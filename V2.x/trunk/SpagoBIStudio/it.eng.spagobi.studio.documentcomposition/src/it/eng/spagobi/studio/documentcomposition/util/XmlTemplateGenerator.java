@@ -39,135 +39,164 @@ public class XmlTemplateGenerator {
 		xstream.useAttributeFor(Document.class, "sbiObjLabel");
 		xstream.aliasField("sbi_obj_label", Document.class, "sbiObjLabel");
 
-		xstream.aliasField("STYLE", Document.class, "style");
-		xstream.useAttributeFor(Style.class, "style");
-		xstream.aliasField("style", Style.class, "style");        
+		try{
+			xstream.useAttributeFor(Document.class, "localFileName");
+			xstream.aliasField("local_file_name", Document.class, "localFileName");
+		}
+		catch (Exception e) {
+			// if not treated		
+			}
 
-		xstream.aliasField("PARAMETERS", Document.class, "parameters");
+			xstream.aliasField("STYLE", Document.class, "style");
+			xstream.useAttributeFor(Style.class, "style");
+			xstream.aliasField("style", Style.class, "style");        
 
-		xstream.addImplicitCollection(Parameters.class, "parameter", "PARAMETER", Parameter.class);
+			xstream.aliasField("PARAMETERS", Document.class, "parameters");
 
-		xstream.omitField(Parameter.class, "navigationName");
+			xstream.addImplicitCollection(Parameters.class, "parameter", "PARAMETER", Parameter.class);
 
-		xstream.useAttributeFor(Parameter.class, "type");
-		xstream.aliasField("type", Parameter.class, "type");
+			xstream.omitField(Parameter.class, "navigationName");
 
-		xstream.useAttributeFor(Parameter.class, "sbiParLabel");
-		xstream.aliasField("sbi_par_label", Parameter.class, "sbiParLabel");
 
-		xstream.useAttributeFor(Parameter.class, "defaultVal");
-		xstream.aliasField("default_value", Parameter.class, "defaultVal");
+			xstream.useAttributeFor(Parameter.class, "type");
+			xstream.aliasField("type", Parameter.class, "type");
 
-		xstream.aliasField("REFRESH", Parameter.class, "refresh");
+			xstream.useAttributeFor(Parameter.class, "sbiParLabel");
+			xstream.aliasField("sbi_par_label", Parameter.class, "sbiParLabel");
 
-		xstream.addImplicitCollection(Refresh.class, "refreshDocLinked", "REFRESH_DOC_LINKED", RefreshDocLinked.class);
+			xstream.useAttributeFor(Parameter.class, "defaultVal");
+			xstream.aliasField("default_value", Parameter.class, "defaultVal");
 
-		xstream.useAttributeFor(RefreshDocLinked.class, "labelDoc");
-		xstream.aliasField("labelDoc", RefreshDocLinked.class, "labelDoc");
+			xstream.aliasField("REFRESH", Parameter.class, "refresh");
 
-		xstream.useAttributeFor(RefreshDocLinked.class, "labelParam");
-		xstream.aliasField("labelParam", RefreshDocLinked.class, "labelParam");
+			xstream.addImplicitCollection(Refresh.class, "refreshDocLinked", "REFRESH_DOC_LINKED", RefreshDocLinked.class);
 
+			xstream.useAttributeFor(RefreshDocLinked.class, "labelDoc");
+			xstream.aliasField("labelDoc", RefreshDocLinked.class, "labelDoc");
+
+			xstream.useAttributeFor(RefreshDocLinked.class, "labelParam");
+			xstream.aliasField("labelParam", RefreshDocLinked.class, "labelParam");
+
+		}
+
+
+		public static String transformToXml(Object bean) {
+
+
+			XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("_", "_");
+			XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
+
+			setAlias(xstream);	
+
+			String xml = xstream.toXML(bean);
+			System.out.println(xml);
+			return xml;
+		}
+
+
+		public static DocumentComposition readXml(IFile file) throws CoreException{
+			XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("grfthscv", "_");
+			XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
+			setAlias(xstream);	
+			DocumentComposition objFromXml = (DocumentComposition)xstream.fromXML(file.getContents());
+			return objFromXml;
+		}
+
+
+
+		public static void main(String[] args) {
+//
+//			DocumentComposition docComp = new DocumentComposition();
+//
+//			DocumentsConfiguration documentsConfiguration = new DocumentsConfiguration();
+//
+//			RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
+//			refreshDocLinked.setLabelDoc("doc1");
+//			refreshDocLinked.setLabelParam("i1");
+//
+//
+//			Vector rv = new Vector();
+//			rv.add(refreshDocLinked);
+//
+//			Refresh refresh = new Refresh();
+//			refresh.setRefreshDocLinked(rv);
+//		Parameter i1= new Parameter();
+//		i1.setDefaultVal("");
+//	
+//		i1.setSbiParLabel("sb1");
+//		i1.setType("IN");
+//		i1.setRefresh(refresh);
+//
+//			Parameter i1= new Parameter();
+//			i1.setDefaultVal("");
+//			i1.setSbiParLabel("sb1");
+//			i1.setType("IN");
+//			i1.setRefresh(refresh);
+//		Parameter i2= new Parameter();
+//		i2.setDefaultVal("");
+//	
+//		i2.setSbiParLabel("sb2");
+//		i2.setType("IN");
+//		i2.setRefresh(refresh);
+//
+//			Parameter i2= new Parameter();
+//			i2.setDefaultVal("");
+//			i2.setSbiParLabel("sb2");
+//			i2.setType("IN");
+//			i2.setRefresh(refresh);
+//
+//			Vector p = new Vector();
+//			p.add(i1);
+//			p.add(i2);
+//
+//			Parameters parameters = new Parameters();
+//			parameters.setParameter(p);
+//
+//			Style style = new Style();
+//			style.setStyle("float:left; width:49%;");
+//		Document doc1 = new Document();
+//
+//		doc1.setSbiObjLabel("sbi doc1 label");
+//		doc1.setStyle(style);
+//		doc1.setParameters(parameters);
+//
+//			Document doc1 = new Document();
+//			doc1.setSbiObjLabel("sbi doc1 label");
+//			doc1.setStyle(style);
+//			doc1.setParameters(parameters);
+//		Document doc2 = new Document();
+//
+//		doc2.setSbiObjLabel("sbi doc2 label");
+//		doc2.setStyle(style);
+//
+//			Document doc2 = new Document();
+//			doc2.setSbiObjLabel("sbi doc2 label");
+//			doc2.setStyle(style);
+//		Document doc3 = new Document();
+//
+//		doc3.setSbiObjLabel("sbi doc3 label");
+//		doc3.setStyle(style);
+//
+//			Document doc3 = new Document();
+//			doc3.setSbiObjLabel("sbi doc3 label");
+//			doc3.setStyle(style);
+//
+//			Vector docsVector = new Vector();
+//			docsVector.add(doc1);
+//			docsVector.add(doc2);
+//			docsVector.add(doc3);
+//
+//
+//			documentsConfiguration.setVideoWidth("1400");
+//			documentsConfiguration.setVideoHeight("1050");
+//			documentsConfiguration.setDocuments(docsVector);
+//
+//
+//			docComp.setTemplateValue("xxx.jsp");
+//			docComp.setDocumentsConfiguration(documentsConfiguration);
+//
+//
+//
+//			transformToXml(docComp);
+		}
 	}
-
-
-	public static String transformToXml(Object bean) {
-
-
-		XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("_", "_");
-		XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
-
-		setAlias(xstream);	
-
-		String xml = xstream.toXML(bean);
-		System.out.println(xml);
-		return xml;
-	}
-
-
-	public static DocumentComposition readXml(IFile file) throws CoreException{
-		XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("grfthscv", "_");
-		XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
-		setAlias(xstream);	
-		DocumentComposition objFromXml = (DocumentComposition)xstream.fromXML(file.getContents());
-		return objFromXml;
-	}
-
-
-
-	public static void main(String[] args) {
-
-		DocumentComposition docComp = new DocumentComposition();
-
-		DocumentsConfiguration documentsConfiguration = new DocumentsConfiguration();
-
-		RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
-		refreshDocLinked.setLabelDoc("doc1");
-		refreshDocLinked.setLabelParam("i1");
-
-
-		Vector rv = new Vector();
-		rv.add(refreshDocLinked);
-
-		Refresh refresh = new Refresh();
-		refresh.setRefreshDocLinked(rv);
-
-		Parameter i1= new Parameter();
-		i1.setDefaultVal("");
-	
-		i1.setSbiParLabel("sb1");
-		i1.setType("IN");
-		i1.setRefresh(refresh);
-
-		Parameter i2= new Parameter();
-		i2.setDefaultVal("");
-	
-		i2.setSbiParLabel("sb2");
-		i2.setType("IN");
-		i2.setRefresh(refresh);
-
-		Vector p = new Vector();
-		p.add(i1);
-		p.add(i2);
-
-		Parameters parameters = new Parameters();
-		parameters.setParameter(p);
-
-		Style style = new Style();
-		style.setStyle("float:left; width:49%;");
-
-		Document doc1 = new Document();
-
-		doc1.setSbiObjLabel("sbi doc1 label");
-		doc1.setStyle(style);
-		doc1.setParameters(parameters);
-
-		Document doc2 = new Document();
-
-		doc2.setSbiObjLabel("sbi doc2 label");
-		doc2.setStyle(style);
-
-		Document doc3 = new Document();
-
-		doc3.setSbiObjLabel("sbi doc3 label");
-		doc3.setStyle(style);
-
-		Vector docsVector = new Vector();
-		docsVector.add(doc1);
-		docsVector.add(doc2);
-		docsVector.add(doc3);
-
-
-		documentsConfiguration.setVideoWidth("1400");
-		documentsConfiguration.setVideoHeight("1050");
-		documentsConfiguration.setDocuments(docsVector);
-
-
-		docComp.setTemplateValue("xxx.jsp");
-		docComp.setDocumentsConfiguration(documentsConfiguration);
-
-
-
-		transformToXml(docComp);
-	}
-}

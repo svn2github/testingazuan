@@ -1,5 +1,7 @@
 package test;
 
+import it.eng.spagobi.studio.documentcomposition.editors.Designer;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;

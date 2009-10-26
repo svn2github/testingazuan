@@ -6,6 +6,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameter;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameters;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.RefreshDocLinked;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataParameter;
@@ -211,7 +212,7 @@ public class NavigationView extends ViewPart {
 		table.setHeaderVisible (true);
 		table.setSize(300, 300);
 		
-	    String[] titles = { "Navigation name" };
+	    String[] titles = { "Navigation name" , "Master document", "Destination documents"};
 	    for (int i = 0; i < titles.length; i++) {
 		      TableColumn column = new TableColumn(table, SWT.NONE);
 		      column.setText(titles[i]);
@@ -233,6 +234,22 @@ public class NavigationView extends ViewPart {
 							if(navName != null && type != null && type.equalsIgnoreCase("OUT")){
 							      TableItem item = new TableItem(table, SWT.NONE);
 							      item.setText(0, navName);
+							      
+							      TableItem itemMaster = new TableItem(table, SWT.NONE);
+							      itemMaster.setText(1, doc.getSbiObjLabel());
+							      
+							      TableItem itemDest = new TableItem(table, SWT.NONE);
+							      StringBuffer dest = new StringBuffer();
+							      if(param.getRefresh()!= null){
+							    	  Vector <RefreshDocLinked> destinatons =param.getRefresh().getRefreshDocLinked();
+							    	  for(int k =0; k<destinatons.size(); k++){
+							    		  dest.append(((RefreshDocLinked)destinatons.elementAt(k)).getLabelDoc());
+							    		  if(k != destinatons.size()-1){
+							    			  dest.append(" - ");
+							    		  }
+							    	  }
+							      }
+							      itemDest.setText(2, dest.toString());
 							}
 						}
 					}

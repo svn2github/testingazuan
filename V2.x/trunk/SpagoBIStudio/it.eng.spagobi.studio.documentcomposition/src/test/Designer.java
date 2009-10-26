@@ -5,6 +5,7 @@ import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataStyle;
 
@@ -93,7 +94,7 @@ public class Designer {
 
 		DocContainer group=new DocContainer(this, mainComposite, x, y, tempWidth, tempHeight);
 		containers.put(group.getId(), group);
-		Composite g=group.getContainer();
+		Composite g=group.getDocumentContained().getGroup();
 		mainComposite.layout();
 		mainComposite.update();
 		mainComposite.redraw();
@@ -120,9 +121,9 @@ public class Designer {
 			DocContainer docContainer=containers.get(id);
 			docContainer.setTitle(metadataDocument!=null ? metadataDocument.getLabel() : "NoDocument");
 			if(metadataDocument!=null){
-				docContainer.setMetadataDocument(metadataDocument);
+				docContainer.getDocumentContained().setMetadataDocument(metadataDocument);
 			}
-			docContainer.viewDocumentMetadata(metadataDocument);
+			docContainer.getDocumentContained().viewDocumentMetadata(metadataDocument);
 		}
 		SpagoBILogger.infoLog("END: "+Designer.class.toString()+": add Doc Container from template");
 
@@ -223,7 +224,8 @@ public class Designer {
 				switch (event.type) {
 				case SWT.MouseDown:
 					/**  IF in resizing state mouse button on shell causes end resizing**/
-					Composite selected=currentSelection.intValue()!=-1 ? containers.get(currentSelection).getContainer() : null ;
+					DocContainer selectedDoc=currentSelection.intValue()!=-1 ? containers.get(currentSelection) : null ;
+					Composite selected=currentSelection.intValue()!=-1 ? containers.get(currentSelection).getDocumentContained().getGroup() : null ;
 					if(getState().equals(Designer.RESIZE)){
 						setState(Designer.NORMAL);
 						offset[0] = null;							
@@ -238,6 +240,7 @@ public class Designer {
 						selected.setSize(tempWidth, tempHeight);						
 						DocContainer docContainerSelected=containers.get(currentSelection);
 						docContainerSelected.reloadStyleDocumentProperties();
+						(new ModelBO()).updateModelModifyDocument(selectedDoc.getDocumentContained().getMetadataDocument(), selectedDoc.calculateTemplateStyle());						
 						setCurrentSelection(new Integer(-1));
 						if(selected!=null){
 							selected.setBackground(new Color(selected.getDisplay(),new RGB(200,200,200)));
@@ -255,8 +258,8 @@ public class Designer {
 					break;
 				case SWT.MouseMove:
 					/**  IF in resizing state mouse moving on shell causes resizing**/
-					DocContainer selectedDoc=currentSelection.intValue()!=-1 ? containers.get(currentSelection) : null ;
-					Composite selected1=selectedDoc.getContainer();
+					DocContainer selectedDoc1=currentSelection.intValue()!=-1 ? containers.get(currentSelection) : null ;
+					Composite selected1=selectedDoc1.getDocumentContained().getGroup();
 					//System.out.println("Stampo coordinate: x = "+event.x+" su "+p.x+" | y = "+event.y+" su "+p.y);
 					if(getState().equals(Designer.RESIZE)){
 						if(selected1!=null){
@@ -273,38 +276,36 @@ public class Designer {
 								nuova_altezza=rect.height+(y-rect.y-rect.height);
 							}
 							// check if intersects other components
-							boolean doesIntersect=DocContainer.doesIntersect(selectedDoc.getId(), selectedDoc.getDesigner(),selectedDoc.getContainer().getLocation().x, selectedDoc.getContainer().getLocation().y, nuova_larghezza,nuova_altezza, true);
+							boolean doesIntersect=DocContainer.doesIntersect(selectedDoc1.getId(), selectedDoc1.getDesigner(),selectedDoc1.getDocumentContained().getGroup().getLocation().x, selectedDoc1.getDocumentContained().getGroup().getLocation().y, nuova_larghezza,nuova_altezza, true);
 							// check if exceeds bounds
-							boolean doesExceed=DocContainer.doesExceed(selectedDoc.getId(), selectedDoc.getDesigner(),selectedDoc.getContainer().getLocation().x, selectedDoc.getContainer().getLocation().y, nuova_larghezza,nuova_altezza, true);							
+							boolean doesExceed=DocContainer.doesExceed(selectedDoc1.getId(), selectedDoc1.getDesigner(),selectedDoc1.getDocumentContained().getGroup().getLocation().x, selectedDoc1.getDocumentContained().getGroup().getLocation().y, nuova_larghezza,nuova_altezza, true);							
 							if(doesIntersect==false && doesExceed==false){
 								selected1.setSize(nuova_larghezza, nuova_altezza);
-								//								selectedDoc.setWidth(nuova_larghezza);
-								//								selectedDoc.setHeight(nuova_altezza);
-								System.out.println("Resizing da fuori: x="+selectedDoc.getContainer().getBounds().x+" e y="+selectedDoc.getContainer().getBounds().y+" altezza nuova="+selectedDoc.getContainer().getBounds().height+" e larghezza nuova="+selectedDoc.getContainer().getBounds().width);														
+								System.out.println("Resizing da fuori: x="+selectedDoc1.getDocumentContained().getGroup().getBounds().x+" e y="+selectedDoc1.getDocumentContained().getGroup().getBounds().y+" altezza nuova="+selectedDoc1.getDocumentContained().getGroup().getBounds().height+" e larghezza nuova="+selectedDoc1.getDocumentContained().getGroup().getBounds().width);														
+								(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle());
 							}
 							else{
-								System.out.println("BLoccato resizing da fuori: x="+selectedDoc.getContainer().getBounds().x+" e y="+selectedDoc.getContainer().getBounds().y+" altezza rimane="+selectedDoc.getContainer().getBounds().height+" e larghezza rimane="+selectedDoc.getContainer().getBounds().width);							
+								System.out.println("BLoccato resizing da fuori: x="+selectedDoc1.getDocumentContained().getGroup().getBounds().x+" e y="+selectedDoc1.getDocumentContained().getGroup().getBounds().y+" altezza rimane="+selectedDoc1.getDocumentContained().getGroup().getBounds().height+" e larghezza rimane="+selectedDoc1.getDocumentContained().getGroup().getBounds().width);							
 							}
 							//shell.redraw();
 						}
 					}
 					else if(getState().equals(Designer.DRAG)){
-						if(selectedDoc.getId().equals(selectedDoc.getDesigner().getCurrentSelection())){
+						if(selectedDoc1.getId().equals(selectedDoc1.getDesigner().getCurrentSelection())){
 							if (offset[0] != null) {
 								Point pt = offset[0];							
 								int newX=event.x - pt.x;
 								int newY=event.y - pt.y;
-								boolean doesIntersect=DocContainer.doesIntersect(selectedDoc.getId(), selectedDoc.getDesigner(),newX, newY, selectedDoc.getContainer().getBounds().width,selectedDoc.getContainer().getBounds().height,true);
-								boolean doesExceed=DocContainer.doesExceed(selectedDoc.getId(), selectedDoc.getDesigner(),newX, newY, selectedDoc.getContainer().getBounds().width,selectedDoc.getContainer().getBounds().height,true);
+								boolean doesIntersect=DocContainer.doesIntersect(selectedDoc1.getId(), selectedDoc1.getDesigner(),newX, newY, selectedDoc1.getDocumentContained().getGroup().getBounds().width,selectedDoc1.getDocumentContained().getGroup().getBounds().height,true);
+								boolean doesExceed=DocContainer.doesExceed(selectedDoc1.getId(), selectedDoc1.getDesigner(),newX, newY, selectedDoc1.getDocumentContained().getGroup().getBounds().width,selectedDoc1.getDocumentContained().getGroup().getBounds().height,true);
 
 								if(doesIntersect==false && doesExceed==false){
-									selectedDoc.getContainer().setLocation(newX, newY);
-									//									xPos=newX;
-									//									yPos=newY;
-									System.out.println("Drag da fuori: x="+selectedDoc.getContainer().getBounds().x+" e y="+selectedDoc.getContainer().getBounds().y+" altezza nuova="+selectedDoc.getContainer().getBounds().height+" e larghezza nuova="+selectedDoc.getContainer().getBounds().width);														
+									selectedDoc1.getDocumentContained().getGroup().setLocation(newX, newY);
+									(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle());
+									System.out.println("Drag da fuori: x="+selectedDoc1.getDocumentContained().getGroup().getBounds().x+" e y="+selectedDoc1.getDocumentContained().getGroup().getBounds().y+" altezza nuova="+selectedDoc1.getDocumentContained().getGroup().getBounds().height+" e larghezza nuova="+selectedDoc1.getDocumentContained().getGroup().getBounds().width);														
 								}
 								else{
-									System.out.println("Drag BLOCCATO da fuori: x="+selectedDoc.getContainer().getBounds().x+" e y="+selectedDoc.getContainer().getBounds().y+" altezza rimane="+selectedDoc.getContainer().getBounds().height+" e larghezza rimane="+selectedDoc.getContainer().getBounds().width);														
+									System.out.println("Drag BLOCCATO da fuori: x="+selectedDoc1.getDocumentContained().getGroup().getBounds().x+" e y="+selectedDoc1.getDocumentContained().getGroup().getBounds().y+" altezza rimane="+selectedDoc1.getDocumentContained().getGroup().getBounds().height+" e larghezza rimane="+selectedDoc1.getDocumentContained().getGroup().getBounds().width);														
 								}
 							}
 						}
@@ -441,7 +442,6 @@ public class Designer {
 		// Run all the documents
 		for (Iterator iterator = documentComposition.getDocumentsConfiguration().getDocuments().iterator(); iterator.hasNext();) {
 			Document document = (Document) iterator.next();
-			String label=document.getSbiObjLabel();
 			String sbiObjectLabel =	document.getSbiObjLabel();
 			MetadataStyle metadataStyle=null;
 			// Recover style informations!

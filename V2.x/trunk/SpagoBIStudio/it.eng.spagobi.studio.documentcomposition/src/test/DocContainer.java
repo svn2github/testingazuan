@@ -5,9 +5,13 @@ import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.core.util.SDKDocumentParameters;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
+import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
 
@@ -16,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
@@ -64,36 +69,9 @@ public class DocContainer {
 
 	final Integer id;
 	Designer designer;
-	Group container;
-	MetadataDocument metadataDocument;	
+	DocumentContained documentContained;
 
 	String title="";
-
-	public static final String TYPE_REPORT="REPORT";
-	public static final String TYPE_DOSSIER="DOSSIER";
-	public static final String TYPE_OLAP="OLAP";
-	public static final String TYPE_DATA_MINING="DATA_MINING";
-	public static final String TYPE_DASH="DASH";
-	public static final String TYPE_DATAMART="DATAMART";
-	public static final String TYPE_MAP="MAP";
-	public static final String TYPE_OFFICE_DOC="OFFICE_DOC";
-	public static final String TYPE_ETL="ETL";
-	public static final String TYPE_DOCUMENT_COMPOSITIOn="DOCUMENT_COMPOSITION";
-
-
-	public static final String IMG_JASPER_REPORT="it/eng/spagobi/studio/documentcomposition/resources/images/jasper.png";
-	public static final String IMG_BIRT_REPORT="it/eng/spagobi/studio/documentcomposition/resources/images/birt.png";
-	public static final String IMG_DASHBOARD="it/eng/spagobi/studio/documentcomposition/resources/images/chart.png";
-	public static final String IMG_CHART="it/eng/spagobi/studio/documentcomposition/resources/images/chart.png";
-	public static final String IMG_DOCUMENT_COMPOSITION="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
-	public static final String IMG_OLAP="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
-	public static final String IMG_ETL="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
-	public static final String IMG_OFFICE_DOC="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
-	public static final String IMG_MAP="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
-	public static final String IMG_DATAMART="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
-	public static final String IMG_DOSSIER="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
-	public static final String IMG_DATA_MINING="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
-
 
 	public static final int DEFAULT_WIDTH=200;
 	public static final int DEFAULT_HEIGHT=200;
@@ -111,32 +89,35 @@ public class DocContainer {
 	 * @param tempWidth
 	 * @param tempHeight
 	 */
-	
+
 	public DocContainer(Designer _designer,Composite mainComposite, int x, int y, int tempWidth, int tempHeight) {
 		super();
 		designer=_designer;
 		id=Integer.valueOf(designer.getCounter());
-
-		container=new Group(mainComposite, SWT.NULL);
-
+try{
+	documentContained=new DocumentContained(mainComposite, SWT.NULL);
+}
+catch (Exception e) {
+e.printStackTrace();}
+		
 		title="NUMERO "+(new Integer(designer.getCounter()).toString());
-		container.setText(title);
+		documentContained.getGroup().setText(title);
 		GridLayout layout=new GridLayout();
 		layout.numColumns=2;
-		container.setLayout(layout);
+		documentContained.getGroup().setLayout(layout);
 		designer.incrementCounter();
-		container.setSize(tempWidth, tempHeight);
-		container.setLocation(x, y);
+		documentContained.getGroup().setSize(tempWidth, tempHeight);
+		documentContained.getGroup().setLocation(x, y);
 		designer.setState(Designer.NORMAL);
 
-		addContainerMouseControls(mainComposite, container);
-		addContextMenu(mainComposite.getShell(), container);
-		addDragAndDropDocument(container);
+		addContainerMouseControls(mainComposite, documentContained.getGroup());
+		addContextMenu(mainComposite.getShell(), documentContained.getGroup());
+		addDragAndDropDocument(documentContained.getGroup());
 
-		container.layout();
-		container.redraw();
-		container.getParent().redraw();
-		container.getParent().layout();
+		documentContained.getGroup().layout();
+		documentContained.getGroup().redraw();
+		documentContained.getGroup().getParent().redraw();
+		documentContained.getGroup().getParent().layout();
 
 	}
 
@@ -146,7 +127,7 @@ public class DocContainer {
 	 * @param mainComposite
 	 * @param composite
 	 */
-	
+
 	public void addContainerMouseControls(final Composite mainComposite, final Composite composite){
 		final Point[] offset = new Point[1];
 		Listener listener = new Listener() {
@@ -154,7 +135,7 @@ public class DocContainer {
 				;				switch (event.type) {
 				case SWT.MouseDown:
 					// Reload the DocumentPropertiesView
-					if(metadataDocument!=null)
+					if(documentContained.getMetadataDocument()!=null)
 						reloadDocumentPropertiesView(id.toString());
 					reloadStyleDocumentProperties();
 
@@ -167,14 +148,15 @@ public class DocContainer {
 							cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_ARROW);						
 							designer.getMainComposite().setCursor(cursor);							
 							offset[0] = null;							
-							int tempWidth=container.getBounds().width;
+							int tempWidth=documentContained.getGroup().getBounds().width;
 							tempWidth=tempWidth/ALIGNMENT_MARGIN;
 							tempWidth=tempWidth*ALIGNMENT_MARGIN;
-							int tempHeight=container.getBounds().height;
+							int tempHeight=documentContained.getGroup().getBounds().height;
 							tempHeight=tempHeight/ALIGNMENT_MARGIN;
 							tempHeight=tempHeight*ALIGNMENT_MARGIN;
-							container.setSize(tempWidth, tempHeight);
+							documentContained.getGroup().setSize(tempWidth, tempHeight);
 							reloadStyleDocumentProperties();
+							(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
 							designer.setCurrentSelection(Integer.valueOf(-1));
 							// Reload style text in view (only if in mode automatic
 						}
@@ -205,7 +187,7 @@ public class DocContainer {
 						}
 						else{ 
 							if(idPreviousSel.intValue()!=-1){
-								Composite toDeselect=designer.getContainers().get(idPreviousSel).getContainer();
+								Composite toDeselect=designer.getContainers().get(idPreviousSel).getDocumentContained().getGroup();
 								toDeselect.setBackground(new Color(toDeselect.getDisplay(),new RGB(200,200,200)));
 							}
 						}
@@ -219,8 +201,6 @@ public class DocContainer {
 						Point pt1 = composite.toDisplay(0, 0);
 						Point pt2 = mainComposite.toDisplay(event.x, event.y);
 						offset[0] = new Point(pt2.x - pt1.x, pt2.y - pt1.y);
-						//System.out.println("QUESTO E' UN TEST DA DENTRO CHE "+composite.getBounds().x+" = "+xPos+" e "+composite.getBounds().y+" = "+ yPos+" e poi altezza "+composite.getBounds().height+" = "+height+ " e larghezza  "+composite.getBounds().width+ " = "+width);
-
 					}					
 					break;
 				case SWT.MouseMove:
@@ -239,18 +219,16 @@ public class DocContainer {
 								nuova_altezza=rect.height+(y-rect.y-rect.height);
 							}
 							//check if intersect!
-							boolean doesIntersect=DocContainer.doesIntersect(id,designer,container.getLocation().x, container.getLocation().y, nuova_larghezza, nuova_altezza,false);
-							boolean doesExceed=DocContainer.doesExceed(id,designer,container.getLocation().x, container.getLocation().y, nuova_larghezza, nuova_altezza,false);
+							boolean doesIntersect=DocContainer.doesIntersect(id,designer,documentContained.getGroup().getLocation().x, documentContained.getGroup().getLocation().y, nuova_larghezza, nuova_altezza,false);
+							boolean doesExceed=DocContainer.doesExceed(id,designer,documentContained.getGroup().getLocation().x, documentContained.getGroup().getLocation().y, nuova_larghezza, nuova_altezza,false);
 
 							if(doesIntersect==false && doesExceed==false){
-								System.out.println("STIRAMI!");
 								composite.setSize(nuova_larghezza, nuova_altezza);
-								//								width=nuova_larghezza;
-								//								height=nuova_altezza;
-								System.out.println("Resizing da dentro: x="+container.getBounds().x+" e y="+container.getBounds().y+" altezza nuova="+container.getBounds().height+" e larghezza nuova="+container.getBounds().width);														
+								(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
+								System.out.println("Resizing da dentro: x="+documentContained.getGroup().getBounds().x+" e y="+documentContained.getGroup().getBounds().y+" altezza nuova="+documentContained.getGroup().getBounds().height+" e larghezza nuova="+documentContained.getGroup().getBounds().width);														
 							}	
 							else{
-								System.out.println("Resizing BLOCCATO da dentro: x="+container.getBounds().x+" e y="+container.getBounds().y+" altezza rimane="+container.getBounds().height+" e larghezza rimane="+container.getBounds().width);														
+								System.out.println("Resizing BLOCCATO da dentro: x="+documentContained.getGroup().getBounds().x+" e y="+documentContained.getGroup().getBounds().y+" altezza rimane="+documentContained.getGroup().getBounds().height+" e larghezza rimane="+documentContained.getGroup().getBounds().width);														
 							}
 
 						}
@@ -262,16 +240,16 @@ public class DocContainer {
 								Point pt = offset[0];							
 								int newX=event.x - pt.x;
 								int newY=event.y - pt.y;
-								boolean doesIntersect=doesIntersect(id, designer,newX, newY, container.getBounds().width,container.getBounds().height,false);
-								boolean doesExceed=doesExceed(id, designer,newX, newY, container.getBounds().width,container.getBounds().height,false);
+								boolean doesIntersect=doesIntersect(id, designer,newX, newY, documentContained.getGroup().getBounds().width,documentContained.getGroup().getBounds().height,false);
+								boolean doesExceed=doesExceed(id, designer,newX, newY, documentContained.getGroup().getBounds().width, documentContained.getGroup().getBounds().height,false);
 
 								if(doesIntersect==false && doesExceed==false){
-									System.out.println("MUOVIMI");
 									composite.setLocation(newX, newY);
-									System.out.println("Drag da dentro: x="+container.getBounds().x+" e y="+container.getBounds().y+" altezza nuova="+container.getBounds().height+" e larghezza nuova="+container.getBounds().width);														
+									(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
+									System.out.println("Drag da dentro: x="+documentContained.getGroup().getBounds().x+" e y="+documentContained.getGroup().getBounds().y+" altezza nuova="+documentContained.getGroup().getBounds().height+" e larghezza nuova="+documentContained.getGroup().getBounds().width);														
 								}
 								else{
-									System.out.println("Drag BLOCCATO da dentro: x="+container.getBounds().x+" e y="+container.getBounds().y+" altezza rimane="+container.getBounds().height+" e larghezza rimane="+container.getBounds().width);														
+									System.out.println("Drag BLOCCATO da dentro: x="+documentContained.getGroup().getBounds().x+" e y="+documentContained.getGroup().getBounds().y+" altezza rimane="+documentContained.getGroup().getBounds().height+" e larghezza rimane="+documentContained.getGroup().getBounds().width);														
 								}
 								//								System.out.println("QUESTO E' UN TEST DA DENTRO CHE "+composite.getBounds().x+" = "+xPos+" e "+composite.getBounds().y+" = "+ yPos+" e poi altezza "+composite.getBounds().height+" = "+height+ " e larghezza  "+composite.getBounds().width+ " = "+width);
 
@@ -283,17 +261,15 @@ public class DocContainer {
 
 					/**  IF in SELECTION state mouse up on container causes selection started from DRAG**/
 					if(designer.getState().equals(Designer.DRAG)){
-						//offset[0] = null;
 						// ---------- Try alignment MArgin-----------
-
-						int tempX=container.getLocation().x;
+						int tempX=documentContained.getGroup().getLocation().x;
 						tempX=tempX/ALIGNMENT_MARGIN;
 						tempX=tempX*ALIGNMENT_MARGIN;
-						int tempY=container.getLocation().y;
+						int tempY=documentContained.getGroup().getLocation().y;
 						tempY=tempY/ALIGNMENT_MARGIN;
 						tempY=tempY*ALIGNMENT_MARGIN;
-						container.setLocation(tempX, tempY);
-
+						documentContained.getGroup().setLocation(tempX, tempY);
+						//updateModelModifyDocument(metadataDocument); //Aaa
 						if(id.equals(designer.getCurrentSelection())){
 							composite.setBackground(new Color(composite.getDisplay(),new RGB(0,0,255)));
 							designer.setCurrentSelection(id);
@@ -323,11 +299,11 @@ public class DocContainer {
 
 
 
-/**
- *  Add the context menu on document containers
- * @param mainComposite
- * @param composite
- */
+	/**
+	 *  Add the context menu on document containers
+	 * @param mainComposite
+	 * @param composite
+	 */
 
 	public void addContextMenu(final Composite mainComposite, final Composite composite){
 		composite.addListener(SWT.MenuDetect, new Listener() {
@@ -349,7 +325,7 @@ public class DocContainer {
 				delItem.addListener(SWT.Selection, new Listener() {
 					public void handleEvent(Event e) {
 						Integer idSel=designer.getCurrentSelection();
-						String title=designer.getContainers().get(idSel).getContainer().getText();
+						String title=designer.getContainers().get(idSel).getDocumentContained().getGroup().getText();
 
 						designer.getContainers().remove(idSel);
 						composite.dispose();
@@ -380,15 +356,21 @@ public class DocContainer {
 
 
 
-	public Group getContainer() {
-		return container;
+
+	public DocumentContained getDocumentContained() {
+		return documentContained;
 	}
 
 
-	public void setContainer(Group container) {
-		this.container = container;
+	public void setDocumentContained(DocumentContained documentContained) {
+		this.documentContained = documentContained;
 	}
 
+
+	/**
+	 *  Add Drag and drop function of a document to its document container
+	 * @param composite
+	 */
 
 	protected void addDragAndDropDocument(final Composite composite){
 		// Allow data to be copied or moved to the drop target
@@ -464,11 +446,6 @@ public class DocContainer {
 			public void dropAccept(DropTargetEvent event) {
 			}
 			public void drop(DropTargetEvent event) {
-				//				if (textTransfer.isSupportedType(event.currentDataType)) {
-				//					String text = (String)event.data;
-				//					Label label=new Label(composite, SWT.NULL);
-				//					label.setText("CIAOOOOO");
-				//				}
 				boolean doTransfer=false;
 				if (localTransfer.isSupportedType(event.currentDataType)){
 					Object selectedObject = event.data;
@@ -476,11 +453,10 @@ public class DocContainer {
 					{
 						TreeSelection selectedTreeSelection=(TreeSelection)selectedObject;
 						IFile file=(IFile)selectedTreeSelection.getFirstElement();
-						doTransfer=recoverDocumentMetadata(file);
+						doTransfer=documentContained.recoverDocumentMetadata(file);
 
-						//						IElementComparer el=selectedTreeSelection.getElementComparer();
-						//						org.eclipse.jface.viewers.TreePath[] selectedTreePathes=selectedTreeSelection.getPaths();
-						//						TreePath selectedTreePath=selectedTreePathes[0];
+						// update the model with a new document!
+						//updateModelWithNewDocument(metadataDocument);
 					}
 
 				}
@@ -504,275 +480,28 @@ public class DocContainer {
 
 
 
-	public boolean recoverDocumentMetadata(IFile file){
-		try{
-			int i=0;
-			String id=file.getPersistentProperty(PropertyPage.DOCUMENT_ID);
-			if(metadataDocument!=null){
-				MessageDialog.openWarning(container.getShell(), 
-						"Warning", "Container has already Document in!");
-				return false;
-			}
-			else if(id==null){
-				MessageDialog.openWarning(container.getShell(), 
-						"Warning", "Chosen file has no SpagoBI document metadata");
-				return false;
-			}
-			else{			
-				i++;
-
-				IPath ia=file.getFullPath();
-				String localFileName=ia.toString();
-
-				metadataDocument=new MetadataDocument(file);
-				metadataDocument.setLocalFileName(localFileName);
-				return viewDocumentMetadata(metadataDocument);
-			}
-		}
-		catch (Exception e) {	
-			e.printStackTrace();
-			SpagoBILogger.errorLog("Exception while retrieving metadata",e);
-			return false;
-		}
-
-	}
-
-	public boolean viewDocumentMetadata(MetadataDocument metadataDocument){
-
-		// get the image Path
-
-		if(metadataDocument.getType()!=null){
-			String imagePath=null;
-			if(metadataDocument.getType().equalsIgnoreCase(TYPE_REPORT)){
-				imagePath=IMG_JASPER_REPORT;
-			}
-			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_DASH)){
-				imagePath=IMG_DASHBOARD;
-			}
-			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_DATA_MINING)){
-				imagePath=IMG_DATA_MINING;
-			}
-			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_DATAMART)){
-				imagePath=IMG_DATAMART;
-			}
-			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_DOSSIER)){
-				imagePath=IMG_DOSSIER;
-			}
-			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_DOCUMENT_COMPOSITIOn)){
-				imagePath=IMG_DOCUMENT_COMPOSITION;
-			}
-			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_MAP)){
-				imagePath=IMG_MAP;
-			}
-			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_ETL)){
-				imagePath=IMG_ETL;
-			}
-			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_OFFICE_DOC)){
-				imagePath=IMG_OFFICE_DOC;
-			}
-
-
-			if(imagePath!=null){
-				final String imagePathFinal=imagePath;
-				container.addPaintListener(new PaintListener() {
-					public void paintControl(PaintEvent e) {
-						Image image = null;
-						try {
-							InputStream is=getInputStreamFromResource(imagePathFinal);
-							image = new Image(container.getDisplay(), is);
-						} catch (FileNotFoundException e1) {
-							e1.printStackTrace();
-						}
-						catch (Exception e2) {
-
-							e2.printStackTrace();
-						}
-						e.gc.drawImage(image, 20, 30);
-						image.dispose();
-					}
-				});
-				container.redraw();
-			}
-		}
-
-		container.setText(metadataDocument.getLocalFileName());
-		Label nameLabelName=new Label(container,SWT.NULL);
-		nameLabelName.setText("Name: ");			
-		Label nameLabelValue=new Label(container,SWT.NULL);
-		nameLabelValue.setText(metadataDocument.getName() != null ? metadataDocument.getName() : "" );
-		Label localFileNameLabel=new Label(container,SWT.NULL);
-		localFileNameLabel.setText(metadataDocument.getLocalFileName());				
-
-		return true;
-	}
 
 
 
-	//	public boolean viewDocumentMetadata(IFile file){
-	//
-	//		try{
-	//			int i=0;
-	//			String id=file.getPersistentProperty(PropertyPage.DOCUMENT_ID);
-	//			if(metadataDocument!=null){
-	//				MessageDialog.openWarning(container.getShell(), 
-	//						"Warning", "Container has already Document in!");
-	//				return false;
-	//			}
-	//			else if(id==null){
-	//				MessageDialog.openWarning(container.getShell(), 
-	//						"Warning", "Chosen file has no SpagoBI document metadata");
-	//				return false;
-	//			}
-	//			else{			
-	//				i++;
-	//
-	//				String documentName=file.getPersistentProperty(PropertyPage.DOCUMENT_NAME);
-	//				String documentType=file.getPersistentProperty(PropertyPage.DOCUMENT_TYPE);
-	//				String documentEngineId=file.getPersistentProperty(PropertyPage.ENGINE_ID);
-	//				String documentLabel=file.getPersistentProperty(PropertyPage.DOCUMENT_LABEL);
-	//				String documentState=file.getPersistentProperty(PropertyPage.DOCUMENT_STATE);
-	//				String documentDescription=file.getPersistentProperty(PropertyPage.DOCUMENT_DESCRIPTION);
-	//				String documentDatasetId=file.getPersistentProperty(PropertyPage.DATASET_ID);
-	//				String documentDatasourceId=file.getPersistentProperty(PropertyPage.DATA_SOURCE_ID);
-	//				String xmlParameters=file.getPersistentProperty(PropertyPage.DOCUMENT_PARAMETERS_XML);
-	//
-	//				//			Label idLabelName=new Label(container,SWT.NULL);
-	//				//			idLabelName.setText("id: ");
-	//				//			Label idLabelValue=new Label(container,SWT.NULL);
-	//				//			idLabelValue.setText(id != null ? id : "" );
-	//
-	//				// get the image Path
-	//				if(documentType!=null){
-	//					String imagePath=null;
-	//					if(documentType.equalsIgnoreCase(TYPE_REPORT)){
-	//						imagePath=IMG_JASPER_REPORT;
-	//					}
-	//					else if(documentType.equalsIgnoreCase(TYPE_DASH)){
-	//						imagePath=IMG_DASHBOARD;
-	//					}
-	//					else if(documentType.equalsIgnoreCase(TYPE_DATA_MINING)){
-	//						imagePath=IMG_DATA_MINING;
-	//					}
-	//					else if(documentType.equalsIgnoreCase(TYPE_DATAMART)){
-	//						imagePath=IMG_DATAMART;
-	//					}
-	//					else if(documentType.equalsIgnoreCase(TYPE_DOSSIER)){
-	//						imagePath=IMG_DOSSIER;
-	//					}
-	//					else if(documentType.equalsIgnoreCase(TYPE_DOCUMENT_COMPOSITIOn)){
-	//						imagePath=IMG_DOCUMENT_COMPOSITION;
-	//					}
-	//					else if(documentType.equalsIgnoreCase(TYPE_MAP)){
-	//						imagePath=IMG_MAP;
-	//					}
-	//					else if(documentType.equalsIgnoreCase(TYPE_ETL)){
-	//						imagePath=IMG_ETL;
-	//					}
-	//					else if(documentType.equalsIgnoreCase(TYPE_OFFICE_DOC)){
-	//						imagePath=IMG_OFFICE_DOC;
-	//					}
-	//
-	//
-	//					if(imagePath!=null){
-	//						final String imagePathFinal=imagePath;
-	//						container.addPaintListener(new PaintListener() {
-	//							public void paintControl(PaintEvent e) {
-	//								Image image = null;
-	//								try {
-	//									InputStream is=getInputStreamFromResource(imagePathFinal);
-	//									image = new Image(container.getDisplay(), is);
-	//								} catch (FileNotFoundException e1) {
-	//									e1.printStackTrace();
-	//								}
-	//								catch (Exception e2) {
-	//
-	//									e2.printStackTrace();
-	//								}
-	//								e.gc.drawImage(image, 20, 30);
-	//								image.dispose();
-	//							}
-	//						});
-	//						container.redraw();
-	//					}
-	//				}
-	//
-	//				container.setText(file.getName());
-	//				Label nameLabelName=new Label(container,SWT.NULL);
-	//				nameLabelName.setText("Name: ");			
-	//				Label nameLabelValue=new Label(container,SWT.NULL);
-	//				nameLabelValue.setText(documentName != null ? documentName : "" );
-	//				Label localFileName=new Label(container,SWT.NULL);
-	//				localFileName.setText(file.getName());
-	//
-	//
-	//				metadataDocument=new MetadataDocument();
-	//				metadataDocument.setId(Integer.valueOf(id));
-	//				metadataDocument.setLabel(documentLabel);
-	//				metadataDocument.setDescription(documentDescription);
-	//				metadataDocument.setType(documentType);
-	//				metadataDocument.setName(documentName);
-	//				metadataDocument.setEngine(documentEngineId);
-	//				metadataDocument.setDataSet(documentDatasetId);
-	//				metadataDocument.setDataSource(documentDatasourceId);
-	//				metadataDocument.setState(documentState);
-	//				metadataDocument.setLocalFileName(file.getName());
-	//
-	//				if(xmlParameters!=null && !xmlParameters.equalsIgnoreCase(""))
-	//				{
-	//					XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("grfthscv", "_");
-	//					XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
-	//					xstream.alias("SDK_DOCUMENT_PARAMETERS", SDKDocumentParameters.class);
-	//					xstream.alias("PARAMETER", SDKDocumentParameter.class);
-	//					xstream.useAttributeFor(SDKDocumentParameter.class, "id");
-	//					xstream.useAttributeFor(SDKDocumentParameter.class, "label");
-	//					xstream.useAttributeFor(SDKDocumentParameter.class, "type");
-	//					xstream.useAttributeFor(SDKDocumentParameter.class, "urlName");
-	//					xstream.omitField(SDKDocumentParameter.class, "values");		
-	//					xstream.omitField(SDKDocumentParameter.class, "constraints");
-	//					xstream.omitField(SDKDocumentParameter.class, "__hashCodeCalc");
-	//					SDKDocumentParameters parametersMetaDataObject= (SDKDocumentParameters)xstream.fromXML(xmlParameters);
-	//					metadataDocument.buildMetadataParameters(parametersMetaDataObject);
-	//				}
-	//			}
-	//		}
-	//		catch (Exception e) {	
-	//			e.printStackTrace();
-	//			SpagoBILogger.errorLog("Exception while retrieving metadata",e);
-	//			return false;
-	//		}
-	//		catch (Throwable e) {
-	//			e.printStackTrace();
-	//			SpagoBILogger.errorLog("Exception while retrieving metadata",e);
-	//			return false;
-	//		}
-	//
-	//		return true;
-	//	}
 
-	/** Get input stream from a resource
-	 * 
-	 * @param resourcePath
-	 * @return
-	 * @throws IOException
+
+
+
+
+	/**
+	 *  Calculate the style string from the Style class
+	 * @param composite
 	 */
-
-	public static InputStream getInputStreamFromResource(String resourcePath) throws IOException {
-		Bundle b = org.eclipse.core.runtime.Platform.getBundle(it.eng.spagobi.studio.documentcomposition.Activator.PLUGIN_ID);
-		URL res = b.getResource(resourcePath);
-		InputStream is = res.openStream();
-		return is;
-	}
-
 	public Style calculateTemplateStyle(){
 		Style style=new Style();	
 		String toAdd="float:left;margin:0px;";
 
 		// get the bounds
-		Point location=container.getLocation();
+		Point location=documentContained.getGroup().getLocation();
 		int x=location.x;
 		int y=location.y;
 
-		Rectangle rect=container.getBounds();
+		Rectangle rect=documentContained.getGroup().getBounds();
 		int width =rect.width;
 		int height =rect.height;
 
@@ -797,7 +526,6 @@ public class DocContainer {
 
 		style.setStyle(toAdd);
 		return style;
-
 	}
 
 	/**
@@ -812,7 +540,7 @@ public class DocContainer {
 			Integer idOther = (Integer) iterator.next();
 			if(!idOther.equals(currentId)){
 				DocContainer otherContainer = designer.getContainers().get(idOther);
-				Group otherGroup=otherContainer.getContainer();
+				Group otherGroup=otherContainer.documentContained.getGroup();
 				Rectangle otherRectangle=otherGroup.getBounds();
 				doesIntersect=thisRectangle.intersects(otherRectangle);	
 				System.out.println("Interseca primo: "+doesIntersect+" il container "+otherContainer.getTitle());
@@ -852,7 +580,10 @@ public class DocContainer {
 
 
 
-
+	/**
+	 *  Call to reload the style document properties view when a container is selected
+	 * @param composite
+	 */
 	public void reloadStyleDocumentProperties(){
 		Style style=calculateTemplateStyle();
 		IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
@@ -862,7 +593,7 @@ public class DocContainer {
 		Object p=w.getPart(false);
 		if(p!=null){
 			DocumentPropertiesView view=(DocumentPropertiesView)p;
-				view.reloadStyle(id, style.getStyle());
+			view.reloadStyle(id, style.getStyle());
 		}
 		else{
 			// View not present
@@ -884,7 +615,7 @@ public class DocContainer {
 			Object p=w.getPart(false);
 			if(p!=null){
 				DocumentPropertiesView view=(DocumentPropertiesView)p;
-				view.reloadProperties(metadataDocument);
+				view.reloadProperties(documentContained.getMetadataDocument());
 			}
 			else{
 				// View not present
@@ -895,7 +626,7 @@ public class DocContainer {
 			Object p2=wPars.getPart(false);
 			if(p2!=null){
 				DocumentParametersView docParameters=(DocumentParametersView)p2;
-				docParameters.reloadProperties(metadataDocument.getMetadataParameters());
+				docParameters.reloadProperties(documentContained.getMetadataDocument().getMetadataParameters());
 			}
 			else{
 				// View Not present
@@ -908,37 +639,6 @@ public class DocContainer {
 		int i=0;
 
 	}
-
-
-	//	protected boolean doesIntersect (int newX, int newY, int newWidth, int newHeight){
-	//		boolean doesIntersect=false;
-	//		Vector<Point> points=new Vector<Point>();
-	//		Point leftTopPoint=new Point(newX,newY);
-	//		Point rightTopPoint=new Point(newX+newWidth,newY);
-	//		Point leftBottomPoint=new Point(newX,newY+newHeight);
-	//		Point rightBottomPoint=new Point(newX+newWidth,newY+newHeight);
-	//		points.add(leftTopPoint);
-	//		points.add(rightTopPoint);
-	//		points.add(leftBottomPoint);
-	//		points.add(rightBottomPoint);
-	//
-	//		for (Iterator iterator = designer.getContainers().keySet().iterator(); iterator.hasNext() && doesIntersect==false;) {
-	//			Integer idOther = (Integer) iterator.next();
-	//			if(!idOther.equals(id)){
-	//				DocContainer otherContainer = designer.getContainers().get(idOther);
-	//				Group otherGroup=otherContainer.getContainer();
-	//				Rectangle otherRectangle=otherGroup.getBounds();
-	//				for (Iterator iterator2 = points.iterator(); iterator2.hasNext() && doesIntersect==false;) {
-	//					Point point = (Point) iterator2.next();
-	//					doesIntersect=otherRectangle.contains(point);	
-	//				}
-	//			}
-	//		}
-	//		return doesIntersect;
-	//	}
-
-
-
 
 
 	public Designer getDesigner() {
@@ -960,15 +660,6 @@ public class DocContainer {
 		this.title = title;
 	}
 
-
-	public MetadataDocument getMetadataDocument() {
-		return metadataDocument;
-	}
-
-
-	public void setMetadataDocument(MetadataDocument metadataDocument) {
-		this.metadataDocument = metadataDocument;
-	}
 
 
 

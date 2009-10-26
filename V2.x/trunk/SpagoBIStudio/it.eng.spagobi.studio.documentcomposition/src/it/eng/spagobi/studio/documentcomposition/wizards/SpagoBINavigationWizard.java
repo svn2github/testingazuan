@@ -142,9 +142,8 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	    //elabora documento master
 	    for (int i = 0; i< documents.size(); i++){
 	    	Document doc = (Document)documents.get(i);
-	    	String docLabel = doc.getLabel();
+	    	String docLabel = doc.getSbiObjLabel();
 	    	if(docLabel.equalsIgnoreCase(masterName)){
-	    		doc.setLabel(masterName);
 	    		doc.setSbiObjLabel(masterName);
 	    		Combo out = newNavigationWizardMasterDocPage.getMasterDocOutputParam();	 
 				String masterPar = out.getText();
@@ -222,7 +221,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	}
 
 	private void fillNavigationOutParam(Parameter param, String out){
-		param.setLabel(out);
+
 		param.setSbiParLabel(out);
 		param.setNavigationName(newNavigationWizardPage.getNavigationNameText().getText());
 		param.setDefaultVal(newNavigationWizardMasterDocPage.getMasterDefaultValueOutputParam().getText());
@@ -253,11 +252,10 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		for(int k =0; k<destInfos.size(); k++){
 			DestinationInfo destInfo = destInfos.elementAt(k);
 			String destinationDoc = destInfo.getDocDestName();
-			if(destinationDoc != null && destinationDoc.equals(doc.getLabel())){
+			if(destinationDoc != null && destinationDoc.equals(doc.getSbiObjLabel())){
 				String paramName = destInfo.getParamDestName();
 				Parameter param = new Parameter();
 				param.setType("IN");
-				param.setLabel(paramName);
 				param.setSbiParLabel(paramName);
 				param.setDefaultVal(destInfo.getParamDefaultValue().getText());
 				

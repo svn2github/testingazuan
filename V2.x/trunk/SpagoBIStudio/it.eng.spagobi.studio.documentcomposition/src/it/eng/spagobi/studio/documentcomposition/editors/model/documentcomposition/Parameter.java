@@ -2,7 +2,6 @@ package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposit
 
 
 public class Parameter {
-	private String label;
 	private String type;
 	private String sbiParLabel;
 	private String defaultVal;
@@ -24,12 +23,7 @@ public class Parameter {
 	public void setRefresh(Refresh refresh) {
 		this.refresh = refresh;
 	}
-	public String getLabel() {
-		return label;
-	}
-	public void setLabel(String label) {
-		this.label = label;
-	}
+
 	public String getType() {
 		return type;
 	}

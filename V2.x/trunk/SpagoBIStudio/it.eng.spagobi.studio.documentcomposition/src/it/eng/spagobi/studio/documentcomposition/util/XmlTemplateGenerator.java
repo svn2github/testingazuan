@@ -36,9 +36,6 @@ public class XmlTemplateGenerator {
 
 		xstream.addImplicitCollection(DocumentsConfiguration.class, "documents", "DOCUMENT", Document.class);
 
-		xstream.useAttributeFor(Document.class, "label");
-		xstream.aliasField("label", Document.class, "label");
-
 		xstream.useAttributeFor(Document.class, "sbiObjLabel");
 		xstream.aliasField("sbi_obj_label", Document.class, "sbiObjLabel");
 
@@ -51,9 +48,6 @@ public class XmlTemplateGenerator {
 		xstream.addImplicitCollection(Parameters.class, "parameter", "PARAMETER", Parameter.class);
 
 		xstream.omitField(Parameter.class, "navigationName");
-
-		xstream.useAttributeFor(Parameter.class, "label");
-		xstream.aliasField("label", Parameter.class, "label");
 
 		xstream.useAttributeFor(Parameter.class, "type");
 		xstream.aliasField("type", Parameter.class, "type");
@@ -120,14 +114,14 @@ public class XmlTemplateGenerator {
 
 		Parameter i1= new Parameter();
 		i1.setDefaultVal("");
-		i1.setLabel("lab1");		
+	
 		i1.setSbiParLabel("sb1");
 		i1.setType("IN");
 		i1.setRefresh(refresh);
 
 		Parameter i2= new Parameter();
 		i2.setDefaultVal("");
-		i2.setLabel("lab2");		
+	
 		i2.setSbiParLabel("sb2");
 		i2.setType("IN");
 		i2.setRefresh(refresh);
@@ -143,18 +137,18 @@ public class XmlTemplateGenerator {
 		style.setStyle("float:left; width:49%;");
 
 		Document doc1 = new Document();
-		doc1.setLabel("label doc 1");
+
 		doc1.setSbiObjLabel("sbi doc1 label");
 		doc1.setStyle(style);
 		doc1.setParameters(parameters);
 
 		Document doc2 = new Document();
-		doc2.setLabel("label doc 2");
+
 		doc2.setSbiObjLabel("sbi doc2 label");
 		doc2.setStyle(style);
 
 		Document doc3 = new Document();
-		doc3.setLabel("label doc 3");
+
 		doc3.setSbiObjLabel("sbi doc3 label");
 		doc3.setStyle(style);
 

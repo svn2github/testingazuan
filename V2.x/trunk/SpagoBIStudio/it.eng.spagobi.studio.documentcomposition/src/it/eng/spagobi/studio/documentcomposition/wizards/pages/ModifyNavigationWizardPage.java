@@ -347,8 +347,8 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    				navigationNameText.setText(navigName);
 				    				navigationNameText.setEditable(false);
 				    				
-				    				String masterDoc = ((Document)docs.elementAt(i)).getLabel();
-				    				String masterParam = param.getLabel();
+				    				String masterDoc = ((Document)docs.elementAt(i)).getSbiObjLabel();
+				    				String masterParam = param.getSbiParLabel();
 				    				String masterParamDefault = param.getDefaultVal();
 				    				
 				    				masterDocName.setText(masterDoc);
@@ -448,12 +448,12 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		if(docs != null){
 			for(int i=0; i<docs.size(); i++){
 				Document doc = (Document)docs.elementAt(i);
-				if(doc.getLabel().equals(destDoc)){
+				if(doc.getSbiObjLabel().equals(destDoc)){
 					Parameters params = (doc).getParameters();
 					if(params != null){
 			    		for (int j = 0; j<params.getParameter().size(); j++){
 			    			Parameter param = params.getParameter().elementAt(j);
-			    			if(param.getLabel().equals(parLabel )&& param.getType().equals("IN")){
+			    			if(param.getSbiParLabel().equals(parLabel )&& param.getType().equals("IN")){
 			    				destinationInputParamDefaultValue.elementAt(destinPos).setText(param.getDefaultVal());
 			    			}
 			    		}

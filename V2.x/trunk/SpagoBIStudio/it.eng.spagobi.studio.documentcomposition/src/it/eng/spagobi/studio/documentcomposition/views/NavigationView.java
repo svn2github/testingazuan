@@ -366,16 +366,13 @@ public class NavigationView extends ViewPart {
 			DocumentsConfiguration documentsConfiguration = new DocumentsConfiguration();
 			
 			Document doc1 = new Document();
-			doc1.setLabel("mapUsa");
 			doc1.setSbiObjLabel("mapUsa");
 			
 			Document doc2 = new Document();
-			doc2.setLabel("rptBestSales");
 			doc2.setSbiObjLabel("rptBestSales");
 			
 			Document doc3 = new Document();
-			doc3.setLabel("chartSales");
-			doc3.setSbiObjLabel("Chart-linkable-USA_2");
+			doc3.setSbiObjLabel("chartSales");
 			
 			Vector docsVector = new Vector();
 			docsVector.add(doc1);

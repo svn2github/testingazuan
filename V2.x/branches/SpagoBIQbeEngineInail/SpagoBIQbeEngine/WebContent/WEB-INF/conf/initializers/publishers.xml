@@ -17,5 +17,15 @@
 			</RESOURCES>
 		</RENDERING>    	
 	</PUBLISHER>	
-	                        	
+
+
+	<!-- TODO remove this publisher -->
+    <PUBLISHER name="FORM_VIEWER_START_PUBLISHER">
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/WEB-INF/jsp/formviewer.jsp" />
+			</RESOURCES>
+		</RENDERING>
+	</PUBLISHER>
+  	
 </PUBLISHERS>

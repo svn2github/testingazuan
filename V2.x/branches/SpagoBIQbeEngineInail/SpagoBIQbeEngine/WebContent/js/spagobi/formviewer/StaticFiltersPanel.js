@@ -1,0 +1,107 @@
+/**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
+ 
+/**
+  * Object name 
+  * 
+  * [description]
+  * 
+  * 
+  * Public Properties
+  * 
+  * [list]
+  * 
+  * 
+  * Public Methods
+  * 
+  *  [list]
+  * 
+  * 
+  * Public Events
+  * 
+  *  [list]
+  * 
+  * Authors
+  * 
+  * - Davide Zerbetto (davide.zerbetto@eng.it)
+  */
+
+Ext.ns("Sbi.viewer");
+
+Sbi.viewer.StaticFiltersPanel = function(staticFilters) {
+	
+	this.init(staticFilters);
+	
+	var c = {
+		title: 'Static Filters',
+		layout: 'table',
+	    layoutConfig: {
+	        columns: staticFilters.length
+	    },
+		frame: true,
+		autoScroll: true,
+		autoWidth: true,
+  		items: this.forms
+	};
+	
+	// constructor
+    Sbi.viewer.StaticFiltersPanel.superclass.constructor.call(this, c);
+
+};
+
+Ext.extend(Sbi.viewer.StaticFiltersPanel, Ext.Panel, {
+    
+	services: null
+	, forms: null
+	   
+	// private methods
+	   
+	, init: function(staticFilters) {
+		this.forms = [];
+		for (var i = 0; i < staticFilters.length; i++) {
+			var aStaticFiltersGroup = staticFilters[i];
+			var aStaticFiltersForm = null;
+			if (aStaticFiltersGroup.singleSelection) {
+				aStaticFiltersForm = new Sbi.viewer.StaticFiltersORPanel(aStaticFiltersGroup);
+			} else {
+				aStaticFiltersForm = new Sbi.viewer.StaticFiltersANDPanel(aStaticFiltersGroup);
+			}
+			this.forms.push(aStaticFiltersForm);
+		}
+	}
+
+	   
+	// public methods
+	
+	, setState: function(state) {
+	
+	}
+	
+	, getState: function() {
+		var state = [];
+		for (var i = 0; i < this.forms.length; i++) {
+			var aForm = this.forms[i];
+			state.push(aForm.getState());
+		}
+		return state;
+	}
+  	
+});

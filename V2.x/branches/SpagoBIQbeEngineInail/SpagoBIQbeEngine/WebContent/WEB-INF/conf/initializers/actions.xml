@@ -16,5 +16,13 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
+	<!-- Form Viewer Initialization 
+	TODO substitute this action with FORM_ENGINE_START_ACTION -->
+	<ACTION name="FORM_VIEWER_START_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.initializers.StartViewerAction"  
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 </ACTIONS>
 

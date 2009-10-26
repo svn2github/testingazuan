@@ -156,7 +156,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 					//messaggio di errore in dialog
 					addButton.setVisible(false);
 					final boolean[] result = new boolean[1];
-			        Shell confirm = createErrorDialog(composite, result, false);
+			        Shell confirm = createErrorDialog(composite, result, 0);
 			        confirm.setText("Error");
 			        confirm.setSize(300,100);
 					confirm.open();
@@ -227,20 +227,21 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 							addButton.setVisible(false);
 							selectedCombo.deselect((selectedCombo).getSelectionIndex());
 							final boolean[] result = new boolean[1];
-					        Shell confirm = createErrorDialog(composite, result, true);
+					        Shell confirm = createErrorDialog(composite, result, 1);
 					        confirm.setText("Error");
 					        confirm.setSize(300,100);
 							confirm.open();
 						}
 
 						int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
-						name = destinationDocNameCombo.elementAt(destinCounter).getItem(sel);
-						
-						destinationInputParam.elementAt(destinComboToRedraw).removeAll();
-						
-						fillDestinationParamCombo(name, destinComboToRedraw);
-						destinationInputParam.elementAt(destinComboToRedraw).redraw();
-						
+						if(sel != -1){
+							name = destinationDocNameCombo.elementAt(destinCounter).getItem(sel);
+							
+							destinationInputParam.elementAt(destinComboToRedraw).removeAll();
+							
+							fillDestinationParamCombo(name, destinComboToRedraw);
+							destinationInputParam.elementAt(destinComboToRedraw).redraw();
+						}
 					}
 				});	
 				composite.pack(false);
@@ -256,7 +257,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				if(!canSelect){
 					//messaggio di errore in dialog
 					final boolean[] result = new boolean[1];
-			        Shell confirm = createErrorDialog(composite, result, true);
+			        Shell confirm = createErrorDialog(composite, result, 1);
 			        confirm.setText("Error");
 			        confirm.setSize(300,100);
 					confirm.open();
@@ -264,10 +265,12 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				}
 				// TODO Auto-generated method stub
 				int sel = destinationDocNameCombo.elementAt(0).getSelectionIndex();
-				name = destinationDocNameCombo.elementAt(0).getItem(sel);
-				destinationInputParam.elementAt(0).removeAll();
-				fillDestinationParamCombo(name, 0);
-				destinationInputParam.elementAt(0).redraw();
+				if(sel != -1){
+					name = destinationDocNameCombo.elementAt(0).getItem(sel);
+					destinationInputParam.elementAt(0).removeAll();
+					fillDestinationParamCombo(name, 0);
+					destinationInputParam.elementAt(0).redraw();
+				}
 				
 			}
 
@@ -278,17 +281,18 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 					//messaggio di errore in dialog
 					((Combo)e.widget).deselect(((Combo)e.widget).getSelectionIndex());
 					final boolean[] result = new boolean[1];
-			        Shell confirm = createErrorDialog(composite, result, true);
+			        Shell confirm = createErrorDialog(composite, result, 1);
 			        confirm.setText("Error");
 			        confirm.setSize(300,100);
 					confirm.open();
 				}
 				int sel = destinationDocNameCombo.elementAt(0).getSelectionIndex();
-				name = destinationDocNameCombo.elementAt(0).getItem(sel);
-				//controlla se è possibile modificare destinazioni
-				fillDestinationParamCombo(name, 0);
-				destinationInputParam.elementAt(0).redraw();
-				
+				if(sel != -1){
+					name = destinationDocNameCombo.elementAt(0).getItem(sel);
+					//controlla se è possibile modificare destinazioni
+					fillDestinationParamCombo(name, 0);
+					destinationInputParam.elementAt(0).redraw();
+				}
 			}
 		});	
 		
@@ -381,7 +385,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		}
 		
 	}
-	protected Shell createErrorDialog(Composite client, final boolean[] result, boolean selectedBefore){
+	protected Shell createErrorDialog(Composite client, final boolean[] result, int messageType){
 		final Shell error = new Shell(client.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		error.setLayout(new GridLayout(3, false));
 
@@ -393,8 +397,10 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		error.setLocation (pt.x, pt.y);
 
 		String message = "No more destination documents available.";
-		if(selectedBefore){
+		if(messageType == 1){
 			 message = "Destination already selected.";
+		}else if(messageType == 2){
+			message = "Select a destination.";
 		}
 		new Label(error, SWT.NONE).setText(message);
 		

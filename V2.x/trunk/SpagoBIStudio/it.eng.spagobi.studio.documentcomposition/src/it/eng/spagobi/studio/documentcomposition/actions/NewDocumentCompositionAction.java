@@ -11,6 +11,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.navigator.CommonViewer;
@@ -35,6 +37,7 @@ public class NewDocumentCompositionAction implements IViewActionDelegate {
 		Object objSel = sel.toList().get(0);
 		Folder folderSel = null;		
 		try{
+			
 			// FolderSel is the folder in wich to insert the new template
 			folderSel=(Folder)objSel;
 

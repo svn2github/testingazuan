@@ -441,7 +441,7 @@ public class Designer {
 		// Run all the documents
 		for (Iterator iterator = documentComposition.getDocumentsConfiguration().getDocuments().iterator(); iterator.hasNext();) {
 			Document document = (Document) iterator.next();
-			String label=document.getLabel();
+			String label=document.getSbiObjLabel();
 			String sbiObjectLabel =	document.getSbiObjLabel();
 			MetadataStyle metadataStyle=null;
 			// Recover style informations!

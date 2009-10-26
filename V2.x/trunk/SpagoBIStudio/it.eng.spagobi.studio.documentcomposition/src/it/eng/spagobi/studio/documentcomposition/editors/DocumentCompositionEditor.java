@@ -95,6 +95,26 @@ public class DocumentCompositionEditor extends EditorPart {
 	@Override
 	public void createPartControl(Composite _parent) {
 		SpagoBILogger.infoLog(DocumentCompositionEditor.class.toString()+": Create Part Control function");
+		
+		//inserisce le 3 viste
+        try {
+            IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench()
+                            .getActiveWorkbenchWindow().getActivePage();
+            if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView") == null ){
+                        iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView");
+            }
+            if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView") == null ){
+                iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView");
+            }
+            if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.NavigationView") == null ){
+                iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.NavigationView");
+            }
+        } catch (PartInitException partinitexception) {
+                partinitexception.printStackTrace();
+        }
+		
+		
+		
 		parent=_parent;
 		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
 		final ScrolledForm form = toolkit.createScrolledForm(parent);

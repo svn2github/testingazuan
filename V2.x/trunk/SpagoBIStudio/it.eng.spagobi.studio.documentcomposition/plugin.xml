@@ -50,7 +50,7 @@
            id="org.eclipse.ui.navigation"
            name="Navigazione">
         </category>
-        <view id="it.eng.spagobi.studio.documentcomposition.views"
+        <view id="it.eng.spagobi.studio.documentcomposition.views.NavigationView"
                 name="Navigazione"
                 icon="icons\view.gif"
                 class="it.eng.spagobi.studio.documentcomposition.views.NavigationView"/>

@@ -85,13 +85,10 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 			newNavigationWizardDestinDocPage.getDestinationInfos().add(destinationInfo);	
 		}
 	}
-	@Override
-	public boolean performFinish() {
-
-		completePageDataCollection();
-		//////////////CODICE DEFINITIVO//////////////////////
+	
+	private void redrawTable(){
 		//*INSERISCE NELLA LISTA DELLE NAVIGATION LA NUOVA NAVIGAZIONE*/
- 
+		 
 		Object objSel = selection.toList().get(0);
 		Table listOfNavigations = (Table)objSel;
 	    TableItem item = new TableItem(listOfNavigations, SWT.NONE);
@@ -99,8 +96,36 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		final Color color = new Color(listOfNavigations.getShell().getDisplay(), rgb);
 	    item.setForeground(color);
 	    item.setText(0, newNavigationWizardPage.getNavigationNameText().getText());
+
+	    item.setText(1, newNavigationWizardMasterDocPage.getMasterDocName().getText());
+      
+	    StringBuffer dest = new StringBuffer();
+	    
+		Vector<DestinationInfo> destInfos = newNavigationWizardDestinDocPage.getDestinationInfos();
+		for(int k =0; k<destInfos.size(); k++){
+			DestinationInfo destInfo = destInfos.elementAt(k);
+			String destinationDoc = destInfo.getDocDestName();
+			if(destinationDoc != null){
+	    		dest.append((destInfos.elementAt(k)).getDocDestName());
+	    		if(k != destInfos.size()-1){
+	    			dest.append(" - ");
+	    		}
+			}
+			
+		}
+
+		item.setText(2, dest.toString());
+    
 	    listOfNavigations.getShell().redraw();
 		////////////////////////////////////
+		
+	}
+	@Override
+	public boolean performFinish() {
+
+		completePageDataCollection();
+		//////////////CODICE DEFINITIVO//////////////////////
+		redrawTable();
 		
 		//recupera da plugin oggetto DocumentComposition
 		
@@ -164,6 +189,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	    Activator.getDefault().setDocumentComposition(docComp);///////////////NB risetta!!!
 	    XmlTemplateGenerator generator = new XmlTemplateGenerator();
 	    generator.transformToXml(docComp);
+	    
 	    return true;
 	}
 

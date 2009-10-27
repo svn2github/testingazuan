@@ -5,6 +5,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
+import it.eng.spagobi.studio.documentcomposition.views.NavigationView;
 
 import java.util.Iterator;
 
@@ -113,7 +114,11 @@ e.printStackTrace();}
 					if(documentContained.getMetadataDocument()!=null)
 						reloadDocumentPropertiesView(id.toString());
 					reloadStyleDocumentProperties();
-
+					// Reload navigations view
+					if(documentContained.getMetadataDocument()!=null){
+						reloadNavigationView(id.toString());
+					}
+					
 					/**  IF in resizing state mouse button on Container causes end resizing**/	
 					calculateTemplateStyle();
 					if(designer.getState().equals(Designer.RESIZE)){
@@ -628,7 +633,41 @@ e.printStackTrace();}
 		int i=0;
 
 	}
+	/** Reload the view with navigations
+	 * 
+	 * @param id
+	 */
 
+	public void reloadNavigationView(String id){
+		IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
+		try{
+			// Document properties
+			IWorkbenchPage aa=a.getActivePage();
+			IViewReference w=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.NavigationView");
+			Object p=w.getPart(false);
+			if(p!=null){
+				NavigationView view=(NavigationView)p;
+				view.reloadNavigations(documentContained.getMetadataDocument());
+			}
+			else{
+				// View not present
+
+			}
+			// Document parameters
+			IViewReference wPars=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView");
+			Object p2=wPars.getPart(false);
+			if(p2!=null){
+				DocumentParametersView docParameters=(DocumentParametersView)p2;
+				docParameters.reloadProperties(documentContained.getMetadataDocument().getMetadataParameters());
+			}
+			else{
+				// View Not present
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		int i=0;
+	}
 
 	public Designer getDesigner() {
 		return designer;

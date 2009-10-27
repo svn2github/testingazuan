@@ -114,11 +114,11 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 				setPageComplete(name.length() > 0	&& paramOut.length() > 0);
 			}
 		});
-		composite.addListener(SWT.Show, new Listener() {
+/*		composite.addListener(SWT.Show, new Listener() {
 			public void handleEvent(Event event) {
 				metaDoc = Activator.getDefault().getMetadataDocumentComposition();
 			}
-		});	
+		});	*/
 		
 		
 		composite.pack();
@@ -129,7 +129,7 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 
 
 	private void fillMasterCombo(){
-		
+		metaDoc = Activator.getDefault().getMetadataDocumentComposition();
 		if(metaDoc != null){
 			Vector docs = metaDoc.getMetadataDocuments();
 			if(docs != null){
@@ -153,12 +153,13 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 					String masterName = doc.getName();
 					if(masterName != null && !masterName.equals("") &&(masterName.equals(masterDoc))){
 						Vector params = doc.getMetadataParameters();
-						for (int j =0; j<params.size(); j++){
-							MetadataParameter param = (MetadataParameter)params.elementAt(j);
-							String label = param.getLabel();
-							masterDocOutputParam.add(label);
+						if(params != null){
+							for (int j =0; j<params.size(); j++){
+								MetadataParameter param = (MetadataParameter)params.elementAt(j);
+								String label = param.getLabel();
+								masterDocOutputParam.add(label);
+							}
 						}
-						
 					}
 				}
 			}

@@ -171,12 +171,14 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	private void fillDestinationCombo(String docDest, int comboToRedraw){
 		if(destinationDocNameCombo.elementAt(comboToRedraw) != null){
 			if(destinationDocNameCombo.elementAt(comboToRedraw).getItemCount() == 0){
+				metaDoc = Activator.getDefault().getMetadataDocumentComposition();
 				if(metaDoc != null){
 					Vector docs = metaDoc.getMetadataDocuments();
 					if(docs != null){
 						for(int i=0; i<docs.size(); i++){
-							String destinationName = ((MetadataDocument)docs.elementAt(i)).getName();
-							
+							MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
+							if(doc.getMetadataParameters() != null && doc.getMetadataParameters().size()!=0){
+								String destinationName = doc.getName();
 								if(destinationName != null && !destinationName.equals("")){
 									destinationDocNameCombo.elementAt(comboToRedraw).add(destinationName);
 									if(docDest != null && docDest.equals(destinationName)){
@@ -184,7 +186,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 										destinationDocNameCombo.elementAt(comboToRedraw).select(pos-1);
 									}
 								}
-							
+							}
 						}
 					}
 				}
@@ -223,19 +225,22 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				for(int j=0; j<items.length; j++){
 					presentItems.add(items[j]);
 				}
-				
+				metaDoc = Activator.getDefault().getMetadataDocumentComposition();
 				if(metaDoc != null){
 					Vector docs = metaDoc.getMetadataDocuments();
-					if(docs != null){
+					if(docs != null){						
 						for(int i=0; i<docs.size(); i++){
-							String destinationName = ((MetadataDocument)docs.elementAt(i)).getName();
-							if(destinationName != null && !presentItems.contains(destinationName)){
-								destinationDocNameCombo.elementAt(comboToRedraw).add(destinationName);
-								if(docDest != null && docDest.equals(destinationName)){
-									int pos = destinationDocNameCombo.elementAt(comboToRedraw).getItemCount();
-									destinationDocNameCombo.elementAt(comboToRedraw).select(pos-1);
-								}								
-							}							
+							MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
+							if(doc.getMetadataParameters() != null && doc.getMetadataParameters().size()!=0){
+								String destinationName = doc.getName();
+								if(destinationName != null && !presentItems.contains(destinationName)){
+									destinationDocNameCombo.elementAt(comboToRedraw).add(destinationName);
+									if(docDest != null && docDest.equals(destinationName)){
+										int pos = destinationDocNameCombo.elementAt(comboToRedraw).getItemCount();
+										destinationDocNameCombo.elementAt(comboToRedraw).select(pos-1);
+									}								
+								}							
+							}
 						}
 					}
 				}
@@ -279,16 +284,17 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 					String docName = doc.getName();
 					if(docName != null && !docName.equals("") &&(docName.equals(destDoc))){
 						Vector params = doc.getMetadataParameters();
-						for (int j =0; j<params.size(); j++){
-							MetadataParameter param = (MetadataParameter)params.elementAt(j);
-							String label = param.getLabel();
-							destinationInputParam.elementAt(destinComboToRedraw).add(label);
-							if(paramInSel != null && paramInSel.equals(label)){
-								int pos = destinationInputParam.elementAt(destinComboToRedraw).getItemCount();
-								destinationInputParam.elementAt(destinComboToRedraw).select(pos-1);
+						if(params != null){
+							for (int j =0; j<params.size(); j++){
+								MetadataParameter param = (MetadataParameter)params.elementAt(j);
+								String label = param.getLabel();
+								destinationInputParam.elementAt(destinComboToRedraw).add(label);
+								if(paramInSel != null && paramInSel.equals(label)){
+									int pos = destinationInputParam.elementAt(destinComboToRedraw).getItemCount();
+									destinationInputParam.elementAt(destinComboToRedraw).select(pos-1);
+								}
 							}
 						}
-						
 					}
 				}
 			}

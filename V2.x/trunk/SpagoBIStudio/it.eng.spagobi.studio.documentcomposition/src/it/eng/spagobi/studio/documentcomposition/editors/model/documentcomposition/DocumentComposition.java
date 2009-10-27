@@ -2,6 +2,7 @@ package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposit
 
 
 public class DocumentComposition {
+	
 	private DocumentsConfiguration documentsConfiguration;
 	private String templateValue;
 	
@@ -17,6 +18,9 @@ public class DocumentComposition {
 	}
 	public void setTemplateValue(String templateValue) {
 		this.templateValue = templateValue;
+	}
+	public DocumentComposition() {
+		documentsConfiguration = new DocumentsConfiguration();
 	}
 
 

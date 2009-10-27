@@ -37,7 +37,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 	Vector<Combo> destinationInputParam ;
 	Vector<Text> destinationInputParamDefaultValue ;
 	
-	private MetadataDocumentComposition metaDoc = Activator.getDefault().getMetadataDocumentComposition();
+	private MetadataDocumentComposition metaDoc;
 	
 
 	String name = "";
@@ -110,6 +110,8 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		/////////////riempie documenti dest
 		fillDestinationCombo();
 		
+
+		
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 1;
 		destinationDocNameCombo.elementAt(destinCounter).setLayoutData(gd);
@@ -136,6 +138,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		addButton.setText("Add destination");
 		addButton.setVisible(false);
 		addButton.setLayoutData(gd);
+
 
 		
 		destinationInputParam.elementAt(destinCounter).addListener( SWT.FocusIn, new Listener() {
@@ -306,9 +309,6 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 			}
 		});		
 
-		
-
-		
 		composite.pack(false);
 		composite.redraw();
 		
@@ -317,7 +317,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 
 	
 	private void fillDestinationCombo(){
-
+		metaDoc = Activator.getDefault().getMetadataDocumentComposition();
 		SpagoBINavigationWizard wizard = (SpagoBINavigationWizard)getWizard();
 
 		if(destinationDocNameCombo.elementAt(destinCounter).getItemCount() == 0){
@@ -325,12 +325,14 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				Vector docs = metaDoc.getMetadataDocuments();
 				if(docs != null){
 					for(int i=0; i<docs.size(); i++){
-						String destinationName = ((MetadataDocument)docs.elementAt(i)).getName();
-						
+						MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
+						if(doc.getMetadataParameters() != null && doc.getMetadataParameters().size()!=0){
+							String destinationName = doc.getName();
+							
 							if(destinationName != null && !destinationName.equals("")){
 								destinationDocNameCombo.elementAt(destinCounter).add(destinationName);
 							}
-						
+						}
 					}
 				}
 			}
@@ -360,7 +362,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		destinationDocNameCombo.elementAt(destinCounter).redraw();
 	}
 	private void fillDestinationParamCombo(String destDoc, int destinComboToRedraw){
-
+		
 		if(destinComboToRedraw == 0){
 			destinationInputParam.elementAt(destinComboToRedraw).removeAll();
 		}
@@ -372,12 +374,13 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 					String docName = doc.getName();
 					if(docName != null && !docName.equals("") &&(docName.equals(destDoc))){
 						Vector params = doc.getMetadataParameters();
-						for (int j =0; j<params.size(); j++){
-							MetadataParameter param = (MetadataParameter)params.elementAt(j);
-							String label = param.getLabel();
-							destinationInputParam.elementAt(destinComboToRedraw).add(label);
+						if(params != null){
+							for (int j =0; j<params.size(); j++){
+								MetadataParameter param = (MetadataParameter)params.elementAt(j);
+								String label = param.getLabel();
+								destinationInputParam.elementAt(destinComboToRedraw).add(label);
+							}
 						}
-						
 					}
 				}
 			}

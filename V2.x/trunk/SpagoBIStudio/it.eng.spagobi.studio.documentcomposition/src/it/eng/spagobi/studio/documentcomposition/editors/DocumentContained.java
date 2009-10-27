@@ -1,7 +1,6 @@
 package it.eng.spagobi.studio.documentcomposition.editors;
 
 
-import it.eng.spagobi.studio.core.Activator;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
@@ -10,6 +9,7 @@ import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
@@ -86,7 +86,8 @@ public class DocumentContained {
 				MetadataDocumentComposition metadataDocumentComposition=it.eng.spagobi.studio.documentcomposition.Activator.getDefault().getMetadataDocumentComposition();
 				Vector<MetadataDocument> metaDataDocumentVector=metadataDocumentComposition.getMetadataDocuments();
 
-				metadataDocument=new MetadataDocument(file);
+				metadataDocument=new MetadataDocument(file);				
+
 				metadataDocument.setLocalFileName(localFileName);
 				if(metaDataDocumentVector==null){
 					metaDataDocumentVector=new Vector<MetadataDocument>();

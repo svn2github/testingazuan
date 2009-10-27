@@ -4,6 +4,10 @@ import java.util.Vector;
 
 public class DocumentsConfiguration {
 
+	public DocumentsConfiguration() {
+		documents = new Vector<Document>();
+	}
+
 	private String videoWidth;
 	private String videoHeight;
 	private Vector<Document> documents;

@@ -2,10 +2,13 @@ package it.eng.spagobi.studio.documentcomposition.editors;
 
 
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
+import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
+import it.eng.spagobi.studio.documentcomposition.views.NavigationView;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -35,6 +38,7 @@ public class DocumentCompositionEditor extends EditorPart {
 	int width=0;
 	Composite parent;
 	DocumentComposition documentComposition;
+	MetadataDocumentComposition metadataDocumentComposition;
 	Designer designer;
 
 	@Override
@@ -63,6 +67,9 @@ public class DocumentCompositionEditor extends EditorPart {
 		try {
 			documentComposition = bo.createModel(file);
 			bo.saveModel(documentComposition);
+			
+			metadataDocumentComposition = new MetadataDocumentComposition();
+			Activator.getDefault().setMetadataDocumentComposition(metadataDocumentComposition);
 		} catch (CoreException e) {
 			e.printStackTrace();
 			SpagoBILogger.errorLog(DocumentCompositionEditor.class.toString()+": Error in reading template", e);
@@ -187,7 +194,21 @@ public class DocumentCompositionEditor extends EditorPart {
 		catch (Exception e) {
 			SpagoBILogger.warningLog("Window not active, could not empty the property view");	
 		}
-
+		try{
+			IViewReference w3=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.NavigationView");
+			Object p3=w3.getPart(false);
+			if(p3!=null){
+				NavigationView view=(NavigationView)p3;
+				view.cleanParameters();
+			}
+			else{
+				// View not present
+				SpagoBILogger.infoLog("View not present");
+			}
+		}
+		catch (Exception e) {
+			SpagoBILogger.warningLog("Window not active, could not empty the property view");	
+		}
 		// Initialize Designer
 		designer.initializeDesigner(documentComposition);
 		SpagoBILogger.infoLog("END: "+DocumentCompositionEditor.class.toString()+" initialize Editor");	

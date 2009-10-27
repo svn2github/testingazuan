@@ -13,6 +13,7 @@ import it.eng.spagobi.studio.documentcomposition.views.NavigationView;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
@@ -121,6 +122,7 @@ public class DocumentCompositionEditor extends EditorPart {
 		parent=_parent;
 		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
 		final ScrolledForm form = toolkit.createScrolledForm(parent);
+		
 		//		TableWrapLayout layout = new TableWrapLayout();
 		//		layout.numColumns = 1;
 		//		layout.horizontalSpacing = 20;
@@ -131,17 +133,18 @@ public class DocumentCompositionEditor extends EditorPart {
 
 		form.getBody().setLayout(fill);
 
-		Section section = toolkit.createSection(form.getBody(), 
-				Section.TITLE_BAR);
+		final Section section = toolkit.createSection(form.getBody(), 
+				Section.TITLE_BAR | SWT.NO_REDRAW_RESIZE);
 		//section.setLayoutData()
 		section.setSize(1000, 1000);
 		section.addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanged(ExpansionEvent e) {
+				//parent.setSize(width, height);
 				form.reflow(true);
 			}
 		});
 		section.setText("Document Composition designer");
-		Composite sectionClient = toolkit.createComposite(section);
+		Composite sectionClient = toolkit.createComposite(section, SWT.NO_REDRAW_RESIZE);
 		sectionClient.setSize(1000, 1000);
 
 		designer=new Designer(sectionClient);

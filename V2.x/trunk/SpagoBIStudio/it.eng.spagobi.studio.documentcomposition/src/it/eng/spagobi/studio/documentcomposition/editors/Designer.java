@@ -368,19 +368,6 @@ public class Designer {
 						}
 					}
 				});
-				MenuItem itemSize = new MenuItem(menu, SWT.PUSH);
-				itemSize.setText("Video Size");
-				itemSize.addListener(SWT.Selection, new Listener() {
-
-					public void handleEvent(Event e) {
-						if(getState().equals(Designer.NORMAL)){
-							//aaa
-						}
-					}
-				});
-
-
-
 
 				menu.setLocation(event.x, event.y);
 				menu.setVisible(true);

@@ -291,7 +291,6 @@ public class DocContainer {
 
 
 						documentContained.getGroup().setLocation(tempX, tempY);
-						//updateModelModifyDocument(metadataDocument); //Aaa
 						if(id.equals(designer.getCurrentSelection())){
 							composite.setBackground(new Color(composite.getDisplay(),new RGB(0,0,255)));
 							designer.setCurrentSelection(id);
@@ -478,21 +477,35 @@ public class DocContainer {
 						IFile file=(IFile)selectedTreeSelection.getFirstElement();
 						doTransfer=documentContained.recoverDocumentMetadata(file);
 						// add the document!!
-//						DocumentComposition documentComposition=Activator.getDefault().getDocumentComposition();
-//						Document document=new Document(documentContained.getMetadataDocument(),calculateTemplateStyle());
-//						documentComposition.getDocumentsConfiguration().getDocuments().add(document);
-
 						(new ModelBO()).addNewDocumentToModel(documentContained.getMetadataDocument(), calculateTemplateStyle());
 					}
 
 				}
+				if(doTransfer==true){
+					// Select the component!
+					if(documentContained.getMetadataDocument()!=null)
+						reloadDocumentPropertiesView(id.toString());
+					reloadStyleDocumentProperties();
+					// Reload navigations view
+					if(documentContained.getMetadataDocument()!=null){
+						reloadNavigationView(id.toString());
+					}
+					designer.setState(Designer.SELECTION);
+					composite.setBackground(new Color(composite.getDisplay(),new RGB(0,0,255)));
+					if(designer.getCurrentSelection().intValue()!=-1){
+						Composite toDeselect=designer.getContainers().get(designer.getCurrentSelection()).getDocumentContained().getGroup();
+						toDeselect.setBackground(new Color(toDeselect.getDisplay(),new RGB(200,200,200)));
+					}
+					designer.setCurrentSelection(id);
+				}
+
 				if(doTransfer==true){
 					if (fileTransfer.isSupportedType(event.currentDataType)){
 						String[] files = (String[])event.data;
 						for (int i = 0; i < files.length; i++) {
 							Label label=new Label(composite, SWT.NULL);
 							label.setText(files[i]);
-						}
+						}					
 					}
 				}
 				composite.redraw();

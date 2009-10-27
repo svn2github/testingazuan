@@ -3,15 +3,18 @@ package it.eng.spagobi.studio.documentcomposition.editors;
 
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
+import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataStyle;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -266,7 +269,6 @@ public class Designer {
 					}
 					break;
 				case SWT.MouseMove:
-					System.out.println("Mouse movement: "+Integer.valueOf(event.x).toString()+" / "+Integer.valueOf(event.y).toString());
 					/**  IF in resizing state mouse moving on shell causes resizing**/
 					DocContainer selectedDoc1=currentSelection.intValue()!=-1 ? containers.get(currentSelection) : null ;
 					Composite selected1=selectedDoc1.getDocumentContained().getGroup();
@@ -494,6 +496,14 @@ public class Designer {
 						String ciao=fileToGet.getPersistentProperty(PropertyPage.DOCUMENT_NAME);
 						IPath f=fileToGet.getFullPath(); 
 						metadataDocument=new MetadataDocument(fileToGet);
+						MetadataDocumentComposition metadataDocumentComposition=Activator.getDefault().getMetadataDocumentComposition();
+						Vector<MetadataDocument> metadataDocumentVector=metadataDocumentComposition.getMetadataDocuments();
+						if(metadataDocumentVector==null){
+							metadataDocumentVector=new Vector<MetadataDocument>();
+							metadataDocumentComposition.setMetadataDocuments(metadataDocumentVector);
+						}
+						metadataDocumentVector.add(metadataDocument);
+						
 						int widthToPut=metadataStyle.getWidthFromPerc(mainComposite);
 						int heightToPut=metadataStyle.getHeightFromPerc(mainComposite);
 						addDocContainerFromTemplate(mainComposite, metadataStyle.getX(), metadataStyle.getY(), widthToPut, heightToPut, metadataDocument);

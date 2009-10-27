@@ -188,7 +188,6 @@ e.printStackTrace();}
 					}					
 					break;
 				case SWT.MouseMove:
-					System.out.println("Mouse movement: "+Integer.valueOf(event.x).toString()+" / "+Integer.valueOf(event.y).toString());
 					if(designer.getState().equals(Designer.RESIZE)){
 						if(id.equals(designer.getCurrentSelection())){
 							Rectangle rect=composite.getBounds();

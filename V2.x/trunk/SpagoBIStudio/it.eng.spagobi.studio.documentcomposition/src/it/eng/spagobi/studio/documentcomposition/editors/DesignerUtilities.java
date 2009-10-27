@@ -15,7 +15,6 @@ public class DesignerUtilities {
 		int totalX=width+x;
 		int toReturn;
 		if((containerSize-totalX)<=DocContainer.ALIGNMENT_MARGIN){
-			toReturn=containerSize-1;
 			// add difference between actual width and remaining with limit
 			toReturn=width+((containerSize-totalX));
 		}
@@ -36,7 +35,6 @@ public class DesignerUtilities {
 		int totalY=height+y;
 		int toReturn;
 		if((containerSize-totalY)<=DocContainer.ALIGNMENT_MARGIN){
-			toReturn=containerSize-1;
 			// add difference between actual width and remaining with limit
 			toReturn=height+((containerSize-totalY));
 		}

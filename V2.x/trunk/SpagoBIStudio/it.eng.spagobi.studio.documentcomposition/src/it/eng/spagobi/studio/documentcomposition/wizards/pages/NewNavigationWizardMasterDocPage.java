@@ -17,7 +17,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 public class NewNavigationWizardMasterDocPage extends WizardPage {
@@ -29,7 +31,7 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 	Combo masterDocName;
 	Combo masterDocOutputParam;
 	Text masterDefaultValueOutputParam;
-	private MetadataDocumentComposition metaDoc = Activator.getDefault().getMetadataDocumentComposition();
+	private MetadataDocumentComposition metaDoc;
 
 	public NewNavigationWizardMasterDocPage() {
 		super("New Document - Master document");
@@ -56,7 +58,7 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 	}
 	
 	public void createControl(Composite parent) {
-
+		
 		final Composite composite = new Composite(parent, SWT.BORDER
 				| SWT.NO_REDRAW_RESIZE);
 		composite.setSize(600, 400);
@@ -112,8 +114,12 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 				setPageComplete(name.length() > 0	&& paramOut.length() > 0);
 			}
 		});
+		composite.addListener(SWT.Show, new Listener() {
+			public void handleEvent(Event event) {
+				metaDoc = Activator.getDefault().getMetadataDocumentComposition();
+			}
+		});	
 		
-
 		
 		composite.pack();
 		composite.redraw();

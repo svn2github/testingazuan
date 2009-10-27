@@ -41,6 +41,13 @@ import org.eclipse.ui.part.ViewPart;
 public class NavigationView extends ViewPart {
 
 	Table table;
+	Composite client ;
+	FormToolkit toolkit;
+	Label labelNoDocs;
+	
+	
+	boolean hasDocuments = false;
+	
 	private DocumentComposition documentComp = Activator.getDefault().getDocumentComposition();
 	private MetadataDocumentComposition metadataDoc = Activator.getDefault().getMetadataDocumentComposition();
 	
@@ -53,10 +60,10 @@ public class NavigationView extends ViewPart {
 	 * it.
 	 */
 	public void createPartControl(Composite parent) {		
-		test();
+		//test();
 		
 		
-		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
+		toolkit = new FormToolkit(parent.getDisplay());
 
 		// Lets make a layout for the first section of the screen
 		GridLayout layout = new GridLayout();
@@ -69,99 +76,19 @@ public class NavigationView extends ViewPart {
 		section.setText("Document composition navigations"); //$NON-NLS-1$
 		section.setDescription("Navigations");
 		// Composite for storing the data
-		final Composite client = toolkit.createComposite(section, SWT.WRAP);
+		client = toolkit.createComposite(section, SWT.WRAP);
 		layout = new GridLayout();
 		layout.numColumns = 3;
 		layout.marginWidth = 2;
 		layout.marginHeight = 2;
 		client.setLayout(layout);
 		
-		GridData gd = new GridData(SWT.LEFT);
-		gd.widthHint = 50;
-		gd.horizontalSpan =1;
-		gd.horizontalAlignment= SWT.LEFT;
-		
-		if(documentComp != null && documentComp.getDocumentsConfiguration()!= null && documentComp.getDocumentsConfiguration().getDocuments()!= null){
-			final boolean[] result = new boolean[1];
-			/**crea dialog x conferma**/
-		
-			Button newButton = toolkit.createButton(client, "New", SWT.PUSH); 
-			Button deleteButton = createDeleteButton(parent, toolkit, client);
-			Button updateButton = toolkit.createButton(client, "Modify", SWT.PUSH);
-			
-			
-			newButton.pack();
-			updateButton.pack();
-			
-	
-			newButton.setLayoutData(gd);
-			deleteButton.setLayoutData(gd);
-			updateButton.setLayoutData(gd);
-			
-			
-			// Add Delete Button Listener
-			Listener deleteListener = new Listener() {
-				public void handleEvent(Event event) {
-			        switch (event.type) {
-			        case SWT.Selection:
-			          Shell confirm = createConfirmDialog(client, result);
-			          confirm.setText("Confirm delete?");
-			          confirm.setSize(250,100);
-					  confirm.open();
-					  
-					  
-			          break;
-			        }
-	
-				}
-			};
-	
-			Listener addListener = new Listener() {
-				public void handleEvent(Event event) {
-			        switch (event.type) {
-			        case SWT.Selection:
-				    	///button to start the wizard
-			    	    // Instantiates and initializes the wizard
-			        	SpagoBINavigationWizard wizard = new SpagoBINavigationWizard();
-	
-			    	    wizard.init(PlatformUI.getWorkbench(),  new StructuredSelection(table));
-			    	    // Instantiates the wizard container with the wizard and opens it
-			    	    WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
-			    	    dialog.create();
-			    	    dialog.open();
-			        }
-	
-				}
-			};
-			
-			Listener modifyListener = new Listener() {
-				public void handleEvent(Event event) {
-			        switch (event.type) {
-			        case SWT.Selection:
-				    		///button to start the wizard
-			    	    // Instantiates and initializes the wizard
-			        	SpagoBIModifyNavigationWizard wizard = new SpagoBIModifyNavigationWizard();
-	
-			    	    wizard.init(PlatformUI.getWorkbench(),  new StructuredSelection(table));
-			    	    // Instantiates the wizard container with the wizard and opens it
-			    	    WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
-			    	    dialog.create();
-			    	    dialog.open();
-			        }
-	
-				}
-			};
-			newButton.addListener(SWT.Selection, addListener);
-			updateButton.addListener(SWT.Selection, modifyListener);
-			deleteButton.addListener(SWT.Selection, deleteListener);
-					
-			/**tabella navigazioni**/
-			createTable(parent, toolkit, client);
-	
-		}else{
-			
-			new Label(client, SWT.NONE).setText("No documents configured.");
 
+		if(documentComp != null && documentComp.getDocumentsConfiguration()!= null && documentComp.getDocumentsConfiguration().getDocuments()!= null){
+			loadNavigations(toolkit, parent);
+		}else{			
+			labelNoDocs = new Label(client, SWT.NONE);
+			labelNoDocs.setText("No documents configured.");
 		}
 		toolkit.paintBordersFor(client);
 		section.setClient(client);
@@ -297,7 +224,7 @@ public class NavigationView extends ViewPart {
 							//elimina la classe java del modello
 							par.remove(j);
 							params.setParameter(par);
-							Activator.getDefault().setDocumentComposition(documentComp);
+							//Activator.getDefault().setDocumentComposition(documentComp);
 							item.dispose();
 						}
 					}
@@ -307,102 +234,110 @@ public class NavigationView extends ViewPart {
 		}
 	}
 	
-	private void test(){
-		if(metadataDoc == null){
-			metadataDoc = new MetadataDocumentComposition();
-			Vector<MetadataDocument> docs = new Vector<MetadataDocument>();
-			
-			MetadataDocument m = new MetadataDocument();
-			m.setName("mapUsa");
-			
-			MetadataParameter p = new MetadataParameter();
-			p.setLabel("year");
-			MetadataParameter p1 = new MetadataParameter();
-			p1.setLabel("state");
-			MetadataParameter p2 = new MetadataParameter();
-			p2.setLabel("month");
-			
-			Vector v = new Vector();
-			v.add(p);
-			v.add(p1);
-			v.add(p2);
-			
-			m.setMetadataParameters(v);
-			docs.add(m);
-			
-			MetadataDocument m2 = new MetadataDocument();
-			m2.setName("chartSales");
-			
-			MetadataParameter pp = new MetadataParameter();
-			pp.setLabel("year1");
-			MetadataParameter pp1 = new MetadataParameter();
-			pp1.setLabel("state1");
-			MetadataParameter pp2 = new MetadataParameter();
-			pp2.setLabel("month1");
-			
-			Vector vv = new Vector();
-			vv.add(pp);
-			vv.add(pp1);
-			vv.add(pp2);
-			
-			m2.setMetadataParameters(vv);
-			docs.add(m2);
-			
-			MetadataDocument m3 = new MetadataDocument();
-			m3.setName("rptBestSales");
-			
-			MetadataParameter ppp = new MetadataParameter();
-			ppp.setLabel("year2");
-			MetadataParameter ppp1 = new MetadataParameter();
-			ppp1.setLabel("state2");
-			MetadataParameter ppp2 = new MetadataParameter();
-			ppp2.setLabel("month2");
-			
-			Vector vvv = new Vector();
-			vvv.add(ppp);
-			vvv.add(ppp1);
-			vvv.add(ppp2);
-			
-			m3.setMetadataParameters(vvv);
-			docs.add(m3);
-			
-			metadataDoc.setMetadataDocuments(docs);
-			Activator.getDefault().setMetadataDocumentComposition(metadataDoc);
-		}
+	private void loadNavigations(FormToolkit toolkit, Composite parent){
+		GridData gd = new GridData(SWT.LEFT);
+		gd.widthHint = 50;
+		gd.horizontalSpan =1;
+		gd.horizontalAlignment= SWT.LEFT;
+		final boolean[] result = new boolean[1];
+		/**crea dialog x conferma**/
+	
+		Button newButton = toolkit.createButton(client, "New", SWT.PUSH); 
+		Button deleteButton = createDeleteButton(parent, toolkit, client);
+		Button updateButton = toolkit.createButton(client, "Modify", SWT.PUSH);
 		
-		if(documentComp == null || documentComp.getDocumentsConfiguration() == null){
-			documentComp = new DocumentComposition();
-			DocumentsConfiguration documentsConfiguration = new DocumentsConfiguration();
-			
-			Document doc1 = new Document();
-			doc1.setSbiObjLabel("mapUsa");
-			
-			Document doc2 = new Document();
-			doc2.setSbiObjLabel("rptBestSales");
-			
-			Document doc3 = new Document();
-			doc3.setSbiObjLabel("chartSales");
-			
-			Vector docsVector = new Vector();
-			docsVector.add(doc1);
-			docsVector.add(doc2);
-			docsVector.add(doc3);
-			
-			documentsConfiguration.setVideoWidth("1400");
-			documentsConfiguration.setVideoHeight("1050");
-			documentsConfiguration.setDocuments(docsVector);
-			
-			documentComp.setDocumentsConfiguration(documentsConfiguration);
-			
-			Activator.getDefault().setDocumentComposition(documentComp);
-		}
+		
+		newButton.pack();
+		updateButton.pack();
+		
+
+		newButton.setLayoutData(gd);
+		deleteButton.setLayoutData(gd);
+		updateButton.setLayoutData(gd);
+		
+		
+		// Add Delete Button Listener
+		Listener deleteListener = new Listener() {
+			public void handleEvent(Event event) {
+		        switch (event.type) {
+		        case SWT.Selection:
+		          Shell confirm = createConfirmDialog(client, result);
+		          confirm.setText("Confirm delete?");
+		          confirm.setSize(250,100);
+				  confirm.open();
+				  
+				  
+		          break;
+		        }
+
+			}
+		};
+
+		Listener addListener = new Listener() {
+			public void handleEvent(Event event) {
+		        switch (event.type) {
+		        case SWT.Selection:
+			    	///button to start the wizard
+		    	    // Instantiates and initializes the wizard
+		        	SpagoBINavigationWizard wizard = new SpagoBINavigationWizard();
+
+		    	    wizard.init(PlatformUI.getWorkbench(),  new StructuredSelection(table));
+		    	    // Instantiates the wizard container with the wizard and opens it
+		    	    WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
+		    	    dialog.create();
+		    	    dialog.open();
+		        }
+
+			}
+		};
+		
+		Listener modifyListener = new Listener() {
+			public void handleEvent(Event event) {
+		        switch (event.type) {
+		        case SWT.Selection:
+			    		///button to start the wizard
+		    	    // Instantiates and initializes the wizard
+		        	SpagoBIModifyNavigationWizard wizard = new SpagoBIModifyNavigationWizard();
+
+		    	    wizard.init(PlatformUI.getWorkbench(),  new StructuredSelection(table));
+		    	    // Instantiates the wizard container with the wizard and opens it
+		    	    WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
+		    	    dialog.create();
+		    	    dialog.open();
+		        }
+
+			}
+		};
+		newButton.addListener(SWT.Selection, addListener);
+		updateButton.addListener(SWT.Selection, modifyListener);
+		deleteButton.addListener(SWT.Selection, deleteListener);
+				
+		/**tabella navigazioni**/
+		createTable(parent, toolkit, client);
+
 	}
+	
+	public void reloadNavigations(MetadataDocument document){
+		
+		metadataDoc = Activator.getDefault().getMetadataDocumentComposition();
+		documentComp= Activator.getDefault().getDocumentComposition();
+		if(!hasDocuments){
+			labelNoDocs.dispose();
+			loadNavigations(toolkit, client.getParent() );
+			hasDocuments = true;
+		}
+		client.layout();
+		client.redraw();
+	}
+	
 	@Override
 	public void setFocus() {
 		// TODO Auto-generated method stub
 		
 	}
-
+	public void cleanParameters(){
+		table.removeAll();
+	}
 
 
 }

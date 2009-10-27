@@ -175,7 +175,7 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		    	}
 		    }
 	    }
-	    Activator.getDefault().setDocumentComposition(docComp);///////////////NB risetta!!!
+	    //Activator.getDefault().setDocumentComposition(docComp);///////////////NB risetta!!!
 	    
 	    generator.transformToXml(docComp);
 	    return true;

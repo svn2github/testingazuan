@@ -457,6 +457,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    					destinationInfo.setParamDefaultValue(destinationInputParamDefaultValue.elementAt(destinCounter));
 
 				    					destinationInfos.add(destinationInfo);
+				    					composite2.pack();
 				    					composite2.redraw();
 				    				}				    				
 				    				//fine

@@ -188,7 +188,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 			    }
 		    }
 		}
-	    Activator.getDefault().setDocumentComposition(docComp);///////////////NB risetta!!!
+	    //Activator.getDefault().setDocumentComposition(docComp);///////////////NB risetta!!!
 	    XmlTemplateGenerator generator = new XmlTemplateGenerator();
 	    generator.transformToXml(docComp);
 	    

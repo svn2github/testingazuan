@@ -70,12 +70,12 @@ public class DocContainer {
 		super();
 		designer=_designer;
 		id=Integer.valueOf(designer.getCounter());
-try{
-	documentContained=new DocumentContained(mainComposite, SWT.NULL);
-}
-catch (Exception e) {
-e.printStackTrace();}
-		
+		try{
+			documentContained=new DocumentContained(mainComposite, SWT.NULL);
+		}
+		catch (Exception e) {
+			e.printStackTrace();}
+
 		title="NUMERO "+(new Integer(designer.getCounter()).toString());
 		documentContained.getGroup().setText(title);
 		GridLayout layout=new GridLayout();
@@ -118,7 +118,7 @@ e.printStackTrace();}
 					if(documentContained.getMetadataDocument()!=null){
 						reloadNavigationView(id.toString());
 					}
-					
+
 					/**  IF in resizing state mouse button on Container causes end resizing**/	
 					calculateTemplateStyle();
 					if(designer.getState().equals(Designer.RESIZE)){
@@ -128,12 +128,12 @@ e.printStackTrace();}
 							cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_ARROW);						
 							designer.getMainComposite().setCursor(cursor);							
 							offset[0] = null;							
-//							int tempWidth=documentContained.getGroup().getBounds().width;
-//							tempWidth=tempWidth/ALIGNMENT_MARGIN;
-//							tempWidth=tempWidth*ALIGNMENT_MARGIN;
-//							int tempHeight=documentContained.getGroup().getBounds().height;
-//							tempHeight=tempHeight/ALIGNMENT_MARGIN;
-//							tempHeight=tempHeight*ALIGNMENT_MARGIN;
+							//							int tempWidth=documentContained.getGroup().getBounds().width;
+							//							tempWidth=tempWidth/ALIGNMENT_MARGIN;
+							//							tempWidth=tempWidth*ALIGNMENT_MARGIN;
+							//							int tempHeight=documentContained.getGroup().getBounds().height;
+							//							tempHeight=tempHeight/ALIGNMENT_MARGIN;
+							//							tempHeight=tempHeight*ALIGNMENT_MARGIN;
 
 							DesignerUtilities designerUtilities=new DesignerUtilities();
 							int setWidth=designerUtilities.calculateWidth(documentContained.getGroup(), mainComposite.getBounds().width);
@@ -196,17 +196,17 @@ e.printStackTrace();}
 							int nuova_larghezza=rect.width;
 							int nuova_altezza=rect.height;
 							if(x<rect.x+rect.width //&& x>(rect.x+DEFAULT_WIDTH)
-									){
+							){
 								nuova_larghezza=rect.width+(x-rect.x-rect.width);
 								//composite.setSize(nuova_larghezza, rect.height);
 							}
 							if(y<rect.y+rect.height //&& y>(rect.y+DEFAULT_HEIGHT)
-									){
+							){
 								nuova_altezza=rect.height+(y-rect.y-rect.height);
 							}
 							if(nuova_altezza<DEFAULT_HEIGHT)nuova_altezza=DEFAULT_HEIGHT;
 							if(nuova_larghezza<DEFAULT_WIDTH)nuova_larghezza=DEFAULT_WIDTH;
-							
+
 							//check if intersect!
 							boolean doesIntersect=DocContainer.doesIntersect(id,designer,documentContained.getGroup().getLocation().x, documentContained.getGroup().getLocation().y, nuova_larghezza, nuova_altezza,false);
 							boolean doesExceed=DocContainer.doesExceed(id,designer,documentContained.getGroup().getLocation().x, documentContained.getGroup().getLocation().y, nuova_larghezza, nuova_altezza,false);
@@ -219,7 +219,7 @@ e.printStackTrace();}
 
 							}	
 							else{
-//								System.out.println("Resizing BLOCCATO da dentro: x="+documentContained.getGroup().getBounds().x+" e y="+documentContained.getGroup().getBounds().y+" altezza rimane="+documentContained.getGroup().getBounds().height+" e larghezza rimane="+documentContained.getGroup().getBounds().width);														
+								//								System.out.println("Resizing BLOCCATO da dentro: x="+documentContained.getGroup().getBounds().x+" e y="+documentContained.getGroup().getBounds().y+" altezza rimane="+documentContained.getGroup().getBounds().height+" e larghezza rimane="+documentContained.getGroup().getBounds().width);														
 								System.out.println("BLocca Slarga dentro");
 
 							}
@@ -255,12 +255,39 @@ e.printStackTrace();}
 					/**  IF in SELECTION state mouse up on container causes selection started from DRAG**/
 					if(designer.getState().equals(Designer.DRAG)){
 						// ---------- Try alignment MArgin-----------
+
+
 						int tempX=documentContained.getGroup().getLocation().x;
+						int tempY=documentContained.getGroup().getLocation().y;
 						tempX=tempX/ALIGNMENT_MARGIN;
 						tempX=tempX*ALIGNMENT_MARGIN;
-						int tempY=documentContained.getGroup().getLocation().y;
 						tempY=tempY/ALIGNMENT_MARGIN;
 						tempY=tempY*ALIGNMENT_MARGIN;
+
+						// check if space is almost filled: autofill
+						int width=documentContained.getGroup().getBounds().width;
+						int height=documentContained.getGroup().getBounds().height;
+						int totalX=width+tempX;
+						int mainWidth=mainComposite.getBounds().width;		
+						if((mainWidth-totalX)<=(DocContainer.ALIGNMENT_MARGIN+10)){
+							// increase the width to fill							
+							int newwidth=width+((mainWidth-totalX));
+							//documentContained.getGroup().getBounds().width=width;
+							documentContained.getGroup().setSize(newwidth, height);
+						}
+						int totalY=height+tempY;
+						int mainHeight=mainComposite.getBounds().height;		
+						if((mainHeight-totalY)<=(DocContainer.ALIGNMENT_MARGIN+10)){
+							// increase the width to fill							
+							int newheight=height+((mainHeight-totalY));
+							//documentContained.getGroup().getBounds().width=width;
+							documentContained.getGroup().setSize(width, newheight);
+						}
+
+
+
+
+
 						documentContained.getGroup().setLocation(tempX, tempY);
 						//updateModelModifyDocument(metadataDocument); //Aaa
 						if(id.equals(designer.getCurrentSelection())){
@@ -278,7 +305,8 @@ e.printStackTrace();}
 							designer.setCurrentSelection(Integer.valueOf(-1));
 							offset[0] = null;							
 						}
-					}					
+					}
+					documentContained.getGroup().redraw();
 					break;
 				}
 			}

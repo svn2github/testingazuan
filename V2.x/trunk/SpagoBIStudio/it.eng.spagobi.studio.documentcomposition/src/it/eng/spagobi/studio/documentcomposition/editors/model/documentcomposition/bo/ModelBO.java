@@ -1,50 +1,46 @@
 package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo;
 
-import java.util.Iterator;
-import java.util.Vector;
-
 import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameter;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Refresh;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.util.XmlTemplateGenerator;
 
+import java.util.Iterator;
+import java.util.Vector;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.dialogs.MessageDialog;
-
-import com.thoughtworks.xstream.XStream;
 
 public class ModelBO {
 
 	public DocumentComposition createModel(IFile file) throws CoreException{
 		DocumentComposition documentComposition = XmlTemplateGenerator.readXml(file);
+		if(documentComposition.getDocumentsConfiguration()==null){
+			documentComposition.setDocumentsConfiguration(new DocumentsConfiguration());
+		}
 		return documentComposition;
 	}
 
-		public void saveModel(DocumentComposition documentComposition){
-			Activator.getDefault().setDocumentComposition(documentComposition);
-		}
+	public void saveModel(DocumentComposition documentComposition){
+		Activator.getDefault().setDocumentComposition(documentComposition);
+	}
 
 	public DocumentComposition getModel(){
 		return Activator.getDefault().getDocumentComposition();
 	}
 
-	
+
 	/** update the model with a new document!
 	 * 
 	 */
-	public void updateModelWithNewDocument(MetadataDocument _metadataDocument, Style style){
+	public void addNewDocumentToModel(MetadataDocument _metadataDocument, Style style){
 		ModelBO bo=new ModelBO();
 		DocumentComposition documentComposition=bo.getModel();
 		DocumentsConfiguration documentsConfiguration=documentComposition.getDocumentsConfiguration();
-		if(documentsConfiguration==null)documentsConfiguration=new DocumentsConfiguration();
 		Vector<Document> documents=documentsConfiguration.getDocuments();
-		if(documents==null)documents=new Vector<Document>();
 		Document newDocument=new Document();
 		newDocument.setSbiObjLabel(_metadataDocument.getLabel());
 		newDocument.setLocalFileName(_metadataDocument.getLocalFileName());

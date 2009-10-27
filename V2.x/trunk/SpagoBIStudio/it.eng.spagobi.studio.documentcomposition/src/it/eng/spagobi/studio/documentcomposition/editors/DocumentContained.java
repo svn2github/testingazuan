@@ -3,6 +3,7 @@ package it.eng.spagobi.studio.documentcomposition.editors;
 
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
@@ -59,7 +60,7 @@ public class DocumentContained {
 
 
 	/**
-	 *  Get the metadata of the document inside the container
+	 *  Get the metadata of the document inside the container and add the document
 	 * @param composite
 	 */
 	public boolean recoverDocumentMetadata(IFile file){
@@ -94,6 +95,7 @@ public class DocumentContained {
 					metadataDocumentComposition.setMetadataDocuments(metaDataDocumentVector);
 				}
 				metaDataDocumentVector.add(metadataDocument);
+				
 				return viewDocumentMetadata(metadataDocument);
 			}
 		}

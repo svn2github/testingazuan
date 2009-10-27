@@ -4,13 +4,9 @@ import java.util.Vector;
 
 public class DocumentsConfiguration {
 
-	public DocumentsConfiguration() {
-		documents = new Vector<Document>();
-	}
-
 	private String videoWidth;
 	private String videoHeight;
-	private Vector<Document> documents;
+	private Vector<Document> documents=new Vector<Document>();
 
 
 	public Vector<Document> getDocuments() {
@@ -20,7 +16,7 @@ public class DocumentsConfiguration {
 	public void setDocuments(Vector<Document> documents) {
 		this.documents = documents;
 	}
-	
+
 	public String getVideoWidth() {
 		return videoWidth;
 	}
@@ -36,5 +32,8 @@ public class DocumentsConfiguration {
 	public void setVideoHeight(String videoHeight) {
 		this.videoHeight = videoHeight;
 	}
+
+
+
 
 }

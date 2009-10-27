@@ -5,7 +5,7 @@ public class DocumentComposition {
 	
 	private DocumentsConfiguration documentsConfiguration;
 	private String templateValue;
-	
+
 	public DocumentsConfiguration getDocumentsConfiguration() {
 		return documentsConfiguration;
 	}
@@ -20,8 +20,7 @@ public class DocumentComposition {
 		this.templateValue = templateValue;
 	}
 	public DocumentComposition() {
-		documentsConfiguration = new DocumentsConfiguration();
+		documentsConfiguration=new DocumentsConfiguration();
 	}
-
-
+	
 }

@@ -1,5 +1,7 @@
 package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition;
 
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
+
 import java.util.Vector;
 
 
@@ -35,6 +37,17 @@ public class Document {
 	public void setSbiObjLabel(String sbiObjLabel) {
 		this.sbiObjLabel = sbiObjLabel;
 	}
+	public Document() {
+		super();
+	}
+
+	public Document(MetadataDocument metadataDocument, Style _style) {
+		super();
+		sbiObjLabel=metadataDocument.getLabel();
+		localFileName=metadataDocument.getLocalFileName();
+		style=_style;
+	}	
+
 
 
 }

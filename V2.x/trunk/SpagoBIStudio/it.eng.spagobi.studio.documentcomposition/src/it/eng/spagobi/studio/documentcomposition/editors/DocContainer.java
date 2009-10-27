@@ -1,6 +1,9 @@
 package it.eng.spagobi.studio.documentcomposition.editors;
 
 
+import it.eng.spagobi.studio.documentcomposition.Activator;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
@@ -256,7 +259,6 @@ public class DocContainer {
 					if(designer.getState().equals(Designer.DRAG)){
 						// ---------- Try alignment MArgin-----------
 
-
 						int tempX=documentContained.getGroup().getLocation().x;
 						int tempY=documentContained.getGroup().getLocation().y;
 						tempX=tempX/ALIGNMENT_MARGIN;
@@ -475,9 +477,12 @@ public class DocContainer {
 						TreeSelection selectedTreeSelection=(TreeSelection)selectedObject;
 						IFile file=(IFile)selectedTreeSelection.getFirstElement();
 						doTransfer=documentContained.recoverDocumentMetadata(file);
+						// add the document!!
+//						DocumentComposition documentComposition=Activator.getDefault().getDocumentComposition();
+//						Document document=new Document(documentContained.getMetadataDocument(),calculateTemplateStyle());
+//						documentComposition.getDocumentsConfiguration().getDocuments().add(document);
 
-						// update the model with a new document!
-						//updateModelWithNewDocument(metadataDocument);
+						(new ModelBO()).addNewDocumentToModel(documentContained.getMetadataDocument(), calculateTemplateStyle());
 					}
 
 				}

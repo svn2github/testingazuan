@@ -13,6 +13,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBIModifyNavigationWizard;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.util.DestinationInfo;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -43,7 +44,8 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	Vector<Combo> destinationInputParam ;
 	Vector<Text> destinationInputParamDefaultValue ;
 	
-
+	HashMap <String, String> docInfoUtil = new HashMap<String, String>();
+	
 	String name = "";
 	String paramIn = "";
 	
@@ -177,13 +179,16 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 					if(docs != null){
 						for(int i=0; i<docs.size(); i++){
 							MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
+							String destName = doc.getName();
+							String destLabel = doc.getLabel();
 							if(doc.getMetadataParameters() != null && doc.getMetadataParameters().size()!=0){
-								String destinationName = doc.getName();
-								if(destinationName != null && !destinationName.equals("")){
-									destinationDocNameCombo.elementAt(comboToRedraw).add(destinationName);
-									if(docDest != null && docDest.equals(destinationName)){
+								if(destName != null && !destName.equals("")){
+									destinationDocNameCombo.elementAt(comboToRedraw).add(destName);
+									docInfoUtil.put(destName, destLabel);
+									if(docDest != null && docDest.equals(destName)){
 										int pos = destinationDocNameCombo.elementAt(comboToRedraw).getItemCount();
 										destinationDocNameCombo.elementAt(comboToRedraw).select(pos-1);
+										
 									}
 								}
 							}
@@ -230,11 +235,13 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 					Vector docs = metaDoc.getMetadataDocuments();
 					if(docs != null){						
 						for(int i=0; i<docs.size(); i++){
-							MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
+							MetadataDocument doc = (MetadataDocument)docs.elementAt(i);							
+							String destLabel = doc.getLabel();
 							if(doc.getMetadataParameters() != null && doc.getMetadataParameters().size()!=0){
 								String destinationName = doc.getName();
 								if(destinationName != null && !presentItems.contains(destinationName)){
 									destinationDocNameCombo.elementAt(comboToRedraw).add(destinationName);
+									docInfoUtil.put(destinationName, destLabel);
 									if(docDest != null && docDest.equals(destinationName)){
 										int pos = destinationDocNameCombo.elementAt(comboToRedraw).getItemCount();
 										destinationDocNameCombo.elementAt(comboToRedraw).select(pos-1);
@@ -454,12 +461,9 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    					deleteDestButton.addListener(SWT.Selection, deleteListener);
 				    					
 				    					destinationInfo = new DestinationInfo();
-				    					int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
-				    					destinationInfo.setDocDestName(destinationDocNameCombo.elementAt(destinCounter).getItem(sel));				
-				    					
-				    					int selIn = destinationInputParam.elementAt(destinCounter).getSelectionIndex();		
-				    					destinationInfo.setParamDestName(destinationInputParam.elementAt(destinCounter).getItem(selIn));
-				    					
+
+				    					destinationInfo.setDocDestName(destinationDocNameCombo.elementAt(destinCounter).getText());				
+				    					destinationInfo.setParamDestName(destinationInputParam.elementAt(destinCounter).getText());				    					
 				    					destinationInfo.setParamDefaultValue(destinationInputParamDefaultValue.elementAt(destinCounter));
 
 				    					destinationInfos.add(destinationInfo);
@@ -620,4 +624,11 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	public void setMasterDefaultValueOutputParam(Text masterDefaultValueOutputParam) {
 		this.masterDefaultValueOutputParam = masterDefaultValueOutputParam;
 	}
+	public HashMap<String, String> getDocInfoUtil() {
+		return docInfoUtil;
+	}
+	public void setDocInfoUtil(HashMap<String, String> docInfoUtil) {
+		this.docInfoUtil = docInfoUtil;
+	}
+	
 }

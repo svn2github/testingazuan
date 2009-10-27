@@ -13,6 +13,7 @@ import it.eng.spagobi.studio.documentcomposition.wizards.pages.ModifyNavigationW
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.util.DestinationInfo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Vector;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -151,8 +152,6 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 	    			
 	    			Vector<Parameter> parameters = new Vector<Parameter>();
 	
-	
-		    		
 		    		//aggiunge parametro OUT per doc master
 	    			Parameter newParam = new Parameter();
 	    			fillNavigationOutParam(newParam, masterPar);
@@ -199,9 +198,9 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		
 	}
 
-	private void fillNavigationOutParam(Parameter param, String out){
+	private void fillNavigationOutParam(Parameter param, String masterParam){
 
-		param.setSbiParLabel(out);
+		param.setSbiParLabel(masterParam);
 		param.setNavigationName(modifyNavigationWizardPage.getNavigationNameText().getText());
 		param.setDefaultVal(modifyNavigationWizardPage.getMasterDefaultValueOutputParam().getText());
 		
@@ -212,7 +211,9 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		for(int k =0; k<destInfos.size(); k++){
 			DestinationInfo destInfo = destInfos.elementAt(k);
 			RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
-			String toRefresh = destInfo.getDocDestName();
+			
+			HashMap<String, String> docInfoUtil= modifyNavigationWizardPage.getDocInfoUtil();
+			String toRefresh = docInfoUtil.get(destInfo.getDocDestName());
 
 			String paramIn =destInfo.getParamDestName();
 
@@ -227,11 +228,15 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 	}
 	private void fillInNavigationParams(Vector<Parameter> parameters, Document doc){
 		//cicla su destinazioni
+		HashMap<String, String> docInfoUtil= modifyNavigationWizardPage.getDocInfoUtil();
 		Vector<DestinationInfo> destInfos = modifyNavigationWizardPage.getDestinationInfos();
 		for(int k =0; k<destInfos.size(); k++){
 			DestinationInfo destInfo = destInfos.elementAt(k);
 			String destinationDoc = destInfo.getDocDestName();
-			if(destinationDoc != null && destinationDoc.equals(doc.getSbiObjLabel())){
+			//recupera da hashmap di utilità la label corrispondente
+			String destLabel = docInfoUtil.get(destinationDoc);
+			
+			if(destLabel != null && destLabel.equals(doc.getSbiObjLabel())){
 				String paramName = destInfo.getParamDestName();
 				Parameter param = new Parameter();
 				param.setType("IN");

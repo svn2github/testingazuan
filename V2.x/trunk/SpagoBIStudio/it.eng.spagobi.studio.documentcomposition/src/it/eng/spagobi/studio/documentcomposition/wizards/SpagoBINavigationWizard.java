@@ -14,6 +14,7 @@ import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWiza
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.util.DestinationInfo;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -131,7 +132,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		
 		DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
 		
-		String masterName= newNavigationWizardMasterDocPage.getName();
+		String masterLabel= newNavigationWizardMasterDocPage.getMasterLabel();
 	    //in realtà prende il doc master corrispondente a quello selezionato dall'utente
 	    //all'interno del doc master costrisce Parametro con Refresh (navigazione)	
 		//DocumentComposition docComp = new DocumentComposition ();
@@ -144,12 +145,9 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 			    for (int i = 0; i< documents.size(); i++){
 			    	Document doc = (Document)documents.get(i);
 			    	String docLabel = doc.getSbiObjLabel();
-			    	if(docLabel.equalsIgnoreCase(masterName)){
-			    		doc.setSbiObjLabel(masterName);
-			    		Combo out = newNavigationWizardMasterDocPage.getMasterDocOutputParam();	 
-						String masterPar = out.getText();
-			    		//campo out a cui vengono assegnati
+			    	if(docLabel.equalsIgnoreCase(masterLabel)){
 			    		
+			    		//campo out a cui vengono assegnati
 			    		
 			    		Parameters params = doc.getParameters();//tag già presente nel modello riempito precedentemente
 		    			if(params == null){
@@ -160,12 +158,10 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		    			if(parameters == null){
 		    				parameters = new Vector<Parameter>();
 		    			}
-			    		//aggiunge il parameter IN per la dstinazione
-			    		fillInNavigationParams(parameters, doc);
-			    		
+		    		
 			    		//aggiunge parametro OUT per doc master
 		    			Parameter newParam = new Parameter();
-		    			fillNavigationOutParam(newParam, masterPar);
+		    			fillNavigationOutParam(newParam);
 		
 		
 		    			parameters.add(newParam);
@@ -223,8 +219,8 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		
 	}
 
-	private void fillNavigationOutParam(Parameter param, String out){
-
+	private void fillNavigationOutParam(Parameter param){
+		String out =newNavigationWizardMasterDocPage.getMasterDocOutputParam().getText();
 		param.setSbiParLabel(out);
 		param.setNavigationName(newNavigationWizardPage.getNavigationNameText().getText());
 		param.setDefaultVal(newNavigationWizardMasterDocPage.getMasterDefaultValueOutputParam().getText());
@@ -236,10 +232,11 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		for(int k =0; k<destInfos.size(); k++){
 			DestinationInfo destInfo = destInfos.elementAt(k);
 			RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
-			String toRefresh = destInfo.getDocDestName();
+			HashMap<String, String> docInfoUtil= newNavigationWizardDestinDocPage.getDocInfoUtil();
+			String toRefresh = docInfoUtil.get(destInfo.getDocDestName());
 
 			String paramIn =destInfo.getParamDestName();
-
+			
 			refreshDocLinked.setLabelDoc(toRefresh);
 			refreshDocLinked.setLabelParam(paramIn);
 			refreshes.add(refreshDocLinked);
@@ -252,10 +249,15 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	private void fillInNavigationParams(Vector<Parameter> parameters, Document doc){
 		//cicla su destinazioni
 		Vector<DestinationInfo> destInfos = newNavigationWizardDestinDocPage.getDestinationInfos();
+		HashMap<String, String> docInfoUtil= newNavigationWizardDestinDocPage.getDocInfoUtil();
 		for(int k =0; k<destInfos.size(); k++){
 			DestinationInfo destInfo = destInfos.elementAt(k);
 			String destinationDoc = destInfo.getDocDestName();
-			if(destinationDoc != null && destinationDoc.equals(doc.getSbiObjLabel())){
+			
+			//recupera da hashmap di utilità la label corrispondente
+			String destLabel = docInfoUtil.get(destinationDoc);
+			
+			if(destLabel != null && destLabel.equals(doc.getSbiObjLabel())){
 				String paramName = destInfo.getParamDestName();
 				Parameter param = new Parameter();
 				param.setType("IN");

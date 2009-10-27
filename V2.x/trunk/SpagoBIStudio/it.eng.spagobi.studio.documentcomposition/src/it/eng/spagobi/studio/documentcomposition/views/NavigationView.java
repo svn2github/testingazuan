@@ -84,7 +84,8 @@ public class NavigationView extends ViewPart {
 		client.setLayout(layout);
 		
 
-		if(documentComp != null && documentComp.getDocumentsConfiguration()!= null && documentComp.getDocumentsConfiguration().getDocuments()!= null){
+		if(documentComp != null && documentComp.getDocumentsConfiguration()!= null 
+				&& documentComp.getDocumentsConfiguration().getDocuments()!= null && documentComp.getDocumentsConfiguration().getDocuments().size() != 0){
 			loadNavigations(toolkit, parent);
 		}else{			
 			labelNoDocs = new Label(client, SWT.NONE);

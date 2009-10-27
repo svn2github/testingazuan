@@ -1,12 +1,12 @@
 package it.eng.spagobi.studio.documentcomposition.wizards.pages;
 
 import it.eng.spagobi.studio.documentcomposition.Activator;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataParameter;
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 import org.eclipse.jface.wizard.WizardPage;
@@ -17,20 +17,24 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 public class NewNavigationWizardMasterDocPage extends WizardPage {
 
 
 	String name = "";
+	String masterLabel = "";
 	String paramOut ="";
 	
+	
+	HashMap <String, String> docInfoUtil;
+
+
 	Combo masterDocName;
 	Combo masterDocOutputParam;
 	Text masterDefaultValueOutputParam;
+	
 	private MetadataDocumentComposition metaDoc;
 
 	public NewNavigationWizardMasterDocPage() {
@@ -102,7 +106,7 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 				SpagoBINavigationWizard wizard = (SpagoBINavigationWizard)getWizard();
 				wizard.setSelectedMaster(masterDocName.getText());
 				fillMasterParamCombo(name);
-				
+				masterLabel = docInfoUtil.get(name);
 				setPageComplete(name.length() > 0	&& paramOut.length() > 0);
 			}
 		});
@@ -114,12 +118,6 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 				setPageComplete(name.length() > 0	&& paramOut.length() > 0);
 			}
 		});
-/*		composite.addListener(SWT.Show, new Listener() {
-			public void handleEvent(Event event) {
-				metaDoc = Activator.getDefault().getMetadataDocumentComposition();
-			}
-		});	*/
-		
 		
 		composite.pack();
 		composite.redraw();
@@ -129,14 +127,19 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 
 
 	private void fillMasterCombo(){
+		docInfoUtil = new HashMap<String, String>();
 		metaDoc = Activator.getDefault().getMetadataDocumentComposition();
 		if(metaDoc != null){
 			Vector docs = metaDoc.getMetadataDocuments();
 			if(docs != null){
 				for(int i=0; i<docs.size(); i++){
-					String masterName = ((MetadataDocument)docs.elementAt(i)).getName();
+
+					MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
+					String masterName = doc.getName();
+					String masterLabel = doc.getLabel();
 					if(masterName != null && !masterName.equals("")){
-						masterDocName.add(masterName);
+						masterDocName.add(masterName);	
+						docInfoUtil.put(masterName, masterLabel);
 					}
 				}
 			}
@@ -192,4 +195,22 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 	public String getParamOut() {
 		return paramOut;
 	}
+
+	public HashMap<String, String> getDocInfoUtil() {
+		return docInfoUtil;
+	}
+
+	public void setDocInfoUtil(HashMap<String, String> docInfoUtil) {
+		this.docInfoUtil = docInfoUtil;
+	}
+
+	public String getMasterLabel() {
+		return masterLabel;
+	}
+
+	public void setMasterLabel(String masterLabel) {
+		this.masterLabel = masterLabel;
+	}
+
+
 }

@@ -7,6 +7,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.util.DestinationInfo;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 import org.eclipse.jface.wizard.WizardPage;
@@ -19,7 +20,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.widgets.ColumnLayout;
 
 public class NewNavigationWizardDestinDocPage extends WizardPage {
 
@@ -45,7 +44,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 	
 	int destinCounter = 0;
 
-	
+	HashMap <String, String> docInfoUtil = new HashMap<String, String>();
 
 	private DestinationInfo destinationInfo;
 	private Vector<DestinationInfo> destinationInfos;
@@ -317,6 +316,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 
 	
 	private void fillDestinationCombo(){
+
 		metaDoc = Activator.getDefault().getMetadataDocumentComposition();
 		SpagoBINavigationWizard wizard = (SpagoBINavigationWizard)getWizard();
 
@@ -326,11 +326,13 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				if(docs != null){
 					for(int i=0; i<docs.size(); i++){
 						MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
+						String destName = doc.getName();
+						String destLabel = doc.getLabel();
 						if(doc.getMetadataParameters() != null && doc.getMetadataParameters().size()!=0){
-							String destinationName = doc.getName();
-							
+							String destinationName = doc.getName();							
 							if(destinationName != null && !destinationName.equals("")){
 								destinationDocNameCombo.elementAt(destinCounter).add(destinationName);
+								docInfoUtil.put(destName, destLabel);
 							}
 						}
 					}
@@ -469,6 +471,13 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 			Vector<Text> destinationInputParamDefaultValue) {
 		this.destinationInputParamDefaultValue = destinationInputParamDefaultValue;
 	}
+	public HashMap<String, String> getDocInfoUtil() {
+		return docInfoUtil;
+	}
+	public void setDocInfoUtil(HashMap<String, String> docInfoUtil) {
+		this.docInfoUtil = docInfoUtil;
+	}
+	
 }
 
 

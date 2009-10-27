@@ -11,4 +11,15 @@ public class Style {
 		this.style = style;
 	}
 
+	public Style(String style) {
+		super();
+		this.style = style;
+	}
+
+	public Style() {
+		super();
+	}
+	
+
+	
 }

@@ -30,7 +30,7 @@
    <extension point="org.eclipse.ui.views">
 		<view
 	            class="it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView"
-	            icon="icons/sample.gif"
+	            icon="icons/propertiesIcon.png"
 	            id="it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView"
 	            name="Document Properties">
 	</view>
@@ -38,7 +38,7 @@
    <extension point="org.eclipse.ui.views">
 		<view
 	            class="it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView"
-	            icon="icons/sample.gif"
+	            icon="icons/iconAnalyticalDriverView.png"
 	            id="it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView"
 	            name="DocumentParameters">
 	</view>

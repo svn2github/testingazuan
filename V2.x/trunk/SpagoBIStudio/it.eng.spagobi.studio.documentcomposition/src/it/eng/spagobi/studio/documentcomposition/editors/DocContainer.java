@@ -123,13 +123,17 @@ e.printStackTrace();}
 							cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_ARROW);						
 							designer.getMainComposite().setCursor(cursor);							
 							offset[0] = null;							
-							int tempWidth=documentContained.getGroup().getBounds().width;
-							tempWidth=tempWidth/ALIGNMENT_MARGIN;
-							tempWidth=tempWidth*ALIGNMENT_MARGIN;
-							int tempHeight=documentContained.getGroup().getBounds().height;
-							tempHeight=tempHeight/ALIGNMENT_MARGIN;
-							tempHeight=tempHeight*ALIGNMENT_MARGIN;
-							documentContained.getGroup().setSize(tempWidth, tempHeight);
+//							int tempWidth=documentContained.getGroup().getBounds().width;
+//							tempWidth=tempWidth/ALIGNMENT_MARGIN;
+//							tempWidth=tempWidth*ALIGNMENT_MARGIN;
+//							int tempHeight=documentContained.getGroup().getBounds().height;
+//							tempHeight=tempHeight/ALIGNMENT_MARGIN;
+//							tempHeight=tempHeight*ALIGNMENT_MARGIN;
+
+							DesignerUtilities designerUtilities=new DesignerUtilities();
+							int setWidth=designerUtilities.calculateWidth(documentContained.getGroup(), mainComposite.getBounds().width);
+							int setHeight=designerUtilities.calculateHeight(documentContained.getGroup(), mainComposite.getBounds().height);
+							documentContained.getGroup().setSize(setWidth, setHeight);
 							reloadStyleDocumentProperties();
 							(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
 							designer.setCurrentSelection(Integer.valueOf(-1));
@@ -200,10 +204,14 @@ e.printStackTrace();}
 							if(doesIntersect==false && doesExceed==false){
 								composite.setSize(nuova_larghezza, nuova_altezza);
 								(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
-								System.out.println("Resizing da dentro: x="+documentContained.getGroup().getBounds().x+" e y="+documentContained.getGroup().getBounds().y+" altezza nuova="+documentContained.getGroup().getBounds().height+" e larghezza nuova="+documentContained.getGroup().getBounds().width);														
+								//System.out.println("Resizing da dentro: x="+documentContained.getGroup().getBounds().x+" e y="+documentContained.getGroup().getBounds().y+" altezza nuova="+documentContained.getGroup().getBounds().height+" e larghezza nuova="+documentContained.getGroup().getBounds().width);														
+								System.out.println("OK Slarga dentro");
+
 							}	
 							else{
-								System.out.println("Resizing BLOCCATO da dentro: x="+documentContained.getGroup().getBounds().x+" e y="+documentContained.getGroup().getBounds().y+" altezza rimane="+documentContained.getGroup().getBounds().height+" e larghezza rimane="+documentContained.getGroup().getBounds().width);														
+//								System.out.println("Resizing BLOCCATO da dentro: x="+documentContained.getGroup().getBounds().x+" e y="+documentContained.getGroup().getBounds().y+" altezza rimane="+documentContained.getGroup().getBounds().height+" e larghezza rimane="+documentContained.getGroup().getBounds().width);														
+								System.out.println("BLocca Slarga dentro");
+
 							}
 
 						}
@@ -568,7 +576,7 @@ e.printStackTrace();}
 		Object p=w.getPart(false);
 		if(p!=null){
 			DocumentPropertiesView view=(DocumentPropertiesView)p;
-			view.reloadStyle(id, style.getStyle());
+			view.reloadStyle(id, style.getStyle(), documentContained.getMetadataDocument());
 		}
 		else{
 			// View not present

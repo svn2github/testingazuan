@@ -3,6 +3,8 @@ package it.eng.spagobi.studio.documentcomposition.views;
 import java.util.HashMap;
 
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -50,6 +52,7 @@ public class DocumentPropertiesView extends ViewPart {
 	Text textStyle;
 	Button automaticButton;
 	Button manualButton;
+	MetadataDocument metadataDocument;
 	// Style parameters, if present means we are in manual mode
 	HashMap<Integer, String> styleParameters=new HashMap<Integer, String>();
 	Integer id;
@@ -86,8 +89,6 @@ public class DocumentPropertiesView extends ViewPart {
 
 	public void createPartControl(Composite parent) {
 
-
-
 		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
 		// Lets make a layout for the first section of the screen
 		GridLayout layout = new GridLayout();
@@ -121,6 +122,7 @@ public class DocumentPropertiesView extends ViewPart {
 				String t = textStyle.getText();
 				if(t!=null && !t.equalsIgnoreCase("") && manualMode==true){
 					styleParameters.put(id, t);
+					(new ModelBO()).updateModelModifyDocument(metadataDocument, new Style(t));
 				}
 			}
 		});
@@ -206,10 +208,11 @@ public class DocumentPropertiesView extends ViewPart {
 		client.redraw();
 	}
 
-	public void reloadStyle(Integer docContainerId, String style){
+	public void reloadStyle(Integer docContainerId, String style, MetadataDocument _metadataDocument){
 		// check if present document is in manual mode
 		String stylePrec=styleParameters.get(docContainerId);
 		id=docContainerId;
+		metadataDocument=_metadataDocument;
 		styleCurrent=style;
 		if(stylePrec==null){ // set  automatic mode
 			enableManualMode(false);

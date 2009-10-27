@@ -101,6 +101,9 @@ public class DocumentCompositionEditor extends EditorPart {
 	            if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.NavigationView") == null ){
 	                iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.NavigationView");
 	            }
+	            if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.VideoSizeView") == null ){
+	                iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.VideoSizeView");
+	            }	            
             }
         } catch (PartInitException partinitexception) {
                 partinitexception.printStackTrace();

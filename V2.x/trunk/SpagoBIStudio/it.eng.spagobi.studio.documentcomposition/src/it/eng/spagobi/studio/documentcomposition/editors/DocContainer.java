@@ -183,6 +183,7 @@ e.printStackTrace();}
 					}					
 					break;
 				case SWT.MouseMove:
+					System.out.println("Mouse movement: "+Integer.valueOf(event.x).toString()+" / "+Integer.valueOf(event.y).toString());
 					if(designer.getState().equals(Designer.RESIZE)){
 						if(id.equals(designer.getCurrentSelection())){
 							Rectangle rect=composite.getBounds();
@@ -190,13 +191,18 @@ e.printStackTrace();}
 							int y=event.y;
 							int nuova_larghezza=rect.width;
 							int nuova_altezza=rect.height;
-							if(x<rect.x+rect.width && x>(rect.x+DEFAULT_WIDTH)){
+							if(x<rect.x+rect.width //&& x>(rect.x+DEFAULT_WIDTH)
+									){
 								nuova_larghezza=rect.width+(x-rect.x-rect.width);
 								//composite.setSize(nuova_larghezza, rect.height);
 							}
-							if(y<rect.y+rect.height && y>(rect.y+DEFAULT_HEIGHT)){
+							if(y<rect.y+rect.height //&& y>(rect.y+DEFAULT_HEIGHT)
+									){
 								nuova_altezza=rect.height+(y-rect.y-rect.height);
 							}
+							if(nuova_altezza<DEFAULT_HEIGHT)nuova_altezza=DEFAULT_HEIGHT;
+							if(nuova_larghezza<DEFAULT_WIDTH)nuova_larghezza=DEFAULT_WIDTH;
+							
 							//check if intersect!
 							boolean doesIntersect=DocContainer.doesIntersect(id,designer,documentContained.getGroup().getLocation().x, documentContained.getGroup().getLocation().y, nuova_larghezza, nuova_altezza,false);
 							boolean doesExceed=DocContainer.doesExceed(id,designer,documentContained.getGroup().getLocation().x, documentContained.getGroup().getLocation().y, nuova_larghezza, nuova_altezza,false);

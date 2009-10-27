@@ -43,6 +43,14 @@
 	            name="DocumentParameters">
 	</view>
 	</extension>
+   <extension point="org.eclipse.ui.views">
+		<view
+	            class="it.eng.spagobi.studio.documentcomposition.views.VideoSizeView"
+	            icon="icons/videoSize.png"
+	            id="it.eng.spagobi.studio.documentcomposition.views.VideoSizeView"
+	            name="Video Size">
+	</view>
+	</extension>
 	
 	<!-- tabs di navigazione -->
 	<extension point="org.eclipse.ui.views">

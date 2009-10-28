@@ -47,10 +47,14 @@ public class VideoSizeView extends ViewPart{
 			DocumentsConfiguration documentsConfiguration=documentComposition.getDocumentsConfiguration();
 			String heightS=documentsConfiguration.getVideoHeight();
 			String widthS=documentsConfiguration.getVideoWidth();
-			width=Integer.valueOf(widthS);
-			height=Integer.valueOf(heightS);
+			if(widthS!=null){
+				width=Integer.valueOf(widthS);
+			}
+			if(heightS!=null){
+				height=Integer.valueOf(heightS);
+			}
 		}
-		
+
 		Label text2=new Label(client, SWT.NULL);
 		text2.setText("Video Height: ");
 
@@ -100,7 +104,7 @@ public class VideoSizeView extends ViewPart{
 				}
 			}
 		});
-	
+
 		client.pack();
 		section.setClient(client);
 

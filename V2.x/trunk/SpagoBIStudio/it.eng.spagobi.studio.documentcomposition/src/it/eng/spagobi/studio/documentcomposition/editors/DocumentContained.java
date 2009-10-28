@@ -30,10 +30,10 @@ public class DocumentContained {
 	Group group;	
 	MetadataDocument metadataDocument;	
 
-	public static final String IMG_JASPER_REPORT="it/eng/spagobi/studio/documentcomposition/resources/images/jasper.png";
+	public static final String IMG_JASPER_REPORT="it/eng/spagobi/studio/documentcomposition/resources/images/IconJasperReport.PNG";
 	public static final String IMG_BIRT_REPORT="it/eng/spagobi/studio/documentcomposition/resources/images/birt.png";
 	public static final String IMG_DASHBOARD="it/eng/spagobi/studio/documentcomposition/resources/images/chart.png";
-	public static final String IMG_CHART="it/eng/spagobi/studio/documentcomposition/resources/images/chart.png";
+	public static final String IMG_CHART="it/eng/spagobi/studio/documentcomposition/resources/images/IconChartEditor.PNG";
 	public static final String IMG_DOCUMENT_COMPOSITION="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
 	public static final String IMG_OLAP="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
 	public static final String IMG_ETL="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";

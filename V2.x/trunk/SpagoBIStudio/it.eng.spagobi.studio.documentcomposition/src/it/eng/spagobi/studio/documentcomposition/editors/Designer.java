@@ -256,7 +256,8 @@ public class Designer {
 						(new ModelBO()).updateModelModifyDocument(selectedDoc.getDocumentContained().getMetadataDocument(), selectedDoc.calculateTemplateStyle());						
 						setCurrentSelection(new Integer(-1));
 						if(selected!=null){
-							selected.setBackground(new Color(selected.getDisplay(),new RGB(200,200,200)));
+							
+							selected.setBackground(new Color(selected.getDisplay(),new RGB(189,189,189)));
 						}
 					}
 					/**  IF in Selection state mouse button on shell causes end selection**/
@@ -265,7 +266,7 @@ public class Designer {
 						offset[0] = null;							
 						setCurrentSelection(new Integer(-1));
 						if(selected!=null){
-							selected.setBackground(new Color(selected.getDisplay(),new RGB(200,200,200)));
+							selected.setBackground(new Color(selected.getDisplay(),new RGB(189,189,189)));
 						}
 					}
 					break;

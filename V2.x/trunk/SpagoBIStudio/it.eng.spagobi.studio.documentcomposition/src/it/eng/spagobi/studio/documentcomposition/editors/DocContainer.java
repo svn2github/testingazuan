@@ -72,12 +72,12 @@ public class DocContainer {
 		designer=_designer;
 		id=Integer.valueOf(designer.getCounter());
 		try{
-			documentContained=new DocumentContained(mainComposite, SWT.NULL);
+			documentContained=new DocumentContained(mainComposite, SWT.NONE);
 		}
 		catch (Exception e) {
 			e.printStackTrace();}
 
-		title="NUMERO "+(new Integer(designer.getCounter()).toString());
+		title="NUMBER "+(new Integer(designer.getCounter()).toString());
 		documentContained.getGroup().setText(title);
 		GridLayout layout=new GridLayout();
 		layout.numColumns=2;
@@ -157,7 +157,7 @@ public class DocContainer {
 						designer.setState(Designer.DRAG);
 						cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_HAND);						
 						designer.getMainComposite().setCursor(cursor);
-						composite.setBackground(new Color(composite.getDisplay(),new RGB(0,255,0)));
+						composite.setBackground(new Color(composite.getDisplay(),new RGB(165,195,210)));
 						System.out.println(id);
 						designer.setCurrentSelection(id);
 						// ---- modify selection view---
@@ -173,11 +173,11 @@ public class DocContainer {
 						else{ 
 							if(idPreviousSel.intValue()!=-1){
 								Composite toDeselect=designer.getContainers().get(idPreviousSel).getDocumentContained().getGroup();
-								toDeselect.setBackground(new Color(toDeselect.getDisplay(),new RGB(200,200,200)));
+								toDeselect.setBackground(new Color(toDeselect.getDisplay(),new RGB(189,189,189)));
 							}
 						}
 
-						composite.setBackground(new Color(composite.getDisplay(),new RGB(0,255,0)));							
+						composite.setBackground(new Color(composite.getDisplay(),new RGB(165,195,210)));							
 						designer.setState(Designer.DRAG);
 						cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_HAND);						
 						designer.getMainComposite().setCursor(cursor);						
@@ -290,7 +290,7 @@ public class DocContainer {
 
 						documentContained.getGroup().setLocation(tempX, tempY);
 						if(id.equals(designer.getCurrentSelection())){
-							composite.setBackground(new Color(composite.getDisplay(),new RGB(0,0,255)));
+							composite.setBackground(new Color(composite.getDisplay(),new RGB(193,214,255)));
 							designer.setCurrentSelection(id);
 							designer.setState(Designer.SELECTION);
 							designer.setCurrentSelection(id);
@@ -333,7 +333,7 @@ public class DocContainer {
 				item.setText("Resize");
 				item.addListener(SWT.Selection, new Listener() {
 					public void handleEvent(Event e) {
-						composite.setBackground(new Color(composite.getDisplay(),new RGB(255,0,0)));
+						composite.setBackground(new Color(composite.getDisplay(),new RGB(248,191,129)));
 						//cursor = new Cursor(container.getDisplay(), new Image(container.getDisplay(),"D:\\progetti\\spagobi\\workspaceSpagobiStudio\\it.eng.spagobi.studio.documentcomposition\\icons\\cursorResize.PNG").getImageData(), 0, 0);
 						cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_CROSS);						
 						designer.getMainComposite().setCursor(cursor);
@@ -496,10 +496,10 @@ public class DocContainer {
 						reloadNavigationView(id.toString());
 					}
 					designer.setState(Designer.SELECTION);
-					composite.setBackground(new Color(composite.getDisplay(),new RGB(0,0,255)));
+					composite.setBackground(new Color(composite.getDisplay(),new RGB(193,214,255)));
 					if(designer.getCurrentSelection().intValue()!=-1){
 						Composite toDeselect=designer.getContainers().get(designer.getCurrentSelection()).getDocumentContained().getGroup();
-						toDeselect.setBackground(new Color(toDeselect.getDisplay(),new RGB(200,200,200)));
+						toDeselect.setBackground(new Color(toDeselect.getDisplay(),new RGB(189,189,189)));
 					}
 					designer.setCurrentSelection(id);
 				}

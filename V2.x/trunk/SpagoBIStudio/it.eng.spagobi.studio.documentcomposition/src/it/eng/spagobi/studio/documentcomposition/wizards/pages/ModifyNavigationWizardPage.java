@@ -106,6 +106,8 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		destinationDocNameCombo = new Vector<Combo>();
 		destinationInputParam = new Vector<Combo>();
 		destinationInputParamDefaultValue = new Vector<Text>();
+		
+		fillDocInfoUtil();
 
 		final ScrolledComposite sc =  new ScrolledComposite(parent, SWT.V_SCROLL );
 		final Composite composite = new Composite(sc, SWT.NONE);
@@ -184,8 +186,8 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 							if(doc.getMetadataParameters() != null && doc.getMetadataParameters().size()!=0){
 								if(destName != null && !destName.equals("")){
 									destinationDocNameCombo.elementAt(comboToRedraw).add(destName);
-									docInfoUtil.put(destName, destLabel);
-									if(docDest != null && docDest.equals(destName)){
+									
+									if(docDest != null && docDest.equals(destLabel)){
 										int pos = destinationDocNameCombo.elementAt(comboToRedraw).getItemCount();
 										destinationDocNameCombo.elementAt(comboToRedraw).select(pos-1);
 										
@@ -241,7 +243,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 								String destinationName = doc.getName();
 								if(destinationName != null && !presentItems.contains(destinationName)){
 									destinationDocNameCombo.elementAt(comboToRedraw).add(destinationName);
-									docInfoUtil.put(destinationName, destLabel);
+									
 									if(docDest != null && docDest.equals(destinationName)){
 										int pos = destinationDocNameCombo.elementAt(comboToRedraw).getItemCount();
 										destinationDocNameCombo.elementAt(comboToRedraw).select(pos-1);
@@ -289,7 +291,8 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				for(int i=0; i<docs.size(); i++){
 					MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
 					String docName = doc.getName();
-					if(docName != null && !docName.equals("") &&(docName.equals(destDoc))){
+					String docLabel= doc.getLabel();
+					if(docLabel != null && !docLabel.equals("") &&(docLabel.equals(destDoc))){
 						Vector params = doc.getMetadataParameters();
 						if(params != null){
 							for (int j =0; j<params.size(); j++){
@@ -307,6 +310,23 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 			}
 		}
 		
+	}
+	private HashMap<String, String> fillDocInfoUtil(){
+		metaDoc = Activator.getDefault().getMetadataDocumentComposition();
+		if(metaDoc != null){
+			Vector docs = metaDoc.getMetadataDocuments();
+			if(docs != null){						
+				for(int i=0; i<docs.size(); i++){
+					MetadataDocument doc = (MetadataDocument)docs.elementAt(i);							
+					String docLabel = doc.getLabel();
+					String docName = doc.getName();
+					docInfoUtil.put(docName, docLabel);
+					//e il contrario!
+					docInfoUtil.put(docLabel, docName);
+				}
+			}
+		}
+		return null;
 	}
 	
 	private Parameter getNavigationItem(final Composite composite){
@@ -348,7 +368,8 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    				String masterParam = param.getSbiParLabel();
 				    				String masterParamDefault = param.getDefaultVal();
 				    				
-				    				masterDocName.setText(masterDoc);
+				    				
+				    				masterDocName.setText(docInfoUtil.get(masterDoc));
 				    				masterDocName.setEditable(false);
 				    				
 				    				masterParamName.setText(masterParam);

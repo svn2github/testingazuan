@@ -147,6 +147,7 @@ public class DocumentContained {
 						try {
 							InputStream is=DocCompUtilities.getInputStreamFromResource(imagePathFinal);
 							image = new Image(group.getDisplay(), is);
+							
 						} catch (FileNotFoundException e1) {
 							e1.printStackTrace();
 						}

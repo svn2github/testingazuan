@@ -466,12 +466,20 @@ public class StringUtilities {
 		if (profileAttributeEndIndex < profileAttributeEndIndex)
 			throw new Exception("Not opened profile attribute: '$P{' expected.");
 		String attribute = statement.substring(profileAttributeStartIndex + 3, profileAttributeEndIndex).trim();
+		
+			String dequotePrefix = "_dequoted";
+	     if (attribute.endsWith(dequotePrefix)){
+      		surroundWithQuotes = false;
+	   }
+		
+		
 		int startConfigIndex = attribute.indexOf("(");
 		String attributeName = "";
 		String prefix = "";
 		String split = "";
 		String suffix = "";
 		boolean attributeExcpetedToBeMultiValue = false;
+		
 		if (startConfigIndex != -1) {
 			// the parameter is expected to be multivalue
 			attributeExcpetedToBeMultiValue = true;

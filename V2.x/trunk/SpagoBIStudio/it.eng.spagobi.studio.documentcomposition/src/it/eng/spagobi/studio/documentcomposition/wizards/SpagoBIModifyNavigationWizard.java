@@ -8,24 +8,20 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameters;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Refresh;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.RefreshDocLinked;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ParameterBO;
 import it.eng.spagobi.studio.documentcomposition.util.XmlTemplateGenerator;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.ModifyNavigationWizardPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.util.DestinationInfo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Vector;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -140,7 +136,8 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		    for (int i = 0; i< documents.size(); i++){
 		    	Document doc = (Document)documents.get(i);
 		    	String docLabel = doc.getSbiObjLabel();
-		    	if(docLabel.equalsIgnoreCase(masterName)){
+
+		    	if(docLabel.equals(modifyNavigationWizardPage.getDocInfoUtil().get(masterName))){
 	
 					String masterPar = modifyNavigationWizardPage.getMasterParamName().getText();
 		    		//modifica le destinazioni
@@ -156,11 +153,9 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		    		//aggiunge parametro OUT per doc master
 	    			Parameter newParam = new Parameter();
 	    			fillNavigationOutParam(newParam, masterPar);
-	
-	
-	    			parameters.add(newParam);
-					params.setParameter(parameters);
-					doc.setParameters(params);
+	    			
+	    			
+
 		    	}else{
 		    		Parameters params = doc.getParameters();//tag già presente nel modello riempito precedentemente
 
@@ -174,14 +169,10 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 	    			}
 		    		//aggiunge il parameter IN per la dstinazione
 		    		fillInNavigationParams(parameters, doc);
-			
-		    		
-		    		params.setParameter(parameters);
-					doc.setParameters(params);
+
 		    	}
 		    }
 	    }
-	    //Activator.getDefault().setDocumentComposition(docComp);///////////////NB risetta!!!
 	    
 	    generator.transformToXml(docComp);
 	    return true;
@@ -206,7 +197,8 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 	}
 
 	private void fillNavigationOutParam(Parameter param, String masterParam){
-
+		HashMap<String, String> docInfoUtil= modifyNavigationWizardPage.getDocInfoUtil();
+		
 		param.setSbiParLabel(masterParam);
 		param.setNavigationName(modifyNavigationWizardPage.getNavigationNameText().getText());
 		param.setDefaultVal(modifyNavigationWizardPage.getMasterDefaultValueOutputParam().getText());
@@ -217,22 +209,30 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		Vector<DestinationInfo> destInfos = modifyNavigationWizardPage.getDestinationInfos();
 		for(int k =0; k<destInfos.size(); k++){
 			DestinationInfo destInfo = destInfos.elementAt(k);
-
 			
-			HashMap<String, String> docInfoUtil= modifyNavigationWizardPage.getDocInfoUtil();
 			String toRefresh = docInfoUtil.get(destInfo.getDocDestName());
 
 			String paramIn =destInfo.getParamDestName();
-			RefreshDocLinked refreshDocLinked = refreshDocAlreadyExists(paramIn, toRefresh, refreshes);
-			if(refreshDocLinked == null){
-				refreshDocLinked = new RefreshDocLinked();
+			String id =destInfo.getParamDestId();
+			
+			RefreshDocLinked refreshDocLinked = refreshDocAlreadyExists(id, toRefresh, refreshes);
+			if(refreshDocLinked != null){
+				refreshDocLinked.setLabelDoc(toRefresh);
+				refreshDocLinked.setLabelParam(paramIn);
 			}
-			
-			refreshDocLinked.setLabelDoc(toRefresh);
-			refreshDocLinked.setLabelParam(paramIn);
-			refreshes.add(refreshDocLinked);
-			
-			refresh.setRefreshDocLinked(refreshes);
+		}
+		//cacella refreshedDocs 
+		HashMap<String, String> deleted = modifyNavigationWizardPage.getDeletedParams();
+		Iterator ids = deleted.keySet().iterator();
+		while(ids.hasNext()){
+			String id= (String)ids.next();
+			String toDeleteLabel = docInfoUtil.get(deleted.get(id));
+			for(int k=0; k<refreshes.size(); k++){
+				RefreshDocLinked refreshDocLinked = refreshes.elementAt(k);
+				if(refreshDocLinked.getIdParam().equals(id)){
+					refreshes.remove(refreshDocLinked);
+				}
+			}
 		}
 		param.setRefresh(refresh);		
 		param.setType("OUT");
@@ -248,36 +248,39 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 			String destLabel = docInfoUtil.get(destinationDoc);
 			
 			if(destLabel != null && destLabel.equals(doc.getSbiObjLabel())){
-				String paramName = destInfo.getParamDestName();		
-				Parameter param = inParameterAlreadyExists(paramName, parameters);
-				if(param == null){
-					param = new Parameter();
+				String paramName = destInfo.getParamDestName();	
+				String id =destInfo.getParamDestId();
+				ParameterBO bo = new ParameterBO();
+				bo.getParameterById(id, parameters);
+				Parameter param = bo.getParameterById(id, parameters);
+				//NB non può aggiungere parametri, ma solo modificarli o cancellarli
+				if(param != null){
+					param.setType("IN");
+					param.setSbiParLabel(paramName);
+					param.setDefaultVal(destInfo.getParamDefaultValue().getText());	
 				}
-				//altrimenti lo prende dal DocumentSComposition - Parameters
-				param.setType("IN");
-				param.setSbiParLabel(paramName);
-				param.setDefaultVal(destInfo.getParamDefaultValue().getText());
-				
-				parameters.add(param);
 			}			
 		}
-	}
-	private Parameter inParameterAlreadyExists(String paramName, Vector<Parameter> parameters){
-		Parameter paramFound = null; 
-		for(int i=0; i<parameters.size(); i++){
-			Parameter param = parameters.elementAt(i);
-			if(param.getSbiParLabel().equals(paramName)){
-				paramFound = param;
+		//cacella destination parameter
+		HashMap<String, String> deleted = modifyNavigationWizardPage.getDeletedParams();
+		Iterator ids = deleted.keySet().iterator();
+		while(ids.hasNext()){
+			String id= (String)ids.next();
+			String toDeleteLabel = docInfoUtil.get(deleted.get(id));
+			for(int k=0; k<parameters.size(); k++){
+				Parameter param = parameters.elementAt(k);
+				if(param.getId().equals(id)){
+					parameters.remove(param);
+				}
 			}
 		}
-		
-		return paramFound;
 	}
-	private RefreshDocLinked refreshDocAlreadyExists(String paramName, String docName, Vector<RefreshDocLinked> refreshes){
+
+	private RefreshDocLinked refreshDocAlreadyExists(String id, String docName, Vector<RefreshDocLinked> refreshes){
 		RefreshDocLinked docRefrFound = null; 
 		for(int i=0; i<refreshes.size(); i++){
 			RefreshDocLinked doc = refreshes.elementAt(i);
-			if(doc.getLabelDoc().equals(docName) && doc.getLabelParam().equals(paramName)){
+			if(doc.getLabelDoc().equals(docName) && doc.getIdParam().equals(id)){
 				docRefrFound = doc;
 			}
 		}

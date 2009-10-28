@@ -45,6 +45,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	Vector<Text> destinationInputParamDefaultValue ;
 	
 	HashMap <String, String> docInfoUtil = new HashMap<String, String>();
+	HashMap <String, String> deletedParams = new HashMap<String, String>();
 	
 	String name = "";
 	String paramIn = "";
@@ -299,6 +300,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 								MetadataParameter param = (MetadataParameter)params.elementAt(j);
 								String label = param.getLabel();
 								destinationInputParam.elementAt(destinComboToRedraw).add(label);
+								
 								if(paramInSel != null && paramInSel.equals(label)){
 									int pos = destinationInputParam.elementAt(destinComboToRedraw).getItemCount();
 									destinationInputParam.elementAt(destinComboToRedraw).select(pos-1);
@@ -328,7 +330,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		}
 		return null;
 	}
-	
+
 	private Parameter getNavigationItem(final Composite composite){
 		Parameter param = null;
 		
@@ -358,7 +360,8 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    		for (int j = 0; j<params.getParameter().size(); j++){
 				    			param = params.getParameter().elementAt(j);
 				    			String navigName = itemsSel[0].getText();
-				    			if(param.getType() != null &&param.getType().equalsIgnoreCase("OUT") 
+				    			
+				    			if(param.getType() != null && param.getType().equalsIgnoreCase("OUT") 
 				    					&& param.getNavigationName()!= null 
 				    					&& param.getNavigationName().equals(navigName)){
 				    				navigationNameText.setText(navigName);
@@ -381,6 +384,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    				//cicla su destinazioni
 				    				Refresh refresh = param.getRefresh();
 				    				Vector<RefreshDocLinked> destinations = refresh.getRefreshDocLinked();
+				    				System.out.println("destination size::"+destinations.size());
 				    				for(int k =0; k<destinations.size(); k++){
 				    					
 				    					//secondo composite
@@ -389,9 +393,13 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    					
 				    					destinCounter++;
 				    					
-				    					RefreshDocLinked destin = destinations.get(k);
+				    					final RefreshDocLinked destin = destinations.get(k);
+				    					
+				    					
 				    					String docDest = destin.getLabelDoc();
 				    					final String docDestParam = destin.getLabelParam();
+				    					
+				    					
 				    					//inserisce blocco x destinazione
 				    					Composite destBlock = new Composite(composite2, SWT.BORDER | SWT.FILL);
 				    					GridLayout glBlock = new GridLayout();
@@ -401,10 +409,10 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    					new Label(destBlock, SWT.NONE).setText("Destination document:");	
 				    					destinationDocNameCombo.addElement(new Combo(destBlock, SWT.BORDER |SWT.READ_ONLY ));
 
-				    					destinationDocNameCombo.elementAt(k).setLayoutData(gridData);
-				    					destinationDocNameCombo.elementAt(k).setVisible(true);
+				    					destinationDocNameCombo.elementAt(destinCounter).setLayoutData(gridData);
+				    					destinationDocNameCombo.elementAt(destinCounter).setVisible(true);
 				    					
-				    					fillDestinationCombo(docDest, k);
+				    					fillDestinationCombo(docDest, destinCounter);
 
 				    					//crea una nuovo output text
 				    					new Label(destBlock, SWT.NONE).setText("Input parameter:");
@@ -413,16 +421,16 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    					
 				    					destinationInputParam.addElement(newText);
 				    					newText.setLayoutData(gridData);
-				    					fillDestinationParamCombo(docDest, k, docDestParam);
+				    					fillDestinationParamCombo(docDest, destinCounter, docDestParam);
 
 				    					new Label(destBlock, SWT.NONE).setText("Default value:");
 				    					destinationInputParamDefaultValue.addElement(new Text(destBlock, SWT.BORDER));
-				    					destinationInputParamDefaultValue.elementAt(k).setLayoutData(gridData);
-				    					setDefaultValue(docs,k,docDest,docDestParam);
+				    					destinationInputParamDefaultValue.elementAt(destinCounter).setLayoutData(gridData);
+				    					setDefaultValue(docs,destinCounter,docDest,docDestParam);
 				    					
 				    					final int element = k;
 				    					
-				    					destinationDocNameCombo.elementAt(k).addModifyListener(new ModifyListener() {
+				    					destinationDocNameCombo.elementAt(destinCounter).addModifyListener(new ModifyListener() {
 				    						public void modifyText(ModifyEvent event) {
 				    							Combo selectedCombo = (Combo) event.widget;
 				    							//ricavo dal vettore di combo la sua posizione
@@ -440,9 +448,9 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    								confirm.open();
 				    							}
 
-				    							int sel = destinationDocNameCombo.elementAt(element).getSelectionIndex();
+				    							int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
 				    							if(sel != -1){
-					    							name = destinationDocNameCombo.elementAt(element).getItem(sel);
+					    							name = destinationDocNameCombo.elementAt(destinCounter).getItem(sel);
 					    							
 					    							destinationInputParam.elementAt(destinComboToRedraw).removeAll();
 					    							
@@ -451,7 +459,26 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    							}
 				    						}
 				    					});		
-				    					
+				    					destinationInputParam.elementAt(destinCounter).addModifyListener(new ModifyListener() {
+				    						public void modifyText(ModifyEvent event) {
+				    							//aggiunge pulsante x add delle pagine
+				    													    					
+				    							destinationInfo = destinationInfos.get(destinCounter);
+				    							destinationInfo.setParamDestName(destinationInputParam.elementAt(destinCounter).getText());
+				    							destinationInfo.setParamDestId(destin.getIdParam());
+				    							
+				    						}
+				    					});	
+				    					destinationInputParamDefaultValue.elementAt(destinCounter).addModifyListener(new ModifyListener() {
+				    						public void modifyText(ModifyEvent event) {
+				    							
+				    							//aggiunge pulsante x add delle pagine
+				    							destinationInfo = destinationInfos.get(destinCounter);
+				    							destinationInfo.setParamDestName(destinationInputParamDefaultValue.elementAt(destinCounter).getText());
+				    							destinationInfo.setParamDestId(destin.getIdParam());
+				    							
+				    						}
+				    					});	
 				    					//pulsante delete
 				    					GridData gd = new GridData(GridData.FILL);
 				    					gd.horizontalSpan = 1;
@@ -463,11 +490,12 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    						public void handleEvent(Event event) {
 				    					        switch (event.type) {
 				    					        case SWT.Selection:
-					    							int selectionIndex = destinationDocNameCombo.elementAt(element).getSelectionIndex();
-					    							name = destinationDocNameCombo.elementAt(element).getItem(selectionIndex);
+					    							int selectionIndex = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
+					    							name = destinationDocNameCombo.elementAt(destinCounter).getItem(selectionIndex);
 					    							System.out.println("deletion "+name);
-
-					    							deleteDestination(element, composite2);
+					    							
+					    							deletedParams.put(destin.getIdParam(), name);
+					    							deleteDestination(destinCounter, composite2);
 					    							
 					    							for(int i=0; i<=destinCounter;i++){
 					    								refillDestinationCombo(null, i);
@@ -650,6 +678,12 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	}
 	public void setDocInfoUtil(HashMap<String, String> docInfoUtil) {
 		this.docInfoUtil = docInfoUtil;
+	}
+	public HashMap<String, String> getDeletedParams() {
+		return deletedParams;
+	}
+	public void setDeletedParams(HashMap<String, String> deletedParams) {
+		this.deletedParams = deletedParams;
 	}
 	
 }

@@ -6,7 +6,14 @@ public class DestinationInfo{
 	private String docDestName;
 	private String paramDestName;
 	private Text paramDefaultValue;
+	private String paramDestId;
 	
+	public String getParamDestId() {
+		return paramDestId;
+	}
+	public void setParamDestId(String paramDestId) {
+		this.paramDestId = paramDestId;
+	}
 	public Text getParamDefaultValue() {
 		return paramDefaultValue;
 	}

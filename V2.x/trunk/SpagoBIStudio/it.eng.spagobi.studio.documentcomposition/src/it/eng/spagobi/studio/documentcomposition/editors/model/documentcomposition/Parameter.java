@@ -1,12 +1,28 @@
 package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition;
 
 
-public class Parameter {
+public class Parameter {	
+	
+	private static long idCounter = 0;
+
+	public static synchronized String createID()
+	{
+	    return String.valueOf(idCounter++);
+	}
+
+	public Parameter() {
+		this.id = createID();
+		// TODO Auto-generated constructor stub
+	}
+	
 	private String type;
 	private String sbiParLabel;
 	private String defaultVal;
 	private Refresh refresh;
 	
+	//per gestire modifica/cancellazione parametro
+	private String id ;
+
 	//attributo che non verrà salvato nell'xml del template ma individua la navigazione
 	private String navigationName;
 	
@@ -43,5 +59,11 @@ public class Parameter {
 		this.defaultVal = defaultVal;
 	}
 
-
+	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 }

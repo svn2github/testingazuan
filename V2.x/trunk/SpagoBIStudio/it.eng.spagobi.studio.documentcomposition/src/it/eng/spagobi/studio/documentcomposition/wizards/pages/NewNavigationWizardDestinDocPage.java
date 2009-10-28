@@ -202,14 +202,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				destinationInputParam.addElement(newText);
 				
 				newText.setLayoutData(gridData);
-				
-				destinationInputParam.elementAt(destinCounter).addModifyListener(new ModifyListener() {
-					public void modifyText(ModifyEvent event) {
-						//aggiunge pulsante x add delle pagine
 
-						addButton.setVisible(true);
-					}
-				});
 				
 				new Label(composite, SWT.NONE).setText("Default value:");
 				destinationInputParamDefaultValue.addElement(new Text(composite, SWT.BORDER));

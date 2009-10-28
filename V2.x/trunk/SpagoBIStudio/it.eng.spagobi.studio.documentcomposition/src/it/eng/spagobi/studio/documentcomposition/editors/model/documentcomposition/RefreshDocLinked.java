@@ -3,8 +3,14 @@ package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposit
 public class RefreshDocLinked {
 	private String labelDoc;
 	private String labelParam;
-
+	private String idParam;
 	
+	public String getIdParam() {
+		return idParam;
+	}
+	public void setIdParam(String idParam) {
+		this.idParam = idParam;
+	}
 	public String getLabelDoc() {
 		return labelDoc;
 	}

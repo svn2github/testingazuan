@@ -56,7 +56,7 @@ public class XmlTemplateGenerator {
 			xstream.addImplicitCollection(Parameters.class, "parameter", "PARAMETER", Parameter.class);
 
 			xstream.omitField(Parameter.class, "navigationName");
-
+			
 
 			xstream.useAttributeFor(Parameter.class, "type");
 			xstream.aliasField("type", Parameter.class, "type");
@@ -85,6 +85,7 @@ public class XmlTemplateGenerator {
 
 			XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("_", "_");
 			XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
+			xstream.setMode(XStream.NO_REFERENCES);
 
 			setAlias(xstream);	
 

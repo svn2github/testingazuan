@@ -12,6 +12,7 @@ public class Document {
 	private String localFileName;	
 	private Parameters parameters;//parameters
 	private Style style; 
+	private String id;
 
 	public Style getStyle() {
 		return style;
@@ -41,6 +42,12 @@ public class Document {
 		super();
 	}
 
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 	public Document(MetadataDocument metadataDocument, Style _style) {
 		super();
 		sbiObjLabel=metadataDocument.getLabel();

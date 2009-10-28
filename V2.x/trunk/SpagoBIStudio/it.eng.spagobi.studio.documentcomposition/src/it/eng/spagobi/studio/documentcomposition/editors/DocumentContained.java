@@ -4,6 +4,7 @@ package it.eng.spagobi.studio.documentcomposition.editors;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
@@ -83,19 +84,10 @@ public class DocumentContained {
 				IPath ia=file.getFullPath();
 				String localFileName=ia.toString();
 
-				// Must get the right MetadataDocument
-				MetadataDocumentComposition metadataDocumentComposition=it.eng.spagobi.studio.documentcomposition.Activator.getDefault().getMetadataDocumentComposition();
-				Vector<MetadataDocument> metaDataDocumentVector=metadataDocumentComposition.getMetadataDocuments();
-
 				metadataDocument=new MetadataDocument(file);				
-
 				metadataDocument.setLocalFileName(localFileName);
-				if(metaDataDocumentVector==null){
-					metaDataDocumentVector=new Vector<MetadataDocument>();
-					metadataDocumentComposition.setMetadataDocuments(metaDataDocumentVector);
-				}
-				metaDataDocumentVector.add(metadataDocument);
-				
+				(new MetadataBO()).getMetadataDocumentComposition().addMetadataDocument(metadataDocument);
+
 				return viewDocumentMetadata(metadataDocument);
 			}
 		}

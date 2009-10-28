@@ -1,11 +1,9 @@
 package it.eng.spagobi.studio.documentcomposition.editors;
 
 
-import it.eng.spagobi.studio.documentcomposition.Activator;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
 import it.eng.spagobi.studio.documentcomposition.views.NavigationView;
@@ -349,10 +347,17 @@ public class DocContainer {
 						Integer idSel=designer.getCurrentSelection();
 						String title=designer.getContainers().get(idSel).getDocumentContained().getGroup().getText();
 
-						designer.getContainers().remove(idSel);
+						// delete document 
+						(new ModelBO()).deleteDocumentFromModel(documentContained.getMetadataDocument());
+						// delete metadata document
+						(new MetadataBO()).getMetadataDocumentComposition().removeMetadataDocument(documentContained.getMetadataDocument());
+						designer.setCurrentSelection(-1);
+						designer.setState(Designer.NORMAL);
 						composite.dispose();
-						designer.getMainComposite().redraw();
+						designer.getContainers().remove(idSel);
 						designer.getMainComposite().layout();
+						designer.getMainComposite().redraw();
+						//						designer.getMainComposite().pack();
 
 					}
 				});				

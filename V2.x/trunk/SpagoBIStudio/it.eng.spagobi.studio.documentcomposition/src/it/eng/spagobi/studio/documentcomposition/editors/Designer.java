@@ -8,6 +8,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataStyle;
@@ -483,14 +484,18 @@ public class Designer {
 						String ciao=fileToGet.getPersistentProperty(PropertyPage.DOCUMENT_NAME);
 						IPath f=fileToGet.getFullPath(); 
 						metadataDocument=new MetadataDocument(fileToGet);
-						MetadataDocumentComposition metadataDocumentComposition=Activator.getDefault().getMetadataDocumentComposition();
-						Vector<MetadataDocument> metadataDocumentVector=metadataDocumentComposition.getMetadataDocuments();
-						if(metadataDocumentVector==null){
-							metadataDocumentVector=new Vector<MetadataDocument>();
-							metadataDocumentComposition.setMetadataDocuments(metadataDocumentVector);
-						}
-						metadataDocumentVector.add(metadataDocument);
-						
+
+
+						(new MetadataBO()).getMetadataDocumentComposition().addMetadataDocument(metadataDocument);
+
+						//						MetadataDocumentComposition metadataDocumentComposition=Activator.getDefault().getMetadataDocumentComposition();
+						//						Vector<MetadataDocument> metadataDocumentVector=metadataDocumentComposition.getMetadataDocuments();
+						//						if(metadataDocumentVector==null){
+						//							metadataDocumentVector=new Vector<MetadataDocument>();
+						//							metadataDocumentComposition.setMetadataDocuments(metadataDocumentVector);
+						//						}
+						//						metadataDocumentVector.add(metadataDocument);
+
 						int widthToPut=metadataStyle.getWidthFromPerc(mainComposite);
 						int heightToPut=metadataStyle.getHeightFromPerc(mainComposite);
 						addDocContainerFromTemplate(mainComposite, metadataStyle.getX(), metadataStyle.getY(), widthToPut, heightToPut, metadataDocument);

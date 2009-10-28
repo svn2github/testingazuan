@@ -37,8 +37,7 @@ public class ModelBO {
 	 * 
 	 */
 	public void addNewDocumentToModel(MetadataDocument _metadataDocument, Style style){
-		ModelBO bo=new ModelBO();
-		DocumentComposition documentComposition=bo.getModel();
+		DocumentComposition documentComposition=getModel();
 		DocumentsConfiguration documentsConfiguration=documentComposition.getDocumentsConfiguration();
 		Vector<Document> documents=documentsConfiguration.getDocuments();
 		Document newDocument=new Document();
@@ -46,7 +45,25 @@ public class ModelBO {
 		newDocument.setLocalFileName(_metadataDocument.getLocalFileName());
 		newDocument.setStyle(style);
 		documents.add(newDocument);
-		bo.saveModel(documentComposition);
+		saveModel(documentComposition);
+	}
+
+	/** delete a document from the model!
+	 * 
+	 */
+	public void deleteDocumentFromModel(MetadataDocument _metadataDocument){
+		DocumentComposition documentComposition=getModel();
+		DocumentsConfiguration documentsConfiguration=documentComposition.getDocumentsConfiguration();
+		Vector<Document> documents=documentsConfiguration.getDocuments();
+		boolean found=false;
+		for (Iterator iterator = documents.iterator(); iterator.hasNext() && found==false;) {
+			Document document = (Document) iterator.next();
+			if(document.getSbiObjLabel().equals(_metadataDocument.getLabel())){
+				documents.remove(document);
+				found=true;
+			}
+		}
+		saveModel(documentComposition);
 	}
 
 	/** update the model with a new document!

@@ -127,6 +127,7 @@ public class Designer {
 			docContainer.setTitle(metadataDocument!=null ? metadataDocument.getLabel() : "NoDocument");
 			if(metadataDocument!=null){
 				docContainer.getDocumentContained().setMetadataDocument(metadataDocument);
+				metadataDocument.setIdMetadataDocument(id+"_"+metadataDocument.getLabel());
 			}
 			docContainer.getDocumentContained().viewDocumentMetadata(metadataDocument);
 		}
@@ -256,7 +257,7 @@ public class Designer {
 						(new ModelBO()).updateModelModifyDocument(selectedDoc.getDocumentContained().getMetadataDocument(), selectedDoc.calculateTemplateStyle());						
 						setCurrentSelection(new Integer(-1));
 						if(selected!=null){
-							
+
 							selected.setBackground(new Color(selected.getDisplay(),new RGB(189,189,189)));
 						}
 					}
@@ -485,7 +486,6 @@ public class Designer {
 						String ciao=fileToGet.getPersistentProperty(PropertyPage.DOCUMENT_NAME);
 						IPath f=fileToGet.getFullPath(); 
 						metadataDocument=new MetadataDocument(fileToGet);
-
 
 						(new MetadataBO()).getMetadataDocumentComposition().addMetadataDocument(metadataDocument);
 

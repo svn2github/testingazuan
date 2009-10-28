@@ -22,7 +22,7 @@ public class MetadataDocumentComposition {
 		boolean found=false;
 		for (Iterator iterator = metadataDocuments.iterator(); iterator.hasNext() && found==false;) {
 			MetadataDocument metaDocument = (MetadataDocument) iterator.next();
-			if(metaDocument.getId().equals(_metadataDocument.getId())){
+			if(metaDocument.getIdMetadataDocument().equals(_metadataDocument.getIdMetadataDocument())){
 				metadataDocuments.remove(metaDocument);
 				found=true;
 			}

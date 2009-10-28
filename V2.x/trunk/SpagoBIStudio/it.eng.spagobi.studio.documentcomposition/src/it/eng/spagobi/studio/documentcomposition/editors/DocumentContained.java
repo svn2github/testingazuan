@@ -64,7 +64,7 @@ public class DocumentContained {
 	 *  Get the metadata of the document inside the container and add the document
 	 * @param composite
 	 */
-	public boolean recoverDocumentMetadata(IFile file){
+	public boolean recoverDocumentMetadata(Integer idContainer,IFile file){
 		try{
 			int i=0;
 			String id=file.getPersistentProperty(PropertyPage.DOCUMENT_ID);
@@ -85,6 +85,7 @@ public class DocumentContained {
 				String localFileName=ia.toString();
 
 				metadataDocument=new MetadataDocument(file);				
+				metadataDocument.setIdMetadataDocument(id+"_"+metadataDocument.getLabel());
 				metadataDocument.setLocalFileName(localFileName);
 				(new MetadataBO()).getMetadataDocumentComposition().addMetadataDocument(metadataDocument);
 

@@ -1,6 +1,5 @@
 package it.eng.spagobi.studio.documentcomposition.editors;
 
-
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
@@ -38,11 +37,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-
 public class DocContainer {
-
-
-
 
 	final Integer id;
 	Designer designer;
@@ -348,9 +343,11 @@ public class DocContainer {
 						String title=designer.getContainers().get(idSel).getDocumentContained().getGroup().getText();
 
 						// delete document 
-						(new ModelBO()).deleteDocumentFromModel(documentContained.getMetadataDocument());
-						// delete metadata document
-						(new MetadataBO()).getMetadataDocumentComposition().removeMetadataDocument(documentContained.getMetadataDocument());
+						if(documentContained.getMetadataDocument()!=null){  // has a doc associated???
+							(new ModelBO()).deleteDocumentFromModel(documentContained.getMetadataDocument());
+							// delete metadata document
+							(new MetadataBO()).getMetadataDocumentComposition().removeMetadataDocument(documentContained.getMetadataDocument());
+						}
 						designer.setCurrentSelection(-1);
 						designer.setState(Designer.NORMAL);
 						composite.dispose();
@@ -480,7 +477,7 @@ public class DocContainer {
 					{
 						TreeSelection selectedTreeSelection=(TreeSelection)selectedObject;
 						IFile file=(IFile)selectedTreeSelection.getFirstElement();
-						doTransfer=documentContained.recoverDocumentMetadata(file);
+						doTransfer=documentContained.recoverDocumentMetadata(id, file);
 						// add the document!!
 						(new ModelBO()).addNewDocumentToModel(documentContained.getMetadataDocument(), calculateTemplateStyle());
 					}

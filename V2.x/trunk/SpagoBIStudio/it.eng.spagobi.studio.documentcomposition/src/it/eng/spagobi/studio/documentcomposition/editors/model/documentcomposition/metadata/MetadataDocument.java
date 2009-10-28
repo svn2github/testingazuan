@@ -17,7 +17,7 @@ import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
 
 public class MetadataDocument {
 
-
+	private String idMetadataDocument;
 	private Integer id;
 	private String name;
 	private String label;
@@ -31,7 +31,7 @@ public class MetadataDocument {
 	private Vector<MetadataParameter> metadataParameters;
 
 	private String localFileName;
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -115,10 +115,11 @@ public class MetadataDocument {
 	public void setLocalFileName(String localFileName) {
 		this.localFileName = localFileName;
 	}
-	public MetadataDocument() {
-	}
 
-	
+//	public MetadataDocument() {
+//	}
+
+
 	public MetadataDocument(IFile file) throws CoreException {
 		String documentId=file.getPersistentProperty(PropertyPage.DOCUMENT_ID);
 		String documentName=file.getPersistentProperty(PropertyPage.DOCUMENT_NAME);
@@ -130,7 +131,7 @@ public class MetadataDocument {
 		String documentDatasetId=file.getPersistentProperty(PropertyPage.DATASET_ID);
 		String documentDatasourceId=file.getPersistentProperty(PropertyPage.DATA_SOURCE_ID);
 		String xmlParameters=file.getPersistentProperty(PropertyPage.DOCUMENT_PARAMETERS_XML);
-		
+
 		setId(id!=null ? Integer.valueOf(id) : -1);
 		setLabel(documentLabel);
 		setDescription(documentDescription);
@@ -141,6 +142,9 @@ public class MetadataDocument {
 		setDataSource(documentDatasourceId);
 		setState(documentState);
 		setLocalFileName(file.getName());
+
+//		String idMetadataDocument=idContainer+"_"+documentLabel;
+//		setIdMetadataDocument(idMetadataDocument);
 
 		if(xmlParameters!=null && !xmlParameters.equalsIgnoreCase(""))
 		{
@@ -159,12 +163,19 @@ public class MetadataDocument {
 			buildMetadataParameters(parametersMetaDataObject);
 		}
 
-	
+
+	}
+	public String getIdMetadataDocument() {
+		return idMetadataDocument;
+	}
+	public void setIdMetadataDocument(String idMetadataDocument) {
+		this.idMetadataDocument = idMetadataDocument;
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
+
 }

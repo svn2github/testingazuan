@@ -21,7 +21,10 @@
 package it.eng.spagobi.engines.qbe.services.initializers;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spagobi.engines.qbe.QbeEngine;
+import it.eng.spagobi.engines.qbe.QbeEngineInstance;
+import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 
 import org.apache.log4j.Logger;
 
@@ -30,14 +33,28 @@ import org.apache.log4j.Logger;
  * @author Zerbetto Davide (davide.zerbetto@eng.it)
  * TODO substitute this action with FormEngineStartAction
  */
-public class StartViewerAction extends AbstractHttpAction {	
+public class StartViewerAction extends AbstractEngineStartAction {	
 	
 	/** Logger component. */
     private static transient Logger logger = Logger.getLogger(StartViewerAction.class);
-    
+    public static final String ENGINE_INSTANCE = EngineConstants.ENGINE_INSTANCE;
 		
     public void service(SourceBean serviceRequest, SourceBean serviceResponse) {
     	logger.debug("IN");
+    	try {
+    		SourceBean template = SourceBean.fromXMLString("<QBE><DATAMART 	name=\"foodmart1998\"/></QBE>");
+			super.service(serviceRequest, serviceResponse);
+			QbeEngineInstance qbeEngineInstance = QbeEngine.createInstance( template, getEnv() );
+			setAttributeInSession( ENGINE_INSTANCE, qbeEngineInstance);		
+			setAttribute(ENGINE_INSTANCE, qbeEngineInstance);
+			
+			setAttribute(LANGUAGE, "it");
+			setAttribute(COUNTRY, "IT");
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	logger.debug("OUT");
 	}
 

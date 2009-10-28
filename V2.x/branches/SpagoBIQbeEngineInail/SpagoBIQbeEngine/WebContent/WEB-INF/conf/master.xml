@@ -33,4 +33,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/core/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/core/validation.xml" />
 	
+	<!-- start QBE Data Brower (Form Viewer) configuration -->
+	<CONFIGURATOR path="/WEB-INF/conf/formviewer/actions.xml" />
+	
 </MASTER>

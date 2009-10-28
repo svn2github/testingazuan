@@ -105,12 +105,14 @@ var template = {
     openFilters: [
         // single selection
         {
+        	id: 'Anno',
             text: 'Anno',
             field: 'it.eng.spagobi.SalesFact1998::time(time_id):year',
             operator: 'EQUALS',
             singleSelection: true
         },
         {
+        	id: 'Store',
             text: 'Store',
             field: 'it.eng.spagobi.SalesFact1998::store(store_id):name',
             operator: 'EQUALS',
@@ -118,12 +120,14 @@ var template = {
         },
         // multi selection
         {
+        	id: 'Brand',
             text: 'Brand',
-            field: 'it.eng.spagobi.SalesFact1998::product(product_id):brand',
+            field: 'it.eng.spagobi.SalesFact1998::product(product_id):brandName',
             operator: 'EQUALS',
             singleSelection: false
         },
         {
+        	id: 'Reparto',
             text: 'Reparto',
             field: 'it.eng.spagobi.SalesFact1998::store(store_id):department',
             operator: 'EQUALS',

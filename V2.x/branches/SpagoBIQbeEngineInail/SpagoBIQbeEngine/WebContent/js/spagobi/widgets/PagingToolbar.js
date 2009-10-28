@@ -41,57 +41,31 @@
   * 
   * Authors
   * 
-  * - Davide Zerbetto (davide.zerbetto@eng.it)
+  * - Andrea Gioia (andrea.gioia@eng.it)
   */
 
-Ext.ns("Sbi.formviewer");
+Ext.ns("Sbi.widgets");
 
-Sbi.formviewer.ViewerPanel = function(config) {
-	
-	var c = Ext.apply({
-		// set default values here
-	}, config || {});
-	
-	this.init(c);
-	
-	c = Ext.apply(c, {
-		title: 'Viewer',
-		layout: 'table',
-	    layoutConfig: {
-	        columns: 1
-	    },
-		autoScroll: true, 
-  		items: this.items
-	});
+Sbi.widgets.PagingToolbar = function(config) {
 	
 	// constructor
-    Sbi.formviewer.ViewerPanel.superclass.constructor.call(this, c);
-
+	Sbi.widgets.PagingToolbar.superclass.constructor.call(this, config)
 };
 
-Ext.extend(Sbi.formviewer.ViewerPanel, Ext.Panel, {
+Ext.extend(Sbi.widgets.PagingToolbar, Ext.PagingToolbar, {
     
-    services: null
-    , staticFiltersPanel: null
-   
-    // private methods
-    , init: function(config) {
-		this.items =  [];
-		this.staticFiltersPanel = new Sbi.formviewer.StaticFiltersPanel(config.staticFilters); 
-		this.items.push(this.staticFiltersPanel);
-		this.openFiltersPanel = new Sbi.formviewer.OpenFiltersPanel(config.openFilters); 
-		this.items.push(this.openFiltersPanel);
-	}
-    
-    
-    // public methods
-    
-    , setState: function(state) {
-	
-    }
-
-	, getState: function() {
+	beforeLoad : function(store, o){
+		Sbi.widgets.PagingToolbar.superclass.beforeLoad.call(this);
 		
+		 var pn = this.paramNames;
+		 if(o.params[pn.start] === undefined && o.params[pn.limit] === undefined) {
+			 // load has been forced not by paging toolbar
+			 o.params[pn.start] = 0; //this.cursor;
+			 o.params[pn.limit] = this.pageSize
+		 }
+		 
+		// alert('PAGING_TOOLBAR\n' +  o.params.toSource());
+	
+		 return true;
 	}
-  	
 });

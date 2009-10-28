@@ -54,7 +54,7 @@ Sbi.formviewer.StaticFiltersORPanel = function(aStaticFiltersORGroup) {
 		frame: true
         , items: this.items
         , width: 300
-        , height: 350
+        , height: 150
 	};
 	
 	// constructor

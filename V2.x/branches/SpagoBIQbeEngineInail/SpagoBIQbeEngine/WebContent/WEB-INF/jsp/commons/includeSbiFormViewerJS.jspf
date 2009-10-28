@@ -21,10 +21,15 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/commons/Utils.js'/></script>
 <script type="text/javascript" src='../js/spagobi/locale/LocaleUtils.js'/></script>
 
+<script type="text/javascript" src='../js/spagobi/widgets/LookupField.js'/></script>
+<script type="text/javascript" src='../js/spagobi/widgets/PagingToolbar.js'/></script>
+<script type="text/javascript" src='../js/spagobi/widgets/FilteringToolbar.js'/></script>
+
 <script type="text/javascript" src='../js/spagobi/formviewer/ViewerPanel.js'/></script>
 <script type="text/javascript" src='../js/spagobi/formviewer/StaticFiltersPanel.js'/></script>
 <script type="text/javascript" src='../js/spagobi/formviewer/StaticFiltersORPanel.js'/></script>
 <script type="text/javascript" src='../js/spagobi/formviewer/StaticFiltersANDPanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/formviewer/OpenFiltersPanel.js'/></script>
 
 <!-- END-DEBUG -->
 

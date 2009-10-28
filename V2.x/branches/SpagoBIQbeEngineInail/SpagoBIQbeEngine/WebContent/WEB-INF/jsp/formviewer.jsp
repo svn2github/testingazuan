@@ -33,8 +33,8 @@ Locale locale = Locale.ENGLISH;
 		};
 
 	    var params = {
-		    	//SBI_EXECUTION_ID: <%= request.getParameter("SBI_EXECUTION_ID")!=null?"'" + request.getParameter("SBI_EXECUTION_ID") +"'": "null" %>
-		 };
+		    	SBI_EXECUTION_ID: <%= request.getParameter("SBI_EXECUTION_ID")!=null?"'" + request.getParameter("SBI_EXECUTION_ID") +"'": "null" %>
+		};
 	
 	    Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({
 	    	baseUrl: url

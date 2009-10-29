@@ -105,18 +105,20 @@ var template = {
     staticOpenFilters: [
         // single selection
         {
-        	id: 'Anno',
-            text: 'Anno',
-            field: 'it.eng.spagobi.SalesFact1998::time(time_id):year',
+        	id: 'Mese',
+            text: 'Mese',
+            field: 'it.eng.spagobi.SalesFact1998::timeByDay(time_id):theMonth',
             operator: 'EQUALS',
-            singleSelection: true
+            singleSelection: false,
+            maxSelectedNumber: 3
         },
         {
-        	id: 'Store',
-            text: 'Store',
-            field: 'it.eng.spagobi.SalesFact1998::store(store_id):name',
+        	id: 'Customer',
+            text: 'Customer',
+            field: 'it.eng.spagobi.Customer:fullname',
             operator: 'EQUALS',
-            singleSelection: true
+            singleSelection: false,
+            maxSelectedNumber: 3
         },
         // multi selection
         {
@@ -124,8 +126,7 @@ var template = {
             text: 'Brand',
             field: 'it.eng.spagobi.SalesFact1998::product(product_id):brandName',
             operator: 'EQUALS',
-            singleSelection: false,
-            maxSelectedNumber: 3
+            singleSelection: true
         },
         {
         	id: 'Reparto',
@@ -146,19 +147,29 @@ var template = {
     dynamicFilters: [
         {
             operator: 'EQUALS',
-            admissibleFields: 'ALL'
+            admissibleFields: [
+               {field: 'it.eng.spagobi.SalesFact1998::time(time_id):quarter_num', text: 'Quadrimestre'},
+        	   {field: 'it.eng.spagobi.SalesFact1998::time(time_id):month_num', text: 'Mese'},
+        	   {field: 'it.eng.spagobi.SalesFact1998::time(time_id):week_num', text: 'Settimana'},
+        	   {field: 'it.eng.spagobi.SalesFact1998::time(time_id):day_num', text: 'Giorno'}                
+            ]
         },
         {
             operator: 'EQUALS',
-            admissibleFields: 'ALL'
+            admissibleFields: [
+               {field: 'it.eng.spagobi.SalesFact1998::time(time_id):quarter_num', text: 'Quadrimestre'},
+        	   {field: 'it.eng.spagobi.SalesFact1998::time(time_id):month_num', text: 'Mese'},
+        	   {field: 'it.eng.spagobi.SalesFact1998::time(time_id):week_num', text: 'Settimana'},
+        	   {field: 'it.eng.spagobi.SalesFact1998::time(time_id):day_num', text: 'Giorno'}                
+            ]
         },
         {
             operator: 'BETWEEN',
             admissibleFields: [
-                'it.eng.spagobi.SalesFact1998::time(time_id):quarter_num',
-                'it.eng.spagobi.SalesFact1998::time(time_id):month_num',
-                'it.eng.spagobi.SalesFact1998::time(time_id):week_num',
-                'it.eng.spagobi.SalesFact1998::time(time_id):day_num'                
+               {field: 'it.eng.spagobi.SalesFact1998::time(time_id):quarter_num', text: 'Quadrimestre'},
+        	   {field: 'it.eng.spagobi.SalesFact1998::time(time_id):month_num', text: 'Mese'},
+        	   {field: 'it.eng.spagobi.SalesFact1998::time(time_id):week_num', text: 'Settimana'},
+        	   {field: 'it.eng.spagobi.SalesFact1998::time(time_id):day_num', text: 'Giorno'}                
             ]
         }
     ]

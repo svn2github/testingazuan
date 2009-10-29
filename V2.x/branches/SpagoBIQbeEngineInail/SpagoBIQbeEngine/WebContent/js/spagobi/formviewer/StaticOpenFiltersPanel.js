@@ -143,29 +143,48 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.FormPanel, {
 		
 		var store = this.createStore(openFilter);
 		
-		field = new Ext.form.ComboBox(Ext.apply(baseConfig, {
-			//tpl: '<tpl for="."><div ext:qtip="{label} ({value}): {description}" class="x-combo-list-item">{label}</div></tpl>'
-            editable: true			    
-		    , forceSelection: false
-		    , store: store
-		    , displayField: 'column-1'
-		    , valueField: 'column-1'
-		    , emptyText: ''
-		    , typeAhead: false
-		    //, typeAheadDelay: 1000
-		    , triggerAction: 'all'
-		    , selectOnFocus:true
-		    , autoLoad: false
-		}));
-		
-		/*
-		field = new Sbi.widgets.LookupField(Ext.apply(baseConfig, {
-			  store: store
-				, params: params
-				, singleSelect: openFilter.singleSelection
-		}));
-		*/
-		
+		if (openFilter.singleSelection === undefined || openFilter.singleSelection === null || openFilter.singleSelection === true) {
+			field = new Ext.form.ComboBox(Ext.apply(baseConfig, {
+	            editable: true			    
+			    , forceSelection: false
+			    , store: store
+			    , displayField: 'column-1'
+			    , valueField: 'column-1'
+			    , emptyText: ''
+			    , typeAhead: false
+			    //, typeAheadDelay: 1000
+			    , triggerAction: 'all'
+			    , selectOnFocus:true
+			    , autoLoad: false
+			}));
+		} else {
+			
+			field = new Ext.ux.Andrie.Select(Ext.apply(baseConfig, {
+				multiSelect: true
+				, maxLength: openFilter.maxSelectedNumber
+			    , store: store
+			    , displayField: 'column-1'
+			    , valueField: 'column-1'
+			    , emptyText: ''
+			    , selectOnFocus: true
+			    , autoLoad: false
+			}));
+			/*
+			field = new Ext.ux.BoxSelect(Ext.apply(baseConfig, {
+	            editable: true			    
+			    , forceSelection: false
+			    , store: store
+			    , displayField: 'column-1'
+			    , valueField: 'column-1'
+			    , emptyText: ''
+			    , typeAhead: false
+			    //, typeAheadDelay: 1000
+			    , triggerAction: 'all'
+			    , selectOnFocus:true
+			    , autoLoad: false
+			}));
+			*/
+		}
 		return field;
 	}
 

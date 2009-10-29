@@ -145,13 +145,13 @@ public class GetFilterValuesAction extends AbstractQbeEngineAction {
 				dataSet.setAbortOnOverflow(true);
 				
 				Map userAttributes = new HashMap();
-//				UserProfile profile = (UserProfile)this.getEnv().get(EngineConstants.ENV_USER_PROFILE);
-//				Iterator it = profile.getUserAttributeNames().iterator();
-//				while(it.hasNext()) {
-//					String attributeName = (String)it.next();
-//					Object attributeValue = profile.getUserAttribute(attributeName);
-//					userAttributes.put(attributeName, attributeValue);
-//				}
+				UserProfile profile = (UserProfile)this.getEnv().get(EngineConstants.ENV_USER_PROFILE);
+				Iterator it = profile.getUserAttributeNames().iterator();
+				while(it.hasNext()) {
+					String attributeName = (String)it.next();
+					Object attributeValue = profile.getUserAttribute(attributeName);
+					userAttributes.put(attributeName, attributeValue);
+				}
 				dataSet.addBinding("attributes", userAttributes);
 				dataSet.addBinding("parameters", this.getEnv());
 				dataSet.loadData();

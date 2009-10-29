@@ -72,15 +72,26 @@ Sbi.formviewer.ViewerPanel = function(config) {
 Ext.extend(Sbi.formviewer.ViewerPanel, Ext.Panel, {
     
     services: null
-    , staticFiltersPanel: null
+    , staticClosedFiltersPanel: null
+    , staticOpenFiltersPanel: null
+    , dynamicFiltersPanel: null
    
     // private methods
     , init: function(config) {
-		this.items =  [];
-		this.staticFiltersPanel = new Sbi.formviewer.StaticClosedFiltersPanel(config.staticClosedFilters); 
-		this.items.push(this.staticFiltersPanel);
-		this.openFiltersPanel = new Sbi.formviewer.StaticOpenFiltersPanel(config.staticOpenFilters); 
-		this.items.push(this.openFiltersPanel);
+		this.items = [];
+		if (config.staticClosedFilters !== undefined && config.staticClosedFilters !== null && config.staticClosedFilters.length > 0) {
+			this.staticClosedFiltersPanel = new Sbi.formviewer.StaticClosedFiltersPanel(config.staticClosedFilters); 
+			this.items.push(this.staticClosedFiltersPanel);
+		}
+		if (config.staticOpenFilters !== undefined && config.staticOpenFilters !== null && config.staticOpenFilters.length > 0) {
+			this.staticOpenFiltersPanel = new Sbi.formviewer.StaticOpenFiltersPanel(config.staticOpenFilters); 
+			this.items.push(this.staticOpenFiltersPanel);
+		}
+		if (config.dynamicFilters !== undefined && config.dynamicFilters !== null && config.dynamicFilters.length > 0) {
+			this.dynamicFiltersPanel = new Sbi.formviewer.DynamicFiltersPanel(config.dynamicFilters); 
+			this.items.push(this.dynamicFiltersPanel);
+		}
+		
 	}
     
     

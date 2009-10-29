@@ -281,7 +281,7 @@ public class QbeDriver extends AbstractDriver implements IEngineDriver {
         
 	protected Map applyService(Map pars) {
 		logger.debug("IN");
-		pars.put("ACTION_NAME", "SPAGO_BI_START_ACTION");
+		pars.put("ACTION_NAME", "QBE_ENGINE_START_ACTION");
 		pars.put("NEW_SESSION", "TRUE");
 		logger.debug("OUT");
 		return pars;

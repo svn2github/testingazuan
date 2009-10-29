@@ -460,7 +460,7 @@ public class Designer {
 			}
 			catch (Exception e) {
 				MessageDialog.openError(mainComposite.getShell(), 
-						"Error", "Error in retrieving positioning metadata for the file with name "+sbiObjectLabel);
+						"Error", "Error in retrieving positioning metadata for the document with label "+sbiObjectLabel);
 				SpagoBILogger.errorLog("END "+Designer.class.toString()+": Initialize designer function: " +
 						"Error in retrieving positioning metadata for the file with name "+sbiObjectLabel,null);				
 				continue;

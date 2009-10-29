@@ -61,6 +61,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		destinationInfos = new Vector<DestinationInfo>();
 
 	}
+	
 	@Override
 	public boolean isPageComplete() {
 				
@@ -74,7 +75,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				return false;
 			}
 		}	
-
+		
 		return ret;
 	}
 
@@ -153,7 +154,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 
 		addButton.addListener( SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
-				
+				//setPageComplete(false);
 				if(destinationDocNameCombo.elementAt(destinCounter).getItemCount() ==1){
 					//messaggio di errore in dialog
 					addButton.setVisible(false);
@@ -230,6 +231,8 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 
 						int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
 						if(sel != -1){
+							setPageComplete(true);
+							
 							name = destinationDocNameCombo.elementAt(destinCounter).getItem(sel);
 							
 							destinationInputParam.elementAt(destinComboToRedraw).removeAll();
@@ -293,18 +296,21 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		
 		destinationInputParam.elementAt(0).addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
-
+				setPageComplete(true);
 				//aggiunge pulsante x add delle pagine
 				addButton.setVisible(true);
-				paramIn = destinationInputParam.elementAt(0).getText();				
+				paramIn = destinationInputParam.elementAt(0).getText();		
+				
 				composite.redraw();
 			}
 		});		
-
+		
 		composite.pack(false);
 		composite.redraw();
 		
 		setControl(composite);
+		setPageComplete(false);
+
 	}
 
 	

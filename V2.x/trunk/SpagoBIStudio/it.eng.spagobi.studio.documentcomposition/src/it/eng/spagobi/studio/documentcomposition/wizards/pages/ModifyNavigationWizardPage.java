@@ -445,6 +445,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    						        confirm.setText("Error");
 				    						        confirm.setSize(300,100);
 				    								confirm.open();
+				    								return;
 				    							}
 
 				    							int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
@@ -489,17 +490,26 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    						public void handleEvent(Event event) {
 				    					        switch (event.type) {
 				    					        case SWT.Selection:
-					    							int selectionIndex = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
-					    							name = destinationDocNameCombo.elementAt(destinCounter).getItem(selectionIndex);
-					    							System.out.println("deletion "+name);
-					    							
-					    							deletedParams.put(destin.getIdParam(), name);
-					    							deleteDestination(destinCounter, composite2);
-					    							
-					    							for(int i=0; i<=destinCounter;i++){
-					    								refillDestinationCombo(null, i);
-					    							}
-					    							
+				    					        	if(destinationDocNameCombo.size() == 1){
+				    					        		//non è possibile cancellare destination
+					    								final boolean[] result = new boolean[1];
+					    						        Shell confirm = createErrorDialog(composite2.getParent(), result, 3);
+					    						        confirm.setText("Error");
+					    						        confirm.setSize(300,100);
+					    								confirm.open();
+					    								
+				    					        	}else{
+						    							int selectionIndex = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
+						    							name = destinationDocNameCombo.elementAt(destinCounter).getItem(selectionIndex);
+						    							System.out.println("deletion "+name);
+						    							
+						    							deletedParams.put(destin.getIdParam(), name);
+						    							deleteDestination(destinCounter, composite2);
+						    							
+						    							for(int i=0; i<=destinCounter;i++){
+						    								refillDestinationCombo(null, i);
+						    							}
+				    					        	}
 					    							composite.pack();
 					    							composite.redraw();
 					    						}
@@ -583,6 +593,8 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 			 message = "Destination already selected.";
 		}else if(messageType == 2){
 			message = "Select a destination.";
+		}else if(messageType == 3){
+			message = "Operation denied.";
 		}
 		new Label(error, SWT.NONE).setText(message);
 		

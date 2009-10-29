@@ -55,8 +55,9 @@ public class XmlTemplateGenerator {
 
 			xstream.addImplicitCollection(Parameters.class, "parameter", "PARAMETER", Parameter.class);
 
-			xstream.omitField(Parameter.class, "navigationName");
-			
+			//xstream.omitField(Parameter.class, "navigationName");
+			xstream.useAttributeFor(Parameter.class, "navigationName");
+			xstream.aliasField("navigationName", Parameter.class, "navigationName");
 
 			xstream.useAttributeFor(Parameter.class, "type");
 			xstream.aliasField("type", Parameter.class, "type");

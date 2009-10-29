@@ -51,15 +51,20 @@ public class NewNavigationWizardPage extends WizardPage {
 	        public void handleEvent(Event event) {
 	          String text = navigationNameText.getText();
 
-	          if(text != null && text.length()!=0)
+	          if(text != null && text.length()!=0){
 	            setPageComplete(true);
-	          else
+	        
+	          }else{
 	            setPageComplete(false);
+	     
+	          }
 	        }
 	      });
 		navigationNameText.setFocus();
 		
 		setControl(composite);
+		setPageComplete(false);
+
 	}
 	
 	public Text getNavigationNameText() {

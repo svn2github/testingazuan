@@ -8,6 +8,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameters;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Refresh;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.RefreshDocLinked;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ParameterBO;
 import it.eng.spagobi.studio.documentcomposition.util.XmlTemplateGenerator;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardDestinDocPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardMasterDocPage;
@@ -34,7 +35,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 
 	// workbench selection when the wizard was started
 	protected IStructuredSelection selection;
-
+	private ParameterBO bo = new ParameterBO();
 
 	// the workbench instance
 	protected IWorkbench workbench;
@@ -121,6 +122,15 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		////////////////////////////////////
 		
 	}
+	
+	@Override
+	public boolean canFinish() {
+		// TODO Auto-generated method stub
+		boolean can = super.canFinish();
+		return can;
+	}
+
+
 	@Override
 	public boolean performFinish() {
 
@@ -138,6 +148,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		    Vector documents = docConf.getDocuments();
 		    if(documents != null){
 		    	//aggiunge parametro OUT per doc master
+		    	
     			Parameter masterParam = new Parameter();//viene generato id
     			fillNavigationOutParam(masterParam, documents);
 		    	
@@ -199,6 +210,13 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		    	if(doc.getParameters().getParameter() == null){
 		    		doc.getParameters().setParameter(new Vector());
 		    	}
+		    	
+		    	Parameter outputParam = bo.getDocOutputParameter(parameters);
+		    	if(outputParam != null && outputParam.getSbiParLabel().equals(out)){
+		    		param = outputParam;
+		    		param.setDefaultVal(newNavigationWizardMasterDocPage.getMasterDefaultValueOutputParam().getText());
+		    		return;
+		    	}
 				if(masterLabel != null && masterLabel.equals(doc.getSbiObjLabel())){
 					//se doc master
 					doc.getParameters().getParameter().add(param);
@@ -211,7 +229,6 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	private void fillRefreshes(Vector<RefreshDocLinked> refreshes, String docDest ,Parameter param){
 
 		RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
-		HashMap<String, String> docInfoUtil= newNavigationWizardDestinDocPage.getDocInfoUtil();
 
 		String paramIn =param.getSbiParLabel();
 		
@@ -238,13 +255,17 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 			    	Vector parameters = doc.getParameters().getParameter();
 					if(destLabel != null && destLabel.equals(doc.getSbiObjLabel())){
 						String paramName = destInfo.getParamDestName();
-						Parameter param = new Parameter();//viene anche creato ID
-						param.setType("IN");
-						param.setSbiParLabel(paramName);
-						param.setDefaultVal(destInfo.getParamDefaultValue().getText());
-						System.out.println(param.getId());
+						Parameter param =bo.getDocInputParameterByLabel(parameters, paramName);
+						if(param == null){
+							param = new Parameter();//viene anche creato ID
+							param.setType("IN");
+							param.setSbiParLabel(paramName);
+							param.setDefaultVal(destInfo.getParamDefaultValue().getText());
+							parameters.add(param);
+						}else{
+							param.setDefaultVal(destInfo.getParamDefaultValue().getText());
+						}
 						
-						parameters.add(param);
 						Refresh refresh = masterParam.getRefresh();
 						if(refresh == null){
 							refresh = new Refresh();

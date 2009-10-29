@@ -1,6 +1,7 @@
 package it.eng.spagobi.studio.documentcomposition.wizards.pages;
 
 import it.eng.spagobi.studio.documentcomposition.Activator;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ParameterBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataParameter;
@@ -13,11 +14,16 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 public class NewNavigationWizardMasterDocPage extends WizardPage {
@@ -26,14 +32,16 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 	String name = "";
 	String masterLabel = "";
 	String paramOut ="";
-	
+	private ParameterBO bo = new ParameterBO();
 	
 	HashMap <String, String> docInfoUtil;
 
-
+	Composite composite;
 	Combo masterDocName;
 	Combo masterDocOutputParam;
 	Text masterDefaultValueOutputParam;
+	
+	boolean canFlip = true;
 	
 	private MetadataDocumentComposition metaDoc;
 
@@ -48,22 +56,55 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 	}
 	@Override
 	public boolean canFlipToNextPage() {
-		int sel = masterDocName.getSelectionIndex();
-		String master =null;
-		if(sel != -1){
-			 master = masterDocName.getItem(sel);
-		}
-		if ((masterDocOutputParam.getText() == null || masterDocOutputParam.getText().length() == 0)
-				&&(sel == -1 || master == null )) {
+		System.out.println("masterdocname::"+masterDocName.getText()+"- and masterDocOutputParam::"+masterDocOutputParam.getText());
+		if ((masterDocName.getText() == null) && (masterDocOutputParam.getText() == null)) {
+			return false;		
+		}else if((canFlip && masterDocOutputParam.getText().length() != 0 || masterDocOutputParam.getSelectionIndex() != -1) && masterDocName.getSelectionIndex() != -1){
+			return true;
+		}else{
 			return false;
 		}
 
-		return true;
+	}
+
+	protected Shell createErrorDialog(Composite client, final boolean[] result){
+		final Shell error = new Shell(client.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+		error.setLayout(new GridLayout(3, false));
+
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 3;
+
+		error.setSize(300, 100);
+		Point pt = client.getDisplay().getCursorLocation ();
+		error.setLocation (pt.x, pt.y);
+
+		String message = "Operation denied! Master output parameter already exists.";
+		
+		new Label(error, SWT.NONE).setText(message);
+		
+		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		gd.horizontalSpan = 3;
+	    final Button cancel = new Button(error, SWT.PUSH);
+	    cancel.setLayoutData(gd);
+	    cancel.setText("Cancel");
+
+	    error.isReparentable();
+
+	    Listener dialogListener = new Listener() {
+	        public void handleEvent(Event event) {
+	          result[0] = event.widget == cancel;
+	          error.notifyListeners(event.type, event);
+	          error.close();
+	        }
+	      };
+	    cancel.addListener(SWT.Selection, dialogListener);
+	    return error;
+		
 	}
 	
 	public void createControl(Composite parent) {
 		
-		final Composite composite = new Composite(parent, SWT.BORDER
+		composite = new Composite(parent, SWT.BORDER
 				| SWT.NO_REDRAW_RESIZE);
 		composite.setSize(600, 400);
 		final GridLayout gl = new GridLayout();
@@ -107,21 +148,41 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 				wizard.setSelectedMaster(masterDocName.getText());
 				fillMasterParamCombo(name);
 				masterLabel = docInfoUtil.get(name);
-				setPageComplete(name.length() > 0	&& paramOut.length() > 0);
+				
 			}
 		});
 		
 		masterDocOutputParam.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent event) {
+			public void modifyText(ModifyEvent event) {	
+				//verifico che il parametro di out non sia già presente
+				boolean exists =bo.ouputParameterExists(Activator.getDefault().getDocumentComposition(), masterLabel, masterDocOutputParam.getText());
 				
-				paramOut = masterDocOutputParam.getText();
-				setPageComplete(name.length() > 0	&& paramOut.length() > 0);
+				if(exists){
+	        		//non è possibile cancellare destination
+					final boolean[] result = new boolean[1];
+			        Shell confirm = createErrorDialog(composite, result);
+			        confirm.setText("Error");
+			        confirm.setSize(300,100);
+					confirm.open();
+					canFlip= false;
+					setPageComplete(false);	
+					
+					
+				}else{
+					canFlip= true;
+					paramOut = masterDocOutputParam.getText();
+					setPageComplete(true);
+					
+				}
+				
 			}
 		});
-		
+
 		composite.pack();
 		composite.redraw();
 		setControl(composite);
+		setPageComplete(false);
+		
 	}
 
 

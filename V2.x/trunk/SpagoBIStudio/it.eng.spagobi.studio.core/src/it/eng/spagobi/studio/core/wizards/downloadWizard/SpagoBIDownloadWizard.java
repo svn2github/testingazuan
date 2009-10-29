@@ -1,12 +1,15 @@
 package it.eng.spagobi.studio.core.wizards.downloadWizard;
 
+import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.sdk.documents.bo.SDKTemplate;
 import it.eng.spagobi.sdk.engines.bo.SDKEngine;
 import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
+import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
 import it.eng.spagobi.sdk.proxy.EnginesServiceProxy;
+import it.eng.spagobi.services.proxy.DataSetServiceProxy;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
@@ -118,9 +121,12 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		}
 		catch (Exception e) {
 			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve template", e);
-			MessageDialog.openError(getShell(), "Could not get template from server", "Could not get the template from server");	
+			MessageDialog.openError(getShell(), "Error", "Could not get the template from server");	
 			return;
 		}			
+
+		// Recover information field like dataSource, dataSet, engine names!
+
 
 		//Get the parameters
 		String[] roles;
@@ -156,196 +162,232 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		}			
 
 
-		// get the extension
-		Integer engineId=document.getEngineId();
-		SDKProxyFactory proxyFactory=new SDKProxyFactory();
-		EnginesServiceProxy engineProxy=proxyFactory.getEnginesServiceProxy();
+		// DAtaset Infomation field
+SDKDocument documentMore=null;
+		String dataSetName=null;
+//		if(document.getDataSetId()==null){ // if not retrieved from tree must get the document to have dataset and datasource informative field
+//			SDKProxyFactory proxyFactory=new SDKProxyFactory();
+//			DocumentsServiceProxy documentsServiceProxyServiceProxy=proxyFactory.getDocumentsServiceProxy();
+//			documentsServiceProxyServiceProxy.getDocumentsAsTree(document.g)
+//		}
+if(document.getDataSetId()!=null){
+			try{
+				SDKProxyFactory proxyFactory=new SDKProxyFactory();
+				DataSetsSDKServiceProxy dataSetServiceProxy=proxyFactory.getDataSetsSDKServiceProxy();
+				SDKDataSet sdkDataSet=dataSetServiceProxy.getDataSet(document.getDataSetId());
+				dataSetName=sdkDataSet.getName();
+			}
+			catch (Exception e) {
+				SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve dataset informations", e);
+				//MessageDialog.openError(getShell(), "Error", "Could not retrieve dataset Information");	
+				//return;
+			}			
+		}
+	//}
 
-		SDKEngine sdkEngine=null;
+
+	// get the extension
+	Integer engineId=document.getEngineId();
+	SDKProxyFactory proxyFactory=new SDKProxyFactory();
+	EnginesServiceProxy engineProxy=proxyFactory.getEnginesServiceProxy();
+
+	SDKEngine sdkEngine=null;
+	try{
+		sdkEngine=engineProxy.getEngine(engineId);
+	}
+	catch (Exception e) {
+		SpagoBILogger.errorLog("No comunication with SpagoBI server, could not get engine", e);
+		MessageDialog.openError(getShell(), "", "Could not get engine the template from server");	
+		return;
+	}		
+
+	String type=document.getType();
+	String engineName=sdkEngine!=null?sdkEngine.getLabel(): null;
+	String extension=getFileExtension(type, engineName);
+
+	// create the file in the selected directory
+	// get the folder selected 
+	Object objSel = selection.toList().get(0);
+	Folder folderSel = null;
+	folderSel=(Folder)objSel;  
+	String projectName = folderSel.getProject().getName();
+
+	//Take workspace
+	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+	IPath workspacePath=root.getLocation();
+
+	// get the folder where to insert the template document
+	IProject project = root.getProject(projectName);
+	IPath pathFolder = folderSel.getProjectRelativePath();
+
+	String templateFileName=template.getFileName();
+
+	// remove previous extensions
+	int indexPoint=templateFileName.indexOf('.');
+	if(indexPoint!=-1){
+		templateFileName=templateFileName.substring(0, indexPoint);
+	}
+
+	IPath pathNewFile = pathFolder.append(templateFileName+extension); 
+	IFile newFile = project.getFile(pathNewFile);
+	DataHandler dh=template.getContent(); 
+	try {
+		is=dh.getInputStream();
+	} catch (IOException e1) {
+		SpagoBILogger.errorLog("Error in writing the file", e1);
+		return;
+	}
+
+
+
+	// check if file exists, in case ask user if overwrite
+	boolean write=true;
+	if(newFile.exists()==true){
+		MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
+				"Error", "File already exists");
+		write=MessageDialog.openQuestion(workbench.getActiveWorkbenchWindow().getShell(), "Overwrite?", "File "+newFile.getName()+" already exists, overwrite?"); 
+	}
+
+	if(write){
+
 		try{
-			sdkEngine=engineProxy.getEngine(engineId);
+			newFile.create(is, true, null);
 		}
-		catch (Exception e) {
-			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not get engine", e);
-			MessageDialog.openError(getShell(), "Could not get template from server", "Could not get engine the template from server");	
-			return;
-		}		
-
-		String type=document.getType();
-		String engineName=sdkEngine!=null?sdkEngine.getLabel():"";
-		String extension=getFileExtension(type, engineName);
-
-		// create the file in the selected directory
-		// get the folder selected 
-		Object objSel = selection.toList().get(0);
-		Folder folderSel = null;
-		folderSel=(Folder)objSel;  
-		String projectName = folderSel.getProject().getName();
-
-		//Take workspace
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IPath workspacePath=root.getLocation();
-
-		// get the folder where to insert the template document
-		IProject project = root.getProject(projectName);
-		IPath pathFolder = folderSel.getProjectRelativePath();
-
-		String templateFileName=template.getFileName();
-
-		// remove previous extensions
-		int indexPoint=templateFileName.indexOf('.');
-		if(indexPoint!=-1){
-			templateFileName=templateFileName.substring(0, indexPoint);
-		}
-
-		IPath pathNewFile = pathFolder.append(templateFileName+extension); 
-		IFile newFile = project.getFile(pathNewFile);
-		DataHandler dh=template.getContent(); 
-		try {
-			is=dh.getInputStream();
-		} catch (IOException e1) {
-			SpagoBILogger.errorLog("Error in writing the file", e1);
+		catch (CoreException e) {
+			SpagoBILogger.errorLog("error while creating new file", e);	
 			return;
 		}
 
 
-
-		// check if file exists, in case ask user if overwrite
-		boolean write=true;
-		if(newFile.exists()==true){
-			MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
-					"Error", "File already exists");
-			write=MessageDialog.openQuestion(workbench.getActiveWorkbenchWindow().getShell(), "Overwrite?", "File "+newFile.getName()+" already exists, overwrite?"); 
+		//Set File Metadata	
+		try{
+			newFile=BiObjectUtilities.setFileMetaData(newFile,document);
+			//newFile=BiObjectUtilities.setFileMetaData(newFile,document);
+		}
+		catch (CoreException e) {
+			SpagoBILogger.errorLog("Error while setting meta data", e);	
+			return;
 		}
 
-		if(write){
+		//Set Informative Metadata	
+		try{
+			newFile=BiObjectUtilities.setFileInformativeMetaData(newFile,engineName, dataSetName, null);
+			//newFile=BiObjectUtilities.setFileMetaData(newFile,document);
+		}
+		catch (CoreException e) {
+			SpagoBILogger.errorLog("Error while setting meta data", e);	
+			return;
+		}
 
+
+		//Set ParametersFile Metadata	
+		if(parameters.length>0){
 			try{
-				newFile.create(is, true, null);
-			}
-			catch (CoreException e) {
-				SpagoBILogger.errorLog("error while creating new file", e);	
-				return;
-			}
+				newFile=BiObjectUtilities.setFileParametersMetaData(newFile,parameters);
 
-
-			//Set File Metadata	
-			try{
-				newFile=BiObjectUtilities.setFileMetaData(newFile,document);
-				//newFile=BiObjectUtilities.setFileMetaData(newFile,document);
 			}
-			catch (CoreException e) {
+			catch (Exception e) {
+				e.printStackTrace();
 				SpagoBILogger.errorLog("Error while setting meta data", e);	
 				return;
-			}
-			//Set ParametersFile Metadata	
-			if(parameters.length>0){
-				try{
-					newFile=BiObjectUtilities.setFileParametersMetaData(newFile,parameters);
-
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-					SpagoBILogger.errorLog("Error while setting meta data", e);	
-					return;
-				}			
-			}
-
-
-			IWorkbench wb = PlatformUI.getWorkbench();
-			IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
-			IWorkbenchPage page = win.getActivePage();
-			IEditorRegistry er = wb.getEditorRegistry();
-			IEditorDescriptor editordesc =  er.getDefaultEditor(newFile.getName());
-			if(editordesc!=null){
-				try {
-					page.openEditor(new FileEditorInput(newFile), editordesc.getId());
-				} catch (PartInitException e) {
-					SpagoBILogger.errorLog("Error while opening editor", e);
-					MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
-							"Error", "Error while opening editor");
-				}
-				SpagoBILogger.infoLog("File "+newFile.getName()+" created");	
-			}
-			else{
-				SpagoBILogger.infoLog("No editor avalaible for the selected Bi Object type: "+type+ " and engine "+engineName);	
-				MessageDialog.openWarning(getShell(), "No editor avalaible", "No editor avalaible for the selected Bi Object type: "+type+ " and engine "+engineName);
-			}
-		}
-		else // choose not to overwrite the file
-		{
-			SpagoBILogger.infoLog("Choose to not overwrite file "+newFile.getName());	
+			}			
 		}
 
+
+		IWorkbench wb = PlatformUI.getWorkbench();
+		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
+		IWorkbenchPage page = win.getActivePage();
+		IEditorRegistry er = wb.getEditorRegistry();
+		IEditorDescriptor editordesc =  er.getDefaultEditor(newFile.getName());
+		if(editordesc!=null){
+			try {
+				page.openEditor(new FileEditorInput(newFile), editordesc.getId());
+			} catch (PartInitException e) {
+				SpagoBILogger.errorLog("Error while opening editor", e);
+				MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
+						"Error", "Error while opening editor");
+			}
+			SpagoBILogger.infoLog("File "+newFile.getName()+" created");	
+		}
+		else{
+			SpagoBILogger.infoLog("No editor avalaible for the selected Bi Object type: "+type+ " and engine "+engineName);	
+			MessageDialog.openWarning(getShell(), "No editor avalaible", "No editor avalaible for the selected Bi Object type: "+type+ " and engine "+engineName);
+		}
+	}
+	else // choose not to overwrite the file
+	{
+		SpagoBILogger.infoLog("Choose to not overwrite file "+newFile.getName());	
 	}
 
-	/**
-	 * We will accept the selection in the workbench to see if
-	 * we can initialize from it.
-	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
-	 */
-	public void init(IWorkbench _workbench, IStructuredSelection _selection) {
-		this.selection = _selection;
-		this.workbench=_workbench;
+}
 
+/**
+ * We will accept the selection in the workbench to see if
+ * we can initialize from it.
+ * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
+ */
+public void init(IWorkbench _workbench, IStructuredSelection _selection) {
+	this.selection = _selection;
+	this.workbench=_workbench;
+
+}
+
+
+private String getFileExtension(String type, String engine){
+	String extension=".xml";
+	if(type.equalsIgnoreCase("DASH") && engine.equalsIgnoreCase("DashboardInternalEng") ){
+		extension=".sbidash";
 	}
-
-
-	private String getFileExtension(String type, String engine){
-		String extension=".xml";
-		if(type.equalsIgnoreCase("DASH") && engine.equalsIgnoreCase("DashboardInternalEng") ){
-			extension=".sbidash";
-		}
-		else if(type.equalsIgnoreCase("DASH") && engine.equalsIgnoreCase("ChartInternalEngine")){
-			extension=".sbichart";
-		}
-		else if(type.equalsIgnoreCase("REPORT") && engine.equalsIgnoreCase("Birt")){
-			extension=".xml";
-		}
-		else if(type.equalsIgnoreCase("REPORT") && engine.equalsIgnoreCase("JasperReport")){
-			extension=".xml";
-		}	
-		else if(type.equalsIgnoreCase("OLAP") && engine.equalsIgnoreCase("JPIVOT")){
-			extension=".xml";
-		}
-		else if(type.equalsIgnoreCase("MAP") && engine.equalsIgnoreCase("GeoEngine")){
-			extension=".xml";
-		}		
-		else if(type.equalsIgnoreCase("OFFICE_DOC") && engine.equalsIgnoreCase("OfficeInternalEng")){
-			extension=".xml";
-		}
-		else if(type.equalsIgnoreCase("ETL") && engine.equalsIgnoreCase("TALEND")){
-			extension=".xml";
-		}		
-		else if(type.equalsIgnoreCase("Dossier") && engine.equalsIgnoreCase("Dossier")){
-			extension=".xml";
-		}
-		else if(type.equalsIgnoreCase("Composite") && engine.equalsIgnoreCase("CompositeDocument")){
-			extension=".xml";
-		}
-		else if(type.equalsIgnoreCase("DATA_MINING") && engine.equalsIgnoreCase("Weka")){
-			extension=".xml";
-		}
-		else if(type.equalsIgnoreCase("DATAMART") && engine.equalsIgnoreCase("Qbe")){
-			extension=".xml";
-		}
-		return extension;
-
+	else if(type.equalsIgnoreCase("DASH") && engine.equalsIgnoreCase("ChartInternalEngine")){
+		extension=".sbichart";
 	}
+	else if(type.equalsIgnoreCase("REPORT") && engine.equalsIgnoreCase("Birt")){
+		extension=".xml";
+	}
+	else if(type.equalsIgnoreCase("REPORT") && engine.equalsIgnoreCase("JasperReport")){
+		extension=".xml";
+	}	
+	else if(type.equalsIgnoreCase("OLAP") && engine.equalsIgnoreCase("JPIVOT")){
+		extension=".xml";
+	}
+	else if(type.equalsIgnoreCase("MAP") && engine.equalsIgnoreCase("GeoEngine")){
+		extension=".xml";
+	}		
+	else if(type.equalsIgnoreCase("OFFICE_DOC") && engine.equalsIgnoreCase("OfficeInternalEng")){
+		extension=".xml";
+	}
+	else if(type.equalsIgnoreCase("ETL") && engine.equalsIgnoreCase("TALEND")){
+		extension=".xml";
+	}		
+	else if(type.equalsIgnoreCase("Dossier") && engine.equalsIgnoreCase("Dossier")){
+		extension=".xml";
+	}
+	else if(type.equalsIgnoreCase("Composite") && engine.equalsIgnoreCase("CompositeDocument")){
+		extension=".xml";
+	}
+	else if(type.equalsIgnoreCase("DATA_MINING") && engine.equalsIgnoreCase("Weka")){
+		extension=".xml";
+	}
+	else if(type.equalsIgnoreCase("DATAMART") && engine.equalsIgnoreCase("Qbe")){
+		extension=".xml";
+	}
+	return extension;
+
+}
 
 
-	//	private IFile setFileMetaData(IFile newFile, SDKDocument document) throws CoreException{
-	//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_ID, document.getId().toString());
-	//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_LABEL, document.getLabel());
-	//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_NAME, document.getName());
-	//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_DESCRIPTION, document.getDescription());
-	//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_STATE, document.getState());
-	//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_TYPE, document.getType());
-	//		newFile.setPersistentProperty(PropertyPage.DATA_SOURCE_ID, (document.getDataSourceId()!=null?document.getDataSourceId().toString(): ""));
-	//		newFile.setPersistentProperty(PropertyPage.DATASET_ID, (document.getDataSetId()!=null?document.getDataSetId().toString(): ""));
-	//		newFile.setPersistentProperty(PropertyPage.ENGINE_ID, (document.getEngineId()!=null?document.getEngineId().toString(): ""));
-	//		return newFile;
-	//	}
+//	private IFile setFileMetaData(IFile newFile, SDKDocument document) throws CoreException{
+//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_ID, document.getId().toString());
+//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_LABEL, document.getLabel());
+//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_NAME, document.getName());
+//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_DESCRIPTION, document.getDescription());
+//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_STATE, document.getState());
+//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_TYPE, document.getType());
+//		newFile.setPersistentProperty(PropertyPage.DATA_SOURCE_ID, (document.getDataSourceId()!=null?document.getDataSourceId().toString(): ""));
+//		newFile.setPersistentProperty(PropertyPage.DATASET_ID, (document.getDataSetId()!=null?document.getDataSetId().toString(): ""));
+//		newFile.setPersistentProperty(PropertyPage.ENGINE_ID, (document.getEngineId()!=null?document.getEngineId().toString(): ""));
+//		return newFile;
+//	}
 
 }
 

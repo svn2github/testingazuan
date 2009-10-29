@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 
 public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
-		IWorkbenchPropertyPage {
+IWorkbenchPropertyPage {
 
 	public static QualifiedName DOCUMENT_ID = new QualifiedName("it.eng.spagobi.sdk.document.id", "Identifier");
 	public static QualifiedName DOCUMENT_LABEL = new QualifiedName("it.eng.spagobi.sdk.document.label", "Label");
@@ -27,14 +27,15 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 	public static QualifiedName DOCUMENT_TYPE = new QualifiedName("it.eng.spagobi.sdk.document.type", "Type");
 	public static QualifiedName DOCUMENT_STATE = new QualifiedName("it.eng.spagobi.sdk.document.description", "State");
 	public static QualifiedName DOCUMENT_PARAMETERS_XML = new QualifiedName("it.eng.spagobi.sdk.document.parametersxml", "Parameters");
-	
+
 	public static QualifiedName DATASET_ID = new QualifiedName("it.eng.spagobi.sdk.dataset.id", "Identifier");
 	public static QualifiedName DATASET_LABEL = new QualifiedName("it.eng.spagobi.sdk.dataset.label", "Label");
 	public static QualifiedName DATASET_NAME = new QualifiedName("it.eng.spagobi.sdk.dataset.name", "Name");
 	public static QualifiedName DATASET_DESCRIPTION = new QualifiedName("it.eng.spagobi.sdk.dataset.description", "Description");
-	
+
 	public static QualifiedName DATA_SOURCE_ID = new QualifiedName("it.eng.spagobi.sdk.datasource.id", "Identifier");
-	
+	public static QualifiedName DATA_SOURCE_NAME = new QualifiedName("it.eng.spagobi.sdk.datasource.name", "Name");
+
 	public static QualifiedName ENGINE_ID = new QualifiedName("it.eng.spagobi.sdk.engine.id", "Identifier");
 	public static QualifiedName ENGINE_LABEL = new QualifiedName("it.eng.spagobi.sdk.engine.label", "Label");
 	public static QualifiedName ENGINE_NAME = new QualifiedName("it.eng.spagobi.sdk.engine.name", "Name");
@@ -49,40 +50,40 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 	protected Control createContents(Composite parent) {
 		// hide default buttons
 		this.noDefaultAndApplyButton();
-		
+
 		Composite container = new Composite(parent, SWT.NULL);
 		RowLayout rowLayout = new RowLayout();
- 		rowLayout.wrap = false;
- 		rowLayout.pack = true;
- 		rowLayout.justify = false;
- 		rowLayout.type = SWT.VERTICAL;
- 		rowLayout.marginLeft = 5;
- 		rowLayout.marginTop = 5;
- 		rowLayout.marginRight = 5;
- 		rowLayout.marginBottom = 5;
- 		rowLayout.spacing = 0;
- 		rowLayout.fill = true;
- 		container.setLayout(rowLayout);
-	    
+		rowLayout.wrap = false;
+		rowLayout.pack = true;
+		rowLayout.justify = false;
+		rowLayout.type = SWT.VERTICAL;
+		rowLayout.marginLeft = 5;
+		rowLayout.marginTop = 5;
+		rowLayout.marginRight = 5;
+		rowLayout.marginBottom = 5;
+		rowLayout.spacing = 0;
+		rowLayout.fill = true;
+		container.setLayout(rowLayout);
+
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		layout.horizontalSpacing = 10;
-		
+
 		Group docGroup = new Group(container, SWT.NULL);
-	    docGroup.setText("Document's information:");
-	    docGroup.setLayout(new FillLayout());
+		docGroup.setText("Document's information:");
+		docGroup.setLayout(new FillLayout());
 		Composite docContainer = new Composite(docGroup, SWT.NULL);
 		docContainer.setLayout(layout);
-	    
+
 		Group dataSetGroup = new Group(container, SWT.NULL);
-	    dataSetGroup.setText("Dataset's information:");
-	    dataSetGroup.setLayout(new FillLayout());
+		dataSetGroup.setText("Dataset's information:");
+		dataSetGroup.setLayout(new FillLayout());
 		Composite datasetContainer = new Composite(dataSetGroup, SWT.NULL);
 		datasetContainer.setLayout(layout);
-	    
+
 		Group engineGroup = new Group(container, SWT.NULL);
-	    engineGroup.setText("Engine's information:");
-	    engineGroup.setLayout(new FillLayout());
+		engineGroup.setText("Engine's information:");
+		engineGroup.setLayout(new FillLayout());
 		Composite engineContainer = new Composite(engineGroup, SWT.NULL);
 		engineContainer.setLayout(layout);
 
@@ -100,10 +101,10 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 		addPropertyContent(engineContainer, ENGINE_LABEL);
 		addPropertyContent(engineContainer, ENGINE_NAME);
 		addPropertyContent(engineContainer, ENGINE_DESCRIPTION);
-		
+
 		return container;
 	}
-	
+
 	private void addPropertyContent(Composite composite, QualifiedName qn) {
 		Label label = new Label(composite, SWT.NULL);
 		label.setText(qn.getLocalName());
@@ -123,20 +124,20 @@ public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 			return "Error while recovering property " + qn.getLocalName();
 		}
 	}
-	
-	
-	
-//	protected void setDocumentId(String documentId) {
-//		IFile file = (IFile) this.getElement();
-//		String value = documentId;
-//		if (value.equals("")) value = null;
-//		try {
-//			file.setPersistentProperty(DOCUMENT_ID_PROP_KEY, value);
-//		} catch (CoreException e) {}
-//	}
-	
+
+
+
+	//	protected void setDocumentId(String documentId) {
+	//		IFile file = (IFile) this.getElement();
+	//		String value = documentId;
+	//		if (value.equals("")) value = null;
+	//		try {
+	//			file.setPersistentProperty(DOCUMENT_ID_PROP_KEY, value);
+	//		} catch (CoreException e) {}
+	//	}
+
 	public boolean performOk() {
-//		setDocumentId(textField.getText());
+		//		setDocumentId(textField.getText());
 		return super.performOk();
 	}
 

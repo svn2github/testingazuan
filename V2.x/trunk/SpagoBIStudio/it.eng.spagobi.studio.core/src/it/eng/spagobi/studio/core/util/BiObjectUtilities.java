@@ -87,6 +87,28 @@ public class BiObjectUtilities {
 		return newFile;
 	}
 
+	
+	
+	
+	public static IFile setFileInformativeMetaData(IFile newFile, String engineName, String dataSetName, String dataSourceName) throws CoreException{
+		if(dataSetName!=null){
+			newFile.setPersistentProperty(PropertyPage.DATASET_NAME, dataSetName);			
+		}
+		if(engineName!=null){
+			newFile.setPersistentProperty(PropertyPage.ENGINE_NAME, engineName);			
+		}
+		if(dataSourceName!=null){
+			newFile.setPersistentProperty(PropertyPage.DATA_SOURCE_NAME, dataSourceName);			
+		}
+		return newFile;
+	}
+	
+	
+	
+	
+	
+	
+	
 
 	public static IFile setFileParametersMetaData(IFile newFile, SDKDocumentParameter[] parameters) throws CoreException{
 		String xml="";

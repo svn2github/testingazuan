@@ -150,9 +150,9 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 	    			if(parameters == null){
 	    				parameters = new Vector<Parameter>();
 	    			}
-		    		//aggiunge parametro OUT per doc master
-	    			Parameter newParam = new Parameter();
-	    			fillNavigationOutParam(newParam, masterPar);
+	    			ParameterBO bo = new ParameterBO();
+	    			Parameter outputPram = bo.getDocOutputParameter(parameters);
+	    			fillNavigationOutParam(outputPram, masterPar);
 	    			
 	    			
 
@@ -196,14 +196,11 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		
 	}
 
-	private void fillNavigationOutParam(Parameter param, String masterParam){
+	private void fillNavigationOutParam(Parameter ouputparam, String masterParam){
 		HashMap<String, String> docInfoUtil= modifyNavigationWizardPage.getDocInfoUtil();
+
 		
-		param.setSbiParLabel(masterParam);
-		param.setNavigationName(modifyNavigationWizardPage.getNavigationNameText().getText());
-		param.setDefaultVal(modifyNavigationWizardPage.getMasterDefaultValueOutputParam().getText());
-		
-		Refresh refresh = param.getRefresh();
+		Refresh refresh = ouputparam.getRefresh();
 		Vector <RefreshDocLinked> refreshes = refresh.getRefreshDocLinked();
 		
 		Vector<DestinationInfo> destInfos = modifyNavigationWizardPage.getDestinationInfos();
@@ -234,8 +231,8 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 				}
 			}
 		}
-		param.setRefresh(refresh);		
-		param.setType("OUT");
+		ouputparam.setRefresh(refresh);		
+
 	}
 	private void fillInNavigationParams(Vector<Parameter> parameters, Document doc){
 		//cicla su destinazioni

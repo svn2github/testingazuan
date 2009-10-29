@@ -163,7 +163,6 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		gd.horizontalSpan = 1;		
 		
 
-		
 		getNavigationItem(composite);//riempie campi precedentemente inseriti
 
 
@@ -532,7 +531,8 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				}
 			}
 		}
-		
+		composite.pack();
+		composite.layout();
 		return param;
 	}
 	

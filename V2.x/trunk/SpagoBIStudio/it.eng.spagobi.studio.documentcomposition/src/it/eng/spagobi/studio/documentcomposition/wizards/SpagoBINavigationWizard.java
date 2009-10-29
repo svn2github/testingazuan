@@ -208,7 +208,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	    }
 	}
 	
-	private void fillRefreshes(Vector<RefreshDocLinked> refreshes, String docDest ,Parameter param, Parameter masterParam){
+	private void fillRefreshes(Vector<RefreshDocLinked> refreshes, String docDest ,Parameter param){
 
 		RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
 		HashMap<String, String> docInfoUtil= newNavigationWizardDestinDocPage.getDocInfoUtil();
@@ -220,8 +220,6 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		refreshDocLinked.setIdParam(param.getId());
 
 		refreshes.add(refreshDocLinked);
-
-
 	}
 	private void fillInNavigationParams(Vector documents, Parameter masterParam){
 
@@ -247,10 +245,16 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 						System.out.println(param.getId());
 						
 						parameters.add(param);
-						Refresh refresh = new Refresh();
-						Vector <RefreshDocLinked> refreshes = new Vector<RefreshDocLinked>();
+						Refresh refresh = masterParam.getRefresh();
+						if(refresh == null){
+							refresh = new Refresh();
+						}
+						Vector <RefreshDocLinked> refreshes = refresh.getRefreshDocLinked();
+						if(refreshes == null){
+							refreshes = new Vector<RefreshDocLinked>();
+						}
 						
-						fillRefreshes(refreshes, paramName, param, masterParam);
+						fillRefreshes(refreshes, destLabel, param);
 						
 						refresh.setRefreshDocLinked(refreshes);
 						masterParam.setRefresh(refresh);

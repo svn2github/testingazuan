@@ -60,6 +60,9 @@ public class XmlTemplateGenerator {
 
 			xstream.useAttributeFor(Parameter.class, "type");
 			xstream.aliasField("type", Parameter.class, "type");
+			
+			xstream.useAttributeFor(Parameter.class, "id");
+			xstream.aliasField("id", Parameter.class, "id");
 
 			xstream.useAttributeFor(Parameter.class, "sbiParLabel");
 			xstream.aliasField("sbi_par_label", Parameter.class, "sbiParLabel");

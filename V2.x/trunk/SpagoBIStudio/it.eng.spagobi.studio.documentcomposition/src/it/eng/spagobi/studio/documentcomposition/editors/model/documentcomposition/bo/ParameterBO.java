@@ -17,5 +17,15 @@ public class ParameterBO {
 		
 		return paramFound;
 	}
-
+	public Parameter getDocOutputParameter(Vector<Parameter> parameters){
+		Parameter paramFound = null; 
+		for(int i=0; i<parameters.size(); i++){
+			Parameter param = parameters.elementAt(i);
+			if(param.getType().equals("OUT")){
+				paramFound = param;
+			}
+		}
+		
+		return paramFound;
+	}
 }

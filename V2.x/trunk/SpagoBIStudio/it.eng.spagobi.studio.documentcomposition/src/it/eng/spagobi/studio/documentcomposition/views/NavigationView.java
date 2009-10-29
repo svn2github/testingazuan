@@ -13,6 +13,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBIModifyNavigationWizard;
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -45,7 +46,7 @@ public class NavigationView extends ViewPart {
 	FormToolkit toolkit;
 	Label labelNoDocs;
 	
-	
+	HashMap <String, String> docInfoUtil = new HashMap<String, String>();
 	boolean hasDocuments = false;
 	
 	private DocumentComposition documentComp = Activator.getDefault().getDocumentComposition();
@@ -62,7 +63,7 @@ public class NavigationView extends ViewPart {
 	public void createPartControl(Composite parent) {		
 		//test();
 		
-		
+		fillDocumentsNames();
 		toolkit = new FormToolkit(parent.getDisplay());
 
 		// Lets make a layout for the first section of the screen
@@ -154,7 +155,7 @@ public class NavigationView extends ViewPart {
 		      TableColumn column = new TableColumn(table, SWT.NONE);
 		      column.setText(titles[i]);
 		}   
-	    
+	    //ricavata quando apro documento salvato in precedenza--> gira all'inizio
 	    if(documentComp != null && documentComp.getDocumentsConfiguration() != null){
 			Vector docs = documentComp.getDocumentsConfiguration().getDocuments();
 			if(docs != null){
@@ -172,21 +173,19 @@ public class NavigationView extends ViewPart {
 							      TableItem item = new TableItem(table, SWT.NONE);
 							      item.setText(0, navName);
 							      
-							      TableItem itemMaster = new TableItem(table, SWT.NONE);
-							      itemMaster.setText(1, doc.getSbiObjLabel());
-							      
-							      TableItem itemDest = new TableItem(table, SWT.NONE);
+							      item.setText(1, docInfoUtil.get(doc.getSbiObjLabel()));
+
 							      StringBuffer dest = new StringBuffer();
 							      if(param.getRefresh()!= null){
 							    	  Vector <RefreshDocLinked> destinatons =param.getRefresh().getRefreshDocLinked();
 							    	  for(int k =0; k<destinatons.size(); k++){
-							    		  dest.append(((RefreshDocLinked)destinatons.elementAt(k)).getLabelDoc());
+							    		  dest.append(docInfoUtil.get(((RefreshDocLinked)destinatons.elementAt(k)).getLabelDoc()));
 							    		  if(k != destinatons.size()-1){
 							    			  dest.append(" - ");
 							    		  }
 							    	  }
 							      }
-							      itemDest.setText(2, dest.toString());
+							      item.setText(2, dest.toString());
 							}
 						}
 					}
@@ -200,7 +199,19 @@ public class NavigationView extends ViewPart {
 	    
 	    return table;
 	}
-	
+	private void fillDocumentsNames(){
+		if(metadataDoc != null){
+			Vector docs = metadataDoc.getMetadataDocuments();
+			if(docs != null){
+				for(int i=0; i<docs.size(); i++){
+					MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
+					String docName = doc.getName();
+					String docLabel = doc.getLabel();
+					docInfoUtil.put(docLabel, docName);
+				}
+			}
+		}
+	}
 	private void deleteNavigationFromModel(){
 
 		int selectedToDelete = table.getSelectionIndex();
@@ -234,6 +245,7 @@ public class NavigationView extends ViewPart {
 			}
 		}
 	}
+	
 	
 	private void loadNavigations(FormToolkit toolkit, Composite parent){
 		GridData gd = new GridData(SWT.LEFT);

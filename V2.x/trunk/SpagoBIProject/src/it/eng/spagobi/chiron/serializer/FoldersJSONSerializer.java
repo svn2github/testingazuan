@@ -74,8 +74,8 @@ public class FoldersJSONSerializer implements Serializer {
 			result.put(PARENTID, lowFunct.getParentId() );
 			MessageBuilder msgBuild=new MessageBuilder();
 			String lowFunctName=msgBuild.getUserMessage(lowFunct.getName(),null, locale);
-			result.put(NAME, lowFunctName );		
-			String description=msgBuild.getUserMessage(lowFunct.getDescription(), null,locale);
+			result.put(NAME, lowFunctName );
+			String description = lowFunct.getDescription() != null ? msgBuild.getUserMessage(lowFunct.getDescription(), null,locale) : "";
 			result.put(DESCRIPTION, description);	
 			result.put(DEVROLES, lowFunct.getDevRoles() );
 			result.put(TESTROLES, lowFunct.getTestRoles() );		

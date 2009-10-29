@@ -80,6 +80,9 @@ public class XmlTemplateGenerator {
 
 			xstream.useAttributeFor(RefreshDocLinked.class, "labelParam");
 			xstream.aliasField("labelParam", RefreshDocLinked.class, "labelParam");
+			
+			xstream.useAttributeFor(RefreshDocLinked.class, "idParam");
+			xstream.aliasField("idParam", RefreshDocLinked.class, "idParam");
 
 		}
 

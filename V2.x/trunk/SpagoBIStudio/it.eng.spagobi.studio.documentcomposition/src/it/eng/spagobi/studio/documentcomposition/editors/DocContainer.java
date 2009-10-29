@@ -1,5 +1,6 @@
 package it.eng.spagobi.studio.documentcomposition.editors;
 
+import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
@@ -37,6 +38,13 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
+/** DocContainer class represents a square added in a designer, identified by a idCOntainer,
+ *  contains a documentContained
+ *  defines mouse controls on it that let resize, drag, delete options
+ * @author gavardi
+ *
+ */
+
 public class DocContainer {
 
 	final Integer idContainer;
@@ -65,24 +73,31 @@ public class DocContainer {
 	public DocContainer(Designer _designer,Composite mainComposite, int x, int y, int tempWidth, int tempHeight) {
 		super();
 		designer=_designer;
+		// Set incremental Id
 		idContainer=Integer.valueOf(designer.createID());
 		try{
 			documentContained=new DocumentContained(mainComposite, SWT.NONE);
 		}
 		catch (Exception e) {
-			e.printStackTrace();}
-
+			SpagoBILogger.errorLog("Error in creating the group", e);
+			e.printStackTrace();
+			return;	
+		}
 		title="NUMBER "+(idContainer.toString());
 		documentContained.getGroup().setText(title);
+
 		GridLayout layout=new GridLayout();
-		layout.numColumns=2;
+		layout.numColumns=1;
 		documentContained.getGroup().setLayout(layout);
 		documentContained.getGroup().setSize(tempWidth, tempHeight);
 		documentContained.getGroup().setLocation(x, y);
 		designer.setState(Designer.NORMAL);
 
+		// Add mouse controls on container
 		addContainerMouseControls(mainComposite, documentContained.getGroup());
+		// Add context menu on container
 		addContextMenu(mainComposite.getShell(), documentContained.getGroup());
+		// Add drag and drop from navigation tree to container		
 		addDragAndDropDocument(documentContained.getGroup());
 
 		documentContained.getGroup().layout();
@@ -103,20 +118,18 @@ public class DocContainer {
 		final Point[] offset = new Point[1];
 		Listener listener = new Listener() {
 			public void handleEvent(Event event) {
-				;				switch (event.type) {
-				case SWT.MouseDown:
-					// Reload the DocumentPropertiesView
-					//if(documentContained.getMetadataDocument()!=null)
-						reloadDocumentPropertiesView(idContainer.toString());
-
+				;				
+				switch (event.type) {
+				case SWT.MouseDown:			// *********  MOUSE DOWN   ***************
+					// Reload views
+					reloadDocumentPropertiesView(idContainer.toString());
 					reloadStyleDocumentProperties();
 					// Reload navigations view
 					if(documentContained.getMetadataDocument()!=null){
 						reloadNavigationView(idContainer.toString());
 					}
 
-					/**  IF in resizing state mouse button on Container causes end resizing**/	
-					calculateTemplateStyle();
+					//  If in resizing state mouse button on Container causes end resizing	
 					if(designer.getState().equals(Designer.RESIZE)){
 						// only if click on the current selected!
 						if(idContainer.equals(designer.getCurrentSelection())){
@@ -124,24 +137,16 @@ public class DocContainer {
 							cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_ARROW);						
 							designer.getMainComposite().setCursor(cursor);							
 							offset[0] = null;							
-							//							int tempWidth=documentContained.getGroup().getBounds().width;
-							//							tempWidth=tempWidth/ALIGNMENT_MARGIN;
-							//							tempWidth=tempWidth*ALIGNMENT_MARGIN;
-							//							int tempHeight=documentContained.getGroup().getBounds().height;
-							//							tempHeight=tempHeight/ALIGNMENT_MARGIN;
-							//							tempHeight=tempHeight*ALIGNMENT_MARGIN;
-
 							DesignerUtilities designerUtilities=new DesignerUtilities();
 							int setWidth=designerUtilities.calculateWidth(documentContained.getGroup(), mainComposite.getBounds().width);
 							int setHeight=designerUtilities.calculateHeight(documentContained.getGroup(), mainComposite.getBounds().height);
 							documentContained.getGroup().setSize(setWidth, setHeight);
 							reloadStyleDocumentProperties();
-							// Uodate Model if present document
+							// Update Model if present document
 							if(documentContained.getMetadataDocument()!=null){
 								(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
 							}
 							designer.setCurrentSelection(Integer.valueOf(-1));
-							// Reload style text in view (only if in mode automatic
 						}
 					}
 					/**  IF in normal state mouse button on Container causes selection**/					
@@ -157,8 +162,6 @@ public class DocContainer {
 						designer.getMainComposite().setCursor(cursor);
 						composite.setBackground(new Color(composite.getDisplay(),new RGB(165,195,210)));
 						designer.setCurrentSelection(idContainer);
-						// ---- modify selection view---
-
 					}
 					/**  IF in selection state mouse button on Container causes restart DRAG or another selection!**/					
 					else if(designer.getState().equals(Designer.SELECTION)){
@@ -193,19 +196,17 @@ public class DocContainer {
 							int y=event.y;
 							int nuova_larghezza=rect.width;
 							int nuova_altezza=rect.height;
-							if(x<rect.x+rect.width //&& x>(rect.x+DEFAULT_WIDTH)
-							){
+							if(x<rect.x+rect.width ){
 								nuova_larghezza=rect.width+(x-rect.x-rect.width);
 								//composite.setSize(nuova_larghezza, rect.height);
 							}
-							if(y<rect.y+rect.height //&& y>(rect.y+DEFAULT_HEIGHT)
-							){
+							if(y<rect.y+rect.height){
 								nuova_altezza=rect.height+(y-rect.y-rect.height);
 							}
 							if(nuova_altezza<DEFAULT_HEIGHT)nuova_altezza=DEFAULT_HEIGHT;
 							if(nuova_larghezza<DEFAULT_WIDTH)nuova_larghezza=DEFAULT_WIDTH;
 
-							//check if intersect!
+							//check if intersect or exceed!
 							boolean doesIntersect=DocContainer.doesIntersect(idContainer,designer,documentContained.getGroup().getLocation().x, documentContained.getGroup().getLocation().y, nuova_larghezza, nuova_altezza,false);
 							boolean doesExceed=DocContainer.doesExceed(idContainer,designer,documentContained.getGroup().getLocation().x, documentContained.getGroup().getLocation().y, nuova_larghezza, nuova_altezza,false);
 
@@ -215,15 +216,7 @@ public class DocContainer {
 								if(documentContained.getMetadataDocument()!=null){
 									(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
 								}
-								//System.out.println("Resizing da dentro: x="+documentContained.getGroup().getBounds().x+" e y="+documentContained.getGroup().getBounds().y+" altezza nuova="+documentContained.getGroup().getBounds().height+" e larghezza nuova="+documentContained.getGroup().getBounds().width);														
-								System.out.println("OK Slarga dentro");
-
 							}	
-							else{
-								//								System.out.println("Resizing BLOCCATO da dentro: x="+documentContained.getGroup().getBounds().x+" e y="+documentContained.getGroup().getBounds().y+" altezza rimane="+documentContained.getGroup().getBounds().height+" e larghezza rimane="+documentContained.getGroup().getBounds().width);														
-								System.out.println("BLocca Slarga dentro");
-
-							}
 
 						}
 					}
@@ -236,7 +229,6 @@ public class DocContainer {
 								int newY=event.y - pt.y;
 								boolean doesIntersect=doesIntersect(idContainer, designer,newX, newY, documentContained.getGroup().getBounds().width,documentContained.getGroup().getBounds().height,false);
 								boolean doesExceed=doesExceed(idContainer, designer,newX, newY, documentContained.getGroup().getBounds().width, documentContained.getGroup().getBounds().height,false);
-
 								if(doesIntersect==false && doesExceed==false){
 									composite.setLocation(newX, newY);
 									// Update model if document is present!
@@ -244,9 +236,6 @@ public class DocContainer {
 										(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
 									}
 								}
-								else{
-								}
-								//								System.out.println("QUESTO E' UN TEST DA DENTRO CHE "+composite.getBounds().x+" = "+xPos+" e "+composite.getBounds().y+" = "+ yPos+" e poi altezza "+composite.getBounds().height+" = "+height+ " e larghezza  "+composite.getBounds().width+ " = "+width);
 
 							}
 						}			
@@ -284,10 +273,6 @@ public class DocContainer {
 							//documentContained.getGroup().getBounds().width=width;
 							documentContained.getGroup().setSize(width, newheight);
 						}
-
-
-
-
 
 						documentContained.getGroup().setLocation(tempX, tempY);
 						if(idContainer.equals(designer.getCurrentSelection())){
@@ -406,17 +391,10 @@ public class DocContainer {
 		// Allow data to be copied or moved to the drop target
 		int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;
 		DropTarget target = new DropTarget(composite, operations);
-
-		// Receive data in Text or File format
-		//final TextTransfer textTransfer = TextTransfer.getInstance();
 		final FileTransfer fileTransfer = FileTransfer.getInstance();
 		final LocalSelectionTransfer localTransfer = LocalSelectionTransfer.getTransfer();
-
 		Transfer[] types = new Transfer[] {fileTransfer, localTransfer};
-		//		Transfer[] types = new Transfer[] {fileTransfer, textTransfer};
-
 		target.setTransfer(types);
-
 		target.addDropListener(new DropTargetListener() {
 			public void dragEnter(DropTargetEvent event) {
 				if (event.detail == DND.DROP_DEFAULT) {
@@ -426,7 +404,6 @@ public class DocContainer {
 						event.detail = DND.DROP_NONE;
 					}
 				}
-				// will accept text but prefer to have files dropped
 				for (int i = 0; i < event.dataTypes.length; i++) {
 					if (fileTransfer.isSupportedType(event.dataTypes[i])){
 						event.currentDataType = event.dataTypes[i];
@@ -437,24 +414,15 @@ public class DocContainer {
 						break;
 					}
 				}
-				// Mine
 				for (int i = 0; i < event.dataTypes.length; i++) {
 					if (localTransfer.isSupportedType(event.dataTypes[i])){
 						event.currentDataType = event.dataTypes[i];
-						//						if (event.detail != DND.DROP_COPY) {
-						//							event.detail = DND.DROP_NONE;
-						//						}
 						break;
 					}
 				}				
 			}
 			public void dragOver(DropTargetEvent event) {
 				event.feedback = DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
-				//				if (textTransfer.isSupportedType(event.currentDataType)) {
-				//					Object o = textTransfer.nativeToJava(event.currentDataType);
-				//					String t = (String)o;
-				//					if (t != null) System.out.println(t);
-				//				}
 			}
 			public void dragOperationChanged(DropTargetEvent event) {
 				if (event.detail == DND.DROP_DEFAULT) {
@@ -487,7 +455,6 @@ public class DocContainer {
 						// add the document!!
 						(new ModelBO()).addNewDocumentToModel(documentContained.getMetadataDocument(), calculateTemplateStyle());
 					}
-
 				}
 				if(doTransfer==true){
 					// Select the component!
@@ -506,7 +473,6 @@ public class DocContainer {
 					}
 					designer.setCurrentSelection(idContainer);
 				}
-
 				if(doTransfer==true){
 					if (fileTransfer.isSupportedType(event.currentDataType)){
 						String[] files = (String[])event.data;
@@ -590,9 +556,7 @@ public class DocContainer {
 				Group otherGroup=otherContainer.documentContained.getGroup();
 				Rectangle otherRectangle=otherGroup.getBounds();
 				doesIntersect=thisRectangle.intersects(otherRectangle);	
-				System.out.println("Interseca primo: "+doesIntersect+" il container "+otherContainer.getTitle());
 				doesIntersect=thisRectangle.intersects(otherRectangle.x, otherRectangle.y, otherRectangle.width, otherRectangle.height);
-				System.out.println("secondo: "+doesIntersect+" il container "+otherContainer.getTitle());		
 			}
 
 		}
@@ -610,15 +574,11 @@ public class DocContainer {
 		Composite mainComposite=designer.getMainComposite();
 		int heightMain=mainComposite.getSize().y;
 		int widthMain=mainComposite.getSize().x;
-
 		//-------give bound of 5 -------
-		// x should be nor less than 5, x+width should not be more than widthMain-5
 		if(newX<MIN_MARGIN_BOUNDS || (newX+newWidth)>(widthMain-MIN_MARGIN_BOUNDS)){
-			System.out.println("Eccede larghezza: x è "+newX+" la larghezza è "+newWidth+" su un totale di "+widthMain);			
 			return true;
 		}
 		else if(newY<MIN_MARGIN_BOUNDS || (newY+newHeight)>(heightMain-MIN_MARGIN_BOUNDS)){
-			System.out.println("Eccede Altezza: y è "+newY+" la altezza è "+newHeight+" su un totale di "+heightMain);			
 			return true;
 		}
 		else return false;
@@ -680,12 +640,13 @@ public class DocContainer {
 			}
 		}
 		catch (Exception e) {
+			SpagoBILogger.errorLog("Reload Document Properties", e);
 			e.printStackTrace();
 		}
 
 	}
-	
-	
+
+
 	/** Reload the view with navigations
 	 * 
 	 * @param id
@@ -703,8 +664,7 @@ public class DocContainer {
 				view.reloadNavigations(documentContained.getMetadataDocument());
 			}
 			else{
-				// View not present
-
+				SpagoBILogger.warningLog("view Document properties closed");
 			}
 			// Document parameters
 			IViewReference wPars=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView");
@@ -714,9 +674,10 @@ public class DocContainer {
 				docParameters.reloadParametersProperties(documentContained.getMetadataDocument());
 			}
 			else{
-				// View Not present
+				SpagoBILogger.warningLog("view Document parameters closed");
 			}
 		}catch (Exception e) {
+			SpagoBILogger.errorLog("Error reloading navigation view", e);
 			e.printStackTrace();
 		}
 		int i=0;

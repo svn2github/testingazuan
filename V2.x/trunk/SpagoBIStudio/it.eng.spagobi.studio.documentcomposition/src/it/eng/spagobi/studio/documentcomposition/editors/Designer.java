@@ -272,7 +272,6 @@ public class Designer {
 					/**  IF in resizing state mouse moving on shell causes resizing**/
 					DocContainer selectedDoc1=currentSelection.intValue()!=-1 ? containers.get(currentSelection) : null ;
 					Composite selected1=selectedDoc1.getDocumentContained().getGroup();
-					//System.out.println("Stampo coordinate: x = "+event.x+" su "+p.x+" | y = "+event.y+" su "+p.y);
 					if(getState().equals(Designer.RESIZE)){
 						if(selected1!=null){
 							Rectangle rect=selected1.getBounds();
@@ -293,16 +292,10 @@ public class Designer {
 							boolean doesExceed=DocContainer.doesExceed(selectedDoc1.getIdContainer(), selectedDoc1.getDesigner(),selectedDoc1.getDocumentContained().getGroup().getLocation().x, selectedDoc1.getDocumentContained().getGroup().getLocation().y, nuova_larghezza,nuova_altezza, true);							
 							if(doesIntersect==false && doesExceed==false){
 								selected1.setSize(nuova_larghezza, nuova_altezza);
-								//								System.out.println("Resizing da fuori: x="+selectedDoc1.getDocumentContained().getGroup().getBounds().x+" e y="+selectedDoc1.getDocumentContained().getGroup().getBounds().y+" altezza nuova="+selectedDoc1.getDocumentContained().getGroup().getBounds().height+" e larghezza nuova="+selectedDoc1.getDocumentContained().getGroup().getBounds().width);														
-								System.out.println("OK Slarga fuori");
 								// Update model if document is present
 								if(selectedDoc1.getDocumentContained().getMetadataDocument()!=null){
 									(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle());
 								}
-							}
-							else{
-								System.out.println("Blocca Slarga fuori");
-								//								System.out.println("BLoccato resizing da fuori: x="+selectedDoc1.getDocumentContained().getGroup().getBounds().x+" e y="+selectedDoc1.getDocumentContained().getGroup().getBounds().y+" altezza rimane="+selectedDoc1.getDocumentContained().getGroup().getBounds().height+" e larghezza rimane="+selectedDoc1.getDocumentContained().getGroup().getBounds().width);							
 							}
 							//shell.redraw();
 						}
@@ -322,9 +315,6 @@ public class Designer {
 									if(selectedDoc1.getDocumentContained().getMetadataDocument()!=null){
 										(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle());
 									}
-								}
-								else{
-									System.out.println("Drag BLOCCATO da fuori: x="+selectedDoc1.getDocumentContained().getGroup().getBounds().x+" e y="+selectedDoc1.getDocumentContained().getGroup().getBounds().y+" altezza rimane="+selectedDoc1.getDocumentContained().getGroup().getBounds().height+" e larghezza rimane="+selectedDoc1.getDocumentContained().getGroup().getBounds().width);														
 								}
 							}
 						}

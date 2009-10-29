@@ -23,6 +23,9 @@ public class MetadataDocument {
 	private String label;
 	private String description;
 	private String type;
+	private String engineId;
+	private String dataSetId;
+	private String dataSourceId;
 	private String engine;
 	private String dataSet;
 	private String dataSource;
@@ -125,11 +128,15 @@ public class MetadataDocument {
 		String documentName=file.getPersistentProperty(PropertyPage.DOCUMENT_NAME);
 		String documentType=file.getPersistentProperty(PropertyPage.DOCUMENT_TYPE);
 		String documentEngineId=file.getPersistentProperty(PropertyPage.ENGINE_ID);
+		String documentEngineName=file.getPersistentProperty(PropertyPage.ENGINE_NAME);
 		String documentLabel=file.getPersistentProperty(PropertyPage.DOCUMENT_LABEL);
 		String documentState=file.getPersistentProperty(PropertyPage.DOCUMENT_STATE);
 		String documentDescription=file.getPersistentProperty(PropertyPage.DOCUMENT_DESCRIPTION);
 		String documentDatasetId=file.getPersistentProperty(PropertyPage.DATASET_ID);
 		String documentDatasourceId=file.getPersistentProperty(PropertyPage.DATA_SOURCE_ID);
+		String documentDatasetName=file.getPersistentProperty(PropertyPage.DATASET_NAME);
+		String documentDatasourceName=file.getPersistentProperty(PropertyPage.DATA_SOURCE_NAME);
+
 		String xmlParameters=file.getPersistentProperty(PropertyPage.DOCUMENT_PARAMETERS_XML);
 
 		setId(id!=null ? Integer.valueOf(id) : -1);
@@ -137,9 +144,15 @@ public class MetadataDocument {
 		setDescription(documentDescription);
 		setType(documentType);
 		setName(documentName);
-		setEngine(documentEngineId);
-		setDataSet(documentDatasetId);
-		setDataSource(documentDatasourceId);
+				
+		setEngineId(documentEngineId);
+		setDataSetId(documentDatasetId);
+		setDataSourceId(documentDatasourceId);
+
+		setEngine(documentEngineName);
+		setDataSet(documentDatasetName);
+		setDataSource(documentDatasourceName);
+		
 		setState(documentState);
 		setLocalFileName(file.getName());
 
@@ -170,6 +183,24 @@ public class MetadataDocument {
 	}
 	public void setIdMetadataDocument(String idMetadataDocument) {
 		this.idMetadataDocument = idMetadataDocument;
+	}
+	public String getEngineId() {
+		return engineId;
+	}
+	public void setEngineId(String engineId) {
+		this.engineId = engineId;
+	}
+	public String getDataSetId() {
+		return dataSetId;
+	}
+	public void setDataSetId(String dataSetId) {
+		this.dataSetId = dataSetId;
+	}
+	public String getDataSourceId() {
+		return dataSourceId;
+	}
+	public void setDataSourceId(String dataSourceId) {
+		this.dataSourceId = dataSourceId;
 	}
 
 

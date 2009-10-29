@@ -89,6 +89,14 @@ public class SDKObjectsConverter {
 		if (engine != null) {
 			aDoc.setEngineId(engine.getId());
 		}
+		Integer dataSetId = obj.getDataSetId();
+		if (dataSetId != null) {
+			aDoc.setDataSetId(dataSetId);
+		}
+		Integer dataSourceId = obj.getDataSourceId();
+		if (dataSourceId != null) {
+			aDoc.setDataSourceId(dataSourceId);
+		}
 		logger.debug("OUT");
 		return aDoc;
 	}

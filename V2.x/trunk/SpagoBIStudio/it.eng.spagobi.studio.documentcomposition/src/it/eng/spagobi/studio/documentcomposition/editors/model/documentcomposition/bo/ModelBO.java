@@ -40,10 +40,13 @@ public class ModelBO {
 		DocumentComposition documentComposition=getModel();
 		DocumentsConfiguration documentsConfiguration=documentComposition.getDocumentsConfiguration();
 		Vector<Document> documents=documentsConfiguration.getDocuments();
-		Document newDocument=new Document();
-		newDocument.setSbiObjLabel(_metadataDocument.getLabel());
-		newDocument.setLocalFileName(_metadataDocument.getLocalFileName());
-		newDocument.setStyle(style);
+
+		Document newDocument=new Document(_metadataDocument,style);
+//		newDocument.setSbiObjLabel(_metadataDocument.getLabel());
+//		newDocument.setLocalFileName(_metadataDocument.getLocalFileName());
+//		newDocument.setStyle(style);
+//		newDocument.setId(_metadataDocument.getIdMetadataDocument());
+
 		documents.add(newDocument);
 		saveModel(documentComposition);
 	}

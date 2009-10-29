@@ -39,7 +39,7 @@ import org.eclipse.ui.PlatformUI;
 
 public class DocContainer {
 
-	final Integer id;
+	final Integer idContainer;
 	Designer designer;
 	DocumentContained documentContained;
 
@@ -65,19 +65,18 @@ public class DocContainer {
 	public DocContainer(Designer _designer,Composite mainComposite, int x, int y, int tempWidth, int tempHeight) {
 		super();
 		designer=_designer;
-		id=Integer.valueOf(designer.getCounter());
+		idContainer=Integer.valueOf(designer.createID());
 		try{
 			documentContained=new DocumentContained(mainComposite, SWT.NONE);
 		}
 		catch (Exception e) {
 			e.printStackTrace();}
 
-		title="NUMBER "+(new Integer(designer.getCounter()).toString());
+		title="NUMBER "+(idContainer.toString());
 		documentContained.getGroup().setText(title);
 		GridLayout layout=new GridLayout();
 		layout.numColumns=2;
 		documentContained.getGroup().setLayout(layout);
-		designer.incrementCounter();
 		documentContained.getGroup().setSize(tempWidth, tempHeight);
 		documentContained.getGroup().setLocation(x, y);
 		designer.setState(Designer.NORMAL);
@@ -108,18 +107,18 @@ public class DocContainer {
 				case SWT.MouseDown:
 					// Reload the DocumentPropertiesView
 					if(documentContained.getMetadataDocument()!=null)
-						reloadDocumentPropertiesView(id.toString());
+						reloadDocumentPropertiesView(idContainer.toString());
 					reloadStyleDocumentProperties();
 					// Reload navigations view
 					if(documentContained.getMetadataDocument()!=null){
-						reloadNavigationView(id.toString());
+						reloadNavigationView(idContainer.toString());
 					}
 
 					/**  IF in resizing state mouse button on Container causes end resizing**/	
 					calculateTemplateStyle();
 					if(designer.getState().equals(Designer.RESIZE)){
 						// only if click on the current selected!
-						if(id.equals(designer.getCurrentSelection())){
+						if(idContainer.equals(designer.getCurrentSelection())){
 							designer.setState(Designer.NORMAL);
 							cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_ARROW);						
 							designer.getMainComposite().setCursor(cursor);							
@@ -153,8 +152,7 @@ public class DocContainer {
 						cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_HAND);						
 						designer.getMainComposite().setCursor(cursor);
 						composite.setBackground(new Color(composite.getDisplay(),new RGB(165,195,210)));
-						System.out.println(id);
-						designer.setCurrentSelection(id);
+						designer.setCurrentSelection(idContainer);
 						// ---- modify selection view---
 
 					}
@@ -162,7 +160,7 @@ public class DocContainer {
 					else if(designer.getState().equals(Designer.SELECTION)){
 						// check if already selected or is changing selection!
 						Integer idPreviousSel=designer.getCurrentSelection();
-						if(Integer.valueOf(id).equals(idPreviousSel)){
+						if(Integer.valueOf(idContainer).equals(idPreviousSel)){
 							//composite.setBackground(new Color(composite.getDisplay(),new RGB(0,255,0)));
 						}
 						else{ 
@@ -176,7 +174,7 @@ public class DocContainer {
 						designer.setState(Designer.DRAG);
 						cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_HAND);						
 						designer.getMainComposite().setCursor(cursor);						
-						designer.setCurrentSelection(id);
+						designer.setCurrentSelection(idContainer);
 						Rectangle rect = composite.getBounds();
 						Point pt1 = composite.toDisplay(0, 0);
 						Point pt2 = mainComposite.toDisplay(event.x, event.y);
@@ -185,7 +183,7 @@ public class DocContainer {
 					break;
 				case SWT.MouseMove:
 					if(designer.getState().equals(Designer.RESIZE)){
-						if(id.equals(designer.getCurrentSelection())){
+						if(idContainer.equals(designer.getCurrentSelection())){
 							Rectangle rect=composite.getBounds();
 							int x=event.x;
 							int y=event.y;
@@ -204,8 +202,8 @@ public class DocContainer {
 							if(nuova_larghezza<DEFAULT_WIDTH)nuova_larghezza=DEFAULT_WIDTH;
 
 							//check if intersect!
-							boolean doesIntersect=DocContainer.doesIntersect(id,designer,documentContained.getGroup().getLocation().x, documentContained.getGroup().getLocation().y, nuova_larghezza, nuova_altezza,false);
-							boolean doesExceed=DocContainer.doesExceed(id,designer,documentContained.getGroup().getLocation().x, documentContained.getGroup().getLocation().y, nuova_larghezza, nuova_altezza,false);
+							boolean doesIntersect=DocContainer.doesIntersect(idContainer,designer,documentContained.getGroup().getLocation().x, documentContained.getGroup().getLocation().y, nuova_larghezza, nuova_altezza,false);
+							boolean doesExceed=DocContainer.doesExceed(idContainer,designer,documentContained.getGroup().getLocation().x, documentContained.getGroup().getLocation().y, nuova_larghezza, nuova_altezza,false);
 
 							if(doesIntersect==false && doesExceed==false){
 								composite.setSize(nuova_larghezza, nuova_altezza);
@@ -224,13 +222,13 @@ public class DocContainer {
 					}
 					/**  IF in Selection state mouse moving on container causes drag and drop**/
 					else if(designer.getState().equals(Designer.DRAG)){
-						if(id.equals(designer.getCurrentSelection())){
+						if(idContainer.equals(designer.getCurrentSelection())){
 							if (offset[0] != null) {
 								Point pt = offset[0];							
 								int newX=event.x - pt.x;
 								int newY=event.y - pt.y;
-								boolean doesIntersect=doesIntersect(id, designer,newX, newY, documentContained.getGroup().getBounds().width,documentContained.getGroup().getBounds().height,false);
-								boolean doesExceed=doesExceed(id, designer,newX, newY, documentContained.getGroup().getBounds().width, documentContained.getGroup().getBounds().height,false);
+								boolean doesIntersect=doesIntersect(idContainer, designer,newX, newY, documentContained.getGroup().getBounds().width,documentContained.getGroup().getBounds().height,false);
+								boolean doesExceed=doesExceed(idContainer, designer,newX, newY, documentContained.getGroup().getBounds().width, documentContained.getGroup().getBounds().height,false);
 
 								if(doesIntersect==false && doesExceed==false){
 									composite.setLocation(newX, newY);
@@ -284,17 +282,17 @@ public class DocContainer {
 
 
 						documentContained.getGroup().setLocation(tempX, tempY);
-						if(id.equals(designer.getCurrentSelection())){
+						if(idContainer.equals(designer.getCurrentSelection())){
 							composite.setBackground(new Color(composite.getDisplay(),new RGB(193,214,255)));
-							designer.setCurrentSelection(id);
+							designer.setCurrentSelection(idContainer);
 							designer.setState(Designer.SELECTION);
-							designer.setCurrentSelection(id);
+							designer.setCurrentSelection(idContainer);
 							cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_ARROW);						
 							designer.getMainComposite().setCursor(cursor);
 						}
 					}		
 					else if(designer.getState().equals(Designer.SELECTION)){
-						if(designer.getCurrentSelection().equals(id)){
+						if(designer.getCurrentSelection().equals(idContainer)){
 							designer.setState(Designer.NORMAL);
 							designer.setCurrentSelection(Integer.valueOf(-1));
 							offset[0] = null;							
@@ -373,8 +371,8 @@ public class DocContainer {
 	}
 
 
-	public Integer getId() {
-		return id;
+	public Integer getIdContainer() {
+		return idContainer;
 	}
 
 
@@ -477,7 +475,7 @@ public class DocContainer {
 					{
 						TreeSelection selectedTreeSelection=(TreeSelection)selectedObject;
 						IFile file=(IFile)selectedTreeSelection.getFirstElement();
-						doTransfer=documentContained.recoverDocumentMetadata(id, file);
+						doTransfer=documentContained.recoverDocumentMetadata(idContainer, file);
 						// add the document!!
 						(new ModelBO()).addNewDocumentToModel(documentContained.getMetadataDocument(), calculateTemplateStyle());
 					}
@@ -486,11 +484,11 @@ public class DocContainer {
 				if(doTransfer==true){
 					// Select the component!
 					if(documentContained.getMetadataDocument()!=null)
-						reloadDocumentPropertiesView(id.toString());
+						reloadDocumentPropertiesView(idContainer.toString());
 					reloadStyleDocumentProperties();
 					// Reload navigations view
 					if(documentContained.getMetadataDocument()!=null){
-						reloadNavigationView(id.toString());
+						reloadNavigationView(idContainer.toString());
 					}
 					designer.setState(Designer.SELECTION);
 					composite.setBackground(new Color(composite.getDisplay(),new RGB(193,214,255)));
@@ -498,7 +496,7 @@ public class DocContainer {
 						Composite toDeselect=designer.getContainers().get(designer.getCurrentSelection()).getDocumentContained().getGroup();
 						toDeselect.setBackground(new Color(toDeselect.getDisplay(),new RGB(189,189,189)));
 					}
-					designer.setCurrentSelection(id);
+					designer.setCurrentSelection(idContainer);
 				}
 
 				if(doTransfer==true){
@@ -634,7 +632,7 @@ public class DocContainer {
 		Object p=w.getPart(false);
 		if(p!=null){
 			DocumentPropertiesView view=(DocumentPropertiesView)p;
-			view.reloadStyle(id, style.getStyle(), documentContained.getMetadataDocument());
+			view.reloadStyle(idContainer, style.getStyle(), documentContained.getMetadataDocument());
 		}
 		else{
 			// View not present

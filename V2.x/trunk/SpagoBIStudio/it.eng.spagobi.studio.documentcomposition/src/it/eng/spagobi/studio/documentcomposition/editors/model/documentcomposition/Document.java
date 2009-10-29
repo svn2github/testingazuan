@@ -14,6 +14,17 @@ public class Document {
 	private Style style; 
 	private String id;
 
+//	private static long idCounter = 0;
+//
+//	public static synchronized String createID()
+//	{
+//		return String.valueOf(idCounter++);
+//	}
+
+	public Document() {
+		//this.id = createID();
+	}
+
 	public Style getStyle() {
 		return style;
 	}
@@ -38,9 +49,6 @@ public class Document {
 	public void setSbiObjLabel(String sbiObjLabel) {
 		this.sbiObjLabel = sbiObjLabel;
 	}
-	public Document() {
-		super();
-	}
 
 	public String getId() {
 		return id;
@@ -53,6 +61,7 @@ public class Document {
 		sbiObjLabel=metadataDocument.getLabel();
 		localFileName=metadataDocument.getLocalFileName();
 		style=_style;
+		this.id = metadataDocument.getIdMetadataDocument();
 	}	
 
 

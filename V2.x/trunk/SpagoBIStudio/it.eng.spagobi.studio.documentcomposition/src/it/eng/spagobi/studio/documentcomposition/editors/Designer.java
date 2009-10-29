@@ -40,7 +40,13 @@ import org.eclipse.ui.part.EditorPart;
 
 public class Designer {
 
-	int counter=0;
+	 private static long idCounter = 0;
+
+	 public static synchronized String createID()
+	 {
+	     return String.valueOf(idCounter++);
+	 }
+	
 	String state=NORMAL;
 	Integer currentSelection=-1;
 	int currentX=0;
@@ -98,14 +104,14 @@ public class Designer {
 		}
 
 		DocContainer group=new DocContainer(this, mainComposite, x, y, tempWidth, tempHeight);
-		containers.put(group.getId(), group);
+		containers.put(group.getIdContainer(), group);
 		Composite g=group.getDocumentContained().getGroup();
 		mainComposite.layout();
 		mainComposite.update();
 		mainComposite.redraw();
 		mainComposite.setFocus();
 		SpagoBILogger.infoLog("END "+Designer.class.toString()+": add New Container function");
-		return group.id;
+		return group.getIdContainer();
 	}
 
 	/** Add Container reading the template
@@ -159,21 +165,6 @@ public class Designer {
 		this.state = state;
 	}
 
-
-
-	public int getCounter() {
-		return counter;
-	}
-
-
-
-	public void setCounter(int counter) {
-		this.counter = counter;
-	}
-
-	public void incrementCounter() {
-		this.counter = counter+1;
-	}
 
 
 
@@ -291,9 +282,9 @@ public class Designer {
 								nuova_altezza=rect.height+(y-rect.y-rect.height);
 							}
 							// check if intersects other components
-							boolean doesIntersect=DocContainer.doesIntersect(selectedDoc1.getId(), selectedDoc1.getDesigner(),selectedDoc1.getDocumentContained().getGroup().getLocation().x, selectedDoc1.getDocumentContained().getGroup().getLocation().y, nuova_larghezza,nuova_altezza, true);
+							boolean doesIntersect=DocContainer.doesIntersect(selectedDoc1.getIdContainer(), selectedDoc1.getDesigner(),selectedDoc1.getDocumentContained().getGroup().getLocation().x, selectedDoc1.getDocumentContained().getGroup().getLocation().y, nuova_larghezza,nuova_altezza, true);
 							// check if exceeds bounds
-							boolean doesExceed=DocContainer.doesExceed(selectedDoc1.getId(), selectedDoc1.getDesigner(),selectedDoc1.getDocumentContained().getGroup().getLocation().x, selectedDoc1.getDocumentContained().getGroup().getLocation().y, nuova_larghezza,nuova_altezza, true);							
+							boolean doesExceed=DocContainer.doesExceed(selectedDoc1.getIdContainer(), selectedDoc1.getDesigner(),selectedDoc1.getDocumentContained().getGroup().getLocation().x, selectedDoc1.getDocumentContained().getGroup().getLocation().y, nuova_larghezza,nuova_altezza, true);							
 							if(doesIntersect==false && doesExceed==false){
 								selected1.setSize(nuova_larghezza, nuova_altezza);
 								//								System.out.println("Resizing da fuori: x="+selectedDoc1.getDocumentContained().getGroup().getBounds().x+" e y="+selectedDoc1.getDocumentContained().getGroup().getBounds().y+" altezza nuova="+selectedDoc1.getDocumentContained().getGroup().getBounds().height+" e larghezza nuova="+selectedDoc1.getDocumentContained().getGroup().getBounds().width);														
@@ -308,13 +299,13 @@ public class Designer {
 						}
 					}
 					else if(getState().equals(Designer.DRAG)){
-						if(selectedDoc1.getId().equals(selectedDoc1.getDesigner().getCurrentSelection())){
+						if(selectedDoc1.getIdContainer().equals(selectedDoc1.getDesigner().getCurrentSelection())){
 							if (offset[0] != null) {
 								Point pt = offset[0];							
 								int newX=event.x - pt.x;
 								int newY=event.y - pt.y;
-								boolean doesIntersect=DocContainer.doesIntersect(selectedDoc1.getId(), selectedDoc1.getDesigner(),newX, newY, selectedDoc1.getDocumentContained().getGroup().getBounds().width,selectedDoc1.getDocumentContained().getGroup().getBounds().height,true);
-								boolean doesExceed=DocContainer.doesExceed(selectedDoc1.getId(), selectedDoc1.getDesigner(),newX, newY, selectedDoc1.getDocumentContained().getGroup().getBounds().width,selectedDoc1.getDocumentContained().getGroup().getBounds().height,true);
+								boolean doesIntersect=DocContainer.doesIntersect(selectedDoc1.getIdContainer(), selectedDoc1.getDesigner(),newX, newY, selectedDoc1.getDocumentContained().getGroup().getBounds().width,selectedDoc1.getDocumentContained().getGroup().getBounds().height,true);
+								boolean doesExceed=DocContainer.doesExceed(selectedDoc1.getIdContainer(), selectedDoc1.getDesigner(),newX, newY, selectedDoc1.getDocumentContained().getGroup().getBounds().width,selectedDoc1.getDocumentContained().getGroup().getBounds().height,true);
 
 								if(doesIntersect==false && doesExceed==false){
 									selectedDoc1.getDocumentContained().getGroup().setLocation(newX, newY);
@@ -486,7 +477,7 @@ public class Designer {
 						String ciao=fileToGet.getPersistentProperty(PropertyPage.DOCUMENT_NAME);
 						IPath f=fileToGet.getFullPath(); 
 						metadataDocument=new MetadataDocument(fileToGet);
-
+						document.setId(metadataDocument.getIdMetadataDocument());
 						(new MetadataBO()).getMetadataDocumentComposition().addMetadataDocument(metadataDocument);
 
 						//						MetadataDocumentComposition metadataDocumentComposition=Activator.getDefault().getMetadataDocumentComposition();

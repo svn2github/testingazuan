@@ -21,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -30,10 +31,10 @@ public class DocumentContained {
 	Group group;	
 	MetadataDocument metadataDocument;	
 
-	public static final String IMG_JASPER_REPORT="it/eng/spagobi/studio/documentcomposition/resources/images/IconJasperReport.PNG";
+	public static final String IMG_JASPER_REPORT="it/eng/spagobi/studio/documentcomposition/resources/images/IconJasperReport250.PNG";
 	public static final String IMG_BIRT_REPORT="it/eng/spagobi/studio/documentcomposition/resources/images/birt.png";
 	public static final String IMG_DASHBOARD="it/eng/spagobi/studio/documentcomposition/resources/images/chart.png";
-	public static final String IMG_CHART="it/eng/spagobi/studio/documentcomposition/resources/images/IconChartEditor.PNG";
+	public static final String IMG_CHART="it/eng/spagobi/studio/documentcomposition/resources/images/IconChartEditor250.PNG";
 	public static final String IMG_DOCUMENT_COMPOSITION="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
 	public static final String IMG_OLAP="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
 	public static final String IMG_ETL="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
@@ -85,7 +86,7 @@ public class DocumentContained {
 				String localFileName=ia.toString();
 
 				metadataDocument=new MetadataDocument(file);				
-				metadataDocument.setIdMetadataDocument(id+"_"+metadataDocument.getLabel());
+				metadataDocument.setIdMetadataDocument(idContainer+"_"+metadataDocument.getLabel());
 				metadataDocument.setLocalFileName(localFileName);
 				(new MetadataBO()).getMetadataDocumentComposition().addMetadataDocument(metadataDocument);
 
@@ -115,7 +116,7 @@ public class DocumentContained {
 				imagePath=IMG_JASPER_REPORT;
 			}
 			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_DASH)){
-				imagePath=IMG_DASHBOARD;
+				imagePath=IMG_CHART;
 			}
 			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_DATA_MINING)){
 				imagePath=IMG_DATA_MINING;
@@ -148,7 +149,7 @@ public class DocumentContained {
 						try {
 							InputStream is=DocCompUtilities.getInputStreamFromResource(imagePathFinal);
 							image = new Image(group.getDisplay(), is);
-							
+
 						} catch (FileNotFoundException e1) {
 							e1.printStackTrace();
 						}
@@ -166,11 +167,12 @@ public class DocumentContained {
 
 		group.setText(metadataDocument.getLocalFileName());
 		Label nameLabelName=new Label(group,SWT.NULL);
-		nameLabelName.setText("Name: ");			
-		Label nameLabelValue=new Label(group,SWT.NULL);
-		nameLabelValue.setText(metadataDocument.getName() != null ? metadataDocument.getName() : "" );
-		Label localFileNameLabel=new Label(group,SWT.NULL);
-		localFileNameLabel.setText(metadataDocument.getLocalFileName());				
+		nameLabelName.setText("Name: "+metadataDocument.getName() != null ? metadataDocument.getName() : "" );			
+//		Label nameLabelValue=new Label(group,SWT.NULL);
+		//nameLabelValue.setText(metadataDocument.getName() != null ? metadataDocument.getName() : "" );
+//		Label localFileNameLabel=new Label(group,SWT.NULL);
+//		localFileNameLabel.setText(metadataDocument.getLocalFileName());				
+//		(new Label(group, SWT.NULL)).setText("");
 
 		return true;
 	}

@@ -85,6 +85,14 @@ public class Exporter {
 	    	
 	    	Iterator it = dataStore.iterator();
 	    	int rownum = 1;
+	    	short formatIndexInt = HSSFDataFormat.getBuiltinFormat("#,##0");
+		    CellStyle cellStyleInt = wb.createCellStyle();   
+		    cellStyleInt.setDataFormat(formatIndexInt);
+		    
+		    short formatIndexDoub = HSSFDataFormat.getBuiltinFormat("#,##0.00");
+		    CellStyle cellStyleDoub = wb.createCellStyle();   
+		    cellStyleDoub.setDataFormat(formatIndexDoub);
+		    
 			while(it.hasNext()){
 				Row rowVal = sheet.createRow(rownum);
 				IRecord record =(IRecord)it.next();
@@ -102,21 +110,15 @@ public class Exporter {
 						    Number val = (Number)f.getValue();
 						    cell.setCellValue(val.intValue());
 						    cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-						    short formatIndex = HSSFDataFormat.getBuiltinFormat("#,##0");
-						    CellStyle cellStyle = wb.createCellStyle();   
-						    cellStyle.setDataFormat(formatIndex);
-						    cell.setCellStyle(cellStyle);
+						    cell.setCellStyle(cellStyleInt);
 						}else if( Number.class.isAssignableFrom(c) ) {
 							logger.debug("Column [" + (fieldIndex+1) + "] type is equal to [" + "NUMBER" + "]");
 							Cell cell = rowVal.createCell(fieldIndex);
 						    Number val = (Number)f.getValue();
 						    cell.setCellValue(val.doubleValue());
 						    cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-						    List formats = HSSFDataFormat.getBuiltinFormats();
-						    short formatIndex = HSSFDataFormat.getBuiltinFormat("#,##0.00");
-						    CellStyle cellStyle = wb.createCellStyle();   
-						    cellStyle.setDataFormat(formatIndex);
-						    cell.setCellStyle(cellStyle);
+						   // List formats = HSSFDataFormat.getBuiltinFormats();
+						    cell.setCellStyle(cellStyleDoub);
 						}else if( String.class.isAssignableFrom(c)){
 							logger.debug("Column [" + (fieldIndex+1) + "] type is equal to [" + "STRING" + "]");
 							Cell cell = rowVal.createCell(fieldIndex);		    

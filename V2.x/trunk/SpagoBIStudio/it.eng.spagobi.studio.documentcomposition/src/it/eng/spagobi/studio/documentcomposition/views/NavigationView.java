@@ -1,6 +1,7 @@
 package it.eng.spagobi.studio.documentcomposition.views;
 
 import it.eng.spagobi.studio.documentcomposition.Activator;
+import it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
@@ -33,6 +34,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -213,7 +215,10 @@ public class NavigationView extends ViewPart {
 		}
 	}
 	private void deleteNavigationFromModel(){
-
+		IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		
+		DocumentCompositionEditor editor= (DocumentCompositionEditor)iworkbenchpage.getActiveEditor();
+		
 		int selectedToDelete = table.getSelectionIndex();
 		TableItem item = table.getItem(selectedToDelete);
 		if(documentComp != null){
@@ -238,6 +243,7 @@ public class NavigationView extends ViewPart {
 							params.setParameter(par);
 							//Activator.getDefault().setDocumentComposition(documentComp);
 							item.dispose();
+							editor.setIsDirty(true);
 						}
 					}
 
@@ -335,7 +341,9 @@ public class NavigationView extends ViewPart {
 		metadataDoc = Activator.getDefault().getMetadataDocumentComposition();
 		documentComp= Activator.getDefault().getDocumentComposition();
 		if(!hasDocuments){
-			labelNoDocs.dispose();
+			if(labelNoDocs != null){
+				labelNoDocs.dispose();
+			}
 			loadNavigations(toolkit, client.getParent() );
 			hasDocuments = true;
 		}

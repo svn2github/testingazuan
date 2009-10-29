@@ -6,9 +6,13 @@ import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
+import it.eng.spagobi.studio.documentcomposition.util.XmlTemplateGenerator;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
 import it.eng.spagobi.studio.documentcomposition.views.NavigationView;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -41,11 +45,45 @@ public class DocumentCompositionEditor extends EditorPart {
 	DocumentComposition documentComposition;
 	MetadataDocumentComposition metadataDocumentComposition;
 	Designer designer;
+	private XmlTemplateGenerator generator = new XmlTemplateGenerator();
+	protected boolean isDirty = false;
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		// TODO Auto-generated method stub
+		SpagoBILogger.infoLog("Start Saving Document Composition Template File");
+		ByteArrayInputStream bais = null;
+		try {
+			FileEditorInput fei = (FileEditorInput) getEditorInput();
+			IFile file = fei.getFile();
+			String newContent =  generator.transformToXml(documentComposition);
+			byte[] bytes = newContent.getBytes();
+			bais = new ByteArrayInputStream(bytes);
+			file.setContents(bais, IFile.FORCE, null);
+			
+		} catch (CoreException e) {
+			SpagoBILogger.errorLog("Error while Saving Chart Template File",e);
+			e.printStackTrace();
+		}	
+		finally { 
+			if (bais != null)
+				try {
+					bais.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		setIsDirty(false);
+	   
+	}
+	public void setIsDirty(boolean isDirty) {
+		this.isDirty = isDirty;
+		firePropertyChange(PROP_DIRTY);
+	}
 
+	public boolean isDirty() {
+		return isDirty;
 	}
 
 	@Override
@@ -79,11 +117,7 @@ public class DocumentCompositionEditor extends EditorPart {
 		SpagoBILogger.infoLog("END "+DocumentCompositionEditor.class.toString()+": init function");
 	}
 
-	@Override
-	public boolean isDirty() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
 
 	@Override
 	public boolean isSaveAsAllowed() {

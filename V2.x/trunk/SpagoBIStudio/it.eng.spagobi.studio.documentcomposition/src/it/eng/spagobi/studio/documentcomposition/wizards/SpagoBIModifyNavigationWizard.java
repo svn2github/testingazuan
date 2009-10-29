@@ -1,6 +1,7 @@
 package it.eng.spagobi.studio.documentcomposition.wizards;
 
 import it.eng.spagobi.studio.documentcomposition.Activator;
+import it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
@@ -24,6 +25,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
 
 public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 
@@ -114,11 +117,7 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 	}
 	@Override
 	public boolean performFinish() {
-		XmlTemplateGenerator generator = new XmlTemplateGenerator();
-		
-		
-		//completePageDataCollection();
-		
+	
 		redrawTable();
 		//recupera da plugin oggetto DocumentComposition
 		
@@ -173,8 +172,11 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		    	}
 		    }
 	    }
-	    
-	    generator.transformToXml(docComp);
+		IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		
+		DocumentCompositionEditor editor= (DocumentCompositionEditor)iworkbenchpage.getActiveEditor();
+		editor.setIsDirty(true);
+	    //generator.transformToXml(docComp);
 	    return true;
 	}
 
@@ -252,8 +254,6 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 				Parameter param = bo.getParameterById(id, parameters);
 				//NB non può aggiungere parametri, ma solo modificarli o cancellarli
 				if(param != null){
-					param.setType("IN");
-					param.setSbiParLabel(paramName);
 					param.setDefaultVal(destInfo.getParamDefaultValue().getText());	
 				}
 			}			

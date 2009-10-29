@@ -1,6 +1,7 @@
 package it.eng.spagobi.studio.documentcomposition.wizards;
 
 import it.eng.spagobi.studio.documentcomposition.Activator;
+import it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
@@ -9,7 +10,6 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Refresh;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.RefreshDocLinked;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ParameterBO;
-import it.eng.spagobi.studio.documentcomposition.util.XmlTemplateGenerator;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardDestinDocPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardMasterDocPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardPage;
@@ -24,12 +24,12 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
 
 public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 
@@ -156,10 +156,14 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		    	
 		    }
 		}
-	    Activator.getDefault().setDocumentComposition(docComp);///////////////NB risetta!!!
-	    XmlTemplateGenerator generator = new XmlTemplateGenerator();
-	    generator.transformToXml(docComp);
+//	    Activator.getDefault().setDocumentComposition(docComp);///////////////NB risetta!!!
+//	    XmlTemplateGenerator generator = new XmlTemplateGenerator();
+//	    generator.transformToXml(docComp);
 	    
+		IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		
+		DocumentCompositionEditor editor= (DocumentCompositionEditor)iworkbenchpage.getActiveEditor();
+		editor.setIsDirty(true);
 	    return true;
 	}
 

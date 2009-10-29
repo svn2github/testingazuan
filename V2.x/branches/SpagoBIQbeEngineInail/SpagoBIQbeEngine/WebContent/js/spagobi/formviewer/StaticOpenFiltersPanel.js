@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.formviewer");
 
-Sbi.formviewer.OpenFiltersPanel = function(openFilters) {
+Sbi.formviewer.StaticOpenFiltersPanel = function(openFilters) {
 	
 	var settings = {
 			columnNo: 3
@@ -82,7 +82,7 @@ Sbi.formviewer.OpenFiltersPanel = function(openFilters) {
 	}
 
 	c = Ext.apply({}, c, {
-		title: 'Open Filters',
+		title: 'Filtri statici aperti',
 		labelAlign: c.labelAlign,
         border: false,
         frame: true,
@@ -96,7 +96,7 @@ Sbi.formviewer.OpenFiltersPanel = function(openFilters) {
 	});
 	
 	// constructor
-    Sbi.formviewer.OpenFiltersPanel.superclass.constructor.call(this, c);
+    Sbi.formviewer.StaticOpenFiltersPanel.superclass.constructor.call(this, c);
 
 	var columnContainer = this.items.get(0);
 	this.columns = [];
@@ -108,7 +108,7 @@ Sbi.formviewer.OpenFiltersPanel = function(openFilters) {
     
 };
 
-Ext.extend(Sbi.formviewer.OpenFiltersPanel, Ext.FormPanel, {
+Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.FormPanel, {
     
 	services: null
 	, fields: null

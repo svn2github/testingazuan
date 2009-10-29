@@ -46,23 +46,23 @@
 
 Ext.ns("Sbi.formviewer");
 
-Sbi.formviewer.StaticFiltersANDPanel = function(aStaticFiltersORGroup) {
+Sbi.formviewer.StaticClosedXORFiltersPanel = function(aStaticFiltersORGroup) {
 	
 	this.init(aStaticFiltersORGroup);
 	
 	c = {
 		frame: true
         , items: this.items
-        , width: 400
+        , width: 300
         , height: 150
 	};
 	
 	// constructor
-    Sbi.formviewer.StaticFiltersANDPanel.superclass.constructor.call(this, c);
+    Sbi.formviewer.StaticClosedXORFiltersPanel.superclass.constructor.call(this, c);
 
 };
 
-Ext.extend(Sbi.formviewer.StaticFiltersANDPanel, Ext.form.FormPanel, {
+Ext.extend(Sbi.formviewer.StaticClosedXORFiltersPanel, Ext.form.FormPanel, {
     
 	items: null
 	
@@ -75,9 +75,20 @@ Ext.extend(Sbi.formviewer.StaticFiltersANDPanel, Ext.form.FormPanel, {
             xtype: 'fieldset',
             title: config.title,
             autoHeight: true,
-            defaultType: 'checkbox',
+            defaultType: 'radio',
             items: []
         }
+		
+		// TODO e se non c'è l'allowNoSelection????
+		if (config.allowNoSelection !== null && config.allowNoSelection === true) {
+			// create No Selection Item
+			this.items.items.push({
+				hideLabel: true,
+				boxLabel: config.noSelectionText,
+				name: config.id,
+				inputValue: 'noSelection'
+			});
+		}
 		
 		for (var i = 0; i < config.options.length; i++) {
 			// create items
@@ -85,7 +96,8 @@ Ext.extend(Sbi.formviewer.StaticFiltersANDPanel, Ext.form.FormPanel, {
 			this.items.items.push({
 				hideLabel: true,
                 boxLabel: aFilter.text,
-                name: config.id
+                name: config.id,
+                inputValue: aFilter.rightOperandValue
 			});
 		}
 	}

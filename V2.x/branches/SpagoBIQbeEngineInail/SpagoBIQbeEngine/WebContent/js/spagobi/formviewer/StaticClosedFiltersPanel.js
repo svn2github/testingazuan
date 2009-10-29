@@ -46,12 +46,12 @@
 
 Ext.ns("Sbi.formviewer");
 
-Sbi.formviewer.StaticFiltersPanel = function(staticFilters) {
+Sbi.formviewer.StaticClosedFiltersPanel = function(staticFilters) {
 	
 	this.init(staticFilters);
 	
 	var c = {
-		title: 'Static Filters',
+		title: 'Filtri statici chiusi',
 		layout: 'table',
 	    layoutConfig: {
 	        columns: staticFilters.length
@@ -63,11 +63,11 @@ Sbi.formviewer.StaticFiltersPanel = function(staticFilters) {
 	};
 	
 	// constructor
-    Sbi.formviewer.StaticFiltersPanel.superclass.constructor.call(this, c);
+    Sbi.formviewer.StaticClosedFiltersPanel.superclass.constructor.call(this, c);
 
 };
 
-Ext.extend(Sbi.formviewer.StaticFiltersPanel, Ext.Panel, {
+Ext.extend(Sbi.formviewer.StaticClosedFiltersPanel, Ext.Panel, {
     
 	services: null
 	, forms: null
@@ -80,9 +80,9 @@ Ext.extend(Sbi.formviewer.StaticFiltersPanel, Ext.Panel, {
 			var aStaticFiltersGroup = staticFilters[i];
 			var aStaticFiltersForm = null;
 			if (aStaticFiltersGroup.singleSelection) {
-				aStaticFiltersForm = new Sbi.formviewer.StaticFiltersORPanel(aStaticFiltersGroup);
+				aStaticFiltersForm = new Sbi.formviewer.StaticClosedXORFiltersPanel(aStaticFiltersGroup);
 			} else {
-				aStaticFiltersForm = new Sbi.formviewer.StaticFiltersANDPanel(aStaticFiltersGroup);
+				aStaticFiltersForm = new Sbi.formviewer.StaticClosedOnOffFiltersPanel(aStaticFiltersGroup);
 			}
 			this.forms.push(aStaticFiltersForm);
 		}

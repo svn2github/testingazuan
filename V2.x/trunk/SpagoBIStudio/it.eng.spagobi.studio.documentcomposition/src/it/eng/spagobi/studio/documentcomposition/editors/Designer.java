@@ -40,13 +40,13 @@ import org.eclipse.ui.part.EditorPart;
 
 public class Designer {
 
-	 private static long idCounter = 0;
+	private static long idCounter = 0;
 
-	 public static synchronized String createID()
-	 {
-	     return String.valueOf(idCounter++);
-	 }
-	
+	public static synchronized String createID()
+	{
+		return String.valueOf(idCounter++);
+	}
+
 	String state=NORMAL;
 	Integer currentSelection=-1;
 	int currentX=0;
@@ -122,9 +122,11 @@ public class Designer {
 	 * @param _width
 	 * @param _height
 	 * @param metadataDocument
+	 *
+	 * 
 	 */
 
-	public void addDocContainerFromTemplate(Composite mainComposite, int x, int y, int _width, int _height, MetadataDocument metadataDocument){
+	public void addDocContainerFromTemplate(Composite mainComposite, int x, int y, int _width, int _height, MetadataDocument metadataDocument, Document document){
 		SpagoBILogger.infoLog(Designer.class.toString()+": add Doc Container from template");
 		Integer id=addNewDocContainer(mainComposite, x, y, _width, _height);
 		if(id==null) return;
@@ -134,6 +136,7 @@ public class Designer {
 			if(metadataDocument!=null){
 				docContainer.getDocumentContained().setMetadataDocument(metadataDocument);
 				metadataDocument.setIdMetadataDocument(id+"_"+metadataDocument.getLabel());
+				document.setId(id+"_"+metadataDocument.getLabel());
 			}
 			docContainer.getDocumentContained().viewDocumentMetadata(metadataDocument);
 		}
@@ -245,7 +248,10 @@ public class Designer {
 						selected.setSize(setWidth, setHeight);						
 						DocContainer docContainerSelected=containers.get(currentSelection);
 						docContainerSelected.reloadStyleDocumentProperties();
-						(new ModelBO()).updateModelModifyDocument(selectedDoc.getDocumentContained().getMetadataDocument(), selectedDoc.calculateTemplateStyle());						
+						// UOpdate only if document is present
+						if(selectedDoc.getDocumentContained().getMetadataDocument()!=null){
+							(new ModelBO()).updateModelModifyDocument(selectedDoc.getDocumentContained().getMetadataDocument(), selectedDoc.calculateTemplateStyle());						
+						}
 						setCurrentSelection(new Integer(-1));
 						if(selected!=null){
 
@@ -289,7 +295,10 @@ public class Designer {
 								selected1.setSize(nuova_larghezza, nuova_altezza);
 								//								System.out.println("Resizing da fuori: x="+selectedDoc1.getDocumentContained().getGroup().getBounds().x+" e y="+selectedDoc1.getDocumentContained().getGroup().getBounds().y+" altezza nuova="+selectedDoc1.getDocumentContained().getGroup().getBounds().height+" e larghezza nuova="+selectedDoc1.getDocumentContained().getGroup().getBounds().width);														
 								System.out.println("OK Slarga fuori");
-								(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle());
+								// Update model if document is present
+								if(selectedDoc1.getDocumentContained().getMetadataDocument()!=null){
+									(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle());
+								}
 							}
 							else{
 								System.out.println("Blocca Slarga fuori");
@@ -309,8 +318,10 @@ public class Designer {
 
 								if(doesIntersect==false && doesExceed==false){
 									selectedDoc1.getDocumentContained().getGroup().setLocation(newX, newY);
-									(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle());
-									System.out.println("Drag da fuori: x="+selectedDoc1.getDocumentContained().getGroup().getBounds().x+" e y="+selectedDoc1.getDocumentContained().getGroup().getBounds().y+" altezza nuova="+selectedDoc1.getDocumentContained().getGroup().getBounds().height+" e larghezza nuova="+selectedDoc1.getDocumentContained().getGroup().getBounds().width);														
+									// Update model if document is present
+									if(selectedDoc1.getDocumentContained().getMetadataDocument()!=null){
+										(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle());
+									}
 								}
 								else{
 									System.out.println("Drag BLOCCATO da fuori: x="+selectedDoc1.getDocumentContained().getGroup().getBounds().x+" e y="+selectedDoc1.getDocumentContained().getGroup().getBounds().y+" altezza rimane="+selectedDoc1.getDocumentContained().getGroup().getBounds().height+" e larghezza rimane="+selectedDoc1.getDocumentContained().getGroup().getBounds().width);														
@@ -476,8 +487,8 @@ public class Designer {
 						String name=fileToGet.getName();
 						String ciao=fileToGet.getPersistentProperty(PropertyPage.DOCUMENT_NAME);
 						IPath f=fileToGet.getFullPath(); 
+						// not put yet Id beacuase not linked yet to the group
 						metadataDocument=new MetadataDocument(fileToGet);
-						document.setId(metadataDocument.getIdMetadataDocument());
 						(new MetadataBO()).getMetadataDocumentComposition().addMetadataDocument(metadataDocument);
 
 						//						MetadataDocumentComposition metadataDocumentComposition=Activator.getDefault().getMetadataDocumentComposition();
@@ -490,7 +501,7 @@ public class Designer {
 
 						int widthToPut=metadataStyle.getWidthFromPerc(mainComposite);
 						int heightToPut=metadataStyle.getHeightFromPerc(mainComposite);
-						addDocContainerFromTemplate(mainComposite, metadataStyle.getX(), metadataStyle.getY(), widthToPut, heightToPut, metadataDocument);
+						addDocContainerFromTemplate(mainComposite, metadataStyle.getX(), metadataStyle.getY(), widthToPut, heightToPut, metadataDocument, document);
 					}
 					else{
 						MessageDialog.openError(mainComposite.getShell(), 

@@ -61,8 +61,9 @@ public class ModelBO {
 		boolean found=false;
 		for (Iterator iterator = documents.iterator(); iterator.hasNext() && found==false;) {
 			Document document = (Document) iterator.next();
-			if(document.getSbiObjLabel().equals(_metadataDocument.getLabel())){
-				documents.remove(document);
+			//if(document.getSbiObjLabel().equals(_metadataDocument.getLabel())){
+			if(document.getId().equals(_metadataDocument.getIdMetadataDocument())){
+			documents.remove(document);
 				found=true;
 			}
 		}
@@ -81,7 +82,7 @@ public class ModelBO {
 			for (Iterator iterator = documents.iterator(); iterator.hasNext();) {
 				Document document = (Document) iterator.next();
 				// Modify the current document!
-				if(document.getSbiObjLabel().equals(_metadataDocument.getLabel())){
+				if(document.getId().equals(_metadataDocument.getIdMetadataDocument())){
 					document.setStyle(style);
 				}
 

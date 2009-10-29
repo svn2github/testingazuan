@@ -106,8 +106,9 @@ public class DocContainer {
 				;				switch (event.type) {
 				case SWT.MouseDown:
 					// Reload the DocumentPropertiesView
-					if(documentContained.getMetadataDocument()!=null)
+					//if(documentContained.getMetadataDocument()!=null)
 						reloadDocumentPropertiesView(idContainer.toString());
+
 					reloadStyleDocumentProperties();
 					// Reload navigations view
 					if(documentContained.getMetadataDocument()!=null){
@@ -135,7 +136,10 @@ public class DocContainer {
 							int setHeight=designerUtilities.calculateHeight(documentContained.getGroup(), mainComposite.getBounds().height);
 							documentContained.getGroup().setSize(setWidth, setHeight);
 							reloadStyleDocumentProperties();
-							(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
+							// Uodate Model if present document
+							if(documentContained.getMetadataDocument()!=null){
+								(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
+							}
 							designer.setCurrentSelection(Integer.valueOf(-1));
 							// Reload style text in view (only if in mode automatic
 						}
@@ -207,7 +211,10 @@ public class DocContainer {
 
 							if(doesIntersect==false && doesExceed==false){
 								composite.setSize(nuova_larghezza, nuova_altezza);
-								(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
+								// Update model if present document
+								if(documentContained.getMetadataDocument()!=null){
+									(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
+								}
 								//System.out.println("Resizing da dentro: x="+documentContained.getGroup().getBounds().x+" e y="+documentContained.getGroup().getBounds().y+" altezza nuova="+documentContained.getGroup().getBounds().height+" e larghezza nuova="+documentContained.getGroup().getBounds().width);														
 								System.out.println("OK Slarga dentro");
 
@@ -232,11 +239,12 @@ public class DocContainer {
 
 								if(doesIntersect==false && doesExceed==false){
 									composite.setLocation(newX, newY);
-									(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
-									System.out.println("Drag da dentro: x="+documentContained.getGroup().getBounds().x+" e y="+documentContained.getGroup().getBounds().y+" altezza nuova="+documentContained.getGroup().getBounds().height+" e larghezza nuova="+documentContained.getGroup().getBounds().width);														
+									// Update model if document is present!
+									if(documentContained.getMetadataDocument()!=null){
+										(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
+									}
 								}
 								else{
-									System.out.println("Drag BLOCCATO da dentro: x="+documentContained.getGroup().getBounds().x+" e y="+documentContained.getGroup().getBounds().y+" altezza rimane="+documentContained.getGroup().getBounds().height+" e larghezza rimane="+documentContained.getGroup().getBounds().width);														
 								}
 								//								System.out.println("QUESTO E' UN TEST DA DENTRO CHE "+composite.getBounds().x+" = "+xPos+" e "+composite.getBounds().y+" = "+ yPos+" e poi altezza "+composite.getBounds().height+" = "+height+ " e larghezza  "+composite.getBounds().width+ " = "+width);
 
@@ -665,7 +673,7 @@ public class DocContainer {
 			Object p2=wPars.getPart(false);
 			if(p2!=null){
 				DocumentParametersView docParameters=(DocumentParametersView)p2;
-				docParameters.reloadProperties(documentContained.getMetadataDocument().getMetadataParameters());
+				docParameters.reloadParametersProperties(documentContained.getMetadataDocument());
 			}
 			else{
 				// View Not present
@@ -675,9 +683,9 @@ public class DocContainer {
 			e.printStackTrace();
 		}
 
-		int i=0;
-
 	}
+	
+	
 	/** Reload the view with navigations
 	 * 
 	 * @param id
@@ -703,7 +711,7 @@ public class DocContainer {
 			Object p2=wPars.getPart(false);
 			if(p2!=null){
 				DocumentParametersView docParameters=(DocumentParametersView)p2;
-				docParameters.reloadProperties(documentContained.getMetadataDocument().getMetadataParameters());
+				docParameters.reloadParametersProperties(documentContained.getMetadataDocument());
 			}
 			else{
 				// View Not present

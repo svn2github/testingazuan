@@ -1,6 +1,7 @@
 package it.eng.spagobi.studio.documentcomposition.views;
 
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataParameter;
 
 import java.util.HashMap;
@@ -91,17 +92,21 @@ public class DocumentParametersView extends ViewPart {
 
 	}
 
-	public void reloadProperties(Vector<MetadataParameter> parameters){
+	public void reloadParametersProperties(MetadataDocument metadataDocument){
 		table.removeAll();
-		for (Iterator iterator = parameters.iterator(); iterator.hasNext();) {
-			MetadataParameter metadataParameter = (MetadataParameter) iterator.next();
-			TableItem item = new TableItem (table, SWT.NONE);
-			item.setText (ID, metadataParameter.getId()!=null ? metadataParameter.getId().toString() : "");
-			item.setText (LABEL, metadataParameter.getLabel()!=null ? metadataParameter.getLabel() : "");
-			item.setText (TYPE, metadataParameter.getType()!=null ? metadataParameter.getType() : "");
-			item.setText (URLNAME, metadataParameter.getUrlName()!=null ? metadataParameter.getUrlName() : "");
+		if(metadataDocument!=null){		
+			Vector<MetadataParameter> parameters=metadataDocument.getMetadataParameters();
+			if(parameters!=null){
+				for (Iterator iterator = parameters.iterator(); iterator.hasNext();) {
+					MetadataParameter metadataParameter = (MetadataParameter) iterator.next();
+					TableItem item = new TableItem (table, SWT.NONE);
+					item.setText (ID, metadataParameter.getId()!=null ? metadataParameter.getId().toString() : "");
+					item.setText (LABEL, metadataParameter.getLabel()!=null ? metadataParameter.getLabel() : "");
+					item.setText (TYPE, metadataParameter.getType()!=null ? metadataParameter.getType() : "");
+					item.setText (URLNAME, metadataParameter.getUrlName()!=null ? metadataParameter.getUrlName() : "");
+				}
+			}
 		}
-
 		client.layout();
 		client.redraw();
 	}

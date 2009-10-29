@@ -122,7 +122,9 @@ public class DocumentPropertiesView extends ViewPart {
 				String t = textStyle.getText();
 				if(t!=null && !t.equalsIgnoreCase("") && manualMode==true){
 					styleParameters.put(id, t);
-					(new ModelBO()).updateModelModifyDocument(metadataDocument, new Style(t));
+					if(metadataDocument!=null){
+						(new ModelBO()).updateModelModifyDocument(metadataDocument, new Style(t));
+					}
 				}
 			}
 		});
@@ -193,17 +195,26 @@ public class DocumentPropertiesView extends ViewPart {
 		viewSelectedProperties();
 	}
 
-	public void reloadProperties(MetadataDocument document){
-		table.getItem(ID).setText(1, document.getId()!=null ? document.getId().toString() : "");
-		table.getItem(LABEL).setText(1, document.getLabel()!=null ? document.getLabel() : "");
-		table.getItem(NAME).setText(1, document.getName()!=null ? document.getName() : "");
-		table.getItem(DESCRIPTION).setText(1, document.getDescription()!=null ? document.getDescription() : "");
-		table.getItem(TYPE).setText(1, document.getType()!=null ? document.getType() : "");
-		table.getItem(ENGINE).setText(1, document.getEngine()!=null ? document.getEngine() : "");
-		table.getItem(DATA_SET).setText(1, document.getDataSet()!=null ? document.getDataSet() : "");
-		table.getItem(DATA_SOURCE).setText(1, document.getDataSource()!=null ? document.getDataSource() : "");
-		table.getItem(STATE).setText(1, document.getState()!=null ? document.getState() : "");
+	public void reloadProperties(MetadataDocument documentMeta){
+		String id=(documentMeta!=null && documentMeta.getId()!=null) ? documentMeta.getId().toString() : "";
+		String label=(documentMeta!=null && documentMeta.getLabel()!=null) ? documentMeta.getLabel() : "";
+		String name=(documentMeta!=null && documentMeta.getName()!=null) ? documentMeta.getName() : "";
+		String description=(documentMeta!=null && documentMeta.getDescription()!=null) ? documentMeta.getDescription() : "";
+		String type=(documentMeta!=null && documentMeta.getType()!=null) ? documentMeta.getType() : "";
+		String engine=(documentMeta!=null && documentMeta.getEngine()!=null) ? documentMeta.getEngine() : "";
+		String dataSet=(documentMeta!=null && documentMeta.getDataSet()!=null) ? documentMeta.getDataSet() : "";
+		String dataSource=(documentMeta!=null && documentMeta.getDataSource()!=null) ? documentMeta.getDataSource() : "";
+		String state=(documentMeta!=null && documentMeta.getState()!=null) ? documentMeta.getState() : "";
 
+		table.getItem(ID).setText(1, id );
+		table.getItem(LABEL).setText(1, label);
+		table.getItem(NAME).setText(1, name);
+		table.getItem(DESCRIPTION).setText(1, description);
+		table.getItem(TYPE).setText(1, type);
+		table.getItem(ENGINE).setText(1, engine);
+		table.getItem(DATA_SET).setText(1, dataSet);
+		table.getItem(DATA_SOURCE).setText(1, dataSource);
+		table.getItem(STATE).setText(1, state);
 		client.layout();
 		client.redraw();
 	}

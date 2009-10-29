@@ -77,9 +77,9 @@ Ext.extend(Sbi.formviewer.ViewerPanel, Ext.Panel, {
     // private methods
     , init: function(config) {
 		this.items =  [];
-		this.staticFiltersPanel = new Sbi.formviewer.StaticClosedFiltersPanel(config.staticFilters); 
+		this.staticFiltersPanel = new Sbi.formviewer.StaticClosedFiltersPanel(config.staticClosedFilters); 
 		this.items.push(this.staticFiltersPanel);
-		this.openFiltersPanel = new Sbi.formviewer.StaticOpenFiltersPanel(config.openFilters); 
+		this.openFiltersPanel = new Sbi.formviewer.StaticOpenFiltersPanel(config.staticOpenFilters); 
 		this.items.push(this.openFiltersPanel);
 	}
     

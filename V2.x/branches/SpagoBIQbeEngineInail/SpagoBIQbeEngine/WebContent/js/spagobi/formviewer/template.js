@@ -40,12 +40,12 @@ var template = {
     // --------------------------------  fine selected fields ---------------------------------------------------
     
     
-    // -------------------------------- inizio filtri statici ----------------------------------------------------
-    // Raggruppamenti logici di filtri preconfezionati. E' possibile specificare quale deve essee la politica di
+    // -------------------------------- inizio filtri statici chiusi ----------------------------------------------------
+    // Raggruppamenti logici di filtri preconfezionati. E' possibile specificare quale deve essere la politica di
     // selezione dei filtri all'interno di un medesimo gruppo (singleSelection: true|false)
     // -----------------------------------------------------------------------------------------------------------
-    staticFilters: [
-        // gruppo-1, filtro in OR sullo stato 
+    staticClosedFilters: [
+        // gruppo-1, filtri esclusivi (alternativi) 
         {
         	id: 'Stato',
             title: 'Stato',
@@ -70,7 +70,7 @@ var template = {
             ]
         },
         
-        // gruppo-2, filtro in AND sulla famiglia di prodotto 
+        // gruppo-2, filtro on/off
         {
         	id: 'Tipologia prodotto',
             title: 'Tipologia prodotto',
@@ -93,16 +93,16 @@ var template = {
             ]
         } 
     ], 
-    // -------------------------------- fine filtri statici ----------------------------------------------
+    // -------------------------------- fine filtri statici chiusi ----------------------------------------------
     
     
     
-    // -------------------------------- inizio filtri aperti ----------------------------------------------
+    // -------------------------------- inizio filtri statici aperti ----------------------------------------------
     // filtri in cui l'utente può liberamente scegliere uno o più valori (singleSelection: true|false) per 
     // l'operatore di destra da una lista generata per mezzo di una distinct sulla colonna definita come 
     // operatore di sinistra del filtro (field)
     // ----------------------------------------------------------------------------------------------------
-    openFilters: [
+    staticOpenFilters: [
         // single selection
         {
         	id: 'Anno',
@@ -124,17 +124,19 @@ var template = {
             text: 'Brand',
             field: 'it.eng.spagobi.SalesFact1998::product(product_id):brandName',
             operator: 'EQUALS',
-            singleSelection: false
+            singleSelection: false,
+            maxSelectedNumber: 3
         },
         {
         	id: 'Reparto',
             text: 'Reparto',
             field: 'it.eng.spagobi.SalesFact1998::store(store_id):department',
             operator: 'EQUALS',
-            singleSelection: false
+            singleSelection: false,
+            maxSelectedNumber: 3
         }
     ],
-    // -------------------------------- fine filtri aperti ----------------------------------------------
+    // -------------------------------- fine filtri statici aperti ----------------------------------------------
     
     // -------------------------------- dinamici aperti -------------------------------------------------
     // filtri in cui l'utente può liberamente definire sia l'operando di destra che quello di sinistra.

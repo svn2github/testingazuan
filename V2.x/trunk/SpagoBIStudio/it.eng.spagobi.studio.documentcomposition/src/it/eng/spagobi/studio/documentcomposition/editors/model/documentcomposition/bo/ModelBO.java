@@ -39,15 +39,15 @@ public class ModelBO {
 	public void addNewDocumentToModel(MetadataDocument _metadataDocument, Style style){
 		DocumentComposition documentComposition=getModel();
 		DocumentsConfiguration documentsConfiguration=documentComposition.getDocumentsConfiguration();
-		Vector<Document> documents=documentsConfiguration.getDocuments();
-
+		if(documentsConfiguration.getDocuments()==null){
+			documentsConfiguration.setDocuments(new Vector<Document>());
+		}
 		Document newDocument=new Document(_metadataDocument,style);
-//		newDocument.setSbiObjLabel(_metadataDocument.getLabel());
-//		newDocument.setLocalFileName(_metadataDocument.getLocalFileName());
-//		newDocument.setStyle(style);
-//		newDocument.setId(_metadataDocument.getIdMetadataDocument());
-
-		documents.add(newDocument);
+		//		newDocument.setSbiObjLabel(_metadataDocument.getLabel());
+		//		newDocument.setLocalFileName(_metadataDocument.getLocalFileName());
+		//		newDocument.setStyle(style);
+		//		newDocument.setId(_metadataDocument.getIdMetadataDocument());
+		documentsConfiguration.getDocuments().add(newDocument);
 		saveModel(documentComposition);
 	}
 
@@ -63,7 +63,7 @@ public class ModelBO {
 			Document document = (Document) iterator.next();
 			//if(document.getSbiObjLabel().equals(_metadataDocument.getLabel())){
 			if(document.getId().equals(_metadataDocument.getIdMetadataDocument())){
-			documents.remove(document);
+				documents.remove(document);
 				found=true;
 			}
 		}
@@ -74,8 +74,7 @@ public class ModelBO {
 	 * 
 	 */
 	public void updateModelModifyDocument(MetadataDocument _metadataDocument, Style style){
-		ModelBO bo=new ModelBO();
-		DocumentComposition documentComposition=bo.getModel();
+		DocumentComposition documentComposition=getModel();
 		DocumentsConfiguration documentsConfiguration=documentComposition.getDocumentsConfiguration();
 		Vector<Document> documents=documentsConfiguration.getDocuments();
 		if(documents!=null){
@@ -87,7 +86,7 @@ public class ModelBO {
 				}
 
 			}
-			bo.saveModel(documentComposition);
+			saveModel(documentComposition);
 		}
 	}
 

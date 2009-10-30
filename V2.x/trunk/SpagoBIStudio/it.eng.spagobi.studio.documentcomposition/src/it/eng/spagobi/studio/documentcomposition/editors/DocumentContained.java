@@ -89,7 +89,6 @@ public class DocumentContained {
 				metadataDocument.setIdMetadataDocument(idContainer+"_"+metadataDocument.getLabel());
 				metadataDocument.setLocalFileName(localFileName);
 				(new MetadataBO()).getMetadataDocumentComposition().addMetadataDocument(metadataDocument);
-
 				return viewDocumentMetadata(metadataDocument);
 			}
 		}

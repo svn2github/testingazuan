@@ -54,12 +54,16 @@ public class MetadataStyle {
 	
 	public int getWidthFromPerc(Composite mainComposite){
 		// calculate the percentage of the whole composite
-		int toReturn=(mainComposite.getBounds().width/100)*widthPercentage;
+		int mainSize=mainComposite.getBounds().width;
+		mainSize=mainSize/100;
+		int toReturn=(mainSize)*widthPercentage;
 		return toReturn;
 	}
 	public int getHeightFromPerc(Composite mainComposite){
 		// calculate the percentage of the whole composite
-		int toReturn=(mainComposite.getBounds().height/100)*heightPercentage;
+		int mainSize=mainComposite.getBounds().height;		
+		mainSize=mainSize/100;		
+		int toReturn=(mainSize)*heightPercentage;
 		return toReturn;
 	}
 

@@ -123,7 +123,10 @@ public class DocContainer {
 				case SWT.MouseDown:			// *********  MOUSE DOWN   ***************
 					// Reload views
 					reloadDocumentPropertiesView(idContainer.toString());
+
 					reloadStyleDocumentProperties();
+					System.out.println(designer.getEditor().isDirty);
+
 					// Reload navigations view
 					if(documentContained.getMetadataDocument()!=null){
 						reloadNavigationView(idContainer.toString());
@@ -147,6 +150,7 @@ public class DocContainer {
 								(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
 							}
 							designer.setCurrentSelection(Integer.valueOf(-1));
+							designer.getEditor().setIsDirty(true);
 						}
 					}
 					/**  IF in normal state mouse button on Container causes selection**/					
@@ -216,7 +220,8 @@ public class DocContainer {
 								if(documentContained.getMetadataDocument()!=null){
 									(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
 								}
-							}	
+								designer.getEditor().setIsDirty(true);
+							}
 
 						}
 					}
@@ -235,6 +240,7 @@ public class DocContainer {
 									if(documentContained.getMetadataDocument()!=null){
 										(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
 									}
+									designer.getEditor().setIsDirty(true);								
 								}
 
 							}
@@ -327,7 +333,7 @@ public class DocContainer {
 					}
 				});
 				MenuItem delItem = new MenuItem(menu, SWT.PUSH);
-				delItem.setText("Delete Doc");
+				delItem.setText("Delete Document");
 				delItem.addListener(SWT.Selection, new Listener() {
 					public void handleEvent(Event e) {
 						Integer idSel=designer.getCurrentSelection();
@@ -339,6 +345,7 @@ public class DocContainer {
 							// delete metadata document
 							(new MetadataBO()).getMetadataDocumentComposition().removeMetadataDocument(documentContained.getMetadataDocument());
 						}
+						designer.getEditor().setIsDirty(true);
 						designer.setCurrentSelection(-1);
 						designer.setState(Designer.NORMAL);
 						composite.dispose();
@@ -482,6 +489,7 @@ public class DocContainer {
 						}					
 					}
 				}
+				designer.getEditor().setIsDirty(true);				
 				composite.redraw();
 				composite.layout();
 				composite.getParent().redraw();
@@ -519,12 +527,12 @@ public class DocContainer {
 		int height =rect.height;
 
 		// get the left margin: arrotondo alla decina
-		toAdd+="left:"+Integer.valueOf(x).toString()+";";
+		toAdd+="left:"+Integer.valueOf(x).toString()+"px;";
 
 		// get the top margin: arrotondo alla decina
 		int marginTopTemp=y/10;
 		int marginTop=y*10;
-		toAdd+="top:"+Integer.valueOf(y).toString()+";";
+		toAdd+="top:"+Integer.valueOf(y).toString()+"px;";
 
 		// get the total height and width of the container
 		Point point=designer.getMainComposite().getSize();

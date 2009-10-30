@@ -42,6 +42,8 @@ public class Designer {
 
 	private static long idCounter = 0;
 
+	DocumentCompositionEditor editor=null;
+
 	public static synchronized String createID()
 	{
 		return String.valueOf(idCounter++);
@@ -54,7 +56,6 @@ public class Designer {
 	Composite mainComposite;
 	HashMap<Integer, DocContainer> containers;
 
-	EditorPart editor;
 
 	public static final String NORMAL="normal";
 	public static final String SELECTION="selection";
@@ -144,7 +145,7 @@ public class Designer {
 
 	}
 
-	public Designer(Composite composite) {
+	public Designer(Composite composite, DocumentCompositionEditor _editor) {
 		super();
 		FormLayout layout=new FormLayout();
 		//composite.setLayout(layout);
@@ -153,7 +154,7 @@ public class Designer {
 		addContextMenu(composite);
 		containers=new HashMap<Integer, DocContainer>();
 		addShellMouseControls(composite);
-
+		this.editor=_editor;
 	}
 
 
@@ -257,6 +258,7 @@ public class Designer {
 
 							selected.setBackground(new Color(selected.getDisplay(),new RGB(189,189,189)));
 						}
+						editor.setIsDirty(true);
 					}
 					/**  IF in Selection state mouse button on shell causes end selection**/
 					else if(getState().equals(Designer.SELECTION)){
@@ -296,6 +298,7 @@ public class Designer {
 								if(selectedDoc1.getDocumentContained().getMetadataDocument()!=null){
 									(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle());
 								}
+								editor.setIsDirty(true);								
 							}
 							//shell.redraw();
 						}
@@ -315,6 +318,7 @@ public class Designer {
 									if(selectedDoc1.getDocumentContained().getMetadataDocument()!=null){
 										(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle());
 									}
+									editor.setIsDirty(true);								
 								}
 							}
 						}
@@ -360,6 +364,7 @@ public class Designer {
 					public void handleEvent(Event e) {
 						if(getState().equals(Designer.NORMAL)){
 							addNewDocContainer(composite, currentX, currentY, DocContainer.DEFAULT_WIDTH, DocContainer.DEFAULT_HEIGHT);
+							editor.setIsDirty(true);
 						}
 					}
 				});
@@ -428,13 +433,13 @@ public class Designer {
 
 
 
-	public EditorPart getEditor() {
+	public DocumentCompositionEditor getEditor() {
 		return editor;
 	}
 
 
 
-	public void setEditor(EditorPart editor) {
+	public void setEditor(DocumentCompositionEditor editor) {
 		this.editor = editor;
 	}
 

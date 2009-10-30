@@ -42,7 +42,7 @@ public class DocumentCompositionEditor extends EditorPart {
 	int height=0;
 	int width=0;
 	Composite parent;
-	DocumentComposition documentComposition;
+	//DocumentComposition documentComposition;
 	MetadataDocumentComposition metadataDocumentComposition;
 	Designer designer;
 	private XmlTemplateGenerator generator = new XmlTemplateGenerator();
@@ -56,7 +56,10 @@ public class DocumentCompositionEditor extends EditorPart {
 		try {
 			FileEditorInput fei = (FileEditorInput) getEditorInput();
 			IFile file = fei.getFile();
+			DocumentComposition documentComposition=(new ModelBO()).getModel();
 			String newContent =  generator.transformToXml(documentComposition);
+			System.out.println("******** SAVING ***************");
+			System.out.println(newContent);
 			byte[] bytes = newContent.getBytes();
 			bais = new ByteArrayInputStream(bytes);
 			file.setContents(bais, IFile.FORCE, null);
@@ -104,7 +107,7 @@ public class DocumentCompositionEditor extends EditorPart {
 		templateName=file.getName();
 		ModelBO bo=new ModelBO();
 		try {
-			documentComposition = bo.createModel(file);
+			DocumentComposition documentComposition = bo.createModel(file);
 			bo.saveModel(documentComposition);
 			
 			metadataDocumentComposition = new MetadataDocumentComposition();
@@ -181,7 +184,7 @@ public class DocumentCompositionEditor extends EditorPart {
 		Composite sectionClient = toolkit.createComposite(section, SWT.NO_REDRAW_RESIZE);
 		sectionClient.setSize(1000, 1000);
 
-		designer=new Designer(sectionClient);
+		designer=new Designer(sectionClient, this);
 		designer.setEditor(this);
 		section.setClient(sectionClient);
 
@@ -190,7 +193,7 @@ public class DocumentCompositionEditor extends EditorPart {
 		height=parent.getBounds().height;
 
 		// Now initialize Editor with DocumentComposition retrieved
-		initializeEditor(documentComposition);
+		initializeEditor(new ModelBO().getModel());
 
 		SpagoBILogger.infoLog("END "+DocumentCompositionEditor.class.toString()+": create Part Control function");
 
@@ -258,13 +261,7 @@ public class DocumentCompositionEditor extends EditorPart {
 
 	}
 
-	public DocumentComposition getDocumentComposition() {
-		return documentComposition;
-	}
 
-	public void setDocumentComposition(DocumentComposition documentComposition) {
-		this.documentComposition = documentComposition;
-	}
 
 	public Designer getDesigner() {
 		return designer;

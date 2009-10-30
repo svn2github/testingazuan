@@ -2,6 +2,7 @@ package it.eng.spagobi.studio.documentcomposition.views;
 
 import java.util.HashMap;
 
+import it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
@@ -23,11 +24,17 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.internal.EditorReference;
+import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.ViewPart;
 
 public class DocumentPropertiesView extends ViewPart {
@@ -125,7 +132,16 @@ public class DocumentPropertiesView extends ViewPart {
 					if(metadataDocument!=null){
 						(new ModelBO()).updateModelModifyDocument(metadataDocument, new Style(t));
 					}
+					IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
+					IWorkbenchPage aa=a.getActivePage();
+					IEditorReference[] editors=aa.findEditors(null, "it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor", IWorkbenchPage.MATCH_ID);
+					if(editors!=null && editors.length>0){
+						EditorReference editorReference=(EditorReference)editors[0];
+						DocumentCompositionEditor editor=(DocumentCompositionEditor)editorReference.getPart(false);
+						editor.setIsDirty(true);
+					}				
 				}
+
 			}
 		});
 		automaticButton = new Button(comp, SWT.RADIO);

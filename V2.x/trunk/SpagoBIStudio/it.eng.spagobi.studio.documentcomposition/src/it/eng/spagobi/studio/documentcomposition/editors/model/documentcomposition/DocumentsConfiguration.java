@@ -33,6 +33,10 @@ public class DocumentsConfiguration {
 		this.videoHeight = videoHeight;
 	}
 
+	public DocumentsConfiguration() {
+		documents=new Vector<Document>();
+	}
+
 
 
 

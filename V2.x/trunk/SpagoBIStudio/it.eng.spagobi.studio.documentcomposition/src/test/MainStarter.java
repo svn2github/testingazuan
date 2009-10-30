@@ -20,7 +20,7 @@ public class MainStarter {
 		FillLayout fill=new FillLayout();
 		shell.setLayout(fill);
 		Composite main=new Composite(shell, SWT.BORDER);
-		Designer designer=new Designer(main);
+		Designer designer=new Designer(main, null);
 		shell.pack();
 		shell.open();
 		while (!shell.isDisposed()) {

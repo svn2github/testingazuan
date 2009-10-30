@@ -36,6 +36,8 @@ import java.util.HashMap;
 public interface DocumentsService {
 	
 	SDKDocument[] getDocumentsAsList(String type, String state, String folderPath);
+
+	SDKDocument getDocumentById(Integer id);
 	
 	SDKFunctionality getDocumentsAsTree(String initialPath);
 	

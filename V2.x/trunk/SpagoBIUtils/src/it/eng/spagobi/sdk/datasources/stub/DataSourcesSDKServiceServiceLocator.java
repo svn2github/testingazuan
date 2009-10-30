@@ -1,59 +1,59 @@
 /**
- * DocumentsServiceServiceLocator.java
+ * DataSourcesSDKServiceServiceLocator.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
-package it.eng.spagobi.sdk.documents.stub;
+package it.eng.spagobi.sdk.datasources.stub;
 
-public class DocumentsServiceServiceLocator extends org.apache.axis.client.Service implements it.eng.spagobi.sdk.documents.stub.DocumentsServiceService {
+public class DataSourcesSDKServiceServiceLocator extends org.apache.axis.client.Service implements it.eng.spagobi.sdk.datasources.stub.DataSourcesSDKServiceService {
 
-    public DocumentsServiceServiceLocator() {
+    public DataSourcesSDKServiceServiceLocator() {
     }
 
 
-    public DocumentsServiceServiceLocator(org.apache.axis.EngineConfiguration config) {
+    public DataSourcesSDKServiceServiceLocator(org.apache.axis.EngineConfiguration config) {
         super(config);
     }
 
-    public DocumentsServiceServiceLocator(java.lang.String wsdlLoc, javax.xml.namespace.QName sName) throws javax.xml.rpc.ServiceException {
+    public DataSourcesSDKServiceServiceLocator(java.lang.String wsdlLoc, javax.xml.namespace.QName sName) throws javax.xml.rpc.ServiceException {
         super(wsdlLoc, sName);
     }
 
-    // Use to get a proxy class for DocumentsService
-    private java.lang.String DocumentsService_address = "http://localhost:8080/SpagoBI/sdk/DocumentsService";
+    // Use to get a proxy class for DataSourcesSDKService
+    private java.lang.String DataSourcesSDKService_address = "http://localhost:8080/SpagoBI/sdk/DataSourcesSDKService";
 
-    public java.lang.String getDocumentsServiceAddress() {
-        return DocumentsService_address;
+    public java.lang.String getDataSourcesSDKServiceAddress() {
+        return DataSourcesSDKService_address;
     }
 
     // The WSDD service name defaults to the port name.
-    private java.lang.String DocumentsServiceWSDDServiceName = "DocumentsService";
+    private java.lang.String DataSourcesSDKServiceWSDDServiceName = "DataSourcesSDKService";
 
-    public java.lang.String getDocumentsServiceWSDDServiceName() {
-        return DocumentsServiceWSDDServiceName;
+    public java.lang.String getDataSourcesSDKServiceWSDDServiceName() {
+        return DataSourcesSDKServiceWSDDServiceName;
     }
 
-    public void setDocumentsServiceWSDDServiceName(java.lang.String name) {
-        DocumentsServiceWSDDServiceName = name;
+    public void setDataSourcesSDKServiceWSDDServiceName(java.lang.String name) {
+        DataSourcesSDKServiceWSDDServiceName = name;
     }
 
-    public it.eng.spagobi.sdk.documents.stub.DocumentsService getDocumentsService() throws javax.xml.rpc.ServiceException {
+    public it.eng.spagobi.sdk.datasources.stub.DataSourcesSDKService getDataSourcesSDKService() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
-            endpoint = new java.net.URL(DocumentsService_address);
+            endpoint = new java.net.URL(DataSourcesSDKService_address);
         }
         catch (java.net.MalformedURLException e) {
             throw new javax.xml.rpc.ServiceException(e);
         }
-        return getDocumentsService(endpoint);
+        return getDataSourcesSDKService(endpoint);
     }
 
-    public it.eng.spagobi.sdk.documents.stub.DocumentsService getDocumentsService(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
+    public it.eng.spagobi.sdk.datasources.stub.DataSourcesSDKService getDataSourcesSDKService(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
-            it.eng.spagobi.sdk.documents.stub.DocumentsServiceSoapBindingStub _stub = new it.eng.spagobi.sdk.documents.stub.DocumentsServiceSoapBindingStub(portAddress, this);
-            _stub.setPortName(getDocumentsServiceWSDDServiceName());
+            it.eng.spagobi.sdk.datasources.stub.DataSourcesSDKServiceSoapBindingStub _stub = new it.eng.spagobi.sdk.datasources.stub.DataSourcesSDKServiceSoapBindingStub(portAddress, this);
+            _stub.setPortName(getDataSourcesSDKServiceWSDDServiceName());
             return _stub;
         }
         catch (org.apache.axis.AxisFault e) {
@@ -61,8 +61,8 @@ public class DocumentsServiceServiceLocator extends org.apache.axis.client.Servi
         }
     }
 
-    public void setDocumentsServiceEndpointAddress(java.lang.String address) {
-        DocumentsService_address = address;
+    public void setDataSourcesSDKServiceEndpointAddress(java.lang.String address) {
+        DataSourcesSDKService_address = address;
     }
 
     /**
@@ -72,9 +72,9 @@ public class DocumentsServiceServiceLocator extends org.apache.axis.client.Servi
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (it.eng.spagobi.sdk.documents.stub.DocumentsService.class.isAssignableFrom(serviceEndpointInterface)) {
-                it.eng.spagobi.sdk.documents.stub.DocumentsServiceSoapBindingStub _stub = new it.eng.spagobi.sdk.documents.stub.DocumentsServiceSoapBindingStub(new java.net.URL(DocumentsService_address), this);
-                _stub.setPortName(getDocumentsServiceWSDDServiceName());
+            if (it.eng.spagobi.sdk.datasources.stub.DataSourcesSDKService.class.isAssignableFrom(serviceEndpointInterface)) {
+                it.eng.spagobi.sdk.datasources.stub.DataSourcesSDKServiceSoapBindingStub _stub = new it.eng.spagobi.sdk.datasources.stub.DataSourcesSDKServiceSoapBindingStub(new java.net.URL(DataSourcesSDKService_address), this);
+                _stub.setPortName(getDataSourcesSDKServiceWSDDServiceName());
                 return _stub;
             }
         }
@@ -94,8 +94,8 @@ public class DocumentsServiceServiceLocator extends org.apache.axis.client.Servi
             return getPort(serviceEndpointInterface);
         }
         java.lang.String inputPortName = portName.getLocalPart();
-        if ("DocumentsService".equals(inputPortName)) {
-            return getDocumentsService();
+        if ("DataSourcesSDKService".equals(inputPortName)) {
+            return getDataSourcesSDKService();
         }
         else  {
             java.rmi.Remote _stub = getPort(serviceEndpointInterface);
@@ -105,7 +105,7 @@ public class DocumentsServiceServiceLocator extends org.apache.axis.client.Servi
     }
 
     public javax.xml.namespace.QName getServiceName() {
-        return new javax.xml.namespace.QName("urn:spagobisdkdocuments", "DocumentsServiceService");
+        return new javax.xml.namespace.QName("urn:spagobisdkdatasources", "DataSourcesSDKServiceService");
     }
 
     private java.util.HashSet ports = null;
@@ -113,7 +113,7 @@ public class DocumentsServiceServiceLocator extends org.apache.axis.client.Servi
     public java.util.Iterator getPorts() {
         if (ports == null) {
             ports = new java.util.HashSet();
-            ports.add(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "DocumentsService"));
+            ports.add(new javax.xml.namespace.QName("urn:spagobisdkdatasources", "DataSourcesSDKService"));
         }
         return ports.iterator();
     }
@@ -123,8 +123,8 @@ public class DocumentsServiceServiceLocator extends org.apache.axis.client.Servi
     */
     public void setEndpointAddress(java.lang.String portName, java.lang.String address) throws javax.xml.rpc.ServiceException {
         
-if ("DocumentsService".equals(portName)) {
-            setDocumentsServiceEndpointAddress(address);
+if ("DataSourcesSDKService".equals(portName)) {
+            setDataSourcesSDKServiceEndpointAddress(address);
         }
         else 
 { // Unknown Port Name

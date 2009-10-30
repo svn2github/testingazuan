@@ -10,20 +10,25 @@ import it.eng.spagobi.sdk.documents.stub.DocumentsService;
 import it.eng.spagobi.sdk.documents.stub.DocumentsServiceServiceLocator;
 
 
-
-
 public class DocumentsServiceProxy implements DocumentsService {
   private String _endpoint = null;
   private DocumentsService documentsService = null;
   private ClientCredentialsHolder cch = null;
-  
+    
+//  public DocumentsServiceProxy() {
+//    _initDocumentsServiceProxy();
+//  }
   
   public DocumentsServiceProxy(String user, String pwd) {
 		cch = new ClientCredentialsHolder(user, pwd);
 	    _initDocumentsServiceProxy();
 	  }
+
   
-  
+  public DocumentsServiceProxy(String endpoint) {
+    _endpoint = endpoint;
+    _initDocumentsServiceProxy();
+  }
   
   private void _initDocumentsServiceProxy() {
 //    try {
@@ -37,7 +42,7 @@ public class DocumentsServiceProxy implements DocumentsService {
 //      
 //    }
 //    catch (javax.xml.rpc.ServiceException serviceException) {}
-//  
+
     try {
 		it.eng.spagobi.sdk.documents.stub.DocumentsServiceServiceLocator locator = new it.eng.spagobi.sdk.documents.stub.DocumentsServiceServiceLocator();
 		Remote remote = locator.getPort(it.eng.spagobi.sdk.documents.stub.DocumentsService.class);
@@ -79,6 +84,12 @@ public class DocumentsServiceProxy implements DocumentsService {
     if (documentsService == null)
       _initDocumentsServiceProxy();
     return documentsService.getDocumentsAsList(in0, in1, in2);
+  }
+  
+  public it.eng.spagobi.sdk.documents.bo.SDKDocument getDocumentById(java.lang.Integer in0) throws java.rmi.RemoteException{
+    if (documentsService == null)
+      _initDocumentsServiceProxy();
+    return documentsService.getDocumentById(in0);
   }
   
   public it.eng.spagobi.sdk.documents.bo.SDKFunctionality getDocumentsAsTree(java.lang.String in0) throws java.rmi.RemoteException{
@@ -123,12 +134,11 @@ public class DocumentsServiceProxy implements DocumentsService {
     return documentsService.saveNewDocument(in0, in1, in2);
   }
   
-  public it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent executeDocument(it.eng.spagobi.sdk.documents.bo.SDKDocument in0, it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter[] in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException, it.eng.spagobi.sdk.exceptions.InvalidParameterValue, it.eng.spagobi.sdk.exceptions.MissingParameterValue, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException{
-	    if (documentsService == null)
-	      _initDocumentsServiceProxy();
-	    return documentsService.executeDocument(in0, in1, in2, in3);
-	  }
-	  
+  public it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent executeDocument(it.eng.spagobi.sdk.documents.bo.SDKDocument in0, it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter[] in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.InvalidParameterValue, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException, it.eng.spagobi.sdk.exceptions.MissingParameterValue, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException{
+    if (documentsService == null)
+      _initDocumentsServiceProxy();
+    return documentsService.executeDocument(in0, in1, in2, in3);
+  }
   
   
 }

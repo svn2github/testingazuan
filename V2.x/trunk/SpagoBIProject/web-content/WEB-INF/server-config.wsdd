@@ -64,6 +64,26 @@
   <arrayMapping innerType="ns15:SDKDataStoreFieldMetadata" languageSpecificType="java:it.eng.spagobi.sdk.datasets.bo.SDKDataStoreFieldMetadata[]" qname="ns14:ArrayOf_tns2_SDKDataStoreFieldMetadata" xmlns:ns14="urn:spagobisdkdatasets" xmlns:ns15="http://bo.datasets.sdk.spagobi.eng.it"/>
   <arrayMapping innerType="soapenc:string" languageSpecificType="java:java.lang.String[]" qname="ns16:ArrayOf_soapenc_string" xmlns:ns16="urn:spagobisdkdatasets" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"/>
  </service>
+  <service name="DataSourcesSDKService" provider="java:RPC">
+  <requestFlow>
+   <handler type="java:org.apache.ws.axis.security.WSDoAllReceiver">
+    <parameter name="passwordCallbackClass" value="it.eng.spagobi.sdk.callbacks.ServerPWCallback"/>
+    <parameter name="action" value="UsernameToken"/>
+   </handler>
+  </requestFlow>
+  <parameter name="wsdlServicePort" value="DataSourcesSDKService"/>
+  <parameter name="className" value="it.eng.spagobi.sdk.datasources.stub.DataSourcesSDKServiceSoapBindingSkeleton"/>
+  <parameter name="typeMappingVersion" value="1.2"/>
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="wsdlServiceElement" value="DataSourcesSDKServiceService"/>
+  <parameter name="wsdlTargetNamespace" value="urn:spagobisdkdatasources"/>
+  <parameter name="wsdlPortType" value="DataSourcesSDKService"/>
+  <parameter name="scope" value="Session"/>
+  <parameter name="schemaUnqualified" value="http://exceptions.sdk.spagobi.eng.it,urn:spagobisdkdatasources,http://bo.datasources.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns29:NotAllowedOperationException" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.exceptions.NotAllowedOperationException" xmlns:ns29="http://exceptions.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns30:SDKDataSource" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.datasources.bo.SDKDataSource" xmlns:ns30="http://bo.datasources.sdk.spagobi.eng.it"/>
+  <arrayMapping innerType="ns32:SDKDataSource" languageSpecificType="java:it.eng.spagobi.sdk.datasources.bo.SDKDataSource[]" qname="ns31:ArrayOf_tns2_SDKDataSource" xmlns:ns31="urn:spagobisdkdatasources" xmlns:ns32="http://bo.datasources.sdk.spagobi.eng.it"/>
+ </service>
  <service name="AdminService" provider="java:MSG">
   <parameter name="allowedMethods" value="AdminService"/>
   <parameter name="enableRemoteAdmin" value="false"/>
@@ -201,7 +221,41 @@
   <parameter name="scope" value="Application"/>
   <parameter name="schemaUnqualified" value="http://xml.apache.org/xml-soap"/>
  </service>
- <service name="DocumentsService" provider="java:RPC">
+  <service name="DocumentsService" provider="java:RPC">
+  <requestFlow>
+   <handler type="java:org.apache.ws.axis.security.WSDoAllReceiver">
+    <parameter name="passwordCallbackClass" value="it.eng.spagobi.sdk.callbacks.ServerPWCallback"/>
+    <parameter name="action" value="UsernameToken"/>
+   </handler>
+  </requestFlow>  
+  <parameter name="wsdlServicePort" value="DocumentsService"/>
+  <parameter name="className" value="it.eng.spagobi.sdk.documents.stub.DocumentsServiceSoapBindingSkeleton"/>
+  <parameter name="typeMappingVersion" value="1.2"/>
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="wsdlServiceElement" value="DocumentsServiceService"/>
+  <parameter name="wsdlTargetNamespace" value="urn:spagobisdkdocuments"/>
+  <parameter name="wsdlPortType" value="DocumentsService"/>
+  <parameter name="scope" value="Session"/>
+  <parameter name="schemaUnqualified" value="urn:spagobisdkdocuments,http://exceptions.sdk.spagobi.eng.it,http://xml.apache.org/xml-soap,http://bo.documents.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns33:mapItem" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.apache.xml.xml_soap.MapItem" xmlns:ns33="http://xml.apache.org/xml-soap"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns34:SDKTemplate" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.documents.bo.SDKTemplate" xmlns:ns34="http://bo.documents.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns35:NonExecutableDocumentException" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException" xmlns:ns35="http://exceptions.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns36:MissingParameterValue" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.exceptions.MissingParameterValue" xmlns:ns36="http://exceptions.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns37:InvalidParameterValue" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.exceptions.InvalidParameterValue" xmlns:ns37="http://exceptions.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns38:SDKFunctionality" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.documents.bo.SDKFunctionality" xmlns:ns38="http://bo.documents.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns39:SDKDocumentParameter" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter" xmlns:ns39="http://bo.documents.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns40:SDKExecutedDocumentContent" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent" xmlns:ns40="http://bo.documents.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns41:SDKConstraint" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.documents.bo.SDKConstraint" xmlns:ns41="http://bo.documents.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns42:NotAllowedOperationException" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.exceptions.NotAllowedOperationException" xmlns:ns42="http://exceptions.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns43:SDKDocument" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.documents.bo.SDKDocument" xmlns:ns43="http://bo.documents.sdk.spagobi.eng.it"/>
+  <arrayMapping innerType="xsd:anyType" languageSpecificType="java:java.lang.Object[]" qname="ns44:ArrayOf_xsd_anyType" xmlns:ns44="urn:spagobisdkdocuments" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  <arrayMapping innerType="ns46:SDKConstraint" languageSpecificType="java:it.eng.spagobi.sdk.documents.bo.SDKConstraint[]" qname="ns45:ArrayOf_tns2_SDKConstraint" xmlns:ns45="urn:spagobisdkdocuments" xmlns:ns46="http://bo.documents.sdk.spagobi.eng.it"/>
+  <arrayMapping innerType="ns48:SDKDocumentParameter" languageSpecificType="java:it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter[]" qname="ns47:ArrayOf_tns2_SDKDocumentParameter" xmlns:ns47="urn:spagobisdkdocuments" xmlns:ns48="http://bo.documents.sdk.spagobi.eng.it"/>
+  <arrayMapping innerType="soapenc:string" languageSpecificType="java:java.lang.String[]" qname="ns49:ArrayOf_soapenc_string" xmlns:ns49="urn:spagobisdkdocuments" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"/>
+  <arrayMapping innerType="ns51:SDKDocument" languageSpecificType="java:it.eng.spagobi.sdk.documents.bo.SDKDocument[]" qname="ns50:ArrayOf_tns2_SDKDocument" xmlns:ns50="urn:spagobisdkdocuments" xmlns:ns51="http://bo.documents.sdk.spagobi.eng.it"/>
+  <arrayMapping innerType="ns53:SDKFunctionality" languageSpecificType="java:it.eng.spagobi.sdk.documents.bo.SDKFunctionality[]" qname="ns52:ArrayOf_tns2_SDKFunctionality" xmlns:ns52="urn:spagobisdkdocuments" xmlns:ns53="http://bo.documents.sdk.spagobi.eng.it"/>
+ </service>
+ <!--  <service name="DocumentsService" provider="java:RPC">
   <requestFlow>
    <handler type="java:org.apache.ws.axis.security.WSDoAllReceiver">
     <parameter name="passwordCallbackClass" value="it.eng.spagobi.sdk.callbacks.ServerPWCallback"/>
@@ -235,6 +289,7 @@
   <arrayMapping innerType="ns47:SDKFunctionality" languageSpecificType="java:it.eng.spagobi.sdk.documents.bo.SDKFunctionality[]" qname="ns46:ArrayOf_tns2_SDKFunctionality" xmlns:ns46="urn:spagobisdkdocuments" xmlns:ns47="http://bo.documents.sdk.spagobi.eng.it"/>
   <arrayMapping innerType="ns49:SDKConstraint" languageSpecificType="java:it.eng.spagobi.sdk.documents.bo.SDKConstraint[]" qname="ns48:ArrayOf_tns2_SDKConstraint" xmlns:ns48="urn:spagobisdkdocuments" xmlns:ns49="http://bo.documents.sdk.spagobi.eng.it"/>
  </service>
+ -->
  <transport name="http">
   <requestFlow>
    <handler type="URLMapper"/>

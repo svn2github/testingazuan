@@ -92,6 +92,23 @@
   <parameter name="wsdlTargetNamespace" value="urn:spagobisdktestconnection"/>
   <parameter name="wsdlServiceElement" value="TestConnectionServiceService"/>
  </service>
+   <service name="DataSourcesSDKService" provider="java:RPC">
+  <requestFlow>
+	<handler type="WSDoAllSender"/>
+  </requestFlow>
+  <parameter name="wsdlServicePort" value="DataSourcesSDKService"/>
+  <parameter name="className" value="it.eng.spagobi.sdk.datasources.stub.DataSourcesSDKServiceSoapBindingStub"/>
+  <parameter name="typeMappingVersion" value="1.2"/>
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="wsdlServiceElement" value="DataSourcesSDKServiceService"/>
+  <parameter name="wsdlTargetNamespace" value="urn:spagobisdkdatasources"/>
+  <parameter name="wsdlPortType" value="DataSourcesSDKService"/>
+  <parameter name="scope" value="Session"/>
+  <parameter name="schemaUnqualified" value="http://exceptions.sdk.spagobi.eng.it,urn:spagobisdkdatasources,http://bo.datasources.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns29:NotAllowedOperationException" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.exceptions.NotAllowedOperationException" xmlns:ns29="http://exceptions.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns30:SDKDataSource" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.datasources.bo.SDKDataSource" xmlns:ns30="http://bo.datasources.sdk.spagobi.eng.it"/>
+  <arrayMapping innerType="ns32:SDKDataSource" languageSpecificType="java:it.eng.spagobi.sdk.datasources.bo.SDKDataSource[]" qname="ns31:ArrayOf_tns2_SDKDataSource" xmlns:ns31="urn:spagobisdkdatasources" xmlns:ns32="http://bo.datasources.sdk.spagobi.eng.it"/>
+ </service>
  <service name="DataSetsSDKService" provider="java:RPC">
   <requestFlow>
 	<handler type="WSDoAllSender"/>

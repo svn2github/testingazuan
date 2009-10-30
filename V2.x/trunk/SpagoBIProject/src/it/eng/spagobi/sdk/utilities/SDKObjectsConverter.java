@@ -37,6 +37,7 @@ import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
 import it.eng.spagobi.sdk.datasets.bo.SDKDataSetParameter;
 import it.eng.spagobi.sdk.datasets.bo.SDKDataStoreFieldMetadata;
 import it.eng.spagobi.sdk.datasets.bo.SDKDataStoreMetadata;
+import it.eng.spagobi.sdk.datasources.bo.SDKDataSource;
 import it.eng.spagobi.sdk.documents.bo.SDKConstraint;
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
@@ -44,6 +45,7 @@ import it.eng.spagobi.sdk.documents.bo.SDKFunctionality;
 import it.eng.spagobi.sdk.documents.bo.SDKTemplate;
 import it.eng.spagobi.sdk.engines.bo.SDKEngine;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.tools.dataset.bo.DataSetParameterItem;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
@@ -319,6 +321,45 @@ public class SDKObjectsConverter {
 		return sdkEngine;
 	}
 
+	
+	
+	
+	
+	
+	
+	public SDKDataSource fromSpagoBiDataSourceToSDKDataSource(SpagoBiDataSource spagoBiDataSource) {
+		logger.debug("IN");
+		if (spagoBiDataSource == null) {
+			logger.warn("SpagoBiDataSource in input is null!!");
+			return null;
+		}
+		SDKDataSource toReturn = null;
+		try {
+			toReturn = new SDKDataSource();
+			toReturn.setId(spagoBiDataSource.getId());
+			toReturn.setLabel(spagoBiDataSource.getLabel());
+			toReturn.setJndi(spagoBiDataSource.getJndiName());
+			toReturn.setAttrSchema(spagoBiDataSource.getSchemaAttribute());
+			//toReturn.setDescr(spagoBiDataSource.)
+			//toReturn.setDialectId(spagoBiDataSource.get)
+			toReturn.setDriver(spagoBiDataSource.getDriver());
+			toReturn.setMultiSchema(spagoBiDataSource.getMultiSchema()== true ? Integer.valueOf(1) :Integer.valueOf(0));
+			//toReturn.setUserName(spa)
+			toReturn.setPwd(spagoBiDataSource.getPassword());
+			toReturn.setUrlConnection(spagoBiDataSource.getUrl());
+
+		} catch (Exception e) {
+			logger.error("Error while converting SpagoBiDataSource into SDKDataSource.", e);
+			logger.debug("Returning null.");
+			return null;
+		} finally {
+			logger.debug("OUT");
+		}
+		return toReturn;
+	}
+
+	
+	
 	public SDKDataSet fromSpagoBiDataSetToSDKDataSet(SpagoBiDataSet spagoBiDataSet) {
 		logger.debug("IN");
 		if (spagoBiDataSet == null) {

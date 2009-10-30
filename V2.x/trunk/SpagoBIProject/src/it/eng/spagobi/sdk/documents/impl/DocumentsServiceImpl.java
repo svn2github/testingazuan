@@ -659,6 +659,11 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 		return toReturn;
 	}
 
+	public SDKDocument getDocumentById(Integer id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 
 

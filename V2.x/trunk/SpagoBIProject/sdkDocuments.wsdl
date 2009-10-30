@@ -169,6 +169,8 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       <wsdl:part name="in2" type="soapenc:string"/>
 
+      <wsdl:part name="in3" type="soapenc:string"/>
+
    </wsdl:message>
 
    <wsdl:message name="getDocumentParametersRequest">
@@ -176,6 +178,12 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
       <wsdl:part name="in0" type="soapenc:int"/>
 
       <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDocumentByIdResponse">
+
+      <wsdl:part name="getDocumentByIdReturn" type="tns2:SDKDocument"/>
 
    </wsdl:message>
 
@@ -204,8 +212,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
       <wsdl:part name="in1" type="soapenc:string"/>
 
       <wsdl:part name="in2" type="soapenc:string"/>
-
-      <wsdl:part name="in3" type="soapenc:string"/>
 
    </wsdl:message>
 
@@ -240,6 +246,12 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
       <wsdl:part name="in1" type="tns2:SDKTemplate"/>
 
       <wsdl:part name="in2" type="soapenc:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDocumentByIdRequest">
+
+      <wsdl:part name="in0" type="soapenc:int"/>
 
    </wsdl:message>
 
@@ -318,6 +330,14 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          <wsdl:input message="impl:getDocumentsAsListRequest" name="getDocumentsAsListRequest"/>
 
          <wsdl:output message="impl:getDocumentsAsListResponse" name="getDocumentsAsListResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDocumentById" parameterOrder="in0">
+
+         <wsdl:input message="impl:getDocumentByIdRequest" name="getDocumentByIdRequest"/>
+
+         <wsdl:output message="impl:getDocumentByIdResponse" name="getDocumentByIdResponse"/>
 
       </wsdl:operation>
 
@@ -422,6 +442,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:input>
 
          <wsdl:output name="getDocumentsAsListResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobisdkdocuments" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDocumentById">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getDocumentByIdRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobisdkdocuments" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getDocumentByIdResponse">
 
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobisdkdocuments" use="encoded"/>
 

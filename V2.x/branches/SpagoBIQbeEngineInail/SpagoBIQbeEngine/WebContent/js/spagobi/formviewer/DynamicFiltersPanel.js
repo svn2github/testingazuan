@@ -49,7 +49,7 @@ Ext.ns("Sbi.formviewer");
 Sbi.formviewer.DynamicFiltersPanel = function(dynamicFilters) {
 	
 	var settings = {
-		columnNo: 2
+		columnNo: 3
 		, columnWidth: 350
 		, labelAlign: 'left'
 		, fieldWidth: 200	
@@ -64,7 +64,7 @@ Sbi.formviewer.DynamicFiltersPanel = function(dynamicFilters) {
 	this.baseConfig = c;
 	
 	var columnsBaseConfig = [];
-	for(var i = 0; i < c.columnNo; i++) {		
+	for(var i = 0; i < c.columnNo; i++) {
 		columnsBaseConfig[i] = {
 			width: c.columnWidth,
             layout: 'form',
@@ -98,7 +98,7 @@ Sbi.formviewer.DynamicFiltersPanel = function(dynamicFilters) {
 	
 };
 
-Ext.extend(Sbi.formviewer.DynamicFiltersPanel, Ext.Panel, {
+Ext.extend(Sbi.formviewer.DynamicFiltersPanel, Ext.form.FormPanel, {
     
 	services: null
 	   
@@ -117,7 +117,12 @@ Ext.extend(Sbi.formviewer.DynamicFiltersPanel, Ext.Panel, {
 				this.fields[dynamicFilters[i].id + '_value_' + j] = aValueInput;
 			}
 			this.columns[0].add( combo );
-			this.columns[1].add( valuesInputs );
+			this.columns[1].add( valuesInputs[0] );
+			if (valuesInputs.length > 1) {
+				this.columns[2].add( valuesInputs[1] );
+			} else {
+				this.columns[2].add( new Ext.form.Field({hidden: true, labelSeparator: ''}) );
+			}
 		}
 		
 		this.doLayout();
@@ -134,7 +139,7 @@ Ext.extend(Sbi.formviewer.DynamicFiltersPanel, Ext.Panel, {
 		});
 
 		var combo = new Ext.form.ComboBox({
-            editable: false			
+            editable: false
             , fieldLabel: 'Variabile'
 		    , forceSelection: false
 		    , store: store
@@ -150,11 +155,25 @@ Ext.extend(Sbi.formviewer.DynamicFiltersPanel, Ext.Panel, {
 	}
 	
 	, createFieldValuesInput: function(dynamicFilter) {
-		var valuesInput = new Ext.form.TextField({
-			fieldLabel: 'Valore'
-		   , name : 'Valore'
-		   , allowBlank: true
-		});
+		var valuesInput = [];
+		if (dynamicFilter.operator.toUpperCase() === 'BETWEEN') {
+			valuesInput[0] = new Ext.form.TextField({
+				fieldLabel: 'Dal valore'
+			   , name : 'DaValore'
+			   , allowBlank: true
+			});
+			valuesInput[1] = new Ext.form.TextField({
+				fieldLabel: 'al valore'
+			   , name : 'AValore'
+			   , allowBlank: true
+			});
+		} else {
+			valuesInput[0] = new Ext.form.TextField({
+				fieldLabel: 'Valore'
+			   , name : 'Valore'
+			   , allowBlank: true
+			});
+		}
 		return valuesInput;
 	}
 

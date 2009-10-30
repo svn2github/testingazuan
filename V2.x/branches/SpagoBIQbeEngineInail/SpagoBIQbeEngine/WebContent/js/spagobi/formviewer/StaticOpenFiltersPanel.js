@@ -158,7 +158,22 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.FormPanel, {
 			    , autoLoad: false
 			}));
 		} else {
+			/* */
+			field = new Ext.ux.form.SuperBoxSelect(Ext.apply(baseConfig, {
+	            editable: true			    
+			    , forceSelection: false
+			    , store: store
+			    , displayField: 'column-1'
+			    , valueField: 'column-1'
+			    , emptyText: ''
+			    , typeAhead: false
+			    //, typeAheadDelay: 1000
+			    , triggerAction: 'all'
+			    , selectOnFocus:true
+			    , autoLoad: false
+			}));
 			
+			/* 
 			field = new Ext.ux.Andrie.Select(Ext.apply(baseConfig, {
 				multiSelect: true
 				, maxLength: openFilter.maxSelectedNumber
@@ -169,6 +184,7 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.FormPanel, {
 			    , selectOnFocus: true
 			    , autoLoad: false
 			}));
+			*/
 			/*
 			field = new Ext.ux.BoxSelect(Ext.apply(baseConfig, {
 	            editable: true			    

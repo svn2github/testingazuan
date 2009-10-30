@@ -1,12 +1,14 @@
 package it.eng.spagobi.studio.core.wizards.downloadWizard;
 
 import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
+import it.eng.spagobi.sdk.datasources.bo.SDKDataSource;
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.sdk.documents.bo.SDKTemplate;
 import it.eng.spagobi.sdk.engines.bo.SDKEngine;
 import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
+import it.eng.spagobi.sdk.proxy.DataSourcesSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
 import it.eng.spagobi.sdk.proxy.EnginesServiceProxy;
 import it.eng.spagobi.services.proxy.DataSetServiceProxy;
@@ -161,6 +163,19 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			return;
 		}			
 
+		{
+			
+			SDKProxyFactory proxyFactory=new SDKProxyFactory();
+			DataSetsSDKServiceProxy dataSetServiceProxy=proxyFactory.getDataSetsSDKServiceProxy();
+			try{
+				SDKDataSet sdkDataSet=dataSetServiceProxy.getDataSet(1);
+			}
+catch (Exception e) {
+	// TODO: handle exception
+}
+			
+		}
+		
 
 		// DAtaset Infomation field
 		String dataSetName=null;
@@ -177,7 +192,23 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 				//return;
 			}			
 		}
-		//}
+
+		// DAtaset Infomation field
+		String dataSourceName=null;
+		if(document.getDataSourceId()!=null){
+			try{
+				SDKProxyFactory proxyFactory=new SDKProxyFactory();
+				DataSourcesSDKServiceProxy dataSourcesServiceProxy=proxyFactory.getDataSourcesSDKServiceProxy();
+				SDKDataSource sdkDataSource=dataSourcesServiceProxy.getDataSource(document.getDataSourceId());
+				dataSourceName=sdkDataSource.getLabel();
+			}
+			catch (Exception e) {
+				e.printStackTrace(); 
+				SpagoBILogger.errorLog("No comunic8ation with SpagoBI server, could not retrieve dataSource informations", e);
+				//MessageDialog.openError(getShell(), "Error", "Could not retrieve dataset Information");	
+				//return;
+			}			
+		}
 
 
 		// get the extension
@@ -265,7 +296,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 
 			//Set Informative Metadata	
 			try{
-				newFile=BiObjectUtilities.setFileInformativeMetaData(newFile,engineName, dataSetName, null);
+				newFile=BiObjectUtilities.setFileInformativeMetaData(newFile,engineName, dataSetName, dataSourceName);
 				//newFile=BiObjectUtilities.setFileMetaData(newFile,document);
 			}
 			catch (CoreException e) {

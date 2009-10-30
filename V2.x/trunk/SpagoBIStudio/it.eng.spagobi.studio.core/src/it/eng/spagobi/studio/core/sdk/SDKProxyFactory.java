@@ -1,6 +1,7 @@
 package it.eng.spagobi.studio.core.sdk;
 
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
+import it.eng.spagobi.sdk.proxy.DataSourcesSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
 import it.eng.spagobi.sdk.proxy.EnginesServiceProxy;
 
@@ -38,5 +39,17 @@ public class SDKProxyFactory {
 		proxy.setEndpoint(serverUrl + "sdk/DataSetsSDKService");
 		return proxy;
 	}
+
+	public static DataSourcesSDKServiceProxy getDataSourcesSDKServiceProxy() {
+		SpagoBIServerConnectionDefinition def = new SpagoBIServerConnectionDefinition();
+		DataSourcesSDKServiceProxy proxy = new DataSourcesSDKServiceProxy(def.getUserName(), def.getPassword());
+		String serverUrl = def.getServerUrl();
+		if (serverUrl != null && !serverUrl.endsWith("/")) {
+			serverUrl += "/";
+		}
+		proxy.setEndpoint(serverUrl + "sdk/DataSourcesSDKService");
+		return proxy;
+	}
+
 	
 }

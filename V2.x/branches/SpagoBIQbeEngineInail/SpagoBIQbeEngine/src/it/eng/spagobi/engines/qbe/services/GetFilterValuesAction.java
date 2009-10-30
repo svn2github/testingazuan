@@ -202,7 +202,7 @@ public class GetFilterValuesAction extends AbstractQbeEngineAction {
 	private Query buildQuery(String fieldUniqueName, JSONObject filtersJSON) throws JSONException {
 		logger.debug("IN: fieldUniqueName = " + fieldUniqueName);
 		Query query = new Query();
-		query.addSelectFiled(fieldUniqueName, "NONE", "Valori", true, true, false, "asc");
+		query.addSelectFiled(fieldUniqueName, "NONE", "Valori", true, true, false, null);
 		query.setDistinctClauseEnabled(true);
 		if (filtersJSON != null) {
 			String valuefilter = (String) filtersJSON.get(SpagoBIConstants.VALUE_FILTER);

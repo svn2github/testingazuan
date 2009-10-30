@@ -125,6 +125,18 @@ Ext.ux.form.SuperBoxSelect = Ext.extend(Ext.ux.form.SuperBoxSelect,Ext.form.Comb
      */
     forceFormValue: true,
     
+    // start modifications by Zerbetto (30/10/2009): added maxSelection property
+    /**
+     * @cfg {Boolean} maxSelection The max number of available selections  
+     */
+    maxSelection: Number.MAX_VALUE,
+    
+    /**
+     * @cfg {String} maxSelectionText Validation message displayed when maxSelection is not met
+     */
+    maxSelectionText: 'Maximum {0} items allowed',
+    // end modifications by Zerbetto (30/10/2009)
+    
     /**
      * @cfg {Boolean} navigateItemsWithTab When set to true the tab key will navigate between selected items. Defaults to true.
      */
@@ -326,7 +338,9 @@ Ext.ux.form.SuperBoxSelect = Ext.extend(Ext.ux.form.SuperBoxSelect,Ext.form.Comb
 	    	},this);
 	    }
     	this.store.add(toAdd);
-    	this.store.sort(this.displayField, 'ASC');
+    	// start modifications by Zerbetto (30/10/2009): removed sort operation
+    	//this.store.sort(this.displayField, 'ASC');
+    	// end modifications by Zerbetto (30/10/2009)
     	
 		if(this.store.getCount() === 0 && this.isExpanded()){
 			this.collapse();
@@ -672,7 +686,12 @@ Ext.ux.form.SuperBoxSelect = Ext.extend(Ext.ux.form.SuperBoxSelect,Ext.form.Comb
                  return false;
              }
         }
-        
+        // start modifications by Zerbetto (30/10/2009): added maxSelection validation
+        if(this.items.getCount() > this.maxSelection){
+            this.markInvalid(String.format(this.maxSelectionText, this.maxSelection));
+            return false;
+        }
+        // end modifications by Zerbetto (30/10/2009)
         this.clearInvalid();
         return true;
     },
@@ -686,7 +705,7 @@ Ext.ux.form.SuperBoxSelect = Ext.extend(Ext.ux.form.SuperBoxSelect,Ext.form.Comb
     },
     setupFormInterception : function(){
         var form;
-        // start modifications by Zerbetto (28/10/2009): in Ext 2.0 findParentBy function is not defined
+        // start modifications by Zerbetto (29/10/2009): in Ext 2.0 findParentBy function is not defined
         if (this.findParentBy) {
         	this.findParentBy(function(p){ 
 	            if(p.getForm){
@@ -701,7 +720,7 @@ Ext.ux.form.SuperBoxSelect = Ext.extend(Ext.ux.form.SuperBoxSelect,Ext.form.Comb
 	            }
 	        });
          */
-        // end modifications by Zerbetto (28/10/2009)
+        // end modifications by Zerbetto (29/10/2009)
         if(form){
         	
         	var formGet = form.getValues;

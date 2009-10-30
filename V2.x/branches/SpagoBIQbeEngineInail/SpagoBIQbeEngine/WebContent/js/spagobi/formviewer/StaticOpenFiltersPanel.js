@@ -169,8 +169,9 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.FormPanel, {
 			    , typeAhead: false
 			    //, typeAheadDelay: 1000
 			    , triggerAction: 'all'
-			    , selectOnFocus:true
+			    , selectOnFocus: true
 			    , autoLoad: false
+			    , maxSelection: openFilter.maxSelectedNumber
 			}));
 			
 			/* 

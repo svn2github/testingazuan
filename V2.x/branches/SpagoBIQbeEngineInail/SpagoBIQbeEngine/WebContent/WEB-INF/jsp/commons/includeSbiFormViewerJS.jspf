@@ -6,15 +6,15 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <!-- Include QBE stylesheets -->
 <link rel="styleSheet" href ="../css/qbe.css" type="text/css" />
 
-<!-- Include SuperBoxSelect code 
+<!-- Include SuperBoxSelect code -->
 <script type="text/javascript" src='../js/lib/ext-2.0.1/ux/form/SuperBoxSelect.js'/></script>
--->
-<!-- Include SuperBoxSelect stylesheets 
+
+<!-- Include SuperBoxSelect stylesheets -->
 <link rel="styleSheet" href ="../js/lib/ext-2.0.1/resources/css/superboxselect.css" type="text/css" />
 <link rel="styleSheet" href ="../js/lib/ext-2.0.1/resources/css/superboxselect-gray-extend.css" type="text/css" />
--->
 
-<!-- Include ux.Andrie.Select (multi-selection combobox) code --> 
+
+<!-- Include ux.Andrie.Select (multi-selection combobox) code -->
 <script type="text/javascript" src='../js/lib/ext-2.0.1/ux/Andrie/Select/Select.js'/></script>
 
 <!-- Include ux.Andrie.Select stylesheets -->

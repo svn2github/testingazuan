@@ -18,8 +18,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IViewReference;
@@ -32,6 +35,7 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
@@ -41,7 +45,6 @@ public class DocumentCompositionEditor extends EditorPart {
 	String templateName="";
 	int height=0;
 	int width=0;
-	Composite parent;
 	//DocumentComposition documentComposition;
 	MetadataDocumentComposition metadataDocumentComposition;
 	Designer designer;
@@ -63,7 +66,7 @@ public class DocumentCompositionEditor extends EditorPart {
 			byte[] bytes = newContent.getBytes();
 			bais = new ByteArrayInputStream(bytes);
 			file.setContents(bais, IFile.FORCE, null);
-			
+
 		} catch (CoreException e) {
 			SpagoBILogger.errorLog("Error while Saving Chart Template File",e);
 			e.printStackTrace();
@@ -78,7 +81,7 @@ public class DocumentCompositionEditor extends EditorPart {
 				}
 		}
 		setIsDirty(false);
-	   
+
 	}
 	public void setIsDirty(boolean isDirty) {
 		this.isDirty = isDirty;
@@ -109,7 +112,7 @@ public class DocumentCompositionEditor extends EditorPart {
 		try {
 			DocumentComposition documentComposition = bo.createModel(file);
 			bo.saveModel(documentComposition);
-			
+
 			metadataDocumentComposition = new MetadataDocumentComposition();
 			Activator.getDefault().setMetadataDocumentComposition(metadataDocumentComposition);
 		} catch (CoreException e) {
@@ -131,44 +134,42 @@ public class DocumentCompositionEditor extends EditorPart {
 	@Override
 	public void createPartControl(Composite _parent) {
 		SpagoBILogger.infoLog(DocumentCompositionEditor.class.toString()+": Create Part Control function");
-		
-		//inserisce le 3 viste
-        try {
-            IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench()
-                            .getActiveWorkbenchWindow().getActivePage();
-            if(iworkbenchpage != null){
-	            if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView") == null ){
-	                        iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView");
-	            }
-	            if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView") == null ){
-	                iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView");
-	            }
-	            if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.NavigationView") == null ){
-	                iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.NavigationView");
-	            }
-	            if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.VideoSizeView") == null ){
-	                iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.VideoSizeView");
-	            }	            
-            }
-        } catch (PartInitException partinitexception) {
-                partinitexception.printStackTrace();
-        }
-		
-		
-		
-		parent=_parent;
-		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
-		final ScrolledForm form = toolkit.createScrolledForm(parent);
-		
-		//		TableWrapLayout layout = new TableWrapLayout();
-		//		layout.numColumns = 1;
-		//		layout.horizontalSpacing = 20;
-		//		layout.verticalSpacing = 10;
-		//		layout.topMargin = 20;
-		//		layout.leftMargin = 20;
-		FillLayout fill = new FillLayout();
 
-		form.getBody().setLayout(fill);
+		//inserisce le 3 viste
+		try {
+			IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench()
+			.getActiveWorkbenchWindow().getActivePage();
+			if(iworkbenchpage != null){
+				if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView") == null ){
+					iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView");
+				}
+				if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView") == null ){
+					iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView");
+				}
+				if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.NavigationView") == null ){
+					iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.NavigationView");
+				}
+				if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.VideoSizeView") == null ){
+					iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.VideoSizeView");
+				}	            
+			}
+		} catch (PartInitException partinitexception) {
+			partinitexception.printStackTrace();
+		}
+
+
+		FormToolkit toolkit = new FormToolkit(_parent.getDisplay());
+		final ScrolledForm form = toolkit.createScrolledForm(_parent);
+
+		TableWrapLayout layout = new TableWrapLayout();
+		layout.numColumns = 1;
+		layout.horizontalSpacing = 20;
+		layout.verticalSpacing = 10;
+		layout.topMargin = 20;
+		layout.leftMargin = 20;
+		//		FillLayout layout = new FillLayout();
+
+		form.getBody().setLayout(layout);
 
 		final Section section = toolkit.createSection(form.getBody(), 
 				Section.TITLE_BAR | SWT.NO_REDRAW_RESIZE);
@@ -180,17 +181,22 @@ public class DocumentCompositionEditor extends EditorPart {
 				form.reflow(true);
 			}
 		});
-		section.setText("Document Composition designer");
+		section.setText("Document Composition designer: Screen");
 		Composite sectionClient = toolkit.createComposite(section, SWT.NO_REDRAW_RESIZE);
-		sectionClient.setSize(1000, 1000);
+		//sectionClient.setSize(1000, 1000);
+		Composite composite=new Group(sectionClient,SWT.BORDER_DOT);
+		//		composite.setText("Video");
+		composite.setBackground(new Color(composite.getDisplay(), new RGB(240,240,240)));
+		composite.setLocation(0, 0);
+		composite.setSize(800, 600);
 
-		designer=new Designer(sectionClient, this);
+		designer=new Designer(composite, this);
 		designer.setEditor(this);
 		section.setClient(sectionClient);
 
 		// Add the control resize, shell resize all the document Containers
-		width=parent.getBounds().width;
-		height=parent.getBounds().height;
+		width=sectionClient.getBounds().width;
+		height=sectionClient.getBounds().height;
 
 		// Now initialize Editor with DocumentComposition retrieved
 		initializeEditor(new ModelBO().getModel());

@@ -150,10 +150,10 @@ public class Designer {
 		FormLayout layout=new FormLayout();
 		//composite.setLayout(layout);
 		mainComposite=composite;
-		setMouseControls(composite);
-		addContextMenu(composite);
+		setMouseControls(mainComposite);
+		addContextMenu(mainComposite);
 		containers=new HashMap<Integer, DocContainer>();
-		addShellMouseControls(composite);
+		addShellMouseControls(mainComposite);
 		this.editor=_editor;
 	}
 
@@ -226,6 +226,7 @@ public class Designer {
 				case SWT.MouseDown:
 					/**  IF in resizing state mouse button on shell causes end resizing**/
 					DocContainer selectedDoc=currentSelection.intValue()!=-1 ? containers.get(currentSelection) : null ;
+					System.out.println("MAin composite in x="+mainComposite.getBounds().x+" y="+mainComposite.getBounds().x+" height="+mainComposite.getBounds().height+" width="+mainComposite.getBounds().width);
 					Composite selected=currentSelection.intValue()!=-1 ? containers.get(currentSelection).getDocumentContained().getGroup() : null ;
 					if(getState().equals(Designer.RESIZE)){
 						setState(Designer.NORMAL);
@@ -340,9 +341,10 @@ public class Designer {
 				}
 			}
 		};
-		shell.addListener(SWT.MouseDown, listener);
-		shell.addListener(SWT.MouseUp, listener);
-		shell.addListener(SWT.MouseMove, listener);
+		mainComposite.addListener(SWT.MouseDown, listener);
+		mainComposite.addListener(SWT.MouseUp, listener);
+		mainComposite.addListener(SWT.MouseMove, listener);
+
 		SpagoBILogger.infoLog("END "+Designer.class.toString()+": Add Shell mouse control");		
 	}
 

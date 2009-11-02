@@ -48,20 +48,22 @@ public class NavigationView extends ViewPart {
 	FormToolkit toolkit;
 	Label labelNoDocs;
 	
-	boolean reloaded = false;
+/*	boolean reloaded = false;
+	boolean hasDocuments = false;	*/
 	
 	HashMap <String, String> docInfoUtil = new HashMap<String, String>();
-	boolean hasDocuments = false;
 	
 	private Button newButton; 
 	private Button deleteButton;
 	private Button updateButton;
 	
-	private DocumentComposition documentComp = Activator.getDefault().getDocumentComposition();
-	private MetadataDocumentComposition metadataDoc = Activator.getDefault().getMetadataDocumentComposition();
+	private DocumentComposition documentComp;
+	private MetadataDocumentComposition metadataDoc;
 	
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
+		documentComp = Activator.getDefault().getDocumentComposition();
+		metadataDoc = Activator.getDefault().getMetadataDocumentComposition();
 		
 	}
 	/**
@@ -69,7 +71,8 @@ public class NavigationView extends ViewPart {
 	 * it.
 	 */
 	public void createPartControl(Composite parent) {		
-		//test();
+		documentComp = Activator.getDefault().getDocumentComposition();
+		metadataDoc = Activator.getDefault().getMetadataDocumentComposition();
 		
 		fillDocumentsNames();
 		toolkit = new FormToolkit(parent.getDisplay());
@@ -150,9 +153,7 @@ public class NavigationView extends ViewPart {
 		
 	}
 	protected Table createTable(Composite parent, FormToolkit toolkit, Composite client){
-		if(docInfoUtil == null || docInfoUtil.size() == 0){
-			fillDocumentsNames();
-		}
+
 		table = toolkit.createTable(client, SWT.SINGLE  | SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 20;
@@ -176,7 +177,7 @@ public class NavigationView extends ViewPart {
 					//recupera ogni documento
 					Document doc = (Document)docs.elementAt(i);
 					Parameters params = doc.getParameters();
-					if(params != null){
+					if(params != null && params.getParameter() != null){
 						Vector par = params.getParameter();
 						for(int j =0; j<par.size(); j++){
 							Parameter param = (Parameter)par.elementAt(j);
@@ -354,25 +355,24 @@ public class NavigationView extends ViewPart {
 		
 		metadataDoc = Activator.getDefault().getMetadataDocumentComposition();
 		documentComp= Activator.getDefault().getDocumentComposition();
-		if(!hasDocuments){
-			if(labelNoDocs != null){
-				labelNoDocs.dispose();
-			}
-			if(!reloaded){
-				if(table != null && !table.isDisposed()){
-					table.dispose();
-				}
-				if((newButton == null && deleteButton == null && updateButton == null) ||(
-						newButton.isDisposed() && deleteButton.isDisposed() && updateButton.isDisposed())){
-					loadNavigations(toolkit, client.getParent().getParent());
-				}else{
-					/**tabella navigazioni**/
-					createTable(client.getParent(), toolkit, client);
-				}
-			}
-			hasDocuments = true;
-			reloaded = true;
+
+		fillDocumentsNames();
+		if(labelNoDocs != null){
+			labelNoDocs.dispose();
 		}
+
+		if(table != null && !table.isDisposed()){
+			table.dispose();
+		}
+		if((newButton == null && deleteButton == null && updateButton == null) ||(
+				newButton.isDisposed() && deleteButton.isDisposed() && updateButton.isDisposed())){
+			loadNavigations(toolkit, client.getParent().getParent());
+		}else{
+			/**tabella navigazioni**/
+			createTable(client.getParent(), toolkit, client);
+		}
+
+
 		client.layout();
 		client.redraw();
 	}

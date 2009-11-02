@@ -1,6 +1,7 @@
 package it.eng.spagobi.studio.documentcomposition.wizards.pages;
 
 import it.eng.spagobi.studio.documentcomposition.Activator;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.RefreshDocLinked;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataParameter;
@@ -20,6 +21,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -424,6 +426,51 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 	      };
 	    cancel.addListener(SWT.Selection, dialogListener);
 	    return error;
+		
+	}
+	protected Shell createConfirmDialog(Composite client, final boolean[] result, int element, RefreshDocLinked destin){
+		final Shell confirm = new Shell(client.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+		confirm.setLayout(new RowLayout());
+		
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 3;
+		confirm.setSize(500, 100);
+		
+		String message = "Warning!Another navigation uses the same destination parameter. \n This operation will modify both. \nContinue? ";
+		new Label(confirm, SWT.NONE).setText(message);
+		
+		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		gd.horizontalSpan = 3;
+		
+		Point pt = client.getDisplay().getCursorLocation ();
+		confirm.setLocation (pt.x, pt.y);
+
+	    final Button ok = new Button(confirm, SWT.PUSH);
+	    ok.setText("Confirm");
+	    Button cancel = new Button(confirm, SWT.PUSH);
+	    cancel.setText("Cancel");
+	    confirm.isReparentable();
+	    
+
+	    
+	    final int elem =element;
+	    final String refreshID =destin.getIdParam();
+	    Listener dialogListener = new Listener() {
+	        public void handleEvent(Event event) {
+	          result[0] = event.widget == ok;
+	          confirm.notifyListeners(event.type, event);
+	          confirm.close();
+				if(result[0]){
+					destinationInfo = destinationInfos.get(elem);
+					destinationInfo.setParamDestName(destinationInputParam.elementAt(elem).getText());
+					destinationInfo.setParamDestId(refreshID);
+				}
+	        }
+	      };
+	      
+	    ok.addListener(SWT.Selection, dialogListener);
+	    cancel.addListener(SWT.Selection, dialogListener);
+	    return confirm;
 		
 	}
 	private boolean canSelectDestination(String currentDest, int currentCombo){

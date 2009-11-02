@@ -8,7 +8,7 @@ import java.util.Vector;
 public class MetadataDocumentComposition {
 
 	private Vector<MetadataDocument> metadataDocuments=new Vector<MetadataDocument>();
-
+	
 	public Vector<MetadataDocument> getMetadataDocuments() {
 		return metadataDocuments;
 	}

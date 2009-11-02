@@ -8,6 +8,8 @@ public class DocumentsConfiguration {
 	private String videoHeight;
 	private Vector<Document> documents=new Vector<Document>();
 
+	private static int VIDEO_WIDTH=1200;
+	private static int VIDEO_HEIGHT=1064;
 
 	public Vector<Document> getDocuments() {
 		return documents;
@@ -35,6 +37,8 @@ public class DocumentsConfiguration {
 
 	public DocumentsConfiguration() {
 		documents=new Vector<Document>();
+		videoHeight=Integer.valueOf(VIDEO_HEIGHT).toString();
+		videoWidth=Integer.valueOf(VIDEO_WIDTH).toString();
 	}
 
 

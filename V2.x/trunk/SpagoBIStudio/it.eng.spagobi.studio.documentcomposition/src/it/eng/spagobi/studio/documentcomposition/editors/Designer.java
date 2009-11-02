@@ -83,11 +83,11 @@ public class Designer {
 
 		// shell check if overlaids or exceeds
 		int tempWidth=_width;
-		tempWidth=tempWidth/DocContainer.ALIGNMENT_MARGIN;
-		tempWidth=tempWidth*DocContainer.ALIGNMENT_MARGIN;
+//		tempWidth=tempWidth/DocContainer.ALIGNMENT_MARGIN;
+//		tempWidth=tempWidth*DocContainer.ALIGNMENT_MARGIN;
 		int tempHeight=_height;
-		tempHeight=tempHeight/DocContainer.ALIGNMENT_MARGIN;
-		tempHeight=tempHeight*DocContainer.ALIGNMENT_MARGIN;
+//		tempHeight=tempHeight/DocContainer.ALIGNMENT_MARGIN;
+//		tempHeight=tempHeight*DocContainer.ALIGNMENT_MARGIN;
 
 		Rectangle rectangle=new Rectangle(x,y, tempWidth, tempHeight);
 		boolean doesExceed=DocContainer.doesExceed(Integer.valueOf(-1), this, x, y, tempWidth, tempHeight, false);
@@ -497,10 +497,20 @@ public class Designer {
 						//							metadataDocumentComposition.setMetadataDocuments(metadataDocumentVector);
 						//						}
 						//						metadataDocumentVector.add(metadataDocument);
+						// ************		PREPARE MEASURES FOR THE DESIGNER	*****************
+						String videoWidth=(new ModelBO()).getModel().getDocumentsConfiguration().getVideoWidth();
+						String videoHeight=(new ModelBO()).getModel().getDocumentsConfiguration().getVideoHeight();
+						int vWidth=Integer.valueOf(videoWidth);
+						int vHeight=Integer.valueOf(videoHeight);
 
 						int widthToPut=metadataStyle.getWidthFromPerc(mainComposite);
 						int heightToPut=metadataStyle.getHeightFromPerc(mainComposite);
-						addDocContainerFromTemplate(mainComposite, metadataStyle.getX(), metadataStyle.getY(), widthToPut, heightToPut, metadataDocument, document);
+						// scale x and y to default designer sizes
+
+						int scaledX=(DESIGNER_WIDTH*metadataStyle.getX())/vWidth;
+						int scaledY=(DESIGNER_HEIGHT*metadataStyle.getY())/vHeight;
+
+						addDocContainerFromTemplate(mainComposite, scaledX, scaledY, widthToPut, heightToPut, metadataDocument, document);
 					}
 					else{
 						MessageDialog.openError(mainComposite.getShell(), 

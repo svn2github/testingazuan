@@ -3,7 +3,9 @@ package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposit
 
 import org.eclipse.swt.widgets.Composite;
 
+import it.eng.spagobi.studio.documentcomposition.editors.Designer;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 
 public class MetadataStyle {
 
@@ -48,10 +50,23 @@ public class MetadataStyle {
 		y=Integer.valueOf(topValue).intValue();
 		widthPercentage=Integer.valueOf(widthValue).intValue();
 		heightPercentage=Integer.valueOf(heightValue).intValue();
-		
+
+
+
+		String videoHeight=(new ModelBO()).getModel().getDocumentsConfiguration().getVideoHeight();
+		String videoWidth=(new ModelBO()).getModel().getDocumentsConfiguration().getVideoWidth();
+		int videoHeightI=Integer.valueOf(videoHeight).intValue();
+		int videoWidthI=Integer.valueOf(videoWidth).intValue();
+
+		// x : 800 (DESIGNER_WIDTH) = mio : videoWidth 
+//		int scaledX=(x*videoWidthI) / Designer.DESIGNER_WIDTH;
+//		int scaledY=(y*videoHeightI) / Designer.DESIGNER_HEIGHT;
+//
+//		x=scaledX;
+//		y=scaledY;
 
 	}
-	
+
 	public int getWidthFromPerc(Composite mainComposite){
 		// calculate the percentage of the whole composite
 		int mainSize=mainComposite.getBounds().width;

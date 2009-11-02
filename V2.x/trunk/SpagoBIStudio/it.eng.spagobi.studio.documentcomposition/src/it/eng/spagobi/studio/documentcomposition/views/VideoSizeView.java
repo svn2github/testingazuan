@@ -1,5 +1,6 @@
 package it.eng.spagobi.studio.documentcomposition.views;
 
+import it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
@@ -11,15 +12,22 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.internal.EditorReference;
 import org.eclipse.ui.part.ViewPart;
 
 public class VideoSizeView extends ViewPart{
 
 	Composite client;
+	Spinner heightSpin=null;
+	Spinner widthSpin=null;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -59,7 +67,7 @@ public class VideoSizeView extends ViewPart{
 		Label text2=new Label(client, SWT.NULL);
 		text2.setText("Video Height: ");
 
-		final Spinner heightSpin = new Spinner (client, SWT.BORDER);
+		heightSpin = new Spinner (client, SWT.BORDER);
 		heightSpin.setMaximum(100000);
 		heightSpin.setMinimum(0);
 		heightSpin.setSelection(Integer.valueOf(height));
@@ -78,13 +86,21 @@ public class VideoSizeView extends ViewPart{
 				if(modelBO.getModel()!=null && modelBO.getModel().getDocumentsConfiguration()!=null){
 					modelBO.getModel().getDocumentsConfiguration().setVideoHeight(newSizeInt.toString());
 				}
+				IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
+				IWorkbenchPage aa=a.getActivePage();
+				IEditorReference[] editors=aa.findEditors(null, "it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor", IWorkbenchPage.MATCH_ID);
+				if(editors!=null && editors.length>0){
+					EditorReference editorReference=(EditorReference)editors[0];
+					DocumentCompositionEditor editor=(DocumentCompositionEditor)editorReference.getPart(false);
+					editor.setIsDirty(true);
+				}				
 			}
 		});
 
 		Label text1=new org.eclipse.swt.widgets.Label(client, SWT.NULL);
 		text1.setText("Video : ");
 
-		final Spinner widthSpin = new Spinner (client, SWT.BORDER);
+		widthSpin = new Spinner (client, SWT.BORDER);
 		widthSpin.setMaximum(100000);
 		widthSpin.setMinimum(0);
 		widthSpin.setSelection(Integer.valueOf(width));
@@ -103,6 +119,14 @@ public class VideoSizeView extends ViewPart{
 				if(modelBO.getModel()!=null && modelBO.getModel().getDocumentsConfiguration()!=null){
 					modelBO.getModel().getDocumentsConfiguration().setVideoWidth(newSizeInt.toString());
 				}
+				IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
+				IWorkbenchPage aa=a.getActivePage();
+				IEditorReference[] editors=aa.findEditors(null, "it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor", IWorkbenchPage.MATCH_ID);
+				if(editors!=null && editors.length>0){
+					EditorReference editorReference=(EditorReference)editors[0];
+					DocumentCompositionEditor editor=(DocumentCompositionEditor)editorReference.getPart(false);
+					editor.setIsDirty(true);
+				}				
 			}
 		});
 
@@ -112,6 +136,19 @@ public class VideoSizeView extends ViewPart{
 
 
 	}
+
+	public void reloadSizes(){
+		DocumentComposition docCompModel=new ModelBO().getModel();
+		if(docCompModel!=null && docCompModel.getDocumentsConfiguration()!=null){
+			String heightS=docCompModel.getDocumentsConfiguration().getVideoHeight();
+			String widthS=docCompModel.getDocumentsConfiguration().getVideoHeight();
+			int height=Integer.valueOf(heightS);
+			int width=Integer.valueOf(widthS);
+			heightSpin.setSelection(height);
+			widthSpin.setSelection(width);
+		}		
+	}
+
 
 	@Override
 	public void setFocus() {

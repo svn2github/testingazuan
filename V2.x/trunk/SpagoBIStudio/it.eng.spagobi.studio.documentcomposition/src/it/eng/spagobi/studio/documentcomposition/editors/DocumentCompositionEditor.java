@@ -5,11 +5,13 @@ import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.util.XmlTemplateGenerator;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
 import it.eng.spagobi.studio.documentcomposition.views.NavigationView;
+import it.eng.spagobi.studio.documentcomposition.views.VideoSizeView;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -24,6 +26,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -36,6 +39,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
+import org.eclipse.ui.internal.EditorReference;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
@@ -56,10 +60,17 @@ public class DocumentCompositionEditor extends EditorPart {
 		// TODO Auto-generated method stub
 		SpagoBILogger.infoLog("Start Saving Document Composition Template File");
 		ByteArrayInputStream bais = null;
+
+		// Before Saving recalculate all containers style because they could have changed with video size
+		DocumentComposition documentComposition=(new ModelBO()).getModel();
+
+		// reload styles
+		documentComposition.reloadAllStylesContained();
+
+
 		try {
 			FileEditorInput fei = (FileEditorInput) getEditorInput();
 			IFile file = fei.getFile();
-			DocumentComposition documentComposition=(new ModelBO()).getModel();
 			String newContent =  generator.transformToXml(documentComposition);
 			System.out.println("******** SAVING ***************");
 			System.out.println(newContent);
@@ -151,6 +162,24 @@ public class DocumentCompositionEditor extends EditorPart {
 				}
 				if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.VideoSizeView") == null ){
 					iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.VideoSizeView");
+					IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
+					IWorkbenchPage aa=a.getActivePage();
+					IViewReference w=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.VideoSizeView");
+					Object p=w.getPart(false);
+					if(p!=null){
+						VideoSizeView view=(VideoSizeView)p;
+						view.reloadSizes();
+					}
+					else{
+						// View not present
+
+					}
+
+
+
+
+
+
 				}	            
 			}
 		} catch (PartInitException partinitexception) {

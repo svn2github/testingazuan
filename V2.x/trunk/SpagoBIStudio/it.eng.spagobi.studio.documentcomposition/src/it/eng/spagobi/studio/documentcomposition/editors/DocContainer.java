@@ -53,8 +53,8 @@ public class DocContainer {
 
 	String title="";
 
-	public static final int DEFAULT_WIDTH=200;
-	public static final int DEFAULT_HEIGHT=200;
+	public static final int DEFAULT_WIDTH=210;
+	public static final int DEFAULT_HEIGHT=210;
 	public static final int MIN_MARGIN_BOUNDS=0;
 	public static final int ALIGNMENT_MARGIN=30;
 
@@ -259,25 +259,25 @@ public class DocContainer {
 						tempY=tempY/ALIGNMENT_MARGIN;
 						tempY=tempY*ALIGNMENT_MARGIN;
 
-						// check if space is almost filled: autofill
-						int width=documentContained.getGroup().getBounds().width;
-						int height=documentContained.getGroup().getBounds().height;
-						int totalX=width+tempX;
-						int mainWidth=mainComposite.getBounds().width;		
-						if((mainWidth-totalX)<=(DocContainer.ALIGNMENT_MARGIN+10)){
-							// increase the width to fill							
-							int newwidth=width+((mainWidth-totalX));
-							//documentContained.getGroup().getBounds().width=width;
-							documentContained.getGroup().setSize(newwidth, height);
-						}
-						int totalY=height+tempY;
-						int mainHeight=mainComposite.getBounds().height;		
-						if((mainHeight-totalY)<=(DocContainer.ALIGNMENT_MARGIN+10)){
-							// increase the width to fill							
-							int newheight=height+((mainHeight-totalY));
-							//documentContained.getGroup().getBounds().width=width;
-							documentContained.getGroup().setSize(width, newheight);
-						}
+						// check if space is almost filled: autofill  DISABLED AUTOFILL WITH BOUNDS IN DRAG!
+//						int width=documentContained.getGroup().getBounds().width;
+//						int height=documentContained.getGroup().getBounds().height;
+//						int totalX=width+tempX;
+//						int mainWidth=mainComposite.getBounds().width;		
+//						if((mainWidth-totalX)<=(DocContainer.ALIGNMENT_MARGIN+10)){
+//							// increase the width to fill							
+//							int newwidth=width+((mainWidth-totalX));
+//							//documentContained.getGroup().getBounds().width=width;
+//							documentContained.getGroup().setSize(newwidth, height);
+//						}
+//						int totalY=height+tempY;
+//						int mainHeight=mainComposite.getBounds().height;		
+//						if((mainHeight-totalY)<=(DocContainer.ALIGNMENT_MARGIN+10)){
+//							// increase the width to fill							
+//							int newheight=height+((mainHeight-totalY));
+//							//documentContained.getGroup().getBounds().width=width;
+//							documentContained.getGroup().setSize(width, newheight);
+//						}
 
 						documentContained.getGroup().setLocation(tempX, tempY);
 						reloadStyleDocumentProperties();						
@@ -528,21 +528,21 @@ public class DocContainer {
 		int videoHeightI=Integer.valueOf(videoHeight).intValue();
 		int videoWidthI=Integer.valueOf(videoWidth).intValue();
 		
-		// x : 800 (DESIGNER_WIDTH) = mio : videoWidth 
-		int scaledX=(x*videoWidthI) / Designer.DESIGNER_WIDTH;
-		int scaledY=(y*videoHeightI) / Designer.DESIGNER_HEIGHT;
+		// Lo stile deve essere scalato alla dimensione reale
+		int realX=(x*videoWidthI) / Designer.DESIGNER_WIDTH;
+		int realY=(y*videoHeightI) / Designer.DESIGNER_HEIGHT;
 		
 		Rectangle rect=documentContained.getGroup().getBounds();
 		int width =rect.width;
 		int height =rect.height;
 
 		// get the left margin: arrotondo alla decina
-		toAdd+="left:"+Integer.valueOf(scaledX).toString()+"px;";
+		toAdd+="left:"+Integer.valueOf(realX).toString()+"px;";
 
 		// get the top margin: arrotondo alla decina
 		int marginTopTemp=y/DocContainer.ALIGNMENT_MARGIN;
 		int marginTop=y*DocContainer.ALIGNMENT_MARGIN;
-		toAdd+="top:"+Integer.valueOf(scaledY).toString()+"px;";
+		toAdd+="top:"+Integer.valueOf(realY).toString()+"px;";
 
 		// get the total height and width of the container
 		Point point=designer.getMainComposite().getSize();

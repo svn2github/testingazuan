@@ -59,7 +59,12 @@ Sbi.locale.ln['sbi.qbe.messagewin.warning.title'] = 'Warning message';
 Sbi.locale.ln['sbi.qbe.messagewin.error.title'] = 'Error message';
 Sbi.locale.ln['sbi.qbe.messagewin.info.title'] = 'Info message';
 
-
+//LookupField 
+Sbi.locale.ln['sbi.lookup.Confirm'] = 'Confirm';
+Sbi.locale.ln['sbi.lookup.Annulla'] = 'Cancel';
+Sbi.locale.ln['sbi.lookup.Select']= 'Select Value ...';
+Sbi.locale.ln['sbi.lookup.ValueOfColumn'] ='The value of the column';
+Sbi.locale.ln['sbi.lookup.asA'] = 'as a';
 
 //===================================================================
 //QUERY EDITOR PANEL
@@ -70,6 +75,12 @@ Sbi.locale.ln['sbi.qbe.queryeditor.westregion.tools.expand'] = 'Expand all';
 Sbi.locale.ln['sbi.qbe.queryeditor.westregion.tools.collapse'] = 'Collapse all'; 
 Sbi.locale.ln['sbi.qbe.queryeditor.westregion.tools.flat'] = 'Flat view'; 
 Sbi.locale.ln['sbi.qbe.queryeditor.westregion.tools.addcalculated'] = 'Add calulated field'; 
+
+Sbi.locale.ln['sbi.qbe.queryeditor.savequery'] = 'Save query ...';
+Sbi.locale.ln['sbi.qbe.queryeditor.querysaved'] = 'Query saved';
+Sbi.locale.ln['sbi.qbe.queryeditor.querysavedsucc'] = 'Query saved succesfully';
+Sbi.locale.ln['sbi.qbe.queryeditor.msgwarning'] = 'The query is incorrect; do you want to save it anyway?';
+Sbi.locale.ln['sbi.qbe.queryeditor.saveqasview'] = 'Save query as view...';
 
 Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.title'] = 'Query Editor';
 Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.save'] = 'Save query as subobject';
@@ -82,6 +93,22 @@ Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.title'] = 'Query Catalogue';
 Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.delete'] = 'Delete query';
 Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.add'] = 'Add query';
 Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.insert'] = 'Insert query';
+
+//===================================================================
+//EXPRESSION EDITOR
+//===================================================================
+Sbi.locale.ln['sbi.qbe.expreditor.title'] = 'Expression Editor';
+Sbi.locale.ln['sbi.qbe.expreditor.items'] = 'Exp. Items';
+Sbi.locale.ln['sbi.qbe.expreditor.operands'] = 'Operands';
+Sbi.locale.ln['sbi.qbe.expreditor.operators'] = 'Operators';
+Sbi.locale.ln['sbi.qbe.expreditor.structure'] = 'Exp. Structure';
+Sbi.locale.ln['sbi.qbe.expreditor.clear'] = 'Clear All';
+Sbi.locale.ln['sbi.qbe.expreditor.expression'] = 'Expression';
+Sbi.locale.ln['sbi.qbe.expreditor.log'] =  'Log';
+Sbi.locale.ln['sbi.qbe.expreditor.refresh'] =  'Refresh expression structure';
+Sbi.locale.ln['sbi.qbe.expreditor.clearttp'] =  'Clear all selected fields';
+Sbi.locale.ln['sbi.qbe.expreditor.filterdesc'] = 'Filter description goes here';
+Sbi.locale.ln['sbi.qbe.expreditor.operatordesc'] =  'Operator description goes here';
 
 
 //===================================================================
@@ -104,6 +131,20 @@ Sbi.locale.ln['sbi.qbe.datastorepanel.grid.refreshtext'] = 'Refresh';
 
 Sbi.locale.ln['sbi.qbe.datastorepanel.button.tt.exportto'] = 'Export to';
 
+//===================================================================
+//SAVE WINDOW
+//===================================================================
+Sbi.locale.ln['sbi.qbe.savewindow.desc'] = 'Description';
+Sbi.locale.ln['sbi.qbe.savewindow.name'] = 'Name' ;
+Sbi.locale.ln['sbi.qbe.savewindow.saveas'] = 'Save as ...' ;
+Sbi.locale.ln['sbi.qbe.savewindow.selectscope'] = 'Select scope...' ;
+Sbi.locale.ln['sbi.qbe.savewindow.scope'] = 'Scope';
+Sbi.locale.ln['sbi.qbe.savewindow.save'] = 'Save';
+Sbi.locale.ln['sbi.qbe.savewindow.cancel'] = 'Cancel';
+Sbi.locale.ln['sbi.qbe.savewindow.public'] = 'Public';
+Sbi.locale.ln['sbi.qbe.savewindow.private'] = 'Private';
+Sbi.locale.ln['sbi.qbe.savewindow.publicdesc'] = 'Everybody that can execute this document will see also your saved subobject';
+Sbi.locale.ln['sbi.qbe.savewindow.privatedesc'] = 'The saved quary will be visible only to you';
 
 
 //===================================================================
@@ -130,7 +171,7 @@ Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.rodef'] = 'Right operand default 
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.rolast'] = 'Right operand last value';
 
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.isfree'] = 'Is for Prompt';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.delete'] = 'Delete';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.delete'] = 'Delete All';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.boperator'] = 'Bol.Connector';
 
 //column tooltip
@@ -235,7 +276,7 @@ Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.order'] = 'Order';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.group'] = 'Group';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.function'] = 'Function';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.field'] = 'Field';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.delete'] = 'Delete';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.delete'] = 'Delete All';
 
 //aggregation functions
 Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.none'] = 'none';
@@ -271,12 +312,12 @@ Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.hide'] = 'Hide non-visible';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.hide'] = 'Hide all non visible fields';
 
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.group'] = 'Group by entity';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.group'] = 'Group fileds by parent entity';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.group'] = 'Group fields by parent entity';
 
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.add'] = 'Add calculated';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.add'] = 'Add an ad-hoc calculated field (i.e. valid only for this query)';
 
-Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.delete'] = 'Delete';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.delete'] = 'Delete All';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.delete'] = 'Delete selected filed';
 
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.deleteall'] = 'Delete All';

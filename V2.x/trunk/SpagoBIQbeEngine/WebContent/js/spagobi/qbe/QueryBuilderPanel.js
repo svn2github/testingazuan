@@ -205,7 +205,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     , showSaveQueryWindow: function(){
 	    if(this.saveQueryWindow === null) {
 	    	this.saveQueryWindow = new Sbi.widgets.SaveWindow({
-	    		title: 'Save query ...'
+	    		title: LN('sbi.qbe.queryeditor.savequery')
 	    	});
 	    	this.saveQueryWindow.on('save', function(win, formState){this.saveQuery(formState);}, this);
 		}
@@ -227,8 +227,8 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 			} catch (ex) {}
 			
 			Ext.Msg.show({
-				   title:'Query saved',
-				   msg: 'Query saved succesfully',
+				   title:LN('sbi.qbe.queryeditor.querysaved'),
+				   msg: LN('sbi.qbe.queryeditor.querysavedsucc'),
 				   buttons: Ext.Msg.OK,
 				   icon: Ext.MessageBox.INFO
 			});
@@ -254,7 +254,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	}
     
 	, showSaveQueryWarning: function() {
-		Ext.Msg.confirm('WARNING','The query is incorrect; do you want to save it anyway?', function(btn) {
+		Ext.Msg.confirm('WARNING',LN('sbi.qbe.queryeditor.msgwarning'), function(btn) {
 			if (btn == 'yes') {
 				this.showSaveQueryWindow();
 			}
@@ -266,7 +266,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	, showSaveViewWindow: function() {
 		if(this.saveViewWindow === null) {
 			this.saveViewWindow = new Sbi.widgets.SaveWindow({
-	    		title: 'Save query as view...'
+	    		title:LN('sbi.qbe.queryeditor.saveqasview')
 	    		, descriptionFieldVisible: false
 	    		, scopeFieldVisible: false
 	    	});

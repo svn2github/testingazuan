@@ -152,9 +152,21 @@
             class="it.eng.spagobi.studio.core.properties.PropertyPage"
             id="it.eng.spagobi.studio.core.propertyPage"
             name="SpagoBI"
+            >
+      </page>
+   </extension>
+
+<!--
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="it.eng.spagobi.studio.core.properties.PropertyPage"
+            id="it.eng.spagobi.studio.core.propertyPage"
+            name="SpagoBI"
             nameFilter="*.sbi*">
       </page>
    </extension>
+-->
    
    <!-- 
    <extension

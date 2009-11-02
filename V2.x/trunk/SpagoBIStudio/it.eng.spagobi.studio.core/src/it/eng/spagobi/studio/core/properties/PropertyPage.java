@@ -1,20 +1,31 @@
 package it.eng.spagobi.studio.core.properties;
 
+import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
+import it.eng.spagobi.sdk.datasources.bo.SDKDataSource;
+import it.eng.spagobi.sdk.documents.bo.SDKDocument;
+import it.eng.spagobi.sdk.engines.bo.SDKEngine;
+import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
+import it.eng.spagobi.sdk.proxy.DataSourcesSDKServiceProxy;
+import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
+import it.eng.spagobi.sdk.proxy.EnginesServiceProxy;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
+import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 
 public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
@@ -35,12 +46,46 @@ IWorkbenchPropertyPage {
 
 	public static QualifiedName DATA_SOURCE_ID = new QualifiedName("it.eng.spagobi.sdk.datasource.id", "Identifier");
 	public static QualifiedName DATA_SOURCE_NAME = new QualifiedName("it.eng.spagobi.sdk.datasource.name", "Name");
+	public static QualifiedName DATA_SOURCE_LABEL = new QualifiedName("it.eng.spagobi.sdk.datasource.label", "Label");
+	public static QualifiedName DATA_SOURCE_DESCRIPTION = new QualifiedName("it.eng.spagobi.sdk.datasource.description", "Description");
 
 	public static QualifiedName ENGINE_ID = new QualifiedName("it.eng.spagobi.sdk.engine.id", "Identifier");
 	public static QualifiedName ENGINE_LABEL = new QualifiedName("it.eng.spagobi.sdk.engine.label", "Label");
 	public static QualifiedName ENGINE_NAME = new QualifiedName("it.eng.spagobi.sdk.engine.name", "Name");
 	public static QualifiedName ENGINE_DESCRIPTION = new QualifiedName("it.eng.spagobi.sdk.engine.description", "Description");
 
+	Group docGroup = null;
+	Group dataSetGroup = null;
+	Group dataSourceGroup = null;
+	Group engineGroup = null;
+
+	Label documentIdValue=null;
+	Label documentLabelValue=null;
+	Label documentNameValue=null;
+	Label documentDescriptionValue=null;
+	Label documentTypeValue=null;
+	Label documentStateValue=null;
+
+	Label engineIdValue=null;
+	Label engineLabelValue=null;
+	Label engineNameValue=null;
+	Label engineDescriptionValue=null;
+
+	Label datasetIdValue=null;
+	Label datasetLabelValue=null;
+	Label datasetNameValue=null;
+	Label datasetDescriptionValue=null;
+
+	Label dataSourceIdValue=null;
+	Label dataSourceLabelValue=null;
+	Label dataSourceNameValue=null;
+	Label dataSourceDescriptionValue=null;
+
+
+
+
+
+	Composite container=null;
 
 	public PropertyPage() {
 		super();
@@ -51,7 +96,7 @@ IWorkbenchPropertyPage {
 		// hide default buttons
 		this.noDefaultAndApplyButton();
 
-		Composite container = new Composite(parent, SWT.NULL);
+		container = new Composite(parent, SWT.NULL);
 		RowLayout rowLayout = new RowLayout();
 		rowLayout.wrap = false;
 		rowLayout.pack = true;
@@ -69,17 +114,23 @@ IWorkbenchPropertyPage {
 		layout.numColumns = 2;
 		layout.horizontalSpacing = 10;
 
-		Group docGroup = new Group(container, SWT.NULL);
+		docGroup = new Group(container, SWT.NULL);
 		docGroup.setText("Document's information:");
 		docGroup.setLayout(new FillLayout());
 		Composite docContainer = new Composite(docGroup, SWT.NULL);
 		docContainer.setLayout(layout);
 
-		Group dataSetGroup = new Group(container, SWT.NULL);
+		dataSetGroup = new Group(container, SWT.NULL);
 		dataSetGroup.setText("Dataset's information:");
 		dataSetGroup.setLayout(new FillLayout());
 		Composite datasetContainer = new Composite(dataSetGroup, SWT.NULL);
 		datasetContainer.setLayout(layout);
+
+		Group dataSourceGroup = new Group(container, SWT.NULL);
+		dataSourceGroup.setText("Datasource's information:");
+		dataSourceGroup.setLayout(new FillLayout());
+		Composite datasourceContainer = new Composite(dataSourceGroup, SWT.NULL);
+		datasourceContainer.setLayout(layout);
 
 		Group engineGroup = new Group(container, SWT.NULL);
 		engineGroup.setText("Engine's information:");
@@ -87,20 +138,71 @@ IWorkbenchPropertyPage {
 		Composite engineContainer = new Composite(engineGroup, SWT.NULL);
 		engineContainer.setLayout(layout);
 
-		addPropertyContent(docContainer, DOCUMENT_ID);
-		addPropertyContent(docContainer, DOCUMENT_LABEL);
-		addPropertyContent(docContainer, DOCUMENT_NAME);
-		addPropertyContent(docContainer, DOCUMENT_DESCRIPTION);
-		addPropertyContent(docContainer, DOCUMENT_TYPE);
-		addPropertyContent(docContainer, DOCUMENT_STATE);
-		addPropertyContent(datasetContainer, DATASET_ID);
-		addPropertyContent(datasetContainer, DATASET_LABEL);
-		addPropertyContent(datasetContainer, DATASET_NAME);
-		addPropertyContent(datasetContainer, DATASET_DESCRIPTION);
-		addPropertyContent(engineContainer, ENGINE_ID);
-		addPropertyContent(engineContainer, ENGINE_LABEL);
-		addPropertyContent(engineContainer, ENGINE_NAME);
-		addPropertyContent(engineContainer, ENGINE_DESCRIPTION);
+		new Label(docContainer, SWT.NULL).setText(DOCUMENT_ID.getLocalName());
+		documentIdValue=new Label(docContainer, SWT.NULL);
+		new Label(docContainer, SWT.NULL).setText(DOCUMENT_LABEL.getLocalName());
+		documentLabelValue=new Label(docContainer, SWT.NULL);
+		new Label(docContainer, SWT.NULL).setText(DOCUMENT_NAME.getLocalName());
+		documentNameValue=new Label(docContainer, SWT.NULL);
+		new Label(docContainer, SWT.NULL).setText(DOCUMENT_DESCRIPTION.getLocalName());
+		documentDescriptionValue=new Label(docContainer, SWT.NULL);
+		new Label(docContainer, SWT.NULL).setText(DOCUMENT_TYPE.getLocalName());
+		documentTypeValue=new Label(docContainer, SWT.NULL);
+		new Label(docContainer, SWT.NULL).setText(DOCUMENT_STATE.getLocalName());
+		documentStateValue=new Label(docContainer, SWT.NULL);
+		new Label(engineContainer, SWT.NULL).setText(ENGINE_ID.getLocalName());
+engineIdValue=new Label(docContainer, SWT.NULL);
+		new Label(engineContainer, SWT.NULL).setText(ENGINE_LABEL.getLocalName());
+		engineLabelValue=new Label(docContainer, SWT.NULL);
+		new Label(engineContainer, SWT.NULL).setText(ENGINE_NAME.getLocalName());
+		engineNameValue=new Label(docContainer, SWT.NULL);
+		new Label(engineContainer, SWT.NULL).setText(ENGINE_DESCRIPTION.getLocalName());
+		engineDescriptionValue=new Label(docContainer, SWT.NULL);
+		new Label(datasetContainer, SWT.NULL).setText(DATASET_ID.getLocalName());
+		datasetIdValue=new Label(docContainer, SWT.NULL);
+		new Label(datasetContainer, SWT.NULL).setText(DATASET_LABEL.getLocalName());
+		datasetLabelValue=new Label(docContainer, SWT.NULL);
+		new Label(datasetContainer, SWT.NULL).setText(DATASET_NAME.getLocalName());
+		datasetNameValue=new Label(docContainer, SWT.NULL);
+		new Label(datasetContainer, SWT.NULL).setText(DATASET_DESCRIPTION.getLocalName());
+
+		new Label(datasourceContainer, SWT.NULL).setText(DATA_SOURCE_ID.getLocalName());
+
+		new Label(datasourceContainer, SWT.NULL).setText(DATA_SOURCE_LABEL.getLocalName());
+
+		new Label(datasourceContainer, SWT.NULL).setText(DATA_SOURCE_NAME.getLocalName());
+
+		new Label(datasourceContainer, SWT.NULL).setText(DATA_SOURCE_DESCRIPTION.getLocalName());
+
+		
+		
+//		addPropertyContent(docContainer, DOCUMENT_ID);
+//		addPropertyContent(docContainer, DOCUMENT_LABEL);
+//		addPropertyContent(docContainer, DOCUMENT_NAME);
+//		addPropertyContent(docContainer, DOCUMENT_DESCRIPTION);
+//		addPropertyContent(docContainer, DOCUMENT_TYPE);
+//		addPropertyContent(docContainer, DOCUMENT_STATE);
+//		addPropertyContent(datasetContainer, DATASET_ID);
+//		addPropertyContent(datasetContainer, DATASET_LABEL);
+//		addPropertyContent(datasetContainer, DATASET_NAME);
+//		addPropertyContent(datasetContainer, DATASET_DESCRIPTION);
+//		addPropertyContent(engineContainer, ENGINE_ID);
+//		addPropertyContent(engineContainer, ENGINE_LABEL);
+//		addPropertyContent(engineContainer, ENGINE_NAME);
+//		addPropertyContent(engineContainer, ENGINE_DESCRIPTION);
+//		addPropertyContent(datasourceContainer, DATA_SOURCE_ID);
+//		addPropertyContent(datasourceContainer, DATA_SOURCE_NAME);
+
+		Button buttonRefresh=new Button(container, SWT.PUSH);
+		buttonRefresh.setText("Refresh Metadata");
+		Listener refreshListener = new Listener() {
+			public void handleEvent(Event event) {
+				refreshMetadata();
+			}
+		};
+
+		buttonRefresh.addListener(SWT.Selection, refreshListener);
+
 
 		return container;
 	}
@@ -125,6 +227,142 @@ IWorkbenchPropertyPage {
 		}
 	}
 
+
+	protected void refreshMetadata(){
+		IFile file = (IFile) this.getElement();
+		String documentId=null;
+
+		// Recover document
+		SDKDocument document=null;
+		try{
+			documentId=file.getPersistentProperty(DOCUMENT_ID);
+
+			SDKProxyFactory proxyFactory=new SDKProxyFactory();
+			DocumentsServiceProxy docServiceProxy=proxyFactory.getDocumentsServiceProxy();
+			document=docServiceProxy.getDocumentById(Integer.valueOf(documentId));
+		}
+		catch (Exception e) {
+			MessageDialog.openError(container.getShell(), 
+					"Error", "Could not recover document Id to refresh Meta Data!");		
+			SpagoBILogger.errorLog("Could not recover document Id",e);		
+			return;	
+		}
+
+		// Recover DataSource
+
+		Integer dataSourceId=document.getDataSourceId();
+		SDKDataSource dataSource=null;
+		if(dataSourceId!=null){
+			try{
+				SDKProxyFactory proxyFactory=new SDKProxyFactory();
+				DataSourcesSDKServiceProxy dataSourceServiceProxy=proxyFactory.getDataSourcesSDKServiceProxy();
+				dataSource=dataSourceServiceProxy.getDataSource(Integer.valueOf(dataSourceId));
+			}
+			catch (Exception e) {
+				MessageDialog.openError(container.getShell(), 
+						"Error", "Could not recover data source to refresh Meta Data!");		
+				SpagoBILogger.warningLog("Could not recover data source",e);		
+			}
+		}
+
+
+		// Recover DataSet
+
+		Integer dataSetId=document.getDataSetId();
+		SDKDataSet dataSet=null;
+		if(dataSetId!=null){
+			try{
+				SDKProxyFactory proxyFactory=new SDKProxyFactory();
+				DataSetsSDKServiceProxy dataSetServiceProxy=proxyFactory.getDataSetsSDKServiceProxy();
+				dataSet=dataSetServiceProxy.getDataSet(Integer.valueOf(dataSetId));
+			}
+			catch (Exception e) {
+				MessageDialog.openError(container.getShell(), 
+						"Error", "Could not recover data set to refresh Meta Data!");		
+				SpagoBILogger.warningLog("Could not recover data set",e);		
+			}
+		}
+
+
+		// Recover Engine
+
+		Integer engineId=document.getEngineId();
+		SDKEngine engine=null;
+		if(engineId!=null){
+			try{
+				SDKProxyFactory proxyFactory=new SDKProxyFactory();
+				EnginesServiceProxy engineServiceProxy=proxyFactory.getEnginesServiceProxy();
+				engine=engineServiceProxy.getEngine(Integer.valueOf(engineId));
+			}
+			catch (Exception e) {
+				MessageDialog.openError(container.getShell(), 
+						"Error", "Could not recover engine to refresh Meta Data!");		
+				SpagoBILogger.warningLog("Could not recover engine",e);		
+			}
+		}
+
+		// Reload Documents Metadata
+		if(document!=null){
+			try{
+				file.setPersistentProperty(PropertyPage.DOCUMENT_ID, document.getId().toString());
+				file.setPersistentProperty(PropertyPage.DOCUMENT_LABEL, document.getLabel());
+				file.setPersistentProperty(PropertyPage.DOCUMENT_NAME, document.getName()!=null ? document.getName() : "");
+				file.setPersistentProperty(PropertyPage.DOCUMENT_DESCRIPTION, document.getDescription()!=null ? document.getDescription() : "");
+				file.setPersistentProperty(PropertyPage.DOCUMENT_TYPE, document.getType()!=null ? document.getType() : "");
+				file.setPersistentProperty(PropertyPage.DOCUMENT_STATE, document.getState()!=null ? document.getState() : "");
+			}
+			catch (Exception e) {
+				MessageDialog.openError(container.getShell(), 
+						"Error", "Error while refreshing meta data!");		
+				SpagoBILogger.errorLog("Error while refreshing meta data",e);		
+			}
+		}
+		// Reload Engine Metadata
+		if(engine!=null){
+			try{
+				file.setPersistentProperty(PropertyPage.ENGINE_ID, engine.getId().toString());
+				file.setPersistentProperty(PropertyPage.ENGINE_LABEL, engine.getLabel());
+				file.setPersistentProperty(PropertyPage.ENGINE_NAME, engine.getName()!=null ? engine.getName() : "");
+				file.setPersistentProperty(PropertyPage.ENGINE_DESCRIPTION, engine.getDescription()!=null ? engine.getDescription() : "");
+			}
+			catch (Exception e) {
+				MessageDialog.openError(container.getShell(), 
+						"Error", "Error while refreshing engine meta data!");		
+				SpagoBILogger.errorLog("Error while refreshing engine meta data",e);		
+			}
+		}
+
+		// Reload dataSet Metadata
+		if(dataSet!=null){
+			try{
+				file.setPersistentProperty(PropertyPage.DATASET_ID, dataSet.getId().toString());
+				file.setPersistentProperty(PropertyPage.DATASET_LABEL, dataSet.getLabel());
+				file.setPersistentProperty(PropertyPage.DATASET_NAME, dataSet.getName()!=null ? dataSet.getName() : "");
+				file.setPersistentProperty(PropertyPage.DATASET_DESCRIPTION, dataSet.getDescription()!=null ? dataSet.getDescription() : "");
+			}
+			catch (Exception e) {
+				MessageDialog.openError(container.getShell(), 
+						"Error", "Error while refreshing dataset meta data!");		
+				SpagoBILogger.errorLog("Error while refreshing dataset meta data",e);		
+			}
+		}
+		// Reload dataSource Metadata
+		if(dataSource!=null){
+			try{
+				file.setPersistentProperty(PropertyPage.DATA_SOURCE_ID, dataSource.getId().toString());
+				file.setPersistentProperty(PropertyPage.DATA_SOURCE_LABEL, dataSource.getLabel()!=null ? dataSource.getLabel() : "");
+				file.setPersistentProperty(PropertyPage.DATA_SOURCE_NAME, dataSource.getName()!=null ? dataSource.getName() : "");
+				file.setPersistentProperty(PropertyPage.DATA_SOURCE_DESCRIPTION, dataSource.getDescr()!=null ? dataSource.getDescr() : "");
+			}
+			catch (Exception e) {
+				MessageDialog.openError(container.getShell(), 
+						"Error", "Error while refreshing dataSource meta data!");		
+				SpagoBILogger.errorLog("Error while refreshing dataSouce meta data",e);		
+			}
+		}
+
+
+	}
 
 
 	//	protected void setDocumentId(String documentId) {

@@ -6,27 +6,19 @@ import it.eng.spagobi.sdk.documents.bo.SDKDocument;
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.sdk.documents.bo.SDKTemplate;
 import it.eng.spagobi.sdk.engines.bo.SDKEngine;
-import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.DataSourcesSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
 import it.eng.spagobi.sdk.proxy.EnginesServiceProxy;
-import it.eng.spagobi.services.proxy.DataSetServiceProxy;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
-import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 import it.eng.spagobi.studio.core.util.BiObjectUtilities;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.rmi.RemoteException;
 
 import javax.activation.DataHandler;
 
-import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.internal.resources.Folder;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -34,14 +26,8 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.ProgressMonitorPart;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorDescriptor;
@@ -367,10 +353,10 @@ catch (Exception e) {
 			extension=".sbichart";
 		}
 		else if(type.equalsIgnoreCase("REPORT") && engine.equalsIgnoreCase("Birt")){
-			extension=".xml";
+			extension=".rptdesign";
 		}
 		else if(type.equalsIgnoreCase("REPORT") && engine.equalsIgnoreCase("JasperReport")){
-			extension=".xml";
+			extension=".jrxml";
 		}	
 		else if(type.equalsIgnoreCase("OLAP") && engine.equalsIgnoreCase("JPIVOT")){
 			extension=".xml";
@@ -388,7 +374,7 @@ catch (Exception e) {
 			extension=".xml";
 		}
 		else if(type.equalsIgnoreCase("Composite") && engine.equalsIgnoreCase("CompositeDocument")){
-			extension=".xml";
+			extension=".sbidoccomp";
 		}
 		else if(type.equalsIgnoreCase("DATA_MINING") && engine.equalsIgnoreCase("Weka")){
 			extension=".xml";

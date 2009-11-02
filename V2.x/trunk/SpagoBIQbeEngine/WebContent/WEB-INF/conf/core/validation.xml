@@ -12,7 +12,7 @@
 				</FIELD>
 				<FIELD name="queryDescription">
 				    <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
-					<VALIDATOR validatorName="MAXLENGTH" arg0="100"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="1000"/>
 				</FIELD>
 			</FIELDS>
 		</VALIDATION>

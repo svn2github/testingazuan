@@ -7,6 +7,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameters;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Refresh;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.RefreshDocLinked;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ParameterBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataParameter;
@@ -26,6 +27,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -282,9 +284,6 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	}
 	private void fillDestinationParamCombo(String destDoc, int destinComboToRedraw, String paramInSel){
 
-		if(destinComboToRedraw == 0){
-			destinationInputParam.elementAt(destinComboToRedraw).removeAll();
-		}
 		if(metaDoc != null){
 			Vector docs = metaDoc.getMetadataDocuments();
 			if(docs != null){
@@ -292,6 +291,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 					MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
 					String docName = doc.getName();
 					String docLabel= doc.getLabel();
+					
 					if(docLabel != null && !docLabel.equals("") &&(docLabel.equals(destDoc))){
 						Vector params = doc.getMetadataParameters();
 						if(params != null){
@@ -349,7 +349,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 
 		if(itemsSel != null && itemsSel.length != 0){
 
-			DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
+			final DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
 			if(docComp != null && docComp.getDocumentsConfiguration() != null){
 				Vector docs = docComp.getDocumentsConfiguration().getDocuments();
 				if(docs != null){
@@ -429,7 +429,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    					
 				    					final int element = k;
 				    					
-				    					destinationDocNameCombo.elementAt(destinCounter).addModifyListener(new ModifyListener() {
+				    					destinationDocNameCombo.elementAt(element).addModifyListener(new ModifyListener() {
 				    						public void modifyText(ModifyEvent event) {
 				    							Combo selectedCombo = (Combo) event.widget;
 				    							//ricavo dal vettore di combo la sua posizione
@@ -445,36 +445,42 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    						        confirm.setText("Error");
 				    						        confirm.setSize(300,100);
 				    								confirm.open();
-				    								return;
-				    							}
-
-				    							int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
-				    							if(sel != -1){
-					    							name = destinationDocNameCombo.elementAt(destinCounter).getItem(sel);
-					    							
+				    							}else{
+				    								name = destinationDocNameCombo.elementAt(element).getText();
 					    							destinationInputParam.elementAt(destinComboToRedraw).removeAll();
-					    							
-					    							fillDestinationParamCombo(name, destinComboToRedraw, docDestParam);
+					    							String label = docInfoUtil.get(name);
+
+					    							fillDestinationParamCombo(label, destinComboToRedraw, docDestParam);
 					    							destinationInputParam.elementAt(destinComboToRedraw).redraw();
 				    							}
+
 				    						}
 				    					});		
-				    					destinationInputParam.elementAt(destinCounter).addModifyListener(new ModifyListener() {
+				    					destinationInputParam.elementAt(element).addModifyListener(new ModifyListener() {
 				    						public void modifyText(ModifyEvent event) {
-				    							//aggiunge pulsante x add delle pagine
-				    													    					
-				    							destinationInfo = destinationInfos.get(destinCounter);
-				    							destinationInfo.setParamDestName(destinationInputParam.elementAt(destinCounter).getText());
-				    							destinationInfo.setParamDestId(destin.getIdParam());
+				    							//verifica se è già presente...
+				    							ParameterBO bo = new ParameterBO();
+				    							String docLab =docInfoUtil.get(destinationDocNameCombo.elementAt(element).getText());
+				    							boolean exists = bo.inputParameterExists(docComp, docLab, destinationInputParam.elementAt(element).getText());
+				    							if(exists){
+			    					        		//non è possibile cancellare destination
+				    								final boolean[] result = new boolean[1];
+				    						        Shell confirm = createConfirmDialog(composite2.getParent(), result, element, destin);				    						        
+				    								confirm.open();
+
+				    							}else{						    					
+					    							destinationInfo = destinationInfos.get(element);
+					    							destinationInfo.setParamDestName(destinationInputParam.elementAt(element).getText());
+					    							destinationInfo.setParamDestId(destin.getIdParam());
+				    							}
 				    							
 				    						}
 				    					});	
-				    					destinationInputParamDefaultValue.elementAt(destinCounter).addModifyListener(new ModifyListener() {
+				    					destinationInputParamDefaultValue.elementAt(element).addModifyListener(new ModifyListener() {
 				    						public void modifyText(ModifyEvent event) {
-				    							
-				    							//aggiunge pulsante x add delle pagine
-				    							destinationInfo = destinationInfos.get(destinCounter);
-				    							destinationInfo.setParamDestName(destinationInputParamDefaultValue.elementAt(destinCounter).getText());
+				    					
+				    							destinationInfo = destinationInfos.get(element);
+				    							destinationInfo.setParamDefaultValue(destinationInputParamDefaultValue.elementAt(element));
 				    							destinationInfo.setParamDestId(destin.getIdParam());
 				    							
 				    						}
@@ -615,6 +621,52 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	      };
 	    cancel.addListener(SWT.Selection, dialogListener);
 	    return error;
+		
+	}
+	
+	protected Shell createConfirmDialog(Composite client, final boolean[] result, int element, RefreshDocLinked destin){
+		final Shell confirm = new Shell(client.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+		confirm.setLayout(new RowLayout());
+		
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 3;
+		confirm.setSize(500, 100);
+		
+		String message = "Warning!Another navigation uses the same destination parameter. \n This operation will modify both. \nContinue? ";
+		new Label(confirm, SWT.NONE).setText(message);
+		
+		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		gd.horizontalSpan = 3;
+		
+		Point pt = client.getDisplay().getCursorLocation ();
+		confirm.setLocation (pt.x, pt.y);
+
+	    final Button ok = new Button(confirm, SWT.PUSH);
+	    ok.setText("Confirm");
+	    Button cancel = new Button(confirm, SWT.PUSH);
+	    cancel.setText("Cancel");
+	    confirm.isReparentable();
+	    
+
+	    
+	    final int elem =element;
+	    final String refreshID =destin.getIdParam();
+	    Listener dialogListener = new Listener() {
+	        public void handleEvent(Event event) {
+	          result[0] = event.widget == ok;
+	          confirm.notifyListeners(event.type, event);
+	          confirm.close();
+				if(result[0]){
+					destinationInfo = destinationInfos.get(elem);
+					destinationInfo.setParamDestName(destinationInputParam.elementAt(elem).getText());
+					destinationInfo.setParamDestId(refreshID);
+				}
+	        }
+	      };
+	      
+	    ok.addListener(SWT.Selection, dialogListener);
+	    cancel.addListener(SWT.Selection, dialogListener);
+	    return confirm;
 		
 	}
 	private boolean canSelectDestination(String currentDest, int currentCombo){

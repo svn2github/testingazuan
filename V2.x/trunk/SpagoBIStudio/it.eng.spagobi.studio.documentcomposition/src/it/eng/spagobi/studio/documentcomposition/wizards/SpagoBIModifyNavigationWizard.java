@@ -32,7 +32,7 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 
 	// workbench selection when the wizard was started
 	protected IStructuredSelection selection;
-
+	private DocumentComposition docComp ;
 
 	// the workbench instance
 	protected IWorkbench workbench;
@@ -76,10 +76,11 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 			int destinCounter= modifyNavigationWizardPage.getDestinCounter();
 			if(destinCounter!= -1){
 				if(!modifyNavigationWizardPage.getDestinationDocNameCombo().elementAt(destinCounter).isDisposed()){
-					int sel = modifyNavigationWizardPage.getDestinationDocNameCombo().elementAt(destinCounter).getSelectionIndex();
-					destinationInfo.setDocDestName(modifyNavigationWizardPage.getDestinationDocNameCombo().elementAt(destinCounter).getItem(sel));
-					int selIn = modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter).getSelectionIndex();		
-					destinationInfo.setParamDestName(modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter).getItem(selIn));
+					
+					destinationInfo.setDocDestName(modifyNavigationWizardPage.getDestinationDocNameCombo().elementAt(destinCounter).getText());
+						
+					destinationInfo.setParamDestName(modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter).getText());
+					
 					destinationInfo.setParamDefaultValue(modifyNavigationWizardPage.getDestinationInputParamDefaultValue().elementAt(destinCounter));
 					modifyNavigationWizardPage.getDestinationInfos().add(destinationInfo);	
 				}
@@ -118,10 +119,11 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 	@Override
 	public boolean performFinish() {
 	
+		
 		redrawTable();
 		//recupera da plugin oggetto DocumentComposition
+		docComp = Activator.getDefault().getDocumentComposition();
 		
-		DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
 
 		String masterName= modifyNavigationWizardPage.getMasterDocName().getText();
 	    //in realtà prende il doc master corrispondente a quello selezionato dall'utente
@@ -246,19 +248,39 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 			//recupera da hashmap di utilità la label corrispondente
 			String destLabel = docInfoUtil.get(destinationDoc);
 			
+			//aggiorna tutti parametri con la stessa label (sarà 1 solo!!! se non ci sono errori)
 			if(destLabel != null && destLabel.equals(doc.getSbiObjLabel())){
 				String paramName = destInfo.getParamDestName();	
 				String id =destInfo.getParamDestId();
 				ParameterBO bo = new ParameterBO();
-				bo.getParameterById(id, parameters);
-				Parameter param = bo.getParameterById(id, parameters);
-				//NB non può aggiungere parametri, ma solo modificarli o cancellarli
-				if(param != null){
-					param.setDefaultVal(destInfo.getParamDefaultValue().getText());	
+				//se esiste parametro IN con stessa label
+				Parameter paramsSameLabel = bo.getDocInputParameterByLabel(parameters, destInfo.getParamDestName());
+				if(paramsSameLabel != null){
+					//lo modifico nel valore di default 
+					if(paramsSameLabel != null){
+						paramsSameLabel.setDefaultVal(destInfo.getParamDefaultValue().getText());
+						//refresh corrispondente viene aggiornato
+						upadateRefreshedDocLink(paramsSameLabel.getId(), destinationDoc, destLabel);
+					}
+					//e cancello quello con id corrente
+					Parameter paramToDelete = bo.getParameterById(id, parameters);
+					parameters.remove(paramToDelete);
+					//refresh viene aggiornato-->cancellato
+					deleteRefreshedDocLink(id, destinationDoc, destLabel);
+				}else{
+					//modificato valore di default
+					Parameter param = bo.getParameterById(id, parameters);
+					if(param != null){
+						param.setDefaultVal(destInfo.getParamDefaultValue().getText());													
+					}
+					//refresh viene aggiornato
+					upadateRefreshedDocLink(id, destinationDoc, destLabel);
 				}
+
+
 			}			
 		}
-		//cacella destination parameter
+		//cancella destination parameter
 		HashMap<String, String> deleted = modifyNavigationWizardPage.getDeletedParams();
 		Iterator ids = deleted.keySet().iterator();
 		while(ids.hasNext()){
@@ -280,7 +302,68 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 			if(doc.getLabelDoc().equals(docName) && doc.getIdParam().equals(id)){
 				docRefrFound = doc;
 			}
-		}
+		}		
+		return docRefrFound;
+	}
+	private RefreshDocLinked upadateRefreshedDocLink(String id, String docName, String  sbiParLabel){
+		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
+	    Vector documents = docConf.getDocuments();
+	    RefreshDocLinked docRefrFound = null; 
+	    if(documents != null){
+		    //elabora documento master
+		    for (int i = 0; i< documents.size(); i++){
+		    	Document doc = (Document)documents.get(i);
+	    		Parameters params = doc.getParameters();
+	    		if(params != null){
+	    			Vector<Parameter> parameters =params.getParameter();
+	    			if(parameters == null){
+	    				for(int j=0; j<parameters.size(); j++){	    			
+	    					Parameter param = parameters.elementAt(j);
+	    					if(param.getRefresh() != null && param.getRefresh().getRefreshDocLinked() != null){
+								
+								for(int k=0; k<param.getRefresh().getRefreshDocLinked().size(); k++){
+									RefreshDocLinked docRef = param.getRefresh().getRefreshDocLinked().elementAt(k);
+									if(docRef.getLabelDoc().equals(docName) && docRef.getIdParam().equals(id)){
+										docRef.setLabelParam(sbiParLabel);
+									}
+								}
+	    					}
+	    				}
+	    			}
+	    		}
+		    }
+	    }				
+		
+		return docRefrFound;
+	}
+	private RefreshDocLinked deleteRefreshedDocLink(String id, String docName, String  sbiParLabel){
+		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
+	    Vector documents = docConf.getDocuments();
+	    RefreshDocLinked docRefrFound = null; 
+	    if(documents != null){
+		    //elabora documento master
+		    for (int i = 0; i< documents.size(); i++){
+		    	Document doc = (Document)documents.get(i);
+	    		Parameters params = doc.getParameters();
+	    		if(params != null){
+	    			Vector<Parameter> parameters =params.getParameter();
+	    			if(parameters == null){
+	    				for(int j=0; j<parameters.size(); j++){	    			
+	    					Parameter param = parameters.elementAt(j);
+	    					if(param.getRefresh() != null && param.getRefresh().getRefreshDocLinked() != null){
+								
+								for(int k=0; k<param.getRefresh().getRefreshDocLinked().size(); k++){
+									RefreshDocLinked docRef = param.getRefresh().getRefreshDocLinked().elementAt(k);
+									if(docRef.getLabelDoc().equals(docName) && docRef.getIdParam().equals(id)){
+										param.getRefresh().getRefreshDocLinked().remove(docRef);
+									}
+								}
+	    					}
+	    				}
+	    			}
+	    		}
+		    }
+	    }				
 		
 		return docRefrFound;
 	}

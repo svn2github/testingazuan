@@ -17,8 +17,7 @@ public class ParameterBO {
 			if(param.getId().equals(id)){
 				paramFound = param;
 			}
-		}
-		
+		}		
 		return paramFound;
 	}
 	public Parameter getDocOutputParameter(Vector<Parameter> parameters){
@@ -34,8 +33,8 @@ public class ParameterBO {
 		return paramFound;
 	}
 	
-	public boolean ouputParameterExists(DocumentComposition docComp, String masterDocLabel, String masterParamLabel){
-		System.out.println(masterDocLabel +" "+masterParamLabel);
+	public boolean outputParameterExists(DocumentComposition docComp, String masterDocLabel, String masterParamLabel){
+
 		boolean ret = false;
 		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
 		if(docConf != null){
@@ -76,5 +75,47 @@ public class ParameterBO {
 			}
 		}
 		return paramFound;
+	}
+/*	public String[] getDocInputParametersByLabel(Vector<Parameter> parameters, String label){
+		String[] paramsFound = null; 
+		if(parameters != null){
+			for(int i=0; i<parameters.size(); i++){
+				Parameter param = parameters.elementAt(i);
+				if(param.getType().equals("IN") && param.getSbiParLabel().equals(label)){
+					paramsFound[i] = param.getId();
+				}
+			}
+		}
+		return paramsFound;
+	}*/
+	public boolean inputParameterExists(DocumentComposition docComp, String destinDocLabel, String destinParamLabel){
+		boolean ret = false;
+		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
+		if(docConf != null){
+		    Vector documents = docConf.getDocuments();
+		    if(documents != null){
+		    	for (int i = 0; i< documents.size(); i++){
+		    		Document doc = (Document)documents.elementAt(i);
+		    		String docLabel =doc.getSbiObjLabel();
+		    		if(destinDocLabel.equals(docLabel)){
+		    			Parameters parameters = doc.getParameters();
+		    			if(parameters != null){
+		    				Vector<Parameter> params = parameters.getParameter();
+		    				if(params != null){
+		    					for(int j=0;j<params.size(); j++){
+		    						Parameter param = params.elementAt(j);
+		    						if(param.getType().equals("IN") && param.getSbiParLabel().equals(destinParamLabel)){
+		    							ret = true;
+		    						}
+		    					}
+		    				}
+		    			}
+		    			
+		    		}		    		
+		    	}
+		    }
+		}
+		
+		return ret;
 	}
 }

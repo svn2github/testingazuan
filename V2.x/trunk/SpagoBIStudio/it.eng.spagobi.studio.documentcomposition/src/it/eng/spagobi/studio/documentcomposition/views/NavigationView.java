@@ -48,8 +48,14 @@ public class NavigationView extends ViewPart {
 	FormToolkit toolkit;
 	Label labelNoDocs;
 	
+	boolean reloaded = false;
+	
 	HashMap <String, String> docInfoUtil = new HashMap<String, String>();
 	boolean hasDocuments = false;
+	
+	private Button newButton; 
+	private Button deleteButton;
+	private Button updateButton;
 	
 	private DocumentComposition documentComp = Activator.getDefault().getDocumentComposition();
 	private MetadataDocumentComposition metadataDoc = Activator.getDefault().getMetadataDocumentComposition();
@@ -96,6 +102,8 @@ public class NavigationView extends ViewPart {
 		}
 		toolkit.paintBordersFor(client);
 		section.setClient(client);
+		client.pack();
+		client.redraw();
 
 	}
 	
@@ -142,6 +150,9 @@ public class NavigationView extends ViewPart {
 		
 	}
 	protected Table createTable(Composite parent, FormToolkit toolkit, Composite client){
+		if(docInfoUtil == null || docInfoUtil.size() == 0){
+			fillDocumentsNames();
+		}
 		table = toolkit.createTable(client, SWT.SINGLE  | SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 20;
@@ -174,8 +185,11 @@ public class NavigationView extends ViewPart {
 							if(navName != null && type != null && type.equalsIgnoreCase("OUT")){
 							      TableItem item = new TableItem(table, SWT.NONE);
 							      item.setText(0, navName);
+							      String sbiLabel = doc.getSbiObjLabel();
 							      
-							      item.setText(1, docInfoUtil.get(doc.getSbiObjLabel()));
+							      String name =docInfoUtil.get(sbiLabel);
+							      
+							      item.setText(1, name);
 
 							      StringBuffer dest = new StringBuffer();
 							      if(param.getRefresh()!= null){
@@ -261,9 +275,9 @@ public class NavigationView extends ViewPart {
 		final boolean[] result = new boolean[1];
 		/**crea dialog x conferma**/
 	
-		Button newButton = toolkit.createButton(client, "New", SWT.PUSH); 
-		Button deleteButton = createDeleteButton(parent, toolkit, client);
-		Button updateButton = toolkit.createButton(client, "Modify", SWT.PUSH);
+		newButton = toolkit.createButton(client, "New", SWT.PUSH); 
+		deleteButton = createDeleteButton(parent, toolkit, client);
+		updateButton = toolkit.createButton(client, "Modify", SWT.PUSH);
 		
 		
 		newButton.pack();
@@ -344,8 +358,20 @@ public class NavigationView extends ViewPart {
 			if(labelNoDocs != null){
 				labelNoDocs.dispose();
 			}
-			loadNavigations(toolkit, client.getParent() );
+			if(!reloaded){
+				if(table != null && !table.isDisposed()){
+					table.dispose();
+				}
+				if((newButton == null && deleteButton == null && updateButton == null) ||(
+						newButton.isDisposed() && deleteButton.isDisposed() && updateButton.isDisposed())){
+					loadNavigations(toolkit, client.getParent().getParent());
+				}else{
+					/**tabella navigazioni**/
+					createTable(client.getParent(), toolkit, client);
+				}
+			}
 			hasDocuments = true;
+			reloaded = true;
 		}
 		client.layout();
 		client.redraw();

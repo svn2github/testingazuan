@@ -847,9 +847,24 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	    var docurlPar = "ACTION_NAME=EXPORT_RESULT_ACTION&SBI_EXECUTION_ID="+this.executionInstance.SBI_EXECUTION_ID+"&MIME_TYPE="+exportType+"&RESPONSE_TYPE=RESPONSE_TYPE_ATTACHMENT";
 	   
 	    var endUrl = baseUrl + docurlPar;
-	   // alert ("endUrl: " + endUrl);
-	    
-		window.open(endUrl,'name','height=750,width=1000');
+	   
+	    if(Ext.isIE6) {
+		    var form = document.getElementById('export-form');
+			if(!form) {
+				var dh = Ext.DomHelper;
+				form = dh.append(Ext.getBody(), {
+				    id: 'export-form'
+				    , tag: 'form'
+				    , method: 'post'
+				    , cls: 'export-form'
+				});
+			}
+			
+			form.action = endUrl;
+			form.submit();
+	    } else {
+	    	window.open(endUrl,'name','height=750,width=1000');
+	    }
 	}
 	
 	, exportGeoExecution: function (exportType) {	

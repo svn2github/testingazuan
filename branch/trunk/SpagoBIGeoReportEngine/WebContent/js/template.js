@@ -1,0 +1,36 @@
+<script language="javascript" type="text/javascript">
+map =
+{
+    indicators: [["numero_watson","NUMERO"],["valore_watson","VALORE"]],
+    geojsonUrl: "localhost:8080",
+    analysis: "prop",
+    //IF YOU WANT TO DISPLAY MAP IN EXT WINDOW (default is Ext ViewPort)
+    window: "false",
+    businessId: "id_capoluog", //it links to alphanumeric data into spagobi dataset
+    geoId: "gid", //it links to geometires 
+    //geoId: "Codistreg",
+    layer: "capoluoghi",
+    //layer: "reg_it",
+    layer_name: "Capoluoghi",
+    //layer_name: "Regioni",
+    mapname: "WATSONs",
+    width: 0, //ONLY FOR EXT WINDOW
+    height: 600, //ONLY FOR EXT WINDOW
+    spagobiDataset: 'mapdata', //spagobi dataset label from which you can retreive alphanumeric data
+    document1Label: "geobi_dial2", 
+    document2Label: "GEOREPORT_DOC_BAR",  
+    role: "spagobi/admin",
+    dispToolbar1: "false",
+    dispSlide1: "false",
+    dispToolbar2: "false",
+    dispSlide2: "false",
+    listeners: [["value","numero_watson"]],
+    document2Listeners: [["regione","gl_regione"]],
+    parameters: [],
+    document2Parameters: [],
+    feautreInfo: [["REGIONE","gl_regione"], ["CAPOLUOGO","nome"]],
+	  initPosLon: 6.090,
+	  initPosLat: 40.373,
+	  initZoom: 5
+}
+</script>

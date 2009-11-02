@@ -78,11 +78,15 @@ END-CAS -->
     <url-pattern>/servlet/AdapterHTTP/*</url-pattern>
   </filter-mapping> 
    	
-
-   <filter-mapping>
+  <filter-mapping>
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
     <url-pattern>/servlet/AdapterHTTP/*</url-pattern>
   </filter-mapping> 
+  
+  <filter-mapping>
+		<filter-name>CAS Validation Filter</filter-name>
+		<url-pattern>/proxyCallback</url-pattern>	
+   </filter-mapping>
 END-CAS -->
 
 	<filter-mapping>

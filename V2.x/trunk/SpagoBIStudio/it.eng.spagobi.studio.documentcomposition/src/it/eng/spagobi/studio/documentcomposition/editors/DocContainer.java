@@ -123,7 +123,6 @@ public class DocContainer {
 				case SWT.MouseDown:			// *********  MOUSE DOWN   ***************
 					// Reload views
 					reloadDocumentPropertiesView(idContainer.toString());
-
 					reloadStyleDocumentProperties();
 					System.out.println(designer.getEditor().isDirty);
 
@@ -281,6 +280,7 @@ public class DocContainer {
 						}
 
 						documentContained.getGroup().setLocation(tempX, tempY);
+						reloadStyleDocumentProperties();						
 						if(idContainer.equals(designer.getCurrentSelection())){
 							composite.setBackground(new Color(composite.getDisplay(),new RGB(193,214,255)));
 							designer.setCurrentSelection(idContainer);
@@ -522,17 +522,27 @@ public class DocContainer {
 		int x=location.x;
 		int y=location.y;
 
+		// make proportion of x and y second o to actual Video Size
+		String videoHeight=(new ModelBO()).getModel().getDocumentsConfiguration().getVideoHeight();
+		String videoWidth=(new ModelBO()).getModel().getDocumentsConfiguration().getVideoWidth();
+		int videoHeightI=Integer.valueOf(videoHeight).intValue();
+		int videoWidthI=Integer.valueOf(videoWidth).intValue();
+		
+		// x : 800 (DESIGNER_WIDTH) = mio : videoWidth 
+		int scaledX=(x*videoWidthI) / Designer.DESIGNER_WIDTH;
+		int scaledY=(y*videoHeightI) / Designer.DESIGNER_HEIGHT;
+		
 		Rectangle rect=documentContained.getGroup().getBounds();
 		int width =rect.width;
 		int height =rect.height;
 
 		// get the left margin: arrotondo alla decina
-		toAdd+="left:"+Integer.valueOf(x).toString()+"px;";
+		toAdd+="left:"+Integer.valueOf(scaledX).toString()+"px;";
 
 		// get the top margin: arrotondo alla decina
-		int marginTopTemp=y/10;
-		int marginTop=y*10;
-		toAdd+="top:"+Integer.valueOf(y).toString()+"px;";
+		int marginTopTemp=y/DocContainer.ALIGNMENT_MARGIN;
+		int marginTop=y*DocContainer.ALIGNMENT_MARGIN;
+		toAdd+="top:"+Integer.valueOf(scaledY).toString()+"px;";
 
 		// get the total height and width of the container
 		Point point=designer.getMainComposite().getSize();

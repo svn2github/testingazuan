@@ -64,6 +64,8 @@ public class Designer {
 	public static final int MOUSE_LEFT_KEY=1;
 	public static final int MOUSE_RIGHT_KEY=3;
 
+	public static final int DESIGNER_WIDTH=800;
+	public static final int DESIGNER_HEIGHT=600;
 
 	/** 
 	 * Adds a new Document Container in the designer

@@ -42,9 +42,10 @@ public class VideoSizeView extends ViewPart{
 
 		int width=1000;
 		int height=500;
-		final DocumentComposition documentComposition=(new ModelBO()).getModel();
-		if(documentComposition!=null && documentComposition.getDocumentsConfiguration()!=null){
-			DocumentsConfiguration documentsConfiguration=documentComposition.getDocumentsConfiguration();
+		//final DocumentComposition documentComposition=(new ModelBO()).getModel();
+		final ModelBO modelBO=new ModelBO();
+		if(modelBO.getModel()!=null && modelBO.getModel().getDocumentsConfiguration()!=null){
+			DocumentsConfiguration documentsConfiguration=modelBO.getModel().getDocumentsConfiguration();
 			String heightS=documentsConfiguration.getVideoHeight();
 			String widthS=documentsConfiguration.getVideoWidth();
 			if(widthS!=null){
@@ -74,8 +75,8 @@ public class VideoSizeView extends ViewPart{
 				catch (Exception e) {
 					newSizeInt=new Integer(10);
 				}
-				if(documentComposition!=null && documentComposition.getDocumentsConfiguration()!=null){
-					documentComposition.getDocumentsConfiguration().setVideoHeight(newSizeInt.toString());
+				if(modelBO.getModel()!=null && modelBO.getModel().getDocumentsConfiguration()!=null){
+					modelBO.getModel().getDocumentsConfiguration().setVideoHeight(newSizeInt.toString());
 				}
 			}
 		});
@@ -99,8 +100,8 @@ public class VideoSizeView extends ViewPart{
 				catch (Exception e) {
 					newSizeInt=new Integer(10);
 				}
-				if(documentComposition!=null && documentComposition.getDocumentsConfiguration()!=null){
-					documentComposition.getDocumentsConfiguration().setVideoWidth(newSizeInt.toString());
+				if(modelBO.getModel()!=null && modelBO.getModel().getDocumentsConfiguration()!=null){
+					modelBO.getModel().getDocumentsConfiguration().setVideoWidth(newSizeInt.toString());
 				}
 			}
 		});

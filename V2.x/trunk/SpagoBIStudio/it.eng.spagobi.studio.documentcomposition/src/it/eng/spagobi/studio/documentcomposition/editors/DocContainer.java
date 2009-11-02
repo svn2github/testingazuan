@@ -268,24 +268,24 @@ public class DocContainer {
 						tempY=tempY*ALIGNMENT_MARGIN;
 
 						// check if space is almost filled: autofill  DISABLED AUTOFILL WITH BOUNDS IN DRAG!
-						//						int width=documentContained.getGroup().getBounds().width;
-						//						int height=documentContained.getGroup().getBounds().height;
-						//						int totalX=width+tempX;
-						//						int mainWidth=mainComposite.getBounds().width;		
-						//						if((mainWidth-totalX)<=(DocContainer.ALIGNMENT_MARGIN+10)){
-						//							// increase the width to fill							
-						//							int newwidth=width+((mainWidth-totalX));
-						//							//documentContained.getGroup().getBounds().width=width;
-						//							documentContained.getGroup().setSize(newwidth, height);
-						//						}
-						//						int totalY=height+tempY;
-						//						int mainHeight=mainComposite.getBounds().height;		
-						//						if((mainHeight-totalY)<=(DocContainer.ALIGNMENT_MARGIN+10)){
-						//							// increase the width to fill							
-						//							int newheight=height+((mainHeight-totalY));
-						//							//documentContained.getGroup().getBounds().width=width;
-						//							documentContained.getGroup().setSize(width, newheight);
-						//						}
+//						int width=documentContained.getGroup().getBounds().width;
+//						int height=documentContained.getGroup().getBounds().height;
+//						int totalX=width+tempX;
+//						int mainWidth=mainComposite.getBounds().width;		
+//						if((mainWidth-totalX)<=(DocContainer.ALIGNMENT_MARGIN+10)){
+//							// increase the width to fill							
+//							int newwidth=width+((mainWidth-totalX));
+//							//documentContained.getGroup().getBounds().width=width;
+//							documentContained.getGroup().setSize(newwidth, height);
+//						}
+//						int totalY=height+tempY;
+//						int mainHeight=mainComposite.getBounds().height;		
+//						if((mainHeight-totalY)<=(DocContainer.ALIGNMENT_MARGIN+10)){
+//							// increase the width to fill							
+//							int newheight=height+((mainHeight-totalY));
+//							//documentContained.getGroup().getBounds().width=width;
+//							documentContained.getGroup().setSize(width, newheight);
+//						}
 
 						documentContained.getGroup().setLocation(tempX, tempY);
 						reloadStyleDocumentProperties();						
@@ -534,11 +534,11 @@ public class DocContainer {
 		String videoWidth=(new ModelBO()).getModel().getDocumentsConfiguration().getVideoWidth();
 		int videoHeightI=Integer.valueOf(videoHeight).intValue();
 		int videoWidthI=Integer.valueOf(videoWidth).intValue();
-
+		
 		// Lo stile deve essere scalato alla dimensione reale
 		int realX=(x*videoWidthI) / Designer.DESIGNER_WIDTH;
 		int realY=(y*videoHeightI) / Designer.DESIGNER_HEIGHT;
-
+		
 		Rectangle rect=documentContained.getGroup().getBounds();
 		int width =rect.width;
 		int height =rect.height;
@@ -680,7 +680,7 @@ public class DocContainer {
 	public void reloadNavigationView(String id){
 		IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
 		try{
-			// Document properties
+			// Document navigation view
 			IWorkbenchPage aa=a.getActivePage();
 			IViewReference w=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.NavigationView");
 			Object p=w.getPart(false);
@@ -689,17 +689,7 @@ public class DocContainer {
 				view.reloadNavigations(documentContained.getMetadataDocument());
 			}
 			else{
-				SpagoBILogger.warningLog("view Document properties closed");
-			}
-			// Document parameters
-			IViewReference wPars=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView");
-			Object p2=wPars.getPart(false);
-			if(p2!=null){
-				DocumentParametersView docParameters=(DocumentParametersView)p2;
-				docParameters.reloadParametersProperties(documentContained.getMetadataDocument());
-			}
-			else{
-				SpagoBILogger.warningLog("view Document parameters closed");
+				SpagoBILogger.warningLog("view Document navigation closed");
 			}
 		}catch (Exception e) {
 			SpagoBILogger.errorLog("Error reloading navigation view", e);

@@ -28,7 +28,7 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
     if(!win) {
       win = new Ext.Window({
         id:'filterWizard',
-        title: 'Expression Editor',
+        title: LN('sbi.qbe.expreditor.title'),
 			 	layout:'fit',
 				width:500,
 				height:300,
@@ -134,35 +134,35 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
     var operandsRootNode;
     var operatorsRootNode;
       
-    expItemTreeRootNode = new Ext.tree.TreeNode({text:'Exp. Items', iconCls:'database',expanded:true});
+    expItemTreeRootNode = new Ext.tree.TreeNode({text:LN('sbi.qbe.expreditor.items'), iconCls:'database',expanded:true});
     
     if(!operands) {  
     	// create a dummy list of possible operands just for test purpose
         operands = [
-	        {text: 'filter1', ttip: 'Filter1: description goes here', type: 'operand', value: '$F{filter1}'}
-        	, {text: 'filter2', ttip: 'Filter1: description goes here', type: 'operand', value: '$F{filter2}'}
-          	, {text: 'filter3', ttip: 'Filter1: description goes here', type: 'operand', value: '$F{filter3}'}
-          	, {text: 'filter4', ttip: 'Filter1: description goes here', type: 'operand', value: '$F{filter4}'}
-          	, {text: 'filter5', ttip: 'Filter1: description goes here', type: 'operand', value: '$F{filter5}'}
+	        {text: 'filter1', ttip: LN('sbi.qbe.expreditor.filterdesc'), type: 'operand', value: '$F{filter1}'}
+        	, {text: 'filter2', ttip: LN('sbi.qbe.expreditor.filterdesc'), type: 'operand', value: '$F{filter2}'}
+          	, {text: 'filter3', ttip: LN('sbi.qbe.expreditor.filterdesc'), type: 'operand', value: '$F{filter3}'}
+          	, {text: 'filter4', ttip: LN('sbi.qbe.expreditor.filterdesc'), type: 'operand', value: '$F{filter4}'}
+          	, {text: 'filter5', ttip: LN('sbi.qbe.expreditor.filterdesc'), type: 'operand', value: '$F{filter5}'}
         ];
 	}
       
         
-    operandsRootNode = new Ext.tree.TreeNode({text:'Operands', iconCls:'cube'});
+    operandsRootNode = new Ext.tree.TreeNode({text:LN('sbi.qbe.expreditor.operands'), iconCls:'cube'});
     for(var i = 0; i < operands.length; i++) {
        operandsRootNode.appendChild( createExpItemNode( operands[i] ) );
     }
         
     if(!operators) {
     	operators = [
-        	{text: 'AND', ttip: 'AND: description of operator goes here', type: 'operator', value: 'AND'}
-          	, {text: 'OR', ttip: 'OR: description of operator goes here', type: 'operator', value: 'OR'}
-          	, {text: ' ( ', ttip: '( : description of operator goes here', type: 'operator', value: '('}
-          	, {text: ' ) ', ttip: ') : description of operator goes here', type: 'operator', value: ')'}
+        	{text: 'AND', ttip:  LN('sbi.qbe.expreditor.operatordesc') , type: 'operator', value: 'AND'}
+          	, {text: 'OR', ttip:  LN('sbi.qbe.expreditor.operatordesc'), type: 'operator', value: 'OR'}
+          	, {text: ' ( ', ttip:  LN('sbi.qbe.expreditor.operatordesc'), type: 'operator', value: '('}
+          	, {text: ' ) ', ttip:  LN('sbi.qbe.expreditor.operatordesc'), type: 'operator', value: ')'}
         ];
     }
         
-    operatorsRootNode = new Ext.tree.TreeNode({text:'Operators', iconCls:'cube'});
+    operatorsRootNode = new Ext.tree.TreeNode({text:LN('sbi.qbe.expreditor.operators'), iconCls:'cube'});
     for(var i = 0; i < operators.length; i++) {
     	operatorsRootNode.appendChild( createExpItemNode( operators[i] ) );
     }
@@ -197,7 +197,7 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
     
     if(!expStructureTreePanel) {
       
-      var rootNode = new Ext.tree.TreeNode({text:'Exp. Structure', iconCls:'database',expanded:true});
+      var rootNode = new Ext.tree.TreeNode({text:LN('sbi.qbe.expreditor.structure'), iconCls:'database',expanded:true});
         
       expStructureTreePanel = new Ext.tree.TreePanel({
         root:rootNode,
@@ -254,7 +254,7 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
   };  
     
   var refreshExpStructureTreePanel = function() {
-    var rootNode = new Ext.tree.TreeNode({text:'Exp. Structure', iconCls:'database',expanded:true});
+    var rootNode = new Ext.tree.TreeNode({text:LN('sbi.qbe.expreditor.structure'), iconCls:'database',expanded:true});
      
     rootNode.appendChild([
       getExpStructureTree(true)
@@ -269,8 +269,8 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
     
     
   var xbutton = new Ext.Toolbar.Button({
-    text:'Clear All',
-    tooltip:'Clear all selected fields',
+    text: LN('sbi.qbe.expreditor.clear'),
+    tooltip: LN('sbi.qbe.expreditor.clearttp'),
     iconCls:'remove',
     handler: function(){
       editor.reset();
@@ -349,7 +349,7 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
     items: [
     { // CENTER REGION ---------------------------------------------------------
       region: 'center',
-      title: 'Expression',
+      title: LN('sbi.qbe.expreditor.expression'),
       collapsible: false,
       collapsed: false,
       split: true,
@@ -365,7 +365,7 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
     }, 
     { // EAST REGION -----------------------------------------------------------
       region: 'east',
-      title: 'Exp. Structure',
+      title: LN('sbi.qbe.expreditor.structure'),
       collapsible: true,
       collapsed: true,
       hideCollapseTool: true,
@@ -380,7 +380,7 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
       
       tools:[{
         id:'refresh',
-        qtip:'Refresch expression structure',
+        qtip: LN('sbi.qbe.expreditor.refresh'),
         handler: refreshExpStructureTreePanel
       }],
       
@@ -388,7 +388,7 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
     }, 
     { // WEST REGION -----------------------------------------------------------
       region: 'west',
-      title: 'Exp. Items',
+      title: LN('sbi.qbe.expreditor.items'),
       collapsible: true,
       hideCollapseTool: true,
       titleCollapse: true,
@@ -404,7 +404,7 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
     }, 
     { // WEST REGION -----------------------------------------------------------
       region: 'south',
-      title: 'Log',
+      title: LN('sbi.qbe.expreditor.log'),
       collapsible: true,
       hideCollapseTool: true,
       titleCollapse: true,

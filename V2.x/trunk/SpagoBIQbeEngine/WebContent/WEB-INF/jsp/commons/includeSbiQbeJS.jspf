@@ -11,7 +11,6 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 
 <!-- START-DEBUG -->
 <script type="text/javascript" src='../js/spagobi/qbe/filterwizard/parser.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbe/filterwizard/filterWizard.js'/></script>
 <script type="text/javascript" src='../js/spagobi/qbe/filterwizard/buttonColumn.js'/></script>
 		
 <script type="text/javascript" src='../js/spagobi/commons/Settings.js'/></script>	
@@ -21,8 +20,9 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/commons/Format.js'/></script>
 <script type="text/javascript" src='../js/spagobi/commons/Utils.js'/></script>
 <script type="text/javascript" src='../js/spagobi/locale/LocaleUtils.js'/></script>
+	
+<script type="text/javascript" src='../js/spagobi/qbe/filterwizard/filterWizard.js'/></script>
 
-		
 <script type="text/javascript" src='../js/spagobi/qbe/DataStorePanel.js'/></script>
 <script type="text/javascript" src='../js/spagobi/qbe/DataMartStructurePanel.js'/></script>
 <script type="text/javascript" src='../js/spagobi/qbe/QueryCataloguePanel.js'/></script>
@@ -43,6 +43,10 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/qbe/DocumentParametersGridPanel.js'/></script>
 <script type="text/javascript" src='../js/spagobi/qbe/DocumentParametersStore.js'/></script>
 <script type="text/javascript" src='../js/spagobi/qbe/HavingGridPanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/widgets/LookupField.js'/></script>
+<script type="text/javascript" src='../js/spagobi/widgets/FilteringToolbar.js'/></script>
+<script type="text/javascript" src='../js/spagobi/widgets/PagingToolbar.js'/></script>
+<script type="text/javascript" src='../js/spagobi/widgets/TriggerFieldMultiButton.js'/></script>
 <!-- END-DEBUG -->
 
 <!-- START-PRODUCTION

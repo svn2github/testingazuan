@@ -214,10 +214,12 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     
     , saveQuery: function(meta) {
     	this.applyChanges();
-    	this.queryCataloguePanel.save(meta, function() {
+    	this.queryCataloguePanel.save(meta, function(response, options) {
     		// for old gui
     		try {
-				parent.loadSubObject(window.name, content.text.substr(5));
+				var content = Ext.util.JSON.decode( response.responseText );
+				content.text = content.text || "";
+				parent.loadSubObject(window.name, content.text);
 			} catch (ex) {}
 			// for new gui
 			try {

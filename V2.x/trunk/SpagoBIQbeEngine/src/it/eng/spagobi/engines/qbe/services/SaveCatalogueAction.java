@@ -35,6 +35,7 @@ import it.eng.spagobi.utilities.engines.EngineAnalysisMetadata;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
+import it.eng.spagobi.utilities.service.JSONSuccess;
 
 /**
  * This action is responsible to persist the queries contained into the catalogue
@@ -96,7 +97,9 @@ public class SaveCatalogueAction extends AbstractQbeEngineAction {
 			}
 			
 			try {
-				writeBackToClient( new JSONAcknowledge() );
+				String newSubobjectId = result.substring(5);
+				JSONSuccess success = new JSONSuccess(newSubobjectId);
+				writeBackToClient( success );
 			} catch (IOException e) {
 				String message = "Impossible to write back the responce to the client";
 				throw new SpagoBIEngineServiceException(getActionName(), message, e);

@@ -104,7 +104,7 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			logger.debug("User Id: " + getUserId());
 			logger.debug("Audit Id: " + getAuditId());
 			logger.debug("Document Id: " + getDocumentId());
-			logger.debug("Template: " + getTemplate());	
+			logger.debug("Template: " + getTemplateAsSourceBean());	
 			
 			hitsPrimary = MonitorFactory.startPrimary("GeoEngine.requestHits");
 	        hitsByDate = MonitorFactory.start("GeoEngine.requestHits." + DateFormat.getDateInstance(DateFormat.SHORT).format(new Date()));
@@ -136,7 +136,7 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 				env.put(GeoEngineConstants.ENV_OUTPUT_TYPE, outputType);
 			}			
 			
-			geoEngineInstance = GeoEngine.createInstance(getTemplate(), env);
+			geoEngineInstance = GeoEngine.createInstance(getTemplateAsSourceBean(), env);
 			geoEngineInstance.setAnalysisMetadata( getAnalysisMetadata() );
 			
 			analysisStateRowData = getAnalysisStateRowData();

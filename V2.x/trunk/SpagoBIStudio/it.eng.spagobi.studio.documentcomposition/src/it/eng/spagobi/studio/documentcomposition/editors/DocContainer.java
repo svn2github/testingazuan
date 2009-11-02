@@ -4,10 +4,13 @@ import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
+import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
 import it.eng.spagobi.studio.documentcomposition.views.NavigationView;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
@@ -20,8 +23,11 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
@@ -53,10 +59,10 @@ public class DocContainer {
 
 	String title="";
 
-	public static final int DEFAULT_WIDTH=210;
-	public static final int DEFAULT_HEIGHT=210;
+	public static final int DEFAULT_WIDTH=200;
+	public static final int DEFAULT_HEIGHT=200;
 	public static final int MIN_MARGIN_BOUNDS=0;
-	public static final int ALIGNMENT_MARGIN=30;
+	public static final int ALIGNMENT_MARGIN=20;
 
 	Cursor cursor=null;
 
@@ -121,6 +127,7 @@ public class DocContainer {
 				;				
 				switch (event.type) {
 				case SWT.MouseDown:			// *********  MOUSE DOWN   ***************
+
 					// Reload views
 					reloadDocumentPropertiesView(idContainer.toString());
 					reloadStyleDocumentProperties();
@@ -148,6 +155,7 @@ public class DocContainer {
 							if(documentContained.getMetadataDocument()!=null){
 								(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
 							}
+							documentContained.drawImage();
 							designer.setCurrentSelection(Integer.valueOf(-1));
 							designer.getEditor().setIsDirty(true);
 						}
@@ -260,24 +268,24 @@ public class DocContainer {
 						tempY=tempY*ALIGNMENT_MARGIN;
 
 						// check if space is almost filled: autofill  DISABLED AUTOFILL WITH BOUNDS IN DRAG!
-//						int width=documentContained.getGroup().getBounds().width;
-//						int height=documentContained.getGroup().getBounds().height;
-//						int totalX=width+tempX;
-//						int mainWidth=mainComposite.getBounds().width;		
-//						if((mainWidth-totalX)<=(DocContainer.ALIGNMENT_MARGIN+10)){
-//							// increase the width to fill							
-//							int newwidth=width+((mainWidth-totalX));
-//							//documentContained.getGroup().getBounds().width=width;
-//							documentContained.getGroup().setSize(newwidth, height);
-//						}
-//						int totalY=height+tempY;
-//						int mainHeight=mainComposite.getBounds().height;		
-//						if((mainHeight-totalY)<=(DocContainer.ALIGNMENT_MARGIN+10)){
-//							// increase the width to fill							
-//							int newheight=height+((mainHeight-totalY));
-//							//documentContained.getGroup().getBounds().width=width;
-//							documentContained.getGroup().setSize(width, newheight);
-//						}
+						//						int width=documentContained.getGroup().getBounds().width;
+						//						int height=documentContained.getGroup().getBounds().height;
+						//						int totalX=width+tempX;
+						//						int mainWidth=mainComposite.getBounds().width;		
+						//						if((mainWidth-totalX)<=(DocContainer.ALIGNMENT_MARGIN+10)){
+						//							// increase the width to fill							
+						//							int newwidth=width+((mainWidth-totalX));
+						//							//documentContained.getGroup().getBounds().width=width;
+						//							documentContained.getGroup().setSize(newwidth, height);
+						//						}
+						//						int totalY=height+tempY;
+						//						int mainHeight=mainComposite.getBounds().height;		
+						//						if((mainHeight-totalY)<=(DocContainer.ALIGNMENT_MARGIN+10)){
+						//							// increase the width to fill							
+						//							int newheight=height+((mainHeight-totalY));
+						//							//documentContained.getGroup().getBounds().width=width;
+						//							documentContained.getGroup().setSize(width, newheight);
+						//						}
 
 						documentContained.getGroup().setLocation(tempX, tempY);
 						reloadStyleDocumentProperties();						
@@ -326,7 +334,6 @@ public class DocContainer {
 				item.addListener(SWT.Selection, new Listener() {
 					public void handleEvent(Event e) {
 						composite.setBackground(new Color(composite.getDisplay(),new RGB(248,191,129)));
-						//cursor = new Cursor(container.getDisplay(), new Image(container.getDisplay(),"D:\\progetti\\spagobi\\workspaceSpagobiStudio\\it.eng.spagobi.studio.documentcomposition\\icons\\cursorResize.PNG").getImageData(), 0, 0);
 						cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_CROSS);						
 						designer.getMainComposite().setCursor(cursor);
 						designer.setState(Designer.RESIZE);
@@ -527,11 +534,11 @@ public class DocContainer {
 		String videoWidth=(new ModelBO()).getModel().getDocumentsConfiguration().getVideoWidth();
 		int videoHeightI=Integer.valueOf(videoHeight).intValue();
 		int videoWidthI=Integer.valueOf(videoWidth).intValue();
-		
+
 		// Lo stile deve essere scalato alla dimensione reale
 		int realX=(x*videoWidthI) / Designer.DESIGNER_WIDTH;
 		int realY=(y*videoHeightI) / Designer.DESIGNER_HEIGHT;
-		
+
 		Rectangle rect=documentContained.getGroup().getBounds();
 		int width =rect.width;
 		int height =rect.height;

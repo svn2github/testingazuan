@@ -256,6 +256,7 @@ public class Designer {
 						if(selectedDoc.getDocumentContained().getMetadataDocument()!=null){
 							(new ModelBO()).updateModelModifyDocument(selectedDoc.getDocumentContained().getMetadataDocument(), selectedDoc.calculateTemplateStyle());						
 						}
+						selectedDoc.getDocumentContained().drawImage();						
 						setCurrentSelection(new Integer(-1));
 						if(selected!=null){
 

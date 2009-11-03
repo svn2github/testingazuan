@@ -63,23 +63,23 @@ public class DocumentCompositionEditor extends EditorPart {
 		super.dispose();
 
 		IViewPart navigationView = DocCompUtilities.getViewReference(DocCompUtilities.NAVIGATION_VIEW_ID);
-		if(navigationView != null){
+		if(navigationView != null && navigationView instanceof NavigationView){
 			navigationView = (NavigationView)navigationView;
 			getSite().getPage().hideView(navigationView);
 
 		}
 		IViewPart propertiesView = DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PROPERTIES_VIEW_ID);
-		if(propertiesView != null){
+		if(propertiesView != null && propertiesView instanceof DocumentPropertiesView){
 			propertiesView = (DocumentPropertiesView)propertiesView;
 			getSite().getPage().hideView(propertiesView);
 		}
 		IViewPart parametersView = DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PARAMETERS_VIEW_ID);
-		if(parametersView != null){
+		if(parametersView != null && parametersView instanceof DocumentParametersView){
 			parametersView = (DocumentParametersView)parametersView;
 			getSite().getPage().hideView(parametersView);
 		}
 		IViewPart videoView = DocCompUtilities.getViewReference(DocCompUtilities.VIDEO_SIZE_VIEW_ID);
-		if(videoView != null){
+		if(videoView != null && videoView instanceof VideoSizeView){
 			videoView = (VideoSizeView)videoView;
 			getSite().getPage().hideView(videoView);
 		}

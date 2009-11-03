@@ -669,7 +669,7 @@ public class DocContainer {
 		try{
 			// Navigation
 			IViewPart object=DocCompUtilities.getViewReference(DocCompUtilities.NAVIGATION_VIEW_ID);
-			if(object!=null){
+			if(object!=null && object instanceof NavigationView){
 				NavigationView view=(NavigationView)object;
 				view.reloadNavigations(documentContained.getMetadataDocument());
 			}

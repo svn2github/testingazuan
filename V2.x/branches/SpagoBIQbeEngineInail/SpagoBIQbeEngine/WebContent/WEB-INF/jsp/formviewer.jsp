@@ -3,7 +3,7 @@
 	     pageEncoding="ISO-8859-1"%>
 <%@page import="java.util.Locale"%>
 <%
-Locale locale = Locale.ENGLISH;
+Locale locale = Locale.ITALIAN;
 %>
 
 <%-- ---------------------------------------------------------------------- --%>

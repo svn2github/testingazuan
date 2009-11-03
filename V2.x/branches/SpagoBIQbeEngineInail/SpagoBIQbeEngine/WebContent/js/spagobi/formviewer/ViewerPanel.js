@@ -50,6 +50,11 @@ Sbi.formviewer.ViewerPanel = function(template, config) {
 	
 	var defaultSettings = {
 		// set default values here
+		layout: 'table',
+	    layoutConfig: {
+	        columns: 1
+	    },
+		autoScroll: true
 	};
 	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.viewerPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.viewerPanel);
@@ -59,12 +64,6 @@ Sbi.formviewer.ViewerPanel = function(template, config) {
 	this.init(template);
 	
 	Ext.apply(c, {
-		title: 'Viewer',
-		layout: 'table',
-	    layoutConfig: {
-	        columns: 1
-	    },
-		autoScroll: true, 
   		items: this.items
 	});
 	

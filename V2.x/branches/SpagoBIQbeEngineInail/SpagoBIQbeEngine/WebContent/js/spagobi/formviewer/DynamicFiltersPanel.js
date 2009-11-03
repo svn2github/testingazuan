@@ -55,7 +55,7 @@ Sbi.formviewer.DynamicFiltersPanel = function(dynamicFilters, config) {
 		, labelAlign: 'left'
 		, fieldWidth: 200	
 		, maskOnRender: false
-		, title: 'Filtri dinamici'
+		, title: LN('sbi.formviewer.dynamicfilterspanel.title')
 		, frame: true
 		, autoScroll: true
 		, autoWidth: true
@@ -140,7 +140,7 @@ Ext.extend(Sbi.formviewer.DynamicFiltersPanel, Ext.form.FormPanel, {
 
 		var combo = new Ext.form.ComboBox({
             editable: false
-            , fieldLabel: 'Variabile'
+            , fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.variable')
 		    , forceSelection: false
 		    , store: store
 		    , mode : 'local'
@@ -158,19 +158,19 @@ Ext.extend(Sbi.formviewer.DynamicFiltersPanel, Ext.form.FormPanel, {
 		var valuesInput = [];
 		if (dynamicFilter.operator.toUpperCase() === 'BETWEEN') {
 			valuesInput[0] = new Ext.form.TextField({
-				fieldLabel: 'Dal valore'
-			   , name : 'DaValore'
+				fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.fromvalue')
+			   , name : 'fromvalue'
 			   , allowBlank: true
 			});
 			valuesInput[1] = new Ext.form.TextField({
-				fieldLabel: 'al valore'
-			   , name : 'AValore'
+				fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.tovalue')
+			   , name : 'tovalue'
 			   , allowBlank: true
 			});
 		} else {
 			valuesInput[0] = new Ext.form.TextField({
-				fieldLabel: 'Valore'
-			   , name : 'Valore'
+				fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.fromvalue')
+			   , name : 'value'
 			   , allowBlank: true
 			});
 		}

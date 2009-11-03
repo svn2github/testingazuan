@@ -50,7 +50,7 @@ Sbi.formviewer.StaticOpenFiltersPanel = function(openFilters, config) {
 	
 	var defaultSettings = {
 		// set default values here
-		title: 'Filtri statici aperti'
+		title: LN('sbi.formviewer.staticopenfilterspanel.title')
 		, labelAlign: 'left'
         , border: false
         , frame: true

@@ -198,14 +198,16 @@ public class NavigationView extends ViewPart {
 							      StringBuffer dest = new StringBuffer();
 							      if(param.getRefresh()!= null){
 							    	  Vector <RefreshDocLinked> destinatons =param.getRefresh().getRefreshDocLinked();
-							    	  for(int k =0; k<destinatons.size(); k++){
-							    		  dest.append(docInfoUtil.get(((RefreshDocLinked)destinatons.elementAt(k)).getLabelDoc()));
-							    		  dest.append("(");
-							    		  dest.append(((RefreshDocLinked)destinatons.elementAt(k)).getLabelParam());
-							    		  dest.append(")");
-							    		  if(k != destinatons.size()-1){
-							    			  dest.append("-");
-							    		  }
+							    	  if(destinatons != null){
+								    	  for(int k =0; k<destinatons.size(); k++){
+								    		  dest.append(docInfoUtil.get(((RefreshDocLinked)destinatons.elementAt(k)).getLabelDoc()));
+								    		  dest.append("(");
+								    		  dest.append(((RefreshDocLinked)destinatons.elementAt(k)).getLabelParam());
+								    		  dest.append(")");
+								    		  if(k != destinatons.size()-1){
+								    			  dest.append("-");
+								    		  }
+								    	  }
 							    	  }
 							      }
 							      item.setText(2, dest.toString());

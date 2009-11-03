@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -268,24 +269,24 @@ public class DocContainer {
 						tempY=tempY*ALIGNMENT_MARGIN;
 
 						// check if space is almost filled: autofill  DISABLED AUTOFILL WITH BOUNDS IN DRAG!
-//						int width=documentContained.getGroup().getBounds().width;
-//						int height=documentContained.getGroup().getBounds().height;
-//						int totalX=width+tempX;
-//						int mainWidth=mainComposite.getBounds().width;		
-//						if((mainWidth-totalX)<=(DocContainer.ALIGNMENT_MARGIN+10)){
-//							// increase the width to fill							
-//							int newwidth=width+((mainWidth-totalX));
-//							//documentContained.getGroup().getBounds().width=width;
-//							documentContained.getGroup().setSize(newwidth, height);
-//						}
-//						int totalY=height+tempY;
-//						int mainHeight=mainComposite.getBounds().height;		
-//						if((mainHeight-totalY)<=(DocContainer.ALIGNMENT_MARGIN+10)){
-//							// increase the width to fill							
-//							int newheight=height+((mainHeight-totalY));
-//							//documentContained.getGroup().getBounds().width=width;
-//							documentContained.getGroup().setSize(width, newheight);
-//						}
+						//						int width=documentContained.getGroup().getBounds().width;
+						//						int height=documentContained.getGroup().getBounds().height;
+						//						int totalX=width+tempX;
+						//						int mainWidth=mainComposite.getBounds().width;		
+						//						if((mainWidth-totalX)<=(DocContainer.ALIGNMENT_MARGIN+10)){
+						//							// increase the width to fill							
+						//							int newwidth=width+((mainWidth-totalX));
+						//							//documentContained.getGroup().getBounds().width=width;
+						//							documentContained.getGroup().setSize(newwidth, height);
+						//						}
+						//						int totalY=height+tempY;
+						//						int mainHeight=mainComposite.getBounds().height;		
+						//						if((mainHeight-totalY)<=(DocContainer.ALIGNMENT_MARGIN+10)){
+						//							// increase the width to fill							
+						//							int newheight=height+((mainHeight-totalY));
+						//							//documentContained.getGroup().getBounds().width=width;
+						//							documentContained.getGroup().setSize(width, newheight);
+						//						}
 
 						documentContained.getGroup().setLocation(tempX, tempY);
 						reloadStyleDocumentProperties();						
@@ -357,6 +358,10 @@ public class DocContainer {
 						designer.setState(Designer.NORMAL);
 						composite.dispose();
 						designer.getContainers().remove(idSel);
+						IViewPart viewPart=DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PROPERTIES_VIEW_ID);
+						if(viewPart!=null)((DocumentPropertiesView)viewPart).setVisible(false);
+						IViewPart viewPart2=DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PARAMETERS_VIEW_ID);
+						if(viewPart2!=null)((DocumentParametersView)viewPart2).setVisible(false);						
 						designer.getMainComposite().layout();
 						designer.getMainComposite().redraw();
 						//						designer.getMainComposite().pack();
@@ -534,11 +539,11 @@ public class DocContainer {
 		String videoWidth=(new ModelBO()).getModel().getDocumentsConfiguration().getVideoWidth();
 		int videoHeightI=Integer.valueOf(videoHeight).intValue();
 		int videoWidthI=Integer.valueOf(videoWidth).intValue();
-		
+
 		// Lo stile deve essere scalato alla dimensione reale
 		int realX=(x*videoWidthI) / Designer.DESIGNER_WIDTH;
 		int realY=(y*videoHeightI) / Designer.DESIGNER_HEIGHT;
-		
+
 		Rectangle rect=documentContained.getGroup().getBounds();
 		int width =rect.width;
 		int height =rect.height;
@@ -618,18 +623,10 @@ public class DocContainer {
 	 */
 	public void reloadStyleDocumentProperties(){
 		Style style=calculateTemplateStyle();
-		IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
-		// Document properties
-		IWorkbenchPage aa=a.getActivePage();
-		IViewReference w=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView");
-		Object p=w.getPart(false);
-		if(p!=null){
-			DocumentPropertiesView view=(DocumentPropertiesView)p;
+		IViewPart object=DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PROPERTIES_VIEW_ID);
+		if(object!=null){
+			DocumentPropertiesView view=(DocumentPropertiesView)object;
 			view.reloadStyle(idContainer, style.getStyle(), documentContained.getMetadataDocument());
-		}
-		else{
-			// View not present
-
 		}
 	}
 
@@ -641,27 +638,17 @@ public class DocContainer {
 	public void reloadDocumentPropertiesView(String id){
 		IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
 		try{
-			// Document properties
-			IWorkbenchPage aa=a.getActivePage();
-			IViewReference w=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView");
-			Object p=w.getPart(false);
-			if(p!=null){
-				DocumentPropertiesView view=(DocumentPropertiesView)p;
+			IViewPart object=DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PROPERTIES_VIEW_ID);
+			if(object!=null){
+				DocumentPropertiesView view=(DocumentPropertiesView)object;
 				view.reloadProperties(documentContained.getMetadataDocument());
 			}
-			else{
-				// View not present
 
-			}
 			// Document parameters
-			IViewReference wPars=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView");
-			Object p2=wPars.getPart(false);
-			if(p2!=null){
-				DocumentParametersView docParameters=(DocumentParametersView)p2;
-				docParameters.reloadParametersProperties(documentContained.getMetadataDocument());
-			}
-			else{
-				// View Not present
+			IViewPart object2=DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PARAMETERS_VIEW_ID);
+			if(object2!=null){
+				DocumentParametersView view=(DocumentParametersView)object2;
+				view.reloadParametersProperties(documentContained.getMetadataDocument());
 			}
 		}
 		catch (Exception e) {
@@ -680,22 +667,20 @@ public class DocContainer {
 	public void reloadNavigationView(String id){
 		IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
 		try{
-			// Document navigation view
-			IWorkbenchPage aa=a.getActivePage();
-			IViewReference w=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.NavigationView");
-			Object p=w.getPart(false);
-			if(p!=null){
-				NavigationView view=(NavigationView)p;
+			// Navigation
+			IViewPart object=DocCompUtilities.getViewReference(DocCompUtilities.NAVIGATION_VIEW_ID);
+			if(object!=null){
+				NavigationView view=(NavigationView)object;
 				view.reloadNavigations(documentContained.getMetadataDocument());
 			}
 			else{
 				SpagoBILogger.warningLog("view Document navigation closed");
 			}
+
 		}catch (Exception e) {
 			SpagoBILogger.errorLog("Error reloading navigation view", e);
 			e.printStackTrace();
 		}
-		int i=0;
 	}
 
 	public Designer getDesigner() {

@@ -51,6 +51,7 @@ public class ParameterBO {
 		}		
 		return paramFound;
 	}
+	
 	public boolean deleteParameterById(DocumentComposition docComp, String id){
 		boolean paramFound = false;
 		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();

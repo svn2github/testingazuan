@@ -156,7 +156,7 @@ public class NavigationView extends ViewPart {
 		
 	}
 	protected Table createTable(Composite parent, FormToolkit toolkit, Composite client){
-		fillDocumentsNames();
+		//fillDocumentsNames();
 		table = toolkit.createTable(client, SWT.SINGLE  | SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 20;
@@ -234,8 +234,10 @@ public class NavigationView extends ViewPart {
 					MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
 					String docName = doc.getName();
 					String docLabel = doc.getLabel();
-					docInfoUtil.put(docLabel, docName);
-					docInfoUtil.put(docName, docLabel);
+					if(docLabel != null && docName != null){
+						docInfoUtil.put(docLabel, docName);
+						docInfoUtil.put(docName, docLabel);
+					}
 				}
 			}
 		}
@@ -303,6 +305,10 @@ public class NavigationView extends ViewPart {
 											boolean result =paramBo.deleteParameterById(documentComp, idParam);
 										}
 										refreshes.remove(refresh);
+									}
+									if(refreshes.size()== 0){
+										//elimina anche parametro out
+										par.remove(paramOut);
 									}
 								}
 								

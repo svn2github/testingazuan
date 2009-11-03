@@ -20,13 +20,16 @@ import java.io.IOException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IViewPart;
@@ -142,23 +145,39 @@ public class DocumentCompositionEditor extends EditorPart {
 	public void init(IEditorSite site, IEditorInput input)
 	throws PartInitException {
 		SpagoBILogger.infoLog(DocumentCompositionEditor.class.toString()+": init function");
-		this.setPartName(input.getName());
-		FileEditorInput fei = (FileEditorInput) input;
-		setInput(input);
-		setSite(site);
-		IFile file = fei.getFile();
-		templateName=file.getName();
-		ModelBO bo=new ModelBO();
-		try {
-			DocumentComposition documentComposition = bo.createModel(file);
-			bo.saveModel(documentComposition);
+		
+		//verifica se esiste già un documento aperto
+		try{
 
-			metadataDocumentComposition = new MetadataDocumentComposition();
-			Activator.getDefault().setMetadataDocumentComposition(metadataDocumentComposition);
-		} catch (CoreException e) {
-			e.printStackTrace();
-			SpagoBILogger.errorLog(DocumentCompositionEditor.class.toString()+": Error in reading template", e);
-			throw(new PartInitException("Error in reading template"));
+			this.setPartName(input.getName());
+			FileEditorInput fei = (FileEditorInput) input;
+			setInput(input);
+			setSite(site);
+			IFile file = fei.getFile();
+			templateName=file.getName();
+			ModelBO bo=new ModelBO();
+			try {
+				DocumentComposition documentComposition = bo.createModel(file);
+				bo.saveModel(documentComposition);
+	
+				metadataDocumentComposition = new MetadataDocumentComposition();
+				Activator.getDefault().setMetadataDocumentComposition(metadataDocumentComposition);
+			} catch (CoreException e) {
+				e.printStackTrace();
+				SpagoBILogger.errorLog(DocumentCompositionEditor.class.toString()+": Error in reading template", e);
+				throw(new PartInitException("Error in reading template"));
+			}
+			IEditorPart currentEditor = DocCompUtilities.getEditorReference(DocCompUtilities.DOCUMENT_COMPOSITION_EDITOR_ID);
+			if(currentEditor != null && currentEditor instanceof DocumentCompositionEditor){
+				SpagoBILogger.warningLog("Editor is already opened!!!");
+				System.out.println("Editor is already opened!!!");
+				MessageDialog.openError(site.getShell(), "ERROR", "Operation denied. Another editor is opened.");
+				IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+				iworkbenchpage.closeEditor(this, false);
+				
+			}
+		}catch(Exception e){
+			SpagoBILogger.warningLog("Error occurred:"+e.getMessage());
 		}
 		SpagoBILogger.infoLog("END "+DocumentCompositionEditor.class.toString()+": init function");
 	}
@@ -173,9 +192,10 @@ public class DocumentCompositionEditor extends EditorPart {
 
 	@Override
 	public void createPartControl(Composite _parent) {
-		SpagoBILogger.infoLog(DocumentCompositionEditor.class.toString()+": Create Part Control function");
 
-		//inserisce le 3 viste
+		SpagoBILogger.infoLog(DocumentCompositionEditor.class.toString()+": Create Part Control function");
+		
+		//inserisce le viste
 		try {
 			IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench()
 			.getActiveWorkbenchWindow().getActivePage();

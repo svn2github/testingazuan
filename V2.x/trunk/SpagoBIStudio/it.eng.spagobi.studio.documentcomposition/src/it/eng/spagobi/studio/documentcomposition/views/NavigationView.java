@@ -191,16 +191,25 @@ public class NavigationView extends ViewPart {
 							      item.setText(0, navName);
 							      String sbiLabel = doc.getSbiObjLabel();
 							      
-							      String name =docInfoUtil.get(sbiLabel);
-							      
+							      /*BUG!!!!*/
+							      String name =docInfoUtil.get(sbiLabel);		
+							      if(name == null){
+							    	  name = sbiLabel;
+							      }
 							      item.setText(1, name);
-
+							      /*FINE*/
 							      StringBuffer dest = new StringBuffer();
 							      if(param.getRefresh()!= null){
 							    	  Vector <RefreshDocLinked> destinatons =param.getRefresh().getRefreshDocLinked();
 							    	  if(destinatons != null){
 								    	  for(int k =0; k<destinatons.size(); k++){
-								    		  dest.append(docInfoUtil.get(((RefreshDocLinked)destinatons.elementAt(k)).getLabelDoc()));
+										      /*BUG!!!!*/
+										      String docdest =docInfoUtil.get(((RefreshDocLinked)destinatons.elementAt(k)).getLabelDoc());		
+										      if(docdest == null){
+										    	  docdest = ((RefreshDocLinked)destinatons.elementAt(k)).getLabelDoc();
+										      }
+										      /*FINE*/
+								    		  dest.append(docdest);
 								    		  dest.append("(");
 								    		  dest.append(((RefreshDocLinked)destinatons.elementAt(k)).getLabelParam());
 								    		  dest.append(")");
@@ -268,8 +277,7 @@ public class NavigationView extends ViewPart {
 
 						if(navName != null && navName.equalsIgnoreCase(item.getText())){
 							//elimina la classe java del modello
-/*							par.remove(j);
-							params.setParameter(par);*/
+
 							String destinations = item.getText(2);
 							
 							ParameterBO paramBo = new ParameterBO();

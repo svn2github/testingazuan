@@ -159,11 +159,9 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 	    				parameters = new Vector<Parameter>();
 	    			}
 	    			ParameterBO bo = new ParameterBO();
-	    			Parameter outputPram = bo.getDocOutputParameter(parameters);
+	    			Parameter outputPram = bo.getDocOutputParameter(parameters, masterPar);
 	    			fillNavigationOutParam(outputPram, masterPar);
 	    			
-	    			
-
 		    	}else{
 		    		Parameters params = doc.getParameters();//tag già presente nel modello riempito precedentemente
 
@@ -227,7 +225,7 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 			if(refreshDocLinked != null){
 				refreshDocLinked.setLabelDoc(toRefresh);
 				refreshDocLinked.setLabelParam(paramIn);
-				//refreshDocLinked.setIdParam(id);
+
 			}
 		}
 		//cacella refreshedDocs 
@@ -282,7 +280,7 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 						param.setDefaultVal(destInfo.getParamDefaultValue().getText());													
 					}
 					//refresh viene aggiornato
-					refreshBO.upadateRefreshedDocLink(docComp, id,destLabel,param.getSbiParLabel());
+					refreshBO.upadateRefreshedDocLink(docComp, id,param.getSbiParLabel(),destLabel);
 				}
 
 

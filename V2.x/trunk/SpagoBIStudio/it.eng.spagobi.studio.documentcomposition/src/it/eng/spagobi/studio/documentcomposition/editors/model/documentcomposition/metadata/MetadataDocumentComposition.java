@@ -8,9 +8,9 @@ import java.util.Vector;
 public class MetadataDocumentComposition {
 
 	public MetadataDocumentComposition() {
-		if(Activator.getDefault().getMetadataDocumentComposition() != null){
+/*		if(Activator.getDefault().getMetadataDocumentComposition() != null){
 			metadataDocuments = Activator.getDefault().getMetadataDocumentComposition().getMetadataDocuments();
-		}
+		}*/
 	}
 
 	private Vector<MetadataDocument> metadataDocuments=new Vector<MetadataDocument>();

@@ -216,7 +216,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		    		doc.getParameters().setParameter(new Vector());
 		    	}
 		    	
-		    	Parameter outputParam = bo.getDocOutputParameter(parameters);
+		    	Parameter outputParam = bo.getDocOutputParameter(parameters, masterLabel);
 		    	if(outputParam != null && outputParam.getSbiParLabel().equals(out)){
 		    		param = outputParam;
 		    		param.setDefaultVal(newNavigationWizardMasterDocPage.getMasterDefaultValueOutputParam().getText());

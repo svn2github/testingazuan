@@ -376,23 +376,32 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	}
 	
 	, showWizard: function() {	
-		if(!this.isWizardExpression()) {
-			this.syncWizardExpressionWithGrid();
-		}					
-		var operands = [];			
-		for(i = 0; i <  this.grid.store.getCount(); i++) {
-			var tmpRec =  this.grid.store.getAt(i);
-			operands[i] = {
-				text: tmpRec.data.filterId,
-				ttip: tmpRec.data.filterId + ': ' + tmpRec.data.filterDescription,
-				type: 'operand',
-				value: '$F{' +  tmpRec.data.filterId + '}'
-			};
+		if(this.grid.store.getCount() == 0) {
+			Ext.Msg.show({
+				   title:'Warning',
+				   msg: 'Impossible to create a filter expression. No filters have been defined yet.',
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.WARNING
+			});
+		} else { 		
+			if(!this.isWizardExpression()) {
+				this.syncWizardExpressionWithGrid();
+			}					
+			var operands = [];			
+			for(i = 0; i <  this.grid.store.getCount(); i++) {
+				var tmpRec =  this.grid.store.getAt(i);
+				operands[i] = {
+					text: tmpRec.data.filterId,
+					ttip: tmpRec.data.filterId + ': ' + tmpRec.data.filterDescription,
+					type: 'operand',
+					value: '$F{' +  tmpRec.data.filterId + '}'
+				};
+			}
+			
+			it.eng.spagobi.engines.qbe.filterwizard.setOperands(operands);
+			it.eng.spagobi.engines.qbe.filterwizard.show();	 
+			this.setWizardExpression(true);
 		}
-		
-		it.eng.spagobi.engines.qbe.filterwizard.setOperands(operands);
-		it.eng.spagobi.engines.qbe.filterwizard.show();	 
-		this.setWizardExpression(true);
 	}
 	
 	, setWizardExpression: function(b) {

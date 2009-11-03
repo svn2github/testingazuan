@@ -233,7 +233,7 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 		}, this);
 		
 		// create the Grid
-	    this.grid = new Ext.grid.GridPanel({
+		this.grid = new Ext.grid.GridPanel({
 	    	store: this.store,
 	        cm: cm,
 	        clicksToEdit:1,

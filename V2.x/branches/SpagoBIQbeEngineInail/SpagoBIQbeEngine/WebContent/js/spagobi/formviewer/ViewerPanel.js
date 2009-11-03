@@ -63,8 +63,18 @@ Sbi.formviewer.ViewerPanel = function(template, config) {
 	
 	this.init(template);
 	
+	this.toolbar = new Ext.Toolbar({
+		items: [{
+			text: 'getFormState',
+			handler: this.getFormState,
+			scope: this
+		}]
+	});
+	
 	Ext.apply(c, {
-  		items: this.items
+		title: 'TITOLO'
+		, tbar: this.toolbar
+  		, items: this.items
 	});
 	
 	// constructor
@@ -97,15 +107,14 @@ Ext.extend(Sbi.formviewer.ViewerPanel, Ext.Panel, {
 		
 	}
     
-    
     // public methods
-    
-    , setState: function(state) {
-	
-    }
 
-	, getState: function() {
-		
+	, getFormState: function() {
+		var state = {};
+		if (this.staticClosedFiltersPanel !== null) {
+			state.staticClosedFilters = this.staticClosedFiltersPanel.getFormState();
+		}
+		alert(state.toSource());
 	}
   	
 });

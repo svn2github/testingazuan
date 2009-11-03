@@ -87,7 +87,6 @@ Ext.extend(Sbi.formviewer.StaticClosedXORFiltersPanel, Ext.form.FormPanel, {
             items: []
         }
 		
-		// TODO e se non c'è l'allowNoSelection????
 		if (aStaticClosedXORFiltersGroup.allowNoSelection !== null && aStaticClosedXORFiltersGroup.allowNoSelection === true) {
 			// create No Selection Item
 			this.items.items.push({
@@ -98,26 +97,23 @@ Ext.extend(Sbi.formviewer.StaticClosedXORFiltersPanel, Ext.form.FormPanel, {
 			});
 		}
 		
-		for (var i = 0; i < aStaticClosedXORFiltersGroup.options.length; i++) {
+		for (var i = 0; i < aStaticClosedXORFiltersGroup.filters.length; i++) {
 			// create items
-			var aFilter = aStaticClosedXORFiltersGroup.options[i];
+			var aFilter = aStaticClosedXORFiltersGroup.filters[i];
 			this.items.items.push({
 				hideLabel: true,
                 boxLabel: aFilter.text,
                 name: aStaticClosedXORFiltersGroup.id,
-                inputValue: aFilter.rightOperandValue
+                inputValue: aFilter.id
 			});
 		}
 	}
 	
 	// public methods
 	
-	, setState: function(state) {
+	, getFormState: function() {
+		var state = this.getForm().getValues();
+		return state;
+	}
 	
-	}
-
-	, getState: function() {
-		
-	}
-  	
 });

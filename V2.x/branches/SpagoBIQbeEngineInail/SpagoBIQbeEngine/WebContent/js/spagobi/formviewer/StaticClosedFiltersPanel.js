@@ -79,6 +79,8 @@ Ext.extend(Sbi.formviewer.StaticClosedFiltersPanel, Ext.Panel, {
     
 	services: null
 	, forms: null
+	, xorFilters: new Array()
+	, onOffFilters: new Array()
 	   
 	// private methods
 	   
@@ -89,8 +91,10 @@ Ext.extend(Sbi.formviewer.StaticClosedFiltersPanel, Ext.Panel, {
 			var aStaticFiltersForm = null;
 			if (aStaticFiltersGroup.singleSelection) {
 				aStaticFiltersForm = new Sbi.formviewer.StaticClosedXORFiltersPanel(aStaticFiltersGroup);
+				this.xorFilters.push(aStaticFiltersForm);
 			} else {
 				aStaticFiltersForm = new Sbi.formviewer.StaticClosedOnOffFiltersPanel(aStaticFiltersGroup);
+				this.onOffFilters.push(aStaticFiltersForm);
 			}
 			this.forms.push(aStaticFiltersForm);
 		}
@@ -99,15 +103,21 @@ Ext.extend(Sbi.formviewer.StaticClosedFiltersPanel, Ext.Panel, {
 	   
 	// public methods
 	
-	, setState: function(state) {
-	
-	}
-	
-	, getState: function() {
-		var state = [];
-		for (var i = 0; i < this.forms.length; i++) {
-			var aForm = this.forms[i];
-			state.push(aForm.getState());
+	, getFormState: function() {
+		var state = {};
+		state.xorFilters = {};
+		state.onOffFilters = {};
+		if (this.xorFilters !== null) {
+			for (var i = 0; i < this.xorFilters.length; i++) {
+				var aXORFilter = this.xorFilters[i];
+				Ext.apply(state.xorFilters, aXORFilter.getFormState());
+			}
+		}
+		if (this.onOffFilters !== null) {
+			for (var i = 0; i < this.onOffFilters.length; i++) {
+				var aOnOffFilter = this.onOffFilters[i];
+				Ext.apply(state.onOffFilters, aOnOffFilter.getFormState());
+			}
 		}
 		return state;
 	}

@@ -79,26 +79,23 @@ Ext.extend(Sbi.formviewer.StaticClosedOnOffFiltersPanel, Ext.form.FormPanel, {
 	, init: function(aStaticClosedOnOffFiltersGroup) {
 		this.items = [];
 		
-		for (var i = 0; i < aStaticClosedOnOffFiltersGroup.options.length; i++) {
+		for (var i = 0; i < aStaticClosedOnOffFiltersGroup.filters.length; i++) {
 			// create items
-			var aFilter = aStaticClosedOnOffFiltersGroup.options[i];
+			var aFilter = aStaticClosedOnOffFiltersGroup.filters[i];
 			this.items.push({
 				xtype: 'checkbox',
 				hideLabel: true,
                 boxLabel: aFilter.text,
-                name: aStaticClosedOnOffFiltersGroup.id
+                name: aFilter.id
 			});
 		}
 	}
 	
 	// public methods
 	
-	, setState: function(state) {
-	
-	}
-
-	, getState: function() {
-		
+	, getFormState: function() {
+		var state = this.getForm().getValues();
+		return state;
 	}
   	
 });

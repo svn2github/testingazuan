@@ -47,21 +47,21 @@ var template = {
     staticClosedFilters: [
         // gruppo-1, filtri esclusivi (alternativi) 
         {
-        	id: 'Stato',
+        	id: 'xorFilter-1',
             title: 'Stato',
             singleSelection: true,
             allowNoSelection: true,
             noSelectionText: 'Tutti gli stati',
-            width: '50%',
-            options: [
+            filters: [
                 {
+                	id: 'option-1',
                     text: 'Solo vendite negli USA',
                     leftOperandValue: 'it.eng.spagobi.SalesFact1998::customer(customer_id):country',
                     operator: 'EQUALS TO',
                     rightOperandValue: 'USA'
                 },
-                
                 {
+                	id: 'option-2',
                     text: 'Solo vendite in Canada',
                     leftOperandValue: 'it.eng.spagobi.SalesFact1998::customer(customer_id):country',
                     operator: 'EQUALS TO',
@@ -70,21 +70,21 @@ var template = {
             ]
         },
         {
-        	id: 'Anno',
+        	id: 'xorFilter-2',
             title: 'Anno',
             singleSelection: true,
             allowNoSelection: true,
             noSelectionText: 'Tutti gli anni',
-            width: '50%',
-            options: [
+            filters: [
                 {
+                	id: 'option-1',
                     text: '1997',
                     leftOperandValue: 'it.eng.spagobi.SalesFact1998::timeByDay(time_id):year',
                     operator: 'EQUALS TO',
                     rightOperandValue: '1997'
                 },
-                
                 {
+                	id: 'option-2',
                     text: '1998',
                     leftOperandValue: 'it.eng.spagobi.SalesFact1998::timeByDay(time_id):year',
                     operator: 'EQUALS TO',
@@ -95,19 +95,18 @@ var template = {
         
         // gruppo-2, filtro on/off
         {
-        	id: 'Tipologia prodotto',
             title: 'Tipologia prodotto',
             singleSelection: false,
-            width: '50%',
-            options: [
+            filters: [
                 {
+                	id: 'onOffFilter-1',
                     text: 'Solo cibi',
                     leftOperandValue: 'it.eng.spagobi.SalesFact1998::product(product_id):family',
                     operator: 'EQUALS TO',
                     rightOperandValue: 'Food'
                 },
-                
                 {
+                	id: 'onOffFilter-2',
                     text: 'solo bevande',
                     leftOperandValue: 'it.eng.spagobi.SalesFact1998::product(product_id):family',
                     operator: 'EQUALS TO',
@@ -116,24 +115,25 @@ var template = {
             ]
         }, 
         {
-        	id: 'Promozioni',
             title: 'Promozioni',
             singleSelection: false,
-            width: '50%',
-            options: [
+            filters: [
                 {
+                	id: 'onOffFilter-3',
                     text: 'Escludi clienti giovani',
                     leftOperandValue: 'it.eng.spagobi.SalesFact1998::product(product_id):family',
                     operator: 'EQUALS TO',
                     rightOperandValue: 'Food'
                 },
                 {
+                	id: 'onOffFilter-4',
                     text: 'Escludi clienti esteri',
                     leftOperandValue: 'it.eng.spagobi.SalesFact1998::product(product_id):family',
                     operator: 'EQUALS TO',
                     rightOperandValue: 'Drink'
                 },
                 {
+                	id: 'onOffFilter-5',
                     text: 'Escludi clienti non diplomati',
                     leftOperandValue: 'it.eng.spagobi.SalesFact1998::product(product_id):family',
                     operator: 'EQUALS TO',
@@ -155,7 +155,7 @@ var template = {
     staticOpenFilters: [
         // single selection
         {
-        	id: 'Mese',
+        	id: 'staticOpenFilter-1',
             text: 'Mese',
             field: 'it.eng.spagobi.SalesFact1998::timeByDay(time_id):theMonth',
             operator: 'EQUALS',
@@ -163,7 +163,7 @@ var template = {
             maxSelectedNumber: 3
         },
         {
-        	id: 'Customer',
+        	id: 'staticOpenFilter-2',
             text: 'Customer',
             field: 'it.eng.spagobi.Customer:fullname',
             operator: 'EQUALS',
@@ -172,14 +172,14 @@ var template = {
         },
         // multi selection
         {
-        	id: 'Brand',
+        	id: 'staticOpenFilter-3',
             text: 'Brand',
             field: 'it.eng.spagobi.SalesFact1998::product(product_id):brandName',
             operator: 'EQUALS',
             singleSelection: true
         },
         {
-        	id: 'Reparto',
+        	id: 'staticOpenFilter-4',
             text: 'Reparto',
             field: 'it.eng.spagobi.SalesFact1998::store(store_id):department',
             operator: 'EQUALS',

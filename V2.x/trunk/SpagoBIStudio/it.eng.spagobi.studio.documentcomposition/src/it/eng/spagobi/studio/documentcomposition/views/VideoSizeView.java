@@ -4,6 +4,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEdit
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
+import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -12,6 +13,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
@@ -86,14 +88,9 @@ public class VideoSizeView extends ViewPart{
 				if(modelBO.getModel()!=null && modelBO.getModel().getDocumentsConfiguration()!=null){
 					modelBO.getModel().getDocumentsConfiguration().setVideoHeight(newSizeInt.toString());
 				}
-				IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
-				IWorkbenchPage aa=a.getActivePage();
-				IEditorReference[] editors=aa.findEditors(null, "it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor", IWorkbenchPage.MATCH_ID);
-				if(editors!=null && editors.length>0){
-					EditorReference editorReference=(EditorReference)editors[0];
-					DocumentCompositionEditor editor=(DocumentCompositionEditor)editorReference.getPart(false);
-					editor.setIsDirty(true);
-				}				
+				IEditorPart editorPart=DocCompUtilities.getEditorReference(DocCompUtilities.DOCUMENT_COMPOSITION_EDITOR_ID);
+				if(editorPart!=null) ((DocumentCompositionEditor)editorPart).setIsDirty(true);
+				
 			}
 		});
 
@@ -119,14 +116,8 @@ public class VideoSizeView extends ViewPart{
 				if(modelBO.getModel()!=null && modelBO.getModel().getDocumentsConfiguration()!=null){
 					modelBO.getModel().getDocumentsConfiguration().setVideoWidth(newSizeInt.toString());
 				}
-				IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
-				IWorkbenchPage aa=a.getActivePage();
-				IEditorReference[] editors=aa.findEditors(null, "it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor", IWorkbenchPage.MATCH_ID);
-				if(editors!=null && editors.length>0){
-					EditorReference editorReference=(EditorReference)editors[0];
-					DocumentCompositionEditor editor=(DocumentCompositionEditor)editorReference.getPart(false);
-					editor.setIsDirty(true);
-				}				
+				IEditorPart editorPart=DocCompUtilities.getEditorReference(DocCompUtilities.DOCUMENT_COMPOSITION_EDITOR_ID);
+				if(editorPart!=null) ((DocumentCompositionEditor)editorPart).setIsDirty(true);				
 			}
 		});
 
@@ -141,7 +132,7 @@ public class VideoSizeView extends ViewPart{
 		DocumentComposition docCompModel=new ModelBO().getModel();
 		if(docCompModel!=null && docCompModel.getDocumentsConfiguration()!=null){
 			String heightS=docCompModel.getDocumentsConfiguration().getVideoHeight();
-			String widthS=docCompModel.getDocumentsConfiguration().getVideoHeight();
+			String widthS=docCompModel.getDocumentsConfiguration().getVideoWidth();
 			int height=Integer.valueOf(heightS);
 			int width=Integer.valueOf(widthS);
 			heightSpin.setSelection(height);

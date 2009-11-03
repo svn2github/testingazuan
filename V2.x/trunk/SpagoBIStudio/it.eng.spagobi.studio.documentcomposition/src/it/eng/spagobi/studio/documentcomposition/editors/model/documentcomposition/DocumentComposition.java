@@ -4,7 +4,9 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -18,6 +20,8 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
+import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
+import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
 
 
 public class DocumentComposition {
@@ -49,23 +53,38 @@ public class DocumentComposition {
 	 */
 	public void reloadAllStylesContained(){
 		// take desginer and run all the containers
-		IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
-		IWorkbenchPage aa=a.getActivePage();
-		IEditorReference[] editors=aa.findEditors(null, "it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor", IWorkbenchPage.MATCH_ID);
-		if(editors!=null && editors.length>0){
-			EditorReference editorReference=(EditorReference)editors[0];
-			DocumentCompositionEditor editor=(DocumentCompositionEditor)editorReference.getPart(false);
+		DocumentPropertiesView docPropertiesView=null;
+		IViewPart viewPart=DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PROPERTIES_VIEW_ID);
+		if(viewPart!=null)docPropertiesView=(DocumentPropertiesView)viewPart;
+
+		IEditorPart editorPart=DocCompUtilities.getEditorReference(DocCompUtilities.DOCUMENT_COMPOSITION_EDITOR_ID);	
+		if(editorPart!=null){
+			DocumentCompositionEditor editor=(DocumentCompositionEditor)editorPart;
 			Designer designer=editor.getDesigner();
 			for (Iterator iterator = designer.getContainers().keySet().iterator(); iterator.hasNext();) {
 				Integer id = (Integer) iterator.next();
 				DocContainer docContainer=designer.getContainers().get(id);
 				if(docContainer.getDocumentContained()!=null && docContainer.getDocumentContained().getMetadataDocument()!=null) {
-					Style style=docContainer.calculateTemplateStyle();
+					// If in manual state shell take manual configuration!
+					String manualString=null;
+					if(docPropertiesView!=null){
+						manualString=docPropertiesView.getStyleParameters().get(docContainer.getIdContainer());
+					}
+					// manual mode
+					Style style=null;
+					if(manualString!=null){
+						style=new Style();	
+						style.setStyle(manualString);
+					}
+					else{	
+						style=docContainer.calculateTemplateStyle();
+					}
 					MetadataDocument metadataDocument=docContainer.getDocumentContained().getMetadataDocument();
 					new ModelBO().updateModelModifyDocument(metadataDocument, style);
-				}
-			}
 
+				}
+
+			}
 		}
 	}
 

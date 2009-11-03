@@ -1,12 +1,13 @@
 package it.eng.spagobi.studio.documentcomposition.views;
 
-import java.util.HashMap;
-
 import it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
+import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
+
+import java.util.HashMap;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.swt.SWT;
@@ -24,6 +25,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -34,7 +36,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.internal.EditorReference;
-import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.ViewPart;
 
 public class DocumentPropertiesView extends ViewPart {
@@ -128,18 +129,17 @@ public class DocumentPropertiesView extends ViewPart {
 			public void modifyText(ModifyEvent event) {
 				String t = textStyle.getText();
 				if(t!=null && !t.equalsIgnoreCase("") && manualMode==true){
+					System.out.println(id);
 					styleParameters.put(id, t);
 					if(metadataDocument!=null){
 						(new ModelBO()).updateModelModifyDocument(metadataDocument, new Style(t));
 					}
 					IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
 					IWorkbenchPage aa=a.getActivePage();
-					IEditorReference[] editors=aa.findEditors(null, "it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor", IWorkbenchPage.MATCH_ID);
-					if(editors!=null && editors.length>0){
-						EditorReference editorReference=(EditorReference)editors[0];
-						DocumentCompositionEditor editor=(DocumentCompositionEditor)editorReference.getPart(false);
-						editor.setIsDirty(true);
-					}				
+					
+					IEditorPart editorPart=DocCompUtilities.getEditorReference(DocCompUtilities.DOCUMENT_COMPOSITION_EDITOR_ID);
+					if(editorPart!=null) ((DocumentCompositionEditor)editorPart).setIsDirty(true);
+				
 				}
 
 			}
@@ -209,6 +209,7 @@ public class DocumentPropertiesView extends ViewPart {
 		toolkit.paintBordersFor(client);
 		section.setClient(client);
 		viewSelectedProperties();
+		setVisible(false);		
 	}
 
 	public void reloadProperties(MetadataDocument documentMeta){
@@ -233,10 +234,12 @@ public class DocumentPropertiesView extends ViewPart {
 		table.getItem(STATE).setText(1, state);
 		client.layout();
 		client.redraw();
+		setVisible(true);
 	}
 
 	public void reloadStyle(Integer docContainerId, String style, MetadataDocument _metadataDocument){
 		// check if present document is in manual mode
+		setVisible(true);
 		String stylePrec=styleParameters.get(docContainerId);
 		id=docContainerId;
 		metadataDocument=_metadataDocument;
@@ -291,6 +294,7 @@ public class DocumentPropertiesView extends ViewPart {
 		}
 		enableManualMode(false);
 		styleParameters=new HashMap<Integer, String>();
+		setVisible(false);
 	}
 
 
@@ -487,7 +491,20 @@ public class DocumentPropertiesView extends ViewPart {
 	}
 
 
+	public void setVisible(boolean visible){
+		client.setVisible(visible);
+	}
+	public boolean isVisible(){
+		return client.isVisible();
+		}
 
+	public HashMap<Integer, String> getStyleParameters() {
+		return styleParameters;
+	}
+
+	public void setStyleParameters(HashMap<Integer, String> styleParameters) {
+		this.styleParameters = styleParameters;
+	}
 
 
 

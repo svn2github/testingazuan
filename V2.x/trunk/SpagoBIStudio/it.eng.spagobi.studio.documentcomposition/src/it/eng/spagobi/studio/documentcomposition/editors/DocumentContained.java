@@ -3,16 +3,11 @@ package it.eng.spagobi.studio.documentcomposition.editors;
 
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Map;
-import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
@@ -21,8 +16,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -145,7 +138,9 @@ public class DocumentContained {
 
 			drawImage();
 
-			group.setText(metadataDocument.getLocalFileName());
+			String titleGroup="Name: "+metadataDocument.getName() != null ? metadataDocument.getName() : metadataDocument.getLabel();
+			group.setText(titleGroup);
+			group.setToolTipText(metadataDocument.getLocalFileName());
 			Label nameLabelName=new Label(group,SWT.NULL);
 			nameLabelName.setText("Name: "+metadataDocument.getName() != null ? metadataDocument.getName() : "" );			
 			//		Label nameLabelValue=new Label(group,SWT.NULL);

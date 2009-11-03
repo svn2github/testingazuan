@@ -89,7 +89,7 @@ public class DocumentParametersView extends ViewPart {
 		toolkit.paintBordersFor(client);
 		section.setClient(client);
 		viewSelectedProperties();
-
+		setVisible(false);
 	}
 
 	public void reloadParametersProperties(MetadataDocument metadataDocument){
@@ -109,6 +109,7 @@ public class DocumentParametersView extends ViewPart {
 		}
 		client.layout();
 		client.redraw();
+		setVisible(true);
 	}
 
 
@@ -187,6 +188,12 @@ public class DocumentParametersView extends ViewPart {
 	}
 
 
+	public void setVisible(boolean visible){
+		client.setVisible(visible);
+	}
+	public boolean isVisible(){
+		return client.isVisible();
+	}
 
 
 

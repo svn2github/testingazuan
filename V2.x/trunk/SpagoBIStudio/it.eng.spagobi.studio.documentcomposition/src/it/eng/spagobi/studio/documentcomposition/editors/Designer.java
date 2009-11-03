@@ -12,6 +12,9 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataStyle;
+import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
+import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
+import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,6 +39,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.part.EditorPart;
 
 public class Designer {
@@ -228,7 +232,6 @@ public class Designer {
 				case SWT.MouseDown:
 					/**  IF in resizing state mouse button on shell causes end resizing**/
 					DocContainer selectedDoc=currentSelection.intValue()!=-1 ? containers.get(currentSelection) : null ;
-					System.out.println("MAin composite in x="+mainComposite.getBounds().x+" y="+mainComposite.getBounds().x+" height="+mainComposite.getBounds().height+" width="+mainComposite.getBounds().width);
 					Composite selected=currentSelection.intValue()!=-1 ? containers.get(currentSelection).getDocumentContained().getGroup() : null ;
 					if(getState().equals(Designer.RESIZE)){
 						setState(Designer.NORMAL);
@@ -272,6 +275,12 @@ public class Designer {
 						if(selected!=null){
 							selected.setBackground(new Color(selected.getDisplay(),new RGB(189,189,189)));
 						}
+						// set Views Invisible
+						IViewPart viewPart=DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PROPERTIES_VIEW_ID);
+						if(viewPart!=null)((DocumentPropertiesView)viewPart).setVisible(false);
+						IViewPart viewPart2=DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PARAMETERS_VIEW_ID);
+						if(viewPart2!=null)((DocumentParametersView)viewPart2).setVisible(false);
+
 					}
 					break;
 				case SWT.MouseMove:

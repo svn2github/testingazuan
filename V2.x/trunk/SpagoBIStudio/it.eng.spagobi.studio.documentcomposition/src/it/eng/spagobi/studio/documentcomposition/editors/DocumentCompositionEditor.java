@@ -7,6 +7,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
+import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
 import it.eng.spagobi.studio.documentcomposition.util.XmlTemplateGenerator;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
@@ -28,6 +29,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -151,36 +153,24 @@ public class DocumentCompositionEditor extends EditorPart {
 			IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench()
 			.getActiveWorkbenchWindow().getActivePage();
 			if(iworkbenchpage != null){
-				if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView") == null ){
-					iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView");
+				if (iworkbenchpage.findView(DocCompUtilities.DOCUMENT_PROPERTIES_VIEW_ID) == null ){
+					iworkbenchpage.showView(DocCompUtilities.DOCUMENT_PROPERTIES_VIEW_ID);
 				}
-				if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView") == null ){
-					iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView");
+				if (iworkbenchpage.findView(DocCompUtilities.DOCUMENT_PARAMETERS_VIEW_ID) == null ){
+					iworkbenchpage.showView(DocCompUtilities.DOCUMENT_PARAMETERS_VIEW_ID);
 				}
-				if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.NavigationView") == null ){
-					iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.NavigationView");
+				if (iworkbenchpage.findView(DocCompUtilities.NAVIGATION_VIEW_ID) == null ){
+					iworkbenchpage.showView(DocCompUtilities.NAVIGATION_VIEW_ID);
 				}
-				if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.VideoSizeView") == null ){
-					iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.VideoSizeView");
-					IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
-					IWorkbenchPage aa=a.getActivePage();
-					IViewReference w=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.VideoSizeView");
-					Object p=w.getPart(false);
-					if(p!=null){
-						VideoSizeView view=(VideoSizeView)p;
-						view.reloadSizes();
-					}
-					else{
-						// View not present
+				if (iworkbenchpage.findView(DocCompUtilities.VIDEO_SIZE_VIEW_ID) == null ){
+					iworkbenchpage.showView(DocCompUtilities.VIDEO_SIZE_VIEW_ID);
+				}
+				IViewPart object=DocCompUtilities.getViewReference(DocCompUtilities.VIDEO_SIZE_VIEW_ID);
+				if(object!=null){
+					VideoSizeView view=(VideoSizeView)object;
+					view.reloadSizes();						
+				}
 
-					}
-
-
-
-
-
-
-				}	            
 			}
 		} catch (PartInitException partinitexception) {
 			partinitexception.printStackTrace();
@@ -242,44 +232,45 @@ public class DocumentCompositionEditor extends EditorPart {
 		// Document properties
 		IWorkbenchPage aa=a.getActivePage();
 		try{
-			IViewReference w=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView");
-			Object p=w.getPart(false);
-			if(p!=null){
-				DocumentPropertiesView view=(DocumentPropertiesView)p;
+
+			IViewPart object=DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PROPERTIES_VIEW_ID);
+			if(object!=null){
+				DocumentPropertiesView view=(DocumentPropertiesView)object;
 				view.cleanSizeAndProperties();
 			}
 			else{
-				// View not present
+				SpagoBILogger.warningLog("view Document Propertiess closed");
 			}
 		}
 		catch (Exception e) {
 			SpagoBILogger.warningLog("Window not active, could not empty the property view");	
 		}
+
 		try{
-			IViewReference w2=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView");
-			Object p2=w2.getPart(false);
-			if(p2!=null){
-				DocumentParametersView view=(DocumentParametersView)p2;
+			IViewPart object=DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PARAMETERS_VIEW_ID);
+			if(object!=null){
+				DocumentParametersView view=(DocumentParametersView)object;
 				view.cleanParameters();
 			}
 			else{
-				// View not present
+				SpagoBILogger.warningLog("view Document Parameters closed");
 			}
+
 		}
 		catch (Exception e) {
 			SpagoBILogger.warningLog("Window not active, could not empty the property view");	
 		}
+
 		try{
-			IViewReference w3=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.NavigationView");
-			Object p3=w3.getPart(false);
-			if(p3!=null){
-				NavigationView view=(NavigationView)p3;
+			IViewPart object=DocCompUtilities.getViewReference(DocCompUtilities.NAVIGATION_VIEW_ID);
+			if(object!=null){
+				NavigationView view=(NavigationView)object;
 				view.cleanParameters();
 			}
 			else{
-				// View not present
-				SpagoBILogger.infoLog("View not present");
+				SpagoBILogger.warningLog("view Navigation not present");
 			}
+
 		}
 		catch (Exception e) {
 			SpagoBILogger.warningLog("Window not active, could not empty the property view");	
@@ -306,6 +297,8 @@ public class DocumentCompositionEditor extends EditorPart {
 		this.designer = designer;
 	}
 
+	
+	
 
 
 }

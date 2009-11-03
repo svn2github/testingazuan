@@ -383,7 +383,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    				//cicla su destinazioni
 				    				Refresh refresh = param.getRefresh();
 				    				Vector<RefreshDocLinked> destinations = refresh.getRefreshDocLinked();
-				    				System.out.println("destination size::"+destinations.size());
+				    				
 				    				for(int k =0; k<destinations.size(); k++){
 				    					
 				    					//secondo composite
@@ -463,7 +463,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    							String docLab =docInfoUtil.get(destinationDocNameCombo.elementAt(element).getText());
 				    							boolean exists = bo.inputParameterExists(docComp, docLab, destinationInputParam.elementAt(element).getText());
 				    							if(exists){
-			    					        		//non è possibile cancellare destination
+			    					        		
 				    								final boolean[] result = new boolean[1];
 				    						        Shell confirm = createConfirmDialog(composite2.getParent(), result, element, destin);				    						        
 				    								confirm.open();
@@ -507,7 +507,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    					        	}else{
 						    							int selectionIndex = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
 						    							name = destinationDocNameCombo.elementAt(destinCounter).getItem(selectionIndex);
-						    							System.out.println("deletion "+name);
+						    							
 						    							
 						    							deletedParams.put(destin.getIdParam(), name);
 						    							deleteDestination(destinCounter, composite2);
@@ -625,32 +625,41 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	}
 	
 	protected Shell createConfirmDialog(Composite client, final boolean[] result, int element, RefreshDocLinked destin){
-		final Shell confirm = new Shell(client.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-		confirm.setLayout(new RowLayout());
+final Shell confirm = new Shell(client.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+		
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 3;
+		layout.marginWidth = 6;
+		layout.marginHeight = 6;
+		
+		confirm.setLayout(layout);
 		
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 3;
-		confirm.setSize(500, 100);
+		confirm.setSize(400, 120);
 		
-		String message = "Warning!Another navigation uses the same destination parameter. \n This operation will modify both. \nContinue? ";
-		new Label(confirm, SWT.NONE).setText(message);
+		String message = "Warning! Another navigation uses the same destination parameter. \n This operation will modify both. \nContinue? ";
+		Label label = new Label(confirm, SWT.NONE);
+		label.setText(message);
+		label.setLayoutData(gd);
 		
 		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 3;
+		gd.horizontalSpan = 1;
 		
 		Point pt = client.getDisplay().getCursorLocation ();
 		confirm.setLocation (pt.x, pt.y);
 
 	    final Button ok = new Button(confirm, SWT.PUSH);
 	    ok.setText("Confirm");
+	    ok.setLayoutData(gd);
 	    Button cancel = new Button(confirm, SWT.PUSH);
 	    cancel.setText("Cancel");
+	    cancel.setLayoutData(gd);
 	    confirm.isReparentable();
-	    
-
 	    
 	    final int elem =element;
 	    final String refreshID =destin.getIdParam();
+	    
 	    Listener dialogListener = new Listener() {
 	        public void handleEvent(Event event) {
 	          result[0] = event.widget == ok;

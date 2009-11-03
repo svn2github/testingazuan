@@ -8,6 +8,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameter;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameters;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.RefreshDocLinked;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.RefreshDocLinkedBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataParameter;
@@ -256,10 +257,13 @@ public class NavigationView extends ViewPart {
 							//elimina la classe java del modello
 							par.remove(j);
 							params.setParameter(par);
-							//Activator.getDefault().setDocumentComposition(documentComp);
+							
 							item.dispose();
 							editor.setIsDirty(true);
 						}
+						//elimina anche parametri IN
+						RefreshDocLinkedBO bo = new RefreshDocLinkedBO();
+						bo.deleteRefreshedDocLink(documentComp, param.getId(), param.getSbiParLabel(), doc.getSbiObjLabel());
 					}
 
 				}

@@ -56,7 +56,7 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 	}
 	@Override
 	public boolean canFlipToNextPage() {
-		System.out.println("masterdocname::"+masterDocName.getText()+"- and masterDocOutputParam::"+masterDocOutputParam.getText());
+		
 		if ((masterDocName.getText() == null) && (masterDocOutputParam.getText() == null)) {
 			return false;		
 		}else if((canFlip && masterDocOutputParam.getText().length() != 0 || masterDocOutputParam.getSelectionIndex() != -1) && masterDocName.getSelectionIndex() != -1){

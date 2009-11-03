@@ -53,7 +53,7 @@ Sbi.formviewer.StaticClosedOnOffFiltersPanel = function(aStaticFiltersORGroup) {
 	c = {
 		frame: true
         , items: this.items
-        , width: 400
+        , width: 200
         , height: 150
 	};
 	
@@ -71,6 +71,7 @@ Ext.extend(Sbi.formviewer.StaticClosedOnOffFiltersPanel, Ext.form.FormPanel, {
 	, init: function(config) {
 		this.items = [];
 		
+		/*
 		this.items = {
             xtype: 'fieldset',
             title: config.title,
@@ -78,11 +79,13 @@ Ext.extend(Sbi.formviewer.StaticClosedOnOffFiltersPanel, Ext.form.FormPanel, {
             defaultType: 'checkbox',
             items: []
         }
+        */
 		
 		for (var i = 0; i < config.options.length; i++) {
 			// create items
 			var aFilter = config.options[i];
-			this.items.items.push({
+			this.items.push({
+				xtype: 'checkbox',
 				hideLabel: true,
                 boxLabel: aFilter.text,
                 name: config.id

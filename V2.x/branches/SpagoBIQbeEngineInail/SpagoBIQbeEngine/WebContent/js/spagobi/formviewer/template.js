@@ -69,6 +69,29 @@ var template = {
                 }
             ]
         },
+        {
+        	id: 'Anno',
+            title: 'Anno',
+            singleSelection: true,
+            allowNoSelection: true,
+            noSelectionText: 'Tutti gli anni',
+            width: '50%',
+            options: [
+                {
+                    text: '1997',
+                    leftOperandValue: 'it.eng.spagobi.SalesFact1998::timeByDay(time_id):year',
+                    operator: 'EQUALS TO',
+                    rightOperandValue: '1997'
+                },
+                
+                {
+                    text: '1998',
+                    leftOperandValue: 'it.eng.spagobi.SalesFact1998::timeByDay(time_id):year',
+                    operator: 'EQUALS TO',
+                    rightOperandValue: '1998'
+                }
+            ]
+        },
         
         // gruppo-2, filtro on/off
         {
@@ -91,7 +114,34 @@ var template = {
                     rightOperandValue: 'Drink'
                 }
             ]
+        }, 
+        {
+        	id: 'Promozioni',
+            title: 'Promozioni',
+            singleSelection: false,
+            width: '50%',
+            options: [
+                {
+                    text: 'Escludi clienti giovani',
+                    leftOperandValue: 'it.eng.spagobi.SalesFact1998::product(product_id):family',
+                    operator: 'EQUALS TO',
+                    rightOperandValue: 'Food'
+                },
+                {
+                    text: 'Escludi clienti esteri',
+                    leftOperandValue: 'it.eng.spagobi.SalesFact1998::product(product_id):family',
+                    operator: 'EQUALS TO',
+                    rightOperandValue: 'Drink'
+                },
+                {
+                    text: 'Escludi clienti non diplomati',
+                    leftOperandValue: 'it.eng.spagobi.SalesFact1998::product(product_id):family',
+                    operator: 'EQUALS TO',
+                    rightOperandValue: 'Drink'
+                }
+            ]
         } 
+        
     ], 
     // -------------------------------- fine filtri statici chiusi ----------------------------------------------
     

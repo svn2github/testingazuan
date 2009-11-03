@@ -10,6 +10,37 @@ import java.util.Vector;
 
 public class ParameterBO {
 	
+	public String getLastId(DocumentComposition docComp){
+		int counter=0;
+
+		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
+		if(docConf != null){
+		    Vector documents = docConf.getDocuments();
+		    if(documents != null){
+		    	for (int i = 0; i< documents.size(); i++){
+		    		Document doc = (Document)documents.elementAt(i);
+		    		String docLabel =doc.getSbiObjLabel();
+		    		
+	    			Parameters parameters = doc.getParameters();
+	    			if(parameters != null){
+	    				Vector<Parameter> params = parameters.getParameter();
+	    				if(params != null){
+	    					for(int j=0;j<params.size(); j++){
+	    						Parameter param = params.elementAt(j);
+	    						int last =Integer.valueOf(param.getId()).intValue();
+	    						if(last > counter){
+	    							counter = last;
+	    						}
+	    					}
+	    				}
+	    			}
+		    	    		
+		    	}
+		    }
+		}
+		return String.valueOf(counter);
+	}
+	
 	public Parameter getParameterById(String id , Vector<Parameter> parameters){
 		Parameter paramFound = null; 
 		for(int i=0; i<parameters.size(); i++){
@@ -20,6 +51,36 @@ public class ParameterBO {
 		}		
 		return paramFound;
 	}
+	public boolean deleteParameterById(DocumentComposition docComp, String id){
+		boolean paramFound = false;
+		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
+		if(docConf != null){
+		    Vector documents = docConf.getDocuments();
+		    if(documents != null){
+		    	for (int i = 0; i< documents.size(); i++){
+		    		Document doc = (Document)documents.elementAt(i);
+		    		String docLabel =doc.getSbiObjLabel();
+
+		    			Parameters parameters = doc.getParameters();
+		    			if(parameters != null){
+		    				Vector<Parameter> params = parameters.getParameter();
+		    				if(params != null){
+		    					for(int j=0;j<params.size(); j++){
+		    						Parameter param = params.elementAt(j);
+		    						if(param.getType().equals("IN") && param.getId().equals(id)){
+		    							params.remove(param);
+		    						}
+		    					}
+		    				}
+		    			}
+	    		
+		    	}
+		    }
+		}
+	
+		return paramFound;
+	}
+	
 	public Parameter getDocOutputParameter(Vector<Parameter> parameters){
 		Parameter paramFound = null; 
 		if(parameters != null){
@@ -76,18 +137,7 @@ public class ParameterBO {
 		}
 		return paramFound;
 	}
-/*	public String[] getDocInputParametersByLabel(Vector<Parameter> parameters, String label){
-		String[] paramsFound = null; 
-		if(parameters != null){
-			for(int i=0; i<parameters.size(); i++){
-				Parameter param = parameters.elementAt(i);
-				if(param.getType().equals("IN") && param.getSbiParLabel().equals(label)){
-					paramsFound[i] = param.getId();
-				}
-			}
-		}
-		return paramsFound;
-	}*/
+
 	public boolean inputParameterExists(DocumentComposition docComp, String destinDocLabel, String destinParamLabel){
 		boolean ret = false;
 		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
@@ -118,4 +168,5 @@ public class ParameterBO {
 		
 		return ret;
 	}
+
 }

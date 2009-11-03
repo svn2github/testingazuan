@@ -149,7 +149,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		    if(documents != null){
 		    	//aggiunge parametro OUT per doc master
 		    	
-    			Parameter masterParam = new Parameter();//viene generato id
+    			Parameter masterParam = new Parameter(docComp);//viene generato id
     			fillNavigationOutParam(masterParam, documents);
 		    	
 		    	fillInNavigationParams(documents, masterParam);
@@ -258,7 +258,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 						String paramName = destInfo.getParamDestName();
 						Parameter param =bo.getDocInputParameterByLabel(parameters, paramName);
 						if(param == null){
-							param = new Parameter();//viene anche creato ID
+							param = new Parameter(Activator.getDefault().getDocumentComposition());//viene anche creato ID
 							param.setType("IN");
 							param.setSbiParLabel(paramName);
 							param.setDefaultVal(destInfo.getParamDefaultValue().getText());

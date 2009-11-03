@@ -8,6 +8,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameter;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameters;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.RefreshDocLinked;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ParameterBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.RefreshDocLinkedBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
@@ -16,6 +17,7 @@ import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBIModifyNavigation
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
 
 import java.util.HashMap;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -154,7 +156,7 @@ public class NavigationView extends ViewPart {
 		
 	}
 	protected Table createTable(Composite parent, FormToolkit toolkit, Composite client){
-
+		fillDocumentsNames();
 		table = toolkit.createTable(client, SWT.SINGLE  | SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 20;
@@ -198,12 +200,17 @@ public class NavigationView extends ViewPart {
 							    	  Vector <RefreshDocLinked> destinatons =param.getRefresh().getRefreshDocLinked();
 							    	  for(int k =0; k<destinatons.size(); k++){
 							    		  dest.append(docInfoUtil.get(((RefreshDocLinked)destinatons.elementAt(k)).getLabelDoc()));
+							    		  dest.append("(");
+							    		  dest.append(((RefreshDocLinked)destinatons.elementAt(k)).getLabelParam());
+							    		  dest.append(")");
 							    		  if(k != destinatons.size()-1){
-							    			  dest.append(" - ");
+							    			  dest.append("-");
 							    		  }
 							    	  }
 							      }
 							      item.setText(2, dest.toString());
+							      
+							      
 							}
 						}
 					}
@@ -226,6 +233,7 @@ public class NavigationView extends ViewPart {
 					String docName = doc.getName();
 					String docLabel = doc.getLabel();
 					docInfoUtil.put(docLabel, docName);
+					docInfoUtil.put(docName, docLabel);
 				}
 			}
 		}
@@ -237,6 +245,7 @@ public class NavigationView extends ViewPart {
 		
 		int selectedToDelete = table.getSelectionIndex();
 		TableItem item = table.getItem(selectedToDelete);
+
 		if(documentComp != null){
 
 			Vector docs = documentComp.getDocumentsConfiguration().getDocuments();
@@ -250,28 +259,66 @@ public class NavigationView extends ViewPart {
 					Vector par = params.getParameter();
 					for(int j =0; j<par.size(); j++){
 
-						Parameter param = (Parameter)par.elementAt(j);
-						String navName = param.getNavigationName();
+						Parameter paramOut = (Parameter)par.elementAt(j);
+						String navName = paramOut.getNavigationName();
 
 						if(navName != null && navName.equalsIgnoreCase(item.getText())){
 							//elimina la classe java del modello
-							par.remove(j);
-							params.setParameter(par);
+/*							par.remove(j);
+							params.setParameter(par);*/
+							String destinations = item.getText(2);
+							
+							ParameterBO paramBo = new ParameterBO();
+							RefreshDocLinkedBO bo = new RefreshDocLinkedBO();
+							
+							Vector refreshes = paramOut.getRefresh().getRefreshDocLinked();
+							
+							StringTokenizer st = new StringTokenizer(destinations,"-");
+							while(st.hasMoreTokens()){
+								String destinationDoc = st.nextToken().trim();
+								
+								
+								String param = destinationDoc.substring(destinationDoc.indexOf("(")+1, destinationDoc.indexOf(")"));
+								//cancella refresh
+								
+								destinationDoc = destinationDoc.substring(0, destinationDoc.indexOf("("));
+								String destLabel =docInfoUtil.get(destinationDoc);
+								System.out.println(destLabel);
+								for(int k=0; k<refreshes.size(); k++){
+									RefreshDocLinked refresh = (RefreshDocLinked)refreshes.elementAt(k);
+									String idParam =refresh.getIdParam();
+									System.out.println(idParam);
+									String idDoc =refresh.getLabelDoc();
+									System.out.println(idDoc);
+									String idLabelParam =refresh.getLabelParam();
+									System.out.println(idLabelParam);
+									if(idDoc.equals(destLabel) && idLabelParam.equals(param)){
+										
+										//controlla se usato da altri:
+										boolean isUsedByOther = bo.inputParameterIsUsedByOther(documentComp, idParam);
+										//cancella IN parameter corrispondente
+										if(!isUsedByOther){
+											boolean result =paramBo.deleteParameterById(documentComp, idParam);
+										}
+										refreshes.remove(refresh);
+									}
+								}
+								
+								
+							}
+
 							
 							item.dispose();
 							editor.setIsDirty(true);
 						}
-						//elimina anche parametri IN
-						RefreshDocLinkedBO bo = new RefreshDocLinkedBO();
-						bo.deleteRefreshedDocLink(documentComp, param.getId(), param.getSbiParLabel(), doc.getSbiObjLabel());
+
 					}
 
 				}
 			}
 		}
 	}
-	
-	
+
 	private void loadNavigations(FormToolkit toolkit, Composite parent){
 		GridData gd = new GridData(SWT.LEFT);
 		gd.widthHint = 50;

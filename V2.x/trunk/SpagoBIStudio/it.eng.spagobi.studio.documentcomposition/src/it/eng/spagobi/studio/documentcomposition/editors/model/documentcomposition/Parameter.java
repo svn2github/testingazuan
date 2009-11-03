@@ -1,20 +1,28 @@
 package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition;
 
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ParameterBO;
+
 
 public class Parameter {	
-	
+	private ParameterBO bo = new ParameterBO();
 	private static long idCounter = 0;
 
-	public static synchronized String createID()
+	public static synchronized String createID(String lastId)
 	{
-	    return String.valueOf(idCounter++);
+		long last = Integer.valueOf(lastId).intValue();
+		last = last + (idCounter++);
+	    return String.valueOf(last);
 	}
 
-	public Parameter() {
+/*	public Parameter() {
 		this.id = createID();
 		// TODO Auto-generated constructor stub
+	}*/
+	public Parameter(DocumentComposition docComp) {
+
+		this.id = createID(bo.getLastId(docComp));
+		// TODO Auto-generated constructor stub
 	}
-	
 	private String type;
 	private String sbiParLabel;
 	private String defaultVal;

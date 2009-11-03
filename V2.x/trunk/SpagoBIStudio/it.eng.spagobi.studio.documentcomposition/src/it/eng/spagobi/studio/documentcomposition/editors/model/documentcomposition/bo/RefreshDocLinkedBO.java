@@ -10,6 +10,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import java.util.Vector;
 
 public class RefreshDocLinkedBO {
+	
 	public RefreshDocLinked deleteRefreshedDocLink(DocumentComposition docComp, String id, String sbiParLabel, String  sbiObjLabel){
 		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
 	    Vector documents = docConf.getDocuments();
@@ -82,5 +83,40 @@ public class RefreshDocLinkedBO {
 	    }				
 		
 		return docRefrFound;
+	}
+	public boolean inputParameterIsUsedByOther(DocumentComposition docComp, String id){
+		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
+	    Vector documents = docConf.getDocuments();
+	    boolean isUsedMoreThanOnce = false;
+	    int counter =0;
+	    if(documents != null){
+		    //elabora documento master
+		    for (int i = 0; i< documents.size(); i++){
+		    	Document doc = (Document)documents.get(i);
+	    		Parameters params = doc.getParameters();
+	    		if(params != null){
+	    			Vector<Parameter> parameters =params.getParameter();
+	    			if(parameters != null){
+	    				for(int j=0; j<parameters.size(); j++){	    			
+	    					Parameter param = parameters.elementAt(j);
+	    					if(param.getRefresh() != null && param.getRefresh().getRefreshDocLinked() != null){
+	    						for(int k=0; k<param.getRefresh().getRefreshDocLinked().size(); k++){
+	    							RefreshDocLinked docRef = param.getRefresh().getRefreshDocLinked().elementAt(k);
+	    							if(docRef.getIdParam().equals(id)){
+	    								counter++;
+	    							}
+	    						}	
+							
+	    					}
+	    				}
+	    			}
+	    		}
+		    }
+	    }		
+	    System.out.println(counter);
+		if(counter > 1){
+			isUsedMoreThanOnce = true;
+		}
+		return isUsedMoreThanOnce;
 	}
 }

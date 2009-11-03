@@ -283,15 +283,15 @@ public class NavigationView extends ViewPart {
 								
 								destinationDoc = destinationDoc.substring(0, destinationDoc.indexOf("("));
 								String destLabel =docInfoUtil.get(destinationDoc);
-								System.out.println(destLabel);
+								
 								for(int k=0; k<refreshes.size(); k++){
 									RefreshDocLinked refresh = (RefreshDocLinked)refreshes.elementAt(k);
 									String idParam =refresh.getIdParam();
-									System.out.println(idParam);
+									
 									String idDoc =refresh.getLabelDoc();
-									System.out.println(idDoc);
+									
 									String idLabelParam =refresh.getLabelParam();
-									System.out.println(idLabelParam);
+									
 									if(idDoc.equals(destLabel) && idLabelParam.equals(param)){
 										
 										//controlla se usato da altri:

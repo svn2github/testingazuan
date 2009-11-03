@@ -104,8 +104,12 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		for(int k =0; k<destInfos.size(); k++){
 			DestinationInfo destInfo = destInfos.elementAt(k);
 			String destinationDoc = destInfo.getDocDestName();
+			String destParam = destInfo.getParamDestName();
 			if(destinationDoc != null){
 	    		dest.append((destInfos.elementAt(k)).getDocDestName());
+    		    dest.append("(");
+    		    dest.append(destParam);
+    		    dest.append(")");
 	    		if(k != destInfos.size()-1){
 	    			dest.append(" - ");
 	    		}

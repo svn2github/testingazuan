@@ -58,6 +58,33 @@ public class DocumentCompositionEditor extends EditorPart {
 	protected boolean isDirty = false;
 
 	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		super.dispose();
+
+		IViewPart navigationView = DocCompUtilities.getViewReference(DocCompUtilities.NAVIGATION_VIEW_ID);
+		if(navigationView != null){
+			navigationView = (NavigationView)navigationView;
+			getSite().getPage().hideView(navigationView);
+
+		}
+		IViewPart propertiesView = DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PROPERTIES_VIEW_ID);
+		if(propertiesView != null){
+			propertiesView = (DocumentPropertiesView)propertiesView;
+			getSite().getPage().hideView(propertiesView);
+		}
+		IViewPart parametersView = DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PARAMETERS_VIEW_ID);
+		if(parametersView != null){
+			parametersView = (DocumentParametersView)parametersView;
+			getSite().getPage().hideView(parametersView);
+		}
+		IViewPart videoView = DocCompUtilities.getViewReference(DocCompUtilities.VIDEO_SIZE_VIEW_ID);
+		if(videoView != null){
+			videoView = (VideoSizeView)videoView;
+			getSite().getPage().hideView(videoView);
+		}
+	}
+	@Override
 	public void doSave(IProgressMonitor monitor) {
 		// TODO Auto-generated method stub
 		SpagoBILogger.infoLog("Start Saving Document Composition Template File");

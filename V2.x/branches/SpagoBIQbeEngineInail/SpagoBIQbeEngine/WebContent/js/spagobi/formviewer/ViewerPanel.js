@@ -46,15 +46,19 @@
 
 Ext.ns("Sbi.formviewer");
 
-Sbi.formviewer.ViewerPanel = function(config) {
+Sbi.formviewer.ViewerPanel = function(template, config) {
 	
-	var c = Ext.apply({
+	var defaultSettings = {
 		// set default values here
-	}, config || {});
+	};
+	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.viewerPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.viewerPanel);
+	}
+	var c = Ext.apply(defaultSettings, config || {});
 	
-	this.init(c);
+	this.init(template);
 	
-	c = Ext.apply(c, {
+	Ext.apply(c, {
 		title: 'Viewer',
 		layout: 'table',
 	    layoutConfig: {
@@ -77,18 +81,18 @@ Ext.extend(Sbi.formviewer.ViewerPanel, Ext.Panel, {
     , dynamicFiltersPanel: null
    
     // private methods
-    , init: function(config) {
+    , init: function(template) {
 		this.items = [];
-		if (config.staticClosedFilters !== undefined && config.staticClosedFilters !== null && config.staticClosedFilters.length > 0) {
-			this.staticClosedFiltersPanel = new Sbi.formviewer.StaticClosedFiltersPanel(config.staticClosedFilters); 
+		if (template.staticClosedFilters !== undefined && template.staticClosedFilters !== null && template.staticClosedFilters.length > 0) {
+			this.staticClosedFiltersPanel = new Sbi.formviewer.StaticClosedFiltersPanel(template.staticClosedFilters); 
 			this.items.push(this.staticClosedFiltersPanel);
 		}
-		if (config.staticOpenFilters !== undefined && config.staticOpenFilters !== null && config.staticOpenFilters.length > 0) {
-			this.staticOpenFiltersPanel = new Sbi.formviewer.StaticOpenFiltersPanel(config.staticOpenFilters); 
+		if (template.staticOpenFilters !== undefined && template.staticOpenFilters !== null && template.staticOpenFilters.length > 0) {
+			this.staticOpenFiltersPanel = new Sbi.formviewer.StaticOpenFiltersPanel(template.staticOpenFilters); 
 			this.items.push(this.staticOpenFiltersPanel);
 		}
-		if (config.dynamicFilters !== undefined && config.dynamicFilters !== null && config.dynamicFilters.length > 0) {
-			this.dynamicFiltersPanel = new Sbi.formviewer.DynamicFiltersPanel(config.dynamicFilters); 
+		if (template.dynamicFilters !== undefined && template.dynamicFilters !== null && template.dynamicFilters.length > 0) {
+			this.dynamicFiltersPanel = new Sbi.formviewer.DynamicFiltersPanel(template.dynamicFilters); 
 			this.items.push(this.dynamicFiltersPanel);
 		}
 		

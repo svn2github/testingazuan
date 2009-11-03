@@ -46,19 +46,25 @@
 
 Ext.ns("Sbi.formviewer");
 
-Sbi.formviewer.StaticOpenFiltersPanel = function(openFilters) {
+Sbi.formviewer.StaticOpenFiltersPanel = function(openFilters, config) {
 	
-	var settings = {
-			columnNo: 3
-			, columnWidth: 350
-			, labelAlign: 'left'
-			, fieldWidth: 200	
-			, maskOnRender: false
+	var defaultSettings = {
+		// set default values here
+		title: 'Filtri statici aperti'
+		, labelAlign: 'left'
+        , border: false
+        , frame: true
+        , autoScroll: true
+		, columnNo: 3
+		, columnWidth: 350
+		, labelAlign: 'left'
+		, fieldWidth: 200	
+		, maskOnRender: false
 	};
-	
-	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.openFiltersPanel) {
-		settings = Sbi.settings.formviewer.openFiltersPanel;
+	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.staticOpenFiltersPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.staticOpenFiltersPanel);
 	}
+	var c = Ext.apply(defaultSettings, config || {});
 	
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE'};
 	this.services = new Array();
@@ -67,7 +73,6 @@ Sbi.formviewer.StaticOpenFiltersPanel = function(openFilters) {
 		, baseParams: params
 	});
 	
-	var c = Ext.apply({}, settings || {});
 	this.baseConfig = c;
 	
 	this.formWidth = (c.columnWidth * c.columnNo) + 40;
@@ -81,12 +86,7 @@ Sbi.formviewer.StaticOpenFiltersPanel = function(openFilters) {
 		}
 	}
 
-	c = Ext.apply({}, c, {
-		title: 'Filtri statici aperti',
-		labelAlign: c.labelAlign,
-        border: false,
-        frame: true,
-        autoScroll: true,
+	Ext.apply(c, {
         items: [{
             layout:'column',
             width: this.formWidth, 

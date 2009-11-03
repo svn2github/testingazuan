@@ -46,21 +46,25 @@
 
 Ext.ns("Sbi.formviewer");
 
-Sbi.formviewer.DynamicFiltersPanel = function(dynamicFilters) {
+Sbi.formviewer.DynamicFiltersPanel = function(dynamicFilters, config) {
 	
-	var settings = {
+	var defaultSettings = {
+		// set default values here
 		columnNo: 3
 		, columnWidth: 350
 		, labelAlign: 'left'
 		, fieldWidth: 200	
 		, maskOnRender: false
+		, title: 'Filtri dinamici'
+		, frame: true
+		, autoScroll: true
+		, autoWidth: true
 	};
-	
-	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.openFiltersPanel) {
-		settings = Sbi.settings.formviewer.openFiltersPanel;
+	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.dynamicFiltersPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.dynamicFiltersPanel);
 	}
-	
-	var c = Ext.apply({}, settings || {});
+	var c = Ext.apply(defaultSettings, config || {});
+
 	this.baseConfig = c;
 	
 	var columnsBaseConfig = [];
@@ -73,11 +77,7 @@ Sbi.formviewer.DynamicFiltersPanel = function(dynamicFilters) {
 		}
 	}
 	
-	c = Ext.apply({}, c, {
-		title: 'Filtri dinamici',
-		frame: true,
-		autoScroll: true,
-		autoWidth: true,
+	Ext.apply(c, {
         items: [{
             layout:'column',
             border: false,

@@ -46,11 +46,10 @@
 
 Ext.ns("Sbi.formviewer");
 
-Sbi.formviewer.StaticClosedFiltersPanel = function(staticFilters) {
+Sbi.formviewer.StaticClosedFiltersPanel = function(staticFilters, config) {
 	
-	this.init(staticFilters);
-	
-	var c = {
+	var defaultSettings = {
+		// set default values here
 		title: 'Filtri statici chiusi',
 		layout: 'table',
 	    layoutConfig: {
@@ -58,9 +57,18 @@ Sbi.formviewer.StaticClosedFiltersPanel = function(staticFilters) {
 	    },
 		frame: true,
 		autoScroll: true,
-		autoWidth: true,
-  		items: this.forms
+		autoWidth: true
 	};
+	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.staticClosedFiltersPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.staticClosedFiltersPanel);
+	}
+	var c = Ext.apply(defaultSettings, config || {});
+	
+	this.init(staticFilters);
+	
+	Ext.apply(c, {
+  		items: this.forms
+	});
 	
 	// constructor
     Sbi.formviewer.StaticClosedFiltersPanel.superclass.constructor.call(this, c);

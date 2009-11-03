@@ -46,16 +46,24 @@
 
 Ext.ns("Sbi.formviewer");
 
-Sbi.formviewer.StaticClosedOnOffFiltersPanel = function(aStaticFiltersORGroup) {
+Sbi.formviewer.StaticClosedOnOffFiltersPanel = function(aStaticClosedOnOffFiltersGroup, config) {
 	
-	this.init(aStaticFiltersORGroup);
+	var defaultSettings = {
+		// set default values here
+	};
+	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.staticClosedOnOffFiltersPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.staticClosedOnOffFiltersPanel);
+	}
+	var c = Ext.apply(defaultSettings, config || {});
 	
-	c = {
+	this.init(aStaticClosedOnOffFiltersGroup);
+	
+	Ext.apply(c, {
 		frame: true
         , items: this.items
         , width: 200
         , height: 150
-	};
+	});
 	
 	// constructor
     Sbi.formviewer.StaticClosedOnOffFiltersPanel.superclass.constructor.call(this, c);
@@ -68,27 +76,17 @@ Ext.extend(Sbi.formviewer.StaticClosedOnOffFiltersPanel, Ext.form.FormPanel, {
 	
 	// private methods
 	
-	, init: function(config) {
+	, init: function(aStaticClosedOnOffFiltersGroup) {
 		this.items = [];
 		
-		/*
-		this.items = {
-            xtype: 'fieldset',
-            title: config.title,
-            autoHeight: true,
-            defaultType: 'checkbox',
-            items: []
-        }
-        */
-		
-		for (var i = 0; i < config.options.length; i++) {
+		for (var i = 0; i < aStaticClosedOnOffFiltersGroup.options.length; i++) {
 			// create items
-			var aFilter = config.options[i];
+			var aFilter = aStaticClosedOnOffFiltersGroup.options[i];
 			this.items.push({
 				xtype: 'checkbox',
 				hideLabel: true,
                 boxLabel: aFilter.text,
-                name: config.id
+                name: aStaticClosedOnOffFiltersGroup.id
 			});
 		}
 	}

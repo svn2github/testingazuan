@@ -46,16 +46,24 @@
 
 Ext.ns("Sbi.formviewer");
 
-Sbi.formviewer.StaticClosedXORFiltersPanel = function(aStaticFiltersORGroup) {
+Sbi.formviewer.StaticClosedXORFiltersPanel = function(aStaticClosedXORFiltersGroup, config) {
 	
-	this.init(aStaticFiltersORGroup);
+	var defaultSettings = {
+			// set default values here
+	};
+	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.staticClosedXORFiltersPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.staticClosedXORFiltersPanel);
+	}
+	var c = Ext.apply(defaultSettings, config || {});
 	
-	c = {
+	this.init(aStaticClosedXORFiltersGroup);
+	
+	Ext.apply(c, {
 		frame: true
         , items: this.items
         , width: 300
         , height: 150
-	};
+	});
 	
 	// constructor
     Sbi.formviewer.StaticClosedXORFiltersPanel.superclass.constructor.call(this, c);
@@ -68,35 +76,35 @@ Ext.extend(Sbi.formviewer.StaticClosedXORFiltersPanel, Ext.form.FormPanel, {
 	
 	// private methods
 	
-	, init: function(config) {
+	, init: function(aStaticClosedXORFiltersGroup) {
 		this.items = [];
 		
 		this.items = {
             xtype: 'fieldset',
-            title: config.title,
+            title: aStaticClosedXORFiltersGroup.title,
             autoHeight: true,
             defaultType: 'radio',
             items: []
         }
 		
 		// TODO e se non c'è l'allowNoSelection????
-		if (config.allowNoSelection !== null && config.allowNoSelection === true) {
+		if (aStaticClosedXORFiltersGroup.allowNoSelection !== null && aStaticClosedXORFiltersGroup.allowNoSelection === true) {
 			// create No Selection Item
 			this.items.items.push({
 				hideLabel: true,
-				boxLabel: config.noSelectionText,
-				name: config.id,
+				boxLabel: aStaticClosedXORFiltersGroup.noSelectionText,
+				name: aStaticClosedXORFiltersGroup.id,
 				inputValue: 'noSelection'
 			});
 		}
 		
-		for (var i = 0; i < config.options.length; i++) {
+		for (var i = 0; i < aStaticClosedXORFiltersGroup.options.length; i++) {
 			// create items
-			var aFilter = config.options[i];
+			var aFilter = aStaticClosedXORFiltersGroup.options[i];
 			this.items.items.push({
 				hideLabel: true,
                 boxLabel: aFilter.text,
-                name: config.id,
+                name: aStaticClosedXORFiltersGroup.id,
                 inputValue: aFilter.rightOperandValue
 			});
 		}

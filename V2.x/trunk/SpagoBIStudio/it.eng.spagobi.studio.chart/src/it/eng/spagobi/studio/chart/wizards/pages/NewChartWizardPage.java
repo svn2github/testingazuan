@@ -138,7 +138,6 @@ public class NewChartWizardPage extends WizardPage {
 				compImage.addPaintListener(new PaintListener() {
 					public void paintControl(PaintEvent e) {
 						Image image = null;
-						Image scaled050=null; 
 						try {
 							String imagePath=ChartEditorUtils.getChartImagePath(t.toUpperCase());
 							InputStream is=ChartEditorUtils.getInputStreamFromResource(imagePath);

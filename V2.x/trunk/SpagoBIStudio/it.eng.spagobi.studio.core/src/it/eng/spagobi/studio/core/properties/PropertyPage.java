@@ -1,5 +1,8 @@
 package it.eng.spagobi.studio.core.properties;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
+
 import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
 import it.eng.spagobi.sdk.datasources.bo.SDKDataSource;
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
@@ -13,8 +16,12 @@ import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.wizard.ProgressMonitorPart;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
@@ -54,6 +61,10 @@ IWorkbenchPropertyPage {
 	public static QualifiedName ENGINE_NAME = new QualifiedName("it.eng.spagobi.sdk.engine.name", "Name");
 	public static QualifiedName ENGINE_DESCRIPTION = new QualifiedName("it.eng.spagobi.sdk.engine.description", "Description");
 
+	public static QualifiedName LAST_REFRESH_DATE = new QualifiedName("last_refresh_date", "Last Refresh Date");
+
+	private ProgressMonitorPart monitor;
+
 	Group docGroup = null;
 	Group dataSetGroup = null;
 	Group dataSourceGroup = null;
@@ -80,7 +91,7 @@ IWorkbenchPropertyPage {
 	Label dataSourceLabelValue=null;
 	Label dataSourceNameValue=null;
 	Label dataSourceDescriptionValue=null;
-
+	Label lastRefreshDateLabel=null;
 
 
 
@@ -95,6 +106,7 @@ IWorkbenchPropertyPage {
 	protected Control createContents(Composite parent) {
 		// hide default buttons
 		this.noDefaultAndApplyButton();
+		monitor=new ProgressMonitorPart(getShell(), null);
 
 		container = new Composite(parent, SWT.NULL);
 		RowLayout rowLayout = new RowLayout();
@@ -151,61 +163,176 @@ IWorkbenchPropertyPage {
 		new Label(docContainer, SWT.NULL).setText(DOCUMENT_STATE.getLocalName());
 		documentStateValue=new Label(docContainer, SWT.NULL);
 		new Label(engineContainer, SWT.NULL).setText(ENGINE_ID.getLocalName());
-engineIdValue=new Label(docContainer, SWT.NULL);
+		engineIdValue=new Label(engineContainer, SWT.NULL);
 		new Label(engineContainer, SWT.NULL).setText(ENGINE_LABEL.getLocalName());
-		engineLabelValue=new Label(docContainer, SWT.NULL);
+		engineLabelValue=new Label(engineContainer, SWT.NULL);
 		new Label(engineContainer, SWT.NULL).setText(ENGINE_NAME.getLocalName());
-		engineNameValue=new Label(docContainer, SWT.NULL);
+		engineNameValue=new Label(engineContainer, SWT.NULL);
 		new Label(engineContainer, SWT.NULL).setText(ENGINE_DESCRIPTION.getLocalName());
-		engineDescriptionValue=new Label(docContainer, SWT.NULL);
+		engineDescriptionValue=new Label(engineContainer, SWT.NULL);
 		new Label(datasetContainer, SWT.NULL).setText(DATASET_ID.getLocalName());
-		datasetIdValue=new Label(docContainer, SWT.NULL);
+		datasetIdValue=new Label(datasetContainer, SWT.NULL);
 		new Label(datasetContainer, SWT.NULL).setText(DATASET_LABEL.getLocalName());
-		datasetLabelValue=new Label(docContainer, SWT.NULL);
+		datasetLabelValue=new Label(datasetContainer, SWT.NULL);
 		new Label(datasetContainer, SWT.NULL).setText(DATASET_NAME.getLocalName());
-		datasetNameValue=new Label(docContainer, SWT.NULL);
+		datasetNameValue=new Label(datasetContainer, SWT.NULL);
 		new Label(datasetContainer, SWT.NULL).setText(DATASET_DESCRIPTION.getLocalName());
-
+		datasetDescriptionValue=new Label(datasetContainer, SWT.NULL);
 		new Label(datasourceContainer, SWT.NULL).setText(DATA_SOURCE_ID.getLocalName());
-
+		dataSourceIdValue=new Label(datasourceContainer, SWT.NULL);
 		new Label(datasourceContainer, SWT.NULL).setText(DATA_SOURCE_LABEL.getLocalName());
-
+		dataSourceLabelValue=new Label(datasourceContainer, SWT.NULL);
 		new Label(datasourceContainer, SWT.NULL).setText(DATA_SOURCE_NAME.getLocalName());
-
+		dataSourceNameValue=new Label(datasourceContainer, SWT.NULL);
 		new Label(datasourceContainer, SWT.NULL).setText(DATA_SOURCE_DESCRIPTION.getLocalName());
+		dataSourceDescriptionValue=new Label(datasourceContainer, SWT.NULL);
 
-		
-		
-//		addPropertyContent(docContainer, DOCUMENT_ID);
-//		addPropertyContent(docContainer, DOCUMENT_LABEL);
-//		addPropertyContent(docContainer, DOCUMENT_NAME);
-//		addPropertyContent(docContainer, DOCUMENT_DESCRIPTION);
-//		addPropertyContent(docContainer, DOCUMENT_TYPE);
-//		addPropertyContent(docContainer, DOCUMENT_STATE);
-//		addPropertyContent(datasetContainer, DATASET_ID);
-//		addPropertyContent(datasetContainer, DATASET_LABEL);
-//		addPropertyContent(datasetContainer, DATASET_NAME);
-//		addPropertyContent(datasetContainer, DATASET_DESCRIPTION);
-//		addPropertyContent(engineContainer, ENGINE_ID);
-//		addPropertyContent(engineContainer, ENGINE_LABEL);
-//		addPropertyContent(engineContainer, ENGINE_NAME);
-//		addPropertyContent(engineContainer, ENGINE_DESCRIPTION);
-//		addPropertyContent(datasourceContainer, DATA_SOURCE_ID);
-//		addPropertyContent(datasourceContainer, DATA_SOURCE_NAME);
+
+		//		addPropertyContent(docContainer, DOCUMENT_ID);
+		//		addPropertyContent(docContainer, DOCUMENT_LABEL);
+		//		addPropertyContent(docContainer, DOCUMENT_NAME);
+		//		addPropertyContent(docContainer, DOCUMENT_DESCRIPTION);
+		//		addPropertyContent(docContainer, DOCUMENT_TYPE);
+		//		addPropertyContent(docContainer, DOCUMENT_STATE);
+		//		addPropertyContent(datasetContainer, DATASET_ID);
+		//		addPropertyContent(datasetContainer, DATASET_LABEL);
+		//		addPropertyContent(datasetContainer, DATASET_NAME);
+		//		addPropertyContent(datasetContainer, DATASET_DESCRIPTION);
+		//		addPropertyContent(engineContainer, ENGINE_ID);
+		//		addPropertyContent(engineContainer, ENGINE_LABEL);
+		//		addPropertyContent(engineContainer, ENGINE_NAME);
+		//		addPropertyContent(engineContainer, ENGINE_DESCRIPTION);
+		//		addPropertyContent(datasourceContainer, DATA_SOURCE_ID);
+		//		addPropertyContent(datasourceContainer, DATA_SOURCE_NAME);
 
 		Button buttonRefresh=new Button(container, SWT.PUSH);
 		buttonRefresh.setText("Refresh Metadata");
+
+		new Label(container,SWT.NULL).setText(LAST_REFRESH_DATE.getLocalName());
+		lastRefreshDateLabel=new Label(container,SWT.NULL);
+
+		try{
+			fillValues();
+		}
+		catch (Exception e) {
+			MessageDialog.openError(container.getShell(), "Error", "Error while retrieving metadata informations");
+			SpagoBILogger.errorLog("Error in retrieving metadata", e);
+		}
+
+		
 		Listener refreshListener = new Listener() {
 			public void handleEvent(Event event) {
-				refreshMetadata();
+
+				IRunnableWithProgress op = new IRunnableWithProgress() {			
+					public void run(IProgressMonitor monitor) throws InvocationTargetException {
+						monitor.beginTask("Refreshing metadata", IProgressMonitor.UNKNOWN);
+
+
+						refreshMetadata();
+					}			
+				};
+				ProgressMonitorDialog dialog=new ProgressMonitorDialog(getShell());		
+				try {
+					dialog.run(true, true, op);
+				} catch (InvocationTargetException e1) {
+					e1.printStackTrace();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}	
+				dialog.close();
+
+				try{
+					fillValues();
+				}
+				catch (Exception e) {
+					MessageDialog.openError(container.getShell(), "Error", "Error while retrieving metadata informations from file");
+					SpagoBILogger.errorLog("Error in retrieving metadata informations from file", e);
+				}
+
+
 			}
 		};
 
 		buttonRefresh.addListener(SWT.Selection, refreshListener);
 
 
+
 		return container;
 	}
+
+	public void fillValues() throws CoreException{
+		IFile file = (IFile) this.getElement();
+		String documentId = file.getPersistentProperty(DOCUMENT_ID);
+		if(documentId==null) documentId="EMPTY";
+		String documentLabel = file.getPersistentProperty(DOCUMENT_LABEL);
+		if(documentLabel==null) documentLabel="EMPTY";
+		String documentName = file.getPersistentProperty(DOCUMENT_NAME);
+		if(documentName==null) documentName="EMPTY";
+		String documentDescription = file.getPersistentProperty(DOCUMENT_DESCRIPTION);
+		if(documentDescription==null) documentDescription="EMPTY";
+		String documentType = file.getPersistentProperty(DOCUMENT_TYPE);
+		if(documentType==null) documentType="EMPTY";
+		String documentState = file.getPersistentProperty(DOCUMENT_STATE);
+		if(documentState==null) documentState="EMPTY";
+
+		String engineId = file.getPersistentProperty(ENGINE_ID);
+		if(engineId==null) engineId="EMPTY";
+		String engineLabel = file.getPersistentProperty(ENGINE_LABEL);
+		if(engineLabel==null) engineLabel="EMPTY";
+		String engineName = file.getPersistentProperty(ENGINE_NAME);
+		if(engineName==null) engineName="EMPTY";
+		String engineDescription = file.getPersistentProperty(ENGINE_DESCRIPTION);
+		if(engineDescription==null) engineDescription="EMPTY";
+
+		String datasourceId = file.getPersistentProperty(DATA_SOURCE_ID);
+		if(datasourceId==null) datasourceId="EMPTY";
+		String datasourceLabel = file.getPersistentProperty(DATA_SOURCE_LABEL);
+		if(datasourceLabel==null) datasourceLabel="EMPTY";
+		String datasourceName = file.getPersistentProperty(DATA_SOURCE_NAME);
+		if(datasourceName==null) datasourceName="EMPTY";
+		String datasourceDescription = file.getPersistentProperty(DATA_SOURCE_DESCRIPTION);
+		if(datasourceDescription==null) datasourceDescription="EMPTY";
+
+		String datasetId = file.getPersistentProperty(DATASET_ID);
+		if(datasetId==null) datasetId="EMPTY";
+		String datasetLabel = file.getPersistentProperty(DATASET_LABEL);
+		if(datasetLabel==null) datasetLabel="EMPTY";
+		String datasetName = file.getPersistentProperty(DATASET_NAME);
+		if(datasetName==null) datasetName="EMPTY";
+		String datasetDescription = file.getPersistentProperty(DATASET_DESCRIPTION);
+		if(datasetDescription==null) datasetDescription="EMPTY";
+
+		String date=file.getPersistentProperty(LAST_REFRESH_DATE);
+		lastRefreshDateLabel.setText(date!=null ? date : "");
+
+		documentIdValue.setText(documentId);
+		documentLabelValue.setText(documentLabel);
+		documentNameValue.setText(documentName);
+		documentDescriptionValue.setText(documentDescription);
+		documentTypeValue.setText(documentType);
+		documentStateValue.setText(documentState);
+		engineIdValue.setText(engineId);
+		engineLabelValue.setText(engineLabel);
+		engineNameValue.setText(engineName);
+		engineDescriptionValue.setText(engineDescription);
+		dataSourceIdValue.setText(datasourceId);
+		dataSourceLabelValue.setText(datasourceLabel);
+		dataSourceNameValue.setText(datasourceName);
+		dataSourceDescriptionValue.setText(datasourceDescription);
+		datasetIdValue.setText(datasetId);
+		datasetLabelValue.setText(datasetLabel);
+		datasetNameValue.setText(datasetName);
+		datasetDescriptionValue.setText(datasetDescription);
+
+
+		
+		container.redraw();
+
+
+
+
+	}
+
 
 	private void addPropertyContent(Composite composite, QualifiedName qn) {
 		Label label = new Label(composite, SWT.NULL);
@@ -361,7 +488,17 @@ engineIdValue=new Label(docContainer, SWT.NULL);
 			}
 		}
 
-
+			try{
+				Date dateCurrent=new Date();
+				String currentStr=dateCurrent.toString();
+				file.setPersistentProperty(LAST_REFRESH_DATE, currentStr);
+			}
+			catch (Exception e) {
+				MessageDialog.openError(container.getShell(), 
+						"Error", "Error while refreshing update date!");		
+				SpagoBILogger.errorLog("Error while refreshing update date",e);		
+			}
+		
 	}
 
 

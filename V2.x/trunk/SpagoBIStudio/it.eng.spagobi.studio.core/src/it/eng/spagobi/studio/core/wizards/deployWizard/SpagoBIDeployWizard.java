@@ -96,9 +96,6 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 			labelState=formPage.getStateCombo().getItem(selectedStateIndex);
 		}
 
-		criptable=formPage.getCriptableCheck().getEnabled();
-		visible=formPage.getVisibleCheck().getEnabled();
-
 		refreshSeconds=formPage.getRefreshSecondsSpinner().getSelection();
 
 		TreeItem[] selectedItems=formPage.getTree().getSelection();
@@ -189,6 +186,7 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 				return;
 			}
 			System.out.println(returnCode);
+			newDocument.setId(returnCode);
 		}  catch (Exception e) {
 			SpagoBILogger.errorLog("No comunication with server, cannot deploy document on server", e);			
 			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
@@ -199,25 +197,38 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 
 
 		// Set the metadata in file
-		SDKDocument document=new SDKDocument(
-				null,
-				null,
-				description,
-				null,
-				null,
-				label,
-				name,
-				null,
-				type
-		);		
+		//		SDKDocument document=new SDKDocument(
+		//				null,
+		//				null,
+		//				description,
+		//				null,
+		//				null,
+		//				label,
+		//				name,
+		//				null,
+		//				type
+		//		);		
+
+		// recover engine Info:
+
+
 
 		try{
-			fileSel=(org.eclipse.core.internal.resources.File)BiObjectUtilities.setFileMetaData(fileSel,document);
+			fileSel=(org.eclipse.core.internal.resources.File)BiObjectUtilities.setFileMetaData(fileSel,newDocument);
 		}
 		catch (CoreException e) {
 			SpagoBILogger.errorLog("Error while setting meta data", e);	
 			return;
 		}
+
+		try{			
+			fileSel=(org.eclipse.core.internal.resources.File)BiObjectUtilities.setFileLastRefreshDateMetaData(fileSel);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			SpagoBILogger.errorLog("Error while setting last refresh date", e);	
+			return;
+		}			
 
 
 

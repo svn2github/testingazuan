@@ -1,9 +1,11 @@
 package it.eng.spagobi.studio.core.wizards.deployWizard;
 
 import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
+import it.eng.spagobi.sdk.datasources.bo.SDKDataSource;
 import it.eng.spagobi.sdk.documents.bo.SDKFunctionality;
 import it.eng.spagobi.sdk.engines.bo.SDKEngine;
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
+import it.eng.spagobi.sdk.proxy.DataSourcesSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
 import it.eng.spagobi.sdk.proxy.EnginesServiceProxy;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
@@ -29,6 +31,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.ProgressMonitorPart;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -40,6 +44,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -62,17 +67,17 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 
 	private IStructuredSelection selection;
 	private Tree tree;
-	private Button criptableCheck;
-	private Button visibleCheck;
 	private String typeLabel;
 
 	private Map<String, Integer> engineLabelIdMap;
 	private Map<String, Integer> dataSetLabelIdMap;
+	private Map<String, Integer> dataSourceLabelIdMap;
 
 	private ProgressMonitorPart monitor;
 	// Filter By type
 	SDKEngine[] enginesList;
 	SDKDataSet[] datasetList;		
+	SDKDataSource[] datasourceList;		
 	SDKFunctionality functionality=null;
 
 
@@ -94,6 +99,7 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 	 */
 	public void createControl(Composite parent) {
 		Shell shell = parent.getShell();
+		//		shell.setSize(1000,1000);
 		monitor=new ProgressMonitorPart(getShell(), null);
 
 		// first of all get info from server		
@@ -103,16 +109,17 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 		final EnginesServiceProxy engineService=proxyFactory.getEnginesServiceProxy();
 		final DataSetsSDKServiceProxy datasetService=proxyFactory.getDataSetsSDKServiceProxy();
 		final DocumentsServiceProxy docService=proxyFactory.getDocumentsServiceProxy();
-
+		final DataSourcesSDKServiceProxy datasourceService=proxyFactory.getDataSourcesSDKServiceProxy();
 
 		IRunnableWithProgress op = new IRunnableWithProgress() {			
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
-				monitor.beginTask("Download documents tree", IProgressMonitor.UNKNOWN);
+				monitor.beginTask("Deploy a new Document: ", IProgressMonitor.UNKNOWN);
 
 
 				try{
 					enginesList=engineService.getEngines();
 					datasetList=datasetService.getDataSets();
+					datasourceList=datasourceService.getDataSources();
 					functionality=docService.getDocumentsAsTree(null);			
 					String ciao= functionality.getId().toString()+" "+functionality.getName()+" label: "+functionality.getName();
 					System.out.println(ciao);
@@ -221,8 +228,6 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 			}
 		}
 
-
-
 		// Select dataset
 		new Label(left, SWT.NONE).setText("Dataset");
 		dataSetCombo = new Combo(left, SWT.NONE | SWT.READ_ONLY);
@@ -232,6 +237,47 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 			dataSetCombo.add(dataSet.getLabel());
 			dataSetLabelIdMap.put(dataSet.getLabel(), dataSet.getId());
 		}
+		dataSetCombo.setEnabled(false);
+
+
+		// Select datasource
+		new Label(left, SWT.NONE).setText("Datasource");
+		dataSourceCombo = new Combo(left, SWT.NONE | SWT.READ_ONLY);
+
+		dataSourceLabelIdMap=new HashMap<String, Integer>();
+		for (SDKDataSource dataSource : datasourceList) {
+			dataSourceCombo.add(dataSource.getLabel());
+			dataSourceLabelIdMap.put(dataSource.getLabel(), dataSource.getId());
+		}
+		dataSourceCombo.setEnabled(false);
+
+
+		engineCombo.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {
+				String comboText = engineCombo.getText();
+				boolean found=false;
+				Integer id=engineLabelIdMap.get(comboText);
+				SDKEngine sdkEngine=null;
+				for (int i = 0; i < enginesList.length; i++) {
+					SDKEngine temp=enginesList[i];
+					if(temp.getId().equals(id)){
+						sdkEngine=temp;
+						found=true;
+					}
+				}
+				if(sdkEngine!=null){
+					boolean useDataset=sdkEngine.getUseDataSet()!=null ? sdkEngine.getUseDataSet() : false;
+					boolean useDatasource=sdkEngine.getUseDataSource()!=null ? sdkEngine.getUseDataSource() : false;
+					dataSetCombo.setEnabled(useDataset);
+					dataSourceCombo.setEnabled(useDatasource);
+					
+
+				}
+
+			}
+		});
+
+
 
 		// Select State
 		new Label(left, SWT.NONE).setText("State");
@@ -242,11 +288,6 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 		stateCombo.add("TEST");
 		stateCombo.add("SUSP");
 
-		new Label(left, SWT.NONE).setText("Criptable");
-		criptableCheck=new Button(left,SWT.CHECK);
-
-		new Label(left, SWT.NONE).setText("Visible");
-		visibleCheck=new Button(left,SWT.CHECK);
 
 		new Label(left, SWT.NONE).setText("Refresh Seconds:");				
 		refreshSecondsSpinner = new Spinner(left, SWT.NONE);
@@ -448,22 +489,6 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 
 	public void setSelection(IStructuredSelection selection) {
 		this.selection = selection;
-	}
-
-	public Button getCriptableCheck() {
-		return criptableCheck;
-	}
-
-	public void setCriptableCheck(Button criptableCheck) {
-		this.criptableCheck = criptableCheck;
-	}
-
-	public Button getVisibleCheck() {
-		return visibleCheck;
-	}
-
-	public void setVisibleCheck(Button visibleCheck) {
-		this.visibleCheck = visibleCheck;
 	}
 
 	public String getTypeLabel() {

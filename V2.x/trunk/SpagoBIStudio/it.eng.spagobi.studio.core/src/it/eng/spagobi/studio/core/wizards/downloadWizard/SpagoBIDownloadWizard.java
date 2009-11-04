@@ -149,52 +149,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			return;
 		}			
 
-		{
-			
-			SDKProxyFactory proxyFactory=new SDKProxyFactory();
-			DataSetsSDKServiceProxy dataSetServiceProxy=proxyFactory.getDataSetsSDKServiceProxy();
-			try{
-				SDKDataSet sdkDataSet=dataSetServiceProxy.getDataSet(1);
-			}
-catch (Exception e) {
-	// TODO: handle exception
-}
-			
-		}
-		
 
-		// DAtaset Infomation field
-		String dataSetName=null;
-		if(document.getDataSetId()!=null){
-			try{
-				SDKProxyFactory proxyFactory=new SDKProxyFactory();
-				DataSetsSDKServiceProxy dataSetServiceProxy=proxyFactory.getDataSetsSDKServiceProxy();
-				SDKDataSet sdkDataSet=dataSetServiceProxy.getDataSet(document.getDataSetId());
-				dataSetName=sdkDataSet.getName();
-			}
-			catch (Exception e) {
-				SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve dataset informations", e);
-				//MessageDialog.openError(getShell(), "Error", "Could not retrieve dataset Information");	
-				//return;
-			}			
-		}
-
-		// DAtaset Infomation field
-		String dataSourceName=null;
-		if(document.getDataSourceId()!=null){
-			try{
-				SDKProxyFactory proxyFactory=new SDKProxyFactory();
-				DataSourcesSDKServiceProxy dataSourcesServiceProxy=proxyFactory.getDataSourcesSDKServiceProxy();
-				SDKDataSource sdkDataSource=dataSourcesServiceProxy.getDataSource(document.getDataSourceId());
-				dataSourceName=sdkDataSource.getLabel();
-			}
-			catch (Exception e) {
-				e.printStackTrace(); 
-				SpagoBILogger.errorLog("No comunic8ation with SpagoBI server, could not retrieve dataSource informations", e);
-				//MessageDialog.openError(getShell(), "Error", "Could not retrieve dataset Information");	
-				//return;
-			}			
-		}
 
 
 		// get the extension
@@ -214,7 +169,7 @@ catch (Exception e) {
 
 		String type=document.getType();
 		String engineName=sdkEngine!=null?sdkEngine.getLabel(): null;
-		String extension=getFileExtension(type, engineName);
+		String extension=BiObjectUtilities.getFileExtension(type, engineName);
 
 		// create the file in the selected directory
 		// get the folder selected 
@@ -280,17 +235,6 @@ catch (Exception e) {
 				return;
 			}
 
-			//Set Informative Metadata	
-			try{
-				newFile=BiObjectUtilities.setFileInformativeMetaData(newFile,engineName, dataSetName, dataSourceName);
-				//newFile=BiObjectUtilities.setFileMetaData(newFile,document);
-			}
-			catch (CoreException e) {
-				SpagoBILogger.errorLog("Error while setting meta data", e);	
-				return;
-			}
-
-
 			//Set ParametersFile Metadata	
 			if(parameters.length>0){
 				try{
@@ -303,6 +247,15 @@ catch (Exception e) {
 					return;
 				}			
 			}
+
+			try{			
+				newFile=BiObjectUtilities.setFileLastRefreshDateMetaData(newFile);
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				SpagoBILogger.errorLog("Error while setting last refresh date", e);	
+				return;
+			}			
 
 
 			IWorkbench wb = PlatformUI.getWorkbench();
@@ -344,47 +297,7 @@ catch (Exception e) {
 	}
 
 
-	private String getFileExtension(String type, String engine){
-		String extension=".xml";
-		if(type.equalsIgnoreCase("DASH") && engine.equalsIgnoreCase("DashboardInternalEng") ){
-			extension=".sbidash";
-		}
-		else if(type.equalsIgnoreCase("DASH") && engine.equalsIgnoreCase("ChartInternalEngine")){
-			extension=".sbichart";
-		}
-		else if(type.equalsIgnoreCase("REPORT") && engine.equalsIgnoreCase("Birt")){
-			extension=".rptdesign";
-		}
-		else if(type.equalsIgnoreCase("REPORT") && engine.equalsIgnoreCase("JasperReport")){
-			extension=".jrxml";
-		}	
-		else if(type.equalsIgnoreCase("OLAP") && engine.equalsIgnoreCase("JPIVOT")){
-			extension=".xml";
-		}
-		else if(type.equalsIgnoreCase("MAP") && engine.equalsIgnoreCase("GeoEngine")){
-			extension=".xml";
-		}		
-		else if(type.equalsIgnoreCase("OFFICE_DOC") && engine.equalsIgnoreCase("OfficeInternalEng")){
-			extension=".xml";
-		}
-		else if(type.equalsIgnoreCase("ETL") && engine.equalsIgnoreCase("TALEND")){
-			extension=".xml";
-		}		
-		else if(type.equalsIgnoreCase("Dossier") && engine.equalsIgnoreCase("Dossier")){
-			extension=".xml";
-		}
-		else if(type.equalsIgnoreCase("Composite") && engine.equalsIgnoreCase("CompositeDocument")){
-			extension=".sbidoccomp";
-		}
-		else if(type.equalsIgnoreCase("DATA_MINING") && engine.equalsIgnoreCase("Weka")){
-			extension=".xml";
-		}
-		else if(type.equalsIgnoreCase("DATAMART") && engine.equalsIgnoreCase("Qbe")){
-			extension=".xml";
-		}
-		return extension;
 
-	}
 
 
 	//	private IFile setFileMetaData(IFile newFile, SDKDocument document) throws CoreException{

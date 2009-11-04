@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.SWT;
@@ -470,6 +471,10 @@ public class DocContainer {
 					{
 						TreeSelection selectedTreeSelection=(TreeSelection)selectedObject;
 						IFile file=(IFile)selectedTreeSelection.getFirstElement();
+						if(file.getFileExtension().equalsIgnoreCase("sbidoccomp")){
+							MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Warning", "Cannot insert a document composition document ina document composition document!");
+							return;
+						}
 						doTransfer=documentContained.recoverDocumentMetadata(idContainer, file);
 						// add the document!!
 						(new ModelBO()).addNewDocumentToModel(documentContained.getMetadataDocument(), calculateTemplateStyle(false));

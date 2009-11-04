@@ -1,6 +1,7 @@
 package it.eng.spagobi.studio.documentcomposition.editors;
 
 
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
@@ -40,16 +41,16 @@ public class DocumentContained {
 	public static final String IMG_DOSSIER="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
 	public static final String IMG_DATA_MINING="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
 
-	public static final String TYPE_REPORT="REPORT";
+	public static final String TYPE_REPORT=SpagoBIConstants.REPORT_TYPE_CODE;
 	public static final String TYPE_DOSSIER="DOSSIER";
 	public static final String TYPE_OLAP="OLAP";
 	public static final String TYPE_DATA_MINING="DATA_MINING";
-	public static final String TYPE_DASH="DASH";
+	public static final String TYPE_DASH=SpagoBIConstants.DASH_TYPE_CODE;
 	public static final String TYPE_DATAMART="DATAMART";
 	public static final String TYPE_MAP="MAP";
 	public static final String TYPE_OFFICE_DOC="OFFICE_DOC";
 	public static final String TYPE_ETL="ETL";
-	public static final String TYPE_DOCUMENT_COMPOSITIOn="DOCUMENT_COMPOSITION";
+	public static final String TYPE_DOCUMENT_COMPOSITIOn=SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE;
 
 
 	public DocumentContained(Composite parent, int style) throws Exception{

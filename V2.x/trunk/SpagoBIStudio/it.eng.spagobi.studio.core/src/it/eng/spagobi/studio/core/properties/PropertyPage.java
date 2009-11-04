@@ -62,6 +62,7 @@ IWorkbenchPropertyPage {
 	public static QualifiedName ENGINE_DESCRIPTION = new QualifiedName("it.eng.spagobi.sdk.engine.description", "Description");
 
 	public static QualifiedName LAST_REFRESH_DATE = new QualifiedName("last_refresh_date", "Last Refresh Date");
+	public static QualifiedName MADE_WITH_STUDIO = new QualifiedName("made_with_studio", "Created With SpagoBi Studio");
 
 	private ProgressMonitorPart monitor;
 

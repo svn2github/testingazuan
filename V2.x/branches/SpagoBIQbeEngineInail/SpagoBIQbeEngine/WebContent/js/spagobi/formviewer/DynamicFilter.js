@@ -103,30 +103,30 @@ Sbi.formviewer.DynamicFilter = function(dynamicFilter, config) {
 Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
     
 	services: null
+	, combo: null
+	, valuesInputs: null
 	   
 	// private methods
 	   
 	, init: function(dynamicFilter) {
-		var combo = this.createFieldCombo( dynamicFilter );
-		var valuesInputs = this.createFieldValuesInput( dynamicFilter );
-		this.columns[0].add( combo );
-		this.columns[1].add( valuesInputs[0] );
-		if (valuesInputs.length > 1) {
-			this.columns[2].add( valuesInputs[1] );
+		this.combo = this.createFieldCombo( dynamicFilter );
+		this.valuesInputs = this.createFieldValuesInput( dynamicFilter );
+		this.columns[0].add( this.combo );
+		this.columns[1].add( this.valuesInputs[0] );
+		if (this.valuesInputs.length > 1) {
+			this.columns[2].add( this.valuesInputs[1] );
 		}
 		this.doLayout();
 	
 	}
 
 	, createFieldCombo: function(dynamicFilter) {
-		var store = new Ext.data.Store({
-			data: dynamicFilter.admissibleFields
-			, reader: new Ext.data.JsonReader({fields: [
-               {name:'field'},
-               {name:'text'}
-       	    ]})
+		
+		var store = new Ext.data.JsonStore({
+			data: dynamicFilter.admissibleFields,
+		    fields: ['field', 'text']
 		});
-
+		
 		var combo = new Ext.form.ComboBox({
 			name: 'field'
             , editable: false
@@ -170,7 +170,11 @@ Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
 	// public methods
 	
 	, getFormState: function() {
-		var state = this.getForm().getValues();
+		var state = {field: this.combo.getValue()};
+		for (var i = 0; i < this.valuesInputs.length; i++) {
+			var aValueInput = this.valuesInputs[i];
+			state[aValueInput.name] = aValueInput.getValue();
+		}
 		return state;
 	}
   	

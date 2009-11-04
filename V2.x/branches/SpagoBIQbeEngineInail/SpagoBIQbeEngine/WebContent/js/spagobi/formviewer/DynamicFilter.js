@@ -72,18 +72,18 @@ Sbi.formviewer.DynamicFilter = function(dynamicFilter, config) {
 	var columnsBaseConfig = [];
 	for(var i = 0; i < c.columnNo; i++) {
 		columnsBaseConfig[i] = {
-			width: c.columnWidth,
-            layout: 'form',
-            border: false,
-            //bodyStyle:'padding:5px 5px 5px 5px'
+			width: c.columnWidth
+            , layout: 'form'
+            , border: false
+            //, bodyStyle:'padding:5px 5px 5px 5px'
 		}
 	}
 	
 	Ext.apply(c, {
         items: [{
-            layout:'column',
-            border: false,
-            items: columnsBaseConfig
+            layout:'column'
+            , border: false
+            , items: columnsBaseConfig
         }]
 	});
 	

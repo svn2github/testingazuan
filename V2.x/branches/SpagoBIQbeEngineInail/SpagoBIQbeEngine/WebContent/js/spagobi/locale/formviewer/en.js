@@ -53,6 +53,11 @@ Sbi.locale.formats = {
 };
 
 //===================================================================
+//VIEWER PANEL
+//===================================================================
+Sbi.locale.ln['sbi.formviewer.formviewerpanel.title'] = 'DATA BROWER';
+
+//===================================================================
 //FILTERS PANEL
 //===================================================================
 Sbi.locale.ln['sbi.formviewer.staticclosedfilterspanel.title'] = 'Static closed filters';

@@ -145,7 +145,7 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.FormPanel, {
 		
 		if (openFilter.singleSelection === undefined || openFilter.singleSelection === null || openFilter.singleSelection === true) {
 			field = new Ext.form.ComboBox(Ext.apply(baseConfig, {
-	            editable: true			    
+				editable: true			    
 			    , forceSelection: false
 			    , store: store
 			    , displayField: 'column-1'
@@ -154,7 +154,7 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.FormPanel, {
 			    , typeAhead: false
 			    //, typeAheadDelay: 1000
 			    , triggerAction: 'all'
-			    , selectOnFocus:true
+			    , selectOnFocus: true
 			    , autoLoad: false
 			}));
 		} else {
@@ -222,16 +222,8 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.FormPanel, {
 
 	// public methods
 	
-	, setState: function(state) {
-	
-	}
-	
-	, getState: function() {
-		var state = [];
-		//for (var i = 0; i < this.forms.length; i++) {
-		//	var aForm = this.forms[i];
-		//	state.push(aForm.getState());
-		//}
+	, getFormState: function() {
+		var state = this.getForm().getValues();
 		return state;
 	}
   	

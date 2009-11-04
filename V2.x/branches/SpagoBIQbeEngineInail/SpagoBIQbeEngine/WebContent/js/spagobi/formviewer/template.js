@@ -155,7 +155,7 @@ var template = {
     staticOpenFilters: [
         // single selection
         {
-        	id: 'staticOpenFilter-1',
+        	id: 'openFilter-1',
             text: 'Mese',
             field: 'it.eng.spagobi.SalesFact1998::timeByDay(time_id):theMonth',
             operator: 'EQUALS',
@@ -163,7 +163,7 @@ var template = {
             maxSelectedNumber: 3
         },
         {
-        	id: 'staticOpenFilter-2',
+        	id: 'openFilter-2',
             text: 'Customer',
             field: 'it.eng.spagobi.Customer:fullname',
             operator: 'EQUALS',
@@ -172,14 +172,14 @@ var template = {
         },
         // multi selection
         {
-        	id: 'staticOpenFilter-3',
+        	id: 'openFilter-3',
             text: 'Brand',
             field: 'it.eng.spagobi.SalesFact1998::product(product_id):brandName',
             operator: 'EQUALS',
             singleSelection: true
         },
         {
-        	id: 'staticOpenFilter-4',
+        	id: 'openFilter-4',
             text: 'Reparto',
             field: 'it.eng.spagobi.SalesFact1998::store(store_id):department',
             operator: 'EQUALS',
@@ -196,6 +196,7 @@ var template = {
     // --------------------------------------------------------------------------------------------------
     dynamicFilters: [
         {
+        	id: 'dynamicFilter-1',
             operator: 'EQUALS',
             admissibleFields: [
                {field: 'it.eng.spagobi.SalesFact1998::time(time_id):quarter_num', text: 'Quadrimestre'},
@@ -205,6 +206,7 @@ var template = {
             ]
         },
         {
+        	id: 'dynamicFilter-2',
             operator: 'EQUALS',
             admissibleFields: [
                {field: 'it.eng.spagobi.SalesFact1998::time(time_id):quarter_num', text: 'Quadrimestre'},
@@ -214,6 +216,7 @@ var template = {
             ]
         },
         {
+        	id: 'dynamicFilter-3',
             operator: 'BETWEEN',
             admissibleFields: [
                {field: 'it.eng.spagobi.SalesFact1998::time(time_id):quarter_num', text: 'Quadrimestre'},

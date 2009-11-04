@@ -50,141 +50,54 @@ Sbi.formviewer.DynamicFiltersPanel = function(dynamicFilters, config) {
 	
 	var defaultSettings = {
 		// set default values here
-		columnNo: 3
-		, columnWidth: 350
-		, labelAlign: 'left'
-		, fieldWidth: 200	
-		, maskOnRender: false
-		, title: LN('sbi.formviewer.dynamicfilterspanel.title')
-		, frame: true
-		, autoScroll: true
-		, autoWidth: true
+		title: LN('sbi.formviewer.dynamicfilterspanel.title')
+		, layout: 'table'
+	    , layoutConfig: {
+	        columns: 1
+	    }
 	};
 	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.dynamicFiltersPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.dynamicFiltersPanel);
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 
-	this.baseConfig = c;
-	
-	var columnsBaseConfig = [];
-	for(var i = 0; i < c.columnNo; i++) {
-		columnsBaseConfig[i] = {
-			width: c.columnWidth,
-            layout: 'form',
-            border: false,
-            bodyStyle:'padding:5px 5px 5px 5px'
-		}
-	}
+	this.init(dynamicFilters);
 	
 	Ext.apply(c, {
-        items: [{
-            layout:'column',
-            border: false,
-            items: columnsBaseConfig
-        }]
+        items: this.items
 	});
 	
 	// constructor
     Sbi.formviewer.DynamicFiltersPanel.superclass.constructor.call(this, c);
-    
-	var columnContainer = this.items.get(0);
-	this.columns = [];
-	for(var i = 0; i < c.columnNo; i++) {
-		this.columns[i] = columnContainer.items.get(i);
-	}
 
-	this.init(dynamicFilters);
-	
 };
 
-Ext.extend(Sbi.formviewer.DynamicFiltersPanel, Ext.form.FormPanel, {
+Ext.extend(Sbi.formviewer.DynamicFiltersPanel, Ext.Panel, {
     
 	services: null
+	, dynamicFilters: new Array()
 	   
 	// private methods
 	   
-	, init: function(dynamicFilters) {
-		this.fields = {};
-		
-		var fieldsCounter = 0;
-		for(var i = 0; i < dynamicFilters.length; i++) {
-			var combo = this.createFieldCombo( dynamicFilters[i] );
-			var valuesInputs = this.createFieldValuesInput( dynamicFilters[i] );
-			this.fields[dynamicFilters[i].id + '_combo'] = combo;
-			for(var j = 0; j < valuesInputs.length; j++) {
-				var aValueInput = valuesInputs[j];
-				this.fields[dynamicFilters[i].id + '_value_' + j] = aValueInput;
-			}
-			this.columns[0].add( combo );
-			this.columns[1].add( valuesInputs[0] );
-			if (valuesInputs.length > 1) {
-				this.columns[2].add( valuesInputs[1] );
-			} else {
-				this.columns[2].add( new Ext.form.Field({hidden: true, labelSeparator: ''}) );
-			}
+	, init: function(dynamicFiltersConfig) {
+		this.items = [];
+		for(var i = 0; i < dynamicFiltersConfig.length; i++) {
+			var aDynamicFilter = new Sbi.formviewer.DynamicFilter(dynamicFiltersConfig[i]);
+			this.items.push(aDynamicFilter);
+			this.dynamicFilters.push(aDynamicFilter);
 		}
-		
-		this.doLayout();
-	
 	}
 
-	, createFieldCombo: function(dynamicFilter) {
-		var store = new Ext.data.Store({
-			data: dynamicFilter.admissibleFields
-			, reader: new Ext.data.JsonReader({id: 'field'}, [
-               {name:'field'},
-               {name:'text'}
-       	    ])
-		});
-
-		var combo = new Ext.form.ComboBox({
-            editable: false
-            , fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.variable')
-		    , forceSelection: false
-		    , store: store
-		    , mode : 'local'
-		    , triggerAction: 'all'
-		    , displayField: 'text'
-		    , valueField: 'field'
-		    , emptyText: ''
-		    , typeAhead: false
-		});
-
-		return combo;
-	}
-	
-	, createFieldValuesInput: function(dynamicFilter) {
-		var valuesInput = [];
-		if (dynamicFilter.operator.toUpperCase() === 'BETWEEN') {
-			valuesInput[0] = new Ext.form.TextField({
-				fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.fromvalue')
-			   , name : 'fromvalue'
-			   , allowBlank: true
-			});
-			valuesInput[1] = new Ext.form.TextField({
-				fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.tovalue')
-			   , name : 'tovalue'
-			   , allowBlank: true
-			});
-		} else {
-			valuesInput[0] = new Ext.form.TextField({
-				fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.fromvalue')
-			   , name : 'value'
-			   , allowBlank: true
-			});
-		}
-		return valuesInput;
-	}
-
-	   
 	// public methods
 	
-	, setState: function(state) {
-	
-	}
-	
-	, getState: function() {
+	, getFormState: function() {
+		var state = {};
+		for(var i = 0; i < this.dynamicFilters.length; i++) {
+			var aDynamicFilter = this.dynamicFilters[i];
+			var aDynamicFilterState = aDynamicFilter.getFormState();
+			state[aDynamicFilter.id] = aDynamicFilterState;
+		}
+		return state;
 	}
   	
 });

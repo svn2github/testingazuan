@@ -72,7 +72,7 @@ Sbi.formviewer.ViewerPanel = function(template, config) {
 	});
 	
 	Ext.apply(c, {
-		title: 'TITOLO'
+		title: LN('sbi.formviewer.formviewerpanel.title')
 		, tbar: this.toolbar
   		, items: this.items
 	});
@@ -113,6 +113,12 @@ Ext.extend(Sbi.formviewer.ViewerPanel, Ext.Panel, {
 		var state = {};
 		if (this.staticClosedFiltersPanel !== null) {
 			state.staticClosedFilters = this.staticClosedFiltersPanel.getFormState();
+		}
+		if (this.staticOpenFiltersPanel !== null) {
+			state.staticOpenFilters = this.staticOpenFiltersPanel.getFormState();
+		}
+		if (this.dynamicFiltersPanel !== null) {
+			state.dynamicFilters = this.dynamicFiltersPanel.getFormState();
 		}
 		alert(state.toSource());
 	}

@@ -51,10 +51,11 @@ Sbi.formviewer.DynamicFiltersPanel = function(dynamicFilters, config) {
 	var defaultSettings = {
 		// set default values here
 		title: LN('sbi.formviewer.dynamicfilterspanel.title')
-		, layout: 'table'
-	    , layoutConfig: {
-	        columns: 1
-	    }
+		, frame: true
+		//, layout: 'table'
+	    //, layoutConfig: {
+	    //    columns: 1
+	    //}
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.dynamicFiltersPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.dynamicFiltersPanel);

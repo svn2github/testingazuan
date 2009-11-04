@@ -50,6 +50,12 @@ Sbi.formviewer.StaticClosedOnOffFiltersPanel = function(aStaticClosedOnOffFilter
 	
 	var defaultSettings = {
 		// set default values here
+		frame: true
+		//, autoHeight: true
+		//, autoWidth: true
+		//, layout: 'fit'
+        , width: 300
+        , height: 150
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.staticClosedOnOffFiltersPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.staticClosedOnOffFiltersPanel);
@@ -59,10 +65,7 @@ Sbi.formviewer.StaticClosedOnOffFiltersPanel = function(aStaticClosedOnOffFilter
 	this.init(aStaticClosedOnOffFiltersGroup);
 	
 	Ext.apply(c, {
-		frame: true
-        , items: this.items
-        , width: 200
-        , height: 150
+		items: this.items
 	});
 	
 	// constructor
@@ -89,6 +92,7 @@ Ext.extend(Sbi.formviewer.StaticClosedOnOffFiltersPanel, Ext.form.FormPanel, {
                 name: aFilter.id
 			});
 		}
+		
 	}
 	
 	// public methods

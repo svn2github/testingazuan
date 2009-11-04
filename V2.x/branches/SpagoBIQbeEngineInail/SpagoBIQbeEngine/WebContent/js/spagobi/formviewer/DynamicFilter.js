@@ -56,7 +56,7 @@ Sbi.formviewer.DynamicFilter = function(dynamicFilter, config) {
 		, labelAlign: 'left'
 		, fieldWidth: 200	
 		, maskOnRender: false
-		, frame: true
+		//, frame: true
 		, autoScroll: true
 		, autoWidth: true
 		, border: false
@@ -75,7 +75,7 @@ Sbi.formviewer.DynamicFilter = function(dynamicFilter, config) {
 			width: c.columnWidth,
             layout: 'form',
             border: false,
-            bodyStyle:'padding:5px 5px 5px 5px'
+            //bodyStyle:'padding:5px 5px 5px 5px'
 		}
 	}
 	

@@ -50,14 +50,15 @@ Sbi.formviewer.StaticClosedFiltersPanel = function(staticFilters, config) {
 	
 	var defaultSettings = {
 		// set default values here
-		title: LN('sbi.formviewer.staticclosedfilterspanel.title'),
-		layout: 'table',
-	    layoutConfig: {
+		title: LN('sbi.formviewer.staticclosedfilterspanel.title')
+		, layout: 'column'
+	    , layoutConfig: {
 	        columns: staticFilters.length
-	    },
-		frame: true,
-		autoScroll: true,
-		autoWidth: true
+	    }
+		, frame: true
+		, autoScroll: true
+		, autoWidth: true
+		, autoHeight: true
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.staticClosedFiltersPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.staticClosedFiltersPanel);
@@ -98,6 +99,8 @@ Ext.extend(Sbi.formviewer.StaticClosedFiltersPanel, Ext.Panel, {
 			}
 			this.forms.push(aStaticFiltersForm);
 		}
+		
+		this.doLayout();
 	}
 
 	   

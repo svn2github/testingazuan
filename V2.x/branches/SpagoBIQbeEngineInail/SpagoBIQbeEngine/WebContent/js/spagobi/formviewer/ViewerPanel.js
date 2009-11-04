@@ -50,11 +50,13 @@ Sbi.formviewer.ViewerPanel = function(template, config) {
 	
 	var defaultSettings = {
 		// set default values here
-		layout: 'table',
-	    layoutConfig: {
-	        columns: 1
-	    },
-		autoScroll: true
+		title: LN('sbi.formviewer.formviewerpanel.title')
+		//, layout: 'table'
+	    //, layoutConfig: {
+	    //    columns: 1
+	    //}
+		, layout: 'fit'
+		, autoScroll: true
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.viewerPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.viewerPanel);
@@ -72,8 +74,7 @@ Sbi.formviewer.ViewerPanel = function(template, config) {
 	});
 	
 	Ext.apply(c, {
-		title: LN('sbi.formviewer.formviewerpanel.title')
-		, tbar: this.toolbar
+		tbar: this.toolbar
   		, items: this.items
 	});
 	
@@ -128,7 +129,7 @@ Ext.extend(Sbi.formviewer.ViewerPanel, Ext.Panel, {
 		if (this.groupingVariablesPanel !== null) {
 			state.groupingVariables = this.groupingVariablesPanel.getFormState();
 		}
-		alert(state.toSource());
+		alert(state);
 	}
   	
 });

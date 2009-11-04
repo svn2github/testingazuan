@@ -49,7 +49,13 @@ Ext.ns("Sbi.formviewer");
 Sbi.formviewer.StaticClosedXORFiltersPanel = function(aStaticClosedXORFiltersGroup, config) {
 	
 	var defaultSettings = {
-			// set default values here
+		// set default values here
+		frame: true
+		//, autoHeight: true
+		//, autoWidth: true
+		//, layout: 'fit'
+        , width: 300
+        , height: 150
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.staticClosedXORFiltersPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.staticClosedXORFiltersPanel);
@@ -59,10 +65,7 @@ Sbi.formviewer.StaticClosedXORFiltersPanel = function(aStaticClosedXORFiltersGro
 	this.init(aStaticClosedXORFiltersGroup);
 	
 	Ext.apply(c, {
-		frame: true
-        , items: this.items
-        , width: 300
-        , height: 150
+        items: this.items
 	});
 	
 	// constructor

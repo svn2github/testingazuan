@@ -230,6 +230,31 @@ var template = {
         	   {field: 'it.eng.spagobi.SalesFact1998::time(time_id):day_num', text: 'Giorno'}                
             ]
         }
+    ],
+    // -------------------------------- fine dinamici aperti -------------------------------------------
+    
+    // -------------------------------- variabili di raggruppamento -------------------------------------------------
+    // Combobox di selezione delle variabili da incrociare  
+    // --------------------------------------------------------------------------------------------------
+    groupingVariables: [
+        {
+        	id: 'groupingVariable-1',
+            admissibleFields: [
+               {field: 'it.eng.spagobi.SalesFact1998::time(time_id):quarter_num', text: 'Quadrimestre'},
+        	   {field: 'it.eng.spagobi.SalesFact1998::time(time_id):month_num', text: 'Mese'},
+        	   {field: 'it.eng.spagobi.SalesFact1998::time(time_id):week_num', text: 'Settimana'},
+        	   {field: 'it.eng.spagobi.SalesFact1998::time(time_id):day_num', text: 'Giorno'}                
+            ]
+        },
+        {
+        	id: 'groupingVariable-2',
+            admissibleFields: [
+               {field: 'it.eng.spagobi.SalesFact1998::time(time_id):quarter_num', text: 'Quadrimestre'},
+        	   {field: 'it.eng.spagobi.SalesFact1998::time(time_id):month_num', text: 'Mese'},
+        	   {field: 'it.eng.spagobi.SalesFact1998::time(time_id):week_num', text: 'Settimana'},
+        	   {field: 'it.eng.spagobi.SalesFact1998::time(time_id):day_num', text: 'Giorno'}                
+            ]
+        }
     ]
     // -------------------------------- fine dinamici aperti -------------------------------------------
 };

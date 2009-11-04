@@ -51,8 +51,8 @@ Sbi.formviewer.StaticClosedOnOffFiltersPanel = function(aStaticClosedOnOffFilter
 	var defaultSettings = {
 		// set default values here
 	};
-	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.staticClosedOnOffFiltersPanel) {
-		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.staticClosedOnOffFiltersPanel);
+	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.staticClosedOnOffFiltersPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.staticClosedOnOffFiltersPanel);
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 	

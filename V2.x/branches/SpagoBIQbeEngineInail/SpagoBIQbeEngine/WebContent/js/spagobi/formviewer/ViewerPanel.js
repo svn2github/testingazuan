@@ -56,8 +56,8 @@ Sbi.formviewer.ViewerPanel = function(template, config) {
 	    },
 		autoScroll: true
 	};
-	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.viewerPanel) {
-		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.viewerPanel);
+	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.viewerPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.viewerPanel);
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 	
@@ -88,6 +88,7 @@ Ext.extend(Sbi.formviewer.ViewerPanel, Ext.Panel, {
     , staticClosedFiltersPanel: null
     , staticOpenFiltersPanel: null
     , dynamicFiltersPanel: null
+    , groupingVariablesPanel: null
    
     // private methods
     , init: function(template) {
@@ -104,6 +105,10 @@ Ext.extend(Sbi.formviewer.ViewerPanel, Ext.Panel, {
 			this.dynamicFiltersPanel = new Sbi.formviewer.DynamicFiltersPanel(template.dynamicFilters); 
 			this.items.push(this.dynamicFiltersPanel);
 		}
+		if (template.groupingVariables !== undefined && template.groupingVariables !== null && template.groupingVariables.length > 0) {
+			this.groupingVariablesPanel = new Sbi.formviewer.GroupingVariablesPanel(template.dynamicFilters); 
+			this.items.push(this.groupingVariablesPanel);
+		}
 		
 	}
     
@@ -119,6 +124,9 @@ Ext.extend(Sbi.formviewer.ViewerPanel, Ext.Panel, {
 		}
 		if (this.dynamicFiltersPanel !== null) {
 			state.dynamicFilters = this.dynamicFiltersPanel.getFormState();
+		}
+		if (this.groupingVariablesPanel !== null) {
+			state.groupingVariables = this.groupingVariablesPanel.getFormState();
 		}
 		alert(state.toSource());
 	}

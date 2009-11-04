@@ -46,12 +46,12 @@
 
 Ext.ns("Sbi.formviewer");
 
-Sbi.formviewer.DynamicFilter = function(dynamicFilter, config) {
+Sbi.formviewer.GroupingVariablesPanel = function(groupingVariables, config) {
 	
 	var defaultSettings = {
 		// set default values here
-		id: dynamicFilter.id
-		, columnNo: dynamicFilter.operator.toUpperCase() === 'BETWEEN' ? 3 : 2
+		title: LN('sbi.formviewer.groupingvariablespanel.title')
+		, columnNo: 2
 		, columnWidth: 350
 		, labelAlign: 'left'
 		, fieldWidth: 200	
@@ -59,11 +59,9 @@ Sbi.formviewer.DynamicFilter = function(dynamicFilter, config) {
 		, frame: true
 		, autoScroll: true
 		, autoWidth: true
-		, border: false
-		, bodyBorder: false
 	};
-	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.dynamicFilter) {
-		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.dynamicFilter);
+	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.groupingVariablesPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.groupingVariablesPanel);
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 
@@ -88,7 +86,7 @@ Sbi.formviewer.DynamicFilter = function(dynamicFilter, config) {
 	});
 	
 	// constructor
-    Sbi.formviewer.DynamicFilter.superclass.constructor.call(this, c);
+    Sbi.formviewer.GroupingVariablesPanel.superclass.constructor.call(this, c);
     
 	var columnContainer = this.items.get(0);
 	this.columns = [];
@@ -96,41 +94,36 @@ Sbi.formviewer.DynamicFilter = function(dynamicFilter, config) {
 		this.columns[i] = columnContainer.items.get(i);
 	}
 
-	this.init(dynamicFilter);
+	this.init(groupingVariables);
 	
 };
 
-Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
+Ext.extend(Sbi.formviewer.GroupingVariablesPanel, Ext.form.FormPanel, {
     
 	services: null
-	, combo: null
-	, valuesInputs: null
 	   
 	// private methods
 	   
-	, init: function(dynamicFilter) {
-		this.combo = this.createFieldCombo( dynamicFilter );
-		this.valuesInputs = this.createFieldValuesInput( dynamicFilter );
-		this.columns[0].add( this.combo );
-		this.columns[1].add( this.valuesInputs[0] );
-		if (this.valuesInputs.length > 1) {
-			this.columns[2].add( this.valuesInputs[1] );
-		}
+	, init: function(groupingVariables) {
+		var combo_1 = this.createFieldCombo( groupingVariables[0], 0 );
+		var combo_2 = this.createFieldCombo( groupingVariables[1], 1 );
+		this.columns[0].add( combo_1 );
+		this.columns[1].add( combo_2 );
 		this.doLayout();
 	
 	}
 
-	, createFieldCombo: function(dynamicFilter) {
+	, createFieldCombo: function(groupingVariable, pos) {
 		
 		var store = new Ext.data.JsonStore({
-			data: dynamicFilter.admissibleFields,
+			data: groupingVariable.admissibleFields,
 		    fields: ['field', 'text']
 		});
 		
 		var combo = new Ext.form.ComboBox({
-			name: 'field'
+			name: groupingVariable.id
             , editable: false
-            , fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.variable')
+            , fieldLabel: pos == 0 ? LN('sbi.formviewer.groupingvariablespanel.firstvariable') : LN('sbi.formviewer.groupingvariablespanel.secondvariable')
 		    , forceSelection: false
 		    , store: store
 		    , mode : 'local'
@@ -142,39 +135,11 @@ Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
 
 		return combo;
 	}
-	
-	, createFieldValuesInput: function(dynamicFilter) {
-		var valuesInput = [];
-		if (dynamicFilter.operator.toUpperCase() === 'BETWEEN') {
-			valuesInput[0] = new Ext.form.TextField({
-				fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.fromvalue')
-			   , name : 'fromvalue'
-			   , allowBlank: true
-			});
-			valuesInput[1] = new Ext.form.TextField({
-				fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.tovalue')
-			   , name : 'tovalue'
-			   , allowBlank: true
-			});
-		} else {
-			valuesInput[0] = new Ext.form.TextField({
-				fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.fromvalue')
-			   , name : 'value'
-			   , allowBlank: true
-			});
-		}
-		return valuesInput;
-	}
-
 	   
 	// public methods
 	
 	, getFormState: function() {
-		var state = {field: this.combo.getValue()};
-		for (var i = 0; i < this.valuesInputs.length; i++) {
-			var aValueInput = this.valuesInputs[i];
-			state[aValueInput.name] = aValueInput.getValue();
-		}
+		var state = this.getForm().getValues();
 		return state;
 	}
   	

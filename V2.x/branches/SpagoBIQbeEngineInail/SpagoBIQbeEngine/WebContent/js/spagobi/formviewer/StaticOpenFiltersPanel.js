@@ -61,8 +61,8 @@ Sbi.formviewer.StaticOpenFiltersPanel = function(openFilters, config) {
 		, fieldWidth: 200	
 		, maskOnRender: false
 	};
-	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.staticOpenFiltersPanel) {
-		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.staticOpenFiltersPanel);
+	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.staticOpenFiltersPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.staticOpenFiltersPanel);
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 	

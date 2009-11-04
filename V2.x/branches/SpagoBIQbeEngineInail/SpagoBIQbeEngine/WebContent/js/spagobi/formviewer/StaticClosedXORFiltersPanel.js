@@ -51,8 +51,8 @@ Sbi.formviewer.StaticClosedXORFiltersPanel = function(aStaticClosedXORFiltersGro
 	var defaultSettings = {
 			// set default values here
 	};
-	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.staticClosedXORFiltersPanel) {
-		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.staticClosedXORFiltersPanel);
+	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.staticClosedXORFiltersPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.staticClosedXORFiltersPanel);
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 	

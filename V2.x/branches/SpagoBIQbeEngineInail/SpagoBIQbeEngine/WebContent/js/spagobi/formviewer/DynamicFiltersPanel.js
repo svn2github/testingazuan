@@ -56,8 +56,8 @@ Sbi.formviewer.DynamicFiltersPanel = function(dynamicFilters, config) {
 	        columns: 1
 	    }
 	};
-	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.dynamicFiltersPanel) {
-		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.dynamicFiltersPanel);
+	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.dynamicFiltersPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.dynamicFiltersPanel);
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 

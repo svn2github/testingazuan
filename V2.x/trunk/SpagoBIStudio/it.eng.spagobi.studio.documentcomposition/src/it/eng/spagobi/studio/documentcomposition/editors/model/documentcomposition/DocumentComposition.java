@@ -1,27 +1,17 @@
 package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition;
 
-import java.util.Iterator;
-import java.util.Vector;
-
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.EditorReference;
-
 import it.eng.spagobi.studio.documentcomposition.editors.Designer;
 import it.eng.spagobi.studio.documentcomposition.editors.DocContainer;
 import it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor;
-import it.eng.spagobi.studio.documentcomposition.editors.DocumentContained;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
+
+import java.util.Iterator;
+
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IViewPart;
 
 
 public class DocumentComposition {
@@ -75,10 +65,11 @@ public class DocumentComposition {
 					if(manualString!=null){
 						style=new Style();	
 						style.setStyle(manualString);
+						style.setMode("manual");
 					}
 					else{	
 						style=docContainer.calculateTemplateStyle(true);
-						
+						style.setMode("auto");						
 					}
 					MetadataDocument metadataDocument=docContainer.getDocumentContained().getMetadataDocument();
 					new ModelBO().updateModelModifyDocument(metadataDocument, style);

@@ -3,14 +3,12 @@ package it.eng.spagobi.studio.documentcomposition.editors;
 
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
-import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataStyle;
 import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
@@ -18,7 +16,6 @@ import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -40,7 +37,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.part.EditorPart;
 
 public class Designer {
 
@@ -505,13 +501,6 @@ public class Designer {
 						metadataDocument=new MetadataDocument(fileToGet);
 						(new MetadataBO()).getMetadataDocumentComposition().addMetadataDocument(metadataDocument);
 
-						//						MetadataDocumentComposition metadataDocumentComposition=Activator.getDefault().getMetadataDocumentComposition();
-						//						Vector<MetadataDocument> metadataDocumentVector=metadataDocumentComposition.getMetadataDocuments();
-						//						if(metadataDocumentVector==null){
-						//							metadataDocumentVector=new Vector<MetadataDocument>();
-						//							metadataDocumentComposition.setMetadataDocuments(metadataDocumentVector);
-						//						}
-						//						metadataDocumentVector.add(metadataDocument);
 						// ************		PREPARE MEASURES FOR THE DESIGNER	*****************
 						String videoWidth=(new ModelBO()).getModel().getDocumentsConfiguration().getVideoWidth();
 						String videoHeight=(new ModelBO()).getModel().getDocumentsConfiguration().getVideoHeight();

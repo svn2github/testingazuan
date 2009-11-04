@@ -2,6 +2,7 @@ package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposit
 
 public class Style {
 	private String style;
+	private String mode="auto";
 
 	public String getStyle() {
 		return style;
@@ -19,6 +20,15 @@ public class Style {
 	public Style() {
 		super();
 	}
+
+	public String getMode() {
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+	
 	
 
 	

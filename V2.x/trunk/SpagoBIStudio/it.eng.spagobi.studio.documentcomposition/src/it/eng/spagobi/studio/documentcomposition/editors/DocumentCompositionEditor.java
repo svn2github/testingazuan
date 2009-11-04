@@ -2,11 +2,9 @@ package it.eng.spagobi.studio.documentcomposition.editors;
 
 
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
-import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
 import it.eng.spagobi.studio.documentcomposition.util.XmlTemplateGenerator;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
@@ -24,16 +22,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -44,7 +38,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
-import org.eclipse.ui.internal.EditorReference;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
@@ -54,8 +47,6 @@ public class DocumentCompositionEditor extends EditorPart {
 	String templateName="";
 	int height=0;
 	int width=0;
-	//DocumentComposition documentComposition;
-	MetadataDocumentComposition metadataDocumentComposition;
 	Designer designer;
 	private XmlTemplateGenerator generator = new XmlTemplateGenerator();
 	protected boolean isDirty = false;
@@ -99,7 +90,7 @@ public class DocumentCompositionEditor extends EditorPart {
 		// reload styles
 		documentComposition.reloadAllStylesContained();
 
-		
+
 		try {
 			FileEditorInput fei = (FileEditorInput) getEditorInput();
 			IFile file = fei.getFile();
@@ -145,7 +136,7 @@ public class DocumentCompositionEditor extends EditorPart {
 	public void init(IEditorSite site, IEditorInput input)
 	throws PartInitException {
 		SpagoBILogger.infoLog(DocumentCompositionEditor.class.toString()+": init function");
-		
+
 		//verifica se esiste già un documento aperto
 		try{
 
@@ -159,9 +150,7 @@ public class DocumentCompositionEditor extends EditorPart {
 			try {
 				DocumentComposition documentComposition = bo.createModel(file);
 				bo.saveModel(documentComposition);
-	
-				metadataDocumentComposition = new MetadataDocumentComposition();
-				Activator.getDefault().setMetadataDocumentComposition(metadataDocumentComposition);
+				new MetadataBO().createMetadataDocumentComposition(file);
 			} catch (CoreException e) {
 				e.printStackTrace();
 				SpagoBILogger.errorLog(DocumentCompositionEditor.class.toString()+": Error in reading template", e);
@@ -174,11 +163,12 @@ public class DocumentCompositionEditor extends EditorPart {
 				MessageDialog.openError(site.getShell(), "ERROR", "Operation denied. Another editor is opened.");
 				IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				iworkbenchpage.closeEditor(this, false);
-				
+
 			}
 		}catch(Exception e){
 			SpagoBILogger.warningLog("Error occurred:"+e.getMessage());
 		}
+
 		SpagoBILogger.infoLog("END "+DocumentCompositionEditor.class.toString()+": init function");
 	}
 
@@ -194,7 +184,7 @@ public class DocumentCompositionEditor extends EditorPart {
 	public void createPartControl(Composite _parent) {
 
 		SpagoBILogger.infoLog(DocumentCompositionEditor.class.toString()+": Create Part Control function");
-		
+
 		//inserisce le viste
 		try {
 			IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench()
@@ -344,8 +334,8 @@ public class DocumentCompositionEditor extends EditorPart {
 		this.designer = designer;
 	}
 
-	
-	
+
+
 
 
 }

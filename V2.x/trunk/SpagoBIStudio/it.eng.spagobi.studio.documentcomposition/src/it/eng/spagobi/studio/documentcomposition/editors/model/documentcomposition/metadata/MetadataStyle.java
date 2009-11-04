@@ -49,6 +49,12 @@ public class MetadataStyle {
 		x=Integer.valueOf(leftValue).intValue();
 		y=Integer.valueOf(topValue).intValue();
 		widthPercentage=Integer.valueOf(widthValue).intValue();
+
+		//if template has been made with SpagoBISTudio  add 1
+		// but not if was created with manual style!
+		if(new MetadataBO().getMetadataDocumentComposition().isMadeWithStudio() && (styleS.getMode()==null || !styleS.getMode().equalsIgnoreCase("manual"))){
+			widthPercentage+=1;
+		}
 		heightPercentage=Integer.valueOf(heightValue).intValue();
 
 
@@ -59,11 +65,11 @@ public class MetadataStyle {
 		int videoWidthI=Integer.valueOf(videoWidth).intValue();
 
 		// x : 800 (DESIGNER_WIDTH) = mio : videoWidth 
-//		int scaledX=(x*videoWidthI) / Designer.DESIGNER_WIDTH;
-//		int scaledY=(y*videoHeightI) / Designer.DESIGNER_HEIGHT;
-//
-//		x=scaledX;
-//		y=scaledY;
+		//		int scaledX=(x*videoWidthI) / Designer.DESIGNER_WIDTH;
+		//		int scaledY=(y*videoHeightI) / Designer.DESIGNER_HEIGHT;
+		//
+		//		x=scaledX;
+		//		y=scaledY;
 
 	}
 

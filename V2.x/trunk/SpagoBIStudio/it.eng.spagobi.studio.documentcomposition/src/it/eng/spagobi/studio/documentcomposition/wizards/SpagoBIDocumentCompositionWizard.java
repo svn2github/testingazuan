@@ -1,4 +1,6 @@
 package it.eng.spagobi.studio.documentcomposition.wizards;
+import it.eng.spagobi.studio.core.log.SpagoBILogger;
+import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewDocumentCompositionWizardPage;
 
@@ -8,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Date;
 
 import org.eclipse.core.internal.resources.Folder;
 import org.eclipse.core.resources.IFile;
@@ -80,8 +83,7 @@ public class SpagoBIDocumentCompositionWizard extends Wizard implements INewWiza
 			try {
 				if(is!=null) is.close();
 			} catch (Exception e) {
-//				SpagoBILogger.errorLog("Error while closing stream", e);
-//				SpagoBILogger.errorLog("Error while creating file", e);
+				SpagoBILogger.errorLog("Error while closing stream", e);
 			}
 		}
 		// generate the file	       
@@ -91,7 +93,7 @@ public class SpagoBIDocumentCompositionWizard extends Wizard implements INewWiza
 		try {
 			newFile.create(bais, true, null);
 		} catch (CoreException e) {
-//			SpagoBILogger.errorLog("Error while creating file", e);
+			SpagoBILogger.errorLog("Error while creating file", e);
 			MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
 					"Error", "Error while creating file; name alreay present");
 		}
@@ -109,6 +111,13 @@ public class SpagoBIDocumentCompositionWizard extends Wizard implements INewWiza
 		//			MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
 		//					"Error", "Error while opening editor");
 		//		}
+
+		try {
+			newFile.setPersistentProperty(PropertyPage.MADE_WITH_STUDIO, (new Date()).toString());
+		} catch (CoreException e) {
+			SpagoBILogger.errorLog("Error while setting made with studio meatdata", e);
+		}
+		
 		return true;
 	}
 

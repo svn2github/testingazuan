@@ -49,6 +49,7 @@ public class XmlTemplateGenerator {
 
 			xstream.aliasField("STYLE", Document.class, "style");
 			xstream.useAttributeFor(Style.class, "style");
+			xstream.useAttributeFor(Style.class, "mode");
 			xstream.aliasField("style", Style.class, "style");        
 
 			xstream.aliasField("PARAMETERS", Document.class, "parameters");

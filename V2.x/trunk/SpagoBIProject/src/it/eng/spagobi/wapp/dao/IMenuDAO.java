@@ -46,6 +46,19 @@ public interface IMenuDAO {
 	public Menu loadMenuByID(Integer menuID) throws EMFUserError;
 	
 	/**
+	 * Loads all detail information for a menu identified by its <code>menuID</code>. All these information,
+	 * archived by a query to the DB, are stored into an <code>menu</code> object, which is
+	 * returned.
+	 * 
+	 * @param menuID The id for the menu to load
+	 * 
+	 * @return An <code>menu</code> object containing all loaded information
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public Menu loadMenuByID(Integer menuID, Integer roleID) throws EMFUserError;
+	
+	/**
 	 * Loads all detail information for a menu whose name is equal to <code>name</code>.
 	 * 
 	 * @param name The name for the menu to load
@@ -124,7 +137,7 @@ public interface IMenuDAO {
 	 * 
 	 * @throws EMFUserError If any exception occurred
 	 */
-	public List getChildrenMenu (Integer menuId) throws EMFUserError;
+	public List getChildrenMenu (Integer menuId, Integer roleID) throws EMFUserError;
 	
 	
 	/**

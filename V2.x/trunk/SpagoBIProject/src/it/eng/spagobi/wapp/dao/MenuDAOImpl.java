@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.wapp.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
@@ -34,6 +35,7 @@ import it.eng.spagobi.wapp.metadata.SbiMenuRole;
 import it.eng.spagobi.wapp.metadata.SbiMenuRoleId;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -82,7 +84,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 				return null;
 
 			//SbiMenu hibMenu = (SbiMenu)tmpSession.load(SbiMenu.class,  menuID);
-			toReturn = toMenu(hibMenu);
+			toReturn = toMenu(hibMenu, null);
 
 		} catch (HibernateException he) {
 			logException(he);
@@ -101,6 +103,53 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 		return toReturn;
 	}	
 
+	/**
+	 * Load menu by id.
+	 * 
+	 * @param menuID the menu id
+	 * @param roleId the user's role id
+	 * 
+	 * @return the menu
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.wapp.dao.IMenuDAO#loadMenuByID(integer)
+	 */
+	public Menu loadMenuByID(Integer menuID, Integer roleID) throws EMFUserError {
+		Menu toReturn = null;
+		Session tmpSession = null;
+		Transaction tx = null;
+
+		try {
+			tmpSession = getSession();
+			tx = tmpSession.beginTransaction();	
+
+			Criterion domainCdCriterrion = Expression.eq("menuId", menuID);
+			Criteria criteria = tmpSession.createCriteria(SbiMenu.class);
+			criteria.add(domainCdCriterrion);
+			SbiMenu hibMenu = (SbiMenu) criteria.uniqueResult();
+			if (hibMenu == null) 
+				return null;
+
+			//SbiMenu hibMenu = (SbiMenu)tmpSession.load(SbiMenu.class,  menuID);
+			toReturn = toMenu(hibMenu, roleID);
+
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {			
+			if (tmpSession!=null){
+				if (tmpSession.isOpen()) tmpSession.close();
+
+			}
+		}		
+		return toReturn;
+	}	
 
 	/**
 	 * Load menu by name.
@@ -126,7 +175,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			criteria.add(labelCriterrion);	
 			SbiMenu hibMenu = (SbiMenu) criteria.uniqueResult();
 			if (hibMenu == null) return null;
-			biMenu = toMenu(hibMenu);				
+			biMenu = toMenu(hibMenu, null);				
 
 			//tx.commit();
 		} catch (HibernateException he) {
@@ -407,7 +456,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			while (it.hasNext()) {			
 				SbiMenu hibMenu = (SbiMenu) it.next();	
 				if (hibMenu != null) {
-					Menu biMenu = toMenu(hibMenu);
+					Menu biMenu = toMenu(hibMenu, null);
 					logger.debug("Add Menu:"+biMenu.getName());
 					realResult.add(biMenu);
 				}
@@ -484,6 +533,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 	 * Gets the children menu.
 	 * 
 	 * @param menuId the menu id
+	 * @param roleId the user's role id
 	 * 
 	 * @return the children menu
 	 * 
@@ -491,7 +541,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 	 * 
 	 * @see it.eng.spagobi.wapp.dao.IMenuDAO#getChildrenMenu(java.lang.Integer)
 	 */
-	public List getChildrenMenu (Integer menuId) throws EMFUserError{
+	public List getChildrenMenu (Integer menuId, Integer roleID) throws EMFUserError{
 		List lstChildren = new ArrayList();
 		Session tmpSession = null;
 		Transaction tx = null;
@@ -499,8 +549,8 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 
-			//String hql = " from SbiMenu s where s.id.parentId = "+ menuId + " order by s.prog";
 			String hql = " from SbiMenu s where s.id.parentId = ? order by s.prog";
+
 			Query aQuery = tmpSession.createQuery(hql);
 			aQuery.setInteger(0, menuId.intValue());
 			
@@ -509,7 +559,23 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			while (it.hasNext()) {			
 				SbiMenu hibMenu = (SbiMenu) it.next();	
 				if (hibMenu != null) {
-					Menu biMenu = toMenu(hibMenu);	
+						if (roleID != null){
+							//check if the child can be visualized from the user
+							hql = " from SbiMenuRole as mf  where mf.id.menuId = ? and mf.id.extRoleId = ? ";
+							 
+							aQuery = tmpSession.createQuery(hql);
+							aQuery.setInteger(0, hibMenu.getMenuId());
+							aQuery.setInteger(1, roleID);
+							
+							List hibListRoles = aQuery.list();
+							if (hibListRoles.size()>0){
+			 					Menu biMenu = toMenu(hibMenu, roleID);	
+								lstChildren.add(biMenu);
+							}
+						}					
+				}
+				else{
+					Menu biMenu = toMenu(hibMenu, roleID);	
 					lstChildren.add(biMenu);
 				}
 			}
@@ -537,7 +603,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 	 * @param hibMenu	The Hibernate Menu object
 	 * @return the corrispondent output <code>Menu</code>
 	 */
-	private Menu toMenu(SbiMenu hibMenu) throws EMFUserError{
+	private Menu toMenu(SbiMenu hibMenu, Integer roleId) throws EMFUserError{
 
 		Menu menu = new Menu();
 		menu.setMenuId(hibMenu.getMenuId());
@@ -608,7 +674,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 
 		//set children
 		try{
-			List tmpLstChildren = (DAOFactory.getMenuDAO().getChildrenMenu(menu.getMenuId()));
+			List tmpLstChildren = (DAOFactory.getMenuDAO().getChildrenMenu(menu.getMenuId(), roleId));
 			boolean hasCHildren = (tmpLstChildren.size()==0)?false:true;
 			menu.setLstChildren(tmpLstChildren);
 			menu.setHasChildren(hasCHildren);
@@ -867,6 +933,5 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			}
 		}
 	}
-
 
 }

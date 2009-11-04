@@ -69,6 +69,8 @@ public class MenuUtilities {
 
     protected static IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 	protected static Locale locale=null;
+	protected static Menu originalChild ;
+	protected static int positionChild ;
 	
 	public static String getMenuPath(Menu menu) {
 		try{
@@ -136,13 +138,37 @@ public class MenuUtilities {
 					else {
 						for(int j=0; j<lstUserMenuItems.size(); j++){
 							Menu tmpObj = (Menu)lstUserMenuItems.get(j);
+						
 							if (!containsMenu(lstFinalMenu, tmpObj)){						
-								lstFinalMenu.add((Menu)lstUserMenuItems.get(j));	
+								lstFinalMenu.add(tmpObj);	
 							}
+							else{
+								//checks merge of children's item								
+								List tmpObjChildren = tmpObj.getLstChildren();
+								List tmpNewObjChildren = new ArrayList();
+							  	
+								for (int k=0; k<tmpObjChildren.size();k++){
+									Menu tmpObjChild = (Menu)tmpObjChildren.get(k);								
+									if (!containsMenuChildren(lstFinalMenu, tmpObjChild)){		
+										tmpNewObjChildren.add(tmpObjChild);
+									}
+									else{
+										//if (!tmpNewObjChildren.contains(originalChild))
+										if (!containsMenuChildren(tmpNewObjChildren, originalChild))
+											tmpNewObjChildren.add(originalChild);
+									}
+								}		
+								
+								tmpObj.setLstChildren(tmpNewObjChildren);
+								if (positionChild >= 0)
+									lstFinalMenu.set(positionChild, tmpObj);
+								
+							}
+								
 						}
 					}
 					
-					List lstAdminMenuItems = new  ArrayList();
+				//	List lstAdminMenuItems = new  ArrayList();
 					if (!technicalMenuLoaded && (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)  // for administrators
 							|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)  // for developers
 							|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)  // for testers
@@ -301,13 +327,38 @@ public class MenuUtilities {
 	public static boolean containsMenu(List lst, Menu menu){
 		if (lst == null)
 			return false;
-		
 		for (int i=0; i<lst.size(); i++){
 			Menu tmpMenu = (Menu)lst.get(i);
-			if (tmpMenu.getMenuId().intValue() == menu.getMenuId().intValue())
+			
+			if (tmpMenu.getMenuId().intValue() == menu.getMenuId().intValue()){			
+				originalChild = tmpMenu;
+				positionChild = i;				
 				return true;	
+			}
+			
 		}
 		return false;
 	}
 	
+	/**
+	 * Check if the child menu element in input is already presents into the list
+	 * @param lst the list to check
+	 * @param menu the element to check
+	 * @return true if the element is already presents, false otherwise
+	 */
+	public static boolean containsMenuChildren(List generalChildren, Menu menuChildren){
+
+		if (generalChildren == null)
+			return false;
+		for (int i=0; i<generalChildren.size(); i++){
+			Menu tmpMenu = (Menu)generalChildren.get(i);
+			
+			if (tmpMenu.getMenuId().intValue() == menuChildren.getMenuId().intValue()){				
+				originalChild = tmpMenu;	
+				return true;	
+			}
+			
+		}
+		return false;
+	}
 }

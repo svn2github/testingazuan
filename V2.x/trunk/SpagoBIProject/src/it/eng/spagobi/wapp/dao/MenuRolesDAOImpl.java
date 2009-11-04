@@ -86,7 +86,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 			while (it.hasNext()) {	
 				Object[] tmpLst = (Object[])it.next();
 				Integer menuId = (Integer)tmpLst[0];
-				tmpMenu = menuDAO.loadMenuByID(menuId);
+				tmpMenu = menuDAO.loadMenuByID(menuId, roleId);
 				if (tmpMenu != null){
 				    logger.debug("Add Menu:"+tmpMenu.getName());
 					realResult.add(tmpMenu);

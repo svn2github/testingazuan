@@ -133,20 +133,31 @@ public class MenuModule extends AbstractHttpModule {
 	    Collection lstRolesForUser = profile.getRoles();
 	    Object[] arrRoles = lstRolesForUser.toArray();
 	    for (int i = 0; i < arrRoles.length; i++) {
-		Integer roleId = (Integer) arrRoles[i];
-		if (roleId != null)
-		    logger.debug("Reading menu items for roleId:" + roleId.toString());
-		List lstMenuItems = DAOFactory.getMenuRolesDAO().loadMenuByRoleId(roleId);
-		for (int j = 0; j < lstMenuItems.size(); j++) {
-		    if (!lstFinalMenu.contains((Menu) lstMenuItems.get(j))) {
-			Menu tmpElement = (Menu) lstMenuItems.get(j);
-			logger.debug("Add Menu:" + tmpElement.getName());
-			List tmpChildren = (DAOFactory.getMenuDAO().getChildrenMenu(tmpElement.getMenuId()));
-			boolean tmpHasCHildren = (tmpChildren.size() == 0) ? false : true;
-			tmpElement.setHasChildren(tmpHasCHildren);
-			lstFinalMenu.add(tmpElement);
-		    }
-		}
+			Integer roleId = (Integer) arrRoles[i];
+			if (roleId != null)
+			    logger.debug("Reading menu items for roleId:" + roleId.toString());
+			List lstMenuItems = DAOFactory.getMenuRolesDAO().loadMenuByRoleId(roleId);
+			List lstMenuChildren = new ArrayList();
+			for (int j = 0; j < lstMenuItems.size(); j++) {
+			    if (!lstFinalMenu.contains((Menu) lstMenuItems.get(j))) {
+					Menu tmpElement = (Menu) lstMenuItems.get(j);
+					logger.debug("Add Menu:" + tmpElement.getName());
+					List tmpChildren = (DAOFactory.getMenuDAO().getChildrenMenu(tmpElement.getMenuId(),roleId));
+					//merge children of different roles
+					/*
+					if (!lstMenuChildren.containsAll(tmpChildren)){
+						for (int k=0; k<tmpChildren.size(); k++){
+							if (!lstMenuChildren.contains(tmpChildren.get(k)))
+									lstMenuChildren.add(tmpChildren.get(k));
+						}
+					}*/
+					//boolean tmpHasCHildren = (tmpChildren.size() == 0) ? false : true;
+					boolean tmpHasCHildren = (lstMenuChildren.size() == 0) ? false : true;
+					tmpElement.setHasChildren(tmpHasCHildren);
+					tmpElement.setLstChildren(lstMenuChildren);
+					lstFinalMenu.add(tmpElement);
+			    }
+			}
 	    }
 	    response.setAttribute("LIST_MENU", lstFinalMenu);
 	} catch (Exception ex) {

@@ -99,7 +99,7 @@ public class DocumentCompositionEditor extends EditorPart {
 		// reload styles
 		documentComposition.reloadAllStylesContained();
 
-
+		
 		try {
 			FileEditorInput fei = (FileEditorInput) getEditorInput();
 			IFile file = fei.getFile();

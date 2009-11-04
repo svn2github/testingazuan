@@ -154,7 +154,7 @@ public class DocContainer {
 							reloadStyleDocumentProperties();
 							// Update Model if present document
 							if(documentContained.getMetadataDocument()!=null){
-								(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
+								(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle(false));
 							}
 							documentContained.drawImage();
 							designer.setCurrentSelection(Integer.valueOf(-1));
@@ -226,7 +226,7 @@ public class DocContainer {
 								composite.setSize(nuova_larghezza, nuova_altezza);
 								// Update model if present document
 								if(documentContained.getMetadataDocument()!=null){
-									(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
+									(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle(false));
 								}
 								designer.getEditor().setIsDirty(true);
 							}
@@ -246,7 +246,7 @@ public class DocContainer {
 									composite.setLocation(newX, newY);
 									// Update model if document is present!
 									if(documentContained.getMetadataDocument()!=null){
-										(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle());
+										(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle(false));
 									}
 									designer.getEditor().setIsDirty(true);								
 								}
@@ -472,7 +472,7 @@ public class DocContainer {
 						IFile file=(IFile)selectedTreeSelection.getFirstElement();
 						doTransfer=documentContained.recoverDocumentMetadata(idContainer, file);
 						// add the document!!
-						(new ModelBO()).addNewDocumentToModel(documentContained.getMetadataDocument(), calculateTemplateStyle());
+						(new ModelBO()).addNewDocumentToModel(documentContained.getMetadataDocument(), calculateTemplateStyle(false));
 					}
 				}
 				if(doTransfer==true){
@@ -523,9 +523,9 @@ public class DocContainer {
 
 	/**
 	 *  Calculate the style string from the Style class
-	 * @param composite
+	 * @param saving: if isSaving is true than decrease width by one percentage point to avoid swapping in HTML
 	 */
-	public Style calculateTemplateStyle(){
+	public Style calculateTemplateStyle(boolean isSaving){
 		Style style=new Style();	
 		String toAdd="float:left;margin:0px;";
 
@@ -564,6 +564,9 @@ public class DocContainer {
 		// calculate width and height percentage
 		int widthPerc=(width*100)/totalWidth;
 		int heightPerc=(height*100)/totalHeight;
+		if(isSaving==true){
+			widthPerc=widthPerc-1;
+		}
 		toAdd+="width:"+Integer.valueOf(widthPerc).toString()+"%;";
 		toAdd+="height:"+Integer.valueOf(heightPerc).toString()+"%;";
 
@@ -622,7 +625,7 @@ public class DocContainer {
 	 * @param composite
 	 */
 	public void reloadStyleDocumentProperties(){
-		Style style=calculateTemplateStyle();
+		Style style=calculateTemplateStyle(false);
 		IViewPart object=DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PROPERTIES_VIEW_ID);
 		if(object!=null){
 			DocumentPropertiesView view=(DocumentPropertiesView)object;

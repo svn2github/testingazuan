@@ -82,7 +82,7 @@ public class Designer {
 	 * @return
 	 */
 
-	public Integer addNewDocContainer(Composite mainComposite, int x, int y, int _width, int _height){
+	public Integer addNewDocContainer(Composite mainComposite, int x, int y, int _width, int _height, boolean isNew){
 		SpagoBILogger.infoLog(Designer.class.toString()+": add New Container function");
 
 		// shell check if overlaids or exceeds
@@ -94,9 +94,14 @@ public class Designer {
 //		tempHeight=tempHeight*DocContainer.ALIGNMENT_MARGIN;
 
 		Rectangle rectangle=new Rectangle(x,y, tempWidth, tempHeight);
+		
 		boolean doesExceed=DocContainer.doesExceed(Integer.valueOf(-1), this, x, y, tempWidth, tempHeight, false);
 		boolean doesIntersect=DocContainer.doesIntersect(Integer.valueOf(-1), this, x, y, tempWidth, tempHeight, false);
 
+		if(!isNew){
+			doesExceed=false;
+			doesIntersect=false;
+		}
 		if(doesExceed==true){
 			MessageDialog.openWarning(mainComposite.getShell(), 
 					"Warning", "Container you want to insert exceeds shell!");
@@ -135,7 +140,7 @@ public class Designer {
 
 	public void addDocContainerFromTemplate(Composite mainComposite, int x, int y, int _width, int _height, MetadataDocument metadataDocument, Document document){
 		SpagoBILogger.infoLog(Designer.class.toString()+": add Doc Container from template");
-		Integer id=addNewDocContainer(mainComposite, x, y, _width, _height);
+		Integer id=addNewDocContainer(mainComposite, x, y, _width, _height, false);
 		if(id==null) return;
 		else{
 			DocContainer docContainer=containers.get(id);
@@ -257,7 +262,7 @@ public class Designer {
 						docContainerSelected.reloadStyleDocumentProperties();
 						// UOpdate only if document is present
 						if(selectedDoc.getDocumentContained().getMetadataDocument()!=null){
-							(new ModelBO()).updateModelModifyDocument(selectedDoc.getDocumentContained().getMetadataDocument(), selectedDoc.calculateTemplateStyle());						
+							(new ModelBO()).updateModelModifyDocument(selectedDoc.getDocumentContained().getMetadataDocument(), selectedDoc.calculateTemplateStyle(false));						
 						}
 						selectedDoc.getDocumentContained().drawImage();						
 						setCurrentSelection(new Integer(-1));
@@ -309,7 +314,7 @@ public class Designer {
 								selected1.setSize(nuova_larghezza, nuova_altezza);
 								// Update model if document is present
 								if(selectedDoc1.getDocumentContained().getMetadataDocument()!=null){
-									(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle());
+									(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle(false));
 								}
 								editor.setIsDirty(true);								
 							}
@@ -329,7 +334,7 @@ public class Designer {
 									selectedDoc1.getDocumentContained().getGroup().setLocation(newX, newY);
 									// Update model if document is present
 									if(selectedDoc1.getDocumentContained().getMetadataDocument()!=null){
-										(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle());
+										(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle(false));
 									}
 									editor.setIsDirty(true);								
 								}
@@ -377,7 +382,7 @@ public class Designer {
 
 					public void handleEvent(Event e) {
 						if(getState().equals(Designer.NORMAL)){
-							addNewDocContainer(composite, currentX, currentY, DocContainer.DEFAULT_WIDTH, DocContainer.DEFAULT_HEIGHT);
+							addNewDocContainer(composite, currentX, currentY, DocContainer.DEFAULT_WIDTH, DocContainer.DEFAULT_HEIGHT, true);
 							editor.setIsDirty(true);
 						}
 					}

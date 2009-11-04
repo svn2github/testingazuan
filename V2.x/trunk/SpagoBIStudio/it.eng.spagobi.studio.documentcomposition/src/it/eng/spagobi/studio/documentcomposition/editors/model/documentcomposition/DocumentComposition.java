@@ -77,7 +77,8 @@ public class DocumentComposition {
 						style.setStyle(manualString);
 					}
 					else{	
-						style=docContainer.calculateTemplateStyle();
+						style=docContainer.calculateTemplateStyle(true);
+						
 					}
 					MetadataDocument metadataDocument=docContainer.getDocumentContained().getMetadataDocument();
 					new ModelBO().updateModelModifyDocument(metadataDocument, style);
@@ -88,5 +89,5 @@ public class DocumentComposition {
 		}
 	}
 
-
+	
 }

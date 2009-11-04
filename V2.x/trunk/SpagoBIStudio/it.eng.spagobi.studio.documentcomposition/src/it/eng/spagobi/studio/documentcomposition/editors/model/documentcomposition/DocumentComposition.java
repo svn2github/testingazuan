@@ -34,6 +34,7 @@ public class DocumentComposition {
 	}
 	public DocumentComposition() {
 		documentsConfiguration=new DocumentsConfiguration();
+		templateValue="/jsp/engines/documentcomposition/template/dynamicTemplate.jsp";
 	}
 
 

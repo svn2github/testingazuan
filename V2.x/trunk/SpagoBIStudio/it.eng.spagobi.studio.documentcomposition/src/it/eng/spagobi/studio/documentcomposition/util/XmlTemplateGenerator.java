@@ -108,6 +108,7 @@ public class XmlTemplateGenerator {
 			XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
 			setAlias(xstream);	
 			DocumentComposition objFromXml = (DocumentComposition)xstream.fromXML(file.getContents());
+			objFromXml.setTemplateValue("/jsp/engines/documentcomposition/template/dynamicTemplate.jsp");
 			return objFromXml;
 		}
 

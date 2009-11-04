@@ -70,6 +70,26 @@ public class ModelBO {
 		saveModel(documentComposition);
 	}
 
+	/** delete a document from the model!
+	 * 
+	 */
+	public void deleteDocumentFromModel(Document documentToDelete){
+		DocumentComposition documentComposition=getModel();
+		DocumentsConfiguration documentsConfiguration=documentComposition.getDocumentsConfiguration();
+		Vector<Document> documents=documentsConfiguration.getDocuments();
+		boolean found=false;
+		for (Iterator iterator = documents.iterator(); iterator.hasNext() && found==false;) {
+			Document document = (Document) iterator.next();
+			//if(document.getSbiObjLabel().equals(_metadataDocument.getLabel())){
+			if(document.getSbiObjLabel().equals(documentToDelete.getSbiObjLabel())){
+				documents.remove(document);
+				found=true;
+			}
+		}
+		saveModel(documentComposition);
+	}
+
+	
 	/** update the model with a new document!
 	 * 
 	 */

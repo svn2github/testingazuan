@@ -9,6 +9,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataStyle;
 import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
@@ -16,6 +17,7 @@ import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -83,14 +85,14 @@ public class Designer {
 
 		// shell check if overlaids or exceeds
 		int tempWidth=_width;
-//		tempWidth=tempWidth/DocContainer.ALIGNMENT_MARGIN;
-//		tempWidth=tempWidth*DocContainer.ALIGNMENT_MARGIN;
+		//		tempWidth=tempWidth/DocContainer.ALIGNMENT_MARGIN;
+		//		tempWidth=tempWidth*DocContainer.ALIGNMENT_MARGIN;
 		int tempHeight=_height;
-//		tempHeight=tempHeight/DocContainer.ALIGNMENT_MARGIN;
-//		tempHeight=tempHeight*DocContainer.ALIGNMENT_MARGIN;
+		//		tempHeight=tempHeight/DocContainer.ALIGNMENT_MARGIN;
+		//		tempHeight=tempHeight*DocContainer.ALIGNMENT_MARGIN;
 
 		Rectangle rectangle=new Rectangle(x,y, tempWidth, tempHeight);
-		
+
 		boolean doesExceed=DocContainer.doesExceed(Integer.valueOf(-1), this, x, y, tempWidth, tempHeight, false);
 		boolean doesIntersect=DocContainer.doesIntersect(Integer.valueOf(-1), this, x, y, tempWidth, tempHeight, false);
 
@@ -468,8 +470,9 @@ public class Designer {
 		if(documentComposition.getDocumentsConfiguration()==null || documentComposition.getDocumentsConfiguration().getDocuments()==null || documentComposition.getDocumentsConfiguration().getDocuments().size()==0){
 			return;
 		}
+		Vector<Document> documentsToIterate=new Vector<Document>(documentComposition.getDocumentsConfiguration().getDocuments());
 		// Run all the documents
-		for (Iterator iterator = documentComposition.getDocumentsConfiguration().getDocuments().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = documentsToIterate.iterator(); iterator.hasNext();) {
 			Document document = (Document) iterator.next();
 			String sbiObjectLabel =	document.getSbiObjLabel();
 			MetadataStyle metadataStyle=null;
@@ -521,6 +524,9 @@ public class Designer {
 								"Error", "Could not find file "+localFileName+", download idt again!");
 						SpagoBILogger.errorLog("END "+Designer.class.toString()+": Initialize designer function: " +
 								"Could not find file "+localFileName+", download idt again!",null);
+						// delete from model!!!!
+						new ModelBO().deleteDocumentFromModel(document);
+						int i=0;
 					}
 				}
 			}

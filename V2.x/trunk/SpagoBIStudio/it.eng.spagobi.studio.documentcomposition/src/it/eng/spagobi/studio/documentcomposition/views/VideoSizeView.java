@@ -95,7 +95,7 @@ public class VideoSizeView extends ViewPart{
 		});
 
 		Label text1=new org.eclipse.swt.widgets.Label(client, SWT.NULL);
-		text1.setText("Video : ");
+		text1.setText("Video Width: ");
 
 		widthSpin = new Spinner (client, SWT.BORDER);
 		widthSpin.setMaximum(100000);

@@ -51,7 +51,64 @@ public class ParameterBO {
 		}		
 		return paramFound;
 	}
+	public Parameter getParameterById(DocumentComposition docComp, String id){
+		Parameter paramFound = null;
+		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
+		if(docConf != null){
+		    Vector documents = docConf.getDocuments();
+		    if(documents != null){
+		    	for (int i = 0; i< documents.size(); i++){
+		    		Document doc = (Document)documents.elementAt(i);
+		    		String docLabel =doc.getSbiObjLabel();
+
+		    			Parameters parameters = doc.getParameters();
+		    			if(parameters != null){
+		    				Vector<Parameter> params = parameters.getParameter();
+		    				if(params != null){
+		    					for(int j=0;j<params.size(); j++){
+		    						Parameter param = params.elementAt(j);
+		    						if(param.getType().equals("IN") && param.getId().equals(id)){
+		    							paramFound = param;
+		    						}
+		    					}
+		    				}
+		    			}
+	    		
+		    	}
+		    }
+		}
 	
+		return paramFound;
+	}
+	public String getParameterDocumentName(DocumentComposition docComp, String id){
+		String docName = null;
+		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
+		if(docConf != null){
+		    Vector documents = docConf.getDocuments();
+		    if(documents != null){
+		    	for (int i = 0; i< documents.size(); i++){
+		    		Document doc = (Document)documents.elementAt(i);
+		    		String docLabel =doc.getSbiObjLabel();
+
+		    			Parameters parameters = doc.getParameters();
+		    			if(parameters != null){
+		    				Vector<Parameter> params = parameters.getParameter();
+		    				if(params != null){
+		    					for(int j=0;j<params.size(); j++){
+		    						Parameter param = params.elementAt(j);
+		    						if(param.getType().equals("IN") && param.getId().equals(id)){
+		    							docName = docLabel;
+		    						}
+		    					}
+		    				}
+		    			}
+	    		
+		    	}
+		    }
+		}
+	
+		return docName;
+	}
 	public boolean deleteParameterById(DocumentComposition docComp, String id){
 		boolean paramFound = false;
 		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();

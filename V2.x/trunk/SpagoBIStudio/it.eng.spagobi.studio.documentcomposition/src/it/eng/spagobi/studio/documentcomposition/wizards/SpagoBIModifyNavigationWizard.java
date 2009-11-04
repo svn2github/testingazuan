@@ -9,6 +9,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameters;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Refresh;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.RefreshDocLinked;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.DocumentBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ParameterBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.RefreshDocLinkedBO;
 import it.eng.spagobi.studio.documentcomposition.util.XmlTemplateGenerator;
@@ -207,7 +208,7 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 
 	private void fillNavigationOutParam(Parameter ouputparam, String masterParam){
 		HashMap<String, String> docInfoUtil= modifyNavigationWizardPage.getDocInfoUtil();
-
+		ParameterBO bo = new ParameterBO();
 		
 		Refresh refresh = ouputparam.getRefresh();
 		Vector <RefreshDocLinked> refreshes = refresh.getRefreshDocLinked();
@@ -220,13 +221,53 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 
 			String paramIn =destInfo.getParamDestName();
 			String id =destInfo.getParamDestId();
-			//se esisteva
+			
 			RefreshDocLinked refreshDocLinked = refreshBO.refreshDocAlreadyExists(id, toRefresh, refreshes);
-			if(refreshDocLinked != null){
+			//se non esiste lo crea
+			if(refreshDocLinked == null){
+				//rimuove il vecchio
+				RefreshDocLinked oldRefreshDocLinked = refreshBO.refreshByParamIdAlreadyExists(id, refreshes);
+				if(oldRefreshDocLinked != null){
+					refreshes.remove(oldRefreshDocLinked);
+				}
+				
+				//se quel refresh non esiste lo crea	
+				refreshDocLinked = new RefreshDocLinked();
+				refreshDocLinked.setIdParam(id);
 				refreshDocLinked.setLabelDoc(toRefresh);
 				refreshDocLinked.setLabelParam(paramIn);
-
+				refreshes.add(refreshDocLinked);
+				
 			}
+			//recupera parametro in a cui fa riferimento il refreshdoc 
+			Parameter prevParamIn = bo.getParameterById(docComp, id);
+			String parentDoc = bo.getParameterDocumentName(docComp, id);
+			if(!prevParamIn.getSbiParLabel().equals(paramIn) || !parentDoc.equals(toRefresh)){
+				//allora bisogna creare nuovo parametro in e correggere l'idParam del refresh
+				Parameters params = DocumentBO.getParametersByDocumentLabel(docComp, toRefresh);
+				Parameter paramExisting = bo.getDocInputParameterByLabel(params.getParameter(), paramIn);
+				if(paramExisting == null){
+					Parameter newParam = new Parameter(docComp);
+					newParam.setSbiParLabel(paramIn);
+					newParam.setType("IN");
+					newParam.setDefaultVal(destInfo.getParamDefaultValue().getText());
+					params.getParameter().add(newParam);
+					
+					//poi modifica idParam del refresh
+					refreshDocLinked.setIdParam(newParam.getId());
+				}else{
+					//se param in esiste già modifica idParam del refresh
+					refreshDocLinked.setIdParam(paramExisting.getId());
+					refreshDocLinked.setLabelParam(paramExisting.getSbiParLabel());
+					
+					//e valore di default del param in
+					paramExisting.setDefaultVal(destInfo.getParamDefaultValue().getText());
+				}
+			}else{
+				refreshDocLinked.setLabelDoc(toRefresh);
+				refreshDocLinked.setLabelParam(paramIn);
+			}
+			
 		}
 		//cacella refreshedDocs 
 		HashMap<String, String> deleted = modifyNavigationWizardPage.getDeletedParams();
@@ -241,9 +282,11 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 				}
 			}
 		}
+
 		ouputparam.setRefresh(refresh);		
 
 	}
+
 	private void fillInNavigationParams(Vector<Parameter> parameters, Document doc){
 		//cicla su destinazioni
 		HashMap<String, String> docInfoUtil= modifyNavigationWizardPage.getDocInfoUtil();

@@ -48,7 +48,8 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	
 	HashMap <String, String> docInfoUtil = new HashMap<String, String>();
 	HashMap <String, String> deletedParams = new HashMap<String, String>();
-	
+	HashMap <String, String> deletedRefresh = new HashMap<String, String>();
+
 	String name = "";
 	String paramIn = "";
 	
@@ -446,7 +447,10 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    						        confirm.setSize(300,100);
 				    								confirm.open();
 				    							}else{
+				    								
 				    								name = destinationDocNameCombo.elementAt(element).getText();
+				    								destinationInfo = destinationInfos.get(element);
+				    								destinationInfo.setDocDestName(name);
 					    							destinationInputParam.elementAt(destinComboToRedraw).removeAll();
 					    							String label = docInfoUtil.get(name);
 
@@ -507,7 +511,6 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    					        	}else{
 						    							int selectionIndex = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
 						    							name = destinationDocNameCombo.elementAt(destinCounter).getItem(selectionIndex);
-						    							
 						    							
 						    							deletedParams.put(destin.getIdParam(), name);
 						    							deleteDestination(destinCounter, composite2);
@@ -759,4 +762,10 @@ final Shell confirm = new Shell(client.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLI
 		this.deletedParams = deletedParams;
 	}
 	
+	public HashMap<String, String> getDeletedRefresh() {
+		return deletedRefresh;
+	}
+	public void setDeletedRefresh(HashMap<String, String> deletedRefresh) {
+		this.deletedRefresh = deletedRefresh;
+	}
 }

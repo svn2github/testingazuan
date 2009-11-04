@@ -50,9 +50,7 @@ public class NavigationView extends ViewPart {
 	Composite client ;
 	FormToolkit toolkit;
 	Label labelNoDocs;
-	
-/*	boolean reloaded = false;
-	boolean hasDocuments = false;	*/
+
 	
 	HashMap <String, String> docInfoUtil = new HashMap<String, String>();
 	

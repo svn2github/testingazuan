@@ -52,6 +52,16 @@ public class RefreshDocLinkedBO {
 		}		
 		return docRefrFound;
 	}
+	public RefreshDocLinked refreshByParamIdAlreadyExists(String id, Vector<RefreshDocLinked> refreshes){
+		RefreshDocLinked docRefrFound = null; 
+		for(int i=0; i<refreshes.size(); i++){
+			RefreshDocLinked doc = refreshes.elementAt(i);
+			if(doc.getIdParam().equals(id)){
+				docRefrFound = doc;
+			}
+		}		
+		return docRefrFound;
+	}
 	public RefreshDocLinked upadateRefreshedDocLink(DocumentComposition docComp, String id, String sbiParLabel, String  sbiObjLabel){
 		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
 	    Vector documents = docConf.getDocuments();
@@ -84,6 +94,7 @@ public class RefreshDocLinkedBO {
 		
 		return docRefrFound;
 	}
+
 	public boolean inputParameterIsUsedByOther(DocumentComposition docComp, String id){
 		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
 	    Vector documents = docConf.getDocuments();
@@ -113,7 +124,7 @@ public class RefreshDocLinkedBO {
 	    		}
 		    }
 	    }		
-	    System.out.println(counter);
+
 		if(counter > 1){
 			isUsedMoreThanOnce = true;
 		}

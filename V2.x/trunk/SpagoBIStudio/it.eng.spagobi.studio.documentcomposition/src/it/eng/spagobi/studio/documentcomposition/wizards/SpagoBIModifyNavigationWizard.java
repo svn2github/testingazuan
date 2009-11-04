@@ -1,5 +1,6 @@
 package it.eng.spagobi.studio.documentcomposition.wizards;
 
+import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
@@ -12,7 +13,6 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.DocumentBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ParameterBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.RefreshDocLinkedBO;
-import it.eng.spagobi.studio.documentcomposition.util.XmlTemplateGenerator;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.ModifyNavigationWizardPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.util.DestinationInfo;
 
@@ -23,6 +23,7 @@ import java.util.Vector;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.INewWizard;
@@ -297,6 +298,7 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		//cicla su destinazioni
 		HashMap<String, String> docInfoUtil= modifyNavigationWizardPage.getDocInfoUtil();
 		Vector<DestinationInfo> destInfos = modifyNavigationWizardPage.getDestinationInfos();
+		/*
 		for(int k =0; k<destInfos.size(); k++){
 			DestinationInfo destInfo = destInfos.elementAt(k);
 			String destinationDoc = destInfo.getDocDestName();
@@ -312,10 +314,12 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 				Parameter paramsSameLabel = paramBO.getDocInputParameterByLabel(parameters, destInfo.getParamDestName());
 				if(paramsSameLabel != null){
 					//lo modifico nel valore di default 
-					if(paramsSameLabel != null){
+					try{
 						paramsSameLabel.setDefaultVal(destInfo.getParamDefaultValue().getText());
 						//refresh corrispondente viene aggiornato viene fatto nel fillout 
 						
+					}catch(SWTException e){
+						SpagoBILogger.infoLog(e.getMessage());
 					}
 					//e cancello quello con id corrente
 					Parameter paramToDelete = paramBO.getParameterById(id, parameters);
@@ -334,7 +338,7 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 
 
 			}			
-		}
+		}*/
 		//cancella destination parameter
 		HashMap<String, String> deleted = modifyNavigationWizardPage.getDeletedParams();
 		Iterator ids = deleted.keySet().iterator();
@@ -349,7 +353,6 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 			}
 		}
 	}
-
 
 
 

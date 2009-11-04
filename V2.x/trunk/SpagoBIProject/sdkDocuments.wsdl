@@ -173,29 +173,21 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="getDocumentParametersRequest">
+   <wsdl:message name="getDocumentByLabelRequest">
 
-      <wsdl:part name="in0" type="soapenc:int"/>
-
-      <wsdl:part name="in1" type="soapenc:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="getDocumentByIdResponse">
-
-      <wsdl:part name="getDocumentByIdReturn" type="tns2:SDKDocument"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="getCorrectRolesForExecutionResponse">
-
-      <wsdl:part name="getCorrectRolesForExecutionReturn" type="impl:ArrayOf_soapenc_string"/>
+      <wsdl:part name="in0" type="soapenc:string"/>
 
    </wsdl:message>
 
    <wsdl:message name="NonExecutableDocumentException">
 
       <wsdl:part name="fault" type="tns3:NonExecutableDocumentException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCorrectRolesForExecutionResponse">
+
+      <wsdl:part name="getCorrectRolesForExecutionReturn" type="impl:ArrayOf_soapenc_string"/>
 
    </wsdl:message>
 
@@ -221,6 +213,12 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
+   <wsdl:message name="getDocumentByLabelResponse">
+
+      <wsdl:part name="getDocumentByLabelReturn" type="tns2:SDKDocument"/>
+
+   </wsdl:message>
+
    <wsdl:message name="MissingParameterValue">
 
       <wsdl:part name="fault" type="tns3:MissingParameterValue"/>
@@ -230,12 +228,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <wsdl:message name="downloadTemplateResponse">
 
       <wsdl:part name="downloadTemplateReturn" type="tns2:SDKTemplate"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="executeDocumentResponse">
-
-      <wsdl:part name="executeDocumentReturn" type="tns2:SDKExecutedDocumentContent"/>
 
    </wsdl:message>
 
@@ -249,29 +241,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="getDocumentByIdRequest">
-
-      <wsdl:part name="in0" type="soapenc:int"/>
-
-   </wsdl:message>
-
    <wsdl:message name="getDocumentsAsTreeRequest">
 
       <wsdl:part name="in0" type="soapenc:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="uploadTemplateRequest">
-
-      <wsdl:part name="in0" type="soapenc:int"/>
-
-      <wsdl:part name="in1" type="tns2:SDKTemplate"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="getDocumentParametersResponse">
-
-      <wsdl:part name="getDocumentParametersReturn" type="impl:ArrayOf_tns2_SDKDocumentParameter"/>
 
    </wsdl:message>
 
@@ -286,22 +258,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <wsdl:message name="getAdmissibleValuesResponse">
 
       <wsdl:part name="getAdmissibleValuesReturn" type="apachesoap:Map"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="NotAllowedOperationException">
-
-      <wsdl:part name="fault" type="tns3:NotAllowedOperationException"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="InvalidParameterValue">
-
-      <wsdl:part name="fault" type="tns3:InvalidParameterValue"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="uploadTemplateResponse">
 
    </wsdl:message>
 
@@ -323,6 +279,62 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
+   <wsdl:message name="getDocumentParametersRequest">
+
+      <wsdl:part name="in0" type="soapenc:int"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDocumentByIdResponse">
+
+      <wsdl:part name="getDocumentByIdReturn" type="tns2:SDKDocument"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="executeDocumentResponse">
+
+      <wsdl:part name="executeDocumentReturn" type="tns2:SDKExecutedDocumentContent"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDocumentByIdRequest">
+
+      <wsdl:part name="in0" type="soapenc:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDocumentParametersResponse">
+
+      <wsdl:part name="getDocumentParametersReturn" type="impl:ArrayOf_tns2_SDKDocumentParameter"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="uploadTemplateRequest">
+
+      <wsdl:part name="in0" type="soapenc:int"/>
+
+      <wsdl:part name="in1" type="tns2:SDKTemplate"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NotAllowedOperationException">
+
+      <wsdl:part name="fault" type="tns3:NotAllowedOperationException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="uploadTemplateResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="InvalidParameterValue">
+
+      <wsdl:part name="fault" type="tns3:InvalidParameterValue"/>
+
+   </wsdl:message>
+
    <wsdl:portType name="DocumentsService">
 
       <wsdl:operation name="getDocumentsAsList" parameterOrder="in0 in1 in2">
@@ -338,6 +350,14 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          <wsdl:input message="impl:getDocumentByIdRequest" name="getDocumentByIdRequest"/>
 
          <wsdl:output message="impl:getDocumentByIdResponse" name="getDocumentByIdResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDocumentByLabel" parameterOrder="in0">
+
+         <wsdl:input message="impl:getDocumentByLabelRequest" name="getDocumentByLabelRequest"/>
+
+         <wsdl:output message="impl:getDocumentByLabelResponse" name="getDocumentByLabelResponse"/>
 
       </wsdl:operation>
 
@@ -460,6 +480,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:input>
 
          <wsdl:output name="getDocumentByIdResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobisdkdocuments" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDocumentByLabel">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getDocumentByLabelRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobisdkdocuments" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getDocumentByLabelResponse">
 
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobisdkdocuments" use="encoded"/>
 

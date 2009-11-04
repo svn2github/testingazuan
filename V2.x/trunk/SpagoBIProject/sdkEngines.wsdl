@@ -13,11 +13,17 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      <element name="description" nillable="true" type="soapenc:string"/>
      <element name="documentType" nillable="true" type="soapenc:string"/>
      <element name="driverClassName" nillable="true" type="soapenc:string"/>
+     <element name="driverName" nillable="true" type="soapenc:string"/>
+     <element name="encrypt" nillable="true" type="soapenc:int"/>
      <element name="engineType" nillable="true" type="soapenc:string"/>
      <element name="id" nillable="true" type="soapenc:int"/>
      <element name="label" nillable="true" type="soapenc:string"/>
+     <element name="mainUrl" nillable="true" type="soapenc:string"/>
      <element name="name" nillable="true" type="soapenc:string"/>
+     <element name="secondUrl" nillable="true" type="soapenc:string"/>
      <element name="url" nillable="true" type="soapenc:string"/>
+     <element name="useDataSet" nillable="true" type="soapenc:boolean"/>
+     <element name="useDataSource" nillable="true" type="soapenc:boolean"/>
     </sequence>
    </complexType>
   </schema>

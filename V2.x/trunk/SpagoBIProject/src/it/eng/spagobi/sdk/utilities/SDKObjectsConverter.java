@@ -311,6 +311,10 @@ public class SDKObjectsConverter {
 			sdkEngine.setClassName(engine.getClassName());
 			sdkEngine.setUrl(engine.getUrl());
 			sdkEngine.setDriverClassName(engine.getDriverName());
+			sdkEngine.setDriverName(engine.getDriverName());
+			sdkEngine.setUseDataSet(engine.getUseDataSet());
+			sdkEngine.setUseDataSource(engine.getUseDataSource());
+			
 		} catch (Exception e) {
 			logger.error("Error while converting Engine into SDKEngine.", e);
 			logger.debug("Returning null.");
@@ -321,12 +325,12 @@ public class SDKObjectsConverter {
 		return sdkEngine;
 	}
 
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	public SDKDataSource fromSpagoBiDataSourceToSDKDataSource(SpagoBiDataSource spagoBiDataSource) {
 		logger.debug("IN");
 		if (spagoBiDataSource == null) {
@@ -358,8 +362,8 @@ public class SDKObjectsConverter {
 		return toReturn;
 	}
 
-	
-	
+
+
 	public SDKDataSet fromSpagoBiDataSetToSDKDataSet(SpagoBiDataSet spagoBiDataSet) {
 		logger.debug("IN");
 		if (spagoBiDataSet == null) {

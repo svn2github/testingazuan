@@ -55,6 +55,7 @@ import it.eng.spagobi.engines.exporters.ReportExporter;
 import it.eng.spagobi.engines.kpi.SpagoBIKpiInternalEngine;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
 import it.eng.spagobi.sdk.AbstractSDKService;
+import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
 import it.eng.spagobi.sdk.documents.DocumentsService;
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
@@ -66,6 +67,7 @@ import it.eng.spagobi.sdk.exceptions.MissingParameterValue;
 import it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException;
 import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
 import it.eng.spagobi.sdk.utilities.SDKObjectsConverter;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -660,8 +662,30 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 	}
 
 	public SDKDocument getDocumentById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		SDKDocument toReturn = null;
+        logger.debug("IN: document in input = " + id);
+        try {
+        	super.checkUserPermissionForFunctionality(SpagoBIConstants.DOCUMENT_MANAGEMENT, "User cannot see documents congifuration.");
+        	if (id == null) {
+	        	logger.warn("Document identifier in input is null!");
+	        	return null;
+	        }
+        	BIObject biObject = DAOFactory.getBIObjectDAO().loadBIObjectById(id);
+        	if (biObject == null) {
+        		logger.warn("BiObject with identifier [" + id + "] not existing.");
+        		return null;
+        	}
+        	toReturn = new SDKObjectsConverter().fromBIObjectToSDKDocument(biObject);
+        } catch(NotAllowedOperationException e) {
+        	
+        } catch(Exception e) {
+            logger.error("Error while retrieving SDKEngine list", e);
+            logger.debug("Returning null");
+            return null;
+        } finally {
+        	logger.debug("OUT");
+        }
+        return toReturn;
 	}
 
 

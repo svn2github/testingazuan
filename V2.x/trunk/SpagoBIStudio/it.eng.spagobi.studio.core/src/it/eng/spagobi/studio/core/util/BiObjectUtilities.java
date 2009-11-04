@@ -248,7 +248,7 @@ public class BiObjectUtilities {
 		if(type.equalsIgnoreCase(SpagoBIConstants.DASH_TYPE_CODE) && engine.equalsIgnoreCase("DashboardInternalEng") ){
 			extension=".sbidash";
 		}
-		else if(type.equalsIgnoreCase(SpagoBIConstants.DASH_TYPE_CODE) && engine.equalsIgnoreCase("ChartInternalEngine")){
+		else if(type.equalsIgnoreCase(SpagoBIConstants.DASH_TYPE_CODE) && engine.equalsIgnoreCase("ChartEngine")){
 			extension=".sbichart";
 		}
 		else if(type.equalsIgnoreCase(SpagoBIConstants.REPORT_TYPE_CODE) && engine.equalsIgnoreCase("Birt")){

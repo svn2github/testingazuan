@@ -211,11 +211,11 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		if(newFile.exists()==true){
 			MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
 					"Error", "File already exists");
-			write=MessageDialog.openQuestion(workbench.getActiveWorkbenchWindow().getShell(), "Overwrite?", "File "+newFile.getName()+" already exists, overwrite?"); 
+			write=MessageDialog.openQuestion(workbench.getActiveWorkbenchWindow().getShell(), "File exists: Overwrite?", "File "+newFile.getName()+" already exists, overwrite?"); 
 		}
 
 		if(write){
-
+			
 			try{
 				newFile.create(is, true, null);
 			}

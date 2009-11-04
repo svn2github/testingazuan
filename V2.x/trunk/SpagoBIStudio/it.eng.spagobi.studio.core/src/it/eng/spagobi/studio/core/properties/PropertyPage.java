@@ -139,13 +139,13 @@ IWorkbenchPropertyPage {
 		Composite datasetContainer = new Composite(dataSetGroup, SWT.NULL);
 		datasetContainer.setLayout(layout);
 
-		Group dataSourceGroup = new Group(container, SWT.NULL);
+		dataSourceGroup = new Group(container, SWT.NULL);
 		dataSourceGroup.setText("Datasource's information:");
 		dataSourceGroup.setLayout(new FillLayout());
 		Composite datasourceContainer = new Composite(dataSourceGroup, SWT.NULL);
 		datasourceContainer.setLayout(layout);
 
-		Group engineGroup = new Group(container, SWT.NULL);
+		engineGroup = new Group(container, SWT.NULL);
 		engineGroup.setText("Engine's information:");
 		engineGroup.setLayout(new FillLayout());
 		Composite engineContainer = new Composite(engineGroup, SWT.NULL);
@@ -220,7 +220,7 @@ IWorkbenchPropertyPage {
 			SpagoBILogger.errorLog("Error in retrieving metadata", e);
 		}
 
-		
+
 		Listener refreshListener = new Listener() {
 			public void handleEvent(Event event) {
 
@@ -325,8 +325,14 @@ IWorkbenchPropertyPage {
 		datasetNameValue.setText(datasetName);
 		datasetDescriptionValue.setText(datasetDescription);
 
+		docGroup.redraw();
+		if(engineGroup!=null){
+		engineGroup.redraw();
+		}
+		dataSetGroup.redraw();
+		dataSourceGroup.redraw();
 
-		
+		container.layout();
 		container.redraw();
 
 
@@ -489,17 +495,17 @@ IWorkbenchPropertyPage {
 			}
 		}
 
-			try{
-				Date dateCurrent=new Date();
-				String currentStr=dateCurrent.toString();
-				file.setPersistentProperty(LAST_REFRESH_DATE, currentStr);
-			}
-			catch (Exception e) {
-				MessageDialog.openError(container.getShell(), 
-						"Error", "Error while refreshing update date!");		
-				SpagoBILogger.errorLog("Error while refreshing update date",e);		
-			}
-		
+		try{
+			Date dateCurrent=new Date();
+			String currentStr=dateCurrent.toString();
+			file.setPersistentProperty(LAST_REFRESH_DATE, currentStr);
+		}
+		catch (Exception e) {
+			MessageDialog.openError(container.getShell(), 
+					"Error", "Error while refreshing update date!");		
+			SpagoBILogger.errorLog("Error while refreshing update date",e);		
+		}
+
 	}
 
 

@@ -157,8 +157,6 @@ public class FormEngineStartAction extends AbstractEngineStartAction {
 			}
 			
 			throw serviceException;
-			
-			//throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), qbeEngineInstance, e);
 		} finally {
 			logger.debug("OUT");
 		}		

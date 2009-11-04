@@ -56,6 +56,8 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/formviewer/DynamicFilter.js'/></script>
 <script type="text/javascript" src='../js/spagobi/formviewer/GroupingVariablesPanel.js'/></script>
 
+<script type="text/javascript" src='../js/spagobi/formviewer/DataStorePanel.js'/></script>
+
 <!-- END-DEBUG -->
 
 <!-- START-PRODUCTION

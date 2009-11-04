@@ -92,7 +92,8 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	
 	<head>
 		<%@include file="commons/includeExtJS.jspf" %>
-		<%@include file="commons/includeSbiQbeJS.jspf"%>
+		<%-- @include file="commons/includeSbiQbeJS.jspf" --%>
+		<%@include file="commons/includeSbiFormViewerJS.jspf"%>
 		
 		<%-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) -->
 		<script type="text/javascript">
@@ -144,24 +145,13 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	
 	      	var qbeConfig = {};
 	      	qbeConfig.isFromCross = <%= isFromCross %>;
-	      	<%
-	      	StringBuffer datamartNamesBuffer = new StringBuffer("[");
-	      	Iterator it = datamartNames.iterator();
-	      	while (it.hasNext()) {
-	      		String datamartName = (String) it.next();
-	      		datamartNamesBuffer.append("'" + datamartName + "'");
-	      		if (it.hasNext()) {
-	      			datamartNamesBuffer.append(",");
-	      		}
-	      	}
-	      	datamartNamesBuffer.append("]");
-	      	%>
-	      	qbeConfig.westConfig = {};
-	      	qbeConfig.westConfig.datamartsName = <%= datamartNamesBuffer.toString() %>;
-	
+	      	
 	        // javascript-side user profile object
 	        Ext.ns("Sbi.user");
 	        Sbi.user.isPowerUser = <%= isPowerUser %>;
+
+	        var dataStorePanel = new Sbi.formviewer.DataStorePanel(qbeConfig);
+           	var viewport = new Ext.Viewport(dataStorePanel);  
 	
 	    </script>
 	    

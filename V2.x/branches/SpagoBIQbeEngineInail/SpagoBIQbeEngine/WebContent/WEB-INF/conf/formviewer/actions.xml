@@ -9,5 +9,12 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
+	
+	<ACTION name="EXECUTE_FORM_QUERY_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.formviewer.ExecuteFormQueryAction" 
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 </ACTIONS>
 

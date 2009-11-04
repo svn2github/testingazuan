@@ -101,6 +101,7 @@ Sbi.formviewer.GroupingVariablesPanel = function(groupingVariables, config) {
 Ext.extend(Sbi.formviewer.GroupingVariablesPanel, Ext.form.FormPanel, {
     
 	services: null
+	, combos : new Array()
 	   
 	// private methods
 	   
@@ -109,6 +110,8 @@ Ext.extend(Sbi.formviewer.GroupingVariablesPanel, Ext.form.FormPanel, {
 		var combo_2 = this.createFieldCombo( groupingVariables[1], 1 );
 		this.columns[0].add( combo_1 );
 		this.columns[1].add( combo_2 );
+		this.combos.push(combo_1);
+		this.combos.push(combo_2);
 		this.doLayout();
 	
 	}
@@ -139,7 +142,11 @@ Ext.extend(Sbi.formviewer.GroupingVariablesPanel, Ext.form.FormPanel, {
 	// public methods
 	
 	, getFormState: function() {
-		var state = this.getForm().getValues();
+		var state = {};
+		for (var i = 0; i < this.combos.length; i++) {
+			var aCombo = this.combos[i];
+			state[aCombo.name] = aCombo.getValue();
+		}
 		return state;
 	}
   	

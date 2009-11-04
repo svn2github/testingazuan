@@ -1,11 +1,9 @@
 package it.eng.spagobi.studio.core.properties;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-
 import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
 import it.eng.spagobi.sdk.datasources.bo.SDKDataSource;
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
+import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.sdk.engines.bo.SDKEngine;
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.DataSourcesSDKServiceProxy;
@@ -13,6 +11,13 @@ import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
 import it.eng.spagobi.sdk.proxy.EnginesServiceProxy;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
+import it.eng.spagobi.studio.core.util.BiObjectUtilities;
+import it.eng.spagobi.studio.core.util.SDKDocumentParameters;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -33,7 +38,14 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchPropertyPage;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
 
 public class PropertyPage extends org.eclipse.ui.dialogs.PropertyPage implements
 IWorkbenchPropertyPage {
@@ -70,6 +82,7 @@ IWorkbenchPropertyPage {
 	Group dataSetGroup = null;
 	Group dataSourceGroup = null;
 	Group engineGroup = null;
+	Group parametersGroup = null;
 
 	Label documentIdValue=null;
 	Label documentLabelValue=null;
@@ -94,7 +107,7 @@ IWorkbenchPropertyPage {
 	Label dataSourceDescriptionValue=null;
 	Label lastRefreshDateLabel=null;
 
-
+	Table parametersTable=null;
 
 
 	Composite container=null;
@@ -151,6 +164,12 @@ IWorkbenchPropertyPage {
 		Composite engineContainer = new Composite(engineGroup, SWT.NULL);
 		engineContainer.setLayout(layout);
 
+		parametersGroup=new Group(container, SWT.NULL);
+		parametersGroup.setText("Parameters's information:");
+		parametersGroup.setLayout(new FillLayout());
+		Composite parametersContainer = new Composite(parametersGroup, SWT.NULL);
+		parametersContainer.setLayout(layout);
+
 		new Label(docContainer, SWT.NULL).setText(DOCUMENT_ID.getLocalName());
 		documentIdValue=new Label(docContainer, SWT.NULL);
 		new Label(docContainer, SWT.NULL).setText(DOCUMENT_LABEL.getLocalName());
@@ -205,6 +224,18 @@ IWorkbenchPropertyPage {
 		//		addPropertyContent(engineContainer, ENGINE_DESCRIPTION);
 		//		addPropertyContent(datasourceContainer, DATA_SOURCE_ID);
 		//		addPropertyContent(datasourceContainer, DATA_SOURCE_NAME);
+
+		parametersTable = new Table (parametersContainer, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL);
+		parametersTable.setLinesVisible (true);
+		parametersTable.setHeaderVisible (true);
+		String[] titles = {"Parameter Name","Parameter Url"};
+		for (int i=0; i<titles.length; i++) {
+			TableColumn column = new TableColumn (parametersTable, SWT.NONE);
+			column.setText (titles [i]);
+		}
+		for (int i=0; i<titles.length; i++) {
+			parametersTable.getColumn (i).pack ();
+		}			
 
 		Button buttonRefresh=new Button(container, SWT.PUSH);
 		buttonRefresh.setText("Refresh Metadata");
@@ -303,6 +334,28 @@ IWorkbenchPropertyPage {
 		String datasetDescription = file.getPersistentProperty(DATASET_DESCRIPTION);
 		if(datasetDescription==null) datasetDescription="EMPTY";
 
+		String xmlParameters = file.getPersistentProperty(DOCUMENT_PARAMETERS_XML);
+		if(datasetDescription==null) datasetDescription="EMPTY";
+		List<SDKDocumentParameter> list=null;
+		if(xmlParameters!=null && !xmlParameters.equalsIgnoreCase(""))
+		{
+			XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("grfthscv", "_");
+			XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
+			xstream.alias("SDK_DOCUMENT_PARAMETERS", SDKDocumentParameters.class);
+			xstream.alias("PARAMETER", SDKDocumentParameter.class);
+			xstream.useAttributeFor(SDKDocumentParameter.class, "id");
+			xstream.useAttributeFor(SDKDocumentParameter.class, "label");
+			xstream.useAttributeFor(SDKDocumentParameter.class, "type");
+			xstream.useAttributeFor(SDKDocumentParameter.class, "urlName");
+			xstream.omitField(SDKDocumentParameter.class, "values");		
+			xstream.omitField(SDKDocumentParameter.class, "constraints");
+			xstream.omitField(SDKDocumentParameter.class, "__hashCodeCalc");
+			SDKDocumentParameters parametersMetaDataObject= (SDKDocumentParameters)xstream.fromXML(xmlParameters);
+			list=parametersMetaDataObject.getContent();
+
+		}
+
+
 		String date=file.getPersistentProperty(LAST_REFRESH_DATE);
 		lastRefreshDateLabel.setText(date!=null ? date : "");
 
@@ -324,10 +377,21 @@ IWorkbenchPropertyPage {
 		datasetLabelValue.setText(datasetLabel);
 		datasetNameValue.setText(datasetName);
 		datasetDescriptionValue.setText(datasetDescription);
+		parametersTable.removeAll();
+		if(list!=null){
+			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+				SDKDocumentParameter documentParameter = (SDKDocumentParameter) iterator.next();
+				TableItem item = new TableItem (parametersTable, SWT.NONE);
+				item.setText(0, documentParameter.getLabel()!=null ? documentParameter.getLabel() : "");
+				item.setText(1, documentParameter.getUrlName()!=null ? documentParameter.getUrlName() : "");
+			}
+
+		}
+
 
 		docGroup.redraw();
 		if(engineGroup!=null){
-		engineGroup.redraw();
+			engineGroup.redraw();
 		}
 		dataSetGroup.redraw();
 		dataSourceGroup.redraw();
@@ -435,6 +499,31 @@ IWorkbenchPropertyPage {
 			}
 		}
 
+		String[] roles=null;
+		try{
+			SDKProxyFactory proxyFactory=new SDKProxyFactory();
+			DocumentsServiceProxy docServiceProxy=proxyFactory.getDocumentsServiceProxy(); 		
+			roles=docServiceProxy.getCorrectRolesForExecution(document.getId());
+		}
+		catch (Exception e) {
+			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve roles for execution", e);
+		}			
+		if(roles==null || roles.length==0){
+			SpagoBILogger.errorLog("No roles for execution found",null);
+		}
+
+
+		SDKDocumentParameter[] parameters=null;
+		try{
+			SDKProxyFactory proxyFactory=new SDKProxyFactory();
+			DocumentsServiceProxy docServiceProxy=proxyFactory.getDocumentsServiceProxy(); 		
+			parameters=docServiceProxy.getDocumentParameters(document.getId(), roles[0]);
+		}
+		catch (Exception e) {
+			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve document parameters", e);
+		}			
+
+
 		// Reload Documents Metadata
 		if(document!=null){
 			try{
@@ -494,6 +583,14 @@ IWorkbenchPropertyPage {
 				SpagoBILogger.errorLog("Error while refreshing dataSouce meta data",e);		
 			}
 		}
+
+		try{
+			BiObjectUtilities.setFileParametersMetaData(file, parameters);
+		}
+		catch (Exception e) {
+			SpagoBILogger.errorLog("Error in retrieving parameters metadata", e);
+		}
+
 
 		try{
 			Date dateCurrent=new Date();

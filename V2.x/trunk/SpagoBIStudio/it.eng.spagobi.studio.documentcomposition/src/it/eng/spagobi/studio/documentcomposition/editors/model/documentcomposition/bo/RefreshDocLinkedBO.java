@@ -11,6 +11,40 @@ import java.util.Vector;
 
 public class RefreshDocLinkedBO {
 	
+	/**Method used to get all idParam referencing inputPrameters used by master documents
+	 * @param docComp
+	 * @return Vector<String> of idParam
+	 */
+	public Vector<String> getIdParamsUsedByRefreshes(DocumentComposition docComp){
+		Vector<String> idParamsUsed = new Vector<String>();
+		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
+	    Vector documents = docConf.getDocuments();
+	    if(documents != null){
+		    for (int i = 0; i< documents.size(); i++){
+		    	Document doc = (Document)documents.get(i);
+	    		Parameters params = doc.getParameters();
+	    		if(params != null){
+	    			Vector<Parameter> parameters =params.getParameter();
+	    			if(parameters != null){
+	    				for(int j=0; j<parameters.size(); j++){	    			
+	    					Parameter param = parameters.elementAt(j);
+	    					if(param.getType().equalsIgnoreCase("OUT")){
+		    					if(param.getRefresh() != null && param.getRefresh().getRefreshDocLinked() != null){									
+									for(int k=0; k<param.getRefresh().getRefreshDocLinked().size(); k++){
+										RefreshDocLinked docRef = param.getRefresh().getRefreshDocLinked().elementAt(k);
+										idParamsUsed.add(docRef.getIdParam());
+									}
+		    					}
+	    					}
+	    				}
+	    			}
+	    		}
+		    }
+	    }			
+		
+		return idParamsUsed;
+	}
+	
 	public RefreshDocLinked deleteRefreshedDocLink(DocumentComposition docComp, String id, String sbiParLabel, String  sbiObjLabel){
 		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
 	    Vector documents = docConf.getDocuments();
@@ -22,7 +56,7 @@ public class RefreshDocLinkedBO {
 	    		Parameters params = doc.getParameters();
 	    		if(params != null){
 	    			Vector<Parameter> parameters =params.getParameter();
-	    			if(parameters == null){
+	    			if(parameters != null){
 	    				for(int j=0; j<parameters.size(); j++){	    			
 	    					Parameter param = parameters.elementAt(j);
 	    					if(param.getRefresh() != null && param.getRefresh().getRefreshDocLinked() != null){

@@ -37,6 +37,7 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 	private DocumentComposition docComp ;
 	
 	private RefreshDocLinkedBO refreshBO = new RefreshDocLinkedBO();
+	private ParameterBO paramBO = new ParameterBO();
 
 	// the workbench instance
 	protected IWorkbench workbench;
@@ -159,8 +160,8 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 	    			if(parameters == null){
 	    				parameters = new Vector<Parameter>();
 	    			}
-	    			ParameterBO bo = new ParameterBO();
-	    			Parameter outputPram = bo.getDocOutputParameter(parameters, masterPar);
+	    			
+	    			Parameter outputPram = paramBO.getDocOutputParameter(parameters, masterPar);
 	    			fillNavigationOutParam(outputPram, masterPar);
 	    			
 		    	}else{
@@ -178,7 +179,9 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		    		fillInNavigationParams(parameters, doc);
 
 		    	}
+		    	
 		    }
+		    cleanInputParameters();
 	    }
 		IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		
@@ -187,7 +190,10 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 	    //generator.transformToXml(docComp);
 	    return true;
 	}
-
+	private void cleanInputParameters(){
+		Vector<String> idParamUsedByRefresh = refreshBO.getIdParamsUsedByRefreshes(docComp);
+		paramBO.cleanUnusedInputParameters(docComp, idParamUsedByRefresh);
+	}
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		setWindowTitle("Modify navigation");
 		
@@ -208,7 +214,6 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 
 	private void fillNavigationOutParam(Parameter ouputparam, String masterParam){
 		HashMap<String, String> docInfoUtil= modifyNavigationWizardPage.getDocInfoUtil();
-		ParameterBO bo = new ParameterBO();
 		
 		Refresh refresh = ouputparam.getRefresh();
 		Vector <RefreshDocLinked> refreshes = refresh.getRefreshDocLinked();
@@ -221,51 +226,52 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 
 			String paramIn =destInfo.getParamDestName();
 			String id =destInfo.getParamDestId();
-			
-			RefreshDocLinked refreshDocLinked = refreshBO.refreshDocAlreadyExists(id, toRefresh, refreshes);
-			//se non esiste lo crea
-			if(refreshDocLinked == null){
-				//rimuove il vecchio
-				RefreshDocLinked oldRefreshDocLinked = refreshBO.refreshByParamIdAlreadyExists(id, refreshes);
-				if(oldRefreshDocLinked != null){
-					refreshes.remove(oldRefreshDocLinked);
-				}
-				
-				//se quel refresh non esiste lo crea	
-				refreshDocLinked = new RefreshDocLinked();
-				refreshDocLinked.setIdParam(id);
-				refreshDocLinked.setLabelDoc(toRefresh);
-				refreshDocLinked.setLabelParam(paramIn);
-				refreshes.add(refreshDocLinked);
-				
-			}
-			//recupera parametro in a cui fa riferimento il refreshdoc 
-			Parameter prevParamIn = bo.getParameterById(docComp, id);
-			String parentDoc = bo.getParameterDocumentName(docComp, id);
-			if(!prevParamIn.getSbiParLabel().equals(paramIn) || !parentDoc.equals(toRefresh)){
-				//allora bisogna creare nuovo parametro in e correggere l'idParam del refresh
-				Parameters params = DocumentBO.getParametersByDocumentLabel(docComp, toRefresh);
-				Parameter paramExisting = bo.getDocInputParameterByLabel(params.getParameter(), paramIn);
-				if(paramExisting == null){
-					Parameter newParam = new Parameter(docComp);
-					newParam.setSbiParLabel(paramIn);
-					newParam.setType("IN");
-					newParam.setDefaultVal(destInfo.getParamDefaultValue().getText());
-					params.getParameter().add(newParam);
+			if(id != null){
+				RefreshDocLinked refreshDocLinked = refreshBO.refreshDocAlreadyExists(id, toRefresh, refreshes);
+				//se non esiste lo crea
+				if(refreshDocLinked == null){
+					//rimuove il vecchio
+					RefreshDocLinked oldRefreshDocLinked = refreshBO.refreshByParamIdAlreadyExists(id, refreshes);
+					if(oldRefreshDocLinked != null){
+						refreshes.remove(oldRefreshDocLinked);
+					}
 					
-					//poi modifica idParam del refresh
-					refreshDocLinked.setIdParam(newParam.getId());
+					//se quel refresh non esiste lo crea	
+					refreshDocLinked = new RefreshDocLinked();
+					refreshDocLinked.setIdParam(id);
+					refreshDocLinked.setLabelDoc(toRefresh);
+					refreshDocLinked.setLabelParam(paramIn);
+					refreshes.add(refreshDocLinked);
+					
+				}
+				//recupera parametro in a cui fa riferimento il refreshdoc 
+				Parameter prevParamIn = paramBO.getParameterById(docComp, id);
+				String parentDoc = paramBO.getParameterDocumentName(docComp, id);
+				if(!prevParamIn.getSbiParLabel().equals(paramIn) || !parentDoc.equals(toRefresh)){
+					//allora bisogna creare nuovo parametro in e correggere l'idParam del refresh
+					Parameters params = DocumentBO.getParametersByDocumentLabel(docComp, toRefresh);
+					Parameter paramExisting = paramBO.getDocInputParameterByLabel(params.getParameter(), paramIn);
+					if(paramExisting == null){
+						Parameter newParam = new Parameter(docComp);
+						newParam.setSbiParLabel(paramIn);
+						newParam.setType("IN");
+						newParam.setDefaultVal(destInfo.getParamDefaultValue().getText());
+						params.getParameter().add(newParam);
+						
+						//poi modifica idParam del refresh
+						refreshDocLinked.setIdParam(newParam.getId());
+					}else{
+						//se param in esiste già modifica idParam del refresh
+						refreshDocLinked.setIdParam(paramExisting.getId());
+						refreshDocLinked.setLabelParam(paramExisting.getSbiParLabel());
+						
+						//e valore di default del param in
+						paramExisting.setDefaultVal(destInfo.getParamDefaultValue().getText());
+					}
 				}else{
-					//se param in esiste già modifica idParam del refresh
-					refreshDocLinked.setIdParam(paramExisting.getId());
-					refreshDocLinked.setLabelParam(paramExisting.getSbiParLabel());
-					
-					//e valore di default del param in
-					paramExisting.setDefaultVal(destInfo.getParamDefaultValue().getText());
+					refreshDocLinked.setLabelDoc(toRefresh);
+					refreshDocLinked.setLabelParam(paramIn);
 				}
-			}else{
-				refreshDocLinked.setLabelDoc(toRefresh);
-				refreshDocLinked.setLabelParam(paramIn);
 			}
 			
 		}
@@ -301,9 +307,9 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 			if(destLabel != null && destLabel.equals(doc.getSbiObjLabel())){
 				String paramName = destInfo.getParamDestName();	
 				String id =destInfo.getParamDestId();
-				ParameterBO bo = new ParameterBO();
+				
 				//se esiste parametro IN con stessa label
-				Parameter paramsSameLabel = bo.getDocInputParameterByLabel(parameters, destInfo.getParamDestName());
+				Parameter paramsSameLabel = paramBO.getDocInputParameterByLabel(parameters, destInfo.getParamDestName());
 				if(paramsSameLabel != null){
 					//lo modifico nel valore di default 
 					if(paramsSameLabel != null){
@@ -312,13 +318,13 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 						
 					}
 					//e cancello quello con id corrente
-					Parameter paramToDelete = bo.getParameterById(id, parameters);
+					Parameter paramToDelete = paramBO.getParameterById(id, parameters);
 					parameters.remove(paramToDelete);
 					//refresh viene aggiornato-->cancellato
 					refreshBO.deleteRefreshedDocLink(docComp, id, destLabel, paramsSameLabel.getSbiParLabel());
 				}else{
 					//modificato valore di default
-					Parameter param = bo.getParameterById(id, parameters);
+					Parameter param = paramBO.getParameterById(id, parameters);
 					if(param != null){
 						param.setDefaultVal(destInfo.getParamDefaultValue().getText());													
 					}

@@ -51,6 +51,31 @@ public class ParameterBO {
 		}		
 		return paramFound;
 	}
+	public void cleanUnusedInputParameters(DocumentComposition docComp, Vector<String> idParamUsedByRefresh){
+		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
+		if(docConf != null){
+		    Vector documents = docConf.getDocuments();
+		    if(documents != null){
+		    	for (int i = 0; i< documents.size(); i++){
+		    		Document doc = (Document)documents.elementAt(i);
+		    		String docLabel =doc.getSbiObjLabel();
+	    			Parameters parameters = doc.getParameters();
+	    			if(parameters != null){
+	    				Vector<Parameter> params = parameters.getParameter();
+	    				if(params != null){
+	    					for(int j=0;j<params.size(); j++){
+	    						Parameter param = params.elementAt(j);
+	    						if(param.getType().equalsIgnoreCase("IN") && !idParamUsedByRefresh.contains(param.getId())){
+	    							params.remove(param);
+	    						}
+	    					}
+	    				}
+	    			}
+	    		
+		    	}
+		    }
+		}
+	}
 	public Parameter getParameterById(DocumentComposition docComp, String id){
 		Parameter paramFound = null;
 		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();

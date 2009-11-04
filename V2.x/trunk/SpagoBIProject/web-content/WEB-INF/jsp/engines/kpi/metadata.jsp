@@ -58,11 +58,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String kpiValue = (String)aServiceResponse.getAttribute("KPI_VALUE");
 	String kpiWeight = (String)aServiceResponse.getAttribute("KPI_WEIGHT");
 	String threshName = (String)aServiceResponse.getAttribute("THRESHOLD_NAME");
+	String weightedValue = (String)aServiceResponse.getAttribute("WEIGHTED_VALUE");
+	
 	String kpiWeightedValue = "";
 	if (kpiValue!=null && !kpiValue.equals("") && kpiWeight!=null && !kpiWeight.equals("")){
 			Double val = new Double(kpiValue);
 			Double weight =  new Double(kpiWeight);
-			kpiWeightedValue =new Float(val*weight).toString();
+			if(weightedValue!=null && weightedValue.equals("true")){
+				kpiWeightedValue=new Float(val*weight).toString();
+				kpiValue=new Float(val).toString();
+			}else{
+				kpiWeightedValue =new Float(val*weight).toString();
+			}
 	}
 
 %>

@@ -7,7 +7,7 @@
             class="it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor"
             default="true"
             extensions="sbidoccomp"
-            icon="icons/objecticon_DOCCOMP.png"
+            icon="icons/objecticon_COMPOSITE_DOCUMENT.png"
             id="it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor"
             name="Document Composition Editor">
       </editor>
@@ -19,7 +19,7 @@
             targetID="it.eng.spagobi.studio.core.views.ResourceNavigator">
          <action
                class="it.eng.spagobi.studio.documentcomposition.actions.NewDocumentCompositionAction"
-               icon="icons/objecticon_DOCCOMP.png"
+               icon="icons/objecticon_COMPOSITE_DOCUMENT.png"
                id="it.eng.spagobi.studio.documentcomposition.actions.NewDocumentCompositionAction"
                label="Document Composition"
                menubarPath="group.new"

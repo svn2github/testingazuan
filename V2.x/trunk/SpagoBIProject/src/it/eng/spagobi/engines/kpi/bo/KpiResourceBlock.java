@@ -285,6 +285,7 @@ public class KpiResourceBlock implements Serializable{
 				execUrlParMap.put("KPI_INST_ID", kpiVal.getKpiInstanceId()!=null ? kpiVal.getKpiInstanceId().toString():"");
 				execUrlParMap.put("KPI_VALUE",kpiVal.getValue()!=null ? kpiVal.getValue():"");
 				execUrlParMap.put("KPI_WEIGHT",kpiVal.getWeight()!=null ? kpiVal.getWeight().toString():"");
+				execUrlParMap.put("WEIGHTED_VALUE",options.getWeighted_values()!=null ? options.getWeighted_values():false);
 				execUrlParMap.put("KPI_TARGET",kpiVal.getTarget()!=null ? kpiVal.getTarget().toString():"");
 			}		
 			execUrlParMap.put("KPI_MODEL_INST_ID",line.getModelInstanceNodeId()!=null ? line.getModelInstanceNodeId().toString():"");

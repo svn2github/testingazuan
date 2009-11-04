@@ -100,10 +100,21 @@ Ext.onReady(function(){
 <script>
 Ext.onReady(function(){
     var p = new Ext.Panel({
-        title: '<spagobi:message key = "metadata.modelInstance" />',
+        title: '<spagobi:message key = "metadata.kpiInterpretation" />',
         collapsible:true,
         collapsed : true,
         renderTo: 'container3',
+        contentEl : 'interpretation'
+    });
+});
+</script>
+<script>
+Ext.onReady(function(){
+    var p = new Ext.Panel({
+        title: '<spagobi:message key = "metadata.modelInstance" />',
+        collapsible:true,
+        collapsed : true,
+        renderTo: 'container4',
         contentEl : 'modelInstance'
     });
 });
@@ -114,16 +125,17 @@ Ext.onReady(function(){
         title: '<spagobi:message key = "metadata.tecData" />',
         collapsible:true,
         collapsed : true,
-        renderTo: 'container4',
+        renderTo: 'container5',
         contentEl : 'technicalData'
     });
 });
 </script>
 
 		<div id="container1"> </div>	
-		<div id="container2"> </div>	
+		<div id="container2"> </div>
 		<div id="container3"> </div>	
 		<div id="container4"> </div>	
+		<div id="container5"> </div>	
 			
 <div id="generalData" class="div_background_no_img" style="padding-top:5px;padding-left:5px;">
 	
@@ -156,12 +168,26 @@ Ext.onReady(function(){
 	<table style="width:100%;margin-top:1px" >
 		<!-- DOC NAME -->
 		<tr>			
-			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=kpiInterpretation%>
+			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=kpiDescription%>
 			</td>
 		</tr>	
 		<spagobi:error/>
 	</table> 
 </div>	
+
+<div id="interpretation" class="div_background_no_img" style="padding-top:5px;padding-left:5px;">
+	
+	<!-- KPI INTERPRETATION -->		
+	
+	<table style="width:100%;margin-top:1px" >
+		<!-- DOC NAME -->
+		<tr>			
+			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=kpiInterpretation%>
+			</td>
+		</tr>	
+		<spagobi:error/>
+	</table> 
+</div>
 
 <div id="modelInstance" class="div_background_no_img" style="padding-top:5px;padding-left:5px;">
 	

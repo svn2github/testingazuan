@@ -160,7 +160,12 @@ var template = {
             field: 'it.eng.spagobi.SalesFact1998::timeByDay(time_id):theMonth',
             operator: 'EQUALS',
             singleSelection: false,
-            maxSelectedNumber: 3
+            maxSelectedNumber: 3,
+            query: {
+        		field: 'it.eng.spagobi.TimeByDay:theMonth',
+        		orderField: 'it.eng.spagobi.TimeByDay:monthOfYear',
+        		orderType: 'ASC'
+        	}
         },
         {
         	id: 'openFilter-2',

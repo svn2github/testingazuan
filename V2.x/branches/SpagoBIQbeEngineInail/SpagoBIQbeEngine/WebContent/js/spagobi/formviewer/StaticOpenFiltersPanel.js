@@ -208,9 +208,15 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.FormPanel, {
 
 	, createStore: function(openFilter) {
 		
+		var entityId = (openFilter.query != undefined && openFilter.query.field != undefined) ? openFilter.query.field : openFilter.field;
+		var orderField = (openFilter.query != undefined && openFilter.query.orderField != undefined) ? openFilter.query.orderField : undefined;
+		var orderType = (openFilter.query != undefined && openFilter.query.orderType != undefined) ? openFilter.query.orderType : undefined;
+		
 		var store = new Ext.data.JsonStore({
-			url: this.services['getFilterValuesService'] + '&ENTITY_ID=' + openFilter.field
+			url: this.services['getFilterValuesService']
 		});
+		var baseParams = {'ENTITY_ID': entityId, 'ORDER_ENTITY': orderField, 'ORDER_TYPE': orderType};
+		store.baseParams = baseParams;
 		
 		store.on('loadexception', function(store, options, response, e) {
 			Sbi.exception.ExceptionHandler.handleFailure(response, options);

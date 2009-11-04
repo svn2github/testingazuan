@@ -22,50 +22,31 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.qbe.services;
 
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
-import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import it.eng.qbe.model.DataStoreJSONSerializer;
 import it.eng.qbe.model.HQLStatement;
 import it.eng.qbe.model.IStatement;
 import it.eng.qbe.model.QbeDataSet;
-import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.query.Query;
-import it.eng.qbe.query.WhereField.Operand;
-import it.eng.spago.base.Constants;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
-import it.eng.spago.security.IEngUserProfile;
-import it.eng.spago.tracing.TracerSingleton;
-import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
-import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONSuccess;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 
 /**
  * @author Davide Zerbetto (davide.zerbetto@eng.it)
@@ -76,6 +57,8 @@ public class GetFilterValuesAction extends AbstractQbeEngineAction {
 	
 	// request parameters
 	public static String ENTITY_ID = "ENTITY_ID";
+	public static String ORDER_ENTITY = "ORDER_ENTITY";
+	public static String ORDER_TYPE = "ORDER_TYPE";
 	public static String FILTERS = "FILTERS";	
 	public static String MODE = "MODE";
 	public static String MODE_SIMPLE = "simple";
@@ -90,15 +73,9 @@ public class GetFilterValuesAction extends AbstractQbeEngineAction {
 	
 	public void service(SourceBean request, SourceBean response) {
 		
-		String entityId = null;
-		Integer limit = null;
-		Integer start = null;
-		Integer maxSize = null;
-		boolean isMaxResultsLimitBlocking = false;
 		IDataStore dataStore = null;
 		QbeDataSet dataSet = null;
 		DataStoreJSONSerializer serializer;
-		JSONObject filtersJSON = null;
 		Query query = null;
 		IStatement statement = null;
 		
@@ -116,11 +93,7 @@ public class GetFilterValuesAction extends AbstractQbeEngineAction {
 		
 			totalTimeMonitor = MonitorFactory.start("QbeEngine.getFilterValuesAction.totalTime");
 			
-			entityId = getAttributeAsString( ENTITY_ID );
-			if(this.requestContainsAttribute( FILTERS ) ) {
-				filtersJSON = getAttributeAsJSONObject( FILTERS );
-			}
-			query = buildQuery(entityId, filtersJSON);
+			query = buildQuery();
 			statement = getDatamartModel().createStatement( query );
 			
 			statement.setParameters( getEnv() );
@@ -130,15 +103,6 @@ public class GetFilterValuesAction extends AbstractQbeEngineAction {
 			logger.debug("Executable query (HQL): [" +  hqlQuery+ "]");
 			logger.debug("Executable query (SQL): [" + sqlQuery + "]");
 			
-			start = getAttributeAsInteger( START );
-			limit = getAttributeAsInteger( LIMIT );
-			
-			logger.debug("Parameter [" + ENTITY_ID + "] is equals to [" + entityId + "]");
-			logger.debug("Parameter [" + START + "] is equals to [" + start + "]");
-			logger.debug("Parameter [" + LIMIT + "] is equals to [" + limit + "]");
-			
-			Assert.assertNotNull(entityId, "Parameter [" + ENTITY_ID + "] cannot be null" );
-		
 			try {
 				logger.debug("Executing query ...");
 				dataSet = new QbeDataSet(statement);
@@ -199,20 +163,25 @@ public class GetFilterValuesAction extends AbstractQbeEngineAction {
 	}
 
 
-	private Query buildQuery(String fieldUniqueName, JSONObject filtersJSON) throws JSONException {
-		logger.debug("IN: fieldUniqueName = " + fieldUniqueName);
+	private Query buildQuery() throws JSONException {
+		logger.debug("IN");
+		String entityId = getAttributeAsString(ENTITY_ID);
+		logger.debug("entityId: " + entityId);
+		String orderEntity = getAttributeAsString(ORDER_ENTITY);
+		logger.debug("orderEntity: " + orderEntity);
+		String orderType = getAttributeAsString(ORDER_TYPE);
+		logger.debug("orderType: " + orderType);
+		
+		Assert.assertNotNull(entityId, "Parameter [" + ENTITY_ID + "] cannot be null" );
+		if (orderType == null || orderType.trim().equals("")) {
+			orderType = "NONE";
+		}
+		
 		Query query = new Query();
-		query.addSelectFiled(fieldUniqueName, "NONE", "Valori", true, true, false, null);
+		query.addSelectFiled(entityId, "NONE", "Valori", true, true, false, (orderEntity != null && !orderEntity.trim().equals("")) ? null : orderType);
 		query.setDistinctClauseEnabled(true);
-		if (filtersJSON != null) {
-			String valuefilter = (String) filtersJSON.get(SpagoBIConstants.VALUE_FILTER);
-			String typeFilter = (String) filtersJSON.get(SpagoBIConstants.TYPE_FILTER);
-			String typeValueFilter = (String) filtersJSON.get(SpagoBIConstants.TYPE_VALUE_FILTER);
-			Operand leftOperand = new Operand(fieldUniqueName, "", "Field Content", null, null);
-			Operand rightOperand = new Operand(
-					typeValueFilter.equalsIgnoreCase("NUMBER") ? valuefilter : "" + valuefilter + "", 
-					"", "Static Content", null, null);
-			query.addWhereField("", "", false, leftOperand, typeFilter, rightOperand, "AND");
+		if (orderEntity != null) {
+			query.addSelectFiled(orderEntity, "NONE", "Ordinamento", false, false, false, orderType);
 		}
 		logger.debug("OUT");
 		return query;

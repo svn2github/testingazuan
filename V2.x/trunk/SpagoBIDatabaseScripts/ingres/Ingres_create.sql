@@ -79,6 +79,7 @@ Create table SBI_DATA_SET (
 	ADRESS Varchar(250),
 	EXECUTOR_CLASS Varchar(250),
 	PARAMS Varchar(1000),
+	DS_METADATA Varchar(2000),
 	DATA_SOURCE_ID Integer,
 	OBJECT_TYPE Varchar(50),
 	OPERATION Varchar(250),

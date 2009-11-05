@@ -1,5 +1,7 @@
 package it.eng.spagobi.studio.geo;
 
+import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
+
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -14,6 +16,16 @@ public class Activator extends AbstractUIPlugin {
 	// The shared instance
 	private static Activator plugin;
 	
+	private GEODocument geoDocument;
+	
+	public GEODocument getGeoDocument() {
+		return geoDocument;
+	}
+
+	public void setGeoDocument(GEODocument geoDocument) {
+		this.geoDocument = geoDocument;
+	}
+
 	/**
 	 * The constructor
 	 */

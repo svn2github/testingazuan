@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <MAP>
-
+	<!--
 	<MAP_PROVIDER class_name="it.eng.spagobi.engines.geo.map.provider.SOMapProvider" map_name="USA_STATES" />
 
 	<DATAMART_PROVIDER class_name="it.eng.spagobi.engines.geo.dataset.provider.SQLDatasetProvider"
@@ -76,5 +76,5 @@
   </LAYERS>
 		
 	</MAP_RENDERER>
-	
+	-->
 </MAP>

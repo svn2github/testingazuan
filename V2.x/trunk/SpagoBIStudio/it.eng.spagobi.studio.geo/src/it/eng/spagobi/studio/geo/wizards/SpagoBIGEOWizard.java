@@ -1,15 +1,35 @@
 package it.eng.spagobi.studio.geo.wizards;
 
+import it.eng.spagobi.studio.core.log.SpagoBILogger;
+import it.eng.spagobi.studio.core.properties.PropertyPage;
+import it.eng.spagobi.studio.geo.Activator;
+import it.eng.spagobi.studio.geo.wizards.pages.NewGEOWizardPage;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
+import java.util.Date;
 
+import org.eclipse.core.internal.resources.Folder;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.osgi.framework.Bundle;
 
 public class SpagoBIGEOWizard extends Wizard implements INewWizard{
+	
+	private NewGEOWizardPage newGEOWizardPage;
 	// workbench selection when the wizard was started
 	protected IStructuredSelection selection;
 	// the workbench instance
@@ -18,8 +38,68 @@ public class SpagoBIGEOWizard extends Wizard implements INewWizard{
 	public static final String GEO_INFO_FILE = "it/eng/spagobi/studio/geo/resources/new_template.sbigeo";
 	@Override
 	public boolean performFinish() {
-		// TODO Auto-generated method stub
-		return false;
+		
+		String geoFileName = newGEOWizardPage.getGeoNameText().getText();
+		if (geoFileName == null || geoFileName.trim().equals("")) {
+
+			MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
+					"Error", "GEO Document name empty");
+			return false;
+		}
+		// get the folder selected:  
+		Object objSel = selection.toList().get(0);
+		// FolderSel is the folder in wich to insert the new template
+		Folder folderSel=(Folder)objSel;
+
+		// get the project
+		String projectName = folderSel.getProject().getName();
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		// get the folder where to insert the dashboard document
+		IProject project = root.getProject(projectName);
+
+		// generate the byte array input stream used to fill the file
+		ByteArrayInputStream bais = null;
+		Bundle b = org.eclipse.core.runtime.Platform.getBundle(Activator.PLUGIN_ID);
+
+		URL res = b.getResource(GEO_INFO_FILE);;
+		InputStream is = null;
+		try {
+			is = res.openStream();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			flushFromInputStreamToOutputStream(is, baos, true);
+			byte[] resbytes = baos.toByteArray();
+			bais = new ByteArrayInputStream(resbytes);
+		} catch (Exception e) {
+			
+			MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
+					"Error", "Error while creating file");
+		} finally {
+			try {
+				if(is!=null) is.close();
+			} catch (Exception e) {
+				SpagoBILogger.errorLog("Error while closing stream", e);
+			}
+		}
+		// generate the file	       
+		IPath pathFolder = folderSel.getProjectRelativePath();
+		IPath pathNewFile = pathFolder.append(geoFileName + ".sbidoccomp");
+		IFile newFile = project.getFile(pathNewFile);
+		try {
+			newFile.create(bais, true, null);
+		} catch (CoreException e) {
+			SpagoBILogger.errorLog("Error while creating file", e);
+			MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
+					"Error", "Error while creating file; name alreay present");
+		}
+
+
+		try {
+			newFile.setPersistentProperty(PropertyPage.MADE_WITH_STUDIO, (new Date()).toString());
+		} catch (CoreException e) {
+			SpagoBILogger.errorLog("Error while setting made with studio metadata", e);
+		}
+		
+		return true;
 	}
 
 	public void init(IWorkbench workbench, IStructuredSelection selection) {

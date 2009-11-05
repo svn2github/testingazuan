@@ -84,6 +84,7 @@ public class DetailDataSetModule extends AbstractModule {
 	public static final String PARAMETERS_FILLED="parametersfilled";
 	public static final String TEST_EXECUTED="testExecuted";
 	public final static String LIST_TRANSFORMER = "transformers";
+	public final static String DS_METADATA_XML = "dsMetadataXML";
 
 
 
@@ -233,6 +234,10 @@ public class DetailDataSetModule extends AbstractModule {
 			// save after the test
 			if ("SAVE".equalsIgnoreCase(returnFromTestMsg)) {      // Save 		
 				//DAOFactory.getDataSetDAO().modifyDataSet(dsNew);
+				String datasetMetadataXML=(String)session.getAttribute(DS_METADATA_XML);
+				if(datasetMetadataXML!=null){
+				dsNew.setDsMetadata(datasetMetadataXML);	
+				}
 				serviceResponse.setAttribute(DetailDataSetModule.DATASET, dsNew);
 				serviceResponse.setAttribute(SpagoBIConstants.MODALITY, mod);
 				session.delAttribute(DetailDataSetModule.DATASET);
@@ -669,7 +674,7 @@ public class DetailDataSetModule extends AbstractModule {
 							EMFUserError emf2= new EMFUserError(EMFErrorSeverity.WARNING, "9225", messageBundle);
 							errorHandler.addError(emf2);
 						}
-						
+
 						return ds;
 					}
 				}
@@ -709,9 +714,9 @@ public class DetailDataSetModule extends AbstractModule {
 							String languageScript=(String)serviceRequest.getAttribute("LANGUAGESCRIPT");
 							ds.setLanguageScript(languageScript);
 							String toVerify = script.toUpperCase();
-						//	if( !toVerify.contains("<A") &&  !toVerify.contains("<LINK") &&  !toVerify.contains("<IMG") &&  !toVerify.contains("<SCRIPT")){
-								ds.setScript(script);
-						/*	}else{
+							//	if( !toVerify.contains("<A") &&  !toVerify.contains("<LINK") &&  !toVerify.contains("<IMG") &&  !toVerify.contains("<SCRIPT")){
+							ds.setScript(script);
+							/*	}else{
 								logger.error("error in the script");
 								EMFValidationError emf= new EMFValidationError(EMFErrorSeverity.ERROR, "SCRIPT", "9216");
 								errorHandler.addError(emf);

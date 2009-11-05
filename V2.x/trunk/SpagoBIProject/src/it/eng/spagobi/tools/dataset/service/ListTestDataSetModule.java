@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 
 package it.eng.spagobi.tools.dataset.service;
 
@@ -49,6 +49,7 @@ import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.bo.DataSetFactory;
+import it.eng.spagobi.tools.dataset.bo.DataSetMetadataItem;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
@@ -56,6 +57,8 @@ import it.eng.spagobi.tools.dataset.bo.JavaClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WebServiceDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
+import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -73,10 +76,10 @@ import org.apache.log4j.Logger;
 
 public class ListTestDataSetModule extends AbstractBasicListModule  {
 
-	 private static transient Logger logger = Logger.getLogger(ListTestDataSetModule.class);
-	 private EMFErrorHandler errorHandler;
-		public static final String messageBundle = "messages";
-	 
+	private static transient Logger logger = Logger.getLogger(ListTestDataSetModule.class);
+	private EMFErrorHandler errorHandler;
+	public static final String messageBundle = "messages";
+
 	/**
 	 * Instantiates a new list test data set module.
 	 */
@@ -85,9 +88,9 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		// TODO Auto-generated constructor stub
 	}
 
-	
-	
-	
+
+
+
 	/* (non-Javadoc)
 	 * @see it.eng.spago.dispatching.service.list.basic.IFaceBasicListService#getList(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
@@ -97,7 +100,7 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		ListIFace listIFace=null;
 		try{
 			listIFace=getTestResultList(request, response);
-			
+
 		}
 		catch (EMFUserError eex) {
 			errorHandler.addError(eex);
@@ -108,15 +111,15 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 			return null;
 		}
 		return listIFace;
-		
-	}
-	
-	
 
-	
-	
-	
-	
+	}
+
+
+
+
+
+
+
 
 	/**
 	 * Gets the test result list.
@@ -140,10 +143,10 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 
 		SpagoBiDataSet dataSetConfig =(SpagoBiDataSet)session.getAttribute(DetailDataSetModule.DATASET);
 		IDataSet dataSet = DataSetFactory.getDataSet( dataSetConfig );
-		
-		
+
+
 		String typeDataset=getDataSetType(dataSet);
-			
+
 		IEngUserProfile profile = null;
 		profile = (IEngUserProfile)session.getAttribute(SpagoBIConstants.USER_PROFILE_FOR_TEST);
 		if(profile==null) {
@@ -153,7 +156,7 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 			session.delAttribute(SpagoBIConstants.USER_PROFILE_FOR_TEST);
 		}
 		dataSet.setUserProfile(profile);
-		
+
 		errorHandler=getErrorHandler();
 		if(!errorHandler.isOK()){
 			logger.error("Some Errors are found in error Handler");
@@ -162,41 +165,49 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 			response.setAttribute(DetailDataSetModule.DATASET,dataSet);
 			return null;
 		}
-		
+
 
 		// based on lov type fill the spago list and paginator object
 		SourceBean rowsSourceBean = null;
 		List colNames = new ArrayList();
-		
-		
+
+
 		Object par=(Object)session.getAttribute(DetailDataSetModule.PARAMETERS_FILLED);
 		HashMap parametersFilled=(HashMap)par;
-		
-		
+
+
 		dataSet.setParamsMap(parametersFilled);		
 		try{
-		dataSet.loadData();
+			dataSet.loadData();
 
-		IDataStore ids = dataSet.getDataStore();
-		
-		rowsSourceBean=ids.toSourceBean();
-		
-		//I must get columnNames. assumo che tutte le righe abbiano le stesse colonne
-		if(rowsSourceBean!=null){
-			List row =rowsSourceBean.getAttributeAsList("ROW");
-			if(row.size()>=1){
-				Iterator iterator = row.iterator(); 
-				SourceBean sb = (SourceBean) iterator.next();
-				List sbas=sb.getContainedAttributes();
-				for (Iterator iterator2 = sbas.iterator(); iterator2.hasNext();) {
-					SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
-					String name=object.getKey();
-					colNames.add(name);
-				}
-				
+			IDataStore ids = dataSet.getDataStore();
+
+			String metadataToXML=metadataToXML(ids);
+			if(metadataToXML!=null){
+				session.setAttribute(DetailDataSetModule.DS_METADATA_XML, metadataToXML);
 			}
-		}		
-		
+			else{
+				logger.warn("Metadata not retrieved");
+			}
+
+			rowsSourceBean=ids.toSourceBean();
+
+			//I must get columnNames. assumo che tutte le righe abbiano le stesse colonne
+			if(rowsSourceBean!=null){
+				List row =rowsSourceBean.getAttributeAsList("ROW");
+				if(row.size()>=1){
+					Iterator iterator = row.iterator(); 
+					SourceBean sb = (SourceBean) iterator.next();
+					List sbas=sb.getContainedAttributes();
+					for (Iterator iterator2 = sbas.iterator(); iterator2.hasNext();) {
+						SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
+						String name=object.getKey();
+						colNames.add(name);
+					}
+
+				}
+			}		
+
 		}
 		catch (Exception e) {
 			logger.error("Error while executing dataset for test purpose",e);
@@ -208,9 +219,9 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 			response.setAttribute(DetailDataSetModule.DATASET,dataSet);
 			return null;		
 		}
-		
 
-		
+
+
 		// Build the list fill paginator
 		if(rowsSourceBean != null) {
 			List rows = rowsSourceBean.getAttributeAsList(DataRow.ROW_TAG);
@@ -239,10 +250,10 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		moduleConfigStr += "	<BUTTONS/>";
 		moduleConfigStr += "</CONFIG>";
 		SourceBean moduleConfig = SourceBean.fromXMLString(moduleConfigStr);
-		
+
 		response.setAttribute(DetailDataSetModule.TEST_EXECUTED, "true");
 
-		
+
 		response.setAttribute(moduleConfig);
 
 
@@ -353,13 +364,13 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		}
 		return result;
 	}
-	
+
 	private boolean checkSintax(String result) {
-		
+
 		List visibleColumnNames = null;
 		String valueColumnName = "";
 		String descriptionColumnName = "";
-		
+
 		boolean toconvert = false;
 		try{
 			SourceBean source = SourceBean.fromXMLString(result);
@@ -412,16 +423,16 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 					}
 				}
 			}
-			
+
 		} catch (Exception e) {
 			SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-					              "checkSintax", "the result of the lov is not formatted " +
-					              "with the right structure so it will be wrapped inside an xml envelope");
+					"checkSintax", "the result of the lov is not formatted " +
+			"with the right structure so it will be wrapped inside an xml envelope");
 			toconvert = true;
 		}
 		return toconvert;
 	}
-	
+
 	private String convertResult(String result) {
 		List visibleColumnNames = null;
 		String valueColumnName = "";
@@ -436,8 +447,43 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		visibleColumnNames = Arrays.asList(visibleColumnNamesArray);
 		return sb.toString();
 	}
-	
-	
+
+
+	public String metadataToXML(IDataStore dataStore) {
+		logger.debug("IN");
+		if(dataStore==null || dataStore.getMetaData()==null){
+			logger.error("Data Store is null, cannot recover metadata because Data Store or Data Store metadata is null");
+			return null;
+		}
+		IDataStoreMetaData dataStoreMetaData=dataStore.getMetaData();
+
+		HashMap<String , Class> metadataMap=new HashMap<String, Class>();
+		for (int i = 0; i < dataStoreMetaData.getFieldCount(); i++) {
+			IFieldMetaData fieldMetaData=dataStoreMetaData.getFieldMeta(i);
+			String name=fieldMetaData.getName();
+			Class type=fieldMetaData.getType();
+			if(!metadataMap.containsKey(name)){
+				metadataMap.put(name, type);
+			}
+		}
+
+		String metaXML = "";
+		metaXML += "<METADATALIST>";
+		metaXML += "<ROWS>";
+		for (Iterator iterator = metadataMap.keySet().iterator(); iterator.hasNext();) {
+			String name = (String) iterator.next();
+			String type = metadataMap.get(name)!=null ? ((Class)metadataMap.get(name)).toString() : "";
+			metaXML += "<ROW" +
+			" NAME=\"" + name + "\"" +
+			" TYPE=\"" + type + "\"" +
+			"/>";		
+		}
+		metaXML += "</ROWS></METADATALIST>";
+		logger.debug("OUT");
+		return metaXML;
+	}
+
+
 
 
 }

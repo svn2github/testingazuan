@@ -25,6 +25,8 @@ public interface IDataSet {
 	String getParameters();
 	void setParameters(String parameters);
 
+	String getDsMetadata();
+	void setDsMetadata(String dsMetadata);
 	
 	String getName();
 	void setName(String name);
@@ -55,8 +57,6 @@ public interface IDataSet {
 	
 	Map getParamsMap();
 	void setParamsMap(Map params);
-
-	
 	
 	boolean hasBehaviour(String behaviourId);
 	Object getBehaviour(String behaviourId);
@@ -77,4 +77,5 @@ public interface IDataSet {
 	public void setUserProfile(IEngUserProfile userProfile);
 	
 	public SpagoBiDataSet toSpagoBiDataSet();
+
 }

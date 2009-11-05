@@ -58,7 +58,7 @@ public class ConfigurableDataSet extends  AbstractDataSet {
 		else{
 			dataStore = dataProxy.load(dataReader); 
 		}
-
+		
 		if(hasDataStoreTransformer()) {
 			getDataStoreTransformer().transform(dataStore);
 		}

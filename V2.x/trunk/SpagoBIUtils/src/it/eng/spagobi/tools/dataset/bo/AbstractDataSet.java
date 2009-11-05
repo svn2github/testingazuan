@@ -23,13 +23,19 @@ package it.eng.spagobi.tools.dataset.bo;
 
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.common.behaviour.IDataSetBehaviour;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
+import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.transformer.IDataStoreTransformer;
 import it.eng.spagobi.tools.dataset.common.transformer.PivotDataSetTransformer;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+
+import sun.net.www.MeteredStream;
 
 
 /**
@@ -37,63 +43,64 @@ import org.apache.log4j.Logger;
  */
 public abstract class AbstractDataSet implements IDataSet {
 
-    private int id;
-    private String name;
-    private String description;
-    private String label;
-    private String parameters;
-    private Map paramsMap;
-    private Map behaviours;
-    
-    private Integer transformerId;
-    private String pivotColumnName;
-    private String pivotRowName;
-    private String pivotColumnValue;
-    private boolean numRows;
-    
-    IDataStoreTransformer dataSetTransformer;
-    
-    private static transient Logger logger = Logger.getLogger(AbstractDataSet.class);
+	private int id;
+	private String name;
+	private String description;
+	private String label;
+	private String parameters;
+	private String dsMetadata;
+	private Map paramsMap;
+	private Map behaviours;
 
-    public AbstractDataSet() {
-    	super();
-    	behaviours = new HashMap();
-    }
-    
-    public AbstractDataSet(SpagoBiDataSet dataSetConfig) {
-    	super();
-    	setId(dataSetConfig.getDsId());
-    	setName(dataSetConfig.getName());
-    	setLabel(dataSetConfig.getLabel());
-    	setDescription(dataSetConfig.getDescription());
+	private Integer transformerId;
+	private String pivotColumnName;
+	private String pivotRowName;
+	private String pivotColumnValue;
+	private boolean numRows;
+
+	IDataStoreTransformer dataSetTransformer;
+
+	private static transient Logger logger = Logger.getLogger(AbstractDataSet.class);
+
+	public AbstractDataSet() {
+		super();
+		behaviours = new HashMap();
+	}
+
+	public AbstractDataSet(SpagoBiDataSet dataSetConfig) {
+		super();
+		setId(dataSetConfig.getDsId());
+		setName(dataSetConfig.getName());
+		setLabel(dataSetConfig.getLabel());
+		setDescription(dataSetConfig.getDescription());
 		setLabel(dataSetConfig.getLabel());
 		setParameters(dataSetConfig.getParameters());
-		
+		setDsMetadata(dataSetConfig.getDsMetadata());
 		setTransformerId(dataSetConfig.getTransformerId());
 		setPivotColumnName(dataSetConfig.getPivotColumnName());
 		setPivotRowName(dataSetConfig.getPivotRowName());
 		setPivotColumnValue(dataSetConfig.getPivotColumnValue());
 		setNumRows(dataSetConfig.isNumRows());
-		
+
 		if(this.getPivotColumnName() != null 
 				&& this.getPivotColumnValue() != null
 				&& this.getPivotRowName() != null){
 			setDataStoreTransformer(
 					new PivotDataSetTransformer(getPivotColumnName(), getPivotColumnValue(), getPivotRowName(), isNumRows()));
 		}
-		
+
 		behaviours = new HashMap();
-    }
-    
-    public SpagoBiDataSet toSpagoBiDataSet() {
+	}
+
+	public SpagoBiDataSet toSpagoBiDataSet() {
 		SpagoBiDataSet sbd = new SpagoBiDataSet();
-		
+
 		sbd.setDsId(getId());
 		sbd.setLabel(getLabel());
 		sbd.setName(getName());
 		sbd.setParameters(getParameters());
+		sbd.setDsMetadata(getDsMetadata());
 		sbd.setDescription(getDescription());
-		
 		sbd.setTransformerId(getTransformerId());
 		sbd.setPivotColumnName(getPivotColumnName());
 		sbd.setPivotRowName(getPivotRowName());
@@ -103,46 +110,51 @@ public abstract class AbstractDataSet implements IDataSet {
 	}
 
 
-    public int getId() {
-    	return id;
-    }
 
-    public void setId(int id) {
-    	this.id = id;
-    }
-    
-    public String getLabel() {
-    	return label;
-    }
 
-    public void setLabel(String label) {
-    	this.label = label;
-    }
 
-    public String getName() {
-    	return name;
-    }
 
-    public void setName(String name) {
-    	this.name = name;
-    }
 
-    public String getDescription() {
-    	return description;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public void setDescription(String description) {
-    	this.description = description;
-    }
-    
-    public String getParameters() {
-    	return parameters;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    
-    public void setParameters(String parameters) {
-    	this.parameters = parameters;
-    }
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getParameters() {
+		return parameters;
+	}
+
+
+	public void setParameters(String parameters) {
+		this.parameters = parameters;
+	}
 
 	public Integer getTransformerId() {
 		return transformerId;
@@ -183,15 +195,16 @@ public abstract class AbstractDataSet implements IDataSet {
 	public void setParamsMap(Map paramsMap) {
 		this.paramsMap = paramsMap;
 	}  
-	
+
+
 	public boolean hasBehaviour(String behaviourId) {
 		return behaviours.containsKey(behaviourId);
 	}
-	
+
 	public Object getBehaviour(String behaviourId) {
 		return behaviours.get(behaviourId);
 	}
-	
+
 	public void addBehaviour(IDataSetBehaviour behaviour) {
 		behaviours.put(behaviour.getId(), behaviour);
 	}
@@ -199,7 +212,7 @@ public abstract class AbstractDataSet implements IDataSet {
 	public boolean hasDataStoreTransformer() {
 		return getDataStoreTransformer() != null;
 	}
-	
+
 	public void removeDataStoreTransformer() {
 		setDataStoreTransformer(null);
 	}
@@ -207,7 +220,7 @@ public abstract class AbstractDataSet implements IDataSet {
 	public void setDataStoreTransformer(IDataStoreTransformer dataSetTransformer) {
 		this.dataSetTransformer = dataSetTransformer;
 	}
-	
+
 	public IDataStoreTransformer getDataStoreTransformer() {
 		return this.dataSetTransformer;
 	}
@@ -224,5 +237,13 @@ public abstract class AbstractDataSet implements IDataSet {
 	 */
 	public void setNumRows(boolean numRows) {
 		this.numRows = numRows;
+	}
+
+	public String getDsMetadata() {
+		return dsMetadata;
+	}
+
+	public void setDsMetadata(String dsMetadata) {
+		this.dsMetadata = dsMetadata;
 	}
 }

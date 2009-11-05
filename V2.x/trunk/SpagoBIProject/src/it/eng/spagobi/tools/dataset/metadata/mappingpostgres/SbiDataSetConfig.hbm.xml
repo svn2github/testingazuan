@@ -21,7 +21,10 @@
         </property>
         <property name="parameters" type="string">
             <column name="PARAMS" />
-        </property>   
+        </property>
+        <property name="dsMetadata" type="string">
+            <column name="ds_metadata" />
+        </property>           
          <many-to-one name="transformer" class="it.eng.spagobi.commons.metadata.SbiDomains">
             <column name="TRANSFORMER_ID" not-null="false"/>
         </many-to-one>

@@ -34,6 +34,7 @@ public class SbiDataSetConfig {
 	private String description=null;
 	private String label=null;
 	private String parameters=null;
+	private String dsMetadata=null;
 	private String pivotColumnName=null;
 	private String pivotRowName=null;
 	private String pivotColumnValue=null;
@@ -204,5 +205,25 @@ public class SbiDataSetConfig {
     public void setTransformer(SbiDomains transformer) {
         this.transformer = transformer;
     }
+
+    /**
+     * Gets the metadata.
+     * 
+     * @return metadata
+     */
+	public String getDsMetadata() {
+		return dsMetadata;
+	}
+
+    /**
+     *  the metadata.
+     * 
+     * @param transformer the new metadata
+     */
+	public void setDsMetadata(String dsMetadata) {
+		this.dsMetadata = dsMetadata;
+	}
     	
+    
+    
 }

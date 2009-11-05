@@ -7,12 +7,26 @@
             class="it.eng.spagobi.studio.geo.editors.GEOEditor"
             default="true"
             extensions="sbidoccomp"
-            icon="icons/objecticon_GEO.png"
+            icon="icons/objecticon_MAP.png"
             id="it.eng.spagobi.studio.geo.editors.GEOEditor"
             name="GEO Editor">
       </editor>
    </extension>
+  <extension
+         point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            id="it.eng.spagobi.studio.geo.popupmenus.ResourceNavigatorContribution"
+            targetID="it.eng.spagobi.studio.core.views.ResourceNavigator">
+         <action
+               class="it.eng.spagobi.studio.geo.actions.NewGEOAction"
+               icon="icons/objecticon_MAP.png"
+               id="it.eng.spagobi.studio.geo.actions.NewGEOAction"
+               label="GEO"
+               menubarPath="group.new"
+               style="push" />
 
+      </viewerContribution>
+   </extension>
    <!--
    <extension point="org.eclipse.ui.views">
 		<view

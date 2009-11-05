@@ -44,9 +44,8 @@ Locale locale = Locale.ITALIAN;
         Ext.onReady(function() {
         	Ext.QuickTips.init();
         	
-            var viewer = new Sbi.formviewer.ViewerPanel(template); 
-           	var viewport = new Ext.Viewport(viewer);
-           	
+            var viewer = new Sbi.formviewer.ViewerPanel(template, {region: 'center'});
+           	var viewport = new Ext.Viewport({layout: 'border', items: [viewer]});
       	});
       	
 	    </script>

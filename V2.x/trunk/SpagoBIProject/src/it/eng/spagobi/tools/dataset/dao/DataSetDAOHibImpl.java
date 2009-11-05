@@ -275,6 +275,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			hibDataSet.setName(aDataSet.getName());			
 			hibDataSet.setDescription(aDataSet.getDescription());
 			hibDataSet.setParameters(aDataSet.getParameters());
+			hibDataSet.setDsMetadata(aDataSet.getDsMetadata());
 			
 			
 			
@@ -497,6 +498,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 		ds.setNumRows(hibDataSet.isNumRows());
 		ds.setDescription(hibDataSet.getDescription());		
 		ds.setParameters(hibDataSet.getParameters());		
+		ds.setDsMetadata(hibDataSet.getDsMetadata());		
 		
 		if(ds.getPivotColumnName() != null 
 				&& ds.getPivotColumnValue() != null

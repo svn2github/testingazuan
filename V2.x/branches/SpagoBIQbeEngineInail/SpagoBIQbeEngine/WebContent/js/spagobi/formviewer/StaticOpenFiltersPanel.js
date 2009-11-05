@@ -51,15 +51,15 @@ Sbi.formviewer.StaticOpenFiltersPanel = function(openFilters, config) {
 	var defaultSettings = {
 		// set default values here
 		title: LN('sbi.formviewer.staticopenfilterspanel.title')
-		, labelAlign: 'left'
         , border: false
         , frame: true
         , autoScroll: true
-		, columnNo: 3
-		, columnWidth: 350
-		, labelAlign: 'left'
-		, fieldWidth: 200	
-		, maskOnRender: false
+		, autoWidth: true
+		, autoHeight: true
+        , layout: 'column'
+    	, layoutConfig: {
+	        columns: openFilters.length
+	    }
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.staticOpenFiltersPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.staticOpenFiltersPanel);
@@ -75,40 +75,18 @@ Sbi.formviewer.StaticOpenFiltersPanel = function(openFilters, config) {
 	
 	this.baseConfig = c;
 	
-	this.formWidth = (c.columnWidth * c.columnNo) + 40;
-	var columnsBaseConfig = [];
-	for(var i = 0; i < c.columnNo; i++) {		
-		columnsBaseConfig[i] = {
-			width: c.columnWidth,
-            layout: 'form',
-            border: false,
-            bodyStyle:'padding:5px 5px 5px 5px'
-		}
-	}
-
+	this.init(openFilters);
+	
 	Ext.apply(c, {
-        items: [{
-            layout:'column',
-            width: this.formWidth, 
-            border: false,
-            items: columnsBaseConfig
-        }]
+  		items: this.fields
 	});
 	
 	// constructor
     Sbi.formviewer.StaticOpenFiltersPanel.superclass.constructor.call(this, c);
-
-	var columnContainer = this.items.get(0);
-	this.columns = [];
-	for(var i = 0; i < c.columnNo; i++) {
-		this.columns[i] = columnContainer.items.get(i);
-	}
-	
-	this.init(openFilters);
     
 };
 
-Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.FormPanel, {
+Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
     
 	services: null
 	, fields: null
@@ -117,18 +95,20 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.FormPanel, {
 	   
 	, init: function(openFilters) {
 		
-		this.fields = {};
+		this.fields = [];
 	
 		var fieldsCounter = 0;
 		for(var i = 0; i < openFilters.length; i++) {
 			var field = this.createField( openFilters[i] );
-			field.columnNo = (fieldsCounter++)%this.columns.length;
-			this.fields[openFilters[i].id] = field;
-			this.columns[field.columnNo].add( field );
+			var aPanel = new Ext.Panel({
+				items: [field]
+				, layout: 'form' // form layout required: input field labels are displayed only with this layout
+				, width: 350
+				, height: 50
+			});
+			this.fields.push(aPanel);
 		}
 		
-		this.doLayout();
-	
 	}
 
 	, createField: function( openFilter ) {

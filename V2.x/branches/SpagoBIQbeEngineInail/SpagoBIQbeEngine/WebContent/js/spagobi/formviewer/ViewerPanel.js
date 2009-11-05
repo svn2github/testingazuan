@@ -107,9 +107,22 @@ Ext.extend(Sbi.formviewer.ViewerPanel, Ext.Panel, {
 			this.items.push(this.dynamicFiltersPanel);
 		}
 		if (template.groupingVariables !== undefined && template.groupingVariables !== null && template.groupingVariables.length > 0) {
-			this.groupingVariablesPanel = new Sbi.formviewer.GroupingVariablesPanel(template.dynamicFilters); 
+			this.groupingVariablesPanel = new Sbi.formviewer.GroupingVariablesPanel(template.groupingVariables); 
 			this.items.push(this.groupingVariablesPanel);
 		}
+		
+		// work-around for layout management on resize event, since components are not automatically resized
+	    this.staticClosedFiltersPanel.on('resize', function (component, adjWidth, adjHeight, rawWidth, rawHeight) {
+	    	if (this.staticOpenFiltersPanel != null) {
+	    		this.staticOpenFiltersPanel.doLayout();
+	    	}
+	    	if (this.dynamicFiltersPanel != null) {
+	    		this.dynamicFiltersPanel.doLayout();
+	    	}
+	    	if (this.groupingVariablesPanel != null) {
+	    		this.groupingVariablesPanel.doLayout();
+	    	}
+	    }, this);
 		
 	}
     
@@ -129,7 +142,7 @@ Ext.extend(Sbi.formviewer.ViewerPanel, Ext.Panel, {
 		if (this.groupingVariablesPanel !== null) {
 			state.groupingVariables = this.groupingVariablesPanel.getFormState();
 		}
-		alert(state);
+		alert(state.toSource());
 	}
   	
 });

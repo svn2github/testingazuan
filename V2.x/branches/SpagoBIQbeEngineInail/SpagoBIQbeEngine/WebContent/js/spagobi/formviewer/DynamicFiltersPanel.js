@@ -56,6 +56,7 @@ Sbi.formviewer.DynamicFiltersPanel = function(dynamicFilters, config) {
 	    //, layoutConfig: {
 	    //    columns: 1
 	    //}
+		, autoHeight: true
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.dynamicFiltersPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.dynamicFiltersPanel);

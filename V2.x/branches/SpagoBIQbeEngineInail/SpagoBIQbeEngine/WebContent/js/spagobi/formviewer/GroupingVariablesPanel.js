@@ -58,7 +58,8 @@ Sbi.formviewer.GroupingVariablesPanel = function(groupingVariables, config) {
 		, maskOnRender: false
 		, frame: true
 		, autoScroll: true
-		, autoWidth: true
+		//, autoWidth: true
+		, autoHeight: true
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.groupingVariablesPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.groupingVariablesPanel);

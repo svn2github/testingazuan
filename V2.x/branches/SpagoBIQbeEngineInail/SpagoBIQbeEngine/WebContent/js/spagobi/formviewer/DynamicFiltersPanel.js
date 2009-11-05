@@ -51,11 +51,8 @@ Sbi.formviewer.DynamicFiltersPanel = function(dynamicFilters, config) {
 	var defaultSettings = {
 		// set default values here
 		title: LN('sbi.formviewer.dynamicfilterspanel.title')
+		, autoScroll: true
 		, frame: true
-		//, layout: 'table'
-	    //, layoutConfig: {
-	    //    columns: 1
-	    //}
 		, autoHeight: true
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.dynamicFiltersPanel) {

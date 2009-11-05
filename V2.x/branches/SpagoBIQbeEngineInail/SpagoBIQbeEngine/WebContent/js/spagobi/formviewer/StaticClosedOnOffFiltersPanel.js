@@ -51,9 +51,6 @@ Sbi.formviewer.StaticClosedOnOffFiltersPanel = function(aStaticClosedOnOffFilter
 	var defaultSettings = {
 		// set default values here
 		frame: true
-		//, autoHeight: true
-		//, autoWidth: true
-		//, layout: 'fit'
         , width: 300
         , height: 150
 	};

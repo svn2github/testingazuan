@@ -112,17 +112,19 @@ Ext.extend(Sbi.formviewer.ViewerPanel, Ext.Panel, {
 		}
 		
 		// work-around for layout management on resize event, since components are not automatically resized
-	    this.staticClosedFiltersPanel.on('resize', function (component, adjWidth, adjHeight, rawWidth, rawHeight) {
-	    	if (this.staticOpenFiltersPanel != null) {
-	    		this.staticOpenFiltersPanel.doLayout();
-	    	}
-	    	if (this.dynamicFiltersPanel != null) {
-	    		this.dynamicFiltersPanel.doLayout();
-	    	}
-	    	if (this.groupingVariablesPanel != null) {
-	    		this.groupingVariablesPanel.doLayout();
-	    	}
-	    }, this);
+	    if (this.staticClosedFiltersPanel != null) {
+			this.staticClosedFiltersPanel.on('resize', function (component, adjWidth, adjHeight, rawWidth, rawHeight) {
+		    	if (this.staticOpenFiltersPanel != null) {
+		    		this.staticOpenFiltersPanel.doLayout();
+		    	}
+		    	if (this.dynamicFiltersPanel != null) {
+		    		this.dynamicFiltersPanel.doLayout();
+		    	}
+		    	if (this.groupingVariablesPanel != null) {
+		    		this.groupingVariablesPanel.doLayout();
+		    	}
+		    }, this);
+	    }
 		
 	}
     

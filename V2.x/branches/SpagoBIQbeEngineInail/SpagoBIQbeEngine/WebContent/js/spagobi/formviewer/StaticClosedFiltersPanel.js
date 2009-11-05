@@ -100,7 +100,6 @@ Ext.extend(Sbi.formviewer.StaticClosedFiltersPanel, Ext.Panel, {
 			this.forms.push(aStaticFiltersForm);
 		}
 		
-		//this.doLayout();
 	}
 
 	   

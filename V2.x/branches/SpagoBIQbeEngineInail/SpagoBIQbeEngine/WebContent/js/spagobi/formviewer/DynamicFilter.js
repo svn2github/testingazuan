@@ -51,16 +51,12 @@ Sbi.formviewer.DynamicFilter = function(dynamicFilter, config) {
 	var defaultSettings = {
 		// set default values here
 		id: dynamicFilter.id
-		, columnNo: dynamicFilter.operator.toUpperCase() === 'BETWEEN' ? 3 : 2
-		, columnWidth: 350
-		, labelAlign: 'left'
-		, fieldWidth: 200	
-		, maskOnRender: false
-		//, frame: true
 		, autoScroll: true
 		, autoWidth: true
-		, border: false
-		, bodyBorder: false
+        , layout: 'column'
+    	, layoutConfig: {
+	        columns: dynamicFilter.operator.toUpperCase() === 'BETWEEN' ? 3 : 2
+	    }
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.dynamicFilter) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.dynamicFilter);
@@ -69,35 +65,15 @@ Sbi.formviewer.DynamicFilter = function(dynamicFilter, config) {
 
 	this.baseConfig = c;
 	
-	var columnsBaseConfig = [];
-	for(var i = 0; i < c.columnNo; i++) {
-		columnsBaseConfig[i] = {
-			width: c.columnWidth
-            , layout: 'form'
-            , border: false
-            //, bodyStyle:'padding:5px 5px 5px 5px'
-		}
-	}
+	this.init(dynamicFilter);
 	
 	Ext.apply(c, {
-        items: [{
-            layout:'column'
-            , border: false
-            , items: columnsBaseConfig
-        }]
+  		items: this.fields
 	});
 	
 	// constructor
     Sbi.formviewer.DynamicFilter.superclass.constructor.call(this, c);
     
-	var columnContainer = this.items.get(0);
-	this.columns = [];
-	for(var i = 0; i < c.columnNo; i++) {
-		this.columns[i] = columnContainer.items.get(i);
-	}
-
-	this.init(dynamicFilter);
-	
 };
 
 Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
@@ -105,19 +81,39 @@ Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
 	services: null
 	, combo: null
 	, valuesInputs: null
+	, fields: null
 	   
 	// private methods
 	   
 	, init: function(dynamicFilter) {
+		this.fields = [];
 		this.combo = this.createFieldCombo( dynamicFilter );
+		var aPanel = new Ext.Panel({
+			items: [this.combo]
+			, layout: 'form' // form layout required: input field labels are displayed only with this layout
+			, width: 300
+		});
+		this.fields.push(aPanel);
+		
 		this.valuesInputs = this.createFieldValuesInput( dynamicFilter );
-		this.columns[0].add( this.combo );
-		this.columns[1].add( this.valuesInputs[0] );
-		if (this.valuesInputs.length > 1) {
-			this.columns[2].add( this.valuesInputs[1] );
+		if (this.valuesInputs.length == 1) {
+			this.fields.push(new Ext.Panel({
+				items: [this.valuesInputs[0]]
+				, layout: 'form' // form layout required: input field labels are displayed only with this layout
+				, width: 400
+			}));
+		} else {
+			this.fields.push(new Ext.Panel({
+				items: [this.valuesInputs[0]]
+				, layout: 'form' // form layout required: input field labels are displayed only with this layout
+				, width: 250
+			}));
+			this.fields.push(new Ext.Panel({
+				items: [this.valuesInputs[1]]
+				, layout: 'form' // form layout required: input field labels are displayed only with this layout
+				, width: 250
+			}));
 		}
-		this.doLayout();
-	
 	}
 
 	, createFieldCombo: function(dynamicFilter) {
@@ -150,17 +146,20 @@ Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
 				fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.fromvalue')
 			   , name : 'fromvalue'
 			   , allowBlank: true
+			   , width: 100
 			});
 			valuesInput[1] = new Ext.form.TextField({
 				fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.tovalue')
 			   , name : 'tovalue'
 			   , allowBlank: true
+			   , width: 100
 			});
 		} else {
 			valuesInput[0] = new Ext.form.TextField({
-				fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.fromvalue')
+				fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.value')
 			   , name : 'value'
 			   , allowBlank: true
+			   , width: 290
 			});
 		}
 		return valuesInput;

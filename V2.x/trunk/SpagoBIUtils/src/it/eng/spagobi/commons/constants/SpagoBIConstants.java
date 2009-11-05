@@ -150,6 +150,7 @@ public class SpagoBIConstants {
 	public static final String OLAP_TYPE_CODE = "OLAP";
 	public static final String DATA_MINING_TYPE_CODE = "DATA_MINING";
 	public static final String DASH_TYPE_CODE = "DASH";
+	public static final String MAP_TYPE_CODE = "MAP";
 	public static final String LOW_FUNCTIONALITY_TYPE_CODE = "LOW_FUNCT";
 	public static final String USER_FUNCTIONALITY_TYPE_CODE = "USER_FUNCT";
 		
@@ -361,5 +362,6 @@ public class SpagoBIConstants {
 	
 	public static final String BACK_URL = "BACK_URL";
 	public static final String SDK_EXECUTION_SERVICE = "SDK_EXECUTION_SERVICE";
-	
+
+
 }

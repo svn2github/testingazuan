@@ -104,7 +104,7 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
 				items: [field]
 				, layout: 'form' // form layout required: input field labels are displayed only with this layout
 				, width: 350
-				, height: 50
+				//, height: 40 // cannot set a static height, since the SuperBoxSelect resize vertically
 			});
 			this.fields.push(aPanel);
 		}
@@ -124,21 +124,6 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
 		var store = this.createStore(openFilter);
 		
 		if (openFilter.singleSelection === undefined || openFilter.singleSelection === null || openFilter.singleSelection === true) {
-			field = new Ext.form.ComboBox(Ext.apply(baseConfig, {
-				editable: true			    
-			    , forceSelection: false
-			    , store: store
-			    , displayField: 'column-1'
-			    , valueField: 'column-1'
-			    , emptyText: ''
-			    , typeAhead: false
-			    //, typeAheadDelay: 1000
-			    , triggerAction: 'all'
-			    , selectOnFocus: true
-			    , autoLoad: false
-			}));
-		} else {
-			/* */
 			field = new Ext.ux.form.SuperBoxSelect(Ext.apply(baseConfig, {
 	            editable: true			    
 			    , forceSelection: false
@@ -147,11 +132,26 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
 			    , valueField: 'column-1'
 			    , emptyText: ''
 			    , typeAhead: false
-			    //, typeAheadDelay: 1000
+			    , triggerAction: 'all'
+			    , selectOnFocus: true
+			    , autoLoad: false
+			    , maxSelection: 1
+			    , width: 200
+			}));
+		} else {
+			field = new Ext.ux.form.SuperBoxSelect(Ext.apply(baseConfig, {
+	            editable: true			    
+			    , forceSelection: false
+			    , store: store
+			    , displayField: 'column-1'
+			    , valueField: 'column-1'
+			    , emptyText: ''
+			    , typeAhead: false
 			    , triggerAction: 'all'
 			    , selectOnFocus: true
 			    , autoLoad: false
 			    , maxSelection: openFilter.maxSelectedNumber
+			    , width: 200
 			}));
 			
 			/* 

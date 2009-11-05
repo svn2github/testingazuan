@@ -40,6 +40,8 @@ public class SpagoBiDataSet  implements java.io.Serializable {
 
     private java.lang.String parameters;
 
+    private java.lang.String dsMetadata;
+
     private java.lang.String query;
 
     private java.lang.String script;
@@ -427,7 +429,19 @@ public class SpagoBiDataSet  implements java.io.Serializable {
     }
 
 
-    /**
+    public java.lang.String getDsMetadata() {
+		return dsMetadata;
+	}
+
+
+
+	public void setDsMetadata(java.lang.String dsMetadata) {
+		this.dsMetadata = dsMetadata;
+	}
+
+
+
+	/**
      * Gets the query value for this SpagoBiDataSet.
      * 
      * @return query

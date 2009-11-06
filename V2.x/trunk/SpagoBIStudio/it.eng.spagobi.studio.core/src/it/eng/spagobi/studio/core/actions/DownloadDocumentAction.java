@@ -1,7 +1,9 @@
 package it.eng.spagobi.studio.core.actions;
 
+import it.Prova;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.wizards.downloadWizard.SpagoBIDownloadWizard;
+import it.eng.spagobi.tools.dataset.bo.provaDataSet;
 
 import org.eclipse.core.internal.resources.Folder;
 import org.eclipse.jface.action.IAction;
@@ -31,6 +33,7 @@ public class DownloadDocumentAction implements IViewActionDelegate {
 	}
 
 	public void run(IAction action) {
+
 		SpagoBIDownloadWizard sbindw = new SpagoBIDownloadWizard();
 		CommonViewer commViewer=((CommonNavigator) view).getCommonViewer();
 		IStructuredSelection sel=(IStructuredSelection)commViewer.getSelection();

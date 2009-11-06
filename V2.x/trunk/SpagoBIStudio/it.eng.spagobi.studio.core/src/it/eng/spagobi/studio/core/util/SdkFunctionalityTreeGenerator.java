@@ -90,7 +90,7 @@ public class SdkFunctionalityTreeGenerator {
 		ImageDescriptor etlDescriptor=ImageDescriptorGatherer.getImageDesc("objecticon_ETL.png");
 		ImageDescriptor qbeDescriptor=ImageDescriptorGatherer.getImageDesc("objecticon_DATAMART.png");
 		ImageDescriptor dossierDescriptor=ImageDescriptorGatherer.getImageDesc("objecticon_DOSSIER.png");
-		ImageDescriptor compositeDescriptor=ImageDescriptorGatherer.getImageDesc("objecticon_DOCUMENT_COMPOSITE.png");
+		ImageDescriptor compositeDescriptor=ImageDescriptorGatherer.getImageDesc("objecticon_COMPOSITE_DOCUMENT.png");
 		ImageDescriptor kpiDescriptor=ImageDescriptorGatherer.getImageDesc("objecticon_KPI.png");
 		ImageDescriptor dataMiningDescriptor=ImageDescriptorGatherer.getImageDesc("objecticon_DATA_MINING.png");
 

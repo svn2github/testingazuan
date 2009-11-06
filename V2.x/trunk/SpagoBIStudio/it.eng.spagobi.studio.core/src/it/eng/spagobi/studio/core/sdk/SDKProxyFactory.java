@@ -4,6 +4,7 @@ import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.DataSourcesSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
 import it.eng.spagobi.sdk.proxy.EnginesServiceProxy;
+import it.eng.spagobi.sdk.proxy.MapsSDKServiceProxy;
 
 public class SDKProxyFactory {
 
@@ -51,5 +52,15 @@ public class SDKProxyFactory {
 		return proxy;
 	}
 
+	public static MapsSDKServiceProxy getMapsSDKServiceProxy() {
+		SpagoBIServerConnectionDefinition def = new SpagoBIServerConnectionDefinition();
+		MapsSDKServiceProxy proxy = new MapsSDKServiceProxy(def.getUserName(), def.getPassword());
+		String serverUrl = def.getServerUrl();
+		if (serverUrl != null && !serverUrl.endsWith("/")) {
+			serverUrl += "/";
+		}
+		proxy.setEndpoint(serverUrl + "sdk/MapsSDKService");
+		return proxy;
+	}
 	
 }

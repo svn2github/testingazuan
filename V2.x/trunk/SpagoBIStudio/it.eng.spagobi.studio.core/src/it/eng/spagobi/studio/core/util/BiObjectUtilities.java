@@ -6,9 +6,11 @@ import it.eng.spagobi.sdk.datasources.bo.SDKDataSource;
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.sdk.engines.bo.SDKEngine;
+import it.eng.spagobi.sdk.maps.bo.SDKMap;
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.DataSourcesSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.EnginesServiceProxy;
+import it.eng.spagobi.sdk.proxy.MapsSDKServiceProxy;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
@@ -68,6 +70,9 @@ public class BiObjectUtilities {
 
 
 	}
+	
+
+	
 
 	public static IFile setFileMetaData(IFile newFile, SDKDocument document) throws CoreException{
 

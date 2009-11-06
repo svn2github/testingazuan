@@ -1,6 +1,5 @@
 package it.eng.spagobi.studio.core.actions;
 
-import it.Prova;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.wizards.downloadWizard.SpagoBIDownloadWizard;
 import it.eng.spagobi.tools.dataset.bo.provaDataSet;

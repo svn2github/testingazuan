@@ -40,6 +40,8 @@ Export-Package: it.eng.spagobi.sdk.datasets,
  it.eng.spagobi.sdk.engines.bo,
  it.eng.spagobi.sdk.exceptions,
  it.eng.spagobi.sdk.proxy,
+ it.eng.spagobi.sdk.maps,
+ it.eng.spagobi.sdk.maps.bo,
  it.eng.spagobi.studio.core.log,
  it.eng.spagobi.studio.core.properties,
  it.eng.spagobi.studio.core.sdk

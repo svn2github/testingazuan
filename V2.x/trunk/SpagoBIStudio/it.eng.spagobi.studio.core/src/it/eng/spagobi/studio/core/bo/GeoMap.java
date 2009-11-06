@@ -38,8 +38,8 @@ public class GeoMap  implements Serializable   {
 	private String format;	
 	private int binId;
 
-	
-	
+
+
 	public GeoMap(SDKMap sdkMap) {
 		super();
 		mapId=sdkMap.getMapId();
@@ -47,9 +47,11 @@ public class GeoMap  implements Serializable   {
 		descr=sdkMap.getDescr();
 		url=sdkMap.getUrl();
 		format=sdkMap.getFormat();
-		binId=sdkMap.getBinId();
+		if(sdkMap.getBinId()!=null){
+			binId=sdkMap.getBinId();
+		}
 	}
-	
+
 
 	public GeoMap() {
 		super();
@@ -67,9 +69,9 @@ public class GeoMap  implements Serializable   {
 	public String getDescr() {
 		return descr;
 	}
-	
-	
-	
+
+
+
 
 	/**
 	 * Sets the descr.

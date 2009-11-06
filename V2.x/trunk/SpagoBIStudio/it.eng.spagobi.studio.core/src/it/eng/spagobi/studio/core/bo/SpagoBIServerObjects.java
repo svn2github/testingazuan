@@ -13,6 +13,25 @@ import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 public class SpagoBIServerObjects {
 
 
+	public GeoMap getGeoMapById(Integer geoId){
+		GeoMap toReturn=null;
+
+		SDKMap sdkMap=null;
+		try{
+			SDKProxyFactory proxyFactory=new SDKProxyFactory();
+			MapsSDKServiceProxy mapsServiceProxy=proxyFactory.getMapsSDKServiceProxy();
+			sdkMap=mapsServiceProxy.getMapById(geoId);
+		}
+		catch (Exception e) {
+			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve map informations", e);
+		}	
+		if(sdkMap!=null){
+			toReturn=new GeoMap(sdkMap);
+
+		}
+		return toReturn;		
+
+	}
 
 	public Vector<GeoMap> getAllGeoMaps(){
 		Vector<GeoMap> toReturn=new Vector<GeoMap>();

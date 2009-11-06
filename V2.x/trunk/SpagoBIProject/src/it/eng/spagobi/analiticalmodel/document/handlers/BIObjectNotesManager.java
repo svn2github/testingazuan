@@ -21,10 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.document.handlers;
 
+import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
+import it.eng.spagobi.commons.dao.DAOFactory;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,6 +42,65 @@ public class BIObjectNotesManager {
 
 	// logger component
 	private static Logger logger = Logger.getLogger(BIObjectNotesManager.class);
+	
+	public String getExecutionIdentifier(Integer biobjID, String executionRole, HashMap execUrlParMapWithValues ) {
+		
+		logger.debug("IN");
+		BIObject biobj = null;
+		try {
+			biobj = DAOFactory.getBIObjectDAO().loadBIObjectForExecutionByIdAndRole(biobjID, executionRole);
+		} catch (EMFUserError e1) {
+			logger.error("EMFUser Error",e1);
+			e1.printStackTrace();
+		}
+		
+		BIObjectParameter biobjpar = null;
+		String parUrlName = null;
+		String identif = null;
+		List biobjpars = null;
+		Iterator iterBiobjPars = null;
+		
+		if(biobj!=null){
+			identif = "biobject=" + biobj.getLabel() + "&";
+			biobjpars = biobj.getBiObjectParameters();
+			iterBiobjPars = biobjpars.iterator();
+			while(iterBiobjPars.hasNext()){
+				biobjpar = (BIObjectParameter)iterBiobjPars.next();
+				Parameter par = biobjpar.getParameter();
+				if((par==null) || (!par.isFunctional())){
+					continue;
+				}
+				parUrlName = biobjpar.getParameterUrlName();
+				String parValue = (String)execUrlParMapWithValues.get(parUrlName);
+			 	identif = identif + parUrlName + "=" + parValue;
+			 	if(iterBiobjPars.hasNext()){
+			 		identif = identif + "&";
+			 	}
+			}
+			logger.debug("identifier produced : " + identif);
+		}
+		
+		BASE64Encoder encoder = new BASE64Encoder();
+		
+		String ecodedIdentif = "";
+		int index = 0;
+		while(index<identif.length()){
+			String tmpStr = "";
+			try{
+				tmpStr = identif.substring(index, index + 10);
+			} catch (Exception e) {
+				tmpStr = identif.substring(index, identif.length());
+			}
+			String tmpEncoded = encoder.encode(tmpStr.getBytes());
+			ecodedIdentif = ecodedIdentif + tmpEncoded;
+			index = index + 10;
+		}
+
+		logger.debug("end method execution, returning encoded identifier: " + ecodedIdentif);
+		logger.debug("OUT");
+		return ecodedIdentif;
+	}
+	
 	
 	/**
 	 * Return an identifier for a specific execution. The identifier is composed using the

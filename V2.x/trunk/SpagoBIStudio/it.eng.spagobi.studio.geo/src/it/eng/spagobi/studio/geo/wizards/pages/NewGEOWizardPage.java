@@ -1,5 +1,6 @@
 package it.eng.spagobi.studio.geo.wizards.pages;
 
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -14,10 +15,11 @@ public class NewGEOWizardPage extends WizardPage{
 
 	Text geoNameText;
 	
-	protected NewGEOWizardPage(String pageName) {
+	public NewGEOWizardPage(String pageName) {
 		super(pageName);
 		setTitle("New GEO Document Template ...");
 	}
+
 
 	public void createControl(Composite parent) {
 		Shell shell = parent.getShell();

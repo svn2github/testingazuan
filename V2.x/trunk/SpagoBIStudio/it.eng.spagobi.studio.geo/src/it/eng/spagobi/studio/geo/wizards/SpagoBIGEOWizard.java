@@ -20,6 +20,8 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -82,7 +84,7 @@ public class SpagoBIGEOWizard extends Wizard implements INewWizard{
 		}
 		// generate the file	       
 		IPath pathFolder = folderSel.getProjectRelativePath();
-		IPath pathNewFile = pathFolder.append(geoFileName + ".sbidoccomp");
+		IPath pathNewFile = pathFolder.append(geoFileName + ".sbigeo");
 		IFile newFile = project.getFile(pathNewFile);
 		try {
 			newFile.create(bais, true, null);
@@ -102,12 +104,35 @@ public class SpagoBIGEOWizard extends Wizard implements INewWizard{
 		return true;
 	}
 
+	public void addPages() {
+		super.addPages();
+		newGEOWizardPage = new NewGEOWizardPage("New GEO Document");
+		addPage(newGEOWizardPage);
+	}
+
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		setWindowTitle("New GEO document creation");
 		this.workbench = workbench;
 		this.selection = selection;
 		
 	}
+	
+	/**
+	 * We will initialize file contents with a sample text.
+	 */
+
+	private InputStream openContentStream() {
+		String contents =
+			"This is the initial file contents for *.mpe file that should be word-sorted in the Preview page of the multi-page editor";
+		return new ByteArrayInputStream(contents.getBytes());
+	}
+
+	private void throwCoreException(String message) throws CoreException {
+		IStatus status =
+			new Status(IStatus.ERROR, "it.eng.spagobi.studio.core", IStatus.OK, message, null);
+		throw new CoreException(status);
+	}
+	
 	public static void flushFromInputStreamToOutputStream(InputStream is, OutputStream os, 
 			boolean closeStreams) throws Exception  {
 		try{	

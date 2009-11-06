@@ -24,6 +24,8 @@ package it.eng.spagobi.mapcatalogue.metadata;
 
 // Generated 31-mag-2007 14.53.27 by Hibernate Tools 3.2.0.beta8
 
+import it.eng.spagobi.mapcatalogue.bo.GeoFeature;
+
 import java.util.Set;
 
 /**
@@ -159,4 +161,36 @@ public class SbiGeoFeatures implements java.io.Serializable {
 		this.sbiGeoMapFeatureses = sbiGeoMapFeatureses;
 	}
 */
+
+	/**
+	 * From the Hibernate Feature object at input, gives the corrispondent
+	 * <code>GeoFeature</code> object.
+	 * 
+	 * @param hibFeature The Hibernate Feature object
+	 * 
+	 * @return the corrispondent output <code>GeoFeature</code>
+	 */
+	public GeoFeature toGeoFeature(){
+		
+		GeoFeature feature = new GeoFeature();
+		feature.setFeatureId(getFeatureId());
+		feature.setName(getName());
+		feature.setDescr(getDescr());
+		feature.setType(getType());
+	
+		/*
+		List maps = new ArrayList();	
+		Set hibMaps = hibFeature.getSbiGeoMapFeatureses();			
+		for (Iterator it = hibMaps.iterator(); it.hasNext(); ) {
+			SbiGeoMapFeatures hibMapFeatures = (SbiGeoMapFeatures) it.next();				
+			Integer mapId = hibMapFeatures.getId().getFeatureId();				
+			maps.add(mapId);
+		}
+			
+		feature.setBiMaps(maps);
+		*/
+		return feature;
+	}
+
+
 }

@@ -66,7 +66,7 @@ public class SbiGeoFeaturesDAOHibImpl extends AbstractHibernateDAO implements IS
 			tx = tmpSession.beginTransaction();
 			//toReturn = (SbiGeoFeatures)tmpSession.load(SbiGeoFeatures.class,  featureID);
 			SbiGeoFeatures hibFeature = (SbiGeoFeatures)tmpSession.load(SbiGeoFeatures.class,  featureID);
-			toReturn = toGeoFeature(hibFeature);
+			toReturn = hibFeature.toGeoFeature();
 			tx.commit();
 			
 		} catch (HibernateException he) {
@@ -115,7 +115,7 @@ public class SbiGeoFeaturesDAOHibImpl extends AbstractHibernateDAO implements IS
 			//if (tmpLst != null && tmpLst.size()>0 ) biFeature = (SbiGeoFeatures)tmpLst.get(0);
 			SbiGeoFeatures hibFeature = (SbiGeoFeatures) criteria.uniqueResult();
 			if (hibFeature == null) return null;
-			biFeature = toGeoFeature(hibFeature);	
+			biFeature = hibFeature.toGeoFeature();	
 			
 			tx.commit();
 		} catch (HibernateException he) {
@@ -275,7 +275,7 @@ public class SbiGeoFeaturesDAOHibImpl extends AbstractHibernateDAO implements IS
 			while (it.hasNext()) {			
 				SbiGeoFeatures hibFeature = (SbiGeoFeatures) it.next();	
 				if (hibFeature != null) {
-					GeoFeature bifeature = toGeoFeature(hibFeature);	
+					GeoFeature bifeature = hibFeature.toGeoFeature();	
 					realResult.add(bifeature);
 				}
 			}
@@ -349,33 +349,8 @@ public class SbiGeoFeaturesDAOHibImpl extends AbstractHibernateDAO implements IS
 		
 	}
 
-	/**
-	 * From the Hibernate Feature object at input, gives the corrispondent
-	 * <code>GeoFeature</code> object.
-	 * 
-	 * @param hibFeature The Hibernate Feature object
-	 * 
-	 * @return the corrispondent output <code>GeoFeature</code>
-	 */
-	public GeoFeature toGeoFeature(SbiGeoFeatures hibFeature){
-		
-		GeoFeature feature = new GeoFeature();
-		feature.setFeatureId(hibFeature.getFeatureId());
-		feature.setName(hibFeature.getName());
-		feature.setDescr(hibFeature.getDescr());
-		feature.setType(hibFeature.getType());
-	
-		/*
-		List maps = new ArrayList();	
-		Set hibMaps = hibFeature.getSbiGeoMapFeatureses();			
-		for (Iterator it = hibMaps.iterator(); it.hasNext(); ) {
-			SbiGeoMapFeatures hibMapFeatures = (SbiGeoMapFeatures) it.next();				
-			Integer mapId = hibMapFeatures.getId().getFeatureId();				
-			maps.add(mapId);
-		}
-			
-		feature.setBiMaps(maps);
-		*/
-		return feature;
-	}
+
+
+
+
 }

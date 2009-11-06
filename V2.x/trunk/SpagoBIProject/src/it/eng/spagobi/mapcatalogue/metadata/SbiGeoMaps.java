@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.mapcatalogue.metadata;
 
 import it.eng.spagobi.commons.metadata.SbiBinContents;
+import it.eng.spagobi.mapcatalogue.bo.GeoMap;
 
 
 // Generated 31-mag-2007 14.53.27 by Hibernate Tools 3.2.0.beta8
@@ -189,4 +190,32 @@ public class SbiGeoMaps implements java.io.Serializable {
 		this.binContents = binContents;
 	}
 
+
+	/**
+	 * From the Hibernate Map object at input, gives the corrispondent
+	 * <code>GeoMap</code> object.
+	 * 
+	 * @param hibMap The Hibernate Map object
+	 * 
+	 * @return the corrispondent output <code>GeoMap</code>
+	 */
+	public GeoMap toGeoMap(){
+
+		GeoMap map = new GeoMap();
+		map.setMapId(getMapId());
+		map.setName(getName());
+		map.setDescr(getDescr());
+		map.setFormat(getFormat());
+		map.setUrl(getUrl());
+		SbiBinContents tmpBin = getBinContents();
+		if (tmpBin != null) { 
+			map.setBinId(tmpBin.getId().intValue());
+		}
+
+
+		return map;
+	}
+
+
 }
+

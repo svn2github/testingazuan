@@ -18,11 +18,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.mapcatalogue.bo;
 
 
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IBinContentDAO;
+import it.eng.spagobi.commons.metadata.SbiBinContents;
+import it.eng.spagobi.mapcatalogue.metadata.SbiGeoFeatures;
+import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
+import it.eng.spagobi.sdk.maps.impl.MapsSDKServiceImpl;
+
 import java.io.Serializable;
+
+import org.apache.log4j.Logger;
 
 /**
  * Defines a value constraint object.
@@ -33,15 +44,17 @@ import java.io.Serializable;
 
 
 public class GeoMap  implements Serializable   {
-	
+
 	private int mapId;
 	private String name;
 	private String descr;
 	private String url;	
 	private String format;	
 	private int binId;
-	
-	
+
+	static private Logger logger = Logger.getLogger(GeoMap.class);
+
+
 	/**
 	 * Gets the descr.
 	 * 
@@ -50,7 +63,7 @@ public class GeoMap  implements Serializable   {
 	public String getDescr() {
 		return descr;
 	}
-	
+
 	/**
 	 * Sets the descr.
 	 * 
@@ -59,7 +72,7 @@ public class GeoMap  implements Serializable   {
 	public void setDescr(String descr) {
 		this.descr = descr;
 	}
-	
+
 	/**
 	 * Gets the format.
 	 * 
@@ -68,7 +81,7 @@ public class GeoMap  implements Serializable   {
 	public String getFormat() {
 		return format;
 	}
-	
+
 	/**
 	 * Sets the format.
 	 * 
@@ -77,7 +90,7 @@ public class GeoMap  implements Serializable   {
 	public void setFormat(String format) {
 		this.format = format;
 	}
-	
+
 	/**
 	 * Gets the map id.
 	 * 
@@ -86,7 +99,7 @@ public class GeoMap  implements Serializable   {
 	public int getMapId() {
 		return mapId;
 	}
-	
+
 	/**
 	 * Sets the map id.
 	 * 
@@ -95,7 +108,7 @@ public class GeoMap  implements Serializable   {
 	public void setMapId(int mapId) {
 		this.mapId = mapId;
 	}
-	
+
 	/**
 	 * Gets the name.
 	 * 
@@ -104,7 +117,7 @@ public class GeoMap  implements Serializable   {
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
 	 * Sets the name.
 	 * 
@@ -113,7 +126,7 @@ public class GeoMap  implements Serializable   {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * Gets the url.
 	 * 
@@ -122,7 +135,7 @@ public class GeoMap  implements Serializable   {
 	public String getUrl() {
 		return url;
 	}
-	
+
 	/**
 	 * Sets the url.
 	 * 
@@ -148,6 +161,36 @@ public class GeoMap  implements Serializable   {
 	 */
 	public void setBinId(int binId) {
 		this.binId = binId;
+	}
+
+
+	public SbiGeoMaps toSpagoBiGeoMaps() throws EMFUserError, EMFInternalError {
+		logger.info("IN");
+		SbiGeoMaps sbm = new SbiGeoMaps();
+		sbm.setMapId(getMapId());
+		sbm.setName(getName());
+		sbm.setDescr(getDescr());
+		sbm.setFormat(getFormat());	
+		sbm.setUrl(getUrl());
+
+		IBinContentDAO binContentDAO=DAOFactory.getBinContentDAO();
+		try{
+			byte[] binContentsContent=binContentDAO.getBinContent(getBinId());
+			if(binContentsContent!=null){
+				Integer contentId=getBinId();
+				SbiBinContents sbiBinContents=new SbiBinContents();
+				sbiBinContents.setId(contentId);
+				sbiBinContents.setContent(binContentsContent);
+				sbm.setBinContents(sbiBinContents);
+			}
+		}
+		catch (Exception e) {
+			logger.error("Bin COntent not found");
+		}
+
+
+		logger.info("OUT");
+		return sbm;
 	}
 
 

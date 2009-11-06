@@ -63,6 +63,25 @@
   <arrayMapping innerType="ns51:SDKDocument" languageSpecificType="java:it.eng.spagobi.sdk.documents.bo.SDKDocument[]" qname="ns50:ArrayOf_tns2_SDKDocument" xmlns:ns50="urn:spagobisdkdocuments" xmlns:ns51="http://bo.documents.sdk.spagobi.eng.it"/>
   <arrayMapping innerType="ns53:SDKFunctionality" languageSpecificType="java:it.eng.spagobi.sdk.documents.bo.SDKFunctionality[]" qname="ns52:ArrayOf_tns2_SDKFunctionality" xmlns:ns52="urn:spagobisdkdocuments" xmlns:ns53="http://bo.documents.sdk.spagobi.eng.it"/>
   </service>
+ <service name="MapsSDKService" provider="java:RPC">
+  <requestFlow>
+	<handler type="WSDoAllSender"/>
+  </requestFlow>
+  <parameter name="wsdlServicePort" value="MapsSDKService"/>
+  <parameter name="className" value="it.eng.spagobi.sdk.maps.stub.MapsSDKServiceSoapBindingStub"/>
+  <parameter name="typeMappingVersion" value="1.2"/>
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="wsdlServiceElement" value="MapsSDKServiceService"/>
+  <parameter name="wsdlTargetNamespace" value="urn:spagobisdkmaps"/>
+  <parameter name="wsdlPortType" value="MapsSDKService"/>
+  <parameter name="scope" value="Session"/>
+  <parameter name="schemaUnqualified" value="urn:spagobisdkmaps,http://bo.maps.sdk.spagobi.eng.it,http://exceptions.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns25:NotAllowedOperationException" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.exceptions.NotAllowedOperationException" xmlns:ns25="http://exceptions.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns26:SDKFeature" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.maps.bo.SDKFeature" xmlns:ns26="http://bo.maps.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns27:SDKMap" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.maps.bo.SDKMap" xmlns:ns27="http://bo.maps.sdk.spagobi.eng.it"/>
+  <arrayMapping innerType="ns29:SDKMap" languageSpecificType="java:it.eng.spagobi.sdk.maps.bo.SDKMap[]" qname="ns28:ArrayOf_tns2_SDKMap" xmlns:ns28="urn:spagobisdkmaps" xmlns:ns29="http://bo.maps.sdk.spagobi.eng.it"/>
+  <arrayMapping innerType="ns31:SDKFeature" languageSpecificType="java:it.eng.spagobi.sdk.maps.bo.SDKFeature[]" qname="ns30:ArrayOf_tns2_SDKFeature" xmlns:ns30="urn:spagobisdkmaps" xmlns:ns31="http://bo.maps.sdk.spagobi.eng.it"/>
+ </service>    
  <service name="EnginesService" provider="java:RPC">
   <requestFlow>
 	<handler type="WSDoAllSender"/>

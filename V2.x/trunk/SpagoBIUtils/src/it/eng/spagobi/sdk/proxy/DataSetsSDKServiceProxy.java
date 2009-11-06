@@ -30,8 +30,7 @@ public class DataSetsSDKServiceProxy implements it.eng.spagobi.sdk.datasets.stub
           ((javax.xml.rpc.Stub)dataSetsSDKService)._setProperty("javax.xml.rpc.service.endpoint.address", _endpoint);
         else
           _endpoint = (String)((javax.xml.rpc.Stub)dataSetsSDKService)._getProperty("javax.xml.rpc.service.endpoint.address");
-      }
-      
+      }      
     }
     catch (javax.xml.rpc.ServiceException serviceException) {}
   }

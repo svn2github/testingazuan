@@ -63,7 +63,7 @@ public class SpagoBIGEOWizard extends Wizard implements INewWizard{
 		ByteArrayInputStream bais = null;
 		Bundle b = org.eclipse.core.runtime.Platform.getBundle(Activator.PLUGIN_ID);
 
-		URL res = b.getResource(GEO_INFO_FILE);;
+		URL res = b.getResource(GEO_INFO_FILE);
 		InputStream is = null;
 		try {
 			is = res.openStream();

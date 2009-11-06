@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MAP>
+	<!--
+	<MAP_PROVIDER class_name="it.eng.spagobi.engines.geo.map.provider.SOMapProvider" map_name="USA_STATES" />
+
+	<DATAMART_PROVIDER class_name="it.eng.spagobi.engines.geo.dataset.provider.SQLDatasetProvider"
+			   hierarchy="custom"
+			   level="States">
+			   
+			   
+		<METADATA>
+		     <COLUMN type="geoid"   column_id="region_id"         hierarchy="custom" level="States"/>      
+		     <COLUMN type="measure" column_id="store_sales"      agg_func="sum"/>
+		     <COLUMN type="measure" column_id="store_cost"       agg_func="sum"/>
+		     <COLUMN type="measure" column_id="unit_sales"       agg_func="sum"/>
+		</METADATA>	   
+			   
+		<DATASET>
+      <DATASOURCE type="connection" driver="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:hsql://localhost:9002/foodmart" user="sa" password="sa"/>
+      <QUERY>
+        SELECT s.store_id as store_id, r.region_id as region_id, sum(store_sales) as store_sales, sum(store_cost) as store_cost, sum(unit_sales) as unit_sales, sales_state, sales_region, sales_subregion, sales_area 
+        FROM sales_fact_1997 f, store s, sales_region r 
+        WHERE f.store_id = s.store_id AND s.region_id = r.region_id 
+        GROUP BY store_id, region_id, sales_state, sales_region, sales_subregion, sales_area
+      </QUERY>
+		</DATASET>		   
+
+		<HIERARCHIES>
+    	<HIERARCHY name="custom" type="custom">
+    	   <LEVEL name="States" column_id="sales_state"  column_desc="sales_state" feature_name="States"/>               
+    	</HIERARCHY>			
+		</HIERARCHIES>
+		
+		<CROSS_NAVIGATION>
+      <LINK hierarchy="custom" level="States">
+          <PARAM type="absolute" name="DOCUMENT_LABEL" value="rptBestSales" />
+          <PARAM type="relative" scope ="dataset" name="state" value="sales_state" /> 
+      </LINK>
+		</CROSS_NAVIGATION>
+
+
+	</DATAMART_PROVIDER>                       
+	
+		
+	<MAP_RENDERER class_name="it.eng.spagobi.engines.geo.map.renderer.InteractiveMapRenderer">	
+	
+  <MEASURES default_kpi="store_sales">
+  	<KPI column_id="store_sales" description="Store Sales" agg_func="sum" colour="#E19696" >
+  		<TRESHOLDS type="quantile" lb_value="0" ub_value="none" >
+  			<PARAM name="GROUPS_NUMBER" value="5" />
+  		</TRESHOLDS>
+   		<COLOURS type="grad" outbound_colour="#FFFFFF" null_values_color="#CCCCCC" >
+  			<PARAM name="BASE_COLOR" value="#FF0000" />
+  		</COLOURS>
+   	</KPI>
+   	<KPI column_id="store_cost" description="Store Cost" agg_func="sum" colour="#9696B9" >
+  		<TRESHOLDS type="quantile" lb_value="0" ub_value="none" >
+  			<PARAM name="GROUPS_NUMBER" value="5" />
+  		</TRESHOLDS>
+   		<COLOURS type="grad" outbound_colour="#FFFFFF" null_values_color="#CCCCCC" >
+  			<PARAM name="BASE_COLOR" value="#3333CC" />
+  		</COLOURS>
+   	</KPI>
+   	<KPI column_id="unit_sales" description="Unit Sales" agg_func="sum" colour="#96C396" >
+  		<TRESHOLDS type="quantile" lb_value="0" ub_value="none" >
+  			<PARAM name="GROUPS_NUMBER" value="5" />
+  		</TRESHOLDS>
+   		<COLOURS type="grad" outbound_colour="#FFFFFF" null_values_color="#CCCCCC" >
+  			<PARAM name="BASE_COLOR" value="#009900" />
+  		</COLOURS>
+   	</KPI>
+   </MEASURES>
+		
+  <LAYERS>
+  	<LAYER name="States" description="States" selected="true" default_fill_color="#4682B4" />
+  </LAYERS>
+		
+	</MAP_RENDERER>
+	-->
+</MAP>

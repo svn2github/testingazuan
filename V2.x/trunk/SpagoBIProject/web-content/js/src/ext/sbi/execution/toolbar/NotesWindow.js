@@ -128,12 +128,21 @@ Ext.extend(Sbi.execution.toolbar.NotesWindow, Ext.Window, {
 			failure: Sbi.exception.ExceptionHandler.handleFailure      
 		});
 	}
+	
+	,checkEmptyValues: function(val){
+	     var expression = Ext.util.Format.stripTags( val );
+	     expression = expression.replace(/&nbsp;/g," ");
+	     if(expression.trim() == ""){
+	     	val = "";
+	     }
+	     return val;
+	}
 
 	, saveNotes: function () {
 		Ext.Ajax.request({
 	        url: this.services['saveNotesService'],
 	        params: {'SBI_EXECUTION_ID': this.SBI_EXECUTION_ID, 
-						'PREVIOUS_NOTES': this.previousNotes, 'NOTES': this.editor.getValue()},
+						'PREVIOUS_NOTES': this.previousNotes, 'NOTES': this.checkEmptyValues(this.editor.getValue())},
 	        callback : function(options , success, response) {
 	  	  		if (success) {
 		      		if(response !== undefined && response.responseText !== undefined) {

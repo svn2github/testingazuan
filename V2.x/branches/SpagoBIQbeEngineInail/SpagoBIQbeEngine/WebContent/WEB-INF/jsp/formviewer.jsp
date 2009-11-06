@@ -5,13 +5,17 @@
 <%
 Locale locale = Locale.ITALIAN;
 %>
-
 <%-- ---------------------------------------------------------------------- --%>
 <%-- HTML	 																--%>
 <%-- ---------------------------------------------------------------------- --%>
 
+<%-- DOCTYPE declaration: it is required in order to fix some side effects, in particular in IE --%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%-- and DOCTYPE declaration --%>
+    
 <html>
-	
+
 	<head>
 		<%@include file="commons/includeExtJS.jspf" %>
 		<%@include file="commons/includeSbiFormViewerJS.jspf"%>
@@ -46,6 +50,7 @@ Locale locale = Locale.ITALIAN;
         	
             var viewer = new Sbi.formviewer.ViewerPanel(template, {region: 'center'});
            	var viewport = new Ext.Viewport({layout: 'border', items: [viewer]});
+           	
       	});
       	
 	    </script>

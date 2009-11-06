@@ -140,7 +140,7 @@ var template = {
                     rightOperandValue: 'Drink'
                 }
             ]
-        } 
+        }
         
     ], 
     // -------------------------------- fine filtri statici chiusi ----------------------------------------------

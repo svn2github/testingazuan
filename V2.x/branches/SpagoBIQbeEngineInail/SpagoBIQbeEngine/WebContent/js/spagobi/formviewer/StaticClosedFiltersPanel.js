@@ -51,7 +51,7 @@ Sbi.formviewer.StaticClosedFiltersPanel = function(staticFilters, config) {
 	var defaultSettings = {
 		// set default values here
 		title: LN('sbi.formviewer.staticclosedfilterspanel.title')
-		, layout: 'column'
+		, layout: 'table'
 	    , layoutConfig: {
 	        columns: staticFilters.length
 	    }

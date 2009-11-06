@@ -51,6 +51,10 @@ Sbi.formviewer.StaticClosedXORFiltersPanel = function(aStaticClosedXORFiltersGro
 	var defaultSettings = {
 		// set default values here
 		frame: true
+		//, layout: 'form'
+		//, autoScroll: true
+		//, autoWidth: true
+		//, autoHeight: true
         , width: 300
         , height: 150
 	};
@@ -83,6 +87,7 @@ Ext.extend(Sbi.formviewer.StaticClosedXORFiltersPanel, Ext.form.FormPanel, {
             xtype: 'fieldset',
             title: aStaticClosedXORFiltersGroup.title,
             autoHeight: true,
+            autoWidth: true,
             defaultType: 'radio',
             items: []
         }
@@ -91,6 +96,10 @@ Ext.extend(Sbi.formviewer.StaticClosedXORFiltersPanel, Ext.form.FormPanel, {
 			// create No Selection Item
 			this.items.items.push({
 				hideLabel: true,
+				//fieldLabel: '',
+				//labelSeparator: '',
+				//labelStyle: 'width: 0px',
+				//itemCls: 'no-padding',
 				boxLabel: aStaticClosedXORFiltersGroup.noSelectionText,
 				name: aStaticClosedXORFiltersGroup.id,
 				inputValue: 'noSelection'
@@ -102,6 +111,10 @@ Ext.extend(Sbi.formviewer.StaticClosedXORFiltersPanel, Ext.form.FormPanel, {
 			var aFilter = aStaticClosedXORFiltersGroup.filters[i];
 			this.items.items.push({
 				hideLabel: true,
+				//fieldLabel: '',
+				//labelSeparator: '',
+				//labelStyle: 'width: 0px',
+				//itemCls: 'no-padding',
                 boxLabel: aFilter.text,
                 name: aStaticClosedXORFiltersGroup.id,
                 inputValue: aFilter.id

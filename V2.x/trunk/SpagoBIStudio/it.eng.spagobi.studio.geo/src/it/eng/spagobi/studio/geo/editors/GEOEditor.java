@@ -1,12 +1,12 @@
 package it.eng.spagobi.studio.geo.editors;
 
-import it.eng.spagobi.studio.core.properties.PropertyPage;
-
 import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
-import it.eng.spagobi.sdk.maps.bo.SDKMap;
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
-import it.eng.spagobi.sdk.proxy.MapsSDKServiceProxy;
+import it.eng.spagobi.studio.core.bo.Dataset;
+import it.eng.spagobi.studio.core.bo.GeoMap;
+import it.eng.spagobi.studio.core.bo.SpagoBIServerObjects;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
+import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 import it.eng.spagobi.studio.geo.Activator;
 import it.eng.spagobi.studio.geo.editors.model.bo.ModelBO;
@@ -49,8 +49,8 @@ public class GEOEditor extends EditorPart{
 
 	protected boolean isDirty = false;
 
-	private HashMap<String, SDKDataSet> datasetInfos;
-	private HashMap<String, SDKMap> mapInfos;
+	private HashMap<String, Dataset> datasetInfos;
+	private HashMap<String, GeoMap> mapInfos;
 
 	public void init(IEditorSite site, IEditorInput input) {
 		try{
@@ -71,8 +71,8 @@ public class GEOEditor extends EditorPart{
 			}
 			setInput(input);
 			setSite(site);
-			mapInfos=new HashMap<String, SDKMap>();
-			datasetInfos=new HashMap<String, SDKDataSet>();
+			mapInfos=new HashMap<String, GeoMap>();
+			datasetInfos=new HashMap<String, Dataset>();
 		}catch(Exception e){
 			SpagoBILogger.warningLog("Error occurred:"+e.getMessage());
 		}
@@ -96,13 +96,20 @@ public class GEOEditor extends EditorPart{
 			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve dataset informations", e);
 		}	
 
-		for (int i = 0; i < sdkDataSets.length; i++) {
-			SDKDataSet sdkDataSet=sdkDataSets[i];
-			String aaa=sdkDataSet.getName();
-			if(!datasetInfos.keySet().contains(sdkDataSet.getName())){
-				datasetInfos.put(sdkDataSet.getName(), sdkDataSet);
-			}	
-		}		
+		
+		SpagoBIServerObjects sbso=new SpagoBIServerObjects();
+		Vector<Dataset> datasetVector= sbso.getAllDatasets();
+		for (Iterator iterator = datasetVector.iterator(); iterator.hasNext();) {
+			Dataset dataset = (Dataset) iterator.next();
+			datasetInfos.put(dataset.getLabel(), dataset);
+		}
+		Vector<GeoMap> mapVector= sbso.getAllGeoMaps();
+		for (Iterator iterator = mapVector.iterator(); iterator.hasNext();) {
+			GeoMap geoMap = (GeoMap) iterator.next();
+			mapInfos.put(geoMap.getName(), geoMap);
+		}
+
+		
 		//mapInfos.put(sdkMap.getName(), sdkMap);
 
 

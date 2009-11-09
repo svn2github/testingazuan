@@ -19,6 +19,7 @@ import it.eng.spagobi.studio.geo.editors.model.bo.ModelBO;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.util.DesignerUtils;
 
+import java.awt.Font;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
@@ -222,6 +223,7 @@ public class GEOEditor extends EditorPart{
 			}
 		});
 		section.setText("GEO designer");
+
 		Composite sectionClient = toolkit.createComposite(section, SWT.RESIZE);
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 2;
@@ -323,6 +325,10 @@ public class GEOEditor extends EditorPart{
 						editor.minimumWidth = comboSel.getSize ().x;
 						editor.horizontalAlignment = SWT.CENTER;
 						editor.grabHorizontal=true;
+						editor.minimumHeight=comboSel.getSize().y;
+						editor.verticalAlignment=SWT.CENTER;
+						editor.grabVertical=true;
+
 						editor.setEditor(comboSel, item, DATASET_SELECT);
 
 						//combo per geoid, measures, geocd
@@ -335,6 +341,9 @@ public class GEOEditor extends EditorPart{
 						editor.minimumWidth = comboAgg.getSize ().x;
 						editor.horizontalAlignment = SWT.CENTER;
 						editor.grabHorizontal=true;
+						editor.minimumHeight=comboAgg.getSize().y;
+						editor.verticalAlignment=SWT.CENTER;
+						editor.grabVertical=true;
 						editor.setEditor(comboAgg, item, DATASET_AGGREGATION);
 					}
 				}
@@ -365,8 +374,6 @@ public class GEOEditor extends EditorPart{
 			column.setResizable(true);
 
 		} 
-
-		TableEditor editor = new TableEditor (datasetTable);
 
 		for (int i=0; i<titles.length; i++) {
 			datasetTable.getColumn (i).pack();
@@ -441,6 +448,9 @@ public class GEOEditor extends EditorPart{
 						editor.minimumWidth = newDescr.getSize ().x;
 						editor.horizontalAlignment = SWT.CENTER;
 						editor.grabHorizontal=true;						
+						editor.minimumHeight=newDescr.getSize().y;
+						editor.verticalAlignment=SWT.CENTER;
+						editor.grabVertical=true;
 						newDescr.selectAll();
 						newDescr.setFocus();						
 						editor.setEditor(newDescr, item, FEATURE_DESCR);
@@ -451,6 +461,9 @@ public class GEOEditor extends EditorPart{
 						editor.minimumWidth = selButton.getSize ().x;
 						editor.horizontalAlignment = SWT.CENTER;
 						editor.grabHorizontal=true;
+						editor.minimumHeight=selButton.getSize().y;
+						editor.verticalAlignment=SWT.CENTER;
+						editor.grabVertical=true;
 						editor.setEditor(selButton, item, FEATURE_DEFAULT_LEVEL);
 						Composite colorSection=DesignerUtils.createColorPicker(mapTable, "#FF0000");
 
@@ -458,9 +471,14 @@ public class GEOEditor extends EditorPart{
 						editor.minimumWidth = colorSection.getSize ().x;
 						editor.horizontalAlignment = SWT.CENTER;
 						editor.grabHorizontal=true;
+						editor.minimumHeight=colorSection.getSize().y;
+						editor.verticalAlignment=SWT.CENTER;
+						editor.grabVertical=true;						
 						editor.setEditor(colorSection, item, FEATURE_DEFAULT_COLORS);
 					}
 				}
+				sectionClient.getParent().pack();
+				sectionClient.getParent().redraw();
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -491,30 +509,6 @@ public class GEOEditor extends EditorPart{
 			column.setText(titles[i]);
 		} 
 
-		TableEditor editor = new TableEditor (mapTable);
-
-		//valori reperiti da dataset selezionato
-		/*    	TableItem item = new TableItem(mapTable, SWT.NONE);
-	    item.setText(0, mapInfos.get("name"));
-	    item.setText(1, mapInfos.get("description"));
-
-
-	    //combo per geoid, measures, geocd
-	    Button radio = new Button(mapTable, SWT.RADIO);
-	    if(mapInfos.get("selected").equalsIgnoreCase("true")){
-	    	radio.setSelection(true);
-	    }
-
-	    radio.setEnabled(true);
-	    radio.pack();
-
-	    editor.minimumWidth = radio.getSize ().x;
-	    editor.horizontalAlignment = SWT.CENTER;
-	    editor.grabHorizontal= true;
-	    editor.verticalAlignment = SWT.BOTTOM;
-	    editor.setEditor(radio, item, 2);
-
-	    item.setText(3, mapInfos.get("color"));*/
 
 		for (int i=0; i<titles.length; i++) {
 			mapTable.getColumn (i).pack ();

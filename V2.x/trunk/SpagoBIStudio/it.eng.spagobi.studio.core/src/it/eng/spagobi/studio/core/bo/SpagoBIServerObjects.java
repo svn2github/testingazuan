@@ -3,6 +3,7 @@ package it.eng.spagobi.studio.core.bo;
 import java.util.Vector;
 
 import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
+import it.eng.spagobi.sdk.datasets.bo.SDKDataStoreMetadata;
 import it.eng.spagobi.sdk.maps.bo.SDKMap;
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.MapsSDKServiceProxy;
@@ -13,7 +14,33 @@ import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 public class SpagoBIServerObjects {
 
 
-	public GeoMap getGeoMapById(Integer geoId){
+
+	public DataStoreMetadata getDataStoreMetadata(Integer datasetId) throws Exception{
+		SDKDataStoreMetadata sdkDataStoreMetadata=null;
+		DataStoreMetadata toReturn=null;
+		try{
+			SDKProxyFactory proxyFactory=new SDKProxyFactory();
+			DataSetsSDKServiceProxy datasetsServiceProxy=proxyFactory.getDataSetsSDKServiceProxy();
+			SDKDataSet sdkDataSet=datasetsServiceProxy.getDataSet(datasetId);
+
+			sdkDataStoreMetadata=datasetsServiceProxy.getDataStoreMetadata(sdkDataSet);
+		}
+		catch (Exception e) {
+			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve dataset metadata informations", e);
+			throw(e);
+		}
+		if(sdkDataStoreMetadata!=null){
+			toReturn=new DataStoreMetadata(sdkDataStoreMetadata);
+		}
+		return toReturn;
+	}
+
+
+
+
+
+
+	public GeoMap getGeoMapById(Integer geoId) throws Exception{
 		GeoMap toReturn=null;
 
 		SDKMap sdkMap=null;
@@ -24,6 +51,7 @@ public class SpagoBIServerObjects {
 		}
 		catch (Exception e) {
 			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve map informations", e);
+			throw(e);
 		}	
 		if(sdkMap!=null){
 			toReturn=new GeoMap(sdkMap);
@@ -58,7 +86,7 @@ public class SpagoBIServerObjects {
 	}
 
 
-	public Vector<Dataset> getAllDatasets(){
+	public Vector<Dataset> getAllDatasets() throws Exception{
 		Vector<Dataset> toReturn=new Vector<Dataset>();
 
 		SDKDataSet[] sdkDataSets=null;
@@ -69,7 +97,9 @@ public class SpagoBIServerObjects {
 		}
 		catch (Exception e) {
 			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve dataset informations", e);
-		}	
+			throw(e);
+		}
+
 
 		for (int i = 0; i < sdkDataSets.length; i++) {
 			SDKDataSet sdkDataSet=sdkDataSets[i];
@@ -79,9 +109,7 @@ public class SpagoBIServerObjects {
 			}
 		}
 		return toReturn;		
-
 	}
-
 
 
 }

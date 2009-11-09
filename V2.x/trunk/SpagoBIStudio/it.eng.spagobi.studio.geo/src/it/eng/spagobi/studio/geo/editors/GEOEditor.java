@@ -7,6 +7,7 @@ import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
 import it.eng.spagobi.studio.core.bo.DataStoreMetadata;
 import it.eng.spagobi.studio.core.bo.DataStoreMetadataField;
 import it.eng.spagobi.studio.core.bo.Dataset;
+import it.eng.spagobi.studio.core.bo.GeoFeature;
 import it.eng.spagobi.studio.core.bo.GeoMap;
 import it.eng.spagobi.studio.core.bo.SpagoBIServerObjects;
 import it.eng.spagobi.studio.core.exceptions.NoServerException;
@@ -16,6 +17,7 @@ import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 import it.eng.spagobi.studio.geo.Activator;
 import it.eng.spagobi.studio.geo.editors.model.bo.ModelBO;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
+import it.eng.spagobi.studio.geo.util.DesignerUtils;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,10 +30,15 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -39,6 +46,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorInput;
@@ -66,11 +74,14 @@ public class GEOEditor extends EditorPart{
 	private HashMap<String, GeoMap> mapInfos;
 
 	private HashMap<String, DataStoreMetadata> tempDsMetadataInfos;
+	private HashMap<String, GeoFeature[]> tempMapMetadataInfos;
 
 
 	private String selectedDataset;
 	private Table datasetTable;
 	private Combo datasetCombo;	
+
+	private Table mapTable;
 
 	private static final int DATASET_NAME=0;
 	private static final int DATASET_CLASS=1;
@@ -79,8 +90,8 @@ public class GEOEditor extends EditorPart{
 
 	private static final int FEATURE_NAME=0;
 	private static final int FEATURE_DESCR=1;
-	private static final int DATSET_DEFAULT_LEVEL=2;
-	private static final int DATSET_DEFAULT_COLORS=3;
+	private static final int FEATURE_DEFAULT_LEVEL=2;
+	private static final int FEATURE_DEFAULT_COLORS=3;
 
 
 	public void init(IEditorSite site, IEditorInput input) {
@@ -106,6 +117,7 @@ public class GEOEditor extends EditorPart{
 			mapInfos=new HashMap<String, GeoMap>();
 			datasetInfos=new HashMap<String, Dataset>();
 			tempDsMetadataInfos=new HashMap<String, DataStoreMetadata>();
+			tempMapMetadataInfos=new HashMap<String, GeoFeature[]>();
 		}catch(Exception e){
 			SpagoBILogger.warningLog("Error occurred:"+e.getMessage());
 		}
@@ -354,50 +366,6 @@ public class GEOEditor extends EditorPart{
 
 		TableEditor editor = new TableEditor (datasetTable);
 
-		//valori reperiti da dataset selezionato
-		/*if(selectedDataset != null && !selectedDataset.equals("") && datasetInfos.get(selectedDataset) != null){
-
-			Dataset datasetItem = datasetInfos.get(selectedDataset);
-			TableItem item = new TableItem(datasetTable, SWT.NONE);
-
-
-			item.setText(0, datasetItem.getName());
-			item.setText(1, datasetItem.getType());
-
-			//combo per geoid, measures, geocd
-			Combo comboSel = new Combo(datasetTable,SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
-			comboSel.add("geoid");
-			comboSel.add("measures");
-			comboSel.add("geocd");
-			for(int i=0; i< comboSel.getItemCount(); i++){
-				boolean val = datasetItem.getNumberingRows().booleanValue();
-				if(String.valueOf(val).equalsIgnoreCase(comboSel.getItem(i))){
-					comboSel.select(i);
-				}		
-			}
-
-			comboSel.pack();
-
-			editor.minimumWidth = comboSel.getSize ().x;
-			editor.horizontalAlignment = SWT.CENTER;
-			editor.grabHorizontal=true;
-			editor.setEditor(comboSel, item, 2);
-
-
-			//combo per geoid, measures, geocd
-			Combo comboAgg = new Combo(datasetTable,SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
-			comboAgg.add("sum");
-			comboAgg.add("media");
-			comboAgg.pack();
-
-			editor = new TableEditor (datasetTable);
-			editor.minimumWidth = comboAgg.getSize ().x;
-			editor.horizontalAlignment = SWT.CENTER;
-			editor.grabHorizontal=true;
-			editor.setEditor(comboAgg, item, 3);
-
-	}
-		 */
 		for (int i=0; i<titles.length; i++) {
 			datasetTable.getColumn (i).pack();
 		}  
@@ -405,7 +373,7 @@ public class GEOEditor extends EditorPart{
 
 	}
 
-	private void createMapCombo(Composite sectionClient,Group mapGroup){
+	private void createMapCombo(final Composite sectionClient,Group mapGroup){
 
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.horizontalSpan = 1;
@@ -423,6 +391,84 @@ public class GEOEditor extends EditorPart{
 			mapCombo.add(name);
 		}		
 		mapCombo.setLayoutData(gd);
+
+
+		mapCombo.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				// Once selected the dataset fill the table with its metadata, check first if they have been already recovered!
+				mapTable.removeAll();
+				int indexSelection=mapCombo.getSelectionIndex();
+				String mapLabel=mapCombo.getItem(indexSelection);
+				GeoFeature[] geoFeatures=null;
+				// get the metadata
+				if(tempMapMetadataInfos.get(mapLabel)!=null){
+					geoFeatures=tempMapMetadataInfos.get(mapLabel);
+				}
+				else{
+					GeoMap geoMap = mapInfos.get(mapLabel);
+					try{
+						geoFeatures=new SpagoBIServerObjects().getFeaturesByMapId(geoMap.getMapId());
+						if(geoFeatures!=null){
+							tempMapMetadataInfos.put(mapLabel, geoFeatures);
+						}
+						else{
+							SpagoBILogger.warningLog("No features returned from map with label "+mapLabel);
+							MessageDialog.openWarning(sectionClient.getShell(), "Warning", "No features returned from map with label "+mapLabel);			
+						}
+					}
+					catch (NoServerException e1) {
+						SpagoBILogger.errorLog("Could not get features associated to map with label = "+mapLabel, e1);
+						MessageDialog.openError(sectionClient.getShell(), "Error", "Could not get features associated to map with label = "+mapLabel);
+					}
+				}
+				if(geoFeatures!=null){
+					for (int i = 0; i < geoFeatures.length; i++) {
+						GeoFeature geoFeature=geoFeatures[i];
+						TableItem item = new TableItem(mapTable, SWT.NONE);
+						item.setText(FEATURE_NAME, geoFeature.getName());
+
+						TableEditor editor = new TableEditor (mapTable);
+						Text newDescr = new Text(mapTable, SWT.BORDER);
+						newDescr.setBackground(new Color(sectionClient.getDisplay(), new RGB(245,245,245)));
+						newDescr.setText(geoFeature.getDescr()!=null ? geoFeature.getDescr() : "");
+						newDescr.addModifyListener(new ModifyListener() {
+							public void modifyText(ModifyEvent me) {
+								System.out.println("Changed");
+							}
+						});
+						editor.minimumWidth = newDescr.getSize ().x;
+						editor.horizontalAlignment = SWT.CENTER;
+						editor.grabHorizontal=true;						
+						newDescr.selectAll();
+						newDescr.setFocus();						
+						editor.setEditor(newDescr, item, FEATURE_DESCR);
+
+						Button selButton = new Button(mapTable, SWT.RADIO);
+						selButton.setText("");	
+						editor = new TableEditor (mapTable);
+						editor.minimumWidth = selButton.getSize ().x;
+						editor.horizontalAlignment = SWT.CENTER;
+						editor.grabHorizontal=true;
+						editor.setEditor(selButton, item, FEATURE_DEFAULT_LEVEL);
+						Composite colorSection=DesignerUtils.createColorPicker(mapTable, "#FF0000");
+
+						editor = new TableEditor (mapTable);
+						editor.minimumWidth = colorSection.getSize ().x;
+						editor.horizontalAlignment = SWT.CENTER;
+						editor.grabHorizontal=true;
+						editor.setEditor(colorSection, item, FEATURE_DEFAULT_COLORS);
+					}
+				}
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+		});
+
+
+
+
+
 	}
 
 	private void createMapTable(Composite sectionClient, Group mapGroup){
@@ -431,13 +477,13 @@ public class GEOEditor extends EditorPart{
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.horizontalSpan =2;
 
-		Table mapTable = new Table(mapGroup, SWT.SINGLE  | SWT.BORDER );
+		mapTable = new Table(mapGroup, SWT.SINGLE  | SWT.BORDER );
 		mapTable.setLayoutData(gd);
 		mapTable.setLinesVisible (true);
 		mapTable.setHeaderVisible (true);
 
 
-		String[] titles = { "  Column name  " , "  Type  ", "  Select  ", "  Aggregation mode "};
+		String[] titles = { "      Feature name      " , "           Description        ", "  Select Default ", "  Default Color "};
 		for (int i = 0; i < titles.length; i++) {
 			TableColumn column = new TableColumn(mapTable, SWT.RESIZE);
 			column.setText(titles[i]);

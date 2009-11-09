@@ -5,6 +5,7 @@ public class DatamartProvider {
 	private String hierarchy;
 	private String level;
 	private Metadata metadata;
+	private Hierarchies hierarchies;
 	
 	public String getClassName() {
 		return className;
@@ -29,6 +30,12 @@ public class DatamartProvider {
 	}
 	public void setMetadata(Metadata metadata) {
 		this.metadata = metadata;
+	}
+	public Hierarchies getHierarchies() {
+		return hierarchies;
+	}
+	public void setHierarchies(Hierarchies hierarchies) {
+		this.hierarchies = hierarchies;
 	}
 
 }

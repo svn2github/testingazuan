@@ -1,6 +1,11 @@
 package it.eng.spagobi.studio.geo.editors;
 
 
+import it.eng.spagobi.studio.geo.editors.model.bo.HierarchyBO;
+import it.eng.spagobi.studio.geo.editors.model.bo.LevelBO;
+import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
+import it.eng.spagobi.studio.geo.editors.model.geo.Level;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -27,29 +32,42 @@ public class Designer {
 
 	private GEOEditor editor=null;
 	private Composite mainComposite;
+	private GEODocument geoDocument;
 
-	
 	public Designer(Composite _composite, GEOEditor _editor) {
 		super();
 		mainComposite= _composite;
 		editor = _editor;
 	}
 
+	public Designer(Composite _composite, GEOEditor _editor, GEODocument _geoDocument) {
+		super();
+		mainComposite= _composite;
+		editor = _editor;
+		geoDocument = _geoDocument;
+	}
 	
-	private void createNewHierarchy(Tree hierarchiesTree, String name){
-		
+	private void createNewHierarchy(Tree hierarchiesTree, String name, String type){		
         TreeItem iItem = new TreeItem(hierarchiesTree, SWT.NONE);
         iItem.setText(name);
         hierarchiesTree.redraw();
         //crea oggetto java con name+type
+        HierarchyBO.setNewHierarchy(geoDocument, name, type);
 		
 	}
-	private void createNewLevel(Tree hierarchiesTree, String name, TreeItem parent){
-		
+	private void createNewLevel(Tree hierarchiesTree, Level newLevel, TreeItem parent){		
         TreeItem iItem = new TreeItem(parent, SWT.NONE);
-        iItem.setText(name);
+        iItem.setText(newLevel.getName());
         hierarchiesTree.redraw();
         //crea oggetto java con name+type
+        LevelBO.setNewLevel(geoDocument, parent.getText(), newLevel);
+		
+	}
+	
+	private void deleteItem(Tree hierarchiesTree, TreeItem item){
+		item.dispose();
+		hierarchiesTree.redraw();
+        //elimina oggetto java
 		
 	}
 	private void createMenu(final Composite sectionClient, final Tree hierarchiesTree){
@@ -78,6 +96,19 @@ public class Designer {
 
             }
         });	 
+		menuItem = new MenuItem (menu, SWT.PUSH);
+		menuItem.setText ("Delete");
+		menuItem.addListener(SWT.Selection, new Listener () {
+            public void handleEvent (Event event) { 
+            	TreeItem[] sel = hierarchiesTree.getSelection();
+            	if(sel[0] != null){
+                	deleteItem(hierarchiesTree, sel[0]);
+            	}else{
+            		MessageDialog.openWarning(sectionClient.getShell(), "Warning", "Please select an item to delete");
+            	}
+
+            }
+        });	
 		hierarchiesTree.setMenu(menu);
 	}
 	protected void createHierarchiesTree(final Composite sectionClient){
@@ -189,7 +220,7 @@ public class Designer {
 				//create tree item
 				String type = textType.getText();
 				String name = text.getText();
-				createNewHierarchy(hierarchiesTree, name);
+				createNewHierarchy(hierarchiesTree, name, type);
 				dialog.close ();
 			}
 		});
@@ -295,9 +326,17 @@ public class Designer {
 		ok.addSelectionListener (new SelectionAdapter () {
 			public void widgetSelected (SelectionEvent e) {
 				//create tree item
-				String column = textColumn.getText();
+				String columnId = textColumn.getText();
+				String columnDesc = textDescription.getText();
+				String feature = textFeature.getText();
 				String name = text.getText();
-				createNewLevel(hierarchiesTree, name, selectedItem);
+				
+		        Level newLevel = new Level();
+		        newLevel.setName(name);
+		        newLevel.setColumnId(columnId);
+		        newLevel.setColumnDesc(columnDesc);
+		        newLevel.setFeatureName(feature);
+				createNewLevel(hierarchiesTree, newLevel,  selectedItem);
 				dialog.close ();
 			}
 		});
@@ -322,5 +361,12 @@ public class Designer {
 	public void setMainComposite(Composite mainComposite) {
 		this.mainComposite = mainComposite;
 	}
-	
+	public GEODocument getGeoDocument() {
+		return geoDocument;
+	}
+
+
+	public void setGeoDocument(GEODocument geoDocument) {
+		this.geoDocument = geoDocument;
+	}
 }

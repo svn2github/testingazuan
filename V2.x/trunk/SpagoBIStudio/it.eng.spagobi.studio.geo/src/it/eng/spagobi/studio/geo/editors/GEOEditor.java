@@ -223,6 +223,7 @@ public class GEOEditor extends EditorPart{
 
 		Designer designer = new Designer(sectionClient, this);
 		GEODocument geoDocument = Activator.getDefault().getGeoDocument();
+		designer.setGeoDocument(geoDocument);
 
 		initializeEditor(geoDocument);
 		//creazione delle combo e tabelle

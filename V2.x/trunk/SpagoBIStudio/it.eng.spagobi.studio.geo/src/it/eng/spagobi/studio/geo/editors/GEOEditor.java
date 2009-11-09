@@ -283,6 +283,7 @@ public class GEOEditor extends EditorPart{
 				datasetTable.removeAll();
 				int indexSelection=datasetCombo.getSelectionIndex();
 				String datasetLabel=datasetCombo.getItem(indexSelection);
+				selectedDataset = datasetLabel;
 				DataStoreMetadata dataStoreMetadata=null;
 				// get the metadata
 				if(tempDsMetadataInfos.get(datasetLabel)!=null){

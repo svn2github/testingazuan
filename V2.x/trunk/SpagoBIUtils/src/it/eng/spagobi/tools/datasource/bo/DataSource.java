@@ -21,8 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.datasource.bo;
 
-import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
-
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -32,6 +30,8 @@ import java.util.Set;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 
 
 
@@ -104,30 +104,21 @@ public class DataSource implements Serializable, IDataSource {
     			&& getMultiSchema().booleanValue();
     }
 	
-	/**
-	 * Check is jndi.
-	 * 
-	 * @return true, if successful
-	 */
+	
 	public boolean checkIsJndi() {
     	return getJndi() != null 
     			&& getJndi().equals("") == false;
     }
 	
-    /**
-     * Gets the connection.
-     * 
-     * @return the connection
-     * 
-     * @throws NamingException the naming exception
-     * @throws SQLException the SQL exception
-     * @throws ClassNotFoundException the class not found exception
-     */
-    public Connection getConnection() throws NamingException, SQLException, ClassNotFoundException {
+	public Connection getConnection() throws NamingException, SQLException, ClassNotFoundException {
+    	return getConnection(null);
+    }
+	
+    public Connection getConnection(String schema) throws NamingException, SQLException, ClassNotFoundException {
     	Connection connection = null;
     	 
     	if( checkIsJndi() ) {
-    		connection = getJndiConnection();
+    		connection = getJndiConnection(schema);
     	} else {    		
     		connection = getDirectConnection();
     	}
@@ -144,13 +135,17 @@ public class DataSource implements Serializable, IDataSource {
      * @throws NamingException the naming exception
      * @throws SQLException the SQL exception
      */
-    private Connection getJndiConnection() throws NamingException, SQLException {
+    private Connection getJndiConnection(String schema) throws NamingException, SQLException {
 		Connection connection = null;
 		
-		Context ctx;
+		Context ctx;		
+		String jndiName;
+		
+		jndiName = (checkIsMultiSchema() && schema != null)? getJndi() + schema: getJndi();
+		
 		ctx = new InitialContext();
-		javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup( getJndi() );
-		connection = ds.getConnection();
+		javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup( jndiName );
+		connection = ds.getConnection();		
 		
 		return connection;
     }

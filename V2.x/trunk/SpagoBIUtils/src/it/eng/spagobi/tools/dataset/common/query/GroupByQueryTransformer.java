@@ -58,7 +58,11 @@ public class GroupByQueryTransformer extends AbstractQueryTransformer{
 		String subQueryAlias = "t" + System.currentTimeMillis();
     	
 		alias = (String)(groupByColumnAlias.get(0) == null?groupByColumnNames.get(0): groupByColumnAlias.get(0));
-    	transformedStatment = "SELECT " + subQueryAlias + "." + groupByColumnNames.get(0) + " AS " + groupByColumnNames.get(0);
+		alias = alias.trim();
+		if( !(alias.startsWith("'") || alias.startsWith("\"")) ) {
+			alias = "\"" + alias + "\"";
+		}
+    	transformedStatment = "SELECT " + subQueryAlias + "." + groupByColumnNames.get(0) + " AS " + alias;
     	
     	for(int i = 0; i < aggregateColumnName.size(); i++) {
     		

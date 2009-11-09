@@ -3,13 +3,13 @@
  */
 package it.eng.spagobi.tools.dataset.common.datastore;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 
 /**
  * @authors Angelo Bernabei (angelo.bernabei@eng.it)       
@@ -21,6 +21,7 @@ public interface IDataStore {
 	
 	Iterator iterator();    
 	boolean isEmpty();
+	long getRecordsCount();
 	
     IRecord getRecordAt(int i);
     IRecord getRecordByID(Object value);
@@ -35,10 +36,7 @@ public interface IDataStore {
     void sortRecords(int fieldIndex);    
     void sortRecords(int fieldIndex, Comparator filedComparator);    
     void sortRecords(Comparator recordComparator);
-    
-    
-   
-    
+        
     void appendRecord(IRecord r);
     void prependRecord(IRecord record);
 	void insertRecord(int recordIndex, IRecord record);

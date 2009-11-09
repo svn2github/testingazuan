@@ -32,21 +32,104 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.utilities.sql;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import it.eng.spagobi.utilities.assertion.Assert;
+
 /**
  * @author Andrea Gioia
  *
  */
 public class SqlUtils {
-	
-	/**
-	 * Checks if is select statement.
-	 * 
-	 * @param query the query
-	 * 
-	 * @return true, if is select statement
-	 */
+
 	public static boolean isSelectStatement(String query) {
 		if(query == null) return false;		
 		return query.toUpperCase().trim().startsWith("SELECT");
+	}
+	
+	public static String getSelectClause(String query) {
+		String selectClause;
+		
+		selectClause = null;
+		
+		Assert.assertNotNull(query, "...");
+		Assert.assertTrue( isSelectStatement(query), "...");
+		
+		int indexOFSelect = query.toUpperCase().indexOf("SELECT");
+		int indexOFFrom = query.toUpperCase().indexOf("FROM");
+		
+		selectClause = query.substring(indexOFSelect + "SELECT".length(), indexOFFrom).trim();
+		
+		return selectClause;
+	}
+	
+	public static List getSelectFields(String query) {
+		List selectFields;
+		String selectClause;
+		
+		Assert.assertNotNull(query, "...");
+		Assert.assertTrue( isSelectStatement(query), "...");
+		
+		selectFields = new ArrayList();
+		selectClause = getSelectClause(query);
+		String[] fields = selectClause.split(",");
+		for(int i = 0; i < fields.length; i++) {
+			String f = fields[i];
+			String[] field = new String[2];
+			String[] tokens = fields[i].trim().split("\\s");
+			field[0] = tokens[0]; // the column name
+			if(tokens.length > 1) {
+				String alias = null;
+				if(fields[i].endsWith("'")) {
+					Pattern p = Pattern.compile("'[^']*'");
+					Matcher m = p.matcher(fields[i]);
+					while(m.find()) {
+						alias = m.group();
+						alias = alias.trim().substring(1, alias.length()-1);
+					}
+				} else if(fields[i].endsWith("\"")) {
+					Pattern p = Pattern.compile("\"[^\"]*\"");
+					Matcher m = p.matcher(fields[i]);
+					while(m.find()) {
+						alias = m.group();
+						alias = alias.trim().substring(1, alias.length()-1);
+					}
+				} else {
+					alias = tokens[tokens.length-1];
+				}
+				field[1] = alias;
+			}
+			selectFields.add(field);
+		}
+		return selectFields;
+	}
+	
+	public static final void main(String args[]) {
+		List<String[]> results;
+		
+		String query = "   select colonna1, " +
+				"colonna2 as Colonna2, " +
+				"colonna3 as 'Colonna 3', " +
+				"colonna4 as \"Colonna 4\", " +
+				"\"colonna5\" as \"Colonna 4\", " +
+				"'colonna6' as 'Colonna 4', " +
+				"'colonna7', " +
+				"\"colonna8\", " + 
+				"colonna9 Colonna9, " +
+				"colonna10 'Colonna 10', " +
+				"colonna11 \"Colonna 11\", " +
+				"\"colonna12\" \"Colonna 12\", " +
+				"'colonna13' 'Colonna 13' " +
+				"from table1 where colonna9 = 'pippo'";
+				
+		
+		results = getSelectFields(query);
+		for(int i = 0; i < results.size(); i++) {
+			System.out.println(results.get(i)[0] + " - " + results.get(i)[1]);
+		}
+		
 	}
 }

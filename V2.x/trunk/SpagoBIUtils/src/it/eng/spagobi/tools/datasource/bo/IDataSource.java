@@ -1,12 +1,12 @@
 package it.eng.spagobi.tools.datasource.bo;
 
-import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Set;
 
 import javax.naming.NamingException;
+
+import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 
 public interface IDataSource {
 
@@ -22,16 +22,10 @@ public interface IDataSource {
 	public Boolean getMultiSchema();
 
 	public void setMultiSchema(Boolean multiSchema);
-    /**
-     * Gets the connection.
-     * 
-     * @return the connection
-     * 
-     * @throws NamingException the naming exception
-     * @throws SQLException the SQL exception
-     * @throws ClassNotFoundException the class not found exception
-     */
+   
     public Connection getConnection() throws NamingException, SQLException, ClassNotFoundException ;
+    
+    public Connection getConnection(String schema) throws NamingException, SQLException, ClassNotFoundException ;
     
     
 	/**

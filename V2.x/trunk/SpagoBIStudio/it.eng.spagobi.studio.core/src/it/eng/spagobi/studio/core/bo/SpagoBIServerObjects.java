@@ -5,6 +5,7 @@ import java.util.Vector;
 import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
 import it.eng.spagobi.sdk.datasets.bo.SDKDataStoreMetadata;
 import it.eng.spagobi.sdk.exceptions.MissingParameterValue;
+import it.eng.spagobi.sdk.maps.bo.SDKFeature;
 import it.eng.spagobi.sdk.maps.bo.SDKMap;
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.MapsSDKServiceProxy;
@@ -45,7 +46,31 @@ public class SpagoBIServerObjects {
 
 
 
+	public GeoFeature[] getFeaturesByMapId(Integer mapId) throws NoServerException{
+		GeoFeature[] toReturn=null;
+		SDKFeature[] sdkFeatures=null;
+		try{
+			SDKProxyFactory proxyFactory=new SDKProxyFactory();
+			MapsSDKServiceProxy mapsServiceProxy=proxyFactory.getMapsSDKServiceProxy();
+			sdkFeatures =mapsServiceProxy.getMapFeatures(mapId);
+		}
+		catch (Exception e) {
+			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve map informations", e);
+			throw(new NoServerException(e));
+		}	
 
+		if(sdkFeatures!=null){
+			toReturn=new GeoFeature[sdkFeatures.length];
+			for (int i = 0; i < sdkFeatures.length; i++) {
+				SDKFeature sdkFeature=sdkFeatures[i];
+				GeoFeature geoFeature=new GeoFeature(sdkFeature);
+				toReturn[i]=geoFeature;
+			}
+		}
+		return toReturn;	
+	}
+
+	
 
 	public GeoMap getGeoMapById(Integer geoId) throws NoServerException{
 		GeoMap toReturn=null;
@@ -68,6 +93,8 @@ public class SpagoBIServerObjects {
 
 	}
 
+	
+	
 	public Vector<GeoMap> getAllGeoMaps() throws NoServerException{
 		Vector<GeoMap> toReturn=new Vector<GeoMap>();
 

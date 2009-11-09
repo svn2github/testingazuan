@@ -154,27 +154,59 @@ public class Query {
 		return fields;
 	}
 	
-	/*
-	public List getIncludedSelectFields() {
-		List includedSelectFields = new ArrayList();
-		Iterator it = this.getSelectFields().iterator();
-		while( it.hasNext() ) {
-			DataMartSelectField selectField = (DataMartSelectField)it.next();
-			if(selectField.isIncluded()) {
-				includedSelectFields.add(selectField);
+	public List getSelectFieldsByName(String uniqueName) {
+		List fields;
+		Iterator it;
+		DataMartSelectField field;
+		
+		fields = new ArrayList();
+		it = getSelectFields(false).iterator();
+		while(it.hasNext()) {
+			ISelectField f = (ISelectField)it.next();
+			if(f.isDataMartField()) {
+				field = (DataMartSelectField)f;
+				if(field.getUniqueName().equalsIgnoreCase(uniqueName)) {
+					fields.add(field);
+				}
+			}
+				
+		}
+		
+		return fields;
+	}
+	
+	public ISelectField getSelectFieldByIndex(int fieldIndex) {
+		Assert.assertTrue(fieldIndex > 0 && fieldIndex < selectFields.size(), "Index [" + fieldIndex + "] out of bound for select fields list (0 - " + selectFields.size() + ")");
+		return (ISelectField)selectFields.get(fieldIndex);
+	}
+	
+	public int getSelectFieldIndex(String uniqueName) {
+		int index;
+		
+		index = -1;
+				
+		for(int i = 0; i < selectFields.size(); i++) {
+			ISelectField f = (ISelectField)selectFields.get(i);
+			if(f.isDataMartField()) {
+				DataMartSelectField field = (DataMartSelectField)f;
+				if(field.getUniqueName().equalsIgnoreCase(uniqueName)) {
+					index = i;
+					break;
+				}
 			}
 		}
-		return includedSelectFields;
+		
+		return index;
 	}
-	*/
 	
+
 	public List getDataMartSelectFields(boolean onlyIncluded) {
 		List dataMartSelectFields;
 		Iterator it;
 		ISelectField field;
 		
 		dataMartSelectFields = new ArrayList();
-		it = getSelectFields(false).iterator();
+		it = selectFields.iterator();
 		while(it.hasNext()) {
 			field = (ISelectField)it.next();
 			if(field.isDataMartField()) {

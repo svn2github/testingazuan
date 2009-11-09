@@ -139,6 +139,7 @@ public class DataStoreJSONSerializer {
 				}
 				
 				Boolean calculated = (Boolean)fieldMetaData.getProperty("calculated");
+				calculated = calculated == null? Boolean.FALSE: calculated;
 				if(calculated.booleanValue() == true) {
 					DataSetVariable variable =  (DataSetVariable)fieldMetaData.getProperty("variable");
 					if(variable.getType().equalsIgnoreCase(DataSetVariable.HTML)) {

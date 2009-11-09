@@ -40,4 +40,6 @@ public interface ISelectField {
 
 	boolean isIncluded();
 	void setIncluded(boolean include) ;
+	
+	ISelectField copy();
 }

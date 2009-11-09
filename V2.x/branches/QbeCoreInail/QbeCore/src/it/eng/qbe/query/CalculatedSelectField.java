@@ -62,4 +62,8 @@ public class CalculatedSelectField extends AbstractSelectField {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+	public ISelectField copy() {
+		return null;
+	}
 }

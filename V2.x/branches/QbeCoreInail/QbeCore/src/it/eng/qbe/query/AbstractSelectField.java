@@ -73,5 +73,4 @@ public abstract class AbstractSelectField implements ISelectField {
 		this.included = included;
 	}
 
-	
 }

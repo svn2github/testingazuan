@@ -45,6 +45,18 @@ public class DataMartSelectField extends AbstractSelectField {
 		setGroupByField(groupByField);
 		setOrderType(orderType);
 	}
+	
+	public DataMartSelectField(DataMartSelectField field) {
+			
+			this(field.getUniqueName(), 
+				field.getFunction().getName(), 
+				field.getAlias(), 
+				field.isIncluded(), 
+				field.isVisible(),
+				field.isGroupByField(), 
+				field.getOrderType());					
+	}
+
 
 	
 	public IAggregationFunction getFunction() {
@@ -90,5 +102,9 @@ public class DataMartSelectField extends AbstractSelectField {
 
 	public void setOrderType(String orderType) {
 		this.orderType = orderType;
+	}
+	
+	public ISelectField copy() {
+		return new DataMartSelectField( this );
 	}
 }

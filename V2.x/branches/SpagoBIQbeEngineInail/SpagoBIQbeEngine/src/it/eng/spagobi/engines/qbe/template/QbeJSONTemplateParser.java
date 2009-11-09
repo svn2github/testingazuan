@@ -21,6 +21,7 @@
 package it.eng.spagobi.engines.qbe.template;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import it.eng.spagobi.utilities.assertion.Assert;
@@ -37,6 +38,14 @@ public class QbeJSONTemplateParser implements IQbeTemplateParser {
 
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(QbeJSONTemplateParser.class);
+    
+    public static String STATIC_XOR_FILTERS_PREFIX = "xorFilter-";
+    public static String STATIC_XOR_OPTIONS_PREFIX = "option-";
+    public static String STATIC_ON_OFF_FILTERS_PREFIX = "onOffFilter-";
+    public static String OPEN_FILTERS_PREFIX = "openFilter-";
+    public static String DYNAMIC_FILTERS_PREFIX = "dynamicFilter-";
+    public static String GROUPING_VARIABLE_PREFIX = "groupingVariable-";
+    
 	
     public QbeTemplate parse(Object template) {
     	Assert.assertNotNull(template, "Input parameter [template] cannot be null");
@@ -45,14 +54,14 @@ public class QbeJSONTemplateParser implements IQbeTemplateParser {
     }
 	
 	private QbeTemplate parse(JSONObject template) {
-		
+		logger.debug("IN: input template: " + template);
 		QbeTemplate qbeTemplate = null;
-		
-		
-		
 		try {
 			
 			qbeTemplate = new QbeTemplate();
+			addAdditionalInfo(template);
+			logger.debug("Modified template: " + template);
+			qbeTemplate.setProperty("jsonTemplate", template);
 			
 			JSONObject qbeConf = template.getJSONObject("qbeConf");
 			String datamartName = qbeConf.getString("datamartName");
@@ -67,5 +76,56 @@ public class QbeJSONTemplateParser implements IQbeTemplateParser {
 		}	
 		
 		return qbeTemplate;
+	}
+
+	private void addAdditionalInfo(JSONObject template) {
+		logger.debug("IN");
+		try {
+			JSONArray staticClosedFilters = template.getJSONArray("staticClosedFilters");
+			int xorFiltersCounter = 1;
+			int onOffFiltersCounter = 1;
+			for (int i = 0; i < staticClosedFilters.length(); i++) {
+				JSONObject aStaticClosedFilter = (JSONObject) staticClosedFilters.get(i);
+				if (aStaticClosedFilter.getBoolean("singleSelection")) {
+					// xor filter
+					aStaticClosedFilter.put("id", STATIC_XOR_FILTERS_PREFIX + xorFiltersCounter++);
+					JSONArray options = aStaticClosedFilter.getJSONArray("filters");
+					for (int j = 0; j < options.length(); j++) {
+						JSONObject anOption = (JSONObject) options.get(j);
+						anOption.put("id", STATIC_XOR_OPTIONS_PREFIX + (j+1));
+					}
+				} else {
+					// on off filter
+					JSONArray filters = aStaticClosedFilter.getJSONArray("filters");
+					for (int j = 0; j < filters.length(); j++) {
+						JSONObject anOption = (JSONObject) filters.get(j);
+						anOption.put("id", STATIC_ON_OFF_FILTERS_PREFIX + onOffFiltersCounter++);
+					}
+				}
+			}
+			
+			JSONArray staticOpenFilters = template.getJSONArray("staticOpenFilters");
+			for (int i = 0; i < staticOpenFilters.length(); i++) {
+				JSONObject aStaticOpenFilter = (JSONObject) staticOpenFilters.get(i);
+				aStaticOpenFilter.put("id", OPEN_FILTERS_PREFIX + (i+1));
+			}
+			
+			JSONArray dynamicFilters = template.getJSONArray("dynamicFilters");
+			for (int i = 0; i < dynamicFilters.length(); i++) {
+				JSONObject aDynamicFilter = (JSONObject) dynamicFilters.get(i);
+				aDynamicFilter.put("id", DYNAMIC_FILTERS_PREFIX + (i+1));
+			}
+			
+			JSONArray groupingVariables = template.getJSONArray("groupingVariables");
+			for (int i = 0; i < groupingVariables.length(); i++) {
+				JSONObject aGroupingVariable = (JSONObject) groupingVariables.get(i);
+				aGroupingVariable.put("id", GROUPING_VARIABLE_PREFIX + (i+1));
+			}
+			
+		} catch(Throwable t) {
+			throw new QbeTemplateParseException("Cannot parse template [" + template.toString()+ "]", t);
+		} finally {
+			logger.debug("OUT");
+		}
 	}
 }

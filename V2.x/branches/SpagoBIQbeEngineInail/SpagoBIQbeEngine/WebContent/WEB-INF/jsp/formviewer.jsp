@@ -1,10 +1,70 @@
+<%-- 
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+--%>
 <%@ page language="java" 
 	     contentType="text/html; charset=ISO-8859-1" 
 	     pageEncoding="ISO-8859-1"%>
+
+<%-- ---------------------------------------------------------------------- --%>
+<%-- JAVA IMPORTS															--%>
+<%-- ---------------------------------------------------------------------- --%>
+<%@page import="it.eng.spago.configuration.*"%>
+<%@page import="it.eng.spago.base.*"%>
+<%@page import="it.eng.spagobi.engines.qbe.QbeEngineConfig"%>
+<%@page import="it.eng.spagobi.engines.qbe.QbeEngineInstance"%>
+<%@page import="it.eng.spagobi.utilities.engines.EngineConstants"%>
+<%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
+<%@page import="it.eng.spago.security.IEngUserProfile"%>
+<%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
 <%@page import="java.util.Locale"%>
+<%@page import="it.eng.spagobi.services.common.EnginConf"%>
+
+<%-- ---------------------------------------------------------------------- --%>
+<%-- JAVA CODE 																--%>
+<%-- ---------------------------------------------------------------------- --%>
 <%
-Locale locale = Locale.ITALIAN;
+	QbeEngineInstance qbeEngineInstance;
+	UserProfile profile;
+	Locale locale;
+	String isFromCross;
+	boolean isPowerUser;
+	Integer resultLimit;
+	boolean isMaxResultLimitBlocking;
+	boolean isQueryValidationEnabled;
+	boolean isQueryValidationBlocking;
+	String spagobiServerHost;
+	String spagobiContext;
+	String spagobiSpagoController;
+	
+	qbeEngineInstance = (QbeEngineInstance)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("ENGINE_INSTANCE");
+	profile = (UserProfile)qbeEngineInstance.getEnv().get(EngineConstants.ENV_USER_PROFILE);
+	locale = (Locale) qbeEngineInstance.getEnv().get(EngineConstants.ENV_LOCALE);
+	
+	QbeEngineConfig qbeEngineConfig = QbeEngineConfig.getInstance();
+	
+	// settings for max records number limit
+	resultLimit = qbeEngineConfig.getResultLimit();
+	isMaxResultLimitBlocking = qbeEngineConfig.isMaxResultLimitBlocking();
+	isQueryValidationEnabled = qbeEngineConfig.isQueryValidationEnabled();
+	isQueryValidationBlocking = qbeEngineConfig.isQueryValidationBlocking();
 %>
+
 <%-- ---------------------------------------------------------------------- --%>
 <%-- HTML	 																--%>
 <%-- ---------------------------------------------------------------------- --%>
@@ -26,7 +86,14 @@ Locale locale = Locale.ITALIAN;
     	<script type="text/javascript"> 
 
     	Sbi.config = {}; 
-
+    	
+		Sbi.config.queryLimit = {};
+		Sbi.config.queryLimit.maxRecords = <%= resultLimit != null ? "" + resultLimit.intValue() : "undefined" %>;
+		Sbi.config.queryLimit.isBlocking = <%= isMaxResultLimitBlocking %>;
+		Sbi.config.queryValidation = {};
+		Sbi.config.queryValidation.isEnabled = <%= isQueryValidationEnabled %>;
+		Sbi.config.queryValidation.isBlocking = <%= isQueryValidationBlocking %>;
+    	
     	var url = {
 		    	host: '<%= request.getServerName()%>'
 		    	, port: '<%= request.getServerPort()%>'
@@ -47,9 +114,11 @@ Locale locale = Locale.ITALIAN;
 	    
         Ext.onReady(function() {
         	Ext.QuickTips.init();
+
+			var template = <%= qbeEngineInstance.getTemplate().getProperty("jsonTemplate").toString() %>;
         	
-            var viewer = new Sbi.formviewer.ViewerPanel(template, {region: 'center'});
-           	var viewport = new Ext.Viewport({layout: 'border', items: [viewer]});
+	        var formEnginePanel = new Sbi.formviewer.FormEnginePanel(template, {region: 'center'});
+           	var viewport = new Ext.Viewport({layout: 'border', items: [formEnginePanel]});  
            	
       	});
       	

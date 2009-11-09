@@ -68,9 +68,6 @@ public class FormEngineStartAction extends AbstractEngineStartAction {
     		setEngineName(ENGINE_NAME);
 			super.service(serviceRequest, serviceResponse);
 			
-			
-			//if(true) throw new SpagoBIEngineStartupException(getEngineName(), "Test exception");
-			
 			logger.debug("User Id: " + getUserId());
 			logger.debug("Audit Id: " + getAuditId());
 			logger.debug("Document Id: " + getDocumentId());

@@ -49,6 +49,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 	DataMartModel datamartModel;		
 	QueryCatalogue queryCatalogue;
 	String activeQueryId;
+	QbeTemplate template;
 
 	// executable version of the query. cached here for performance reasons (i.e. avoid query re-compilation 
 	// over result-set paging)
@@ -66,6 +67,8 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		super( env );
 		
 		logger.debug("IN");
+		
+		this.template = template;
 		
 		queryCatalogue = new QueryCatalogue();
 		queryCatalogue.addQuery(new Query());
@@ -147,6 +150,10 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 
 	public DataMartModel getDatamartModel() {
 		return datamartModel;
+	}
+	
+	public QbeTemplate getTemplate() {
+		return template;
 	}
 
 	public void setDatamartModel(DataMartModel datamartModel) {

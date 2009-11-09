@@ -46,11 +46,11 @@
 
 Ext.ns("Sbi.formviewer");
 
-Sbi.formviewer.ViewerPanel = function(template, config) {
+Sbi.formviewer.FormViewerPage = function(template, config) {
 	
 	var defaultSettings = {
 		// set default values here
-		title: LN('sbi.formviewer.formviewerpanel.title')
+		title: LN('sbi.formviewer.formviewerpage.title')
 		//, layout: 'table'
 	    //, layoutConfig: {
 	    //    columns: 1
@@ -58,8 +58,8 @@ Sbi.formviewer.ViewerPanel = function(template, config) {
 		, layout: 'fit'
 		, autoScroll: true
 	};
-	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.viewerPanel) {
-		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.viewerPanel);
+	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.formViewerPage) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.formViewerPage);
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 	
@@ -79,11 +79,11 @@ Sbi.formviewer.ViewerPanel = function(template, config) {
 	});
 	
 	// constructor
-    Sbi.formviewer.ViewerPanel.superclass.constructor.call(this, c);
+    Sbi.formviewer.FormViewerPage.superclass.constructor.call(this, c);
 
 };
 
-Ext.extend(Sbi.formviewer.ViewerPanel, Ext.Panel, {
+Ext.extend(Sbi.formviewer.FormViewerPage, Ext.Panel, {
     
     services: null
     , staticClosedFiltersPanel: null

@@ -51,7 +51,6 @@ Sbi.formviewer.StaticClosedXORFiltersPanel = function(aStaticClosedXORFiltersGro
 	var defaultSettings = {
 		// set default values here
 		frame: true
-		//, layout: 'form'
 		//, autoScroll: true
 		//, autoWidth: true
 		//, autoHeight: true

@@ -6,17 +6,16 @@
 <link rel="styleSheet" href ="../js/lib/ext-2.0.1/resources/css/superboxselect.css" type="text/css" />
 <link rel="styleSheet" href ="../js/lib/ext-2.0.1/resources/css/superboxselect-gray-extend.css" type="text/css" />
 
-<!-- Include ux.Andrie.Select (multi-selection combobox) code -->
+<%-- Include ux.Andrie.Select (multi-selection combobox) code 
 <script type="text/javascript" src='../js/lib/ext-2.0.1/ux/Andrie/Select/Select.js'/></script>
 <link rel="styleSheet" href ="../js/lib/ext-2.0.1/resources/css/Select.css" type="text/css" />
+--%>
 
 <!-- Include localized labels  -->
 <script type="text/javascript" src='../js/spagobi/locale/qbe/<%=locale.getLanguage()%>.js'/></script>
 <script type="text/javascript" src='../js/spagobi/locale/formviewer/<%=locale.getLanguage()%>.js'/></script>
 
 <!-- START-DEBUG -->
-
-<script type="text/javascript" src='../js/spagobi/formviewer/template.js'/></script>
 
 <script type="text/javascript" src='../js/spagobi/commons/Settings.js'/></script>	
 <script type="text/javascript" src='../js/spagobi/overrides/overrides.js'/></script>
@@ -30,7 +29,7 @@
 <script type="text/javascript" src='../js/spagobi/widgets/PagingToolbar.js'/></script>
 <script type="text/javascript" src='../js/spagobi/widgets/FilteringToolbar.js'/></script>
 
-<script type="text/javascript" src='../js/spagobi/formviewer/ViewerPanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/formviewer/FormViewerPage.js'/></script>
 <script type="text/javascript" src='../js/spagobi/formviewer/StaticClosedFiltersPanel.js'/></script>
 <script type="text/javascript" src='../js/spagobi/formviewer/StaticClosedXORFiltersPanel.js'/></script>
 <script type="text/javascript" src='../js/spagobi/formviewer/StaticClosedOnOffFiltersPanel.js'/></script>

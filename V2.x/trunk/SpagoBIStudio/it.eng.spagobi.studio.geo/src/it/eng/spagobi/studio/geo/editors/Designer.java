@@ -6,63 +6,49 @@ import java.util.Vector;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 
 public class Designer {
 
 
 	private GEOEditor editor=null;
 	private Composite mainComposite;
-	
-	private Vector<String> dataSets;
-	private Vector<String> maps;
+
 	
 	public Designer(Composite _composite, GEOEditor _editor) {
 		super();
-		FormLayout layout=new FormLayout();
-		//composite.setLayout(layout);
 		mainComposite= _composite;
-
-		this.editor=_editor;
+		editor = _editor;
 	}
 	
-	public void initializeDesigner(GEODocument geoDocument){
-		System.out.println("loading informations for designer");
-		dataSets = new Vector<String>();
-		for (int i=0; i< 4 ; i++){
-			dataSets.add("dataset"+i);
-		}
-		createDatasetCombo();
+	protected void createHierarchiesTree(Composite sectionClient){
 		
-		maps = new Vector<String>();
-		for (int i=0; i< 5 ; i++){
-			maps.add("map"+i);
-		}
-		createMapCombo();
-		//mainComposite.pack();
-		mainComposite.redraw();
+		GridData gd = new GridData(GridData.FILL_BOTH);
+		gd.horizontalSpan =4;
+				
+		Group hierarchiesGroup = new Group(sectionClient, SWT.FILL | SWT.RESIZE);
+		hierarchiesGroup.setLayout(sectionClient.getLayout());
+		hierarchiesGroup.setLayoutData(gd);
+		
+		final Tree hierarchiesTree = new Tree(hierarchiesGroup, SWT.SINGLE | SWT.BORDER );
+		hierarchiesTree.setLayoutData(gd);
+	    for (int i = 0; i < 4; i++) {
+	        TreeItem iItem = new TreeItem(hierarchiesTree, 0);
+	        iItem.setText("TreeItem (0) -" + i);
+	        
+	        for (int j = 0; j < 4; j++) {
+	          TreeItem jItem = new TreeItem(iItem, 0);
+	          jItem.setText("TreeItem (1) -" + j);
+	        }
+	      }
 	}
-	
-	private void createDatasetCombo(){
-		Label datasetLabel = new Label(mainComposite,  SWT.SIMPLE);
-		datasetLabel.setText("Data Set");
-		final Combo datasetCombo = new Combo(mainComposite,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
-		for(int i=0; i< dataSets.size(); i++){
-			datasetCombo.setText(dataSets.elementAt(i));
-		}		
-	}
-	
-	private void createMapCombo(){
-		Label mapLabel = new Label(mainComposite,  SWT.SIMPLE);
-		mapLabel.setText("Map");
-		final Combo mapCombo = new Combo(mainComposite,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
-		for(int i=0; i< maps.size(); i++){
-			mapCombo.setText(maps.elementAt(i));
-		}		
-	}
-	
+
 	public GEOEditor getEditor() {
 		return editor;
 	}

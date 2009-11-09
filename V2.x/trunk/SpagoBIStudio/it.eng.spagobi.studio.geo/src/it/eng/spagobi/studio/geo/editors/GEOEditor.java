@@ -6,6 +6,7 @@ import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
 import it.eng.spagobi.studio.core.bo.Dataset;
 import it.eng.spagobi.studio.core.bo.GeoMap;
 import it.eng.spagobi.studio.core.bo.SpagoBIServerObjects;
+import it.eng.spagobi.studio.core.exceptions.NoServerException;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
@@ -108,17 +109,23 @@ public class GEOEditor extends EditorPart{
 
 		
 		SpagoBIServerObjects sbso=new SpagoBIServerObjects();
-		Vector<Dataset> datasetVector= sbso.getAllDatasets();
-		for (Iterator iterator = datasetVector.iterator(); iterator.hasNext();) {
-			Dataset dataset = (Dataset) iterator.next();
-			datasetInfos.put(dataset.getLabel(), dataset);
-		}
-		Vector<GeoMap> mapVector= sbso.getAllGeoMaps();
-		for (Iterator iterator = mapVector.iterator(); iterator.hasNext();) {
-			GeoMap geoMap = (GeoMap) iterator.next();
-			mapInfos.put(geoMap.getName(), geoMap);
-		}
+		Vector<Dataset> datasetVector;
+		try {
+			datasetVector = sbso.getAllDatasets();
 
+			for (Iterator iterator = datasetVector.iterator(); iterator.hasNext();) {
+				Dataset dataset = (Dataset) iterator.next();
+				datasetInfos.put(dataset.getLabel(), dataset);
+			}
+			Vector<GeoMap> mapVector= sbso.getAllGeoMaps();
+			for (Iterator iterator = mapVector.iterator(); iterator.hasNext();) {
+				GeoMap geoMap = (GeoMap) iterator.next();
+				mapInfos.put(geoMap.getName(), geoMap);
+			}
+		} catch (NoServerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		//mapInfos.put(sdkMap.getName(), sdkMap);
 
@@ -155,6 +162,8 @@ public class GEOEditor extends EditorPart{
 	@Override
 	public void createPartControl(Composite parent) {
 		
+		
+		
 		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
 		final ScrolledForm form = toolkit.createScrolledForm(parent);
 
@@ -190,7 +199,7 @@ public class GEOEditor extends EditorPart{
 		sectionClient.setLayout(gl);
 		section.setClient(sectionClient);
 
-
+		Designer designer = new Designer(sectionClient, this);
 		GEODocument geoDocument = Activator.getDefault().getGeoDocument();
 
 		initializeEditor(geoDocument);
@@ -206,7 +215,7 @@ public class GEOEditor extends EditorPart{
 		createDatasetTable(sectionClient, datasetGroup);
 		createMapTable(sectionClient,mapGroup);
 		
-		createHierarchiesTree(sectionClient);
+		designer.createHierarchiesTree(sectionClient);
 		
 		SpagoBILogger.infoLog("END "+GEOEditor.class.toString()+": create Part Control function");
 
@@ -371,30 +380,7 @@ public class GEOEditor extends EditorPart{
 	    mapTable.layout();
 	    
 	}
-	
-	private void createHierarchiesTree(Composite sectionClient){
-		
-		GridData gd = new GridData(GridData.FILL_BOTH);
-		gd.horizontalSpan =4;
-				
-		Group hierarchiesGroup = new Group(sectionClient, SWT.FILL | SWT.RESIZE);
-		hierarchiesGroup.setLayout(sectionClient.getLayout());
-		hierarchiesGroup.setLayoutData(gd);
-		
-		final Tree hierarchiesTree = new Tree(hierarchiesGroup, SWT.SINGLE | SWT.BORDER );
-		hierarchiesTree.setLayoutData(gd);
-	    for (int i = 0; i < 4; i++) {
-	        TreeItem iItem = new TreeItem(hierarchiesTree, 0);
-	        iItem.setText("TreeItem (0) -" + i);
-	        
-	        for (int j = 0; j < 4; j++) {
-	          TreeItem jItem = new TreeItem(iItem, 0);
-	          jItem.setText("TreeItem (1) -" + j);
-	        }
-	      }
-	  
-		
-	}
+
 
 	@Override
 	public void setFocus() {

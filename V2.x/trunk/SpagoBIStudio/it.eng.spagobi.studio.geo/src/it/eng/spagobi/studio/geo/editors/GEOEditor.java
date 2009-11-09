@@ -564,5 +564,31 @@ public class GEOEditor extends EditorPart{
 	public void setSelectedDataset(String selectedDataset) {
 		this.selectedDataset = selectedDataset;
 	}
+	public HashMap<String, DataStoreMetadata> getTempDsMetadataInfos() {
+		return tempDsMetadataInfos;
+	}
+	public void setTempDsMetadataInfos(
+			HashMap<String, DataStoreMetadata> tempDsMetadataInfos) {
+		this.tempDsMetadataInfos = tempDsMetadataInfos;
+	}
+	public HashMap<String, GeoFeature[]> getTempMapMetadataInfos() {
+		return tempMapMetadataInfos;
+	}
+	public void setTempMapMetadataInfos(
+			HashMap<String, GeoFeature[]> tempMapMetadataInfos) {
+		this.tempMapMetadataInfos = tempMapMetadataInfos;
+	}
+	public HashMap<String, Dataset> getDatasetInfos() {
+		return datasetInfos;
+	}
+	public void setDatasetInfos(HashMap<String, Dataset> datasetInfos) {
+		this.datasetInfos = datasetInfos;
+	}
+	public HashMap<String, GeoMap> getMapInfos() {
+		return mapInfos;
+	}
+	public void setMapInfos(HashMap<String, GeoMap> mapInfos) {
+		this.mapInfos = mapInfos;
+	}
 
 }

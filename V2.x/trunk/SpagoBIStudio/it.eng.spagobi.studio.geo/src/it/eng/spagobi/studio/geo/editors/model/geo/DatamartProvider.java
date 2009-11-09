@@ -4,6 +4,8 @@ public class DatamartProvider {
 	private String className;
 	private String hierarchy;
 	private String level;
+	private Metadata metadata;
+	
 	public String getClassName() {
 		return className;
 	}
@@ -21,6 +23,12 @@ public class DatamartProvider {
 	}
 	public void setLevel(String level) {
 		this.level = level;
+	}
+	public Metadata getMetadata() {
+		return metadata;
+	}
+	public void setMetadata(Metadata metadata) {
+		this.metadata = metadata;
 	}
 
 }

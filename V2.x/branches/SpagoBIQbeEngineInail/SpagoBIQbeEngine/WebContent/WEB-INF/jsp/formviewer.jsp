@@ -48,9 +48,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	boolean isMaxResultLimitBlocking;
 	boolean isQueryValidationEnabled;
 	boolean isQueryValidationBlocking;
-	String spagobiServerHost;
-	String spagobiContext;
-	String spagobiSpagoController;
 	
 	qbeEngineInstance = (QbeEngineInstance)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("ENGINE_INSTANCE");
 	profile = (UserProfile)qbeEngineInstance.getEnv().get(EngineConstants.ENV_USER_PROFILE);

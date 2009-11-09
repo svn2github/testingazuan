@@ -150,8 +150,9 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	        Ext.ns("Sbi.user");
 	        Sbi.user.isPowerUser = <%= isPowerUser %>;
 
-	        var dataStorePanel = new Sbi.formviewer.DataStorePanel(qbeConfig);
-           	var viewport = new Ext.Viewport(dataStorePanel);  
+	        //var formEnginePanel = new Sbi.formviewer.DataStorePanel(qbeConfig);
+	        var formEnginePanel = new Sbi.formviewer.FormEnginePanel(qbeConfig);
+           	var viewport = new Ext.Viewport(formEnginePanel);  
 	
 	    </script>
 	    

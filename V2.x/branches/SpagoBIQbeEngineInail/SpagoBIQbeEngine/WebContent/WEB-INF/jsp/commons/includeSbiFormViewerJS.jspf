@@ -1,34 +1,17 @@
-<!-- 
-IMPORTANT: every time this file get modified (i.e. a new js file is added to the importation list or an old one is removed) also the target
-create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must be updated properly
- -->
-
 <!-- Include QBE stylesheets -->
 <link rel="styleSheet" href ="../css/qbe.css" type="text/css" />
 
 <!-- Include SuperBoxSelect code -->
 <script type="text/javascript" src='../js/lib/ext-2.0.1/ux/form/SuperBoxSelect.js'/></script>
-
-<!-- Include SuperBoxSelect stylesheets -->
 <link rel="styleSheet" href ="../js/lib/ext-2.0.1/resources/css/superboxselect.css" type="text/css" />
 <link rel="styleSheet" href ="../js/lib/ext-2.0.1/resources/css/superboxselect-gray-extend.css" type="text/css" />
 
-
 <!-- Include ux.Andrie.Select (multi-selection combobox) code -->
 <script type="text/javascript" src='../js/lib/ext-2.0.1/ux/Andrie/Select/Select.js'/></script>
-
-<!-- Include ux.Andrie.Select stylesheets -->
 <link rel="styleSheet" href ="../js/lib/ext-2.0.1/resources/css/Select.css" type="text/css" />
 
-
-<!-- Include Ext.ux.BoxSelect (multi-selection combobox) code  
-<script type="text/javascript" src='../js/lib/ext-2.0.1/ux/boxselect/Ext.ux.BoxSelect.js'/></script>
--->
-<!-- Include Ext.ux.BoxSelect stylesheets 
-<link rel="styleSheet" href ="../js/lib/ext-2.0.1/resources/css/boxselect.css" type="text/css" />
--->
-
 <!-- Include localized labels  -->
+<script type="text/javascript" src='../js/spagobi/locale/qbe/<%=locale.getLanguage()%>.js'/></script>
 <script type="text/javascript" src='../js/spagobi/locale/formviewer/<%=locale.getLanguage()%>.js'/></script>
 
 <!-- START-DEBUG -->
@@ -57,6 +40,8 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/formviewer/GroupingVariablesPanel.js'/></script>
 
 <script type="text/javascript" src='../js/spagobi/formviewer/DataStorePanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/formviewer/ResultsPage.js'/></script>
+<script type="text/javascript" src='../js/spagobi/formviewer/FormEnginePanel.js'/></script>
 
 <!-- END-DEBUG -->
 

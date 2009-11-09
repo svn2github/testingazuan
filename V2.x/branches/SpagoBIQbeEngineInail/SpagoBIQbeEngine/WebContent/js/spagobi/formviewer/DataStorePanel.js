@@ -67,15 +67,12 @@ Sbi.formviewer.DataStorePanel = function(config) {
 	this.initPanel();
 	
 	c = Ext.apply(c, {
-		title: LN('sbi.qbe.datastorepanel.title'),  
 		layout: 'fit',
 		items: [this.grid]
 	});
 	
 	// constructor
 	Sbi.formviewer.DataStorePanel.superclass.constructor.call(this, c);
-    
-    this.addEvents();
 };
 
 Ext.extend(Sbi.formviewer.DataStorePanel, Ext.Panel, {

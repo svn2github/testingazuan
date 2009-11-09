@@ -48,30 +48,38 @@ Ext.ns("Sbi.xxx");
 
 Sbi.xxx.Xxxx = function(config) {
 	
-	var c = Ext.apply({
-		// set default values here
-	}, config || {});
+	var defaultSettings = {
+			title: LN('sbi.qbe.queryeditor.title'),
+		};
+		
+		if(Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.queryBuilderPanel) {
+			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.queryBuilderPanel);
+		}
+		
+		var c = Ext.apply(defaultSettings, config || {});
+		
+		Ext.apply(this, c);
+		
+		
+		this.services = this.services || new Array();	
+		this.services['doThat'] = this.services['doThat'] || Sbi.config.serviceRegistry.getServiceUrl({
+			serviceName: 'DO_THAT_ACTION'
+			, baseParams: new Object()
+		});
+		
+		this.addEvents('customEvents');
+		
+		
+		this.initThis(c.westConfig || {});
+		this.initThat(c.westConfig || {});
 	
-	this.services = new Array();
-	var params = {};
-	this.services['loadDataStore'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'EXEC_QUERY_ACTION'
-		, baseParams: params
-	});
-	
-	this.addEvents();
-	
-	this.initThis();
-	this.initThat();
-	
-	c = Ext.apply(c, {
-		title: 'Results',  
-		layout: 'fit',
-		items: [this.grid]
-	})
-	
-	// constructor
-    Sbi.xxx.Xxxx.superclass.constructor.call(this, c);
+		c = Ext.apply(c, {
+	      	layout: 'border',      	
+	      	items: [this.thisPanel, this.thatPanel]
+		});
+
+		// constructor
+		Sbi.xxx.Xxxx.superclass.constructor.call(this, c);
     
     this.addEvents();
 };

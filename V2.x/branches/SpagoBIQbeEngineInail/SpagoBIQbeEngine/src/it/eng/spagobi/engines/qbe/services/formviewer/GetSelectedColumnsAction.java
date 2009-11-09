@@ -56,7 +56,7 @@ import it.eng.spagobi.utilities.sql.SqlUtils;
 /**
  * The Class ExecuteQueryAction.
  */
-public class ExecuteFormQueryAction extends AbstractQbeEngineAction {	
+public class GetSelectedColumnsAction extends AbstractQbeEngineAction {	
 	
 	// INPUT PARAMETERS
 	public static final String LIMIT = "limit";
@@ -65,7 +65,7 @@ public class ExecuteFormQueryAction extends AbstractQbeEngineAction {
 	
 	
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(ExecuteFormQueryAction.class);
+    public static transient Logger logger = Logger.getLogger(GetSelectedColumnsAction.class);
     public static transient Logger auditlogger = Logger.getLogger("audit.query");
     
 	

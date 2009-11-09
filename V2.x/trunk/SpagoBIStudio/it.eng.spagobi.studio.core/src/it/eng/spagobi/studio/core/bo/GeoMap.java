@@ -47,6 +47,9 @@ public class GeoMap  implements Serializable   {
 		descr=sdkMap.getDescr();
 		url=sdkMap.getUrl();
 		format=sdkMap.getFormat();
+		if(sdkMap!=null){
+			System.out.println("SI");
+		}
 		if(sdkMap.getBinId()!=null){
 			binId=sdkMap.getBinId();
 		}

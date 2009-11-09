@@ -7,6 +7,7 @@ import it.eng.spagobi.sdk.datasets.bo.SDKDataStoreMetadata;
 import it.eng.spagobi.sdk.maps.bo.SDKMap;
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.MapsSDKServiceProxy;
+import it.eng.spagobi.studio.core.exceptions.NoServerException;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 
@@ -15,7 +16,7 @@ public class SpagoBIServerObjects {
 
 
 
-	public DataStoreMetadata getDataStoreMetadata(Integer datasetId) throws Exception{
+	public DataStoreMetadata getDataStoreMetadata(Integer datasetId) throws NoServerException{
 		SDKDataStoreMetadata sdkDataStoreMetadata=null;
 		DataStoreMetadata toReturn=null;
 		try{
@@ -27,7 +28,7 @@ public class SpagoBIServerObjects {
 		}
 		catch (Exception e) {
 			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve dataset metadata informations", e);
-			throw(e);
+			throw(new NoServerException(e));
 		}
 		if(sdkDataStoreMetadata!=null){
 			toReturn=new DataStoreMetadata(sdkDataStoreMetadata);
@@ -40,7 +41,7 @@ public class SpagoBIServerObjects {
 
 
 
-	public GeoMap getGeoMapById(Integer geoId) throws Exception{
+	public GeoMap getGeoMapById(Integer geoId) throws NoServerException{
 		GeoMap toReturn=null;
 
 		SDKMap sdkMap=null;
@@ -51,7 +52,7 @@ public class SpagoBIServerObjects {
 		}
 		catch (Exception e) {
 			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve map informations", e);
-			throw(e);
+			throw(new NoServerException(e));
 		}	
 		if(sdkMap!=null){
 			toReturn=new GeoMap(sdkMap);
@@ -61,7 +62,7 @@ public class SpagoBIServerObjects {
 
 	}
 
-	public Vector<GeoMap> getAllGeoMaps(){
+	public Vector<GeoMap> getAllGeoMaps() throws NoServerException{
 		Vector<GeoMap> toReturn=new Vector<GeoMap>();
 
 		SDKMap[] sdkMaps=null;
@@ -72,6 +73,7 @@ public class SpagoBIServerObjects {
 		}
 		catch (Exception e) {
 			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve map informations", e);
+			throw(new NoServerException(e));
 		}	
 
 		for (int i = 0; i < sdkMaps.length; i++) {
@@ -86,7 +88,7 @@ public class SpagoBIServerObjects {
 	}
 
 
-	public Vector<Dataset> getAllDatasets() throws Exception{
+	public Vector<Dataset> getAllDatasets() throws NoServerException{
 		Vector<Dataset> toReturn=new Vector<Dataset>();
 
 		SDKDataSet[] sdkDataSets=null;
@@ -97,7 +99,7 @@ public class SpagoBIServerObjects {
 		}
 		catch (Exception e) {
 			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve dataset informations", e);
-			throw(e);
+			throw(new NoServerException(e));
 		}
 
 

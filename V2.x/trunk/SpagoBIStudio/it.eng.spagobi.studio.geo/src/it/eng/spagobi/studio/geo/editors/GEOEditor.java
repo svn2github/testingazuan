@@ -222,7 +222,7 @@ public class GEOEditor extends EditorPart{
 			}
 		});
 		section.setText("GEO designer");
-		Composite sectionClient = toolkit.createComposite(section, SWT.NO_REDRAW_RESIZE);
+		Composite sectionClient = toolkit.createComposite(section, SWT.RESIZE);
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 2;
 		gl.makeColumnsEqualWidth = true;
@@ -338,6 +338,8 @@ public class GEOEditor extends EditorPart{
 						editor.setEditor(comboAgg, item, DATASET_AGGREGATION);
 					}
 				}
+				sectionClient.getParent().pack();
+				sectionClient.getParent().redraw();
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {

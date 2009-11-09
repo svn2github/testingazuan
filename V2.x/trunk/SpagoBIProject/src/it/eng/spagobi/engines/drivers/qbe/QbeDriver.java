@@ -21,24 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.drivers.qbe;
 
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
-import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
-import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
-import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
-import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
-import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
-import it.eng.spagobi.engines.drivers.AbstractDriver;
-import it.eng.spagobi.engines.drivers.EngineURL;
-import it.eng.spagobi.engines.drivers.IEngineDriver;
-import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
-
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -48,6 +30,27 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
+import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
+import it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IBinContentDAO;
+import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
+import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
+import it.eng.spagobi.engines.drivers.AbstractDriver;
+import it.eng.spagobi.engines.drivers.EngineURL;
+import it.eng.spagobi.engines.drivers.IEngineDriver;
+import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
+import it.eng.spagobi.utilities.assertion.Assert;
 
 
 
@@ -65,75 +68,81 @@ public class QbeDriver extends AbstractDriver implements IEngineDriver {
 	 * 
 	 * @param profile Profile of the user
 	 * @param roleName the name of the execution role
-	 * @param biobject the biobject
+	 * @param analyticalDocument the biobject
 	 * 
 	 * @return Map The map of the execution call parameters
 	 */
-	public Map getParameterMap(Object biobject, IEngUserProfile profile, String roleName) {
+	public Map getParameterMap(Object analyticalDocument, IEngUserProfile profile, String roleName) {
+		Map parameters;
+		BIObject biObject;
+		
 		logger.debug("IN");
 		
-		Map map = new Hashtable();
-		try{
-			BIObject biobj = (BIObject)biobject;
-			map = getMap(biobj);
-			// This parameter is not required
-			//map.put("query", "#");
-		} catch (ClassCastException cce) {
-			logger.error("The parameter is not a BIObject type", cce);
-		} 
+		try {
+			Assert.assertNotNull(analyticalDocument, "Input parameter [analyticalDocument] cannot be null");
+			Assert.assertTrue((analyticalDocument instanceof BIObject), "Input parameter [analyticalDocument] cannot be an instance of [" + analyticalDocument.getClass().getName()+ "]");
+			
+			biObject = (BIObject)analyticalDocument;
+			
+			parameters = new Hashtable();
+			parameters = getRequestParameters(biObject);
+			parameters = applySecurity(parameters, profile);
+			parameters = addDocumentParametersInfo(parameters, biObject);
+			parameters = applyService(parameters, biObject);
+		} finally {
+			logger.debug("OUT");
+		}
 		
-		map = applySecurity(map, profile);
-		map = addDocumentParametersInfo((BIObject) biobject, map);
-		map = applyService(map);
-		logger.debug("OUT");
-		return map;
+		return parameters;
 	}
 	
 	/**
 	 * Returns a map of parameters which will be send in the request to the
 	 * engine application.
 	 * 
-	 * @param subObject SubObject to execute
+	 * @param analyticalDocumentSubObject SubObject to execute
 	 * @param profile Profile of the user
 	 * @param roleName the name of the execution role
-	 * @param object the object
+	 * @param analyticalDocument the object
 	 * 
 	 * @return Map The map of the execution call parameters
 	 */
-	public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile, String roleName) {
-	
+	public Map getParameterMap(Object analyticalDocument, Object analyticalDocumentSubObject, IEngUserProfile profile, String roleName) {
+		
+		Map parameters;
+		BIObject biObject;
+		SubObject subObject;
+		
 		logger.debug("IN");
 		
-		if(subObject == null) {
-			return getParameterMap(object, profile, roleName);
-		}
-		
-		Map map = new Hashtable();
 		try{
-			BIObject biobj = (BIObject)object;
-			map = getMap(biobj);
-			SubObject subObjectDetail = (SubObject) subObject;
+			Assert.assertNotNull(analyticalDocument, "Input parameter [analyticalDocument] cannot be null");
+			Assert.assertTrue((analyticalDocument instanceof BIObject), "Input parameter [analyticalDocument] cannot be an instance of [" + analyticalDocument.getClass().getName()+ "]");
+			biObject = (BIObject)analyticalDocument;
 			
-			Integer id = subObjectDetail.getId();
+			if(analyticalDocumentSubObject == null) {
+				logger.warn("Input parameter [subObject] is null");
+				return getParameterMap(analyticalDocument, profile, roleName);
+			}				
+			Assert.assertTrue((analyticalDocumentSubObject instanceof SubObject), "Input parameter [subObjectDetail] cannot be an instance of [" + analyticalDocumentSubObject.getClass().getName()+ "]");
+			subObject = (SubObject) analyticalDocumentSubObject;
+						
+			parameters = getRequestParameters(biObject);
 			
-			map.put("nameSubObject",  subObjectDetail.getName() != null? subObjectDetail.getName(): "" );
-			map.put("descriptionSubObject", subObjectDetail.getDescription() != null? subObjectDetail.getDescription(): "");
-			map.put("visibilitySubObject", subObjectDetail.getIsPublic().booleanValue()?"Public":"Private" );
-	        map.put("subobjectId", subObjectDetail.getId());
+			parameters.put("nameSubObject",  subObject.getName() != null? subObject.getName(): "" );
+			parameters.put("descriptionSubObject", subObject.getDescription() != null? subObject.getDescription(): "");
+			parameters.put("visibilitySubObject", subObject.getIsPublic().booleanValue()?"Public":"Private" );
+			parameters.put("subobjectId", subObject.getId());
+			
+			parameters = applySecurity(parameters, profile);
+			parameters = addDocumentParametersInfo(parameters, biObject);
+			parameters = applyService(parameters, biObject);
+			parameters.put("isFromCross", "false");
 		
-			
-		} catch (ClassCastException cce) {
-		    logger.error("The second parameter is not a SubObjectDetail type", cce);
+		} finally {
+			logger.debug("OUT");
 		}
-		
-		
-		map = applySecurity(map, profile);
-		map = addDocumentParametersInfo((BIObject)object, map);
-		map = applyService(map);
-		map.put("isFromCross", "false");
-		logger.debug("OUT");		
-		
-		return map;
+		return parameters;
 		
 	}
 	
@@ -143,7 +152,7 @@ public class QbeDriver extends AbstractDriver implements IEngineDriver {
 	 * @param map The parameters map
 	 * @return the modified map with the new parameter
 	 */
-    private Map addDocumentParametersInfo(BIObject biobject, Map map) {
+    private Map addDocumentParametersInfo(Map map, BIObject biobject) {
     	logger.debug("IN");
     	JSONArray parametersJSON = new JSONArray();
     	try {
@@ -172,45 +181,45 @@ public class QbeDriver extends AbstractDriver implements IEngineDriver {
 	/**
      * Starting from a BIObject extracts from it the map of the paramaeters for the
      * execution call
-     * @param biobj BIObject to execute
+     * @param biObject BIObject to execute
      * @return Map The map of the execution call parameters
      */    
-	private Map getMap(BIObject biobj) {
+	private Map getRequestParameters(BIObject biObject) {
 		logger.debug("IN");
 		
-		Map pars;
-		ObjTemplate objtemplate;
-		byte[] template;
-		String documentId;
+		Map parameters;
+		ObjTemplate template;
+		IBinContentDAO contentDAO;
+		byte[] content;
 		
-		pars = new Hashtable();
-		try {
+		logger.debug("IN");
 		
-			objtemplate = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(biobj.getId());		    
-			if (objtemplate == null) {
-		    	throw new Exception("Active Template null");
-		    }
+		parameters = null;
+		
+		try {		
+			parameters = new Hashtable();
+			template = this.getTemplate(biObject);
 			
-			template = DAOFactory.getBinContentDAO().getBinContent(objtemplate.getBinId());		    
-			if (template == null) {
-				throw new Exception("Content of the Active template null");
+			try {
+				contentDAO = DAOFactory.getBinContentDAO();
+				Assert.assertNotNull(contentDAO, "Impossible to instantiate contentDAO");
+				
+				content = contentDAO.getBinContent(template.getBinId());		    
+				Assert.assertNotNull(content, "Template content cannot be null");
+			} catch (Throwable t){
+				throw new RuntimeException("Impossible to load template content for document [" + biObject.getLabel()+ "]", t);
 			}
-			
-			documentId = biobj.getId().toString();
-			pars.put("document", documentId);
-			logger.debug("Add document parameter:" + documentId);
-	        
-			pars = addBIParameters(biobj, pars);
-        
-		} catch (Exception e) {
-		    logger.error("Error while recovering execution parameter map: \n" + e);
+					
+			appendRequestParameter(parameters, "document", biObject.getId().toString());
+			appendAnalyticalDriversToRequestParameters(biObject, parameters);
+		} finally {
+			logger.debug("OUT");
 		}
 		
-
-		logger.debug("OUT");
-		
-		return pars;
+		return parameters;
 	} 
+	
+	
 	
     /**
      * Add into the parameters map the BIObject's BIParameter names and values
@@ -218,7 +227,7 @@ public class QbeDriver extends AbstractDriver implements IEngineDriver {
      * @param pars Map of the parameters for the execution call  
      * @return Map The map of the execution call parameters
      */
-	private Map addBIParameters(BIObject biobj, Map pars) {
+	private Map appendAnalyticalDriversToRequestParameters(BIObject biobj, Map pars) {
 		logger.debug("IN");
 		
 		if(biobj==null) {
@@ -278,13 +287,60 @@ public class QbeDriver extends AbstractDriver implements IEngineDriver {
     }
 
     
-        
-	protected Map applyService(Map pars) {
+    
+    private final static String PARAM_SERVICE_NAME = "ACTION_NAME";
+    private final static String PARAM_NEW_SESSION = "NEW_SESSION";
+    
+	private Map applyService(Map parameters, BIObject biObject) {
+		ObjTemplate template;
+		
 		logger.debug("IN");
-		pars.put("ACTION_NAME", "QBE_ENGINE_START_ACTION");
-		pars.put("NEW_SESSION", "TRUE");
-		logger.debug("OUT");
-		return pars;
+		
+		try {
+			Assert.assertNotNull(parameters, "Input [parameters] cannot be null");
+			
+			template = getTemplate(biObject);
+			if(template.getName().trim().toLowerCase().endsWith(".xml")) {
+				parameters.put(PARAM_SERVICE_NAME, "QBE_ENGINE_START_ACTION");
+			} else if(template.getName().trim().toLowerCase().endsWith(".json")) {
+				parameters.put(PARAM_SERVICE_NAME, "FORM_ENGINE_START_ACTION");
+			} else {
+				Assert.assertUnreachable("Active template [" + template.getName() + "] extension is not valid (valid extensions are: .xml ; .json)");
+			}
+			
+			parameters.put(PARAM_NEW_SESSION, "TRUE");
+		} catch(Throwable t) {
+			throw new RuntimeException("Impossible to guess from template extension the engine startup service to call");
+		} finally {
+			logger.debug("OUT");
+		}
+		
+		return parameters;
+	}
+	
+	private ObjTemplate getTemplate(BIObject biObject) {
+		ObjTemplate template;
+		IObjTemplateDAO templateDAO;
+		
+		logger.debug("IN");
+		
+		try {
+			Assert.assertNotNull(biObject, "Input [biObject] cannot be null");
+			
+			templateDAO = DAOFactory.getObjTemplateDAO();
+			Assert.assertNotNull(templateDAO, "Impossible to instantiate templateDAO");
+		
+			template = templateDAO.getBIObjectActiveTemplate( biObject.getId() );
+			Assert.assertNotNull(template, "Loaded template cannot be null");	
+			
+			logger.debug("Active template [" + template.getName() + "] of document [" + biObject.getLabel() + "] loaded succesfully");
+		} catch(Throwable t) {
+			throw new RuntimeException("Impossible to load template for document [" + biObject.getLabel()+ "]", t);
+		} finally {
+			logger.debug("OUT");
+		}
+		
+		return template;
 	}
 	
     private Locale getLocale() {
@@ -304,6 +360,11 @@ public class QbeDriver extends AbstractDriver implements IEngineDriver {
 		} finally  {
 			logger.debug("OUT");
 		}	
+	}
+    
+    private void appendRequestParameter(Map parameters, String pname, String pvalue) {
+		parameters.put(pname, pvalue);
+		logger.debug("Added parameter [" + pname + "] with value [" + pvalue + "] to request parameters list");
 	}
 }
 

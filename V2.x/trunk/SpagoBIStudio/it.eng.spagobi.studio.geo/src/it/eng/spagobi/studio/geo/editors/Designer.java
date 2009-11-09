@@ -1,16 +1,9 @@
 package it.eng.spagobi.studio.geo.editors;
 
-import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
-
-import java.util.Vector;
-
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 

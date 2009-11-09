@@ -65,10 +65,16 @@ public class Designer {
 	}
 	
 	private void deleteItem(Tree hierarchiesTree, TreeItem item){
+        //elimina oggetto java
+		if(item.getParentItem() == null){
+			//hierarchy--> delete hierarchy
+			HierarchyBO.deleteHierarchy(geoDocument, item.getText());
+		}else{
+			//level--> deleteLevel
+			LevelBO.deleteLevel(geoDocument, item.getParentItem().getText(), item.getText());
+		}
 		item.dispose();
 		hierarchiesTree.redraw();
-        //elimina oggetto java
-		
 	}
 	private void createMenu(final Composite sectionClient, final Tree hierarchiesTree){
 		

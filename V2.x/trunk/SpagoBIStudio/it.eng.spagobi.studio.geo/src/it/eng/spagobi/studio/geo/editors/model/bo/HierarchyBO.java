@@ -33,5 +33,21 @@ public class HierarchyBO {
 		}
 
 	}
+	public static void deleteHierarchy(GEODocument geoDocument, String name){
+		DatamartProvider dmProvider =geoDocument.getDatamartProvider();
+		if(dmProvider != null){
+			Hierarchies hierarchies = dmProvider.getHierarchies();
+			if(hierarchies != null && hierarchies.getHierarchy() != null){
+				for(int i =0; i< hierarchies.getHierarchy().size(); i++){
+					Hierarchy h = hierarchies.getHierarchy().elementAt(i);
+					if(h.getName().equals(name)){
+						hierarchies.getHierarchy().remove(h);
+					}
+				}
+				
+			}
+		}
+
+	}
 
 }

@@ -3,8 +3,10 @@ package it.eng.spagobi.studio.geo.util;
 import it.eng.spagobi.studio.geo.editors.model.geo.Column;
 import it.eng.spagobi.studio.geo.editors.model.geo.DatamartProvider;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
+import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchies;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchy;
 import it.eng.spagobi.studio.geo.editors.model.geo.Level;
+import it.eng.spagobi.studio.geo.editors.model.geo.Levels;
 import it.eng.spagobi.studio.geo.editors.model.geo.MapProvider;
 import it.eng.spagobi.studio.geo.editors.model.geo.MapRenderer;
 import it.eng.spagobi.studio.geo.editors.model.geo.Metadata;
@@ -48,12 +50,16 @@ public class XmlTemplateGenerator {
 					xstream.aliasField("level", Column.class, "level");
 					xstream.useAttributeFor(Column.class, "aggFunction");
 					xstream.aliasField("agg_func", Column.class, "aggFunction");
-			xstream.addImplicitCollection(DatamartProvider.class, "hierarchies", "HIERARCHY", Hierarchy.class);
+					xstream.aliasField("HIERARCHIES", DatamartProvider.class, "hierarchies");
+					xstream.addImplicitCollection(Hierarchies.class, "hierarchy", "HIERARCHY", Hierarchy.class);
+
 			xstream.useAttributeFor(Hierarchy.class, "name");
 			xstream.aliasField("name", Hierarchy.class, "name");
 			xstream.useAttributeFor(Hierarchy.class, "type");
 			xstream.aliasField("type", Hierarchy.class, "type");
-				xstream.addImplicitCollection(Hierarchy.class, "levels", "LEVEL", Level.class);
+				xstream.aliasField("LEVELS", Hierarchy.class, "levels");
+				xstream.addImplicitCollection(Levels.class, "level", "LEVEL", Level.class);
+
 					xstream.useAttributeFor(Level.class, "name");
 					xstream.aliasField("name", Level.class, "name");
 					xstream.useAttributeFor(Level.class, "columnId");

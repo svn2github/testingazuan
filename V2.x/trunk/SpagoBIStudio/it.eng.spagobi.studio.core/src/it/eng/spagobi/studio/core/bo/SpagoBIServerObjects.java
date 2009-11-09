@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
 import it.eng.spagobi.sdk.datasets.bo.SDKDataStoreMetadata;
+import it.eng.spagobi.sdk.exceptions.MissingParameterValue;
 import it.eng.spagobi.sdk.maps.bo.SDKMap;
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.MapsSDKServiceProxy;
@@ -16,7 +17,7 @@ public class SpagoBIServerObjects {
 
 
 
-	public DataStoreMetadata getDataStoreMetadata(Integer datasetId) throws NoServerException{
+	public DataStoreMetadata getDataStoreMetadata(Integer datasetId) throws NoServerException, MissingParameterValue{
 		SDKDataStoreMetadata sdkDataStoreMetadata=null;
 		DataStoreMetadata toReturn=null;
 		try{
@@ -27,8 +28,13 @@ public class SpagoBIServerObjects {
 			sdkDataStoreMetadata=datasetsServiceProxy.getDataStoreMetadata(sdkDataSet);
 		}
 		catch (Exception e) {
-			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve dataset metadata informations", e);
-			throw(new NoServerException(e));
+			if(e instanceof MissingParameterValue){
+				throw (MissingParameterValue)e;
+			}
+			else{
+				SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve dataset metadata informations", e);
+				throw(new NoServerException(e));
+			}
 		}
 		if(sdkDataStoreMetadata!=null){
 			toReturn=new DataStoreMetadata(sdkDataStoreMetadata);

@@ -22,6 +22,7 @@ public class DataStoreMetadata {
 
 	public DataStoreMetadata(SDKDataStoreMetadata sdkDataStoreMetadata) {
 		if(sdkDataStoreMetadata==null || sdkDataStoreMetadata.getFieldsMetadata()==null) return;
+		fieldsMetadata=new DataStoreMetadataField[sdkDataStoreMetadata.getFieldsMetadata().length];
 		for (int i = 0; i < sdkDataStoreMetadata.getFieldsMetadata().length; i++) {
 			fieldsMetadata[i]=new DataStoreMetadataField(sdkDataStoreMetadata.getFieldsMetadata()[i]);
 		}

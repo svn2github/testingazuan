@@ -347,6 +347,7 @@ public class GEOEditor extends EditorPart{
 						editor.verticalAlignment=SWT.CENTER;
 						editor.grabVertical=true;
 						editor.setEditor(comboAgg, item, DATASET_AGGREGATION);
+						datasetTable.pack();
 					}
 				}
 				sectionClient.getParent().pack();
@@ -478,6 +479,7 @@ public class GEOEditor extends EditorPart{
 						editor.verticalAlignment=SWT.CENTER;
 						editor.grabVertical=true;						
 						editor.setEditor(colorSection, item, FEATURE_DEFAULT_COLORS);
+						mapTable.pack();
 					}
 				}
 				sectionClient.getParent().pack();
@@ -593,5 +595,7 @@ public class GEOEditor extends EditorPart{
 	public void setSelectedMap(String selectedMap) {
 		this.selectedMap = selectedMap;
 	}
+
+
 
 }

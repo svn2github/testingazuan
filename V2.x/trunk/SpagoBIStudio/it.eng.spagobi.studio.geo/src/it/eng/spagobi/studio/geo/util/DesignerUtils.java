@@ -27,7 +27,8 @@ public class DesignerUtils {
 		colorGd.marginBottom = 0;
 		innerSection.setLayout(colorGd);
 		final Label colorLabel = new Label(innerSection, SWT.BORDER);
-		colorLabel.setText("          ");
+		colorLabel.setText("           ");
+		colorLabel.setSize(50, 20);
 		RGB rgb=null;
 		if(colorHex!=null){
 			//String hexadecimal = aParameter.getValue().toString();
@@ -45,6 +46,7 @@ public class DesignerUtils {
 		colorLabel.setBackground(color);
 		Button button = new Button(innerSection, SWT.PUSH);
 		button.setText("Color...");
+		button.setSize(50, 10);
 		final Shell parentShell = parent.getShell();
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {

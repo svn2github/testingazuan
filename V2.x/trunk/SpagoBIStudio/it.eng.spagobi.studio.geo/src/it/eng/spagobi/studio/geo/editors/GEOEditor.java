@@ -79,6 +79,7 @@ public class GEOEditor extends EditorPart{
 
 
 	private String selectedDataset;
+	private String selectedMap;
 	private Table datasetTable;
 	private Combo datasetCombo;	
 
@@ -409,6 +410,7 @@ public class GEOEditor extends EditorPart{
 				mapTable.removeAll();
 				int indexSelection=mapCombo.getSelectionIndex();
 				String mapLabel=mapCombo.getItem(indexSelection);
+				selectedMap = mapLabel;
 				GeoFeature[] geoFeatures=null;
 				// get the metadata
 				if(tempMapMetadataInfos.get(mapLabel)!=null){
@@ -584,6 +586,12 @@ public class GEOEditor extends EditorPart{
 	}
 	public void setMapInfos(HashMap<String, GeoMap> mapInfos) {
 		this.mapInfos = mapInfos;
+	}
+	public String getSelectedMap() {
+		return selectedMap;
+	}
+	public void setSelectedMap(String selectedMap) {
+		this.selectedMap = selectedMap;
 	}
 
 }

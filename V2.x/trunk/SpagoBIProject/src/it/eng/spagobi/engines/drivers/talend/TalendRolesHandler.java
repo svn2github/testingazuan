@@ -68,7 +68,7 @@ public class TalendRolesHandler implements IRolesHandler {
 		try {
 			biobjectId = new Integer(biobjectIdStr);
 		} catch (Exception e) {
-			logger.error("Malformed BIObject id: " + biobjectIdStr);
+			logger.error("Malformed BIObject id: " + biobjectIdStr,e);
 			throw new EMFInternalError(EMFErrorSeverity.ERROR, "Malformed BIObject id: " + biobjectIdStr);
 		}
 		List roles = null;

@@ -166,7 +166,7 @@ public class GEOEditor extends EditorPart{
 		//mapInfos.put(sdkMap.getName(), sdkMap);
 
 
-		// Initialize Designer
+		// Initialize HierarchiesDesigner
 		//		dataSets = new Vector<String>();
 		//		for (int i=0; i< 4 ; i++){
 		//			dataSets.add("dataset"+i);
@@ -236,7 +236,7 @@ public class GEOEditor extends EditorPart{
 		sectionClient.setLayout(gl);
 		section.setClient(sectionClient);
 
-		Designer designer = new Designer(sectionClient, this);
+		HierarchiesDesigner designer = new HierarchiesDesigner(sectionClient, this);
 		GEODocument geoDocument = Activator.getDefault().getGeoDocument();
 		designer.setGeoDocument(geoDocument);
 

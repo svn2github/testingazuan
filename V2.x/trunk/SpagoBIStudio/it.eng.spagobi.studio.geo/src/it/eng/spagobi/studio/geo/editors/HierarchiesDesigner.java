@@ -37,20 +37,20 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
-public class Designer {
+public class HierarchiesDesigner {
 
 
 	private GEOEditor editor=null;
 	private Composite mainComposite;
 	private GEODocument geoDocument;
 
-	public Designer(Composite _composite, GEOEditor _editor) {
+	public HierarchiesDesigner(Composite _composite, GEOEditor _editor) {
 		super();
 		mainComposite= _composite;
 		editor = _editor;
 	}
 
-	public Designer(Composite _composite, GEOEditor _editor, GEODocument _geoDocument) {
+	public HierarchiesDesigner(Composite _composite, GEOEditor _editor, GEODocument _geoDocument) {
 		super();
 		mainComposite= _composite;
 		editor = _editor;

@@ -83,7 +83,7 @@ public class EventServiceImpl extends AbstractServiceImpl {
 	    }
 	    return returnValue;
 	} catch (Exception e) {
-		logger.error("TalendRolesHandler not found");
+		logger.error("TalendRolesHandler not found",e);
 
 	}finally{
 	    logger.debug("OUT");

@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.analiticalmodel.document.bo;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class ObjNote implements Serializable {
 
@@ -29,7 +30,12 @@ public class ObjNote implements Serializable {
 	Integer biobjId = null;
 	Integer binId = null;
 	String execReq = null;
+	Boolean isPublic = new Boolean(false);
+	String owner = null;
+	Date lastChangeDate;
+	Date creationDate;
     byte[] content = null;
+    String notes = null;
     
     
 	/**
@@ -120,6 +126,76 @@ public class ObjNote implements Serializable {
 	 */
 	public void setContent(byte[] content) {
 		this.content = content;
+	}
+
+	/**
+	 * @return the isPublic
+	 */
+	public Boolean getIsPublic() {
+		return isPublic;
+	}
+
+	/**
+	 * @param isPublic the isPublic to set
+	 */
+	public void setIsPublic(Boolean isPublic) {
+		this.isPublic = isPublic;
+	}
+
+	/**
+	 * @return the owner
+	 */
+	public String getOwner() {
+		return owner;
+	}
+
+	/**
+	 * @param owner the owner to set
+	 */
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	/**
+	 * @return the lastChangeDate
+	 */
+	public Date getLastChangeDate() {
+		return lastChangeDate;
+	}
+
+	/**
+	 * @param lastChangeDate the lastChangeDate to set
+	 */
+	public void setLastChangeDate(Date lastChangeDate) {
+		this.lastChangeDate = lastChangeDate;
+	}
+
+	/**
+	 * @return the creationDate
+	 */
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	/**
+	 * @param creationDate the creationDate to set
+	 */
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	/**
+	 * @return the notes
+	 */
+	public String getNotes() {
+		return notes;
+	}
+
+	/**
+	 * @param notes the notes to set
+	 */
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 	
 	

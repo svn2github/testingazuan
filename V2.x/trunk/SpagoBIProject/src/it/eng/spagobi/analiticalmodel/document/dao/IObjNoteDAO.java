@@ -23,6 +23,8 @@ package it.eng.spagobi.analiticalmodel.document.dao;
 
 import it.eng.spagobi.analiticalmodel.document.bo.ObjNote;
 
+import java.util.List;
+
 
 
 public interface IObjNoteDAO {
@@ -37,6 +39,7 @@ public interface IObjNoteDAO {
 	 */
 	public void saveExecutionNotes(Integer biobjId, ObjNote objNote) throws Exception;
 	
+	
 	/**
 	 * Get Notes for a specific execution of the biobject.
 	 * 
@@ -49,6 +52,30 @@ public interface IObjNoteDAO {
 	 */
 	public ObjNote getExecutionNotes(Integer biobjId, String execIdentif) throws Exception;
 	
+	/**
+	 * Get Notes for a specific execution of the biobject by owner.
+	 * 
+	 * @param biobjId id of the biobject executed
+	 * @param execIdentif the exec identif
+	 * @param owner the note's owner
+	 * 
+	 * @return ObjNote notes saved
+	 * 
+	 * @throws Exception the exception
+	 */
+	public ObjNote getExecutionNotesByOwner(Integer biobjId, String execIdentif, String owner) throws Exception;
+	
+	/**
+	 * Get Notes for a specific execution of the biobject.
+	 * 
+	 * @param biobjId id of the biobject executed
+	 * @param execIdentif the exec identif
+	 * 
+	 * @return ObjNote notes saved
+	 * 
+	 * @throws Exception the exception
+	 */
+	public List getListExecutionNotes(Integer biobjId, String execIdentif) throws Exception;
 	
 	/**
 	 * Modify execution notes.
@@ -67,5 +94,15 @@ public interface IObjNoteDAO {
 	 * @throws Exception the exception
 	 */
 	public void eraseNotes(Integer biobjId) throws Exception;
+	
+	/**
+	 * Deletes all notes associated to the BIObject with the id and the owner specified in input.
+	 * 
+	 * @param biobjId the biobj id
+	 * @param owner the user owner the note
+	 * 
+	 * @throws Exception the exception
+	 */
+	public void eraseNotesByOwner(Integer biobjId, String execIdentif, String owner) throws Exception ;
 	
 }

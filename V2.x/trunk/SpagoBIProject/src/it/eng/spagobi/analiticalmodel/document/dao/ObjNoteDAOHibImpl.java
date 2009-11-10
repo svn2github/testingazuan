@@ -35,6 +35,7 @@ import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -83,8 +84,87 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 		}
 		return objNote;
 	}
-
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjNoteDAO#getExecutionNotesByOwner(java.lang.Integer, java.lang.String, java.lang.String)
+	 */
+	public ObjNote getExecutionNotesByOwner(Integer biobjId, String execIdentif, String owner) throws Exception {
+		ObjNote objNote = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+		
+			String hql = "from SbiObjNotes son where son.sbiObject.biobjId = ?"  + 
+			 " and son.execReq = ? and owner = ? ";
+			Query query = aSession.createQuery(hql);
+			query.setInteger(0, biobjId.intValue());
+			query.setString(1, execIdentif);
+			query.setString(2, owner);
+			
+			SbiObjNotes hibObjNote = (SbiObjNotes)query.uniqueResult();
+			if(hibObjNote!=null) {
+				objNote = toObjNote(hibObjNote);
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return objNote;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjNoteDAO#getListExecutionNotes(java.lang.Integer, java.lang.String)
+	 */
+	public List getListExecutionNotes(Integer biobjId, String execIdentif) throws Exception {
+		List lstObjNote = new ArrayList();
+		//ObjNote objNote = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			//String hql = "from SbiObjNotes son where son.sbiObject.biobjId = " + biobjId + 
+			//			 " and son.execReq = '"+execIdentif+"'";
+			
+			String hql = "from SbiObjNotes son where son.sbiObject.biobjId = ? and son.execReq = ?";
+			
+			Query query = aSession.createQuery(hql);
+			query.setInteger(0, biobjId.intValue());
+			query.setString(1, execIdentif);
+			
+			/*SbiObjNotes hibObjNote = (SbiObjNotes)query.uniqueResult();
+			if(hibObjNote!=null) {
+				objNote = toObjNote(hibObjNote);
+			}*/
+			List result = query.list();
+			Iterator it = result.iterator();
+			while (it.hasNext()){
+				lstObjNote.add(toObjNote((SbiObjNotes)it.next()));
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return lstObjNote;
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjNoteDAO#saveExecutionNotes(java.lang.Integer, it.eng.spagobi.analiticalmodel.document.bo.ObjNote)
@@ -107,6 +187,8 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 			hibObjNote.setExecReq(execReq);
 			hibObjNote.setSbiBinContents(hibBinContent);
 			hibObjNote.setSbiObject(hibBIObject);
+			hibObjNote.setOwner(objNote.getOwner());
+			hibObjNote.setIsPublic(objNote.getIsPublic());
 			aSession.save(hibObjNote);
 			tx.commit();
 		} catch (HibernateException he) {
@@ -155,9 +237,16 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 		ObjNote objNote = new ObjNote();
 		objNote.setBinId(hibnotes.getSbiBinContents().getId());
 		objNote.setBiobjId(hibnotes.getSbiObject().getBiobjId());
-		objNote.setContent(hibnotes.getSbiBinContents().getContent());
+		byte[] content = hibnotes.getSbiBinContents().getContent();
+		String notes = new String(content);
+		objNote.setNotes((notes == null)?"":notes);
+		objNote.setContent( hibnotes.getSbiBinContents().getContent());
 		objNote.setExecReq(hibnotes.getExecReq());
 		objNote.setId(hibnotes.getObjNoteId());
+		objNote.setOwner((hibnotes.getOwner()==null)?"":hibnotes.getOwner());
+		objNote.setIsPublic((hibnotes.getIsPublic()==null)?true:hibnotes.getIsPublic());
+		objNote.setCreationDate(hibnotes.getCreationDate());
+		objNote.setLastChangeDate(hibnotes.getLastChangeDate());
 		return objNote;
 	}
 
@@ -198,6 +287,44 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjNoteDAO#eraseNotesByOwner(java.lang.Integer, java.lang.String)
+	 */
+	public void eraseNotesByOwner(Integer biobjId, String execIdentif, String owner) throws Exception {
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			//String hql = "from SbiObjNotes son where son.sbiObject.biobjId = " + biobjId;
+			String hql = "from SbiObjNotes son where son.sbiObject.biobjId = ? and son.execReq = ? and son.owner = ?" ;
+		
+			Query query = aSession.createQuery(hql);
+			query.setInteger(0, biobjId.intValue());
+			query.setString(1, execIdentif);
+			query.setString(2, owner);
+			
+			List notes = query.list();
+			Iterator notesIt = notes.iterator();
+			while (notesIt.hasNext()) {
+				SbiObjNotes note = (SbiObjNotes) notesIt.next();
+				SbiBinContents noteBinContent = note.getSbiBinContents();
+				aSession.delete(note);
+				aSession.delete(noteBinContent);
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		
+	}
 	
 
 }

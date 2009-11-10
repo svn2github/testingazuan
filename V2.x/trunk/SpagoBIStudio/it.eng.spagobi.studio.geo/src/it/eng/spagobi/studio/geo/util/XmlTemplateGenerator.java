@@ -1,15 +1,20 @@
 package it.eng.spagobi.studio.geo.util;
 
+import it.eng.spagobi.studio.geo.editors.model.geo.Colours;
 import it.eng.spagobi.studio.geo.editors.model.geo.Column;
 import it.eng.spagobi.studio.geo.editors.model.geo.DatamartProvider;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchies;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchy;
+import it.eng.spagobi.studio.geo.editors.model.geo.KPI;
 import it.eng.spagobi.studio.geo.editors.model.geo.Level;
 import it.eng.spagobi.studio.geo.editors.model.geo.Levels;
 import it.eng.spagobi.studio.geo.editors.model.geo.MapProvider;
 import it.eng.spagobi.studio.geo.editors.model.geo.MapRenderer;
+import it.eng.spagobi.studio.geo.editors.model.geo.Measures;
 import it.eng.spagobi.studio.geo.editors.model.geo.Metadata;
+import it.eng.spagobi.studio.geo.editors.model.geo.Param;
+import it.eng.spagobi.studio.geo.editors.model.geo.Tresholds;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -72,7 +77,42 @@ public class XmlTemplateGenerator {
 		xstream.aliasField("MAP_RENDERER", MapRenderer.class, "mapRenderer");
 		xstream.useAttributeFor(MapRenderer.class, "className");
 		xstream.aliasField("class_name", MapRenderer.class, "className");
-		
+		xstream.aliasField("MEASURES", MapRenderer.class, "measures");
+			xstream.addImplicitCollection(Measures.class, "kpi", "KPI", KPI.class);
+			xstream.useAttributeFor(KPI.class, "columnId");
+			xstream.aliasField("column_id", KPI.class, "columnId");	
+			xstream.useAttributeFor(KPI.class, "description");
+			xstream.aliasField("description", KPI.class, "description");	
+			xstream.useAttributeFor(KPI.class, "aggFunct");
+			xstream.aliasField("agg_funct", KPI.class, "aggFunct");	
+			xstream.useAttributeFor(KPI.class, "color");
+			xstream.aliasField("colour", KPI.class, "color");	
+			xstream.aliasField("TRESHOLDS", KPI.class, "tresholds");
+				xstream.useAttributeFor(Tresholds.class, "type");
+				xstream.aliasField("type", Tresholds.class, "type");
+				xstream.useAttributeFor(Tresholds.class, "lbValue");
+				xstream.aliasField("lb_value", Tresholds.class, "lbValue");
+				xstream.useAttributeFor(Tresholds.class, "ubValue");
+				xstream.aliasField("ub_value", Tresholds.class, "ubValue");
+				xstream.aliasField("PARAM", Tresholds.class, "param");
+					xstream.useAttributeFor(Param.class, "name");
+					xstream.aliasField("name", Param.class, "name");
+					xstream.useAttributeFor(Param.class, "value");
+					xstream.aliasField("value", Param.class, "value");
+			
+			xstream.aliasField("COLOURS", KPI.class, "colours");
+				xstream.useAttributeFor(Colours.class, "type");
+				xstream.aliasField("type", Colours.class, "type");
+				xstream.useAttributeFor(Colours.class, "outboundColour");
+				xstream.aliasField("outbound_colour", Colours.class, "outboundColour");
+				xstream.useAttributeFor(Colours.class, "nullValuesColor");
+				xstream.aliasField("null_values_color", Colours.class, "nullValuesColor");
+				xstream.aliasField("PARAM", Colours.class, "param");
+					xstream.useAttributeFor(Param.class, "name");
+					xstream.aliasField("name", Param.class, "name");
+					xstream.useAttributeFor(Param.class, "value");
+					xstream.aliasField("value", Param.class, "value");
+
 		
 
 		}

@@ -33,9 +33,10 @@ public class MeasuresDesigner {
 		geoDocument = _geoDocument;
 	}
 	
-	public void createMeasuresShell(final Composite sectionClient){
+	public void createMeasuresShell(final Composite sectionClient, String columnName){
+		System.out.println("column measure::"+columnName);
 		final Shell dialog = new Shell (mainComposite.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-		dialog.setText("New Measure");
+		dialog.setText("New Measure for "+columnName);
 		FormLayout formLayout = new FormLayout ();
 		formLayout.marginWidth = 10;
 		formLayout.marginHeight = 10;
@@ -95,7 +96,7 @@ public class MeasuresDesigner {
 		data.top = new FormAttachment (labelAgg, 0, SWT.CENTER);
 		data.bottom = new FormAttachment (cancel, 0, SWT.DEFAULT);
 		textAgg.setLayoutData (data);*/
-		
+		data.bottom = new FormAttachment (cancel, 0, SWT.DEFAULT);
 
 		Button ok = new Button (dialog, SWT.PUSH);
 		ok.setText ("OK");

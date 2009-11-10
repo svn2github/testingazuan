@@ -19,7 +19,6 @@ import it.eng.spagobi.studio.geo.editors.model.bo.ModelBO;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.util.DesignerUtils;
 
-import java.awt.Font;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
@@ -30,6 +29,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -42,14 +42,14 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPage;
@@ -84,6 +84,7 @@ public class GEOEditor extends EditorPart{
 	private Combo datasetCombo;	
 
 	private Table mapTable;
+	private MeasuresDesigner measuresDesigner;
 
 	private static final int DATASET_NAME=0;
 	private static final int DATASET_CLASS=1;
@@ -209,12 +210,12 @@ public class GEOEditor extends EditorPart{
 		layout.verticalSpacing = 10;
 		layout.topMargin = 20;
 		layout.leftMargin = 20;
-		//		FillLayout layout = new FillLayout();
+		
 
 		form.getBody().setLayout(layout);
 
 		final Section section = toolkit.createSection(form.getBody(), 
-				Section.TITLE_BAR | SWT.NO_REDRAW_RESIZE);
+				Section.TITLE_BAR | SWT.RESIZE | SWT.TOP);
 
 		section.setSize(1000, 1000);
 		section.addExpansionListener(new ExpansionAdapter() {
@@ -232,17 +233,20 @@ public class GEOEditor extends EditorPart{
 		gl.marginHeight=5;
 		gl.marginRight=5;
 		gl.marginLeft=5;
+		
 
 		sectionClient.setLayout(gl);
 		section.setClient(sectionClient);
 
 		HierarchiesDesigner designer = new HierarchiesDesigner(sectionClient, this);
+		
 		GEODocument geoDocument = Activator.getDefault().getGeoDocument();
 		designer.setGeoDocument(geoDocument);
-
+		measuresDesigner = new MeasuresDesigner(sectionClient, this, geoDocument) ;
+		
 		initializeEditor(geoDocument);
 		//creazione delle combo e tabelle
-		Group datasetGroup = new Group(sectionClient, SWT.FILL);
+		Group datasetGroup = new Group(sectionClient, SWT.FILL );
 		datasetGroup.setLayout(sectionClient.getLayout());
 		Group mapGroup = new Group(sectionClient, SWT.FILL);
 		mapGroup.setLayout(sectionClient.getLayout());
@@ -262,11 +266,12 @@ public class GEOEditor extends EditorPart{
 
 	private void createDatasetCombo(final Composite sectionClient,final Group datasetGroup){
 
-		GridData gd = new GridData(GridData.FILL_BOTH);
+		GridData gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		gd.horizontalAlignment= SWT.END;
 		gd.grabExcessHorizontalSpace= true;
 		gd.minimumWidth= 120;
+		gd.verticalAlignment = SWT.TOP;
 
 		Label datasetLabel = new Label(datasetGroup,  SWT.SIMPLE);
 		datasetLabel.setText("Data Set");
@@ -314,14 +319,22 @@ public class GEOEditor extends EditorPart{
 				if(dataStoreMetadata!=null){
 					for (int i = 0; i < dataStoreMetadata.getFieldsMetadata().length; i++) {
 						DataStoreMetadataField dsmf=dataStoreMetadata.getFieldsMetadata()[i];
-						TableItem item = new TableItem(datasetTable, SWT.NONE);
+						final TableItem item = new TableItem(datasetTable, SWT.NONE);
 						item.setText(DATASET_NAME, dsmf.getName());
 						item.setText(DATASET_CLASS, dsmf.getClassName());
 						//combo per geoid, measures, geocd
-						Combo comboSel = new Combo(datasetTable,SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
+						final Combo comboSel = new Combo(datasetTable,SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
 						comboSel.add("geoid");
 						comboSel.add("measures");
 						comboSel.add("geocd");
+						
+						comboSel.addModifyListener(new ModifyListener() {
+				            public void modifyText(ModifyEvent event) {
+				            	//per valorizzare table item col valore del widget contenuto
+				              item.setText(2, comboSel.getText());				              
+				            }
+				        });
+						
 						comboSel.pack();
 						TableEditor editor = new TableEditor (datasetTable);
 						editor.minimumWidth = comboSel.getSize ().x;
@@ -330,6 +343,7 @@ public class GEOEditor extends EditorPart{
 						editor.minimumHeight=comboSel.getSize().y;
 						editor.verticalAlignment=SWT.CENTER;
 						editor.grabVertical=true;
+						
 
 						editor.setEditor(comboSel, item, DATASET_SELECT);
 
@@ -347,9 +361,33 @@ public class GEOEditor extends EditorPart{
 						editor.verticalAlignment=SWT.CENTER;
 						editor.grabVertical=true;
 						editor.setEditor(comboAgg, item, DATASET_AGGREGATION);
+					
 						datasetTable.pack();
 					}
 				}
+				// resize the row height using a MeasureItem listener
+				datasetTable.addListener(SWT.MeasureItem, new Listener() {
+				   public void handleEvent(Event event) {
+				      // height cannot be per row so simply set
+				      event.height = 20;
+				   }
+				});
+
+				//listener per measures --> right click
+				datasetTable.addListener(SWT.MouseDown, new Listener () {
+		            public void handleEvent (Event event) {            	
+		            	if (event.button==3){	
+				        	TableItem[] selection = datasetTable.getSelection();
+			        	
+				        	if(selection[0].getText(2) != null && selection[0].getText(2).equalsIgnoreCase("measures")){
+				        		measuresDesigner.createMeasuresShell(sectionClient, selection[0].getText(0));
+				        	}else{
+				        		MessageDialog.openWarning(sectionClient.getShell(), "Warning", "No measure in selected column");
+				        	}           	            	
+		            	}
+		            }
+		        });
+				
 				sectionClient.getParent().pack();
 				sectionClient.getParent().redraw();
 			}
@@ -365,7 +403,7 @@ public class GEOEditor extends EditorPart{
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.horizontalSpan =2;
 
-		datasetTable = new Table(datasetGroup, SWT.SINGLE  | SWT.BORDER );
+		datasetTable = new Table(datasetGroup, SWT.SINGLE  | SWT.BORDER | SWT.FULL_SELECTION);
 		datasetTable.setLayoutData(gd);
 		datasetTable.setLinesVisible (true);
 		datasetTable.setHeaderVisible (true);
@@ -381,17 +419,25 @@ public class GEOEditor extends EditorPart{
 		for (int i=0; i<titles.length; i++) {
 			datasetTable.getColumn (i).pack();
 		}  
+		// resize the row height using a MeasureItem listener
+		datasetTable.addListener(SWT.PaintItem, new Listener() {
+		   public void handleEvent(Event event) {
+		      // height cannot be per row so simply set
+		      event.height = 20;
+		   }
+		});
 		datasetTable.redraw();
 
 	}
 
 	private void createMapCombo(final Composite sectionClient,Group mapGroup){
 
-		GridData gd = new GridData(GridData.FILL_BOTH);
+		GridData gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
-		gd.horizontalAlignment= SWT.END;
+		gd.horizontalAlignment= SWT.END;		
 		gd.grabExcessHorizontalSpace= true;
 		gd.minimumWidth= 120;
+		gd.verticalAlignment = SWT.TOP;
 
 		Label mapLabel = new Label(mapGroup,  SWT.SIMPLE);
 		mapLabel.setText("Map");
@@ -482,6 +528,17 @@ public class GEOEditor extends EditorPart{
 						mapTable.pack();
 					}
 				}
+				// resize the row height using a MeasureItem listener
+				mapTable.addListener(SWT.MeasureItem, new Listener() {
+				   public void handleEvent(Event event) {
+				      // height cannot be per row so simply set
+				      event.height = 25;
+				   }
+				});
+
+				mapTable.pack();
+				mapTable.redraw();
+				
 				sectionClient.getParent().pack();
 				sectionClient.getParent().redraw();
 			}
@@ -512,13 +569,14 @@ public class GEOEditor extends EditorPart{
 		for (int i = 0; i < titles.length; i++) {
 			TableColumn column = new TableColumn(mapTable, SWT.RESIZE);
 			column.setText(titles[i]);
+			column.setResizable(true);
 		} 
 
 
 		for (int i=0; i<titles.length; i++) {
 			mapTable.getColumn (i).pack ();
 		}  
-		mapTable.layout();
+		mapTable.redraw();
 
 	}
 

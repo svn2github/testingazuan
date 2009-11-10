@@ -64,8 +64,11 @@ public class QbeJSONTemplateParser implements IQbeTemplateParser {
 			qbeTemplate.setProperty("jsonTemplate", template);
 			
 			JSONObject qbeConf = template.optJSONObject("qbeConf");
-			String datamartName = qbeConf.getString("datamartName");
-			qbeTemplate.addDatamartName(datamartName);
+			JSONArray datamartsName = (JSONArray) qbeConf.get("datamartsName");
+			for (int i = 0; i < datamartsName.length(); i++ ) {
+				String aDatamartName = (String) datamartsName.get(i);
+				qbeTemplate.addDatamartName(aDatamartName);
+			}
 			qbeTemplate.setProperty("query", qbeConf.getString("query"));
 			
 			logger.debug("Templete parsed succesfully");

@@ -1,6 +1,15 @@
 package it.eng.spagobi.studio.geo.editors;
 
 
+import it.eng.spagobi.sdk.exceptions.MissingParameterValue;
+import it.eng.spagobi.studio.core.bo.DataStoreMetadata;
+import it.eng.spagobi.studio.core.bo.DataStoreMetadataField;
+import it.eng.spagobi.studio.core.bo.Dataset;
+import it.eng.spagobi.studio.core.bo.GeoFeature;
+import it.eng.spagobi.studio.core.bo.GeoMap;
+import it.eng.spagobi.studio.core.bo.SpagoBIServerObjects;
+import it.eng.spagobi.studio.core.exceptions.NoServerException;
+import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.geo.editors.model.bo.HierarchyBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.LevelBO;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
@@ -15,6 +24,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
@@ -281,7 +291,9 @@ public class Designer {
 		labelColumn.setText ("Dataset column:");
 		labelColumn.setLayoutData (data);		
 		
-		final Text textColumn = new Text (dialog, SWT.BORDER);
+	
+		final Combo textColumn = drawColumnIdCombo(dialog);
+
 		data = new FormData ();
 		data.width = 200;
 		data.left = new FormAttachment (labelColumn, 0, SWT.DEFAULT);
@@ -313,7 +325,7 @@ public class Designer {
 		labelFeature.setText ("Feature:");
 		labelFeature.setLayoutData (data);	
 		
-		final Text textFeature = new Text (dialog, SWT.BORDER);
+		final Combo textFeature = drawFeaturesNameCombo(dialog);
 		data = new FormData ();
 		data.width = 200;
 		data.left = new FormAttachment (labelFeature, 0, SWT.DEFAULT);
@@ -351,6 +363,89 @@ public class Designer {
 		dialog.pack ();
 		dialog.open ();
 
+	}
+	
+	private Combo drawColumnIdCombo(final Shell dialog){
+		final Combo textColumn = new Combo(dialog, SWT.SINGLE);
+
+		String datasetLabel=editor.getSelectedDataset();
+		DataStoreMetadata dataStoreMetadata=null;
+		// get the metadata
+		if(editor.getTempDsMetadataInfos().get(datasetLabel)!=null){
+			dataStoreMetadata=editor.getTempDsMetadataInfos().get(datasetLabel);
+		}
+		else{
+			Dataset dataset = editor.getDatasetInfos().get(datasetLabel);
+			try{
+				if(dataset.getId() != null){
+					dataStoreMetadata=new SpagoBIServerObjects().getDataStoreMetadata(dataset.getId());
+				}
+				
+				if(dataStoreMetadata!=null){
+					editor.getTempDsMetadataInfos().put(datasetLabel, dataStoreMetadata);
+				}
+				else{
+					SpagoBILogger.warningLog("Dataset returned no metadata");
+					MessageDialog.openWarning(mainComposite.getShell(), "Warning", "Dataset with label = "+datasetLabel+" returned no metadata");			
+				}
+			}
+			catch (MissingParameterValue e2) {
+				SpagoBILogger.errorLog("Could not execute dataset with label = "+datasetLabel+" metadata: probably missing parameter", e2);
+				MessageDialog.openError(mainComposite.getShell(), "Error", "Could not execute dataset with label = "+datasetLabel+" metadata: probably missing parameter");
+			}
+			catch (NoServerException e1) {
+				SpagoBILogger.errorLog("Error No comunciation with server retrieving dataset with label = "+datasetLabel+" metadata", e1);
+				MessageDialog.openError(mainComposite.getShell(), "Error", "No comunciation with server retrieving dataset with label = "+datasetLabel+" metadata");
+			}
+		}
+		if(dataStoreMetadata!=null){
+			
+			for (int i = 0; i < dataStoreMetadata.getFieldsMetadata().length; i++) {
+				DataStoreMetadataField dsmf=dataStoreMetadata.getFieldsMetadata()[i];
+				String column = dsmf.getName();
+				textColumn.add(column);				
+			}
+			//dialog.redraw();
+		}
+		return textColumn;
+	}
+	private Combo drawFeaturesNameCombo(final Shell dialog){
+		final Combo textFeature = new Combo(dialog, SWT.SINGLE);
+
+		String mapLabel=editor.getSelectedMap();
+		GeoFeature[] geoFeatures=null;
+		// get the metadata
+		if(editor.getTempMapMetadataInfos().get(mapLabel)!=null){
+			geoFeatures=editor.getTempMapMetadataInfos().get(mapLabel);
+		}
+		else{
+			GeoMap geoMap = editor.getMapInfos().get(mapLabel);
+			try{
+				if(geoMap.getMapId() != -1){
+					geoFeatures=new SpagoBIServerObjects().getFeaturesByMapId(geoMap.getMapId());
+				}
+				if(geoFeatures!=null){
+					editor.getTempMapMetadataInfos().put(mapLabel, geoFeatures);
+				}
+				else{
+					SpagoBILogger.warningLog("No features returned from map with label "+mapLabel);
+					MessageDialog.openWarning(mainComposite.getShell(), "Warning", "No features returned from map with label "+mapLabel);			
+				}
+			}
+			catch (NoServerException e1) {
+				SpagoBILogger.errorLog("Could not get features associated to map with label = "+mapLabel, e1);
+				MessageDialog.openError(mainComposite.getShell(), "Error", "Could not get features associated to map with label = "+mapLabel);
+			}
+		}
+		if(geoFeatures!=null){
+			for (int i = 0; i < geoFeatures.length; i++) {
+				GeoFeature geoFeature=geoFeatures[i];
+				geoFeature.getName();
+
+				
+			}
+		}
+		return textFeature;
 	}
 	public GEOEditor getEditor() {
 		return editor;

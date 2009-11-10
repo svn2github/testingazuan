@@ -20,6 +20,8 @@
  **/
 package it.eng.qbe.export;
 
+import it.eng.spagobi.utilities.assertion.Assert;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,43 +41,63 @@ public class FormViewerTemplateBuilder {
 	private JSONArray nodes = null;
 	private JSONObject baseTemplate = null;
 	private JSONObject queryJSON = null;
-	private String datamartName = null;
+	private JSONArray datamartsName = null;
 	
-	public FormViewerTemplateBuilder(JSONArray nodes, JSONObject queryJSON, String datamartName) {
-		this.nodes = nodes;
-		this.queryJSON = queryJSON;
-		this.datamartName = datamartName;
+	public FormViewerTemplateBuilder(JSONArray nodes, JSONObject queryJSON, JSONArray datamartsName) {
+		logger.debug("IN");
 		
-		StringBuffer buffer = new StringBuffer();
-		InputStream is = getClass().getClassLoader().getResourceAsStream("template.json");
-		
-		BufferedReader reader = new BufferedReader( new InputStreamReader(is) );
-		String line = null;
 		try {
-			while( (line = reader.readLine()) != null) {
-				buffer.append(line + "\n");
+			Assert.assertNotNull(queryJSON, "Input query cannot be empty");
+			Assert.assertNotNull(datamartsName, "Input datamarts' names list cannot be empty");
+			
+			this.nodes = nodes;
+			this.queryJSON = queryJSON;
+			this.datamartsName = datamartsName;
+			
+			try {
+				StringBuffer buffer = new StringBuffer();
+				InputStream is = getClass().getClassLoader().getResourceAsStream("template.json");
+				if (is == null) {
+					throw new ExportException("Could not find base template file: template.json");
+				}
+				BufferedReader reader = new BufferedReader( new InputStreamReader(is) );
+				String line = null;
+				while( (line = reader.readLine()) != null) {
+					buffer.append(line + "\n");
+				}
+				baseTemplate = new JSONObject(buffer.toString());
+			} catch (ExportException e) {
+				throw e;
+			} catch (JSONException e) {
+				throw new ExportException("Error parsing base template file: template.json", e);
+			} catch (Exception e) {
+				throw new ExportException("Cannot create template builder", e);
 			}
-			baseTemplate = new JSONObject(buffer.toString());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} finally {
+			logger.debug("OUT");
 		}
 		
 	}
 	
-	public String buildTemplate() throws Exception {
+	public String buildTemplate() {
 		String toReturn = null;
 		logger.debug("IN");
-		JSONObject qbeConf = (JSONObject) baseTemplate.get("qbeConf");
-		qbeConf.put("datamartName", this.datamartName);
-		qbeConf.put("query", this.queryJSON);
-		
-		JSONArray fields = new JSONArray();
-		getFields(nodes, fields);
-		baseTemplate.put("fields", fields);
-		
-		toReturn = baseTemplate.toString(3);
-		logger.debug("OUT");
+		try {
+			JSONObject qbeConf = new JSONObject();
+			qbeConf.put("datamartsName", datamartsName);
+			qbeConf.put("query", this.queryJSON);
+			baseTemplate.put("qbeConf", qbeConf);
+			
+			JSONArray fields = new JSONArray();
+			getFields(nodes, fields);
+			baseTemplate.put("fields", fields);
+			
+			toReturn = baseTemplate.toString(3);
+		} catch (Exception e) {
+			throw new ExportException("Cannot create template", e);
+		} finally {
+			logger.debug("OUT");
+		}
 		return toReturn;
 	}
 	

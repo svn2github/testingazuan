@@ -179,10 +179,12 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 				ExtJsQbeTreeBuilder qbeBuilder = new ExtJsQbeTreeBuilder(treeFilter);	 
 						
 				JSONArray nodes = new JSONArray();
+				JSONArray datamartsName = new JSONArray();
 				List datamartsNames = getEngineInstance().getDatamartModel().getDataSource().getDatamartNames();
 				Iterator it = datamartsNames.iterator();
 				while (it.hasNext()) {
 					String aDatamartName = (String) it.next();
+					datamartsName.put(aDatamartName);
 					JSONArray temp = qbeBuilder.getQbeTree(getDatamartModel(), getLocale(), aDatamartName);
 					for (int i = 0; i < temp.length(); i++) {
 						Object object = temp.get(i);
@@ -190,7 +192,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 					}
 				}
 				JSONObject queryJSON = (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(getEngineInstance().getActiveQuery(), getEngineInstance().getDatamartModel(), getLocale());
-				FormViewerTemplateBuilder formViewerTemplateBuilder = new FormViewerTemplateBuilder(nodes, queryJSON, (String) datamartsNames.get(0));
+				FormViewerTemplateBuilder formViewerTemplateBuilder = new FormViewerTemplateBuilder(nodes, queryJSON, datamartsName);
 				templateContent = formViewerTemplateBuilder.buildTemplate();
 				
 				try {				

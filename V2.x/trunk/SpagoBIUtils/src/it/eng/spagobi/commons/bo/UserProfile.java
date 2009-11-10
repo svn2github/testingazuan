@@ -102,6 +102,8 @@ public class UserProfile implements IEngUserProfile {
      */
     public UserProfile(String user) {
 	this.userUniqueIdentifier = user;
+	this.userId=user;
+	this.userName=user;
     }
 
     /**

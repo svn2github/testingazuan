@@ -30,6 +30,7 @@ public class LevelBO {
 								levels = new Levels();
 								vectLevels = new Vector<Level>();
 								levels.setLevel(vectLevels);
+								vectHier.elementAt(i).setLevels(levels);
 							} else {
 								levels = vectHier.elementAt(i).getLevels();
 								vectLevels = levels.getLevel();
@@ -46,6 +47,7 @@ public class LevelBO {
 			}
 		}
 	}
+
 	public static void deleteLevel(GEODocument geoDocument,
 			String hierarchyName, String toDeleteLevel) {
 		DatamartProvider dmProvider = geoDocument.getDatamartProvider();
@@ -74,5 +76,36 @@ public class LevelBO {
 				}
 			}
 		}
+	}
+	public static Level getLevelByName(GEODocument geoDocument,
+			String hierarchyName, String level) {
+		Level levelret = null;
+		DatamartProvider dmProvider = geoDocument.getDatamartProvider();
+		if (dmProvider != null) {
+			Hierarchies hierarchies = dmProvider.getHierarchies();
+			Vector<Hierarchy> vectHier = null;
+			if (hierarchies != null) {
+				vectHier = hierarchies.getHierarchy();
+				if (vectHier != null) {
+					for (int i = 0; i < vectHier.size(); i++) {
+						if (vectHier.elementAt(i).getName().equals(
+								hierarchyName)) {
+							Levels levels = null;
+							Vector<Level> vectLevels = null;
+							if (vectHier.elementAt(i).getLevels() == null && vectHier.elementAt(i).getLevels().getLevel() != null) {
+								for(int j=0; j<vectHier.elementAt(i).getLevels().getLevel().size(); j++){
+									Level l = vectHier.elementAt(i).getLevels().getLevel().elementAt(j);
+									if(l.getName().equals(level)){
+										levelret = l;
+									}
+									
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return levelret;
 	}
 }

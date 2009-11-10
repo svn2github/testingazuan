@@ -18,6 +18,7 @@ public class HierarchyBO {
 				hierarchies = new Hierarchies();
 				vectHier = new Vector<Hierarchy>();
 				hierarchies.setHierarchy(vectHier);
+				dmProvider.setHierarchies(hierarchies);
 			}else{
 				vectHier = hierarchies.getHierarchy();
 				if(vectHier == null){
@@ -33,6 +34,24 @@ public class HierarchyBO {
 		}
 
 	}
+
+	public static Hierarchy getHierarchyByName(GEODocument geoDocument, String name){
+		Hierarchy hierarchy = null;
+		DatamartProvider dmProvider =geoDocument.getDatamartProvider();
+		if(dmProvider != null){
+			Hierarchies hierarchies = dmProvider.getHierarchies();
+			if(hierarchies != null && hierarchies.getHierarchy() != null){
+				for(int i =0; i< hierarchies.getHierarchy().size(); i++){
+					Hierarchy h = hierarchies.getHierarchy().elementAt(i);
+					if(h.getName().equals(name)){
+						hierarchy = h;
+					}
+				}
+				
+			}
+		}
+		return hierarchy;
+	}	
 	public static void deleteHierarchy(GEODocument geoDocument, String name){
 		DatamartProvider dmProvider =geoDocument.getDatamartProvider();
 		if(dmProvider != null){

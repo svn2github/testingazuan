@@ -1,0 +1,95 @@
+{
+    qbeConf: {
+        datamartName: ""
+        , query: {}
+    },
+
+    fields: [
+       
+    ],
+    
+    staticClosedFilters: [
+
+        {
+            title: '',
+            singleSelection: true,
+            allowNoSelection: true,
+            noSelectionText: '',
+            filters: [
+                {
+                    text: '',
+                    leftOperandValue: '',
+                    operator: '',
+                    rightOperandValue: ''
+                },
+                {
+                    text: '',
+                    leftOperandValue: '',
+                    operator: '',
+                    rightOperandValue: ''
+                }
+            ]
+        },
+        
+        {
+            title: '',
+            singleSelection: false,
+            filters: [
+                {
+                    text: '',
+                    leftOperandValue: '',
+                    operator: '',
+                    rightOperandValue: ''
+                },
+                {
+                    text: '',
+                    leftOperandValue: '',
+                    operator: '',
+                    rightOperandValue: ''
+                }
+            ]
+        }
+    ], 
+    
+
+    staticOpenFilters: [
+
+        {
+            text: '',
+            field: '',
+            operator: 'EQUALS',
+            singleSelection: false,
+            maxSelectedNumber: 3,
+            query: {
+          		field: '',
+          		orderField: '',
+          		orderType: 'ASC'
+          	}
+        },
+
+        {
+            text: '',
+            field: '',
+            operator: 'EQUALS',
+            singleSelection: true
+        }
+    ],
+
+    dynamicFilters: [
+        {
+            operator: 'EQUALS',
+            admissibleFields: [
+               {field: '', text: ''}             
+            ]
+        }
+    ],
+
+    groupingVariables: [
+        {
+            admissibleFields: [
+               {field: '', text: ''}             
+            ]
+        }
+    ]
+
+}

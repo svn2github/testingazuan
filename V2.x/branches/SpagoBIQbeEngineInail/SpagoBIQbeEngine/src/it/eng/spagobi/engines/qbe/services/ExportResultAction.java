@@ -35,9 +35,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.hibernate.Session;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import it.eng.qbe.export.Exporter;
 import it.eng.qbe.export.Field;
+import it.eng.qbe.export.FormViewerTemplateBuilder;
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
 import it.eng.qbe.export.ReportRunner;
 import it.eng.qbe.export.SQLFieldsReader;
@@ -45,12 +48,22 @@ import it.eng.qbe.export.TemplateBuilder;
 import it.eng.qbe.model.IStatement;
 import it.eng.qbe.model.QbeDataSet;
 import it.eng.qbe.query.DataMartSelectField;
+import it.eng.qbe.query.serializer.QuerySerializerFactory;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.engines.qbe.QbeEngineConfig;
+import it.eng.spagobi.engines.qbe.tree.ExtJsQbeTreeBuilder;
+import it.eng.spagobi.engines.qbe.tree.filter.IQbeTreeEntityFilter;
+import it.eng.spagobi.engines.qbe.tree.filter.IQbeTreeFieldFilter;
+import it.eng.spagobi.engines.qbe.tree.filter.QbeTreeAccessModalityEntityFilter;
+import it.eng.spagobi.engines.qbe.tree.filter.QbeTreeAccessModalityFieldFilter;
+import it.eng.spagobi.engines.qbe.tree.filter.QbeTreeFilter;
+import it.eng.spagobi.engines.qbe.tree.filter.QbeTreeOrderEntityFilter;
+import it.eng.spagobi.engines.qbe.tree.filter.QbeTreeOrderFieldFilter;
+import it.eng.spagobi.engines.qbe.tree.filter.QbeTreeQueryEntityFilter;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineConstants;
@@ -149,13 +162,51 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			
 			decorateExtractedFields( extractedFields );
 			
+
 			
+			
+			if("application/json".equalsIgnoreCase( mimeType )) {
+				
+				logger.debug("Filtering entities list ...");			
+				IQbeTreeEntityFilter entityFilter = new QbeTreeAccessModalityEntityFilter();
+				logger.debug("Apply entity filter [" + entityFilter.getClass().getName() + "]");
+				entityFilter = new QbeTreeQueryEntityFilter(entityFilter, getEngineInstance().getActiveQuery());
+				logger.debug("Filtering fields list ...");	
+				IQbeTreeFieldFilter fieldFilter = new QbeTreeAccessModalityFieldFilter();
+				logger.debug("Apply field filter [" + fieldFilter.getClass().getName() + "]");
+				
+				QbeTreeFilter treeFilter = new  QbeTreeFilter(entityFilter, fieldFilter);
+				ExtJsQbeTreeBuilder qbeBuilder = new ExtJsQbeTreeBuilder(treeFilter);	 
+						
+				JSONArray nodes = new JSONArray();
+				List datamartsNames = getEngineInstance().getDatamartModel().getDataSource().getDatamartNames();
+				Iterator it = datamartsNames.iterator();
+				while (it.hasNext()) {
+					String aDatamartName = (String) it.next();
+					JSONArray temp = qbeBuilder.getQbeTree(getDatamartModel(), getLocale(), aDatamartName);
+					for (int i = 0; i < temp.length(); i++) {
+						Object object = temp.get(i);
+						nodes.put(object);
+					}
+				}
+				JSONObject queryJSON = (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(getEngineInstance().getActiveQuery(), getEngineInstance().getDatamartModel(), getLocale());
+				FormViewerTemplateBuilder formViewerTemplateBuilder = new FormViewerTemplateBuilder(nodes, queryJSON, (String) datamartsNames.get(0));
+				templateContent = formViewerTemplateBuilder.buildTemplate();
+				
+				try {				
+					writeBackToClient(200, templateContent, writeBackResponseInline, "template." + fileExtension, mimeType);
+				} catch (IOException ioe) {
+					throw new SpagoBIEngineException("Impossible to write back the responce to the client", ioe);
+				}	
+				return;
+			}
 			
 			params = new HashMap();
 			params.put("pagination", getPaginationParamVaue(mimeType) );
 			
 			templateBuilder = new TemplateBuilder(sqlQuery, extractedFields, params);
 			templateContent = templateBuilder.buildTemplate();
+			
 			if( !"text/jrxml".equalsIgnoreCase( mimeType ) ) {
 				if( "application/vnd.ms-excel".equalsIgnoreCase( mimeType ) ) {
 					RequestContainer requestContainer = RequestContainer.getRequestContainer();

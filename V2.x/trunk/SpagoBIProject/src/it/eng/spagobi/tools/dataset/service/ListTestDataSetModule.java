@@ -49,7 +49,6 @@ import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.bo.DataSetFactory;
-import it.eng.spagobi.tools.dataset.bo.DataSetMetadataItem;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;

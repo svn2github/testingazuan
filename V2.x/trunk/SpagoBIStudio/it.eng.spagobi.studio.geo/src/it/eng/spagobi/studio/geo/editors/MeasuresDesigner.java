@@ -64,14 +64,6 @@ public class MeasuresDesigner {
 		});
 		
 		final Text text = createTextWithLayout(dialog, label, data);
-
-/*		final Text text = new Text (dialog, SWT.BORDER);
-		data = new FormData ();
-		data.width = 200;
-		data.left = new FormAttachment (label, 0, SWT.DEFAULT);
-		data.right = new FormAttachment (100, 0);
-		data.top = new FormAttachment (label, 0, SWT.CENTER);
-		text.setLayoutData (data);*/
 		
 		//aggregate function
 		data = new FormData ();
@@ -86,16 +78,19 @@ public class MeasuresDesigner {
 		textAgg.add("sum");
 		textAgg.add("media");
 		
-/*		final Combo textAgg = new Combo (dialog, SWT.BORDER);
-		textAgg.add("sum");
-		textAgg.add("media");
-		data = new FormData ();
-		data.width = 200;
-		data.left = new FormAttachment (labelAgg, 0, SWT.DEFAULT);
-		data.right = new FormAttachment (100, 0);
-		data.top = new FormAttachment (labelAgg, 0, SWT.CENTER);
-		data.bottom = new FormAttachment (cancel, 0, SWT.DEFAULT);
-		textAgg.setLayoutData (data);*/
+		//color
+		Label labelCol = new Label (dialog, SWT.RIGHT);
+		labelCol.setText ("Colour:");		
+		labelCol.setLayoutData (data);
+		final Text textColor = createTextWithLayout(dialog, labelCol, data);
+		
+		//tresholds
+		Label labelTresh = new Label (dialog, SWT.RIGHT);
+		labelTresh.setText ("Tresholds:");		
+		labelTresh.setLayoutData (data);
+		final Text textTresh = createTextWithLayout(dialog, labelTresh, data);
+		
+
 		data.bottom = new FormAttachment (cancel, 0, SWT.DEFAULT);
 
 		Button ok = new Button (dialog, SWT.PUSH);

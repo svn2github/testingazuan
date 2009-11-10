@@ -200,7 +200,6 @@ public class GEOEditor extends EditorPart{
 	public void createPartControl(Composite parent) {
 
 
-
 		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
 		final ScrolledForm form = toolkit.createScrolledForm(parent);
 

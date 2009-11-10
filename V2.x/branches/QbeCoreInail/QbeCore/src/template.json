@@ -1,14 +1,14 @@
 {
     qbeConf: {
-        datamartName: ""
-        , query: {}
-    },
+        datamartsName: ${datamartsName}
+        , query: ${query}
+    }
 
-    fields: [
-       
-    ],
+    , fields: 
+    	
+    	${fields}
     
-    staticClosedFilters: [
+    , staticClosedFilters: [
 
         {
             title: '',
@@ -49,10 +49,10 @@
                 }
             ]
         }
-    ], 
+    ] 
     
 
-    staticOpenFilters: [
+    , staticOpenFilters: [
 
         {
             text: '',
@@ -73,18 +73,18 @@
             operator: 'EQUALS',
             singleSelection: true
         }
-    ],
+    ]
 
-    dynamicFilters: [
+    , dynamicFilters: [
         {
             operator: 'EQUALS',
             admissibleFields: [
                {field: '', text: ''}             
             ]
         }
-    ],
+    ]
 
-    groupingVariables: [
+    , groupingVariables: [
         {
             admissibleFields: [
                {field: '', text: ''}             

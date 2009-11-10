@@ -39,6 +39,82 @@ public class FormViewerTemplateBuilder {
 	public static transient Logger logger = Logger.getLogger(FormViewerTemplateBuilder.class);
 	
 	private JSONArray nodes = null;
+	private String baseTemplate = null;
+	private JSONObject queryJSON = null;
+	private JSONArray datamartsName = null;
+	
+	public FormViewerTemplateBuilder(JSONArray nodes, JSONObject queryJSON, JSONArray datamartsName) {
+		logger.debug("IN");
+		
+		try {
+			Assert.assertNotNull(queryJSON, "Input query cannot be empty");
+			Assert.assertNotNull(datamartsName, "Input datamarts' names list cannot be empty");
+			
+			this.nodes = nodes;
+			this.queryJSON = queryJSON;
+			this.datamartsName = datamartsName;
+			
+			try {
+				StringBuffer buffer = new StringBuffer();
+				InputStream is = getClass().getClassLoader().getResourceAsStream("template.json");
+				if (is == null) {
+					throw new ExportException("Could not find base template file: template.json");
+				}
+				BufferedReader reader = new BufferedReader( new InputStreamReader(is) );
+				String line = null;
+				while( (line = reader.readLine()) != null) {
+					buffer.append(line + "\n");
+				}
+				baseTemplate = buffer.toString();
+			} catch (ExportException e) {
+				throw e;
+			} catch (Exception e) {
+				throw new ExportException("Cannot create template builder", e);
+			}
+		} finally {
+			logger.debug("OUT");
+		}
+		
+	}
+	
+	public String buildTemplate() {
+		String toReturn = null;
+		logger.debug("IN");
+		try {
+			
+			toReturn = baseTemplate.replaceAll("\\$\\{datamartsName\\}", datamartsName.toString());
+			toReturn = toReturn.replaceAll("\\$\\{query\\}", this.queryJSON.toString());
+			
+			JSONArray fields = new JSONArray();
+			getFields(nodes, fields);
+			toReturn = toReturn.replaceAll("\\$\\{fields\\}", fields.toString(3));
+			
+		} catch (Exception e) {
+			throw new ExportException("Cannot create template", e);
+		} finally {
+			logger.debug("OUT");
+		}
+		return toReturn;
+	}
+	
+	private void getFields(JSONArray nodes, JSONArray container) throws Exception {
+		for (int i = 0; i < nodes.length(); i++) {
+			JSONObject node = (JSONObject) nodes.get(i);
+			
+			JSONArray children = (JSONArray) node.opt("children");
+			
+			if (children != null && children.length() > 0) {
+				// entity node
+				getFields(children, container);
+			} else {
+				// field leaf
+				container.put(node.get("id"));
+			}
+		}
+	}	
+	
+	/*
+	private JSONArray nodes = null;
 	private JSONObject baseTemplate = null;
 	private JSONObject queryJSON = null;
 	private JSONArray datamartsName = null;
@@ -100,19 +176,5 @@ public class FormViewerTemplateBuilder {
 		}
 		return toReturn;
 	}
-	
-	private void getFields(JSONArray nodes, JSONArray container) throws Exception {
-		for (int i = 0; i < nodes.length(); i++) {
-			JSONObject node = (JSONObject) nodes.get(i);
-			
-			JSONArray children = (JSONArray) node.opt("children");
-			
-			if (children != null && children.length() > 0) {
-				getFields(children, container);
-			} else {
-				container.put(node.get("id"));
-			}
-		}
-	}
-
+	*/
 }

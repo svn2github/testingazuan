@@ -68,5 +68,5 @@ Sbi.locale.ln['sbi.formviewer.dynamicfilterspanel.value'] = 'Value';
 Sbi.locale.ln['sbi.formviewer.dynamicfilterspanel.fromvalue'] = 'From value';
 Sbi.locale.ln['sbi.formviewer.dynamicfilterspanel.tovalue'] = 'To value';
 Sbi.locale.ln['sbi.formviewer.groupingvariablespanel.title'] = 'Grouping variables';
-Sbi.locale.ln['sbi.formviewer.groupingvariablespanel.firstvariable'] = 'First variable';
-Sbi.locale.ln['sbi.formviewer.groupingvariablespanel.secondvariable'] = 'Second variable';
+Sbi.locale.ln['sbi.formviewer.groupingvariablespanel.variable-1'] = 'First variable';
+Sbi.locale.ln['sbi.formviewer.groupingvariablespanel.variable-2'] = 'Second variable';

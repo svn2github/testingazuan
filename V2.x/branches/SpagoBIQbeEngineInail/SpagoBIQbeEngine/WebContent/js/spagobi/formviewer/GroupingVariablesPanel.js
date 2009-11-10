@@ -51,15 +51,15 @@ Sbi.formviewer.GroupingVariablesPanel = function(groupingVariables, config) {
 	var defaultSettings = {
 		// set default values here
 		title: LN('sbi.formviewer.groupingvariablespanel.title')
-		, columnNo: 2
-		, columnWidth: 350
-		, labelAlign: 'left'
-		, fieldWidth: 200	
-		, maskOnRender: false
+		, border: false
 		, frame: true
 		, autoScroll: true
-		//, autoWidth: true
+		, autoWidth: true
 		, autoHeight: true
+		, layout: 'column'
+    	, layoutConfig: {
+	        columns: groupingVariables.length
+	    }
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.groupingVariablesPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.groupingVariablesPanel);
@@ -68,53 +68,38 @@ Sbi.formviewer.GroupingVariablesPanel = function(groupingVariables, config) {
 
 	this.baseConfig = c;
 	
-	var columnsBaseConfig = [];
-	for(var i = 0; i < c.columnNo; i++) {
-		columnsBaseConfig[i] = {
-			width: c.columnWidth,
-            layout: 'form',
-            border: false,
-            bodyStyle:'padding:5px 5px 5px 5px'
-		}
-	}
+	this.init(groupingVariables);
 	
 	Ext.apply(c, {
-        items: [{
-            layout:'column',
-            border: false,
-            items: columnsBaseConfig
-        }]
+		items: this.items
 	});
 	
 	// constructor
     Sbi.formviewer.GroupingVariablesPanel.superclass.constructor.call(this, c);
     
-	var columnContainer = this.items.get(0);
-	this.columns = [];
-	for(var i = 0; i < c.columnNo; i++) {
-		this.columns[i] = columnContainer.items.get(i);
-	}
-
-	this.init(groupingVariables);
-	
 };
 
 Ext.extend(Sbi.formviewer.GroupingVariablesPanel, Ext.form.FormPanel, {
     
 	services: null
-	, combos : new Array()
+	, items: null
+	, combos: null
 	   
 	// private methods
 	   
 	, init: function(groupingVariables) {
-		var combo_1 = this.createFieldCombo( groupingVariables[0], 0 );
-		var combo_2 = this.createFieldCombo( groupingVariables[1], 1 );
-		this.columns[0].add( combo_1 );
-		this.columns[1].add( combo_2 );
-		this.combos.push(combo_1);
-		this.combos.push(combo_2);
-		this.doLayout();
-	
+		this.items = [];
+		this.combos = new Array();
+		for (var i = 0; i < groupingVariables.length; i++) {
+			var combo = this.createFieldCombo( groupingVariables[i], i );
+			this.combos.push( combo );
+			var aPanel = new Ext.Panel({
+				items: [combo]
+				, layout: 'form' // form layout required: input field labels are displayed only with this layout
+				, width: 300
+			});
+			this.items.push( aPanel );
+		}
 	}
 
 	, createFieldCombo: function(groupingVariable, pos) {
@@ -127,7 +112,7 @@ Ext.extend(Sbi.formviewer.GroupingVariablesPanel, Ext.form.FormPanel, {
 		var combo = new Ext.form.ComboBox({
 			name: groupingVariable.id
             , editable: false
-            , fieldLabel: pos == 0 ? LN('sbi.formviewer.groupingvariablespanel.firstvariable') : LN('sbi.formviewer.groupingvariablespanel.secondvariable')
+            , fieldLabel: LN('sbi.formviewer.groupingvariablespanel.variable-' + (pos + 1))
 		    , forceSelection: false
 		    , store: store
 		    , mode : 'local'

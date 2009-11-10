@@ -76,7 +76,7 @@ public class HierarchiesDesigner {
 		
 	}
 	private void createNewLevel(Tree hierarchiesTree, Level newLevel, TreeItem parent){		
-        TreeItem iItem = new TreeItem(hierarchiesTree, SWT.NONE);
+        TreeItem iItem = new TreeItem(parent, SWT.NONE);
         iItem.setText(newLevel.getName());
         hierarchiesTree.redraw();
         //crea oggetto java con name+type
@@ -109,8 +109,12 @@ public class HierarchiesDesigner {
 		menuItem.addListener(SWT.Selection, new Listener () {
             public void handleEvent (Event event) { 
             	TreeItem[] sel = hierarchiesTree.getSelection();
-            	System.out.println("crea hierarchy");
-            	createNewHierarchyShell(hierarchiesTree, null);
+            	if(sel[0] != null && sel[0].getParentItem() != null){//ha selez un livello--> errore
+            		MessageDialog.openError(sectionClient.getShell(), "Error", "Wrong position");
+            	}else{
+            		createNewHierarchyShell(hierarchiesTree, null);
+            	}
+            	
             }
         });
 		menuItem = new MenuItem (menu, SWT.PUSH);
@@ -118,10 +122,10 @@ public class HierarchiesDesigner {
 		menuItem.addListener(SWT.Selection, new Listener () {
             public void handleEvent (Event event) { 
             	TreeItem[] sel = hierarchiesTree.getSelection();
-            	if(sel[0] != null){
+            	if(sel[0] != null && sel[0].getParentItem() == null){
                 	createNewLevelShell(hierarchiesTree, sel[0], null);
             	}else{
-            		MessageDialog.openWarning(sectionClient.getShell(), "Warning", "Please select a hierarchy");
+            		MessageDialog.openError(sectionClient.getShell(), "Error", "Wrong position. Please select a hierarchy");
             	}
 
             }
@@ -438,7 +442,7 @@ public class HierarchiesDesigner {
 	}
 	
 	private Combo drawColumnIdCombo(final Shell dialog){
-		final Combo textColumn = new Combo(dialog, SWT.SINGLE);
+		final Combo textColumn = new Combo(dialog, SWT.SINGLE | SWT.READ_ONLY);
 
 		String datasetLabel=editor.getSelectedDataset();
 		if(datasetLabel == null){
@@ -486,7 +490,7 @@ public class HierarchiesDesigner {
 		return textColumn;
 	}
 	private Combo drawFeaturesNameCombo(final Shell dialog){
-		final Combo textFeature = new Combo(dialog, SWT.SINGLE);
+		final Combo textFeature = new Combo(dialog, SWT.SINGLE | SWT.READ_ONLY);
 
 		String mapLabel=editor.getSelectedMap();
 		

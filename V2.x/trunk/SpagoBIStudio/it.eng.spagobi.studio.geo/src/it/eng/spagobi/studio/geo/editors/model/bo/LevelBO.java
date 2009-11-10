@@ -62,7 +62,7 @@ public class LevelBO {
 								hierarchyName)) {
 							Levels levels = null;
 							Vector<Level> vectLevels = null;
-							if (vectHier.elementAt(i).getLevels() == null && vectHier.elementAt(i).getLevels().getLevel() != null) {
+							if (vectHier.elementAt(i).getLevels() != null && vectHier.elementAt(i).getLevels().getLevel() != null) {
 								for(int j=0; j<vectHier.elementAt(i).getLevels().getLevel().size(); j++){
 									Level l = vectHier.elementAt(i).getLevels().getLevel().elementAt(j);
 									if(l.getName().equals(toDeleteLevel)){
@@ -88,13 +88,11 @@ public class LevelBO {
 				vectHier = hierarchies.getHierarchy();
 				if (vectHier != null) {
 					for (int i = 0; i < vectHier.size(); i++) {
-						if (vectHier.elementAt(i).getName().equals(
-								hierarchyName)) {
-							Levels levels = null;
-							Vector<Level> vectLevels = null;
-							if (vectHier.elementAt(i).getLevels() == null && vectHier.elementAt(i).getLevels().getLevel() != null) {
+						Hierarchy hier = vectHier.elementAt(i);
+						if (hier.getName().equals(	hierarchyName)) {
+							if (hier.getLevels() != null && hier.getLevels().getLevel() != null) {
 								for(int j=0; j<vectHier.elementAt(i).getLevels().getLevel().size(); j++){
-									Level l = vectHier.elementAt(i).getLevels().getLevel().elementAt(j);
+									Level l = hier.getLevels().getLevel().elementAt(j);
 									if(l.getName().equals(level)){
 										levelret = l;
 									}

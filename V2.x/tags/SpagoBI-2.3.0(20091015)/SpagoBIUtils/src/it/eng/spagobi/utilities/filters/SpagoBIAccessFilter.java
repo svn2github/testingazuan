@@ -166,7 +166,7 @@ public class SpagoBIAccessFilter implements Filter {
 				
 			
 			    
-			    if(!isBackend && userId != null) {
+			    if(userId != null) {
 			    		try {
 			    			// this is not correct. profile in session can come also from a concurrent execution 
 						    profile = (IEngUserProfile) ioManager.getFromSession(IEngUserProfile.ENG_USER_PROFILE);

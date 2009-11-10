@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.document.metadata;
 
+import java.util.Date;
+
 import it.eng.spagobi.commons.metadata.SbiBinContents;
 
 
@@ -30,6 +32,10 @@ public class SbiObjNotes  implements java.io.Serializable {
      private SbiObjects sbiObject;
      private SbiBinContents sbiBinContents;
      private String execReq;
+     private String owner;
+     private Boolean isPublic;
+     private Date creationDate;
+     private Date lastChangeDate;
      
 	/**
 	 * Gets the obj note id.
@@ -101,6 +107,62 @@ public class SbiObjNotes  implements java.io.Serializable {
 	 */
 	public void setExecReq(String execReq) {
 		this.execReq = execReq;
+	}
+
+	/**
+	 * @return the owner
+	 */
+	public String getOwner() {
+		return owner;
+	}
+
+	/**
+	 * @param owner the owner to set
+	 */
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	/**
+	 * @return the isPublic
+	 */
+	public Boolean getIsPublic() {
+		return isPublic;
+	}
+
+	/**
+	 * @param isPublic the isPublic to set
+	 */
+	public void setIsPublic(Boolean isPublic) {
+		this.isPublic = isPublic;
+	}
+
+	/**
+	 * @return the creationDate
+	 */
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	/**
+	 * @param creationDate the creationDate to set
+	 */
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	/**
+	 * @return the lastChangeDate
+	 */
+	public Date getLastChangeDate() {
+		return lastChangeDate;
+	}
+
+	/**
+	 * @param lastChangeDate the lastChangeDate to set
+	 */
+	public void setLastChangeDate(Date lastChangeDate) {
+		this.lastChangeDate = lastChangeDate;
 	}
 	
 	

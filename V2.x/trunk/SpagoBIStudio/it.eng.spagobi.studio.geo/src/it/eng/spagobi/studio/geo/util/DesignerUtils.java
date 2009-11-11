@@ -80,19 +80,18 @@ public class DesignerUtils {
 	 * @return
 	 */
 	public static Composite createColorPicker(Composite parent, String colorHex, final Label labelToColour){
-		//		Composite innerSection = toolkit.createComposite(section);
-		Composite innerSection = new Composite(parent, SWT.BORDER);
+
+		Composite innerSection = new Composite(parent, SWT.NONE);
 		GridLayout colorGd = new GridLayout();
 		colorGd.numColumns = 2;
 		colorGd.marginHeight = 0;
 		colorGd.marginBottom = 0;
 		innerSection.setLayout(colorGd);
-//		final Label colorLabel = new Label(innerSection, SWT.BORDER);
+
 		labelToColour.setText("           ");
 		labelToColour.setSize(50, 20);
 		RGB rgb=null;
 		if(colorHex!=null){
-			//String hexadecimal = aParameter.getValue().toString();
 			try{
 				rgb= convertHexadecimalToRGB(colorHex);
 			}

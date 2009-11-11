@@ -65,6 +65,14 @@ public class Query {
 		subqueries  = new HashMap();
 	}
 	
+	/*
+	public Query(Query query) {
+		
+	}
+	*/
+	
+	
+	
 	public String getId() {
 		return id;
 	}
@@ -331,7 +339,11 @@ public class Query {
 		return subquery;
 	}
 
-	
+	/*
+	public Query copy() {
+		return new Query(this);
+	}
+	*/
 	
 
 }

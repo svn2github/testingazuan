@@ -75,11 +75,6 @@ public class QbeDataSet extends AbstractDataSet {
 	}
 	
 	
-	
-	public void loadData() throws EMFUserError, EMFInternalError {
-		loadData(0, -1, -1);
-	}
-	
 	public void loadData(int offset, int fetchSize, int maxResults) throws EMFUserError, EMFInternalError {
 		Session session = null;
 		org.hibernate.Query hibernateQuery;

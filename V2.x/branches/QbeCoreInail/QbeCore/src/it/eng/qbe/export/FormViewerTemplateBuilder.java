@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -37,6 +38,7 @@ public class FormViewerTemplateBuilder {
 	
 	public static transient Logger logger = Logger.getLogger(FormViewerTemplateBuilder.class);
 	
+	/*
 	private JSONArray nodes = null;
 	private String baseTemplate = null;
 	private String analysisState = null;
@@ -95,6 +97,7 @@ public class FormViewerTemplateBuilder {
 		}
 		return toReturn;
 	}
+	*/
 	
 	private void getFields(JSONArray nodes, JSONArray container) throws Exception {
 		for (int i = 0; i < nodes.length(); i++) {
@@ -112,7 +115,7 @@ public class FormViewerTemplateBuilder {
 		}
 	}	
 	
-	/*
+	
 	private JSONArray nodes = null;
 	private JSONObject baseTemplate = null;
 	private JSONObject queryJSON = null;
@@ -175,5 +178,5 @@ public class FormViewerTemplateBuilder {
 		}
 		return toReturn;
 	}
-	*/
+	
 }

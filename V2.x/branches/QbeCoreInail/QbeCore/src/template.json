@@ -1,12 +1,12 @@
 {
     qbeConf: {
-        datamartsName: ${datamartsName}
-        , query: ${query}
+        datamartsName: []
+        , query: {}
     }
 
     , fields: 
     	
-    	${fields}
+    	[]
     
     , staticClosedFilters: [
 

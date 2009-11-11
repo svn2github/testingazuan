@@ -48,21 +48,29 @@ Ext.ns("Sbi.formviewer");
 
 Sbi.formviewer.DataStorePanel = function(config) {
 	
-	var c = Ext.apply({
-		// set default values here
-	}, config || {});
+	var defaultSettings = {
+		//title: LN('sbi.qbe.queryeditor.title')
+	};
+			
+	if(Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.dataStorePanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.resultsPage);
+	}
+			
+	var c = Ext.apply(defaultSettings, config || {});
 	
-	this.services = new Array();
-	var params = {};
-	this.services['loadDataStore'] = Sbi.config.serviceRegistry.getServiceUrl({
+	Ext.apply(this, c);
+	
+	this.services = this.services || new Array();	
+	this.services['loadDataStore'] = this.services['loadDataStore'] || Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'EXECUTE_FORM_QUERY_ACTION'
-		, baseParams: params
+		, baseParams: new Object()
 	});
-	this.services['exportDataStore'] = Sbi.config.serviceRegistry.getServiceUrl({
+	
+	this.services['exportDataStore'] = this.services['exportDataStore'] || Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'EXPORT_RESULT_ACTION'
-		, baseParams: params
+		, baseParams: new Object()
 	});
-		
+	
 	this.initStore();
 	this.initPanel();
 	
@@ -82,16 +90,15 @@ Ext.extend(Sbi.formviewer.DataStorePanel, Ext.Panel, {
 	, paging: null
 	, pageSize: null
 	, pageNumber: null
-   
-   
+    
 	// ---------------------------------------------------------------------------------------------------
     // public methods
 	// ---------------------------------------------------------------------------------------------------
 	
-	, execQuery:  function(query, freeFiltersForm) {  
+	, execQuery:  function(baseParams) {  
 		this.store.removeAll();
-		this.store.baseParams = {id: query.id};
-		var requestParameters = Ext.apply({start: 0, limit: 25 }, freeFiltersForm || {});
+		this.store.baseParams = baseParams;
+		var requestParameters = {start: 0, limit: 25 };
 		this.store.load({params: requestParameters});
 	}
 
@@ -115,11 +122,6 @@ Ext.extend(Sbi.formviewer.DataStorePanel, Ext.Panel, {
 	// ---------------------------------------------------------------------------------------------------
 	// private methods
 	// ---------------------------------------------------------------------------------------------------
-	
-	, renderHtml: function(value, meta, record, row, col, store){
-		
-	}
-	
 	
 	, initStore: function() {
 		

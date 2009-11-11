@@ -1235,6 +1235,18 @@ Ext.ux.form.SuperBoxSelect = Ext.extend(Ext.ux.form.SuperBoxSelect,Ext.form.Comb
         });
         return ret.join(this.valueDelimiter);
     },
+    
+    // start modifications by Gioia (10/11/2009): added method getValuesList
+    getValuesList : function(){
+    	var ret = [];
+        this.items.each(function(item){
+            ret.push(item.value);
+        });
+        return ret;
+    },
+    // end modifications by Gioia (10/11/2009): added method getValuesList
+    
+    
     /**
      * Returns an Array of item objects containing the {@link #Ext.ux.form.SuperBoxSelect-displayField}, {@link #Ext.ux.form.SuperBoxSelect-valueField} and {@link #Ext.ux.form.SuperBoxSelect-classField} properties.
      * @methodOf Ext.ux.form.SuperBoxSelect

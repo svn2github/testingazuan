@@ -21,36 +21,21 @@
 package it.eng.spagobi.engines.qbe.services.formviewer;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
-import it.eng.qbe.datasource.DBConnection;
-import it.eng.qbe.model.DataStoreJSONSerializer;
-import it.eng.qbe.model.HQLStatement;
-import it.eng.qbe.model.IStatement;
-import it.eng.qbe.query.HavingField;
+import it.eng.qbe.query.DataMartSelectField;
+import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.query.Query;
-import it.eng.qbe.query.WhereField;
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.engines.qbe.QbeEngineConfig;
 import it.eng.spagobi.engines.qbe.services.AbstractQbeEngineAction;
-import it.eng.spagobi.tools.dataset.bo.JDBCStandardDataSet;
-import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
-import it.eng.spagobi.tools.dataset.common.query.GroupByQueryTransformer;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.JSONSuccess;
-import it.eng.spagobi.utilities.sql.SqlUtils;
 
 
 /**
@@ -59,36 +44,22 @@ import it.eng.spagobi.utilities.sql.SqlUtils;
 public class GetSelectedColumnsAction extends AbstractQbeEngineAction {	
 	
 	// INPUT PARAMETERS
-	public static final String LIMIT = "limit";
-	public static final String START = "start";
-	public static final String QUERY_ID = "id";
+	public static final String FIELD_TYPE = "type";
 	
+	public static final String FIELD_TYPE_ALL = "ALL";
+	public static final String FIELD_TYPE_GROUPABLE = "GROUPABLE";
+	public static final String FIELD_TYPE_AGGREGABLE = "AGGREGABLE";
+		
 	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(GetSelectedColumnsAction.class);
-    public static transient Logger auditlogger = Logger.getLogger("audit.query");
-    
-	
+   
 	public void service(SourceBean request, SourceBean response)  {				
 				
-		
-		String queryId = null;
-		Integer limit = null;
-		Integer start = null;
-		Integer maxSize = null;
-		boolean isMaxResultsLimitBlocking = false;
-		IDataStore dataStore = null;
-		JDBCStandardDataSet dataSet = null;
-		DataStoreJSONSerializer serializer;
-		
-		Query query = null;
-		IStatement statement = null;
-		
-		Integer resultNumber = null;
-		JSONObject gridDataFeed = new JSONObject();
-		
-		Monitor totalTimeMonitor = null;
-		Monitor errorHitsMonitor = null;
+		JSONObject results;
+		String fieldType;
+		Query query;
+		List selectFields;
 					
 		logger.debug("IN");
 		
@@ -96,154 +67,72 @@ public class GetSelectedColumnsAction extends AbstractQbeEngineAction {
 		
 			super.service(request, response);	
 			
-			totalTimeMonitor = MonitorFactory.start("QbeEngine.executeQueryAction.totalTime");
-			
-			start = getAttributeAsInteger( START );	
-			logger.debug("Parameter [" + START + "] is equals to [" + start + "]");
-			
-			limit = getAttributeAsInteger( LIMIT );
-			logger.debug("Parameter [" + LIMIT + "] is equals to [" + limit + "]");
-						
-			maxSize = QbeEngineConfig.getInstance().getResultLimit();			
-			logger.debug("Configuration setting  [" + "QBE.QBE-SQL-RESULT-LIMIT.value" + "] is equals to [" + (maxSize != null? maxSize: "none") + "]");
-			isMaxResultsLimitBlocking = QbeEngineConfig.getInstance().isMaxResultLimitBlocking();
-			logger.debug("Configuration setting  [" + "QBE.QBE-SQL-RESULT-LIMIT.isBlocking" + "] is equals to [" + isMaxResultsLimitBlocking + "]");
-			
-			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
 			
 			
-			// STEP 1: modify the query according to the input that come from the form
-			query = getEngineInstance().getQueryCatalogue().getFirstQuery();			
-			// ... query transformation goes here	
-			updatePromptableFiltersValue(query);
-			getEngineInstance().setActiveQuery(query);
+			fieldType = getAttributeAsString( FIELD_TYPE );	
+			logger.debug("Parameter [" + FIELD_TYPE + "] is equals to [" + fieldType + "]");
 			
+			if(fieldType == null) {
+				logger.warn("Parameter [" + FIELD_TYPE + "] not specified. All select fields will be returned");
+				fieldType = FIELD_TYPE_ALL;
+			}
 			
+			query = getEngineInstance().getQueryCatalogue().getFirstQuery();
+			Assert.assertNotNull(query, "Impossible to get any query from catalogue");
 			
-			// STEP 2: prepare statment and obtain the corresponding sql query
-			statement = getEngineInstance().getStatment();	
-			statement.setParameters( getEnv() );
-			
-			String hqlQuery = statement.getQueryString();
-			String sqlQuery = ((HQLStatement)statement).getSqlQueryString();
-			logger.debug("Executable query (HQL): [" +  hqlQuery+ "]");
-			logger.debug("Executable query (SQL): [" + sqlQuery + "]");
-			UserProfile userProfile = (UserProfile)getEnv().get(EngineConstants.ENV_USER_PROFILE);
-			auditlogger.info("[" + userProfile.getUserId() + "]:: HQL: " + hqlQuery);
-			auditlogger.info("[" + userProfile.getUserId() + "]:: SQL: " + sqlQuery);
-			
-			// STEP 3: transform the sql query
-			GroupByQueryTransformer transformer = new GroupByQueryTransformer();
-			int fieldIndex = query.getSelectFieldIndex("it.eng.spagobi.Customer:numCarsOwned");
-			
-			List selectFields = SqlUtils.getSelectFields(sqlQuery);
-			String[] f = (String[])selectFields.get(fieldIndex);
-			
-			String as = query.getSelectFieldByIndex(fieldIndex).getAlias();
-			transformer.addGrouByColumn(f[1]!=null? f[1]:f[0], query.getSelectFieldByIndex(fieldIndex).getAlias());
-			transformer.addAggregateColumn(f[1]!=null? f[1]:f[0], "COUNT", "Tot");
-			sqlQuery = (String)transformer.transformQuery(sqlQuery);
-			
-			// STEP 4: execute the query
+			selectFields = null;
+			if(FIELD_TYPE_ALL.equalsIgnoreCase(fieldType)) {
+				selectFields = query.getSelectFields(true);
+			} else if(FIELD_TYPE_GROUPABLE.equalsIgnoreCase(fieldType)) {
+				selectFields = query.getSelectFields(true);
+			} else  if(FIELD_TYPE_GROUPABLE.equalsIgnoreCase(fieldType)) {
+				Assert.assertUnreachable("Value [" + fieldType + "] for parameter [" + FIELD_TYPE + "] is valid but not yet supported.");
+			} else {
+				Assert.assertUnreachable("Parameter [" + FIELD_TYPE + "] cannot be equal to [" + fieldType + "]");
+			}
+			Assert.assertNotNull(selectFields, "The returned list of selected fields cannot be null");
 			
 			try {
-				logger.debug("Executing query ...");
-				
-				dataSet = new JDBCStandardDataSet();
-				//Session session = getDatamartModel().getDataSource().getSessionFactory().openSession();
-				DBConnection connection = getDatamartModel().getDataSource().getConnection();
-				DataSource dataSource = new DataSource();
-				dataSource.setJndi(connection.getJndiName());
-				dataSource.setHibDialectName(connection.getDialect());
-				dataSource.setUrlConnection(connection.getUrl());
-				dataSource.setDriver(connection.getDriverClass());
-				dataSource.setUser(connection.getUsername());
-				dataSource.setPwd(connection.getPassword());
-				dataSet.setDataSource(dataSource);
-				dataSet.setQuery(sqlQuery);
-				dataSet.loadData();
-				dataStore = dataSet.getDataStore();
-			} catch (Exception e) {
-				logger.debug("Query execution aborted because of an internal exceptian");
-				SpagoBIEngineServiceException exception;
-				String message;
-				
-				message = "An error occurred in " + getActionName() + " service while executing query: [" +  statement.getQueryString() + "]";				
-				exception = new SpagoBIEngineServiceException(getActionName(), message, e);
-				exception.addHint("Check if the query is properly formed: [" + statement.getQueryString() + "]");
-				exception.addHint("Check connection configuration");
-				exception.addHint("Check the qbe jar file");
-				
-				throw exception;
+				results = new JSONObject();
+				results.put("fields", serialize(selectFields));
+			} catch(Throwable t) {
+				throw new SpagoBIEngineServiceException(getActionName(), "Impossible to serialize selected fields list", t);
 			}
-			logger.debug("Query executed succesfully");
-			
-			
-			dataStore.getMetaData().setProperty("resultNumber", new Integer( (int)dataStore.getRecordsCount() ));
-			
-			resultNumber = (Integer)dataStore.getMetaData().getProperty("resultNumber");
-			Assert.assertNotNull(resultNumber, "property [resultNumber] of the dataStore returned by loadData method of the class [" + dataSet.getClass().getName()+ "] cannot be null");
-			logger.debug("Total records: " + resultNumber);			
-			
-			
-			boolean overflow = maxSize != null && resultNumber >= maxSize;
-			if (overflow) {
-				logger.warn("Query results number [" + resultNumber + "] exceeds max result limit that is [" + maxSize + "]");
-				auditlogger.info("[" + userProfile.getUserId() + "]:: max result limit [" + maxSize + "] exceeded with SQL: " + sqlQuery);
-			}
-						
-			serializer = new DataStoreJSONSerializer();
-			gridDataFeed = (JSONObject)serializer.serialize(dataStore);
 			
 			try {
-				writeBackToClient( new JSONSuccess(gridDataFeed) );
+				writeBackToClient( new JSONSuccess(results) );
 			} catch (IOException e) {
-				String message = "Impossible to write back the responce to the client";
-				throw new SpagoBIEngineServiceException(getActionName(), message, e);
+				throw new SpagoBIEngineServiceException(getActionName(), "Impossible to write back the responce to the client", e);
 			}
 			
-		} catch(Throwable t) {
-			errorHitsMonitor = MonitorFactory.start("QbeEngine.errorHits");
-			errorHitsMonitor.stop();
-			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
-		} finally {
-			if(totalTimeMonitor != null) totalTimeMonitor.stop();
+		}  finally {
 			logger.debug("OUT");
-		}	
-		
+		}		
 		
 	}
 	
-	private void updatePromptableFiltersValue(Query query) {
-		logger.debug("IN");
-		List whereFields = query.getWhereFields();
-		Iterator whereFieldsIt = whereFields.iterator();
-		while (whereFieldsIt.hasNext()) {
-			WhereField whereField = (WhereField) whereFieldsIt.next();
-			if (whereField.isPromptable()) {
-				// getting filter value on request
-				String promptValue = this.getAttributeAsString(whereField.getName());
-				logger.debug("Read prompt value [" + promptValue + "] for promptable filter [" + whereField.getName() + "].");
-				if (promptValue != null) {
-					whereField.getRightOperand().lastValue = promptValue;
+	private JSONArray serialize(List selectedFields) {
+		JSONArray selectedFieldsJSON;
+		
+		selectedFieldsJSON = new JSONArray();
+		
+		for(int i = 0; i < selectedFields.size(); i++) {
+			ISelectField f = (ISelectField)selectedFields.get(i);
+			if(f.isDataMartField()) {
+				DataMartSelectField dataMartSelectField = (DataMartSelectField)f;
+				JSONObject selectFieldJSON = new JSONObject();
+				try {
+					selectFieldJSON.put("name", dataMartSelectField.getUniqueName());
+					selectFieldJSON.put("alias", dataMartSelectField.getAlias());
+				} catch (JSONException e) {
+					throw new SpagoBIEngineServiceException(getActionName(), "An error occurred while serializing field [" + dataMartSelectField.getUniqueName() + " - " + dataMartSelectField.getAlias() +"]", e);
 				}
+				selectedFieldsJSON.put(selectFieldJSON);
 			}
 		}
-		List havingFields = query.getHavingFields();
-		Iterator havingFieldsIt = havingFields.iterator();
-		while (havingFieldsIt.hasNext()) {
-			HavingField havingField = (HavingField) havingFieldsIt.next();
-			if (havingField.isPromptable()) {
-				// getting filter value on request
-				String promptValue = this.getAttributeAsString(havingField.getName());
-				logger.debug("Read prompt value [" + promptValue + "] for promptable filter [" + havingField.getName() + "].");
-				if (promptValue != null) {
-					havingField.getRightOperand().lastValue = promptValue;
-				}
-			}
-		}
-		logger.debug("OUT");
+		
+		return selectedFieldsJSON;
 	}
-
+	
 	
 }

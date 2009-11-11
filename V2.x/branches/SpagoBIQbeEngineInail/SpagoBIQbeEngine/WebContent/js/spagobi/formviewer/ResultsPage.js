@@ -41,46 +41,46 @@
   * 
   * Authors
   * 
-  * - Andrea Gioia (mail)
+  * - Andrea Gioia (andrea.gioia@eng.it)
   */
 
-Ext.ns("Sbi.xxx");
+Ext.ns("Sbi.formviewer");
 
 Sbi.formviewer.ResultsPage = function(config) {	
 	var defaultSettings = {
-			//title: LN('sbi.qbe.queryeditor.title')
-		};
+		//title: LN('sbi.qbe.queryeditor.title')
+	};
 		
-		if(Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.queryBuilderPanel) {
-			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.queryBuilderPanel);
-		}
+	if(Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.resultsPage) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.resultsPage);
+	}
 		
-		var c = Ext.apply(defaultSettings, config || {});
-		
-		Ext.apply(this, c);
-		
-		
-		this.services = this.services || new Array();	
-		this.services['getSelectedColumns'] = this.services['getSelectedColumns'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'GET_SELECTED_COLUMNS_ACTION'
-			, baseParams: new Object()
-		});
-		
-		this.addEvents('execute');
-		
-		this.initControlPanel(c.controlPanelConfig || {});
-		this.initMasterDetailPanel(c.masterDetailPanelConfig || {});
-		
-		c = Ext.apply(c, {
-		    layout:'border',
-		    bodyStyle:'background:green',
-		    items: [this.controlPanel, this.masterResultsPanel, this.detailResultsPanel]
-		});
+	var c = Ext.apply(defaultSettings, config || {});
+	
+	Ext.apply(this, c);
 		
 		
+	this.services = this.services || new Array();	
+	this.services['getSelectedColumns'] = this.services['getSelectedColumns'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_SELECTED_COLUMNS_ACTION'
+		, baseParams: new Object()
+	});
 		
-		// constructor
-	    Sbi.formviewer.ResultsPage.superclass.constructor.call(this, c);
+	this.addEvents('execute');
+		
+	this.initControlPanel(c.controlPanelConfig || {});
+	this.initMasterDetailPanel(c.masterDetailPanelConfig || {});
+		
+	c = Ext.apply(c, {
+	    layout:'border',
+	    bodyStyle:'background:green',
+	    items: [this.controlPanel, this.masterResultsPanel, this.detailResultsPanel]
+	});
+		
+		
+		
+	// constructor
+	Sbi.formviewer.ResultsPage.superclass.constructor.call(this, c);
 };
 
 Ext.extend(Sbi.formviewer.ResultsPage, Ext.Panel, {
@@ -89,43 +89,73 @@ Ext.extend(Sbi.formviewer.ResultsPage, Ext.Panel, {
     , controlPanel: null
     , masterResultsPanel: null
     , detailResultsPanel: null
+    , groupInputField: null
    
-    // public methods
+    // -- public methods -----------------------------------------------------------------------
     
+    
+    
+    , loadResults: function() {
+		var values = this.groupInputField.getValuesList();
+		var baseParams = {groupFields: Ext.util.JSON.encode(values)}
+		this.masterResultsPanel.execQuery(baseParams);
+	}
+    
+    // -- private methods -----------------------------------------------------------------------
+        
     , initControlPanel: function() {
 		var p = {type: 'groupable'};
-		var store = new Ext.data.JsonStore({
+		store = new Ext.data.JsonStore({
 			url: this.services['getSelectedColumns']
-			, params: p
+			, baseParams: p
+			, root: 'fields'
+		    , fields: ['name', 'alias']
 		});
 		
 		store.on('loadexception', function(store, options, response, e) {
 			Sbi.exception.ExceptionHandler.handleFailure(response, options);
 		});
 		
-		this.field = new Ext.ux.form.SuperBoxSelect({
+		this.groupInputField = new Ext.ux.form.SuperBoxSelect({
 	        editable: true			    
 		    , forceSelection: false
 		    , store: store
-		    , fieldLabel: 'Group On'
-		    , width: 200
-		    , displayField: 'column-1'
-		    , valueField: 'column-1'
+		    , fieldLabel: 'Group By'
+		    , anchor:'100%'
+		    , displayField: 'alias'
+		    , valueField: 'name'
 		    , emptyText: ''
 		    , typeAhead: false
-		    //, typeAheadDelay: 1000
 		    , triggerAction: 'all'
 		    , selectOnFocus: true
 		    , autoLoad: false
-		    //, maxSelection: 10
+		});
+		
+		var submitButton = new Ext.Button({
+			text: "Ricalcola",
+            scope: this,
+            handler: this.loadResults
+
 		});
 	
-		this.controlPanel = new Ext.form.FormPanel({
-			layout: 'fit'
-			, region: 'north'
-			, bodyStyle:'padding:10px'
+		this.controlPanel = new Ext.Panel({
+			region: 'north'
+			, layout: 'border'
 			, height: 50
-			, items: [this.field]
+			, items: [
+			     new Ext.form.FormPanel({
+			    	 region: 'center', 
+			    	 bodyStyle:'padding:10px',
+			    	 items: [this.groupInputField]
+			     })
+				, new Ext.form.FormPanel({
+					region: 'east', 
+					split: false, 
+					bodyStyle:'padding:13 10 13 5',
+					width: 85, 
+					items: [submitButton]
+				})
+			]
 		});
 	}
     
@@ -138,13 +168,45 @@ Ext.extend(Sbi.formviewer.ResultsPage, Ext.Panel, {
 			frame: false, 
 			border: true,
 			width: 320,
-			minWidth: 320	
+			minWidth: 320,
+			
+			services: {
+				loadDataStore: Sbi.config.serviceRegistry.getServiceUrl({
+					serviceName: 'EXECUTE_MASTER_QUERY_ACTION'
+					, baseParams: new Object()
+				})
+			}
 		});
 	
 		this.detailResultsPanel = new Sbi.formviewer.DataStorePanel({
 			region: 'center',
 			frame: false, 
-		    border: false
+		    border: false,
+		    
+		    services: {
+				loadDataStore: Sbi.config.serviceRegistry.getServiceUrl({
+					serviceName: 'EXECUTE_DETAIL_QUERY_ACTION'
+					, baseParams: new Object()
+				})
+			}
 		});
+		
+		this.masterResultsPanel.grid.on("rowdblclick", function(grid,  rowIndex, e){
+	    	var row;
+	       	var record = grid.getStore().getAt( rowIndex );
+	       	var baseParams = grid.getStore().baseParams;
+	       	var fields = Ext.util.JSON.decode(baseParams.groupFields);
+	       	var filters = new Array();
+	       	for(var i = 0; i < fields.length; i++) {
+	       		var filter = {
+	       			columnName: fields[i],
+	       			value: record.get('column-'+(i+1))
+	       		};
+	       		filters.push(filter);
+	       	}
+	       	
+	       	var baseParams = {filters: Ext.util.JSON.encode(filters)}
+			this.detailResultsPanel.execQuery(baseParams);
+	    }, this);
 	}
 });

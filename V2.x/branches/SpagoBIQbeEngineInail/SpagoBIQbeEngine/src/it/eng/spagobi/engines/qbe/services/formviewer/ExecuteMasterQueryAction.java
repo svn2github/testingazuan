@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.jamonapi.Monitor;
@@ -56,39 +57,40 @@ import it.eng.spagobi.utilities.sql.SqlUtils;
 /**
  * The Class ExecuteQueryAction.
  */
-public class ExecuteFormQueryAction extends AbstractQbeEngineAction {	
+public class ExecuteMasterQueryAction extends AbstractQbeEngineAction {	
 	
 	// INPUT PARAMETERS
 	public static final String LIMIT = "limit";
 	public static final String START = "start";
-	public static final String QUERY_ID = "id";
+	public static final String GROUPBY_FIELDS = "groupFields";
 	
 	
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(ExecuteFormQueryAction.class);
+    public static transient Logger logger = Logger.getLogger(ExecuteMasterQueryAction.class);
     public static transient Logger auditlogger = Logger.getLogger("audit.query");
     
 	
 	public void service(SourceBean request, SourceBean response)  {				
 				
 		
-		String queryId = null;
-		Integer limit = null;
-		Integer start = null;
-		Integer maxSize = null;
-		boolean isMaxResultsLimitBlocking = false;
-		IDataStore dataStore = null;
-		JDBCStandardDataSet dataSet = null;
+		String queryId;
+		Integer limit;
+		Integer start;
+		JSONArray groupFields;
+		Integer maxSize;
+		boolean isMaxResultsLimitBlocking;
+		IDataStore dataStore;
+		JDBCStandardDataSet dataSet;
 		DataStoreJSONSerializer serializer;
 		
-		Query query = null;
-		IStatement statement = null;
+		Query query;
+		IStatement statement;
 		
-		Integer resultNumber = null;
+		Integer resultNumber;
 		JSONObject gridDataFeed = new JSONObject();
 		
 		Monitor totalTimeMonitor = null;
-		Monitor errorHitsMonitor = null;
+		Monitor errorHitsMonitor;
 					
 		logger.debug("IN");
 		
@@ -103,6 +105,11 @@ public class ExecuteFormQueryAction extends AbstractQbeEngineAction {
 			
 			limit = getAttributeAsInteger( LIMIT );
 			logger.debug("Parameter [" + LIMIT + "] is equals to [" + limit + "]");
+			
+			groupFields = getAttributeAsJSONArray( GROUPBY_FIELDS );
+			logger.debug("Parameter [" + GROUPBY_FIELDS + "] is equals to [" + groupFields + "]");
+			Assert.assertNotNull(groupFields, "Parameter [" + GROUPBY_FIELDS + "] cannot be null");
+			Assert.assertTrue(groupFields.length() > 0, "GroupBy fileds list cannot be empty");
 						
 			maxSize = QbeEngineConfig.getInstance().getResultLimit();			
 			logger.debug("Configuration setting  [" + "QBE.QBE-SQL-RESULT-LIMIT.value" + "] is equals to [" + (maxSize != null? maxSize: "none") + "]");
@@ -134,20 +141,24 @@ public class ExecuteFormQueryAction extends AbstractQbeEngineAction {
 			
 			// STEP 3: transform the sql query
 			GroupByQueryTransformer transformer = new GroupByQueryTransformer();
-			int fieldIndex = query.getSelectFieldIndex("it.eng.spagobi.Customer:numCarsOwned");
-			
 			List selectFields = SqlUtils.getSelectFields(sqlQuery);
-			String[] f = (String[])selectFields.get(fieldIndex);
 			
-			String as = query.getSelectFieldByIndex(fieldIndex).getAlias();
-			transformer.addGrouByColumn(f[1]!=null? f[1]:f[0], query.getSelectFieldByIndex(fieldIndex).getAlias());
-			transformer.addAggregateColumn(f[1]!=null? f[1]:f[0], "COUNT", "Tot");
+			for(int i = 0; i < groupFields.length(); i++) {
+				String groupByField = groupFields.getString(i);
+				int fieldIndex = query.getSelectFieldIndex(groupByField);				
+				String[] f = (String[])selectFields.get(fieldIndex);				
+				String as = query.getSelectFieldByIndex(fieldIndex).getAlias();
+				
+				transformer.addGrouByColumn(f[1]!=null? f[1]:f[0], query.getSelectFieldByIndex(fieldIndex).getAlias());
+			}
+			
+			transformer.addAggregateColumn("*"/*f[1]!=null? f[1]:f[0]*/, "COUNT", "Tot");
 			sqlQuery = (String)transformer.transformQuery(sqlQuery);
 			
 			// STEP 4: execute the query
 			
 			try {
-				logger.debug("Executing query ...");
+				logger.debug("Executing query: [" + sqlQuery + "]");
 				
 				dataSet = new JDBCStandardDataSet();
 				//Session session = getDatamartModel().getDataSource().getSessionFactory().openSession();

@@ -10,8 +10,14 @@
 	</ACTION>
 	
 	
-	<ACTION name="EXECUTE_FORM_QUERY_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.formviewer.ExecuteFormQueryAction" 
+	<ACTION name="EXECUTE_MASTER_QUERY_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.formviewer.ExecuteMasterQueryAction" 
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="EXECUTE_DETAIL_QUERY_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.formviewer.ExecuteDetailQueryAction" 
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>

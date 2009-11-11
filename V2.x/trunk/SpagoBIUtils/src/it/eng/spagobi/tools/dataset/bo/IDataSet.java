@@ -1,5 +1,7 @@
 package it.eng.spagobi.tools.dataset.bo;
 
+import java.util.Map;
+
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
@@ -8,25 +10,15 @@ import it.eng.spagobi.tools.dataset.common.behaviour.IDataSetBehaviour;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.transformer.IDataStoreTransformer;
 
-import java.util.Map;
-
 public interface IDataSet {
-
 	
-	void loadData() throws EMFUserError, EMFInternalError;
-    IDataStore getDataStore();
-    IDataStore fetchNext();
-    void setFetchSize(int l);
-
-	
-	int getId();
-	void setId(int id);
-
-	String getParameters();
-	void setParameters(String parameters);
-
 	String getDsMetadata();
 	void setDsMetadata(String dsMetadata);
+	
+	
+	// general properties ....
+	int getId();
+	void setId(int id);
 	
 	String getName();
 	void setName(String name);
@@ -36,7 +28,48 @@ public interface IDataSet {
 	
 	String getLabel();
 	void setLabel(String label);
+
+	// parametrization ....
+	// --------------------------------------------------------------------------------------------------
+	// INVESTIGATE: why this 2 similar methods ??? FIND OUT & REFACTOR !
+	String getParameters();
+	void setParameters(String parameters);
+
+	Map getParamsMap();
+	void setParamsMap(Map params);
+	// --------------------------------------------------------------------------------------------------
 	
+	// profilation ...
+	public IEngUserProfile getUserProfile();
+	public void setUserProfile(IEngUserProfile userProfile);
+	
+	// execution ...
+	// --------------------------------------------------------------------------------------------------
+	// TODO improve dataset layer excaption handling (remove ALL EMFUserError & EMFInternalError)
+	void loadData() throws EMFUserError, EMFInternalError;
+	void loadData(int offset, int fetchSize, int maxResults) throws EMFUserError, EMFInternalError;
+	// --------------------------------------------------------------------------------------------------
+    
+	IDataStore getDataStore();
+	
+	
+	// just 4 querable dataSet....
+	Object getQuery();
+	void setQuery(Object query);	
+	
+	// extension points ...
+	boolean hasBehaviour(String behaviourId);
+	Object getBehaviour(String behaviourId);
+	void addBehaviour(IDataSetBehaviour behaviour);
+	
+	
+	
+	// =================================================================================================
+	// TO BE DEPRECATED ( do not cross this line ;-) )
+	// =================================================================================================
+	
+	// --------------------------------------------------------------------------------------------------
+	// TODO these methods do NOT belong to the dataset interface. remove them and refactor the code.
 	Integer getTransformerId();
 	void setTransformerId(Integer transformerId);
 
@@ -45,37 +78,25 @@ public interface IDataSet {
 
 	String getPivotRowName();
 	void setPivotRowName(String pivotRowName);
+	
+	boolean isNumRows();
+	void setNumRows(boolean numRows);
 
 	String getPivotColumnValue();
 	void setPivotColumnValue(String pivotColumnValue);
 	
-	boolean isNumRows();
-	void setNumRows(boolean numRows);
+	boolean hasDataStoreTransformer() ;
+	void removeDataStoreTransformer() ;
+	void setDataStoreTransformer(IDataStoreTransformer transformer);
+	IDataStoreTransformer getDataStoreTransformer();
+	// TODO these methods do NOT belong to the dataset interface. remove them and refactor the code.
+	// --------------------------------------------------------------------------------------------------
 	
-	Object getQuery();
-	void setQuery(Object query);
-	
-	Map getParamsMap();
-	void setParamsMap(Map params);
-	
-	boolean hasBehaviour(String behaviourId);
-	Object getBehaviour(String behaviourId);
-	void addBehaviour(IDataSetBehaviour behaviour);
-	
-
-	public boolean hasDataStoreTransformer() ;
-	
-	public void removeDataStoreTransformer() ;
-
-	public void setDataStoreTransformer(IDataStoreTransformer transformer);
-	
-	public IDataStoreTransformer getDataStoreTransformer();
-    
-	
-	public IEngUserProfile getUserProfile();
-
-	public void setUserProfile(IEngUserProfile userProfile);
-	
-	public SpagoBiDataSet toSpagoBiDataSet();
-
+	// --------------------------------------------------------------------------------------------------
+	// TODO these methods must be moved into a proper factory that convert SpagoBI BO into data bean passed
+	// to the DAO. For the conversion from data bean and SpagoBI BO such a factory alredy exist
+	// NOTE: SpagoBiDataSet: change when possible the name SpagoBiDataSet following a convention common to 
+	// all data bean
+	SpagoBiDataSet toSpagoBiDataSet();
+	// --------------------------------------------------------------------------------------------------
 }

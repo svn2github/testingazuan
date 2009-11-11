@@ -281,17 +281,18 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
     private byte[] getTemplate() {
 		byte[] templateContent = null;
 		HashMap requestParameters;
-			
-		contentProxy = getContentServiceProxy();
-		if(contentProxy == null) {
-			throw new SpagoBIEngineStartupException("SpagoBIQbeEngine", 
-					"Impossible to instatiate proxy class [" + ContentServiceProxy.class.getName() + "] " +
-					"in order to retrive the template of document [" + documentId + "]");
-		}
-			
-		requestParameters = ParametersDecoder.getDecodedRequestParameters(this.getHttpRequest());
-		template = contentProxy.readTemplate(getDocumentId(), requestParameters);
-			
+		
+		if(template == null) {
+			contentProxy = getContentServiceProxy();
+			if(contentProxy == null) {
+				throw new SpagoBIEngineStartupException("SpagoBIQbeEngine", 
+						"Impossible to instatiate proxy class [" + ContentServiceProxy.class.getName() + "] " +
+						"in order to retrive the template of document [" + documentId + "]");
+			}
+				
+			requestParameters = ParametersDecoder.getDecodedRequestParameters(this.getHttpRequest());
+			template = contentProxy.readTemplate(getDocumentId(), requestParameters);
+		}	
 		try {
 		  templateContent = DECODER.decodeBuffer(template.getContent());
 		} catch (IOException e) {

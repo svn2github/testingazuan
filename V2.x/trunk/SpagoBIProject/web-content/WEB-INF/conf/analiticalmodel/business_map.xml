@@ -25,6 +25,7 @@
 		<MAP_ACTION actionName="DELETE_SUBOBJECTS_ACTION"  businessProcess="SeeSubobjectsFunctionality"/>
 		<MAP_ACTION actionName="GET_NOTES_ACTION"  businessProcess="SeeNotesFunctionality"/>
 		<MAP_ACTION actionName="SAVE_NOTES_ACTION"  businessProcess="SeeNotesFunctionality"/>
+		<MAP_ACTION actionName="PRINT_NOTES_ACTION"  businessProcess="SeeNotesFunctionality"/>
 		<MAP_ACTION actionName="SAVE_REMEMBER_ME_ACTION"  businessProcess="SaveRememberMeFunctionality"/>
 		<MAP_ACTION actionName="GET_VIEWPOINTS_ACTION"  businessProcess="SeeViewpointsFunctionality"/>
 		<MAP_ACTION actionName="DELETE_VIEWPOINTS_ACTION"  businessProcess="SeeViewpointsFunctionality"/>

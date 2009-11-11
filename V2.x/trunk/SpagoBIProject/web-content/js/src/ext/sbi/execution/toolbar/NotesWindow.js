@@ -47,7 +47,6 @@
 Ext.ns("Sbi.execution.toolbar");
 
 Sbi.execution.toolbar.NotesWindow = function(config) {
-	
 	// always declare exploited services first!
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
 	this.services = new Array();
@@ -55,6 +54,10 @@ Sbi.execution.toolbar.NotesWindow = function(config) {
 		serviceName: 'GET_NOTES_ACTION'
 		, baseParams: params
 	});
+	this.services['printNotesService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'PRINT_NOTES_ACTION'
+		, baseParams: params
+	});	
 	this.services['saveNotesService'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'SAVE_NOTES_ACTION'
 		, baseParams: params
@@ -62,7 +65,6 @@ Sbi.execution.toolbar.NotesWindow = function(config) {
 	
 	this.previousNotes = undefined;
 	this.SBI_EXECUTION_ID = config.SBI_EXECUTION_ID;
-	
 	this.buddy = undefined;
 	
     this.editor = new Ext.form.HtmlEditor({
@@ -85,7 +87,12 @@ Sbi.execution.toolbar.NotesWindow = function(config) {
 		        	  text: LN('sbi.execution.notes.savenotes'), 
 		        	  scope: this,
 		        	  handler: this.saveNotes
-		          }
+		          },
+			      {
+		        	  text: LN('sbi.execution.notes.printnotes'), 
+		        	  scope: this,
+		        	  handler: this.printNotes
+		          }	          
 		]
 	});   
 	
@@ -103,7 +110,6 @@ Sbi.execution.toolbar.NotesWindow = function(config) {
 };
 
 Ext.extend(Sbi.execution.toolbar.NotesWindow, Ext.Window, {
-	
 	loadNotes: function () {
 		Ext.Ajax.request({
 	        url: this.services['getNotesService'],
@@ -175,5 +181,13 @@ Ext.extend(Sbi.execution.toolbar.NotesWindow, Ext.Window, {
 		});
 		
 	}
+	, printNotes: function () {
+		var urlPrint = this.services['printNotesService'];
+		urlPrint+= '&SBI_EXECUTION_ID=' + this.SBI_EXECUTION_ID;
+			window.open(urlPrint,'name','height=750,width=1000');
+	
+	}
+
+
 	
 });

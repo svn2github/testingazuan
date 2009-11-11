@@ -125,7 +125,12 @@
  	class="it.eng.spagobi.analiticalmodel.document.x.SaveNotesAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
- 
+
+ <ACTION name="PRINT_NOTES_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.PrintNotesAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+
  <ACTION name="SAVE_REMEMBER_ME_ACTION" 
  	class="it.eng.spagobi.analiticalmodel.document.x.SaveRememberMeAction" scope="REQUEST">
  	<CONFIG/>

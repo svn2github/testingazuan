@@ -40,6 +40,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -234,6 +235,7 @@ public class GEOEditor extends EditorPart{
 		gl.marginHeight=5;
 		gl.marginRight=5;
 		gl.marginLeft=5;
+		sectionClient.setLayout(gl);
 		
 
 		sectionClient.setLayout(gl);
@@ -247,9 +249,12 @@ public class GEOEditor extends EditorPart{
 		
 		initializeEditor(geoDocument);
 		//creazione delle combo e tabelle
-		Group datasetGroup = new Group(sectionClient, SWT.FILL );
+		
+		Group datasetGroup = new Group(sectionClient, SWT.FILL);
+		datasetGroup.setSize(800, 600);
 		datasetGroup.setLayout(sectionClient.getLayout());
-		Group mapGroup = new Group(sectionClient, SWT.FILL);
+		Group mapGroup = new Group(sectionClient, SWT.FILL );
+		mapGroup.setSize(800, 600);
 		mapGroup.setLayout(sectionClient.getLayout());
 
 		createDatasetCombo(sectionClient, datasetGroup);
@@ -375,6 +380,7 @@ public class GEOEditor extends EditorPart{
 						editor.setEditor(comboAgg, item, DATASET_AGGREGATION);
 					
 						datasetTable.pack();
+						//datasetTable.redraw();
 					}
 				}
 				// resize the row height using a MeasureItem listener
@@ -418,6 +424,7 @@ public class GEOEditor extends EditorPart{
 		datasetTable.setLayoutData(gd);
 		datasetTable.setLinesVisible (true);
 		datasetTable.setHeaderVisible (true);
+		
 
 		String[] titles = { "  Column name   " , "               Type               ", "     Select       ", "   Aggregation mode   "};
 		for (int i = 0; i < titles.length; i++) {
@@ -426,6 +433,9 @@ public class GEOEditor extends EditorPart{
 			column.setResizable(true);
 
 		} 
+		for(int i=0; i< 10; i++){
+			TableItem item = new TableItem(datasetTable, SWT.TRANSPARENT);			
+		}
 
 		for (int i=0; i<titles.length; i++) {
 			datasetTable.getColumn (i).pack();
@@ -537,6 +547,7 @@ public class GEOEditor extends EditorPart{
 						editor.grabVertical=true;						
 						editor.setEditor(colorSection, item, FEATURE_DEFAULT_COLORS);
 						mapTable.pack();
+						//mapTable.redraw();
 					}
 				}
 				// resize the row height using a MeasureItem listener
@@ -583,7 +594,9 @@ public class GEOEditor extends EditorPart{
 			column.setResizable(true);
 		} 
 
-
+		for(int i=0; i< 10; i++){
+			TableItem item = new TableItem(mapTable, SWT.TRANSPARENT);			
+		}
 		for (int i=0; i<titles.length; i++) {
 			mapTable.getColumn (i).pack ();
 		}  

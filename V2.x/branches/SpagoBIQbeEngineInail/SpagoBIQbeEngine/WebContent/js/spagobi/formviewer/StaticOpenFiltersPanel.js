@@ -137,6 +137,7 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
 			    , autoLoad: false
 			    , maxSelection: 1
 			    , width: 200
+			    , maxHeight: 250
 			}));
 		} else {
 			field = new Ext.ux.form.SuperBoxSelect(Ext.apply(baseConfig, {
@@ -152,6 +153,7 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
 			    , autoLoad: false
 			    , maxSelection: openFilter.maxSelectedNumber
 			    , width: 200
+			    , maxHeight: 250
 			}));
 			
 			/* 

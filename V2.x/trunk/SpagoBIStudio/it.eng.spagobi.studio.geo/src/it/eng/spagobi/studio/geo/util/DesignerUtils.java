@@ -73,7 +73,67 @@ public class DesignerUtils {
 		});
 		return innerSection;
 	}
-
+	/**
+	 * @param parent
+	 * @param colorHex
+	 * @param labelToColour
+	 * @return
+	 */
+	public static Composite createColorPicker(Composite parent, String colorHex, final Label labelToColour){
+		//		Composite innerSection = toolkit.createComposite(section);
+		Composite innerSection = new Composite(parent, SWT.BORDER);
+		GridLayout colorGd = new GridLayout();
+		colorGd.numColumns = 2;
+		colorGd.marginHeight = 0;
+		colorGd.marginBottom = 0;
+		innerSection.setLayout(colorGd);
+//		final Label colorLabel = new Label(innerSection, SWT.BORDER);
+		labelToColour.setText("           ");
+		labelToColour.setSize(50, 20);
+		RGB rgb=null;
+		if(colorHex!=null){
+			//String hexadecimal = aParameter.getValue().toString();
+			try{
+				rgb= convertHexadecimalToRGB(colorHex);
+			}
+			catch (Exception e) {
+				rgb=new RGB(255,0,0);
+			}
+		}
+		else{
+			rgb=new RGB(255,0,0);
+		}
+		final Color color = new org.eclipse.swt.graphics.Color(parent.getDisplay(), rgb);
+		labelToColour.setBackground(color);
+		Button button = new Button(innerSection, SWT.PUSH);
+		button.setText("Color...");
+		button.setSize(50, 10);
+		final Shell parentShell = parent.getShell();
+		button.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				final Shell centerShell = new Shell(parentShell, SWT.NO_TRIM);
+				centerShell.setLocation(
+						(parentShell.getSize().x - COLORDIALOG_WIDTH) / 2,
+						(parentShell.getSize().y - COLORDIALOG_HEIGHT) / 2);
+				ColorDialog colorDg = new ColorDialog(centerShell,
+						SWT.APPLICATION_MODAL);
+				colorDg.setRGB(labelToColour.getBackground().getRGB());
+				//colorDg.setText("Choose a color");
+				RGB rgb = colorDg.open();
+				if (rgb != null) {
+					// Dispose the old color, create the
+					// new one, and set into the label
+					color.dispose();
+					Color newColor = new Color(parentShell.getDisplay(), rgb);
+					labelToColour.setBackground(newColor);
+					String newHexadecimal = convertRGBToHexadecimal(rgb);
+					//aParameter.setValue(newHexadecimal);
+				}
+				centerShell.dispose();
+			}
+		});
+		return innerSection;
+	}
 
 	public static String convertRGBToHexadecimal(RGB rgb) {
 		int red = rgb.red;

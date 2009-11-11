@@ -1,6 +1,9 @@
 package it.eng.spagobi.studio.geo.editors;
 
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
+import it.eng.spagobi.studio.geo.editors.model.geo.KPI;
+import it.eng.spagobi.studio.geo.editors.model.geo.Param;
+import it.eng.spagobi.studio.geo.editors.model.geo.Tresholds;
 import it.eng.spagobi.studio.geo.util.DesignerUtils;
 
 import org.eclipse.swt.SWT;
@@ -12,7 +15,6 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -35,7 +37,32 @@ public class MeasuresDesigner {
 		geoDocument = _geoDocument;
 	}
 	
-	public void createMeasuresShell(final Composite sectionClient, String columnName){
+	private KPI fillMeasure(Shell dialog, String columnName){
+		KPI kpi = new KPI();
+		Tresholds tresholds = new Tresholds();
+		kpi.setTresholds(tresholds);
+		
+		Text desc = (Text)dialog.getData("Description");
+		kpi.setDescription(desc.getText());
+		Text treshType = (Text)dialog.getData("TresholdsType");
+		tresholds.setType(treshType.getText());
+		Text treshLb = (Text)dialog.getData("TresholdsLb");
+		tresholds.setLbValue(treshLb.getText());
+		Text treshUb = (Text)dialog.getData("TresholdsUb");
+		tresholds.setUbValue(treshUb.getText());
+		
+		Param param = new Param();
+		tresholds.setParam(param);
+		
+		Text treshParamName = (Text)dialog.getData("TresholdsParamName");
+		param.setName(treshParamName.getText());
+		Text treshParamVal = (Text)dialog.getData("TresholdsParamValue");
+		param.setValue(treshParamVal.getText());
+		
+		return kpi;
+	} 
+	
+	public void createMeasuresShell(final Composite sectionClient, final String columnName){
 
 		final Shell dialog = new Shell (mainComposite.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		dialog.setText("New Measure for "+columnName);
@@ -65,7 +92,7 @@ public class MeasuresDesigner {
 			}
 		});
 		
-		final Text text = createTextWithLayout(dialog, label, data);
+		final Text text = createTextWithLayout(dialog, label, data, "Description");
 		
 		//aggregate function
 		data = new FormData ();
@@ -96,7 +123,7 @@ public class MeasuresDesigner {
 		Label labelTreshType = new Label (dialog, SWT.RIGHT);
 		labelTreshType.setText ("Tresholds type:");		
 		labelTreshType.setLayoutData (data);
-		final Text textTreshType = createTextWithLayout(dialog.getShell(), labelTreshType, data);
+		final Text textTreshType = createTextWithLayout(dialog.getShell(), labelTreshType, data, "TresholdsType");
 		
 		data = new FormData ();
 		data.width = 140;
@@ -104,7 +131,7 @@ public class MeasuresDesigner {
 		Label labelTreshLb = new Label (dialog, SWT.RIGHT);
 		labelTreshLb.setText ("Tresholds lb value:");		
 		labelTreshLb.setLayoutData (data);
-		final Text textTreshLb = createTextWithLayout(dialog.getShell(), labelTreshLb, data);
+		final Text textTreshLb = createTextWithLayout(dialog.getShell(), labelTreshLb, data, "TresholdsLb");
 		
 		data = new FormData ();
 		data.width = 140;
@@ -112,7 +139,7 @@ public class MeasuresDesigner {
 		Label labelTreshUb = new Label (dialog, SWT.RIGHT);
 		labelTreshUb.setText ("Tresholds ub value:");		
 		labelTreshUb.setLayoutData (data);
-		final Text textTreshUb = createTextWithLayout(dialog.getShell(), labelTreshUb, data);
+		final Text textTreshUb = createTextWithLayout(dialog.getShell(), labelTreshUb, data, "TresholdsUb");
 		
 		data = new FormData ();
 		data.width = 140;
@@ -120,7 +147,7 @@ public class MeasuresDesigner {
 		Label labelTreshParamName = new Label (dialog, SWT.RIGHT);
 		labelTreshParamName.setText ("Tresholds param name:");		
 		labelTreshParamName.setLayoutData (data);
-		final Text textTreshParamName = createTextWithLayout(dialog.getShell(), labelTreshParamName, data);
+		final Text textTreshParamName = createTextWithLayout(dialog.getShell(), labelTreshParamName, data, "TresholdsParamName");
 		
 		data = new FormData ();
 		data.width = 140;
@@ -128,7 +155,7 @@ public class MeasuresDesigner {
 		Label labelTreshParamVal = new Label (dialog, SWT.RIGHT);
 		labelTreshParamVal.setText ("Tresholds param value:");		
 		labelTreshParamVal.setLayoutData (data);
-		final Text textTreshParamVal = createTextWithLayout(dialog.getShell(), labelTreshParamVal, data);
+		final Text textTreshParamVal = createTextWithLayout(dialog.getShell(), labelTreshParamVal, data, "TresholdsParamValue");
 		
 		//colours
 		data = new FormData ();
@@ -174,7 +201,7 @@ public class MeasuresDesigner {
 		data.bottom = new FormAttachment (cancel, 0, SWT.DEFAULT);
 
 		Button ok = new Button (dialog, SWT.PUSH);
-		ok.setText ("OK");
+		ok.setText ("Add");
 		data = new FormData ();
 		data.width = 60;
 		data.right = new FormAttachment (cancel, 0, SWT.DEFAULT);
@@ -182,6 +209,23 @@ public class MeasuresDesigner {
 		ok.setLayoutData (data);
 		ok.addSelectionListener (new SelectionAdapter () {
 			public void widgetSelected (SelectionEvent e) {
+				String aggFunc = textAgg.getText();
+				String descr = text.getText();
+				fillMeasure(dialog, columnName);
+				dialog.close ();
+			}
+		});
+		
+		Button delete = new Button (dialog, SWT.PUSH);
+		delete.setText ("Delete");
+		data = new FormData ();
+		data.width = 60;
+		data.right = new FormAttachment (ok, 0, SWT.DEFAULT);
+		data.bottom = new FormAttachment (100, 0);
+		delete.setLayoutData (data);
+		delete.addSelectionListener (new SelectionAdapter () {
+			public void widgetSelected (SelectionEvent e) {
+				//delete measure
 				String aggFunc = textAgg.getText();
 				String descr = text.getText();
 				//createNewHierarchy(hierarchiesTree, name, type);
@@ -196,7 +240,7 @@ public class MeasuresDesigner {
 	}
 	
 	
-	private Text createTextWithLayout(Shell dialog, Label itsLabel, FormData data){
+	private Text createTextWithLayout(Shell dialog, Label itsLabel, FormData data, String dataKey){
 		Text text = new Text (dialog, SWT.BORDER);
 		data = new FormData ();
 		data.width = 200;
@@ -204,6 +248,7 @@ public class MeasuresDesigner {
 		data.right = new FormAttachment (100, 0);
 		data.top = new FormAttachment (itsLabel, 0, SWT.CENTER);
 		text.setLayoutData (data);
+		dialog.setData(dataKey, text);
 		return text;
 	}
 	private Combo createComboWithLayout(Shell dialog, Label itsLabel, FormData data){

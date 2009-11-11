@@ -28,8 +28,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -64,6 +65,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 public class GEOEditor extends EditorPart{
 
@@ -281,6 +283,8 @@ public class GEOEditor extends EditorPart{
 			datasetCombo.add(name);
 		}		
 		datasetCombo.setLayoutData(gd);
+		
+		final ImageDescriptor measureIcon = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/measure.gif");
 
 		datasetCombo.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
@@ -330,7 +334,16 @@ public class GEOEditor extends EditorPart{
 						comboSel.addModifyListener(new ModifyListener() {
 				            public void modifyText(ModifyEvent event) {
 				            	//per valorizzare table item col valore del widget contenuto
-				              item.setText(2, comboSel.getText());				              
+				              item.setText(2, comboSel.getText());
+				              if(comboSel.getText().equalsIgnoreCase("measures")){
+
+					              item.setImage(0, measureIcon.createImage());
+				              }else{
+				            	  if(item.getImage() != null){
+				            		  item.setImage(0,null);
+				            	  }				            	  
+				              }
+				              
 				            }
 				        });
 						
@@ -376,8 +389,7 @@ public class GEOEditor extends EditorPart{
 				datasetTable.addListener(SWT.MouseDown, new Listener () {
 		            public void handleEvent (Event event) {            	
 		            	if (event.button==3){	
-				        	TableItem[] selection = datasetTable.getSelection();
-			        	
+				        	TableItem[] selection = datasetTable.getSelection();			        	
 				        	if(selection[0].getText(2) != null && selection[0].getText(2).equalsIgnoreCase("measures")){
 				        		measuresDesigner.createMeasuresShell(sectionClient, selection[0].getText(0));
 				        	}else{

@@ -162,10 +162,17 @@ Sbi.locale.ln['sbi.execution.metadata'] = 'Metadatos';
 Sbi.locale.ln['sbi.execution.rating'] = 'Puntuación del documento';
 Sbi.locale.ln['sbi.execution.rating.vote'] = 'Vote';
 
-Sbi.locale.ln['sbi.execution.notes.insertNotes'] = 'Insert notes';
-Sbi.locale.ln['sbi.execution.notes.savenotes'] = 'Guardar';
-Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'Notes saved correctly';
-Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Error while saving notes: notes have been modified by another user while you were modifing them. Please reopen this window and try again!';
+Sbi.locale.ln['sbi.execution.notes.notes'] = 'Lista Pin';
+Sbi.locale.ln['sbi.execution.notes.detailnote'] = 'Detalles';
+Sbi.locale.ln['sbi.execution.notes.deletenote'] = 'Cancelar';
+Sbi.locale.ln['sbi.execution.notes.owner'] = 'Propietario';
+Sbi.locale.ln['sbi.execution.notes.creationDate'] = 'Creada';
+Sbi.locale.ln['sbi.execution.notes.lastModificationDate'] = 'Modificada por última vez';
+Sbi.locale.ln['sbi.execution.notes.goBack'] = 'Volver a la lista';
+Sbi.locale.ln['sbi.execution.notes.insertNotes'] = 'Mostrar notas';
+Sbi.locale.ln['sbi.execution.notes.savenotes'] = 'Salvar';
+Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'notas guardadas correctamente';
+Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Error al guardar notas: notas han sido modificados por otro usuario mientras se modifing ellos. Por favor, vuelva a abrir esta ventana y vuelva a intentarlo!';
 
 Sbi.locale.ln['sbi.lookup.Confirm'] = 'Confirm';
 Sbi.locale.ln['sbi.lookup.Annulla'] = 'Cancel';

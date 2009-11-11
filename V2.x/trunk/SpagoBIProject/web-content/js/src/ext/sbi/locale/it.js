@@ -152,11 +152,18 @@ Sbi.locale.ln['sbi.execution.metadata'] = 'Metadati';
 Sbi.locale.ln['sbi.execution.rating'] = 'Rating documento';
 Sbi.locale.ln['sbi.execution.rating.vote'] = 'Vota';
 
+Sbi.locale.ln['sbi.execution.notes.notes'] = 'Lista Note';
 Sbi.locale.ln['sbi.execution.notes.insertNotes'] = 'Inserisci le note';
 Sbi.locale.ln['sbi.execution.notes.savenotes'] = 'Salva';
-Sbi.locale.ln['sbi.execution.notes.printnotes'] = 'Stampa';
+Sbi.locale.ln['sbi.execution.notes.detailnote'] = 'Dettaglio';
+Sbi.locale.ln['sbi.execution.notes.deletenote'] = 'Cancella';
+Sbi.locale.ln['sbi.execution.notes.owner'] = 'Proprietario';
+Sbi.locale.ln['sbi.execution.notes.creationDate'] = 'Data creazione';
+Sbi.locale.ln['sbi.execution.notes.lastModificationDate'] = 'Data ultima modifica';
 Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'Note salvate correttamente';
+Sbi.locale.ln['sbi.execution.notes.goBack'] = 'Torna alla lista';
 Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Errore nel salvataggio delle note: sono state modificate da un altro utente. Riapri questa finestra e ritenta!';
+Sbi.locale.ln['sbi.execution.notes.printnotes'] = 'Stampa';
 Sbi.locale.ln['sbi.execution.notes.printConflict'] = 'Errore nella stampa delle note';
 Sbi.locale.ln['sbi.execution.notes.notedPrinted'] = 'Note stampate correttamente';
 

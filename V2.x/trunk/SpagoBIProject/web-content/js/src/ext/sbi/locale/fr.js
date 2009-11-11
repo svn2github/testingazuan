@@ -162,6 +162,13 @@ Sbi.locale.ln['sbi.execution.metadata'] = 'Metadonnés';
 Sbi.locale.ln['sbi.execution.rating'] = 'Vote du Document';
 Sbi.locale.ln['sbi.execution.rating.vote'] = 'Votez';
 
+Sbi.locale.ln['sbi.execution.notes.notes'] = 'Remarques Liste';
+Sbi.locale.ln['sbi.execution.notes.detailnote'] = 'Détail';
+Sbi.locale.ln['sbi.execution.notes.deletenote'] = 'Supprimer';
+Sbi.locale.ln['sbi.execution.notes.owner'] = 'Propriétaire';
+Sbi.locale.ln['sbi.execution.notes.creationDate'] = 'Créé';
+Sbi.locale.ln['sbi.execution.notes.lastModificationDate'] = 'Dernière modification';
+Sbi.locale.ln['sbi.execution.notes.goBack'] = 'Retour à la liste';
 Sbi.locale.ln['sbi.execution.notes.insertNotes'] = 'Inserez notes';
 Sbi.locale.ln['sbi.execution.notes.savenotes'] = 'Enregistrer';
 Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'Notes enregistrées correctement';

@@ -31,4 +31,15 @@ Sbi.settings.qbe = {
 				, 'having': {hideable: true, hidden: false, width: 50, sortable: false}			
 			}
 		}
-}; 
+};
+
+Sbi.settings.formviewer = {
+		staticClosedXORFiltersPanel: {
+			width: 300
+			, height: 150
+		}
+		, staticClosedOnOffFiltersPanel: {
+			width: 300
+			, height: 150
+		}
+};

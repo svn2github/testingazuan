@@ -28,7 +28,6 @@ import java.io.InputStreamReader;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -40,18 +39,18 @@ public class FormViewerTemplateBuilder {
 	
 	private JSONArray nodes = null;
 	private String baseTemplate = null;
-	private JSONObject queryJSON = null;
+	private String analysisState = null;
 	private JSONArray datamartsName = null;
 	
-	public FormViewerTemplateBuilder(JSONArray nodes, JSONObject queryJSON, JSONArray datamartsName) {
+	public FormViewerTemplateBuilder(JSONArray nodes, String analysisState, JSONArray datamartsName) {
 		logger.debug("IN");
 		
 		try {
-			Assert.assertNotNull(queryJSON, "Input query cannot be empty");
+			Assert.assertNotNull(analysisState, "Input query cannot be empty");
 			Assert.assertNotNull(datamartsName, "Input datamarts' names list cannot be empty");
 			
 			this.nodes = nodes;
-			this.queryJSON = queryJSON;
+			this.analysisState = analysisState;
 			this.datamartsName = datamartsName;
 			
 			try {
@@ -83,7 +82,7 @@ public class FormViewerTemplateBuilder {
 		try {
 			
 			toReturn = baseTemplate.replaceAll("\\$\\{datamartsName\\}", datamartsName.toString());
-			toReturn = toReturn.replaceAll("\\$\\{query\\}", this.queryJSON.toString());
+			toReturn = toReturn.replaceAll("\\$\\{query\\}", analysisState);
 			
 			JSONArray fields = new JSONArray();
 			getFields(nodes, fields);

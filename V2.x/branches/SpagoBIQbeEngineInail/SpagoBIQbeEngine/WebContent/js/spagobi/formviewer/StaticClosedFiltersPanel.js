@@ -90,11 +90,18 @@ Ext.extend(Sbi.formviewer.StaticClosedFiltersPanel, Ext.Panel, {
 		for (var i = 0; i < staticFilters.length; i++) {
 			var aStaticFiltersGroup = staticFilters[i];
 			var aStaticFiltersForm = null;
+			var config = {};
+			if (aStaticFiltersGroup.width !== undefined) {
+				config.width = aStaticFiltersGroup.width;
+			}
+			if (aStaticFiltersGroup.height !== undefined) {
+				config.height = aStaticFiltersGroup.height;
+			}
 			if (aStaticFiltersGroup.singleSelection) {
-				aStaticFiltersForm = new Sbi.formviewer.StaticClosedXORFiltersPanel(aStaticFiltersGroup);
+				aStaticFiltersForm = new Sbi.formviewer.StaticClosedXORFiltersPanel(aStaticFiltersGroup, config);
 				this.xorFilters.push(aStaticFiltersForm);
 			} else {
-				aStaticFiltersForm = new Sbi.formviewer.StaticClosedOnOffFiltersPanel(aStaticFiltersGroup);
+				aStaticFiltersForm = new Sbi.formviewer.StaticClosedOnOffFiltersPanel(aStaticFiltersGroup, config);
 				this.onOffFilters.push(aStaticFiltersForm);
 			}
 			this.forms.push(aStaticFiltersForm);

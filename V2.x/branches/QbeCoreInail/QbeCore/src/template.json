@@ -15,6 +15,8 @@
             singleSelection: true,
             allowNoSelection: true,
             noSelectionText: '',
+            height: 150, 
+            width: 300,
             filters: [
                 {
                     text: '',
@@ -34,6 +36,8 @@
         {
             title: '',
             singleSelection: false,
+            height: 150, 
+            width: 300,
             filters: [
                 {
                     text: '',
@@ -60,6 +64,8 @@
             operator: 'EQUALS',
             singleSelection: false,
             maxSelectedNumber: 3,
+            height: 150, 
+            width: 300,
             query: {
           		field: '',
           		orderField: '',
@@ -70,6 +76,8 @@
         {
             text: '',
             field: '',
+            height: 150, 
+            width: 300,
             operator: 'EQUALS',
             singleSelection: true
         }

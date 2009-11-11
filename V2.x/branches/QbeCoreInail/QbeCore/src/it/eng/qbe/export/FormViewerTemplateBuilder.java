@@ -161,6 +161,7 @@ public class FormViewerTemplateBuilder {
 		String toReturn = null;
 		logger.debug("IN");
 		try {
+			StringBuffer buffer = new StringBuffer();
 			JSONObject qbeConf = new JSONObject();
 			qbeConf.put("datamartsName", datamartsName);
 			qbeConf.put("query", this.queryJSON);
@@ -170,7 +171,22 @@ public class FormViewerTemplateBuilder {
 			getFields(nodes, fields);
 			baseTemplate.put("fields", fields);
 			
-			toReturn = baseTemplate.toString(3);
+			buffer.append("{");
+			buffer.append("\n\n\"fields\":\n");
+			buffer.append(((JSONArray) baseTemplate.get("fields")).toString(2));
+			buffer.append("\n\n\"staticClosedFilters\":\n");
+			buffer.append(((JSONArray) baseTemplate.get("staticClosedFilters")).toString(2));
+			buffer.append("\n\n\"staticOpenFilters\":\n");
+			buffer.append(((JSONArray) baseTemplate.get("staticOpenFilters")).toString(2));
+			buffer.append("\n\n\"dynamicFilters\":\n");
+			buffer.append(((JSONArray) baseTemplate.get("dynamicFilters")).toString(2));
+			buffer.append("\n\n\"groupingVariables\":\n");
+			buffer.append(((JSONArray) baseTemplate.get("groupingVariables")).toString(2));
+			buffer.append("\n\n\"qbeConf\":\n");
+			buffer.append(((JSONObject) baseTemplate.get("qbeConf")).toString(2));
+			buffer.append("\n}");
+			toReturn = buffer.toString();
+			
 		} catch (Exception e) {
 			throw new ExportException("Cannot create template", e);
 		} finally {

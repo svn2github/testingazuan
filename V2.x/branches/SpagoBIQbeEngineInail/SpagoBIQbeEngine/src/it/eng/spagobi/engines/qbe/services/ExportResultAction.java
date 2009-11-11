@@ -30,6 +30,8 @@ import it.eng.qbe.export.TemplateBuilder;
 import it.eng.qbe.model.IStatement;
 import it.eng.qbe.model.QbeDataSet;
 import it.eng.qbe.query.DataMartSelectField;
+import it.eng.qbe.query.Query;
+import it.eng.qbe.query.serializer.QuerySerializerFactory;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
@@ -64,6 +66,7 @@ import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.hibernate.Session;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 
 
@@ -186,15 +189,16 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 					}
 				}
 				String analysisState = new String(getEngineInstance().getAnalysisState().store());
-				
-				FormViewerTemplateBuilder formViewerTemplateBuilder = new FormViewerTemplateBuilder(nodes, analysisState, datamartsName);
+				JSONObject queryJSON = new JSONObject(analysisState);
+				FormViewerTemplateBuilder formViewerTemplateBuilder = new FormViewerTemplateBuilder(nodes, queryJSON, datamartsName);
 				templateContent = formViewerTemplateBuilder.buildTemplate();
 				
-				try {				
+				try {
 					writeBackToClient(200, templateContent, writeBackResponseInline, "template." + fileExtension, mimeType);
 				} catch (IOException ioe) {
 					throw new SpagoBIEngineException("Impossible to write back the responce to the client", ioe);
-				}	
+				}
+				
 				return;
 			}
 			

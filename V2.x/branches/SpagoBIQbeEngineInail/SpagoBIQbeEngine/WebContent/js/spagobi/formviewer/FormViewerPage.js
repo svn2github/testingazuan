@@ -151,7 +151,7 @@ Ext.extend(Sbi.formviewer.FormViewerPage, Ext.Panel, {
 			state.groupingVariables = this.groupingVariablesPanel.getFormState();
 		}
 		this.fireEvent('submit', state);
-		//alert(state.toSource());
+		
 	}
   	
 });

@@ -94,16 +94,20 @@ Ext.extend(Sbi.formviewer.ResultsPage, Ext.Panel, {
    
     // -- public methods -----------------------------------------------------------------------
     
-    , getFormState() {
+    , getFormState: function() {
 		return this.formState;
 	}
 
-	, setFormState(formState) {
+	, setFormState: function(formState) {
 		this.formState = formState;
 	}
     
     , loadResults: function() {
-		var values = this.groupInputField.getValuesList();
+		//var values = this.groupInputField.getValuesList();
+    	var values = [];
+    	for (var i in this.formState.groupingVariables) {
+    		values.push(this.formState.groupingVariables[i]);
+    	}
 		var baseParams = {groupFields: Ext.util.JSON.encode(values), formstate: Ext.util.JSON.encode(this.formState)}
 		this.masterResultsPanel.execQuery(baseParams);
 	}

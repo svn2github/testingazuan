@@ -21,8 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.analiticalmodel.document.x;
 
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjNote;
@@ -30,8 +31,6 @@ import it.eng.spagobi.analiticalmodel.document.dao.IObjNoteDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.BIObjectNotesManager;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
-import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -42,11 +41,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringBufferInputStream;
-import java.sql.Connection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -56,6 +53,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.JRRtfExporter;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.log4j.Logger;
@@ -71,6 +69,8 @@ import org.xml.sax.InputSource;
 public class PrintNotesAction extends AbstractSpagoBIAction {
 
 	public static final String SERVICE_NAME = "PRINT_NOTES_ACTION";
+
+	public static final String SBI_OUTPUT_TYPE = "SBI_OUTPUT_TYPE";
 
 	private static final String TEMPLATE_NAME="notesPrintedTemplate.jrxml";
 	private static final String TEMPLATE_PATH="/WEB-INF/classes/it/eng/spagobi/analiticalmodel/document/resources/";
@@ -97,28 +97,19 @@ public class PrintNotesAction extends AbstractSpagoBIAction {
 			return;
 		}
 
+		String outputType = "PDF";
+		RequestContainer requestContainer=getRequestContainer();
+		SourceBean sb=requestContainer.getServiceRequest();
+		outputType=(String)sb.getAttribute(SBI_OUTPUT_TYPE);
+		if(outputType==null)outputType="PDF";
 
 		String templateStr = getTemplateTemplate();
 
-
-//		SourceBean templateBaseContent =null;
-//		List toReturn = new ArrayList();
-//		String finalTemplate="";
-//		try {
-//		templateBaseContent = SourceBean.fromXMLString(templateStr);
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		}
-//		SourceBean titleSB=(SourceBean)templateBaseContent.getAttribute("title");
-//		SourceBean titleText=(SourceBean)titleSB.getAttribute("band.staticText.text");
-//		String title=" Document Notes";
-//		titleText.setCharacters(title);
 
 		//JREmptyDataSource conn=new JREmptyDataSource(1);
 		//Connection conn = getConnection("SpagoBI",getHttpSession(),profile,obj.getId().toString());		
 		JRBeanCollectionDataSource datasource = new JRBeanCollectionDataSource(objNoteList);            
 
-		String outputType = "PDF";
 		HashedMap parameters=new HashedMap();
 		parameters.put("PARAM_OUTPUT_FORMAT", outputType);
 		parameters.put("TITLE", executionInstance.getBIObject().getLabel());
@@ -144,8 +135,14 @@ public class PrintNotesAction extends AbstractSpagoBIAction {
 			logger.debug("filling report");
 			JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, datasource);
 			JRExporter exporter=null;
-			exporter = (JRExporter)Class.forName("net.sf.jasperreports.engine.export.JRPdfExporter").newInstance();
-			if(exporter == null) exporter = new JRPdfExporter(); 	
+			if(outputType.equalsIgnoreCase("PDF")){
+				exporter = (JRExporter)Class.forName("net.sf.jasperreports.engine.export.JRPdfExporter").newInstance();
+				if(exporter == null) exporter = new JRPdfExporter(); 	
+			}
+			else{
+				exporter = (JRExporter)Class.forName("net.sf.jasperreports.engine.export.JRRtfExporter").newInstance();
+				if(exporter == null) exporter = new JRRtfExporter(); 					
+			}
 
 			exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
 			exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, out);
@@ -164,7 +161,15 @@ public class PrintNotesAction extends AbstractSpagoBIAction {
 			}
 		}
 
-		String mimeType = "application/pdf";
+		String mimeType;
+		if(outputType.equalsIgnoreCase("RTF")){
+			mimeType = "application/rtf";
+		}
+		else{
+			mimeType = "application/pdf";
+		}
+
+
 		HttpServletResponse response = getHttpResponse();
 		response.setContentType(mimeType);							
 		response.setHeader("Content-Disposition", "filename=\"report." + outputType + "\";");
@@ -180,7 +185,7 @@ public class PrintNotesAction extends AbstractSpagoBIAction {
 		}
 		catch (Exception e) {
 			logger.error("Error while writing the content output stream", e);			
-			}
+		}
 		finally {
 			tmpFile.delete();
 		}

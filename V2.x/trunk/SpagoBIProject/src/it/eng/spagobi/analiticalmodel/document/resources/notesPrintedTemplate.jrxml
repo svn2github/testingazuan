@@ -41,18 +41,6 @@
 		<fieldDescription><![CDATA[creationDate]]></fieldDescription>
 	</field>
 
-
-		<group  name="r" isStartNewPage="true" >
-			<groupExpression><![CDATA[$V{REPORT_COUNT}]]></groupExpression>
-			<groupHeader>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-			</groupHeader>
-			<groupFooter>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-			</groupFooter>
-		</group>
 		<background>
 			<band height="0"  isSplitAllowed="true" >
 			</band>
@@ -101,7 +89,7 @@
 			</band>
 		</columnHeader>
 		<detail>
-			<band height="174"  isSplitAllowed="true" >
+			<band height="170"  isSplitAllowed="false" >
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="139"
@@ -165,7 +153,7 @@
 					<textElement>
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{creationDate}!=null ? $F{creationDate}.toString() : "" ]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{creationDate}!=null ? $F{creationDate}.toString() : ""]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -180,6 +168,15 @@
 					</textElement>
 				<text><![CDATA[Creation Date]]></text>
 				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="157"
+						width="534"
+						height="0"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
 			</band>
 		</detail>
 		<columnFooter>
@@ -187,7 +184,7 @@
 			</band>
 		</columnFooter>
 		<pageFooter>
-			<band height="10"  isSplitAllowed="true" >
+			<band height="17"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"

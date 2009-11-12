@@ -125,6 +125,11 @@
  	class="it.eng.spagobi.analiticalmodel.document.x.SaveNotesAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
+ 
+ <ACTION name="DELETE_NOTES_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.DeleteNotesAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
 
  <ACTION name="PRINT_NOTES_ACTION" 
  	class="it.eng.spagobi.analiticalmodel.document.x.PrintNotesAction" scope="REQUEST">

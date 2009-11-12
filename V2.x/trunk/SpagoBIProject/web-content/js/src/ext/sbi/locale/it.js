@@ -161,6 +161,7 @@ Sbi.locale.ln['sbi.execution.notes.owner'] = 'Proprietario';
 Sbi.locale.ln['sbi.execution.notes.creationDate'] = 'Data creazione';
 Sbi.locale.ln['sbi.execution.notes.lastModificationDate'] = 'Data ultima modifica';
 Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'Note salvate correttamente';
+Sbi.locale.ln['sbi.execution.notes.noteDeleted'] = 'Nota cancellata';
 Sbi.locale.ln['sbi.execution.notes.goBack'] = 'Torna alla lista';
 Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Errore nel salvataggio delle note: sono state modificate da un altro utente. Riapri questa finestra e ritenta!';
 Sbi.locale.ln['sbi.execution.notes.printnotes'] = 'Stampa';

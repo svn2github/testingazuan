@@ -22,5 +22,20 @@
             <column name="exec_req" />
         </property>
         
+        <property name="owner" type="string">
+            <column name="owner" />
+        </property>
+        
+        <property name="isPublic" type="boolean">
+            <column name="ispublic"/>
+        </property>
+        
+        <property name="creationDate" type="timestamp">
+            <column name="creation_date"/>
+        </property>
+        
+        <property name="lastChangeDate" type="timestamp">
+            <column name="last_change_date"/>
+        </property>
     </class>
 </hibernate-mapping>

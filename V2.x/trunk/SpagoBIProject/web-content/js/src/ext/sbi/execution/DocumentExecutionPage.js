@@ -779,7 +779,8 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	}
 	
 	, annotateExecution: function () {
-		this.win_notes = new Sbi.execution.toolbar.NotesWindow({'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID});
+		//this.win_notes = new Sbi.execution.toolbar.NotesWindow({'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID});
+		this.win_notes = new Sbi.execution.toolbar.ListNotesWindow({'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID});
 		this.win_notes.show();
 	}
 	

@@ -31,6 +31,7 @@ public class ObjNote implements Serializable {
 	Integer binId = null;
 	String execReq = null;
 	Boolean isPublic = new Boolean(false);
+	Boolean isDeletable = new Boolean(false);
 	String owner = null;
 	Date lastChangeDate;
 	Date creationDate;
@@ -196,6 +197,20 @@ public class ObjNote implements Serializable {
 	 */
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+
+	/**
+	 * @return the isDeletable
+	 */
+	public Boolean getIsDeletable() {
+		return isDeletable;
+	}
+
+	/**
+	 * @param isDeletable the isDeletable to set
+	 */
+	public void setIsDeletable(Boolean isDeletable) {
+		this.isDeletable = isDeletable;
 	}
 	
 	

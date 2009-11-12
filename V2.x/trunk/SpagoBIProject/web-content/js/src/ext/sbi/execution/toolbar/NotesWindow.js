@@ -47,53 +47,125 @@
 Ext.ns("Sbi.execution.toolbar");
 
 Sbi.execution.toolbar.NotesWindow = function(config) {
+	
 	// always declare exploited services first!
-	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
+	var msg = ( config.MESSAGE == null)?'GET_DETAIL_NOTE':config.MESSAGE;
+	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null, MESSAGE: msg};
+	
+	if (msg != 'INSERT_NOTE'){
+    this.idNote = config.REC.id;
+  	this.owner = config.REC.owner;
+  	this.creationDate = config.REC.creationDate;
+	  this.lastModificationDate = config.REC.lastModificationDate;
+  }else{
+    this.idNote = '';
+  	this.owner = Sbi.user.userId;
+  	this.creationDate ='';
+  	this.lastModificationDate ='';
+  }
 	this.services = new Array();
 	this.services['getNotesService'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'GET_NOTES_ACTION'
+		, baseParams: params
+	});
+	this.services['saveNotesService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'SAVE_NOTES_ACTION'
 		, baseParams: params
 	});
 	this.services['printNotesService'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'PRINT_NOTES_ACTION'
 		, baseParams: params
 	});	
-	this.services['saveNotesService'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'SAVE_NOTES_ACTION'
-		, baseParams: params
-	});
 	
 	this.previousNotes = undefined;
+	
 	this.SBI_EXECUTION_ID = config.SBI_EXECUTION_ID;
 	this.buddy = undefined;
 	
-    this.editor = new Ext.form.HtmlEditor({
-        frame: true,
-        value: '',
-        bodyStyle:'padding:5px 5px 0',
-        width:'100%',
-        disabled: true,
-	    height: 265,
-        id:'notes'        
-    });   
-	
+  this.editor = new Ext.form.HtmlEditor({
+        frame: true
+        ,value: ''
+        ,bodyStyle:'padding:5px 5px 0'
+        ,width:'100%'
+        ,disabled: true
+	      ,height: 265
+	      ,enableSourceEdit: false
+	      ,disabled:true
+	      ,readOnly:true
+        ,id:'notes'        
+  });   
+    
+  var scopeComboBoxData = [
+    		['PUBLIC','Public', 'Everybody can view this note'],
+    		['PRIVATE', 'Private', 'The saved note will be visible only to you']
+    	];
+    		
+    	var scopeComboBoxStore = new Ext.data.SimpleStore({
+    		fields: ['value', 'field', 'description'],
+    		data : scopeComboBoxData 
+    	});    		    
+ 		    
+    	this.scopeField = new Ext.form.ComboBox({
+    	   	tpl: '<tpl for="."><div ext:qtip="{field}: {description}" class="x-combo-list-item">{field}</div></tpl>',	
+    	   	editable  : false,
+    	   	fieldLabel : 'Scope',
+    	   	forceSelection : true,
+    	   	mode : 'local',
+    	   	name : 'scope',
+    	   	store : scopeComboBoxStore,
+    	   	displayField:'field',
+    	    valueField:'value',
+    	    emptyText:'Select scope...',
+    	    typeAhead: true,
+    	    triggerAction: 'all',
+    	    selectOnFocus:true
+  });
+  /*
+  this.windowButtons = {};
+  backBtn = new Ext.Button({
+          		        	  text: LN('sbi.execution.executionpage.toolbar.annotate')
+          		        	  ,scope: this
+          		        	  ,handler: this.goBack
+          		          });
+  
+  this.windowButtons.add(backBtn);
+  */
+
 	var c = Ext.apply({}, config, {
-		title: LN('sbi.execution.notes.insertNotes'),
-		width:700,
-		height:300,
-		items: [this.editor],
-		buttons: [
+	   title: LN('sbi.execution.notes.notes')
+		,width:700
+		,height:300
+		,items: [this.editor]
+		,tbar: new Ext.Toolbar({enableOverflow: false
+	            ,items: [ LN('sbi.execution.notes.owner') + ': ' + this.owner
+                      , LN('sbi.execution.notes.creationDate') + ': ' + this.creationDate
+                      , LN('sbi.execution.notes.lastModificationDate') + ': ' + this.lastModificationDate]	
+        })
+		,bbar:  new Ext.Toolbar({
+	             enableOverflow: false
+	            ,items: [this.scopeField]	
+	     })
+	,buttons: [
 		          {
-		        	  text: LN('sbi.execution.notes.savenotes'), 
-		        	  scope: this,
-		        	  handler: this.saveNotes
-		          },
-			      {
-		        	  text: LN('sbi.execution.notes.printnotes'), 
-		        	  scope: this,
-		        	  handler: this.printNotes
-		          }	          
+		            id: 'save'
+		        	  ,text: LN('sbi.execution.notes.savenotes') 
+		        	  ,scope: this
+		        	  ,handler: this.saveNotes
+		          }
+		          ,{
+                id: 'print'
+		        	  ,text: LN('sbi.execution.notes.printnotes') 
+		        	  ,scope: this
+		        	  ,handler: this.printNotes
+		           }	  
+		          ,{
+		            id: 'back'
+		        	  ,text: LN('sbi.execution.notes.goBack')
+		        	  ,scope: this
+		        	  ,handler: this.goBack
+		           }
 		]
+		//,buttons: this.windowButtons
 	});   
 	
 	this.loadNotes();
@@ -110,18 +182,36 @@ Sbi.execution.toolbar.NotesWindow = function(config) {
 };
 
 Ext.extend(Sbi.execution.toolbar.NotesWindow, Ext.Window, {
+	
 	loadNotes: function () {
 		Ext.Ajax.request({
 	        url: this.services['getNotesService'],
-	        params: {SBI_EXECUTION_ID: this.SBI_EXECUTION_ID},
+	        params: {SBI_EXECUTION_ID: this.SBI_EXECUTION_ID, NOTE_ID: this.idNote, OWNER: this.owner},
 	        callback : function(options , success, response) {
 	  	  		if (success) {
 		      		if(response !== undefined && response.responseText !== undefined) {
 		      			var content = Ext.util.JSON.decode( response.responseText );
 		      			if (content !== undefined) {
+		      			  
 		      				this.previousNotes = content.notes;
 		      				this.editor.setValue(Ext.util.Format.htmlDecode(content.notes));
-		      				this.editor.enable();
+		      				if (options.params.OWNER == Sbi.user.userId){		      				  
+		      				  //this.editor.enable();
+		      				 /* var saveBtn = new Ext.Button({
+        		        	  text: LN('sbi.execution.notes.savenotes') 
+        		        	  ,scope: this
+        		        	  ,handler: this.saveNotes
+        		          });
+        		         this.windowButtons.addButton(saveBtn);
+        		         */
+		      				   this.editor.setDisabled(false);
+		      				}
+		      				else{
+		      				  this.editor.setDisabled(true);
+		      				}
+		      				this.scopeField.setValue((content.visibility==true)?'PUBLIC':'PRIVATE');
+		      				//this.creationDate.setValue(content.creationDate);
+		      				//this.lastModificationDate.setValue(content.lastModificationDate);
 		      			} 
 		      		} else {
 		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
@@ -134,29 +224,20 @@ Ext.extend(Sbi.execution.toolbar.NotesWindow, Ext.Window, {
 			failure: Sbi.exception.ExceptionHandler.handleFailure      
 		});
 	}
-	
-	,checkEmptyValues: function(val){
-	     var expression = Ext.util.Format.stripTags( val );
-	     expression = expression.replace(/&nbsp;/g," ");
-	     if(expression.trim() == ""){
-	     	val = "";
-	     }
-	     return val;
-	}
 
 	, saveNotes: function () {
 		Ext.Ajax.request({
 	        url: this.services['saveNotesService'],
 	        params: {'SBI_EXECUTION_ID': this.SBI_EXECUTION_ID, 
-						'PREVIOUS_NOTES': this.previousNotes, 'NOTES': this.checkEmptyValues(this.editor.getValue())},
+					 'PREVIOUS_NOTES': this.previousNotes, 'NOTES':  this.checkEmptyValues(this.editor.getValue()), 'VISIBILITY': this.scopeField.getValue()},
 	        callback : function(options , success, response) {
 	  	  		if (success) {
 		      		if(response !== undefined && response.responseText !== undefined) {
 		      			var content = Ext.util.JSON.decode( response.responseText );
 		      			if (content !== undefined) {
-		      				if (content.result === 'conflict') {
-		      					Sbi.exception.ExceptionHandler.showErrorMessage(LN('sbi.execution.notes.notesConflict'), 'Service Error');
-		      				} else {
+		      				//if (content.result === 'conflict') {
+		      				//	Sbi.exception.ExceptionHandler.showErrorMessage(LN('sbi.execution.notes.notesConflict'), 'Service Error');
+		      				//} else {
 				      			Ext.MessageBox.show({
 				      				title: 'Status',
 				      				msg: LN('sbi.execution.notes.notedSaved'),
@@ -167,13 +248,13 @@ Ext.extend(Sbi.execution.toolbar.NotesWindow, Ext.Window, {
 				      				animEl: 'root-menu'        			
 				      			});
 				      			this.previousNotes = this.editor.getValue();
-		      				}
+		      				//}
 		      			}
 		      		} else {
 		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
 		      		}
 	  	  		} else { 
-	  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot load notes', 'Service Error');
+	  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot save notes', 'Service Error');
 	  	  		}
 	        },
 	        scope: this,
@@ -181,13 +262,27 @@ Ext.extend(Sbi.execution.toolbar.NotesWindow, Ext.Window, {
 		});
 		
 	}
+	
+		, goBack: function () {
+    this.hide();
+		this.win_notes = new Sbi.execution.toolbar.ListNotesWindow({'SBI_EXECUTION_ID': this.SBI_EXECUTION_ID});
+		this.win_notes.show();
+	}
+		
+	,checkEmptyValues: function(val){
+	     var expression = Ext.util.Format.stripTags( val );
+	     expression = expression.replace(/&nbsp;/g," ");
+	     if(expression.trim() == ""){
+	     	val = "";
+	     }
+	     return val;
+	}
+
 	, printNotes: function () {
 		var urlPrint = this.services['printNotesService'];
 		urlPrint+= '&SBI_EXECUTION_ID=' + this.SBI_EXECUTION_ID;
 			window.open(urlPrint,'name','height=750,width=1000');
 	
 	}
-
-
 	
 });

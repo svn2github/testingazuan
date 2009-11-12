@@ -14,6 +14,10 @@
 	background-image: url('../../../img/clear16.gif') !important;
 }
 
+.icon-insert {
+	background-image: url('../../../img/attach.png') !important;
+}
+
 .icon-remove {
 	background-image: url('../../../img/erase.png') !important;
 }
@@ -144,4 +148,24 @@
 
 .icon-info {
 	background-image: url('../../../img/question.gif') !important;
+}
+
+.action-detail-note {
+	width:14px;
+    height:14px;
+    margin:2 2 2 2;
+    float:right;
+    background-image: url('../../../img/notesEmpty.png');
+    background-position:center center;
+    background-repeat:no-repeat; 
+}
+
+.action-delete-note {
+	width:14px;
+    height:14px;
+    margin:2 2 2 2;
+    float:right;
+    background-image: url('../../../img/error16.gif') !important;
+    background-position:center center;
+    background-repeat:no-repeat; 
 }

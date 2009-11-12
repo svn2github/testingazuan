@@ -21,15 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.chiron.serializer;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-
-import org.json.JSONArray;
-
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjNote;
 import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.bo.Viewpoint;
@@ -39,6 +32,14 @@ import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+
+import org.json.JSONArray;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -58,6 +59,7 @@ public class JSONSerializer implements Serializer {
 		mappings.put( Viewpoint.class, new ViewpointJSONSerializer() );
 		mappings.put( Snapshot.class, new SnapshotJSONSerializer() );
 		mappings.put( DataStore.class, new DataStoreJSONSerializer() );
+		mappings.put( ObjNote.class, new ObjectNotesJSONSerializer() );
 		
 		
 		mappings.put( GetParametersForExecutionAction.ParameterForExecution.class, new ParameterForExecutionJSONSerializer() );
@@ -92,12 +94,6 @@ public class JSONSerializer implements Serializer {
 		
 		return result;	
 	}
-	
-	
-	
-
-	
-	
 
 
 }

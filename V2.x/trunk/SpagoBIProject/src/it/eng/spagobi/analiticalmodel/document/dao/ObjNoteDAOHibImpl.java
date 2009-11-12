@@ -36,6 +36,7 @@ import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -211,13 +212,18 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 	public void modifyExecutionNotes(ObjNote objNote) throws Exception {
 		Session aSession = null;
 		Transaction tx = null;
-		try {
+		try {			
 			aSession = getSession();
 			tx = aSession.beginTransaction();
+			
+			Date now = new Date();
+			
 			SbiObjNotes hibObjNote = (SbiObjNotes)aSession.load(SbiObjNotes.class, objNote.getId());
 			SbiBinContents hibBinCont = hibObjNote.getSbiBinContents();
 			hibBinCont.setContent(objNote.getContent());
 			hibObjNote.setExecReq(objNote.getExecReq());
+			hibObjNote.setIsPublic(objNote.getIsPublic());
+			hibObjNote.setLastChangeDate(now);
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);

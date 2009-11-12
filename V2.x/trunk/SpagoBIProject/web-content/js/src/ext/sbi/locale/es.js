@@ -172,6 +172,7 @@ Sbi.locale.ln['sbi.execution.notes.goBack'] = 'Volver a la lista';
 Sbi.locale.ln['sbi.execution.notes.insertNotes'] = 'Mostrar notas';
 Sbi.locale.ln['sbi.execution.notes.savenotes'] = 'Salvar';
 Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'notas guardadas correctamente';
+Sbi.locale.ln['sbi.execution.notes.noteDeleted'] = 'Nota suprimido';
 Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Error al guardar notas: notas han sido modificados por otro usuario mientras se modifing ellos. Por favor, vuelva a abrir esta ventana y vuelva a intentarlo!';
 
 Sbi.locale.ln['sbi.lookup.Confirm'] = 'Confirm';

@@ -63,14 +63,20 @@ Sbi.formviewer.FormViewerPage = function(template, config) {
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 	
+	// add events
+    this.addEvents('submit');
+	
 	this.init(template);
 	
 	this.toolbar = new Ext.Toolbar({
-		items: [{
-			text: 'getFormState',
-			handler: this.getFormState,
-			scope: this
-		}]
+		items: [
+		    '->'
+		    , {
+				text: LN('sbi.formviewer.formviewerpage.execute'),
+				handler: this.getFormState,
+				scope: this
+		    }
+		  ]
 	});
 	
 	Ext.apply(c, {
@@ -144,7 +150,8 @@ Ext.extend(Sbi.formviewer.FormViewerPage, Ext.Panel, {
 		if (this.groupingVariablesPanel !== null) {
 			state.groupingVariables = this.groupingVariablesPanel.getFormState();
 		}
-		alert(state.toSource());
+		this.fireEvent('submit', state);
+		//alert(state.toSource());
 	}
   	
 });

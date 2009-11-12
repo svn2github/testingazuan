@@ -102,10 +102,22 @@ Ext.extend(Sbi.formviewer.FormEnginePanel, Ext.Panel, {
     
     , initFormViewerPage: function(template, config) {
 		this.formViewerPage = new Sbi.formviewer.FormViewerPage(template, config);
+		this.formViewerPage.on('submit', this.moveToNextPage, this);
 	}
 
 	, initResultsPage: function(config) {
 		this.resultsPage = new Sbi.formviewer.ResultsPage(config);
+		//this.resultsPage.on('', this.moveToPreviousPage, this);
 	}
 
+    , moveToNextPage: function(formState) {
+    	this.getLayout().setActiveItem( 1 );
+    	this.resultsPage.setFormState(formState);
+    	this.resultsPage.loadResults();
+	}
+    
+    , moveToPreviousPage: function() {
+    	this.getLayout().setActiveItem( 0 );
+	}
+	
 });

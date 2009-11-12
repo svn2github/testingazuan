@@ -98,4 +98,5 @@
 <DOMAIN valueCd="COUNT" valueNm="Count" domainCd="MEASURE_TYPE" domainNm="Measure Type" valueDs=""/>
 <DOMAIN valueCd="TIME" valueNm="Time" domainCd="MEASURE_TYPE" domainNm="Measure Type" valueDs=""/>
 <DOMAIN valueCd="SIZE" valueNm="Size" domainCd="MEASURE_TYPE" domainNm="Measure Type" valueDs=""/>
+<DOMAIN valueCd="org.hibernate.dialect.DB2400Dialect" valueNm="sbidomains.nm.db2" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="sbidomains.ds.db2"/>
 </DOMAINS>

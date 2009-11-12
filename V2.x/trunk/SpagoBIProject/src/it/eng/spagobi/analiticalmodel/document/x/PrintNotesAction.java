@@ -121,6 +121,7 @@ public class PrintNotesAction extends AbstractSpagoBIAction {
 		String outputType = "PDF";
 		HashedMap parameters=new HashedMap();
 		parameters.put("PARAM_OUTPUT_FORMAT", outputType);
+		parameters.put("TITLE", executionInstance.getBIObject().getLabel());
 
 		UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
 		UUID uuid_local = uuidGen.generateTimeBasedUUID();
@@ -139,6 +140,7 @@ public class PrintNotesAction extends AbstractSpagoBIAction {
 			StringBufferInputStream sbis=new StringBufferInputStream(templateStr);
 			logger.debug("compiling report");
 			JasperReport report  = JasperCompileManager.compileReport(sbis);
+			//report.setProperty("", )
 			logger.debug("filling report");
 			JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, datasource);
 			JRExporter exporter=null;
@@ -261,12 +263,6 @@ public class PrintNotesAction extends AbstractSpagoBIAction {
 		logger.debug("OUT");
 		return buffer.toString();
 	}
-
-
-
-
-
-
 
 	/**
 	 * This method, based on the data sources table, gets a database connection

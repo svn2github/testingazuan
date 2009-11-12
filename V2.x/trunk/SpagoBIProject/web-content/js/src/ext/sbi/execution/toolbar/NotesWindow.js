@@ -116,17 +116,6 @@ Sbi.execution.toolbar.NotesWindow = function(config) {
     	    triggerAction: 'all',
     	    selectOnFocus:true
   });
-  /*
-  this.windowButtons = {};
-  backBtn = new Ext.Button({
-          		        	  text: LN('sbi.execution.executionpage.toolbar.annotate')
-          		        	  ,scope: this
-          		        	  ,handler: this.goBack
-          		          });
-  
-  this.windowButtons.add(backBtn);
-  */
-
 	var c = Ext.apply({}, config, {
 	   title: LN('sbi.execution.notes.notes')
 		,width:700
@@ -147,6 +136,7 @@ Sbi.execution.toolbar.NotesWindow = function(config) {
 		        	  ,text: LN('sbi.execution.notes.savenotes') 
 		        	  ,scope: this
 		        	  ,handler: this.saveNotes
+		        	  ,disabled: (this.owner != Sbi.user.userId)
 		          }
 		          ,{
 		            id: 'back'
@@ -155,7 +145,6 @@ Sbi.execution.toolbar.NotesWindow = function(config) {
 		        	  ,handler: this.goBack
 		           }
 		]
-		//,buttons: this.windowButtons
 	});   
 	
 	this.loadNotes();
@@ -187,21 +176,12 @@ Ext.extend(Sbi.execution.toolbar.NotesWindow, Ext.Window, {
 		      				this.editor.setValue(Ext.util.Format.htmlDecode(content.notes));
 		      				if (options.params.OWNER == Sbi.user.userId){		      				  
 		      				  //this.editor.enable();
-		      				 /* var saveBtn = new Ext.Button({
-        		        	  text: LN('sbi.execution.notes.savenotes') 
-        		        	  ,scope: this
-        		        	  ,handler: this.saveNotes
-        		          });
-        		         this.windowButtons.addButton(saveBtn);
-        		         */
 		      				   this.editor.setDisabled(false);
 		      				}
 		      				else{
 		      				  this.editor.setDisabled(true);
 		      				}
-		      				this.scopeField.setValue((content.visibility==true)?'PUBLIC':'PRIVATE');
-		      				//this.creationDate.setValue(content.creationDate);
-		      				//this.lastModificationDate.setValue(content.lastModificationDate);
+		      				this.scopeField.setValue((content.visibility==true)?'PUBLIC':'PRIVATE');		      			
 		      			} 
 		      		} else {
 		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');

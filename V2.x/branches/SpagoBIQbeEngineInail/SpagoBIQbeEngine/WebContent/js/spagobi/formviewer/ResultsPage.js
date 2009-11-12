@@ -90,14 +90,21 @@ Ext.extend(Sbi.formviewer.ResultsPage, Ext.Panel, {
     , masterResultsPanel: null
     , detailResultsPanel: null
     , groupInputField: null
+    , formState: null
    
     // -- public methods -----------------------------------------------------------------------
     
-    
+    , getFormState() {
+		return this.formState;
+	}
+
+	, setFormState(formState) {
+		this.formState = formState;
+	}
     
     , loadResults: function() {
 		var values = this.groupInputField.getValuesList();
-		var baseParams = {groupFields: Ext.util.JSON.encode(values)}
+		var baseParams = {groupFields: Ext.util.JSON.encode(values), formstate: Ext.util.JSON.encode(this.formState)}
 		this.masterResultsPanel.execQuery(baseParams);
 	}
     
@@ -205,7 +212,7 @@ Ext.extend(Sbi.formviewer.ResultsPage, Ext.Panel, {
 	       		filters.push(filter);
 	       	}
 	       	
-	       	var baseParams = {filters: Ext.util.JSON.encode(filters)}
+	       	var baseParams = {filters: Ext.util.JSON.encode(filters), formState: Ext.util.JSON.encode(this.formState)}
 			this.detailResultsPanel.execQuery(baseParams);
 	    }, this);
 	}

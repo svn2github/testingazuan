@@ -163,8 +163,8 @@ Sbi.locale.ln['sbi.execution.rating'] = 'Puntuación del documento';
 Sbi.locale.ln['sbi.execution.rating.vote'] = 'Vote';
 
 Sbi.locale.ln['sbi.execution.notes.notes'] = 'Lista Pin';
-Sbi.locale.ln['sbi.execution.notes.detailnote'] = 'Detalles';
-Sbi.locale.ln['sbi.execution.notes.deletenote'] = 'Cancelar';
+Sbi.locale.ln['sbi.execution.notes.detailNote'] = 'Detalles';
+Sbi.locale.ln['sbi.execution.notes.deleteNote'] = 'Cancelar';
 Sbi.locale.ln['sbi.execution.notes.owner'] = 'Propietario';
 Sbi.locale.ln['sbi.execution.notes.creationDate'] = 'Creada';
 Sbi.locale.ln['sbi.execution.notes.lastModificationDate'] = 'Modificada por última vez';

@@ -54,7 +54,7 @@ Sbi.locale.formats = {
 //VIEWER PANEL
 //===================================================================
 Sbi.locale.ln['sbi.formviewer.formviewerpage.title'] = 'DATA BROWER';
-
+Sbi.locale.ln['sbi.formviewer.formviewerpage.execute'] = 'Esegui';
 
 //===================================================================
 //FILTERS PANEL

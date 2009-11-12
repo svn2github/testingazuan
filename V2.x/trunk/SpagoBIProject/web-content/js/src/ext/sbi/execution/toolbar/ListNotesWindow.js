@@ -129,19 +129,30 @@ this.notesStore.on('load'
                                    this._toolbar.addButton(ttbarInsertNoteButton) ;                            
                                   }
                               }
-                           var ttbarInsertNoteButton = new Ext.Toolbar.Button({
-                                      text: LN('sbi.execution.notes.printnotes')
-                                    	,tooltip: LN('sbi.execution.notes.printnotes')
+                           var ttbarPrintNoteButton = new Ext.Toolbar.Button({
+                                      text: LN('sbi.execution.notes.printnotesPDF')
+                                    	,tooltip: LN('sbi.execution.notes.printnotesPDF')
                                 		  ,iconCls:'icon-pdf'
                                 		  ,listeners: {
                                 			'click': {
-                                          		fn: this.printNotes
+                                          		fn: this.printNotesPDF
                                           		,scope: this
                                        } 
                                   		}
                                     });                                
-                                   this._toolbar.addButton(ttbarInsertNoteButton) ;                            
-                                  
+                                   this._toolbar.addButton(ttbarPrintNoteButton) ;   
+                           var ttbarPrint2NoteButton = new Ext.Toolbar.Button({
+                                      text: LN('sbi.execution.notes.printnotesRTF')
+                                    	,tooltip: LN('sbi.execution.notes.printnotesRTF')
+                                		  ,iconCls:'icon-rtf'
+                                		  ,listeners: {
+                                			'click': {
+                                          		fn: this.printNotesRTF
+                                          		,scope: this
+                                       } 
+                                  		}
+                                    });                                
+                                   this._toolbar.addButton(ttbarPrint2NoteButton) ;                                                               
                           }
                           , this);        
   this.notesStore.load();
@@ -292,10 +303,14 @@ Ext.extend(Sbi.execution.toolbar.ListNotesWindow, Ext.Window, {
       }
       return null;
     }
-	, printNotes: function () {
+	, printNotesPDF: function () {
 		var urlPrint = this.services['printNotesService'];
-		//urlPrint+= '&SBI_EXECUTION_ID=' + this.SBI_EXECUTION_ID;
+		urlPrint+= '&SBI_OUTPUT_TYPE=PDF';
 			window.open(urlPrint,'name','height=750,width=1000');
-	
+	}    
+	, printNotesRTF: function () {
+		var urlPrint = this.services['printNotesService'];
+		urlPrint+= '&SBI_OUTPUT_TYPE=RTF';
+		window.open(urlPrint,'name','height=750,width=1000');
 	}    
 });

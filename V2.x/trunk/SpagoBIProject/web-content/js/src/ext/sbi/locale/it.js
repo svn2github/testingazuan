@@ -164,9 +164,8 @@ Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'Note salvate correttamente';
 Sbi.locale.ln['sbi.execution.notes.noteDeleted'] = 'Nota cancellata';
 Sbi.locale.ln['sbi.execution.notes.goBack'] = 'Torna alla lista';
 Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Errore nel salvataggio delle note: sono state modificate da un altro utente. Riapri questa finestra e ritenta!';
-Sbi.locale.ln['sbi.execution.notes.printnotes'] = 'Esporta in PDF';
-Sbi.locale.ln['sbi.execution.notes.printConflict'] = 'Errore nella esportazione in PDF delle note';
-Sbi.locale.ln['sbi.execution.notes.notedPrinted'] = 'Note esportate in PDF correttamente';
+Sbi.locale.ln['sbi.execution.notes.printnotesPDF'] = 'Esporta in PDF';
+Sbi.locale.ln['sbi.execution.notes.printnotesRTF'] = 'Esporta in RTF';
 
 Sbi.locale.ln['sbi.lookup.Confirm'] = 'Conferma';
 Sbi.locale.ln['sbi.lookup.Annulla'] = 'Annulla';

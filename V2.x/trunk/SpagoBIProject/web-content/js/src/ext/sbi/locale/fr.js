@@ -174,9 +174,8 @@ Sbi.locale.ln['sbi.execution.notes.savenotes'] = 'Enregistrer';
 Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'Notes enregistrées correctement';
 Sbi.locale.ln['sbi.execution.notes.noteDeleted'] = 'Note supprimé';
 Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Erreur pendant l\'enregistrement des notes: les notes ont étées modifiées par an autre utilisateur pendant que vous eties en train de les modifier. Reouvréz la fenetre et reessayéz!';
-Sbi.locale.ln['sbi.execution.notes.printnotes'] = 'Export in PDF';
-Sbi.locale.ln['sbi.execution.notes.printConflict'] = 'Error while exporting notes in PDF';
-Sbi.locale.ln['sbi.execution.notes.notedPrinted'] = 'Notes exported successfully in PDF';
+Sbi.locale.ln['sbi.execution.notes.printnotesPDF'] = 'Export in PDF';
+Sbi.locale.ln['sbi.execution.notes.printnotesRTF'] = 'Export in RTF';
 
 Sbi.locale.ln['sbi.lookup.Confirm'] = 'Confirmer';
 Sbi.locale.ln['sbi.lookup.Annulla'] = 'Annuller';

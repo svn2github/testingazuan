@@ -72,10 +72,6 @@ Sbi.execution.toolbar.NotesWindow = function(config) {
 		serviceName: 'SAVE_NOTES_ACTION'
 		, baseParams: params
 	});
-	this.services['printNotesService'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'PRINT_NOTES_ACTION'
-		, baseParams: params
-	});	
 	
 	this.previousNotes = undefined;
 	
@@ -152,12 +148,6 @@ Sbi.execution.toolbar.NotesWindow = function(config) {
 		        	  ,scope: this
 		        	  ,handler: this.saveNotes
 		          }
-		          ,{
-                id: 'print'
-		        	  ,text: LN('sbi.execution.notes.printnotes') 
-		        	  ,scope: this
-		        	  ,handler: this.printNotes
-		           }	  
 		          ,{
 		            id: 'back'
 		        	  ,text: LN('sbi.execution.notes.goBack')
@@ -276,13 +266,5 @@ Ext.extend(Sbi.execution.toolbar.NotesWindow, Ext.Window, {
 	     	val = "";
 	     }
 	     return val;
-	}
-
-	, printNotes: function () {
-		var urlPrint = this.services['printNotesService'];
-		urlPrint+= '&SBI_EXECUTION_ID=' + this.SBI_EXECUTION_ID;
-			window.open(urlPrint,'name','height=750,width=1000');
-	
-	}
-	
+	}	
 });

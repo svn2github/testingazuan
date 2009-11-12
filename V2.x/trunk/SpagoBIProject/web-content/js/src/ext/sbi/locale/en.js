@@ -175,6 +175,9 @@ Sbi.locale.ln['sbi.execution.notes.noteDeleted'] = 'Note deleted';
 Sbi.locale.ln['sbi.execution.notes.savenotes'] = 'Save';
 Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'Notes saved correctly';
 Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Error while saving notes: notes have been modified by another user while you were modifing them. Please reopen this window and try again!';
+Sbi.locale.ln['sbi.execution.notes.printnotes'] = 'Export in PDF';
+Sbi.locale.ln['sbi.execution.notes.printConflict'] = 'Error while exporting notes in PDF';
+Sbi.locale.ln['sbi.execution.notes.notedPrinted'] = 'Notes exported successfully in PDF';
 
 Sbi.locale.ln['sbi.lookup.Confirm'] = 'Confirm';
 Sbi.locale.ln['sbi.lookup.Annulla'] = 'Cancel';

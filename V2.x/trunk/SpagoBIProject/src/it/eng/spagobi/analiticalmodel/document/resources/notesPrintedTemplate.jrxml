@@ -101,11 +101,11 @@
 			</band>
 		</columnHeader>
 		<detail>
-			<band height="114"  isSplitAllowed="true" >
+			<band height="174"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="139"
-						y="43"
+						y="86"
 						width="356"
 						height="59"
 						key="textField"/>
@@ -118,7 +118,7 @@
 				<staticText>
 					<reportElement
 						x="13"
-						y="43"
+						y="86"
 						width="117"
 						height="23"
 						key="staticText-2"/>
@@ -154,6 +154,32 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[($F{owner}== null) ? "Not Defined" : $F{owner}]]></textFieldExpression>
 				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="139"
+						y="48"
+						width="294"
+						height="18"
+						key="textField"/>
+					<box></box>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{creationDate}!=null ? $F{creationDate}.toString() : "" ]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="13"
+						y="48"
+						width="117"
+						height="23"
+						key="staticText-4"/>
+					<box></box>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Creation Date]]></text>
+				</staticText>
 			</band>
 		</detail>
 		<columnFooter>

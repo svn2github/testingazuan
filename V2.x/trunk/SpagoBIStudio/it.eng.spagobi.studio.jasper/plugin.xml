@@ -33,4 +33,12 @@
        icon="icons/objecticon_JASPER.png">
    </editor>
  </extension>
+    <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="SpagoBI Editors Configuration"
+            class="it.eng.spagobi.studio.jasper.preferences.EditorsConfigurationPreferencePage"
+            id="it.eng.spagobi.studio.jasper.preferences.EditorsConfigurationPreferencePage">
+      </page>
+    </extension>    
 </plugin>

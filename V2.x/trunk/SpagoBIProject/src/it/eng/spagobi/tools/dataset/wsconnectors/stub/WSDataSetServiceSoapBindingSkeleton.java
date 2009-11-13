@@ -53,7 +53,7 @@ public class WSDataSetServiceSoapBindingSkeleton implements it.eng.spagobi.tools
     public WSDataSetServiceSoapBindingSkeleton(it.eng.spagobi.tools.dataset.wsconnectors.stub.IWsConnector impl) {
         this.impl = impl;
     }
-    public java.lang.String readDataSet(java.lang.String in0, java.util.HashMap in1, java.lang.String in2) throws java.rmi.RemoteException
+    public java.lang.String readDataSet(java.lang.String in0, java.util.Map in1, java.lang.String in2) throws java.rmi.RemoteException
     {
         java.lang.String ret = impl.readDataSet(in0, in1, in2);
         return ret;

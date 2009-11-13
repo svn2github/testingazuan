@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.qbe.services.formviewer;
 
+import it.eng.qbe.query.CriteriaConstants;
 import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
@@ -117,6 +118,7 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 							WhereField.Operand leftOperand = new WhereField.Operand(filter.getString("leftOperandValue"), null, "Field Content", null, null);
 							WhereField.Operand rightOperand = new WhereField.Operand(filter.getString("rightOperandValue"), null, "Static Value", null, null);
 							query.addWhereField(filter.getString(QbeJSONTemplateParser.ID), null, false, leftOperand, filter.getString("operator"), rightOperand, "AND");
+							updateWhereClauseStructure(query, filter.getString(QbeJSONTemplateParser.ID), "AND");
 						}
 					}
 				}
@@ -152,9 +154,20 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 				String id = filter.getString(QbeJSONTemplateParser.ID);
 				List<String> values = formViewerState.getOpenFilterValues(id);
 				if (values.size() > 0) {
+					StringBuffer buffer = new StringBuffer(values.get(0));
+					if (values.size() > 1) {
+						for (int c = 1; c < values.size(); c++) {
+							buffer.append("," + values.get(c));
+						}
+					}
+					String operator = filter.getString("operator");
+					if (operator.equals(CriteriaConstants.EQUALS_TO)) {
+						operator = CriteriaConstants.IN;
+					}
 					WhereField.Operand leftOperand = new WhereField.Operand(filter.getString("field"), null, "Field Content", null, null);
-					WhereField.Operand rightOperand = new WhereField.Operand(values.get(0), null, "Static Value", null, null);
-					query.addWhereField(id, null, false, leftOperand, filter.getString("operator"), rightOperand, "AND");
+					WhereField.Operand rightOperand = new WhereField.Operand(buffer.toString(), null, "Static Value", null, null);
+					query.addWhereField(id, null, false, leftOperand, operator, rightOperand, "AND");
+					updateWhereClauseStructure(query, filter.getString(QbeJSONTemplateParser.ID), "AND");
 				}
 			}
 		}

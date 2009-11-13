@@ -90,16 +90,18 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
     
 	services: null
 	, fields: null
+	, combos: null
 	   
 	// private methods
 	   
 	, init: function(openFilters) {
 		
 		this.fields = [];
-	
+		this.combos = new Array();
 		var fieldsCounter = 0;
 		for(var i = 0; i < openFilters.length; i++) {
 			var field = this.createField( openFilters[i] );
+			this.combos.push( field );
 			var aPanel = new Ext.Panel({
 				items: [field]
 				, layout: 'form' // form layout required: input field labels are displayed only with this layout
@@ -211,7 +213,11 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
 	// public methods
 	
 	, getFormState: function() {
-		var state = this.getForm().getValues();
+		var state = {};
+		for (var i = 0; i < this.combos.length; i++) {
+			var aCombo = this.combos[i];
+			state[aCombo.name] = aCombo.getValuesList();
+		}
 		return state;
 	}
   	

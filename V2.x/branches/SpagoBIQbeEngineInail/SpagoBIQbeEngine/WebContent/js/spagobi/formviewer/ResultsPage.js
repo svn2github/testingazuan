@@ -68,14 +68,27 @@ Sbi.formviewer.ResultsPage = function(config) {
 		
 	this.addEvents('edit');
 		
-	this.initControlPanel(c.controlPanelConfig || {});
+	//this.initControlPanel(c.controlPanelConfig || {});
 	this.initMasterDetailPanel(c.masterDetailPanelConfig || {});
-		
+	
+	this.toolbar = new Ext.Toolbar({
+		items: [
+		    '->'
+		    , {
+				text: 'Indietro',
+				handler: function() {this.fireEvent('edit');},
+				scope: this
+		    }
+		  ]
+	});
+	
 	c = Ext.apply(c, {
 	    layout:'border',
+	    tbar: this.toolbar,
 	    style: 'padding:3px;',
 	    //bodyStyle:'background:green',
-	    items: [this.controlPanel, this.masterResultsPanel, this.detailResultsPanel]
+	    //items: [this.controlPanel, this.masterResultsPanel, this.detailResultsPanel]
+	    items: [this.masterResultsPanel, this.detailResultsPanel]
 	});
 		
 		
@@ -106,15 +119,15 @@ Ext.extend(Sbi.formviewer.ResultsPage, Ext.Panel, {
     , loadResults: function(groupFields) {
     	var values
     	
-    	if(groupFields) {
+    	//if(groupFields) {
     		values = new Array();
     		for(p in this.formState.groupingVariables) {
     			values.push(this.formState.groupingVariables[p]);
-    			this.groupInputField.setValue(values);
+    			//this.groupInputField.setValue(values);
     		}
-		} else {
-			values = this.groupInputField.getValuesList();
-		}
+		//} else {
+		//	values = this.groupInputField.getValuesList();
+		//}
     	
     	var baseParams = {groupFields: Ext.util.JSON.encode(values), formstate: Ext.util.JSON.encode(this.formState)}
 		this.masterResultsPanel.execQuery(baseParams);		

@@ -77,7 +77,7 @@ public class FormViewerState {
 		logger.debug("IN: openFilterId = " + openFilterId);
 		List<String> toReturn = new ArrayList<String>();
 		if (staticOpenFilters != null ) {
-			JSONArray values = staticOpenFilters.optJSONArray("openFilterId");
+			JSONArray values = staticOpenFilters.optJSONArray(openFilterId);
 			if (values != null && values.length() > 0) {
 				for (int i = 0; i < values.length(); i++)
 					if (values.optString(i) != null) {

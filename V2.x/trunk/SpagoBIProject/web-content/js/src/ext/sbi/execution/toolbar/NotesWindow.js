@@ -78,18 +78,19 @@ Sbi.execution.toolbar.NotesWindow = function(config) {
 	this.SBI_EXECUTION_ID = config.SBI_EXECUTION_ID;
 	this.buddy = undefined;
 	
+ 
   this.editor = new Ext.form.HtmlEditor({
         frame: true
         ,value: ''
-        ,bodyStyle:'padding:5px 5px 0'
-        ,width:'100%'
+        //,bodyStyle:'padding:5px 5px 0'
+        //,width:'100%'
+        ,width:700
         ,disabled: true
 	      ,height: 265
 	      ,enableSourceEdit: false
-	      ,disabled:true
-	      ,readOnly:true
+	      //,readOnly:true
         ,id:'notes'        
-  });   
+  }); 
     
   var scopeComboBoxData = [
     		['PUBLIC','Public', 'Everybody can view this note'],

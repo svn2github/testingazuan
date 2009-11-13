@@ -87,7 +87,7 @@ Sbi.execution.toolbar.ListNotesWindow = function(config) {
 	         ,'</div>'
 	      */   
 	         ,'Owner: <b>{owner}</b><br>'
-	         , '{[Ext.util.Format.ellipsis(values.notes, 100)]}'
+	          , '{[Ext.util.Format.ellipsis(Ext.util.Format.stripTags(values.notes), 100)]}' 
 	         ,'<tpl if="values.deletable == true ">'
 	         ,   '<div class="button"><img class="action-delete-note" title="'+LN('sbi.execution.notes.deleteNote')+'" src="' + Ext.BLANK_IMAGE_URL + '"/></div>'
 	         ,'</tpl>'

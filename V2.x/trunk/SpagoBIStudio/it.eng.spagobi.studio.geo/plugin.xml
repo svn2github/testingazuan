@@ -6,7 +6,7 @@
       <editor
             class="it.eng.spagobi.studio.geo.editors.GEOEditor"
             default="true"
-            extensions="sbidoccomp"
+            extensions="sbigeo"
             icon="icons/objecticon_MAP.png"
             id="it.eng.spagobi.studio.geo.editors.GEOEditor"
             name="GEO Editor">

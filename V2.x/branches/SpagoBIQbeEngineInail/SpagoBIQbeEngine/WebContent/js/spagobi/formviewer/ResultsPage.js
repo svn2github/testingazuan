@@ -66,26 +66,15 @@ Sbi.formviewer.ResultsPage = function(config) {
 		, baseParams: new Object()
 	});
 		
-	this.addEvents('execute', 'backToForm');
+	this.addEvents('edit');
 		
 	this.initControlPanel(c.controlPanelConfig || {});
 	this.initMasterDetailPanel(c.masterDetailPanelConfig || {});
-	
-	this.toolbar = new Ext.Toolbar({
-		items: [
-		    '->'
-		    , {
-				text: 'Indietro',
-				handler: function() {this.fireEvent('backToForm');},
-				scope: this
-		    }
-		  ]
-	});
-	
+		
 	c = Ext.apply(c, {
 	    layout:'border',
-	    tbar: this.toolbar,
-	    bodyStyle:'background:green',
+	    style: 'padding:3px;',
+	    //bodyStyle:'background:green',
 	    items: [this.controlPanel, this.masterResultsPanel, this.detailResultsPanel]
 	});
 		
@@ -114,14 +103,21 @@ Ext.extend(Sbi.formviewer.ResultsPage, Ext.Panel, {
 		this.formState = formState;
 	}
     
-    , loadResults: function() {
-		//var values = this.groupInputField.getValuesList();
-    	var values = [];
-    	for (var i in this.formState.groupingVariables) {
-    		values.push(this.formState.groupingVariables[i]);
-    	}
-		var baseParams = {groupFields: Ext.util.JSON.encode(values), formstate: Ext.util.JSON.encode(this.formState)}
-		this.masterResultsPanel.execQuery(baseParams);
+    , loadResults: function(groupFields) {
+    	var values
+    	
+    	if(groupFields) {
+    		values = new Array();
+    		for(p in this.formState.groupingVariables) {
+    			values.push(this.formState.groupingVariables[p]);
+    			this.groupInputField.setValue(values);
+    		}
+		} else {
+			values = this.groupInputField.getValuesList();
+		}
+    	
+    	var baseParams = {groupFields: Ext.util.JSON.encode(values), formstate: Ext.util.JSON.encode(this.formState)}
+		this.masterResultsPanel.execQuery(baseParams);		
 	}
     
     // -- private methods -----------------------------------------------------------------------
@@ -157,26 +153,48 @@ Ext.extend(Sbi.formviewer.ResultsPage, Ext.Panel, {
 		var submitButton = new Ext.Button({
 			text: "Ricalcola",
             scope: this,
-            handler: this.loadResults
+            handler: function(){this.loadResults();}
+
+		});
+		
+		var backButton = new Ext.Button({
+			text: "Indietro",
+            scope: this,
+            handler: function() {this.fireEvent('edit', this);}
 
 		});
 	
 		this.controlPanel = new Ext.Panel({
 			region: 'north'
 			, layout: 'border'
-			, height: 50
+			, frame: false
+			, border: true
+			, style:'padding:10px; background:white'
+			, height: 70
 			, items: [
 			     new Ext.form.FormPanel({
 			    	 region: 'center', 
+			    	 frame: false, 
+					 border: false,
 			    	 bodyStyle:'padding:10px',
 			    	 items: [this.groupInputField]
 			     })
 				, new Ext.form.FormPanel({
 					region: 'east', 
+					frame: false, 
+					border: false,
 					split: false, 
 					bodyStyle:'padding:13 10 13 5',
 					width: 85, 
 					items: [submitButton]
+				}), new Ext.form.FormPanel({
+					region: 'west', 
+					split: false, 
+					frame: false, 
+					border: false,
+					bodyStyle:'padding:13 10 13 5',
+					width: 85, 
+					items: [backButton]
 				})
 			]
 		});
@@ -189,7 +207,7 @@ Ext.extend(Sbi.formviewer.ResultsPage, Ext.Panel, {
 			collapsible: true,
 			autoScroll: true,
 			frame: false, 
-			border: true,
+			border: false,
 			width: 320,
 			minWidth: 320,
 			

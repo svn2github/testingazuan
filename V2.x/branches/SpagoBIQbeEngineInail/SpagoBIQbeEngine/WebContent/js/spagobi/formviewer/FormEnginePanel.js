@@ -107,13 +107,13 @@ Ext.extend(Sbi.formviewer.FormEnginePanel, Ext.Panel, {
 
 	, initResultsPage: function(config) {
 		this.resultsPage = new Sbi.formviewer.ResultsPage(config);
-		this.resultsPage.on('backToForm', this.moveToPreviousPage, this);
+		this.resultsPage.on('edit', this.moveToPreviousPage, this);
 	}
 
     , moveToNextPage: function(formState) {
     	this.getLayout().setActiveItem( 1 );
     	this.resultsPage.setFormState(formState);
-    	this.resultsPage.loadResults();
+    	this.resultsPage.loadResults(formState.groupingVariables);
 	}
     
     , moveToPreviousPage: function() {

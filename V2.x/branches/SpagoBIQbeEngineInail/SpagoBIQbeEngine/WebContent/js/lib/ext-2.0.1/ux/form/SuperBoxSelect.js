@@ -1284,7 +1284,7 @@ Ext.ux.form.SuperBoxSelect = Ext.extend(Ext.ux.form.SuperBoxSelect,Ext.form.Comb
             return;
         }
         
-        var values = Ext.isArray(value) ? value : value.split(this.valueDelimiter);
+        var values = (value instanceof Array)  ? value : value.split(this.valueDelimiter);
         this.removeAllItems().resetStore();
         
         //reset remoteLookup because setValue should overwrite everything

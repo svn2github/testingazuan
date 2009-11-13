@@ -51,13 +51,10 @@ Sbi.formviewer.FormViewerPage = function(template, config) {
 	var defaultSettings = {
 		// set default values here
 		title: LN('sbi.formviewer.formviewerpage.title')
-		//, layout: 'table'
-	    //, layoutConfig: {
-	    //    columns: 1
-	    //}
 		, layout: 'fit'
 		, autoScroll: true
 	};
+	
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.formViewerPage) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.formViewerPage);
 	}
@@ -151,6 +148,7 @@ Ext.extend(Sbi.formviewer.FormViewerPage, Ext.Panel, {
 			state.groupingVariables = this.groupingVariablesPanel.getFormState();
 		}
 		this.fireEvent('submit', state);
+
 		
 	}
   	

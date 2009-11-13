@@ -30,8 +30,6 @@ import it.eng.qbe.export.TemplateBuilder;
 import it.eng.qbe.model.IStatement;
 import it.eng.qbe.model.QbeDataSet;
 import it.eng.qbe.query.DataMartSelectField;
-import it.eng.qbe.query.Query;
-import it.eng.qbe.query.serializer.QuerySerializerFactory;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;

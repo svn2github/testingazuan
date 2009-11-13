@@ -107,7 +107,7 @@ Ext.extend(Sbi.formviewer.FormEnginePanel, Ext.Panel, {
 
 	, initResultsPage: function(config) {
 		this.resultsPage = new Sbi.formviewer.ResultsPage(config);
-		//this.resultsPage.on('', this.moveToPreviousPage, this);
+		this.resultsPage.on('backToForm', this.moveToPreviousPage, this);
 	}
 
     , moveToNextPage: function(formState) {

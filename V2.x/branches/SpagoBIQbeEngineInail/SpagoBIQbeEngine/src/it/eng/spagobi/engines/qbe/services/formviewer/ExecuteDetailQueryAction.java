@@ -39,6 +39,7 @@ import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
+import it.eng.qbe.query.serializer.QuerySerializerFactory;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.engines.qbe.QbeEngineConfig;
@@ -64,6 +65,7 @@ public class ExecuteDetailQueryAction extends AbstractQbeEngineAction {
 	public static final String LIMIT = "limit";
 	public static final String START = "start";
 	public static final String FILTERS = "filters";
+	public static final String FORM_STATE = "formState";
 	
 	
 	/** Logger component. */
@@ -123,6 +125,26 @@ public class ExecuteDetailQueryAction extends AbstractQbeEngineAction {
 			// STEP 1: modify the query according to the input that come from the form
 			query = getEngineInstance().getQueryCatalogue().getFirstQuery();			
 			// ... query transformation goes here	
+			
+			logger.debug("Making a deep copy of the original query...");
+			String store = ((JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(query, getEngineInstance().getDatamartModel(), getLocale())).toString();
+			Query copy = QuerySerializerFactory.getDeserializer("application/json").deserialize(store, getEngineInstance().getDatamartModel());
+			logger.debug("Deep copy of the original query produced");
+			
+			String jsonEncodedFormState = getAttributeAsString( FORM_STATE );
+			logger.debug("Form state retrieved as a string: " + jsonEncodedFormState);
+			JSONObject formState = new JSONObject(jsonEncodedFormState);
+			logger.debug("Form state converted into a valid JSONObject: " + formState.toString(3));
+			JSONObject template = (JSONObject) getEngineInstance().getTemplate().getProperty("jsonTemplate");
+			logger.debug("Form viewer template retrieved.");
+			
+			FormViewerQueryTransformer formViewerQueryTransformer = new FormViewerQueryTransformer();
+			formViewerQueryTransformer.setFormState(formState);
+			formViewerQueryTransformer.setTemplate(template);
+			logger.debug("Applying Form Viewer query transformation...");
+			query = formViewerQueryTransformer.execTransformation(copy);
+			logger.debug("Applying Form Viewer query transformation...");
+			
 			updatePromptableFiltersValue(query);
 			getEngineInstance().setActiveQuery(query);
 			

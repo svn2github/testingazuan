@@ -39,6 +39,17 @@ public class QbeJSONTemplateParser implements IQbeTemplateParser {
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(QbeJSONTemplateParser.class);
     
+    public static String ID = "id";
+    public static String OPERATOR = "operator";
+    
+    public static String STATIC_CLOSED_FILTERS = "staticClosedFilters";
+    public static String STATIC_OPEN_FILTERS = "staticOpenFilters";
+    public static String DYNAMIC_FILTERS = "dynamicFilters";
+    public static String GROUPING_VARIABLES = "groupingVariables";
+    public static String FILTERS = "filters";
+    public static String STATIC_CLOSED_FILTER_SINGLE_SELECTION = "singleSelection";
+    public static String STATIC_CLOSED_FILTER_NO_SELECTION = "noSelection";
+    
     public static String STATIC_XOR_FILTERS_PREFIX = "xorFilter-";
     public static String STATIC_XOR_OPTIONS_PREFIX = "option-";
     public static String STATIC_ON_OFF_FILTERS_PREFIX = "onOffFilter-";
@@ -84,52 +95,52 @@ public class QbeJSONTemplateParser implements IQbeTemplateParser {
 	private void addAdditionalInfo(JSONObject template) {
 		logger.debug("IN");
 		try {
-			JSONArray staticClosedFilters = template.optJSONArray("staticClosedFilters");
+			JSONArray staticClosedFilters = template.optJSONArray(STATIC_CLOSED_FILTERS);
 			int xorFiltersCounter = 1;
 			int onOffFiltersCounter = 1;
 			if (staticClosedFilters != null && staticClosedFilters.length() > 0) {
 				for (int i = 0; i < staticClosedFilters.length(); i++) {
 					JSONObject aStaticClosedFilter = (JSONObject) staticClosedFilters.get(i);
-					if (aStaticClosedFilter.getBoolean("singleSelection")) {
+					if (aStaticClosedFilter.getBoolean(STATIC_CLOSED_FILTER_SINGLE_SELECTION)) {
 						// xor filter
-						aStaticClosedFilter.put("id", STATIC_XOR_FILTERS_PREFIX + xorFiltersCounter++);
-						JSONArray options = aStaticClosedFilter.getJSONArray("filters");
+						aStaticClosedFilter.put(ID, STATIC_XOR_FILTERS_PREFIX + xorFiltersCounter++);
+						JSONArray options = aStaticClosedFilter.getJSONArray(FILTERS);
 						for (int j = 0; j < options.length(); j++) {
 							JSONObject anOption = (JSONObject) options.get(j);
-							anOption.put("id", STATIC_XOR_OPTIONS_PREFIX + (j+1));
+							anOption.put(ID, STATIC_XOR_OPTIONS_PREFIX + (j+1));
 						}
 					} else {
 						// on off filter
-						JSONArray filters = aStaticClosedFilter.getJSONArray("filters");
+						JSONArray filters = aStaticClosedFilter.getJSONArray(FILTERS);
 						for (int j = 0; j < filters.length(); j++) {
 							JSONObject anOption = (JSONObject) filters.get(j);
-							anOption.put("id", STATIC_ON_OFF_FILTERS_PREFIX + onOffFiltersCounter++);
+							anOption.put(ID, STATIC_ON_OFF_FILTERS_PREFIX + onOffFiltersCounter++);
 						}
 					}
 				}
 			}
 			
-			JSONArray staticOpenFilters = template.optJSONArray("staticOpenFilters");
+			JSONArray staticOpenFilters = template.optJSONArray(STATIC_OPEN_FILTERS);
 			if (staticOpenFilters != null && staticOpenFilters.length() > 0) {
 				for (int i = 0; i < staticOpenFilters.length(); i++) {
 					JSONObject aStaticOpenFilter = (JSONObject) staticOpenFilters.get(i);
-					aStaticOpenFilter.put("id", OPEN_FILTERS_PREFIX + (i+1));
+					aStaticOpenFilter.put(ID, OPEN_FILTERS_PREFIX + (i+1));
 				}
 			}
 			
-			JSONArray dynamicFilters = template.optJSONArray("dynamicFilters");
+			JSONArray dynamicFilters = template.optJSONArray(DYNAMIC_FILTERS);
 			if (dynamicFilters != null && dynamicFilters.length() > 0) {
 				for (int i = 0; i < dynamicFilters.length(); i++) {
 					JSONObject aDynamicFilter = (JSONObject) dynamicFilters.get(i);
-					aDynamicFilter.put("id", DYNAMIC_FILTERS_PREFIX + (i+1));
+					aDynamicFilter.put(ID, DYNAMIC_FILTERS_PREFIX + (i+1));
 				}
 			}
 			
-			JSONArray groupingVariables = template.optJSONArray("groupingVariables");
+			JSONArray groupingVariables = template.optJSONArray(GROUPING_VARIABLES);
 			if (groupingVariables != null && groupingVariables.length() > 0) {
 				for (int i = 0; i < groupingVariables.length(); i++) {
 					JSONObject aGroupingVariable = (JSONObject) groupingVariables.get(i);
-					aGroupingVariable.put("id", GROUPING_VARIABLE_PREFIX + (i+1));
+					aGroupingVariable.put(ID, GROUPING_VARIABLE_PREFIX + (i+1));
 				}
 			}
 			

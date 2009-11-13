@@ -66,13 +66,25 @@ Sbi.formviewer.ResultsPage = function(config) {
 		, baseParams: new Object()
 	});
 		
-	this.addEvents('execute');
+	this.addEvents('execute', 'backToForm');
 		
 	this.initControlPanel(c.controlPanelConfig || {});
 	this.initMasterDetailPanel(c.masterDetailPanelConfig || {});
-		
+	
+	this.toolbar = new Ext.Toolbar({
+		items: [
+		    '->'
+		    , {
+				text: 'Indietro',
+				handler: function() {this.fireEvent('backToForm');},
+				scope: this
+		    }
+		  ]
+	});
+	
 	c = Ext.apply(c, {
 	    layout:'border',
+	    tbar: this.toolbar,
 	    bodyStyle:'background:green',
 	    items: [this.controlPanel, this.masterResultsPanel, this.detailResultsPanel]
 	});

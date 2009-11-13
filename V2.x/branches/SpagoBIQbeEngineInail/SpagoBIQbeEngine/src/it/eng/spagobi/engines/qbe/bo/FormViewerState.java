@@ -107,8 +107,9 @@ public class FormViewerState {
 		List<String> toReturn = new ArrayList<String>();
 		if (dynamicFilters != null ) {
 			JSONObject dynamicFilter = dynamicFilters.optJSONObject(dynamicFilterId);
-			if (dynamicFilter != null && dynamicFilter.optString("value") != null) {
-				toReturn.add(dynamicFilter.optString("value"));
+			if (dynamicFilter != null && dynamicFilter.optString("fromvalue") != null && dynamicFilter.optString("tovalue") != null) {
+				toReturn.add(dynamicFilter.optString("fromvalue"));
+				toReturn.add(dynamicFilter.optString("tovalue"));
 			}
 		}
 		logger.debug("OUT: returning " + toReturn);
@@ -120,9 +121,8 @@ public class FormViewerState {
 		String toReturn = null;
 		if (dynamicFilters != null ) {
 			JSONObject dynamicFilter = dynamicFilters.optJSONObject(dynamicFilterId);
-			if (dynamicFilter != null && dynamicFilter.optString("fromvalue") != null && dynamicFilter.optString("tovalue") != null) {
-				toReturn = dynamicFilter.optString("fromvalue");
-				toReturn = dynamicFilter.optString("tovalue");
+			if (dynamicFilter != null && dynamicFilter.optString("value") != null) {
+				toReturn = dynamicFilter.optString("value");
 			}
 		}
 		logger.debug("OUT: returning " + toReturn);

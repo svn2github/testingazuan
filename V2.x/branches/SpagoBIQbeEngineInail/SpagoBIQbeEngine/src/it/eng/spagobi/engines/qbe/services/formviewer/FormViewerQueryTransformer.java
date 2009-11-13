@@ -194,6 +194,7 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 						rightOperand = new WhereField.Operand(value, null, "Static Value", null, null);
 					}
 					query.addWhereField(id, null, false, leftOperand, filter.getString("operator"), rightOperand, "AND");
+					updateWhereClauseStructure(query, id, "AND");
 				}
 			}
 		}

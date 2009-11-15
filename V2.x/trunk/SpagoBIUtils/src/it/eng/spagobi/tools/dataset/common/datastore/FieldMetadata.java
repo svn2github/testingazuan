@@ -7,6 +7,7 @@ public class FieldMetadata implements IFieldMetaData {
 
 
 	String name;
+	String alias;
 	Class type;
 	Map properties;
 
@@ -30,6 +31,14 @@ public class FieldMetadata implements IFieldMetaData {
 		this.name = name;
 	}
 
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
+	
 	public Class getType() {
 		return type;
 	}

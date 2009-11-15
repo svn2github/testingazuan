@@ -1,24 +1,25 @@
 package it.eng.spagobi.tools.dataset.common.dataproxy;
 
+import java.util.Map;
+
 import it.eng.spago.security.IEngUserProfile;
 
-import java.util.HashMap;
+public abstract class AbstractDataProxy implements IDataProxy {
 
-public abstract class AbstractDataProxy implements IDataProxy{
-
-	HashMap parametersMap;
+	Map parameters;
 	IEngUserProfile profile;
+	int offset;
+	int fetchSize;
+	int maxResults;
+	boolean calculateResultNumberOnLoad;
+	String statement;
 
-	public void bindParameters(HashMap _parametersMap){
-		parametersMap=_parametersMap;
+	public Map getParameters() {
+		return parameters;
 	}
 
-	public HashMap getParametersMap() {
-		return parametersMap;
-	}
-
-	public void setParametersMap(HashMap parametersMap) {
-		this.parametersMap = parametersMap;
+	public void setParameters(Map parameters) {
+		this.parameters = parameters;
 	}
 
 	public IEngUserProfile getProfile() {
@@ -29,6 +30,64 @@ public abstract class AbstractDataProxy implements IDataProxy{
 		this.profile = profile;
 	}
 
+	public boolean isPaginationSupported() {
+		return isOffsetSupported() && isMaxResultsSupported();
+	}
+	
+	public boolean isOffsetSupported() {
+		return false;
+	}
+	
+	public int getOffset() {
+		return offset;
+	}
 
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
 
+	public boolean isFetchSizeSupported() {
+		return false;
+	}
+	
+	public int getFetchSize() {
+		return fetchSize;
+	}
+
+	public void setFetchSize(int fetchSize) {
+		this.fetchSize = fetchSize;
+	}
+
+	public boolean isMaxResultsSupported() {
+		return false;
+	}
+	
+	public int getMaxResults() {
+		return maxResults;
+	}
+
+	public void setMaxResults(int maxResults) {
+		this.maxResults = maxResults;
+	}
+	
+	public boolean isCalculateResultNumberOnLoadEnabled() {
+		return calculateResultNumberOnLoad;
+	}
+	
+	public void setCalculateResultNumberOnLoad(boolean enabled) {
+		calculateResultNumberOnLoad = enabled;
+	}
+	
+	public long getResultNumber() {
+		return -1;
+	}
+	
+	public String getStatement() {
+		return statement;
+	}
+
+	public void setStatement(String statement) {
+		this.statement = statement;
+	}
+	
 }

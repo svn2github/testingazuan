@@ -18,45 +18,76 @@ import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
+import it.eng.spagobi.utilities.assertion.Assert;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class JDBCStandardDataReader implements IDataReader {
+public class JDBCStandardDataReader extends AbstractDataReader {
 
 	private static transient Logger logger = Logger.getLogger(JDBCStandardDataReader.class);
     
-	public JDBCStandardDataReader() {
-		
-	}
-
+	
+	public JDBCStandardDataReader() { }
+	
+	public boolean isOffsetSupported() {return true;}	
+	public boolean isFetchSizeSupported() {return true;}	
+	public boolean isMaxResultsSupported() {return true;}
     
     public IDataStore read(Object data) throws EMFUserError, EMFInternalError {
     	DataStore dataStore;
     	DataStoreMetaData dataStoreMeta;
     	FieldMetadata fieldMeta;
+    	String fieldName;
+    	ResultSet rs;
+    	int columnCount;
+    	int columnIndex;
     	
     	logger.debug("IN");
     	
     	dataStore = null;
     	
     	try {
-    		ResultSet rs = (ResultSet)data;
-    		int columnCount = rs.getMetaData().getColumnCount();
-    		int columnIndex;
     		
+    		Assert.assertNotNull(data, "Input parameter [data] cannot be null");
+    		Assert.assertTrue(data instanceof ResultSet, "Input parameter [data] cannot be of type [" + data.getClass().getName() + "]");
+    		
+    		rs = (ResultSet)data;
+    		    		
     		dataStore = new DataStore();
         	dataStoreMeta = new DataStoreMetaData();
         	
-        	
+        	logger.debug("Reading metadata ...");
+        	columnCount = rs.getMetaData().getColumnCount();
     		for(columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
         		fieldMeta = new FieldMetadata();
-        		fieldMeta.setName( rs.getMetaData().getColumnLabel(columnIndex) );
+        		fieldName = rs.getMetaData().getColumnLabel(columnIndex);
+        		logger.debug("Field [" + columnIndex + "] name is equal to [" + fieldName + "]");
+        		fieldMeta.setName( fieldName );
         		dataStoreMeta.addFiedMeta(fieldMeta);
         	}    
     		dataStore.setMetaData(dataStoreMeta);
+    		logger.debug("Metadata readed succcesfully");
     		
-    		while (rs.next()) {
+    		
+    		logger.debug("Reading data ...");
+    		if(getOffset() > 0) {
+    			logger.debug("Offset is equal to [" + getOffset() + "]");
+    			rs.relative(getOffset());
+    		} else {
+    			logger.debug("Offset not set");
+    		}
+    		
+    		long maxRecToParse = Long.MAX_VALUE;
+    		if(getFetchSize() > 0) {
+    			maxRecToParse = getFetchSize();
+    			logger.debug("FetchSize is equal to [" + maxRecToParse + "]");
+    		} else {
+    			logger.debug("FetchSize not set");
+    		}
+    		
+    		long recCount = 0;
+    		while (rs.next() && (recCount < maxRecToParse) ) {
     			IRecord record = new Record(dataStore);
     			for(columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
     				Object columnValue = rs.getObject(columnIndex);
@@ -67,7 +98,16 @@ public class JDBCStandardDataReader implements IDataReader {
 					record.appendField( field );
     			}
     			dataStore.appendRecord(record);
+    			recCount++;
+    			logger.debug("[" + recCount + "] - Records [" + rs.getRow()  + "] succesfully readed");
     		}
+    		logger.debug("Readed [" + recCount+ "] records");
+    		logger.debug("Data readed succcesfully");
+    		
+    		rs.last();
+    		int resultNumber = rs.getRow();
+    		dataStore.getMetaData().setProperty("resultNumber", new Integer(resultNumber));
+    		logger.debug("Reading total record numeber is equal to [" + resultNumber + "]");
     	} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

@@ -8,5 +8,5 @@
 package it.eng.spagobi.tools.dataset.wsconnectors.stub;
 
 public interface IWsConnector extends java.rmi.Remote {
-    public java.lang.String readDataSet(java.lang.String in0, java.util.HashMap in1, java.lang.String in2) throws java.rmi.RemoteException;
+    public java.lang.String readDataSet(java.lang.String in0, java.util.Map in1, java.lang.String in2) throws java.rmi.RemoteException;
 }

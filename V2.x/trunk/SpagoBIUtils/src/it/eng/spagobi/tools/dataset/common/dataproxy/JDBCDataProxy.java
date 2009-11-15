@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.dataset.common.dataproxy;
 
+import java.sql.Connection;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spago.dbaccess.Utils;
 import it.eng.spago.dbaccess.sql.DataConnection;
 import it.eng.spago.dbaccess.sql.SQLCommand;
@@ -33,10 +37,6 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.tools.dataset.common.datareader.IDataReader;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
-
-import java.sql.Connection;
-
-import org.apache.log4j.Logger;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -108,6 +108,7 @@ public class JDBCDataProxy extends AbstractDataProxy {
 		
 		return dataStore;
 	}
+	
 	
 	private DataConnection getDataConnection(Connection con) throws EMFInternalError {
 		DataConnection dataCon = null;

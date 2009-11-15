@@ -21,6 +21,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.tools.dataset.common.dataproxy;
 
+import java.net.URL;
+import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.rpc.ServiceException;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
@@ -28,16 +39,6 @@ import it.eng.spagobi.tools.dataset.common.datareader.IDataReader;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.wsconnectors.stub.IWsConnector;
 import it.eng.spagobi.tools.dataset.wsconnectors.stub.IWsConnectorServiceLocator;
-
-import java.net.URL;
-import java.rmi.RemoteException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-
-import javax.xml.rpc.ServiceException;
-
-import org.apache.log4j.Logger;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -92,14 +93,14 @@ public class WebServiceDataProxy extends AbstractDataProxy {
 		// Add the profile Attributes
 
 		try {
-			parametersMap=addProfileAtributes(parametersMap);
+			parameters = addProfileAtributes(parameters);
 		} catch (EMFInternalError e1) {
 			logger.error("error in resolving profile attributes");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "11100", messageBundle);
 		}
 		
 		try {
-			resultXML=connector.readDataSet(address, parametersMap, operation);
+			resultXML=connector.readDataSet(address, parameters, operation);
 		} catch (RemoteException e) {
 			logger.error("Service not avalaible");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "11200", messageBundle);
@@ -114,30 +115,6 @@ public class WebServiceDataProxy extends AbstractDataProxy {
 		return dataStore;
 
 	}
-
-	/*
-	private IWsConnector lookUp() throws SecurityException {
-		try {
-			IWsConnectorServiceLocator locator = new IWsConnectorServiceLocator();   
-			IWsConnector connector=null;
-			URL addressToCall=null;
-			try{
-				addressToCall=new URL(address);
-			}
-			catch (Exception e) {
-				//TODO
-			}
-
-			connector = locator.getWSDataSetService(addressToCall);	
-
-			return connector;
-		} catch (ServiceException e) {
-			logger.error("Error during service execution", e);
-			throw new SecurityException();
-		}
-	}*/
-
-
 
 	public String getAddress() {
 		return address;
@@ -155,7 +132,7 @@ public class WebServiceDataProxy extends AbstractDataProxy {
 		this.operation = operation;
 	}
 
-	public HashMap addProfileAtributes(HashMap mapNameValue) throws EMFInternalError{
+	public Map addProfileAtributes(Map mapNameValue) throws EMFInternalError{
 		if(mapNameValue==null) mapNameValue=new HashMap();
 		Set names=(Set)profile.getUserAttributeNames();
 		for (Iterator iterator = names.iterator(); iterator.hasNext();) {

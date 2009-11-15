@@ -3,6 +3,16 @@
  */
 package it.eng.spagobi.tools.dataset.common.datareader;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringBufferInputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.xml.sax.InputSource;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
@@ -14,21 +24,11 @@ import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringBufferInputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-import org.xml.sax.InputSource;
-
 /**
  * @author Angelo Bernabei
  *         angelo.bernabei@eng.it
  */
-public class XmlDataReader implements IDataReader {
+public class XmlDataReader extends AbstractDataReader {
 
 	private static transient Logger logger = Logger.getLogger(XmlDataReader.class);
 

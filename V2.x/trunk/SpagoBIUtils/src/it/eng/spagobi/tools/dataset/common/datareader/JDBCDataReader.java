@@ -3,6 +3,12 @@
  */
 package it.eng.spagobi.tools.dataset.common.datareader;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.error.EMFInternalError;
@@ -17,17 +23,11 @@ import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 /**
  * @author Angelo Bernabei
  *         angelo.bernabei@eng.it
  */
-public class JDBCDataReader implements IDataReader {
+public class JDBCDataReader extends AbstractDataReader {
 
 	private static transient Logger logger = Logger.getLogger(JDBCDataReader.class);
     

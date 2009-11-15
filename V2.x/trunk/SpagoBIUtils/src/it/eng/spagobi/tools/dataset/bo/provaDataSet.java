@@ -1,15 +1,15 @@
 package it.eng.spagobi.tools.dataset.bo;
 
-import it.eng.spago.security.IEngUserProfile;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import it.eng.spago.security.IEngUserProfile;
 
 public class provaDataSet implements IJavaClassDataSet {
 
 
-	public String getValues(IEngUserProfile profile, HashMap map) {
+	public String getValues(IEngUserProfile profile, Map map) {
 	
 		String result = "<ROWS>";
 		result += "<ROW VALUE=\"";

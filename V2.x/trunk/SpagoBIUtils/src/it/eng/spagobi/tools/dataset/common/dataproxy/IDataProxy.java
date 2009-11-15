@@ -21,7 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.dataset.common.dataproxy;
 
+import java.util.Map;
+
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.tools.dataset.common.datareader.IDataReader;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
@@ -30,8 +33,32 @@ import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
  *
  */
 public interface IDataProxy {
-	IDataStore load(String Statement, IDataReader dataReader) throws EMFUserError;
+	
 	IDataStore load(IDataReader dataReader) throws EMFUserError;
 	
-
+	// for querable dataset...
+	public String getStatement();
+	public void setStatement(String statement);
+	
+	// pagination ...
+	boolean isPaginationSupported();
+	boolean isOffsetSupported();
+	int getOffset();
+	void setOffset(int offset);
+	boolean isFetchSizeSupported();
+	int getFetchSize();
+	void setFetchSize(int fetchSize);
+	boolean isMaxResultsSupported();
+	int getMaxResults();
+	void setMaxResults(int maxResults);
+	
+	boolean isCalculateResultNumberOnLoadEnabled();
+	void setCalculateResultNumberOnLoad(boolean enabled);
+	long getResultNumber();
+	
+	// profilation ...
+	Map getParameters();
+	void setParameters(Map parameters);
+	IEngUserProfile getProfile();
+	void setProfile(IEngUserProfile profile);
 }

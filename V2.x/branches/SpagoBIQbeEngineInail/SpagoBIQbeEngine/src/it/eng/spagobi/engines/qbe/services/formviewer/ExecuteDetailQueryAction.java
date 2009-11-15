@@ -46,6 +46,7 @@ import it.eng.spagobi.engines.qbe.QbeEngineConfig;
 import it.eng.spagobi.engines.qbe.services.AbstractQbeEngineAction;
 import it.eng.spagobi.tools.dataset.bo.JDBCStandardDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.query.FilterQueryTransformer;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.utilities.assertion.Assert;
@@ -64,6 +65,8 @@ public class ExecuteDetailQueryAction extends AbstractQbeEngineAction {
 	// INPUT PARAMETERS
 	public static final String LIMIT = "limit";
 	public static final String START = "start";
+	public static final String SORT = "sort";
+	public static final String DIR = "dir";
 	public static final String FILTERS = "filters";
 	public static final String FORM_STATE = "formState";
 	
@@ -170,7 +173,7 @@ public class ExecuteDetailQueryAction extends AbstractQbeEngineAction {
 			for(int i = 0; i < queryFields.size(); i++) {
 				ISelectField queryField = (ISelectField)queryFields.get(i);
 				String[] f = (String[])selectFields.get(i);	
-				transformer.addColumn(f[1]!=null? f[1]:f[0], queryField.getAlias());				
+				transformer.addColumn(f[1]!=null? f[1]:f[0], f[1]!=null? f[1]:f[0]);				
 			}
 			
 			for(int i = 0; i < filters.length(); i++) {
@@ -202,8 +205,15 @@ public class ExecuteDetailQueryAction extends AbstractQbeEngineAction {
 				dataSource.setPwd(connection.getPassword());
 				dataSet.setDataSource(dataSource);
 				dataSet.setQuery(sqlQuery);
-				dataSet.loadData();
+				dataSet.loadData(start, limit, -1);
 				dataStore = dataSet.getDataStore();
+				for(int i = 0; i < dataStore.getMetaData().getFieldCount(); i++) {
+					IFieldMetaData m = dataStore.getMetaData().getFieldMeta(i);
+					ISelectField queryField = (ISelectField)queryFields.get(i);
+					String[] f = (String[])selectFields.get(i);	
+					logger.debug(f[0] + ": " + m.getName() + ": " + queryField.getAlias());
+					m.setAlias(queryField.getAlias());
+				}
 			} catch (Exception e) {
 				logger.debug("Query execution aborted because of an internal exceptian");
 				SpagoBIEngineServiceException exception;
@@ -220,7 +230,7 @@ public class ExecuteDetailQueryAction extends AbstractQbeEngineAction {
 			logger.debug("Query executed succesfully");
 			
 			
-			dataStore.getMetaData().setProperty("resultNumber", new Integer( (int)dataStore.getRecordsCount() ));
+			//dataStore.getMetaData().setProperty("resultNumber", new Integer( (int)dataStore.getRecordsCount() ));
 			
 			resultNumber = (Integer)dataStore.getMetaData().getProperty("resultNumber");
 			Assert.assertNotNull(resultNumber, "property [resultNumber] of the dataStore returned by loadData method of the class [" + dataSet.getClass().getName()+ "] cannot be null");

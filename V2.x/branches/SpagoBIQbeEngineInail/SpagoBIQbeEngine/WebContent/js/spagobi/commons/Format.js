@@ -97,7 +97,7 @@ Sbi.qbe.commons.Format = function(){
 	    		
     		});
 
-        	if(!v) {
+        	if(v === undefined || v === null) {
         		 return format.nullValue;
         	}
         	

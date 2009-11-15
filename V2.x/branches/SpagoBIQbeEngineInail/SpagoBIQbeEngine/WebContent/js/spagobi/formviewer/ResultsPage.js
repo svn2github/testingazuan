@@ -223,6 +223,9 @@ Ext.extend(Sbi.formviewer.ResultsPage, Ext.Panel, {
 			border: false,
 			width: 320,
 			minWidth: 320,
+			displayInfo: false,
+			pageSize: 50,
+			sortable: false,
 			
 			services: {
 				loadDataStore: Sbi.config.serviceRegistry.getServiceUrl({
@@ -236,6 +239,9 @@ Ext.extend(Sbi.formviewer.ResultsPage, Ext.Panel, {
 			region: 'center',
 			frame: false, 
 		    border: false,
+		    displayInfo: true,
+		    pageSize: 25,
+		    sortable: true,
 		    
 		    services: {
 				loadDataStore: Sbi.config.serviceRegistry.getServiceUrl({

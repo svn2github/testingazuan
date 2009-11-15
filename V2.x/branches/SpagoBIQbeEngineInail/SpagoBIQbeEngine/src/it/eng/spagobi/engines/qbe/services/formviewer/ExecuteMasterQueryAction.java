@@ -63,6 +63,10 @@ public class ExecuteMasterQueryAction extends AbstractQbeEngineAction {
 	// INPUT PARAMETERS
 	public static final String LIMIT = "limit";
 	public static final String START = "start";
+	
+	public static final String SORT = "sort";
+	public static final String DIR = "dir";
+
 	public static final String GROUPBY_FIELDS = "groupFields";
 	public static final String FORM_STATE = "formState";
 	
@@ -169,6 +173,7 @@ public class ExecuteMasterQueryAction extends AbstractQbeEngineAction {
 				String as = query.getSelectFieldByIndex(fieldIndex).getAlias();
 				
 				transformer.addGrouByColumn(f[1]!=null? f[1]:f[0], query.getSelectFieldByIndex(fieldIndex).getAlias());
+				//transformer.addGrouByColumn(f[1]!=null? f[1]:f[0], f[1]!=null? f[1]:f[0]);
 			}
 			
 			transformer.addAggregateColumn("*"/*f[1]!=null? f[1]:f[0]*/, "COUNT", "Tot");
@@ -191,7 +196,7 @@ public class ExecuteMasterQueryAction extends AbstractQbeEngineAction {
 				dataSource.setPwd(connection.getPassword());
 				dataSet.setDataSource(dataSource);
 				dataSet.setQuery(sqlQuery);
-				dataSet.loadData();
+				dataSet.loadData(start, limit, -1);
 				dataStore = dataSet.getDataStore();
 			} catch (Exception e) {
 				logger.debug("Query execution aborted because of an internal exceptian");

@@ -49,7 +49,10 @@ Ext.ns("Sbi.formviewer");
 Sbi.formviewer.DataStorePanel = function(config) {
 	
 	var defaultSettings = {
-		//title: LN('sbi.qbe.queryeditor.title')
+			displayInfo: true,
+			pageSize: 25,
+			sortable: false,
+			sortMode: 'remote' // remote | local | auto
 	};
 			
 	if(Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.dataStorePanel) {
@@ -98,7 +101,7 @@ Ext.extend(Sbi.formviewer.DataStorePanel, Ext.Panel, {
 	, execQuery:  function(baseParams) {  
 		this.store.removeAll();
 		this.store.baseParams = baseParams;
-		var requestParameters = {start: 0, limit: 25 };
+		var requestParameters = {start: 0, limit: this.pageSize };
 		this.store.load({params: requestParameters});
 	}
 
@@ -149,6 +152,14 @@ Ext.extend(Sbi.formviewer.DataStorePanel, Ext.Panel, {
 			   
 			   if(meta.fields[i].subtype && meta.fields[i].subtype === 'html') {
 				   meta.fields[i].renderer  =  Sbi.locale.formatters['html'];
+			   }
+			   
+			   if(this.sortable === false) {
+				   meta.fields[i].sortable = false;
+			   } else {
+				   if(meta.fields[i].sortable === undefined) { // keep server value if defined
+					   meta.fields[i].sortable = true;
+				   }
 			   }
 			   
 		   }
@@ -213,9 +224,9 @@ Ext.extend(Sbi.formviewer.DataStorePanel, Ext.Panel, {
 		
 		
 		this.pagingTBar = new Ext.PagingToolbar({
-            pageSize: 25,
+            pageSize: this.pageSize,
             store: this.store,
-            displayInfo: true,
+            displayInfo: this.displayInfo,
             displayMsg: LN('sbi.qbe.datastorepanel.grid.displaymsg'),
             emptyMsg: LN('sbi.qbe.datastorepanel.grid.emptymsg'),
             beforePageText: LN('sbi.qbe.datastorepanel.grid.beforepagetext'),
@@ -229,6 +240,7 @@ Ext.extend(Sbi.formviewer.DataStorePanel, Ext.Panel, {
 		this.pagingTBar.on('render', function() {
 			this.pagingTBar.addItem(this.warningMessageItem);
 			this.warningMessageItem.setVisible(false);
+			this.pagingTBar.loading.setVisible(false);
 		}, this);
 		
 		// create the Grid

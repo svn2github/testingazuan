@@ -102,7 +102,7 @@ public class DataStoreJSONSerializer {
 				}
 				
 				fieldMetaDataJSON = new JSONObject();
-				fieldMetaDataJSON.put("header", fieldMetaData.getName());
+				fieldMetaDataJSON.put("header", fieldMetaData.getAlias() != null? fieldMetaData.getAlias(): fieldMetaData.getName());
 				fieldMetaDataJSON.put("name", "column-" + (i+1));						
 				fieldMetaDataJSON.put("dataIndex", "column-" + (i+1));
 											

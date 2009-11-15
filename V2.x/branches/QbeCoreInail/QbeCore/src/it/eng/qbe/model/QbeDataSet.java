@@ -135,15 +135,17 @@ public class QbeDataSet extends AbstractDataSet {
 			queryFiled = (ISelectField)fieldsIterator.next();
 			
 			dataStoreFieldMeta = new FieldMetadata();
-			dataStoreFieldMeta.setName( queryFiled.getAlias() );
+			dataStoreFieldMeta.setAlias( queryFiled.getAlias() );
 			if(queryFiled.isDataMartField()) {
+				dataStoreFieldMeta.setName( ((DataMartSelectField)queryFiled).getUniqueName() );
 				dataStoreFieldMeta.setProperty("calculated", new Boolean(false));
 				dataStoreFieldMeta.setProperty("uniqueName", ((DataMartSelectField)queryFiled).getUniqueName());
 				dataStoreFieldMeta.setType(Object.class);
 			} else {
 				CalculatedSelectField claculatedQueryField = (CalculatedSelectField)queryFiled;
+				dataStoreFieldMeta.setName(claculatedQueryField.getAlias());
 				dataStoreFieldMeta.setProperty("calculated", new Boolean(true));	
-				// fixme also calculated field must have uniquename for uniformity
+				// FIXME also calculated field must have uniquename for uniformity
 				dataStoreFieldMeta.setProperty("uniqueName", claculatedQueryField.getAlias());
 				DataSetVariable variable = new DataSetVariable(claculatedQueryField.getAlias(), claculatedQueryField.getType(), claculatedQueryField.getExpression());
 				dataStoreFieldMeta.setProperty("variable", variable);	

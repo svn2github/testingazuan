@@ -263,6 +263,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			}
 			SourceBean sb = new SourceBean("ROWS");
 			finder.addOrder(Order.desc("beginDt"));
+			finder.addOrder(Order.desc("idKpiInstanceValue"));
 			logger.debug("Order Date Criteria setted");
 			finder.setMaxResults(10);
 			logger.debug("Max result to 10 setted");
@@ -330,6 +331,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			}
 			SourceBean sb = new SourceBean("ROWS");
 			finder.addOrder(Order.desc("beginDt"));
+			finder.addOrder(Order.desc("idKpiInstanceValue"));
 			logger.debug("Order Date Criteria setted");
 
 			List l = finder.list();

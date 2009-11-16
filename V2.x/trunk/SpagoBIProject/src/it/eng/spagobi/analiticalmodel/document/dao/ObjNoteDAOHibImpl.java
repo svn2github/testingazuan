@@ -70,7 +70,7 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 			
 			SbiObjNotes hibObjNote = null;
 			List l = query.list();
-			if(l!=null && l.isEmpty()){
+			if(l!=null && !l.isEmpty()){
 				hibObjNote = (SbiObjNotes)l.get(0);
 			}
 			if(hibObjNote!=null) {

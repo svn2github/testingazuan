@@ -75,7 +75,7 @@ Sbi.formviewer.ResultsPage = function(config) {
 		items: [
 		    '->'
 		    , {
-				text: 'Indietro',
+				text: LN('sbi.formviewer.resultspage.backtoform'),
 				handler: function() {this.fireEvent('edit');},
 				scope: this
 		    }

@@ -69,3 +69,8 @@ Sbi.locale.ln['sbi.formviewer.dynamicfilterspanel.tovalue'] = 'Al valore';
 Sbi.locale.ln['sbi.formviewer.groupingvariablespanel.title'] = 'Variabili di raggruppamento';
 Sbi.locale.ln['sbi.formviewer.groupingvariablespanel.variable-1'] = 'Prima variabile';
 Sbi.locale.ln['sbi.formviewer.groupingvariablespanel.variable-2'] = 'Seconda variabile';
+
+//===================================================================
+//RESULTS PAGE
+//===================================================================
+Sbi.locale.ln['sbi.formviewer.resultspage.backtoform'] = 'Torna al form';

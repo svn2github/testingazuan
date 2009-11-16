@@ -68,11 +68,14 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 			query.setInteger(0, biobjId.intValue());
 			query.setString(1, execIdentif);
 			
-			SbiObjNotes hibObjNote = (SbiObjNotes)query.uniqueResult();
+			SbiObjNotes hibObjNote = null;
+			List l = query.list();
+			if(l!=null && l.isEmpty()){
+				hibObjNote = (SbiObjNotes)l.get(0);
+			}
 			if(hibObjNote!=null) {
 				objNote = toObjNote(hibObjNote);
 			}
-			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
 			if (tx != null)

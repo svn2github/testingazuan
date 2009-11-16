@@ -21,12 +21,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.document.handlers;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.commons.dao.DAOFactory;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -128,6 +133,7 @@ public class BIObjectNotesManager {
 		while(iterBiobjPars.hasNext()){
 			biobjpar = (BIObjectParameter)iterBiobjPars.next();
 			Parameter par = biobjpar.getParameter();
+			
 			if((par==null) || (!par.isFunctional())){
 				continue;
 			}

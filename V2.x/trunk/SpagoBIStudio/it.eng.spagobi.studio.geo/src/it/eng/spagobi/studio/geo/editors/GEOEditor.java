@@ -63,6 +63,7 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
@@ -167,33 +168,6 @@ public class GEOEditor extends EditorPart{
 			e.printStackTrace();
 		}
 
-		//mapInfos.put(sdkMap.getName(), sdkMap);
-
-
-		// Initialize HierarchiesDesigner
-		//		dataSets = new Vector<String>();
-		//		for (int i=0; i< 4 ; i++){
-		//			dataSets.add("dataset"+i);
-		//		}
-		//		
-		//		maps = new Vector<String>();
-		//		for (int i=0; i< 5 ; i++){
-		//			maps.add("map"+i);
-		//		}
-
-		//riferita a metadata
-		//		datasetInfos = new HashMap<String, String>();		
-		//		datasetInfos.put("column", "region_id");
-		//		datasetInfos.put("type", "measure");
-		//		datasetInfos.put("select", "geoid");
-		//		datasetInfos.put("aggregation", "sum");
-		//		
-		//		//riferita a layers
-		//		mapInfos = new HashMap<String, String>();
-		//		mapInfos.put("name", "States");
-		//		mapInfos.put("description", "States");
-		//		mapInfos.put("selected", "true");
-		//		mapInfos.put("color", "#4682B4");
 
 		SpagoBILogger.infoLog("END: "+GEOEditor.class.toString()+" initialize Editor");	
 	}
@@ -201,7 +175,6 @@ public class GEOEditor extends EditorPart{
 
 	@Override
 	public void createPartControl(Composite parent) {
-
 
 		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
 		final ScrolledForm form = toolkit.createScrolledForm(parent);
@@ -236,10 +209,7 @@ public class GEOEditor extends EditorPart{
 		gl.marginRight=5;
 		gl.marginLeft=5;
 		sectionClient.setLayout(gl);
-		
-
-		sectionClient.setLayout(gl);
-		section.setClient(sectionClient);
+	
 
 		HierarchiesDesigner designer = new HierarchiesDesigner(sectionClient, this);
 		
@@ -263,8 +233,13 @@ public class GEOEditor extends EditorPart{
 		createDatasetTable(sectionClient, datasetGroup);
 		createMapTable(sectionClient,mapGroup);
 
-		designer.createHierarchiesTree(sectionClient);
+		designer.createHierarchiesTree(sectionClient, toolkit);
+		section.setClient(sectionClient);
+		
+		section.pack();
+		sectionClient.pack();
 
+		
 		SpagoBILogger.infoLog("END "+GEOEditor.class.toString()+": create Part Control function");
 
 	}
@@ -380,7 +355,7 @@ public class GEOEditor extends EditorPart{
 						editor.setEditor(comboAgg, item, DATASET_AGGREGATION);
 					
 						datasetTable.pack();
-						//datasetTable.redraw();
+						mapTable.pack();
 					}
 				}
 				// resize the row height using a MeasureItem listener
@@ -559,7 +534,7 @@ public class GEOEditor extends EditorPart{
 				});
 
 				mapTable.pack();
-				mapTable.redraw();
+				datasetTable.pack();
 				
 				sectionClient.getParent().pack();
 				sectionClient.getParent().redraw();

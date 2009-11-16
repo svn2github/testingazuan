@@ -385,167 +385,171 @@ public class DocumentCompositionConfiguration {
 				parametersSB = (SourceBean)documentSB.getAttribute("PARAMETERS");	
 				if(parametersSB!=null){
 					paramList = parametersSB.getAttributeAsList("PARAMETER");
-				Properties param = new Properties();
-				//loop on parameters of single document
-				for(int j = 0; j < paramList.size(); j++) {
-					paramSB = (SourceBean)paramList.get(j);
-					String sbiParLabel = (paramSB.getAttribute("sbi_par_label")==null)?"":(String)paramSB.getAttribute("sbi_par_label");
-					param.setProperty("sbi_par_label_param_"+i+"_"+j, sbiParLabel);
-					String typePar = (paramSB.getAttribute("type")==null)?"":(String)paramSB.getAttribute("type");
-					param.setProperty("type_par_"+i+"_"+j, typePar);
-					String defaultValuePar = (paramSB.getAttribute("default_value")==null)?"":(String)paramSB.getAttribute("default_value");
-					param.setProperty("default_value_param_"+i+"_"+j, defaultValuePar);
+					Properties param = new Properties();
+					//loop on parameters of single document
+					for(int j = 0; j < paramList.size(); j++) {
+						paramSB = (SourceBean)paramList.get(j);
+						String sbiParLabel = (paramSB.getAttribute("sbi_par_label")==null)?"":(String)paramSB.getAttribute("sbi_par_label");
+						param.setProperty("sbi_par_label_param_"+i+"_"+j, sbiParLabel);
+						String typePar = (paramSB.getAttribute("type")==null)?"":(String)paramSB.getAttribute("type");
+						param.setProperty("type_par_"+i+"_"+j, typePar);
+						String defaultValuePar = (paramSB.getAttribute("default_value")==null)?"":(String)paramSB.getAttribute("default_value");
+						param.setProperty("default_value_param_"+i+"_"+j, defaultValuePar);
 
-					refreshSB = (SourceBean)paramSB.getAttribute("REFRESH");				
-					refreshDocList = refreshSB.getAttributeAsList("REFRESH_DOC_LINKED");
-					Properties paramRefreshLinked = new Properties();
-					//loop on document linked to single parameter
-					int k = 0;
-					for(k = 0; k < refreshDocList.size(); k++) {
-						refreshDocLinkedSB = (SourceBean)refreshDocList.get(k);
-						String labelDoc = (refreshDocLinkedSB.getAttribute("labelDoc")==null)?"":(String)refreshDocLinkedSB.getAttribute("labelDoc");
-						paramRefreshLinked.setProperty("refresh_doc_linked", labelDoc);
-						String labelPar = (refreshDocLinkedSB.getAttribute("labelParam")==null)?"":(String)refreshDocLinkedSB.getAttribute("labelParam");
-						paramRefreshLinked.setProperty("refresh_par_linked", labelPar);
-						String defaultValueLinked = (paramSB.getAttribute("default_value")==null)?"":(String)paramSB.getAttribute("default_value");
-						paramRefreshLinked.setProperty("default_value_linked", defaultValueLinked);
-						param.setProperty("param_linked_"+i+"_"+j+"_"+k, paramRefreshLinked.toString());
+						refreshSB = (SourceBean)paramSB.getAttribute("REFRESH");				
+						if(refreshSB!=null){
+							refreshDocList = refreshSB.getAttributeAsList("REFRESH_DOC_LINKED");
+							if(refreshDocList!=null){
+								Properties paramRefreshLinked = new Properties();
+								//loop on document linked to single parameter
+								int k = 0;
+								for(k = 0; k < refreshDocList.size(); k++) {
+									refreshDocLinkedSB = (SourceBean)refreshDocList.get(k);
+									String labelDoc = (refreshDocLinkedSB.getAttribute("labelDoc")==null)?"":(String)refreshDocLinkedSB.getAttribute("labelDoc");
+									paramRefreshLinked.setProperty("refresh_doc_linked", labelDoc);
+									String labelPar = (refreshDocLinkedSB.getAttribute("labelParam")==null)?"":(String)refreshDocLinkedSB.getAttribute("labelParam");
+									paramRefreshLinked.setProperty("refresh_par_linked", labelPar);
+									String defaultValueLinked = (paramSB.getAttribute("default_value")==null)?"":(String)paramSB.getAttribute("default_value");
+									paramRefreshLinked.setProperty("default_value_linked", defaultValueLinked);
+									param.setProperty("param_linked_"+i+"_"+j+"_"+k, paramRefreshLinked.toString());
+								}
+								param.setProperty("num_doc_linked_param_"+i+"_"+j, new Integer(k).toString());
+							}
+						}
 					}
-					param.setProperty("num_doc_linked_param_"+i+"_"+j, new Integer(k).toString());
+					document.setParams(param);
 				}
-				document.setParams(param);
-			}
-			addDocument(document);
-		}		
-	}catch (Exception e){
-		logger.error ("Error while initializing the document. " , e);
+				addDocument(document);
+			}		
+		}catch (Exception e){
+			logger.error ("Error while initializing the document. " , e);
+		}
+		logger.debug("OUT");
 	}
-	logger.debug("OUT");
-}
 
 
-/**
- * Gets the document.
- * 
- * @param documentName the document name
- * 
- * @return the document
- */
-public Document getDocument(String documentName) {
-	return (Document)documentsMap.get(documentName);
-}
+	/**
+	 * Gets the document.
+	 * 
+	 * @param documentName the document name
+	 * 
+	 * @return the document
+	 */
+	public Document getDocument(String documentName) {
+		return (Document)documentsMap.get(documentName);
+	}
 
 
-/**
- * Gets the label.
- * 
- * @param documentLabel the document label
- * 
- * @return the label
- */
-public String getLabel(String documentLabel) {
-	Document document = getDocument(documentLabel);
-	if(document != null) return document.getSbiObjLabel();
+	/**
+	 * Gets the label.
+	 * 
+	 * @param documentLabel the document label
+	 * 
+	 * @return the label
+	 */
+	public String getLabel(String documentLabel) {
+		Document document = getDocument(documentLabel);
+		if(document != null) return document.getSbiObjLabel();
 
-	return null;
-}
+		return null;
+	}
 
 
-/**
- * Gets the labels array.
- * 
- * @return the labels array
- */
-public List getLabelsArray() {
-	logger.debug("IN");
-	Collection collLabels = documentsMap.values();
-	List retLabels = new ArrayList();
-	Object[] arrDocs = (Object[])collLabels.toArray();
-	try{
-		int numDocAdded = 0;
-		while (numDocAdded < arrDocs.length){
+	/**
+	 * Gets the labels array.
+	 * 
+	 * @return the labels array
+	 */
+	public List getLabelsArray() {
+		logger.debug("IN");
+		Collection collLabels = documentsMap.values();
+		List retLabels = new ArrayList();
+		Object[] arrDocs = (Object[])collLabels.toArray();
+		try{
+			int numDocAdded = 0;
+			while (numDocAdded < arrDocs.length){
+				for(int i=0; i < arrDocs.length; i++){
+					Document tmpDoc =(Document) arrDocs[i];
+					if (tmpDoc.getNumOrder() == numDocAdded){
+						retLabels.add(tmpDoc.getSbiObjLabel());
+						numDocAdded ++;
+					}
+				}
+			}
+		}catch(Exception e){
+			logger.error("Error while getting documents label ", e);
+			//System.out.println(e);
+		}
+		logger.debug("OUT");
+		return retLabels;
+
+	}
+
+	/**
+	 * Gets the sbi obj labels array.
+	 * 
+	 * @return the sbi obj labels array
+	 */
+	public List getSbiObjLabelsArray() {
+		logger.debug("IN");
+
+		Collection collLabels = documentsMap.values();
+		List retLabels = new ArrayList();
+		Object[] arrDocs = (Object[])collLabels.toArray();
+		try{
 			for(int i=0; i < arrDocs.length; i++){
 				Document tmpDoc =(Document) arrDocs[i];
-				if (tmpDoc.getNumOrder() == numDocAdded){
-					retLabels.add(tmpDoc.getSbiObjLabel());
-					numDocAdded ++;
-				}
+				retLabels.add(tmpDoc.getSbiObjLabel());
 			}
+		}catch(Exception e){
+			logger.error("Error while getting documents label.", e);
 		}
-	}catch(Exception e){
-		logger.error("Error while getting documents label ", e);
-		//System.out.println(e);
+		logger.debug("OUT");
+		return retLabels;
+
 	}
-	logger.debug("OUT");
-	return retLabels;
 
-}
+	/**
+	 * Gets the template file.
+	 * 
+	 * @return the template file
+	 */
+	public String getTemplateFile() {
+		return templateFile;
+	}
 
-/**
- * Gets the sbi obj labels array.
- * 
- * @return the sbi obj labels array
- */
-public List getSbiObjLabelsArray() {
-	logger.debug("IN");
+	/**
+	 * Sets the template file.
+	 * 
+	 * @param templateFile the new template file
+	 */
+	public void setTemplateFile(String templateFile) {
+		this.templateFile = templateFile;
+	}
 
-	Collection collLabels = documentsMap.values();
-	List retLabels = new ArrayList();
-	Object[] arrDocs = (Object[])collLabels.toArray();
-	try{
-		for(int i=0; i < arrDocs.length; i++){
-			Document tmpDoc =(Document) arrDocs[i];
-			retLabels.add(tmpDoc.getSbiObjLabel());
+	/**
+	 * Gets the parameters array.
+	 * 
+	 * @return the parameters array
+	 */
+	public List getParametersArray() {
+		logger.debug("IN");
+		Collection collDocs = documentsMap.values();
+		List retParams = new ArrayList();
+		Object[] arrPars = (Object[])collDocs.toArray();
+		try{
+			for(int i=0; i < arrPars.length; i++){
+				Document tmpDoc =(Document) arrPars[i];
+				retParams.add(tmpDoc.getParams());
+			}
+		}catch(Exception e){
+			logger.error("Error while getting parameters.", e);
 		}
-	}catch(Exception e){
-		logger.error("Error while getting documents label.", e);
+		logger.debug("OUT");
+		return retParams;
+
 	}
-	logger.debug("OUT");
-	return retLabels;
-
-}
-
-/**
- * Gets the template file.
- * 
- * @return the template file
- */
-public String getTemplateFile() {
-	return templateFile;
-}
-
-/**
- * Sets the template file.
- * 
- * @param templateFile the new template file
- */
-public void setTemplateFile(String templateFile) {
-	this.templateFile = templateFile;
-}
-
-/**
- * Gets the parameters array.
- * 
- * @return the parameters array
- */
-public List getParametersArray() {
-	logger.debug("IN");
-	Collection collDocs = documentsMap.values();
-	List retParams = new ArrayList();
-	Object[] arrPars = (Object[])collDocs.toArray();
-	try{
-		for(int i=0; i < arrPars.length; i++){
-			Document tmpDoc =(Document) arrPars[i];
-			retParams.add(tmpDoc.getParams());
-		}
-	}catch(Exception e){
-		logger.error("Error while getting parameters.", e);
-	}
-	logger.debug("OUT");
-	return retParams;
-
-}
-/*
+	/*
 	public List getParametersForDocument(String docLabel) {
 		Collection collDocs = documentsMap.values();
 		List retParams = new ArrayList();
@@ -562,373 +566,373 @@ public List getParametersArray() {
 		return retParams;
 
 	}
- */
+	 */
 
-/**
- * Gets the parameters for document.
- * 
- * @param docLabel the doc label
- * 
- * @return the parameters for document
- */
-public HashMap getParametersForDocument(String docLabel) {
-	logger.debug("IN");
-	Collection collDocs = documentsMap.values();
-	HashMap retParams = new LinkedHashMap();
-	Object[] arrDocs = (Object[])collDocs.toArray();
-
-	try{
-		int cont = 0;
-		while (cont < arrDocs.length){
-			//loop on documents
-			for(int i=0; i < arrDocs.length; i++){
-				Document tmpDoc =(Document) arrDocs[i];
-				if (tmpDoc.getNumOrder() == cont){
-					if (tmpDoc.getSbiObjLabel().equalsIgnoreCase(docLabel)){
-						Properties prop = (Properties)tmpDoc.getParams();
-						Enumeration e =  prop.keys();
-						int totParsLinked = 0;
-						//loop on parameters of single document
-						while (e.hasMoreElements() ){
-							String key = (String)e.nextElement();
-							retParams.put(key, (String)prop.get(key));
-							if (key.startsWith("param_linked_"+(tmpDoc.getNumOrder())))
-								totParsLinked ++;
-						}
-						retParams.put("num_doc_linked_"+(tmpDoc.getNumOrder()), Integer.valueOf(totParsLinked));
-					}
-					cont ++;
-				}
-			}
-		}
-	}catch(Exception e){
-		logger.error("Error while reading parameters.", e);
-
-
-	}
-	logger.debug("OUT");
-	return retParams;
-
-}
-
-/**
- * Reads and defines all maps with all information about configuration for refresh.
- * 
- * @param docLabel the logical label of document presents into document composition
- */
-public void getInfoDocumentLinked(String docLabel) {
-	logger.debug("IN");
-	Document tmpDoc = getDocument(docLabel);
-	int numDoc = 0;
-	if (tmpDoc != null){
-		numDoc = tmpDoc.getNumOrder();
-		//set syle for div
-		lstDivStyle.put("STYLE_DOC__"+numDoc, tmpDoc.getStyle());
-		lstDocLinked.put("MAIN_DOC_LABEL__"+numDoc, tmpDoc.getSbiObjLabel());
-		lstDocTitles.put("TITLE_DOC__"+ docLabel, tmpDoc.getTitle());
-		//gets layout informations (width and height) for next settings of ext-panels
-		String docStyles = tmpDoc.getStyle();
-		String tmpStyle = "";
-		Integer[] widthPxValues = tmpDoc.getVideoWidth();
-		Integer[] heightPxValues = tmpDoc.getVideoHeight();
-
-		if (docStyles != null){
-			String[] propValues = docStyles.split(";");
-			for (int i=0; i<propValues.length; i++){
-				String key = propValues[i].substring(0, propValues[i].indexOf(":"));
-				String value = propValues[i].substring(propValues[i].indexOf(":")+1);
-				if (key.equalsIgnoreCase("WIDTH") || key.equalsIgnoreCase("HEIGHT")){
-					if (value.endsWith("%")){
-						//if the value is defined in percentage, converts it in pixel value
-						for (int j=0; j<percentageValues.length; j++){
-							int diff = Integer.valueOf(value.substring(0, value.length()-1)).compareTo(percentageValues[j]);
-							if (diff == 0){
-								if (key.equalsIgnoreCase("WIDTH"))
-									value = widthPxValues[j].toString();
-								else if (key.equalsIgnoreCase("HEIGHT"))
-									value = heightPxValues[j].toString();
-								break;
-							}
-							else if (diff > 0 && j > 0){
-								if (key.equalsIgnoreCase("WIDTH"))
-									value = widthPxValues[j-1].toString();
-								else if (key.equalsIgnoreCase("HEIGHT"))
-									value = heightPxValues[j-1].toString();
-								break;
-							}
-						}
-					}
-					else if (value.endsWith("px"))
-						value = value.substring(0, value.length()-2);
-
-					tmpStyle += key.toUpperCase() + "_" + value + "|";
-				}
-			}
-			tmpStyle = tmpStyle.substring(0, tmpStyle.length()-1);
-			lstPanelStyle.put("STYLE__"  + docLabel , tmpStyle);
-		}
+	/**
+	 * Gets the parameters for document.
+	 * 
+	 * @param docLabel the doc label
+	 * 
+	 * @return the parameters for document
+	 */
+	public HashMap getParametersForDocument(String docLabel) {
+		logger.debug("IN");
+		Collection collDocs = documentsMap.values();
+		HashMap retParams = new LinkedHashMap();
+		Object[] arrDocs = (Object[])collDocs.toArray();
 
 		try{
-			HashMap paramsDoc = getParametersForDocument(docLabel);
-			//loop on parameters of document
-			int contOutPar = 0;
-
-			for (int i=0; i< paramsDoc.size(); i++){
-				int numParAdd = 0;
-				String typePar = (paramsDoc.get("type_par_"+(numDoc)+"_"+i)==null)?"":(String)paramsDoc.get("type_par_"+(numDoc)+"_"+i);
-				//if (typePar != null && typePar.equalsIgnoreCase("OUT")){
-
-				if (typePar != null && typePar.indexOf("OUT")>= 0){
-					lstFieldLinked.put("SBI_LABEL_PAR_MASTER__"+(numDoc)+"__"+contOutPar, (String)paramsDoc.get("sbi_par_label_param_"+(numDoc)+"_"+i));
-					Integer totalNumDocLinked = (paramsDoc.get("num_doc_linked_"+(numDoc))==null)?new Integer(0):(Integer)paramsDoc.get("num_doc_linked_"+(numDoc));
-					Integer numDocLinked = (paramsDoc.get("num_doc_linked_param_"+(numDoc)+"_"+i)==null)?new Integer(0):Integer.valueOf((String)paramsDoc.get("num_doc_linked_param_"+(numDoc)+"_"+i));
-					lstFieldLinked.put("NUM_DOC_FIELD_LINKED__"+(numDoc)+"__"+contOutPar, numDocLinked);
-					lstFieldLinked.put("TOT_NUM_DOC_FIELD_LINKED__"+(numDoc)+"__"+contOutPar, totalNumDocLinked);
-					//loop on document linked to parameter
-					for (int j=0; j<numDocLinked.intValue(); j++){
-
-						String paramLinked = (paramsDoc.get("param_linked_"+(numDoc)+"_"+i+"_"+j)==null)?"":(String)paramsDoc.get("param_linked_"+(numDoc)+"_"+i+"_"+j);
-						String[] params = paramLinked.split(",");
-						Document linkedDoc = null;
-
-						//loop on parameters of document linked
-						for (int k=0; k<params.length; k++) {
-							String labelDocLinked = params[k];
-							labelDocLinked = labelDocLinked.replace("{", "");
-							labelDocLinked = labelDocLinked.replace("}", "");
-							if (labelDocLinked.trim().startsWith("refresh_doc_linked")){
-								//get document linked 
-								linkedDoc = getDocument(labelDocLinked.substring(labelDocLinked.indexOf("=")+1));
-								//lstDocLinked.put("DOC_LABEL_LINKED__"+numDoc+"__"+j, linkedDoc.getSbiObjLabel() + "|"+ linkedDoc.getLabel());
-
+			int cont = 0;
+			while (cont < arrDocs.length){
+				//loop on documents
+				for(int i=0; i < arrDocs.length; i++){
+					Document tmpDoc =(Document) arrDocs[i];
+					if (tmpDoc.getNumOrder() == cont){
+						if (tmpDoc.getSbiObjLabel().equalsIgnoreCase(docLabel)){
+							Properties prop = (Properties)tmpDoc.getParams();
+							Enumeration e =  prop.keys();
+							int totParsLinked = 0;
+							//loop on parameters of single document
+							while (e.hasMoreElements() ){
+								String key = (String)e.nextElement();
+								retParams.put(key, (String)prop.get(key));
+								if (key.startsWith("param_linked_"+(tmpDoc.getNumOrder())))
+									totParsLinked ++;
 							}
-							else if (labelDocLinked.trim().startsWith("refresh_par_linked")){
-								String tmpLabelLinked = labelDocLinked.substring(labelDocLinked.indexOf("=")+1);
-								HashMap paramsDocLinked = getParametersForDocument(linkedDoc.getSbiObjLabel());
-								int numLinked = linkedDoc.getNumOrder();
-								for (int x=0; x< paramsDocLinked.size(); x++){
-									String sbiLabelPar = (paramsDocLinked.get("sbi_par_label_param_"+numLinked+"_"+x)==null)?"":(String)paramsDocLinked.get("sbi_par_label_param_"+(numLinked)+"_"+x);
-									//String labelPar = (paramsDocLinked.get("label_param_"+numLinked+"_"+x)==null)?"":(String)paramsDocLinked.get("label_param_"+(numLinked)+"_"+x);
-									if (sbiLabelPar != null && !sbiLabelPar.equals("") &&sbiLabelPar.equalsIgnoreCase(tmpLabelLinked)){
-										lstDocLinked.put("DOC_LABEL_LINKED__"+numDoc+"__"+contOutPar+"__"+numParAdd, linkedDoc.getSbiObjLabel());
-										lstFieldLinked.put("DOC_FIELD_LINKED__"+numDoc+"__"+contOutPar+"__"+numParAdd, linkedDoc.getSbiObjLabel()+"__"+sbiLabelPar );
-										numParAdd ++;
-										break;
-									}
-									else if (sbiLabelPar == null || sbiLabelPar.equals(""))
-										break;
-								}								
-							}
+							retParams.put("num_doc_linked_"+(tmpDoc.getNumOrder()), Integer.valueOf(totParsLinked));
 						}
+						cont ++;
 					}
-					contOutPar ++;
-				} 
+				}
 			}
-
 		}catch(Exception e){
-			logger.error("Error while getting informations about documents ", e);
+			logger.error("Error while reading parameters.", e);
+
+
 		}
 		logger.debug("OUT");
-	}
-}
+		return retParams;
 
-/**
- * Gets the documents array.
- * 
- * @return the documents array
- */
-public List getDocumentsArray() {
-	Collection collDocs = documentsMap.values();
-	List retDocs = new ArrayList();
-	Object[] arrDocs = (Object[])collDocs.toArray();
-	try{
-		int numDocAdded = 0;
-		while (numDocAdded < arrDocs.length){
-			for(int i=0; i < arrDocs.length; i++){
-				Document tmpDoc =(Document) arrDocs[i];
-				if (tmpDoc.getNumOrder() == numDocAdded){
-					retDocs.add(tmpDoc);
-					numDocAdded ++;
+	}
+
+	/**
+	 * Reads and defines all maps with all information about configuration for refresh.
+	 * 
+	 * @param docLabel the logical label of document presents into document composition
+	 */
+	public void getInfoDocumentLinked(String docLabel) {
+		logger.debug("IN");
+		Document tmpDoc = getDocument(docLabel);
+		int numDoc = 0;
+		if (tmpDoc != null){
+			numDoc = tmpDoc.getNumOrder();
+			//set syle for div
+			lstDivStyle.put("STYLE_DOC__"+numDoc, tmpDoc.getStyle());
+			lstDocLinked.put("MAIN_DOC_LABEL__"+numDoc, tmpDoc.getSbiObjLabel());
+			lstDocTitles.put("TITLE_DOC__"+ docLabel, tmpDoc.getTitle());
+			//gets layout informations (width and height) for next settings of ext-panels
+			String docStyles = tmpDoc.getStyle();
+			String tmpStyle = "";
+			Integer[] widthPxValues = tmpDoc.getVideoWidth();
+			Integer[] heightPxValues = tmpDoc.getVideoHeight();
+
+			if (docStyles != null){
+				String[] propValues = docStyles.split(";");
+				for (int i=0; i<propValues.length; i++){
+					String key = propValues[i].substring(0, propValues[i].indexOf(":"));
+					String value = propValues[i].substring(propValues[i].indexOf(":")+1);
+					if (key.equalsIgnoreCase("WIDTH") || key.equalsIgnoreCase("HEIGHT")){
+						if (value.endsWith("%")){
+							//if the value is defined in percentage, converts it in pixel value
+							for (int j=0; j<percentageValues.length; j++){
+								int diff = Integer.valueOf(value.substring(0, value.length()-1)).compareTo(percentageValues[j]);
+								if (diff == 0){
+									if (key.equalsIgnoreCase("WIDTH"))
+										value = widthPxValues[j].toString();
+									else if (key.equalsIgnoreCase("HEIGHT"))
+										value = heightPxValues[j].toString();
+									break;
+								}
+								else if (diff > 0 && j > 0){
+									if (key.equalsIgnoreCase("WIDTH"))
+										value = widthPxValues[j-1].toString();
+									else if (key.equalsIgnoreCase("HEIGHT"))
+										value = heightPxValues[j-1].toString();
+									break;
+								}
+							}
+						}
+						else if (value.endsWith("px"))
+							value = value.substring(0, value.length()-2);
+
+						tmpStyle += key.toUpperCase() + "_" + value + "|";
+					}
+				}
+				tmpStyle = tmpStyle.substring(0, tmpStyle.length()-1);
+				lstPanelStyle.put("STYLE__"  + docLabel , tmpStyle);
+			}
+
+			try{
+				HashMap paramsDoc = getParametersForDocument(docLabel);
+				//loop on parameters of document
+				int contOutPar = 0;
+
+				for (int i=0; i< paramsDoc.size(); i++){
+					int numParAdd = 0;
+					String typePar = (paramsDoc.get("type_par_"+(numDoc)+"_"+i)==null)?"":(String)paramsDoc.get("type_par_"+(numDoc)+"_"+i);
+					//if (typePar != null && typePar.equalsIgnoreCase("OUT")){
+
+					if (typePar != null && typePar.indexOf("OUT")>= 0){
+						lstFieldLinked.put("SBI_LABEL_PAR_MASTER__"+(numDoc)+"__"+contOutPar, (String)paramsDoc.get("sbi_par_label_param_"+(numDoc)+"_"+i));
+						Integer totalNumDocLinked = (paramsDoc.get("num_doc_linked_"+(numDoc))==null)?new Integer(0):(Integer)paramsDoc.get("num_doc_linked_"+(numDoc));
+						Integer numDocLinked = (paramsDoc.get("num_doc_linked_param_"+(numDoc)+"_"+i)==null)?new Integer(0):Integer.valueOf((String)paramsDoc.get("num_doc_linked_param_"+(numDoc)+"_"+i));
+						lstFieldLinked.put("NUM_DOC_FIELD_LINKED__"+(numDoc)+"__"+contOutPar, numDocLinked);
+						lstFieldLinked.put("TOT_NUM_DOC_FIELD_LINKED__"+(numDoc)+"__"+contOutPar, totalNumDocLinked);
+						//loop on document linked to parameter
+						for (int j=0; j<numDocLinked.intValue(); j++){
+
+							String paramLinked = (paramsDoc.get("param_linked_"+(numDoc)+"_"+i+"_"+j)==null)?"":(String)paramsDoc.get("param_linked_"+(numDoc)+"_"+i+"_"+j);
+							String[] params = paramLinked.split(",");
+							Document linkedDoc = null;
+
+							//loop on parameters of document linked
+							for (int k=0; k<params.length; k++) {
+								String labelDocLinked = params[k];
+								labelDocLinked = labelDocLinked.replace("{", "");
+								labelDocLinked = labelDocLinked.replace("}", "");
+								if (labelDocLinked.trim().startsWith("refresh_doc_linked")){
+									//get document linked 
+									linkedDoc = getDocument(labelDocLinked.substring(labelDocLinked.indexOf("=")+1));
+									//lstDocLinked.put("DOC_LABEL_LINKED__"+numDoc+"__"+j, linkedDoc.getSbiObjLabel() + "|"+ linkedDoc.getLabel());
+
+								}
+								else if (labelDocLinked.trim().startsWith("refresh_par_linked")){
+									String tmpLabelLinked = labelDocLinked.substring(labelDocLinked.indexOf("=")+1);
+									HashMap paramsDocLinked = getParametersForDocument(linkedDoc.getSbiObjLabel());
+									int numLinked = linkedDoc.getNumOrder();
+									for (int x=0; x< paramsDocLinked.size(); x++){
+										String sbiLabelPar = (paramsDocLinked.get("sbi_par_label_param_"+numLinked+"_"+x)==null)?"":(String)paramsDocLinked.get("sbi_par_label_param_"+(numLinked)+"_"+x);
+										//String labelPar = (paramsDocLinked.get("label_param_"+numLinked+"_"+x)==null)?"":(String)paramsDocLinked.get("label_param_"+(numLinked)+"_"+x);
+										if (sbiLabelPar != null && !sbiLabelPar.equals("") &&sbiLabelPar.equalsIgnoreCase(tmpLabelLinked)){
+											lstDocLinked.put("DOC_LABEL_LINKED__"+numDoc+"__"+contOutPar+"__"+numParAdd, linkedDoc.getSbiObjLabel());
+											lstFieldLinked.put("DOC_FIELD_LINKED__"+numDoc+"__"+contOutPar+"__"+numParAdd, linkedDoc.getSbiObjLabel()+"__"+sbiLabelPar );
+											numParAdd ++;
+											break;
+										}
+										else if (sbiLabelPar == null || sbiLabelPar.equals(""))
+											break;
+									}								
+								}
+							}
+						}
+						contOutPar ++;
+					} 
+				}
+
+			}catch(Exception e){
+				logger.error("Error while getting informations about documents ", e);
+			}
+			logger.debug("OUT");
+		}
+	}
+
+	/**
+	 * Gets the documents array.
+	 * 
+	 * @return the documents array
+	 */
+	public List getDocumentsArray() {
+		Collection collDocs = documentsMap.values();
+		List retDocs = new ArrayList();
+		Object[] arrDocs = (Object[])collDocs.toArray();
+		try{
+			int numDocAdded = 0;
+			while (numDocAdded < arrDocs.length){
+				for(int i=0; i < arrDocs.length; i++){
+					Document tmpDoc =(Document) arrDocs[i];
+					if (tmpDoc.getNumOrder() == numDocAdded){
+						retDocs.add(tmpDoc);
+						numDocAdded ++;
+					}
+				}
+			}
+		}catch(Exception e){
+			System.out.println(e);
+		}
+		return retDocs;
+
+	}
+
+	private HashMap getMapFromString(String strToConvert){
+		HashMap retHash = new LinkedHashMap();
+		String[] tmpStr = strToConvert.split(",");
+		for (int i=0; i < tmpStr.length; i++){
+			String key = tmpStr[i].substring(0, tmpStr[i].indexOf("="));
+			String value = tmpStr[i].substring(tmpStr[i].indexOf("=")+1);
+			retHash.put(key, value);
+		}
+		return retHash;
+	}
+
+	private Integer[] getVideoDimensions(String type, Integer value){
+		Integer[] realDimensions = null;
+		int pos = 0;
+		if (type.equalsIgnoreCase("width")){
+			for (int i=0; i<generalWidthDimensions.length; i++){
+				if (value.compareTo(generalWidthDimensions[i])==0){
+					String labelDim = "widthPxValues"+generalWidthDimensions[i].toString();
+					realDimensions = (Integer[])lstDimensions.get(labelDim);
+					break;
+				}
+				else if (value.compareTo(generalWidthDimensions[i])>0){
+					if (i>0)
+						pos = i-1;
+					String labelDim = "widthPxValues"+generalWidthDimensions[pos].toString();
+					realDimensions = (Integer[])lstDimensions.get(labelDim);
+					break;
 				}
 			}
 		}
-	}catch(Exception e){
-		System.out.println(e);
-	}
-	return retDocs;
-
-}
-
-private HashMap getMapFromString(String strToConvert){
-	HashMap retHash = new LinkedHashMap();
-	String[] tmpStr = strToConvert.split(",");
-	for (int i=0; i < tmpStr.length; i++){
-		String key = tmpStr[i].substring(0, tmpStr[i].indexOf("="));
-		String value = tmpStr[i].substring(tmpStr[i].indexOf("=")+1);
-		retHash.put(key, value);
-	}
-	return retHash;
-}
-
-private Integer[] getVideoDimensions(String type, Integer value){
-	Integer[] realDimensions = null;
-	int pos = 0;
-	if (type.equalsIgnoreCase("width")){
-		for (int i=0; i<generalWidthDimensions.length; i++){
-			if (value.compareTo(generalWidthDimensions[i])==0){
-				String labelDim = "widthPxValues"+generalWidthDimensions[i].toString();
-				realDimensions = (Integer[])lstDimensions.get(labelDim);
-				break;
-			}
-			else if (value.compareTo(generalWidthDimensions[i])>0){
-				if (i>0)
-					pos = i-1;
-				String labelDim = "widthPxValues"+generalWidthDimensions[pos].toString();
-				realDimensions = (Integer[])lstDimensions.get(labelDim);
-				break;
+		else if (type.equalsIgnoreCase("height")){
+			for (int i=0; i<generalHeightDimensions.length; i++){
+				if (value.compareTo(generalHeightDimensions[i])==0){
+					String labelDim = "heightPxValues"+generalHeightDimensions[i].toString();
+					realDimensions = (Integer[])lstDimensions.get(labelDim);
+					break;
+				}
+				else if (value.compareTo(generalHeightDimensions[i])>0){
+					if (i>0)
+						pos = i-1;
+					String labelDim = "heightPxValues"+generalHeightDimensions[pos].toString();
+					realDimensions = (Integer[])lstDimensions.get(labelDim);
+					break;
+				}
 			}
 		}
-	}
-	else if (type.equalsIgnoreCase("height")){
-		for (int i=0; i<generalHeightDimensions.length; i++){
-			if (value.compareTo(generalHeightDimensions[i])==0){
-				String labelDim = "heightPxValues"+generalHeightDimensions[i].toString();
-				realDimensions = (Integer[])lstDimensions.get(labelDim);
-				break;
-			}
-			else if (value.compareTo(generalHeightDimensions[i])>0){
-				if (i>0)
-					pos = i-1;
-				String labelDim = "heightPxValues"+generalHeightDimensions[pos].toString();
-				realDimensions = (Integer[])lstDimensions.get(labelDim);
-				break;
-			}
-		}
+
+		return realDimensions;
 	}
 
-	return realDimensions;
-}
+	/**
+	 * Gets the lst url.
+	 * 
+	 * @return the lst url
+	 */
+	public Map getLstUrl() {
+		return lstUrl;
+	}
 
-/**
- * Gets the lst url.
- * 
- * @return the lst url
- */
-public Map getLstUrl() {
-	return lstUrl;
-}
+	/**
+	 * Sets the lst url.
+	 * 
+	 * @param lstUrl the new lst url
+	 */
+	public void setLstUrl(Map lstUrl) {
+		this.lstUrl = lstUrl;
+	}
 
-/**
- * Sets the lst url.
- * 
- * @param lstUrl the new lst url
- */
-public void setLstUrl(Map lstUrl) {
-	this.lstUrl = lstUrl;
-}
+	/**
+	 * Gets the lst div style.
+	 * 
+	 * @return the lst div style
+	 */
+	public Map getLstDivStyle() {
+		return lstDivStyle;
+	}
 
-/**
- * Gets the lst div style.
- * 
- * @return the lst div style
- */
-public Map getLstDivStyle() {
-	return lstDivStyle;
-}
+	/**
+	 * Sets the lst style.
+	 * 
+	 * @param lstDivStyle the new lst style
+	 */
+	public void setLstStyle(Map lstDivStyle) {
+		this.lstDivStyle = lstDivStyle;
+	}
 
-/**
- * Sets the lst style.
- * 
- * @param lstDivStyle the new lst style
- */
-public void setLstStyle(Map lstDivStyle) {
-	this.lstDivStyle = lstDivStyle;
-}
+	/**
+	 * Gets the lst url params.
+	 * 
+	 * @return the lst url params
+	 */
+	public Map getLstUrlParams() {
+		return lstUrlParams;
+	}
 
-/**
- * Gets the lst url params.
- * 
- * @return the lst url params
- */
-public Map getLstUrlParams() {
-	return lstUrlParams;
-}
+	/**
+	 * Sets the lst url params.
+	 * 
+	 * @param lstUrlParams the new lst url params
+	 */
+	public void setLstUrlParams(Map lstUrlParams) {
+		this.lstUrlParams = lstUrlParams;
+	}
 
-/**
- * Sets the lst url params.
- * 
- * @param lstUrlParams the new lst url params
- */
-public void setLstUrlParams(Map lstUrlParams) {
-	this.lstUrlParams = lstUrlParams;
-}
+	/**
+	 * Gets the lst doc linked.
+	 * 
+	 * @return the lst doc linked
+	 */
+	public Map getLstDocLinked() {
+		return lstDocLinked;
+	}
 
-/**
- * Gets the lst doc linked.
- * 
- * @return the lst doc linked
- */
-public Map getLstDocLinked() {
-	return lstDocLinked;
-}
+	/**
+	 * Sets the lst doc linked.
+	 * 
+	 * @param lstDocLinked the new lst doc linked
+	 */
+	public void setLstDocLinked(Map lstDocLinked) {
+		this.lstDocLinked = lstDocLinked;
+	}
 
-/**
- * Sets the lst doc linked.
- * 
- * @param lstDocLinked the new lst doc linked
- */
-public void setLstDocLinked(Map lstDocLinked) {
-	this.lstDocLinked = lstDocLinked;
-}
+	/**
+	 * Gets the lst field linked.
+	 * 
+	 * @return the lst field linked
+	 */
+	public Map getLstFieldLinked() {
+		return lstFieldLinked;
+	}
 
-/**
- * Gets the lst field linked.
- * 
- * @return the lst field linked
- */
-public Map getLstFieldLinked() {
-	return lstFieldLinked;
-}
+	/**
+	 * Sets the lst field linked.
+	 * 
+	 * @param lstFieldLinked the new lst field linked
+	 */
+	public void setLstFieldLinked(Map lstFieldLinked) {
+		this.lstFieldLinked = lstFieldLinked;
+	}
 
-/**
- * Sets the lst field linked.
- * 
- * @param lstFieldLinked the new lst field linked
- */
-public void setLstFieldLinked(Map lstFieldLinked) {
-	this.lstFieldLinked = lstFieldLinked;
-}
+	/**
+	 * Gets the lst panel style.
+	 * 
+	 * @return the lst panel style
+	 */
+	public Map getLstPanelStyle() {
+		return lstPanelStyle;
+	}
 
-/**
- * Gets the lst panel style.
- * 
- * @return the lst panel style
- */
-public Map getLstPanelStyle() {
-	return lstPanelStyle;
-}
+	/**
+	 * @return the lstDocTitles
+	 */
+	public Map getLstDocTitles() {
+		return lstDocTitles;
+	}
 
-/**
- * @return the lstDocTitles
- */
-public Map getLstDocTitles() {
-	return lstDocTitles;
-}
+	/**
+	 * @param lstDocTitles the lstDocTitles to set
+	 */
+	public void setLstDocTitles(Map lstDocTitles) {
+		this.lstDocTitles = lstDocTitles;
+	}
 
-/**
- * @param lstDocTitles the lstDocTitles to set
- */
-public void setLstDocTitles(Map lstDocTitles) {
-	this.lstDocTitles = lstDocTitles;
-}
-
-/**
- * Sets the lst panel style.
- * 
- * @param lstPanelStyle the new lst panel style
- */
-public void setLstPanelStyle(Map lstPanelStyle) {
-	this.lstPanelStyle = lstPanelStyle;
-}
+	/**
+	 * Sets the lst panel style.
+	 * 
+	 * @param lstPanelStyle the new lst panel style
+	 */
+	public void setLstPanelStyle(Map lstPanelStyle) {
+		this.lstPanelStyle = lstPanelStyle;
+	}
 
 }

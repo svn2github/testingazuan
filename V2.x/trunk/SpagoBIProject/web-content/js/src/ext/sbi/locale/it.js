@@ -152,6 +152,9 @@ Sbi.locale.ln['sbi.execution.metadata'] = 'Metadati';
 Sbi.locale.ln['sbi.execution.rating'] = 'Rating documento';
 Sbi.locale.ln['sbi.execution.rating.vote'] = 'Vota';
 
+Sbi.locale.ln['sbi.execution.notes.owner'] = 'Proprietario ';
+Sbi.locale.ln['sbi.execution.notes.creationDate'] = 'Data creazione ';
+Sbi.locale.ln['sbi.execution.notes.modificationDate'] = 'Data ultima modifica ';
 Sbi.locale.ln['sbi.execution.notes.notes'] = 'Lista Note';
 Sbi.locale.ln['sbi.execution.notes.insertNotes'] = 'Inserisci le note';
 Sbi.locale.ln['sbi.execution.notes.savenotes'] = 'Salva';

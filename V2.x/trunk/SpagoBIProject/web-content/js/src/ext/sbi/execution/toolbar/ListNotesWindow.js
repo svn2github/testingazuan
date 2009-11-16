@@ -86,8 +86,11 @@ Sbi.execution.toolbar.ListNotesWindow = function(config) {
 	         ,    '<a href="javascript:void(0);">Owner: <b>{owner}</b></a>'
 	         ,'</div>'
 	      */   
-	         ,'Owner: <b>{owner}</b><br>'
-	          , '{[Ext.util.Format.ellipsis(Ext.util.Format.stripTags(values.notes), 100)]}' 
+	         ,'<i>'+LN('sbi.execution.notes.owner')+' </i><b>{owner}</b>'
+	         ,'<i>      '+LN('sbi.execution.notes.creationDate')+' </i><b>{creationDate}</b>'
+           ,'<i>      '+LN('sbi.execution.notes.modificationDate')+' </i>&nbsp<b>{lastModificationDate}</b>' 
+           ,'<br>'
+	         , '{[Ext.util.Format.ellipsis(Ext.util.Format.stripTags(values.notes), 100)]}' 	        
 	         ,'<tpl if="values.deletable == true ">'
 	         ,   '<div class="button"><img class="action-delete-note" title="'+LN('sbi.execution.notes.deleteNote')+'" src="' + Ext.BLANK_IMAGE_URL + '"/></div>'
 	         ,'</tpl>'

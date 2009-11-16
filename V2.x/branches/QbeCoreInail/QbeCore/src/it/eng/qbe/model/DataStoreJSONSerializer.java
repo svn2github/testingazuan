@@ -108,7 +108,12 @@ public class DataStoreJSONSerializer {
 											
 							
 				Class clazz = fieldMetaData.getType();
-				logger.debug("Column [" + (i+1) + "] class is equal to [" + clazz.getName() + "]");
+				if (clazz == null) {
+					logger.debug("Metadata class is null; considering String as default");
+					clazz = String.class;
+				} else {
+					logger.debug("Column [" + (i+1) + "] class is equal to [" + clazz.getName() + "]");
+				}
 				if( Number.class.isAssignableFrom(clazz) ) {
 					//BigInteger, Integer, Long, Short, Byte
 					if(Integer.class.isAssignableFrom(clazz) 

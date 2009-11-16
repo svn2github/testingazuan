@@ -119,7 +119,7 @@ Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
 	, createFieldCombo: function(dynamicFilter) {
 		
 		var store = new Ext.data.JsonStore({
-			data: dynamicFilter.admissibleFields,
+			data: [{'field': '', 'text': ''}].concat(dynamicFilter.admissibleFields),
 		    fields: ['field', 'text']
 		});
 		

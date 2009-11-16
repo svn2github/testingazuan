@@ -30,6 +30,7 @@ import it.eng.spagobi.engines.qbe.bo.FormViewerState;
 import it.eng.spagobi.engines.qbe.template.QbeJSONTemplateParser;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -103,10 +104,7 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 							}
 						}
 						if (filter != null) {
-							WhereField.Operand leftOperand = new WhereField.Operand(filter.getString("leftOperandValue"), null, "Field Content", null, null);
-							WhereField.Operand rightOperand = new WhereField.Operand(filter.getString("rightOperandValue"), null, "Static Value", null, null);
-							query.addWhereField(id, null, false, leftOperand, filter.getString("operator"), rightOperand, "AND");
-							updateWhereClauseStructure(query, id, "AND");
+							applyStaticClosedFilter(query, filter, id);
 						}
 					}
 				} else {
@@ -115,10 +113,7 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 						JSONObject filter = filters.getJSONObject(j);
 						boolean isActive = formViewerState.isOnOffFilterActive(filter.getString(QbeJSONTemplateParser.ID));
 						if (isActive) {
-							WhereField.Operand leftOperand = new WhereField.Operand(filter.getString("leftOperandValue"), null, "Field Content", null, null);
-							WhereField.Operand rightOperand = new WhereField.Operand(filter.getString("rightOperandValue"), null, "Static Value", null, null);
-							query.addWhereField(filter.getString(QbeJSONTemplateParser.ID), null, false, leftOperand, filter.getString("operator"), rightOperand, "AND");
-							updateWhereClauseStructure(query, filter.getString(QbeJSONTemplateParser.ID), "AND");
+							applyStaticClosedFilter(query, filter, filter.getString(QbeJSONTemplateParser.ID));
 						}
 					}
 				}
@@ -128,23 +123,81 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 		logger.debug("OUT");
 	}
 	
+	
+	private void applyStaticClosedFilter(Query query, JSONObject filter, String id) throws Exception {
+		JSONArray expression = filter.optJSONArray("expression");
+		ExpressionNode node = null;
+		if (expression == null) {
+			node = addWhereConditionFromClosedfilter(query, filter, id);
+		} else {
+			node = addWhereExpressionFromClosedfilter(query, expression);
+		}
+		updateWhereClauseStructure(query, node, "AND");
+	}
+	
+	private ExpressionNode addWhereConditionFromClosedfilter(Query query, JSONObject filter, String id) throws Exception {
+		WhereField.Operand leftOperand = new WhereField.Operand(filter.getString("leftOperandValue"), null, "Field Content", null, null);
+		WhereField.Operand rightOperand = null;
+		if (filter.optString("rightOperandValue") != null) {
+			rightOperand = new WhereField.Operand(filter.getString("rightOperandValue"), null, "Static Value", null, null);
+		}
+		query.addWhereField(id, null, false, leftOperand, filter.getString("operator"), rightOperand, "AND");
+		
+		ExpressionNode newFilterNode = new ExpressionNode("NODE_CONST", "$F{" + id + "}");
+		return newFilterNode;
+	}
+	
+	
+	private ExpressionNode addWhereExpressionFromClosedfilter(Query query, JSONArray expression) throws Exception {
+		String operator = expression.getString(1);
+		ExpressionNode node = new ExpressionNode("NODE_OP", operator);
+		
+		JSONObject filter1 = expression.getJSONObject(0);
+		String id = UUID.randomUUID().toString();
+		addWhereConditionFromClosedfilter(query, filter1, id);
+		node.addChild(new ExpressionNode("NODE_CONST", "$F{" + id + "}"));
+		
+		JSONObject filter2 = expression.getJSONObject(2);
+		id = UUID.randomUUID().toString();
+		addWhereConditionFromClosedfilter(query, filter2, id);
+		node.addChild(new ExpressionNode("NODE_CONST", "$F{" + id + "}"));
+		
+		return node;
+	}
+	
 	private void updateWhereClauseStructure(Query query, String filterId,
 			String booleanConnector) {
 		ExpressionNode node = query.getWhereClauseStructure();
+		ExpressionNode newFilterNode = new ExpressionNode("NODE_CONST", "$F{" + filterId + "}");
 		if (node == null) {
-			node = new ExpressionNode("NODE_OP", booleanConnector);
-			ExpressionNode child = new ExpressionNode("NODE_CONST", "$F{" + filterId + "}");
-			node.addChild(child);
+			node = newFilterNode;
 			query.setWhereClauseStructure(node);
 		} else {
-			ExpressionNode child = new ExpressionNode("NODE_OP", "AND");
-			ExpressionNode nephew = new ExpressionNode("NODE_CONST", "$F{" + filterId + "}");
-			child.addChild(nephew);
-			node.addChild(child);
+			if (node.getType() == "NODE_OP" && node.getValue().equals(booleanConnector)) {
+				node.addChild(newFilterNode);
+			} else {
+				ExpressionNode newNode = new ExpressionNode("NODE_OP", booleanConnector);
+				newNode.addChild(node);
+				newNode.addChild(newFilterNode);
+				query.setWhereClauseStructure(newNode);
+			}
 		}
-		
 	}
 
+	private void updateWhereClauseStructure(Query query, ExpressionNode nodeToInsert,
+			String booleanConnector) {
+		ExpressionNode node = query.getWhereClauseStructure();
+		if (node == null) {
+			node = nodeToInsert;
+			query.setWhereClauseStructure(node);
+		} else {
+			ExpressionNode newNode = new ExpressionNode("NODE_OP", booleanConnector);
+			newNode.addChild(node);
+			newNode.addChild(nodeToInsert);
+			query.setWhereClauseStructure(newNode);
+		}
+	}
+	
 	private void applyStaticOpenFilters(Query query) throws Exception {
 		logger.debug("IN");
 		JSONArray staticOpenFilters = template.optJSONArray(QbeJSONTemplateParser.STATIC_OPEN_FILTERS);

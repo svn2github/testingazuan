@@ -434,3 +434,24 @@ new Ext.tree.TreePanel({
         return node;
     }
 });
+
+
+/* =============================================================================
+* Be default, ExtJS does not provide any special handling to display an empty string in the dropdown list of a ComboBox. 
+* In HTML, an empty DIV element as no height. So, in the dropdown list, the "empty string" option is displayed as a thin bar, almost unselectable.
+* See:
+* - http://snipplr.com/view/9122/extjs-display-empty-string-in-extformcombobox-dropdown-list/
+============================================================================= */
+Ext.override(Ext.form.ComboBox, {
+	initList: (function(){
+		if(!this.tpl) {
+			this.tpl = new Ext.XTemplate('<tpl for="."><div class="x-combo-list-item">{', this.displayField , ':this.blank}</div></tpl>', 
+				{
+					blank: function(value){
+						return value==='' ? '&nbsp' : value;
+					}
+				}
+			);
+		}
+	}).createSequence(Ext.form.ComboBox.prototype.initList)
+});

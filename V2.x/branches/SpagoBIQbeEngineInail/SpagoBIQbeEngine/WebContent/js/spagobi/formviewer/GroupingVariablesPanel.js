@@ -113,7 +113,7 @@ Ext.extend(Sbi.formviewer.GroupingVariablesPanel, Ext.form.FormPanel, {
 			name: groupingVariable.id
             , editable: false
             , fieldLabel: LN('sbi.formviewer.groupingvariablespanel.variable-' + (pos + 1))
-		    , forceSelection: false
+		    , forceSelection: true
 		    , store: store
 		    , mode : 'local'
 		    , triggerAction: 'all'
@@ -121,6 +121,7 @@ Ext.extend(Sbi.formviewer.GroupingVariablesPanel, Ext.form.FormPanel, {
 		    , valueField: 'field'
 		    , emptyText: ''
 		});
+		combo.setValue(groupingVariable.admissibleFields[0].field);
 
 		return combo;
 	}

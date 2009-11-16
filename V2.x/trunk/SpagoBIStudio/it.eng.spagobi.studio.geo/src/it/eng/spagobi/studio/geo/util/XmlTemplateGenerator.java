@@ -29,13 +29,13 @@ public class XmlTemplateGenerator {
 	public static void setAlias(XStream xstream){
 		xstream.alias("MAP", GEODocument.class);
 		
-		xstream.aliasField("MAP_PROVIDER", MapProvider.class, "mapProvider"); 
+		xstream.aliasField("MAP_PROVIDER", GEODocument.class, "mapProvider"); 
 		xstream.useAttributeFor(MapProvider.class, "className");
 		xstream.aliasField("class_name", MapProvider.class, "className");
 		xstream.useAttributeFor(MapProvider.class, "mapName");
 		xstream.aliasField("map_name", MapProvider.class, "mapName");
 
-		xstream.aliasField("DATAMART_PROVIDER", DatamartProvider.class, "datamartProvider"); 
+		xstream.aliasField("DATAMART_PROVIDER", GEODocument.class, "datamartProvider"); 
 		xstream.useAttributeFor(DatamartProvider.class, "className");
 		xstream.aliasField("class_name", DatamartProvider.class, "className");
 		xstream.useAttributeFor(DatamartProvider.class, "hierarchy");
@@ -74,7 +74,7 @@ public class XmlTemplateGenerator {
 					xstream.useAttributeFor(Level.class, "featureName");
 					xstream.aliasField("feature_name", Level.class, "featureName");
 		
-		xstream.aliasField("MAP_RENDERER", MapRenderer.class, "mapRenderer");
+		xstream.aliasField("MAP_RENDERER", GEODocument.class, "mapRenderer");
 		xstream.useAttributeFor(MapRenderer.class, "className");
 		xstream.aliasField("class_name", MapRenderer.class, "className");
 		xstream.aliasField("MEASURES", MapRenderer.class, "measures");

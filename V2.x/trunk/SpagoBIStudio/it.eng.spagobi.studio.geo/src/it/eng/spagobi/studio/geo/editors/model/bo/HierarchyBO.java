@@ -32,7 +32,6 @@ public class HierarchyBO {
 			newHierarchy.setType(type);
 			vectHier.add(newHierarchy);
 		}
-
 	}
 
 	public static Hierarchy getHierarchyByName(GEODocument geoDocument, String name){
@@ -52,6 +51,14 @@ public class HierarchyBO {
 		}
 		return hierarchy;
 	}	
+	public static Hierarchies getAllHierarchies(GEODocument geoDocument){
+		DatamartProvider dmProvider =geoDocument.getDatamartProvider();
+		if(dmProvider != null){
+			Hierarchies hierarchies = dmProvider.getHierarchies();
+			return hierarchies;
+		}
+		return null;
+	}
 	public static void deleteHierarchy(GEODocument geoDocument, String name){
 		DatamartProvider dmProvider =geoDocument.getDatamartProvider();
 		if(dmProvider != null){

@@ -18,7 +18,10 @@ import it.eng.spagobi.studio.geo.Activator;
 import it.eng.spagobi.studio.geo.editors.model.bo.ModelBO;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.util.DesignerUtils;
+import it.eng.spagobi.studio.geo.util.XmlTemplateGenerator;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
@@ -29,7 +32,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ModifyEvent;
@@ -40,7 +42,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -63,7 +64,6 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
@@ -99,6 +99,8 @@ public class GEOEditor extends EditorPart{
 	private static final int FEATURE_DESCR=1;
 	private static final int FEATURE_DEFAULT_LEVEL=2;
 	private static final int FEATURE_DEFAULT_COLORS=3;
+	
+	private GEODocument geoDocument;
 
 
 	public void init(IEditorSite site, IEditorInput input) {
@@ -110,7 +112,7 @@ public class GEOEditor extends EditorPart{
 			IFile file = fei.getFile();
 			ModelBO bo=new ModelBO();
 			try {
-				GEODocument geoDocument = bo.createModel(file);
+				geoDocument = bo.createModel(file);
 				bo.saveModel(geoDocument);
 
 			} catch (CoreException e) {
@@ -213,7 +215,7 @@ public class GEOEditor extends EditorPart{
 
 		HierarchiesDesigner designer = new HierarchiesDesigner(sectionClient, this);
 		
-		GEODocument geoDocument = Activator.getDefault().getGeoDocument();
+		geoDocument = Activator.getDefault().getGeoDocument();
 		designer.setGeoDocument(geoDocument);
 		measuresDesigner = new MeasuresDesigner(sectionClient, this, geoDocument) ;
 		
@@ -382,6 +384,7 @@ public class GEOEditor extends EditorPart{
 				
 				sectionClient.getParent().pack();
 				sectionClient.getParent().redraw();
+				setIsDirty(true);
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -522,7 +525,7 @@ public class GEOEditor extends EditorPart{
 						editor.grabVertical=true;						
 						editor.setEditor(colorSection, item, FEATURE_DEFAULT_COLORS);
 						mapTable.pack();
-						//mapTable.redraw();
+
 					}
 				}
 				// resize the row height using a MeasureItem listener
@@ -538,6 +541,8 @@ public class GEOEditor extends EditorPart{
 				
 				sectionClient.getParent().pack();
 				sectionClient.getParent().redraw();
+				
+				setIsDirty(true);
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -594,7 +599,33 @@ public class GEOEditor extends EditorPart{
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		// TODO Auto-generated method stub
+		SpagoBILogger.infoLog("Start Saving GEO Template File");
+		ByteArrayInputStream bais = null;
 
+		try {
+			FileEditorInput fei = (FileEditorInput) getEditorInput();
+			IFile file = fei.getFile();
+			String newContent =  XmlTemplateGenerator.transformToXml(geoDocument);
+			System.out.println("******** SAVING ***************");
+			System.out.println(newContent);
+			byte[] bytes = newContent.getBytes();
+			bais = new ByteArrayInputStream(bytes);
+			file.setContents(bais, IFile.FORCE, null);
+
+		} catch (CoreException e) {
+			SpagoBILogger.errorLog("Error while Saving GEO Template File",e);
+			e.printStackTrace();
+		}	
+		finally { 
+			if (bais != null)
+				try {
+					bais.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		setIsDirty(false);
 	}
 
 	@Override
@@ -606,7 +637,7 @@ public class GEOEditor extends EditorPart{
 	@Override
 	public boolean isDirty() {
 		// TODO Auto-generated method stub
-		return false;
+		return isDirty;
 	}
 
 	@Override

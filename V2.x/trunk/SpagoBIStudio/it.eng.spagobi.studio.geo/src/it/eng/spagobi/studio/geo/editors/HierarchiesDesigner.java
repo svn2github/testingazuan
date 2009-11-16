@@ -13,6 +13,7 @@ import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.geo.editors.model.bo.HierarchyBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.LevelBO;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
+import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchies;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchy;
 import it.eng.spagobi.studio.geo.editors.model.geo.Level;
 
@@ -59,7 +60,25 @@ public class HierarchiesDesigner {
 		editor = _editor;
 		geoDocument = _geoDocument;
 	}
-	
+	private void fillHierarchiesTree(Tree hierarchiesTree){
+		Hierarchies hierarchies = HierarchyBO.getAllHierarchies(geoDocument);
+		//create hierarchies
+		if(hierarchies != null && hierarchies.getHierarchy()!= null){
+			for(int i=0; i < hierarchies.getHierarchy().size(); i++){
+				Hierarchy hierarchy = hierarchies.getHierarchy().elementAt(i);
+				TreeItem item = new TreeItem(hierarchiesTree, SWT.NONE);
+				item.setText(hierarchy.getName());
+				if(hierarchy.getLevels() != null && hierarchy.getLevels().getLevel() != null){
+					for(int j=0; j < hierarchy.getLevels().getLevel().size(); j++){
+						Level level = hierarchy.getLevels().getLevel().elementAt(j);
+						TreeItem itemLev = new TreeItem(item, SWT.NONE);
+						itemLev.setText(level.getName());
+					}
+				}
+			}			
+		}
+		hierarchiesTree.getParent().getParent().redraw();
+	}
 	private void createNewHierarchy(Tree hierarchiesTree, String name, String type){		
         TreeItem iItem = new TreeItem(hierarchiesTree, SWT.NONE);
         iItem.setText(name);
@@ -67,6 +86,7 @@ public class HierarchiesDesigner {
         hierarchiesTree.getParent().getParent().redraw();
         //crea oggetto java con name+type
         HierarchyBO.setNewHierarchy(geoDocument, name, type);
+        editor.setIsDirty(true);
 		
 	}
 	
@@ -76,6 +96,7 @@ public class HierarchiesDesigner {
         hierarchiesTree.getParent().getParent().redraw();
         hierarchy.setName(name);
         hierarchy.setType(type);
+        editor.setIsDirty(true);
 		
 	}
 	private void createNewLevel(Tree hierarchiesTree, Level newLevel, TreeItem parent){		
@@ -84,7 +105,8 @@ public class HierarchiesDesigner {
 
         hierarchiesTree.getParent().getParent().redraw();
         //crea oggetto java con name+type
-        LevelBO.setNewLevel(geoDocument, parent.getText(), newLevel);		
+        LevelBO.setNewLevel(geoDocument, parent.getText(), newLevel);
+        editor.setIsDirty(true);
 	}
 	private void updateLevel(Tree hierarchiesTree, Level newLevel, TreeItem parent, Level oldLevel){		
         TreeItem iItem = hierarchiesTree.getSelection()[0];
@@ -92,6 +114,7 @@ public class HierarchiesDesigner {
         //hierarchiesTree.pack();
         hierarchiesTree.getParent().getParent().redraw();
         oldLevel = newLevel;	
+        editor.setIsDirty(true);
 	}
 	
 	private void deleteItem(Tree hierarchiesTree, TreeItem item){
@@ -106,6 +129,7 @@ public class HierarchiesDesigner {
 		item.dispose();
         hierarchiesTree.pack();
         hierarchiesTree.redraw();
+        editor.setIsDirty(true);
 	}
 	private void createMenu(final Composite sectionClient, final Tree hierarchiesTree){
 		
@@ -165,27 +189,31 @@ public class HierarchiesDesigner {
 		
 		hierarchiesGroup.setLayoutData(gd);
 		hierarchiesGroup.setLayout(sectionClient.getLayout());
-		//hierarchiesGroup.setText("HIERARCHIES");
-		
-		//final Tree hierarchiesTree = new Tree(hierarchiesGroup, SWT.SINGLE);
+
 		final Tree hierarchiesTree = toolkit.createTree(hierarchiesGroup, SWT.NONE | SWT.V_SCROLL | SWT.H_SCROLL | SWT.SINGLE );
 		hierarchiesTree.setLayoutData(gd);
+
 		
-		//final Label emptyTree = new Label(hierarchiesGroup, SWT.CENTER);
-		final Label emptyTree = toolkit.createLabel(hierarchiesGroup, "empty heirarchies tree...right click here to create", SWT.CENTER);
-		//emptyTree.setText("empty heirarchies tree...right click here to create");
-		Color color = new org.eclipse.swt.graphics.Color(sectionClient.getDisplay(), 255,0,0);
-		emptyTree.setForeground(color);
-		emptyTree.setLayoutData(gd);
-		emptyTree.addListener(SWT.MouseDown, new Listener () {
-            public void handleEvent (Event event) {            	
-            	if (event.button==3){	
-            		createNewHierarchyShell(hierarchiesTree, null);   
-            		emptyTree.setVisible(false);
-            	}
-            }
-        });	    
-	    emptyTree.setLayoutData(gd);
+		if(geoDocument.getDatamartProvider().getHierarchies() == null || 
+				geoDocument.getDatamartProvider().getHierarchies().getHierarchy() == null || 
+				geoDocument.getDatamartProvider().getHierarchies().getHierarchy().size() == 0){
+			final Label emptyTree = toolkit.createLabel(hierarchiesGroup, "empty heirarchies tree...right click here to create", SWT.CENTER);
+			
+			Color color = new org.eclipse.swt.graphics.Color(sectionClient.getDisplay(), 255,0,0);
+			emptyTree.setForeground(color);
+			emptyTree.setLayoutData(gd);
+			emptyTree.addListener(SWT.MouseDown, new Listener () {
+	            public void handleEvent (Event event) {            	
+	            	if (event.button==3){	
+	            		createNewHierarchyShell(hierarchiesTree, null);   
+	            		emptyTree.setVisible(false);
+	            	}
+	            }
+	        });	    
+		    emptyTree.setLayoutData(gd);
+		}else{
+			fillHierarchiesTree(hierarchiesTree);
+		}
 	    //mouseDoubleClick --> modify
 	    hierarchiesTree.addListener(SWT.MouseDoubleClick, new Listener () {
             public void handleEvent (Event event) {

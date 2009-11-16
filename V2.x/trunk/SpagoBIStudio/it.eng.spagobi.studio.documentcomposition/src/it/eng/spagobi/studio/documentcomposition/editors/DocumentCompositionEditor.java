@@ -102,7 +102,7 @@ public class DocumentCompositionEditor extends EditorPart {
 			file.setContents(bais, IFile.FORCE, null);
 
 		} catch (CoreException e) {
-			SpagoBILogger.errorLog("Error while Saving Chart Template File",e);
+			SpagoBILogger.errorLog("Error while Saving Document Composition Template File",e);
 			e.printStackTrace();
 		}	
 		finally { 

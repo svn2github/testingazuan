@@ -109,7 +109,7 @@ Ext.extend(Sbi.widgets.SaveWindow, Ext.Window, {
 	    		name:'description',
 	    		allowBlank:false, 
 	    		inputType:'text',
-	    		maxLength:95,
+	    		maxLength:1000,
 	    		width:250,
 	    		fieldLabel: LN('sbi.qbe.savewindow.desc') 
 	    	});

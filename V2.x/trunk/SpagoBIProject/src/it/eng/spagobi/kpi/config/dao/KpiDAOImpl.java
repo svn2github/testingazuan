@@ -37,10 +37,15 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 
 public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
@@ -79,6 +84,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("OUT");
 		return xmlToReturn;
 	}
+
 
 	public Kpi loadKpiDefinitionById(Integer id) throws EMFUserError {
 		logger.debug("IN");
@@ -247,34 +253,37 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			Criteria finder = aSession.createCriteria(SbiKpiValue.class);
-			finder
-			.add(Expression.eq("sbiKpiInstance.idKpiInstance",
-					kpiInstId));
-			finder.add(Expression.le("beginDt", endDate));
-			logger.debug("Begin Date Criteria Setted");
-
+			
+			String hql = "select max(s.idKpiInstanceValue)";
+			hql += " from SbiKpiValue s where s.sbiKpiInstance.idKpiInstance = ? ";
+			hql += " and s.beginDt <= ? " ;
 			if (resId != null) {
-				finder.add(Expression.eq("sbiResources.resourceId", resId));
-				logger.debug("Resource setted");
+				hql += " and s.sbiResources.resourceId = ? ";
 			} else {
-				//finder.add(Expression.eq("sbiResources.resourceId", null));
 				logger.debug("Null resource setted");
 			}
-			SourceBean sb = new SourceBean("ROWS");
-			finder.addOrder(Order.desc("beginDt"));
-			finder.addOrder(Order.desc("idKpiInstanceValue"));
-			logger.debug("Order Date Criteria setted");
-			finder.setMaxResults(10);
-			logger.debug("Max result to 10 setted");
+			hql += "group by s.beginDt order by s.beginDt desc";         
+			
+			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, kpiInstId);
+			hqlQuery.setDate(1, endDate);
+			if (resId != null) {
+				hqlQuery.setInteger(2, resId);
+				logger.debug("Resource setted");
+			} else {
+				logger.debug("Null resource setted");
+			}	
+			hqlQuery.setMaxResults(10);
 
-			List l = finder.list();
+			SourceBean sb = new SourceBean("ROWS");
+			List l = hqlQuery.list();
 			if (!l.isEmpty()) {
 				logger.debug("The result list is not empty");
 				for (int k = l.size() - 1; k >= 0; k--) {
-					SbiKpiValue temp = (SbiKpiValue) l.get(k);
+					Integer kpiValueId = (Integer) l.get(k);
+					SbiKpiValue temp = (SbiKpiValue) aSession.load(SbiKpiValue.class, kpiValueId);
 					SourceBean sb2 = new SourceBean("ROW");
-					if (temp.getValue() != null) {
+					if (temp!=null && temp.getValue() != null) {
 						sb2.setAttribute("x", temp.getBeginDt());
 						sb2.setAttribute("KPI_VALUE", temp.getValue());
 						sb.setAttribute(sb2);
@@ -314,33 +323,38 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			Criteria finder = aSession.createCriteria(SbiKpiValue.class);
-			finder
-			.add(Expression.eq("sbiKpiInstance.idKpiInstance",
-					kpiInstId));
-			finder.add(Expression.le("beginDt", endDate));
-			finder.add(Expression.ge("beginDt", beginDate));
-			logger.debug("Begin and End Date Criteria Setted");
-
+			
+			String hql = "select max(s.idKpiInstanceValue)";
+			hql += " from SbiKpiValue s where s.sbiKpiInstance.idKpiInstance = ? ";
+			hql += " and s.beginDt <= ? and s.beginDt >= ? ";
 			if (resId != null) {
-				finder.add(Expression.eq("sbiResources.resourceId", resId));
+				hql += " and s.sbiResources.resourceId = ? ";
+			} else {
+				logger.debug("Null resource setted");
+			}	
+			hql += "group by s.beginDt order by s.beginDt desc";         
+			
+			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, kpiInstId);
+			hqlQuery.setDate(1, endDate);
+			hqlQuery.setDate(2, beginDate);
+			if (resId != null) {
+				hqlQuery.setInteger(3, resId);
 				logger.debug("Resource setted");
 			} else {
-				//finder.add(Expression.eq("sbiResources.resourceId", null));
 				logger.debug("Null resource setted");
-			}
-			SourceBean sb = new SourceBean("ROWS");
-			finder.addOrder(Order.desc("beginDt"));
-			finder.addOrder(Order.desc("idKpiInstanceValue"));
-			logger.debug("Order Date Criteria setted");
+			}				
+			hqlQuery.setMaxResults(10);
 
-			List l = finder.list();
+			SourceBean sb = new SourceBean("ROWS");
+			List l = hqlQuery.list();
 			if (!l.isEmpty()) {
 				logger.debug("The result list is not empty");
 				for (int k = l.size() - 1; k >= 0; k--) {
-					SbiKpiValue temp = (SbiKpiValue) l.get(k);
+					Integer kpiValueId = (Integer) l.get(k);
+					SbiKpiValue temp = (SbiKpiValue) aSession.load(SbiKpiValue.class, kpiValueId);
 					SourceBean sb2 = new SourceBean("ROW");
-					if (temp.getValue() != null) {
+					if (temp !=null && temp.getValue() != null) {
 						sb2.setAttribute("x", temp.getBeginDt());
 						sb2.setAttribute("KPI_VALUE", temp.getValue());
 						sb.setAttribute(sb2);
@@ -659,7 +673,6 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("IN");
 		KpiValue toReturn = new KpiValue();
 
-		
 		Date beginDate = value.getBeginDt();
 		logger
 		.debug("SbiKpiValue begin date: "

@@ -1,103 +1,90 @@
 {
-    qbeConf: {
-        datamartsName: []
-        , query: {}
+    "qbeConf": {
+        "datamartsName": []
+        , "query": {}
     }
-
-    , fields: 
-    	
-    	[]
-    
-    , staticClosedFilters: [
-
+    , "fields": []
+    , "staticClosedFilters": [
         {
-            title: '',
-            singleSelection: true,
-            allowNoSelection: true,
-            noSelectionText: '',
-            height: 150, 
-            width: 300,
-            filters: [
+            "title": "",
+            "singleSelection": true,
+            "allowNoSelection": true,
+            "noSelectionText": "",
+            "height": 150, 
+            "width": 300,
+            "filters": [
                 {
-                    text: '',
-                    leftOperandValue: '',
-                    operator: '',
-                    rightOperandValue: ''
+                    "text": "",
+                    "leftOperandValue": "",
+                    "operator": "",
+                    "rightOperandValue": ""
                 },
                 {
-                    text: '',
-                    leftOperandValue: '',
-                    operator: '',
-                    rightOperandValue: ''
+                    "text": "",
+                    "leftOperandValue": "",
+                    "operator": "",
+                    "rightOperandValue": ""
                 }
             ]
         },
-        
         {
-            title: '',
-            singleSelection: false,
-            height: 150, 
-            width: 300,
-            filters: [
+            "title": "",
+            "singleSelection": false,
+            "height": 150, 
+            "width": 300,
+            "filters": [
                 {
-                    text: '',
-                    leftOperandValue: '',
-                    operator: '',
-                    rightOperandValue: ''
+                    "text": "",
+                    "leftOperandValue": "",
+                    "operator": "",
+                    "rightOperandValue": ""
                 },
                 {
-                    text: '',
-                    leftOperandValue: '',
-                    operator: '',
-                    rightOperandValue: ''
+                    "text": "",
+                    "leftOperandValue": "",
+                    "operator": "",
+                    "rightOperandValue": ""
                 }
             ]
         }
     ] 
-    
-
-    , staticOpenFilters: [
-
+    , "staticOpenFilters": [
         {
-            text: '',
-            field: '',
-            operator: 'EQUALS',
-            singleSelection: false,
-            maxSelectedNumber: 3,
-            height: 150, 
-            width: 300,
-            query: {
-          		field: '',
-          		orderField: '',
-          		orderType: 'ASC'
-          	}
+            "text": "",
+            "field": "",
+            "operator": "EQUALS TO",
+            "singleSelection": false,
+            "maxSelectedNumber": 3,
+            "height": 150, 
+            "width": 300,
+            "query": {
+				"field": "",
+				"orderField": "",
+				"orderType": "ASC"
+			}
         },
-
         {
-            text: '',
-            field: '',
-            height: 150, 
-            width: 300,
-            operator: 'EQUALS',
-            singleSelection: true
+            "text": "",
+            "field": "",
+            "height": 150, 
+            "width": 300,
+            "operator": "EQUALS TO",
+            "singleSelection": true
         }
     ]
-
-    , dynamicFilters: [
+    , "dynamicFilters": [
         {
-            operator: 'EQUALS',
-            admissibleFields: [
-               {field: '', text: ''}             
+            "operator": "EQUALS TO",
+            "admissibleFields": [
+               {"field": "", "text": ""}             
             ]
         }
     ]
-
-    , groupingVariables: [
+    , "groupingVariables": [
         {
-            admissibleFields: [
-               {field: '', text: ''}             
+            "admissibleFields": [
+               {"field": "", "text": ""}             
             ]
         }
     ]
-
 }

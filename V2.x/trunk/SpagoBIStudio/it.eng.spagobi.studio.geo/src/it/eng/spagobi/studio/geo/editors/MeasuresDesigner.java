@@ -309,6 +309,7 @@ public class MeasuresDesigner {
 				//add or modify measure
 				KPI kpiToAdd = fillMeasure(dialog, columnName);
 				KpiBO.setNewMeasure(geoDocument, kpiToAdd);
+				editor.setIsDirty(true);
 				dialog.close ();
 			}
 		});
@@ -328,6 +329,7 @@ public class MeasuresDesigner {
 					KPI kpiToDelete = fillMeasure(dialog, columnName);
 					KpiBO.deleteMeasure(geoDocument, kpiToDelete);
 				}
+				editor.setIsDirty(true);
 				dialog.close ();
 			}
 		});

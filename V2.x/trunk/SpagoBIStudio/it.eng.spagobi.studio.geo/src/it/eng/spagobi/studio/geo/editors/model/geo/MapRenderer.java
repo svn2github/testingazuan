@@ -4,6 +4,7 @@ public class MapRenderer {
 	
 	private String className;
 	private Measures measures;
+	private Layers layers;
 
 	public String getClassName() {
 		return className;
@@ -19,6 +20,14 @@ public class MapRenderer {
 
 	public void setMeasures(Measures measures) {
 		this.measures = measures;
+	}
+
+	public Layers getLayers() {
+		return layers;
+	}
+
+	public void setLayers(Layers layers) {
+		this.layers = layers;
 	}
 
 }

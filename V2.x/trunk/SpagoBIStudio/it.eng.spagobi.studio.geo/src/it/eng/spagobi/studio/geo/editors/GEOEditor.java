@@ -17,10 +17,14 @@ import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 import it.eng.spagobi.studio.geo.Activator;
 import it.eng.spagobi.studio.geo.editors.model.bo.ColumnBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.DatasetBO;
+import it.eng.spagobi.studio.geo.editors.model.bo.LayerBO;
+import it.eng.spagobi.studio.geo.editors.model.bo.LayersBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.MetadataBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.ModelBO;
 import it.eng.spagobi.studio.geo.editors.model.geo.Column;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
+import it.eng.spagobi.studio.geo.editors.model.geo.Layer;
+import it.eng.spagobi.studio.geo.editors.model.geo.Layers;
 import it.eng.spagobi.studio.geo.editors.model.geo.Metadata;
 import it.eng.spagobi.studio.geo.util.DesignerUtils;
 import it.eng.spagobi.studio.geo.util.XmlTemplateGenerator;
@@ -41,6 +45,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
@@ -50,6 +55,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -297,7 +303,10 @@ public class GEOEditor extends EditorPart{
 				}
 				else{
 					Dataset dataset = datasetInfos.get(datasetLabel);
-					DatasetBO.setNewDataset(geoDocument, dataset.getJdbcQuery());
+					it.eng.spagobi.studio.geo.editors.model.geo.Dataset datasetGeo= DatasetBO.setNewDataset(geoDocument, dataset.getJdbcQuery());
+					Integer datasourceId = dataset.getJdbcDataSourceId();
+					
+					//DatasourceBO.addDatasource(datasetGeo, type, driver, url, user, password);
 					try{
 						dataStoreMetadata=new SpagoBIServerObjects().getDataStoreMetadata(dataset.getId());
 						if(dataStoreMetadata!=null){
@@ -353,7 +362,7 @@ public class GEOEditor extends EditorPart{
 	}
 
 
-	private void createDatasetTable(Composite sectionClient, Group datasetGroup){
+	private void createDatasetTable(final Composite sectionClient, Group datasetGroup){
 
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.horizontalSpan =2;
@@ -387,14 +396,50 @@ public class GEOEditor extends EditorPart{
 			datasetTable.getColumn (i).pack();
 		}  
 		// resize the row height using a MeasureItem listener
-		datasetTable.addListener(SWT.PaintItem, new Listener() {
+		datasetTable.addListener(SWT.MeasureItem, new Listener() {
 		   public void handleEvent(Event event) {
 		      // height cannot be per row so simply set
 		      event.height = 20;
 		   }
 		});
+
+		//listener per measures --> right click
+		datasetTable.addListener(SWT.MouseDown, new Listener () {
+            public void handleEvent (Event event) {            	
+            	if (event.button==3){	
+		        	TableItem[] selection = datasetTable.getSelection();	
+		        	//find the column
+		        	Column col = ColumnBO.getColumnByName(geoDocument, selection[0].getText());
+		        	
+		        	if(col != null && col.getType().equalsIgnoreCase("measures")){
+		        		measuresDesigner.createMeasuresShell(sectionClient, col.getColumnId());
+		        	}else{
+		        		MessageDialog.openWarning(sectionClient.getShell(), "Warning", "No measure in selected column");
+		        	}           	            	
+            	}
+            }
+        });
 		datasetTable.redraw();
 
+	}
+	private void selectFeature(Composite sectionClient, Layers layers){
+		try{
+			selectedMap = layers.getMapName();
+			GeoMap geoMap = mapInfos.get(selectedMap);
+			GeoFeature[] geoFeatures=new SpagoBIServerObjects().getFeaturesByMapId(geoMap.getMapId());
+			if(geoFeatures!=null){
+				tempMapMetadataInfos.put(selectedMap, geoFeatures);
+				fillMapTable(geoFeatures, sectionClient, false);
+			}
+			else{
+				SpagoBILogger.warningLog("No features returned from map with label "+selectedMap);
+				MessageDialog.openWarning(sectionClient.getShell(), "Warning", "No features returned from map with label "+selectedMap);			
+			}
+		}
+		catch (NoServerException e1) {
+			SpagoBILogger.errorLog("Could not get features associated to map with label = "+selectedMap, e1);
+			MessageDialog.openError(sectionClient.getShell(), "Error", "Could not get features associated to map with label = "+selectedMap);
+		}
 	}
 	private void selectDataset(Composite sectionClient, Metadata metadata){
 
@@ -433,11 +478,19 @@ public class GEOEditor extends EditorPart{
 		mapLabel.setText("Map");
 		mapLabel.setAlignment(SWT.RIGHT);
 
+		Layers layers = LayersBO.getLayers(geoDocument);
+		
 		final Combo mapCombo = new Combo(mapGroup,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
+		int index =0;
 		for (Iterator<String> iterator = mapInfos.keySet().iterator(); iterator.hasNext();) {
 			String name = (String) iterator.next();
 			mapCombo.add(name);
-		}		
+			if(layers != null && layers.getMapName() != null && layers.getMapName().equals(name)){
+				mapCombo.select(index);		
+			}
+			index++;
+		}
+	
 		mapCombo.setLayoutData(gd);
 
 
@@ -472,7 +525,7 @@ public class GEOEditor extends EditorPart{
 				}
 				if(geoFeatures!=null){
 					
-					fillMapTable(geoFeatures, sectionClient);
+					fillMapTable(geoFeatures, sectionClient, true);
 				}
 				// resize the row height using a MeasureItem listener
 				mapTable.addListener(SWT.MeasureItem, new Listener() {
@@ -483,7 +536,6 @@ public class GEOEditor extends EditorPart{
 				});
 
 				mapTable.pack();
-				datasetTable.pack();
 				
 				sectionClient.getParent().pack();
 				sectionClient.getParent().redraw();
@@ -494,10 +546,6 @@ public class GEOEditor extends EditorPart{
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 		});
-
-
-
-
 
 	}
 
@@ -519,65 +567,46 @@ public class GEOEditor extends EditorPart{
 			column.setText(titles[i]);
 			column.setResizable(true);
 		} 
-
-		for(int i=0; i< 10; i++){
-			TableItem item = new TableItem(mapTable, SWT.TRANSPARENT);			
+		Layers layers = LayersBO.getLayers(geoDocument);
+		
+		if(layers != null && layers.getMapName() != null && !layers.getMapName().equals("")){
+			selectFeature(sectionClient, layers);
+			
+		}else{
+			for(int i=0; i< 10; i++){
+				TableItem item = new TableItem(mapTable, SWT.TRANSPARENT);			
+			}
 		}
+
 		for (int i=0; i<titles.length; i++) {
 			mapTable.getColumn (i).pack ();
 		}  
+		// resize the row height using a MeasureItem listener
+		mapTable.addListener(SWT.MeasureItem, new Listener() {
+		   public void handleEvent(Event event) {
+		      // height cannot be per row so simply set
+		      event.height = 25;
+		   }
+		});
+		
 		mapTable.redraw();
 
 	}
 
-
-	@Override
-	public void setFocus() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void setIsDirty(boolean isDirty) {
-		this.isDirty = isDirty;
-		firePropertyChange(PROP_DIRTY);
-	}
-
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-		// TODO Auto-generated method stub
-		SpagoBILogger.infoLog("Start Saving GEO Template File");
-		ByteArrayInputStream bais = null;
-
-		try {
-			FileEditorInput fei = (FileEditorInput) getEditorInput();
-			IFile file = fei.getFile();
-			String newContent =  XmlTemplateGenerator.transformToXml(geoDocument);
-			System.out.println("******** SAVING ***************");
-			System.out.println(newContent);
-			byte[] bytes = newContent.getBytes();
-			bais = new ByteArrayInputStream(bytes);
-			file.setContents(bais, IFile.FORCE, null);
-
-		} catch (CoreException e) {
-			SpagoBILogger.errorLog("Error while Saving GEO Template File",e);
-			e.printStackTrace();
-		}	
-		finally { 
-			if (bais != null)
-				try {
-					bais.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		}
-		setIsDirty(false);
-	}
 	
-	private void fillMapTable(GeoFeature[] geoFeatures, Composite sectionClient){
-		
+	private void fillMapTable(GeoFeature[] geoFeatures, Composite sectionClient, boolean replace){
+		if(replace){
+			LayersBO.setNewLayers(geoDocument, selectedMap);
+		}
 		for (int i = 0; i < geoFeatures.length; i++) {
 			GeoFeature geoFeature=geoFeatures[i];
+			
+			Layer layer = LayerBO.getLayerByName(geoDocument, geoFeature.getName());
+			if(layer == null){
+				//if no column exists than create it
+				layer = LayerBO.setNewLayer(geoDocument, geoFeature.getName(), selectedMap);
+			}
+			final Layer selectedLayer = layer;
 			TableItem item = new TableItem(mapTable, SWT.NONE);
 			item.setText(FEATURE_NAME, geoFeature.getName());
 
@@ -585,11 +614,18 @@ public class GEOEditor extends EditorPart{
 			Text newDescr = new Text(mapTable, SWT.BORDER);
 			newDescr.setBackground(new Color(sectionClient.getDisplay(), new RGB(245,245,245)));
 			newDescr.setText(geoFeature.getDescr()!=null ? geoFeature.getDescr() : "");
+			if(layer != null && selectedLayer.getDescription() != null){
+				newDescr.setText(selectedLayer.getDescription());
+			}
+			
 			newDescr.addModifyListener(new ModifyListener() {
 				public void modifyText(ModifyEvent me) {
 					System.out.println("Changed");
+					selectedLayer.setDescription(((Text)me.widget).getText());
+					setIsDirty(true);
 				}
 			});
+			
 			editor.minimumWidth = newDescr.getSize ().x;
 			editor.horizontalAlignment = SWT.CENTER;
 			editor.grabHorizontal=true;						
@@ -600,7 +636,7 @@ public class GEOEditor extends EditorPart{
 			newDescr.setFocus();						
 			editor.setEditor(newDescr, item, FEATURE_DESCR);
 
-			Button selButton = new Button(mapTable, SWT.RADIO);
+			final Button selButton = new Button(mapTable, SWT.RADIO);
 			selButton.setText("");	
 			editor = new TableEditor (mapTable);
 			editor.minimumWidth = selButton.getSize ().x;
@@ -610,20 +646,49 @@ public class GEOEditor extends EditorPart{
 			editor.verticalAlignment=SWT.CENTER;
 			editor.grabVertical=true;
 			editor.setEditor(selButton, item, FEATURE_DEFAULT_LEVEL);
+			editor.layout();
+			
+			final boolean[] isSelected = new boolean[1];
+			
+			selButton.addSelectionListener (new SelectionAdapter () {
+				public void widgetSelected (SelectionEvent e) {
+					isSelected[0] = e.widget == selButton;
+					selectedLayer.setSelected(String.valueOf(isSelected[0]));
+					
+					setIsDirty(true);
+				}
+			});
+			
+			if(selectedLayer.getSelected()!= null && selectedLayer.getSelected().equals("true")){
+				selButton.setSelection(true);
+			}
+			
+						
 			Composite colorSection=DesignerUtils.createColorPicker(mapTable, "#FF0000");
-
+			for(int k=0; k<colorSection.getChildren().length; k++){
+				Control contr = (colorSection.getChildren())[k];
+				if(contr instanceof Label){
+					Color color = contr.getBackground();
+					String defaultFillColour = DesignerUtils.convertRGBToHexadecimal(color.getRGB());
+					selectedLayer.setDefaultFillColour(defaultFillColour);
+				}
+			}
+			
+			
 			editor = new TableEditor (mapTable);
-			editor.minimumWidth = colorSection.getSize ().x;
-			editor.horizontalAlignment = SWT.CENTER;
+			//editor.minimumWidth = colorSection.getSize ().x;
+			editor.horizontalAlignment = SWT.LEFT;
 			editor.grabHorizontal=true;
-			editor.minimumHeight=colorSection.getSize().y;
-			editor.verticalAlignment=SWT.CENTER;
-			editor.grabVertical=true;						
+			//editor.minimumHeight=colorSection.getSize().y;
+			//editor.verticalAlignment=SWT.CENTER;
+			//editor.grabVertical=true;						
 			editor.setEditor(colorSection, item, FEATURE_DEFAULT_COLORS);
-			mapTable.pack();
+			editor.layout();
+
 
 		}
-	
+		mapTable.pack();
+		mapTable.redraw();
 	}
 	
 	private void fillDatasetTable(DataStoreMetadata dataStoreMetadata, boolean replace){
@@ -656,9 +721,18 @@ public class GEOEditor extends EditorPart{
 				String typeText= comboSel.getItem(k);
 				if(selectedColumn.getType() != null && selectedColumn.getType().equals(typeText)){
 					comboSel.select(k);
-				}	
+				}
 			}
-
+			if(comboSel.getText() != null && comboSel.getText().equals("measures")){
+	              item.setText(2, comboSel.getText());
+	              if(comboSel.getText().equalsIgnoreCase("measures")){
+		              item.setImage(0, measureIcon.createImage());
+	              }else{
+	            	  if(item.getImage() != null){
+	            		  item.setImage(0,null);
+	            	  }				            	  
+	              }
+			}
 			
 			comboSel.addModifyListener(new ModifyListener() {
 	            public void modifyText(ModifyEvent event) {
@@ -676,7 +750,7 @@ public class GEOEditor extends EditorPart{
 	              setIsDirty(true);
 	            }
 	        });
-			
+			selectedColumn.setType(comboSel.getText());
 			comboSel.pack();
 			TableEditor editor = new TableEditor (datasetTable);
 			editor.minimumWidth = comboSel.getSize ().x;
@@ -726,6 +800,7 @@ public class GEOEditor extends EditorPart{
 		
 	}
 
+
 	@Override
 	public void doSaveAs() {
 		// TODO Auto-generated method stub
@@ -738,6 +813,49 @@ public class GEOEditor extends EditorPart{
 		return isDirty;
 	}
 
+
+	@Override
+	public void setFocus() {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setIsDirty(boolean isDirty) {
+		this.isDirty = isDirty;
+		firePropertyChange(PROP_DIRTY);
+	}
+
+	@Override
+	public void doSave(IProgressMonitor monitor) {
+		// TODO Auto-generated method stub
+		SpagoBILogger.infoLog("Start Saving GEO Template File");
+		ByteArrayInputStream bais = null;
+
+		try {
+			FileEditorInput fei = (FileEditorInput) getEditorInput();
+			IFile file = fei.getFile();
+			String newContent =  XmlTemplateGenerator.transformToXml(geoDocument);
+			System.out.println("******** SAVING ***************");
+			System.out.println(newContent);
+			byte[] bytes = newContent.getBytes();
+			bais = new ByteArrayInputStream(bytes);
+			file.setContents(bais, IFile.FORCE, null);
+
+		} catch (CoreException e) {
+			SpagoBILogger.errorLog("Error while Saving GEO Template File",e);
+			e.printStackTrace();
+		}	
+		finally { 
+			if (bais != null)
+				try {
+					bais.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		setIsDirty(false);
+	}
 	@Override
 	public boolean isSaveAsAllowed() {
 		// TODO Auto-generated method stub

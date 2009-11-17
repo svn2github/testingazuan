@@ -9,6 +9,8 @@ import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchies;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchy;
 import it.eng.spagobi.studio.geo.editors.model.geo.KPI;
+import it.eng.spagobi.studio.geo.editors.model.geo.Layer;
+import it.eng.spagobi.studio.geo.editors.model.geo.Layers;
 import it.eng.spagobi.studio.geo.editors.model.geo.Level;
 import it.eng.spagobi.studio.geo.editors.model.geo.Levels;
 import it.eng.spagobi.studio.geo.editors.model.geo.MapProvider;
@@ -46,7 +48,6 @@ public class XmlTemplateGenerator {
 		xstream.aliasField("level", DatamartProvider.class, "level");
 		/**figli di datamart provider**/
 			xstream.aliasField("DATASET", DatamartProvider.class, "dataset"); 
-				xstream.useAttributeFor(Dataset.class, "query");
 				xstream.aliasField("QUERY", Dataset.class, "query");
 				
 				xstream.aliasField("DATASOURCE", Dataset.class, "datasource");
@@ -134,8 +135,18 @@ public class XmlTemplateGenerator {
 					xstream.useAttributeFor(Param.class, "value");
 					xstream.aliasField("value", Param.class, "value");
 
-		
-
+		xstream.aliasField("LAYERS", MapRenderer.class, "layers");
+		xstream.useAttributeFor(Layers.class, "mapName");
+		xstream.aliasField("mapName", Layers.class, "mapName");
+		xstream.addImplicitCollection(Layers.class, "layer", "LAYER", Layer.class);
+			xstream.useAttributeFor(Layer.class, "name");
+			xstream.aliasField("name", Layer.class, "name");
+			xstream.useAttributeFor(Layer.class, "defaultFillColour");
+			xstream.aliasField("default_fill_color", Layer.class, "defaultFillColour");
+			xstream.useAttributeFor(Layer.class, "description");
+			xstream.aliasField("description", Layer.class, "description");
+			xstream.useAttributeFor(Layer.class, "selected");
+			xstream.aliasField("selected", Layer.class, "selected");
 		}
 
 

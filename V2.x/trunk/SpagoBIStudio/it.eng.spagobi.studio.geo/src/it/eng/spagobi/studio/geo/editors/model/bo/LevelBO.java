@@ -106,4 +106,12 @@ public class LevelBO {
 		}
 		return levelret;
 	}
+	
+	public static void updateLevel(GEODocument geoDocument,
+			String hierarchyName, Level oldLevel, Level newLevel){
+		Level levelToUpdate = getLevelByName(geoDocument, hierarchyName, oldLevel.getName());
+		levelToUpdate = newLevel;
+		
+		
+	}
 }

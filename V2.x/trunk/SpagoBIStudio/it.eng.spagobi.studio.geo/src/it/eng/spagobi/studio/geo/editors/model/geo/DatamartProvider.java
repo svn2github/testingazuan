@@ -6,6 +6,7 @@ public class DatamartProvider {
 	private String level;
 	private Metadata metadata;
 	private Hierarchies hierarchies;
+	private Dataset dataset;
 	
 	public String getClassName() {
 		return className;
@@ -36,6 +37,12 @@ public class DatamartProvider {
 	}
 	public void setHierarchies(Hierarchies hierarchies) {
 		this.hierarchies = hierarchies;
+	}
+	public Dataset getDataset() {
+		return dataset;
+	}
+	public void setDataset(Dataset dataset) {
+		this.dataset = dataset;
 	}
 
 }

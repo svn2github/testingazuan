@@ -50,7 +50,8 @@ public class HierarchyBO {
 			}
 		}
 		return hierarchy;
-	}	
+	}
+
 	public static Hierarchies getAllHierarchies(GEODocument geoDocument){
 		DatamartProvider dmProvider =geoDocument.getDatamartProvider();
 		if(dmProvider != null){

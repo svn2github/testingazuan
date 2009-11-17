@@ -10,6 +10,7 @@ import it.eng.spagobi.studio.core.bo.GeoMap;
 import it.eng.spagobi.studio.core.bo.SpagoBIServerObjects;
 import it.eng.spagobi.studio.core.exceptions.NoServerException;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
+import it.eng.spagobi.studio.geo.editors.model.bo.DatamartProviderBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.HierarchyBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.LevelBO;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
@@ -21,6 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -30,7 +32,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -99,19 +100,26 @@ public class HierarchiesDesigner {
         editor.setIsDirty(true);
 		
 	}
-	private void createNewLevel(Tree hierarchiesTree, Level newLevel, TreeItem parent){		
+	private void createNewLevel(Tree hierarchiesTree, Level newLevel, TreeItem parent, boolean isDefault){		
         TreeItem iItem = new TreeItem(parent, SWT.NONE);
         iItem.setText(newLevel.getName());
 
         hierarchiesTree.getParent().getParent().redraw();
-        //crea oggetto java con name+type
+
         LevelBO.setNewLevel(geoDocument, parent.getText(), newLevel);
+        if(isDefault){
+        	DatamartProviderBO.setHierarchy(geoDocument, parent.getText(), newLevel.getName());
+        }
         editor.setIsDirty(true);
 	}
-	private void updateLevel(Tree hierarchiesTree, Level newLevel, TreeItem parent, Level oldLevel){		
+	private void updateLevel(Tree hierarchiesTree, Level newLevel, TreeItem parent, Level oldLevel, boolean isDefault){		
         TreeItem iItem = hierarchiesTree.getSelection()[0];
         iItem.setText(newLevel.getName());
-        //hierarchiesTree.pack();
+        
+        LevelBO.updateLevel(geoDocument, parent.getText(), oldLevel, newLevel);
+        if(isDefault){
+        	DatamartProviderBO.setHierarchy(geoDocument, parent.getText(), oldLevel.getName());
+        }
         hierarchiesTree.getParent().getParent().redraw();
         oldLevel = newLevel;	
         editor.setIsDirty(true);
@@ -339,6 +347,7 @@ public class HierarchiesDesigner {
 
 	}
 	private void createNewLevelShell(final Tree hierarchiesTree, final TreeItem selectedItem, final Level level){
+		
 		final Shell dialog = new Shell (mainComposite.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		dialog.setText("New Level for "+selectedItem);
 		FormLayout formLayout = new FormLayout ();
@@ -394,23 +403,55 @@ public class HierarchiesDesigner {
 		}
 		if(level != null){
 			for(int i=0; i<textColumn.getItemCount();i++){
-				if(textColumn.getText().equals(level.getName())){
+				String val = textColumn.getItem(i);
+				if(val.equals(level.getColumnId())){
 					textColumn.select(i);
+					
 				}
 			}
 			
 		}
 		data = new FormData ();
-		data.width = 200;
+		data.width = 125;
 		data.left = new FormAttachment (labelColumn, 0, SWT.DEFAULT);
-		data.right = new FormAttachment (100, 0);
+		data.right = new FormAttachment (75, 0);
 		data.top = new FormAttachment (labelColumn, 0, SWT.CENTER);
 		textColumn.setLayoutData (data);
+		
+		//is default
+		data = new FormData ();
+		data.width = 75;
+		data.left = new FormAttachment (textColumn, 5, SWT.DEFAULT);
+		data.top = new FormAttachment(text, 5);
+		
+		final Button checkIsDef = new Button(dialog, SWT.CHECK | SWT.RIGHT);
+		final boolean[] isDefault = new boolean[1];
+		checkIsDef.setText("Is default");
+		if(level != null){
+			String defHier =geoDocument.getDatamartProvider().getHierarchy();
+			String defLev =geoDocument.getDatamartProvider().getLevel();
+			if(defHier.equals(selectedItem.getParentItem().getText()) && defLev.equals(level.getName())){
+				checkIsDef.setSelection(true);
+			}
+		}
+
+		checkIsDef.setLayoutData (data);
+		checkIsDef.addSelectionListener(new SelectionListener() {
+
+	        public void widgetSelected(SelectionEvent event) {
+	        	isDefault[0] = event.widget == checkIsDef;
+	        }
+
+	        public void widgetDefaultSelected(SelectionEvent event) {
+	        	isDefault[0] = event.widget == checkIsDef;
+	        }
+	    });
+		
 		
 		//description
 		data = new FormData ();
 		data.width = 100;
-		data.top = new FormAttachment(textColumn, 5);
+		data.top = new FormAttachment(checkIsDef, 5);
 		Label labelDescr = new Label (dialog, SWT.RIGHT);
 		labelDescr.setText ("Description:");
 		labelDescr.setLayoutData (data);	
@@ -441,7 +482,8 @@ public class HierarchiesDesigner {
 		}
 		if(level != null){
 			for(int i=0; i<textFeature.getItemCount();i++){
-				if(textFeature.getText().equals(level.getFeatureName())){
+				String val = textFeature.getItem(i);
+				if(val.equals(level.getFeatureName())){
 					textFeature.select(i);
 				}
 			}
@@ -476,9 +518,9 @@ public class HierarchiesDesigner {
 		        newLevel.setColumnDesc(columnDesc);
 		        newLevel.setFeatureName(feature);
 		        if(level == null){
-		        	createNewLevel(hierarchiesTree, newLevel,  selectedItem);
+		        	createNewLevel(hierarchiesTree, newLevel,  selectedItem, isDefault[0]);		        	
 		        }else{
-		        	updateLevel(hierarchiesTree, newLevel,  selectedItem, level);
+		        	updateLevel(hierarchiesTree, newLevel,  selectedItem, level, isDefault[0]);
 		        }
 				
 				dialog.close ();

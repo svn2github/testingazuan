@@ -2,7 +2,7 @@ package it.eng.spagobi.studio.geo.editors.model.geo;
 
 public class Dataset {
 	private Datasource datasource;
-	private Query query;
+	private String query;
 	
 	public Datasource getDatasource() {
 		return datasource;
@@ -10,11 +10,12 @@ public class Dataset {
 	public void setDatasource(Datasource datasource) {
 		this.datasource = datasource;
 	}
-	public Query getQuery() {
+	public String getQuery() {
 		return query;
 	}
-	public void setQuery(Query query) {
+	public void setQuery(String query) {
 		this.query = query;
 	}
+
 
 }

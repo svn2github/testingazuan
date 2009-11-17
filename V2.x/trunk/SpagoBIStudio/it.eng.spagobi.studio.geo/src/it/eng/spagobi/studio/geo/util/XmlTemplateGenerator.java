@@ -3,6 +3,8 @@ package it.eng.spagobi.studio.geo.util;
 import it.eng.spagobi.studio.geo.editors.model.geo.Colours;
 import it.eng.spagobi.studio.geo.editors.model.geo.Column;
 import it.eng.spagobi.studio.geo.editors.model.geo.DatamartProvider;
+import it.eng.spagobi.studio.geo.editors.model.geo.Dataset;
+import it.eng.spagobi.studio.geo.editors.model.geo.Datasource;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchies;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchy;
@@ -43,8 +45,27 @@ public class XmlTemplateGenerator {
 		xstream.useAttributeFor(DatamartProvider.class, "level");
 		xstream.aliasField("level", DatamartProvider.class, "level");
 		/**figli di datamart provider**/
+			xstream.aliasField("DATASET", DatamartProvider.class, "dataset"); 
+				xstream.useAttributeFor(Dataset.class, "query");
+				xstream.aliasField("QUERY", Dataset.class, "query");
+				
+				xstream.aliasField("DATASOURCE", Dataset.class, "datasource");
+					xstream.useAttributeFor(Datasource.class, "type");
+					xstream.aliasField("type", Datasource.class, "type");
+					xstream.useAttributeFor(Datasource.class, "driver");
+					xstream.aliasField("driver", Datasource.class, "driver");
+					xstream.useAttributeFor(Datasource.class, "url");
+					xstream.aliasField("url", Datasource.class, "url");
+					xstream.useAttributeFor(Datasource.class, "user");
+					xstream.aliasField("user", Datasource.class, "user");
+					xstream.useAttributeFor(Datasource.class, "password");
+					xstream.aliasField("password", Datasource.class, "password");
+			
 			xstream.aliasField("METADATA", DatamartProvider.class, "metadata"); 
-				xstream.aliasField("COLUMN", Metadata.class, "column");
+			xstream.useAttributeFor(Metadata.class, "dataset");
+			xstream.aliasField("dataset", Metadata.class, "dataset");
+			xstream.addImplicitCollection(Metadata.class, "column", "COLUMN", Column.class);
+
 					xstream.useAttributeFor(Column.class, "type");
 					xstream.aliasField("type", Column.class, "type");
 					xstream.useAttributeFor(Column.class, "columnId");

@@ -66,6 +66,7 @@ Sbi.locale.ln['sbi.formviewer.dynamicfilterspanel.variable'] = 'Variabile';
 Sbi.locale.ln['sbi.formviewer.dynamicfilterspanel.value'] = 'Valore';
 Sbi.locale.ln['sbi.formviewer.dynamicfilterspanel.fromvalue'] = 'Dal valore';
 Sbi.locale.ln['sbi.formviewer.dynamicfilterspanel.tovalue'] = 'Al valore';
+Sbi.locale.ln['sbi.formviewer.dynamicfilterspanel.clear.tt'] = 'Cancella valori inseriti';
 Sbi.locale.ln['sbi.formviewer.groupingvariablespanel.title'] = 'Variabili di raggruppamento';
 Sbi.locale.ln['sbi.formviewer.groupingvariablespanel.variable-1'] = 'Prima variabile';
 Sbi.locale.ln['sbi.formviewer.groupingvariablespanel.variable-2'] = 'Seconda variabile';

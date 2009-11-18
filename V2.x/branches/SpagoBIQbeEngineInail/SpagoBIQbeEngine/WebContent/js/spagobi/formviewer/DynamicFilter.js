@@ -201,7 +201,7 @@ Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
         }
 		for (var i = 0; i < this.valuesInputs.length; i++) {
 			var aValueInput = this.valuesInputs[i];
-			if (String.trim(aValueInput.getValue()) === '') {
+			if (aValueInput.getValue() !== null && aValueInput.getValue().trim() === '') {
 				return false;
 			}
 		}

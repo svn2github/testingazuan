@@ -4,7 +4,6 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.chart.bo.charttypes.blockcharts.util.Activity;
 import it.eng.spagobi.engines.chart.bo.charttypes.blockcharts.util.AnnotationBlock;
 import it.eng.spagobi.engines.chart.bo.charttypes.blockcharts.util.RangeBlocks;
-import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyXYItemLabelGenerator;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
@@ -34,6 +33,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.LookupPaintScale;
 import org.jfree.chart.renderer.xy.XYBlockRenderer;
 import org.jfree.chart.title.PaintScaleLegend;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.RegularTimePeriod;
@@ -49,6 +49,10 @@ public class TimeBlockChart extends BlockCharts {
 	Date beginDate;
 	Date endDate;
 
+	Date maxDateFound;
+	Date minDateFound;
+
+
 	HashMap<String , AnnotationBlock> annotations;
 
 //	Utility Map
@@ -59,7 +63,15 @@ public class TimeBlockChart extends BlockCharts {
 		return ( (d2.getTime() - d1.getTime() + ONE_HOUR) / 
 				(ONE_HOUR * 24));
 	}   
-	
+	public static Date addDay(Date date){
+		//TODO you may want to check for a null date and handle it.
+		Calendar cal = Calendar.getInstance();
+		cal.setTime (date);
+		cal.add (Calendar.DATE, 1);
+		return cal.getTime();
+	}
+
+
 	static final long ONE_DAY = 24 * 60 * 60 * 1000;
 	static final long ANNOTATION_HEIGHT = 24 * 60 * 40 * 1000;
 	static final long BLOCK_HEIGHT = 24 * 60 * 35 * 1000;
@@ -72,25 +84,16 @@ public class TimeBlockChart extends BlockCharts {
 		DatasetMap datasetMap=new DatasetMap();
 		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
 
-		Calendar c=new GregorianCalendar();
-		c.set(9 + 2000, Calendar.JANUARY, 1);
-		beginDate=c.getTime();
-		Calendar c1=new GregorianCalendar();
-		c1.set(9 + 2000, Calendar.JANUARY, 10);
-		endDate=c1.getTime();
+//		Calendar c=new GregorianCalendar();
+//		c.set(9 + 2000, Calendar.JANUARY, 1);
+//		beginDate=c.getTime();
+//		Calendar c1=new GregorianCalendar();
+//		c1.set(9 + 2000, Calendar.JANUARY, 10);
+//		endDate=c1.getTime();
 
-		long daysBetween=daysBetween(beginDate,endDate); 
-		long minutesBetweenLong=daysBetween*24*60;
-		int mbl=Long.valueOf(minutesBetweenLong).intValue();
-		//		count days
 
 		ArrayList<Activity> activities=new ArrayList<Activity>();
 
-		RegularTimePeriod t = new Day(1,1,2009);
-		DefaultXYZDataset dataset = new DefaultXYZDataset();
-		double[] xvalues = new double[mbl];    
-		double[] yvalues = new double[mbl];    
-		double[] zvalues = new double[mbl];
 
 		RegularTimePeriod timePeriod = null;
 
@@ -104,12 +107,35 @@ public class TimeBlockChart extends BlockCharts {
 			SourceBean row = (SourceBean) iterator.next();
 			Activity activity=new Activity(row);
 			activities.add(activity);
-			// if a new Code create a new Annotation
 
-			//			if(timePeriod==null){
-//			timePeriod = new Day(activity.getBeginDate().getDay(),activity.getBeginDate().getMonth(),activity.getBeginDate().getYear());
-//			}
+			if(maxDateFound!=null && !activity.getBeginDate().after(maxDateFound)){
+			}
+			else{
+				maxDateFound=activity.getBeginDate();
+			}
+
+			if(minDateFound!=null && !activity.getBeginDate().before(minDateFound)){
+			}
+			else{
+				minDateFound=activity.getBeginDate();
+			}
 		}
+
+		//		count days
+		long daysBetween;
+		if(dateMin!=null && dateMax!=null){
+			daysBetween=daysBetween(dateMin,dateMax); 
+		}
+		else{
+			daysBetween=daysBetween(minDateFound,maxDateFound); 
+		}
+		long minutesBetweenLong=daysBetween*24*60;
+		int mbl=Long.valueOf(minutesBetweenLong).intValue();
+
+		DefaultXYZDataset dataset = new DefaultXYZDataset();
+		double[] xvalues = new double[mbl];    
+		double[] yvalues = new double[mbl];    
+		double[] zvalues = new double[mbl];
 
 		annotations=new HashMap<String, AnnotationBlock>();
 		// run all the activities
@@ -128,10 +154,10 @@ public class TimeBlockChart extends BlockCharts {
 				// minuteValue : 60 = x :100
 				double convertedMinuteValue=(doubleMinuteValue*100)/60.0;
 				double convertedMinuteValueCent=convertedMinuteValue/100;
-				
+
 				double hourD=(double)hour.intValue();
 				double converted=hourD+convertedMinuteValueCent;
-				
+
 				String yVal=Double.valueOf(converted).toString();
 				xvalues[j]=secondmills;
 				yvalues[j]=Double.valueOf(yVal);
@@ -154,6 +180,7 @@ public class TimeBlockChart extends BlockCharts {
 				new double[][] { xvalues, yvalues, zvalues });
 
 		datasetMap.getDatasets().put("1", dataset);
+		logger.debug("OUT");
 		return datasetMap;
 	}
 
@@ -167,7 +194,7 @@ public class TimeBlockChart extends BlockCharts {
 			RangeBlocks rangeBlocks = ranges.get(i);
 			patternRangeIndex.put(rangeBlocks.getPattern(), Integer.valueOf(i));
 		}
-
+		logger.debug("OUT");
 	}
 
 
@@ -176,6 +203,7 @@ public class TimeBlockChart extends BlockCharts {
 
 	@Override
 	public JFreeChart createChart(DatasetMap datasets) {
+		logger.debug("IN");
 		super.createChart(datasets);
 		DefaultXYZDataset dataset=(DefaultXYZDataset)datasets.getDatasets().get("1"); 
 
@@ -184,7 +212,7 @@ public class TimeBlockChart extends BlockCharts {
 		xAxis.setUpperMargin(0.0);
 		xAxis.setInverted(false);
 		xAxis.setDateFormatOverride(new SimpleDateFormat("dd/MM/yyyy"));
-		if(yAutoRange){
+		if(dateAutoRange){
 			xAxis.setAutoRange(true);
 		}
 		else{
@@ -193,8 +221,11 @@ public class TimeBlockChart extends BlockCharts {
 			xAxis.setTickUnit(unit);
 		}
 
-		if(beginDate!=null && endDate!=null){
-			xAxis.setRange(beginDate, endDate);
+		if(dateMin!=null && dateMax!=null){
+			xAxis.setRange(dateMin, addDay(dateMax));
+		}
+		else{
+			xAxis.setRange(minDateFound, addDay(maxDateFound));			
 		}
 
 //		Calendar c=new GregorianCalendar();
@@ -207,7 +238,8 @@ public class TimeBlockChart extends BlockCharts {
 		NumberAxis yAxis = new NumberAxis(xLabel);
 		yAxis.setUpperMargin(0.0);
 		yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-		yAxis.setRange(xMin, xMax);
+		yAxis.setRange(hourMin, hourMax);
+
 		XYBlockRenderer renderer = new XYBlockRenderer();
 		renderer.setBlockWidth(BLOCK_HEIGHT);
 		// one block for each minute!
@@ -230,15 +262,24 @@ public class TimeBlockChart extends BlockCharts {
 			AnnotationBlock annotationBlock=annotations.get(annotationCode);
 			XYTextAnnotation xyAnnotation = new XYTextAnnotation(
 					annotationBlock.getAnnotation(),annotationBlock.getXPosition()+ANNOTATION_HEIGHT, annotationBlock.getYPosition());
-			xyAnnotation.setFont(new Font("nome",Font.BOLD,8));
-			xyAnnotation.setPaint(Color.BLACK);
+			if(styleAnnotation!=null){
+				xyAnnotation.setFont(new Font(styleAnnotation.getFontName(),Font.BOLD,styleAnnotation.getSize()));
+				xyAnnotation.setPaint(styleAnnotation.getColor());
+			}
+			else{
+				xyAnnotation.setFont(new Font("Nome",Font.BOLD,8));				
+				xyAnnotation.setPaint(Color.BLACK);
+			}
+			
 			xyAnnotation.setTextAnchor(TextAnchor.BOTTOM_LEFT);
 			renderer.addAnnotation(xyAnnotation);
 		}
 
+		logger.debug("Annotation set");
+
 		LookupPaintScale paintScale = new LookupPaintScale(0.5, ranges.size()+0.5, color);
 		String[] labels=new String[ranges.size()+1];
-labels[0]="";
+		labels[0]="";
 
 		// ******************** SCALE ****************************
 		for (Iterator iterator = ranges.iterator(); iterator.hasNext();) {
@@ -255,8 +296,8 @@ labels[0]="";
 		}
 		renderer.setPaintScale(paintScale);
 
-		
-		
+
+
 		SymbolAxis scaleAxis = new SymbolAxis(null, labels);
 		scaleAxis.setRange(0.5, ranges.size()+0.5);
 		scaleAxis.setPlot(new PiePlot());
@@ -268,21 +309,30 @@ labels[0]="";
 		psl.setAxisOffset(5.0);
 		// ******************** END SCALE ****************************
 
-		
-		
+		logger.debug("Scale Painted");
+
+
 		XYPlot plot = new XYPlot(dataset, xAxis, yAxis, renderer);
 		plot.setOrientation(PlotOrientation.HORIZONTAL);
 		plot.setBackgroundPaint(Color.lightGray);
 		plot.setRangeGridlinePaint(Color.white);
 		plot.setAxisOffset(new RectangleInsets(5, 5, 5, 5));
 
+		logger.debug("Plot set");
+
+
 		JFreeChart chart = new JFreeChart(name, plot);
+		if(styleTitle!=null){
+			TextTitle title =setStyleTitle(name, styleTitle);
+			chart.setTitle(title);
+		}
 		chart.removeLegend();
 		chart.setBackgroundPaint(Color.white);
-
 		chart.addSubtitle(psl);
 
-		
+
+		logger.debug("OUT");
+
 		return chart;
 
 	}

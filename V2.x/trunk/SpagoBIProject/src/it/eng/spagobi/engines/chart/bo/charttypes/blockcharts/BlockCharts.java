@@ -1,8 +1,11 @@
 package it.eng.spagobi.engines.chart.bo.charttypes.blockcharts;
 
 import java.awt.Color;
+import java.text.DateFormat;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,40 +17,41 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts;
 import it.eng.spagobi.engines.chart.bo.charttypes.blockcharts.util.RangeBlocks;
+import it.eng.spagobi.engines.chart.utils.StyleLabel;
 
 public class BlockCharts extends ChartImpl{
 	private static transient Logger logger=Logger.getLogger(BlockCharts.class);
 
 	// FIeld Database to recover from dataset
 	public static String ANNOTATION="ANNOTATION";
-	//static String SALE_CODE="SALA_CODICE";
 	public static String BEGIN_ACTIVITY_DATE="BEGIN_DATE";
 	public static String PATTERN="PATTERN";
-	public static String DURATION="DURATA";
+	public static String DURATION="DURATION";
 
 	Map confParameters;
 	String xLabel;
 	String yLabel;
-	Double xMin;
-	Double xMax;
-	Double yMin;
-	Double yMax;
+	Double hourMin;
+	Double hourMax;
+	java.util.Date dateMin;
+	Date dateMax;
 	SimpleDateFormat beginDateFormat;
 	SimpleDateFormat viewDateFormat;
+	protected StyleLabel styleAnnotation;
 
-	boolean yAutoRange;
+	boolean dateAutoRange;
 
 	ArrayList<RangeBlocks> ranges;
 	static final String X_LABEL = "x_label";
 	static final String Y_LABEL = "y_label";
-	static final String X_MAX = "x_max";
-	static final String X_MIN = "x_min";
-	static final String Y_MAX = "y_max";
-	static final String Y_MIN = "y_min";
+	static final String HOUR_MAX = "hour_max";
+	static final String HOUR_MIN = "hour_min";
+	static final String DATE_MAX = "date_max";
+	static final String DATE_MIN = "date_min";
 	static final String VIEW_DATE_FORMAT = "view_date_format";
-	static final String Y_AUTO_RANGE = "y_auto_range";
+	static final String DATE_AUTO_RANGE = "date_auto_range";
 	static final String HOUR_CODE = "ORA";
-
+	static final String STYLE_ANNOTATION_LABELS = "STYLE_ANNOTATION_LABELS";
 
 
 	@Override
@@ -80,24 +84,24 @@ public class BlockCharts extends ChartImpl{
 			yLabel="Time";	
 		}
 
-		if(confParameters.get(X_MAX)!=null && confParameters.get(X_MIN)!=null){	
-			String xMaxS=(String)confParameters.get(X_MAX);
-			String xMinS=(String)confParameters.get(X_MIN);
-			xMax=Double.valueOf(xMaxS);
-			xMin=Double.valueOf(xMinS);
+		if(confParameters.get(HOUR_MAX)!=null && confParameters.get(HOUR_MIN)!=null){	
+			String xMaxS=(String)confParameters.get(HOUR_MAX);
+			String xMinS=(String)confParameters.get(HOUR_MIN);
+			hourMax=Double.valueOf(xMaxS);
+			hourMin=Double.valueOf(xMinS);
 		}
 		else{
-			xMax=24.0;
-			xMin=0.0;
+			hourMax=24.0;
+			hourMin=0.0;
 		}
 
-		if(confParameters.get(Y_AUTO_RANGE)!=null){	
-			if(confParameters.get(Y_AUTO_RANGE).toString().equalsIgnoreCase("true"))
-				yAutoRange=true;
-			else yAutoRange=false;
+		if(confParameters.get(DATE_AUTO_RANGE)!=null){	
+			if(confParameters.get(DATE_AUTO_RANGE).toString().equalsIgnoreCase("true"))
+				dateAutoRange=true;
+			else dateAutoRange=false;
 		}
 		else{
-			yAutoRange=false;
+			dateAutoRange=false;
 		}
 
 
@@ -117,6 +121,23 @@ public class BlockCharts extends ChartImpl{
 		}
 
 
+		if(confParameters.get(DATE_MAX)!=null && confParameters.get(DATE_MIN)!=null){	
+			String dateMaxS=(String)confParameters.get(DATE_MAX);
+			String dateMinS=(String)confParameters.get(DATE_MIN);
+			try{
+
+				DateFormat myDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+				dateMin = myDateFormat.parse(dateMinS);
+				dateMax = myDateFormat.parse(dateMaxS);
+			}
+			catch (Exception e) {
+				logger.error("Could not convert begin or end date");
+				dateMin=null;
+				dateMax=null;
+			}
+		}
+
+
 		ranges=new ArrayList<RangeBlocks>();
 		SourceBean rangesSB = (SourceBean)content.getAttribute("RANGES");
 		List rangesList = rangesSB.getAttributeAsList("RANGE");
@@ -133,6 +154,27 @@ public class BlockCharts extends ChartImpl{
 			RangeBlocks block=new RangeBlocks(rangeLabel, rangePattern, color);
 			ranges.add(block);
 		}
+
+
+		SourceBean styleAnnotationSB = (SourceBean)content.getAttribute(STYLE_ANNOTATION_LABELS);
+		if(styleAnnotationSB!=null){
+			String fontS = (String)styleAnnotationSB.getAttribute(FONT_STYLE);
+			if(fontS==null)fontS="ARIAL";
+			String sizeS = (String)styleAnnotationSB.getAttribute(SIZE_STYLE);
+			if(sizeS==null)sizeS="8";
+			String colorS = (String)styleAnnotationSB.getAttribute(COLOR_STYLE);
+			if(colorS==null)colorS="#000000";
+			try{
+				Color color=Color.decode(colorS);
+				int size=Integer.valueOf(sizeS).intValue();
+				styleAnnotation=new StyleLabel(fontS,size,color);
+			}
+			catch (Exception e) {
+				logger.error("Wrong style Annotation settings, use default");
+			}
+
+		}
+
 
 
 		logger.debug("OUT");

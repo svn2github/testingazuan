@@ -63,6 +63,11 @@
 	background-image: url('../../../img/analiticalmodel/execution/ico_note.png') !important;
 }
 
+.icon-no-notes {
+	background-image: url('../../../img/analiticalmodel/execution/ico_no_note.png') !important;
+}
+
+
 .icon-metadata {
 	background-image: url('../../../img/info16.png') !important;
 }
@@ -151,18 +156,18 @@
 }
 
 .action-detail-note {
-	width:14px;
-    height:14px;
+	width:16px;
+    height:16px;
     margin:2 2 2 2;
     float:right;
-    background-image: url('../../../img/notesEmpty.png');
+    background-image: url('../../../img/detail.png');
     background-position:center center;
     background-repeat:no-repeat; 
 }
 
 .action-delete-note {
-	width:14px;
-    height:14px;
+	width:16px;
+    height:16px;
     margin:2 2 2 2;
     float:right;
     background-image: url('../../../img/error16.gif') !important;

@@ -196,16 +196,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		<div class='div_detail_form'>
 		<%
-			   Boolean isMultischema = ds.checkIsMultiSchema();
+			   Boolean isMultischema = new Boolean(ds.checkIsMultiSchema());
 			   if(isMultischema==null) {
 				   isMultischema = false;
 			   }
 		%>
 
-			   <input type="radio" name="MULTISCHEMA" value="YES" <% if(isMultischema) { out.println(" checked='checked' "); } %> >
+			   <input type="radio" name="MULTISCHEMA" value="YES" <% if(isMultischema.booleanValue()) { out.println(" checked='checked' "); } %> >
 					<span class="portlet-font"><spagobi:message key = "SBISet.ListDS.YES" /></span>
 			   </input>
-			   <input type="radio" name="MULTISCHEMA" value="NO" <% if(!isMultischema) { out.println(" checked='checked' "); } %> >
+			   <input type="radio" name="MULTISCHEMA" value="NO" <% if(!isMultischema.booleanValue()) { out.println(" checked='checked' "); } %> >
 					<span class="portlet-font"><spagobi:message key = "SBISet.ListDS.NO" /></span>
 			   </input>
 		</div>

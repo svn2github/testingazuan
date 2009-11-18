@@ -1,0 +1,145 @@
+package it.eng.spagobi.engines.chart.bo.charttypes.blockcharts.util;
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.chart.bo.charttypes.XYCharts.BlockChart;
+import it.eng.spagobi.engines.chart.bo.charttypes.blockcharts.BlockCharts;
+import it.eng.spagobi.engines.chart.bo.charttypes.blockcharts.TimeBlockChart;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.apache.log4j.Logger;
+import org.jfree.data.time.Hour;
+import org.jfree.data.time.Minute;
+
+import com.sun.org.apache.bcel.internal.verifier.statics.DOUBLE_Upper;
+
+public class Activity {
+
+	// Fields from Database
+	String code;
+	Date beginDate;
+//	Double hour;
+	Hour hour;
+	Minute minutes;
+	Integer hourCod;
+	Integer duration;
+	String pattern;
+
+	private static transient Logger logger=Logger.getLogger(Activity.class);
+
+
+	public Activity(String code, Date beginDate, Hour hour, Integer hourCod,
+			Integer duration, String pattern) {
+		super();
+		this.code = code;
+		this.beginDate = beginDate;
+		this.hour = hour;
+		this.hourCod = hourCod;
+		this.duration = duration;
+		this.pattern = pattern;
+	}
+
+	public Activity(SourceBean sb) throws ParseException {
+		super();
+		code=(String)sb.getAttribute(BlockCharts.ANNOTATION);
+		String data=(String)sb.getAttribute(BlockCharts.BEGIN_ACTIVITY_DATE);
+		//SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat dateFormat=new SimpleDateFormat("dd/MM/yyyy");		
+		SimpleDateFormat hourFormat=new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");	
+		Date date=null;
+		Date hour=null;
+		try{
+			date=dateFormat.parse(data);
+		}
+		catch (ParseException e) {
+			logger.error("Wrong format specified: could not convert date "+data);
+			throw e;
+		}
+		try{
+			hour=hourFormat.parse(data);
+		}
+		catch (ParseException e) {
+			logger.error("Wrong format specified: could not convert time "+data);
+			throw e;
+		}
+		beginDate=date;
+		//beginDate=new Date(milliseconds);
+//		String hourS=(String)sb.getAttribute(BlockCharts.HOUR);
+//		Double hour=Double.valueOf(hourS);
+		minutes=new Minute(hour);
+
+//		String hourCode=(String)sb.getAttribute();
+//		if(hourCode!=null){
+//		hourCod=Integer.valueOf(hourCode);
+//		}
+		pattern=(String)sb.getAttribute(BlockCharts.PATTERN);
+		String durationS=(String)sb.getAttribute(BlockCharts.DURATION);
+		duration=Integer.valueOf(durationS);
+		int i=0;
+		// calculate valueFase from fase
+
+	}
+
+
+
+	public Date getBeginDate() {
+		return beginDate;
+	}
+	public void setBeginDate(Date beginDate) {
+		this.beginDate = beginDate;
+	}
+	public Integer getHourCod() {
+		return hourCod;
+	}
+	public void setHourCod(Integer hourCod) {
+		this.hourCod = hourCod;
+	}
+	public Integer getDuration() {
+		return duration;
+	}
+	public void setDuration(Integer duration) {
+		this.duration = duration;
+	}
+	public String getPattern() {
+		return pattern;
+	}
+	public void setPattern(String pattern) {
+		this.pattern = pattern;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public Hour getHour() {
+		return hour;
+	}
+
+	public void setHour(Hour hour) {
+		this.hour = hour;
+	}
+
+	public Minute getMinutes() {
+		return minutes;
+	}
+
+	public void setMinutes(Minute minutes) {
+		this.minutes = minutes;
+	}
+
+	public double getStringTime(){
+		String hourS=Integer.valueOf(this.hour.getHour()).toString();
+		String minutesS=Integer.valueOf(this.minutes.getMinute()).toString();
+		double d=Double.valueOf(hourS+"."+minutesS);
+		return d;
+	}
+
+
+}

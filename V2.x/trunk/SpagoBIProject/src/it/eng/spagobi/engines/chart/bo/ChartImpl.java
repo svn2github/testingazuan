@@ -36,6 +36,7 @@ import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.OverlaidStackedBarLi
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.SimpleBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBarGroup;
+import it.eng.spagobi.engines.chart.bo.charttypes.blockcharts.TimeBlockChart;
 import it.eng.spagobi.engines.chart.bo.charttypes.boxcharts.SimpleBox;
 import it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.SimpleCluster;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.BulletGraph;
@@ -155,6 +156,9 @@ public class ChartImpl implements IChart {
 	public static final String TARGETCHART = "TARGETCHART";
 	public static final String sparkline = "spark_line";
 	public static final String winlose = "win_lose";
+
+	public static final String BLOCKCHART = "BLOCKCHART";
+	public static final String simpletimeblock = "simpletimeblock";
 
 	
 	
@@ -587,8 +591,12 @@ public class ChartImpl implements IChart {
 			if(subtype.equalsIgnoreCase(winlose)){
 				sbi=new WinLose();
 			}
-		}		
-
+		}	
+		else if(type.equals(BLOCKCHART)){
+			if(subtype.equalsIgnoreCase(simpletimeblock)){
+				sbi=new TimeBlockChart();
+			}
+		}			
 
 		return sbi;
 	}

@@ -84,11 +84,12 @@ Sbi.execution.toolbar.NotesWindow = function(config) {
         ,value: ''
         //,bodyStyle:'padding:5px 5px 0'
         //,width:'100%'
-        ,width:700
+        ,width:690
         ,disabled: true
 	      ,height: 265
 	      ,enableSourceEdit: false
-	      //,readOnly:true
+	      //,autoWidth : true
+	      , autoHeight : true
         ,id:'notes'        
   }); 
     

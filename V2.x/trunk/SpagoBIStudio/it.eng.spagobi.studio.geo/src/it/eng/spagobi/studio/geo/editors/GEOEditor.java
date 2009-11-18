@@ -43,6 +43,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -686,25 +688,20 @@ public class GEOEditor extends EditorPart{
 				selButton.setSelection(true);
 			}
 			
-						
-			Composite colorSection=DesignerUtils.createColorPicker(mapTable, "#FF0000");
-			for(int k=0; k<colorSection.getChildren().length; k++){
-				Control contr = (colorSection.getChildren())[k];
-				if(contr instanceof Label){
-					Color color = contr.getBackground();
-					String defaultFillColour = DesignerUtils.convertRGBToHexadecimal(color.getRGB());
-					selectedLayer.setDefaultFillColour(defaultFillColour);
-				}
+			final String[] defaultFillColour = new String[1];
+			defaultFillColour[0]= "#FF0000";
+			if(selectedLayer.getDefaultFillColour() != null){
+				defaultFillColour[0]= selectedLayer.getDefaultFillColour();
 			}
+			final Composite colorSection=DesignerUtils.createColorPickerFillLayer(mapTable, defaultFillColour[0], selectedLayer, this);
+			String col =(String)colorSection.getData();
+			selectedLayer.setDefaultFillColour(defaultFillColour[0]);
+
 			mapTableEditors.add(editor);
 			
 			editor = new TableEditor (mapTable);
-			//editor.minimumWidth = colorSection.getSize ().x;
 			editor.horizontalAlignment = SWT.LEFT;
-			editor.grabHorizontal=true;
-			//editor.minimumHeight=colorSection.getSize().y;
-			//editor.verticalAlignment=SWT.CENTER;
-			//editor.grabVertical=true;						
+			editor.grabHorizontal=true;				
 			editor.setEditor(colorSection, item, FEATURE_DEFAULT_COLORS);
 			editor.layout();
 			mapTableEditors.add(editor);

@@ -1,5 +1,8 @@
 package it.eng.spagobi.studio.geo.util;
 
+import it.eng.spagobi.studio.geo.editors.GEOEditor;
+import it.eng.spagobi.studio.geo.editors.model.geo.Layer;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -20,7 +23,7 @@ public class DesignerUtils {
 
 	public static Composite createColorPicker(Composite parent, String colorHex){
 		//		Composite innerSection = toolkit.createComposite(section);
-		Composite innerSection = new Composite(parent, SWT.BORDER);
+		final Composite innerSection = new Composite(parent, SWT.BORDER);
 		GridLayout colorGd = new GridLayout();
 		colorGd.numColumns = 2;
 		colorGd.marginHeight = 0;
@@ -66,7 +69,64 @@ public class DesignerUtils {
 					Color newColor = new Color(parentShell.getDisplay(), rgb);
 					colorLabel.setBackground(newColor);
 					String newHexadecimal = convertRGBToHexadecimal(rgb);
-					//aParameter.setValue(newHexadecimal);
+					innerSection.setData(newHexadecimal);
+				}
+				centerShell.dispose();
+			}
+		});
+		return innerSection;
+	}
+	public static Composite createColorPickerFillLayer(Composite parent, String colorHex,final Layer selectedLayer, final GEOEditor editor){
+		//		Composite innerSection = toolkit.createComposite(section);
+		final Composite innerSection = new Composite(parent, SWT.BORDER);
+		GridLayout colorGd = new GridLayout();
+		colorGd.numColumns = 2;
+		colorGd.marginHeight = 0;
+		colorGd.marginBottom = 0;
+		innerSection.setLayout(colorGd);
+		final Label colorLabel = new Label(innerSection, SWT.BORDER);
+		colorLabel.setText("           ");
+		colorLabel.setSize(50, 18);
+		RGB rgb=null;
+		if(colorHex!=null){
+			//String hexadecimal = aParameter.getValue().toString();
+			try{
+				rgb= convertHexadecimalToRGB(colorHex);
+			}
+			catch (Exception e) {
+				rgb=new RGB(255,0,0);
+			}
+		}
+		else{
+			rgb=new RGB(255,0,0);
+		}
+		final Color color = new org.eclipse.swt.graphics.Color(parent.getDisplay(), rgb);
+		colorLabel.setBackground(color);
+		Button button = new Button(innerSection, SWT.PUSH);
+		button.setText("Color");
+		button.setSize(30, 10);
+		final Shell parentShell = parent.getShell();
+		button.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				final Shell centerShell = new Shell(parentShell, SWT.NO_TRIM);
+				centerShell.setLocation(
+						(parentShell.getSize().x - COLORDIALOG_WIDTH) / 2,
+						(parentShell.getSize().y - COLORDIALOG_HEIGHT) / 2);
+				ColorDialog colorDg = new ColorDialog(centerShell,
+						SWT.APPLICATION_MODAL);
+				colorDg.setRGB(colorLabel.getBackground().getRGB());
+				//colorDg.setText("Choose a color");
+				RGB rgb = colorDg.open();
+				if (rgb != null) {
+					// Dispose the old color, create the
+					// new one, and set into the label
+					color.dispose();
+					Color newColor = new Color(parentShell.getDisplay(), rgb);
+					colorLabel.setBackground(newColor);
+					String newHexadecimal = convertRGBToHexadecimal(rgb);
+					innerSection.setData(newHexadecimal);
+					selectedLayer.setDefaultFillColour(newHexadecimal);
+					editor.setIsDirty(true);
 				}
 				centerShell.dispose();
 			}

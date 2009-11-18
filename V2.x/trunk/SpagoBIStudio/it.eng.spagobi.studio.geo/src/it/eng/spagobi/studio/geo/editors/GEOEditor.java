@@ -98,8 +98,10 @@ public class GEOEditor extends EditorPart{
 	private String selectedMap;
 	private Table datasetTable;
 	private Combo datasetCombo;	
-
 	private Table mapTable;
+	
+	private Vector<TableEditor> datasetTableEditors = new Vector<TableEditor>();
+	private Vector<TableEditor> mapTableEditors = new Vector<TableEditor>();
 	private MeasuresDesigner measuresDesigner;
 
 	private static final int DATASET_NAME=0;
@@ -260,7 +262,7 @@ public class GEOEditor extends EditorPart{
 
 
 	private void createDatasetCombo(final Composite sectionClient,final Group datasetGroup){
-
+		
 		GridData gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		gd.horizontalAlignment= SWT.END;
@@ -293,6 +295,16 @@ public class GEOEditor extends EditorPart{
 			public void widgetSelected(SelectionEvent e) {
 				// Once selected the dataset fill the table with its metadata, check first if they have been already recovered!
 				datasetTable.removeAll();
+				datasetTable.setItemCount(0);
+				datasetTable.pack();
+				
+				if(datasetTableEditors != null){
+					for(int i=0; i< datasetTableEditors.size(); i++){
+						TableEditor editor= datasetTableEditors.elementAt(i);
+				        Control old = editor.getEditor();
+				        if (old != null) old.dispose();
+					}
+				}
 				int indexSelection=datasetCombo.getSelectionIndex();
 				String datasetLabel=datasetCombo.getItem(indexSelection);
 				selectedDataset = datasetLabel;
@@ -498,6 +510,16 @@ public class GEOEditor extends EditorPart{
 			public void widgetSelected(SelectionEvent e) {
 				// Once selected the dataset fill the table with its metadata, check first if they have been already recovered!
 				mapTable.removeAll();
+				mapTable.setItemCount(0);
+				mapTable.pack();
+				
+				if(mapTableEditors != null){
+					for(int i=0; i< mapTableEditors.size(); i++){
+						TableEditor editor= mapTableEditors.elementAt(i);
+				        Control old = editor.getEditor();
+				        if (old != null) old.dispose();
+					}
+				}
 				int indexSelection=mapCombo.getSelectionIndex();
 				String mapLabel=mapCombo.getItem(indexSelection);
 				selectedMap = mapLabel;
@@ -635,6 +657,7 @@ public class GEOEditor extends EditorPart{
 			newDescr.selectAll();
 			newDescr.setFocus();						
 			editor.setEditor(newDescr, item, FEATURE_DESCR);
+			mapTableEditors.add(editor);
 
 			final Button selButton = new Button(mapTable, SWT.RADIO);
 			selButton.setText("");	
@@ -673,7 +696,7 @@ public class GEOEditor extends EditorPart{
 					selectedLayer.setDefaultFillColour(defaultFillColour);
 				}
 			}
-			
+			mapTableEditors.add(editor);
 			
 			editor = new TableEditor (mapTable);
 			//editor.minimumWidth = colorSection.getSize ().x;
@@ -684,7 +707,7 @@ public class GEOEditor extends EditorPart{
 			//editor.grabVertical=true;						
 			editor.setEditor(colorSection, item, FEATURE_DEFAULT_COLORS);
 			editor.layout();
-
+			mapTableEditors.add(editor);
 
 		}
 		mapTable.pack();
@@ -692,7 +715,6 @@ public class GEOEditor extends EditorPart{
 	}
 	
 	private void fillDatasetTable(DataStoreMetadata dataStoreMetadata, boolean replace){
-		
 		//if dataset changed than new Metadata 
 		if(replace){
 			MetadataBO.setNewMetadata(geoDocument, selectedDataset);
@@ -783,6 +805,7 @@ public class GEOEditor extends EditorPart{
 	            	setIsDirty(true);
 	            }
 	        });
+			datasetTableEditors.add(editor);
 			
 			editor = new TableEditor (datasetTable);
 			editor.minimumWidth = comboAgg.getSize ().x;
@@ -792,12 +815,12 @@ public class GEOEditor extends EditorPart{
 			editor.verticalAlignment=SWT.CENTER;
 			editor.grabVertical=true;
 			editor.setEditor(comboAgg, item, DATASET_AGGREGATION);
-		
+			datasetTableEditors.add(editor);
+			
 			datasetTable.pack();
 			datasetTable.redraw();
 			
 		}
-		
 	}
 
 

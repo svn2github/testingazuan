@@ -86,7 +86,7 @@ public class DesignerUtils {
 		innerSection.setLayout(colorGd);
 		final Label colorLabel = new Label(innerSection, SWT.BORDER);
 		colorLabel.setText("           ");
-		colorLabel.setSize(50, 18);
+		colorLabel.setSize(50, 20);
 		RGB rgb=null;
 		if(colorHex!=null){
 			//String hexadecimal = aParameter.getValue().toString();

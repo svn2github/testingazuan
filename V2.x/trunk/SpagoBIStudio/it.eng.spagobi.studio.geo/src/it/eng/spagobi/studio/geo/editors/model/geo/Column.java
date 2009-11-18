@@ -7,6 +7,8 @@ public class Column {
 	private String level;
 	private String aggFunction;
 	
+	private boolean choosenForTemplate;
+	
 	public String getType() {
 		return type;
 	}
@@ -36,6 +38,12 @@ public class Column {
 	}
 	public void setAggFunction(String aggFunction) {
 		this.aggFunction = aggFunction;
+	}
+	public boolean isChoosenForTemplate() {
+		return choosenForTemplate;
+	}
+	public void setChoosenForTemplate(boolean choosenForTemplate) {
+		this.choosenForTemplate = choosenForTemplate;
 	}
 
 

@@ -77,6 +77,9 @@ public class XmlTemplateGenerator {
 					xstream.aliasField("level", Column.class, "level");
 					xstream.useAttributeFor(Column.class, "aggFunction");
 					xstream.aliasField("agg_func", Column.class, "aggFunction");
+					xstream.useAttributeFor(Column.class, "choosenForTemplate");
+					xstream.aliasField("choosenForTemplate", Column.class, "choosenForTemplate");
+					
 					xstream.aliasField("HIERARCHIES", DatamartProvider.class, "hierarchies");
 					xstream.addImplicitCollection(Hierarchies.class, "hierarchy", "HIERARCHY", Hierarchy.class);
 
@@ -147,6 +150,8 @@ public class XmlTemplateGenerator {
 			xstream.aliasField("description", Layer.class, "description");
 			xstream.useAttributeFor(Layer.class, "selected");
 			xstream.aliasField("selected", Layer.class, "selected");
+			xstream.useAttributeFor(Layer.class, "choosenForTemplate");
+			xstream.aliasField("choosenForTemplate", Layer.class, "choosenForTemplate");
 		}
 
 

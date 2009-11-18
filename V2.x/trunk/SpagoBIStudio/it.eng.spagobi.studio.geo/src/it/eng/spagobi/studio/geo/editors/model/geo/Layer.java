@@ -6,6 +6,8 @@ public class Layer {
 	private String selected;
 	private String defaultFillColour;
 	
+	private boolean choosenForTemplate;
+	
 	public String getName() {
 		return name;
 	}
@@ -29,6 +31,12 @@ public class Layer {
 	}
 	public void setDefaultFillColour(String defaultFillColour) {
 		this.defaultFillColour = defaultFillColour;
+	}
+	public boolean isChoosenForTemplate() {
+		return choosenForTemplate;
+	}
+	public void setChoosenForTemplate(boolean choosenForTemplate) {
+		this.choosenForTemplate = choosenForTemplate;
 	}
 
 

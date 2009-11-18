@@ -156,11 +156,11 @@ public class ExecuteMasterQueryAction extends AbstractQbeEngineAction {
 			
 			String hqlQuery = statement.getQueryString();
 			String sqlQuery = ((HQLStatement)statement).getSqlQueryString();
-			logger.debug("Executable query (HQL): [" +  hqlQuery+ "]");
-			logger.debug("Executable query (SQL): [" + sqlQuery + "]");
+			//logger.debug("Executable query (HQL): [" +  hqlQuery+ "]");
+			//logger.debug("Executable query (SQL): [" + sqlQuery + "]");
 			UserProfile userProfile = (UserProfile)getEnv().get(EngineConstants.ENV_USER_PROFILE);
-			auditlogger.info("[" + userProfile.getUserId() + "]:: HQL: " + hqlQuery);
-			auditlogger.info("[" + userProfile.getUserId() + "]:: SQL: " + sqlQuery);
+			//auditlogger.info("[" + userProfile.getUserId() + "]:: HQL: " + hqlQuery);
+			//auditlogger.info("[" + userProfile.getUserId() + "]:: SQL: " + sqlQuery);
 			
 			// STEP 3: transform the sql query
 			GroupByQueryTransformer transformer = new GroupByQueryTransformer();
@@ -183,6 +183,7 @@ public class ExecuteMasterQueryAction extends AbstractQbeEngineAction {
 			
 			try {
 				logger.debug("Executing query: [" + sqlQuery + "]");
+				auditlogger.info("[" + userProfile.getUserId() + "]:: SQL: " + sqlQuery);
 				
 				dataSet = new JDBCStandardDataSet();
 				//Session session = getDatamartModel().getDataSource().getSessionFactory().openSession();

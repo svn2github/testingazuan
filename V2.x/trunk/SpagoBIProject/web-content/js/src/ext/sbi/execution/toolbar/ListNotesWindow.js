@@ -97,6 +97,7 @@ Sbi.execution.toolbar.ListNotesWindow = function(config) {
            , '<div class="button"><img class="action-detail-note" title="'+LN('sbi.execution.notes.detailNote')+'" src="' + Ext.BLANK_IMAGE_URL + '"/></div>'
            ,'</div>'
            ,'<br>'
+           ,'<hr  style="border:solid #E0E0E0 1px;">'         
 	      ,'</tpl>'
 	      ,'<div class="x-clear"></div>'
 	  );

@@ -92,6 +92,11 @@ Sbi.execution.DocumentExecutionPage = function(config, doc) {
 		serviceName: 'EXPORT_RESULT_ACTION'
 		, baseParams: params
 	});
+	
+	this.services['getNotesService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_NOTES_ACTION'
+		, baseParams: params
+	});
 
 	
 	// add events
@@ -216,6 +221,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	}
 
 	, synchronizeToolbar: function( executionInstance ){
+	
 		
 		// if toolbar is hidden, do nothing
 		if (this.toolbarHiddenPreference) 
@@ -304,12 +310,14 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		}
 		
 		if (Sbi.user.functionalities.contains('SeeNotesFunctionality') && !executionInstance.SBI_SNAPSHOT_ID) {
-			this.toolbar.addButton(new Ext.Toolbar.Button({
-				iconCls: 'icon-notes' 
-				, tooltip: LN('sbi.execution.executionpage.toolbar.annotate')
-		     	, scope: this
-		    	, handler : this.annotateExecution
-			}));
+      this.getNoteIcon();
+    	this.toolbar.addButton(new Ext.Toolbar.Button({
+  			   id: 'noteIcon'
+  				, tooltip: LN('sbi.execution.executionpage.toolbar.annotate')
+  				, iconCls: 'icon-no-notes'
+  		     	, scope: this
+  		    	, handler : this.annotateExecution
+  			}));    
 		}
 		
 		if (Sbi.user.functionalities.contains('SeeMetadataFunctionality') && !this.executionInstance.SBI_SNAPSHOT_ID) {
@@ -321,6 +329,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			}));
 		}
 		
+	
 		if(executionInstance.document.exporters){
 			if ( executionInstance.document.typeCode == 'KPI' && executionInstance.document.exporters.contains('PDF')) {
 				this.toolbar.addButton(new Ext.Toolbar.Button({
@@ -776,6 +785,31 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	, bookmarkExecution: function () {
 		this.win_saveRememberMe = new Sbi.execution.toolbar.SaveRememberMeWindow({'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID});
 		this.win_saveRememberMe.show();
+	}
+	
+	, getNoteIcon: function () {
+  		Ext.Ajax.request({
+  	        url: this.services['getNotesService'],
+  	        params: {SBI_EXECUTION_ID: this.executionInstance.SBI_EXECUTION_ID, MESSAGE: 'GET_LIST_NOTES'},
+  	        callback : function(options , success, response) {
+  	  	  		if (success) {
+  		      		if(response !== undefined && response.responseText !== undefined) {
+  		      			var content = Ext.util.JSON.decode( response.responseText );		 
+                  //checks if documents has some note for change icon     			
+  		      			if (content !== undefined && content.totalCount > 0) {		      		
+                    var el = Ext.getCmp('noteIcon');                
+                    el.setIconClass('icon-notes');
+  		      			}
+  		      		} else {
+  		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+  		      		}
+  	  	  		} else { 
+  	  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot load notes', 'Service Error');
+  	  	  		}
+  	        },
+  	        scope: this,
+  			failure: Sbi.exception.ExceptionHandler.handleFailure      
+  		});
 	}
 	
 	, annotateExecution: function () {

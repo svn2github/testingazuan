@@ -77,7 +77,8 @@ Sbi.locale.ln['sbi.formviewer.groupingvariablespanel.variable-2'] = 'Second vari
 //VALIDATION
 //===================================================================
 Sbi.locale.ln['sbi.formviewer.formviewerpage.validation.error'] = 'Error';
-Sbi.locale.ln['sbi.formviewer.staticopenfilterspanel.validation.maxselectiontext'] = 'Maximum {0} items allowed for filter {1}';
+Sbi.locale.ln['sbi.formviewer.staticopenfilterspanel.validation.maxselectiontext'] = 'Maximum {0} items allowed for filter "{1}"';
+Sbi.locale.ln['sbi.formviewer.dynamicfilter.validation.missingvalue'] = 'Missing value for variable "{0}"';
 
 //===================================================================
 //RESULTS PAGE

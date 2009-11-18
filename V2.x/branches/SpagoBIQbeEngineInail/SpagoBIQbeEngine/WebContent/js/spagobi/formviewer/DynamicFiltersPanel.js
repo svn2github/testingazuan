@@ -98,5 +98,18 @@ Ext.extend(Sbi.formviewer.DynamicFiltersPanel, Ext.Panel, {
 		}
 		return state;
 	}
-  	
+
+	
+	, getErrors: function() {
+		var errors = new Array();
+		for(var i = 0; i < this.dynamicFilters.length; i++) {
+			var aDynamicFilter = this.dynamicFilters[i];
+			if (!aDynamicFilter.isValid()) {
+				var validationErrors = aDynamicFilter.getValidationErrors();
+				errors = errors.concat(validationErrors);
+			}
+		}
+		return errors;
+	}
+	
 });

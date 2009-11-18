@@ -142,6 +142,10 @@ Ext.extend(Sbi.formviewer.FormViewerPage, Ext.Panel, {
 			var openFiltersErrors = this.staticOpenFiltersPanel.getErrors();
 			errors = errors.concat(openFiltersErrors);
 		}
+		if (this.dynamicFiltersPanel !== null) {
+			var dynamicFiltersErrors = this.dynamicFiltersPanel.getErrors();
+			errors = errors.concat(dynamicFiltersErrors);
+		}
 		if (errors.length == 0) {
 			successCallback.call(obj);
 		} else {

@@ -194,5 +194,29 @@ Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
 		}
 		return state;
 	}
+	
+    , isValid: function(){
+        if(this.combo.getValue() === '') {
+        	return true;
+        }
+		for (var i = 0; i < this.valuesInputs.length; i++) {
+			var aValueInput = this.valuesInputs[i];
+			if (String.trim(aValueInput.getValue()) === '') {
+				return false;
+			}
+		}
+        return true;
+    }
+    
+    , getValidationErrors: function() {
+    	var errors = new Array();
+    	if (this.isValid()) {
+    		return errors;
+    	} else {
+    		var error = String.format(LN('sbi.formviewer.dynamicfilter.validation.missingvalue'), this.combo.getRawValue());
+    		errors.push(error);
+    	}
+    	return errors;
+    }
   	
 });

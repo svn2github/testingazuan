@@ -226,7 +226,8 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
 		for (var i = 0; i < this.combos.length; i++) {
 			var aCombo = this.combos[i];
 			if (!aCombo.validate()) {
-				var error = String.format(LN('sbi.formviewer.staticopenfilterspanel.validation.maxselectiontext'), aCombo.initialConfig.maxSelection, aCombo.initialConfig.fieldLabel);
+				var error = String.format(LN('sbi.formviewer.staticopenfilterspanel.validation.maxselectiontext'), 
+						aCombo.initialConfig.maxSelection, aCombo.initialConfig.fieldLabel);
 				errors.push(error);
 			}
 		}

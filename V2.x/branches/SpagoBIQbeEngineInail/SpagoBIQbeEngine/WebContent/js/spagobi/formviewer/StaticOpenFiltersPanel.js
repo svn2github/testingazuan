@@ -220,5 +220,17 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
 		}
 		return state;
 	}
+	
+	, getErrors: function() {
+		var errors = new Array();
+		for (var i = 0; i < this.combos.length; i++) {
+			var aCombo = this.combos[i];
+			if (!aCombo.validate()) {
+				var error = String.format(LN('sbi.formviewer.staticopenfilterspanel.validation.maxselectiontext'), aCombo.initialConfig.maxSelection, aCombo.initialConfig.fieldLabel);
+				errors.push(error);
+			}
+		}
+		return errors;
+	}
   	
 });

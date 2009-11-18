@@ -105,7 +105,7 @@ Sbi.exception.ExceptionHandler = function(){
            		title: t
            		, msg: m
            		, buttons: Ext.MessageBox.OK     
-           		, icon: Ext.MessageBox. WARNING
+           		, icon: Ext.MessageBox.WARNING
            		, modal: false
        		});
         }

@@ -695,6 +695,22 @@ Ext.ux.form.SuperBoxSelect = Ext.extend(Ext.ux.form.SuperBoxSelect,Ext.form.Comb
         this.clearInvalid();
         return true;
     },
+    
+    // start modifications by Zerbetto (17/11/2009): added validate method
+    validate: function(){
+        if(this.items.getCount() === 0){
+             if(this.allowBlank){
+                 return true;
+             } else {
+                 return false;
+             }
+        }
+        if(this.items.getCount() > this.maxSelection){
+            return false;
+        }
+        return true;
+    },
+    // end modifications by Zerbetto (17/11/2009)
 
     manageNameAttribute :  function(){
     	if(this.items.getCount() === 0){

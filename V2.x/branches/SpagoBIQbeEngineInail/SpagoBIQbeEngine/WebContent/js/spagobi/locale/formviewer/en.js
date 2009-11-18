@@ -74,6 +74,12 @@ Sbi.locale.ln['sbi.formviewer.groupingvariablespanel.variable-1'] = 'First varia
 Sbi.locale.ln['sbi.formviewer.groupingvariablespanel.variable-2'] = 'Second variable';
 
 //===================================================================
+//VALIDATION
+//===================================================================
+Sbi.locale.ln['sbi.formviewer.formviewerpage.validation.error'] = 'Error';
+Sbi.locale.ln['sbi.formviewer.staticopenfilterspanel.validation.maxselectiontext'] = 'Maximum {0} items allowed for filter {1}';
+
+//===================================================================
 //RESULTS PAGE
 //===================================================================
 Sbi.locale.ln['sbi.formviewer.resultspage.backtoform'] = 'Back to form';

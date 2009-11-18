@@ -72,6 +72,12 @@ Sbi.locale.ln['sbi.formviewer.groupingvariablespanel.variable-1'] = 'Prima varia
 Sbi.locale.ln['sbi.formviewer.groupingvariablespanel.variable-2'] = 'Seconda variabile';
 
 //===================================================================
+//VALIDATION
+//===================================================================
+Sbi.locale.ln['sbi.formviewer.formviewerpage.validation.error'] = 'Errore';
+Sbi.locale.ln['sbi.formviewer.staticopenfilterspanel.validation.maxselectiontext'] = 'Puoi selezionare al massimo {0} valori per il filtro {1}';
+
+//===================================================================
 //RESULTS PAGE
 //===================================================================
 Sbi.locale.ln['sbi.formviewer.resultspage.backtoform'] = 'Torna al form';

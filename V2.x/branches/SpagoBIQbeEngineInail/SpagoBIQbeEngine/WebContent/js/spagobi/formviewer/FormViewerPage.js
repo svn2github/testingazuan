@@ -70,7 +70,12 @@ Sbi.formviewer.FormViewerPage = function(template, config) {
 		    '->'
 		    , {
 				text: LN('sbi.formviewer.formviewerpage.execute'),
-				handler: this.getFormState,
+				handler: function() {
+		    		this.validateForm(function() {
+		    			var state = this.getFormState();
+		    			this.fireEvent('submit', state);
+		    		}, this);
+		    	},
 				scope: this
 		    }
 		  ]
@@ -131,6 +136,19 @@ Ext.extend(Sbi.formviewer.FormViewerPage, Ext.Panel, {
 		
 	}
     
+	, validateForm: function(successCallback, obj) {
+		var errors = new Array();
+		if (this.staticOpenFiltersPanel !== null) {
+			var openFiltersErrors = this.staticOpenFiltersPanel.getErrors();
+			errors = errors.concat(openFiltersErrors);
+		}
+		if (errors.length == 0) {
+			successCallback.call(obj);
+		} else {
+			Sbi.exception.ExceptionHandler.showErrorMessage(errors.join('<br/>'), LN('sbi.formviewer.formviewerpage.validation.error'));
+		}
+	}
+
     // public methods
 
 	, getFormState: function() {
@@ -147,9 +165,7 @@ Ext.extend(Sbi.formviewer.FormViewerPage, Ext.Panel, {
 		if (this.groupingVariablesPanel !== null) {
 			state.groupingVariables = this.groupingVariablesPanel.getFormState();
 		}
-		this.fireEvent('submit', state);
-
-		
+		return state;
 	}
   	
 });

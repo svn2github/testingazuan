@@ -219,21 +219,43 @@ public class ContentServiceImpl extends AbstractServiceImpl{
     private String saveSubObject(String user,String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
 	logger.debug("IN");
 	try {
-//	    IBIObjectDAO objdao = DAOFactory.getBIObjectDAO();
 	    ISubObjectDAO subdao = DAOFactory.getSubObjectDAO();
 	    Integer docId = new Integer(documentiId);
-//	    BIObject biobj = objdao.loadBIObjectById(docId);
-	    SubObject  objSub = new SubObject();
+	    boolean subobjExists = false;
+	    
+	    //gets subobj if yet presents
+	    Integer id = null;
+	    SubObject objSub = subdao.getSubObjectByNameAndBIObjectId(analysisName, docId);
+	    if (objSub != null){
+	    	id = objSub.getId();
+	    	//check ability to modify:
+		    if (!user.equals(objSub.getOwner())) {
+	        	logger.debug("KO - User " + user + " cannot modify subobjects");
+	        	return "KO - You cannot modify subobjects";
+	        }
+	    	subobjExists = true;
+	    }
+	    else 
+	    	objSub = new SubObject();
+	    
 	    objSub.setDescription(analysisDescription);
+	    
 	    if (visibilityBoolean!=null && visibilityBoolean.equals("true")){
-		objSub.setIsPublic(new Boolean(true));
+	    	objSub.setIsPublic(new Boolean(true));
 	    }else{
-		objSub.setIsPublic(new Boolean(false));
+	    	objSub.setIsPublic(new Boolean(false));
 	    }
 	    objSub.setOwner(user);
 	    objSub.setName(analysisName);
 	    objSub.setContent(content.getBytes());
-	    Integer id = subdao.saveSubObject(docId, objSub);
+	    
+	    //if subobject doesn't exist, it will be created
+	    if (!subobjExists)
+	    	id = subdao.saveSubObject(docId, objSub);
+	    else 
+	    	//update the subobject
+	    	id = subdao.modifySubObject(docId, objSub);;
+	    
 	    String toReturn = "OK - " + id.toString();
 	    return toReturn;
 	} catch (NumberFormatException e) {

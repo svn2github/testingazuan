@@ -596,6 +596,18 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 											, href: ''   
 				                        })	
 				                        ); 
+						} else if(executionInstance.document.exporters[i]=='JSON'){
+							menuItems.push(   new Ext.menu.Item({
+	                            id:  Ext.id()
+	                            , text: LN('sbi.execution.jsonExport')
+	                            , group: 'group_2'
+	                            , iconCls: 'icon-json' 
+						     	, scope: this
+								, width: 15
+						    	, handler : function() { this.exportQbEExecution('application/json'); }
+								, href: ''   
+	                        })	
+	                        ); 
 						}
 						
 				    }   

@@ -184,6 +184,7 @@ Sbi.locale.ln['sbi.execution.txtExport'] = 'TXT';
 Sbi.locale.ln['sbi.execution.rtfExport'] = 'RTF';
 Sbi.locale.ln['sbi.execution.docExport'] = 'DOC';
 Sbi.locale.ln['sbi.execution.jrxmlExport'] = 'JRXML';
+Sbi.locale.ln['sbi.execution.jsonExport'] = 'JSON';
 
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.expand'] = 'Espandi/Riduci';
 

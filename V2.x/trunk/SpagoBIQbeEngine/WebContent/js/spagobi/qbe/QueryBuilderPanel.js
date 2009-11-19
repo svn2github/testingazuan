@@ -91,6 +91,10 @@ Sbi.qbe.QueryBuilderPanel = function(config) {
 		serviceName: 'SAVE_TREE_ACTION'
 		, baseParams: params
 	});
+	this.services['getMeta'] = this.services['getMeta'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_ANALYSIS_META_ACTION'
+		, baseParams: params
+	});
 		
 	this.addEvents('execute');
 		
@@ -203,10 +207,41 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     }
     
     , showSaveQueryWindow: function(){
+      var nameMeta = "";
+      var descriptionMeta = "";
+      var scopeMeta = "";
+      
 	    if(this.saveQueryWindow === null) {
 	    	this.saveQueryWindow = new Sbi.widgets.SaveWindow({
 	    		title: LN('sbi.qbe.queryeditor.savequery')
 	    	});
+	      //getting meta informations 
+       	Ext.Ajax.request({
+				url:  this.services['getMeta'],
+				callback: function(options, success, response) {
+       				if(success) {
+       					if(response !== undefined && response.responseText !== undefined) {
+		      			    var content = Ext.util.JSON.decode( response.responseText );
+		      			  
+    		      			if (content !== undefined) {                          			  
+    		      				nameMeta = content.name;
+                      
+                      descriptionMeta = content.description; 
+                      scopeMeta = (content.scope);    		                   
+	    	              this.saveQueryWindow.setFormState({ name: nameMeta
+                                	    		, description: descriptionMeta
+                                	    		, scope: scopeMeta.toUpperCase()
+                                	    	  });   				      			
+    		      			} 
+    		      		} else {
+    		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+    		      		}
+       				}
+       			},
+       			scope: this,
+				failure: Sbi.exception.ExceptionHandler.handleFailure		
+       	});   
+       	
 	    	this.saveQueryWindow.on('save', function(win, formState){this.saveQuery(formState);}, this);
 		}
 	    this.saveQueryWindow.show();
@@ -274,6 +309,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		}
 		this.saveViewWindow.show();
 	}
+	
 	
 	// --------------------------------------------------------------------------------
 	// 	private methods

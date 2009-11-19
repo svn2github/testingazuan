@@ -87,6 +87,12 @@ Ext.extend(Sbi.widgets.SaveWindow, Ext.Window, {
       	return formState;
     }
 
+	,setFormState : function(formState) {            
+	  	this.nameField.setValue(formState.name);
+	  	this.descriptionField.setValue(formState.description);
+	  	this.scopeField.setValue(formState.scope);
+	}
+
 	//private methods
 	, initFormPanel: function(config) {
 		

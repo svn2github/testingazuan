@@ -541,7 +541,7 @@ Create table SBI_SUBOBJECTS (
 	SUBOBJ_ID Integer NOT NULL with default next value for SBI_SUBOBJECTS_SEQ,
 	BIOBJ_ID Integer NOT NULL,
 	BIN_ID Integer,
-	NAME Varchar(50),
+	NAME Varchar(50) NOT NULL,
 	DESCRIPTION Varchar(100),
 	OWNER Varchar(50),
 	ISPUBLIC TINYINT,

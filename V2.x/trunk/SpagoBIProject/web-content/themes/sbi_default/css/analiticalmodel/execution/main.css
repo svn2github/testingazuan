@@ -120,6 +120,9 @@
      background-image:url('../../../img/jrxml.gif') !important;
 }
 
+.icon-json {
+     background-image:url('../../../img/json18.png') !important;
+}
 
 .icon-export {
 	background-image: url('../../../img/analiticalmodel/execution/ico_exporter.png') !important;

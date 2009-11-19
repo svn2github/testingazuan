@@ -510,8 +510,11 @@ public class Designer {
 						int vWidth=Integer.valueOf(videoWidth);
 						int vHeight=Integer.valueOf(videoHeight);
 
-						int widthToPut=metadataStyle.getWidthFromPerc(mainComposite);
-						int heightToPut=metadataStyle.getHeightFromPerc(mainComposite);
+						//int widthToPut=metadataStyle.getWidthFromPerc(mainComposite);
+						//int heightToPut=metadataStyle.getHeightFromPerc(mainComposite);
+						int widthToPut=MetadataStyle.fromVideoWidthToDesignerWidth(metadataStyle.getWidth(), vWidth, DESIGNER_WIDTH);
+						int heightToPut=MetadataStyle.fromVideoHeightToDesignerHeight(metadataStyle.getHeight(), vHeight, DESIGNER_HEIGHT);
+						
 						// scale x and y to default designer sizes
 
 						int scaledX=(DESIGNER_WIDTH*metadataStyle.getX())/vWidth;

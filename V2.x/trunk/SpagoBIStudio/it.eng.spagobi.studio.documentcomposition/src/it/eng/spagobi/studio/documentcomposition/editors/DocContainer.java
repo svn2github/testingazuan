@@ -4,6 +4,7 @@ import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataStyle;
 import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
@@ -532,7 +533,8 @@ public class DocContainer {
 	 */
 	public Style calculateTemplateStyle(boolean isSaving){
 		Style style=new Style();	
-		String toAdd="float:left;margin:0px;";
+//		String toAdd="float:left;margin:0px;";
+		String toAdd="position:absolute;margin:0px;";
 
 		// get the bounds
 		Point location=documentContained.getGroup().getLocation();
@@ -567,13 +569,26 @@ public class DocContainer {
 		int totalHeight=point.y;
 
 		// calculate width and height percentage
-		int widthPerc=(width*100)/totalWidth;
+		/*int widthPerc=(width*100)/totalWidth;
 		int heightPerc=(height*100)/totalHeight;
 		if(isSaving==true){
 			widthPerc=widthPerc-1;
 		}
 		toAdd+="width:"+Integer.valueOf(widthPerc).toString()+"%;";
 		toAdd+="height:"+Integer.valueOf(heightPerc).toString()+"%;";
+		 */
+		
+		// calculate height and width as absolute value
+		
+//		Integer convertedWidth=(videoWidthI * width) / totalWidth;
+//		Integer convertedHeight=(videoHeightI * height) / totalHeight;
+		
+		int convertedWidth=MetadataStyle.fromDesignerWidthToVideoWidth(width, videoWidthI, totalWidth);
+		int convertedHeight=MetadataStyle.fromDesignerHeightToVideoHeight(height, videoHeightI, totalHeight);
+		
+		toAdd+="width:"+Integer.valueOf(convertedWidth).toString()+"px;";
+		toAdd+="height:"+Integer.valueOf(convertedHeight).toString()+"px;";
+
 
 		style.setStyle(toAdd);
 		return style;

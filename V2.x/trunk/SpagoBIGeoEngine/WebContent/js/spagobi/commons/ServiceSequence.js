@@ -87,6 +87,9 @@ Ext.extend(Sbi.commons.ServiceSequence, Ext.util.Observable, {
     
     , runNext : function(serviceResponse, serviceConfig) {
     	
+    	//if(serviceResponse !== undefined) alert('serviceResponse: ' + serviceResponse.toSource());
+    	//if(serviceConfig !== undefined) alert('serviceConfig: ' + serviceConfig.toSource());
+    	
     	if( this.serviceStack && this.serviceStack.length > 0) {    	
 	    	var nextServiceConfig = this.serviceStack.pop();
 	    	

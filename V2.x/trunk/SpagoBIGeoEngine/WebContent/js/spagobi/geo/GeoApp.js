@@ -101,6 +101,7 @@ Sbi.geo.app = function() {
 									try {
 										sendMessage("Subobject saved!!!!","subobjectsaved");
 									} catch (ex) {
+										Sbi.commons.ExceptionHandler.showErrorMessage( ex.toSource() );
 									}
 								}
                       		} 
@@ -111,14 +112,7 @@ Sbi.geo.app = function() {
                       	this.saveAnalysisWin = new Sbi.geo.SaveAnalysisWindow({                      
                       		saveServiceSequence : sequence      		                      	 		                   		
                       	});
-                /*
-                      	sequence.add({
-		                	url: Sbi.geo.app.serviceRegistry.getServiceUrl('GET_ANALYSIS_META_ACTION')
-							, failure: Sbi.commons.ExceptionHandler.handleFailure
-						//	, params: drillPanel.getAnalysisState
-							, scope: this.saveAnalysisWin
-						}); 
-						*/
+                
                       	sequence.add({
 		                	url: Sbi.geo.app.serviceRegistry.getServiceUrl('SET_ANALYSIS_STATE_ACTION')
 							, failure: Sbi.commons.ExceptionHandler.handleFailure
@@ -131,16 +125,16 @@ Sbi.geo.app = function() {
 							, params: this.saveAnalysisWin.getAnalysisMeta
 							, scope: this.saveAnalysisWin
 						}); 
-						
+						/*
 						sequence.add({
 		                	url: Sbi.geo.app.serviceRegistry.getServiceUrl('SET_ANALYSIS_STATE_ACTION')
 							, failure: Sbi.commons.ExceptionHandler.handleFailure
 							, params: drillPanel.getAnalysisState
 							, scope: drillPanel
 						}); 
-					
-						 //	saveServiceSequence.run();
+						*/
                       }
+                      
                       //getting meta informations 				
 				       	Ext.Ajax.request({
 							url:  Sbi.geo.app.serviceRegistry.getServiceUrl('GET_ANALYSIS_META_ACTION'),

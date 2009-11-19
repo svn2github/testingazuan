@@ -139,13 +139,11 @@ Ext.extend(Sbi.geo.SaveAnalysisWindow, Ext.Window, {
    
     // public methods
 	getAnalysisMeta : function() {
-      
-    	
+          	
       	var analysisMeta = {};
       	analysisMeta.analysisName= this.analysisName.getValue();
 	    analysisMeta.analysisDescription= this.analysisDescription.getValue();
 	    analysisMeta.analysisScope= this.analysisScope.getValue();
-	    		
       	
       	return analysisMeta;
     }

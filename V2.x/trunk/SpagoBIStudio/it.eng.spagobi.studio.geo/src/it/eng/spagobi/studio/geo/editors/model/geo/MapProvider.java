@@ -1,6 +1,12 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
-public class MapProvider {
+import java.io.Serializable;
+
+public class MapProvider  implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 454546882825789321L;
 	private String className;
 	private String mapName;
 	

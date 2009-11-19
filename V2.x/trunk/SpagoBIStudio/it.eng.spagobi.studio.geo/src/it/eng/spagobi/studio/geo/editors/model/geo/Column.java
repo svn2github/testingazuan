@@ -1,6 +1,13 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
-public class Column {
+import java.io.Serializable;
+
+public class Column  implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9181247915522064183L;
 	private String type;
 	private String columnId;
 	private String hierarchy;

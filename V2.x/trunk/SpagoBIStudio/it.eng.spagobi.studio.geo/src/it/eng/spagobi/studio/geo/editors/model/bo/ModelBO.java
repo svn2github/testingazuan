@@ -30,8 +30,8 @@ public class ModelBO {
 		}
 		return geoDocument;
 	}
-	public static void cleanGEODocument(GEODocument geoDocument){
-		DatamartProvider dmProvider = geoDocument.getDatamartProvider();
+	public void cleanGEODocument(GEODocument geoDocumentToSaveOnFile){
+		DatamartProvider dmProvider = geoDocumentToSaveOnFile.getDatamartProvider();
 		Metadata metadata = dmProvider.getMetadata();
 		
 		if(metadata != null){
@@ -46,10 +46,12 @@ public class ModelBO {
 						colToRemove.add(col);
 					}
 				}
+				System.out.println(colToRemove.size());
 				columns.removeAll(colToRemove);
+				System.out.println("columns left on doc :"+columns.size());
 			}
 		}
-		MapRenderer mapRenderer = geoDocument.getMapRenderer();
+		MapRenderer mapRenderer = geoDocumentToSaveOnFile.getMapRenderer();
 		Layers layers = mapRenderer.getLayers();
 		if(layers != null){
 			Vector<Layer> layToRemove= new Vector<Layer>();
@@ -63,7 +65,9 @@ public class ModelBO {
 						layToRemove.add(layer);
 					}
 				}
+				System.out.println(layToRemove.size());
 				layerVect.removeAll(layToRemove);
+				System.out.println("layers left on doc :"+layerVect.size());
 			}
 		}
 	}

@@ -25,11 +25,13 @@ import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layer;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layers;
 import it.eng.spagobi.studio.geo.editors.model.geo.Metadata;
+import it.eng.spagobi.studio.geo.util.DeepCopy;
 import it.eng.spagobi.studio.geo.util.DesignerUtils;
 import it.eng.spagobi.studio.geo.util.XmlTemplateGenerator;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
@@ -48,7 +50,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -253,6 +254,9 @@ public class GEOEditor extends EditorPart {
 		createMapTable(sectionClient, mapGroup);
 
 		designer.createHierarchiesTree(sectionClient, toolkit);
+		CrossNavigationDesigner crossNavigationDesigner = new CrossNavigationDesigner(sectionClient, this, geoDocument);
+		crossNavigationDesigner.createCrossnavigationTable(sectionClient, toolkit);
+		
 		section.setClient(sectionClient);
 
 		section.pack();
@@ -426,7 +430,6 @@ public class GEOEditor extends EditorPart {
 
 		}
 		// look up for metadata stored in geodocument
-
 		final Metadata metadata = MetadataBO.getMetadata(geoDocument);
 
 		if (metadata != null && metadata.getDataset() != null
@@ -969,9 +972,12 @@ public class GEOEditor extends EditorPart {
 			FileEditorInput fei = (FileEditorInput) getEditorInput();
 			IFile file = fei.getFile();
 			
-			ModelBO.cleanGEODocument(geoDocument);
+			ModelBO modelBO = new ModelBO();
+			
+			GEODocument geoDocumentToSaveOnFile = (GEODocument)DeepCopy.copy(geoDocument);
+			modelBO.cleanGEODocument(geoDocumentToSaveOnFile);
 			String newContent = XmlTemplateGenerator
-					.transformToXml(geoDocument);
+					.transformToXml(geoDocumentToSaveOnFile);
 			System.out.println("******** SAVING ***************");
 			System.out.println(newContent);
 			byte[] bytes = newContent.getBytes();

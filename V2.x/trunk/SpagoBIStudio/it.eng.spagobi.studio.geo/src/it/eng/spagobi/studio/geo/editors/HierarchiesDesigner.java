@@ -189,7 +189,7 @@ public class HierarchiesDesigner {
 				
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.horizontalSpan =4;
-		gd.heightHint=200;
+		gd.heightHint=150;
 		gd.minimumHeight=100;
 		gd.verticalAlignment=SWT.TOP;
 				

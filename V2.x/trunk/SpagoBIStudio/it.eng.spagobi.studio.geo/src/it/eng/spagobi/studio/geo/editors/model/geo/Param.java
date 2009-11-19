@@ -1,6 +1,12 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
-public class Param {
+import java.io.Serializable;
+
+public class Param  implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7558764620485105790L;
 	private String name;
 	private String value;
 	public String getName() {

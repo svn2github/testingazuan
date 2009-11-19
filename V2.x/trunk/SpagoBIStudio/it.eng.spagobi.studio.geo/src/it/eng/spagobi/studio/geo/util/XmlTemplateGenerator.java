@@ -2,6 +2,7 @@ package it.eng.spagobi.studio.geo.util;
 
 import it.eng.spagobi.studio.geo.editors.model.geo.Colours;
 import it.eng.spagobi.studio.geo.editors.model.geo.Column;
+import it.eng.spagobi.studio.geo.editors.model.geo.CrossNavigation;
 import it.eng.spagobi.studio.geo.editors.model.geo.DatamartProvider;
 import it.eng.spagobi.studio.geo.editors.model.geo.Dataset;
 import it.eng.spagobi.studio.geo.editors.model.geo.Datasource;
@@ -13,6 +14,8 @@ import it.eng.spagobi.studio.geo.editors.model.geo.Layer;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layers;
 import it.eng.spagobi.studio.geo.editors.model.geo.Level;
 import it.eng.spagobi.studio.geo.editors.model.geo.Levels;
+import it.eng.spagobi.studio.geo.editors.model.geo.Link;
+import it.eng.spagobi.studio.geo.editors.model.geo.LinkParam;
 import it.eng.spagobi.studio.geo.editors.model.geo.MapProvider;
 import it.eng.spagobi.studio.geo.editors.model.geo.MapRenderer;
 import it.eng.spagobi.studio.geo.editors.model.geo.Measures;
@@ -47,6 +50,23 @@ public class XmlTemplateGenerator {
 		xstream.useAttributeFor(DatamartProvider.class, "level");
 		xstream.aliasField("level", DatamartProvider.class, "level");
 		/**figli di datamart provider**/
+			xstream.aliasField("CROSS_NAVIGATION", DatamartProvider.class, "crossNavigation"); 
+			xstream.addImplicitCollection(CrossNavigation.class, "links", "LINK", Link.class);
+			xstream.useAttributeFor(Link.class, "hierarchy");
+			xstream.aliasField("hierarchy", Link.class, "hierarchy");
+			xstream.useAttributeFor(Link.class, "level");
+			xstream.aliasField("level", Link.class, "level");
+				xstream.addImplicitCollection(Link.class, "param", "PARAM", LinkParam.class);
+				xstream.useAttributeFor(LinkParam.class, "name");
+				xstream.aliasField("name", LinkParam.class, "name");
+				xstream.useAttributeFor(LinkParam.class, "value");
+				xstream.aliasField("value", LinkParam.class, "value");
+				xstream.useAttributeFor(LinkParam.class, "scope");
+				xstream.aliasField("scope", LinkParam.class, "scope");
+				xstream.useAttributeFor(LinkParam.class, "type");
+				xstream.aliasField("type", LinkParam.class, "type");
+				
+				
 			xstream.aliasField("DATASET", DatamartProvider.class, "dataset"); 
 				xstream.aliasField("QUERY", Dataset.class, "query");
 				

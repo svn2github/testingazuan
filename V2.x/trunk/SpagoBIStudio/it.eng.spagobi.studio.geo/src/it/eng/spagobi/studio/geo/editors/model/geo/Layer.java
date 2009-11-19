@@ -1,6 +1,12 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
-public class Layer {
+import java.io.Serializable;
+
+public class Layer  implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3332143022971484137L;
 	private String name;
 	private String description;
 	private String selected;

@@ -1,8 +1,13 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
+import java.io.Serializable;
 import java.util.Vector;
 
-public class Metadata {
+public class Metadata  implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8324517477227898967L;
 	private Vector<Column> column;
 	private String dataset;
 

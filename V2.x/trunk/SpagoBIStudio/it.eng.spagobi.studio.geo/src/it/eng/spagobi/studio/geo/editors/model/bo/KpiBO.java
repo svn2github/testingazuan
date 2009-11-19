@@ -43,15 +43,17 @@ public class KpiBO {
 			Vector<KPI> kpis= measures.getKpi();
 			if(kpis != null){
 				int kpisSize =kpis.size();
+				Vector<KPI> kpisToRemove = new Vector<KPI>();
 				for(int i=0; i< kpisSize; i++){
 					KPI kpi = kpis.elementAt(i);
 					String columnId = kpi.getColumnId();
 					if(kpiToDelete.getColumnId().equals(columnId)){
 						//delete
-						kpis.remove(i);
+						//kpis.remove(i);
+						kpisToRemove.add(kpi);
 					}
 				}
-
+				kpis.removeAll(kpisToRemove);
 			}
 		}
 	}

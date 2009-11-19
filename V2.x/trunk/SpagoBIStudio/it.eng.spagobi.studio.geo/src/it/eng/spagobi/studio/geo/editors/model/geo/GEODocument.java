@@ -1,6 +1,18 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
-public class GEODocument {
+import java.io.Serializable;
+
+public class GEODocument  implements Serializable {
+	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6527389398919946121L;
+
+	public GEODocument(GEODocument geoDocToCopy) {
+		
+	}
 	private MapProvider mapProvider;
 	private DatamartProvider datamartProvider;
 	private MapRenderer mapRenderer;

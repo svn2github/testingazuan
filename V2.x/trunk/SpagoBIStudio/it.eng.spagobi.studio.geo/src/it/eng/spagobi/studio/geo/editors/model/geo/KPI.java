@@ -1,6 +1,12 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
-public class KPI {
+import java.io.Serializable;
+
+public class KPI  implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4936266761341753956L;
 	private String columnId;
 	private String description;
 	private String aggFunct;

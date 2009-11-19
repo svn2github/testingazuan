@@ -65,13 +65,15 @@ public class HierarchyBO {
 		if(dmProvider != null){
 			Hierarchies hierarchies = dmProvider.getHierarchies();
 			if(hierarchies != null && hierarchies.getHierarchy() != null){
+				Vector <Hierarchy> hierToRemove = new Vector<Hierarchy>();
 				for(int i =0; i< hierarchies.getHierarchy().size(); i++){
 					Hierarchy h = hierarchies.getHierarchy().elementAt(i);
 					if(h.getName().equals(name)){
-						hierarchies.getHierarchy().remove(h);
+						//hierarchies.getHierarchy().remove(h);
+						hierToRemove.add(h);
 					}
 				}
-				
+				hierarchies.getHierarchy().removeAll(hierToRemove);
 			}
 		}
 

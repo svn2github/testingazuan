@@ -1,6 +1,13 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
-public class Dataset {
+import java.io.Serializable;
+
+public class Dataset  implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4381699831115967736L;
 	private Datasource datasource;
 	private String query;
 	

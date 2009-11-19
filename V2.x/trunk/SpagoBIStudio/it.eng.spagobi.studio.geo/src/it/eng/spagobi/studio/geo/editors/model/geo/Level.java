@@ -1,6 +1,12 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
-public class Level {
+import java.io.Serializable;
+
+public class Level  implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5406582217159680931L;
 	private String name;
 	private String columnId;
 	private String columnDesc;

@@ -1,7 +1,13 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
-public class MapRenderer {
+import java.io.Serializable;
+
+public class MapRenderer  implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8609302485242818211L;
 	private String className;
 	private Measures measures;
 	private Layers layers;

@@ -1,6 +1,12 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
-public class Hierarchy {
+import java.io.Serializable;
+
+public class Hierarchy  implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1082027570216423244L;
 	private String name;
 	private String type;
 	private Levels levels;

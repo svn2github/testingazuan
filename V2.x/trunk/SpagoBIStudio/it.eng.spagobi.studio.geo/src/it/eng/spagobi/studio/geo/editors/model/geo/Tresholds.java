@@ -1,6 +1,12 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
-public class Tresholds {
+import java.io.Serializable;
+
+public class Tresholds  implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7314038587889055886L;
 	private String type;
 	private String lbValue;
 	private String ubValue;

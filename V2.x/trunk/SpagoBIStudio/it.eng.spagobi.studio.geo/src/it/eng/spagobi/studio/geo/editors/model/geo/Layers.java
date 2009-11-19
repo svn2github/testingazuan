@@ -1,9 +1,14 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
+import java.io.Serializable;
 import java.util.Vector;
 
-public class Layers {
+public class Layers  implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 719689238722747829L;
 	private Vector<Layer> layer;
 	private String mapName;
 

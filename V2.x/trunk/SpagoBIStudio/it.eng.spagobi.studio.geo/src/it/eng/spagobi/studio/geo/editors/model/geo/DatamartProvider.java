@@ -1,12 +1,20 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
-public class DatamartProvider {
+import java.io.Serializable;
+
+public class DatamartProvider  implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -347688907924281162L;
 	private String className;
 	private String hierarchy;
 	private String level;
 	private Metadata metadata;
 	private Hierarchies hierarchies;
 	private Dataset dataset;
+	private CrossNavigation crossNavigation;
 	
 	public String getClassName() {
 		return className;
@@ -43,6 +51,12 @@ public class DatamartProvider {
 	}
 	public void setDataset(Dataset dataset) {
 		this.dataset = dataset;
+	}
+	public CrossNavigation getCrossNavigation() {
+		return crossNavigation;
+	}
+	public void setCrossNavigation(CrossNavigation crossNavigation) {
+		this.crossNavigation = crossNavigation;
 	}
 
 }

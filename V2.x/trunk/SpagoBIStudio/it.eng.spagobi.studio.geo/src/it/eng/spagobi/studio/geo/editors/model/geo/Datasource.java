@@ -1,6 +1,12 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
-public class Datasource {
+import java.io.Serializable;
+
+public class Datasource  implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 736002302185629450L;
 	private String type;
 	private String driver;
 	private String url;

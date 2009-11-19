@@ -130,6 +130,12 @@
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>
+	</ACTION>	
+	
+	<ACTION name="GET_VALUES_FOR_QBE_FILTER_LOOKUP_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.GetValuesForQbeFilterLookup"  
+			scope="REQUEST">
+		<CONFIG></CONFIG>
 	</ACTION>
 
 </ACTIONS>

@@ -86,7 +86,7 @@ public class LookupStoreJSONSerializer {
 			metadata.put("valueField", valueField);
 			metadata.put("displayField", displayField);
 			metadata.put("descriptionField", descriptionField);			
-			metadata.put("id", "id");
+			//metadata.put("id", "id");
 			result.put("metaData", metadata);
 			
 			propertyRawValue = dataStore.getMetaData().getProperty("resultNumber");
@@ -171,7 +171,7 @@ public class LookupStoreJSONSerializer {
 			while(records.hasNext()) {
 				record = (IRecord)records.next();
 				recordJSON = new JSONObject();
-				recordJSON.put("id", ++recNo);
+				//recordJSON.put("id", ++recNo);
 				
 				for(int i = 0; i < dataStore.getMetaData().getFieldCount(); i++) {
 					IFieldMetaData fieldMetaData = dataStore.getMetaData().getFieldMeta(i);

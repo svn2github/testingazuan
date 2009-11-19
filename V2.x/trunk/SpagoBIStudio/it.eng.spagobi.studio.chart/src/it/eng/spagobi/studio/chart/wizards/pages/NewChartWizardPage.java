@@ -138,17 +138,29 @@ public class NewChartWizardPage extends WizardPage {
 				compImage.addPaintListener(new PaintListener() {
 					public void paintControl(PaintEvent e) {
 						Image image = null;
+						Image scaledImage = null;
 						try {
 							String imagePath=ChartEditorUtils.getChartImagePath(t.toUpperCase());
 							InputStream is=ChartEditorUtils.getInputStreamFromResource(imagePath);
 							image = new Image(compImage.getDisplay(), is);
+					
+							final int originalWidth = image.getBounds().width;
+							final int originalHeight = image.getBounds().height; 				
+							int containerHeight=compImage.getBounds().height;
+							int containerWidth=compImage.getBounds().width;
+							double rapportoHeight=(double)containerHeight / (double)originalHeight;
+							double rapportoWidth=(double)containerWidth / (double)originalWidth;
+							
+							scaledImage = new Image(compImage.getDisplay(),
+									image.getImageData().scaledTo((int)(originalWidth*rapportoWidth-20),(int)(originalHeight*rapportoHeight-20)));
+						
 						} catch (FileNotFoundException e1) {
 							SpagoBILogger.errorLog("could not find image for type "+t, e1);
 						}
 						catch (Exception e2) {
 							SpagoBILogger.errorLog("Error while drawing image for type "+t, e2);
 						}
-						e.gc.drawImage(image, 20, 30);
+						e.gc.drawImage(scaledImage, 20, 30);
 						image.dispose();
 					}
 				});

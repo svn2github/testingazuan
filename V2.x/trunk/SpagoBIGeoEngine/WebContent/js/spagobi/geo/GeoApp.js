@@ -148,19 +148,15 @@ Sbi.geo.app = function() {
 			    		      			if (content !== undefined) {                          			  
 			    		      				nameMeta = content.name;			                      
 			    		      				descriptionMeta = content.description; 
-			    		      				scopeMeta = (content.scope);   
-                                               
-			    		      				if (scopeMeta != undefined){
-			    		      				
+			    		      				scopeMeta = (content.scope);                                                  			    		      			    		      			
   			    		      				this.saveAnalysisWin.setAnalysisMeta({ analysisName: nameMeta
   			                                	    		, analysisDescription: descriptionMeta
-  			                                	    		, analysisScope: scopeMeta.toUpperCase()
-  			                                	    	  });
-                            }   				      			
-			    		      			} 
-			    		      		} else {
-			    		      			Sbi.commons.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-			    		      		}
+  			                                	    		, analysisScope: scopeMeta
+  			                                	    	  });                            
+  			    		      			}   				      						    		      	 
+				    		      	} else {
+				    		      			Sbi.commons.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+				    		      	}
 			       				}
 			       			},
 			       			scope: this,

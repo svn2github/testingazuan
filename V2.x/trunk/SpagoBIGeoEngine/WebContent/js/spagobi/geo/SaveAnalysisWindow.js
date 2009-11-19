@@ -149,8 +149,8 @@ Ext.extend(Sbi.geo.SaveAnalysisWindow, Ext.Window, {
     }
 
 	,setAnalysisMeta : function(analysisMeta) {            
-	  	this.analysisName.setValue(analysisMeta.analysisName);
-	  	this.analysisDescription.setValue(analysisMeta.analysisDescription);
-	  	this.analysisScope.setValue(analysisMeta.analysisScope);
+		if(analysisMeta.analysisName !== undefined) this.analysisName.setValue(analysisMeta.analysisName);
+		if(analysisMeta.analysisDescription !== undefined) this.analysisDescription.setValue(analysisMeta.analysisDescription);
+		if(analysisMeta.analysisScope !== undefined) this.analysisScope.setValue(analysisMeta.analysisScope.toUpperCase());
 	}
 });

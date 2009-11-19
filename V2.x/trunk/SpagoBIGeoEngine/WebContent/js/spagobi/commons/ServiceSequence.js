@@ -22,7 +22,7 @@
 /**
   * ServiceSequence 
   * 
-  * Conacat multiple ajax requests. This class have a very simple implementation. 
+  * Concat multiple ajax requests. This class have a very simple implementation. 
   * Lot of improvements are needed :-(
   * 
   * 

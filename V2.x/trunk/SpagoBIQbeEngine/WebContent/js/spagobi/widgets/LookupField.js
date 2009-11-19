@@ -88,6 +88,15 @@ Sbi.widgets.LookupField = function(config) {
 		}, this);
 	}, this);
 	
+	/*
+	this.grid.on('render', function(g) {
+		alert('DONE');
+		g.getView().on( 'beforerefresh', function(){ alert('beforerefresh'); } );
+		g.getView().on( 'refresh', function(){ alert('refresh'); } );
+	});
+	*/
+	
+	
 	
 };
 
@@ -128,7 +137,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     
     
     , getValue : function(){
-    alert('metodo get value');
+    
 		this.clean();
 		var v = [];
 		this.xvalue = this.xvalue || {};
@@ -150,7 +159,6 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	 *  - string -> single value
 	 */
 	, setValue : function(v){	
-	alert('metodo set value');
 		if(typeof v === 'object') {
 			this.xvalue = {};
 			
@@ -258,7 +266,6 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	}
     
     , updateMeta: function(meta) {
-	alert('inizio METODO update meta');
     	if(this.grid){		
   
 			this.valueField = meta.valueField;
@@ -267,14 +274,12 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 			
 			meta.fields[0] = new Ext.grid.RowNumberer();
 			meta.fields[ meta.fields.length - 1 ] = this.sm;
-			alert('prima di setconfig di updatemeta');
+			
 			this.grid.getColumnModel().setConfig(meta.fields);
-			alert('dopo di setconfig di updatemeta');
+			
 		} else {
 		   alert('ERROR: store meta changed before grid instatiation')
-		}
-		  alert('fine METODO update meta');
-		
+		}		
 	}
     
     , resetSelection: function(valuesToLoad) {
@@ -286,32 +291,24 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
    	}
     
     , onSelect: function(sm, rowIndex, record) {
-    alert('inizio METODO onselect');
+    	
     	if(this.singleSelect === true){
     		this.xselection = {}
     	}
-    	alert('Values in xSelection prima dell aggiunta: '+this.xselection['Values']);
     	if(this.xselection['Values']){
-    	alert('xSelection contiene valori');
     		var temp = new Array();
 			temp = this.xselection['Values'].split(',');
-			
-			alert('array temp '+temp);
+		
 			if(!this.arrayContains(temp,record.data[this.valueField])){
-			alert('allora glielo aggiungo');
     			this.xselection['Values'] = this.xselection['Values']+","+ record.data[this.valueField];
     		}
     	}else{
     		this.xselection['Values'] = record.data[this.valueField];
-    	}
-    	alert('Values in xSelection dopo aggiunta: '+this.xselection['Values']);
-    	  alert('fine METODO onselect');
+    	}    	 
     }
     
     , onDeselect: function(sm, rowIndex, record) {
-    alert('inizio METODO ondeselect');
-    alert('Values in xSelection prima della deselzione: '+this.xselection['Values']);
-    alert('Cosa deseleziono: '+record.data[this.valueField]);
+    	
     	if( this.xselection['Values'] ) {
     		var temp = new Array();
 			temp = this.xselection['Values'].split(',');
@@ -328,8 +325,6 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 				}
     		}   		
     	}    	
-    	 alert('Values in xSelection dopo della deselzione: '+this.xselection['Values']);
-    	  alert('fine METODO ondeselect');
     }
     
     ,arrayContains: function(arrayToCheck, obj){
@@ -343,7 +338,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     }
     
     , applySelection: function() {
-    alert('inizio METODO applyselection');
+    	
     	var riga1 = this.store.getAt(1) ;
 		
     	if(this.grid) {    		    		
@@ -360,12 +355,11 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 		        	selectedRecs.push(rec);	        	
 		        }
 		    }, this);
-		    alert('selected records: '+selectedRecs);
-		    alert('prima di selectrecords in applyselection');
+		   
+		    
 		    this.sm.selectRecords(selectedRecs);
-		    alert('dopo di selectrecords in applyselection');
+		    
 		 }		
-	 alert('fine METODO applyselection');
     }
 	
     , clean: function() {

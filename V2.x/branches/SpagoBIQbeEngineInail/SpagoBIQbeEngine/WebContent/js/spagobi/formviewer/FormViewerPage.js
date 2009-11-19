@@ -136,7 +136,7 @@ Ext.extend(Sbi.formviewer.FormViewerPage, Ext.Panel, {
 		
 	}
     
-	, validateForm: function(successCallback, obj) {
+	, validateForm: function(successHandler, obj) {
 		var errors = new Array();
 		if (this.staticOpenFiltersPanel !== null) {
 			var openFiltersErrors = this.staticOpenFiltersPanel.getErrors();
@@ -146,8 +146,8 @@ Ext.extend(Sbi.formviewer.FormViewerPage, Ext.Panel, {
 			var dynamicFiltersErrors = this.dynamicFiltersPanel.getErrors();
 			errors = errors.concat(dynamicFiltersErrors);
 		}
-		if (errors.length == 0) {
-			successCallback.call(obj);
+		if (errors.length == 0 && successHandler !== undefined) {
+			successHandler.call(obj || this);
 		} else {
 			Sbi.exception.ExceptionHandler.showErrorMessage(errors.join('<br/>'), LN('sbi.formviewer.formviewerpage.validation.error'));
 		}

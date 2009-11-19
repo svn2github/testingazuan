@@ -116,7 +116,7 @@ public class HierarchiesDesigner {
         TreeItem iItem = hierarchiesTree.getSelection()[0];
         iItem.setText(newLevel.getName());
         
-        LevelBO.updateLevel(geoDocument, parent.getText(), oldLevel, newLevel);
+        LevelBO.updateLevel(geoDocument, iItem.getParentItem().getText(), oldLevel, newLevel);
         if(isDefault){
         	DatamartProviderBO.setHierarchy(geoDocument, parent.getText(), oldLevel.getName());
         }

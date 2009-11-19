@@ -134,8 +134,12 @@ public class LevelBO {
 	public static void updateLevel(GEODocument geoDocument,
 			String hierarchyName, Level oldLevel, Level newLevel){
 		Level levelToUpdate = getLevelByName(geoDocument, hierarchyName, oldLevel.getName());
-		levelToUpdate = newLevel;
-		
+		if(levelToUpdate != null){
+			levelToUpdate.setName(newLevel.getName());
+			levelToUpdate.setColumnDesc(newLevel.getColumnDesc());
+			levelToUpdate.setColumnId(newLevel.getColumnId());
+			levelToUpdate.setFeatureName(newLevel.getFeatureName());
+		}
 		
 	}
 }

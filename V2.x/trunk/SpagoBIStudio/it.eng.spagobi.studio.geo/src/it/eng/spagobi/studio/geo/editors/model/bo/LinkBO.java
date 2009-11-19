@@ -46,7 +46,19 @@ public class LinkBO {
 		}
 		params.add(param);
 		return link;
+	}
+	
+	public static LinkParam getLinkParam(Link link, LinkParam param) {
 
+		Vector<LinkParam> params = link.getParam();
+		if(params != null){
+			params = new Vector<LinkParam>();
+			if(params.contains(param)){
+				return param;
+			}
+		}
+
+		return null;
 	}
 
 	public static Link getLinkByHierarchyAndLevel(GEODocument geoDocument,
@@ -67,6 +79,23 @@ public class LinkBO {
 			}
 		}
 		return link;
+	}
+	public static void deleteLink(GEODocument geoDocument,
+			String hierarchyName, String levelName){
+		DatamartProvider dmProvider = geoDocument.getDatamartProvider();
+		CrossNavigation crossNavigation = dmProvider.getCrossNavigation();
+		if (crossNavigation != null) {
+			Vector<Link> links = crossNavigation.getLinks();
+			for (int i = 0; i < links.size(); i++) {
+				Link linkI = links.elementAt(i);
+				if (hierarchyName != null && levelName != null
+						&& linkI.getHierarchy().equals(hierarchyName)
+						&& linkI.getLevel().equals(levelName)) {
+					links.remove(linkI);
+				}
+
+			}
+		}
 	}
 
 }

@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -193,8 +194,8 @@ public class HierarchiesDesigner {
 		gd.minimumHeight=100;
 		gd.verticalAlignment=SWT.TOP;
 				
-		final Composite hierarchiesGroup = new Composite(sectionClient, SWT.FILL);
-		
+		final Group hierarchiesGroup = new Group(sectionClient, SWT.FILL);
+		hierarchiesGroup.setText("Hierarchies");
 		hierarchiesGroup.setLayoutData(gd);
 		hierarchiesGroup.setLayout(sectionClient.getLayout());
 

@@ -756,10 +756,10 @@ public class GEOEditor extends EditorPart {
 				}
 			});
 
-			editor.minimumWidth = newDescr.getSize().x;
+			editor.minimumWidth = newDescr.getBounds().x;
 			editor.horizontalAlignment = SWT.CENTER;
 			editor.grabHorizontal = true;
-			editor.minimumHeight = newDescr.getSize().y;
+			editor.minimumHeight = newDescr.getBounds().y;
 			editor.verticalAlignment = SWT.CENTER;
 			editor.grabVertical = true;
 			newDescr.selectAll();
@@ -770,10 +770,10 @@ public class GEOEditor extends EditorPart {
 			final Button selButton = new Button(mapTable, SWT.RADIO);
 			selButton.setText("");
 			editor = new TableEditor(mapTable);
-			editor.minimumWidth = selButton.getSize().x;
+			editor.minimumWidth = selButton.getBounds().x;
 			editor.horizontalAlignment = SWT.CENTER;
 			editor.grabHorizontal = true;
-			editor.minimumHeight = selButton.getSize().y;
+			editor.minimumHeight = selButton.getBounds().y;
 			editor.verticalAlignment = SWT.CENTER;
 			editor.grabVertical = true;
 			editor.setEditor(selButton, item, FEATURE_DEFAULT_LEVEL);
@@ -863,6 +863,7 @@ public class GEOEditor extends EditorPart {
 				item.setText(2, comboSel.getText());
 				if (comboSel.getText().equalsIgnoreCase("measures")) {
 					item.setImage(0, measureIcon.createImage());
+					
 				} else {
 					if (item.getImage() != null) {
 						item.setImage(0, null);
@@ -890,10 +891,10 @@ public class GEOEditor extends EditorPart {
 			selectedColumn.setType(comboSel.getText());
 			comboSel.pack();
 			TableEditor editor = new TableEditor(datasetTable);
-			editor.minimumWidth = comboSel.getSize().x;
+			editor.minimumWidth = comboSel.getBounds().x;
 			editor.horizontalAlignment = SWT.CENTER;
 			editor.grabHorizontal = true;
-			editor.minimumHeight = comboSel.getSize().y;
+			editor.minimumHeight = comboSel.getBounds().y;
 			editor.verticalAlignment = SWT.CENTER;
 			editor.grabVertical = true;
 
@@ -924,10 +925,10 @@ public class GEOEditor extends EditorPart {
 			datasetTableEditors.add(editor);
 
 			editor = new TableEditor(datasetTable);
-			editor.minimumWidth = comboAgg.getSize().x;
+			editor.minimumWidth = comboAgg.getBounds().x;
 			editor.horizontalAlignment = SWT.CENTER;
 			editor.grabHorizontal = true;
-			editor.minimumHeight = comboAgg.getSize().y;
+			editor.minimumHeight = comboAgg.getBounds().y;
 			editor.verticalAlignment = SWT.CENTER;
 			editor.grabVertical = true;
 			editor.setEditor(comboAgg, item, DATASET_AGGREGATION);

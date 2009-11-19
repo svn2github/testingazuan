@@ -4,22 +4,67 @@ import it.eng.spagobi.studio.geo.editors.model.geo.CrossNavigation;
 import it.eng.spagobi.studio.geo.editors.model.geo.DatamartProvider;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.editors.model.geo.Link;
+import it.eng.spagobi.studio.geo.editors.model.geo.LinkParam;
 
 import java.util.Vector;
 
 public class LinkBO {
-	public static Link getLinkByHierarchyAndLevel(GEODocument geoDocument, 
-			String hierarchyName, String levelName){
+
+	public static Link setNewLink(GEODocument geoDocument, String hierarchy,
+			String level) {
+		DatamartProvider dmProvider = geoDocument.getDatamartProvider();
+		CrossNavigation crossNavigation = dmProvider.getCrossNavigation();
+		Vector<Link> links = null;
+		Link link = new Link();
+		if (crossNavigation != null) {
+			links = crossNavigation.getLinks();
+			if(links == null){
+				links = new Vector<Link>();
+				crossNavigation.setLinks(links);
+			}
+		}else{
+			crossNavigation = new CrossNavigation();
+			links = new Vector<Link>();
+			crossNavigation.setLinks(links);
+			dmProvider.setCrossNavigation(crossNavigation);
+		}
+		link.setHierarchy(hierarchy);
+		link.setLevel(level);
+		links.add(link);
+		return link;
+
+	}
+	
+	public static Link addParamToLink(GEODocument geoDocument, Link link, LinkParam param) {
+		DatamartProvider dmProvider = geoDocument.getDatamartProvider();
+		CrossNavigation crossNavigation = dmProvider.getCrossNavigation();
+		Vector<Link> links = crossNavigation.getLinks();
+		Vector<LinkParam> params = link.getParam();
+		if(params == null){
+			params = new Vector<LinkParam>();
+			link.setParam(params);
+		}
+		params.add(param);
+		return link;
+
+	}
+
+	public static Link getLinkByHierarchyAndLevel(GEODocument geoDocument,
+			String hierarchyName, String levelName) {
 		Link link = null;
 		DatamartProvider dmProvider = geoDocument.getDatamartProvider();
-		CrossNavigation crossNavigation =dmProvider.getCrossNavigation();
-		Vector<Link> links = crossNavigation.getLinks();
-		for(int i=0; i<links.size(); i++){
-			Link linkI = links.elementAt(i);
-			if(hierarchyName != null && levelName != null && linkI.getHierarchy().equals(hierarchyName) && linkI.getLevel().equals(levelName)){
-				link=linkI;
+		CrossNavigation crossNavigation = dmProvider.getCrossNavigation();
+		if (crossNavigation != null) {
+			Vector<Link> links = crossNavigation.getLinks();
+			for (int i = 0; i < links.size(); i++) {
+				Link linkI = links.elementAt(i);
+				if (hierarchyName != null && levelName != null
+						&& linkI.getHierarchy().equals(hierarchyName)
+						&& linkI.getLevel().equals(levelName)) {
+					link = linkI;
+				}
+
 			}
-			
 		}
 		return link;
 	}

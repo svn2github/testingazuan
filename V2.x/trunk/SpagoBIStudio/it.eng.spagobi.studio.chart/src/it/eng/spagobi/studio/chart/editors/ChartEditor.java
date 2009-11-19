@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
@@ -169,10 +170,33 @@ public final class ChartEditor extends EditorPart {
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 2;
 		sectionClientInformation.setLayout(gl);
+
 		Label typeLabel = new Label(sectionClientInformation, SWT.NULL);
 		typeLabel.setText("Title:");
-		Label type = new Label(sectionClientInformation, SWT.NULL);
-		type.setText(model.getTitle());
+		final Text titleText=new Text(sectionClientInformation, SWT.BORDER);
+		titleText.setText(model.getTitle());
+		titleText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		titleText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {
+				model.getEditor().setIsDirty(true);
+				String titleValue = titleText.getText();
+				model.setTitle(titleValue);
+			}
+		});
+
+		Label subTitleLabel = new Label(sectionClientInformation, SWT.NULL);
+		subTitleLabel.setText("Sub Title:");
+		final Text subTitleText=new Text(sectionClientInformation, SWT.BORDER);
+		subTitleText.setText(model.getSubTitle());
+		subTitleText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		subTitleText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {
+				model.getEditor().setIsDirty(true);
+				String subTitleValue = subTitleText.getText();
+				model.setSubTitle(subTitleValue);
+			}
+		});
+
 		Label movieLabel = new Label(sectionClientInformation, SWT.NULL);
 		movieLabel.setText("Type:");
 		Label movie = new Label(sectionClientInformation, SWT.NULL);
@@ -280,6 +304,7 @@ public final class ChartEditor extends EditorPart {
 		components.createConfigurationSection(model,null, toolkit, form);
 
 
+		
 
 		// ******************	get subtypes COMBO	******************
 		SpagoBILogger.infoLog("Create the sub type combo: ");
@@ -299,7 +324,7 @@ public final class ChartEditor extends EditorPart {
 			String subType = (String) iterator.next();
 			combo.add(subType);
 		}
-		combo.setToolTipText("Select the chart subtype among "+type+": the specific configuration parameters and the forms will change accordingly");
+		combo.setToolTipText("Select the chart subtype among "+model.getType()+": the specific configuration parameters and the forms will change accordingly");
 
 		// Put default subtype on combo
 		SpagoBILogger.infoLog("Model subtype is "+subTypeLabel);
@@ -365,6 +390,8 @@ public final class ChartEditor extends EditorPart {
 		}
 
 
+		//*********** DATASET INFORMATION SECTION **********
+		components.createDataSetInformationSection(model, toolkit, form);		
 
 
 		//*************************	CHANGE SUBTYPE: ERASE PREVIOUS SPECIFIC MODEL and CREATE NEW FORM	*********************

@@ -4,6 +4,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.studio.chart.editors.ChartEditorUtils;
 import it.eng.spagobi.studio.chart.editors.model.chart.ChartModel.Dimension;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
+import it.eng.spagobi.studio.core.properties.PropertyPage;
 
 import java.io.InputStream;
 import java.util.List;
@@ -87,6 +88,7 @@ public class ChartModelFactory {
 //				SpagoBILogger.errorLog("Error while getting template file content",e);
 //				throw new Exception("Error while reading Template file: " + e.getMessage());
 //			}
+			
 
 			// **** CREATE THE MODEL	****
 
@@ -120,6 +122,14 @@ public class ChartModelFactory {
 			}
 
 
+			// Set the dataset if present!
+			
+			String dataSetIdS=file.getPersistentProperty(PropertyPage.DATASET_ID);
+			if(dataSetIdS!=null){
+				Integer dataSetId=Integer.valueOf(dataSetIdS);
+				model.setSdkDataSetId(dataSetId);
+			}
+			
 
 		} finally {
 			if (thisIs != null) thisIs.close();

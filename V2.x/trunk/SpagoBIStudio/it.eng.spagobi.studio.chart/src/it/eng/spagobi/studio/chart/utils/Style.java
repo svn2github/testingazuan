@@ -1,6 +1,7 @@
 package it.eng.spagobi.studio.chart.utils;
 
 import it.eng.spagobi.studio.chart.editors.ChartEditor;
+import it.eng.spagobi.studio.chart.editors.model.chart.ChartModel;
 import it.eng.spagobi.studio.chart.editors.model.chart.Parameter;
 
 import java.util.ArrayList;
@@ -31,7 +32,9 @@ public class Style {
 
 	public static final String HORIZONTAL="HORIZONTAL";
 	public static final String VERTICAL="VERTICAL";
-
+	public static final String STYLE_SUBTITLE="STYLE_SUBTITLE";
+	
+	
 	//parameters collector, automatically reloaded by set methods
 	//protected ArrayList<Parameter> parameters=new ArrayList<Parameter>();
 
@@ -106,7 +109,7 @@ public class Style {
 	//	}
 
 
-	public String toXML() {
+	public String toXML(ChartModel model) {
 		String toReturn="<"+this.name.toUpperCase()+" ";
 		if(hasFont==true){
 			String fontDef=font!=null?font:"Arial";
@@ -124,6 +127,14 @@ public class Style {
 			String orientationDef=orientation!=null? orientation :"vertical";
 			toReturn+="orientation='"+orientationDef+"' ";
 		}
+		
+		// Only for subtitle add the tag name
+		if(this.name.equalsIgnoreCase(STYLE_SUBTITLE)){
+			String subTitle=model.getSubTitle();
+			if(subTitle==null)subTitle="";
+			toReturn+="name='"+subTitle+"' ";			
+		}
+		
 		toReturn+="/>\n";
 		return toReturn;
 	}

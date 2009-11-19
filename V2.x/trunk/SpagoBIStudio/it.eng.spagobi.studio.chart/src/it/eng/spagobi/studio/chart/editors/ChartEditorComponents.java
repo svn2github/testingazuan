@@ -55,7 +55,7 @@ public class ChartEditorComponents {
 	IntervalsInformationEditor intervalsInformationEditor=null;
 	YZRangesEditor yzRangesEditor=null;
 	ScatterRangeMarkerEditor scatterRangeMarkerEditor=null;
-
+	DataSetInformationEditor dataInformationEditor=null;
 
 
 	public ChartEditorComponents() {
@@ -386,6 +386,10 @@ public class ChartEditorComponents {
 		yzRangesEditor=new YZRangesEditor(model, formToolkit, scrolledForm);
 	}
 
+
+	public void createDataSetInformationSection(final ChartModel model, FormToolkit formToolkit, final ScrolledForm scrolledForm){
+		dataInformationEditor=new DataSetInformationEditor(model, formToolkit, scrolledForm);
+	}
 
 
 	public DrillConfigurationEditor getDrillConfigurationEditor() {

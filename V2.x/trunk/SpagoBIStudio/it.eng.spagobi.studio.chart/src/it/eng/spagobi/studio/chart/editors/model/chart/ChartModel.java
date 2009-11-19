@@ -55,6 +55,7 @@ public class ChartModel {
 	public static final String BARCHART_INFO_FILE = "it/eng/spagobi/studio/chart/editors/model/chart/barChartsConfig.xml";
 
 	protected String title;
+	protected String subTitle;
 	protected String type;
 	protected String subType;
 	protected Dimension dimension;
@@ -66,6 +67,7 @@ public class ChartModel {
 
 	protected ChartEditor editor;
 
+	protected Integer sdkDataSetId;
 
 	// ********* Configuration Parameters ***********
 	//protected HashMap<String, Object> confParametersValues=new HashMap<String, Object>();
@@ -172,6 +174,15 @@ public class ChartModel {
 		}
 
 
+		Node subTitleNode = thisDocument.selectSingleNode("//"+typeUpperCase+"/STYLE_SUBTITLE");
+		if(subTitleNode!=null){
+			String subTitleS=subTitleNode.valueOf("@name");
+			if(subTitleS!=null){
+				subTitle=subTitleS;
+			}
+		}
+		if(subTitle==null)subTitle="";
+
 		// finds the dimension
 		String widthStr = null;
 		String heightStr =null;
@@ -255,7 +266,7 @@ public class ChartModel {
 			for (Iterator iterator = styleParametersEditors.keySet().iterator(); iterator.hasNext();) {
 				String styleName = (String) iterator.next();
 				Style style=styleParametersEditors.get(styleName);
-				String styleXml=style.toXML();
+				String styleXml=style.toXML(this);
 				toReturn+=styleXml;
 			}
 		}
@@ -1379,6 +1390,22 @@ public class ChartModel {
 
 	public void setEditor(ChartEditor editor) {
 		this.editor = editor;
+	}
+
+	public String getSubTitle() {
+		return subTitle;
+	}
+
+	public void setSubTitle(String subTitle) {
+		this.subTitle = subTitle;
+	}
+
+	public Integer getSdkDataSetId() {
+		return sdkDataSetId;
+	}
+
+	public void setSdkDataSetId(Integer sdkDataSetId) {
+		this.sdkDataSetId = sdkDataSetId;
 	}
 
 

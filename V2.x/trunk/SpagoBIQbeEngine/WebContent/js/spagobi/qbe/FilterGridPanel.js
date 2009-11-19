@@ -53,7 +53,13 @@ Sbi.qbe.FilterGridPanel = function(config) {
 		// set default values here
 	}, config || {});
 	
+	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE'};
 	this.services = new Array();
+	
+	this.services['getValuesForQbeFilterLookupService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_VALUES_FOR_QBE_FILTER_LOOKUP_ACTION'
+		, baseParams: params
+	});
 	
 	this.documentParametersStore = c.documentParametersStore;
 	
@@ -562,10 +568,32 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    		}
 		    	}		    	
 		    }, this);
+		    
+		    //FATTO DA ME
+		    //var multiButtonEditor = new Sbi.widgets.TriggerFieldMultiButton({
+	           //  allowBlank: true
+	           //  , triggerClass: 'x-form-search-trigger'
+
+		   // });
+		   var lookupFieldEditor = new Ext.form.TriggerField({
+	             allowBlank: true
+	             , triggerClass: 'x-form-search-trigger'
+
+		    });
+		    lookupFieldEditor.onTriggerClick = this.openValuesForQbeFilterLookup.createDelegate(this);
+		    lookupFieldEditor.on('change', function(f, newValue, oldValue){
+		    	if(this.activeEditingContext) {
+		    		if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
+		    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value', rightOperandLongDescription: null}, this.activeEditingContext.row);
+		    		}
+		    	}		    	
+		    }, this);
+		    //FINE FATTO DA ME
 		    		
 		    this.valueColumnEditors = {
 		    		parentFieldEditor: new Ext.grid.GridEditor(parentFieldEditor)		    		
 		    		, textEditor: new Ext.grid.GridEditor(textEditor)
+		    		, lookupFieldEditor: new Ext.grid.GridEditor(lookupFieldEditor)	
 		    }
 		    
 			
@@ -840,10 +868,16 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			var editor;
 			if(this.parentQuery !== null) {
 				editor = this.valueColumnEditors.parentFieldEditor;
+				//FATTO DA ME
+			} else if(dataIndex === 'rightOperandDescription'){
+			   
+				editor = this.valueColumnEditors.lookupFieldEditor;
+			  
+			    //FINE FATTO DA ME
 			} else {
 				editor = this.valueColumnEditors.textEditor;
 			}
-				
+
 			this.grid.colModel.setEditor(col,editor);
 		}			
 	}
@@ -882,6 +916,78 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		this.grid.stopEditing();
 		this.operandChooserWindow.setParentQuery(this.parentQuery);
 		this.operandChooserWindow.show();
+	}
+	
+	, createStore: function(entityId) {
+		var record = this.activeEditingContext.grid.store.getAt(this.activeEditingContext.row);
+		var entityId = record.get('leftOperandValue');
+		var createStoreUrl = this.services['getValuesForQbeFilterLookupService']
+		        + '&ENTITY_ID=' + entityId;
+		var store;	
+		store = new Ext.data.JsonStore({
+			url: createStoreUrl
+		});
+		store.on('loadexception', function(store, options, response, e) {
+			var msg = '';
+			var content = Ext.util.JSON.decode( response.responseText );
+  			if(content !== undefined) {
+  				msg += content.serviceName + ' : ' + content.message;
+  			} else {
+  				msg += 'Server response is empty';
+  			}
+	
+			Sbi.exception.ExceptionHandler.showErrorMessage(msg, response.statusText);
+		});
+		return store;	
+	}
+	
+	, getFormState: function() {
+		var state;
+		
+		state = {};
+		for(p in this.fields) {
+			var field = this.fields[p];
+			var value = field.getValue();
+			state[field.name] = value;
+			var rawValue = field.getRawValue();
+			if (rawValue !== undefined) {
+				// TODO to improve: the value of the field should be an object with actual value and its description
+				// Conflicts with other parameters are avoided since the parameter url name max lenght is 20
+				state[field.name + '_field_visible_description'] = rawValue;
+			}
+		}
+		return state;
+	}
+	
+	, openValuesForQbeFilterLookup: function(e) {
+			var store = this.createStore();
+			//store.on('beforeload', function(store, o) {
+				//var p = Sbi.commons.JSON.encode(this.getFormState());
+				//o.params.PARAMETERS = p;
+				//return true;
+			//}, this);
+			var baseConfig = {
+		       store: store
+		     , singleSelect: false
+			};
+			
+			this.lookupField = new Sbi.widgets.LookupField(baseConfig);
+			var record = this.activeEditingContext.grid.store.getAt(this.activeEditingContext.row);
+		    var valuesToload = record.get('rightOperandValue');
+			this.lookupField.onLookUp(valuesToload);
+			this.lookupField.on('selectionmade', function(xselection) {
+				var filter;
+				if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
+					filter = {
+						rightOperandType: 'Static Value'
+						, rightOperandDescription: xselection.Values
+						, rightOperandValue: xselection.Values
+						, rightOperandLongDescription: xselection.Values
+					}
+					this.modifyFilter(filter, this.activeEditingContext.row);
+				}
+			}, this);
+			
 	}
 	
 	, getLeftOperandTooltip: function (value, metadata, record) {

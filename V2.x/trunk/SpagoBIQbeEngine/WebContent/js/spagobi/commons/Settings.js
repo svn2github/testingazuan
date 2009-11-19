@@ -6,6 +6,7 @@ Sbi.settings.qbe = {
 			enableTreeTbPinBtn: true,
 			enableTreeTbUnpinBtn: true,
 			
+			
 			enableQueryTbExecuteBtn: true,
 			enableQueryTbSaveBtn: true,
 			enableQueryTbValidateBtn: false,
@@ -16,7 +17,9 @@ Sbi.settings.qbe = {
 		}
 
 		, selectGridPanel: {
+		
 			enableTbHideNonvisibleBtn: true
+			, enableTbAddCalculatedBtn: true
 			, enableTbDeleteAllBtn: true
 			, columns : {
 				'entity': {hideable: true, hidden: false, sortable: false}

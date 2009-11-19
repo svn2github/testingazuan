@@ -50,6 +50,11 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
+	<ACTION name="GET_ANALYSIS_META_ACTION" 
+  			class="it.eng.spagobi.engines.geo.service.GetAnalysisMetaAction" 
+  			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>	
 	
     
 </ACTIONS>

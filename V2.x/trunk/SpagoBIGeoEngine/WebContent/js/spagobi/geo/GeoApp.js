@@ -78,10 +78,12 @@ Sbi.geo.app = function() {
                     handler: function(event, toolEl, panel){
                       if(this.saveAnalysisWin === undefined) {
                       	var sequence = new Sbi.commons.ServiceSequence({
-                      	  	onSequenceExecuted: function(response) {
-                      			var content = Ext.util.JSON.decode( response.responseText );
-								content.text = content.text || "";
-								if (content.text.match('OK - ')) {
+                      	  	onSequenceExecuted: function(response) {                  		
+                      	  	var content = Ext.util.JSON.decode( response.responseText );                      				
+							content.text = content.text || "";	
+							//TODO: check how test response result: actually content is ever empty (if response is OK)!!!!
+							if (content.text.match('OK - ')) {
+							 //if (content !== undefined && content.statusText === 'OK') {
 									Ext.MessageBox.show({
 						           		title: 'Customized view saved'
 						           		, msg: 'Customized view saved succesfully !!!'
@@ -106,10 +108,17 @@ Sbi.geo.app = function() {
                       	})
                       	
                       	
-                      	this.saveAnalysisWin = new Sbi.geo.SaveAnalysisWindow({
-                      		saveServiceSequence : sequence      		                   		
+                      	this.saveAnalysisWin = new Sbi.geo.SaveAnalysisWindow({                      
+                      		saveServiceSequence : sequence      		                      	 		                   		
                       	});
-                      	
+                /*
+                      	sequence.add({
+		                	url: Sbi.geo.app.serviceRegistry.getServiceUrl('GET_ANALYSIS_META_ACTION')
+							, failure: Sbi.commons.ExceptionHandler.handleFailure
+						//	, params: drillPanel.getAnalysisState
+							, scope: this.saveAnalysisWin
+						}); 
+						*/
                       	sequence.add({
 		                	url: Sbi.geo.app.serviceRegistry.getServiceUrl('SET_ANALYSIS_STATE_ACTION')
 							, failure: Sbi.commons.ExceptionHandler.handleFailure
@@ -122,14 +131,47 @@ Sbi.geo.app = function() {
 							, params: this.saveAnalysisWin.getAnalysisMeta
 							, scope: this.saveAnalysisWin
 						}); 
+						
 						sequence.add({
 		                	url: Sbi.geo.app.serviceRegistry.getServiceUrl('SET_ANALYSIS_STATE_ACTION')
 							, failure: Sbi.commons.ExceptionHandler.handleFailure
 							, params: drillPanel.getAnalysisState
 							, scope: drillPanel
 						}); 
-						 
+					
+						 //	saveServiceSequence.run();
                       }
+                      //getting meta informations 				
+				       	Ext.Ajax.request({
+							url:  Sbi.geo.app.serviceRegistry.getServiceUrl('GET_ANALYSIS_META_ACTION'),
+							callback: function(options, success, response) {							 
+			       				if(success) {
+			       					if(response !== undefined && response.responseText !== undefined) {
+			       						var nameMeta = "";
+			       				        var descriptionMeta = "";
+			       				        var scopeMeta = "";
+					      			    var content = Ext.util.JSON.decode( response.responseText );					      			 
+			    		      			if (content !== undefined) {                          			  
+			    		      				nameMeta = content.name;			                      
+			    		      				descriptionMeta = content.description; 
+			    		      				scopeMeta = (content.scope);   
+                                               
+			    		      				if (scopeMeta != undefined){
+			    		      				
+  			    		      				this.saveAnalysisWin.setAnalysisMeta({ analysisName: nameMeta
+  			                                	    		, analysisDescription: descriptionMeta
+  			                                	    		, analysisScope: scopeMeta.toUpperCase()
+  			                                	    	  });
+                            }   				      			
+			    		      			} 
+			    		      		} else {
+			    		      			Sbi.commons.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+			    		      		}
+			       				}
+			       			},
+			       			scope: this,
+							failure: Sbi.commons.ExceptionHandler.handleFailure		
+				       	});   
                       this.saveAnalysisWin.show();
                     }
                 } , {

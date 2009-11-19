@@ -98,6 +98,7 @@ Sbi.geo.SaveAnalysisWindow = function(config) {
             	if(this.saveServiceSequence === undefined) {
             		alert('Error: saveServiceSequence is undefined' );
             	} else {
+            	
             		this.saveServiceSequence.run();
             	}
         	}
@@ -148,4 +149,10 @@ Ext.extend(Sbi.geo.SaveAnalysisWindow, Ext.Window, {
       	
       	return analysisMeta;
     }
+
+	,setAnalysisMeta : function(analysisMeta) {            
+	  	this.analysisName.setValue(analysisMeta.analysisName);
+	  	this.analysisDescription.setValue(analysisMeta.analysisDescription);
+	  	this.analysisScope.setValue(analysisMeta.analysisScope);
+	}
 });

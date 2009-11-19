@@ -40,6 +40,16 @@ public interface ISubObjectDAO {
 	public Integer saveSubObject(Integer idBIObj, SubObject subObj) throws EMFUserError;
 	
 	/**
+	 * Modify a subObject of the object.
+	 * 
+	 * @param idBIObj the id of the biobject parent
+	 * @param subObj the sub obj
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public Integer modifySubObject(Integer idBIObj, SubObject subObj) throws EMFUserError;
+	
+	/**
 	 * Gets the detail of all the subobjects accessible to the user.
 	 * 
 	 * @param idBIObj the id of the biobject parent

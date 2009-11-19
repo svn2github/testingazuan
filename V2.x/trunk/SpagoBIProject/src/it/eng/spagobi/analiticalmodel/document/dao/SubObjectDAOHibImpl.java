@@ -26,6 +26,7 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjNotes;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
 import it.eng.spagobi.commons.bo.UserProfile;
@@ -279,6 +280,58 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 		return subobj;
 	}
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO#modifySubObject(java.lang.Integer, it.eng.spagobi.analiticalmodel.document.bo.SubObject)
+	 */
+	public Integer modifySubObject(Integer idBIObj, SubObject subObj) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		Integer subObjId = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiObjects hibBIObject = (SbiObjects) aSession.load(SbiObjects.class, idBIObj);
+			SbiBinContents hibBinContent = new SbiBinContents();
+			byte[] bytes = null;
+			try {
+				bytes = subObj.getContent();
+			} catch (EMFInternalError e) {
+				logger.error("Could not retrieve content of SubObject object in input.");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+			}
+			hibBinContent.setContent(bytes);
+			
+			Integer idBin = (Integer)aSession.save(hibBinContent);
+			// recover the saved binary hibernate object
+			hibBinContent = (SbiBinContents) aSession.load(SbiBinContents.class, idBin);
+			// store the subobject
+			Date now = new Date();
+			subObjId = subObj.getId();
+			SbiSubObjects hibSub = (SbiSubObjects)aSession.load(SbiSubObjects.class, subObj.getId());
+			hibSub.setOwner(subObj.getOwner());
+			hibSub.setLastChangeDate(now);
+			hibSub.setIsPublic(subObj.getIsPublic());
+			hibSub.setCreationDate(now);
+			hibSub.setDescription(subObj.getDescription());
+			hibSub.setName(subObj.getName());
+			hibSub.setSbiBinContents(hibBinContent);
+			hibSub.setSbiObject(hibBIObject);
+			aSession.save(hibSub);
+			
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return subObjId;
+	}
+	
 	public SubObject getSubObjectByNameAndBIObjectId(String subobjectName, Integer idBIObj) throws EMFUserError {
 		SubObject subObject = null;
 		List subObjects = this.getSubObjects(idBIObj);

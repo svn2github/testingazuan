@@ -87,10 +87,10 @@ Ext.extend(Sbi.widgets.SaveWindow, Ext.Window, {
       	return formState;
     }
 
-	,setFormState : function(formState) {            
-	  	this.nameField.setValue(formState.name);
-	  	this.descriptionField.setValue(formState.description);
-	  	this.scopeField.setValue(formState.scope);
+	,setFormState : function(formState) {      
+		if(formState.name !== undefined) this.nameField.setValue(formState.name);
+		if(formState.description !== undefined) this.descriptionField.setValue(formState.description);
+		if(formState.scope !== undefined) this.scopeField.setValue(formState.scope.toUpperCase());
 	}
 
 	//private methods

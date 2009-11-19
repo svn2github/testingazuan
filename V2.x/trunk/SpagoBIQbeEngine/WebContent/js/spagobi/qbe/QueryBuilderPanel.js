@@ -220,17 +220,16 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 				url:  this.services['getMeta'],
 				callback: function(options, success, response) {
        				if(success) {
-       					if(response !== undefined && response.responseText !== undefined) {
+       					if(response !== undefined && response.responseText !== undefined ) {
 		      			    var content = Ext.util.JSON.decode( response.responseText );
 		      			  
-    		      			if (content !== undefined) {                          			  
-    		      				nameMeta = content.name;
-                      
-                      descriptionMeta = content.description; 
-                      scopeMeta = (content.scope);    		                   
-	    	              this.saveQueryWindow.setFormState({ name: nameMeta
+    		      			if (content !== undefined) {      		      					                   			 
+    		      				nameMeta = content.name;                      
+    		      				descriptionMeta = content.description; 
+    		      				scopeMeta = (content.scope);    		                   
+    		      				this.saveQueryWindow.setFormState({ name: nameMeta
                                 	    		, description: descriptionMeta
-                                	    		, scope: scopeMeta.toUpperCase()
+                                	    		, scope: scopeMeta
                                 	    	  });   				      			
     		      			} 
     		      		} else {

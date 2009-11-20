@@ -402,7 +402,7 @@ public class ChartImpl implements IChart {
 			legendPosition="bottom";
 			if(dataParameters.get(LEGEND_POSITION)!=null && !(((String)dataParameters.get(LEGEND_POSITION)).equalsIgnoreCase("") )){	
 				String leg=(String)dataParameters.get(LEGEND_POSITION);
-				if(leg.equalsIgnoreCase("bottom") || leg.equalsIgnoreCase("left") || leg.equalsIgnoreCase("right") || leg.equalsIgnoreCase("up"))
+				if(leg.equalsIgnoreCase("bottom") || leg.equalsIgnoreCase("left") || leg.equalsIgnoreCase("right") || leg.equalsIgnoreCase("top"))
 					legendPosition=leg;
 			}
 			

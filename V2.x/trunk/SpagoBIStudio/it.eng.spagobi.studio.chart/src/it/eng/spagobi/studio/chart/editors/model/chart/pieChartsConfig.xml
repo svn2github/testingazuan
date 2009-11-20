@@ -40,7 +40,6 @@
 			<SECTION name="slider">
 				<PARAMETER name='values' description='How to view values' type='COMBO' values='normal,percentage' tooltip='Select if view values in percentage form'/>
 				<PARAMETER name='dimensions' description='How many dimensions: ' type='COMBO' values='2d,3d' tooltip='select if view chart in 2d or 3d form'/>
-				<PARAMETER name="legend_position" description='Position of the legend' type='COMBO' values='top,left,right,bottom' tooltip='select the legend position'/>
 			</SECTION>
 		</CONF>
 	</PIECHART>

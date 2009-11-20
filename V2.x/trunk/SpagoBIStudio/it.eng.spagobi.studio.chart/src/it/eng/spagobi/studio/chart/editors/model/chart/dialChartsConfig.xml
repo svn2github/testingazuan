@@ -51,8 +51,6 @@
 			</SECTION>
 			<SECTION name='legend'>
 				<PARAMETER name='legend' description='Legend' type='BOOLEAN' tooltip='draw legend?' defaultValue='true'/>
-				<PARAMETER name="legend_position" description='Legend Position' type='COMBO'
-					values='top,left,right,bottom' tooltip='position of the legend' defaultValue='bottom'/>			
 			</SECTION>			
 			<SECTION name='multichart'>
 				<PARAMETER name='multichart' description='Multichart' type='BOOLEAN' tooltip='Is multichart?' defaultValue='false'/>

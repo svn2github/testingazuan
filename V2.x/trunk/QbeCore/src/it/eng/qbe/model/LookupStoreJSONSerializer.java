@@ -86,7 +86,6 @@ public class LookupStoreJSONSerializer {
 			metadata.put("valueField", valueField);
 			metadata.put("displayField", displayField);
 			metadata.put("descriptionField", descriptionField);			
-			//metadata.put("id", "id");
 			result.put("metaData", metadata);
 			
 			propertyRawValue = dataStore.getMetaData().getProperty("resultNumber");
@@ -156,10 +155,8 @@ public class LookupStoreJSONSerializer {
 						fieldMetaDataJSON.put("type", "auto");
 						fieldMetaDataJSON.remove("type");
 						fieldMetaDataJSON.put("subtype", "html");
-					}
-					
+					}				
 				}
-
 				fieldsMetaDataJSON.put(fieldMetaDataJSON);
 			}
 			fieldsMetaDataJSON.put("recCk");
@@ -171,7 +168,6 @@ public class LookupStoreJSONSerializer {
 			while(records.hasNext()) {
 				record = (IRecord)records.next();
 				recordJSON = new JSONObject();
-				//recordJSON.put("id", ++recNo);
 				
 				for(int i = 0; i < dataStore.getMetaData().getFieldCount(); i++) {
 					IFieldMetaData fieldMetaData = dataStore.getMetaData().getFieldMeta(i);
@@ -181,12 +177,9 @@ public class LookupStoreJSONSerializer {
 							&& (propertyRawValue instanceof Boolean) 
 							&& ((Boolean)propertyRawValue).booleanValue() == false) {
 						continue;
-					}
-										
+					}										
 					field = record.getFieldAt( dataStore.getMetaData().getFieldIndex( fieldMetaData.getName() ) );
-					
-					
-					
+		
 					String fieldValue = "";
 					if(field.getValue() != null && !field.getValue().equals("")) {
 						if(Date.class.isAssignableFrom(fieldMetaData.getType())) {
@@ -199,7 +192,6 @@ public class LookupStoreJSONSerializer {
 					
 					recordJSON.put("Values", fieldValue);
 				}
-				
 				recordsJSON.put(recordJSON);
 			}
 			

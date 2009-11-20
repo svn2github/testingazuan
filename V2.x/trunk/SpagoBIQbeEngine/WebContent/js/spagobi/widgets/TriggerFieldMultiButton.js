@@ -54,8 +54,7 @@ Sbi.widgets.TriggerFieldMultiButton = function(config) {
 	var c = Ext.apply({}, config, {});   
 	    
 	Sbi.widgets.TriggerFieldMultiButton.superclass.constructor.call(this, c);  
-	
-	//this.addEvents("onlookupvalues", "onparentvalues");
+
 };
 
 
@@ -65,7 +64,6 @@ Sbi.widgets.TriggerFieldMultiButton = Ext.extend(Ext.form.TwinTriggerField, {
 	validateOnBlur:false,
 	trigger1Class:'x-form-search-trigger',
 	trigger2Class:'trigger-up',
-	paramName : 'query',
 	
 	initComponent : function(){
 		Sbi.widgets.TriggerFieldMultiButton.superclass.initComponent.call(this);       
@@ -85,11 +83,4 @@ Sbi.widgets.TriggerFieldMultiButton = Ext.extend(Ext.form.TwinTriggerField, {
         }    	
     },
 
-   /* onTrigger1Click : function(){
-        this.fireEvent('onlookupvalues', this);  
-    },
-
-    onTrigger2Click : function(){   
-        this.fireEvent('onparentvalues', this);
-    }*/
 });

@@ -540,7 +540,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    
 		    var parentFieldEditor = new Ext.form.TriggerField({
 	             allowBlank: true
-	             , triggerClass: 'x-form-search-trigger'
+	             , triggerClass: 'trigger-up'
 
 		    });
 		    parentFieldEditor.onTriggerClick = this.onOpenValueEditor.createDelegate(this);
@@ -588,6 +588,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    
 		    var multiButtonEditor = new Sbi.widgets.TriggerFieldMultiButton({
 	         		allowBlank: true
+	         		
 		    });
 		    
 		    multiButtonEditor.onTrigger1Click = this.openValuesForQbeFilterLookup.createDelegate(this);

@@ -305,9 +305,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     		}
     	}else{
     		this.xselection['Values'] = record.data[this.valueField];
-    	}
-
-    	}    	 
+    	} 	 
     }
     
     , onDeselect: function(sm, rowIndex, record) {

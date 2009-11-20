@@ -141,7 +141,7 @@ public class SDKObjectsConverter {
 			// gets engine
 			Engine engine = null;
 			IEngineDAO engineDAO = DAOFactory.getEngineDAO();
-			if (document.getEngineId() != null) {
+			if (document.getEngineId() == null) {
 				// if engine id is not specified take the first engine for the biobject type
 				List engines = engineDAO.loadAllEnginesForBIObjectType(document.getType());
 				if (engines.size() == 0) {

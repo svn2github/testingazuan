@@ -569,12 +569,8 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    	}		    	
 		    }, this);
 		    
-		    //FATTO DA ME
-		    //var multiButtonEditor = new Sbi.widgets.TriggerFieldMultiButton({
-	           //  allowBlank: true
-	           //  , triggerClass: 'x-form-search-trigger'
-
-		   // });
+		    //FATTO DA ME	    
+		    
 		   var lookupFieldEditor = new Ext.form.TriggerField({
 	             allowBlank: true
 	             , triggerClass: 'x-form-search-trigger'
@@ -588,12 +584,38 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    		}
 		    	}		    	
 		    }, this);
+		    
+		    
+		    var multiButtonEditor = new Sbi.widgets.TriggerFieldMultiButton({
+	         		allowBlank: true
+		    });
+		    
+		    multiButtonEditor.onTrigger1Click = this.openValuesForQbeFilterLookup.createDelegate(this);
+		    multiButtonEditor.onTrigger2Click = this.onOpenValueEditor.createDelegate(this);  	
+		    
+		   /* multiButtonEditor.on('onlookupvalues', function(f){
+		    	this.openValuesForQbeFilterLookup.createDelegate(this);	    	
+		    }, this);
+		    
+		    multiButtonEditor.on('onparentvalues', function(f){
+		    	this.onOpenValueEditor.createDelegate(this);  	
+		    }, this);*/
+		    
+		    multiButtonEditor.on('change', function(f, newValue, oldValue){
+		    	if(this.activeEditingContext) {
+		    		if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
+		    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value', rightOperandLongDescription: null}, this.activeEditingContext.row);
+		    		}
+		    	}		    	
+		    }, this);
+		    
 		    //FINE FATTO DA ME
 		    		
 		    this.valueColumnEditors = {
 		    		parentFieldEditor: new Ext.grid.GridEditor(parentFieldEditor)		    		
 		    		, textEditor: new Ext.grid.GridEditor(textEditor)
 		    		, lookupFieldEditor: new Ext.grid.GridEditor(lookupFieldEditor)	
+		    		, multiButtonEditor: new Ext.grid.GridEditor(multiButtonEditor)
 		    }
 		    
 			
@@ -867,8 +889,12 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		if(dataIndex === 'leftOperandDescription' || dataIndex === 'rightOperandDescription') {
 			var editor;
 			if(this.parentQuery !== null) {
-				editor = this.valueColumnEditors.parentFieldEditor;
-				//FATTO DA ME
+			//FATTO DA ME
+				if(dataIndex === 'rightOperandDescription'){
+					editor = this.valueColumnEditors.multiButtonEditor;
+				}else{
+					editor = this.valueColumnEditors.parentFieldEditor;
+				}
 			} else if(dataIndex === 'rightOperandDescription'){
 			   
 				editor = this.valueColumnEditors.lookupFieldEditor;

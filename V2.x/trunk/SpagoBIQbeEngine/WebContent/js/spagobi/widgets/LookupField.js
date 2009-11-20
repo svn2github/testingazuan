@@ -43,7 +43,7 @@
   * 
   * Authors
   * 
-  * - Andrea Gioia (andrea.gioia@eng.it)
+  * - Chiara Chiarelli (chiara.chiarelli@eng.it)
   */
 
 Ext.ns("Sbi.widgets");
@@ -333,14 +333,13 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     	var len = arrayToCheck.length;
 		for (var i = 0; i < len; i++){
 			if(arrayToCheck[i]==obj){
-			return true;
+				return true;
 			}
 		}
     	return false;
     }
     
-    , applySelection: function() {
-    	
+    , applySelection: function() {    	
     	var riga1 = this.store.getAt(1) ;
 		
     	if(this.grid) {    		    		
@@ -357,8 +356,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 		        	selectedRecs.push(rec);	        	
 		        }
 		    }, this);
-			this.sm.selectRecords(selectedRecs);
-		    
+			this.sm.selectRecords(selectedRecs);		    
 		 }		
     }
 	

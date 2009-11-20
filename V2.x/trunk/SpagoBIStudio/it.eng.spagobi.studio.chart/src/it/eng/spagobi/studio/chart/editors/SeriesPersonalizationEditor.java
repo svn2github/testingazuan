@@ -94,23 +94,6 @@ public class SeriesPersonalizationEditor {
 		gl.numColumns = 2;
 		sectionClientSeries.setLayout(gl);
 
-		//Image imageAdd = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_OBJ_ELEMENT);
-		Button buttonAdd = new Button(sectionClientSeries, SWT.PUSH);
-		buttonAdd.setText("Add");
-		//buttonAdd.setImage(imageAdd);
-		buttonAdd.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
-		buttonAdd.setToolTipText("Add serie");
-		buttonAdd.pack();
-
-		final Button buttonRem = new Button(sectionClientSeries, SWT.PUSH);
-		buttonRem.setToolTipText("Remove");
-		//		Image imageRem = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_TOOL_DELETE);
-		buttonRem.setText("Cancel");
-		buttonRem.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
-		buttonRem.setToolTipText("Remove serie");
-		//		buttonRem.setImage(imageRem);
-		buttonRem.pack();
-
 
 		parsTable = new Table (sectionClientSeries, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL);
 		parsTable.setLinesVisible (true);
@@ -168,6 +151,29 @@ public class SeriesPersonalizationEditor {
 		GridLayout g2 = new GridLayout();
 		g2.numColumns =4 ;
 		group.setLayout(g2);
+
+		//Image imageAdd = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_OBJ_ELEMENT);
+		Button buttonAdd = new Button(group, SWT.PUSH);
+		buttonAdd.setText("    Add Serie   ");
+		//buttonAdd.setImage(imageAdd);
+		buttonAdd.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
+		buttonAdd.setBackground(new Color(group.getDisplay(), new RGB( 0,255,255)));
+		buttonAdd.setToolTipText("Add serie");
+		buttonAdd.pack();
+
+		final Button buttonRem = new Button(group, SWT.PUSH);
+		buttonRem.setToolTipText("Remove");
+		//		Image imageRem = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_TOOL_DELETE);
+		buttonRem.setText("  Cancel Serie ");
+		buttonRem.setBackground(new Color(group.getDisplay(), new RGB( 0,255,255)));
+		buttonRem.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		buttonRem.setToolTipText("Remove serie");
+		//		buttonRem.setImage(imageRem);
+		buttonRem.pack();
+
+		ChartEditorUtils.addBlanckSpace(group);
+		ChartEditorUtils.addBlanckSpace(group);
+		
 		
 		Label newNameLabel = new Label(group, SWT.NULL); 
 		newNameLabel.setText("    Serie Name: ");

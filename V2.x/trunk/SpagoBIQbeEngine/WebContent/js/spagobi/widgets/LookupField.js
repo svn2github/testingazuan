@@ -298,12 +298,15 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     	if(this.xselection['Values']){
     		var temp = new Array();
 			temp = this.xselection['Values'].split(',');
+
 		
 			if(!this.arrayContains(temp,record.data[this.valueField])){
     			this.xselection['Values'] = this.xselection['Values']+","+ record.data[this.valueField];
     		}
     	}else{
     		this.xselection['Values'] = record.data[this.valueField];
+    	}
+
     	}    	 
     }
     
@@ -325,12 +328,13 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 				}
     		}   		
     	}    	
+
     }
     
     ,arrayContains: function(arrayToCheck, obj){
     	var len = arrayToCheck.length;
 		for (var i = 0; i < len; i++){
-			if(arrayToCheck[i]===obj){
+			if(arrayToCheck[i]==obj){
 			return true;
 			}
 		}
@@ -355,9 +359,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 		        	selectedRecs.push(rec);	        	
 		        }
 		    }, this);
-		   
-		    
-		    this.sm.selectRecords(selectedRecs);
+			this.sm.selectRecords(selectedRecs);
 		    
 		 }		
     }

@@ -342,7 +342,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 
 					var tempTocheck = record.data[this.valueField].format('d/m/Y H:i:s');
 				
-					if(temp[i] !== tempTocheck){
+					if(temp[i] != tempTocheck){
 							if(this.xselection['Values']){
 					    		this.xselection['Values'] = this.xselection['Values']+","+ temp[i];
 					    	}else{
@@ -350,7 +350,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 					    	}
 						}
 				}else{
-						if(temp[i] !== record.data[this.valueField]){
+						if(temp[i] != record.data[this.valueField]){
 							if(this.xselection['Values']){
 					    		this.xselection['Values'] = this.xselection['Values']+","+ temp[i];
 					    	}else{
@@ -366,14 +366,14 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     
     ,arrayContains: function(arrayToCheck, obj){
     	var len = arrayToCheck.length;
-
+		
 		for (var i = 0; i < len; i++){
-			if(this.grid.getColumnModel().getColumnById('1').type == 'date'){
+			if(this.grid.getColumnModel().getColumnById('1').type == 'date' && (obj instanceof Date)){
 			
 				var tempTocheck = Date.parseDate(arrayToCheck[i], 'd/m/Y H:i:s');
-				
-				if(tempTocheck==obj){
-				alert('Trovato');
+
+				if(tempTocheck.getTime()==obj.getTime()){
+
 					return true;
 				}
 			}else{

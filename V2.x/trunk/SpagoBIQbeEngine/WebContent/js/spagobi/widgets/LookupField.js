@@ -275,11 +275,12 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 			
 			meta.fields[0] = new Ext.grid.RowNumberer();
 			meta.fields[ meta.fields.length - 1 ] = this.sm;
-			
-			alert(meta.fields[0].toSource());
-			
-				this.grid.getColumnModel().setConfig(meta.fields);
-			
+
+			if(meta.fields[1].type == 'date'){
+				meta.fields[1].renderer = Ext.util.Format.dateRenderer('d/m/Y H:i:s');
+			}
+	
+			this.grid.getColumnModel().setConfig(meta.fields);		
 			
 		} else {
 		   alert('ERROR: store meta changed before grid instatiation')
@@ -299,6 +300,10 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     	if(this.singleSelect === true){
     		this.xselection = {}
     	}
+
+		if(this.grid.getColumnModel().getColumnById('1').type == 'date'){
+			record.data[this.valueField] = record.data[this.valueField].format('d/m/Y H:i:s');
+		}
     	if(this.xselection['Values']){
     		var temp = new Array();
 			temp = this.xselection['Values'].split(',');
@@ -309,7 +314,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     		}
     	}else{
     		this.xselection['Values'] = record.data[this.valueField];
-    	} 	 
+    	} 	
     }
     
     , onDeselect: function(sm, rowIndex, record) {
@@ -320,12 +325,26 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 			delete this.xselection['Values'];
 			if(temp.length!=0){
 				for(i = 0; i <  temp.length; i++) {
-					if(temp[i] !== record.data[this.valueField]){
-						if(this.xselection['Values']){
-				    		this.xselection['Values'] = this.xselection['Values']+","+ temp[i];
-				    	}else{
-				    		this.xselection['Values'] = temp[i];
-				    	}
+				
+				if(this.grid.getColumnModel().getColumnById('1').type == 'date'){		
+
+					var tempTocheck = record.data[this.valueField].format('d/m/Y H:i:s');
+				
+					if(temp[i] !== tempTocheck){
+							if(this.xselection['Values']){
+					    		this.xselection['Values'] = this.xselection['Values']+","+ temp[i];
+					    	}else{
+					    		this.xselection['Values'] = temp[i];
+					    	}
+						}
+				}else{
+						if(temp[i] !== record.data[this.valueField]){
+							if(this.xselection['Values']){
+					    		this.xselection['Values'] = this.xselection['Values']+","+ temp[i];
+					    	}else{
+					    		this.xselection['Values'] = temp[i];
+					    	}
+						}
 					}
 				}
     		}   		
@@ -336,8 +355,17 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     ,arrayContains: function(arrayToCheck, obj){
     	var len = arrayToCheck.length;
 		for (var i = 0; i < len; i++){
-			if(arrayToCheck[i]==obj){
-				return true;
+			if(this.grid.getColumnModel().getColumnById('1').type == 'date'){
+			
+				var tempTocheck = Date.parseDate(arrayToCheck[i], 'd/m/Y H:i:s');
+				alert(obj);
+				if(tempTocheck==obj){
+					return true;
+				}
+			}else{
+				if(arrayToCheck[i]==obj){
+					return true;
+				}
 			}
 		}
     	return false;

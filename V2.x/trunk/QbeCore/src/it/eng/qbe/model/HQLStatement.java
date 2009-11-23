@@ -21,7 +21,10 @@
 package it.eng.qbe.model;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -47,6 +50,7 @@ import it.eng.qbe.query.IAggregationFunction;
 import it.eng.qbe.query.Operand;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
+import it.eng.qbe.query.serializer.SerializationConstants;
 import it.eng.qbe.utility.StringUtils;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.utilities.assertion.Assert;
@@ -556,15 +560,79 @@ public class HQLStatement extends BasicStatement {
 						}
 					}					
 				}
-			}
+			}else if(datamartField.getType().equalsIgnoreCase("timestamp") || datamartField.getType().equalsIgnoreCase("date")){
+
+					String dbDialect = dataMartModel.getDataSource().getConnection().getDialect();
+					String format = "MM/dd/yyyy";
+					SimpleDateFormat f = new SimpleDateFormat();
+					f.applyPattern(format);
+					String[] items = operandValueToBound.split(",");
+					boundedValue = "";
+					for(int i = 0; i < items.length; i++) {
+						// if the value is already surrounded by quotes, does not add quotes
+							boundedValue += (i==0?"":",") + composeStringToDt(dbDialect,items[i]);						
+					}	
+			}				
 		}
 		
 		return boundedValue;
 	}
 	
+	private String composeStringToDt(String dialect, String date){
+		String toReturn = "";
+		
+		if(dialect!=null){
+			if( dialect.equalsIgnoreCase(SerializationConstants.DIALECT_MYSQL)){
+				if (date.startsWith("'") && date.endsWith("'")) {
+					toReturn = " STR_TO_DATE("+date+",'%d/%m/%Y %h:%i:%s') ";
+				}else{
+					toReturn = " STR_TO_DATE('"+date+"','%d/%m/%Y %h:%i:%s') ";
+				}
+			}else if( dialect.equalsIgnoreCase(SerializationConstants.DIALECT_HSQL)){
+				if (date.startsWith("'") && date.endsWith("'")) {
+					toReturn = date;
+				}else{
+					toReturn = "'"+date+"'";
+				}
+			}else if( dialect.equalsIgnoreCase(SerializationConstants.DIALECT_INGRES)){
+				if (date.startsWith("'") && date.endsWith("'")) {
+					toReturn = " STR_TO_DATE("+date+",'%d/%m/%Y') ";
+				}else{
+					toReturn = " STR_TO_DATE('"+date+"','%d/%m/%Y') ";
+				}
+			}else if( dialect.equalsIgnoreCase(SerializationConstants.DIALECT_ORACLE)){
+				if (date.startsWith("'") && date.endsWith("'")) {
+					toReturn = " TO_TIMESTAMP("+date+",'DD/MM/YYYY HH24:MI:SS.FF') ";
+				}else{
+					toReturn = " TO_TIMESTAMP('"+date+"','DD/MM/YYYY HH24:MI:SS.FF') ";
+				}
+			}else if( dialect.equalsIgnoreCase(SerializationConstants.DIALECT_ORACLE9i10g)){
+				if (date.startsWith("'") && date.endsWith("'")) {
+					toReturn = " TO_TIMESTAMP("+date+",'DD/MM/YYYY HH24:MI:SS.FF') ";
+				}else{
+					toReturn = " TO_TIMESTAMP('"+date+"','DD/MM/YYYY HH24:MI:SS.FF') ";
+				}
+			}else if( dialect.equalsIgnoreCase(SerializationConstants.DIALECT_POSTGRES)){
+				if (date.startsWith("'") && date.endsWith("'")) {
+					toReturn = " TO_TIMESTAMP("+date+",'DD/MM/YYYY HH24:MI:SS.FF') ";
+				}else{
+					toReturn = " TO_TIMESTAMP('"+date+"','DD/MM/YYYY HH24:MI:SS.FF') ";
+				}
+			}else if( dialect.equalsIgnoreCase(SerializationConstants.DIALECT_SQLSERVER)){
+				if (date.startsWith("'") && date.endsWith("'")) {
+					toReturn = date;
+				}else{
+					toReturn = "'"+date+"'";
+				}
+			}
+		}
+		
+		return toReturn;
+	}
+	
 	private String buildUserProvidedWhereField(WhereField whereField, Query query, Map entityAliasesMaps) {
 		
-		String whereClauseElement;
+		String whereClauseElement = "";
 		String leftOperandElement;
 		String rightOperandElement;
 				
@@ -892,6 +960,7 @@ public class HQLStatement extends BasicStatement {
 		while(it.hasNext()){
 			String entityUniqueName = (String)it.next();
 			DataMartEntity entity = dataMartModelStructure.getEntity( entityUniqueName );
+			
 			
 			// check for condition filter on this entity
 			List filters = dataMartModelAccessModality.getEntityFilterConditions(entity.getType());

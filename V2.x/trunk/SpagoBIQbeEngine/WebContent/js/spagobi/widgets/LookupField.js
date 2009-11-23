@@ -191,12 +191,13 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     // private methods
     , initWin: function() {
      
-		var cm = new Ext.grid.ColumnModel([
+     var cm = new Ext.grid.ColumnModel([
 		   new Ext.grid.RowNumberer(),
 	       {
 	       	  header: "Values",
 	          dataIndex: 'Values',
 	          width: 75
+	          //renderer: Ext.util.Format.dateRenderer('d/m/Y H:i:s')
 	       }
 	    ]);
 		
@@ -275,7 +276,10 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 			meta.fields[0] = new Ext.grid.RowNumberer();
 			meta.fields[ meta.fields.length - 1 ] = this.sm;
 			
-			this.grid.getColumnModel().setConfig(meta.fields);
+			alert(meta.fields[0].toSource());
+			
+				this.grid.getColumnModel().setConfig(meta.fields);
+			
 			
 		} else {
 		   alert('ERROR: store meta changed before grid instatiation')

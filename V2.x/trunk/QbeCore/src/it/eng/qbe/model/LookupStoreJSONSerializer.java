@@ -136,10 +136,11 @@ public class LookupStoreJSONSerializer {
 				} else if( String.class.isAssignableFrom(clazz) || Date.class.isAssignableFrom(clazz)) {
 					logger.debug("Column [" + (i+1) + "] type is equal to [" + "STRING" + "]");
 					fieldMetaDataJSON.put("type", "string");
-				/*} else if( Date.class.isAssignableFrom(clazz) ) {
+				} else if( Date.class.isAssignableFrom(clazz) ) {
 					logger.debug("Column [" + (i+1) + "] type is equal to [" + "DATE" + "]");
 					fieldMetaDataJSON.put("type", "date");
-					fieldMetaDataJSON.put("dateFormat", "d/m/Y H:i:s");*/
+					fieldMetaDataJSON.put("dateFormat", "d/m/Y H:i:s");
+					//fieldMetaDataJSON.put("renderer", "Ext.util.Format.dateRenderer('d/m/Y H:i:s')");
 				} else if( Boolean.class.isAssignableFrom(clazz) ) {
 					logger.debug("Column [" + (i+1) + "] type is equal to [" + "BOOLEAN" + "]");
 					fieldMetaDataJSON.put("type", "boolean");
@@ -159,6 +160,7 @@ public class LookupStoreJSONSerializer {
 				}
 				fieldsMetaDataJSON.put(fieldMetaDataJSON);
 			}
+			
 			fieldsMetaDataJSON.put("recCk");
 			metadata.put("fields", fieldsMetaDataJSON);
 			
@@ -183,7 +185,7 @@ public class LookupStoreJSONSerializer {
 					String fieldValue = "";
 					if(field.getValue() != null && !field.getValue().equals("")) {
 						if(Date.class.isAssignableFrom(fieldMetaData.getType())) {
-							fieldValue =  "'"+field.getValue().toString()+"'";
+							fieldValue =  DATE_FORMATTER.format(  field.getValue() );
 						} else {
 							fieldValue =  field.getValue().toString();
 						}

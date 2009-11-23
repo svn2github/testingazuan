@@ -302,19 +302,31 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     	}
 
 		if(this.grid.getColumnModel().getColumnById('1').type == 'date'){
-			record.data[this.valueField] = record.data[this.valueField].format('d/m/Y H:i:s');
-		}
-    	if(this.xselection['Values']){
-    		var temp = new Array();
-			temp = this.xselection['Values'].split(',');
-
-		
-			if(!this.arrayContains(temp,record.data[this.valueField])){
-    			this.xselection['Values'] = this.xselection['Values']+","+ record.data[this.valueField];
-    		}
-    	}else{
-    		this.xselection['Values'] = record.data[this.valueField];
-    	} 	
+			var tempTocheck = record.data[this.valueField].format('d/m/Y H:i:s');
+			if(this.xselection['Values']){
+	    		var temp = new Array();
+				temp = this.xselection['Values'].split(',');
+	
+			
+				if(!this.arrayContains(temp,record.data[this.valueField])){
+	    			this.xselection['Values'] = this.xselection['Values']+","+ tempTocheck;
+	    		}
+	    	}else{
+	    		this.xselection['Values'] = tempTocheck;
+	    	} 	
+		}else{
+	    	if(this.xselection['Values']){
+	    		var temp = new Array();
+				temp = this.xselection['Values'].split(',');
+	
+			
+				if(!this.arrayContains(temp,record.data[this.valueField])){
+	    			this.xselection['Values'] = this.xselection['Values']+","+ record.data[this.valueField];
+	    		}
+	    	}else{
+	    		this.xselection['Values'] = record.data[this.valueField];
+	    	} 	
+    	}
     }
     
     , onDeselect: function(sm, rowIndex, record) {
@@ -358,7 +370,6 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 			if(this.grid.getColumnModel().getColumnById('1').type == 'date'){
 			
 				var tempTocheck = Date.parseDate(arrayToCheck[i], 'd/m/Y H:i:s');
-				alert(obj);
 				if(tempTocheck==obj){
 					return true;
 				}

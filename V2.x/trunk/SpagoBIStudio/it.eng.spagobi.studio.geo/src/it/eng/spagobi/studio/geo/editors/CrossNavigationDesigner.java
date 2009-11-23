@@ -454,7 +454,10 @@ public class CrossNavigationDesigner {
 				Link link = LinkBO.getLinkByHierarchyAndLevel(geoDocument,
 						hierarchiesCombo.getText(), levelCombo.getText());	
 				if (link != null) {
+					TableItem item = crossNavTable.getItem(new Point(hierarchiesCombo.getBounds().x, hierarchiesCombo.getBounds().y));
+					
 					LinkBO.deleteLink(geoDocument, hierarchiesCombo.getText(), levelCombo.getText());
+					crossNavTable.redraw();
 				}
 				getEditor().setIsDirty(true);
 			}

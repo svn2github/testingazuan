@@ -16,14 +16,22 @@ import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 import it.eng.spagobi.studio.geo.Activator;
 import it.eng.spagobi.studio.geo.editors.model.bo.ColumnBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.DatasetBO;
+import it.eng.spagobi.studio.geo.editors.model.bo.HierarchyBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.LayerBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.LayersBO;
+import it.eng.spagobi.studio.geo.editors.model.bo.LevelBO;
+import it.eng.spagobi.studio.geo.editors.model.bo.LinkBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.MetadataBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.ModelBO;
 import it.eng.spagobi.studio.geo.editors.model.geo.Column;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
+import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchies;
+import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchy;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layer;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layers;
+import it.eng.spagobi.studio.geo.editors.model.geo.Level;
+import it.eng.spagobi.studio.geo.editors.model.geo.Levels;
+import it.eng.spagobi.studio.geo.editors.model.geo.Link;
 import it.eng.spagobi.studio.geo.editors.model.geo.Metadata;
 import it.eng.spagobi.studio.geo.util.DeepCopy;
 import it.eng.spagobi.studio.geo.util.DesignerUtils;
@@ -51,6 +59,9 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -61,6 +72,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -86,6 +98,9 @@ public class GEOEditor extends EditorPart {
 	protected boolean isDirty = false;
 	final ImageDescriptor measureIcon = AbstractUIPlugin
 			.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/measure.gif");
+	
+	final ImageDescriptor idIcon = AbstractUIPlugin
+	.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/key.gif");
 
 	private Vector<String> dataSets;
 	private Vector<String> maps;
@@ -478,9 +493,12 @@ public class GEOEditor extends EditorPart {
 							&& col.getType().equalsIgnoreCase("measures")) {
 						measuresDesigner.createMeasuresShell(sectionClient, col
 								.getColumnId());
+					}if (col != null
+							&& col.getType().equalsIgnoreCase("geoid")) {
+						createGeoIdHierarchiesShell(sectionClient, col);
 					} else {
 						MessageDialog.openWarning(sectionClient.getShell(),
-								"Warning", "No measure in selected column");
+								"Warning", "Operation denied.");
 					}
 				}
 			}
@@ -488,7 +506,150 @@ public class GEOEditor extends EditorPart {
 		datasetTable.redraw();
 
 	}
+	private void createGeoIdHierarchiesShell(Composite sectionClient, final Column column){
+		final Shell dialog = new Shell (sectionClient.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+		dialog.setText("Granularity Level");
+		FormLayout formLayout = new FormLayout ();
+		formLayout.marginWidth = 10;
+		formLayout.marginHeight = 10;
+		formLayout.spacing = 10;
+		dialog.setLayout (formLayout);
 
+		Label label = new Label (dialog, SWT.RIGHT);
+		label.setText ("Hierarchy:");
+		FormData data = new FormData ();
+		data.width = 100;
+		label.setLayoutData (data);
+
+		Button cancel = new Button (dialog, SWT.PUSH);
+		cancel.setText ("Cancel");
+		data = new FormData ();
+		data.width = 60;
+		data.right = new FormAttachment (100, 0);
+		data.bottom = new FormAttachment (100, 0);
+		cancel.setLayoutData (data);
+		cancel.addSelectionListener (new SelectionAdapter () {
+			public void widgetSelected (SelectionEvent e) {
+				System.out.println("User cancelled dialog");
+				dialog.close ();
+			}
+		});
+
+		final Combo hierCombo = createHierachiesCombo(dialog);
+
+		if(column != null && column.getHierarchy()!= null){
+			hierCombo.setText(column.getHierarchy());
+		}
+		data = new FormData ();
+		data.width = 200;
+		data.left = new FormAttachment (label, 0, SWT.DEFAULT);
+		data.right = new FormAttachment (100, 0);
+		data.top = new FormAttachment (label, 0, SWT.CENTER);
+
+		hierCombo.setLayoutData (data);
+		
+		
+		//Level
+		data = new FormData ();
+		data.width = 100;
+		data.top = new FormAttachment(hierCombo, 5);
+
+		Label labelLevel = new Label (dialog, SWT.RIGHT);
+		labelLevel.setText ("Level:");		
+		labelLevel.setLayoutData (data);
+		
+		String hierarchyName = hierCombo.getText();
+		final Combo levelCombo = createLevelsCombo(dialog, hierarchyName);
+		if(column != null && column.getLevel()!= null){
+			levelCombo.setText(column.getLevel());
+		}
+		data = new FormData ();
+		data.width = 200;
+		data.left = new FormAttachment (labelLevel, 0, SWT.DEFAULT);
+		data.right = new FormAttachment (100, 0);
+		data.top = new FormAttachment (labelLevel, 0, SWT.CENTER);
+		data.bottom = new FormAttachment (cancel, 0, SWT.DEFAULT);
+		levelCombo.setLayoutData (data);
+		
+		hierCombo.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				String hierarchySelected = ((Combo)e.widget).getText();
+				recreateLevelsCombo(dialog, levelCombo, hierarchySelected);
+				setIsDirty(true);
+				
+				levelCombo.redraw();
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		Button ok = new Button (dialog, SWT.PUSH);
+		ok.setText ("OK");
+		data = new FormData ();
+		data.width = 60;
+		data.right = new FormAttachment (cancel, 0, SWT.DEFAULT);
+		data.bottom = new FormAttachment (100, 0);
+		ok.setLayoutData (data);
+		ok.addSelectionListener (new SelectionAdapter () {
+			public void widgetSelected (SelectionEvent e) {
+
+				String level = levelCombo.getText();
+				String hierarchy = hierCombo.getText();
+				if(hierarchy != null && level != null){
+					column.setHierarchy(hierarchy);
+					column.setLevel(level);
+				}
+				
+				dialog.close ();
+			}
+		});
+
+		dialog.setDefaultButton (ok);
+		dialog.pack ();
+		dialog.open ();
+	}
+	
+	private Combo createHierachiesCombo(Composite dialog){
+		Combo hierCombo = new Combo(dialog, SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
+		Hierarchies hierarchies=HierarchyBO.getAllHierarchies(geoDocument);
+		if(hierarchies != null && hierarchies.getHierarchy() != null){
+			for(int i=0; i< hierarchies.getHierarchy().size(); i++){
+				Hierarchy hier = hierarchies.getHierarchy().elementAt(i);
+				String name = hier.getName();
+				hierCombo.add(name);				
+			}
+		}
+		return hierCombo;
+	}
+	private Combo createLevelsCombo(Composite dialog, String hierarchyName){
+		Combo levelCombo = new Combo(dialog, SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
+		if(hierarchyName != null && !hierarchyName.equals("")){
+			Levels levels=LevelBO.getLevelsByHierarchyName(geoDocument, hierarchyName);
+			if(levels != null && levels.getLevel()!= null){
+				for(int i=0; i< levels.getLevel().size(); i++){
+					Level level = levels.getLevel().elementAt(i);
+					String name = level.getName();
+					levelCombo.add(name);				
+				}
+			}
+		}
+		return levelCombo;
+	}
+	private void recreateLevelsCombo(Composite dialog,Combo levelCombo, String hierarchyName){
+		levelCombo.removeAll();
+		if(hierarchyName != null && !hierarchyName.equals("")){
+			Levels levels=LevelBO.getLevelsByHierarchyName(geoDocument, hierarchyName);
+			if(levels != null && levels.getLevel()!= null){
+				for(int i=0; i< levels.getLevel().size(); i++){
+					Level level = levels.getLevel().elementAt(i);
+					String name = level.getName();
+					levelCombo.add(name);				
+				}
+			}
+		}
+	}
 	private void selectFeature(Composite sectionClient, Layers layers) {
 		try {
 			selectedMap = layers.getMapName();
@@ -845,12 +1006,13 @@ public class GEOEditor extends EditorPart {
 
 			item.setText(DATASET_NAME, dsmf.getName());
 			item.setText(DATASET_CLASS, dsmf.getClassName());
-			// combo per geoid, measures, geocd
+			// combo per geoid, measures
 			final Combo comboSel = new Combo(datasetTable, SWT.SIMPLE
 					| SWT.DROP_DOWN | SWT.READ_ONLY);
+			//geoid is unique
 			comboSel.add("geoid");
 			comboSel.add("measures");
-			comboSel.add("geocd");
+			//comboSel.add("geocd");
 			for (int k = 0; k < comboSel.getItemCount(); k++) {
 				String typeText = comboSel.getItem(k);
 				if (selectedColumn.getType() != null
@@ -858,18 +1020,21 @@ public class GEOEditor extends EditorPart {
 					comboSel.select(k);
 				}
 			}
-			if (comboSel.getText() != null
-					&& comboSel.getText().equals("measures")) {
+			if (comboSel.getText() != null) {
 				item.setText(2, comboSel.getText());
 				if (comboSel.getText().equalsIgnoreCase("measures")) {
 					item.setImage(0, measureIcon.createImage());
 					
-				} else {
+				} else if(comboSel.getText().equalsIgnoreCase("geoid")){
+					item.setImage(0, idIcon.createImage());
+				}else{
 					if (item.getImage() != null) {
 						item.setImage(0, null);
 					}
 				}
+				
 			}
+			
 
 			comboSel.addModifyListener(new ModifyListener() {
 				public void modifyText(ModifyEvent event) {
@@ -878,7 +1043,9 @@ public class GEOEditor extends EditorPart {
 					item.setText(2, comboSel.getText());
 					if (comboSel.getText().equalsIgnoreCase("measures")) {
 						item.setImage(0, measureIcon.createImage());
-					} else {
+					} else if(comboSel.getText().equalsIgnoreCase("geoid")){
+						item.setImage(0, idIcon.createImage());
+					}else {
 						if (item.getImage() != null) {
 							item.setImage(0, null);
 						}
@@ -900,7 +1067,6 @@ public class GEOEditor extends EditorPart {
 
 			editor.setEditor(comboSel, item, DATASET_SELECT);
 
-			// combo per geoid, measures, geocd
 			final Combo comboAgg = new Combo(datasetTable, SWT.SIMPLE
 					| SWT.DROP_DOWN | SWT.READ_ONLY);
 			comboAgg.add("sum");

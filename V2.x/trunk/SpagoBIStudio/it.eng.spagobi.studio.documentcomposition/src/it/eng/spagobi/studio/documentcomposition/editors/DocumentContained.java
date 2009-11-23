@@ -8,6 +8,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
@@ -17,13 +18,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
 public class DocumentContained {
 
-	Group group;	
+	Composite group;	
 	MetadataDocument metadataDocument;	
 	Image image=null;
 	String imagePath=null;
@@ -40,6 +42,9 @@ public class DocumentContained {
 	public static final String IMG_DATAMART="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
 	public static final String IMG_DOSSIER="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
 	public static final String IMG_DATA_MINING="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
+	public static final String CONTAINER_MOVE="it/eng/spagobi/studio/documentcomposition/resources/images/drag.png";
+	public static final String CONTAINER_20X20_MOVE="it/eng/spagobi/studio/documentcomposition/resources/images/drag20x20.png";
+	public static final String CONTAINER_WHITE="it/eng/spagobi/studio/documentcomposition/resources/images/white.png";
 
 	public static final String TYPE_REPORT=SpagoBIConstants.REPORT_TYPE_CODE;
 	public static final String TYPE_DOSSIER="DOSSIER";
@@ -52,11 +57,44 @@ public class DocumentContained {
 	public static final String TYPE_ETL="ETL";
 	public static final String TYPE_DOCUMENT_COMPOSITIOn=SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE;
 
+	Button buttonDrag=null;
 
 	public DocumentContained(Composite parent, int style) throws Exception{
-		group=new Group(parent, style);
-	group.setSize(DocContainer.DEFAULT_WIDTH, DocContainer.DEFAULT_HEIGHT);
+		group=new Composite(parent, style);
+		group.setSize(DocContainer.DEFAULT_WIDTH, DocContainer.DEFAULT_HEIGHT);
+		//		final String imagePathFinal1=CONTAINER_20X20_MOVE;
+		//		InputStream is1=DocCompUtilities.getInputStreamFromResource(imagePathFinal1);
+		//		final Image image1 = new Image(group.getDisplay(), is1);
+		//		group.setBackgroundImage(image1);
+		//		final String imagePathFinal=CONTAINER_20X20_MOVE;
+		//		InputStream is=DocCompUtilities.getInputStreamFromResource(imagePathFinal);
+		//		final Image imageSize = new Image(group.getDisplay(), is);
+		//		group.addPaintListener(new PaintListener() {
+		//			public void paintControl(PaintEvent e) {
+		//				e.gc.drawImage(imageSize,20,20);
+		//				imageSize.dispose();
+		//				//				e.gc.drawImage(image, 20, 30);
+		//				//				image.dispose();
+		//			}
+		//		});
+		final String imagePathFinal=CONTAINER_20X20_MOVE;
+		InputStream is=null;
+		try {
+			is = DocCompUtilities.getInputStreamFromResource(imagePathFinal);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		final Image imageSize = new Image(group.getDisplay(), is);
+		buttonDrag=new Button(group, SWT.NULL);
+		buttonDrag.setLocation(0, 0);
+		buttonDrag.setSize(10,10);
+		buttonDrag.setBackgroundImage(imageSize);
+
+		group.redraw();
 	}
+
+
 
 
 	/**
@@ -140,15 +178,18 @@ public class DocumentContained {
 			drawImage();
 
 			String titleGroup="Name: "+metadataDocument.getName() != null ? metadataDocument.getName() : metadataDocument.getLabel();
-			group.setText(titleGroup);
+			//group.setText(titleGroup);
+			group.setData(titleGroup);
 			group.setToolTipText(metadataDocument.getLocalFileName());
 			Label nameLabelName=new Label(group,SWT.NULL);
-			nameLabelName.setText("Name: "+metadataDocument.getName() != null ? metadataDocument.getName() : "" );			
+			nameLabelName.setText(titleGroup);			
 			//		Label nameLabelValue=new Label(group,SWT.NULL);
 			//nameLabelValue.setText(metadataDocument.getName() != null ? metadataDocument.getName() : "" );
 			//		Label localFileNameLabel=new Label(group,SWT.NULL);
 			//		localFileNameLabel.setText(metadataDocument.getLocalFileName());				
 			//		(new Label(group, SWT.NULL)).setText("");
+			nameLabelName.redraw();
+			group.redraw();
 		}
 		return true;
 
@@ -165,40 +206,38 @@ public class DocumentContained {
 		catch (Exception e) {
 			// TODO: handle exception
 		}
-		final int originalWidth = image.getBounds().width;
-		final int originalHeight = image.getBounds().height; 				
-		int containerHeight=group.getBounds().height;
-		int containerWidth=group.getBounds().width;
-		
-		
-		double rapportoHeight=(double)containerHeight / (double)originalHeight;
-		double rapportoWidth=(double)containerWidth / (double)originalWidth;
-		
-		
+
+		//int newWidth=
+
+
+		//		final int originalWidth = image.getBounds().width;
+		//		final int originalHeight = image.getBounds().height; 				
+		//		int containerHeight=group.getBounds().height;
+		//		int containerWidth=group.getBounds().width;
+
+		int newWidth=DesignerUtilities.getScaledImageWidth(image.getBounds().width, group.getBounds().width);
+		int newHeight=DesignerUtilities.getScaledImageHeight(image.getBounds().height, group.getBounds().height);
+
 		final Image scaled200 = new Image(group.getDisplay(),
-				image.getImageData().scaledTo((int)(originalWidth*rapportoWidth-20),(int)(originalHeight*rapportoHeight-20)));
+				image.getImageData().scaledTo(newWidth,newHeight));
 
 
-		group.addPaintListener(new PaintListener() {
-			public void paintControl(PaintEvent e) {
-				//				image = null;
-				//				try {
-				//					InputStream is=DocCompUtilities.getInputStreamFromResource(imagePathFinal);
-				//					image = new Image(group.getDisplay(), is);
-				//
-				//				} catch (FileNotFoundException e1) {
-				//					e1.printStackTrace();
-				//				}
-				//				catch (Exception e2) {
-				//
-				//					e2.printStackTrace();
-				//				}
-				e.gc.drawImage(scaled200,20,20);
-				image.dispose();
-				//				e.gc.drawImage(image, 20, 30);
-				//				image.dispose();
-			}
-		});
+		//		double rapportoHeight=(double)containerHeight / (double)originalHeight;
+		//		double rapportoWidth=(double)containerWidth / (double)originalWidth;
+		//		final Image scaled200 = new Image(group.getDisplay(),
+		//				image.getImageData().scaledTo((int)(originalWidth*rapportoWidth-20),(int)(originalHeight*rapportoHeight-20)));
+
+
+		//		group.addPaintListener(new PaintListener() {
+		//			public void paintControl(PaintEvent e) {
+		//				e.gc.drawImage(scaled200,20,20);
+		//				image.dispose();
+		//				//				e.gc.drawImage(image, 20, 30);
+		//				//				image.dispose();
+		//			}
+		//		});
+		group.setBackgroundImage(scaled200);
+
 		group.redraw();
 	}
 
@@ -215,7 +254,7 @@ public class DocumentContained {
 	}
 
 
-	public Group getGroup() {
+	public Composite getGroup() {
 		return group;
 	}
 
@@ -242,6 +281,20 @@ public class DocumentContained {
 
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
+	}
+
+
+
+
+	public Button getButtonDrag() {
+		return buttonDrag;
+	}
+
+
+
+
+	public void setButtonDrag(Button buttonDrag) {
+		this.buttonDrag = buttonDrag;
 	}
 
 

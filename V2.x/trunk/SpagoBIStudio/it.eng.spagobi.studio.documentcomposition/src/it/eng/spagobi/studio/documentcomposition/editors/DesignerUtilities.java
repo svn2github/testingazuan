@@ -4,6 +4,19 @@ import org.eclipse.swt.widgets.Composite;
 
 public class DesignerUtilities {
 
+	
+	public static int getScaledImageWidth(int originalWidth, int targetWidth){
+		double rapportoWidth=(double)targetWidth / (double)originalWidth;
+		int newWidth=(int)(originalWidth*rapportoWidth);
+		return newWidth;
+	}
+	
+	public static int getScaledImageHeight(int originalHeight, int targetHeight){
+		double rapportoHeight=(double)targetHeight / (double)originalHeight;
+		int newHeight=(int)(originalHeight*rapportoHeight);
+		return newHeight;
+	}
+
 
 
 	public int calculateWidth(Composite currentComposite, int containerSize){

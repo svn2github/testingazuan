@@ -67,6 +67,9 @@ public class DocContainer {
 	public static final int MIN_MARGIN_BOUNDS=0;
 	public static final int ALIGNMENT_MARGIN=20;
 
+	int tempx;
+	int tempy;
+
 	Cursor cursor=null;
 
 	/** Document Container Contrusctor
@@ -85,7 +88,7 @@ public class DocContainer {
 		// Set incremental Id
 		idContainer=Integer.valueOf(designer.createID());
 		try{
-			documentContained=new DocumentContained(mainComposite, SWT.NONE);
+			documentContained=new DocumentContained(mainComposite, SWT.BORDER);
 		}
 		catch (Exception e) {
 			SpagoBILogger.errorLog("Error in creating the group", e);
@@ -93,7 +96,7 @@ public class DocContainer {
 			return;	
 		}
 		title="NUMBER "+(idContainer.toString());
-		documentContained.getGroup().setText(title);
+		documentContained.getGroup().setData(title);
 
 		GridLayout layout=new GridLayout();
 		layout.numColumns=1;
@@ -193,7 +196,19 @@ public class DocContainer {
 
 						composite.setBackground(new Color(composite.getDisplay(),new RGB(165,195,210)));							
 						designer.setState(Designer.DRAG);
-						cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_HAND);						
+						//cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_HAND);						
+						if(designer.getDragImage()!=null && documentContained.group!=null){
+							int newWidth=DesignerUtilities.getScaledImageWidth(designer.getDragImage().getBounds().width, documentContained.group.getBounds().width);
+							int newHeight=DesignerUtilities.getScaledImageHeight(designer.getDragImage().getBounds().height, documentContained.group.getBounds().height);
+
+							final Image scaled200 = new Image(documentContained.group.getDisplay(),
+									designer.getDragImage().getImageData().scaledTo(newWidth,newHeight));
+							cursor = new Cursor(designer.getMainComposite().getDisplay(), scaled200.getImageData(), 0, 0);												
+							//cursor = new Cursor(designer.getMainComposite().getDisplay(), new Image(designer.getMainComposite().getDisplay(),"C:\\Documents and Settings\\gavardi\\Desktop\\angelo_11gorni.PNG").getImageData(), 0, 0);						
+						}
+						else{
+							cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_HAND);						
+						}
 						designer.getMainComposite().setCursor(cursor);						
 						designer.setCurrentSelection(idContainer);
 						Rectangle rect = composite.getBounds();
@@ -245,8 +260,11 @@ public class DocContainer {
 								boolean doesIntersect=doesIntersect(idContainer, designer,newX, newY, documentContained.getGroup().getBounds().width,documentContained.getGroup().getBounds().height,false);
 								boolean doesExceed=doesExceed(idContainer, designer,newX, newY, documentContained.getGroup().getBounds().width, documentContained.getGroup().getBounds().height,false);
 								if(doesIntersect==false && doesExceed==false){
-									composite.setLocation(newX, newY);
-									// Update model if document is present!
+									System.out.println("Mouse at "+event.x+"/"+event.y+" : move to "+newX+"/"+newY);
+									//composite.setLocation(newX, newY);
+									tempx=newX;
+									tempy=newY;
+									composite.setBackground(new Color(composite.getDisplay(),new RGB(255,255,255)));									// Update model if document is present!
 									if(documentContained.getMetadataDocument()!=null){
 										(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle(false));
 									}
@@ -263,8 +281,11 @@ public class DocContainer {
 					if(designer.getState().equals(Designer.DRAG)){
 						// ---------- Try alignment MArgin-----------
 
-						int tempX=documentContained.getGroup().getLocation().x;
-						int tempY=documentContained.getGroup().getLocation().y;
+						//						int tempX=documentContained.getGroup().getLocation().x;
+						//						int tempY=documentContained.getGroup().getLocation().y;
+						int tempX=tempx;
+						int tempY=tempy;
+
 						tempX=tempX/ALIGNMENT_MARGIN;
 						tempX=tempX*ALIGNMENT_MARGIN;
 						tempY=tempY/ALIGNMENT_MARGIN;
@@ -316,6 +337,13 @@ public class DocContainer {
 		composite.addListener(SWT.MouseDown, listener);
 		composite.addListener(SWT.MouseUp, listener);
 		composite.addListener(SWT.MouseMove, listener);
+
+		if(documentContained.getButtonDrag()!=null){
+			documentContained.getButtonDrag().addListener(SWT.MouseDown, listener);
+			documentContained.getButtonDrag().addListener(SWT.MouseUp, listener);
+			documentContained.getButtonDrag().addListener(SWT.MouseMove, listener);
+
+		}
 	}
 
 
@@ -347,7 +375,7 @@ public class DocContainer {
 				delItem.addListener(SWT.Selection, new Listener() {
 					public void handleEvent(Event e) {
 						Integer idSel=designer.getCurrentSelection();
-						String title=designer.getContainers().get(idSel).getDocumentContained().getGroup().getText();
+						String title=designer.getContainers().get(idSel).getDocumentContained().getGroup().getData().toString();
 
 						// delete document 
 						if(documentContained.getMetadataDocument()!=null){  // has a doc associated???
@@ -502,8 +530,8 @@ public class DocContainer {
 					if (fileTransfer.isSupportedType(event.currentDataType)){
 						String[] files = (String[])event.data;
 						for (int i = 0; i < files.length; i++) {
-							Label label=new Label(composite, SWT.NULL);
-							label.setText(files[i]);
+							//							Label label=new Label(composite, SWT.NULL);
+							//							label.setText(files[i]);
 						}					
 					}
 				}
@@ -533,7 +561,7 @@ public class DocContainer {
 	 */
 	public Style calculateTemplateStyle(boolean isSaving){
 		Style style=new Style();	
-//		String toAdd="float:left;margin:0px;";
+		//		String toAdd="float:left;margin:0px;";
 		String toAdd="position:absolute;margin:0px;";
 
 		// get the bounds
@@ -577,15 +605,15 @@ public class DocContainer {
 		toAdd+="width:"+Integer.valueOf(widthPerc).toString()+"%;";
 		toAdd+="height:"+Integer.valueOf(heightPerc).toString()+"%;";
 		 */
-		
+
 		// calculate height and width as absolute value
-		
-//		Integer convertedWidth=(videoWidthI * width) / totalWidth;
-//		Integer convertedHeight=(videoHeightI * height) / totalHeight;
-		
+
+		//		Integer convertedWidth=(videoWidthI * width) / totalWidth;
+		//		Integer convertedHeight=(videoHeightI * height) / totalHeight;
+
 		int convertedWidth=MetadataStyle.fromDesignerWidthToVideoWidth(width, videoWidthI, totalWidth);
 		int convertedHeight=MetadataStyle.fromDesignerHeightToVideoHeight(height, videoHeightI, totalHeight);
-		
+
 		toAdd+="width:"+Integer.valueOf(convertedWidth).toString()+"px;";
 		toAdd+="height:"+Integer.valueOf(convertedHeight).toString()+"px;";
 
@@ -606,7 +634,7 @@ public class DocContainer {
 			Integer idOther = (Integer) iterator.next();
 			if(!idOther.equals(currentId)){
 				DocContainer otherContainer = designer.getContainers().get(idOther);
-				Group otherGroup=otherContainer.documentContained.getGroup();
+				Composite otherGroup=otherContainer.documentContained.getGroup();
 				Rectangle otherRectangle=otherGroup.getBounds();
 				doesIntersect=thisRectangle.intersects(otherRectangle);	
 				doesIntersect=thisRectangle.intersects(otherRectangle.x, otherRectangle.y, otherRectangle.width, otherRectangle.height);

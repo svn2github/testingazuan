@@ -9,12 +9,12 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataStyle;
 import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
@@ -29,6 +29,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
@@ -45,6 +46,7 @@ public class Designer {
 	private static long idCounter = 0;
 
 	DocumentCompositionEditor editor=null;
+	Image dragImage=null;
 
 	public static synchronized String createID()
 	{
@@ -65,7 +67,6 @@ public class Designer {
 	public static final String DRAG="drag";
 	public static final int MOUSE_LEFT_KEY=1;
 	public static final int MOUSE_RIGHT_KEY=3;
-
 	public static final int DESIGNER_WIDTH=800;
 	public static final int DESIGNER_HEIGHT=600;
 
@@ -163,6 +164,19 @@ public class Designer {
 		addContextMenu(mainComposite);
 		containers=new HashMap<Integer, DocContainer>();
 		addShellMouseControls(mainComposite);
+		String dragPath=DocumentContained.CONTAINER_MOVE;
+		try{
+			if(dragPath!=null){
+				final String imagePathFinal=dragPath;
+				InputStream is=DocCompUtilities.getInputStreamFromResource(imagePathFinal);
+				dragImage = new Image(composite.getDisplay(), is);
+			}
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		
 		this.editor=_editor;
 	}
 
@@ -204,6 +218,7 @@ public class Designer {
 				if(arg0.button==MOUSE_LEFT_KEY){
 					currentX=arg0.x;
 					currentY=arg0.y;
+					System.out.println(arg0.x+"/"+arg0.y);
 				}
 				else if(arg0.button==MOUSE_RIGHT_KEY){
 					// memorize th eposition of the menu 
@@ -329,6 +344,7 @@ public class Designer {
 								boolean doesExceed=DocContainer.doesExceed(selectedDoc1.getIdContainer(), selectedDoc1.getDesigner(),newX, newY, selectedDoc1.getDocumentContained().getGroup().getBounds().width,selectedDoc1.getDocumentContained().getGroup().getBounds().height,true);
 
 								if(doesIntersect==false && doesExceed==false){
+									System.out.println("Mouse Out at "+event.x+"/"+event.y+" : move to "+newX+"/"+newY);									
 									selectedDoc1.getDocumentContained().getGroup().setLocation(newX, newY);
 									// Update model if document is present
 									if(selectedDoc1.getDocumentContained().getMetadataDocument()!=null){
@@ -514,7 +530,7 @@ public class Designer {
 						//int heightToPut=metadataStyle.getHeightFromPerc(mainComposite);
 						int widthToPut=MetadataStyle.fromVideoWidthToDesignerWidth(metadataStyle.getWidth(), vWidth, DESIGNER_WIDTH);
 						int heightToPut=MetadataStyle.fromVideoHeightToDesignerHeight(metadataStyle.getHeight(), vHeight, DESIGNER_HEIGHT);
-						
+
 						// scale x and y to default designer sizes
 
 						int scaledX=(DESIGNER_WIDTH*metadataStyle.getX())/vWidth;
@@ -545,5 +561,14 @@ public class Designer {
 
 	}
 
+	public Image getDragImage() {
+		return dragImage;
+	}
+
+	public void setDragImage(Image dragImage) {
+		this.dragImage = dragImage;
+	}
+
+	
 
 }

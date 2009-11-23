@@ -11,6 +11,15 @@ public class MapRenderer  implements Serializable {
 	private String className;
 	private Measures measures;
 	private Layers layers;
+	private GuiSettings guiSettings;
+
+	public GuiSettings getGuiSettings() {
+		return guiSettings;
+	}
+
+	public void setGuiSettings(GuiSettings guiSettings) {
+		this.guiSettings = guiSettings;
+	}
 
 	public String getClassName() {
 		return className;

@@ -14,6 +14,7 @@ import it.eng.spagobi.studio.geo.editors.model.geo.Levels;
 import it.eng.spagobi.studio.geo.editors.model.geo.Link;
 import it.eng.spagobi.studio.geo.editors.model.geo.LinkParam;
 
+import java.awt.Toolkit;
 import java.util.Vector;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -32,6 +33,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -59,6 +61,9 @@ public class CrossNavigationDesigner {
 	final ImageDescriptor eraseIcon = AbstractUIPlugin
 	.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/erase.gif");
 	
+	final ImageDescriptor detailIcon = AbstractUIPlugin
+	.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/detail.gif");
+	
 	public CrossNavigationDesigner(Composite _composite, GEOEditor _editor, GEODocument _geoDocument) {
 		super();
 		mainComposite= _composite;
@@ -84,7 +89,7 @@ public class CrossNavigationDesigner {
 		crossNavTable.setLinesVisible(true);
 		crossNavTable.setHeaderVisible(true);
 
-		String[] titles = { "  Hierarchy   ","     Level     ", "    ", "    ", "    "};
+		String[] titles = { "  Hierarchy   ","     Level     ", "    ", "    ", "    ", "    "};
 		for (int i = 0; i < titles.length; i++) {
 			TableColumn column = new TableColumn(crossNavTable, SWT.NONE);
 			column.setText(titles[i]);
@@ -299,7 +304,7 @@ public class CrossNavigationDesigner {
 	}
 	private void createTableItemRow(TableItem item, final Table crossNavTable, Link link){
 		
-		TableEditor editor = new TableEditor(crossNavTable);
+		final TableEditor editor1 = new TableEditor(crossNavTable);
 
 		final Combo hierarchiesCombo = createHierachiesCombo(crossNavTable);
 		if(link != null){
@@ -312,16 +317,16 @@ public class CrossNavigationDesigner {
 			}
 		}
 		
-		editor.minimumWidth = hierarchiesCombo.getBounds().x;
-		editor.horizontalAlignment = SWT.CENTER;
-		editor.grabHorizontal = true;
-		editor.minimumHeight = hierarchiesCombo.getBounds().y;
-		editor.verticalAlignment = SWT.CENTER;
-		editor.grabVertical = true;
-		editor.setEditor(hierarchiesCombo, item, 0);
-		editor.layout();
+		editor1.minimumWidth = hierarchiesCombo.getBounds().x;
+		editor1.horizontalAlignment = SWT.CENTER;
+		editor1.grabHorizontal = true;
+		editor1.minimumHeight = hierarchiesCombo.getBounds().y;
+		editor1.verticalAlignment = SWT.CENTER;
+		editor1.grabVertical = true;
+		editor1.setEditor(hierarchiesCombo, item, 0);
+		editor1.layout();
 		
-		editor = new TableEditor(crossNavTable);
+		final TableEditor editor2 = new TableEditor(crossNavTable);
 
 		final Combo levelCombo = createLevelsCombo(crossNavTable, hierarchiesCombo.getText());
 		
@@ -334,13 +339,13 @@ public class CrossNavigationDesigner {
 				}
 			}
 		}
-		editor.minimumWidth = levelCombo.getBounds().x;
-		editor.horizontalAlignment = SWT.CENTER;
-		editor.grabHorizontal = true;
-		editor.minimumHeight = levelCombo.getBounds().y;
-		editor.verticalAlignment = SWT.CENTER;
-		editor.grabVertical = true;
-		editor.setEditor(levelCombo, item, 1);
+		editor2.minimumWidth = levelCombo.getBounds().x;
+		editor2.horizontalAlignment = SWT.CENTER;
+		editor2.grabHorizontal = true;
+		editor2.minimumHeight = levelCombo.getBounds().y;
+		editor2.verticalAlignment = SWT.CENTER;
+		editor2.grabVertical = true;
+		editor2.setEditor(levelCombo, item, 1);
 		
 		hierarchiesCombo.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
@@ -378,7 +383,7 @@ public class CrossNavigationDesigner {
 				
 			}
 		});
-		editor = new TableEditor(crossNavTable);
+		final TableEditor editor3 = new TableEditor(crossNavTable);
 		Button addNew = new Button(crossNavTable, SWT.PUSH);
 		//addNew.setText("Add");
 		Image addImage = addIcon.createImage();
@@ -386,13 +391,13 @@ public class CrossNavigationDesigner {
 		addNew.setSize(20, 20);
 		
 		addNew.setImage(addImage);
-		editor.minimumWidth = addNew.getBounds().x;
-		editor.horizontalAlignment = SWT.CENTER;
-		editor.grabHorizontal = true;
-		editor.minimumHeight = addNew.getBounds().y;
-		editor.verticalAlignment = SWT.TOP;
-		editor.grabVertical = true;
-		editor.setEditor(addNew, item, 2);
+		editor3.minimumWidth = addNew.getBounds().x;
+		editor3.horizontalAlignment = SWT.CENTER;
+		editor3.grabHorizontal = true;
+		editor3.minimumHeight = addNew.getBounds().y;
+		editor3.verticalAlignment = SWT.TOP;
+		editor3.grabVertical = true;
+		editor3.setEditor(addNew, item, 2);
 		
 		addNew.addSelectionListener (new SelectionAdapter () {
 			public void widgetSelected (SelectionEvent e) {
@@ -407,19 +412,19 @@ public class CrossNavigationDesigner {
 		addNew.setToolTipText("Add new link");
 		
 		
-		editor = new TableEditor(crossNavTable);
+		final TableEditor editor4 = new TableEditor(crossNavTable);
 		Button addParameter = new Button(crossNavTable, SWT.PUSH);
 		addParameter.setSize(paramsIcon.createImage().getBounds().width, paramsIcon.createImage().getBounds().height);
 		addParameter.setImage(paramsIcon.createImage());
 		
 		addParameter.setToolTipText("Add parameters");
-		editor.minimumWidth = addParameter.getBounds().x;
-		editor.horizontalAlignment = SWT.CENTER;
-		editor.grabHorizontal = true;
-		editor.minimumHeight = addParameter.getBounds().y;
-		editor.verticalAlignment = SWT.TOP;
-		editor.grabVertical = true;
-		editor.setEditor(addParameter, item, 3);
+		editor4.minimumWidth = addParameter.getBounds().x;
+		editor4.horizontalAlignment = SWT.CENTER;
+		editor4.grabHorizontal = true;
+		editor4.minimumHeight = addParameter.getBounds().y;
+		editor4.verticalAlignment = SWT.TOP;
+		editor4.grabVertical = true;
+		editor4.setEditor(addParameter, item, 3);
 		
 		
 		addParameter.addSelectionListener (new SelectionAdapter () {
@@ -434,19 +439,44 @@ public class CrossNavigationDesigner {
 		});
 		addParameter.pack();
 		
-		editor = new TableEditor(crossNavTable);
+		final TableEditor editor5 = new TableEditor(crossNavTable);
+		Button detail = new Button(crossNavTable, SWT.PUSH);
+		detail.setSize(detailIcon.createImage().getBounds().width, detailIcon.createImage().getBounds().height);
+		detail.setImage(detailIcon.createImage());
+		
+		detail.setToolTipText("View detail");
+		editor5.minimumWidth = detail.getBounds().x;
+		editor5.horizontalAlignment = SWT.CENTER;
+		editor5.grabHorizontal = true;
+		editor5.minimumHeight = detail.getBounds().y;
+		editor5.verticalAlignment = SWT.TOP;
+		editor5.grabVertical = true;
+		editor5.setEditor(detail, item, 4);
+		
+		
+		detail.addSelectionListener (new SelectionAdapter () {
+			public void widgetSelected (SelectionEvent e) {
+				Link link = LinkBO.getLinkByHierarchyAndLevel(geoDocument,
+						hierarchiesCombo.getText(), levelCombo.getText());	
+				if (link != null) {
+					createDetailShell(crossNavTable.getParent(), link);					
+				}
+			}
+		});
+		
+		final TableEditor  editor6 = new TableEditor(crossNavTable);
 		Button erase = new Button(crossNavTable, SWT.PUSH);
 		erase.setSize(eraseIcon.createImage().getBounds().width, eraseIcon.createImage().getBounds().height);
 		erase.setImage(eraseIcon.createImage());
 		
 		erase.setToolTipText("Delete link");
-		editor.minimumWidth = erase.getBounds().x;
-		editor.horizontalAlignment = SWT.CENTER;
-		editor.grabHorizontal = true;
-		editor.minimumHeight = erase.getBounds().y;
-		editor.verticalAlignment = SWT.TOP;
-		editor.grabVertical = true;
-		editor.setEditor(erase, item, 4);
+		editor6.minimumWidth = erase.getBounds().x;
+		editor6.horizontalAlignment = SWT.CENTER;
+		editor6.grabHorizontal = true;
+		editor6.minimumHeight = erase.getBounds().y;
+		editor6.verticalAlignment = SWT.TOP;
+		editor6.grabVertical = true;
+		editor6.setEditor(erase, item, 5);
 		
 		
 		erase.addSelectionListener (new SelectionAdapter () {
@@ -457,13 +487,96 @@ public class CrossNavigationDesigner {
 					TableItem item = crossNavTable.getItem(new Point(hierarchiesCombo.getBounds().x, hierarchiesCombo.getBounds().y));
 					
 					LinkBO.deleteLink(geoDocument, hierarchiesCombo.getText(), levelCombo.getText());
+					TableItem[] items =crossNavTable.getItems();
+					for(int i=0; i<items.length; i++){
+						if(items[i].equals(item)){
+							crossNavTable.remove(i);
+							
+							Control old1 = editor1.getEditor();
+							if (old1 != null)
+								old1.dispose();
+							Control old2 = editor2.getEditor();
+							if (old2 != null)
+								old2.dispose();
+							Control old3 = editor3.getEditor();
+							if (old3 != null)
+								old3.dispose();
+							Control old4 = editor4.getEditor();
+							if (old4 != null)
+								old4.dispose();
+							Control old5 = editor5.getEditor();
+							if (old5 != null)
+								old5.dispose();
+							Control old6 = editor6.getEditor();
+							if (old6 != null)
+								old6.dispose();
+						}
+					}
 					crossNavTable.redraw();
 				}
 				getEditor().setIsDirty(true);
 			}
 		});
-		addParameter.pack();
-		tableEditors.add(editor);
+
+	}
+	private void createDetailShell(Composite sectionClient, final Link link){
+		
+		Vector<LinkParam>params = link.getParam();
+
+		final Shell dialog = new Shell (mainComposite.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+		dialog.setText("Optional Parameters");
+
+		FormLayout formLayout = new FormLayout ();
+		formLayout.marginWidth = 10;
+		formLayout.marginHeight = 10;
+		formLayout.spacing = 10;
+		dialog.setLayout (formLayout);
+
+		Table paramsTable = new Table(dialog, SWT.MULTI | SWT.BORDER	| SWT.FULL_SELECTION);
+		paramsTable.setLinesVisible(true);
+		paramsTable.setHeaderVisible(true);
+		String[] titles = { "Name", "Type", "Scope", "Value"};
+		for (int i = 0; i < titles.length; i++) {
+			TableColumn column = new TableColumn(paramsTable, SWT.NONE);
+			column.setText(titles[i]);		
+		}
+		if(params != null){
+			for(int i = 0; i < params.size(); i++){
+				TableItem item = new TableItem(paramsTable, SWT.NONE);
+				item.setText(0, params.elementAt(i).getName());
+				item.setText(1, params.elementAt(i).getType());
+				item.setText(2, params.elementAt(i).getScope());
+				item.setText(3, params.elementAt(i).getValue());
+			}
+		}
+		for (int i = 0; i < titles.length; i++) {
+			paramsTable.getColumn(i).pack();
+		}
+		
+		paramsTable.redraw();
+		
+		FormData data = new FormData ();
+		data.width = 300;
+		paramsTable.setLayoutData (data);
+
+		Button cancel = new Button (dialog, SWT.PUSH);
+		cancel.setText ("Cancel");
+		data = new FormData ();
+		data.width = 60;
+		data.right = new FormAttachment (100, 0);
+		data.bottom = new FormAttachment (100, 0);
+		cancel.setLayoutData (data);
+		cancel.addSelectionListener (new SelectionAdapter () {
+			public void widgetSelected (SelectionEvent e) {
+				System.out.println("User cancelled dialog");
+				dialog.close ();
+			}
+		});
+		
+		dialog.setDefaultButton (cancel);
+		dialog.pack ();
+		dialog.open ();
+
 	}
 	private Combo createHierachiesCombo(Table crossNavTable){
 		Combo hierCombo = new Combo(crossNavTable, SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);

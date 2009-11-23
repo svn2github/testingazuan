@@ -312,7 +312,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	    			this.xselection['Values'] = this.xselection['Values']+","+ tempTocheck;
 	    		}
 	    	}else{
-	    		this.xselection['Values'] = tempTocheck;
+	    		this.xselection['Values'] =''+ tempTocheck;
 	    	} 	
 		}else{
 	    	if(this.xselection['Values']){
@@ -324,7 +324,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	    			this.xselection['Values'] = this.xselection['Values']+","+ record.data[this.valueField];
 	    		}
 	    	}else{
-	    		this.xselection['Values'] = record.data[this.valueField];
+	    		this.xselection['Values'] = ''+record.data[this.valueField];
 	    	} 	
     	}
     }
@@ -346,7 +346,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 							if(this.xselection['Values']){
 					    		this.xselection['Values'] = this.xselection['Values']+","+ temp[i];
 					    	}else{
-					    		this.xselection['Values'] = temp[i];
+					    		this.xselection['Values'] = ''+temp[i];
 					    	}
 						}
 				}else{
@@ -354,7 +354,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 							if(this.xselection['Values']){
 					    		this.xselection['Values'] = this.xselection['Values']+","+ temp[i];
 					    	}else{
-					    		this.xselection['Values'] = temp[i];
+					    		this.xselection['Values'] = ''+temp[i];
 					    	}
 						}
 					}
@@ -366,11 +366,14 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     
     ,arrayContains: function(arrayToCheck, obj){
     	var len = arrayToCheck.length;
+
 		for (var i = 0; i < len; i++){
 			if(this.grid.getColumnModel().getColumnById('1').type == 'date'){
 			
 				var tempTocheck = Date.parseDate(arrayToCheck[i], 'd/m/Y H:i:s');
+				
 				if(tempTocheck==obj){
+				alert('Trovato');
 					return true;
 				}
 			}else{

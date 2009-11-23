@@ -133,14 +133,13 @@ public class LookupStoreJSONSerializer {
 						fieldMetaDataJSON.put("type", "float");
 					}
 					
-				} else if( String.class.isAssignableFrom(clazz) || Date.class.isAssignableFrom(clazz)) {
+				} else if( String.class.isAssignableFrom(clazz) ) {
 					logger.debug("Column [" + (i+1) + "] type is equal to [" + "STRING" + "]");
 					fieldMetaDataJSON.put("type", "string");
 				} else if( Date.class.isAssignableFrom(clazz) ) {
 					logger.debug("Column [" + (i+1) + "] type is equal to [" + "DATE" + "]");
 					fieldMetaDataJSON.put("type", "date");
 					fieldMetaDataJSON.put("dateFormat", "d/m/Y H:i:s");
-					//fieldMetaDataJSON.put("renderer", "Ext.util.Format.dateRenderer('d/m/Y H:i:s')");
 				} else if( Boolean.class.isAssignableFrom(clazz) ) {
 					logger.debug("Column [" + (i+1) + "] type is equal to [" + "BOOLEAN" + "]");
 					fieldMetaDataJSON.put("type", "boolean");

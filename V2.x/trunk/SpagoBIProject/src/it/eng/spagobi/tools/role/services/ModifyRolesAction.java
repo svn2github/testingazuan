@@ -67,7 +67,7 @@ public class ModifyRolesAction extends AbstractHttpAction {
 				return;
 			}
 			String fieldsOrder = (String) serviceRequest.getAttribute("FIELDS_ORDER");
-			int roleTypeIndex = 0, saveSubojectsIndex = 0, subojectsIndex = 0, snapshotsIndex = 0, viewpointsIndex = 0, notesIndex = 0, metadataIndex = 0, sendMailIndex = 0, rememberMeIndex = 0, personalFolderIndex = 0, buildQbeQueryIndex = 0;
+			int roleTypeIndex = 0, saveSubojectsIndex = 0, subojectsIndex = 0, snapshotsIndex = 0, viewpointsIndex = 0, notesIndex = 0, seemetadataIndex = 0, savemetadataIndex = 0, sendMailIndex = 0, rememberMeIndex = 0, personalFolderIndex = 0, buildQbeQueryIndex = 0;
 			String[] fields = fieldsOrder.split(",");
 			for (int i = 0; i < fields.length; i++) {
 				String field = fields[i];
@@ -83,8 +83,10 @@ public class ModifyRolesAction extends AbstractHttpAction {
 					viewpointsIndex = i;
 				} else if (field.equalsIgnoreCase("Notes")) {
 					notesIndex = i;
-				} else if (field.equalsIgnoreCase("Metadata")) {
-					metadataIndex = i;
+				} else if (field.equalsIgnoreCase("SeeMetadata")) {
+					seemetadataIndex = i;
+				} else if (field.equalsIgnoreCase("SaveMetadata")) {
+					savemetadataIndex = i;					
 				} else if (field.equalsIgnoreCase("SendMail")) {
 					sendMailIndex = i;
 				} else if (field.equalsIgnoreCase("RememberMe")) {
@@ -113,7 +115,8 @@ public class ModifyRolesAction extends AbstractHttpAction {
 				role.setIsAbleToSeeSnapshots(Boolean.parseBoolean(values[snapshotsIndex]));
 				role.setIsAbleToSeeViewpoints(Boolean.parseBoolean(values[viewpointsIndex]));
 				role.setIsAbleToSeeNotes(Boolean.parseBoolean(values[notesIndex]));
-				role.setIsAbleToSeeMetadata(Boolean.parseBoolean(values[metadataIndex]));
+				role.setIsAbleToSeeMetadata(Boolean.parseBoolean(values[seemetadataIndex]));
+				role.setIsAbleToSaveMetadata(Boolean.parseBoolean(values[savemetadataIndex]));
 				role.setIsAbleToSendMail(Boolean.parseBoolean(values[sendMailIndex]));
 				role.setIsAbleToSaveRememberMe(Boolean.parseBoolean(values[rememberMeIndex]));
 				role.setIsAbleToSaveIntoPersonalFolder(Boolean.parseBoolean(values[personalFolderIndex]));

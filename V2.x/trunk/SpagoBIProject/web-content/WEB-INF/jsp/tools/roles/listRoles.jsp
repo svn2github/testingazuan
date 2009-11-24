@@ -152,6 +152,7 @@ Ext.onReady(function(){
     		%>['<%= role.getId() %>', '<%= role.getName() %>', '<%= role.getDescription() %>', '<%= roleTypeDescription %>', 
     		 <%= role.isAbleToSaveSubobjects() %>, <%= role.isAbleToSeeSubobjects() %>, <%= role.isAbleToSeeSnapshots() %>,
     		 <%= role.isAbleToSeeViewpoints() %>, <%= role.isAbleToSeeNotes() %>, <%= role.isAbleToSeeMetadata() %>, 
+    		 <%= role.isAbleToSaveMetadata() %>,
     		 <%= role.isAbleToSendMail() %>, <%= role.isAbleToSaveRememberMe() %>, 
     		 <%= role.isAbleToSaveIntoPersonalFolder() %>,
     		 <%= role.isAbleToBuildQbeQuery() %>,
@@ -174,7 +175,8 @@ Ext.onReady(function(){
            {name: 'Snapshots'},
            {name: 'Viewpoints'},
            {name: 'Notes'},
-           {name: 'Metadata'},
+           {name: 'SeeMetadata'},
+           {name: 'SaveMetadata'},
            {name: 'SendMail'},
            {name: 'RememberMe'},
            {name: 'PersonalFolder'},
@@ -235,10 +237,16 @@ Ext.onReady(function(){
 		dataIndex: 'Notes',
 		align: 'center'
 	});
-	var metadataColumn = new Ext.grid.CheckColumn({
-		header: '<spagobi:message key="SBISet.ListRoles.columnMetadata" />',
-		tooltip: '<spagobi:message key="SBISet.ListRoles.columnMetadataTooltip" />',
-		dataIndex: 'Metadata',
+	var seeMetadataColumn = new Ext.grid.CheckColumn({
+		header: '<spagobi:message key="SBISet.ListRoles.columnSeeMetadata" />',
+		tooltip: '<spagobi:message key="SBISet.ListRoles.columnSeeMetadataTooltip" />',
+		dataIndex: 'SeeMetadata',
+		align: 'center'
+	});
+	var saveMetadataColumn = new Ext.grid.CheckColumn({
+		header: '<spagobi:message key="SBISet.ListRoles.columnSaveMetadata" />',
+		tooltip: '<spagobi:message key="SBISet.ListRoles.columnSaveMetadataTooltip" />',
+		dataIndex: 'SaveMetadata',
 		align: 'center'
 	});
 	var sendMailColumn = new Ext.grid.CheckColumn({
@@ -293,7 +301,8 @@ Ext.onReady(function(){
         snapshotsColumn,
         viewpointsColumn,
         notesColumn,
-        metadataColumn,
+        seeMetadataColumn,
+        saveMetadataColumn,
         sendMailColumn,
         rememberMeColumn,
         personalFolderColumn,
@@ -309,7 +318,7 @@ Ext.onReady(function(){
     var grid = new Ext.grid.EditorGridPanel({
     	cm: cm,
         store: store,
-		plugins: [saveSubObjectsColumn, subObjectsColumn, snapshotsColumn, viewpointsColumn, notesColumn, metadataColumn, sendMailColumn, rememberMeColumn, personalFolderColumn, buildQbeQueryColumn],
+		plugins: [saveSubObjectsColumn, subObjectsColumn, snapshotsColumn, viewpointsColumn, notesColumn, seeMetadataColumn, saveMetadataColumn, sendMailColumn, rememberMeColumn, personalFolderColumn, buildQbeQueryColumn],
 		viewConfig: {
         	forceFit: true
 		},
@@ -325,7 +334,7 @@ Ext.onReady(function(){
 function saveRoles() {
 	var modifiedRecords = store.getModifiedRecords();
 	var url = '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>';
-	url += '&ACTION_NAME=MODIFY_ROLES_ACTION&FIELDS_ORDER=Type,SaveSubojects,Subojects,Snapshots,Viewpoints,Notes,Metadata,SendMail,RememberMe,PersonalFolder,BuildQbeQuery';
+	url += '&ACTION_NAME=MODIFY_ROLES_ACTION&FIELDS_ORDER=Type,SaveSubojects,Subojects,Snapshots,Viewpoints,Notes,SeeMetadata,SaveMetadata,SendMail,RememberMe,PersonalFolder,BuildQbeQuery';
 	var modifiedRoles = '';
 	//for (key in modifiedRecords) {
 	//	if (key == 'set' || key == 'get' || key == 'getKeys') continue;
@@ -336,7 +345,7 @@ function saveRoles() {
 		var roleType = record.get('Type');
 		roleType = getRoleTypeCode(roleType);
 		modifiedRoles += '' + roleId + ':' + roleType + ',' + record.get('SaveSubojects') + ',' + record.get('Subojects') + ',' +  record.get('Snapshots') + ',' 
-			+ record.get('Viewpoints') + ',' + record.get('Notes') + ',' + record.get('Metadata') + ',' 
+			+ record.get('Viewpoints') + ',' + record.get('Notes') + ',' + record.get('SeeMetadata') + ',' + record.get('SaveMetadata') + ',' 
 			+ record.get('SendMail') + ',' + record.get('RememberMe') + ',' + record.get('PersonalFolder') + ',' + record.get('BuildQbeQuery') + ';';
 	}
 	if (modifiedRoles == '') {

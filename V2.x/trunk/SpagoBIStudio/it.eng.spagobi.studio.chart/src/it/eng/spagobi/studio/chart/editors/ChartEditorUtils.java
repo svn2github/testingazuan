@@ -68,13 +68,15 @@ public class ChartEditorUtils {
 	}
 
 
+
+
 	/** Get the configuration file path for the selected type
 	 * 
 	 * @param chartType
 	 * @return
 	 * @throws Exception
 	 */
-	
+
 	public static String getChartConfigPath(String chartType) throws Exception {
 		String toReturn = null;
 		InputStream is = getInputStreamFromResource(ChartModel.CHART_INFO_FILE);
@@ -119,7 +121,7 @@ public class ChartEditorUtils {
 		return toReturn;
 	}
 
-	
+
 	/** Get input stream from a resource
 	 * 
 	 * @param resourcePath
@@ -135,7 +137,7 @@ public class ChartEditorUtils {
 	}
 
 
-	
+
 	/**	Draw a configuration parameter
 	 * 
 	 * @param model

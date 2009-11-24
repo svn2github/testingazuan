@@ -43,14 +43,14 @@ public class DataSetInformationEditor {
 			}
 		});
 		sectionDatasetInformation.setText("Dataset Metadata");
-		sectionDatasetInformation.setDescription("All the selected Dataset Metadata");
+		//sectionDatasetInformation.setDescription("All the selected Dataset Metadata");
 
 
 		GridLayout gridLayout=new GridLayout();
 		gridLayout.numColumns=1;
 		sectionClientDatasetInformation.setLayout(gridLayout);
 		SpagoBIServerObjects sbso = new SpagoBIServerObjects();
-
+		noDataSet=new org.eclipse.swt.widgets.Label(sectionClientDatasetInformation, SWT.NULL);
 
 		if(model.getSdkDataSetId()!=null){
 			DataStoreMetadata dataStoreMetadata= null;
@@ -73,17 +73,18 @@ public class DataSetInformationEditor {
 				else{
 					SpagoBILogger
 					.errorLog("No comunication with SpagoBI server, could not retrieve dataset informations",null);
-					MessageDialog.openError(sectionDatasetInformation.getShell(), "Error", "Could not retrieve metadata for dataset with ID "+model.getSdkDataSetId());
+					//MessageDialog.openError(sectionDatasetInformation.getShell(), "Error", "Could not retrieve metadata for dataset with ID "+model.getSdkDataSetId());
+					noDataSet.setText("No comunication with SpagoBI server, could not retrieve dataset informations");
 				}
 			} catch (Exception e) {
 				SpagoBILogger
 				.errorLog("No comunication with SpagoBI server, could not retrieve dataset informations",e);
-				MessageDialog.openError(sectionDatasetInformation.getShell(), "Error", "Could not retrieve metadata for dataset with ID "+model.getSdkDataSetId());
+				//MessageDialog.openError(sectionDatasetInformation.getShell(), "Error", "Could not retrieve metadata for dataset with ID "+model.getSdkDataSetId());
+				noDataSet.setText("No comunication with SpagoBI server, could not retrieve dataset informations");
 			}
 
 		}
 		else{
-			noDataSet=new org.eclipse.swt.widgets.Label(sectionClientDatasetInformation, SWT.NULL);
 			noDataSet.setText("No Dataset Associated to the opened document");
 		}
 

@@ -90,6 +90,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</tr>
 		<%} %>
 		
+		<tr class="portlet-font">
+				<td width="100" align="center">
+					<img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/tools/objmetadata/document-meta.gif", currTheme)%>' />
+				</td>
+				<td width="20">
+					&nbsp;
+				</td>
+				<td vAlign="middle">
+				    <br/> 
+					<a href='<portlet:actionURL><portlet:param name="PAGE" value="ListObjMetadataPage"/></portlet:actionURL>' 
+						class="link_main_menu" >
+					 	<spagobi:message key="SBISet.linkEngConf" />
+					</a>
+				</td>
+			</tr>
+	
 	</table>
 	<br/>
 </div>

@@ -42,29 +42,37 @@ public class Activity {
 		this.pattern = pattern;
 	}
 
-	public Activity(SourceBean sb) throws ParseException {
-		super();
+	public Activity(SourceBean sb, String dateFormatS, String hourFormatS) throws ParseException {
+		logger.error("IN");
 		code=(String)sb.getAttribute(BlockCharts.ANNOTATION);
 		String data=(String)sb.getAttribute(BlockCharts.BEGIN_ACTIVITY_DATE);
+		//String tempo=(String)sb.getAttribute(BlockCharts.BEGIN_ACTIVITY_TIME);
+		
+		
 		//SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat dateFormat=new SimpleDateFormat("dd/MM/yyyy");		
-		SimpleDateFormat hourFormat=new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");	
+		SimpleDateFormat dateFormat=new SimpleDateFormat(dateFormatS);		
+		SimpleDateFormat hourFormat=new SimpleDateFormat(hourFormatS);	
 		Date date=null;
 		Date hour=null;
 		try{
+			logger.debug("date retrieved to convert is "+data.toString());
 			date=dateFormat.parse(data);
 		}
 		catch (ParseException e) {
 			logger.error("Wrong format specified: could not convert date "+data);
 			throw e;
 		}
+		logger.debug("time date is "+date.toString());
 		try{
-			hour=hourFormat.parse(data);
+			java.sql.Timestamp timestamp = new java.sql.Timestamp(hourFormat.parse(data).getTime());
+			hour=new Date(timestamp.getTime());
+			//hour=hourFormat.parse(data);
 		}
 		catch (ParseException e) {
 			logger.error("Wrong format specified: could not convert time "+data);
 			throw e;
 		}
+		logger.debug("hour date is "+hour.toString());
 		beginDate=date;
 		//beginDate=new Date(milliseconds);
 //		String hourS=(String)sb.getAttribute(BlockCharts.HOUR);
@@ -76,9 +84,11 @@ public class Activity {
 //		hourCod=Integer.valueOf(hourCode);
 //		}
 		pattern=(String)sb.getAttribute(BlockCharts.PATTERN);
+		if(pattern==null)pattern="";
 		String durationS=(String)sb.getAttribute(BlockCharts.DURATION);
 		duration=Integer.valueOf(durationS);
-		int i=0;
+		logger.debug("OUT");
+
 		// calculate valueFase from fase
 
 	}

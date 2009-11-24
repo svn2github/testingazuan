@@ -84,14 +84,6 @@ public class TimeBlockChart extends BlockCharts {
 		DatasetMap datasetMap=new DatasetMap();
 		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
 
-//		Calendar c=new GregorianCalendar();
-//		c.set(9 + 2000, Calendar.JANUARY, 1);
-//		beginDate=c.getTime();
-//		Calendar c1=new GregorianCalendar();
-//		c1.set(9 + 2000, Calendar.JANUARY, 10);
-//		endDate=c1.getTime();
-
-
 		ArrayList<Activity> activities=new ArrayList<Activity>();
 
 
@@ -100,14 +92,18 @@ public class TimeBlockChart extends BlockCharts {
 		SourceBean sbRows=SourceBean.fromXMLString(res);
 		List listAtts=sbRows.getAttributeAsList("ROW");
 		// Run all rows
-
+		if(listAtts==null){
+			logger.error("Null rows retrieved from dataset");
+			return null;
+		}
 		int j=0;
 		// for each activity
+		logger.debug("retrieved number rows: "+listAtts.size());
 		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
 			SourceBean row = (SourceBean) iterator.next();
-			Activity activity=new Activity(row);
+			Activity activity=new Activity(row, beginDateFormat, beginHourFormat);
 			activities.add(activity);
-
+			logger.debug("Activity built from "+activity.getBeginDate()+" minutes"+activity.getMinutes()!=null?activity.getMinutes().toString():"");
 			if(maxDateFound!=null && !activity.getBeginDate().after(maxDateFound)){
 			}
 			else{
@@ -124,58 +120,97 @@ public class TimeBlockChart extends BlockCharts {
 		//		count days
 		long daysBetween;
 		if(dateMin!=null && dateMax!=null){
+			logger.debug("use date limit defined in template: from "+dateMin.toString()+" to "+dateMax.toString());
 			daysBetween=daysBetween(dateMin,dateMax); 
 		}
 		else{
+			logger.debug("use date limit found: from "+minDateFound.toString()+" to "+maxDateFound.toString());
 			daysBetween=daysBetween(minDateFound,maxDateFound); 
 		}
-		long minutesBetweenLong=daysBetween*24*60;
+		logger.debug("Days between the two dates "+daysBetween);
+		// add a date to include extremis
+		long minutesBetweenLong=daysBetween*24*60*2; // raddoppio in caso di sovrapposizioni
 		int mbl=Long.valueOf(minutesBetweenLong).intValue();
 
 		DefaultXYZDataset dataset = new DefaultXYZDataset();
-		double[] xvalues = new double[mbl];    
-		double[] yvalues = new double[mbl];    
-		double[] zvalues = new double[mbl];
+
+		ArrayList<Long> xValuesList=new ArrayList<Long>();
+		ArrayList<Double> yValuesList=new ArrayList<Double>();
+		ArrayList<Double> zValuesList=new ArrayList<Double>();
+
 
 		annotations=new HashMap<String, AnnotationBlock>();
 		// run all the activities
 		for (Iterator iterator = activities.iterator(); iterator.hasNext();) {
 			Activity activity = (Activity) iterator.next();
 
-			RegularTimePeriod rtp = new Day(activity.getBeginDate());
-			long secondmills= rtp.getFirstMillisecond();
+			// insert only if activty falls inside the min and max Range (idf defined)
+			if(dateMin!=null && dateMax!=null && (activity.getBeginDate().after(dateMax) || activity.getBeginDate().before(dateMin))){
+				logger.debug("Activity discarde because starting out of selected bounds in "+activity.getBeginDate());
+			}
+			else{	
+				logger.debug("Inserting activity with begin date "+activity.getBeginDate()+" adn pattern "+activity.getPattern());
+				RegularTimePeriod rtp = new Day(activity.getBeginDate());
+				long secondmills= rtp.getFirstMillisecond();
 
-			Minute minute=activity.getMinutes();
-			for(int i=0;i<activity.getDuration();i++){
-				// convert from hour to number axis (da sessantesimi a centesimi!)
-				Integer hour=Integer.valueOf(minute.getHourValue());
-				Integer minuteValue=Integer.valueOf(minute.getMinute());
-				Double doubleMinuteValue=Double.valueOf(((double)minuteValue.intValue()));
-				// minuteValue : 60 = x :100
-				double convertedMinuteValue=(doubleMinuteValue*100)/60.0;
-				double convertedMinuteValueCent=convertedMinuteValue/100;
+				Minute minute=activity.getMinutes();
+				for(int i=0;i<activity.getDuration();i++){
+					// convert from hour to number axis (da sessantesimi a centesimi!)
+					Integer hour=Integer.valueOf(minute.getHourValue());
+					Integer minuteValue=Integer.valueOf(minute.getMinute());
+					Double doubleMinuteValue=Double.valueOf(((double)minuteValue.intValue()));
+					// minuteValue : 60 = x :100
+					double convertedMinuteValue=(doubleMinuteValue*100)/60.0;
+					double convertedMinuteValueCent=convertedMinuteValue/100;
 
-				double hourD=(double)hour.intValue();
-				double converted=hourD+convertedMinuteValueCent;
+					double hourD=(double)hour.intValue();
+					double converted=hourD+convertedMinuteValueCent;
 
-				String yVal=Double.valueOf(converted).toString();
-				xvalues[j]=secondmills;
-				yvalues[j]=Double.valueOf(yVal);
-				zvalues[j]=patternRangeIndex.get(activity.getPattern())+0.5;
-				//System.out.println("Date: "+activity.getBeginDate()+":"+Double.valueOf(xvalues[j]).toString()+", Hour: "+Double.valueOf(yvalues[j]).toString()+", Value: "+Double.valueOf(zvalues[j]).toString());
-				if(annotations.get(activity.getCode())==null){
-					AnnotationBlock annotation=new AnnotationBlock(activity.getCode());
-					annotation.setXPosition(xvalues[j]);
-					annotation.setYPosition(yvalues[j]);
-					annotations.put(annotation.getAnnotation(), annotation);
+					String yVal=Double.valueOf(converted).toString();
+
+					xValuesList.add(new Long(secondmills));
+					yValuesList.add(Double.valueOf(yVal));
+
+					Object cosa=patternRangeIndex.get(activity.getPattern());
+					
+					if(cosa!=null){
+						zValuesList.add(Double.valueOf(patternRangeIndex.get(activity.getPattern())).doubleValue()+0.5);
+					}
+					else{
+						zValuesList.add(-1.0);
+					}
+					//					xvalues[j]=secondmills;
+//					yvalues[j]=Double.valueOf(yVal);
+//					zvalues[j]=patternRangeIndex.get(activity.getPattern())+0.5;
+
+					//System.out.println("Date: "+activity.getBeginDate()+":"+Double.valueOf(xvalues[j]).toString()+", Hour: "+Double.valueOf(yvalues[j]).toString()+", Value: "+Double.valueOf(zvalues[j]).toString());
+					if(annotations.get(activity.getCode())==null){
+						AnnotationBlock annotation=new AnnotationBlock(activity.getCode());
+						annotation.setXPosition(xValuesList.get(j).doubleValue());
+						annotation.setYPosition(yValuesList.get(j).doubleValue());
+						annotations.put(annotation.getAnnotation(), annotation);
+					}
+					minute=(Minute)minute.next();
+					j++;
 				}
-				minute=(Minute)minute.next();
-				j++;
 			}
 
+		}
+//		create arrays
+		double[] xvalues = new double[xValuesList.size()];    
+		double[] yvalues = new double[yValuesList.size()];    
+		double[] zvalues = new double[zValuesList.size()];
 
+		for (int i = 0; i < zValuesList.size(); i++) {
+			Long l=xValuesList.get(i);
+			xvalues[i]=l;
+			Double d2=yValuesList.get(i);
+			yvalues[i]=d2;			
+			Double d=zValuesList.get(i);
+			zvalues[i]=d;
 		}
 
+		logger.debug("adding the serie");
 		dataset.addSeries("Series 1", 
 				new double[][] { xvalues, yvalues, zvalues });
 
@@ -270,7 +305,7 @@ public class TimeBlockChart extends BlockCharts {
 				xyAnnotation.setFont(new Font("Nome",Font.BOLD,8));				
 				xyAnnotation.setPaint(Color.BLACK);
 			}
-			
+
 			xyAnnotation.setTextAnchor(TextAnchor.BOTTOM_LEFT);
 			renderer.addAnnotation(xyAnnotation);
 		}

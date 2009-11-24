@@ -25,6 +25,7 @@ public class BlockCharts extends ChartImpl{
 	// FIeld Database to recover from dataset
 	public static String ANNOTATION="ANNOTATION";
 	public static String BEGIN_ACTIVITY_DATE="BEGIN_DATE";
+	public static String BEGIN_ACTIVITY_TIME="BEGIN_TIME";
 	public static String PATTERN="PATTERN";
 	public static String DURATION="DURATION";
 
@@ -35,7 +36,8 @@ public class BlockCharts extends ChartImpl{
 	Double hourMax;
 	java.util.Date dateMin;
 	Date dateMax;
-	SimpleDateFormat beginDateFormat;
+String beginDateFormat;
+String beginHourFormat;
 	SimpleDateFormat viewDateFormat;
 	protected StyleLabel styleAnnotation;
 
@@ -49,6 +51,8 @@ public class BlockCharts extends ChartImpl{
 	static final String DATE_MAX = "date_max";
 	static final String DATE_MIN = "date_min";
 	static final String VIEW_DATE_FORMAT = "view_date_format";
+	static final String BEGIN_DATE_FORMAT = "begin_date_format";
+	static final String BEGIN_HOUR_FORMAT = "begin_hour_format";
 	static final String DATE_AUTO_RANGE = "date_auto_range";
 	static final String HOUR_CODE = "ORA";
 	static final String STYLE_ANNOTATION_LABELS = "STYLE_ANNOTATION_LABELS";
@@ -56,6 +60,7 @@ public class BlockCharts extends ChartImpl{
 
 	@Override
 	public void configureChart(SourceBean content) {
+logger.debug("IN");
 		super.configureChart(content);
 		confParameters = new HashMap();
 		SourceBean confSB = (SourceBean)content.getAttribute("CONF");
@@ -119,6 +124,23 @@ public class BlockCharts extends ChartImpl{
 		else{
 			viewDateFormat=new SimpleDateFormat("dd/MM/yyyy");
 		}
+
+		if(confParameters.get(BEGIN_DATE_FORMAT)!=null){	
+			beginDateFormat=(String)confParameters.get(BEGIN_DATE_FORMAT);
+		}
+		else{
+			beginDateFormat="dd/MM/yyyy";
+		}
+		logger.debug("begin date format "+beginDateFormat);
+		
+
+		if(confParameters.get(BEGIN_HOUR_FORMAT)!=null){	
+			beginHourFormat=(String)confParameters.get(BEGIN_HOUR_FORMAT);
+		}
+		else{
+			beginHourFormat="dd/MM/yyyy HH:mm:ss";
+		}
+		logger.debug("begin hour format "+beginHourFormat);
 
 
 		if(confParameters.get(DATE_MAX)!=null && confParameters.get(DATE_MIN)!=null){	

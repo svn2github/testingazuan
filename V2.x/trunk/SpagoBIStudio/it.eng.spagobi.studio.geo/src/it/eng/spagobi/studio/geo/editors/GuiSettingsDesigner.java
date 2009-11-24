@@ -4,27 +4,33 @@ import it.eng.spagobi.studio.geo.Activator;
 import it.eng.spagobi.studio.geo.editors.model.bo.GuiSettingsBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.WindowBO;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
+import it.eng.spagobi.studio.geo.editors.model.geo.GuiParam;
+import it.eng.spagobi.studio.geo.editors.model.geo.GuiParamValue;
 import it.eng.spagobi.studio.geo.editors.model.geo.GuiSettings;
 import it.eng.spagobi.studio.geo.editors.model.geo.Param;
 import it.eng.spagobi.studio.geo.editors.model.geo.Window;
 
 import java.util.Vector;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Layout;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -90,7 +96,7 @@ public class GuiSettingsDesigner {
 		sectionClient.redraw();
 	}
 	
-	private void createWindowGroup(String forWindow, FormToolkit toolkit, RowLayout rl){
+	private void createWindowGroup(final String forWindow, FormToolkit toolkit, RowLayout rl){
 		
 		final Group guiGroup = new Group(mainComposite, SWT.FILL);
 		guiGroup.setText(forWindow);
@@ -99,12 +105,15 @@ public class GuiSettingsDesigner {
 		guiGroup.setLayout(mainComposite.getLayout());
 		
 		
-		FillLayout fillLayout = new FillLayout();
-		fillLayout.type = SWT.VERTICAL;
+		GridData gd = new GridData(GridData.FILL_BOTH);
+		gd.horizontalSpan =1;
+		gd.heightHint=75;
+		gd.minimumHeight=60;
+		gd.verticalAlignment=SWT.TOP;	
 
 		final Table guiWindowsTable = toolkit.createTable(guiGroup, SWT.MULTI | SWT.BORDER
 				| SWT.FULL_SELECTION);
-		guiWindowsTable.setLayout(fillLayout);
+		guiWindowsTable.setLayoutData(gd);
 		guiWindowsTable.setLinesVisible(true);
 		guiWindowsTable.setHeaderVisible(true);
 
@@ -114,20 +123,14 @@ public class GuiSettingsDesigner {
 			column.setText(titles[i]);
 
 		}
-		Window selWindow = null;
+
 		if (guiSettings != null && guiSettings.getWindows() != null && guiSettings.getWindows().getWindow() != null) {
-			//look for window name = navigation			
-			for(int i=0; i<guiSettings.getWindows().getWindow().size(); i++){
-				Window window = guiSettings.getWindows().getWindow().elementAt(i);
-				String name = window.getName();
-				if(name != null && name.equalsIgnoreCase(forWindow)){
-					selWindow = window;
+			Window window = WindowBO.getWindowByName(geoDocument, forWindow);
+			if(window != null){				
+				Vector<GuiParam> params = window.getParams();
+				for(int j=0; j< params.size(); j++){
 					TableItem item = new TableItem(guiWindowsTable, SWT.TRANSPARENT);
-					Vector<Param> params = window.getParams();
-					for(int j=0; j< params.size(); j++){
-						createWindowsRow(item, guiWindowsTable, params.elementAt(j));
-					}
-					
+					createWindowsRow(item, guiWindowsTable, params.elementAt(j));
 				}
 			}
 		} else {
@@ -138,14 +141,46 @@ public class GuiSettingsDesigner {
 		for (int i = 0; i < titles.length; i++) {
 			guiWindowsTable.getColumn(i).pack();
 		}
-		
+		 //rightClick --> menu
+		guiWindowsTable.addListener(SWT.MouseDown, new Listener () {
+            public void handleEvent (Event event) {            	
+            	if (event.button==3){	
+            		Window window = WindowBO.getWindowByName(geoDocument, forWindow);
+            		createMenu(guiWindowsTable, window);	            	            	
+            	}
+            }
+        });
 		guiWindowsTable.redraw();
 		//form to add parameters
-		createInsertParamForm(toolkit, guiGroup, guiWindowsTable, selWindow);
+		createInsertParamForm(forWindow, toolkit, guiGroup, guiWindowsTable);
 
 		
 	}
-	private void createInsertParamForm(FormToolkit toolkit, Group group, final Table table, final Window window){
+	private void createMenu(final Table table, final Window window){		
+    	Menu menu = new Menu (mainComposite.getShell(), SWT.POP_UP);    	
+    	MenuItem menuItem = new MenuItem (menu, SWT.PUSH);
+		menuItem.setText ("Delete");
+		menuItem.addListener(SWT.Selection, new Listener () {
+            public void handleEvent (Event event) { 
+            	TableItem[] sel = table.getSelection();
+            	if(sel[0] != null){
+                	deleteItem(table, sel[0], window);
+            	}else{
+            		MessageDialog.openWarning(mainComposite.getShell(), "Warning", "Please select an item to delete");
+            	}
+
+            }
+        });	
+		table.setMenu(menu);
+	}
+	private void deleteItem(Table table, TableItem item, Window window){
+		WindowBO.deleteParamByName(window, item.getText(0));
+		item.dispose();
+        //table.pack();
+        table.redraw();
+        editor.setIsDirty(true);
+	}
+	private void createInsertParamForm(final String windowName, FormToolkit toolkit, Group group, final Table table){
 		
 		FormLayout formLayout = new FormLayout ();
 		formLayout.marginWidth = 5;
@@ -195,8 +230,10 @@ public class GuiSettingsDesigner {
 		ok.addSelectionListener (new SelectionAdapter () {
 			public void widgetSelected (SelectionEvent e) {
 				//add parameter
-				Param param = new Param();
+				Window window = WindowBO.getWindowByName(geoDocument, windowName);
+				GuiParam param = new GuiParam();
 				param.setName(text.getText());
+
 				param.setValue(textVal.getText());
 				//insert in geodocument
 				if(window != null){
@@ -209,18 +246,37 @@ public class GuiSettingsDesigner {
 					}					
 				}else{
 					//crea window
+					Window newWindow = WindowBO.setNewWindow(geoDocument);
+					newWindow.setName(windowName.toLowerCase());
+					Vector params = newWindow.getParams();
+					if(params != null){
+						params.add(param);
+					}else{
+						params = new Vector<Param>();
+						params.add(param);
+						newWindow.setParams(params);						
+					}	
 				}
 				
 				
 				TableItem item = new TableItem(table, SWT.NONE);
 				createWindowsRow(item, table, param);
+				//clean combo and text
+				text.deselectAll();
+				textVal.setText("");
+				text.redraw();
+				textVal.redraw();
+				
+				editor.setIsDirty(true);
 			}
 		});
 	}
 
-	private void createWindowsRow(TableItem item, final Table guiTable, Param param){
-		item.setText(0, param.getName());
-		item.setText(1, param.getValue());
+	private void createWindowsRow(TableItem item, final Table guiTable, GuiParam param){
+		if(param.getName() != null)
+			item.setText(0, param.getName());
+		if(param.getValue() != null )
+			item.setText(1, param.getValue());
 		guiTable.redraw();
 	}
 	private Combo createWindowsParamCombo(Composite composite){

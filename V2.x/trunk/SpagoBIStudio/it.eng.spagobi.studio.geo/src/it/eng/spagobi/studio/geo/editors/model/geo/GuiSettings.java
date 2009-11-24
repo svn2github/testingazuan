@@ -9,12 +9,12 @@ public class GuiSettings   implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 6664124887478223504L;
-	private Vector<Param> params;
+	private Vector<GuiParam> params;
 	private Windows windows;
-	public Vector<Param> getParams() {
+	public Vector<GuiParam> getParams() {
 		return params;
 	}
-	public void setParams(Vector<Param> params) {
+	public void setParams(Vector<GuiParam> params) {
 		this.params = params;
 	}
 	public Windows getWindows() {

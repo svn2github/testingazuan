@@ -6,7 +6,10 @@ import it.eng.spagobi.studio.geo.editors.model.geo.CrossNavigation;
 import it.eng.spagobi.studio.geo.editors.model.geo.DatamartProvider;
 import it.eng.spagobi.studio.geo.editors.model.geo.Dataset;
 import it.eng.spagobi.studio.geo.editors.model.geo.Datasource;
+import it.eng.spagobi.studio.geo.editors.model.geo.Defaults;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
+import it.eng.spagobi.studio.geo.editors.model.geo.GuiParam;
+import it.eng.spagobi.studio.geo.editors.model.geo.GuiSettings;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchies;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchy;
 import it.eng.spagobi.studio.geo.editors.model.geo.KPI;
@@ -22,6 +25,8 @@ import it.eng.spagobi.studio.geo.editors.model.geo.Measures;
 import it.eng.spagobi.studio.geo.editors.model.geo.Metadata;
 import it.eng.spagobi.studio.geo.editors.model.geo.Param;
 import it.eng.spagobi.studio.geo.editors.model.geo.Tresholds;
+import it.eng.spagobi.studio.geo.editors.model.geo.Window;
+import it.eng.spagobi.studio.geo.editors.model.geo.Windows;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -29,11 +34,14 @@ import org.eclipse.core.runtime.CoreException;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
+import com.thoughtworks.xstream.mapper.MapperWrapper;
 
 public class XmlTemplateGenerator {
 
 
 	public static void setAlias(XStream xstream){
+		
+		xstream.registerConverter(new ParamConverter());
 		xstream.alias("MAP", GEODocument.class);
 		
 		xstream.aliasField("MAP_PROVIDER", GEODocument.class, "mapProvider"); 
@@ -172,7 +180,27 @@ public class XmlTemplateGenerator {
 			xstream.aliasField("selected", Layer.class, "selected");
 			xstream.useAttributeFor(Layer.class, "choosenForTemplate");
 			xstream.aliasField("choosenForTemplate", Layer.class, "choosenForTemplate");
-		}
+			
+			//gui settings
+		xstream.aliasField("GUI_SETTINGS", MapRenderer.class, "guiSettings");
+		xstream.addImplicitCollection(GuiSettings.class, "params", "PARAM", GuiParam.class);
+		xstream.useAttributeFor(GuiParam.class, "name");
+		xstream.aliasField("name", GuiParam.class, "name");
+		
+		xstream.aliasField("WINDOWS", GuiSettings.class, "windows");
+		xstream.addImplicitCollection(Windows.class, "window", "WINDOW", Window.class);
+		xstream.useAttributeFor(Window.class, "name");
+		xstream.aliasField("name", Window.class, "name");
+		xstream.addImplicitCollection(Window.class, "params", "PARAM", GuiParam.class);
+		xstream.useAttributeFor(GuiParam.class, "name");
+		xstream.aliasField("name", GuiParam.class, "name");
+				
+		xstream.aliasField("DEFAULTS", Windows.class, "defaults");
+		xstream.addImplicitCollection(Defaults.class, "params", "PARAM", GuiParam.class);
+		xstream.useAttributeFor(GuiParam.class, "name");
+		xstream.aliasField("name", GuiParam.class, "name");
+		
+	}
 
 
 		public static String transformToXml(Object bean) {

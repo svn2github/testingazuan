@@ -11,16 +11,14 @@ public class Window   implements Serializable{
 
 
 	private String name;
+	private Vector<GuiParam> params;
 
 
-	private Vector<Param> params;
-
-
-	public Vector<Param> getParams() {
+	public Vector<GuiParam> getParams() {
 		return params;
 	}
 
-	public void setParams(Vector<Param> params) {
+	public void setParams(Vector<GuiParam> params) {
 		this.params = params;
 	}
 

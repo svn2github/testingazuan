@@ -598,10 +598,6 @@ public class ImportUtilities {
 		newObj.setUuid(obj.getUuid());
 		newObj.setCreationDate(obj.getCreationDate());
 		newObj.setCreationUser(obj.getCreationUser());
-		newObj.setExtendedDescription(obj.getExtendedDescription());
-		newObj.setKeywords(obj.getKeywords());
-		newObj.setLanguage(obj.getLanguage());
-		newObj.setObjectve(obj.getObjectve());
 		newObj.setRefreshSeconds(obj.getRefreshSeconds());
 		//newObj.setDataSource(obj.getDataSource());
 		logger.debug("OUT");
@@ -732,10 +728,6 @@ public class ImportUtilities {
 			existingObj.setVisible(exportedObj.getVisible());
 			existingObj.setProfiledVisibility(exportedObj.getProfiledVisibility());
 			existingObj.setRefreshSeconds(exportedObj.getRefreshSeconds());
-			existingObj.setExtendedDescription(exportedObj.getExtendedDescription());
-			existingObj.setKeywords(exportedObj.getKeywords());
-			existingObj.setLanguage(exportedObj.getLanguage());
-			existingObj.setObjectve(exportedObj.getObjectve());
 
 			// deletes existing associations between object and parameters 
 			Set objPars = existingObj.getSbiObjPars();

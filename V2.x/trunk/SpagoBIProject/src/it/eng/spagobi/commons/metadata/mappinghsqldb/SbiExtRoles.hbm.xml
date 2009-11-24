@@ -55,6 +55,9 @@
         <property name="isAbleToSeeMetadata" type="boolean">
             <column name="see_metadata" />
         </property>
+        <property name="isAbleToSaveMetadata" type="boolean">
+            <column name="save_metadata" />
+        </property>
         <property name="isAbleToBuildQbeQuery" type="boolean">
             <column name="build_qbe_query" />
         </property>

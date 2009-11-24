@@ -543,10 +543,6 @@ public class ExporterMetadata {
 
 			hibBIObj.setCreationDate(biobj.getCreationDate());
 			hibBIObj.setCreationUser(biobj.getCreationUser());
-			hibBIObj.setExtendedDescription(biobj.getExtendedDescription());
-			hibBIObj.setKeywords(biobj.getKeywords());
-			hibBIObj.setLanguage(biobj.getLanguage());
-			hibBIObj.setObjectve(biobj.getObjectve());
 			hibBIObj.setRefreshSeconds(biobj.getRefreshSeconds());
 			hibBIObj.setProfiledVisibility(biobj.getProfiledVisibility());
 			Transaction tx = session.beginTransaction();

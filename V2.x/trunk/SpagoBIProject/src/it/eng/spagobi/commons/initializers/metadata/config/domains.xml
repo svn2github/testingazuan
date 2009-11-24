@@ -99,4 +99,6 @@
 <DOMAIN valueCd="TIME" valueNm="Time" domainCd="MEASURE_TYPE" domainNm="Measure Type" valueDs=""/>
 <DOMAIN valueCd="SIZE" valueNm="Size" domainCd="MEASURE_TYPE" domainNm="Measure Type" valueDs=""/>
 <DOMAIN valueCd="org.hibernate.dialect.DB2400Dialect" valueNm="sbidomains.nm.db2" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="sbidomains.ds.db2"/>
+<DOMAIN valueCd="FILE" valueNm="FILE" domainCd="OBJMETA_DATA_TYPE" domainNm="Predefined data type for metadata" valueDs="Predefined data type FILE for metadata"/>
+<DOMAIN valueCd="TEXT" valueNm="TEXT" domainCd="OBJMETA_DATA_TYPE" domainNm="Predefined data type for metadata" valueDs="Predefined data type TEXT for metadata"/>
 </DOMAINS>

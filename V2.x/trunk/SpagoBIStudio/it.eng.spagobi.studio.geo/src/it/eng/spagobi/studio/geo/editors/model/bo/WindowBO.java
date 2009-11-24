@@ -59,4 +59,16 @@ public class WindowBO {
 		}
 		
 	}
+	public static GuiParam getParamByName(Window window, String paramName){
+		
+		Vector<GuiParam> params = window.getParams();
+		if(params != null){
+			for(int i=0; i<params.size(); i++){
+				if(params.elementAt(i).getName()!= null && params.elementAt(i).getName().equalsIgnoreCase(paramName)){
+					return params.elementAt(i);
+				}
+			}			
+		}
+		return null;
+	}
 }

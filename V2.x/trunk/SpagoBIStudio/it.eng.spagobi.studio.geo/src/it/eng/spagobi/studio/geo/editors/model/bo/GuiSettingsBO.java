@@ -22,4 +22,17 @@ public class GuiSettingsBO {
 			
 		}
 	}
+	public static GuiParam getParamByName(GEODocument geoDocument, String paramName){
+		GuiSettings guiSettings= geoDocument.getMapRenderer().getGuiSettings();
+		Vector<GuiParam> params = guiSettings.getParams();
+		if(params != null){
+			for(int i=0; i<params.size(); i++){
+				if(params.elementAt(i).getName()!= null && params.elementAt(i).getName().equalsIgnoreCase(paramName)){
+					return params.elementAt(i);
+				}
+			}
+			
+		}
+		return null;
+	}
 }

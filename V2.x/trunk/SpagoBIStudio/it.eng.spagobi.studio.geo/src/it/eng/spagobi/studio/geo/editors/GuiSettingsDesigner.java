@@ -2,6 +2,7 @@ package it.eng.spagobi.studio.geo.editors;
 
 import it.eng.spagobi.studio.geo.Activator;
 import it.eng.spagobi.studio.geo.editors.model.bo.GuiSettingsBO;
+import it.eng.spagobi.studio.geo.editors.model.bo.MetadataBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.WindowBO;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.editors.model.geo.GuiParam;
@@ -14,8 +15,11 @@ import java.util.Vector;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -44,6 +48,8 @@ public class GuiSettingsDesigner {
 	private GEODocument geoDocument;
 	
 	private GuiSettings guiSettings;
+	private final int TYPE_WINDOWS=1;
+	private final int TYPE_PARAMS=2;
 	
 	public GuiSettings getGuiSettings() {
 		return guiSettings;
@@ -137,11 +143,7 @@ public class GuiSettingsDesigner {
 				TableItem item = new TableItem(guiWindowsTable, SWT.TRANSPARENT);
 				createWindowsRow(item, guiWindowsTable, params.elementAt(j));
 			}
-		}/* else {
-			for (int i = 0; i < 1; i++) {
-				TableItem item = new TableItem(guiWindowsTable, SWT.TRANSPARENT);
-			}
-		}*/
+		}
 		for (int i = 0; i < titles.length; i++) {
 			guiWindowsTable.getColumn(i).pack();
 		}
@@ -266,8 +268,33 @@ public class GuiSettingsDesigner {
 		FormData data = new FormData ();
 		data.width = 40;
 		label.setLayoutData (data);
-
-		final Combo text = createWindowsParamCombo(formComp);
+		int type =TYPE_WINDOWS;
+		if(windowName == null){
+			type =TYPE_PARAMS;
+		}
+		final Combo text = createParamCombo(formComp, type);
+		
+		text.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {				
+				if(windowName == null){
+					GuiParam param = GuiSettingsBO.getParamByName(geoDocument, text.getText());
+					if(param != null){
+						MessageDialog.openWarning(mainComposite.getShell(), "Warning", "Another parameter with the same name is already defined.");		
+						text.deselectAll();
+					}
+				}else{
+					Window window = WindowBO.getWindowByName(geoDocument, windowName);
+					if(window != null){
+						GuiParam param = WindowBO.getParamByName(window, text.getText());
+						if(param != null){
+							MessageDialog.openWarning(mainComposite.getShell(), "Warning", "Another parameter with the same name is already defined.");		
+							text.deselectAll();
+						}
+					}
+					
+				}
+			}
+		});
 		data = new FormData ();
 		data.width = 80;
 		data.left = new FormAttachment (label, 0, SWT.DEFAULT);
@@ -358,30 +385,41 @@ public class GuiSettingsDesigner {
 			item.setText(1, param.getValue());
 		guiTable.redraw();
 	}
-	private Combo createWindowsParamCombo(Composite composite){
+	private Combo createParamCombo(Composite composite, int type){
 		Combo combo= new Combo(composite, SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
-		combo.add("visible");
-		combo.add("width");
-		combo.add("height");
-		combo.add("x");
-		combo.add("y");
-		combo.add("moovable");
-		combo.add("xMin");
-		combo.add("yMin");
-		combo.add("xMax");
-		combo.add("yMax");
-		combo.add("showContent");
-		combo.add("margin");
-		combo.add("titleBarVisible");
-		combo.add("statusBarVisible");
-		combo.add("title");
-		combo.add("statusBarContent");
-		combo.add("closeButtonVisible");
-		combo.add("minimizeButtonVisible");
-		combo.add("maximizeButtonVisible");
-		combo.add("minimized");
-		combo.add("transform");
-		combo.add("styles");
+		if(type == TYPE_PARAMS){
+			combo.add("defaultDrillNav");
+			combo.add("highlightOnMouseOver");
+			combo.add("normalizeChartValues");
+			combo.add("chartScale");
+			combo.add("chartWidth");
+			combo.add("chartHeight");
+			combo.add("valueFont");
+			combo.add("valueScale");
+		}else if(type == TYPE_WINDOWS){
+			combo.add("visible");
+			combo.add("width");
+			combo.add("height");
+			combo.add("x");
+			combo.add("y");
+			combo.add("moovable");
+			combo.add("xMin");
+			combo.add("yMin");
+			combo.add("xMax");
+			combo.add("yMax");
+			combo.add("showContent");
+			combo.add("margin");
+			combo.add("titleBarVisible");
+			combo.add("statusBarVisible");
+			combo.add("title");
+			combo.add("statusBarContent");
+			combo.add("closeButtonVisible");
+			combo.add("minimizeButtonVisible");
+			combo.add("maximizeButtonVisible");
+			combo.add("minimized");
+			combo.add("transform");
+			combo.add("styles");
+		}
 		return combo;
 	} 
 	public GEOEditor getEditor() {

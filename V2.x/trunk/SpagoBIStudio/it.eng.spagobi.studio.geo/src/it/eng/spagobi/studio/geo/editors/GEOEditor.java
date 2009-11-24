@@ -313,9 +313,24 @@ public class GEOEditor extends EditorPart {
 		section2.setText("GUI Settings - Windows");
 		section2.setDescription("Insert parameters for GUI Settings Windows");
 		GuiSettingsDesigner guiSettingsDesigner = new GuiSettingsDesigner(sectionGUI, this, geoDocument);
-		guiSettingsDesigner.createGuiSettingsTable(sectionGUI, toolkit);
+		guiSettingsDesigner.createGuiSettingsWindows(sectionGUI, toolkit);
 		
 		section2.setClient(sectionGUI);
+		
+		Section section3 = toolkit.createSection(form.getBody(), Section.DESCRIPTION|Section.TITLE_BAR|Section.TWISTIE);
+		Composite sectionGUIParams = toolkit.createComposite(section3, SWT.RESIZE);
+		sectionGUIParams.setLayout(gl);
+		section2.addExpansionListener(new ExpansionAdapter() {
+			public void expansionStateChanged(ExpansionEvent e) {
+				form.reflow(true);
+			}
+		});
+		section3.setText("GUI Settings - Params");
+		section3.setDescription("Insert parameters for GUI Settings Params");
+		GuiSettingsDesigner guiSettingsDesignerParams = new GuiSettingsDesigner(sectionGUIParams, this, geoDocument);
+		guiSettingsDesignerParams.createGuiSettingsParams(sectionGUIParams, toolkit);
+		
+		section3.setClient(sectionGUIParams);
 
 		section.pack();
 		sectionClient.pack();

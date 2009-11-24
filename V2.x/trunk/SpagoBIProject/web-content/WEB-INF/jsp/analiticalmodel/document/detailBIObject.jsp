@@ -969,149 +969,8 @@ function saveDocument(goBack) {
 		</span>
 	</a> -->
 	
-<a style="margin: 0px 0px 5px 10px;" id="metadataDiv_<%=obj.getId().toString()%>" name="metadataDiv_<%=obj.getId().toString()%>" > 
-		<span class='portlet-form-field-label'>
-			<spagobi:message key="metadata.insertMetadata"  />
-		</span> 
-</a>	
 <br>
-<br>
-	<!-- OPEN METADATA DIV -->	 
-<div id="metadata_<%=obj.getId().toString()%>"  >
-
-<!-- OPEN COLUMN WITH METADATA  -->	    
-<% 
-		      		String longDesc = obj.getExtendedDescription();
-		      		if(longDesc==null) {
-		      			longDesc = "";
-		      		}
-		      		//longDesc = GeneralUtilities.replace(longDesc,"'","\\'");
-
-		      		String objective = obj.getObjectve();
-		      		if(objective==null) {
-		      			objective = "";
-		      			
-		      		}
-		      		//objective = GeneralUtilities.replace(objective,"'","\\'");
-		      %>
-		      		
-		      		
-
-<table  class='header-sub-table-portlet-section' >		
-	<tr class='header-sub-row-portlet-section'>
-		<td class='header-sub-title-column-portlet-section'>
-			<spagobi:message key = "metadata.docMetadata" />
-		</td>
-	</tr>
-	<tr>
-		<td style='background:none;border:none'>&nbsp;
-		</td>
-	</tr>
-</table>		
-<table width="100%" cellspacing="0" border="0" id = "fieldsTable" >
-  <tr>
-  	<td>
-  		<div style="float:left;clear:left;width:200px;height:25px;" >
-			<span class='portlet-form-field-label' width="230" >
-				<spagobi:message key ="metadata.docLongDescr" />
-			</span>
-		</div>
-	</td>
-  </tr>
-  <tr>
-  	<td>
-	  <div id= "containerLongDescr">
-	  </div> 
-    </td>
-    <td>		
-	  <div class='div_detail_label'>
-			<span class='portlet-form-field-label'>
-				<spagobi:message key ="metadata.docLanguage" />
-			</span>
-	  </div>
-	  <div class='div_detail_form'>
-					<% 
-		      		String language = obj.getLanguage();
-		      		if(language==null) {
-		      			language = "";
-		      		}
-		      		%>
-		<input class='portlet-form-input-field' style='width:230px' type="text" 
- 			name="language" id="language" value="<%=StringEscapeUtils.escapeHtml(language)%>" />
-	  </div>	
-		
-	  <div class='div_detail_label'>
-			<span class='portlet-form-field-label'>
-				<spagobi:message key ="metadata.docKeyword" />
-			</span>
-	  </div>
-	  <div class='div_detail_form'>
-					<% 
-		      		String Keywords = obj.getKeywords();
-		      		if(Keywords==null) {
-		      			Keywords = "";
-		      		}
-		      		%>
-			<input class='portlet-form-input-field' style='width:230px' type="text" 
- 					name="Keywords" id="Keywords" value="<%=StringEscapeUtils.escapeHtml(Keywords)%>" />
-	  </div>										
-	</td>
-  </tr>
-  <tr>
-  	<td style='background:none;border:none'>&nbsp;
-  	</td>
-  </tr>
-  <tr>
-  	<td>			
-  		<div style="float:left;clear:left;width:200px;height:25px;" >
-					<span class='portlet-form-field-label'>
-						<spagobi:message key ="metadata.docObjective" />
-					</span>
-		</div>
-	</td>
-  </tr>
-  <tr>
-  	<td>
-		<div id= "containerObjective">
-		</div> 
-	</td>
-  </tr>		
-  <tr>
-  	<td style='background:none;border:none'>&nbsp;
-  	</td>
-  </tr>			
-</table> 
-</div>
-<!-- CLOSE METADATA DIV -->	 
-<script>
-Ext.onReady(function(){
-
-    Ext.QuickTips.init();
-
-	var top = new Ext.form.HtmlEditor({
-        frame: true,
-        bodyStyle:'padding:5px 5px 0',
-        width: 550,
-        height: 100,
-        value: '<%=StringEscapeUtils.escapeJavaScript(longDesc)%>',
-        renderTo: 'containerLongDescr',
-            id:'longDescription'            
-    });   
-    
-    var top1 = new Ext.form.HtmlEditor({
-        frame: true,
-        value: '<%=StringEscapeUtils.escapeJavaScript(objective)%>',
-        bodyStyle:'padding:5px 5px 0',
-        width: 550,
-        height: 100,
-        renderTo: 'containerObjective',
-            id:'objective'        
-    });   
-     
-	});	  
-	 	
-toggleWithCookie('metadata_<%=obj.getId().toString()%>', 'metadataDiv_<%=obj.getId().toString()%>', true );
-</script> 
+<br>		
 
 	
 <div id="par_<%=obj.getId().toString()%>"  >
@@ -1181,11 +1040,6 @@ function isBIObjectFormChanged() {
 	//var dataset = document.getElementById('dataset').value;
 	//var datasetLabel=document.getElementById('datasetLabel').value;
 	var state = document.getElementById('doc_state').value;
-	
-	var longDescription = document.getElementById('longDescription').value;
-	var objective = document.getElementById('objective').value;
-	var language = document.getElementById('language').value;
-	var keywords = document.getElementById('Keywords').value;
 
   
 	if ((label != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialBIObject.getLabel()))%>')
@@ -1198,10 +1052,6 @@ function isBIObjectFormChanged() {
 		|| (state != '<%=initialBIObject.getStateID()+","+initialBIObject.getStateCode()%>') 
 		|| (versionTemplateChanged == 'true')
 		|| (fileUploadChanged == 'true') 
-		 || (longDescription != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialBIObject.getExtendedDescription())) != null ? StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialBIObject.getExtendedDescription())) : ""%>')
-		 || (objective != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialBIObject.getObjectve())) != null ? StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialBIObject.getObjectve())) : ""%>')
-		|| (language != '<%= initialBIObject.getLanguage()!= null ? initialBIObject.getLanguage() : "" %>')
-		|| (keywords != '<%= initialBIObject.getKeywords()!= null ? initialBIObject.getKeywords() : "" %>')
 		){
 			
 		biobjFormModified = 'true';

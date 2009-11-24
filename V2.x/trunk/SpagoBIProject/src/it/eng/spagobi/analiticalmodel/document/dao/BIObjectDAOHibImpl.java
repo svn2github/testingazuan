@@ -477,12 +477,6 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			
 			hibBIObject.setRefreshSeconds(biObject.getRefreshSeconds());
 			
-			// metadata ... to uncomment when the user interface managed that fields
-			hibBIObject.setExtendedDescription(biObject.getExtendedDescription());
-			hibBIObject.setLanguage(biObject.getLanguage());
-			hibBIObject.setObjectve(biObject.getObjectve());
-			hibBIObject.setKeywords(biObject.getKeywords());
-			
 			// functionalities erasing
 			Set hibFunctionalities = hibBIObject.getSbiObjFuncs();
 			for (Iterator it = hibFunctionalities.iterator(); it.hasNext(); ) {
@@ -644,13 +638,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			String uuid = uuidObj.toString();
 			hibBIObject.setUuid(uuid);
 			
-			// metadata		
 			hibBIObject.setCreationDate(new Date());
-			hibBIObject.setExtendedDescription(obj.getExtendedDescription());
 			hibBIObject.setCreationUser(obj.getCreationUser());
-			hibBIObject.setLanguage(obj.getLanguage());
-			hibBIObject.setObjectve(obj.getObjectve());
-			hibBIObject.setKeywords(obj.getKeywords());
 			
 			// save biobject
 			Integer id = (Integer) aSession.save(hibBIObject);
@@ -1082,13 +1071,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			}
 			aBIObject.setFunctionalities(functionlities);
 			
-			// metadata
 			aBIObject.setCreationDate(hibBIObject.getCreationDate());
-			aBIObject.setExtendedDescription(hibBIObject.getExtendedDescription());
 			aBIObject.setCreationUser(hibBIObject.getCreationUser());
-			aBIObject.setLanguage(hibBIObject.getLanguage());
-			aBIObject.setObjectve(hibBIObject.getObjectve());
-			aBIObject.setKeywords(hibBIObject.getKeywords());
 			
 			aBIObject.setRefreshSeconds(hibBIObject.getRefreshSeconds());
 			logger.debug("OUT");

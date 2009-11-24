@@ -63,89 +63,12 @@ public class SbiObjects  implements java.io.Serializable {
      private Set sbiObjFuncs;
      private Set sbiObjStates;
      private String uuid;
-     // add this properties for metadata
-     private String extendedDescription=null;
-     private String objectve=null;
-     private String language=null;
-     private String keywords=null;
      private Date creationDate=null;
      private String creationUser=null;
      private Integer refreshSeconds=null;     
      private SbiDataSetConfig dataSet=null;
      
     // Constructors
-
-	/**
-     * Gets the extended description.
-     * 
-     * @return the extended description
-     */
-    public String getExtendedDescription() {
-        return extendedDescription;
-    }
-
-    /**
-     * Sets the extended description.
-     * 
-     * @param extendedDescription the new extended description
-     */
-    public void setExtendedDescription(String extendedDescription) {
-        this.extendedDescription = extendedDescription;
-    }
-
-    /**
-     * Gets the objectve.
-     * 
-     * @return the objectve
-     */
-    public String getObjectve() {
-        return objectve;
-    }
-
-    /**
-     * Sets the objectve.
-     * 
-     * @param objectve the new objectve
-     */
-    public void setObjectve(String objectve) {
-        this.objectve = objectve;
-    }
-
-    /**
-     * Gets the language.
-     * 
-     * @return the language
-     */
-    public String getLanguage() {
-        return language;
-    }
-
-    /**
-     * Sets the language.
-     * 
-     * @param language the new language
-     */
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-    
-    /**
-     * Gets the keywords.
-     * 
-     * @return the keywords
-     */
-    public String getKeywords() {
-        return keywords;
-    }
-
-    /**
-     * Sets the keywords.
-     * 
-     * @param keywords the new keywords
-     */
-    public void setKeywords(String keywords) {
-        this.keywords = keywords;
-    }
 
     /**
      * Gets the creation date.

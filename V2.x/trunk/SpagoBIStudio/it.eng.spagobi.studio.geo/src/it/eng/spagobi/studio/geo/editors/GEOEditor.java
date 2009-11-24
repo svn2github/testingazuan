@@ -244,11 +244,7 @@ public class GEOEditor extends EditorPart {
 		gl.marginLeft = 5;
 		sectionClient.setLayout(gl);
 
-		HierarchiesDesigner designer = new HierarchiesDesigner(sectionClient,
-				this);
 
-		geoDocument = Activator.getDefault().getGeoDocument();
-		designer.setGeoDocument(geoDocument);
 		measuresDesigner = new MeasuresDesigner(sectionClient, this,
 				geoDocument);
 
@@ -267,12 +263,59 @@ public class GEOEditor extends EditorPart {
 
 		createDatasetTable(sectionClient, datasetGroup);
 		createMapTable(sectionClient, mapGroup);
-
-		designer.createHierarchiesTree(sectionClient, toolkit);
-		CrossNavigationDesigner crossNavigationDesigner = new CrossNavigationDesigner(sectionClient, this, geoDocument);
-		crossNavigationDesigner.createCrossnavigationTable(sectionClient, toolkit);
-		
 		section.setClient(sectionClient);
+		
+		Section section0 = toolkit.createSection(form.getBody(), Section.DESCRIPTION|Section.TITLE_BAR|Section.TWISTIE);
+		Composite sectionHier = toolkit.createComposite(section0, SWT.RESIZE);
+		sectionHier.setLayout(gl);
+		section0.addExpansionListener(new ExpansionAdapter() {
+			public void expansionStateChanged(ExpansionEvent e) {
+				form.reflow(true);
+			}
+		});
+		
+
+		section0.setText("Hierarchies");
+		section0.setDescription("Define Hierarchies and Levels");
+		HierarchiesDesigner designer = new HierarchiesDesigner(sectionHier,
+				this);
+
+		geoDocument = Activator.getDefault().getGeoDocument();
+		designer.setGeoDocument(geoDocument);
+		designer.createHierarchiesTree(sectionHier, toolkit);
+		
+		section0.setClient(sectionHier);
+		
+		Section section1 = toolkit.createSection(form.getBody(), Section.DESCRIPTION|Section.TITLE_BAR|Section.TWISTIE);
+		Composite sectionCrossNav = toolkit.createComposite(section1, SWT.RESIZE);
+		sectionCrossNav.setLayout(gl);
+		section1.addExpansionListener(new ExpansionAdapter() {
+			public void expansionStateChanged(ExpansionEvent e) {
+				form.reflow(true);
+			}
+		});
+		section1.setText("Cross Navigation");
+		section1.setDescription("Fill parameters for Cross Navigation");
+		CrossNavigationDesigner crossNavigationDesigner = new CrossNavigationDesigner(sectionCrossNav, this, geoDocument);
+		crossNavigationDesigner.createCrossnavigationTable(sectionCrossNav, toolkit);
+		
+		section1.setClient(sectionCrossNav);
+		
+		
+		Section section2 = toolkit.createSection(form.getBody(), Section.DESCRIPTION|Section.TITLE_BAR|Section.TWISTIE);
+		Composite sectionGUI = toolkit.createComposite(section2, SWT.RESIZE);
+		sectionGUI.setLayout(gl);
+		section2.addExpansionListener(new ExpansionAdapter() {
+			public void expansionStateChanged(ExpansionEvent e) {
+				form.reflow(true);
+			}
+		});
+		section2.setText("GUI Settings - Windows");
+		section2.setDescription("Insert parameters for GUI Settings Windows");
+		GuiSettingsDesigner guiSettingsDesigner = new GuiSettingsDesigner(sectionGUI, this, geoDocument);
+		guiSettingsDesigner.createGuiSettingsTable(sectionGUI, toolkit);
+		
+		section2.setClient(sectionGUI);
 
 		section.pack();
 		sectionClient.pack();
@@ -495,7 +538,13 @@ public class GEOEditor extends EditorPart {
 								.getColumnId());
 					}if (col != null
 							&& col.getType().equalsIgnoreCase("geoid")) {
-						createGeoIdHierarchiesShell(sectionClient, col);
+						//check if another geoid is already defined
+						if(!MetadataBO.geoidColumnExists(geoDocument)){
+							createGeoIdHierarchiesShell(sectionClient, col);
+						}else{
+							MessageDialog.openWarning(sectionClient.getShell(), "Warning", "Another column of type geoid is already defined.");							
+						}
+						
 					} else {
 						MessageDialog.openWarning(sectionClient.getShell(),
 								"Warning", "Operation denied.");
@@ -530,7 +579,6 @@ public class GEOEditor extends EditorPart {
 		cancel.setLayoutData (data);
 		cancel.addSelectionListener (new SelectionAdapter () {
 			public void widgetSelected (SelectionEvent e) {
-				System.out.println("User cancelled dialog");
 				dialog.close ();
 			}
 		});
@@ -1044,7 +1092,15 @@ public class GEOEditor extends EditorPart {
 					if (comboSel.getText().equalsIgnoreCase("measures")) {
 						item.setImage(0, measureIcon.createImage());
 					} else if(comboSel.getText().equalsIgnoreCase("geoid")){
-						item.setImage(0, idIcon.createImage());
+						//check if another geoid is already defined
+						if(!MetadataBO.geoidColumnExists(geoDocument)){
+							item.setImage(0, idIcon.createImage());
+						}else{
+							MessageDialog.openWarning(datasetTable.getParent().getShell(), "Warning", "Another column of type geoid is already defined.");		
+							comboSel.deselectAll();
+						}
+						
+						
 					}else {
 						if (item.getImage() != null) {
 							item.setImage(0, null);

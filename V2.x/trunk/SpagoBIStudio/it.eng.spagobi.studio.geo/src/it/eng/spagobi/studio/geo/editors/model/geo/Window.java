@@ -1,6 +1,7 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
 import java.io.Serializable;
+import java.util.Vector;
 
 public class Window   implements Serializable{
 	/**
@@ -12,15 +13,17 @@ public class Window   implements Serializable{
 	private String name;
 
 
-	private Param param;
+	private Vector<Param> params;
 
-	public Param getParam() {
-		return param;
+
+	public Vector<Param> getParams() {
+		return params;
 	}
 
-	public void setParam(Param param) {
-		this.param = param;
+	public void setParams(Vector<Param> params) {
+		this.params = params;
 	}
+
 	public String getName() {
 		return name;
 	}

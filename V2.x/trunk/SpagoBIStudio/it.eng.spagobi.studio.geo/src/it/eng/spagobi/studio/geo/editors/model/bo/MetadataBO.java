@@ -23,4 +23,17 @@ public class MetadataBO {
 		DatamartProvider dmProvider = geoDocument.getDatamartProvider();
 		return dmProvider.getMetadata();
 	}
+	public static boolean geoidColumnExists(GEODocument geoDocument){
+		DatamartProvider dmProvider = geoDocument.getDatamartProvider();
+		Metadata metadata = dmProvider.getMetadata();
+		if(metadata != null && metadata.getColumn() != null){
+			for(int i=0; i<metadata.getColumn().size(); i++){
+				Column col = metadata.getColumn().elementAt(i);
+				if(col.getType() != null && col.getType().equalsIgnoreCase("geoid")){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

@@ -190,12 +190,12 @@ public class HierarchiesDesigner {
 				
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.horizontalSpan =4;
-		gd.heightHint=150;
-		gd.minimumHeight=100;
+		gd.heightHint=100;
+		gd.minimumHeight=70;
 		gd.verticalAlignment=SWT.TOP;
 				
 		final Group hierarchiesGroup = new Group(sectionClient, SWT.FILL);
-		hierarchiesGroup.setText("Hierarchies");
+		//hierarchiesGroup.setText("Hierarchies");
 		hierarchiesGroup.setLayoutData(gd);
 		hierarchiesGroup.setLayout(sectionClient.getLayout());
 

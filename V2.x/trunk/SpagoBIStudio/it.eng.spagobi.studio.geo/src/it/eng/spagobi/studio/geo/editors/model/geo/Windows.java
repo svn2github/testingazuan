@@ -12,7 +12,7 @@ public class Windows   implements Serializable{
 	private static final long serialVersionUID = 2376495538216584683L;
 	private Defaults defaults;
 	private Vector<Window> window;
-	private Vector<Param> params;
+	
 	public Defaults getDefaults() {
 		return defaults;
 	}
@@ -24,12 +24,6 @@ public class Windows   implements Serializable{
 	}
 	public void setWindow(Vector<Window> window) {
 		this.window = window;
-	}
-	public Vector<Param> getParams() {
-		return params;
-	}
-	public void setParams(Vector<Param> params) {
-		this.params = params;
 	}
 
 }

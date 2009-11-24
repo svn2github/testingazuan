@@ -60,7 +60,7 @@ public class DocumentParametersView extends ViewPart {
 		// Creating the Screen
 		Section section = toolkit.createSection(parent, Section.DESCRIPTION
 				| Section.TITLE_BAR);
-		section.setText("Properties of selected document"); //$NON-NLS-1$
+		section.setText("Parameters of selected document"); //$NON-NLS-1$
 		client = toolkit.createComposite(section, SWT.WRAP);
 		layout = new GridLayout();
 		layout.numColumns = 1;

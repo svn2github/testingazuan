@@ -93,6 +93,11 @@
         <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingmysql/SbiAlarmEvent.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingmysql/SbiAlarmContact.hbm.xml" />
         
+         <!-- Obj Metadata -->
+        <mapping resource="it/eng/spagobi/tools/objmetadata/metadata/mappingmysql/SbiObjMetadata.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/objmetadata/metadata/mappingmysql/SbiObjMetacontents.hbm.xml" />
+        
+        <!-- end mapping -->
         <class-cache class="it.eng.spagobi.commons.metadata.SbiDomains" usage="read-only"/>
         <class-cache class="it.eng.spagobi.commons.metadata.SbiUserFunctionality" usage="read-only"/>
         <class-cache class="it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig" usage="nonstrict-read-write"/>

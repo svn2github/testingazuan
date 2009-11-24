@@ -93,5 +93,10 @@
         <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingora/SbiAlarm.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingora/SbiAlarmEvent.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingora/SbiAlarmContact.hbm.xml" />
+        
+        <!-- Obj Metadata -->
+        <mapping resource="it/eng/spagobi/tools/objmetadata/metadata/mappingora/SbiObjMetadata.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/objmetadata/metadata/mappingora/SbiObjMetacontents.hbm.xml" />
+        
     </session-factory>
 </hibernate-configuration>

@@ -85,5 +85,10 @@
         <!-- Menu -->
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingsqlserver/SbiMenu.hbm.xml" />
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingsqlserver/SbiMenuRole.hbm.xml" />
+        
+        <!-- Obj Metadata
+        <mapping resource="it/eng/spagobi/tools/objmetadata/metadata/mappingsqlserver/SbiObjMetadata.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/objmetadata/metadata/mappingsqlserver/SbiObjMetacontents.hbm.xml" /> -->
+        
     </session-factory>
 </hibernate-configuration>

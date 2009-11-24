@@ -50,6 +50,8 @@
 		<DAO name="KpiInstanceDAO" implementation="it.eng.spagobi.kpi.config.dao.KpiInstanceDAOImpl" />
 		<DAO name="ResourceDAO" implementation="it.eng.spagobi.kpi.model.dao.ResourceDAOImpl" />
 		<DAO name="KpiInstPeriodDAO" implementation="it.eng.spagobi.kpi.config.dao.KpiInstPeriodDAOImpl" />
+		<DAO name="ObjMetadataDAO" implementation="it.eng.spagobi.tools.objmetadata.dao.ObjMetadataDAOHibImpl" />
+		<DAO name="ObjMetacontentDAO" implementation="it.eng.spagobi.tools.objmetadata.dao.ObjMetacontentDAOHibImpl" />
 	 </DAO-CONF>     
      
      <!-- ********************* END DAO CONFIGURATION ************************ -->

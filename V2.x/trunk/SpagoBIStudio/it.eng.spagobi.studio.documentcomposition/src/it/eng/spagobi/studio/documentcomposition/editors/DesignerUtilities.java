@@ -1,6 +1,8 @@
 package it.eng.spagobi.studio.documentcomposition.editors;
 
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 
 public class DesignerUtilities {
 
@@ -58,5 +60,16 @@ public class DesignerUtilities {
 		return toReturn;
 	}
 
+	public static void printPointer(String nomeEvento,Event event, Rectangle container, int x, int y){
+		System.out.println("----------"+nomeEvento+"-----------------");
+		if(event!=null){
+			System.out.println("Evento: "+event.x+"/"+event.y);
+		}
+		if(container!=null){
+			System.out.println("Container: "+container.x+"/"+container.y);			
+		}
+		System.out.println("Temporaneo: "+x+"/"+y);
+		System.out.println("---------------------------");
+	}
 
 }

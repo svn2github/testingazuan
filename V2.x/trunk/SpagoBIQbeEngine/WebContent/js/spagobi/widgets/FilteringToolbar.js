@@ -276,7 +276,15 @@ Ext.extend(Sbi.widgets.FilteringToolbar, Ext.Toolbar, {
 				this.typeStore.loadData([[meta.fields[i].type, meta.fields[i].type]],false);
 				this.typeCombo.setValue(meta.fields[i].type);
 				this.columnNameCombo.setValue(meta.fields[i].name);
-				
+				if(meta.fields[i].type=='int' || meta.fields[i].type=='date'){
+					this.filterStore.loadData([
+	              	  ['EQUALS TO', '=']
+	                , ['LESS THAN', '<']
+	                , ['EQUALS OR LESS THAN', '<=']
+	                , ['GREATER THAN', '>']
+	 	            , ['EQUALS OR GREATER THAN', '>=']
+	        		],false);
+				}
 			}
 		}
 	}

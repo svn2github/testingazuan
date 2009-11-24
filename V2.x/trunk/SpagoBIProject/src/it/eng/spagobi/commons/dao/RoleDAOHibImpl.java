@@ -315,6 +315,7 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 			hibRole.setIsAbleToSeeViewpoints(new Boolean(aRole.isAbleToSeeViewpoints()));
 			hibRole.setIsAbleToSeeNotes(new Boolean(aRole.isAbleToSeeNotes()));
 			hibRole.setIsAbleToSeeMetadata(new Boolean(aRole.isAbleToSeeMetadata()));
+			hibRole.setIsAbleToSaveMetadata(new Boolean(aRole.isAbleToSaveMetadata()));
 			hibRole.setIsAbleToSendMail(new Boolean(aRole.isAbleToSendMail()));
 			hibRole.setIsAbleToSaveRememberMe(new Boolean(aRole.isAbleToSaveRememberMe()));
 			hibRole.setIsAbleToSaveIntoPersonalFolder(new Boolean(aRole.isAbleToSaveIntoPersonalFolder()));
@@ -508,6 +509,7 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 		role.setIsAbleToSeeViewpoints(hibRole.getIsAbleToSeeViewpoints() == null || hibRole.getIsAbleToSeeViewpoints().booleanValue());
 		role.setIsAbleToSeeNotes(hibRole.getIsAbleToSeeNotes() == null || hibRole.getIsAbleToSeeNotes().booleanValue());
 		role.setIsAbleToSeeMetadata(hibRole.getIsAbleToSeeMetadata() == null || hibRole.getIsAbleToSeeMetadata().booleanValue());
+		role.setIsAbleToSaveMetadata(hibRole.getIsAbleToSaveMetadata() == null || hibRole.getIsAbleToSaveMetadata().booleanValue());
 		role.setIsAbleToSendMail(hibRole.getIsAbleToSendMail() == null || hibRole.getIsAbleToSendMail().booleanValue());
 		role.setIsAbleToSaveRememberMe(hibRole.getIsAbleToSaveRememberMe() == null || hibRole.getIsAbleToSaveRememberMe().booleanValue());
 		role.setIsAbleToSaveIntoPersonalFolder(hibRole.getIsAbleToSaveIntoPersonalFolder() == null || hibRole.getIsAbleToSaveIntoPersonalFolder().booleanValue());

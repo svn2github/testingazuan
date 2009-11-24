@@ -112,11 +112,7 @@ public class DocumentsJSONSerializer implements Serializer {
 			result.put(STATEID, obj.getStateID());
 			result.put(FUNCTIONALITIES, obj.getFunctionalities());
 			result.put(CREATIONDATE, obj.getCreationDate());
-			result.put(EXTENDEDDESCRIPTION, obj.getExtendedDescription());
 			result.put(CREATIONUSER, obj.getCreationUser());
-			result.put(LANGUAGE, obj.getLanguage());
-			result.put(OBJECTVE, obj.getObjectve());
-			result.put(KEYWORDS, obj.getKeywords());
 			result.put(REFRESHSECONDS, obj.getRefreshSeconds());
 			result.put(ACTIONS, new JSONArray());
 			 

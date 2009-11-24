@@ -243,13 +243,8 @@ public class DetBIObjModHelper {
 		obj.setStateCode(stateCode);
 		obj.setStateID(stateId);
 		//obj.setPath(path);
-		// metadata
 		obj.setCreationUser(userId);
-		obj.setExtendedDescription(longDescription);
-		obj.setObjectve(objective);
-		obj.setLanguage(language);
 		//obj.setRating(Rating == null ? null : new Short(Rating));
-		obj.setKeywords(Keywords);
 		obj.setRefreshSeconds(refreshSeconds);
 		// RETURN OBJECT
 		return obj;
@@ -460,10 +455,6 @@ public class DetBIObjModHelper {
 		objClone.setRelName(obj.getRelName());
 		objClone.setStateCode(obj.getStateCode());
 		objClone.setStateID(obj.getStateID());
-		objClone.setExtendedDescription(obj.getExtendedDescription());
-		objClone.setObjectve(obj.getObjectve());
-		objClone.setLanguage(obj.getLanguage());
-		objClone.setKeywords(obj.getKeywords());
 		objClone.setRefreshSeconds(obj.getRefreshSeconds());
 		return objClone;
 	}

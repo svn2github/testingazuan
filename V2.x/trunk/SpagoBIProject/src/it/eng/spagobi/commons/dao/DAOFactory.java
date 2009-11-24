@@ -72,6 +72,8 @@ import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapsDAO;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 import it.eng.spagobi.tools.distributionlist.dao.IDistributionListDAO;
+import it.eng.spagobi.tools.objmetadata.dao.IObjMetacontentDAO;
+import it.eng.spagobi.tools.objmetadata.dao.IObjMetadataDAO;
 import it.eng.spagobi.wapp.dao.IMenuDAO;
 import it.eng.spagobi.wapp.dao.IMenuRolesDAO;
 
@@ -623,5 +625,26 @@ public class DAOFactory {
 		return (IKpiInstPeriodDAO)createDAOInstance("KpiInstPeriodDAO");
 	}
 	
+	/**
+	 * Creates a DAO instance for a object Metadata.
+	 * 
+	 * @return a DAO instance for the  predefined object metadata
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public static IObjMetadataDAO getObjMetadataDAO() throws EMFUserError{
+		return (IObjMetadataDAO)createDAOInstance("ObjMetadataDAO");
+	}
+	
+	/**
+	 * Creates a DAO instance for a object Metadata.
+	 * 
+	 * @return a DAO instance for the  predefined object metadata
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public static IObjMetacontentDAO getObjMetacontentDAO() throws EMFUserError{
+		return (IObjMetacontentDAO)createDAOInstance("ObjMetacontentDAO");
+	}
 	
 }

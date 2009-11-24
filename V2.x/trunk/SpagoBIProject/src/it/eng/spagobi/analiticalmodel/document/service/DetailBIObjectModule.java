@@ -724,7 +724,6 @@ public class DetailBIObjectModule extends AbstractModule {
             obj.setDataSourceId(null);
             obj.setDataSetId(null);
             obj.setDescription("");
-            obj.setExtendedDescription("");
             obj.setLabel("");
             obj.setName("");
             obj.setEncrypt(new Integer(0));

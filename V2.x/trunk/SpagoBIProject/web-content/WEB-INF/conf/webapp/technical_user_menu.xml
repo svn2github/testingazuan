@@ -23,6 +23,10 @@
 				functionality="MapFeaturesManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListFeaturesPage"
 				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/mapcatalogue/featureManagement16.png" />
+		<ITEM	title="#menu.MetadataMan"
+				functionality="ObjMetadataManagement"
+				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListObjMetadataPage"
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/tools/objmetadata/document-meta.gif" />
 	</ITEM>
 	
 	<ITEM	code="analyticalModel" 

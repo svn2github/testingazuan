@@ -182,7 +182,17 @@ public class HQLStatement extends BasicStatement {
 			public String getName() {return CriteriaConstants.BETWEEN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertTrue(rightHandValue.contains(","), "When  BEETWEEN operator is used the operand have to be specified in the following form: minVal,MaxVal");
-				String[] bounds = rightHandValue.split(",");
+				String[] bounds = new String[2];
+				if(rightHandValue.contains("STR_TO_DATE") || rightHandValue.contains("TO_TIMESTAMP") ){
+					int firstComma = rightHandValue.indexOf(',');
+					int correctComma = rightHandValue.indexOf(',', firstComma+1);
+					String minValue = rightHandValue.substring(0, correctComma-1);
+					String maxValue = rightHandValue.substring(correctComma+1, rightHandValue.length());
+					bounds[0]=minValue;
+					bounds[1]=maxValue;
+				}else{
+					bounds = rightHandValue.split(",");
+				}
 				Assert.assertTrue(bounds.length == 2, "When  BEETWEEN operator is used the operand have to be specified in the following form: minVal,MaxVal");
 				return leftHandValue + " BETWEEN " + bounds[0] + " AND " + bounds[1];
 			}
@@ -191,7 +201,17 @@ public class HQLStatement extends BasicStatement {
 			public String getName() {return CriteriaConstants.NOT_BETWEEN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertTrue(rightHandValue.contains(","), "When  NOT BEETWEEN operator is used the operand have to be specified in the following form: minVal,MaxVal");
-				String[] bounds = rightHandValue.split(",");
+				String[] bounds = new String[2];
+				if(rightHandValue.contains("STR_TO_DATE") || rightHandValue.contains("TO_TIMESTAMP") ){
+					int firstComma = rightHandValue.indexOf(',');
+					int correctComma = rightHandValue.indexOf(',', firstComma+1);
+					String minValue = rightHandValue.substring(0, correctComma-1);
+					String maxValue = rightHandValue.substring(correctComma+1, rightHandValue.length());
+					bounds[0]=minValue;
+					bounds[1]=maxValue;
+				}else{
+					bounds = rightHandValue.split(",");
+				}
 				Assert.assertTrue(bounds.length == 2, "When  NOT BEETWEEN operator is used the operand have to be specified in the following form: minVal,MaxVal");
 				return leftHandValue + " NOT BETWEEN " + bounds[0] + " AND " + bounds[1];
 			}

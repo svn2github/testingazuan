@@ -1,11 +1,8 @@
 package it.eng.spagobi.engines.chart.bo.charttypes.blockcharts.util;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.chart.bo.charttypes.XYCharts.BlockChart;
 import it.eng.spagobi.engines.chart.bo.charttypes.blockcharts.BlockCharts;
-import it.eng.spagobi.engines.chart.bo.charttypes.blockcharts.TimeBlockChart;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.jfree.data.time.Hour;
 import org.jfree.data.time.Minute;
 
-import com.sun.org.apache.bcel.internal.verifier.statics.DOUBLE_Upper;
 
 public class Activity {
 

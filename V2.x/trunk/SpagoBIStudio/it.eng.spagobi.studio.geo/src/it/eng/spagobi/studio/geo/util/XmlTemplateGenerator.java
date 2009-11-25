@@ -1,5 +1,6 @@
 package it.eng.spagobi.studio.geo.util;
 
+import it.eng.spagobi.studio.geo.editors.model.bo.Label;
 import it.eng.spagobi.studio.geo.editors.model.geo.Colours;
 import it.eng.spagobi.studio.geo.editors.model.geo.Column;
 import it.eng.spagobi.studio.geo.editors.model.geo.CrossNavigation;
@@ -7,12 +8,14 @@ import it.eng.spagobi.studio.geo.editors.model.geo.DatamartProvider;
 import it.eng.spagobi.studio.geo.editors.model.geo.Dataset;
 import it.eng.spagobi.studio.geo.editors.model.geo.Datasource;
 import it.eng.spagobi.studio.geo.editors.model.geo.Defaults;
+import it.eng.spagobi.studio.geo.editors.model.geo.Format;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.editors.model.geo.GuiParam;
 import it.eng.spagobi.studio.geo.editors.model.geo.GuiSettings;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchies;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchy;
 import it.eng.spagobi.studio.geo.editors.model.geo.KPI;
+import it.eng.spagobi.studio.geo.editors.model.geo.Labels;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layer;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layers;
 import it.eng.spagobi.studio.geo.editors.model.geo.Level;
@@ -34,7 +37,6 @@ import org.eclipse.core.runtime.CoreException;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
-import com.thoughtworks.xstream.mapper.MapperWrapper;
 
 public class XmlTemplateGenerator {
 
@@ -195,10 +197,26 @@ public class XmlTemplateGenerator {
 		xstream.useAttributeFor(GuiParam.class, "name");
 		xstream.aliasField("name", GuiParam.class, "name");
 				
-		xstream.aliasField("DEFAULTS", Windows.class, "defaults");
-		xstream.addImplicitCollection(Defaults.class, "params", "PARAM", GuiParam.class);
-		xstream.useAttributeFor(GuiParam.class, "name");
-		xstream.aliasField("name", GuiParam.class, "name");
+			xstream.aliasField("DEFAULTS", Windows.class, "defaults");
+			xstream.addImplicitCollection(Defaults.class, "params", "PARAM", GuiParam.class);
+			xstream.useAttributeFor(GuiParam.class, "name");
+			xstream.aliasField("name", GuiParam.class, "name");
+			
+		xstream.aliasField("LABELS", GuiSettings.class, "labels");
+		xstream.addImplicitCollection(Labels.class, "labels", "LABEL", Label.class);
+		xstream.useAttributeFor(Label.class, "position");
+		xstream.aliasField("position", Label.class, "position");
+		xstream.useAttributeFor(Label.class, "className");
+		xstream.aliasField("class_name", Label.class, "className");
+		xstream.aliasField("TEXT", Label.class, "text");
+		xstream.addImplicitCollection(Label.class, "params", "PARAM", GuiParam.class);
+			xstream.aliasField("FORMAT", Label.class, "format");
+			xstream.useAttributeFor(Format.class, "day");
+			xstream.aliasField("day", Format.class, "day");
+			xstream.useAttributeFor(Format.class, "hour");
+			xstream.aliasField("hour", Format.class, "hour");
+
+		
 		
 	}
 

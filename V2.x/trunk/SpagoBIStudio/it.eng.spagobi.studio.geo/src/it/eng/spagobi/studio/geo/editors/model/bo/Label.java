@@ -29,5 +29,23 @@ public class Label implements Serializable {
 	public void setClassName(String className) {
 		this.className = className;
 	}
+	public Format getFormat() {
+		return format;
+	}
+	public void setFormat(Format format) {
+		this.format = format;
+	}
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
+	}
+	public Vector<GuiParam> getParams() {
+		return params;
+	}
+	public void setParams(Vector<GuiParam> params) {
+		this.params = params;
+	}
 
 }

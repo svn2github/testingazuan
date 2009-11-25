@@ -35,13 +35,14 @@ public class LayerBO {
 		MapRenderer mapRenderer = geoDocument.getMapRenderer();
 		Layers layers = mapRenderer.getLayers();
 		Vector<Layer> layer = layers.getLayer();
-		for (int i = 0; i < layer.size(); i++) {
-			if (layer.elementAt(i).getName().equals(featureId)) {
-				layerRet = layer.elementAt(i);
+		if(layer != null){
+			for (int i = 0; i < layer.size(); i++) {
+				if (layer.elementAt(i).getName().equals(featureId)) {
+					layerRet = layer.elementAt(i);
+				}
+	
 			}
-
 		}
-
 		return layerRet;
 	}
 

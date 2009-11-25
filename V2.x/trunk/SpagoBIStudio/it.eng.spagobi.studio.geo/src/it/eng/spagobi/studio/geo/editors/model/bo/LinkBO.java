@@ -49,7 +49,6 @@ public class LinkBO {
 	}
 	
 	public static LinkParam getLinkParam(Link link, LinkParam param) {
-
 		Vector<LinkParam> params = link.getParam();
 		if(params != null){
 			params = new Vector<LinkParam>();
@@ -57,8 +56,18 @@ public class LinkBO {
 				return param;
 			}
 		}
-
 		return null;
+	}
+	public static void deleteLinkParam(Link link, String paramName) {
+		Vector<LinkParam> params = link.getParam();
+		if(params != null){
+			for(int i=0; i<params.size(); i++){
+				LinkParam param = params.elementAt(i);
+				if(param.getName()!= null && param.getName().equals(paramName)){
+					params.remove(param);
+				}
+			}
+		}
 	}
 
 	public static Link getLinkByHierarchyAndLevel(GEODocument geoDocument,

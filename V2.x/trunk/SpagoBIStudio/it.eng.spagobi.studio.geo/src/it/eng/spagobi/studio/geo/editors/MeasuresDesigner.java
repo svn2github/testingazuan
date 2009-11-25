@@ -21,6 +21,8 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 public class MeasuresDesigner {
@@ -328,6 +330,10 @@ public class MeasuresDesigner {
 				if(confirm){
 					KPI kpiToDelete = fillMeasure(dialog, columnName);
 					KpiBO.deleteMeasure(geoDocument, kpiToDelete);
+					Table datasetTable = editor.getDatasetTable();
+					TableItem[] selectedRow = datasetTable.getSelection();
+					Combo combo =(Combo)selectedRow[0].getData();
+					combo.deselectAll();
 				}
 				editor.setIsDirty(true);
 				dialog.close ();

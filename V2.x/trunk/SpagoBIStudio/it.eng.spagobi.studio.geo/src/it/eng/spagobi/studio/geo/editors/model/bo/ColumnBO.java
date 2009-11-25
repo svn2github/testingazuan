@@ -35,13 +35,14 @@ public class ColumnBO {
 		DatamartProvider dmProvider = geoDocument.getDatamartProvider();
 		Metadata metadata =dmProvider.getMetadata();
 		Vector<Column> columns = metadata.getColumn();
-		for(int i=0; i<columns.size(); i++){
-			if(columns.elementAt(i).getColumnId().equals(columnId)){
-				column=columns.elementAt(i);
+		if(columns != null){
+			for(int i=0; i<columns.size(); i++){
+				if(columns.elementAt(i).getColumnId().equals(columnId)){
+					column=columns.elementAt(i);
+				}
+				
 			}
-			
 		}
-
 		return column;
 	}
 

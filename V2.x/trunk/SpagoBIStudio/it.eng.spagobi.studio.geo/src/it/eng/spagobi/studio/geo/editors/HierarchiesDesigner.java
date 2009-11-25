@@ -136,7 +136,7 @@ public class HierarchiesDesigner {
 			LevelBO.deleteLevel(geoDocument, item.getParentItem().getText(), item.getText());
 		}
 		item.dispose();
-        hierarchiesTree.pack();
+        //hierarchiesTree.pack();
         hierarchiesTree.redraw();
         editor.setIsDirty(true);
 	}

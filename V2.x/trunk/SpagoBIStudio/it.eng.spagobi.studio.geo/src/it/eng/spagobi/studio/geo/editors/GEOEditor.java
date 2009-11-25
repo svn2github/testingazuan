@@ -112,6 +112,8 @@ public class GEOEditor extends EditorPart {
 
 	private String selectedDataset;
 	private String selectedMap;
+
+
 	private Table datasetTable;
 	private Combo datasetCombo;
 	private Table mapTable;
@@ -226,7 +228,7 @@ public class GEOEditor extends EditorPart {
 		final Section section = toolkit.createSection(form.getBody(),
 				Section.TITLE_BAR | SWT.RESIZE | SWT.TOP);
 
-		section.setSize(1000, 1000);
+		//section.setSize(1000, 1000);
 		section.addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanged(ExpansionEvent e) {
 				// parent.setSize(width, height);
@@ -1121,19 +1123,19 @@ public class GEOEditor extends EditorPart {
 					// per valorizzare table item col valore del widget
 					// contenuto
 					item.setText(2, comboSel.getText());
+					Column col = ColumnBO.getColumnByName(geoDocument,
+							item.getText());
 					if (comboSel.getText().equalsIgnoreCase("measures")) {
 						item.setImage(0, measureIcon.createImage());
 					} else if(comboSel.getText().equalsIgnoreCase("geoid")){
 						//check if another geoid is already defined
-						
-						if(MetadataBO.geoidColumnExists(geoDocument) != null){
+						Column colGeoid = MetadataBO.geoidColumnExists(geoDocument);
+						if(colGeoid == null ||(colGeoid != null && colGeoid.equals(col))){
 							item.setImage(0, idIcon.createImage());
 						}else{
 							MessageDialog.openWarning(datasetTable.getParent().getShell(), "Warning", "Another column of type geoid is already defined.");		
 							comboSel.deselectAll();
-						}
-						
-						
+						}					
 					}else {
 						if (item.getImage() != null) {
 							item.setImage(0, null);
@@ -1188,6 +1190,8 @@ public class GEOEditor extends EditorPart {
 			editor.grabVertical = true;
 			editor.setEditor(comboAgg, item, DATASET_AGGREGATION);
 			datasetTableEditors.add(editor);
+			
+			item.setData(comboSel);
 
 			datasetTable.pack();
 			datasetTable.redraw();
@@ -1310,5 +1314,11 @@ public class GEOEditor extends EditorPart {
 	public void setSelectedMap(String selectedMap) {
 		this.selectedMap = selectedMap;
 	}
+	public Table getDatasetTable() {
+		return datasetTable;
+	}
 
+	public void setDatasetTable(Table datasetTable) {
+		this.datasetTable = datasetTable;
+	}
 }

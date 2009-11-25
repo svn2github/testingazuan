@@ -68,7 +68,7 @@ public class KpiBO {
 	}
 	
 	public static KPI getMeasureByColumnId(GEODocument geoDocument, String columnIdToSearch){
-		KPI kpi = null;
+		KPI kpiToReturn = null;
 		MapRenderer mapRenderer = geoDocument.getMapRenderer();
 		Measures measures = mapRenderer.getMeasures();
 		if(measures != null){
@@ -76,15 +76,15 @@ public class KpiBO {
 			if(kpis != null){
 				int kpisSize =kpis.size();
 				for(int i=0; i< kpisSize; i++){
-					kpi = kpis.elementAt(i);
+					KPI kpi = kpis.elementAt(i);
 					String columnId = kpi.getColumnId();
 					if(columnIdToSearch.equals(columnId)){
-						return kpi;
+						kpiToReturn = kpi;
 					}
 				}
 
 			}
 		}
-		return kpi;
+		return kpiToReturn;
 	}
 }

@@ -339,7 +339,7 @@
         <COLUMN label="ID" name="ID" hidden="true" />        
         <COLUMN label="SBIDev.predLovList.columnLabel" name="LABEL"/>
         <COLUMN label="SBIDev.predLovList.columnName" name="NAME"/>
-        <COLUMN label="SBIDev.predLovList.columnDesc" name="DESCRIPTION"/>
+        <COLUMN label="SBIDev.predLovList.columnDesc" name="DESCR"/>
       	<COLUMN label="SBIDev.predLovList.columnType" name="TYPE"/>
       	<COLUMN label="SBIDev.predLovList.columnParameters" name="N_OF_PARAMETERS" horizontal-align="CENTER"/>
       </COLUMNS>

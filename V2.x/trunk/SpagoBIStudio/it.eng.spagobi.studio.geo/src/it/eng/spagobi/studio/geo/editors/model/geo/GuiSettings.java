@@ -11,6 +11,8 @@ public class GuiSettings   implements Serializable{
 	private static final long serialVersionUID = 6664124887478223504L;
 	private Vector<GuiParam> params;
 	private Windows windows;
+	private Labels labels;
+	
 	public Vector<GuiParam> getParams() {
 		return params;
 	}
@@ -22,6 +24,12 @@ public class GuiSettings   implements Serializable{
 	}
 	public void setWindows(Windows windows) {
 		this.windows = windows;
+	}
+	public Labels getLabels() {
+		return labels;
+	}
+	public void setLabels(Labels labels) {
+		this.labels = labels;
 	}
 
 }

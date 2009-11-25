@@ -27,7 +27,7 @@ public class KpiBO {
 			String columnId = kpi.getColumnId();
 			if(kpiToAdd.getColumnId().equals(columnId)){
 				//va in modifica
-				kpi = kpiToAdd;
+				kpi = fillKPI(kpi, kpiToAdd);
 				isKpiModified = true;
 			}
 		}
@@ -35,6 +35,15 @@ public class KpiBO {
 			//aggiunge kpi
 			kpis.add(kpiToAdd);
 		}
+	}
+	private static KPI fillKPI(KPI kpi, KPI kpiToUse){
+		kpi.setAggFunct(kpiToUse.getAggFunct());
+		kpi.setColor(kpiToUse.getColor());
+		kpi.setColours(kpiToUse.getColours());
+		kpi.setColumnId(kpiToUse.getColumnId());
+		kpi.setDescription(kpiToUse.getDescription());
+		kpi.setTresholds(kpiToUse.getTresholds());
+		return kpi;
 	}
 	public static void deleteMeasure(GEODocument geoDocument, KPI kpiToDelete){
 		MapRenderer mapRenderer = geoDocument.getMapRenderer();

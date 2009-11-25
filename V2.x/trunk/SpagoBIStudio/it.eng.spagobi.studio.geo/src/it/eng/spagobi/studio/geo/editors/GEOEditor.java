@@ -320,7 +320,7 @@ public class GEOEditor extends EditorPart {
 		Section section3 = toolkit.createSection(form.getBody(), Section.DESCRIPTION|Section.TITLE_BAR|Section.TWISTIE);
 		Composite sectionGUIParams = toolkit.createComposite(section3, SWT.RESIZE);
 		sectionGUIParams.setLayout(gl);
-		section2.addExpansionListener(new ExpansionAdapter() {
+		section3.addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanged(ExpansionEvent e) {
 				form.reflow(true);
 			}
@@ -331,6 +331,21 @@ public class GEOEditor extends EditorPart {
 		guiSettingsDesignerParams.createGuiSettingsParams(sectionGUIParams, toolkit);
 		
 		section3.setClient(sectionGUIParams);
+		
+		Section section4 = toolkit.createSection(form.getBody(), Section.DESCRIPTION|Section.TITLE_BAR|Section.TWISTIE);
+		Composite sectionGUILabels = toolkit.createComposite(section4, SWT.RESIZE);
+		sectionGUILabels.setLayout(gl);
+		section4.addExpansionListener(new ExpansionAdapter() {
+			public void expansionStateChanged(ExpansionEvent e) {
+				form.reflow(true);
+			}
+		});
+		section4.setText("GUI Settings - Labels");
+		section4.setDescription("Insert parameters for GUI Settings Labels");
+		GuiSettingsLabelDesigner guiSettingsDesignerLabels = new GuiSettingsLabelDesigner(sectionGUILabels, this, geoDocument);
+		guiSettingsDesignerLabels.createGuiSettingsLabels(sectionGUILabels, toolkit);
+		
+		section4.setClient(sectionGUILabels);
 
 		section.pack();
 		sectionClient.pack();
@@ -453,10 +468,11 @@ public class GEOEditor extends EditorPart {
 				});
 
 				// listener per measures --> right click
-				datasetTable.addListener(SWT.MouseDown, new Listener() {
+/*				datasetTable.addListener(SWT.MouseDown, new Listener() {
 					public void handleEvent(Event event) {
 						if (event.button == 3) {
 							TableItem[] selection = datasetTable.getSelection();
+
 							if (selection[0].getText(2) != null
 									&& selection[0].getText(2)
 											.equalsIgnoreCase("measures")) {
@@ -469,7 +485,7 @@ public class GEOEditor extends EditorPart {
 							}
 						}
 					}
-				});
+				});*/
 
 				sectionClient.getParent().pack();
 				sectionClient.getParent().redraw();
@@ -551,10 +567,11 @@ public class GEOEditor extends EditorPart {
 							&& col.getType().equalsIgnoreCase("measures")) {
 						measuresDesigner.createMeasuresShell(sectionClient, col
 								.getColumnId());
-					}if (col != null
+					}else if (col != null
 							&& col.getType().equalsIgnoreCase("geoid")) {
 						//check if another geoid is already defined
-						if(!MetadataBO.geoidColumnExists(geoDocument)){
+						Column colGeoid = MetadataBO.geoidColumnExists(geoDocument);
+						if(colGeoid == null ||(colGeoid != null && colGeoid.equals(col))){
 							createGeoIdHierarchiesShell(sectionClient, col);
 						}else{
 							MessageDialog.openWarning(sectionClient.getShell(), "Warning", "Another column of type geoid is already defined.");							
@@ -1108,7 +1125,8 @@ public class GEOEditor extends EditorPart {
 						item.setImage(0, measureIcon.createImage());
 					} else if(comboSel.getText().equalsIgnoreCase("geoid")){
 						//check if another geoid is already defined
-						if(!MetadataBO.geoidColumnExists(geoDocument)){
+						
+						if(MetadataBO.geoidColumnExists(geoDocument) != null){
 							item.setImage(0, idIcon.createImage());
 						}else{
 							MessageDialog.openWarning(datasetTable.getParent().getShell(), "Warning", "Another column of type geoid is already defined.");		

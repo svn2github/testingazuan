@@ -104,11 +104,12 @@ public class GuiSettingsDesigner {
 		
 		// look up for guisettings stored in geodocument
 		guiSettings = GuiSettingsBO.getGuiSettings(geoDocument);
-		//windows section - navigation
+
 		createParamsGroup(toolkit,  rl);
 	
 		sectionClient.redraw();
 	}
+
 	private void createParamsGroup(FormToolkit toolkit, RowLayout rl){
 		
 		final Group guiGroup = new Group(mainComposite, SWT.FILL);
@@ -141,7 +142,7 @@ public class GuiSettingsDesigner {
 			Vector<GuiParam> params = guiSettings.getParams();
 			for(int j=0; j< params.size(); j++){
 				TableItem item = new TableItem(guiWindowsTable, SWT.TRANSPARENT);
-				createWindowsRow(item, guiWindowsTable, params.elementAt(j));
+				createGUIRow(item, guiWindowsTable, params.elementAt(j));
 			}
 		}
 		for (int i = 0; i < titles.length; i++) {
@@ -195,7 +196,7 @@ public class GuiSettingsDesigner {
 				Vector<GuiParam> params = window.getParams();
 				for(int j=0; j< params.size(); j++){
 					TableItem item = new TableItem(guiWindowsTable, SWT.TRANSPARENT);
-					createWindowsRow(item, guiWindowsTable, params.elementAt(j));
+					createGUIRow(item, guiWindowsTable, params.elementAt(j));
 				}
 			}
 		} 
@@ -366,7 +367,7 @@ public class GuiSettingsDesigner {
 					params.add(param);
 				}
 				TableItem item = new TableItem(table, SWT.NONE);
-				createWindowsRow(item, table, param);
+				createGUIRow(item, table, param);
 				//clean combo and text
 				text.deselectAll();
 				textVal.setText("");
@@ -378,7 +379,7 @@ public class GuiSettingsDesigner {
 		});
 	}
 
-	private void createWindowsRow(TableItem item, final Table guiTable, GuiParam param){
+	private void createGUIRow(TableItem item, final Table guiTable, GuiParam param){
 		if(param.getName() != null)
 			item.setText(0, param.getName());
 		if(param.getValue() != null )

@@ -77,8 +77,7 @@ public class CrossNavigationDesigner {
 		gd.minimumHeight=100;
 		gd.verticalAlignment=SWT.TOP;
 				
-		final Group crossNavGroup = new Group(sectionClient, SWT.FILL);
-		crossNavGroup.setText("Cross Navigation");
+		final Composite crossNavGroup = new Composite(sectionClient, SWT.FILL);
 		
 		crossNavGroup.setLayoutData(gd);
 		crossNavGroup.setLayout(sectionClient.getLayout());

@@ -194,7 +194,7 @@ public class HierarchiesDesigner {
 		gd.minimumHeight=70;
 		gd.verticalAlignment=SWT.TOP;
 				
-		final Group hierarchiesGroup = new Group(sectionClient, SWT.FILL);
+		final Composite hierarchiesGroup = new Composite(sectionClient, SWT.FILL);
 		//hierarchiesGroup.setText("Hierarchies");
 		hierarchiesGroup.setLayoutData(gd);
 		hierarchiesGroup.setLayout(sectionClient.getLayout());

@@ -298,7 +298,7 @@ public class MeasuresDesigner {
 		data.bottom = new FormAttachment (cancel, 0, SWT.DEFAULT);
 
 		Button ok = new Button (dialog, SWT.PUSH);
-		ok.setText ("Add");
+		ok.setText ("OK");
 		data = new FormData ();
 		data.width = 60;
 		data.right = new FormAttachment (cancel, 0, SWT.DEFAULT);

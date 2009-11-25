@@ -1,20 +1,15 @@
 package it.eng.spagobi.studio.chart.editors.model.chart;
 
-import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.studio.chart.editors.ChartEditorUtils;
-import it.eng.spagobi.studio.chart.editors.model.chart.ChartModel.Dimension;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
 
 import java.io.InputStream;
-import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.eclipse.core.resources.IFile;
-import org.xml.sax.InputSource;
 
 public class ChartModelFactory {
 

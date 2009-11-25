@@ -46,8 +46,8 @@ function start_map(lon, lat, zoom){
 	center_lon = lon;
 	center_lat = lat;
 	//center_point = lonLatToMercator(new OpenLayers.LonLat(lon,lat));
-    center_point = new OpenLayers.LonLat(lon,lat);
-    zoom_level = zoom; 
+  center_point = new OpenLayers.LonLat(lon,lat);
+  zoom_level = zoom; 
 	
 	display_map(center_point,zoom_level);
 	

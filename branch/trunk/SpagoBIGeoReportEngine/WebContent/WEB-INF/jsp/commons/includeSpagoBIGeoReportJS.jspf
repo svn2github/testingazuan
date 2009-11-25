@@ -1,6 +1,12 @@
 <!-- Include MapFish and app-specific scripts: -->
 
+<!--
 <script type="text/javascript" src='./js/src/geoReport.js'/></script>
+-->
+<script type="text/javascript" src='./js/src/ext/sbi/georeport/GeoReportPanel.js'/></script>
+<script type="text/javascript" src='./js/src/ext/sbi/sdk/sbisdk-all-debug.js'/></script>
+
+
 
 <!-- Include Ext stylesheets here: -->
 <link id="theme" rel="styleSheet" href ="./css/georeport.css" type="text/css" />

@@ -1,8 +1,10 @@
 package it.eng.spagobi.studio.jasper.editors;
 
+import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.preferences.PreferenceConstants;
 
 import java.io.File;
+import java.util.Date;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -38,28 +40,36 @@ public final class JasperEditor implements IEditorLauncher {
 						"Warning", "You must define IReport path in preferences");
 			}
 			else{
+				SpagoBILogger.infoLog("iReport path is "+iReportPathString);
 				// get the directory Path
 				Path iReportPath=new Path(iReportPathString);
 				File iReportExec=iReportPath.toFile();
 				File iReportDirectory=iReportExec.getParentFile();
+				//				Date newD=new Date();
+				//				String temp=iReportDirectory.getPath()+"/"+newD.toString()+".txt";
+				//				new File(temp);
 				String command=iReportPath+" "+fileToEditPath;
-
+				SpagoBILogger.infoLog("Command to launch: "+command+" --- in iReport Directory: "+iReportDirectory);
 				Runtime rt = Runtime.getRuntime();
+				SpagoBILogger.infoLog("start execution");
+
 				Process proc  = rt.exec(command, null, iReportDirectory);		
+				System.out.println(proc.toString());
 				int returnValue=proc.waitFor();
+				SpagoBILogger.infoLog("Return value is "+returnValue);
 				if(returnValue!=0){
+					SpagoBILogger.infoLog("Error during iReport Execution");
 					MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
 							"Error", "Generic error after closing iReport: code "+Integer.valueOf(returnValue).toString());			
 				}
-								
 				IFile fileToEditIFile = ResourcesPlugin.getWorkspace().getRoot().getFile(fileToEditIPath);
 				IFile fileToEditDirectory = ResourcesPlugin.getWorkspace().getRoot().getFile(fileToEditDirectoryIPath);
-				
+
 				boolean isSync=fileToEditIFile.isSynchronized(2);				
 				fileToEditIFile.refreshLocal(IResource.DEPTH_INFINITE, null);
 				boolean isSync2=fileToEditDirectory.isSynchronized(2);				
 				fileToEditDirectory.refreshLocal(IResource.DEPTH_INFINITE, null);
-
+				SpagoBILogger.infoLog("Refreshed, exit jasper editor");
 			}
 		}
 		catch(Exception e)

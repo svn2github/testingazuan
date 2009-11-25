@@ -17,7 +17,7 @@
          <action
             id="it.eng.spagobi.studio.jasper.actions.NewJasperAction" 
             label="Jasper"
-            icon="icons/objecticon_JASPER.png" 
+            icon="icons/objecticon_REPORT.png" 
             style="push"
             menubarPath="group.new"
             class="it.eng.spagobi.studio.jasper.actions.NewJasperAction" />

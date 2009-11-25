@@ -416,12 +416,13 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 		});
 		buttons.clear.addListener('click', function(){this.expressionEditor.reset();}, this);
 		
+		/*
 		buttons.debug = new Ext.Toolbar.Button({
 		    text:'Debug',
 		    tooltip:'Shows expression string as passed to the server',
 		    iconCls:'option'
 		});
-		buttons.debug.addListener('click', function(){alert(this.getExpression());}, this);
+		buttons.debug.addListener('click', function(){alert(this.getExpression());}, this);*/
 		
 		buttons.validate = new Ext.Toolbar.Button({
 		    text:'Validate',
@@ -447,7 +448,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
     	    	'render': function(editor){
     	          var tb = editor.getToolbar();
     	          tb.add(buttons.clear);
-    	          tb.add(buttons.debug);
+    	          //tb.add(buttons.debug);
     	          tb.add(buttons.validate);
     	        },
     	        'activate': function(){

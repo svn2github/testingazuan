@@ -1,6 +1,5 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
-import it.eng.spagobi.studio.geo.editors.model.bo.Label;
 
 import java.io.Serializable;
 import java.util.Vector;

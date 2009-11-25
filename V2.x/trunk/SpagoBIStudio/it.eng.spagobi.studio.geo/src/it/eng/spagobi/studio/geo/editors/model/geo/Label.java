@@ -1,7 +1,5 @@
-package it.eng.spagobi.studio.geo.editors.model.bo;
+package it.eng.spagobi.studio.geo.editors.model.geo;
 
-import it.eng.spagobi.studio.geo.editors.model.geo.Format;
-import it.eng.spagobi.studio.geo.editors.model.geo.GuiParam;
 
 import java.io.Serializable;
 import java.util.Vector;

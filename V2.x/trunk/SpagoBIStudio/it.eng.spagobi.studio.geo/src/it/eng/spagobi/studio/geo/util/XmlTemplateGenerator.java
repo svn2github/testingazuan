@@ -1,6 +1,5 @@
 package it.eng.spagobi.studio.geo.util;
 
-import it.eng.spagobi.studio.geo.editors.model.bo.Label;
 import it.eng.spagobi.studio.geo.editors.model.geo.Colours;
 import it.eng.spagobi.studio.geo.editors.model.geo.Column;
 import it.eng.spagobi.studio.geo.editors.model.geo.CrossNavigation;
@@ -15,6 +14,7 @@ import it.eng.spagobi.studio.geo.editors.model.geo.GuiSettings;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchies;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchy;
 import it.eng.spagobi.studio.geo.editors.model.geo.KPI;
+import it.eng.spagobi.studio.geo.editors.model.geo.Label;
 import it.eng.spagobi.studio.geo.editors.model.geo.Labels;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layer;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layers;
@@ -203,7 +203,7 @@ public class XmlTemplateGenerator {
 			xstream.aliasField("name", GuiParam.class, "name");
 			
 		xstream.aliasField("LABELS", GuiSettings.class, "labels");
-		xstream.addImplicitCollection(Labels.class, "labels", "LABEL", Label.class);
+		xstream.addImplicitCollection(Labels.class, "label", "LABEL", Label.class);
 		xstream.useAttributeFor(Label.class, "position");
 		xstream.aliasField("position", Label.class, "position");
 		xstream.useAttributeFor(Label.class, "className");

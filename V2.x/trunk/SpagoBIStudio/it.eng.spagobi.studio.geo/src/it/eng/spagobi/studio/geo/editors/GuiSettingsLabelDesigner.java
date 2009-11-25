@@ -2,27 +2,41 @@ package it.eng.spagobi.studio.geo.editors;
 
 import it.eng.spagobi.studio.geo.Activator;
 import it.eng.spagobi.studio.geo.editors.model.bo.GuiSettingsBO;
-import it.eng.spagobi.studio.geo.editors.model.bo.Label;
+import it.eng.spagobi.studio.geo.editors.model.bo.LabelBO;
+import it.eng.spagobi.studio.geo.editors.model.bo.WindowBO;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
+import it.eng.spagobi.studio.geo.editors.model.geo.GuiParam;
 import it.eng.spagobi.studio.geo.editors.model.geo.GuiSettings;
+import it.eng.spagobi.studio.geo.editors.model.geo.Label;
 import it.eng.spagobi.studio.geo.editors.model.geo.Labels;
+import it.eng.spagobi.studio.geo.editors.model.geo.Param;
+import it.eng.spagobi.studio.geo.editors.model.geo.Window;
 
 import java.util.Vector;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
@@ -33,8 +47,6 @@ public class GuiSettingsLabelDesigner {
 	private GEODocument geoDocument;
 	
 	private GuiSettings guiSettings;
-	private final int TYPE_WINDOWS=1;
-	private final int TYPE_PARAMS=2;
 	
 	public GuiSettings getGuiSettings() {
 		return guiSettings;
@@ -66,107 +78,255 @@ public class GuiSettingsLabelDesigner {
 	
 	public void createGuiSettingsLabels(final Composite sectionClient, FormToolkit toolkit){
 		
-		GridLayout rl = new GridLayout();
-		rl.numColumns=4;
-		rl.makeColumnsEqualWidth=true;
-		rl.marginRight=10;
-		
 		// look up for guisettings stored in geodocument
 		guiSettings = GuiSettingsBO.getGuiSettings(geoDocument);
-
-		createLabelsGroup(toolkit,  rl);
-	
+		createLabelsGroup(toolkit);	
 		sectionClient.redraw();
 	}
-	private void createLabelsGroup(FormToolkit toolkit, Layout rl){
-		
-		final Group guiGroup = new Group(mainComposite, SWT.FILL);
-		
-		guiGroup.setLayout(rl);
-		guiGroup.setLayout(mainComposite.getLayout());
-		
-		
-		GridData gd = new GridData(GridData.FILL_BOTH);
+	private void createLabelsGroup(final FormToolkit toolkit){
+		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		gd.horizontalSpan =4;
-		gd.heightHint=75;
-		gd.minimumHeight=60;
-		gd.minimumWidth=700;
 		gd.verticalAlignment=SWT.TOP;
-		gd.grabExcessHorizontalSpace=true;
 		
 
-		final Table guiWindowsTable = toolkit.createTable(guiGroup, SWT.MULTI | SWT.BORDER
+		final Button add = toolkit.createButton(mainComposite, "Add", SWT.PUSH);
+		add.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				final Group guiGroup = new Group(mainComposite, SWT.FILL);
+				createLabelGroup(toolkit, guiGroup, null);
+				mainComposite.redraw();
+			}
+		});
+		add.setLayoutData(gd);
+		if (guiSettings != null && guiSettings.getLabels() != null && guiSettings.getLabels().getLabel() != null) {		
+			Labels labels = guiSettings.getLabels();
+			if(labels != null && labels.getLabel() != null){
+				Vector<Label> labelV= labels.getLabel();
+				for(int i=0; i< labelV.size(); i++){
+					final Group guiGroup = new Group(mainComposite, SWT.FILL);
+					createLabelGroup(toolkit, guiGroup, labelV.elementAt(i));
+				}				
+			}
+		}else{
+			final Group guiGroup = new Group(mainComposite, SWT.FILL);
+			createLabelGroup(toolkit, guiGroup, null);
+		}
+		
+	}	
+	private void createLabelGroup(FormToolkit toolkit, Group guiGroup, Label label){
+		if(label == null){
+			label = LabelBO.setNewLabel(geoDocument);
+		}	
+		RowLayout fillLayout = new RowLayout();
+		fillLayout.type = SWT.VERTICAL;
+		fillLayout.pack=true;
+		
+		guiGroup.setLayout(fillLayout);
+		//flag position for this label
+		
+		createPositionCheck(toolkit, guiGroup, label);
+		createFormatInput(toolkit, guiGroup, label);
+		createParamsGroup(toolkit, guiGroup, label);
+	}
+	private void createParamsGroup(FormToolkit toolkit, Group guiGroup, Label label){	
+		Composite comp = toolkit.createComposite(guiGroup, SWT.BORDER);
+		RowLayout rl = new RowLayout();
+		rl.fill=true;
+		rl.justify=true;
+		rl.spacing=10;
+		rl.marginLeft=10;
+		rl.marginTop=10;
+		comp.setLayout(rl);
+		
+		final Table guiTable = toolkit.createTable(comp, SWT.MULTI | SWT.BORDER
 				| SWT.FULL_SELECTION);
-		guiWindowsTable.setLayoutData(gd);
-		guiWindowsTable.setLinesVisible(true);
-		guiWindowsTable.setHeaderVisible(true);
+		guiTable.setLayout(guiGroup.getLayout());
+		guiTable.setLinesVisible(true);
+		guiTable.setHeaderVisible(true);
 
-		String[] titles = { "     Position     ", "      Class name      "};
+		String[] titles = { "Parameter Name", "Value"};
 		for (int i = 0; i < titles.length; i++) {
-			TableColumn column = new TableColumn(guiWindowsTable, SWT.NONE);
+			TableColumn column = new TableColumn(guiTable, SWT.NONE);
 			column.setText(titles[i]);
 
 		}
-		if (guiSettings != null && guiSettings.getLabels() != null ) {
-		
-			Labels labels = guiSettings.getLabels();
-			if(labels != null){
-				Vector<Label> labelVect = labels.getLabel();
-				for(int j=0; j< labelVect.size(); j++){
-					TableItem item = new TableItem(guiWindowsTable, SWT.TRANSPARENT);
-					createGUIRow(item, guiWindowsTable, labelVect.elementAt(j));
+		if (label != null) {		
+			Vector<GuiParam> params = label.getParams();
+			if(params != null){
+				for(int i=0; i< params.size(); i++){
+					GuiParam param = params.elementAt(i);
+					TableItem item = new TableItem(guiTable, SWT.TRANSPARENT);
+					createGUIRow(item, guiTable, param);
 				}
-			}
 
+			}
 		}
 		for (int i = 0; i < titles.length; i++) {
-			guiWindowsTable.getColumn(i).pack();
+			guiTable.getColumn(i).pack();
 		}
 		 //rightClick --> menu
-		guiWindowsTable.addListener(SWT.MouseDown, new Listener () {
+		guiTable.addListener(SWT.MouseDown, new Listener () {
             public void handleEvent (Event event) {            	
             	if (event.button==3){	
-            		createMenu(guiWindowsTable, null);	            	            	
+            		createMenu(guiTable, null);	            	            	
             	}
             }
         });
-		guiWindowsTable.redraw();
-		//form to add parameters
-		//createInsertForm(null, toolkit, guiGroup, guiWindowsTable);
-
-	}	
-	private void createGUIRow(TableItem item, final Table guiTable, Label label){
-		if(label.getPosition() != null)
-			item.setText(0, label.getPosition());
-		if(label.getClassName() != null )
-			item.setText(1, label.getClassName());
 		guiTable.redraw();
+		//form to add parameters
+		createInsertParamForm(label, toolkit, comp, guiTable);
+
+	}
+	private void createInsertParamForm(final Label label, FormToolkit toolkit, Composite group, final Table table){
+		
+		FormLayout formLayout = new FormLayout ();
+		formLayout.marginWidth = 5;
+		formLayout.marginHeight = 5;
+		formLayout.spacing = 5;		
+				
+		Composite formComp = toolkit.createComposite(group, SWT.BORDER);
+		formComp.setLayout (formLayout);
+		
+		org.eclipse.swt.widgets.Label name = new org.eclipse.swt.widgets.Label (formComp, SWT.RIGHT);
+		name.setText ("Name:");
+		FormData data = new FormData ();
+		data.width = 40;
+		name.setLayoutData (data);
+
+		final Text text = new Text(formComp, SWT.BORDER);
+		
+		text.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {			
+	
+				GuiParam param = LabelBO.getParamByName(label, text.getText());
+				if(param != null){
+					MessageDialog.openWarning(mainComposite.getShell(), "Warning", "Another parameter with the same name is already defined.");		
+					text.setText("");
+				}
+
+			}
+		});
+		data = new FormData ();
+		data.width = 80;
+		data.left = new FormAttachment (name, 0, SWT.DEFAULT);
+		data.right = new FormAttachment (100, 0);
+		text.setLayoutData (data);
+		formComp.setData(text.getText());
+		org.eclipse.swt.widgets.Label labelVal = new org.eclipse.swt.widgets.Label (formComp, SWT.RIGHT);
+		labelVal.setText ("Value:");
+		data = new FormData ();
+		data.width = 40;
+		data.top = new FormAttachment(text, 5);
+		labelVal.setLayoutData (data);
+
+		final Text textVal = toolkit.createText(formComp, "", SWT.BORDER);
+		data = new FormData ();
+		data.width = 80;
+		data.left = new FormAttachment (labelVal, 0, SWT.DEFAULT);
+		data.right = new FormAttachment (100, 0);
+		data.top = new FormAttachment (labelVal, 0, SWT.CENTER);
+		textVal.setLayoutData (data);
+		formComp.setData(textVal.getText());
+		
+		Button ok = new Button (formComp, SWT.PUSH);
+		ok.setText ("Add");
+		data = new FormData ();
+		data.width = 40;
+		data.top = new FormAttachment(textVal, 5);
+		data.right = new FormAttachment (100, 0);
+		ok.setLayoutData (data);
+		ok.addSelectionListener (new SelectionAdapter () {
+			public void widgetSelected (SelectionEvent e) {
+				GuiParam param = new GuiParam();
+				param.setName(text.getText());	
+				param.setValue(textVal.getText());
+				//add parameter to windows bean
+				if(label != null){
+					Vector params = label.getParams();
+					if(params != null){
+						params.add(param);
+					}else{
+						params = new Vector<Param>();
+						label.setParams(params);						
+					}				
+
+				}
+				TableItem item = new TableItem(table, SWT.NONE);
+				createGUIRow(item, table, param);
+				//clean combo and text
+				text.setText("");
+				textVal.setText("");
+				text.redraw();
+				textVal.redraw();
+				
+				editor.setIsDirty(true);
+			}
+		});
+	}
+	private void createGUIRow(TableItem item, final Table guiTable, GuiParam param){
+		if(param.getName() != null)
+			item.setText(0, param.getName());
+		if(param.getValue() != null )
+			item.setText(1, param.getValue());
+		guiTable.redraw();
+	}
+	private void createPositionCheck(FormToolkit toolkit, Group guiGroup, final Label label){
+		Composite posComp = toolkit.createComposite(guiGroup, SWT.BORDER);
+		RowLayout rl = new RowLayout();
+		rl.fill=true;
+		rl.justify=true;
+		rl.spacing=10;
+		rl.marginLeft=10;
+		rl.marginTop=10;
+		posComp.setLayout(rl);
+		
+		org.eclipse.swt.widgets.Label position = toolkit.createLabel(posComp, "Position:", SWT.BOLD);
+		createSinglePosition(toolkit, posComp, label, "header-left");
+		createSinglePosition(toolkit, posComp, label, "header-center");
+		createSinglePosition(toolkit, posComp, label, "header-right");
+		createSinglePosition(toolkit, posComp, label, "footer-left");
+		createSinglePosition(toolkit, posComp, label, "footer-center");
+		createSinglePosition(toolkit, posComp, label, "footer-right");
+
+		
+	}
+	private void createSinglePosition(FormToolkit toolkit, Composite posComp, final Label label, String pos){
+		final Button btn = toolkit.createButton(posComp, pos, SWT.RADIO);
+		btn.addListener(SWT.Selection, new Listener () {
+            public void handleEvent (Event event) { 
+            	//add to label
+            	Label labelExistent = LabelBO.getLabelByPosition(geoDocument, btn.getText());
+            	if(labelExistent == null){
+            		label.setPosition(btn.getText());
+            	}else{
+            		MessageDialog.openError(mainComposite.getShell(), "Warning", "Label in the same position already exists.");
+            	}
+            	editor.setIsDirty(true);
+            }
+        });
+		if(label != null && label.getPosition() != null && label.getPosition().equalsIgnoreCase(pos)){
+			btn.setSelection(true);
+			btn.redraw();
+		}
+		
+	}
+	private void createFormatInput(FormToolkit toolkit, Group guiGroup, Label label){
+		Composite formComp = toolkit.createComposite(guiGroup, SWT.BORDER);
+
+		RowLayout rl = new RowLayout();
+		rl.fill=true;
+		rl.justify=false;
+		rl.spacing=10;
+		rl.marginLeft=10;
+		rl.marginTop=10;
+		formComp.setLayout(rl);
+		org.eclipse.swt.widgets.Label formatlabel = toolkit.createLabel(formComp, "Format:", SWT.BOLD);
+		Text day = toolkit.createText(formComp, "dd/MM/yyyy");
+		Text hour = toolkit.createText(formComp, "HH:mm");
 	}
 	private void createMenu(final Table table, final Label label){		
     	Menu menu = new Menu (mainComposite.getShell(), SWT.POP_UP);    	
     	MenuItem menuItem = new MenuItem (menu, SWT.PUSH);
-		menuItem.setText ("New label");
-		menuItem.addListener(SWT.Selection, new Listener () {
-            public void handleEvent (Event event) { 
-            	///insert new label
-
-            }
-        });	
-		menuItem = new MenuItem (menu, SWT.PUSH);
-		menuItem.setText ("New parameter");
-		menuItem.addListener(SWT.Selection, new Listener () {
-            public void handleEvent (Event event) { 
-/*            	TreeItem[] sel = hierarchiesTree.getSelection();
-            	if(sel[0] != null && sel[0].getParentItem() == null){
-                	createNewLevelShell(hierarchiesTree, sel[0], null);
-                	
-            	}else{
-            		MessageDialog.openError(sectionClient.getShell(), "Error", "Wrong position. Please select a hierarchy");
-            	}*/
-
-            }
-        });	 
-		menuItem = new MenuItem (menu, SWT.PUSH);
 		menuItem.setText ("Delete");
 		menuItem.addListener(SWT.Selection, new Listener () {
             public void handleEvent (Event event) { 

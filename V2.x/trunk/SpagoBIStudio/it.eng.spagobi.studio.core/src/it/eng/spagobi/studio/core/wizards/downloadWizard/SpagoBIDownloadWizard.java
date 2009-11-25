@@ -107,6 +107,11 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			DocumentsServiceProxy docServiceProxy=proxyFactory.getDocumentsServiceProxy(); 		
 			template=docServiceProxy.downloadTemplate(id);
 		}
+		catch (NullPointerException e) {
+			SpagoBILogger.errorLog("No comunication with server, check SpagoBi Server definition in preferences page", e);
+			MessageDialog.openError(getShell(), "Error", "No comunication with server, check SpagoBi Server definition in preferences page");	
+			return;
+		}
 		catch (Exception e) {
 			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve template", e);
 			MessageDialog.openError(getShell(), "Error", "Could not get the template from server");	
@@ -123,6 +128,11 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			DocumentsServiceProxy docServiceProxy=proxyFactory.getDocumentsServiceProxy(); 		
 			roles=docServiceProxy.getCorrectRolesForExecution(id);
 		}
+		catch (NullPointerException e) {
+			SpagoBILogger.errorLog("No comunication with server, check SpagoBi Server definition in preferences page", e);
+			MessageDialog.openError(getShell(), "Error", "No comunication with server, check SpagoBi Server definition in preferences page");	
+			return;
+		}		
 		catch (Exception e) {
 			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve roles for execution", e);
 			MessageDialog.openError(getShell(), "Could not retrieve roles for execution", "Could not retrieve roles for execution");	
@@ -142,6 +152,11 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			DocumentsServiceProxy docServiceProxy=proxyFactory.getDocumentsServiceProxy(); 		
 			parameters=docServiceProxy.getDocumentParameters(id, roles[0]);
 		}
+		catch (NullPointerException e) {
+			SpagoBILogger.errorLog("No comunication with server, check SpagoBi Server definition in preferences page", e);
+			MessageDialog.openError(getShell(), "Error", "No comunication with server, check SpagoBi Server definition in preferences page");	
+			return;
+		}		
 		catch (Exception e) {
 			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve document parameters", e);
 			e.printStackTrace();

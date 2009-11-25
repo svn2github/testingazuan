@@ -139,9 +139,15 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 		try {
 			dialog.run(true, true, op);
 		} catch (InvocationTargetException e1) {
-			e1.printStackTrace();
+			SpagoBILogger.errorLog("No comunication with SpagoBI server", e1);
+			dialog.close();
+			MessageDialog.openError(getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
+			return;
 		} catch (InterruptedException e1) {
-			e1.printStackTrace();
+			SpagoBILogger.errorLog("No comunication with SpagoBI server", e1);
+			dialog.close();
+			MessageDialog.openError(getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
+			return;
 		}	
 		dialog.close();
 
@@ -270,7 +276,7 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 					boolean useDatasource=sdkEngine.getUseDataSource()!=null ? sdkEngine.getUseDataSource() : false;
 					dataSetCombo.setEnabled(useDataset);
 					dataSourceCombo.setEnabled(useDatasource);
-					
+
 
 				}
 

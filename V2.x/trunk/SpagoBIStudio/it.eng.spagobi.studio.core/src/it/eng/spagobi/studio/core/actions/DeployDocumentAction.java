@@ -90,7 +90,7 @@ public class DeployDocumentAction implements IViewActionDelegate {
 					// document associated, upload the template
 					SDKProxyFactory proxyFactory=new SDKProxyFactory();
 					DocumentsServiceProxy docServiceProxy=proxyFactory.getDocumentsServiceProxy();
-					
+
 					URI uri=fileSel2.getLocationURI();
 
 					File fileJava=new File(uri.getPath()); 
@@ -99,17 +99,19 @@ public class DeployDocumentAction implements IViewActionDelegate {
 					SDKTemplate sdkTemplate=new SDKTemplate();
 					sdkTemplate.setFileName(fileSel2.getName());
 					sdkTemplate.setContent(dataHandler);
-					
+
 					try {
 						docServiceProxy.uploadTemplate(idInteger, sdkTemplate);
 					} catch (NotAllowedOperationException e) {
 						SpagoBILogger.errorLog("Not Allowed Operation", e);			
 						MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
 								"Error upload", "Error while uploading the template: not allowed operation");	
+						return;
 					} catch (RemoteException e) {
 						SpagoBILogger.errorLog("Error comunicating with server", e);			
 						MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
 								"Error comunicating with server", "Error while uploading the template: missing comunication with server");	
+						return;
 					}
 
 					monitor.done();
@@ -118,17 +120,25 @@ public class DeployDocumentAction implements IViewActionDelegate {
 				}
 			};
 
-			
+
 			ProgressMonitorDialog dialog=new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());		
 			try {
 				dialog.run(true, true, op);
 			} catch (InvocationTargetException e1) {
-				e1.printStackTrace();
+				SpagoBILogger.errorLog("Error comunicating with server", e1);			
+				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+						"Error", "Missing comunication with server; check server definition and if service is avalaible");	
+				dialog.close();
+				return;
 			} catch (InterruptedException e1) {
-				e1.printStackTrace();
+				SpagoBILogger.errorLog("Error comunicating with server", e1);			
+				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+						"Error", "Missing comunication with server; check server definition and if service is avalaible");	
+				dialog.close();
+				return;
 			}	
 			dialog.close();
-			
+
 			MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),"Deploy succesfull", "Deployed to the associated document "+document_label+" succesfull");		
 		}
 		else{

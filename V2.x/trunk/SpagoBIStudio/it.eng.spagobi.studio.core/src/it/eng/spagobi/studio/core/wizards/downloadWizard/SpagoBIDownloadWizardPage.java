@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
 /**
@@ -86,7 +87,7 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 				}
 				catch (Exception e) {
 					SpagoBILogger.errorLog("No comunication with SpagoBI server", e);
-					MessageDialog.openError(getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
+					MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
 					return;
 				}
 				monitor.done();
@@ -99,39 +100,44 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 		try {
 			dialog.run(true, true, op);
 		} catch (InvocationTargetException e1) {
-			e1.printStackTrace();
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}	
-		dialog.close();
+			SpagoBILogger.errorLog("No comunication with SpagoBI server", e1);
+			dialog.close();
+			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
+			return;
+			} catch (InterruptedException e1) {
+				SpagoBILogger.errorLog("No comunication with SpagoBI server", e1);
+				dialog.close();
+				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
+				return;
+			}	
+			dialog.close();
 
 
-		SdkFunctionalityTreeGenerator treeGenerator=new SdkFunctionalityTreeGenerator();			
+			SdkFunctionalityTreeGenerator treeGenerator=new SdkFunctionalityTreeGenerator();			
 
-		try{
-			tree=treeGenerator.generateTree(container, functionality);
-		}
-		catch (Exception e) {
-			SpagoBILogger.errorLog("Error while generating tree", e);
-			MessageDialog.openError(getShell(), "Error in generating the tree, control your DB", "Error in generating the tree, control your DB");	
-			e.printStackTrace();	
-		}
-
-		tree.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event event) {
-				//check if page is complete
-				boolean complete=isPageComplete();
-				if(complete){
-					setPageComplete(true);
-				}
-				else{
-					setPageComplete(false);	        	
-				}
+			try{
+				tree=treeGenerator.generateTree(container, functionality);
 			}
-		});
+			catch (Exception e) {
+				SpagoBILogger.errorLog("Error while generating tree", e);
+				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Error", "Error in generating the tree, control if SpagoBI Server is defined and service is avalaible");	
+			}
 
-		initialize();
-		setControl(container);
+			tree.addListener(SWT.Selection, new Listener() {
+				public void handleEvent(Event event) {
+					//check if page is complete
+					boolean complete=isPageComplete();
+					if(complete){
+						setPageComplete(true);
+					}
+					else{
+						setPageComplete(false);	        	
+					}
+				}
+			});
+
+			initialize();
+			setControl(container);
 	}
 
 

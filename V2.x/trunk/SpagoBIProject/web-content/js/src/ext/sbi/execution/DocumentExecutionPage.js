@@ -1047,9 +1047,12 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		this.miframe.on('resize', function() {
 			if (Ext.isIE) {
 				var aFrame = this.miframe.getFrame();
-				aFrame.dom.style.height = this.miframe.getSize().height - 6;
+				// work-around: during cross navigation to a third document, this.miframe.getSize().height is 0
+				// therefore this check is necessary in order to avoid height less than 0, that causes side effects in IE
+				if (this.miframe.getSize().height > 6) {
+					aFrame.dom.style.height = this.miframe.getSize().height - 6;
+				}
 			}
-
 		}, this);
 	}
 	

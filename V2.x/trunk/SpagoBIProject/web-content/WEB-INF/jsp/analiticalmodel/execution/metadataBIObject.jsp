@@ -92,13 +92,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if (ds!=null) dataSource = ds.getLabel();}
 	
 	docDescr = (obj.getDescription()!= null ? obj.getDescription() : "");
-	docObjective = (obj.getObjectve()!= null ? obj.getObjectve() : ""); 
-	docLongDescr = (obj.getExtendedDescription()!= null ? obj.getExtendedDescription() : ""); 
+
 	Double temp =  DAOFactory.getBIObjectRatingDAO().calculateBIObjectRating(obj);
 	docRating = ( temp != null ? temp :new Double (0) );
-	keywords = (obj.getKeywords()!= null ? obj.getKeywords() : ""); 
-	
-	docLanguage = (obj.getLanguage()!= null ? obj.getLanguage() : ""); 
+
 	
 	creationDate = (obj.getCreationDate() != null ? obj.getCreationDate().toString() : ""); 
 	creationUser = (obj.getCreationUser()!= null ? obj.getCreationUser() : ""); 

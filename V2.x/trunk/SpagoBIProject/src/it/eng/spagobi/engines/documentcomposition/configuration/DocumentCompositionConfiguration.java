@@ -589,17 +589,20 @@ public class DocumentCompositionConfiguration {
 					Document tmpDoc =(Document) arrDocs[i];
 					if (tmpDoc.getNumOrder() == cont){
 						if (tmpDoc.getSbiObjLabel().equalsIgnoreCase(docLabel)){
-							Properties prop = (Properties)tmpDoc.getParams();
-							Enumeration e =  prop.keys();
-							int totParsLinked = 0;
-							//loop on parameters of single document
-							while (e.hasMoreElements() ){
-								String key = (String)e.nextElement();
-								retParams.put(key, (String)prop.get(key));
-								if (key.startsWith("param_linked_"+(tmpDoc.getNumOrder())))
-									totParsLinked ++;
+							Object paramsO=tmpDoc.getParams();
+							if(paramsO!=null){
+								Properties prop = (Properties)paramsO;
+								Enumeration e =  prop.keys();
+								int totParsLinked = 0;
+								//loop on parameters of single document
+								while (e.hasMoreElements() ){
+									String key = (String)e.nextElement();
+									retParams.put(key, (String)prop.get(key));
+									if (key.startsWith("param_linked_"+(tmpDoc.getNumOrder())))
+										totParsLinked ++;
+								}
+								retParams.put("num_doc_linked_"+(tmpDoc.getNumOrder()), Integer.valueOf(totParsLinked));
 							}
-							retParams.put("num_doc_linked_"+(tmpDoc.getNumOrder()), Integer.valueOf(totParsLinked));
 						}
 						cont ++;
 					}

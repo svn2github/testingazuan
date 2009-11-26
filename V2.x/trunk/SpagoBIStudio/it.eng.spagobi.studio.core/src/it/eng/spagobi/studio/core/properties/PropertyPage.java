@@ -78,6 +78,7 @@ IWorkbenchPropertyPage {
 
 	private ProgressMonitorPart monitor;
 
+	Integer documentId;
 	Group docGroup = null;
 	Group dataSetGroup = null;
 	Group dataSourceGroup = null;
@@ -116,11 +117,25 @@ IWorkbenchPropertyPage {
 		super();
 	}
 
+
 	@Override
 	protected Control createContents(Composite parent) {
 		// hide default buttons
 		this.noDefaultAndApplyButton();
 		monitor=new ProgressMonitorPart(getShell(), null);
+
+		IFile file = (IFile) this.getElement();
+		String documentIdS=null;
+		try {
+			documentIdS=file.getPersistentProperty(DOCUMENT_ID);
+		} catch (CoreException e2) {
+			SpagoBILogger.errorLog("Error in retrieving Id", e2);
+		}
+		if(documentIdS!=null)
+			documentId=Integer.valueOf(documentIdS);
+		else
+			documentId=null;
+
 
 		container = new Composite(parent, SWT.NULL);
 		RowLayout rowLayout = new RowLayout();
@@ -255,33 +270,49 @@ IWorkbenchPropertyPage {
 		Listener refreshListener = new Listener() {
 			public void handleEvent(Event event) {
 
-				IRunnableWithProgress op = new IRunnableWithProgress() {			
-					public void run(IProgressMonitor monitor) throws InvocationTargetException {
-						monitor.beginTask("Refreshing metadata", IProgressMonitor.UNKNOWN);
-
-
-						refreshMetadata();
-					}			
-				};
-				ProgressMonitorDialog dialog=new ProgressMonitorDialog(getShell());		
-				try {
-					dialog.run(true, true, op);
-				} catch (InvocationTargetException e1) {
-					e1.printStackTrace();
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}	
-				dialog.close();
-
-				try{
-					fillValues();
+				if(documentId==null){
+					SpagoBILogger.errorLog("Cannot retrieve metadata cause no document is associated",null);
+					MessageDialog.openWarning(getShell(), "Warning", "No document is associated");
 				}
-				catch (Exception e) {
-					MessageDialog.openError(container.getShell(), "Error", "Error while retrieving metadata informations from file");
-					SpagoBILogger.errorLog("Error in retrieving metadata informations from file", e);
+				else{
+
+					IRunnableWithProgress op = new IRunnableWithProgress() {			
+						public void run(IProgressMonitor monitor) throws InvocationTargetException {
+							monitor.beginTask("Refreshing metadata", IProgressMonitor.UNKNOWN);
+							try {
+								refreshMetadata();
+							} catch (Exception e) {
+								MessageDialog.openError(getShell(), "Exception", "Exception");
+							}
+						}			
+					};
+					ProgressMonitorDialog dialog=new ProgressMonitorDialog(getShell());		
+					try {
+						dialog.run(true, true, op);
+					} catch (InvocationTargetException e1) {
+						SpagoBILogger.errorLog("No comunication with SpagoBI server: could not refresh metadata", e1);
+						dialog.close();
+						MessageDialog.openError(getShell(), "Error", "No comunication with server: Could not refresh metadata");	
+						return;
+					} catch (InterruptedException e1) {
+						SpagoBILogger.errorLog("No comunication with SpagoBI server: could not refresh metadata", e1);
+						dialog.close();
+						MessageDialog.openError(getShell(), "Error", "No comunication with server: Could not refresh metadata");	
+						return;	
+					}	
+					dialog.close();
+
+					try{
+						fillValues();
+					}
+					catch (Exception e) {
+						MessageDialog.openError(container.getShell(), "Error", "Error while retrieving metadata informations from file");
+						SpagoBILogger.errorLog("Error in retrieving metadata informations from file", e);
+						return;
+					}
+
+					MessageDialog.openInformation(container.getShell(), "Information", "Metadata refreshed");
 				}
-
-
 			}
 		};
 
@@ -426,7 +457,7 @@ IWorkbenchPropertyPage {
 	}
 
 
-	protected void refreshMetadata(){
+	protected void refreshMetadata() throws Exception{
 		IFile file = (IFile) this.getElement();
 		String documentId=null;
 
@@ -440,10 +471,8 @@ IWorkbenchPropertyPage {
 			document=docServiceProxy.getDocumentById(Integer.valueOf(documentId));
 		}
 		catch (Exception e) {
-			MessageDialog.openError(container.getShell(), 
-					"Error", "Could not recover document Id to refresh Meta Data!");		
 			SpagoBILogger.errorLog("Could not recover document Id",e);		
-			return;	
+			throw e;	
 		}
 
 		// Recover DataSource
@@ -457,8 +486,6 @@ IWorkbenchPropertyPage {
 				dataSource=dataSourceServiceProxy.getDataSource(Integer.valueOf(dataSourceId));
 			}
 			catch (Exception e) {
-				MessageDialog.openError(container.getShell(), 
-						"Error", "Could not recover data source to refresh Meta Data!");		
 				SpagoBILogger.warningLog("Could not recover data source",e);		
 			}
 		}
@@ -475,8 +502,6 @@ IWorkbenchPropertyPage {
 				dataSet=dataSetServiceProxy.getDataSet(Integer.valueOf(dataSetId));
 			}
 			catch (Exception e) {
-				MessageDialog.openError(container.getShell(), 
-						"Error", "Could not recover data set to refresh Meta Data!");		
 				SpagoBILogger.warningLog("Could not recover data set",e);		
 			}
 		}
@@ -493,8 +518,6 @@ IWorkbenchPropertyPage {
 				engine=engineServiceProxy.getEngine(Integer.valueOf(engineId));
 			}
 			catch (Exception e) {
-				MessageDialog.openError(container.getShell(), 
-						"Error", "Could not recover engine to refresh Meta Data!");		
 				SpagoBILogger.warningLog("Could not recover engine",e);		
 			}
 		}
@@ -535,8 +558,6 @@ IWorkbenchPropertyPage {
 				file.setPersistentProperty(PropertyPage.DOCUMENT_STATE, document.getState()!=null ? document.getState() : "");
 			}
 			catch (Exception e) {
-				MessageDialog.openError(container.getShell(), 
-						"Error", "Error while refreshing meta data!");		
 				SpagoBILogger.errorLog("Error while refreshing meta data",e);		
 			}
 		}
@@ -549,8 +570,6 @@ IWorkbenchPropertyPage {
 				file.setPersistentProperty(PropertyPage.ENGINE_DESCRIPTION, engine.getDescription()!=null ? engine.getDescription() : "");
 			}
 			catch (Exception e) {
-				MessageDialog.openError(container.getShell(), 
-						"Error", "Error while refreshing engine meta data!");		
 				SpagoBILogger.errorLog("Error while refreshing engine meta data",e);		
 			}
 		}
@@ -564,8 +583,6 @@ IWorkbenchPropertyPage {
 				file.setPersistentProperty(PropertyPage.DATASET_DESCRIPTION, dataSet.getDescription()!=null ? dataSet.getDescription() : "");
 			}
 			catch (Exception e) {
-				MessageDialog.openError(container.getShell(), 
-						"Error", "Error while refreshing dataset meta data!");		
 				SpagoBILogger.errorLog("Error while refreshing dataset meta data",e);		
 			}
 		}
@@ -578,8 +595,6 @@ IWorkbenchPropertyPage {
 				file.setPersistentProperty(PropertyPage.DATA_SOURCE_DESCRIPTION, dataSource.getDescr()!=null ? dataSource.getDescr() : "");
 			}
 			catch (Exception e) {
-				MessageDialog.openError(container.getShell(), 
-						"Error", "Error while refreshing dataSource meta data!");		
 				SpagoBILogger.errorLog("Error while refreshing dataSouce meta data",e);		
 			}
 		}
@@ -598,8 +613,6 @@ IWorkbenchPropertyPage {
 			file.setPersistentProperty(LAST_REFRESH_DATE, currentStr);
 		}
 		catch (Exception e) {
-			MessageDialog.openError(container.getShell(), 
-					"Error", "Error while refreshing update date!");		
 			SpagoBILogger.errorLog("Error while refreshing update date",e);		
 		}
 

@@ -4,6 +4,8 @@ import it.eng.spagobi.studio.geo.Activator;
 import it.eng.spagobi.studio.geo.editors.model.geo.Column;
 import it.eng.spagobi.studio.geo.editors.model.geo.DatamartProvider;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
+import it.eng.spagobi.studio.geo.editors.model.geo.Label;
+import it.eng.spagobi.studio.geo.editors.model.geo.Labels;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layer;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layers;
 import it.eng.spagobi.studio.geo.editors.model.geo.MapProvider;
@@ -11,22 +13,32 @@ import it.eng.spagobi.studio.geo.editors.model.geo.MapRenderer;
 import it.eng.spagobi.studio.geo.editors.model.geo.Metadata;
 import it.eng.spagobi.studio.geo.util.XmlTemplateGenerator;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 
 public class ModelBO {
+	private ResourceBundle rb = ResourceBundle.getBundle("config", Locale.ENGLISH);
+	
 	public GEODocument createModel(IFile file) throws CoreException{
 		GEODocument geoDocument = XmlTemplateGenerator.readXml(file);
 		if(geoDocument.getMapProvider()==null){
-			geoDocument.setMapProvider(new MapProvider());
+			MapProvider mapProvider =new MapProvider();
+			geoDocument.setMapProvider(mapProvider);
+			mapProvider.setClassName(rb.getString("mapprovider.class.name"));
 		}
 		if(geoDocument.getDatamartProvider()==null){
-			geoDocument.setDatamartProvider(new DatamartProvider());
+			DatamartProvider datamartProvider = new DatamartProvider();
+			geoDocument.setDatamartProvider(datamartProvider);
+			datamartProvider.setClassName(rb.getString("datamartprovider.class.name"));
 		}
 		if(geoDocument.getMapRenderer()==null){
-			geoDocument.setMapRenderer(new MapRenderer());
+			MapRenderer mapRenderer= new MapRenderer();
+			geoDocument.setMapRenderer(mapRenderer);
+			mapRenderer.setClassName(rb.getString("maprenderer.class.name"));
 		}
 		return geoDocument;
 	}
@@ -68,6 +80,25 @@ public class ModelBO {
 				System.out.println(layToRemove.size());
 				layerVect.removeAll(layToRemove);
 				System.out.println("layers left on doc :"+layerVect.size());
+			}
+		}
+		//clean and rebiuld labels
+		Labels labels = mapRenderer.getGuiSettings().getLabels();
+		if(labels != null){
+			Vector<Label> labelVect = labels.getLabel();
+			if(labelVect != null){
+				Vector<Label> labelsToRemove= new Vector<Label>();
+				for(int i = 0; i<labelVect.size(); i++){
+					Label label = labelVect.elementAt(i);
+					if(label.getPosition() == null || label.getPosition().equalsIgnoreCase("")){
+						labelsToRemove.add(label);
+					}else{
+						//set className
+						String className=rb.getString("label.class.name");
+						label.setClassName(className);
+					}
+				}
+				labelVect.removeAll(labelsToRemove);
 			}
 		}
 	}

@@ -3,14 +3,13 @@ package it.eng.spagobi.studio.geo.editors;
 import it.eng.spagobi.studio.geo.Activator;
 import it.eng.spagobi.studio.geo.editors.model.bo.GuiSettingsBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.LabelBO;
-import it.eng.spagobi.studio.geo.editors.model.bo.WindowBO;
+import it.eng.spagobi.studio.geo.editors.model.geo.Format;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.editors.model.geo.GuiParam;
 import it.eng.spagobi.studio.geo.editors.model.geo.GuiSettings;
 import it.eng.spagobi.studio.geo.editors.model.geo.Label;
 import it.eng.spagobi.studio.geo.editors.model.geo.Labels;
 import it.eng.spagobi.studio.geo.editors.model.geo.Param;
-import it.eng.spagobi.studio.geo.editors.model.geo.Window;
 
 import java.util.Vector;
 
@@ -38,6 +37,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 public class GuiSettingsLabelDesigner {
@@ -76,25 +77,29 @@ public class GuiSettingsLabelDesigner {
 	}
 	
 	
-	public void createGuiSettingsLabels(final Composite sectionClient, FormToolkit toolkit){
+	public void createGuiSettingsLabels(final Composite sectionClient, FormToolkit toolkit, ScrolledForm form){
 		
 		// look up for guisettings stored in geodocument
 		guiSettings = GuiSettingsBO.getGuiSettings(geoDocument);
-		createLabelsGroup(toolkit);	
+		createLabelsGroup(toolkit, form);	
 		sectionClient.redraw();
 	}
-	private void createLabelsGroup(final FormToolkit toolkit){
+	private void createLabelsGroup(final FormToolkit toolkit, final ScrolledForm form){
 		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		gd.horizontalSpan =4;
-		gd.verticalAlignment=SWT.TOP;
-		
+		//gd.verticalAlignment=SWT.TOP;
+		mainComposite.setLayoutData(gd);
 
 		final Button add = toolkit.createButton(mainComposite, "Add", SWT.PUSH);
 		add.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				final Group guiGroup = new Group(mainComposite, SWT.FILL);
 				createLabelGroup(toolkit, guiGroup, null);
+				guiGroup.forceFocus();
 				mainComposite.redraw();
+				form.reflow(true);
+				((Section)(mainComposite.getParent())).redraw();
+				
 			}
 		});
 		add.setLayoutData(gd);
@@ -103,8 +108,11 @@ public class GuiSettingsLabelDesigner {
 			if(labels != null && labels.getLabel() != null){
 				Vector<Label> labelV= labels.getLabel();
 				for(int i=0; i< labelV.size(); i++){
-					final Group guiGroup = new Group(mainComposite, SWT.FILL);
-					createLabelGroup(toolkit, guiGroup, labelV.elementAt(i));
+					if(labelV.elementAt(i).getPosition() != null){
+						final Group guiGroup = new Group(mainComposite, SWT.FILL);
+						createLabelGroup(toolkit, guiGroup, labelV.elementAt(i));	
+					}
+									
 				}				
 			}
 		}else{
@@ -116,10 +124,15 @@ public class GuiSettingsLabelDesigner {
 	private void createLabelGroup(FormToolkit toolkit, Group guiGroup, Label label){
 		if(label == null){
 			label = LabelBO.setNewLabel(geoDocument);
-		}	
+		}
+		Format format = label.getFormat();
+		if(format == null){
+			format = new Format();
+			label.setFormat(format);
+		}
 		RowLayout fillLayout = new RowLayout();
 		fillLayout.type = SWT.VERTICAL;
-		fillLayout.pack=true;
+		fillLayout.wrap=true;
 		
 		guiGroup.setLayout(fillLayout);
 		//flag position for this label
@@ -128,14 +141,14 @@ public class GuiSettingsLabelDesigner {
 		createFormatInput(toolkit, guiGroup, label);
 		createParamsGroup(toolkit, guiGroup, label);
 	}
-	private void createParamsGroup(FormToolkit toolkit, Group guiGroup, Label label){	
-		Composite comp = toolkit.createComposite(guiGroup, SWT.BORDER);
+	private void createParamsGroup(FormToolkit toolkit, Group guiGroup, final Label label){	
+		Composite comp = toolkit.createComposite(guiGroup, SWT.NONE);
 		RowLayout rl = new RowLayout();
 		rl.fill=true;
 		rl.justify=true;
-		rl.spacing=10;
-		rl.marginLeft=10;
-		rl.marginTop=10;
+		rl.spacing=5;
+		rl.marginLeft=5;
+		rl.marginTop=5;
 		comp.setLayout(rl);
 		
 		final Table guiTable = toolkit.createTable(comp, SWT.MULTI | SWT.BORDER
@@ -168,7 +181,7 @@ public class GuiSettingsLabelDesigner {
 		guiTable.addListener(SWT.MouseDown, new Listener () {
             public void handleEvent (Event event) {            	
             	if (event.button==3){	
-            		createMenu(guiTable, null);	            	            	
+            		createMenu(guiTable, label);	            	            	
             	}
             }
         });
@@ -184,7 +197,7 @@ public class GuiSettingsLabelDesigner {
 		formLayout.marginHeight = 5;
 		formLayout.spacing = 5;		
 				
-		Composite formComp = toolkit.createComposite(group, SWT.BORDER);
+		Composite formComp = toolkit.createComposite(group, SWT.NONE);
 		formComp.setLayout (formLayout);
 		
 		org.eclipse.swt.widgets.Label name = new org.eclipse.swt.widgets.Label (formComp, SWT.RIGHT);
@@ -271,22 +284,30 @@ public class GuiSettingsLabelDesigner {
 		guiTable.redraw();
 	}
 	private void createPositionCheck(FormToolkit toolkit, Group guiGroup, final Label label){
-		Composite posComp = toolkit.createComposite(guiGroup, SWT.BORDER);
+		Composite posComp = toolkit.createComposite(guiGroup, SWT.NONE);
 		RowLayout rl = new RowLayout();
 		rl.fill=true;
 		rl.justify=true;
-		rl.spacing=10;
-		rl.marginLeft=10;
-		rl.marginTop=10;
+		rl.spacing=5;
+		rl.marginLeft=5;
+		rl.marginTop=5;
 		posComp.setLayout(rl);
 		
 		org.eclipse.swt.widgets.Label position = toolkit.createLabel(posComp, "Position:", SWT.BOLD);
 		createSinglePosition(toolkit, posComp, label, "header-left");
 		createSinglePosition(toolkit, posComp, label, "header-center");
 		createSinglePosition(toolkit, posComp, label, "header-right");
-		createSinglePosition(toolkit, posComp, label, "footer-left");
-		createSinglePosition(toolkit, posComp, label, "footer-center");
-		createSinglePosition(toolkit, posComp, label, "footer-right");
+		Composite posComp2 = toolkit.createComposite(guiGroup, SWT.NONE);
+		rl = new RowLayout();
+		rl.fill=true;
+		rl.justify=true;
+		rl.spacing=5;
+		rl.marginLeft=55;
+		rl.marginTop=5;
+		posComp2.setLayout(rl);
+		createSinglePosition(toolkit, posComp2, label, "footer-left");
+		createSinglePosition(toolkit, posComp2, label, "footer-center");
+		createSinglePosition(toolkit, posComp2, label, "footer-right");
 
 		
 	}
@@ -295,13 +316,15 @@ public class GuiSettingsLabelDesigner {
 		btn.addListener(SWT.Selection, new Listener () {
             public void handleEvent (Event event) { 
             	//add to label
-            	Label labelExistent = LabelBO.getLabelByPosition(geoDocument, btn.getText());
-            	if(labelExistent == null){
-            		label.setPosition(btn.getText());
-            	}else{
-            		MessageDialog.openError(mainComposite.getShell(), "Warning", "Label in the same position already exists.");
+            	if(!btn.getText().equals(label.getPosition())){
+	            	Label labelExistent = LabelBO.getLabelByPosition(geoDocument, btn.getText());
+	            	if(labelExistent == null){
+	            		label.setPosition(btn.getText());
+	            	}else{
+	            		MessageDialog.openError(mainComposite.getShell(), "Warning", "Label in the same position already exists.");
+	            	}
+	            	editor.setIsDirty(true);
             	}
-            	editor.setIsDirty(true);
             }
         });
 		if(label != null && label.getPosition() != null && label.getPosition().equalsIgnoreCase(pos)){
@@ -310,8 +333,8 @@ public class GuiSettingsLabelDesigner {
 		}
 		
 	}
-	private void createFormatInput(FormToolkit toolkit, Group guiGroup, Label label){
-		Composite formComp = toolkit.createComposite(guiGroup, SWT.BORDER);
+	private void createFormatInput(FormToolkit toolkit, Group guiGroup, final Label label){
+		Composite formComp = toolkit.createComposite(guiGroup, SWT.NONE);
 
 		RowLayout rl = new RowLayout();
 		rl.fill=true;
@@ -321,8 +344,24 @@ public class GuiSettingsLabelDesigner {
 		rl.marginTop=10;
 		formComp.setLayout(rl);
 		org.eclipse.swt.widgets.Label formatlabel = toolkit.createLabel(formComp, "Format:", SWT.BOLD);
-		Text day = toolkit.createText(formComp, "dd/MM/yyyy");
-		Text hour = toolkit.createText(formComp, "HH:mm");
+		final Text day = toolkit.createText(formComp, "dd/MM/yyyy");
+		label.getFormat().setDay(day.getText());
+		final Text hour = toolkit.createText(formComp, "HH:mm");
+		label.getFormat().setHour(hour.getText());
+		hour.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {	
+				label.getFormat().setDay(day.getText());
+				label.getFormat().setHour(hour.getText());
+			}
+		});
+		if(label != null && label.getFormat().getDay() != null){
+			day.setText(label.getFormat().getDay());
+			day.redraw();
+		}
+		if(label != null && label.getFormat().getHour() != null){
+			hour.setText(label.getFormat().getHour());
+			hour.redraw();
+		}
 	}
 	private void createMenu(final Table table, final Label label){		
     	Menu menu = new Menu (mainComposite.getShell(), SWT.POP_UP);    	
@@ -330,16 +369,24 @@ public class GuiSettingsLabelDesigner {
 		menuItem.setText ("Delete");
 		menuItem.addListener(SWT.Selection, new Listener () {
             public void handleEvent (Event event) { 
-/*            	TreeItem[] sel = hierarchiesTree.getSelection();
+            	TableItem[] sel = table.getSelection();
             	if(sel[0] != null){
-                	deleteItem(hierarchiesTree, sel[0]);
+                	deleteItem(label, sel[0]);
             	}else{
-            		MessageDialog.openWarning(sectionClient.getShell(), "Warning", "Please select an item to delete");
-            	}*/
+            		MessageDialog.openWarning(mainComposite.getShell(), "Warning", "Please select an item to delete");
+            	}
 
             }
         });	
 		table.setMenu(menu);
+	}
+	
+	private void deleteItem(Label label, TableItem item){
+		LabelBO.deleteParamByName(label, item.getText());
+		item.dispose();
+		editor.setIsDirty(true);
+		item.getParent().redraw();
+		
 	}
 	public GEOEditor getEditor() {
 		return editor;

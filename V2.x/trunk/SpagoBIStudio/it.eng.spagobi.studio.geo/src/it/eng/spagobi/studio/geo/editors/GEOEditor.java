@@ -51,6 +51,7 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -334,8 +335,9 @@ public class GEOEditor extends EditorPart {
 		
 		section3.setClient(sectionGUIParams);
 		
-		Section section4 = toolkit.createSection(form.getBody(), Section.DESCRIPTION|Section.TITLE_BAR|Section.TWISTIE);
-		Composite sectionGUILabels = toolkit.createComposite(section4, SWT.RESIZE);
+		Section section4 = toolkit.createSection(form.getBody(), Section.DESCRIPTION|Section.TITLE_BAR|Section.TWISTIE | SWT.RESIZE);
+		
+		Composite sectionGUILabels = toolkit.createComposite(section4, SWT.BORDER);
 		sectionGUILabels.setLayout(gl);
 		section4.addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanged(ExpansionEvent e) {
@@ -345,7 +347,7 @@ public class GEOEditor extends EditorPart {
 		section4.setText("GUI Settings - Labels");
 		section4.setDescription("Insert parameters for GUI Settings Labels");
 		GuiSettingsLabelDesigner guiSettingsDesignerLabels = new GuiSettingsLabelDesigner(sectionGUILabels, this, geoDocument);
-		guiSettingsDesignerLabels.createGuiSettingsLabels(sectionGUILabels, toolkit);
+		guiSettingsDesignerLabels.createGuiSettingsLabels(sectionGUILabels, toolkit, form);
 		
 		section4.setClient(sectionGUILabels);
 

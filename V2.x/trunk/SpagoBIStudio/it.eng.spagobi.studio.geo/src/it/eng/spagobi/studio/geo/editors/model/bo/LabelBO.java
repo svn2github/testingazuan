@@ -56,8 +56,19 @@ public class LabelBO {
 			}
 		}finally{
 			return label;
-		}
+		}		
+	}
+	public static void deleteParamByName(Label label, String paramName){
 		
+		Vector<GuiParam> params = label.getParams();
+		if(params != null){
+			for(int i=0; i<params.size(); i++){
+				if(params.elementAt(i).getName()!= null && params.elementAt(i).getName().equalsIgnoreCase(paramName)){
+					params.remove(i);
+				}
+			}			
+		}
+
 	}
 
 }

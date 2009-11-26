@@ -138,6 +138,7 @@ public class GuiSettingsLabelDesigner {
 		//flag position for this label
 		
 		createPositionCheck(toolkit, guiGroup, label);
+		createText(toolkit, guiGroup, label);
 		createFormatInput(toolkit, guiGroup, label);
 		createParamsGroup(toolkit, guiGroup, label);
 	}
@@ -210,12 +211,7 @@ public class GuiSettingsLabelDesigner {
 		
 		text.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {			
-	
-				GuiParam param = LabelBO.getParamByName(label, text.getText());
-				if(param != null){
-					MessageDialog.openWarning(mainComposite.getShell(), "Warning", "Another parameter with the same name is already defined.");		
-					text.setText("");
-				}
+
 
 			}
 		});
@@ -307,8 +303,37 @@ public class GuiSettingsLabelDesigner {
 		posComp2.setLayout(rl);
 		createSinglePosition(toolkit, posComp2, label, "footer-left");
 		createSinglePosition(toolkit, posComp2, label, "footer-center");
-		createSinglePosition(toolkit, posComp2, label, "footer-right");
+		createSinglePosition(toolkit, posComp2, label, "footer-right");		
+	}
+	private void createText(FormToolkit toolkit, Group guiGroup, final Label label){
+		Composite textComp = toolkit.createComposite(guiGroup, SWT.NONE);
+		RowLayout rl = new RowLayout();
+		rl.fill=true;
+		rl.justify=true;
+		rl.spacing=5;
+		rl.marginLeft=5;
+		rl.marginTop=5;
+		textComp.setLayout(rl);
+		
+		org.eclipse.swt.widgets.Label labelText = toolkit.createLabel(textComp, "Text:", SWT.RIGHT);
 
+		final Text text = toolkit.createText(textComp, "", SWT.BORDER);
+		text.setSize(20, 200);
+		
+
+		label.setText(text.getText());
+		
+		text.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {	
+
+				label.setText(text.getText());
+				editor.setIsDirty(true);
+			}
+		});
+		if(label != null && label.getText() != null){
+			text.setText(label.getText());
+			text.redraw();
+		}
 		
 	}
 	private void createSinglePosition(FormToolkit toolkit, Composite posComp, final Label label, String pos){

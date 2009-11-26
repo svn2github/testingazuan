@@ -19,7 +19,14 @@ public class ParamConverter implements Converter {
     					MarshallingContext context) {
             GuiParam param = (GuiParam) value;
             writer.addAttribute("name", param.getName());
-            writer.setValue(param.getValue());
+            if(!param.getName().equalsIgnoreCase("styles")){                
+                writer.setValue(param.getValue());
+            }else{
+            	writer.setValue("<[CDATA[");
+                writer.setValue(param.getValue());
+                writer.setValue("]]>"); 
+            }
+
             
     }
 
@@ -29,7 +36,13 @@ public class ParamConverter implements Converter {
     		String value =reader.getValue();
     		String name = reader.getAttribute("name");
     		par.setName(name);
-            par.setValue(value);
+    		if(!name.equalsIgnoreCase("styles")){    			
+                par.setValue(value);
+    		}else{
+    			String style = value.substring(value.indexOf("<[CDATA[")+"<[CDATA[".length(), value.indexOf("]]>"));
+    			par.setValue(style);
+    		}
+    		
             
             return par;
     }

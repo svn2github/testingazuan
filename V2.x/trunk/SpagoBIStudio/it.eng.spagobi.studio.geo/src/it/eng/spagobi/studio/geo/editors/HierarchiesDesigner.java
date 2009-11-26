@@ -555,7 +555,7 @@ public class HierarchiesDesigner {
 				}
 				
 				if(dataStoreMetadata!=null){
-					editor.getTempDsMetadataInfos().put(datasetLabel, dataStoreMetadata);
+					//editor.getTempDsMetadataInfos().put(datasetLabel, dataStoreMetadata);
 				}
 				else{
 					SpagoBILogger.warningLog("Dataset returned no metadata");
@@ -585,14 +585,26 @@ public class HierarchiesDesigner {
 	private Combo drawFeaturesNameCombo(final Shell dialog){
 		final Combo textFeature = new Combo(dialog, SWT.SINGLE | SWT.READ_ONLY);
 
-		String mapLabel=editor.getSelectedMap();
+/*		String mapLabel=editor.getSelectedMap();
 		
 		if(mapLabel == null){
 			return null;
-		}
+		}*/
 		GeoFeature[] geoFeatures=null;
+		
+		try{
+			geoFeatures=new SpagoBIServerObjects().getAllFeatures();
+			if(geoFeatures==null){
+				SpagoBILogger.warningLog("No features returned");
+				MessageDialog.openWarning(mainComposite.getShell(), "Warning", "No features returned");			
+			}
+		}
+		catch (NoServerException e1) {
+			SpagoBILogger.errorLog("Could not get features", e1);
+			MessageDialog.openError(mainComposite.getShell(), "Error", "Could not get features");
+		}
 		// get the metadata
-		if(editor.getTempMapMetadataInfos().get(mapLabel)!=null){
+/*		if(editor.getTempMapMetadataInfos().get(mapLabel)!=null){
 			geoFeatures=editor.getTempMapMetadataInfos().get(mapLabel);
 		}
 		else{
@@ -613,7 +625,7 @@ public class HierarchiesDesigner {
 				SpagoBILogger.errorLog("Could not get features associated to map with label = "+mapLabel, e1);
 				MessageDialog.openError(mainComposite.getShell(), "Error", "Could not get features associated to map with label = "+mapLabel);
 			}
-		}
+		}*/
 		if(geoFeatures!=null){
 			for (int i = 0; i < geoFeatures.length; i++) {
 				GeoFeature geoFeature=geoFeatures[i];

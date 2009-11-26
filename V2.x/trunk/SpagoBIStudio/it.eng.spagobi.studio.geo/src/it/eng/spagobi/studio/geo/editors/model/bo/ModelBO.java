@@ -50,19 +50,18 @@ public class ModelBO {
 			Vector<Column> colToRemove= new Vector<Column>();
 			Vector<Column> columns = metadata.getColumn();
 			if(columns != null){
-
 				for(int j=0; j<columns.size(); j++){
 					Column col = columns.elementAt(j);
 					if(!col.isChoosenForTemplate()){
-						//columns.remove(col);
+						colToRemove.add(col);
+					}else if(col.isChoosenForTemplate() && col.getType()== null){
 						colToRemove.add(col);
 					}
 				}
-				System.out.println(colToRemove.size());
 				columns.removeAll(colToRemove);
-				System.out.println("columns left on doc :"+columns.size());
 			}
 		}
+		
 		MapRenderer mapRenderer = geoDocumentToSaveOnFile.getMapRenderer();
 		Layers layers = mapRenderer.getLayers();
 		if(layers != null){

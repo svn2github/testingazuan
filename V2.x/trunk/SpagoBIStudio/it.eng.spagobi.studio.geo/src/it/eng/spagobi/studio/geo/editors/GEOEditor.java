@@ -3,6 +3,7 @@ package it.eng.spagobi.studio.geo.editors;
 import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
 import it.eng.spagobi.sdk.exceptions.MissingParameterValue;
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
+import it.eng.spagobi.studio.core.bo.DataSource;
 import it.eng.spagobi.studio.core.bo.DataStoreMetadata;
 import it.eng.spagobi.studio.core.bo.DataStoreMetadataField;
 import it.eng.spagobi.studio.core.bo.Dataset;
@@ -16,14 +17,15 @@ import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 import it.eng.spagobi.studio.geo.Activator;
 import it.eng.spagobi.studio.geo.editors.model.bo.ColumnBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.DatasetBO;
+import it.eng.spagobi.studio.geo.editors.model.bo.DatasourceBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.HierarchyBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.LayerBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.LayersBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.LevelBO;
-import it.eng.spagobi.studio.geo.editors.model.bo.LinkBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.MetadataBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.ModelBO;
 import it.eng.spagobi.studio.geo.editors.model.geo.Column;
+import it.eng.spagobi.studio.geo.editors.model.geo.Datasource;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchies;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchy;
@@ -31,7 +33,6 @@ import it.eng.spagobi.studio.geo.editors.model.geo.Layer;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layers;
 import it.eng.spagobi.studio.geo.editors.model.geo.Level;
 import it.eng.spagobi.studio.geo.editors.model.geo.Levels;
-import it.eng.spagobi.studio.geo.editors.model.geo.Link;
 import it.eng.spagobi.studio.geo.editors.model.geo.Metadata;
 import it.eng.spagobi.studio.geo.util.DeepCopy;
 import it.eng.spagobi.studio.geo.util.DesignerUtils;
@@ -39,7 +40,6 @@ import it.eng.spagobi.studio.geo.util.XmlTemplateGenerator;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
@@ -51,7 +51,6 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -337,7 +336,7 @@ public class GEOEditor extends EditorPart {
 		
 		Section section4 = toolkit.createSection(form.getBody(), Section.DESCRIPTION|Section.TITLE_BAR|Section.TWISTIE | SWT.RESIZE);
 		
-		Composite sectionGUILabels = toolkit.createComposite(section4, SWT.BORDER);
+		Composite sectionGUILabels = toolkit.createComposite(section4, SWT.NONE);
 		sectionGUILabels.setLayout(gl);
 		section4.addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanged(ExpansionEvent e) {
@@ -385,10 +384,30 @@ public class GEOEditor extends EditorPart {
 			if (metadata != null && metadata.getDataset() != null
 					&& metadata.getDataset().equals(name)) {
 				datasetCombo.select(index);
+
 			}
 			index++;
 		}
+		///datasource
+		Dataset dataset = datasetInfos.get(metadata.getDataset());
 
+		Integer datasourceId = dataset.getJdbcDataSourceId();
+		
+		SpagoBIServerObjects sbso=new SpagoBIServerObjects();
+		DataSource sdkdataSource;
+		try {
+			sdkdataSource = sbso.getDataSourceById(datasourceId);
+			sdkdataSource.getUrlConnection();
+			
+			Datasource datasource = DatasourceBO.setNewDatasource(geoDocument);
+			datasource.setDriver(sdkdataSource.getDriver());
+			datasource.setPassword(sdkdataSource.getPwd());
+			datasource.setType("connection");
+			datasource.setUrl(sdkdataSource.getUrlConnection());
+			datasource.setUser(sdkdataSource.getName());
+		} catch (NoServerException e3) {
+			SpagoBILogger.errorLog(e3.getMessage(), e3);
+		}
 		datasetCombo.setLayoutData(gd);
 
 		datasetCombo.addSelectionListener(new SelectionListener() {
@@ -419,9 +438,23 @@ public class GEOEditor extends EditorPart {
 					it.eng.spagobi.studio.geo.editors.model.geo.Dataset datasetGeo = DatasetBO
 							.setNewDataset(geoDocument, dataset.getJdbcQuery());
 					Integer datasourceId = dataset.getJdbcDataSourceId();
+					
+					SpagoBIServerObjects sbso=new SpagoBIServerObjects();
+					DataSource sdkdataSource;
+					try {
+						sdkdataSource = sbso.getDataSourceById(datasourceId);
+						sdkdataSource.getUrlConnection();
+						
+						Datasource datasource = DatasourceBO.setNewDatasource(geoDocument);
+						datasource.setDriver(sdkdataSource.getDriver());
+						datasource.setPassword(sdkdataSource.getPwd());
+						datasource.setType("connection");
+						datasource.setUrl(sdkdataSource.getUrlConnection());
+						datasource.setUser(sdkdataSource.getName());
+					} catch (NoServerException e3) {
+						SpagoBILogger.errorLog(e3.getMessage(), e3);
+					}
 
-					// DatasourceBO.addDatasource(datasetGeo, type, driver, url,
-					// user, password);
 					try {
 						dataStoreMetadata = new SpagoBIServerObjects()
 								.getDataStoreMetadata(dataset.getId());

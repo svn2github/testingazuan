@@ -100,8 +100,18 @@ Sbi.execution.ExecutionPanel = function(config, doc) {
 	// constructor
     Sbi.execution.ExecutionPanel.superclass.constructor.call(this, c);
     
-    
-    
+    // Workaround: on IE, it takes a long time to destroy the stacked execution wizards.
+    // See Sbi.settings.IE.destroyExecutionWizardWhenClosed on Settings.js for more information
+    if (Ext.isIE && Sbi.settings.IE.destroyExecutionWizardWhenClosed !== undefined && Sbi.settings.IE.destroyExecutionWizardWhenClosed === false) {
+	    this.on('beforedestroy', function() {
+	    	this.hide();
+			for (var i = 0; i < this.documentsStack.length; i++) {
+				var temp = this.documentsStack[i];
+				this.remove(temp, false);
+			}
+	    	return true; // now the execution panel can be destroyed
+	    }, this);
+    }
     
     //this.addEvents();	
 };
@@ -215,8 +225,12 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 		
 		for(var i = this.documentsStack.length-1; i > b.stackIndex; i--) {
 			var el = this.documentsStack.pop();
-			this.remove(el);
-			el.destroy();
+			this.remove(el, false);
+		    // Workaround: on IE, it takes a long time to destroy the stacked execution wizards.
+		    // See Sbi.settings.IE.destroyExecutionWizardWhenClosed on Settings.js for more information
+		    if (Ext.isIE && (Sbi.settings.IE.destroyExecutionWizardWhenClosed === undefined || Sbi.settings.IE.destroyExecutionWizardWhenClosed === true)) {
+		    	el.destroy();
+		    }
 		}
 		// if browser is IE, re-inject parent.execCrossNavigation function in order to solve parent variable conflict that occurs when 
 		// more iframes are built and the same function in injected: it is a workaround that let cross navigation work properly

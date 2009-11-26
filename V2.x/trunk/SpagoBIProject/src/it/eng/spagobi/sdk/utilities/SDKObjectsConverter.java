@@ -355,7 +355,7 @@ public class SDKObjectsConverter {
 			//toReturn.setDialectId(spagoBiDataSource.get)
 			toReturn.setDriver(spagoBiDataSource.getDriver());
 			toReturn.setMultiSchema(spagoBiDataSource.getMultiSchema()== true ? Integer.valueOf(1) :Integer.valueOf(0));
-			//toReturn.setUserName(spa)
+			toReturn.setName(spagoBiDataSource.getUser());
 			toReturn.setPwd(spagoBiDataSource.getPassword());
 			toReturn.setUrlConnection(spagoBiDataSource.getUrl());
 

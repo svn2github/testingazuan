@@ -27,6 +27,7 @@ public class DocumentContained {
 	Group group;	
 	MetadataDocument metadataDocument;	
 	Image image=null;
+	Image scaledImage=null;
 	String imagePath=null;
 	Designer designer;
 
@@ -155,13 +156,8 @@ public class DocumentContained {
 			String titleGroup="Name: "+metadataDocument.getName() != null ? metadataDocument.getName() : metadataDocument.getLabel();
 			group.setText(titleGroup);
 			group.setToolTipText(metadataDocument.getLocalFileName());
-			Label nameLabelName=new Label(group,SWT.NULL);
-			nameLabelName.setText("Name: "+metadataDocument.getName() != null ? metadataDocument.getName() : "" );			
-			//		Label nameLabelValue=new Label(group,SWT.NULL);
-			//nameLabelValue.setText(metadataDocument.getName() != null ? metadataDocument.getName() : "" );
-			//		Label localFileNameLabel=new Label(group,SWT.NULL);
-			//		localFileNameLabel.setText(metadataDocument.getLocalFileName());				
-			//		(new Label(group, SWT.NULL)).setText("");
+//			Label nameLabelName=new Label(group,SWT.NULL);
+//			nameLabelName.setText("Name: "+metadataDocument.getName() != null ? metadataDocument.getName() : "" );			
 		}
 		return true;
 
@@ -188,7 +184,7 @@ public class DocumentContained {
 		double rapportoWidth=(double)containerWidth / (double)originalWidth;
 
 
-		final Image scaled200 = new Image(group.getDisplay(),
+		 scaledImage = new Image(group.getDisplay(),
 				image.getImageData().scaledTo((int)(originalWidth*rapportoWidth-20),(int)(originalHeight*rapportoHeight-20)));
 
 
@@ -206,7 +202,7 @@ public class DocumentContained {
 				//
 				//					e2.printStackTrace();
 				//				}
-				e.gc.drawImage(scaled200,20,20);
+				e.gc.drawImage(scaledImage,20,20);
 				image.dispose();
 				//				e.gc.drawImage(image, 20, 30);
 				//				image.dispose();
@@ -255,6 +251,16 @@ public class DocumentContained {
 
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
+	}
+
+
+	public Image getScaledImage() {
+		return scaledImage;
+	}
+
+
+	public void setScaledImage(Image scaledImage) {
+		this.scaledImage = scaledImage;
 	}
 
 

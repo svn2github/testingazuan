@@ -11,8 +11,6 @@ import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
 import it.eng.spagobi.studio.documentcomposition.views.NavigationView;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
@@ -26,11 +24,8 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
@@ -38,13 +33,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IViewReference;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
@@ -343,8 +335,49 @@ public class DocContainer {
 						designer.setState(Designer.RESIZE);
 					}
 				});
+				
+				MenuItem delDocItem = new MenuItem(menu, SWT.PUSH);
+				delDocItem.setText("Delete Document");
+				delDocItem.addListener(SWT.Selection, new Listener() {
+					public void handleEvent(Event e) {
+						Integer idSel=designer.getCurrentSelection();
+						String title=designer.getContainers().get(idSel).getDocumentContained().getGroup().getText();
+
+						// delete document 
+						if(documentContained.getMetadataDocument()!=null){  // has a doc associated???
+							(new ModelBO()).deleteDocumentFromModel(documentContained.getMetadataDocument());
+							// delete metadata document
+							(new MetadataBO()).getMetadataDocumentComposition().removeMetadataDocument(documentContained.getMetadataDocument());
+						}
+						
+						designer.getEditor().setIsDirty(true);
+						designer.setCurrentSelection(-1);
+						designer.setState(Designer.NORMAL);
+						//composite.dispose();
+						//designer.getContainers().remove(idSel);
+						DocContainer docContainer=designer.getContainers().get(idSel);
+						//docContainer.setDocumentContained(null);
+						docContainer.setTitle("");
+						docContainer.getDocumentContained().setMetadataDocument(null);
+						docContainer.getDocumentContained().getScaledImage().dispose();
+						docContainer.getDocumentContained().setImage(null);
+						docContainer.getDocumentContained().setScaledImage(null);
+						docContainer.getDocumentContained().getGroup().setText(idContainer.toString());
+						docContainer.getDocumentContained().getGroup().setBackground(new Color(docContainer.getDocumentContained().getGroup().getDisplay(),new RGB(189,189,189)));
+						
+						IViewPart viewPart=DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PROPERTIES_VIEW_ID);
+						if(viewPart!=null)((DocumentPropertiesView)viewPart).setVisible(false);
+						IViewPart viewPart2=DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PARAMETERS_VIEW_ID);
+						if(viewPart2!=null)((DocumentParametersView)viewPart2).setVisible(false);						
+						designer.getMainComposite().layout();
+						designer.getMainComposite().redraw();
+						//						designer.getMainComposite().pack();
+
+					}
+				});	
+				
 				MenuItem delItem = new MenuItem(menu, SWT.PUSH);
-				delItem.setText("Delete Document");
+				delItem.setText("Delete Container");
 				delItem.addListener(SWT.Selection, new Listener() {
 					public void handleEvent(Event e) {
 						Integer idSel=designer.getCurrentSelection();
@@ -371,6 +404,8 @@ public class DocContainer {
 
 					}
 				});				
+			
+				
 				menu.setLocation(event.x, event.y);
 				menu.setVisible(true);
 				while (!menu.isDisposed() && menu.isVisible()) {
@@ -505,8 +540,8 @@ public class DocContainer {
 					if (fileTransfer.isSupportedType(event.currentDataType)){
 						String[] files = (String[])event.data;
 						for (int i = 0; i < files.length; i++) {
-							Label label=new Label(composite, SWT.NULL);
-							label.setText(files[i]);
+//							Label label=new Label(composite, SWT.NULL);
+//							label.setText(files[i]);
 						}					
 					}
 				}

@@ -81,6 +81,6 @@ Sbi.widgets.TriggerFieldMultiButton = Ext.extend(Ext.form.TwinTriggerField, {
             this.wrap.setWidth(this.el.getWidth()+this.trigger.getWidth());
         } else {
         }    	
-    },
+    }
 
 });

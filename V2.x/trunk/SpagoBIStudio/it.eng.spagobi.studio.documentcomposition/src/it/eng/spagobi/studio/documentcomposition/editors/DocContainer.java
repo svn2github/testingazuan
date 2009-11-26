@@ -151,7 +151,9 @@ public class DocContainer {
 							if(documentContained.getMetadataDocument()!=null){
 								(new ModelBO()).updateModelModifyDocument(documentContained.getMetadataDocument(), calculateTemplateStyle(false));
 							}
-							documentContained.drawImage();
+							if(documentContained!=null && documentContained.getMetadataDocument()!=null){
+								documentContained.drawImage();
+							}
 							designer.setCurrentSelection(Integer.valueOf(-1));
 							designer.getEditor().setIsDirty(true);
 						}
@@ -335,7 +337,7 @@ public class DocContainer {
 						designer.setState(Designer.RESIZE);
 					}
 				});
-				
+
 				MenuItem delDocItem = new MenuItem(menu, SWT.PUSH);
 				delDocItem.setText("Delete Document");
 				delDocItem.addListener(SWT.Selection, new Listener() {
@@ -349,7 +351,15 @@ public class DocContainer {
 							// delete metadata document
 							(new MetadataBO()).getMetadataDocumentComposition().removeMetadataDocument(documentContained.getMetadataDocument());
 						}
-						
+						else{
+							designer.getEditor().setIsDirty(true);
+							designer.setCurrentSelection(-1);
+							designer.setState(Designer.NORMAL);
+							designer.getMainComposite().layout();
+							designer.getMainComposite().redraw();
+							return;
+						}
+
 						designer.getEditor().setIsDirty(true);
 						designer.setCurrentSelection(-1);
 						designer.setState(Designer.NORMAL);
@@ -364,7 +374,7 @@ public class DocContainer {
 						docContainer.getDocumentContained().setScaledImage(null);
 						docContainer.getDocumentContained().getGroup().setText(idContainer.toString());
 						docContainer.getDocumentContained().getGroup().setBackground(new Color(docContainer.getDocumentContained().getGroup().getDisplay(),new RGB(189,189,189)));
-						
+
 						IViewPart viewPart=DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PROPERTIES_VIEW_ID);
 						if(viewPart!=null)((DocumentPropertiesView)viewPart).setVisible(false);
 						IViewPart viewPart2=DocCompUtilities.getViewReference(DocCompUtilities.DOCUMENT_PARAMETERS_VIEW_ID);
@@ -375,7 +385,7 @@ public class DocContainer {
 
 					}
 				});	
-				
+
 				MenuItem delItem = new MenuItem(menu, SWT.PUSH);
 				delItem.setText("Delete Container");
 				delItem.addListener(SWT.Selection, new Listener() {
@@ -404,8 +414,8 @@ public class DocContainer {
 
 					}
 				});				
-			
-				
+
+
 				menu.setLocation(event.x, event.y);
 				menu.setVisible(true);
 				while (!menu.isDisposed() && menu.isVisible()) {
@@ -540,8 +550,8 @@ public class DocContainer {
 					if (fileTransfer.isSupportedType(event.currentDataType)){
 						String[] files = (String[])event.data;
 						for (int i = 0; i < files.length; i++) {
-//							Label label=new Label(composite, SWT.NULL);
-//							label.setText(files[i]);
+							//							Label label=new Label(composite, SWT.NULL);
+							//							label.setText(files[i]);
 						}					
 					}
 				}

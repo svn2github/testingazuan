@@ -258,11 +258,13 @@ public class Designer {
 						selected.setSize(setWidth, setHeight);						
 						DocContainer docContainerSelected=containers.get(currentSelection);
 						docContainerSelected.reloadStyleDocumentProperties();
-						// UOpdate only if document is present
+						// Update only if document is present
 						if(selectedDoc.getDocumentContained().getMetadataDocument()!=null){
 							(new ModelBO()).updateModelModifyDocument(selectedDoc.getDocumentContained().getMetadataDocument(), selectedDoc.calculateTemplateStyle(false));						
 						}
-						selectedDoc.getDocumentContained().drawImage();						
+						if(selectedDoc.getDocumentContained()!=null && selectedDoc.getDocumentContained().getMetadataDocument()!=null){
+							selectedDoc.getDocumentContained().drawImage();						
+						}
 						setCurrentSelection(new Integer(-1));
 						if(selected!=null){
 

@@ -270,9 +270,8 @@ if (message != null && !message.trim().equals("")) {
 			}
 			// for new ExtJs-based execution interface
 			try {
-				window.onload = setTimeout('try {sendMessage("Subobject saved!!!!","subobjectsaved")} catch (ex) {}', 1000);
+				window.onLoad = setTimeout('try {sendMessage("Subobject saved!!!!","subobjectsaved")} catch (ex) {}', 1000);
 			} catch (err) {
-				alert(ex);
 			}
 			</script>
 		<p>

@@ -90,6 +90,31 @@ public class SpagoBIServerObjects {
 	}
 
 	
+	public GeoFeature[] getAllFeatures() throws NoServerException{
+		GeoFeature[] toReturn=null;
+		SDKFeature[] sdkFeatures=null;
+		try{
+			SDKProxyFactory proxyFactory=new SDKProxyFactory();
+			MapsSDKServiceProxy mapsServiceProxy=proxyFactory.getMapsSDKServiceProxy();
+			sdkFeatures =mapsServiceProxy.getFeatures();
+		}
+		catch (Exception e) {
+			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve map informations", e);
+			throw(new NoServerException(e));
+		}	
+
+		if(sdkFeatures!=null){
+			toReturn=new GeoFeature[sdkFeatures.length];
+			for (int i = 0; i < sdkFeatures.length; i++) {
+				SDKFeature sdkFeature=sdkFeatures[i];
+				GeoFeature geoFeature=new GeoFeature(sdkFeature);
+				toReturn[i]=geoFeature;
+			}
+		}
+		return toReturn;	
+	}
+
+	
 
 	public GeoMap getGeoMapById(Integer geoId) throws NoServerException{
 		GeoMap toReturn=null;

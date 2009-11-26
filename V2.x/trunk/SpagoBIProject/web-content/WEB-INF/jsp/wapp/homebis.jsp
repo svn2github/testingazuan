@@ -172,15 +172,15 @@ var themesViewName;
 // BANNER AND FOOTER CONFIGURATION
 SourceBean b = (SourceBean)spagoconfig.getAttribute("SPAGOBI.HOME.BANNER");
 String banner = (String)b.getAttribute("view");
-Boolean showbanner = true;
+boolean showbanner = true;
 if (banner!=null && !banner.equals("") && banner.equalsIgnoreCase("false")){
 	showbanner = false;
 }
 SourceBean f = (SourceBean)spagoconfig.getAttribute("SPAGOBI.HOME.FOOTER");
 String footer =(String) f.getAttribute("view");
-Boolean showfooter = true;
+boolean showfooter = true;
 if (footer!=null && !footer.equals("") && footer.equalsIgnoreCase("false")){
-	showfooter = false;
+	showfooter =  false;
 }
 
 

@@ -192,7 +192,10 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 	
 	, clear: function() {
 		for(p in this.fields) {
-			this.fields[p].reset();
+			var aField = this.fields[p];
+			if (!aField.isTransient) {
+				aField.reset();
+			}
 		}
 	}
 	

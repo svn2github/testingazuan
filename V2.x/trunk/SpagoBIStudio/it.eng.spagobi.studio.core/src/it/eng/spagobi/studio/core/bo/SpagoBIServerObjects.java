@@ -4,10 +4,12 @@ import java.util.Vector;
 
 import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
 import it.eng.spagobi.sdk.datasets.bo.SDKDataStoreMetadata;
+import it.eng.spagobi.sdk.datasources.bo.SDKDataSource;
 import it.eng.spagobi.sdk.exceptions.MissingParameterValue;
 import it.eng.spagobi.sdk.maps.bo.SDKFeature;
 import it.eng.spagobi.sdk.maps.bo.SDKMap;
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
+import it.eng.spagobi.sdk.proxy.DataSourcesSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.MapsSDKServiceProxy;
 import it.eng.spagobi.studio.core.exceptions.NoServerException;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
@@ -44,6 +46,23 @@ public class SpagoBIServerObjects {
 	}
 
 
+	public DataSource getDataSourceById(Integer dsId) throws NoServerException{
+		DataSource toReturn=null;
+		SDKDataSource sdkDS=null;
+		try{
+			SDKProxyFactory proxyFactory=new SDKProxyFactory();
+			DataSourcesSDKServiceProxy dsServiceProxy=proxyFactory.getDataSourcesSDKServiceProxy();
+			sdkDS = dsServiceProxy.getDataSource(dsId);
+		}
+		catch (Exception e) {
+			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve map informations", e);
+			throw(new NoServerException(e));
+		}	
+		if(sdkDS!=null){
+			toReturn=new DataSource(sdkDS);
+		}
+		return toReturn;	
+	}
 
 
 	public GeoFeature[] getFeaturesByMapId(Integer mapId) throws NoServerException{

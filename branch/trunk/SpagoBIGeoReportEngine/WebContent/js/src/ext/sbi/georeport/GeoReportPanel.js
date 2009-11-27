@@ -49,7 +49,7 @@ Ext.ns("Sbi.georeport");
 Sbi.georeport.GeoReportPanel = function(config) {
 	
 	var defaultSettings = {
-			mapName: 'Mappa di prova'
+		mapName: 'sbi.georeport.mappanel.title'
 	};
 		
 	if(Sbi.settings && Sbi.settings.georeport && Sbi.settings.georeport.georeportPanel) {
@@ -62,14 +62,29 @@ Sbi.georeport.GeoReportPanel = function(config) {
 		
 		
 	this.services = this.services || new Array();	
-	/*
-	this.services['doThat'] = this.services['doThat'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'DO_THAT_ACTION'
-		, baseParams: new Object()
-	});
-	*/
 	
-	this.addEvents('customEvents');
+	var params = {
+		layer: this.targetLayerConf.name
+		, businessId: this.businessId
+		, geoId: this.geoId
+	};
+	if(this.targetLayerConf.url) {
+		params.featureSourceType = 'wfs';
+		params.featureSource = this.targetLayerConf.url;
+	} else {
+		params.featureSourceType = 'file';
+		params.featureSource = this.targetLayerConf.data;
+	}
+	
+	this.services['MapOl'] = this.services['MapOl'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'MapOl'
+		, baseParams: params
+	});
+	
+	
+	
+	
+	//this.addEvents('customEvents');
 		
 		
 	this.initMap();
@@ -88,20 +103,25 @@ Sbi.georeport.GeoReportPanel = function(config) {
 Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
     
     services: null
+    
+    , baseLayersConf: null
+    , layers: null
+    
     , map: null
     , lon: null
     , lat: null
     , zoomLevel: null
-    , layers: null
-    , showPositon: true
-    , showOverview: true
+    
+    , showPositon: null
+    , showOverview: null
     , mapName: null
     , mapPanel: null
     , controlPanel: null
     
     , analysisType: null
-    , targetLayerName: null
-    , targetLayerLabel: null
+    , PROPORTIONAL_SYMBOLS:'proportionalSymbols'
+    , CHOROPLETH:'choropleth'
+    
     , targetLayer: null
     , geostatistic: null
     
@@ -120,71 +140,61 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
     
 	 // -- private methods ------------------------------------------------------------------------
 	
-
+	, initMap: function() {		
+		this.map = new OpenLayers.Map('map');
+		this.initLayers();
+		this.initControls();		
+		this.initAnalysis();
+	}
+	
 	, initLayers: function(c) {
-		this.layers = [
-		    new OpenLayers.Layer.WMS( 
-		    		"OpenLayers WMS",
-		    		"http://labs.metacarta.com/wms/vmap0",
-		    		{layers: 'basic'},
-		    		{singleTile: true}
-		    ), 
-		    
-		    new OpenLayers.Layer.WMS( 
-		    		"NASA Global Mosaic",
-	                "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
-	                {layers: "landsat7"}
-		    ),
-		    
-		    new OpenLayers.Layer.WMS(
-		    		"Satellite",
-					"http://labs.metacarta.com/wms-c/Basic.py?", 
-                    {layers: 'satellite', format: 'image/png'}
-		    )
-		];
+		this.layers = new Array();
+		if(this.baseLayersConf && this.baseLayersConf.length > 0) {
+			for(var i = 0; i < this.baseLayersConf.length; i++) {
+				var layerConf = this.baseLayersConf[i];
+				this.layers.push(new OpenLayers.Layer.WMS(
+						layerConf.name, layerConf.url, 
+						layerConf.params, layerConf.options
+				));
+			}			
+		}
+		this.map.addLayers(this.layers);
+		this.setCenter();
+	}
+	
+	, initControls: function() {
+		if(this.showPositon) {
+			this.map.addControl(new OpenLayers.Control.MousePosition());
+		}
+		
+		if(this.showOverview) {
+			this.map.addControl(new OpenLayers.Control.OverviewMap());
+		}
 	}
 	
 	, initAnalysis: function() {
 		
-		var url = '/SpagoBIGeoReportEngine/MapOl' 
-			url += '?layer=' + this.targetLayerName;
-			url += '&server=' + this.geojsonUrl;
-			url += '&label=' + this.spagobiDataset;
-			url += '&businessId=' + this.businessId;
-			url += '&geoid=' + this.geoId;
+		var geostatConf = {
+		    map: this.map,
+		    layer: null, // this.targetLayer not yet defined here
+		    indicators:  this.indicators,
+		    url: this.services['MapOl'],
+	        loadMask : {msg: 'Proportional Symbols analysis...', msgCls: 'x-mask-loading'},
+	        legendDiv : 'myChoroplethLegendDiv',
+	        featureSelection: false
+	        , listeners: {}
+    	};
 			
 		
-		var indic = new Array(this.indicators.length);
-
-		for(var i= 0, len = indic.length; i < len; i++){
-			indic[i] = this.indicators[i];
-		} 
-		
-		if (this.analysisType === "prop") {
+		if (this.analysisType === this.PROPORTIONAL_SYMBOLS) {
 			this.initProportionalSymbolsAnalysis();
+			geostatConf.layer = this.targetLayer;
+			this.geostatistic = new mapfish.widgets.geostat.ProportionalSymbol(geostatConf);
 			
-			this.geostatistic = new mapfish.widgets.geostat.ProportionalSymbol({
-	            'map': this.map,
-	            'layer': this.targetLayer,
-	            'indicators': indic,
-	            'url': url,
-	            'loadMask' : {msg: 'Proportional Symbols analysis...', msgCls: 'x-mask-loading'},
-	            'legendDiv' : 'myChoroplethLegendDiv',
-	            'featureSelection': false
-    		});
-		} else if (this.analysisType === "chorop") {
+		} else if (this.analysisType === this.CHOROPLETH) {
 			this.initChoroplethAnalysis();
-			
-			this.geostatistic = new mapfish.widgets.geostat.Choropleth({
-	            'map': this.map,
-	            'layer': this.targetLayerName,
-	            'indicators': indic,
-	            'url': url,
-	            'loadMask' : {msg: 'Please wait', msgCls: 'x-mask-loading'},
-	            'legendDiv' : 'myChoroplethLegendDiv',
-	            'featureSelection': false,
-	            'listeners': {}
-	        });
+			geostatConf.layer = this.targetLayer;
+			this.geostatistic = new mapfish.widgets.geostat.Choropleth(geostatConf);
 		} else {
 			alert('error: unsupported analysis type [' + this.analysisType + ']');
 		}
@@ -193,13 +203,11 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 		this.analysisLayerSelectControl.activate();
 		
 		
-		
-		
 	}
 	
 	, initProportionalSymbolsAnalysis: function() {
-		//alert('initProportionalSymbolsAnalysis: ' + this.targetLayerLabel + '; ' + this.targetLayerName);
-		this.targetLayer = new OpenLayers.Layer.Vector(this.targetLayerLabel, {
+	
+		this.targetLayer = new OpenLayers.Layer.Vector(this.targetLayerConf.text, {
 				'visibility': false  ,
 				'styleMap': new OpenLayers.StyleMap({
 	   				'select': new OpenLayers.Style(
@@ -208,32 +216,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 				})
 		});
 
-		this.map.addLayers([this.targetLayer]);
-
-		/*
-		var p = new Object();
-		p.desc=['desc'];
-
-		for (var i=0; i<parameters.length; i++){
-			param = parameters[i][1];
-            desc = parameters[i][0];
-
-            p['desc'] = param;
-        }
-		                      
-		var p2 = new Object();
-		p2.desc=['desc'];
-
-		for (var i=0; i< document2Parameters.length; i++){
-        	param = document2Parameters[i][1];
-            desc = document2Parameters[i][0];
-            alert(desc + ' = ' + param);
-            p2['desc'] = param;
-        }
-		*/
-		
-		
-		
+		this.map.addLayer(this.targetLayer);
         this.analysisLayerSelectControl = new OpenLayers.Control.SelectFeature(this.targetLayer, {} );
 
         this.targetLayer.events.register("featureselected", this, function(o) { 
@@ -249,7 +232,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 	}
 	
 	, initChoroplethAnalysis: function() {
-		this.targetLayer = new OpenLayers.Layer.Vector(this.targetLayerLabel, {
+		this.targetLayer = new OpenLayers.Layer.Vector(this.targetLayerConf.text, {
         	'visibility': false,
           	'styleMap': new OpenLayers.StyleMap({
             	'default': new OpenLayers.Style(
@@ -265,26 +248,8 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
       	});
      
     
-    	this.map.addLayer(this.targetLayer);
-        
-    	/*
-    	var p = new Object();
-    	p.desc=['desc'];
-    	for (var i=0; i<parameters.length; i++){
-        	param = parameters[i][1];
-            desc = parameters[i][0];
-            p[desc] = param;
-        }
-                                      
-	    var p2 = new Object();
-	    p2.desc=['desc'];
-    	for (var i=0; i<document2Parameters.length; i++){
-        	param = document2Parameters[i][1];
-            desc = document2Parameters[i][0];
-            p2[desc] = param;
-        }
-        */                              
-        var analysisLayerSelectControl = new OpenLayers.Control.SelectFeature(this.targetLayer, {});
+    	this.map.addLayer(this.targetLayer);                                    
+    	this.analysisLayerSelectControl = new OpenLayers.Control.SelectFeature(this.targetLayer, {});
         
         this.targetLayer.events.register("featureselected", this, function(o) { 
 			//alert('select -> ' + this.getInfo(o.feature));
@@ -299,64 +264,63 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 	
 	, onTargetFeatureSelect: function(feature) {
 		this.selectedFeature = feature;
-        content = "<div style='font-size:.8em'>" + this.getInfo(feature);
+		
         
-        /*
-        for (var i=0; i<listeners.length; i++){
-            param = feature.attributes[this.listeners[i][1]];
-            desc = this.listeners[i][0];
-            p[desc] = param;
-        }
+       
 
-   	    for (var i=0; i<document2Listeners.length; i++){
-        	param = feature.attributes[document2Listeners[i][1]];
-            desc = document2Listeners[i][0];
-            p2[desc] = param;
-        }
-         
-        spagobiContent = p;
-        spagobiContent2 = p2;
-		*/
-        
-        /* ----
-         function(docLab, role, params, dispToolbar, dispSlide,frameId) {
-         
-         var html = Sbi.sdk.api.getDocumentHtml({
-					documentLabel: docLab
-					, executionRole: "/" + role
-					, parameters: params 
-			      	, displayToolbar: dispToolbar
-					, displaySliders: dispSlide
-					, iframe: {
-			        	id: frameId,
-			          	height: '100%'
-				    	, width: '100%'
-						, style: 'border: 0px;'
-					}
-				});
-         */
-
+		var params = Ext.apply({}, this.detailDocumentConf.staticParams);
+		for(p in this.detailDocumentConf.dynamicParams) {
+			var attrName = this.detailDocumentConf.dynamicParams[p];
+			params[p] = feature.attributes[attrName];
+		}
+		
+		//alert(params.toSource());
+		
         var execDetailFn = "execDoc(";
-        execDetailFn += "'" + this.document2Label + "',"; // documentLabel
-        execDetailFn += "'" + this.role + "',"; // execution role
-        execDetailFn += "{}" + ","; // parameters
-        execDetailFn += this.dispToolbar2 + ","; // displayToolbar
-        execDetailFn += this.dispSlide2 + ","; // displaySliders
-        execDetailFn += "'" + this.document2Label + "'"; // frameId
+        execDetailFn += '"' + this.detailDocumentConf.label + '",'; // documentLabel
+        execDetailFn += '"' + this.role + '",'; // execution role
+        execDetailFn += Ext.util.JSON.encode(params) + ','; // parameters
+        execDetailFn += this.detailDocumentConf.displayToolbar + ','; // displayToolbar
+        execDetailFn += this.detailDocumentConf.displaySliders + ','; // displaySliders
+        execDetailFn += '"' + this.detailDocumentConf.label + '"'; // frameId
         execDetailFn += ")";
+       
+        alert(execDetailFn);
         
         var link = '';
-        link += '<center>'
-        link += '	<font size="1" face="Verdana">'
-        link += '		<a href="#" onclick="Ext.getCmp(\'' + this.mapPanel.getId() + '\').setActiveTab(\'infotable\');' 
-        link += '       Ext.getCmp(\'infotable\').body.dom.innerHTML = ';
-        link += '     	' + execDetailFn + '";>' 
+        link += '<center>';
+        link += '<font size="1" face="Verdana">';
+        link += '<a href="#" onclick=\'Ext.getCmp("' + this.mapPanel.getId() + '").setActiveTab("infotable");';
+        link += 'Ext.getCmp("infotable").body.dom.innerHTML=';
+        link += execDetailFn + '\';>';
         link += 'Dettagli</a></font></center>';
 
+        alert(link);
+        
+        params = Ext.apply({}, this.inlineDocumentConf.staticParams);
+		for(p in this.inlineDocumentConf.dynamicParams) {
+			var attrName = this.inlineDocumentConf.dynamicParams[p];
+			params[p] = feature.attributes[attrName];
+		}
+		
+		//alert(params.toSource());
+        
+        var content = "<div style='font-size:.8em'>" + this.getInfo(feature);
+        content += link;
+        content += execDoc(
+        		this.inlineDocumentConf.label, 
+        		this.role, 
+        		params, 
+        		this.inlineDocumentConf.displayToolbar, 
+        		this.inlineDocumentConf.displaySliders, 
+        		this.inlineDocumentConf.label,
+        		'300'
+        );
+       
         popup = new OpenLayers.Popup.FramedCloud("chicken", 
                 feature.geometry.getBounds().getCenterLonLat(),
                 null,
-                content + link + execDoc(this.document1Label, this.role, {}, this.dispToolbar1, this.dispSlide1, this.document1Label),
+                content,
                 null, 
                 true, 
                 function(evt) {
@@ -379,6 +343,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 	}
 	
 	, getInfo: function(feature) {
+		//alert(feature.attributes.toSource());
 		var info = "";
 	    for(var i=0; i<this.feautreInfo.length; i++){
 	    	info = info+"<b>"+ this.feautreInfo[i][0] +"</b>: " + feature.attributes[this.feautreInfo[i][1]] + "<br />";    
@@ -391,25 +356,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 	
 	
 
-	, initMap: function(c) {
-		this.map = new OpenLayers.Map('map');
-
-		  
-		this.initLayers(c);
-	  
-		this.map.addLayers(this.layers);
-		this.setCenter(c);
-
-		if(this.showPositon) {
-			this.map.addControl(new OpenLayers.Control.MousePosition());
-		}
-		
-		if(this.showOverview) {
-			this.map.addControl(new OpenLayers.Control.OverviewMap());
-		}
-		
-		this.initAnalysis();
-	}
+	
 	
 	, initMapPanel: function() {
 		this.mapPanel = new Ext.TabPanel({
@@ -421,7 +368,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 			},
 
 	       	items: [{
-	        	title: this.mapName,
+	        	title: LN(this.mapName),
 	            xtype: 'mapcomponent',
 	            map: this.map
 	        },{
@@ -445,7 +392,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 		 */
 		
 		 this.controlPanel = new Ext.Panel({
-		    	title       : 'Navigazione',
+		    	title       : LN('sbi.georeport.controlpanel.title'),
 		        region      : 'west',
 		        split       : true,
 		        width       : 300,
@@ -454,7 +401,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 		        cmargins    : '3 3 3 3',
 		        items: [
 		        {
-		        	title: 'Livelli',
+		        	title: LN('sbi.georeport.layerpanel.title'),
 		            collapsible: true,
 		            autoHeight: true,
 		            xtype: 'layertree',
@@ -465,19 +412,16 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 		            region: 'center',
 		            tbar: this.toolbar                
 		        },*/ {
-		        	title: 'Analisi',
-		            region: 'south',
+		        	title: LN('sbi.georeport.analysispanel.title'),
 		            collapsible: true,
 		            items: [this.geostatistic]
 		        }, {
-		           title: 'Legenda',
-		           region: 'south',
+		           title: LN('sbi.georeport.legendpanel.title'),
 		           collapsible: true,
 		           height: 150,
 		           html: '<center id="myChoroplethLegendDiv"></center>'
 		        }, {
 		           title: 'Logo',
-		           region: 'south',
 		           collapsible: true,
 		           height: 85,
 		           html: '<center><img src="/SpagoBIGeoReportEngine/js/lib/mapfish/georeport.png" alt="GeoReport"/></center>'

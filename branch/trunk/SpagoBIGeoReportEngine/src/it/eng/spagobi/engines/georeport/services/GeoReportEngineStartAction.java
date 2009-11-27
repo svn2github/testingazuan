@@ -25,9 +25,12 @@ import javax.servlet.RequestDispatcher;
 
 import org.apache.log4j.Logger;
 
+import it.eng.spagobi.engines.georeport.GeoReportEngine;
+import it.eng.spagobi.engines.georeport.GeoReportEngineInstance;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.EngineStartServletIOManager;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
@@ -40,8 +43,6 @@ public class GeoReportEngineStartAction extends AbstractEngineStartServlet {
 	
 	private static final String ENGINE_NAME = "GeoReportEngine";
 	
-	private static final String ENV_PARAM_DATA_SET = "dataSet";
-	
 	private static final String REQUEST_DISPATCHER_URL = "/WEB-INF/jsp/geoReport.jsp";
 	
 	/** Logger component. */
@@ -49,14 +50,17 @@ public class GeoReportEngineStartAction extends AbstractEngineStartServlet {
     
 	
 	public void doService( EngineStartServletIOManager servletIOManager ) throws SpagoBIEngineException {
-		 
-		RequestDispatcher requestDispatcher;
+		
+		GeoReportEngineInstance engineInstance;
 		IDataSource dataSource;
         IDataSet dataSet;
+		RequestDispatcher requestDispatcher;
+		
          
         logger.debug("IN");
         
         try {
+        	// log some contextual infos
         	logger.debug("User: [" + servletIOManager.getUserId() + "]");
         	logger.debug("Document: [" + servletIOManager.getDocumentId() + "]");
         	
@@ -66,8 +70,15 @@ public class GeoReportEngineStartAction extends AbstractEngineStartServlet {
         	dataSet = servletIOManager.getDataSet();
         	logger.debug("Dataset: [" + (dataSet == null? dataSource: dataSet.getName()) + "]");
         	
-        	servletIOManager.getHttpSession().setAttribute(ENV_PARAM_DATA_SET, dataSet);
+        	// create a new engine instance
+        	engineInstance = GeoReportEngine.createInstance(
+        			servletIOManager.getTemplateAsString(), 
+        			servletIOManager.getEnv()
+        	);
         	
+        	servletIOManager.getHttpSession().setAttribute(EngineConstants.ENGINE_INSTANCE, engineInstance);
+        	
+        	// dispatch the request to the presentation layer
         	requestDispatcher = getServletContext().getRequestDispatcher( REQUEST_DISPATCHER_URL );
             try {
             	requestDispatcher.forward(servletIOManager.getRequest(), servletIOManager.getResponse());

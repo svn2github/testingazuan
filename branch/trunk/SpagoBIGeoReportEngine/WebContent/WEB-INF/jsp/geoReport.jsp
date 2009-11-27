@@ -29,13 +29,23 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 <%-- ---------------------------------------------------------------------- --%>
 <%-- JAVA IMPORTS															--%>
 <%-- ---------------------------------------------------------------------- --%>
-<% // no imports %>
+<%@page import="java.util.Locale"%>
+<%@page import="it.eng.spagobi.engines.georeport.GeoReportEngineInstance"%>
+<%@page import="it.eng.spagobi.utilities.engines.EngineConstants"%>
 
 
 <%-- ---------------------------------------------------------------------- --%>
 <%-- JAVA CODE 																--%>
 <%-- ---------------------------------------------------------------------- --%>
-<% // lucky for us no code yet %>
+<% 
+	GeoReportEngineInstance engineInstance;
+	Locale locale;
+	
+	engineInstance = (GeoReportEngineInstance)request.getSession().getAttribute(EngineConstants.ENGINE_INSTANCE);
+	locale = engineInstance.getLocale();
+	
+	engineInstance.getGuiSettings();
+%>
 
 <%-- ---------------------------------------------------------------------- --%>
 <%-- HTML	 																--%>
@@ -54,50 +64,15 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	<body>
 	
 		<!-- Include template here  -->
+		<!--   %@include file="tests/capoluoghiPropRemoteTemplate.jsp" % --> 
+		<%@include file="tests/usastateChorLocalTemplate.jsp" %>
+		
+		
 		<script language="javascript" type="text/javascript">
-			map = {
-				targetLayerName: "spagobi_capoluoghi",
-				targetLayerLabel: "Capoluoghi",
-				analysisType: "prop",
-				indicators: [["numero_watson", "XNUMERO"],["valore_watson", "XVALORE"]],
+			execDoc = function(docLab, role, params, dispToolbar, dispSlide,frameId, height) {
 
-
-			    geojsonUrl: "localhost:8080",
-			    
-
-
-			    //IF YOU WANT TO DISPLAY MAP IN EXT WINDOW (default is Ext ViewPort)
-			    window: "false",
-			    businessId: "id_capoluog", //it links to alphanumeric data into spagobi dataset
-			    geoId: "id_capoluog", //it links to geometires 
-			    
-			    mapname: "WATSONs",
-			    width: 0, //ONLY FOR EXT WINDOW
-			    height: 600, //ONLY FOR EXT WINDOW
-
-			    spagobiDataset: 'mapdata', //spagobi dataset label from which you can retreive alphanumeric data
-
-			    role: "spagobi/admin",
-			    document2Label: "DepartmentList",  
-			    dispToolbar2: "false",
-			    dispSlide2: "false",
-			    document2Listeners: [["regione", "gl_regione"]],
-			    document2Parameters: [],
-			    
-			    document1Label: "DIALCHART_simpledial", 			   
-			    dispToolbar1: "false",
-			    dispSlide1: "false",			   
-			    listeners: [["value","numero_watson"]],
-			    parameters: [],
-			    
-			    feautreInfo: [["REGIONE","gl_regione"], ["CAPOLUOGO","nome"]],
-				  lon: 6.090,
-				  lat: 40.373,
-				  zoomLevel: 5
-			};
-
-
-			execDoc = function(docLab, role, params, dispToolbar, dispSlide,frameId) {
+				var h = height || '100%';
+				alert(h);
 				
 				var html = Sbi.sdk.api.getDocumentHtml({
 					documentLabel: docLab
@@ -105,9 +80,10 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 					, parameters: params 
 			      	, displayToolbar: dispToolbar
 					, displaySliders: dispSlide
+					, useExtUI: false
 					, iframe: {
-			        	id: frameId,
-			          	height: '100%'
+			        	id: frameId
+			          	, height: h
 				    	, width: '100%'
 						, style: 'border: 0px;'
 					}
@@ -115,17 +91,32 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 				
 				//var html = '<h1>Prova provata ' + docLab + ' </h1>'
 			    return html;
-			};
-
+			};		
 		</script>
 		
-		
-		
 		<script language="javascript" type="text/javascript">
-			Ext.onReady(function(){
 
+			Sbi.config = {};
+
+			var url = {
+		    	host: '<%= request.getServerName()%>'
+		    	, port: '<%= request.getServerPort()%>'
+		    	, contextPath: '<%= request.getContextPath().startsWith("/")||request.getContextPath().startsWith("\\")?request.getContextPath().substring(1): request.getContextPath()%>'
+		    	, controllerPath: null // no cotroller just servlets   
+		    };
+	
+		    var params = { };
+	
+		    Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({
+		    	baseUrl: url
+		        , baseParams: params
+		    });
+
+		
+			Ext.onReady(function(){
+			
 				Ext.QuickTips.init();   
-				var geoReportPanel = new Sbi.georeport.GeoReportPanel(map);	    
+				var geoReportPanel = new Sbi.georeport.GeoReportPanel(Sbi.template);	    
 	      		var viewport = new Ext.Viewport({
 		      		layout: 'fit',
 		            items: [geoReportPanel]

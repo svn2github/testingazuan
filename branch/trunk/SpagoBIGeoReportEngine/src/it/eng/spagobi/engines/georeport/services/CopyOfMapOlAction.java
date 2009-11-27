@@ -21,26 +21,28 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.georeport.services;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
+import org.json.JSONWriter;
 import org.mapfish.geo.MfFeature;
 import org.mapfish.geo.MfFeatureCollection;
+import org.mapfish.geo.MfGeoFactory;
+import org.mapfish.geo.MfGeoJSONReader;
 import org.mapfish.geo.MfGeoJSONWriter;
 import org.mapfish.geo.MfGeometry;
 
 import it.eng.spagobi.engines.georeport.GeoReportEngineInstance;
-import it.eng.spagobi.engines.georeport.features.SbiFeature;
-import it.eng.spagobi.engines.georeport.features.SbiFeatureFactory;
-import it.eng.spagobi.engines.georeport.features.provider.FeaturesProviderDAOFactory;
-import it.eng.spagobi.engines.georeport.features.provider.IFeaturesProviderDAO;
 import it.eng.spagobi.services.proxy.DataSetServiceProxy;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
@@ -56,7 +58,7 @@ import it.eng.spagobi.utilities.service.AbstractBaseServlet;
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class MapOlAction extends AbstractBaseServlet {
+public class CopyOfMapOlAction extends AbstractBaseServlet {
 	
 	public static final String FEATURE_SOURCE_TYPE = "featureSourceType";
 	public static final String FEATURE_SOURCE = "featureSource";
@@ -121,17 +123,39 @@ public class MapOlAction extends AbstractBaseServlet {
 			// # COL NUMBER
 			int nc = dataStoreMeta.getFieldCount();
 
-			
+			//Instantiate GeoJsonFactory
+			MfGeoFactory geoFactory = new MfGeoFactory() {
+				public MfFeature createFeature(final String id, final MfGeometry geometry, final JSONObject properties) {
+					return new MfFeature() {
+						public String getFeatureId() {
+							return id;
+			            }
+			            
+						public MfGeometry getMfGeometry() {
+							return geometry;
+			            }
+			            
+						public void toJSON(JSONWriter builder) throws JSONException {
+							Iterator iter = properties.keys();
+							while (iter.hasNext()){
+								String key = (String) iter.next();
+			                    Object value = properties.get(key);
+			                    builder.key(key).value(value);                    	  
+			                }
+			            }
+			        };
+			   }
+			};
 			
 			//Create Output Collection of Features
 			Collection outputFeatureCollection = new ArrayList();
 			
+			//Reads GeoJSON from GeoServer
+			MfGeoJSONReader jsonReader = new MfGeoJSONReader(geoFactory); 
 
 			// for each row
 			Iterator it = dataStore.iterator();
 
-			IFeaturesProviderDAO featuresProvider = FeaturesProviderDAOFactory.getFeaturesProviderDAO(featureSourceType);
-			
 			while(it.hasNext()) {
 			       
 				IRecord record = (IRecord)it.next();
@@ -143,15 +167,31 @@ public class MapOlAction extends AbstractBaseServlet {
 			    //IDfetaure
 				geoIdPValue = "" + field.getValue();
 
-			    Map parameters = new HashMap();
-			    parameters.put("layerName", layerName);
-			    parameters.put("geoIdPName", geoIdPName);
-			    parameters.put("geoIdPValue", geoIdPValue);
-							    
+			    
+			    //Prepare wfsUrl to get feature from GeoServer filtering by "idFeature"  
+			    String wfsUrl = featureSource + "?request=GetFeature&typename=topp:" + layerName + "&Filter=<Filter><PropertyIsEqualTo><PropertyName>"+ geoIdPName +"</PropertyName><Literal>"+ geoIdPValue +"</Literal></PropertyIsEqualTo></Filter>&outputformat=json&version=1.0.0";
+			    
+			        
+				String result = null;
+			    
 				// geoserver call
 			    try {
-			    	
-			        MfFeatureCollection featureCollection = featuresProvider.getFeatures(featureSource, parameters);
+			    	URL url = new URL(wfsUrl);
+			        URLConnection conn = url.openConnection ();
+			        // Get the response
+			        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			        StringBuffer sb = new StringBuffer();
+			        String line;
+			        while ((line = rd.readLine()) != null) {
+			        	sb.append(line);        
+			        }
+			        rd.close();
+			        result = sb.toString();
+			        //logger.debug("GeoServer response is equal to [" + result + "]");
+			               
+			        
+			        //featureCollection from GeoServer
+			        MfFeatureCollection featureCollection = (MfFeatureCollection) jsonReader.decode(result);
 			        List featureList = new ArrayList(featureCollection.getCollection());
 			        MfFeature feature = (MfFeature) featureList.get(0);
 			        
@@ -164,26 +204,33 @@ public class MapOlAction extends AbstractBaseServlet {
 					
 			        //for each col
 			        for(int j=0; j<nc; j++){
-			        	jsonProperties.accumulate(
-			        			dataStoreMeta.getFieldName(j), 
-			        			record.getFieldAt( dataStoreMeta.getFieldIndex(dataStoreMeta.getFieldName(j)) ).getValue()
-			        	);  
-			        }
+			        // fetch business data   
 			        
-			        //for each prop
-			        if(feature instanceof SbiFeature) {
-			        	JSONObject properties = ((SbiFeature)feature).getProperties();
-			        	Iterator keysIterator = properties.sortedKeys();
-			        	while(keysIterator.hasNext()) {
-			        		String key = (String)keysIterator.next();
-				        	jsonProperties.accumulate(key, properties.get(key));
-			        	}
+			        if (dataStoreMeta.getFieldMeta(j).getType().equals(String.class) ){        
+			        jsonProperties.accumulate(dataStoreMeta.getFieldName(j), (String) record.getFieldAt( dataStoreMeta.getFieldIndex(dataStoreMeta.getFieldName(j)) ).getValue());  
 			        }
-			        
-			        MfFeature featureToCollect = SbiFeatureFactory.getInstance().createFeature(geoIdPValue, geom, jsonProperties);
+			        if (dataStoreMeta.getFieldMeta(j).getType().equals(Integer.class) ){        
+			        jsonProperties.accumulate(dataStoreMeta.getFieldName(j), (Integer) record.getFieldAt( dataStoreMeta.getFieldIndex(dataStoreMeta.getFieldName(j)) ).getValue());  
+			        }
+			        if (dataStoreMeta.getFieldMeta(j).getType().equals(Float.class) ){        
+			        jsonProperties.accumulate(dataStoreMeta.getFieldName(j), (Float) record.getFieldAt( dataStoreMeta.getFieldIndex(dataStoreMeta.getFieldName(j)) ).getValue());  
+			        }
+			        if (dataStoreMeta.getFieldMeta(j).getType().equals(Double.class) ){        
+			        jsonProperties.accumulate(dataStoreMeta.getFieldName(j), (Double) record.getFieldAt( dataStoreMeta.getFieldIndex(dataStoreMeta.getFieldName(j)) ).getValue());  
+			        }
+			        if (dataStoreMeta.getFieldMeta(j).getType().equals(Long.class) ){        
+			        jsonProperties.accumulate(dataStoreMeta.getFieldName(j), (Long) record.getFieldAt( dataStoreMeta.getFieldIndex(dataStoreMeta.getFieldName(j)) ).getValue());  
+			        }
+			        if (dataStoreMeta.getFieldMeta(j).getType().equals(Short.class) ){        
+			        jsonProperties.accumulate(dataStoreMeta.getFieldName(j), (Short) record.getFieldAt( dataStoreMeta.getFieldIndex(dataStoreMeta.getFieldName(j)) ).getValue());  
+			        }
+
+			        }
+			        MfFeature featureToCollect = geoFactory.createFeature(geoIdPValue, geom, jsonProperties);
 			        outputFeatureCollection.add(featureToCollect);
-			      } catch (Exception e) {
-			    	  e.printStackTrace();
+			      } catch (Exception e)
+			      {
+			      e.printStackTrace();
 			      }
 				}
 				

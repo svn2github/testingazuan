@@ -36,6 +36,9 @@ import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubreports;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubreportsId;
 import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRole;
 import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFunctions;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ObjParuse;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterUseDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiObjParuse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiObjParuseId;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParameters;
@@ -263,11 +266,11 @@ public class ImportManager implements IImportManager, Serializable {
 		metaLog.log("-------Lov-----");
 		importLovs(overwrite);
 		metaLog.log("-------Paruse-----");
-		importParuse();
+		//importParuse();
 		metaLog.log("-------Paruse Det-----");
-		importParuseDet();
+		//importParuseDet();
 		metaLog.log("-------Paruse check-----");
-		importParuseCheck();
+		//importParuseCheck();
 		metaLog.log("-------Funct Roles-----");
 		importFunctRoles();
 		metaLog.log("-------BiObject-----");
@@ -972,20 +975,43 @@ public class ImportManager implements IImportManager, Serializable {
 				} else {
 					existingParId = (Integer) paramIdAss.get(oldId);
 				}
+				Integer newIdPar=null;
+				// parameter is already present and overwrite==true b(exstingParId)
 				if (existingParId != null) {
 					logger.info("The parameter with label:[" + exportedParameter.getLabel() + "] is just present. It will be updated.");
 					metaLog.log("The parameter with label = [" + exportedParameter.getLabel() + "] will be updated.");
 					SbiParameters existingParameter = ImportUtilities.modifyExistingSbiParameter(exportedParameter, sessionCurrDB, existingParId);
 					ImportUtilities.associateWithExistingEntities(existingParameter, exportedParameter, sessionCurrDB, importer, metaAss);
 					sessionCurrDB.update(existingParameter);
+					newIdPar=existingParId;
+
+					// delete the paruse associated to the previous!
+//					List exportedParuses = importer.getAllExportedSbiObjects(sessionCurrDB, "SbiParuse", null);
+//					Iterator iterSbiParuses = exportedParuses.iterator();
+//					while (iterSbiParuses.hasNext()) {
+//					SbiParuse paruse = (SbiParuse) iterSbiParuses.next();
+//					SbiParameters param = paruse.getSbiParameters();
+
+					IParameterUseDAO iParameterUseDAO=DAOFactory.getParameterUseDAO();
+					iParameterUseDAO.eraseParameterUseByParId(newIdPar);
+
+//					List exportedParuses = importer.getFilteredExportedSbiObjects(sessionExpDB, "SbiParuse", "sbiParameters", existingParId);					
+//					Iterator iterSbiParuses = exportedParuses.iterator();
+//					while (iterSbiParuses.hasNext()) {
+//						SbiParuse paruse = (SbiParuse) iterSbiParuses.next();
+//						sessionCurrDB.delete(paruse);
+//					}
 				} else {
+					// parameter is new (new Id)
 					SbiParameters newPar = ImportUtilities.makeNewSbiParameter(exportedParameter);
 					ImportUtilities.associateWithExistingEntities(newPar, exportedParameter, sessionCurrDB, importer, metaAss);
 					sessionCurrDB.save(newPar);
 					metaLog.log("Inserted new parameter " + newPar.getName());
 					Integer newId = newPar.getParId();
 					metaAss.insertCoupleParameter(oldId, newId);
+					newIdPar=newId;
 				}
+				importParuse(oldId);
 			}
 		} catch (Exception e) {
 			if (exportedParameter != null) {
@@ -1281,7 +1307,7 @@ public class ImportManager implements IImportManager, Serializable {
 			}
 		}
 		return false;
-	}
+	} 
 
 
 	private void insertObjectTemplate(SbiObjects obj, Integer objIdExp) throws EMFUserError {
@@ -1373,15 +1399,20 @@ public class ImportManager implements IImportManager, Serializable {
 	 * 
 	 * @throws EMFUserError
 	 */
-	private void importParuse() throws EMFUserError {
+	// overwrite will be surely true or the paramete is new
+	private void importParuse(Integer oldParameterId) throws EMFUserError {
 		logger.debug("IN");
+		// delete previous paruse!
 		SbiParuse paruse = null;
 		try {
-			List exportedParuses = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuse", null);
+			//List exportedParuses = importer.getAllExportedSbi(sessionExpDB, "SbiParuse", null);
+			List exportedParuses = importer.getFilteredExportedSbiObjects(sessionExpDB, "SbiParuse", "sbiParameters", oldParameterId);
 			Iterator iterSbiParuses = exportedParuses.iterator();
 			while (iterSbiParuses.hasNext()) {
 				paruse = (SbiParuse) iterSbiParuses.next();
+
 				SbiParameters param = paruse.getSbiParameters();
+				// recover param and lov to insert into relationship
 				Integer oldParamId = param.getParId();
 				Map assParams = metaAss.getParameterIDAssociation();
 				Integer newParamId = (Integer) assParams.get(oldParamId);
@@ -1402,19 +1433,27 @@ public class ImportManager implements IImportManager, Serializable {
 				}
 
 				Integer oldId = paruse.getUseId();
+				Integer existingParUseId = null;
 				Map paruseIdAss = metaAss.getParuseIDAssociation();
 				Set paruseIdAssSet = paruseIdAss.keySet();
-				if (paruseIdAssSet.contains(oldId)) {
-					metaLog.log("Exported parameter use " + paruse.getName() + " not inserted"
-							+ " because it has the same label of an existing parameter use");
-					continue;
-				}
+				// should not contain
+//				if (paruseIdAssSet.contains(oldId)) {
+//				metaLog.log("Exported parameter use " + paruse.getName() + " not inserted"
+//				+ " because it has the same label of an existing parameter use");
+//				continue;
+//				}
+//				else{
+				existingParUseId = (Integer) paruseIdAss.get(oldId);
+//				}
+
 				SbiParuse newParuse = ImportUtilities.makeNewSbiParuse(paruse);
 				sessionCurrDB.save(newParuse);
 				metaLog.log("Inserted new parameter use " + newParuse.getName() + " for param " + param.getName());
 				Integer newId = newParuse.getUseId();
 				sessionExpDB.evict(paruse);
 				metaAss.insertCoupleParuse(oldId, newId);
+				importParuseDet(oldId);
+				importParuseCheck(oldId);
 			}
 		} catch (Exception e) {
 			if (paruse != null) {
@@ -1427,16 +1466,65 @@ public class ImportManager implements IImportManager, Serializable {
 		}
 	}
 
+
+
+
 	/**
 	 * Import exported paruses association with roles
 	 * 
 	 * @throws EMFUserError
 	 */
-	private void importParuseDet() throws EMFUserError {
+//	private void importParuseDet() throws EMFUserError {
+//	logger.debug("IN");
+//	SbiParuseDet parusedet = null;
+//	try {
+//	List exportedParuseDets = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuseDet", null);
+//	Iterator iterSbiParuseDets = exportedParuseDets.iterator();
+//	while (iterSbiParuseDets.hasNext()) {
+//	parusedet = (SbiParuseDet) iterSbiParuseDets.next();
+//	// get ids of exported role and paruse associzted
+//	Integer paruseid = parusedet.getId().getSbiParuse().getUseId();
+//	Integer roleid = parusedet.getId().getSbiExtRoles().getExtRoleId();
+//	// get association of roles and paruses
+//	Map paruseIdAss = metaAss.getParuseIDAssociation();
+//	Map roleIdAss = metaAss.getRoleIDAssociation();
+//	// try to get from association the id associate to the exported
+//	// metadata
+//	Integer newParuseid = (Integer) paruseIdAss.get(paruseid);
+//	Integer newRoleid = (Integer) roleIdAss.get(roleid);
+//	// build a new SbiParuseDet
+//	SbiParuseDet newParuseDet = ImportUtilities.makeNewSbiParuseDet(parusedet, newParuseid, newRoleid);
+//	// check if the association between metadata already exist
+//	Map unique = new HashMap();
+//	unique.put("paruseid", newParuseid);
+//	unique.put("roleid", newRoleid);
+//	Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiParuseDet());
+//	if (existObj == null) {
+//	sessionCurrDB.save(newParuseDet);
+//	metaLog.log("Inserted new association between paruse " + parusedet.getId().getSbiParuse().getName()
+//	+ " and role " + parusedet.getId().getSbiExtRoles().getName());
+//	}
+
+//	}
+//	} catch (Exception e) {
+//	if (parusedet != null) {
+//	logger.error("Error while importing association between exported parameter use with label [" + parusedet.getId().getSbiParuse().getLabel()
+//	+ "] and exported role with name [" + parusedet.getId().getSbiExtRoles().getName() + "]", e);
+//	}
+//	logger.error("Error while inserting object ", e);
+//	throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+//	} finally {
+//	logger.debug("OUT");
+//	}
+//	}
+
+	private void importParuseDet(Integer parUseOldId) throws EMFUserError {
 		logger.debug("IN");
 		SbiParuseDet parusedet = null;
 		try {
-			List exportedParuseDets = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuseDet", null);
+			//List exportedParuseDets2 = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuseDet", null);
+			List exportedParuseDets = importer.getFilteredExportedSbiObjects(sessionExpDB, "SbiParuseDet", "id.sbiParuse",parUseOldId);
+
 			Iterator iterSbiParuseDets = exportedParuseDets.iterator();
 			while (iterSbiParuseDets.hasNext()) {
 				parusedet = (SbiParuseDet) iterSbiParuseDets.next();
@@ -1476,16 +1564,18 @@ public class ImportManager implements IImportManager, Serializable {
 		}
 	}
 
+
+
 	/**
 	 * Imports associations between parameter uses and checks
 	 * 
 	 * @throws EMFUserError
 	 */
-	private void importParuseCheck() throws EMFUserError {
+	private void importParuseCheck(Integer paruseOldId) throws EMFUserError {
 		logger.debug("IN");
 		SbiParuseCk paruseck = null;
 		try {
-			List exportedParuseChecks = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuseCk", null);
+			List exportedParuseChecks = importer.getFilteredExportedSbiObjects(sessionExpDB, "SbiParuseCk", "id.sbiParuse", paruseOldId);
 			Iterator iterSbiParuseChecks = exportedParuseChecks.iterator();
 			while (iterSbiParuseChecks.hasNext()) {
 				paruseck = (SbiParuseCk) iterSbiParuseChecks.next();
@@ -1511,7 +1601,6 @@ public class ImportManager implements IImportManager, Serializable {
 					metaLog.log("Inserted new association between paruse " + paruseck.getId().getSbiParuse().getName()
 							+ " and check " + paruseck.getId().getSbiChecks().getName());
 				}
-
 
 				// build a new id for the SbiParuseCheck
 				SbiParuseCkId parusecheckid = paruseck.getId();

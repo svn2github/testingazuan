@@ -261,10 +261,10 @@ public class ImportManager implements IImportManager, Serializable {
 		importFunctionalities();
 		metaLog.log("-------Checks-----");
 		importChecks();
-		metaLog.log("-------Parameters-----");
-		importParameters(overwrite);
 		metaLog.log("-------Lov-----");
 		importLovs(overwrite);
+		metaLog.log("-------Parameters-----");
+		importParameters(overwrite);
 		metaLog.log("-------Paruse-----");
 		//importParuse();
 		metaLog.log("-------Paruse Det-----");

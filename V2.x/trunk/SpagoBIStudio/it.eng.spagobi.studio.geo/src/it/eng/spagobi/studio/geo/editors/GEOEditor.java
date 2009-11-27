@@ -389,24 +389,26 @@ public class GEOEditor extends EditorPart {
 			index++;
 		}
 		///datasource
-		Dataset dataset = datasetInfos.get(metadata.getDataset());
-
-		Integer datasourceId = dataset.getJdbcDataSourceId();
-		
-		SpagoBIServerObjects sbso=new SpagoBIServerObjects();
-		DataSource sdkdataSource;
-		try {
-			sdkdataSource = sbso.getDataSourceById(datasourceId);
-			sdkdataSource.getUrlConnection();
+		if(metadata != null){
+			Dataset dataset = datasetInfos.get(metadata.getDataset());
+	
+			Integer datasourceId = dataset.getJdbcDataSourceId();
 			
-			Datasource datasource = DatasourceBO.setNewDatasource(geoDocument);
-			datasource.setDriver(sdkdataSource.getDriver());
-			datasource.setPassword(sdkdataSource.getPwd());
-			datasource.setType("connection");
-			datasource.setUrl(sdkdataSource.getUrlConnection());
-			datasource.setUser(sdkdataSource.getName());
-		} catch (NoServerException e3) {
-			SpagoBILogger.errorLog(e3.getMessage(), e3);
+			SpagoBIServerObjects sbso=new SpagoBIServerObjects();
+			DataSource sdkdataSource;
+			try {
+				sdkdataSource = sbso.getDataSourceById(datasourceId);
+				sdkdataSource.getUrlConnection();
+				
+				Datasource datasource = DatasourceBO.setNewDatasource(geoDocument);
+				datasource.setDriver(sdkdataSource.getDriver());
+				datasource.setPassword(sdkdataSource.getPwd());
+				datasource.setType("connection");
+				datasource.setUrl(sdkdataSource.getUrlConnection());
+				datasource.setUser(sdkdataSource.getName());
+			} catch (NoServerException e3) {
+				SpagoBILogger.errorLog(e3.getMessage(), e3);
+			}
 		}
 		datasetCombo.setLayoutData(gd);
 

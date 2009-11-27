@@ -148,9 +148,10 @@ public class GuiSettingsDesigner {
 					paramVis[0] = new GuiParam();
 					paramVis[0].setValue(visible.getText());
 					paramVis[0].setName("visible");
+					params.add(paramVis[0]);
 				}else
 					paramVis[0].setValue(visible.getText());
-				params.add(paramVis[0]);
+				
 				editor.setIsDirty(true);
 			}
 		});
@@ -190,9 +191,10 @@ public class GuiSettingsDesigner {
 					paramY[0] = new GuiParam();
 					paramY[0].setValue(y.getText());
 					paramY[0].setName("y");
+					params.add(paramY[0]);
 				}else
 					paramY[0].setValue(y.getText());
-				params.add(paramY[0]);
+				
 				editor.setIsDirty(true);
 			}
 		});
@@ -226,9 +228,10 @@ public class GuiSettingsDesigner {
 					paramStyle[0] = new GuiParam();
 					paramStyle[0].setValue(style.getText());
 					paramStyle[0].setName("styles");
+					params.add(paramStyle[0]);
 				}else
 					paramStyle[0].setValue(style.getText());
-				params.add(paramStyle[0]);
+				
 				editor.setIsDirty(true);
 			}
 		});
@@ -263,9 +266,10 @@ public class GuiSettingsDesigner {
 					paramMin[0] = new GuiParam();
 					paramMin[0].setValue(minim.getText());
 					paramMin[0].setName("minimized");
+					params.add(paramMin[0]);
 				}else
 					paramMin[0].setValue(minim.getText());
-				params.add(paramMin[0]);
+				
 				editor.setIsDirty(true);
 			}
 		});

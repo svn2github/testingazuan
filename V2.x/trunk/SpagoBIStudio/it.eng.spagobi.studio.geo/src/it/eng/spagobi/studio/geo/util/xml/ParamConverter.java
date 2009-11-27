@@ -1,4 +1,4 @@
-package it.eng.spagobi.studio.geo.util;
+package it.eng.spagobi.studio.geo.util.xml;
 
 import it.eng.spagobi.studio.geo.editors.model.geo.GuiParam;
 
@@ -7,6 +7,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 
 public class ParamConverter implements Converter {
 
@@ -17,15 +18,18 @@ public class ParamConverter implements Converter {
     public void marshal(Object value, 
     					HierarchicalStreamWriter writer,
     					MarshallingContext context) {
-            GuiParam param = (GuiParam) value;
-            writer.addAttribute("name", param.getName());
-            if(!param.getName().equalsIgnoreCase("styles")){                
-                writer.setValue(param.getValue());
-            }else{
-            	writer.setValue("<[CDATA[");
-                writer.setValue(param.getValue());
-                writer.setValue("]]>"); 
-            }
+    	CdataPrettyPrintWriter cdataWriter = (CdataPrettyPrintWriter)writer.underlyingWriter();
+    	
+        GuiParam param = (GuiParam) value;
+        cdataWriter.addAttribute("name", param.getName());
+        
+        if(!param.getName().equalsIgnoreCase("styles")){                
+        	cdataWriter.setValue(param.getValue());
+        }else{
+        	cdataWriter.setValue("<![CDATA[");
+        	cdataWriter.setValue(param.getValue());
+        	cdataWriter.setValue("]]>"); 
+        }
 
             
     }
@@ -36,11 +40,19 @@ public class ParamConverter implements Converter {
     		String value =reader.getValue();
     		String name = reader.getAttribute("name");
     		par.setName(name);
-    		if(!name.equalsIgnoreCase("styles")){    			
+     		if(!name.equalsIgnoreCase("styles")){    			
                 par.setValue(value);
     		}else{
-    			String style = value.substring(value.indexOf("<[CDATA[")+"<[CDATA[".length(), value.indexOf("]]>"));
-    			par.setValue(style);
+    			int cdatadpos= value.indexOf("<![CDATA[");
+    			if(cdatadpos != -1){
+    				int cdataendpos=value.indexOf("]]>");
+    				String style = value.substring(cdatadpos+"<![CDATA[".length(), cdataendpos);
+    				par.setValue(style);
+    			}else{
+    				par.setValue(value);
+    			}
+
+    			
     		}
     		
             

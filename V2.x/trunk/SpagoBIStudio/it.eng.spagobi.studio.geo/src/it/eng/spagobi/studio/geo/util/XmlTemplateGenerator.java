@@ -30,12 +30,20 @@ import it.eng.spagobi.studio.geo.editors.model.geo.Param;
 import it.eng.spagobi.studio.geo.editors.model.geo.Tresholds;
 import it.eng.spagobi.studio.geo.editors.model.geo.Window;
 import it.eng.spagobi.studio.geo.editors.model.geo.Windows;
+import it.eng.spagobi.studio.geo.util.xml.CdataPrettyPrintWriter;
+import it.eng.spagobi.studio.geo.util.xml.ParamConverter;
+
+import java.io.StringWriter;
+import java.io.Writer;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.core.util.QuickWriter;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
 
 public class XmlTemplateGenerator {
@@ -223,9 +231,18 @@ public class XmlTemplateGenerator {
 
 		public static String transformToXml(Object bean) {
 
+			final XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("_", "_");
+			//XStream xstream = new XStream(new DomDriver("UTF-8", replacer));
+			 XStream xstream = new XStream(new DomDriver("UTF-8", replacer) {
+                 public HierarchicalStreamWriter createWriter(Writer out) {
+                     return new CdataPrettyPrintWriter(out, replacer) {
+                         protected void writeText(QuickWriter writer, String text) {
+                             writer.write(text);                         
+                         }
+                     };
+                 }
+             }); 
 
-			XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("_", "_");
-			XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
 			xstream.setMode(XStream.NO_REFERENCES);
 
 			setAlias(xstream);	
@@ -238,7 +255,8 @@ public class XmlTemplateGenerator {
 
 		public static GEODocument readXml(IFile file) throws CoreException{
 			XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("grfthscv", "_");
-			XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
+			XStream xstream = new XStream(new DomDriver("UTF-8", replacer));
+
 			setAlias(xstream);	
 			GEODocument objFromXml = (GEODocument)xstream.fromXML(file.getContents());
 

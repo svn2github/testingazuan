@@ -1450,6 +1450,12 @@
 
                     case 'complete' :
 
+                        var M;
+                        try{ M = (this.getWindow() ? this.getWindow().hostMIF : null); }catch(access){}
+
+                        //Already been Hooked (Ready)?
+                        M || ((this._domFired = this._renderHook()) && this.fireEvent.defer(1,this,["domready", this]));
+
                         this._domReady ||  // one last try for slow DOMS.
                             this.loadHandler({
                                         type : 'domready',

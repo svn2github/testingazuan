@@ -1449,13 +1449,18 @@
                     case 'load' : // Gecko, Opera, IE
 
                     case 'complete' :
-
+                    	
+                    	/* START modifications by Davide Zerbetto (27-11-2009):
+                    	 * on IE, the status may be 'complete' but 'domready' status never occurred
+                    	 * so, check if the iframe is already Hooked also on 'complete' status
+                    	 */
                         var M;
                         try{ M = (this.getWindow() ? this.getWindow().hostMIF : null); }catch(access){}
 
                         //Already been Hooked (Ready)?
                         M || ((this._domFired = this._renderHook()) && this.fireEvent.defer(1,this,["domready", this]));
-
+                        /* END modifications by Davide Zerbetto (27-11-2009) */
+                        
                         this._domReady ||  // one last try for slow DOMS.
                             this.loadHandler({
                                         type : 'domready',

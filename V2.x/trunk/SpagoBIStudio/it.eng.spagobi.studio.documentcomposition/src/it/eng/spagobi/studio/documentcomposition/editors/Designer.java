@@ -5,6 +5,7 @@ import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataBO;
@@ -488,6 +489,7 @@ public class Designer {
 						"Error", "Error in retrieving positioning metadata for the document with label "+sbiObjectLabel);
 				SpagoBILogger.errorLog("END "+Designer.class.toString()+": Initialize designer function: " +
 						"Error in retrieving positioning metadata for the file with name "+sbiObjectLabel,null);				
+				new ModelBO().deleteDocumentFromModel(document);
 				continue;
 			}
 
@@ -531,7 +533,6 @@ public class Designer {
 								"Could not find file "+localFileName+", download idt again!",null);
 						// delete from model!!!!
 						new ModelBO().deleteDocumentFromModel(document);
-						int i=0;
 					}
 				}
 			}

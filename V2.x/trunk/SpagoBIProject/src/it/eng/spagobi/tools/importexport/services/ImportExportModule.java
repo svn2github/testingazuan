@@ -592,6 +592,7 @@ public class ImportExportModule extends AbstractModule {
 					SbiDataSource existingDataSource = (SbiDataSource)existingDSObj;
 					SbiDataSource exportedDataSource = (SbiDataSource)exportedDSObj;
 					impManager.getUserAssociation().recordDataSourceAssociation(exportedDataSource.getLabel(), existingDataSource.getLabel());
+					impManager.getUserAssociation().recordDataSourceAssociation(Integer.valueOf(exportedDataSource.getDsId()), Integer.valueOf(existingDataSource.getDsId()));
 				}
 			} 
 //			else {

@@ -674,18 +674,24 @@ public class ImportManager implements IImportManager, Serializable {
 					existingDatasourceId = (Integer) dsIdAss.get(oldId);
 				}
 
-				if (existingDatasourceId != null) {
-					logger.info("The data source with label:[" + dataSource.getLabel() + "] is just present. It will be updated.");
-					metaLog.log("The data source with label = [" + dataSource.getLabel() + "] will be updated.");
-					SbiDataSource existingDs = ImportUtilities.modifyExistingSbiDataSource(dataSource, sessionCurrDB, existingDatasourceId);
-					ImportUtilities.associateWithExistingEntities(existingDs, dataSource, sessionCurrDB, importer, metaAss);
-					sessionCurrDB.update(existingDs);
-				} else {
-					SbiDataSource newDS = ImportUtilities.makeNewSbiDataSource(dataSource);
-					ImportUtilities.associateWithExistingEntities(newDS, dataSource, sessionCurrDB, importer, metaAss);
-					Integer newId = (Integer) sessionCurrDB.save(newDS);
-					metaLog.log("Inserted new datasource " + newDS.getLabel());
-					metaAss.insertCoupleDataSources(oldId, newId);
+				// if association made by user do not update!
+				if(!getUserAssociation().isDataSourceAssociated(oldId)){
+					if (existingDatasourceId != null) {
+						logger.info("The data source with label:[" + dataSource.getLabel() + "] is just present. It will be updated.");
+						metaLog.log("The data source with label = [" + dataSource.getLabel() + "] will be updated.");
+						SbiDataSource existingDs = ImportUtilities.modifyExistingSbiDataSource(dataSource, sessionCurrDB, existingDatasourceId);
+						ImportUtilities.associateWithExistingEntities(existingDs, dataSource, sessionCurrDB, importer, metaAss);
+						sessionCurrDB.update(existingDs);
+					} else {
+						SbiDataSource newDS = ImportUtilities.makeNewSbiDataSource(dataSource);
+						ImportUtilities.associateWithExistingEntities(newDS, dataSource, sessionCurrDB, importer, metaAss);
+						Integer newId = (Integer) sessionCurrDB.save(newDS);
+						metaLog.log("Inserted new datasource " + newDS.getLabel());
+						metaAss.insertCoupleDataSources(oldId, newId);
+					}
+				}
+				else{
+					metaLog.log("Not inserted data source with ID " + oldId);					
 				}
 			}
 		} catch (Exception e) {
@@ -880,7 +886,7 @@ public class ImportManager implements IImportManager, Serializable {
 				if (existingLovId != null) {
 					logger.info("The lov with label:[" + exportedLov.getLabel() + "] is just present. It will be updated.");
 					metaLog.log("The lov with label = [" + exportedLov.getLabel() + "] will be updated.");
-					SbiLov existinglov = ImportUtilities.modifyExistingSbiLov(exportedLov, sessionCurrDB, existingLovId);
+					SbiLov existinglov = ImportUtilities.modifyExistingSbiLov(exportedLov, sessionCurrDB, existingLovId, getUserAssociation().getDsExportedToUserLabel());
 					ImportUtilities.associateWithExistingEntities(existinglov, exportedLov, sessionCurrDB, importer, metaAss);
 					sessionCurrDB.update(existinglov);
 				} else {
@@ -998,8 +1004,8 @@ public class ImportManager implements IImportManager, Serializable {
 //					List exportedParuses = importer.getFilteredExportedSbiObjects(sessionExpDB, "SbiParuse", "sbiParameters", existingParId);					
 //					Iterator iterSbiParuses = exportedParuses.iterator();
 //					while (iterSbiParuses.hasNext()) {
-//						SbiParuse paruse = (SbiParuse) iterSbiParuses.next();
-//						sessionCurrDB.delete(paruse);
+//					SbiParuse paruse = (SbiParuse) iterSbiParuses.next();
+//					sessionCurrDB.delete(paruse);
 //					}
 				} else {
 					// parameter is new (new Id)
@@ -2188,13 +2194,18 @@ public class ImportManager implements IImportManager, Serializable {
 		while (iterSbiDs.hasNext()) {
 			SbiDataSource dsExp = (SbiDataSource) iterSbiDs.next();
 			String label = dsExp.getLabel();
-			Object existObj = importer.checkExistence(label, sessionCurrDB, new SbiDataSource());
-			if (existObj != null) {
-				SbiDataSource dsCurr = (SbiDataSource) existObj;
-				metaAss.insertCoupleDataSources(new Integer(dsExp.getDsId()), new Integer(dsCurr.getDsId()));
-				metaLog.log("Found an existing data source " + dsCurr.getLabel() + " with "
-						+ "the same label of one exported data source");
+			if(metaAss.getDataSourceIDAssociation()!=null && metaAss.getDataSourceIDAssociation().get(dsExp.getDsId())==null){
+				Object existObj = importer.checkExistence(label, sessionCurrDB, new SbiDataSource());
+				if (existObj != null) {
+					SbiDataSource dsCurr = (SbiDataSource) existObj;
+					metaAss.insertCoupleDataSources(new Integer(dsExp.getDsId()), new Integer(dsCurr.getDsId()));
+					metaLog.log("Found an existing data source " + dsCurr.getLabel() + " with "
+							+ "the same label of one exported data source");
+				}
 			}
+			else{
+				metaLog.log("User already defined association  for datasource with label" + dsExp.getLabel());				
+			}			
 		}
 		List exportedDataset = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSetConfig", null);
 		Iterator iterSbiDataset = exportedDataset.iterator();

@@ -18,8 +18,10 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.tools.importexport;
+
+import java.util.HashMap;
 
 import it.eng.spago.base.SourceBean;
 
@@ -31,20 +33,23 @@ import org.apache.log4j.Logger;
  * setted by the user. The association recorder can be exported into xml format 
  */
 public class UserAssociationsKeeper {
-    
 
-    static private Logger logger = Logger.getLogger(UserAssociationsKeeper.class);
+
+	static private Logger logger = Logger.getLogger(UserAssociationsKeeper.class);
 
 	private SourceBean associationSB = null;
 	private SourceBean roleAssSB = null;
 	private SourceBean engineAssSB = null;
 	private SourceBean datasourceAssSB = null;
-	
+
+	private HashMap<Integer, Integer> dsExportedToUser=new HashMap<Integer, Integer>();
+	private HashMap<String, String> dsExportedToUserLabel=new HashMap<String, String>();
+
 	/**
 	 * Defines the internal structure for recording associations.
 	 */
 	public UserAssociationsKeeper() {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try{
 			associationSB = new SourceBean("USER_ASSOCIATIONS");
 			roleAssSB = new SourceBean("ROLE_ASSOCIATIONS");
@@ -56,11 +61,11 @@ public class UserAssociationsKeeper {
 		} catch (Exception e) {
 			logger.error("Error while creating the association SourceBean \n " , e );
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
-	
+
+
 	/**
 	 * Records an association between an exported role and an existing one.
 	 * 
@@ -68,10 +73,10 @@ public class UserAssociationsKeeper {
 	 * @param existingRolename the name of the existing role
 	 */
 	public void recordRoleAssociation(String exportedRoleName, String existingRolename) {
-	    logger.debug("IN");
+		logger.debug("IN");
 		if( (associationSB==null) || (roleAssSB==null) ) {
-		    logger.warn("Cannot record the association between exported role "+exportedRoleName+" " +
-		            			  "and the role " + existingRolename + ", the association SourceBean is null");
+			logger.warn("Cannot record the association between exported role "+exportedRoleName+" " +
+					"and the role " + existingRolename + ", the association SourceBean is null");
 			return;
 		}
 		try{
@@ -88,14 +93,14 @@ public class UserAssociationsKeeper {
 				roleAssSB.setAttribute(roleSB);
 			}
 		} catch (Exception e) {
-		    logger.error( "Error while recording the association between exported role "+exportedRoleName+" " +
-		            			  "and the role " + existingRolename + " \n " , e);
+			logger.error( "Error while recording the association between exported role "+exportedRoleName+" " +
+					"and the role " + existingRolename + " \n " , e);
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
-	
+
+
 	/**
 	 * Records an association between an exported engine and an existing one.
 	 * 
@@ -103,10 +108,10 @@ public class UserAssociationsKeeper {
 	 * @param existingEngineLabel the label of the existing engine
 	 */
 	public void recordEngineAssociation(String exportedEngineLabel, String existingEngineLabel) {
-	    logger.debug("IN");
+		logger.debug("IN");
 		if( (associationSB==null) || (engineAssSB==null) ) {
-		    logger.warn("Cannot record the association between exported engine "+exportedEngineLabel+" " +
-		            			  "and the engine " + existingEngineLabel + ", the association SourceBean is null");
+			logger.warn("Cannot record the association between exported engine "+exportedEngineLabel+" " +
+					"and the engine " + existingEngineLabel + ", the association SourceBean is null");
 			return;
 		}
 		try{
@@ -123,14 +128,37 @@ public class UserAssociationsKeeper {
 				engineAssSB.setAttribute(engineSB);
 			}
 		} catch (Exception e) {
-		    logger.error("Error while recording the association between exported engine "+exportedEngineLabel+" " +
-		            			  "and the engine " + existingEngineLabel + " \n " , e);
+			logger.error("Error while recording the association between exported engine "+exportedEngineLabel+" " +
+					"and the engine " + existingEngineLabel + " \n " , e);
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
-	
+
+
+	public void recordDataSourceAssociation(Integer idExport, Integer idAssociated) {
+		logger.debug("IN");
+		if(dsExportedToUser==null) dsExportedToUser=new HashMap<Integer, Integer>();
+		dsExportedToUser.put(idExport, idAssociated);
+		logger.debug("OUT");
+	}
+
+
+	public boolean isDataSourceAssociated(Integer idExport) {
+		logger.debug("IN");
+		boolean toReturn=false;
+		if(dsExportedToUser!=null){
+			if(dsExportedToUser.get(idExport)!=null){
+				toReturn=true;
+			}
+			else toReturn=false;
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+
+
+
 	/**
 	 * Records an association between an exported data source and an existing one.
 	 * 
@@ -138,10 +166,10 @@ public class UserAssociationsKeeper {
 	 * @param existingDataSourceName the name of the existing data source
 	 */
 	public void recordDataSourceAssociation(String exportedDataSourceName, String existingDataSourceName) {
-	    logger.debug("IN");
+		logger.debug("IN");
 		if( (associationSB==null) || (datasourceAssSB==null) ) {
-		    logger.warn("Cannot record the association between exported  "+exportedDataSourceName+" " +
-		            			  "and the data source " + existingDataSourceName + ", the association SourceBean is null");
+			logger.warn("Cannot record the association between exported  "+exportedDataSourceName+" " +
+					"and the data source " + existingDataSourceName + ", the association SourceBean is null");
 			return;
 		}
 		try{
@@ -156,42 +184,44 @@ public class UserAssociationsKeeper {
 				dsSB.setAttribute("exported", exportedDataSourceName);
 				dsSB.setAttribute("associatedTo", existingDataSourceName);
 				datasourceAssSB.setAttribute(dsSB);
+				if(dsExportedToUserLabel==null)dsExportedToUserLabel=new HashMap<String, String>();
+				dsExportedToUserLabel.put(exportedDataSourceName, existingDataSourceName);
 			}
 		} catch (Exception e) {
-		    logger.error("Error while recording the association between exported data source "+exportedDataSourceName+" " +
-		            			  "and the data source " + existingDataSourceName + " \n " , e);
+			logger.error("Error while recording the association between exported data source "+exportedDataSourceName+" " +
+					"and the data source " + existingDataSourceName + " \n " , e);
 		}finally{
-		    logger.debug("OUT");
-		    
+			logger.debug("OUT");
+
 		}
 	}
-	
-	
+
+
 	/**
 	 * Exports the associations as xml.
 	 * 
 	 * @return the xml representation of the associations
 	 */
 	public String toXml() {
-	    logger.debug("IN");
+		logger.debug("IN");
 		String xml = "";
 		try{
 			xml = associationSB.toXML(false);
 		} catch (Exception e) {
-		    logger.error("Error while exporting the association SourceBean to xml  \n " , e);
+			logger.error("Error while exporting the association SourceBean to xml  \n " , e);
 		}
 		logger.debug("OUT");
 		return xml;
 	}
-	
-	
+
+
 	/**
 	 * Fill the associations reading an xml string.
 	 * 
 	 * @param xmlStr the xml string which defines the associations
 	 */
 	public void fillFromXml(String xmlStr) {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try {
 			SourceBean associationSBtmp = SourceBean.fromXMLString(xmlStr);
 			SourceBean roleAssSBtmp = (SourceBean)associationSBtmp.getAttribute("ROLE_ASSOCIATIONS");
@@ -205,12 +235,12 @@ public class UserAssociationsKeeper {
 			engineAssSB = engineAssSBtmp;
 			datasourceAssSB = datasourceAssSBtmp;
 		} catch (Exception e) {
-		    logger.error("Error while loading SourceBean from xml  \n " , e);
+			logger.error("Error while loading SourceBean from xml  \n " , e);
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
+
 	/**
 	 * Gets the associated role.
 	 * 
@@ -219,7 +249,7 @@ public class UserAssociationsKeeper {
 	 * @return the associated role
 	 */
 	public String getAssociatedRole(String expRoleName) {
-	    logger.debug("IN");
+		logger.debug("IN");
 		String assRole = null;
 		SourceBean assRoleSB = (SourceBean)roleAssSB.getFilteredSourceBeanAttribute("ROLE_ASSOCIATION", "exported", expRoleName);
 		if(assRoleSB!=null) {
@@ -231,7 +261,7 @@ public class UserAssociationsKeeper {
 		logger.debug("OUT");
 		return assRole;
 	}
-	
+
 	/**
 	 * Gets the associated engine.
 	 * 
@@ -273,5 +303,28 @@ public class UserAssociationsKeeper {
 		logger.debug("OUT");
 		return assDataSource;
 	}
-	
+
+
+	public HashMap<Integer, Integer> getDsExportedToUser() {
+		return dsExportedToUser;
+	}
+
+
+	public void setDsExportedToUser(HashMap<Integer, Integer> dsExportedToUser) {
+		this.dsExportedToUser = dsExportedToUser;
+	}
+
+
+	public HashMap<String, String> getDsExportedToUserLabel() {
+		return dsExportedToUserLabel;
+	}
+
+
+	public void setDsExportedToUserLabel(
+			HashMap<String, String> dsExportedToUserLabel) {
+		this.dsExportedToUserLabel = dsExportedToUserLabel;
+	}
+
+
+
 }

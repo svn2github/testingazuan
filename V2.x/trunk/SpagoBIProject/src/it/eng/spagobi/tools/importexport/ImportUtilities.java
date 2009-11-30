@@ -23,6 +23,7 @@ package it.eng.spagobi.tools.importexport;
 
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
@@ -42,6 +43,7 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseCkId;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseDet;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseDetId;
 import it.eng.spagobi.behaviouralmodel.check.metadata.SbiChecks;
+import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
 import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
 import it.eng.spagobi.commons.metadata.SbiDomains;
@@ -1087,7 +1089,7 @@ public class ImportUtilities {
 	 * 
 	 * @throws EMFUserError 	 */
 	public static SbiLov modifyExistingSbiLov(SbiLov exportedLov,
-			Session sessionCurrDB, Integer existingId) {
+			Session sessionCurrDB, Integer existingId, HashMap<String, String> dsExportUser) {
 		logger.debug("IN");
 		SbiLov existingLov = null;
 		try {
@@ -1095,7 +1097,20 @@ public class ImportUtilities {
 			existingLov.setDefaultVal(exportedLov.getDefaultVal());
 			existingLov.setDescr(exportedLov.getDescr());
 			existingLov.setLabel(exportedLov.getLabel());
-			existingLov.setLovProvider(exportedLov.getLovProvider());
+
+			try {
+				QueryDetail queryDetail=new QueryDetail(exportedLov.getLovProvider());
+				String dataSource=queryDetail.getDataSource();
+				if(dsExportUser!=null && dsExportUser.get(dataSource)!=null){
+					String newDs=dsExportUser.get(dataSource);
+					queryDetail.setDataSource(newDs);
+					existingLov.setLovProvider(queryDetail.toXML());
+				}
+			} catch (SourceBeanException e) {
+				logger.error("error in reading the xml of lov provider");		
+				existingLov.setLovProvider(exportedLov.getLovProvider());
+			}			
+
 			existingLov.setName(exportedLov.getName());
 			existingLov.setProfileAttr(exportedLov.getProfileAttr());
 		} finally {
@@ -2090,7 +2105,7 @@ public class ImportUtilities {
 		else{
 			existingMod.setSbiKpi(null);
 		}
-		
+
 	}
 
 
@@ -2777,7 +2792,7 @@ public class ImportUtilities {
 
 		// recover the Contacts already present 
 		Set<SbiAlarmContact> setContactsToImport=existingAlarm.getSbiAlarmContacts();
-		
+
 		// I want a Array to fill with Id already present just to check not to insert again an already present association
 		Vector<Integer> idsAlready=new Vector<Integer>();
 		for (Iterator iterator = setContactsToImport.iterator(); iterator.hasNext();) {
@@ -2785,8 +2800,8 @@ public class ImportUtilities {
 			Integer id=sbiAlarmContact.getId();
 			idsAlready.add(id);
 		}
-		
-		
+
+
 		for (Iterator iterator = setContactsExported.iterator(); iterator.hasNext();) {
 			SbiAlarmContact sbiAlarmContact = (SbiAlarmContact) iterator.next();
 			Integer oldId=sbiAlarmContact.getId();
@@ -2799,12 +2814,12 @@ public class ImportUtilities {
 
 			// check id not already present
 			if(!idsAlready.contains(newId)){
-			SbiAlarmContact newSbiAlarmContact = (SbiAlarmContact) sessionCurrDB.load(SbiAlarmContact.class, newId);
-			setContactsToImport.add(newSbiAlarmContact);
-			idsAlready.add(newId);
+				SbiAlarmContact newSbiAlarmContact = (SbiAlarmContact) sessionCurrDB.load(SbiAlarmContact.class, newId);
+				setContactsToImport.add(newSbiAlarmContact);
+				idsAlready.add(newId);
 			}
-			
-			
+
+
 		}
 		existingAlarm.setSbiAlarmContacts(setContactsToImport);
 	}

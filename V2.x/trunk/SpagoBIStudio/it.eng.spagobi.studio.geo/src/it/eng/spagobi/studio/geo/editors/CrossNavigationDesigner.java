@@ -24,6 +24,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -92,6 +94,15 @@ public class CrossNavigationDesigner {
 		
 		final Table crossNavTable = toolkit.createTable(crossNavGroup, SWT.MULTI | SWT.BORDER
 				| SWT.FULL_SELECTION);
+		
+		gd = new GridData(GridData.FILL_BOTH);
+		gd.horizontalSpan =2;
+		gd.verticalAlignment=SWT.TOP;
+		gd.widthHint= 500;
+		gd.minimumWidth=400;
+		gd.grabExcessHorizontalSpace=true;
+		gd.heightHint=130;
+		
 		crossNavTable.setLayoutData(gd);
 		crossNavTable.setLinesVisible(true);
 		crossNavTable.setHeaderVisible(true);
@@ -109,11 +120,6 @@ public class CrossNavigationDesigner {
 			for(int i=0; i<crossNavigation.getLinks().size(); i++){
 				TableItem item = new TableItem(crossNavTable, SWT.TRANSPARENT);
 				createTableItemRow(item, crossNavTable, crossNavigation.getLinks().elementAt(i));
-			}
-		} else {
-			for (int i = 0; i < 1; i++) {
-				TableItem item = new TableItem(crossNavTable, SWT.TRANSPARENT);
-				createTableItemRow(item, crossNavTable, null);
 			}
 		}
 		for (int i = 0; i < titles.length; i++) {
@@ -165,11 +171,18 @@ public class CrossNavigationDesigner {
 		
 		addNewLine.addSelectionListener (new SelectionAdapter () {
 			public void widgetSelected (SelectionEvent e) {
-				TableItem item = new TableItem(crossNavTable, SWT.NONE);
-				createTableItemRow(item, crossNavTable, null);				
-
-				getEditor().setIsDirty(true);
-				crossNavTable.redraw();
+				
+				Hierarchies hierarchies=HierarchyBO.getAllHierarchies(geoDocument);
+				if(hierarchies == null || hierarchies.getHierarchy() == null){
+					MessageDialog.openWarning(sectionClient.getShell(), "Warning", "No hierarchies defined");
+					
+				}else{				
+					TableItem item = new TableItem(crossNavTable, SWT.NONE);
+					createTableItemRow(item, crossNavTable, null);				
+	
+					getEditor().setIsDirty(true);
+					crossNavTable.redraw();
+				}
 			}
 		});
 		addNewLine.pack();
@@ -402,6 +415,16 @@ public class CrossNavigationDesigner {
 				
 			}
 		});
+/*	    Listener listener = new Listener() {
+	        public void handleEvent(Event e) {
+	          if(e.type == SWT.KeyDown){
+	        	  if(hierarchiesCombo.getItemCount()==0){
+						createHierachiesCombo(crossNavTable);
+				}
+	          }
+	        }
+	      };
+	    hierarchiesCombo.addListener(SWT.KeyDown, listener);*/
 		
 		levelCombo.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
@@ -410,10 +433,8 @@ public class CrossNavigationDesigner {
 						hierarchiesCombo.getText(), levelCombo.getText());	
 				if (link == null) {
 					link = LinkBO.setNewLink(geoDocument, hierarchiesCombo.getText(), levelCombo.getText());
-				}
-				
+				}				
 			}
-
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
 				

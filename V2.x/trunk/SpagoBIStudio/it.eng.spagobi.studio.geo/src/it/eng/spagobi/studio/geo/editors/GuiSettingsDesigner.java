@@ -687,7 +687,15 @@ public class GuiSettingsDesigner {
 			item.setText(0, param.getName());
 		}
 		if(param.getValue() != null ){
-			item.setText(1, param.getValue());
+			if(param.getName().equalsIgnoreCase("styles")){
+				String shortVal = param.getValue();
+				if(shortVal.length()>10){
+					shortVal = shortVal.substring(0, 10);
+				}
+				item.setText(1, shortVal);
+			}else{
+				item.setText(1, param.getValue());
+			}
 		}
 		guiTable.redraw();
 	}

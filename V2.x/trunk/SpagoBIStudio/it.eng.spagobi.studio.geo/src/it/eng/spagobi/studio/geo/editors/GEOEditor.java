@@ -506,25 +506,6 @@ public class GEOEditor extends EditorPart {
 					}
 				});
 
-				// listener per measures --> right click
-/*				datasetTable.addListener(SWT.MouseDown, new Listener() {
-					public void handleEvent(Event event) {
-						if (event.button == 3) {
-							TableItem[] selection = datasetTable.getSelection();
-
-							if (selection[0].getText(2) != null
-									&& selection[0].getText(2)
-											.equalsIgnoreCase("measures")) {
-								measuresDesigner.createMeasuresShell(
-										sectionClient, selection[0].getText(0));
-							} else {
-								MessageDialog.openWarning(sectionClient
-										.getShell(), "Warning",
-										"No measure in selected column");
-							}
-						}
-					}
-				});*/
 
 				sectionClient.getParent().pack();
 				sectionClient.getParent().redraw();
@@ -565,7 +546,7 @@ public class GEOEditor extends EditorPart {
 			selectDataset(sectionClient, metadata);
 
 		} else {
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 5; i++) {
 				TableItem item = new TableItem(datasetTable, SWT.TRANSPARENT);
 			}
 		}
@@ -923,7 +904,7 @@ public class GEOEditor extends EditorPart {
 					}
 				});
 
-				mapTable.pack();
+				mapTable.redraw();
 
 				sectionClient.getParent().pack();
 				sectionClient.getParent().redraw();
@@ -963,7 +944,7 @@ public class GEOEditor extends EditorPart {
 			selectFeature(sectionClient, layers);
 
 		} else {
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 5; i++) {
 				TableItem item = new TableItem(mapTable, SWT.TRANSPARENT);
 			}
 		}

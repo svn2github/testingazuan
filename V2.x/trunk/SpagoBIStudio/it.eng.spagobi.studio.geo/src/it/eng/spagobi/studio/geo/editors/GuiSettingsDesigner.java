@@ -8,13 +8,12 @@ import it.eng.spagobi.studio.geo.editors.model.geo.Defaults;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.editors.model.geo.GuiParam;
 import it.eng.spagobi.studio.geo.editors.model.geo.GuiSettings;
+import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchy;
 import it.eng.spagobi.studio.geo.editors.model.geo.Param;
 import it.eng.spagobi.studio.geo.editors.model.geo.Window;
 
 import java.util.Vector;
 
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -22,25 +21,28 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
@@ -106,9 +108,20 @@ public class GuiSettingsDesigner {
 		Defaults defaults = DefaultsBO.setNewDefaults(geoDocument);
 		final Vector<GuiParam> params =defaults.getParams();
 		
+		
+		GridData gridData = new GridData();
+		gridData.horizontalAlignment = GridData.FILL;
+		gridData.grabExcessHorizontalSpace = false;
+		gridData.widthHint=340;
+		
+		
 		final Group guiGroup = new Group(mainComposite, SWT.FILL);
 		guiGroup.setText("Defaults");
-		guiGroup.setLayout(mainComposite.getLayout());		
+		//guiGroup.setLayout(mainComposite.getLayout());		
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 1;
+		guiGroup.setLayout(gridLayout);
+
 		
 		FormLayout formLayout = new FormLayout ();
 		formLayout.marginWidth = 5;
@@ -117,6 +130,7 @@ public class GuiSettingsDesigner {
 				
 		Composite formComp = toolkit.createComposite(guiGroup, SWT.NONE);
 		formComp.setLayout (formLayout);
+		formComp.setLayoutData(gridData);
 		
 		Label visLabel = new Label (formComp, SWT.RIGHT);
 		visLabel.setText ("Visible:");
@@ -156,7 +170,7 @@ public class GuiSettingsDesigner {
 			}
 		});
 		data = new FormData ();
-		data.width = 80;
+		data.width = 120;
 		data.left = new FormAttachment (visLabel, 0, SWT.DEFAULT);
 		data.right = new FormAttachment (100, 0);
 		visible.setLayoutData (data);
@@ -170,7 +184,7 @@ public class GuiSettingsDesigner {
 
 		final Text y = toolkit.createText(formComp, "", SWT.BORDER);
 		data = new FormData ();
-		data.width = 80;
+		data.width = 120;
 		data.left = new FormAttachment (yLabel, 0, SWT.DEFAULT);
 		data.right = new FormAttachment (100, 0);
 		data.top = new FormAttachment (yLabel, 0, SWT.CENTER);
@@ -205,9 +219,9 @@ public class GuiSettingsDesigner {
 		data.top = new FormAttachment(y, 5);
 		styleLabel.setLayoutData (data);
 
-		final Text style = toolkit.createText(formComp, "", SWT.BORDER);
+		final Text style = toolkit.createText(formComp, "", SWT.BORDER | SWT.MULTI | SWT.WRAP );
 		data = new FormData ();
-		data.width = 80;
+		data.width = 120;
 		data.height=60;
 		data.left = new FormAttachment (styleLabel, 0, SWT.DEFAULT);
 		data.right = new FormAttachment (100, 0);
@@ -275,7 +289,7 @@ public class GuiSettingsDesigner {
 		});
 		
 		data = new FormData ();
-		data.width = 80;
+		data.width = 120;
 		data.left = new FormAttachment (minLabel, 0, SWT.DEFAULT);
 		data.right = new FormAttachment (100, 0);
 		data.top = new FormAttachment (minLabel, 0, SWT.CENTER);
@@ -493,8 +507,7 @@ public class GuiSettingsDesigner {
 						MessageDialog.openWarning(mainComposite.getShell(), "Warning", "Another parameter with the same name is already defined.");		
 						text.deselectAll();
 					}
-				}else{
-					
+				}else{					
 					Window window = WindowBO.getWindowByName(geoDocument, windowName);
 					if(window != null){
 						GuiParam param = WindowBO.getParamByName(window, text.getText());
@@ -505,19 +518,7 @@ public class GuiSettingsDesigner {
 					}
 					//if styles selected--> textarea
 					if(text.getText().equals("styles")){
-	/*					CDataInputDialog dlg = new CDataInputDialog(mainComposite.getShell(), 
-								"CDATA Styles", 
-								"Enter CDATA value for Styles", 
-								null, null);
-							
-				        if (dlg.open() == dlg.OK) {
-				        	
-				          // User clicked OK; update the label with the input
-				        	textVal.setText(dlg.getValue());
-				        	textVal.redraw();
-				        	dlg.close();
-				        }*/
-						
+						createInputStyleShell(window, table, windowName);
 					}
 					
 				}
@@ -583,6 +584,103 @@ public class GuiSettingsDesigner {
 			}
 		});
 	}
+	private void createInputStyleShell(final Window window, final Table table, final String windowName){
+		System.out.println(window);
+		final Shell dialog = new Shell (mainComposite.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+		dialog.setText("Insert Styles");
+		FormLayout formLayout = new FormLayout ();
+		formLayout.marginWidth = 10;
+		formLayout.marginHeight = 10;
+		formLayout.spacing = 10;
+		dialog.setLayout (formLayout);
+
+		Label label = new Label (dialog, SWT.RIGHT);
+		label.setText ("Styles:");
+		FormData data = new FormData ();
+		data.width = 40;
+		label.setLayoutData (data);
+
+		Button cancel = new Button (dialog, SWT.PUSH);
+		cancel.setText ("Cancel");
+		data = new FormData ();
+		data.width = 60;
+		data.right = new FormAttachment (100, 0);
+		data.bottom = new FormAttachment (100, 0);
+		cancel.setLayoutData (data);
+		cancel.addSelectionListener (new SelectionAdapter () {
+			public void widgetSelected (SelectionEvent e) {
+				System.out.println("User cancelled dialog");
+				dialog.close ();
+			}
+		});
+		final GuiParam[] paramStyle = new GuiParam[1];
+		final Text text = new Text (dialog, SWT.BORDER | SWT.WRAP | SWT.MULTI);
+		if(window != null && window.getParams() != null){
+			for(int i=0; i<window.getParams().size(); i++){
+				GuiParam param = window.getParams().elementAt(i);
+				if(param.getName().equalsIgnoreCase("styles")){
+					String val = param.getValue();
+					text.setText(val);
+					paramStyle[0]=param;
+				}
+			}
+		}
+		data = new FormData ();
+		data.width = 180;
+		data.height=100;
+		data.left = new FormAttachment (label, 0, SWT.DEFAULT);
+		data.right = new FormAttachment (100, 0);
+		data.top = new FormAttachment (label, 0, SWT.TOP);
+		data.bottom = new FormAttachment (cancel, 0, SWT.DEFAULT);
+		text.setLayoutData (data);
+		
+		final Button ok = new Button (dialog, SWT.PUSH);
+		ok.setText ("OK");
+		data = new FormData ();
+		data.width = 60;
+		data.right = new FormAttachment (cancel, 0, SWT.DEFAULT);
+		data.bottom = new FormAttachment (100, 0);
+		ok.setLayoutData (data);
+		ok.addSelectionListener (new SelectionAdapter () {
+			public void widgetSelected (SelectionEvent e) {			
+				Window win = window;
+				if(window == null){
+					win = WindowBO.setNewWindow(geoDocument);
+					win.setName(windowName);
+				}				
+				String style = text.getText();				
+				if(paramStyle[0] == null){
+					paramStyle[0] = new GuiParam();
+					paramStyle[0].setValue(style);
+					paramStyle[0].setName("styles");
+					if(win.getParams() != null){
+						win.getParams().add(paramStyle[0]);
+					}else{
+						Vector<GuiParam> params = new Vector<GuiParam>();
+						params.add(paramStyle[0]);
+						win.setParams(params);
+					}
+					
+				}else{
+					paramStyle[0].setValue(style);
+				}
+				TableItem item = new TableItem(table, SWT.NONE);	
+				System.out.println(item);
+				System.out.println(table);
+				System.out.println(paramStyle[0]);
+				createGUIRow(item, table, paramStyle[0]);	
+				table.redraw();
+				editor.setIsDirty(true);				
+				dialog.close ();
+			}
+		});
+
+		dialog.setDefaultButton (ok);
+		dialog.pack ();
+		dialog.open ();
+
+	}
+	
 
 	private void createGUIRow(TableItem item, final Table guiTable, GuiParam param){
 		if(param.getName() != null){

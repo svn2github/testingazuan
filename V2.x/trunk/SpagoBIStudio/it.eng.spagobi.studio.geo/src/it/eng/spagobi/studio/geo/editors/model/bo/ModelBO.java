@@ -54,7 +54,7 @@ public class ModelBO {
 					Column col = columns.elementAt(j);
 					if(!col.isChoosenForTemplate()){
 						colToRemove.add(col);
-					}else if(col.isChoosenForTemplate() && col.getType()== null){
+					}else if(col.isChoosenForTemplate() && (col.getType()== null || col.getType().equals(""))){
 						colToRemove.add(col);
 					}
 				}

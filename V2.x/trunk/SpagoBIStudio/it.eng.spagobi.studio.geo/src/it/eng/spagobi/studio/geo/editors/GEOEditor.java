@@ -506,7 +506,8 @@ public class GEOEditor extends EditorPart {
 					}
 				});
 
-				
+				datasetTable.pack();
+				datasetTable.redraw();
 				sectionClient.getParent().pack();
 				sectionClient.getParent().redraw();
 				form.reflow(true);

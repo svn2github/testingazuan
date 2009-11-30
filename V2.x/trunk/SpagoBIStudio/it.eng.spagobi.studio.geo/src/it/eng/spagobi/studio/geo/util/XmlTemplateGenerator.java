@@ -19,7 +19,6 @@ import it.eng.spagobi.studio.geo.editors.model.geo.Labels;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layer;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layers;
 import it.eng.spagobi.studio.geo.editors.model.geo.Level;
-import it.eng.spagobi.studio.geo.editors.model.geo.Levels;
 import it.eng.spagobi.studio.geo.editors.model.geo.Link;
 import it.eng.spagobi.studio.geo.editors.model.geo.LinkParam;
 import it.eng.spagobi.studio.geo.editors.model.geo.MapProvider;
@@ -33,7 +32,6 @@ import it.eng.spagobi.studio.geo.editors.model.geo.Windows;
 import it.eng.spagobi.studio.geo.util.xml.CdataPrettyPrintWriter;
 import it.eng.spagobi.studio.geo.util.xml.ParamConverter;
 
-import java.io.StringWriter;
 import java.io.Writer;
 
 import org.eclipse.core.resources.IFile;
@@ -43,7 +41,6 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
 
 public class XmlTemplateGenerator {
@@ -125,8 +122,7 @@ public class XmlTemplateGenerator {
 			xstream.aliasField("name", Hierarchy.class, "name");
 			xstream.useAttributeFor(Hierarchy.class, "type");
 			xstream.aliasField("type", Hierarchy.class, "type");
-				xstream.aliasField("LEVELS", Hierarchy.class, "levels");
-				xstream.addImplicitCollection(Levels.class, "level", "LEVEL", Level.class);
+				xstream.addImplicitCollection(Hierarchy.class, "levels", "LEVEL", Level.class);
 
 					xstream.useAttributeFor(Level.class, "name");
 					xstream.aliasField("name", Level.class, "name");

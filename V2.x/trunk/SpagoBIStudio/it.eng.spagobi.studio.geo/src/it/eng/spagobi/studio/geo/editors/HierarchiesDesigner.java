@@ -6,7 +6,6 @@ import it.eng.spagobi.studio.core.bo.DataStoreMetadata;
 import it.eng.spagobi.studio.core.bo.DataStoreMetadataField;
 import it.eng.spagobi.studio.core.bo.Dataset;
 import it.eng.spagobi.studio.core.bo.GeoFeature;
-import it.eng.spagobi.studio.core.bo.GeoMap;
 import it.eng.spagobi.studio.core.bo.SpagoBIServerObjects;
 import it.eng.spagobi.studio.core.exceptions.NoServerException;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
@@ -32,7 +31,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -70,9 +68,9 @@ public class HierarchiesDesigner {
 				Hierarchy hierarchy = hierarchies.getHierarchy().elementAt(i);
 				TreeItem item = new TreeItem(hierarchiesTree, SWT.NONE);
 				item.setText(hierarchy.getName());
-				if(hierarchy.getLevels() != null && hierarchy.getLevels().getLevel() != null){
-					for(int j=0; j < hierarchy.getLevels().getLevel().size(); j++){
-						Level level = hierarchy.getLevels().getLevel().elementAt(j);
+				if(hierarchy.getLevels() != null){
+					for(int j=0; j < hierarchy.getLevels().size(); j++){
+						Level level = hierarchy.getLevels().elementAt(j);
 						TreeItem itemLev = new TreeItem(item, SWT.NONE);
 						itemLev.setText(level.getName());
 					}

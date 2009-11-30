@@ -5,7 +5,6 @@ import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchies;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchy;
 import it.eng.spagobi.studio.geo.editors.model.geo.Level;
-import it.eng.spagobi.studio.geo.editors.model.geo.Levels;
 
 import java.util.Vector;
 
@@ -24,22 +23,12 @@ public class LevelBO {
 					for (int i = 0; i < vectHier.size(); i++) {
 						if (vectHier.elementAt(i).getName().equals(
 								hierarchyName)) {
-							Levels levels = null;
 							Vector<Level> vectLevels = null;
 							if (vectHier.elementAt(i).getLevels() == null) {
-								levels = new Levels();
 								vectLevels = new Vector<Level>();
-								levels.setLevel(vectLevels);
-								vectHier.elementAt(i).setLevels(levels);
-							} else {
-								levels = vectHier.elementAt(i).getLevels();
-								vectLevels = levels.getLevel();
-								if (vectLevels == null) {
-									vectLevels = new Vector<Level>();
-									levels.setLevel(vectLevels);
-								}
+								vectHier.elementAt(i).setLevels(vectLevels);
 							}
-							levels.getLevel().add(newLevel);
+							vectLevels.add(newLevel);
 
 						}
 					}
@@ -60,19 +49,18 @@ public class LevelBO {
 					for (int i = 0; i < vectHier.size(); i++) {
 						if (vectHier.elementAt(i).getName().equals(
 								hierarchyName)) {
-							Levels levels = null;
 							Vector<Level> vectLevels = null;
-							if (vectHier.elementAt(i).getLevels() != null && vectHier.elementAt(i).getLevels().getLevel() != null) {
+							if (vectHier.elementAt(i).getLevels() != null && vectHier.elementAt(i).getLevels() != null) {
 								Vector<Level> vectLevelsToRemove = new Vector<Level>();
-								for(int j=0; j<vectHier.elementAt(i).getLevels().getLevel().size(); j++){
-									Level l = vectHier.elementAt(i).getLevels().getLevel().elementAt(j);
+								for(int j=0; j<vectHier.elementAt(i).getLevels().size(); j++){
+									Level l = vectHier.elementAt(i).getLevels().elementAt(j);
 									if(l.getName().equals(toDeleteLevel)){
 										//vectHier.elementAt(i).getLevels().getLevel().remove(l);
 										vectLevelsToRemove.add(l);
 									}
 									
 								}
-								vectHier.elementAt(i).getLevels().getLevel().removeAll(vectLevelsToRemove);
+								vectHier.elementAt(i).getLevels().removeAll(vectLevelsToRemove);
 							}
 						}
 					}
@@ -93,9 +81,9 @@ public class LevelBO {
 					for (int i = 0; i < vectHier.size(); i++) {
 						Hierarchy hier = vectHier.elementAt(i);
 						if (hier.getName().equals(	hierarchyName)) {
-							if (hier.getLevels() != null && hier.getLevels().getLevel() != null) {
-								for(int j=0; j<vectHier.elementAt(i).getLevels().getLevel().size(); j++){
-									Level l = hier.getLevels().getLevel().elementAt(j);
+							if (hier.getLevels() != null && hier.getLevels() != null) {
+								for(int j=0; j<vectHier.elementAt(i).getLevels().size(); j++){
+									Level l = hier.getLevels().elementAt(j);
 									if(l.getName().equals(level)){
 										levelret = l;
 									}
@@ -109,9 +97,8 @@ public class LevelBO {
 		}
 		return levelret;
 	}
-	public static Levels getLevelsByHierarchyName(GEODocument geoDocument,
+	public static Vector<Level> getLevelsByHierarchyName(GEODocument geoDocument,
 			String hierarchyName){
-		Levels levels = null;
 		DatamartProvider dmProvider = geoDocument.getDatamartProvider();
 		if (dmProvider != null) {
 			Hierarchies hierarchies = dmProvider.getHierarchies();
@@ -129,7 +116,7 @@ public class LevelBO {
 			}
 		}
 		
-		return levels;
+		return null;
 	}
 	public static void updateLevel(GEODocument geoDocument,
 			String hierarchyName, Level oldLevel, Level newLevel){

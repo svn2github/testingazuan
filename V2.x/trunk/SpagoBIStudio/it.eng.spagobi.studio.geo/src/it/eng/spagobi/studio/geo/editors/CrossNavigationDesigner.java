@@ -1,22 +1,17 @@
 package it.eng.spagobi.studio.geo.editors;
 
 import it.eng.spagobi.studio.geo.Activator;
-import it.eng.spagobi.studio.geo.editors.model.bo.ColumnBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.CrossNavigationBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.HierarchyBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.LevelBO;
 import it.eng.spagobi.studio.geo.editors.model.bo.LinkBO;
-import it.eng.spagobi.studio.geo.editors.model.bo.MetadataBO;
-import it.eng.spagobi.studio.geo.editors.model.geo.Column;
 import it.eng.spagobi.studio.geo.editors.model.geo.CrossNavigation;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchies;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchy;
 import it.eng.spagobi.studio.geo.editors.model.geo.Level;
-import it.eng.spagobi.studio.geo.editors.model.geo.Levels;
 import it.eng.spagobi.studio.geo.editors.model.geo.Link;
 import it.eng.spagobi.studio.geo.editors.model.geo.LinkParam;
-import it.eng.spagobi.studio.geo.editors.model.geo.Window;
 
 import java.util.Vector;
 
@@ -24,8 +19,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -639,10 +632,10 @@ public class CrossNavigationDesigner {
 	private Combo createLevelsCombo(Table crossNavTable, String hierarchyName){
 		Combo levelCombo = new Combo(crossNavTable, SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
 		if(hierarchyName != null && !hierarchyName.equals("")){
-			Levels levels=LevelBO.getLevelsByHierarchyName(geoDocument, hierarchyName);
-			if(levels != null && levels.getLevel()!= null){
-				for(int i=0; i< levels.getLevel().size(); i++){
-					Level level = levels.getLevel().elementAt(i);
+			Vector<Level> levels=LevelBO.getLevelsByHierarchyName(geoDocument, hierarchyName);
+			if(levels != null){
+				for(int i=0; i< levels.size(); i++){
+					Level level = levels.elementAt(i);
 					String name = level.getName();
 					levelCombo.add(name);				
 				}
@@ -653,10 +646,10 @@ public class CrossNavigationDesigner {
 	private void recreateLevelsCombo(Table crossNavTable,Combo levelCombo, String hierarchyName){
 		levelCombo.removeAll();
 		if(hierarchyName != null && !hierarchyName.equals("")){
-			Levels levels=LevelBO.getLevelsByHierarchyName(geoDocument, hierarchyName);
-			if(levels != null && levels.getLevel()!= null){
-				for(int i=0; i< levels.getLevel().size(); i++){
-					Level level = levels.getLevel().elementAt(i);
+			Vector<Level> levels=LevelBO.getLevelsByHierarchyName(geoDocument, hierarchyName);
+			if(levels != null){
+				for(int i=0; i< levels.size(); i++){
+					Level level = levels.elementAt(i);
 					String name = level.getName();
 					levelCombo.add(name);				
 				}

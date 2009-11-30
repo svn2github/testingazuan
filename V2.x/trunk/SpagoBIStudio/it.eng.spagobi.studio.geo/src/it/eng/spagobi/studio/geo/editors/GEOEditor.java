@@ -32,7 +32,6 @@ import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchy;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layer;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layers;
 import it.eng.spagobi.studio.geo.editors.model.geo.Level;
-import it.eng.spagobi.studio.geo.editors.model.geo.Levels;
 import it.eng.spagobi.studio.geo.editors.model.geo.Metadata;
 import it.eng.spagobi.studio.geo.util.DeepCopy;
 import it.eng.spagobi.studio.geo.util.DesignerUtils;
@@ -391,23 +390,24 @@ public class GEOEditor extends EditorPart {
 		///datasource
 		if(metadata != null){
 			Dataset dataset = datasetInfos.get(metadata.getDataset());
-	
-			Integer datasourceId = dataset.getJdbcDataSourceId();
-			
-			SpagoBIServerObjects sbso=new SpagoBIServerObjects();
-			DataSource sdkdataSource;
-			try {
-				sdkdataSource = sbso.getDataSourceById(datasourceId);
-				sdkdataSource.getUrlConnection();
+			if(dataset != null){
+				Integer datasourceId = dataset.getJdbcDataSourceId();
 				
-				Datasource datasource = DatasourceBO.setNewDatasource(geoDocument);
-				datasource.setDriver(sdkdataSource.getDriver());
-				datasource.setPassword(sdkdataSource.getPwd());
-				datasource.setType("connection");
-				datasource.setUrl(sdkdataSource.getUrlConnection());
-				datasource.setUser(sdkdataSource.getName());
-			} catch (NoServerException e3) {
-				SpagoBILogger.errorLog(e3.getMessage(), e3);
+				SpagoBIServerObjects sbso=new SpagoBIServerObjects();
+				DataSource sdkdataSource;
+				try {
+					sdkdataSource = sbso.getDataSourceById(datasourceId);
+					sdkdataSource.getUrlConnection();
+					
+					Datasource datasource = DatasourceBO.setNewDatasource(geoDocument);
+					datasource.setDriver(sdkdataSource.getDriver());
+					datasource.setPassword(sdkdataSource.getPwd());
+					datasource.setType("connection");
+					datasource.setUrl(sdkdataSource.getUrlConnection());
+					datasource.setUser(sdkdataSource.getName());
+				} catch (NoServerException e3) {
+					SpagoBILogger.errorLog(e3.getMessage(), e3);
+				}
 			}
 		}
 		datasetCombo.setLayoutData(gd);
@@ -726,10 +726,10 @@ public class GEOEditor extends EditorPart {
 	private Combo createLevelsCombo(Composite dialog, String hierarchyName){
 		Combo levelCombo = new Combo(dialog, SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
 		if(hierarchyName != null && !hierarchyName.equals("")){
-			Levels levels=LevelBO.getLevelsByHierarchyName(geoDocument, hierarchyName);
-			if(levels != null && levels.getLevel()!= null){
-				for(int i=0; i< levels.getLevel().size(); i++){
-					Level level = levels.getLevel().elementAt(i);
+			Vector<Level> levels=LevelBO.getLevelsByHierarchyName(geoDocument, hierarchyName);
+			if(levels != null){
+				for(int i=0; i< levels.size(); i++){
+					Level level = levels.elementAt(i);
 					String name = level.getName();
 					levelCombo.add(name);				
 				}
@@ -740,10 +740,10 @@ public class GEOEditor extends EditorPart {
 	private void recreateLevelsCombo(Composite dialog,Combo levelCombo, String hierarchyName){
 		levelCombo.removeAll();
 		if(hierarchyName != null && !hierarchyName.equals("")){
-			Levels levels=LevelBO.getLevelsByHierarchyName(geoDocument, hierarchyName);
-			if(levels != null && levels.getLevel()!= null){
-				for(int i=0; i< levels.getLevel().size(); i++){
-					Level level = levels.getLevel().elementAt(i);
+			Vector<Level> levels=LevelBO.getLevelsByHierarchyName(geoDocument, hierarchyName);
+			if(levels != null){
+				for(int i=0; i< levels.size(); i++){
+					Level level = levels.elementAt(i);
 					String name = level.getName();
 					levelCombo.add(name);				
 				}

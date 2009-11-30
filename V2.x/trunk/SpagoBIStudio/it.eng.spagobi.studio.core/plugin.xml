@@ -53,7 +53,7 @@
       <view
             name="SpagoBIStudio Resource Navigator"
             category="it.eng.spagobi.studio.core"
-            class="org.eclipse.ui.navigator.CommonNavigator"
+            class="it.eng.spagobi.studio.core.views.ResourceNavigator"
             id="it.eng.spagobi.studio.core.views.ResourceNavigator"
             icon="icons/sbiproject.gif">
       </view>

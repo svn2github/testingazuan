@@ -312,19 +312,22 @@ public class NavigationView extends ViewPart {
 											boolean result =paramBo.deleteParameterById(documentComp, idParam);
 										}
 										refreshes.remove(refresh);
+										if(refreshes.size()== 0){
+											//elimina anche parametro out
+											par.remove(paramOut);
+										}
+										item.dispose();
+										editor.setIsDirty(true);
+										return;
 									}
-									if(refreshes.size()== 0){
-										//elimina anche parametro out
-										par.remove(paramOut);
-									}
+									
 								}
 								
 								
 							}
 
 							
-							item.dispose();
-							editor.setIsDirty(true);
+							
 						}
 
 					}
@@ -361,13 +364,22 @@ public class NavigationView extends ViewPart {
 			public void handleEvent(Event event) {
 		        switch (event.type) {
 		        case SWT.Selection:
-		          Shell confirm = createConfirmDialog(client, result);
-		          confirm.setText("Confirm delete?");
-		          confirm.setSize(250,100);
-				  confirm.open();
-				  
-				  
-		          break;
+		        	TableItem[] items = table.getSelection();
+		        	if(items.length == 0){
+		        		MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Warning", "Please, select a navigation from list below.");
+		        	}else{
+				          /*Shell confirm = createConfirmDialog(client, result);
+				          confirm.setText("Confirm delete?");
+				          confirm.setSize(250,100);
+						  confirm.open();*/
+		        		boolean confirm =MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Confirm", "Do you wish to delete the selected navigation?");
+		        		if(confirm){
+		        			deleteNavigationFromModel();				  
+							table.redraw();
+		        		}
+		        		
+		        	}
+		        	break;
 		        }
 
 			}

@@ -33,9 +33,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.utilities.threadmanager;
 
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.services.common.EnginConf;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -45,7 +42,12 @@ import org.apache.log4j.Logger;
 import commonj.work.Work;
 import commonj.work.WorkItem;
 import commonj.work.WorkListener;
+
 import de.myfoo.commonj.work.FooWorkManager;
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.services.common.EnginConf;
+import it.eng.spagobi.utilities.assertion.Assert;
 
 
 
@@ -94,25 +96,32 @@ public class WorkManager {
      * @throws NamingException the naming exception
      */
     public void init() throws NamingException {
-	logger.debug("IN");
-	try {
-	    
-	    SourceBean jndiSB = (SourceBean)EnginConf.getInstance().getConfig().getAttribute("JNDI_THREAD_MANAGER");
-	    String jndi = (String) jndiSB.getCharacters();
-	    logger.debug("lookup jndi:"+jndi);
-	    Context ctx = new InitialContext();
-	    wm = (FooWorkManager) ctx.lookup(jndi);
-	    logger.debug("JNDI lookup successfully executed!!");
-	} catch (NamingException e) {
-	    logger.error(e);
-	    throw e;
-	} catch (Exception e) {
-	    logger.error(e);
-	} catch (Throwable t) {
-	    logger.error(t);
-	} finally {
-	    logger.debug("OUT");
-	}
+		
+    	SourceBean jndiSB;
+    	String jndi;
+    	Context ctx;
+    	
+    	logger.debug("IN");
+		
+    	try {
+		    jndiSB = (SourceBean)EnginConf.getInstance().getConfig().getAttribute("JNDI_THREAD_MANAGER");
+		    Assert.assertNotNull(jndiSB, "Impossible to find block [<JNDI_THREAD_MANAGER>] into configuration");
+		    jndi = (String) jndiSB.getCharacters();
+		    Assert.assertNotNull(jndiSB, "Block [<JNDI_THREAD_MANAGER>] foud in configuration is empty");
+		    
+		    logger.debug("WorkManager jndi name is [" + jndi + "]");
+		    
+		    logger.debug("Looking up for JNDI resource [" + jndi + "] ...");
+		    ctx = new InitialContext();
+		    wm = (FooWorkManager) ctx.lookup(jndi);
+		    logger.debug("JNDI resource lookup successfully terminated");
+		} catch (NamingException e) {
+		    throw e;
+		} catch (Throwable t) {
+			throw new RuntimeException("An error occurred while initializing the WorkManager", t);
+		} finally {
+		    logger.debug("OUT");
+		}
 
     }
 

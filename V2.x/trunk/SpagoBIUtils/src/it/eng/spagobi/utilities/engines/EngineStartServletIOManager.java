@@ -82,8 +82,8 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 	public static final String AUDIT_ID = "SPAGOBI_AUDIT_ID";
 	public static final String DOCUMENT_ID = "document";
 	
-	public static final String COUNTRY = "country";
-	public static final String LANGUAGE = "language";
+	public static final String COUNTRY = "SBI_COUNTRY";
+	public static final String LANGUAGE = "SBI_LANGUAGE";
 	
 	private Logger logger = Logger.getLogger(EngineStartServletIOManager.class);
 	
@@ -337,6 +337,7 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 		 	   
 		 	   copyRequestParametersIntoEnv(env);
 		 	   env.put(EngineConstants.ENV_DATASOURCE, getDataSource());
+		 	   env.put(EngineConstants.ENV_DATASET, getDataSet());
 		 	   env.put(EngineConstants.ENV_DOCUMENT_ID, getDocumentId());
 		 	   env.put(EngineConstants.ENV_CONTENT_SERVICE_PROXY, getContentServiceProxy());
 		 	   env.put(EngineConstants.ENV_AUDIT_SERVICE_PROXY, getAuditServiceProxy() );

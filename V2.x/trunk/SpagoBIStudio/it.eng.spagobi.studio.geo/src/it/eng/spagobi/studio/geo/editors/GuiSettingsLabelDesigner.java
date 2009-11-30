@@ -87,15 +87,20 @@ public class GuiSettingsLabelDesigner {
 	private void createLabelsGroup(final FormToolkit toolkit, final ScrolledForm form){
 		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		gd.horizontalSpan =4;
-		//gd.verticalAlignment=SWT.TOP;
 		mainComposite.setLayoutData(gd);
 
 		final Button add = toolkit.createButton(mainComposite, "Add", SWT.PUSH);
+		add.setSize(addIcon.createImage().getBounds().width, addIcon.createImage().getBounds().height);
+		add.setImage(addIcon.createImage());
+		
+		add.setToolTipText("Add label");
 		add.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				final Group guiGroup = new Group(mainComposite, SWT.FILL);
 				createLabelGroup(toolkit, guiGroup, null);
 				guiGroup.forceFocus();
+				guiGroup.layout();
+				guiGroup.redraw();
 				mainComposite.redraw();
 				form.reflow(true);
 				((Section)(mainComposite.getParent())).redraw();
@@ -121,7 +126,7 @@ public class GuiSettingsLabelDesigner {
 		}
 		
 	}	
-	private void createLabelGroup(FormToolkit toolkit, Group guiGroup, Label label){
+	private void createLabelGroup(FormToolkit toolkit,final Group guiGroup, Label label){
 		if(label == null){
 			label = LabelBO.setNewLabel(geoDocument);
 		}
@@ -135,6 +140,28 @@ public class GuiSettingsLabelDesigner {
 		fillLayout.wrap=true;
 		
 		guiGroup.setLayout(fillLayout);
+		final Label[] theLabel = {label};
+		
+		final Button deleteLabel =toolkit.createButton(guiGroup, "Delete", SWT.PUSH);
+		deleteLabel.setSize(eraseIcon.createImage().getBounds().width, eraseIcon.createImage().getBounds().height);
+		deleteLabel.setImage(eraseIcon.createImage());
+		
+		deleteLabel.setToolTipText("Delete label");
+		
+		deleteLabel.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				
+				Labels labels =guiSettings.getLabels();
+				labels.getLabel().remove(theLabel[0]);
+				
+				guiGroup.dispose();
+				mainComposite.pack();
+				mainComposite.redraw();
+				//form.reflow(true);
+				((Section)(mainComposite.getParent())).redraw();
+				
+			}
+		});
 		//flag position for this label
 		
 		createPositionCheck(toolkit, guiGroup, label);
@@ -256,7 +283,8 @@ public class GuiSettingsLabelDesigner {
 						params.add(param);
 					}else{
 						params = new Vector<Param>();
-						label.setParams(params);						
+						label.setParams(params);
+						params.add(param);
 					}				
 
 				}
@@ -306,10 +334,11 @@ public class GuiSettingsLabelDesigner {
 		createSinglePosition(toolkit, posComp2, label, "footer-right");		
 	}
 	private void createText(FormToolkit toolkit, Group guiGroup, final Label label){
-		Composite textComp = toolkit.createComposite(guiGroup, SWT.NONE);
+		Composite textComp = toolkit.createComposite(guiGroup, SWT.FILL);
 		RowLayout rl = new RowLayout();
 		rl.fill=true;
-		rl.justify=true;
+		rl.wrap=true;
+		//rl.justify=true;
 		rl.spacing=5;
 		rl.marginLeft=5;
 		rl.marginTop=5;
@@ -319,10 +348,9 @@ public class GuiSettingsLabelDesigner {
 
 		final Text text = toolkit.createText(textComp, "", SWT.BORDER);
 		text.setSize(20, 200);
-		
-
-		label.setText(text.getText());
-		
+		if(label != null && label.getText() != null){
+			text.setText(label.getText());
+		}
 		text.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {	
 

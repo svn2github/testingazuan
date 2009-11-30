@@ -572,6 +572,9 @@ public class GEOEditor extends EditorPart {
 				int indexSelection = mapCombo.getSelectionIndex();
 				String mapLabel = mapCombo.getItem(indexSelection);
 				selectedMap = mapLabel;
+				//add mapName to mapprovider
+				geoDocument.getMapProvider().setMapName(selectedMap);
+				
 				GeoFeature[] geoFeatures = null;
 				// get the metadata
 				if (tempMapMetadataInfos.get(mapLabel) != null) {
@@ -617,8 +620,7 @@ public class GEOEditor extends EditorPart {
 				mapTable.redraw();
 				mapGroup.pack();
 				mapGroup.redraw();
-/*				sectionClient.getParent().pack();
-				sectionClient.getParent().redraw();*/
+
 				form.reflow(true);
 				setIsDirty(true);
 			}

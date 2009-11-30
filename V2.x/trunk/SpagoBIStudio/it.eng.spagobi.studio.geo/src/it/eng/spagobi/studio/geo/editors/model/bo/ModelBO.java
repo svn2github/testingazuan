@@ -25,14 +25,11 @@ public class ModelBO {
 	
 	public GEODocument createModel(IFile file) throws CoreException{
 		GEODocument geoDocument = XmlTemplateGenerator.readXml(file);
-		String mapName = file.getName();
-		String extension = file.getFileExtension();
-		mapName = mapName.substring(0,mapName.lastIndexOf(extension)-1);
 		if(geoDocument.getMapProvider()==null){
 			MapProvider mapProvider =new MapProvider();
 			geoDocument.setMapProvider(mapProvider);
 			mapProvider.setClassName(rb.getString("mapprovider.class.name"));
-			mapProvider.setMapName(mapName);
+			
 		}
 		if(geoDocument.getDatamartProvider()==null){
 			DatamartProvider datamartProvider = new DatamartProvider();

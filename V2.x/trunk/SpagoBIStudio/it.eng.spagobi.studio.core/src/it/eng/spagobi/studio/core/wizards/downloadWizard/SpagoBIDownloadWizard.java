@@ -10,12 +10,14 @@ import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.DataSourcesSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
 import it.eng.spagobi.sdk.proxy.EnginesServiceProxy;
+import it.eng.spagobi.studio.core.actions.DownloadDocumentAction;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 import it.eng.spagobi.studio.core.util.BiObjectUtilities;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 
 import javax.activation.DataHandler;
 
@@ -71,29 +73,27 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 	 * using wizard as execution context.
 	 */
 	public boolean performFinish() {
-
+		boolean toReturn;
 		TreeItem[] selectedItems=page.getTree().getSelection();
-		if(selectedItems==null || selectedItems.length!=1){
+		if(selectedItems==null){
 			SpagoBILogger.errorLog("Error; no item or multiple items selected", null);
 		}
 		else{	
-			TreeItem selectedItem=selectedItems[0];
-			Object docObject=selectedItem.getData();	
-			SDKDocument document=(SDKDocument)docObject;
-			doFinish(document);
+			for (int i = 0; i < selectedItems.length; i++) {
+				TreeItem selectedItem=selectedItems[i];
+				Object docObject=selectedItem.getData();	
+				SDKDocument document=(SDKDocument)docObject;
+				toReturn=downloadTemplate(document);
+			}
+			doFinish();
 		}
 
 		return true;
 	}
 
-	/** The worker method. Download the template and creates the file
-	 * 
-	 * @param document: the SdkDocument refderencing the BiObject
-	 * @throws CoreException 
-	 * 
-	 */
 
-	private void doFinish(SDKDocument document) {
+	public boolean downloadTemplate(SDKDocument document){
+
 		InputStream is=null;
 		//try{
 		Integer id=document.getId();
@@ -110,12 +110,12 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		catch (NullPointerException e) {
 			SpagoBILogger.errorLog("No comunication with server, check SpagoBi Server definition in preferences page", e);
 			MessageDialog.openError(getShell(), "Error", "No comunication with server, check SpagoBi Server definition in preferences page");	
-			return;
+			return false;
 		}
 		catch (Exception e) {
 			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve template", e);
 			MessageDialog.openError(getShell(), "Error", "Could not get the template from server");	
-			return;
+			return false;
 		}			
 
 		// Recover information field like dataSource, dataSet, engine names!
@@ -131,17 +131,17 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		catch (NullPointerException e) {
 			SpagoBILogger.errorLog("No comunication with server, check SpagoBi Server definition in preferences page", e);
 			MessageDialog.openError(getShell(), "Error", "No comunication with server, check SpagoBi Server definition in preferences page");	
-			return;
+			return false;
 		}		
 		catch (Exception e) {
 			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve roles for execution", e);
 			MessageDialog.openError(getShell(), "Could not retrieve roles for execution", "Could not retrieve roles for execution");	
-			return;
+			return false;
 		}			
 		if(roles==null || roles.length==0){
 			SpagoBILogger.errorLog("No roles for execution found",null);
 			MessageDialog.openError(getShell(), "No roles for execution found", "No roles for execution found");	
-			return;			
+			return false;			
 		}
 
 		//SDKDocumentParameter[] parameters=null;
@@ -155,13 +155,13 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		catch (NullPointerException e) {
 			SpagoBILogger.errorLog("No comunication with server, check SpagoBi Server definition in preferences page", e);
 			MessageDialog.openError(getShell(), "Error", "No comunication with server, check SpagoBi Server definition in preferences page");	
-			return;
+			return false;
 		}		
 		catch (Exception e) {
 			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve document parameters", e);
 			e.printStackTrace();
 			MessageDialog.openError(getShell(), "Could not retrieve document parameters for execution", "Could not retrieve roles for execution");	
-			return;
+			return false;
 		}			
 
 
@@ -179,7 +179,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		catch (Exception e) {
 			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not get engine", e);
 			MessageDialog.openError(getShell(), "", "Could not get engine the template from server");	
-			return;
+			return false;
 		}		
 
 		String type=document.getType();
@@ -216,7 +216,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			is=dh.getInputStream();
 		} catch (IOException e1) {
 			SpagoBILogger.errorLog("Error in writing the file", e1);
-			return;
+			return false;
 		}
 
 
@@ -230,13 +230,13 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		}
 
 		if(write){
-			
+
 			try{
 				newFile.create(is, true, null);
 			}
 			catch (CoreException e) {
 				SpagoBILogger.errorLog("error while creating new file", e);	
-				return;
+				return false;
 			}
 
 
@@ -247,7 +247,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			}
 			catch (CoreException e) {
 				SpagoBILogger.errorLog("Error while setting meta data", e);	
-				return;
+				return false;
 			}
 
 			//Set ParametersFile Metadata	
@@ -259,7 +259,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 				catch (Exception e) {
 					e.printStackTrace();
 					SpagoBILogger.errorLog("Error while setting meta data", e);	
-					return;
+					return false;
 				}			
 			}
 
@@ -269,35 +269,49 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			catch (Exception e) {
 				e.printStackTrace();
 				SpagoBILogger.errorLog("Error while setting last refresh date", e);	
-				return;
+				return false;
 			}			
 
 
-			IWorkbench wb = PlatformUI.getWorkbench();
-			IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
-			IWorkbenchPage page = win.getActivePage();
-			IEditorRegistry er = wb.getEditorRegistry();
-			IEditorDescriptor editordesc =  er.getDefaultEditor(newFile.getName());
-			if(editordesc!=null){
-				try {
-					page.openEditor(new FileEditorInput(newFile), editordesc.getId());
-				} catch (PartInitException e) {
-					SpagoBILogger.errorLog("Error while opening editor", e);
-					MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
-							"Error", "Error while opening editor");
-				}
-				SpagoBILogger.infoLog("File "+newFile.getName()+" created");	
-			}
-			else{
-				SpagoBILogger.infoLog("No editor avalaible for the selected Bi Object type: "+type+ " and engine "+engineName);	
-				MessageDialog.openWarning(getShell(), "No editor avalaible", "No editor avalaible for the selected Bi Object type: "+type+ " and engine "+engineName);
-			}
+//			IWorkbench wb = PlatformUI.getWorkbench();
+//			IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
+//			IWorkbenchPage page = win.getActivePage();
+//			IEditorRegistry er = wb.getEditorRegistry();
+//			IEditorDescriptor editordesc =  er.getDefaultEditor(newFile.getName());
+//			if(editordesc!=null){
+//				try {
+//					page.openEditor(new FileEditorInput(newFile), editordesc.getId());
+//				} catch (PartInitException e) {
+//					SpagoBILogger.errorLog("Error while opening editor", e);
+//					MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
+//							"Error", "Error while opening editor");
+//				}
+//				SpagoBILogger.infoLog("File "+newFile.getName()+" created");	
+//			}
+//			else{
+//				SpagoBILogger.infoLog("No editor avalaible for the selected Bi Object type: "+type+ " and engine "+engineName);	
+//				MessageDialog.openWarning(getShell(), "No editor avalaible", "No editor avalaible for the selected Bi Object type: "+type+ " and engine "+engineName);
+//			}
 		}
 		else // choose not to overwrite the file
 		{
 			SpagoBILogger.infoLog("Choose to not overwrite file "+newFile.getName());	
 		}
 
+		return true;
+
+	}
+
+
+	/** The worker method. Download the template and creates the file
+	 * 
+	 * @param document: the SdkDocument refderencing the BiObject
+	 * @throws CoreException 
+	 * 
+	 */
+
+	private void doFinish() {
+		SpagoBILogger.infoLog("Documents downloaded");
 	}
 
 	/**

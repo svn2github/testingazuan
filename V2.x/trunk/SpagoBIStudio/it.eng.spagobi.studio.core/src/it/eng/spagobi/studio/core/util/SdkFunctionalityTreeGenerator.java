@@ -101,7 +101,7 @@ public class SdkFunctionalityTreeGenerator {
 		imageDescriptors.put("OFFICE_DOC", officeDocumentDescriptor);
 		imageDescriptors.put("ETL", etlDescriptor);
 		imageDescriptors.put("DOSSIER", dossierDescriptor);
-		imageDescriptors.put("COMPOSITE", compositeDescriptor);
+		imageDescriptors.put("DOCUMENT_COMPOSITE", compositeDescriptor);
 		imageDescriptors.put("DATAMART", qbeDescriptor);
 		imageDescriptors.put("KPI", kpiDescriptor);
 		imageDescriptors.put("DATA_MINING", kpiDescriptor);

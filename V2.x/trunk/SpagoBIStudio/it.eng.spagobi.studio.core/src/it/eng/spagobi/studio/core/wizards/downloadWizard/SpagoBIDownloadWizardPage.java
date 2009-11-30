@@ -206,13 +206,20 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 		boolean isComplete=false;
 		if(tree!=null){
 			TreeItem[] treeItems=tree.getSelection();
-			if(treeItems!=null && treeItems.length==1){
+//			if(treeItems!=null && treeItems.length==1){
+//				TreeItem treeItem=treeItems[0];
+//				Object data=treeItem.getData();
+//				if(data!=null && data instanceof SDKDocument){
+//					isComplete=true;
+//				}
+//			}
+			if(treeItems!=null && treeItems.length>=1){
 				TreeItem treeItem=treeItems[0];
 				Object data=treeItem.getData();
 				if(data!=null && data instanceof SDKDocument){
 					isComplete=true;
 				}
-			}
+			}			
 		}
 
 		return isComplete;

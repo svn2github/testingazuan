@@ -1,6 +1,5 @@
 package it.eng.spagobi.studio.documentcomposition.wizards;
 
-import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.editors.DocumentCompositionEditor;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
@@ -23,7 +22,6 @@ import java.util.Vector;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.INewWizard;
@@ -261,6 +259,7 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 						
 						//poi modifica idParam del refresh
 						refreshDocLinked.setIdParam(newParam.getId());
+						refreshDocLinked.setLabelParam(newParam.getSbiParLabel());						
 					}else{
 						//se param in esiste già modifica idParam del refresh
 						refreshDocLinked.setIdParam(paramExisting.getId());

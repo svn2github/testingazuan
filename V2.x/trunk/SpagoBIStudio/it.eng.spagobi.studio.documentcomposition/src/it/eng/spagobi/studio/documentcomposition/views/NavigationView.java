@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -396,13 +397,19 @@ public class NavigationView extends ViewPart {
 		        case SWT.Selection:
 			    		///button to start the wizard
 		    	    // Instantiates and initializes the wizard
-		        	SpagoBIModifyNavigationWizard wizard = new SpagoBIModifyNavigationWizard();
-
-		    	    wizard.init(PlatformUI.getWorkbench(),  new StructuredSelection(table));
-		    	    // Instantiates the wizard container with the wizard and opens it
-		    	    WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
-		    	    dialog.create();
-		    	    dialog.open();
+		        	TableItem[] items = table.getSelection();
+		        	if(items.length == 0){
+		        		MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Warning", "Please, select a navigation from list below.");
+		        	}else{
+		        			        	
+			        	SpagoBIModifyNavigationWizard wizard = new SpagoBIModifyNavigationWizard();
+	
+			    	    wizard.init(PlatformUI.getWorkbench(),  new StructuredSelection(table));
+			    	    // Instantiates the wizard container with the wizard and opens it
+			    	    WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
+			    	    dialog.create();
+			    	    dialog.open();
+		        	}
 		        }
 
 			}

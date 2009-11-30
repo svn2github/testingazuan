@@ -252,10 +252,12 @@ public class GEOEditor extends EditorPart {
 		initializeEditor(geoDocument);
 		// creazione delle combo e tabelle
 
-		Group datasetGroup = new Group(sectionClient, SWT.FILL);
+		Group datasetGroup = new Group(sectionClient, SWT.FILL | SWT.RESIZE);
 		datasetGroup.setSize(800, 600);
 		datasetGroup.setLayout(sectionClient.getLayout());
-		Group mapGroup = new Group(sectionClient, SWT.FILL);
+		
+		
+		Group mapGroup = new Group(sectionClient, SWT.FILL | SWT.RESIZE);
 		mapGroup.setSize(800, 600);
 		mapGroup.setLayout(sectionClient.getLayout());
 
@@ -263,6 +265,7 @@ public class GEOEditor extends EditorPart {
 		createMapCombo(sectionClient, mapGroup, form);
 
 		createDatasetTable(sectionClient, datasetGroup);
+
 		createMapTable(sectionClient, mapGroup);
 		section.setClient(sectionClient);
 		
@@ -507,9 +510,10 @@ public class GEOEditor extends EditorPart {
 				});
 
 				datasetTable.pack();
-				datasetTable.redraw();
-				sectionClient.getParent().pack();
-				sectionClient.getParent().redraw();
+				datasetGroup.pack();
+				datasetGroup.redraw();
+/*				sectionClient.getParent().pack();
+				sectionClient.getParent().redraw();*/
 				form.reflow(true);
 				setIsDirty(true);
 			}
@@ -518,7 +522,112 @@ public class GEOEditor extends EditorPart {
 			}
 		});
 	}
+	private void createMapCombo(final Composite sectionClient, final Group mapGroup, final ScrolledForm form) {
 
+		GridData gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+		gd.horizontalSpan = 1;
+		gd.horizontalAlignment = SWT.END;
+		gd.grabExcessHorizontalSpace = true;
+		gd.minimumWidth = 120;
+		gd.verticalAlignment = SWT.TOP;
+
+		Label mapLabel = new Label(mapGroup, SWT.SIMPLE);
+		mapLabel.setText("Map");
+		mapLabel.setAlignment(SWT.RIGHT);
+
+		Layers layers = LayersBO.getLayers(geoDocument);
+
+		final Combo mapCombo = new Combo(mapGroup, SWT.SIMPLE | SWT.DROP_DOWN
+				| SWT.READ_ONLY);
+		int index = 0;
+		for (Iterator<String> iterator = mapInfos.keySet().iterator(); iterator
+				.hasNext();) {
+			String name = (String) iterator.next();
+			mapCombo.add(name);
+			if (layers != null && layers.getMapName() != null
+					&& layers.getMapName().equals(name)) {
+				mapCombo.select(index);
+			}
+			index++;
+		}
+
+		mapCombo.setLayoutData(gd);
+
+		mapCombo.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				// Once selected the dataset fill the table with its metadata,
+				// check first if they have been already recovered!
+				mapTable.removeAll();
+				mapTable.setItemCount(0);
+				mapTable.pack();
+
+				if (mapTableEditors != null) {
+					for (int i = 0; i < mapTableEditors.size(); i++) {
+						TableEditor editor = mapTableEditors.elementAt(i);
+						Control old = editor.getEditor();
+						if (old != null)
+							old.dispose();
+					}
+				}
+				int indexSelection = mapCombo.getSelectionIndex();
+				String mapLabel = mapCombo.getItem(indexSelection);
+				selectedMap = mapLabel;
+				GeoFeature[] geoFeatures = null;
+				// get the metadata
+				if (tempMapMetadataInfos.get(mapLabel) != null) {
+					geoFeatures = tempMapMetadataInfos.get(mapLabel);
+				} else {
+					GeoMap geoMap = mapInfos.get(mapLabel);
+					try {
+						geoFeatures = new SpagoBIServerObjects()
+								.getFeaturesByMapId(geoMap.getMapId());
+						if (geoFeatures != null) {
+							tempMapMetadataInfos.put(mapLabel, geoFeatures);
+						} else {
+							SpagoBILogger
+									.warningLog("No features returned from map with label "
+											+ mapLabel);
+							MessageDialog.openWarning(sectionClient.getShell(),
+									"Warning",
+									"No features returned from map with label "
+											+ mapLabel);
+						}
+					} catch (NoServerException e1) {
+						SpagoBILogger.errorLog(
+								"Could not get features associated to map with label = "
+										+ mapLabel, e1);
+						MessageDialog.openError(sectionClient.getShell(),
+								"Error",
+								"Could not get features associated to map with label = "
+										+ mapLabel);
+					}
+				}
+				if (geoFeatures != null) {
+
+					fillMapTable(geoFeatures, sectionClient, true);
+				}
+				// resize the row height using a MeasureItem listener
+				mapTable.addListener(SWT.MeasureItem, new Listener() {
+					public void handleEvent(Event event) {
+						// height cannot be per row so simply set
+						event.height = 25;
+					}
+				});
+
+				mapTable.redraw();
+				mapGroup.pack();
+				mapGroup.redraw();
+/*				sectionClient.getParent().pack();
+				sectionClient.getParent().redraw();*/
+				form.reflow(true);
+				setIsDirty(true);
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+		});
+
+	}
 	private void createDatasetTable(final Composite sectionClient,
 			Group datasetGroup) {
 
@@ -814,111 +923,7 @@ public class GEOEditor extends EditorPart {
 		}
 	}
 
-	private void createMapCombo(final Composite sectionClient, Group mapGroup, final ScrolledForm form) {
-
-		GridData gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 1;
-		gd.horizontalAlignment = SWT.END;
-		gd.grabExcessHorizontalSpace = true;
-		gd.minimumWidth = 120;
-		gd.verticalAlignment = SWT.TOP;
-
-		Label mapLabel = new Label(mapGroup, SWT.SIMPLE);
-		mapLabel.setText("Map");
-		mapLabel.setAlignment(SWT.RIGHT);
-
-		Layers layers = LayersBO.getLayers(geoDocument);
-
-		final Combo mapCombo = new Combo(mapGroup, SWT.SIMPLE | SWT.DROP_DOWN
-				| SWT.READ_ONLY);
-		int index = 0;
-		for (Iterator<String> iterator = mapInfos.keySet().iterator(); iterator
-				.hasNext();) {
-			String name = (String) iterator.next();
-			mapCombo.add(name);
-			if (layers != null && layers.getMapName() != null
-					&& layers.getMapName().equals(name)) {
-				mapCombo.select(index);
-			}
-			index++;
-		}
-
-		mapCombo.setLayoutData(gd);
-
-		mapCombo.addSelectionListener(new SelectionListener() {
-			public void widgetSelected(SelectionEvent e) {
-				// Once selected the dataset fill the table with its metadata,
-				// check first if they have been already recovered!
-				mapTable.removeAll();
-				mapTable.setItemCount(0);
-				mapTable.pack();
-
-				if (mapTableEditors != null) {
-					for (int i = 0; i < mapTableEditors.size(); i++) {
-						TableEditor editor = mapTableEditors.elementAt(i);
-						Control old = editor.getEditor();
-						if (old != null)
-							old.dispose();
-					}
-				}
-				int indexSelection = mapCombo.getSelectionIndex();
-				String mapLabel = mapCombo.getItem(indexSelection);
-				selectedMap = mapLabel;
-				GeoFeature[] geoFeatures = null;
-				// get the metadata
-				if (tempMapMetadataInfos.get(mapLabel) != null) {
-					geoFeatures = tempMapMetadataInfos.get(mapLabel);
-				} else {
-					GeoMap geoMap = mapInfos.get(mapLabel);
-					try {
-						geoFeatures = new SpagoBIServerObjects()
-								.getFeaturesByMapId(geoMap.getMapId());
-						if (geoFeatures != null) {
-							tempMapMetadataInfos.put(mapLabel, geoFeatures);
-						} else {
-							SpagoBILogger
-									.warningLog("No features returned from map with label "
-											+ mapLabel);
-							MessageDialog.openWarning(sectionClient.getShell(),
-									"Warning",
-									"No features returned from map with label "
-											+ mapLabel);
-						}
-					} catch (NoServerException e1) {
-						SpagoBILogger.errorLog(
-								"Could not get features associated to map with label = "
-										+ mapLabel, e1);
-						MessageDialog.openError(sectionClient.getShell(),
-								"Error",
-								"Could not get features associated to map with label = "
-										+ mapLabel);
-					}
-				}
-				if (geoFeatures != null) {
-
-					fillMapTable(geoFeatures, sectionClient, true);
-				}
-				// resize the row height using a MeasureItem listener
-				mapTable.addListener(SWT.MeasureItem, new Listener() {
-					public void handleEvent(Event event) {
-						// height cannot be per row so simply set
-						event.height = 25;
-					}
-				});
-
-				mapTable.redraw();
-
-				sectionClient.getParent().pack();
-				sectionClient.getParent().redraw();
-				form.reflow(true);
-				setIsDirty(true);
-			}
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		});
-
-	}
+	
 
 	private void createMapTable(Composite sectionClient, Group mapGroup) {
 

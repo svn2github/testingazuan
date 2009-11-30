@@ -179,6 +179,7 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
+			Date now = new Date();
 			String execReq = objNote.getExecReq();
 			SbiObjects hibBIObject = (SbiObjects) aSession.load(SbiObjects.class, biobjId);
 			SbiBinContents hibBinContent = new SbiBinContents();
@@ -193,6 +194,8 @@ public class ObjNoteDAOHibImpl extends AbstractHibernateDAO implements IObjNoteD
 			hibObjNote.setSbiObject(hibBIObject);
 			hibObjNote.setOwner(objNote.getOwner());
 			hibObjNote.setIsPublic(objNote.getIsPublic());
+			hibObjNote.setCreationDate(now);
+			hibObjNote.setLastChangeDate(now);
 			aSession.save(hibObjNote);
 			tx.commit();
 		} catch (HibernateException he) {

@@ -37,7 +37,7 @@ import org.hibernate.type.ManyToOneType;
 import org.hibernate.type.Type;
 
 import it.eng.qbe.dao.DAOFactory;
-import it.eng.qbe.datasource.IHibernateDataSource;
+import it.eng.qbe.datasource.hibernate.IHibernateDataSource;
 import it.eng.qbe.model.structure.DataMartCalculatedField;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
@@ -46,8 +46,6 @@ import it.eng.spagobi.utilities.assertion.Assert;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
- * 
- * TODO this class will replace others builder classes. Once done, rename it HibernateDatamartStructure
  */
 public class HibernateDatamartStructureBuilder implements IDataMartStructureBuilder {
 	

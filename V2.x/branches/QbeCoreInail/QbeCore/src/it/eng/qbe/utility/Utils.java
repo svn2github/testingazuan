@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 
 import sun.misc.BASE64Encoder;
 
-import it.eng.qbe.datasource.IHibernateDataSource;
+import it.eng.qbe.datasource.hibernate.IHibernateDataSource;
 import it.eng.qbe.model.io.IDataMartModelRetriever;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.configuration.ConfigSingleton;

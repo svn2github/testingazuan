@@ -20,61 +20,40 @@
  **/
 package it.eng.qbe.datasource;
 
-import it.eng.qbe.bo.DatamartLabels;
 import it.eng.qbe.bo.DatamartProperties;
+import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-// TODO: Auto-generated Javadoc
 /**
- * The Class AbstractDataSource.
- * 
  * @author Andrea Gioia
  */
-public class AbstractDataSource implements IDataSource {
+public abstract class AbstractDataSource implements IDataSource {
 	
-	/** The name. */
 	private String name;
-	
-	/** The type. */
 	private int type;
-	
-	/** The properties. */
 	private DatamartProperties properties = null;	
+	private DataMartModelAccessModality dataMartModelAccessModality;
 	
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.datasource.IDataSource#getName()
-	 */
+	public DataMartModelAccessModality getDataMartModelAccessModality() {
+		return dataMartModelAccessModality;
+	}
+
+	public void setDataMartModelAccessModality(
+			DataMartModelAccessModality dataMartModelAccessModality) {
+		this.dataMartModelAccessModality = dataMartModelAccessModality;
+	}
+
 	public String getName() {
 		return name;
 	}
-
-	/**
-	 * Sets the name.
-	 * 
-	 * @param name the new name
-	 */
+	
 	public void setName(String name) {
 		this.name = name;
 	}
 	
-	/**
-	 * Sets the type.
-	 * 
-	 * @param type the new type
-	 */
 	protected void setType(int type) {
 		this.type = type;
 	}
 
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.datasource.IDataSource#getType()
-	 */
 	public int getType() {
 		return type;
 	}
@@ -83,17 +62,10 @@ public class AbstractDataSource implements IDataSource {
 	// =========================================================================================================
 	// Qbe properties
 	// =========================================================================================================
-	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.datasource.IDataSource#getProperties()
-	 */
 	public DatamartProperties getProperties() {
 		return properties;
 	}
-
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.datasource.IDataSource#setProperties(it.eng.qbe.bo.DatamartProperties)
-	 */
+	
 	public void setProperties(DatamartProperties properties) {
 		this.properties = properties;
 	}

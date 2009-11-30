@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 
+import it.eng.qbe.datasource.hibernate.IHibernateDataSource;
 import it.eng.qbe.query.CalculatedSelectField;
 import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.ISelectField;
@@ -82,7 +83,7 @@ public class QbeDataSet extends AbstractDataSet {
 		boolean overflow;
 		
 		try{		
-			session = statement.getDataMartModel().getDataSource().getSessionFactory().openSession();
+			session = ((IHibernateDataSource)statement.getDataSource()).getSessionFactory().openSession();
 			
 			// execute query
 			hibernateQuery = session.createQuery( statement.getQueryString() );	

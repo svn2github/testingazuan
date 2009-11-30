@@ -18,83 +18,29 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.qbe.datasource;
-
-import java.util.List;
+package it.eng.qbe.datasource.hibernate;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-// TODO: Auto-generated Javadoc
+import it.eng.qbe.datasource.IDataSource;
+
 /**
  * The Interface IHibernateDataSource.
  */
 public interface IHibernateDataSource extends IDataSource {
 
-	/**
-	 * Gets the datamart name.
-	 * 
-	 * @return the datamart name
-	 */
-	String getDatamartName();
 	
-	/**
-	 * Gets the datamart names.
-	 * 
-	 * @return the datamart names
-	 */
-	List getDatamartNames();
 	
-	/**
-	 * Gets the connection.
-	 * 
-	 * @return the connection
-	 */
+	
 	DBConnection getConnection();
-	
-	/**
-	 * Gets the configuration.
-	 * 
-	 * @return the configuration
-	 */
 	Configuration getConfiguration();	
-	
-	/**
-	 * Gets the session factory.
-	 * 
-	 * @return the session factory
-	 */
 	SessionFactory getSessionFactory();
-	
-	/**
-	 * Gets the session factory.
-	 * 
-	 * @param dmName the dm name
-	 * 
-	 * @return the session factory
-	 */
 	SessionFactory getSessionFactory(String dmName);
 
 	
-	/**
-	 * Refresh datamart views.
-	 */
 	void refreshDatamartViews();	
-	
-	/**
-	 * Refresh shared views.
-	 */
 	void refreshSharedViews();	
-	
-	/**
-	 * Refresh shared view.
-	 * 
-	 * @param sharedViewName the shared view name
-	 */
 	void refreshSharedView(String sharedViewName);
-	
-	/**
-	 * Refresh.
-	 */
 	void refresh();		
 }

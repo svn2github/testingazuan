@@ -20,51 +20,37 @@
  **/
 package it.eng.qbe.datasource;
 
-import it.eng.qbe.bo.DatamartLabels;
+import java.util.List;
+
 import it.eng.qbe.bo.DatamartProperties;
+import it.eng.qbe.model.IStatement;
+import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
+import it.eng.qbe.model.structure.DataMartModelStructure;
+import it.eng.qbe.query.Query;
 
-import java.util.Locale;
-
-// TODO: Auto-generated Javadoc
 /**
- * The Interface IDataSource.
- * 
  * @author Andrea Gioia
  */
 public interface IDataSource {
 	
-	/** The HIBERNAT e_ d s_ type. */
-	int HIBERNATE_DS_TYPE = 1;
 	
-	/** The COMPOSIT e_ hibernat e_ d s_ type. */
+	DataMartModelStructure getDataMartModelStructure();
+	IStatement createStatement(Query query);
+	
+	DataMartModelAccessModality getDataMartModelAccessModality();
+	void setDataMartModelAccessModality(DataMartModelAccessModality dataMartModelAccessModality) ;
+	
+	int HIBERNATE_DS_TYPE = 1;
 	int COMPOSITE_HIBERNATE_DS_TYPE = 2;
 		
-	/**
-	 * Gets the name.
-	 * 
-	 * @return the name
-	 */
-	String getName();
-	
-	/**
-	 * Gets the type.
-	 * 
-	 * @return the type
-	 */
-	int getType();
 
-	
-	/**
-	 * Gets the properties.
-	 * 
-	 * @return the properties
-	 */
+	String getName();
+	int getType();
 	DatamartProperties getProperties();
-	
-	/**
-	 * Sets the properties.
-	 * 
-	 * @param properties the new properties
-	 */
 	void setProperties(DatamartProperties properties);
+	
+	String getDatamartName();
+	List getDatamartNames();
+	
+	void addView(String name, IStatement statement, List columnNames, List columnAlias, List columnHibernateTypes);
 }

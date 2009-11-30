@@ -23,10 +23,9 @@ package it.eng.qbe.model;
 import java.util.Map;
 import java.util.Set;
 
+import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.query.Query;
-import it.eng.spago.base.SourceBean;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface IStatement.
  * 
@@ -34,7 +33,7 @@ import it.eng.spago.base.SourceBean;
  */
 public interface IStatement {
 	
-	public IDataMartModel getDataMartModel();
+	public IDataSource getDataSource();
 	
 	public void setQuery(Query query);	
 	public Query getQuery();
@@ -65,14 +64,7 @@ public interface IStatement {
 	
 	
 	public void setParameters(Map parameters);
-	public SourceBean execute() throws Exception ;
 	
-
-	public SourceBean execute(int offset) throws Exception;
-	public SourceBean execute(int offset, int fetchSize) throws Exception;		
-	public SourceBean execute(int offset, int fetchSize, int maxResults) throws Exception;
-	public SourceBean execute(int offset, int fetchSize, int maxResults, boolean isMaxResultsLimitBlocking) throws Exception;
-
 	
 	
 }

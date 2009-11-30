@@ -22,6 +22,7 @@ package it.eng.qbe.model;
 
 import java.util.Map;
 
+import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.query.Query;
 
 // TODO: Auto-generated Javadoc
@@ -33,7 +34,7 @@ import it.eng.qbe.query.Query;
 public abstract class  BasicStatement implements IStatement{
 
 	/** The data mart model. */
-	IDataMartModel dataMartModel;
+	IDataSource dataSource;
 	
 	/** The query. */
 	Query query;
@@ -61,8 +62,8 @@ public abstract class  BasicStatement implements IStatement{
 	 * 
 	 * @param dataMartModel the data mart model
 	 */
-	protected BasicStatement(IDataMartModel dataMartModel) {
-		this.dataMartModel = dataMartModel;
+	protected BasicStatement(IDataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 	
 	/**
@@ -71,13 +72,13 @@ public abstract class  BasicStatement implements IStatement{
 	 * @param dataMartModel the data mart model
 	 * @param query the query
 	 */
-	protected BasicStatement(IDataMartModel dataMartModel, Query query) {
-		this.dataMartModel = dataMartModel;
+	protected BasicStatement(IDataSource dataSource, Query query) {
+		this.dataSource = dataSource;
 		this.query = query;
 	}
 	
-	public IDataMartModel getDataMartModel() {
-		return dataMartModel;
+	public IDataSource getDataSource() {
+		return dataSource;
 	}
 	
 	public Query getQuery() {

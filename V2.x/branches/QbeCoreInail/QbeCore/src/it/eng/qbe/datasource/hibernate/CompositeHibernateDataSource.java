@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.qbe.datasource;
+package it.eng.qbe.datasource.hibernate;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,9 +30,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.cfg.Mappings;
-import org.hibernate.engine.Mapping;
-import org.hibernate.mapping.PersistentClass;
 
 import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.dao.DAOFactory;
@@ -113,7 +110,7 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	 * 
 	 * @param dataSourceName the data source name
 	 */
-	protected CompositeHibernateDataSource(String dataSourceName) {
+	public CompositeHibernateDataSource(String dataSourceName) {
 		setName( dataSourceName );
 		setType( COMPOSITE_HIBERNATE_DS_TYPE );
 		alreadyAddedView = new ArrayList();

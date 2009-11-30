@@ -31,9 +31,10 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 
+import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.datasource.hibernate.IHibernateDataSource;
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartEntity;
@@ -48,7 +49,6 @@ import it.eng.qbe.query.Operand;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.utility.StringUtils;
-import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
@@ -208,13 +208,13 @@ public class HQLStatement extends BasicStatement {
 	}
 	
 	
-	protected HQLStatement(IDataMartModel dataMartModel) {
-		super(dataMartModel);
+	protected HQLStatement(IDataSource dataSource) {
+		super(dataSource);
 	}
 	
 	
-	protected HQLStatement(IDataMartModel dataMartModel, Query query) {
-		super(dataMartModel, query);
+	public HQLStatement(IDataSource dataSource, Query query) {
+		super(dataSource, query);
 	}
 	
 	public static final String DISTINCT = "DISTINCT";
@@ -266,7 +266,7 @@ public class HQLStatement extends BasicStatement {
 				
 				logger.debug("select field unique name [" + selectField.getUniqueName() + "]");
 				
-				datamartField = getDataMartModel().getDataMartModelStructure().getField(selectField.getUniqueName());
+				datamartField = getDataSource().getDataMartModelStructure().getField(selectField.getUniqueName());
 				queryName = datamartField.getQueryName();
 				logger.debug("select field query name [" + queryName + "]");
 				
@@ -330,7 +330,7 @@ public class HQLStatement extends BasicStatement {
 				String entityAlias = (String)entityAliases.get(entityUniqueName);
 				logger.debug("entity alias [" + entityAlias +"]");
 				
-				DataMartEntity datamartEntity =  getDataMartModel().getDataMartModelStructure().getEntity(entityUniqueName);
+				DataMartEntity datamartEntity =  getDataSource().getDataMartModelStructure().getEntity(entityUniqueName);
 				String whereClauseElement = datamartEntity.getType() + " " + entityAlias;
 				logger.debug("where clause element [" + whereClauseElement +"]");
 				
@@ -383,7 +383,7 @@ public class HQLStatement extends BasicStatement {
 			Assert.assertNotNull(targetQueryEntityAliasesMap, "Entity aliases map for query [" + query.getId() + "] cannot be null in order to execute method [buildUserProvidedWhereField]");
 			
 			
-			datamartField = getDataMartModel().getDataMartModelStructure().getField( operand.value );
+			datamartField = getDataSource().getDataMartModelStructure().getField( operand.value );
 			Assert.assertNotNull(datamartField, "DataMart does not cantain a field named [" + operand.value + "]");
 			queryName = datamartField.getQueryName();
 			logger.debug("where field query name [" + queryName + "]");
@@ -443,7 +443,7 @@ public class HQLStatement extends BasicStatement {
 			fieldName = chunks[1];
 			logger.debug("where right-hand field unique name [" + fieldName + "]");
 
-			datamartField = getDataMartModel().getDataMartModelStructure().getField( fieldName );
+			datamartField = getDataSource().getDataMartModelStructure().getField( fieldName );
 			Assert.assertNotNull(datamartField, "DataMart does not cantain a field named [" + fieldName + "]");
 			
 			queryName = datamartField.getQueryName();
@@ -530,7 +530,7 @@ public class HQLStatement extends BasicStatement {
 		if (OPERAND_TYPE_FIELD.equalsIgnoreCase(leadOperand.type) 
 						|| OPERAND_TYPE_PARENT_FIELD.equalsIgnoreCase(leadOperand.type)) {
 			
-			DataMartField datamartField = getDataMartModel().getDataMartModelStructure().getField(leadOperand.value);
+			DataMartField datamartField = getDataSource().getDataMartModelStructure().getField(leadOperand.value);
 			
 			if(datamartField.getType().equalsIgnoreCase("String") || datamartField.getType().equalsIgnoreCase("character")) {
 				if( !( CriteriaConstants.IN.equalsIgnoreCase( operator ) 
@@ -885,8 +885,8 @@ public class HQLStatement extends BasicStatement {
 		}
 		
 
-		DataMartModelStructure dataMartModelStructure = dataMartModel.getDataMartModelStructure();
-		DataMartModelAccessModality dataMartModelAccessModality = dataMartModel.getDataMartModelAccessModality();
+		DataMartModelStructure dataMartModelStructure = getDataSource().getDataMartModelStructure();
+		DataMartModelAccessModality dataMartModelAccessModality = getDataSource().getDataMartModelAccessModality();
 		
 		Iterator it = entityAliases.keySet().iterator();
 		while(it.hasNext()){
@@ -983,7 +983,7 @@ public class HQLStatement extends BasicStatement {
 		Iterator it = groupByFields.iterator();
 		while( it.hasNext() ) {
 			DataMartSelectField groupByField = (DataMartSelectField)it.next();
-			DataMartField datamartField = getDataMartModel().getDataMartModelStructure().getField(groupByField.getUniqueName());
+			DataMartField datamartField = getDataSource().getDataMartModelStructure().getField(groupByField.getUniqueName());
 			DataMartEntity entity = datamartField.getParent().getRoot(); 
 			String queryName = datamartField.getQueryName();
 			if(!entityAliases.containsKey(entity.getUniqueName())) {
@@ -1032,7 +1032,7 @@ public class HQLStatement extends BasicStatement {
 			
 			Assert.assertTrue(selectField.isOrderByField(), "Field [" + selectField.getUniqueName() +"] is not an orderBy filed");
 			
-			DataMartField datamartField = getDataMartModel().getDataMartModelStructure().getField(selectField.getUniqueName());
+			DataMartField datamartField = getDataSource().getDataMartModelStructure().getField(selectField.getUniqueName());
 			DataMartEntity entity = datamartField.getParent().getRoot(); 
 			String queryName = datamartField.getQueryName();
 			if(!entityAliases.containsKey(entity.getUniqueName())) {
@@ -1083,7 +1083,7 @@ public class HQLStatement extends BasicStatement {
 		while(entityUniqueNamesIterator.hasNext()) {
 			entityUniqueName = (String)entityUniqueNamesIterator.next();
 			//entity = getDataMartModel().getDataMartModelStructure().getRootEntity( entityUniqueName );
-			entity = getDataMartModel().getDataMartModelStructure().getEntity( entityUniqueName );
+			entity = getDataSource().getDataMartModelStructure().getEntity( entityUniqueName );
 			selectedEntities.add(entity);
 		}
 		
@@ -1172,7 +1172,7 @@ public class HQLStatement extends BasicStatement {
 		Session session = null;
 		HqlToSqlQueryRewriter queryRewriter;
 		try {
-			session = dataMartModel.getDataSource().getSessionFactory().openSession();
+			session = ((IHibernateDataSource)getDataSource()).getSessionFactory().openSession();
 			queryRewriter = new HqlToSqlQueryRewriter(session);
 			sqlQuery = queryRewriter.rewrite( getQueryString() );
 		} finally {
@@ -1181,74 +1181,6 @@ public class HQLStatement extends BasicStatement {
 		
 		return sqlQuery;		
 	}	
-	
-	public SourceBean execute() throws Exception {
-		return execute(offset, fetchSize, maxResults);
-	}
-	
-	public SourceBean execute(int offset) throws Exception {
-		return execute(offset, fetchSize, maxResults);
-	}
-	
-	public SourceBean execute(int offset, int fetchSize) throws Exception {
-		return execute(offset, fetchSize, maxResults);
-	}
-	
-	public SourceBean execute(int offset, int fetchSize, int maxResults) throws Exception {
-		return execute(offset, fetchSize, maxResults, isBlocking);
-	}
-	
-	public SourceBean execute(int offset, int fetchSize, int maxResults, boolean isMaxResultsLimitBlocking) throws Exception {
-		Session session = null;
-		org.hibernate.Query hibernateQuery;
-		int resultNumber;
-		boolean overflow;
-		
-		try{		
-			session = dataMartModel.getDataSource().getSessionFactory().openSession();
-			
-			// execute query
-			hibernateQuery = session.createQuery( getQueryString() );	
-			ScrollableResults scrollableResults = hibernateQuery.scroll();
-			scrollableResults.last();
-			resultNumber = scrollableResults.getRowNumber() + 1; // Hibernate ScrollableResults row number starts with 0
-			resultNumber = resultNumber < 0? 0: resultNumber;
-			overflow = (resultNumber >= maxResults);
-			
-			List result = null;
-			
-			if (overflow && isMaxResultsLimitBlocking) {
-				// does not execute query
-				result = new ArrayList();
-			} else {
-				offset = offset < 0 ? 0 : offset;
-				if(maxResults > 0) {
-					fetchSize = (fetchSize > 0)? Math.min(fetchSize, maxResults): maxResults;
-				}
-				
-				hibernateQuery.setFirstResult(offset);
-				if(fetchSize > 0) hibernateQuery.setMaxResults(fetchSize);			
-				result = hibernateQuery.list();
-			}	
-			// build the source bean that holds the resultset				
-			SourceBean resultSetSB = new SourceBean("QUERY_RESPONSE_SOURCE_BEAN");
-			resultSetSB.setAttribute("query", queryString);
-			resultSetSB.setAttribute("offset", new Integer(offset));
-			resultSetSB.setAttribute("fetchSize", new Integer(fetchSize));
-			resultSetSB.setAttribute("maxResults", new Integer(maxResults));
-			resultSetSB.setAttribute("resultNumber", new Integer(resultNumber));
-			resultSetSB.setAttribute("overflow", new Boolean(overflow));
-			resultSetSB.setAttribute("list", result);
-			
-			
-			session.close();
-						
-			return resultSetSB;
-		}finally {
-			if (session != null && session.isOpen())
-			session.close();
-		}
-	}
 	
 	
 	public String toString() {

@@ -26,6 +26,10 @@ import java.util.Map;
 
 import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.dao.DAOFactory;
+import it.eng.qbe.datasource.hibernate.AbstractHibernateDataSource;
+import it.eng.qbe.datasource.hibernate.BasicHibernateDataSource;
+import it.eng.qbe.datasource.hibernate.CompositeHibernateDataSource;
+import it.eng.qbe.datasource.hibernate.DBConnection;
 
 // TODO: Auto-generated Javadoc
 /**

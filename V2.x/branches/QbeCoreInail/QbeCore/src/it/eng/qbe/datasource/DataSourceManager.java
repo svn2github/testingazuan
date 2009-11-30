@@ -24,6 +24,8 @@ package it.eng.qbe.datasource;
 import java.util.List;
 import java.util.Map;
 
+import it.eng.qbe.datasource.hibernate.DBConnection;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Interface DataSourceManager.

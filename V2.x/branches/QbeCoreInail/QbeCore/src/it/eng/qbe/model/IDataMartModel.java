@@ -23,7 +23,7 @@ package it.eng.qbe.model;
 import java.io.Serializable;
 import java.util.Map;
 
-import it.eng.qbe.datasource.IHibernateDataSource;
+import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.qbe.query.Query;
@@ -39,61 +39,23 @@ public interface IDataMartModel extends Serializable {
 	
 	String getName();
 	
-	/**
-	 * Creates the statement.
-	 * 
-	 * @return the i statement
-	 */
-	//public IStatement createStatement();
-	
-	/**
-	 * Creates the statement.
-	 * 
-	 * @param query the query
-	 * 
-	 * @return the i statement
-	 */
+
 	public IStatement createStatement(Query query);
 	
-	/**
-	 * Gets the data mart model structure.
-	 * 
-	 * @return the data mart model structure
-	 */
+
 	public DataMartModelStructure getDataMartModelStructure();
 	
-	/**
-	 * Gets the data source.
-	 * 
-	 * @return the data source
-	 */
-	public IHibernateDataSource getDataSource();
+	public IDataSource getDataSource();
 	
-	/**
-	 * Gets the data mart model access modality.
-	 * 
-	 * @return the data mart model access modality
-	 */
+
 	public DataMartModelAccessModality getDataMartModelAccessModality();
 	
-	/**
-	 * Sets the data mart model access modality.
-	 * 
-	 * @param dataMartModelAccessModality the new data mart model access modality
-	 */
+
 	public void setDataMartModelAccessModality(DataMartModelAccessModality dataMartModelAccessModality);	
 	
-	/**
-	 * Gets the data mart properties.
-	 * 
-	 * @return the data mart properties
-	 */
+
 	public Map getDataMartProperties();
 	
-	/**
-	 * Sets the data mart properties.
-	 * 
-	 * @param dataMartProperties the new data mart properties
-	 */
+	
 	public void setDataMartProperties(Map dataMartProperties);
 }

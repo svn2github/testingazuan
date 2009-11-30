@@ -21,11 +21,11 @@
 package it.eng.qbe.model.structure.builder;
 
 import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.datasource.IHibernateDataSource;
+import it.eng.qbe.datasource.hibernate.IHibernateDataSource;
 
 
 /**
- * @author Andrea Gioia
+ * @author Andrea Gioia (andrea.gioia@eng.it)
  */
 public class DataMartStructureBuilderFactory {
 	
@@ -34,8 +34,7 @@ public class DataMartStructureBuilderFactory {
 		
 		builder = null;
 		
-		if(dataSource.getType() == IDataSource.HIBERNATE_DS_TYPE
-				|| dataSource.getType() == IDataSource.COMPOSITE_HIBERNATE_DS_TYPE) {
+		if(dataSource instanceof IHibernateDataSource) {
 			builder = new HibernateDatamartStructureBuilder((IHibernateDataSource)dataSource);
 		} else {
 			throw new RuntimeException("Impossible to load dtamart structure from a datasource of type [" + dataSource.getType() + "]");

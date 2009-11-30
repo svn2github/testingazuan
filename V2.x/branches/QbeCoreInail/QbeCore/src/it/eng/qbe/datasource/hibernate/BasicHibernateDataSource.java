@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.qbe.datasource;
+package it.eng.qbe.datasource.hibernate;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -105,7 +105,7 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 	 * 
 	 * @param dataSourceName the data source name
 	 */
-	protected BasicHibernateDataSource(String dataSourceName) {
+	public BasicHibernateDataSource(String dataSourceName) {
 		setName( dataSourceName );
 		setType( HIBERNATE_DS_TYPE );
 		alreadyAddedView = new ArrayList();
@@ -285,4 +285,6 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 	public void refreshSharedViews() {
 		refreshDatamartViews();
 	}
+
+	
 }

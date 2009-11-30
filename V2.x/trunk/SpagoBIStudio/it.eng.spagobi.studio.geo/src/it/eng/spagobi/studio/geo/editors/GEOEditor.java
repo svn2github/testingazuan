@@ -259,8 +259,8 @@ public class GEOEditor extends EditorPart {
 		mapGroup.setSize(800, 600);
 		mapGroup.setLayout(sectionClient.getLayout());
 
-		createDatasetCombo(sectionClient, datasetGroup);
-		createMapCombo(sectionClient, mapGroup);
+		createDatasetCombo(sectionClient, datasetGroup, form);
+		createMapCombo(sectionClient, mapGroup, form);
 
 		createDatasetTable(sectionClient, datasetGroup);
 		createMapTable(sectionClient, mapGroup);
@@ -358,7 +358,7 @@ public class GEOEditor extends EditorPart {
 	}
 
 	private void createDatasetCombo(final Composite sectionClient,
-			final Group datasetGroup) {
+			final Group datasetGroup, final ScrolledForm form) {
 
 		GridData gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
@@ -506,9 +506,10 @@ public class GEOEditor extends EditorPart {
 					}
 				});
 
-
+				
 				sectionClient.getParent().pack();
 				sectionClient.getParent().redraw();
+				form.reflow(true);
 				setIsDirty(true);
 			}
 
@@ -812,7 +813,7 @@ public class GEOEditor extends EditorPart {
 		}
 	}
 
-	private void createMapCombo(final Composite sectionClient, Group mapGroup) {
+	private void createMapCombo(final Composite sectionClient, Group mapGroup, final ScrolledForm form) {
 
 		GridData gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
@@ -908,7 +909,7 @@ public class GEOEditor extends EditorPart {
 
 				sectionClient.getParent().pack();
 				sectionClient.getParent().redraw();
-
+				form.reflow(true);
 				setIsDirty(true);
 			}
 

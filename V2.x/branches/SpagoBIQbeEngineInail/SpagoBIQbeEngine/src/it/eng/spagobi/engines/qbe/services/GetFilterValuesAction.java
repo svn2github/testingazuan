@@ -22,20 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.qbe.services;
 
 
-import it.eng.qbe.model.DataStoreJSONSerializer;
-import it.eng.qbe.model.HQLStatement;
-import it.eng.qbe.model.IStatement;
-import it.eng.qbe.model.QbeDataSet;
-import it.eng.qbe.query.Query;
-import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
-import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.engines.EngineConstants;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
-import it.eng.spagobi.utilities.service.JSONSuccess;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,6 +33,20 @@ import org.json.JSONObject;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+
+import it.eng.qbe.model.QbeDataSet;
+import it.eng.qbe.query.Query;
+import it.eng.qbe.statment.IStatement;
+import it.eng.qbe.statment.hibernate.HQLStatement;
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datawriter.JSONDataWriter;
+import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.engines.EngineConstants;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
+import it.eng.spagobi.utilities.service.JSONSuccess;
 
 /**
  * @author Davide Zerbetto (davide.zerbetto@eng.it)
@@ -75,7 +75,7 @@ public class GetFilterValuesAction extends AbstractQbeEngineAction {
 		
 		IDataStore dataStore = null;
 		QbeDataSet dataSet = null;
-		DataStoreJSONSerializer serializer;
+		JSONDataWriter dataSetWriter;
 		Query query = null;
 		IStatement statement = null;
 		
@@ -141,8 +141,8 @@ public class GetFilterValuesAction extends AbstractQbeEngineAction {
 			Assert.assertNotNull(resultNumber, "property [resultNumber] of the dataStore returned by loadData method of the class [" + dataSet.getClass().getName()+ "] cannot be null");
 			logger.debug("Total records: " + resultNumber);			
 			
-			serializer = new DataStoreJSONSerializer();
-			gridDataFeed = (JSONObject)serializer.serialize(dataStore);
+			dataSetWriter = new JSONDataWriter();
+			gridDataFeed = (JSONObject)dataSetWriter.write(dataStore);
 			
 			try {
 				writeBackToClient( new JSONSuccess(gridDataFeed) );

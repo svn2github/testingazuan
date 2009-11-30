@@ -34,18 +34,18 @@ import org.json.JSONObject;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
-import it.eng.qbe.model.DataStoreJSONSerializer;
-import it.eng.qbe.model.HQLStatement;
-import it.eng.qbe.model.IStatement;
 import it.eng.qbe.model.QbeDataSet;
 import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
+import it.eng.qbe.statment.IStatement;
+import it.eng.qbe.statment.hibernate.HQLStatement;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.engines.qbe.QbeEngineConfig;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datawriter.JSONDataWriter;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
@@ -79,7 +79,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		boolean isMaxResultsLimitBlocking = false;
 		IDataStore dataStore = null;
 		QbeDataSet dataSet = null;
-		DataStoreJSONSerializer serializer;
+		JSONDataWriter dataSetWriter;
 		
 		Query query = null;
 		IStatement statement = null;
@@ -189,8 +189,8 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			
 			//gridDataFeed = buildGridDataFeed(results, resultNumber.intValue());	
 			
-			serializer = new DataStoreJSONSerializer();
-			gridDataFeed = (JSONObject)serializer.serialize(dataStore);
+			dataSetWriter = new JSONDataWriter();
+			gridDataFeed = (JSONObject)dataSetWriter.write(dataStore);
 			//logger.debug("Response object: " + gridDataFeed.toString(3));
 			
 			try {

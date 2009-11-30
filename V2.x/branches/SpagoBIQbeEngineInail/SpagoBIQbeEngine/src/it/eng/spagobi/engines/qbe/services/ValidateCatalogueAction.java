@@ -26,9 +26,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import it.eng.qbe.model.HQLStatement;
-import it.eng.qbe.model.IStatement;
 import it.eng.qbe.query.Query;
+import it.eng.qbe.statment.IStatement;
+import it.eng.qbe.statment.hibernate.HQLStatement;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;

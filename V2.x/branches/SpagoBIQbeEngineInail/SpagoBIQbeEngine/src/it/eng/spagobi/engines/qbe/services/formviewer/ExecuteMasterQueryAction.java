@@ -33,19 +33,19 @@ import com.jamonapi.MonitorFactory;
 
 import it.eng.qbe.datasource.hibernate.DBConnection;
 import it.eng.qbe.datasource.hibernate.IHibernateDataSource;
-import it.eng.qbe.model.DataStoreJSONSerializer;
-import it.eng.qbe.model.HQLStatement;
-import it.eng.qbe.model.IStatement;
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.query.serializer.QuerySerializerFactory;
+import it.eng.qbe.statment.IStatement;
+import it.eng.qbe.statment.hibernate.HQLStatement;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.engines.qbe.QbeEngineConfig;
 import it.eng.spagobi.engines.qbe.services.AbstractQbeEngineAction;
 import it.eng.spagobi.tools.dataset.bo.JDBCStandardDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datawriter.JSONDataWriter;
 import it.eng.spagobi.tools.dataset.common.query.GroupByQueryTransformer;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.utilities.assertion.Assert;
@@ -87,7 +87,7 @@ public class ExecuteMasterQueryAction extends AbstractQbeEngineAction {
 		boolean isMaxResultsLimitBlocking;
 		IDataStore dataStore;
 		JDBCStandardDataSet dataSet;
-		DataStoreJSONSerializer serializer;
+		JSONDataWriter dataSetWriter;
 		
 		Query query;
 		IStatement statement;
@@ -229,8 +229,8 @@ public class ExecuteMasterQueryAction extends AbstractQbeEngineAction {
 				auditlogger.info("[" + userProfile.getUserId() + "]:: max result limit [" + maxSize + "] exceeded with SQL: " + sqlQuery);
 			}
 						
-			serializer = new DataStoreJSONSerializer();
-			gridDataFeed = (JSONObject)serializer.serialize(dataStore);
+			dataSetWriter = new JSONDataWriter();
+			gridDataFeed = (JSONObject)dataSetWriter.write(dataStore);
 			
 			try {
 				writeBackToClient( new JSONSuccess(gridDataFeed) );

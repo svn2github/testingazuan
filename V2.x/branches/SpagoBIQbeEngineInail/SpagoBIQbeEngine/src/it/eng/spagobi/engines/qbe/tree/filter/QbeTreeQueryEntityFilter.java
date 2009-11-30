@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Set;
 
 import it.eng.qbe.model.IDataMartModel;
-import it.eng.qbe.model.IStatement;
 import it.eng.qbe.query.Query;
+import it.eng.qbe.statment.IStatement;
 
 // TODO: Auto-generated Javadoc
 /**

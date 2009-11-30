@@ -31,7 +31,8 @@ import org.json.JSONObject;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
-import it.eng.qbe.datasource.DBConnection;
+import it.eng.qbe.datasource.hibernate.DBConnection;
+import it.eng.qbe.datasource.hibernate.IHibernateDataSource;
 import it.eng.qbe.model.DataStoreJSONSerializer;
 import it.eng.qbe.model.HQLStatement;
 import it.eng.qbe.model.IStatement;
@@ -187,7 +188,7 @@ public class ExecuteMasterQueryAction extends AbstractQbeEngineAction {
 				
 				dataSet = new JDBCStandardDataSet();
 				//Session session = getDatamartModel().getDataSource().getSessionFactory().openSession();
-				DBConnection connection = getDatamartModel().getDataSource().getConnection();
+				DBConnection connection = ((IHibernateDataSource)getDatamartModel().getDataSource()).getConnection();
 				DataSource dataSource = new DataSource();
 				dataSource.setJndi(connection.getJndiName());
 				dataSource.setHibDialectName(connection.getDialect());

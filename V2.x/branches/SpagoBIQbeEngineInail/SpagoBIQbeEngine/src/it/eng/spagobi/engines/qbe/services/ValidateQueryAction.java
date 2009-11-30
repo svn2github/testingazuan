@@ -20,12 +20,19 @@
  **/
 package it.eng.spagobi.engines.qbe.services;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import it.eng.qbe.model.HQLStatement;
 import it.eng.qbe.model.IStatement;
+import it.eng.qbe.model.QbeDataSet;
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
@@ -55,7 +62,20 @@ public class ValidateQueryAction extends AbstractQbeEngineAction {
 			logger.debug("Validating query (HQL): [" +  hqlQuery+ "]");
 			logger.debug("Validating query (SQL): [" + sqlQuery + "]");
 			try {
-				statement.execute(0, 1, 1, true);
+				QbeDataSet dataSet = new QbeDataSet(statement);
+				
+				Map userAttributes = new HashMap();
+				UserProfile profile = (UserProfile)this.getEnv().get(EngineConstants.ENV_USER_PROFILE);
+				Iterator it = profile.getUserAttributeNames().iterator();
+				while(it.hasNext()) {
+					String attributeName = (String)it.next();
+					Object attributeValue = profile.getUserAttribute(attributeName);
+					userAttributes.put(attributeName, attributeValue);
+				}
+				dataSet.addBinding("attributes", userAttributes);
+				dataSet.addBinding("parameters", this.getEnv());
+				dataSet.loadData(0, 1, 1);
+				
 				logger.info("Query execution did not throw any exception. Validation successful.");
 				validationResult = true;
 			} catch (Throwable t) {

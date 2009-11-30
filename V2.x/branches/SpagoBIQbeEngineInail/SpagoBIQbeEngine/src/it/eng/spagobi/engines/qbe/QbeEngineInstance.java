@@ -26,8 +26,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import it.eng.qbe.catalogue.QueryCatalogue;
-import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.datasource.hibernate.DBConnection;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.IStatement;
 import it.eng.qbe.query.Query;
@@ -142,11 +142,6 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		setQueryCatalogue( qbeEngineAnalysisState.getCatalogue(  ) );
 	}
 	
-
-	public void setAnalysisState(String analysisState) {
-		Query query = datamartModel.getQuery(analysisState);	
-		setActiveQuery(query);
-	}
 
 	public DataMartModel getDatamartModel() {
 		return datamartModel;

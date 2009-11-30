@@ -22,7 +22,7 @@ package it.eng.spagobi.engines.qbe.namingstrategy;
 
 import java.util.List;
 
-import it.eng.qbe.datasource.DBConnection;
+import it.eng.qbe.datasource.hibernate.DBConnection;
 import it.eng.qbe.naming.NamingStrategy;
 
 // TODO: Auto-generated Javadoc

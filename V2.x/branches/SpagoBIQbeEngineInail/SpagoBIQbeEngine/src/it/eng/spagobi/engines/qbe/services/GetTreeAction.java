@@ -94,8 +94,6 @@ public class GetTreeAction extends AbstractQbeEngineAction {
 			}
 			entityFilter = new QbeTreeOrderEntityFilter(entityFilter);
 			logger.debug("Apply field filter [" + entityFilter.getClass().getName() + "]");
-			//entityFilter = new QbeTreeOrderEntityByLabelFilter(entityFilter, getLocale() );
-			//logger.debug("Apply entity filter [" + entityFilter.getClass().getName() + "]");
 			
 			logger.debug("Filtering fields list ...");	
 			fieldFilter = new QbeTreeAccessModalityFieldFilter();

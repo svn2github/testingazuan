@@ -285,8 +285,6 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
         execDetailFn += '"' + this.detailDocumentConf.label + '"'; // frameId
         execDetailFn += ")";
        
-        alert(execDetailFn);
-        
         var link = '';
         link += '<center>';
         link += '<font size="1" face="Verdana">';
@@ -295,8 +293,6 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
         link += execDetailFn + '\';>';
         link += 'Dettagli</a></font></center>';
 
-        alert(link);
-        
         params = Ext.apply({}, this.inlineDocumentConf.staticParams);
 		for(p in this.inlineDocumentConf.dynamicParams) {
 			var attrName = this.inlineDocumentConf.dynamicParams[p];

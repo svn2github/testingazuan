@@ -1,6 +1,5 @@
 Ext.ns("Sbi.locale");
 
-alert('Italiano');
 
 Sbi.locale.ln = Sbi.locale.ln || new Array();
 

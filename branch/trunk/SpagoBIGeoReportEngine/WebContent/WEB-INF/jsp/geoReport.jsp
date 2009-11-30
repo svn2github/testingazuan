@@ -72,7 +72,6 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 			execDoc = function(docLab, role, params, dispToolbar, dispSlide,frameId, height) {
 
 				var h = height || '100%';
-				alert(h);
 				
 				var html = Sbi.sdk.api.getDocumentHtml({
 					documentLabel: docLab
@@ -104,6 +103,14 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 		    	, contextPath: '<%= request.getContextPath().startsWith("/")||request.getContextPath().startsWith("\\")?request.getContextPath().substring(1): request.getContextPath()%>'
 		    	, controllerPath: null // no cotroller just servlets   
 		    };
+
+			Sbi.sdk.services.setBaseUrl({
+		        protocol: 'http'     
+		        , host: url.host
+		        , port: url.port
+		        //, contextPath: 'SpagoBI'
+		        //, controllerPath: 'servlet/AdapterHTTP'  
+		    });
 	
 		    var params = { };
 	

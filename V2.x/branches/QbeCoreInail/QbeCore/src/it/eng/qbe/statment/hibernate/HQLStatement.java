@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.qbe.model;
+package it.eng.qbe.statment.hibernate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +36,7 @@ import org.hibernate.Session;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.hibernate.IHibernateDataSource;
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
+import it.eng.qbe.model.Filter;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
@@ -48,6 +49,7 @@ import it.eng.qbe.query.IAggregationFunction;
 import it.eng.qbe.query.Operand;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
+import it.eng.qbe.statment.BasicStatement;
 import it.eng.qbe.utility.StringUtils;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
@@ -1060,8 +1062,8 @@ public class HQLStatement extends BasicStatement {
 		DataMartEntity entity;
 		
 		
-		Assert.assertNotNull(query, "Input parameter 'query' cannot be null");
-		Assert.assertTrue(!query.isEmpty(), "Input query cannot be empty (i.e. with no selected fields)");
+		Assert.assertNotNull( getQuery(), "Input parameter 'query' cannot be null");
+		Assert.assertTrue(! getQuery().isEmpty(), "Input query cannot be empty (i.e. with no selected fields)");
 		
 		selectedEntities = new HashSet();
 		
@@ -1070,15 +1072,15 @@ public class HQLStatement extends BasicStatement {
 		entityAliasesMaps = new HashMap();
 		
 		// let's start with the query at hand
-		entityAliasesMaps.put(query.getId(), new HashMap());
+		entityAliasesMaps.put( getQuery().getId(), new HashMap());
 		
-		buildSelectClause(query, entityAliasesMaps);
-		buildWhereClause(query, entityAliasesMaps);
-		buildGroupByClause(query, entityAliasesMaps);
-		buildOrderByClause(query, entityAliasesMaps);
-		buildFromClause(query, entityAliasesMaps);
+		buildSelectClause( getQuery(), entityAliasesMaps);
+		buildWhereClause( getQuery(), entityAliasesMaps);
+		buildGroupByClause( getQuery(), entityAliasesMaps);
+		buildOrderByClause( getQuery(), entityAliasesMaps);
+		buildFromClause( getQuery(), entityAliasesMaps);
 		
-		Map entityAliases = (Map)entityAliasesMaps.get(query.getId());
+		Map entityAliases = (Map)entityAliasesMaps.get( getQuery().getId());
 		entityUniqueNamesIterator = entityAliases.keySet().iterator();
 		while(entityUniqueNamesIterator.hasNext()) {
 			entityUniqueName = (String)entityUniqueNamesIterator.next();
@@ -1144,27 +1146,28 @@ public class HQLStatement extends BasicStatement {
 		// each map is indexed by the query id
 		Map entityAliasesMaps = new HashMap();
 		
-		queryStr = compose(query, entityAliasesMaps);	
+		queryStr = compose(getQuery(), entityAliasesMaps);	
 		
 		
 		
-		if(parameters != null) {
+		if(getParameters() != null) {
 			try {
-				queryStr = StringUtils.replaceParameters(queryStr.trim(), "P", parameters);
+				queryStr = StringUtils.replaceParameters(queryStr.trim(), "P", getParameters());
 			} catch (IOException e) {
 				throw new SpagoBIRuntimeException("Impossible to set parameters in query", e);
 			}
 			
-		}				
-		this.queryString = queryStr;			
+		}	
+		
+		setQueryString(queryStr);	
 	}
 		
 	public String getQueryString() {		
-		if(this.queryString == null) {
+		if(super.getQueryString() == null) {
 			this.prepare();
 		}
 		
-		return this.queryString;
+		return super.getQueryString();
 	}
 	
 	public String getSqlQueryString() {	

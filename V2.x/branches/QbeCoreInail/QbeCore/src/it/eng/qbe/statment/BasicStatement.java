@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.qbe.model;
+package it.eng.qbe.statment;
 
 import java.util.Map;
 
@@ -33,18 +33,20 @@ import it.eng.qbe.query.Query;
  */
 public abstract class  BasicStatement implements IStatement{
 
-	/** The data mart model. */
+	
 	IDataSource dataSource;
 	
-	/** The query. */
+
 	Query query;
 	
-	/** The parameters. */
+	
 	Map parameters;
 	
-	/** The query string. */
+	
 	String queryString;
 	
+	
+
 	/** The max results. */
 	int maxResults;
 	
@@ -89,6 +91,7 @@ public abstract class  BasicStatement implements IStatement{
 		this.query = query;
 		this.queryString = null;
 	}
+	
 	
 	public Map getParameters() {
 		return parameters;
@@ -151,11 +154,12 @@ public abstract class  BasicStatement implements IStatement{
 	}
 	
 	public String getQueryString() {
-		if(queryString == null) {
-			queryString = getQueryString();
-		}
 		return queryString;
 	}	
+	
+	protected void setQueryString(String queryString) {
+		this.queryString = queryString;
+	}
 
 
 }

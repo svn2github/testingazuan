@@ -31,6 +31,8 @@ import it.eng.qbe.datasource.hibernate.BasicHibernateDataSource;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.qbe.query.Query;
+import it.eng.qbe.statment.IStatement;
+import it.eng.qbe.statment.hibernate.HQLStatement;
 
 
 public class DataMartModel implements IDataMartModel {

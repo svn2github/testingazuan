@@ -27,6 +27,7 @@ import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.qbe.query.Query;
+import it.eng.qbe.statment.IStatement;
 
 
 // TODO: Auto-generated Javadoc

@@ -23,10 +23,10 @@ package it.eng.qbe.datasource;
 import java.util.List;
 
 import it.eng.qbe.bo.DatamartProperties;
-import it.eng.qbe.model.IStatement;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.qbe.query.Query;
+import it.eng.qbe.statment.IStatement;
 
 /**
  * @author Andrea Gioia

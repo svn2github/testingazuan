@@ -203,13 +203,20 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 
 		String templateFileName=template.getFileName();
 
-		// remove previous extensions
-		int indexPoint=templateFileName.indexOf('.');
-		if(indexPoint!=-1){
-			templateFileName=templateFileName.substring(0, indexPoint);
+		// remove previous extensions only if a new Extension was found
+		String fileName="";
+		if(extension!=null){
+			int indexPoint=templateFileName.indexOf('.');
+			if(indexPoint!=-1){
+				templateFileName=templateFileName.substring(0, indexPoint);
+				fileName=templateFileName+extension;
+			}
+		}
+		else{
+			fileName=templateFileName;
 		}
 
-		IPath pathNewFile = pathFolder.append(templateFileName+extension); 
+		IPath pathNewFile = pathFolder.append(fileName); 
 		IFile newFile = project.getFile(pathNewFile);
 		DataHandler dh=template.getContent(); 
 		try {
@@ -273,25 +280,25 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			}			
 
 
-//			IWorkbench wb = PlatformUI.getWorkbench();
-//			IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
-//			IWorkbenchPage page = win.getActivePage();
-//			IEditorRegistry er = wb.getEditorRegistry();
-//			IEditorDescriptor editordesc =  er.getDefaultEditor(newFile.getName());
-//			if(editordesc!=null){
-//				try {
-//					page.openEditor(new FileEditorInput(newFile), editordesc.getId());
-//				} catch (PartInitException e) {
-//					SpagoBILogger.errorLog("Error while opening editor", e);
-//					MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
-//							"Error", "Error while opening editor");
-//				}
-//				SpagoBILogger.infoLog("File "+newFile.getName()+" created");	
-//			}
-//			else{
-//				SpagoBILogger.infoLog("No editor avalaible for the selected Bi Object type: "+type+ " and engine "+engineName);	
-//				MessageDialog.openWarning(getShell(), "No editor avalaible", "No editor avalaible for the selected Bi Object type: "+type+ " and engine "+engineName);
-//			}
+			//			IWorkbench wb = PlatformUI.getWorkbench();
+			//			IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
+			//			IWorkbenchPage page = win.getActivePage();
+			//			IEditorRegistry er = wb.getEditorRegistry();
+			//			IEditorDescriptor editordesc =  er.getDefaultEditor(newFile.getName());
+			//			if(editordesc!=null){
+			//				try {
+			//					page.openEditor(new FileEditorInput(newFile), editordesc.getId());
+			//				} catch (PartInitException e) {
+			//					SpagoBILogger.errorLog("Error while opening editor", e);
+			//					MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
+			//							"Error", "Error while opening editor");
+			//				}
+			//				SpagoBILogger.infoLog("File "+newFile.getName()+" created");	
+			//			}
+			//			else{
+			//				SpagoBILogger.infoLog("No editor avalaible for the selected Bi Object type: "+type+ " and engine "+engineName);	
+			//				MessageDialog.openWarning(getShell(), "No editor avalaible", "No editor avalaible for the selected Bi Object type: "+type+ " and engine "+engineName);
+			//			}
 		}
 		else // choose not to overwrite the file
 		{

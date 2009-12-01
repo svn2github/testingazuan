@@ -23,4 +23,6 @@ public class SpagoBIStudioConstants {
 	public final static String GEO_ENGINE_LABEL="GeoEngine";
 	public final static String DOCUMENT_COMPOSITION_ENGINE_LABEL="DocumentComposition";
 
+	
+	
 }

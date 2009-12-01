@@ -34,11 +34,6 @@ public class BiObjectUtilities {
 	 */
 
 
-	public final static String DASHBOARD_ENGINE_EXTENSION="sbidash";
-	public final static String CHART_ENGINE_EXTENSION="sbichart";
-	public final static String JASPER_REPORT_ENGINE_EXTENSION="jrxml";
-	public final static String BIRT_REPORT_ENGINE_EXTENSION="rptdesign";
-	public final static String DOCUMENT_COMPOSITION_ENGINE_EXTENSION="sbidoccomp";
 
 
 
@@ -48,23 +43,23 @@ public class BiObjectUtilities {
 		if(indexPoint==-1) return null;
 
 		String extension=fileName.substring(indexPoint+1);
-		if(extension.equalsIgnoreCase(DASHBOARD_ENGINE_EXTENSION)){
+		if(extension.equalsIgnoreCase(SpagoBIStudioConstants.DASHBOARD_ENGINE_EXTENSION)){
 			return SpagoBIConstants.DASH_TYPE_CODE;
 		}
-		else if(extension.equalsIgnoreCase(CHART_ENGINE_EXTENSION)){
+		else if(extension.equalsIgnoreCase(SpagoBIStudioConstants.CHART_ENGINE_EXTENSION)){
 			return SpagoBIConstants.DASH_TYPE_CODE;
 		}
-		else if(extension.equalsIgnoreCase(JASPER_REPORT_ENGINE_EXTENSION)){
+		else if(extension.equalsIgnoreCase(SpagoBIStudioConstants.JASPER_REPORT_ENGINE_EXTENSION)){
 			return SpagoBIConstants.REPORT_TYPE_CODE;
+		}
+		else if(extension.equalsIgnoreCase(SpagoBIStudioConstants.BIRT_REPORT_ENGINE_EXTENSION)){
+			return SpagoBIConstants.REPORT_TYPE_CODE;
+		}
+		else if(extension.equalsIgnoreCase(SpagoBIStudioConstants.DOCUMENT_COMPOSITION_ENGINE_EXTENSION)){
+			return SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE;
 		}
 		else if(extension.equalsIgnoreCase("xml")){
 			return SpagoBIConstants.REPORT_TYPE_CODE;
-		}
-		else if(extension.equalsIgnoreCase(BIRT_REPORT_ENGINE_EXTENSION)){
-			return SpagoBIConstants.REPORT_TYPE_CODE;
-		}
-		else if(extension.equalsIgnoreCase(DOCUMENT_COMPOSITION_ENGINE_EXTENSION)){
-			return SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE;
 		}		
 		else return null;
 
@@ -249,45 +244,37 @@ public class BiObjectUtilities {
 
 	
 	public static String getFileExtension(String type, String engine){
-		String extension=".xml";
+		String extension=null;
 		if(type.equalsIgnoreCase(SpagoBIConstants.DASH_TYPE_CODE) && engine.equalsIgnoreCase(SpagoBIStudioConstants.DASHBOARD_ENGINE_LABEL) ){
-			extension=".sbidash";
+			extension="."+SpagoBIStudioConstants.DASHBOARD_ENGINE_EXTENSION;
 		}
 		else if(type.equalsIgnoreCase(SpagoBIConstants.DASH_TYPE_CODE) && engine.equalsIgnoreCase(SpagoBIStudioConstants.CHART_ENGINE_LABEL)){
-			extension=".sbichart";
+			extension="."+SpagoBIStudioConstants.CHART_ENGINE_EXTENSION;
 		}
 		else if(type.equalsIgnoreCase(SpagoBIConstants.REPORT_TYPE_CODE) && engine.equalsIgnoreCase(SpagoBIStudioConstants.BIRT_REPORT_ENGINE_LABEL)){
-			extension=".rptdesign";
+			extension="."+SpagoBIStudioConstants.BIRT_REPORT_ENGINE_EXTENSION;
 		}
 		else if(type.equalsIgnoreCase(SpagoBIConstants.REPORT_TYPE_CODE) && engine.equalsIgnoreCase(SpagoBIStudioConstants.JASPER_REPORT_ENGINE_LABEL)){
-			extension=".jrxml";
+			extension="."+SpagoBIStudioConstants.JASPER_REPORT_ENGINE_EXTENSION;
 		}	
-		else if(type.equalsIgnoreCase(SpagoBIConstants.OLAP_TYPE_CODE) && engine.equalsIgnoreCase(SpagoBIStudioConstants.OLAP_ENGINE_LABEL)){
-			extension=".xml";
+		else if(type.equalsIgnoreCase(SpagoBIConstants.OLAP_TYPE_CODE)){
 		}
 		else if(type.equalsIgnoreCase("MAP") && engine.equalsIgnoreCase(SpagoBIStudioConstants.GEO_ENGINE_LABEL)){
-			extension=".xml";
 		}		
-		else if(type.equalsIgnoreCase("OFFICE_DOC") && engine.equalsIgnoreCase(SpagoBIStudioConstants.OFFICE_DOCUMENT_ENGINE_LABEL)){
-			extension=".xml";
+		else if(type.equalsIgnoreCase("OFFICE_DOC")){
 		}
 		else if(type.equalsIgnoreCase("ETL") && engine.equalsIgnoreCase(SpagoBIStudioConstants.ETL_ENGINE_LABEL)){
-			extension=".xml";
 		}		
-		else if(type.equalsIgnoreCase("Dossier") && engine.equalsIgnoreCase(SpagoBIStudioConstants.DOSSIER_ENGINE_LABEL)){
-			extension=".xml";
+		else if(type.equalsIgnoreCase("Dossier")){
 		}
-		else if(type.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE) && engine.equalsIgnoreCase(SpagoBIStudioConstants.DOCUMENT_COMPOSITION_ENGINE_LABEL)){
-			extension=".sbidoccomp";
+		else if(type.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE)){
+			extension="."+SpagoBIStudioConstants.DOCUMENT_COMPOSITION_ENGINE_EXTENSION;
 		}
-		else if(type.equalsIgnoreCase("DATA_MINING") && engine.equalsIgnoreCase(SpagoBIStudioConstants.DATA_MINING_ENGINE_LABEL)){
-			extension=".xml";
+		else if(type.equalsIgnoreCase("DATA_MINING")){
 		}
-		else if(type.equalsIgnoreCase("DATAMART") && engine.equalsIgnoreCase(SpagoBIStudioConstants.QBE_ENGINE_LABEL)){
-			extension=".xml";
+		else if(type.equalsIgnoreCase("DATAMART")){
 		}
-		else if(type.equalsIgnoreCase("QBE") && engine.equalsIgnoreCase(SpagoBIStudioConstants.QBE_ENGINE_LABEL)){
-			extension=".xml";
+		else if(type.equalsIgnoreCase("QBE")){
 		}		
 		return extension;
 

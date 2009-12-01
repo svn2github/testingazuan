@@ -144,6 +144,17 @@ public class DocumentCompositionEditor extends EditorPart {
 			FileEditorInput fei = (FileEditorInput) input;
 			setInput(input);
 			setSite(site);
+			IEditorPart currentEditor = DocCompUtilities.getEditorReference(DocCompUtilities.DOCUMENT_COMPOSITION_EDITOR_ID);
+			if(currentEditor != null && currentEditor instanceof DocumentCompositionEditor){
+				SpagoBILogger.warningLog("Editor is already opened!!!");
+				System.out.println("Editor is already opened!!!");
+				MessageDialog.openError(site.getShell(), "ERROR", "Operation denied. Another editor is opened.");
+				IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+				iworkbenchpage.closeEditor(this, false);
+				return;
+
+			}
+
 			IFile file = fei.getFile();
 			templateName=file.getName();
 			ModelBO bo=new ModelBO();
@@ -155,15 +166,6 @@ public class DocumentCompositionEditor extends EditorPart {
 				e.printStackTrace();
 				SpagoBILogger.errorLog(DocumentCompositionEditor.class.toString()+": Error in reading template", e);
 				throw(new PartInitException("Error in reading template"));
-			}
-			IEditorPart currentEditor = DocCompUtilities.getEditorReference(DocCompUtilities.DOCUMENT_COMPOSITION_EDITOR_ID);
-			if(currentEditor != null && currentEditor instanceof DocumentCompositionEditor){
-				SpagoBILogger.warningLog("Editor is already opened!!!");
-				System.out.println("Editor is already opened!!!");
-				MessageDialog.openError(site.getShell(), "ERROR", "Operation denied. Another editor is opened.");
-				IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-				iworkbenchpage.closeEditor(this, false);
-
 			}
 		}catch(Exception e){
 			SpagoBILogger.warningLog("Error occurred:"+e.getMessage());

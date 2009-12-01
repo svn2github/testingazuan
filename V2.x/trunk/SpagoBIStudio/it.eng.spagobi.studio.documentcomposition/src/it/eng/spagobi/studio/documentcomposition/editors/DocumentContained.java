@@ -39,7 +39,7 @@ public class DocumentContained {
 	public static final String IMG_OLAP="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
 	public static final String IMG_ETL="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
 	public static final String IMG_OFFICE_DOC="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
-	public static final String IMG_MAP="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
+	public static final String IMG_MAP="it/eng/spagobi/studio/documentcomposition/resources/images/iconMap.PNG";
 	public static final String IMG_DATAMART="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
 	public static final String IMG_DOSSIER="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
 	public static final String IMG_DATA_MINING="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";

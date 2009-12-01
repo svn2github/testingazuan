@@ -66,6 +66,34 @@ public class VideoSizeView extends ViewPart{
 			}
 		}
 
+		Label text1=new org.eclipse.swt.widgets.Label(client, SWT.NULL);
+		text1.setText("Video Width: ");
+
+		widthSpin = new Spinner (client, SWT.BORDER);
+		widthSpin.setMaximum(100000);
+		widthSpin.setMinimum(0);
+		widthSpin.setSelection(Integer.valueOf(width));
+		//styleSizeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+		widthSpin.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {
+				int newSize = widthSpin.getSelection();
+				Integer newSizeInt=null;
+				try{
+					newSizeInt=Integer.valueOf(newSize);
+				}
+				catch (Exception e) {
+					newSizeInt=new Integer(10);
+				}
+				if(modelBO.getModel()!=null && modelBO.getModel().getDocumentsConfiguration()!=null){
+					modelBO.getModel().getDocumentsConfiguration().setVideoWidth(newSizeInt.toString());
+				}
+				IEditorPart editorPart=DocCompUtilities.getEditorReference(DocCompUtilities.DOCUMENT_COMPOSITION_EDITOR_ID);
+				if(editorPart!=null) ((DocumentCompositionEditor)editorPart).setIsDirty(true);				
+			}
+		});
+
+		
 		Label text2=new Label(client, SWT.NULL);
 		text2.setText("Video Height: ");
 
@@ -91,33 +119,6 @@ public class VideoSizeView extends ViewPart{
 				IEditorPart editorPart=DocCompUtilities.getEditorReference(DocCompUtilities.DOCUMENT_COMPOSITION_EDITOR_ID);
 				if(editorPart!=null) ((DocumentCompositionEditor)editorPart).setIsDirty(true);
 				
-			}
-		});
-
-		Label text1=new org.eclipse.swt.widgets.Label(client, SWT.NULL);
-		text1.setText("Video Width: ");
-
-		widthSpin = new Spinner (client, SWT.BORDER);
-		widthSpin.setMaximum(100000);
-		widthSpin.setMinimum(0);
-		widthSpin.setSelection(Integer.valueOf(width));
-		//styleSizeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-		widthSpin.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent event) {
-				int newSize = widthSpin.getSelection();
-				Integer newSizeInt=null;
-				try{
-					newSizeInt=Integer.valueOf(newSize);
-				}
-				catch (Exception e) {
-					newSizeInt=new Integer(10);
-				}
-				if(modelBO.getModel()!=null && modelBO.getModel().getDocumentsConfiguration()!=null){
-					modelBO.getModel().getDocumentsConfiguration().setVideoWidth(newSizeInt.toString());
-				}
-				IEditorPart editorPart=DocCompUtilities.getEditorReference(DocCompUtilities.DOCUMENT_COMPOSITION_EDITOR_ID);
-				if(editorPart!=null) ((DocumentCompositionEditor)editorPart).setIsDirty(true);				
 			}
 		});
 

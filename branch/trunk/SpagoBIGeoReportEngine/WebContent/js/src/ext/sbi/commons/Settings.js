@@ -33,6 +33,25 @@ Sbi.settings.georeport = {
 			   }
 			]
 			
+			
+			/*
+			var options = {
+	            projection: new OpenLayers.Projection("EPSG:900913"),
+	            displayProjection: new OpenLayers.Projection("EPSG:4326"),
+	            units: "m",
+	            maxResolution: 156543.0339,
+	            maxExtent: new OpenLayers.Bounds(-20037508, -20037508,
+	                                             20037508, 20037508.34)
+			        };
+		        options.controls = [
+		            new OpenLayers.Control.Navigation(),
+		            new OpenLayers.Control.PanZoomBar()            
+		        ]
+			 */
+			, baseMapOptions: {
+			
+			}
+			
 			// controls
 			, showPositon: true
 			, showOverview: true

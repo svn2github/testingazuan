@@ -34,7 +34,7 @@ public class GeoReportEngine {
 	private static EnginConf engineConfig;
 	
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(GeoReportEngine.class);
+    private static transient Logger logger = Logger.getLogger(GeoReportEngine.class);
 	
     // init engine
     static {

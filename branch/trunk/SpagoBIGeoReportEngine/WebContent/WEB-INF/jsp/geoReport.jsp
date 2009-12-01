@@ -65,10 +65,14 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	
 		<!-- Include template here  -->
 		<!--   %@include file="tests/capoluoghiPropRemoteTemplate.jsp" % --> 
-		<%@include file="tests/usastateChorLocalTemplate.jsp" %>
+		<!--  %@include file="tests/usastateChorLocalTemplate.jsp" % -->
+		
 		
 		
 		<script language="javascript" type="text/javascript">
+
+			Sbi.template = <%= engineInstance.getGuiSettings().toString() %>;
+		
 			execDoc = function(docLab, role, params, dispToolbar, dispSlide,frameId, height) {
 
 				var h = height || '100%';

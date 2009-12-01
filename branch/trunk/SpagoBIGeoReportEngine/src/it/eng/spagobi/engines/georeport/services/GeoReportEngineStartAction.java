@@ -46,7 +46,7 @@ public class GeoReportEngineStartAction extends AbstractEngineStartServlet {
 	private static final String REQUEST_DISPATCHER_URL = "/WEB-INF/jsp/geoReport.jsp";
 	
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(GeoReportEngineStartAction.class);
+    private static transient Logger logger = Logger.getLogger(GeoReportEngineStartAction.class);
     
 	
 	public void doService( EngineStartServletIOManager servletIOManager ) throws SpagoBIEngineException {

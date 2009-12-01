@@ -19,7 +19,7 @@ public class SbiFeatureFactory extends MfGeoFactory {
 	}
 	
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(SbiFeatureFactory.class);
+    private static transient Logger logger = Logger.getLogger(SbiFeatureFactory.class);
     
 	
 	private SbiFeatureFactory() {}

@@ -53,10 +53,10 @@ public class FeaturesProviderDAOFileImpl implements IFeaturesProviderDAO {
 	public static final String GEOID_PNAME = "geoIdPName";
 	public static final String GEOID_PVALUE = "geoIdPValue";
 
-	public static final MfGeoJSONReader JSON_READER = new MfGeoJSONReader(SbiFeatureFactory.getInstance());
+	private static final MfGeoJSONReader JSON_READER = new MfGeoJSONReader(SbiFeatureFactory.getInstance());
 	
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(FeaturesProviderDAOFileImpl.class);
+    private static transient Logger logger = Logger.getLogger(FeaturesProviderDAOFileImpl.class);
     
 	
 	public MfFeatureCollection getFeatures(Object fetureProviderEndPoint, Map parameters) {

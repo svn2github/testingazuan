@@ -44,7 +44,7 @@ public class FeaturesProviderDAOWFSImpl implements IFeaturesProviderDAO {
 	public static final String GEOID_PVALUE = "geoIdPValue";
 
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(FeaturesProviderDAOWFSImpl.class);
+    private static transient Logger logger = Logger.getLogger(FeaturesProviderDAOWFSImpl.class);
     
     
 	public MfFeatureCollection getFeatures(Object fetureProviderEndPoint, Map parameters) {

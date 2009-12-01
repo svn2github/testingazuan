@@ -300,8 +300,10 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 								MetadataParameter param = (MetadataParameter)params.elementAt(j);
 								String label = param.getLabel();
 								destinationInputParam.elementAt(destinComboToRedraw).add(label);
+								destinationInputParam.elementAt(destinComboToRedraw).setData(label, param.getUrlName());
 								
-								if(paramInSel != null && paramInSel.equals(label)){
+								String urlName= param.getUrlName();
+								if(paramInSel != null && paramInSel.equals(urlName)){
 									int pos = destinationInputParam.elementAt(destinComboToRedraw).getItemCount();
 									destinationInputParam.elementAt(destinComboToRedraw).select(pos-1);
 								}
@@ -312,6 +314,30 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 			}
 		}
 		
+	}
+	
+	private void fillMasterParamsData(String masterDoc){
+		if(metaDoc != null){
+			Vector docs = metaDoc.getMetadataDocuments();
+			if(docs != null){
+				for(int i=0; i<docs.size(); i++){
+					MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
+					String docName = doc.getName();
+					String docLabel= doc.getLabel();
+					if(docLabel != null && !docLabel.equals("") && (docLabel.equals(masterDoc))){
+						Vector params = doc.getMetadataParameters();
+						if(params != null){
+							for (int j =0; j<params.size(); j++){
+								MetadataParameter param = (MetadataParameter)params.elementAt(j);
+								String label = param.getLabel();
+								masterParamName.setData(label, param.getUrlName());
+								masterParamName.setData(param.getUrlName(), label);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	private HashMap<String, String> fillDocInfoUtil(){
 		metaDoc = Activator.getDefault().getMetadataDocumentComposition();
@@ -375,7 +401,15 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    				masterDocName.setText(docInfoUtil.get(masterDoc));
 				    				masterDocName.setEditable(false);
 				    				
-				    				masterParamName.setText(masterParam);
+				    				fillMasterParamsData(masterDoc);
+				    				
+				    				//masterParamName.setText(masterParam);
+				    				String labelMaster = (String)masterParamName.getData(masterParam);
+				    				if(labelMaster == null){
+				    					//edited by user
+				    					labelMaster=masterParam;
+				    				}
+				    				masterParamName.setText(labelMaster);
 				    				masterParamName.setEditable(false);
 				    				
 				    				masterDefaultValueOutputParam.setText(masterParamDefault);
@@ -474,7 +508,10 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 
 				    							}else{						    					
 					    							destinationInfo = destinationInfos.get(element);
-					    							destinationInfo.setParamDestName(destinationInputParam.elementAt(element).getText());
+					    							//destinationInfo.setParamDestName(destinationInputParam.elementAt(element).getText());
+					    							String label = destinationInputParam.elementAt(element).getText();
+							    					String urlName= (String)destinationInputParam.elementAt(element).getData(label);
+							    					destinationInfo.setParamDestName(urlName);
 					    							destinationInfo.setParamDestId(destin.getIdParam());
 				    							}
 				    							
@@ -530,7 +567,10 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    					destinationInfo = new DestinationInfo();
 
 				    					destinationInfo.setDocDestName(destinationDocNameCombo.elementAt(destinCounter).getText());				
-				    					destinationInfo.setParamDestName(destinationInputParam.elementAt(destinCounter).getText());				    					
+				    					//destinationInfo.setParamDestName(destinationInputParam.elementAt(destinCounter).getText());
+				    					String label = destinationInputParam.elementAt(destinCounter).getText();
+				    					String urlName= (String)destinationInputParam.elementAt(destinCounter).getData(label);
+				    					destinationInfo.setParamDestName(urlName);
 				    					destinationInfo.setParamDefaultValue(destinationInputParamDefaultValue.elementAt(destinCounter));
 
 				    					destinationInfos.add(destinationInfo);
@@ -670,7 +710,10 @@ final Shell confirm = new Shell(client.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLI
 	          confirm.close();
 				if(result[0]){
 					destinationInfo = destinationInfos.get(elem);
-					destinationInfo.setParamDestName(destinationInputParam.elementAt(elem).getText());
+					//destinationInfo.setParamDestName(destinationInputParam.elementAt(elem).getText());
+					String label = destinationInputParam.elementAt(elem).getText();
+					String urlName= (String)destinationInputParam.elementAt(elem).getData(label);
+					destinationInfo.setParamDestName(urlName);
 					destinationInfo.setParamDestId(refreshID);
 				}
 	        }
@@ -768,4 +811,5 @@ final Shell confirm = new Shell(client.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLI
 	public void setDeletedRefresh(HashMap<String, String> deletedRefresh) {
 		this.deletedRefresh = deletedRefresh;
 	}
+
 }

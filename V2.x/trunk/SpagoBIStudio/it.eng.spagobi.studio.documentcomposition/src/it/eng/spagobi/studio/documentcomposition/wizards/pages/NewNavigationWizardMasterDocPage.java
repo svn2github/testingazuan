@@ -155,7 +155,9 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 		masterDocOutputParam.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {	
 				//verifico che il parametro di out non sia già presente
-				boolean exists =bo.outputParameterExists(Activator.getDefault().getDocumentComposition(), masterLabel, masterDocOutputParam.getText());
+				String label = masterDocOutputParam.getText();
+				String urlName= (String)masterDocOutputParam.getData(label);
+				boolean exists =bo.outputParameterExists(Activator.getDefault().getDocumentComposition(), masterLabel, urlName);
 				
 				if(exists){
 	        		//non è possibile cancellare destination
@@ -170,7 +172,7 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 					
 				}else{
 					canFlip= true;
-					paramOut = masterDocOutputParam.getText();
+					paramOut = urlName;
 					setPageComplete(true);					
 					
 				}
@@ -222,6 +224,7 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 								MetadataParameter param = (MetadataParameter)params.elementAt(j);
 								String label = param.getLabel();
 								masterDocOutputParam.add(label);
+								masterDocOutputParam.setData(label, param.getUrlName());
 							}
 						}
 					}

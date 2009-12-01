@@ -83,7 +83,10 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 					
 					destinationInfo.setDocDestName(modifyNavigationWizardPage.getDestinationDocNameCombo().elementAt(destinCounter).getText());
 						
-					destinationInfo.setParamDestName(modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter).getText());
+					//destinationInfo.setParamDestName(modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter).getText());
+					String label = modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter).getText();
+					String urlName= (String)modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter).getData(label);
+					destinationInfo.setParamDestName(urlName);
 					
 					destinationInfo.setParamDefaultValue(modifyNavigationWizardPage.getDestinationInputParamDefaultValue().elementAt(destinCounter));
 					modifyNavigationWizardPage.getDestinationInfos().add(destinationInfo);	
@@ -125,13 +128,11 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		
 	}
 	@Override
-	public boolean performFinish() {
-	
+	public boolean performFinish() {	
 		
 		redrawTable();
 		//recupera da plugin oggetto DocumentComposition
-		docComp = Activator.getDefault().getDocumentComposition();
-		
+		docComp = Activator.getDefault().getDocumentComposition();		
 
 		String masterName= modifyNavigationWizardPage.getMasterDocName().getText();
 	    //in realtà prende il doc master corrispondente a quello selezionato dall'utente
@@ -148,7 +149,9 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 
 		    	if(docLabel.equals(modifyNavigationWizardPage.getDocInfoUtil().get(masterName))){
 	
-					String masterPar = modifyNavigationWizardPage.getMasterParamName().getText();
+					//String masterPar = modifyNavigationWizardPage.getMasterParamName().getText();
+		    		String label = modifyNavigationWizardPage.getMasterParamName().getText();
+		    		String masterPar = (String)modifyNavigationWizardPage.getMasterParamName().getData(label);
 		    		//modifica le destinazioni
 		    		Parameters params = doc.getParameters();//tag già presente nel modello riempito precedentemente
 
@@ -297,47 +300,7 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		//cicla su destinazioni
 		HashMap<String, String> docInfoUtil= modifyNavigationWizardPage.getDocInfoUtil();
 		Vector<DestinationInfo> destInfos = modifyNavigationWizardPage.getDestinationInfos();
-		/*
-		for(int k =0; k<destInfos.size(); k++){
-			DestinationInfo destInfo = destInfos.elementAt(k);
-			String destinationDoc = destInfo.getDocDestName();
-			//recupera da hashmap di utilità la label corrispondente
-			String destLabel = docInfoUtil.get(destinationDoc);
-			
-			//aggiorna tutti parametri con la stessa label (sarà 1 solo!!! se non ci sono errori)
-			if(destLabel != null && destLabel.equals(doc.getSbiObjLabel())){
-				String paramName = destInfo.getParamDestName();	
-				String id =destInfo.getParamDestId();
-				
-				//se esiste parametro IN con stessa label
-				Parameter paramsSameLabel = paramBO.getDocInputParameterByLabel(parameters, destInfo.getParamDestName());
-				if(paramsSameLabel != null){
-					//lo modifico nel valore di default 
-					try{
-						paramsSameLabel.setDefaultVal(destInfo.getParamDefaultValue().getText());
-						//refresh corrispondente viene aggiornato viene fatto nel fillout 
-						
-					}catch(SWTException e){
-						SpagoBILogger.infoLog(e.getMessage());
-					}
-					//e cancello quello con id corrente
-					Parameter paramToDelete = paramBO.getParameterById(id, parameters);
-					parameters.remove(paramToDelete);
-					//refresh viene aggiornato-->cancellato
-					refreshBO.deleteRefreshedDocLink(docComp, id, destLabel, paramsSameLabel.getSbiParLabel());
-				}else{
-					//modificato valore di default
-					Parameter param = paramBO.getParameterById(id, parameters);
-					if(param != null){
-						param.setDefaultVal(destInfo.getParamDefaultValue().getText());													
-					}
-					//refresh viene aggiornato
-					refreshBO.upadateRefreshedDocLink(docComp, id,param.getSbiParLabel(),destLabel);
-				}
 
-
-			}			
-		}*/
 		//cancella destination parameter
 		HashMap<String, String> deleted = modifyNavigationWizardPage.getDeletedParams();
 		Iterator ids = deleted.keySet().iterator();

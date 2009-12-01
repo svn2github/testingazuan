@@ -81,8 +81,13 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 			int destinCounter= newNavigationWizardDestinDocPage.getDestinCounter();
 			int sel = newNavigationWizardDestinDocPage.getDestinationDocNameCombo().elementAt(destinCounter).getSelectionIndex();
 			destinationInfo.setDocDestName(newNavigationWizardDestinDocPage.getDestinationDocNameCombo().elementAt(destinCounter).getItem(sel));
-			int selIn = newNavigationWizardDestinDocPage.getDestinationInputParam().elementAt(destinCounter).getSelectionIndex();		
-			destinationInfo.setParamDestName(newNavigationWizardDestinDocPage.getDestinationInputParam().elementAt(destinCounter).getItem(selIn));
+			
+			
+			//destinationInfo.setParamDestName(newNavigationWizardDestinDocPage.getDestinationInputParam().elementAt(destinCounter).getItem(selIn));
+			String label = newNavigationWizardDestinDocPage.getDestinationInputParam().elementAt(destinCounter).getText();
+			String urlName= (String)newNavigationWizardDestinDocPage.getDestinationInputParam().elementAt(destinCounter).getData(label);
+			destinationInfo.setParamDestName(urlName);
+			
 			destinationInfo.setParamDefaultValue(newNavigationWizardDestinDocPage.getDestinationInputParamDefaultValue().elementAt(destinCounter));
 			newNavigationWizardDestinDocPage.getDestinationInfos().add(destinationInfo);	
 		}
@@ -197,8 +202,15 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	
 	private void fillNavigationOutParam(Parameter param , Vector documents){
 		String master =newNavigationWizardMasterDocPage.getMasterDocName().getText();
-		String out =newNavigationWizardMasterDocPage.getMasterDocOutputParam().getText();
-		param.setSbiParLabel(out);
+		//String out =newNavigationWizardMasterDocPage.getMasterDocOutputParam().getText();
+    	String masterParamLabel= newNavigationWizardMasterDocPage.getMasterDocOutputParam().getText();
+    	String masterParamUrl= (String)newNavigationWizardMasterDocPage.getMasterDocOutputParam().getData(masterParamLabel);
+    	if(masterParamUrl == null){//edited by user
+    		masterParamUrl=masterParamLabel;
+    		
+    	}
+		param.setSbiParLabel(masterParamUrl);
+		
 		param.setNavigationName(newNavigationWizardPage.getNavigationNameText().getText());
 		param.setDefaultVal(newNavigationWizardMasterDocPage.getMasterDefaultValueOutputParam().getText());
 		HashMap<String, String> docInfoUtil= newNavigationWizardDestinDocPage.getDocInfoUtil();
@@ -215,9 +227,10 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		    	if(doc.getParameters().getParameter() == null){
 		    		doc.getParameters().setParameter(new Vector());
 		    	}
+
+		    	Parameter outputParam = bo.getDocOutputParameter(parameters, masterParamUrl);
 		    	
-		    	Parameter outputParam = bo.getDocOutputParameter(parameters, masterLabel);
-		    	if(outputParam != null && outputParam.getSbiParLabel().equals(out)){
+		    	if(outputParam != null && outputParam.getSbiParLabel().equals(masterParamUrl)){
 		    		param = outputParam;
 		    		param.setDefaultVal(newNavigationWizardMasterDocPage.getMasterDefaultValueOutputParam().getText());
 		    		return;

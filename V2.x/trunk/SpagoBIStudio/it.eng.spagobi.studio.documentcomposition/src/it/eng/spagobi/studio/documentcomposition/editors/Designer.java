@@ -292,52 +292,54 @@ public class Designer {
 				case SWT.MouseMove:
 					/**  IF in resizing state mouse moving on shell causes resizing**/
 					DocContainer selectedDoc1=currentSelection.intValue()!=-1 ? containers.get(currentSelection) : null ;
-					Composite selected1=selectedDoc1.getDocumentContained().getGroup();
-					if(getState().equals(Designer.RESIZE)){
-						if(selected1!=null){
-							Rectangle rect=selected1.getBounds();
-							int x=event.x;
-							int y=event.y;
-							int nuova_larghezza=rect.width;
-							int nuova_altezza=rect.height;
-							if(x>rect.x+rect.width){
-								nuova_larghezza=rect.width+(x-rect.x-rect.width);
-								//selected1.setSize(nuova_larghezza, rect.height);
-							}
-							if(y>rect.y+rect.height){
-								nuova_altezza=rect.height+(y-rect.y-rect.height);
-							}
-							// check if intersects other components
-							boolean doesIntersect=DocContainer.doesIntersect(selectedDoc1.getIdContainer(), selectedDoc1.getDesigner(),selectedDoc1.getDocumentContained().getGroup().getLocation().x, selectedDoc1.getDocumentContained().getGroup().getLocation().y, nuova_larghezza,nuova_altezza, true);
-							// check if exceeds bounds
-							boolean doesExceed=DocContainer.doesExceed(selectedDoc1.getIdContainer(), selectedDoc1.getDesigner(),selectedDoc1.getDocumentContained().getGroup().getLocation().x, selectedDoc1.getDocumentContained().getGroup().getLocation().y, nuova_larghezza,nuova_altezza, true);							
-							if(doesIntersect==false && doesExceed==false){
-								selected1.setSize(nuova_larghezza, nuova_altezza);
-								// Update model if document is present
-								if(selectedDoc1.getDocumentContained().getMetadataDocument()!=null){
-									(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle(false));
+					if(selectedDoc1 != null){
+						Composite selected1=selectedDoc1.getDocumentContained().getGroup();
+						if(getState().equals(Designer.RESIZE)){
+							if(selected1!=null){
+								Rectangle rect=selected1.getBounds();
+								int x=event.x;
+								int y=event.y;
+								int nuova_larghezza=rect.width;
+								int nuova_altezza=rect.height;
+								if(x>rect.x+rect.width){
+									nuova_larghezza=rect.width+(x-rect.x-rect.width);
+									//selected1.setSize(nuova_larghezza, rect.height);
 								}
-								editor.setIsDirty(true);								
-							}
-							//shell.redraw();
-						}
-					}
-					else if(getState().equals(Designer.DRAG)){
-						if(selectedDoc1.getIdContainer().equals(selectedDoc1.getDesigner().getCurrentSelection())){
-							if (offset[0] != null) {
-								Point pt = offset[0];							
-								int newX=event.x - pt.x;
-								int newY=event.y - pt.y;
-								boolean doesIntersect=DocContainer.doesIntersect(selectedDoc1.getIdContainer(), selectedDoc1.getDesigner(),newX, newY, selectedDoc1.getDocumentContained().getGroup().getBounds().width,selectedDoc1.getDocumentContained().getGroup().getBounds().height,true);
-								boolean doesExceed=DocContainer.doesExceed(selectedDoc1.getIdContainer(), selectedDoc1.getDesigner(),newX, newY, selectedDoc1.getDocumentContained().getGroup().getBounds().width,selectedDoc1.getDocumentContained().getGroup().getBounds().height,true);
-
+								if(y>rect.y+rect.height){
+									nuova_altezza=rect.height+(y-rect.y-rect.height);
+								}
+								// check if intersects other components
+								boolean doesIntersect=DocContainer.doesIntersect(selectedDoc1.getIdContainer(), selectedDoc1.getDesigner(),selectedDoc1.getDocumentContained().getGroup().getLocation().x, selectedDoc1.getDocumentContained().getGroup().getLocation().y, nuova_larghezza,nuova_altezza, true);
+								// check if exceeds bounds
+								boolean doesExceed=DocContainer.doesExceed(selectedDoc1.getIdContainer(), selectedDoc1.getDesigner(),selectedDoc1.getDocumentContained().getGroup().getLocation().x, selectedDoc1.getDocumentContained().getGroup().getLocation().y, nuova_larghezza,nuova_altezza, true);							
 								if(doesIntersect==false && doesExceed==false){
-									selectedDoc1.getDocumentContained().getGroup().setLocation(newX, newY);
+									selected1.setSize(nuova_larghezza, nuova_altezza);
 									// Update model if document is present
 									if(selectedDoc1.getDocumentContained().getMetadataDocument()!=null){
 										(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle(false));
 									}
 									editor.setIsDirty(true);								
+								}
+								//shell.redraw();
+							}
+						}
+						else if(getState().equals(Designer.DRAG)){
+							if(selectedDoc1.getIdContainer().equals(selectedDoc1.getDesigner().getCurrentSelection())){
+								if (offset[0] != null) {
+									Point pt = offset[0];							
+									int newX=event.x - pt.x;
+									int newY=event.y - pt.y;
+									boolean doesIntersect=DocContainer.doesIntersect(selectedDoc1.getIdContainer(), selectedDoc1.getDesigner(),newX, newY, selectedDoc1.getDocumentContained().getGroup().getBounds().width,selectedDoc1.getDocumentContained().getGroup().getBounds().height,true);
+									boolean doesExceed=DocContainer.doesExceed(selectedDoc1.getIdContainer(), selectedDoc1.getDesigner(),newX, newY, selectedDoc1.getDocumentContained().getGroup().getBounds().width,selectedDoc1.getDocumentContained().getGroup().getBounds().height,true);
+	
+									if(doesIntersect==false && doesExceed==false){
+										selectedDoc1.getDocumentContained().getGroup().setLocation(newX, newY);
+										// Update model if document is present
+										if(selectedDoc1.getDocumentContained().getMetadataDocument()!=null){
+											(new ModelBO()).updateModelModifyDocument(selectedDoc1.getDocumentContained().getMetadataDocument(), selectedDoc1.calculateTemplateStyle(false));
+										}
+										editor.setIsDirty(true);								
+									}
 								}
 							}
 						}
@@ -470,7 +472,9 @@ public class Designer {
 
 	public void initializeDesigner(DocumentComposition documentComposition){
 		SpagoBILogger.infoLog(Designer.class.toString()+": Initialize designer function");
-		if(documentComposition.getDocumentsConfiguration()==null || documentComposition.getDocumentsConfiguration().getDocuments()==null || documentComposition.getDocumentsConfiguration().getDocuments().size()==0){
+		if(documentComposition.getDocumentsConfiguration()==null 
+				|| (documentComposition.getDocumentsConfiguration()!= null && documentComposition.getDocumentsConfiguration().getDocuments()==null) 
+				|| (documentComposition.getDocumentsConfiguration()!= null && documentComposition.getDocumentsConfiguration().getDocuments()!=null && documentComposition.getDocumentsConfiguration().getDocuments().size()==0)){
 			return;
 		}
 		Vector<Document> documentsToIterate=new Vector<Document>(documentComposition.getDocumentsConfiguration().getDocuments());

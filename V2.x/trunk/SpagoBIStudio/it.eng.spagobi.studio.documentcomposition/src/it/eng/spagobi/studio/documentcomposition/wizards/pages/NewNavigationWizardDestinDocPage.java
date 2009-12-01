@@ -174,7 +174,10 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				destinationInfo.setDocDestName(destinationDocNameCombo.elementAt(destinCounter).getItem(sel));
 				
 				int selIn = destinationInputParam.elementAt(destinCounter).getSelectionIndex();		
-				destinationInfo.setParamDestName(destinationInputParam.elementAt(destinCounter).getItem(selIn));
+				//destinationInfo.setParamDestName(destinationInputParam.elementAt(destinCounter).getItem(selIn));
+				String label = destinationInputParam.elementAt(destinCounter).getText();
+				String urlName= (String)destinationInputParam.elementAt(destinCounter).getData(label);
+				destinationInfo.setParamDestName(urlName);
 				
 				destinationInfo.setParamDefaultValue(destinationInputParamDefaultValue.elementAt(destinCounter));
 				destinationInfos.add(destinationInfo);	
@@ -410,6 +413,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 								MetadataParameter param = (MetadataParameter)params.elementAt(j);
 								String label = param.getLabel();
 								destinationInputParam.elementAt(destinComboToRedraw).add(label);
+								destinationInputParam.elementAt(destinComboToRedraw).setData(label, param.getUrlName());
 							}
 						}
 					}

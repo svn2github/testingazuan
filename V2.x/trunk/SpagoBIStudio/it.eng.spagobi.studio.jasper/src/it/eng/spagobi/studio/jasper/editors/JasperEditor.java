@@ -55,13 +55,15 @@ public final class JasperEditor implements IEditorLauncher {
 
 				Process proc  = rt.exec(command, null, iReportDirectory);		
 				System.out.println(proc.toString());
-				int returnValue=proc.waitFor();
-				SpagoBILogger.infoLog("Return value is "+returnValue);
-				if(returnValue!=0){
-					SpagoBILogger.infoLog("Error during iReport Execution");
-					MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
-							"Error", "Generic error after closing iReport: code "+Integer.valueOf(returnValue).toString());			
-				}
+				//int returnValue=proc.waitFor();
+//				int returnValue=0;
+//				
+//				SpagoBILogger.infoLog("Return value is "+returnValue);
+//				if(returnValue!=0){
+//					SpagoBILogger.infoLog("Error during iReport Execution");
+//					MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+//							"Error", "Generic error after closing iReport: code "+Integer.valueOf(returnValue).toString());			
+//				}
 				IFile fileToEditIFile = ResourcesPlugin.getWorkspace().getRoot().getFile(fileToEditIPath);
 				IFile fileToEditDirectory = ResourcesPlugin.getWorkspace().getRoot().getFile(fileToEditDirectoryIPath);
 

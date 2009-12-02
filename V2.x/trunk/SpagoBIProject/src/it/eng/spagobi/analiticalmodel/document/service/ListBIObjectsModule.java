@@ -424,7 +424,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MOVE_DOWN_STATE)) {
 	    // if
 	    // (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)){
-	    moduleConfigStr += "	<MOVEDOWN_CAPTION  confirm=\"TRUE\" image=\"/img/ArrowDown1.gif\" label=\"SBISet.objects.captionMoveDown\">"
+	    moduleConfigStr += "	<MOVEDOWN_CAPTION  confirm=\"TRUE\" image=\"/img/ArrowDown1.gif\" label='SBISet.objects.captionMoveDown'>"
 		    + "		<PARAMETER name=\""
 		    + ObjectsTreeConstants.PAGE
 		    + "\" scope=\"\" type=\"ABSOLUTE\" value=\"UpdateBIObjectStatePage\"/> "
@@ -444,7 +444,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	}
 	if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MOVE_UP_STATE)) {
 
-	    moduleConfigStr += "	<MOVEUP_CAPTION  confirm=\"TRUE\" image=\"/img/ArrowUp1.gif\" label=\"SBISet.objects.captionMoveUp\">"
+	    moduleConfigStr += "	<MOVEUP_CAPTION  confirm=\"TRUE\" image=\"/img/ArrowUp1.gif\" label='SBISet.objects.captionMoveUp'>"
 		    + "		<PARAMETER name=\""
 		    + ObjectsTreeConstants.PAGE
 		    + "\" scope=\"\" type=\"ABSOLUTE\" value=\"UpdateBIObjectStatePage\"/> "

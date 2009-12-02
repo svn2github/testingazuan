@@ -1,9 +1,22 @@
+/* Modifies for add menagement of notes linked to user */
 ALTER TABLE SBI_OBJECT_NOTES ADD  OWNER VARCHAR2 (50);
 ALTER TABLE SBI_OBJECT_NOTES ADD  ISPUBLIC SMALLINT;
 ALTER TABLE SBI_OBJECT_NOTES ADD  (CREATION_DATE TIMESTAMP(6) DEFAULT SYSDATE NOT NULL );
 ALTER TABLE SBI_OBJECT_NOTES ADD  (LAST_CHANGE_DATE TIMESTAMP(6) DEFAULT SYSDATE NOT NULL );
 ALTER TABLE SBI_SUBOBJECTS MODIFY DESCRIPTION VARCHAR(1000) DEFAULT NULL;
 ALTER TABLE SBI_DATA_SET ADD (DS_METADATA VARCHAR(2000) DEFAULT NULL);
+/* force a valid value for date fields in existing records: */
+UPDATE SBI_OBJECT_NOTES SET LAST_CHANGE_DATE = SYSDATE,CREATION_DATE =SYSDATE;
+
+/* force a valid value for owner field in existing records: 
+***************************** ATTENTION **********************************
+* The OWNER value depends from your context... 
+we suggest 'biadmin' because is the classic admin user in SpaogoBI demo: 
+you should change this value with a valid user in your platfrom, in this way 
+he may change or delete the EXISTING notes!!*/
+UPDATE SBI_OBJECT_NOTES SET OWNER = 'biadmin';
+/*************************************************************************/
+COMMIT;
 
 /* Modifies for add possibility to update subobjects. It's necessary delete all subobjects where 
 name is null because we add not null constraint to name column. */

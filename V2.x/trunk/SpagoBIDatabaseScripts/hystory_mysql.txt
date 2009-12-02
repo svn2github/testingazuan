@@ -150,6 +150,20 @@ ALTER TABLE SBI_OBJECT_NOTES ADD COLUMN OWNER VARCHAR(50);
 ALTER TABLE SBI_OBJECT_NOTES ADD COLUMN ISPUBLIC BOOLEAN;
 ALTER TABLE SBI_OBJECT_NOTES ADD COLUMN CREATION_DATE TIMESTAMP NOT NULL;
 ALTER TABLE SBI_OBJECT_NOTES ADD COLUMN LAST_CHANGE_DATE TIMESTAMP NOT NULL; 
+
+/* force a valid value for date fields in existing records: */
+UPDATE SBI_OBJECT_NOTES SET LAST_CHANGE_DATE = NOW(),CREATION_DATE = NOW();
+
+/* force a valid value for owner field in existing records: 
+***************************** ATTENTION **********************************
+* The OWNER value depends from your context... 
+we suggest 'biadmin' because is the classic admin user in SpaogoBI demo: 
+you should change this value with a valid user in your platfrom, in this way 
+he may change or delete the EXISTING notes!!*/
+UPDATE SBI_OBJECT_NOTES SET OWNER = 'biadmin';
+/*************************************************************************/
+COMMIT;
+
 -19/11/2009
 DELETE FROM SBI_REMEMBER_ME WHERE SUBOBJ_ID IN (SELECT SUBOBJ_ID FROM SBI_SUBOBJECTS WHERE NAME IS NULL OR NAME ='');
 DELETE FROM SBI_AUDIT WHERE SUBOBJ_ID IN (SELECT SUBOBJ_ID FROM SBI_SUBOBJECTS WHERE NAME IS NULL OR NAME ='');

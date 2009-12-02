@@ -560,8 +560,8 @@ public class ListTag extends TagSupport
 						String labelCode = (String)captionSB.getAttribute("label");
 						String label = msgBuilder.getMessage(labelCode, _bundle, httpRequest);					 
 						_htmlStream.append(" <td width='40px'>\n");
-						_htmlStream.append(" 	<a name='"+label+"' " + (onClickFunctionName != null ? " href='javascript:void(0);' onclick='" + onClickFunctionName + "()' " : "") + " >\n");
-						_htmlStream.append(" 		<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, img, currTheme)+"' />\n");
+						_htmlStream.append(" 	<a name=\""+label+"\" " + (onClickFunctionName != null ? " href='javascript:void(0);' onclick='" + onClickFunctionName + "()' " : "") + " >\n");
+						_htmlStream.append(" 		<img title=\""+label+"\" alt=\""+label+"\" src='"+urlBuilder.getResourceLinkByTheme(httpRequest, img, currTheme)+"' />\n");
 						_htmlStream.append(" 	</a>\n");
 						_htmlStream.append(" </td>\n");
 					}
@@ -743,7 +743,7 @@ public class ListTag extends TagSupport
 						}
 
 					}
-					_htmlStream.append("			<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, img, currTheme)+"' />\n");
+					_htmlStream.append("			<img title=\""+label+"\" alt=\""+label+"\" src='"+urlBuilder.getResourceLinkByTheme(httpRequest, img, currTheme)+"' />\n");
 					_htmlStream.append("     </a>\n");
 					_htmlStream.append(" </td>\n");
 				}
@@ -1497,7 +1497,7 @@ public class ListTag extends TagSupport
 					//htmlStream.append("<td class=\"portlet-section-header\">\n");
 					//htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
 					htmlStream.append("<div style=\"float: left;\">");
-					htmlStream.append("<a href='javascript:"+onClickFunctionName+"()'><img class=\"header-button-image-portlet-section\" title='"+label+"' alt='"+label+"' style='height: 95%;width: 95%;' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, img, currTheme)+"' /></a>\n");
+					htmlStream.append("<a href='javascript:"+onClickFunctionName+"()'><img class=\"header-button-image-portlet-section\" title=\""+label+"\" alt=\""+label+"\" style='height: 95%;width: 95%;' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, img, currTheme)+"' /></a>\n");
 					htmlStream.append("</div>");
 					//htmlStream.append("</td>\n");
 
@@ -1507,7 +1507,7 @@ public class ListTag extends TagSupport
 					String buttonUrl = createUrl(paramsMap);
 
 					htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
-					htmlStream.append("<a href='"+buttonUrl+"'><img class=\"header-button-image-portlet-section\" title='" + label + "' alt='" + label + "' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, img, currTheme)+"' /></a>\n");
+					htmlStream.append("<a href='"+buttonUrl+"'><img class=\"header-button-image-portlet-section\" title=\"" + label + "\" alt=\"" + label + "\" src='"+urlBuilder.getResourceLinkByTheme(httpRequest, img, currTheme)+"' /></a>\n");
 					htmlStream.append("</td>\n");}
 
 			}

@@ -5,7 +5,7 @@
 
 <iframe id='invalidSessionJasper'
                  name='invalidSessionJasper'
-                 src='<%=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()%>/SpagoBIJasperReportEngine/invalidateSession.jsp'
+                 src='<%=GeneralUtilities.getSpagoBiHost()%>/SpagoBIJasperReportEngine/invalidateSession.jsp'
                  height='0'
                  width='0'
                  frameborder='0' >
@@ -13,7 +13,7 @@
 
 <iframe id='invalidSessionJPivot'
                  name='invalidSessionJPivot'
-                 src='<%=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()%>/SpagoBIJPivotEngine/invalidateSession.jsp'
+                 src='<%=GeneralUtilities.getSpagoBiHost()%>/SpagoBIJPivotEngine/invalidateSession.jsp'
                  height='0'
                  width='0'
                  frameborder='0' >
@@ -21,7 +21,7 @@
 
 <iframe id='invalidSessionQbe'
                  name='invalidSessionQbe'
-                 src='<%=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()%>/SpagoBIQbeEngine/invalidateSession.jsp'
+                 src='<%=GeneralUtilities.getSpagoBiHost()%>/SpagoBIQbeEngine/invalidateSession.jsp'
                  height='0'
                  width='0'
                  frameborder='0' >
@@ -29,7 +29,7 @@
 
 <iframe id='invalidSessionGeo'
                  name='invalidSessionGeo'
-                 src='<%=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()%>/SpagoBIGeoEngine/invalidateSession.jsp'
+                 src='<%=GeneralUtilities.getSpagoBiHost()%>/SpagoBIGeoEngine/invalidateSession.jsp'
                  height='0'
                  width='0'
                  frameborder='0' >
@@ -37,7 +37,7 @@
 
 <iframe id='invalidSessionBirt'
                  name='invalidSessionBirt'
-                 src='<%=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()%>/SpagoBIBirtReportEngine/invalidateSession.jsp'
+                 src='<%=GeneralUtilities.getSpagoBiHost()%>/SpagoBIBirtReportEngine/invalidateSession.jsp'
                  height='0'
                  width='0'
                  frameborder='0' >
@@ -45,7 +45,7 @@
 
 <iframe id='invalidSessionTalend'
                  name='invalidSessionTalend'
-                 src='<%=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()%>/SpagoBITalendEngine/invalidateSession.jsp'
+                 src='<%=GeneralUtilities.getSpagoBiHost()	%>/SpagoBITalendEngine/invalidateSession.jsp'
                  height='0'
                  width='0'
                  frameborder='0' >

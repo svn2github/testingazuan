@@ -140,11 +140,13 @@ function SbiJsInitializerClass() {
   
 }
 
+
  try{
  	 SbiJsInitializer.prototype;
  } catch (err) {
  	 var SbiJsInitializer = new SbiJsInitializerClass();
  }
+
 
 // END PORLTET JAVASCRIPT INTIIALIZER
 

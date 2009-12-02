@@ -73,7 +73,13 @@
 	<CONFIGURATOR path="/WEB-INF/conf/engines/chart/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/chart/business_map.xml" /> 
 	<CONFIGURATOR path="/WEB-INF/conf/engines/chart/validation.xml" /> 
-	
+
+<!-- engines.dossier -->
+	<CONFIGURATOR path="/WEB-INF/conf/engines/widget/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/engines/widget/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/engines/widget/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/engines/widget/business_map.xml" /> 
+
 <!-- engines.kpi -->
 	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/publishers.xml" />

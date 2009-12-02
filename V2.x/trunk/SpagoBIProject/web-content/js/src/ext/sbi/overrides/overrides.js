@@ -1,3 +1,12 @@
+	
+
+	/**
+	 * patch a bug in the datepicker (see SPAGOBI-324). 
+	 * The error is in the way Ext.util.ClickRepeater manage repeated click event. The problem seem to be related to the event 
+	 * mouseup that is not handled properly by ClickRepeater. This cause the click event sequence to continue even after the
+	 * mouse button is released. This patch is not resolutive. It is just a work-around that eliminate ClickRepeater behaviour 
+	 */
+
 	Ext.override(Ext.DatePicker, {
 		 // private
 		
@@ -138,7 +147,7 @@
 
 
 
-/**
+	/**
 	 * Override Ext.FormPanel so that in case we create a form without items it still has a item list.
 	 * ERROR IS : this.items has no properties
 	 */

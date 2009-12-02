@@ -144,62 +144,62 @@ try {
 
 <%-- define a toolbar --%>
 <wcf:toolbar id="toolbar01" bundle="com.tonbeller.jpivot.toolbar.resources">
-  <% if(tb.getButtonCubeVisibleB()){%>
+  <% if(tb.getButtonCubeVisibleB().booleanValue()){%>
   	<wcf:scriptbutton id="cubeNaviButton" tooltip="toolb.cube" img="cube" model="#{navi01.visible}"/>
   <% } %>
   
-  <% if(tb.getButtonMDXVisibleB()){%>
+  <% if(tb.getButtonMDXVisibleB().booleanValue()){%>
 	<wcf:scriptbutton id="mdxEditButton" tooltip="toolb.mdx.edit" img="mdx-edit" model="#{mdxedit01.visible}"/>
   <% } %>
 
-  <% if(tb.getButtonOrderVisibleB()){%>
+  <% if(tb.getButtonOrderVisibleB().booleanValue()){%>
   	<wcf:scriptbutton id="sortConfigButton" tooltip="toolb.table.config" img="sort-asc" model="#{sortform01.visible}"/>
   <% } %>
   
   <%
   if (profile.getFunctionalities().contains("SaveSubobjectFunctionality")) {
   %>
-	  <% if(tb.getButtonSaveAnalysisVisibleB()){%>
+	  <% if(tb.getButtonSaveAnalysisVisibleB().booleanValue()){%>
 	  <wcf:scriptbutton id="saveAnalysis" tooltip="toolb.save" img="save" model="#{saveAnalysis01.visible}"/>
 	  <% } %>
   <%
   }
   %>
   <wcf:separator/>
-  <% if(tb.getButtonFatherMembVisibleB()){%>
+  <% if(tb.getButtonFatherMembVisibleB().booleanValue()){%>
   	<wcf:scriptbutton id="levelStyle" tooltip="toolb.level.style" img="level-style" model="#{table01.extensions.axisStyle.levelStyle}"/>
   <% } %>
   
-  <% if(tb.getButtonHideSpansVisibleB()){%>
+  <% if(tb.getButtonHideSpansVisibleB().booleanValue()){%>
   	<wcf:scriptbutton id="hideSpans" tooltip="toolb.hide.spans" img="hide-spans" model="#{table01.extensions.axisStyle.hideSpans}"/>
   <% } %>
   
-  <% if(tb.getButtonShowPropertiesVisibleB()){%>
+  <% if(tb.getButtonShowPropertiesVisibleB().booleanValue()){%>
   	<wcf:scriptbutton id="propertiesButton" tooltip="toolb.properties"  img="properties" model="#{table01.rowAxisBuilder.axisConfig.propertyConfig.showProperties}"/>
   <% } %>
   
-  <% if(tb.getButtonHideEmptyVisibleB()){%>
+  <% if(tb.getButtonHideEmptyVisibleB().booleanValue()){%>
   	<wcf:scriptbutton id="nonEmpty" tooltip="toolb.non.empty" img="non-empty" model="#{table01.extensions.nonEmpty.buttonPressed}"/>
   <% } %>
   
-  <% if(tb.getButtonShiftAxisVisibleB()){%>
+  <% if(tb.getButtonShiftAxisVisibleB().booleanValue()){%>
   	<wcf:scriptbutton id="swapAxes" tooltip="toolb.swap.axes"  img="swap-axes" model="#{table01.extensions.swapAxes.buttonPressed}"/>
   <% } %>
   
   <wcf:separator/>
-  <% if(tb.getButtonDrillMemberVisibleB()){%>
+  <% if(tb.getButtonDrillMemberVisibleB().booleanValue()){%>
   	<wcf:scriptbutton model="#{table01.extensions.drillMember.enabled}"	 tooltip="toolb.navi.member" radioGroup="navi" id="drillMember"   img="navi-member"/>
   <% } %>
   
-  <% if(tb.getButtonDrillPositionVisibleB()){%>
+  <% if(tb.getButtonDrillPositionVisibleB().booleanValue()){%>
   	<wcf:scriptbutton model="#{table01.extensions.drillPosition.enabled}" tooltip="toolb.navi.position" radioGroup="navi" id="drillPosition" img="navi-position"/>
   <% } %>
   
-  <% if(tb.getButtonDrillReplaceVisibleB()){%>
+  <% if(tb.getButtonDrillReplaceVisibleB().booleanValue()){%>
   	<wcf:scriptbutton model="#{table01.extensions.drillReplace.enabled}"	 tooltip="toolb.navi.replace" radioGroup="navi" id="drillReplace"  img="navi-replace"/>
   <% } %>
   
-  <% if(tb.getButtonDrillThroughVisibleB()){%>
+  <% if(tb.getButtonDrillThroughVisibleB().booleanValue()){%>
   	<wcf:scriptbutton model="#{table01.extensions.drillThrough.enabled}"  tooltip="toolb.navi.drillthru" id="drillThrough01"  img="navi-through"/>
   <% } %>
   <%
@@ -210,14 +210,14 @@ try {
   }
   %>
   <wcf:separator/>
-   <% if(tb.getButtonShowChartVisibleB()){%>
+   <% if(tb.getButtonShowChartVisibleB().booleanValue()){%>
   		<wcf:scriptbutton id="chartButton01" tooltip="toolb.chart" img="chart" model="#{chart01.visible}"/>
    <% } %>
-   <% if(tb.getButtonConfigureChartVisibleB()){%>
+   <% if(tb.getButtonConfigureChartVisibleB().booleanValue()){%>
   		<wcf:scriptbutton id="chartPropertiesButton01" tooltip="toolb.chart.config" img="chart-config" model="#{chartform01.visible}"/>
    <% } %>
   <wcf:separator/>
-   <% if(tb.getButtonConfigurePrintVisibleB()){%>
+   <% if(tb.getButtonConfigurePrintVisibleB().booleanValue()){%>
   		<wcf:scriptbutton id="printPropertiesButton01" tooltip="toolb.print.config" img="print-config" model="#{printform01.visible}"/>
    <% } %>
   <%--
@@ -225,7 +225,7 @@ try {
   <wcf:imgbutton id="printxls" tooltip="toolb.excel" img="excel" href="./Print?cube=01&type=0"/>
   --%>
   <wcf:separator/>
-   <% if(tb.getButtonFlushCacheVisibleB()){%>
+   <% if(tb.getButtonFlushCacheVisibleB().booleanValue()){%>
   	<wcf:imgbutton id="flushCache" tooltip="toolb.cache.flush" img="reload" href="./FlushCacheServlet"/>
    <% } %>
 </wcf:toolbar>

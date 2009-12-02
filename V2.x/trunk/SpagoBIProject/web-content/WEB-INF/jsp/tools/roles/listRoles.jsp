@@ -208,68 +208,68 @@ Ext.onReady(function(){
     var checkColumnWidth = 100;
     
     var saveSubObjectsColumn = new Ext.grid.CheckColumn({
-		header: '<spagobi:message key="SBISet.ListRoles.columnSaveSubobjects" />',
-		tooltip: '<spagobi:message key="SBISet.ListRoles.columnSaveSubobjectsTooltip" />',
+		header: "<spagobi:message key='SBISet.ListRoles.columnSaveSubobjects' />",
+		tooltip: "<spagobi:message key='SBISet.ListRoles.columnSaveSubobjectsTooltip' />",
 		dataIndex: 'SaveSubojects',
 		align: 'center'
 	});
 	var subObjectsColumn = new Ext.grid.CheckColumn({
-		header: '<spagobi:message key="SBISet.ListRoles.columnSubobjects" />',
-		tooltip: '<spagobi:message key="SBISet.ListRoles.columnSubobjectsTooltip" />',
+		header: "<spagobi:message key='SBISet.ListRoles.columnSubobjects' />",
+		tooltip: "<spagobi:message key='SBISet.ListRoles.columnSubobjectsTooltip' />",
 		dataIndex: 'Subojects',
 		align: 'center'
 	});
 	var snapshotsColumn = new Ext.grid.CheckColumn({
-		header: '<spagobi:message key="SBISet.ListRoles.columnSnapshots" />',
-		tooltip: '<spagobi:message key="SBISet.ListRoles.columnSnapshotsTooltip" />',
+		header: "<spagobi:message key='SBISet.ListRoles.columnSnapshots' />",
+		tooltip: "<spagobi:message key='SBISet.ListRoles.columnSnapshotsTooltip' />",
 		dataIndex: 'Snapshots',
 		align: 'center'
 	});
 	var viewpointsColumn = new Ext.grid.CheckColumn({
-		header: '<spagobi:message key="SBISet.ListRoles.columnViewpoints" />',
-		tooltip: '<spagobi:message key="SBISet.ListRoles.columnViewpointsTooltip" />',
+		header: "<spagobi:message key='SBISet.ListRoles.columnViewpoints' />",
+		tooltip: "<spagobi:message key='SBISet.ListRoles.columnViewpointsTooltip' />",
 		dataIndex: 'Viewpoints',
 		align: 'center'
 	});
 	var notesColumn = new Ext.grid.CheckColumn({
-		header: '<spagobi:message key="SBISet.ListRoles.columnNotes" />',
-		tooltip: '<spagobi:message key="SBISet.ListRoles.columnNotesTooltip" />',
+		header: "<spagobi:message key='SBISet.ListRoles.columnNotes' />",
+		tooltip: "<spagobi:message key='SBISet.ListRoles.columnNotesTooltip' />",
 		dataIndex: 'Notes',
 		align: 'center'
 	});
 	var seeMetadataColumn = new Ext.grid.CheckColumn({
-		header: '<spagobi:message key="SBISet.ListRoles.columnSeeMetadata" />',
-		tooltip: '<spagobi:message key="SBISet.ListRoles.columnSeeMetadataTooltip" />',
+		header: "<spagobi:message key='SBISet.ListRoles.columnSeeMetadata' />",
+		tooltip: "<spagobi:message key='SBISet.ListRoles.columnSeeMetadataTooltip' />",
 		dataIndex: 'SeeMetadata',
 		align: 'center'
 	});
 	var saveMetadataColumn = new Ext.grid.CheckColumn({
-		header: '<spagobi:message key="SBISet.ListRoles.columnSaveMetadata" />',
-		tooltip: '<spagobi:message key="SBISet.ListRoles.columnSaveMetadataTooltip" />',
+		header: "<spagobi:message key='SBISet.ListRoles.columnSaveMetadata' />",
+		tooltip: "<spagobi:message key='SBISet.ListRoles.columnSaveMetadataTooltip' />",
 		dataIndex: 'SaveMetadata',
 		align: 'center'
 	});
 	var sendMailColumn = new Ext.grid.CheckColumn({
-		header: '<spagobi:message key="SBISet.ListRoles.columnSendMail" />',
-		tooltip: '<spagobi:message key="SBISet.ListRoles.columnSendMailTooltip" />',
+		header: "<spagobi:message key='SBISet.ListRoles.columnSendMail' />",
+		tooltip: "<spagobi:message key='SBISet.ListRoles.columnSendMailTooltip' />",
 		dataIndex: 'SendMail',
 		align: 'center'
 	});
 	var rememberMeColumn = new Ext.grid.CheckColumn({
-		header: '<spagobi:message key="SBISet.ListRoles.columnRememberMe" />',
-		tooltip: '<spagobi:message key="SBISet.ListRoles.columnRememberMeTooltip" />',
+		header: "<spagobi:message key='SBISet.ListRoles.columnRememberMe' />",
+		tooltip: "<spagobi:message key='SBISet.ListRoles.columnRememberMeTooltip' />",
 		dataIndex: 'RememberMe',
 		align: 'center'
 	});
 	var personalFolderColumn = new Ext.grid.CheckColumn({
-		header: '<spagobi:message key="SBISet.ListRoles.columnPersonalFolder" />',
-		tooltip: '<spagobi:message key="SBISet.ListRoles.columnPersonalFolderTooltip" />',
+		header: "<spagobi:message key='SBISet.ListRoles.columnPersonalFolder' />",
+		tooltip: "<spagobi:message key='SBISet.ListRoles.columnPersonalFolderTooltip' />",
 		dataIndex: 'PersonalFolder',
 		align: 'center'
 	});
 	var buildQbeQueryColumn = new Ext.grid.CheckColumn({
-		header: '<spagobi:message key="SBISet.ListRoles.columnBuildQbeQuery" />',
-		tooltip: '<spagobi:message key="SBISet.ListRoles.columnBuildQbeQueryTooltip" />',
+		header: "<spagobi:message key='SBISet.ListRoles.columnBuildQbeQuery' />",
+		tooltip: "<spagobi:message key='SBISet.ListRoles.columnBuildQbeQueryTooltip' />",
 		dataIndex: 'BuildQbeQuery',
 		align: 'center'
 	});
@@ -308,7 +308,7 @@ Ext.onReady(function(){
         personalFolderColumn,
         buildQbeQueryColumn,
         {
-           header: '<spagobi:message key="SBISet.ListRoles.deleteCaption" />',
+           header: "<spagobi:message key='SBISet.ListRoles.deleteCaption' />",
            dataIndex: 'DeleteUrl',
            align: 'center'
         }
@@ -388,13 +388,13 @@ function somethingWentWrong() {
 
 function showMessage(response) {
 	var icon;
-	if (response == 'SBISet.ListRoles.saveOk') {
-		response = '<spagobi:message key="SBISet.ListRoles.saveOk" />';
+	if (response == "SBISet.ListRoles.saveOk") {
+		response = "<spagobi:message key='SBISet.ListRoles.saveOk' />";
 		icon = Ext.MessageBox.INFO;
 		store.commitChanges();
 	}
-	if (response == 'SBISet.ListRoles.errorWhileSaving') {
-		response = '<spagobi:message key="SBISet.ListRoles.errorWhileSaving" />';
+	if (response == "SBISet.ListRoles.errorWhileSaving") {
+		response = "<spagobi:message key='SBISet.ListRoles.errorWhileSaving' />";
 		icon = Ext.MessageBox.ERROR;
 	}
 	Ext.MessageBox.show({

@@ -1107,9 +1107,13 @@ public class ImportUtilities {
 					existingLov.setLovProvider(queryDetail.toXML());
 				}
 			} catch (SourceBeanException e) {
-				logger.error("error in reading the xml of lov provider");		
+				logger.error("error in reading the xml of lov provider, transcribe the original by default ",e);		
 				existingLov.setLovProvider(exportedLov.getLovProvider());
-			}			
+			}
+			catch (Exception e) {
+				logger.error("error in reading the xml of lov provider; transcribe the original by default ",e);		
+				existingLov.setLovProvider(exportedLov.getLovProvider());
+			}
 
 			existingLov.setName(exportedLov.getName());
 			existingLov.setProfileAttr(exportedLov.getProfileAttr());

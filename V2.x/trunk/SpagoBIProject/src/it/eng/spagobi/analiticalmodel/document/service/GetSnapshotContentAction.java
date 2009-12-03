@@ -68,7 +68,7 @@ public class GetSnapshotContentAction extends AbstractHttpAction {
 			content = "You cannot see required snapshot.".getBytes();
 		}
 		httpResp.setContentType("text/html");
-		httpResp.setContentLength(content.length);
+		//httpResp.setContentLength(content.length);
 		httpResp.getOutputStream().write(content);
 		httpResp.setStatus(SUCCESS);
 		httpResp.getOutputStream().flush();

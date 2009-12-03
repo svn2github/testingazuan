@@ -1,0 +1,236 @@
+package it.eng.spagobi.commons.utilities.indexing;
+
+import it.eng.spagobi.commons.bo.Domain;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IBinContentDAO;
+import it.eng.spagobi.commons.utilities.JTidyHTMLHandler;
+import it.eng.spagobi.tools.objmetadata.bo.ObjMetacontent;
+import it.eng.spagobi.tools.objmetadata.bo.ObjMetadata;
+import it.eng.spagobi.tools.objmetadata.dao.IObjMetacontentDAO;
+import it.eng.spagobi.tools.objmetadata.dao.IObjMetadataDAO;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.index.TermEnum;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
+
+/**Indexing class.
+ * @author franceschini
+ *
+ */
+public class LuceneIndexer {
+
+	private static boolean deleting = false; // true during deletion pass
+	private static IndexReader reader; // existing index
+	private static IndexWriter writer; // new index being built
+	private static TermEnum uidIter; // document id iterator
+
+	private static final String LONG_TEXT = "LONG_TEXT";// html
+	private static final String SHORT_TEXT = "SHORT_TEXT";// simple text
+
+	static private Logger logger = Logger.getLogger(LuceneIndexer.class);
+
+	/**Method called to create or increment Lucene index created over metadata binary contents.
+	 * @param index  index file
+	 * @param create indicating whether index is to be created or updated
+	 */
+	public void createIndex(File index, boolean create) {
+		logger.debug("IN");
+		try {
+			Date start = new Date();
+		    if (!create) { // delete stale docs
+				deleting = true;
+				indexDocs(index, create);
+			}
+			writer = new IndexWriter(FSDirectory.open(index),
+					new StandardAnalyzer(Version.LUCENE_CURRENT), create,
+					new IndexWriter.MaxFieldLength(1000000));
+			indexDocs(index, create); // add new docs
+
+			writer.optimize();
+			writer.close();
+
+			Date end = new Date();
+
+			logger.info("Indexing time:: " + (end.getTime() - start.getTime())
+					+ " milliseconds");
+			logger.debug("OUT");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+	}
+
+	/**Method walking directory hierarchy in uid order, while keeping uid iterator from
+	 * existing index in sync. Mismatches indicate one of: (a) old documents to
+	 * be deleted; (b) unchanged documents, to be left alone; or (c) new
+	 * documents, to be indexed.
+	 * @param index index file
+	 * @param create create or update existing index
+	 * @throws Exception
+	 */
+	private static void indexDocs(File index, boolean create) throws Exception {
+		logger.debug("IN");
+		if (!create) { // incrementally update
+
+			reader = IndexReader.open(FSDirectory.open(index), false); // open
+			// existing
+			// index
+			uidIter = reader.terms(new Term("uid", "")); // init uid iterator
+
+			indexDocs();
+
+			if (deleting) { // delete rest of stale docs
+
+				while (uidIter.term() != null
+						&& uidIter.term().field() == "uid") {
+					logger.info("deleting "
+							+ uidIter.term().text());
+					reader.deleteDocuments(uidIter.term());
+					uidIter.next();
+				}
+				deleting = false;
+			 
+
+			}
+
+			uidIter.close(); // close uid iterator
+			reader.close(); // close existing index
+
+		} else {
+			// don't have exisiting
+			indexDocs();
+		}
+		logger.debug("OUT");
+	}
+
+	/**Method which indexes metadata binary contents. The logic is: if uid exists do not add to Document 
+	 * otherwise add it. Binary contents can be either html or simple text.
+	 * @throws Exception
+	 */
+	private static void indexDocs() throws Exception {
+		logger.debug("IN");
+		ByteArrayInputStream bais = null;
+		try{			
+			// call dao to get binary contents to index
+			IObjMetadataDAO metadataDAO = DAOFactory.getObjMetadataDAO();
+			List<ObjMetadata> results = metadataDAO.loadAllObjMetadata();
+			// loop over list of metadata to index its content
+			if (results != null) {
+	
+				for (int i = 0; i < results.size(); i++) {
+					// look for binary content mimetype
+					ObjMetadata metadata = results.get(i);
+					Integer idDomain = metadata.getDataType();
+					Integer metaId = metadata.getObjMetaId();
+					Domain domain = DAOFactory.getDomainDAO().loadDomainById(
+							idDomain);
+	
+					IObjMetacontentDAO metacontentDAO = DAOFactory
+							.getObjMetacontentDAO();
+					List<ObjMetacontent> metacontents = metacontentDAO
+							.loadObjMetacontentByObjMetaId(metaId);
+					if (metacontents != null) {
+						for (int j = 0; j < metacontents.size(); j++) {
+							ObjMetacontent metacontent = metacontents.get(j);
+							Integer binId = metacontent.getBinaryContentId();
+	
+							byte[] content = metacontent.getContent();
+							bais = new ByteArrayInputStream(
+									content);
+							String uid = String.valueOf(binId.intValue());
+							
+							JTidyHTMLHandler htmlHandler = new JTidyHTMLHandler();
+							String htmlContent = htmlHandler.getContent(bais);
+							bais.close();
+							
+							if (uidIter != null) {
+								while (uidIter.term() != null
+										&& uidIter.term().field() == "uid"
+										&& uidIter.term().text().compareTo(uid) < 0) {
+									if (deleting) { // delete stale docs
+										logger.info("deleting html binary content "
+												+ uidIter.term().text());
+										reader.deleteDocuments(uidIter.term());
+									}
+									uidIter.next();
+								}
+								if (uidIter.term() != null
+										&& uidIter.term().field() == "uid"
+										&& uidIter.term().text().compareTo(uid) == 0) {
+									uidIter.next(); // keep matching docs
+								} else if (!deleting) { // add new docs
+									Document doc = new Document();
+									doc.add(new Field("uid", uid,
+											Field.Store.YES,
+											Field.Index.NOT_ANALYZED));
+									if (domain.getValueCd().equalsIgnoreCase(LONG_TEXT)) { // index html binary
+										doc.add(new Field("contents", htmlContent,
+												Field.Store.NO,
+												Field.Index.ANALYZED));
+										logger.info("adding html binary content " + doc.get("uid"));
+									} else if (domain.getValueCd()
+											.equalsIgnoreCase(SHORT_TEXT)) {// index
+																			// simple
+																			// text
+																			// binary
+										doc.add(new Field("contents", new String(
+												content, "UTF-8"), Field.Store.NO,
+												Field.Index.ANALYZED));
+										logger.info("adding simple text binary content " + doc.get("uid"));
+									}
+									
+									writer.addDocument(doc);
+								}
+							} else { // creating a new index
+								Document doc = new Document();
+								doc.add(new Field("uid", uid, Field.Store.YES,
+										Field.Index.NOT_ANALYZED));
+								if (domain.getValueCd().equalsIgnoreCase(LONG_TEXT)) { // index
+																						// html
+																						// binary
+																						// content
+									doc.add(new Field("contents", htmlContent,
+											Field.Store.NO, Field.Index.ANALYZED));
+									logger.info("adding html binary content " + doc.get("uid"));
+								} else if (domain.getValueCd().equalsIgnoreCase(
+										SHORT_TEXT)) {// index simple text binary
+														// content
+									doc.add(new Field("contents", new String(content, "UTF-8"),
+											Field.Store.NO, Field.Index.ANALYZED));
+									logger.info("adding simple text binary content " + doc.get("uid"));
+								}
+								
+								writer.addDocument(doc);
+							}
+							
+						}
+	
+					}
+				}
+
+			}
+		}catch(Exception e){
+			logger.error(e.getMessage());
+		}finally{
+			if(bais != null){
+				bais.close();
+			}
+			logger.debug("OUT");
+		}
+			
+	}
+
+}

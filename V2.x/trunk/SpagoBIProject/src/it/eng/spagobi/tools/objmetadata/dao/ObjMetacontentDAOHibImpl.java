@@ -475,7 +475,9 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 		meta.setObjMetacontentId(hibObjMetacontent.getObjMetacontentId());
 		meta.setObjmetaId(hibObjMetacontent.getObjmetaId());
 		meta.setBiobjId(hibObjMetacontent.getSbiObjects().getBiobjId());
-		meta.setSubobjId(hibObjMetacontent.getSbiSubObjects().getSubObjId());
+		if(hibObjMetacontent.getSbiSubObjects() != null){
+			meta.setSubobjId(hibObjMetacontent.getSbiSubObjects().getSubObjId());
+		}		
 		meta.setBinaryContentId(hibObjMetacontent.getSbiBinContents().getId());
 		meta.setContent(hibObjMetacontent.getSbiBinContents().getContent()); 
 		meta.setCreationDate(hibObjMetacontent.getCreationDate());

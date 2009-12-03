@@ -76,11 +76,12 @@ public class ObjMetadataDAOHibImpl extends AbstractHibernateDAO implements IObjM
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			Criteria finder = aSession.createCriteria(SbiObjMetadata.class);
-			finder.add(Expression.eq("SbiObjMetadata.dataType.valueCd",type));
+			Query hibQuery = aSession.createQuery(" from SbiObjMetadata meta where meta.dataType.valueCd = ? and meta.dataType.domainCd='OBJMETA_DATA_TYPE'" );
+			hibQuery.setString(0, type);
+			
 			logger.debug("Type setted: "+(type!=null?type:""));
 
-			List hibList = finder.list();
+			List hibList = hibQuery.list();
 			Iterator it = hibList.iterator();
 
 			while (it.hasNext()) {

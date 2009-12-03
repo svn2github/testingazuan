@@ -219,9 +219,9 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 			
-			String hql = " from SbiObjMetacontents c where c.objmetaId = ? and c.biobjId = ? ";
+			String hql = " from SbiObjMetacontents c where c.objmetaId = ? and c.sbiObjects.biobjId = ? ";
 			if(subObjId!=null){
-				hql += "and c.subobjId = ? ";
+				hql += "and c.SbiSubObjects.subobjId = ? ";
 			}
 			Query aQuery = tmpSession.createQuery(hql);
 			aQuery.setInteger(0, objMetaId.intValue());

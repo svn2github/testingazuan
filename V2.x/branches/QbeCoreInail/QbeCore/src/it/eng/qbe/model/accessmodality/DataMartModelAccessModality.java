@@ -34,9 +34,9 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 
-import it.eng.qbe.model.Filter;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
+import it.eng.qbe.query.Filter;
 import it.eng.qbe.utility.StringUtils;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;

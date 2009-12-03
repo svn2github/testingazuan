@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 public class GetSnapshotContentAction extends AbstractHttpAction {
-
+	public static int SUCCESS = 200;
 	static Logger logger = Logger.getLogger(GetSnapshotContentAction.class);
 	
 	/* (non-Javadoc)
@@ -67,8 +67,10 @@ public class GetSnapshotContentAction extends AbstractHttpAction {
 			logger.error("Current user [" + ((UserProfile) profile).getUserId().toString() + "] CANNOT see snapshot with id = " + idSnap + " of document with id = " + objectId);
 			content = "You cannot see required snapshot.".getBytes();
 		}
+		httpResp.setContentType("text/html");
 		httpResp.setContentLength(content.length);
 		httpResp.getOutputStream().write(content);
+		httpResp.setStatus(SUCCESS);
 		httpResp.getOutputStream().flush();
 		logger.debug("OUT");
 	}

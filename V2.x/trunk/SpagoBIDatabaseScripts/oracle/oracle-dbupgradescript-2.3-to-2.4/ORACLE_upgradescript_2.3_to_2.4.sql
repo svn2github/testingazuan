@@ -87,13 +87,6 @@ CREATE TABLE SBI_OBJ_METACONTENTS (
 CREATE UNIQUE INDEX XAK1SBI_OBJ_METACONTENTS ON SBI_OBJ_METACONTENTS
 (
         OBJMETA_ID                          ASC,
-        BIOBJ_ID                            ASC
-)
-/
-
-CREATE UNIQUE INDEX XAK2SBI_OBJ_METACONTENTS ON SBI_OBJ_METACONTENTS
-(
-        OBJMETA_ID                          ASC,
         BIOBJ_ID                            ASC,
         SUBOBJ_ID                           ASC
 )

@@ -526,7 +526,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  if(showSlider || filterSeries==true) {%>
 			<form id='serieform' name="serie" action="<%=refreshUrl%>" method="POST"> 
 				<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE" /> 
-				<input type="hidden" name="category" value="<%=datasetMap.getCategoryCurrent()%>" /> 
+				<% if(!refreshUrlPars.containsKey("category")){%> 
+					<input type="hidden" name="category" value="<%=datasetMap.getCategoryCurrent()%>" /> 
+				<%}%>
 			<%} %>
 
   <!-- Begin drawing the page -->

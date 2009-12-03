@@ -34,9 +34,9 @@ import org.json.JSONObject;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
-import it.eng.qbe.model.QbeDataSet;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statment.IStatement;
+import it.eng.qbe.statment.QbeDataSet;
 import it.eng.qbe.statment.hibernate.HQLStatement;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.bo.UserProfile;

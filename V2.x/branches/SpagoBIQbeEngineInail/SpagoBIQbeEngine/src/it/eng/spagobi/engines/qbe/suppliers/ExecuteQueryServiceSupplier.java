@@ -27,9 +27,9 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import it.eng.qbe.model.QbeDataSet;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statment.IStatement;
+import it.eng.qbe.statment.QbeDataSet;
 import it.eng.qbe.statment.hibernate.HQLStatement;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.engines.qbe.QbeEngineInstance;

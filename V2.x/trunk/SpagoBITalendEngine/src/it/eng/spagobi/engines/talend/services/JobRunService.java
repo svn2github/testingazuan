@@ -31,44 +31,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.engines.talend.services;
 
-import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.bo.UserProfile;
+import org.apache.log4j.Logger;
+
 import it.eng.spagobi.engines.talend.TalendEngine;
 import it.eng.spagobi.engines.talend.exception.ContextNotFoundException;
 import it.eng.spagobi.engines.talend.exception.JobExecutionException;
 import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
 import it.eng.spagobi.engines.talend.runtime.Job;
 import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
-import it.eng.spagobi.engines.talend.utils.EngineMessageBundle;
-import it.eng.spagobi.services.content.bo.Content;
-import it.eng.spagobi.services.proxy.ContentServiceProxy;
-import it.eng.spagobi.utilities.ParametersDecoder;
-import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
 import it.eng.spagobi.utilities.engines.EngineStartServletIOManager;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
-
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.apache.log4j.Logger;
-import org.dom4j.DocumentException;
-
-import sun.misc.BASE64Decoder;
 
 public class JobRunService extends AbstractEngineStartServlet {
 	
@@ -89,7 +62,7 @@ public class JobRunService extends AbstractEngineStartServlet {
 		
 		try {		
 			
-			servletIOManager.auditServiceStartEvent();
+			//servletIOManager.auditServiceStartEvent();
 				
 			super.doService(servletIOManager);
 				

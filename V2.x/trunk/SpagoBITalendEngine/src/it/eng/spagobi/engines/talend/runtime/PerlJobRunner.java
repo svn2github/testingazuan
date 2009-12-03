@@ -31,15 +31,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.engines.talend.runtime;
 
-import it.eng.spagobi.engines.talend.TalendEngine;
-import it.eng.spagobi.engines.talend.TalendEngineConfig;
-import it.eng.spagobi.engines.talend.exception.ContextNotFoundException;
-import it.eng.spagobi.engines.talend.exception.JobExecutionException;
-import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
-import it.eng.spagobi.engines.talend.utils.TalendScriptAccessUtils;
-import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
-import it.eng.spagobi.utilities.threadmanager.WorkManager;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -49,10 +40,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUIDGenerator;
+
+import it.eng.spagobi.engines.talend.TalendEngineConfig;
+import it.eng.spagobi.engines.talend.exception.ContextNotFoundException;
+import it.eng.spagobi.engines.talend.exception.JobExecutionException;
+import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
+import it.eng.spagobi.engines.talend.utils.TalendScriptAccessUtils;
+import it.eng.spagobi.services.proxy.EventServiceProxy;
+import it.eng.spagobi.utilities.engines.AuditServiceProxy;
+import it.eng.spagobi.utilities.engines.EngineConstants;
+import it.eng.spagobi.utilities.threadmanager.WorkManager;
 
 
 public class PerlJobRunner implements IJobRunner {
@@ -154,7 +153,8 @@ public class PerlJobRunner implements IJobRunner {
     	try {
 	    WorkManager wm = new WorkManager();
 	    TalendWork jrt = new TalendWork(cmd, null, executableJobDir, filesToBeDeleted, parameters);
-	    TalendWorkListener listener = new TalendWorkListener();
+	    TalendWorkListener listener = new TalendWorkListener((AuditServiceProxy)parameters.get(EngineConstants.ENV_AUDIT_SERVICE_PROXY), (
+    			EventServiceProxy)parameters.get(EngineConstants.ENV_EVENT_SERVICE_PROXY));
 	    wm.run(jrt, listener);
 	} catch (Exception e) {
 	    e.printStackTrace();

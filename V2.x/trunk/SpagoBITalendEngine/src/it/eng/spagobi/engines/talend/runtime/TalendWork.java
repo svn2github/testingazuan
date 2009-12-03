@@ -31,29 +31,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.engines.talend.runtime;
 
-import it.eng.spagobi.engines.talend.utils.FileUtils;
-import it.eng.spagobi.services.proxy.EventServiceProxy;
-import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
-import it.eng.spagobi.utilities.engines.EngineConstants;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Logger;
 
 import commonj.work.Work;
+
+import it.eng.spagobi.engines.talend.utils.FileUtils;
+import it.eng.spagobi.services.proxy.EventServiceProxy;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 
 public class TalendWork implements Work {
 
@@ -100,141 +95,138 @@ public class TalendWork implements Work {
      */
     public TalendWork(String command, String[] envr, File executableJobDir, List filesToBeDeletedAfterJobExecution,
 	    Map parameters) {
-	this._command = command;
-	this._executableJobDir = executableJobDir;
-	this._envr = envr;
-	this._filesToBeDeletedAfterJobExecution = filesToBeDeletedAfterJobExecution;
-	this._parameters = parameters;
+		this._command = command;
+		this._executableJobDir = executableJobDir;
+		this._envr = envr;
+		this._filesToBeDeletedAfterJobExecution = filesToBeDeletedAfterJobExecution;
+		this._parameters = parameters;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Runnable#run()
-     */
     public void run() {
-	logger.debug("IN");
-
+		logger.debug("IN");
 	
-	// registering the start execution event
-	String startExecutionEventDescription = "${talend.execution.started}<br/>";
-
-	String parametersList = "${talend.execution.parameters}<br/><ul>";
-	Set paramKeys = _parameters.keySet();
-	Iterator paramKeysIt = paramKeys.iterator();
-	logger.debug("--- Request Parameters---");
-	while (paramKeysIt.hasNext()) {
-	    String key = (String) paramKeysIt.next();
-	    
-	    if (!key.equalsIgnoreCase("template") 
-	    	&& !key.equalsIgnoreCase("biobjectId")
-		    && !key.equalsIgnoreCase("cr_manager_url") && !key.equalsIgnoreCase("events_manager_url")
-		    && !key.equalsIgnoreCase("user") && !key.equalsIgnoreCase("SPAGOBI_AUDIT_SERVLET")
-		    && !key.equalsIgnoreCase("spagobicontext") && !key.equalsIgnoreCase("SPAGOBI_AUDIT_ID")
-		    && !key.equalsIgnoreCase("username")) {
-		Object valueObj = _parameters.get(key);
-		logger.debug(key+"/"+valueObj.toString());
-		parametersList += "<li>" + key + " = " + (valueObj != null ? valueObj.toString() : "") + "</li>";
-	    }
-	}
-	logger.debug("--- Request Parameters---");
-	parametersList += "</ul>";
-
-	Map startEventParams = new HashMap();
-	startEventParams.put(EVENT_TYPE, DOCUMENT_EXECUTION_START);
-	startEventParams.put(BIOBJECT_ID, _parameters.get(EngineConstants.ENV_DOCUMENT_ID));
-
-	Integer startEventId = null;
-	EventServiceProxy eventServiceProxy = (EventServiceProxy)_parameters.get( EngineConstants.ENV_EVENT_SERVICE_PROXY);
+		
+		// registering the start execution event
+		String startExecutionEventDescription = "${talend.execution.started}<br/>";
 	
-
-	try {
-
-	    String startEventParamsStr = getParamsStr(startEventParams);
-
-	    eventServiceProxy.fireEvent(startExecutionEventDescription + parametersList, startEventParamsStr,
-		    TALEND_ROLES_HANDLER_CLASS_NAME, TALEND_PRESENTAION_HANDLER_CLASS_NAME);
-	    logger.debug("Start Fire Event");
-
-	} catch (Exception e) {
-	    logger.error("problems while registering the start process event", e);
-	}
-
-	if (_command == null) {
-	    logger.error("No command to be executed");
-	    return;
-	}
-
-	Map endEventParams = new HashMap();
-	endEventParams.put(EVENT_TYPE, DOCUMENT_EXECUTION_END);
-	// endEventParams.put("biobj-path", params.get(TEMPLATE_PATH));
-	endEventParams.put(BIOBJECT_ID, _parameters.get("document"));
-	if (startEventId != null) {
-	    endEventParams.put(START_EVENT_ID, startEventId.toString());
-	}
-
-	String endExecutionEventDescription = null;
-	BufferedReader input = null;
-	try {
-	    logger.debug("Java Command:"+_command);
-	    logger.debug("Executable Job Dir:"+_executableJobDir);
-	    Process p =Runtime.getRuntime().exec(_command, _envr, _executableJobDir);
-
-	    p.waitFor();
-	   
-	    
-	   LineNumberReader in = new LineNumberReader( new InputStreamReader(p.getErrorStream()) );
-	   String line = null;
-	   String str = "";
-	   while( (line = in.readLine()) != null) {
-		   str += line  + "\n";
-	   }
-	   logger.debug(str);
-	   
-	    
-	    
-	   
-	    
-	    //CODICE DA USARE EVENTUALMENTE IN FUTURO CON ALTRE MODIFICHE:
-	    /*this.talendJobClass = Class.forName(talendJobClassName); 
-	    this.runJob = this.talendJobClass.getMethod("runJob", new  Class[]{String[].class}); 
-	    int status = ((Integer)runJob.invoke(null,  mainMethodParams)).intValue(); */
-	    
-	    endExecutionEventDescription = "${talend.execution.executionOk}<br/>";
-	    endEventParams.put("operation-result", "success");
-
-	} catch (Throwable e) {
-	    logger.error("Error while executing command " + _command, e);
-	    endExecutionEventDescription = "${talend.execution.executionKo}<br/>";
-	    endEventParams.put("operation-result", "failure");
-	} finally {
-	    if (_filesToBeDeletedAfterJobExecution != null && _filesToBeDeletedAfterJobExecution.size() > 0) {
-		Iterator it = _filesToBeDeletedAfterJobExecution.iterator();
-		while (it.hasNext()) {
-		    File aFile = (File) it.next();
-		    if (aFile != null && aFile.exists())
-			FileUtils.deleteDirectory(aFile);
+		String parametersList = "${talend.execution.parameters}<br/><ul>";
+		Set paramKeys = _parameters.keySet();
+		Iterator paramKeysIt = paramKeys.iterator();
+		logger.debug("--- Request Parameters---");
+		while (paramKeysIt.hasNext()) {
+		    String key = (String) paramKeysIt.next();
+		    
+		    if (!key.equalsIgnoreCase("template") 
+		    	&& !key.equalsIgnoreCase("biobjectId")
+			    && !key.equalsIgnoreCase("cr_manager_url") && !key.equalsIgnoreCase("events_manager_url")
+			    && !key.equalsIgnoreCase("user") && !key.equalsIgnoreCase("SPAGOBI_AUDIT_SERVLET")
+			    && !key.equalsIgnoreCase("spagobicontext") && !key.equalsIgnoreCase("SPAGOBI_AUDIT_ID")
+			    && !key.equalsIgnoreCase("username")) {
+			Object valueObj = _parameters.get(key);
+			logger.debug(key+"/"+valueObj);
+			parametersList += "<li>" + key + " = " + (valueObj != null ? valueObj.toString() : "") + "</li>";
+		    }
 		}
-	    }
-	    if (input != null) {
+		logger.debug("--- Request Parameters---");
+		parametersList += "</ul>";
+	
+		Map startEventParams = new HashMap();
+		startEventParams.put(EVENT_TYPE, DOCUMENT_EXECUTION_START);
+		startEventParams.put(BIOBJECT_ID, _parameters.get(EngineConstants.ENV_DOCUMENT_ID));
+	
+		Integer startEventId = null;
+		EventServiceProxy eventServiceProxy = (EventServiceProxy)_parameters.get( EngineConstants.ENV_EVENT_SERVICE_PROXY);
+		
+	
 		try {
-		    input.close();
-		} catch (IOException e) {
-		    e.printStackTrace();
+	
+		    String startEventParamsStr = getParamsStr(startEventParams);
+	
+		    eventServiceProxy.fireEvent(startExecutionEventDescription + parametersList, startEventParamsStr,
+			    TALEND_ROLES_HANDLER_CLASS_NAME, TALEND_PRESENTAION_HANDLER_CLASS_NAME);
+		    logger.debug("Start Fire Event");
+	
+		} catch (Exception e) {
+		    logger.error("problems while registering the start process event", e);
 		}
-	    }
-	}
-
-	try {
-
-	    String endEventParamsStr = getParamsStr(endEventParams);
-
-	    eventServiceProxy.fireEvent(endExecutionEventDescription + parametersList, endEventParamsStr,
-		    TALEND_ROLES_HANDLER_CLASS_NAME, TALEND_PRESENTAION_HANDLER_CLASS_NAME);
-	    logger.debug("End fire event");
-
-	} catch (Exception e) {
-	    logger.error("problems while registering the end process event", e);
-	}
-	completeWithoutError = true;
+	
+		if (_command == null) {
+		    logger.error("No command to be executed");
+		    return;
+		}
+	
+		Map endEventParams = new HashMap();
+		endEventParams.put(EVENT_TYPE, DOCUMENT_EXECUTION_END);
+		// endEventParams.put("biobj-path", params.get(TEMPLATE_PATH));
+		endEventParams.put(BIOBJECT_ID, _parameters.get("document"));
+		if (startEventId != null) {
+		    endEventParams.put(START_EVENT_ID, startEventId.toString());
+		}
+	
+		String endExecutionEventDescription = null;
+		BufferedReader input = null;
+		try {
+		    logger.debug("Java Command:"+_command);
+		    logger.debug("Executable Job Dir:"+_executableJobDir);
+		    Process p =Runtime.getRuntime().exec(_command, _envr, _executableJobDir);
+	
+		    p.waitFor();
+		   
+		    
+		   LineNumberReader in = new LineNumberReader( new InputStreamReader(p.getErrorStream()) );
+		   String line = null;
+		   String str = "";
+		   while( (line = in.readLine()) != null) {
+			   str += line  + "\n";
+		   }
+		   logger.debug(str);
+		   
+		    
+		    
+		   
+		    
+		    //CODICE DA USARE EVENTUALMENTE IN FUTURO CON ALTRE MODIFICHE:
+		    /*this.talendJobClass = Class.forName(talendJobClassName); 
+		    this.runJob = this.talendJobClass.getMethod("runJob", new  Class[]{String[].class}); 
+		    int status = ((Integer)runJob.invoke(null,  mainMethodParams)).intValue(); */
+		    
+		    endExecutionEventDescription = "${talend.execution.executionOk}<br/>";
+		    endEventParams.put("operation-result", "success");
+	
+		} catch (Throwable e) {
+		    logger.error("Error while executing command " + _command, e);
+		    endExecutionEventDescription = "${talend.execution.executionKo}<br/>";
+		    endEventParams.put("operation-result", "failure");
+		} finally {
+		    if (_filesToBeDeletedAfterJobExecution != null && _filesToBeDeletedAfterJobExecution.size() > 0) {
+			Iterator it = _filesToBeDeletedAfterJobExecution.iterator();
+			while (it.hasNext()) {
+			    File aFile = (File) it.next();
+			    if (aFile != null && aFile.exists())
+				FileUtils.deleteDirectory(aFile);
+			}
+		    }
+		    if (input != null) {
+			try {
+			    input.close();
+			} catch (IOException e) {
+			    e.printStackTrace();
+			}
+		    }
+		}
+	
+		try {
+	
+		    String endEventParamsStr = getParamsStr(endEventParams);
+	
+		    eventServiceProxy.fireEvent(endExecutionEventDescription + parametersList, endEventParamsStr,
+			    TALEND_ROLES_HANDLER_CLASS_NAME, TALEND_PRESENTAION_HANDLER_CLASS_NAME);
+		    logger.debug("End fire event");
+	
+		} catch (Exception e) {
+		    logger.error("problems while registering the end process event", e);
+		}
+		completeWithoutError = true;
 
     }
 

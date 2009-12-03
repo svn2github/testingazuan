@@ -31,6 +31,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiValue;
 import it.eng.spagobi.tools.objmetadata.bo.ObjMetadata;
 import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetadata;
 
@@ -47,6 +48,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Order;
 
 
 /**
@@ -55,6 +57,53 @@ import org.hibernate.criterion.Expression;
  */
 public class ObjMetadataDAOHibImpl extends AbstractHibernateDAO implements IObjMetadataDAO{
 	static private Logger logger = Logger.getLogger(ObjMetadataDAOHibImpl.class);
+	
+	/**
+	 * Load object's metadata by type
+	 * 
+	 * @param type the type(SHORT_TEXT or LONG_TEXT)
+	 * 
+	 * @return the metadata
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public List loadObjMetaDataListByType(String type) throws EMFUserError{
+		logger.debug("IN");
+		List toReturn = new ArrayList();
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Criteria finder = aSession.createCriteria(SbiObjMetadata.class);
+			finder.add(Expression.eq("SbiObjMetadata.dataType.valueCd",type));
+			logger.debug("Type setted: "+(type!=null?type:""));
+
+			List hibList = finder.list();
+			Iterator it = hibList.iterator();
+
+			while (it.hasNext()) {
+				toReturn.add(toObjMetadata((SbiObjMetadata) it.next()));
+			}
+			
+		} catch (HibernateException he) {
+			logger.error("Error while loading the metadata with type " + (type!=null?type:""), he);			
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
 	
 	/**
 	 * Load object's metadata by id.

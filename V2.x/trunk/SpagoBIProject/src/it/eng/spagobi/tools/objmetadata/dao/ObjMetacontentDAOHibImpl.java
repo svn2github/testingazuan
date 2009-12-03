@@ -210,29 +210,28 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 	 * 
 	 * @see it.eng.spagobi.tools.objmetadata.dao.IObjMetacontentDAO#loadObjMetacontentByObjId(java.lang.Integer, java.lang.Integer)
 	 */	
-	public List loadObjMetacontentBySubobjId(Integer objMetaId, Integer biObjId, Integer subObjId) throws EMFUserError{
+	public ObjMetacontent loadObjMetacontentBySubobjId(Integer objMetaId, Integer biObjId, Integer subObjId) throws EMFUserError{
 		logger.debug("IN");
-		List realResult = new ArrayList();
+		ObjMetacontent realResult = null;
 		Session tmpSession = null;
 		Transaction tx = null;
 		try {
 			tmpSession = getSession();
 			tx = tmpSession.beginTransaction();
 			
-			String hql = " from SbiObjMetacontents c where c.objmetaId = ? and c.biobjId = ?  and c.subobjId = ? ";
+			String hql = " from SbiObjMetacontents c where c.objmetaId = ? and c.biobjId = ? ";
+			if(subObjId!=null){
+				hql += "and c.subobjId = ? ";
+			}
 			Query aQuery = tmpSession.createQuery(hql);
 			aQuery.setInteger(0, objMetaId.intValue());
 			aQuery.setInteger(1, biObjId.intValue());
-			aQuery.setInteger(2, subObjId.intValue());
-			List hibList = aQuery.list();			
-			if (hibList == null) return null;		
-			
-			Iterator it = hibList.iterator();
-			while (it.hasNext()) {
-				realResult.add(toObjMetacontent((SbiObjMetacontents) it.next()));
+			if(subObjId!=null){
+				aQuery.setInteger(2, subObjId.intValue());
 			}
-			
-			tx.commit();
+			SbiObjMetacontents res =(SbiObjMetacontents) aQuery.uniqueResult();
+			realResult = toObjMetacontent(res);
+
 		} catch (HibernateException he) {
 			logger.error("Error while loading the metadata content list with metaid " + objMetaId, he);
 			if (tx != null)

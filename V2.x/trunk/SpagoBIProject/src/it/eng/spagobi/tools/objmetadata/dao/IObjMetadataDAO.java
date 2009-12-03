@@ -37,6 +37,18 @@ import java.util.List;
  */
 public interface IObjMetadataDAO {
 	
+	/**
+	 * Loads all detail information for a metadata identified by its <code>type</code>.
+	 * All these informations,  achived by a query to the DB, are stored
+	 * into a <code>metadata</code> object, which is returned.
+	 * 
+	 * @param type The type of metadata to load (LONG_TEXT or SHORT_TEXT)
+	 * 
+	 * @return A <code>objMetadata</code> object containing all loaded information
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public List loadObjMetaDataListByType(String type) throws EMFUserError;
 	
 	/**
 	 * Loads all detail information for a metadata identified by its <code>id</code>.

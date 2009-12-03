@@ -87,7 +87,7 @@ public interface IObjMetacontentDAO {
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public List loadObjMetacontentBySubobjId(Integer objMetaId, Integer biObjId, Integer subObjId) throws EMFUserError;
+	public ObjMetacontent loadObjMetacontentBySubobjId(Integer objMetaId, Integer biObjId, Integer subObjId) throws EMFUserError;
 	
 	/**
 	 * Loads all detail information for all object's metadata. For each of them, detail

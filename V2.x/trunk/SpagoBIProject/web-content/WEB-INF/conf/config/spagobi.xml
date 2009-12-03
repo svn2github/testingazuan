@@ -234,7 +234,9 @@ END-LIFERAY -->
 			-->
 		</TREE_INITIAL_STRUCTURE>
 	 </TREE_INITIALIZATION>
-     
+     <INDEX_INITIALIZATION>
+		<INDEX jndiResourcePath="java://comp/env/spagobi_resource_path" name="//idx" />
+	 </INDEX_INITIALIZATION>
   
 	
 </SPAGOBI>

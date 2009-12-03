@@ -42,7 +42,7 @@ String beginHourFormat;
 	protected StyleLabel styleAnnotation;
 
 	boolean dateAutoRange;
-
+boolean addTransparency;
 	ArrayList<RangeBlocks> ranges;
 	static final String X_LABEL = "x_label";
 	static final String Y_LABEL = "y_label";
@@ -54,6 +54,7 @@ String beginHourFormat;
 	static final String BEGIN_DATE_FORMAT = "begin_date_format";
 	static final String BEGIN_HOUR_FORMAT = "begin_hour_format";
 	static final String DATE_AUTO_RANGE = "date_auto_range";
+	static final String ADD_TRANSPARENCY = "add_transparency";
 	static final String HOUR_CODE = "ORA";
 	static final String STYLE_ANNOTATION_LABELS = "STYLE_ANNOTATION_LABELS";
 
@@ -108,6 +109,16 @@ logger.debug("IN");
 		else{
 			dateAutoRange=false;
 		}
+
+		if(confParameters.get(ADD_TRANSPARENCY)!=null){	
+			if(confParameters.get(ADD_TRANSPARENCY).toString().equalsIgnoreCase("true"))
+				addTransparency=true;
+			else addTransparency=false;
+		}
+		else{
+			addTransparency=false;
+		}
+
 
 
 

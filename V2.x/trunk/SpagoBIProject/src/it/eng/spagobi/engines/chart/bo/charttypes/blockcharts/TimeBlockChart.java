@@ -172,7 +172,7 @@ public class TimeBlockChart extends BlockCharts {
 					yValuesList.add(Double.valueOf(yVal));
 
 					Object cosa=patternRangeIndex.get(activity.getPattern());
-					
+
 					if(cosa!=null){
 						zValuesList.add(Double.valueOf(patternRangeIndex.get(activity.getPattern())).doubleValue()+0.5);
 					}
@@ -322,7 +322,14 @@ public class TimeBlockChart extends BlockCharts {
 			Integer index=patternRangeIndex.get(range.getPattern());
 			Color color=range.getColor();
 			if(color!=null){
-				Paint colorTransparent=new Color(color.getRed(), color.getGreen(), color.getBlue(), 50);			
+				//Paint colorTransparent=new Color(color.getRed(), color.getGreen(), color.getBlue(), 50);			
+				Paint colorTransparent=null;
+				if(addTransparency==true){
+					colorTransparent=new Color(color.getRed(), color.getGreen(), color.getBlue(),50);			
+				}
+				else{
+					colorTransparent=new Color(color.getRed(), color.getGreen(), color.getBlue());								
+				}
 				paintScale.add(index+0.5, colorTransparent);
 			}
 			//String insertLabel="            "+range.getLabel();

@@ -1,5 +1,7 @@
 package it.eng.spagobi.commons.utilities.indexing;
 
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IBinContentDAO;
@@ -39,6 +41,8 @@ public class LuceneIndexer {
 
 	private static final String LONG_TEXT = "LONG_TEXT";// html
 	private static final String SHORT_TEXT = "SHORT_TEXT";// simple text
+	
+	
 
 	static private Logger logger = Logger.getLogger(LuceneIndexer.class);
 
@@ -137,13 +141,10 @@ public class LuceneIndexer {
 					Integer idDomain = metadata.getDataType();
 					Integer metaId = metadata.getObjMetaId();
 					String metaLabel = metadata.getLabel();
-					Domain domain = DAOFactory.getDomainDAO().loadDomainById(
-							idDomain);
+					Domain domain = DAOFactory.getDomainDAO().loadDomainById(idDomain);
 	
-					IObjMetacontentDAO metacontentDAO = DAOFactory
-							.getObjMetacontentDAO();
-					List<ObjMetacontent> metacontents = metacontentDAO
-							.loadObjMetacontentByObjMetaId(metaId);
+					IObjMetacontentDAO metacontentDAO = DAOFactory.getObjMetacontentDAO();
+					List<ObjMetacontent> metacontents = metacontentDAO.loadObjMetacontentByObjMetaId(metaId);
 					if (metacontents != null) {
 						for (int j = 0; j < metacontents.size(); j++) {
 							ObjMetacontent metacontent = metacontents.get(j);
@@ -164,8 +165,7 @@ public class LuceneIndexer {
 										&& uidIter.term().field() == "uid"
 										&& uidIter.term().text().compareTo(uid) < 0) {
 									if (deleting) { // delete stale docs
-										logger.info("deleting html binary content "
-												+ uidIter.term().text());
+										logger.info("deleting html binary content "+ uidIter.term().text());
 										reader.deleteDocuments(uidIter.term());
 									}
 									uidIter.next();
@@ -176,14 +176,12 @@ public class LuceneIndexer {
 									uidIter.next(); // keep matching docs
 								} else if (!deleting) { // add new docs
 									Document doc = new Document();
-									addFieldsToDocument(doc, uid,biobjId, metaLabel, domain, htmlContent, content);
-									
+									addFieldsToDocument(doc, uid,biobjId, metaLabel, domain, htmlContent, content);									
 									writer.addDocument(doc);
 								}
 							} else { // creating a new index
 								Document doc = new Document();
-								addFieldsToDocument(doc, uid, biobjId, metaLabel, domain, htmlContent, content);
-								
+								addFieldsToDocument(doc, uid, biobjId, metaLabel, domain, htmlContent, content);								
 								writer.addDocument(doc);
 							}
 							
@@ -205,26 +203,42 @@ public class LuceneIndexer {
 	}
 	
 	private static void addFieldsToDocument(Document doc, String uid, Integer biobjId, String metaLabel,Domain domain, String htmlContent, byte[] content) throws UnsupportedEncodingException{
-		doc.add(new Field("uid", uid, Field.Store.YES,
+		doc.add(new Field(IndexingConstants.UID, uid, Field.Store.YES,
 				Field.Index.NOT_ANALYZED));
-		doc.add(new Field("biobjId", String.valueOf(biobjId.intValue()), Field.Store.YES,
+		doc.add(new Field(IndexingConstants.BIOBJ_ID, String.valueOf(biobjId.intValue()), Field.Store.YES,
 				Field.Index.NOT_ANALYZED));
-		doc.add(new Field("metadata", metaLabel,
+		doc.add(new Field(IndexingConstants.METADATA, metaLabel,
 				Field.Store.YES,
 				Field.Index.NOT_ANALYZED));
 		if (domain.getValueCd().equalsIgnoreCase(LONG_TEXT)) { // index
 																// html
 																// binary
 																// content
-			doc.add(new Field("contents", htmlContent,
+			doc.add(new Field(IndexingConstants.CONTENTS, htmlContent,
 					Field.Store.NO, Field.Index.ANALYZED));
 			logger.info("adding html binary content " + doc.get("uid"));
 		} else if (domain.getValueCd().equalsIgnoreCase(
 				SHORT_TEXT)) {// index simple text binary
 								// content
-			doc.add(new Field("contents", new String(content, "UTF-8"),
+			doc.add(new Field(IndexingConstants.CONTENTS, new String(content, "UTF-8"),
 					Field.Store.NO, Field.Index.ANALYZED));
 			logger.info("adding simple text binary content " + doc.get("uid"));
+		}
+		addBiobjFieldsToDocument(doc, biobjId);
+	}
+	
+	private static void addBiobjFieldsToDocument(Document doc, Integer biObjectID){
+		try {
+			BIObject biObj = DAOFactory.getBIObjectDAO().loadBIObjectById(biObjectID);
+			doc.add(new Field(IndexingConstants.BIOBJ_NAME, biObj.getName(),
+					Field.Store.NO, Field.Index.ANALYZED));
+			doc.add(new Field(IndexingConstants.BIOBJ_DESCR, biObj.getDescription(),
+					Field.Store.NO, Field.Index.ANALYZED));
+			doc.add(new Field(IndexingConstants.BIOBJ_LABEL, biObj.getLabel(),
+					Field.Store.NO, Field.Index.ANALYZED));
+			
+		} catch (EMFUserError e) {
+			logger.error(e.getMessage());
 		}
 	}
 

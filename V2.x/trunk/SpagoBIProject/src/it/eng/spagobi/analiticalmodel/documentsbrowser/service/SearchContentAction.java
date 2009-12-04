@@ -22,12 +22,15 @@ package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
+import it.eng.spagobi.commons.utilities.indexing.IndexingConstants;
 import it.eng.spagobi.commons.utilities.indexing.LuceneSearcher;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.utilities.exceptions.SpagoBIException;
@@ -104,44 +107,32 @@ public class SearchContentAction extends AbstractBaseHttpAction{
 			SessionContainer sessCont = getSessionContainer();
 			SessionContainer permCont = sessCont.getPermanentContainer();
 			IEngUserProfile profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			
-			/*
-			//getting  documents
-			List tmpObjects = DAOFactory.getBIObjectDAO().searchBIObjects(valueFilter, typeFilter, columnFilter, scope, Integer.valueOf(folderID), profile);
-			objects = new ArrayList();
-			if(tmpObjects != null) {
-                for(Iterator it = tmpObjects.iterator(); it.hasNext();) {
-                    BIObject obj = (BIObject)it.next();
-                    if(ObjectsAccessVerifier.checkProfileVisibility(obj, profile))
-                    	objects.add(obj);
-                }
+			String indexBasePath = "";
+			SourceBean jndiBean =(SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.RESOURCE_PATH_JNDI_NAME");
+			if (jndiBean != null) {
+				String jndi = jndiBean.getCharacters();
+				indexBasePath = SpagoBIUtilities.readJndiResource(jndi);
 			}
-			*/
-			String index = "C:\\Programmi\\resources\\idx";
+			String index = indexBasePath+"\\idx";
 			IndexReader reader;
 			try{
 				reader = IndexReader.open(FSDirectory.open(new File(index)), true);
 				// read-only=true
-				boolean isIndexCurrent = reader.isCurrent();
-				//if !isC
+				//boolean isIndexCurrent = reader.isCurrent();
 				IndexSearcher searcher = new IndexSearcher(reader);
+				
+				String[] fields = {IndexingConstants.CONTENTS, IndexingConstants.BIOBJ_DESCR, IndexingConstants.BIOBJ_NAME, IndexingConstants.BIOBJ_LABEL};
 				//getting  documents
-				ScoreDoc [] hits = LuceneSearcher.searchIndex(searcher, valueFilter, index);
+				
+				ScoreDoc [] hits = LuceneSearcher.searchIndex(searcher, valueFilter, index, fields);
 				
 				objects = new ArrayList();
 				if(hits != null) {
 	                for(int i=0; i<hits.length; i++) {
 	                	
 	        	    	ScoreDoc hit = hits[i];
-	        	    	logger.debug("Doc id:: "+hit.doc);
-	        	    	logger.debug("Doc score:: "+hit.score);
 	        	    	Document doc = searcher.doc(hit.doc);
-	        	        String uid = doc.get("uid");
-	        	        String biobjId = doc.get("biobjId");
-	        	        String metadata = doc.get("metadata");
-	        	        if (uid != null) {
-	        	          logger.debug("Doc uid:: "+uid);
-	        	        }
+	        	        String biobjId = doc.get(IndexingConstants.BIOBJ_ID);
 	        	        BIObject obj =DAOFactory.getBIObjectDAO().loadBIObjectForDetail(Integer.valueOf(biobjId));        	        
 	        	        
 	        	        objects.add(obj);

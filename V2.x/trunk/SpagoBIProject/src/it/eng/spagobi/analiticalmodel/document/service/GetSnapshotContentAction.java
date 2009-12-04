@@ -65,10 +65,11 @@ public class GetSnapshotContentAction extends AbstractHttpAction {
 			content = snap.getContent();
 		} else {
 			logger.error("Current user [" + ((UserProfile) profile).getUserId().toString() + "] CANNOT see snapshot with id = " + idSnap + " of document with id = " + objectId);
-			content = "You cannot see required snapshot.".getBytes();
+			//content = "You cannot see required snapshot.".getBytes();
+			content = "You cannot see required snapshot.".getBytes("UTF-8");
 		}
 		httpResp.setContentType("text/html");
-		//httpResp.setContentLength(content.length);
+		httpResp.setContentLength(content.length);
 		httpResp.getOutputStream().write(content);
 		httpResp.setStatus(SUCCESS);
 		httpResp.getOutputStream().flush();

@@ -22,7 +22,7 @@ public class LuceneSearcher {
 	
 	static private Logger logger = Logger.getLogger(LuceneSearcher.class);
 
-	public static void searchIndex(IndexSearcher searcher, String queryString, String index) throws IOException, ParseException {
+	public static ScoreDoc[] searchIndex(IndexSearcher searcher, String queryString, String index) throws IOException, ParseException {
 		logger.debug("IN");
 		String field = "contents";
 
@@ -41,7 +41,7 @@ public class LuceneSearcher {
 	    logger.info(numTotalHits + " total matching documents");
 
 	    //loop over results
-	    for (int i=0; i<hits.length; i++){
+/*	    for (int i=0; i<hits.length; i++){
 	    	ScoreDoc hit = hits[i];
 	    	logger.debug("Doc id:: "+hit.doc);
 	    	logger.debug("Doc score:: "+hit.score);
@@ -50,9 +50,10 @@ public class LuceneSearcher {
 	        if (uid != null) {
 	          logger.debug("Doc uid:: "+uid);
 	        }
-	    }
-	    
+	    }*/
 	    logger.debug("OUT");
+	    return hits;
+	    
 
 	}
 	public static void main(String[] argv) {

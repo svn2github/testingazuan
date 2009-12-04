@@ -28,17 +28,26 @@ import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.commons.utilities.indexing.LuceneSearcher;
+import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.utilities.exceptions.SpagoBIException;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.store.FSDirectory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,7 +105,7 @@ public class SearchContentAction extends AbstractBaseHttpAction{
 			SessionContainer permCont = sessCont.getPermanentContainer();
 			IEngUserProfile profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			
-			
+			/*
 			//getting  documents
 			List tmpObjects = DAOFactory.getBIObjectDAO().searchBIObjects(valueFilter, typeFilter, columnFilter, scope, Integer.valueOf(folderID), profile);
 			objects = new ArrayList();
@@ -107,8 +116,56 @@ public class SearchContentAction extends AbstractBaseHttpAction{
                     	objects.add(obj);
                 }
 			}
+			*/
+			String index = "C:\\Programmi\\resources\\idx";
+			IndexReader reader;
+			try{
+				reader = IndexReader.open(FSDirectory.open(new File(index)), true);
+				// read-only=true
+				boolean isIndexCurrent = reader.isCurrent();
+				//if !isC
+				IndexSearcher searcher = new IndexSearcher(reader);
+				//getting  documents
+				ScoreDoc [] hits = LuceneSearcher.searchIndex(searcher, valueFilter, index);
+				
+				objects = new ArrayList();
+				if(hits != null) {
+	                for(int i=0; i<hits.length; i++) {
+	                	
+	        	    	ScoreDoc hit = hits[i];
+	        	    	logger.debug("Doc id:: "+hit.doc);
+	        	    	logger.debug("Doc score:: "+hit.score);
+	        	    	Document doc = searcher.doc(hit.doc);
+	        	        String uid = doc.get("uid");
+	        	        String biobjId = doc.get("biobjId");
+	        	        String metadata = doc.get("metadata");
+	        	        if (uid != null) {
+	        	          logger.debug("Doc uid:: "+uid);
+	        	        }
+	        	        BIObject obj =DAOFactory.getBIObjectDAO().loadBIObjectForDetail(Integer.valueOf(biobjId));        	        
+	        	        
+	        	        objects.add(obj);
+	                }
+				}
+				searcher.close();
+			} catch (CorruptIndexException e) {
+				logger.error(e.getMessage());
+				throw new SpagoBIException("Index corrupted", e);
+				
+			} catch (IOException e) {
+				logger.error(e.getMessage());
+				throw new SpagoBIException("Unable to read index", e);
+				
+			} // only searching, so
+			catch (ParseException e) {
+				logger.error(e.getMessage());
+				throw new SpagoBIException("Wrong query syntax", e);
+				
+			}
+			
+			
 		
-			JSONArray documentsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( objects,null );
+			JSONArray documentsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( objects,Locale.ENGLISH);
 			JSONObject documentsResponseJSON =  createJSONResponseDocuments(documentsJSON);
 		
 			try {

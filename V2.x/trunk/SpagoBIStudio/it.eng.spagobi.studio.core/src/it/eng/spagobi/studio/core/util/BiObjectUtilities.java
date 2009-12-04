@@ -260,6 +260,7 @@ public class BiObjectUtilities {
 		else if(type.equalsIgnoreCase(SpagoBIConstants.OLAP_TYPE_CODE)){
 		}
 		else if(type.equalsIgnoreCase("MAP") && engine.equalsIgnoreCase(SpagoBIStudioConstants.GEO_ENGINE_LABEL)){
+			extension="."+SpagoBIStudioConstants.GEO_ENGINE_EXTENSION;
 		}		
 		else if(type.equalsIgnoreCase("OFFICE_DOC")){
 		}

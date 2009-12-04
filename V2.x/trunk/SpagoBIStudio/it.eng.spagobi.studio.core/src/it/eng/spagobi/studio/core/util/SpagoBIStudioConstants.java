@@ -9,6 +9,7 @@ public class SpagoBIStudioConstants {
 	public final static String JASPER_REPORT_ENGINE_EXTENSION="jrxml";
 	public final static String BIRT_REPORT_ENGINE_EXTENSION="rptdesign";
 	public final static String DOCUMENT_COMPOSITION_ENGINE_EXTENSION="sbidoccomp";
+	public final static String GEO_ENGINE_EXTENSION="sbigeo";
 
 	public final static String DASHBOARD_ENGINE_LABEL="DashboardInternalEng";
 	public final static String CHART_ENGINE_LABEL="ChartEngine";

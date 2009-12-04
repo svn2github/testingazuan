@@ -47,7 +47,7 @@ public class SpagoBINewJasperReportWizard extends Wizard implements INewWizard {
 		if (jasperFileName == null || jasperFileName.trim().equals("")) {
 			//SpagoBILogger.errorLog("JasperNameEmpty", null);
 			MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
-					"Error", "Dashboard name empty");
+					"Error", "Report name empty");
 			return false;
 		}
 

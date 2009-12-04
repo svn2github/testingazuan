@@ -45,11 +45,7 @@ public class BirtImageServlet extends HttpServlet {
 		File imageFile = null;
 		String completeImageFileName = "";
 		
-		// USER PROFILE
-		session = request.getSession();
-		IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		userId = (String) profile.getUserUniqueIdentifier();
-		logger.debug("userId=" + userId);
+		
 
 		if (chartLabel == null){
 			String imagePath = request.getParameter("imagePath");
@@ -78,13 +74,19 @@ public class BirtImageServlet extends HttpServlet {
 			}
 		
 		
-			try{
+			try{		
 				fis = new FileInputStream(imageFile);
 			}catch (Exception e) {
 				logger.error("Error writing image into file input stream", e);
 			}
 		}
 		else{
+			// USER PROFILE
+			session = request.getSession();
+			IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			userId = (String) profile.getUserUniqueIdentifier();
+			logger.debug("userId=" + userId);
+			
 			fis = executeEngineChart(allParams);
 		}
 		try {

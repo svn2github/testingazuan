@@ -47,4 +47,5 @@ Export-Package: it.eng.spagobi.commons.constants,
  it.eng.spagobi.studio.core.exceptions,
  it.eng.spagobi.studio.core.log,
  it.eng.spagobi.studio.core.properties,
- it.eng.spagobi.studio.core.sdk
+ it.eng.spagobi.studio.core.sdk,
+ it.eng.spagobi.studio.core.util

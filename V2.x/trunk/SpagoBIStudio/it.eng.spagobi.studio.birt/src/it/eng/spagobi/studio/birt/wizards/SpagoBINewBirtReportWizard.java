@@ -52,7 +52,7 @@ public class SpagoBINewBirtReportWizard extends Wizard implements INewWizard {
 		if (birtFileName == null || birtFileName.trim().equals("")) {
 			//SpagoBILogger.errorLog("BirtNameEmpty", null);
 			MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
-					"Error", "Dashboard name empty");
+					"Error", "Birt name empty");
 			return false;
 		}
 

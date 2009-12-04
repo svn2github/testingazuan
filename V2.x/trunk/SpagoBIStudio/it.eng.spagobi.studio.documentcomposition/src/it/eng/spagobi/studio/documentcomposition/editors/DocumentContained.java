@@ -39,7 +39,7 @@ public class DocumentContained {
 	public static final String IMG_OLAP="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
 	public static final String IMG_ETL="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
 	public static final String IMG_OFFICE_DOC="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
-	public static final String IMG_MAP="it/eng/spagobi/studio/documentcomposition/resources/images/iconMap.PNG";
+	public static final String IMG_MAP="it/eng/spagobi/studio/documentcomposition/resources/images/IconMap.PNG";
 	public static final String IMG_DATAMART="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
 	public static final String IMG_DOSSIER="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
 	public static final String IMG_DATA_MINING="it/eng/spagobi/studio/documentcomposition/resources/images/olap.png";
@@ -172,7 +172,13 @@ public class DocumentContained {
 			}
 		}
 		catch (Exception e) {
+			SpagoBILogger.errorLog("COuld not find image "+imagePath, e);
+			return;
 			// TODO: handle exception
+		}
+		if(image==null){
+			SpagoBILogger.errorLog("COuld not find image "+imagePath, null);
+			return;
 		}
 		final int originalWidth = image.getBounds().width;
 		final int originalHeight = image.getBounds().height; 				

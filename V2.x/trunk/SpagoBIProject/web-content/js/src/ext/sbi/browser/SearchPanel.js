@@ -39,10 +39,8 @@ Sbi.browser.SearchPanel = function(config) {
     	, items: [
     	          new Ext.form.Checkbox({id: 'temp'})
     	  ]
-    	  //, valueFilter: 'pippo'
-    	  //, scope: 'node'
-    	  , typeFilter: 'CONTAINS'
-    	  , columnFilter: 'NAME'
+    	  //, docMeta:false
+    	  //, docName:false
 	});   
 	
 	Sbi.browser.SearchPanel.superclass.constructor.call(this, c);  
@@ -51,8 +49,7 @@ Sbi.browser.SearchPanel = function(config) {
 	
 	this.addListener('afterlayout', function(el){
 		
-		if(this.searchField) return;
-		
+		if(this.searchField) return;		
 			
 		this.remove('temp');
 		
@@ -62,110 +59,64 @@ Sbi.browser.SearchPanel = function(config) {
 	    });
 		
 		this.searchField.addListener('onsearch', this.onSearch, this);
+		
 		this.searchField.addListener('onreset', function(){
 			this.setFormState({valueFilter: null});
 			this.fireEvent('onreset', this, this.getFormState());
 		}, this);
 		
-		this.scopeCheckbox =  new Ext.form.Checkbox({
-	    	boxLabel: 'search only in current folder'
+		this.docNameCheckbox =  new Ext.form.Checkbox({
+	    	boxLabel: LN('sbi.browser.searchpanel.docname')
+	    	,hideLabel: true 
+	    	, width:220
+	    });	
+		this.docLabelCheckbox =  new Ext.form.Checkbox({
+	    	boxLabel: LN('sbi.browser.searchpanel.doclabel')
+	    	,hideLabel: true 
+	    	, width:220
+	    });	
+		this.docDescrCheckbox =  new Ext.form.Checkbox({
+	    	boxLabel: LN('sbi.browser.searchpanel.docdescr')
+	    	,hideLabel: true 
+	    	, width:220
+	    });	
+		this.docMetaCheckbox =  new Ext.form.Checkbox({
+	    	boxLabel: LN('sbi.browser.searchpanel.docmeta')
 	    	,hideLabel: true 
 	    	, width:220
 	    });	
 		
-		var filterTypes = [
-		    ['CONTAINS', LN('sbi.browser.searchpanel.filters.contains.name'), LN('sbi.browser.searchpanel.filters.contains.description')]
-		    , ['START_WITH', LN('sbi.browser.searchpanel.filters.startwith.name'), LN('sbi.browser.searchpanel.filters.contains.description')]
-		    , ['END_WITH', LN('sbi.browser.searchpanel.filters.endwith.name'), LN('sbi.browser.searchpanel.filters.contains.description')]
-		    , ['EQUALS_TO', LN('sbi.browser.searchpanel.filters.equalsto.name'), LN('sbi.browser.searchpanel.filters.contains.description')]
-		    , ['GREATER_THAN', LN('sbi.browser.searchpanel.filters.gt.name'), LN('sbi.browser.searchpanel.filters.contains.description')]
-		    , ['EQUALS_OR_GREATER_THAN', LN('sbi.browser.searchpanel.filters.egt.name'), LN('sbi.browser.searchpanel.filters.contains.description')]
-		    , ['LESS_THAN', LN('sbi.browser.searchpanel.filters.lt.name'), LN('sbi.browser.searchpanel.filters.contains.description')]
-		    , ['EQUALS_OR_LESS_THAN', LN('sbi.browser.searchpanel.filters.elt.name'), LN('sbi.browser.searchpanel.filters.contains.description')]
-		];
-		                        
-		var filterTypesComboBoxStore = new Ext.data.SimpleStore({
-		   fields: ['value', 'field', 'description']
-		   , data : filterTypes
-		});
-		             	
-		this.filterTypesComboBox = new Ext.form.ComboBox({
-		   tpl: '<tpl for="."><div ext:qtip="{field}: {description}" class="x-combo-list-item">{field}</div></tpl>',	
-		   editable  : false,
-		   fieldLabel : 'Function',
-		   forceSelection : true,
-		   mode : 'local',
-		   name : 'typeFilter',
-		   store : filterTypesComboBoxStore,
-		   displayField:'field',
-		   valueField:'value',
-		   emptyText:'Select a function...',
-		   typeAhead: true,
-		   triggerAction: 'all',
-		   width: 100,
-		   selectOnFocus:true,
-		   listeners: {
-			'select': {
-		       fn: function(){}
-		       , scope: this
-		     }
-		 	}
-		});	
-		             	
-		var columnNames = [
-		   ['LABEL', LN('sbi.browser.searchpanel.columns.label.name'), LN('sbi.browser.searchpanel.columns.label.description')]
-		   , ['NAME', LN('sbi.browser.searchpanel.columns.name.name'), LN('sbi.browser.searchpanel.columns.label.description')]
-		   , ['ENGINE', LN('sbi.browser.searchpanel.columns.engine.name'), LN('sbi.browser.searchpanel.columns.label.description')]
-		   , ['STATE', LN('sbi.browser.searchpanel.columns.state.name'), LN('sbi.browser.searchpanel.columns.label.description')]
-		   , ['CREATION_DATE', LN('sbi.browser.searchpanel.columns.creationdate.name'), LN('sbi.browser.searchpanel.columns.label.description')]
-		];
-		             	                        
-		var columnNamesComboBoxStore = new Ext.data.SimpleStore({
-			fields: ['value', 'field', 'description']
-		    , data : columnNames
-		});
-		             	             	
-		this.columnNamesComboBox = new Ext.form.ComboBox({
-			tpl: '<tpl for="."><div ext:qtip="{field}: {description}" class="x-combo-list-item">{field}</div></tpl>',	
-		    editable  : false,
-		    fieldLabel : 'Attribute',
-		    forceSelection : true,
-		    mode : 'local',
-		    name : 'columnFilter',
-		    store : columnNamesComboBoxStore,
-		    displayField:'field',
-		    valueField:'value',
-		    emptyText:'Select an attribute...',
-		    typeAhead: true,
-		    triggerAction: 'all',
-		    width: 100,
-		    selectOnFocus:true,
-		    listeners: {
-		   		'select': {
-		        	fn: function(){}
-		            , scope: this
-				}
-		    }
-		});	
-		
+		this.similCheckbox =  new Ext.form.Checkbox({
+	    	boxLabel: LN('sbi.browser.searchpanel.similar')
+	    	,hideLabel: true 
+	    	, width:220
+	    });	
 		this.add({
 	        xtype:'fieldset',
-	        title: 'Query',
+	        title: LN('sbi.browser.searchpanel.query'),
 	        collapsible: false,
 	        autoHeight:true,
 	        //defaults: {width: 10},
 	        defaultType: 'textfield',
-	        items :[this.searchField, this.scopeCheckbox]
+	        items :[this.searchField]
 	       });
-		
+		this.add({
+	        xtype:'fieldset',
+	        title: LN('sbi.browser.searchpanel.searchin'),
+	        collapsible: true,
+	        autoHeight:true,
+	        //defaults: {width: 10},
+	        defaultType: 'textfield',
+	        items :[this.docNameCheckbox, this.docLabelCheckbox, this.docDescrCheckbox, this.docMetaCheckbox]
+	       });
 		this.add({
             xtype:'fieldset',
-            title: 'Advanced options',
+            title: LN('sbi.browser.searchpanel.advanced'),
             collapsible: true,
             autoHeight:true,
             //defaults: {width: 10},
             defaultType: 'textfield',
-            items :[this.filterTypesComboBox, this.columnNamesComboBox]
+            items :[this.similCheckbox]
            });
 	
 		this.setFormState(c);
@@ -176,26 +127,22 @@ Sbi.browser.SearchPanel = function(config) {
 Ext.extend(Sbi.browser.SearchPanel, Ext.FormPanel, {
     
 	searchField: null
-	, scopeCheckbox: null
-	, filterTypesComboBox: null
-	, columnNamesComboBox: null
-	, selectedFolderId: null
+	, similCheckbox: null
+	, docMetaCheckbox: null
+	, docDescrCheckbox: null
+	, docLabelCheckbox: null
+	, docNameCheckbox: null
 	
 	, getFormState: function() {
 	
 		var formState = {};
 	    
 		formState.valueFilter = this.searchField.getRawValue();
-		formState.scope = this.scopeCheckbox.getValue() === true? 'node':  'tree';
-		if(formState.scope === 'node') {
-			if(this.selectedFolderId) {
-				formState.folderId = this.selectedFolderId;
-			} else {
-				formState.scope = 'tree';
-			}			
-		}
-		formState.typeFilter = this.filterTypesComboBox.getValue();
-		formState.columnFilter = this.columnNamesComboBox.getValue();
+		formState.docName = this.docNameCheckbox.getValue();
+		formState.docLabel = this.docLabelCheckbox.getValue();
+		formState.docDescr = this.docDescrCheckbox.getValue();
+		formState.docMeta = this.docMetaCheckbox.getValue();
+		formState.similar = this.similCheckbox.getValue();
 	    	   
 	    return formState;
 	}
@@ -206,20 +153,22 @@ Ext.extend(Sbi.browser.SearchPanel, Ext.FormPanel, {
 			this.searchField.setValue( formState.valueFilter );
 		}
 		
-		if(formState.scope) {
-			if(formState.scope === 'node') {
-				this.scopeCheckbox.setValue(true);
-			} else {
-				this.scopeCheckbox.setValue(false);
-			}
+		if(formState.docName) {
+			this.docNameCheckbox.setValue(formState.docName);
 		} 
 		
-		if(formState.typeFilter) {
-			this.filterTypesComboBox.setValue( formState.typeFilter );
+		if(formState.docLabel) {
+			this.docLabelCheckbox.setValue( formState.docLabel );
 		}
 		
-		if(formState.columnFilter) {
-			this.columnNamesComboBox.setValue( formState.columnFilter );
+		if(formState.docDescr) {
+			this.docDescrCheckbox.setValue( formState.docDescr );
+		}
+		if(formState.docMeta) {
+			this.docMetaCheckbox.setValue( formState.docMeta );
+		}
+		if(formState.similar) {
+			this.similCheckbox.setValue( formState.similar );
 		}
 	}
 	

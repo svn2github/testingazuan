@@ -34,6 +34,17 @@ Sbi.locale.ln['sbi.browser.searchpanel.columns.engine.name']  = 'motore';
 Sbi.locale.ln['sbi.browser.searchpanel.columns.state.name']  = 'stato';
 Sbi.locale.ln['sbi.browser.searchpanel.columns.creationdate.name']  = 'data di creazione';
 
+Sbi.locale.ln['sbi.browser.searchpanel.searchin'] = 'Cerca in';
+Sbi.locale.ln['sbi.browser.searchpanel.query'] = 'Testo';
+Sbi.locale.ln['sbi.browser.searchpanel.advanced'] = 'Opzioni avanzate';
+Sbi.locale.ln['sbi.browser.searchpanel.docname'] = 'nome documento';
+Sbi.locale.ln['sbi.browser.searchpanel.doclabel'] = 'etichetta documento';
+Sbi.locale.ln['sbi.browser.searchpanel.docdescr'] = 'descrizione documento';
+Sbi.locale.ln['sbi.browser.searchpanel.docmeta'] = 'metadati e viste';
+Sbi.locale.ln['sbi.browser.searchpanel.similar'] = 'cerca parole simili';
+
+
+
 Sbi.locale.ln['sbi.browser.misc.x']  = 'per';
 Sbi.locale.ln['sbi.browser.misc.ungroup']  = 'rimuovi gruppi';
 

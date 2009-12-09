@@ -20,19 +20,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.commons.utilities.indexing.IndexingConstants;
 import it.eng.spagobi.commons.utilities.indexing.LuceneSearcher;
-import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.utilities.exceptions.SpagoBIException;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 import it.eng.spagobi.utilities.service.JSONSuccess;
@@ -42,6 +38,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
@@ -63,12 +60,12 @@ import org.json.JSONObject;
 public class SearchContentAction extends AbstractBaseHttpAction{
 	
 	// REQUEST PARAMETERS
-	public static final String FOLDER_ID = "folderId";
-	public static final String ROOT_FOLDER_ID = "rootFolderId";
+	public static final String DOC_NAME = "docName";
+	public static final String DOC_LABEL = "docLabel";
+	public static final String DOC_DESCR = "docDescr";
+	public static final String DOC_META = "docMeta";
+	public static final String SIMILAR = "similar";
 	
-	
-	public static final String ROOT_NODE_ID = "rootNode";
-		
 	
 	// logger component
 	private static Logger logger = Logger.getLogger(SearchContentAction.class);
@@ -83,30 +80,30 @@ public class SearchContentAction extends AbstractBaseHttpAction{
 			setSpagoBIRequestContainer( request );
 			setSpagoBIResponseContainer( response );
 			
-			String folderID = getAttributeAsString(FOLDER_ID);	
-			String rootFolderID = getAttributeAsString(ROOT_FOLDER_ID);	
-			String typeFilter = getAttributeAsString(SpagoBIConstants.TYPE_FILTER);
+			Vector<String> fieldsToSearch = new Vector<String>();
 			String valueFilter = getAttributeAsString(SpagoBIConstants.VALUE_FILTER);
-			String columnFilter = getAttributeAsString(SpagoBIConstants.COLUMN_FILTER );
-			String scope = getAttributeAsString(SpagoBIConstants.SCOPE );
+			fieldsToSearch.add(IndexingConstants.CONTENTS);
 			
-			logger.debug("Parameter [" + FOLDER_ID + "] is equal to [" + folderID + "]");
-			logger.debug("Parameter [" + ROOT_FOLDER_ID + "] is equal to [" + rootFolderID + "]");
-			logger.debug("Parameter [" + SpagoBIConstants.TYPE_FILTER + "] is equal to [" + typeFilter + "]");
+			boolean onDocName = getAttributeAsBoolean(DOC_NAME);
+			if(onDocName){
+				fieldsToSearch.add(IndexingConstants.BIOBJ_NAME);
+			}
+			boolean onDocLabel = getAttributeAsBoolean(DOC_LABEL);
+			if(onDocLabel){
+				fieldsToSearch.add(IndexingConstants.BIOBJ_LABEL);
+			}
+			boolean onDocDescr = getAttributeAsBoolean(DOC_DESCR);
+			if(onDocDescr){
+				fieldsToSearch.add(IndexingConstants.BIOBJ_DESCR);
+			}
+			boolean onMeta = getAttributeAsBoolean(DOC_META);
+			if(onMeta){
+				fieldsToSearch.add(IndexingConstants.METADATA);
+			}
+			boolean similar = getAttributeAsBoolean(SIMILAR);
+
 			logger.debug("Parameter [" + SpagoBIConstants.VALUE_FILTER + "] is equal to [" + valueFilter + "]");
-			logger.debug("Parameter [" + SpagoBIConstants.COLUMN_FILTER + "] is equal to [" + columnFilter + "]");
-			logger.debug("Parameter [" + SpagoBIConstants.SCOPE + "] is equal to [" + scope + "]"); //'node' or 'tree'
-			
-			folderID = folderID!=null? folderID: rootFolderID;
-			
-			//getting default folder (root)
-			LowFunctionality rootFunct = DAOFactory.getLowFunctionalityDAO().loadRootLowFunctionality(false);
-			if (folderID == null || folderID.equalsIgnoreCase(ROOT_NODE_ID))
-				folderID = String.valueOf(rootFunct.getId());
-						
-			SessionContainer sessCont = getSessionContainer();
-			SessionContainer permCont = sessCont.getPermanentContainer();
-			IEngUserProfile profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+
 			String indexBasePath = "";
 			SourceBean jndiBean =(SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.RESOURCE_PATH_JNDI_NAME");
 			if (jndiBean != null) {
@@ -120,15 +117,17 @@ public class SearchContentAction extends AbstractBaseHttpAction{
 				// read-only=true
 				IndexSearcher searcher = new IndexSearcher(reader);
 				
-				String[] fields = {IndexingConstants.CONTENTS, 
-									IndexingConstants.BIOBJ_DESCR, 
-									IndexingConstants.BIOBJ_NAME, 
-									IndexingConstants.BIOBJ_LABEL,
-									IndexingConstants.METADATA};
+				
+			    String[] fields = new String[fieldsToSearch.size()];			
+			    fieldsToSearch.toArray(fields);
+
 				//getting  documents
-				
-				ScoreDoc [] hits = LuceneSearcher.searchIndex(searcher, valueFilter, index, fields);
-				
+				ScoreDoc [] hits = null;
+				if(similar){
+					hits = LuceneSearcher.searchIndexFuzzy(searcher, valueFilter, index, fields);
+				}else{
+					hits = LuceneSearcher.searchIndex(searcher, valueFilter, index, fields);
+				}
 				objects = new ArrayList();
 				if(hits != null) {
 	                for(int i=0; i<hits.length; i++) {
@@ -156,7 +155,6 @@ public class SearchContentAction extends AbstractBaseHttpAction{
 				throw new SpagoBIException("Wrong query syntax", e);
 				
 			}
-			
 			
 		
 			JSONArray documentsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( objects,Locale.ENGLISH);

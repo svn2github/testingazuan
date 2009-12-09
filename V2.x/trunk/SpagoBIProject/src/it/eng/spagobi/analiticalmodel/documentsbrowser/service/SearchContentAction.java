@@ -118,10 +118,13 @@ public class SearchContentAction extends AbstractBaseHttpAction{
 			try{
 				reader = IndexReader.open(FSDirectory.open(new File(index)), true);
 				// read-only=true
-				//boolean isIndexCurrent = reader.isCurrent();
 				IndexSearcher searcher = new IndexSearcher(reader);
 				
-				String[] fields = {IndexingConstants.CONTENTS, IndexingConstants.BIOBJ_DESCR, IndexingConstants.BIOBJ_NAME, IndexingConstants.BIOBJ_LABEL};
+				String[] fields = {IndexingConstants.CONTENTS, 
+									IndexingConstants.BIOBJ_DESCR, 
+									IndexingConstants.BIOBJ_NAME, 
+									IndexingConstants.BIOBJ_LABEL,
+									IndexingConstants.METADATA};
 				//getting  documents
 				
 				ScoreDoc [] hits = LuceneSearcher.searchIndex(searcher, valueFilter, index, fields);

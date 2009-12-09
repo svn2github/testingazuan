@@ -55,6 +55,7 @@ import it.eng.spagobi.commons.services.AbstractBasicCheckListModule;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.SessionMonitor;
+import it.eng.spagobi.commons.utilities.indexing.LuceneIndexer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -870,6 +871,8 @@ public class DetailBIObjectModule extends AbstractModule {
 				} else {
 					DAOFactory.getBIObjectDAO().insertBIObject(obj, objTemp, loadParsDCClicked);
 				}
+				
+				LuceneIndexer.addBiobjToIndex(obj);
 			} else if(mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_MOD)) {
 				
 				BIObjectParameter biObjPar = null;

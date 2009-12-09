@@ -1,11 +1,14 @@
 package it.eng.spagobi.commons.utilities.indexing;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IBinContentDAO;
 import it.eng.spagobi.commons.utilities.JTidyHTMLHandler;
+import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.tools.objmetadata.bo.ObjMetacontent;
 import it.eng.spagobi.tools.objmetadata.bo.ObjMetadata;
 import it.eng.spagobi.tools.objmetadata.dao.IObjMetacontentDAO;
@@ -45,6 +48,50 @@ public class LuceneIndexer {
 	
 
 	static private Logger logger = Logger.getLogger(LuceneIndexer.class);
+	
+	
+	public static void addBiobjToIndex(BIObject biObj){
+		logger.debug("IN");
+		try {
+			String indexBasePath = "";
+			SourceBean jndiBean =(SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.RESOURCE_PATH_JNDI_NAME");
+			if (jndiBean != null) {
+				String jndi = jndiBean.getCharacters();
+				indexBasePath = SpagoBIUtilities.readJndiResource(jndi);
+			}
+			String index = indexBasePath+"\\idx";
+			Date start = new Date();
+			
+			writer = new IndexWriter(FSDirectory.open(new File(index)),
+					new StandardAnalyzer(Version.LUCENE_CURRENT), false,
+					new IndexWriter.MaxFieldLength(1000000));
+			
+			Document doc = new Document();
+			doc.add(new Field(IndexingConstants.BIOBJ_ID, String.valueOf(biObj.getId().intValue()), Field.Store.YES,
+					Field.Index.NOT_ANALYZED));
+			doc.add(new Field(IndexingConstants.BIOBJ_NAME, biObj.getName(),
+					Field.Store.NO, Field.Index.ANALYZED));
+			doc.add(new Field(IndexingConstants.BIOBJ_DESCR, biObj.getDescription(),
+					Field.Store.NO, Field.Index.ANALYZED));
+			doc.add(new Field(IndexingConstants.BIOBJ_LABEL, biObj.getLabel(),
+					Field.Store.NO, Field.Index.ANALYZED));
+			
+			writer.addDocument(doc);
+			writer.optimize();
+			writer.close();
+
+			Date end = new Date();
+
+			logger.info("Indexing time:: " + (end.getTime() - start.getTime())
+					+ " milliseconds");
+			logger.debug("OUT");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		
+	}
 
 	/**Method called to create or increment Lucene index created over metadata binary contents.
 	 * @param index  index file
@@ -93,14 +140,14 @@ public class LuceneIndexer {
 			reader = IndexReader.open(FSDirectory.open(index), false); // open
 			// existing
 			// index
-			uidIter = reader.terms(new Term("uid", "")); // init uid iterator
+			uidIter = reader.terms(new Term(IndexingConstants.UID, "")); // init uid iterator
 
 			indexDocs();
 
 			if (deleting) { // delete rest of stale docs
 
 				while (uidIter.term() != null
-						&& uidIter.term().field() == "uid") {
+						&& uidIter.term().field().equals(IndexingConstants.UID)) {
 					logger.info("deleting "
 							+ uidIter.term().text());
 					reader.deleteDocuments(uidIter.term());
@@ -162,7 +209,7 @@ public class LuceneIndexer {
 							}
 							if (uidIter != null) {
 								while (uidIter.term() != null
-										&& uidIter.term().field() == "uid"
+										&& uidIter.term().field().equals(IndexingConstants.UID)
 										&& uidIter.term().text().compareTo(uid) < 0) {
 									if (deleting) { // delete stale docs
 										logger.info("deleting html binary content "+ uidIter.term().text());
@@ -171,7 +218,7 @@ public class LuceneIndexer {
 									uidIter.next();
 								}
 								if (uidIter.term() != null
-										&& uidIter.term().field() == "uid"
+										&& uidIter.term().field().equals(IndexingConstants.UID)
 										&& uidIter.term().text().compareTo(uid) == 0) {
 									uidIter.next(); // keep matching docs
 								} else if (!deleting) { // add new docs
@@ -185,8 +232,7 @@ public class LuceneIndexer {
 								writer.addDocument(doc);
 							}
 							
-						}
-	
+						}	
 					}
 				}
 
@@ -209,20 +255,20 @@ public class LuceneIndexer {
 				Field.Index.NOT_ANALYZED));
 		doc.add(new Field(IndexingConstants.METADATA, metaLabel,
 				Field.Store.YES,
-				Field.Index.NOT_ANALYZED));
+				Field.Index.ANALYZED));
 		if (domain.getValueCd().equalsIgnoreCase(LONG_TEXT)) { // index
 																// html
 																// binary
 																// content
 			doc.add(new Field(IndexingConstants.CONTENTS, htmlContent,
 					Field.Store.NO, Field.Index.ANALYZED));
-			logger.info("adding html binary content " + doc.get("uid"));
+			logger.info("adding html binary content " + doc.get(IndexingConstants.UID));
 		} else if (domain.getValueCd().equalsIgnoreCase(
 				SHORT_TEXT)) {// index simple text binary
 								// content
 			doc.add(new Field(IndexingConstants.CONTENTS, new String(content, "UTF-8"),
 					Field.Store.NO, Field.Index.ANALYZED));
-			logger.info("adding simple text binary content " + doc.get("uid"));
+			logger.info("adding simple text binary content " + doc.get(IndexingConstants.UID));
 		}
 		addBiobjFieldsToDocument(doc, biobjId);
 	}

@@ -160,6 +160,13 @@ public class ParametersDecoder {
 			for(int i = 0; i < chunks.length; i++) {
 				String singleValue = chunks[i];
 				if (parameterType.equalsIgnoreCase("STRING")) {
+					logger.debug("Single string value = [" + singleValue + "]");
+					singleValue = singleValue.replaceAll("'", "''");
+					logger.debug("After single quotes (') escape, single string value is = [" + singleValue + "]");
+					logger.debug("Adding quotes to parameter value ... ");
+					singleValue = "'" + singleValue + "'";
+					logger.debug("Final single string value is = [" + singleValue + "]");
+					/*
 					if (singleValue.trim().equals("")) {
 						logger.debug("Adding quotes to parameter value ... ");
 						singleValue = "'" + singleValue + "'";
@@ -169,6 +176,7 @@ public class ParametersDecoder {
 							singleValue = "'" + singleValue + "'";
 						}
 					}
+					*/
 				}
 				values.add(singleValue);
 			}

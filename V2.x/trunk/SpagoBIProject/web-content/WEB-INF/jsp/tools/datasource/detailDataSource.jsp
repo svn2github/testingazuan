@@ -287,7 +287,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="URL_CONNECTION" 
-				   size="50" value="<%= StringEscapeUtils.escapeHtml(url) %>" maxlength="50" <%= disabledParam %> />
+				   size="50" value="<%= StringEscapeUtils.escapeHtml(url) %>" maxlength="500" <%= disabledParam %> />
 	   </div>
 	   <div class='div_detail_label'>
 			<span class='portlet-form-field-label'>	

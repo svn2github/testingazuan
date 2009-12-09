@@ -22,10 +22,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.chiron.serializer;
 
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjMetaDataAndContent;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjNote;
 import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.bo.Viewpoint;
+import it.eng.spagobi.analiticalmodel.document.x.GetMetadataAction;
 import it.eng.spagobi.analiticalmodel.document.x.GetParametersForExecutionAction;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.bo.Domain;
@@ -60,8 +62,9 @@ public class JSONSerializer implements Serializer {
 		mappings.put( Snapshot.class, new SnapshotJSONSerializer() );
 		mappings.put( DataStore.class, new DataStoreJSONSerializer() );
 		mappings.put( ObjNote.class, new ObjectNotesJSONSerializer() );
+		mappings.put( ObjMetaDataAndContent.class,new MetadataJSONSerializer());	
 		
-		
+		mappings.put( GetMetadataAction.class,new MetadataJSONSerializer());	
 		mappings.put( GetParametersForExecutionAction.ParameterForExecution.class, new ParameterForExecutionJSONSerializer() );
 	}
 

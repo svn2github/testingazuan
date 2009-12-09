@@ -63,19 +63,19 @@ Sbi.execution.toolbar.MetadataWindow = function(config) {
 	
 	this.buddy = undefined;
 	
-	/*this.initMetadata();
+	this.initMetadata();
 	
 	 var store = this.createGridSourceStore();
 	    store.load();
-	    alert(this.gridStore.toSource());
-	    this.shortTextStore = this.gridStore.shorttext;
-	    this.longTextStore = this.gridStore.longtext;
+	   // alert(this.gridStore.toSource());
+	   // this.shortTextStore = this.gridStore.shorttext;
+	  //  this.longTextStore = this.gridStore.longtext;
 	    var temp = this.createGrid();
-	    this.shortTextGrid.setSource(temp);*/
+	    this.shortTextGrid.setSource(temp);
 	
 		var c = Ext.apply({}, config, {
 		id:'win_metadata'
-		bodyCfg: {
+		/*bodyCfg: {
 			tag:'div',
 			cls:'x-panel-body',
 			children:[{
@@ -86,9 +86,9 @@ Sbi.execution.toolbar.MetadataWindow = function(config) {
   				height:'100%',
   				style: {overflow:'auto'}  
 			}]
-		},
-		//,items: [this.shortTextPanel,this.longTextPanel]
-		/*,buttons: [
+		},*/
+		,items: [this.shortTextPanel,this.longTextPanel]
+		,buttons: [
 		          {
 		            id: 'save'
 		        	  ,text: LN('sbi.execution.notes.savenotes') 
@@ -96,7 +96,7 @@ Sbi.execution.toolbar.MetadataWindow = function(config) {
 		        	  ,handler: this.saveMetadata
 		        	  ,disabled: false
 		          }
-		]*/
+		]
 		,layout:'fit'
 		,width:650
 		,height:410

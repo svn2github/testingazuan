@@ -34,11 +34,13 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.monitoring.dao.AuditManager;
+import it.eng.spagobi.services.common.SsoServiceInterface;
 
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -56,6 +58,7 @@ public class ExecutionProxy {
 
     static private Logger logger = Logger.getLogger(ExecutionProxy.class);
     static private String backEndExtension = "BackEnd";
+    static private String sendMailOperation = "SEND_MAIL";
     
     private BIObject biObject = null;
 
@@ -216,10 +219,10 @@ public class ExecutionProxy {
 
 	    // set spagobi context
 	    if (!mapPars.containsKey(SpagoBIConstants.SBI_CONTEXT)) {
-		String sbicontext = GeneralUtilities.getSpagoBiContext();
-		if (sbicontext != null) {
-		    mapPars.put(SpagoBIConstants.SBI_CONTEXT, sbicontext);
-		}
+			String sbicontext = GeneralUtilities.getSpagoBiContext();
+			if (sbicontext != null) {
+			    mapPars.put(SpagoBIConstants.SBI_CONTEXT, sbicontext);
+			}
 	    }
 	    
 	    // set spagobi  url
@@ -244,20 +247,24 @@ public class ExecutionProxy {
 	    // set country and language (locale)
 	    Locale locale = GeneralUtilities.getDefaultLocale();
 	    if (!mapPars.containsKey(SpagoBIConstants.COUNTRY)) {
-		String country = locale.getCountry();
-		mapPars.put(SpagoBIConstants.COUNTRY, country);
+			String country = locale.getCountry();
+			mapPars.put(SpagoBIConstants.COUNTRY, country);
 	    }
 	    if (!mapPars.containsKey(SpagoBIConstants.LANGUAGE)) {
-		String language = locale.getLanguage();
-		mapPars.put(SpagoBIConstants.LANGUAGE, language);
+			String language = locale.getLanguage();
+			mapPars.put(SpagoBIConstants.LANGUAGE, language);
 	    }
+	    
+	  //set userId if it's a send mail operation (backend operation)
+	    if (sendMailOperation.equals(modality))
+	    	mapPars.put(SsoServiceInterface.USER_ID, ((UserProfile) profile).getUserUniqueIdentifier());
 
 	    // AUDIT
 	    AuditManager auditManager = AuditManager.getInstance();
 	    Integer executionId = auditManager.insertAudit(biObject, null, profile, "", modality != null ? modality : "");
 	    // adding parameters for AUDIT updating
 	    if (executionId != null) {
-		mapPars.put(AuditManager.AUDIT_ID, executionId.toString());
+	    	mapPars.put(AuditManager.AUDIT_ID, executionId.toString());
 	    }
 
 	    // built the request to sent to the engine

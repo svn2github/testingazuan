@@ -82,10 +82,12 @@ public class ObjMetadataDAOHibImpl extends AbstractHibernateDAO implements IObjM
 			logger.debug("Type setted: "+(type!=null?type:""));
 
 			List hibList = hibQuery.list();
-			Iterator it = hibList.iterator();
-
-			while (it.hasNext()) {
-				toReturn.add(toObjMetadata((SbiObjMetadata) it.next()));
+			if(hibList!=null && !hibList.isEmpty()){
+				Iterator it = hibList.iterator();
+	
+				while (it.hasNext()) {
+					toReturn.add(toObjMetadata((SbiObjMetadata) it.next()));
+				}
 			}
 			
 		} catch (HibernateException he) {

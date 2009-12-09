@@ -35,6 +35,11 @@ public class CreateKpiMetadataAction extends AbstractHttpAction{
 		String kpiValueDescr = (String)serviceRequest.getAttribute("KPI_VALUE_DESCR");
 		String kpiModelInstanceId = (String)serviceRequest.getAttribute("KPI_MODEL_INST_ID");
 		String weightedValue = (String)serviceRequest.getAttribute("WEIGHTED_VALUE");
+		String kpiValID = (String)serviceRequest.getAttribute("KPI_VALUE_ID");
+		String xml = null;
+		if(kpiValID!=null && !kpiValID.equals("")){
+			xml = DAOFactory.getKpiDAO().loadKPIValueXml(new Integer(kpiValID));
+		}
 		
 		
 		if (kpiInstanceID!=null){
@@ -141,6 +146,12 @@ public class CreateKpiMetadataAction extends AbstractHttpAction{
 			serviceResponse.setAttribute("KPI_VALUE_DESCR", kpiValueDescr);
 		}else{
 			serviceResponse.setAttribute("KPI_VALUE_DESCR", "");
+		}
+		
+		if (xml!=null){
+			serviceResponse.setAttribute("KPI_XML_DATA", xml);
+		}else{
+			serviceResponse.setAttribute("KPI_XML_DATA", "");
 		}
 		
 		logger.debug("OUT");

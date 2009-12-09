@@ -170,7 +170,15 @@ public class ExecutionProxy {
 	    String driverClassName = eng.getDriverName();
 	    // get the url of the engine
 	    
-	    String urlEngine = eng.getUrl();
+	    // in case there is a Secondary URL, use it
+	    String urlEngine = eng.getSecondaryUrl();
+	    if (urlEngine == null || urlEngine.trim().equals("")) {
+	    	logger.debug("Secondary url is not defined for engine " + eng.getLabel() + "; main url will be used.");
+	    	// in case there is not a Secondary URL, use the main url
+	    	urlEngine = eng.getUrl();
+	    }
+	    logger.debug("Engine url is " + urlEngine);
+	    
 	    
 	    // ADD this extension because this is a BackEnd engine invocation
 	    urlEngine = urlEngine+backEndExtension;

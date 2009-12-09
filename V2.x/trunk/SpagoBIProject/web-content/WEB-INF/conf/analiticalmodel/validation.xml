@@ -12,7 +12,7 @@
 				</FIELD>
 				<FIELD name="name" label="#SBIDev.docConf.docDet.nameField">
 				    <VALIDATOR validatorName="MANDATORY"/>
-				    <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
+				    <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)\:éèëïâêôûîçàù])*$"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="200"/>
 				</FIELD>
 				<FIELD name="description" label="#SBIDev.docConf.docDet.descriptionField">

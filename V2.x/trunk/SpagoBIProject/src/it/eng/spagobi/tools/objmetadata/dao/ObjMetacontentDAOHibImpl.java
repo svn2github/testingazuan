@@ -221,7 +221,9 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 			
 			String hql = " from SbiObjMetacontents c where c.objmetaId = ? and c.sbiObjects.biobjId = ? ";
 			if(subObjId!=null){
-				hql += "and c.SbiSubObjects.subobjId = ? ";
+				hql += "and c.sbiSubObjects.subObjId = ? ";
+			}else{
+				hql += "and c.sbiSubObjects.subObjId IS NULL ";
 			}
 			Query aQuery = tmpSession.createQuery(hql);
 			aQuery.setInteger(0, objMetaId.intValue());
@@ -230,7 +232,9 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 				aQuery.setInteger(2, subObjId.intValue());
 			}
 			SbiObjMetacontents res =(SbiObjMetacontents) aQuery.uniqueResult();
-			realResult = toObjMetacontent(res);
+			if(res!=null){
+				realResult = toObjMetacontent(res);
+			}
 
 		} catch (HibernateException he) {
 			logger.error("Error while loading the metadata content list with metaid " + objMetaId, he);

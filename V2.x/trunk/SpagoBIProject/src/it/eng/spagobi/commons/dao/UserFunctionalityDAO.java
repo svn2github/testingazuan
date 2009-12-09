@@ -44,7 +44,6 @@ public class UserFunctionalityDAO extends AbstractHibernateDAO implements IUserF
      */
     public String[] readUserFunctionality(String[] roles) throws Exception{
 	logger.debug("IN");
-	if (roles==null) return null;
 	if (roles==null || roles.length==0) {
 	    logger.warn("The array of roles is empty...");
 	    return new String[0];

@@ -45,8 +45,8 @@ String strUuid = instanceO.getExecutionId();
 BIObject biObj = instanceO.getBIObject();
 
 // get the url for document retrieval
-String officeDocUrl = GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl();
-officeDocUrl += "?ACTION_NAME=GET_OFFICE_DOC&NEW_SESSION=TRUE&"+SsoServiceInterface.USER_ID+"=" + userUniqueIdentifier + "&documentId=" + biObj.getId().toString() + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE";
+String officeDocUrl = GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier);
+officeDocUrl += "?ACTION_NAME=GET_OFFICE_DOC&documentId=" + biObj.getId().toString() + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE";
 // adding parameters for AUDIT updating
 if (executionAuditId_office != null) {
 	officeDocUrl += "&" + AuditManager.AUDIT_ID + "=" + executionAuditId_office.toString();

@@ -104,7 +104,7 @@ public class JasperReportServlet extends HttpServlet {
 	
 	//  operazioni fatte dal filtro OUT
 	IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-
+	logger.debug("profile from session: " + profile);
 	Map params = new HashMap();
 	Enumeration enumer = request.getParameterNames();
 	String parName = null;

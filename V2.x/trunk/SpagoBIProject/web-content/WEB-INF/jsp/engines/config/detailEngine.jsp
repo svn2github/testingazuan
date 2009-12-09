@@ -299,6 +299,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			&nbsp;*
 		</div>
 	</div>
+	<div id="secondaryUrl" style='display:<%= ("EXT".equalsIgnoreCase(engineType)) ? "inline;" : "none;" %>'>
+		<div class='div_detail_label'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key = "SBISet.eng.secondaryUrlField" />
+			</span>
+		</div>
+		<div class='div_detail_form'>
+		<% String secUrl = engine.getSecondaryUrl();
+		   if( (secUrl==null) || (secUrl.equalsIgnoreCase("null")) ) {
+		   		secUrl = "";
+		   } 
+		%>
+			<input class='portlet-form-input-field' type="text" name="secondaryUrl" 
+	                size="50" value="<%=StringEscapeUtils.escapeHtml(secUrl)%>" maxlength="260">
+		</div>
+	</div>
 	<div id="driverName" style='display:<%= ("EXT".equalsIgnoreCase(engineType)) ? "inline;" : "none;" %>'>
 		<div class='div_detail_label'>
 			<span class='portlet-form-field-label'>
@@ -316,20 +332,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					size="50" value="<%=StringEscapeUtils.escapeHtml(engineDriver)%>" maxlength="260">
 			&nbsp;*				
 		</div>
-	</div>
-	<div class='div_detail_label' style='display:none;'>
-		<span class='portlet-form-field-label'>
-			<spagobi:message key = "SBISet.eng.secondaryUrlField" />
-		</span>
-	</div>
-	<div class='div_detail_form' style='display:none;'>
-	<% String secUrl = engine.getSecondaryUrl();
-	   if( (secUrl==null) || (secUrl.equalsIgnoreCase("null")) ) {
-	   		secUrl = "";
-	   } 
-	%>
-		<input class='portlet-form-input-field' type="text" name="secondaryUrl" 
-                size="50" value="<%=StringEscapeUtils.escapeHtml(secUrl)%>" maxlength="260">
 	</div>
 	<div class='div_detail_label' style='display:none;'>
 		<span class='portlet-form-field-label'>
@@ -396,11 +398,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	function changeEngineType(value){
 		if (value == 'EXT') {
 			document.getElementById('url').style.display = 'inline';
+			document.getElementById('secondaryUrl').style.display = 'inline';
 			document.getElementById('driverName').style.display = 'inline';
 			document.getElementById('className').style.display = 'none';		
 		}
 		if (value == 'INT') {
 			document.getElementById('url').style.display = 'none';
+			document.getElementById('secondaryUrl').style.display = 'none';
 			document.getElementById('driverName').style.display = 'none';
 			document.getElementById('className').style.display = 'inline';		
 		}

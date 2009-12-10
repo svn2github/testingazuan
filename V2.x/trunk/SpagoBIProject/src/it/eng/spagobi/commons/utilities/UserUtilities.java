@@ -279,6 +279,9 @@ public class UserUtilities {
 			if (virtualRole.isAbleToSeeMetadata()) {
 				roleFunctionalities.add(SpagoBIConstants.SEE_METADATA_FUNCTIONALITY);
 			}
+			if (virtualRole.isAbleToSaveMetadata()) {
+				roleFunctionalities.add(SpagoBIConstants.SAVE_METADATA_FUNCTIONALITY);
+			}
 			if (virtualRole.isAbleToBuildQbeQuery()) {
 				roleFunctionalities.add(SpagoBIConstants.BUILD_QBE_QUERIES_FUNCTIONALITY);
 			}
@@ -308,6 +311,7 @@ public class UserUtilities {
 		virtualRole.setIsAbleToSeeSnapshots(false);
 		virtualRole.setIsAbleToSeeViewpoints(false);
 		virtualRole.setIsAbleToSeeMetadata(false);
+		virtualRole.setIsAbleToSaveMetadata(false);
 		virtualRole.setIsAbleToSendMail(false);
 		virtualRole.setIsAbleToSeeNotes(false);
 		virtualRole.setIsAbleToSaveRememberMe(false);
@@ -338,6 +342,10 @@ public class UserUtilities {
 					if (anotherRole.isAbleToSeeMetadata()) {
 						logger.debug("User has role " + roleName + " that is able to see metadata.");
 						virtualRole.setIsAbleToSeeMetadata(true);
+					}
+					if (anotherRole.isAbleToSaveMetadata()) {
+						logger.debug("User has role " + roleName + " that is able to save metadata.");
+						virtualRole.setIsAbleToSaveMetadata(true);
 					}
 					if (anotherRole.isAbleToSendMail()) {
 						logger.debug("User has role " + roleName + " that is able to send mail.");

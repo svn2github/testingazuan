@@ -21,17 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.chiron.serializer;
 
-import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjMetaDataAndContent;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.tools.objmetadata.bo.ObjMetacontent;
 import it.eng.spagobi.tools.objmetadata.bo.ObjMetadata;
 
-import java.util.List;
 import java.util.Locale;
 
-import org.json.JSONArray;
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 /**
@@ -39,45 +35,51 @@ import org.json.JSONObject;
  */
 public class MetadataJSONSerializer implements Serializer {
 	
-	public static final String ID = "meta_id";
+	private static Logger logger = Logger.getLogger(MetadataJSONSerializer.class);
+	
+	public static final String METADATA_ID = "meta_id";
+	public static final String BIOBJECT_ID = "biobject_id";
+	public static final String SUBOBJECT_ID = "subobject_id";
 	public static final String NAME = "meta_name";
+	public static final String TYPE = "meta_type";
 	public static final String TEXT = "meta_content";
 	public static final String CREATION_DATE = "meta_creation_date";
 	public static final String CHANGE_DATE = "meta_change_date";
 	
-	public String contextName = "";
-
 	public Object serialize(Object o, Locale locale) throws SerializationException {
-		JSONObject  result = new JSONObject();
+		logger.debug("IN");
+		JSONObject result = new JSONObject();
 
-		contextName = GeneralUtilities.getSpagoBiContext();
-		if( !(o instanceof ObjMetaDataAndContent) ) {
+		if ( !(o instanceof ObjMetaDataAndContent) ) {
 			throw new SerializationException("MetadataJSONSerializer is unable to serialize object of type: " + o.getClass().getName());
 		}
 		
 		try {
-					ObjMetaDataAndContent both = (ObjMetaDataAndContent)o;
-					ObjMetadata meta = both.getMeta();
-					ObjMetacontent content = both.getMetacontent();
+			ObjMetaDataAndContent both = (ObjMetaDataAndContent)o;
+			ObjMetadata meta = both.getMeta();
+			ObjMetacontent content = both.getMetacontent();
 
-					result.put(ID, meta.getObjMetaId().toString());
-					result.put(NAME, meta.getName());
-					if(content!=null){
-						result.put(TEXT, new String(content.getContent(),"UTF-8"));
-						result.put(CREATION_DATE, content.getCreationDate());
-						result.put(CHANGE_DATE, content.getLastChangeDate());
-					}else{
-						result.put(TEXT, "");
-						result.put(CREATION_DATE, "");
-						result.put(CHANGE_DATE, "");
-					}
-		
+			result.put(METADATA_ID, meta.getObjMetaId());
+			result.put(NAME, meta.getName());
+			result.put(TYPE, meta.getDataTypeCode());
+			if (content != null) {
+				result.put(BIOBJECT_ID, content.getBiobjId());
+				result.put(SUBOBJECT_ID, content.getSubobjId() != null ? content.getSubobjId() : -1);
+				result.put(TEXT, new String(content.getContent(),"UTF-8"));
+				result.put(CREATION_DATE, content.getCreationDate());
+				result.put(CHANGE_DATE, content.getLastChangeDate());
+			} else {
+				result.put(BIOBJECT_ID, -1);
+				result.put(SUBOBJECT_ID, -1);
+				result.put(TEXT, "");
+				result.put(CREATION_DATE, "");
+				result.put(CHANGE_DATE, "");
+			}
 		} catch (Throwable t) {
 			throw new SerializationException("An error occurred while serializing object: " + o, t);
 		} finally {
-			
+			logger.debug("OUT");
 		}
-		//System.out.println(result);
 		return result;
 	}
 

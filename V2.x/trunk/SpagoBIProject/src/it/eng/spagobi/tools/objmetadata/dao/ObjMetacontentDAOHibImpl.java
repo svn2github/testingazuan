@@ -147,55 +147,6 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 		return realResult;	
 
 	}
-
-	/**
-	 * Load object's metadata by objMetaId and biObjId.
-	 * 
-	 * @param objMetaId the objMetaId
-	 * @param biObjId the biObjId
-	 * 
-	 * @return A list containing all metadata contents objects of a specific biobjid
-	 * 
-	 * @throws EMFUserError the EMF user error
-	 * 
-	 * @see it.eng.spagobi.tools.objmetadata.dao.IObjMetacontentDAO#loadObjMetacontentByObjId(java.lang.Integer, java.lang.Integer)
-	 */	
-	public List loadObjMetacontentByObjId(Integer objMetaId, Integer biObjId) throws EMFUserError {
-		logger.debug("IN");
-		List realResult = new ArrayList();
-		Session tmpSession = null;
-		Transaction tx = null;
-		try {
-			tmpSession = getSession();
-			tx = tmpSession.beginTransaction();
-			
-			String hql = " from SbiObjMetacontents c where c.objmetaId = ? and c.biobjId = ? ";
-			Query aQuery = tmpSession.createQuery(hql);
-			aQuery.setInteger(0, objMetaId.intValue());
-			aQuery.setInteger(1, biObjId.intValue());
-			List hibList = aQuery.list();			
-			if (hibList == null) return null;
-			
-			Iterator it = hibList.iterator();
-			while (it.hasNext()) {
-				realResult.add(toObjMetacontent((SbiObjMetacontents) it.next()));
-			}
-			
-			tx.commit();
-		} catch (HibernateException he) {
-			logger.error("Error while loading the metadata content list with metaid " + objMetaId, he);
-			if (tx != null)
-				tx.rollback();
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		} finally {
-			if (tmpSession!=null){
-				if (tmpSession.isOpen()) tmpSession.close();
-			}
-		}
-		logger.debug("OUT");
-		return realResult;	
-
-	}
 	
 	/**
 	 * Load object's metadata by objMetaId, biObjId and subobjId.
@@ -210,7 +161,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 	 * 
 	 * @see it.eng.spagobi.tools.objmetadata.dao.IObjMetacontentDAO#loadObjMetacontentByObjId(java.lang.Integer, java.lang.Integer)
 	 */	
-	public ObjMetacontent loadObjMetacontentBySubobjId(Integer objMetaId, Integer biObjId, Integer subObjId) throws EMFUserError{
+	public ObjMetacontent loadObjMetacontent(Integer objMetaId, Integer biObjId, Integer subObjId) throws EMFUserError{
 		logger.debug("IN");
 		ObjMetacontent realResult = null;
 		Session tmpSession = null;

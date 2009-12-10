@@ -494,6 +494,7 @@ public class ObjMetadataDAOHibImpl extends AbstractHibernateDAO implements IObjM
 		meta.setName(hibObjMetadata.getName());
 		meta.setDescription(hibObjMetadata.getDescription());
 		meta.setDataType(hibObjMetadata.getDataType().getValueId());
+		meta.setDataTypeCode(hibObjMetadata.getDataType().getValueCd());
 		meta.setCreationDate(hibObjMetadata.getCreationDate());
 		
 		return meta;

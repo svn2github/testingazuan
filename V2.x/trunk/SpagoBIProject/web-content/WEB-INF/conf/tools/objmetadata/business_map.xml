@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <BUSINESS_MAP>
 	<MAP_ACTIONS>
-		<MAP_ACTION actionName="GET_METADATA_ACTION" businessProcess="ObjMetadataManagement" />
+		<MAP_ACTION actionName="GET_METADATA_ACTION" businessProcess="SeeMetadataFunctionality" />
+		<MAP_ACTION actionName="SAVE_METADATA_ACTION" businessProcess="SaveMetadataFunctionality" />
 	</MAP_ACTIONS>
 
 	<MAP_PAGE_MODULES>

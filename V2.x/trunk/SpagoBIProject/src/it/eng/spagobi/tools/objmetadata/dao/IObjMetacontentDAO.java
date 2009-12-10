@@ -68,26 +68,13 @@ public interface IObjMetacontentDAO {
 	 * 
 	 * @param objMetaId The objMetaId for the metadata to load
 	 * @param biObjId The biObjId for the object to load
-	 * 
-	 * @return A list containing all metadata objects
-	 * 
-	 * @throws EMFUserError If an Exception occurred
-	 */
-	public List loadObjMetacontentByObjId(Integer objMetaId, Integer biObjId) throws EMFUserError;
-	
-	/**
-	 * Loads all detail information for object's metadata content whose objMetaId is equal to <code>objMetaId</code>
-	 * and biobj_id is equal to <code>biObjId</code>.
-	 * 
-	 * @param objMetaId The objMetaId for the metadata to load
-	 * @param biObjId The biObjId for the object to load
 	 * @param subObjId The subObjId for the subObject to load
 	 * 
 	 * @return A list containing all metadata objects (it should contains ever only one element)
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public ObjMetacontent loadObjMetacontentBySubobjId(Integer objMetaId, Integer biObjId, Integer subObjId) throws EMFUserError;
+	public ObjMetacontent loadObjMetacontent(Integer objMetaId, Integer biObjId, Integer subObjId) throws EMFUserError;
 	
 	/**
 	 * Loads all detail information for all object's metadata. For each of them, detail

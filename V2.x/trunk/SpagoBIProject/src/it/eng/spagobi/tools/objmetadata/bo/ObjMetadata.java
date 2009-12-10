@@ -30,12 +30,13 @@ import java.util.Date;
 
 public class ObjMetadata implements Serializable {
 	
-	 private Integer objMetaId=null;
-     private String label=null;
-     private String name=null;
-     private String description=null;
-     private Integer dataType=null;
-     private Date creationDate=null;
+	private Integer objMetaId=null;
+    private String label=null;
+    private String name=null;
+    private String description=null;
+    private Integer dataType=null;
+    private String dataTypeCode=null;
+	private Date creationDate=null;
 	/**
 	 * @return the objMetaId
 	 */
@@ -109,5 +110,12 @@ public class ObjMetadata implements Serializable {
 		this.creationDate = creationDate;
 	}
 
+    public String getDataTypeCode() {
+		return dataTypeCode;
+	}
+    
+	public void setDataTypeCode(String dataTypeCode) {
+		this.dataTypeCode = dataTypeCode;
+	}
 
 }

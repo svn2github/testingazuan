@@ -23,14 +23,16 @@ package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.x.AbstractSpagoBIAction;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.commons.utilities.indexing.IndexingConstants;
 import it.eng.spagobi.commons.utilities.indexing.LuceneSearcher;
 import it.eng.spagobi.utilities.exceptions.SpagoBIException;
-import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
 import java.io.File;
@@ -57,7 +59,7 @@ import org.json.JSONObject;
  * @author Antonella Giachino (antonella.giachino@eng.it)
  *
  */
-public class SearchContentAction extends AbstractBaseHttpAction{
+public class SearchContentAction extends AbstractSpagoBIAction{
 	
 	// REQUEST PARAMETERS
 	public static final String DOC_NAME = "docName";
@@ -70,16 +72,16 @@ public class SearchContentAction extends AbstractBaseHttpAction{
 	// logger component
 	private static Logger logger = Logger.getLogger(SearchContentAction.class);
 	
-	public void service(SourceBean request, SourceBean response) throws Exception {
+	@Override
+	public void doService(){
 		
 		List objects;
 		
 		logger.debug("IN");
 		
 		try {
-			setSpagoBIRequestContainer( request );
-			setSpagoBIResponseContainer( response );
-			
+			UserProfile profile = (UserProfile)getUserProfile();
+
 			Vector<String> fieldsToSearch = new Vector<String>();
 			String valueFilter = getAttributeAsString(SpagoBIConstants.VALUE_FILTER);
 			fieldsToSearch.add(IndexingConstants.CONTENTS);
@@ -128,6 +130,7 @@ public class SearchContentAction extends AbstractBaseHttpAction{
 				}else{
 					hits = LuceneSearcher.searchIndex(searcher, valueFilter, index, fields);
 				}
+				
 				objects = new ArrayList();
 				if(hits != null) {
 	                for(int i=0; i<hits.length; i++) {
@@ -135,9 +138,12 @@ public class SearchContentAction extends AbstractBaseHttpAction{
 	        	    	ScoreDoc hit = hits[i];
 	        	    	Document doc = searcher.doc(hit.doc);
 	        	        String biobjId = doc.get(IndexingConstants.BIOBJ_ID);
-	        	        BIObject obj =DAOFactory.getBIObjectDAO().loadBIObjectForDetail(Integer.valueOf(biobjId));        	        
+	        	        BIObject obj =DAOFactory.getBIObjectDAO().loadBIObjectForDetail(Integer.valueOf(biobjId));	        	        
+	        			boolean canSee = ObjectsAccessVerifier.canSee(obj, profile);
+	        	    	if (canSee) {
+	        	    		objects.add(obj);
+	        	    	}        	        
 	        	        
-	        	        objects.add(obj);
 	                }
 				}
 				searcher.close();
@@ -166,8 +172,9 @@ public class SearchContentAction extends AbstractBaseHttpAction{
 				throw new SpagoBIException("Impossible to write back the responce to the client", e);
 			}
 			
-		} catch (Throwable t) {
-			throw new SpagoBIException("An unexpected error occured while executing " + getActionName(), t);
+		} catch (Exception e) {
+			logger.error("Excepiton",e);
+			e.printStackTrace();
 		} finally {
 			logger.debug("OUT");
 		}
@@ -205,4 +212,5 @@ public class SearchContentAction extends AbstractBaseHttpAction{
 		
 		return results;
 	}
+
 }

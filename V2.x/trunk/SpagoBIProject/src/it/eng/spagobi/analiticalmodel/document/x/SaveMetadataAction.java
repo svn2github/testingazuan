@@ -80,7 +80,7 @@ public class SaveMetadataAction extends AbstractSpagoBIAction {
 			}		
 			
 		} catch (Exception e) {
-			throw new SpagoBIServiceException(SERVICE_NAME, "Excepiton occurred while saving metadata", e);
+			throw new SpagoBIServiceException(SERVICE_NAME, "Exception occurred while saving metadata", e);
 		} finally {
 			logger.debug("OUT");
 		}

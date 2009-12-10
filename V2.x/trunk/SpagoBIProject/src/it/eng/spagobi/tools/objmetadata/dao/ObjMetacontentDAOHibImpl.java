@@ -55,6 +55,7 @@ import org.hibernate.criterion.Expression;
  * for a metadata content
  */
 public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IObjMetacontentDAO{
+	
 	static private Logger logger = Logger.getLogger(ObjMetacontentDAOHibImpl.class);
 	
 	/**
@@ -78,22 +79,17 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			SbiObjMetacontents hibContent = (SbiObjMetacontents)aSession.load(SbiObjMetacontents.class,  id);
+			SbiObjMetacontents hibContent = (SbiObjMetacontents)aSession.load(SbiObjMetacontents.class, id);
 			toReturn = toObjMetacontent(hibContent);
-			tx.commit();
-			
+			tx.rollback();
 		} catch (HibernateException he) {
-			logger.error("Error while loading the data source with id " + id.toString(), he);			
-
+			logger.error("Error while loading the metadata content with id = " + id, he);			
 			if (tx != null)
 				tx.rollback();
-
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-
 		} finally {
-			if (aSession!=null){
+			if (aSession != null) {
 				if (aSession.isOpen()) aSession.close();
-				logger.debug("OUT");
 			}
 		}
 		logger.debug("OUT");
@@ -115,32 +111,31 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 	
 		logger.debug("IN");
 		List realResult = new ArrayList();
-		Session tmpSession = null;
+		Session session = null;
 		Transaction tx = null;
 		try {
-			tmpSession = getSession();
-			tx = tmpSession.beginTransaction();
+			session = getSession();
+			tx = session.beginTransaction();
 			
 			String hql = " from SbiObjMetacontents c where c.objmetaId = ?";
-			Query aQuery = tmpSession.createQuery(hql);
+			Query aQuery = session.createQuery(hql);
 			aQuery.setInteger(0, objMetaId.intValue());
 			List hibList = aQuery.list();			
-			if (hibList == null) return null;			
-			
-			Iterator it = hibList.iterator();
-			while (it.hasNext()) {
-				realResult.add(toObjMetacontent((SbiObjMetacontents) it.next()));
+			if (hibList != null && !hibList.isEmpty()) {
+				Iterator it = hibList.iterator();
+				while (it.hasNext()) {
+					realResult.add(toObjMetacontent((SbiObjMetacontents) it.next()));
+				}
 			}
-			
-			tx.commit();
+			tx.rollback();
 		} catch (HibernateException he) {
-			logger.error("Error while loading the metadata content list with metaid " + objMetaId, he);
+			logger.error("Error while loading the metadata content list with metadata id = " + objMetaId, he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		} finally {
-			if (tmpSession!=null){
-				if (tmpSession.isOpen()) tmpSession.close();
+			if (session!=null){
+				if (session.isOpen()) session.close();
 			}
 		}
 		logger.debug("OUT");
@@ -164,11 +159,11 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 	public ObjMetacontent loadObjMetacontent(Integer objMetaId, Integer biObjId, Integer subObjId) throws EMFUserError{
 		logger.debug("IN");
 		ObjMetacontent realResult = null;
-		Session tmpSession = null;
+		Session session = null;
 		Transaction tx = null;
 		try {
-			tmpSession = getSession();
-			tx = tmpSession.beginTransaction();
+			session = getSession();
+			tx = session.beginTransaction();
 			
 			String hql = " from SbiObjMetacontents c where c.objmetaId = ? and c.sbiObjects.biobjId = ? ";
 			if(subObjId!=null){
@@ -176,7 +171,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 			}else{
 				hql += "and c.sbiSubObjects.subObjId IS NULL ";
 			}
-			Query aQuery = tmpSession.createQuery(hql);
+			Query aQuery = session.createQuery(hql);
 			aQuery.setInteger(0, objMetaId.intValue());
 			aQuery.setInteger(1, biObjId.intValue());
 			if(subObjId!=null){
@@ -186,15 +181,16 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 			if(res!=null){
 				realResult = toObjMetacontent(res);
 			}
-
+			tx.rollback();
 		} catch (HibernateException he) {
-			logger.error("Error while loading the metadata content list with metaid " + objMetaId, he);
+			logger.error("Error while loading the metadata content with metadata id = " + objMetaId + 
+					", biobject id = " + biObjId + ", subobject id = " + subObjId, he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		} finally {
-			if (tmpSession!=null){
-				if (tmpSession.isOpen()) tmpSession.close();
+			if (session!=null){
+				if (session.isOpen()) session.close();
 			}
 		}
 		logger.debug("OUT");
@@ -223,20 +219,18 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 			Query hibQuery = aSession.createQuery(" from SbiObjMetacontents");
 			
 			List hibList = hibQuery.list();
-			Iterator it = hibList.iterator();
-
-			while (it.hasNext()) {
-				realResult.add(toObjMetacontent((SbiObjMetacontents) it.next()));
+			if (hibList != null && !hibList.isEmpty()) {
+				Iterator it = hibList.iterator();
+				while (it.hasNext()) {
+					realResult.add(toObjMetacontent((SbiObjMetacontents) it.next()));
+				}
 			}
-			tx.commit();
+			tx.rollback();
 		} catch (HibernateException he) {
 			logger.error("Error while loading all meta contents ", he);
-
 			if (tx != null)
 				tx.rollback();
-
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-
 		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();				
@@ -269,45 +263,58 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 			SbiObjMetacontents hibContents = (SbiObjMetacontents) aSession.load(SbiObjMetacontents.class,
 					new Integer(aObjMetacontent.getObjMetacontentId()));	
 			
-			//gets foreign object 		
-			aCriterion = Expression.eq("biobjId",	aObjMetacontent.getBiobjId());
-			criteria = aSession.createCriteria(SbiObjects.class);
-			criteria.add(aCriterion);
-			SbiObjects biobj = (SbiObjects) criteria.uniqueResult();
+			// update biobject reference
+			if (hibContents.getSbiObjects().getBiobjId() != aObjMetacontent.getBiobjId()) {
+				aCriterion = Expression.eq("biobjId", aObjMetacontent.getBiobjId());
+				criteria = aSession.createCriteria(SbiObjects.class);
+				criteria.add(aCriterion);
+				SbiObjects biobj = (SbiObjects) criteria.uniqueResult();
+				hibContents.setSbiObjects(biobj);
+			}
 			
-			//gets foreign subobject 		
-			aCriterion = Expression.eq("subobjId", aObjMetacontent.getSubobjId());
-			criteria = aSession.createCriteria(SbiSubObjects.class);
-			criteria.add(aCriterion);
-			SbiSubObjects subobj = (SbiSubObjects) criteria.uniqueResult();
+			// update subobject reference
+			if (aObjMetacontent.getSubobjId() == null) {
+				hibContents.setSbiSubObjects(null);
+			} else {
+				SbiSubObjects previousSubobject = hibContents.getSbiSubObjects();
+				if (previousSubobject == null || previousSubobject.getSubObjId() != aObjMetacontent.getSubobjId()) {
+					aCriterion = Expression.eq("subobjId", aObjMetacontent.getSubobjId());
+					criteria = aSession.createCriteria(SbiSubObjects.class);
+					criteria.add(aCriterion);
+					SbiSubObjects subobj = (SbiSubObjects) criteria.uniqueResult();
+					hibContents.setSbiSubObjects(subobj);
+				}
+			}
 			
-			//gets foreign binary content 		
-			aCriterion = Expression.eq("id", aObjMetacontent.getBinaryContentId());
-			criteria = aSession.createCriteria(SbiBinContents.class);
-			criteria.add(aCriterion);
-			SbiBinContents bincontent = (SbiBinContents) criteria.uniqueResult();
-			
+			// update content
+			SbiBinContents binaryContent = hibContents.getSbiBinContents();
+			if (binaryContent == null) {
+				binaryContent = new SbiBinContents();
+				binaryContent.setContent(aObjMetacontent.getContent());
+			} else {
+				binaryContent.setContent(aObjMetacontent.getContent());
+			}
+			aSession.save(binaryContent);
+			hibContents.setSbiBinContents(binaryContent);
+
+			// update metadata reference
 			hibContents.setObjmetaId(aObjMetacontent.getObjmetaId());
-			hibContents.setSbiObjects(biobj);
-			hibContents.setSbiSubObjects(subobj);			
-			hibContents.setSbiBinContents(bincontent);
+			
+			// update last change date
 			hibContents.setLastChangeDate(aObjMetacontent.getLastChangeDate());
 			
 			tx.commit();
 		} catch (HibernateException he) {
 			logger.error("Error while modifing the meta content with id " + ((aObjMetacontent == null)?"":String.valueOf(aObjMetacontent.getObjMetacontentId())), he);
-
 			if (tx != null)
 				tx.rollback();
-
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-
-		}finally {
+		} finally {
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
-				logger.debug("OUT");
 			}
 		}
+		logger.debug("OUT");
 	
 	}
 
@@ -331,12 +338,10 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
-			SbiObjMetacontents hibContents = (SbiObjMetacontents) aSession.load(SbiObjMetacontents.class,
-					new Integer(aObjMetacontent.getObjMetacontentId()));	
-			
+			SbiObjMetacontents hibContents = new SbiObjMetacontents();	
 
 			//gets foreign object 		
-			aCriterion = Expression.eq("biobjId",	aObjMetacontent.getBiobjId());
+			aCriterion = Expression.eq("biobjId", aObjMetacontent.getBiobjId());
 			criteria = aSession.createCriteria(SbiObjects.class);
 			criteria.add(aCriterion);
 			SbiObjects biobj = (SbiObjects) criteria.uniqueResult();
@@ -347,16 +352,14 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 			criteria.add(aCriterion);
 			SbiSubObjects subobj = (SbiSubObjects) criteria.uniqueResult();
 			
-			//gets foreign binary content 		
-			aCriterion = Expression.eq("id", aObjMetacontent.getBinaryContentId());
-			criteria = aSession.createCriteria(SbiBinContents.class);
-			criteria.add(aCriterion);
-			SbiBinContents bincontent = (SbiBinContents) criteria.uniqueResult();
+			SbiBinContents binaryContent = new SbiBinContents();
+			binaryContent.setContent(aObjMetacontent.getContent());
+			aSession.save(binaryContent);
 			
 			hibContents.setObjmetaId(aObjMetacontent.getObjmetaId());
 			hibContents.setSbiObjects(biobj);
 			hibContents.setSbiSubObjects(subobj);			
-			hibContents.setSbiBinContents(bincontent);
+			hibContents.setSbiBinContents(binaryContent);
 			hibContents.setLastChangeDate(aObjMetacontent.getLastChangeDate());
 			
 			aSession.save(hibContents);

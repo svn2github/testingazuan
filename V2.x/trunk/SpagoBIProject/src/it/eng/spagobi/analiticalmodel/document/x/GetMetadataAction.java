@@ -82,7 +82,7 @@ public class GetMetadataAction extends AbstractSpagoBIAction {
 			writeBackToClient( new JSONSuccess( toReturn ) ); 
 			
 		} catch (Exception e) {
-			throw new SpagoBIServiceException(SERVICE_NAME, "Excepiton occurred while retrieving metadata", e);
+			throw new SpagoBIServiceException(SERVICE_NAME, "Exception occurred while retrieving metadata", e);
 		} finally {
 			logger.debug("OUT");
 		}

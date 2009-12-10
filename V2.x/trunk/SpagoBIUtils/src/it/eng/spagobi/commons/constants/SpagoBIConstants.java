@@ -347,6 +347,7 @@ public class SpagoBIConstants {
 	public static final String SAVE_INTO_FOLDER_FUNCTIONALITY = "SaveIntoFolderFunctionality";
 	public static final String SAVE_REMEMBER_ME_FUNCTIONALITY = "SaveRememberMeFunctionality";
 	public static final String SEE_METADATA_FUNCTIONALITY = "SeeMetadataFunctionality";
+	public static final String SAVE_METADATA_FUNCTIONALITY = "SaveMetadataFunctionality";
 	public static final String BUILD_QBE_QUERIES_FUNCTIONALITY = "BuildQbeQueriesFunctionality";
 	
 	public static final String DOCUMENT_MOVE_DOWN_STATE = "DocumentMoveDownState" ;

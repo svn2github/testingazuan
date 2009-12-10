@@ -871,7 +871,7 @@ public class DetailBIObjectModule extends AbstractModule {
 				} else {
 					DAOFactory.getBIObjectDAO().insertBIObject(obj, objTemp, loadParsDCClicked);
 				}
-				
+				//indexes biobject
 				LuceneIndexer.addBiobjToIndex(obj);
 			} else if(mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_MOD)) {
 				

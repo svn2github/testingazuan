@@ -18,246 +18,232 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
- 
+
 /**
-  * Object name 
-  * 
-  * [description]
-  * 
-  * 
-  * Public Properties
-  * 
-  * [list]
-  * 
-  * 
-  * Public Methods
-  * 
-  *  [list]
-  * 
-  * 
-  * Public Events
-  * 
-  *  [list]
-  * 
-  * Authors
-  * 
-  * - Chiara Chiarelli (chiara.chiarelli@eng.it)
-  */
+ * Object name
+ * 
+ * [description]
+ * 
+ * 
+ * Public Properties
+ * 
+ * [list]
+ * 
+ * 
+ * Public Methods
+ * 
+ * [list]
+ * 
+ * 
+ * Public Events
+ * 
+ * [list]
+ * 
+ * Authors - Chiara Chiarelli (chiara.chiarelli@eng.it)
+ */
 
 Ext.ns("Sbi.execution.toolbar");
 
 Sbi.execution.toolbar.MetadataWindow = function(config) {
-	
-	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
+
+	var params = {
+		LIGHT_NAVIGATOR_DISABLED : 'TRUE'
+	};
 	this.services = new Array();
-	this.services['showMetadataService'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'MetadataBIObjectPage'
-		, serviceType: 'PAGE'
-		, baseParams: params
-	}) + '&MESSAGEDET=METADATA_SELECT&OBJECT_ID=' + config.OBJECT_ID;
-	
-	this.services['getValuesForMetadataGridService'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'GET_METADATA_ACTION'
-		, baseParams: params
-	})+ '&OBJECT_ID=' + config.OBJECT_ID;
-	
+
+	this.services['getMetadataService'] = Sbi.config.serviceRegistry
+			.getServiceUrl( {
+				serviceName : 'GET_METADATA_ACTION',
+				baseParams : params
+			})
+			+ '&OBJECT_ID=' + config.OBJECT_ID;
+
+	this.services['saveMetadataService'] = Sbi.config.serviceRegistry
+			.getServiceUrl( {
+				serviceName : 'SAVE_METADATA_ACTION',
+				baseParams : params
+			})
+			+ '&OBJECT_ID=' + config.OBJECT_ID;
+
 	this.buddy = undefined;
+
+	this.store = this.createGridSourceStore();
+	this.createGridPanel();
+
+	this.storeTabs = this.createTabsSourceStore();
+	this.createTabsPanel();
 	
-	this.initMetadata();
-	
-	 var store = this.createGridSourceStore();
-	    store.load();
-	   // alert(this.gridStore.toSource());
-	   // this.shortTextStore = this.gridStore.shorttext;
-	  //  this.longTextStore = this.gridStore.longtext;
-	    var temp = this.createGrid();
-	    this.shortTextGrid.setSource(temp);
-	
-		var c = Ext.apply({}, config, {
-		id:'win_metadata'
-		/*bodyCfg: {
-			tag:'div',
-			cls:'x-panel-body',
-			children:[{
-				tag:'iframe',
-  				src: this.services['showMetadataService'],
-  				frameBorder:0,
-  				width:'100%',
-  				height:'100%',
-  				style: {overflow:'auto'}  
-			}]
-		},*/
-		,items: [this.shortTextPanel,this.longTextPanel]
-		,buttons: [
-		          {
-		            id: 'save'
-		        	  ,text: LN('sbi.execution.notes.savenotes') 
-		        	  ,scope: this
-		        	  ,handler: this.saveMetadata
-		        	  ,disabled: false
-		          }
-		]
-		,layout:'fit'
-		,width:650
-		,height:410
-		,plain: true
-		,autoScroll:true
-		,title: LN('sbi.execution.metadata')
-	});   
-	
-	
-	
+	var c = Ext.apply( {}, config, {
+		id : 'win_metadata',
+		items : [ this.shortTextPanel, this.longTextPanel ],
+		//items : [ this.shortTextPanel ],
+		buttons : [ {
+			id : 'save',
+			text : LN('sbi.execution.notes.savenotes'),
+			scope : this,
+			handler : this.saveMetadata,
+			disabled : false
+		} ],
+		layout : 'fit',
+		width : 650,
+		height : 410,
+		plain : true,
+		autoScroll : true,
+		title : LN('sbi.execution.metadata')
+	});
+
 	// constructor
-    Sbi.execution.toolbar.MetadataWindow.superclass.constructor.call(this, c);
-	
-    if (this.buddy === undefined) {
-    	this.buddy = new Sbi.commons.ComponentBuddy({
-    		buddy : this
-    	});
-    }
-    
+	Sbi.execution.toolbar.MetadataWindow.superclass.constructor.call(this, c);
+
+	if (this.buddy === undefined) {
+		this.buddy = new Sbi.commons.ComponentBuddy( {
+			buddy : this
+		});
+	}
+
 };
 
 Ext.extend(Sbi.execution.toolbar.MetadataWindow, Ext.Window, {
-	services:null
-   ,gridStore:null
-   ,shortTextStore:null
-   ,longTextStore:null
-   ,shortTextPanel: null
-   ,shortTextGrid:null
-   ,longTextPanel: null
-   ,longTextTabPanel: null
-   ,longTextEditor1:null
-   ,longTextEditor2:null
-   
-   ,initMetadata: function(){
-	    
-	   
-	    
-	    this.shortTextGrid = new Ext.grid.PropertyGrid({
-	        width: 640,
-	        autoHeight: true,
-	        cm: new Ext.grid.ColumnModel([
-				{header: "Ticker", width: 100, sortable: true},
-				{header: "Company Name", width: 540, sortable: true}
-			 ]),
-			columns: ["Ticker","Company Name"],
-	        source: {},
-	        viewConfig : {
-	            forceFit: true,
-	            scrollOffset: 2 // the grid will never have scrollbars
-	        }
-	    });
-	     
-	    
-	    this.shortTextPanel = new Ext.Panel({
-	        title: 'Short Text Metadata',
-	        collapsible: true,
-	        collapsed : true,
-	        items: [this.shortTextGrid],
-	        autoWidth : true,
+	services : null,
+	gridStore : null,
+	shortTextStore : null,
+	longTextStore : null,
+	shortTextPanel : null,
+	shortTextGrid : null,
+	longTextPanel : null,
+	longTextTabPanel : null,
+	longTextEditor : null
+
+	,
+	createGridPanel : function() {
+
+		this.shortTextGrid = new Ext.grid.EditorGridPanel( {
+			store : this.store,
+			autoHeight : true,
+			columns : [ {
+				header : "Name",
+				width : 100,
+				sortable : true,
+				dataIndex : 'meta_name'
+			}, {
+				header : "Value",
+				width : 540,
+				sortable : true,
+				dataIndex : 'meta_content',
+				editor : new Ext.form.TextField( {})
+			} ],
+			viewConfig : {
+				forceFit : true,
+				scrollOffset : 2
+			// the grid will never have scrollbars
+			},
+			singleSelect : true,
+			//selModel : new Ext.grid.RowSelectionModel(),
+			clicksToEdit : 2
+		});
+
+		this.shortTextPanel = new Ext.Panel( {
+			title : 'Short Text Metadata',
+			layout : 'fit',
+			collapsible : true,
+			collapsed : true,
+			items : [ this.shortTextGrid ],
+			autoWidth : true,
 			autoHeight : true
-	    });
-		  
-	var tab1 =  new Ext.Panel({
-			title: 'Objective'
-	});
-	
-	var tab2 =  new Ext.Panel({
-			title: 'Long Description'
-	});
-	
-	
-	tab1.on("show", function() {
-		this.longTextEditor1 = new Ext.form.HtmlEditor({
-		         frame: true
-		        ,value: 'cc'
-		      	,width: '100%'
-		        ,disabled: false
-			   ,height: 258
-			    ,enableSourceEdit: false      
-		  }); 
-		tab1.add(this.longTextEditor1);
-	}, this);
-	
-	tab2.on("show", function() {
-		
-		this.longTextEditor2 = new Ext.form.HtmlEditor({
-		         frame: true
-		        ,value: 'cc'
-		      	,width: '100%'
-		        ,disabled: false
-			   ,height: 258
-			    ,enableSourceEdit: false      
-		  }); 
-		  
-		tab2.add(this.longTextEditor2);
-	}, this);
-	  
-	this.longTextTabPanel = new Ext.TabPanel({
-		 hideMode: 'offsets'	
-	       , resizeTabs: true, 
-	        minTabWidth: 115,
-	        tabWidth: 135,
-	        enableTabScroll: true,
-	        activeTab: 1,
-		    autoScroll:true,
-		    
-		    items: [tab1,tab2]
 		});
-		
-	this.longTextPanel = new Ext.Panel({
-	        title: 'Long Text Metadata',
-	        collapsible: true,
-	        collapsed : false,
-	        items: [this.longTextTabPanel]
-	    });
 
+
+	},
+	createTabsPanel : function(){
+		var tabs = new Array();
+		for(i =0; i<this.storeTabs.getTotalCount(); i++){
+			var tab = new Ext.Panel( {
+				"title" : this.storeTabs.getAt(i).data.meta_name,
+				"html" : this.storeTabs.getAt(i).data.meta_content
+				
+			});
+
+			tab.on("show", function() {
+				this.longTextEditor = new Ext.form.HtmlEditor( {
+					frame : true,
+					value : tab.body,
+					width : '100%',
+					disabled : false,
+					height : 258,
+					enableSourceEdit : false
+				});
+				tab.add(this.longTextEditor);
+			}, this);
+			tabs[i] =tab;
+		}
+
+		this.longTextTabPanel = new Ext.TabPanel( {
+			hideMode : 'offsets',
+			resizeTabs : true,
+			minTabWidth : 115,
+			tabWidth : 135,
+			enableTabScroll : true,
+			activeTab : 0,
+			autoScroll : true,
+
+			items : tabs
+		});
+
+		this.longTextPanel = new Ext.Panel( {
+			title : 'Long Text Metadata',
+			collapsible : true,
+			collapsed : false,
+			items : [ this.longTextTabPanel ]
+		});
 	}
-	
-	, createGridSourceStore: function() {
 
-		var createGridStoreUrl = this.services['getValuesForMetadataGridService'];	
-		var store = new Ext.data.JsonStore({
-			url: createGridStoreUrl
-		});
-		store.on('loadexception', function(store, options, response, e) {
-			var msg = '';
-			var content = Ext.util.JSON.decode( response.responseText );		
-  			if(content !== undefined) {
-  				this.gridStore = content;
-  				msg += content.serviceName + ' : ' + content.message;
-  			} else {
-  				msg += 'Server response is empty';
-  			}
-	
-			Sbi.exception.ExceptionHandler.showErrorMessage(msg, response.statusText);
-		});
+	,
+	createGridSourceStore : function() {
+		var store = new Ext.data.SimpleStore( {
+			fields : [ 'meta_name', 'meta_content' ],
+			data : [ [ "BE", "Belgium" ], [ "BR", "Brazil" ],
+					[ "BG", "Bulgaria" ], [ "CA", "Canada" ],
+					[ "CL", "Chile" ], [ "CY", "Cyprus" ],
+					[ "CZ", "Czech Republic" ], [ "FI", "Finland" ],
+					[ "FR", "France" ], [ "DE", "Germany" ],
+					[ "HU", "Hungary" ], [ "IE", "Ireland" ],
+					[ "IL", "Israel" ], [ "IT", "Italy" ], [ "LV", "Latvia" ],
+					[ "LT", "Lithuania" ], [ "MX", "Mexico" ],
+					[ "NL", "Netherlands" ], [ "NZ", "New Zealand" ],
+					[ "NO", "Norway" ], [ "PK", "Pakistan" ],
+					[ "PL", "Poland" ], [ "RO", "Romania" ],
+					[ "SK", "Slovakia" ], [ "SI", "Slovenia" ],
+					[ "ES", "Spain" ], [ "SE", "Sweden" ],
+					[ "CH", "Switzerland" ], [ "GB", "United Kingdom" ] ]
+		}); // end of Ext.data.SimpleStore
+
+		/*
+		 * var store = new Ext.data.Store({ {"meta_name":"metadata1",
+		 * "meta_content":"aaaaaaaaa", "meta_id":"1", "meta_creation_date":"",
+		 * "meta_change_date":""}, {"meta_name":"metadata2",
+		 * "meta_content":"bbbbbbbbbb", "meta_id":"2", "meta_creation_date":"",
+		 * "meta_change_date":""} });
+		 */
+
+		return store;
+	},
+	createTabsSourceStore : function() {
+		var store = new Ext.data.SimpleStore( {
+			fields : [ 'meta_name', 'meta_content' ],
+			data : [ [ "BE", "html Belgium" ], [ "BR", "html Brazil" ],
+					[ "BG", "html Bulgaria" ], [ "CA", "html Canada" ],
+					[ "CL", "html Chile" ], [ "CY", "html Cyprus" ] ]
+		}); // end of Ext.data.SimpleStore
+
 		return store;
 	}
-	
-	,saveMetadata: function(){
-	
-	}
-	
-	,createGrid: function(){
-		var toReturn;
-		if(this.shortTextStore){
-		alert(this.shortTextStore.toSource());
-			var tempStr = '{ ';
-		      for(var i=0;i<this.shortTextStore.length;i++){
-			      if(i!=0){
-			      	tempStr += ' , ';
-			      }
-		      	  tempStr += this.shortTextStore[i].meta_name +': '+this.shortTextStore[i].meta_content;
-		      }
-		      tempStr += ' }';
-		      alert(tempStr);
-		      toReturn = eval(tempStr);
-		}else{
-			toReturn = {};
-		}
-	    return toReturn;
-	 }
+
+	,
+	saveMetadata : function() {
+		alert("save");
+
+		var modifiedRecords = this.store.getModifiedRecords();
+		// store.commitChanges();
+}
 
 });

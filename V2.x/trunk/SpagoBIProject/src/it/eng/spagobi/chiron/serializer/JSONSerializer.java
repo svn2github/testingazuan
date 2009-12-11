@@ -64,7 +64,6 @@ public class JSONSerializer implements Serializer {
 		mappings.put( ObjNote.class, new ObjectNotesJSONSerializer() );
 		mappings.put( ObjMetaDataAndContent.class, new MetadataJSONSerializer());	
 		
-		mappings.put( GetMetadataAction.class, new MetadataJSONSerializer());	
 		mappings.put( GetParametersForExecutionAction.ParameterForExecution.class, new ParameterForExecutionJSONSerializer() );
 	}
 

@@ -340,26 +340,32 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 			
 			SbiObjMetacontents hibContents = new SbiObjMetacontents();	
 
-			//gets foreign object 		
+			// get biobject reference		
 			aCriterion = Expression.eq("biobjId", aObjMetacontent.getBiobjId());
 			criteria = aSession.createCriteria(SbiObjects.class);
 			criteria.add(aCriterion);
 			SbiObjects biobj = (SbiObjects) criteria.uniqueResult();
+			hibContents.setSbiObjects(biobj);
 			
-			//gets foreign subobject 		
-			aCriterion = Expression.eq("subobjId", aObjMetacontent.getSubobjId());
-			criteria = aSession.createCriteria(SbiSubObjects.class);
-			criteria.add(aCriterion);
-			SbiSubObjects subobj = (SbiSubObjects) criteria.uniqueResult();
+			// get subobject reference
+			if (aObjMetacontent.getSubobjId() == null) {
+				hibContents.setSbiSubObjects(null);
+			} else {
+				aCriterion = Expression.eq("subObjId", aObjMetacontent.getSubobjId());
+				criteria = aSession.createCriteria(SbiSubObjects.class);
+				criteria.add(aCriterion);
+				SbiSubObjects subobj = (SbiSubObjects) criteria.uniqueResult();
+				hibContents.setSbiSubObjects(subobj);
+			}
 			
 			SbiBinContents binaryContent = new SbiBinContents();
 			binaryContent.setContent(aObjMetacontent.getContent());
 			aSession.save(binaryContent);
+			hibContents.setSbiBinContents(binaryContent);
 			
 			hibContents.setObjmetaId(aObjMetacontent.getObjmetaId());
-			hibContents.setSbiObjects(biobj);
-			hibContents.setSbiSubObjects(subobj);			
-			hibContents.setSbiBinContents(binaryContent);
+			
+			hibContents.setCreationDate(aObjMetacontent.getCreationDate());;
 			hibContents.setLastChangeDate(aObjMetacontent.getLastChangeDate());
 			
 			aSession.save(hibContents);

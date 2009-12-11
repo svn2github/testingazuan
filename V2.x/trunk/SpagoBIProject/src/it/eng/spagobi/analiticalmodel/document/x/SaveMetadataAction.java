@@ -41,6 +41,9 @@ public class SaveMetadataAction extends AbstractSpagoBIAction {
 	
 	public static final String SERVICE_NAME = "SAVE_METADATA_ACTION";
 	
+	// REQUEST PARAMETERS
+	public static final String OBJECT_ID = "OBJECT_ID";
+	public static final String SUBOBJECT_ID = "SUBOBJECT_ID";
 	public static final String METADATA = "METADATA";
 	
 	// logger component
@@ -49,14 +52,19 @@ public class SaveMetadataAction extends AbstractSpagoBIAction {
 	public void doService() {
 		logger.debug("IN");
 		try {
+			Integer biobjectId = this.getAttributeAsInteger(OBJECT_ID);
+			logger.debug("Object id = " + biobjectId);
+			Integer subobjectId = null;
+			try {
+				subobjectId = this.getAttributeAsInteger(SUBOBJECT_ID);
+			} catch (NumberFormatException e) {}
+			logger.debug("Subobject id = " + subobjectId);
 			String jsonEncodedMetadata = getAttributeAsString( METADATA );
 			logger.debug(METADATA + " = [" + jsonEncodedMetadata + "]");
 			JSONArray metadata = new JSONArray(jsonEncodedMetadata);
 			for (int i = 0; i < metadata.length(); i++) {					
 				JSONObject aMetadata = metadata.getJSONObject(i);
 				Integer metadataId = aMetadata.getInt(MetadataJSONSerializer.METADATA_ID);
-				Integer biobjectId = aMetadata.getInt(MetadataJSONSerializer.BIOBJECT_ID);
-				Integer subobjectId = aMetadata.getInt(MetadataJSONSerializer.SUBOBJECT_ID);
 				String text = aMetadata.getString(MetadataJSONSerializer.TEXT);
 				ObjMetacontent aObjMetacontent = DAOFactory.getObjMetacontentDAO().loadObjMetacontent(metadataId, biobjectId, subobjectId);
 				if (aObjMetacontent == null) {

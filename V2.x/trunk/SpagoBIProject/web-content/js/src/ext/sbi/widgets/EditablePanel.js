@@ -42,51 +42,61 @@
  * Authors - Davide Zerbetto (davide.zerbetto@eng.it)
  */
 
-
 Ext.ns("Sbi.widgets");
 
 Sbi.widgets.EditablePanel = function(config) {
-	
-	this.fieldName = config.fieldName || '';
-	
-	this.contentPanel = new Ext.Panel({
-		html : config.html
-	});
-	
-    this.htmlEditor = new Ext.form.HtmlEditor({
-	    value: ''
-	    , name: this.fieldName
-	});
     
-	var c = {
-		title : config.title
-		, items : [this.contentPanel]
-		, height : config.height
-	};
-	
-	Sbi.widgets.EditablePanel.superclass.constructor.call(this, c);
-	
-	this.addEvents('change');
-	
-	if (config.editable === undefined || config.editable !== false) {
-		
-	    this.on('render', function(panel) {
-	    	panel.getEl().on('dblclick', function() {
-	    		this.htmlEditor.setValue(this.contentPanel.body.dom.innerHTML);
-	    		this.htmlEditor.on('sync', function () {
-	    			this.fireEvent('change', this, this.htmlEditor.getValue());
-	    		}, this);
-	    		this.add(this.htmlEditor);
-	    		this.doLayout();
-	    		this.remove(this.contentPanel);
-	    		this.doLayout();
-			}, this);
-		}, this);
-	    
-	}
+    this.fieldName = config.fieldName || '';
+    
+    this.contentPanel = new Ext.Panel({
+        html : config.html
+    });
+    
+    this.htmlEditor = null;
+    
+    var c = {
+        title : config.title
+        , items : [this.contentPanel]
+        , height : config.height
+    };
+    
+    Sbi.widgets.EditablePanel.superclass.constructor.call(this, c);
+    
+    this.addEvents('change');
+    
+    if (config.editable === undefined || config.editable !== false) {
+        
+        this.on('render', function(panel) {
+            panel.getEl().on('dblclick', function() {
+                this.htmlEditor = new Ext.form.HtmlEditor({
+                    value: this.contentPanel.body.dom.innerHTML
+                    , name: this.fieldName
+                });
+                this.htmlEditor.on('sync', function () {
+                    this.fireEvent('change', this, this.htmlEditor.getValue());
+                }, this);
+                this.add(this.htmlEditor);
+                this.doLayout();
+                this.remove(this.contentPanel);
+                this.doLayout();
+            }, this);
+        }, this);
+        
+    }
 
 };
 
 Ext.extend(Sbi.widgets.EditablePanel, Ext.Panel, {
 
+    commitChanges: function() {
+        var newHtml = this.htmlEditor.getValue();
+        this.contentPanel = new Ext.Panel({
+            html : newHtml
+        });
+        this.add(this.contentPanel);
+        this.doLayout();
+        this.remove(this.htmlEditor);
+        this.doLayout();
+    }
+    
 });

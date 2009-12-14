@@ -150,6 +150,14 @@ Sbi.locale.ln['sbi.execution.subobjects.execute'] = 'Executer';
 Sbi.locale.ln['sbi.execution.subobjects.noSubObjectsSelected'] = 'Pas de vues customizées selectionnées';
 Sbi.locale.ln['sbi.execution.subobjects.cannotDeleteSubObject'] = 'Tu ne peux pas effacer la vue customisée';
 
+//Metadata
+Sbi.locale.ln['sbi.execution.metadata'] = 'Metadonnés';
+Sbi.locale.ln['sbi.execution.metadata.savemeta'] = 'Enregistrér';
+Sbi.locale.ln['sbi.execution.metadata.metaname'] = 'Nom';
+Sbi.locale.ln['sbi.execution.metadata.metavalue'] = 'Valeur';
+Sbi.locale.ln['sbi.execution.metadata.shorttextmetadata'] = 'Courts Metadonnés';
+Sbi.locale.ln['sbi.execution.metadata.longtextmetadata'] = 'Longs Metadonnés';
+
 // Toolbar 
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Envoyer à';
 // Save into personal folder
@@ -167,7 +175,7 @@ Sbi.locale.ln['sbi.rememberme.saveOk'] = 'Execution enregistrés correctement com
 Sbi.locale.ln['sbi.rememberme.alreadyExisting'] = 'Execution exist deja dans les Hot Links';
 Sbi.locale.ln['sbi.rememberme.errorWhileSaving'] = 'Erreur pendant l\'enregistrement';
 
-Sbi.locale.ln['sbi.execution.metadata'] = 'Metadonnés';
+
 Sbi.locale.ln['sbi.execution.rating'] = 'Vote du Document';
 Sbi.locale.ln['sbi.execution.rating.vote'] = 'Votez';
 

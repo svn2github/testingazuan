@@ -131,6 +131,11 @@ Sbi.execution.DocumentExecutionPage = function(config, doc) {
 		this.executionInstance.SBI_SNAPSHOT_ID = snapshotId;
 		this.synchronize(this.executionInstance);
 	}, this);
+	
+	this.shortcutsPanel.on('subobjectshowmetadatarequest', function (subObjectId) {
+    	 var win_metadata = new Sbi.execution.toolbar.MetadataWindow({'OBJECT_ID': this.executionInstance.OBJECT_ID, 'SUBOBJECT_ID': subObjectId});
+		 win_metadata.show();
+	}, this);
     
 	var c = Ext.apply({}, config, {
 		layout: 'border'
@@ -831,7 +836,13 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	}
 	
 	, metaExecution: function () {
-		this.win_metadata = new Sbi.execution.toolbar.MetadataWindow({'OBJECT_ID': this.executionInstance.OBJECT_ID});
+		var subObjectId = this.executionInstance.SBI_SUBOBJECT_ID;
+		alert(subObjectId);
+		if(subObjectId !== undefined){
+			this.win_metadata = new Sbi.execution.toolbar.MetadataWindow({'OBJECT_ID': this.executionInstance.OBJECT_ID, 'SUBOBJECT_ID': subObjectId});
+		}else{
+			this.win_metadata = new Sbi.execution.toolbar.MetadataWindow({'OBJECT_ID': this.executionInstance.OBJECT_ID});
+		}	
 		this.win_metadata.show();
 	}
 	

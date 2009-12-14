@@ -93,7 +93,7 @@ Sbi.execution.toolbar.MetadataWindow = function(config) {
     var buttons = [];
     if (Sbi.user.functionalities.contains('SaveMetadataFunctionality')) {
         buttons.push({
-            text : 'Salva'
+            text : LN('sbi.execution.metadata.savemeta')
             , scope : this
             , handler : this.saveMetadata
         });
@@ -171,12 +171,12 @@ Ext.extend(Sbi.execution.toolbar.MetadataWindow, Ext.Window, {
             store : this.shortTextMetadataStore,
             autoHeight : true,
             columns : [ {
-                header : "Name",
+                header : LN('sbi.execution.metadata.metaname'),
                 width : 100,
                 sortable : true,
                 dataIndex : 'meta_name'
             }, {
-                header : "Value",
+                header : LN('sbi.execution.metadata.metavalue'),
                 width : 540,
                 sortable : true,
                 dataIndex : 'meta_content',
@@ -192,10 +192,10 @@ Ext.extend(Sbi.execution.toolbar.MetadataWindow, Ext.Window, {
         });
 
         this.shortTextMetadataPanel = new Ext.Panel({
-            title : 'Short Text Metadata',
+            title : LN('sbi.execution.metadata.shorttextmetadata'),
             layout : 'fit',
             collapsible : true,
-            collapsed : true,
+            collapsed : false,
             items : [ shortTextMetadataGridPanel ],
             autoWidth : true,
             autoHeight : true
@@ -212,7 +212,7 @@ Ext.extend(Sbi.execution.toolbar.MetadataWindow, Ext.Window, {
         });
 
         this.longTextMetadataPanel = new Ext.Panel( {
-            title : 'Long Text Metadata',
+            title : LN('sbi.execution.metadata.longtextmetadata'),
             collapsible : true,
             collapsed : false,
             items : [ this.longTextMetadataTabPanel ],

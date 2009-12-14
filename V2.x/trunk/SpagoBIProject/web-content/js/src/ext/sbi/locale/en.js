@@ -150,6 +150,14 @@ Sbi.locale.ln['sbi.execution.subobjects.execute'] = 'Execute';
 Sbi.locale.ln['sbi.execution.subobjects.noSubObjectsSelected'] = 'No customized views selected';
 Sbi.locale.ln['sbi.execution.subobjects.cannotDeleteSubObject'] = 'You cannot delete customized view';
 
+//Metadata
+Sbi.locale.ln['sbi.execution.metadata'] = 'Metadata';
+Sbi.locale.ln['sbi.execution.metadata.savemeta'] = 'Save';
+Sbi.locale.ln['sbi.execution.metadata.metaname'] = 'Name';
+Sbi.locale.ln['sbi.execution.metadata.metavalue'] = 'Value';
+Sbi.locale.ln['sbi.execution.metadata.shorttextmetadata'] = 'Short Text Metadata';
+Sbi.locale.ln['sbi.execution.metadata.longtextmetadata'] = 'Long Text Metadata';
+
 // Toolbar 
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Send to';
 // Save into personal folder
@@ -167,7 +175,6 @@ Sbi.locale.ln['sbi.rememberme.saveOk'] = 'Execution saved as Hot Link correctly'
 Sbi.locale.ln['sbi.rememberme.alreadyExisting'] = 'Execution is already existing on Hot Links';
 Sbi.locale.ln['sbi.rememberme.errorWhileSaving'] = 'Error while saving';
 
-Sbi.locale.ln['sbi.execution.metadata'] = 'Metadata';
 Sbi.locale.ln['sbi.execution.rating'] = 'Document rating';
 Sbi.locale.ln['sbi.execution.rating.vote'] = 'Vote';
 

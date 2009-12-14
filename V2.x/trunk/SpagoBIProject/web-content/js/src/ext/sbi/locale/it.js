@@ -143,6 +143,14 @@ Sbi.locale.ln['sbi.execution.subobjects.execute'] = 'Esegui';
 Sbi.locale.ln['sbi.execution.subobjects.noSubObjectsSelected'] = 'Nessuna vista customizzata selezionata';
 Sbi.locale.ln['sbi.execution.subobjects.cannotDeleteSubObject'] = 'Non puoi eliminare la vista customizzata';
 
+//Metadata
+Sbi.locale.ln['sbi.execution.metadata'] = 'Metadati';
+Sbi.locale.ln['sbi.execution.metadata.savemeta'] = 'Salva';
+Sbi.locale.ln['sbi.execution.metadata.metaname'] = 'Nome';
+Sbi.locale.ln['sbi.execution.metadata.metavalue'] = 'Valore';
+Sbi.locale.ln['sbi.execution.metadata.shorttextmetadata'] = 'Metadati Brevi';
+Sbi.locale.ln['sbi.execution.metadata.longtextmetadata'] = 'Metadati Lunghi';
+
 // Toolbar
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Invia a';
 //Save into personal folder
@@ -159,7 +167,6 @@ Sbi.locale.ln['sbi.rememberme.saveOk'] = 'L\'esecuzione è stata salvata corretta
 Sbi.locale.ln['sbi.rememberme.alreadyExisting'] = 'L\'esecuzione è già presente negli Hot Links';
 Sbi.locale.ln['sbi.rememberme.errorWhileSaving'] = 'Errore durante il salvataggio';
 
-Sbi.locale.ln['sbi.execution.metadata'] = 'Metadati';
 Sbi.locale.ln['sbi.execution.rating'] = 'Rating documento';
 Sbi.locale.ln['sbi.execution.rating.vote'] = 'Vota';
 
@@ -180,6 +187,7 @@ Sbi.locale.ln['sbi.execution.notes.goBack'] = 'Torna alla lista';
 Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Errore nel salvataggio delle note: sono state modificate da un altro utente. Riapri questa finestra e ritenta!';
 Sbi.locale.ln['sbi.execution.notes.printnotesPDF'] = 'Esporta in PDF';
 Sbi.locale.ln['sbi.execution.notes.printnotesRTF'] = 'Esporta in RTF';
+
 
 Sbi.locale.ln['sbi.lookup.Confirm'] = 'Conferma';
 Sbi.locale.ln['sbi.lookup.Annulla'] = 'Annulla';

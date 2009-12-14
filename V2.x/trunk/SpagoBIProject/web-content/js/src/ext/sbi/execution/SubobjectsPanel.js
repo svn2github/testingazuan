@@ -77,6 +77,22 @@ Sbi.execution.SubobjectsPanel = function(config, doc) {
 		, url: this.services['getSubObjectsService']
     }); 
     
+     this.executeMetadataColumn = new Ext.grid.ButtonColumn({
+	       header:  '',
+	       dataIndex: 'metadata',
+	       iconCls: 'icon-metadata',
+	       clickHandler: function(e, t) {
+	          var index = this.grid.getView().findRowIndex(t);
+	          var selectedRecord = this.grid.subObjectsStore.getAt(index);
+	          var subObjectId = selectedRecord.get('id');
+	          this.grid.fireEvent('showmetadatarequest', subObjectId);
+	       },
+	       width: 25,
+	       renderer : function(v, p, record){
+	           return '<center><img class="x-mybutton-'+this.id+' grid-button ' +this.iconCls+'" width="16px" height="16px" src="'+Ext.BLANK_IMAGE_URL+'"/></center>';
+	       }
+	});
+    
     this.executeColumn = new Ext.grid.ButtonColumn({
 	       header:  '',
 	       dataIndex: 'delete',
@@ -112,6 +128,7 @@ Sbi.execution.SubobjectsPanel = function(config, doc) {
        		return val? LN('sbi.execution.subobjects.visibility.public'): LN('sbi.execution.subobjects.visibility.private')
        	}
        }
+       , this.executeMetadataColumn
        , this.executeColumn
     ];
     
@@ -143,7 +160,7 @@ Sbi.execution.SubobjectsPanel = function(config, doc) {
 	c = Ext.apply({}, c, {
         store: this.subObjectsStore
         , columns: columns
-        , plugins: this.executeColumn
+        , plugins: [this.executeColumn,this.executeMetadataColumn]
 		, viewConfig: {
         	forceFit: true
         	, emptyText: LN('sbi.execution.subobjects.emptyText')
@@ -162,7 +179,7 @@ Sbi.execution.SubobjectsPanel = function(config, doc) {
     
     this.on('rowdblclick', this.onRowDblClick, this);
     
-    this.addEvents('executionrequest', 'ready');
+    this.addEvents('executionrequest', 'ready', 'showmetadatarequest');
     
 };
 

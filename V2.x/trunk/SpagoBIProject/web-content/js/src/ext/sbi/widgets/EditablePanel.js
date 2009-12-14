@@ -71,6 +71,8 @@ Sbi.widgets.EditablePanel = function(config) {
                 this.htmlEditor = new Ext.form.HtmlEditor({
                     value: this.contentPanel.body.dom.innerHTML
                     , name: this.fieldName
+                    , width: 640
+                    , height: 258
                 });
                 this.htmlEditor.on('sync', function () {
                     this.fireEvent('change', this, this.htmlEditor.getValue());

@@ -402,18 +402,20 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 	public List fillDepths(List objectsList){
 		HashMap idsMenus=new HashMap();
 		ArrayList limitLeaves=new ArrayList();
-		for (Iterator iterator = objectsList.iterator(); iterator.hasNext();) {
-			Menu menu = (Menu) iterator.next();
-			Integer id=menu.getMenuId();
-			idsMenus.put(id, menu);
-		}
-
-		for (Iterator iterator = objectsList.iterator(); iterator.hasNext();) {
-			Menu menu= (Menu) iterator.next();
-			Integer id=menu.getMenuId();
-			int depth=calculateDepth(idsMenus, menu);
-			if(depth==3) // trace only limit leaves!
-				limitLeaves.add(id);
+		if(objectsList!=null){
+			for (Iterator iterator = objectsList.iterator(); iterator.hasNext();) {
+				Menu menu = (Menu) iterator.next();
+				Integer id=menu.getMenuId();
+				idsMenus.put(id, menu);
+			}
+	
+			for (Iterator iterator = objectsList.iterator(); iterator.hasNext();) {
+				Menu menu= (Menu) iterator.next();
+				Integer id=menu.getMenuId();
+				int depth=calculateDepth(idsMenus, menu);
+				if(depth==3) // trace only limit leaves!
+					limitLeaves.add(id);
+			}
 		}
 		return limitLeaves;
 

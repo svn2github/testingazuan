@@ -278,7 +278,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 			} else {
 				SbiSubObjects previousSubobject = hibContents.getSbiSubObjects();
 				if (previousSubobject == null || previousSubobject.getSubObjId() != aObjMetacontent.getSubobjId()) {
-					aCriterion = Expression.eq("subobjId", aObjMetacontent.getSubobjId());
+					aCriterion = Expression.eq("subObjId", aObjMetacontent.getSubobjId());
 					criteria = aSession.createCriteria(SbiSubObjects.class);
 					criteria.add(aCriterion);
 					SbiSubObjects subobj = (SbiSubObjects) criteria.uniqueResult();

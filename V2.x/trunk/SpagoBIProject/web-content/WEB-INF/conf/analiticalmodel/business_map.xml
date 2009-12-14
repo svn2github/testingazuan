@@ -8,6 +8,7 @@
 		<MAP_ACTION actionName="GET_FOLDER_CONTENT_ACTION" businessProcess="DocumentUserManagement"/>
 		<MAP_ACTION actionName="GET_FOLDER_PATH_ACTION"  businessProcess="DocumentUserManagement"/>
 		<MAP_ACTION actionName="SEARCH_CONTENT_ACTION"  businessProcess="DocumentUserManagement"/>
+		<MAP_ACTION actionName="GET_CATEGORIES_ACTION"  businessProcess="DocumentUserManagement"/>
 		
 		<MAP_ACTION actionName="START_EXECUTION_PROCESS_ACTION"  businessProcess="DocumentUserManagement"/>
 		<MAP_ACTION actionName="GET_ROLES_FOR_EXECUTION_ACTION"  businessProcess="DocumentUserManagement"/>

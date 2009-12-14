@@ -55,7 +55,6 @@ public class LuceneSearcher {
 			throws IOException, ParseException {
 		logger.debug("IN");
 		Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
-		//MultiFieldQueryParser queryParser = new MultiFieldQueryParser(Version.LUCENE_CURRENT, fields, analyzer);
 		BooleanQuery orQuery = new BooleanQuery();
 		for(int i=0; i< fields.length;i++){
 			Query query = new FuzzyQuery(new Term(fields[i], queryString));

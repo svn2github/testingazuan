@@ -27,13 +27,13 @@ import it.eng.spagobi.analiticalmodel.document.bo.ObjNote;
 import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.bo.Viewpoint;
-import it.eng.spagobi.analiticalmodel.document.x.GetMetadataAction;
 import it.eng.spagobi.analiticalmodel.document.x.GetParametersForExecutionAction;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
+import it.eng.spagobi.tools.objmetadata.bo.ObjMetadata;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -63,6 +63,8 @@ public class JSONSerializer implements Serializer {
 		mappings.put( DataStore.class, new DataStoreJSONSerializer() );
 		mappings.put( ObjNote.class, new ObjectNotesJSONSerializer() );
 		mappings.put( ObjMetaDataAndContent.class, new MetadataJSONSerializer());	
+		mappings.put( ObjMetadata.class, new ShortMetadataJSONSerializer());	
+		
 		
 		mappings.put( GetParametersForExecutionAction.ParameterForExecution.class, new ParameterForExecutionJSONSerializer() );
 	}

@@ -62,10 +62,7 @@ import org.json.JSONObject;
 public class SearchContentAction extends AbstractSpagoBIAction{
 	
 	// REQUEST PARAMETERS
-	public static final String DOC_NAME = "docName";
-	public static final String DOC_LABEL = "docLabel";
-	public static final String DOC_DESCR = "docDescr";
-	public static final String DOC_META = "docMeta";
+	public static final String ATTRIBUTES = "attributes";
 	public static final String SIMILAR = "similar";
 	
 	
@@ -86,22 +83,26 @@ public class SearchContentAction extends AbstractSpagoBIAction{
 			String valueFilter = getAttributeAsString(SpagoBIConstants.VALUE_FILTER);
 			fieldsToSearch.add(IndexingConstants.CONTENTS);
 			
-			boolean onDocName = getAttributeAsBoolean(DOC_NAME);
-			if(onDocName){
-				fieldsToSearch.add(IndexingConstants.BIOBJ_NAME);
+			String attributes = getAttributeAsString(ATTRIBUTES);
+			if(attributes != null){
+				if(attributes.equalsIgnoreCase("ALL")){//SEARCH IN ALL FIELDS
+					fieldsToSearch.add(IndexingConstants.BIOBJ_LABEL);
+					fieldsToSearch.add(IndexingConstants.BIOBJ_NAME);
+					fieldsToSearch.add(IndexingConstants.BIOBJ_DESCR);
+					fieldsToSearch.add(IndexingConstants.METADATA);
+				}else if(attributes.equalsIgnoreCase("LABEL")){//SEARCH IN LABEL DOC
+					fieldsToSearch.add(IndexingConstants.BIOBJ_LABEL);
+				}else if(attributes.equalsIgnoreCase("NAME")){//SEARCH IN NAME DOC
+					fieldsToSearch.add(IndexingConstants.BIOBJ_NAME);
+				}else if(attributes.equalsIgnoreCase("DESCRIPTION")){//SEARCH IN DESCRIPTION DOC
+					fieldsToSearch.add(IndexingConstants.BIOBJ_DESCR);
+				}else if(attributes.equalsIgnoreCase("CATEGORIES")){//SEARCH IN CATEGORIES DOC
+					fieldsToSearch.add(IndexingConstants.METADATA);
+					fieldsToSearch.add(IndexingConstants.CONTENTS);
+				}
+				
 			}
-			boolean onDocLabel = getAttributeAsBoolean(DOC_LABEL);
-			if(onDocLabel){
-				fieldsToSearch.add(IndexingConstants.BIOBJ_LABEL);
-			}
-			boolean onDocDescr = getAttributeAsBoolean(DOC_DESCR);
-			if(onDocDescr){
-				fieldsToSearch.add(IndexingConstants.BIOBJ_DESCR);
-			}
-			boolean onMeta = getAttributeAsBoolean(DOC_META);
-			if(onMeta){
-				fieldsToSearch.add(IndexingConstants.METADATA);
-			}
+
 			boolean similar = getAttributeAsBoolean(SIMILAR);
 
 			logger.debug("Parameter [" + SpagoBIConstants.VALUE_FILTER + "] is equal to [" + valueFilter + "]");

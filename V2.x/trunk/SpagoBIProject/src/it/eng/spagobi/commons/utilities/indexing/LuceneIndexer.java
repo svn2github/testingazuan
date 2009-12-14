@@ -67,6 +67,9 @@ public class LuceneIndexer {
 					new IndexWriter.MaxFieldLength(1000000));
 			
 			Document doc = new Document();
+			String uid = createUidDocument(null, String.valueOf(biObj.getId().intValue()));
+			doc.add(new Field(IndexingConstants.UID, uid , Field.Store.YES,
+					Field.Index.NOT_ANALYZED));
 			doc.add(new Field(IndexingConstants.BIOBJ_ID, String.valueOf(biObj.getId().intValue()), Field.Store.YES,
 					Field.Index.NOT_ANALYZED));
 			doc.add(new Field(IndexingConstants.BIOBJ_NAME, biObj.getName(),
@@ -197,7 +200,7 @@ public class LuceneIndexer {
 							ObjMetacontent metacontent = metacontents.get(j);
 							Integer binId = metacontent.getBinaryContentId();
 							Integer biobjId = metacontent.getBiobjId();
-							String uid = String.valueOf(binId.intValue());
+							String binIdString = String.valueOf(binId.intValue());
 	
 							byte[] content = metacontent.getContent();
 							String htmlContent = null;
@@ -210,7 +213,7 @@ public class LuceneIndexer {
 							if (uidIter != null) {
 								while (uidIter.term() != null
 										&& uidIter.term().field().equals(IndexingConstants.UID)
-										&& uidIter.term().text().compareTo(uid) < 0) {
+										&& uidIter.term().text().compareTo(binIdString) < 0) {
 									if (deleting) { // delete stale docs
 										logger.info("deleting html binary content "+ uidIter.term().text());
 										reader.deleteDocuments(uidIter.term());
@@ -219,16 +222,16 @@ public class LuceneIndexer {
 								}
 								if (uidIter.term() != null
 										&& uidIter.term().field().equals(IndexingConstants.UID)
-										&& uidIter.term().text().compareTo(uid) == 0) {
+										&& uidIter.term().text().compareTo(binIdString) == 0) {
 									uidIter.next(); // keep matching docs
 								} else if (!deleting) { // add new docs
 									Document doc = new Document();
-									addFieldsToDocument(doc, uid,biobjId, metaLabel, domain, htmlContent, content);									
+									addFieldsToDocument(doc, binIdString, biobjId, metaLabel, domain, htmlContent, content);									
 									writer.addDocument(doc);
 								}
 							} else { // creating a new index
 								Document doc = new Document();
-								addFieldsToDocument(doc, uid, biobjId, metaLabel, domain, htmlContent, content);								
+								addFieldsToDocument(doc, binIdString, biobjId, metaLabel, domain, htmlContent, content);								
 								writer.addDocument(doc);
 							}
 							
@@ -247,9 +250,18 @@ public class LuceneIndexer {
 		}
 			
 	}
+	private static String createUidDocument(String binId, String biobjId){
+		String uid=biobjId;
+		if(binId != null){
+			uid+= "_"+binId;
+		}
+		
+		return uid;
+	}
 	
-	private static void addFieldsToDocument(Document doc, String uid, Integer biobjId, String metaLabel,Domain domain, String htmlContent, byte[] content) throws UnsupportedEncodingException{
-		doc.add(new Field(IndexingConstants.UID, uid, Field.Store.YES,
+	private static void addFieldsToDocument(Document doc, String binId, Integer biobjId, String metaLabel,Domain domain, String htmlContent, byte[] content) throws UnsupportedEncodingException{
+		String uid = createUidDocument(binId, String.valueOf(biobjId.intValue()));
+		doc.add(new Field(IndexingConstants.UID, uid , Field.Store.YES,
 				Field.Index.NOT_ANALYZED));
 		doc.add(new Field(IndexingConstants.BIOBJ_ID, String.valueOf(biobjId.intValue()), Field.Store.YES,
 				Field.Index.NOT_ANALYZED));

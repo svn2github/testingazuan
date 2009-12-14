@@ -2,17 +2,20 @@ package it.eng.spagobi.studio.geo.editors.model.bo;
 
 import it.eng.spagobi.studio.geo.Activator;
 import it.eng.spagobi.studio.geo.editors.model.geo.Column;
+import it.eng.spagobi.studio.geo.editors.model.geo.CrossNavigation;
 import it.eng.spagobi.studio.geo.editors.model.geo.DatamartProvider;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.editors.model.geo.Label;
 import it.eng.spagobi.studio.geo.editors.model.geo.Labels;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layer;
 import it.eng.spagobi.studio.geo.editors.model.geo.Layers;
+import it.eng.spagobi.studio.geo.editors.model.geo.Link;
 import it.eng.spagobi.studio.geo.editors.model.geo.MapProvider;
 import it.eng.spagobi.studio.geo.editors.model.geo.MapRenderer;
 import it.eng.spagobi.studio.geo.editors.model.geo.Metadata;
 import it.eng.spagobi.studio.geo.util.XmlTemplateGenerator;
 
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Vector;
@@ -41,6 +44,16 @@ public class ModelBO {
 			geoDocument.setMapRenderer(mapRenderer);
 			mapRenderer.setClassName(rb.getString("maprenderer.class.name"));
 		}
+		
+		//put id to links
+		if(geoDocument.getDatamartProvider()!=null && geoDocument.getDatamartProvider().getCrossNavigation()!=null && geoDocument.getDatamartProvider().getCrossNavigation().getLinks()!=null){
+			Vector<Link> links=geoDocument.getDatamartProvider().getCrossNavigation().getLinks();
+			for (Iterator iterator = links.iterator(); iterator.hasNext();) {
+				Link link = (Link) iterator.next();
+				link.setId(CrossNavigation.idLink++);
+			}
+		}
+		
 		return geoDocument;
 	}
 	public void cleanGEODocument(GEODocument geoDocumentToSaveOnFile){

@@ -28,8 +28,10 @@ public class LevelBO {
 								vectLevels = new Vector<Level>();
 								vectHier.elementAt(i).setLevels(vectLevels);
 							}
+							else{
+								vectLevels=vectHier.elementAt(i).getLevels();
+							}
 							vectLevels.add(newLevel);
-
 						}
 					}
 				}
@@ -58,7 +60,7 @@ public class LevelBO {
 										//vectHier.elementAt(i).getLevels().getLevel().remove(l);
 										vectLevelsToRemove.add(l);
 									}
-									
+
 								}
 								vectHier.elementAt(i).getLevels().removeAll(vectLevelsToRemove);
 							}
@@ -87,7 +89,7 @@ public class LevelBO {
 									if(l.getName().equals(level)){
 										levelret = l;
 									}
-									
+
 								}
 							}
 						}
@@ -115,7 +117,7 @@ public class LevelBO {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 	public static void updateLevel(GEODocument geoDocument,
@@ -127,6 +129,6 @@ public class LevelBO {
 			levelToUpdate.setColumnId(newLevel.getColumnId());
 			levelToUpdate.setFeatureName(newLevel.getFeatureName());
 		}
-		
+
 	}
 }

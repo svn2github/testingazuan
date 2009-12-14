@@ -34,7 +34,29 @@ public class LinkBO {
 		return link;
 
 	}
-	
+
+
+	public static void updateExisting(GEODocument geoDocument, Integer idLink, String levelName) {
+		DatamartProvider dmProvider = geoDocument.getDatamartProvider();
+		CrossNavigation crossNavigation = dmProvider.getCrossNavigation();
+		if(idLink!=null){
+			if (crossNavigation != null) {
+				Vector<Link> links = crossNavigation.getLinks();
+				if(links!=null){
+					for (int i = 0; i < links.size(); i++) {
+						Link linkI = links.elementAt(i);
+						if(linkI.getId().equals(idLink)){
+							linkI.setLevel(levelName);
+						}
+					}
+				}
+
+			}
+		}
+	}
+
+
+
 	public static Link addParamToLink(GEODocument geoDocument, Link link, LinkParam param) {
 		DatamartProvider dmProvider = geoDocument.getDatamartProvider();
 		CrossNavigation crossNavigation = dmProvider.getCrossNavigation();
@@ -47,7 +69,7 @@ public class LinkBO {
 		params.add(param);
 		return link;
 	}
-	
+
 	public static LinkParam getLinkParam(Link link, LinkParam param) {
 		Vector<LinkParam> params = link.getParam();
 		if(params != null){
@@ -70,25 +92,30 @@ public class LinkBO {
 		}
 	}
 
-	public static Link getLinkByHierarchyAndLevel(GEODocument geoDocument,
-			String hierarchyName, String levelName) {
+	public static Link getLinkByHierarchyAndLevel(GEODocument geoDocument, Integer idLink) {
 		Link link = null;
 		DatamartProvider dmProvider = geoDocument.getDatamartProvider();
 		CrossNavigation crossNavigation = dmProvider.getCrossNavigation();
-		if (crossNavigation != null) {
-			Vector<Link> links = crossNavigation.getLinks();
-			for (int i = 0; i < links.size(); i++) {
-				Link linkI = links.elementAt(i);
-				if (hierarchyName != null && levelName != null
-						&& linkI.getHierarchy().equals(hierarchyName)
-						&& linkI.getLevel().equals(levelName)) {
-					link = linkI;
+		if(idLink!=null){
+			if (crossNavigation != null) {
+				Vector<Link> links = crossNavigation.getLinks();
+				if(links!=null){
+					for (int i = 0; i < links.size(); i++) {
+						Link linkI = links.elementAt(i);
+						//					if (hierarchyName != null && levelName != null
+						//							&& linkI.getHierarchy().equals(hierarchyName)
+						//							&& linkI.getLevel().equals(levelName)) {
+						if(linkI.getId().equals(idLink)){
+							link = linkI;
+						}
+					}
 				}
 
 			}
 		}
 		return link;
 	}
+
 	public static void deleteLink(GEODocument geoDocument,
 			String hierarchyName, String levelName){
 		DatamartProvider dmProvider = geoDocument.getDatamartProvider();

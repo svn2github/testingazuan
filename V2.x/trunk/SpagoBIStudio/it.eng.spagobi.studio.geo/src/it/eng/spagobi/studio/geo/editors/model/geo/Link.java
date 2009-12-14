@@ -1,5 +1,7 @@
 package it.eng.spagobi.studio.geo.editors.model.geo;
 
+import it.eng.spagobi.studio.geo.editors.CrossNavigationDesigner;
+
 import java.io.Serializable;
 import java.util.Vector;
 
@@ -11,6 +13,13 @@ public class Link  implements Serializable {
 	private String hierarchy;
 	private String level;
 	private Vector<LinkParam> param;
+	public Integer id=null;
+	
+	
+	public Link() {
+		super();
+		id=Integer.valueOf(CrossNavigation.idLink++);
+	}
 	public String getHierarchy() {
 		return hierarchy;
 	}
@@ -29,6 +38,13 @@ public class Link  implements Serializable {
 	public void setParam(Vector<LinkParam> param) {
 		this.param = param;
 	}
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 
+	
 }

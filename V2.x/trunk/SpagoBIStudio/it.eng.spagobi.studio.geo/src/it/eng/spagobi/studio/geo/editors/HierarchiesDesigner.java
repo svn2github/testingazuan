@@ -1,6 +1,9 @@
 package it.eng.spagobi.studio.geo.editors;
 
 
+import java.util.Iterator;
+import java.util.Vector;
+
 import it.eng.spagobi.sdk.exceptions.MissingParameterValue;
 import it.eng.spagobi.studio.core.bo.DataStoreMetadata;
 import it.eng.spagobi.studio.core.bo.DataStoreMetadataField;
@@ -16,6 +19,7 @@ import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchies;
 import it.eng.spagobi.studio.geo.editors.model.geo.Hierarchy;
 import it.eng.spagobi.studio.geo.editors.model.geo.Level;
+import it.eng.spagobi.studio.geo.editors.model.geo.Link;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -40,6 +44,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.part.WorkbenchPart;
 
 public class HierarchiesDesigner {
 
@@ -80,118 +85,163 @@ public class HierarchiesDesigner {
 		hierarchiesTree.getParent().getParent().redraw();
 	}
 	private void createNewHierarchy(Tree hierarchiesTree, String name, String type){		
-        TreeItem iItem = new TreeItem(hierarchiesTree, SWT.NONE);
-        iItem.setText(name);
+		TreeItem iItem = new TreeItem(hierarchiesTree, SWT.NONE);
+		iItem.setText(name);
 
-        hierarchiesTree.getParent().getParent().redraw();
-        //crea oggetto java con name+type
-        HierarchyBO.setNewHierarchy(geoDocument, name, type);
-        editor.setIsDirty(true);
-		
+		hierarchiesTree.getParent().getParent().redraw();
+		//crea oggetto java con name+type
+		HierarchyBO.setNewHierarchy(geoDocument, name, type);
+		editor.setIsDirty(true);
+
 	}
-	
+
 	private void updateHierarchy(Tree hierarchiesTree, String name, String type, Hierarchy hierarchy){		
-        TreeItem iItem = hierarchiesTree.getSelection()[0];
-        iItem.setText(name);
-        hierarchiesTree.getParent().getParent().redraw();
-        hierarchy.setName(name);
-        hierarchy.setType(type);
-        editor.setIsDirty(true);
-		
+		TreeItem iItem = hierarchiesTree.getSelection()[0];
+		iItem.setText(name);
+		hierarchiesTree.getParent().getParent().redraw();
+		hierarchy.setName(name);
+		hierarchy.setType(type);
+		editor.setIsDirty(true);
+
 	}
 	private void createNewLevel(Tree hierarchiesTree, Level newLevel, TreeItem parent, boolean isDefault){		
-        TreeItem iItem = new TreeItem(parent, SWT.NONE);
-        iItem.setText(newLevel.getName());
+		TreeItem iItem = new TreeItem(parent, SWT.NONE);
+		iItem.setText(newLevel.getName());
 
-        hierarchiesTree.getParent().getParent().redraw();
+		hierarchiesTree.getParent().getParent().redraw();
 
-        LevelBO.setNewLevel(geoDocument, parent.getText(), newLevel);
-        if(isDefault){
-        	DatamartProviderBO.setHierarchy(geoDocument, parent.getText(), newLevel.getName());
-        }
-        editor.setIsDirty(true);
+		LevelBO.setNewLevel(geoDocument, parent.getText(), newLevel);
+		if(isDefault){
+			DatamartProviderBO.setHierarchy(geoDocument, parent.getText(), newLevel.getName());
+		}
+		editor.setIsDirty(true);
 	}
 	private void updateLevel(Tree hierarchiesTree, Level newLevel, TreeItem parent, Level oldLevel, boolean isDefault){		
-        TreeItem iItem = hierarchiesTree.getSelection()[0];
-        iItem.setText(newLevel.getName());
-        
-        LevelBO.updateLevel(geoDocument, iItem.getParentItem().getText(), oldLevel, newLevel);
-        if(isDefault){
-        	DatamartProviderBO.setHierarchy(geoDocument, parent.getText(), oldLevel.getName());
-        }
-        hierarchiesTree.getParent().getParent().redraw();
-        oldLevel = newLevel;	
-        editor.setIsDirty(true);
-	}
-	
-	private void deleteItem(Tree hierarchiesTree, TreeItem item){
-        //elimina oggetto java
-		if(item.getParentItem() == null){
-			//hierarchy--> delete hierarchy
-			HierarchyBO.deleteHierarchy(geoDocument, item.getText());			
-		}else{
-			//level--> deleteLevel
-			LevelBO.deleteLevel(geoDocument, item.getParentItem().getText(), item.getText());
+		TreeItem iItem = hierarchiesTree.getSelection()[0];
+		iItem.setText(newLevel.getName());
+
+		LevelBO.updateLevel(geoDocument, iItem.getParentItem().getText(), oldLevel, newLevel);
+		if(isDefault){
+			DatamartProviderBO.setHierarchy(geoDocument, parent.getText(), oldLevel.getName());
 		}
-		item.dispose();
-        //hierarchiesTree.pack();
-        hierarchiesTree.redraw();
-        editor.setIsDirty(true);
+		hierarchiesTree.getParent().getParent().redraw();
+		oldLevel = newLevel;	
+		editor.setIsDirty(true);
 	}
+
+	private void deleteItem(Tree hierarchiesTree, TreeItem item){
+		//elimina oggetto java
+		if(item.getParentItem() == null){
+			// check hierarchy is not used by cross navigation
+			if(canEraseHierarchy(geoDocument, item.getText())){
+				//hierarchy--> delete hierarchy
+				HierarchyBO.deleteHierarchy(geoDocument, item.getText());
+				item.dispose();
+				editor.setIsDirty(true);
+			}
+			else{
+				MessageDialog.openWarning(mainComposite.getShell(), "Warning", "Cannot delete hierarchy because is used in cross navigation section");
+			}
+		}else{
+			// check level is not used by cross navigation
+			if(canEraseLevel(geoDocument, item.getText())){
+				//level--> deleteLevel
+				LevelBO.deleteLevel(geoDocument, item.getParentItem().getText(), item.getText());
+				item.dispose();
+				editor.setIsDirty(true);
+			}
+			else{
+				MessageDialog.openWarning(mainComposite.getShell(), "Warning", "Cannot delete Level because is used in cross navigation section");
+			}
+		}
+		//hierarchiesTree.pack();
+		hierarchiesTree.redraw();
+	}
+
+
+	private boolean canEraseHierarchy(GEODocument document, String hierarchyName){
+		boolean can=true;
+		if(geoDocument.getDatamartProvider()!=null && geoDocument.getDatamartProvider().getCrossNavigation()!=null && geoDocument.getDatamartProvider().getCrossNavigation().getLinks()!=null){
+			Vector<Link> links=geoDocument.getDatamartProvider().getCrossNavigation().getLinks();
+			for (Iterator iterator = links.iterator(); iterator.hasNext() && can==true;) {
+				Link link = (Link) iterator.next();
+				if(link.getHierarchy()!=null && link.getHierarchy().equalsIgnoreCase(hierarchyName)){
+					can=false;
+				}
+			}
+		}
+		return can;
+	}
+
+	private boolean canEraseLevel(GEODocument document, String levelName){
+		boolean can=true;
+		if(geoDocument.getDatamartProvider()!=null && geoDocument.getDatamartProvider().getCrossNavigation()!=null && geoDocument.getDatamartProvider().getCrossNavigation().getLinks()!=null){
+			Vector<Link> links=geoDocument.getDatamartProvider().getCrossNavigation().getLinks();
+			for (Iterator iterator = links.iterator(); iterator.hasNext() && can==true;) {
+				Link link = (Link) iterator.next();
+				if(link.getLevel()!=null && link.getLevel().equalsIgnoreCase(levelName)){
+					can=false;
+				}
+			}
+		}
+		return can;
+	}
+
+
 	private void createMenu(final Composite sectionClient, final Tree hierarchiesTree){
-		
-    	Menu menu = new Menu (sectionClient.getShell(), SWT.POP_UP);
-    	MenuItem menuItem = new MenuItem (menu, SWT.PUSH);
+
+		Menu menu = new Menu (sectionClient.getShell(), SWT.POP_UP);
+		MenuItem menuItem = new MenuItem (menu, SWT.PUSH);
 		menuItem.setText ("New Hierarchy");
 		menuItem.addListener(SWT.Selection, new Listener () {
-            public void handleEvent (Event event) { 
-            	TreeItem[] sel = hierarchiesTree.getSelection();
-            	if(sel[0] != null && sel[0].getParentItem() != null){//ha selez un livello--> errore
-            		MessageDialog.openError(sectionClient.getShell(), "Error", "Wrong position");
-            	}else{
-            		createNewHierarchyShell(hierarchiesTree, null);
-            		
-            	}
-            	
-            }
-        });
+			public void handleEvent (Event event) { 
+				TreeItem[] sel = hierarchiesTree.getSelection();
+				if(sel[0] != null && sel[0].getParentItem() != null){//ha selez un livello--> errore
+					MessageDialog.openError(sectionClient.getShell(), "Error", "Wrong position");
+				}else{
+					createNewHierarchyShell(hierarchiesTree, null);
+
+				}
+
+			}
+		});
 		menuItem = new MenuItem (menu, SWT.PUSH);
 		menuItem.setText ("New Level");
 		menuItem.addListener(SWT.Selection, new Listener () {
-            public void handleEvent (Event event) { 
-            	TreeItem[] sel = hierarchiesTree.getSelection();
-            	if(sel[0] != null && sel[0].getParentItem() == null){
-                	createNewLevelShell(hierarchiesTree, sel[0], null);
-                	
-            	}else{
-            		MessageDialog.openError(sectionClient.getShell(), "Error", "Wrong position. Please select a hierarchy");
-            	}
+			public void handleEvent (Event event) { 
+				TreeItem[] sel = hierarchiesTree.getSelection();
+				if(sel[0] != null && sel[0].getParentItem() == null){
+					createNewLevelShell(hierarchiesTree, sel[0], null);
 
-            }
-        });	 
+				}else{
+					MessageDialog.openError(sectionClient.getShell(), "Error", "Wrong position. Please select a hierarchy");
+				}
+
+			}
+		});	 
 		menuItem = new MenuItem (menu, SWT.PUSH);
 		menuItem.setText ("Delete");
 		menuItem.addListener(SWT.Selection, new Listener () {
-            public void handleEvent (Event event) { 
-            	TreeItem[] sel = hierarchiesTree.getSelection();
-            	if(sel[0] != null){
-                	deleteItem(hierarchiesTree, sel[0]);
-            	}else{
-            		MessageDialog.openWarning(sectionClient.getShell(), "Warning", "Please select an item to delete");
-            	}
+			public void handleEvent (Event event) { 
+				TreeItem[] sel = hierarchiesTree.getSelection();
+				if(sel[0] != null){
+					deleteItem(hierarchiesTree, sel[0]);
+				}else{
+					MessageDialog.openWarning(sectionClient.getShell(), "Warning", "Please select an item to delete");
+				}
 
-            }
-        });	
+			}
+		});	
 		hierarchiesTree.setMenu(menu);
 	}
 	public void createHierarchiesTree(final Composite sectionClient, FormToolkit toolkit){
-				
+
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.horizontalSpan =4;
 		gd.heightHint=100;
 		gd.minimumHeight=70;
 		gd.verticalAlignment=SWT.TOP;
-				
+
 		final Composite hierarchiesGroup = new Composite(sectionClient, SWT.FILL);
 		//hierarchiesGroup.setText("Hierarchies");
 		hierarchiesGroup.setLayoutData(gd);
@@ -200,59 +250,59 @@ public class HierarchiesDesigner {
 		final Tree hierarchiesTree = toolkit.createTree(hierarchiesGroup, SWT.NONE | SWT.V_SCROLL | SWT.H_SCROLL | SWT.SINGLE );
 		hierarchiesTree.setLayoutData(gd);
 
-		
+
 		if(geoDocument.getDatamartProvider().getHierarchies() == null || 
 				geoDocument.getDatamartProvider().getHierarchies().getHierarchy() == null || 
 				geoDocument.getDatamartProvider().getHierarchies().getHierarchy().size() == 0){
 			final Label emptyTree = toolkit.createLabel(hierarchiesGroup, "empty heirarchies tree...right click here to create", SWT.CENTER);
-			
+
 			Color color = new org.eclipse.swt.graphics.Color(sectionClient.getDisplay(), 255,0,0);
 			emptyTree.setForeground(color);
 			emptyTree.setLayoutData(gd);
 			emptyTree.addListener(SWT.MouseDown, new Listener () {
-	            public void handleEvent (Event event) {            	
-	            	if (event.button==3){	
-	            		createNewHierarchyShell(hierarchiesTree, null);   
-	            		emptyTree.setVisible(false);
-	            	}
-	            }
-	        });	    
-		    emptyTree.setLayoutData(gd);
+				public void handleEvent (Event event) {            	
+					if (event.button==3){	
+						createNewHierarchyShell(hierarchiesTree, null);   
+						emptyTree.setVisible(false);
+					}
+				}
+			});	    
+			emptyTree.setLayoutData(gd);
 		}else{
 			fillHierarchiesTree(hierarchiesTree);
 		}
-	    //mouseDoubleClick --> modify
-	    hierarchiesTree.addListener(SWT.MouseDoubleClick, new Listener () {
-            public void handleEvent (Event event) {
-            	TreeItem[] sel = hierarchiesTree.getSelection();
-            	if(sel[0] != null){
-                	if(sel[0].getParentItem()== null){
-                		//hierarchy
-                		Hierarchy hierarchy= HierarchyBO.getHierarchyByName(geoDocument, sel[0].getText());
-                		createNewHierarchyShell(hierarchiesTree, hierarchy);
+		//mouseDoubleClick --> modify
+		hierarchiesTree.addListener(SWT.MouseDoubleClick, new Listener () {
+			public void handleEvent (Event event) {
+				TreeItem[] sel = hierarchiesTree.getSelection();
+				if(sel[0] != null){
+					if(sel[0].getParentItem()== null){
+						//hierarchy
+						Hierarchy hierarchy= HierarchyBO.getHierarchyByName(geoDocument, sel[0].getText());
+						createNewHierarchyShell(hierarchiesTree, hierarchy);
 
-                	}else{
-                		//level
-                		Level level = LevelBO.getLevelByName(geoDocument, sel[0].getParentItem().getText(), sel[0].getText());
-                		createNewLevelShell(hierarchiesTree, sel[0], level);
+					}else{
+						//level
+						Level level = LevelBO.getLevelByName(geoDocument, sel[0].getParentItem().getText(), sel[0].getText());
+						createNewLevelShell(hierarchiesTree, sel[0], level);
 
-                	}
-            	}else{
-            		MessageDialog.openWarning(sectionClient.getShell(), "Warning", "Please select an item to update");
-            	}
-            }
-        });
-	    //rightClick --> menu
-	    hierarchiesTree.addListener(SWT.MouseDown, new Listener () {
-            public void handleEvent (Event event) {            	
-            	if (event.button==3){	
-            		createMenu(sectionClient, hierarchiesTree);	            	            	
-            	}
-            }
-        });	    
-	    
-	    hierarchiesGroup.redraw();
-        sectionClient.getParent().redraw();
+					}
+				}else{
+					MessageDialog.openWarning(sectionClient.getShell(), "Warning", "Please select an item to update");
+				}
+			}
+		});
+		//rightClick --> menu
+		hierarchiesTree.addListener(SWT.MouseDown, new Listener () {
+			public void handleEvent (Event event) {            	
+				if (event.button==3){	
+					createMenu(sectionClient, hierarchiesTree);	            	            	
+				}
+			}
+		});	    
+
+		hierarchiesGroup.redraw();
+		sectionClient.getParent().redraw();
 	}
 	private void createNewHierarchyShell(final Tree hierarchiesTree, final Hierarchy hierarchy){
 		final Shell dialog = new Shell (mainComposite.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
@@ -294,8 +344,8 @@ public class HierarchiesDesigner {
 		data.top = new FormAttachment (label, 0, SWT.CENTER);
 		//data.bottom = new FormAttachment (cancel, 0, SWT.DEFAULT);
 		text.setLayoutData (data);
-		
-		
+
+
 		//type
 		data = new FormData ();
 		data.width = 100;
@@ -304,7 +354,7 @@ public class HierarchiesDesigner {
 		Label labelType = new Label (dialog, SWT.RIGHT);
 		labelType.setText ("Type:");		
 		labelType.setLayoutData (data);
-		
+
 		final Text textType = new Text (dialog, SWT.BORDER);
 		if(hierarchy != null){
 			textType.setText(hierarchy.getType());
@@ -316,7 +366,7 @@ public class HierarchiesDesigner {
 		data.top = new FormAttachment (labelType, 0, SWT.CENTER);
 		data.bottom = new FormAttachment (cancel, 0, SWT.DEFAULT);
 		textType.setLayoutData (data);
-		
+
 
 		Button ok = new Button (dialog, SWT.PUSH);
 		ok.setText ("OK");
@@ -335,7 +385,7 @@ public class HierarchiesDesigner {
 				}else{
 					updateHierarchy(hierarchiesTree, name, type, hierarchy);
 				}
-				
+
 				dialog.close ();
 			}
 		});
@@ -346,7 +396,7 @@ public class HierarchiesDesigner {
 
 	}
 	private void createNewLevelShell(final Tree hierarchiesTree, final TreeItem selectedItem, final Level level){
-		
+
 		final Shell dialog = new Shell (mainComposite.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		dialog.setText("New Level for "+selectedItem);
 		FormLayout formLayout = new FormLayout ();
@@ -385,7 +435,7 @@ public class HierarchiesDesigner {
 		data.right = new FormAttachment (100, 0);
 		data.top = new FormAttachment (label, 0, SWT.CENTER);
 		text.setLayoutData (data);
-		
+
 		//dataset column 
 		data = new FormData ();
 		data.width = 100;
@@ -393,8 +443,8 @@ public class HierarchiesDesigner {
 		Label labelColumn = new Label (dialog, SWT.RIGHT);
 		labelColumn.setText ("Dataset column:");
 		labelColumn.setLayoutData (data);		
-		
-	
+
+
 		final Combo textColumn = drawColumnIdCombo(dialog);
 		if(textColumn == null){
 			MessageDialog.openError(mainComposite.getShell(), "Error", "Select a dataset!");
@@ -405,10 +455,10 @@ public class HierarchiesDesigner {
 				String val = textColumn.getItem(i);
 				if(val.equals(level.getColumnId())){
 					textColumn.select(i);
-					
+
 				}
 			}
-			
+
 		}
 		data = new FormData ();
 		data.width = 125;
@@ -416,13 +466,13 @@ public class HierarchiesDesigner {
 		data.right = new FormAttachment (75, 0);
 		data.top = new FormAttachment (labelColumn, 0, SWT.CENTER);
 		textColumn.setLayoutData (data);
-		
+
 		//is default
 		data = new FormData ();
 		data.width = 75;
 		data.left = new FormAttachment (textColumn, 5, SWT.DEFAULT);
 		data.top = new FormAttachment(text, 5);
-		
+
 		final Button checkIsDef = new Button(dialog, SWT.CHECK | SWT.RIGHT);
 		final boolean[] isDefault = new boolean[1];
 		checkIsDef.setText("Is default");
@@ -437,16 +487,16 @@ public class HierarchiesDesigner {
 		checkIsDef.setLayoutData (data);
 		checkIsDef.addSelectionListener(new SelectionListener() {
 
-	        public void widgetSelected(SelectionEvent event) {
-	        	isDefault[0] = event.widget == checkIsDef;
-	        }
+			public void widgetSelected(SelectionEvent event) {
+				isDefault[0] = event.widget == checkIsDef;
+			}
 
-	        public void widgetDefaultSelected(SelectionEvent event) {
-	        	isDefault[0] = event.widget == checkIsDef;
-	        }
-	    });
-		
-		
+			public void widgetDefaultSelected(SelectionEvent event) {
+				isDefault[0] = event.widget == checkIsDef;
+			}
+		});
+
+
 		//description
 		data = new FormData ();
 		data.width = 100;
@@ -454,7 +504,7 @@ public class HierarchiesDesigner {
 		Label labelDescr = new Label (dialog, SWT.RIGHT);
 		labelDescr.setText ("Description:");
 		labelDescr.setLayoutData (data);	
-		
+
 		final Text textDescription = new Text (dialog, SWT.BORDER);
 		if(level != null){
 			textDescription.setText(level.getColumnDesc());
@@ -465,7 +515,7 @@ public class HierarchiesDesigner {
 		data.right = new FormAttachment (100, 0);
 		data.top = new FormAttachment (labelDescr, 0, SWT.CENTER);
 		textDescription.setLayoutData (data);
-		
+
 		//feature
 		data = new FormData ();
 		data.width = 100;
@@ -473,7 +523,7 @@ public class HierarchiesDesigner {
 		Label labelFeature = new Label (dialog, SWT.RIGHT);
 		labelFeature.setText ("Feature:");
 		labelFeature.setLayoutData (data);	
-		
+
 		final Combo textFeature = drawFeaturesNameCombo(dialog);
 		if(textFeature == null){
 			MessageDialog.openError(mainComposite.getShell(), "Error", "Select a map!");
@@ -486,7 +536,7 @@ public class HierarchiesDesigner {
 					textFeature.select(i);
 				}
 			}
-			
+
 		}
 		data = new FormData ();
 		data.width = 200;
@@ -510,18 +560,18 @@ public class HierarchiesDesigner {
 				String columnDesc = textDescription.getText();
 				String feature = textFeature.getText();
 				String name = text.getText();
-				
-		        Level newLevel = new Level();
-		        newLevel.setName(name);
-		        newLevel.setColumnId(columnId);
-		        newLevel.setColumnDesc(columnDesc);
-		        newLevel.setFeatureName(feature);
-		        if(level == null){
-		        	createNewLevel(hierarchiesTree, newLevel,  selectedItem, isDefault[0]);		        	
-		        }else{
-		        	updateLevel(hierarchiesTree, newLevel,  selectedItem, level, isDefault[0]);
-		        }
-				
+
+				Level newLevel = new Level();
+				newLevel.setName(name);
+				newLevel.setColumnId(columnId);
+				newLevel.setColumnDesc(columnDesc);
+				newLevel.setFeatureName(feature);
+				if(level == null){
+					createNewLevel(hierarchiesTree, newLevel,  selectedItem, isDefault[0]);		        	
+				}else{
+					updateLevel(hierarchiesTree, newLevel,  selectedItem, level, isDefault[0]);
+				}
+
 				dialog.close ();
 			}
 		});
@@ -531,13 +581,13 @@ public class HierarchiesDesigner {
 		dialog.open ();
 
 	}
-	
+
 	private Combo drawColumnIdCombo(final Shell dialog){
 		final Combo textColumn = new Combo(dialog, SWT.SINGLE | SWT.READ_ONLY);
 
 		String datasetLabel=editor.getSelectedDataset();
 		if(datasetLabel == null){
-			
+
 			return null;
 		}
 		DataStoreMetadata dataStoreMetadata=null;
@@ -551,7 +601,7 @@ public class HierarchiesDesigner {
 				if(dataset.getId() != null){
 					dataStoreMetadata=new SpagoBIServerObjects().getDataStoreMetadata(dataset.getId());
 				}
-				
+
 				if(dataStoreMetadata!=null){
 					//editor.getTempDsMetadataInfos().put(datasetLabel, dataStoreMetadata);
 				}
@@ -570,7 +620,7 @@ public class HierarchiesDesigner {
 			}
 		}
 		if(dataStoreMetadata!=null){
-			
+
 			for (int i = 0; i < dataStoreMetadata.getFieldsMetadata().length; i++) {
 				DataStoreMetadataField dsmf=dataStoreMetadata.getFieldsMetadata()[i];
 				String column = dsmf.getName();
@@ -583,13 +633,13 @@ public class HierarchiesDesigner {
 	private Combo drawFeaturesNameCombo(final Shell dialog){
 		final Combo textFeature = new Combo(dialog, SWT.SINGLE | SWT.READ_ONLY);
 
-/*		String mapLabel=editor.getSelectedMap();
-		
+		/*		String mapLabel=editor.getSelectedMap();
+
 		if(mapLabel == null){
 			return null;
 		}*/
 		GeoFeature[] geoFeatures=null;
-		
+
 		try{
 			geoFeatures=new SpagoBIServerObjects().getAllFeatures();
 			if(geoFeatures==null){
@@ -602,7 +652,7 @@ public class HierarchiesDesigner {
 			MessageDialog.openError(mainComposite.getShell(), "Error", "Could not get features");
 		}
 		// get the metadata
-/*		if(editor.getTempMapMetadataInfos().get(mapLabel)!=null){
+		/*		if(editor.getTempMapMetadataInfos().get(mapLabel)!=null){
 			geoFeatures=editor.getTempMapMetadataInfos().get(mapLabel);
 		}
 		else{
@@ -628,8 +678,8 @@ public class HierarchiesDesigner {
 			for (int i = 0; i < geoFeatures.length; i++) {
 				GeoFeature geoFeature=geoFeatures[i];
 				textFeature.add(geoFeature.getName());
-				
-				
+
+
 			}
 		}
 		return textFeature;

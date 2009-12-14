@@ -7,6 +7,12 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <!-- Include Ext stylesheets here: -->
 <link id="theme" rel="styleSheet" href ="./css/georeport.css" type="text/css" />
 
+<!--  
+<script type="text/javascript" src="./js/src/ext/sbi/commons/OpenStreetMap.js"></script>
+<script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAAQ7O6ISk_yCoR4rsoNpu2yRTwM0brOpm-All5BF6PoaKBxRWWERT09-Dn64qCYckMx5v2Y0of_bmM5A"></script>
+<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAQ7O6ISk_yCoR4rsoNpu2yRTwM0brOpm-All5BF6PoaKBxRWWERT09-Dn64qCYckMx5v2Y0of_bmM5A'></script>
+-->
+
 
 <!-- Include sbi sdk  -->
 <script type="text/javascript" src='./js/src/ext/sbi/sdk/sbisdk-all-debug.js'/></script>
@@ -14,6 +20,9 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 
 <!-- Include localized labels  -->
 <script type="text/javascript" src='./js/src/ext/sbi/locale/<%=locale.getLanguage()%>.js'/></script>
+
+
+
 
 <!-- START-DEBUG -->
 <script type="text/javascript" src='./js/src/ext/sbi/commons/Settings.js'/></script>

@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.georeport;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -39,6 +40,7 @@ import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 public class GeoReportEngineInstance {
 	private Map env;
 	private JSONObject guiSettings;
+	private List<String> includes;
 
 	public GeoReportEngineInstance(String template, Map env) {
 		this.env = env;			
@@ -47,6 +49,8 @@ public class GeoReportEngineInstance {
 		} catch (Throwable t) {
 			throw new SpagoBIRuntimeException("Impossible to parse template", t);
 		}
+		
+		includes = GeoReportEngine.getConfig().getIncludes();
 	}
 	
 	public Map getEnv() {
@@ -55,6 +59,10 @@ public class GeoReportEngineInstance {
 	
 	public JSONObject getGuiSettings() {
 		return guiSettings;
+	}
+	
+	public List getIncludes() {
+		return includes;
 	}
 	
 	public IDataSource getDataSource() {
@@ -76,6 +84,8 @@ public class GeoReportEngineInstance {
 	public EventServiceProxy getEventServiceProxy() {
 		return (EventServiceProxy)this.getEnv().get(EngineConstants.ENV_EVENT_SERVICE_PROXY);
 	}
+	
+	
 	
 	
 }

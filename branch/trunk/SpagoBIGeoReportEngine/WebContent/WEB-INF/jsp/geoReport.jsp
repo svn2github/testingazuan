@@ -30,6 +30,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 <%-- JAVA IMPORTS															--%>
 <%-- ---------------------------------------------------------------------- --%>
 <%@page import="java.util.Locale"%>
+<%@page import="java.util.List"%>
 <%@page import="it.eng.spagobi.engines.georeport.GeoReportEngineInstance"%>
 <%@page import="it.eng.spagobi.utilities.engines.EngineConstants"%>
 
@@ -40,11 +41,16 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 <% 
 	GeoReportEngineInstance engineInstance;
 	Locale locale;
+	String template;
+	List<String> includes;
 	
 	engineInstance = (GeoReportEngineInstance)request.getSession().getAttribute(EngineConstants.ENGINE_INSTANCE);
 	locale = engineInstance.getLocale();
 	
-	engineInstance.getGuiSettings();
+	template = engineInstance.getGuiSettings().toString();
+	includes = engineInstance.getIncludes();
+	
+	
 %>
 
 <%-- ---------------------------------------------------------------------- --%>
@@ -58,6 +64,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 		
 		<%@include file="commons/includeExtJS.jspf" %>
 		<%@include file="commons/includeMapFishJS.jspf" %>
+		<%@include file="commons/includeExtensionsJS.jspf" %>		
 		<%@include file="commons/includeSpagoBIGeoReportJS.jspf" %>
 	</head>
 	
@@ -71,7 +78,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 		
 		<script language="javascript" type="text/javascript">
 
-			Sbi.template = <%= engineInstance.getGuiSettings().toString() %>;
+			Sbi.template = <%=template%>;
 		
 			execDoc = function(docLab, role, params, dispToolbar, dispSlide,frameId, height) {
 

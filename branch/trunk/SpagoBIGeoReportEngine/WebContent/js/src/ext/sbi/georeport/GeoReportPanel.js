@@ -98,6 +98,10 @@ Sbi.georeport.GeoReportPanel = function(config) {
 
 	// constructor
 	Sbi.georeport.GeoReportPanel.superclass.constructor.call(this, c);
+	
+	this.on('render', function() {
+		this.setCenter();
+	}, this);
 };
 
 Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
@@ -127,64 +131,154 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
     
     // -- public methods ------------------------------------------------------------------------
     
+    
     , setCenter: function(center) {
+      	
 		center = center || {};
-		this.lon = center.lon || this.lon;
-		this.lat = center.lat || this.lat;
-		this.zoomLevel = center.zoomLevel || this.zoomLevel;
-		
-		this.centerPoint = new OpenLayers.LonLat(this.lon, this.lat);
-		this.map.setCenter(this.centerPoint, this.zoomLevel);
+      	this.lon = center.lon || this.lon;
+      	this.lat = center.lat || this.lat;
+      	this.zoomLevel = center.zoomLevel || this.zoomLevel;
+        
+        if(this.map.projection == "EPSG:900913"){            
+            this.centerPoint = this.lonLatToMercator(new OpenLayers.LonLat(this.lon, this.lat));
+            this.map.setCenter(this.centerPoint, this.zoomLevel);
+        } else if(this.map.projection == "EPSG:4326") {
+        	this.centerPoint = new OpenLayers.LonLat(this.lon, this.lat);
+        	this.map.setCenter(this.centerPoint, this.zoomLevel);
+        } else{
+        	alert("Map Projection not supported yet!");
+        }
+         
+     }
+
+	, lonLatToMercator: function(ll) {
+		var lon = ll.lon * 20037508.34 / 180;
+		var lat = Math.log(Math.tan((90 + ll.lat) * Math.PI / 360)) / (Math.PI / 180);
+		lat = lat * 20037508.34 / 180;
+		return new OpenLayers.LonLat(lon, lat);
 	}
 
+	, osm_getTileURL: function(bounds) {
+		var res = this.map.getResolution();
+		var x = Math.round((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
+		var y = Math.round((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
+		var z = this.map.getZoom();
+		var limit = Math.pow(2, z);
+
+		if (y < 0 || y >= limit) {
+			return OpenLayers.Util.getImagesLocation() + "404.png";
+		} else {
+			x = ((x % limit) + limit) % limit;
+			return this.url + z + "/" + x + "/" + y + "." + this.type;
+		}
+	}
     
 	 // -- private methods ------------------------------------------------------------------------
 	
-	, initMap: function() {		
-		this.map = new OpenLayers.Map('map');
-		this.initLayers();
-		this.initControls();		
-		this.initAnalysis();
-	}
 	
+	, initMap: function() {  
+		var o = this.baseMapOptions;
+	
+		if(o.projection !== undefined && typeof o.projection === 'string') {
+			o.projection = new OpenLayers.Projection( o.projection );
+		}
+		
+		if(o.displayProjection !== undefined && typeof o.displayProjection === 'string') {
+			o.displayProjection = new OpenLayers.Projection( o.displayProjection );
+		}
+		
+		if(o.maxExtent !== undefined && typeof o.maxExtent === 'object') {
+			o.maxExtent = new OpenLayers.Bounds(
+					o.maxExtent.left, 
+					o.maxExtent.bottom,
+					o.maxExtent.right,
+					o.maxExtent.top
+            );
+		}
+		
+		
+		this.map = new OpenLayers.Map('map', this.baseMapOptions);
+		this.initLayers();
+		this.initControls();  
+		this.initAnalysis();
+    }
+
 	, initLayers: function(c) {
 		this.layers = new Array();
 		if(this.baseLayersConf && this.baseLayersConf.length > 0) {
 			for(var i = 0; i < this.baseLayersConf.length; i++) {
 				var layerConf = this.baseLayersConf[i];
-				this.layers.push(new OpenLayers.Layer.WMS(
+				var layer;
+				if(layerConf.type === 'WMS') {
+					layer = new OpenLayers.Layer.WMS(
 						layerConf.name, layerConf.url, 
 						layerConf.params, layerConf.options
-				));
+					);
+				} else if(layerConf.type === 'TMS') {
+					layerConf.options.getURL = this.osm_getTileURL;
+					layer = new OpenLayers.Layer.TMS(
+						layerConf.name, layerConf.url, layerConf.options
+					);
+				} else if(layerConf.type === 'Google') {
+					layer = new OpenLayers.Layer.Google(
+						layerConf.name, layerConf.options
+					);
+				} else if(layerConf.type === 'OSM') { 
+					layer = new OpenLayers.Layer.OSM.Mapnik('OSM');
+				}else {
+					alert('Layer type [' + layerConf.type + '] not supported');
+				}
+				
+				this.layers.push( layer	);
 			}			
 		}
 		this.map.addLayers(this.layers);
-		this.setCenter();
+		
+		//this.setCenter();
 	}
 	
 	, initControls: function() {
-		if(this.showPositon) {
+		
+		var o = this.baseMapControls;
+		
+		// @TODO move this code in a factory objet
+		if(o.mousePositionControl && o.mousePositionControl.enabled === true) {
 			this.map.addControl(new OpenLayers.Control.MousePosition());
 		}
 		
-		if(this.showOverview) {
+		if(o.overviewMapControl && o.overviewMapControl.enabled === true) {
 			this.map.addControl(new OpenLayers.Control.OverviewMap());
+		}
+		
+		if(o.navigationControl && o.navigationControl.enabled === true) {
+			this.map.addControl(new OpenLayers.Control.Navigation());
+		}
+		
+		if(o.panZoomBarControl && o.panZoomBarControl.enabled === true) {
+			this.map.addControl(new OpenLayers.Control.PanZoomBar());
 		}
 	}
 	
 	, initAnalysis: function() {
 		
 		var geostatConf = {
-		    map: this.map,
-		    layer: null, // this.targetLayer not yet defined here
-		    indicators:  this.indicators,
-		    url: this.services['MapOl'],
-	        loadMask : {msg: 'Proportional Symbols analysis...', msgCls: 'x-mask-loading'},
-	        legendDiv : 'myChoroplethLegendDiv',
-	        featureSelection: false
-	        , listeners: {}
-    	};
-			
+			map: this.map,
+			layer: null, // this.targetLayer not yet defined here
+			indicators:  this.indicators,
+			url: this.services['MapOl'],
+			loadMask : {msg: 'Analysis...', msgCls: 'x-mask-loading'},
+			legendDiv : 'myChoroplethLegendDiv',
+			featureSelection: false,
+			listeners: {}
+		};
+
+		if(this.map.projection == "EPSG:900913") {
+			 geostatConf.format = new OpenLayers.Format.GeoJSON({
+				 externalProjection: new OpenLayers.Projection("EPSG:4326"),
+			     internalProjection: new OpenLayers.Projection("EPSG:900913")
+			 });
+		}
+		
 		
 		if (this.analysisType === this.PROPORTIONAL_SYMBOLS) {
 			this.initProportionalSymbolsAnalysis();
@@ -378,14 +472,15 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 	
 	, initControlPanel: function() {
 		
-		/*
+		
 		 this.toolbar = new mapfish.widgets.toolbar.Toolbar({
 		    	map: this.map, 
-		        configurable: false
+		        configurable: false,
+		        items: ['']
 		 });
 		 
 		 this.initToolbarContent();
-		 */
+		 
 		
 		 this.controlPanel = new Ext.Panel({
 		    	title       : LN('sbi.georeport.controlpanel.title'),
@@ -402,12 +497,12 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 		            autoHeight: true,
 		            xtype: 'layertree',
 		            map: this.map
-		        }, /*{
+		        }, {
 		            title: 'Toolbar',
 		            collapsible: true,
 		            region: 'center',
 		            tbar: this.toolbar                
-		        },*/ {
+		        }, {
 		        	title: LN('sbi.georeport.analysispanel.title'),
 		            collapsible: true,
 		            items: [this.geostatistic]
@@ -420,17 +515,29 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 		           title: 'Logo',
 		           collapsible: true,
 		           height: 85,
-		           html: '<center><img src="/SpagoBIGeoReportEngine/js/lib/mapfish/georeport.png" alt="GeoReport"/></center>'
+		           //html: '<center><img src="/SpagoBIGeoReportEngine/js/lib/mapfish/georeport.png" alt="GeoReport"/></center>'
+		           items: [new Ext.Button({
+				    	text: 'Debug',
+				        width: 30,
+				        handler: function() {
+		        	   		var size = this.controlPanel.getSize();
+		        	   		size.width += 1;
+		        	   		this.controlPanel.refreshSize(size);
+		           		},
+		           		scope: this
+				    })]
 		        }]
 		    }); 
 		 
-		
+		 	
 	}
 	
+
+	
 	, addSeparator: function(toolbar){
-          toolbar.add(new Ext.Toolbar.Spacer());
-          toolbar.add(new Ext.Toolbar.Separator());
-          toolbar.add(new Ext.Toolbar.Spacer());
+          this.toolbar.add(new Ext.Toolbar.Spacer());
+          this.toolbar.add(new Ext.Toolbar.Separator());
+          this.toolbar.add(new Ext.Toolbar.Spacer());
     } 
 
 	, initToolbarContent: function() {
@@ -442,7 +549,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 	    });
 	    this.map.addLayer(vectorLayer);
 	    
-	 
+	    this.toolbar.on('render', function() {
 	   
 			this.toolbar.addControl(
 	              new OpenLayers.Control.ZoomToMaxExtent({
@@ -540,5 +647,6 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 	          this.addSeparator(toolbar);
 	          
 	          this.toolbar.activate();
+	    }, this);
       }
 });

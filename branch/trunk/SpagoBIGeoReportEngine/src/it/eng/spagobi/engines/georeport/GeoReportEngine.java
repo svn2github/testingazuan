@@ -25,23 +25,22 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import it.eng.spagobi.services.common.EnginConf;
-
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
 public class GeoReportEngine {
-	private static EnginConf engineConfig;
+	
+	private static GeoReportEngineConfig engineConfig;
 	
 	/** Logger component. */
     private static transient Logger logger = Logger.getLogger(GeoReportEngine.class);
 	
     // init engine
     static {
-    	engineConfig = EnginConf.getInstance();
+    	engineConfig = GeoReportEngineConfig.getInstance();
     }
     
-    public static EnginConf getConfig() {
+    public static GeoReportEngineConfig getConfig() {
     	return engineConfig;
     }
     

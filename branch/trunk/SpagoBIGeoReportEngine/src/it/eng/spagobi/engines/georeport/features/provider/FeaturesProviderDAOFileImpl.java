@@ -120,7 +120,7 @@ public class FeaturesProviderDAOFileImpl implements IFeaturesProviderDAO {
 			indexOnAttribute = geoIdPName;
 			lookupTable = new HashMap();
 			
-			resourcesDir = GeoReportEngine.getConfig().getResourcePath() + "/georeport";
+			resourcesDir = GeoReportEngine.getConfig().getEngineConfig().getResourcePath() + "/georeport";
 			logger.debug("Resource dir is equal to [" + resourcesDir + "]");
 			
 			targetFile = new File(resourcesDir, filename);

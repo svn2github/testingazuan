@@ -19,31 +19,16 @@ Sbi.locale.ln['sbi.browser.folderdetailpanel.listviewTT']  = 'Vista a lista';
 Sbi.locale.ln['sbi.browser.folderdetailpanel.groupviewTT']  = 'Vista a gruppi';
 Sbi.locale.ln['sbi.browser.folderdetailpanel.waitmsg']  = 'Attendere prego ...';
 
-Sbi.locale.ln['sbi.browser.searchpanel.filters.contains.name']  = 'contine';
-Sbi.locale.ln['sbi.browser.searchpanel.filters.startwith.name']  = 'comincia per';
-Sbi.locale.ln['sbi.browser.searchpanel.filters.endwith.name']  = 'finisce con';
-Sbi.locale.ln['sbi.browser.searchpanel.filters.equalsto.name']  = 'uguale a';
-Sbi.locale.ln['sbi.browser.searchpanel.filters.gt.name']  = 'più grande di';
-Sbi.locale.ln['sbi.browser.searchpanel.filters.egt.name']  = 'uguale o più grande di';
-Sbi.locale.ln['sbi.browser.searchpanel.filters.lt.name']  = 'più piccolo di';
-Sbi.locale.ln['sbi.browser.searchpanel.filters.elt.name']  = 'uguale o più piccolo di';
+Sbi.locale.ln['sbi.browser.searchpanel.attributes.all']  = 'tutti';
+Sbi.locale.ln['sbi.browser.searchpanel.attributes.label']  = 'etichetta';
+Sbi.locale.ln['sbi.browser.searchpanel.attributes.name']  = 'nome';
+Sbi.locale.ln['sbi.browser.searchpanel.attributes.description']  = 'descrizione';
+Sbi.locale.ln['sbi.browser.searchpanel.attributes.categories']  = 'categorie';
 
-Sbi.locale.ln['sbi.browser.searchpanel.columns.label.name']  = 'label (id)';
-Sbi.locale.ln['sbi.browser.searchpanel.columns.name.name']  = 'nome';
-Sbi.locale.ln['sbi.browser.searchpanel.columns.engine.name']  = 'motore';
-Sbi.locale.ln['sbi.browser.searchpanel.columns.state.name']  = 'stato';
-Sbi.locale.ln['sbi.browser.searchpanel.columns.creationdate.name']  = 'data di creazione';
-
-Sbi.locale.ln['sbi.browser.searchpanel.searchin'] = 'Cerca in';
+Sbi.locale.ln['sbi.browser.searchpanel.attributes'] = 'Cerca in';
 Sbi.locale.ln['sbi.browser.searchpanel.query'] = 'Testo';
 Sbi.locale.ln['sbi.browser.searchpanel.advanced'] = 'Opzioni avanzate';
-Sbi.locale.ln['sbi.browser.searchpanel.docname'] = 'nome documento';
-Sbi.locale.ln['sbi.browser.searchpanel.doclabel'] = 'etichetta documento';
-Sbi.locale.ln['sbi.browser.searchpanel.docdescr'] = 'descrizione documento';
-Sbi.locale.ln['sbi.browser.searchpanel.docmeta'] = 'metadati e viste';
 Sbi.locale.ln['sbi.browser.searchpanel.similar'] = 'cerca parole simili';
-
-
 
 Sbi.locale.ln['sbi.browser.misc.x']  = 'per';
 Sbi.locale.ln['sbi.browser.misc.ungroup']  = 'rimuovi gruppi';
@@ -187,7 +172,6 @@ Sbi.locale.ln['sbi.execution.notes.goBack'] = 'Torna alla lista';
 Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Errore nel salvataggio delle note: sono state modificate da un altro utente. Riapri questa finestra e ritenta!';
 Sbi.locale.ln['sbi.execution.notes.printnotesPDF'] = 'Esporta in PDF';
 Sbi.locale.ln['sbi.execution.notes.printnotesRTF'] = 'Esporta in RTF';
-
 
 Sbi.locale.ln['sbi.lookup.Confirm'] = 'Conferma';
 Sbi.locale.ln['sbi.lookup.Annulla'] = 'Annulla';

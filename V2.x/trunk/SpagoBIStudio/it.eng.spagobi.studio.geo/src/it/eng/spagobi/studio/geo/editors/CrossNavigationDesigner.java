@@ -52,6 +52,10 @@ public class CrossNavigationDesigner {
 	private GEODocument geoDocument;
 	private Vector<TableEditor> tableEditors = new Vector<TableEditor>();
 
+	Button addParameter=null;
+	Button detail=null;	
+	Button erase=null;	
+
 	final ImageDescriptor addIcon = AbstractUIPlugin
 	.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/add.gif");
 
@@ -356,7 +360,7 @@ public class CrossNavigationDesigner {
 		final TableEditor editor2 = new TableEditor(crossNavTable);
 
 		final Combo levelCombo = createLevelsCombo(crossNavTable, hierarchiesCombo.getText());
-
+		boolean isThereLink=false;
 		if(link != null){
 			String levelSel = link.getLevel();
 			for (int k = 0; k < levelCombo.getItemCount(); k++) {
@@ -365,7 +369,8 @@ public class CrossNavigationDesigner {
 					levelCombo.select(k);
 				}
 			}
-			levelCombo.setData(link.getId());			
+			levelCombo.setData(link.getId());
+			isThereLink=true;
 		}
 		editor2.minimumWidth = levelCombo.getBounds().x;
 		editor2.horizontalAlignment = SWT.CENTER;
@@ -431,6 +436,9 @@ public class CrossNavigationDesigner {
 					LinkBO.updateExisting(geoDocument, idLink, levelCombo.getText());
 				}
 				getEditor().setIsDirty(true);
+				addParameter.setEnabled(true);
+				detail.setEnabled(true);
+				erase.setEnabled(true);
 
 			}
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -442,10 +450,10 @@ public class CrossNavigationDesigner {
 
 
 		final TableEditor editor4 = new TableEditor(crossNavTable);
-		Button addParameter = new Button(crossNavTable, SWT.PUSH);
+		addParameter = new Button(crossNavTable, SWT.PUSH);
 		addParameter.setSize(paramsIcon.createImage().getBounds().width, paramsIcon.createImage().getBounds().height);
 		addParameter.setImage(paramsIcon.createImage());
-
+		if(!isThereLink)addParameter.setEnabled(false);
 		addParameter.setToolTipText("Add parameters");
 		editor4.minimumWidth = addParameter.getBounds().x;
 		editor4.horizontalAlignment = SWT.CENTER;
@@ -472,10 +480,10 @@ public class CrossNavigationDesigner {
 		addParameter.pack();
 
 		final TableEditor editor5 = new TableEditor(crossNavTable);
-		Button detail = new Button(crossNavTable, SWT.PUSH);
+		detail = new Button(crossNavTable, SWT.PUSH);
 		detail.setSize(detailIcon.createImage().getBounds().width, detailIcon.createImage().getBounds().height);
 		detail.setImage(detailIcon.createImage());
-
+		if(!isThereLink)detail.setEnabled(false);
 		detail.setToolTipText("View detail");
 		editor5.minimumWidth = detail.getBounds().x;
 		editor5.horizontalAlignment = SWT.CENTER;
@@ -500,9 +508,10 @@ public class CrossNavigationDesigner {
 		});
 
 		final TableEditor  editor6 = new TableEditor(crossNavTable);
-		Button erase = new Button(crossNavTable, SWT.PUSH);
+		erase = new Button(crossNavTable, SWT.PUSH);
 		erase.setSize(eraseIcon.createImage().getBounds().width, eraseIcon.createImage().getBounds().height);
 		erase.setImage(eraseIcon.createImage());
+		if(!isThereLink)erase.setEnabled(false);
 
 		erase.setToolTipText("Delete link");
 		editor6.minimumWidth = erase.getBounds().x;

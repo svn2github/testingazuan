@@ -27,11 +27,15 @@
 Ext.ns("Sbi.browser");
 
 Sbi.browser.SearchPanel = function(config) { 
-		
+	 
+	this.services = new Array();
+	this.services['getCategoriesService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_CATEGORIES_ACTION'
+		, baseParams: {
+				LIGHT_NAVIGATOR_DISABLED: 'TRUE'
+		}
+	});
 	
-	
-	
-    
 	var c = Ext.apply({}, config, {
 		title: LN('sbi.browser.searchpanel.title')
         , border:true
@@ -39,10 +43,18 @@ Sbi.browser.SearchPanel = function(config) {
     	, items: [
     	          new Ext.form.Checkbox({id: 'temp'})
     	  ]
-    	  //, docMeta:false
-    	  //, docName:false
+    	//, attributes: 'ALL'
 	});   
 	
+    this.attributesStore = new Ext.data.JsonStore({
+    	autoLoad: false    	
+    	,fields: ['label', 'name', 'description']
+		, url: this.services['getCategoriesService']
+		
+    });
+    this.attributesStore.on('load', this.onLoad, this);
+    
+    this.attributesStore.load();
 	Sbi.browser.SearchPanel.superclass.constructor.call(this, c);  
 	
 	this.addEvents("onsearch", "onreset");
@@ -64,27 +76,30 @@ Sbi.browser.SearchPanel = function(config) {
 			this.setFormState({valueFilter: null});
 			this.fireEvent('onreset', this, this.getFormState());
 		}, this);
-		
-		this.docNameCheckbox =  new Ext.form.Checkbox({
-	    	boxLabel: LN('sbi.browser.searchpanel.docname')
-	    	,hideLabel: true 
-	    	, width:220
-	    });	
-		this.docLabelCheckbox =  new Ext.form.Checkbox({
-	    	boxLabel: LN('sbi.browser.searchpanel.doclabel')
-	    	,hideLabel: true 
-	    	, width:220
-	    });	
-		this.docDescrCheckbox =  new Ext.form.Checkbox({
-	    	boxLabel: LN('sbi.browser.searchpanel.docdescr')
-	    	,hideLabel: true 
-	    	, width:220
-	    });	
-		this.docMetaCheckbox =  new Ext.form.Checkbox({
-	    	boxLabel: LN('sbi.browser.searchpanel.docmeta')
-	    	,hideLabel: true 
-	    	, width:220
-	    });	
+
+
+		this.attributesComboBox = new Ext.form.ComboBox({
+			tpl: '<tpl for="."><div ext:qtip="{name}: {name}" class="x-combo-list-item">{name}</div></tpl>',	
+		    editable  : false,
+		    fieldLabel : 'Attribute',
+		    forceSelection : true,
+		    mode : 'local',
+		    name : 'attributes',
+		    store : this.attributesStore,
+		    displayField:'name',
+		    valueField:'name',
+		    emptyText:'Select an attribute...',
+		    typeAhead: true,
+		    triggerAction: 'all',
+		    width: 100,
+		    selectOnFocus:true,
+		    listeners: {
+		   		'select': {
+		        	fn: function(){}
+		            , scope: this
+				}
+		    }
+		});	
 		
 		this.similCheckbox =  new Ext.form.Checkbox({
 	    	boxLabel: LN('sbi.browser.searchpanel.similar')
@@ -102,12 +117,12 @@ Sbi.browser.SearchPanel = function(config) {
 	       });
 		this.add({
 	        xtype:'fieldset',
-	        title: LN('sbi.browser.searchpanel.searchin'),
+	        title: LN('sbi.browser.searchpanel.attributes'),
 	        collapsible: true,
 	        autoHeight:true,
 	        //defaults: {width: 10},
 	        defaultType: 'textfield',
-	        items :[this.docNameCheckbox, this.docLabelCheckbox, this.docDescrCheckbox, this.docMetaCheckbox]
+	        items :[this.attributesComboBox]
 	       });
 		this.add({
             xtype:'fieldset',
@@ -125,23 +140,17 @@ Sbi.browser.SearchPanel = function(config) {
 };
 
 Ext.extend(Sbi.browser.SearchPanel, Ext.FormPanel, {
-    
-	searchField: null
+    services: null
+	,searchField: null
 	, similCheckbox: null
-	, docMetaCheckbox: null
-	, docDescrCheckbox: null
-	, docLabelCheckbox: null
-	, docNameCheckbox: null
+	, attributesComboBox: null
 	
 	, getFormState: function() {
 	
 		var formState = {};
 	    
 		formState.valueFilter = this.searchField.getRawValue();
-		formState.docName = this.docNameCheckbox.getValue();
-		formState.docLabel = this.docLabelCheckbox.getValue();
-		formState.docDescr = this.docDescrCheckbox.getValue();
-		formState.docMeta = this.docMetaCheckbox.getValue();
+		formState.attributes = this.attributesComboBox.getValue();
 		formState.similar = this.similCheckbox.getValue();
 	    	   
 	    return formState;
@@ -153,20 +162,9 @@ Ext.extend(Sbi.browser.SearchPanel, Ext.FormPanel, {
 			this.searchField.setValue( formState.valueFilter );
 		}
 		
-		if(formState.docName) {
-			this.docNameCheckbox.setValue(formState.docName);
+		if(formState.attributes) {
+			this.attributesComboBox.setValue(formState.attributes);
 		} 
-		
-		if(formState.docLabel) {
-			this.docLabelCheckbox.setValue( formState.docLabel );
-		}
-		
-		if(formState.docDescr) {
-			this.docDescrCheckbox.setValue( formState.docDescr );
-		}
-		if(formState.docMeta) {
-			this.docMetaCheckbox.setValue( formState.docMeta );
-		}
 		if(formState.similar) {
 			this.similCheckbox.setValue( formState.similar );
 		}
@@ -177,7 +175,27 @@ Ext.extend(Sbi.browser.SearchPanel, Ext.FormPanel, {
 		this.fireEvent('onsearch', this, this.getFormState());
 		
 	}
-    
+    , onLoad : function() {
+    	var recordsToAdd = [];
+    	recordsToAdd[0]=new Ext.data.Record({name:'ALL', label:LN('sbi.browser.searchpanel.attributes.all'), description:LN('sbi.browser.searchpanel.attributes.all')});
+    	recordsToAdd[1]=new Ext.data.Record({name:'LABEL', label:LN('sbi.browser.searchpanel.attributes.label'), description:LN('sbi.browser.searchpanel.attributes.label')});
+    	recordsToAdd[2]=new Ext.data.Record({name:'NAME', label:LN('sbi.browser.searchpanel.attributes.name'), description:LN('sbi.browser.searchpanel.attributes.name')});
+    	recordsToAdd[3]=new Ext.data.Record({name:'DESCRIPTION', label:LN('sbi.browser.searchpanel.attributes.description'), description:LN('sbi.browser.searchpanel.attributes.description')});
+    	this.attributesStore.add(recordsToAdd);
+    	
+    	//this.attributesComboBox.insert(0, new Ext.data.Record({name:'ALL', label:LN('sbi.browser.searchpanel.attributes.all'), description:LN('sbi.browser.searchpanel.attributes.all')}));
+    	//this.attributesComboBox.setValue(new Ext.data.Record({name:'ALL', label:LN('sbi.browser.searchpanel.attributes.all'), description:LN('sbi.browser.searchpanel.attributes.all')}));
+    	
+/*    	this.attributesComboBox.insert(1, new Ext.data.Record({name:'LABEL', label:LN('sbi.browser.searchpanel.attributes.label'), description:LN('sbi.browser.searchpanel.attributes.label')}));
+    	this.attributesComboBox.setValue(1);*/
+    	
+/*    	this.attributesComboBox.insert(2, new Ext.data.Record({'NAME', LN('sbi.browser.searchpanel.attributes.name'), LN('sbi.browser.searchpanel.attributes.name')}));
+    	this.attributesComboBox.setValue(2);
+    	
+    	this.attributesComboBox.insert(3, new Ext.data.Record({'DESCRIPTION', LN('sbi.browser.searchpanel.attributes.description'), LN('sbi.browser.searchpanel.attributes.description')}));
+    	this.attributesComboBox.setValue(3);*/
+
+    }
 });
 
 Ext.reg('searchpanel', Sbi.browser.SearchPanel);

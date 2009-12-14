@@ -26,28 +26,15 @@ Sbi.locale.ln['sbi.browser.folderdetailpanel.listviewTT']  = 'List View';
 Sbi.locale.ln['sbi.browser.folderdetailpanel.groupviewTT']  = 'Group View';
 Sbi.locale.ln['sbi.browser.folderdetailpanel.waitmsg']  = 'Please wait ...';
 
-Sbi.locale.ln['sbi.browser.searchpanel.filters.contains.name']  = 'contiene';
-Sbi.locale.ln['sbi.browser.searchpanel.filters.startwith.name']  = 'comienza por';
-Sbi.locale.ln['sbi.browser.searchpanel.filters.endwith.name']  = 'termina por';
-Sbi.locale.ln['sbi.browser.searchpanel.filters.equalsto.name']  = '=';
-Sbi.locale.ln['sbi.browser.searchpanel.filters.gt.name']  = '>';
-Sbi.locale.ln['sbi.browser.searchpanel.filters.egt.name']  = '>=';
-Sbi.locale.ln['sbi.browser.searchpanel.filters.lt.name']  = '<';
-Sbi.locale.ln['sbi.browser.searchpanel.filters.elt.name']  = '<=';
+Sbi.locale.ln['sbi.browser.searchpanel.attributes.all']  = 'all';
+Sbi.locale.ln['sbi.browser.searchpanel.attributes.label']  = 'label';
+Sbi.locale.ln['sbi.browser.searchpanel.attributes.name']  = 'name';
+Sbi.locale.ln['sbi.browser.searchpanel.attributes.description']  = 'description';
+Sbi.locale.ln['sbi.browser.searchpanel.attributes.categories']  = 'categories';
 
-Sbi.locale.ln['sbi.browser.searchpanel.columns.label.name']  = 'etiqueta (id)';
-Sbi.locale.ln['sbi.browser.searchpanel.columns.name.name']  = 'nombre';
-Sbi.locale.ln['sbi.browser.searchpanel.columns.engine.name']  = 'motor';
-Sbi.locale.ln['sbi.browser.searchpanel.columns.state.name']  = 'state';
-Sbi.locale.ln['sbi.browser.searchpanel.columns.creationdate.name']  = 'fecha de creation';
-
-Sbi.locale.ln['sbi.browser.searchpanel.searchin'] = 'Search in';
+Sbi.locale.ln['sbi.browser.searchpanel.attributes'] = 'Search in';
 Sbi.locale.ln['sbi.browser.searchpanel.query'] = 'Query';
 Sbi.locale.ln['sbi.browser.searchpanel.advanced'] = 'Advanced options';
-Sbi.locale.ln['sbi.browser.searchpanel.docname'] = 'document name';
-Sbi.locale.ln['sbi.browser.searchpanel.doclabel'] = 'document label';
-Sbi.locale.ln['sbi.browser.searchpanel.docdescr'] = 'document description';
-Sbi.locale.ln['sbi.browser.searchpanel.docmeta'] = 'metadata and views';
 Sbi.locale.ln['sbi.browser.searchpanel.similar'] = 'search similar words';
 
 Sbi.locale.ln['sbi.browser.misc.x']  = 'by';

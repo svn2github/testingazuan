@@ -479,8 +479,10 @@ public class HierarchiesDesigner {
 		if(level != null){
 			String defHier =geoDocument.getDatamartProvider().getHierarchy();
 			String defLev =geoDocument.getDatamartProvider().getLevel();
-			if(defHier.equals(selectedItem.getParentItem().getText()) && defLev.equals(level.getName())){
-				checkIsDef.setSelection(true);
+			if(defHier!=null && selectedItem.getParentItem()!=null && defLev!=null && level!=null && level.getName()!=null){
+				if(defHier.equals(selectedItem.getParentItem().getText()) && defLev.equals(level.getName())){
+					checkIsDef.setSelection(true);
+				}
 			}
 		}
 

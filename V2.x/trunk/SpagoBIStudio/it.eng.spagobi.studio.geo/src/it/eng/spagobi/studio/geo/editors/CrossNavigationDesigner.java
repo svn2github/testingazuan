@@ -583,10 +583,10 @@ public class CrossNavigationDesigner {
 		if(params != null){
 			for(int i = 0; i < params.size(); i++){
 				TableItem item = new TableItem(paramsTable, SWT.NONE);
-				item.setText(0, params.elementAt(i).getName());
-				item.setText(1, params.elementAt(i).getType());
-				item.setText(2, params.elementAt(i).getScope());
-				item.setText(3, params.elementAt(i).getValue());
+				item.setText(0, params.elementAt(i).getName()!=null ? params.elementAt(i).getName() : "");
+				item.setText(1, params.elementAt(i).getType() !=null ? params.elementAt(i).getType() : "");
+				item.setText(2, params.elementAt(i).getScope() != null ? params.elementAt(i).getScope() : "");
+				item.setText(3, params.elementAt(i).getValue()!=null ? params.elementAt(i).getValue() : "");
 			}
 		}
 		for (int i = 0; i < titles.length; i++) {

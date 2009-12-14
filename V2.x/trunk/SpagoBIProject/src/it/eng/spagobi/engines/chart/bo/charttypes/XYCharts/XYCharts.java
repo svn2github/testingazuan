@@ -89,7 +89,7 @@ public class XYCharts extends ChartImpl{
         double[][] data = new double[][] {xvalues, yvalues, zvalues};
         
         int xVal = 0;
-		int yVal = 0;
+        int yVal = 0;
 		int col = 0;
 		int row = 0;
 		int cell = 0;
@@ -122,13 +122,13 @@ public class XYCharts extends ChartImpl{
 				nameP=new String(object.getKey());
 				value=new String((String)object.getValue());
 				if(nameP.equalsIgnoreCase("x"))
-				{
-						xVal = new Integer(value).intValue();	
+				{						
+						xVal = new Double(value).intValue();	
 						col = (xVal/blockWidth)-1;
 				}
 				if(nameP.equalsIgnoreCase("y"))
 				{
-					    yVal = new Integer(value).intValue();	
+					    yVal = new Double(value).intValue();	
 					    row = (yVal/blockHeight)-1;
 				}
 				if(nameP.equalsIgnoreCase("z"))

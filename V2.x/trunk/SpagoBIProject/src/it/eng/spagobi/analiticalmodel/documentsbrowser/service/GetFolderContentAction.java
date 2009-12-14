@@ -22,6 +22,7 @@ package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -111,12 +112,16 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 			MessageBuilder m = new MessageBuilder();
 			Locale locale = m.getLocale(httpRequest);
 			JSONArray documentsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( objects ,locale);
-			JSONObject showmetadataAction = new JSONObject();
-			showmetadataAction.put("name", "showmetadata");
-			showmetadataAction.put("description", "Show Metadata");
-			for(int i = 0; i < documentsJSON.length(); i++) {
-				JSONObject documentJSON = documentsJSON.getJSONObject(i);
-				documentJSON.getJSONArray("actions").put(showmetadataAction);
+			Collection func = profile.getFunctionalities();
+			
+			if(func.contains("SeeMetadataFunctionality")){
+				JSONObject showmetadataAction = new JSONObject();
+				showmetadataAction.put("name", "showmetadata");
+				showmetadataAction.put("description", "Show Metadata");
+				for(int i = 0; i < documentsJSON.length(); i++) {
+					JSONObject documentJSON = documentsJSON.getJSONObject(i);
+					documentJSON.getJSONArray("actions").put(showmetadataAction);
+				}
 			}
 			if(isHome) {
 				JSONObject deleteAction = new JSONObject();

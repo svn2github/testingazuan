@@ -113,6 +113,8 @@ Sbi.execution.SubobjectsPanel = function(config, doc) {
     	Sbi.user.functionalities.contains('SaveSubobjectFunctionality') &&
     	(doc.typeCode != 'DATAMART' || Sbi.user.functionalities.contains('BuildQbeQueriesFunctionality'));
     
+    
+    
     var columns = [
        {id: "id", header: "Id", sortable: true, dataIndex: 'id',  hidden: true}
        , {header: LN('sbi.execution.subobjects.name'), sortable: true, dataIndex: 'name'}
@@ -128,9 +130,12 @@ Sbi.execution.SubobjectsPanel = function(config, doc) {
        		return val? LN('sbi.execution.subobjects.visibility.public'): LN('sbi.execution.subobjects.visibility.private')
        	}
        }
-       , this.executeMetadataColumn
        , this.executeColumn
     ];
+    
+    if(Sbi.user.functionalities.contains('SeeMetadataFunctionality')){
+       columns.push(this.executeMetadataColumn);
+    }
     
     var tbar = undefined;
     
@@ -160,7 +165,7 @@ Sbi.execution.SubobjectsPanel = function(config, doc) {
 	c = Ext.apply({}, c, {
         store: this.subObjectsStore
         , columns: columns
-        , plugins: [this.executeColumn,this.executeMetadataColumn]
+        , plugins: Sbi.user.functionalities.contains('SeeMetadataFunctionality') ? [this.executeColumn,this.executeMetadataColumn] : this.executeColumn
 		, viewConfig: {
         	forceFit: true
         	, emptyText: LN('sbi.execution.subobjects.emptyText')

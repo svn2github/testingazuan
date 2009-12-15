@@ -182,19 +182,6 @@
       		<MODULE keep_instance="false" keep_response="false" name="DetailBIObjectModule"/>
     	</MODULES>
   	</PAGE>    
-  	
-  	<PAGE name="MetadataBIObjectPage" scope="REQUEST" title="BIObject Metadata" >
-    	<DEPENDENCIES>
-      		<DEPENDENCE source="MetadataBIObjectPage" target="MetadataBIObjectModule">
-        		<CONDITIONS/>
-        		<CONSEQUENCES/>
-      		</DEPENDENCE>
-    	</DEPENDENCIES>
-    	<MODULES>
-      		<MODULE keep_instance="false" keep_response="false" name="MetadataBIObjectModule"/>
-    	</MODULES>
-  	</PAGE>  
-	
 	
 	<PAGE name="DocumentTemplateBuildPage" scope="REQUEST" title="Document template build page" >
     	<DEPENDENCIES>

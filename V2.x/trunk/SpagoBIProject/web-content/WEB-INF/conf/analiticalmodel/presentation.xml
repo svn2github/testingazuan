@@ -7,7 +7,6 @@
 <MAPPING business_name="ExecutionWorkspacePage" business_type="PAGE" publisher_name="ExecutionWorkspacePublisher"/>
 <MAPPING business_name="LOGIN_PAGE_SBI_FUNCTIONALITY" business_type="PAGE" publisher_name="BIObjectsPubJ"/>
 <MAPPING business_name="DetailBIObjectPage" business_type="PAGE" publisher_name="DetailBIObjectPubJ"/>
-<MAPPING business_name="MetadataBIObjectPage" business_type="PAGE" publisher_name="MetadataBIObjectPubJ"/>
 <MAPPING business_name="DocumentTemplateBuildPage" business_type="PAGE" publisher_name="DocumentTemplateBuildPublisher"/>
 <MAPPING business_name="ExecuteBIObjectPage" business_type="PAGE" publisher_name="ExecuteBIObjectPubJ"/>
 <MAPPING business_type="ACTION" business_name="CREATE_MASTER_NODE_LOWFUNCTIONALITY" publisher_name="FunctionalitiesTreeRefresh"/>

@@ -50,9 +50,6 @@
 		<MAP_PAGE_MODULE pageName="DetailBIObjectPage" moduleName="DetailBIObjectModule" businessProcess="DocumentManagement" />
 		<MAP_PAGE_MODULE pageName="DocumentTemplateBuildPage" moduleName="DocumentTemplateBuildModule" businessProcess="DocumentManagement" />
 		<MAP_PAGE_MODULE pageName="ExecuteBIObjectPage" moduleName="ExecuteBIObjectModule" businessProcess="DocumentUserManagement" />
-		
-		<MAP_PAGE_MODULE pageName="MetadataBIObjectPage" moduleName="MetadataBIObjectModule" businessProcess="SeeMetadataFunctionality" />
-		
 	</MAP_PAGE_MODULES>
 
 </BUSINESS_MAP>

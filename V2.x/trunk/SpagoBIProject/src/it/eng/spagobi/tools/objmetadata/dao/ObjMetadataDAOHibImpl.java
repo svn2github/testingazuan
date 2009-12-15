@@ -30,8 +30,10 @@ package it.eng.spagobi.tools.objmetadata.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiValue;
+import it.eng.spagobi.tools.objmetadata.bo.ObjMetacontent;
 import it.eng.spagobi.tools.objmetadata.bo.ObjMetadata;
 import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetadata;
 
@@ -357,6 +359,19 @@ public class ObjMetadataDAOHibImpl extends AbstractHibernateDAO implements IObjM
 			tx = aSession.beginTransaction();
 			SbiObjMetadata hibMeta = (SbiObjMetadata) aSession.load(SbiObjMetadata.class,
 					new Integer(aObjMetadata.getObjMetaId()));
+			
+			//delete metadatacontents eventually associated
+			List metaContents = DAOFactory.getObjMetacontentDAO().loadAllObjMetacontent();
+			IObjMetacontentDAO objMetaContentDAO = DAOFactory.getObjMetacontentDAO();
+			if (metaContents != null && !metaContents.isEmpty()) {
+				Iterator it = metaContents.iterator();
+				while (it.hasNext()) {
+					ObjMetacontent objMetadataCont = (ObjMetacontent) it.next();
+					if(objMetadataCont!=null && objMetadataCont.getObjmetaId().equals(hibMeta.getObjMetaId())){
+						objMetaContentDAO.eraseObjMetadata(objMetadataCont);
+					}
+				}
+			}			
 
 			aSession.delete(hibMeta);
 			tx.commit();

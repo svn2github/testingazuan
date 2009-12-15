@@ -234,7 +234,7 @@ public class DetailObjMetadataModule extends AbstractModule {
 		try {
 			String id = (String) request.getAttribute("ID");
 //			if the metadata is associated with any BIObjects or BISuobjets, creates an error
-			boolean bObjects =  DAOFactory.getObjMetadataDAO().hasBIObjAssociated(id);
+			/*boolean bObjects =  DAOFactory.getObjMetadataDAO().hasBIObjAssociated(id);
 			boolean bSubobjects =  DAOFactory.getObjMetadataDAO().hasSubObjAssociated(id);
 			if (bObjects || bSubobjects){
 				HashMap params = new HashMap();
@@ -242,7 +242,7 @@ public class DetailObjMetadataModule extends AbstractModule {
 				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 13007, new Vector(), params );
 				getErrorHandler().addError(error);
 				return;
-			}
+			}*/
 			
 			//delete the metadata
 			ObjMetadata meta = DAOFactory.getObjMetadataDAO().loadObjMetaDataByID(new Integer(id));

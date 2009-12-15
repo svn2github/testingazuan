@@ -702,6 +702,10 @@ public class DetailBIObjectModule extends AbstractModule {
 					}
 				}
 			}
+			/*
+			*deletes document from index
+			**/
+			LuceneIndexer.updateBiobjInIndex(obj, true);
 		} catch (Exception ex) {
 			logger.error("Cannot erase object", ex  );
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -1005,7 +1009,7 @@ public class DetailBIObjectModule extends AbstractModule {
 			/*
 			*indexes biobject by modifying document in index
 			**/
-			LuceneIndexer.updateBiobjInIndex(obj);
+			LuceneIndexer.updateBiobjInIndex(obj, false);
 			
 			// based on the kind of back put different data into response
 			Object saveAndGoBack = request.getAttribute("saveAndGoBack");

@@ -91,7 +91,7 @@ public class SaveMetadataAction extends AbstractSpagoBIAction {
 				*indexes biobject by modifying document in index
 				**/
 				BIObject biObjToIndex = DAOFactory.getBIObjectDAO().loadBIObjectById(biobjectId);
-				LuceneIndexer.updateBiobjInIndex(biObjToIndex);
+				LuceneIndexer.updateBiobjInIndex(biObjToIndex, false);
 			}		
 			
 		} catch (Exception e) {

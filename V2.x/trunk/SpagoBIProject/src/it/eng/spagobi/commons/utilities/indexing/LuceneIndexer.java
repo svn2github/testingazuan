@@ -105,7 +105,7 @@ public class LuceneIndexer {
 	/**Method to update a lucene document based on biObj input parameter
 	 * @param biObj
 	 */
-	public static void updateBiobjInIndex(BIObject biObj){
+	public static void updateBiobjInIndex(BIObject biObj, boolean delete){
 		logger.debug("IN");
 		try {
 			String indexBasePath = "";
@@ -149,12 +149,13 @@ public class LuceneIndexer {
 						
 						//delete document 
 						writer.deleteDocuments(new Term(IndexingConstants.UID, uid));
-						//re-add document to index
-						Document doc = new Document();
-						addBiobjFieldsToDocument(doc, biObj.getId());						
-						addFieldsToDocument(doc, String.valueOf(binId.intValue()), biObj.getId(),objMetadata.getName(),domain,htmlContent, content);
-						writer.addDocument(doc);
-						
+						if(!delete){
+							//re-add document to index
+							Document doc = new Document();
+							addBiobjFieldsToDocument(doc, biObj.getId());						
+							addFieldsToDocument(doc, String.valueOf(binId.intValue()), biObj.getId(),objMetadata.getName(),domain,htmlContent, content);
+							writer.addDocument(doc);
+						}
 					}
 				}
 			}
@@ -162,18 +163,20 @@ public class LuceneIndexer {
 				//document with no metadata
 				String uid = String.valueOf(biObj.getId().intValue());
 				writer.deleteDocuments(new Term(IndexingConstants.UID, uid));
-				Document doc = new Document();
-				doc.add(new Field(IndexingConstants.UID, uid , Field.Store.YES,
-						Field.Index.NOT_ANALYZED));
-				doc.add(new Field(IndexingConstants.BIOBJ_ID, String.valueOf(biObj.getId().intValue()), Field.Store.YES,
-						Field.Index.NOT_ANALYZED));
-				doc.add(new Field(IndexingConstants.BIOBJ_NAME, biObj.getName(),
-						Field.Store.NO, Field.Index.ANALYZED));
-				doc.add(new Field(IndexingConstants.BIOBJ_DESCR, biObj.getDescription(),
-						Field.Store.NO, Field.Index.ANALYZED));
-				doc.add(new Field(IndexingConstants.BIOBJ_LABEL, biObj.getLabel(),
-						Field.Store.NO, Field.Index.ANALYZED));
-				writer.addDocument(doc);
+				if(!delete){
+					Document doc = new Document();
+					doc.add(new Field(IndexingConstants.UID, uid , Field.Store.YES,
+							Field.Index.NOT_ANALYZED));
+					doc.add(new Field(IndexingConstants.BIOBJ_ID, String.valueOf(biObj.getId().intValue()), Field.Store.YES,
+							Field.Index.NOT_ANALYZED));
+					doc.add(new Field(IndexingConstants.BIOBJ_NAME, biObj.getName(),
+							Field.Store.NO, Field.Index.ANALYZED));
+					doc.add(new Field(IndexingConstants.BIOBJ_DESCR, biObj.getDescription(),
+							Field.Store.NO, Field.Index.ANALYZED));
+					doc.add(new Field(IndexingConstants.BIOBJ_LABEL, biObj.getLabel(),
+							Field.Store.NO, Field.Index.ANALYZED));
+					writer.addDocument(doc);
+				}
 			}
 
 			writer.optimize();

@@ -64,18 +64,25 @@ public class LuceneSearcher {
 		logger.debug("IN");
 		Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
 		BooleanQuery orQuery = new BooleanQuery();
+		BooleanQuery andQuery = new BooleanQuery();
 		for(int i=0; i< fields.length;i++){
 			Query query = new FuzzyQuery(new Term(fields[i], queryString));
 			orQuery.add(query, BooleanClause.Occur.SHOULD);
 		}
-		
-		logger.debug("Searching for: " + orQuery.toString());
+		andQuery.add(orQuery, BooleanClause.Occur.MUST);
+		if(metaDataToSearch != null){
+			//search for query string on metadata name field and content
+			//where metadata name = metaDataToSearch
+			Query queryMetadata = new TermQuery(new Term(IndexingConstants.METADATA, metaDataToSearch));
+			andQuery.add(queryMetadata, BooleanClause.Occur.MUST);
+		}
+		logger.debug("Searching for: " + andQuery.toString());
 		int hitsPerPage = 50;
 
 		// Collect enough docs to show 5 pages
 		TopScoreDocCollector collector = TopScoreDocCollector.create(
 				5 * hitsPerPage, false);
-		searcher.search(orQuery, collector);
+		searcher.search(andQuery, collector);
 		ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
 		int numTotalHits = collector.getTotalHits();

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="SpagoBIGeoReportEngine"
+		 xmlns="http://java.sun.com/xml/ns/j2ee" 
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		 xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" 
+		 version="2.4">
+
+	<display-name>SpagoBIGeoReportEngine</display-name>
+	<description>
+		Spago BI - SpagoBIGeoReportEngine
+	</description>
+	
+ <!--
+	<filter>
+		<filter-name>CAS_Filter</filter-name>
+		<filter-class>
+			edu.yale.its.tp.cas.client.filter.CASFilter
+		</filter-class>
+		<init-param>
+			<param-name>
+				edu.yale.its.tp.cas.client.filter.loginUrl
+			</param-name>
+			<param-value>
+				https://localhost:8443/exo-cas-2/login
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>
+				edu.yale.its.tp.cas.client.filter.validateUrl
+			</param-name>
+			<param-value>
+				https://localhost:8443/exo-cas-2/serviceValidate
+			</param-value>
+		</init-param>
+    <init-param>
+       <param-name>edu.yale.its.tp.cas.client.filter.serverName</param-name>
+       <param-value>localhost:8443</param-value>
+    </init-param>
+		<init-param>
+			<param-name>
+				edu.yale.its.tp.cas.client.filter.proxyCallbackUrl
+			</param-name>
+			<param-value>
+				https://localhost:8443/SpagoBIJasperReportEngine/proxyReceptor
+			</param-value>
+		</init-param>	
+
+     <init-param>
+  			 <param-name>edu.yale.its.tp.cas.client.filter.wrapRequest</param-name> 
+             <param-value>true</param-value> 
+       </init-param> 
+       	
+	</filter>
+-->
+
+	<filter>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<filter-class>
+			it.eng.spagobi.utilities.filters.SpagoBIAccessFilter
+		</filter-class>
+	</filter>
+
+<!-- 
+	<filter-mapping>
+		<filter-name>CAS_Filter</filter-name>
+		<url-pattern>/JasperReportServlet/*</url-pattern>
+	</filter-mapping>
+-->
+
+
+	<filter-mapping>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<url-pattern>/GeoReportEngineStartAction/*</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<url-pattern>/MapOl/*</url-pattern>
+	</filter-mapping>
+
+
+
+    <!--  ============================================================================ -->
+	<!--  SERVLETS								 									                                   -->
+	<!--  ============================================================================ -->
+	
+	<servlet>
+  		<servlet-name>ProxyTicketReceptor</servlet-name> 
+  		<servlet-class>edu.yale.its.tp.cas.proxy.ProxyTicketReceptor</servlet-class> 
+		<init-param>
+  			<param-name>edu.yale.its.tp.cas.proxyUrl</param-name> 
+  			<param-value>https://localhost:8443/exo-cas-2/proxy</param-value> 
+  		</init-param>
+    </servlet>
+
+
+	<servlet>
+		<servlet-name>GeoReportEngineStartAction</servlet-name>
+		<servlet-class>
+			it.eng.spagobi.engines.georeport.services.GeoReportEngineStartAction
+		</servlet-class>
+	</servlet>
+	
+	<servlet>
+      <servlet-name>MapOl</servlet-name>
+      <servlet-class>
+			it.eng.spagobi.engines.georeport.services.MapOlAction
+	  </servlet-class>
+    </servlet>
+
+	<!--  ============================================================================ -->
+	<!--  SERVLET MAPPINGS						 									                               -->
+	<!--  ============================================================================ -->
+	    
+ 	<servlet-mapping>
+  		<servlet-name>ProxyTicketReceptor</servlet-name> 
+  		<url-pattern>/proxyReceptor</url-pattern> 
+  	</servlet-mapping> 
+
+
+	<servlet-mapping>
+		<servlet-name>GeoReportEngineStartAction</servlet-name>
+		<url-pattern>/GeoReportEngineStartAction</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+    	<servlet-name>MapOl</servlet-name>
+    	<url-pattern>/MapOl</url-pattern>
+  	</servlet-mapping>
+	
+	
+	<!--  ============================================================================ -->
+	<!--  WELCOME PAGE 									                               -->
+	<!--  ============================================================================ -->
+	<welcome-file-list>
+		<welcome-file>/html/index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<!--  ============================================================================ -->
+	<!--  ERROR PAGES								                               		-->
+	<!--  ============================================================================ -->
+	  <error-page>
+	  	<exception-type>java.lang.Throwable</exception-type>
+	  	<location>/html/error.html</location>
+	  </error-page>
+		 
+	  <error-page>
+	  	<error-code>404</error-code>
+	  	<location>/html/error.html</location>
+	  </error-page>
+  
+	  <error-page>
+	  	<error-code>500</error-code>
+	  	<location>/html/error.html</location>
+	  </error-page>
+
+</web-app>
+

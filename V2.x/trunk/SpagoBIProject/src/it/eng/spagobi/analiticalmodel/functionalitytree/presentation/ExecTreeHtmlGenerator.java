@@ -30,7 +30,6 @@ import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
-import it.eng.spagobi.analiticalmodel.document.service.MetadataBIObjectModule;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
@@ -552,7 +551,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	private String createMetadataObjectLink(Integer id) {
 		String detUrl = GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserId().toString());
 		HashMap detUrlParMap = new HashMap();
-		detUrlParMap.put(ObjectsTreeConstants.PAGE, MetadataBIObjectModule.MODULE_PAGE);
+		//detUrlParMap.put(ObjectsTreeConstants.PAGE, MetadataBIObjectModule.MODULE_PAGE);
 		detUrlParMap.put(ObjectsTreeConstants.MESSAGE_DETAIL, ObjectsTreeConstants.METADATA_SELECT);
 		detUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, id.toString());
 		detUrlParMap.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");

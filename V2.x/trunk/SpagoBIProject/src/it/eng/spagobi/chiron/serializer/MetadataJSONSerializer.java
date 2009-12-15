@@ -27,6 +27,7 @@ import it.eng.spagobi.tools.objmetadata.bo.ObjMetadata;
 
 import java.util.Locale;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 

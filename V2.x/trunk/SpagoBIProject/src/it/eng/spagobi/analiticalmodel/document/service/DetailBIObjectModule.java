@@ -871,8 +871,7 @@ public class DetailBIObjectModule extends AbstractModule {
 				} else {
 					DAOFactory.getBIObjectDAO().insertBIObject(obj, objTemp, loadParsDCClicked);
 				}
-				//indexes biobject
-				LuceneIndexer.addBiobjToIndex(obj);
+
 			} else if(mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_MOD)) {
 				
 				BIObjectParameter biObjPar = null;
@@ -979,6 +978,7 @@ public class DetailBIObjectModule extends AbstractModule {
 					} else {
 						DAOFactory.getBIObjectDAO().modifyBIObject(obj, objTemp, loadParsDCClicked);
 					}
+
 	    			// reloads the BIObject 
 	    			obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(obj.getId());
 	    			// check if there's a parameter to save and in case save it
@@ -1001,6 +1001,12 @@ public class DetailBIObjectModule extends AbstractModule {
 			
 			// reloads the BIObject with the correct Id 
 			obj = DAOFactory.getBIObjectDAO().loadBIObjectForDetail(obj.getId());
+			
+			/*
+			*indexes biobject by modifying document in index
+			**/
+			LuceneIndexer.updateBiobjInIndex(obj);
+			
 			// based on the kind of back put different data into response
 			Object saveAndGoBack = request.getAttribute("saveAndGoBack");
 			if (saveAndGoBack != null) {

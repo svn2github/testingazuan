@@ -4,6 +4,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjMetaDataAndContent;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IBinContentDAO;
@@ -17,8 +18,12 @@ import it.eng.spagobi.tools.objmetadata.dao.IObjMetadataDAO;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+
+import net.sf.cglib.transform.impl.AddDelegateTransformer;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -50,6 +55,9 @@ public class LuceneIndexer {
 	static private Logger logger = Logger.getLogger(LuceneIndexer.class);
 	
 	
+	/**Method to add biObj input to lucene index (no metadata included) 
+	 * @param biObj
+	 */
 	public static void addBiobjToIndex(BIObject biObj){
 		logger.debug("IN");
 		try {
@@ -65,7 +73,6 @@ public class LuceneIndexer {
 			writer = new IndexWriter(FSDirectory.open(new File(index)),
 					new StandardAnalyzer(Version.LUCENE_CURRENT), false,
 					new IndexWriter.MaxFieldLength(1000000));
-			
 			Document doc = new Document();
 			String uid = createUidDocument(null, String.valueOf(biObj.getId().intValue()));
 			doc.add(new Field(IndexingConstants.UID, uid , Field.Store.YES,
@@ -95,7 +102,95 @@ public class LuceneIndexer {
 		}
 		
 	}
+	/**Method to update a lucene document based on biObj input parameter
+	 * @param biObj
+	 */
+	public static void updateBiobjInIndex(BIObject biObj){
+		logger.debug("IN");
+		try {
+			String indexBasePath = "";
+			SourceBean jndiBean =(SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.RESOURCE_PATH_JNDI_NAME");
+			if (jndiBean != null) {
+				String jndi = jndiBean.getCharacters();
+				indexBasePath = SpagoBIUtilities.readJndiResource(jndi);
+			}
+			String index = indexBasePath+"\\idx";
+			Date start = new Date();
+			
+			writer = new IndexWriter(FSDirectory.open(new File(index)),
+					new StandardAnalyzer(Version.LUCENE_CURRENT), false,
+					new IndexWriter.MaxFieldLength(1000000));
+			
+			ArrayList<String> uids = new ArrayList<String>();
+			//checks whether biobj has metadata content
+			List metadata = DAOFactory.getObjMetadataDAO().loadAllObjMetadata();
+			if (metadata != null && !metadata.isEmpty()) {
+				ByteArrayInputStream bais = null;
+				Iterator it = metadata.iterator();
+				while (it.hasNext()) {
+					ObjMetadata objMetadata = (ObjMetadata) it.next();
+					ObjMetacontent objMetacontent = (ObjMetacontent) DAOFactory.getObjMetacontentDAO().loadObjMetacontent(objMetadata.getObjMetaId(), biObj.getId(), null);
+					if(objMetacontent != null){
+						Integer binId = objMetacontent.getBinaryContentId();
+						String uid = createUidDocument(String.valueOf(binId.intValue()), String.valueOf(biObj.getId().intValue()));
+						Integer idDomain = objMetadata.getDataType();
+						Domain domain = DAOFactory.getDomainDAO().loadDomainById(idDomain);
+						String binIdString = String.valueOf(binId.intValue());
+						
+						byte[] content = objMetacontent.getContent();
+						String htmlContent = null;
+						if (domain.getValueCd().equalsIgnoreCase(LONG_TEXT)) {
+							bais = new ByteArrayInputStream(content);
+							JTidyHTMLHandler htmlHandler = new JTidyHTMLHandler();
+							htmlContent = htmlHandler.getContent(bais);
+							bais.close();
+						}
+						uids.add(uid);
+						
+						//delete document 
+						writer.deleteDocuments(new Term(IndexingConstants.UID, uid));
+						//re-add document to index
+						Document doc = new Document();
+						addBiobjFieldsToDocument(doc, biObj.getId());						
+						addFieldsToDocument(doc, String.valueOf(binId.intValue()), biObj.getId(),objMetadata.getName(),domain,htmlContent, content);
+						writer.addDocument(doc);
+						
+					}
+				}
+			}
+			if(uids.isEmpty()){
+				//document with no metadata
+				String uid = String.valueOf(biObj.getId().intValue());
+				writer.deleteDocuments(new Term(IndexingConstants.UID, uid));
+				Document doc = new Document();
+				doc.add(new Field(IndexingConstants.UID, uid , Field.Store.YES,
+						Field.Index.NOT_ANALYZED));
+				doc.add(new Field(IndexingConstants.BIOBJ_ID, String.valueOf(biObj.getId().intValue()), Field.Store.YES,
+						Field.Index.NOT_ANALYZED));
+				doc.add(new Field(IndexingConstants.BIOBJ_NAME, biObj.getName(),
+						Field.Store.NO, Field.Index.ANALYZED));
+				doc.add(new Field(IndexingConstants.BIOBJ_DESCR, biObj.getDescription(),
+						Field.Store.NO, Field.Index.ANALYZED));
+				doc.add(new Field(IndexingConstants.BIOBJ_LABEL, biObj.getLabel(),
+						Field.Store.NO, Field.Index.ANALYZED));
+				writer.addDocument(doc);
+			}
 
+			writer.optimize();
+			writer.close();
+
+			Date end = new Date();
+
+			logger.info("Indexing time:: " + (end.getTime() - start.getTime())
+					+ " milliseconds");
+			logger.debug("OUT");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		
+	}
 	/**Method called to create or increment Lucene index created over metadata binary contents.
 	 * @param index  index file
 	 * @param create indicating whether index is to be created or updated

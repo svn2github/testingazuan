@@ -110,6 +110,16 @@
     <mkdir dir="${tomcat.home}/webapps/SpagoBIGeoEngine" />
     <unzip src="../../../SpagoBIGeoEngine/dist/SpagoBIGeoEngine.war" dest="${tomcat.home}/webapps/SpagoBIGeoEngine" />
   </target>
+	
+  <target name="create.SpagoBIGeoReportEngine.war" depends="create.sbi.utils.jar">
+    <ant dir="../SpagoBIGeoReportEngine/ant" />
+  </target>
+  <target name="deploy.SpagoBIGeoReportEngine.war" depends="create.sbi.utils.jar,create.SpagoBIGeoReportEngine.war">
+  <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIGeoReportEngine" />
+    <delete dir="${tomcat.home}/webapps/SpagoBIGeoReportEngine" />
+    <mkdir dir="${tomcat.home}/webapps/SpagoBIGeoReportEngine" />
+    <unzip src="../../../SpagoBIGeoReportEngine/dist/SpagoBIGeoReportEngine.war" dest="${tomcat.home}/webapps/SpagoBIGeoReportEngine" />
+  </target>
   
   <target name="create.SpagoBIJasperReportEngine.war" depends="create.sbi.utils.jar">
     <ant dir="../SpagoBIJasperReportEngine/ant" />
@@ -213,7 +223,11 @@
             
     <antcall target="create.SpagoBIGeoEngine.war" />
     <copy file="../../../SpagoBIGeoEngine/dist/SpagoBIGeoEngine.war" 
-        todir="../../../dist" overwrite="true" />  
+        todir="../../../dist" overwrite="true" />
+  	
+  	<antcall target="create.SpagoBIGeoReportEngine.war" />
+  	    <copy file="../../../SpagoBIGeoReportEngine/dist/SpagoBIGeoReportEngine.war" 
+  	        todir="../../../dist" overwrite="true" /> 
           
     <antcall target="create.SpagoBIJPaloEngine.war" />
     <copy file="../../../SpagoBIJPaloEngine/dist/SpagoBIJPaloEngine.war" 
@@ -250,6 +264,7 @@
     <antcall target="deploy.SpagoBI.war" />
     <antcall target="deploy.SpagoBIBirtReportEngine.war" />
     <antcall target="deploy.SpagoBIGeoEngine.war" />
+  	<antcall target="deploy.SpagoBIGeoReportEngine.war" />
     <antcall target="deploy.SpagoBIJasperReportEngine.war" />
     <antcall target="deploy.SpagoBIJPaloEngine.war" />
     <antcall target="deploy.SpagoBIJPivotEngine.war" />
@@ -261,20 +276,22 @@
 
    <target name="clean.all" >
   <delete dir="../../../dist"/>
-	<delete dir="../../../QbeCore/ant-build"/>
-	<delete dir="../../../QbeCore/dist"/>  	
-	<delete dir="../../../SpagoBIBirtReportEngine/ant-build"/>
-	<delete dir="../../../SpagoBIBirtReportEngine/dist"/>  	
-	<delete dir="../../../SpagoBIExoSecurityProvider/ant-build"/>
-	<delete dir="../../../SpagoBIExoSecurityProvider/dist"/>  	
-	<delete dir="../../../SpagoBILiferaySecurityProvider/ant-build"/>
-	<delete dir="../../../SpagoBILiferaySecurityProvider/dist"/>  	
-	<delete dir="../../../SpagoBIXMLSecurityProvider/ant-build"/> 
-	<delete dir="../../../SpagoBIXMLSecurityProvider/dist"/>    	
-	<delete dir="../../../SpagoBILdapSecurityProvider/ant-build"/>    
+  <delete dir="../../../QbeCore/ant-build"/>
+  <delete dir="../../../QbeCore/dist"/>  	
+  <delete dir="../../../SpagoBIBirtReportEngine/ant-build"/>
+  <delete dir="../../../SpagoBIBirtReportEngine/dist"/>  	
+  <delete dir="../../../SpagoBIExoSecurityProvider/ant-build"/>
+  <delete dir="../../../SpagoBIExoSecurityProvider/dist"/>  	
+  <delete dir="../../../SpagoBILiferaySecurityProvider/ant-build"/>
+  <delete dir="../../../SpagoBILiferaySecurityProvider/dist"/>  	
+  <delete dir="../../../SpagoBIXMLSecurityProvider/ant-build"/> 
+  <delete dir="../../../SpagoBIXMLSecurityProvider/dist"/>    	
+  <delete dir="../../../SpagoBILdapSecurityProvider/ant-build"/>    
   <delete dir="../../../SpagoBILdapSecurityProvider/dist"/>    	  	
-	<delete dir="../../../SpagoBIGeoEngine/ant-build"/>
-	<delete dir="../../../SpagoBIGeoEngine/dist"/>  	
+  <delete dir="../../../SpagoBIGeoEngine/ant-build"/>
+  <delete dir="../../../SpagoBIGeoEngine/dist"/>  	
+  <delete dir="../../../SpagoBIGeoReportEngine/ant-build"/>
+  <delete dir="../../../SpagoBIGeoReportEngine/dist"/>
   <delete dir="../../../SpagoBIJasperReportEngine/ant-build"/>
   <delete dir="../../../SpagoBIJasperReportEngine/dist"/>    
   <delete dir="../../../SpagoBIJPaloEngine/ant-build"/>
@@ -320,6 +337,7 @@
     <ant dir="../SpagoBIBirtReportEngine/ant" target="svn.checkout"/>
     <ant dir="../SpagoBIExoSecurityProvider/ant" target="svn.checkout"/>
     <ant dir="../SpagoBIGeoEngine/ant" target="svn.checkout"/>
+  	<ant dir="../SpagoBIGeoReportEngine/ant" target="svn.checkout"/>
     <ant dir="../SpagoBIJasperReportEngine/ant" target="svn.checkout"/>
     <ant dir="../SpagoBIJPaloEngine/ant" target="svn.checkout"/>
     <ant dir="../SpagoBIJPivotEngine/ant" target="svn.checkout"/>
@@ -340,6 +358,7 @@
     <ant dir="../SpagoBIBirtReportEngine/ant" target="javadoc"/>
     <ant dir="../SpagoBIExoSecurityProvider/ant" target="javadoc"/>
     <ant dir="../SpagoBIGeoEngine/ant" target="javadoc"/>
+  	<ant dir="../SpagoBIGeoReportEngine/ant" target="javadoc"/>
     <ant dir="../SpagoBIJasperReportEngine/ant" target="javadoc"/>
     <ant dir="../SpagoBIJPaloEngine/ant" target="javadoc"/>
     <ant dir="../SpagoBIJPivotEngine/ant" target="javadoc"/>
@@ -358,6 +377,7 @@
         <ant dir="../SpagoBIProject/ant" target="package"/> 
         <ant dir="../SpagoBIBirtReportEngine/ant" target="package"/> 
         <ant dir="../SpagoBIGeoEngine/ant" target="package"/> 
+  	    <ant dir="../SpagoBIGeoReportEngine/ant" target="package"/>
         <ant dir="../SpagoBIJasperReportEngine/ant" target="package"/> 
         <ant dir="../SpagoBIJPaloEngine/ant" target="package"/> 
         <ant dir="../SpagoBIJPivotEngine/ant" target="package"/> 

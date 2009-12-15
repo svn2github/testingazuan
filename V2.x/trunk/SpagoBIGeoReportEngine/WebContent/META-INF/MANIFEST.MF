@@ -1,3 +1,5 @@
 Manifest-Version: 1.0
-Class-Path: 
 
+Name: SpagoBIGeoReportEngine.war
+Implementation-Title: SpagoBIGeoReportEngine
+Implementation-Version: 2.4.0 

@@ -91,13 +91,13 @@ Sbi.execution.toolbar.MetadataWindow = function(config) {
     this.metadataStore.on('load', this.init, this);
     this.metadataStore.load();
     
-    // init
+    // init  
     this.initGeneralMetadataGridPanel();
     this.initShortTextMetadataGridPanel();
     this.initLongTextMetadataTabPanel();
     
     var buttons = [];
-    if (Sbi.user.functionalities.contains('SaveMetadataFunctionality')) {
+   if (Sbi.user.functionalities.contains('SaveMetadataFunctionality')) {
         buttons.push({
             text : LN('sbi.execution.metadata.savemeta')
             , scope : this
@@ -107,7 +107,7 @@ Sbi.execution.toolbar.MetadataWindow = function(config) {
     
     var c = Ext.apply( {}, config, {
         id : 'win_metadata',
-        items : [ this.generalMetadataPanel, this.shortTextMetadataPanel ],
+        items : this.generalMetadataPanel ,
         buttons : buttons,
         width : 650,
         height : 410,
@@ -143,17 +143,21 @@ Ext.extend(Sbi.execution.toolbar.MetadataWindow, Ext.Window, {
         for (var i = 0; i < this.metadataStore.getCount(); i++) {
             var aRecord = this.metadataStore.getAt(i);
             if (aRecord.data.meta_type == 'SHORT_TEXT') {
+            	
                 this.shortTextMetadataStore.add(aRecord);
+                
             }else if (aRecord.data.meta_type == 'GENERAL_META') {
+            	
                 this.generalMetadataStore.add(aRecord);
             } else {
+            	
                 this.longTextMetadataStore.add(aRecord);
                 var html = aRecord.data.meta_content !== '' ? aRecord.data.meta_content : '<br/>';
                 
                 var editablePanel = new Sbi.widgets.EditablePanel({
                     "title" : aRecord.data.meta_name
                     , "html" : html
-                    , "height" : 300
+                    , "height" : 246
                     , "editable" : Sbi.user.functionalities.contains('SaveMetadataFunctionality')
                     , "fieldName" : aRecord.data.meta_id
                 });
@@ -171,8 +175,19 @@ Ext.extend(Sbi.execution.toolbar.MetadataWindow, Ext.Window, {
                 this.longTextMetadataTabPanel.add(editablePanel);
             }
         }
-        this.add(this.longTextMetadataPanel);
-        this.doLayout();
+        
+        
+        
+        if(this.shortTextMetadataStore.getCount() !== 0 ){
+	    	this.add(this.shortTextMetadataPanel);
+	    }
+     
+        if(this.longTextMetadataStore.getCount() !== 0 ){
+    		 this.add(this.longTextMetadataPanel);
+    	} 
+	      
+	    this.doLayout();
+        
     }
     
     , initGeneralMetadataGridPanel : function() {

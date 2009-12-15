@@ -50,6 +50,8 @@ Sbi.widgets.EditablePanel = function(config) {
     
     this.contentPanel = new Ext.Panel({
         html : config.html
+        , height: 246
+        ,autoScroll: true
     });
     
     this.htmlEditor = null;
@@ -58,6 +60,7 @@ Sbi.widgets.EditablePanel = function(config) {
         title : config.title
         , items : [this.contentPanel]
         , height : config.height
+        //, autoScroll: true
     };
     
     Sbi.widgets.EditablePanel.superclass.constructor.call(this, c);
@@ -72,7 +75,7 @@ Sbi.widgets.EditablePanel = function(config) {
                     value: this.contentPanel.body.dom.innerHTML
                     , name: this.fieldName
                     , width: 620
-                    , height: 258
+                    , height: 246
                 });
                 this.htmlEditor.on('sync', function () {
                     this.fireEvent('change', this, this.htmlEditor.getValue());
@@ -96,6 +99,8 @@ Ext.extend(Sbi.widgets.EditablePanel, Ext.Panel, {
 	        if(this.contentPanel !== undefined && this.contentPanel !== null){
 		        this.contentPanel = new Ext.Panel({
 		            html : newHtml
+		            , height: 246
+		            ,autoScroll: true
 		        });   
 		        this.add(this.contentPanel);
 		        this.doLayout();

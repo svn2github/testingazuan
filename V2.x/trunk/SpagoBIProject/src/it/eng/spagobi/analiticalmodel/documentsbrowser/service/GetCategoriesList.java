@@ -35,7 +35,6 @@ public class GetCategoriesList extends AbstractSpagoBIAction{
 				objects.add(metadata);
 			}
 			toReturn = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(objects, null);
-			System.out.println(toReturn.toString());
 			writeBackToClient( new JSONSuccess( toReturn ) ); 
 		} catch (EMFUserError e) {
 			// TODO Auto-generated catch block

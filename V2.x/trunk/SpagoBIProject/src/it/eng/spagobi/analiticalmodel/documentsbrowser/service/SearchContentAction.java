@@ -43,12 +43,16 @@ import java.util.Locale;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.highlight.Highlighter;
+import org.apache.lucene.search.highlight.QueryScorer;
+import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
 import org.apache.lucene.store.FSDirectory;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -81,7 +85,6 @@ public class SearchContentAction extends AbstractSpagoBIAction{
 
 			Vector<String> fieldsToSearch = new Vector<String>();
 			String valueFilter = getAttributeAsString(SpagoBIConstants.VALUE_FILTER);
-			//fieldsToSearch.add(IndexingConstants.CONTENTS);
 			
 			String attributes = getAttributeAsString(ATTRIBUTES);
 			String metaDataToSearch = null;
@@ -91,7 +94,11 @@ public class SearchContentAction extends AbstractSpagoBIAction{
 					fieldsToSearch.add(IndexingConstants.BIOBJ_NAME);
 					fieldsToSearch.add(IndexingConstants.BIOBJ_DESCR);
 					fieldsToSearch.add(IndexingConstants.METADATA);
+					//search metadata binary content
 					fieldsToSearch.add(IndexingConstants.CONTENTS);
+					//search subobject fields
+					fieldsToSearch.add(IndexingConstants.SUBOBJ_DESCR);
+					fieldsToSearch.add(IndexingConstants.SUBOBJ_NAME);
 				}else if(attributes.equalsIgnoreCase("LABEL")){//SEARCH IN LABEL DOC
 					fieldsToSearch.add(IndexingConstants.BIOBJ_LABEL);
 				}else if(attributes.equalsIgnoreCase("NAME")){//SEARCH IN NAME DOC
@@ -100,7 +107,6 @@ public class SearchContentAction extends AbstractSpagoBIAction{
 					fieldsToSearch.add(IndexingConstants.BIOBJ_DESCR);
 				}else{//SEARCH IN CATEGORIES DOC
 					//get categories name
-					System.out.println(attributes);
 					metaDataToSearch = attributes;
 					fieldsToSearch.add(IndexingConstants.METADATA);
 					fieldsToSearch.add(IndexingConstants.CONTENTS);
@@ -140,16 +146,17 @@ public class SearchContentAction extends AbstractSpagoBIAction{
 				objects = new ArrayList();
 				if(hits != null) {
 	                for(int i=0; i<hits.length; i++) {
-	                	
+
 	        	    	ScoreDoc hit = hits[i];
 	        	    	Document doc = searcher.doc(hit.doc);
 	        	        String biobjId = doc.get(IndexingConstants.BIOBJ_ID);
-	        	        BIObject obj =DAOFactory.getBIObjectDAO().loadBIObjectForDetail(Integer.valueOf(biobjId));	        	        
-	        			boolean canSee = ObjectsAccessVerifier.canSee(obj, profile);
-	        	    	if (canSee) {
-	        	    		objects.add(obj);
-	        	    	}        	        
-	        	        
+	        	        BIObject obj =DAOFactory.getBIObjectDAO().loadBIObjectForDetail(Integer.valueOf(biobjId));
+	        	        if(obj != null){
+		        			boolean canSee = ObjectsAccessVerifier.canSee(obj, profile);
+		        	    	if (canSee) {
+		        	    		objects.add(obj);
+		        	    	}        	        
+		                }
 	                }
 				}
 				searcher.close();

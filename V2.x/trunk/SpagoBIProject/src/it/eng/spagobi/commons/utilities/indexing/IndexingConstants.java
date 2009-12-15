@@ -9,4 +9,6 @@ public class IndexingConstants {
 	public static final String BIOBJ_DESCR = "BIOBJ_DESCR";
 	public static final String METADATA = "METADATA";
 	
+	public static final String SUBOBJ_NAME = "SUBOBJ_NAME";
+	public static final String SUBOBJ_DESCR = "SUBOBJ_DESCR";
 }

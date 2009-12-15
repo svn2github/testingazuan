@@ -5,6 +5,7 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjMetaDataAndContent;
+import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IBinContentDAO;
@@ -17,6 +18,7 @@ import it.eng.spagobi.tools.objmetadata.dao.IObjMetadataDAO;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,6 +31,7 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
@@ -152,7 +155,8 @@ public class LuceneIndexer {
 						if(!delete){
 							//re-add document to index
 							Document doc = new Document();
-							addBiobjFieldsToDocument(doc, biObj.getId());						
+							addBiobjFieldsToDocument(doc, biObj.getId());
+							addSubobjFieldsToDocument(doc, biObj.getId());
 							addFieldsToDocument(doc, String.valueOf(binId.intValue()), biObj.getId(),objMetadata.getName(),domain,htmlContent, content);
 							writer.addDocument(doc);
 						}
@@ -175,12 +179,13 @@ public class LuceneIndexer {
 							Field.Store.NO, Field.Index.ANALYZED));
 					doc.add(new Field(IndexingConstants.BIOBJ_LABEL, biObj.getLabel(),
 							Field.Store.NO, Field.Index.ANALYZED));
+					addSubobjFieldsToDocument(doc, biObj.getId());
 					writer.addDocument(doc);
 				}
 			}
 
 			writer.optimize();
-			writer.close();
+			//writer.close();
 
 			Date end = new Date();
 
@@ -189,8 +194,24 @@ public class LuceneIndexer {
 			logger.debug("OUT");
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			if(writer != null){
+				try {
+					writer.rollback();
+				} catch (IOException e1) {
+					logger.error(e.getMessage());
+				}
+			}
 			logger.error(e.getMessage());
+		}finally{
+			try {
+				writer.commit();
+				writer.close();
+			} catch (CorruptIndexException e) {
+				logger.error(e.getMessage());
+			} catch (IOException e) {
+				logger.error(e.getMessage());
+			}
+			
 		}
 		
 	}
@@ -325,12 +346,14 @@ public class LuceneIndexer {
 									uidIter.next(); // keep matching docs
 								} else if (!deleting) { // add new docs
 									Document doc = new Document();
-									addFieldsToDocument(doc, binIdString, biobjId, metaName, domain, htmlContent, content);									
+									addFieldsToDocument(doc, binIdString, biobjId, metaName, domain, htmlContent, content);	
+									addSubobjFieldsToDocument(doc, biobjId);
 									writer.addDocument(doc);
 								}
 							} else { // creating a new index
 								Document doc = new Document();
-								addFieldsToDocument(doc, binIdString, biobjId, metaName, domain, htmlContent, content);								
+								addFieldsToDocument(doc, binIdString, biobjId, metaName, domain, htmlContent, content);		
+								addSubobjFieldsToDocument(doc, biobjId);
 								writer.addDocument(doc);
 							}
 							
@@ -394,6 +417,22 @@ public class LuceneIndexer {
 			doc.add(new Field(IndexingConstants.BIOBJ_LABEL, biObj.getLabel(),
 					Field.Store.NO, Field.Index.ANALYZED));
 			
+		} catch (EMFUserError e) {
+			logger.error(e.getMessage());
+		}
+	}
+	private static void addSubobjFieldsToDocument(Document doc, Integer biObjectID){
+		try {
+			List<SubObject> subobjects= DAOFactory.getSubObjectDAO().getSubObjects(biObjectID);
+			if(subobjects != null){
+				for(int i =0; i<subobjects.size(); i++){
+					SubObject subObj = subobjects.get(i);
+					doc.add(new Field(IndexingConstants.SUBOBJ_NAME, subObj.getName(),
+							Field.Store.NO, Field.Index.ANALYZED));
+					doc.add(new Field(IndexingConstants.SUBOBJ_DESCR, subObj.getDescription(),
+							Field.Store.NO, Field.Index.ANALYZED));
+				}
+			}
 		} catch (EMFUserError e) {
 			logger.error(e.getMessage());
 		}

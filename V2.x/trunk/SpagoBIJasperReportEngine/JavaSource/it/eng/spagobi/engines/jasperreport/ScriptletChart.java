@@ -28,21 +28,20 @@ package it.eng.spagobi.engines.jasperreport;
 import it.eng.spagobi.services.proxy.DocumentExecuteServiceProxy;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
-
 import net.sf.jasperreports.engine.JRDefaultScriptlet;
 import net.sf.jasperreports.engine.JRScriptletException;
+import net.sf.jasperreports.engine.fill.JRFillParameter;
 import net.sf.jasperreports.engine.fill.JRFillVariable;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author Giulio Gavardi
@@ -79,32 +78,50 @@ public class ScriptletChart extends JRDefaultScriptlet {
 			// Get all defined variables wich start with prefix sbichart,
 			// each is an image to fill
 			Map allVariables = this.variablesMap;
+			Map allParameters = this.parametersMap;
 
 			boolean oldModeRetrievingChart=false;
-
+			boolean done=false;
 			if(allVariables==null)allVariables=new HashMap();
+			if(allParameters==null)allParameters=new HashMap();
 
 
 			// First search for the chart_label variable, if present switch to "old mode"
 
-			for (Iterator iterator = allVariables.keySet().iterator(); iterator.hasNext();) {
+			for (Iterator iterator = allVariables.keySet().iterator(); iterator.hasNext() && done==false;) {
 				String varName = (String) iterator.next();
 				if(varName.equalsIgnoreCase(CHART_LABEL)){
 					oldModeRetrievingChart=true;
 					logger.debug("old mode for retrieving chart, getting label from CHART LABEL variable and inserting in CHART_IMAGE variable");
+					done=true;
 				}
 			}
 
 
 			logger.debug("Running all variables");
-			boolean done=false;
+			done=false;
 			for (Iterator iterator = allVariables.keySet().iterator(); iterator.hasNext() && done==false;) {
 				String varName = (String) iterator.next();
 				if(oldModeRetrievingChart==true){
 					if(varName.equalsIgnoreCase(CHART_LABEL)){
 						JRFillVariable labelValueO = (JRFillVariable) allVariables.get(CHART_LABEL);
 						String labelValue = null;
+						if(labelValueO.getValue()==null){
+							logger.error("CHART_LABEL variable has no value");
+							return;
+						}
 						labelValue=(String)labelValueO.getValue();
+						
+						// Set other parameters (only not system defined)
+						for (Iterator iterator2 = allParameters.keySet().iterator(); iterator2.hasNext();) {
+							String namePar = (String) iterator2.next();
+							JRFillParameter par=(JRFillParameter)allParameters.get(namePar);
+							if(!par.isSystemDefined() && par.getValue()!=null){
+								Object val=par.getValue();
+								chartParameters.put(namePar, val.toString());
+							}
+						}
+
 						logger.debug("execute chart with lable "+labelValue);
 						DocumentExecuteServiceProxy proxy=new DocumentExecuteServiceProxy(userId,session);
 						logger.debug("Calling Service");

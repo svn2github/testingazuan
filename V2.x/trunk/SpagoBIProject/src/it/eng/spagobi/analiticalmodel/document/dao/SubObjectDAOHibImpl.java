@@ -31,7 +31,11 @@ import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
+import it.eng.spagobi.tools.objmetadata.bo.ObjMetacontent;
+import it.eng.spagobi.tools.objmetadata.bo.ObjMetadata;
+import it.eng.spagobi.tools.objmetadata.dao.IObjMetacontentDAO;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -171,6 +175,21 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 			tx = aSession.beginTransaction();
 			SbiSubObjects hibSubobject = (SbiSubObjects)aSession.load(SbiSubObjects.class, idSub);
 			SbiBinContents hibBinCont = hibSubobject.getSbiBinContents();
+			
+			//delete metadata eventually associated
+			List metadata = DAOFactory.getObjMetadataDAO().loadAllObjMetadata();
+			IObjMetacontentDAO objMetaContentDAO = DAOFactory.getObjMetacontentDAO();
+			if (metadata != null && !metadata.isEmpty()) {
+				Iterator it = metadata.iterator();
+				while (it.hasNext()) {
+					ObjMetadata objMetadata = (ObjMetadata) it.next();
+					ObjMetacontent objMetacontent = (ObjMetacontent) DAOFactory.getObjMetacontentDAO().loadObjMetacontent(objMetadata.getObjMetaId(), hibSubobject.getSbiObject().getBiobjId(), hibSubobject.getSubObjId());
+					if(objMetacontent!=null){
+						objMetaContentDAO.eraseObjMetadata(objMetacontent);
+					}
+				}
+			}			
+			
 			aSession.delete(hibSubobject);
 			aSession.delete(hibBinCont);
 			tx.commit();

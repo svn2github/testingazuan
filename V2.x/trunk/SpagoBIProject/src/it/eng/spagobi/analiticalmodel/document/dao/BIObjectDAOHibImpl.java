@@ -34,6 +34,7 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjMetaDataAndContent;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
@@ -66,6 +67,10 @@ import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
+import it.eng.spagobi.tools.objmetadata.bo.ObjMetacontent;
+import it.eng.spagobi.tools.objmetadata.bo.ObjMetadata;
+import it.eng.spagobi.tools.objmetadata.dao.IObjMetacontentDAO;
+import it.eng.spagobi.tools.objmetadata.dao.IObjMetadataDAO;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -777,6 +782,21 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				IObjNoteDAO objNoteDAO = DAOFactory.getObjNoteDAO();
 				objNoteDAO.eraseNotes(obj.getId());
 				
+				//delete metadata eventually associated
+				List metadata = DAOFactory.getObjMetadataDAO().loadAllObjMetadata();
+				IObjMetacontentDAO objMetaContentDAO = DAOFactory.getObjMetacontentDAO();
+				if (metadata != null && !metadata.isEmpty()) {
+					Iterator it = metadata.iterator();
+					while (it.hasNext()) {
+						ObjMetadata objMetadata = (ObjMetadata) it.next();
+						ObjMetacontent objMetacontent = (ObjMetacontent) DAOFactory.getObjMetacontentDAO().loadObjMetacontent(objMetadata.getObjMetaId(), obj.getId(), null);
+						if(objMetacontent!=null){
+							objMetaContentDAO.eraseObjMetadata(objMetacontent);
+						}
+					}
+				}			
+				
+				 
 				// delete parameters associated
 				Set objPars = hibBIObject.getSbiObjPars();
 				Iterator itObjPar = objPars.iterator();

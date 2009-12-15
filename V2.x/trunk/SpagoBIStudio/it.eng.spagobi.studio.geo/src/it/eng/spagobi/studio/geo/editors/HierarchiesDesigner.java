@@ -1,3 +1,23 @@
+/**
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+ **/
 package it.eng.spagobi.studio.geo.editors;
 
 
@@ -52,6 +72,7 @@ public class HierarchiesDesigner {
 	private GEOEditor editor=null;
 	private Composite mainComposite;
 	private GEODocument geoDocument;
+	Label emptyTree=null;
 
 	public HierarchiesDesigner(Composite _composite, GEOEditor _editor) {
 		super();
@@ -196,11 +217,13 @@ public class HierarchiesDesigner {
 		menuItem.addListener(SWT.Selection, new Listener () {
 			public void handleEvent (Event event) { 
 				TreeItem[] sel = hierarchiesTree.getSelection();
-				if(sel[0] != null && sel[0].getParentItem() != null){//ha selez un livello--> errore
+				if(sel.length>=1 && sel[0] != null && sel[0].getParentItem() != null){//ha selez un livello--> errore
 					MessageDialog.openError(sectionClient.getShell(), "Error", "Wrong position");
 				}else{
 					createNewHierarchyShell(hierarchiesTree, null);
-
+					if(emptyTree!=null && emptyTree.isVisible()){
+						emptyTree.setVisible(false);
+					}
 				}
 
 			}
@@ -254,7 +277,7 @@ public class HierarchiesDesigner {
 		if(geoDocument.getDatamartProvider().getHierarchies() == null || 
 				geoDocument.getDatamartProvider().getHierarchies().getHierarchy() == null || 
 				geoDocument.getDatamartProvider().getHierarchies().getHierarchy().size() == 0){
-			final Label emptyTree = toolkit.createLabel(hierarchiesGroup, "empty heirarchies tree...right click here to create", SWT.CENTER);
+			emptyTree = toolkit.createLabel(hierarchiesGroup, "empty hierarchies tree...right click here to create", SWT.CENTER);
 
 			Color color = new org.eclipse.swt.graphics.Color(sectionClient.getDisplay(), 255,0,0);
 			emptyTree.setForeground(color);

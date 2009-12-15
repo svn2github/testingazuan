@@ -23,8 +23,10 @@ package it.eng.spagobi.analiticalmodel.document.x;
 
 import java.util.Date;
 
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.chiron.serializer.MetadataJSONSerializer;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.indexing.LuceneIndexer;
 import it.eng.spagobi.tools.objmetadata.bo.ObjMetacontent;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
@@ -85,6 +87,11 @@ public class SaveMetadataAction extends AbstractSpagoBIAction {
 					aObjMetacontent.setLastChangeDate(new Date());
 					DAOFactory.getObjMetacontentDAO().modifyObjMetacontent(aObjMetacontent);
 				}
+				/*
+				*indexes biobject by modifying document in index
+				**/
+				BIObject biObjToIndex = DAOFactory.getBIObjectDAO().loadBIObjectById(biobjectId);
+				LuceneIndexer.updateBiobjInIndex(biObjToIndex);
 			}		
 			
 		} catch (Exception e) {

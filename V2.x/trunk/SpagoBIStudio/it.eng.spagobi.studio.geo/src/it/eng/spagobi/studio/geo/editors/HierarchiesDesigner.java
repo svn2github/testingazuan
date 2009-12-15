@@ -378,10 +378,23 @@ public class HierarchiesDesigner {
 		labelType.setText ("Type:");		
 		labelType.setLayoutData (data);
 
-		final Text textType = new Text (dialog, SWT.BORDER);
+		final Combo textType	= new Combo(dialog, SWT.BORDER);	
+		textType.add("default");
+		textType.add("custom");
+		//		final Text textType = new Text (dialog, SWT.BORDER);
+		textType.select(0);
 		if(hierarchy != null){
-			textType.setText(hierarchy.getType());
+			if(hierarchy.getType()!=null){
+				if(hierarchy.getType().equalsIgnoreCase("default")){
+					textType.select(0);
+				}
+				else{
+					textType.select(1);					
+				}
+			}
 		}
+
+
 		data = new FormData ();
 		data.width = 200;
 		data.left = new FormAttachment (labelType, 0, SWT.DEFAULT);

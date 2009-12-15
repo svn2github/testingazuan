@@ -17,6 +17,7 @@ import org.apache.lucene.search.FuzzyQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
@@ -26,20 +27,27 @@ public class LuceneSearcher {
 	static private Logger logger = Logger.getLogger(LuceneSearcher.class);
 
 	public static ScoreDoc[] searchIndex(IndexSearcher searcher,
-			String queryString, String index, String[] fields)
+			String queryString, String index, String[] fields, String metaDataToSearch)
 			throws IOException, ParseException {
 		logger.debug("IN");
 		Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
+		BooleanQuery andQuery = new BooleanQuery();
+		if(metaDataToSearch != null){
+			//search for query string on metadata name field and content
+			//where metadata name = metaDataToSearch
+			Query queryMetadata = new TermQuery(new Term(IndexingConstants.METADATA, metaDataToSearch));
+			andQuery.add(queryMetadata, BooleanClause.Occur.MUST);
+		}
 		Query query = new MultiFieldQueryParser(Version.LUCENE_CURRENT, fields,
 				analyzer).parse(queryString);
-
-		logger.debug("Searching for: " + query.toString());
+		andQuery.add(query, BooleanClause.Occur.MUST);
+		logger.debug("Searching for: " + andQuery.toString());
 		int hitsPerPage = 50;
 
 		// Collect enough docs to show 5 pages
 		TopScoreDocCollector collector = TopScoreDocCollector.create(
 				5 * hitsPerPage, false);
-		searcher.search(query, collector);
+		searcher.search(andQuery, collector);
 		ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
 		int numTotalHits = collector.getTotalHits();
@@ -51,7 +59,7 @@ public class LuceneSearcher {
 	}
 
 	public static ScoreDoc[] searchIndexFuzzy(IndexSearcher searcher,
-			String queryString, String index, String[] fields)
+			String queryString, String index, String[] fields, String metaDataToSearch)
 			throws IOException, ParseException {
 		logger.debug("IN");
 		Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
@@ -78,35 +86,5 @@ public class LuceneSearcher {
 
 	}
 
-	public static void main(String[] argv) {
-
-		String index = "C:\\Programmi\\resources\\idx";
-		String queryString = "federa";// or install for test
-		IndexReader reader;
-		try {
-			reader = IndexReader.open(FSDirectory.open(new File(index)), true);
-			// read-only=true
-			boolean isIndexCurrent = reader.isCurrent();
-			// if !isC
-			IndexSearcher searcher = new IndexSearcher(reader);
-			String[] fields = { IndexingConstants.CONTENTS };
-			searchIndex(searcher, queryString, index, fields);
-
-			// searcher can only be closed when there
-			// is no need to access the documents any more.
-			searcher.close();
-		} catch (CorruptIndexException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} // only searching, so
-		catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
 
 }

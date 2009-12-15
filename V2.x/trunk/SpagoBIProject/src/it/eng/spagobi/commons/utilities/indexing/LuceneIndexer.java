@@ -190,7 +190,8 @@ public class LuceneIndexer {
 					ObjMetadata metadata = results.get(i);
 					Integer idDomain = metadata.getDataType();
 					Integer metaId = metadata.getObjMetaId();
-					String metaLabel = metadata.getLabel();
+					//String metaLabel = metadata.getLabel();
+					String metaName = metadata.getName();
 					Domain domain = DAOFactory.getDomainDAO().loadDomainById(idDomain);
 	
 					IObjMetacontentDAO metacontentDAO = DAOFactory.getObjMetacontentDAO();
@@ -215,7 +216,7 @@ public class LuceneIndexer {
 										&& uidIter.term().field().equals(IndexingConstants.UID)
 										&& uidIter.term().text().compareTo(binIdString) < 0) {
 									if (deleting) { // delete stale docs
-										logger.info("deleting html binary content "+ uidIter.term().text());
+										logger.info("deleting stale document "+ uidIter.term().text());
 										reader.deleteDocuments(uidIter.term());
 									}
 									uidIter.next();
@@ -226,12 +227,12 @@ public class LuceneIndexer {
 									uidIter.next(); // keep matching docs
 								} else if (!deleting) { // add new docs
 									Document doc = new Document();
-									addFieldsToDocument(doc, binIdString, biobjId, metaLabel, domain, htmlContent, content);									
+									addFieldsToDocument(doc, binIdString, biobjId, metaName, domain, htmlContent, content);									
 									writer.addDocument(doc);
 								}
 							} else { // creating a new index
 								Document doc = new Document();
-								addFieldsToDocument(doc, binIdString, biobjId, metaLabel, domain, htmlContent, content);								
+								addFieldsToDocument(doc, binIdString, biobjId, metaName, domain, htmlContent, content);								
 								writer.addDocument(doc);
 							}
 							
@@ -259,13 +260,13 @@ public class LuceneIndexer {
 		return uid;
 	}
 	
-	private static void addFieldsToDocument(Document doc, String binId, Integer biobjId, String metaLabel,Domain domain, String htmlContent, byte[] content) throws UnsupportedEncodingException{
+	private static void addFieldsToDocument(Document doc, String binId, Integer biobjId, String metaName,Domain domain, String htmlContent, byte[] content) throws UnsupportedEncodingException{
 		String uid = createUidDocument(binId, String.valueOf(biobjId.intValue()));
 		doc.add(new Field(IndexingConstants.UID, uid , Field.Store.YES,
 				Field.Index.NOT_ANALYZED));
 		doc.add(new Field(IndexingConstants.BIOBJ_ID, String.valueOf(biobjId.intValue()), Field.Store.YES,
 				Field.Index.NOT_ANALYZED));
-		doc.add(new Field(IndexingConstants.METADATA, metaLabel,
+		doc.add(new Field(IndexingConstants.METADATA, metaName,
 				Field.Store.YES,
 				Field.Index.ANALYZED));
 		if (domain.getValueCd().equalsIgnoreCase(LONG_TEXT)) { // index

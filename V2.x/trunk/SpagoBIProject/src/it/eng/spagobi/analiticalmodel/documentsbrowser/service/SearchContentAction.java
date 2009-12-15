@@ -81,22 +81,27 @@ public class SearchContentAction extends AbstractSpagoBIAction{
 
 			Vector<String> fieldsToSearch = new Vector<String>();
 			String valueFilter = getAttributeAsString(SpagoBIConstants.VALUE_FILTER);
-			fieldsToSearch.add(IndexingConstants.CONTENTS);
+			//fieldsToSearch.add(IndexingConstants.CONTENTS);
 			
 			String attributes = getAttributeAsString(ATTRIBUTES);
+			String metaDataToSearch = null;
 			if(attributes != null){
 				if(attributes.equalsIgnoreCase("ALL")){//SEARCH IN ALL FIELDS
 					fieldsToSearch.add(IndexingConstants.BIOBJ_LABEL);
 					fieldsToSearch.add(IndexingConstants.BIOBJ_NAME);
 					fieldsToSearch.add(IndexingConstants.BIOBJ_DESCR);
 					fieldsToSearch.add(IndexingConstants.METADATA);
+					fieldsToSearch.add(IndexingConstants.CONTENTS);
 				}else if(attributes.equalsIgnoreCase("LABEL")){//SEARCH IN LABEL DOC
 					fieldsToSearch.add(IndexingConstants.BIOBJ_LABEL);
 				}else if(attributes.equalsIgnoreCase("NAME")){//SEARCH IN NAME DOC
 					fieldsToSearch.add(IndexingConstants.BIOBJ_NAME);
 				}else if(attributes.equalsIgnoreCase("DESCRIPTION")){//SEARCH IN DESCRIPTION DOC
 					fieldsToSearch.add(IndexingConstants.BIOBJ_DESCR);
-				}else if(attributes.equalsIgnoreCase("CATEGORIES")){//SEARCH IN CATEGORIES DOC
+				}else{//SEARCH IN CATEGORIES DOC
+					//get categories name
+					System.out.println(attributes);
+					metaDataToSearch = attributes;
 					fieldsToSearch.add(IndexingConstants.METADATA);
 					fieldsToSearch.add(IndexingConstants.CONTENTS);
 				}
@@ -127,9 +132,9 @@ public class SearchContentAction extends AbstractSpagoBIAction{
 				//getting  documents
 				ScoreDoc [] hits = null;
 				if(similar){
-					hits = LuceneSearcher.searchIndexFuzzy(searcher, valueFilter, index, fields);
+					hits = LuceneSearcher.searchIndexFuzzy(searcher, valueFilter, index, fields, metaDataToSearch);
 				}else{
-					hits = LuceneSearcher.searchIndex(searcher, valueFilter, index, fields);
+					hits = LuceneSearcher.searchIndex(searcher, valueFilter, index, fields, metaDataToSearch);
 				}
 				
 				objects = new ArrayList();

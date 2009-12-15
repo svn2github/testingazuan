@@ -43,7 +43,7 @@ Sbi.browser.SearchPanel = function(config) {
     	, items: [
     	          new Ext.form.Checkbox({id: 'temp'})
     	  ]
-    	//, attributes: 'ALL'
+    	, attributes: 'ALL'
 	});   
 	
     this.attributesStore = new Ext.data.JsonStore({
@@ -182,18 +182,7 @@ Ext.extend(Sbi.browser.SearchPanel, Ext.FormPanel, {
     	recordsToAdd[2]=new Ext.data.Record({name:'NAME', label:LN('sbi.browser.searchpanel.attributes.name'), description:LN('sbi.browser.searchpanel.attributes.name')});
     	recordsToAdd[3]=new Ext.data.Record({name:'DESCRIPTION', label:LN('sbi.browser.searchpanel.attributes.description'), description:LN('sbi.browser.searchpanel.attributes.description')});
     	this.attributesStore.add(recordsToAdd);
-    	
-    	//this.attributesComboBox.insert(0, new Ext.data.Record({name:'ALL', label:LN('sbi.browser.searchpanel.attributes.all'), description:LN('sbi.browser.searchpanel.attributes.all')}));
-    	//this.attributesComboBox.setValue(new Ext.data.Record({name:'ALL', label:LN('sbi.browser.searchpanel.attributes.all'), description:LN('sbi.browser.searchpanel.attributes.all')}));
-    	
-/*    	this.attributesComboBox.insert(1, new Ext.data.Record({name:'LABEL', label:LN('sbi.browser.searchpanel.attributes.label'), description:LN('sbi.browser.searchpanel.attributes.label')}));
-    	this.attributesComboBox.setValue(1);*/
-    	
-/*    	this.attributesComboBox.insert(2, new Ext.data.Record({'NAME', LN('sbi.browser.searchpanel.attributes.name'), LN('sbi.browser.searchpanel.attributes.name')}));
-    	this.attributesComboBox.setValue(2);
-    	
-    	this.attributesComboBox.insert(3, new Ext.data.Record({'DESCRIPTION', LN('sbi.browser.searchpanel.attributes.description'), LN('sbi.browser.searchpanel.attributes.description')}));
-    	this.attributesComboBox.setValue(3);*/
+
 
     }
 });

@@ -78,6 +78,9 @@ public class BiObjectUtilities {
 		else if(extension.equalsIgnoreCase(SpagoBIStudioConstants.DOCUMENT_COMPOSITION_ENGINE_EXTENSION)){
 			return SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE;
 		}
+		else if(extension.equalsIgnoreCase(SpagoBIStudioConstants.GEO_ENGINE_EXTENSION)){
+			return SpagoBIConstants.MAP_TYPE_CODE;
+		}		
 		else if(extension.equalsIgnoreCase("xml")){
 			return SpagoBIConstants.REPORT_TYPE_CODE;
 		}		

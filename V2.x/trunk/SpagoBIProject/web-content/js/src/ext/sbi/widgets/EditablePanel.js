@@ -71,7 +71,7 @@ Sbi.widgets.EditablePanel = function(config) {
                 this.htmlEditor = new Ext.form.HtmlEditor({
                     value: this.contentPanel.body.dom.innerHTML
                     , name: this.fieldName
-                    , width: 640
+                    , width: 620
                     , height: 258
                 });
                 this.htmlEditor.on('sync', function () {
@@ -91,14 +91,18 @@ Sbi.widgets.EditablePanel = function(config) {
 Ext.extend(Sbi.widgets.EditablePanel, Ext.Panel, {
 
     commitChanges: function() {
-        var newHtml = this.htmlEditor.getValue();
-        this.contentPanel = new Ext.Panel({
-            html : newHtml
-        });
-        this.add(this.contentPanel);
-        this.doLayout();
-        this.remove(this.htmlEditor);
-        this.doLayout();
+    	if(this.htmlEditor !== undefined && this.htmlEditor !== null){
+	        var newHtml = this.htmlEditor.getValue();
+	        if(this.contentPanel !== undefined && this.contentPanel !== null){
+		        this.contentPanel = new Ext.Panel({
+		            html : newHtml
+		        });   
+		        this.add(this.contentPanel);
+		        this.doLayout();
+	        }
+	        this.remove(this.htmlEditor);
+	        this.doLayout();
+        }       
     }
     
 });

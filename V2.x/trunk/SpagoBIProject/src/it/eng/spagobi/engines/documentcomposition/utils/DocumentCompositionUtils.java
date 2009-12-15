@@ -233,10 +233,29 @@ public class DocumentCompositionUtils {
 				UUID uuid = uuidGen.generateRandomBasedUUID();
 				urlReturn += "&" + LightNavigationManager.LIGHT_NAVIGATOR_ID + "=" + uuid.toString();
 			}
+			// I add passing of SBI_LANGUAGE and SBI_COUNTRY
+			// on session container they are called AF_COUNTRY and AF_LANGUAGE
+			SessionContainer sContainer=sessionContainer.getPermanentContainer();
+			if(sContainer!=null){
+				Object language=sContainer.getAttribute("AF_LANGUAGE");
+				Object country=sContainer.getAttribute("AF_COUNTRY");
+				if(language==null){
+					language=sContainer.getAttribute("SBI_LANGUAGE");
+				}
+				if(country==null){
+					country=sContainer.getAttribute("SBI_COUNTRY");
+				}
+				if(language!=null && country!=null){
+					urlReturn += "&" + SpagoBIConstants.SBI_LANGUAGE + "=" + language +"&"+SpagoBIConstants.SBI_COUNTRY+"="+country;				
+				}
+			}
 
 			urlReturn += "&" + SpagoBIConstants.ROLE + "=" + executionRole;
 			urlReturn += getParametersUrl(document, requestSB, instance);
 			//adds '|' char for management error into jsp if is necessary.
+
+
+
 			logger.debug("urlReturn: " + "|"+urlReturn);
 		}catch(Exception ex){
 			logger.error("Error while getting execution url: " + ex);

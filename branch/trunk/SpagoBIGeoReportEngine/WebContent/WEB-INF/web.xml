@@ -7,51 +7,55 @@
 
 	<display-name>SpagoBIGeoReportEngine</display-name>
 	<description>
-		Spago BI - SpagoBIGeoReportEngine
+		SpagoBI - SpagoBIGeoReportEngine
 	</description>
 	
- <!--
+	
+	<!--  ============================================================================ -->
+	<!--  FILTERS								 									                                   -->
+	<!--  ============================================================================ -->
+	
+ 	<!-- START-CAS 
 	<filter>
-		<filter-name>CAS_Filter</filter-name>
-		<filter-class>
-			edu.yale.its.tp.cas.client.filter.CASFilter
-		</filter-class>
-		<init-param>
-			<param-name>
-				edu.yale.its.tp.cas.client.filter.loginUrl
-			</param-name>
-			<param-value>
-				https://localhost:8443/exo-cas-2/login
-			</param-value>
-		</init-param>
-		<init-param>
-			<param-name>
-				edu.yale.its.tp.cas.client.filter.validateUrl
-			</param-name>
-			<param-value>
-				https://localhost:8443/exo-cas-2/serviceValidate
-			</param-value>
-		</init-param>
-    <init-param>
-       <param-name>edu.yale.its.tp.cas.client.filter.serverName</param-name>
-       <param-value>localhost:8443</param-value>
-    </init-param>
-		<init-param>
-			<param-name>
-				edu.yale.its.tp.cas.client.filter.proxyCallbackUrl
-			</param-name>
-			<param-value>
-				https://localhost:8443/SpagoBIJasperReportEngine/proxyReceptor
-			</param-value>
-		</init-param>	
-
-     <init-param>
-  			 <param-name>edu.yale.its.tp.cas.client.filter.wrapRequest</param-name> 
-             <param-value>true</param-value> 
-       </init-param> 
-       	
+	  <filter-name>CAS Authentication Filter</filter-name>
+	  <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
+	  <init-param>
+	    <param-name>casServerLoginUrl</param-name>
+	    <param-value>https://athos.engilab.ewebpd.eng.it:1447/cas/login</param-value>
+	  </init-param>
+	  <init-param>
+	    <param-name>serverName</param-name>
+	    <param-value>athos.engilab.ewebpd.eng.it:1447</param-value>
+	  </init-param>    
 	</filter>
--->
+
+	<filter>
+	  <filter-name>CAS Validation Filter</filter-name>
+	  <filter-class>org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter</filter-class>
+	  <init-param>
+	    <param-name>casServerUrlPrefix</param-name>
+	    <param-value>https://athos.engilab.ewebpd.eng.it:1447/cas</param-value>
+	  </init-param>
+	  <init-param>
+	    <param-name>serverName</param-name>
+	    <param-value>https://athos.engilab.ewebpd.eng.it:1447</param-value>
+	  </init-param>
+	  <init-param>
+	    <param-name>proxyReceptorUrl</param-name>
+	    <param-value>/proxyCallback</param-value>
+	  </init-param> 
+	  <init-param>
+			<param-name>proxyCallbackUrl</param-name>
+			<param-value>https://athos.engilab.ewebpd.eng.it:1447/SpagoBIGeoReportEngine/proxyCallback</param-value>
+	   </init-param>  
+	</filter>
+
+	<filter>
+	  <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
+	  <filter-class>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
+	</filter>
+	
+	END-CAS -->
 
 	<filter>
 		<filter-name>SpagoBIAccessFilter</filter-name>
@@ -60,24 +64,42 @@
 		</filter-class>
 	</filter>
 
-<!-- 
-	<filter-mapping>
-		<filter-name>CAS_Filter</filter-name>
-		<url-pattern>/JasperReportServlet/*</url-pattern>
-	</filter-mapping>
--->
 
+
+	<!--  ============================================================================ -->
+	<!--  FILTER MAPPINGS								 									                                   -->
+	<!--  ============================================================================ -->
+
+	<!-- START-CAS 
+   
+   	<filter-mapping>
+    	<filter-name>CAS Authentication Filter</filter-name>
+    	<url-pattern>/GeoReportEngineStartAction/*</url-pattern>
+  	</filter-mapping> 
+    	
+   	<filter-mapping>
+    	<filter-name>CAS Validation Filter</filter-name>
+    	<url-pattern>/GeoReportEngineStartAction/*</url-pattern>
+  	</filter-mapping> 
+   	
+
+   	<filter-mapping>
+    	<filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
+    	<url-pattern>/GeoReportEngineStartAction/*</url-pattern>
+  	</filter-mapping> 
+  
+  	<filter-mapping>
+		<filter-name>CAS Validation Filter</filter-name>
+		<url-pattern>/proxyCallback</url-pattern>	
+  	</filter-mapping>
+
+	END-CAS -->
 
 	<filter-mapping>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<url-pattern>/GeoReportEngineStartAction/*</url-pattern>
 	</filter-mapping>
 	
-	<filter-mapping>
-		<filter-name>SpagoBIAccessFilter</filter-name>
-		<url-pattern>/MapOl/*</url-pattern>
-	</filter-mapping>
-
 
 
     <!--  ============================================================================ -->
@@ -130,29 +152,26 @@
 	
 	
 	<!--  ============================================================================ -->
-	<!--  WELCOME PAGE 									                               -->
-	<!--  ============================================================================ -->
+	<!--  WELCOME & ERRORS				 									           -->
+	<!--  ============================================================================ --> 
 	<welcome-file-list>
-		<welcome-file>/html/index.jsp</welcome-file>
+		<welcome-file>/html/index.html</welcome-file>
 	</welcome-file-list>
 
-	<!--  ============================================================================ -->
-	<!--  ERROR PAGES								                               		-->
-	<!--  ============================================================================ -->
-	  <error-page>
-	  	<exception-type>java.lang.Throwable</exception-type>
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
 	  	<location>/html/error.html</location>
-	  </error-page>
+	</error-page>
 		 
-	  <error-page>
-	  	<error-code>404</error-code>
+	<error-page>
+		<error-code>404</error-code>
 	  	<location>/html/error.html</location>
-	  </error-page>
+	</error-page>
   
-	  <error-page>
+	<error-page>
 	  	<error-code>500</error-code>
 	  	<location>/html/error.html</location>
-	  </error-page>
+	</error-page>
 
 </web-app>
 

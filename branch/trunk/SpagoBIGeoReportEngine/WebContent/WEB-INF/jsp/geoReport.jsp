@@ -116,7 +116,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 		    };
 
 			Sbi.sdk.services.setBaseUrl({
-		        protocol: 'http'     
+		        protocol: '<%= request.getScheme()%>'     
 		        , host: url.host
 		        , port: url.port
 		        //, contextPath: 'SpagoBI'

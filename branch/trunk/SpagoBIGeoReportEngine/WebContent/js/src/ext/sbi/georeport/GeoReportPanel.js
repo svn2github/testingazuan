@@ -100,8 +100,19 @@ Sbi.georeport.GeoReportPanel = function(config) {
 	Sbi.georeport.GeoReportPanel.superclass.constructor.call(this, c);
 	
 	this.on('render', function() {
+		alert('dah');
+		this.init3D.defer(500, this);
 		this.setCenter();
+		
 	}, this);
+	
+	/*
+	this.on('afterlayout', function() {
+		alert('doh');
+		this.init3D();
+	}, this);
+	*/
+	
 };
 
 Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
@@ -258,6 +269,40 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 			this.map.addControl(new OpenLayers.Control.PanZoomBar());
 		}
 	}
+	
+	
+	, init3D: function(center){
+		center = center || {};
+		this.lon = center.lon || this.lon;
+		this.lat = center.lat || this.lat;
+	    
+	    if(this.map.projection == "EPSG:900913"){
+	        
+	    	var earth = new mapfish.Earth(this.map, 'map3dContainer', {
+	    		lonLat: this.lonLatToMercator(new OpenLayers.LonLat(this.lon, this.lat)),
+	            altitude: 50, //da configurare
+	            heading: -60, //da configurare
+	            tilt: 70,     //da configurare
+	            range: 700}
+	    	); //da configurare
+	    	
+	    } else if(this.map.projection == "EPSG:4326"){
+	    	
+	    	var earth = new mapfish.Earth(this.map, 'map3dContainer', {
+	    		lonLat: new OpenLayers.LonLat(this.lon, this.lat),
+	            altitude: 50,//da configurare
+	            heading: -60,//da configurare
+	            tilt: 70,//da configurare
+	            range: 700
+	       
+	    	}); //da configurare	    
+	    } else{
+	    	alert('Map projection [' + this.map.projection + '] not supported yet!');
+	    }
+	  
+	  }
+	
+	
 	
 	, initAnalysis: function() {
 		
@@ -503,6 +548,14 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 		            region: 'center',
 		            tbar: this.toolbar                
 		        }, {
+                    html: '<center id="map3dContainer"></center>',
+                    split: true,
+                    height: 300,
+                    minSize: 300,
+                    maxSize: 500,
+                    collapsible: true,
+                    title: 'Navigazione 3D'
+		        }, {
 		        	title: LN('sbi.georeport.analysispanel.title'),
 		            collapsible: true,
 		            items: [this.geostatistic]
@@ -520,9 +573,12 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 				    	text: 'Debug',
 				        width: 30,
 				        handler: function() {
+		        	   		this.init3D();
+		        	   		/*
 		        	   		var size = this.controlPanel.getSize();
 		        	   		size.width += 1;
 		        	   		this.controlPanel.refreshSize(size);
+		        	   		*/
 		           		},
 		           		scope: this
 				    })]

@@ -30,20 +30,22 @@ import org.json.JSONObject;
 import it.eng.spagobi.services.proxy.EventServiceProxy;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
+import it.eng.spagobi.utilities.engines.AbstractEngineInstance;
 import it.eng.spagobi.utilities.engines.AuditServiceProxy;
 import it.eng.spagobi.utilities.engines.EngineConstants;
+import it.eng.spagobi.utilities.engines.IEngineAnalysisState;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class GeoReportEngineInstance {
-	private Map env;
+public class GeoReportEngineInstance extends AbstractEngineInstance {
 	private JSONObject guiSettings;
 	private List<String> includes;
 
 	public GeoReportEngineInstance(String template, Map env) {
-		this.env = env;			
+		super( env );	
 		try {
 			this.guiSettings = new JSONObject(template);
 		} catch (Throwable t) {
@@ -53,10 +55,7 @@ public class GeoReportEngineInstance {
 		includes = GeoReportEngine.getConfig().getIncludes();
 	}
 	
-	public Map getEnv() {
-		return this.env;
-	}
-	
+
 	public JSONObject getGuiSettings() {
 		return guiSettings;
 	}
@@ -83,6 +82,23 @@ public class GeoReportEngineInstance {
 	
 	public EventServiceProxy getEventServiceProxy() {
 		return (EventServiceProxy)this.getEnv().get(EngineConstants.ENV_EVENT_SERVICE_PROXY);
+	}
+
+	
+	// -- unimplemented methods ------------------------------------------------------------
+
+	public IEngineAnalysisState getAnalysisState() {
+		throw new GeoReportEngineRuntimeException("Unsupported method [getAnalysisState]");
+	}
+
+
+	public void setAnalysisState(IEngineAnalysisState analysisState) {
+		throw new GeoReportEngineRuntimeException("Unsupported method [setAnalysisState]");		
+	}
+
+
+	public void validate() throws SpagoBIEngineException {
+		throw new GeoReportEngineRuntimeException("Unsupported method [validate]");		
 	}
 	
 	

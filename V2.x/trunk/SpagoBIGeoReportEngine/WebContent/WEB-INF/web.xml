@@ -10,7 +10,7 @@
 		Spago BI - SpagoBIGeoReportEngine
 	</description>
 	
- <!--
+ <!-- START-CAS
 	<filter>
 		<filter-name>CAS_Filter</filter-name>
 		<filter-class>
@@ -51,7 +51,7 @@
        </init-param> 
        	
 	</filter>
--->
+ END-CAS -->
 
 	<filter>
 		<filter-name>SpagoBIAccessFilter</filter-name>
@@ -60,14 +60,7 @@
 		</filter-class>
 	</filter>
 
-<!-- 
-	<filter-mapping>
-		<filter-name>CAS_Filter</filter-name>
-		<url-pattern>/JasperReportServlet/*</url-pattern>
-	</filter-mapping>
--->
-
-
+<!-- START-CAS
 	<filter-mapping>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<url-pattern>/GeoReportEngineStartAction/*</url-pattern>
@@ -78,7 +71,7 @@
 		<url-pattern>/MapOl/*</url-pattern>
 	</filter-mapping>
 
-
+END-CAS -->
 
     <!--  ============================================================================ -->
 	<!--  SERVLETS								 									                                   -->

@@ -142,6 +142,7 @@ Sbi.locale.ln['sbi.execution.metadata'] = 'Metadata';
 Sbi.locale.ln['sbi.execution.metadata.savemeta'] = 'Save';
 Sbi.locale.ln['sbi.execution.metadata.metaname'] = 'Name';
 Sbi.locale.ln['sbi.execution.metadata.metavalue'] = 'Value';
+Sbi.locale.ln['sbi.execution.metadata.generalmetadata'] = 'General Metadata (Not Editable)';
 Sbi.locale.ln['sbi.execution.metadata.shorttextmetadata'] = 'Short Text Metadata';
 Sbi.locale.ln['sbi.execution.metadata.longtextmetadata'] = 'Long Text Metadata';
 

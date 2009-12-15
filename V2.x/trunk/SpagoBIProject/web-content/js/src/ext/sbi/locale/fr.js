@@ -142,6 +142,7 @@ Sbi.locale.ln['sbi.execution.metadata'] = 'Metadonnés';
 Sbi.locale.ln['sbi.execution.metadata.savemeta'] = 'Enregistrér';
 Sbi.locale.ln['sbi.execution.metadata.metaname'] = 'Nom';
 Sbi.locale.ln['sbi.execution.metadata.metavalue'] = 'Valeur';
+Sbi.locale.ln['sbi.execution.metadata.generalmetadata'] = 'Generales Metadonnés (Non Editables)';
 Sbi.locale.ln['sbi.execution.metadata.shorttextmetadata'] = 'Courts Metadonnés';
 Sbi.locale.ln['sbi.execution.metadata.longtextmetadata'] = 'Longs Metadonnés';
 

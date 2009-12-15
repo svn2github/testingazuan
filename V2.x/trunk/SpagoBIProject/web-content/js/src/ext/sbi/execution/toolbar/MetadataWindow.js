@@ -63,6 +63,11 @@ Sbi.execution.toolbar.MetadataWindow = function(config) {
                 serviceName : 'SAVE_METADATA_ACTION',
                 baseParams : params
             });
+            
+ 	// store for general metadata
+    this.generalMetadataStore = new Ext.data.SimpleStore({
+        fields : ['meta_name', 'meta_content' ]
+    });
 
     // store for short text metadata
     this.shortTextMetadataStore = new Ext.data.SimpleStore({
@@ -87,6 +92,7 @@ Sbi.execution.toolbar.MetadataWindow = function(config) {
     this.metadataStore.load();
     
     // init
+    this.initGeneralMetadataGridPanel();
     this.initShortTextMetadataGridPanel();
     this.initLongTextMetadataTabPanel();
     
@@ -101,7 +107,7 @@ Sbi.execution.toolbar.MetadataWindow = function(config) {
     
     var c = Ext.apply( {}, config, {
         id : 'win_metadata',
-        items : [ this.shortTextMetadataPanel ],
+        items : [ this.generalMetadataPanel, this.shortTextMetadataPanel ],
         buttons : buttons,
         width : 650,
         height : 410,
@@ -128,7 +134,9 @@ Ext.extend(Sbi.execution.toolbar.MetadataWindow, Ext.Window, {
     , metadataStore : null
     , shortTextMetadataStore : null
     , longTextMetadataStore : null
+    , generalMetadataStore: null
     , shortTextMetadataPanel : null
+    , generalMetadataPanel : null
 
     , init: function () {
         
@@ -136,6 +144,8 @@ Ext.extend(Sbi.execution.toolbar.MetadataWindow, Ext.Window, {
             var aRecord = this.metadataStore.getAt(i);
             if (aRecord.data.meta_type == 'SHORT_TEXT') {
                 this.shortTextMetadataStore.add(aRecord);
+            }else if (aRecord.data.meta_type == 'GENERAL_META') {
+                this.generalMetadataStore.add(aRecord);
             } else {
                 this.longTextMetadataStore.add(aRecord);
                 var html = aRecord.data.meta_content !== '' ? aRecord.data.meta_content : '<br/>';
@@ -163,6 +173,40 @@ Ext.extend(Sbi.execution.toolbar.MetadataWindow, Ext.Window, {
         }
         this.add(this.longTextMetadataPanel);
         this.doLayout();
+    }
+    
+    , initGeneralMetadataGridPanel : function() {
+                     
+        var generalMetadataGridPanel = new Ext.grid.GridPanel({
+            store : this.generalMetadataStore,
+            autoHeight : true,
+            columns : [ {
+                header : LN('sbi.execution.metadata.metaname'),
+                width : 100,
+                sortable : true,
+                dataIndex : 'meta_name'
+            }, {
+                header : LN('sbi.execution.metadata.metavalue'),
+                width : 540,
+                sortable : true,
+                dataIndex : 'meta_content'
+            } ],
+            viewConfig : {
+                forceFit : true,
+                scrollOffset : 2
+            // the grid will never have scrollbars
+            }
+        });
+
+        this.generalMetadataPanel = new Ext.Panel({
+            title : LN('sbi.execution.metadata.generalmetadata'),
+            layout : 'fit',
+            collapsible : true,
+            collapsed : false,
+            items : [ generalMetadataGridPanel ],
+            autoWidth : true,
+            autoHeight : true
+        });
     }
 
     , initShortTextMetadataGridPanel : function() {
@@ -195,7 +239,7 @@ Ext.extend(Sbi.execution.toolbar.MetadataWindow, Ext.Window, {
             title : LN('sbi.execution.metadata.shorttextmetadata'),
             layout : 'fit',
             collapsible : true,
-            collapsed : false,
+            collapsed : true,
             items : [ shortTextMetadataGridPanel ],
             autoWidth : true,
             autoHeight : true

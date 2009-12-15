@@ -89,9 +89,9 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("			divM.innerHTML = '';\n");
 		String capExec = msgBuilder.getMessage("SBISet.devObjects.captionExecute", "messages", httpRequest);
 		htmlStream.append("			if(urlExecution!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlExecution+'\">"+capExec+"</a></div>';\n");
-		String capMetadata = msgBuilder.getMessage("SBISet.objects.captionMetadata", "messages", httpRequest);
+		/*String capMetadata = msgBuilder.getMessage("SBISet.objects.captionMetadata", "messages", httpRequest);
 		htmlStream.append("			if(urlMetadata!=''){ divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:makePopup(\\''+prog+'\\',\\''+urlMetadata+'\\')\" >"+capMetadata+"</a></div>'; }\n");
-		
+		*/
 		String capErase = msgBuilder.getMessage("SBISet.devObjects.captionErase", "messages", httpRequest);
         htmlStream.append("         if(urlEraseDoc!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:actionConfirm(\\'"+capErase+"\\', \\''+urlEraseDoc+'\\');\">"+capErase+"</a></div>';\n");
         htmlStream.append("         if(urlEraseFolder!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:actionConfirm(\\'"+capErase+"\\', \\''+urlEraseFolder+'\\');\">"+capErase+"</a></div>';\n");
@@ -125,7 +125,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
         htmlStream.append("     function eraseFolder(idF){\n");
         htmlStream.append("         alert('Not Implemented');");
         htmlStream.append("     }\n");
-        
+        /*
     	htmlStream.append("function makePopup(id, urlMetadata ) {\n");		
 		htmlStream.append(" var win = new Ext.Window({id:id , \n"
 					+"            bodyCfg:{ \n" 
@@ -153,7 +153,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 			+"        });  \n"
 			+"   win.show(); \n" );
 						
-		htmlStream.append("}\n");
+		htmlStream.append("}\n");*/
         
         /* ********* end luca changes *************** */
 	}
@@ -453,14 +453,14 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 					if ((stateObj.equals("TEST")) && canTest && profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) {
 						thereIsOneOrMoreObjectsInTestState = true;
 
-						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",' <a title=\\'" +exec+"\\' href=\""+createExecuteObjectLink(idObj)+"\">" + obj.getName() +"</a><a title=\""+metadata+"\" href=\"javascript:makePopup(\\'"+prog+"\\',\\'"+createMetadataObjectLink(idObj)+"\\')\" > <img src=\\'" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/editTemplate.jpg", currTheme) + "\\' /></a>', '', '', '', '" + userIcon + "', '','', 'menu" + requestIdentity + "("+prog+", event, \\'\\',\\'\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
+						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",' <a title=\\'" +exec+"\\' href=\""+createExecuteObjectLink(idObj)+"\">" + obj.getName() +"</a>', '', '', '', '" + userIcon + "', '','', 'menu" + requestIdentity + "("+prog+", event, \\'\\',\\'\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
 						//htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event,\\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'\\', \\'\\', \\'\\',\\'" +createMoveDownObjectLink(idObj) + "\\', \\'" +createMoveUpObjectLink(idObj) + "\\')' );\n");
 					} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && (stateObj.equals("REL"))&& canExec) {
 							
 						//Nuovo albero con Icona dei metadati
 						boolean profileAttrsOk = ObjectsAccessVerifier.checkProfileVisibility(obj, profile);
 						if (profileAttrsOk) {
-							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",' <a title=\\'" +exec+"\\' href=\""+createExecuteObjectLink(idObj)+"\">" + obj.getName() +"</a><a title=\""+metadata+"\" href=\"javascript:makePopup(\\'"+prog+"\\',\\'"+createMetadataObjectLink(idObj)+"\\')\" > <img src=\\'" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/editTemplate.jpg", currTheme) + "\\' /></a>', '', '', '', '" + userIcon + "', '','', 'menu" + requestIdentity + "("+prog+", event, \\'\\',\\'\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
+							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",' <a title=\\'" +exec+"\\' href=\""+createExecuteObjectLink(idObj)+"\">" + obj.getName() +"</a>', '', '', '', '" + userIcon + "', '','', 'menu" + requestIdentity + "("+prog+", event, \\'\\',\\'\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
 						} else {
 							logger.debug("NOT visible " + obj.getName() + " because user profile attribute constraint are not satisfied");
 						}

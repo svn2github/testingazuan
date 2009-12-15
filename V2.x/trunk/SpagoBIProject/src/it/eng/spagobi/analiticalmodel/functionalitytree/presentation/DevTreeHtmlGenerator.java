@@ -126,9 +126,9 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("			divM.innerHTML = '';\n");
 		String capExec = msgBuilder.getMessage("SBISet.devObjects.captionExecute", "messages", httpRequest);
 		htmlStream.append("			if(urlExecution!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlExecution+'\">"+capExec+"</a></div>';\n");
-		String capMetadata = msgBuilder.getMessage("SBISet.objects.captionMetadata", "messages", httpRequest);
+		/*String capMetadata = msgBuilder.getMessage("SBISet.objects.captionMetadata", "messages", httpRequest);
 		htmlStream.append("			if(urlMetadata!=''){ divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"javascript:makePopup(\\''+prog+'\\',\\''+urlMetadata+'\\')\" >"+capMetadata+"</a></div>'; }\n");
-															
+			*/												
 		String capDetail = msgBuilder.getMessage("SBISet.devObjects.captionDetail", "messages", httpRequest);
 		htmlStream.append("			if(urlDetail!='') divM.innerHTML = divM.innerHTML + '<div onmouseout=\"this.style.backgroundColor=\\'white\\'\"  onmouseover=\"this.style.backgroundColor=\\'#eaf1f9\\'\" ><a class=\"dtreemenulink\" href=\"'+urlDetail+'\">"+capDetail+"</a></div>';\n");
 		String capErase = msgBuilder.getMessage("SBISet.devObjects.captionErase", "messages", httpRequest);
@@ -152,7 +152,7 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
         htmlStream.append("             location.href = url;\n");
         htmlStream.append("         }\n");
         htmlStream.append("     }\n");
-        
+        /*
     	htmlStream.append("function makePopup(id, urlMetadata ) {\n");		
 		htmlStream.append(" var win = new Ext.Window({id:id , \n"
 					+"            bodyCfg:{ \n" 
@@ -180,7 +180,7 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 			+"        });  \n"
 			+"   win.show(); \n" );
 						
-		htmlStream.append("}\n");
+		htmlStream.append("}\n");*/
         
 	}
 

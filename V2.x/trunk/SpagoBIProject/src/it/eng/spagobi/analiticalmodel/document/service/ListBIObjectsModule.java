@@ -363,7 +363,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		+ "		<PARAMETER name=\""
 		+ ObjectsTreeConstants.OBJECT_ID
 		+ "\" scope=\"LOCAL\" type=\"RELATIVE\" value=\"OBJECT_ID\"/> " + "	</EXEC_CAPTION>";
-	if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_METADATA_MANAGEMENT)) {
+	/*if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_METADATA_MANAGEMENT)) {
 	    moduleConfigStr += "	<METADATA_CAPTION popup=\"TRUE\" popupH=\"350\" popupW=\"800\" confirm=\"FALSE\" image=\"/img/editTemplate.jpg\" label=\"SBISet.objects.captionMetadata\">"
 		    + "		<PARAMETER name=\""
 		    + ObjectsTreeConstants.PAGE
@@ -382,7 +382,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		    + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED
 		    + "\" scope=\"\" type=\"ABSOLUTE\" value=\"TRUE\"/> "
 		    + "	</METADATA_CAPTION>";
-	}
+	}*/
 	if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_DETAIL_MANAGEMENT)) {
 	    moduleConfigStr += "	<DETAIL_CAPTION  confirm=\"FALSE\" image=\"/img/detail.gif\" label=\"SBISet.objects.captionDetail\">"
 		    + "		<PARAMETER name=\""

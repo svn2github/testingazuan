@@ -41,13 +41,14 @@ public class IndexingInitializer implements InitializerIFace {
 		    String name = (String) node.getAttribute("name");
 		    //first checks if iindex exists
 		    File idxFile = new File(location+name);
-		    boolean createIndex = false;
 		    if(!idxFile.exists()){
-		    	createIndex = true;
+		    	logger.debug("Creating index");
+			    LuceneIndexer indexer = new LuceneIndexer();
+			    indexer.createIndex(idxFile);
+		    }else{
+		    	logger.debug("Index already exists");
 		    }
-		    System.out.println(idxFile.getAbsolutePath());
-		    LuceneIndexer indexer = new LuceneIndexer();
-		    indexer.createIndex(idxFile, createIndex);
+
 		    
 		}
 		logger.debug("OUT");

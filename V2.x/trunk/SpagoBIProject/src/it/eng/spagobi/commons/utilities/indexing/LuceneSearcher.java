@@ -189,7 +189,7 @@ public class LuceneSearcher {
     	    	ScoreDoc hit = hits[i];
     	    	Document doc = searcher.doc(hit.doc);
     	        String biobjId = doc.get(IndexingConstants.BIOBJ_ID);    	        
-		        String summary ="";
+		        String summary =" ";
 		        if (highlighter != null){
 		            String[] summaries;
 					try {

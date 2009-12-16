@@ -45,10 +45,8 @@ import org.apache.lucene.util.Version;
  */
 public class LuceneIndexer {
 
-	private static boolean deleting = false; // true during deletion pass
 	private static IndexReader reader; // existing index
 	private static IndexWriter writer; // new index being built
-	private static TermEnum uidIter; // document id iterator
 
 	private static final String LONG_TEXT = "LONG_TEXT";// html
 	private static final String SHORT_TEXT = "SHORT_TEXT";// simple text
@@ -219,18 +217,14 @@ public class LuceneIndexer {
 	 * @param index  index file
 	 * @param create indicating whether index is to be created or updated
 	 */
-	public void createIndex(File index, boolean create) {
+	public void createIndex(File index) {
 		logger.debug("IN");
 		try {
 			Date start = new Date();
-		    if (!create) { // delete stale docs
-				deleting = true;
-				indexDocs(index, create);
-			}
 			writer = new IndexWriter(FSDirectory.open(index),
-					new StandardAnalyzer(Version.LUCENE_CURRENT), create,
+					new StandardAnalyzer(Version.LUCENE_CURRENT), true,
 					new IndexWriter.MaxFieldLength(1000000));
-			indexDocs(index, create); // add new docs
+			indexDocs();
 
 			writer.optimize();
 			writer.close();
@@ -247,48 +241,6 @@ public class LuceneIndexer {
 		}
 	}
 
-	/**Method walking directory hierarchy in uid order, while keeping uid iterator from
-	 * existing index in sync. Mismatches indicate one of: (a) old documents to
-	 * be deleted; (b) unchanged documents, to be left alone; or (c) new
-	 * documents, to be indexed.
-	 * @param index index file
-	 * @param create create or update existing index
-	 * @throws Exception
-	 */
-	private static void indexDocs(File index, boolean create) throws Exception {
-		logger.debug("IN");
-		if (!create) { // incrementally update
-
-			reader = IndexReader.open(FSDirectory.open(index), false); // open
-			// existing
-			// index
-			uidIter = reader.terms(new Term(IndexingConstants.UID, "")); // init uid iterator
-
-			indexDocs();
-
-			if (deleting) { // delete rest of stale docs
-
-				while (uidIter.term() != null
-						&& uidIter.term().field().equals(IndexingConstants.UID)) {
-					logger.info("deleting "
-							+ uidIter.term().text());
-					reader.deleteDocuments(uidIter.term());
-					uidIter.next();
-				}
-				deleting = false;
-			 
-
-			}
-
-			uidIter.close(); // close uid iterator
-			reader.close(); // close existing index
-
-		} else {
-			// don't have exisiting
-			indexDocs();
-		}
-		logger.debug("OUT");
-	}
 
 	/**Method which indexes metadata binary contents. The logic is: if uid exists do not add to Document 
 	 * otherwise add it. Binary contents can be either html or simple text.
@@ -297,70 +249,77 @@ public class LuceneIndexer {
 	private static void indexDocs() throws Exception {
 		logger.debug("IN");
 		ByteArrayInputStream bais = null;
-		try{			
-			// call dao to get binary contents to index
+		try{
+			//loads all metadata
 			IObjMetadataDAO metadataDAO = DAOFactory.getObjMetadataDAO();
-			List<ObjMetadata> results = metadataDAO.loadAllObjMetadata();
-			// loop over list of metadata to index its content
-			if (results != null) {
-	
-				for (int i = 0; i < results.size(); i++) {
-					// look for binary content mimetype
-					ObjMetadata metadata = results.get(i);
-					Integer idDomain = metadata.getDataType();
-					Integer metaId = metadata.getObjMetaId();
-					//String metaLabel = metadata.getLabel();
-					String metaName = metadata.getName();
-					Domain domain = DAOFactory.getDomainDAO().loadDomainById(idDomain);
-	
-					IObjMetacontentDAO metacontentDAO = DAOFactory.getObjMetacontentDAO();
-					List<ObjMetacontent> metacontents = metacontentDAO.loadObjMetacontentByObjMetaId(metaId);
-					if (metacontents != null) {
-						for (int j = 0; j < metacontents.size(); j++) {
-							ObjMetacontent metacontent = metacontents.get(j);
-							Integer binId = metacontent.getBinaryContentId();
-							Integer biobjId = metacontent.getBiobjId();
-							String binIdString = String.valueOf(binId.intValue());
-	
-							byte[] content = metacontent.getContent();
-							String htmlContent = null;
-							if (domain.getValueCd().equalsIgnoreCase(LONG_TEXT)) {
-								bais = new ByteArrayInputStream(content);
-								JTidyHTMLHandler htmlHandler = new JTidyHTMLHandler();
-								htmlContent = htmlHandler.getContent(bais);
-								bais.close();
-							}
-							if (uidIter != null) {
-								while (uidIter.term() != null
-										&& uidIter.term().field().equals(IndexingConstants.UID)
-										&& uidIter.term().text().compareTo(binIdString) < 0) {
-									if (deleting) { // delete stale docs
-										logger.info("deleting stale document "+ uidIter.term().text());
-										reader.deleteDocuments(uidIter.term());
-									}
-									uidIter.next();
+			List<ObjMetadata> metadatas = metadataDAO.loadAllObjMetadata();
+
+			//call dao to get biobjects to index
+			List<BIObject> biobjects = DAOFactory.getBIObjectDAO().loadAllBIObjects();
+			if(biobjects != null){				
+				for(int k=0; k<biobjects.size(); k++){
+
+					boolean hasMetacontent = false;
+					Integer biObjId = biobjects.get(k).getId();
+					//checks if biobject has metadata 
+					// loop over list of metadata to get metacontent
+					if (metadatas != null) {	
+						for (int i = 0; i < metadatas.size(); i++) {
+							// look for binary content mimetype
+							ObjMetadata metadata = metadatas.get(i);
+							Integer metaId = metadata.getObjMetaId();	
+							String metaName = metadata.getName();
+							IObjMetacontentDAO metacontentDAO = DAOFactory.getObjMetacontentDAO();
+							ObjMetacontent metacontent = metacontentDAO.loadObjMetacontent(metaId, biObjId, null);
+							//indexes biobject+metadata -->document uid is of type biObjId+"_"+binId
+							if(metacontent != null){
+								hasMetacontent = true;
+								Integer idDomain = metadata.getDataType();
+								Domain domain = DAOFactory.getDomainDAO().loadDomainById(idDomain);
+								
+								Integer binId = metacontent.getBinaryContentId();
+								Integer biobjId = metacontent.getBiobjId();
+								
+								String binIdString = String.valueOf(binId.intValue());
+		
+								byte[] content = metacontent.getContent();
+								String htmlContent = null;
+								if (domain.getValueCd().equalsIgnoreCase(LONG_TEXT)) {
+									bais = new ByteArrayInputStream(content);
+									JTidyHTMLHandler htmlHandler = new JTidyHTMLHandler();
+									htmlContent = htmlHandler.getContent(bais);
+									bais.close();
 								}
-								if (uidIter.term() != null
-										&& uidIter.term().field().equals(IndexingConstants.UID)
-										&& uidIter.term().text().compareTo(binIdString) == 0) {
-									uidIter.next(); // keep matching docs
-								} else if (!deleting) { // add new docs
-									Document doc = new Document();
-									addFieldsToDocument(doc, binIdString, biobjId, metaName, domain, htmlContent, content);	
-									addSubobjFieldsToDocument(doc, biobjId);
-									writer.addDocument(doc);
-								}
-							} else { // creating a new index
+								String uid = createUidDocument(binIdString, String.valueOf(biobjId.intValue()));
 								Document doc = new Document();
 								addFieldsToDocument(doc, binIdString, biobjId, metaName, domain, htmlContent, content);		
 								addSubobjFieldsToDocument(doc, biobjId);
 								writer.addDocument(doc);
+
 							}
-							
-						}	
+						}
+					}
+					//else if biobj has no metacontent associated
+					//than indexing only biobect
+					if(!hasMetacontent){
+						String uid = String.valueOf(biObjId.intValue());
+
+						Document doc = new Document();
+						doc.add(new Field(IndexingConstants.UID, uid , Field.Store.YES,
+								Field.Index.NOT_ANALYZED));
+						//biobjid = uid
+						doc.add(new Field(IndexingConstants.BIOBJ_ID, uid, Field.Store.YES,
+								Field.Index.NOT_ANALYZED));
+						doc.add(new Field(IndexingConstants.BIOBJ_NAME, biobjects.get(k).getName(),
+								Field.Store.NO, Field.Index.ANALYZED));
+						doc.add(new Field(IndexingConstants.BIOBJ_DESCR, biobjects.get(k).getDescription(),
+								Field.Store.NO, Field.Index.ANALYZED));
+						doc.add(new Field(IndexingConstants.BIOBJ_LABEL, biobjects.get(k).getLabel(),
+								Field.Store.NO, Field.Index.ANALYZED));
+						addSubobjFieldsToDocument(doc, biobjects.get(k).getId());
+						writer.addDocument(doc);
 					}
 				}
-
 			}
 		}catch(Exception e){
 			logger.error(e.getMessage());

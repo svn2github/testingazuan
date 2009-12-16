@@ -141,7 +141,7 @@ Sbi.browser.FolderViewTemplate = function(config) {
 	        		return s == 'USER_FUNCT';
 	        	}
 	        	, isSearchResult: function(o) {
-	        		if((typeof o != undefined) && o != null){
+	        		if((typeof o != undefined) && o != null && o!=''){
 	        			return true;
 	        		}else{
 	        			return false;

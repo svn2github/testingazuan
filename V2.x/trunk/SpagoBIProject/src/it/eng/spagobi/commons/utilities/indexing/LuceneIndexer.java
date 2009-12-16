@@ -68,7 +68,7 @@ public class LuceneIndexer {
 				String jndi = jndiBean.getCharacters();
 				indexBasePath = SpagoBIUtilities.readJndiResource(jndi);
 			}
-			String index = indexBasePath+"\\idx";
+			String index = indexBasePath+"/idx";
 			Date start = new Date();
 			
 			writer = new IndexWriter(FSDirectory.open(new File(index)),
@@ -115,7 +115,7 @@ public class LuceneIndexer {
 				String jndi = jndiBean.getCharacters();
 				indexBasePath = SpagoBIUtilities.readJndiResource(jndi);
 			}
-			String index = indexBasePath+"\\idx";
+			String index = indexBasePath+"/idx";
 			Date start = new Date();
 			
 			writer = new IndexWriter(FSDirectory.open(new File(index)),

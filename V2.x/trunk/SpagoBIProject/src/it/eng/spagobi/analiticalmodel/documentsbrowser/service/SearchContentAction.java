@@ -38,6 +38,7 @@ import it.eng.spagobi.utilities.service.JSONSuccess;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -187,6 +188,17 @@ public class SearchContentAction extends AbstractSpagoBIAction{
 				String biobjid = jsonobj.getString("id");
 				String summary = (String)returned.get(biobjid);
 				jsonobj.put("summary", summary);
+			}
+			Collection func = profile.getFunctionalities();
+			
+			if(func.contains("SeeMetadataFunctionality")){
+				JSONObject showmetadataAction = new JSONObject();
+				showmetadataAction.put("name", "showmetadata");
+				showmetadataAction.put("description", "Show Metadata");
+				for(int i = 0; i < documentsJSON.length(); i++) {
+					JSONObject documentJSON = documentsJSON.getJSONObject(i);
+					documentJSON.getJSONArray("actions").put(showmetadataAction);
+				}
 			}
 			JSONObject documentsResponseJSON =  createJSONResponseDocuments(documentsJSON);
 		

@@ -38,6 +38,7 @@ import it.eng.spagobi.utilities.service.JSONSuccess;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
@@ -51,9 +52,11 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.highlight.Highlighter;
+import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.apache.lucene.search.highlight.QueryScorer;
 import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -126,6 +129,7 @@ public class SearchContentAction extends AbstractSpagoBIAction{
 			}
 			String index = indexBasePath+"\\idx";
 			IndexReader reader;
+			HashMap returned = null;
 			try{
 				reader = IndexReader.open(FSDirectory.open(new File(index)), true);
 				// read-only=true
@@ -136,20 +140,21 @@ public class SearchContentAction extends AbstractSpagoBIAction{
 			    fieldsToSearch.toArray(fields);
 
 				//getting  documents
-				ScoreDoc [] hits = null;
+				
 				if(similar){
-					hits = LuceneSearcher.searchIndexFuzzy(searcher, valueFilter, index, fields, metaDataToSearch);
+					returned = LuceneSearcher.searchIndexFuzzy(searcher, valueFilter, index, fields, metaDataToSearch);
 				}else{
-					hits = LuceneSearcher.searchIndex(searcher, valueFilter, index, fields, metaDataToSearch);
+					returned = LuceneSearcher.searchIndex(searcher, valueFilter, index, fields, metaDataToSearch);
 				}
+				ScoreDoc [] hits = (ScoreDoc [])returned.get("hits");
 				
 				objects = new ArrayList();
 				if(hits != null) {
 	                for(int i=0; i<hits.length; i++) {
-
 	        	    	ScoreDoc hit = hits[i];
 	        	    	Document doc = searcher.doc(hit.doc);
 	        	        String biobjId = doc.get(IndexingConstants.BIOBJ_ID);
+
 	        	        BIObject obj =DAOFactory.getBIObjectDAO().loadBIObjectForDetail(Integer.valueOf(biobjId));
 	        	        if(obj != null){
 		        			boolean canSee = ObjectsAccessVerifier.canSee(obj, profile);
@@ -176,7 +181,13 @@ public class SearchContentAction extends AbstractSpagoBIAction{
 			}
 			
 		
-			JSONArray documentsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( objects,Locale.ENGLISH);
+			JSONArray documentsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( objects, null);
+			for(int i=0; i<documentsJSON.length();i++){
+				JSONObject jsonobj = documentsJSON.getJSONObject(i);
+				String biobjid = jsonobj.getString("id");
+				String summary = (String)returned.get(biobjid);
+				jsonobj.put("summary", summary);
+			}
 			JSONObject documentsResponseJSON =  createJSONResponseDocuments(documentsJSON);
 		
 			try {

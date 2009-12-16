@@ -61,6 +61,7 @@ Sbi.browser.FolderDetailPanel = function(config) {
 		 , root: 'folderContent'
 		 , fields: ['title', 'icon', 'samples']
 	});	
+
 	this.store.on('loadexception', Sbi.exception.ExceptionHandler.handleFailure);
 	this.store.on('beforeload', function(){if(this.loadingMask) this.loadingMask.show();}, this);
 	this.store.on('load', function(){if(this.loadingMask) this.loadingMask.hide();}, this);

@@ -34,6 +34,7 @@ Sbi.browser.FolderViewTemplate = function(config) {
 	
 	var documentAttributes = '';
 	for(var i = 0; i < config.metaDocument.length; i++) {
+
 		var meta = config.metaDocument[i];
 		if(meta.visible) {		
 			
@@ -46,10 +47,11 @@ Sbi.browser.FolderViewTemplate = function(config) {
 			} else {
 				documentAttributes += '<span class="field-value"> {' + meta.id + '}</span>';
 			}
+
 			documentAttributes += '</p>';
 		}
 	}
-	
+
 	var documentTpl = '' +
 	'<div id="document-item-icon" class="document-item-icon">' + 
 	'<img src="' + Ext.BLANK_IMAGE_URL + '" class="{typeCode}-icon"></img>' +
@@ -88,7 +90,10 @@ Sbi.browser.FolderViewTemplate = function(config) {
     '<div class="item-desc">' +
         folderAttributes +
     '</div>';
-		
+	
+	var summaryTpl =''+
+		'<div id="summary" class="item-desc">{summary}</div>';
+	
 	Sbi.browser.FolderViewTemplate.superclass.constructor.call(this, 
 			 '<div id="sample-ct">',
 	            '<tpl for=".">',
@@ -100,7 +105,13 @@ Sbi.browser.FolderViewTemplate = function(config) {
 	            	'</tpl>',
 	                '<tpl for="samples">',   
 	                	'{[engine=""]}',
+	                	'{[summary=""]}',
+	                	'<tpl if="this.isSearchResult(summary) == true">',
+	                    '<dd class="group-item-search">',
+	                    '</tpl>',
+	                	'<tpl if="this.isSearchResult(summary) == false">',
 	                    '<dd class="group-item">',
+	                    '</tpl>',
 	                        '<div class="item-control-panel">',	 
 	                        	'<tpl for="actions">',   
 	                            	'<div class="button"><img class="action-{name}" title="{description}" src="' + Ext.BLANK_IMAGE_URL + '"/></div>',
@@ -110,6 +121,10 @@ Sbi.browser.FolderViewTemplate = function(config) {
 	                        '<tpl if="this.exists(engine) == true">',
 	                        	documentTpl,
 	                        '</tpl>',
+	                        // -- SUMMARY -----------------------------------------------
+	                    	'<tpl if="this.isSearchResult(summary) == true">',
+	                    		summaryTpl,
+		                	'</tpl>',
 	                        // -- FOLDER -----------------------------------------------
 	                        '<tpl if="this.exists(engine) == false">',
 	                        	folderTpl,
@@ -124,6 +139,14 @@ Sbi.browser.FolderViewTemplate = function(config) {
 	        	}
 	        	, isHomeFolder: function(s) {
 	        		return s == 'USER_FUNCT';
+	        	}
+	        	, isSearchResult: function(o) {
+	        		if((typeof o != undefined) && o != null){
+	        			return true;
+	        		}else{
+	        			return false;
+	        		}
+	        		
 	        	}
 	        }
 	);

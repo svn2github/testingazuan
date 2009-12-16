@@ -6,13 +6,13 @@
   <script>
 	var appHeight = typeof(global.paramHeight)!="undefined" ? parseInt(global.paramHeight) : 300;
 	var appWidth = typeof(global.paramWidth)!="undefined" ? parseInt(global.paramWidth) : 300;		
-        var dataurlParam = typeof(global.dataurl)!="undefined" ? global.dataurl : "http://localhost:8080/openlaszlo/OpenLaszloEngineDash"; 
+    var dataurlParam = typeof(global.dataurl)!="undefined" ? global.dataurl : "http://localhost:8080/openlaszlo/OpenLaszloEngineDash"; 
 	var xLabelAttributeName = typeof(global.xLabel)!="undefined" ? global.xLabel : "xLabel";	
-	var valueAttributeName = typeof(global.value)!="undefined" ? global.value : "value";	
+	var valueAttributeName = typeof(global.VALUE)!="undefined" ? global.VALUE :  "value";
 	var min = typeof(global.minValue)!="undefined" ? parseInt(global.minValue) : 100;	
-        var low = typeof(global.lowValue)!="undefined" ? parseInt(global.lowValue) : 295;
-        var high = typeof(global.highValue)!="undefined" ? parseInt(global.highValue) : 340;
-        var max = typeof(global.maxValue)!="undefined" ? parseInt(global.maxValue) : 400;
+    var low = typeof(global.lowValue)!="undefined" ? parseInt(global.lowValue) : 295;
+    var high = typeof(global.highValue)!="undefined" ? parseInt(global.highValue) : 340;
+    var max = typeof(global.maxValue)!="undefined" ? parseInt(global.maxValue) : 400;
 	var arc1Color = typeof(global.colorArc1)!="undefined" ? global.colorArc1 : 0x9cff00;
 	var arc2Color = typeof(global.colorArc2)!="undefined" ? global.colorArc2 : 0xfff999;
 	var arc3Color = typeof(global.colorArc3)!="undefined" ? global.colorArc3 : 0xff5454;
@@ -61,8 +61,8 @@
 
   	<method name="showDisplay" args="min,low,high,max">
 		
-	   	 this.setWidth(appWidth);
-	  	 this.setHeight(appHeight);
+	   	 <!-- this.setWidth(appWidth);
+	  	 this.setHeight(appHeight); -->
 
 	         var radiusByWidth = (appWidth-2*appMargin)/2;
 	         var radiusByHeight = (appHeight-2*appMargin)/(1+rectangleHeightRate);
@@ -71,26 +71,28 @@
 		 var centerX = 0;
 		 var centerY = 0;
 
-	         if (radiusByWidth &lt;  radiusByHeight) {
-	  		
-			radius = radiusByWidth;
-					     
-	         } else {
-			radius = radiusByHeight;
-			
+	     if (radiusByWidth &lt;  radiusByHeight) {
+	  		radius = radiusByWidth;					     
+	     } else {
+			radius = radiusByHeight;			
  		}
-
+<!-- ORIG 
 		centerY = (appHeight-2*appMargin)-radius/4+appMargin;
 		centerX = (appWidth-2*appMargin)/2+appMargin;
-
-	
+-->
+		this.setWidth(appWidth);
+		this.setHeight(appHeight-radius+(appMargin*2));
+		
+		centerY = appHeight-radius+appMargin;
+		centerX = (appWidth-2*appMargin)/2+appMargin;
+		
 		this.rotDisplay.setX(centerX);
 		this.rotDisplay.setY(centerY);
 		this.rotDisplay.ago.setAgo(-radius*agoWidthRate,radius*agoHeightRate,agoColor);
 		 
 		var deltaDiv = (max-min)/numDiv;
 
-		   ang = 0;
+		ang = 0;
 
 
 		if (withMainDiv) {
@@ -123,7 +125,8 @@
 		this.setArc(centerX,centerY,radius,0,angLow,arc1Color);
 		this.setArc(centerX,centerY,radius,angLow,angHigh,arc2Color);
 		this.setArc(centerX,centerY,radius,angHigh,Math.PI,arc3Color);
-	
+
+		
 		this.rotDisplay.sphere.setSphere(centerX,centerY,radius*innerSphereRate);
 
 		this.shadow.showShadow(centerX,centerY,radius);
@@ -131,14 +134,14 @@
        	</method>
 
 	<method name="setArc" args="centerX,centerY,radius,angStart,angStop,color"> 
-		
-	        
-
 		var arcStartX = centerX-radius*Math.cos(angStart);
 		var arcStartY = centerY-radius*Math.sin(angStart);
 
-		angStart = (Math.PI-angStart)/Math.PI*180; 
-		angStop = (Math.PI-angStop)/Math.PI*180;
+		<!-- ORIG angStart = (Math.PI-angStart)/Math.PI*180; 
+		angStop = (Math.PI-angStop)/Math.PI*180; -->
+		
+		angStart = (Math.PI-angStart); 
+		angStop = (Math.PI-angStop);
 
 		var arcIntoX = centerX-radius*Math.cos((angStop-angStart));
 		var arcIntoY = centerY-radius*Math.sin((angStop-angStart));
@@ -146,17 +149,19 @@
 		this.moveTo(centerX,centerY);
 		this.beginPath();
 		this.lineTo(arcStartX,arcStartY);
-		this.arc(arcStartX,arcStartY,radius,angStart,angStop,false);
+		<!--  ORIG this.arc(arcStartX,arcStartY,radius,angStart,angStop,false); -->
+		this.arc(centerX,centerY,radius,angStart,angStop,false);
 		this.lineTo(centerX,centerY);
 		this.closePath();
 
-	        this.fillStyle = color;
-	        this.globalAlpha = 0.5; 		
-	        this.fill();
-            
-	        this.strokeStyle = 0xffff00;
-	        this.lineWidth = 5;
-	        this.stroke();
+        this.fillStyle = color;
+        this.globalAlpha = 0.5; 		
+        this.fill();
+           
+          
+        this.strokeStyle = 0xffff00;
+        this.lineWidth = 5;
+        this.stroke();
 		   
 		var g = this.createRadialGradient(centerX-radius*radialGradientRate,centerY-radius*radialGradientRate, .7, centerX+radius*radialGradientRate, centerX+radius*radialGradientRate, 0)
 	        this.globalAlpha = 0; 
@@ -165,7 +170,7 @@
 	        g.addColorStop(1, 0xffffff);
 	        this.fillStyle = g;
 	        this.fill();
-                      
+            
 	        this.strokeStyle = 0x000000;
 	        this.lineWidth = 2;
 	        this.stroke();
@@ -195,7 +200,7 @@
 		        g.addColorStop(1, 0xffffff);
 		        this.fillStyle = g;
 		        this.fill();
-	
+			
         	        this.strokeStyle = 0xffffff;
 		        this.lineWidth = 5;
 		        this.stroke();
@@ -408,26 +413,34 @@
 			var arcStartX = centerX-radius*Math.cos(angStart);
 			var arcStartY = centerY-radius*Math.sin(angStart);
 
-			angStart = (Math.PI-angStart)/Math.PI*180; 
+			<!--  ORIG angStart = (Math.PI-angStart)/Math.PI*180; 
 			angStop = (Math.PI-angStop)/Math.PI*180;
+			 -->
+			angStart =(Math.PI-angStart); 
+			angStop = (Math.PI-angStop);
 
 			var arcIntoX = centerX-radius*Math.cos((angStop-angStart));
 			var arcIntoY = centerY-radius*Math.sin((angStop-angStart));
 
-			this.moveTo(centerX,centerY);
+			<!-- ORIG this.moveTo(centerX,centerY);
 			this.beginPath();
 			this.lineTo(arcStartX,arcStartY);
 			this.arc(arcStartX,arcStartY,radius,angStart,angStop,false);
 			this.lineTo(centerX,centerY);
+			this.closePath();  -->
+			
+			this.beginPath();
+			this.arc(centerX,centerY,radius,angStart,angStop,false);
+			this.lineTo(centerX,centerY);
 			this.closePath();
 	
-		        this.fillStyle = color;
-		        this.globalAlpha = 1; 		
-		        this.fill();
-		            
-		        this.strokeStyle = 0x000000;
-		        this.lineWidth = 5;
-		        this.stroke();
+	        this.fillStyle = color;
+	        this.globalAlpha = 1; 		
+	        this.fill();
+	          <!--   
+	        this.strokeStyle = 0x000000;
+	        this.lineWidth = 5;
+	        this.stroke();
 				   
 			var g = this.createRadialGradient(centerX-radius,centerY-radius, 0.5, centerX+radius, centerX+radius, 0)
         		this.globalAlpha = 0; 
@@ -436,7 +449,7 @@
         		g.addColorStop(1, 0xffffff);
         		this.fillStyle = g;
         		this.fill();
-                      
+            -->
         		this.strokeStyle = 0x000000;
         		this.lineWidth = 2;
         		this.stroke();
@@ -452,6 +465,10 @@
       	<method event="ondata"> 
               var label = rotationresponse.getNodeAttribute(xLabelAttributeName);
               var rotation = rotationresponse.getNodeAttribute(valueAttributeName);
+              if (rotation == undefined || rotation == "undefined")
+              	rotation =  rotationresponse.getNodeAttribute(valueAttributeName.toUpperCase());
+              	
+              	
               rotation = rotation*180/(max-min);
               if(actualang==-1) {
                   actualang = rotation;

@@ -56,10 +56,10 @@
 	<extension point="org.eclipse.ui.views">
     	 <category 
            id="org.eclipse.ui.navigation"
-           name="Navigazione">
+           name="Navigation">
         </category>
         <view id="it.eng.spagobi.studio.documentcomposition.views.NavigationView"
-                name="Navigazione"
+                name="Navigation"
                 icon="icons\view.gif"
                 class="it.eng.spagobi.studio.documentcomposition.views.NavigationView"/>
 

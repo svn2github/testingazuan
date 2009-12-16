@@ -121,7 +121,7 @@ public class DataSetInformationEditor {
 		gd.horizontalSpan = 1;
 
 		datasetTable = new Table(sectionClient, SWT.MULTI | SWT.BORDER
-				| SWT.FULL_SELECTION | SWT.CHECK);
+				| SWT.FULL_SELECTION);
 		datasetTable.setLayoutData(gd);
 		datasetTable.setLinesVisible(true);
 		datasetTable.setHeaderVisible(true);

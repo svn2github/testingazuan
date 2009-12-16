@@ -151,6 +151,7 @@ public class LuceneIndexer {
 						//delete document 
 						writer.deleteDocuments(new Term(IndexingConstants.UID, uid));
 						if(!delete){
+							logger.debug("metadata-->re-add doc to index::"+biObj.getId().intValue());
 							//re-add document to index
 							Document doc = new Document();
 							addBiobjFieldsToDocument(doc, biObj.getId());
@@ -166,6 +167,7 @@ public class LuceneIndexer {
 				String uid = String.valueOf(biObj.getId().intValue());
 				writer.deleteDocuments(new Term(IndexingConstants.UID, uid));
 				if(!delete){
+					logger.debug("NO metadata-->re-add doc to index::"+biObj.getId().intValue());
 					Document doc = new Document();
 					doc.add(new Field(IndexingConstants.UID, uid , Field.Store.YES,
 							Field.Index.NOT_ANALYZED));

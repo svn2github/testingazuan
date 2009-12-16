@@ -206,6 +206,34 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 	}
 
 	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO#deleteSubObject(java.lang.Integer)
+	 */
+	public void deleteSubObjectSameConnection(Integer idSub, Session aSession) throws EMFUserError {
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiSubObjects hibSubobject = (SbiSubObjects)aSession.load(SbiSubObjects.class, idSub);
+			SbiBinContents hibBinCont = hibSubobject.getSbiBinContents();
+			aSession.delete(hibSubobject);
+			aSession.delete(hibBinCont);
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} 
+//		finally {
+//			if (aSession!=null){
+//				if (aSession.isOpen()) aSession.close();
+//			}
+//		}		
+	}
+
+	
+	
+	/* (non-Javadoc)
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO#getSubObject(java.lang.Integer)
 	 */
 	public SubObject getSubObject(Integer idSubObj) throws EMFUserError {

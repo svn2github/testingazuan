@@ -27,6 +27,8 @@ import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 
 import java.util.List;
 
+import org.hibernate.Session;
+
 public interface ISubObjectDAO {
 
 	/**
@@ -80,6 +82,16 @@ public interface ISubObjectDAO {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void deleteSubObject(Integer idSub) throws EMFUserError;
+
+	/**
+	 * Delete a subObject mantaining the previous connection.
+	 * 
+	 * @param idSub the id sub
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void deleteSubObjectSameConnection(Integer idSub, Session aSession) throws EMFUserError;
+
 	
 	/**
 	 * Gets the detail of all the biobject subobjects.

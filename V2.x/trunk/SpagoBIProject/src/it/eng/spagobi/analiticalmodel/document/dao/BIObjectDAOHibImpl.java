@@ -758,7 +758,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				List subobjects =  subobjDAO.getSubObjects(obj.getId());
 				for (int i=0; i < subobjects.size(); i++){
 					SubObject s = (SubObject) subobjects.get(i);
-					subobjDAO.deleteSubObject(s.getId());
+					//subobjDAO.deleteSubObject(s.getId());
+					subobjDAO.deleteSubObjectSameConnection(s.getId(), aSession);
 				}
 				
 				//delete viewpoints eventually associated

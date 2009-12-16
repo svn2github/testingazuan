@@ -24,9 +24,11 @@ package it.eng.spagobi.engines.georeport.services;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
@@ -126,6 +128,9 @@ public class MapOlAction extends AbstractBaseServlet {
 			//Create Output Collection of Features
 			Collection outputFeatureCollection = new ArrayList();
 			
+			// used to avoid multiple creation of the same geographical feature
+			Set geoIdPValues = new HashSet();
+			
 
 			// for each row
 			Iterator it = dataStore.iterator();
@@ -143,6 +148,13 @@ public class MapOlAction extends AbstractBaseServlet {
 			    //IDfetaure
 				geoIdPValue = "" + field.getValue();
 
+				
+				if(geoIdPValues.contains(geoIdPValue)) {
+					continue;
+				} else {
+					geoIdPValues.add(geoIdPValue);
+				}
+				
 			    Map parameters = new HashMap();
 			    parameters.put("layerName", layerName);
 			    parameters.put("geoIdPName", geoIdPName);

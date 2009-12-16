@@ -23,8 +23,8 @@ package it.eng.spagobi.engines.georeport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,6 +68,7 @@ public class GeoReportEngineConfig {
 	public List getIncludes() {
 		List results;
 		
+		includes = null;
 		if(includes == null) {
 			initIncludes();
 		}
@@ -75,8 +76,10 @@ public class GeoReportEngineConfig {
 		results = new ArrayList();
 		Iterator<String> it = enabledIncludes.iterator();
 		while(it.hasNext()) {
-			List urls = includes.get( it.next() );
+			String includeName = it.next();
+			List urls = includes.get( includeName );
 			results.addAll(urls);
+			logger.debug("Added [" + urls.size() + "] for include [" + includeName + "]");
 		}
 		
 		
@@ -98,7 +101,7 @@ public class GeoReportEngineConfig {
 		SourceBean urlSB;
 		
 		includes = new HashMap();
-		enabledIncludes = new HashSet();
+		enabledIncludes = new LinkedHashSet();
 		
 		includesSB = (SourceBean) getConfigSourceBean().getAttribute(INCLUDES_TAG);
 		if(includesSB == null) {
@@ -116,6 +119,9 @@ public class GeoReportEngineConfig {
 			includeSB = (SourceBean)includeSBList.get(i);
 			String name = (String)includeSB.getAttribute("name");
 			String bydefault = (String)includeSB.getAttribute("default");
+			
+			logger.debug("Include [" + name + "]: [" + bydefault + "]");
+			
 			List urls = new ArrayList();
 			
 			urlSBList = includeSB.getAttributeAsList(URL_TAG);
@@ -123,6 +129,7 @@ public class GeoReportEngineConfig {
 				urlSB = (SourceBean)urlSBList.get(j);
 				String url = urlSB.getCharacters();
 				urls.add(url);
+				logger.debug("Url [" + name + "] added to include list");
 			}
 			
 			includes.put(name, urls);

@@ -1,7 +1,5 @@
 package it.eng.spagobi.commons.utilities.indexing;
 
-import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.JTidyHTMLHandler;
@@ -32,9 +30,7 @@ import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.apache.lucene.search.highlight.QueryScorer;
-import org.apache.lucene.search.highlight.QueryTermExtractor;
 import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
-import org.apache.lucene.search.highlight.WeightedTerm;
 import org.apache.lucene.util.Version;
 
 public class LuceneSearcher {
@@ -163,6 +159,7 @@ public class LuceneSearcher {
 		BooleanQuery andQuery = new BooleanQuery();
 		for(int i=0; i< fields.length;i++){
 			Query query = new FuzzyQuery(new Term(fields[i], queryString));
+			query = query.rewrite(searcher.getIndexReader());
 			orQuery.add(query, BooleanClause.Occur.SHOULD);
 		}
 		andQuery.add(orQuery, BooleanClause.Occur.MUST);
@@ -183,7 +180,10 @@ public class LuceneSearcher {
 		objectsToReturn.put("hits", hits);
 
 		//highlighter
+		//orQuery = orQuery.rewrite(searcher.getIndexReader());
+		//andQuery = andQuery.rewrite(searcher.getIndexReader());
         Highlighter highlighter = new Highlighter( new SimpleHTMLFormatter(), new QueryScorer(andQuery));
+
 		if(hits != null) {
             for(int i=0; i<hits.length; i++) {
     	    	ScoreDoc hit = hits[i];
@@ -196,7 +196,6 @@ public class LuceneSearcher {
 						Integer idobj= (Integer.valueOf(biobjId));
 
 						String contentToSearchOn = fillSummaryText(idobj);
-						
 						summaries = highlighter.getBestFragments(new StandardAnalyzer(Version.LUCENE_CURRENT), IndexingConstants.CONTENTS ,contentToSearchOn, 3);
 						
 			            StringBuffer summaryBuffer = new StringBuffer();

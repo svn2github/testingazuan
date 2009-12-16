@@ -127,7 +127,7 @@ public class SearchContentAction extends AbstractSpagoBIAction{
 				String jndi = jndiBean.getCharacters();
 				indexBasePath = SpagoBIUtilities.readJndiResource(jndi);
 			}
-			String index = indexBasePath+"\\idx";
+			String index = indexBasePath+"/idx";
 			IndexReader reader;
 			HashMap returned = null;
 			try{

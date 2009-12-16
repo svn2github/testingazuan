@@ -395,6 +395,7 @@ public final class ChartEditor extends EditorPart {
 					colorLabel.setBackground(newColor);
 					String newHexadecimal = ChartEditor.convertRGBToHexadecimal(rgb);
 					model.setBackgroundColor(ChartEditor.convertHexadecimalToRGB(newHexadecimal));
+					setIsDirty(true);
 				}
 				centerShell.dispose();
 			}

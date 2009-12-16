@@ -74,6 +74,7 @@ public class LuceneSearcher {
 		//highlighter
         Highlighter highlighter = new Highlighter( new SimpleHTMLFormatter(), new QueryScorer(andQuery));
 		if(hits != null) {
+			logger.debug("hits size: " + hits.length);
             for(int i=0; i<hits.length; i++) {
     	    	ScoreDoc hit = hits[i];
     	    	Document doc = searcher.doc(hit.doc);

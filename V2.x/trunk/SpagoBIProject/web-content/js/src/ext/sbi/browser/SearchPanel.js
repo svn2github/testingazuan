@@ -92,6 +92,7 @@ Sbi.browser.SearchPanel = function(config) {
 		    typeAhead: true,
 		    triggerAction: 'all',
 		    width: 100,
+		    listWidth: 200,
 		    selectOnFocus:true,
 		    listeners: {
 		   		'select': {

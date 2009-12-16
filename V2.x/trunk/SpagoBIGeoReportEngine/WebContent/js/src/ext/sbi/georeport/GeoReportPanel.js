@@ -596,7 +596,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 	
 
 	
-	, addSeparator: function(toolbar){
+	, addSeparator: function(){
           this.toolbar.add(new Ext.Toolbar.Spacer());
           this.toolbar.add(new Ext.Toolbar.Separator());
           this.toolbar.add(new Ext.Toolbar.Spacer());
@@ -625,7 +625,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 		        }
 		    );
 			
-		    this.addSeparator(toolbar);
+		    this.addSeparator();
 	    }
 	    
 	    if(this.toolbarConf.mouseButtonGroupEnabled === true) {
@@ -658,7 +658,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 	            }
 	        );
 	          
-			this.addSeparator(toolbar);
+			this.addSeparator();
 	    }
 	          
 	    if(this.toolbarConf.drawButtonGroupEnabled === true) {
@@ -689,7 +689,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 	            }
 	        );
 	          
-			this.addSeparator(toolbar);
+			this.addSeparator();
 	    }
 	      
 	    if(this.toolbarConf.historyButtonGroupEnabled === true) {
@@ -713,7 +713,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 	            })
 	         );
 	          
-	         this.addSeparator(toolbar);
+	         this.addSeparator();
 	    }
 	          
 	    this.toolbar.activate();

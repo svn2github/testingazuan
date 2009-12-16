@@ -287,8 +287,8 @@
 			    	 <file name="./src/ext/sbi/browser/FolderView.js"/>
 			    	 <file name="./src/ext/sbi/browser/FolderDetailPanel.js"/>
 
-			    	<file name="./src/ext/sbi/execution/widgets/EditablePanel.js"/>
-					   <file name="./src/ext/sbi/widgets/FilteringToolbar.js"/>
+			    	 <file name="./src/ext/sbi/widgets/EditablePanel.js"/>
+					 <file name="./src/ext/sbi/widgets/FilteringToolbar.js"/>
 			    	 <file name="./src/ext/sbi/widgets/PagingToolbar.js"/>
 			    	 <file name="./src/ext/sbi/widgets/LookupField.js"/>
 			    	 <file name="./src/ext/sbi/widgets/SaveWindow.js"/>

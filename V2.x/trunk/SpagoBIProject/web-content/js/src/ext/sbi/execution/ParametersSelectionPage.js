@@ -159,6 +159,10 @@ Sbi.execution.ParametersSelectionPage = function(config, doc) {
 	this.shortcutsPanel.on('viewpointexecutionrequest', this.onExecuteViewpoint, this);
 	this.shortcutsPanel.on('subobjectexecutionrequest', this.onExecuteSubobject, this);
 	this.shortcutsPanel.on('snapshotexcutionrequest', this.onExecuteSnapshot, this);
+	this.shortcutsPanel.on('subobjectshowmetadatarequest', function (subObjectId) {
+    	 var win_metadata = new Sbi.execution.toolbar.MetadataWindow({'OBJECT_ID': this.executionInstance.OBJECT_ID, 'SUBOBJECT_ID': subObjectId});
+		 win_metadata.show();
+	}, this);
 	
 	this.shortcutsPanel.subobjectsPanel.on('ready', function(){
 		this.isSubobjectPanelReady = true;

@@ -250,24 +250,20 @@
 	color: #777;
 }
 
-.group-view .group-item {
+.group-view .group-item-search #summary {
 	float: left;
-	width: 200px;
-	border: 1px solid;
-}
-
-.group-view .group-item #summary {
-	float: left;
-	width: 200px;
+	width: 250px;
 	margin: 2 2 2 2;
+	margin-left: 50px;
+	clear:right;
 	padding: 10px;
-	border: 1px solid;
+	color:#555555;
 }
 
 /*overrides existing*/
 .group-view .group-item-search {
 	float: left;
-	width: 600px;
+	width: 700px;
 	height: 122px;
 	margin: 5px 5px 5px 10px;
 	cursor: pointer;

@@ -50,6 +50,20 @@ Sbi.georeport.GeoReportPanel = function(config) {
 	
 	var defaultSettings = {
 		mapName: 'sbi.georeport.mappanel.title'
+		, controlPanelConf: {
+			layerPanelEnabled: true
+			, analysisPanelEnabled: true
+			, legendPanelEnabled: true
+			, logoPanelEnabled: true
+			, earthPanelEnabled: true
+		}	
+		, toolbarConf: {
+			enabled: true,
+			zoomToMaxButtonEnabled: true,
+			mouseButtonGroupEnabled: true,
+			drawButtonGroupEnabled: true,
+			historyButtonGroupEnabled: true
+		}
 	};
 		
 	if(Sbi.settings && Sbi.settings.georeport && Sbi.settings.georeport.georeportPanel) {
@@ -100,18 +114,16 @@ Sbi.georeport.GeoReportPanel = function(config) {
 	Sbi.georeport.GeoReportPanel.superclass.constructor.call(this, c);
 	
 	this.on('render', function() {
-		alert('dah');
-		this.init3D.defer(500, this);
 		this.setCenter();
-		
+		if(this.controlPanelConf.earthPanelEnabled === true) {
+			this.init3D.defer(500, this);
+		}
+		if(this.toolbarConf.enabled) {
+			this.initToolbarContent.defer(500, this);	
+		}
 	}, this);
 	
-	/*
-	this.on('afterlayout', function() {
-		alert('doh');
-		this.init3D();
-	}, this);
-	*/
+	
 	
 };
 
@@ -151,7 +163,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
       	this.zoomLevel = center.zoomLevel || this.zoomLevel;
         
         if(this.map.projection == "EPSG:900913"){            
-            this.centerPoint = this.lonLatToMercator(new OpenLayers.LonLat(this.lon, this.lat));
+            this.centerPoint = Sbi.georeport.GeoReportUtils.lonLatToMercator(new OpenLayers.LonLat(this.lon, this.lat));
             this.map.setCenter(this.centerPoint, this.zoomLevel);
         } else if(this.map.projection == "EPSG:4326") {
         	this.centerPoint = new OpenLayers.LonLat(this.lon, this.lat);
@@ -162,28 +174,6 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
          
      }
 
-	, lonLatToMercator: function(ll) {
-		var lon = ll.lon * 20037508.34 / 180;
-		var lat = Math.log(Math.tan((90 + ll.lat) * Math.PI / 360)) / (Math.PI / 180);
-		lat = lat * 20037508.34 / 180;
-		return new OpenLayers.LonLat(lon, lat);
-	}
-
-	, osm_getTileURL: function(bounds) {
-		var res = this.map.getResolution();
-		var x = Math.round((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
-		var y = Math.round((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
-		var z = this.map.getZoom();
-		var limit = Math.pow(2, z);
-
-		if (y < 0 || y >= limit) {
-			return OpenLayers.Util.getImagesLocation() + "404.png";
-		} else {
-			x = ((x % limit) + limit) % limit;
-			return this.url + z + "/" + x + "/" + y + "." + this.type;
-		}
-	}
-    
 	 // -- private methods ------------------------------------------------------------------------
 	
 	
@@ -216,57 +206,29 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 
 	, initLayers: function(c) {
 		this.layers = new Array();
+				
 		if(this.baseLayersConf && this.baseLayersConf.length > 0) {
 			for(var i = 0; i < this.baseLayersConf.length; i++) {
-				var layerConf = this.baseLayersConf[i];
-				var layer;
-				if(layerConf.type === 'WMS') {
-					layer = new OpenLayers.Layer.WMS(
-						layerConf.name, layerConf.url, 
-						layerConf.params, layerConf.options
-					);
-				} else if(layerConf.type === 'TMS') {
-					layerConf.options.getURL = this.osm_getTileURL;
-					layer = new OpenLayers.Layer.TMS(
-						layerConf.name, layerConf.url, layerConf.options
-					);
-				} else if(layerConf.type === 'Google') {
-					layer = new OpenLayers.Layer.Google(
-						layerConf.name, layerConf.options
-					);
-				} else if(layerConf.type === 'OSM') { 
-					layer = new OpenLayers.Layer.OSM.Mapnik('OSM');
-				}else {
-					alert('Layer type [' + layerConf.type + '] not supported');
+				if(this.baseLayersConf[i].enabled === true) {
+					var l = Sbi.georeport.LayerFactory.createLayer( this.baseLayersConf[i] );
+					this.layers.push( l	);
 				}
-				
-				this.layers.push( layer	);
 			}			
 		}
-		this.map.addLayers(this.layers);
 		
-		//this.setCenter();
+		this.map.addLayers(this.layers);
 	}
 	
 	, initControls: function() {
 		
-		var o = this.baseMapControls;
-		
-		// @TODO move this code in a factory objet
-		if(o.mousePositionControl && o.mousePositionControl.enabled === true) {
-			this.map.addControl(new OpenLayers.Control.MousePosition());
-		}
-		
-		if(o.overviewMapControl && o.overviewMapControl.enabled === true) {
-			this.map.addControl(new OpenLayers.Control.OverviewMap());
-		}
-		
-		if(o.navigationControl && o.navigationControl.enabled === true) {
-			this.map.addControl(new OpenLayers.Control.Navigation());
-		}
-		
-		if(o.panZoomBarControl && o.panZoomBarControl.enabled === true) {
-			this.map.addControl(new OpenLayers.Control.PanZoomBar());
+		if(this.baseControlsConf && this.baseControlsConf.length > 0) {
+			for(var i = 0; i < this.baseControlsConf.length; i++) {
+				if(this.baseControlsConf[i].enabled === true) {
+					this.baseControlsConf[i].mapOptions = this.baseMapOptions;
+					var c = Sbi.georeport.ControlFactory.createControl( this.baseControlsConf[i] );
+					this.map.addControl( c );
+				}
+			}			
 		}
 	}
 	
@@ -279,7 +241,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 	    if(this.map.projection == "EPSG:900913"){
 	        
 	    	var earth = new mapfish.Earth(this.map, 'map3dContainer', {
-	    		lonLat: this.lonLatToMercator(new OpenLayers.LonLat(this.lon, this.lat)),
+	    		lonLat: Sbi.georeport.GeoReportUtils.lonLatToMercator(new OpenLayers.LonLat(this.lon, this.lat)),
 	            altitude: 50, //da configurare
 	            heading: -60, //da configurare
 	            tilt: 70,     //da configurare
@@ -494,6 +456,34 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 	
 	
 	, initMapPanel: function() {
+		
+		var mapPanelConf = {
+			title: LN(this.mapName),
+	       	items: {
+		        xtype: 'mapcomponent',
+		        map: this.map
+		    }
+	    };
+		
+		if(this.toolbarConf.enabled) {
+			this.loadingButton = new Ext.Toolbar.Button({
+	            tooltip: 'Please wait',
+	            iconCls: "x-tbar-loading"
+	        });
+			
+			this.toolbar = new mapfish.widgets.toolbar.Toolbar({
+		    	map: this.map, 
+		        configurable: false,
+		        items: [this.loadingButton, ' Loading toolbar...']
+			});
+			
+			this.loadingButton.disable();
+			
+			mapPanelConf.tbar = this.toolbar;
+		}
+	 
+		
+	 
 		this.mapPanel = new Ext.TabPanel({
 		    region    : 'center',
 		    margins   : '3 3 3 0', 
@@ -502,73 +492,77 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 				autoScroll : true
 			},
 
-	       	items: [{
-	        	title: LN(this.mapName),
-	            xtype: 'mapcomponent',
-	            map: this.map
-	        },{
-	            title    : 'Info',
-	            html: '<div id="info"</div>',
-	            id: 'infotable',
-	            autoScroll: true
-	        }]
+	       	items: [
+		       	new Ext.Panel(mapPanelConf), {
+		            title    : 'Info',
+		            html: '<div id="info"</div>',
+		            id: 'infotable',
+		            autoScroll: true
+		        }
+		    ]
 		});
 	}
 	
 	, initControlPanel: function() {
 		
 		
-		 this.toolbar = new mapfish.widgets.toolbar.Toolbar({
-		    	map: this.map, 
-		        configurable: false,
-		        items: ['']
-		 });
-		 
-		 this.initToolbarContent();
-		 
+		var controlPanelItems = [];
 		
-		 this.controlPanel = new Ext.Panel({
-		    	title       : LN('sbi.georeport.controlpanel.title'),
-		        region      : 'west',
-		        split       : true,
-		        width       : 300,
-		        collapsible : true,
-		        margins     : '3 0 3 3',
-		        cmargins    : '3 3 3 3',
-		        items: [
-		        {
-		        	title: LN('sbi.georeport.layerpanel.title'),
-		            collapsible: true,
-		            autoHeight: true,
-		            xtype: 'layertree',
-		            map: this.map
-		        }, {
-		            title: 'Toolbar',
-		            collapsible: true,
-		            region: 'center',
-		            tbar: this.toolbar                
-		        }, {
-                    html: '<center id="map3dContainer"></center>',
-                    split: true,
-                    height: 300,
-                    minSize: 300,
-                    maxSize: 500,
-                    collapsible: true,
-                    title: 'Navigazione 3D'
-		        }, {
-		        	title: LN('sbi.georeport.analysispanel.title'),
-		            collapsible: true,
-		            items: [this.geostatistic]
-		        }, {
+		if(this.controlPanelConf.earthPanelEnabled === true) {
+			controlPanelItems.push({
+				title: LN('sbi.georeport.earthpanel.title'),
+                html: '<center id="map3dContainer"></center>',
+                split: true,
+                height: 300,
+                minSize: 300,
+                maxSize: 500,
+                collapsible: false                
+	        });
+		}
+		
+		if(this.controlPanelConf.layerPanelEnabled === true) {
+			controlPanelItems.push({
+	        	title: LN('sbi.georeport.layerpanel.title'),
+	            collapsible: true,
+	            autoHeight: true,
+	            xtype: 'layertree',
+	            map: this.map
+	        });
+		}
+		
+		if(this.controlPanelConf.analysisPanelEnabled === true) {
+			controlPanelItems.push({
+	        	title: LN('sbi.georeport.analysispanel.title'),
+	            collapsible: true,
+	            items: [this.geostatistic]
+	        });
+		}
+		
+		
+		
+		if(this.controlPanelConf.legendPanelEnabled === true) {
+			controlPanelItems.push({
 		           title: LN('sbi.georeport.legendpanel.title'),
 		           collapsible: true,
 		           height: 150,
 		           html: '<center id="myChoroplethLegendDiv"></center>'
-		        }, {
+		     });
+		}
+		
+		if(this.controlPanelConf.logoPanelEnabled === true) {
+			controlPanelItems.push({
 		           title: 'Logo',
 		           collapsible: true,
 		           height: 85,
-		           //html: '<center><img src="/SpagoBIGeoReportEngine/js/lib/mapfish/georeport.png" alt="GeoReport"/></center>'
+		           html: '<center><img src="/SpagoBIGeoReportEngine/img/georeport.jpg" alt="GeoReport"/></center>'
+		    });
+		}
+		
+		if(this.controlPanelConf.logoPanelEnabled === false) {
+			controlPanelItems.push({
+		           title: 'Debug',
+		           collapsible: true,
+		           height: 85,
 		           items: [new Ext.Button({
 				    	text: 'Debug',
 				        width: 30,
@@ -582,8 +576,20 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 		           		},
 		           		scope: this
 				    })]
-		        }]
-		    }); 
+		    });
+		}
+		
+		this.controlPanel = new Ext.Panel({
+			 title       : LN('sbi.georeport.controlpanel.title'),
+		     region      : 'west',
+		     split       : true,
+		     width       : 300,
+		     collapsible : true,
+		     margins     : '3 0 3 3',
+		     cmargins    : '3 3 3 3',
+		     autoScroll	 : true,
+		     items		 : controlPanelItems 
+		}); 
 		 
 		 	
 	}
@@ -598,111 +604,119 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 
 	, initToolbarContent: function() {
 			
-		//alert('initToolbarContent');
+		this.toolbar.items.each( function(item) {
+			this.toolbar.items.remove(item);
+            item.destroy();           
+        }, this); 
 		
 		var vectorLayer = new OpenLayers.Layer.Vector("vector", { 
 	    	displayInLayerSwitcher: false
 	    });
 	    this.map.addLayer(vectorLayer);
 	    
-	    this.toolbar.on('render', function() {
-	   
-			this.toolbar.addControl(
-	              new OpenLayers.Control.ZoomToMaxExtent({
-	                  map: this.map,
-	                  title: 'Zoom to maximum map extent'
-	              }), {
-	                  iconCls: 'zoomfull', 
-	                  toggleGroup: 'map'
-	              }
-	          );
-		
+	    if(this.toolbarConf.zoomToMaxButtonEnabled === true) {
+		    this.toolbar.addControl(
+		        new OpenLayers.Control.ZoomToMaxExtent({
+		        	map: this.map,
+		            title: 'Zoom to maximum map extent'
+		        }), {
+		            iconCls: 'zoomfull', 
+		            toggleGroup: 'map'
+		        }
+		    );
 			
-			  this.addSeparator(toolbar);
+		    this.addSeparator(toolbar);
+	    }
+	    
+	    if(this.toolbarConf.mouseButtonGroupEnabled === true) {
+		    this.toolbar.addControl(
+		    	new OpenLayers.Control.ZoomBox({
+		    		title: 'Zoom in: click in the map or use the left mouse button and drag to create a rectangle'
+	            }), {
+		    		iconCls: 'zoomin', 
+	                toggleGroup: 'map'
+		    	}
+	        );
 	      
-			  this.toolbar.addControl(
-	              new OpenLayers.Control.ZoomBox({
-	                  title: 'Zoom in: click in the map or use the left mouse button and drag to create a rectangle'
-	              }), {
-	                  iconCls: 'zoomin', 
-	                  toggleGroup: 'map'
-	              }
-	          );
+			this.toolbar.addControl(
+				new OpenLayers.Control.ZoomBox({
+					out: true,
+	                title: 'Zoom out: click in the map or use the left mouse button and drag to create a rectangle'
+	            }), {
+					iconCls: 'zoomout', 
+	                toggleGroup: 'map'
+	            }
+	        );
+	          
+			this.toolbar.addControl(
+				new OpenLayers.Control.DragPan({
+					isDefault: true,
+	                title: 'Pan map: keep the left mouse button pressed and drag the map'
+	            }), {
+	                iconCls: 'pan', 
+	                toggleGroup: 'map'
+	            }
+	        );
+	          
+			this.addSeparator(toolbar);
+	    }
+	          
+	    if(this.toolbarConf.drawButtonGroupEnabled === true) {
+	    	this.toolbar.addControl(
+	    		new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Point, {
+	    			title: 'Draw a point on the map'
+	            }), {
+	    			iconCls: 'drawpoint', 
+	                toggleGroup: 'map'
+	            }
+	        );
+	          
+			this.toolbar.addControl(
+				new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Path, {
+					title: 'Draw a linestring on the map'
+				}), {
+	                iconCls: 'drawline', 
+	                toggleGroup: 'map'
+				}
+	        );
+	          
+			this.toolbar.addControl(
+				new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Polygon, {
+					title: 'Draw a polygon on the map'
+	            }), {
+	                iconCls: 'drawpolygon', 
+	                toggleGroup: 'map'
+	            }
+	        );
+	          
+			this.addSeparator(toolbar);
+	    }
 	      
-			  this.toolbar.addControl(
-	              new OpenLayers.Control.ZoomBox({
-	                  out: true,
-	                  title: 'Zoom out: click in the map or use the left mouse button and drag to create a rectangle'
-	              }), {
-	                  iconCls: 'zoomout', 
-	                  toggleGroup: 'map'
-	              }
-	          );
+	    if(this.toolbarConf.historyButtonGroupEnabled === true) {
+	    	var nav = new OpenLayers.Control.NavigationHistory();
+	        this.map.addControl(nav);
+	        nav.activate();
 	          
-			  this.toolbar.addControl(
-	              new OpenLayers.Control.DragPan({
-	                  isDefault: true,
-	                  title: 'Pan map: keep the left mouse button pressed and drag the map'
-	              }), {
-	                  iconCls: 'pan', 
-	                  toggleGroup: 'map'
-	              }
-	          );
+	        this.toolbar.add(
+	        	new Ext.Toolbar.Button({
+	        		iconCls: 'back',
+	                tooltip: 'Previous view', 
+	                handler: nav.previous.trigger
+	            })
+	         );
 	          
-			  this.addSeparator(toolbar);
+	         this.toolbar.add(
+	        	new Ext.Toolbar.Button({
+	        		iconCls: 'next',
+	                tooltip: 'Next view', 
+	                handler: nav.next.trigger
+	            })
+	         );
 	          
-			  this.toolbar.addControl(
-	              new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Point, {
-	                  title: 'Draw a point on the map'
-	              }), {
-	                  iconCls: 'drawpoint', 
-	                  toggleGroup: 'map'
-	              }
-	          );
+	         this.addSeparator(toolbar);
+	    }
 	          
-			  this.toolbar.addControl(
-	              new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Path, {
-	                  title: 'Draw a linestring on the map'
-	              }), {
-	                  iconCls: 'drawline', 
-	                  toggleGroup: 'map'
-	              }
-	          );
-	          
-			  this.toolbar.addControl(
-	              new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Polygon, {
-	                  title: 'Draw a polygon on the map'
-	              }), {
-	                  iconCls: 'drawpolygon', 
-	                  toggleGroup: 'map'
-	              }
-	          );
-	          
-			  this.addSeparator(toolbar);
-	      
-	          var nav = new OpenLayers.Control.NavigationHistory();
-	          this.map.addControl(nav);
-	          nav.activate();
-	          
-	          this.toolbar.add(
-	              new Ext.Toolbar.Button({
-	                  iconCls: 'back',
-	                  tooltip: 'Previous view', 
-	                  handler: nav.previous.trigger
-	              })
-	          );
-	          
-	          this.toolbar.add(
-	              new Ext.Toolbar.Button({
-	                  iconCls: 'next',
-	                  tooltip: 'Next view', 
-	                  handler: nav.next.trigger
-	              })
-	          );
-	          
-	          this.addSeparator(toolbar);
-	          
-	          this.toolbar.activate();
-	    }, this);
+	    this.toolbar.activate();
+	    
       }
 });

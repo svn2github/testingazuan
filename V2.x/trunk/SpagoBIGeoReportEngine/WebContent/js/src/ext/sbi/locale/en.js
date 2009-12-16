@@ -56,10 +56,11 @@ Sbi.locale.formats = {
 //===================================================================
 // CONTROL PANEL
 //===================================================================
-Sbi.locale.ln['sbi.georeport.controlpanel.title'] = 'Navigation';
+Sbi.locale.ln['sbi.georeport.controlpanel.title'] = 'Control Panel';
 Sbi.locale.ln['sbi.georeport.layerpanel.title'] = 'Layers';
 Sbi.locale.ln['sbi.georeport.analysispanel.title'] = 'Analysis';
 Sbi.locale.ln['sbi.georeport.legendpanel.title'] = 'Legend';
+Sbi.locale.ln['sbi.georeport.earthpanel.title'] = '3D Navigation';
 
 
 

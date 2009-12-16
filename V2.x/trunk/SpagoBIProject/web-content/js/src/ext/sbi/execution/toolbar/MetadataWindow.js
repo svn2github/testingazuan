@@ -254,7 +254,7 @@ Ext.extend(Sbi.execution.toolbar.MetadataWindow, Ext.Window, {
             title : LN('sbi.execution.metadata.shorttextmetadata'),
             layout : 'fit',
             collapsible : true,
-            collapsed : true,
+            collapsed : false,
             items : [ shortTextMetadataGridPanel ],
             autoWidth : true,
             autoHeight : true

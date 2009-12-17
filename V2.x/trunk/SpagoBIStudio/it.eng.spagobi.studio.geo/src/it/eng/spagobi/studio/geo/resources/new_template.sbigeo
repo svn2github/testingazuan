@@ -1,164 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <MAP>
-	<!--
-	<MAP_PROVIDER class_name="it.eng.spagobi.engines.geo.map.provider.SOMapProvider" map_name="USA" />
-
-	<DATAMART_PROVIDER class_name="it.eng.spagobi.engines.geo.datamart.provider.DataMartProvider"
-			   hierarchy="custom"
-			   level="States">
-			   
-			   
-		<METADATA>
-		     <COLUMN type="geoid"   column_id="region_id"        hierarchy="custom" level="States"/>      
-		     <COLUMN type="measure" column_id="store_sales"      agg_func="sum"/>
-		     <COLUMN type="measure" column_id="store_cost"       agg_func="sum"/>
-		     <COLUMN type="measure" column_id="unit_sales"       agg_func="sum"/>
-		</METADATA>	   
-			   
-		<DATASET>
-    <QUERY>
-     SELECT r.region_id as region_id, s.store_country,r.sales_state, r.sales_region,  s.store_city,
-     sum(f.store_sales) store_sales,  avg(f.unit_sales) unit_sales,sum(f.store_cost) store_cost
-    FROM
-        sales_fact_1998 f, store s, time_by_day t,sales_region r
-    where
-        s.store_id=f.store_id and
-        f.time_id=t.time_id AND s.region_id = r.region_id
- group by region_id, s.store_country,r.sales_state, r.sales_region,  s.store_city
-       </QUERY>
-		</DATASET>		   
-
-		
-		<HIERARCHIES>
-      <HIERARCHY name="custom" type="custom">
-        <LEVEL name="States" column_id="sales_state" column_desc="sales_state" feature_name="States"/> 
-        <LEVEL name="regions" column_id="sales_region" column_desc="sales_region" feature_name="regions"/>                     
-      </HIERARCHY>
-    </HIERARCHIES>
-		
-		<CROSS_NAVIGATION>
-      <LINK hierarchy="custom" level="States">
-          <PARAM type="absolute" name="DOCUMENT_LABEL" value="TopProductsForCountr" />
-          <PARAM type="relative" scope ="dataset" name="ParState" value="sales_state" /> 
-          <PARAM type="absolute" name="ParTopNum" value="8" /> 
-          <PARAM type="absolute" name="ParProdFamily" value="Food" /> 
-      </LINK>
-      <LINK hierarchy="custom" level="regions">
-          <PARAM type="absolute" name="DOCUMENT_LABEL" value="BestByRegion" />
-          <PARAM type="relative" scope ="dataset" name="region" value="sales_region" /> 
-      </LINK>
-		</CROSS_NAVIGATION>
-
-
-	</DATAMART_PROVIDER>                       
-	
-		
-	<MAP_RENDERER class_name="it.eng.spagobi.engines.geo.map.renderer.InteractiveMapRenderer">	
-	
-  <MEASURES default_kpi="store_cost">
-
-  	<KPI column_id="store_sales" description="Store Sales" agg_func="sum" colour="#E19696" >
-  		<TRESHOLDS type="quantile" lb_value="0" ub_value="none" >
-  			<PARAM name="GROUPS_NUMBER" value="5" />
-  		</TRESHOLDS>
-   		<COLOURS type="grad" outbound_colour="#FFFFFF" null_values_color="#CCCCCC" >
-  			<PARAM name="BASE_COLOR" value="#009900" />
-  		</COLOURS>
-   	</KPI>
-   	
-   	<KPI column_id="store_cost" description="Store Cost" agg_func="avg" colour="#9696B9" >
-  		<TRESHOLDS type="quantile" lb_value="0" ub_value="none" >
-  			<PARAM name="GROUPS_NUMBER" value="5" />
-  		</TRESHOLDS>
-   		<COLOURS type="grad" outbound_colour="#FFFFFF" null_values_color="#CCCCCC" >
-  			<PARAM name="BASE_COLOR" value="#3333CC" />
-  		</COLOURS>
-   	</KPI> 
-   	<KPI column_id="unit_sales" description="Unit Sales" agg_func="sum" colour="#96C396" >
-  		<TRESHOLDS type="quantile" lb_value="0" ub_value="none" >
-  			<PARAM name="GROUPS_NUMBER" value="5" />
-  		</TRESHOLDS>
-   		<COLOURS type="grad" outbound_colour="#FFFFFF" null_values_color="#CCCCCC" >
-  			<PARAM name="BASE_COLOR" value="#9900FF" />
-
-  		</COLOURS>
-   	</KPI>
-   </MEASURES>
-		
-  <LAYERS>
-    <LAYER name="States" description="States" selected="true" default_fill_color="#4682B4" />
-  	<LAYER name="Labels_State_Names" description="Labels State Names" selected="false" default_fill_color="#4682B4" />
-  </LAYERS>
+  <MAP_RENDERER class_name="it.eng.spagobi.engines.geo.map.renderer.InteractiveMapRenderer">	
+    
+    <GUI_SETTINGS>
+        <WINDOWS>
+          <DEFAULTS>
+            <PARAM name='visible'>true</PARAM>
+            <PARAM name='y'>3</PARAM>
+            <PARAM name='transform'>scale(1.0)</PARAM>
+            <PARAM name='minimized'>true</PARAM>
+            <PARAM name='styles'>
+              <![CDATA[
+              {
+                  winPlaceholderStyles: {"fill":"none","stroke":"dimgray","stroke-width":1.5}
+                  , windowStyles: {"fill":"#fffce6","stroke":"dimgray","stroke-width":1}
+                  , titlebarStyles: {"fill":"steelblue","stroke":"dimgray","stroke-width":1}
+                  , titlebarHeight: 17
+                  , statusbarStyles: {"fill":"aliceblue","stroke":"dimgray","stroke-width":1}
+                  , statusbarHeight: 13
+                  , titletextStyles: {"font-family":"Arial,Helvetica","font-size":14,"fill":"white"}
+                  , statustextStyles: {"font-family":"Arial,Helvetica","font-size":10,"fill":"dimgray"}
+                  , buttonStyles: {"fill":"steelblue","stroke":"white","stroke-width":2}
+              }
+              ]]>
+            </PARAM>          
+          </DEFAULTS>
+          
+          <WINDOW name='navigation'>
+            <PARAM name='visible'>true</PARAM>
+            <PARAM name='title'>Navigazione</PARAM>
+          </WINDOW>
+          
+          <WINDOW name='measures'>
+            <PARAM name='visible'>true</PARAM>
+            <PARAM name='title'>Misure</PARAM>
+          </WINDOW>
+          
+          <WINDOW name='layers'>
+            <PARAM name='visible'>true</PARAM>
+            <PARAM name='title'>Layers</PARAM>
+          </WINDOW>
+          
+          <WINDOW name='detail'>
+            <PARAM name='visible'>true</PARAM>
+            <PARAM name='title'>Dettagli</PARAM>
+          </WINDOW>
+          
+          <WINDOW name='legend'>
+            <PARAM name='visible'>true</PARAM>
+          </WINDOW>
+          
+          <WINDOW name='colourpicker'>
+            <PARAM name='visible'>true</PARAM>
+          </WINDOW>        
+          
+        </WINDOWS>
   
-  <GUI_SETTINGS>
-      <WINDOWS>
-        <DEFAULTS>
-          <PARAM name='visible'>true</PARAM>
-          <PARAM name='y'>3</PARAM>
-          <PARAM name='transform'>scale(1.0)</PARAM>
-          <PARAM name='minimized'>true</PARAM>
-          <PARAM name='styles'>
-            <![CDATA[
-            {
-                winPlaceholderStyles: {"fill":"none","stroke":"dimgray","stroke-width":1.5}
-                , windowStyles: {"fill":"#fffce6","stroke":"dimgray","stroke-width":1}
-                , titlebarStyles: {"fill":"steelblue","stroke":"dimgray","stroke-width":1}
-                , titlebarHeight: 17
-                , statusbarStyles: {"fill":"aliceblue","stroke":"dimgray","stroke-width":1}
-                , statusbarHeight: 13
-                , titletextStyles: {"font-family":"Arial,Helvetica","font-size":14,"fill":"white"}
-                , statustextStyles: {"font-family":"Arial,Helvetica","font-size":10,"fill":"dimgray"}
-                , buttonStyles: {"fill":"steelblue","stroke":"white","stroke-width":2}
-            }
-            ]]>
-          </PARAM>          
-        </DEFAULTS>
         
-        <WINDOW name='navigation'>
-          <PARAM name='visible'>true</PARAM>
-          <PARAM name='title'>Navigazione</PARAM>
-        </WINDOW>
+        <PARAM name='defaultDrillNav'>false</PARAM>
         
-        <WINDOW name='measures'>
-          <PARAM name='visible'>true</PARAM>
-          <PARAM name='title'>Misure</PARAM>
-        </WINDOW>
+        <PARAM name='highlightOnMouseOver'>true</PARAM>
+        <PARAM name='normalizeChartValues'>true</PARAM>
+        <PARAM name='chartScale'>1.0</PARAM>
+        <PARAM name='chartWidth'>80</PARAM>
+        <PARAM name='chartHeight'>160</PARAM>
+        <PARAM name='valueFont'>16px</PARAM>
+        <PARAM name='valueScale'>1.0</PARAM>
         
-        <WINDOW name='layers'>
-          <PARAM name='visible'>true</PARAM>
-          <PARAM name='title'>Layers</PARAM>
-        </WINDOW>
-        
-        <WINDOW name='detail'>
-          <PARAM name='visible'>true</PARAM>
-          <PARAM name='title'>Dettagli</PARAM>
-        </WINDOW>
-        
-        <WINDOW name='legend'>
-          <PARAM name='visible'>true</PARAM>
-        </WINDOW>
-        
-        <WINDOW name='colourpicker'>
-          <PARAM name='visible'>true</PARAM>
-        </WINDOW>        
-        
-      </WINDOWS>
-
-
-      
-      <PARAM name='defaultDrillNav'>false</PARAM>
-      
-      <PARAM name='highlightOnMouseOver'>true</PARAM>
-      <PARAM name='normalizeChartValues'>true</PARAM>
-      <PARAM name='chartScale'>1.0</PARAM>
-      <PARAM name='chartWidth'>80</PARAM>
-      <PARAM name='chartHeight'>160</PARAM>
-      <PARAM name='valueFont'>16px</PARAM>
-      <PARAM name='valueScale'>1.0</PARAM>
-      
-    </GUI_SETTINGS>
+      </GUI_SETTINGS>
 		
 		
 	</MAP_RENDERER>
-	-->
+
 </MAP>

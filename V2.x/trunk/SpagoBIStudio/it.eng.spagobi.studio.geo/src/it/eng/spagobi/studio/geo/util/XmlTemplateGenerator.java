@@ -159,6 +159,8 @@ public class XmlTemplateGenerator {
 		xstream.useAttributeFor(MapRenderer.class, "className");
 		xstream.aliasField("class_name", MapRenderer.class, "className");
 		xstream.aliasField("MEASURES", MapRenderer.class, "measures");
+		xstream.useAttributeFor(Measures.class, "defaultKpi");
+		xstream.aliasField("default_kpi", Measures.class, "defaultKpi");
 		xstream.addImplicitCollection(Measures.class, "kpi", "KPI", KPI.class);
 		xstream.useAttributeFor(KPI.class, "columnId");
 		xstream.aliasField("column_id", KPI.class, "columnId");	

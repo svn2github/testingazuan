@@ -281,7 +281,6 @@ Ext.extend(Sbi.execution.toolbar.MetadataWindow, Ext.Window, {
     }
 
     , saveMetadata : function() {
-    	//this.loadingMask = new Sbi.decorator.LoadMask(this, {msg:LN('sbi.browser.folderdetailpanel.waitmsg')}); 
         var modifiedRecords = new Array();
         modifiedRecords = modifiedRecords.concat(this.shortTextMetadataStore.getModifiedRecords());
         modifiedRecords = modifiedRecords.concat(this.longTextMetadataStore.getModifiedRecords());
@@ -293,19 +292,21 @@ Ext.extend(Sbi.execution.toolbar.MetadataWindow, Ext.Window, {
             METADATA: Ext.util.JSON.encode(modifiedMetadata)
         };
         
+        Ext.MessageBox.wait('Please wait...', 'Processing');
         Ext.Ajax.request({
             url: this.services['saveMetadataService'],
             success: function(response, options) {
-           	if (response !== undefined) {
-  	  			this.shortTextMetadataStore.commitChanges();
-                var editablePanels = this.longTextMetadataTabPanel.items;
-                //editablePanels.each(function() {this.commitChanges();});
-                for (var i = 0; i < editablePanels.getCount(); i++) {
-                    editablePanels.get(i).commitChanges();
-                }
-              }else{
-			    Sbi.exception.ExceptionHandler.showErrorMessage('Error while saving Metadata', 'Service Error');
-			  }
+				if (response !== undefined) {
+					Ext.MessageBox.hide();
+					this.shortTextMetadataStore.commitChanges();
+					var editablePanels = this.longTextMetadataTabPanel.items;
+					//editablePanels.each(function() {this.commitChanges();});
+					for (var i = 0; i < editablePanels.getCount(); i++) {
+						editablePanels.get(i).commitChanges();
+					}
+				} else {
+					Sbi.exception.ExceptionHandler.showErrorMessage('Error while saving Metadata', 'Service Error');
+				}
             },
             failure: Sbi.exception.ExceptionHandler.handleFailure,    
             scope: this,

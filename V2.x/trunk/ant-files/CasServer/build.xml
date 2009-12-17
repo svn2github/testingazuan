@@ -19,14 +19,17 @@
   </target>
 
  
-	<target name="create.war" depends="svn.checkout" >
+	<target name="create.war" >
         
 
-	      <war warfile="../../cas/dist/CasServer-${project.version}_${project.date}.war" 
+	      <war warfile="../../cas/dist/cas.war" 
 	           webxml="../../cas/web-content/WEB-INF/web.xml" 
 	           manifest="../../cas/web-content/META-INF/MANIFEST.MF" 
 	           basedir="../../cas/web-content"/>
-
+	           
+        <zip destfile="../../cas/dist/CasServer-${project.version}_${project.date}.zip"
+              basedir="../../cas/dist">
+        </zip>
 
 	</target>
      

@@ -106,6 +106,13 @@ public class Parameter {
 				toReturn+="value='"+value+"' ";
 				toReturn+="/>\n";
 			}
+			if(value.toString().equals("")){
+				toReturn="<PARAMETER ";
+				toReturn+="name='"+name+"' ";
+				toReturn+="value='0.0' ";
+				toReturn+="/>\n";
+				
+			}
 		}
 		else if(type==BOOLEAN_TYPE){ // if boolean and is empty cannot be empty
 			if(value==null) value="false";

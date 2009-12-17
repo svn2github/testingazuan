@@ -1,29 +1,10 @@
-/**
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
- **/
 package it.eng.spagobi.studio.geo.editors;
 
 import it.eng.spagobi.studio.geo.editors.model.bo.KpiBO;
 import it.eng.spagobi.studio.geo.editors.model.geo.Colours;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 import it.eng.spagobi.studio.geo.editors.model.geo.KPI;
+import it.eng.spagobi.studio.geo.editors.model.geo.Measures;
 import it.eng.spagobi.studio.geo.editors.model.geo.Param;
 import it.eng.spagobi.studio.geo.editors.model.geo.Tresholds;
 import it.eng.spagobi.studio.geo.util.DesignerUtils;
@@ -32,6 +13,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -68,7 +50,7 @@ public class MeasuresDesigner {
 		kpi.setColumnId(columnName);
 		Tresholds tresholds = new Tresholds();
 		kpi.setTresholds(tresholds);
-		
+
 		Text desc = (Text)dialog.getData("Description");
 		kpi.setDescription(desc.getText());
 		
@@ -80,7 +62,7 @@ public class MeasuresDesigner {
 		String hexCol = DesignerUtils.convertRGBToHexadecimal(bgCol.getRGB());
 		kpi.setColor(hexCol);
 		
-		Text treshType = (Text)dialog.getData("TresholdsType");
+		Combo treshType = (Combo)dialog.getData("TresholdsType");
 		tresholds.setType(treshType.getText());
 		Text treshLb = (Text)dialog.getData("TresholdsLb");
 		tresholds.setLbValue(treshLb.getText());
@@ -90,7 +72,7 @@ public class MeasuresDesigner {
 		Param param = new Param();
 		tresholds.setParam(param);
 		
-		Text treshParamName = (Text)dialog.getData("TresholdsParamName");
+		Combo treshParamName = (Combo)dialog.getData("TresholdsParamName");
 		param.setName(treshParamName.getText());
 		Text treshParamVal = (Text)dialog.getData("TresholdsParamValue");
 		param.setValue(treshParamVal.getText());
@@ -114,7 +96,7 @@ public class MeasuresDesigner {
 		Param colParam = new Param();
 		colours.setParam(colParam);
 		
-		Text colParamName = (Text)dialog.getData("ColParamName");
+		Combo colParamName = (Combo)dialog.getData("ColParamName");
 		colParam.setName(colParamName.getText());
 		Label colParamVal = (Label)dialog.getData("ColParamVal");
 		Color bgCol4 =colParamVal.getBackground();
@@ -137,10 +119,51 @@ public class MeasuresDesigner {
 		formLayout.spacing = 10;
 		dialog.setLayout (formLayout);
 
-		Label label = new Label (dialog, SWT.RIGHT);
-		label.setText ("Description:");
+		Label labelIsDef = new Label (dialog, SWT.RIGHT);
+		labelIsDef.setText ("Is default:");
 		FormData data = new FormData ();
 		data.width = 140;
+		labelIsDef.setLayoutData (data);
+		
+		
+		//checkbox default
+		final Button isDefault = new Button(dialog, SWT.CHECK| SWT.RIGHT);
+		data = new FormData ();
+		data.width = 200;
+		data.left = new FormAttachment (labelIsDef, 0, SWT.DEFAULT);
+		data.right = new FormAttachment (100, 0);
+		data.top = new FormAttachment (labelIsDef, 0, SWT.CENTER);
+		isDefault.setLayoutData (data);
+		dialog.setData("defaultKpi", columnName);
+	
+		final boolean[] isDefaultRes = new boolean[1];
+		if(kpi != null){
+			Measures measures =geoDocument.getMapRenderer().getMeasures();
+			if(measures != null){
+				String columnNameDef = measures.getDefaultKpi();
+				if(columnNameDef.equals(columnName)){
+					isDefault.setSelection(true);
+					isDefaultRes[0]=true;
+				}else{
+					isDefault.setSelection(false);
+					isDefaultRes[0]=false;
+				}
+				
+			}
+		}
+		isDefault.addSelectionListener(new SelectionListener() {
+	        public void widgetSelected(SelectionEvent event) {
+	        	isDefaultRes[0] = event.widget == isDefault;
+	        }
+	        public void widgetDefaultSelected(SelectionEvent event) {
+	        	isDefaultRes[0] = event.widget == isDefault;
+	        }
+	    });
+		Label label = new Label (dialog, SWT.RIGHT);
+		label.setText ("Description:");
+		data = new FormData ();
+		data.width = 140;
+		data.top = new FormAttachment(isDefault, 5);
 		label.setLayoutData (data);
 
 		Button cancel = new Button (dialog, SWT.PUSH);
@@ -201,11 +224,22 @@ public class MeasuresDesigner {
 		Label labelTreshType = new Label (dialog, SWT.RIGHT);
 		labelTreshType.setText ("Tresholds type:");		
 		labelTreshType.setLayoutData (data);
-		final Text textTreshType = createTextWithLayout(dialog.getShell(), labelTreshType, data, "TresholdsType");
-		if(kpi != null && kpi.getTresholds()!= null){
-			textTreshType.setText(kpi.getTresholds().getType());
-		}
 		
+		final Combo textTreshType = createComboWithLayout(dialog, labelTreshType, data, "TresholdsType");
+		textTreshType.add("static");
+		textTreshType.add("uniform");
+		textTreshType.add("perc");
+		textTreshType.add("quantile");
+		if(kpi != null){
+			if(kpi != null && kpi.getTresholds()!= null && kpi.getTresholds().getParam() != null){
+				for(int i =0; i<textTreshType.getItemCount(); i++){
+					if(kpi.getTresholds().getType().equalsIgnoreCase(textTreshType.getItem(i))){
+						textTreshType.select(i);
+					}
+				}
+			}
+		}
+
 		data = new FormData ();
 		data.width = 140;
 		data.top = new FormAttachment(textTreshType, 5);
@@ -234,10 +268,34 @@ public class MeasuresDesigner {
 		Label labelTreshParamName = new Label (dialog, SWT.RIGHT);
 		labelTreshParamName.setText ("Tresholds param name:");		
 		labelTreshParamName.setLayoutData (data);
-		final Text textTreshParamName = createTextWithLayout(dialog.getShell(), labelTreshParamName, data, "TresholdsParamName");
-		if(kpi != null && kpi.getTresholds()!= null && kpi.getTresholds().getParam() != null){
-			textTreshParamName.setText(kpi.getTresholds().getParam().getName());
+		
+		final Combo textTreshParamName = createComboWithLayout(dialog, labelTreshParamName, data, "TresholdsParamName");
+		textTreshParamName.setEnabled(false);
+		textTreshParamName.add("range");
+		textTreshParamName.add("GROUPS_NUMBER");
+		if(kpi != null){
+			if(kpi != null && kpi.getTresholds()!= null && kpi.getTresholds().getParam() != null){
+				for(int i =0; i<textTreshParamName.getItemCount(); i++){
+					if(kpi.getTresholds().getParam().getName().equalsIgnoreCase(textTreshParamName.getItem(i))){
+						textTreshParamName.select(i);
+					}
+				}
+			}
 		}
+
+		//listener to change threshold param name
+		textTreshType.addSelectionListener(new SelectionAdapter () {
+			public void widgetSelected (SelectionEvent e) {
+				if(textTreshType.getText() != null && textTreshType.getText() != ""){
+					if(textTreshType.getText().equals("static") || textTreshType.getText().equals("perc")){
+						textTreshParamName.setText("range");
+					}else if(textTreshType.getText().equals("uniform") || textTreshType.getText().equals("quantile")){
+						textTreshParamName.setText("GROUPS_NUMBER");
+					}
+				}
+			}
+		});
+		////////////end 
 		
 		data = new FormData ();
 		data.width = 140;
@@ -259,6 +317,7 @@ public class MeasuresDesigner {
 		labelColoursType.setLayoutData (data);
 		final Combo textColoursType = createComboWithLayout(dialog, labelColoursType, data, "ColType");
 		textColoursType.add("grad");
+		textColoursType.add("static");
 		if(kpi != null && kpi.getColours() != null){
 			for(int i =0; i<textColoursType.getItemCount(); i++){
 				if(kpi.getColours().getType().equalsIgnoreCase(textColoursType.getItem(i))){
@@ -299,11 +358,33 @@ public class MeasuresDesigner {
 		Label labelColParamName = new Label (dialog, SWT.RIGHT);
 		labelColParamName.setText ("Colours param name:");		
 		labelColParamName.setLayoutData (data);
-		final Text textColParamName = createTextWithLayout(dialog, labelColParamName, data, "ColParamName");
-		if(kpi != null && kpi.getColours()!= null && kpi.getColours().getParam() != null){
-			textColParamName.setText(kpi.getColours().getParam().getName());
-		}
 		
+		final Combo textColParamName = createComboWithLayout(dialog, labelColParamName, data, "ColParamName");
+		textColParamName.setEnabled(false);
+		textColParamName.add("BASE_COLOR");
+		textColParamName.add("range");
+		if(kpi != null && kpi.getColours() != null){
+			for(int i =0; i<textColParamName.getItemCount(); i++){
+				if(kpi != null && kpi.getColours()!= null && kpi.getColours().getParam() != null ){
+					if(kpi.getColours().getParam().getName().equalsIgnoreCase(textColParamName.getItem(i))){
+						textColParamName.select(i);
+					}
+				}
+			}
+		}
+		//listener to change color param name 
+		textColoursType.addSelectionListener(new SelectionAdapter () {
+			public void widgetSelected (SelectionEvent e) {
+				if(textColoursType.getText() != null && textColoursType.getText() != ""){
+					if(textColoursType.getText().equals("grad")){
+						textColParamName.setText("BASE_COLOR");
+					}else if(textColoursType.getText().equals("static")){
+						textColParamName.setText("range");
+					}
+				}
+			}
+		});
+		////////////end 
 		data = new FormData ();
 		data.width = 140;
 		data.top = new FormAttachment(textColParamName, 5);
@@ -330,6 +411,11 @@ public class MeasuresDesigner {
 			public void widgetSelected (SelectionEvent e) {
 				//add or modify measure
 				KPI kpiToAdd = fillMeasure(dialog, columnName);
+				
+				if(isDefaultRes[0]){
+					Measures measures = geoDocument.getMapRenderer().getMeasures();
+					measures.setDefaultKpi(columnName);
+				}
 				KpiBO.setNewMeasure(geoDocument, kpiToAdd);
 				editor.setIsDirty(true);
 				dialog.close ();

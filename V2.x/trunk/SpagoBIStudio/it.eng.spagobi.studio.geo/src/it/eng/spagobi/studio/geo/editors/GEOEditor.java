@@ -265,6 +265,12 @@ public class GEOEditor extends EditorPart {
 		createMapCombo(sectionClient, mapGroup, form);
 
 		createDatasetTable(sectionClient, datasetGroup);
+		//enter couple of indications to the user:
+		Color color = new org.eclipse.swt.graphics.Color(sectionClient.getDisplay(), 255,0,0);
+		String infoText ="Once hierarchies are set:\n right click on 'measure' typed column to add KPI settings \n right click on 'geoid' typed column to add granularity level.";
+		Label infos = new Label(sectionClient, SWT.LEFT);		
+		infos.setText(infoText);
+		infos.setForeground(color);
 
 		createMapTable(sectionClient, mapGroup);
 		section.setClient(sectionClient);
@@ -281,8 +287,7 @@ public class GEOEditor extends EditorPart {
 
 		section0.setText("Hierarchies");
 		section0.setDescription("Define Hierarchies and Levels");
-		HierarchiesDesigner designer = new HierarchiesDesigner(sectionHier,
-				this);
+		HierarchiesDesigner designer = new HierarchiesDesigner(sectionHier, this);
 
 		geoDocument = Activator.getDefault().getGeoDocument();
 		designer.setGeoDocument(geoDocument);

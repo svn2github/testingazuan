@@ -64,6 +64,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.part.WorkbenchPart;
 
 public class HierarchiesDesigner {
@@ -261,11 +263,13 @@ public class HierarchiesDesigner {
 
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.horizontalSpan =4;
-		gd.heightHint=100;
+		gd.heightHint=150;
 		gd.minimumHeight=70;
 		gd.verticalAlignment=SWT.TOP;
+		gd.verticalSpan=1;
+		gd.grabExcessVerticalSpace=true;
 
-		final Composite hierarchiesGroup = new Composite(sectionClient, SWT.FILL);
+		final Composite hierarchiesGroup = new Composite(sectionClient, SWT.RESIZE);
 		//hierarchiesGroup.setText("Hierarchies");
 		hierarchiesGroup.setLayoutData(gd);
 		hierarchiesGroup.setLayout(sectionClient.getLayout());
@@ -273,13 +277,13 @@ public class HierarchiesDesigner {
 		final Tree hierarchiesTree = toolkit.createTree(hierarchiesGroup, SWT.NONE | SWT.V_SCROLL | SWT.H_SCROLL | SWT.SINGLE );
 		hierarchiesTree.setLayoutData(gd);
 
+		Color color = new org.eclipse.swt.graphics.Color(sectionClient.getDisplay(), 255,0,0);
 
 		if(geoDocument.getDatamartProvider().getHierarchies() == null || 
 				geoDocument.getDatamartProvider().getHierarchies().getHierarchy() == null || 
 				geoDocument.getDatamartProvider().getHierarchies().getHierarchy().size() == 0){
-			emptyTree = toolkit.createLabel(hierarchiesGroup, "empty hierarchies tree...right click here to create", SWT.CENTER);
+			emptyTree = toolkit.createLabel(hierarchiesGroup, "empty hierarchies tree...right click here to create", SWT.CENTER | SWT.TOP);
 
-			Color color = new org.eclipse.swt.graphics.Color(sectionClient.getDisplay(), 255,0,0);
 			emptyTree.setForeground(color);
 			emptyTree.setLayoutData(gd);
 			emptyTree.addListener(SWT.MouseDown, new Listener () {
@@ -290,10 +294,16 @@ public class HierarchiesDesigner {
 					}
 				}
 			});	    
+			gd = new GridData(GridData.FILL_BOTH);
+			gd.horizontalSpan =4;
+			gd.heightHint=50;
+			gd.minimumHeight=40;
+			gd.verticalSpan=1;
 			emptyTree.setLayoutData(gd);
 		}else{
 			fillHierarchiesTree(hierarchiesTree);
 		}
+
 		//mouseDoubleClick --> modify
 		hierarchiesTree.addListener(SWT.MouseDoubleClick, new Listener () {
 			public void handleEvent (Event event) {
@@ -323,7 +333,7 @@ public class HierarchiesDesigner {
 				}
 			}
 		});	    
-
+		
 		hierarchiesGroup.redraw();
 		sectionClient.getParent().redraw();
 	}
@@ -671,11 +681,6 @@ public class HierarchiesDesigner {
 	private Combo drawFeaturesNameCombo(final Shell dialog){
 		final Combo textFeature = new Combo(dialog, SWT.SINGLE | SWT.READ_ONLY);
 
-		/*		String mapLabel=editor.getSelectedMap();
-
-		if(mapLabel == null){
-			return null;
-		}*/
 		GeoFeature[] geoFeatures=null;
 
 		try{
@@ -689,29 +694,7 @@ public class HierarchiesDesigner {
 			SpagoBILogger.errorLog("Could not get features", e1);
 			MessageDialog.openError(mainComposite.getShell(), "Error", "Could not get features");
 		}
-		// get the metadata
-		/*		if(editor.getTempMapMetadataInfos().get(mapLabel)!=null){
-			geoFeatures=editor.getTempMapMetadataInfos().get(mapLabel);
-		}
-		else{
-			GeoMap geoMap = editor.getMapInfos().get(mapLabel);
-			try{
-				if(geoMap.getMapId() != -1){
-					geoFeatures=new SpagoBIServerObjects().getFeaturesByMapId(geoMap.getMapId());
-				}
-				if(geoFeatures!=null){
-					editor.getTempMapMetadataInfos().put(mapLabel, geoFeatures);
-				}
-				else{
-					SpagoBILogger.warningLog("No features returned from map with label "+mapLabel);
-					MessageDialog.openWarning(mainComposite.getShell(), "Warning", "No features returned from map with label "+mapLabel);			
-				}
-			}
-			catch (NoServerException e1) {
-				SpagoBILogger.errorLog("Could not get features associated to map with label = "+mapLabel, e1);
-				MessageDialog.openError(mainComposite.getShell(), "Error", "Could not get features associated to map with label = "+mapLabel);
-			}
-		}*/
+
 		if(geoFeatures!=null){
 			for (int i = 0; i < geoFeatures.length; i++) {
 				GeoFeature geoFeature=geoFeatures[i];

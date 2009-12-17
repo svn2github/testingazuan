@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Andrea Gioia (andrea.gioia@eng.it)
+ * @authors Andrea Gioia (andrea.gioia@eng.it), Fabio D'Ovidio (f.dovidio@inovaos.it)
  */
 public class FeaturesProviderDAOFactory {
 	

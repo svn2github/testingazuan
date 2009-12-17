@@ -41,7 +41,7 @@
   * 
   * Authors
   * 
-  * - Andrea Gioia (andrea.gioia@eng.it)
+  * - Andrea Gioia (andrea.gioia@eng.it), Fabio D'Ovidio (f.dovidio@inovaos.it)
   */
 
 Ext.ns("Sbi.georeport");
@@ -459,6 +459,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 		
 		var mapPanelConf = {
 			title: LN(this.mapName),
+			layout: 'fit',
 	       	items: {
 		        xtype: 'mapcomponent',
 		        map: this.map

@@ -30,7 +30,7 @@ import org.mapfish.geo.MfFeature;
 import org.mapfish.geo.MfGeometry;
 
 /**
- * @author Andrea Gioia (andrea.gioia@eng.it)
+ * @authors Andrea Gioia (andrea.gioia@eng.it), Fabio D'Ovidio (f.dovidio@inovaos.it)
  */
 public class SbiFeature extends MfFeature {
 	

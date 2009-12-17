@@ -68,7 +68,7 @@ public class GeoReportEngineConfig {
 	public List getIncludes() {
 		List results;
 		
-		includes = null;
+		//includes = null;
 		if(includes == null) {
 			initIncludes();
 		}

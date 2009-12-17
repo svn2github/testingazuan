@@ -79,7 +79,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 		<script language="javascript" type="text/javascript">
 
 			Sbi.template = <%=template%>;
-		
+
 			execDoc = function(docLab, role, params, dispToolbar, dispSlide,frameId, height) {
 
 				var h = height || '100%';
@@ -153,6 +153,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 		<div id="map"></div>
 	
 		</div>
+		
 		<center id="error"></center>
 		
 	 

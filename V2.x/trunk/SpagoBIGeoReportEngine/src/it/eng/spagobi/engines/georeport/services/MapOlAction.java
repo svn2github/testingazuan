@@ -56,7 +56,7 @@ import it.eng.spagobi.utilities.service.AbstractBaseServlet;
 
 
 /**
- * @author Andrea Gioia (andrea.gioia@eng.it)
+ * @authors Andrea Gioia (andrea.gioia@eng.it), Fabio D'Ovidio (f.dovidio@inovaos.it)
  */
 public class MapOlAction extends AbstractBaseServlet {
 	

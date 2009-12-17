@@ -32,7 +32,7 @@
   * 
   * Authors
   * 
-  * - Andrea Gioia (adrea.gioia@eng.it)
+  * - Andrea Gioia (adrea.gioia@eng.it), Fabio D'Ovidio (f.dovidio@inovaos.it)
   */
 
 Ext.ns("Sbi.georeport");

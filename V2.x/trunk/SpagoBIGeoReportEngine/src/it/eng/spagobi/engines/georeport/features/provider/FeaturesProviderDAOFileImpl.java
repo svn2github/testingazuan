@@ -43,7 +43,7 @@ import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
 /**
- * @author Andrea Gioia (andrea.gioia@eng.it)
+ * @authors Andrea Gioia (andrea.gioia@eng.it)
  */
 public class FeaturesProviderDAOFileImpl implements IFeaturesProviderDAO {
 

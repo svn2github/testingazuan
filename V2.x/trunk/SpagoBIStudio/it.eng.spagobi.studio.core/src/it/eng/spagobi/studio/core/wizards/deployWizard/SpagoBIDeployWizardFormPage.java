@@ -522,6 +522,16 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 	}
 
 
+	public Map<String, Integer> getDataSourceLabelIdMap() {
+		return dataSourceLabelIdMap;
+	}
+
+
+	public void setDataSourceLabelIdMap(Map<String, Integer> dataSourceLabelIdMap) {
+		this.dataSourceLabelIdMap = dataSourceLabelIdMap;
+	}
+
+
 
 
 	//	public String getContainerName() {

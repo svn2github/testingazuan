@@ -40,6 +40,7 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 	String type;
 	String labelEngine;
 	String labelDataSet;
+	String labelDataSource;	
 	String labelState;
 	boolean criptable;
 	boolean visible;
@@ -91,6 +92,11 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 			labelDataSet=formPage.getDataSetCombo().getItem(selectedDataSetIndex);
 		}
 
+		int selectedDataSourceIndex=formPage.getDataSourceCombo().getSelectionIndex();
+		if(selectedDataSourceIndex!=-1){
+			labelDataSource=formPage.getDataSourceCombo().getItem(selectedDataSourceIndex);
+		}
+		
 		int selectedStateIndex=formPage.getStateCombo().getSelectionIndex();
 		if(selectedStateIndex!=-1){
 			labelState=formPage.getStateCombo().getItem(selectedStateIndex);
@@ -145,6 +151,14 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 			}
 		}
 
+		if(labelDataSource!=null){
+			Integer dataSourceId=formPage.getDataSourceLabelIdMap().get(labelDataSource);
+			if(dataSourceId!=null){
+				newDocument.setDataSourceId(dataSourceId);		
+			}
+		}
+
+		
 		newDocument.setState(labelState);
 		newDocument.setType(type);
 

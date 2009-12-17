@@ -292,7 +292,7 @@ Ext.extend(Sbi.execution.toolbar.MetadataWindow, Ext.Window, {
             METADATA: Ext.util.JSON.encode(modifiedMetadata)
         };
         
-        Ext.MessageBox.wait('Please wait...', 'Processing');
+        Ext.MessageBox.wait(LN('sbi.execution.metadata.waitmessage'), LN('sbi.execution.metadata.waittitle'));
         Ext.Ajax.request({
             url: this.services['saveMetadataService'],
             success: function(response, options) {

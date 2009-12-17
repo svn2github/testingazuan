@@ -136,6 +136,9 @@ Sbi.locale.ln['sbi.execution.metadata.metavalue'] = 'Valore';
 Sbi.locale.ln['sbi.execution.metadata.generalmetadata'] = 'Metadati Generali (Non Editabili)';
 Sbi.locale.ln['sbi.execution.metadata.shorttextmetadata'] = 'Metadati Brevi';
 Sbi.locale.ln['sbi.execution.metadata.longtextmetadata'] = 'Metadati Lunghi';
+Sbi.locale.ln['sbi.execution.metadata.waitmessage'] = 'Attendere prego...';
+Sbi.locale.ln['sbi.execution.metadata.waittitle'] = 'Salvataggio metadati in corso';
+
 
 // Toolbar
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Invia a';

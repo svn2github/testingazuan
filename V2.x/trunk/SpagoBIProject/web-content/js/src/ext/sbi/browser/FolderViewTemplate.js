@@ -53,8 +53,14 @@ Sbi.browser.FolderViewTemplate = function(config) {
 	}
 
 	var documentTpl = '' +
-	'<div id="document-item-icon" class="document-item-icon">' + 
-	'<img src="' + Ext.BLANK_IMAGE_URL + '" class="{typeCode}-icon"></img>' +
+	'<div id="document-item-icon" class="document-item-icon">' +
+
+	'<tpl if="this.isSearchResult(summary) == true">'+
+		'<img src="' + Ext.BLANK_IMAGE_URL + '" class="{typeCode}-icon" ext:qtip="<b>{views}</b><br/>{summary}"></img>' +
+	'</tpl>'+
+	'<tpl if="this.isSearchResult(summary) == false">'+
+		'<img src="' + Ext.BLANK_IMAGE_URL + '" class="{typeCode}-icon"></img>' +
+	'</tpl>'+	    
 	'</div>' +
     '<div class="item-desc">' +
     documentAttributes +
@@ -92,18 +98,18 @@ Sbi.browser.FolderViewTemplate = function(config) {
     '</div>';
 	
 	
+
+	
+	var summaryTpl =''+
+		'<div id="summary" class="item-desc">{summary}</div>';
+	
 	var tooltip = new Ext.ToolTip({
-	    //target: 'summary',
 	    title: 'Summary',
 	    plain: true,
 	    showDelay: 0,
 	    hideDelay: 0,
 	    trackMouse: true
 	}); 
-	
-	var summaryTpl =''+
-		'<div id="summary" class="item-desc">{summary}</div>';
-	
 
 	
 	Sbi.browser.FolderViewTemplate.superclass.constructor.call(this, 
@@ -118,12 +124,8 @@ Sbi.browser.FolderViewTemplate = function(config) {
 	                '<tpl for="samples">',   
 	                	'{[engine=""]}',
 	                	'{[summary=""]}',
-	                	'<tpl if="this.isSearchResult(summary) == true">',
-	                    '<dd class="group-item" ext:qtip="{summary}">',
-	                    '</tpl>',
-	                	'<tpl if="this.isSearchResult(summary) == false">',
+	                	'{[views=""]}',
 	                    '<dd class="group-item">',
-	                    '</tpl>',
 	                        '<div class="item-control-panel">',	 
 	                        	'<tpl for="actions">',   
 	                            	'<div class="button"><img class="action-{name}" title="{description}" src="' + Ext.BLANK_IMAGE_URL + '"/></div>',

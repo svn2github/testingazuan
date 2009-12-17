@@ -188,6 +188,8 @@ public class SearchContentAction extends AbstractSpagoBIAction{
 				String biobjid = jsonobj.getString("id");
 				String summary = (String)returned.get(biobjid);
 				jsonobj.put("summary", summary);
+				String views = (String)returned.get(biobjid+"-views");
+				jsonobj.put("views", views);
 			}
 			Collection func = profile.getFunctionalities();
 			

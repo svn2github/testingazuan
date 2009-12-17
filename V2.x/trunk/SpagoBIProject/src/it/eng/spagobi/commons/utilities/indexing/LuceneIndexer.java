@@ -217,8 +217,10 @@ public class LuceneIndexer {
 	/**Method called to create or increment Lucene index created over metadata binary contents.
 	 * @param index  index file
 	 * @param create indicating whether index is to be created or updated
+	 * @throws IOException 
+	 * @throws CorruptIndexException 
 	 */
-	public void createIndex(File index) {
+	public void createIndex(File index) throws CorruptIndexException, IOException {
 		logger.debug("IN");
 		try {
 			Date start = new Date();
@@ -239,6 +241,9 @@ public class LuceneIndexer {
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
+		}finally{
+			writer.optimize();
+			writer.close();
 		}
 	}
 
@@ -325,8 +330,6 @@ public class LuceneIndexer {
 		}catch(Exception e){
 			logger.error(e.getMessage());
 		}finally{
-			writer.optimize();
-			writer.close();
 			if(bais != null){
 				bais.close();
 			}

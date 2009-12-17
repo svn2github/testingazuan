@@ -33,7 +33,9 @@ import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.apache.lucene.search.highlight.QueryScorer;
+import org.apache.lucene.search.highlight.QueryTermExtractor;
 import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
+import org.apache.lucene.search.highlight.WeightedTerm;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
@@ -82,7 +84,16 @@ public class LuceneSearcher {
             for(int i=0; i<hits.length; i++) {
     	    	ScoreDoc hit = hits[i];
     	    	Document doc = searcher.doc(hit.doc);
-    	        String biobjId = doc.get(IndexingConstants.BIOBJ_ID);    	        
+    	        String biobjId = doc.get(IndexingConstants.BIOBJ_ID);    
+    	        
+    	        String[] subobjNames = doc.getValues(IndexingConstants.SUBOBJ_NAME); 
+	    	    if(subobjNames != null && subobjNames.length != 0){
+	    	    	String views = "";
+	    	        for(int k=0; k<subobjNames.length; k++){
+	    	        	views+= subobjNames[k]+" ";
+	    	        }
+	    	        objectsToReturn.put(biobjId+"-views", views);
+    	        }
 		        String summary ="";
 		        if (highlighter != null){
 		            String[] summaries;
@@ -240,7 +251,7 @@ public class LuceneSearcher {
 	public static void main(String[] argv) {
 
 		String index = "C:\\Programmi\\resources\\idx";
-		String queryString = "subobject1";// or install for test
+		String queryString = "prova";// or install for test
 		IndexReader reader;
 		try {
 			reader = IndexReader.open(FSDirectory.open(new File(index)), true);

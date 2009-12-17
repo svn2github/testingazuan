@@ -6,10 +6,12 @@ import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.commons.utilities.indexing.LuceneIndexer;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.index.CorruptIndexException;
 
 /**Initializer class for Metadata Indexing
  * @author franceschini
@@ -44,7 +46,13 @@ public class IndexingInitializer implements InitializerIFace {
 		    if(!idxFile.exists()){
 		    	logger.debug("Creating index");
 			    LuceneIndexer indexer = new LuceneIndexer();
-			    indexer.createIndex(idxFile);
+			    try {
+					indexer.createIndex(idxFile);
+				} catch (CorruptIndexException e) {
+					logger.error("Index corrupted "+e.getMessage());
+				} catch (IOException e) {
+					logger.error(e.getMessage());
+				}
 		    }else{
 		    	logger.debug("Index already exists");
 		    }

@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.document.x;
 
+import java.io.IOException;
 import java.util.Date;
 
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
@@ -28,7 +29,9 @@ import it.eng.spagobi.chiron.serializer.MetadataJSONSerializer;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.indexing.LuceneIndexer;
 import it.eng.spagobi.tools.objmetadata.bo.ObjMetacontent;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
+import it.eng.spagobi.utilities.service.JSONAcknowledge;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -94,6 +97,14 @@ public class SaveMetadataAction extends AbstractSpagoBIAction {
 			**/
 			BIObject biObjToIndex = DAOFactory.getBIObjectDAO().loadBIObjectById(biobjectId);
 			LuceneIndexer.updateBiobjInIndex(biObjToIndex, false);
+			
+			
+			try {
+				writeBackToClient( new JSONAcknowledge() );
+			} catch (IOException e) {
+				String message = "Impossible to write back the responce to the client";
+				throw new SpagoBIEngineServiceException(getActionName(), message, e);
+			}
 			
 		} catch (Exception e) {
 			throw new SpagoBIServiceException(SERVICE_NAME, "Exception occurred while saving metadata", e);

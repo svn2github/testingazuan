@@ -50,9 +50,11 @@ Sbi.widgets.EditablePanel = function(config) {
     
     this.contentPanel = new Ext.Panel({
         html : config.html
-        , height: 246
-        ,autoScroll: true
+        , autoScroll: true
     });
+    
+    // initial state is 'view'
+    this.state = 'view';
     
     this.htmlEditor = null;
     
@@ -71,19 +73,25 @@ Sbi.widgets.EditablePanel = function(config) {
         
         this.on('render', function(panel) {
             panel.getEl().on('dblclick', function() {
-                this.htmlEditor = new Ext.form.HtmlEditor({
-                    value: this.contentPanel.body.dom.innerHTML
-                    , name: this.fieldName
-                    , width: 620
-                    , height: 246
-                });
-                this.htmlEditor.on('sync', function () {
-                    this.fireEvent('change', this, this.htmlEditor.getValue());
-                }, this);
-                this.add(this.htmlEditor);
-                this.doLayout();
-                this.remove(this.contentPanel);
-                this.doLayout();
+            	if (this.state === 'view') {
+	                this.htmlEditor = new Ext.form.HtmlEditor({
+	                    value: this.contentPanel.body.dom.innerHTML
+	                    , name: this.fieldName
+	                    , width: 620
+	                    , height: 246
+	                });
+	                this.htmlEditor.on('sync', function () {
+	                    this.fireEvent('change', this, this.htmlEditor.getValue());
+	                }, this);
+	                this.add(this.htmlEditor);
+	                this.doLayout();
+	                this.remove(this.contentPanel);
+	                this.doLayout();
+	                
+	                // state changes to 'edit'
+	                this.state = 'edit';
+            	}
+                
             }, this);
         }, this);
         
@@ -93,20 +101,24 @@ Sbi.widgets.EditablePanel = function(config) {
 
 Ext.extend(Sbi.widgets.EditablePanel, Ext.Panel, {
 
-    commitChanges: function() {
-    	if(this.htmlEditor !== undefined && this.htmlEditor !== null){
+	state: null
+	
+    , commitChanges: function() {
+    	if (this.state === 'edit') {
 	        var newHtml = this.htmlEditor.getValue();
 	        if(this.contentPanel !== undefined && this.contentPanel !== null){
 		        this.contentPanel = new Ext.Panel({
 		            html : newHtml
-		            , height: 246
-		            ,autoScroll: true
+		            , autoScroll: true
 		        });   
 		        this.add(this.contentPanel);
 		        this.doLayout();
 	        }
 	        this.remove(this.htmlEditor);
 	        this.doLayout();
+	        
+            // state returns to 'view'
+            this.state = 'view';
         }       
     }
     

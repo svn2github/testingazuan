@@ -1,23 +1,3 @@
-/**
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
- **/
 package it.eng.spagobi.studio.geo.editors;
 
 import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
@@ -717,7 +697,7 @@ public class GEOEditor extends EditorPart {
 							selection[0].getText());
 
 					if (col != null
-							&& col.getType().equalsIgnoreCase("measures")) {
+							&& col.getType().equalsIgnoreCase("measure")) {
 						measuresDesigner.createMeasuresShell(sectionClient, col
 								.getColumnId());
 					}else if (col != null
@@ -1135,12 +1115,12 @@ public class GEOEditor extends EditorPart {
 
 			item.setText(DATASET_NAME, dsmf.getName());
 			item.setText(DATASET_CLASS, dsmf.getClassName());
-			// combo per geoid, measures
+			// combo per geoid, measure
 			final Combo comboSel = new Combo(datasetTable, SWT.SIMPLE
 					| SWT.DROP_DOWN | SWT.READ_ONLY);
 			//geoid is unique
 			comboSel.add("geoid");
-			comboSel.add("measures");
+			comboSel.add("measure");
 			//comboSel.add("geocd");
 			for (int k = 0; k < comboSel.getItemCount(); k++) {
 				String typeText = comboSel.getItem(k);
@@ -1151,7 +1131,7 @@ public class GEOEditor extends EditorPart {
 			}
 			if (comboSel.getText() != null) {
 				item.setText(2, comboSel.getText());
-				if (comboSel.getText().equalsIgnoreCase("measures")) {
+				if (comboSel.getText().equalsIgnoreCase("measure")) {
 					item.setImage(0, measureIcon.createImage());
 					
 				} else if(comboSel.getText().equalsIgnoreCase("geoid")){
@@ -1172,7 +1152,7 @@ public class GEOEditor extends EditorPart {
 					item.setText(2, comboSel.getText());
 					Column col = ColumnBO.getColumnByName(geoDocument,
 							item.getText());
-					if (comboSel.getText().equalsIgnoreCase("measures")) {
+					if (comboSel.getText().equalsIgnoreCase("measure")) {
 						item.setImage(0, measureIcon.createImage());
 					} else if(comboSel.getText().equalsIgnoreCase("geoid")){
 						//check if another geoid is already defined

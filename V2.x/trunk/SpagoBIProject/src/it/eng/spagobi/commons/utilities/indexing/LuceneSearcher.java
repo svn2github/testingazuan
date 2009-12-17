@@ -7,6 +7,7 @@ import it.eng.spagobi.tools.objmetadata.bo.ObjMetacontent;
 import it.eng.spagobi.tools.objmetadata.bo.ObjMetadata;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +17,8 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
@@ -31,6 +34,7 @@ import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.apache.lucene.search.highlight.QueryScorer;
 import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
+import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
 public class LuceneSearcher {
@@ -233,6 +237,33 @@ public class LuceneSearcher {
 		return objectsToReturn;
 
 	}
+	public static void main(String[] argv) {
 
+		String index = "C:\\Programmi\\resources\\idx";
+		String queryString = "subobject1";// or install for test
+		IndexReader reader;
+		try {
+			reader = IndexReader.open(FSDirectory.open(new File(index)), true);
+			
+			IndexSearcher searcher = new IndexSearcher(reader);
+			String[] fields = { IndexingConstants.CONTENTS , IndexingConstants.SUBOBJ_NAME, IndexingConstants.SUBOBJ_DESCR};
+			searchIndex(searcher, queryString, index, fields, null);
+
+			// searcher can only be closed when there
+			// is no need to access the documents any more.
+			searcher.close();
+		} catch (CorruptIndexException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} // only searching, so
+		catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 
 }

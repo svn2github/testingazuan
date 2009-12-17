@@ -112,7 +112,7 @@ public class SearchContentAction extends AbstractSpagoBIAction{
 				}else{//SEARCH IN CATEGORIES DOC
 					//get categories name
 					metaDataToSearch = attributes;
-					fieldsToSearch.add(IndexingConstants.METADATA);
+					//fieldsToSearch.add(IndexingConstants.METADATA);
 					fieldsToSearch.add(IndexingConstants.CONTENTS);
 				}
 				

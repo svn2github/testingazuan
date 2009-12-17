@@ -392,9 +392,9 @@ public class LuceneIndexer {
 				for(int i =0; i<subobjects.size(); i++){
 					SubObject subObj = subobjects.get(i);
 					doc.add(new Field(IndexingConstants.SUBOBJ_NAME, subObj.getName(),
-							Field.Store.NO, Field.Index.ANALYZED));
+							Field.Store.YES, Field.Index.ANALYZED));
 					doc.add(new Field(IndexingConstants.SUBOBJ_DESCR, subObj.getDescription(),
-							Field.Store.NO, Field.Index.ANALYZED));
+							Field.Store.YES, Field.Index.ANALYZED));
 				}
 			}
 		} catch (EMFUserError e) {

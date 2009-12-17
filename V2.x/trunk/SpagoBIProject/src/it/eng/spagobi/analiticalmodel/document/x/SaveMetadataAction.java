@@ -87,12 +87,13 @@ public class SaveMetadataAction extends AbstractSpagoBIAction {
 					aObjMetacontent.setLastChangeDate(new Date());
 					DAOFactory.getObjMetacontentDAO().modifyObjMetacontent(aObjMetacontent);
 				}
-				/*
-				*indexes biobject by modifying document in index
-				**/
-				BIObject biObjToIndex = DAOFactory.getBIObjectDAO().loadBIObjectById(biobjectId);
-				LuceneIndexer.updateBiobjInIndex(biObjToIndex, false);
+
 			}		
+			/*
+			*indexes biobject by modifying document in index
+			**/
+			BIObject biObjToIndex = DAOFactory.getBIObjectDAO().loadBIObjectById(biobjectId);
+			LuceneIndexer.updateBiobjInIndex(biObjToIndex, false);
 			
 		} catch (Exception e) {
 			throw new SpagoBIServiceException(SERVICE_NAME, "Exception occurred while saving metadata", e);

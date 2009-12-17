@@ -303,6 +303,14 @@ public class UserUtilities {
 		
     }
     
+    public static String getUserId(HttpServletRequest req){
+        logger.debug("IN");
+        SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
+        String userId = userProxy.readUserIdentifier(req);
+        logger.debug("OUT,userId:"+userId);
+        return userId;
+    }
+    
 	private static Role getVirtualRole(String[] roles) throws Exception {
 		logger.debug("IN");
 		Role virtualRole = new Role("", "");

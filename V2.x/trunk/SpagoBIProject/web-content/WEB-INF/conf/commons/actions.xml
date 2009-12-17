@@ -63,6 +63,9 @@
  <ACTION name="CHECK_USER_PROFILE_EXISTENCE" class="it.eng.spagobi.commons.services.CheckUserProfileAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION> 
+ <ACTION name="LOGIN_ACTION_WEB" class="it.eng.spagobi.commons.services.LoginActionWeb" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION> 
  
 </ACTIONS>
 

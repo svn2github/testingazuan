@@ -412,11 +412,13 @@ public class MeasuresDesigner {
 				//add or modify measure
 				KPI kpiToAdd = fillMeasure(dialog, columnName);
 				
+				KpiBO.setNewMeasure(geoDocument, kpiToAdd);
 				if(isDefaultRes[0]){
 					Measures measures = geoDocument.getMapRenderer().getMeasures();
-					measures.setDefaultKpi(columnName);
+					if(measures != null){
+						measures.setDefaultKpi(columnName);
+					}
 				}
-				KpiBO.setNewMeasure(geoDocument, kpiToAdd);
 				editor.setIsDirty(true);
 				dialog.close ();
 			}

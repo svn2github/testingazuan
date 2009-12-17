@@ -393,7 +393,7 @@ public class GEOEditor extends EditorPart {
 		///datasource
 		if(metadata != null){
 			Dataset dataset = datasetInfos.get(metadata.getDataset());
-			if(dataset != null){
+/*			if(dataset != null){
 				Integer datasourceId = dataset.getJdbcDataSourceId();
 				
 				SpagoBIServerObjects sbso=new SpagoBIServerObjects();
@@ -411,7 +411,7 @@ public class GEOEditor extends EditorPart {
 				} catch (NoServerException e3) {
 					SpagoBILogger.errorLog(e3.getMessage(), e3);
 				}
-			}
+			}*/
 		}
 		datasetCombo.setLayoutData(gd);
 
@@ -440,8 +440,8 @@ public class GEOEditor extends EditorPart {
 					dataStoreMetadata = tempDsMetadataInfos.get(datasetLabel);
 				} else {
 					Dataset dataset = datasetInfos.get(datasetLabel);
-					it.eng.spagobi.studio.geo.editors.model.geo.Dataset datasetGeo = DatasetBO
-							.setNewDataset(geoDocument, dataset.getJdbcQuery());
+/*					it.eng.spagobi.studio.geo.editors.model.geo.Dataset datasetGeo = DatasetBO
+							.setNewDataset(geoDocument, dataset.getJdbcQuery());*/
 					Integer datasourceId = dataset.getJdbcDataSourceId();
 					
 					SpagoBIServerObjects sbso=new SpagoBIServerObjects();
@@ -450,12 +450,12 @@ public class GEOEditor extends EditorPart {
 						sdkdataSource = sbso.getDataSourceById(datasourceId);
 						sdkdataSource.getUrlConnection();
 						
-						Datasource datasource = DatasourceBO.setNewDatasource(geoDocument);
+/*						Datasource datasource = DatasourceBO.setNewDatasource(geoDocument);
 						datasource.setDriver(sdkdataSource.getDriver());
 						datasource.setPassword(sdkdataSource.getPwd());
 						datasource.setType("connection");
 						datasource.setUrl(sdkdataSource.getUrlConnection());
-						datasource.setUser(sdkdataSource.getName());
+						datasource.setUser(sdkdataSource.getName());*/
 					} catch (NoServerException e3) {
 						SpagoBILogger.errorLog(e3.getMessage(), e3);
 					}

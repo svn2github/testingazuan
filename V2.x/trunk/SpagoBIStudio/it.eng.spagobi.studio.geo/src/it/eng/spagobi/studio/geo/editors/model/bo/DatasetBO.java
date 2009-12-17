@@ -26,7 +26,7 @@ import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 
 public class DatasetBO {
 	
-	public static Dataset setNewDataset(GEODocument geoDocument,
+/*	public static Dataset setNewDataset(GEODocument geoDocument,
 			String datasetQuery) {
 		DatamartProvider dmProvider = geoDocument.getDatamartProvider();
 		Dataset dataset =dmProvider.getDataset();
@@ -41,6 +41,6 @@ public class DatasetBO {
 		}
 		dataset.setQuery(datasetQuery);
 		return dataset;
-	}	
+	}	*/
 
 }

@@ -33,7 +33,7 @@ public class DatamartProvider  implements Serializable {
 	private String level;
 	private Metadata metadata;
 	private Hierarchies hierarchies;
-	private Dataset dataset;
+	//private Dataset dataset;
 	private CrossNavigation crossNavigation;
 	
 	public String getClassName() {
@@ -66,12 +66,12 @@ public class DatamartProvider  implements Serializable {
 	public void setHierarchies(Hierarchies hierarchies) {
 		this.hierarchies = hierarchies;
 	}
-	public Dataset getDataset() {
+/*	public Dataset getDataset() {
 		return dataset;
 	}
 	public void setDataset(Dataset dataset) {
 		this.dataset = dataset;
-	}
+	}*/
 	public CrossNavigation getCrossNavigation() {
 		return crossNavigation;
 	}

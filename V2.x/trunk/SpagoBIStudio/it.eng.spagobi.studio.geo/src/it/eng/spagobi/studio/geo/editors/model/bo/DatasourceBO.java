@@ -26,7 +26,7 @@ import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
 
 public class DatasourceBO {
 
-	public static void addDatasource(Datasource datasource, Dataset dataset, String type,
+/*	public static void addDatasource(Datasource datasource, Dataset dataset, String type,
 			String driver, String url, String user, String password) {
 		datasource.setDriver(driver);
 		datasource.setPassword(password);
@@ -47,6 +47,6 @@ public class DatasourceBO {
 			dataset.setDatasource(datasource);
 		}
 		return datasource;
-	}
+	}*/
 
 }

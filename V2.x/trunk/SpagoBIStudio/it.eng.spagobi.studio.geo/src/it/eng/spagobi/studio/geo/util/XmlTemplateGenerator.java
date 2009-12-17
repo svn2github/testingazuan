@@ -20,13 +20,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.studio.geo.util;
 
-import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.studio.geo.editors.model.geo.Colours;
 import it.eng.spagobi.studio.geo.editors.model.geo.Column;
 import it.eng.spagobi.studio.geo.editors.model.geo.CrossNavigation;
 import it.eng.spagobi.studio.geo.editors.model.geo.DatamartProvider;
-import it.eng.spagobi.studio.geo.editors.model.geo.Dataset;
-import it.eng.spagobi.studio.geo.editors.model.geo.Datasource;
 import it.eng.spagobi.studio.geo.editors.model.geo.Defaults;
 import it.eng.spagobi.studio.geo.editors.model.geo.Format;
 import it.eng.spagobi.studio.geo.editors.model.geo.GEODocument;
@@ -103,8 +100,8 @@ public class XmlTemplateGenerator {
 		xstream.useAttributeFor(LinkParam.class, "type");
 		xstream.aliasField("type", LinkParam.class, "type");
 
-
-		xstream.aliasField("DATASET", DatamartProvider.class, "dataset"); 
+		xstream.omitField(DatamartProvider.class, "DATASET");
+/*		xstream.aliasField("DATASET", DatamartProvider.class, "dataset"); 
 		xstream.aliasField("QUERY", Dataset.class, "query");
 
 		xstream.aliasField("DATASOURCE", Dataset.class, "datasource");
@@ -117,7 +114,7 @@ public class XmlTemplateGenerator {
 		xstream.useAttributeFor(Datasource.class, "user");
 		xstream.aliasField("user", Datasource.class, "user");
 		xstream.useAttributeFor(Datasource.class, "password");
-		xstream.aliasField("password", Datasource.class, "password");
+		xstream.aliasField("password", Datasource.class, "password");*/
 
 		xstream.aliasField("METADATA", DatamartProvider.class, "metadata"); 
 		xstream.useAttributeFor(Metadata.class, "dataset");

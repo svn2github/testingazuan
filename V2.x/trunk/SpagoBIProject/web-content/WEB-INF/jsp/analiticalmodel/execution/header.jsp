@@ -315,13 +315,6 @@ if (toolbarIsVisible) {
 				<% } %>
 				<% if (virtualRole.isAbleToSeeMetadata()) { %>
 				<li>
-					<a id="metadata_button<%= uuid %>" href='javascript:void(0);'>
-						<img width="22px" height="22px" title='<spagobi:message key = "SBISet.objects.captionMetadata" />'
-							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/editTemplate.jpg", currTheme)%>'
-							alt='<spagobi:message key = "SBISet.objects.captionMetadata" />' />
-					</a>
-				</li>
-				<li>
 					<a id="rating_button<%= uuid %>" href='javascript:void(0);'>
 						<img width="22px" height="22px" title='<spagobi:message key = "metadata.Rating" />'
 							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/rating.png", currTheme)%>'
@@ -889,49 +882,6 @@ if (toolbarIsVisible) {
 	</script>
 	<% } %>
 	<%-- end notes --%>
-	
-	<%-- Scripts for metadata window --%>
-	<% if (virtualRole.isAbleToSeeMetadata()) { %>
-	<script>
-	var win_metadata_<%= uuid %>;
-	Ext.get('metadata_button<%= uuid %>').on('click', function(){
-		if(!win_metadata_<%= uuid %>) {
-			win_metadata_<%= uuid %> = new Ext.Window({
-				id:'win_metadata_<%= uuid %>',
-				bodyCfg: {
-					tag:'div',
-					cls:'x-panel-body',
-					children:[{
-						tag:'iframe',
-	      					src: '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+"&PAGE=" + MetadataBIObjectModule.MODULE_PAGE + "&LIGHT_NAVIGATOR_DISABLED=true&MESSAGEDET=" + ObjectsTreeConstants.METADATA_SELECT + "&OBJECT_ID=" + obj.getId().toString() %>',
-	      					frameBorder:0,
-	      					width:'100%',
-	      					height:'100%',
-	      					style: {overflow:'auto'}  
-	 						}]
-				},
-				layout:'fit',
-				width:700,
-				height:400,
-				closeAction:'hide',
-				plain: true,
-				title: '<spagobi:message key = "SBISet.objects.captionMetadata" />'
-			});
-		};
-		<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){ %>
-		changeDivDisplay('divIframe<%= uuid %>','hidden');
-		<% } %>
-		win_metadata_<%= uuid %>.show();
-		<% if  ((outputType!= null && outputType.equals("PDF")) || obj.getBiObjectTypeCode().equals("MAP")){%>
-		win_metadata_<%= uuid %>.on('beforehide', function() {
-			changeDivDisplay('divIframe<%= uuid %>','visible');
-			return true;
-		});
-		<% } %>
-	});
-	</script>
-	<% } %>
-	<%-- End scripts for metadata window --%>
 	
 	<%-- Scripts for rating window --%>
 	<% if (virtualRole.isAbleToSeeMetadata()) { %>

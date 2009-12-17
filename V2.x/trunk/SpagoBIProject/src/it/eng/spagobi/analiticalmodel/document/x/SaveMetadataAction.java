@@ -22,7 +22,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.analiticalmodel.document.x;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.util.Date;
+
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.chiron.serializer.MetadataJSONSerializer;
@@ -32,10 +39,6 @@ import it.eng.spagobi.tools.objmetadata.bo.ObjMetacontent;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
-
-import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * 
@@ -65,6 +68,10 @@ public class SaveMetadataAction extends AbstractSpagoBIAction {
 			} catch (NumberFormatException e) {}
 			logger.debug("Subobject id = " + subobjectId);
 			String jsonEncodedMetadata = getAttributeAsString( METADATA );
+			CharsetDecoder decoder=Charset.forName("UTF-8").newDecoder();
+			jsonEncodedMetadata=decoder.decode(ByteBuffer.wrap(jsonEncodedMetadata.getBytes())).toString();
+
+			
 			logger.debug(METADATA + " = [" + jsonEncodedMetadata + "]");
 			JSONArray metadata = new JSONArray(jsonEncodedMetadata);
 			for (int i = 0; i < metadata.length(); i++) {					

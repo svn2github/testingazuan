@@ -154,7 +154,6 @@ public class LuceneIndexer {
 							logger.debug("metadata-->re-add doc to index::"+biObj.getId().intValue());
 							//re-add document to index
 							Document doc = new Document();
-							addBiobjFieldsToDocument(doc, biObj.getId());
 							addSubobjFieldsToDocument(doc, biObj.getId());
 							addFieldsToDocument(doc, String.valueOf(binId.intValue()), biObj.getId(),objMetadata.getName(),domain,htmlContent, content);
 							writer.addDocument(doc);
@@ -326,6 +325,8 @@ public class LuceneIndexer {
 		}catch(Exception e){
 			logger.error(e.getMessage());
 		}finally{
+			writer.optimize();
+			writer.close();
 			if(bais != null){
 				bais.close();
 			}
@@ -350,7 +351,7 @@ public class LuceneIndexer {
 				Field.Index.NOT_ANALYZED));
 		doc.add(new Field(IndexingConstants.METADATA, metaName,
 				Field.Store.YES,
-				Field.Index.ANALYZED));
+				Field.Index.NOT_ANALYZED));
 		if (domain.getValueCd().equalsIgnoreCase(LONG_TEXT)) { // index
 																// html
 																// binary
@@ -358,12 +359,14 @@ public class LuceneIndexer {
 			doc.add(new Field(IndexingConstants.CONTENTS, htmlContent,
 					Field.Store.NO, Field.Index.ANALYZED));
 			logger.info("adding html binary content " + doc.get(IndexingConstants.UID));
+			logger.info("-> " + htmlContent);
 		} else if (domain.getValueCd().equalsIgnoreCase(
 				SHORT_TEXT)) {// index simple text binary
 								// content
 			doc.add(new Field(IndexingConstants.CONTENTS, new String(content, "UTF-8"),
 					Field.Store.NO, Field.Index.ANALYZED));
 			logger.info("adding simple text binary content " + doc.get(IndexingConstants.UID));
+			logger.info("-> " + new String(content, "UTF-8"));
 		}
 		addBiobjFieldsToDocument(doc, biobjId);
 	}

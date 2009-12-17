@@ -91,8 +91,20 @@ Sbi.browser.FolderViewTemplate = function(config) {
         folderAttributes +
     '</div>';
 	
+	
+	var tooltip = new Ext.ToolTip({
+	    //target: 'summary',
+	    title: 'Summary',
+	    plain: true,
+	    showDelay: 0,
+	    hideDelay: 0,
+	    trackMouse: true
+	}); 
+	
 	var summaryTpl =''+
 		'<div id="summary" class="item-desc">{summary}</div>';
+	
+
 	
 	Sbi.browser.FolderViewTemplate.superclass.constructor.call(this, 
 			 '<div id="sample-ct">',
@@ -107,7 +119,7 @@ Sbi.browser.FolderViewTemplate = function(config) {
 	                	'{[engine=""]}',
 	                	'{[summary=""]}',
 	                	'<tpl if="this.isSearchResult(summary) == true">',
-	                    '<dd class="group-item-search">',
+	                    '<dd class="group-item" ext:qtip="{summary}">',
 	                    '</tpl>',
 	                	'<tpl if="this.isSearchResult(summary) == false">',
 	                    '<dd class="group-item">',
@@ -121,10 +133,6 @@ Sbi.browser.FolderViewTemplate = function(config) {
 	                        '<tpl if="this.exists(engine) == true">',
 	                        	documentTpl,
 	                        '</tpl>',
-	                        // -- SUMMARY -----------------------------------------------
-	                    	'<tpl if="this.isSearchResult(summary) == true">',
-	                    		summaryTpl,
-		                	'</tpl>',
 	                        // -- FOLDER -----------------------------------------------
 	                        '<tpl if="this.exists(engine) == false">',
 	                        	folderTpl,
@@ -151,7 +159,7 @@ Sbi.browser.FolderViewTemplate = function(config) {
 	        }
 	);
 }; 
-    
+   
     
 Ext.extend(Sbi.browser.FolderViewTemplate, Ext.XTemplate, {
 	

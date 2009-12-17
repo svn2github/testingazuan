@@ -116,6 +116,7 @@ public class SimpleDial extends DialCharts{
 			}
 			else {
 				logger.error("increment not defined");
+				setIncrement(Double.valueOf(1.0).doubleValue());
 			}
 			if(confParameters.get(MINOR_TICK)!=null){	
 				String minorTickCount=(String)confParameters.get(MINOR_TICK);

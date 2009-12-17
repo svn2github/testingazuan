@@ -42,13 +42,16 @@ import com.tonbeller.jpivot.mondrian.MondrianModel;
  *     &lt;/DESCRIPTION&gt;<br/>
  * 	  &lt;PARAMETERS&gt;<br/>
  * 	   &lt;PARAMETER name="family" scope="relative" dimension="Product" hierarchy="[Product]" level="[Product].[Product Family]" /&gt;<br/>
- *      &lt;PARAMETER name="city" scope="relative" dimension="Region" hierarchy="[Region]" level="[Region].[Sales City]" /&gt;<br/>
+ *      &lt;PARAMETER name="city" scope="relative" dimension="Region" hierarchy="[Region]" level="[Region].[Sales City]" property="code" /&gt;<br/>
  * 	  &lt;/PARAMETERS&gt;<br/>
  * 	 &lt;/TARGET&gt;<br/>
  * 	&lt;/CROSS_NAVIGATION&gt;<br/>
  * 
  * @author Zerbetto Davide (davide.zerbetto@eng.it)
- *
+ * 
+ * DATE            CONTRIBUTOR/DEVELOPER                        NOTE
+ * 17-12-2009      Zerbetto Davide/Gilles CAFIERO (G2C)			parameter value can be retrieved by a member property
+ * 
  */
 public class SpagoBICrossNavigationConfig {
 
@@ -100,7 +103,7 @@ public class SpagoBICrossNavigationConfig {
 	
 	private String getCrossNavigationUrl(Target target, Cell cell, MondrianModel model) {
 		logger.debug("IN");
-		StringBuffer buffer = new StringBuffer("parent.execCrossNavigation(this.name, '" 
+		StringBuffer buffer = new StringBuffer("parent.execCrossNavigation(window.name, '" 
 				+ StringEscapeUtils.escapeJavaScript(target.documentLabel) + "', '");
 		String query = model.getCurrentMdx();
 		Connection monConnection = model.getConnection();
@@ -140,6 +143,7 @@ public class SpagoBICrossNavigationConfig {
 		String dimensionName = parameter.dimension;
 		String hierarchyName = parameter.hierarchy;
 		String levelName = parameter.level;
+		String propertyName = parameter.property;
 		Dimension dimension = getDimension(cube, dimensionName);
 		if (dimension == null) {
 			logger.error("Dimension " + dimensionName + " not found in cube " + cube.getName() + "Returning null");
@@ -148,7 +152,11 @@ public class SpagoBICrossNavigationConfig {
 		Member member = cell.getContextMember(dimension);
 		Hierarchy hierarchy = member.getHierarchy();
 		if (hierarchy.getUniqueName().equals(hierarchyName)) {
-			value = getLevelValue(member, levelName);
+			if (propertyName == null || propertyName.trim().equals("")) {
+				value = getLevelValue(member, levelName);
+			} else {
+				value = getMemberPropertyValue(member, propertyName);
+			}
 		}
 		return value;
 	}
@@ -189,6 +197,15 @@ public class SpagoBICrossNavigationConfig {
 		return toReturn;
 	}
 	
+	private String getMemberPropertyValue(Member member, String propertyName) {
+		String toReturn = null;
+			Object propertyNameValue = member.getPropertyValue(propertyName, false);	
+			if (propertyNameValue != null) {
+				toReturn  = propertyNameValue.toString();
+			}
+		return toReturn;
+	}
+	
 	protected class Target {
 		String documentLabel;
 		String customizedView;
@@ -224,6 +241,8 @@ public class SpagoBICrossNavigationConfig {
 		String dimension;
 		String hierarchy;
 		String level;
+		String property;
+		
 		TargetParameter(Node node) {
 			name = node.valueOf("@name");
 			isAbsolute = node.valueOf("@scope").trim().equalsIgnoreCase("absolute");
@@ -234,6 +253,7 @@ public class SpagoBICrossNavigationConfig {
 				hierarchy = node.valueOf("@hierarchy");
 				level = node.valueOf("@level");
 			}
+			property = node.valueOf("@property");
 		}
 	}
 	

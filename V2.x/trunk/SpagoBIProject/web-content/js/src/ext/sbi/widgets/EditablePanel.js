@@ -49,7 +49,7 @@ Sbi.widgets.EditablePanel = function(config) {
     this.fieldName = config.fieldName || '';
     
     this.contentPanel = new Ext.Panel({
-        html : config.html
+        html : '<div class="x-editable-panel">' + config.html + '</div>'
         , autoScroll: true
     });
     
@@ -75,10 +75,11 @@ Sbi.widgets.EditablePanel = function(config) {
             panel.getEl().on('dblclick', function() {
             	if (this.state === 'view') {
 	                this.htmlEditor = new Ext.form.HtmlEditor({
-	                    value: this.contentPanel.body.dom.innerHTML
+	                    value: this.contentPanel.body.dom.childNodes[0].innerHTML
 	                    , name: this.fieldName
 	                    , width: 620
 	                    , height: 246
+	                    , enableLists: false
 	                });
 	                this.htmlEditor.on('sync', function () {
 	                    this.fireEvent('change', this, this.htmlEditor.getValue());
@@ -87,6 +88,10 @@ Sbi.widgets.EditablePanel = function(config) {
 	                this.doLayout();
 	                this.remove(this.contentPanel);
 	                this.doLayout();
+	                
+	                // workaround: in IE the double-click does not make the editing cursor appear (this happens very often)
+	                this.htmlEditor.focus(); 
+	                
 	                
 	                // state changes to 'edit'
 	                this.state = 'edit';
@@ -108,7 +113,7 @@ Ext.extend(Sbi.widgets.EditablePanel, Ext.Panel, {
 	        var newHtml = this.htmlEditor.getValue();
 	        if(this.contentPanel !== undefined && this.contentPanel !== null){
 		        this.contentPanel = new Ext.Panel({
-		            html : newHtml
+		            html : '<div class="x-editable-panel">' + newHtml + '</div>'
 		            , autoScroll: true
 		        });   
 		        this.add(this.contentPanel);

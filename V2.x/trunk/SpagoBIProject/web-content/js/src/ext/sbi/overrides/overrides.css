@@ -26,3 +26,12 @@ http://extjs.com/forum/showthread.php?p=282928#post282928
 .x-grid3 table {
     table-layout:fixed;
 }
+
+
+/* 
+See Sbi.widgets.EditablePanel
+The Ext.form.HtmlEditor retrieves <STRONG> for bold font weight and <EM> for italic font style in IE, but those tags are not interpreted by the 
+browser as expected in the panel content ('view' state of the EditablePanel).
+ */
+.x-editable-panel strong, .x-editable-panel b, .x-editable-panel strong *, .x-editable-panel b * { font-weight: bold !important; }
+.x-editable-panel em, .x-editable-panel i, .x-editable-panel em *, .x-editable-panel i * { font-style: italic !important; }

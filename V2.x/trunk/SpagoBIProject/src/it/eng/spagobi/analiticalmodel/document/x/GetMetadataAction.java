@@ -76,9 +76,7 @@ public class GetMetadataAction extends AbstractSpagoBIAction {
 			Integer subObjectId = null;
 			try {
 				subObjectId = this.getAttributeAsInteger(SUBOBJECT_ID);
-			} catch (NumberFormatException e) {
-				logger.error("Number format exception",e);
-			}
+			} catch (NumberFormatException e) {}
 			logger.debug("Subobject id = " + subObjectId);
 			
 			List metaDataAndContents = new ArrayList();

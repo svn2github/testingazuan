@@ -50,20 +50,20 @@ Sbi.widgets.EditablePanel = function(config) {
     
     this.contentPanel = new Ext.Panel({
         html : '<div class="x-editable-panel">' + config.html + '</div>'
-        , autoScroll: true
+        , layout: 'fit'
+        , autoScroll: false
     });
+    delete config.html;
     
     // initial state is 'view'
     this.state = 'view';
     
     this.htmlEditor = null;
     
-    var c = {
-        title : config.title
-        , items : [this.contentPanel]
-        , height : config.height
-        //, autoScroll: true
-    };
+    var c = Ext.apply({}, config, {
+        items : [this.contentPanel]
+        , autoScroll: true
+    });
     
     Sbi.widgets.EditablePanel.superclass.constructor.call(this, c);
     
@@ -77,10 +77,9 @@ Sbi.widgets.EditablePanel = function(config) {
 	                this.htmlEditor = new Ext.form.HtmlEditor({
 	                    value: this.contentPanel.body.dom.childNodes[0].innerHTML
 	                    , name: this.fieldName
-	                    , width: 620
-	                    , height: 246
 	                    , enableLists: false
 	                });
+	                this.htmlEditor.setSize(this.getSize());
 	                this.htmlEditor.on('sync', function () {
 	                    this.fireEvent('change', this, this.htmlEditor.getValue());
 	                }, this);
@@ -91,7 +90,6 @@ Sbi.widgets.EditablePanel = function(config) {
 	                
 	                // workaround: in IE the double-click does not make the editing cursor appear (this happens very often)
 	                this.htmlEditor.focus(); 
-	                
 	                
 	                // state changes to 'edit'
 	                this.state = 'edit';
@@ -114,7 +112,7 @@ Ext.extend(Sbi.widgets.EditablePanel, Ext.Panel, {
 	        if(this.contentPanel !== undefined && this.contentPanel !== null){
 		        this.contentPanel = new Ext.Panel({
 		            html : '<div class="x-editable-panel">' + newHtml + '</div>'
-		            , autoScroll: true
+		            , layout: 'fit'
 		        });   
 		        this.add(this.contentPanel);
 		        this.doLayout();

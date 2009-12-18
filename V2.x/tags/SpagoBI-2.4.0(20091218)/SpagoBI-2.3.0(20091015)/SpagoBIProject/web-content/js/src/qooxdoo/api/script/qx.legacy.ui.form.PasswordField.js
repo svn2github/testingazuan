@@ -1,1 +1,0 @@
-{type:"class",attributes:{"hasError":"true","name":"PasswordField","hasWarning":"true","packageName":"qx.legacy.ui.form","superClass":"qx.legacy.ui.form.TextField","fullName":"qx.legacy.ui.form.PasswordField","type":"class"},children:[{type:"errors",children:[{type:"error",attributes:{"msg":"Class documentation is missing.","column":"16","line":"21"}}]}]}

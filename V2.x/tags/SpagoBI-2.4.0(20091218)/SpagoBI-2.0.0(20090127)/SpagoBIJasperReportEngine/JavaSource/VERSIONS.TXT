@@ -1,2 +1,0 @@
-SpagoBI version to be used with this engine: 2.0.0
-Included Jasper Report: 3.1.3

@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-
-Name: sbi.security.ldap-2.2.0.jar
-Implementation-Title: SpagoBILdapSecurityProvider
-Implementation-Version: 2.2.0 
-

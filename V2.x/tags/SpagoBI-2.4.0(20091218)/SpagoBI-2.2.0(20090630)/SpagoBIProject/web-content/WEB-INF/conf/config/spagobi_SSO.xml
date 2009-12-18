@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<SPAGOBI_SSO> 
-    <INTEGRATION_CLASS_JNDI>java://comp/env/spagobi_sso_class</INTEGRATION_CLASS_JNDI>
-	<ACTIVE>false</ACTIVE>
-	<PASS>PASS</PASS>  
-    <SECURITY_LOGOUT_URL>https://localhost:8443/exo-cas-2/logout</SECURITY_LOGOUT_URL>
-</SPAGOBI_SSO>

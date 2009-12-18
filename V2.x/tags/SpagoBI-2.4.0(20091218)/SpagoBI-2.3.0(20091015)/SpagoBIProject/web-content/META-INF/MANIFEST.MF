@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-
-Name: SpagoBI.war
-Implementation-Title: SpagoBI
-Implementation-Version: 2.3.0
-
-

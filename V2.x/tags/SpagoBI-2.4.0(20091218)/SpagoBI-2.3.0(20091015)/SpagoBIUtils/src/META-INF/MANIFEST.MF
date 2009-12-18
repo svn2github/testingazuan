@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-
-Name: sbi.utils-2.2.0.jar
-Implementation-Title: SpagoBIUtils
-Implementation-Version: 2.2.0
-

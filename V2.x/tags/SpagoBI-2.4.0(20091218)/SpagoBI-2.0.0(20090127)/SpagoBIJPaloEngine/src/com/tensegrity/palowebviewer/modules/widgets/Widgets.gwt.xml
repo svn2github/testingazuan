@@ -1,7 +1,0 @@
-<module>
-	<inherits name='com.google.gwt.user.User'/>
-	<inherits name='com.tensegrity.palowebviewer.modules.util.Util'/>
-
- 	<entry-point class='com.tensegrity.palowebviewer.modules.widgets.client.WidgetsEntryPoint'/>
- 	
-</module>

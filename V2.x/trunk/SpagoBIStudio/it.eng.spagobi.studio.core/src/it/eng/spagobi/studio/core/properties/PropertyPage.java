@@ -29,6 +29,7 @@ import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.DataSourcesSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
 import it.eng.spagobi.sdk.proxy.EnginesServiceProxy;
+import it.eng.spagobi.studio.core.exceptions.NoDocumentException;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 import it.eng.spagobi.studio.core.util.BiObjectUtilities;
@@ -62,6 +63,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchPropertyPage;
+import org.eclipse.ui.PlatformUI;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -97,6 +99,7 @@ IWorkbenchPropertyPage {
 	public static QualifiedName MADE_WITH_STUDIO = new QualifiedName("made_with_studio", "Created With SpagoBi Studio");
 
 	private ProgressMonitorPart monitor;
+	public final NoDocumentException noDocumentException=new NoDocumentException();
 
 	Integer documentId;
 	Group docGroup = null;
@@ -320,8 +323,16 @@ IWorkbenchPropertyPage {
 						MessageDialog.openError(getShell(), "Error", "No comunication with server: Could not refresh metadata");	
 						return;	
 					}	
+					
 					dialog.close();
 
+					if(noDocumentException.isNoDocument()){
+						SpagoBILogger.errorLog("Document no more present", null);			
+						MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+								"Error refresh", "Document is no more present on server");	
+						return;
+					}
+					
 					try{
 						fillValues();
 					}
@@ -495,6 +506,11 @@ IWorkbenchPropertyPage {
 			throw e;	
 		}
 
+		if(document==null){
+				noDocumentException.setNoDocument(true);
+				return;
+		}
+		
 		// Recover DataSource
 
 		Integer dataSourceId=document.getDataSourceId();

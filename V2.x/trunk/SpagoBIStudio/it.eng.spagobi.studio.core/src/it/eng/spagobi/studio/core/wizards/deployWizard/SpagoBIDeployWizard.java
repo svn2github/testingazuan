@@ -194,9 +194,9 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 			DocumentsServiceProxy docServiceProxy=proxyFactory.getDocumentsServiceProxy();
 			Integer returnCode=docServiceProxy.saveNewDocument(newDocument, sdkTemplate, functionalityId);
 			if(returnCode==null){
-				SpagoBILogger.errorLog("Error during document deploy", null);			
+				SpagoBILogger.errorLog("Error during document deploy: label already present", null);			
 				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
-						"Error during deploy", "Error during file deploy");		
+						"Error", "Error during file deploy: label already present");		
 				return;
 			}
 			System.out.println(returnCode);

@@ -28,9 +28,11 @@ import java.rmi.RemoteException;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 
+import it.eng.spagobi.sdk.documents.bo.SDKDocument;
 import it.eng.spagobi.sdk.documents.bo.SDKTemplate;
 import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
 import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
+import it.eng.spagobi.studio.core.exceptions.NoDocumentException;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
@@ -102,7 +104,7 @@ public class DeployDocumentAction implements IViewActionDelegate {
 			final Integer idInteger=Integer.valueOf(document_idString);
 			final String label2=document_label;
 			final org.eclipse.core.internal.resources.File fileSel2=fileSel;
-
+			final NoDocumentException documentException=new NoDocumentException();
 			IRunnableWithProgress op = new IRunnableWithProgress() {			
 				public void run(IProgressMonitor monitor) throws InvocationTargetException {
 					monitor.beginTask("Deploying to document "+label2, IProgressMonitor.UNKNOWN);
@@ -121,8 +123,18 @@ public class DeployDocumentAction implements IViewActionDelegate {
 					sdkTemplate.setContent(dataHandler);
 
 					try {
-						docServiceProxy.uploadTemplate(idInteger, sdkTemplate);
-					} catch (NotAllowedOperationException e) {
+						// check document still exists
+						SDKDocument doc=docServiceProxy.getDocumentById(idInteger);
+						if(doc==null){
+							documentException.setNoDocument(true);
+							return;
+						}
+						else{
+							documentException.setNoDocument(false);
+							docServiceProxy.uploadTemplate(idInteger, sdkTemplate);
+						}
+					}
+					catch (NotAllowedOperationException e) {
 						SpagoBILogger.errorLog("Not Allowed Operation", e);			
 						MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
 								"Error upload", "Error while uploading the template: not allowed operation");	
@@ -156,7 +168,15 @@ public class DeployDocumentAction implements IViewActionDelegate {
 						"Error", "Missing comunication with server; check server definition and if service is avalaible");	
 				dialog.close();
 				return;
-			}	
+			} 
+			if(documentException.isNoDocument()){
+				SpagoBILogger.errorLog("Document no more present", null);			
+				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+						"Error upload", "Document is no more present on server");	
+				return;
+			}
+			
+
 			dialog.close();
 
 			MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),"Deploy succesfull", "Deployed to the associated document "+document_label+" succesfull");		

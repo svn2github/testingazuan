@@ -43,6 +43,21 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/qbe/DocumentParametersGridPanel.js'/></script>
 <script type="text/javascript" src='../js/spagobi/qbe/DocumentParametersStore.js'/></script>
 <script type="text/javascript" src='../js/spagobi/qbe/HavingGridPanel.js'/></script>
+
+
+
+<script type="text/javascript" src='../js/spagobi/formbuilder/FormBuilderPage.js'/></script>
+<script type="text/javascript" src='../js/spagobi/formbuilder/QueryFieldsPanel.js'/></script>
+
+<script type="text/javascript" src='../js/spagobi/formbuilder/FiltersTemplatePanel.js'/></script>
+
+<script type="text/javascript" src='../js/spagobi/formbuilder/StaticClosedFiltersEditorPanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/formbuilder/StaticClosedXORFiltersEditorPanel.js'/></script>
+<!-- -->
+
+
+
+
 <!-- END-DEBUG -->
 
 <!-- START-PRODUCTION

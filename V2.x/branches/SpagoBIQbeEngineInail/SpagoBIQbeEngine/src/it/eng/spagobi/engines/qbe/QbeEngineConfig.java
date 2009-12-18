@@ -49,7 +49,8 @@ public class QbeEngineConfig {
 	
 	private EnginConf engineConfig;
 	
-	private static QbeEngineConfig instance = null;
+	private Locale locale = null;
+	
 	
 	public static String QBE_MODE = "QBE_MODE";
 	public static String QBE_DATAMART_DIR = "QBE_DATAMART_DIR";
@@ -60,6 +61,8 @@ public class QbeEngineConfig {
 	
 	private static transient Logger logger = Logger.getLogger(QbeEngineConfig.class);
 	
+	// -- singleton pattern --------------------------------------------
+	private static QbeEngineConfig instance;
 	
 	public static QbeEngineConfig getInstance(){
 		if(instance==null) {
@@ -68,28 +71,12 @@ public class QbeEngineConfig {
 		return instance;
 	}
 	
-	
-	/** The locale. */
-	private Locale locale = null;
-	
-	//private SourceBean config = null;	
-	
-	/**
-	 * Instantiates a new qbe engine conf.
-	 */
 	private QbeEngineConfig() {
-		
 		setEngineConfig( EnginConf.getInstance() );
+	}
+	// -- singleton pattern --------------------------------------------
 		
-		// deprecated
-		//config = ConfigSingleton.getInstance();	
-	}
-	
-	public SourceBean getConfigSourceBean() {
-		return getEngineConfig().getConfig();
-	}
-	
-	// core settings
+	// -- CORE SETTINGS ACCESSOR Methods--------------------------------
 	
 	public File getQbeDataMartDir() {
 		File qbeDataMartDir;
@@ -257,6 +244,8 @@ public class QbeEngineConfig {
 		return QbeDataSourceCache.getInstance();
 	}
 
+	// -- ACCESS Methods  --------------------------------------------
+	
 	public EnginConf getEngineConfig() {
 		return engineConfig;
 	}
@@ -265,5 +254,7 @@ public class QbeEngineConfig {
 		this.engineConfig = engineConfig;
 	}
 	
-	
+	public SourceBean getConfigSourceBean() {
+		return getEngineConfig().getConfig();
+	}
 }

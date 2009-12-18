@@ -68,13 +68,15 @@ Sbi.qbe.QbePanel = function(config) {
 	if (Sbi.user.isPowerUser === true) {
 		// if user is a power user, instantiate and show also the QueryBuilderPanel
 		this.queryEditorPanel = new Sbi.qbe.QueryBuilderPanel(c);
-		items = [this.queryEditorPanel, this.queryResultPanel];
+		this.formBuilderPage = new Sbi.formbuilder.FormBuilderPage();
+		items = [this.queryEditorPanel, this.queryResultPanel, this.formBuilderPage];
 	} else {
 		// if user is a read-only user, do not instantiate and show the QueryBuilderPanel
 		// and execute first query on catalog
 		items = [this.queryResultPanel];
 		this.loadFirstQuery();
 	}
+	
 	
 	this.tabs = new Ext.TabPanel({
 		border: false,
@@ -128,6 +130,7 @@ Sbi.qbe.QbePanel = function(config) {
 	// constructor
     Sbi.qbe.QbePanel.superclass.constructor.call(this, c);
     
+  
     //alert('isFromCross: ' + config.isFromCross);
     if(config.isFromCross) {
     	this.loadFirstQuery();

@@ -68,8 +68,12 @@ public class SaveMetadataAction extends AbstractSpagoBIAction {
 			} catch (NumberFormatException e) {}
 			logger.debug("Subobject id = " + subobjectId);
 			String jsonEncodedMetadata = getAttributeAsString( METADATA );
-			CharsetDecoder decoder=Charset.forName("UTF-8").newDecoder();
-			jsonEncodedMetadata=decoder.decode(ByteBuffer.wrap(jsonEncodedMetadata.getBytes())).toString();
+			try {
+				CharsetDecoder decoder=Charset.forName("UTF-8").newDecoder();
+				jsonEncodedMetadata=decoder.decode(ByteBuffer.wrap(jsonEncodedMetadata.getBytes())).toString();
+			} catch(Throwable t) {
+				// firefox
+			}
 
 			
 			logger.debug(METADATA + " = [" + jsonEncodedMetadata + "]");

@@ -1,0 +1,36 @@
+<project name="CasServer" default="create.war" basedir=".">
+
+  <property file="build.properties"/>
+
+ 
+  <target name="clean" >
+    <delete dir="../../cas/dist/CasServer-${project.version}_${project.date}.war"/>
+    <delete dir="../../cas/dist"/>  	
+    <mkdir dir="../../cas/dist"/>
+
+  </target>
+ 
+  
+  <target name="svn.checkout" depends="clean">
+
+    <exec dir="../../cas" executable="svn" >
+      <arg line="checkout ${svn.base.location}/cas ."/>
+    </exec>	 
+  </target>
+
+ 
+	<target name="create.war" depends="svn.checkout">
+        
+
+	      <war warfile="../../cas/dist/cas.war" 
+	           webxml="../../cas/web-content/WEB-INF/web.xml" 
+	           manifest="../../cas/web-content/META-INF/MANIFEST.MF" 
+	           basedir="../../cas/web-content"/>
+	           
+        <zip destfile="../../cas/dist/CasServer-${project.version}_${project.date}.zip"
+              basedir="../../cas/dist">
+        </zip>
+
+	</target>
+     
+</project>

@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.5.0_06" class="java.beans.XMLDecoder"> 
+ <object class="it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl"> 
+  <void property="description"> 
+   <string>test11</string> 
+  </void> 
+  <void property="entityClasses"> 
+   <void method="add"> 
+    <object id="EntityClass0" class="it.eng.qbe.wizard.EntityClass"> 
+     <void property="classAlias"> 
+      <string>aGerarchiaGeo</string> 
+     </void> 
+     <void property="className"> 
+      <string>it.eng.geo.genova.GerarchiaGeo</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object id="EntityClass1" class="it.eng.qbe.wizard.EntityClass"> 
+     <void property="classAlias"> 
+      <string>aGis3</string> 
+     </void> 
+     <void property="className"> 
+      <string>it.eng.geo.genova.Gis3</string> 
+     </void> 
+    </object> 
+   </void> 
+  </void> 
+  <void property="expertQueryDisplayed"> 
+   <string>select   gerarchiag0_.COD_UU as  codUu ,  gis3x1_.desc_UU as  descUu ,  gis3x1_.num_iscr as  numIscr ,  gis3x1_.num_esenti as  numEsenti ,  gis3x1_.perc as  perc    from genova.gerarchia_geo gerarchiag0_, genova.gis3 gis3x1_ where gis3x1_.desc_UU=gerarchiag0_.DESC_UU</string> 
+  </void> 
+  <void property="finalQuery"> 
+   <string>select aGerarchiaGeo.codUu as codUu , aGis3.descUu as descUu , aGis3.numIscr as numIscr , aGis3.numEsenti as numEsenti , aGis3.perc as perc  from it.eng.geo.genova.GerarchiaGeo as aGerarchiaGeo , it.eng.geo.genova.Gis3 as aGis3 where 
+aGis3.descUu = aGerarchiaGeo.descUu</string> 
+  </void> 
+  <void property="owner"> 
+   <string>biadmin</string> 
+  </void> 
+  <void property="queryId"> 
+   <string>test11</string> 
+  </void> 
+  <void property="selectClause"> 
+   <object class="it.eng.qbe.wizard.SelectClauseSourceBeanImpl"> 
+    <void property="selectFields"> 
+     <void method="add"> 
+      <object class="it.eng.qbe.wizard.SelectFieldSourceBeanImpl"> 
+       <void property="fieldAlias"> 
+        <string>codUu</string> 
+       </void> 
+       <void property="fieldCompleteName"> 
+        <string>it.eng.geo.genova.GerarchiaGeo.codUu</string> 
+       </void> 
+       <void property="fieldEntityClass"> 
+        <object idref="EntityClass0"/> 
+       </void> 
+       <void property="fieldName"> 
+        <string>aGerarchiaGeo.codUu</string> 
+       </void> 
+       <void property="hibType"> 
+        <string>string</string> 
+       </void> 
+       <void property="id"> 
+        <string>select_9</string> 
+       </void> 
+       <void property="precision"> 
+        <string>2</string> 
+       </void> 
+       <void property="scale"> 
+        <string>19</string> 
+       </void> 
+      </object> 
+     </void> 
+     <void method="add"> 
+      <object class="it.eng.qbe.wizard.SelectFieldSourceBeanImpl"> 
+       <void property="fieldAlias"> 
+        <string>descUu</string> 
+       </void> 
+       <void property="fieldCompleteName"> 
+        <string>it.eng.geo.genova.Gis3.descUu</string> 
+       </void> 
+       <void property="fieldEntityClass"> 
+        <object idref="EntityClass1"/> 
+       </void> 
+       <void property="fieldName"> 
+        <string>aGis3.descUu</string> 
+       </void> 
+       <void property="hibType"> 
+        <string>string</string> 
+       </void> 
+       <void property="id"> 
+        <string>select_5</string> 
+       </void> 
+       <void property="precision"> 
+        <string>2</string> 
+       </void> 
+       <void property="scale"> 
+        <string>19</string> 
+       </void> 
+      </object> 
+     </void> 
+     <void method="add"> 
+      <object class="it.eng.qbe.wizard.SelectFieldSourceBeanImpl"> 
+       <void property="fieldAlias"> 
+        <string>numIscr</string> 
+       </void> 
+       <void property="fieldCompleteName"> 
+        <string>it.eng.geo.genova.Gis3.numIscr</string> 
+       </void> 
+       <void property="fieldEntityClass"> 
+        <object class="it.eng.qbe.wizard.EntityClass"> 
+         <void property="classAlias"> 
+          <string>aGis3</string> 
+         </void> 
+         <void property="className"> 
+          <string>it.eng.geo.genova.Gis3</string> 
+         </void> 
+        </object> 
+       </void> 
+       <void property="fieldName"> 
+        <string>aGis3.numIscr</string> 
+       </void> 
+       <void property="hibType"> 
+        <string>integer</string> 
+       </void> 
+       <void property="id"> 
+        <string>select_6</string> 
+       </void> 
+       <void property="precision"> 
+        <string>2</string> 
+       </void> 
+       <void property="scale"> 
+        <string>19</string> 
+       </void> 
+      </object> 
+     </void> 
+     <void method="add"> 
+      <object class="it.eng.qbe.wizard.SelectFieldSourceBeanImpl"> 
+       <void property="fieldAlias"> 
+        <string>numEsenti</string> 
+       </void> 
+       <void property="fieldCompleteName"> 
+        <string>it.eng.geo.genova.Gis3.numEsenti</string> 
+       </void> 
+       <void property="fieldEntityClass"> 
+        <object class="it.eng.qbe.wizard.EntityClass"> 
+         <void property="classAlias"> 
+          <string>aGis3</string> 
+         </void> 
+         <void property="className"> 
+          <string>it.eng.geo.genova.Gis3</string> 
+         </void> 
+        </object> 
+       </void> 
+       <void property="fieldName"> 
+        <string>aGis3.numEsenti</string> 
+       </void> 
+       <void property="hibType"> 
+        <string>integer</string> 
+       </void> 
+       <void property="id"> 
+        <string>select_7</string> 
+       </void> 
+       <void property="precision"> 
+        <string>2</string> 
+       </void> 
+       <void property="scale"> 
+        <string>19</string> 
+       </void> 
+      </object> 
+     </void> 
+     <void method="add"> 
+      <object class="it.eng.qbe.wizard.SelectFieldSourceBeanImpl"> 
+       <void property="fieldAlias"> 
+        <string>perc</string> 
+       </void> 
+       <void property="fieldCompleteName"> 
+        <string>it.eng.geo.genova.Gis3.perc</string> 
+       </void> 
+       <void property="fieldEntityClass"> 
+        <object class="it.eng.qbe.wizard.EntityClass"> 
+         <void property="classAlias"> 
+          <string>aGis3</string> 
+         </void> 
+         <void property="className"> 
+          <string>it.eng.geo.genova.Gis3</string> 
+         </void> 
+        </object> 
+       </void> 
+       <void property="fieldName"> 
+        <string>aGis3.perc</string> 
+       </void> 
+       <void property="hibType"> 
+        <string>double</string> 
+       </void> 
+       <void property="id"> 
+        <string>select_8</string> 
+       </void> 
+       <void property="precision"> 
+        <string>0</string> 
+       </void> 
+       <void property="scale"> 
+        <string>22</string> 
+       </void> 
+      </object> 
+     </void> 
+    </void> 
+   </object> 
+  </void> 
+  <void property="visibility"> 
+   <boolean>true</boolean> 
+  </void> 
+  <void property="whereClause"> 
+   <object class="it.eng.qbe.wizard.WhereClauseSourceBeanImpl"> 
+    <void property="whereFields"> 
+     <void method="add"> 
+      <object class="it.eng.qbe.wizard.WhereFieldSourceBeanImpl"> 
+       <void property="fieldEntityClassForLeftCondition"> 
+        <object class="it.eng.qbe.wizard.EntityClass"> 
+         <void property="classAlias"> 
+          <string>aGis3</string> 
+         </void> 
+         <void property="className"> 
+          <string>it.eng.geo.genova.Gis3</string> 
+         </void> 
+        </object> 
+       </void> 
+       <void property="fieldEntityClassForRightCondition"> 
+        <object class="it.eng.qbe.wizard.EntityClass"> 
+         <void property="classAlias"> 
+          <string>aGerarchiaGeo</string> 
+         </void> 
+         <void property="className"> 
+          <string>it.eng.geo.genova.GerarchiaGeo</string> 
+         </void> 
+        </object> 
+       </void> 
+       <void property="fieldName"> 
+        <string>aGis3.descUu</string> 
+       </void> 
+       <void property="fieldOperator"> 
+        <string>=</string> 
+       </void> 
+       <void property="fieldValue"> 
+        <string>aGerarchiaGeo.descUu</string> 
+       </void> 
+       <void property="hibernateType"> 
+        <string>org.hibernate.type.StringType</string> 
+       </void> 
+       <void property="id"> 
+        <string>where_1190213130013</string> 
+       </void> 
+       <void property="nextBooleanOperator"> 
+        <string>AND </string> 
+       </void> 
+      </object> 
+     </void> 
+    </void> 
+   </object> 
+  </void> 
+ </object> 
+</java> 

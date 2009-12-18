@@ -1,0 +1,213 @@
+<project name="${project.name}" default="makeDist" basedir=".">
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+  <!--   DEFINIZIONE FILE DI PROPERTY						                                      -->
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ --> 
+  <property file="build.properties"/>	
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+  <!--   DEFINIZIONE CLASSPATH						                                            -->
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ --> 
+	<path id="web.classpath">
+    		<pathelement path="${classpath}"/>
+    		<!-- LIBRERIE SPECIFICHE APPLICATIVO  -->
+    		<fileset dir="${web.lib}">
+          		<include name="**/*.jar"/>
+    		</fileset>
+    		<!-- LIBRERIE ESTERNE DEL WEB CONTAINER necessarie per la compilazione -->
+    		<!-- ma che non devono essere comprese nel war                         -->
+    		<fileset dir="${runtime.lib}">
+          		<include name="**/*.jar"/>
+    		</fileset>    		
+ 	</path>
+
+  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+  <!--   PULIZIA AMBIENTE						                                                -->
+  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--> 
+  <target name="clean" >
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+    <delete dir="${dist}/${webapp_name}" />
+  </target>	   	
+  <target name="init" depends="clean">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+    <mkdir dir="${build}/${webapp_name}/WEB-INF/classes"/>
+  </target>
+
+  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+  <!--   SCARICO DEI SORGENTI AGGIORNATI DA SVN							                        -->
+  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+  <target name="svn.checkout" depends="init"
+      description="Sincronizza l'applicazione con il repository">
+    <exec dir="${project.dir}" executable="svn" >
+      <arg line="checkout ${svn.base.location}/${project.name} ."/>
+    </exec>	 
+  </target>
+
+  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+  <!--   COMPILAZIONE							                                                  -->
+  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+  <target name="compile" depends="svn.checkout" description="compile the source" >
+    <!-- Compile the java code from ${src} into ${build}/${webapp_name}/WEB-INF/classes -->
+    <javac srcdir="${src}" destdir="${build}/${webapp_name}/WEB-INF/classes" debug="on">
+      <classpath refid="web.classpath"/>
+    </javac> 
+  </target>
+
+  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+  <!--   COPIA DELLE JSP,CSS,...                                                    -->
+  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->	  	  
+  <target name="copy.artifacts" depends="compile">
+    <copy todir="${build}/${webapp_name}/WEB-INF/classes">
+      <fileset dir="${src}">
+        <exclude name="**/*.java"/>
+        <exclude name="**/*.svn"/>
+      </fileset>
+    </copy>
+    <!-- copies artifacts without filter (jars, jsp, js, ....) -->
+    <copy todir="${build}/${webapp_name}" >
+      <fileset dir="${web.dir}">
+        <exclude name="**/*.svn"/>
+        <exclude name="**/*.xml"/>
+        <exclude name="**/*.properties"/>
+      </fileset>
+    </copy>
+    <!-- copies artifacts with filter (*.xml, *.properties) -->
+    <copy todir="${build}/${webapp_name}" >
+      <fileset dir="${web.dir}">
+        <include name="**/*.xml"/>
+        <include name="**/*.properties"/>
+      </fileset>
+    </copy>
+  </target>
+
+	<target name="create.war" depends="copy.artifacts" >
+	      <mkdir dir="${dist}/${webapp_name}"/>
+	      <delete file="${dist}/${webapp_name}/${war_name}" />
+	      <war warfile="${dist}/${webapp_name}/${war_name}" 
+	           webxml="${build}/${webapp_name}/WEB-INF/web.xml" 
+	           basedir="${build}/${webapp_name}" />
+	</target>
+
+  <target name="javadoc">    
+    <javadoc packagenames="*"
+      sourcepath="${src}"
+      defaultexcludes="yes"
+      destdir="${dist}/${webapp_name}/javadoc"
+      author="true"
+      version="true"
+      use="true">
+      <classpath refid="web.classpath"/>
+    </javadoc>    
+  </target>
+
+	<target name="create.service.client.jar">
+    <mkdir dir="${dist}/${webapp_name}"/>
+    <jar destfile="${dist}/${webapp_name}/spagobi.service.client-${project.version}.jar">
+    
+    	<fileset dir="${build}/${webapp_name}/WEB-INF/classes"
+				includes="it/eng/spagobi/tools/dataset/bo/*,
+				it/eng/spagobi/tools/dataset/common/**/*">
+	
+			</fileset>
+			
+			<fileset dir="${build}/${webapp_name}/WEB-INF/classes"
+							includes="it/eng/spagobi/tools/datasource/bo/*">
+				
+			</fileset>
+			
+      <fileset dir="${build}/${webapp_name}/WEB-INF/classes"
+		             includes="it/eng/spagobi/services/audit/stub/AuditService.class,
+                   it/eng/spagobi/services/audit/stub/AuditServiceService.class,
+                   it/eng/spagobi/services/audit/stub/AuditServiceServiceLocator.class,
+				   it/eng/spagobi/services/audit/stub/AuditServiceSoapBindingSkeleton.class,
+				   it/eng/spagobi/services/audit/stub/AuditServiceSoapBindingStub.class,	
+
+	               it/eng/spagobi/services/content/bo/Content.class,
+	               it/eng/spagobi/services/content/stub/ContentService.class,               
+	               it/eng/spagobi/services/content/stub/ContentServiceService.class,
+				   it/eng/spagobi/services/content/stub/ContentServiceServiceLocator.class,
+			       it/eng/spagobi/services/content/stub/ContentServiceSoapBindingStub.class,
+				   it/eng/spagobi/services/content/stub/ContentServiceSoapBindingSkeleton.class,
+	
+	               it/eng/spagobi/services/datasource/bo/SpagoBiDataSource.class,
+	               it/eng/spagobi/services/datasource/stub/DataSourceService.class,               
+	               it/eng/spagobi/services/datasource/stub/DataSourceServiceService.class,
+				   it/eng/spagobi/services/datasource/stub/DataSourceServiceServiceLocator.class,
+			       it/eng/spagobi/services/datasource/stub/DataSourceServiceSoapBindingStub.class,
+				   it/eng/spagobi/services/datasource/stub/DataSourceServiceSoapBindingSkeleton.class,
+		    	
+	               it/eng/spagobi/services/event/stub/EventService.class,               
+	               it/eng/spagobi/services/event/stub/EventServiceService.class,
+				   it/eng/spagobi/services/event/stub/EventServiceServiceLocator.class,
+			       it/eng/spagobi/services/event/stub/EventServiceSoapBindingStub.class,
+				   it/eng/spagobi/services/event/stub/EventServiceSoapBindingSkeleton.class,
+		    	
+	               it/eng/spagobi/services/scheduler/stub/SchedulerService.class,               
+	               it/eng/spagobi/services/scheduler/stub/SchedulerServiceService.class,
+				   it/eng/spagobi/services/scheduler/stub/SchedulerServiceServiceLocator.class,
+			       it/eng/spagobi/services/scheduler/stub/SchedulerServiceSoapBindingStub.class,
+				   it/eng/spagobi/services/scheduler/stub/SchedulerServiceSoapBindingSkeleton.class,
+		    	
+		    	   it/eng/spagobi/services/security/bo/SpagoBIUserProfile.class, 
+		    	   it/eng/spagobi/services/security/exceptions/SecurityException.class, 
+		    	   it/eng/spagobi/services/security/stub/SecurityService.class,               
+	               it/eng/spagobi/services/security/stub/SecurityServiceService.class,
+				   it/eng/spagobi/services/security/stub/SecurityServiceServiceLocator.class,
+			       it/eng/spagobi/services/security/stub/SecurityServiceSoapBindingStub.class,
+				   it/eng/spagobi/services/security/stub/SecurityServiceSoapBindingSkeleton.class,
+		    	
+		    	   it/eng/spagobi/services/dataset/bo/SpagoBiDataSet.class,
+		    	   it/eng/spagobi/services/dataset/stub/DataSetService.class,               
+	               it/eng/spagobi/services/dataset/stub/DataSetServiceServiceLocator.class,
+				   it/eng/spagobi/services/dataset/stub/DataSetServiceService.class,
+			       it/eng/spagobi/services/dataset/stub/DataSetServiceSoapBindingImpl.class,
+		    	   it/eng/spagobi/services/dataset/stub/DataSetServiceSoapBindingStub.class,
+				   it/eng/spagobi/services/dataset/stub/DataSetServiceSoapBindingSkeleton.class,
+			    	
+			    	it/eng/spagobi/services/proxy/AbstractServiceProxy.class,
+			    	it/eng/spagobi/services/proxy/ContentServiceProxy.class,
+			    	it/eng/spagobi/services/proxy/DataSourceServiceProxy.class,
+			    	it/eng/spagobi/services/proxy/EventServiceProxy.class,
+			    	it/eng/spagobi/services/proxy/SchedulerServiceProxy.class,
+			    	it/eng/spagobi/services/proxy/SecurityServiceProxy.class,
+				    it/eng/spagobi/services/proxy/AuditServiceProxy.class,
+		    	    it/eng/spagobi/services/proxy/DataSetServiceProxy.class,
+		    	    it/eng/spagobi/services/proxy/DocumentExecuteServiceProxy.class,
+		    		it/eng/spagobi/services/execute/stub/DocumentExecuteServiceServiceLocator.class,
+					it/eng/spagobi/services/execute/stub/DocumentExecuteServiceService.class,
+		    		it/eng/spagobi/services/execute/stub/DocumentExecuteService.class,
+			    	it/eng/spagobi/services/execute/stub/DocumentExecuteServiceSoapBindingStub.class,
+		    		it/eng/spagobi/services/execute/stub/DocumentExecuteServiceSoapBindingSkeleton.class,			    	
+		    		it/eng/spagobi/services/execute/stub/DocumentExecuteServiceSoapBindingImpl.class,			    	
+		    	    
+		    		it/eng/spagobi/services/common/EnginConf.class,
+		    	    it/eng/spagobi/services/common/SsoServiceInterface.class,
+		    	    it/eng/spagobi/services/common/SsoServiceFactory.class,
+		    	    it/eng/spagobi/services/cas/CasSsoService.class,
+				    it/eng/spagobi/commons/bo/UserProfile.class,
+		    	
+		    		it/eng/spagobi/commons/utilities/StringUtilities.class,
+		    	
+		    		it/eng/spagobi/container/AbstractContainer.class,
+		    		it/eng/spagobi/container/Context.class,
+		    		it/eng/spagobi/container/ContextManager.class,
+		    		it/eng/spagobi/container/IContainer.class,
+		    		it/eng/spagobi/container/ISessionContainer.class,
+		    		it/eng/spagobi/container/SpagoBIRequestContainer.class,
+		    		it/eng/spagobi/container/SpagoBISessionContainer.class,
+		    		it/eng/spagobi/container/strategy/IContextRetrieverStrategy.class,
+		    		it/eng/spagobi/container/strategy/ExecutionContextRetrieverStrategy.class"
+		    />
+    </jar>      	           
+	</target>
+
+  <target name="makeDist" >    
+    <antcall target="create.war" />
+<!--    <antcall target="javadoc" />  -->
+    <antcall target="create.service.client.jar" />
+  </target>
+  
+
+</project>

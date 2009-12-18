@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<VALIDATIONS>
+	<SERVICE name="ThresholdDetailPage" type="PAGE">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS />
+			<FIELDS>
+				<FIELD name="name" label="#sbi.kpi.label.name" bundle="component_kpi_messages">
+					<VALIDATOR validatorName="MANDATORY" />
+					<VALIDATOR validatorName="ALFANUMERIC" />
+				</FIELD>
+				</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+	
+	<SERVICE name="ThresholdValueDetailPage" type="PAGE">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS />
+			<FIELDS>
+				<FIELD name="label" label="#sbi.kpi.label.label" bundle="component_kpi_messages">
+					<VALIDATOR validatorName="MANDATORY" />
+					<VALIDATOR validatorName="ALFANUMERIC" />
+				</FIELD>
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+	<!-- Starting with dinamic validations -->
+	<DINAMIC_VALIDATIONS>
+	</DINAMIC_VALIDATIONS>
+</VALIDATIONS>

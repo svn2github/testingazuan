@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<ACTIONS>
+
+	<ACTION name="GET_TREE_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.GetTreeAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="EXEC_QUERY_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.ExecuteQueryAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="REFRESH_QUERY_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.RefreshQueryAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="SAVE_QUERY_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.SaveQueryAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="EXPORT_RESULT_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.ExportResultAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="CREATE_VIEW_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.CreateViewAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="DANIELA_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.DanielaAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+</ACTIONS>
+

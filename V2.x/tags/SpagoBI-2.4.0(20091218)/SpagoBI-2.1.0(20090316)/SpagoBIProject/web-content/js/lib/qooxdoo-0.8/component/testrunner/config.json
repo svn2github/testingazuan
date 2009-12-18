@@ -1,0 +1,23 @@
+{
+  "name" : "Testrunner (application) config",
+
+  "include" :
+  [
+    {
+      "path" : "testrunner.json"  
+    },
+    
+    {
+      "path" : "../../tool/data/config/application.json",
+      "block"   : [ "source", "build", "clean" ]
+    }
+  ],
+
+  "let" :
+  {
+      "APPLICATION"  : "testrunner",
+      "CACHE"        : "../../cache",
+      "QOOXDOO_PATH" : "../../framework",
+      "QOOXDOO_URI"  : "../${QOOXDOO_PATH}"
+  }
+}

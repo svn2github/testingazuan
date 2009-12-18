@@ -1,0 +1,335 @@
+################################################################################
+#
+#  qooxdoo - the new era of web development
+#
+#  http://qooxdoo.org
+#
+#  Copyright:
+#    2006-2008 1&1 Internet AG, Germany, http://www.1and1.org
+#
+#  License:
+#    LGPL: http://www.gnu.org/licenses/lgpl.html
+#    EPL: http://www.eclipse.org/org/documents/epl-v10.php
+#    See the LICENSE file in the project's top-level directory for details.
+#
+#  Authors:
+#    * Sebastian Werner (wpbasti)
+#    * Andreas Ecker (ecker)
+#    * Fabian Jakobs (fjakobs)
+#    * Thomas Herchenroeder (thron7)
+#
+################################################################################
+
+################################################################################
+# VARIABLES
+################################################################################
+
+FRAMEWORK_VERSION := $(shell svn propget qx:version .)
+FRAMEWORK_SVNINFO := $(shell python tool/bin/svninfo.py .)
+
+CMD_LINE = echo "----------------------------------------------------------------------------"
+CMD_NICE = nice -n 10
+CMD_PYTHON = $(CMD_NICE) python -t -O
+CMD_REMOVE = $(CMD_NICE) rm -rf
+CMD_DIR = $(CMD_NICE) mkdir -p
+CMD_FIND = $(CMD_NICE) find
+CMD_ZIP = $(CMD_NICE) zip
+CMD_SVN = $(CMD_NICE) svn
+CMD_ZIP_CREATE = $(CMD_ZIP) -rq
+CMD_ANY2UNIX = | xargs $(CMD_PYTHON) tool/pylib/misc/textutil.py --command any2Unix
+CMD_MKEXEC = $(CMD_NICE) chmod a+rx
+CMD_GENERATOR := $(CMD_PYTHON) "$(CURDIR)/tool/bin/generator.py"
+
+FILES_TEXT = \( -name "*.py" -o -name "*.sh" -o -name "*.js" -o -name "*.html" -o -name "*.css" -o -name "*.xml" -o -name Makefile -o -name AUTHORS -o -name LICENSE -o -name README -o -name RELEASENOTES -o -name TODO \)
+FILES_TEMP = \( -name "*.rej" -o -name "*.orig" -o -name "*.pyc" -o -name "*.pyo" -o -name "*.bak" -o -name "*.old" -o -name "*~" -o -name "messages.pot" \)
+FILES_EXEC = \( -name "*.py" -o -name "*.sh" \)
+
+CMD_SYNC_ONLINE = $(CMD_NICE) rsync --checksum --compress --recursive --delete --inplace --links --safe-links --exclude .svn
+CMD_SYNC_OFFLINE = $(CMD_NICE) rsync --recursive --delete --inplace --links --safe-links --exclude .svn
+
+RELEASE_BUILD = release/temp/build/qooxdoo-$(FRAMEWORK_VERSION)-build
+RELEASE_SDK = release/temp/sdk/qooxdoo-$(FRAMEWORK_VERSION)-sdk
+
+APPLICATIONS = demobrowser feedreader portal
+COMPONENTS = apiviewer testrunner
+FRAMEWORK_TARGETS = api test
+SDK_COPY = index.html
+
+
+
+################################################################################
+# RELEASE TARGETS
+################################################################################
+
+release: release-sdk
+
+release-sdk: distclean release-sdk-sans-clean
+release-sdk-sans-clean: release-sdk-info apiviewer release-sdk-svn-collect release-sdk-archive
+
+release-sdk-info:
+	@echo
+	@echo "****************************************************************************"
+	@echo "  GENERATING SDK VERSION OF RELEASE $(FRAMEWORK_VERSION)"
+	@echo "****************************************************************************"
+
+
+release-sdk-svn-collect:
+	@echo
+	@echo "  SYNCHRONISATION OF SDK RELEASE"
+	@echo "----------------------------------------------------------------------------"
+
+	@echo "  * Extracting sources..."
+	@$(CMD_DIR) `dirname $(RELEASE_SDK)`
+	@$(CMD_SVN) export . $(RELEASE_SDK)
+
+	@echo "  * Synchronizing components..."
+	@$(CMD_REMOVE) $(RELEASE_SDK)/component/buildtool/
+
+	@echo "  * Synchronizing framework..."
+	@$(CMD_SYNC_OFFLINE) framework/api/* $(RELEASE_SDK)/framework/api
+
+	@echo "  * Switching to Unix line endings..."
+	@$(CMD_FIND) $(RELEASE_SDK) $(FILES_TEXT) $(CMD_ANY2UNIX)
+
+
+release-sdk-collect:
+	@echo
+	@echo "  SYNCHRONISATION OF SDK RELEASE"
+	@echo "----------------------------------------------------------------------------"
+
+	@echo "  * Copying info files..."
+	@$(CMD_DIR) $(RELEASE_SDK)
+	@for FILE in `find . -maxdepth 1 -type f -name "*.txt"`; do \
+	  echo "    - `basename $$FILE`"; \
+	  cp -f $$FILE $(RELEASE_SDK); \
+	done
+
+	@echo "  * Synchronizing applications..."
+	@for APPLICATION in $(APPLICATIONS); do \
+		echo "    - $$APPLICATION"; \
+	  $(CMD_DIR) $(RELEASE_SDK)/application/$$APPLICATION; \
+	  $(CMD_SYNC_OFFLINE) --exclude script --exclude build --exclude publish application/$$APPLICATION/* $(RELEASE_SDK)/application/$$APPLICATION; \
+	done
+
+	@echo "  * Synchronizing components..."
+	@for APPLICATION in $(COMPONENTS); do \
+		echo "    - $$APPLICATION"; \
+	  $(CMD_DIR) $(RELEASE_SDK)/component/$$APPLICATION; \
+	  $(CMD_SYNC_OFFLINE) --exclude script --exclude build --exclude publish component/$$APPLICATION/* $(RELEASE_SDK)/component/$$APPLICATION; \
+	done
+
+	@echo "  * Synchronizing framework..."
+	@$(CMD_DIR) $(RELEASE_SDK)/framework
+	@$(CMD_SYNC_OFFLINE) --exclude *.pyo --exclude *.pyc --exclude .cache --exclude tool/icon/themes --exclude tool/icon/temp framework/* $(RELEASE_SDK)/framework
+	@$(CMD_SYNC_OFFLINE) framework/api/* $(RELEASE_SDK)/framework/api
+
+	@echo "  * Synchronizing tools..."
+	@$(CMD_DIR) $(RELEASE_SDK)/tool
+	@$(CMD_SYNC_OFFLINE) --exclude *.pyo --exclude *.pyc tool/* $(RELEASE_SDK)/tool
+
+	@echo "  * Copying remaining SDK files..."
+	@for ITEM in $(SDK_COPY); do \
+	  cp -rf $$ITEM $(RELEASE_SDK)/$$ITEM; \
+	done
+
+	@echo "  * Switching to Unix line endings..."
+	@$(CMD_FIND) $(RELEASE_SDK) $(FILES_TEXT) $(CMD_ANY2UNIX)
+
+release-sdk-archive:
+	@echo "  * Generating zip archive..."
+	@cd release/temp/sdk; $(CMD_REMOVE) ../../qooxdoo-$(FRAMEWORK_VERSION)-sdk.zip; $(CMD_ZIP_CREATE) ../../qooxdoo-$(FRAMEWORK_VERSION)-sdk.zip qooxdoo-$(FRAMEWORK_VERSION)-sdk
+
+	@echo "  * Cleaning up..."
+	@rm -rf release/temp
+
+
+
+info-apiviewer:
+	@echo
+	@echo "****************************************************************************"
+	@echo "  GENERATING APIVIEWER"
+	@echo "****************************************************************************"
+
+
+apiviewer: info-apiviewer exec-apiviewer-build
+
+exec-apiviewer-build:
+	@time ( cd framework && $(CMD_GENERATOR) api ) || exit 1
+
+
+
+
+################################################################################
+# QUICKSTART TARGETS
+################################################################################
+
+release-quickstart: quickstart
+	@echo
+	@echo "****************************************************************************"
+	@echo "  GENERATING QUICKSTART VERSION OF RELEASE $(FRAMEWORK_VERSION)"
+	@echo "****************************************************************************"
+
+	@echo
+	@echo "  SYNCHRONISATION OF QUICKSTART RELEASE"
+	@echo "----------------------------------------------------------------------------"
+
+	@echo "  * Synchronizing quickstart..."
+	@$(CMD_DIR) release
+	@$(CMD_SYNC_OFFLINE) component/qooxdoo-$(FRAMEWORK_VERSION)-quickstart.zip release/
+
+
+QUICKSTART_TEMP = temp-quickstart
+
+info-quickstart:
+	@echo
+	@echo "****************************************************************************"
+	@echo "  GENERATING QUICKSTART"
+	@echo "****************************************************************************"
+
+quickstart: exec-quickstart-build info-quickstart exec-quickstart-collect exec-quickstart-archive
+
+exec-quickstart-build:
+	@cd component/quickstart && $(CMD_GENERATOR) build
+
+exec-quickstart-collect:
+	@$(CMD_DIR) $(QUICKSTART_TEMP)/qooxdoo-$(FRAMEWORK_VERSION)-quickstart
+
+	@echo "  * Copying info files..."
+	@$(CMD_DIR) $(QUICKSTART_TEMP)/qooxdoo-$(FRAMEWORK_VERSION)-quickstart
+	@for FILE in `find ../ -maxdepth 1 -type f -name "*.txt"`; do \
+	  echo "    - `basename $$FILE`"; \
+	  cp -f $$FILE $(QUICKSTART_TEMP)/qooxdoo-$(FRAMEWORK_VERSION)-quickstart; \
+	done
+
+	@echo "  * Syncing files..."
+	@$(CMD_SYNC_OFFLINE) component/quickstart/build/* $(QUICKSTART_TEMP)/qooxdoo-$(FRAMEWORK_VERSION)-quickstart/quickstart
+
+exec-quickstart-archive:
+	@echo "  * Cleaning up target folders..."
+	@$(CMD_FIND) $(QUICKSTART_TEMP) $(FILES_TEMP) -exec $(CMD_REMOVE) {} \;
+
+	@echo "  * Switching to Unix line endings..."
+	@$(CMD_FIND) $(QUICKSTART_TEMP) $(FILES_TEXT) $(CMD_ANY2UNIX)
+
+	@echo "  * Fixing executables..."
+	@$(CMD_FIND) $(QUICKSTART_TEMP) $(FILES_EXEC) -exec $(CMD_MKEXEC) {} \;
+
+	@echo "  * Building quickstart archive..."
+	@cd $(QUICKSTART_TEMP); $(CMD_REMOVE) ../component/qooxdoo-$(FRAMEWORK_VERSION)-quickstart.zip; $(CMD_ZIP_CREATE) ../component/qooxdoo-$(FRAMEWORK_VERSION)-quickstart.zip qooxdoo-$(FRAMEWORK_VERSION)-quickstart
+
+	@echo "  * Cleaning up temporary folder..."
+	@$(CMD_REMOVE) $(QUICKSTART_TEMP)
+
+	@echo "  * Created component/qooxdoo-$(FRAMEWORK_VERSION)-quickstart.zip"
+
+
+
+
+
+
+################################################################################
+# SKELETON TARGETS
+################################################################################
+
+SKELETON_TEMP = temp-skeleton
+SKELETON_FILES = generate.py config.json Manifest.json source/class source/resource source/translation source/index.html
+
+info-skeleton:
+	@echo
+	@echo "****************************************************************************"
+	@echo "  GENERATING SKELETON"
+	@echo "****************************************************************************"
+
+skeleton: info-skeleton exec-skeleton-collect exec-skeleton-archive
+
+exec-skeleton-collect:
+	@echo "  * Copying info files..."
+	@$(CMD_DIR) $(SKELETON_TEMP)/qooxdoo-$(FRAMEWORK_VERSION)-skeleton
+	@for FILE in `find ../ -maxdepth 1 -type f -name "*.txt"`; do \
+	  echo "    - `basename $$FILE`"; \
+	  cp -f $$FILE $(SKELETON_TEMP)/qooxdoo-$(FRAMEWORK_VERSION)-skeleton; \
+	done
+
+	@echo "  * Collecting skeleton files..."
+	@$(CMD_DIR) $(SKELETON_TEMP)/qooxdoo-$(FRAMEWORK_VERSION)-skeleton
+	@for FILE in $(SKELETON_FILES); do \
+    	echo "    - $$FILE"; \
+    	$(CMD_DIR) `dirname $(SKELETON_TEMP)/qooxdoo-$(FRAMEWORK_VERSION)-skeleton/skeleton/$$FILE`; \
+	  	$(CMD_SYNC_OFFLINE) component/skeleton/$$FILE `dirname $(SKELETON_TEMP)/qooxdoo-$(FRAMEWORK_VERSION)-skeleton/skeleton/$$FILE`; \
+  	done
+
+exec-skeleton-archive:
+	@echo "  * Cleaning up target folders..."
+	@$(CMD_FIND) $(SKELETON_TEMP) $(FILES_TEMP) -exec $(CMD_REMOVE) {} \;
+
+	@echo "  * Switching to Unix line endings..."
+	@$(CMD_FIND) $(SKELETON_TEMP) $(FILES_TEXT) $(CMD_ANY2UNIX)
+
+	@echo "  * Fixing executables..."
+	@$(CMD_FIND) $(SKELETON_TEMP) $(FILES_EXEC) -exec $(CMD_MKEXEC) {} \;
+
+	@echo "  * Building skeleton archive..."
+	@cd $(SKELETON_TEMP); $(CMD_REMOVE) ../component/qooxdoo-$(FRAMEWORK_VERSION)-skeleton.zip; $(CMD_ZIP_CREATE) ../component/qooxdoo-$(FRAMEWORK_VERSION)-skeleton.zip qooxdoo-$(FRAMEWORK_VERSION)-skeleton
+
+	@echo "  * Cleaning up temporary folder..."
+	@$(CMD_REMOVE) $(SKELETON_TEMP)
+
+	@echo "  * Created component/qooxdoo-$(FRAMEWORK_VERSION)-skeleton.zip"
+
+
+################################################################################
+# BASIC TARGETS
+################################################################################
+distclean:
+	@for APPLICATION in $(APPLICATIONS); do ( cd application/$$APPLICATION && $(CMD_GENERATOR) distclean ) || exit 1; done
+	@for APPLICATION in $(COMPONENTS); do ( cd component/$$APPLICATION && $(CMD_GENERATOR) distclean ) || exit 1; done
+	@cd framework && $(CMD_GENERATOR) distclean
+	@$(CMD_REMOVE) application/*.zip
+	@$(CMD_REMOVE) release
+
+build: build-apps build-components
+build-apps:
+	@time for APPLICATION in $(APPLICATIONS); do ( cd application/$$APPLICATION && $(CMD_GENERATOR) build ) || exit 1; done
+
+build-components:
+	@time for APPLICATION in $(COMPONENTS); do ( cd component/$$APPLICATION && $(CMD_GENERATOR) build ) || exit 1; done
+
+build-framework:
+	@for TARGET in $(FRAMEWORK_TARGETS); do ( cd framework && $(CMD_GENERATOR) $$TARGET ) || exit 1; done
+
+source:
+	@time for APPLICATION in $(APPLICATIONS); do ( cd application/$$APPLICATION && $(CMD_GENERATOR) source ) || exit 1; done
+	@time for APPLICATION in $(COMPONENTS); do ( cd component/$$APPLICATION && $(CMD_GENERATOR) source ) || exit 1; done
+
+publish-build: build-apps build-framework
+
+publish-check:
+	@echo "  * Checking kit is complete..."
+	@for TARGET in $(APPLICATIONS); do F="application/$$TARGET/build/script/$$TARGET.js"; [ -s $$F ] || ( echo "Missing $$F; run 'make publish-build' first!"; exit 1 ); done
+	@for TARGET in $(FRAMEWORK_TARGETS); do F="framework/$$TARGET/script"; [ -d $$F ] || ( echo "Missing $$F; run 'make publish-build' first!"; exit 1 ); done
+	@echo "    - Looks good"
+
+publish: publish-check
+	@echo "  * Preparing index.html..."
+	@$(CMD_DIR) temp/
+	@cat tool/data/publish/index.html | \
+		sed 's/class="local"/class="local hide"/g' | \
+		sed 's/ class="publish"//g' > temp/index.html
+	@echo "  * Syncing index.html..."
+	@$(CMD_SYNC_ONLINE) temp/index.html root@qooxdoo.org:/var/www/qooxdoo/demo/$(FRAMEWORK_VERSION)/
+	@$(CMD_REMOVE) temp
+	@echo "  * Syncing applications..."
+	@for APPLICATION in $(APPLICATIONS); do \
+	  echo "    - $$APPLICATION..."; \
+	  rsync --checksum --compress --recursive --delete --inplace --links --safe-links --exclude .svn application/$$APPLICATION/build/* root@qooxdoo.org:/var/www/qooxdoo/demo/$(FRAMEWORK_VERSION)/$$APPLICATION || exit 1; \
+	done
+	@for APPLICATION in $(COMPONENTS); do \
+	  echo "    - $$APPLICATION..."; \
+		if [ "$$APPLICATION" = "apiviewer" ]; then \
+			rsync --checksum --compress --recursive --delete --inplace --links --safe-links --exclude .svn framework/api/* root@qooxdoo.org:/var/www/qooxdoo/demo/$(FRAMEWORK_VERSION)/$$APPLICATION || exit 1; \
+		fi; \
+		if [ "$$APPLICATION" = "testrunner" ]; then \
+			rsync --checksum --compress --recursive --delete --inplace --links --safe-links --exclude .svn framework/test/* root@qooxdoo.org:/var/www/qooxdoo/demo/$(FRAMEWORK_VERSION)/$$APPLICATION || exit 1; \
+		fi; \
+	done
+

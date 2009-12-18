@@ -1,0 +1,32 @@
+<div style='width:600px;font-size:10px;font-family:verdana;' >
+<br/>
+Lo script deve essere scritto utilizzando il linguaggio Groovy.
+Lo script deve restituire una stringa xml contenente la lista di valori. 
+La stringa xml restituita deve essere formattata utilizzando la struttura xml riporta in fondo alla finestra.
+Dentro lo script è possibile utilizzare degli attributi di profilo come spiegato di seguito.
+<br/><br/>
+Per utilizzare un attributo di profilo all'interno dello script è necessario inserire la chiamata alla 
+funzione <b>getSingleValueProfileAttribute(nome attributo di profilo)</b>. 
+<br/>
+Esempio: istruzioni groovy ... getSingleValueProfileAttribute(nome) ... istruzioni groovy
+<br/><br/>
+Per utilizzare un attributo di profilo multivalore all'interno dello script è necessario inserire la chiamata alla
+funzione <b>getMultiValueProfileAttribute(nome attributo di profilo, prefix, splitter, suffix)</b>.
+<br/> 
+Esempio: istruzioni groovy ...  getMultiValueProfileAttribute(branches, 'in (', ';', ')') ... istruzioni groovy
+<br/>
+La funzione restituisce una stringa tipo: prefix+(lista di valori separati dallo splitter)+suffix
+<br/><br/>
+Esiste una funzione che permette di ritornare un valore fisso di default senza scrivere nessuna istruzione groovy.
+In tal caso lo script deve contenere solamente la chiamata alla funzione <b>returnValue('valore da ritornare')</b>. 
+<br/><br/><br/>
+<b>Struttura Xml della stringa restituita</b>
+<hr/>
+&lt;ROWS&gt;<br/>
+&nbsp;&nbsp;&lt;ROW  nomeAttributo1="valoreAttributo1" nomeAttributo2="valoreAttributo2" ... /&gt;<br/>
+&nbsp;&nbsp;&lt;ROW  nomeAttributo1="valoreAttributo1" nomeAttributo2="valoreAttributo2" ... /&gt;<br/>
+&nbsp;&nbsp;...<br/>
+&nbsp;&nbsp;Tutte le righe devono avere gli stessi attributi !<br/>
+&nbsp;&nbsp;...<br/>
+&lt;/ROWS&gt;<br/>
+</div>

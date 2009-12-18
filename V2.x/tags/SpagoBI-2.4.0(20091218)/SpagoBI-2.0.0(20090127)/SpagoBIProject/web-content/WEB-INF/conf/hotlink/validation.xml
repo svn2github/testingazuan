@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<VALIDATIONS>
+
+	<!-- validation for RememberMe saving -->
+	<SERVICE name="SAVE_REMEMBER_ME" type="ACTION">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS/>
+			<FIELDS>
+				<FIELD name="name" label="#sbi.rememberme.name">
+					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
+				</FIELD>
+				<FIELD name="description" label="#sbi.rememberme.descr">
+					<VALIDATOR validatorName="XSS"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="5000"/>
+				</FIELD>
+				<FIELD name="parameters">
+					<VALIDATOR validatorName="XSS"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="400"/>
+				</FIELD>	
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+
+</VALIDATIONS>

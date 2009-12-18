@@ -1,0 +1,3 @@
+SpagoBI version to be used with this engine: 2.0.0
+Included JPivot: 
+Included Mondrian: 3.0.4.11371

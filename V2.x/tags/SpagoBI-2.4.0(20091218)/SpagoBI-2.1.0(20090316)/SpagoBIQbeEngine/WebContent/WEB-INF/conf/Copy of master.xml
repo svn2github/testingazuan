@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MASTER>
+	
+	<CONFIGURATOR path="/WEB-INF/conf/qbe.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/validators.xml" />
+	
+	<!-- start QBE COMMONS -->
+	<CONFIGURATOR path="/WEB-INF/conf/commons/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/commons/common.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/commons/errors.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/commons/events.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/commons/security.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/commons/upload.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/commons/authorizations.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/commons/dispatchers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/commons/initializers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/commons/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/commons/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/commons/tracing.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/commons/traps.xml" />
+  	<CONFIGURATOR path="/WEB-INF/conf/commons/renderers.xml" />		
+	
+	<!-- start QBE INITILAIZER module -->
+	<CONFIGURATOR path="/WEB-INF/conf/initializer/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/initializer/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/initializer/publishers.xml" />
+	
+	<!-- start QUERY_BUILDER module -->
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/validation.xml" />
+	
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/select/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/select/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/select/publishers.xml" />
+	
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/where/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/where/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/where/publishers.xml" />
+	
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/groupby/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/groupby/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/groupby/publishers.xml" />
+	
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/orderby/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/orderby/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/querybuilder/orderby/publishers.xml" />
+	<!-- end QUERY_BUILDER module -->
+	
+	
+	<!-- start QUERY_INSPECTOR module -->
+	<CONFIGURATOR path="/WEB-INF/conf/queryinspector/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/queryinspector/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/queryinspector/publishers.xml" />
+	<!-- end QUERY_INSPECTOR module -->
+	
+	<!-- start QUERY_RESULTS_HANDLER module -->
+	<CONFIGURATOR path="/WEB-INF/conf/queryresultshandler/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/queryresultshandler/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/queryresultshandler/publishers.xml" />
+	<!-- end QUERY_RESULTS_HANDLER module -->
+	
+	<!-- start QUERY_SAVER module -->
+	<CONFIGURATOR path="/WEB-INF/conf/querysaver/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/querysaver/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/querysaver/publishers.xml" />
+	<!-- end QUERY_SAVER module -->
+	
+	<!-- start GEO_TEMPLATE_BUILDER module -->
+	<CONFIGURATOR path="/WEB-INF/conf/components/geoTemplateBuilder/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/geoTemplateBuilder/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/components/geoTemplateBuilder/publishers.xml" />
+	<!-- end GEO_TEMPLATE_BUILDER module -->
+	
+</MASTER>

@@ -1,0 +1,14 @@
+<div style='width:650px;font-size:10px;font-family:verdana;' >
+<br/>
+Per inserire nella query un attributo di profilo con valore singolo: <b>${nome_attributo}</b>. 
+<br/>
+<br/>
+Per inserire nella query un attributo di profilo con valore multiplo:  
+<b>${nome_attributo(prefisso;separatore;suffisso)}</b>. 
+<br/>
+L'attributo di profilo sarà sostituito dal prefisso +(lista di valori divisi dal separatore)+ suffisso 
+<br/>
+<b>Esempio:</b> ${nome_attributo( in (';',';') )}
+<br/>
+Per inserire un parametro: $P{nome_parametro}. Aggiungi quindi un parametro nella mascera di dettaglio, utilizzando nome_parametro come nome e scegliendo il tipo. 
+</div>

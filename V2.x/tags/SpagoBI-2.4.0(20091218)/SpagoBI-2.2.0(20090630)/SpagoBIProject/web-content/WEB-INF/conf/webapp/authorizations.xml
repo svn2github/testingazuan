@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<AUTHORIZATIONS default="FALSE">
+	<ENTITIES>
+		<ATTRIBUTES>
+			<ATTRIBUTE name="month" />
+			<ATTRIBUTE name="email"  />
+			<ATTRIBUTE name="name"  />
+			<ATTRIBUTE name="ente"  />
+			<ATTRIBUTE name="family"  />
+			<ATTRIBUTE name="multiValue"  />			
+		</ATTRIBUTES>	
+		<USERS>
+			<USER userID="biadmin" password="biadmin" month="03" name="SpagoBI Admin" email="spagobi@eng.it" ente="ENTE_1" family="Food" multiValue="{,{'Oakland','Milwaukie'}}"/>
+			<USER userID="bimodel" password="bimodel" month="03" name="SpagoBI Model Admin" email="spagobi@eng.it" ente="ENTE_1" family="Food" />			
+			<USER userID="biuser" password="biuser" month="04" name="SpagoBI User" email="spagobi@eng.it" ente="ENTE_2" family="Food" multiValue="{,{'Oakland','Milwaukie','Los Angeles', 'San Francisco'}}"/>
+			<USER userID="bidev" password="bidev" month="03" name="SpagoBI Dev" email="spagobi@eng.it" ente="ENTE_1" family="Food"/>
+			<USER userID="bitest" password="bitest" month="03" name="SpagoBI Test" email="spagobi@eng.it" ente="ENTE_1" family="Food"/>
+			<USER userID="biuser_a" password="biuser" month="04" name="SpagoBI User" email="spagobi@eng.it" ente="ENTE_1" family="Food"/>
+            <USER userID="biuser_b" password="biuser" month="05" name="SpagoBI User" email="spagobi@eng.it" ente="ENTE_2" family="Drink"/>
+			<USER userID="chiron" password="chiron" />
+		</USERS>
+		<ROLES>
+			<ROLE roleName="/spagobi/dev" description="/spagobi/dev" />
+			<ROLE roleName="/spagobi/test" description="/spagobi/test" />
+			<ROLE roleName="/spagobi/user" description="/spagobi/user" />
+			<ROLE roleName="/spagobi/admin" description="/spagobi/admin" />
+			<ROLE roleName="/spagobi/modeladmin" description="/spagobi/modeladmin" />
+		</ROLES>
+		<FUNCTIONALITIES></FUNCTIONALITIES>
+		<RESOURCES></RESOURCES>
+		<APPLICATIONS></APPLICATIONS>
+	</ENTITIES>
+	<RELATIONS>
+		<BEHAVIOURS>
+			<BEHAVIOUR userID="biuser" roleName="/spagobi/user" />
+			<BEHAVIOUR userID="biuser_a" roleName="/spagobi/user" />
+			<BEHAVIOUR userID="biuser_b" roleName="/spagobi/user" />
+			<BEHAVIOUR userID="bitest" roleName="/spagobi/test" />
+			<BEHAVIOUR userID="biadmin" roleName="/spagobi/admin" />
+			<BEHAVIOUR userID="bidev" roleName="/spagobi/dev" />
+			<BEHAVIOUR userID="bimodel" roleName="/spagobi/modeladmin" />
+			<BEHAVIOUR userID="chiron" roleName="/spagobi/admin" />
+		</BEHAVIOURS>
+	</RELATIONS>
+</AUTHORIZATIONS>

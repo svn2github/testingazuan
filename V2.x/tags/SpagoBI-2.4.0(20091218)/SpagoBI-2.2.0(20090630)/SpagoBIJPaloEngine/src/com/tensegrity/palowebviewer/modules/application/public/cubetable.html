@@ -1,0 +1,203 @@
+<head>
+	<title>Cube table</title>
+	<link rel="stylesheet" href="themes/default/style.css" type="text/css" />
+	<script language="JavaScript" type="text/javascript">
+        function getMainWindow() {
+            var result = window;
+            while(result.name != 'wpalo-main') {
+                result = result.parent;
+            }
+            return result;
+        }
+
+	
+		function fireLoaded() {
+			try{
+				getMainWindow().onCubeTableLoaded(getId(), window)
+			}catch(e){
+				
+			}
+		}
+			
+		function getId(){
+			var res = document.location.href.match(new RegExp("id\=([A-Za-z0-9]+)"))
+			if(res && res.length > 0)
+				return res[1]
+			return false;
+		}	
+	
+	
+	function syncronizeSize(){
+		var top = document.getElementById("top");
+		var left = document.getElementById("left");
+		var leftinner = document.getElementById("leftinner");
+		var content = document.getElementById("content");
+		
+		var topleft = document.getElementById("topleft");
+		try{			
+			if(document.all){
+				left.style.width = leftinner.clientWidth + 3 + "px";
+			}else{
+				left.style.width = leftinner.clientWidth + 1 + "px";
+			}
+			
+			top.style.left = left.clientWidth + 1 + "px";
+			top.style.width = (document.body.clientWidth - left.clientWidth - 16) + "px"
+			left.style.top = top.clientHeight - 1 + "px";
+			left.style.height = (document.body.clientHeight - top.clientHeight - 15) + "px";
+			if(document.all){
+				leftinner.style.height = (document.body.clientHeight - top.clientHeight - 18) + "px";
+			}else{
+				leftinner.style.height = (document.body.clientHeight - top.clientHeight - 17) + "px";
+			}
+			
+			
+			topleft.style.width = left.clientWidth + "px";
+			topleft.style.height = top.clientHeight - 1 + "px";
+			content.style.top = top.clientHeight + "px";
+			content.style.left = left.clientWidth + 2 + "px"
+			content.style.height = document.body.clientHeight - top.clientHeight + "px"
+			content.style.width = (document.body.clientWidth -1)- left.clientWidth + "px"
+			content.style.height = document.body.clientHeight - top.clientHeight + "px"
+			
+			if(document.all){
+				var verbottomborder = document.getElementById("verbottomborder")
+				if(verbottomborder)
+					verbottomborder.style.width = leftinner.clientWidth + "px"
+			}
+	}catch(e){}
+	}
+	function syncronize(){
+		var top = document.getElementById("top");		
+		var left = document.getElementById("left");		
+		var content = document.getElementById("content");
+
+
+		
+		top.scrollLeft = content.scrollLeft
+		left.scrollTop = content.scrollTop
+	}
+	
+	
+	function test(){
+		var top = document.getElementById("top");		
+		var left = document.getElementById("left");
+		var content = document.getElementById("content");
+		alert(document.body.clientHeight)		
+		alert(top.clientHeight)
+		alert(content.style.height)
+	}
+	
+	
+	function getWidth(str){
+		var objTestWidth = getMainWindow().document.getElementById("testWidth")
+		objTestWidth.innerHTML = str
+		
+		return objTestWidth.clientWidth;
+		objTestWidth.innerHTML = str
+		return objTestWidth.clientWidth
+		
+	}
+	
+	
+	</script>
+	<script language="JavaScript" type="text/javascript" src="js/tree.js"></script>
+</head>
+
+<body style="margin:0; padding:0; overflow: hidden;" onload="syncronizeSize();fireLoaded() " onresize="syncronizeSize()" onmousemove="return true;moveDD(event)" onmouseup="return true;endDD(event)">
+<div id="hint" style="display: none;"></div>
+<input type="text" id="forfocus" style="position: absolute; top: -1000px;" />
+<div id="top" style="position: absolute; background-color: #f2f4f7; width: 100%; overflow: hidden; background-image: url(themes/default/img/bg.gif); background-position: 0 bottom; background-repeat: repeat-x; border-right: 1px solid #404040; border-top: 1px solid #C0C0C0; padding-bottom: 2px;">
+	Loading...
+</div>
+<div id="left" style1="background-image: url(themes/default/img/bg2.gif); background-position: right top; background-repeat: repeat-y; position: absolute; background-color: #f2f4f7; overflow: hidden; border-left: 1px solid #C0C0C0; border-top: 1px solid #C0C0C0; border-bottom: 1px solid #404040; border-right: 1px solid #404040; padding-top: 0px;">
+	<div id="leftinner">
+		Loading...
+	</div>
+</div>
+<div id="content" style="position: absolute; background-color: white; top: 20px; width: 80px; height: 80px; overflow: scroll;" onscroll="syncronize();"></div>
+<div id="topleft" style="position: absolute; background-color: white; top: 0; left: 0; overflow: hidden;"></div>
+<div id="verticalSeparator" style="position: absolute; width: 1px; height: 300px; background-image: url(themes/default/img/sep1.gif); z-index: 3;top: 0; cursor: W-resize;  display: none;"></style>
+
+<div id="testWidth" style="position: absolute; visibility: hidden; white-space: nowrap;">Width</div>
+
+
+<script language="JavaScript" type="text/javascript">
+	var objTestWidth = document.getElementById("testWidth");
+	
+
+	var node = null;//getTree(str4);
+	var node1 = null;//getTree(str1);
+	var trees = new Array(255);
+	var horizontalOriginalNodes = new Array(255)
+	var trees1 = new Array(255);
+	var verticalOriginalNodes = new Array(255)
+
+	
+	var horTreeCount = 0
+	var verTreeCount = 0
+	
+	
+	function invalidate(){
+		if(node != null){
+			//document.getElementById("top").innerHTML = node.getHTMLTable()
+		}else if(horTreeCount > 0){
+			//node = getTree(trees[0])			
+			node = cloneTreeNode(horizontalOriginalNodes[0])
+			//document.getElementById("top").innerHTML = node.getHTMLTable()
+		}
+
+		
+		if(node1 != null){
+			//document.getElementById("left").innerHTML = node1.getVerticalHTMLTable()
+		}else if(verTreeCount > 0){
+			node1 = cloneTreeNode(verticalOriginalNodes[0])
+			//node1 = cloneNode(verticalOriginalNodes[0])
+			//document.getElementById("left").innerHTML = node1.getVerticalHTMLTable()
+		}
+		syncronizeSize();
+		return true;
+	}
+	
+	function insertTree(direction, str, pos) {
+//		log("InsertTree: " + str)
+		globalIndex = 0;
+		horArrayCount = 0;
+		verArrayCount = 0;
+		if(direction == 0){
+			trees[horTreeCount] = str;
+			horizontalOriginalNodes[horTreeCount] = getTree(str)
+			horTreeCount++
+		}else{
+			trees1[verTreeCount] = str;
+			verticalOriginalNodes[verTreeCount] = getTree(str)
+			verTreeCount++
+		}
+			invalidate()
+		return true;
+	}
+	function clean(){
+		horTreeCount = 0;
+		node = null;
+		node1 = null;
+		verTreeCount = 0;
+		invalidate();
+		firstTime = true;
+	}
+	
+	function log1(str){
+		document.getElementById('log').value += str + "\n"
+	}
+	
+	function log(str){
+		if(window.console)
+			console.info(str)
+	}
+</script>
+
+<!--input type="button" value="clear" onclick="document.getElementById('log').value=''" style="position: absolute; top: 0; left: 0; z-index: 6;" />
+<textarea id="log" style="position: absolute; top: 300px; left: 300px; width: 300px; height: 500px;"></textarea-->
+
+</body>
+</html>
+

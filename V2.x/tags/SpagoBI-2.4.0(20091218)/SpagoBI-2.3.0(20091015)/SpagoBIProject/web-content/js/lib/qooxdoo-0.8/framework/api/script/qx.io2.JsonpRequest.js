@@ -1,0 +1,1 @@
+{type:"class",attributes:{"isStatic":"true","name":"JsonpRequest","hasWarning":"true","packageName":"qx.io2","hasError":"true","fullName":"qx.io2.JsonpRequest","type":"bootstrap"},children:[{type:"errors",children:[{type:"error",attributes:{"msg":"Class documentation is missing.","column":"20","line":"24"}}]}]}

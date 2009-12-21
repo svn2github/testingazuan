@@ -82,8 +82,10 @@ public class LuceneIndexer {
 					Field.Index.NOT_ANALYZED));
 			doc.add(new Field(IndexingConstants.BIOBJ_NAME, biObj.getName(),
 					Field.Store.NO, Field.Index.ANALYZED));
-			doc.add(new Field(IndexingConstants.BIOBJ_DESCR, biObj.getDescription(),
+			if(biObj.getDescription() != null){
+				doc.add(new Field(IndexingConstants.BIOBJ_DESCR, biObj.getDescription(),
 					Field.Store.NO, Field.Index.ANALYZED));
+			}
 			doc.add(new Field(IndexingConstants.BIOBJ_LABEL, biObj.getLabel(),
 					Field.Store.NO, Field.Index.ANALYZED));
 			
@@ -174,8 +176,10 @@ public class LuceneIndexer {
 							Field.Index.NOT_ANALYZED));
 					doc.add(new Field(IndexingConstants.BIOBJ_NAME, biObj.getName(),
 							Field.Store.NO, Field.Index.ANALYZED));
-					doc.add(new Field(IndexingConstants.BIOBJ_DESCR, biObj.getDescription(),
-							Field.Store.NO, Field.Index.ANALYZED));
+					if(biObj.getDescription() != null){
+						doc.add(new Field(IndexingConstants.BIOBJ_DESCR, biObj.getDescription(),
+								Field.Store.NO, Field.Index.ANALYZED));
+					}
 					doc.add(new Field(IndexingConstants.BIOBJ_LABEL, biObj.getLabel(),
 							Field.Store.NO, Field.Index.ANALYZED));
 					addSubobjFieldsToDocument(doc, biObj.getId());
@@ -318,8 +322,10 @@ public class LuceneIndexer {
 								Field.Index.NOT_ANALYZED));
 						doc.add(new Field(IndexingConstants.BIOBJ_NAME, biobjects.get(k).getName(),
 								Field.Store.NO, Field.Index.ANALYZED));
-						doc.add(new Field(IndexingConstants.BIOBJ_DESCR, biobjects.get(k).getDescription(),
+						if(biobjects.get(k).getDescription() != null){
+							doc.add(new Field(IndexingConstants.BIOBJ_DESCR, biobjects.get(k).getDescription(),
 								Field.Store.NO, Field.Index.ANALYZED));
+						}
 						doc.add(new Field(IndexingConstants.BIOBJ_LABEL, biobjects.get(k).getLabel(),
 								Field.Store.NO, Field.Index.ANALYZED));
 						addSubobjFieldsToDocument(doc, biobjects.get(k).getId());
@@ -352,24 +358,30 @@ public class LuceneIndexer {
 				Field.Index.NOT_ANALYZED));
 		doc.add(new Field(IndexingConstants.BIOBJ_ID, String.valueOf(biobjId.intValue()), Field.Store.YES,
 				Field.Index.NOT_ANALYZED));
-		doc.add(new Field(IndexingConstants.METADATA, metaName,
+		if(metaName != null){
+			doc.add(new Field(IndexingConstants.METADATA, metaName,
 				Field.Store.YES,
 				Field.Index.NOT_ANALYZED));
+		}
 		if (domain.getValueCd().equalsIgnoreCase(LONG_TEXT)) { // index
 																// html
 																// binary
 																// content
-			doc.add(new Field(IndexingConstants.CONTENTS, htmlContent,
-					Field.Store.NO, Field.Index.ANALYZED));
-			logger.info("adding html binary content " + doc.get(IndexingConstants.UID));
-			logger.info("-> " + htmlContent);
+			if(htmlContent != null){
+				doc.add(new Field(IndexingConstants.CONTENTS, htmlContent,
+						Field.Store.NO, Field.Index.ANALYZED));
+				logger.info("adding html binary content " + doc.get(IndexingConstants.UID));
+				logger.info("-> " + htmlContent);
+			}
 		} else if (domain.getValueCd().equalsIgnoreCase(
 				SHORT_TEXT)) {// index simple text binary
 								// content
-			doc.add(new Field(IndexingConstants.CONTENTS, new String(content, "UTF-8"),
-					Field.Store.NO, Field.Index.ANALYZED));
-			logger.info("adding simple text binary content " + doc.get(IndexingConstants.UID));
-			logger.info("-> " + new String(content, "UTF-8"));
+			if(content != null){
+				doc.add(new Field(IndexingConstants.CONTENTS, new String(content, "UTF-8"),
+						Field.Store.NO, Field.Index.ANALYZED));
+				logger.info("adding simple text binary content " + doc.get(IndexingConstants.UID));
+				logger.info("-> " + new String(content, "UTF-8"));
+			}
 		}
 		addBiobjFieldsToDocument(doc, biobjId);
 	}
@@ -379,10 +391,14 @@ public class LuceneIndexer {
 			BIObject biObj = DAOFactory.getBIObjectDAO().loadBIObjectById(biObjectID);
 			doc.add(new Field(IndexingConstants.BIOBJ_NAME, biObj.getName(),
 					Field.Store.NO, Field.Index.ANALYZED));
-			doc.add(new Field(IndexingConstants.BIOBJ_DESCR, biObj.getDescription(),
+			if(biObj.getDescription() != null){
+				doc.add(new Field(IndexingConstants.BIOBJ_DESCR, biObj.getDescription(),
 					Field.Store.NO, Field.Index.ANALYZED));
-			doc.add(new Field(IndexingConstants.BIOBJ_LABEL, biObj.getLabel(),
+			}
+			if(biObj.getLabel() != null){
+				doc.add(new Field(IndexingConstants.BIOBJ_LABEL, biObj.getLabel(),
 					Field.Store.NO, Field.Index.ANALYZED));
+			}
 			
 		} catch (EMFUserError e) {
 			logger.error(e.getMessage());
@@ -394,10 +410,14 @@ public class LuceneIndexer {
 			if(subobjects != null){
 				for(int i =0; i<subobjects.size(); i++){
 					SubObject subObj = subobjects.get(i);
-					doc.add(new Field(IndexingConstants.SUBOBJ_NAME, subObj.getName(),
+					if(subObj.getName() != null){
+						doc.add(new Field(IndexingConstants.SUBOBJ_NAME, subObj.getName(),
 							Field.Store.YES, Field.Index.ANALYZED));
-					doc.add(new Field(IndexingConstants.SUBOBJ_DESCR, subObj.getDescription(),
+					}
+					if(subObj.getDescription() != null){
+						doc.add(new Field(IndexingConstants.SUBOBJ_DESCR, subObj.getDescription(),
 							Field.Store.YES, Field.Index.ANALYZED));
+					}
 				}
 			}
 		} catch (EMFUserError e) {

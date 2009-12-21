@@ -661,6 +661,9 @@ Create table SBI_THRESHOLD_VALUE (
 	LABEL Varchar2 (20) NOT NULL,
 	COLOUR Varchar2 (20),
 	POSITION Number(38,0),
+	min_closed SMALLINT,
+	max_closed SMALLINT,
+	value Number,
 primary key ("ID_THRESHOLD_VALUE") 
 ) 
 /
@@ -673,6 +676,7 @@ Create table SBI_KPI_MODEL (
 	KPI_MODEL_CD Varchar2 (40) NOT NULL,
 	KPI_MODEL_NM Varchar2 (400),
 	KPI_MODEL_DESC Varchar2 (1000),
+	KPI_MODEL_LBL VARCHAR(100) NOT NULL,
 primary key ("KPI_MODEL_ID") 
 ) 
 /
@@ -757,6 +761,7 @@ Create table SBI_KPI_MODEL_INST (
 	START_DATE Timestamp(6),
 	END_DATE Timestamp(6),
 	KPI_MODEL_ID Number(38,0),
+	modelUUID VARCHAR(400),
 primary key ("KPI_MODEL_INST") 
 )
 /
@@ -991,7 +996,9 @@ CREATE UNIQUE INDEX anarm_name_unique ON SBI_ALARM_CONTACT (NAME)
 /
 CREATE UNIQUE INDEX kpi_code_unique ON SBI_KPI (code)
 /
-CREATE UNIQUE INDEX model_cd_unique ON SBI_KPI_MODEL (KPI_MODEL_CD)
+CREATE UNIQUE INDEX model_cd_par_id_unique ON SBI_KPI_MODEL (KPI_MODEL_CD,KPI_PARENT_MODEL_ID)
+/
+CREATE UNIQUE INDEX model_lbl_unique ON SBI_KPI_MODEL (KPI_MODEL_LBL)
 /
 CREATE UNIQUE INDEX period_name_unique ON SBI_KPI_PERIODICITY (name)
 /

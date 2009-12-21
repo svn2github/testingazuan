@@ -74,6 +74,10 @@ Sbi.formbuilder.StaticClosedXORFiltersEditorPanel = function(filtersGroupConf, c
 				text: 'Add',
 				handler: function() {this.addFilter();},
 				scope: this
+		    }, {
+				text: 'Delete',
+				handler: function() { this.destroy(); },
+				scope: this
 		    }
 		  ]
 	});
@@ -152,11 +156,16 @@ Ext.extend(Sbi.formbuilder.StaticClosedXORFiltersEditorPanel, Ext.Panel, {
 		}
 
 		var filter = this.createFilterEditor();
+		filter.index = this.filters.length;
 		
 		this.filters.push(filter);
 		
 		this.filtersGroupPanel.add(filter);
 		this.filtersGroupPanel.doLayout();
+	}
+	
+	, deleteFilter: function() {
+		alert('delete filter');
 	}
 	
 	, createFilterEditor: function() {

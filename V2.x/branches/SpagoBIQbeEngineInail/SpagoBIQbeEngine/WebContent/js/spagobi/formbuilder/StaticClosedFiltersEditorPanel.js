@@ -99,24 +99,56 @@ Ext.extend(Sbi.formbuilder.StaticClosedFiltersEditorPanel, Ext.Panel, {
 	}
 
 	, clearContents: function() {
-		Sbi.qbe.commons.Utils.unimplementedFunction('clearContents');
+		if(this.empty === true) return;
+		
+		this.reset();
+		
+		this.emptyMsgPanel = new Ext.Panel({
+			html: '1Click on the button in the top-rigtht corner in order to add a new filter group'
+		});
+		this.add(this.emptyMsgPanel);
+		this.contents = [this.emptyMsgPanel];
+		this.doLayout();
+		this.empty = true;		
 	}
 	
 	, addStaticClosedXORFilters: function(staticFiltersGroupConf) {
 		if(this.empty === true) {
-			this.remove(0, true);
-			this.doLayout();
+			this.reset();
+			//this.remove(0, true);
+			//this.doLayout();
 			this.empty = false;
+			this.contents = [];
 		}
 				
-		var staticFiltersForm = new Sbi.formbuilder.StaticClosedXORFiltersEditorPanel(staticFiltersGroupConf);		
-		this.add(staticFiltersForm);
+		var staticFiltersGroup = new Sbi.formbuilder.StaticClosedXORFiltersEditorPanel(staticFiltersGroupConf);		
+		staticFiltersGroup.on('destroy', function(fGroup) {
+			var t = this.contents;
+			this.contents = [];
+			for(var i = 0; i < t.length; i++) {
+				if(fGroup.id !== t[i].id) {
+					this.contents.push(t[i]);
+				}
+			}
+		}, this);
+		
+		this.contents.push(staticFiltersGroup);
+		this.add(staticFiltersGroup);
 		this.doLayout();	
 	}
 
 	// --------------------------------------------------------------------------------
 	// private methods
 	// --------------------------------------------------------------------------------
+	
+	, reset: function() {
+		if(this.contents && this.contents.length) {
+			for(var i = this.contents.length-1; i >= 0; i--) {
+				// beware: remove change also the length of contents (probably by calling "delete contents[i]") 
+				this.remove(this.contents[i], true);
+			}
+		}
+	}
 	
 	, init: function(staticFiltersConf) {
 		if(staticFiltersConf !== undefined) {
@@ -126,12 +158,12 @@ Ext.extend(Sbi.formbuilder.StaticClosedFiltersEditorPanel, Ext.Panel, {
 			this.initTools();
 			this.contents = [this.emptyMsgPanel];
 		}
-	}
+	}	
 	
 	, initEmptyMsgPanel: function() {
 		this.empty = true;
 		this.emptyMsgPanel = new Ext.Panel({
-			html: 'drag a field here to create a new static filter'
+			html: '2Click on the button in the top-rigtht corner in order to add a new filter group'
 		});
 	}
 

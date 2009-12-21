@@ -37,8 +37,8 @@
         <property name="minClosed" type="boolean">
             <column name="min_closed" />
         </property>
-        <property name="value" type="double">
-            <column name="value" precision="22" scale="0" />
+        <property name="thValue" type="double">
+            <column name="th_value" precision="22" scale="0" />
         </property>
         
         

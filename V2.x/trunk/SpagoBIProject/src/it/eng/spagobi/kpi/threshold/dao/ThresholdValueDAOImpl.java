@@ -179,7 +179,7 @@ IThresholdValueDAO {
 				thresholdValue.setMinValue(hibThresholdValue.getMinValue());
 				thresholdValue.setMinClosed(hibThresholdValue.getMinClosed());
 				thresholdValue.setMaxClosed(hibThresholdValue.getMaxClosed());
-				thresholdValue.setValue(hibThresholdValue.getValue());
+				thresholdValue.setValue(hibThresholdValue.getThValue());
 
 				thresholdValue.setThresholdId(hibThresholdValue
 						.getSbiThreshold().getThresholdId());
@@ -223,7 +223,7 @@ IThresholdValueDAO {
 			toReturn.setMaxValue(hibThresholdValue.getMaxValue());
 			toReturn.setMinClosed(hibThresholdValue.getMinClosed());
 			toReturn.setMaxClosed(hibThresholdValue.getMaxClosed());
-			toReturn.setValue(hibThresholdValue.getValue());
+			toReturn.setValue(hibThresholdValue.getThValue());
 
 			Color color=null;
 			String col=hibThresholdValue.getColour();
@@ -307,7 +307,7 @@ IThresholdValueDAO {
 			sbiThresholdValue.setColour(colour);
 			sbiThresholdValue.setMinClosed(minClosed);
 			sbiThresholdValue.setMaxClosed(maxClosed);
-			sbiThresholdValue.setValue(value);
+			sbiThresholdValue.setThValue(value);
 
 			sbiThresholdValue.setSbiThreshold(threshold);
 			sbiThresholdValue.setSeverity(severity);
@@ -384,7 +384,7 @@ IThresholdValueDAO {
 			
 			sbiThresholdValue.setMinClosed(minClosed);
 			sbiThresholdValue.setMaxClosed(maxClosed);
-			sbiThresholdValue.setValue(value);
+			sbiThresholdValue.setThValue(value);
 
 			idToReturn = (Integer) aSession.save(sbiThresholdValue);
 
@@ -452,7 +452,7 @@ IThresholdValueDAO {
 		Double minValue = t.getMinValue();
 		Boolean maxClosed = t.getMaxClosed();
 		Boolean minClosed = t.getMinClosed();
-		Double value = t.getValue();
+		Double value = t.getThValue();
 		SbiThreshold sbit = t.getSbiThreshold();
 		Color color = new Color(255, 255, 0);
 		String col = t.getColour();

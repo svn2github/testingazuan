@@ -73,6 +73,8 @@ Sbi.formbuilder.StaticOpenFiltersEditorPanel = function(openFilters, config) {
     Sbi.formbuilder.StaticOpenFiltersEditorPanel.superclass.constructor.call(this, c);
     
     this.doLayout();
+    
+    this.on('afterlayout', this.initDD, this);
 };
 
 Ext.extend(Sbi.formbuilder.StaticOpenFiltersEditorPanel, Ext.Panel, {
@@ -85,6 +87,11 @@ Ext.extend(Sbi.formbuilder.StaticOpenFiltersEditorPanel, Ext.Panel, {
 		Sbi.qbe.commons.Utils.unimplementedFunction('loadContents');
 	}
 	
+	, initDD: function() {
+		this.removeListener('afterlayout', this.initDD, this);
+		this.dropTarget = new Sbi.formbuilder.StaticOpenFiltersEditorPanelDropTarget(this);
+	}
+
 	, init: function(openFiltersConf) {
 		if(openFiltersConf !== undefined) {
 			this.loadContents(openFiltersConf);	

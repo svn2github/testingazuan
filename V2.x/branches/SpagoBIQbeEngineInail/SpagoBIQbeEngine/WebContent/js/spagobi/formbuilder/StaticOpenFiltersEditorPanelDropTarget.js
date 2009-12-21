@@ -54,7 +54,6 @@ Sbi.formbuilder.StaticOpenFiltersEditorPanelDropTarget = function(staticOpenFilt
 	}, config || {});
 	
 	this.targetPanel = staticOpenFiltersEditorPanel;
-	this.targetElement = this.targetPanel.el.dom.childNodes[0].childNodes[1];
 	
 	// constructor
     Sbi.formbuilder.StaticOpenFiltersEditorPanelDropTarget.superclass.constructor.call(this, this.targetPanel, c);

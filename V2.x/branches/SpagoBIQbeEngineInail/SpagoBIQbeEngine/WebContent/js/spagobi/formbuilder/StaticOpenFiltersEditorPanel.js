@@ -72,9 +72,10 @@ Sbi.formbuilder.StaticOpenFiltersEditorPanel = function(openFilters, config) {
 	// constructor
     Sbi.formbuilder.StaticOpenFiltersEditorPanel.superclass.constructor.call(this, c);
     
+    this.on('afterlayout', this.initDD, this);
+    
     this.doLayout();
     
-    this.on('afterlayout', this.initDD, this);
 };
 
 Ext.extend(Sbi.formbuilder.StaticOpenFiltersEditorPanel, Ext.Panel, {

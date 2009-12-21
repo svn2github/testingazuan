@@ -107,6 +107,8 @@ Ext.extend(Sbi.formbuilder.FiltersTemplatePanel, Ext.Panel, {
 		
 		this.staticClosedFiltersEditorPanel = new Sbi.formbuilder.StaticClosedFiltersEditorPanel();
 		this.add(this.staticClosedFiltersEditorPanel);
+		this.staticOpenFiltersEditorPanel = new Sbi.formbuilder.StaticOpenFiltersEditorPanel();
+		this.add(this.staticOpenFiltersEditorPanel);
 		this.doLayout(true);
 				
 		//alert('Out');

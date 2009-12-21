@@ -149,6 +149,8 @@ Ext.extend(Sbi.formbuilder.QueryFieldsPanel, Ext.Panel, {
 	        ],
 	        stripeRows: false,
 	        autoExpandColumn: 'alias',
+	        enableDragDrop: true,
+	        ddGroup: 'formbuilderDDGroup'
 	    });
     }
     

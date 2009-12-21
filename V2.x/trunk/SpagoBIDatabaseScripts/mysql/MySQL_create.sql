@@ -725,7 +725,7 @@ Create table `SBI_THRESHOLD_VALUE` (
 	`colour` Varchar(20),
 	`min_closed` BOOLEAN,
 	`max_closed` BOOLEAN,
-	`value` DOUBLE,
+	`th_value` DOUBLE,
 	UNIQUE (`label`, `THRESHOLD_ID`),
  Primary Key (`id_threshold_value`)) ENGINE = InnoDB;
 

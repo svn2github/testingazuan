@@ -663,7 +663,7 @@ Create table SBI_THRESHOLD_VALUE (
 	POSITION Number(38,0),
 	min_closed SMALLINT,
 	max_closed SMALLINT,
-	value Number,
+	th_value Number,
 primary key ("ID_THRESHOLD_VALUE") 
 ) 
 /

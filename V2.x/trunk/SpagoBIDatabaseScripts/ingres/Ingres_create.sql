@@ -649,7 +649,7 @@ Create table SBI_THRESHOLD_VALUE (
 	COLOUR Varchar(20),
 	min_closed Smallint,
 	max_closed Smallint,
-	value Float,
+	th_value Float,
 UNIQUE(LABEL, THRESHOLD_ID),	
 Primary Key (id_threshold_value)
 ) ;\p\g

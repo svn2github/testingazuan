@@ -714,8 +714,6 @@ Create table `SBI_THRESHOLD` (
 	UNIQUE (`code`),
  Primary Key (`THRESHOLD_ID`)) ENGINE = InnoDB;
 
-  
-
 Create table `SBI_THRESHOLD_VALUE` (
 	`id_threshold_value` Int NOT NULL AUTO_INCREMENT,
 	`THRESHOLD_ID` Int NOT NULL,
@@ -725,10 +723,13 @@ Create table `SBI_THRESHOLD_VALUE` (
 	`max_value` Double,
 	`label` Varchar(20) NOT NULL,
 	`colour` Varchar(20),
+	`min_closed` BOOLEAN,
+	`max_closed` BOOLEAN,
+	`value` DOUBLE,
 	UNIQUE (`label`, `THRESHOLD_ID`),
  Primary Key (`id_threshold_value`)) ENGINE = InnoDB;
 
-Create table `SBI_KPI_MODEL` (
+ Create table `SBI_KPI_MODEL` (
 	`KPI_MODEL_ID` Int NOT NULL AUTO_INCREMENT,
 	`KPI_ID` Int,
 	`KPI_MODEL_TYPE_ID` Int NOT NULL,
@@ -736,8 +737,11 @@ Create table `SBI_KPI_MODEL` (
 	`KPI_MODEL_CD` Varchar(40) NOT NULL,
 	`KPI_MODEL_NM` Varchar(400),
 	`KPI_MODEL_DESC` Varchar(1000),
-	UNIQUE (`KPI_MODEL_CD`),
+	`KPI_MODEL_LBL` VARCHAR(100) NOT NULL,
+	UNIQUE (`KPI_MODEL_LBL`),
  Primary Key (`KPI_MODEL_ID`)) ENGINE = InnoDB;
+ 
+ALTER TABLE SBI_KPI_MODEL ADD UNIQUE INDEX UNIQUE_PAR_ID_CD(KPI_PARENT_MODEL_ID, KPI_MODEL_CD);
 
 Create table `SBI_KPI_MODEL_ATTR` (
 	`KPI_MODEL_ATTR_ID` Int NOT NULL AUTO_INCREMENT,
@@ -827,6 +831,7 @@ Create table `SBI_KPI_MODEL_INST` (
 	`description` Varchar(1000),
 	`start_date` DATETIME,
 	`end_date` DATETIME,
+	`modelUUID` VARCHAR(400),
     UNIQUE (`label`),
  Primary Key (`KPI_MODEL_INST`)) ENGINE = InnoDB;
 

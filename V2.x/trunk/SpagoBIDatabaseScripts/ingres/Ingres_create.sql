@@ -647,6 +647,9 @@ Create table SBI_THRESHOLD_VALUE (
 	MAX_VALUE Float,
 	LABEL Varchar(20) NOT NULL,
 	COLOUR Varchar(20),
+	min_closed Smallint,
+	max_closed Smallint,
+	value Float,
 UNIQUE(LABEL, THRESHOLD_ID),	
 Primary Key (id_threshold_value)
 ) ;\p\g
@@ -660,9 +663,14 @@ Create table SBI_KPI_MODEL (
 	KPI_MODEL_CD Varchar(40) NOT NULL,
 	KPI_MODEL_NM Varchar(400),
 	KPI_MODEL_DESC Varchar(1000),
-UNIQUE(KPI_MODEL_CD),	
+	KPI_MODEL_LBL VARCHAR(100) NOT NULL,
+UNIQUE(KPI_MODEL_LBL),	
 Primary Key (KPI_MODEL_ID)
 ) ;\p\g
+
+ALTER TABLE SBI_KPI_MODEL ADD UNIQUE INDEX UNIQUE_PAR_ID_CD(KPI_PARENT_MODEL_ID,
+ KPI_MODEL_CD) ;\p\g
+
 CREATE SEQUENCE SBI_KPI_MODEL_ATTR_SEQ;\p\g
 Create table SBI_KPI_MODEL_ATTR (
 	KPI_MODEL_ATTR_ID Integer NOT NULL with default next value for SBI_KPI_MODEL_ATTR_SEQ,
@@ -742,6 +750,7 @@ Create table SBI_KPI_MODEL_INST (
 	DESCRIPTION Varchar(1000),
 	START_DATE Date,
 	END_DATE Date,
+	modelUUID Varchar(400),
 UNIQUE(LABEL),	
 Primary Key (KPI_MODEL_INST)
 ) ;\p\g

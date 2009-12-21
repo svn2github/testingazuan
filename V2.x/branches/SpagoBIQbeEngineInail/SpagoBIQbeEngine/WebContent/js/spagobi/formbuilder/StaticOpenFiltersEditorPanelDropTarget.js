@@ -56,26 +56,41 @@ Sbi.formbuilder.StaticOpenFiltersEditorPanelDropTarget = function(staticOpenFilt
 	this.targetPanel = staticOpenFiltersEditorPanel;
 	
 	// constructor
-    Sbi.formbuilder.StaticOpenFiltersEditorPanelDropTarget.superclass.constructor.call(this, this.targetPanel, c);
+    Sbi.formbuilder.StaticOpenFiltersEditorPanelDropTarget.superclass.constructor.call(this, this.targetPanel.getEl(), c);
 };
 
 Ext.extend(Sbi.formbuilder.StaticOpenFiltersEditorPanelDropTarget, Ext.dd.DropTarget, {
     
 	targetPanel: null
 
-    , notifyOver : function(ddSource, e, data){
+    , notifyOver : function(ddSource, e, data) {
 		return this.dropAllowed;
 	}
 	
 	, notifyDrop : function(ddSource, e, data) {
-		alert('Dropped!!!!');
-	}
-
-	// =====================================================================================
-	// from ..............
-	// =====================================================================================
-	, notifyDropFromDatamartStructureTree: function(ddSource, e, data, rowIndex) {
+		var rows = ddSource.dragData.selections;
+		if(rows.length > 1 ) {
+			Ext.Msg.show({
+				   title:'Wrong dragged source',
+				   msg: 'Select just one field please',
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.ERROR
+			});
+			return;
+		}
 		
-	} 
+		var openFilter = {};
+		openFilter.text = rows[0].data.alias;
+		openFilter.field = rows[0].data.id;
+		openFilter.operator = '';
+		openFilter.maxSelectedNumber = '';
+
+		var staticOpenFilterWindow = new Sbi.formbuilder.StaticOpenFilterWindow(openFilter, {});
+		
+		staticOpenFilterWindow.show();
+		
+		staticOpenFilterWindow.on('apply', function(openFilter) {this.targetPanel.addFilter(openFilter);} , this); 
+
+	}
 	
 });

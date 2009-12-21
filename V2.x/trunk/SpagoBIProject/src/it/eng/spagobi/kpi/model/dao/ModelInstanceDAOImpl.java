@@ -40,24 +40,20 @@ import org.hibernate.criterion.Order;
 import org.hibernate.exception.ConstraintViolationException;
 
 public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
-IModelInstanceDAO {
+		IModelInstanceDAO {
 
 	static private Logger logger = Logger.getLogger(ModelInstanceDAOImpl.class);
 
-	
-	
-	
-	
 	private ModelInstanceNode toModelInstanceNode(
 			SbiKpiModelInst hibSbiKpiModelInst, Date requestedDate)
-	throws EMFUserError {
+			throws EMFUserError {
 
 		logger.debug("IN");
 		ModelInstanceNode toReturn = new ModelInstanceNode();
 
 		String modelCode = "";
 
-		if(hibSbiKpiModelInst.getSbiKpiModel()!=null){
+		if (hibSbiKpiModelInst.getSbiKpiModel() != null) {
 			modelCode = hibSbiKpiModelInst.getSbiKpiModel().getKpiModelCd();
 		}
 
@@ -72,7 +68,7 @@ IModelInstanceDAO {
 				+ (name != null ? name : "name null"));
 		SbiKpiInstance kpiInst = hibSbiKpiModelInst.getSbiKpiInstance();
 
-		IKpiInstanceDAO kpiInstDAO=DAOFactory.getKpiInstanceDAO();
+		IKpiInstanceDAO kpiInstDAO = DAOFactory.getKpiInstanceDAO();
 		KpiInstance kpiInstanceAssociated = null;
 		if (kpiInst != null) {
 			kpiInstanceAssociated = kpiInstDAO.toKpiInstance(kpiInst);
@@ -82,7 +78,7 @@ IModelInstanceDAO {
 		List res = new ArrayList();
 		if (!resources.isEmpty()) {
 			Iterator i = resources.iterator();
-			IModelResourceDAO resDAO=DAOFactory.getModelResourcesDAO();
+			IModelResourceDAO resDAO = DAOFactory.getModelResourcesDAO();
 			while (i.hasNext()) {
 				SbiKpiModelResources dls = (SbiKpiModelResources) i.next();
 				Resource r = resDAO.toResource(dls);
@@ -99,9 +95,9 @@ IModelInstanceDAO {
 		if (father != null) {
 			fatherId = father.getKpiModelInst();
 			logger
-			.debug("SbiKpiModelInstanceNode fatherId: "
-					+ (fatherId != null ? fatherId.toString()
-							: "fatherId null"));
+					.debug("SbiKpiModelInstanceNode fatherId: "
+							+ (fatherId != null ? fatherId.toString()
+									: "fatherId null"));
 		} else {
 			isRoot = true;
 		}
@@ -121,9 +117,10 @@ IModelInstanceDAO {
 
 		// gets ModelNode referenced
 		Integer reference = hibSbiKpiModelInst.getSbiKpiModel().getKpiModelId();
-		logger.debug("SbiKpiModelInstanceNode modelNodeReference: "
-				+ (reference != null ? reference.toString()
-						: "reference null"));
+		logger
+				.debug("SbiKpiModelInstanceNode modelNodeReference: "
+						+ (reference != null ? reference.toString()
+								: "reference null"));
 
 		toReturn.setModelInstanceNodeId(id);
 		logger.debug("KpiModelInstanceNode id setted");
@@ -149,8 +146,7 @@ IModelInstanceDAO {
 		logger.debug("OUT");
 		return toReturn;
 	}
-	
-	
+
 	public ModelInstanceNode loadModelInstanceById(Integer id,
 			Date requestedDate) throws EMFUserError {
 		logger.debug("IN");
@@ -162,7 +158,7 @@ IModelInstanceDAO {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiKpiModelInst hibSbiKpiModelInst = (SbiKpiModelInst) aSession
-			.get(SbiKpiModelInst.class, id);
+					.get(SbiKpiModelInst.class, id);
 			toReturn = toModelInstanceNode(hibSbiKpiModelInst, requestedDate);
 
 		} catch (HibernateException he) {
@@ -184,9 +180,9 @@ IModelInstanceDAO {
 		logger.debug("OUT");
 		return toReturn;
 	}
-	
-	
-	public ModelInstanceNode loadModelInstanceByLabel(String label,Date requestedDate) throws EMFUserError {
+
+	public ModelInstanceNode loadModelInstanceByLabel(String label,
+			Date requestedDate) throws EMFUserError {
 		logger.debug("IN");
 		ModelInstanceNode toReturn = null;
 		Session aSession = null;
@@ -197,9 +193,11 @@ IModelInstanceDAO {
 			tx = aSession.beginTransaction();
 			Criterion nameCriterrion = Expression.eq("label", label);
 			Criteria criteria = aSession.createCriteria(SbiKpiModelInst.class);
-			criteria.add(nameCriterrion);	
-			SbiKpiModelInst hibSbiKpiModelInst = (SbiKpiModelInst) criteria.uniqueResult();
-			if (hibSbiKpiModelInst == null) return null;
+			criteria.add(nameCriterrion);
+			SbiKpiModelInst hibSbiKpiModelInst = (SbiKpiModelInst) criteria
+					.uniqueResult();
+			if (hibSbiKpiModelInst == null)
+				return null;
 			toReturn = toModelInstanceNode(hibSbiKpiModelInst, requestedDate);
 
 		} catch (HibernateException he) {
@@ -221,9 +219,7 @@ IModelInstanceDAO {
 		logger.debug("OUT");
 		return toReturn;
 	}
-	
-	
-	
+
 	public List loadModelsInstanceRoot() throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -236,9 +232,9 @@ IModelInstanceDAO {
 			crit.add(Expression.isNull("sbiKpiModelInst"));
 			List sbiKpiModelInstanceList = crit.list();
 			for (Iterator iterator = sbiKpiModelInstanceList.iterator(); iterator
-			.hasNext();) {
+					.hasNext();) {
 				SbiKpiModelInst sbiKpiModelInst = (SbiKpiModelInst) iterator
-				.next();
+						.next();
 				ModelInstance aModelInst = toModelInstanceWithoutChildren(
 						sbiKpiModelInst, aSession);
 				toReturn.add(aModelInst);
@@ -274,24 +270,24 @@ IModelInstanceDAO {
 		Date endDate = value.getEndDate();
 		Integer id = value.getKpiModelInst();
 		SbiKpiModel sbiKpiModel = value.getSbiKpiModel();
-		
-		//insert Parent
-		if(value.getSbiKpiModelInst()!=null){
+		String modelUUID = value.getModelUUID();
+
+		// insert Parent
+		if (value.getSbiKpiModelInst() != null) {
 			toReturn.setParentId(value.getSbiKpiModelInst().getKpiModelInst());
 		}
 
 		// load with Dao to get also domains
 		try {
-			SbiKpiModel sbiKpiModel2=null;
-			IModelDAO modelDao=(IModelDAO)DAOFactory.getModelDAO();
-			Integer modelId=sbiKpiModel.getKpiModelId();
-			//sbiKpiModel2=modelDao.l(modelId);
-		
+			SbiKpiModel sbiKpiModel2 = null;
+			IModelDAO modelDao = (IModelDAO) DAOFactory.getModelDAO();
+			Integer modelId = sbiKpiModel.getKpiModelId();
+			// sbiKpiModel2=modelDao.l(modelId);
+
 		} catch (EMFUserError e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 
 		Model aModel = ModelDAOImpl.toModelWithoutChildren(sbiKpiModel,
 				aSession);
@@ -311,9 +307,10 @@ IModelInstanceDAO {
 						.getValueId());
 			}
 			// TODO
-			if (sbiKpiInstance.getSbiKpiInstPeriods() != null && !(sbiKpiInstance.getSbiKpiInstPeriods().isEmpty())) {
+			if (sbiKpiInstance.getSbiKpiInstPeriods() != null
+					&& !(sbiKpiInstance.getSbiKpiInstPeriods().isEmpty())) {
 				SbiKpiInstPeriod instPeriod = (SbiKpiInstPeriod) sbiKpiInstance
-				.getSbiKpiInstPeriods().toArray()[0];
+						.getSbiKpiInstPeriods().toArray()[0];
 
 				aKpiInstance.setPeriodicityId(instPeriod.getSbiKpiPeriodicity()
 						.getIdKpiPeriodicity());
@@ -332,13 +329,14 @@ IModelInstanceDAO {
 		toReturn.setStartDate(startDate);
 		toReturn.setEndDate(endDate);
 		toReturn.setModel(aModel);
+		toReturn.setModelUUID(modelUUID);
 
 		logger.debug("OUT");
 		return toReturn;
 	}
 
 	public ModelInstance loadModelInstanceWithoutChildrenById(Integer id)
-	throws EMFUserError {
+			throws EMFUserError {
 		logger.debug("IN");
 		ModelInstance toReturn = null;
 		Session aSession = null;
@@ -347,7 +345,7 @@ IModelInstanceDAO {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiKpiModelInst hibSbiKpiModelInstance = (SbiKpiModelInst) aSession
-			.load(SbiKpiModelInst.class, id);
+					.load(SbiKpiModelInst.class, id);
 			toReturn = toModelInstanceWithoutChildren(hibSbiKpiModelInstance,
 					aSession);
 
@@ -371,9 +369,8 @@ IModelInstanceDAO {
 		return toReturn;
 	}
 
-
 	public ModelInstance loadModelInstanceWithoutChildrenByLabel(String label)
-	throws EMFUserError {
+			throws EMFUserError {
 		logger.debug("IN");
 		ModelInstance toReturn = null;
 		Session aSession = null;
@@ -384,10 +381,13 @@ IModelInstanceDAO {
 			tx = aSession.beginTransaction();
 			Criterion nameCriterrion = Expression.eq("label", label);
 			Criteria criteria = aSession.createCriteria(SbiKpiModelInst.class);
-			criteria.add(nameCriterrion);	
-			SbiKpiModelInst hibSbiKpiModelInst = (SbiKpiModelInst) criteria.uniqueResult();
-			if (hibSbiKpiModelInst == null) return null;
-			toReturn = toModelInstanceWithoutChildren(hibSbiKpiModelInst, aSession);
+			criteria.add(nameCriterrion);
+			SbiKpiModelInst hibSbiKpiModelInst = (SbiKpiModelInst) criteria
+					.uniqueResult();
+			if (hibSbiKpiModelInst == null)
+				return null;
+			toReturn = toModelInstanceWithoutChildren(hibSbiKpiModelInst,
+					aSession);
 
 		} catch (HibernateException he) {
 			logger.error("Error while loading the Model Instance with label "
@@ -409,38 +409,36 @@ IModelInstanceDAO {
 		return toReturn;
 	}
 
+	// ModelInstance toReturn = null;
+	// Session aSession = null;
+	// Transaction tx = null;
+	// try {
+	// aSession = getSession();
+	// tx = aSession.beginTransaction();
+	// SbiKpiModelInst hibSbiKpiModelInstance = (SbiKpiModelInst) aSession
+	// .load(SbiKpiModelInst.class, label);
+	// toReturn = toModelInstanceWithoutChildren(hibSbiKpiModelInstance,
+	// aSession);
 
-//	ModelInstance toReturn = null;
-//	Session aSession = null;
-//	Transaction tx = null;
-//	try {
-//	aSession = getSession();
-//	tx = aSession.beginTransaction();
-//	SbiKpiModelInst hibSbiKpiModelInstance = (SbiKpiModelInst) aSession
-//	.load(SbiKpiModelInst.class, label);
-//	toReturn = toModelInstanceWithoutChildren(hibSbiKpiModelInstance,
-//	aSession);
+	// } catch (HibernateException he) {
+	// logger.error("Error while loading the Model Instance with label "
+	// + ((label == null) ? "" : label.toString()), he);
 
-//	} catch (HibernateException he) {
-//	logger.error("Error while loading the Model Instance with label "
-//	+ ((label == null) ? "" : label.toString()), he);
+	// if (tx != null)
+	// tx.rollback();
 
-//	if (tx != null)
-//	tx.rollback();
+	// throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
 
-//	throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
-
-//	} finally {
-//	if (aSession != null) {
-//	if (aSession.isOpen())
-//	aSession.close();
-//	logger.debug("OUT");
-//	}
-//	}
-//	logger.debug("OUT");
-//	return toReturn;
-//	}
-
+	// } finally {
+	// if (aSession != null) {
+	// if (aSession.isOpen())
+	// aSession.close();
+	// logger.debug("OUT");
+	// }
+	// }
+	// logger.debug("OUT");
+	// return toReturn;
+	// }
 
 	public void modifyModelInstance(ModelInstance value) throws EMFUserError {
 		logger.debug("IN");
@@ -455,6 +453,7 @@ IModelInstanceDAO {
 			String kpiModelInstanceLb = value.getLabel();
 			Date kpiModelInstanceStartDate = value.getStartDate();
 			Date kpiModelInDateEndDate = value.getEndDate();
+			String modelUUID = value.getModelUUID();
 
 			SbiKpiModelInst sbiKpiModelInst = (SbiKpiModelInst) aSession.load(
 					SbiKpiModelInst.class, kpiModelInstanceId);
@@ -463,9 +462,10 @@ IModelInstanceDAO {
 			sbiKpiModelInst.setLabel(kpiModelInstanceLb);
 			sbiKpiModelInst.setStartDate(kpiModelInstanceStartDate);
 			sbiKpiModelInst.setEndDate(kpiModelInDateEndDate);
+			sbiKpiModelInst.setModelUUID(modelUUID);
 
 			SbiKpiInstance oldSbiKpiInstance = sbiKpiModelInst
-			.getSbiKpiInstance();
+					.getSbiKpiInstance();
 			boolean newKpiInstanceHistory = true;
 			boolean deleteOldHistory = false;
 			boolean dontSaveKpiHistory = false;
@@ -475,7 +475,7 @@ IModelInstanceDAO {
 				newKpiInstanceHistory = false;
 				deleteOldHistory = true;
 			}
-			
+
 			if (value.getKpiInstance() != null
 					&& (!value.getKpiInstance().isSaveKpiHistory())) {
 				newKpiInstanceHistory = false;
@@ -491,9 +491,9 @@ IModelInstanceDAO {
 			if (newKpiInstanceHistory
 					&& !(areBothNull(oldSbiKpiInstance.getSbiKpi(), value
 							.getKpiInstance().getKpi()) || (oldSbiKpiInstance
-									.getSbiKpi() != null && areNullOrEquals(
-											oldSbiKpiInstance.getSbiKpi().getKpiId(), value
-											.getKpiInstance().getKpi())))) {
+							.getSbiKpi() != null && areNullOrEquals(
+							oldSbiKpiInstance.getSbiKpi().getKpiId(), value
+									.getKpiInstance().getKpi())))) {
 				newKpiInstanceHistory = false;
 				deleteOldHistory = true;
 				// create new sbiKpiInstance
@@ -503,27 +503,27 @@ IModelInstanceDAO {
 			if (newKpiInstanceHistory
 					&& !((areBothNull(oldSbiKpiInstance.getSbiThreshold(),
 							value.getKpiInstance().getThresholdId()) || (oldSbiKpiInstance
-									.getSbiThreshold() != null && areNullOrEquals(
-											oldSbiKpiInstance.getSbiThreshold()
-											.getThresholdId(), value.getKpiInstance()
-											.getThresholdId())))
-											&& (areBothNull(oldSbiKpiInstance.getChartType(),
-													value.getKpiInstance().getChartTypeId()) || (oldSbiKpiInstance
-															.getChartType() != null && areNullOrEquals(
-																	oldSbiKpiInstance.getChartType()
-																	.getValueId(), value
-																	.getKpiInstance().getChartTypeId())))
-																	/*
-																	 * TODO && (areBothNull(oldSbiKpiInstance
-																	 * .getSbiKpiPeriodicity(), value
-																	 * .getKpiInstance().getPeriodicityId()) ||
-																	 * (oldSbiKpiInstance .getSbiKpiPeriodicity() != null &&
-																	 * areNullOrEquals( oldSbiKpiInstance.getSbiKpiPeriodicity()
-																	 * .getIdKpiPeriodicity(), value .getKpiInstance()
-																	 * .getPeriodicityId())))
-																	 */
-																	&& areNullOrEquals(oldSbiKpiInstance.getWeight(), value
-																			.getKpiInstance().getWeight()))) {
+							.getSbiThreshold() != null && areNullOrEquals(
+							oldSbiKpiInstance.getSbiThreshold()
+									.getThresholdId(), value.getKpiInstance()
+									.getThresholdId())))
+							&& (areBothNull(oldSbiKpiInstance.getChartType(),
+									value.getKpiInstance().getChartTypeId()) || (oldSbiKpiInstance
+									.getChartType() != null && areNullOrEquals(
+									oldSbiKpiInstance.getChartType()
+											.getValueId(), value
+											.getKpiInstance().getChartTypeId())))
+					/*
+					 * TODO && (areBothNull(oldSbiKpiInstance
+					 * .getSbiKpiPeriodicity(), value
+					 * .getKpiInstance().getPeriodicityId()) ||
+					 * (oldSbiKpiInstance .getSbiKpiPeriodicity() != null &&
+					 * areNullOrEquals( oldSbiKpiInstance.getSbiKpiPeriodicity()
+					 * .getIdKpiPeriodicity(), value .getKpiInstance()
+					 * .getPeriodicityId())))
+					 */
+					&& areNullOrEquals(oldSbiKpiInstance.getWeight(), value
+							.getKpiInstance().getWeight()))) {
 				// create new History
 				Calendar now = Calendar.getInstance();
 				SbiKpiInstanceHistory sbiKpiInstanceHistory = new SbiKpiInstanceHistory();
@@ -534,7 +534,7 @@ IModelInstanceDAO {
 						.getChartType());
 				sbiKpiInstanceHistory.setWeight(oldSbiKpiInstance.getWeight());
 				sbiKpiInstanceHistory
-				.setBeginDt(oldSbiKpiInstance.getBeginDt());
+						.setBeginDt(oldSbiKpiInstance.getBeginDt());
 				sbiKpiInstanceHistory.setEndDt(now.getTime());
 				aSession.save(sbiKpiInstanceHistory);
 			}
@@ -597,15 +597,15 @@ IModelInstanceDAO {
 
 	private SbiKpiInstance setSbiKpiInstanceFromModelInstance(Session aSession,
 			ModelInstance value, SbiKpiInstance sbiKpiInstance) {
-		if (sbiKpiInstance == null){
+		if (sbiKpiInstance == null) {
 			sbiKpiInstance = new SbiKpiInstance();
 		}
-		if(value.getKpiInstance().getD() != null){
+		if (value.getKpiInstance().getD() != null) {
 			sbiKpiInstance.setBeginDt(value.getKpiInstance().getD());
 		} else {
 			sbiKpiInstance.setBeginDt(new Date());
 		}
-		
+
 		if (value.getKpiInstance().getKpi() != null) {
 			sbiKpiInstance.setSbiKpi((SbiKpi) aSession.load(SbiKpi.class, value
 					.getKpiInstance().getKpi()));
@@ -631,8 +631,8 @@ IModelInstanceDAO {
 			// TODO
 
 			SbiKpiPeriodicity sbiKpiPeriodicity = (SbiKpiPeriodicity) aSession
-			.load(SbiKpiPeriodicity.class, value.getKpiInstance()
-					.getPeriodicityId());
+					.load(SbiKpiPeriodicity.class, value.getKpiInstance()
+							.getPeriodicityId());
 			Criteria critt = aSession.createCriteria(SbiKpiInstPeriod.class);
 			critt.add(Expression.eq("sbiKpiInstance", sbiKpiInstance));
 			List instPeriodsList = critt.list();
@@ -646,7 +646,8 @@ IModelInstanceDAO {
 				aSession.save(toInsert);
 
 			} else {
-				((SbiKpiInstPeriod)instPeriodsList.get(0)).setSbiKpiPeriodicity(sbiKpiPeriodicity);
+				((SbiKpiInstPeriod) instPeriodsList.get(0))
+						.setSbiKpiPeriodicity(sbiKpiPeriodicity);
 				aSession.update(instPeriodsList.get(0));
 			}
 
@@ -658,7 +659,7 @@ IModelInstanceDAO {
 			Set InstPeriods = sbiKpiInstance.getSbiKpiInstPeriods();
 			for (Iterator iterator = InstPeriods.iterator(); iterator.hasNext();) {
 				SbiKpiInstPeriod sbiKpiInstPeriod = (SbiKpiInstPeriod) iterator
-				.next();
+						.next();
 				aSession.delete(sbiKpiInstPeriod);
 			}
 			//
@@ -689,7 +690,7 @@ IModelInstanceDAO {
 	}
 
 	public Integer insertModelInstance(ModelInstance toCreate)
-	throws EMFUserError {
+			throws EMFUserError {
 		logger.debug("IN");
 		Integer idToReturn;
 		Session aSession = null;
@@ -706,6 +707,8 @@ IModelInstanceDAO {
 			sbiKpiModelInst.setLabel(toCreate.getLabel());
 			sbiKpiModelInst.setStartDate(toCreate.getStartDate());
 			sbiKpiModelInst.setEndDate(toCreate.getEndDate());
+			sbiKpiModelInst.setModelUUID(toCreate.getModelUUID());
+
 			Model aModel = toCreate.getModel();
 			if (aModel != null && aModel.getId() != null) {
 				SbiKpiModel sbiKpiModel = (SbiKpiModel) aSession.load(
@@ -728,7 +731,7 @@ IModelInstanceDAO {
 			}
 			if (parentId != null) {
 				SbiKpiModelInst sbiKpiModelInstParent = (SbiKpiModelInst) aSession
-				.load(SbiKpiModelInst.class, parentId);
+						.load(SbiKpiModelInst.class, parentId);
 				sbiKpiModelInst.setSbiKpiModelInst(sbiKpiModelInstParent);
 			}
 
@@ -754,7 +757,7 @@ IModelInstanceDAO {
 	}
 
 	public ModelInstance loadModelInstanceWithChildrenById(Integer id)
-	throws EMFUserError {
+			throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
@@ -763,7 +766,7 @@ IModelInstanceDAO {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiKpiModelInst hibSbiKpiModelInst = (SbiKpiModelInst) aSession
-			.load(SbiKpiModelInst.class, id);
+					.load(SbiKpiModelInst.class, id);
 			toReturn = toModelInstanceWithChildren(aSession,
 					hibSbiKpiModelInst, null);
 		} catch (HibernateException he) {
@@ -787,9 +790,8 @@ IModelInstanceDAO {
 
 	}
 
-
 	public ModelInstance loadModelInstanceWithChildrenByLabel(String label)
-	throws EMFUserError {
+			throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
@@ -798,7 +800,7 @@ IModelInstanceDAO {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiKpiModelInst hibSbiKpiModelInst = (SbiKpiModelInst) aSession
-			.load(SbiKpiModelInst.class, label);
+					.load(SbiKpiModelInst.class, label);
 			toReturn = toModelInstanceWithChildren(aSession,
 					hibSbiKpiModelInst, null);
 		} catch (HibernateException he) {
@@ -822,8 +824,6 @@ IModelInstanceDAO {
 
 	}
 
-
-
 	private ModelInstance toModelInstanceWithChildren(Session session,
 			SbiKpiModelInst value, Integer parentId) {
 		logger.debug("IN");
@@ -835,8 +835,9 @@ IModelInstanceDAO {
 		Date endDate = value.getEndDate();
 		Integer id = value.getKpiModelInst();
 		SbiKpiModel sbiKpiModel = value.getSbiKpiModel();
+		String modelUUID = value.getModelUUID();
 		Model aModel = ModelDAOImpl
-		.toModelWithoutChildren(sbiKpiModel, session);
+				.toModelWithoutChildren(sbiKpiModel, session);
 		SbiKpiInstance sbiKpiInstance = value.getSbiKpiInstance();
 
 		if (sbiKpiInstance != null) {
@@ -853,9 +854,10 @@ IModelInstanceDAO {
 						.getValueId());
 			}
 			// TODO
-			if (sbiKpiInstance.getSbiKpiInstPeriods() != null && !(sbiKpiInstance.getSbiKpiInstPeriods().isEmpty())) {
+			if (sbiKpiInstance.getSbiKpiInstPeriods() != null
+					&& !(sbiKpiInstance.getSbiKpiInstPeriods().isEmpty())) {
 				SbiKpiInstPeriod instPeriod = (SbiKpiInstPeriod) sbiKpiInstance
-				.getSbiKpiInstPeriods().toArray()[0];
+						.getSbiKpiInstPeriods().toArray()[0];
 
 				aKpiInstance.setPeriodicityId(instPeriod.getSbiKpiPeriodicity()
 						.getIdKpiPeriodicity());
@@ -867,7 +869,7 @@ IModelInstanceDAO {
 			toReturn.setKpiInstance(aKpiInstance);
 		}
 
-		List childrenNodes = new ArrayList();	
+		List childrenNodes = new ArrayList();
 
 		Criteria critt = session.createCriteria(SbiKpiModelInst.class);
 		critt.add(Expression.eq("sbiKpiModelInst", value));
@@ -891,7 +893,7 @@ IModelInstanceDAO {
 		toReturn.setChildrenNodes(childrenNodes);
 		toReturn.setParentId(parentId);
 		toReturn.setModel(aModel);
-
+		toReturn.setModelUUID(modelUUID);
 
 		logger.debug("OUT");
 		return toReturn;
@@ -914,21 +916,21 @@ IModelInstanceDAO {
 				Set modelChildren = aModel.getSbiKpiModels();
 				// Load all ModelInstance Children
 				Set modelInstanceChildren = sbiKpiModelInst
-				.getSbiKpiModelInsts();
+						.getSbiKpiModelInsts();
 				// Remove all Children just instantiated
 				for (Iterator iterator = modelInstanceChildren.iterator(); iterator
-				.hasNext();) {
+						.hasNext();) {
 					SbiKpiModelInst child = (SbiKpiModelInst) iterator.next();
 					modelChildren.remove(child.getSbiKpiModel());
 				}
 				for (Iterator iterator = modelChildren.iterator(); iterator
-				.hasNext();) {
+						.hasNext();) {
 					SbiKpiModel sbiKpiModelCandidate = (SbiKpiModel) iterator
-					.next();
+							.next();
 					Model modelCandidate = new Model();
 					modelCandidate.setId(sbiKpiModelCandidate.getKpiModelId());
 					modelCandidate
-					.setName(sbiKpiModelCandidate.getKpiModelNm());
+							.setName(sbiKpiModelCandidate.getKpiModelNm());
 					toReturn.add(modelCandidate);
 				}
 			}
@@ -936,7 +938,7 @@ IModelInstanceDAO {
 		} catch (HibernateException he) {
 			logger.error(
 					"Error while loading the model canidate children of the parent "
-					+ ((parentId == null) ? "" : parentId.toString()),
+							+ ((parentId == null) ? "" : parentId.toString()),
 					he);
 
 			if (tx != null)
@@ -957,7 +959,7 @@ IModelInstanceDAO {
 	}
 
 	private void deleteKpiInstance(Session aSession, Integer kpiInstId)
-	throws EMFUserError {
+			throws EMFUserError {
 		SbiKpiInstance sbiKpiInst = (SbiKpiInstance) aSession.load(
 				SbiKpiInstance.class, kpiInstId);
 
@@ -967,9 +969,9 @@ IModelInstanceDAO {
 		List sbiKpiInstanceHistory = critt.list();
 
 		for (Iterator iterator = sbiKpiInstanceHistory.iterator(); iterator
-		.hasNext();) {
+				.hasNext();) {
 			SbiKpiInstanceHistory sbiKpiH = (SbiKpiInstanceHistory) iterator
-			.next();
+					.next();
 
 			aSession.delete(sbiKpiH);
 		}
@@ -1008,7 +1010,7 @@ IModelInstanceDAO {
 			List sbiKpiValueList = critt.list();
 
 			for (Iterator iterator = sbiKpiValueList.iterator(); iterator
-			.hasNext();) {
+					.hasNext();) {
 				SbiKpiValue sbiKpiValue = (SbiKpiValue) iterator.next();
 
 				aSession.delete(sbiKpiValue);
@@ -1085,7 +1087,7 @@ IModelInstanceDAO {
 	}
 
 	public List loadModelsInstanceRoot(String fieldOrder, String typeOrder)
-	throws EMFUserError {
+			throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
@@ -1107,9 +1109,9 @@ IModelInstanceDAO {
 
 			List sbiKpiModelInstanceList = crit.list();
 			for (Iterator iterator = sbiKpiModelInstanceList.iterator(); iterator
-			.hasNext();) {
+					.hasNext();) {
 				SbiKpiModelInst sbiKpiModelInst = (SbiKpiModelInst) iterator
-				.next();
+						.next();
 				ModelInstance aModelInst = toModelInstanceWithoutChildren(
 						sbiKpiModelInst, aSession);
 				toReturn.add(aModelInst);
@@ -1139,29 +1141,26 @@ IModelInstanceDAO {
 		return toReturn;
 	}
 
-/** Returns the root of a model instance
- * 
- * @param mi The model instance
- * @return
- * @throws EMFUserError
- */
+	/**
+	 * Returns the root of a model instance
+	 * 
+	 * @param mi
+	 *            The model instance
+	 * @return
+	 * @throws EMFUserError
+	 */
 	public ModelInstance loadModelInstanceRoot(ModelInstance mi)
-	throws EMFUserError {
+			throws EMFUserError {
 		logger.debug("IN");
-		if(mi.getParentId()==null){
+		if (mi.getParentId() == null) {
 			logger.debug("OUT");
 			return mi;
-		}
-		else{
-			ModelInstance miPar=loadModelInstanceWithoutChildrenById(mi.getParentId());
+		} else {
+			ModelInstance miPar = loadModelInstanceWithoutChildrenById(mi
+					.getParentId());
 			logger.debug("Searching model instance parent.");
 			return loadModelInstanceRoot(miPar);
-			}
+		}
 	}
-		
-			
 
-			
-			
-			
 }

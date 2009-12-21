@@ -25,6 +25,10 @@ public class SbiThresholdValue  implements java.io.Serializable {
      private String colour;
      private Integer position;
      private Set sbiAlarms = new HashSet(0);
+     
+     private Boolean minClosed;
+     private Boolean maxClosed;
+     private Double value;
 
 
     // Constructors
@@ -127,5 +131,29 @@ public class SbiThresholdValue  implements java.io.Serializable {
     public void setSbiAlarms(Set sbiAlarms) {
         this.sbiAlarms = sbiAlarms;
     }
+
+	public Boolean getMinClosed() {
+		return minClosed;
+	}
+
+	public void setMinClosed(Boolean minClosed) {
+		this.minClosed = minClosed;
+	}
+
+	public Boolean getMaxClosed() {
+		return maxClosed;
+	}
+
+	public void setMaxClosed(Boolean maxClosed) {
+		this.maxClosed = maxClosed;
+	}
+
+	public Double getValue() {
+		return value;
+	}
+
+	public void setValue(Double value) {
+		this.value = value;
+	}
 
 }

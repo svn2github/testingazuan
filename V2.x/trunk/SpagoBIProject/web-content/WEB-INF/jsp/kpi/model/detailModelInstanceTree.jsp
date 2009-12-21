@@ -70,6 +70,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	String dateFormat = GeneralUtilities.getLocaleDateFormat(aSessionContainer);
 	
+	String modelInstanceUUID = "";
+	String displayModelInstanceDiv = "display:none;";
+	String radioModelCheked = "";
+
+	String displayKpiDiv = "display:block;";
+	String radioKpiCheked = "checked=\"checked\"";
+
     ConfigSingleton configure = ConfigSingleton.getInstance();
 	SourceBean moduleBean = (SourceBean) configure
 	.getFilteredSourceBeanAttribute("MODULES.MODULE", "NAME",
@@ -123,9 +130,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		messageSave = DelegatedDetailService.DETAIL_INSERT;
 	}
 	}
-	
-	
-	
+
 	if (messageIn != null
 	&& messageIn
 			.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
@@ -139,6 +144,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	Date startDate = modelInstance.getStartDate();
 	Date endDate = modelInstance.getEndDate();
 	Format formatter = new SimpleDateFormat(dojoFormat);
+	modelInstanceUUID = modelInstance.getModelUUID();
+	
+	if (modelInstanceUUID != null && (!modelInstanceUUID.trim().equals(""))){
+		displayModelInstanceDiv = "display:block;";
+		radioModelCheked = "checked=\"checked\"";
+
+		displayKpiDiv = "display:none;";
+		radioKpiCheked = "";
+	}
 
 	if (startDate != null){
 		startDateS =formatter.format(startDate);
@@ -425,8 +439,23 @@ value='<%= StringEscapeUtils.escapeHtml(endDateS) %>'/> </div>
 </div>
 
 <div id="kpiInstanceB" class="x-hide-display">
+<div class="div_detail_area_forms" style="width:670;">
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.kpi.type" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'>
 
-<div class="div_detail_area_forms" style="width: 670;">
+<input type="radio" name="typeKpi" value="model" onClick="DisableFields('model')" <%=radioModelCheked %>>
+	<span class="portlet-font"><spagobi:message
+	key="sbi.kpi.label.kpi.modelUUIDType" bundle="<%=messageBundle%>" /></span>
+</input>
+<input type="radio" name="typeKpi" value="kpi" onClick="DisableFields('kpi')" <%=radioKpiCheked %> >
+	<span class="portlet-font"><spagobi:message
+	key="sbi.kpi.label.kpi.kpiType" bundle="<%=messageBundle%>" /></span>
+</input>
+</div>
+</div>
+<div id="kpi-div" class="div_detail_area_forms" style="width: 670;">
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
@@ -626,6 +655,24 @@ value='<%= StringEscapeUtils.escapeHtml(endDateS) %>'/> </div>
 
 <%} %>
 </div>
+
+<div id="model-label-div" style="width:670;<%=displayModelInstanceDiv %>">
+<div class="div_detail_area_forms" style="width:670;">
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.kpi.modelUUID" bundle="<%=messageBundle%>" /></span></div>
+<%
+String sModelInstanceUUID ="";
+if(modelInstanceUUID != null){
+	sModelInstanceUUID = modelInstanceUUID;
+} %>	
+	
+<div class='div_detail_form'><input
+	class='portlet-form-input-field' type="text" name="modelUUID" size="50"
+	value="<%=sModelInstanceUUID %>" maxlength="200"></div>
+</div>
+</div>
+
 </div>
 <%
  	}
@@ -671,6 +718,18 @@ value='<%= StringEscapeUtils.escapeHtml(endDateS) %>'/> </div>
 <spagobi:error />
 
 <script type="text/javascript">
+
+function DisableFields(type){
+	if (type == 'model'){
+		document.getElementById("kpi-div").style.display = "none";
+		document.getElementById("model-label-div").style.display = "block";
+		document.getElementById("kpi-value").value="";
+	} 
+	if (type == 'kpi'){
+		document.getElementById("model-label-div").style.display = "none";
+		document.getElementById("kpi-div").style.display = "block";
+	}
+}
 
 Ext.onReady(function(){
     var tabs = new Ext.TabPanel({

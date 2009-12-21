@@ -39,6 +39,22 @@ public class DetailThresholdsValueUtil {
 		String sMinValue = (String) serviceRequest.getAttribute("min_Value");
 		String sMaxValue = (String) serviceRequest.getAttribute("max_Value");
 		String colour = (String) serviceRequest.getAttribute("colour");
+
+		String sValue = (String)serviceRequest.getAttribute("value");
+		String sMinClosed = (String)serviceRequest.getAttribute("min_closed");
+		String sMaxClosed = (String)serviceRequest.getAttribute("max_closed");
+		
+		Boolean minClosed = false;
+		if (sMinClosed != null){
+			minClosed = true;
+		}
+
+		Boolean maxClosed = false;
+		if (sMaxClosed != null){
+			maxClosed = true;
+		}
+
+		
 		String sSeverityId = (String) serviceRequest
 		.getAttribute("severity_id");
 		String sThresholdType = null;
@@ -88,6 +104,17 @@ public class DetailThresholdsValueUtil {
 
 			}
 		}
+		
+		Double value = null;
+		if (sValue != null && !(sValue.trim().equals(""))) {
+			try{
+				value = new Double(sValue);
+			} catch(NumberFormatException nfe){
+
+			}
+		}
+		
+		
 
 		Integer severityId = null;
 		if (sSeverityId != null && !(sSeverityId.trim().equals(""))) {
@@ -100,6 +127,10 @@ public class DetailThresholdsValueUtil {
 		toReturn.setLabel(label);
 		toReturn.setMinValue(minValue);
 		toReturn.setMaxValue(maxValue);
+		
+		toReturn.setMaxClosed(maxClosed);
+		toReturn.setMinClosed(minClosed);
+		toReturn.setValue(value);
 
 		Color col=null;
 		try{

@@ -28,6 +28,7 @@ public class SbiKpiModelInst  implements java.io.Serializable {
      private Set sbiKpiModelInsts = new HashSet(0);
      private Set sbiKpiModelResourceses = new HashSet(0);
      private String label;
+     private String modelUUID; // Label of model instance to reference
 
     // Constructors
 
@@ -143,5 +144,13 @@ public class SbiKpiModelInst  implements java.io.Serializable {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-   
+
+	public void setModelUUID(String modelUUID) {
+		this.modelUUID = modelUUID;
+	}
+
+	public String getModelUUID() {
+		return modelUUID;
+	}
+
 }

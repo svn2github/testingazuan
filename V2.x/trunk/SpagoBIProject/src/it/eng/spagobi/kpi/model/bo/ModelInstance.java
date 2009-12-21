@@ -19,7 +19,8 @@ public class ModelInstance implements Serializable{
 	private String label;
 	private Date startDate;
 	private Date endDate;
-	
+	private String modelUUID;
+
 	public String getLabel() {
 		return label;
 	}
@@ -85,5 +86,11 @@ public class ModelInstance implements Serializable{
 	}
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	public void setModelUUID(String modelUUID) {
+		this.modelUUID = modelUUID;
+	}
+	public String getModelUUID() {
+		return modelUUID;
 	}
 }

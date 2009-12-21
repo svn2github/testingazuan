@@ -38,6 +38,8 @@
 		String modelCode = "";
 		String modelDescription = "";
 		Integer kpiId = null;
+		
+		String modelLabel = "";
 	
 		String typeName = "";
 		String typeDescription = "";
@@ -84,7 +86,7 @@
 			SourceBean moduleResponse = (SourceBean) aServiceResponse
 			.getAttribute("DetailModelTreeModule");
 			Model model = (Model) moduleResponse.getAttribute("MODEL");
-			if(model.getId() != null){
+			if(model != null && model.getId() != null){
 				modelId = model.getId().toString();
 				messageIn = DelegatedDetailService.DETAIL_SELECT;
 				messageSave = DelegatedDetailService.DETAIL_UPDATE;
@@ -104,6 +106,7 @@
 			if (model != null) {
 				modelName = model.getName();
 				modelCode = model.getCode();
+				modelLabel = model.getLabel();
 				modelDescription = model.getDescription();
 				typeName = model.getTypeName();
 				typeDescription = model.getTypeDescription();
@@ -363,6 +366,37 @@
 	</div>
 	</div>
 	
+	<div id="labelAdvanced" class="x-hide-display">
+  <div class="div_detail_area_forms" style="width:670;">
+ 
+ <%
+	String readOnly ="";
+ 	if (messageIn != null
+ 			&& messageIn
+ 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
+ 		readOnly = "readonly";
+ 	}
+ %>
+
+
+<%
+ if (messageIn != null
+ 			&& messageIn
+ 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_NEW)) {
+	 	modelLabel =  java.util.UUID.randomUUID().toString();
+	}	 
+%>
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.label" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'><input
+	class='portlet-form-input-field' type="text" name="modelLabel" size="50"
+	value="<%=StringEscapeUtils.escapeHtml(modelLabel)%>" maxlength="100" <%=readOnly %>>&nbsp;*</div>
+ 
+</div>
+</div>
+	
 	</div>
 	</form>
 	
@@ -393,7 +427,9 @@
 				<%}%>
 				<%}%>
 	            {contentEl:'kpiB', title: '<spagobi:message
-	            	key="sbi.kpi.label.kpi.tab" bundle="<%=messageBundle%>" /> '}
+	            	key="sbi.kpi.label.kpi.tab" bundle="<%=messageBundle%>" /> '},
+				{contentEl:'labelAdvanced', title: '<spagobi:message
+					key="sbi.kpi.label.advanced.tab" bundle="<%=messageBundle%>" /> '}
 	        ]
 	    });
 	

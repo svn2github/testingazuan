@@ -4,6 +4,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.detail.impl.DefaultDetailModule;
 import it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService;
 import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -36,8 +37,13 @@ public class DetailModelModule extends DefaultDetailModule {
 			response.setAttribute("ID", Integer.parseInt(idModel));
 			response.setAttribute("MESSAGE", SpagoBIConstants.DETAIL_SELECT);
 			if (!validationError) {
+				try {
 				DetailModelUtil.updateModelFromRequest(request, Integer
 						.parseInt(idModel));
+				} catch (EMFUserError e) {
+					EMFErrorHandler engErrorHandler = getErrorHandler();
+					engErrorHandler.addError(e);
+				}
 				DetailModelUtil
 						.selectModel(Integer.parseInt(idModel), response);
 			} else {
@@ -49,7 +55,12 @@ public class DetailModelModule extends DefaultDetailModule {
 		// DETAIL_INSERT
 		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)) {
 			if (!validationError) {
+				try {
 				DetailModelUtil.newModel(request, response, null);
+				} catch (EMFUserError e) {
+					EMFErrorHandler engErrorHandler = getErrorHandler();
+					engErrorHandler.addError(e);
+				}
 			} else {
 				DetailModelUtil.restoreModelValue(null, request, response);
 			}

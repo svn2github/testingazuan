@@ -22,6 +22,7 @@ public class SbiKpiModel implements java.io.Serializable {
 	private SbiKpi sbiKpi;
 	private String kpiModelCd;
 	private String kpiModelNm;
+	private String kpiModelLabel;
 	private String kpiModelDesc;
 	private Set sbiKpiModelAttrVals = new HashSet(0);
 	private Set sbiKpiModels = new HashSet(0);
@@ -141,6 +142,14 @@ public class SbiKpiModel implements java.io.Serializable {
 
 	public void setSbiKpiModelInsts(Set sbiKpiModelInsts) {
 		this.sbiKpiModelInsts = sbiKpiModelInsts;
+	}
+
+	public String getKpiModelLabel() {
+		return kpiModelLabel;
+	}
+
+	public void setKpiModelLabel(String kpiModelLabel) {
+		this.kpiModelLabel = kpiModelLabel;
 	}
 
 }

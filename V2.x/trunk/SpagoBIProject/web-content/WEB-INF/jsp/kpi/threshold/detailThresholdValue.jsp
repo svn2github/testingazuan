@@ -36,6 +36,10 @@
 	String position = "";
 	String type = "";
 	
+	String value = "";
+	Boolean minClosed = false;
+	Boolean maxClosed = false;
+	
 	String threshold_id = "";
 	Integer severity_id = null;
 	
@@ -135,6 +139,13 @@
 				severity_id = thresholdValue.getSeverityId();
 			if (thresholdValue.getThresholdType() != null)
 				type = thresholdValue.getThresholdType();
+			if(thresholdValue.getMinClosed()!=null)
+				minClosed = thresholdValue.getMinClosed();
+			if(thresholdValue.getMaxClosed()!=null)
+				maxClosed = thresholdValue.getMaxClosed();
+			if(thresholdValue.getValue()!=null)
+				value = thresholdValue.getValue().toString();
+			
 		}
 	}
 
@@ -206,27 +217,75 @@ String urlColorPicker=urlBuilder.getResourceLink(request,"/js/kpi/colorPicker.js
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="label" size="50"
 	value="<%=StringEscapeUtils.escapeHtml(label)%>" maxlength="20"></div>
+	
+</div>	
 <% if(type!=null && (type.trim().equals("RANGE") || type.trim().equals("MINIMUM"))) { %>
-		 
+ <div class="div_detail_area_forms">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.minValue" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form'>
 <input
   class='portlet-form-input-field' type="text" name="min_Value" size="50"
-  value="<%=StringEscapeUtils.escapeHtml(minValue)%>" maxlength="200"></div>
+  value="<%=StringEscapeUtils.escapeHtml(minValue)%>" maxlength="200">  
+</div>
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'><spagobi:message
+	key="sbi.kpi.label.minValueclosed" bundle="<%=messageBunle%>"/></span></div>
+<div class='div_detail_form'>
+
+<% 
+String minClosedChecked = "";
+if(minClosed!= null && minClosed.booleanValue()){
+	minClosedChecked = "checked=\"checked\"";
+}%>
+
+<input type="checkbox" name="min_closed"  <%=minClosedChecked %>/>
+</div>
+</div>
+
  <% } %>
 
 <% if(type!=null && (type.trim().equals("RANGE") || type.trim().equals("MAXIMUM"))) { %>
-
+<div class="div_detail_area_forms">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.maxValue" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form'>
 <input
   class='portlet-form-input-field' type="text" name="max_Value" size="50"
-  value="<%=StringEscapeUtils.escapeHtml(maxValue)%>" maxlength="200"></div>
+  value="<%=StringEscapeUtils.escapeHtml(maxValue)%>" maxlength="200">
+</div>
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'><spagobi:message
+	key="sbi.kpi.label.maxValueclosed" bundle="<%=messageBunle%>"/></span></div>
+<div class='div_detail_form'>
+
+
+<% 
+String maxClosedChecked = "";
+if(maxClosed!= null && maxClosed.booleanValue()){
+	maxClosedChecked = "checked=\"checked\"";
+}%>
+
+<input type="checkbox" name="max_closed" <%=maxClosedChecked %> />
+
+
+</div>
+</div>
+
 <% } %>
+
+<div class="div_detail_area_forms">
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'><spagobi:message
+	key="sbi.kpi.label.ThresholdValue" bundle="<%=messageBunle%>"/></span></div>
+<div class='div_detail_form'>
+<input
+  class='portlet-form-input-field' type="text" name="value" size="50"
+  value="<%=StringEscapeUtils.escapeHtml(value)%>" maxlength="200">
+</div>
+
 
 <script language="JavaScript">
 var cp = new ColorPicker('window'); // Popup window

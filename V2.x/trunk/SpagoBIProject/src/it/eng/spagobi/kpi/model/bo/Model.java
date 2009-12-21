@@ -17,6 +17,8 @@ public class Model implements Serializable{
 	private String typeName = null;//name of the type of the model (GENERIC_ROOT/GQM_ROOT)
 	private String typeDescription = null;//description of the type of the model
 	private Integer kpiId = null;// id of Kpi
+	private String label = null;// unique label of the model
+	
 	
 	public Integer getKpiId() {
 		return kpiId;
@@ -110,6 +112,14 @@ public class Model implements Serializable{
 
 	public void setTypeCd(String typeCd) {
 		this.typeCd = typeCd;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	

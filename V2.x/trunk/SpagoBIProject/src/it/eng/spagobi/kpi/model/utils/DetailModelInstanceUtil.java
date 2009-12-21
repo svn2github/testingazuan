@@ -62,6 +62,9 @@ public class DetailModelInstanceUtil {
 				.getAttribute("RESTORE_DEFAULT");
 		String saveKpiHistory = (String) serviceRequest
 				.getAttribute("SAVE_TO_KPI_HISTORY");
+
+		String type = (String) serviceRequest
+				.getAttribute("typeKpi");
 		
 		if (restoreDefault != null) {
 			restoreDefaultFlag = true;
@@ -98,7 +101,7 @@ public class DetailModelInstanceUtil {
 		String target = (String) serviceRequest.getAttribute("target");
 
 		KpiInstance kpiInstance = null;
-		if (kpiId != null) {
+		if (kpiId != null && type != null && type.equals("kpi")) {
 			kpiInstance = new KpiInstance();
 			kpiInstance.setKpi(kpiId);
 			kpiInstance.setChartTypeId(chartTypeId);
@@ -144,6 +147,11 @@ public class DetailModelInstanceUtil {
 		.getAttribute("startDate");
 		String endDateS = (String) serviceRequest
 		.getAttribute("endDate");
+		String modelInstanceUUID = (String) serviceRequest
+		.getAttribute("modelUUID");
+		
+		String type = (String) serviceRequest
+		.getAttribute("typeKpi");
 
 		ModelInstance toReturn = new ModelInstance();
 		toReturn.setName(modelName);
@@ -163,7 +171,10 @@ public class DetailModelInstanceUtil {
 	    } catch (ParseException e) {
 	    }
 
-		
+	    if (type != null && type.equals("model")){
+	    	toReturn.setModelUUID(modelInstanceUUID);
+	    }
+
 		toReturn.setStartDate(startDate);
 		toReturn.setEndDate(endDate);
 		

@@ -104,6 +104,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			String kpiModelCd = value.getCode();
 			String kpiModelDesc = value.getDescription();
 			String kpiModelNm = value.getName();
+			String kpiModelLbl = value.getLabel();
 			List modelAttributes = value.getModelAttributes();
 			Integer kpiId = value.getKpiId();
 
@@ -112,6 +113,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			sbiKpiModel.setKpiModelCd(kpiModelCd);
 			sbiKpiModel.setKpiModelDesc(kpiModelDesc);
 			sbiKpiModel.setKpiModelNm(kpiModelNm);
+			sbiKpiModel.setKpiModelLabel(kpiModelLbl);
 
 			if (kpiId != null) {
 				SbiKpi sbiKpi = (SbiKpi) aSession.load(SbiKpi.class, kpiId);
@@ -190,6 +192,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		String name = value.getKpiModelNm();
 		String description = value.getKpiModelDesc();
 		String code = value.getKpiModelCd();
+		String label = value.getKpiModelLabel();
 		Integer id = value.getKpiModelId();
 		SbiKpi sbiKpi = value.getSbiKpi();
 		Integer kpiId = null;
@@ -220,6 +223,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		toReturn.setName(name);
 		toReturn.setDescription(description);
 		toReturn.setCode(code);
+		toReturn.setLabel(label);
 		toReturn.setTypeName(typeName);
 		toReturn.setTypeCd(typeCd);
 		toReturn.setTypeDescription(typeDescription);
@@ -239,6 +243,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		String name = value.getKpiModelNm();
 		String description = value.getKpiModelDesc();
 		String code = value.getKpiModelCd();
+		String label = value.getKpiModelLabel();
 		Integer id = value.getKpiModelId();
 		SbiKpi sbiKpi = value.getSbiKpi();
 		Integer kpiId = null;
@@ -283,6 +288,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		toReturn.setName(name);
 		toReturn.setDescription(description);
 		toReturn.setCode(code);
+		toReturn.setLabel(label);
 		toReturn.setTypeCd(typeCd);		
 		toReturn.setTypeName(typeName);
 		toReturn.setTypeDescription(typeDescription);
@@ -337,6 +343,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			sbiKpiModel.setKpiModelNm(model.getName());
 			sbiKpiModel.setKpiModelDesc(model.getDescription());
 			sbiKpiModel.setKpiModelCd(model.getCode());
+			sbiKpiModel.setKpiModelLabel(model.getLabel());
 			sbiKpiModel.setModelType(sbiDomains);
 			if (parentId != null) {
 				SbiKpiModel sbiKpiParentModel = (SbiKpiModel) aSession.load(

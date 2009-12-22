@@ -276,7 +276,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 
 			}
 			catch (Exception e) {
-				logger.error("Error while creating the chart");
+				logger.error("Error while creating the chart",e);
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 2004);
 				userError.setBundle("messages");
 				throw userError;

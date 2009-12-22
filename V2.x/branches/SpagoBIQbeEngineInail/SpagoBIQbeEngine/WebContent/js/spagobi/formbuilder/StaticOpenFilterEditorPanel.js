@@ -149,6 +149,15 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Ext.Panel, {
 		    , maxHeight: 250
 		}));
 
+		field.on('beforedestroy', function(thisComponent) {
+			var myEl = thisComponent.el.up('.x-form-item');
+			if (myEl) {
+				myEl.remove();
+				return false;
+			}
+			else {return true;}
+		}, this);
+		
 		return field;
 	}
 	

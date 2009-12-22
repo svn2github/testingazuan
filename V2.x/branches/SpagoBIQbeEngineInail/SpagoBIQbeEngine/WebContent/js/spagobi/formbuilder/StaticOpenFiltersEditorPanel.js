@@ -125,7 +125,12 @@ Ext.extend(Sbi.formbuilder.StaticOpenFiltersEditorPanel, Ext.Panel, {
 	}
 	
 	, clearContents: function() {
-		Sbi.qbe.commons.Utils.unimplementedFunction('clearContents');
+		this.items.each(function() {this.destroy();});
+		this.emptyMsgPanel = new Ext.Panel({
+			html: 'drag a field here to create a new static open filter'
+		});
+		this.add(this.emptyMsgPanel);
+		
 	}
 	
 	, addFilter: function(openFilter) {

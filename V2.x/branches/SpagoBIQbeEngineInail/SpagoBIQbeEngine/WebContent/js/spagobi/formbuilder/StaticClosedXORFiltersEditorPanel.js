@@ -164,25 +164,34 @@ Ext.extend(Sbi.formbuilder.StaticClosedXORFiltersEditorPanel, Ext.Panel, {
 		this.filtersGroupPanel.doLayout();
 	}
 	
-	, deleteFilter: function() {
+	, deleteFilter: function(f) {
 		alert('delete filter');
+		f.destroy();
+	}
+	
+	, editFilter: function(f) {
+		alert('edit filter');
 	}
 	
 	, createFilterEditor: function() {
 		
-		var buttons = [
-			new Ext.Button({
-		    	text: 'E',
-		        width: 30,
-		        hidden: true
-		    }), new Ext.Button({
-		    	text: 'X',
-		        width: 30,
-		        hidden: true
-		    })
-		];
+		var buttons = [];
 		
+		var editBtn = new Ext.Button({
+	    	text: 'E',
+	        width: 30,
+	        hidden: true
+	    });
+		buttons.push(editBtn);
 		
+		var deleteBtn = new Ext.Button({
+	    	text: 'X',
+	        width: 30,
+	        hidden: true
+	    });
+		buttons.push(deleteBtn);
+		
+				
 		var filterEditor = new Ext.Panel({
 			layout: 'column'
 			//, style: 'background: yellow;'
@@ -214,6 +223,11 @@ Ext.extend(Sbi.formbuilder.StaticClosedXORFiltersEditorPanel, Ext.Panel, {
 				}			    
 			]
 		});
+		
+		var editFn = this.editFilter.createDelegate(this, [filterEditor]);
+		editBtn.on('click', function() {editFn();}, this);
+		var deleteFn = this.deleteFilter.createDelegate(this, [filterEditor]);
+		deleteBtn.on('click', function() {deleteFn();}, this);
 		
 		filterEditor.on('render', function(f) {
 			

@@ -48,6 +48,8 @@ Ext.ns("Sbi.formbuilder");
 
 Sbi.formbuilder.StaticOpenFilterEditorPanel = function(openFilter, config) {
 	
+	this.openFilter = openFilter;
+	
 	var defaultSettings = {
 		// set default values here
 		layout: 'form' // form layout required: input field labels are displayed only with this layout
@@ -70,11 +72,15 @@ Sbi.formbuilder.StaticOpenFilterEditorPanel = function(openFilter, config) {
 		, baseParams: params
 	});
 	
-	var field = this.createField(openFilter);
+	this.field = this.createField();
 	
 	var panelTbar = new Ext.Toolbar({
 		items: [
 		    '->' , {
+				text: 'Edit',
+				handler: function() {this.editFilter();},
+				scope: this
+		    } , {
 				text: 'Remove',
 				handler: function() {this.destroy();},
 				scope: this
@@ -83,7 +89,7 @@ Sbi.formbuilder.StaticOpenFilterEditorPanel = function(openFilter, config) {
 	});
 	
 	Ext.apply(c, {
-		items: [field]
+		items: [this.field]
 		, tbar: panelTbar
 	});
 	
@@ -94,11 +100,14 @@ Sbi.formbuilder.StaticOpenFilterEditorPanel = function(openFilter, config) {
 
 Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Ext.Panel, {
 	
-	createStore: function(openFilter) {
+	openFilter: null
+	, field: null
+	
+	, createStore: function() {
 		
-		var entityId = (openFilter.query != undefined && openFilter.query.field != undefined) ? openFilter.query.field : openFilter.field;
-		var orderField = (openFilter.query != undefined && openFilter.query.orderField != undefined) ? openFilter.query.orderField : undefined;
-		var orderType = (openFilter.query != undefined && openFilter.query.orderType != undefined) ? openFilter.query.orderType : undefined;
+		var entityId = (this.openFilter.query != undefined && this.openFilter.query.field != undefined) ? this.openFilter.query.field : this.openFilter.field;
+		var orderField = (this.openFilter.query != undefined && this.openFilter.query.orderField != undefined) ? this.openFilter.query.orderField : undefined;
+		var orderType = (this.openFilter.query != undefined && this.openFilter.query.orderType != undefined) ? this.openFilter.query.orderType : undefined;
 		
 		var store = new Ext.data.JsonStore({
 			url: this.services['getFilterValuesService']
@@ -114,23 +123,23 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Ext.Panel, {
 		
 	}
 	
-	, createField: function( openFilter ) {
+	, createField: function() {
 		var field;
 		
 		var baseConfig = {
-	       fieldLabel: openFilter.text
-		   , name : openFilter.id
+	       fieldLabel: this.openFilter.text
+		   , name : this.openFilter.id
 		   , width: this.baseConfig.fieldWidth
 		   , allowBlank: true
 		};
 		
-		var store = this.createStore(openFilter);
+		var store = this.createStore(this.openFilter);
 		
 		var maxSelectionNumber = 1;
-		if (openFilter.singleSelection === undefined || openFilter.singleSelection === null || openFilter.singleSelection === true) {
+		if (this.openFilter.singleSelection === undefined || this.openFilter.singleSelection === null || this.openFilter.singleSelection === true) {
 			maxSelectionNumber = 1;
 		} else {
-			maxSelectionNumber = openFilter.maxSelectedNumber;
+			maxSelectionNumber = this.openFilter.maxSelectedNumber;
 		}
 		
 		field = new Ext.ux.form.SuperBoxSelect(Ext.apply(baseConfig, {
@@ -148,17 +157,26 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Ext.Panel, {
 		    , width: 200
 		    , maxHeight: 250
 		}));
-
-		field.on('beforedestroy', function(thisComponent) {
-			var myEl = thisComponent.el.up('.x-form-item');
-			if (myEl) {
-				myEl.remove();
-				return false;
-			}
-			else {return true;}
-		}, this);
 		
 		return field;
+	}
+	
+	, editFilter: function() {
+		var staticOpenFilterWindow = new Sbi.formbuilder.StaticOpenFilterWizard(this.openFilter, {});
+		staticOpenFilterWindow.show();
+		staticOpenFilterWindow.on('apply', function(openFilter) {this.modifyFilter(openFilter);} , this);
+	}
+	
+	, modifyFilter: function(openFilter) {
+		this.openFilter = openFilter;
+		this.remove(this.field);
+		this.field = this.createField();
+		this.add(this.field);
+		this.doLayout();
+	}
+	
+	, getOpenFilter: function() {
+		return this.openFilter;
 	}
 	
 });

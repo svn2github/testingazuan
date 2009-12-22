@@ -470,3 +470,16 @@ Ext.override(Ext.form.ComboBox, {
 		}
 	}).createSequence(Ext.form.ComboBox.prototype.initList)
 });
+
+/* =============================================================================
+* When destroying a form Field, the label is not destroyed
+============================================================================= */
+/* */
+Ext.override(Ext.form.Field, {
+	destroy: (function() {
+		var formItemEl = this.getEl().up('.x-form-item');
+		if (formItemEl) {
+			formItemEl.remove();
+		}
+	}).createSequence(Ext.form.Field.prototype.destroy)
+});

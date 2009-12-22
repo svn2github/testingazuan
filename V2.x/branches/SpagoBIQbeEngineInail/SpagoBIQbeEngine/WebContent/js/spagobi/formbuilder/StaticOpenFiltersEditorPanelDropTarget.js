@@ -82,8 +82,8 @@ Ext.extend(Sbi.formbuilder.StaticOpenFiltersEditorPanelDropTarget, Ext.dd.DropTa
 		var openFilter = {};
 		openFilter.text = rows[0].data.alias;
 		openFilter.field = rows[0].data.id;
-		openFilter.operator = '';
-		openFilter.maxSelectedNumber = '';
+		openFilter.operator = 'EQUALS TO';
+		openFilter.maxSelectedNumber = 1;
 
 		var staticOpenFilterWindow = new Sbi.formbuilder.StaticOpenFilterWizard(openFilter, {});
 		

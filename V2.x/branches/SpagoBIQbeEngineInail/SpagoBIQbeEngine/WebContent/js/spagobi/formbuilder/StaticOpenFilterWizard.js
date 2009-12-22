@@ -143,7 +143,8 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 			triggerAction: 'all',
 			emptyText: LN('sbi.qbe.filtergridpanel.foperators.editor.emptymsg'),
 			selectOnFocus: true, //True to select any existing text in the field immediately on focus
-			fieldLabel: 'Operator'
+			fieldLabel: 'Operator',
+			value: openFilter.operator
 	    });
 	    
 	    var selectionNumbersStore = new Ext.data.SimpleStore({
@@ -175,7 +176,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 			emptyText: '',
 			selectOnFocus: true, //True to select any existing text in the field immediately on focus
 			fieldLabel: 'Max selection',
-			value: 1
+			value: openFilter.maxSelectedNumber
 	    });
 	    
 	    Ext.form.Field.prototype.msgTarget = 'side';
@@ -188,6 +189,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 	                  , {text: 'Cancel', handler: function () {this.close();}, scope: this}
 	                 ]
 	    });
+	    
 	}
 
 	, apply : function () {

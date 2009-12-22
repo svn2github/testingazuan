@@ -57,10 +57,7 @@ public class SecurityInitializer implements InitializerIFace {
 	public void init(SourceBean config) {
 		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
 		        "SecurityInitializer::init: start method", config);
-		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-    			"SecurityInitializer::init: starting synchronizing roles...");
-		RoleSynchronizer synch = new RoleSynchronizer();
-		synch.synchronize();
+
 		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
 				"SecurityInitializer::init: roles synchronization ended.");
 		_config = config;
@@ -81,6 +78,12 @@ public class SecurityInitializer implements InitializerIFace {
 		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
 	        	"SecurityInitializer::init: invoking init method of the portal security initialization class name: '" + portalSecurityInitClassName + "'");
 		portalSecurityInit.init(config);
+		/*roles syncronizing after tables initialization*/
+		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
+				"SecurityInitializer::init: starting synchronizing roles...");
+		RoleSynchronizer synch = new RoleSynchronizer();
+		synch.synchronize();
+		
 		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
         		"SecurityInitializer::init: end method");
 	}

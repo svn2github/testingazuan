@@ -216,7 +216,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	
 	if ((label != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(meta.getLabel()))%>')
-	    || (dataType != '<%=(meta.getDataType()==null)?"":meta.getDataType()%>')
+	    || (dataType != '<%=(meta.getDataType()==null)?"":meta.getDataType().toString()%>')
 		|| (description != '<%=(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(meta.getDescription()))==null)?"":StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(meta.getDescription()))%>')
 		|| ( name != '<%=(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(meta.getName()))==null)?"":StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(meta.getName()))%>')
 		) {

@@ -110,6 +110,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	protected String threshold_image_title = null;// 
 	// displayed
 	protected String bullet_chart_title = null;//
+	
+	protected String value_title = null;
 	// will be displayed
 	protected String kpi_title = null;// 
 	// will be displayed
@@ -147,6 +149,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	protected Integer periodInstID = null;
 
 	protected Integer modelInstanceRootId = null;
+	
+	protected String lang = null;
+	protected String country = null;
 
 	protected String behaviour = "default";// 4 possible values:
 	//default:all old kpiValues are recalculated; all kpivalues without periodicity will not be recalculated
@@ -175,8 +180,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				IEngUserProfile.ENG_USER_PROFILE);
 
 		locale=GeneralUtilities.getDefaultLocale();
-		String lang=(String)session.getPermanentContainer().getAttribute(SpagoBIConstants.AF_LANGUAGE);
-		String country=(String)session.getPermanentContainer().getAttribute(SpagoBIConstants.AF_COUNTRY);
+		lang=(String)session.getPermanentContainer().getAttribute(SpagoBIConstants.AF_LANGUAGE);
+		country=(String)session.getPermanentContainer().getAttribute(SpagoBIConstants.AF_COUNTRY);
 		if(lang!=null && country!=null){
 			locale=new Locale(lang,country,"");
 		}
@@ -252,6 +257,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		options.setModel_title(model_title);
 		options.setThreshold_image_title(threshold_image_title);
 		options.setWeight_title(weight_title);
+		options.setValue_title(value_title);
 		
 		if (cascade!=null && cascade.equals("true")){//in case all the kpi children have to be calculated too
 
@@ -366,8 +372,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(
 				IEngUserProfile.ENG_USER_PROFILE);
 		locale=GeneralUtilities.getDefaultLocale();
-		String lang=(String)session.getPermanentContainer().getAttribute(SpagoBIConstants.AF_LANGUAGE);
-		String country=(String)session.getPermanentContainer().getAttribute(SpagoBIConstants.AF_COUNTRY);
+		lang=(String)session.getPermanentContainer().getAttribute(SpagoBIConstants.AF_LANGUAGE);
+		country=(String)session.getPermanentContainer().getAttribute(SpagoBIConstants.AF_COUNTRY);
 		if(lang!=null && country!=null){
 			locale=new Locale(lang,country,"");
 		}
@@ -481,6 +487,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			options.setModel_title(model_title);
 			options.setThreshold_image_title(threshold_image_title);
 			options.setWeight_title(weight_title);
+			options.setValue_title(value_title);
 			
 			if (this.resources == null || this.resources.isEmpty()) {
 				logger.debug("There are no resources assigned to the Model Instance");
@@ -1494,6 +1501,21 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		this.confMap = new HashMap();
 		// common part for all charts
 		// setting the title with parameter values if is necessary
+		SourceBean formatSB2 = null; 
+		if(lang!=null && country!=null){
+			formatSB2 = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-"+lang.toUpperCase()+"_"+country.toUpperCase()));				
+		}else{
+			formatSB2 = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
+		}
+		String format = (String) formatSB2.getAttribute("format");
+		SimpleDateFormat f = new SimpleDateFormat();
+		f.applyPattern(format);
+		
+		SourceBean formatServerSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
+		String formatServer = (String) formatServerSB.getAttribute("format");
+		SimpleDateFormat fServ = new SimpleDateFormat();
+		fServ.applyPattern(formatServer);
+		
 		if (content.getAttribute("name") != null) {
 			String titleChart = (String) content.getAttribute("name");
 			String tmpTitle = titleChart;
@@ -1508,6 +1530,18 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 					if (parValue.equals("%"))
 						parValue = "";
 					int pos = tmpTitle.indexOf("$P{" + parName + "}") + (parName.length() + 4);
+					if(parName.equalsIgnoreCase("ParKpiDate")){
+						
+						try {
+							if(parValue!=null && !parValue.equalsIgnoreCase("")){
+								Date d = fServ.parse(parValue);
+								parValue = f.format(d);
+							}
+						} catch (ParseException e) {
+							logger.error(e);
+							e.printStackTrace();
+						}
+					}
 					titleChart = titleChart.replace("$P{" + parName + "}", parValue);
 					tmpTitle = tmpTitle.substring(pos);
 				} else
@@ -1557,6 +1591,17 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 						if (parValue.equals("%"))
 							parValue = "";
 						int pos = tmpSubTitle.indexOf("$P{" + parName + "}") + (parName.length() + 4);
+						if(parName.equalsIgnoreCase("ParKpiDate")){
+							try {
+								if(parValue!=null && !parValue.equalsIgnoreCase("")){
+									Date d = fServ.parse(parValue);
+									parValue = f.format(d);
+								}
+							} catch (ParseException e) {
+								logger.error(e);
+								e.printStackTrace();
+							}
+						}
 						subTitle = subTitle.replace("$P{" + parName + "}", parValue);
 						tmpSubTitle = tmpSubTitle.substring(pos);
 					} else
@@ -1715,6 +1760,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				if (fil!=null) threshold_image_title = fil;
 			}
 			this.confMap.put("threshold_image_title", threshold_image_title);
+			
+			if (dataParameters.get("value_title") != null) {
+				String fil = (String) dataParameters.get("value_title");
+				if (fil!=null) value_title = fil;
+			}
+			this.confMap.put("value_title", value_title);
+			
 
 		} catch (Exception e) {
 			logger.error("error in reading template parameters");

@@ -496,7 +496,7 @@ public class ImporterMetadata {
 			return hibDs;
 		} 	else if (hibObj instanceof SbiKpiModel) {
 			String label = (String) unique;
-			hql = "from SbiKpiModel ds where ds.kpiModelCd = '" + label + "'";
+			hql = "from SbiKpiModel ds where ds.kpiModelLabel = '" + label + "'";
 			hqlQuery = sessionCurrDB.createQuery(hql);
 			SbiKpiModel hibDs =null;
 			try{

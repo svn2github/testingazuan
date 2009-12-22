@@ -1752,6 +1752,9 @@ public class ImportUtilities {
 			newThValue.setMaxValue(thresholdValue.getMaxValue());
 			newThValue.setMinValue(thresholdValue.getMinValue());
 			newThValue.setPosition(thresholdValue.getPosition());
+			newThValue.setMaxClosed(thresholdValue.getMaxClosed());
+			newThValue.setMinClosed(thresholdValue.getMinClosed());
+			newThValue.setThValue(thresholdValue.getThValue());
 
 			// associations
 			entitiesAssociationsSbiThresholdValues(thresholdValue, newThValue, sessionCurrDB, metaAss, importer);
@@ -1790,6 +1793,9 @@ public class ImportUtilities {
 			existingThValue.setMaxValue(exportedThValue.getMaxValue());
 			existingThValue.setMinValue(exportedThValue.getMinValue());
 			existingThValue.setPosition(exportedThValue.getPosition());
+			existingThValue.setMaxClosed(exportedThValue.getMaxClosed());
+			existingThValue.setMinClosed(exportedThValue.getMinClosed());
+			existingThValue.setThValue(exportedThValue.getThValue());
 
 			// associations
 			entitiesAssociationsSbiThresholdValues(exportedThValue, existingThValue, sessionCurrDB, metaAss, importer);
@@ -1994,6 +2000,7 @@ public class ImportUtilities {
 		logger.debug("IN");
 		SbiKpiModel newMod = new SbiKpiModel();
 		try{
+			newMod.setKpiModelLabel(model.getKpiModelLabel());
 			newMod.setKpiModelCd(model.getKpiModelCd());
 			newMod.setKpiModelDesc(model.getKpiModelDesc());
 			newMod.setKpiModelNm(model.getKpiModelNm());
@@ -2030,6 +2037,7 @@ public class ImportUtilities {
 		try {
 			// update th Value
 			existingMod = (SbiKpiModel) sessionCurrDB.load(SbiKpiModel.class, existingId);
+			existingMod.setKpiModelLabel(exportedMod.getKpiModelLabel());
 			existingMod.setKpiModelCd(exportedMod.getKpiModelCd());
 			existingMod.setKpiModelNm(exportedMod.getKpiModelNm());
 			existingMod.setKpiModelDesc(exportedMod.getKpiModelDesc());
@@ -2131,6 +2139,7 @@ public class ImportUtilities {
 			newModInst.setLabel(modelInst.getLabel());
 			newModInst.setName(modelInst.getName());
 			newModInst.setStartDate(modelInst.getStartDate());
+			newModInst.setModelUUID(modelInst.getModelUUID());
 
 			// associations
 			entitiesAssociationsSbiModelInstance(modelInst, newModInst, sessionCurrDB, metaAss);
@@ -2169,6 +2178,7 @@ public class ImportUtilities {
 			existingModInst.setLabel(exportedModInst.getLabel());
 			existingModInst.setName(exportedModInst.getName());
 			existingModInst.setStartDate(exportedModInst.getStartDate());
+			existingModInst.setModelUUID(exportedModInst.getModelUUID());
 
 			// associations
 			entitiesAssociationsSbiModelInstance(exportedModInst, existingModInst, sessionCurrDB, metaAss);

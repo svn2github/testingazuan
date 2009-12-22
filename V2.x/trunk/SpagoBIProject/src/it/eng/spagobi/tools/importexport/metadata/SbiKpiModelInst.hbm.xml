@@ -34,6 +34,9 @@
         <property name="endDate" type="timestamp">
             <column name="end_date" length="19" />
         </property>
+		<property name="modelUUID" type="string">
+            <column name="modelUUID" length="1000" />
+        </property>        
         <set name="sbiKpiModelInsts" inverse="true" order-by="name desc" >
             <key>
                 <column name="KPI_MODEL_INST_PARENT" />

@@ -1462,6 +1462,7 @@ public class ExporterMetadata {
 			hibMi.setDescription(mi.getDescription());
 			hibMi.setStartDate(mi.getStartDate());
 			hibMi.setEndDate(mi.getEndDate());
+			hibMi.setModelUUID(mi.getModelUUID());
 
 			// insert Parent
 			if(mi.getParentId()!=null){
@@ -1536,6 +1537,7 @@ public class ExporterMetadata {
 		logger.debug("IN");
 		IModelDAO modelDao=DAOFactory.getModelDAO();
 		try {
+			
 			Query hibQuery = session.createQuery(" from SbiKpiModel where kpiModelId = " + mod.getId());
 			List hibList = hibQuery.list();
 			if(!hibList.isEmpty()) {
@@ -1546,6 +1548,7 @@ public class ExporterMetadata {
 			// main attributes			
 			SbiKpiModel hibMod = new SbiKpiModel();
 			hibMod.setKpiModelId(mod.getId());
+			hibMod.setKpiModelLabel(mod.getLabel());
 			hibMod.setKpiModelCd(mod.getCode());
 			hibMod.setKpiModelDesc(mod.getDescription());
 			hibMod.setKpiModelNm(mod.getName());
@@ -1886,6 +1889,9 @@ public class ExporterMetadata {
 			hibThValue.setLabel(thValue.getLabel());
 			hibThValue.setMaxValue(thValue.getMaxValue());
 			hibThValue.setMinValue(thValue.getMinValue());
+			hibThValue.setMinClosed(thValue.getMinClosed());
+			hibThValue.setMaxClosed(thValue.getMaxClosed());
+			hibThValue.setThValue(thValue.getValue());
 
 			//Color col=thValue.getColour();
 			//String colour = "rgb("+col.getRed()+", "+col.getGreen()+", "+col.getBlue()+")" ;

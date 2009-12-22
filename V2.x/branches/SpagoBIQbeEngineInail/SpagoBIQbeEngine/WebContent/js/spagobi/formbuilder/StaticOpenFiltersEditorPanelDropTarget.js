@@ -85,7 +85,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFiltersEditorPanelDropTarget, Ext.dd.DropTa
 		openFilter.operator = '';
 		openFilter.maxSelectedNumber = '';
 
-		var staticOpenFilterWindow = new Sbi.formbuilder.StaticOpenFilterWindow(openFilter, {});
+		var staticOpenFilterWindow = new Sbi.formbuilder.StaticOpenFilterWizard(openFilter, {});
 		
 		staticOpenFilterWindow.show();
 		

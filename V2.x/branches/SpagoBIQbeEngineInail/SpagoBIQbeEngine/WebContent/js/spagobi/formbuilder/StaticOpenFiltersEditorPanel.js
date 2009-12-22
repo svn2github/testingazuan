@@ -64,13 +64,6 @@ Sbi.formbuilder.StaticOpenFiltersEditorPanel = function(openFilters, config) {
 	var c = Ext.apply(defaultSettings, config || {});
 	this.baseConfig = c;
 	
-	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE'};
-	this.services = new Array();
-	this.services['getFilterValuesService'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'GET_FILTER_VALUES_ACTION'
-		, baseParams: params
-	});
-	
 	this.init(openFilters);
 	
 	Ext.apply(c, {
@@ -137,85 +130,9 @@ Ext.extend(Sbi.formbuilder.StaticOpenFiltersEditorPanel, Ext.Panel, {
 	
 	, addFilter: function(openFilter) {
 		this.remove(this.emptyMsgPanel);
-		var field = this.createField(openFilter);
-		
-		var panelTbar = new Ext.Toolbar({
-			items: [
-			    '->' , {
-					text: 'Remove',
-					handler: function() {this.ownerCt.destroy();},
-					scope: panelTbar
-			    }
-			  ]
-		});
-		
-		var fieldPanel = new Ext.Panel({
-			items: [field]
-			, layout: 'form' // form layout required: input field labels are displayed only with this layout
-			, width: 350
-			, tbar: panelTbar
-		});
-		
-		this.add(fieldPanel);
+		var aStaticOpenFilterEditorPanel = new Sbi.formbuilder.StaticOpenFilterEditorPanel(openFilter);
+		this.add(aStaticOpenFilterEditorPanel);
 		this.doLayout();
-	}
-	
-	, createStore: function(openFilter) {
-		
-		var entityId = (openFilter.query != undefined && openFilter.query.field != undefined) ? openFilter.query.field : openFilter.field;
-		var orderField = (openFilter.query != undefined && openFilter.query.orderField != undefined) ? openFilter.query.orderField : undefined;
-		var orderType = (openFilter.query != undefined && openFilter.query.orderType != undefined) ? openFilter.query.orderType : undefined;
-		
-		var store = new Ext.data.JsonStore({
-			url: this.services['getFilterValuesService']
-		});
-		var baseParams = {'ENTITY_ID': entityId, 'ORDER_ENTITY': orderField, 'ORDER_TYPE': orderType};
-		store.baseParams = baseParams;
-		
-		store.on('loadexception', function(store, options, response, e) {
-			Sbi.exception.ExceptionHandler.handleFailure(response, options);
-		});
-		
-		return store;
-		
-	}
-	
-	, createField: function( openFilter ) {
-		var field;
-		
-		var baseConfig = {
-	       fieldLabel: openFilter.text
-		   , name : openFilter.id
-		   , width: this.baseConfig.fieldWidth
-		   , allowBlank: true
-		};
-		
-		var store = this.createStore(openFilter);
-		
-		var maxSelectionNumber = 1;
-		if (openFilter.singleSelection === undefined || openFilter.singleSelection === null || openFilter.singleSelection === true) {
-			maxSelectionNumber = 1;
-		} else {
-			maxSelectionNumber = openFilter.maxSelectedNumber;
-		}
-		
-		field = new Ext.ux.form.SuperBoxSelect(Ext.apply(baseConfig, {
-			editable: true			    
-		    , forceSelection: false
-		    , store: store
-		    , displayField: 'column-1'
-		    , valueField: 'column-1'
-		    , emptyText: ''
-		    , typeAhead: false
-		    , triggerAction: 'all'
-		    , selectOnFocus: true
-		    , autoLoad: false
-		    , maxSelection: maxSelectionNumber
-		    , width: 200
-		    , maxHeight: 250
-		}));
-
-		return field;
 	}
 	
 });

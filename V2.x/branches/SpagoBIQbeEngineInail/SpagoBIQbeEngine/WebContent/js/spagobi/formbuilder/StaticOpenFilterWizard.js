@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.formbuilder");
 
-Sbi.formbuilder.StaticOpenFilterWindow = function(openFilter, config) {
+Sbi.formbuilder.StaticOpenFilterWizard = function(openFilter, config) {
 	
 	var defaultSettings = {
 		// set default values here
@@ -67,13 +67,13 @@ Sbi.formbuilder.StaticOpenFilterWindow = function(openFilter, config) {
 	});
 	
 	// constructor
-    Sbi.formbuilder.StaticOpenFilterWindow.superclass.constructor.call(this, c);
+    Sbi.formbuilder.StaticOpenFilterWizard.superclass.constructor.call(this, c);
     
     this.addEvents('apply');
     
 };
 
-Ext.extend(Sbi.formbuilder.StaticOpenFilterWindow, Ext.Window, {
+Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 
 	init: function(openFilter) {
 
@@ -174,7 +174,8 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWindow, Ext.Window, {
 			triggerAction: 'all',
 			emptyText: '',
 			selectOnFocus: true, //True to select any existing text in the field immediately on focus
-			fieldLabel: 'Max selection'
+			fieldLabel: 'Max selection',
+			value: 1
 	    });
 	    
 	    Ext.form.Field.prototype.msgTarget = 'side';

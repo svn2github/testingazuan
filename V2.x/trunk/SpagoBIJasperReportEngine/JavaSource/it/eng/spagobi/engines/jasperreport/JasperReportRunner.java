@@ -70,6 +70,9 @@ import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRTextExporterParameter;
 import net.sf.jasperreports.engine.export.JRXmlExporter;
 import net.sf.jasperreports.engine.fill.JRFileVirtualizer;
+import net.sf.jasperreports.engine.fill.JRGzipVirtualizer;
+import net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer;
+import net.sf.jasperreports.engine.util.JRSwapFile;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 import org.apache.log4j.Logger;
@@ -247,7 +250,7 @@ public class JasperReportRunner {
 
 			logger.debug("Compiling template file ...");
 			Monitor monitorCompileTemplate =MonitorFactory.start("JasperReportRunner.compileTemplate");
-			JasperReport report  = JasperCompileManager.compileReport(is);
+			JasperReport report  = JasperCompileManager.compileReport(is);			
 			monitorCompileTemplate.stop();
 			logger.debug("Template file compiled  succesfully");
 
@@ -305,7 +308,9 @@ public class JasperReportRunner {
 			// Create the virtualizer									
 			if(isVirtualizationActive()) {
 				logger.debug("Virtualization of fill process is active");
-				parameters.put(JRParameter.REPORT_VIRTUALIZER, getVirtualizer(tmpDirectory, servletContext));
+				//parameters.put(JRParameter.REPORT_VIRTUALIZER, getVirtualizer(tmpDirectory, servletContext));
+				parameters.put(JRParameter.REPORT_VIRTUALIZER, getSwapVirtualizer(tmpDirectory, servletContext));
+				//parameters.put(JRParameter.REPORT_VIRTUALIZER, getGzipVirtualizer());
 			}
 
 			logger.debug("Filling report ...");
@@ -549,7 +554,7 @@ public class JasperReportRunner {
 	}
 
 	/**
-	 * Gets the virtualizer.
+	 * Gets the virtualizer. (the slowest)
 	 * 
 	 * @param tmpDirectory the tmp directory
 	 * @param servletContext the servlet context
@@ -582,11 +587,80 @@ public class JasperReportRunner {
 		logger.debug("Max page cached during virtualization process: " + maxSize);
 		logger.debug("Dir used as storing area during virtualization: " + dir);
 		virtualizer = new JRFileVirtualizer(maxSize, dir);
-		virtualizer.setReadOnly(true);
+		virtualizer.setReadOnly(false);
+		logger.debug("OUT");
+		return virtualizer;
+	}
+	
+	/**
+	 * Gets the swap virtualizer. (the fastest)
+	 * 
+	 * @param tmpDirectory the tmp directory
+	 * @param servletContext the servlet context
+	 * 
+	 * @return the virtualizer
+	 */
+	public JRSwapFileVirtualizer getSwapVirtualizer(String tmpDirectory, ServletContext servletContext) {
+		logger.debug("IN");
+		JRSwapFileVirtualizer virtualizer = null; 
+
+		SourceBean config = EnginConf.getInstance().getConfig();
+		String maxSizeStr = (String)config.getAttribute("VIRTUALIZER.maxSize");
+		int maxSize = 2; 
+		if(maxSizeStr!=null) maxSize = Integer.parseInt(maxSizeStr);
+		String dir = (String)config.getAttribute("VIRTUALIZER.dir");
+		if(dir == null){
+			dir = tmpDirectory;
+		} else {
+			if(!dir.startsWith("/")) {
+				String contRealPath = servletContext.getRealPath("/");
+				if(contRealPath.endsWith("\\")||contRealPath.endsWith("/")) {
+					contRealPath = contRealPath.substring(0, contRealPath.length()-1);
+				}
+				dir = contRealPath + "/" + dir;
+			}
+		}
+		
+
+		dir = dir + System.getProperty("file.separator") + "jrcache";
+		File file = new File(dir);
+		file.mkdirs();
+		logger.debug("Max page cached during virtualization process: " + maxSize);
+		logger.debug("Dir used as storing area during virtualization: " + dir);
+		JRSwapFile swapFile = new JRSwapFile(dir,maxSize,maxSize);
+		virtualizer = new JRSwapFileVirtualizer(maxSize, swapFile);
+		virtualizer.setReadOnly(false);
 		logger.debug("OUT");
 		return virtualizer;
 	}
 
+	/**
+	 * Gets the gZip virtualizer (it works in memory: slower). 
+	 * 
+	 * @param tmpDirectory the tmp directory
+	 * @param servletContext the servlet context
+	 * 
+	 * @return the virtualizer
+	 */
+	public JRGzipVirtualizer getGzipVirtualizer() {
+		logger.debug("IN");
+		JRGzipVirtualizer virtualizer = null; 
+
+		SourceBean config = EnginConf.getInstance().getConfig();
+		String maxSizeStr = (String)config.getAttribute("VIRTUALIZER.maxSize");
+		int maxSize = 2; 
+		if(maxSizeStr!=null) maxSize = Integer.parseInt(maxSizeStr);
+		
+		
+		logger.debug("Max page cached during virtualization process: " + maxSize);
+		
+		virtualizer = new JRGzipVirtualizer(maxSize);
+		virtualizer.setReadOnly(false);
+		logger.debug("OUT");
+		return virtualizer;
+	}
+
+	
 	private byte[] getImagesBase64Bytes(JasperReport report, JasperPrint jasperPrint) {
 		logger.debug("IN");
 		byte[] bytes = new byte[0];

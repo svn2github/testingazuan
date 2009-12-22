@@ -72,10 +72,12 @@
 		  any drive letter at the beginning, example: /folder/folder/folder).
 		  If the path start with / it will be considered an absolute path, otherwise if it start with 
 	      another letter or symbol it will be considered relative to the folder of the jasper report application 
+	      It uses JRSwapFileVirtualizer (where block size and range increment takes value of maxSize).
+	      If it's not necessary set active to "false" because it slows the execution of document.
 	-->
 	<!-- ====================================================================================== -->
 	<VIRTUALIZER active="true" 
-				maxSize="10"
+				maxSize="100"
 				dir="tmpdir"/>
 
 </ENGINE-CONFIGURATION>

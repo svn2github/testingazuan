@@ -15,6 +15,7 @@ public class KpiLineVisibilityOptions {
 	private String bullet_chart_title = null;
 	private String kpi_title = null;
 	private String weight_title = null;
+	private String value_title = null;
 	
 	
 	public KpiLineVisibilityOptions(Boolean closed_tree,
@@ -125,5 +126,15 @@ public class KpiLineVisibilityOptions {
 	public void setWeight_title(String weight_title) {
 		this.weight_title = weight_title;
 	}
+
+	public String getValue_title() {
+		return value_title;
+	}
+
+	public void setValue_title(String value_title) {
+		this.value_title = value_title;
+	}
+
+
 
 }

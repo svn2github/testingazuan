@@ -28,7 +28,7 @@ public class SbiThresholdValue  implements java.io.Serializable {
      
      private Boolean minClosed;
      private Boolean maxClosed;
-     private Double value;
+     private Double thValue;
 
 
     // Constructors
@@ -148,12 +148,12 @@ public class SbiThresholdValue  implements java.io.Serializable {
 		this.maxClosed = maxClosed;
 	}
 
-	public Double getValue() {
-		return value;
+	public Double getThValue() {
+		return thValue;
 	}
 
-	public void setValue(Double value) {
-		this.value = value;
+	public void setThValue(Double value) {
+		this.thValue = value;
 	}
 
 }

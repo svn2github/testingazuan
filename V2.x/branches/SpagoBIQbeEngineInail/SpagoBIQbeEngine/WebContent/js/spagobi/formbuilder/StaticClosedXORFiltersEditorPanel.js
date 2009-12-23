@@ -46,16 +46,14 @@
 
 Ext.ns("Sbi.formviewer");
 
-Sbi.formbuilder.StaticClosedXORFiltersEditorPanel = function(filtersGroupConf, config) {
+Sbi.formbuilder.StaticClosedXORFiltersEditorPanel = function(config) {
 	
-	var width = filtersGroupConf !== undefined?   filtersGroupConf.width || 300: 300;
-	var height = filtersGroupConf !== undefined?   filtersGroupConf.height || 150: 150;
-	
+
 	var defaultSettings = {
 		// set default values here
 		frame: true
-        , width: width
-        //, height: height
+        , width: 300
+        , height: 150
 		, autoScroll: true
 		, autoWidth: false
 		, autoHeight: true
@@ -65,22 +63,10 @@ Sbi.formbuilder.StaticClosedXORFiltersEditorPanel = function(filtersGroupConf, c
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 	
-	this.init(filtersGroupConf);
+	Ext.apply(this, c);
 	
-	this.toolbar = new Ext.Toolbar({
-		items: [
-		    '->'
-		    , {
-				text: 'Add',
-				handler: function() {this.addFilter();},
-				scope: this
-		    }, {
-				text: 'Delete',
-				handler: function() { this.destroy(); },
-				scope: this
-		    }
-		  ]
-	});
+	this.init();
+	this.initToolbar();
 	
 	Ext.apply(c, {
 		tbar: this.toolbar,
@@ -97,46 +83,12 @@ Ext.extend(Sbi.formbuilder.StaticClosedXORFiltersEditorPanel, Ext.Panel, {
 	, contents: null
 	, filtersGroupPanel: null
 	, filters: null
+	, baseFiltersGroupConf: null
+	, filterWizard: null
 
 	//--------------------------------------------------------------------------------
 	// public methods
 	// --------------------------------------------------------------------------------
-		
-	
-	, loadStructure: function(c) {
-		
-		// TODO: remove all previously added items
-		
-		this.items = {
-			xtype: 'fieldset',
-	        title: c.title,
-	        autoHeight: true,
-	        autoWidth: true,
-	        defaultType: 'radio',
-	        items: []
-	    }
-			
-		if (c.allowNoSelection !== null && c.allowNoSelection === true) {
-			// create No Selection Item
-			this.items.items.push({
-				hideLabel: true,
-				boxLabel: c.noSelectionText,
-				name: c.id,
-				inputValue: 'noSelection'
-			});
-		}
-			
-		for (var i = 0; i < c.filters.length; i++) {
-			// create items
-			var aFilter = c.filters[i];
-			this.items.items.push({
-				hideLabel: true,
-				boxLabel: aFilter.text,
-	            name: c.id,
-	            inputValue: aFilter.id
-			});
-		}
-	}
 	
 	, loadContents: function(filtersGroupConf) {
 		Sbi.qbe.commons.Utils.unimplementedFunction('loadContents');
@@ -148,14 +100,14 @@ Ext.extend(Sbi.formbuilder.StaticClosedXORFiltersEditorPanel, Ext.Panel, {
 		Sbi.qbe.commons.Utils.unimplementedFunction('clearContents');
 	}
 	
-	, addFilter: function() {
+	, addFilter: function(filtersConf) {
 		if(this.filters === null) {
 			this.filters = [];
 			this.filtersGroupPanel.remove(0, true);
 			this.filtersGroupPanel.doLayout();
 		}
 
-		var filter = this.createFilterEditor();
+		var filter = this.createFilterEditor(filtersConf);
 		filter.index = this.filters.length;
 		
 		this.filters.push(filter);
@@ -165,7 +117,6 @@ Ext.extend(Sbi.formbuilder.StaticClosedXORFiltersEditorPanel, Ext.Panel, {
 	}
 	
 	, deleteFilter: function(f) {
-		alert('delete filter');
 		f.destroy();
 	}
 	
@@ -173,7 +124,7 @@ Ext.extend(Sbi.formbuilder.StaticClosedXORFiltersEditorPanel, Ext.Panel, {
 		alert('edit filter');
 	}
 	
-	, createFilterEditor: function() {
+	, createFilterEditor: function(filtersConf) {
 		
 		var buttons = [];
 		
@@ -191,7 +142,23 @@ Ext.extend(Sbi.formbuilder.StaticClosedXORFiltersEditorPanel, Ext.Panel, {
 	    });
 		buttons.push(deleteBtn);
 		
-				
+		
+		var filterConf = {
+			width: 150,
+			hideLabel: true,
+			boxLabel: filtersConf.filterTitle,
+	        name: 'option-' + this.filters.length,
+	        inputValue: 'option-' + this.filters.length
+		};
+		
+		var filter;
+		
+		if(this.singleSelection === true) {
+			filter = new Ext.form.Radio(filterConf);
+		} else {
+			filter = new Ext.form.Checkbox(filterConf);
+		}
+		
 		var filterEditor = new Ext.Panel({
 			layout: 'column'
 			//, style: 'background: yellow;'
@@ -205,13 +172,7 @@ Ext.extend(Sbi.formbuilder.StaticClosedXORFiltersEditorPanel, Ext.Panel, {
 				{
 				    columnWidth: .99,
 				    //cellCls: 'table-cell-top',
-				    items: [new Ext.form.Radio({
-				    	width: 150,
-						hideLabel: true,
-						boxLabel: 'option-' + this.filters.length,
-			            name: 'option-' + this.filters.length,
-			            inputValue: 'option-' + this.filters.length
-					})]
+				    items: [filter]
 				},{
 				    width: 30,
 				    //cellCls: 'table-cell-top',
@@ -254,10 +215,10 @@ Ext.extend(Sbi.formbuilder.StaticClosedXORFiltersEditorPanel, Ext.Panel, {
 	// private methods
 	// --------------------------------------------------------------------------------
 		
-	, init: function(filtersGroupConf) {
+	, init: function() {
 		
-		if(filtersGroupConf !== undefined) {
-			this.loadContents(filtersGroupConf);	
+		if(this.baseFiltersGroupConf !== undefined) {
+			this.loadContents(this.baseFiltersGroupConf);	
 		} else {
 			this.initFiltersGroupPanel();
 			this.contents = [this.filtersGroupPanel];
@@ -266,10 +227,10 @@ Ext.extend(Sbi.formbuilder.StaticClosedXORFiltersEditorPanel, Ext.Panel, {
 	
 	, initFiltersGroupPanel: function() {
 		this.filtersGroupPanel = new Ext.form.FieldSet({
-			title: 'Prova',
+			title: this.groupTitle,
 	        autoHeight: true,
 	        autoWidth: true,
-	        defaultType: 'radio',
+	        //defaultType: (this.singleSelection === true? 'radio': 'checkbox'),
 	        items: [
 	           new Ext.Panel({
 	              	layout: 'fit',
@@ -279,6 +240,38 @@ Ext.extend(Sbi.formbuilder.StaticClosedXORFiltersEditorPanel, Ext.Panel, {
 		});
 	}
 	
+	, initToolbar: function() {
+		this.toolbar = new Ext.Toolbar({
+			items: [
+			    '->'
+			    , {
+					text: 'Add',
+					handler: function() {this.onFilterWizardShow();},
+					scope: this
+			    }, {
+					text: 'Delete',
+					handler: function() { this.destroy(); },
+					scope: this
+			    }
+			  ]
+		});		
+	}
 	
+	, onFilterWizardShow: function(targetFilter) {
+		if(this.filterWizard === null) {
+			this.filterWizard = new Sbi.formbuilder.StaticClosedXORFilterWizard();
+			this.filterWizard.on('apply', function(win, target, state) {
+				if(target === null) {
+					this.addFilter(state);
+				} else {
+					alert('edit');
+				}
+				
+			}, this);
+		}
+		
+		this.filterWizard.setTarget(targetFilter || null);		
+		this.filterWizard.show();
+	}
 	
 });

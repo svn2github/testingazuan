@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.formbuilder");
 
-Sbi.formbuilder.StaticClosedFiltersEditorPanel = function(staticFilters, config) {
+Sbi.formbuilder.StaticClosedFiltersEditorPanel = function(config) {
 	
 	var defaultSettings = {
 		// set default values here
@@ -65,7 +65,8 @@ Sbi.formbuilder.StaticClosedFiltersEditorPanel = function(staticFilters, config)
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 	
-	this.init(staticFilters);
+	this.init();
+	this.initTools();
 	
 	Ext.apply(c, {
 		tools: this.tools,
@@ -85,6 +86,7 @@ Ext.extend(Sbi.formbuilder.StaticClosedFiltersEditorPanel, Ext.Panel, {
 	, empty: null
 	, emptyMsgPanel: null
 	, tools: null
+	, filterGroupWizard: null
 	
 	
 	// --------------------------------------------------------------------------------
@@ -94,7 +96,6 @@ Ext.extend(Sbi.formbuilder.StaticClosedFiltersEditorPanel, Ext.Panel, {
 	, loadContents: function(staticFiltersConf) {
 		Sbi.qbe.commons.Utils.unimplementedFunction('loadContents');
 		this.initEmptyMsgPanel();
-		this.initTools();
 		this.contents = [this.emptyMsgPanel];	
 	}
 
@@ -117,6 +118,9 @@ Ext.extend(Sbi.formbuilder.StaticClosedFiltersEditorPanel, Ext.Panel, {
 		this.contents.push(filtersGroup);
 		this.add(filtersGroup);
 		this.doLayout();	
+		
+	
+		
 	}
 
 	// --------------------------------------------------------------------------------
@@ -132,12 +136,11 @@ Ext.extend(Sbi.formbuilder.StaticClosedFiltersEditorPanel, Ext.Panel, {
 		}
 	}
 	
-	, init: function(staticFiltersConf) {
-		if(staticFiltersConf !== undefined) {
-			this.loadContents(staticFiltersConf);	
+	, init: function() {
+		if(this.baseStaticFiltersConf !== undefined) {
+			this.loadContents(baseStaticFiltersConf);	
 		} else {
 			this.initEmptyMsgPanel();
-			this.initTools();
 			this.contents = [this.emptyMsgPanel];
 		}
 	}	
@@ -156,7 +159,7 @@ Ext.extend(Sbi.formbuilder.StaticClosedFiltersEditorPanel, Ext.Panel, {
 		    id:'plus',
 		    qtip: 'Add static closed filter',
 		    handler: function(event, toolEl, panel){
-		  		this.addFiltersGroup();
+		  		this.onFiltersGroupWizardShow();
 		    }
 		    , scope: this
 		});
@@ -172,6 +175,23 @@ Ext.extend(Sbi.formbuilder.StaticClosedFiltersEditorPanel, Ext.Panel, {
 	}
 	
 	
+	, onFiltersGroupWizardShow: function(targetFilterGroup) {
+		if(this.filterGroupWizard === null) {
+			this.filterGroupWizard = new Sbi.formbuilder.StaticClosedXORFiltersWizard();
+			this.filterGroupWizard.on('apply', function(win, target, state) {
+				//alert(state.toSource());
+				if(target === null) {
+					this.addFiltersGroup(state);
+				} else {
+					alert('edit');
+				}
+				
+			}, this);
+		}
+		
+		this.filterGroupWizard.setTarget(targetFilterGroup || null);		
+		this.filterGroupWizard.show();
+	}
 	
 	, onFiltersGroupDestroy: function(filtersGroup) {
 		var t = this.contents;

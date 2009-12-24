@@ -29,6 +29,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 				         it.eng.spagobi.tools.dataset.service.DetailDataSetModule" %>
 <%@page import="it.eng.spagobi.utilities.scripting.ScriptManager"%>
 <%@page import="it.eng.spagobi.utilities.scripting.ScriptUtilities"%>
+<%@page import="it.eng.spagobi.commons.utilities.SpagoBIUtilities"%>
+<%@page import="java.io.File"%>
 <script type="text/javascript" src="<%=linkProto%>"></script>
 	 				         
 	 				         
@@ -74,7 +76,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
-<form method='POST' action='<%=formUrl%>' id='dsForm' name='dsForm' >
+<form method='POST' action='<%=formUrl%>' id='dsForm' name='dsForm' enctype="multipart/form-data" >
 
 	<% if(ChannelUtilities.isWebRunning()) { %>
 		<input type='hidden' name='PAGE' value='DetailDataSetPage' />
@@ -404,7 +406,30 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</div>
 		<%} %>
 
+
+
+<!--  FILE SECTION -->
+<%boolean hasFile=false;
+if(ds.getFileName()!=null)hasFile=true; %>
 	<div id="filecontainer" <%=hideFile%>>
+   	<div class='div_detail_label' id="WHAT_FILE">
+			<span class='portlet-form-field-label'>
+				<spagobi:message key = "SBIDev.DetailDataSet.getFile" />
+			</span>
+		</div>
+		<div class='div_detail_form'>
+			<input type="radio" name="howGetFile" value="0" checked onclick="changeFileFields('exists')">
+					<span class="portlet-font">
+						<spagobi:message key = "SBIDev.DetailDataSet.ChooseExistingFile" />
+					</span> 
+			</input>
+			<input type="radio" name="howGetFile" value="1" onClick="changeFileFields('new')">
+					<span class="portlet-font">
+						<spagobi:message key = "SBIDev.DetailDataSet.ChooseUploadNewFile" />
+					</span> 
+			</input>
+		</div>
+
 		<div class='div_detail_label' id="FILENAMELABEL" >
 			<span class='portlet-form-field-label'>	
 				<spagobi:message key = "SBISet.ListDataSet.fileName" />
@@ -420,10 +445,76 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				   fileName = "";
 			   }
 		%>
-			<input class='portlet-form-input-field' type="text" name="FILENAME" id="FILENAME"
-				   size="50" value="<%=StringEscapeUtils.escapeHtml(fileName)%>" maxlength="300" <%=disableFile%> />
+		<%  // Get all files in resource dir!
+			ConfigSingleton configSingleton = ConfigSingleton.getInstance();
+			SourceBean sb = (SourceBean)configSingleton.getAttribute("SPAGOBI.RESOURCE_PATH_JNDI_NAME");
+			String pathh = (String) sb.getCharacters();
+			String filePath= SpagoBIUtilities.readJndiResource(pathh);
+			filePath += "/dataset/files";
+			File dir=new File(filePath);
+    
+   			String[] children = dir.list();
+   			if (children == null) {
+				children=new String[0];
+			} else {
+        		for (int i=0; i<children.length; i++) {
+            	// Get filename of file or directory
+            	String filename = children[i];
+			        }
+    		}
+			int i=0;
+%>
+
+				<select class='portlet-form-input-field' style='width:230px;' 
+							name="FILENAME" id="FILENAME" <%=disableFile%>>
+		      		<% 
+					for(int ind=0;ind<children.length;ind++){
+						String file=children[ind];
+		      			%>
+		      			<option value="<%=file%>"<%if(file.equals(fileName)) out.print(" selected='selected' "); %>><%=file%>
+		      			</option>
+		      		<% 
+		      		    }
+		      		%>
+				</select>
+	   	</div>
+	   				<!-- DISPLAY FORM FOR NEW FILES UPLOAD -->
+				<div id="FILE_UPLOAD">
+					<div class='div_detail_label'>
+						<span class='portlet-form-field-label'>
+							<spagobi:message key = "SBIDev.DetailDataSet.UploadNewFile" />
+						</span>
+					</div>
+					<div class='div_detail_form'>
+						<input class='portlet-form-input-field' type="file" disabled
+			      		       name="UPLOAD_FILE" id="UPLOAD_FILE" />
+			<span class='portlet-form-field-label'>
+				<spagobi:message key = "SBIDev.DetailDataSet.saveBeforeTest" />
+			</span>		
+					</div>
+				</div>	
 	   </div>
-	   </div>
+
+	   
+<script type="text/javascript">
+<!--
+function changeFileFields(message){
+	var divNew=document.getElementById("UPLOAD_FILE");
+	var divEx=document.getElementById("FILENAME");
+	if(message=='new'){
+			divEx.disabled=true;	
+			divNew.disabled=false;	
+		}
+	if(message=="exists"){
+			divEx.disabled=false;	
+			divNew.disabled=true;			
+	}	
+}
+-->
+</script>
+
+	   
+	   
 	   
 	   <div id="querycontainer" <%=hideQuery%>>
 	   		<div class='div_detail_label' id="QUERYLABEL">

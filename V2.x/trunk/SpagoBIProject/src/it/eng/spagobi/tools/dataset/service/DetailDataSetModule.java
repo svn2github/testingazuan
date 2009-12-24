@@ -34,10 +34,13 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.validation.EMFValidationError;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.security.ISecurityInfoProvider;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.bo.DataSetFactory;
@@ -51,6 +54,7 @@ import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WebServiceDataSet;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -60,6 +64,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
 
 /**
@@ -236,7 +241,7 @@ public class DetailDataSetModule extends AbstractModule {
 				//DAOFactory.getDataSetDAO().modifyDataSet(dsNew);
 				String datasetMetadataXML=(String)session.getAttribute(DS_METADATA_XML);
 				if(datasetMetadataXML!=null){
-				dsNew.setDsMetadata(datasetMetadataXML);	
+					dsNew.setDsMetadata(datasetMetadataXML);	
 				}
 				serviceResponse.setAttribute(DetailDataSetModule.DATASET, dsNew);
 				serviceResponse.setAttribute(SpagoBIConstants.MODALITY, mod);
@@ -332,6 +337,15 @@ public class DetailDataSetModule extends AbstractModule {
 
 				// Test Case
 				if (testCase) {
+					
+					// check if is file dataset and has no file associated
+					if(dsNew.getType().equals("0") && dsNew.getFileName()==null){
+						logger.error("FIle name is empty: if you are trying to uplad new FIl save dataset before testing it"); 
+						//EMFUserError error=new EMFUserError(EMFErrorSeverity.ERROR, "FIle name is empty: if you are trying to uplad new FIl save dataset before testing it", messageBundle);
+						EMFUserError error=new EMFUserError(EMFErrorSeverity.ERROR, 9226);
+						
+						getErrorHandler().addError(error);
+					}
 					session.setAttribute(SpagoBIConstants.MODALITY, mod);
 					//check if there are parameters to fill
 					List parameters=getParametersToFill(dsNew);
@@ -361,6 +375,12 @@ public class DetailDataSetModule extends AbstractModule {
 			}
 		}	
 
+		if(!testCase)
+			// if is to update dataset check if there is a file to upload aaa
+			if(serviceRequest.getAttribute("UPLOADED_FILE")!=null){
+				String fileName=uploadFileToResources(serviceRequest);
+				dsNew.setFileName(fileName);
+			}
 
 		if (mod.equalsIgnoreCase(SpagoBIConstants.DETAIL_INS)) {		// in case it is an insert
 			//check the type and insert right parameters
@@ -392,8 +412,8 @@ public class DetailDataSetModule extends AbstractModule {
 			//session.setAttribute("dataset", dsNew);
 		} else {				
 			//update ds
-			if(!testCase)
-				DAOFactory.getDataSetDAO().modifyDataSet(DataSetFactory.getDataSet(dsNew));			
+			DAOFactory.getDataSetDAO().modifyDataSet(DataSetFactory.getDataSet(dsNew));			
+
 			//session.setAttribute("dataset", dsNew);
 		}  
 
@@ -418,6 +438,68 @@ public class DetailDataSetModule extends AbstractModule {
 
 	}
 
+
+	protected String uploadFileToResources(SourceBean serviceRequest){
+		FileItem uploaded = (FileItem) serviceRequest.getAttribute("UPLOADED_FILE");
+		if (uploaded != null) {
+			String fileName = GeneralUtilities.getRelativeFileNames(uploaded.getName());
+			if (fileName != null && !fileName.trim().equals("")) {
+				if (uploaded.getSize() == 0) {
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "uploadFile", "201");
+					this.getErrorHandler().addError(error);
+					return null;
+				}
+				int maxSize = GeneralUtilities.getTemplateMaxSize();
+				if (uploaded.getSize() > maxSize) {
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "uploadFile", "202");
+					this.getErrorHandler().addError(error);
+					return null;
+				}
+
+				ConfigSingleton configSingleton = ConfigSingleton.getInstance();
+				SourceBean sb = (SourceBean)configSingleton.getAttribute("SPAGOBI.RESOURCE_PATH_JNDI_NAME");
+				String pathh = (String) sb.getCharacters();
+				String filePath= SpagoBIUtilities.readJndiResource(pathh);
+				filePath += "/dataset/files";
+				File dir=new File(filePath);	    
+
+				// check if file is already present!
+				boolean found=false;
+				String[] children = dir.list();
+				if (children == null) {
+					children=new String[0];
+				} 
+
+				for (int i=0; i<children.length; i++) {
+					// Get filename of file or directory
+					String fileFound = children[i];
+					if(fileName.equals(fileFound)){
+						found=true;
+						logger.error("A file with the same name is already into resources");
+						EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "File already present", "9227");
+						this.getErrorHandler().addError(error);
+						return null;						
+					}
+				}
+
+				// create a new File and copy the exported one
+				File newFile=new File(filePath+"/"+fileName);
+
+				try {
+					uploaded.write(newFile);
+				} catch (Exception e) {
+					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "Error in writing the file", "202");
+					this.getErrorHandler().addError(error);
+					return null;						
+				}
+				// FIle has been written
+				return fileName;
+			}
+		}
+
+
+		return null;
+	}
 
 
 

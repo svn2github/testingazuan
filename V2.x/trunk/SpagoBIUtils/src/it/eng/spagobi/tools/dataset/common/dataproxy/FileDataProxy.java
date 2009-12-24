@@ -26,8 +26,11 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.tools.dataset.common.datareader.IDataReader;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
@@ -60,7 +63,15 @@ public class FileDataProxy extends AbstractDataProxy {
 		FileInputStream inputStream = null;
 		
 		try {
-			inputStream = new FileInputStream(fileName);
+			// recover the file from resources!
+			ConfigSingleton configSingleton = ConfigSingleton.getInstance();
+			SourceBean sb = (SourceBean)configSingleton.getAttribute("SPAGOBI.RESOURCE_PATH_JNDI_NAME");
+			String pathh = (String) sb.getCharacters();
+			String filePath= SpagoBIUtilities.readJndiResource(pathh);
+			filePath += "/dataset/files";
+			filePath+="/"+fileName;
+			//File dir=new File(filePath);
+			inputStream = new FileInputStream(filePath);
 			dataStore = dataReader.read( inputStream );
 		}
 		catch (Exception e) {

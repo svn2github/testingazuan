@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 
-Name: sbi.security.xml-2.2.0.war
+Name: sbi.security.xml-2.4.0.war
 Implementation-Title: SpagoBIXMLSecurityProvider
-Implementation-Version: 2.2.0
+Implementation-Version: 2.4.0
 

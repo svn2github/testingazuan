@@ -313,7 +313,7 @@ Create table SBI_LOV (
 	LABEL Varchar(20) NOT NULL,
 	INPUT_TYPE_CD Varchar(20) NOT NULL,
 	DEFAULT_VAL Varchar(40),
-	LOV_PROVIDER Varchar(2000),
+	LOV_PROVIDER Varchar(8000),
 	INPUT_TYPE_ID Integer NOT NULL,
 	PROFILE_ATTR Varchar(20),
 	NAME Varchar(40) NOT NULL,

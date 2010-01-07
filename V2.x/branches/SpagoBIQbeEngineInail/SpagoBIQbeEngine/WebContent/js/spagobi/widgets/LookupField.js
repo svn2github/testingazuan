@@ -116,6 +116,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	// SUB-COMPONENTS MEMBERS
 	, store: null
 	, sm: null
+	, cm: null
     , grid: null
     , win: null
     
@@ -180,15 +181,19 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     
     // private methods
     , initWin: function() {
-		var cm = new Ext.grid.ColumnModel([
-		   new Ext.grid.RowNumberer(),
-	       {
-	       	  header: "Data",
-	          dataIndex: 'data',
-	          width: 75
-	       }
-	    ]);
-		
+		var cm;
+		if(this.cm === null) {
+			cm = new Ext.grid.ColumnModel([
+			   new Ext.grid.RowNumberer(),
+		       {
+		       	  header: "Data",
+		          dataIndex: 'data',
+		          width: 75
+		       }
+		    ]);
+		} else {
+			cm = this.cm;
+		}
 		var pagingBar = new Sbi.widgets.PagingToolbar({
 	        pageSize: this.limit,
 	        store: this.store,

@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.formviewer");
 
-Sbi.formbuilder.StaticClosedXORFiltersEditorPanel = function(config) {
+Sbi.formbuilder.StaticCloseFilterGroupEditor = function(config) {
 	
 
 	var defaultSettings = {
@@ -74,10 +74,10 @@ Sbi.formbuilder.StaticClosedXORFiltersEditorPanel = function(config) {
 	});
 	
 	// constructor
-	Sbi.formbuilder.StaticClosedXORFiltersEditorPanel.superclass.constructor.call(this, c);
+	Sbi.formbuilder.StaticCloseFilterGroupEditor.superclass.constructor.call(this, c);
 };
 
-Ext.extend(Sbi.formbuilder.StaticClosedXORFiltersEditorPanel, Ext.Panel, {
+Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupEditor, Ext.Panel, {
     
 	services: null
 	, contents: null
@@ -259,7 +259,7 @@ Ext.extend(Sbi.formbuilder.StaticClosedXORFiltersEditorPanel, Ext.Panel, {
 	
 	, onFilterWizardShow: function(targetFilter) {
 		if(this.filterWizard === null) {
-			this.filterWizard = new Sbi.formbuilder.StaticClosedXORFilterWizard();
+			this.filterWizard = new Sbi.formbuilder.StaticCloseFilterWizard();
 			this.filterWizard.on('apply', function(win, target, state) {
 				if(target === null) {
 					this.addFilter(state);

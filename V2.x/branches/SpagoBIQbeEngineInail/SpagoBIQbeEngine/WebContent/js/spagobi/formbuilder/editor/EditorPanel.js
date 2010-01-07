@@ -46,57 +46,96 @@
 
 Ext.ns("Sbi.formbuilder");
 
-Sbi.formbuilder.StaticClosedFiltersEditorPanel = function(config) {
+Sbi.formbuilder.EditorPanel = function(config) {
 	
 	var defaultSettings = {
-		// set default values here
-		title: 'Static closed filters'
+		
+		// labels
+		title: undefined
+		, emptyMsg: 'Editor panel is empty'
+		, filterItemName: 'filter'
+		
+		// options
+		, enableAddBtn: true
+		, enableClearBtn: true
+			
+		// layout
+		/*
 		, layout: 'table'
 	    , layoutConfig: {
 	        columns: 100
 	    }
+		*/
+		
+		// style
 		, frame: true
 		, autoScroll: true
 		, autoWidth: true
 		, autoHeight: true
 	};
-	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.staticClosedFiltersEditorPanel) {
-		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.staticClosedFiltersEditorPanel);
+	
+	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.editorPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.editorPanel);
 	}
 	var c = Ext.apply(defaultSettings, config || {});
+	
+	Ext.apply(this, c);
 	
 	this.init();
 	this.initTools();
 	
+	var items;
+	if(this.filterFrame === true) {
+		var frame = new Ext.form.FieldSet({
+			title: this.filterTitle,
+	        autoHeight: true,
+	        autoWidth: true,
+	        items: this.contents
+		});
+		
+		this.filterItemsCt = frame;
+		items = this.filterItemsCt;
+	} else {
+		this.filterItemsCt = this;
+		items = this.contents;
+	}
+	
+	
+	
 	Ext.apply(c, {
 		tools: this.tools,
-  		items: this.contents
+  		items: items
 	});
 	
 	// constructor
-    Sbi.formbuilder.StaticClosedFiltersEditorPanel.superclass.constructor.call(this, c);
+    Sbi.formbuilder.EditorPanel.superclass.constructor.call(this, c);
+    
+    this.addEvents('addrequest', 'editrequest');
     
     this.doLayout();
 };
 
-Ext.extend(Sbi.formbuilder.StaticClosedFiltersEditorPanel, Ext.Panel, {
+Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
     
 	services: null
 	, contents: null
 	, empty: null
+	, emptyMsg: null
 	, emptyMsgPanel: null
 	, tools: null
-	, filterGroupWizard: null
+	
+	, filterTitle: null
+	, filterFrame: false
+	, filterItemsCt: null
 	
 	
 	// --------------------------------------------------------------------------------
 	// public methods
 	// --------------------------------------------------------------------------------
 		
-	, loadContents: function(staticFiltersConf) {
+	// abstract
+	, loadContents: function(contents) {
 		Sbi.qbe.commons.Utils.unimplementedFunction('loadContents');
-		this.initEmptyMsgPanel();
-		this.contents = [this.emptyMsgPanel];	
 	}
 
 	, clearContents: function() {
@@ -105,22 +144,18 @@ Ext.extend(Sbi.formbuilder.StaticClosedFiltersEditorPanel, Ext.Panel, {
 		}
 	}
 	
-	, addFiltersGroup: function(filtersGroupConf) {
+	, addFilterItem: function(filtersItem) {
 		if(this.empty === true) {
 			this.reset();
 			this.empty = false;
-			this.contents = [];
+			this.contents = [];			
 		}
-				
-		var filtersGroup = new Sbi.formbuilder.StaticClosedXORFiltersEditorPanel(filtersGroupConf);		
-		filtersGroup.on('destroy', this.onFiltersGroupDestroy, this);
 		
-		this.contents.push(filtersGroup);
-		this.add(filtersGroup);
-		this.doLayout();	
-		
-	
-		
+		filtersItem.on('destroy', this.onFilterItemDestroy, this);
+			
+		this.contents.push(filtersItem);
+		this.filterItemsCt.add(filtersItem);
+		this.doLayout();		
 	}
 
 	// --------------------------------------------------------------------------------
@@ -137,67 +172,55 @@ Ext.extend(Sbi.formbuilder.StaticClosedFiltersEditorPanel, Ext.Panel, {
 	}
 	
 	, init: function() {
-		if(this.baseStaticFiltersConf !== undefined) {
-			this.loadContents(baseStaticFiltersConf);	
+		
+		if(this.baseContents !== undefined) {
+			this.loadContents(baseContents);	
 		} else {
 			this.initEmptyMsgPanel();
 			this.contents = [this.emptyMsgPanel];
 		}
 	}	
-	
+
 	, initEmptyMsgPanel: function() {
 		this.empty = true;
 		this.emptyMsgPanel = new Ext.Panel({
-			html: 'Click on the button in the top-rigtht corner in order to add a new filter group'
+			html: this.emptyMsg
 		});
 	}
 
 	, initTools: function() {
 		this.tools = [];
 		
-		this.tools.push({
-		    id:'plus',
-		    qtip: 'Add static closed filter',
-		    handler: function(event, toolEl, panel){
-		  		this.onFiltersGroupWizardShow();
-		    }
-		    , scope: this
-		});
 		
-		this.tools.push({
-		    id:'delete',
-		    qtip: 'clear all',
-		    handler: function(event, toolEl, panel){
-		  		this.clearContents();
-		    }
-		    , scope: this
-		});
-	}
-	
-	
-	, onFiltersGroupWizardShow: function(targetFilterGroup) {
-		if(this.filterGroupWizard === null) {
-			this.filterGroupWizard = new Sbi.formbuilder.StaticClosedXORFiltersWizard();
-			this.filterGroupWizard.on('apply', function(win, target, state) {
-				//alert(state.toSource());
-				if(target === null) {
-					this.addFiltersGroup(state);
-				} else {
-					alert('edit');
-				}
-				
-			}, this);
+		if(this.enableAddBtn === true) {
+			this.tools.push({
+			    id:'plus',
+			    qtip: 'add ' + this.filterItemName,
+			    handler: function(event, toolEl, panel){
+					this.fireEvent('addrequest', this);
+			    }
+			    , scope: this
+			});
 		}
 		
-		this.filterGroupWizard.setTarget(targetFilterGroup || null);		
-		this.filterGroupWizard.show();
+		if(this.enableClearBtn === true) {
+			this.tools.push({
+			    id:'delete',
+			    qtip: 'clear all',
+			    handler: function(event, toolEl, panel){
+			  		this.clearContents();
+			    }
+			    , scope: this
+			});
+		}
 	}
 	
-	, onFiltersGroupDestroy: function(filtersGroup) {
+	
+	, onFilterItemDestroy: function(filterItem) {
 		var t = this.contents;
 		this.contents = [];
 		for(var i = 0; i < t.length; i++) {
-			if(filtersGroup.id !== t[i].id) {
+			if(filterItem.id !== t[i].id) {
 				this.contents.push(t[i]);
 			}
 		}
@@ -205,7 +228,7 @@ Ext.extend(Sbi.formbuilder.StaticClosedFiltersEditorPanel, Ext.Panel, {
 		
 			this.initEmptyMsgPanel();
 			
-			this.add(this.emptyMsgPanel);
+			this.filterItemsCt.add(this.emptyMsgPanel);
 			this.contents = [this.emptyMsgPanel];
 			this.doLayout();
 		}

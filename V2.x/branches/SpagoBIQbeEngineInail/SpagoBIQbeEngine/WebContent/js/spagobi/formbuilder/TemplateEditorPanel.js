@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.formbuilder");
 
-Sbi.formbuilder.FiltersTemplatePanel = function(config) {
+Sbi.formbuilder.TemplateEditorPanel = function(config) {
 	
 	var defaultSettings = {
 		title: LN('Form Builder'),
@@ -81,16 +81,16 @@ Sbi.formbuilder.FiltersTemplatePanel = function(config) {
 	});
 
 	// constructor
-	Sbi.formbuilder.FiltersTemplatePanel.superclass.constructor.call(this, c);
+	Sbi.formbuilder.TemplateEditorPanel.superclass.constructor.call(this, c);
 	
 	this.on('afterlayout', this.init, this);
 };
 
-Ext.extend(Sbi.formbuilder.FiltersTemplatePanel, Ext.Panel, {
+Ext.extend(Sbi.formbuilder.TemplateEditorPanel, Ext.Panel, {
     
 	services: null
-    , staticClosedFiltersEditorPanel: null
-    , staticOpenFiltersEditorPanel: null
+    , staticCloseFilterEditorPanel: null
+    , staticOpenFilterEditorPanel: null
     , dynamicFiltersEditorPanel: null
     , groupingVariablesEditorPanel: null
    
@@ -105,13 +105,13 @@ Ext.extend(Sbi.formbuilder.FiltersTemplatePanel, Ext.Panel, {
 		this.remove(0);
 		this.doLayout(true);
 		
-		this.staticClosedFiltersEditorPanel = new Sbi.formbuilder.StaticClosedFiltersEditorPanel();
-		this.add(this.staticClosedFiltersEditorPanel);
-		this.staticOpenFiltersEditorPanel = new Sbi.formbuilder.StaticOpenFiltersEditorPanel();
-		this.add(this.staticOpenFiltersEditorPanel);
+		this.staticCloseFilterEditorPanel = new Sbi.formbuilder.StaticCloseFilterEditorPanel();
+		this.add(this.staticCloseFilterEditorPanel);
+		
+		this.staticOpenFilterEditorPanel = new Sbi.formbuilder.StaticOpenFilterEditorPanel();
+		this.add(this.staticOpenFilterEditorPanel);
+		
 		this.doLayout(true);
-				
-		//alert('Out');
 	}
     
 });

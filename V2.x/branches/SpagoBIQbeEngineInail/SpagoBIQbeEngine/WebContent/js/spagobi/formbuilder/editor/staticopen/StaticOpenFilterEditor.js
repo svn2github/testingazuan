@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.formbuilder");
 
-Sbi.formbuilder.StaticOpenFilterEditorPanel = function(openFilter, config) {
+Sbi.formbuilder.StaticOpenFilterEditor = function(openFilter, config) {
 	
 	this.openFilter = openFilter;
 	
@@ -94,11 +94,11 @@ Sbi.formbuilder.StaticOpenFilterEditorPanel = function(openFilter, config) {
 	});
 	
 	// constructor
-    Sbi.formbuilder.StaticOpenFilterEditorPanel.superclass.constructor.call(this, c);
+    Sbi.formbuilder.StaticOpenFilterEditor.superclass.constructor.call(this, c);
     
 };
 
-Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Ext.Panel, {
+Ext.extend(Sbi.formbuilder.StaticOpenFilterEditor, Ext.Panel, {
 	
 	openFilter: null
 	, field: null

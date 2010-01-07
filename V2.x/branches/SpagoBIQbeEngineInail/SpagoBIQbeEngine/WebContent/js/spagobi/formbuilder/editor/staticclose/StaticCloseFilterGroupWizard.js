@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.formbuilder");
 
-Sbi.formbuilder.StaticClosedXORFiltersWizard = function(config) {
+Sbi.formbuilder.StaticCloseFilterGroupWizard = function(config) {
 	
 	var defaultSettings = {
 		// set default values here
@@ -82,7 +82,7 @@ Sbi.formbuilder.StaticClosedXORFiltersWizard = function(config) {
 	});
 	
 	// constructor
-    Sbi.formbuilder.StaticClosedXORFiltersWizard.superclass.constructor.call(this, c);
+    Sbi.formbuilder.StaticCloseFilterGroupWizard.superclass.constructor.call(this, c);
     
     if(this.hasBuddy === 'true') {
 		this.buddy = new Sbi.commons.ComponentBuddy({
@@ -94,7 +94,7 @@ Sbi.formbuilder.StaticClosedXORFiltersWizard = function(config) {
     
 };
 
-Ext.extend(Sbi.formbuilder.StaticClosedXORFiltersWizard, Ext.Window, {
+Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 
 	formPanel: null
 	, groupTitleField: null

@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.formbuilder");
 
-Sbi.formbuilder.StaticOpenFiltersEditorPanel = function(openFilters, config) {
+Sbi.formbuilder.StaticOpenFilterEditorPanel = function(openFilters, config) {
 	
 	var defaultSettings = {
 		// set default values here
@@ -72,7 +72,7 @@ Sbi.formbuilder.StaticOpenFiltersEditorPanel = function(openFilters, config) {
 	});
 	
 	// constructor
-    Sbi.formbuilder.StaticOpenFiltersEditorPanel.superclass.constructor.call(this, c);
+    Sbi.formbuilder.StaticOpenFilterEditorPanel.superclass.constructor.call(this, c);
     
     this.on('render', this.initDD, this);
     
@@ -80,7 +80,7 @@ Sbi.formbuilder.StaticOpenFiltersEditorPanel = function(openFilters, config) {
     
 };
 
-Ext.extend(Sbi.formbuilder.StaticOpenFiltersEditorPanel, Ext.Panel, {
+Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Ext.Panel, {
 
 	contents: null
 	, empty: null
@@ -135,99 +135,9 @@ Ext.extend(Sbi.formbuilder.StaticOpenFiltersEditorPanel, Ext.Panel, {
 	
 	, addFilter: function(openFilter) {
 		this.remove(this.emptyMsgPanel);
-		var aStaticOpenFilterEditorPanel = new Sbi.formbuilder.StaticOpenFilterEditorPanel(openFilter);
+		var aStaticOpenFilterEditorPanel = new Sbi.formbuilder.StaticOpenFilterEditor(openFilter);
 		this.add(aStaticOpenFilterEditorPanel);
 		this.doLayout();
 	}
 	
 });
-
-/*
-Ext.extend(Sbi.formbuilder.StaticOpenFiltersEditorPanel, Ext.Panel, {
-    
-	services: null
-	, contents: null
-	, empty: null
-	, emptyMsgPanel: null
-	, tools: null
-	
-	
-	// --------------------------------------------------------------------------------
-	// public methods
-	// --------------------------------------------------------------------------------
-		
-	, loadContents: function(staticFiltersConf) {
-		Sbi.qbe.commons.Utils.unimplementedFunction('loadContents');
-		this.initEmptyMsgPanel();
-		this.initTools();
-		this.contents = [this.emptyMsgPanel];	
-	}
-
-	, clearContents: function() {
-		Sbi.qbe.commons.Utils.unimplementedFunction('clearContents');
-	}
-	
-	, addStaticClosedXORFilters: function(staticFiltersGroupConf) {
-		if(this.empty === true) {
-			this.remove(0, true);
-			this.doLayout();
-			this.empty = false;
-		}
-				
-		var staticFiltersForm = new Sbi.formbuilder.StaticClosedXORFiltersEditorPanel(staticFiltersGroupConf);		
-		this.add(staticFiltersForm);
-		this.doLayout();	
-	}
-
-	// --------------------------------------------------------------------------------
-	// private methods
-	// --------------------------------------------------------------------------------
-	
-	, init: function(staticFiltersConf) {
-		if(staticFiltersConf !== undefined) {
-			this.loadContents(staticFiltersConf);	
-		} else {
-			this.initEmptyMsgPanel();
-			this.initTools();
-			this.contents = [this.emptyMsgPanel];
-		}
-	}
-	
-	, initEmptyMsgPanel: function() {
-		this.empty = true;
-		this.emptyMsgPanel = new Ext.Panel({
-			html: 'drag a field here to create a new static filter'
-		});
-	}
-
-	, initTools: function() {
-		this.tools = [];
-		
-		this.tools.push({
-		    id:'plus',
-		    qtip: 'Add static closed filter',
-		    handler: function(event, toolEl, panel){
-		  		this.addStaticClosedXORFilters();
-		    }
-		    , scope: this
-		});
-		
-		this.tools.push({
-		    id:'delete',
-		    qtip: 'clear all',
-		    handler: function(event, toolEl, panel){
-		  		this.clearContents();
-		    }
-		    , scope: this
-		});
-	}
-	
-	
-	
-	
-
-	   
-	
-  	
-});
-*/

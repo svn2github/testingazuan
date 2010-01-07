@@ -72,7 +72,7 @@ Sbi.formbuilder.FormBuilderPage = function(config) {
 		
 		
 	this.initQueryFieldsPanel();
-	this.initFiltersTemplatePanel();
+	this.initTemplateEditorPanel();
 		
 	this.toolbar = new Ext.Toolbar({
 		items: [
@@ -93,7 +93,7 @@ Sbi.formbuilder.FormBuilderPage = function(config) {
 		style:'padding:3px',
       	layout: 'border',      	
       	tbar: this.toolbar,
-      	items: [this.queryFieldsPanel, this.filtersTemplatePanel]
+      	items: [this.queryFieldsPanel, this.templateEditorPanel]
 	});
 
 	// constructor
@@ -104,7 +104,7 @@ Ext.extend(Sbi.formbuilder.FormBuilderPage, Ext.Panel, {
     
     services: null
     , queryFieldsPanel: null
-    , filtersTemplatePanel: null
+    , templateEditorPanel: null
    
    
     // public methods
@@ -124,8 +124,8 @@ Ext.extend(Sbi.formbuilder.FormBuilderPage, Ext.Panel, {
 		});
     }
     
-    , initFiltersTemplatePanel: function(c) {
-    	this.filtersTemplatePanel = new Sbi.formbuilder.FiltersTemplatePanel({
+    , initTemplateEditorPanel: function(c) {
+    	this.templateEditorPanel = new Sbi.formbuilder.TemplateEditorPanel({
     		region:'center',
 	        autoScroll: true,
 			containerScroll: true,

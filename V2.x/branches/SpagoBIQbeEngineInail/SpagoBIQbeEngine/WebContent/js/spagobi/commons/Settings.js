@@ -31,6 +31,10 @@ Sbi.settings.qbe = {
 				, 'having': {hideable: true, hidden: false, width: 50, sortable: false}			
 			}
 		}
+		
+		, dataMartStructurePanel: {
+			enableTreeContextMenu: true
+		}
 };
 
 Sbi.settings.formviewer = {

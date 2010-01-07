@@ -41,64 +41,82 @@
   * 
   * Authors
   * 
-  * - Davide Zerbetto (davide.zerbetto@eng.it)
+  * - Andrea Gioia (andrea.gioia@eng.it)
   */
 
 Ext.ns("Sbi.formbuilder");
 
-Sbi.formbuilder.StaticOpenFilterEditorPanel = function(config) {
+Sbi.formbuilder.StaticCloseFilterEditorPanel = function(config) {
 	
 	var defaultSettings = {
 		
-		title: 'Static open filters'
-		, emptyMsg: 'Drag a field here to create a new static open filter'
-		, filterItemName: 'static open filter'
-        
-		, enableAddBtn: false
-			
-		, layout: 'column'
+		title: 'Static closed filters'
+		, emptyMsg: 'Click on the button in the top-rigtht corner in order to add a new filter group'
+		, filterItemName: 'static closed filter group'
 		
+		, layout: 'table'
+	    , layoutConfig: {
+	        columns: 100
+	    }
 	};
-	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.staticOpenFilterEditorPanel) {
-		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.staticOpenFilterEditorPanel);
+	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.staticCloseFilterEditorPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.staticCloseFilterEditorPanel);
 	}
-	
 	var c = Ext.apply(defaultSettings, config || {});
 	
 	Ext.apply(this, c);
 	
 	// constructor
-    Sbi.formbuilder.StaticOpenFilterEditorPanel.superclass.constructor.call(this, c);
+    Sbi.formbuilder.StaticCloseFilterEditorPanel.superclass.constructor.call(this, c);
     
-    this.on('render', this.initDD, this);
+    this.on('addrequest', function() {
+    	this.showFilterGroupWizard(null);
+    }, this);
+    this.on('editrequest', function(editor, filterGroup) {
+    	this.showFilterGroupWizard(filterGroup);
+    }, this);
 };
 
-Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Sbi.formbuilder.EditorPanel, {
+Ext.extend(Sbi.formbuilder.StaticCloseFilterEditorPanel, Sbi.formbuilder.EditorPanel, {
+    
+	filterGroupWizard: null
 	
-	dummy: null
 	
 	// --------------------------------------------------------------------------------
 	// public methods
 	// --------------------------------------------------------------------------------
 		
-	
 	, loadContents: function(contents) {
 		alert(contents.toSource());
 	}
 
-	, addFilter: function(filterConf) {
-		var filter = new Sbi.formbuilder.StaticOpenFilterEditor( filterConf );
-		this.addFilterItem( filter );
+	, addFilterGroup: function(filtersGroupConf) {	
+		var filtersGroup = new Sbi.formbuilder.StaticCloseFilterGroupEditor(filtersGroupConf);		
+		this.addFilterItem(filtersGroup);
 	}
 	
+	, showFilterGroupWizard: function(targetFilterGroup) {
+		if(this.filterGroupWizard === null) {
+			this.filterGroupWizard = new Sbi.formbuilder.StaticCloseFilterGroupWizard();
+			this.filterGroupWizard.on('apply', function(win, target, state) {
+				if(target === null) {
+					this.addFilterGroup(state);
+				} else {
+					 alert('edit');
+				}
+				
+			}, this);
+		}
+		
+		this.filterGroupWizard.setTarget(targetFilterGroup || null);		
+		this.filterGroupWizard.show();
+	}
+
 	// --------------------------------------------------------------------------------
 	// private methods
 	// --------------------------------------------------------------------------------
-		
-	, initDD: function() {
-		this.removeListener('render', this.initDD, this);
-		this.dropTarget = new Sbi.formbuilder.StaticOpenFiltersEditorPanelDropTarget(this);
-	}
 	
 	
+	
+  	
 });

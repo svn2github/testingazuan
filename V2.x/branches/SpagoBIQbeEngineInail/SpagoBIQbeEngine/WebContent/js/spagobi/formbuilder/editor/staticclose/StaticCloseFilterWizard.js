@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.formbuilder");
 
-Sbi.formbuilder.StaticClosedXORFilterWizard = function(config) {
+Sbi.formbuilder.StaticCloseFilterWizard = function(config) {
 	
 	var defaultSettings = {
 		// set default values here
@@ -65,6 +65,12 @@ Sbi.formbuilder.StaticClosedXORFilterWizard = function(config) {
 	
 	Ext.apply(this, c);
 	
+	this.services = this.services || new Array();	
+	this.services['getQueryFields'] = this.services['getQueryFields'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_QUERY_FIELDS_ACTION'
+		, baseParams: new Object()
+	});
+	
 	this.init();
 	
 	c = Ext.apply(c, {
@@ -78,7 +84,7 @@ Sbi.formbuilder.StaticClosedXORFilterWizard = function(config) {
 	});
 	
 	// constructor
-    Sbi.formbuilder.StaticClosedXORFilterWizard.superclass.constructor.call(this, c);
+    Sbi.formbuilder.StaticCloseFilterWizard.superclass.constructor.call(this, c);
     
     if(this.hasBuddy === 'true') {
 		this.buddy = new Sbi.commons.ComponentBuddy({
@@ -90,7 +96,7 @@ Sbi.formbuilder.StaticClosedXORFilterWizard = function(config) {
     
 };
 
-Ext.extend(Sbi.formbuilder.StaticClosedXORFilterWizard, Ext.Window, {
+Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 
 	formPanel: null
 	, filterTitleField: null
@@ -141,6 +147,34 @@ Ext.extend(Sbi.formbuilder.StaticClosedXORFilterWizard, Ext.Window, {
     		width:250
     	});
     	items.push(this.filterTitleField);
+    	
+    	var s = new Ext.data.JsonStore({
+    		root: 'results'
+    		, fields: ['id', 'alias']
+    		, url: this.services['getQueryFields']
+    	});
+    	
+    	
+    	this.leftOperandField = new Sbi.widgets.LookupField({
+    		fieldLabel:'Field',
+			name: 'leftOperand',
+    		store: s,
+    		cm: new Ext.grid.ColumnModel([
+	    		new Ext.grid.RowNumberer(),
+	    		{
+	    			header: "Filed",
+	    		    dataIndex: 'alias',
+	    		    width: 75
+	    		}
+    		])
+    	});
+    	items.push(this.leftOperandField);
+    	
+    	this.operatorField = new Sbi.qbe.FilterComboBox({
+    		fieldLabel:'Operator',
+    		name:'operator'
+    	});
+    	items.push(this.operatorField);
     	
     	this.formPanel = new Ext.form.FormPanel({
     		frame:true,

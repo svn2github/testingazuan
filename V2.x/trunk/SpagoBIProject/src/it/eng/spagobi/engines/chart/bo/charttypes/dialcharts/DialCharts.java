@@ -51,6 +51,7 @@ public class DialCharts extends ChartImpl {
 	private static transient Logger logger=Logger.getLogger(DialCharts.class);
 	protected double lower=0.0;
 	protected double upper=0.0;
+	protected String units = "";
 	StyleLabel labelsTickStyle;
 	StyleLabel labelsValueStyle;
 	Map confParameters;
@@ -65,6 +66,8 @@ public class DialCharts extends ChartImpl {
 	public static final String UPPER = "upper";
 	/** Lower Bound*/
 	public static final String LOWER = "lower";
+	/** Units*/
+	public static final String UNITS = "units";
 	/** multichart*/
 	public static final String MULTICHART = "multichart";
 	/** orientation multichart: can be horiontal o vertical*/
@@ -200,6 +203,11 @@ public class DialCharts extends ChartImpl {
 				else {
 					logger.error("upper bound not defined");
 					throw new Exception("upper bound not defined");
+				}
+				
+				if(confParameters.get(UNITS)!=null){	
+					String units=(String)confParameters.get(UNITS);
+					setUnits(units);
 				}
 				
 				multichart=false;
@@ -403,6 +411,16 @@ public class DialCharts extends ChartImpl {
 	 */
 	public void setSbRow(SourceBean sbRow) {
 		this.sbRow = sbRow;
+	}
+
+
+	public String getUnits() {
+		return units;
+	}
+
+
+	public void setUnits(String units) {
+		this.units = units;
 	}
 
 	

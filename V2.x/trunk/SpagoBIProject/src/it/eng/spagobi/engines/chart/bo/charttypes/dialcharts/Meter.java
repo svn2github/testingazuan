@@ -198,6 +198,9 @@ public class Meter extends DialCharts{
 		plot.setTickLabelPaint(labelsTickStyle.getColor());
 		plot.setTickSize(5.0);
 		plot.setTickPaint(Color.lightGray);
+		if(units!=null){
+			plot.setUnits(units);
+		}
 
 		plot.setValuePaint(labelsValueStyle.getColor());
 		plot.setValueFont(new Font(labelsValueStyle.getFontName(), Font.PLAIN, labelsValueStyle.getSize()));

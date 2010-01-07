@@ -1,14 +1,20 @@
 package it.eng.spagobi.kpi.config.bo;
 
+import it.eng.spagobi.engines.kpi.bo.ChartImpl;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
+import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 
+import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class Kpi implements Serializable{
+import org.apache.log4j.Logger;
 
+public class Kpi implements Serializable{
+	
 	Integer kpiId = null;
 	String kpiName = null;
 	IDataSet kpiDs = null;// Related DataSet

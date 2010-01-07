@@ -45,7 +45,6 @@ import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
-import it.eng.spagobi.engines.kpi.bo.ChartImpl;
 import it.eng.spagobi.engines.kpi.bo.KpiLine;
 import it.eng.spagobi.engines.kpi.bo.KpiLineVisibilityOptions;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
@@ -55,7 +54,6 @@ import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 import it.eng.spagobi.kpi.model.bo.Resource;
-import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
@@ -91,6 +89,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 	private static final String RESOURCE="RES_NAME";
 
+	protected String publisher_Name= "KPI_DEFAULT_PUB";//Kpi default publisher
+	
 	protected String name = null;// Document's title
 	protected String subName = null;// Document's subtitle
 	protected StyleLabel styleTitle;// Document's title style
@@ -523,7 +523,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				logger.debug("Successfull kpis creation");
 
 				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
-				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "KPI");
+				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, publisher_Name);
 	
 				if (name != null) {
 					response.setAttribute("title", name);
@@ -534,7 +534,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 					response.setAttribute("styleSubTitle", styleSubTitle);
 				}
 				response.setAttribute("kpiRBlocks", kpiRBlocks);
-				kpiResultsList=kpiRBlocks;
+				kpiResultsList = kpiRBlocks;
 			} catch (Exception eex) {
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 10107);
 				userError.setBundle("messages");
@@ -879,52 +879,6 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				logger.debug("KPI is under alarm control: " + alarm.toString());
 				line.setAlarm(alarm);
 			}
-
-			if ( value!=null &&  value.getValue()!= null && value.getThresholdValues()!=null && !value.getThresholdValues().isEmpty()) {
-
-				List thresholdValues = value.getThresholdValues();
-				/*
-				 * String chartType = value.getChartType(); logger.debug("Got
-				 * chartType: "+(chartType!=null?chartType:""));
-				 * if(chartType==null){ logger.debug("Chart Type is null"); }
-				 */
-				String chartType = "BulletGraph";
-				Double val = new Double(value.getValue());
-				Double target = value.getTarget();
-				HashMap pars = (HashMap) confMap.clone();
-				ChartImpl sbi = null;
-				sbi = ChartImpl.createChart(chartType);
-				logger.debug("Chart created");
-				sbi.setProfile(profile);
-				logger.debug("Profile setted for the chart");
-				sbi.setValueDataSet(val);
-				logger.debug("Value to be represented, setted: " + (val != null ? val.toString() : ""));
-				if (target != null) {
-					sbi.setTarget(target);
-					logger.debug("Target setted: " + (target != null ? target.toString() : ""));
-				}
-				sbi.configureChart(pars);		
-				logger.debug("Config parameters setted into the chart");
-				String thresholdsJsArray = sbi.setThresholdValues(thresholdValues);
-				if (thresholdsJsArray != null) {
-					line.setThresholdsJsArray(thresholdsJsArray);
-				}
-				logger.debug("Thresholds setted for the chart");
-				line.setChartBullet(sbi);
-
-			}
-			if ( value!=null && value.getValue() != null) {
-				Color semaphorColor = null;
-				List thresholdValues = value.getThresholdValues();
-				Double val = new Double(value.getValue());
-				ThresholdValue t = getSemaphorColor(thresholdValues, val);
-				if(t!=null){
-					semaphorColor = t.getColour();
-					line.setThresholdOfValue(t);
-				}
-
-				line.setSemaphorColor(semaphorColor);
-			}
 		}
 
 		logger.debug("OUT");
@@ -1215,58 +1169,6 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 	}
 
-	/**
-	 * This function fills up the vector "intervals" with the intervals of the
-	 * chart, getting them from a list of Thresholds
-	 * 
-	 * @param List
-	 *                of thresholds to set
-	 * @return The Color of the interval in which the value falls
-	 */
-	public ThresholdValue getSemaphorColor(List thresholdValues, Double value) {
-		logger.debug("IN");
-		ThresholdValue toReturn = null;
-		if (thresholdValues != null && !thresholdValues.isEmpty()) {
-			Iterator it = thresholdValues.iterator();
-
-			while (it.hasNext()) {
-				ThresholdValue t = (ThresholdValue) it.next();
-				String type = t.getThresholdType();
-				Double min = t.getMinValue();
-				Double max = t.getMaxValue();
-
-				if (type.equals("RANGE")) {
-					logger.debug("Threshold type RANGE");
-					if (value.doubleValue() >= min.doubleValue() && value.doubleValue() < max.doubleValue()) {
-						String label = t.getLabel();
-						toReturn = t;
-					}
-				} else if (type.equals("MINIMUM")) {
-					logger.debug("Threshold type MINIMUM");
-					if (value.doubleValue() < min.doubleValue()) {
-						String label = t.getLabel();
-						toReturn = t;
-					} else {
-						t.setColour(Color.WHITE) ;
-						toReturn = t;
-					}
-				} else if (type.equals("MAXIMUM")) {
-					logger.debug("Threshold type MAXIMUM");
-					if (value.doubleValue() > max.doubleValue()) {
-						String label = t.getLabel();
-						toReturn = t;
-					} else {
-						t.setColour(Color.WHITE);
-						toReturn = t;
-					}
-				}
-				logger.debug("New interval added to the Vector");
-			}
-		}
-		logger.debug("OUT");
-		return toReturn;
-	}
-
 	private HashMap readParameters(List parametersList) throws EMFUserError {
 		logger.debug("IN");
 		if (parametersList == null) {
@@ -1493,21 +1395,22 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		}
 		logger.debug("OUT. Date:" + this.dateOfKPI);
 		return parametersMap;
-
 	}
 
+	/**
+	 * Function that sets the basic values getting them from the xml template
+	 * @param content The template SourceBean containing parameters configuration
+	 */
 	public void getSetConf(SourceBean content) {
 		logger.debug("IN");
 		this.confMap = new HashMap();
-		// common part for all charts
-		// setting the title with parameter values if is necessary
-		SourceBean formatSB2 = null; 
+		SourceBean internationalizedFormatSB = null; 
 		if(lang!=null && country!=null){
-			formatSB2 = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-"+lang.toUpperCase()+"_"+country.toUpperCase()));				
+			internationalizedFormatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-"+lang.toUpperCase()+"_"+country.toUpperCase()));				
 		}else{
-			formatSB2 = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
+			internationalizedFormatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
 		}
-		String format = (String) formatSB2.getAttribute("format");
+		String format = (String) internationalizedFormatSB.getAttribute("format");
 		SimpleDateFormat f = new SimpleDateFormat();
 		f.applyPattern(format);
 		
@@ -1516,6 +1419,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		SimpleDateFormat fServ = new SimpleDateFormat();
 		fServ.applyPattern(formatServer);
 		
+		//Getting TITLE and replacing eventual parameters
 		if (content.getAttribute("name") != null) {
 			String titleChart = (String) content.getAttribute("name");
 			String tmpTitle = titleChart;
@@ -1554,6 +1458,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		} else
 			setName("");
 
+		//Setting title style
 		SourceBean styleTitleSB = (SourceBean) content.getAttribute("STYLE_TITLE");
 		if (styleTitleSB != null) {
 
@@ -1575,6 +1480,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		}
 		this.confMap.put("styleTitle", styleTitle);
 
+		//Getting SUBTITLE and setting its style
 		SourceBean styleSubTitleSB = (SourceBean) content.getAttribute("STYLE_SUBTITLE");
 		if (styleSubTitleSB != null) {
 
@@ -1629,7 +1535,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		}
 		this.confMap.put("styleSubTitle", styleSubTitle);
 
-		// get all the data parameters
+		// get all the other template parameters
 		try {
 			Map dataParameters = new HashMap();
 			SourceBean dataSB = (SourceBean) content.getAttribute("CONF");
@@ -1767,7 +1673,10 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			}
 			this.confMap.put("value_title", value_title);
 			
-
+			if (dataParameters.get(SpagoBIConstants.PUBLISHER_NAME) != null && dataParameters.get(SpagoBIConstants.PUBLISHER_NAME) != "") {
+				String fil = (String) dataParameters.get(SpagoBIConstants.PUBLISHER_NAME);
+				if (fil!=null) publisher_Name = fil;
+			}
 		} catch (Exception e) {
 			logger.error("error in reading template parameters");
 		}

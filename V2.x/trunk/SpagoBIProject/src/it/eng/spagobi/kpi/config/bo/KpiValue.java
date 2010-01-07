@@ -1,12 +1,19 @@
 package it.eng.spagobi.kpi.config.bo;
 
 import it.eng.spagobi.kpi.model.bo.Resource;
+import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class KpiValue implements Cloneable{
+
+	private static transient Logger logger=Logger.getLogger(KpiValue.class);
 	
 	Integer kpiInstanceId = null;
 	Integer kpiValueId = null;
@@ -22,6 +29,59 @@ public class KpiValue implements Cloneable{
 	String scaleName = null;
 	Resource r = null;//Resource (project/process) to which refers the value
 	String chartType = null;
+	
+	/**
+	 * This function fills up the vector "intervals" with the intervals of the
+	 * chart, getting them from a list of Thresholds
+	 * 
+	 * @param List of thresholds to set
+	 * @return The Color of the interval in which the value falls
+	 */
+	public ThresholdValue getSemaphorColor() {
+		logger.debug("IN");
+		ThresholdValue toReturn = null;
+		Double val = new Double(value);
+		if (thresholdValues != null && !thresholdValues.isEmpty()) {
+			Iterator it = thresholdValues.iterator();
+
+			while (it.hasNext()) {
+				ThresholdValue t = (ThresholdValue) it.next();
+				String type = t.getThresholdType();
+				Double min = t.getMinValue();
+				Double max = t.getMaxValue();
+
+				if (type.equals("RANGE")) {
+					logger.debug("Threshold type RANGE");
+					if (val.doubleValue() >= min.doubleValue() && val.doubleValue() < max.doubleValue()) {
+						String label = t.getLabel();
+						toReturn = t;
+					}
+				} else if (type.equals("MINIMUM")) {
+					logger.debug("Threshold type MINIMUM");
+					if (val.doubleValue() < min.doubleValue()) {
+						String label = t.getLabel();
+						toReturn = t;
+					} else {
+						t.setColour(Color.WHITE) ;
+						toReturn = t;
+					}
+				} else if (type.equals("MAXIMUM")) {
+					logger.debug("Threshold type MAXIMUM");
+					if (val.doubleValue() > max.doubleValue()) {
+						String label = t.getLabel();
+						toReturn = t;
+					} else {
+						t.setColour(Color.WHITE);
+						toReturn = t;
+					}
+				}
+				logger.debug("New interval added to the Vector");
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+	
 	
 	public String getChartType() {
 		return chartType;

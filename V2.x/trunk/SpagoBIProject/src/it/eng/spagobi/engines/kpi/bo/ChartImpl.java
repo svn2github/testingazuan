@@ -191,14 +191,12 @@ public class ChartImpl implements Serializable{
 	 * 
 	 * @param List of thresholds to set
 	 */
-	public String setThresholdValues(List thresholdValues) {
+	public void setThresholdValues(List thresholdValues) {
 		logger.debug("IN");
-		String thresholdsJsArray = "";//String that will be needed by the jsp to show the legend in a tooltip
 		if(thresholdValues!=null && !thresholdValues.isEmpty()){
 			Iterator it = thresholdValues.iterator();
-			thresholdsJsArray += "[";
+
 			while(it.hasNext()){
-				thresholdsJsArray += "{";
 				ThresholdValue t = (ThresholdValue)it.next();
 				String type = t.getThresholdType();
 				Double min = t.getMinValue();
@@ -239,7 +237,6 @@ public class ChartImpl implements Serializable{
 						interval.setMin(lower);
 					}
 					String color = Integer.toHexString( interval.getColor().getRGB() & 0x00ffffff ) ;
-					thresholdsJsArray += "min:"+interval.getMin()+",max:"+interval.getMax()+",label:'"+interval.getLabel()+"',color:'#"+color+"'";
 					intervals.add(interval);
 				}else if (type.equals("MINIMUM")){
 					
@@ -268,7 +265,6 @@ public class ChartImpl implements Serializable{
 						interval1.setMax(min);
 						interval1.setMin(lower);
 					String color1 = Integer.toHexString( interval1.getColor().getRGB() & 0x00ffffff ) ;
-					thresholdsJsArray += "min:"+interval1.getMin()+",max:"+interval1.getMax()+",label:"+interval1.getLabel()+",color:"+color1+"},";
 					intervals.add(interval1);
 					KpiInterval interval2 = new KpiInterval();
 						interval2.setColor(Color.WHITE);
@@ -276,7 +272,6 @@ public class ChartImpl implements Serializable{
 						interval2.setMax(upper);
 						interval2.setMin(min);
 					String color2 = Integer.toHexString( interval2.getColor().getRGB() & 0x00ffffff ) ;
-					thresholdsJsArray += "min:"+interval2.getMin()+",max:"+interval2.getMax()+",label:"+interval2.getLabel()+",color:"+color2;	
 					intervals.add(interval2);
 					
 				}else if (type.equals("MAXIMUM")){
@@ -297,8 +292,7 @@ public class ChartImpl implements Serializable{
 						interval1.setLabel("");
 						interval1.setMax(max);
 						interval1.setMin(lower);	
-					String color1 = Integer.toHexString( interval1.getColor().getRGB() & 0x00ffffff ) ;
-					thresholdsJsArray += "min:"+interval1.getMin()+",max:"+interval1.getMax()+",label:'"+interval1.getLabel()+"',color:'#"+color1+"'},";	
+					String color1 = Integer.toHexString( interval1.getColor().getRGB() & 0x00ffffff ) ;	
 					intervals.add(interval1);
 					KpiInterval interval2 = new KpiInterval();
 					if(c!=null)	{
@@ -313,20 +307,13 @@ public class ChartImpl implements Serializable{
 					}
 						interval2.setMax(upper);
 						interval2.setMin(max);	
-					String color2 = Integer.toHexString( interval2.getColor().getRGB() & 0x00ffffff ) ;
-					thresholdsJsArray += "{min:"+interval2.getMin()+",max:"+interval2.getMax()+",label:'"+interval2.getLabel()+"',color:'#"+color2+"'";		
+					String color2 = Integer.toHexString( interval2.getColor().getRGB() & 0x00ffffff ) ;	
 					intervals.add(interval2);				
 				}				
 				logger.debug("New interval added to the Vector");
-				thresholdsJsArray += "}";
-				if(it.hasNext()){
-					thresholdsJsArray += ",";
-				}
 			}
-			thresholdsJsArray += "]";
 		}
 		logger.debug("OUT");
-		return thresholdsJsArray;
 	}
 	
 	/* (non-Javadoc)

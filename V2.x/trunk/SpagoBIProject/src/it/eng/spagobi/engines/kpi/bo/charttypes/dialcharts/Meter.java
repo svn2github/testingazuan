@@ -67,10 +67,8 @@ public class Meter extends ChartImpl {
 		logger.debug("OUT");
 	}
 	
-	public String setThresholds(List thresholds) {
-		
-		return super.setThresholdValues(thresholds);
-		
+	public void setThresholds(List thresholds) {		
+		super.setThresholdValues(thresholds);		
 	}
 	
 

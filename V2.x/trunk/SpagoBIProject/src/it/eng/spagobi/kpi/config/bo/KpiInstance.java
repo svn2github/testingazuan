@@ -1,12 +1,18 @@
 package it.eng.spagobi.kpi.config.bo;
 
+import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
+
+import java.awt.Color;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 public class KpiInstance implements Serializable{
 	
 	Integer kpiInstanceId = null;
-	
 	Integer periodicityId = null;// kpiInstPeriodicyId
 	Integer chartTypeId = null;
 	Integer thresholdId = null;

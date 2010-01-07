@@ -30,6 +30,7 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.engines.kpi.bo.ChartImpl;
 import it.eng.spagobi.engines.kpi.bo.KpiLine;
 import it.eng.spagobi.engines.kpi.bo.KpiLineVisibilityOptions;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
@@ -486,9 +487,7 @@ public class BasicTemplateBuilder  {
 
 		// Create Source Bean of template of template
 		String templateStr = getTemplateTemplate();
-		
-		
-		
+
 		SourceBean templateBaseContent =null;
 		List toReturn = new ArrayList();
 		String finalTemplate="";
@@ -500,7 +499,6 @@ public class BasicTemplateBuilder  {
 			} catch (Exception e) {
 				logger.error("Error in converting template of template into a SOurce Bean, check the XML code");
 			}
-
 
 		try {
 			staticTextName = SourceBean.fromXMLString(staticTextNameS); // this is for text
@@ -1012,15 +1010,21 @@ public class BasicTemplateBuilder  {
 			SourceBean textWeight, SourceBean image1, int level, SourceBean separatorline,SourceBean threshCode,SourceBean threshValue, SourceBean extraimageToAdd){
 		logger.debug("IN");
 		
-		Color colorSemaphor=line.getSemaphorColor();
 		KpiValue kpiValue=line.getValue();
+		
+		ThresholdValue t = null;
+		Color colorSemaphor = null;
+		if ( kpiValue!=null && kpiValue.getValue() != null) {
+			t = kpiValue.getSemaphorColor();
+			if(t!=null){
+				colorSemaphor = t.getColour();	
+			}
+		}	
 
 		Integer xValue=xStarter+(xIncrease*Integer.valueOf(level));
-
 		Integer yValue=actualHeight;
 
 		try {
-
 			//set Semaphor
 			semaphor.setAttribute("reportElement.x", xValue.toString());
 			semaphor.setAttribute("reportElement.y", new Integer(yValue.intValue()+2).toString());
@@ -1060,7 +1064,7 @@ public class BasicTemplateBuilder  {
 				SourceBean textValue3=(SourceBean)textWeight.getAttribute("text");
 				textValue3.setCharacters(weight);
 				
-				ThresholdValue t = line.getThresholdOfValue();
+				
 				if(t!=null){
 					try {
 						Threshold tr = DAOFactory.getThresholdDAO().loadThresholdById(t.getThresholdId());
@@ -1096,8 +1100,21 @@ public class BasicTemplateBuilder  {
 			//Sets the bullet chart and or the threshold image
 			if(options.getDisplay_bullet_chart() && options.getDisplay_threshold_image()){
 				//both threshold image and bullet chart have to be seen
-				if(line.getChartBullet()!=null){
-					BulletGraph sbi = (BulletGraph)line.getChartBullet();	
+				if ( kpiValue!=null &&  kpiValue.getValue()!= null && kpiValue.getThresholdValues()!=null && !kpiValue.getThresholdValues().isEmpty()) {
+
+					List thresholdValues = kpiValue.getThresholdValues();			
+					// String chartType = value.getChartType(); 
+					String chartType = "BulletGraph";
+					Double val = new Double(kpiValue.getValue());
+					Double target = kpiValue.getTarget();
+					ChartImpl sbi = ChartImpl.createChart(chartType);
+					sbi.setValueDataSet(val);
+					if (target != null) {
+						sbi.setTarget(target);
+					}
+					sbi.setShowAxis(options.getShow_axis());	
+					sbi.setThresholdValues(thresholdValues);
+				
 					JFreeChart chart = sbi.createChart();
 					ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
 					String requestIdentity = null;
@@ -1146,8 +1163,21 @@ public class BasicTemplateBuilder  {
 				}
 			}else if(options.getDisplay_bullet_chart() && !options.getDisplay_threshold_image()){
 				//only bullet chart has to be seen
-				if(line.getChartBullet()!=null){
-					BulletGraph sbi = (BulletGraph)line.getChartBullet();	
+				if ( kpiValue!=null &&  kpiValue.getValue()!= null && kpiValue.getThresholdValues()!=null && !kpiValue.getThresholdValues().isEmpty()) {
+
+					List thresholdValues = kpiValue.getThresholdValues();			
+					// String chartType = value.getChartType(); 
+					String chartType = "BulletGraph";
+					Double val = new Double(kpiValue.getValue());
+					Double target = kpiValue.getTarget();
+					ChartImpl sbi = ChartImpl.createChart(chartType);
+					sbi.setValueDataSet(val);
+					if (target != null) {
+						sbi.setTarget(target);
+					}
+					sbi.setShowAxis(options.getShow_axis());	
+					sbi.setThresholdValues(thresholdValues);
+					
 					JFreeChart chart = sbi.createChart();
 					ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
 					String requestIdentity = null;
@@ -1194,7 +1224,6 @@ public class BasicTemplateBuilder  {
 			}
 
 			separatorline.setAttribute("reportElement.y", new Integer(yValue.intValue()+16).toString());
-
 
 		} catch (SourceBeanException e) {
 			logger.error("error in drawing the line",e);

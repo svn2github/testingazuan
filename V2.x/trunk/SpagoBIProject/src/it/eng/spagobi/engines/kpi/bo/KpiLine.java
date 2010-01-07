@@ -15,9 +15,6 @@ public class KpiLine implements Serializable{
 	String modelInstanceCode = null;
 	Boolean alarm = false ; //if the kpi is under alarm control
 	KpiValue value = null;
-	String thresholdsJsArray = "";
-	Color semaphorColor = null;
-	ChartImpl chartBullet = null;	
 	ThresholdValue thresholdOfValue = null;
 	List children = null;//List ok kpiLineChildren
 	List documents = null;//List of documents related to the Kpi
@@ -27,16 +24,12 @@ public class KpiLine implements Serializable{
 		this.children = new ArrayList();
 		this.documents = new ArrayList();
 	}
-	public KpiLine(String modelNodeName,String arrayJs, Boolean alarm, KpiValue value,
-			Color semaphorColor, ChartImpl chartBullet, List children,
+	public KpiLine(String modelNodeName, Boolean alarm, KpiValue value, List children,
 			List documents, Integer modelInstanceNodeId, String modelInstanceCode,ThresholdValue thresholdOfValue) {
 		super();
-		this.thresholdsJsArray = arrayJs;
 		this.modelNodeName = modelNodeName;
 		this.alarm = alarm;
 		this.value = value;
-		this.semaphorColor = semaphorColor;
-		this.chartBullet = chartBullet;
 		this.children = children;
 		this.documents = documents;
 		this.modelInstanceNodeId = modelInstanceNodeId;
@@ -62,18 +55,6 @@ public class KpiLine implements Serializable{
 	public void setValue(KpiValue value) {
 		this.value = value;
 	}
-	public Color getSemaphorColor() {
-		return semaphorColor;
-	}
-	public void setSemaphorColor(Color semaphorColor) {
-		this.semaphorColor = semaphorColor;
-	}
-	public ChartImpl getChartBullet() {
-		return chartBullet;
-	}
-	public void setChartBullet(ChartImpl chartBullet) {
-		this.chartBullet = chartBullet;
-	}
 	public List getChildren() {
 		return children;
 	}
@@ -85,12 +66,6 @@ public class KpiLine implements Serializable{
 	}
 	public void setDocuments(List documents) {
 		this.documents = documents;
-	}
-	public String getThresholdsJsArray() {
-		return thresholdsJsArray;
-	}
-	public void setThresholdsJsArray(String thresholdsJsArray) {
-		this.thresholdsJsArray = thresholdsJsArray;
 	}
 	public Integer getModelInstanceNodeId() {
 		return modelInstanceNodeId;

@@ -58,6 +58,7 @@ Sbi.formbuilder.StaticCloseFilterEditorPanel = function(config) {
 	    , layoutConfig: {
 	        columns: 100
 	    }
+		, enableDebugBtn: true
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.staticCloseFilterEditorPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.staticCloseFilterEditorPanel);
@@ -79,26 +80,23 @@ Sbi.formbuilder.StaticCloseFilterEditorPanel = function(config) {
 
 Ext.extend(Sbi.formbuilder.StaticCloseFilterEditorPanel, Sbi.formbuilder.EditorPanel, {
     
-	filterGroupWizard: null
+	wizard: null
 	
 	
 	// --------------------------------------------------------------------------------
 	// public methods
 	// --------------------------------------------------------------------------------
 		
-	, loadContents: function(contents) {
-		alert(contents.toSource());
-	}
-
+	
 	, addFilterGroup: function(filtersGroupConf) {	
 		var filtersGroup = new Sbi.formbuilder.StaticCloseFilterGroupEditor(filtersGroupConf);		
 		this.addFilterItem(filtersGroup);
 	}
 	
 	, showFilterGroupWizard: function(targetFilterGroup) {
-		if(this.filterGroupWizard === null) {
-			this.filterGroupWizard = new Sbi.formbuilder.StaticCloseFilterGroupWizard();
-			this.filterGroupWizard.on('apply', function(win, target, state) {
+		if(this.wizard === null) {
+			this.wizard = new Sbi.formbuilder.StaticCloseFilterGroupWizard();
+			this.wizard.on('apply', function(win, target, state) {
 				if(target === null) {
 					this.addFilterGroup(state);
 				} else {
@@ -108,15 +106,17 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditorPanel, Sbi.formbuilder.EditorP
 			}, this);
 		}
 		
-		this.filterGroupWizard.setTarget(targetFilterGroup || null);		
-		this.filterGroupWizard.show();
+		this.wizard.setTarget(targetFilterGroup || null);		
+		this.wizard.show();
 	}
 
 	// --------------------------------------------------------------------------------
 	// private methods
 	// --------------------------------------------------------------------------------
 	
-	
+	, onDebug: function() {
+		alert(this.getContents().toSource());
+	}
 	
   	
 });

@@ -133,9 +133,20 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 	// public methods
 	// --------------------------------------------------------------------------------
 		
-	// abstract
-	, loadContents: function(contents) {
-		Sbi.qbe.commons.Utils.unimplementedFunction('loadContents');
+	, setContents: function(contents) {
+		
+	}
+
+	, getContents: function() {
+		var c = [];
+		if(this.empty === true) return c;
+		
+		for(var i = 0; i < this.contents.length; i++) {
+			var filterItem = this.contents[i];
+			c.push( filterItem.getContents() );
+		}
+		
+		return c;
 	}
 
 	, clearContents: function() {
@@ -213,8 +224,23 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 			    , scope: this
 			});
 		}
+		
+		if(this.enableDebugBtn === true) {
+			this.tools.push({
+			    id:'pin',
+			    qtip: 'debug',
+			    handler: function(event, toolEl, panel){
+					this.onDebug();
+			    }
+			    , scope: this
+			});
+		}
 	}
 	
+	
+	, onDebug: function() {
+	
+	}
 	
 	, onFilterItemDestroy: function(filterItem) {
 		var t = this.contents;

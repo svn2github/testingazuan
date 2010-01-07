@@ -52,11 +52,13 @@ Sbi.formbuilder.StaticCloseFilterWizard = function(config) {
 		// set default values here
 		title: 'Static close filter definition'
 		, autoScroll: true
-		, width: 350
-		, height: 265
+		, width: 550
+		, height: 340
 		, baseState: {
 			filterTitle: undefined		
 		}
+		, modal: true
+		, resizable: false
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.staticClosedXORFiltersWizard) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.staticClosedXORFiltersWizard);
@@ -113,17 +115,37 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 	, getFormState: function() {
 		var s = {};
 		
-		s.filterTitle = this.filterTitleField.getValue();
+		s.text = this.filterTitleField.getValue();
+		s.leftOperandValue = this.leftOperandField.getValue();
+		s.leftOperandDesc = this.leftOperandField.getValue();
+		s.operator = this.operatorField.getValue();
+		s.rightOperandValue = this.rightOperandField.getValue();
 		
 		return s;
 	}
 
 	, setFormState: function(s) {
+		this.filterTitleField.setValue(s.text);
+		this.leftOperandField.setValue(s.leftOperandValue);
+		this.operatorField.setValue(s.operator);
+		this.rightOperandField.setValue(s.rightOperandValue);
+	}
 	
+	, resetFormState: function() {
+		this.filterTitleField.reset();
+		this.leftOperandField.reset();
+		this.operatorField.reset();
+		this.rightOperandField.reset();
 	}
 	
 	, setTarget: function(targetFilter) {
 		this.targetFilter = targetFilter;
+		
+		if(this.targetFilter === null) {
+			this.resetFormState();
+		} else {
+			this.setFormState(this.targetFilter.getContents());
+		}
 	}
 	
 	, getTarget: function() {
@@ -159,6 +181,9 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
     		fieldLabel:'Field',
 			name: 'leftOperand',
     		store: s,
+    		valueField: 'id',
+    		displayField: 'alias',
+    		descriptionField: 'alias',
     		cm: new Ext.grid.ColumnModel([
 	    		new Ext.grid.RowNumberer(),
 	    		{
@@ -168,13 +193,55 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 	    		}
     		])
     	});
+    	this.leftOperandField.on('change', this.onFormStateChange, this);
     	items.push(this.leftOperandField);
     	
     	this.operatorField = new Sbi.qbe.FilterComboBox({
     		fieldLabel:'Operator',
     		name:'operator'
     	});
+    	this.operatorField.on('change', this.onFormStateChange, this);
     	items.push(this.operatorField);
+    	
+    	this.rightOperandField = new Ext.form.TextField({
+    		fieldLabel:'Value' ,
+			name:'rightOperand',
+    	});
+    	this.rightOperandField.on('change', this.onFormStateChange, this);
+    	this.rightOperandField.on('keydown', this.onFormStateChange, this);
+    	
+    	
+    	
+    	items.push(this.rightOperandField);
+    	
+    	
+    	
+    	var sm = new Ext.grid.RowSelectionModel({singleSelect:true});
+    	sm.on('rowselect', this.onRowSelect, this);
+    	
+    	this.filterGrid = new Sbi.qbe.FilterGridPanel({
+    		//title: 'Expand this panel to add other filters...'
+    		//, collapsible: true
+    		//, titleCollapse: true
+    		//, collapsed: true
+    		gridHeight: 140
+    		, gridStyle: 'padding:0px'
+    		, sm: sm
+    		, enableTbExpWizardBtn: false
+    		, columns : {
+				'filterId': {hideable: true, hidden: true, sortable: false}
+				, 'filterDescripion': {hideable: true, hidden: true, sortable: false}
+				, 'leftOperandDescription': {hideable: false, hidden: false, sortable: false}
+				, 'leftOperandType': {hideable: true, hidden: true, sortable: false}
+				, 'operator': {hideable: false, hidden: false, sortable: false}
+				, 'rightOperandDescription': {hideable: false, hidden: false, sortable: false}				
+				, 'rightOperandType': {hideable: true, hidden: true, sortable: false}
+				, 'booleanConnector': {hideable: true, hidden: false, sortable: false}	
+				, 'deleteButton': {hideable: true, hidden: true, sortable: false}
+				, 'promptable': {hideable: true, hidden: true, sortable: false}	
+			}
+    	});
+    	items.push(this.filterGrid);
     	
     	this.formPanel = new Ext.form.FormPanel({
     		frame:true,
@@ -200,6 +267,22 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
             	, scope: this
     		}]
     	 });
+	}
+	
+	, onRowSelect: function(selectionModel, rowIndex, r) {
+		alert(r.data.toSource());
+	}
+	
+	, onFormStateChange: function(field, newValue, oldValue) {
+		alert('change');
+		alert(field.name);
+		if(field.name === 'leftOperand') {
+		} else if(field.name === 'operator') {
+			var r = this.filterGrid.grid.sm.getSelected();
+			var i = this.filterGrid.indexOf(r);
+			this.filterGrid.modifyFilter({operator: newValue}, i);
+		} else if(field.name === 'rightOperand') {
+		}
 	}
 	
 });

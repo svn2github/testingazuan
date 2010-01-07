@@ -32,6 +32,24 @@ Sbi.settings.qbe = {
 			}
 		}
 		
+		, filterGridPanel: {
+			enableTbExpWizardBtn: true
+			, enableTbRemoveAllFilterBtn: true
+			, enableTbAddFilterBtn: true
+			, columns : {
+				'filterId': {hideable: true, hidden: false, sortable: false}
+				, 'filterDescripion': {hideable: true, hidden: true, sortable: false}
+				, 'leftOperandDescription': {hideable: false, hidden: false, sortable: false}
+				, 'leftOperandType': {hideable: true, hidden: true, sortable: false}
+				, 'operator': {hideable: false, hidden: false, sortable: false}
+				, 'rightOperandDescription': {hideable: false, hidden: false, sortable: false}				
+				, 'rightOperandType': {hideable: true, hidden: true, sortable: false}
+				, 'booleanConnector': {hideable: true, hidden: false, sortable: false}
+				, 'deleteButton': {hideable: true, hidden: true, sortable: false}
+				, 'promptable': {hideable: true, hidden: false, sortable: false}				
+			}
+		}
+		
 		, dataMartStructurePanel: {
 			enableTreeContextMenu: true
 		}

@@ -56,6 +56,8 @@ Sbi.formbuilder.StaticCloseFilterEditor = function(config) {
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 	
+	
+	
 	Ext.apply(this, c);
 	
 	this.init();
@@ -105,12 +107,37 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Ext.Panel, {
     
 	buttons: null
 	, filter: null
+	, text: null
+	, leftOperandValue: null
+	, leftOperandDesc: null
+	, operator: null
+	, rightOperandValue: null
 	
 	// --------------------------------------------------------------------------------
 	// public methods
 	// --------------------------------------------------------------------------------
 		
-
+	, setContents: function(c) {
+		if(this.text !== c.text) {
+			alert('filter name is changed!');
+		}
+		this.text = c.text;
+		this.leftOperandValue = c.leftOperandValue;
+		this.leftOperandDesc = c.leftOperandDesc;
+		this.operator = c.operator;
+		this.rightOperandValue = c.rightOperandValue;
+	}
+	
+	, getContents: function() {
+		var c = {};
+		c.text = this.text;
+		c.leftOperandValue = this.leftOperandValue;
+		c.leftOperandDesc = this.leftOperandDesc;
+		c.operator = this.operator;
+		c.rightOperandValue = this.rightOperandValue;
+		
+		return c;
+	}
 	
 	// --------------------------------------------------------------------------------
 	// private methods
@@ -120,7 +147,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Ext.Panel, {
 		var filterConf = {
 			width: 150,
 			hideLabel: true,
-			boxLabel: this.filterTitle,
+			boxLabel: this.text,
 	        name: 'options',
 	        inputValue: 'option'
 		};

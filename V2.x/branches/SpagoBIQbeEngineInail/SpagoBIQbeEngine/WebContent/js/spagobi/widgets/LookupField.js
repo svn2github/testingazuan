@@ -150,6 +150,12 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	 */
 	, setValue : function(v){	 
 		
+		if(v === undefined) {
+			this.xvalue = {};
+			Sbi.widgets.LookupField.superclass.setValue.call(this, '');
+			return;
+		}
+		
 		if(typeof v === 'object') {
 			this.xvalue = {};
 			
@@ -162,10 +168,12 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 			}
 			
 			Ext.apply(this.xvalue, v);
+			
 			var displayText = '';
 			for(p in this.xvalue) {
 				displayText += this.xvalue[p] + ';';
 			}	
+		
 			if(this.singleSelect === true) {
 				displayText = displayText.substr(0, displayText.length-1);
 			}

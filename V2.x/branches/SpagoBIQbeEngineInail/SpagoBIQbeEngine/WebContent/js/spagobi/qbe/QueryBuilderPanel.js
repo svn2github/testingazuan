@@ -414,7 +414,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	, initCenterRegionPanel: function(c) {
 		c.documentParametersStore = this.documentParametersStore;
 		this.selectGridPanel = new Sbi.qbe.SelectGridPanel(c);
-	    this.filterGridPanel = new Sbi.qbe.FilterGridPanel(c);
+	    this.filterGridPanel = new Sbi.qbe.FilterGridPanel(Ext.apply(c || {}, {gridTitle: LN('sbi.qbe.filtergridpanel.title')}));
 	    this.havingGridPanel = new Sbi.qbe.HavingGridPanel(c);
 	    
 	    this.centerRegionPanel = new Ext.Panel({ 

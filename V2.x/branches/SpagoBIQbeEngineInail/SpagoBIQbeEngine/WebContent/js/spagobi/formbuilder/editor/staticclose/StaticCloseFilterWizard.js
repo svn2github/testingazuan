@@ -102,6 +102,11 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 
 	formPanel: null
 	, filterTitleField: null
+	, leftOperandField: null
+	, operatorField: null
+	, rightOperandField: null
+	, filterGrid: null
+	
 	, baseState: null
 	, targetFilter: null
 	, hasBuddy: null
@@ -116,26 +121,86 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 		var s = {};
 		
 		s.text = this.filterTitleField.getValue();
-		s.leftOperandValue = this.leftOperandField.getValue();
-		s.leftOperandDesc = this.leftOperandField.getValue();
-		s.operator = this.operatorField.getValue();
-		s.rightOperandValue = this.rightOperandField.getValue();
+		var filterGridState = this.getFilterGridState();
+		if(filterGridState.length === 1) {
+			s = Ext.apply(s, filterGridState[0]);
+		} else {
+			s.expression = filterGridState;
+		}
 		
 		return s;
 	}
 
 	, setFormState: function(s) {
+		var d ;
+		
+		//alert('setFormState IN');
+		
 		this.filterTitleField.setValue(s.text);
+		
+		this.filterGrid.deleteFilters();
+		if(s.expression) {
+			for(var i = 0, l = s.expression.length; i < l; i=i+2) {
+				d = this.marshalFilterRecord(s.expression[i]); 
+				d.booleanConnector= (i+1<l)? s.expression[i+1]: 'AND';
+				this.filterGrid.addFilter(d);
+			}
+		} else {
+			d = this.marshalFilterRecord(s); 
+			this.filterGrid.addFilter(d);
+		}
+		//alert('setFormState OUT');
+	}
+	
+	, setFilterDetailState: function(s) {
+		//alert('setFilterDetailState IN');
 		this.leftOperandField.setValue(s.leftOperandValue);
+		this.leftOperandField.setDescription(s.leftOperandDescription);
 		this.operatorField.setValue(s.operator);
 		this.rightOperandField.setValue(s.rightOperandValue);
+		//alert('setFilterDetailState OUT');
+	}
+	
+	/*
+	 * return an array containing 2*n - 1 elements where n is the number of row in the grid.
+	 * the array have this form [filter1Conf{Object}, filter1BoolConnector{String}, ..., filterNConf{Object}] 
+	 */
+	, getFilterGridState: function() {
+		var s = [];
+		var store, r, c;
+		
+		store = this.filterGrid.store;
+		for(var i = 0, l = store.getCount(); i < l; i++) {
+			r = store.getAt(i);
+			c = this.unmarshalFilterRecord(r)
+			var b = c.booleanConnector;
+			delete c.booleanConnector;
+			s.push(c);
+			if(i+1 < l) {
+				s.push(b);
+			}
+		}
+		
+		return s;
+	}
+	
+	, setFilterGridState: function(s) {
+		
 	}
 	
 	, resetFormState: function() {
 		this.filterTitleField.reset();
 		this.leftOperandField.reset();
 		this.operatorField.reset();
-		this.rightOperandField.reset();
+		this.rightOperandField.reset();		
+		this.resetFilterGrid();
+	}
+	
+	, resetFilterGrid: function() {
+		if(this.filterGrid.grid.rendered === false) return;
+		this.filterGrid.deleteFilters();
+		this.filterGrid.addFilter();
+		//this.filterGrid.sm.selectRow(this.filterGrid.store.getCount()-1);
 	}
 	
 	, setTarget: function(targetFilter) {
@@ -208,12 +273,8 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 			name:'rightOperand',
     	});
     	this.rightOperandField.on('change', this.onFormStateChange, this);
-    	this.rightOperandField.on('keydown', this.onFormStateChangeX, this);
-    	
-    	
-    	
+    	this.rightOperandField.on('keydown', this.onFormStateChangeX, this);    	
     	items.push(this.rightOperandField);
-    	
     	
     	
     	var sm = new Ext.grid.RowSelectionModel({singleSelect:true});
@@ -241,8 +302,11 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 				, 'promptable': {hideable: true, hidden: true, sortable: false}	
 			}
     	});
-    	this.filterGrid.on('render', function(){
-    		this.filterGrid.addFilter();
+    	this.filterGrid.grid.on('render', function(){
+    		this.filterGrid.store.on('add', function(s, r, i){
+        		this.filterGrid.sm.selectRow(i);
+        	}, this);
+    		this.resetFilterGrid();
     	}, this);
     	items.push(this.filterGrid);
     	
@@ -275,31 +339,55 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
     	
 	}
 	
+	, unmarshalFilterRecord: function(r) {
+		var filterConf = {};
+		
+		filterConf.leftOperandValue = r.data.leftOperandValue;
+		filterConf.leftOperandDescription = r.data.leftOperandDescription;
+		filterConf.operator = r.data.operator;
+		filterConf.rightOperandValue = r.data.rightOperandValue;
+		filterConf.booleanConnector = r.data.booleanConnector;
+		
+		return filterConf;
+	}
+	
+	, marshalFilterRecord: function(c) {
+		var recordData = {};
+		
+		recordData.leftOperandValue = c.leftOperandValue;
+		recordData.leftOperandDescription = c.leftOperandDescription;
+		recordData.operator = c.operator;
+		recordData.rightOperandValue = c.rightOperandValue;
+		recordData.rightOperandDescription = c.rightOperandValue;
+		recordData.booleanConnector = c.booleanConnector || 'AND';
+		
+		return recordData;
+	}
+	
 	, onRowSelect: function(selectionModel, rowIndex, r) {
-		//alert(r.data.toSource());
+		//alert('onRowSelect IN');
+		this.setFilterDetailState( this.unmarshalFilterRecord(r) );
+		//alert('onRowSelect OUT');
 	}
-	
+		
 	, onFormStateChange: function(field, newValue, oldValue) {
-		alert('keydown');
-	}
-	
-	, onFormStateChange: function(field, newValue, oldValue) {
-		alert('change to ' + newValue);
-		alert(field.name);
+		//alert('onFormStateChange IN');
 		var r = this.filterGrid.sm.getSelected();
 		if(r === undefined) {
 			this.filterGrid.sm.selectRow(this.filterGrid.store.getCount()-1);
 			r = this.filterGrid.sm.getSelected();
 		}		
 		var i = this.filterGrid.store.indexOf(r);
-		
 		if(field.name === 'leftOperand') {
-			
+			var value = this.leftOperandField.getValue();
+			var description = this.leftOperandField.getDescription();
+			this.filterGrid.modifyFilter({leftOperandDescription: description, leftOperandValue: value}, i);
 		} else if(field.name === 'operator') {
 			this.filterGrid.modifyFilter({operator: newValue}, i);
 		} else if(field.name === 'rightOperand') {
 			this.filterGrid.modifyFilter({rightOperandDescription: newValue, rightOperandValue: newValue}, i);
 		}
+		//alert('onFormStateChange OUT');
 	}
 	
 });

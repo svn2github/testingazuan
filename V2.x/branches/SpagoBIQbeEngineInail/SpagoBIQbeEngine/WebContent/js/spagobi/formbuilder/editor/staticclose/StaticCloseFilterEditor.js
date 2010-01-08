@@ -108,8 +108,9 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Ext.Panel, {
 	buttons: null
 	, filter: null
 	, text: null
+	, expression: null
 	, leftOperandValue: null
-	, leftOperandDesc: null
+	, leftOperandDescription: null
 	, operator: null
 	, rightOperandValue: null
 	
@@ -122,19 +123,34 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Ext.Panel, {
 			alert('filter name is changed!');
 		}
 		this.text = c.text;
-		this.leftOperandValue = c.leftOperandValue;
-		this.leftOperandDesc = c.leftOperandDesc;
-		this.operator = c.operator;
-		this.rightOperandValue = c.rightOperandValue;
+		if(c.expression !== null){
+			this.expression = c.expression;
+			this.leftOperandValue = null;
+			this.leftOperandDescription = null;
+			this.operator = null;
+			this.rightOperandValue = null;
+		} else {
+			this.expression = null;
+			this.leftOperandValue = c.leftOperandValue;
+			this.leftOperandDescription = c.leftOperandDescription;
+			this.operator = c.operator;
+			this.rightOperandValue = c.rightOperandValue;
+		}
+		
 	}
 	
 	, getContents: function() {
 		var c = {};
 		c.text = this.text;
-		c.leftOperandValue = this.leftOperandValue;
-		c.leftOperandDesc = this.leftOperandDesc;
-		c.operator = this.operator;
-		c.rightOperandValue = this.rightOperandValue;
+		if(this.expression !== null){
+			c.expression = this.expression;
+		} else {
+			c.leftOperandValue = this.leftOperandValue;
+			c.leftOperandDescription = this.leftOperandDescription;
+			c.operator = this.operator;
+			c.rightOperandValue = this.rightOperandValue;
+		}
+		
 		
 		return c;
 	}

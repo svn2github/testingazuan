@@ -178,6 +178,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 				displayText = displayText.substr(0, displayText.length-1);
 			}
 			Sbi.widgets.LookupField.superclass.setValue.call(this, displayText);
+			
 		} else {
 			this.xvalue = {};
 			this.xvalue[v] = v;
@@ -185,6 +186,13 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 		}
 	}
 	
+	, getDescription: function() {
+		return Sbi.widgets.LookupField.superclass.getValue.call(this);
+	}
+	
+	, setDescription: function(d) {
+		Sbi.widgets.LookupField.superclass.setValue.call(this, d);
+	}
 	
     
     // private methods
@@ -338,8 +346,11 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	}
 	
 	, onOk: function() {
+		var oldVal = this.getValue();
 		this.setValue(this.xselection);
+		var newVal = this.getValue();
 		this.win.hide();		
+		this.fireEvent('change', this, newVal, oldVal);
 	}
 	
 	, onCancel: function() {

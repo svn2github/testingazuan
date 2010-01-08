@@ -73,7 +73,7 @@ Sbi.formbuilder.TemplateEditorPanel = function(config) {
 	c = Ext.apply(c, {
 		title: this.title,
 		border: true,
-		bodyStyle:'padding:3px',
+		//bodyStyle:'padding:10px',
       	layout: 'fit',      	
       	items: [{
     	    html: 'destroy me please'
@@ -105,11 +105,17 @@ Ext.extend(Sbi.formbuilder.TemplateEditorPanel, Ext.Panel, {
 		this.remove(0);
 		this.doLayout(true);
 		
-		this.staticCloseFilterEditorPanel = new Sbi.formbuilder.StaticCloseFilterEditorPanel();
+		this.staticCloseFilterEditorPanel = new Sbi.formbuilder.StaticCloseFilterEditorPanel({style:'padding:10px'});
 		this.add(this.staticCloseFilterEditorPanel);
 		
-		this.staticOpenFilterEditorPanel = new Sbi.formbuilder.StaticOpenFilterEditorPanel();
+		this.staticOpenFilterEditorPanel = new Sbi.formbuilder.StaticOpenFilterEditorPanel({style:'padding:10px'});
 		this.add(this.staticOpenFilterEditorPanel);
+		
+		this.dynamicEditorPanel = new Sbi.formbuilder.DynamicFilterEditorPanel({style:'padding:10px'});
+		this.add(this.dynamicEditorPanel);
+		
+		this.groupingVariablesPanel = new Sbi.formbuilder.GroupingVariablesEditorPanel({style:'padding:10px'});
+		this.add(this.groupingVariablesPanel);
 		
 		this.doLayout(true);
 	}

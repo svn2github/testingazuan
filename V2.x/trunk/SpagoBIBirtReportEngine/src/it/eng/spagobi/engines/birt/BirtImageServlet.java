@@ -14,7 +14,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public class BirtImageServlet extends HttpServlet {
 	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public void service(HttpServletRequest request, HttpServletResponse response) {	
-		Hashtable allParams = (Hashtable)request.getParameterMap();
+		Map allParams = request.getParameterMap();
 		
 		String chartLabel = request.getParameter(CHART_LABEL);
 	

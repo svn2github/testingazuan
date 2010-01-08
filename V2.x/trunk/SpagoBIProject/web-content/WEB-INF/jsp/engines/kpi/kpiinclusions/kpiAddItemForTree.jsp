@@ -405,7 +405,9 @@ private String createParStringForCrossNavigation(ExecutionInstance execInstance,
 	
 	parameters +="EXECUTION_FLOW_ID="+executionFlowId;
 	parameters +="&SOURCE_EXECUTION_ID="+uuidPrincip;
-	parameters +="&KPI_VALUE_ID="+(kpiVal.getKpiValueId()!=null? kpiVal.getKpiValueId().toString():"-1");				
+	if(kpiVal!=null){
+		parameters +="&KPI_VALUE_ID="+(kpiVal.getKpiValueId()!=null? kpiVal.getKpiValueId().toString():"-1");	
+	}
 	
 	if (r!=null){
 		parameters +="&ParKpiResource="+r.getName();

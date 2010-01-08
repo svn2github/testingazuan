@@ -208,7 +208,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 			name:'rightOperand',
     	});
     	this.rightOperandField.on('change', this.onFormStateChange, this);
-    	this.rightOperandField.on('keydown', this.onFormStateChange, this);
+    	this.rightOperandField.on('keydown', this.onFormStateChangeX, this);
     	
     	
     	
@@ -241,7 +241,11 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 				, 'promptable': {hideable: true, hidden: true, sortable: false}	
 			}
     	});
+    	this.filterGrid.on('render', function(){
+    		this.filterGrid.addFilter();
+    	}, this);
     	items.push(this.filterGrid);
+    	
     	
     	this.formPanel = new Ext.form.FormPanel({
     		frame:true,
@@ -266,22 +270,35 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
             	}
             	, scope: this
     		}]
-    	 });
+    	});
+    	
+    	
 	}
 	
 	, onRowSelect: function(selectionModel, rowIndex, r) {
-		alert(r.data.toSource());
+		//alert(r.data.toSource());
 	}
 	
 	, onFormStateChange: function(field, newValue, oldValue) {
-		alert('change');
+		alert('keydown');
+	}
+	
+	, onFormStateChange: function(field, newValue, oldValue) {
+		alert('change to ' + newValue);
 		alert(field.name);
+		var r = this.filterGrid.sm.getSelected();
+		if(r === undefined) {
+			this.filterGrid.sm.selectRow(this.filterGrid.store.getCount()-1);
+			r = this.filterGrid.sm.getSelected();
+		}		
+		var i = this.filterGrid.store.indexOf(r);
+		
 		if(field.name === 'leftOperand') {
+			
 		} else if(field.name === 'operator') {
-			var r = this.filterGrid.grid.sm.getSelected();
-			var i = this.filterGrid.indexOf(r);
 			this.filterGrid.modifyFilter({operator: newValue}, i);
 		} else if(field.name === 'rightOperand') {
+			this.filterGrid.modifyFilter({rightOperandDescription: newValue, rightOperandValue: newValue}, i);
 		}
 	}
 	

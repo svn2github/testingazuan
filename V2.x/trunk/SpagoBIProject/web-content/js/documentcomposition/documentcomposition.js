@@ -98,8 +98,13 @@ function execCrossNavigation(windowName, label, parameters) {
 							var tmpOldValue = "";	
 							if (paramsNewValues != null && paramsNewValues.length > 0) {
 								for (j = 0; j < paramsNewValues.length; j++) {
+									//var idPar = fieldLabel.substring(fieldLabel.indexOf("__")+2);
+									//sbiParMaster = asLinkedFields["SBI_LABEL_PAR_MASTER__" + idPar.substring(0,4)];
+									var idParSupp = "";
 									var idPar = fieldLabel.substring(fieldLabel.indexOf("__")+2);
-									sbiParMaster = asLinkedFields["SBI_LABEL_PAR_MASTER__" + idPar.substring(0,4)];   
+									idParSupp = idPar.substring(0,idPar.indexOf("__"))+"__";
+									idParSupp = idParSupp+idPar.substring(idParSupp.length,idPar.indexOf("__",idParSupp.length));
+									sbiParMaster = asLinkedFields["SBI_LABEL_PAR_MASTER__" + idParSupp];
 									tmpNewValue = paramsNewValues[j];
 									if (tmpNewValue.substring(0, tmpNewValue.indexOf("=")) == sbiParMaster){
 										reload = true; //reload only if document target has the parameter inline

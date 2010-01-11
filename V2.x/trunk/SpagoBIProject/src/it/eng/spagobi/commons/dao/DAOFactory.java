@@ -69,6 +69,7 @@ import it.eng.spagobi.kpi.threshold.dao.IThresholdValueDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapsDAO;
+import it.eng.spagobi.profiling.dao.ISbiAttributeDAO;
 import it.eng.spagobi.profiling.dao.ISbiUserDAO;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
@@ -657,5 +658,15 @@ public class DAOFactory {
 	 */
 	public static ISbiUserDAO getSbiUserDAO() throws EMFUserError{
 		return (ISbiUserDAO)createDAOInstance("SbiUserDAO");
+	}
+	/**
+	 * Creates a DAO instance for a object SbiAttribute.
+	 * 
+	 * @return a DAO instance for the  predefined SbiAttribute
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public static ISbiAttributeDAO getSbiAttributeDAO() throws EMFUserError{
+		return (ISbiAttributeDAO)createDAOInstance("SbiAttributeDAO");
 	}
 }

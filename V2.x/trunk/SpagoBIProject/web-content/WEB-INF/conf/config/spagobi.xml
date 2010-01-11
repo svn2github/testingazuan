@@ -38,7 +38,7 @@
    
      
 <!-- START-XML -->
-	
+
 	<SECURITY>
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.XmlSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
 		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.XmlSecurityInfoProviderImpl">
@@ -53,7 +53,9 @@
 	    	<MODEL_ADMIN-PATTERN>/spagobi/modeladmin</MODEL_ADMIN-PATTERN>
     	</ROLE-TYPE-PATTERNS>
 	 </SECURITY>
-	 <!-- 
+	 
+<!-- INTERNAL SECURITY CONNECTOR  -->
+<!-- 
 	 <SECURITY>
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.InternalSecurityInitializer</PORTAL-SECURITY-INIT-CLASS>
 		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.InternalSecurityInfoProviderImpl">
@@ -68,7 +70,7 @@
 	    	<MODEL_ADMIN-PATTERN>/spagobi/modeladmin</MODEL_ADMIN-PATTERN>
     	</ROLE-TYPE-PATTERNS>
 	 </SECURITY>
-	 -->
+-->
 <!-- STOP-XML -->
 
 
@@ -252,6 +254,43 @@ END-LIFERAY -->
      <INDEX_INITIALIZATION>
 		<INDEX jndiResourcePath="java://comp/env/spagobi_resource_path" name="//idx" />
 	 </INDEX_INITIALIZATION>
-  
+     <INTERNAL_PROFILING_INITIALIZER>
+		<DEFAULT_USERS>
+			<USER userId="biadmin" password="biadmin" fullName="SpagoBI Administrator">
+				<ATTRIBUTE name="email" value="francesm@eng.it" />
+				<ATTRIBUTE name="name" value="SpagoBI Administrator" />
+				<ROLE name="/spagobi/admin"/>
+			</USER>
+			<USER userId="biuser" password="biuser" fullName="SpagoBI User">
+				<ATTRIBUTE name="name" value="SpagoBI User" />
+				<ROLE name="/spagobi/user"/>
+			</USER>
+			<USER userId="bitest" password="bitest" fullName="SpagoBI Test User">
+				<ATTRIBUTE name="name" value="SpagoBI TestUser" />
+				<ROLE name="/spagobi/test"/>
+			</USER>
+			<USER userId="bidev" password="bidev" fullName="SpagoBI Developer">
+				<ATTRIBUTE name="name" value="SpagoBI Developer" />
+				<ROLE name="/spagobi/dev"/>
+			</USER>
+		</DEFAULT_USERS>
+		<DEFAULT_ATTRIBUTES>
+			<ATTRIBUTE name="name" description="name" />
+			<ATTRIBUTE name="surname" description="surname" />
+			<ATTRIBUTE name="address" description="address" />
+			<ATTRIBUTE name="birth_date" description="birth date" />
+			<ATTRIBUTE name="email" description="email" />
+		</DEFAULT_ATTRIBUTES>
+		<DEFAULT_ROLES>
+			<ROLE roleName="/spagobi/dev" description="/spagobi/dev" roleTypeCD="DEV_ROLE"/>
+			<ROLE roleName="/spagobi/test" description="/spagobi/test" roleTypeCD="TEST_ROLE"/>
+			<ROLE roleName="/spagobi/user" description="/spagobi/user" roleTypeCD="USER"/>
+			<ROLE roleName="/spagobi/userb" description="/spagobi/userb" roleTypeCD="USER" />
+			<ROLE roleName="/spagobi/admin" description="/spagobi/admin" roleTypeCD="ADMIN" />
+			<ROLE roleName="/spagobi/modeladmin" description="/spagobi/modeladmin" roleTypeCD="MODEL_ADMIN" />
+			<ROLE roleName="/spagobi/op_reva" description="/spagobi/op_reva" roleTypeCD="USER" />
+			<ROLE roleName="/spagobi/an_reva" description="/spagobi/an_reva" roleTypeCD="USER" />			
+		</DEFAULT_ROLES>
+	 </INTERNAL_PROFILING_INITIALIZER>  
 	
 </SPAGOBI>

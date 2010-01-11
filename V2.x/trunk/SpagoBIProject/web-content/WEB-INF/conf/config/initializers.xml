@@ -25,4 +25,7 @@
 	<INITIALIZER class="it.eng.spagobi.commons.initializers.indexing.IndexingInitializer" config="SPAGOBI.INDEX_INITIALIZATION" />
 	<!--  /LUCENE INDEXER -->
 	
+	<!-- INTERNAL PROFILING -->
+	<INITIALIZER class="it.eng.spagobi.security.init.InternalSecurityInitializer" config="SPAGOBI.INTERNAL_PROFILING_INITIALIZER" />
+	
 </INITIALIZERS>

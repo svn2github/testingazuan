@@ -1,6 +1,6 @@
 package it.eng.spagobi.profiling.bean;
 
-// Generated 22-dic-2009 10.09.24 by Hibernate Tools 3.2.4.GA
+// Generated 22-dic-2009 14.20.04 by Hibernate Tools 3.2.4.GA
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,9 +14,11 @@ public class SbiUser implements java.io.Serializable {
 	private String userId;
 	private String password;
 	private String fullName;
+	
 	private Set<SbiExtUserRoles> sbiExtUserRoleses = new HashSet<SbiExtUserRoles>(
 			0);
-	private Set<SbiAttribute> sbiAttributes = new HashSet<SbiAttribute>(0);
+	private Set<SbiUserAttributes> sbiUserAttributeses = new HashSet<SbiUserAttributes>(
+			0);
 
 	public SbiUser() {
 	}
@@ -28,13 +30,13 @@ public class SbiUser implements java.io.Serializable {
 
 	public SbiUser(int id, String userId, String password, String fullName,
 			Set<SbiExtUserRoles> sbiExtUserRoleses,
-			Set<SbiAttribute> sbiAttributes) {
+			Set<SbiUserAttributes> sbiUserAttributeses) {
 		this.id = id;
 		this.userId = userId;
 		this.password = password;
 		this.fullName = fullName;
 		this.sbiExtUserRoleses = sbiExtUserRoleses;
-		this.sbiAttributes = sbiAttributes;
+		this.sbiUserAttributeses = sbiUserAttributeses;
 	}
 
 	public int getId() {
@@ -77,12 +79,13 @@ public class SbiUser implements java.io.Serializable {
 		this.sbiExtUserRoleses = sbiExtUserRoleses;
 	}
 
-	public Set<SbiAttribute> getSbiAttributes() {
-		return this.sbiAttributes;
+	public Set<SbiUserAttributes> getSbiUserAttributeses() {
+		return this.sbiUserAttributeses;
 	}
 
-	public void setSbiAttributes(Set<SbiAttribute> sbiAttributes) {
-		this.sbiAttributes = sbiAttributes;
+	public void setSbiUserAttributeses(
+			Set<SbiUserAttributes> sbiUserAttributeses) {
+		this.sbiUserAttributeses = sbiUserAttributeses;
 	}
 
 }

@@ -98,6 +98,12 @@
         <mapping resource="it/eng/spagobi/tools/objmetadata/metadata/mappingpostgres/SbiObjMetadata.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/objmetadata/metadata/mappingpostgres/SbiObjMetacontents.hbm.xml" />
         
+        <!-- PROFILING -->
+        <mapping resource="it/eng/spagobi/profiling/mapping/SbiAttribute.hbm.xml" />
+        <mapping resource="it/eng/spagobi/profiling/mapping/SbiExtUserRoles.hbm.xml" />
+        <mapping resource="it/eng/spagobi/profiling/mapping/SbiUser.hbm.xml" /> 
+        <mapping resource="it/eng/spagobi/profiling/mapping/SbiUserAttributes.hbm.xml" />         
+        
         <!-- end mapping -->
     </session-factory>
 </hibernate-configuration>

@@ -2,7 +2,10 @@ package it.eng.spagobi.security;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.bo.Role;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.profiling.bean.SbiAttribute;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,15 +21,18 @@ public class InternalSecurityInfoProviderImpl implements ISecurityInfoProvider{
     	logger.debug("IN");
 		List attributes = new ArrayList();
 		//gets attributes from database
-/*		ConfigSingleton config = ConfigSingleton.getInstance();
-		List sb_attributes = config.getAttributeAsList("AUTHORIZATIONS.ENTITIES.ATTRIBUTES.ATTRIBUTE");
-		Iterator iter_sb_attributes = sb_attributes.iterator();
-		while(iter_sb_attributes.hasNext()) {
-			SourceBean attributeSB = (SourceBean)iter_sb_attributes.next();
-			String attribute = (String)attributeSB.getAttribute("name");
-			logger.debug("ADD: attribute="+attribute);
-			attributes.add(attribute);
-		}*/
+		try {
+			List<SbiAttribute> sbiAttributes = DAOFactory.getSbiAttributeDAO().loadSbiAttributes();
+			Iterator it = sbiAttributes.iterator();
+			while(it.hasNext()) {
+				SbiAttribute attribute = (SbiAttribute)it.next();
+
+				attributes.add(attribute.getAttributeName());
+			}
+		} catch (EMFUserError e) {
+			logger.error(e.getMessage());
+		}
+
 		logger.debug("OUT");
 		return attributes;
 	}
@@ -35,17 +41,14 @@ public class InternalSecurityInfoProviderImpl implements ISecurityInfoProvider{
     	logger.debug("IN");
     	//get roles from database
 		List roles = new ArrayList();
-/*		ConfigSingleton config = ConfigSingleton.getInstance();
-		List sb_roles = config.getAttributeAsList("AUTHORIZATIONS.ENTITIES.ROLES.ROLE");
-		Iterator iter_sb_roles = sb_roles.iterator();
-		while(iter_sb_roles.hasNext()) {
-			SourceBean roleSB = (SourceBean)iter_sb_roles.next();
-			String roleName = (String)roleSB.getAttribute("roleName");
-			String roleDescription = (String)roleSB.getAttribute("description");
-			Role role = new Role(roleName, roleDescription);
-			logger.debug("ADD: roleName="+roleName);
-			roles.add(role);
-		}*/
+
+		//gets roles from database
+		try {
+			roles = DAOFactory.getRoleDAO().loadAllRoles();
+
+		} catch (EMFUserError e) {
+			logger.error(e.getMessage());
+		}
 		logger.debug("OUT");
 		return roles;
 	}

@@ -54,6 +54,7 @@
 		<DAO name="ObjMetacontentDAO" implementation="it.eng.spagobi.tools.objmetadata.dao.ObjMetacontentDAOHibImpl" />
 		
 		<DAO name="SbiUserDAO" implementation="it.eng.spagobi.profiling.dao.SbiUserDAOHibImpl"/>
+		<DAO name="SbiAttributeDAO" implementation="it.eng.spagobi.profiling.dao.SbiAttributeDAOHibImpl"/>
 	 </DAO-CONF>     
      
      <!-- ********************* END DAO CONFIGURATION ************************ -->

@@ -98,5 +98,11 @@
         <mapping resource="it/eng/spagobi/tools/objmetadata/metadata/mappingora/SbiObjMetadata.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/objmetadata/metadata/mappingora/SbiObjMetacontents.hbm.xml" />
         
+        <!-- PROFILING -->
+        <mapping resource="it/eng/spagobi/profiling/mapping/SbiAttribute.hbm.xml" />
+        <mapping resource="it/eng/spagobi/profiling/mapping/SbiExtUserRoles.hbm.xml" />
+        <mapping resource="it/eng/spagobi/profiling/mapping/SbiUser.hbm.xml" /> 
+        <mapping resource="it/eng/spagobi/profiling/mapping/SbiUserAttributes.hbm.xml" />         
+        
     </session-factory>
 </hibernate-configuration>

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 22-dic-2009 10.09.24 by Hibernate Tools 3.2.4.GA -->
+<!-- Generated 22-dic-2009 14.20.04 by Hibernate Tools 3.2.4.GA -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.profiling.bean.SbiAttribute" table="SBI_ATTRIBUTE" catalog="spagobi">
+    <class name="it.eng.spagobi.profiling.bean.SbiAttribute" table="sbi_attribute" catalog="spagobi">
         <id name="attributeId" type="int">
             <column name="ATTRIBUTE_ID" />
             <generator class="increment" />
@@ -14,13 +14,11 @@
         <property name="description" type="string">
             <column name="DESCRIPTION" length="500" not-null="true" />
         </property>
-        <set name="sbiUsers" inverse="true" lazy="true" table="SBI_USER_ATTRIBUTES" fetch="select">
+        <set name="sbiUserAttributeses" inverse="true" lazy="true" table="sbi_user_attributes" fetch="select">
             <key>
                 <column name="ATTRIBUTE_ID" not-null="true" />
             </key>
-            <many-to-many entity-name="it.eng.spagobi.profiling.bean.SbiUser">
-                <column name="ID" not-null="true" />
-            </many-to-many>
+            <one-to-many class="it.eng.spagobi.profiling.bean.SbiUserAttributes" />
         </set>
     </class>
 </hibernate-mapping>

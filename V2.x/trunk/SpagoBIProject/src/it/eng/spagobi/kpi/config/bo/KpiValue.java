@@ -49,31 +49,73 @@ public class KpiValue implements Cloneable{
 				String type = t.getThresholdType();
 				Double min = t.getMinValue();
 				Double max = t.getMaxValue();
+				Boolean min_closed = t.getMinClosed()!=null?t.getMinClosed():false;
+				Boolean max_closed = t.getMaxClosed()!=null?t.getMaxClosed():false;
 
 				if (type.equals("RANGE")) {
 					logger.debug("Threshold type RANGE");
-					if (val.doubleValue() >= min.doubleValue() && val.doubleValue() < max.doubleValue()) {
-						String label = t.getLabel();
-						toReturn = t;
+					if(min_closed && max_closed){
+						if (min.doubleValue()<= val.doubleValue()&& val.doubleValue() <= max.doubleValue()) {
+							toReturn = t;
+							break;
+						}
+					}else if(min_closed && !max_closed){
+						if (min.doubleValue()<= val.doubleValue()&& val.doubleValue() < max.doubleValue()) {
+							toReturn = t;
+							break;
+						}					
+					}else if(!min_closed && max_closed){
+						if (min.doubleValue()< val.doubleValue()&& val.doubleValue() <= max.doubleValue()) {
+							toReturn = t;
+							break;
+						}						
+					}else{
+						if (min.doubleValue()< val.doubleValue()&& val.doubleValue() < max.doubleValue()) {
+							toReturn = t;
+							break;
+						}
 					}
+		
 				} else if (type.equals("MINIMUM")) {
 					logger.debug("Threshold type MINIMUM");
-					if (val.doubleValue() < min.doubleValue()) {
-						String label = t.getLabel();
-						toReturn = t;
-					} else {
-						t.setColour(Color.WHITE) ;
-						toReturn = t;
+					if(min_closed){
+						if (val.doubleValue() <= min.doubleValue()) {
+							toReturn = t;
+							break;
+						}else {
+							t.setColour(Color.WHITE) ;
+							toReturn = t;
+							break;
+						}
+					}else{
+						if (val.doubleValue() < min.doubleValue()) {
+							toReturn = t;
+							break;
+						}else {
+							t.setColour(Color.WHITE) ;
+							toReturn = t;
+							break;
+						}
 					}
 				} else if (type.equals("MAXIMUM")) {
 					logger.debug("Threshold type MAXIMUM");
-					if (val.doubleValue() > max.doubleValue()) {
-						String label = t.getLabel();
-						toReturn = t;
-					} else {
-						t.setColour(Color.WHITE);
-						toReturn = t;
-					}
+					if(max_closed){
+						if (val.doubleValue() >= max.doubleValue()) {
+							toReturn = t;
+						} else {
+							t.setColour(Color.WHITE);
+							toReturn = t;
+							break;
+						}
+					}else{
+						if (val.doubleValue() > max.doubleValue()) {
+							toReturn = t;
+						} else {
+							t.setColour(Color.WHITE);
+							toReturn = t;
+							break;
+						}
+					}				
 				}
 				logger.debug("New interval added to the Vector");
 			}

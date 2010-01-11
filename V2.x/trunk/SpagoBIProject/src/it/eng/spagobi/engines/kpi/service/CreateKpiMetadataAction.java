@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
@@ -21,11 +22,15 @@ import it.eng.spagobi.kpi.threshold.bo.Threshold;
 public class CreateKpiMetadataAction extends AbstractHttpAction{
 	
 	private static transient Logger logger=Logger.getLogger(CreateKpiMetadataAction.class);
+	protected String publisher_Name= "KPI_METADATA_DEFAULT_PUB";//Kpi metadata default publisher
 	
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse)
 	throws Exception {
 		logger.debug("IN");
-		
+		String pub_Name = (String)serviceRequest.getAttribute("metadata_publisher_Name");
+		if(pub_Name!=null && !pub_Name.equals("")){
+			publisher_Name = pub_Name;
+		}
 		String kpiInstanceID = (String)serviceRequest.getAttribute("KPI_INST_ID");
 		String kpiBeginDate = (String)serviceRequest.getAttribute("KPI_BEGIN_DATE");
 		String kpiEndDate = (String)serviceRequest.getAttribute("KPI_END_DATE");
@@ -40,8 +45,7 @@ public class CreateKpiMetadataAction extends AbstractHttpAction{
 		if(kpiValID!=null && !kpiValID.equals("")){
 			xml = DAOFactory.getKpiDAO().loadKPIValueXml(new Integer(kpiValID));
 		}
-		
-		
+			
 		if (kpiInstanceID!=null){
 			IKpiInstanceDAO kpiInstDAO=DAOFactory.getKpiInstanceDAO();
 			KpiInstance kI = kpiInstDAO.loadKpiInstanceById(new Integer(kpiInstanceID));
@@ -153,6 +157,8 @@ public class CreateKpiMetadataAction extends AbstractHttpAction{
 		}else{
 			serviceResponse.setAttribute("KPI_XML_DATA", "");
 		}
+		
+		serviceResponse.setAttribute("publisher_Name", publisher_Name);
 		
 		logger.debug("OUT");
 		

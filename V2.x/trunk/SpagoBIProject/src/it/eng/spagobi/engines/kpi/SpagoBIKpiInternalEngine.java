@@ -88,6 +88,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	private static final String RESOURCE="RES_NAME";
 
 	protected String publisher_Name= "KPI_DEFAULT_PUB";//Kpi default publisher
+	protected String metadata_publisher_Name= "KPI_METADATA_DEFAULT_PUB";//Kpi default publisher
+	protected String trend_publisher_Name= "TREND_DEFAULT_PUB";//Kpi default publisher
 	
 	protected String name = "";// Document's title
 	protected String subName = "";// Document's subtitle
@@ -419,6 +421,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, publisher_Name);
+				response.setAttribute("metadata_publisher_Name", metadata_publisher_Name);
+				response.setAttribute("trend_publisher_Name", trend_publisher_Name);
 	
 				if (name != null) {
 					response.setAttribute("title", name);
@@ -1286,6 +1290,16 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			if (dataParameters.get(SpagoBIConstants.PUBLISHER_NAME) != null && dataParameters.get(SpagoBIConstants.PUBLISHER_NAME) != "") {
 				String fil = (String) dataParameters.get(SpagoBIConstants.PUBLISHER_NAME);
 				if (fil!=null) publisher_Name = fil;
+			}
+			
+			if (dataParameters.get("metadata_publisher_Name") != null && dataParameters.get("metadata_publisher_Name") != "") {
+				String fil = (String) dataParameters.get("metadata_publisher_Name");
+				if (fil!=null) metadata_publisher_Name = fil;
+			}
+			
+			if (dataParameters.get("trend_publisher_Name") != null && dataParameters.get("trend_publisher_Name") != "") {
+				String fil = (String) dataParameters.get("trend_publisher_Name");
+				if (fil!=null) trend_publisher_Name = fil;
 			}
 		} catch (Exception e) {
 			logger.error("error in reading template parameters");

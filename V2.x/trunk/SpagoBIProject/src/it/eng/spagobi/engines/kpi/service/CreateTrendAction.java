@@ -6,30 +6,28 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
-import it.eng.spagobi.engines.kpi.bo.ChartImpl;
-import it.eng.spagobi.kpi.config.bo.Kpi;
-import it.eng.spagobi.kpi.config.bo.KpiInstance;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.log4j.Logger;
 
 public class CreateTrendAction extends AbstractHttpAction{
 	
 	private static transient Logger logger=Logger.getLogger(CreateTrendAction.class);
+	protected String publisher_Name= "TREND_DEFAULT_PUB";//Kpi metadata default publisher
 	
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse)
 	throws Exception {
 		logger.debug("IN");
-		
+		String pub_Name = (String)serviceRequest.getAttribute("trend_publisher_Name");
+		if(pub_Name!=null && !pub_Name.equals("")){
+			publisher_Name = pub_Name;
+		}
 		IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		RequestContainer requestContainer = RequestContainer.getRequestContainer();
 		HttpServletRequest request = getHttpRequest();
@@ -85,56 +83,22 @@ public class CreateTrendAction extends AbstractHttpAction{
 			timeTo = f.parse(TimeRangeTo);
 		}
 		
-		
-		KpiInstance ki = DAOFactory.getKpiInstanceDAO().loadKpiInstanceById(kpiInstId);
-		Integer kpiID = ki.getKpi();
-		Kpi k = DAOFactory.getKpiDAO().loadKpiById(kpiID);	
-		String title = "";
-		if (resName!= null){
-			title = msgBuilder.getMessage("sbi.kpi.trendTitleWithResource", request);
-			title = title.replaceAll("%0", k.getKpiName());
-			title = title.replaceAll("%1", resName);
-		}else{
-			title = msgBuilder.getMessage("sbi.kpi.trendTitle", request);
-			title = title.replaceAll("%0", k.getKpiName());
+		serviceResponse.setAttribute("kpiInstId", kpiInstId);
+		serviceResponse.setAttribute("resName", resName);
+		serviceResponse.setAttribute("TimeRangeFrom", TimeRangeFrom!=null ? TimeRangeFrom : "");
+		serviceResponse.setAttribute("TimeRangeTo", TimeRangeTo!=null ? TimeRangeTo : "");
+		serviceResponse.setAttribute("endDate", endDate);
+		if(timeFrom!=null){
+			serviceResponse.setAttribute("timeFrom", timeFrom);
 		}
-	
-		String chartType = "LineChart";		
-		ChartImpl sbi = ChartImpl.createChart(chartType);
-		logger.debug("Chart created");
+		if(timeTo!=null){
+			serviceResponse.setAttribute("timeTo", timeTo);
+		}
+		serviceResponse.setAttribute("d", d);
+		serviceResponse.setAttribute("resID", resID);
 		
-		String result = null ;
-		if(timeFrom!=null && timeTo!=null && timeFrom.before(timeTo)){
-			result = DAOFactory.getKpiDAO().getKpiTrendXmlResult(resID, kpiInstId, timeFrom,timeTo);
-			String subTitle = msgBuilder.getMessage("sbi.kpi.trendPeriod", request);
-			subTitle = subTitle.replaceAll("%0",TimeRangeFrom);
-			subTitle = subTitle.replaceAll("%1",TimeRangeTo);
-			sbi.setSubName(subTitle);
-			logger.debug("Subtitle setted");
-		}else{
-		    result = DAOFactory.getKpiDAO().getKpiTrendXmlResult(resID, kpiInstId, d);
-		    String subTitle = msgBuilder.getMessage("sbi.kpi.trendEndDate", request);
-		    subTitle = subTitle.replaceAll("%0",endDate);
-		    sbi.setSubName(subTitle);
-			logger.debug("Subtitle setted");
-		}    
-		logger.debug("Result calculated:"+(result!=null ? result : "null"));
-			
-		
-		
-	    
-		
-		sbi.setProfile(profile);
-		logger.debug("Profile setted for the chart");
-		sbi.calculateValue(result);
-		logger.debug("Result setted");
-		sbi.setName(title);
-		logger.debug("Title setted");
-		
-		
-		serviceResponse.setAttribute("sbi", sbi);
+		serviceResponse.setAttribute("publisher_Name", publisher_Name);
 		
 		logger.debug("OUT");
 	}
-
 }

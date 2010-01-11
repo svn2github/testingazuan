@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 22-dic-2009 14.20.04 by Hibernate Tools 3.2.4.GA -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.profiling.bean.SbiAttribute" table="sbi_attribute">
+    <class name="it.eng.spagobi.profiling.bean.SbiAttribute" table="SBI_ATTRIBUTE">
         <id name="attributeId" type="int">
             <column name="ATTRIBUTE_ID" />
             <generator class="increment" />
@@ -14,7 +14,7 @@
         <property name="description" type="string">
             <column name="DESCRIPTION" length="500" not-null="true" />
         </property>
-        <set name="sbiUserAttributeses" inverse="true" lazy="true" table="sbi_user_attributes" fetch="select">
+        <set name="sbiUserAttributeses" inverse="true" lazy="true" table="SBI_USER_ATTRIBUTES" fetch="select">
             <key>
                 <column name="ATTRIBUTE_ID" not-null="true" />
             </key>

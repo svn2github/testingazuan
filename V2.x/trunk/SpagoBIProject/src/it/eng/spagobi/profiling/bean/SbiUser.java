@@ -2,6 +2,7 @@ package it.eng.spagobi.profiling.bean;
 
 // Generated 22-dic-2009 14.20.04 by Hibernate Tools 3.2.4.GA
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,6 +15,10 @@ public class SbiUser implements java.io.Serializable {
 	private String userId;
 	private String password;
 	private String fullName;
+	private Date dtPwdBegin;
+	private Date dtPwdEnd;
+	private Boolean flgPwdBlocked;
+	private Date dtLastAccess;
 	
 	private Set<SbiExtUserRoles> sbiExtUserRoleses = new HashSet<SbiExtUserRoles>(
 			0);
@@ -29,12 +34,18 @@ public class SbiUser implements java.io.Serializable {
 	}
 
 	public SbiUser(int id, String userId, String password, String fullName,
+			Date dtPwdBegin, Date dtPwdEnd, Boolean flgPwdBlocked,
+			Date dtLastAccess,
 			Set<SbiExtUserRoles> sbiExtUserRoleses,
 			Set<SbiUserAttributes> sbiUserAttributeses) {
 		this.id = id;
 		this.userId = userId;
 		this.password = password;
 		this.fullName = fullName;
+		this.dtPwdBegin = dtPwdBegin;
+		this.dtPwdEnd = dtPwdEnd;
+		this.flgPwdBlocked = flgPwdBlocked;
+		this.dtLastAccess = dtLastAccess;
 		this.sbiExtUserRoleses = sbiExtUserRoleses;
 		this.sbiUserAttributeses = sbiUserAttributeses;
 	}
@@ -71,6 +82,38 @@ public class SbiUser implements java.io.Serializable {
 		this.fullName = fullName;
 	}
 
+	public Date getDtPwdBegin() {
+		return this.dtPwdBegin;
+	}
+
+	public void setDtPwdBegin(Date dtPwdBegin) {
+		this.dtPwdBegin = dtPwdBegin;
+	}
+
+	public Date getDtPwdEnd() {
+		return this.dtPwdEnd;
+	}
+
+	public void setDtPwdEnd(Date dtPwdEnd) {
+		this.dtPwdEnd = dtPwdEnd;
+	}
+
+	public Boolean getFlgPwdBlocked() {
+		return this.flgPwdBlocked;
+	}
+
+	public void setFlgPwdBlocked(Boolean flgPwdBlocked) {
+		this.flgPwdBlocked = flgPwdBlocked;
+	}
+
+	public Date getDtLastAccess() {
+		return this.dtLastAccess;
+	}
+
+	public void setDtLastAccess(Date dtLastAccess) {
+		this.dtLastAccess = dtLastAccess;
+	}
+	
 	public Set<SbiExtUserRoles> getSbiExtUserRoleses() {
 		return this.sbiExtUserRoleses;
 	}

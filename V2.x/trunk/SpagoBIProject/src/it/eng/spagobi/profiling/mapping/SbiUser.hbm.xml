@@ -17,6 +17,18 @@
         <property name="fullName" type="string">
             <column name="FULL_NAME" />
         </property>
+        <property name="dtPwdBegin" type="timestamp">
+            <column name="DT_PWD_BEGIN" length="19" />
+        </property>
+        <property name="dtPwdEnd" type="timestamp">
+            <column name="DT_PWD_END" length="19" />
+        </property>
+        <property name="flgPwdBlocked" type="java.lang.Boolean">
+            <column name="FLG_PWD_BLOCKED" />
+        </property>
+        <property name="dtLastAccess" type="timestamp">
+            <column name="DT_LAST_ACCESS" length="19" />
+        </property>
         <set name="sbiExtUserRoleses" inverse="false" lazy="true" table="SBI_EXT_USER_ROLES" fetch="select">
             <key>
                 <column name="ID" not-null="true" />

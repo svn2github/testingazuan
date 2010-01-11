@@ -38,7 +38,7 @@
    
      
 <!-- START-XML -->
-
+<!-- 
 	<SECURITY>
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.XmlSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
 		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.XmlSecurityInfoProviderImpl">
@@ -53,9 +53,9 @@
 	    	<MODEL_ADMIN-PATTERN>/spagobi/modeladmin</MODEL_ADMIN-PATTERN>
     	</ROLE-TYPE-PATTERNS>
 	 </SECURITY>
-	 
+ -->	 
 <!-- INTERNAL SECURITY CONNECTOR  -->
-<!-- 
+ 
 	 <SECURITY>
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.InternalSecurityInitializer</PORTAL-SECURITY-INIT-CLASS>
 		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.InternalSecurityInfoProviderImpl">
@@ -70,12 +70,12 @@
 	    	<MODEL_ADMIN-PATTERN>/spagobi/modeladmin</MODEL_ADMIN-PATTERN>
     	</ROLE-TYPE-PATTERNS>
 	 </SECURITY>
--->
+
 <!-- STOP-XML -->
 
 
-   <!-- Web security Provider  (LDAP) 
-
+   <!-- Web security Provider  (LDAP) -->
+<!-- 
 	<SECURITY>
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.LdapSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
 			<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.LdapSecurityProviderImpl">
@@ -90,7 +90,7 @@
 	    	<MODEL_ADMIN-PATTERN>/spagobi/modeladmin</MODEL_ADMIN-PATTERN>
     	</ROLE-TYPE-PATTERNS>
 	</SECURITY>
-	--> 
+ -->
      
 <!-- Exo security Provider  -->
 <!--

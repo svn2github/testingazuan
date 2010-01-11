@@ -255,7 +255,7 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 			}
 		}
 		if(this.contents.length === 0) {
-		
+			this.empty = true;
 			this.initEmptyMsgPanel();
 			
 			this.filterItemsCt.add(this.emptyMsgPanel);

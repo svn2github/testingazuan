@@ -65,8 +65,8 @@ Sbi.formbuilder.StaticCloseFilterEditor = function(config) {
 	this.initButtons();
 	
 	Ext.apply(c, {
-		layout: 'column'
-		, cls: 'filter'
+		cls: 'filter'
+		, layout: 'column'
 		, layoutConfig: {
 		     columns: 3
 		}
@@ -102,6 +102,10 @@ Sbi.formbuilder.StaticCloseFilterEditor = function(config) {
 			this.controls[1].setVisible(false);
 		}, this);
 		
+		this.getEl().on('dblclick', function(el) {
+			this.fireEvent('actionrequest', 'edit', this);
+		}, this);
+		
 	}, this);
 };
 
@@ -122,9 +126,11 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Ext.Panel, {
 		
 	, setContents: function(c) {
 		if(this.text !== c.text) {
-			alert('filter name is changed!');
+			this.filter.setBoxLabel(c.text);
+			//alert('filter name is changed!');
 		}
 		this.text = c.text;
+		
 		if(c.expression !== null){
 			this.expression = c.expression;
 			this.leftOperandValue = null;
@@ -183,29 +189,46 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Ext.Panel, {
 		this.buttons = [];
 		
 		var editBtn = new Ext.Button({
-	    	//text: 'E',
-	        //width: 30,
+			tooltip: 'Edit filter',
 	        cls: 'mybutton-text-icon',
-	        iconCls: 'add',
+	        iconCls: 'edit',
+	        disabled: true,
 	        hidden: true,
 	        handler: function() {
 				this.fireEvent('actionrequest', 'edit', this);
 			}, 
 			scope: this
 	    });
+		
+		editBtn.on('render', function(b) {
+			b.getEl().on('mouseover', function(b, e) {
+				this.controls[0].enable();
+			}, this);
+			b.getEl().on('mouseout', function(el) {
+				this.controls[0].disable();
+			}, this);
+		}, this);		
 		this.buttons.push(editBtn);
 		
 		var deleteBtn = new Ext.Button({
-	    	//text: 'X',
-	        //width: 30,
+			tooltip: 'Delete filter',
 	        cls: 'mybutton-text-icon',
 	        iconCls: 'remove',
+	        disabled: true,
 	        hidden: true,
 	        handler: function() {
 				this.fireEvent('actionrequest', 'delete', this);
 			}, 
 			scope: this
 	    });		
+		deleteBtn.on('render', function(b) {
+			b.getEl().on('mouseover', function(el) {
+				this.controls[1].enable();
+			}, this);
+			b.getEl().on('mouseout', function(el) {
+				this.controls[1].disable();
+			}, this);
+		}, this);
 		this.buttons.push(deleteBtn);	
 
 

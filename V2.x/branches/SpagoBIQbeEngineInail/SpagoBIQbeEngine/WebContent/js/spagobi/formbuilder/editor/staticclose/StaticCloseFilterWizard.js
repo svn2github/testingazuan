@@ -249,6 +249,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
     		valueField: 'id',
     		displayField: 'alias',
     		descriptionField: 'alias',
+    		enableFiltering: false,
     		cm: new Ext.grid.ColumnModel([
 	    		new Ext.grid.RowNumberer(),
 	    		{

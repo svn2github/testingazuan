@@ -53,7 +53,7 @@ Sbi.formbuilder.StaticCloseFilterGroupWizard = function(config) {
 		title: 'Static close filters definition'
 		, autoScroll: true
 		, width: 350
-		, height: 265
+		, height: 300
 		, baseState: {
 			groupTitle: undefined,
 			singleSelection: true,
@@ -100,6 +100,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 	, groupTitleField: null
 	, singleSelectionField: null
 	, allowNoSelectionField: null
+	, noSelectionTextField: null
 	, baseState: null
 	, targetFilterGroup: null
 	, hasBuddy: null
@@ -113,18 +114,52 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 	, getFormState : function () {
 		var s = {};
 		
-		s.groupTitle = this.groupTitleField.getValue();
+		s.groupTitle = this.groupTitleField.getValue(s);
 		s.singleSelection = this.singleSelectionField['true'].getValue()
-		s.allowNoSelection = this.allowNoSelectionField['true'].getValue();                                              
+		s.allowNoSelection = this.allowNoSelectionField['true'].getValue();  
+		s.noSelectionText = this.noSelectionTextField.getValue();
 		return s;
 	}
 
 	, setFormState: function(s) {
+		if(s.groupTitle) {
+			this.groupTitleField.setValue(s.groupTitle);
+		}
+		
+		if(s.singleSelection) {
+			this.singleSelectionField['true'].setValue(s.singleSelection === true);
+			this.singleSelectionField['false'].setValue(s.singleSelection === false);
+		}
+		
+		if(s.allowNoSelection) {
+			this.allowNoSelectionField['true'].setValue(s.allowNoSelection === true);
+			this.allowNoSelectionField['false'].setValue(s.allowNoSelection === false);
+		}
+		
+		if(s.noSelectionText) {
+			this.noSelectionTextField.setValue(s.noSelectionText);
+		}
+	}
 	
+	, resetFormState: function() {
+		this.groupTitleField.reset();
+		
+		var s = Ext.apply(this.baseState || {}, {
+			singleSelection: true
+			, allowNoSelection: false
+			, noSelectionText: 'All'
+		})
+		this.setFormState(s);
 	}
 	
 	, setTarget: function(targetFilterGroup) {
 		this.targetFilterGroup = targetFilterGroup;
+		
+		if(this.targetFilterGroup === null) {
+			this.resetFormState();
+		} else {
+			this.setFormState(this.targetFilter.getContents());
+		}
 	}
 	
 	, getTarget: function() {
@@ -145,11 +180,12 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
     		value: this.baseState.groupTitle,
     		allowBlank: false, 
     		inputType:'text',
-    		maxLength:50,
+    		maxLength:150,
     		style:'margin-bottom:10px;'
     	});
     	items.push(this.groupTitleField);
     	
+    	    	
     	this.singleSelectionField = {};
     	
     	this.singleSelectionField['true'] = new Ext.form.Radio({
@@ -206,7 +242,17 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
             disabled: (this.baseState.singleSelection === false)
 		});
     	//items.push(this.allowNoSelectionField['false']);
-    
+    		
+    	this.noSelectionTextField = new Ext.form.TextField({
+			fieldLabel:'No selection option\'s label',
+    		name:'noSelectionTextField',
+    		value: this.baseState.noSelectionTextField || 'All',
+    		allowBlank: true, 
+    		inputType:'text',
+    		maxLength:150
+    		//, style:'margin-bottom:10px;'
+    	});
+    	
     	var fieldSet = new Ext.form.FieldSet({
     		title: 'Options',
     		autoHeight: true,
@@ -214,7 +260,8 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
     		labelWidth: 150,
     		items: [
     		   this.singleSelectionField['true'], this.singleSelectionField['false'], 
-    		   this.allowNoSelectionField['true'], this.allowNoSelectionField['false']
+    		   this.allowNoSelectionField['true'], this.allowNoSelectionField['false'],
+    		   this.noSelectionTextField
     		]
     	});
     	items.push(fieldSet);
@@ -249,9 +296,11 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 		if(enable === true) {
 			this.allowNoSelectionField['true'].enable();
 			this.allowNoSelectionField['false'].enable();
+			this.noSelectionTextField.enable();
 		} else {
 			this.allowNoSelectionField['true'].disable();
 			this.allowNoSelectionField['false'].disable();
+			this.noSelectionTextField.disable();
 		}
 	}
 });

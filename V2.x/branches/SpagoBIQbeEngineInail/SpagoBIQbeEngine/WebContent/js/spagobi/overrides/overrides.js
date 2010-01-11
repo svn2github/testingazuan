@@ -1,3 +1,22 @@
+/* =============================================================================
+* Extension:  change the boxLabel of Radio/Checkbox at runtime 
+* See:
+* - http://www.extjs.com/forum/showthread.php?t=88702
+============================================================================= */
+Ext.override(Ext.form.Checkbox, {
+  setBoxLabel: function(boxLabel){
+    this.boxLabel = boxLabel;
+    if(this.rendered){
+      this.wrap.child('.x-form-cb-label').update(boxLabel);
+    }
+  }
+});
+
+
+
+/* =============================================================================
+* ???
+============================================================================= */
 
 Ext.override(Ext.layout.TableLayout, {
     onLayout : function(ct, target){

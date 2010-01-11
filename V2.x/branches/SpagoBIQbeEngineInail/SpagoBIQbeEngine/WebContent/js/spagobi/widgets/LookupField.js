@@ -50,9 +50,14 @@ Ext.ns("Sbi.widgets");
 
 Sbi.widgets.LookupField = function(config) {
 	
-	Ext.apply(this, config);
+	var defaultSettings = {
+		enableFiltering: true
+	};
 	
-	this.store = config.store;
+	var c = Ext.apply(defaultSettings, config || {});
+	
+	Ext.apply(this, c);
+	
 	this.store.on('metachange', function( store, meta ) {
 		this.updateMeta( meta );
 	}, this);
@@ -61,11 +66,11 @@ Sbi.widgets.LookupField = function(config) {
 	}, this);
 	
 
-	this.store.baseParams  = config.params;
-	this.params = config.params;
+	this.store.baseParams  = c.params;
+	this.params = c.params;
 	this.initWin();
 	
-	var c = Ext.apply({}, config, {
+	c = Ext.apply(c, {
 		triggerClass: 'x-form-search-trigger'
 		, enableKeyEvents: true
 		,  width: 150
@@ -239,7 +244,10 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	        ]
 	    });
 		
-		var filteringToolbar = new Sbi.widgets.FilteringToolbar({store: this.store});
+		var filteringToolbar;
+		if(this.enableFiltering) {
+			filteringToolbar = new Sbi.widgets.FilteringToolbar({store: this.store});
+		}
 		
 		this.sm = new Ext.grid.CheckboxSelectionModel( {singleSelect: this.singleSelect } );
 		this.sm.on('rowselect', this.onSelect, this);

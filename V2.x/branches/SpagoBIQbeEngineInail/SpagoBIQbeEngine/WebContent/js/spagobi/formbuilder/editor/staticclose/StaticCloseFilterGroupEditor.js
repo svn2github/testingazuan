@@ -100,8 +100,10 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupEditor, Sbi.formbuilder.EditorP
 		
 		c.title = this.groupTitle;
 		c.singleSelection = this.singleSelection;
-		c.allowNoSelection = this.singleSelection;
-		c.noSelectionText = 'All';
+		c.allowNoSelection = this.allowNoSelection;
+		if(this.singleSelection === true) {
+			c.noSelectionText = this.noSelectionText;
+		}
 		c.filters = Sbi.formbuilder.StaticCloseFilterGroupEditor.superclass.getContents.call(this);
 		
 		return c;

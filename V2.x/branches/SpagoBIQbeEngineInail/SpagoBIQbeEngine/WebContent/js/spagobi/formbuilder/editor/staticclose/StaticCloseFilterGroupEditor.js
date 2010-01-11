@@ -87,6 +87,13 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupEditor, Sbi.formbuilder.EditorP
 	// public methods
 	// --------------------------------------------------------------------------------
 	
+	, setContents: function(contents) {
+		//alert(contents.length + '-> ' + contents.toSource());
+		for(var i = 0, l = contents.length; i < l; i++) {
+			this.addFilter(contents[i]);
+		}
+		
+	}
 	
 	, getContents: function() {
 		var c = {};

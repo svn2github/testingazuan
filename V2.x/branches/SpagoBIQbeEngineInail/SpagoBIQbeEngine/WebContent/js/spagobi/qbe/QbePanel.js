@@ -68,7 +68,9 @@ Sbi.qbe.QbePanel = function(config) {
 	if (Sbi.user.isPowerUser === true) {
 		// if user is a power user, instantiate and show also the QueryBuilderPanel
 		this.queryEditorPanel = new Sbi.qbe.QueryBuilderPanel(c);
-		this.formBuilderPage = new Sbi.formbuilder.FormBuilderPage();
+		
+		if(config.formbuilder !== undefined && config.formbuilder.template !== undefined)
+		this.formBuilderPage = new Sbi.formbuilder.FormBuilderPage({template: config.formbuilder.template});
 		items = [this.queryEditorPanel, this.queryResultPanel, this.formBuilderPage];
 	} else {
 		// if user is a read-only user, do not instantiate and show the QueryBuilderPanel

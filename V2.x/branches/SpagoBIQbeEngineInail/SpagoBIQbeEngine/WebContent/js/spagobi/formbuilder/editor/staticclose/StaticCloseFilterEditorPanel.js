@@ -82,14 +82,30 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditorPanel, Sbi.formbuilder.EditorP
     
 	wizard: null
 	
-	
 	// --------------------------------------------------------------------------------
 	// public methods
 	// --------------------------------------------------------------------------------
 		
-	
-	, addFilterGroup: function(filtersGroupConf) {	
-		var filtersGroup = new Sbi.formbuilder.StaticCloseFilterGroupEditor(filtersGroupConf);		
+	, setContents: function(contents) {
+		for(var i = 0, l = contents.length; i < l; i++) {
+			this.addFilterGroup(contents[i]);
+		}
+	}
+
+	, addFilterGroup: function(filtersGroupConf) {
+		c = filtersGroupConf || {};
+		
+		if(c.filters){
+			c.baseContents = c.filters;
+			delete c.filters;
+		}
+		
+		if(c.title){
+			c.groupTitle = c.title;		
+			delete c.title;
+		}
+		
+		var filtersGroup = new Sbi.formbuilder.StaticCloseFilterGroupEditor(c);		
 		this.addFilterItem(filtersGroup);
 	}
 	

@@ -109,7 +109,7 @@ Ext.extend(Sbi.formbuilder.FormBuilderPage, Ext.Panel, {
    
     // public methods
     
-    , initQueryFieldsPanel: function(c) {
+    , initQueryFieldsPanel: function() {
     	
 		this.queryFieldsPanel = new Sbi.formbuilder.QueryFieldsPanel({
 			region:'west',
@@ -124,13 +124,14 @@ Ext.extend(Sbi.formbuilder.FormBuilderPage, Ext.Panel, {
 		});
     }
     
-    , initTemplateEditorPanel: function(c) {
+    , initTemplateEditorPanel: function() {
     	this.templateEditorPanel = new Sbi.formbuilder.TemplateEditorPanel({
     		region:'center',
 	        autoScroll: true,
 			containerScroll: true,
 			layout: 'fit',
-			border: false
+			border: false,
+			template: this.template
     	});    	
     }
     

@@ -148,10 +148,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /*******************************************************************************************************
  * Form builder
  ********************************************************************************************************/
-.filter-select {
-	background: gray;
+.filter-select {	
+    background:#eee !important;
+    border:1px solid #ccc !important;
 }
 
 .x-table-layout td {
      vertical-align:top;
+}
+
+/* remove the default left,center and right images from the button border*/
+.mybutton-text-icon .x-btn-left, .mybutton-text-icon .x-btn-right, .mybutton-text-icon .x-btn-center{
+    background: 0;
+    padding:0px;	
+}
+
+.mybutton-text-icon .x-btn-center .x-btn-text  {
+	 border:1px solid #ccc !important;
+	 background-repeat: no-repeat;
+	 width: 20px;
+
 }

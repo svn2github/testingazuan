@@ -134,7 +134,7 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 	// --------------------------------------------------------------------------------
 		
 	, setContents: function(contents) {
-		
+		alert('ERROR: setContents undefined');
 	}
 
 	, getContents: function() {
@@ -165,15 +165,18 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 		filtersItem.on('destroy', this.onFilterItemDestroy, this);
 			
 		this.contents.push(filtersItem);
-		this.filterItemsCt.add(filtersItem);
-		this.doLayout();		
+		
+		if(this.rendered === true) {
+			this.filterItemsCt.add(filtersItem);
+			this.doLayout();	
+		}
 	}
 
 	// --------------------------------------------------------------------------------
 	// private methods
 	// --------------------------------------------------------------------------------
 	
-	, reset: function() {		
+	, reset: function() {	
 		if(this.contents && this.contents.length) {
 			for(var i = this.contents.length-1; i >= 0; i--) {
 				// beware: "remove" fire destroy event that is catched above here. the callback modify the length of contents) 
@@ -183,17 +186,18 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 	}
 	
 	, init: function() {
+		this.empty = true;
+		this.contents = [];
 		
 		if(this.baseContents !== undefined) {
-			this.loadContents(baseContents);	
+			this.setContents(this.baseContents);	
 		} else {
 			this.initEmptyMsgPanel();
-			this.contents = [this.emptyMsgPanel];
+			this.contents.push(this.emptyMsgPanel);
 		}
 	}	
 
 	, initEmptyMsgPanel: function() {
-		this.empty = true;
 		this.emptyMsgPanel = new Ext.Panel({
 			html: this.emptyMsg
 		});

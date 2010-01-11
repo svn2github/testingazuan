@@ -73,6 +73,9 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/formbuilder/editor/grouping/GroupingVariablesEditorPanel.js'/></script>
 
 
+<script type="text/javascript" src='../js/spagobi/formbuilder/TestTemplate.js'/></script>
+
+
 
 
 

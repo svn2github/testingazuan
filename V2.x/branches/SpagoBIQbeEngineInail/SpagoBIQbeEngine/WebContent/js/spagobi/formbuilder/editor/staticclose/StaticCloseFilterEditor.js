@@ -49,7 +49,7 @@ Ext.ns("Sbi.formbuilder");
 Sbi.formbuilder.StaticCloseFilterEditor = function(config) {
 	
 	var defaultSettings = {
-		
+		style: 'border:1px solid #ccc !important;'
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.staticCloseFilterEditor) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.staticCloseFilterEditor);
@@ -60,10 +60,12 @@ Sbi.formbuilder.StaticCloseFilterEditor = function(config) {
 	
 	Ext.apply(this, c);
 	
+	
 	this.init();
 	this.initButtons();
 	
 	Ext.apply(c, {
+		style: this.style,
 		layout: 'column'
 		, layoutConfig: {
 		     columns: 3
@@ -179,8 +181,10 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Ext.Panel, {
 		this.buttons = [];
 		
 		var editBtn = new Ext.Button({
-	    	text: 'E',
-	        width: 30,
+	    	//text: 'E',
+	        //width: 30,
+	        cls: 'mybutton-text-icon',
+	        iconCls: 'add',
 	        hidden: true,
 	        handler: function() {
 				this.fireEvent('actionrequest', 'edit', this);
@@ -190,15 +194,19 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Ext.Panel, {
 		this.buttons.push(editBtn);
 		
 		var deleteBtn = new Ext.Button({
-	    	text: 'X',
-	        width: 30,
+	    	//text: 'X',
+	        //width: 30,
+	        cls: 'mybutton-text-icon',
+	        iconCls: 'remove',
 	        hidden: true,
 	        handler: function() {
 				this.fireEvent('actionrequest', 'delete', this);
 			}, 
 			scope: this
-	    });
-		this.buttons.push(deleteBtn);		
+	    });		
+		this.buttons.push(deleteBtn);	
+
+
 	}
   	
 });

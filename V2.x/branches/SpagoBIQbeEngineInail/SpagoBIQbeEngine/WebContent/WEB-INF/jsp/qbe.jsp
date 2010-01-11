@@ -171,6 +171,12 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	        	parametersStore.loadData(parametersInfo);
 	        	
 	       		qbeConfig.documentParametersStore = parametersStore;
+
+				qbeConfig.formbuilder = {};
+				qbeConfig.formbuilder.template = Sbi.formbuilder.template;
+				
+
+	       		
 	           	var qbe = new Sbi.qbe.QbePanel(qbeConfig);
 	           	var viewport = new Ext.Viewport(qbe);  
 	           	<%if (isPowerUser && isFromCross.equalsIgnoreCase("false")) {%>

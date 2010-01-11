@@ -86,6 +86,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/presentation.xml" />	
 	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/business_map.xml" /> 
 	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/validation.xml" /> 
+	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/custom_publishers.xml" /> 
 	
 <!-- engines.officedocument -->
 	<CONFIGURATOR path="/WEB-INF/conf/engines/officedocument/messages.xml" />

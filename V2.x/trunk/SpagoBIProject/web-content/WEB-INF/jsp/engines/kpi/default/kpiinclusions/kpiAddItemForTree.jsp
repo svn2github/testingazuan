@@ -18,7 +18,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
 
-<%! //START RECURSIVE METHOD TO CREATE TREE STRUCTURE
+<%!//START RECURSIVE METHOD TO CREATE TREE STRUCTURE
 //PERCENTAGE WIDTH OF EVERY COLUMN (SUM MUST BE 100%)
 private static final String MODEL_COL_W = "53";
 private static final String META_COL_W = "4";
@@ -182,7 +182,7 @@ private StringBuffer addModelNameColumn( StringBuffer _htmlStream, KpiValue kpiV
 	String semaphorColorHex = null;
 	if ( kpiVal!=null && kpiVal.getValue() != null) {
 		Color semaphorColor = null;
-		ThresholdValue t = kpiVal.getSemaphorColor();
+		ThresholdValue t = kpiVal.getThresholdOfValue();
 		if(t!=null){
 			semaphorColor = t.getColour();
 			semaphorColorHex ="rgb("+semaphorColor.getRed()+", "+semaphorColor.getGreen()+", "+semaphorColor.getBlue()+")" ;	
@@ -598,5 +598,4 @@ public List orderChildren(List ordered, List notordered) {
 		toReturn = orderChildren(toReturn,temp);
 	}
 	return toReturn;
-}
-%>
+}%>

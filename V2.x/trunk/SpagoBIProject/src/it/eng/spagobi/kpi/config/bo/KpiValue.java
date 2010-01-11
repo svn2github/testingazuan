@@ -37,7 +37,7 @@ public class KpiValue implements Cloneable{
 	 * @param List of thresholds to set
 	 * @return The Color of the interval in which the value falls
 	 */
-	public ThresholdValue getSemaphorColor() {
+	public ThresholdValue getThresholdOfValue() {
 		logger.debug("IN");
 		ThresholdValue toReturn = null;
 		Double val = new Double(value);

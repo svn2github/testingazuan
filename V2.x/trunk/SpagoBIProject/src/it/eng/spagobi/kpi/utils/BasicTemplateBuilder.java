@@ -1015,7 +1015,7 @@ public class BasicTemplateBuilder  {
 		ThresholdValue t = null;
 		Color colorSemaphor = null;
 		if ( kpiValue!=null && kpiValue.getValue() != null) {
-			t = kpiValue.getSemaphorColor();
+			t = kpiValue.getThresholdOfValue();
 			if(t!=null){
 				colorSemaphor = t.getColour();	
 			}

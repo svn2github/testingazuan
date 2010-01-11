@@ -65,8 +65,8 @@ Sbi.formbuilder.StaticCloseFilterEditor = function(config) {
 	this.initButtons();
 	
 	Ext.apply(c, {
-		style: this.style,
 		layout: 'column'
+		, cls: 'filter'
 		, layoutConfig: {
 		     columns: 3
 		}
@@ -163,11 +163,13 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Ext.Panel, {
 	
 	, init: function() {
 		var filterConf = {
-			width: 150,
+			width: 148,
 			hideLabel: true,
 			boxLabel: this.text,
 	        name: 'options',
-	        inputValue: 'option'
+	        inputValue: 'option',
+	        style: 'background: red',
+	        bodyStyle: 'background: red'
 		};
 		
 		if(this.singleSelection === true) {

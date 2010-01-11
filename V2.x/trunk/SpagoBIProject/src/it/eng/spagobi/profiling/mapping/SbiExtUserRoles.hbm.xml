@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 22-dic-2009 14.20.04 by Hibernate Tools 3.2.4.GA -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.profiling.bean.SbiExtUserRoles" table="sbi_ext_user_roles" catalog="spagobi">
+    <class name="it.eng.spagobi.profiling.bean.SbiExtUserRoles" table="sbi_ext_user_roles">
         <composite-id name="id" class="it.eng.spagobi.profiling.bean.SbiExtUserRolesId">
             <key-property name="id" type="int">
                 <column name="ID" />

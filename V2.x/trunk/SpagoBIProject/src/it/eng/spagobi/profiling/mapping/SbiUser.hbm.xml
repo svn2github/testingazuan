@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 22-dic-2009 10.27.37 by Hibernate Tools 3.2.4.GA -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.profiling.bean.SbiUser" table="SBI_USER" catalog="spagobi">
+    <class name="it.eng.spagobi.profiling.bean.SbiUser" table="SBI_USER">
         <id name="id" type="int">
             <column name="ID" />
             <generator class="increment" />

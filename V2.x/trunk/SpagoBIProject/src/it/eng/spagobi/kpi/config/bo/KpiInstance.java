@@ -1,14 +1,7 @@
 package it.eng.spagobi.kpi.config.bo;
 
-import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
-
-import java.awt.Color;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.log4j.Logger;
 
 public class KpiInstance implements Serializable{
 	
@@ -16,9 +9,9 @@ public class KpiInstance implements Serializable{
 	Integer periodicityId = null;// kpiInstPeriodicyId
 	Integer chartTypeId = null;
 	Integer thresholdId = null;
+	Integer kpiId = null ;// kpiId related to the kpiInstance
 	String scaleCode = null;
 	String scaleName = null;	
-	Integer kpi = null ;// kpiId related to the kpiInstance
 	Date d = null;	
 	Double weight = null; 
 	Double target = null;
@@ -65,16 +58,16 @@ public class KpiInstance implements Serializable{
 		return kpiInstanceId;
 	}
 
-	public void setKpiInstanceId(Integer kpiId) {
-		this.kpiInstanceId = kpiId;
+	public void setKpiInstanceId(Integer kpiInstanceId) {
+		this.kpiInstanceId = kpiInstanceId;
 	}
 
 	public Integer getKpi() {
-		return kpi;
+		return kpiId;
 	}
 
-	public void setKpi(Integer kpi) {
-		this.kpi = kpi;
+	public void setKpi(Integer kpiId) {
+		this.kpiId = kpiId;
 	}
 
 

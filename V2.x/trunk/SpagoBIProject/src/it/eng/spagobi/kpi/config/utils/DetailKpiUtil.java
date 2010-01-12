@@ -79,14 +79,8 @@ public class DetailKpiUtil {
 			}
 
 		Integer ds_id = null;
-		IDataSet ds = null;
 		if (sDs_id != null && !sDs_id.trim().equals("") && !sDs_id.trim().equals("-1")) {
 			ds_id = Integer.parseInt(sDs_id);
-			// try {
-			ds = DAOFactory.getDataSetDAO().loadDataSetByID(ds_id);
-			// } catch (EMFUserError e) {
-			// e.printStackTrace();
-			// }
 		}
 
 		Integer threshold_id = null;
@@ -112,7 +106,7 @@ public class DetailKpiUtil {
 		toReturn.setMetric(metric);
 		toReturn.setStandardWeight(weight);
 		toReturn.setDocumentLabel(documentLabel);
-		toReturn.setKpiDs(ds);
+		toReturn.setKpiDsId(ds_id);
 		toReturn.setThreshold(threshold);
 
 		toReturn.setInterpretation(interpretation);

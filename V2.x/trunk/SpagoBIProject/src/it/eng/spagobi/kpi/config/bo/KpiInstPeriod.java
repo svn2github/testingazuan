@@ -9,7 +9,6 @@ public class KpiInstPeriod implements Serializable{
 	Integer periodicityId;
 	Boolean defaultValue;
 	
-	
 	public Integer getId() {
 		return id;
 	}
@@ -34,8 +33,6 @@ public class KpiInstPeriod implements Serializable{
 	public void setDefaultValue(Boolean defaultValue) {
 		this.defaultValue = defaultValue;
 	}
-	
-	
 	
 }
 

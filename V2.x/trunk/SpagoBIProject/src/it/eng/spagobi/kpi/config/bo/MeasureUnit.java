@@ -10,7 +10,6 @@ public class MeasureUnit implements Serializable{
 	String scaleNm=null;
 	Integer scaleTypeId=null;
 	
-	
 	public Integer getId() {
 		return id;
 	}
@@ -41,8 +40,5 @@ public class MeasureUnit implements Serializable{
 	public void setScaleTypeId(Integer scaleTypeId) {
 		this.scaleTypeId = scaleTypeId;
 	}
-	
-	
-	
-	
+
 }

@@ -28,7 +28,4 @@ public class ModelResources implements Serializable{
 		this.resourceId = resourceId;
 	}
 	
-	
-	
-	
 }

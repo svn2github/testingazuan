@@ -3,7 +3,6 @@ package it.eng.spagobi.engines.kpi.bo;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 
-import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,29 +1,18 @@
 package it.eng.spagobi.kpi.config.bo;
 
-import it.eng.spagobi.engines.kpi.bo.ChartImpl;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
-import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
-import it.eng.spagobi.tools.dataset.bo.IDataSet;
 
-import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
-import org.apache.log4j.Logger;
 
 public class Kpi implements Serializable{
 	
 	Integer kpiId = null;
+	Integer kpiDsId =null;
 	String kpiName = null;
-	IDataSet kpiDs = null;// Related DataSet
 	String documentLabel = null; // document related to this KPI
 	Boolean isRoot = null;
-	Integer fatherId = null;
-	List kpiChildrenIds = null; // List of Kpis children
-	List roles = null; // roles that can view this KPI
-	List kpiInstances = null; // all the instances of that KPI
 	Double standardWeight = null;
 	String metric = null;
 	String description = null;
@@ -43,10 +32,7 @@ public class Kpi implements Serializable{
 
 	public Kpi() {
 		super();
-		this.kpiChildrenIds = new ArrayList();
 		this.isRoot = false;
-		this.roles = new ArrayList();
-		this.kpiInstances = new ArrayList();
 	}
 
 	public Integer getKpiId() {
@@ -65,36 +51,12 @@ public class Kpi implements Serializable{
 		this.kpiName = kpiName;
 	}
 
-	public IDataSet getKpiDs() {
-		return kpiDs;
-	}
-
-	public void setKpiDs(IDataSet kpiDs) {
-		this.kpiDs = kpiDs;
-	}
-
 	public String getDocumentLabel() {
 		return documentLabel;
 	}
 
 	public void setDocumentLabel(String documentLabel) {
 		this.documentLabel = documentLabel;
-	}
-
-	public Integer getFather() {
-		return fatherId;
-	}
-
-	public void setFather(Integer father) {
-		this.fatherId = father;
-	}
-
-	public List getKpiChildren() {
-		return kpiChildrenIds;
-	}
-
-	public void setKpiChildren(List kpiChildren) {
-		this.kpiChildrenIds = kpiChildren;
 	}
 
 	public Boolean getIsParent() {
@@ -137,14 +99,6 @@ public class Kpi implements Serializable{
 		this.description = description;
 	}
 
-	public List getRoles() {
-		return roles;
-	}
-
-	public void setRoles(List roles) {
-		this.roles = roles;
-	}
-
 	public String getScaleCode() {
 		return scaleCode;
 	}
@@ -167,14 +121,6 @@ public class Kpi implements Serializable{
 
 	public void setIsRoot(Boolean isRoot) {
 		this.isRoot = isRoot;
-	}
-
-	public List getKpiInstances() {
-		return kpiInstances;
-	}
-
-	public void setKpiInstances(List kpiInstances) {
-		this.kpiInstances = kpiInstances;
 	}
 
 	public Threshold getThreshold() {
@@ -250,6 +196,14 @@ public class Kpi implements Serializable{
 			toReturn = toReturn.substring(0, 57) + "...";
 		}
 		return toReturn;
+	}
+
+	public Integer getKpiDsId() {
+		return kpiDsId;
+	}
+
+	public void setKpiDsId(Integer kpiDsId) {
+		this.kpiDsId = kpiDsId;
 	}
 
 }

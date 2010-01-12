@@ -1659,8 +1659,9 @@ public class ExporterMetadata {
 			}
 
 			// load dataset
-			if (kpi.getKpiDs() != null) {    
-				IDataSet ds=kpi.getKpiDs();
+			if (kpi.getKpiDsId() != null) {    
+				Integer dsID = kpi.getKpiDsId();				
+				IDataSet ds=DAOFactory.getDataSetDAO().loadDataSetByID(dsID);
 				insertDataSet(ds, session);
 				SbiDataSetConfig sbiDs= (SbiDataSetConfig) session.load(SbiDataSetConfig.class, ds.getId());
 				hibKpi.setSbiDataSet(sbiDs);

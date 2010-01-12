@@ -28,13 +28,6 @@ IResourceDAO {
 
 	static private Logger logger = Logger.getLogger(ResourceDAOImpl.class);
 
-	
-	
-
-	 
-
-	
-	
 	public void modifyResource(Resource resource) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;

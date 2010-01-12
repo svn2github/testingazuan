@@ -580,11 +580,17 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			kVal.setKpiInstanceId(kpiInstanceID);
 			logger.debug("Setted the KpiValue Instance ID:"+kpiInstanceID);	
 
-			if ( (dateOfKPI.after(kpiInstBegDt)||dateOfKPI.equals(kpiInstBegDt))|| DAOFactory.getKpiInstanceDAO().loadKpiInstanceByIdFromHistory(kpiInstanceID,dateOfKPI)==null) {
+			if ( (dateOfKPI.after(kpiInstBegDt)||dateOfKPI.equals(kpiInstBegDt))) {
 				//kpiInstance doesn't change
-			} else {// in case older thresholds have to be retrieved
-				kpiI = DAOFactory.getKpiInstanceDAO().loadKpiInstanceByIdFromHistory(kpiInstanceID,dateOfKPI);
+			}else{
+				KpiInstance tempKIn = DAOFactory.getKpiInstanceDAO().loadKpiInstanceByIdFromHistory(kpiInstanceID,dateOfKPI);
+				if(tempKIn==null){//kpiInstance doesn't change
+				}else{
+					// in case older thresholds have to be retrieved
+					kpiI = tempKIn;
+				}
 			}
+
 			kVal = getFromKpiInstAndSetKpiValueAttributes(kpiI,kVal);
 			
 			// If it has to be calculated for a Resource. The resource will be set as parameter
@@ -629,7 +635,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		KpiInstance kpiI = modI.getKpiInstanceAssociated();
 		line.setChildren(children);
 		if (kpiI != null) {
-			logger.info("Got KpiInstance with ID: " + kpiI.getKpiInstanceId().toString());
+			Integer kpiInstID = kpiI.getKpiInstanceId();
+			logger.info("Got KpiInstance with ID: " + kpiInstID.toString());
 			KpiValue value = getValueDependingOnBehaviour(kpiI, miId, r);
 			line.setValue(value);
 			Integer kpiId = kpiI.getKpi();
@@ -646,7 +653,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				}
 			}
 			if (display_alarm && value!=null && value.getValue()!= null) {
-				Boolean alarm = DAOFactory.getKpiInstanceDAO().isKpiInstUnderAlramControl(kpiI.getKpiInstanceId());
+				Boolean alarm = DAOFactory.getKpiInstanceDAO().isKpiInstUnderAlramControl(kpiInstID);
 				logger.debug("KPI is under alarm control: " + alarm.toString());
 				line.setAlarm(alarm);
 			}
@@ -708,11 +715,17 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		logger.debug("Setted the KpiValue Instance ID:"+kpiInstanceID);	
 		logger.debug("kpiInstBegDt begin date: "+(kpiInstBegDt!=null ? kpiInstBegDt.toString(): "Begin date null"));
 
-		if ( (dateOfKPI.after(kpiInstBegDt)||dateOfKPI.equals(kpiInstBegDt))|| DAOFactory.getKpiInstanceDAO().loadKpiInstanceByIdFromHistory(kpiInstanceID,dateOfKPI)==null) {
+		if ( (dateOfKPI.after(kpiInstBegDt)||dateOfKPI.equals(kpiInstBegDt))) {
 			//kpiInstance doesn't change
-		} else {// in case older thresholds have to be retrieved
-			kpiInst = DAOFactory.getKpiInstanceDAO().loadKpiInstanceByIdFromHistory(kpiInstanceID,dateOfKPI);
+		}else{
+			KpiInstance tempKIn = DAOFactory.getKpiInstanceDAO().loadKpiInstanceByIdFromHistory(kpiInstanceID,dateOfKPI);
+			if(tempKIn==null){//kpiInstance doesn't change
+			}else{
+				// in case older thresholds have to be retrieved
+				kpiInst = tempKIn;
+			}
 		}
+
 		kVal = getFromKpiInstAndSetKpiValueAttributes(kpiInst,kVal);
 
 		// If it has to be calculated for a Resource. The resource will be set

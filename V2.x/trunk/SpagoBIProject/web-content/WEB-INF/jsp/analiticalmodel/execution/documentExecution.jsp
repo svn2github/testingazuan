@@ -94,9 +94,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     logger.debug("Snapshot history number in request is [" + snapshotHistoryNumber + "]");
     
     String toolbarVisible = (String) aServiceRequest.getAttribute(SpagoBIConstants.TOOLBAR_VISIBLE);
-    boolean toolbarHidden = toolbarVisible == null ? false : !Boolean.parseBoolean(toolbarVisible);
+    boolean toolbarHidden = (toolbarVisible == null || toolbarVisible.trim().equals("")) ? false : !Boolean.parseBoolean(toolbarVisible);
     String shortcutsVisible = (String) aServiceRequest.getAttribute(SpagoBIConstants.SLIDERS_VISIBLE);
-    boolean shortcutsHidden = shortcutsVisible == null ? false : !Boolean.parseBoolean(shortcutsVisible);
+    boolean shortcutsHidden = (shortcutsVisible == null || shortcutsVisible.trim().equals("")) ? false : !Boolean.parseBoolean(shortcutsVisible);
     
     Integer engineId = null;
 	Engine engineObj = (obj == null) ? null : obj.getEngine();

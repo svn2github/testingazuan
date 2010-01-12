@@ -52,6 +52,8 @@ import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 import it.eng.spagobi.utilities.assertion.Assert;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -597,10 +599,11 @@ public class GeneralUtilities extends SpagoBIUtilities{
 	}      
 
 	/**
-	 * Returns an url starting with the given base url and adding parameters as the input parameters map
+	 * Returns an url starting with the given base url and adding parameters retrieved by the input parameters map.
+	 * Each parameter value is encoded using URLEncoder.encode(value, "UTF-8");
 	 * @param baseUrl The base url
-	 * @param mapPars The parameters map; those parameters will be added to the url
-	 * @return an url starting with the given base url and adding parameters as the input parameters map
+	 * @param mapPars The parameters map; those parameters will be added to the base url (values will be encoded using UTF-8 encoding)
+	 * @return an url starting with the given base url and adding parameters retrieved by the input parameters map
 	 */
 	public static String getUrl(String baseUrl, Map mapPars) {
 		logger.debug("IN");
@@ -616,6 +619,14 @@ public class GeneralUtilities extends SpagoBIUtilities{
 			  	Object valueObj = mapPars.get(key);
 			  	if (valueObj != null) {
 				  	String value = valueObj.toString();
+					// encoding value
+					try {
+						value = URLEncoder.encode(value, "UTF-8");
+					} catch (UnsupportedEncodingException e) {
+						logger.warn("UTF-8 encoding is not supported!!!", e);
+						logger.warn("Using system encoding...");
+						value = URLEncoder.encode(value);
+					}
 				  	buffer.append(key + "=" + value);
 				  	if (iterKeys.hasNext()) {
 				  		buffer.append("&");

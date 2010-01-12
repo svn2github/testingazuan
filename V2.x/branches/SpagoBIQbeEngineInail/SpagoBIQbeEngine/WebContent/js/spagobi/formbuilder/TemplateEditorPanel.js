@@ -114,7 +114,10 @@ Ext.extend(Sbi.formbuilder.TemplateEditorPanel, Ext.Panel, {
 		});
 		this.add(this.staticCloseFilterEditorPanel);
 		
-		this.staticOpenFilterEditorPanel = new Sbi.formbuilder.StaticOpenFilterEditorPanel({style:'padding:10px'});
+		this.staticOpenFilterEditorPanel = new Sbi.formbuilder.StaticOpenFilterEditorPanel({
+			style:'padding:10px',
+			baseContents: (this.template !== undefined) ? this.template.staticOpenFilters : undefined
+		});
 		this.add(this.staticOpenFilterEditorPanel);
 		
 		this.dynamicEditorPanel = new Sbi.formbuilder.DynamicFilterEditorPanel({style:'padding:10px'});

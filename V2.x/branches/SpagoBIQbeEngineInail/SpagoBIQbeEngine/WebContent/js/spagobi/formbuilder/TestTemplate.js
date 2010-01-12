@@ -77,6 +77,39 @@ Sbi.formbuilder.template = {
 	   }
 	] 
 	
+    , "staticOpenFilters": [
+
+        {
+            "text": "Tipo carta",
+            "field": "it.eng.spagobi.SalesFact1998::customer(customer_id):memberCard",
+            "operator": "EQUALS TO",
+            "singleSelection": false,
+            "maxSelectedNumber": 3
+        },
+
+        {
+            "text": "Qualifica",
+            "field": "it.eng.spagobi.SalesFact1998::customer(customer_id):education",
+            "operator": "EQUALS TO",
+            "singleSelection": true
+        },
+
+        {
+            "text": "Reddito annuo",
+            "field": "it.eng.spagobi.SalesFact1998::customer(customer_id):yearlyIncome",
+            "operator": "IN",
+            "singleSelection": false,
+            "maxSelectedNumber": 3
+        },
+        
+        {
+            "text": "Nati dopo il",
+            "field": "it.eng.spagobi.SalesFact1998::customer(customer_id):birthdate",
+            "operator": "GREATER THAN",
+            "singleSelection": true
+        }
+        
+    ]
 	
 	
 }

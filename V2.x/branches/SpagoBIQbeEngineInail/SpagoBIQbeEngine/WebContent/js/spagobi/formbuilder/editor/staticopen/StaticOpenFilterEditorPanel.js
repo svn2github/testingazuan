@@ -81,6 +81,11 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Sbi.formbuilder.EditorPa
 	// public methods
 	// --------------------------------------------------------------------------------
 		
+	, setContents: function(contents) {
+		for(var i = 0, l = contents.length; i < l; i++) {
+			this.addFilter(contents[i]);
+		}
+	}
 	
 	, loadContents: function(contents) {
 		alert(contents.toSource());
@@ -110,7 +115,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Sbi.formbuilder.EditorPa
 
 		var staticOpenFilterWindow = new Sbi.formbuilder.StaticOpenFilterWizard(openFilter, {});
 		staticOpenFilterWindow.show();		
-		staticOpenFilterWindow.on('apply', function(openFilter) {this.targetPanel.addFilter(openFilter);} , this); 
+		staticOpenFilterWindow.on('apply', function(openFilter) {this.addFilter(openFilter);} , this); 
 	}
 	
 });

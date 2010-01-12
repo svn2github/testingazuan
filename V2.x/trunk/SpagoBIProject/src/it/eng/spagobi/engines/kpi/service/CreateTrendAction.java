@@ -84,7 +84,7 @@ public class CreateTrendAction extends AbstractHttpAction{
 		}
 		
 		serviceResponse.setAttribute("kpiInstId", kpiInstId);
-		serviceResponse.setAttribute("resName", resName);
+		serviceResponse.setAttribute("resName", resName!=null ? resName : "");
 		serviceResponse.setAttribute("TimeRangeFrom", TimeRangeFrom!=null ? TimeRangeFrom : "");
 		serviceResponse.setAttribute("TimeRangeTo", TimeRangeTo!=null ? TimeRangeTo : "");
 		serviceResponse.setAttribute("endDate", endDate);
@@ -95,7 +95,9 @@ public class CreateTrendAction extends AbstractHttpAction{
 			serviceResponse.setAttribute("timeTo", timeTo);
 		}
 		serviceResponse.setAttribute("d", d);
-		serviceResponse.setAttribute("resID", resID);
+		if(resID!=null){
+			serviceResponse.setAttribute("resID", resID);
+		}
 		
 		serviceResponse.setAttribute("publisher_Name", publisher_Name);
 		

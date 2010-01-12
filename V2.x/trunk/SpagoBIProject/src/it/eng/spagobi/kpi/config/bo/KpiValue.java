@@ -1,5 +1,7 @@
 package it.eng.spagobi.kpi.config.bo;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.kpi.model.bo.Resource;
 import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 
@@ -30,11 +32,30 @@ public class KpiValue implements Cloneable{
 	Resource r = null;//Resource (project/process) to which refers the value
 	String chartType = null;
 	
+	
 	/**
-	 * This function fills up the vector "intervals" with the intervals of the
-	 * chart, getting them from a list of Thresholds
+	 * This function returns the value of the attribute required, if existent in the xml field
 	 * 
-	 * @param List of thresholds to set
+	 * @param String attribute for which the value is requested
+	 * @return The value of the attribute
+	 */
+	public String getValueFromStandardXmlValue(String attribute){
+		String valToReturn = "";
+		if(valueXml!=null){
+			try {
+				SourceBean xmlValueSB = SourceBean.fromXMLString(valueXml);
+				valToReturn = (String)xmlValueSB.getAttribute(attribute);
+			} catch (SourceBeanException e) {
+				logger.error("Source Bean Exception",e);
+				e.printStackTrace();
+			}
+		}
+		return valToReturn;
+	}
+	
+	/**
+	 * This function return the ThresholdValue in which the kpiValue falls
+	 * 
 	 * @return The Color of the interval in which the value falls
 	 */
 	public ThresholdValue getThresholdOfValue() {

@@ -52,10 +52,12 @@ Sbi.formbuilder.StaticOpenFilterEditorPanel = function(config) {
 		
 		title: 'Static open filters'
 		, emptyMsg: 'Drag a field here to create a new static open filter'
-		, filterItemName: 'static open filter'
-        
-		, enableAddBtn: false
-			
+		, ddGroup    : 'formbuilderDDGroup'
+		, droppable: {
+			onFieldDrop: this.onFieldDrop
+		} 
+		, filterItemName: 'static open filter'        
+		, enableAddBtn: false			
 		, layout: 'column'
 		
 	};
@@ -69,8 +71,6 @@ Sbi.formbuilder.StaticOpenFilterEditorPanel = function(config) {
 	
 	// constructor
     Sbi.formbuilder.StaticOpenFilterEditorPanel.superclass.constructor.call(this, c);
-    
-    this.on('render', this.initDD, this);
 };
 
 Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Sbi.formbuilder.EditorPanel, {
@@ -94,11 +94,23 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Sbi.formbuilder.EditorPa
 	// --------------------------------------------------------------------------------
 	// private methods
 	// --------------------------------------------------------------------------------
-		
+	
+	/*
 	, initDD: function() {
 		this.removeListener('render', this.initDD, this);
 		this.dropTarget = new Sbi.formbuilder.StaticOpenFiltersEditorPanelDropTarget(this);
 	}
-	
+	*/
+	, onFieldDrop: function(fieldConf) {
+		var openFilter = {};
+		openFilter.text = fieldConf.alias;
+		openFilter.field = fieldConf.id;
+		openFilter.operator = 'EQUALS TO';
+		openFilter.maxSelectedNumber = 1;
+
+		var staticOpenFilterWindow = new Sbi.formbuilder.StaticOpenFilterWizard(openFilter, {});
+		staticOpenFilterWindow.show();		
+		staticOpenFilterWindow.on('apply', function(openFilter) {this.targetPanel.addFilter(openFilter);} , this); 
+	}
 	
 });

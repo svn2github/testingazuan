@@ -41,8 +41,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%! private static transient Logger logger = Logger.getLogger(ExecuteDocumentAction.class);%>
 
-<% if ( "WEB".equalsIgnoreCase(sbiMode) ) { %>
-
 	<%@ include file="/WEB-INF/jsp/commons/importSbiJS.jspf"%>
 	
     
@@ -181,23 +179,5 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	});
     
     </script>
-    
-<% } else {
-	 
-	String url =GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+  "&ACTION_NAME=EXECUTE_DOCUMENT_ACTION";
-	url += "&LANGUAGE=" + locale.getLanguage();
-	url += "&COUNTRY=" + locale.getCountry();
-	%>
-
- 	<iframe 
- 		id='executionIframe'
- 		name='executionIframe'
- 		src='<%= url %>'
- 		frameBorder = 0
- 		width=100%
- 		height=<%= aServiceResponse.getAttribute("height") %>
- 	/>
-    
-<% } %>
 
 <%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

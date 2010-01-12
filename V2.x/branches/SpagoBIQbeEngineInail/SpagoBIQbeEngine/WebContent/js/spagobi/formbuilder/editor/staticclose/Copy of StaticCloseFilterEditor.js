@@ -49,22 +49,71 @@ Ext.ns("Sbi.formbuilder");
 Sbi.formbuilder.StaticCloseFilterEditor = function(config) {
 	
 	var defaultSettings = {
-		//style: 'border:1px solid #ccc !important;'
+		style: 'border:1px solid #ccc !important;'
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.staticCloseFilterEditor) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.staticCloseFilterEditor);
 	}
 	var c = Ext.apply(defaultSettings, config || {});
-		
+	
+	
+	
 	Ext.apply(this, c);
+	
+	
+	this.init();
+	this.initButtons();
+	
+	Ext.apply(c, {
+		cls: 'filter'
+		, layout: 'column'
+		, layoutConfig: {
+		     columns: 3
+		}
+			
+		, controls: this.buttons
+		
+		, items: [{
+			columnWidth: .99,
+			items: [this.filter]
+		},{
+		    width: 23,
+		    items: [ this.buttons[0] ]
+		},{
+		    width: 23,
+		    items: [ this.buttons[1] ]
+		}]
+	});
 	
 	// constructor
     Sbi.formbuilder.StaticCloseFilterEditor.superclass.constructor.call(this, c);
+    
+    this.on('render', function(f) {
+		
+		this.getEl().on('mouseover', function(el) {
+			this.addClass('filter-select');
+			this.controls[0].setVisible(true);
+			this.controls[1].setVisible(true);
+		}, this);
+		
+		this.getEl().on('mouseout', function(el) {
+			this.removeClass('filter-select');
+			this.controls[0].setVisible(false);
+			this.controls[1].setVisible(false);
+		}, this);
+		
+		this.getEl().on('dblclick', function(el) {
+			this.fireEvent('actionrequest', 'edit', this);
+		}, this);
+		
+	}, this);
 };
 
-Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Sbi.formbuilder.InlineEditor, {
+Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Ext.Panel, {
     
-	text: null
+	buttons: null
+	, filter: null
+	, text: null
 	, expression: null
 	, leftOperandValue: null
 	, leftOperandDescription: null
@@ -135,4 +184,54 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Sbi.formbuilder.InlineEditor
 			this.filter = new Ext.form.Checkbox(filterConf);
 		}
 	}
+	
+	, initButtons: function() {
+		this.buttons = [];
+		
+		var editBtn = new Ext.Button({
+			tooltip: 'Edit filter',
+	        cls: 'image-button',
+	        iconCls: 'edit',
+	        disabled: true,
+	        hidden: true,
+	        handler: function() {
+				this.fireEvent('actionrequest', 'edit', this);
+			}, 
+			scope: this
+	    });
+		
+		editBtn.on('render', function(b) {
+			b.getEl().on('mouseover', function(b, e) {
+				this.controls[0].enable();
+			}, this);
+			b.getEl().on('mouseout', function(el) {
+				this.controls[0].disable();
+			}, this);
+		}, this);		
+		this.buttons.push(editBtn);
+		
+		var deleteBtn = new Ext.Button({
+			tooltip: 'Delete filter',
+	        cls: 'image-button',
+	        iconCls: 'editremove',
+	        disabled: true,
+	        hidden: true,
+	        handler: function() {
+				this.fireEvent('actionrequest', 'delete', this);
+			}, 
+			scope: this
+	    });		
+		deleteBtn.on('render', function(b) {
+			b.getEl().on('mouseover', function(el) {
+				this.controls[1].enable();
+			}, this);
+			b.getEl().on('mouseout', function(el) {
+				this.controls[1].disable();
+			}, this);
+		}, this);
+		this.buttons.push(deleteBtn);	
+
+
+	}
+  	
 });

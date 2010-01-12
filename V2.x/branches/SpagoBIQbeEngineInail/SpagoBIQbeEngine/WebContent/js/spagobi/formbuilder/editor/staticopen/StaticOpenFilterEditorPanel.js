@@ -100,12 +100,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Sbi.formbuilder.EditorPa
 	// private methods
 	// --------------------------------------------------------------------------------
 	
-	/*
-	, initDD: function() {
-		this.removeListener('render', this.initDD, this);
-		this.dropTarget = new Sbi.formbuilder.StaticOpenFiltersEditorPanelDropTarget(this);
-	}
-	*/
+	
 	, onFieldDrop: function(fieldConf) {
 		var openFilter = {};
 		openFilter.text = fieldConf.alias;

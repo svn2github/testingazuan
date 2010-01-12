@@ -118,30 +118,32 @@ Ext.extend(Sbi.formbuilder.VariableGroupEditor, Sbi.formbuilder.EditorPanel, {
 	
 	, addField: function(fieldConf) {
 		
-		alert('Error: "addFilter" unimlpemented');
-		/*
-		filtersConf.singleSelection = this.singleSelection;
-		var filter = new Sbi.formbuilder.StaticCloseFilterEditor(filtersConf);	
-		filter.index = this.contents.length;
-		this.addFilterItem(filter);
+		var field = new Sbi.formbuilder.InlineEditor({
+			init: function() {
+				this.filter = new Ext.Panel({
+					html: fieldConf.alias
+				});
+			}
+		});
+				
+		this.addFilterItem(field);
 		
-		filter.on('actionrequest', function(action, filter) {
+		field.on('actionrequest', function(action, field) {
 			if(action === 'edit') {
-				this.editFilter(filter);
+				this.editFilter(field);
 			} else if(action === 'delete') {
-				this.deleteFilter(filter);
+				this.deleteField(field);
 			}
 		}, this);
-		*/
 	}
 	
-	, deleteFilter: function(f) {
+	, deleteField: function(f) {
 		f.destroy();
 	}
 	
 	, editFilter: function(f) {
 		alert('Error: "editFilter" unimlpemented');
-		this.onFilterWizardShow(f)
+		//this.onFilterWizardShow(f)
 	}
 	
 

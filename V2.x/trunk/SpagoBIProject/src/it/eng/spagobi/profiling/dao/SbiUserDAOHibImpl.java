@@ -3,6 +3,7 @@ package it.eng.spagobi.profiling.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.bean.SbiExtUserRoles;
@@ -446,8 +447,9 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 	 * @param sbiUser The Hibernate SbiUser
 	 * 
 	 * @return the corrispondent output <code>UserBO</code>
+	 * @throws EMFUserError 
 	 */
-	public UserBO toUserBO(SbiUser sbiUser){
+	public UserBO toUserBO(SbiUser sbiUser) throws EMFUserError{
 		logger.debug("IN");
 		    // create empty UserBO
 			UserBO userBO = new UserBO();
@@ -477,8 +479,8 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 				HashMap<String, String> nameValueAttr = new HashMap<String, String>();
 				
 				//retrive attribute value
-
-				nameValueAttr.put(attr.getAttributeName(), "");
+				SbiUserAttributes sbiUserAttr =DAOFactory.getSbiAttributeDAO().loadSbiAttributesByUserAndId(userBO.getId(), attrId);
+				nameValueAttr.put(attr.getAttributeName(), sbiUserAttr.getAttributeValue());
 				userAttributes.put(attrId, nameValueAttr);
 			}
 			userBO.setSbiUserAttributeses(userAttributes);

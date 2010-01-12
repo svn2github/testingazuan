@@ -77,10 +77,10 @@ Sbi.formbuilder.StaticCloseFilterEditor = function(config) {
 			columnWidth: .99,
 			items: [this.filter]
 		},{
-		    width: 30,
+		    width: 23,
 		    items: [ this.buttons[0] ]
 		},{
-		    width: 30,
+		    width: 23,
 		    items: [ this.buttons[1] ]
 		}]
 	});
@@ -190,7 +190,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Ext.Panel, {
 		
 		var editBtn = new Ext.Button({
 			tooltip: 'Edit filter',
-	        cls: 'mybutton-text-icon',
+	        cls: 'image-button',
 	        iconCls: 'edit',
 	        disabled: true,
 	        hidden: true,
@@ -212,8 +212,8 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Ext.Panel, {
 		
 		var deleteBtn = new Ext.Button({
 			tooltip: 'Delete filter',
-	        cls: 'mybutton-text-icon',
-	        iconCls: 'remove',
+	        cls: 'image-button',
+	        iconCls: 'editremove',
 	        disabled: true,
 	        hidden: true,
 	        handler: function() {

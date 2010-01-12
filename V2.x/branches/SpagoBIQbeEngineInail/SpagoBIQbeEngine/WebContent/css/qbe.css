@@ -34,11 +34,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 }
 
 .edit {
-    background-image:url(../img/actions/add.gif) !important;
+    background-image:url(../img/actions/edit.png) !important;
 }
 
 .x-item-disabled .edit{
-	 background-image:url(../img/actions/add_gray.gif) !important;
+	 background-image:url(../img/actions/edit_gray.png) !important;
+}
+
+.editremove {
+	background-image:url(../img/actions/editdelete.png) !important;
+}
+
+.x-item-disabled .editremove {
+	background-image:url(../img/actions/editdelete_gray.png) !important;
 }
 
 .remove {
@@ -179,12 +187,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 }
 
 /* remove the default left,center and right images from the button border*/
-.mybutton-text-icon .x-btn-left, .mybutton-text-icon .x-btn-right, .mybutton-text-icon .x-btn-center{
+.image-button .x-btn-left, .image-button .x-btn-right, .image-button .x-btn-center{
     background: 0;
     padding:0px;	
 }
 
-.mybutton-text-icon .x-btn-center .x-btn-text  {
+.image-button .x-btn-center .x-btn-text  {
 	 background-repeat: no-repeat;
 	 width: 20px;
 

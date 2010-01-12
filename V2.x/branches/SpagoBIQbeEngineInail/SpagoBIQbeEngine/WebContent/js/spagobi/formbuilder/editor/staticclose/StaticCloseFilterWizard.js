@@ -88,6 +88,18 @@ Sbi.formbuilder.StaticCloseFilterWizard = function(config) {
 	// constructor
     Sbi.formbuilder.StaticCloseFilterWizard.superclass.constructor.call(this, c);
     
+    this.handlePendingFn = function() {
+    	if(this.pendingState) {
+    		this.setFormState(this.pendingState);
+    		delete this.pendingState;
+    		this.un('show', this.handlePendingFn , this);
+    		delete this.handlePendingFn;
+    	}
+    };
+    
+    this.on('show', this.handlePendingFn , this);
+    
+    
     if(this.hasBuddy === 'true') {
 		this.buddy = new Sbi.commons.ComponentBuddy({
     		buddy : this
@@ -134,31 +146,33 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 	, setFormState: function(s) {
 		var d ;
 		
-		//alert('setFormState IN');
+		if(this.rendered === false) {
+			this.pendingState = s;
+			return;
+		}
 		
-		this.filterTitleField.setValue(s.text);
+		if(s.text) {
+			this.filterTitleField.setValue(s.text);
+		}
 		
 		this.filterGrid.deleteFilters();
 		if(s.expression) {
 			for(var i = 0, l = s.expression.length; i < l; i=i+2) {
 				d = this.marshalFilterRecord(s.expression[i]); 
-				d.booleanConnector= (i+1<l)? s.expression[i+1]: 'AND';
+				d.booleanConnector = (i+1<l)? s.expression[i+1]: 'AND';
 				this.filterGrid.addFilter(d);
 			}
-		} else {
+		} else if(s.leftOperandValue) {
 			d = this.marshalFilterRecord(s); 
 			this.filterGrid.addFilter(d);
 		}
-		//alert('setFormState OUT');
 	}
 	
 	, setFilterDetailState: function(s) {
-		//alert('setFilterDetailState IN');
 		this.leftOperandField.setValue(s.leftOperandValue);
 		this.leftOperandField.setDescription(s.leftOperandDescription);
 		this.operatorField.setValue(s.operator);
 		this.rightOperandField.setValue(s.rightOperandValue);
-		//alert('setFilterDetailState OUT');
 	}
 	
 	/*
@@ -356,7 +370,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 		var recordData = {};
 		
 		recordData.leftOperandValue = c.leftOperandValue;
-		recordData.leftOperandDescription = c.leftOperandDescription;
+		recordData.leftOperandDescription = c.leftOperandDescription || c.leftOperandValue;
 		recordData.operator = c.operator;
 		recordData.rightOperandValue = c.rightOperandValue;
 		recordData.rightOperandDescription = c.rightOperandValue;

@@ -49,7 +49,8 @@ Ext.ns("Sbi.formbuilder");
 Sbi.formbuilder.InlineEditor = function(config) {
 	
 	var defaultSettings = {
-		style: 'border:1px solid #ccc !important;'
+		deletable: true
+		, editable: true
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.inlineEditor) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.inlineEditor);
@@ -64,6 +65,19 @@ Sbi.formbuilder.InlineEditor = function(config) {
 	this.init();
 	this.initButtons();
 	
+	var items = [{
+		columnWidth: .99,
+		items: [this.filter]
+	}];
+	for(var i = 0, l = this.buttons.length; i < l; i++) {
+		items.push({
+		    width: 23,
+		    items: [ this.buttons[i] ]
+		});
+	}
+	
+	
+	
 	Ext.apply(c, {
 		cls: 'filter'
 		, layout: 'column'
@@ -71,18 +85,8 @@ Sbi.formbuilder.InlineEditor = function(config) {
 		     columns: 3
 		}
 			
-		, controls: this.buttons
-		
-		, items: [{
-			columnWidth: .99,
-			items: [this.filter]
-		},{
-		    width: 23,
-		    items: [ this.buttons[0] ]
-		},{
-		    width: 23,
-		    items: [ this.buttons[1] ]
-		}]
+		, controls: this.buttons		
+		, items: items
 	});
 	
 	// constructor
@@ -92,19 +96,23 @@ Sbi.formbuilder.InlineEditor = function(config) {
 		
 		this.getEl().on('mouseover', function(el) {
 			this.addClass('filter-select');
-			this.controls[0].setVisible(true);
-			this.controls[1].setVisible(true);
+			for(var i = 0, l = this.controls.length; i < l; i++) {
+				this.controls[i].setVisible(true);
+			}
 		}, this);
 		
 		this.getEl().on('mouseout', function(el) {
 			this.removeClass('filter-select');
-			this.controls[0].setVisible(false);
-			this.controls[1].setVisible(false);
+			for(var i = 0, l = this.controls.length; i < l; i++) {
+				this.controls[i].setVisible(false);
+			}
 		}, this);
 		
-		this.getEl().on('dblclick', function(el) {
-			this.fireEvent('actionrequest', 'edit', this);
-		}, this);
+		if(this.editable) {
+			this.getEl().on('dblclick', function(el) {
+				this.fireEvent('actionrequest', 'edit', this);
+			}, this);
+    	}
 		
 	}, this);
 };
@@ -141,48 +149,52 @@ Ext.extend(Sbi.formbuilder.InlineEditor, Ext.Panel, {
 	, initButtons: function() {
 		this.buttons = [];
 		
-		var editBtn = new Ext.Button({
-			tooltip: 'Edit filter',
-	        cls: 'image-button',
-	        iconCls: 'edit',
-	        disabled: true,
-	        hidden: true,
-	        handler: function() {
-				this.fireEvent('actionrequest', 'edit', this);
-			}, 
-			scope: this
-	    });
+		if(this.editable === true) {
+			this.editBtn = new Ext.Button({
+				tooltip: 'Edit filter',
+		        cls: 'image-button',
+		        iconCls: 'edit',
+		        disabled: true,
+		        hidden: true,
+		        handler: function() {
+					this.fireEvent('actionrequest', 'edit', this);
+				}, 
+				scope: this
+		    });
+			
+			this.editBtn.on('render', function(b) {
+				b.getEl().on('mouseover', function(b, e) {
+					this.editBtn.enable();
+				}, this);
+				b.getEl().on('mouseout', function(el) {
+					this.editBtn.disable();
+				}, this);
+			}, this);		
+			this.buttons.push(this.editBtn);
+		}
 		
-		editBtn.on('render', function(b) {
-			b.getEl().on('mouseover', function(b, e) {
-				this.controls[0].enable();
+		if(this.deletable === true) {
+			this.deleteBtn = new Ext.Button({
+				tooltip: 'Delete filter',
+		        cls: 'image-button',
+		        iconCls: 'editremove',
+		        disabled: true,
+		        hidden: true,
+		        handler: function() {
+					this.fireEvent('actionrequest', 'delete', this);
+				}, 
+				scope: this
+		    });		
+			this.deleteBtn.on('render', function(b) {
+				b.getEl().on('mouseover', function(el) {
+					this.deleteBtn.enable();
+				}, this);
+				b.getEl().on('mouseout', function(el) {
+					this.deleteBtn.disable();
+				}, this);
 			}, this);
-			b.getEl().on('mouseout', function(el) {
-				this.controls[0].disable();
-			}, this);
-		}, this);		
-		this.buttons.push(editBtn);
-		
-		var deleteBtn = new Ext.Button({
-			tooltip: 'Delete filter',
-	        cls: 'image-button',
-	        iconCls: 'editremove',
-	        disabled: true,
-	        hidden: true,
-	        handler: function() {
-				this.fireEvent('actionrequest', 'delete', this);
-			}, 
-			scope: this
-	    });		
-		deleteBtn.on('render', function(b) {
-			b.getEl().on('mouseover', function(el) {
-				this.controls[1].enable();
-			}, this);
-			b.getEl().on('mouseout', function(el) {
-				this.controls[1].disable();
-			}, this);
-		}, this);
-		this.buttons.push(deleteBtn);	
+			this.buttons.push(this.deleteBtn);
+		}
 
 
 	}

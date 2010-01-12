@@ -100,32 +100,16 @@ Ext.extend(Sbi.formbuilder.VariableGroupEditor, Sbi.formbuilder.EditorPanel, {
 	}
 	
 	, getContents: function() {
-		alert('Error: "getContents" unimlpemented');
-		/*
 		var c = {};
 		
-		c.title = this.groupTitle;
-		c.singleSelection = this.singleSelection;
-		c.allowNoSelection = this.allowNoSelection;
-		if(this.singleSelection === true) {
-			c.noSelectionText = this.noSelectionText;
-		}
-		c.filters = Sbi.formbuilder.StaticCloseFilterGroupEditor.superclass.getContents.call(this);
+		c.admissibleFields = Sbi.formbuilder.VariableGroupEditor.superclass.getContents.call(this)
 		
 		return c;
-		*/
 	}
 	
 	, addField: function(fieldConf) {
 		
-		var field = new Sbi.formbuilder.InlineEditor({
-			init: function() {
-				this.filter = new Ext.Panel({
-					html: fieldConf.alias
-				});
-			}
-		});
-				
+		var field = new Sbi.formbuilder.VariableEditor(fieldConf);				
 		this.addFilterItem(field);
 		
 		field.on('actionrequest', function(action, field) {

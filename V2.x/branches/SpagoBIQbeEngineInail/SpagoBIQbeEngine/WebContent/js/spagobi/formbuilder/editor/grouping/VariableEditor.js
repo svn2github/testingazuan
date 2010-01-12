@@ -46,119 +46,51 @@
 
 Ext.ns("Sbi.formbuilder");
 
-Sbi.formbuilder.StaticCloseFilterEditor = function(config) {
+Sbi.formbuilder.VariableEditor = function(config) {
 	
 	var defaultSettings = {
-		style: 'border:1px solid #ccc !important;'
+		editable: false
+		, alias: 'undefined'
+		, uniqueName: '?'
 	};
-	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.staticCloseFilterEditor) {
-		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.staticCloseFilterEditor);
+	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.variableEditor) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.variableEditor);
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 	
-	
+	c.uniqueName = c.id;
+	delete c.id;
 	
 	Ext.apply(this, c);
 	
 	
-	this.init();
-	this.initButtons();
-	
-	Ext.apply(c, {
-		cls: 'filter'
-		, layout: 'column'
-		, layoutConfig: {
-		     columns: 3
-		}
-			
-		, controls: this.buttons
-		
-		, items: [{
-			columnWidth: .99,
-			items: [this.filter]
-		},{
-		    width: 23,
-		    items: [ this.buttons[0] ]
-		},{
-		    width: 23,
-		    items: [ this.buttons[1] ]
-		}]
-	});
-	
 	// constructor
-    Sbi.formbuilder.StaticCloseFilterEditor.superclass.constructor.call(this, c);
-    
-    this.on('render', function(f) {
-		
-		this.getEl().on('mouseover', function(el) {
-			this.addClass('filter-select');
-			this.controls[0].setVisible(true);
-			this.controls[1].setVisible(true);
-		}, this);
-		
-		this.getEl().on('mouseout', function(el) {
-			this.removeClass('filter-select');
-			this.controls[0].setVisible(false);
-			this.controls[1].setVisible(false);
-		}, this);
-		
-		this.getEl().on('dblclick', function(el) {
-			this.fireEvent('actionrequest', 'edit', this);
-		}, this);
-		
-	}, this);
+    Sbi.formbuilder.VariableEditor.superclass.constructor.call(this, c);
 };
 
-Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Ext.Panel, {
-    
-	buttons: null
-	, filter: null
-	, text: null
-	, expression: null
-	, leftOperandValue: null
-	, leftOperandDescription: null
-	, operator: null
-	, rightOperandValue: null
+Ext.extend(Sbi.formbuilder.VariableEditor, Sbi.formbuilder.InlineEditor, {
+	
+	uniqueName: null
+	, alias: null
 	
 	// --------------------------------------------------------------------------------
 	// public methods
 	// --------------------------------------------------------------------------------
 		
 	, setContents: function(c) {
-		if(this.text !== c.text) {
-			this.filter.setBoxLabel(c.text);
-			//alert('filter name is changed!');
-		}
-		this.text = c.text;
+	
+		this.filedConf = this.filedConf || {};
 		
-		if(c.expression !== null){
-			this.expression = c.expression;
-			this.leftOperandValue = null;
-			this.leftOperandDescription = null;
-			this.operator = null;
-			this.rightOperandValue = null;
-		} else {
-			this.expression = null;
-			this.leftOperandValue = c.leftOperandValue;
-			this.leftOperandDescription = c.leftOperandDescription;
-			this.operator = c.operator;
-			this.rightOperandValue = c.rightOperandValue;
-		}
-		
+		if(c.id || c.field) this.uniqueName = c.id || c.field;
+		if(c.alias || c.text) this.alias = c.alias || c.text;
+	
 	}
 	
 	, getContents: function() {
 		var c = {};
-		c.text = this.text;
-		if(this.expression !== null){
-			c.expression = this.expression;
-		} else {
-			c.leftOperandValue = this.leftOperandValue;
-			c.leftOperandDescription = this.leftOperandDescription;
-			c.operator = this.operator;
-			c.rightOperandValue = this.rightOperandValue;
-		}
 		
+		c.field = this.uniqueName;
+		c.text = this.alias;
 		
 		return c;
 	}
@@ -168,70 +100,10 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Ext.Panel, {
 	// --------------------------------------------------------------------------------
 	
 	, init: function() {
-		var filterConf = {
-			width: 148,
-			hideLabel: true,
-			boxLabel: this.text,
-	        name: 'options',
-	        inputValue: 'option',
-	        style: 'background: red',
-	        bodyStyle: 'background: red'
-		};
-		
-		if(this.singleSelection === true) {
-			this.filter = new Ext.form.Radio(filterConf);
-		} else {
-			this.filter = new Ext.form.Checkbox(filterConf);
-		}
+		this.filter = new Ext.Panel({
+			html: this.alias
+		});
 	}
 	
-	, initButtons: function() {
-		this.buttons = [];
-		
-		var editBtn = new Ext.Button({
-			tooltip: 'Edit filter',
-	        cls: 'image-button',
-	        iconCls: 'edit',
-	        disabled: true,
-	        hidden: true,
-	        handler: function() {
-				this.fireEvent('actionrequest', 'edit', this);
-			}, 
-			scope: this
-	    });
-		
-		editBtn.on('render', function(b) {
-			b.getEl().on('mouseover', function(b, e) {
-				this.controls[0].enable();
-			}, this);
-			b.getEl().on('mouseout', function(el) {
-				this.controls[0].disable();
-			}, this);
-		}, this);		
-		this.buttons.push(editBtn);
-		
-		var deleteBtn = new Ext.Button({
-			tooltip: 'Delete filter',
-	        cls: 'image-button',
-	        iconCls: 'editremove',
-	        disabled: true,
-	        hidden: true,
-	        handler: function() {
-				this.fireEvent('actionrequest', 'delete', this);
-			}, 
-			scope: this
-	    });		
-		deleteBtn.on('render', function(b) {
-			b.getEl().on('mouseover', function(el) {
-				this.controls[1].enable();
-			}, this);
-			b.getEl().on('mouseout', function(el) {
-				this.controls[1].disable();
-			}, this);
-		}, this);
-		this.buttons.push(deleteBtn);	
-
-
-	}
-  	
+	
 });

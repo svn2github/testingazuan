@@ -59,6 +59,8 @@ Sbi.formbuilder.VariableEditorPanel = function(config) {
 	        columns: 100
 	    }
 		, enableDebugBtn: true
+		, enableAddBtn: false	
+		, enableClearBtn: false	
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.variableEditorPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.variableEditorPanel);
@@ -80,28 +82,6 @@ Ext.extend(Sbi.formbuilder.VariableEditorPanel, Sbi.formbuilder.EditorPanel, {
 	// public methods
 	// --------------------------------------------------------------------------------
 		
-	
-	, addFilter: function(filterConf) {	
-		//var filtersGroup = new Sbi.formbuilder.StaticCloseFilterGroupEditor(filtersGroupConf);		
-		//this.addFilterItem(filtersGroup);
-	}
-	
-	, showFilterGroupWizard: function(targetFilterGroup) {
-		if(this.wizard === null) {
-			this.wizard = new Sbi.formbuilder.StaticCloseFilterGroupWizard();
-			this.wizard.on('apply', function(win, target, state) {
-				if(target === null) {
-					this.addFilterGroup(state);
-				} else {
-					 alert('edit');
-				}
-				
-			}, this);
-		}
-		
-		this.wizard.setTarget(targetFilterGroup || null);		
-		this.wizard.show();
-	}
 
 	// --------------------------------------------------------------------------------
 	// private methods

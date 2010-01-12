@@ -112,7 +112,9 @@ Sbi.formbuilder.EditorPanel = function(config) {
     
     this.addEvents('addrequest', 'editrequest');
     
-    this.doLayout();
+    if(this.droppable !== null) {
+    	this.on('render', this.initDropTarget, this);
+    }
 };
 
 Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
@@ -127,6 +129,8 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 	, filterTitle: null
 	, filterFrame: false
 	, filterItemsCt: null
+	
+	, droppable: null
 	
 	
 	// --------------------------------------------------------------------------------
@@ -179,8 +183,12 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 	, reset: function() {	
 		if(this.contents && this.contents.length) {
 			for(var i = this.contents.length-1; i >= 0; i--) {
-				// beware: "remove" fire destroy event that is catched above here. the callback modify the length of contents) 
-				this.remove(this.contents[i], true);
+				if(this.rendered === true) {
+					// beware: "remove" fire destroy event that is catched above here. the callback modify the length of contents) 
+					this.remove(this.contents[i], true);
+				} else {
+					this.contents[i].destroy();
+				}
 			}
 		}
 	}
@@ -239,6 +247,11 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 			    , scope: this
 			});
 		}
+	}
+	
+	, initDropTarget: function() {
+		this.removeListener('render', this.initDropTarget, this);
+		this.dropTarget = new Sbi.formbuilder.EditorDropTarget(this, this.droppable);
 	}
 	
 	

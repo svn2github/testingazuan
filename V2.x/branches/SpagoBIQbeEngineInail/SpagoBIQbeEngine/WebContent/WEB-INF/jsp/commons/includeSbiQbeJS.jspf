@@ -56,6 +56,8 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/formbuilder/QueryFieldsPanel.js'/></script>
 <script type="text/javascript" src='../js/spagobi/formbuilder/TemplateEditorPanel.js'/></script>
 
+
+<script type="text/javascript" src='../js/spagobi/formbuilder/editor/EditorDropTarget.js'/></script>
 <script type="text/javascript" src='../js/spagobi/formbuilder/editor/EditorPanel.js'/></script>
 
 <script type="text/javascript" src='../js/spagobi/formbuilder/editor/staticclose/StaticCloseFilterEditorPanel.js'/></script>
@@ -70,7 +72,9 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/formbuilder/editor/staticopen/StaticOpenFilterWizard.js'/></script>
 
 <script type="text/javascript" src='../js/spagobi/formbuilder/editor/dynamic/DynamicFilterEditorPanel.js'/></script>
-<script type="text/javascript" src='../js/spagobi/formbuilder/editor/grouping/GroupingVariablesEditorPanel.js'/></script>
+
+<script type="text/javascript" src='../js/spagobi/formbuilder/editor/grouping/VariableGroupEditor.js'/></script>
+<script type="text/javascript" src='../js/spagobi/formbuilder/editor/grouping/VariableEditorPanel.js'/></script>
 
 
 <script type="text/javascript" src='../js/spagobi/formbuilder/TestTemplate.js'/></script>

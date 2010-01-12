@@ -120,7 +120,7 @@ Ext.extend(Sbi.formbuilder.TemplateEditorPanel, Ext.Panel, {
 		this.dynamicEditorPanel = new Sbi.formbuilder.DynamicFilterEditorPanel({style:'padding:10px'});
 		this.add(this.dynamicEditorPanel);
 		
-		this.groupingVariablesPanel = new Sbi.formbuilder.GroupingVariablesEditorPanel({style:'padding:10px'});
+		this.groupingVariablesPanel = new Sbi.formbuilder.VariableEditorPanel({style:'padding:10px'});
 		this.add(this.groupingVariablesPanel);
 		
 		this.doLayout(true);

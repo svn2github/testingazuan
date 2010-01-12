@@ -26,6 +26,7 @@ import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -173,7 +174,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	protected List<KpiResourceBlock> kpiResultsList;
 	
 	//Method usually called by the scheduler only in order to recalculate kpi values
-	public void execute(RequestContainer requestContainer, SourceBean response) throws EMFUserError {
+	public void execute(RequestContainer requestContainer, SourceBean response) throws EMFUserError, SourceBeanException {
 		logger.debug("IN");
 		//setting locale, formats, profile
 		setGeneralVariables(requestContainer);
@@ -552,7 +553,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		return options;
 	}
 
-	public void calculateAndInsertKpiValueWithResources(Integer miId,List resources)throws EMFUserError, EMFInternalError {
+	public void calculateAndInsertKpiValueWithResources(Integer miId,List resources)throws EMFUserError, EMFInternalError, SourceBeanException {
 		logger.debug("IN");
 		ModelInstanceNode modI =  DAOFactory.getModelInstanceDAO().loadModelInstanceById(miId, dateOfKPI);
 		if (modI != null) {
@@ -609,7 +610,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	
 
 
-	public KpiLine getBlock(Integer miId, Resource r) throws EMFUserError, EMFInternalError {
+	public KpiLine getBlock(Integer miId, Resource r) throws EMFUserError, EMFInternalError, SourceBeanException {
 		logger.debug("IN");
 		KpiLine line = new KpiLine();
 		ModelInstanceNode modI = DAOFactory.getModelInstanceDAO().loadModelInstanceById(miId, dateOfKPI);
@@ -663,7 +664,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		return line;
 	}
 	
-	private KpiValue getValueDependingOnBehaviour(KpiInstance kpiI,Integer miId, Resource r) throws EMFUserError, EMFInternalError{
+	private KpiValue getValueDependingOnBehaviour(KpiInstance kpiI,Integer miId, Resource r) throws EMFUserError, EMFInternalError, SourceBeanException{
 		logger.debug("IN");
 		KpiValue value = new KpiValue();
 		boolean no_period_to_period = false;
@@ -703,7 +704,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		return value;
 	}
 
-	public KpiValue getNewKpiValue(IDataSet dataSet, KpiInstance kpiInst, Resource r, Integer modelInstanceId) throws EMFUserError, EMFInternalError {
+	public KpiValue getNewKpiValue(IDataSet dataSet, KpiInstance kpiInst, Resource r, Integer modelInstanceId) throws EMFUserError, EMFInternalError, SourceBeanException {
 
 		logger.debug("IN");
 		Integer kpiInstanceID = kpiInst.getKpiInstanceId();
@@ -823,7 +824,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	}
 
 	
-	private KpiValue getKpiValueFromDataset(IDataSet dataSet, HashMap pars, KpiValue kVal, Date begD, Date endDate) throws EMFUserError, EMFInternalError{
+	private KpiValue getKpiValueFromDataset(IDataSet dataSet, HashMap pars, KpiValue kVal, Date begD, Date endDate) throws EMFUserError, EMFInternalError, SourceBeanException{
 		logger.debug("IN");
 		KpiValue kpiValTemp = null;
 		dataSet.setParamsMap(pars);
@@ -898,11 +899,14 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		return kVal;
 	}
 	
-	private KpiValue setKpiValuesFromDataset(KpiValue kpiValueToReturn, List fields,IDataStoreMetaData d, Date begD, Date endDate ) throws EMFUserError{
+	private KpiValue setKpiValuesFromDataset(KpiValue kpiValueToReturn, List fields,IDataStoreMetaData d, Date begD, Date endDate ) throws EMFUserError, SourceBeanException{
 		int length = fields.size();
+		String xmlData = null;
+		String tempXMLroot = "<XML_DATA></XML_DATA>";
+		SourceBean dsValuesXml = SourceBean.fromXMLString(tempXMLroot);
 		for(int fieldIndex =0; fieldIndex<length; fieldIndex++){
 
-			IField f = (IField)fields.get(fieldIndex);
+			IField f = (IField)fields.get(fieldIndex);			
 			if (f != null) {
 				if (f.getValue() != null) {
 					String fieldName = d.getFieldName(fieldIndex);	  
@@ -930,7 +934,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 						logger.debug("Setted the kpiValue value:"+fieldValue);
 					}   
 					else if(fieldName.equalsIgnoreCase("XML_DATA")){
-						String xmlData = f.getValue().toString();
+						xmlData = f.getValue().toString();
 						kpiValueToReturn.setValueXml(xmlData);
 						logger.debug("Setted the kpiValue xmlData:"+xmlData);
 					}   
@@ -941,9 +945,19 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 							kpiValueToReturn.setR(rTemp);
 							logger.info("Setted the kpiValue Resource with resource name:"+fieldValue);
 						}
-					}    
+					} else{
+						String fieldValue = f.getValue().toString();
+						if (fieldValue!=null){
+							dsValuesXml.setAttribute(fieldName, fieldValue);
+						}
+					}
 				}
 			}
+		}
+		if(xmlData==null && dsValuesXml!=null){
+			xmlData = dsValuesXml.toXML(false);
+			kpiValueToReturn.setValueXml(xmlData);
+			logger.debug("Setted the kpiValue xmlData:"+xmlData);
 		}
 		return kpiValueToReturn;
 	}

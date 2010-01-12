@@ -6,11 +6,18 @@ import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.bean.SbiExtUserRoles;
+import it.eng.spagobi.profiling.bean.SbiExtUserRolesId;
 import it.eng.spagobi.profiling.bean.SbiUser;
 import it.eng.spagobi.profiling.bean.SbiUserAttributes;
+import it.eng.spagobi.profiling.bean.SbiUserAttributesId;
+import it.eng.spagobi.profiling.bo.UserBO;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -281,4 +288,204 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			}
 		}
 	}
+
+	public ArrayList<UserBO> loadUsers() throws EMFUserError {
+		logger.debug("IN");
+		ArrayList<UserBO> users = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String q = "from SbiUser ";
+			Query query = aSession.createQuery(q);
+			
+			ArrayList<SbiUser> result = (ArrayList<SbiUser>)query.list();
+			if(result != null && !result.isEmpty()){
+				users = new ArrayList<UserBO> ();
+				for(int i=0; i<result.size(); i++){
+					users.add(toUserBO(result.get(i)));
+				}
+			}
+			
+			return users;
+		} catch (HibernateException he) {
+			logger.error(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			logger.debug("OUT");
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+	}
+	public ArrayList<SbiUser> loadSbiUsers() throws EMFUserError {
+		logger.debug("IN");
+
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String q = "from SbiUser ";
+			Query query = aSession.createQuery(q);
+			
+			ArrayList<SbiUser> result = (ArrayList<SbiUser>)query.list();
+			return result;
+		} catch (HibernateException he) {
+			logger.error(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			logger.debug("OUT");
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+	}
+	public void deleteSbiUserById(Integer id) throws EMFUserError {
+		logger.debug("IN");
+
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiUser userToDelete =(SbiUser)aSession.load(SbiUser.class, id);
+			aSession.delete(userToDelete);
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			logger.debug("OUT");
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+	}
+
+	public void fullUpdateSbiUser(Integer id, String password, String fullName, ArrayList<String> roles, HashMap<Integer, String> attributes)
+			throws EMFUserError {
+		logger.debug("IN");
+
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiUser userToUpdate =(SbiUser)aSession.load(SbiUser.class, id);
+			userToUpdate.setPassword(password);
+			userToUpdate.setFullName(fullName);
+			
+			//sets roles
+			Set<SbiExtUserRoles> extUserRoles = new HashSet<SbiExtUserRoles>();
+			
+			Iterator rolesIt = roles.iterator();
+			while(rolesIt.hasNext()){
+				String roleID = (String)rolesIt.next();
+				SbiExtUserRoles sbiExtUserRole = new SbiExtUserRoles();
+				SbiExtUserRolesId extUserRoleId = new SbiExtUserRolesId();
+		    	
+		    	Integer extRoleId = Integer.valueOf(roleID);
+		    	extUserRoleId.setExtRoleId(extRoleId);//role Id
+		    	extUserRoleId.setId(id);//user ID
+		    	
+		    	sbiExtUserRole.setId(extUserRoleId);
+		    	sbiExtUserRole.setSbiUser(userToUpdate);
+		    	extUserRoles.add(sbiExtUserRole);
+			}
+			userToUpdate.setSbiExtUserRoleses(extUserRoles);
+			//sets attributes
+			
+			Set<SbiUserAttributes> userAttrList = new HashSet<SbiUserAttributes>();
+			Iterator attrsIt = attributes.keySet().iterator();
+			while(attrsIt.hasNext()){
+				Integer attrID = (Integer)attrsIt.next();
+				SbiUserAttributes userAttr = new SbiUserAttributes();
+				SbiUserAttributesId userAttrID = new SbiUserAttributesId();
+		    	
+		    	userAttrID.setAttributeId(attrID);//attributeid
+		    	userAttrID.setId(id);//user ID
+		    	userAttr.setAttributeValue(attributes.get(attrID));
+		    	
+		    	userAttr.setId(userAttrID);
+		    	userAttr.setSbiUser(userToUpdate);
+		    	userAttrList.add(userAttr);
+			}
+			//save
+			aSession.saveOrUpdate(userToUpdate);
+			
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			logger.debug("OUT");
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		
+	}
+	public UserBO loadUserById(Integer id) throws EMFUserError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	/**
+	 * From the Hibernate SbiUser at input, gives the corrispondent BI
+	 * object (UserBO).
+	 * 
+	 * @param sbiUser The Hibernate SbiUser
+	 * 
+	 * @return the corrispondent output <code>UserBO</code>
+	 */
+	public UserBO toUserBO(SbiUser sbiUser){
+		logger.debug("IN");
+		    // create empty UserBO
+			UserBO userBO = new UserBO();
+			userBO.setId(sbiUser.getId());
+			userBO.setDtLastAccess(sbiUser.getDtLastAccess());
+			userBO.setDtPwdBegin(sbiUser.getDtPwdBegin());
+			userBO.setDtPwdEnd(sbiUser.getDtPwdEnd());
+			userBO.setFlgPwdBlocked(sbiUser.getFlgPwdBlocked());
+			userBO.setFullName(sbiUser.getFullName());
+			userBO.setPassword(sbiUser.getPassword());
+			userBO.setUserId(sbiUser.getUserId());
+			
+			List userRoles = new ArrayList();
+			Set roles = sbiUser.getSbiExtUserRoleses();
+			for (Iterator it = roles.iterator(); it.hasNext(); ) {
+				SbiExtRoles role = (SbiExtRoles) it.next();
+				Integer roleId = role.getExtRoleId();
+				userRoles.add(roleId);
+			}
+			userBO.setSbiExtUserRoleses(userRoles);
+
+			HashMap<Integer, HashMap<String, String>> userAttributes = new HashMap<Integer, HashMap<String, String>>(); 
+			Set attributes = sbiUser.getSbiUserAttributeses();
+			for (Iterator it = attributes.iterator(); it.hasNext(); ) {
+				SbiAttribute attr = (SbiAttribute) it.next();
+				Integer attrId = attr.getAttributeId();	
+				HashMap<String, String> nameValueAttr = new HashMap<String, String>();
+				
+				//retrive attribute value
+
+				nameValueAttr.put(attr.getAttributeName(), "");
+				userAttributes.put(attrId, nameValueAttr);
+			}
+			userBO.setSbiUserAttributeses(userAttributes);
+			
+			logger.debug("OUT");
+			return userBO;
+	}
+
+
 }

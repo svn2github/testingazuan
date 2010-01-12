@@ -6,6 +6,7 @@ import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.bean.SbiUserAttributes;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -157,6 +158,58 @@ public class SbiAttributeDAOHibImpl extends AbstractHibernateDAO implements
 			query.setString("name", name);
 
 			toReturn = (SbiAttribute) query.uniqueResult();
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+
+	public HashMap<Integer, String> loadSbiAttributesByIds(List<String> ids)
+			throws EMFUserError {
+		logger.debug("IN");
+		List<SbiUserAttributes> dbResult = null;
+		HashMap<Integer, String> toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+
+			StringBuffer q = new StringBuffer("from SbiUserAttributes att where ");
+			q.append(" att.id in (");
+			for(int i=0; i<ids.size(); i++){				
+				q.append(" :id"+i);				
+				if(i != ids.size()-1){
+					q.append(" , ");
+				}
+			}
+			q.append(" )");
+			
+			Query query = aSession.createQuery(q.toString());
+			for(int i=0; i<ids.size(); i++){				
+				query.setInteger("id"+i, Integer.valueOf(ids.get(i)));
+			}
+			
+
+			dbResult = query.list();
+			if(dbResult != null && !dbResult.isEmpty()){
+				toReturn = new HashMap<Integer, String>();
+				for(int i=0; i< dbResult.size(); i++){
+					SbiUserAttributes res = (SbiUserAttributes)dbResult.get(i);
+					toReturn.put(res.getId().getAttributeId(), res.getAttributeValue());
+				}
+			}
+
 			tx.commit();
 		} catch (HibernateException he) {
 			logger.error(he);

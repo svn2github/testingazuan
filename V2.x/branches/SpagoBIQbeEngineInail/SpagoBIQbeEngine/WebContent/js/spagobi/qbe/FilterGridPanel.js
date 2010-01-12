@@ -553,7 +553,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		            header: LN('sbi.qbe.filtergridpanel.headers.name')
 		           , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.name')
 		           , dataIndex: 'filterId'       
-		           , editor: new Ext.form.TextField({allowBlank: false})
+		           , editor: this.columns['filterId'].editable === true? new Ext.form.TextField({allowBlank: false}): undefined
 		           , hideable: true
 		           , hidden: false		 
 		           , sortable: false
@@ -563,7 +563,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			       header: LN('sbi.qbe.filtergridpanel.headers.desc')
 			       , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.desc')
 			       , dataIndex: 'filterDescripion'       
-			       , editor: new Ext.form.TextField({allowBlank: false})
+			       , editor: this.columns['filterDescripion'].editable === true? new Ext.form.TextField({allowBlank: false}): undefined
 			       , hideable: true
 			       , hidden: true		 
 			       , sortable: false
@@ -574,7 +574,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				    header: LN('sbi.qbe.filtergridpanel.headers.lodesc')
 				    , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.lodesc')
 				    , dataIndex: 'leftOperandDescription'       
-				    , editor: new Ext.form.TextField({allowBlank: false})
+				    , editor: this.columns['leftOperandDescription'].editable === true? new Ext.form.TextField({allowBlank: false}): undefined
 				    , hideable: false
 				    , hidden: false		 
 				    , sortable: false
@@ -594,7 +594,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 					header: LN('sbi.qbe.filtergridpanel.headers.operator')
 			        , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.notdef')
 			        , dataIndex: 'operator'     
-			        , editor: filterOptColumnEditor
+			        , editor: this.columns['operator'].editable === true? filterOptColumnEditor : undefined
 			        , hideable: false
 			        , hidden: false	
 			        , sortable: false
@@ -604,7 +604,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				    header: LN('sbi.qbe.filtergridpanel.headers.rodesc')
 				    , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.rodesc')
 				    , dataIndex: 'rightOperandDescription'       
-				    , editor: textEditor
+				    , editor: this.columns['rightOperandDescription'].editable === true? textEditor : undefined
 				    , hideable: false
 				    , hidden: false	
 				    , sortable: false

@@ -37,16 +37,16 @@ Sbi.settings.qbe = {
 			, enableTbRemoveAllFilterBtn: true
 			, enableTbAddFilterBtn: true
 			, columns : {
-				'filterId': {hideable: true, hidden: false, sortable: false}
-				, 'filterDescripion': {hideable: true, hidden: true, sortable: false}
-				, 'leftOperandDescription': {hideable: false, hidden: false, sortable: false}
-				, 'leftOperandType': {hideable: true, hidden: true, sortable: false}
-				, 'operator': {hideable: false, hidden: false, sortable: false}
-				, 'rightOperandDescription': {hideable: false, hidden: false, sortable: false}				
-				, 'rightOperandType': {hideable: true, hidden: true, sortable: false}
-				, 'booleanConnector': {hideable: true, hidden: false, sortable: false}
-				, 'deleteButton': {hideable: true, hidden: true, sortable: false}
-				, 'promptable': {hideable: true, hidden: false, sortable: false}				
+				'filterId': {hideable: true, hidden: false, sortable: false, editable: true}
+				, 'filterDescripion': {hideable: true, hidden: true, sortable: false, editable: true}
+				, 'leftOperandDescription': {hideable: false, hidden: false, sortable: false, editable: true}
+				, 'leftOperandType': {hideable: true, hidden: true, sortable: false, editable: true}
+				, 'operator': {hideable: false, hidden: false, sortable: false, editable: true}
+				, 'rightOperandDescription': {hideable: false, hidden: false, sortable: false, editable: true}				
+				, 'rightOperandType': {hideable: true, hidden: true, sortable: false, editable: true}
+				, 'booleanConnector': {hideable: true, hidden: false, sortable: false, editable: true}
+				, 'deleteButton': {hideable: true, hidden: true, sortable: false, editable: true}
+				, 'promptable': {hideable: true, hidden: false, sortable: false, editable: true}				
 			}
 		}
 		

@@ -25,9 +25,9 @@ final String META_COL_W = "4";
 final String VAL_COL_W = "9";
 final String WEIGHT_COL_W = "5";
 final String CHART_OR_IMAGE_COL_W = "22";
-String TREND_COL_W = "3";
-String DOC_COL_W = "2";
-String ALARM_COL_W = "2";
+final String TREND_COL_W = "3";
+final String DOC_COL_W = "2";
+final String ALARM_COL_W = "2";
 //in case both Chart and image are visible
 final String CHART_COL_W = "15";
 final String IMG_COL_W = "7";

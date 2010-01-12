@@ -19,7 +19,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
 <% 
 //START CONSTRUCTING TREE FOR EACH RESOURCE
-	
+	//PERCENTAGE WIDTH OF EVERY COLUMN (SUM MUST BE 100%)
+final String MODEL_COL_W = "53";
+final String META_COL_W = "4";
+final String VAL_COL_W = "9";
+final String WEIGHT_COL_W = "5";
+final String CHART_OR_IMAGE_COL_W = "22";
+String TREND_COL_W = "3";
+String DOC_COL_W = "2";
+String ALARM_COL_W = "2";
+//in case both Chart and image are visible
+final String CHART_COL_W = "15";
+final String IMG_COL_W = "7";
+//css classes
+final String table_css_class = "kpi_table";
+final String res_css_class = "kpi_resource_section";
+final String tr_odd_css_class = "kpi_first_line_section_odd";
+final String td_first_line_css_class = "kpi_first_line_td";
+
 		KpiResourceBlock block = (KpiResourceBlock) blocksIt.next();
 		options = block.getOptions();
 		HashMap parMap = block.getParMap() ;
@@ -41,16 +58,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<div id='<%=resourceName%>' >	
 			
 			<!-- START Table containing a specific resource -->		
-			<table class='kpi_table' id='KPI_TABLE<%=resourceId%>' >
+			<table class='<%=table_css_class%>' id='KPI_TABLE<%=resourceId%>' >
 			<TBODY>
 			<% if (options.getDisplay_bullet_chart() && options.getDisplay_threshold_image() ){%>
-				 <tr class='kpi_resource_section' >
+				 <tr class='<%=res_css_class%>' >
 				 	<td colspan='10' id='ext-gen58' >
 				 		<spagobi:message key="sbi.kpi.RESOURCE" /><%=resourceName%>
 				 	</td>
 				 </tr>
 			<%}else{%>
-				 <tr class='kpi_resource_section' >
+				 <tr class='<%=res_css_class%>' >
 				 	<td colspan='9' id='ext-gen58' >
 				 		<spagobi:message key="sbi.kpi.RESOURCE" /><%=resourceName%>
 				 	</td>
@@ -61,31 +78,31 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		}else{%>
 			
 			<!-- START Table in case there are no resources -->	
-			<table class='kpi_table' id='KPI_TABLE' >
+			<table class='<%=table_css_class%>' id='KPI_TABLE' >
 			<TBODY>
 			<% 
 			id = "node1";
 		}%>
 			
 			<!-- START TITLE ROW -->
-		 		 <tr class='kpi_first_line_section_odd' >
+		 		 <tr class='<%=tr_odd_css_class%>' >
 		 		 
 		 		 	<!-- START MODEL TITLE COLUMN -->
-					<td width='53%'  class='kpi_first_line_td' style='text-align:left;' >
+					<td width='<%=MODEL_COL_W%>%'  class='<%=td_first_line_css_class%>' style='text-align:left;' >
 						<%=options.getModel_title()%>
 					</td>
-					<td width='4%' >
+					<td width='<%=META_COL_W%>%' >
 						<div></div>
 					</td>
 					<!-- END MODEL TITLE COLUMN -->
 					
 					<!-- START KPI TITLE COLUMN -->
 				<% if(options.getKpi_title()!=null){%>
-					<td  width='9%' class='kpi_first_line_td' >
+					<td  width='<%=VAL_COL_W%>%' class='<%=td_first_line_css_class%>' >
 						<%=options.getKpi_title()%>
 					</td>
 				<% }else{ %>
-					<td  width='9%' class='kpi_first_line_td' >
+					<td  width='<%=VAL_COL_W%>%' class='<%=td_first_line_css_class%>' >
 						<div></div>
 					</td>
 					<!-- END KPI TITLE COLUMN -->
@@ -94,11 +111,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<% } 
 				
 				if (options.getDisplay_weight() && options.getWeight_title()!=null){ %>
-					<td width='5%' class='kpi_first_line_td' >
+					<td width='<%=WEIGHT_COL_W%>%' class='<%=td_first_line_css_class%>' >
 						<%=options.getWeight_title()%>
 					</td>
 				<% }else{%>
-					<td width='5%' class='kpi_first_line_td' >
+					<td width='<%=WEIGHT_COL_W%>%' class='<%=td_first_line_css_class%>' >
 						<div></div>
 					</td>
 					<!-- END KPI WEIGHT COLUMN -->
@@ -107,30 +124,30 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<% } 
 				
 				if (options.getDisplay_bullet_chart() && options.getDisplay_threshold_image() && options.getBullet_chart_title()!=null && options.getBullet_chart_title()!=null){ %>
-					<td width='15%' class='kpi_first_line_td' style='text-align:center;' >
+					<td width='<%=CHART_COL_W%>%' class='<%=td_first_line_css_class%>' style='text-align:center;' >
 						<%=options.getBullet_chart_title()%>
 					</td>
-					<td width='7%' class='kpi_first_line_td' >
+					<td width='<%=IMG_COL_W%>%' class='<%=td_first_line_css_class%>' >
 						<%=(options.getThreshold_image_title()!=null?options.getThreshold_image_title():"")%>
 					</td>
 				<% }else if(options.getDisplay_bullet_chart()  && options.getBullet_chart_title()!=null){%>
-					<td width='22%' class='kpi_first_line_td' style='text-align:center;' >
+					<td width='<%=CHART_OR_IMAGE_COL_W%>%' class='<%=td_first_line_css_class%>' style='text-align:center;' >
 						<%=options.getBullet_chart_title()%>
 					</td>
 				<% }else if(options.getDisplay_threshold_image()  && options.getThreshold_image_title()!=null){%>
-					<td width='22%' class='kpi_first_line_td' style='text-align:center;' >
+					<td width='<%=CHART_OR_IMAGE_COL_W%>%' class='<%=td_first_line_css_class%>' style='text-align:center;' >
 						<%=options.getThreshold_image_title()%>
 					</td>
 				<% }else{%>
-					<td width='22%' class='kpi_first_line_td' style='text-align:center;' >
+					<td width='<%=CHART_OR_IMAGE_COL_W%>%' class='<%=td_first_line_css_class%>' style='text-align:center;' >
 						<div></div>
 					</td>
 				<% }%>
 					<!-- END BULLET CHART AND THRESHOLD IMAGE COLUMN -->
 					
-				<td width='3%' ><div></div></td>
-				<td width='2%' ><div></div></td>
-				<td width='2%' ><div></div></td>
+				<td width='<%=TREND_COL_W%>%' ><div></div></td>
+				<td width='<%=DOC_COL_W%>%' ><div></div></td>
+				<td width='<%=ALARM_COL_W%>%' ><div></div></td>
 		 </tr>
 		 <!-- END TITLE ROW -->
 		

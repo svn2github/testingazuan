@@ -278,8 +278,8 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 		}
 		
 		if(this.contents.length != this.items.length) {
-			alert('we are in truble');
-			alert(this.contents.length + ' ' + this.items.length);
+			//alert('we are in truble');
+			//alert(this.contents.length + ' ' + this.items.length);
 			for(var i = 0; i < this.items.length; i++) {
 				if(filterItem.id === this.items.get(i).id) {
 					this.items.remove(this.items.get(i));

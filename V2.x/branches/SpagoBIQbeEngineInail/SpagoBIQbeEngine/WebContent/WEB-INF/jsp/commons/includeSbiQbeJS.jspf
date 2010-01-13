@@ -68,8 +68,8 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/formbuilder/editor/staticclose/StaticCloseFilterWizard.js'/></script>
 
 <script type="text/javascript" src='../js/spagobi/formbuilder/editor/staticopen/StaticOpenFilterEditorPanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/formbuilder/editor/staticopen/StaticOpenFilterGroupEditor.js'/></script>
 <script type="text/javascript" src='../js/spagobi/formbuilder/editor/staticopen/StaticOpenFilterEditor.js'/></script>
-<script type="text/javascript" src='../js/spagobi/formbuilder/editor/staticopen/StaticOpenFiltersEditorPanelDropTarget.js'/></script>
 <script type="text/javascript" src='../js/spagobi/formbuilder/editor/staticopen/StaticOpenFilterWizard.js'/></script>
 
 <script type="text/javascript" src='../js/spagobi/formbuilder/editor/dynamic/DynamicFilterEditorPanel.js'/></script>

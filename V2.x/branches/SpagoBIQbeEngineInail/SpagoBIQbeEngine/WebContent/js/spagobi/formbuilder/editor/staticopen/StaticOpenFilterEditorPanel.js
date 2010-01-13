@@ -92,7 +92,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Sbi.formbuilder.EditorPa
 	}
 
 	, addFilter: function(filterConf) {
-		var filter = new Sbi.formbuilder.StaticOpenFilterEditor( filterConf );
+		var filter = new Sbi.formbuilder.StaticOpenFilterGroupEditor( filterConf );
 		this.addFilterItem( filter );
 	}
 	

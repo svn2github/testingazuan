@@ -84,7 +84,7 @@ public class InternalSecurityInitializer implements InitializerIFace {
 				    	Integer id = attrDAO.saveSbiAttribute(sbiAttribute);
 				    	attributesLookup.put(attrName, id);
 					} catch (EMFUserError e) {
-						logger.error(e.getMessage());
+						logger.error(e.getMessage(), e);
 					}	
 			    }else{
 			    	attributesLookup.put(attrName, existingAttribute.getAttributeId());
@@ -128,7 +128,7 @@ public class InternalSecurityInitializer implements InitializerIFace {
 			    	
 			    	rolesLookup.put(roleName, id);
 				} catch (EMFUserError e) {
-					logger.error(e.getMessage());
+					logger.error(e.getMessage(), e);
 				}			    
 			}
 			//finally default users with associations
@@ -204,11 +204,11 @@ public class InternalSecurityInitializer implements InitializerIFace {
 				    }
 
 				} catch (EMFUserError e) {
-					logger.error(e.getMessage());
+					logger.error(e.getMessage(), e);
 				}			    
 			}
 		} catch (EMFUserError e1) {
-			logger.error(e1.getMessage());
+			logger.error(e1.getMessage(), e1);
 		}
 		logger.debug("OUT");
 

@@ -1,10 +1,34 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2009 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.security;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IRoleDAO;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
+import it.eng.spagobi.profiling.bean.SbiAttribute;
+import it.eng.spagobi.profiling.bean.SbiExtUserRoles;
 import it.eng.spagobi.profiling.bean.SbiUser;
 import it.eng.spagobi.profiling.bean.SbiUserAttributes;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
@@ -50,7 +74,7 @@ public class InternalSecurityServiceSupplierImpl implements
 			logger.debug("OUT");
 			return obj;
 		} catch (EMFUserError e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
 		return null;
 
@@ -83,7 +107,6 @@ public class InternalSecurityServiceSupplierImpl implements
 			profile = new SpagoBIUserProfile();
 			profile.setUniqueIdentifier(userId);
 			profile.setUserId(userId);
-			profile.setUserName(userId);
 	
 			// get user name
 			String userName = userId;
@@ -130,7 +153,7 @@ public class InternalSecurityServiceSupplierImpl implements
 			profile.setRoles(roleStr);
 			profile.setAttributes(attributes);
 		} catch (EMFUserError e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return null;
 		}
 		logger.debug("OUT");

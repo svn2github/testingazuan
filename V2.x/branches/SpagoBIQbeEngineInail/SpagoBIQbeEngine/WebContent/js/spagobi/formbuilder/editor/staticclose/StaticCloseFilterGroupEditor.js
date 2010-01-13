@@ -125,7 +125,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupEditor, Sbi.formbuilder.EditorP
 	}
 	
 	, deleteFilter: function(f) {
-		f.destroy();
+		this.remove(f, true);
 	}
 	
 	, editFilter: function(f) {
@@ -149,7 +149,13 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupEditor, Sbi.formbuilder.EditorP
 					scope: this
 			    }, {
 					text: 'Delete',
-					handler: function() { this.destroy(); },
+					handler: function() { 
+			    		if(this.ownerCt) {
+			    			this.ownerCt.remove(this, true);
+			    		} else {
+			    			this.destroy();
+			    		}			    		 
+			    	},
 					scope: this
 			    }
 			  ]

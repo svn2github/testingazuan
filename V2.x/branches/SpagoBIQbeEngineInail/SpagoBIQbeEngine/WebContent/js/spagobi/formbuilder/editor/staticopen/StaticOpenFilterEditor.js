@@ -49,7 +49,7 @@ Ext.ns("Sbi.formbuilder");
 Sbi.formbuilder.StaticOpenFilterEditor = function(config) {
 	
 	var defaultSettings = {
-		
+			layout: 'form' // form layout required: input field labels are displayed only with this layout
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.staticOpenFilterEditor) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.staticOpenFilterEditor);
@@ -94,11 +94,21 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditor, Ext.Panel,  {
 	// --------------------------------------------------------------------------------
 		
 	, setContents: function(c) {
-		
+		alert('setContents');
 	}
 	
 	, getContents: function() {
+		var c = {};
 		
+		c.text = this.text || undefined;
+		c.singleSelection = this.singleSelection || undefined;
+		c.maxSelectedNumber = this.maxSelectedNumber || undefined;
+		c.query = this.query || undefined;
+		c.field = this.field || undefined;
+		c.orderField = this.orderField || undefined;
+		c.orderType = this.orderType || undefined;
+		
+		return c;
 	}
 	
 	// --------------------------------------------------------------------------------
@@ -107,9 +117,9 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditor, Ext.Panel,  {
 	
 	, init: function() {
 		var baseConfig = {
-	       fieldLabel: this.text || 'pippo'
+	       fieldLabel: this.text
 		   , name : this.id
-		   , width: this.baseConfig.fieldWidth
+		   , width: this.fieldWidth
 		   , allowBlank: true
 		};
 		
@@ -121,6 +131,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditor, Ext.Panel,  {
 		} else {
 			maxSelectionNumber = this.maxSelectedNumber;
 		}
+		
 		
 		this.filter = new Ext.ux.form.SuperBoxSelect(Ext.apply(baseConfig, {
 			editable: true			    
@@ -137,6 +148,12 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditor, Ext.Panel,  {
 		    , width: 200
 		    , maxHeight: 250
 		}));
+		
+		/*
+		this.filter = new Ext.Panel({
+			html: 'prova'
+		});
+		*/
 	}
 		
 	, initStore: function() {

@@ -115,6 +115,8 @@ Sbi.formbuilder.EditorPanel = function(config) {
     if(this.droppable !== null) {
     	this.on('render', this.initDropTarget, this);
     }
+    
+    this.on('beforedestroy', this.onEditorDestroy, this);
 };
 
 Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
@@ -138,7 +140,7 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 	// --------------------------------------------------------------------------------
 		
 	, setContents: function(contents) {
-		alert('EditorPanel: setContents undefined: ' + contents.toSource());
+		alert('EditorPanel: setContents undefined');
 	}
 
 	, getContents: function() {
@@ -259,7 +261,14 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 	
 	}
 	
+	, onEditorDestroy: function() {
+		this.pendingDestruction = true;
+	}
+	
 	, onFilterItemDestroy: function(filterItem) {
+		
+		if(this.pendingDestruction === true) return;
+		
 		var t = this.contents;
 		this.contents = [];
 		for(var i = 0; i < t.length; i++) {
@@ -267,6 +276,18 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 				this.contents.push(t[i]);
 			}
 		}
+		
+		if(this.contents.length != this.items.length) {
+			alert('we are in truble');
+			alert(this.contents.length + ' ' + this.items.length);
+			for(var i = 0; i < this.items.length; i++) {
+				if(filterItem.id === this.items.get(i).id) {
+					this.items.remove(this.items.get(i));
+				}
+			}
+			
+		}
+		
 		if(this.contents.length === 0) {
 			this.empty = true;
 			this.initEmptyMsgPanel();

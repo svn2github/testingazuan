@@ -83,16 +83,14 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Sbi.formbuilder.EditorPa
 		
 	, setContents: function(contents) {
 		for(var i = 0, l = contents.length; i < l; i++) {
-			this.addFilter(contents[i]);
+			this.addFilterGroup(contents[i]);
 		}
 	}
 	
-	, loadContents: function(contents) {
-		alert(contents.toSource());
-	}
-
-	, addFilter: function(filterConf) {
-		var filter = new Sbi.formbuilder.StaticOpenFilterGroupEditor( filterConf );
+	, addFilterGroup: function(filtersGroupConf) {
+		var c =  filtersGroupConf || {};
+		c.baseContents = [filtersGroupConf];
+		var filter = new Sbi.formbuilder.StaticOpenFilterGroupEditor( c );
 		this.addFilterItem( filter );
 	}
 	
@@ -102,15 +100,17 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Sbi.formbuilder.EditorPa
 	
 	
 	, onFieldDrop: function(fieldConf) {
-		var openFilter = {};
-		openFilter.text = fieldConf.alias;
-		openFilter.field = fieldConf.id;
-		openFilter.operator = 'EQUALS TO';
-		openFilter.maxSelectedNumber = 1;
+		var filtersGroupConf = {};
+		filtersGroupConf.text = fieldConf.alias;
+		filtersGroupConf.field = fieldConf.id;
+		filtersGroupConf.operator = 'EQUALS TO';
+		filtersGroupConf.maxSelectedNumber = 1;
 
-		var staticOpenFilterWindow = new Sbi.formbuilder.StaticOpenFilterWizard(openFilter, {});
+		var staticOpenFilterWindow = new Sbi.formbuilder.StaticOpenFilterWizard(filtersGroupConf, {});
 		staticOpenFilterWindow.show();		
-		staticOpenFilterWindow.on('apply', function(openFilter) {this.addFilter(openFilter);} , this); 
+		staticOpenFilterWindow.on('apply', function(filtersGroupConf) {
+			this.addFilterGroup(filtersGroupConf);
+		} , this); 
 	}
 	
 });

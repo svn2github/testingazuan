@@ -46,34 +46,19 @@
 
 Ext.ns("Sbi.formbuilder");
 
-Sbi.formbuilder.StaticOpenFilterGroupEditor = function(openFilter, config) {
-	
-	this.openFilter = openFilter;
-	
+Sbi.formbuilder.StaticOpenFilterGroupEditor = function(config) {
+		
 	var defaultSettings = {
-		// set default values here
-		layout: 'form' // form layout required: input field labels are displayed only with this layout
-		, frame: true
-		, autoScroll: true
-		, autoWidth: true
-		, autoHeight: true
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.staticOpenFilterGroupEditor) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.staticOpenFilterGroupEditor);
 	}
-	
 	var c = Ext.apply(defaultSettings, config || {});
-	openFilter.baseConfig = c;
-	
-	alert(openFilter.toSource());
-	
-	this.field = new Sbi.formbuilder.StaticOpenFilterEditor(openFilter); //this.createField();
 	
 	this.initToolbar();
 	
 	Ext.apply(c, {
-		items: [this.field]
-		, tbar: this.toolbar
+		tbar: this.toolbar
 	});
 	
 	// constructor
@@ -81,87 +66,36 @@ Sbi.formbuilder.StaticOpenFilterGroupEditor = function(openFilter, config) {
     
 };
 
-Ext.extend(Sbi.formbuilder.StaticOpenFilterGroupEditor, Ext.Panel, {
+Ext.extend(Sbi.formbuilder.StaticOpenFilterGroupEditor, Sbi.formbuilder.EditorPanel, {
 	
-	openFilter: null
-	, field: null
+	wizard: null
 	
-	/*
-	, createStore: function() {
-		
-		var entityId = (this.openFilter.query != undefined && this.openFilter.query.field != undefined) ? this.openFilter.query.field : this.openFilter.field;
-		var orderField = (this.openFilter.query != undefined && this.openFilter.query.orderField != undefined) ? this.openFilter.query.orderField : undefined;
-		var orderType = (this.openFilter.query != undefined && this.openFilter.query.orderType != undefined) ? this.openFilter.query.orderType : undefined;
-		
-		var store = new Ext.data.JsonStore({
-			url: this.services['getFilterValuesService']
-		});
-		var baseParams = {'ENTITY_ID': entityId, 'ORDER_ENTITY': orderField, 'ORDER_TYPE': orderType};
-		store.baseParams = baseParams;
-		
-		store.on('loadexception', function(store, options, response, e) {
-			Sbi.exception.ExceptionHandler.handleFailure(response, options);
-		});
-		
-		return store;
-		
-	}
+	//--------------------------------------------------------------------------------
+	// public methods
+	// --------------------------------------------------------------------------------
 	
-	, createField: function() {
-		var field;
-		
-		var baseConfig = {
-	       fieldLabel: this.openFilter.text
-		   , name : this.openFilter.id
-		   , width: this.baseConfig.fieldWidth
-		   , allowBlank: true
-		};
-		
-		var store = this.createStore(this.openFilter);
-		
-		var maxSelectionNumber = 1;
-		if (this.openFilter.singleSelection === undefined || this.openFilter.singleSelection === null || this.openFilter.singleSelection === true) {
-			maxSelectionNumber = 1;
-		} else {
-			maxSelectionNumber = this.openFilter.maxSelectedNumber;
+	, setContents: function(contents) {
+		for(var i = 0, l = contents.length; i < l; i++) {
+			this.addFilter(contents[i]);
 		}
-		
-		field = new Ext.ux.form.SuperBoxSelect(Ext.apply(baseConfig, {
-			editable: true			    
-		    , forceSelection: false
-		    , store: store
-		    , displayField: 'column-1'
-		    , valueField: 'column-1'
-		    , emptyText: ''
-		    , typeAhead: false
-		    , triggerAction: 'all'
-		    , selectOnFocus: true
-		    , autoLoad: false
-		    , maxSelection: maxSelectionNumber
-		    , width: 200
-		    , maxHeight: 250
-		}));
-		
-		return field;
-	}
-	*/
-	
-	, editFilter: function() {
-		var staticOpenFilterWindow = new Sbi.formbuilder.StaticOpenFilterWizard(this.openFilter, {});
-		staticOpenFilterWindow.show();
-		staticOpenFilterWindow.on('apply', function(openFilter) {this.modifyFilter(openFilter);} , this);
 	}
 	
-	, modifyFilter: function(openFilter) {
-		this.openFilter = openFilter;
-		this.remove(this.field);
-		this.field = this.createField();
-		this.add(this.field);
-		this.doLayout();
+	, getContents: function() {
+		return this.contents[0].getContents();
 	}
 	
-	, getOpenFilter: function() {
-		return this.openFilter;
+	, addFilter: function(filterConf) {
+		var filter = new Sbi.formbuilder.StaticOpenFilterEditor(filterConf); 
+		this.addFilterItem(filter);
+	}
+	
+	, editFilter: function(f) {
+		this.onFilterWizardShow(f);
+	}
+	
+	, modifyFilter: function(filterConf) {
+		this.clearContents();
+		this.addFilter(filterConf);
 	}
 	
 	// --------------------------------------------------------------------------------
@@ -174,15 +108,44 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterGroupEditor, Ext.Panel, {
 			items: [
 			    '->' , {
 					text: 'Edit',
-					handler: function() {this.editFilter();},
+					handler: function() {this.editFilter(this.contents[0]);},
 					scope: this
 			    } , {
 					text: 'Remove',
-					handler: function() {this.destroy();},
+					handler: function() {
+				    	if(this.ownerCt) {
+			    			this.ownerCt.remove(this, true);
+			    		} else {
+			    			this.destroy();
+			    		}
+				    },
 					scope: this
 			    }
 			  ]
 		});
+	}
+	
+	, onFilterWizardShow: function(targetFilter) {
+		var staticOpenFilterWindow = new Sbi.formbuilder.StaticOpenFilterWizard(targetFilter.getContents(), {});
+		staticOpenFilterWindow.show();
+		staticOpenFilterWindow.on('apply', this.modifyFilter , this);
+		
+		/*
+		if(this.wizard === null) {
+			this.wizard = new Sbi.formbuilder.StaticCloseFilterWizard();
+			this.wizard.on('apply', function(win, target, state) {
+				if(target === null) {
+					this.addFilter(state);
+				} else {
+					target.setContents(state);
+				}
+				
+			}, this);
+		}
+		
+		this.wizard.setTarget(targetFilter || null);		
+		this.wizard.show();
+		*/
 	}
 	
 });

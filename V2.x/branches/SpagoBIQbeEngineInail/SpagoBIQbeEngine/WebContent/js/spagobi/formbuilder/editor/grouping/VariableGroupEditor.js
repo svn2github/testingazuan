@@ -117,7 +117,7 @@ Ext.extend(Sbi.formbuilder.VariableGroupEditor, Sbi.formbuilder.EditorPanel, {
 	}
 	
 	, deleteField: function(f) {
-		f.destroy();
+		this.remove(f, true);
 	}
 	
 	, editFilter: function(f) {

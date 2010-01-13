@@ -230,7 +230,7 @@ if (heightArea == null || heightArea.trim().equals("")) {
 
 <%-- Start execution iframe --%>
 <div id="divIframe<%= uuid %>" style="width:100%;overflow=auto;border: 0;display:inline;<%= heightStr %>">
-	<iframe id="iframeexec<%= uuid %>" name="iframeexec<%= uuid %>" src="<%= StringEscapeUtils.escapeHtml(getUrl(obj.getEngine().getUrl(), executionParameters)) %>&EXECUTION_ID=<%= uuid %>" style="width:100%;height:300px;z-index:0;" frameborder="0" >
+	<iframe id="iframeexec<%= uuid %>" name="iframeexec<%= uuid %>" src="<%= StringEscapeUtils.escapeHtml(GeneralUtilities.getUrl(obj.getEngine().getUrl(), executionParameters)) %>&EXECUTION_ID=<%= uuid %>" style="width:100%;height:300px;z-index:0;" frameborder="0" >
 	</iframe>
 </div>
 

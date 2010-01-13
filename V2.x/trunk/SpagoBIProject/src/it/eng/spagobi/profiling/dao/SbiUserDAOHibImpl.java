@@ -372,38 +372,41 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			
 			//sets roles
 			Set<SbiExtUserRoles> extUserRoles = new HashSet<SbiExtUserRoles>();
-			
-			Iterator rolesIt = roles.iterator();
-			while(rolesIt.hasNext()){
-				String roleID = (String)rolesIt.next();
-				SbiExtUserRoles sbiExtUserRole = new SbiExtUserRoles();
-				SbiExtUserRolesId extUserRoleId = new SbiExtUserRolesId();
-		    	
-		    	Integer extRoleId = Integer.valueOf(roleID);
-		    	extUserRoleId.setExtRoleId(extRoleId);//role Id
-		    	extUserRoleId.setId(id);//user ID
-		    	
-		    	sbiExtUserRole.setId(extUserRoleId);
-		    	sbiExtUserRole.setSbiUser(userToUpdate);
-		    	extUserRoles.add(sbiExtUserRole);
+			if(roles != null){
+				Iterator rolesIt = roles.iterator();
+				while(rolesIt.hasNext()){
+					String roleID = (String)rolesIt.next();
+					SbiExtUserRoles sbiExtUserRole = new SbiExtUserRoles();
+					SbiExtUserRolesId extUserRoleId = new SbiExtUserRolesId();
+			    	
+			    	Integer extRoleId = Integer.valueOf(roleID);
+			    	extUserRoleId.setExtRoleId(extRoleId);//role Id
+			    	extUserRoleId.setId(id);//user ID
+			    	
+			    	sbiExtUserRole.setId(extUserRoleId);
+			    	sbiExtUserRole.setSbiUser(userToUpdate);
+			    	extUserRoles.add(sbiExtUserRole);
+				}
+				userToUpdate.setSbiExtUserRoleses(extUserRoles);
 			}
-			userToUpdate.setSbiExtUserRoleses(extUserRoles);
 			//sets attributes
-			
-			Set<SbiUserAttributes> userAttrList = new HashSet<SbiUserAttributes>();
-			Iterator attrsIt = attributes.keySet().iterator();
-			while(attrsIt.hasNext()){
-				Integer attrID = (Integer)attrsIt.next();
-				SbiUserAttributes userAttr = new SbiUserAttributes();
-				SbiUserAttributesId userAttrID = new SbiUserAttributesId();
-		    	
-		    	userAttrID.setAttributeId(attrID);//attributeid
-		    	userAttrID.setId(id);//user ID
-		    	userAttr.setAttributeValue(attributes.get(attrID));
-		    	
-		    	userAttr.setId(userAttrID);
-		    	userAttr.setSbiUser(userToUpdate);
-		    	userAttrList.add(userAttr);
+			if(attributes != null){
+				Set<SbiUserAttributes> userAttrList = new HashSet<SbiUserAttributes>();
+				Iterator attrsIt = attributes.keySet().iterator();
+				while(attrsIt.hasNext()){
+					Integer attrID = (Integer)attrsIt.next();
+					SbiUserAttributes userAttr = new SbiUserAttributes();
+					SbiUserAttributesId userAttrID = new SbiUserAttributesId();
+			    	
+			    	userAttrID.setAttributeId(attrID);//attributeid
+			    	userAttrID.setId(id);//user ID
+			    	userAttr.setAttributeValue(attributes.get(attrID));
+			    	
+			    	userAttr.setId(userAttrID);
+			    	userAttr.setSbiUser(userToUpdate);
+			    	userAttrList.add(userAttr);
+				}
+				userToUpdate.setSbiUserAttributeses(userAttrList);
 			}
 			//save
 			aSession.saveOrUpdate(userToUpdate);

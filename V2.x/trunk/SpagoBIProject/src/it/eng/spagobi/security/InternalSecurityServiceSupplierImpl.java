@@ -110,9 +110,7 @@ public class InternalSecurityServiceSupplierImpl implements
 					SbiUserAttributes attribute = (SbiUserAttributes) iterAttrs.next();
 					
 					String attributeName = attribute.getSbiAttribute().getAttributeName();
-					
-					//SbiUserAttributes userAttr = DAOFactory.getSbiAttributeDAO().loadSbiAttributesByUserAndId(user.getId(), attribute.getAttributeId());
-					
+
 				    String attributeValue = attribute.getAttributeValue();
 				    if (attributeValue != null) {
 				    	logger.debug("Add attribute. " + attributeName + "=" + attributeName + " to the user"

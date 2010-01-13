@@ -142,7 +142,10 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 					throw new SpagoBIServiceException(SERVICE_NAME,	"Please check password!");
 				}
 				try {
-					HashMap<Integer, String> attrList = deserializeJSONArray(attributesJSON);
+					HashMap<Integer, String> attrList = null;
+					if(attributesJSON != null){
+						attrList = deserializeJSONArray(attributesJSON);
+					}
 					try {
 						userDao.fullUpdateSbiUser(id, password, fullName, roles, attrList);
 

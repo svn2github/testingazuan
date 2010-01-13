@@ -51,6 +51,8 @@ Sbi.formbuilder.InlineEditor = function(config) {
 	var defaultSettings = {
 		deletable: true
 		, editable: true
+		, bodyStyle:'padding-top: 8px; padding-left: 8px; padding-bottom: 8px'
+	    //, height: 55
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.inlineEditor) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.inlineEditor);
@@ -69,10 +71,10 @@ Sbi.formbuilder.InlineEditor = function(config) {
 		columnWidth: .99,
 		items: [this.filter]
 	}];
-	for(var i = 0, l = this.buttons.length; i < l; i++) {
+	for(var i = 0, l = this.xbuttons.length; i < l; i++) {
 		items.push({
 		    width: 23,
-		    items: [ this.buttons[i] ]
+		    items: [ this.xbuttons[i] ]
 		});
 	}
 	
@@ -85,7 +87,7 @@ Sbi.formbuilder.InlineEditor = function(config) {
 		     columns: 3
 		}
 			
-		, controls: this.buttons		
+		, controls: this.xbuttons		
 		, items: items
 	});
 	
@@ -147,7 +149,7 @@ Ext.extend(Sbi.formbuilder.InlineEditor, Ext.Panel, {
 
 	
 	, initButtons: function() {
-		this.buttons = [];
+		this.xbuttons = [];
 		
 		if(this.editable === true) {
 			this.editBtn = new Ext.Button({
@@ -156,6 +158,7 @@ Ext.extend(Sbi.formbuilder.InlineEditor, Ext.Panel, {
 		        iconCls: 'edit',
 		        disabled: true,
 		        hidden: true,
+		        hideMode: 'visibility',
 		        handler: function() {
 					this.fireEvent('actionrequest', 'edit', this);
 				}, 
@@ -170,7 +173,7 @@ Ext.extend(Sbi.formbuilder.InlineEditor, Ext.Panel, {
 					this.editBtn.disable();
 				}, this);
 			}, this);		
-			this.buttons.push(this.editBtn);
+			this.xbuttons.push(this.editBtn);
 		}
 		
 		if(this.deletable === true) {
@@ -180,6 +183,7 @@ Ext.extend(Sbi.formbuilder.InlineEditor, Ext.Panel, {
 		        iconCls: 'editremove',
 		        disabled: true,
 		        hidden: true,
+		        hideMode: 'visibility',
 		        handler: function() {
 					this.fireEvent('actionrequest', 'delete', this);
 				}, 
@@ -193,7 +197,7 @@ Ext.extend(Sbi.formbuilder.InlineEditor, Ext.Panel, {
 					this.deleteBtn.disable();
 				}, this);
 			}, this);
-			this.buttons.push(this.deleteBtn);
+			this.xbuttons.push(this.deleteBtn);
 		}
 
 

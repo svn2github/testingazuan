@@ -53,27 +53,6 @@ The following directive catches exceptions thrown by jsps, must be commented in 
 <!-- IMPORT TAG LIBRARY  -->
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
 
-<%!
-String getUrl(String baseUrl, Map mapPars) {
-	StringBuffer buffer = new StringBuffer();
-    buffer.append(baseUrl);
-    buffer.append(baseUrl.indexOf("?") == -1 ? "?" : "&");
-	if (mapPars != null && !mapPars.isEmpty()) {
-		java.util.Set keys = mapPars.keySet();
-		Iterator iterKeys = keys.iterator(); 
-		while (iterKeys.hasNext()) {
-		  	String key = iterKeys.next().toString();
-		  	String value = mapPars.get(key).toString();
-		  	buffer.append(key + "=" + value);
-		  	if (iterKeys.hasNext()) {
-		  		buffer.append("&");
-		  	}
-		}
-	}
-	return buffer.toString();
-}
-%>
-
 <%-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) -->
 commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext ManagedIFrame library) library
 <script type="text/javascript">
@@ -314,5 +293,3 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 <script>
 	document.onselectstart = function() { return true; }
 </script>
-
-

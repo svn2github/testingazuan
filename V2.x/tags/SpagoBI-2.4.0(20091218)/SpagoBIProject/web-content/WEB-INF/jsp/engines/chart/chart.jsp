@@ -494,10 +494,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 
 
-	/// If it is a linkable graph  write the MAP
+	/// If it is a linkable graph  write the MAP, but only if it has a document associated!!!!!
 	if(sbi.isLinkable()){
-		PrintWriter pw = new PrintWriter(out);
-		ChartUtilities.writeImageMap(pw, "chart", info,new StandardToolTipTagFragmentGenerator(),new StandardURLTagFragmentGenerator());
+		if(sbi instanceof ILinkableChart && ((ILinkableChart)sbi).getDrillLabel()!=null && !((ILinkableChart)sbi).getDrillLabel().trim().equalsIgnoreCase("")){
+			PrintWriter pw = new PrintWriter(out);
+			ChartUtilities.writeImageMap(pw, "chart", info,new StandardToolTipTagFragmentGenerator(),new StandardURLTagFragmentGenerator());
+		}
 	}
 	
 %>

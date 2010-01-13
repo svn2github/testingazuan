@@ -144,13 +144,17 @@ public class SpagoBICrossNavigationConfig {
 		String hierarchyName = parameter.hierarchy;
 		String levelName = parameter.level;
 		String propertyName = parameter.property;
+		logger.debug("Looking for dimension " + dimensionName + ", hierarchy " + hierarchyName + ", level " + levelName + ", property " + propertyName + " ...");
 		Dimension dimension = getDimension(cube, dimensionName);
 		if (dimension == null) {
 			logger.error("Dimension " + dimensionName + " not found in cube " + cube.getName() + "Returning null");
 			return null;
 		}
+		logger.debug("Dimension " + dimensionName + " found.");
 		Member member = cell.getContextMember(dimension);
+		logger.debug("Considering context member " + member.getUniqueName());
 		Hierarchy hierarchy = member.getHierarchy();
+		logger.debug("Member hierarchy is " + hierarchy.getUniqueName());
 		if (hierarchy.getUniqueName().equals(hierarchyName)) {
 			if (propertyName == null || propertyName.trim().equals("")) {
 				value = getLevelValue(member, levelName);
@@ -175,9 +179,12 @@ public class SpagoBICrossNavigationConfig {
 	}
 	
 	private String getLevelValue(Member member, String levelName) {
+		logger.debug("IN: Member is " + member.getUniqueName() + ", levelName is " + levelName);
 		String toReturn = null;
 		Level level = member.getLevel();
+		logger.debug("Member level is " + level.getUniqueName());
 		if (level.getUniqueName().equals(levelName)) {
+			logger.debug("Member level matches input level name " + levelName + "!!");
 			String uniqueName = member.getUniqueName();
 			// The uniqueName is the name of the member retrieved by the column defined in "nameColumn" property of the level in the xml schema.
 			// If the key value is required (retrieved by the column defined in "column" property), use the following code
@@ -186,6 +193,7 @@ public class SpagoBICrossNavigationConfig {
 			//System.out.println(rcm.getKey());
 			toReturn = uniqueName.substring(uniqueName.lastIndexOf("].[") + 3, uniqueName.lastIndexOf("]"));
 		} else {
+			logger.debug("Member level does NOT match input level name " + levelName + "!!");
 			// look for parent member at parent level
 			Member parent = member.getParentMember();
 			if (parent == null) {
@@ -194,15 +202,18 @@ public class SpagoBICrossNavigationConfig {
 				return getLevelValue(parent, levelName);
 			}
 		}
+		logger.debug("OUT: returning " + toReturn);
 		return toReturn;
 	}
 	
 	private String getMemberPropertyValue(Member member, String propertyName) {
+		logger.debug("IN: Member is " + member.getUniqueName() + ", propertyName is " + propertyName);
 		String toReturn = null;
-			Object propertyNameValue = member.getPropertyValue(propertyName, false);	
-			if (propertyNameValue != null) {
-				toReturn  = propertyNameValue.toString();
-			}
+		Object propertyNameValue = member.getPropertyValue(propertyName, false);	
+		if (propertyNameValue != null) {
+			toReturn  = propertyNameValue.toString();
+		}
+		logger.debug("OUT: returning " + toReturn);
 		return toReturn;
 	}
 	

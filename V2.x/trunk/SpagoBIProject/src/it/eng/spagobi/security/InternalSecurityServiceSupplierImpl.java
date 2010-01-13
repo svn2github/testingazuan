@@ -2,12 +2,9 @@ package it.eng.spagobi.security;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IRoleDAO;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
-import it.eng.spagobi.profiling.bean.SbiAttribute;
-import it.eng.spagobi.profiling.bean.SbiExtUserRoles;
 import it.eng.spagobi.profiling.bean.SbiUser;
 import it.eng.spagobi.profiling.bean.SbiUserAttributes;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;

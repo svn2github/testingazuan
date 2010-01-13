@@ -114,16 +114,21 @@ Ext.extend(Sbi.formbuilder.TemplateEditorPanel, Ext.Panel, {
 		});
 		this.add(this.staticCloseFilterEditorPanel);
 		
+		bc = (this.template !== undefined) ? this.template.staticOpenFilters : undefined
 		this.staticOpenFilterEditorPanel = new Sbi.formbuilder.StaticOpenFilterEditorPanel({
 			style:'padding:10px',
-			baseContents: (this.template !== undefined) ? this.template.staticOpenFilters : undefined
+			baseContents: bc
 		});
 		this.add(this.staticOpenFilterEditorPanel);
 		
 		this.dynamicEditorPanel = new Sbi.formbuilder.DynamicFilterEditorPanel({style:'padding:10px'});
 		this.add(this.dynamicEditorPanel);
 		
-		this.groupingVariablesPanel = new Sbi.formbuilder.VariableEditorPanel({style:'padding:10px'});
+		bc = (this.template !== undefined) ? this.template.groupingVariables : undefined
+		this.groupingVariablesPanel = new Sbi.formbuilder.VariableEditorPanel({
+			style:'padding:10px',
+			baseContents: bc
+		});
 		this.add(this.groupingVariablesPanel);
 		
 		this.doLayout(true);

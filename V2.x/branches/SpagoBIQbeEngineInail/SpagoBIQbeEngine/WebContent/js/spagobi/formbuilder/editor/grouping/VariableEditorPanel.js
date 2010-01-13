@@ -82,6 +82,10 @@ Ext.extend(Sbi.formbuilder.VariableEditorPanel, Sbi.formbuilder.EditorPanel, {
 	// public methods
 	// --------------------------------------------------------------------------------
 		
+	, setContents: function(contents) {
+		// the parent-class call this method so do not remove it.
+		// It does nothings because the structure of this panel is fixed
+	}
 
 	// --------------------------------------------------------------------------------
 	// private methods
@@ -91,15 +95,23 @@ Ext.extend(Sbi.formbuilder.VariableEditorPanel, Sbi.formbuilder.EditorPanel, {
 		Sbi.formbuilder.VariableEditorPanel.superclass.init.call(this);
 		var variable1GroupEditor, variable2GroupEditor;
 		
+		
+		var bc;
+		
+		bc = (this.baseContents && this.baseContents.length > 0)? this.baseContents[0].admissibleFields: undefined;
 		variable1GroupEditor = new Sbi.formbuilder.VariableGroupEditor({
-			groupTitle: 'Variable 1'
+			groupTitle: 'Variable 1',
+			baseContents: bc
 		});
 		this.addFilterItem(variable1GroupEditor);
 		
+		bc = (this.baseContents && this.baseContents.length > 1)? this.baseContents[1].admissibleFields: undefined;
 		variable2GroupEditor = new Sbi.formbuilder.VariableGroupEditor({
-			groupTitle: 'Variable 2'
+			groupTitle: 'Variable 2',
+			baseContents: bc
 		});
 		this.addFilterItem(variable2GroupEditor);
+		
 	}	
 	
 	

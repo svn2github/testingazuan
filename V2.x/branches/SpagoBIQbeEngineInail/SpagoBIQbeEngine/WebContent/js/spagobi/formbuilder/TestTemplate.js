@@ -110,6 +110,18 @@ Sbi.formbuilder.template = {
         }
         
     ]
+    
+    , "groupingVariables": [
+        {
+        	"admissibleFields": [
+        	      {"field": "it.eng.spagobi.SalesFact1998::customer(customer_id):city", "text": "Città"}
+            ]
+        }, {
+        	"admissibleFields": [
+                  {"field": "it.eng.spagobi.SalesFact1998::customer(customer_id):stateProvince", "text": "Provincia"}
+            ]
+        }
+    ]
 	
 	
 }

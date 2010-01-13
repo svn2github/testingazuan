@@ -50,16 +50,18 @@ Sbi.formbuilder.VariableEditor = function(config) {
 	
 	var defaultSettings = {
 		editable: false
-		, alias: 'undefined'
-		, uniqueName: '?'
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.variableEditor) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.variableEditor);
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 	
-	c.uniqueName = c.id;
-	delete c.id;
+	c.uniqueName = c.id || c.field || 'not defined';
+	if(c.id) delete c.id;
+	if(c.field) delete c.field;
+	
+	c.alias = c.alias || c.text || 'not defined';
+	delete c.text;
 	
 	Ext.apply(this, c);
 	

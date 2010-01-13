@@ -138,7 +138,7 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 	// --------------------------------------------------------------------------------
 		
 	, setContents: function(contents) {
-		alert('ERROR: setContents undefined');
+		alert('EditorPanel: setContents undefined: ' + contents.toSource());
 	}
 
 	, getContents: function() {

@@ -89,14 +89,9 @@ Ext.extend(Sbi.formbuilder.VariableGroupEditor, Sbi.formbuilder.EditorPanel, {
 	// --------------------------------------------------------------------------------
 	
 	, setContents: function(contents) {
-		alert('Error: "setContents" unimlpemented');
-		
-		/*
 		for(var i = 0, l = contents.length; i < l; i++) {
-			this.addFilter(contents[i]);
-		}
-		*/
-		
+			this.addField(contents[i]);
+		}		
 	}
 	
 	, getContents: function() {

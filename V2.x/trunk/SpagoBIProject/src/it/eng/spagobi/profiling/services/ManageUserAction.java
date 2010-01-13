@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2009 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.profiling.services;
 
 import it.eng.spago.error.EMFUserError;
@@ -26,6 +47,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ManageUserAction extends AbstractSpagoBIAction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8920524215721282986L;
 	// logger component
 	private static Logger logger = Logger.getLogger(SaveMetadataAction.class);
 	private final String MESSAGE_DET = "MESSAGE_DET";
@@ -54,24 +79,26 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 		try {
 			userDao = DAOFactory.getSbiUserDAO();
 		} catch (EMFUserError e1) {
-			throw new SpagoBIServiceException(SERVICE_NAME,	"Please enter user name");
+			throw new SpagoBIServiceException(SERVICE_NAME,	"Error occurred");
 		}
 		HttpServletRequest httpRequest = getHttpRequest();
 		MessageBuilder m = new MessageBuilder();
 		Locale locale = m.getLocale(httpRequest);
 
 		String serviceType = this.getAttributeAsString(MESSAGE_DET);
-
+		logger.debug("Service type "+serviceType);
 		if (serviceType != null && serviceType.equalsIgnoreCase(USERS_LIST)) {
-			try {
+			
+			try {				
 				ArrayList<UserBO> users = userDao.loadUsers();
-
+				logger.debug("Loaded users list");
 				JSONArray usersJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(users,	locale);
 				JSONObject usersResponseJSON = createJSONResponseUsers(usersJSON);
 
 				writeBackToClient(new JSONSuccess(usersResponseJSON));
 
 			} catch (Throwable e) {
+				logger.error("Exception occurred while retrieving users", e);
 				throw new SpagoBIServiceException(SERVICE_NAME,
 						"Exception occurred while retrieving users", e);
 			}
@@ -79,12 +106,13 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 			Integer id = getAttributeAsInteger(ID);
 			try {
 				SbiUser user = userDao.loadSbiUserById(id);
-
+				logger.debug("Loaded user detail");
 				JSONObject userJSON = (JSONObject) SerializerFactory.getSerializer("application/json").serialize(user,locale);
 
 				writeBackToClient(new JSONSuccess(userJSON));
 
 			} catch (Throwable e) {
+				logger.error("Exception occurred while retrieving user detail", e);
 				throw new SpagoBIServiceException(SERVICE_NAME,
 						"Exception occurred while retrieving user detail",
 						e);
@@ -104,25 +132,28 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 				user.setPassword(password);
 				try {
 					Integer id = userDao.saveSbiUser(user);
-
+					logger.debug("New user inserted");
 					writeBackToClient( new JSONAcknowledge("Operazion succeded") );
 
 				} catch (Throwable e) {
+					logger.error("Exception occurred while saving new user", e);
 					throw new SpagoBIServiceException(SERVICE_NAME,
 							"Exception occurred while saving new user",
 							e);
 				}
 			}else{
+				logger.error("User name missing");
 				throw new SpagoBIServiceException(SERVICE_NAME,	"Please enter user name");
 			}
 		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(USER_DELETE)) {
 			Integer id = getAttributeAsInteger(ID);
 			try {
 				userDao.deleteSbiUserById(id);
-
+				logger.debug("User deleted");
 				writeBackToClient( new JSONAcknowledge("Operazion succeded") );
 
 			} catch (Throwable e) {
+				logger.error("Exception occurred while retrieving user to delete", e);
 				throw new SpagoBIServiceException(SERVICE_NAME,
 						"Exception occurred while retrieving user to delete",
 						e);
@@ -148,22 +179,25 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 					}
 					try {
 						userDao.fullUpdateSbiUser(id, password, fullName, roles, attrList);
-
+						logger.debug("User udated");
 						writeBackToClient( new JSONAcknowledge("Operazion succeded") );
 
 					} catch (Throwable e) {
+						logger.error("Exception occurred while updating user", e);
 						throw new SpagoBIServiceException(SERVICE_NAME,
-								"Exception occurred while saving new user",
+								"Exception occurred while updating user",
 								e);
 					}
 				
 				} catch (JSONException e) {
+					logger.error("Exception occurred while write Back To Client after updating user", e);
 					throw new SpagoBIServiceException(SERVICE_NAME,
-							"Exception occurred while updating user",
+							"Exception occurred while write Back To Client after updating user",
 							e);
 				}
 
 			}else{
+				logger.error("User name missing");
 				throw new SpagoBIServiceException(SERVICE_NAME,	"Please enter user name");
 			}
 		}

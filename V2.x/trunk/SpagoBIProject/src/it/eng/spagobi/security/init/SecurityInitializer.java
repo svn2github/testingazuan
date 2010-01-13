@@ -33,6 +33,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.security.init;
 
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
@@ -41,7 +43,8 @@ import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.security.RoleSynchronizer;
 
 public class SecurityInitializer implements InitializerIFace {
-
+	
+	static private Logger logger = Logger.getLogger(SecurityInitializer.class);
 	private SourceBean _config = null;
 	
 	/* (non-Javadoc)
@@ -55,37 +58,30 @@ public class SecurityInitializer implements InitializerIFace {
 	 * @see it.eng.spago.init.InitializerIFace#init(it.eng.spago.base.SourceBean)
 	 */
 	public void init(SourceBean config) {
-		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-		        "SecurityInitializer::init: start method", config);
+		logger.debug("IN");
 
-		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-				"SecurityInitializer::init: roles synchronization ended.");
+		logger.debug("SecurityInitializer::init: roles synchronization ended.");
 		_config = config;
 		SourceBean configSingleton = ConfigSingleton.getInstance();
 		String portalSecurityInitClassName = ((SourceBean) configSingleton.getAttribute("SPAGOBI.SECURITY.PORTAL-SECURITY-INIT-CLASS")).getCharacters();
-		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-        	"SecurityInitializer::init: Portal security initialization class name: '" + portalSecurityInitClassName + "'");
+		logger.debug("SecurityInitializer::init: Portal security initialization class name: '" + portalSecurityInitClassName + "'");
 		if (portalSecurityInitClassName == null || portalSecurityInitClassName.trim().equals("")) return;
 		portalSecurityInitClassName = portalSecurityInitClassName.trim();
 		InitializerIFace portalSecurityInit = null;
 		try {
 			portalSecurityInit = (InitializerIFace)Class.forName(portalSecurityInitClassName).newInstance();
 		} catch (Exception e) {
-			TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.MAJOR, 
-	        	"SecurityInitializer::init: error while instantiating portal security initialization class name: '" + portalSecurityInitClassName + "'", e);
+			logger.error("SecurityInitializer::init: error while instantiating portal security initialization class name: '" + portalSecurityInitClassName + "'", e);
 			return;
 		}
-		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-	        	"SecurityInitializer::init: invoking init method of the portal security initialization class name: '" + portalSecurityInitClassName + "'");
+		logger.debug("SecurityInitializer::init: invoking init method of the portal security initialization class name: '" + portalSecurityInitClassName + "'");
 		portalSecurityInit.init(config);
 		/*roles syncronizing after tables initialization*/
-		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-				"SecurityInitializer::init: starting synchronizing roles...");
+		logger.debug("SecurityInitializer::init: starting synchronizing roles...");
 		RoleSynchronizer synch = new RoleSynchronizer();
 		synch.synchronize();
 		
-		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, 
-        		"SecurityInitializer::init: end method");
+		logger.debug("OUT");
 	}
 
 }

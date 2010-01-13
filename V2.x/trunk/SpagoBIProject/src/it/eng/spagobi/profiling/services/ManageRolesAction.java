@@ -1,0 +1,253 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2009 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
+package it.eng.spagobi.profiling.services;
+
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.analiticalmodel.document.x.AbstractSpagoBIAction;
+import it.eng.spagobi.chiron.serializer.SerializerFactory;
+import it.eng.spagobi.commons.bo.Domain;
+import it.eng.spagobi.commons.bo.Role;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IRoleDAO;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
+import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
+import it.eng.spagobi.utilities.service.JSONAcknowledge;
+import it.eng.spagobi.utilities.service.JSONSuccess;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class ManageRolesAction extends AbstractSpagoBIAction{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4873196748328877998L;
+
+	// logger component
+	private static Logger logger = Logger.getLogger(ManageRolesAction.class);
+	
+	private final String MESSAGE_DET = "MESSAGE_DET";
+	// type of service
+	private final String ROLES_LIST = "ROLES_LIST";
+	private final String ROLE_DETAIL = "ROLE_DETAIL";
+	private final String ROLE_INSERT = "ROLE_INSERT";
+	private final String ROLE_DELETE = "ROLE_DELETE";
+	
+	private final String ID = "ID";
+	private final String NAME = "NAME";
+	private final String DESCRIPTION = "DESCRIPTION";
+	private final String ROLE_TYPE_CD = "ROLE_TYPE_CD";
+	private final String CODE = "CODE";
+	private final String SAVE_SUBOBJECTS="SAVE_SUBOBJECTS";
+	private final String SEE_SUBOBJECTS="SEE_SUBOBJECTS";
+	private final String SEE_VIEWPOINTS="SEE_VIEWPOINTS";
+	private final String SEE_SNAPSHOTS="SEE_SNAPSHOTS";
+	private final String SEE_NOTES="SEE_NOTES";
+	private final String SEND_MAIL="SEND_MAIL";
+	private final String SAVE_INTO_PERSONAL_FOLDER="SAVE_INTO_PERSONAL_FOLDER";
+	private final String SAVE_REMEMBER_ME="SAVE_REMEMBER_ME";
+	private final String SEE_METADATA="SEE_METADATA";
+	private final String SAVE_METADATA="SAVE_METADATA";
+	private final String BUILD_QBE_QUERY="BUILD_QBE_QUERY";
+	
+	@Override
+	public void doService() {
+		logger.debug("IN");
+		IRoleDAO roleDao;
+		try {
+			roleDao = DAOFactory.getRoleDAO();
+		} catch (EMFUserError e1) {
+			throw new SpagoBIServiceException(SERVICE_NAME,	"Error occurred");
+		}
+		HttpServletRequest httpRequest = getHttpRequest();
+		MessageBuilder m = new MessageBuilder();
+		Locale locale = m.getLocale(httpRequest);
+
+		String serviceType = this.getAttributeAsString(MESSAGE_DET);
+
+		if (serviceType != null && serviceType.equalsIgnoreCase(ROLES_LIST)) {
+			try {
+				ArrayList<Role> roles = (ArrayList<Role>)roleDao.loadAllRoles();
+
+				JSONArray rolesJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(roles,	locale);
+				JSONObject rolesResponseJSON = createJSONResponseRoles(rolesJSON);
+
+				writeBackToClient(new JSONSuccess(rolesResponseJSON));
+
+			} catch (Throwable e) {
+				throw new SpagoBIServiceException(SERVICE_NAME,
+						"Exception occurred while retrieving roles", e);
+			}
+		} else if (serviceType != null && serviceType.equalsIgnoreCase(ROLE_DETAIL)) {
+
+			Integer id = getAttributeAsInteger(ID);
+			try {
+				Role role = roleDao.loadByID(id);
+
+				JSONObject roleJSON = (JSONObject) SerializerFactory.getSerializer("application/json").serialize(role,locale);
+				//add flags
+				roleJSON = addFlagsToJSONRoles(roleJSON, role);
+				writeBackToClient(new JSONSuccess(roleJSON));
+
+			} catch (Throwable e) {
+				throw new SpagoBIServiceException(SERVICE_NAME,
+						"Exception occurred while retrieving role detail",
+						e);
+			}
+		}else if (serviceType != null	&& serviceType.equalsIgnoreCase(ROLE_INSERT)) {
+			String name = getAttributeAsString(NAME);
+			String roleTypeCD = getAttributeAsString(ROLE_TYPE_CD);
+			String code = getAttributeAsString(CODE);
+			String description = getAttributeAsString(DESCRIPTION);
+			
+			Boolean saveSubobjects= getAttributeAsBoolean(SAVE_SUBOBJECTS);
+			Boolean seeSubobjects= getAttributeAsBoolean(SEE_SUBOBJECTS);
+			Boolean seeViewpoints= getAttributeAsBoolean(SEE_VIEWPOINTS);
+			Boolean seeSnapshots= getAttributeAsBoolean(SEE_SNAPSHOTS);
+			Boolean seeNotes= getAttributeAsBoolean(SEE_NOTES);
+			Boolean sendMail= getAttributeAsBoolean(SEND_MAIL);
+			Boolean saveIntoPersonalFolder= getAttributeAsBoolean(SAVE_INTO_PERSONAL_FOLDER);
+			Boolean saveRememberMe= getAttributeAsBoolean(SAVE_REMEMBER_ME);
+			Boolean seeMetadata= getAttributeAsBoolean(SEE_METADATA);
+			Boolean saveMetadata= getAttributeAsBoolean(SAVE_METADATA);
+			Boolean buildQbeQuery= getAttributeAsBoolean(BUILD_QBE_QUERY);
+
+			if (name != null) {
+				try {
+				    List<Domain> domains = DAOFactory.getDomainDAO().loadListDomainsByType("ROLE_TYPE");
+	
+				    HashMap<String, Integer> domainIds = new HashMap<String, Integer> ();
+				    for(int i=0; i< domains.size(); i++){
+				    	domainIds.put(domains.get(i).getValueCd(), domains.get(i).getValueId());
+				    }
+				    
+				    Integer roleTypeID = domainIds.get(roleTypeCD);
+				    if(roleTypeID == null){
+				    	throw new SpagoBIServiceException(SERVICE_NAME,	"Role Type ID is undefined");
+				    }
+				    
+					Role role = new Role();
+					role.setCode(code);
+					role.setDescription(description);
+					role.setName(name);
+					role.setRoleTypeCD(roleTypeCD);
+					role.setRoleTypeID(roleTypeID);
+					role.setIsAbleToBuildQbeQuery(buildQbeQuery);
+					role.setIsAbleToSaveIntoPersonalFolder(saveIntoPersonalFolder);
+					role.setIsAbleToSaveMetadata(saveMetadata);
+					role.setIsAbleToSaveRememberMe(saveRememberMe);
+					role.setIsAbleToSaveSubobjects(saveSubobjects);
+					role.setIsAbleToSeeMetadata(seeMetadata);
+					role.setIsAbleToSeeNotes(seeNotes);
+					role.setIsAbleToSeeSnapshots(seeSnapshots);
+					role.setIsAbleToSeeSubobjects(seeSubobjects);
+					role.setIsAbleToSeeViewpoints(seeViewpoints);
+					role.setIsAbleToSendMail(sendMail);
+					try {
+						roleDao.insertRole(role);
+	
+						writeBackToClient( new JSONAcknowledge("Operazion succeded") );
+	
+					} catch (Throwable e) {
+						throw new SpagoBIServiceException(SERVICE_NAME,
+								"Exception occurred while saving new role",
+								e);
+					}
+				} catch (EMFUserError e1) {
+					throw new SpagoBIServiceException(SERVICE_NAME,
+							"Exception occurred while saving new role",
+							e1);
+				}
+			}else{
+				throw new SpagoBIServiceException(SERVICE_NAME,	"Please enter user name");
+			}
+		} 
+		logger.debug("OUT");
+
+		
+	}
+	/**
+	 * Creates a json array with children users informations
+	 * 
+	 * @param rows
+	 * @return
+	 * @throws JSONException
+	 */
+	private JSONObject createJSONResponseRoles(JSONArray rows)
+			throws JSONException {
+		JSONObject results;
+
+		results = new JSONObject();
+		results.put("title", "Roles");
+		results.put("samples", rows);
+		return results;
+	}
+	
+	private JSONObject addFlagsToJSONRoles(JSONObject object, Role role)
+		throws JSONException {
+		
+		Boolean qbeQuery = role.isAbleToBuildQbeQuery();
+		if(qbeQuery != null)
+			object.put(BUILD_QBE_QUERY, qbeQuery.booleanValue());
+		Boolean saveSub = role.isAbleToSaveSubobjects();
+		if(saveSub != null)
+			object.put(SAVE_SUBOBJECTS,saveSub.booleanValue());
+		Boolean seeSub = role.isAbleToSeeSubobjects();
+		if(seeSub != null)
+			object.put(SEE_SUBOBJECTS,seeSub.booleanValue());
+		Boolean seeView = role.isAbleToSeeViewpoints();
+		if(seeView != null)
+			object.put(SEE_VIEWPOINTS,seeView.booleanValue());
+		Boolean seeSnap = role.isAbleToSeeSnapshots();
+		if(seeSnap != null)
+			object.put(SEE_SNAPSHOTS,seeSnap.booleanValue());
+		Boolean seeNotes = role.isAbleToSeeNotes();
+		if(seeNotes != null)
+			object.put(SEE_NOTES,seeNotes.booleanValue());
+		Boolean sendMail = role.isAbleToSendMail();
+		if(sendMail != null)
+			object.put(SEND_MAIL,sendMail.booleanValue());
+		Boolean savePerFol = role.isAbleToSaveIntoPersonalFolder();
+		if(savePerFol != null)
+			object.put(SAVE_INTO_PERSONAL_FOLDER,savePerFol.booleanValue());
+		Boolean saveRememb = role.isAbleToSaveRememberMe();
+		if(saveRememb != null)
+			object.put(SAVE_REMEMBER_ME,saveRememb.booleanValue());
+		Boolean seeMeta = role.isAbleToSeeMetadata();
+		if(seeMeta != null)
+			object.put(SEE_METADATA,seeMeta.booleanValue());
+		Boolean saveMeta = role.isAbleToSaveMetadata();
+		if(saveMeta != null)
+			object.put(SAVE_METADATA,saveMeta.booleanValue());
+		
+		return object;
+	}
+}

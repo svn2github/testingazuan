@@ -167,16 +167,16 @@ public class SearchContentAction extends AbstractSpagoBIAction{
 				}
 				searcher.close();
 			} catch (CorruptIndexException e) {
-				logger.error(e.getMessage());
+				logger.error(e.getMessage(), e);
 				throw new SpagoBIException("Index corrupted", e);
 				
 			} catch (IOException e) {
-				logger.error(e.getMessage());
+				logger.error(e.getMessage(), e);
 				throw new SpagoBIException("Unable to read index", e);
 				
 			} // only searching, so
 			catch (ParseException e) {
-				logger.error(e.getMessage());
+				logger.error(e.getMessage(), e);
 				throw new SpagoBIException("Wrong query syntax", e);
 				
 			}
@@ -207,12 +207,12 @@ public class SearchContentAction extends AbstractSpagoBIAction{
 			try {
 				writeBackToClient( new JSONSuccess( createJSONResponse(documentsResponseJSON) ) );
 			} catch (IOException e) {
+				logger.error(e.getMessage(), e);
 				throw new SpagoBIException("Impossible to write back the responce to the client", e);
 			}
 			
 		} catch (Exception e) {
 			logger.error("Excepiton",e);
-			e.printStackTrace();
 		} finally {
 			logger.debug("OUT");
 		}

@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2009 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.commons.utilities.indexing;
 
 import it.eng.spago.base.SourceBean;
@@ -100,8 +121,7 @@ public class LuceneIndexer {
 			logger.debug("OUT");
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(),e);
 		}
 		
 	}
@@ -210,9 +230,9 @@ public class LuceneIndexer {
 				writer.commit();
 				writer.close();
 			} catch (CorruptIndexException e) {
-				logger.error(e.getMessage());
+				logger.error(e.getMessage(), e);
 			} catch (IOException e) {
-				logger.error(e.getMessage());
+				logger.error(e.getMessage(), e);
 			}
 			
 		}
@@ -243,8 +263,7 @@ public class LuceneIndexer {
 			logger.debug("OUT");
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 		}finally{
 			writer.optimize();
 			writer.close();
@@ -334,7 +353,7 @@ public class LuceneIndexer {
 				}
 			}
 		}catch(Exception e){
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 		}finally{
 			if(bais != null){
 				bais.close();
@@ -344,15 +363,17 @@ public class LuceneIndexer {
 			
 	}
 	private static String createUidDocument(String binId, String biobjId){
+		logger.debug("IN");
 		String uid=biobjId;
 		if(binId != null){
 			uid+= "_"+binId;
 		}
-		
+		logger.debug("OUT");
 		return uid;
 	}
 	
 	private static void addFieldsToDocument(Document doc, String binId, Integer biobjId, String metaName,Domain domain, String htmlContent, byte[] content) throws UnsupportedEncodingException{
+		logger.debug("IN");
 		String uid = createUidDocument(binId, String.valueOf(biobjId.intValue()));
 		doc.add(new Field(IndexingConstants.UID, uid , Field.Store.YES,
 				Field.Index.NOT_ANALYZED));
@@ -384,9 +405,11 @@ public class LuceneIndexer {
 			}
 		}
 		addBiobjFieldsToDocument(doc, biobjId);
+		logger.debug("OUT");
 	}
 	
 	private static void addBiobjFieldsToDocument(Document doc, Integer biObjectID){
+		logger.debug("IN");
 		try {
 			BIObject biObj = DAOFactory.getBIObjectDAO().loadBIObjectById(biObjectID);
 			doc.add(new Field(IndexingConstants.BIOBJ_NAME, biObj.getName(),
@@ -401,10 +424,12 @@ public class LuceneIndexer {
 			}
 			
 		} catch (EMFUserError e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
+		logger.debug("OUT");
 	}
 	private static void addSubobjFieldsToDocument(Document doc, Integer biObjectID){
+		logger.debug("IN");
 		try {
 			List<SubObject> subobjects= DAOFactory.getSubObjectDAO().getSubObjects(biObjectID);
 			if(subobjects != null){
@@ -421,8 +446,9 @@ public class LuceneIndexer {
 				}
 			}
 		} catch (EMFUserError e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
+		logger.debug("OUT");
 	}
 
 }

@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2009 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.commons.utilities.indexing;
 
 import it.eng.spagobi.commons.bo.Domain;
@@ -121,11 +142,11 @@ public class LuceneSearcher {
 			            }
 			            objectsToReturn.put(biobjId, summary);
 					} catch (InvalidTokenOffsetsException e) {
-						logger.error(e.getMessage());
+						logger.error(e.getMessage(), e);
 					} catch (NumberFormatException e) {
-						logger.error(e.getMessage());
+						logger.error(e.getMessage(), e);
 					} catch (Exception e) {
-						logger.error(e.getMessage());
+						logger.error(e.getMessage(),e);
 					} 
 		        }
             }
@@ -138,6 +159,7 @@ public class LuceneSearcher {
 
 	}
 	private static String fillSummaryText(Integer objId) throws Exception{
+		logger.debug("IN");
 		List metadata = DAOFactory.getObjMetadataDAO().loadAllObjMetadata();
 		if (metadata != null && !metadata.isEmpty()) {
 			ByteArrayInputStream bais = null;
@@ -163,6 +185,7 @@ public class LuceneSearcher {
 				}
 			}
 		}
+		logger.debug("OUT");
 		return null;
 	}
 	public static HashMap<String, Object> searchIndexFuzzy(IndexSearcher searcher,
@@ -232,9 +255,9 @@ public class LuceneSearcher {
 			            }
 			            objectsToReturn.put(biobjId, summary);
 					} catch (InvalidTokenOffsetsException e) {
-						logger.error(e.getMessage());
+						logger.error(e.getMessage(), e);
 					} catch (Exception e) {
-						logger.error(e.getMessage());
+						logger.error(e.getMessage(), e);
 					}
 
 		        }
@@ -248,33 +271,6 @@ public class LuceneSearcher {
 		return objectsToReturn;
 
 	}
-	public static void main(String[] argv) {
-
-		String index = "C:\\Programmi\\resources\\idx";
-		String queryString = "prova";// or install for test
-		IndexReader reader;
-		try {
-			reader = IndexReader.open(FSDirectory.open(new File(index)), true);
-			
-			IndexSearcher searcher = new IndexSearcher(reader);
-			String[] fields = { IndexingConstants.CONTENTS , IndexingConstants.SUBOBJ_NAME, IndexingConstants.SUBOBJ_DESCR};
-			searchIndex(searcher, queryString, index, fields, null);
-
-			// searcher can only be closed when there
-			// is no need to access the documents any more.
-			searcher.close();
-		} catch (CorruptIndexException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} // only searching, so
-		catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
+	
 
 }

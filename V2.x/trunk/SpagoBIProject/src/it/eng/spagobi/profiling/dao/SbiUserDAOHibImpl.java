@@ -1,3 +1,24 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2009 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.profiling.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
@@ -59,7 +80,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			if(user != null)
 				return Integer.valueOf(user.getId());
 		} catch (HibernateException he) {
-			logger.error(he);
+			logger.error(he.getMessage(),he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -106,7 +127,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			
 			tx.commit();
 		} catch (HibernateException he) {
-			logger.error(he);
+			logger.error(he.getMessage(), he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -134,7 +155,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			tx.commit();
 			return id;
 		} catch (HibernateException he) {
-			logger.error(he);
+			logger.error(he.getMessage(), he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -159,7 +180,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			aSession.flush();
 			tx.commit();
 		} catch (HibernateException he) {
-			logger.error(he);
+			logger.error(he.getMessage(), he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -181,7 +202,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			aSession.flush();
 			tx.commit();
 		} catch (HibernateException he) {
-			logger.error(he);
+			logger.error(he.getMessage(), he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -202,7 +223,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			aSession.flush();
 			tx.commit();
 		} catch (HibernateException he) {
-			logger.error(he);
+			logger.error(he.getMessage(), he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -230,7 +251,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			tx.commit();
 			return user;
 		} catch (HibernateException he) {
-			logger.error(he);
+			logger.error(he.getMessage(), he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -267,7 +288,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 
 
 		} catch (HibernateException he) {
-			logger.error(he);
+			logger.error(he.getMessage(), he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -295,7 +316,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			ArrayList<SbiExtRoles> result = (ArrayList<SbiExtRoles>)query.list();
 			return result;
 		} catch (HibernateException he) {
-			logger.error(he);
+			logger.error(he.getMessage(), he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -322,7 +343,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			ArrayList<SbiUser> result = (ArrayList<SbiUser>)query.list();
 			return result;
 		} catch (HibernateException he) {
-			logger.error(he);
+			logger.error(he.getMessage(), he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -345,7 +366,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			aSession.delete(userToDelete);
 			tx.commit();
 		} catch (HibernateException he) {
-			logger.error(he);
+			logger.error(he.getMessage(), he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -413,7 +434,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			
 			tx.commit();
 		} catch (HibernateException he) {
-			logger.error(he);
+			logger.error(he.getMessage(), he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
@@ -437,11 +458,8 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-/*			String q = "from SbiUser ";
-			Query query = aSession.createQuery(q);*/
 			Criteria crit = aSession.createCriteria(SbiUser.class);
-			//ArrayList<SbiUser> result = (ArrayList<SbiUser>)query.list();
-			
+
 			ArrayList<SbiUser> result = (ArrayList<SbiUser>)crit.list();
 			if(result != null && !result.isEmpty()){
 				users = new ArrayList<UserBO> ();
@@ -452,7 +470,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			
 			return users;
 		} catch (HibernateException he) {
-			logger.error(he);
+			logger.error(he.getMessage(), he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);

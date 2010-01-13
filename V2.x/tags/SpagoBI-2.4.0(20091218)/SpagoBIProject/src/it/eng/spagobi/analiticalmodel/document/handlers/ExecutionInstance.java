@@ -59,6 +59,8 @@ import it.eng.spagobi.utilities.cache.CacheInterface;
 import it.eng.spagobi.utilities.cache.CacheSingleton;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -691,6 +693,13 @@ public class ExecutionInstance {
 		logger.debug("IN");
 		String biparamLabel = biparam.getLabel();
 		List toReturn = new ArrayList();
+		
+		String urlName = biparam.getParameterUrlName();
+		if ("outputType".equals(urlName)) {
+			logger.debug("Parameter is outputType parameter, it is not validated");
+			return toReturn;
+		}
+		
 		// get lov
 		ModalitiesValue lov = biparam.getParameter().getModalityValue();
 		if (lov.getITypeCd().equals("MAN_IN")) {
@@ -922,8 +931,15 @@ public class ExecutionInstance {
 						Iterator r = list.iterator();
 						while (r.hasNext()) {
 							String value = (String) r.next();
-							if (value.equals("%")) value = "%25";
-							if(value!=null && !value.equals("")){
+							if (value!=null && !value.equals("")) {
+								// encoding value
+								try {
+									value = URLEncoder.encode(value, "UTF-8");
+								} catch (UnsupportedEncodingException e) {
+									logger.warn("UTF-8 encoding is not supported!!!", e);
+									logger.warn("Using system encoding...");
+									value = URLEncoder.encode(value);
+								}
 								buffer.append("&" + aParameter.getParameterUrlName() + "=" + value);
 							}
 						}
@@ -936,7 +952,6 @@ public class ExecutionInstance {
 				}
 			}
 			url = buffer.toString();
-
 		}
 
 		logger.debug("OUT: returning url = [" + url + "]");

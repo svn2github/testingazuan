@@ -79,6 +79,7 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 		try {
 			userDao = DAOFactory.getSbiUserDAO();
 		} catch (EMFUserError e1) {
+			logger.error(e1.getMessage(), e1);
 			throw new SpagoBIServiceException(SERVICE_NAME,	"Error occurred");
 		}
 		HttpServletRequest httpRequest = getHttpRequest();

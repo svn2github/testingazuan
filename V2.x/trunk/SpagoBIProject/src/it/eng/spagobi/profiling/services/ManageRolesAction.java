@@ -85,6 +85,7 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 		try {
 			roleDao = DAOFactory.getRoleDAO();
 		} catch (EMFUserError e1) {
+			logger.error(e1.getMessage(), e1);
 			throw new SpagoBIServiceException(SERVICE_NAME,	"Error occurred");
 		}
 		HttpServletRequest httpRequest = getHttpRequest();
@@ -215,7 +216,7 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 		
 	}
 	/**
-	 * Creates a json array with children users informations
+	 * Creates a json array with children roles informations
 	 * 
 	 * @param rows
 	 * @return

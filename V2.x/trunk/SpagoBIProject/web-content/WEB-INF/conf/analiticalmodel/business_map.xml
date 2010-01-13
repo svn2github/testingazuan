@@ -34,6 +34,7 @@
 		<MAP_ACTION actionName="GET_SNAPSHOTS_ACTION"  businessProcess="SeeSnapshotsFunctionality"/>
 		<MAP_ACTION actionName="MANAGE_USER_ACTION" businessProcess="FunctionalitiesManagement" />
 		<MAP_ACTION actionName="MANAGE_ROLES_ACTION" businessProcess="FunctionalitiesManagement" />
+		<MAP_ACTION actionName="MANAGE_ATTRIBUTES_ACTION" businessProcess="FunctionalitiesManagement" />
 		
 	</MAP_ACTIONS>
 	

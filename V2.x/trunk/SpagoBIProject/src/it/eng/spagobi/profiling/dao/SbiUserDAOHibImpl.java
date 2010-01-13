@@ -3,7 +3,6 @@ package it.eng.spagobi.profiling.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
-import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.bean.SbiExtUserRoles;
@@ -21,6 +20,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -233,7 +234,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 
 	}
 
-	public ArrayList<SbiAttribute> loadSbiUserAttributesById(Integer id) throws EMFUserError {
+	public ArrayList<SbiUserAttributes> loadSbiUserAttributesById(Integer id) throws EMFUserError {
 		logger.debug("IN");
 
 		Session aSession = null;
@@ -242,10 +243,16 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			String q = "select us.sbiUserAttributeses from SbiUser us where us.id = :id";
+
 			Query query = aSession.createQuery(q);
 			query.setInteger("id", id);
 			
-			ArrayList<SbiAttribute> result = (ArrayList<SbiAttribute>)query.list();
+			ArrayList<SbiUserAttributes> result = (ArrayList<SbiUserAttributes>)query.list();
+			
+			Hibernate.initialize(result);
+			for(SbiUserAttributes current : result ){
+				Hibernate.initialize(current.getSbiAttribute());
+			}
 			return result;
 
 
@@ -290,38 +297,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 		}
 	}
 
-	public ArrayList<UserBO> loadUsers() throws EMFUserError {
-		logger.debug("IN");
-		ArrayList<UserBO> users = null;
-		Session aSession = null;
-		Transaction tx = null;
-		try {
-			aSession = getSession();
-			tx = aSession.beginTransaction();
-			String q = "from SbiUser ";
-			Query query = aSession.createQuery(q);
-			
-			ArrayList<SbiUser> result = (ArrayList<SbiUser>)query.list();
-			if(result != null && !result.isEmpty()){
-				users = new ArrayList<UserBO> ();
-				for(int i=0; i<result.size(); i++){
-					users.add(toUserBO(result.get(i)));
-				}
-			}
-			
-			return users;
-		} catch (HibernateException he) {
-			logger.error(he);
-			if (tx != null)
-				tx.rollback();
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		} finally {
-			logger.debug("OUT");
-			if (aSession!=null){
-				if (aSession.isOpen()) aSession.close();
-			}
-		}
-	}
+
 	public ArrayList<SbiUser> loadSbiUsers() throws EMFUserError {
 		logger.debug("IN");
 
@@ -440,6 +416,40 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 		// TODO Auto-generated method stub
 		return null;
 	}
+	public ArrayList<UserBO> loadUsers() throws EMFUserError {
+		logger.debug("IN");
+		ArrayList<UserBO> users = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+/*			String q = "from SbiUser ";
+			Query query = aSession.createQuery(q);*/
+			Criteria crit = aSession.createCriteria(SbiUser.class);
+			//ArrayList<SbiUser> result = (ArrayList<SbiUser>)query.list();
+			
+			ArrayList<SbiUser> result = (ArrayList<SbiUser>)crit.list();
+			if(result != null && !result.isEmpty()){
+				users = new ArrayList<UserBO> ();
+				for(int i=0; i<result.size(); i++){
+					users.add(toUserBO(result.get(i)));
+				}
+			}
+			
+			return users;
+		} catch (HibernateException he) {
+			logger.error(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			logger.debug("OUT");
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+	}	
 	/**
 	 * From the Hibernate SbiUser at input, gives the corrispondent BI
 	 * object (UserBO).
@@ -472,15 +482,14 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			userBO.setSbiExtUserRoleses(userRoles);
 
 			HashMap<Integer, HashMap<String, String>> userAttributes = new HashMap<Integer, HashMap<String, String>>(); 
-			Set attributes = sbiUser.getSbiUserAttributeses();
-			for (Iterator it = attributes.iterator(); it.hasNext(); ) {
-				SbiAttribute attr = (SbiAttribute) it.next();
-				Integer attrId = attr.getAttributeId();	
+			Set<SbiUserAttributes> attributes = sbiUser.getSbiUserAttributeses();
+
+			for (Iterator<SbiUserAttributes> it = attributes.iterator(); it.hasNext(); ) {
+				SbiUserAttributes attr = it.next();
+				Integer attrId = attr.getSbiAttribute().getAttributeId();	
 				HashMap<String, String> nameValueAttr = new HashMap<String, String>();
-				
-				//retrive attribute value
-				SbiUserAttributes sbiUserAttr =DAOFactory.getSbiAttributeDAO().loadSbiAttributesByUserAndId(userBO.getId(), attrId);
-				nameValueAttr.put(attr.getAttributeName(), sbiUserAttr.getAttributeValue());
+
+				nameValueAttr.put(attr.getSbiAttribute().getAttributeName(), attr.getAttributeValue());
 				userAttributes.put(attrId, nameValueAttr);
 			}
 			userBO.setSbiUserAttributeses(userAttributes);

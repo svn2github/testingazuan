@@ -41,9 +41,8 @@
             <key>
                 <column name="ID" not-null="true" />
             </key>
-            <many-to-many entity-name="it.eng.spagobi.profiling.bean.SbiAttribute">
-                <column name="ATTRIBUTE_ID" not-null="true" />
-            </many-to-many>
+            <one-to-many entity-name="it.eng.spagobi.profiling.bean.SbiUserAttributes" />
+
         </set>
     </class>
 </hibernate-mapping>

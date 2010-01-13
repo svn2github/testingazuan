@@ -102,18 +102,18 @@ public class InternalSecurityServiceSupplierImpl implements
 			    roles.add(roleSB.getName());
 			}
 			HashMap attributes = new HashMap();
-			ArrayList<SbiAttribute> attribs = DAOFactory.getSbiUserDAO().loadSbiUserAttributesById(user.getId());
+			ArrayList<SbiUserAttributes> attribs = DAOFactory.getSbiUserDAO().loadSbiUserAttributesById(user.getId());
 			if(attribs != null){
 				Iterator iterAttrs = attribs.iterator();
 				while(iterAttrs.hasNext()){
 				    // Attribute to lookup
-					SbiAttribute attribute = (SbiAttribute) iterAttrs.next();
+					SbiUserAttributes attribute = (SbiUserAttributes) iterAttrs.next();
 					
-					String attributeName = attribute.getAttributeName();
+					String attributeName = attribute.getSbiAttribute().getAttributeName();
 					
-					SbiUserAttributes userAttr = DAOFactory.getSbiAttributeDAO().loadSbiAttributesByUserAndId(user.getId(), attribute.getAttributeId());
+					//SbiUserAttributes userAttr = DAOFactory.getSbiAttributeDAO().loadSbiAttributesByUserAndId(user.getId(), attribute.getAttributeId());
 					
-				    String attributeValue = userAttr.getAttributeValue();
+				    String attributeValue = attribute.getAttributeValue();
 				    if (attributeValue != null) {
 				    	logger.debug("Add attribute. " + attributeName + "=" + attributeName + " to the user"
 				    			+ userName);

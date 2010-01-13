@@ -31,7 +31,7 @@ public interface ISbiUserDAO {
 	
 	public ArrayList<SbiExtRoles> loadSbiUserRolesById(Integer id) throws EMFUserError;
 	
-	public ArrayList<SbiAttribute> loadSbiUserAttributesById(Integer id) throws EMFUserError;
+	public ArrayList<SbiUserAttributes> loadSbiUserAttributesById(Integer id) throws EMFUserError;
 	
 	public ArrayList<SbiUser> loadSbiUsers() throws EMFUserError;
 	

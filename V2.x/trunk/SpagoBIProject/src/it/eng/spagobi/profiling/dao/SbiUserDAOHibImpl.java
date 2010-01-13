@@ -54,7 +54,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			Query query = aSession.createQuery(q);
 			query.setString("userId", userId);
 			
-			SbiUser user = (SbiUser)query.uniqueResult();
+			SbiUser user = (SbiUser)query.uniqueResult();			
 			
 			if(user != null)
 				return Integer.valueOf(user.getId());
@@ -93,7 +93,17 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			toReturn = (SbiUser)aSession.load(SbiUser.class,  id);
+			String q = "from SbiUser us where us.id = :id";
+			Query query = aSession.createQuery(q);
+			query.setInteger("id", id);
+			toReturn = (SbiUser)query.uniqueResult();
+			Hibernate.initialize(toReturn);
+			Hibernate.initialize(toReturn.getSbiExtUserRoleses());
+			Hibernate.initialize(toReturn.getSbiUserAttributeses());
+			for(SbiUserAttributes current : toReturn.getSbiUserAttributeses() ){
+				Hibernate.initialize(current.getSbiAttribute());
+			}
+			
 			tx.commit();
 		} catch (HibernateException he) {
 			logger.error(he);

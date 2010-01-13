@@ -80,10 +80,9 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 			try {
 				SbiUser user = userDao.loadSbiUserById(id);
 
-				JSONArray usersJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(user,locale);
-				JSONObject usersResponseJSON = createJSONResponseUsers(usersJSON);
+				JSONObject userJSON = (JSONObject) SerializerFactory.getSerializer("application/json").serialize(user,locale);
 
-				writeBackToClient(new JSONSuccess(usersResponseJSON));
+				writeBackToClient(new JSONSuccess(userJSON));
 
 			} catch (Throwable e) {
 				throw new SpagoBIServiceException(SERVICE_NAME,

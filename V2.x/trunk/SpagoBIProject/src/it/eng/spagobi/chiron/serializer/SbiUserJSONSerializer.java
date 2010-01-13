@@ -2,6 +2,7 @@ package it.eng.spagobi.chiron.serializer;
 
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.profiling.bean.SbiExtUserRoles;
 import it.eng.spagobi.profiling.bean.SbiUser;
 import it.eng.spagobi.profiling.bean.SbiUserAttributes;
@@ -49,12 +50,12 @@ public class SbiUserJSONSerializer implements Serializer {
 
 			while(itRoles.hasNext()){
 				JSONObject jsonRole = new JSONObject();
-				SbiExtUserRoles extRole = (SbiExtUserRoles)itRoles.next();
-				Integer roleId= extRole.getId().getExtRoleId();
-				Role role = DAOFactory.getRoleDAO().loadByID(roleId);
-				jsonRole.put("name", role.getName());
-				jsonRole.put("id", role.getId());
-				jsonRole.put("description", role.getDescription());
+				SbiExtRoles extRole = (SbiExtRoles)itRoles.next();
+				Integer roleId= extRole.getExtRoleId();
+
+				jsonRole.put("name", extRole.getName());
+				jsonRole.put("id", roleId);
+				jsonRole.put("description", extRole.getDescr());
 				rolesJSON.put(jsonRole);
 			}	
 			result.put("userRoles", rolesJSON);
@@ -67,7 +68,7 @@ public class SbiUserJSONSerializer implements Serializer {
 
 			while(itAttrs.hasNext()){
 				JSONObject jsonAttr = new JSONObject();
-				SbiUserAttributes userAttr = (SbiUserAttributes)itRoles.next();
+				SbiUserAttributes userAttr = (SbiUserAttributes)itAttrs.next();
 				String attrName= userAttr.getSbiAttribute().getAttributeName();
 				jsonAttr.put("name", attrName);
 				jsonAttr.put("id", userAttr.getSbiAttribute().getAttributeId());

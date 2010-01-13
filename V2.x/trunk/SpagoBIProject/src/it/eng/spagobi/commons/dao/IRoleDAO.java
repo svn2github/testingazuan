@@ -161,5 +161,15 @@ public interface IRoleDAO {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public List LoadParUsesAssociated(Integer roleID) throws EMFUserError;
+	/**
+	 * Implements the query to insert a role. All information needed is stored
+	 * into the input <code>Role</code> object.
+	 * 
+	 * @param aRole The object containing all insert information, includig the 
+	 * role abilitations
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public void insertRoleComplete(Role aRole) throws EMFUserError;
 	
 }

@@ -609,6 +609,55 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 		}
 		return uses;
 	}
+
+	public void insertRoleComplete(Role role) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+
+		
+			SbiExtRoles hibRole = new SbiExtRoles();
+			
+			hibRole.setCode(role.getCode());
+			hibRole.setDescr(role.getDescription());
+			hibRole.setName(role.getName());			
+			SbiDomains roleType = (SbiDomains)aSession.load(SbiDomains.class,  role.getRoleTypeID());
+			hibRole.setRoleType(roleType);
+			
+			hibRole.setRoleTypeCode(role.getRoleTypeCD());
+			//abilitations
+			hibRole.setIsAbleToSaveSubobjects(new Boolean(role.isAbleToSaveSubobjects()));
+			hibRole.setIsAbleToSeeSubobjects(new Boolean(role.isAbleToSeeSubobjects()));
+			hibRole.setIsAbleToSeeSnapshots(new Boolean(role.isAbleToSeeSnapshots()));
+			hibRole.setIsAbleToSeeViewpoints(new Boolean(role.isAbleToSeeViewpoints()));
+			hibRole.setIsAbleToSeeNotes(new Boolean(role.isAbleToSeeNotes()));
+			hibRole.setIsAbleToSeeMetadata(new Boolean(role.isAbleToSeeMetadata()));
+			hibRole.setIsAbleToSaveMetadata(new Boolean(role.isAbleToSaveMetadata()));
+			hibRole.setIsAbleToSendMail(new Boolean(role.isAbleToSendMail()));
+			hibRole.setIsAbleToSaveRememberMe(new Boolean(role.isAbleToSaveRememberMe()));
+			hibRole.setIsAbleToSaveIntoPersonalFolder(new Boolean(role.isAbleToSaveIntoPersonalFolder()));
+			hibRole.setIsAbleToBuildQbeQuery(new Boolean(role.isAbleToBuildQbeQuery()));
+			
+			aSession.save(hibRole);
+			
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		
+	}
 	
 	
 	

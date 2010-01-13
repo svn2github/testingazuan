@@ -92,17 +92,18 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 		Locale locale = m.getLocale(httpRequest);
 
 		String serviceType = this.getAttributeAsString(MESSAGE_DET);
-
+		logger.debug("Service type "+serviceType);
 		if (serviceType != null && serviceType.equalsIgnoreCase(ROLES_LIST)) {
 			try {
 				ArrayList<Role> roles = (ArrayList<Role>)roleDao.loadAllRoles();
-
+				logger.debug("Loaded roles list");
 				JSONArray rolesJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(roles,	locale);
 				JSONObject rolesResponseJSON = createJSONResponseRoles(rolesJSON);
 
 				writeBackToClient(new JSONSuccess(rolesResponseJSON));
 
 			} catch (Throwable e) {
+				logger.error(e.getMessage(), e);
 				throw new SpagoBIServiceException(SERVICE_NAME,
 						"Exception occurred while retrieving roles", e);
 			}
@@ -111,13 +112,14 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 			Integer id = getAttributeAsInteger(ID);
 			try {
 				Role role = roleDao.loadByID(id);
-
+				logger.debug("Loaded role detail");
 				JSONObject roleJSON = (JSONObject) SerializerFactory.getSerializer("application/json").serialize(role,locale);
 				//add flags
 				roleJSON = addFlagsToJSONRoles(roleJSON, role);
 				writeBackToClient(new JSONSuccess(roleJSON));
 
 			} catch (Throwable e) {
+				logger.error(e.getMessage(), e);
 				throw new SpagoBIServiceException(SERVICE_NAME,
 						"Exception occurred while retrieving role detail",
 						e);
@@ -151,6 +153,7 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 				    
 				    Integer roleTypeID = domainIds.get(roleTypeCD);
 				    if(roleTypeID == null){
+				    	logger.error("Role type CD not existing");
 				    	throw new SpagoBIServiceException(SERVICE_NAME,	"Role Type ID is undefined");
 				    }
 				    
@@ -172,24 +175,41 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 					role.setIsAbleToSeeViewpoints(seeViewpoints);
 					role.setIsAbleToSendMail(sendMail);
 					try {
-						roleDao.insertRole(role);
-	
+						roleDao.insertRoleComplete(role);
+						logger.debug("New Role inserted");
 						writeBackToClient( new JSONAcknowledge("Operazion succeded") );
 	
 					} catch (Throwable e) {
+						logger.error(e.getMessage(), e);
 						throw new SpagoBIServiceException(SERVICE_NAME,
 								"Exception occurred while saving new role",
 								e);
 					}
 				} catch (EMFUserError e1) {
+					logger.error(e1.getMessage(), e1);
 					throw new SpagoBIServiceException(SERVICE_NAME,
 							"Exception occurred while saving new role",
 							e1);
 				}
 			}else{
-				throw new SpagoBIServiceException(SERVICE_NAME,	"Please enter user name");
+				logger.error("Missing role name");
+				throw new SpagoBIServiceException(SERVICE_NAME,	"Please enter role name");
 			}
-		} 
+		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(ROLE_DELETE)) {
+			Integer id = getAttributeAsInteger(ID);
+			try {
+				Role aRole = roleDao.loadByID(id);
+				roleDao.eraseRole(aRole);
+				logger.debug("Role deleted");
+				writeBackToClient( new JSONAcknowledge("Operazion succeded") );
+
+			} catch (Throwable e) {
+				logger.error("Exception occurred while deleting role", e);
+				throw new SpagoBIServiceException(SERVICE_NAME,
+						"Exception occurred while deleting role",
+						e);
+			}
+		}
 		logger.debug("OUT");
 
 		
@@ -211,6 +231,12 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 		return results;
 	}
 	
+	/**Adds role flags to JSON response object
+	 * @param object JSONObject representing role
+	 * @param role the <code>Role</code> to publish
+	 * @return JSONObject modified
+	 * @throws JSONException
+	 */
 	private JSONObject addFlagsToJSONRoles(JSONObject object, Role role)
 		throws JSONException {
 		

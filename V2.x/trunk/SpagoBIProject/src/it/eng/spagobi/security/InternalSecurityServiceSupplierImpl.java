@@ -83,6 +83,7 @@ public class InternalSecurityServiceSupplierImpl implements
 			profile = new SpagoBIUserProfile();
 			profile.setUniqueIdentifier(userId);
 			profile.setUserId(userId);
+			profile.setUserName(userId);
 	
 			// get user name
 			String userName = userId;

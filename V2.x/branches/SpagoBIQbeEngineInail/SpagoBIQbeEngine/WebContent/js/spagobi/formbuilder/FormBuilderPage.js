@@ -49,7 +49,7 @@ Ext.ns("Sbi.formbuilder");
 Sbi.formbuilder.FormBuilderPage = function(config) {
 	
 	var defaultSettings = {
-		title: LN('Form Builder'),
+		title: LN('Edit'),
 	};
 		
 	if(Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.formBuilderPage) {
@@ -85,13 +85,12 @@ Sbi.formbuilder.FormBuilderPage = function(config) {
 		  ]
 	});
 	
-	
 	c = Ext.apply(c, {
 		title: this.title,
 		border: true,
 		//bodyStyle:'background:green',
 		style:'padding:3px',
-      	layout: 'border',      	
+      	layout: 'border',
       	tbar: this.toolbar,
       	items: [this.queryFieldsPanel, this.templateEditorPanel]
 	});

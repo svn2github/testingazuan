@@ -70,7 +70,7 @@ Sbi.qbe.QbePanel = function(config) {
 		this.queryEditorPanel = new Sbi.qbe.QueryBuilderPanel(c);
 		
 		if(config.formbuilder !== undefined && config.formbuilder.template !== undefined)
-		this.formBuilderPage = new Sbi.formbuilder.FormBuilderPage({template: config.formbuilder.template});
+		this.formBuilderPage = new Sbi.formbuilder.FormPanel({template: config.formbuilder.template});
 		items = [this.queryEditorPanel, this.queryResultPanel, this.formBuilderPage];
 	} else {
 		// if user is a read-only user, do not instantiate and show the QueryBuilderPanel

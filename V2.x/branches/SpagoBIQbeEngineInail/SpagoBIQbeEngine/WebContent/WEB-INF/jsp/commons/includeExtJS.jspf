@@ -16,3 +16,6 @@
 <script type="text/javascript" src='../js/lib/ext-2.0.1/ux/form/SuperBoxSelect.js'/></script>
 <link rel="styleSheet" href ="../js/lib/ext-2.0.1/resources/css/superboxselect.css" type="text/css" />
 <link rel="styleSheet" href ="../js/lib/ext-2.0.1/resources/css/superboxselect-gray-extend.css" type="text/css" />
+
+<!-- Include MIF code -->
+<script type="text/javascript" src='../js/lib/ext-2.0.1/ux/miframe/miframe.js'/></script>

@@ -1,0 +1,83 @@
+/**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
+ 
+/**
+  * Object name 
+  * 
+  * [description]
+  * 
+  * 
+  * Public Properties
+  * 
+  * [list]
+  * 
+  * 
+  * Public Methods
+  * 
+  *  [list]
+  * 
+  * 
+  * Public Events
+  * 
+  *  [list]
+  * 
+  * Authors
+  * 
+  * - Davide Zerbetto (davide.zerbetto@eng.it)
+  */
+
+Ext.ns("Sbi.formbuilder");
+
+Sbi.formbuilder.FormPreviewPage = function(config) {
+	
+	var defaultSettings = {
+		title: 'Preview'
+	};
+		
+	if(Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.formPreviewPage) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.formPreviewPage);
+	}
+		
+	var c = Ext.apply(defaultSettings, config || {});
+		
+	Ext.apply(this, c);
+
+	// constructor
+	Sbi.formbuilder.FormPreviewPage.superclass.constructor.call(this, c);
+	
+	this.on('activate', function() {
+		if (this.formPreviewPanel = undefined) {
+			this.formPreviewPanel = new Ext.ux.ManagedIframePanel({
+				defaultSrc: 'http://www.google.com' // 'about:blank'
+		        , loadMask: true
+		        , fitToParent: true  // not valid in a layout
+		        , disableMessaging: true
+			});
+			this.add(this.formPreviewPanel);
+			this.doLayout();
+		}
+	}, this);
+	
+};
+
+Ext.extend(Sbi.formbuilder.FormPreviewPage, Ext.Panel, {
+    
+});

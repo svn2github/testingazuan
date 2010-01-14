@@ -71,9 +71,12 @@ Sbi.formbuilder.DynamicFilterGroupEditor = function(config) {
 	
 	Ext.apply(this, c);
 	
+	this.initToolbar();
+	
 	Ext.apply(c, {
 		filterTitle: this.groupTitle
 		, filterFrame: true
+		, tbar: this.toolbar
 	});
 	
 	// constructor
@@ -106,7 +109,7 @@ Ext.extend(Sbi.formbuilder.DynamicFilterGroupEditor, Sbi.formbuilder.EditorPanel
 	
 	, addField: function(fieldConf) {
 		
-		var field = new Sbi.formbuilder.VariableEditor(fieldConf);				
+		var field = new Sbi.formbuilder.DynamicFilterEditor(fieldConf);				
 		this.addFilterItem(field);
 		
 		field.on('actionrequest', function(action, field) {
@@ -122,8 +125,36 @@ Ext.extend(Sbi.formbuilder.DynamicFilterGroupEditor, Sbi.formbuilder.EditorPanel
 		this.remove(f, true);
 	}
 	
-	, editFilter: function(f) {
-		alert('Error: "editFilter" unimlpemented');
+	, modifyFilter: function(state) {
+		this.operator = state.operator;
+		this.groupTitle = 'Dynamic filter group (' + this.operator + ')';
+		this.filterItemsCt.setTitle(this.groupTitle);
+	}
+	
+	, editFilter: function() {
+		this.fireEvent('editrequest', this);
+	}
+	
+	, initToolbar: function() {
+		this.toolbar =  new Ext.Toolbar({
+			items: [
+			    '->' , {
+					text: 'Edit',
+					handler: function() {this.editFilter();},
+					scope: this
+			    } , {
+					text: 'Remove',
+					handler: function() {
+				    	if(this.ownerCt) {
+			    			this.ownerCt.remove(this, true);
+			    		} else {
+			    			this.destroy();
+			    		}
+				    },
+					scope: this
+			    }
+			  ]
+		});
 	}
 	
 });

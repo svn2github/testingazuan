@@ -50,7 +50,7 @@ Sbi.formbuilder.DynamicFilterGroupWizard = function(config) {
 	
 	var defaultSettings = {
 		// set default values here
-		title: 'Dynamic filter definition'
+		title: 'Dynamic filter group definition'
 		, autoScroll: true
 		, width: 350
 		, height: 150
@@ -112,6 +112,7 @@ Ext.extend(Sbi.formbuilder.DynamicFilterGroupWizard, Ext.Window, {
 	}
 	
 	, resetFormState: function() {
+		this.operatorField.setValue('');
 		this.operatorField.reset();
 	}
 	

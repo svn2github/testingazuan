@@ -73,9 +73,6 @@ Sbi.formbuilder.DynamicFilterEditorPanel = function(config) {
     this.on('addrequest', function() {
     	this.showFilterGroupWizard(null);
     }, this);
-    this.on('editrequest', function(editor, filterGroup) {
-    	this.showFilterGroupWizard(filterGroup);
-    }, this);
     
 };
 
@@ -100,6 +97,9 @@ Ext.extend(Sbi.formbuilder.DynamicFilterEditorPanel, Sbi.formbuilder.EditorPanel
 			, operator: content.operator
 			, baseContents: content.admissibleFields
 		});
+	    newGroupEditor.on('editrequest', function(editor) {
+	    	this.showFilterGroupWizard(editor);
+	    }, this);
 		this.addFilterItem(newGroupEditor);
 	}
 		
@@ -114,7 +114,7 @@ Ext.extend(Sbi.formbuilder.DynamicFilterEditorPanel, Sbi.formbuilder.EditorPanel
 				if(target === null) {
 					this.addFilterGroup(state);
 				} else {
-					 alert('edit');
+					target.modifyFilter(state);
 				}
 			}, this);
 		}	

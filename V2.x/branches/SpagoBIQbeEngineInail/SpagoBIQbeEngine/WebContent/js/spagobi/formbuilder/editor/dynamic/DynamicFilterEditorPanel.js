@@ -41,7 +41,7 @@
   * 
   * Authors
   * 
-  * - Andrea Gioia (andrea.gioia@eng.it)
+  * - Davide Zerbetto (davide.zerbetto@eng.it)
   */
 
 Ext.ns("Sbi.formbuilder");
@@ -88,18 +88,23 @@ Ext.extend(Sbi.formbuilder.DynamicFilterEditorPanel, Sbi.formbuilder.EditorPanel
 	// public methods
 	// --------------------------------------------------------------------------------
 	
-	, addFilterGroup: function(state) {
-		alert('addFilterGroup');
+	, setContents: function(contents) {
+		for(var i = 0, l = contents.length; i < l; i++) {
+			this.addFilterGroup(contents[i]);
+		}
+	}
+	
+	, addFilterGroup: function(content) {
 		var newGroupEditor = new Sbi.formbuilder.DynamicFilterGroupEditor({
-			groupTitle: 'Dynamic filter group (' + state.operator + ')',
-			baseContents: state.operator
+			groupTitle: 'Dynamic filter group (' + content.operator + ')'
+			, operator: content.operator
+			, baseContents: content.admissibleFields
 		});
 		this.addFilterItem(newGroupEditor);
 	}
 		
 	, addFilter: function(filterConf) {	
-		//var filtersGroup = new Sbi.formbuilder.StaticCloseFilterGroupEditor(filtersGroupConf);		
-		//this.addFilterItem(filtersGroup);
+		alert('addFilter non implementato');
 	}
 
 	, showFilterGroupWizard: function(targetFilterGroup) {

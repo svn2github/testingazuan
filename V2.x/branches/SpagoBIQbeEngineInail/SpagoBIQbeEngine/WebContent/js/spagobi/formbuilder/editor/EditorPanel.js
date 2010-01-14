@@ -198,7 +198,7 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 	, init: function() {
 		this.empty = true;
 		this.contents = [];
-		
+
 		if(this.baseContents !== undefined) {
 			this.setContents(this.baseContents);	
 		} else {

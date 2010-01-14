@@ -111,6 +111,27 @@ Sbi.formbuilder.template = {
         
     ]
     
+    , "dynamicFilters": [
+         {
+             "operator": "EQUALS TO",
+             "admissibleFields": [
+                {"field": "it.eng.spagobi.SalesFact1998::customer(customer_id):numCarsOwned", "text": "Numero autovetture"}             
+             ]
+         },
+         {
+             "operator": "BETWEEN",
+             "admissibleFields": [
+                {"field": "it.eng.spagobi.SalesFact1998::customer(customer_id):birthdate", "text": "Data di nascita"}             
+             ]
+         },
+         {
+             "operator": "BETWEEN",
+             "admissibleFields": [
+                {"field": "it.eng.spagobi.SalesFact1998::customer(customer_id):lname", "text": "Cognome"}             
+             ]
+         }
+     ]
+    
     , "groupingVariables": [
         {
         	"admissibleFields": [

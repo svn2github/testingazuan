@@ -48,7 +48,6 @@ Ext.ns("Sbi.formviewer");
 
 Sbi.formbuilder.DynamicFilterGroupEditor = function(config) {
 	
-
 	var defaultSettings = {	
 		groupTitle: 'Dynamic Filter Group'
 		, width: 300
@@ -59,11 +58,15 @@ Sbi.formbuilder.DynamicFilterGroupEditor = function(config) {
         , droppable: {
 			onFieldDrop: this.addField
 		} 
-		
 	};
+	
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.dynamicFilterGroupEditor) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.dynamicFilterGroupEditor);
 	}
+	
+	this.operator = config.operator;
+	delete config.operator;
+	
 	var c = Ext.apply(defaultSettings, config || {});
 	
 	Ext.apply(this, c);
@@ -81,7 +84,7 @@ Ext.extend(Sbi.formbuilder.DynamicFilterGroupEditor, Sbi.formbuilder.EditorPanel
     
 
 	wizard: null
-	
+	, operator: null
 	, groupTitle: null
 	
 	//--------------------------------------------------------------------------------
@@ -96,47 +99,31 @@ Ext.extend(Sbi.formbuilder.DynamicFilterGroupEditor, Sbi.formbuilder.EditorPanel
 	
 	, getContents: function() {
 		var c = {};
-		
+		c.operator = this.operator;
 		c.admissibleFields = Sbi.formbuilder.DynamicFilterGroupEditor.superclass.getContents.call(this)
-		
 		return c;
 	}
 	
 	, addField: function(fieldConf) {
-		alert('addField');
+		
+		var field = new Sbi.formbuilder.VariableEditor(fieldConf);				
+		this.addFilterItem(field);
+		
+		field.on('actionrequest', function(action, field) {
+			if(action === 'edit') {
+				this.editFilter(field);
+			} else if(action === 'delete') {
+				this.deleteField(field);
+			}
+		}, this);
 	}
 	
 	, deleteField: function(f) {
-		f.destroy();
+		this.remove(f, true);
 	}
 	
 	, editFilter: function(f) {
 		alert('Error: "editFilter" unimlpemented');
-		//this.onFilterWizardShow(f)
 	}
-	
-
-	
-	// --------------------------------------------------------------------------------
-	// private methods
-	// --------------------------------------------------------------------------------
-	/*
-	, onFilterWizardShow: function(targetFilter) {
-		if(this.wizard === null) {
-			this.wizard = new Sbi.formbuilder.StaticCloseFilterWizard();
-			this.wizard.on('apply', function(win, target, state) {
-				if(target === null) {
-					this.addFilter(state);
-				} else {
-					target.setContents(state);
-				}
-				
-			}, this);
-		}
-		
-		this.wizard.setTarget(targetFilter || null);		
-		this.wizard.show();
-	}
-	*/
 	
 });

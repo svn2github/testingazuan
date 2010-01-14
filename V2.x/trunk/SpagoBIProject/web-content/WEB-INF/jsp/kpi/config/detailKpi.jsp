@@ -118,8 +118,8 @@
 				description = kpi.getDescription();
 			if (kpi.getStandardWeight() != null)
 				weight = kpi.getStandardWeight().toString();
-			if(kpi.getKpiDs()!=null)
-				ds_id = kpi.getKpiDs().getId();
+			if(kpi.getKpiDsId()!=null)
+				ds_id = kpi.getKpiDsId();
 			else
 				ds_id = null;
 			if (kpi.getThreshold()!=null)

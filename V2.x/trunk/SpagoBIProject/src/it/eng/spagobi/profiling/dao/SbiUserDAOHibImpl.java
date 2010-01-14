@@ -150,10 +150,20 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			Integer id = (Integer)aSession.save(user);
+			//checks if user with same userId exists
+			String q = "from SbiUser us where us.userId = :userId";
+			Query query = aSession.createQuery(q);
+			query.setString("userId", user.getUserId());
 			
-			tx.commit();
-			return id;
+			SbiUser userExists = (SbiUser)query.uniqueResult();
+			if(userExists == null){
+				Integer id = (Integer)aSession.save(user);				
+				tx.commit();
+				return id;
+			}else{
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 14001);
+			}
+			
 		} catch (HibernateException he) {
 			logger.error(he.getMessage(), he);
 			if (tx != null)

@@ -285,5 +285,10 @@
 	<CONFIGURATOR path="/WEB-INF/conf/tools/objmetadata/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/objmetadata/business_map.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/objmetadata/validation.xml" />
+	
+	<!-- internal profiling -->
+	<CONFIGURATOR path="/WEB-INF/conf/profiling/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/profiling/business_map.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/profiling/validation.xml" />
     
 </MASTER>

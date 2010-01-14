@@ -34,6 +34,7 @@ import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -136,10 +137,14 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 					logger.debug("New user inserted");
 					writeBackToClient( new JSONAcknowledge("Operazion succeded") );
 
-				} catch (Throwable e) {
+				} catch (EMFUserError e) {
 					logger.error("Exception occurred while saving new user", e);
+					writeErrorsBackToClient();
+					throw new SpagoBIServiceException(SERVICE_NAME,	"Exception occurred while saving new user",	e);
+				} catch (IOException e) {
+					logger.error("Exception occurred while writw response to client", e);
 					throw new SpagoBIServiceException(SERVICE_NAME,
-							"Exception occurred while saving new user",
+							"Exception occurred while writw response to client",
 							e);
 				}
 			}else{

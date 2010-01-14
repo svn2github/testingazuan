@@ -53,7 +53,7 @@ Sbi.formbuilder.DynamicFilterGroupEditor = function(config) {
 		, width: 300
         , height: 150
         , autoWidth: false    	
-        , emptyMsg: 'Drag a field here to add a new dynamic filter'
+        , emptyMsg: 'Drag a field here to add an option for the dynamic filter'
         , ddGroup    : 'formbuilderDDGroup'
         , droppable: {
 			onFieldDrop: this.addField

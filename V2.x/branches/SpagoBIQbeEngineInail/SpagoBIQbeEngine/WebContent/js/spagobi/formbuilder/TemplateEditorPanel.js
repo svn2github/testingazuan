@@ -121,7 +121,11 @@ Ext.extend(Sbi.formbuilder.TemplateEditorPanel, Ext.Panel, {
 		});
 		this.add(this.staticOpenFilterEditorPanel);
 		
-		this.dynamicEditorPanel = new Sbi.formbuilder.DynamicFilterEditorPanel({style:'padding:10px'});
+		bc = (this.template !== undefined) ? this.template.dynamicFilters : undefined
+		this.dynamicEditorPanel = new Sbi.formbuilder.DynamicFilterEditorPanel({
+			style:'padding:10px',
+			baseContents: bc
+		});
 		this.add(this.dynamicEditorPanel);
 		
 		bc = (this.template !== undefined) ? this.template.groupingVariables : undefined

@@ -51,12 +51,12 @@ Sbi.formbuilder.DynamicFilterEditorPanel = function(config) {
 	var defaultSettings = {
 		
 		title: 'Dynamic filters'
-		, emptyMsg: 'Drag a field here to create a new dynamic filter'
+		, emptyMsg: 'Drag a field here to add an option for the dynamic filter'
 		, filterItemName: 'dynamic filter group'
 		
 		, layout: 'table'
 	    , layoutConfig: {
-	        columns: 100
+	        columns: 1
 	    }
 		, enableDebugBtn: true
 	};
@@ -69,6 +69,14 @@ Sbi.formbuilder.DynamicFilterEditorPanel = function(config) {
 	
 	// constructor
     Sbi.formbuilder.DynamicFilterEditorPanel.superclass.constructor.call(this, c);
+    
+    this.on('addrequest', function() {
+    	this.showFilterGroupWizard(null);
+    }, this);
+    this.on('editrequest', function(editor, filterGroup) {
+    	this.showFilterGroupWizard(filterGroup);
+    }, this);
+    
 };
 
 Ext.extend(Sbi.formbuilder.DynamicFilterEditorPanel, Sbi.formbuilder.EditorPanel, {
@@ -79,30 +87,36 @@ Ext.extend(Sbi.formbuilder.DynamicFilterEditorPanel, Sbi.formbuilder.EditorPanel
 	// --------------------------------------------------------------------------------
 	// public methods
 	// --------------------------------------------------------------------------------
-		
 	
+	, addFilterGroup: function(state) {
+		alert('addFilterGroup');
+		var newGroupEditor = new Sbi.formbuilder.DynamicFilterGroupEditor({
+			groupTitle: 'Dynamic filter group (' + state.operator + ')',
+			baseContents: state.operator
+		});
+		this.addFilterItem(newGroupEditor);
+	}
+		
 	, addFilter: function(filterConf) {	
 		//var filtersGroup = new Sbi.formbuilder.StaticCloseFilterGroupEditor(filtersGroupConf);		
 		//this.addFilterItem(filtersGroup);
 	}
-	
+
 	, showFilterGroupWizard: function(targetFilterGroup) {
 		if(this.wizard === null) {
-			this.wizard = new Sbi.formbuilder.StaticCloseFilterGroupWizard();
+			this.wizard = new Sbi.formbuilder.DynamicFilterGroupWizard();
 			this.wizard.on('apply', function(win, target, state) {
 				if(target === null) {
 					this.addFilterGroup(state);
 				} else {
 					 alert('edit');
 				}
-				
 			}, this);
-		}
-		
-		this.wizard.setTarget(targetFilterGroup || null);		
+		}	
+		this.wizard.setTarget(targetFilterGroup || null);
 		this.wizard.show();
 	}
-
+	
 	// --------------------------------------------------------------------------------
 	// private methods
 	// --------------------------------------------------------------------------------

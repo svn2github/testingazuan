@@ -50,6 +50,11 @@ Sbi.formbuilder.FormPreviewPage = function(config) {
 	
 	var defaultSettings = {
 		title: 'Preview'
+		, defaultSrc: 'http://www.google.com' // 'about:blank'
+		, autoLoad: true
+        , loadMask: true
+        , fitToParent: true  // not valid in a layout
+        , disableMessaging: true
 	};
 		
 	if(Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.formPreviewPage) {
@@ -57,27 +62,15 @@ Sbi.formbuilder.FormPreviewPage = function(config) {
 	}
 		
 	var c = Ext.apply(defaultSettings, config || {});
-		
-	Ext.apply(this, c);
 
 	// constructor
 	Sbi.formbuilder.FormPreviewPage.superclass.constructor.call(this, c);
 	
 	this.on('activate', function() {
-		if (this.formPreviewPanel = undefined) {
-			this.formPreviewPanel = new Ext.ux.ManagedIframePanel({
-				defaultSrc: 'http://www.google.com' // 'about:blank'
-		        , loadMask: true
-		        , fitToParent: true  // not valid in a layout
-		        , disableMessaging: true
-			});
-			this.add(this.formPreviewPanel);
-			this.doLayout();
-		}
 	}, this);
 	
 };
 
-Ext.extend(Sbi.formbuilder.FormPreviewPage, Ext.Panel, {
+Ext.extend(Sbi.formbuilder.FormPreviewPage, Ext.ux.ManagedIframePanel, {
     
 });

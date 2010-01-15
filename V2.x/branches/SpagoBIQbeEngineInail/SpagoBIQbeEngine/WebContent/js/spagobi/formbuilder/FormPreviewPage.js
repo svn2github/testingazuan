@@ -50,24 +50,21 @@ Sbi.formbuilder.FormPreviewPage = function(config) {
 	
 	var defaultSettings = {
 		title: 'Preview'
-		, defaultSrc: 'http://www.google.com' // 'about:blank'
+		, defaultSrc: 'about:blank'
 		, autoLoad: true
         , loadMask: true
         , fitToParent: true  // not valid in a layout
         , disableMessaging: true
 	};
-		
+	
 	if(Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.formPreviewPage) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.formPreviewPage);
 	}
 		
 	var c = Ext.apply(defaultSettings, config || {});
-
+	
 	// constructor
 	Sbi.formbuilder.FormPreviewPage.superclass.constructor.call(this, c);
-	
-	this.on('activate', function() {
-	}, this);
 	
 };
 

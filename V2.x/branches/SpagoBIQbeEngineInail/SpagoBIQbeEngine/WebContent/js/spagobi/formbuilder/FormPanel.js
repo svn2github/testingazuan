@@ -51,6 +51,17 @@ Sbi.formbuilder.FormPanel = function(config) {
 	var defaultSettings = {
 		title: 'Form builder'
 	};
+	
+	this.services = new Array();
+	var params = {};
+	this.services['setFormBuilderState'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'SET_FORM_BUILDER_STATE_ACTION'
+		, baseParams: params
+	});
+	this.services['getFormPreview'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_FORM_PREVIEW_ACTION'
+		, baseParams: params
+	});
 		
 	if(Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.formPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.formPanel);
@@ -72,8 +83,34 @@ Sbi.formbuilder.FormPanel = function(config) {
 
 	// constructor
 	Sbi.formbuilder.FormPanel.superclass.constructor.call(this, c);
+	
+	// if moving towards preview, send form builder state to server, and then update iframe content
+	this.formPreviewPage.on('activate', function() {
+		this.setFormBuilderState(this.refreshPreview, Sbi.exception.ExceptionHandler.handleFailure, this);
+	}, this);
+
 };
 
 Ext.extend(Sbi.formbuilder.FormPanel, Ext.TabPanel, {
+	
+	services: null
+
+	, setFormBuilderState: function(successCallback, failureCallback, scope) {
+		var state = this.formBuilderPage.templateEditorPanel.getContents();
+		var params = {
+				"FORM_STATE": Sbi.commons.JSON.encode(state)
+		};
+		Ext.Ajax.request({
+		    url: this.services['setFormBuilderState'],
+		    success: successCallback,
+		    failure: failureCallback,	
+		    scope: scope,
+		    params: params
+		});   
+	}
+	
+	, refreshPreview: function() {
+		this.formPreviewPage.getFrame().setSrc(this.services['getFormPreview']);
+	}
     
 });

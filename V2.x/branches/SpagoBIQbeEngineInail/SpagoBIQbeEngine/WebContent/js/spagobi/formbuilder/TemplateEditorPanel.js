@@ -137,5 +137,24 @@ Ext.extend(Sbi.formbuilder.TemplateEditorPanel, Ext.Panel, {
 		
 		this.doLayout(true);
 	}
+
+	, getContents: function() {
+		var state = {};
+		
+		if (this.staticCloseFilterEditorPanel) {
+			state.staticClosedFilters = this.staticCloseFilterEditorPanel.getContents();
+		}
+		if (this.staticOpenFilterEditorPanel) {
+			state.staticOpenFilters = this.staticOpenFilterEditorPanel.getContents();
+		}
+		if (this.dynamicEditorPanel) {
+			state.dynamicFilters = this.dynamicEditorPanel.getContents();
+		}
+		if (this.groupingVariablesPanel) {
+			state.groupingVariables = this.groupingVariablesPanel.getContents();
+		}
+		
+		return state;
+	}
     
 });

@@ -49,7 +49,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	boolean isQueryValidationEnabled;
 	boolean isQueryValidationBlocking;
 	
-	qbeEngineInstance = (QbeEngineInstance)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("ENGINE_INSTANCE");
+	ResponseContainer responseContainer = ResponseContainerAccess.getResponseContainer(request);
+	SourceBean serviceResponse = responseContainer.getServiceResponse();
+	qbeEngineInstance = (QbeEngineInstance) serviceResponse.getAttribute("ENGINE_INSTANCE");
 	profile = (UserProfile)qbeEngineInstance.getEnv().get(EngineConstants.ENV_USER_PROFILE);
 	locale = (Locale) qbeEngineInstance.getEnv().get(EngineConstants.ENV_LOCALE);
 	

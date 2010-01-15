@@ -38,5 +38,7 @@
 	
 	<!-- start QBE Data Browser (Form Builder) configuration -->
 	<CONFIGURATOR path="/WEB-INF/conf/formbuilder/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/formbuilder/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/formbuilder/publishers.xml" />
 	
 </MASTER>

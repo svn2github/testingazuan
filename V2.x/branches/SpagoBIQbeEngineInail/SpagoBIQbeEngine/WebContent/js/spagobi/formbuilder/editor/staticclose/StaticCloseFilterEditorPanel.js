@@ -54,10 +54,10 @@ Sbi.formbuilder.StaticCloseFilterEditorPanel = function(config) {
 		, emptyMsg: 'Click on the button in the top-rigtht corner in order to add a new filter group'
 		, filterItemName: 'static closed filter group'
 		
-		, layout: 'table'
-	    , layoutConfig: {
+		, layout: 'column'
+	    /*, layoutConfig: {
 	        columns: 100
-	    }
+	    }*/
 		, enableDebugBtn: true
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.staticCloseFilterEditorPanel) {

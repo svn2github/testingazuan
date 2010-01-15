@@ -53,11 +53,12 @@ Sbi.formbuilder.DynamicFilterEditorPanel = function(config) {
 		title: 'Dynamic filters'
 		, emptyMsg: 'Click on the button in the top-rigtht corner in order to add a new dynamic filter'
 		, filterItemName: 'dynamic filter group'
-		
+		/*
 		, layout: 'table'
 	    , layoutConfig: {
 	        columns: 1
 	    }
+	    */
 		, enableDebugBtn: true
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.dynamicFilterEditorPanel) {

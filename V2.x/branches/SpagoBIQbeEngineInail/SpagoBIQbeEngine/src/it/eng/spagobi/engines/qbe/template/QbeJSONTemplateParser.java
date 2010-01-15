@@ -92,7 +92,7 @@ public class QbeJSONTemplateParser implements IQbeTemplateParser {
 		return qbeTemplate;
 	}
 
-	private void addAdditionalInfo(JSONObject template) {
+	public static void addAdditionalInfo(JSONObject template) {
 		logger.debug("IN");
 		try {
 			JSONArray staticClosedFilters = template.optJSONArray(STATIC_CLOSED_FILTERS);

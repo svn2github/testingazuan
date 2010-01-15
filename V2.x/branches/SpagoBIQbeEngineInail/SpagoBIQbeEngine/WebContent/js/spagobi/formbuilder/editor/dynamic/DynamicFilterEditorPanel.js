@@ -51,7 +51,7 @@ Sbi.formbuilder.DynamicFilterEditorPanel = function(config) {
 	var defaultSettings = {
 		
 		title: 'Dynamic filters'
-		, emptyMsg: 'Click on the right Add button to add a new dynamic filter'
+		, emptyMsg: 'Click on the button in the top-rigtht corner in order to add a new dynamic filter'
 		, filterItemName: 'dynamic filter group'
 		
 		, layout: 'table'

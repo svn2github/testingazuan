@@ -76,7 +76,7 @@ Sbi.formbuilder.StaticOpenFilterWizard = function(openFilter, config) {
 Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 
 	init: function(openFilter) {
-
+	
 		this.entityId = openFilter.field;
 	
 		this.filterName = new Ext.form.TextField({

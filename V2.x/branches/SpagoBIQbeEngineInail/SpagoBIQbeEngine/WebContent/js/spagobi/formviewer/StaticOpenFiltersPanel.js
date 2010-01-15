@@ -125,67 +125,48 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
 		
 		var store = this.createStore(openFilter);
 		
+		var maxSelectionNumber = 1;
 		if (openFilter.singleSelection === undefined || openFilter.singleSelection === null || openFilter.singleSelection === true) {
-			field = new Ext.ux.form.SuperBoxSelect(Ext.apply(baseConfig, {
-	            editable: true			    
-			    , forceSelection: false
-			    , store: store
-			    , displayField: 'column-1'
-			    , valueField: 'column-1'
-			    , emptyText: ''
-			    , typeAhead: false
-			    , triggerAction: 'all'
-			    , selectOnFocus: true
-			    , autoLoad: false
-			    , maxSelection: 1
-			    , width: 200
-			    , maxHeight: 250
-			}));
+			maxSelectionNumber = 1;
 		} else {
-			field = new Ext.ux.form.SuperBoxSelect(Ext.apply(baseConfig, {
-	            editable: true			    
-			    , forceSelection: false
-			    , store: store
-			    , displayField: 'column-1'
-			    , valueField: 'column-1'
-			    , emptyText: ''
-			    , typeAhead: false
-			    , triggerAction: 'all'
-			    , selectOnFocus: true
-			    , autoLoad: false
-			    , maxSelection: openFilter.maxSelectedNumber
-			    , width: 200
-			    , maxHeight: 250
-			}));
-			
-			/* 
-			field = new Ext.ux.Andrie.Select(Ext.apply(baseConfig, {
-				multiSelect: true
-				, maxLength: openFilter.maxSelectedNumber
-			    , store: store
-			    , displayField: 'column-1'
-			    , valueField: 'column-1'
-			    , emptyText: ''
-			    , selectOnFocus: true
-			    , autoLoad: false
-			}));
-			*/
-			/*
-			field = new Ext.ux.BoxSelect(Ext.apply(baseConfig, {
-	            editable: true			    
-			    , forceSelection: false
-			    , store: store
-			    , displayField: 'column-1'
-			    , valueField: 'column-1'
-			    , emptyText: ''
-			    , typeAhead: false
-			    //, typeAheadDelay: 1000
-			    , triggerAction: 'all'
-			    , selectOnFocus:true
-			    , autoLoad: false
-			}));
-			*/
+			maxSelectionNumber = openFilter.maxSelectedNumber;
 		}
+		
+		/*
+		var tpl = new Ext.XTemplate(
+			 '<tpl for=".">'
+	         + '<tpl if="this.isDate(values[\'column-1\'])">'
+	         +   '<div class="x-combo-list-item">{[values["column-1"]]}</div>'
+	         + '</tpl>'
+	         + '<tpl if="false == true">'
+	         +   '<div class="x-combo-list-item">{column-1}</div>'
+	         + '</tpl>'
+			 + '</tpl>', {
+			 isDate: function(value){
+	        	 alert(typeof value == 'date');
+		         return typeof value == 'date';
+		     }
+		});
+		*/
+		
+		field = new Ext.ux.form.SuperBoxSelect(Ext.apply(baseConfig, {
+			//displayFieldTpl: tpl
+			editable: true			    
+		    , forceSelection: false
+		    , store: store
+		    , displayField: 'column-1'
+		    , valueField: 'column-1'
+		    , emptyText: ''
+		    , typeAhead: false
+		    , triggerAction: 'all'
+		    , selectOnFocus: true
+		    , autoLoad: false
+		    , maxSelection: maxSelectionNumber
+		    , width: 200
+		    , maxHeight: 250
+		    , displayDateFormat: Sbi.locale.formats.date.dateFormat
+		}));
+
 		return field;
 	}
 

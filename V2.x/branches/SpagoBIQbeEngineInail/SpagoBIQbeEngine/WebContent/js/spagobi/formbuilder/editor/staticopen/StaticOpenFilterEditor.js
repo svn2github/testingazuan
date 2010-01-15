@@ -58,7 +58,6 @@ Sbi.formbuilder.StaticOpenFilterEditor = function(config) {
 		
 	Ext.apply(this, c);
 	
-	
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE'};
 	this.services = new Array();
 	this.services['getFilterValuesService'] = Sbi.config.serviceRegistry.getServiceUrl({
@@ -84,6 +83,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditor, Ext.Panel,  {
 	, text: null
 	, singleSelection: null
 	, maxSelectedNumber: null
+	, operator: null
 	, query: null
 	, field: null
 	, orderField: null
@@ -103,6 +103,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditor, Ext.Panel,  {
 		c.text = this.text || undefined;
 		c.singleSelection = this.singleSelection || undefined;
 		c.maxSelectedNumber = this.maxSelectedNumber || undefined;
+		c.operator = this.operator || undefined;
 		c.query = this.query || undefined;
 		c.field = this.field || undefined;
 		c.orderField = this.orderField || undefined;

@@ -6,6 +6,8 @@
 		<MAP_ACTION actionName="DOWNLOAD_BIOBJ_TEMPLATE" businessProcess="DocumentDevManagement" />
 		<MAP_ACTION actionName="GET_FTREE_FOLDERS_ACTION"  businessProcess="DocumentUserManagement"/>
 		<MAP_ACTION actionName="GET_FOLDER_CONTENT_ACTION" businessProcess="DocumentUserManagement"/>
+		<MAP_ACTION actionName="FILTER_FOLDER_CONTENT_ACTION" businessProcess="DocumentUserManagement"/>
+		
 		<MAP_ACTION actionName="GET_FOLDER_PATH_ACTION"  businessProcess="DocumentUserManagement"/>
 		<MAP_ACTION actionName="SEARCH_CONTENT_ACTION"  businessProcess="DocumentUserManagement"/>
 		<MAP_ACTION actionName="GET_CATEGORIES_ACTION"  businessProcess="DocumentUserManagement"/>

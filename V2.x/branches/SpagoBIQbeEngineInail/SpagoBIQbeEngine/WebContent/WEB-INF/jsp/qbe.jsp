@@ -184,12 +184,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	           		qbe.queryEditorPanel.filterGridPanel.dropTarget = new Sbi.qbe.FilterGridDropTarget(qbe.queryEditorPanel.filterGridPanel);
 	           		qbe.queryEditorPanel.havingGridPanel.dropTarget = new Sbi.qbe.HavingGridDropTarget(qbe.queryEditorPanel.havingGridPanel);
 
-	           		//alert('qbe.formBuilderPage: ' + qbe.formBuilderPage);
-	           		//alert('qbe.formBuilderPage.filtersTemplatePanel: ' + qbe.formBuilderPage.filtersTemplatePanel);
-	           		//alert('qbe.formBuilderPage.filtersTemplatePanel.staticOpenFiltersEditorPanel: ' + qbe.formBuilderPage.filtersTemplatePanel.staticOpenFiltersEditorPanel);
-	           		//qbe.formBuilderPage.filtersTemplatePanel.staticOpenFiltersEditorPanel.dropTarget = 
-		           	//	new Sbi.formbuilder.StaticOpenFiltersEditorPanelDropTarget(qbe.formBuilderPage.filtersTemplatePanel.staticOpenFiltersEditorPanel);
-	           	<%}%>
+	         	<%}%>
 	           	
 	      	});
 	    </script>

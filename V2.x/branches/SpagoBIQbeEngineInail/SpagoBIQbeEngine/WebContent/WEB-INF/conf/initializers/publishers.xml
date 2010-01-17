@@ -17,5 +17,15 @@
 			</RESOURCES>
 		</RENDERING>    	
 	</PUBLISHER>
+	
+	<PUBLISHER name="FORM_ENGINE_TEMPLATE_BUILDE_ACTION_PUBLISHER">		
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/WEB-INF/jsp/templateBuilder.jsp" />
+			</RESOURCES>
+		</RENDERING>    	
+	</PUBLISHER>
+	
+	
   	
 </PUBLISHERS>

@@ -20,6 +20,7 @@
  **/
 package it.eng.spagobi.engines.qbe.tree;
 
+import java.io.CharArrayWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -158,6 +159,7 @@ public class ExtJsQbeTreeBuilder  {
 			writer = new PrintWriter(new FileWriter(file));
 		} catch (IOException e) {
 			e.printStackTrace();
+			writer = new PrintWriter(new CharArrayWriter());
 		}
 		addEntityNodes(nodes, datamartName);
 		System.out.println("File saved: " + file.getAbsoluteFile());

@@ -59,6 +59,10 @@
 		
 		<CONFIG></CONFIG>
 	</ACTION>
+	
+  <ACTION name="FILTER_FOLDER_CONTENT_ACTION" class="it.eng.spagobi.analiticalmodel.documentsbrowser.service.FilterFolderContentAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
  
  <ACTION name="GET_FTREE_FOLDERS_ACTION" class="it.eng.spagobi.analiticalmodel.documentsbrowser.service.GetFTreeFoldersAction" scope="REQUEST">
  	<CONFIG/>
@@ -68,6 +72,8 @@
  <ACTION name="GET_FOLDER_PATH_ACTION" class="it.eng.spagobi.analiticalmodel.documentsbrowser.service.GetFolderPathAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
+ 
+
  
  <ACTION name="SEARCH_CONTENT_ACTION" class="it.eng.spagobi.analiticalmodel.documentsbrowser.service.SearchContentAction" scope="REQUEST">
  	<CONFIG/>

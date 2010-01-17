@@ -60,15 +60,14 @@ Sbi.formbuilder.FormBuilderPage = function(config) {
 		
 	Ext.apply(this, c);
 		
-	/*
+	
 	this.services = this.services || new Array();	
-	this.services['doThat'] = this.services['doThat'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'DO_THAT_ACTION'
-		, baseParams: new Object()
+	this.services['saveFormState'] = this.services['saveFormState'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'SAVE_FORM_ACTION'
+		, baseParams: {}
 	});
 	
-	this.addEvents('customEvents');
-	*/
+	//this.addEvents('customEvents');
 		
 		
 	this.initQueryFieldsPanel();
@@ -80,6 +79,26 @@ Sbi.formbuilder.FormBuilderPage = function(config) {
 		    , {
 				text: 'Refresh',
 				handler: function() {this.queryFieldsPanel.refresh();},
+				scope: this
+		    }, {
+				text: 'Save',
+				handler: function() {
+		    		alert('Saving ...');
+		    		var params = {
+		    				"FORM_STATE": Sbi.commons.JSON.encode(this.templateEditorPanel.getContents())
+		    		};
+		    		Ext.Ajax.request({
+		    		    url: this.services['saveFormState'],
+		    		    success: function() {
+		    				alert("Template saved succesfully");
+		    			},
+		    		    failure: function() {
+		    				alert("An error occurred while saving template");
+		    			},
+		    		    scope: this,
+		    		    params: params
+		    		});   
+		    	},
 				scope: this
 		    }
 		  ]

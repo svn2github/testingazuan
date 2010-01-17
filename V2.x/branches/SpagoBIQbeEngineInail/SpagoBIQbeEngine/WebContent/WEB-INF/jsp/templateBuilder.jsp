@@ -39,9 +39,11 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	String spagobiServerHost;
 	String spagobiContext;
 	String spagobiSpagoController;
+	String formDocumentId;
 
 	locale = Locale.ITALY;	
 	
+	formDocumentId = request.getParameter("document");
 	spagobiServerHost = request.getParameter(SpagoBIConstants.SBI_HOST);
     spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
     spagobiSpagoController = "/servlet/AdapterHTTP"; //request.getParameter(SpagoBIConstants.SBI_SPAGO_CONTROLLER);
@@ -91,7 +93,9 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 
 	
 
-		var documentTemplateBuilderPanel = new Sbi.formtemplate.DocumentTemplateBuilder();
+		var documentTemplateBuilderPanel = new Sbi.formtemplate.DocumentTemplateBuilder({
+			formDocumentId: <%= formDocumentId %>
+		});
 	   	var viewport = new Ext.Viewport(documentTemplateBuilderPanel);  
 	 </script>
 	</body>

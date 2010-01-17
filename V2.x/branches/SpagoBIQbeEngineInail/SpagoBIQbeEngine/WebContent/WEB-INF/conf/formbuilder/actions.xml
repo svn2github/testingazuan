@@ -20,5 +20,11 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
+	<ACTION name="SAVE_FORM_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.formbuilder.SaveFormAction" 
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 </ACTIONS>
 

@@ -107,6 +107,12 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 			}
 			logger.debug("Engine instance succesfully created");
 			
+			// form builder
+			qbeEngineInstance.getEnv().put("TEMPLATE", getTemplateAsSourceBean());
+			String docId = this.getAttributeAsString("formDocumentId");
+			if(docId != null) qbeEngineInstance.getEnv().put("DOCUMENT", docId);
+			// form builder
+			
 			qbeEngineInstance.setAnalysisMetadata( getAnalysisMetadata() );
 			if( getAnalysisStateRowData() != null ) {
 				logger.debug("Loading subobject [" + qbeEngineInstance.getAnalysisMetadata().getName() + "] ...");

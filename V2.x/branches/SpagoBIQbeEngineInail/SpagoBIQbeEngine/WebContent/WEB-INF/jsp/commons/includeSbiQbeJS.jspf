@@ -88,6 +88,11 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/formbuilder/TestTemplate.js'/></script>
 
 
+<!-- Document Template Builder-->
+<script type="text/javascript" src='../js/spagobi/formtemplate/DocumentTemplateBuilder.js'/></script>
+
+
+
 
 
 

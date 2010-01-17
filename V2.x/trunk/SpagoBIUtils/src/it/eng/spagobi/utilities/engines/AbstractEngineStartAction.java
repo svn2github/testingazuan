@@ -294,11 +294,13 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 			template = contentProxy.readTemplate(getDocumentId(), requestParameters);
 		}	
 		try {
-		  templateContent = DECODER.decodeBuffer(template.getContent());
-		} catch (IOException e) {
+			if(template == null)throw new SpagoBIEngineRuntimeException("There are no template associated to document [" + documentId + "]");
+			templateContent = DECODER.decodeBuffer(template.getContent());
+		} catch (Throwable e) {
 			SpagoBIEngineStartupException engineException = new SpagoBIEngineStartupException(getEngineName(), "Impossible to get template's content", e);
 			engineException.setDescription("Impossible to get template's content:  " + e.getMessage());
 			engineException.addHint("Check the document's template");
+			throw engineException;
 		}
 		
 		return templateContent;

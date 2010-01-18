@@ -114,7 +114,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         Ext.onReady(function() {
         	Ext.QuickTips.init();
 
-			var template = <%= qbeEngineInstance.getTemplate().getProperty("jsonTemplate").toString() %>;
+			var template = <%= qbeEngineInstance.getTemplate().getProperty("formJSONTemplate").toString() %>;
         	
 	        var formEnginePanel = new Sbi.formviewer.FormEnginePanel(template, {region: 'center'});
            	var viewport = new Ext.Viewport({layout: 'border', items: [formEnginePanel]});  

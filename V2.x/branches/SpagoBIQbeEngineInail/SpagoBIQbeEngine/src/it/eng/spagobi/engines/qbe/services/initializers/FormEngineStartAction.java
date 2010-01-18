@@ -39,7 +39,7 @@ import it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException;
  * 
  * @author Andrea Gioia
  */
-public class FormEngineStartAction extends AbstractEngineStartAction {	
+public class FormEngineStartAction extends QbeEngineStartAction {	
 	
 	// INPUT PARAMETERS
 	
@@ -55,7 +55,8 @@ public class FormEngineStartAction extends AbstractEngineStartAction {
     private static transient Logger logger = Logger.getLogger(FormEngineStartAction.class);
     
     public static final String ENGINE_NAME = "SpagoBIQbeEngine";
-		
+	
+    /*
     public void service(SourceBean serviceRequest, SourceBean serviceResponse) {
     	QbeEngineInstance qbeEngineInstance = null;
     	QbeEngineAnalysisState analysisState;
@@ -159,5 +160,6 @@ public class FormEngineStartAction extends AbstractEngineStartAction {
 		}		
 
 		
-	}    
+	} 
+    */
 }

@@ -36,6 +36,7 @@ import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
+import it.eng.spagobi.utilities.service.JSONFailure;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -56,6 +57,7 @@ public class SaveFormAction extends AbstractQbeEngineAction {
 		String templateName;
 		SourceBean template;
 		SourceBean formBlock;
+		SourceBean queryBlock;
 		
 		QbeEngineInstance qbeEngineInstance;
 		ContentServiceProxy contentServiceProxy;
@@ -81,17 +83,34 @@ public class SaveFormAction extends AbstractQbeEngineAction {
 			}
 			
 			template = (SourceBean)qbeEngineInstance.getEnv().get("TEMPLATE");
-			formBlock = new SourceBean("FORM");
-			formBlock.setCharacters("<![CDATA[\n" + formState.toString(3) + "\n]]>");
-			template.setAttribute(formBlock);
+			
+			StringBuffer dataDefinition = new StringBuffer();
+			dataDefinition.append("<FORM>");
+			dataDefinition.append("<![CDATA[\n" + formState.toString(3) + "\n]]>");
+			dataDefinition.append("</FORM>");
+			formBlock = SourceBean.fromXMLString(dataDefinition.toString());
+			template.updAttribute(formBlock);
+			
+			dataDefinition = new StringBuffer();
+			String analysisState = new String(getEngineInstance().getAnalysisState().store());
+			JSONObject queryJSON = new JSONObject(analysisState);
+			dataDefinition.append("<QUERY>");
+			dataDefinition.append("<![CDATA[\n" + queryJSON.toString(3) + "\n]]>");
+			dataDefinition.append("</QUERY>");
+			queryBlock = SourceBean.fromXMLString(dataDefinition.toString());
+			template.updAttribute(queryBlock);
+			
 			logger.debug(template.toString());
 			
 			contentServiceProxy = (ContentServiceProxy)qbeEngineInstance.getEnv().get(EngineConstants.ENV_CONTENT_SERVICE_PROXY);
 			Assert.assertNotNull(formState, "Parameter [" + FORM_STATE + "] cannot be null");
 			
 			String docId = (String)qbeEngineInstance.getEnv().get("DOCUMENT");
-			contentServiceProxy.saveObjectTemplate(docId, templateName, template.toString());
+			String result = contentServiceProxy.saveObjectTemplate(docId, templateName, template.toString());
 			
+			if (result == null || !result.trim().equals("OK")) {
+				throw new Exception("Error while saving document's template");
+			}
 			
 			try {
 				writeBackToClient( new JSONAcknowledge() );

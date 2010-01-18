@@ -17,7 +17,7 @@
 	</ACTION>
 	
 	<!-- FORM_ENGINE Template Wizard -->
-	<ACTION name="FORM_ENGINE_TEMPLATE_BUILDE_ACTION" 
+	<ACTION name="FORM_ENGINE_TEMPLATE_BUILD_ACTION" 
 			class="it.eng.spagobi.engines.qbe.services.initializers.FormEngineTemplateBuilder" 
 			scope="REQUEST">
 		<CONFIG></CONFIG>

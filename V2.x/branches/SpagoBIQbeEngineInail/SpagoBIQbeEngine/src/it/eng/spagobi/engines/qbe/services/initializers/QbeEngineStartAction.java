@@ -111,6 +111,9 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 			qbeEngineInstance.getEnv().put("TEMPLATE", getTemplateAsSourceBean());
 			String docId = this.getAttributeAsString("formDocumentId");
 			if(docId != null) qbeEngineInstance.getEnv().put("DOCUMENT", docId);
+			else {
+				qbeEngineInstance.getEnv().put("DOCUMENT", this.getDocumentId());
+			}
 			// form builder
 			
 			qbeEngineInstance.setAnalysisMetadata( getAnalysisMetadata() );

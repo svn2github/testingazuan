@@ -184,7 +184,7 @@ public class Query {
 	}
 	
 	public ISelectField getSelectFieldByIndex(int fieldIndex) {
-		Assert.assertTrue(fieldIndex > 0 && fieldIndex < selectFields.size(), "Index [" + fieldIndex + "] out of bound for select fields list (0 - " + selectFields.size() + ")");
+		Assert.assertTrue(fieldIndex >= 0 && fieldIndex < selectFields.size(), "Index [" + fieldIndex + "] out of bound for select fields list (0 - " + selectFields.size() + ")");
 		return (ISelectField)selectFields.get(fieldIndex);
 	}
 	

@@ -84,10 +84,14 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	    var remoteUrl = {
 			completeUrl: '<%= spagobiServerHost + spagobiContext + spagobiSpagoController %>'
 		};
-		    
+
+	    var remoteServiceRegistryParams = {
+		    	SBI_EXECUTION_ID: <%= request.getParameter("SBI_EXECUTION_ID")!=null?"'" + request.getParameter("SBI_EXECUTION_ID") +"'": "null" %>
+		    	, LIGHT_NAVIGATOR_DISABLED: 'TRUE'
+		}; 
 		Sbi.config.remoteServiceRegistry = new Sbi.service.ServiceRegistry({
 			baseUrl: remoteUrl
-		    , baseParams: params
+		    , baseParams: remoteServiceRegistryParams
 		    , defaultAbsolute: true
 		});
 

@@ -138,7 +138,7 @@ public class ExecuteMasterQueryAction extends AbstractQbeEngineAction {
 			logger.debug("Form state retrieved as a string: " + jsonEncodedFormState);
 			JSONObject formState = new JSONObject(jsonEncodedFormState);
 			logger.debug("Form state converted into a valid JSONObject: " + formState.toString(3));
-			JSONObject template = (JSONObject) getEngineInstance().getTemplate().getProperty("jsonTemplate");
+			JSONObject template = (JSONObject) getEngineInstance().getTemplate().getProperty("formJSONTemplate");
 			logger.debug("Form viewer template retrieved.");
 			
 			FormViewerQueryTransformer formViewerQueryTransformer = new FormViewerQueryTransformer();

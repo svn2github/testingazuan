@@ -26,6 +26,8 @@ import java.util.Locale;
 import org.apache.log4j.Logger;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.presentation.Publisher;
+import it.eng.spagobi.commons.presentation.DynamicPublisher;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException;
 
@@ -35,6 +37,7 @@ import it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException;
 public class FormEngineTemplateBuilder extends AbstractEngineStartAction {	
 	
 	// INPUT PARAMETERS
+	private final static String PARAM_MODALITY = "MODALITY";
 	
 	// OUTPUT PARAMETERS
 	public static final String LANGUAGE = "LANGUAGE";
@@ -63,7 +66,18 @@ public class FormEngineTemplateBuilder extends AbstractEngineStartAction {
 			locale = this.getLocale();
 					
 			setAttribute(LANGUAGE, locale.getLanguage());
-			setAttribute(COUNTRY, locale.getCountry());			
+			setAttribute(COUNTRY, locale.getCountry());
+			
+			String publisherName = "NEW_FORM_ENGINE_TEMPLATE_BUILD_ACTION_PUBLISHER";
+			
+			String modality = this.getAttributeAsString(PARAM_MODALITY);
+			logger.debug("Input " + PARAM_MODALITY + " parameter is " + modality);
+			if (modality != null && modality.trim().equalsIgnoreCase("EDIT")) {
+				// edit template
+				publisherName = "EDIT_FORM_ENGINE_TEMPLATE_BUILD_ACTION_PUBLISHER";
+			}
+			
+			serviceResponse.setAttribute(DynamicPublisher.PUBLISHER_NAME, publisherName);
 			
 		} catch (Throwable e) {
 			SpagoBIEngineStartupException serviceException = null;

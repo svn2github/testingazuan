@@ -21,10 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.qbe;
 
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import it.eng.qbe.catalogue.QueryCatalogue;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.hibernate.DBConnection;
@@ -39,6 +35,10 @@ import it.eng.spagobi.utilities.engines.AbstractEngineInstance;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.IEngineAnalysisState;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
+
+import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

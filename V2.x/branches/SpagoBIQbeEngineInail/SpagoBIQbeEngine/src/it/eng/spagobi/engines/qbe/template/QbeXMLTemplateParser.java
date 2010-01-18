@@ -24,10 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.utilities.StringUtilities;
+import it.eng.spagobi.engines.qbe.QbeEngineAnalysisState;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 
@@ -46,6 +48,8 @@ public class QbeXMLTemplateParser implements IQbeTemplateParser{
 	public static String TAG_MODALITY = "MODALITY";
 	public static String TAG_MODALITY_TABLE = "TABLE";
 	public static String TAG_FUNCTIONALITIES = "FUNCTIONALITIES";
+	public static String TAG_QUERY = "QUERY";
+	public static String TAG_FORM = "FORM";
 	
 
 	/** Logger component. */
@@ -62,12 +66,13 @@ public class QbeXMLTemplateParser implements IQbeTemplateParser{
 		QbeTemplate qbeTemplate = null;
 		
 		String templateName;
-		SourceBean datamartSB;
+		SourceBean datamartSB, querySB, formSB;
 		String dmName;
 		SourceBean modalitySB;
 		List modalities;
 		SourceBean compositeModalitySB;
 		SourceBean functionalitiesSB;
+		JSONObject formJSONTemplate, queryJSON;
 		
 		try {
 			
@@ -152,6 +157,24 @@ public class QbeXMLTemplateParser implements IQbeTemplateParser{
 					logger.debug("Qbe template does not contain tag [" + TAG_MODALITY +"] so it will be not profiled");
 				}
 				
+				// query block 
+				if(template.containsAttribute(TAG_QUERY)) {
+					querySB = (SourceBean) template.getAttribute(TAG_QUERY);
+					queryJSON = new JSONObject(querySB.getCharacters());
+					qbeTemplate.setProperty("query", queryJSON);
+				} else {
+					logger.debug("Qbe template does not contain tag [" + TAG_QUERY +"]");
+				}
+				
+				// form block
+				if(template.containsAttribute(TAG_FORM)) {
+					formSB = (SourceBean) template.getAttribute(TAG_FORM);
+					formJSONTemplate = new JSONObject(formSB.getCharacters());
+					QbeJSONTemplateParser.addAdditionalInfo(formJSONTemplate);
+					qbeTemplate.setProperty("formJSONTemplate", formJSONTemplate);
+				} else {
+					logger.debug("Qbe template does not contain tag [" + TAG_FORM +"]");
+				}
 			}
 			
 			compositeModalitySB = new SourceBean(TAG_MODALITY);
@@ -173,7 +196,7 @@ public class QbeXMLTemplateParser implements IQbeTemplateParser{
 			
 			logger.debug("Templete parsed succesfully");
 		} catch(Throwable t) {
-			throw new QbeTemplateParseException("Impossible to parse tempate [" + template.toString()+ "]", t);
+			throw new QbeTemplateParseException("Impossible to parse template [" + template.toString()+ "]", t);
 		} finally {
 			logger.debug("OUT");
 		}	

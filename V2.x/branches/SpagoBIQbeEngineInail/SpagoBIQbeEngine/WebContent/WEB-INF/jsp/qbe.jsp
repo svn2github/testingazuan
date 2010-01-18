@@ -42,12 +42,15 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 <%@page import="java.util.Map"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Iterator"%>
+<%@page import="org.json.JSONObject"%>
 
 <%-- ---------------------------------------------------------------------- --%>
 <%-- JAVA CODE 																--%>
 <%-- ---------------------------------------------------------------------- --%>
 <%
 	QbeEngineInstance qbeEngineInstance;
+	QbeEngineConfig qbeEngineConfig;
+	JSONObject formTemplate;
 	UserProfile profile;
 	Locale locale;
 	String isFromCross;
@@ -71,7 +74,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	}
 	isPowerUser = profile.getFunctionalities().contains(SpagoBIConstants.BUILD_QBE_QUERIES_FUNCTIONALITY);
 	
-	QbeEngineConfig qbeEngineConfig = QbeEngineConfig.getInstance();
+	qbeEngineConfig = QbeEngineConfig.getInstance();
     
     // settings for max records number limit
     resultLimit = qbeEngineConfig.getResultLimit();
@@ -82,12 +85,15 @@ author: Andrea Gioia (andrea.gioia@eng.it)
     spagobiServerHost = request.getParameter(SpagoBIConstants.SBI_HOST);
     spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
     spagobiSpagoController = request.getParameter(SpagoBIConstants.SBI_SPAGO_CONTROLLER);
+    
+    formTemplate = (JSONObject) qbeEngineInstance.getTemplate().getProperty("formJSONTemplate");
 %>
 
 
 <%-- ---------------------------------------------------------------------- --%>
 <%-- HTML	 																--%>
 <%-- ---------------------------------------------------------------------- --%>
+
 <html>
 	
 	<head>
@@ -173,7 +179,8 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	       		qbeConfig.documentParametersStore = parametersStore;
 
 				qbeConfig.formbuilder = {};
-				qbeConfig.formbuilder.template = Sbi.formbuilder.template;
+				//qbeConfig.formbuilder.template = Sbi.formbuilder.template;
+				qbeConfig.formbuilder.template = <%= formTemplate != null ? formTemplate.toString() : "{}" %>;
 				
 
 	       		

@@ -268,8 +268,44 @@ public class FormDriver extends AbstractDriver implements IEngineDriver {
  	 */
     public EngineURL getEditDocumentTemplateBuildUrl(Object biobject, IEngUserProfile profile)
 	throws InvalidOperationRequest {
-    	logger.warn("Function not implemented");
-    	throw new InvalidOperationRequest();
+    	
+    	EngineURL engineURL;
+    	BIObject obj;
+    	String documentId;
+    	Engine engine;
+    	String url;
+    	HashMap parameters;
+    	
+    	logger.debug("IN");
+    	
+    	try {
+	    	obj = null;			
+			try {
+				obj = (BIObject) biobject;
+			} catch (ClassCastException cce) {
+				logger.error("The input object is not a BIObject type", cce);
+				return null;
+			}
+			
+			documentId = obj.getId().toString();
+			engine = obj.getEngine();
+			url = engine.getUrl();
+			//url = url.replaceFirst("/servlet/AdapterHTTP", "");
+			//url += "/templateBuilder.jsp";
+				
+			parameters = new HashMap();
+			parameters.put("document", documentId);
+			parameters.put(PARAM_SERVICE_NAME, "FORM_ENGINE_TEMPLATE_BUILD_ACTION");
+			parameters.put(PARAM_NEW_SESSION, "TRUE");
+			parameters.put(PARAM_MODALITY, "EDIT");
+			applySecurity(parameters, profile);
+			
+			engineURL = new EngineURL(url, parameters);
+    	} finally {
+			logger.debug("OUT");
+		}
+    	
+		return engineURL;
     }
 
     /**
@@ -311,8 +347,9 @@ public class FormDriver extends AbstractDriver implements IEngineDriver {
 				
 			parameters = new HashMap();
 			parameters.put("document", documentId);
-			parameters.put(PARAM_SERVICE_NAME, "FORM_ENGINE_TEMPLATE_BUILDE_ACTION");
+			parameters.put(PARAM_SERVICE_NAME, "FORM_ENGINE_TEMPLATE_BUILD_ACTION");
 			parameters.put(PARAM_NEW_SESSION, "TRUE");
+			parameters.put(PARAM_MODALITY, "NEW");
 			applySecurity(parameters, profile);
 			
 			engineURL = new EngineURL(url, parameters);
@@ -327,6 +364,7 @@ public class FormDriver extends AbstractDriver implements IEngineDriver {
     
     private final static String PARAM_SERVICE_NAME = "ACTION_NAME";
     private final static String PARAM_NEW_SESSION = "NEW_SESSION";
+    private final static String PARAM_MODALITY = "MODALITY";
     
 	private Map applyService(Map parameters, BIObject biObject) {
 		ObjTemplate template;
@@ -336,14 +374,16 @@ public class FormDriver extends AbstractDriver implements IEngineDriver {
 		try {
 			Assert.assertNotNull(parameters, "Input [parameters] cannot be null");
 			
-			template = getTemplate(biObject);
-			if(template.getName().trim().toLowerCase().endsWith(".xml")) {
-				parameters.put(PARAM_SERVICE_NAME, "QBE_ENGINE_START_ACTION");
-			} else if(template.getName().trim().toLowerCase().endsWith(".json")) {
-				parameters.put(PARAM_SERVICE_NAME, "FORM_ENGINE_START_ACTION");
-			} else {
-				Assert.assertUnreachable("Active template [" + template.getName() + "] extension is not valid (valid extensions are: .xml ; .json)");
-			}
+			parameters.put(PARAM_SERVICE_NAME, "FORM_ENGINE_START_ACTION");
+			
+//			template = getTemplate(biObject);
+//			if(template.getName().trim().toLowerCase().endsWith(".xml")) {
+//				parameters.put(PARAM_SERVICE_NAME, "QBE_ENGINE_START_ACTION");
+//			} else if(template.getName().trim().toLowerCase().endsWith(".json")) {
+//				parameters.put(PARAM_SERVICE_NAME, "FORM_ENGINE_START_ACTION");
+//			} else {
+//				Assert.assertUnreachable("Active template [" + template.getName() + "] extension is not valid (valid extensions are: .xml ; .json)");
+//			}
 			
 			parameters.put(PARAM_NEW_SESSION, "TRUE");
 		} catch(Throwable t) {

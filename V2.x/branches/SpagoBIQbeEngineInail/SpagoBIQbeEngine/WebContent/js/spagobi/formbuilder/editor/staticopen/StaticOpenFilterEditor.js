@@ -158,14 +158,16 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditor, Ext.Panel,  {
 	}
 		
 	, initStore: function() {
-		var entityId = (this.query != undefined && this.query.field != undefined) ? this.query.field : this.field;
-		var orderField = (this.query != undefined && this.query.orderField != undefined) ? this.query.orderField : undefined;
-		var orderType = (this.query != undefined && this.query.orderType != undefined) ? this.query.orderType : undefined;
+
+		var entityId = this.field;
+		var orderField = this.orderBy;
+		var orderType = this.orderType;
+		var queryRootEntity = this.queryRootEntity;
 		
 		this.store = new Ext.data.JsonStore({
 			url: this.services['getFilterValuesService']
 		});
-		var baseParams = {'ENTITY_ID': entityId, 'ORDER_ENTITY': orderField, 'ORDER_TYPE': orderType};
+		var baseParams = {'ENTITY_ID': entityId, 'ORDER_ENTITY': orderField, 'ORDER_TYPE': orderType, 'QUERY_ROOT_ENTITY': queryRootEntity};
 		this.store.baseParams = baseParams;
 		
 		this.store.on('loadexception', function(store, options, response, e) {

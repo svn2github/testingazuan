@@ -176,7 +176,6 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
 		var entityId = openFilter.field;
 		var orderField = openFilter.orderBy;
 		var orderType = openFilter.orderType;
-		alert(openFilter.queryRootEntity);
 		var queryRootEntity = openFilter.queryRootEntity;
 		
 		var store = new Ext.data.JsonStore({

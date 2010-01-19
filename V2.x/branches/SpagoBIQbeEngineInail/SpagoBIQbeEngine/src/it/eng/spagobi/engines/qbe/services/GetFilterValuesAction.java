@@ -226,7 +226,7 @@ public class GetFilterValuesAction extends AbstractQbeEngineAction {
 		Query query = new Query();
 		query.addSelectFiled(entityId, "NONE", "Valori", true, true, false, (orderEntity != null && !orderEntity.trim().equals("")) ? null : orderType);
 		query.setDistinctClauseEnabled(true);
-		if (orderEntity != null) {
+		if (orderEntity != null && !orderEntity.equals("")) {
 			query.addSelectFiled(orderEntity, "NONE", "Ordinamento", false, false, false, orderType);
 		}
 		logger.debug("OUT");

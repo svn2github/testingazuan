@@ -100,6 +100,8 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Sbi.formbuilder.EditorPa
 	
 	
 	, onFieldDrop: function(fieldConf) {
+		
+		
 		var filtersGroupConf = {};
 		filtersGroupConf.text = fieldConf.alias;
 		filtersGroupConf.field = fieldConf.id;
@@ -109,8 +111,11 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Sbi.formbuilder.EditorPa
 		filtersGroupConf.orderType = '';
 		filtersGroupConf.queryRootEntity = false;
 
+		
 		var staticOpenFilterWindow = new Sbi.formbuilder.StaticOpenFilterWizard(filtersGroupConf, {});
-		staticOpenFilterWindow.show();		
+		
+		staticOpenFilterWindow.show();	
+		
 		staticOpenFilterWindow.on('apply', function(filtersGroupConf) {
 			this.addFilterGroup(filtersGroupConf);
 		} , this); 

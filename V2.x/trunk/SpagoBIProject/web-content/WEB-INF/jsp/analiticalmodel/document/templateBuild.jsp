@@ -106,13 +106,16 @@ Ext.onReady(function(){
 		, scope: this
 		, handler : function() {sendMessage({}, 'collapse2');}
     });
+
+    var items;
+    if (Sbi.user.ismodeweb) {
+    	items = ['->', backButton, expandButton];
+    } else {
+    	items = ['->', backButton];
+    }
     
     var toolbar = new Ext.Toolbar({
-      items: [
-          '->'
-          , backButton
-          , expandButton  
-      ]
+      items: items
     });
 	
 	var templateEditIFrame = new Ext.ux.ManagedIframePanel({

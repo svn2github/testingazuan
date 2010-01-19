@@ -136,7 +136,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 		    ]
 		});
 		
-	    this.filterOperator = new Ext.form.ComboBox({
+	    this.filterOperatorCombo = new Ext.form.ComboBox({
 			//tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{nome}</div></tpl>',
 	    	name: 'operator',
 			store:  filterOptStore, 
@@ -298,7 +298,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 	    this.openFilterForm = new Ext.form.FormPanel({
 	        frame: true,
 	        bodyStyle: 'padding:5px 5px 0',
-	        items: [this.filterName, this.filterEntity, this.filterOperator, this.maxSelectionNumber, 
+	        items: [this.filterName, this.filterEntity, this.filterOperatorCombo, this.maxSelectionNumber, 
 	                this.queryDetails],
 	        buttons: [
 	                  {text: 'Apply', handler: this.apply, scope: this}
@@ -316,10 +316,12 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 	
 	, getFormState : function () {
 		
-		
 		var openFilter = this.openFilterForm.getForm().getValues();
+		// work-around: for comboboxes, form.getValues() retrieves the displayed value, not the hidden actual value
+		openFilter.operator = this.filterOperatorCombo.getValue();
 		openFilter.orderBy = this.orderByFieldCombo.getValue();
 		openFilter.orderType = this.orderTypeCombo.getValue();
+		// end work-around
 		openFilter.field = this.entityId;
 		if (openFilter.maxSelectedNumber == undefined || openFilter.maxSelectedNumber == null || openFilter.maxSelectedNumber == 1) {
 			openFilter.singleSelection = true;
@@ -327,9 +329,9 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 			openFilter.singleSelection = false;
 		}
 		openFilter.queryRootEntity = (typeof openFilter.queryRootEntity === "string") ? openFilter.queryRootEntity === 'true' : openFilter.queryRootEntity;
+		
 		return openFilter;
-		
-		
+
 	}
 	
 });

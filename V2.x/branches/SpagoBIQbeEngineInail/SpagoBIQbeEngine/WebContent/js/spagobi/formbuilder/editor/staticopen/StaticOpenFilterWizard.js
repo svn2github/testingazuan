@@ -316,23 +316,6 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 	
 	, getFormState : function () {
 		
-		/*
-		var openFilter = {};
-		openFilter.text = this.filterName.getValue();
-		openFilter.field = this.entityId;
-		openFilter.operator = this.filterOperator.getValue();
-		openFilter.maxSelectedNumber = this.maxSelectionNumber.getValue();
-		if (openFilter.maxSelectedNumber == undefined || openFilter.maxSelectedNumber == null || openFilter.maxSelectedNumber == 1) {
-			openFilter.singleSelection = true;
-		} else {
-			openFilter.singleSelection = false;
-		}
-		openFilter.orderBy = this.orderByFieldCombo.getValue();
-		openFilter.orderType = this.orderTypeCombo.getValue();
-		openFilter.queryRootEntity = this.queryRootEntityCheckBox.getValue();
-		alert(openFilter.toSource());
-		return openFilter;
-		*/
 		
 		var openFilter = this.openFilterForm.getForm().getValues();
 		openFilter.orderBy = this.orderByFieldCombo.getValue();

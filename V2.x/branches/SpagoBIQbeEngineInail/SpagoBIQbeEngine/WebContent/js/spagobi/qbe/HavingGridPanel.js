@@ -314,7 +314,6 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
     }
   	
   	, setPromptableFiltersDefaultValues: function(formState) {
-  		alert(formState.toSource());
     	for (var filterName in formState) {
     		var index = this.grid.store.find('filterId', filterName);
     		alert(index);

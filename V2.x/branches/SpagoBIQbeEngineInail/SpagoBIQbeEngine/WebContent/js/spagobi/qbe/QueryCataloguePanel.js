@@ -541,8 +541,6 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	, onSelect: function(sm, newnode, oldnode) {
 		var allowSelection = true;
 		
-		//alert('onselect: ' + newnode.toSource());
-		
 		if(newnode.id !== this.rootNode.id) {
 			var oldquery = oldnode?  oldnode.props.query: undefined;
 			var b = this.fireEvent('beforeselect', this, newnode.props.query, oldquery);

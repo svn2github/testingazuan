@@ -128,7 +128,7 @@ Ext.extend(Sbi.formbuilder.DynamicFilterEditorPanel, Sbi.formbuilder.EditorPanel
 	// --------------------------------------------------------------------------------
 	
 	, onDebug: function() {
-		alert(this.getContents().toSource());
+		
 	}
 	
   	

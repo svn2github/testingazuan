@@ -116,7 +116,7 @@ Ext.extend(Sbi.formbuilder.VariableEditorPanel, Sbi.formbuilder.EditorPanel, {
 	
 	
 	, onDebug: function() {
-		alert(this.getContents().toSource());
+		
 	}
 	
   	

@@ -285,7 +285,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
     	
     	this.rightOperandField = new Ext.form.TextField({
     		fieldLabel:'Value' ,
-			name:'rightOperand',
+			name:'rightOperand'
     	});
     	this.rightOperandField.on('change', this.onFormStateChange, this);
     	this.rightOperandField.on('keydown', this.onFormStateChangeX, this);    	

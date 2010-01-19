@@ -140,7 +140,6 @@ Ext.extend(Sbi.formtemplate.DocumentTemplateBuilder, Ext.Panel, {
 	            
 	        	result = trans.reader.readRecords(t);
 	        }catch(e){
-	        	alert(e.toSource());
 	            this.fireEvent("loadexception", this, o, trans.arg, e);
 	            trans.callback.call(trans.scope||window, null, trans.arg, false);
 	            return;
@@ -204,13 +203,6 @@ Ext.extend(Sbi.formtemplate.DocumentTemplateBuilder, Ext.Panel, {
 		});
 	}
 	
-	, handleResponse: function(results,arg,success) {
-		if(success) {
-			alert(results.toSource());
-		} else {
-			alert('error');
-		}
-	}
 	
 	, openFormBuilder: function(docId) {
 		var form = document.getElementById('submit-form');

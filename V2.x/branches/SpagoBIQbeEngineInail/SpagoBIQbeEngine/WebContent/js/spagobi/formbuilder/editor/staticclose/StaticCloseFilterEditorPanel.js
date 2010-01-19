@@ -131,7 +131,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditorPanel, Sbi.formbuilder.EditorP
 	// --------------------------------------------------------------------------------
 	
 	, onDebug: function() {
-		alert(this.getContents().toSource());
+		
 	}
 	
   	

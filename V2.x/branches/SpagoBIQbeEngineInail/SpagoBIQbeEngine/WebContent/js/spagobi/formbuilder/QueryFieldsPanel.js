@@ -49,7 +49,7 @@ Ext.ns("Sbi.formbuilder");
 Sbi.formbuilder.QueryFieldsPanel = function(config) {
 	
 	var defaultSettings = {
-		title: LN('Selected Fields'),
+		title: LN('Selected Fields')
 	};
 		
 	if(Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.queryFieldsPanel) {

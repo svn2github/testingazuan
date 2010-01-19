@@ -49,7 +49,7 @@ Ext.ns("Sbi.formbuilder");
 Sbi.formbuilder.FormBuilderPage = function(config) {
 	
 	var defaultSettings = {
-		title: LN('Edit'),
+		title: LN('Edit')
 	};
 		
 	if(Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.formBuilderPage) {

@@ -71,7 +71,10 @@ Sbi.formbuilder.FormPanel = function(config) {
 		
 	Ext.apply(this, c);
 	
-	this.formBuilderPage = new Sbi.formbuilder.FormBuilderPage({closable: false, template: config.template});
+	this.formBuilderPage = new Sbi.formbuilder.FormBuilderPage({
+		closable: false,
+		template: config.template
+	});
 	this.formPreviewPage = new Sbi.formbuilder.FormPreviewPage({closable: false});
 	
 	c = Ext.apply(c, {

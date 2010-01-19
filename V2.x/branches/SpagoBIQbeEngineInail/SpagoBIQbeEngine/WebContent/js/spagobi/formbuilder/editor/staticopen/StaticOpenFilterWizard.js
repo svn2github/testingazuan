@@ -259,7 +259,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 
 	    this.queryDetails = {
             xtype: 'fieldset',
-            title: 'Dettagli della query di lookup',
+            title: 'Lookup query details',
             autoHeight: true,
             autoWidth: true,
             items: []
@@ -270,8 +270,8 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 			{
 				xtype: 'radio',
 				hideLabel: false,
-				fieldLabel: 'Proponi i valori',
-	            boxLabel: 'ammissibili per il campo indicato nel filtro',
+				fieldLabel: 'Prompt values',
+	            boxLabel: 'that are admissible for filter field',
 	            name: 'queryRootEntity',
 	            inputValue: false,
 	            checked: (openFilter.queryRootEntity === undefined ? true : !openFilter.queryRootEntity)
@@ -280,7 +280,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 				hideLabel: false,
 				fieldLabel: '',
 				labelSeparator: '',
-	            boxLabel: 'ammissibili per il campo corrispondente nell\'entità di primo livello',
+	            boxLabel: 'that are admissible for relevant field on root entity',
 	            name: 'queryRootEntity',
 	            inputValue: true,
 	            checked: (openFilter.queryRootEntity === undefined ? false : openFilter.queryRootEntity)

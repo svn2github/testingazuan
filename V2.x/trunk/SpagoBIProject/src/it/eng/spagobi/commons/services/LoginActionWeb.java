@@ -49,6 +49,7 @@ import it.eng.spagobi.wapp.util.MenuUtilities;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
+ * This action is used by SpagoBISDK module.
  */
 public class LoginActionWeb extends AbstractBaseHttpAction {
 	

@@ -152,6 +152,50 @@ public class DataMartModelStructure {
 	}
 	
 	/**
+	 * Gets the root entity relevant to the input entity
+	 * @param entity
+	 * @return the root entity relevant to the input entity
+	 */
+	public DataMartEntity getRootEntity(DataMartEntity entity) {
+		if (entity == null) {
+			return null;
+		}
+		DataMartEntity toReturn = null;
+		Iterator keysIt = rootEntities.keySet().iterator();
+		while (keysIt.hasNext()) {
+			String datamartName = (String) keysIt.next();
+			DataMartEntity rootEntity = getRootEntity(entity, datamartName);
+			if (rootEntity != null) {
+				toReturn = rootEntity;
+				break;
+			}
+		}
+		return toReturn;
+	}
+	
+	/**
+	 * Gets the root entity relevant to the input entity in the datamart specified in input
+	 * @param entity
+	 * @return the root entity relevant to the input entity in the datamart specified in input
+	 */
+	public DataMartEntity getRootEntity(DataMartEntity entity, String datamartName) {
+		if (entity == null) {
+			return null;
+		}
+		DataMartEntity toReturn = null;
+		List rootEntities = getRootEntities(datamartName);
+		Iterator rootEntitiesIt = rootEntities.iterator();
+		while (rootEntitiesIt.hasNext()) {
+			DataMartEntity rootEntity = (DataMartEntity) rootEntitiesIt.next();
+			if (entity.getType().equals(rootEntity.getType())) {
+				toReturn = rootEntity;
+				break;
+			}
+		}
+		return toReturn;
+	}
+	
+	/**
 	 * Gets the root entity iterator.
 	 * 
 	 * @param datamartName the datamart name

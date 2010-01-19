@@ -52,13 +52,20 @@ Sbi.formbuilder.StaticOpenFilterWizard = function(openFilter, config) {
 		// set default values here
 		title: 'Static open filter definition'
 		, autoScroll: true
-		, width: 500
+		, width: 550
 		, height: 400
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.staticOpenFilterWindow) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.staticOpenFilterWindow);
 	}
 	var c = Ext.apply(defaultSettings, config || {});
+	
+	var params = {'fieldId': openFilter.field};
+	this.services = this.services || new Array();
+	this.services['getEntityFields'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_ENTITY_FIELDS'
+		, baseParams: params
+	});
 	
 	this.init(openFilter);
 	
@@ -80,8 +87,8 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 		this.entityId = openFilter.field;
 	
 		this.filterName = new Ext.form.TextField({
-			id: 'name',
-			name: 'name',
+			id: 'text',
+			name: 'text',
 			value: openFilter.text,
 			allowBlank: false, 
 			inputType: 'text',
@@ -130,7 +137,8 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 		});
 		
 	    this.filterOperator = new Ext.form.ComboBox({
-			//tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{nome}</div></tpl>',	
+			//tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{nome}</div></tpl>',
+	    	name: 'operator',
 			store:  filterOptStore, 
 			displayField: 'nome',
 			valueField: 'funzione',
@@ -148,7 +156,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 	    });
 	    
 	    var selectionNumbersStore = new Ext.data.SimpleStore({
-		    fields: ['nome', 'valore'],
+		    fields: ['name', 'value'],
 		    data : [
 		            [1, 1],
 		            [2, 2],
@@ -163,9 +171,10 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 		});
 	
 	    this.maxSelectionNumber = new Ext.form.ComboBox({
+	    	name: 'maxSelectedNumber',
 			store:  selectionNumbersStore, 
-			displayField: 'nome',
-			valueField: 'valore',
+			displayField: 'name',
+			valueField: 'value',
 			maxHeight: 200,
 			allowBlank: false,
 			editable: true,
@@ -179,11 +188,118 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 			value: openFilter.maxSelectedNumber
 	    });
 	    
+	    
+	    var orderByFieldStore = new Ext.data.Store({
+	    	proxy: new Ext.data.HttpProxy({
+				url: this.services['getEntityFields']
+		    })
+	    	, reader: new Ext.data.JsonReader({id: 'id'}, [
+                 {name:'id'},
+                 {name:'name'}
+     	    ])
+	    });
+	    
+	    this.orderByFieldCombo = new Ext.form.ComboBox({
+	    	name: 'orderBy',
+			store: orderByFieldStore, 
+			displayField: 'name',
+			valueField: 'id',
+			maxHeight: 200,
+			allowBlank: true,
+			editable: true,
+			typeAhead: true, // True to populate and autoselect the remainder of the text being typed after a configurable delay
+			forceSelection: true, // True to restrict the selected value to one of the values in the list
+			triggerAction: 'all',
+			emptyText: '',
+			selectOnFocus: true, //True to select any existing text in the field immediately on focus
+			fieldLabel: 'Order results by'
+			//value: openFilter.orderBy === undefined ? '' : openFilter.orderBy
+	    });
+	    
+	    this.orderByValue = openFilter.orderBy;
+	    if (this.orderByValue !== undefined && this.orderByValue !== '') {
+		    orderByFieldStore.on('load', function() {
+		    	this.orderByFieldCombo.setValue(this.orderByValue);
+		    }, this);
+		    orderByFieldStore.load();
+	    }
+	    
+	    var orderingTypesStore = new Ext.data.SimpleStore({
+		     fields: ['type', 'nome', 'descrizione'],
+		     data : [
+			    ['NONE', LN('sbi.qbe.selectgridpanel.sortfunc.name.none'), LN('sbi.qbe.selectgridpanel.sortfunc.desc.none')],
+			    ['ASC', LN('sbi.qbe.selectgridpanel.sortfunc.name.asc'), LN('sbi.qbe.selectgridpanel.sortfunc.desc.asc')],
+			    ['DESC', LN('sbi.qbe.selectgridpanel.sortfunc.name.desc'), LN('sbi.qbe.selectgridpanel.sortfunc.desc.desc')]
+			] 
+		});
+	     
+	    this.orderTypeCombo = new Ext.form.ComboBox({
+	    	 name: 'orderType',
+	         tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{nome}</div></tpl>',	
+	         allowBlank: true,
+	         editable: false,
+	         store: orderingTypesStore,
+	         displayField:'nome',
+	         valueField:'type',
+	         typeAhead: true,
+	         mode: 'local',
+	         triggerAction: 'all',
+	         autocomplete: 'off',
+	         emptyText: LN('sbi.qbe.selectgridpanel.sortfunc.editor.emptymsg'),
+	         fieldLabel: 'Order type',
+	         selectOnFocus: true,
+	         value: openFilter.orderType === undefined ? '' : openFilter.orderType
+        });
+	    
+	    if (openFilter.queryRootEntity === undefined || openFilter.queryRootEntity == null) {
+	    	openFilter.queryRootEntity = false;
+	    } else {
+	    	openFilter.queryRootEntity = (typeof openFilter.queryRootEntity === "string") ? openFilter.queryRootEntity === 'true' : openFilter.queryRootEntity;
+	    }
+
+	    this.queryDetails = {
+            xtype: 'fieldset',
+            title: 'Dettagli della query di lookup',
+            autoHeight: true,
+            autoWidth: true,
+            items: []
+        }
+		this.queryDetails.items.push(
+			this.orderByFieldCombo, 
+			this.orderTypeCombo,
+			{
+				xtype: 'radio',
+				hideLabel: false,
+				fieldLabel: 'Proponi i valori',
+	            boxLabel: 'ammissibili per il campo indicato nel filtro',
+	            name: 'queryRootEntity',
+	            inputValue: false,
+	            checked: (openFilter.queryRootEntity === undefined ? true : !openFilter.queryRootEntity)
+			}, {
+				xtype: 'radio',
+				hideLabel: false,
+				fieldLabel: '',
+				labelSeparator: '',
+	            boxLabel: 'ammissibili per il campo corrispondente nell\'entità di primo livello',
+	            name: 'queryRootEntity',
+	            inputValue: true,
+	            checked: (openFilter.queryRootEntity === undefined ? false : openFilter.queryRootEntity)
+		});
+	    
+	    /*
+		this.queryRootEntityCheckBox = new Ext.form.Checkbox({
+	    	boxLabel: 'Interroga dimensione a sè'
+	    	, checked: openFilter.queryRootEntity === undefined ? false : openFilter.queryRootEntity
+	    	, hideLabel: true
+	    });
+	    */
+	    
 	    Ext.form.Field.prototype.msgTarget = 'side';
 	    this.openFilterForm = new Ext.form.FormPanel({
 	        frame: true,
 	        bodyStyle: 'padding:5px 5px 0',
-	        items: [this.filterName, this.filterEntity, this.filterOperator, this.maxSelectionNumber],
+	        items: [this.filterName, this.filterEntity, this.filterOperator, this.maxSelectionNumber, 
+	                this.queryDetails],
 	        buttons: [
 	                  {text: 'Apply', handler: this.apply, scope: this}
 	                  , {text: 'Cancel', handler: function () {this.close();}, scope: this}
@@ -199,6 +315,8 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 	}
 	
 	, getFormState : function () {
+		
+		/*
 		var openFilter = {};
 		openFilter.text = this.filterName.getValue();
 		openFilter.field = this.entityId;
@@ -209,7 +327,26 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 		} else {
 			openFilter.singleSelection = false;
 		}
+		openFilter.orderBy = this.orderByFieldCombo.getValue();
+		openFilter.orderType = this.orderTypeCombo.getValue();
+		openFilter.queryRootEntity = this.queryRootEntityCheckBox.getValue();
+		alert(openFilter.toSource());
 		return openFilter;
+		*/
+		
+		var openFilter = this.openFilterForm.getForm().getValues();
+		openFilter.orderBy = this.orderByFieldCombo.getValue();
+		openFilter.orderType = this.orderTypeCombo.getValue();
+		openFilter.field = this.entityId;
+		if (openFilter.maxSelectedNumber == undefined || openFilter.maxSelectedNumber == null || openFilter.maxSelectedNumber == 1) {
+			openFilter.singleSelection = true;
+		} else {
+			openFilter.singleSelection = false;
+		}
+		openFilter.queryRootEntity = (typeof openFilter.queryRootEntity === "string") ? openFilter.queryRootEntity === 'true' : openFilter.queryRootEntity;
+		return openFilter;
+		
+		
 	}
 	
 });

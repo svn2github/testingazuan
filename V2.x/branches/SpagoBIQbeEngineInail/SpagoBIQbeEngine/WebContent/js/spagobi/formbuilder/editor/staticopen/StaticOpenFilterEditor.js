@@ -104,10 +104,10 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditor, Ext.Panel,  {
 		c.singleSelection = this.singleSelection || undefined;
 		c.maxSelectedNumber = this.maxSelectedNumber || undefined;
 		c.operator = this.operator || undefined;
-		c.query = this.query || undefined;
 		c.field = this.field || undefined;
-		c.orderField = this.orderField || undefined;
+		c.orderBy = this.orderBy || undefined;
 		c.orderType = this.orderType || undefined;
+		c.queryRootEntity = this.queryRootEntity || undefined;
 		
 		return c;
 	}

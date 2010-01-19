@@ -70,7 +70,7 @@ public class SetFormBuilderStateAction  extends AbstractQbeEngineAction {
 			
 			QbeJSONTemplateParser.addAdditionalInfo(formJson);
 			
-			engineInstance.getTemplate().setProperty("jsonTemplate", formJson);
+			engineInstance.getTemplate().setProperty("formJSONTemplate", formJson);
 			
 			try {
 				writeBackToClient( new JSONAcknowledge() );

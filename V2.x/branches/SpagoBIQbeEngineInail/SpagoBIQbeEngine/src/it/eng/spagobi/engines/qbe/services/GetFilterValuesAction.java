@@ -25,6 +25,7 @@ package it.eng.spagobi.engines.qbe.services;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -34,6 +35,10 @@ import org.json.JSONObject;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
+import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.model.structure.DataMartEntity;
+import it.eng.qbe.model.structure.DataMartField;
+import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statment.IStatement;
 import it.eng.qbe.statment.QbeDataSet;
@@ -59,6 +64,7 @@ public class GetFilterValuesAction extends AbstractQbeEngineAction {
 	public static String ENTITY_ID = "ENTITY_ID";
 	public static String ORDER_ENTITY = "ORDER_ENTITY";
 	public static String ORDER_TYPE = "ORDER_TYPE";
+	public static String QUERY_ROOT_ENTITY = "QUERY_ROOT_ENTITY";
 	public static String FILTERS = "FILTERS";	
 	public static String MODE = "MODE";
 	public static String MODE_SIMPLE = "simple";
@@ -171,10 +177,50 @@ public class GetFilterValuesAction extends AbstractQbeEngineAction {
 		logger.debug("orderEntity: " + orderEntity);
 		String orderType = getAttributeAsString(ORDER_TYPE);
 		logger.debug("orderType: " + orderType);
+		boolean queryRootEntity = getAttributeAsBoolean(QUERY_ROOT_ENTITY);
+		logger.debug("queryRootEntity: " + queryRootEntity);
 		
 		Assert.assertNotNull(entityId, "Parameter [" + ENTITY_ID + "] cannot be null" );
+		
+		// default values for request parameters
 		if (orderType == null || orderType.trim().equals("")) {
 			orderType = "NONE";
+		}
+		
+		if (queryRootEntity) {
+			logger.debug("Must query root entity. Looking for select and order fields...");
+			DataMartModel model = this.getDatamartModel();
+			DataMartModelStructure structure = model.getDataMartModelStructure();
+			DataMartField selectField = structure.getField(entityId);
+			DataMartField orderField = null;
+			if (orderEntity != null && !orderEntity.equals("")) {
+				orderField = structure.getField(orderEntity);
+			}
+			DataMartEntity parentEntity = selectField.getParent();
+			logger.debug("Parent entity is " + parentEntity.getUniqueName());
+			DataMartEntity rootEntity = structure.getRootEntity(parentEntity);
+			logger.debug("Relevant root entity is " + rootEntity.getUniqueName());
+			List fields = rootEntity.getAllFields();
+			Iterator it = fields.iterator();
+			while (it.hasNext()) {
+				DataMartField aField = (DataMartField) it.next();
+				if (aField.getName().equals(selectField.getName())) {
+					entityId = aField.getUniqueName();
+					break;
+				}
+			}
+			logger.debug("Select field in root entity is " + entityId);
+			if (orderField != null) {
+				it = fields.iterator();
+				while (it.hasNext()) {
+					DataMartField aField = (DataMartField) it.next();
+					if (aField.getName().equals(orderField.getName())) {
+						orderEntity = aField.getUniqueName();
+						break;
+					}
+				}
+				logger.debug("Order field in root entity is " + orderEntity);
+			}
 		}
 		
 		Query query = new Query();

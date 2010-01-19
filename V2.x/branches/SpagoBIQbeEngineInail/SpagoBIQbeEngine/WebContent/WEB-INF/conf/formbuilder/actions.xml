@@ -26,5 +26,11 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
+	<ACTION name="GET_ENTITY_FIELDS" 
+			class="it.eng.spagobi.engines.qbe.services.formbuilder.GetEntityFieldsAction" 
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 </ACTIONS>
 

@@ -105,6 +105,9 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditorPanel, Sbi.formbuilder.EditorPa
 		filtersGroupConf.field = fieldConf.id;
 		filtersGroupConf.operator = 'EQUALS TO';
 		filtersGroupConf.maxSelectedNumber = 1;
+		filtersGroupConf.orderBy = '';
+		filtersGroupConf.orderType = '';
+		filtersGroupConf.queryRootEntity = false;
 
 		var staticOpenFilterWindow = new Sbi.formbuilder.StaticOpenFilterWizard(filtersGroupConf, {});
 		staticOpenFilterWindow.show();		

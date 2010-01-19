@@ -33,6 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.engines.drivers.EngineURL"%>
 <%@page import="java.util.Map" %>
 <%@page import="java.util.HashMap" %>
+<%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 
 <%
 	UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
@@ -67,10 +68,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     
 	//String backEndContext=GeneralUtilities.getSpagoBiHostBackEnd();
 	//String param1="?"+SpagoBIConstants.SBI_BACK_END_HOST+"="+backEndContext;
-String context=GeneralUtilities.getSpagoBiContext();
-String param2="?"+SpagoBIConstants.SBI_CONTEXT+"="+context;
-String host=GeneralUtilities.getSpagoBiHost();
-String param3="&"+SpagoBIConstants.SBI_HOST+"="+host;
+	String context=GeneralUtilities.getSpagoBiContext();
+	String param2="?"+SpagoBIConstants.SBI_CONTEXT+"="+context;
+	String host=GeneralUtilities.getSpagoBiHost();
+	String param3="&"+SpagoBIConstants.SBI_HOST+"="+host;
 
 	String urlToCall=engineurl.getMainURL();
 	//urlToCall+=param1;
@@ -87,104 +88,55 @@ String param3="&"+SpagoBIConstants.SBI_HOST+"="+host;
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
 
 %>
-<%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
-<table class='header-table-portlet-section'>
-	<tr class='header-row-portlet-section'>
-    	<td class='header-title-column-portlet-section' style='vertical-align:middle;padding-left:5px;'>
-           <%=title%>
-       </td>
-       <td class='header-empty-column-portlet-section'>&nbsp;</td>
-       <td class='header-button-column-portlet-section'>
-           <a href='<%= backUrl %>'>
-                 <img title='<spagobi:message key = "SBIDev.docConf.templateBuild.backButton" />' 
-                      class='header-button-image-portlet-section'
-                      src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme) %>' 
-                      alt='<spagobi:message key = "SBIDev.docConf.templateBuild.backButton" />' />
-           </a>
-       </td>
-   </tr>
-</table>
 
-
-<!-- ***************************************************************** -->
-<!-- ***************************************************************** -->
-<!-- **************** START BLOCK IFRAME ***************************** -->
-<!-- ***************************************************************** -->
-<!-- ***************************************************************** -->
-
+<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/lib/ext-2.0.1/ux/miframe/miframe-min.js")%>'></script>
+<link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/execution/main.css",currTheme)%>'/>
 
 <script>
-		function adaptSize() {
-			iframe = window.frames['iframeexec<%=requestIdentity%>'];
-			navigatorname = navigator.appName;
-			height = 0;
-			navigatorname = navigatorname.toLowerCase();
-			if(navigatorname.indexOf('explorer')) {
-				height = iframe.document.body.offsetHeight;
-			} else {
-				height = iframe.innerHeight;
-			}
-			iframeEl = document.getElementById('iframeexec<%=requestIdentity%>');
-			height = height + 100;
-			if(height < 300){
-				height = 300;
-			}
-			iframeEl.style.height = height + 100 + 'px';
-		}
+Ext.onReady(function(){
+
+    var backButton = new Ext.Toolbar.Button({
+    	iconCls: 'icon-back'
+		, scope: this
+		, handler : function() {window.location.href = '<%= backUrl %>';}
+    });
+
+    var expandButton = new Ext.Toolbar.Button({
+    	iconCls: 'icon-expand'
+		, scope: this
+		, handler : function() {sendMessage({}, 'collapse2');}
+    });
+    
+    var toolbar = new Ext.Toolbar({
+      items: [
+          '->'
+          , backButton
+          , expandButton  
+      ]
+    });
+	
+	var templateEditIFrame = new Ext.ux.ManagedIframePanel({
+		title: '<%= StringEscapeUtils.escapeJavaScript(title) %>'
+		, defaultSrc: '<%= StringEscapeUtils.escapeJavaScript(GeneralUtilities.getUrl(urlToCall, engineurl.getParameters())) %>'
+		, autoLoad: true
+        , loadMask: true
+        , disableMessaging: true
+        , tbar: toolbar
+	});
+	
+	var viewport = new Ext.Viewport({
+		layout: 'border'
+		, items: [
+		    {
+		       region: 'center',
+		       layout: 'fit',
+		       items: [templateEditIFrame]
+		    }
+		]
+	});
+	
+});
 </script>
 
-<div id="divIframe<%=requestIdentity%>" style="width:100%">
-           
-           <%
-           		String onloadStr = " ";
-           		if(!heightSetted)
-           			onloadStr = " onload='adaptSize();' ";
-           		String heightStr = "height:400px;";
-           		if(heightSetted)
-           			heightStr = "height:"+heightArea+"px;";
-           %> 
-             
-           <iframe <%=onloadStr%> 
-				   style='display:inline;<%=heightStr%>' 
-				   id='iframeexec<%=requestIdentity%>' 
-                   name='iframeexec<%=requestIdentity%>'  
-				   src=""
-                   frameborder=0  
-			       width='100%' >
-         	</iframe>       
-                                
-         	<form name="formexecution<%=requestIdentity%>" id='formexecution<%=requestIdentity%>' method="post" 
-         	      action="<%=urlToCall%>" 
-         	      target='iframeexec<%=requestIdentity%>'>
-         	<%
-         		Map mapPars = engineurl.getParameters();
-         		java.util.Set keys = mapPars.keySet();
-         	    Iterator iterKeys = keys.iterator();
-         	    while(iterKeys.hasNext()) {
-         	    	String key = iterKeys.next().toString();
-         	    	String value = mapPars.get(key).toString();
-         	%>
-         		<input type="hidden" name="<%=key%>" value="<%=value%>" />
-         	<%     	
-         	    }
-         	%> 
-         	<center>
-         	<input id="button<%=requestIdentity%>" type="submit" value="View Output"  style='display:inline;'/>
-			</center>
-			</form>
-         
-            <script>
-              button = document.getElementById('button<%=requestIdentity%>');
-              button.style.display='none';
-              button.click();               
-            </script>
-                
-</div>
-       
 
-
-<!-- ***************************************************************** -->
-<!-- ***************************************************************** -->
-<!-- **************** END BLOCK IFRAME ******************************* -->
-<!-- ***************************************************************** -->
-<!-- ***************************************************************** -->
+<%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

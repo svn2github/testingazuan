@@ -232,11 +232,53 @@ public class GuiSettingsDesigner {
 				editor.setIsDirty(true);
 			}
 		});
+		
+		/*Modified 20/01/10 (IT WAS A BUG)*/
+		
+		Label transformLabel = new Label (formComp, SWT.RIGHT);
+		transformLabel.setText ("Transform:");
+		data = new FormData ();
+		data.width = 60;
+		data.top = new FormAttachment(y, 5);
+		transformLabel.setLayoutData (data);
+
+		final Text transform = toolkit.createText(formComp, "scale(1.0)", SWT.BORDER);
+		data = new FormData ();
+		data.width = 100;
+		data.left = new FormAttachment (transformLabel, 0, SWT.DEFAULT);
+		data.right = new FormAttachment (100, 0);
+		data.top = new FormAttachment (transformLabel, 0, SWT.CENTER);
+		transform.setLayoutData (data);
+		final GuiParam[] paramTransform = new GuiParam[1];
+		
+		for(int i=0; i<params.size(); i++){
+			GuiParam param = params.elementAt(i);
+			if(param.getName().equalsIgnoreCase("transform")){
+				String val = param.getValue();
+				transform.setText(val);	
+				paramTransform[0]= param;
+			}
+		}		
+		transform.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {	
+				if(paramTransform[0] == null){
+					paramTransform[0] = new GuiParam();
+					paramTransform[0].setValue(transform.getText());
+					paramTransform[0].setName("transform");
+					params.add(paramTransform[0]);
+				}else
+					paramTransform[0].setValue(transform.getText());
+				
+				editor.setIsDirty(true);
+			}
+		});
+		/*end modified*/
+		
 		Label styleLabel = new Label (formComp, SWT.RIGHT);
 		styleLabel.setText ("Styles:");
 		data = new FormData ();
 		data.width = 40;
-		data.top = new FormAttachment(y, 5);
+		data.top = new FormAttachment(transform, 5);
 		styleLabel.setLayoutData (data);
 
 		final Text style = toolkit.createText(formComp, "", SWT.BORDER | SWT.MULTI | SWT.WRAP );

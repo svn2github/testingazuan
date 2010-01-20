@@ -156,7 +156,7 @@ Ext.extend(Sbi.formbuilder.InlineEditor, Ext.Panel, {
 				tooltip: 'Edit filter',
 		        cls: 'image-button',
 		        iconCls: 'edit',
-		        disabled: true,
+		        disabled: Ext.isIE ? false : true,
 		        hidden: true,
 		        hideMode: 'visibility',
 		        handler: function() {
@@ -165,14 +165,16 @@ Ext.extend(Sbi.formbuilder.InlineEditor, Ext.Panel, {
 				scope: this
 		    });
 			
-			this.editBtn.on('render', function(b) {
-				b.getEl().on('mouseover', function(b, e) {
-					this.editBtn.enable();
+			if (!Ext.isIE.valueOf()) {
+				this.editBtn.on('render', function(b) {
+					b.getEl().on('mouseover', function(b, e) {
+						this.editBtn.enable();
+					}, this);
+					b.getEl().on('mouseout', function(el) {
+						this.editBtn.disable();
+					}, this);
 				}, this);
-				b.getEl().on('mouseout', function(el) {
-					this.editBtn.disable();
-				}, this);
-			}, this);		
+			}
 			this.xbuttons.push(this.editBtn);
 		}
 		
@@ -181,22 +183,24 @@ Ext.extend(Sbi.formbuilder.InlineEditor, Ext.Panel, {
 				tooltip: 'Delete filter',
 		        cls: 'image-button',
 		        iconCls: 'editremove',
-		        disabled: true,
+		        disabled: Ext.isIE ? false : true,
 		        hidden: true,
 		        hideMode: 'visibility',
 		        handler: function() {
 					this.fireEvent('actionrequest', 'delete', this);
 				}, 
 				scope: this
-		    });		
-			this.deleteBtn.on('render', function(b) {
-				b.getEl().on('mouseover', function(el) {
-					this.deleteBtn.enable();
+		    });
+			if (!Ext.isIE.valueOf()) {
+				this.deleteBtn.on('render', function(b) {
+					b.getEl().on('mouseover', function(el) {
+						this.deleteBtn.enable();
+					}, this);
+					b.getEl().on('mouseout', function(el) {
+						this.deleteBtn.disable();
+					}, this);
 				}, this);
-				b.getEl().on('mouseout', function(el) {
-					this.deleteBtn.disable();
-				}, this);
-			}, this);
+			}
 			this.xbuttons.push(this.deleteBtn);
 		}
 

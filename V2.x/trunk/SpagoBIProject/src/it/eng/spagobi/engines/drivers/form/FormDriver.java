@@ -375,6 +375,7 @@ public class FormDriver extends AbstractDriver implements IEngineDriver {
 			Assert.assertNotNull(parameters, "Input [parameters] cannot be null");
 			
 			parameters.put(PARAM_SERVICE_NAME, "FORM_ENGINE_START_ACTION");
+			parameters.put(PARAM_MODALITY, "VIEW");
 			
 //			template = getTemplate(biObject);
 //			if(template.getName().trim().toLowerCase().endsWith(".xml")) {

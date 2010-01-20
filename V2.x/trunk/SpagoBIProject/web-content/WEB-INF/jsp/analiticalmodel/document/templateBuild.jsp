@@ -73,10 +73,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String host=GeneralUtilities.getSpagoBiHost();
 	String param3="&"+SpagoBIConstants.SBI_HOST+"="+host;
 
-	String urlToCall=engineurl.getMainURL();
+	StringBuffer urlToCall= new StringBuffer(engineurl.getMainURL());
 	//urlToCall+=param1;
-	urlToCall+=param2;
-	urlToCall+=param3;	
+	urlToCall.append(param2);
+	urlToCall.append(param3);
+	urlToCall.append("&"+SpagoBIConstants.SBI_LANGUAGE+"="+locale.getLanguage());
+	urlToCall.append("&"+SpagoBIConstants.SBI_COUNTRY+"="+locale.getCountry());
 	
    	
    	// build the back link
@@ -120,7 +122,7 @@ Ext.onReady(function(){
 	
 	var templateEditIFrame = new Ext.ux.ManagedIframePanel({
 		title: '<%= StringEscapeUtils.escapeJavaScript(title) %>'
-		, defaultSrc: '<%= StringEscapeUtils.escapeJavaScript(GeneralUtilities.getUrl(urlToCall, engineurl.getParameters())) %>'
+		, defaultSrc: '<%= StringEscapeUtils.escapeJavaScript(GeneralUtilities.getUrl(urlToCall.toString(), engineurl.getParameters())) %>'
 		, autoLoad: true
         , loadMask: true
         , disableMessaging: true

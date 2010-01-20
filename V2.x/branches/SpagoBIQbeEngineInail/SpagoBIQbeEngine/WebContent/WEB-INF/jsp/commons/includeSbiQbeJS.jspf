@@ -7,7 +7,9 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <link rel="styleSheet" href ="../css/qbe.css" type="text/css" />
 
 <!-- Include localized labels  -->
+<script type="text/javascript" src='../js/spagobi/locale/commons/<%=locale.getLanguage()%>.js'/></script>
 <script type="text/javascript" src='../js/spagobi/locale/qbe/<%=locale.getLanguage()%>.js'/></script>
+<script type="text/javascript" src='../js/spagobi/locale/formbuilder/<%=locale.getLanguage()%>.js'/></script>
 
 <!-- START-DEBUG -->
 <script type="text/javascript" src='../js/spagobi/qbe/filterwizard/parser.js'/></script>

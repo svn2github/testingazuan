@@ -354,6 +354,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 								masterParamName.setData(param.getUrlName(), label);
 							}
 						}
+
 					}
 				}
 			}

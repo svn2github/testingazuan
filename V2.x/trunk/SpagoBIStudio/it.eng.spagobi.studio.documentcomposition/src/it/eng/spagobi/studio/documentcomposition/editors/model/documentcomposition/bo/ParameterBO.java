@@ -189,8 +189,10 @@ public class ParameterBO {
 		if(parameters != null){
 			for(int i=0; i<parameters.size(); i++){
 				Parameter param = parameters.elementAt(i);
-				if(param.getType().equals("OUT") && paramLabel.equals(param.getSbiParLabel())){
-					paramFound = param;
+				if(paramLabel != null){
+					if(param.getType().equals("OUT") && paramLabel.equals(param.getSbiParLabel())){
+						paramFound = param;
+					}
 				}
 			}
 		}

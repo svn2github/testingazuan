@@ -172,6 +172,10 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 					//String masterPar = modifyNavigationWizardPage.getMasterParamName().getText();
 		    		String label = modifyNavigationWizardPage.getMasterParamName().getText();
 		    		String masterPar = (String)modifyNavigationWizardPage.getMasterParamName().getData(label);
+		    		if(masterPar == null){
+		    			//user input parameter
+		    			masterPar = (String)modifyNavigationWizardPage.getMasterParamName().getText();
+		    		}
 		    		//modifica le destinazioni
 		    		Parameters params = doc.getParameters();//tag già presente nel modello riempito precedentemente
 

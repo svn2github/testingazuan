@@ -82,7 +82,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Sbi.formbuilder.InlineEditor
 		}
 		this.text = c.text;
 		
-		if(c.expression !== null){
+		if(c.expression){
 			this.expression = c.expression;
 			this.leftOperandValue = null;
 			this.leftOperandDescription = null;

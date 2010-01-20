@@ -120,13 +120,13 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Sbi.formbuilder.InlineEditor
 	
 	, init: function() {
 		var filterConf = {
-			width: 148,
-			hideLabel: true,
-			boxLabel: this.text,
-	        name: 'options',
-	        inputValue: 'option',
-	        style: 'background: red',
-	        bodyStyle: 'background: red'
+			width: 148
+			, hideLabel: true
+			, boxLabel: this.text
+	        , name: 'options'
+	        , inputValue: 'option'
+	        //, style: 'background: red'
+	        //, bodyStyle: 'background: red'
 		};
 		
 		if(this.singleSelection === true) {

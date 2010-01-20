@@ -70,10 +70,11 @@ Sbi.formtemplate.DocumentTemplateBuilder = function(config) {
 	});
 	
 	this.services['execFormBuilder'] = this.services['execFormBuilder'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'QBE_ENGINE_START_ACTION'
+		serviceName: 'FORM_ENGINE_START_ACTION'
 		, baseParams: {
-			NEW_SESSION: 'TRUE',
-			formDocumentId: this.formDocumentId
+			MODALITY: 'EDIT'
+			, NEW_SESSION: 'TRUE'
+			, formDocumentId: this.formDocumentId
 		}
 	});
 	

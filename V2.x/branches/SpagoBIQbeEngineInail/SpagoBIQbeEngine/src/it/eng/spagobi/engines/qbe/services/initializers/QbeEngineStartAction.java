@@ -85,7 +85,7 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 			
 			logger.debug("Creating engine instance ...");
 			try {
-				qbeEngineInstance = QbeEngine.createInstance( getTemplateAsSourceBean(), getEnv() );
+				qbeEngineInstance = QbeEngine.createInstance(getTemplateAsSourceBean(), getEnv() );
 			} catch(Throwable t) {
 				SpagoBIEngineStartupException serviceException;
 				String msg = "Impossible to create engine instance for document [" + getDocumentId() + "].";
@@ -106,15 +106,6 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 				throw serviceException;
 			}
 			logger.debug("Engine instance succesfully created");
-			
-			// form builder
-			qbeEngineInstance.getEnv().put("TEMPLATE", getTemplateAsSourceBean());
-			String docId = this.getAttributeAsString("formDocumentId");
-			if(docId != null) qbeEngineInstance.getEnv().put("DOCUMENT", docId);
-			else {
-				qbeEngineInstance.getEnv().put("DOCUMENT", this.getDocumentId());
-			}
-			// form builder
 			
 			qbeEngineInstance.setAnalysisMetadata( getAnalysisMetadata() );
 			if( getAnalysisStateRowData() != null ) {

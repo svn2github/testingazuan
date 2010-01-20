@@ -50,6 +50,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 <%
 	QbeEngineInstance qbeEngineInstance;
 	QbeEngineConfig qbeEngineConfig;
+	JSONObject formTemplate;
 	UserProfile profile;
 	Locale locale;
 	String isFromCross;
@@ -67,12 +68,13 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	profile = (UserProfile)qbeEngineInstance.getEnv().get(EngineConstants.ENV_USER_PROFILE);
 	locale = (Locale)qbeEngineInstance.getEnv().get(EngineConstants.ENV_LOCALE);
 	
+	/*
 	isFromCross = (String)qbeEngineInstance.getEnv().get("isFromCross");
 	if (isFromCross == null) {
 		isFromCross = "false";
 	}
 	isPowerUser = profile.getFunctionalities().contains(SpagoBIConstants.BUILD_QBE_QUERIES_FUNCTIONALITY);
-	
+	*/
 	qbeEngineConfig = QbeEngineConfig.getInstance();
     
     // settings for max records number limit
@@ -85,6 +87,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
     spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
     spagobiSpagoController = request.getParameter(SpagoBIConstants.SBI_SPAGO_CONTROLLER);
     
+    formTemplate = (JSONObject) qbeEngineInstance.getTemplate().getProperty("formJSONTemplate");
 %>
 
 
@@ -147,7 +150,9 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 		    });
 	
 	      	var qbeConfig = {};
+			<%--
 	      	qbeConfig.isFromCross = <%= isFromCross %>;
+	      	--%>
 	      	<%
 	      	StringBuffer datamartNamesBuffer = new StringBuffer("[");
 	      	Iterator it = datamartNames.iterator();
@@ -165,8 +170,9 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	
 	        // javascript-side user profile object
 	        Ext.ns("Sbi.user");
+	        <%--
 	        Sbi.user.isPowerUser = <%= isPowerUser %>;
-	
+			--%>
 	        Ext.onReady(function(){
 	        	Ext.QuickTips.init();   
 	
@@ -176,18 +182,25 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	        	
 	       		qbeConfig.documentParametersStore = parametersStore;
 
-	       		// if user is a power user, instantiate and show also the QueryBuilderPanel
-	       		qbeConfig.displayQueryBuilderPanel = Sbi.user.isPowerUser;
-	       		qbeConfig.displayFormBuilderPanel = false;
+	       		qbeConfig.displayQueryBuilderPanel = true;
+	       		qbeConfig.displayFormBuilderPanel = true;
+	       		
+				qbeConfig.formbuilder = {};
+				qbeConfig.formbuilder.template = <%= formTemplate != null ? formTemplate.toString() : "{}" %>;
 	       		
 	           	var qbe = new Sbi.qbe.QbePanel(qbeConfig);
 	           	var viewport = new Ext.Viewport(qbe);  
-	           	<%if (isPowerUser && isFromCross.equalsIgnoreCase("false")) {%>
+
+	           	qbe.queryEditorPanel.selectGridPanel.dropTarget = new Sbi.qbe.SelectGridDropTarget(qbe.queryEditorPanel.selectGridPanel); 
+           		qbe.queryEditorPanel.filterGridPanel.dropTarget = new Sbi.qbe.FilterGridDropTarget(qbe.queryEditorPanel.filterGridPanel);
+           		qbe.queryEditorPanel.havingGridPanel.dropTarget = new Sbi.qbe.HavingGridDropTarget(qbe.queryEditorPanel.havingGridPanel);
+	           	
+	           	<%--if (isPowerUser && isFromCross.equalsIgnoreCase("false")) {%>
 	           		qbe.queryEditorPanel.selectGridPanel.dropTarget = new Sbi.qbe.SelectGridDropTarget(qbe.queryEditorPanel.selectGridPanel); 
 	           		qbe.queryEditorPanel.filterGridPanel.dropTarget = new Sbi.qbe.FilterGridDropTarget(qbe.queryEditorPanel.filterGridPanel);
 	           		qbe.queryEditorPanel.havingGridPanel.dropTarget = new Sbi.qbe.HavingGridDropTarget(qbe.queryEditorPanel.havingGridPanel);
 
-	         	<%}%>
+	         	<%}--%>
 	           	
 	      	});
 	    </script>

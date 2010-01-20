@@ -10,7 +10,15 @@
 		</RENDERING>    	
 	</PUBLISHER>	
 	
-	<PUBLISHER name="FORM_ENGINE_START_ACTION_PUBLISHER">		
+	<PUBLISHER name="FORM_ENGINE_START_ACTION_PUBLISHER">
+   	 	<RENDERING channel="HTTP" type="JAVA" mode="">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="it.eng.spagobi.commons.presentation.DynamicPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+	
+	<PUBLISHER name="VIEW_FORM_ENGINE_PUBLISHER">		
 		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
 			<RESOURCES>
 				<ITEM prog="0" resource="/WEB-INF/jsp/formviewer.jsp" />
@@ -18,6 +26,13 @@
 		</RENDERING>    	
 	</PUBLISHER>
 	
+	<PUBLISHER name="EDIT_FORM_ENGINE_PUBLISHER">		
+		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
+			<RESOURCES>
+				<ITEM prog="0" resource="/WEB-INF/jsp/formeditor.jsp" />
+			</RESOURCES>
+		</RENDERING>    	
+	</PUBLISHER>
 	
 	<PUBLISHER name="FORM_ENGINE_TEMPLATE_BUILD_ACTION_PUBLISHER">
    	 	<RENDERING channel="HTTP" type="JAVA" mode="">
@@ -38,7 +53,8 @@
 	<PUBLISHER name="EDIT_FORM_ENGINE_TEMPLATE_BUILD_ACTION_PUBLISHER">		
    	 	<RENDERING channel="HTTP" mode="" type="LOOP">
       		<RESOURCES>
-        		<PARAMETER name="ACTION_NAME" type="ABSOLUTE" scope="" value="QBE_ENGINE_START_ACTION" />
+        		<PARAMETER name="ACTION_NAME" type="ABSOLUTE" scope="" value="FORM_ENGINE_START_ACTION" />
+        		<PARAMETER name="MODALITY" type="ABSOLUTE" scope="" value="EDIT" />
         		<PARAMETER name="document" type="RELATIVE" scope="SERVICE_REQUEST" value="document" />
       		</RESOURCES>
    	 	</RENDERING>   	

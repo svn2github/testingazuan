@@ -50,6 +50,8 @@ Sbi.qbe.QbePanel = function(config) {
 	
 	var c = Ext.apply({
 		// set default values here
+		displayQueryBuilderPanel: true
+		, displayFormBuilderPanel: false
 	}, config || {});
 	
 	this.services = new Array();
@@ -64,21 +66,25 @@ Sbi.qbe.QbePanel = function(config) {
 	this.queryEditorPanel = null;
 	this.queryResultPanel = new Sbi.widgets.DataStorePanel(c);
 	
-	var items = null;
-	if (Sbi.user.isPowerUser === true) {
-		// if user is a power user, instantiate and show also the QueryBuilderPanel
+	var items = [];
+	
+	if (c.displayQueryBuilderPanel) {
 		this.queryEditorPanel = new Sbi.qbe.QueryBuilderPanel(c);
-		
-		if(config.formbuilder !== undefined && config.formbuilder.template !== undefined)
-		this.formBuilderPage = new Sbi.formbuilder.FormPanel({template: config.formbuilder.template});
-		items = [this.queryEditorPanel, this.queryResultPanel, this.formBuilderPage];
-	} else {
-		// if user is a read-only user, do not instantiate and show the QueryBuilderPanel
-		// and execute first query on catalog
-		items = [this.queryResultPanel];
-		this.loadFirstQuery();
+		items.push(this.queryEditorPanel);
 	}
 	
+	items.push(this.queryResultPanel);
+	
+	if (c.displayFormBuilderPanel && c.formbuilder !== undefined && c.formbuilder.template !== undefined) {
+		this.formBuilderPage = new Sbi.formbuilder.FormPanel({template: c.formbuilder.template});
+		items.push(this.formBuilderPage);
+	}
+	
+	if (!c.displayQueryBuilderPanel) {
+		// if user is a read-only user, do not instantiate and show the QueryBuilderPanel
+		// and execute first query on catalog
+		this.loadFirstQuery();
+	}
 	
 	this.tabs = new Ext.TabPanel({
 		border: false,

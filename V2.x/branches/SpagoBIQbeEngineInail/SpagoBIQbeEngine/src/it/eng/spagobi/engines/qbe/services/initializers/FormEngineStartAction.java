@@ -20,11 +20,8 @@
  **/
 package it.eng.spagobi.engines.qbe.services.initializers;
 
-import java.util.Locale;
-
-import org.apache.log4j.Logger;
-
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.commons.presentation.DynamicPublisher;
 import it.eng.spagobi.engines.qbe.QbeEngine;
 import it.eng.spagobi.engines.qbe.QbeEngineAnalysisState;
 import it.eng.spagobi.engines.qbe.QbeEngineInstance;
@@ -33,15 +30,20 @@ import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException;
 
+import java.util.Locale;
+
+import org.apache.log4j.Logger;
+
 
 /**
  * The Class QbeEngineStartAction.
  * 
  * @author Andrea Gioia
  */
-public class FormEngineStartAction extends QbeEngineStartAction {	
+public class FormEngineStartAction extends AbstractEngineStartAction {	
 	
 	// INPUT PARAMETERS
+	private final static String PARAM_MODALITY = "MODALITY";
 	
 	// OUTPUT PARAMETERS
 	public static final String LANGUAGE = "LANGUAGE";
@@ -54,9 +56,8 @@ public class FormEngineStartAction extends QbeEngineStartAction {
 	/** Logger component. */
     private static transient Logger logger = Logger.getLogger(FormEngineStartAction.class);
     
-    public static final String ENGINE_NAME = "SpagoBIQbeEngine";
+    public static final String ENGINE_NAME = "SpagoBIFormEngine";
 	
-    /*
     public void service(SourceBean serviceRequest, SourceBean serviceResponse) {
     	QbeEngineInstance qbeEngineInstance = null;
     	QbeEngineAnalysisState analysisState;
@@ -72,7 +73,7 @@ public class FormEngineStartAction extends QbeEngineStartAction {
 			logger.debug("User Id: " + getUserId());
 			logger.debug("Audit Id: " + getAuditId());
 			logger.debug("Document Id: " + getDocumentId());
-			logger.debug("Template: " + getTemplateAsJSONObject().toString(3));
+			logger.debug("Template: " + getTemplateAsSourceBean());
 						
 			if(getAuditServiceProxy() != null) {
 				logger.debug("Audit enabled: [TRUE]");
@@ -83,7 +84,7 @@ public class FormEngineStartAction extends QbeEngineStartAction {
 			
 			logger.debug("Creating engine instance ...");
 			try {
-				qbeEngineInstance = QbeEngine.createInstance( getTemplateAsJSONObject(), getEnv() );
+				qbeEngineInstance = QbeEngine.createInstance(getTemplateAsSourceBean(), getEnv() );
 			} catch(Throwable t) {
 				SpagoBIEngineStartupException serviceException;
 				String msg = "Impossible to create engine instance for document [" + getDocumentId() + "].";
@@ -105,6 +106,14 @@ public class FormEngineStartAction extends QbeEngineStartAction {
 			}
 			logger.debug("Engine instance succesfully created");
 			
+			qbeEngineInstance.getEnv().put("TEMPLATE", getTemplateAsSourceBean());
+			String docId = this.getAttributeAsString("formDocumentId");
+			if(docId != null) qbeEngineInstance.getEnv().put("DOCUMENT", docId);
+			else {
+				qbeEngineInstance.getEnv().put("DOCUMENT", this.getDocumentId());
+			}
+			
+			/*
 			qbeEngineInstance.setAnalysisMetadata( getAnalysisMetadata() );
 			if( getAnalysisStateRowData() != null ) {
 				logger.debug("Loading subobject [" + qbeEngineInstance.getAnalysisMetadata().getName() + "] ...");
@@ -127,6 +136,7 @@ public class FormEngineStartAction extends QbeEngineStartAction {
 				}
 				logger.debug("Subobject [" + qbeEngineInstance.getAnalysisMetadata().getName() + "] succesfully loaded");
 			}
+			*/
 			
 			locale = (Locale)qbeEngineInstance.getEnv().get(EngineConstants.ENV_LOCALE);
 			
@@ -136,6 +146,16 @@ public class FormEngineStartAction extends QbeEngineStartAction {
 			setAttribute(LANGUAGE, locale.getLanguage());
 			setAttribute(COUNTRY, locale.getCountry());
 			
+			String publisherName = "VIEW_FORM_ENGINE_PUBLISHER";
+			
+			String modality = this.getAttributeAsString(PARAM_MODALITY);
+			logger.debug("Input " + PARAM_MODALITY + " parameter is " + modality);
+			if (modality != null && modality.trim().equalsIgnoreCase("EDIT")) {
+				// edit template
+				publisherName = "EDIT_FORM_ENGINE_PUBLISHER";
+			}
+			
+			serviceResponse.setAttribute(DynamicPublisher.PUBLISHER_NAME, publisherName);
 			
 		} catch (Throwable e) {
 			SpagoBIEngineStartupException serviceException = null;
@@ -155,11 +175,13 @@ public class FormEngineStartAction extends QbeEngineStartAction {
 			}
 			
 			throw serviceException;
+			
+			//throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), qbeEngineInstance, e);
 		} finally {
 			logger.debug("OUT");
 		}		
 
 		
-	} 
-    */
+	}
+    
 }

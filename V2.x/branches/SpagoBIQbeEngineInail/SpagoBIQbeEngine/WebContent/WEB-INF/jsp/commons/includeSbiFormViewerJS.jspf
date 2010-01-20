@@ -10,6 +10,7 @@
 <script type="text/javascript" src='../js/spagobi/locale/commons/<%=locale.getLanguage()%>.js'/></script>
 <script type="text/javascript" src='../js/spagobi/locale/qbe/<%=locale.getLanguage()%>.js'/></script>
 <script type="text/javascript" src='../js/spagobi/locale/formviewer/<%=locale.getLanguage()%>.js'/></script>
+<script type="text/javascript" src='../js/spagobi/locale/widgets/lookupfield/<%=locale.getLanguage()%>.js'/></script>
 
 <!-- START-DEBUG -->
 

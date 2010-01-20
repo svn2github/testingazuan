@@ -271,6 +271,8 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	        , bbar: pagingBar
 		});
 		
+		this.grid.on('rowdblclick', this.onOk, this);
+		
 		this.win = new Ext.Window({
 			title: LN('sbi.lookup.Select') ,   
             layout      : 'fit',

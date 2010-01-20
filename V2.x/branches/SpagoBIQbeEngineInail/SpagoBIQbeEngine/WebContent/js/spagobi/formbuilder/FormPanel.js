@@ -49,7 +49,7 @@ Ext.ns("Sbi.formbuilder");
 Sbi.formbuilder.FormPanel = function(config) {
 	
 	var defaultSettings = {
-		title: 'Form builder'
+		title: LN('sbi.formbuilder.formpanel.title')
 	};
 	
 	this.services = new Array();

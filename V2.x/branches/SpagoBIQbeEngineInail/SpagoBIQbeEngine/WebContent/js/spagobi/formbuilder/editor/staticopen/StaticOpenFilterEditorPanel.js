@@ -50,8 +50,8 @@ Sbi.formbuilder.StaticOpenFilterEditorPanel = function(config) {
 	
 	var defaultSettings = {
 		
-		title: 'Static open filters'
-		, emptyMsg: 'Drag a field here to create a new static open filter'
+		title: LN('sbi.formbuilder.staticopenfiltereditorpanel.title')
+		, emptyMsg: LN('sbi.formbuilder.staticopenfiltereditorpanel.emptymsg')
 		, ddGroup    : 'formbuilderDDGroup'
 		, droppable: {
 			onFieldDrop: this.onFieldDrop

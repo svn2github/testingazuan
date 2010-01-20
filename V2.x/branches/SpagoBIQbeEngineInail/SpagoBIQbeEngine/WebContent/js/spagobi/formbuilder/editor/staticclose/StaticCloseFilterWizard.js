@@ -50,7 +50,7 @@ Sbi.formbuilder.StaticCloseFilterWizard = function(config) {
 	
 	var defaultSettings = {
 		// set default values here
-		title: 'Static close filter definition'
+		title: LN('sbi.formbuilder.staticclosefilterwizard.title')
 		, autoScroll: true
 		, width: 550
 		, height: 340
@@ -239,7 +239,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 		var items = [];
 		
 		this.filterTitleField = new Ext.form.TextField({
-			fieldLabel:'Name' ,
+			fieldLabel: LN('sbi.formbuilder.staticclosefilterwizard.fields.filtertitle.label'),
 			name:'filterTitleField',
     		value: this.baseState.filterTitle,
     		allowBlank: false, 
@@ -257,7 +257,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
     	
     	
     	this.leftOperandField = new Sbi.widgets.LookupField({
-    		fieldLabel:'Field',
+    		fieldLabel: LN('sbi.formbuilder.staticclosefilterwizard.fields.leftoperand.label'),
 			name: 'leftOperand',
     		store: s,
     		valueField: 'id',
@@ -267,7 +267,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
     		cm: new Ext.grid.ColumnModel([
 	    		new Ext.grid.RowNumberer(),
 	    		{
-	    			header: "Filed",
+	    			header: LN('sbi.formbuilder.staticclosefilterwizard.fields.leftoperand.label'),
 	    		    dataIndex: 'alias',
 	    		    width: 75
 	    		}
@@ -277,14 +277,14 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
     	items.push(this.leftOperandField);
     	
     	this.operatorField = new Sbi.qbe.FilterComboBox({
-    		fieldLabel:'Operator',
-    		name:'operator'
+    		fieldLabel: LN('sbi.formbuilder.staticclosefilterwizard.fields.operator.label'),
+    		name: 'operator'
     	});
     	this.operatorField.on('change', this.onFormStateChange, this);
     	items.push(this.operatorField);
     	
     	this.rightOperandField = new Ext.form.TextField({
-    		fieldLabel:'Value' ,
+    		fieldLabel: LN('sbi.formbuilder.staticclosefilterwizard.fields.rightoperand.label'),
 			name:'rightOperand'
     	});
     	this.rightOperandField.on('change', this.onFormStateChange, this);
@@ -336,14 +336,14 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
     	    buttonAlign : 'center',
     	    items: items,
     	    buttons: [{
-    			text: 'Save',
+    			text: LN('sbi.formbuilder.staticclosefilterwizard.buttons.apply'),
     		    handler: function(){
     	    		this.fireEvent('apply', this, this.getTarget(), this.getFormState());
                 	this.hide();
             	}
             	, scope: this
     	    },{
-    		    text: 'Cancel',
+    		    text: LN('sbi.formbuilder.staticclosefilterwizard.buttons.cancel'),
     		    handler: function(){
                 	this.hide();
             	}

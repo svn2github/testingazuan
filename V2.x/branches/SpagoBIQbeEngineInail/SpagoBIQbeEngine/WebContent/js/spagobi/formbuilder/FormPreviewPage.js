@@ -49,7 +49,7 @@ Ext.ns("Sbi.formbuilder");
 Sbi.formbuilder.FormPreviewPage = function(config) {
 	
 	var defaultSettings = {
-		title: 'Preview'
+		title: LN('sbi.formbuilder.formpreviewpage.title')
 		, defaultSrc: 'about:blank'
 		, autoLoad: true
         , loadMask: true

@@ -49,7 +49,7 @@ Ext.ns("Sbi.formbuilder");
 Sbi.formbuilder.TemplateEditorPanel = function(config) {
 	
 	var defaultSettings = {
-		title: LN('Form Builder')
+		title: LN('sbi.formbuilder.templateeditorpanel.title')
 	};
 		
 	if(Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.filtersTemplatePanel) {

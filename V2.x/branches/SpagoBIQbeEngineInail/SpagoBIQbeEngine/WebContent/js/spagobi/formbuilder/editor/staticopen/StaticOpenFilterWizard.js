@@ -50,7 +50,7 @@ Sbi.formbuilder.StaticOpenFilterWizard = function(openFilter, config) {
 	
 	var defaultSettings = {
 		// set default values here
-		title: 'Static open filter definition'
+		title: LN('sbi.formbuilder.staticopenfilterwizard.title')
 		, autoScroll: true
 		, width: 550
 		, height: 400
@@ -94,7 +94,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 			inputType: 'text',
 			maxLength: 100,
 			width: 250,
-			fieldLabel: 'Name'
+			fieldLabel: LN('sbi.formbuilder.staticopenfilterwizard.fields.filtername.label')
 		});
 		
 		this.filterEntity = new Ext.form.TextField({
@@ -105,7 +105,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 			inputType: 'text',
 			maxLength: 100,
 			width: 250,
-			fieldLabel: 'Field',
+			fieldLabel: LN('sbi.formbuilder.staticopenfilterwizard.fields.filterentity.label'),
 			disabled: true
 		});
 		
@@ -151,7 +151,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 			triggerAction: 'all',
 			emptyText: LN('sbi.qbe.filtergridpanel.foperators.editor.emptymsg'),
 			selectOnFocus: true, //True to select any existing text in the field immediately on focus
-			fieldLabel: 'Operator',
+			fieldLabel: LN('sbi.formbuilder.staticopenfilterwizard.fields.filteroperator.label'),
 			value: openFilter.operator
 	    });
 	    
@@ -184,7 +184,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 			triggerAction: 'all',
 			emptyText: '',
 			selectOnFocus: true, //True to select any existing text in the field immediately on focus
-			fieldLabel: 'Max selection',
+			fieldLabel: LN('sbi.formbuilder.staticopenfilterwizard.fields.maxselectionnumber.label'),
 			value: openFilter.maxSelectedNumber
 	    });
 	    
@@ -212,7 +212,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 			triggerAction: 'all',
 			emptyText: '',
 			selectOnFocus: true, //True to select any existing text in the field immediately on focus
-			fieldLabel: 'Order results by'
+			fieldLabel: LN('sbi.formbuilder.staticopenfilterwizard.fields.orderbyfield.label')
 			//value: openFilter.orderBy === undefined ? '' : openFilter.orderBy
 	    });
 	    
@@ -246,7 +246,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 	         triggerAction: 'all',
 	         autocomplete: 'off',
 	         emptyText: LN('sbi.qbe.selectgridpanel.sortfunc.editor.emptymsg'),
-	         fieldLabel: 'Order type',
+	         fieldLabel: LN('sbi.formbuilder.staticopenfilterwizard.fields.ordertype.label'),
 	         selectOnFocus: true,
 	         value: openFilter.orderType === undefined ? '' : openFilter.orderType
         });
@@ -259,7 +259,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 
 	    this.queryDetails = {
             xtype: 'fieldset',
-            title: 'Lookup query details',
+            title: LN('sbi.formbuilder.staticopenfilterwizard.lookupquerydetailssection.title'),
             autoHeight: true,
             autoWidth: true,
             items: []
@@ -270,8 +270,8 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 			{
 				xtype: 'radio',
 				hideLabel: false,
-				fieldLabel: 'Prompt values',
-	            boxLabel: 'that are admissible for filter field',
+				fieldLabel: LN('sbi.formbuilder.staticopenfilterwizard.lookupquerydetailssection.promptvalues'),
+	            boxLabel: LN('sbi.formbuilder.staticopenfilterwizard.lookupquerydetailssection.donotqueryrootentity'),
 	            name: 'queryRootEntity',
 	            inputValue: false,
 	            checked: (openFilter.queryRootEntity === undefined ? true : !openFilter.queryRootEntity)
@@ -280,7 +280,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 				hideLabel: false,
 				fieldLabel: '',
 				labelSeparator: '',
-	            boxLabel: 'that are admissible for relevant field on root entity',
+	            boxLabel: LN('sbi.formbuilder.staticopenfilterwizard.lookupquerydetailssection.queryrootentity'),
 	            name: 'queryRootEntity',
 	            inputValue: true,
 	            checked: (openFilter.queryRootEntity === undefined ? false : openFilter.queryRootEntity)
@@ -301,8 +301,8 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 	        items: [this.filterName, this.filterEntity, this.filterOperatorCombo, this.maxSelectionNumber, 
 	                this.queryDetails],
 	        buttons: [
-	                  {text: 'Apply', handler: this.apply, scope: this}
-	                  , {text: 'Cancel', handler: function () {this.close();}, scope: this}
+	                  {text: LN('sbi.formbuilder.staticopenfilterwizard.buttons.apply'), handler: this.apply, scope: this}
+	                  , {text: LN('sbi.formbuilder.staticopenfilterwizard.buttons.cancel'), handler: function () {this.close();}, scope: this}
 	                 ]
 	    });
 	    

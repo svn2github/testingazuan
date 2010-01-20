@@ -50,7 +50,7 @@ Sbi.formbuilder.StaticCloseFilterGroupWizard = function(config) {
 	
 	var defaultSettings = {
 		// set default values here
-		title: 'Static close filters definition'
+		title: LN('sbi.formbuilder.staticclosefiltergroupwizard.title')
 		, autoScroll: true
 		, width: 350
 		, height: 300
@@ -147,7 +147,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 		var s = Ext.apply(this.baseState || {}, {
 			singleSelection: true
 			, allowNoSelection: false
-			, noSelectionText: 'All'
+			, noSelectionText: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.noselectiontext')
 		})
 		this.setFormState(s);
 	}
@@ -175,7 +175,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 		var items = [];
 		
 		this.groupTitleField = new Ext.form.TextField({
-			fieldLabel:'Name',
+			fieldLabel: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.grouptitle.label'),
     		name:'groupTitle',
     		value: this.baseState.groupTitle,
     		allowBlank: false, 
@@ -189,8 +189,8 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
     	this.singleSelectionField = {};
     	
     	this.singleSelectionField['true'] = new Ext.form.Radio({
-    		fieldLabel: 'Enable single selection',
-			boxLabel: 'Yes',
+    		fieldLabel: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.enablesingleselection.label'),
+			boxLabel: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.enablesingleselection.yes'),
 			name: 'singleSelection',
 			checked: (this.baseState.singleSelection === true),
 			inputValue: true
@@ -206,7 +206,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
     	this.singleSelectionField['false'] = new Ext.form.Radio({
     		fieldLabel: '',
     		labelSeparator: '',
-			boxLabel: 'No',
+			boxLabel: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.enablesingleselection.no'),
 			name: 'singleSelection',
 			checked: (this.baseState.singleSelection === false),
             inputValue: false,
@@ -223,8 +223,8 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
     	this.allowNoSelectionField = {};
     	
     	this.allowNoSelectionField['true'] = new Ext.form.Radio({
-    		fieldLabel: 'Allow "No selection"',
-			boxLabel: 'Yes',
+    		fieldLabel: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.allownoselection.label'),
+			boxLabel: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.allownoselection.yes'),
 			name: 'allowNoSelectionField',
 			checked: (this.baseState.allowNoSelection === true),
 			inputValue: true,
@@ -235,7 +235,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
     	this.allowNoSelectionField['false'] = new Ext.form.Radio({
     		fieldLabel: '',
     		labelSeparator: '',
-			boxLabel: 'No',
+			boxLabel: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.allownoselection.no'),
 			name: 'allowNoSelectionField',
 			checked: (this.baseState.allowNoSelection === false),
             inputValue: false,
@@ -244,9 +244,9 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
     	//items.push(this.allowNoSelectionField['false']);
     		
     	this.noSelectionTextField = new Ext.form.TextField({
-			fieldLabel:'No selection option\'s label',
+			fieldLabel: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.noselectionoptionlabel.label'),
     		name:'noSelectionTextField',
-    		value: this.baseState.noSelectionTextField || 'All',
+    		value: this.baseState.noSelectionTextField || LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.noselectiontext'),
     		allowBlank: true, 
     		inputType:'text',
     		maxLength:150
@@ -254,7 +254,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
     	});
     	
     	var fieldSet = new Ext.form.FieldSet({
-    		title: 'Options',
+    		title: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.options'),
     		autoHeight: true,
     		autoWidth: true,
     		labelWidth: 150,
@@ -276,14 +276,14 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
     	    buttonAlign : 'center',
     	    items: items,
     	    buttons: [{
-    			text: 'Save',
+    			text: LN('sbi.formbuilder.staticclosefiltergroupwizard.buttons.apply'),
     		    handler: function(){
     	    		this.fireEvent('apply', this, this.getTarget(), this.getFormState());
                 	this.hide();
             	}
             	, scope: this
     	    },{
-    		    text: 'Cancel',
+    		    text: LN('sbi.formbuilder.staticclosefiltergroupwizard.buttons.cancel'),
     		    handler: function(){
                 	this.hide();
             	}

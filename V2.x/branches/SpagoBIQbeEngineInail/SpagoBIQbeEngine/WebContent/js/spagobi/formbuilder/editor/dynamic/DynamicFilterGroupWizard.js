@@ -50,7 +50,7 @@ Sbi.formbuilder.DynamicFilterGroupWizard = function(config) {
 	
 	var defaultSettings = {
 		// set default values here
-		title: 'Dynamic filter group definition'
+		title: LN('sbi.formbuilder.dynamicfiltergroupwizard.title')
 		, autoScroll: true
 		, width: 350
 		, height: 150
@@ -160,7 +160,7 @@ Ext.extend(Sbi.formbuilder.DynamicFilterGroupWizard, Ext.Window, {
 			triggerAction: 'all',
 			emptyText: LN('sbi.qbe.filtergridpanel.foperators.editor.emptymsg'),
 			selectOnFocus: true, //True to select any existing text in the field immediately on focus
-			fieldLabel: 'Operator'
+			fieldLabel: LN('sbi.formbuilder.dynamicfiltergroupwizard.operatorfieldlabel')
 	    });
 
     	items.push(this.operatorField);
@@ -175,14 +175,14 @@ Ext.extend(Sbi.formbuilder.DynamicFilterGroupWizard, Ext.Window, {
     	    buttonAlign : 'center',
     	    items: items,
     	    buttons: [{
-    			text: 'Save',
+    			text: LN('sbi.formbuilder.dynamicfiltergroupwizard.buttons.apply'),
     		    handler: function(){
     	    		this.fireEvent('apply', this, this.getTarget(), this.getFormState());
                 	this.hide();
             	}
             	, scope: this
     	    },{
-    		    text: 'Cancel',
+    		    text: LN('sbi.formbuilder.dynamicfiltergroupwizard.buttons.cancel'),
     		    handler: function(){
                 	this.hide();
             	}

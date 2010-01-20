@@ -153,7 +153,7 @@ Ext.extend(Sbi.formbuilder.InlineEditor, Ext.Panel, {
 		
 		if(this.editable === true) {
 			this.editBtn = new Ext.Button({
-				tooltip: 'Edit filter',
+				tooltip: LN('sbi.formbuilder.inlineeditor.edit'),
 		        cls: 'image-button',
 		        iconCls: 'edit',
 		        disabled: Ext.isIE ? false : true,
@@ -180,7 +180,7 @@ Ext.extend(Sbi.formbuilder.InlineEditor, Ext.Panel, {
 		
 		if(this.deletable === true) {
 			this.deleteBtn = new Ext.Button({
-				tooltip: 'Delete filter',
+				tooltip: LN('sbi.formbuilder.inlineeditor.remove'),
 		        cls: 'image-button',
 		        iconCls: 'editremove',
 		        disabled: Ext.isIE ? false : true,

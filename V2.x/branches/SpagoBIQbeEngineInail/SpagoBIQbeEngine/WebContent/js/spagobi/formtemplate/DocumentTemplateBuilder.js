@@ -163,14 +163,14 @@ Ext.extend(Sbi.formtemplate.DocumentTemplateBuilder, Ext.Panel, {
 	    this.documentsCombo = new Ext.form.ComboBox({
     	   	tpl: '<tpl for="."><div ext:qtip="{name}: {description}" class="x-combo-list-item">{name}</div></tpl>',	
     	   	editable  : false,
-    	   	fieldLabel : 'Document',
+    	   	fieldLabel : LN('sbi.formtemplate.documenttemplatebuilder.documentfield.label'),
     	   	forceSelection : true,
     	   	//mode : 'local',
     	   	name : 'scope',
     	   	store : store,
     	   	displayField:'name',
     	    valueField:'id',
-    	    emptyText:'Select a document...',
+    	    emptyText: LN('sbi.formtemplate.documenttemplatebuilder.documentfield.emptytext'),
     	    typeAhead: true,
     	    triggerAction: 'all',
     	    selectOnFocus:true
@@ -178,12 +178,11 @@ Ext.extend(Sbi.formtemplate.DocumentTemplateBuilder, Ext.Panel, {
 		
 		this.submitBtn = new Ext.Button({
 			tooltip: 'Submit',
-			text: 'Start editing ...',
+			text: LN('sbi.formtemplate.documenttemplatebuilder.startediting'),
 			disabled: false,
 	        hidden: false,
 	        handler: function() {			
 				var docId = this.documentsCombo.getValue();
-				alert('Selected document: ' + docId);
 				this.openFormBuilder(docId);
 			}, 
 			scope: this

@@ -49,7 +49,7 @@ Ext.ns("Sbi.formbuilder");
 Sbi.formbuilder.FormBuilderPage = function(config) {
 	
 	var defaultSettings = {
-		title: LN('Edit')
+		title: LN('sbi.formbuilder.formbuilderpage.title')
 	};
 		
 	if(Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.formBuilderPage) {
@@ -77,24 +77,26 @@ Sbi.formbuilder.FormBuilderPage = function(config) {
 		items: [
 		    '->'
 		    , {
-				text: 'Refresh',
+				text: LN('sbi.formbuilder.formbuilderpage.toolbar.refresh'),
 				handler: function() {this.queryFieldsPanel.refresh();},
 				scope: this
 		    }, {
-				text: 'Save',
+				text: LN('sbi.formbuilder.formbuilderpage.toolbar.save'),
 				handler: function() {
-		    		alert('Saving ...');
 		    		var params = {
 		    				"FORM_STATE": Sbi.commons.JSON.encode(this.templateEditorPanel.getContents())
 		    		};
 		    		Ext.Ajax.request({
 		    		    url: this.services['saveFormState'],
 		    		    success: function() {
-		    				alert("Template saved succesfully");
+				    		Ext.Msg.show({
+			 				   title: LN('sbi.formbuilder.formbuilderpage.templatesaved.title'),
+			 				   msg: LN('sbi.formbuilder.formbuilderpage.templatesaved.msg'),
+							   buttons: Ext.Msg.OK,
+							   icon: Ext.MessageBox.INFO
+				 			});
 		    			},
-		    		    failure: function() {
-		    				alert("An error occurred while saving template");
-		    			},
+		    		    failure: Sbi.exception.ExceptionHandler.handleFailure,
 		    		    scope: this,
 		    		    params: params
 		    		});   

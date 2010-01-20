@@ -50,9 +50,9 @@ Sbi.formbuilder.StaticCloseFilterEditorPanel = function(config) {
 	
 	var defaultSettings = {
 		
-		title: 'Static closed filters'
-		, emptyMsg: 'Click on the button in the top-rigtht corner in order to add a new filter group'
-		, filterItemName: 'static closed filter group'
+		title: LN('sbi.formbuilder.staticclosefiltereditorpanel.title')
+		, emptyMsg: LN('sbi.formbuilder.staticclosefiltereditorpanel.emptymsg')
+		, filterItemName: LN('sbi.formbuilder.staticclosefiltereditorpanel.filteritemname')
 		
 		, layout: 'column'
 	    /*, layoutConfig: {

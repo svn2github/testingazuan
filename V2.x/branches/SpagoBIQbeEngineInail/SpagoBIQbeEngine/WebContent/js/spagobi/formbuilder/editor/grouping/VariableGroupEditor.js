@@ -50,11 +50,11 @@ Sbi.formbuilder.VariableGroupEditor = function(config) {
 	
 
 	var defaultSettings = {	
-		groupTitle: 'Variable Group'
+		groupTitle: LN('sbi.formbuilder.variablegroupeditor.grouptitle')
 		, width: 300
         , height: 150
         , autoWidth: false    	
-        , emptyMsg: 'Drag a field here to add a new admissible value to the variable'
+        , emptyMsg: LN('sbi.formbuilder.variablegroupeditor.emptymsg')
         , ddGroup    : 'formbuilderDDGroup'
         , droppable: {
 			onFieldDrop: this.addField

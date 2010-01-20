@@ -49,11 +49,11 @@ Ext.ns("Sbi.formviewer");
 Sbi.formbuilder.DynamicFilterGroupEditor = function(config) {
 	
 	var defaultSettings = {	
-		groupTitle: 'Dynamic Filter Group'
+		groupTitle: LN('sbi.formbuilder.dynamicfiltergroupeditor.groupTitle')
 		, width: 300
         , height: 150
         , autoWidth: false    	
-        , emptyMsg: 'Drag a field here to add an option for the dynamic filter'
+        , emptyMsg: LN('sbi.formbuilder.dynamicfiltergroupeditor.emptymsg')
         , ddGroup    : 'formbuilderDDGroup'
         , droppable: {
 			onFieldDrop: this.addField
@@ -127,7 +127,7 @@ Ext.extend(Sbi.formbuilder.DynamicFilterGroupEditor, Sbi.formbuilder.EditorPanel
 	
 	, modifyFilter: function(state) {
 		this.operator = state.operator;
-		this.groupTitle = 'Dynamic filter group (' + this.operator + ')';
+		this.groupTitle = LN('sbi.formbuilder.dynamicfiltereditorpanel.grouptitle') + ' (' + this.operator + ')';
 		this.filterItemsCt.setTitle(this.groupTitle);
 	}
 	
@@ -139,11 +139,11 @@ Ext.extend(Sbi.formbuilder.DynamicFilterGroupEditor, Sbi.formbuilder.EditorPanel
 		this.toolbar =  new Ext.Toolbar({
 			items: [
 			    '->' , {
-					text: 'Edit',
+					text: LN('sbi.formbuilder.dynamicfiltergroupeditor.edit'),
 					handler: function() {this.editFilter();},
 					scope: this
 			    } , {
-					text: 'Remove',
+					text: LN('sbi.formbuilder.dynamicfiltergroupeditor.remove'),
 					handler: function() {
 				    	if(this.ownerCt) {
 			    			this.ownerCt.remove(this, true);

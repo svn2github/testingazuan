@@ -24,7 +24,6 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 <%@ page language="java" 
 		 contentType="text/html; charset=UTF-8" 
 		 pageEncoding="UTF-8"%>
-
 <%-- ---------------------------------------------------------------------- --%>
 <%-- JAVA IMPORTS															--%>
 <%-- ---------------------------------------------------------------------- --%>
@@ -40,8 +39,15 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	String spagobiContext;
 	String spagobiSpagoController;
 	String formDocumentId;
-
-	locale = Locale.ITALY;	
+	String language, country;
+	
+	language = request.getParameter(SpagoBIConstants.SBI_LANGUAGE); 
+	country = request.getParameter(SpagoBIConstants.SBI_COUNTRY);
+	try {
+		locale = new Locale(language, country);
+	} catch (Exception e) {
+		locale = Locale.UK;
+	}
 	
 	formDocumentId = request.getParameter("document");
 	spagobiServerHost = request.getParameter(SpagoBIConstants.SBI_HOST);
@@ -51,6 +57,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 <%-- ---------------------------------------------------------------------- --%>
 <%-- HTML	 																--%>
 <%-- ---------------------------------------------------------------------- --%>
+
 <html>
 	<head>
 		<%@include file="commons/includeExtJS.jspf" %>
@@ -74,6 +81,8 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 
 	    var params = {
 	    	SBI_EXECUTION_ID: <%= request.getParameter("SBI_EXECUTION_ID")!=null?"'" + request.getParameter("SBI_EXECUTION_ID") +"'": "null" %>
+	    	, "<%= SpagoBIConstants.SBI_LANGUAGE %>" : "<%= locale.getLanguage() %>"
+	    	, "<%= SpagoBIConstants.SBI_COUNTRY %>" : "<%= locale.getCountry() %>"
 	    };
 
 	    Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({

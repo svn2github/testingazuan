@@ -107,11 +107,11 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterGroupEditor, Sbi.formbuilder.EditorPa
 		this.toolbar =  new Ext.Toolbar({
 			items: [
 			    '->' , {
-					text: 'Edit',
+					text: LN('sbi.formbuilder.staticopenfiltergroupeditor.edit'),
 					handler: function() {this.editFilter(this.contents[0]);},
 					scope: this
 			    } , {
-					text: 'Remove',
+					text: LN('sbi.formbuilder.staticopenfiltergroupeditor.remove'),
 					handler: function() {
 				    	if(this.ownerCt) {
 			    			this.ownerCt.remove(this, true);

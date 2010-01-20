@@ -143,11 +143,11 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupEditor, Sbi.formbuilder.EditorP
 			items: [
 			    '->'
 			    , {
-					text: 'Add',
+					text: LN('sbi.formbuilder.staticclosefiltergroupeditor.toolbar.add'),
 					handler: function() {this.onFilterWizardShow();},
 					scope: this
 			    }, {
-					text: 'Delete',
+					text: LN('sbi.formbuilder.staticclosefiltergroupeditor.toolbar.remove'),
 					handler: function() { 
 			    		if(this.ownerCt) {
 			    			this.ownerCt.remove(this, true);

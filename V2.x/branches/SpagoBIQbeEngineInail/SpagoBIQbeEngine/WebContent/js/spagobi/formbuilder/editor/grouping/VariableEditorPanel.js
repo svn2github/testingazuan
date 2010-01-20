@@ -50,9 +50,9 @@ Sbi.formbuilder.VariableEditorPanel = function(config) {
 	
 	var defaultSettings = {
 		
-		title: 'Grouping Varaibles'
-		, emptyMsg: 'Drag a field here to add a new group variable'
-		, filterItemName: 'dynamic filter group'
+		title: LN('sbi.formbuilder.variableeditorpanel.title')
+		, emptyMsg: LN('sbi.formbuilder.variableeditorpanel.emptymsg')
+		, filterItemName: 'grouping varaibles group'
 		
 		, layout: 'table'
 	    , layoutConfig: {
@@ -100,14 +100,14 @@ Ext.extend(Sbi.formbuilder.VariableEditorPanel, Sbi.formbuilder.EditorPanel, {
 		
 		bc = (this.baseContents && this.baseContents.length > 0)? this.baseContents[0].admissibleFields: undefined;
 		variable1GroupEditor = new Sbi.formbuilder.VariableGroupEditor({
-			groupTitle: 'Variable 1',
+			groupTitle: LN('sbi.formbuilder.variableeditorpanel.grouptitle') + ' 1',
 			baseContents: bc
 		});
 		this.addFilterItem(variable1GroupEditor);
 		
 		bc = (this.baseContents && this.baseContents.length > 1)? this.baseContents[1].admissibleFields: undefined;
 		variable2GroupEditor = new Sbi.formbuilder.VariableGroupEditor({
-			groupTitle: 'Variable 2',
+			groupTitle: LN('sbi.formbuilder.variableeditorpanel.grouptitle') + ' 2',
 			baseContents: bc
 		});
 		this.addFilterItem(variable2GroupEditor);

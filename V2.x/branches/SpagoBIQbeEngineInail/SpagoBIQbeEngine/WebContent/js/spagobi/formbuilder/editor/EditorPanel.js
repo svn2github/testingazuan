@@ -220,7 +220,7 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 		if(this.enableAddBtn === true) {
 			this.tools.push({
 			    id:'plus',
-			    qtip: 'add ' + this.filterItemName,
+			    qtip: LN('sbi.formbuilder.editorpanel.add') + ' ' + this.filterItemName,
 			    handler: function(event, toolEl, panel){
 					this.fireEvent('addrequest', this);
 			    }
@@ -231,7 +231,7 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 		if(this.enableClearBtn === true) {
 			this.tools.push({
 			    id:'delete',
-			    qtip: 'clear all',
+			    qtip: LN('sbi.formbuilder.editorpanel.clearall'),
 			    handler: function(event, toolEl, panel){
 			  		this.clearContents();
 			    }

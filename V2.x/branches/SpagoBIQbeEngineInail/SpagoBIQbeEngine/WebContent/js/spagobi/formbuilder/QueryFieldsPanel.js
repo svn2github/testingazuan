@@ -49,7 +49,7 @@ Ext.ns("Sbi.formbuilder");
 Sbi.formbuilder.QueryFieldsPanel = function(config) {
 	
 	var defaultSettings = {
-		title: LN('Selected Fields')
+		title: LN('sbi.formbuilder.queryfieldspanel.title')
 	};
 		
 	if(Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.queryFieldsPanel) {
@@ -145,7 +145,7 @@ Ext.extend(Sbi.formbuilder.QueryFieldsPanel, Ext.Panel, {
 		this.grid = new Ext.grid.GridPanel({
 	        store: this.store,
 	        columns: [
-	            {id:'alias',header: 'Field Name', width: 160, sortable: true, dataIndex: 'alias'}
+	            {id:'alias', header: LN('sbi.formbuilder.queryfieldspanel.fieldname'), width: 160, sortable: true, dataIndex: 'alias'}
 	        ],
 	        stripeRows: false,
 	        autoExpandColumn: 'alias',

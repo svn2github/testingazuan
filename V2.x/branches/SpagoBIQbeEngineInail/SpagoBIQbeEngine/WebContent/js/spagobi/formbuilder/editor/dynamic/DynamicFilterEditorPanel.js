@@ -50,9 +50,9 @@ Sbi.formbuilder.DynamicFilterEditorPanel = function(config) {
 	
 	var defaultSettings = {
 		
-		title: 'Dynamic filters'
-		, emptyMsg: 'Click on the button in the top-rigtht corner in order to add a new dynamic filter'
-		, filterItemName: 'dynamic filter group'
+		title: LN('sbi.formbuilder.dynamicfiltereditorpanel.title')
+		, emptyMsg: LN('sbi.formbuilder.dynamicfiltereditorpanel.emptymsg')
+		, filterItemName: LN('sbi.formbuilder.dynamicfiltereditorpanel.filteritemname')
 		/*
 		, layout: 'table'
 	    , layoutConfig: {
@@ -94,7 +94,7 @@ Ext.extend(Sbi.formbuilder.DynamicFilterEditorPanel, Sbi.formbuilder.EditorPanel
 	
 	, addFilterGroup: function(content) {
 		var newGroupEditor = new Sbi.formbuilder.DynamicFilterGroupEditor({
-			groupTitle: 'Dynamic filter group (' + content.operator + ')'
+			groupTitle: LN('sbi.formbuilder.dynamicfiltereditorpanel.grouptitle') + ' (' + content.operator + ')'
 			, operator: content.operator
 			, baseContents: content.admissibleFields
 		});

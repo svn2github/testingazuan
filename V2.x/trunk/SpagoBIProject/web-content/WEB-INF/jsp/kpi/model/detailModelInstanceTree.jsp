@@ -455,7 +455,7 @@ value='<%= StringEscapeUtils.escapeHtml(endDateS) %>'/> </div>
 </input>
 </div>
 </div>
-<div id="kpi-div" class="div_detail_area_forms" style="width: 670;">
+<div id="kpi-div" class="div_detail_area_forms" style="width: 670;<%=displayKpiDiv%>">
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message

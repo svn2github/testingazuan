@@ -1192,8 +1192,10 @@ public class GEOEditor extends EditorPart {
 
 			final Combo comboAgg = new Combo(datasetTable, SWT.SIMPLE
 					| SWT.DROP_DOWN | SWT.READ_ONLY);
+			comboAgg.add("");
 			comboAgg.add("sum");
 			comboAgg.add("media");
+
 
 			for (int k = 0; k < comboAgg.getItemCount(); k++) {
 				String aggText = comboAgg.getItem(k);

@@ -161,7 +161,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 				tx.commit();
 				return id;
 			}else{
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 14001);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 15001);
 			}
 			
 		} catch (HibernateException he) {

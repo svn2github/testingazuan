@@ -20,8 +20,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition;
 
+import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataParameter;
 
+import java.util.Iterator;
 import java.util.Vector;
 
 
@@ -34,12 +37,12 @@ public class Document {
 	private Style style; 
 	private String id;
 
-//	private static long idCounter = 0;
-//
-//	public static synchronized String createID()
-//	{
-//		return String.valueOf(idCounter++);
-//	}
+	//	private static long idCounter = 0;
+	//
+	//	public static synchronized String createID()
+	//	{
+	//		return String.valueOf(idCounter++);
+	//	}
 
 	public Document() {
 		//this.id = createID();
@@ -81,6 +84,34 @@ public class Document {
 		sbiObjLabel=metadataDocument.getLabel();
 		localFileName=metadataDocument.getLocalFileName();
 		style=_style;
+		// Set also the input parameters of the document!
+		if(metadataDocument.getMetadataParameters()!=null){
+			for (Iterator iterator = metadataDocument.getMetadataParameters().iterator(); iterator.hasNext();) {
+				MetadataParameter metaParameter = (MetadataParameter) iterator.next();
+				String label=metaParameter.getLabel();
+				//String type=metaParameter.getType();			
+				String type="IN";
+				String urlName=metaParameter.getUrlName();
+				Integer id=metaParameter.getId();
+				// if not already present add it
+				if(parameters==null) {
+					parameters=new Parameters();	
+				}
+				Vector<Parameter> vector=parameters.getParameter();
+				if(vector==null){
+					parameters.setParameter(new Vector<Parameter>());
+				}
+				DocumentComposition docComposition=Activator.getDefault().getDocumentComposition();
+				Parameter par=new Parameter(docComposition);
+				par.setDefaultVal("");
+				par.setSbiParLabel(urlName);
+				par.setType(type);
+				par.setNavigationName(label);
+				parameters.getParameter().add(par);
+			}
+
+
+		}
 		this.id = metadataDocument.getIdMetadataDocument();
 	}	
 

@@ -187,7 +187,8 @@ public class JasperReportRunner {
 			HashMap requestParameters = ParametersDecoder.getDecodedRequestParameters(servletRequest);
 			Content template=contentProxy.readTemplate( documentId,requestParameters);
 			if (template==null){
-				logger.error("The document haven't the template!!!!!!!!!!!!!!!!!!!");
+         logger.error("The document haven't the template.documentId="+documentId+" userUniqueIdentifier="+userUniqueIdentifier);
+				
 				return;
 			}
 			logger.debug("Read the template."+template.getFileName());

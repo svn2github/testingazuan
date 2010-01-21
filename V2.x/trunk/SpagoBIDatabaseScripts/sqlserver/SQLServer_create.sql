@@ -95,7 +95,7 @@ CREATE TABLE SBI_LOV (
        LABEL                VARCHAR(20) NOT NULL,
        INPUT_TYPE_CD        VARCHAR(20) NOT NULL,
        DEFAULT_VAL          VARCHAR(40) NULL,
-       LOV_PROVIDER         VARCHAR(8000) NULL,
+       LOV_PROVIDER         TEXT NULL,
        INPUT_TYPE_ID        INTEGER NOT NULL,
        PROFILE_ATTR         VARCHAR(20) NULL,
        NAME                 VARCHAR(40) NOT NULL,

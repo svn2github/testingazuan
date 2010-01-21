@@ -384,9 +384,9 @@ public class SeriesPersonalizationEditor {
 
 
 					if(model.isSeriesLabelPersonalization()){
-						if(newSerLabel.getText()!=null){
-							serPers.setLabel(newSerLabel.getText());
-							item.setText (LABEL, newSerLabel.getText());
+						if(newSerLabelText.getText()!=null){
+							serPers.setLabel(newSerLabelText.getText());
+							item.setText (LABEL, newSerLabelText.getText());
 						}
 					}
 

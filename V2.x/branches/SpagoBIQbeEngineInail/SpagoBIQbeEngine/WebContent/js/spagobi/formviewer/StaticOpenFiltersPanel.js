@@ -126,9 +126,7 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
 		var store = this.createStore(openFilter);
 		
 		var maxSelectionNumber = 1;
-		if (openFilter.singleSelection === undefined || openFilter.singleSelection === null || openFilter.singleSelection === true) {
-			maxSelectionNumber = 1;
-		} else {
+		if (openFilter.maxSelectedNumber !== undefined && openFilter.maxSelectedNumber !== null) {
 			maxSelectionNumber = openFilter.maxSelectedNumber;
 		}
 		

@@ -32,6 +32,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.DocumentBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ParameterBO;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.RefreshDocLinkedBO;
+import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.ModifyNavigationWizardPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.util.DestinationInfo;
 
@@ -46,8 +47,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 
 public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 
@@ -209,11 +208,9 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		    }
 		    cleanInputParameters();
 	    }
-		IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		
-		DocumentCompositionEditor editor= (DocumentCompositionEditor)iworkbenchpage.getActiveEditor();
+	    DocumentCompositionEditor editor= (DocumentCompositionEditor)DocCompUtilities.getEditorReference(DocCompUtilities.DOCUMENT_COMPOSITION_EDITOR_ID); 
 		editor.setIsDirty(true);
-	    //generator.transformToXml(docComp);
+
 	    return true;
 	}
 	private void cleanInputParameters(){
@@ -296,6 +293,9 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 						paramExisting.setDefaultVal(destInfo.getParamDefaultValue().getText());
 					}
 				}else{
+					if(prevParamIn != null){
+						prevParamIn.setDefaultVal(destInfo.getParamDefaultValue().getText());
+					}
 					refreshDocLinked.setLabelDoc(toRefresh);
 					refreshDocLinked.setLabelParam(paramIn);
 				}

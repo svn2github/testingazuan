@@ -177,7 +177,7 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 			IField valueField = record.getFieldAt(valueFieldIndex);
 			IField groupField = record.getFieldAt(groupFieldIndex);
 
-			if(selectedGroupValue == null || !selectedGroupValue.equals( groupField.getValue().toString() )) {
+			if(selectedGroupValue == null || !selectedGroupValue.toString().equals( groupField.getValue().toString() )) {
 				selectedGroupValue = groupField.getValue();
 				if(newRecord != null) {
 					newRecord.getFields().remove(pivotFieldIndex);

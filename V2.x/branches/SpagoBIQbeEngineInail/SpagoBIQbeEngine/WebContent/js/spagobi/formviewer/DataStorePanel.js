@@ -272,7 +272,8 @@ Ext.extend(Sbi.formviewer.DataStorePanel, Ext.Panel, {
 				   title: LN('sbi.qbe.messagewin.info.title'),
 				   msg: LN('sbi.qbe.datastorepanel.grid.emptywarningmsg'),
 				   buttons: Ext.Msg.OK,
-				   icon: Ext.MessageBox.INFO
+				   icon: Ext.MessageBox.INFO,
+				   modal: false
 			});
        	 }
        	 

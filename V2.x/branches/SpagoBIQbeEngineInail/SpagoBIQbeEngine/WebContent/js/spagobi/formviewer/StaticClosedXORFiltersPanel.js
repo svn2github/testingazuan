@@ -51,11 +51,11 @@ Sbi.formviewer.StaticClosedXORFiltersPanel = function(aStaticClosedXORFiltersGro
 	var defaultSettings = {
 		// set default values here
 		frame: true
-		//, autoScroll: true
+		, autoScroll: true
 		//, autoWidth: true
-		//, autoHeight: true
-        , width: aStaticClosedXORFiltersGroup.width || 300
-        , height: aStaticClosedXORFiltersGroup.height || 150
+		, autoHeight: true
+        //, width: aStaticClosedXORFiltersGroup.width || 300
+        //, height: aStaticClosedXORFiltersGroup.height || 150
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.staticClosedXORFiltersPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.staticClosedXORFiltersPanel);

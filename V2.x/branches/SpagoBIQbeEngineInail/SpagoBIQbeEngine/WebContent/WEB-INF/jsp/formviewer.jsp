@@ -69,9 +69,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%-- ---------------------------------------------------------------------- --%>
 
 <%-- DOCTYPE declaration: it is required in order to fix some side effects, in particular in IE --%>
+<%-- 21-01-2010: the xhtml1-strict DOCTYPE causes this problem in IE8:
+	Open the Document Browser, execute a FORM document, when the form appears close the folders tree panel on the left,
+	expand a grouping variables combobox, then the iframe containing the form is RESIZED in width!!!
+	And it returns to the right width with a onmouseover event on certain elements....  
+	Therefore this DOCTYPE must be commented!!!
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%-- and DOCTYPE declaration --%>
+end DOCTYPE declaration --%>
     
 <html>
 

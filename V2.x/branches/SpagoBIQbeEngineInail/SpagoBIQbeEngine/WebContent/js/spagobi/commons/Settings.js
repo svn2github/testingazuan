@@ -58,10 +58,10 @@ Sbi.settings.qbe = {
 Sbi.settings.formviewer = {
 		staticClosedXORFiltersPanel: {
 			width: 300
-			, height: 150
+			//, height: 150
 		}
 		, staticClosedOnOffFiltersPanel: {
 			width: 300
-			, height: 150
+			//, height: 150
 		}
 };

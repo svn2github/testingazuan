@@ -72,10 +72,11 @@ public class DataMartField extends AbstractDataMartItem {
 	}
 	
 	private String toLowerCase(String str) {
-		String head = str.substring(0,1);
+		/*String head = str.substring(0,1);
 		String tail = str.substring(1, str.length());
 		
-		return head.toLowerCase() + tail;
+		return head.toLowerCase() + tail;*/
+		return str;
 	}
 		
 	public String getType() {

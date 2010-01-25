@@ -102,6 +102,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	public static final String COLUMN_NAME = "NAME";
 	public static final String COLUMN_ENGINE = "ENGINE";
 	public static final String COLUMN_STATE = "STATE";
+	public static final String COLUMN_TYPE = "TYPE";
 	public static final String COLUMN_DATE = "CREATION_DATE";
 	public static final String SCOPE_NODE = "node";
 	
@@ -1849,6 +1850,11 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			if (columnFilter.equalsIgnoreCase(COLUMN_STATE)){
 				bufferFrom.append(", SbiDomains d ");
 				bufferWhere.append(" and d.valueId = o.state and d.valueCd " + operCondition);
+			}	
+			
+			if (columnFilter.equalsIgnoreCase(COLUMN_TYPE)){
+				bufferFrom.append(", SbiDomains d ");
+				bufferWhere.append(" and d.valueId = o.objectType and d.valueCd " + operCondition);
 			}	
 			
 			if (columnFilter != null && columnFilter.equalsIgnoreCase(COLUMN_DATE)){

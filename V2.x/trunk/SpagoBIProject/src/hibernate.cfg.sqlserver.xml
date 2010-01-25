@@ -18,6 +18,7 @@
         <mapping resource="it/eng/spagobi/events/metadata/mappingsqlserver/SbiEvents.hbm.xml" />
         <mapping resource="it/eng/spagobi/events/metadata/mappingsqlserver/SbiEventsLog.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingsqlserver/SbiDomains.hbm.xml" />
+        <mapping resource="it/eng/spagobi/commons/metadata/mappingsqlserver/SbiConfig.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingsqlserver/SbiEventRole.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingsqlserver/SbiExtRoles.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingsqlserver/SbiUserFunctionality.hbm.xml" />

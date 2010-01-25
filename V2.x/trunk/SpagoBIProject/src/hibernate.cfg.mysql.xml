@@ -14,9 +14,11 @@
         <property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
         <property name="hibernate.hbm2ddl.auto">create</property>
         -->
+        
         <mapping resource="it/eng/spagobi/events/metadata/mappingmysql/SbiEvents.hbm.xml" />
         <mapping resource="it/eng/spagobi/events/metadata/mappingmysql/SbiEventsLog.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingmysql/SbiDomains.hbm.xml" />
+        <mapping resource="it/eng/spagobi/commons/metadata/mappingmysql/SbiConfig.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingmysql/SbiEventRole.hbm.xml" /> 
         <mapping resource="it/eng/spagobi/commons/metadata/mappingmysql/SbiExtRoles.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingmysql/SbiUserFunctionality.hbm.xml" />
@@ -101,7 +103,7 @@
         <mapping resource="it/eng/spagobi/profiling/mapping/SbiAttribute.hbm.xml" />
         <mapping resource="it/eng/spagobi/profiling/mapping/SbiExtUserRoles.hbm.xml" />
         <mapping resource="it/eng/spagobi/profiling/mapping/SbiUser.hbm.xml" /> 
-        <mapping resource="it/eng/spagobi/profiling/mapping/SbiUserAttributes.hbm.xml" /> 
+        <mapping resource="it/eng/spagobi/profiling/mapping/SbiUserAttributes.hbm.xml" />  
 
         <!-- end mapping -->
         

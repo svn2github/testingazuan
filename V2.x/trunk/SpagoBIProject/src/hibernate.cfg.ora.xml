@@ -18,6 +18,7 @@
         <mapping resource="it/eng/spagobi/events/metadata/mappingora/SbiEvents.hbm.xml" />
         <mapping resource="it/eng/spagobi/events/metadata/mappingora/SbiEventsLog.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingora/SbiDomains.hbm.xml" />
+        <mapping resource="it/eng/spagobi/commons/metadata/mappingora/SbiConfig.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingora/SbiEventRole.hbm.xml" /> 
         <mapping resource="it/eng/spagobi/commons/metadata/mappingora/SbiExtRoles.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingora/SbiUserFunctionality.hbm.xml" />

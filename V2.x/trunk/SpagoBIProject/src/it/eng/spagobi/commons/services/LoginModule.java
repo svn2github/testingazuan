@@ -37,10 +37,18 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.Config;
+import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IConfigDAO;
+import it.eng.spagobi.commons.metadata.SbiExtRoles;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
+import it.eng.spagobi.profiling.bean.SbiUser;
+import it.eng.spagobi.profiling.dao.ISbiUserDAO;
 import it.eng.spagobi.services.common.SsoServiceFactory;
 import it.eng.spagobi.services.common.SsoServiceInterface;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
@@ -49,7 +57,11 @@ import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 import it.eng.spagobi.wapp.services.ChangeTheme;
 import it.eng.spagobi.wapp.util.MenuUtilities;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,7 +72,10 @@ import org.apache.log4j.Logger;
 public class LoginModule extends AbstractHttpModule {
 
     static Logger logger = Logger.getLogger(LoginModule.class);
+    private static final String PROP_NODE = "changepwd.";
 
+    /**  The format date to manage the data validation. */
+	private static final String DATE_FORMAT = "yyyy-MM-dd";
     
     IEngUserProfile profile = null;
     EMFErrorHandler errorHandler = null;
@@ -111,6 +126,9 @@ public class LoginModule extends AbstractHttpModule {
 		}
 		
 		if (request.getAttribute("MESSAGE") != null && ((String)request.getAttribute("MESSAGE")).equalsIgnoreCase("START_LOGIN")){
+			String url = servletRequest.getProtocol().substring(0,servletRequest.getProtocol().indexOf("/")) + 
+			 			"://"+servletRequest.getServerName()+":"+servletRequest.getLocalPort()+servletRequest.getContextPath();
+			response.setAttribute("start_url", url);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "login");
 			logger.debug("OUT");
 			return;
@@ -151,8 +169,56 @@ public class LoginModule extends AbstractHttpModule {
 		            logger.error("Reading user information... ERROR");
 		            throw new SecurityException("Reading user information... ERROR",e);
 		        }
+		        //getting security type: if it's internal (SpagoBI) active pwd management and checks
+		        boolean isInternalSecurity = ("true".equalsIgnoreCase((String)request.getAttribute("isInternalSecurity")))?true:false;
+		        logger.debug("isInternalSecurity: " + isInternalSecurity);
+		    	if (isInternalSecurity)  {			 
+		    		//gets the user bo
+			        ISbiUserDAO userDao = DAOFactory.getSbiUserDAO();
+			        SbiUser user = userDao.loadSbiUserByUserId(userId);
+			        
+			        //check user's role: if he's admin it doesn't apply checks on password
+			    	SourceBean adminPatternSB = (SourceBean) serverConfig.getAttribute("SPAGOBI.SECURITY.ROLE-TYPE-PATTERNS.ADMIN-PATTERN");
+			    	String strAdminPatter = (String) adminPatternSB.getCharacters();
+		    		List lstRoles = userDao.loadSbiUserRolesById(user.getId());
+			        boolean isAdminUser = false;
+			      
+			        for (int i=0; i<lstRoles.size(); i++){
+			        	SbiExtRoles tmpRole = (SbiExtRoles)lstRoles.get(i);
+			        	Role role = DAOFactory.getRoleDAO().loadByID(tmpRole.getExtRoleId());
+			        	if (role.getName().equals(strAdminPatter)){
+			        		isAdminUser = true;
+			        		logger.debug("User is administrator. Checks on the password are not applied !");
+			        		break;
+			        	}
+			        }
+					
+			        if (!isAdminUser){
+				        //check validation of the password
+				        logger.debug("Validation password starting...");
+				        
+				        boolean goToChangePwd = checkPwd(user);
+						if (goToChangePwd){
+							response.setAttribute("user_id", user.getUserId());
+							String url = servletRequest.getProtocol().substring(0,servletRequest.getProtocol().indexOf("/")) + 
+										 "://"+servletRequest.getServerName()+":"+servletRequest.getLocalPort()+servletRequest.getContextPath();
+							response.setAttribute("start_url", url);
+					        response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ChangePwdPublisher"); 
+					        return;
+						}
+						
+						logger.info("The pwd is active!");
+						//update lastAccessDate on db with current date
+						try{
+							user.setDtLastAccess(new Date());
+							userDao.updateSbiUser(user, user.getId());
+						}catch(Exception e){
+				        	logger.error("Error while update user's dtLastAccess: " + e);
+				        	e.printStackTrace();
+				        }
+			        }
+		    	}
 	    	}
-	        
 	        try {
 	        	profile=UserUtilities.getUserProfile(userId);
 	            if (profile == null){		            	
@@ -205,7 +271,65 @@ public class LoginModule extends AbstractHttpModule {
 		logger.debug("OUT");		
 	}
 	
+	private boolean checkPwd(SbiUser user) throws Exception{
+		logger.debug ("IN");
+		boolean toReturn = false;
+		Date currentDate = new Date();
+		
+		 //gets the active controls to applicate:
+		IConfigDAO configDao = DAOFactory.getSbiConfigDAO();
+		List lstConfigChecks = configDao.loadConfigParametersByProperties(PROP_NODE);
+		logger.debug("checks found on db: " + lstConfigChecks.size());
+		
+		for(int i=0; i<lstConfigChecks.size(); i++){
+			Config check = (Config)lstConfigChecks.get(i);
+			if ((SpagoBIConstants.CHANGEPWD_CHANGE_FIRST).equals(check.getLabel()) && user.getDtLastAccess() == null){
+				//if dtLastAccess isn't enhanced it represents the first login, so is necessary change the pwd
+				logger.info("The pwd needs to activate!");
+				toReturn = true;
+				break;
+			}
+			
+			if ((SpagoBIConstants.CHANGEPWD_EXPIRED_TIME).equals(check.getLabel()) &&
+					user.getDtPwdEnd() != null && currentDate.compareTo(user.getDtPwdEnd()) >= 0){
+				//check if the pwd is expiring, in this case it's locked.
+				logger.info("The pwd is expiring... it should be changed");
+				toReturn = true;
+				break;
+			}
+			if ((SpagoBIConstants.CHANGEPWD_DISACTIVE_TIME).equals(check.getLabel())){
+				//defines the end date for uselessness
+				Date tmpEndForUnused = null;
+				if (user.getDtLastAccess() != null){
+					SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+					Calendar cal = Calendar.getInstance();
+					cal.set(user.getDtLastAccess().getYear()+1900, user.getDtLastAccess().getMonth(), user.getDtLastAccess().getDate());
+					cal.add(Calendar.MONTH, 6);
+					try{
+						tmpEndForUnused = StringUtilities.stringToDate(sdf.format(cal.getTime()), DATE_FORMAT);
+						logger.debug ("End Date For Unused: " + tmpEndForUnused);
+					}catch(Exception e){
+						logger.error("The control pwd goes on error: "+e);							
+					}	
+				}
+				if (tmpEndForUnused != null && currentDate.compareTo(tmpEndForUnused) >= 0){
+					//check if the pwd is unused by 6 months, in this case it's locked.
+					logger.info("The pwd is unused more than 6 months! It's locked!!");
+					toReturn = true;
+					break;
+				}
+			}					
+		} //for
+		
+		//general controls: check if the account is already blocked, otherwise update dtLastAccess field
+		if (user.getFlgPwdBlocked()){
+			//if flgPwdBlocked is true the user cannot goes on
+			logger.info("The pwd needs to activate!");
+			toReturn = true;					
+		}		
+		logger.debug("OUT");
+		return toReturn;
+	}
 
-
-
+	
 }

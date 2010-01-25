@@ -669,4 +669,15 @@ public class DAOFactory {
 	public static ISbiAttributeDAO getSbiAttributeDAO() throws EMFUserError{
 		return (ISbiAttributeDAO)createDAOInstance("SbiAttributeDAO");
 	}
+	
+	/**
+	 * Creates a DAO instance for a object SbiConfig.
+	 * 
+	 * @return a DAO instance for the  predefined SbiConfig
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public static IConfigDAO getSbiConfigDAO() throws EMFUserError{
+		return (IConfigDAO)createDAOInstance("SbiConfigDAO");
+	}
 }

@@ -19,6 +19,7 @@
         <mapping resource="it/eng/spagobi/events/metadata/mappinghsqldb/SbiEvents.hbm.xml" />
         <mapping resource="it/eng/spagobi/events/metadata/mappinghsqldb/SbiEventsLog.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappinghsqldb/SbiDomains.hbm.xml" />
+        <mapping resource="it/eng/spagobi/commons/metadata/mappinghsqldb/SbiConfig.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappinghsqldb/SbiEventRole.hbm.xml" />  
         <mapping resource="it/eng/spagobi/commons/metadata/mappinghsqldb/SbiExtRoles.hbm.xml" />   
         <mapping resource="it/eng/spagobi/commons/metadata/mappinghsqldb/SbiUserFunctionality.hbm.xml" />

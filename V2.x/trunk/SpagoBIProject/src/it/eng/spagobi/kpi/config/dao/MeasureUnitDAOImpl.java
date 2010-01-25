@@ -31,6 +31,7 @@ IMeasureUnitDAO {
 			SbiMeasureUnit hibMeasureUnit = (SbiMeasureUnit) aSession.load(
 					SbiMeasureUnit.class, id);
 			toReturn = new MeasureUnit();
+			toReturn.setId(hibMeasureUnit.getIdMeasureUnit());
 			toReturn.setName(hibMeasureUnit.getName());
 			toReturn.setScaleCd(hibMeasureUnit.getScaleCd());
 			toReturn.setScaleNm(hibMeasureUnit.getScaleNm());
@@ -72,6 +73,7 @@ IMeasureUnitDAO {
 		
 			
 			toReturn = new MeasureUnit();
+			toReturn.setId(hibMu.getIdMeasureUnit());
 			toReturn.setName(hibMu.getName());
 			toReturn.setScaleCd(hibMu.getScaleCd());
 			toReturn.setScaleNm(hibMu.getScaleNm());

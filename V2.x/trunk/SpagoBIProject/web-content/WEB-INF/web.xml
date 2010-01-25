@@ -6,7 +6,7 @@
 	</description>
 
 
-<!-- START-CAS 
+<!-- START-CAS
 <filter>
   <filter-name>CAS Authentication Filter</filter-name>
   <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
@@ -45,7 +45,7 @@
   <filter-class>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
 </filter>
   
-END-CAS -->   
+ END-CAS -->   
     
   	<!-- This filter tries to create the user profile object before AdapterHTTP servlet execution -->
  	<filter>
@@ -53,7 +53,7 @@ END-CAS -->
 		<filter-class>it.eng.spagobi.commons.filters.ProfileFilter</filter-class>
 	</filter>
   	
-<!-- START-CAS  	
+<!-- START-CAS
    <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>
     <url-pattern>/servlet/*</url-pattern>
@@ -68,7 +68,7 @@ END-CAS -->
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
     <url-pattern>/servlet/*</url-pattern>
   </filter-mapping>  
-END-CAS --> 
+ END-CAS --> 
 
 	<filter-mapping>
 		<filter-name>ProfileFilter</filter-name>
@@ -97,7 +97,15 @@ END-CAS -->
         <servlet-class>com.liferay.portal.kernel.servlet.PortletServlet</servlet-class>
   </servlet>  
 END-LIFERAY -->
-     
+  
+     <!-- servlet for change pwd management -->
+   <servlet>
+		<servlet-name>ChangePwdServlet</servlet-name>
+		<servlet-class>
+			it.eng.spagobi.commons.services.ChangePwdServlet
+		</servlet-class>
+	</servlet>
+	   
   <servlet>
      <servlet-name>QuartzInitializer</servlet-name>
      <servlet-class>org.quartz.ee.servlet.QuartzInitializerServlet</servlet-class>     
@@ -163,7 +171,11 @@ EXO -->
     </servlet-mapping>
 END-LIFERAY -->
    
-  	
+  	 <servlet-mapping>
+		<servlet-name>ChangePwdServlet</servlet-name>
+		<url-pattern>/ChangePwdServlet</url-pattern>
+	</servlet-mapping>
+  
     <servlet-mapping>
         <servlet-name>AdapterHTTP</servlet-name>
         <url-pattern>/servlet/AdapterHTTP</url-pattern>

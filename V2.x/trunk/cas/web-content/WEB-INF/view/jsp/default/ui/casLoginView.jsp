@@ -2,7 +2,7 @@
 <jsp:directive.include file="includes/top.jsp" />
 			<form:form method="post" id="fm1" cssClass="fm-v clearfix" commandName="${commandName}" htmlEscape="true">
 			     <input type="hidden" name="lt" value="${flowExecutionKey}" />
-           <input type="hidden" name="_eventId" value="submit" />
+           		 <input type="hidden" name="_eventId" value="submit" />
 			    <form:errors path="*" cssClass="errors" id="status" element="div" />
 			         <div id="msgMandatory" style='display:none;color:red;font-size:11pt;'>
                      Login and password fields are mandatory!<br />
@@ -20,18 +20,18 @@
   		        				    		<td width="150px">    		        				    		 
   		        								  <label for="username"><spring:message code="screen.welcome.label.netid" /></label>
   		        							 </td>
-    		        							<td width="30px">&nbsp;</td>
-    		        							<td>
-    		        								<c:if test="${not empty sessionScope.openIdLocalId}">
-                      						<strong>${sessionScope.openIdLocalId}</strong>
-                      						<input type="hidden" id="username" name="username" value="${sessionScope.openIdLocalId}" />
-                    						</c:if>
-                    						<br/>
-                    						<c:if test="${empty sessionScope.openIdLocalId}">
-                      						<spring:message code="screen.welcome.label.netid.accesskey" var="userNameAccessKey" />
-                      						<form:input cssClass="required" cssErrorClass="error" id="username" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="off" htmlEscape="true" />
-                    						</c:if>
-    		        							</td>	        		        					
+    		        						 <td width="30px">&nbsp;</td>
+    		        						 <td>
+    		        							<c:if test="${not empty sessionScope.openIdLocalId}">
+		                      						<strong>${sessionScope.openIdLocalId}</strong>
+		                      						<input type="hidden" id="username" name="username" value="${sessionScope.openIdLocalId}" />
+	                    						</c:if>
+	                    						<br/>
+	                    						<c:if test="${empty sessionScope.openIdLocalId}">
+		                      						<spring:message code="screen.welcome.label.netid.accesskey" var="userNameAccessKey" />
+		                      						<form:input cssClass="required" cssErrorClass="error" id="username" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="off" htmlEscape="true" />
+                    							</c:if>
+    		        						</td>	        		        					
 		        						</tr>
 		        						<tr>
   		        				    	<td width="150px">
@@ -40,8 +40,15 @@
   		        							<td width="30px">&nbsp;</td>
   		        							<td>
   		        								<spring:message code="screen.welcome.label.password.accesskey" var="passwordAccessKey" />
-          						        <form:password cssClass="required" cssErrorClass="error" id="password" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
+          						        		<form:password cssClass="required" cssErrorClass="error" id="password" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
   		        							</td>	      		        					
+		        						</tr>
+		        						<tr>
+		        							<td width="150px">
+  		        							  	<a href="/SpagoBI/ChangePwdServlet?start_url=${service}">
+					             						Change Password
+					             				</a>
+  		        							</td>
 		        						</tr>
 		        					</table>			        					
 		        				</td>  

@@ -143,6 +143,16 @@ CREATE UNIQUE INDEX XAK2SBI_KPI_MODEL_INST ON SBI_KPI_MODEL_INST
        LABEL						ASC
 );
 
+CREATE UNIQUE INDEX XAK1SBI_CONFIG ON SBI_CONFIG
+(
+       LABEL                          ASC
+);
+
+CREATE INDEX XIF3SBI_CONFIG ON SBI_CONFIG
+(
+       VALUE_TYPE_ID                  ASC
+);
+
 
 ALTER TABLE SBI_CHECKS ADD CONSTRAINT FK_sbi_checks_1 FOREIGN KEY FK_sbi_checks_1 ( VALUE_TYPE_ID ) REFERENCES SBI_DOMAINS ( VALUE_ID ) ON DELETE RESTRICT;
 ALTER TABLE SBI_EXT_ROLES ADD CONSTRAINT FK_sbi_ext_roles_1 FOREIGN KEY FK_sbi_ext_roles_1 ( ROLE_TYPE_ID ) REFERENCES SBI_DOMAINS ( VALUE_ID ) ON DELETE RESTRICT;
@@ -284,3 +294,5 @@ Alter table `SBI_KPI` add Foreign Key (`measure_type`) references `SBI_DOMAINS` 
 
 Alter table `SBI_EXPORTERS` add Foreign Key (`engine_id`) references `SBI_ENGINES` (`ENGINE_ID`) on delete  restrict on update  restrict;
 Alter table `SBI_EXPORTERS` add Foreign Key (`domain_id`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;
+
+ALTER TABLE SBI_CONFIG ADD CONSTRAINT FK_sbi_config_1 FOREIGN KEY FK_sbi_config_1 ( VALUE_TYPE_ID ) REFERENCES SBI_DOMAINS ( VALUE_ID ) ON DELETE RESTRICT;

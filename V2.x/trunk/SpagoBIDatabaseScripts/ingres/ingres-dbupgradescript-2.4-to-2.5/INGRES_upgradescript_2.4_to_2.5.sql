@@ -1,6 +1,11 @@
+/* SQL script  version II 9.3.0                                   */
+/* It migrates SpagoBI repository from release 2.3 to release 2.4 */
+/* Launch this script by client tools(ie. SQUIRREL, Visual DBA,..)*/
+/*----------------------------------------------------------------*/
+
 /* Modifies to add Model Label */
 ALTER TABLE SBI_KPI_MODEL ADD COLUMN KPI_MODEL_LBL VARCHAR(100) NOT NULL;
-UPDATE SBI_KPI_MODEL SET KPI_MODEL_LBL = KPI_MODEL_CD
+UPDATE SBI_KPI_MODEL SET KPI_MODEL_LBL = KPI_MODEL_CD;
 ALTER TABLE SBI_KPI_MODEL DROP INDEX KPI_MODEL_CD;
 ALTER TABLE SBI_KPI_MODEL ADD UNIQUE INDEX UNIQUE_LABEL(KPI_MODEL_LBL);
 ALTER TABLE SBI_KPI_MODEL ADD UNIQUE INDEX UNIQUE_PAR_ID_CD(KPI_PARENT_MODEL_ID, KPI_MODEL_CD);
@@ -61,4 +66,53 @@ INSERT INTO SBI_ROLE_TYPE_USER_FUNC (ROLE_TYPE_ID, USER_FUNCT_ID)
  (
   SELECT USER_FUNCT_ID FROM SBI_USER_FUNC WHERE NAME='ProfileManagement'
  ) b(USER_FUNCT_ID );
+COMMIT;
+
+/** configuration table*/
+CREATE SEQUENCE SBI_CONFIG_SEQ;
+CREATE TABLE SBI_CONFIG (
+	ID 				INTEGER NOT NULL with default next value for SBI_CONFIG_SEQ,
+	LABEL			VARCHAR(100) NOT NULL,
+	NAME			VARCHAR(100) NULL,
+	DESCRIPTION 	VARCHAR(500) NULL,
+	IS_ACTIVE 		TINYINT Default 1,
+	VALUE_CHECK 	VARCHAR(1000) NULL,
+	VALUE_TYPE_ID 	INTEGER NULL,    
+ PRIMARY KEY (ID));
+ 
+ 
+CREATE UNIQUE INDEX XAK1SBI_CONFIG ON SBI_CONFIG
+(
+       LABEL                          ASC
+);
+
+CREATE INDEX XIF3SBI_CONFIG ON SBI_CONFIG
+(
+       VALUE_TYPE_ID                  ASC
+);
+
+ALTER TABLE SBI_CONFIG ADD CONSTRAINT FK_sbi_config_1 FOREIGN KEY ( VALUE_TYPE_ID ) REFERENCES SBI_DOMAINS ( VALUE_ID );
+
+/** inserts data into new table for initial management of change pwd */
+
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) SELECT 'changepwdmodule.len_min', 'LEN_MIN', 'Minimum length', 0, 8, a.VALUE_ID from 
+        (SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'PAR_TYPE' AND VALUE_CD = 'NUM') a(VALUE_ID) ;
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) SELECT 'changepwdmodule.special_char', 'Special char', 'Special chars', 0, '_|-<>#$', a.VALUE_ID from 
+        (SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'PAR_TYPE' AND VALUE_CD = 'STRING') a(VALUE_ID) ;
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) SELECT 'changepwdmodule.upper_char', 'Upper char', 'Minimum a char must be in upper case', 0,'ABCDEFGJKLMNOPQRSTUVWXYZ', a.VALUE_ID from 
+        (SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'PAR_TYPE' AND VALUE_CD = 'STRING') a(VALUE_ID) ;
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) SELECT 'changepwdmodule.lower_char', 'Lower char', 'Minimum a char must be in lower case', 1,'abcdefghjklmnopqrstuwxyz', a.VALUE_ID from 
+        (SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'PAR_TYPE' AND VALUE_CD = 'STRING') a(VALUE_ID) ;
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) SELECT 'changepwdmodule.number', 'Number', 'Minimum a char must be a number', 0,'0123456789', a.VALUE_ID from 
+        (SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'PAR_TYPE' AND VALUE_CD = 'NUM') a(VALUE_ID) ;
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) SELECT 'changepwdmodule.alphabetical', 'Alaphabetical', 'Minimum a char must be a letter', 1,'abcdefghjklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', a.VALUE_ID from 
+(SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'PAR_TYPE' AND VALUE_CD = 'STRING') a(VALUE_ID) ;
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ( 'changepwdmodule.change', 'Change from last', 'The new pwd must be different from the lastest', 1,null, null );
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ( 'changepwd.change_first', 'Change at first login ', 'The pwd must be changed at first login', 0,null, null );
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) SELECT 'changepwd.disactivation_time', 'Disactivation time', 'Number of months before disactivation', 0,'6', a.VALUE_ID from 
+        (SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'PAR_TYPE' AND VALUE_CD = 'NUM') a(VALUE_ID) ;
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) SELECT 'changepwd.expired_time', 'Expired time', 'Number of days fo the expiration', 0,'90', a.VALUE_ID from 
+        (SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'PAR_TYPE' AND VALUE_CD = 'NUM') a(VALUE_ID) ;
+        
+
 COMMIT;

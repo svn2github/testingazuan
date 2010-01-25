@@ -56,3 +56,42 @@ ALTER TABLE SBI_USER ADD DT_LAST_ACCESS TIMESTAMP;
 INSERT INTO SBI_USER_FUNC (NAME, DESCRIPTION) VALUES ('ProfileManagement', 'ProfileManagement');
 INSERT INTO  SBI_ROLE_TYPE_USER_FUNC values((SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'ROLE_TYPE' AND VALUE_CD = 'ADMIN'), (SELECT USER_FUNCT_ID FROM SBI_USER_FUNC WHERE NAME='ProfileManagement'));
 COMMIT;
+
+/** configuration table*/
+CREATE SEQUENCE SBI_CONFIG_SEQ INCREMENT 1 START  1 ;
+CREATE TABLE SBI_CONFIG (
+	ID 				INTEGER DEFAULT nextval('SBI_CONFIG_SEQ') NOT NULL,
+	LABEL			VARCHAR(100) NOT NULL,
+	NAME			VARCHAR(100) NULL,
+	DESCRIPTION 	VARCHAR(500) NULL,
+	IS_ACTIVE 		BOOLEAN DEFAULT TRUE,
+	VALUE_CHECK 	VARCHAR(1000) NULL,
+	VALUE_TYPE_ID 	INTEGER NULL,    
+ PRIMARY KEY (ID));
+ 
+ 
+CREATE UNIQUE INDEX XAK1SBI_CONFIG ON SBI_CONFIG
+(
+       LABEL                      
+);
+
+CREATE INDEX XIF3SBI_CONFIG ON SBI_CONFIG
+(
+       VALUE_TYPE_ID             
+);
+
+ALTER TABLE SBI_CONFIG ADD CONSTRAINT FK_sbi_config_1 FOREIGN KEY ( VALUE_TYPE_ID ) REFERENCES SBI_DOMAINS ( VALUE_ID );
+
+/** inserts data into new table for initial management of change pwd */
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwdmodule.len_min', 'LEN_MIN', 'Minimum length', false, 8, 20 );
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwdmodule.special_char', 'Special char', 'Special chars', false, '_|-<>#$', 21 );
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwdmodule.upper_char', 'Upper char', 'Minimum a char must be in upper case', false,'ABCDEFGJKLMNOPQRSTUVWXYZ', 21 );
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwdmodule.lower_char', 'Lower char', 'Minimum a char must be in lower case', true,'abcdefghjklmnopqrstuwxyz', 21 );
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwdmodule.number', 'Number', 'Minimum a char must be a number', false,'0123456789', 21 );
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwdmodule.alphabetical', 'Alaphabetical', 'Minimum a char must be a letter', true,'abcdefghjklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 21 );
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwdmodule.change', 'Change from last', 'The new pwd must be different from the lastest', true,null, null );
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwd.change_first', 'Change at first login ', 'The pwd must be changed at first login', false,null, null );
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwd.disactivation_time', 'Disactivation time', 'Number of months before disactivation', true,'6', 20 );
+INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwd.expired_time', 'Expired time', 'Number of days fo the expiration', true,'90', 20 );
+COMMIT;
+

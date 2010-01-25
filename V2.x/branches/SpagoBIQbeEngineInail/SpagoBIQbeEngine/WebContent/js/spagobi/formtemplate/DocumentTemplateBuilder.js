@@ -64,8 +64,8 @@ Sbi.formtemplate.DocumentTemplateBuilder = function(config) {
 		serviceName: 'FILTER_FOLDER_CONTENT_ACTION'
 		, baseParams: {
 			typeFilter: 'EQUALS_TO'
-			,valueFilter: 'QbeEngine'
-			,columnFilter: 'ENGINE'
+			, valueFilter: 'DATAMART'
+			, columnFilter: 'TYPE'
 		}
 	});
 	

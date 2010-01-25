@@ -79,23 +79,10 @@ Sbi.formbuilder.FormBuilderPage = function(config) {
 		    , {
 				text: LN('sbi.formbuilder.formbuilderpage.toolbar.save'),
 				handler: function() {
-		    		var params = {
-		    				"FORM_STATE": Sbi.commons.JSON.encode(this.templateEditorPanel.getContents())
-		    		};
-		    		Ext.Ajax.request({
-		    		    url: this.services['saveFormState'],
-		    		    success: function() {
-				    		Ext.Msg.show({
-			 				   title: LN('sbi.formbuilder.formbuilderpage.templatesaved.title'),
-			 				   msg: LN('sbi.formbuilder.formbuilderpage.templatesaved.msg'),
-							   buttons: Ext.Msg.OK,
-							   icon: Ext.MessageBox.INFO
-				 			});
-		    			},
-		    		    failure: Sbi.exception.ExceptionHandler.handleFailure,
-		    		    scope: this,
-		    		    params: params
-		    		});   
+		    		this.validateTemplate(this.saveTemplate, function(errors) {
+		        		var message = errors.join('<br>');
+		        		Sbi.exception.ExceptionHandler.showErrorMessage(message, LN('sbi.formbuilder.formbuilderpage.validationerrors.title'));
+		    		}, this);
 		    	},
 				scope: this
 		    }
@@ -151,4 +138,36 @@ Ext.extend(Sbi.formbuilder.FormBuilderPage, Ext.Panel, {
     	});    	
     }
     
+    , validateTemplate: function(successHandler, failureHandler, scope) {
+    	var errors = [];
+    	
+    	errors = errors.concat(this.templateEditorPanel.groupingVariablesPanel.getErrors());
+    	
+		if (errors.length == 0 && successHandler !== undefined) {
+			successHandler.call(scope || this);
+		}
+		if (errors.length > 0 && failureHandler !== undefined) {
+			failureHandler.call(scope || this, errors);
+		}
+    }
+    
+    , saveTemplate: function() {
+		var params = {
+				"FORM_STATE": Sbi.commons.JSON.encode(this.templateEditorPanel.getContents())
+		};
+		Ext.Ajax.request({
+		    url: this.services['saveFormState'],
+		    success: function() {
+	    		Ext.Msg.show({
+ 				   title: LN('sbi.formbuilder.formbuilderpage.templatesaved.title'),
+ 				   msg: LN('sbi.formbuilder.formbuilderpage.templatesaved.msg'),
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.INFO
+	 			});
+			},
+		    failure: Sbi.exception.ExceptionHandler.handleFailure,
+		    scope: this,
+		    params: params
+		});  
+    }
 });

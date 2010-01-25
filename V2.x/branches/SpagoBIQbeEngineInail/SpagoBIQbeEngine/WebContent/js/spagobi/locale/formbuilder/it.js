@@ -10,6 +10,7 @@ Sbi.locale.ln['sbi.formbuilder.formbuilderpage.toolbar.save'] = 'Salva template'
 
 Sbi.locale.ln['sbi.formbuilder.formbuilderpage.templatesaved.title'] = 'Template del documento salvato';
 Sbi.locale.ln['sbi.formbuilder.formbuilderpage.templatesaved.msg'] = 'Template del documento salvato correttamente!!';
+Sbi.locale.ln['sbi.formbuilder.formbuilderpage.validationerrors.title'] = 'Errore';
 
 Sbi.locale.ln['sbi.formbuilder.formpanel.title'] = 'Designer del form';
 
@@ -45,6 +46,7 @@ Sbi.locale.ln['sbi.formbuilder.dynamicfiltergroupwizard.buttons.cancel'] = 'Annu
 Sbi.locale.ln['sbi.formbuilder.variableeditorpanel.title'] = 'Variabili di raggruppamento';
 Sbi.locale.ln['sbi.formbuilder.variableeditorpanel.emptymsg'] = 'Trascina qui un campo per aggiungere una nuova variabile di raggruppamento';
 Sbi.locale.ln['sbi.formbuilder.variableeditorpanel.grouptitle'] = 'Variabile';
+Sbi.locale.ln['sbi.formbuilder.variableeditorpanel.validationerrors.missingadmissiblefields'] = 'Non ci sono campi ammissibili per la variabile di raggruppamento';
 
 Sbi.locale.ln['sbi.formbuilder.variablegroupeditor.grouptitle'] = 'Gruppo di variabili';
 Sbi.locale.ln['sbi.formbuilder.variablegroupeditor.emptymsg'] = 'Trascina qui un campo per aggiungere un nuovo valore per la variabile di raggruppamento';

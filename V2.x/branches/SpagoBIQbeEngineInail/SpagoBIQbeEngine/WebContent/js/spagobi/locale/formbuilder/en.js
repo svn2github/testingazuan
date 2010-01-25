@@ -9,6 +9,7 @@ Sbi.locale.ln['sbi.formbuilder.formbuilderpage.toolbar.save'] = 'Save template';
 
 Sbi.locale.ln['sbi.formbuilder.formbuilderpage.templatesaved.title'] = 'Template saved';
 Sbi.locale.ln['sbi.formbuilder.formbuilderpage.templatesaved.msg'] = 'Template saved succesfully!!';
+Sbi.locale.ln['sbi.formbuilder.formbuilderpage.validationerrors.title'] = 'Error';
 
 Sbi.locale.ln['sbi.formbuilder.formpanel.title'] = 'Form designer';
 
@@ -44,6 +45,7 @@ Sbi.locale.ln['sbi.formbuilder.dynamicfiltergroupwizard.buttons.cancel'] = 'Canc
 Sbi.locale.ln['sbi.formbuilder.variableeditorpanel.title'] = 'Grouping variables';
 Sbi.locale.ln['sbi.formbuilder.variableeditorpanel.emptymsg'] = 'Drag a field here to add a new group variable';
 Sbi.locale.ln['sbi.formbuilder.variableeditorpanel.grouptitle'] = 'Variable';
+Sbi.locale.ln['sbi.formbuilder.variableeditorpanel.validationerrors.missingadmissiblefields'] = 'Missing admissible fields for grouping variable';
 
 Sbi.locale.ln['sbi.formbuilder.variablegroupeditor.grouptitle'] = 'Variable group';
 Sbi.locale.ln['sbi.formbuilder.variablegroupeditor.emptymsg'] = 'Drag a field here to add a new admissible value to the variable';

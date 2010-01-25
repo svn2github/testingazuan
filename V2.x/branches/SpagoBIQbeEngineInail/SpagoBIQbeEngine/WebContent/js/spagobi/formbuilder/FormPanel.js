@@ -89,7 +89,15 @@ Sbi.formbuilder.FormPanel = function(config) {
 	
 	// if moving towards preview, send form builder state to server, and then update iframe content
 	this.formPreviewPage.on('activate', function() {
-		this.setFormBuilderState(this.refreshPreview, Sbi.exception.ExceptionHandler.handleFailure, this);
+		
+		this.formBuilderPage.validateTemplate(
+			function() {
+				this.setFormBuilderState(this.refreshPreview, Sbi.exception.ExceptionHandler.handleFailure, this);
+			}, function(errors) {
+				var message = errors.join('<br>');
+				Sbi.exception.ExceptionHandler.showErrorMessage(message, LN('sbi.formbuilder.formbuilderpage.validationerrors.title'));
+		}, this);
+		
 	}, this);
 
 };

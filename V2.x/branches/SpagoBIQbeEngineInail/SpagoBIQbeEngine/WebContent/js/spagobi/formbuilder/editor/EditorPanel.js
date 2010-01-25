@@ -106,10 +106,10 @@ Sbi.formbuilder.EditorPanel = function(config) {
 		tools: this.tools,
   		items: items
 	});
-	
+
 	// constructor
     Sbi.formbuilder.EditorPanel.superclass.constructor.call(this, c);
-    
+	
     this.addEvents('addrequest', 'editrequest');
     
     if(this.droppable !== null) {
@@ -117,6 +117,7 @@ Sbi.formbuilder.EditorPanel = function(config) {
     }
     
     this.on('beforedestroy', this.onEditorDestroy, this);
+    
 };
 
 Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
@@ -199,7 +200,7 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 		this.empty = true;
 		this.contents = [];
 
-		if(this.baseContents !== undefined) {
+		if(this.baseContents !== undefined && this.baseContents !== null && this.baseContents.length !== 0) {
 			this.setContents(this.baseContents);	
 		} else {
 			this.initEmptyMsgPanel();

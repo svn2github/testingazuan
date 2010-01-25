@@ -25,7 +25,7 @@
 	      <war warfile="../../cas/dist/cas.war" 
 	           webxml="../../cas/WebContent/WEB-INF/web.xml" 
 	           manifest="../../cas/WebContent/META-INF/MANIFEST.MF" 
-	           basedir="../../cas/WebContent"/>
+	           basedir="../../cas"/>
 	           
         <zip destfile="../../cas/dist/CasServer-${project.version}_${project.date}.zip"
               basedir="../../cas/dist">

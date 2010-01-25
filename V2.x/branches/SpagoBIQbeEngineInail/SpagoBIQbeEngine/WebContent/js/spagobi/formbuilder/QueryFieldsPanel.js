@@ -80,7 +80,15 @@ Sbi.formbuilder.QueryFieldsPanel = function(config) {
 		//bodyStyle:'background:green',
 		bodyStyle:'padding:3px',
       	layout: 'fit',   
-      	items: [this.grid]
+      	items: [this.grid],
+      	tools: [{
+		    id:'gear',
+		    qtip: LN('sbi.formbuilder.queryfieldspanel.tools.refresh'),
+		    handler: function(){
+      			this.refresh();
+		    }
+		    , scope: this
+      	}]
 	});
 
 	// constructor

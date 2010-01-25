@@ -51,8 +51,11 @@ Sbi.formviewer.StaticClosedOnOffFiltersPanel = function(aStaticClosedOnOffFilter
 	var defaultSettings = {
 		// set default values here
 		frame: true
-        , width: aStaticClosedOnOffFiltersGroup.width || 300
-        , height: aStaticClosedOnOffFiltersGroup.height || 150
+		, autoScroll: true
+		//, autoWidth: true
+		, autoHeight: true
+        //, width: aStaticClosedOnOffFiltersGroup.width || 300
+        //, height: aStaticClosedOnOffFiltersGroup.height || 150
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.staticClosedOnOffFiltersPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.staticClosedOnOffFiltersPanel);

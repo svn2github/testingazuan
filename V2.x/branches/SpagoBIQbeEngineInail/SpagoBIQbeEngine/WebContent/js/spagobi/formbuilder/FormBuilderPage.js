@@ -77,10 +77,6 @@ Sbi.formbuilder.FormBuilderPage = function(config) {
 		items: [
 		    '->'
 		    , {
-				text: LN('sbi.formbuilder.formbuilderpage.toolbar.refresh'),
-				handler: function() {this.queryFieldsPanel.refresh();},
-				scope: this
-		    }, {
 				text: LN('sbi.formbuilder.formbuilderpage.toolbar.save'),
 				handler: function() {
 		    		var params = {

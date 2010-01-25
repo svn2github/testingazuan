@@ -7,8 +7,6 @@ Sbi.locale.ln = Sbi.locale.ln || new Array();
 //===================================================================
 Sbi.locale.ln['sbi.formbuilder.formbuilderpage.title'] = 'Designer';
 Sbi.locale.ln['sbi.formbuilder.formbuilderpage.toolbar.save'] = 'Salva template';
-Sbi.locale.ln['sbi.formbuilder.formbuilderpage.toolbar.refresh'] = 'Ricarica campi della query';
-
 
 Sbi.locale.ln['sbi.formbuilder.formbuilderpage.templatesaved.title'] = 'Template del documento salvato';
 Sbi.locale.ln['sbi.formbuilder.formbuilderpage.templatesaved.msg'] = 'Template del documento salvato correttamente!!';
@@ -18,6 +16,7 @@ Sbi.locale.ln['sbi.formbuilder.formpanel.title'] = 'Designer del form';
 Sbi.locale.ln['sbi.formbuilder.formpreviewpage.title'] = 'Anteprima';
 
 Sbi.locale.ln['sbi.formbuilder.queryfieldspanel.title'] = 'Campi selezionati';
+Sbi.locale.ln['sbi.formbuilder.queryfieldspanel.tools.refresh'] = 'Ricarica campi della query';
 Sbi.locale.ln['sbi.formbuilder.queryfieldspanel.fieldname'] = 'Nome del campo';
 
 Sbi.locale.ln['sbi.formbuilder.templateeditorpanel.title'] = 'Designer del form';

@@ -30,11 +30,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory"%>
 <%@page import="it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory"%>
 <%@page import="it.eng.spagobi.commons.utilities.urls.IUrlBuilder"%>
+<%@page import="it.eng.spago.configuration.ConfigSingleton"%>
+<%@page import="it.eng.spago.base.SourceBean"%>
+
 <%      
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
 	String authFailed = "";
+	String startUrl = "";
 	ResponseContainer aResponseContainer = ResponseContainerAccess.getResponseContainer(request);
 	//RequestContainer requestContainer = RequestContainerAccess.getRequestContainer(request); 
+	
+	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
+	SourceBean securitySB = (SourceBean) serverConfig.getAttribute("SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS");
+	
+	String strInternalSecurity = (String) securitySB.getAttribute("className");
+	boolean isInternalSecurity = (strInternalSecurity.indexOf("InternalSecurity")>0)?true:false;
 	
 	RequestContainer requestContainer = RequestContainer.getRequestContainer();
 	
@@ -47,12 +57,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			SourceBean loginModuleResponse = (SourceBean)aServiceResponse.getAttribute("LoginModule");
 			if(loginModuleResponse!=null) {
 				String authFailedMessage = (String)loginModuleResponse.getAttribute(SpagoBIConstants.AUTHENTICATION_FAILED_MESSAGE);
+				startUrl = (loginModuleResponse.getAttribute("start_url")==null)?"":(String)loginModuleResponse.getAttribute("start_url");
 				if(authFailedMessage!=null) {
 					authFailed = authFailedMessage;
-				}
+				}				
 			}
 		}
 	}
+
 	
 	IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 	
@@ -89,6 +101,7 @@ else {
 
 %>	<jsp:include page='<%=url%>' />
         <form action="<%=contextName%>/servlet/AdapterHTTP?PAGE=LoginPage&NEW_SESSION=TRUE" method="POST" >
+        	<input type="hidden" id="isInternalSecurity" name="isInternalSecurity" value="<%=isInternalSecurity %>" />
 	        <div id="content" style="width:100%;">
 		        	<div style="background-color:white;width:500px;height:150px;border:1px solid gray;margin-top:130px;margin-left:50px;" >
 		        		<table>
@@ -117,6 +130,18 @@ else {
 		        								<input name="password" type="password" size="30" />
 		        							</td>	
 		        						</tr>
+		        						<% if (isInternalSecurity) {%>
+			        						<tr><td>&nbsp;</td></tr>
+			        						<tr>
+			        							<td>&nbsp;</td>
+			        							<td>&nbsp;</td>
+			        							<td width="150px">
+	  		        							  	<a href="<%=contextName %>/ChangePwdServlet?start_url=<%=startUrl%>">
+						             						<%=msgBuilder.getMessage("changePwd")%>
+						             				</a>
+	  		        							</td>
+			        						</tr>
+			        					<% } %>
 		        					</table>	
 		        				</td>
 		        				<td>

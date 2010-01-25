@@ -55,6 +55,7 @@
 		
 		<DAO name="SbiUserDAO" implementation="it.eng.spagobi.profiling.dao.SbiUserDAOHibImpl"/>
 		<DAO name="SbiAttributeDAO" implementation="it.eng.spagobi.profiling.dao.SbiAttributeDAOHibImpl"/>
+		<DAO name="SbiConfigDAO" implementation="it.eng.spagobi.commons.dao.ConfigDAO"/>
 	 </DAO-CONF>     
      
      <!-- ********************* END DAO CONFIGURATION ************************ -->

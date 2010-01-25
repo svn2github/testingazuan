@@ -364,5 +364,16 @@ public class SpagoBIConstants {
 	public static final String BACK_URL = "BACK_URL";
 	public static final String SDK_EXECUTION_SERVICE = "SDK_EXECUTION_SERVICE";
 
-
+	//constants to menage configuration parameters
+	public static final String CHANGEPWDMOD_LEN_MIN  = "changepwdmodule.len_min";
+	public static final String CHANGEPWDMOD_SPECIAL_CHAR  = "changepwdmodule.special_char";
+	public static final String CHANGEPWDMOD_UPPER_CHAR  = "changepwdmodule.upper_char";
+	public static final String CHANGEPWDMOD_LOWER_CHAR  = "changepwdmodule.lower_char";
+	public static final String CHANGEPWDMOD_NUMBER  = "changepwdmodule.number";
+	public static final String CHANGEPWDMOD_ALPHA  = "changepwdmodule.alphabetical";
+	public static final String CHANGEPWDMOD_CHANGE  = "changepwdmodule.change";
+	public static final String CHANGEPWDMOD_EXPIRED_TIME  = "changepwdmodule.expired_time";
+	public static final String CHANGEPWD_EXPIRED_TIME  = "changepwd.expired_time";
+	public static final String CHANGEPWD_CHANGE_FIRST  = "changepwd.change_first";
+	public static final String CHANGEPWD_DISACTIVE_TIME  = "changepwd.disactivation_time";
 }

@@ -23,6 +23,10 @@ package it.eng.spagobi.commons.utilities;
 
 import it.eng.spago.security.IEngUserProfile;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -438,7 +442,23 @@ public class StringUtilities {
 		return !isNull( str ) && isEmpty( str );
 	}
 
-
+	public static Date stringToDate(String strDate, String format)throws Exception {
+		logger.debug("IN");
+		
+		if (strDate == null || strDate.equals("")) return null;
+		
+		DateFormat df = new SimpleDateFormat(format);
+		Date result = null;
+        try {
+        	result = df.parse(strDate);           
+       } catch (ParseException e){
+    	   e.printStackTrace();
+    	   logger.error ("Error while parsing the date " + strDate + ": " + e);
+    	   throw new Exception("Error while parsing the date '" + strDate +": "+ e);
+        }
+       logger.debug("OUT");
+       return result;
+	}
 
 	/**
 	 * Substitutes the parameters with sintax "$P{attribute_name}" with
@@ -587,6 +607,7 @@ public class StringUtilities {
 		return statement;
 
 	}
+	
 
 
 

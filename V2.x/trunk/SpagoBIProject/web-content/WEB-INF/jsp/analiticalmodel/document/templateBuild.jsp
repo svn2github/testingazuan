@@ -34,6 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.Map" %>
 <%@page import="java.util.HashMap" %>
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
+<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 
 <%
 	UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
@@ -56,15 +57,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
     title += " : " + obj.getName();
 
-   	// try to get from the session the heigh of the output area
-   	boolean heightSetted = false;
-   	String heightArea = (String) aSessionContainer.getAttribute(SpagoBIConstants.HEIGHT_OUTPUT_AREA);
-   	if (heightArea == null || heightArea.trim().equals("")) {
-   		heightArea = "500";
-   	} else {
-   		heightSetted = true;
-   	}
-   	
+   	// try to get from the preferences the height of the area
+   	String heightArea = (String) ChannelUtilities.getPreferenceValue(aRequestContainer, "HEIGHT_AREA", "600");
     
 	//String backEndContext=GeneralUtilities.getSpagoBiHostBackEnd();
 	//String param1="?"+SpagoBIConstants.SBI_BACK_END_HOST+"="+backEndContext;
@@ -90,6 +84,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
 
 %>
+
 
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/lib/ext-2.0.1/ux/miframe/miframe-min.js")%>'></script>
 <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/execution/main.css",currTheme)%>'/>
@@ -119,7 +114,7 @@ Ext.onReady(function(){
     var toolbar = new Ext.Toolbar({
       items: items
     });
-	
+
 	var templateEditIFrame = new Ext.ux.ManagedIframePanel({
 		title: '<%= StringEscapeUtils.escapeJavaScript(title) %>'
 		, defaultSrc: '<%= StringEscapeUtils.escapeJavaScript(GeneralUtilities.getUrl(urlToCall.toString(), engineurl.getParameters())) %>'
@@ -127,21 +122,29 @@ Ext.onReady(function(){
         , loadMask: true
         , disableMessaging: true
         , tbar: toolbar
+        , renderTo: Sbi.user.ismodeweb ? undefined : 'edit_template_<%=requestIdentity%>'  
 	});
-	
-	var viewport = new Ext.Viewport({
-		layout: 'border'
-		, items: [
-		    {
-		       region: 'center',
-		       layout: 'fit',
-		       items: [templateEditIFrame]
-		    }
-		]
-	});
-	
+
+	if (Sbi.user.ismodeweb) {
+		var viewport = new Ext.Viewport({
+			layout: 'border'
+			, items: [
+			    {
+			       region: 'center',
+			       layout: 'fit',
+			       items: [templateEditIFrame]
+			    }
+			]
+		});
+	}
+		
 });
 </script>
 
+<% if (sbiMode == "PORTLET") { %>
+	<div name="edit_template_<%=requestIdentity%>" id="edit_template_<%=requestIdentity%>" 
+		style="width:100%;height:<%=heightArea+"px;"%>">
+	</div>	
+<% } %>
 
 <%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

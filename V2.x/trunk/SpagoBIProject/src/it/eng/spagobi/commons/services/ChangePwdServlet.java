@@ -13,11 +13,9 @@ import it.eng.spagobi.commons.bo.Config;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IConfigDAO;
-import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.profiling.bean.SbiUser;
 import it.eng.spagobi.profiling.dao.ISbiUserDAO;
-import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -107,7 +105,7 @@ public class ChangePwdServlet extends HttpServlet {
     	logger.debug("Check syntax pwd for the user: " + userId);
     	
     	url = (String) request.getParameter(URL);
-    	logger.debug("Start url for final redirect: " + URL);
+    	logger.debug("Start url for final redirect: " + url);
     	
     	oldPwd = (String) request.getParameter(OLD_PWD);
     	newPwd = (String) request.getParameter(NEW_PWD);
@@ -130,9 +128,9 @@ public class ChangePwdServlet extends HttpServlet {
 					//getting days number for calculate new expiration date
 					IConfigDAO configDao = DAOFactory.getSbiConfigDAO();
 					List lstConfigChecks = configDao.loadConfigParametersByProperties("changepwd.expired_time");
+					Date beginDate = new Date();
 					if (lstConfigChecks.size() > 0){
-						Config check = (Config)lstConfigChecks.get(0);
-						Date beginDate = new Date();
+						Config check = (Config)lstConfigChecks.get(0);						
 						if (check.isActive()){
 							//define the new expired date							
 							Date endDate = null;
@@ -150,13 +148,13 @@ public class ChangePwdServlet extends HttpServlet {
 								logger.error("The control pwd goes on error: "+e);
 								throw new EMFUserError(EMFErrorSeverity.ERROR, 14008, new Vector(), new HashMap());
 							}
-						}
-						tmpUser.setDtLastAccess(beginDate); //reset last access date
+						}						
 					}
-					
+					tmpUser.setDtLastAccess(beginDate); //reset last access date
 					tmpUser.setPassword(newPwd);
 					tmpUser.setFlgPwdBlocked(false); //reset blocking flag
 					userDao.updateSbiUser(tmpUser, tmpUser.getId());
+					logger.debug("Updated properties for user with id " + tmpUser.getId() + " - DtLastAccess: " + tmpUser.getDtLastAccess().toString());
 					//if it's all ok, redirect on login page 
 					response.sendRedirect(url);
 				}										

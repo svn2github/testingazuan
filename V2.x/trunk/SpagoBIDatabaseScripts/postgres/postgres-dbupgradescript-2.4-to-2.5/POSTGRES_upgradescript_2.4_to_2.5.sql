@@ -95,3 +95,5 @@ INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_
 INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwd.expired_time', 'Expired time', 'Number of days fo the expiration', true,'90', 20 );
 COMMIT;
 
+/** change creation date datatype (date --> timestamp) */
+ALTER TABLE SBI_VIEWPOINTS ALTER COLUMN  VP_CREATION_DATE TYPE TIMESTAMP;

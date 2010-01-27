@@ -25,12 +25,10 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.init.InitializerIFace;
 import it.eng.spagobi.behaviouralmodel.check.metadata.SbiChecks;
 import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
-import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
-import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.metadata.SbiConfig;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiUserFunctionality;
-import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.engines.config.metadata.SbiExporters;
 import it.eng.spagobi.engines.config.metadata.SbiExportersId;
@@ -129,6 +127,16 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 				writeExporters(aSession);
 			} else {
 				logger.debug("Exporters table is already populated");
+			}
+			
+			hql = "from SbiConfig";
+			hqlQuery = aSession.createQuery(hql);
+			List configs = hqlQuery.list();
+			if (configs.isEmpty()) {
+				logger.info("Config table is empty. Starting populating predefined configuration parameters...");
+				writeConfig(aSession);
+			} else {
+				logger.debug("Config table is already populated");
 			}
 
 
@@ -501,6 +509,60 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 			logger.debug("Inserting UserFunctionality with name = [" + aUSerFunctionalitySB.getAttribute("name") + "] associated to role types [" + roleTypesStrBuffer.toString() + "]...");
 
 			aSession.save(aUserFunctionality);
+		}
+		logger.debug("OUT");
+	}
+	
+	private void writeConfig(Session aSession) throws Exception {
+		logger.debug("IN");
+		SourceBean configSB = getConfiguration("it/eng/spagobi/commons/initializers/metadata/config/configs.xml");
+		if (configSB == null) {
+			logger.info("Configuration file for predefined configuration parameters not found");
+			return;
+		}
+		List configList = configSB.getAttributeAsList("CONFIG");
+		if (configList == null || configList.isEmpty()) {
+			logger.info("No predefined configuration parameters available from configuration file");
+			return;
+		}
+		Iterator it = configList.iterator();
+		while (it.hasNext()) {
+			SourceBean aConfigSB = (SourceBean) it.next();
+			SbiDomains hibDomain = null;
+			
+			String valueTypeCd = (String) aConfigSB.getAttribute("valueType");
+			if (!"".equals(valueTypeCd)){
+				hibDomain = findDomain(aSession, valueTypeCd, "PAR_TYPE");
+				if (hibDomain == null) {
+					logger.error("Could not find domain for configuration parameter");
+					return;
+				}
+			} 
+			
+
+
+			String confLabel=((String) aConfigSB.getAttribute("label"));
+			String confName=((String) aConfigSB.getAttribute("name"));
+			String confDesc=((String) aConfigSB.getAttribute("description"));
+			String confIsActive=((String) aConfigSB.getAttribute("isActive"));
+			String confValueCheck=((String) aConfigSB.getAttribute("valueCheck"));			
+			
+
+			SbiConfig aConfig=new SbiConfig();
+			//aConfig.setId(exporterId);
+			aConfig.setLabel(confLabel);
+			aConfig.setName(confName);
+			aConfig.setDescription(confDesc);
+			aConfig.setValueCheck(confValueCheck);
+			aConfig.setSbiDomains(hibDomain);			
+
+			Boolean value = confIsActive!=null ? Boolean.valueOf(confIsActive) : Boolean.FALSE;
+			aConfig.setIsActive(value.booleanValue());
+
+			logger.debug("Inserting Config parameter "+aConfig.getLabel());
+
+			aSession.save(aConfig);
+
 		}
 		logger.debug("OUT");
 	}

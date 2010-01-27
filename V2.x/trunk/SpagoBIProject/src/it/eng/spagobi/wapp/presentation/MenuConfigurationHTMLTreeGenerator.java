@@ -408,14 +408,16 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 				Integer id=menu.getMenuId();
 				idsMenus.put(id, menu);
 			}
-	
+			/* deleted check on the menu's depth. Number of menu levels is free.
 			for (Iterator iterator = objectsList.iterator(); iterator.hasNext();) {
 				Menu menu= (Menu) iterator.next();
 				Integer id=menu.getMenuId();
 				int depth=calculateDepth(idsMenus, menu);
 				if(depth==3) // trace only limit leaves!
 					limitLeaves.add(id);
+				
 			}
+			*/
 		}
 		return limitLeaves;
 

@@ -81,7 +81,7 @@ public class WorkRunServlet extends AbstractEngineStartServlet {
 				throw new SpagoBIEngineException("Work execution error", "work.exectuion.error");
 			}
 
-			servletIOManager.tryToWriteBackToClient("commonj.process.started");
+			servletIOManager.tryToWriteBackToClient(work.getWorkName()+": class "+work.getClassName());
 
 		}
 		catch (Exception e) {

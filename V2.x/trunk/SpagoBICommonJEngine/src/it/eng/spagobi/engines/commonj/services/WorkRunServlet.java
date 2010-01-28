@@ -68,7 +68,7 @@ public class WorkRunServlet extends AbstractEngineStartServlet {
 			worksRepository = CommonjEngine.getWorksRepository();
 
 			try {
-				worksRepository.runJob(work, servletIOManager.getEnv());
+				worksRepository.runWork(work, servletIOManager.getEnv());
 			} catch (WorkNotFoundException ex) {
 				logger.error(ex.getMessage());
 				throw new SpagoBIEngineException("Work not found", "work.not.existing");
@@ -86,7 +86,6 @@ public class WorkRunServlet extends AbstractEngineStartServlet {
 		}
 		catch (Exception e) {
 			logger.error("Error in servlet",e);
-			e.printStackTrace();		
 			}
 		finally {
 			logger.debug("OUT");

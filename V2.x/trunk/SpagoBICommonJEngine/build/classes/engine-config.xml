@@ -7,30 +7,8 @@
 	
 	<commonjRepository_root_dir>CommonjRepository</commonjRepository_root_dir>
 	
-	
-	
-	
-	
-	
-	
-	
 	<JNDI_THREAD_MANAGER>java:/comp/env/wm/SpagoWorkManager</JNDI_THREAD_MANAGER>
 	
-	<!-- General Properties -->
-	<spagobi_autopublish>true</spagobi_autopublish>
-	<spagobi_functionality_label>ETL</spagobi_functionality_label>
-	
-	
-
-	<!--  Properties needed to run java script --> 	
-	<java_command>java</java_command>
-	<java_command_option_Xms>256</java_command_option_Xms>
-	<java_command_option_Xmx>1024</java_command_option_Xmx>
-	
-
-	<!-- ====================================================================================== -->
-	<!--  INTERNAL SETTINGS 																    --> 
-	<!-- ====================================================================================== -->
 	
 	<!-- ====================================================================================== -->
 	<!--  SSO settings 																	--> 
@@ -53,11 +31,5 @@
 	<DataSourceServiceProxy_URL>/services/DataSourceService</DataSourceServiceProxy_URL>
 	<DocumentExecuteServiceProxy_URL>/services/DocumentExecuteService</DocumentExecuteServiceProxy_URL>
 	<DataSetServiceProxy_URL>/services/DataSetService</DataSetServiceProxy_URL>	
-	
-	
-
-
-
-
 
 </ENGINE-CONFIGURATION>

@@ -65,7 +65,7 @@ END-CAS -->
 <!-- START-CAS 	
    <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>
-    <url-pattern>/JobRunService</url-pattern>
+    <url-pattern>/WorkRunService</url-pattern>
   </filter-mapping> 
    <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>
@@ -73,11 +73,11 @@ END-CAS -->
   </filter-mapping> 
    <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>
-    <url-pattern>/JobUploadService</url-pattern>
+    <url-pattern>/WorkUploadService</url-pattern>
   </filter-mapping> 
    <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>
-    <url-pattern>/JobRunServiceTest</url-pattern>
+    <url-pattern>/WorkRunServiceTest</url-pattern>
   </filter-mapping>
 
    <filter-mapping>
@@ -90,16 +90,16 @@ END-CAS -->
   </filter-mapping> 
    <filter-mapping>
     <filter-name>CAS Validation Filter</filter-name>
-    <url-pattern>/JobUploadService</url-pattern>
+    <url-pattern>/WorkUploadService</url-pattern>
   </filter-mapping> 
    <filter-mapping>
     <filter-name>CAS Validation Filter</filter-name>
-    <url-pattern>/JobRunServiceTest</url-pattern>
+    <url-pattern>/WorkRunServiceTest</url-pattern>
   </filter-mapping>
 
    <filter-mapping>
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
-    <url-pattern>/JobRunService</url-pattern>
+    <url-pattern>/WorkRunService</url-pattern>
   </filter-mapping> 
    <filter-mapping>
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
@@ -107,11 +107,11 @@ END-CAS -->
   </filter-mapping> 
    <filter-mapping>
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
-    <url-pattern>/JobUploadService</url-pattern>
+    <url-pattern>/WorkUploadService</url-pattern>
   </filter-mapping> 
    <filter-mapping>
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
-    <url-pattern>/JobRunServiceTest</url-pattern>
+    <url-pattern>/WorkRunServiceTest</url-pattern>
   </filter-mapping>
   
   <filter-mapping>
@@ -170,8 +170,8 @@ END-CAS -->
 	
 	<!-- 
 	<servlet-mapping>
-		<servlet-name>JobRunService</servlet-name>
-		<url-pattern>/JobRunServiceBackEnd</url-pattern>
+		<servlet-name>WorkRunService</servlet-name>
+		<url-pattern>/WorkRunServiceBackEnd</url-pattern>
 	</servlet-mapping>	
 	-->
 	

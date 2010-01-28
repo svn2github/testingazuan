@@ -65,6 +65,8 @@ public class CommonjWorkRunner implements IWorkRunner {
 
 	public void run(CommonjWork work, Map parameters)  throws WorkNotFoundException, WorkExecutionException {
 
+		logger.debug("IN");
+
 		File executableWorkDir;    	
 
 		try {
@@ -76,11 +78,13 @@ public class CommonjWorkRunner implements IWorkRunner {
 			executableWorkDir = worksRepository.getExecutableWorkDir(work);
 
 			if (!worksRepository.containsWork(work)) {	    		
-				throw new WorkNotFoundException("Job [" + 
+				logger.error("work [" + 
+						worksRepository.getRootDir().getPath()+"/"+work.getWorkName()+ "] not found in repository");
+				throw new WorkNotFoundException("work [" + 
 						worksRepository.getRootDir().getPath()+"/"+work.getWorkName()+ "] not found in repository");
 			}
 
-			logger.debug("Job [" + work.getWorkName() +"] succesfully found in repository");
+			logger.debug("Work [" + work.getWorkName() +"] succesfully found in repository");
 
 			// load in memory all jars found in folder!
 			loadJars(work, executableWorkDir);
@@ -109,6 +113,7 @@ public class CommonjWorkRunner implements IWorkRunner {
 			listener.setExecutionRole(executionRole);
 			listener.setWorkName(work.getWorkName());
 			listener.setWorkClass(work.getClassName());
+			logger.debug("Class to run "+work.getClassName());
 			
 			logger.debug("listener ready");
 
@@ -118,6 +123,7 @@ public class CommonjWorkRunner implements IWorkRunner {
 			Work workToLaunch=null;
 			// class loaded could be instance of CmdExecWork o di Work, testa se è il primo, se no è l'altra
 			if (obj instanceof CmdExecWork) {
+				logger.debug("Class specified extends CmdExecWork");
 				workToLaunch = (CmdExecWork) obj;
 				((CmdExecWork)obj).setCommand(work.getCommand());
 				((CmdExecWork)obj).setCommandEnvironment(work.getCommand_environment());
@@ -125,6 +131,7 @@ public class CommonjWorkRunner implements IWorkRunner {
 			}
 			else
 				if (obj instanceof Work) {
+					logger.debug("Class specified extends Work");
 					workToLaunch=(Work)obj;
 				}
 
@@ -132,14 +139,14 @@ public class CommonjWorkRunner implements IWorkRunner {
 				wm.run(workToLaunch, listener);
 			}
 			else{
-				logger.error("An error occurred while starting up execution for job [" + work.getWorkName() + "] type is wrong, it must extend commonj.work.Work");
-				throw new WorkExecutionException("An error occurred while starting up execution for job [" + work.getWorkName() + "] type is wrong, it must extend commonj.work.Work");
+				logger.error("An error occurred while starting up execution for work [" + work.getWorkName() + "] type of class "+work.getClassName()+" is wrong, it must extend commonj.work.Work");
+				throw new WorkExecutionException("An error occurred while starting up execution for work [" + work.getWorkName() + "] type is wrong, it must extend commonj.work.Work");
 			}
 
 
 		} catch (Throwable e) {
-			logger.error("An error occurred while starting up execution for job [" + work.getWorkName() + "]");
-			throw new WorkExecutionException("An error occurred while starting up execution for job [" + work.getWorkName() + "]", e);
+			logger.error("An error occurred while starting up execution for work [" + work.getWorkName() + "]");
+			throw new WorkExecutionException("An error occurred while starting up execution for work [" + work.getWorkName() + "]", e);
 		}
 	}
 

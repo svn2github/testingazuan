@@ -36,6 +36,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.commonj.exception.CommonjEngineException;
 import it.eng.spagobi.utilities.assertion.Assert;
@@ -51,9 +53,12 @@ public class CommonjWork {
 	static final String COMMAND="cmd";
 	static final String COMMAND_ENVIRONMENT="cmd_env";
 
+	private static transient Logger logger = Logger.getLogger(CommonjWork.class);
 
 	public CommonjWork(SourceBean template) throws SpagoBIEngineException {
+logger.debug("IN");
 		this.load(template);
+		logger.debug("OUT");
 	}
 
 
@@ -69,6 +74,7 @@ public class CommonjWork {
 	}		
 
 	public void load(SourceBean template) throws it.eng.spagobi.engines.commonj.exception.TemplateParseException {
+		logger.debug("IN");
 		SourceBean workSB;
 
 		Assert.assertNotNull(template, "Input parameter [template] cannot be null");
@@ -78,46 +84,54 @@ public class CommonjWork {
 
 		workName = (String)workSB.getAttribute("workName");
 		if(workName == null) {
-			throw new it.eng.spagobi.engines.commonj.exception.TemplateParseException(template, "Missing  name in document template");
+			logger.error("Missing  work name in document template");
+			throw new it.eng.spagobi.engines.commonj.exception.TemplateParseException(template, "Missing  work name in document template");
 		}
 
 
 		className = (String)workSB.getAttribute("className");
 		if(className == null) {
+			logger.error("Missing class specification in document template");
 			throw new CommonjEngineException("Missing class specification in document template");
 		}
 
 		// check for parameters, in particular cmd and cmd_env
 		SourceBean parametersSB=(SourceBean)workSB.getAttribute("PARAMETERS");
-		List parameterList=parametersSB.getAttributeAsList("PARAMETER");
-
-		Vector<String> parametersVect=new Vector<String>();
-		for (Iterator iterator = parameterList.iterator(); iterator.hasNext();) {
-			SourceBean parameter = (SourceBean) iterator.next();
-			String name=(String)parameter.getAttribute("name");
-			String value=(String)parameter.getAttribute("value");
-			if(name.equalsIgnoreCase(COMMAND)){
-				command=value;				
-			}
-			else
-				if(name.equalsIgnoreCase(COMMAND_ENVIRONMENT)){
-					command_environment=value;	
+		if(parametersSB!=null){
+			List parameterList=parametersSB.getAttributeAsList("PARAMETER");
+			if(parameterList!=null){
+				Vector<String> parametersVect=new Vector<String>();
+				for (Iterator iterator = parameterList.iterator(); iterator.hasNext();) {
+					SourceBean parameter = (SourceBean) iterator.next();
+					String name=(String)parameter.getAttribute("name");
+					String value=(String)parameter.getAttribute("value");
+					if(name.equalsIgnoreCase(COMMAND)){
+						logger.debug("command parameter "+value);
+						command=value;				
+					}
+					else
+						if(name.equalsIgnoreCase(COMMAND_ENVIRONMENT)){
+							logger.debug("command environment parameter"+value);
+							command_environment=value;	
+						}
+						else{
+							logger.debug("general parameter"+value);
+							parametersVect.add(value);
+						}
 				}
-				else{
-					parametersVect.add(value);
+				if(parametersVect.size()>0){
+					parameters=new String[parametersVect.size()];
+					int i=0;
+					for (Iterator iterator = parametersVect.iterator(); iterator.hasNext();) {
+						String string = (String) iterator.next();
+						parameters[i]=string;
+						i++;
+					}
 				}
-		}
-		if(parametersVect.size()>0){
-			parameters=new String[parametersVect.size()];
-			int i=0;
-			for (Iterator iterator = parametersVect.iterator(); iterator.hasNext();) {
-				String string = (String) iterator.next();
-				parameters[i]=string;
-				i++;
 			}
 		}
+		logger.debug("OUT");
 	}
-
 
 
 	/**

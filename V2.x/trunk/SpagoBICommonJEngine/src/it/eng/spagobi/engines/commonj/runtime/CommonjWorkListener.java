@@ -64,9 +64,6 @@ public class CommonjWorkListener implements WorkListener {
 	String executionRole;
 	String biObjectID;
 
-//	public static final String TALEND_ROLES_HANDLER_CLASS_NAME = "it.eng.spagobi.engines.drivers.talend.TalendRolesHandler";
-//	public static final String TALEND_PRESENTAION_HANDLER_CLASS_NAME = "it.eng.spagobi.engines.drivers.talend.TalendEventPresentationHandler";
-
 
 	private static transient Logger logger = Logger.getLogger(CommonjWorkListener.class);
 
@@ -106,7 +103,7 @@ public class CommonjWorkListener implements WorkListener {
 		logger.info("IN");
 		System.out.println("Work "+workName+" rejected");
 		if(auditServiceProxy != null) {
-			auditServiceProxy.notifyServiceErrorEvent("An error occurred while job execution");
+			auditServiceProxy.notifyServiceErrorEvent("An error occurred while work execution");
 		} else {
 			logger.warn("Impossible to log START-EVENT because the audit proxy has not been instatiated properly");
 		}
@@ -129,7 +126,7 @@ public class CommonjWorkListener implements WorkListener {
 
 
 		WorkException workException;
-		Work commonjWork;
+		//Work commonjWork;
 
 		logger.info("IN");
 
@@ -139,10 +136,10 @@ public class CommonjWorkListener implements WorkListener {
 				logger.error(workException); 
 			}
 
-			commonjWork = (Work) event.getWorkItem().getResult();
+			//commonjWork = (Work) event.getWorkItem().getResult();
 			if (workException != null) {
 				if(auditServiceProxy != null) {
-					auditServiceProxy.notifyServiceErrorEvent("An error occurred while job execution");
+					auditServiceProxy.notifyServiceErrorEvent("An error occurred while work execution");
 				} else {
 					logger.warn("Impossible to log START-EVENT because the audit proxy has not been instatiated properly");
 				}
@@ -202,12 +199,14 @@ public class CommonjWorkListener implements WorkListener {
 
 
 	private String builParametersString(){
+		logger.debug("IN");
 		Map startEventParams = new HashMap();
 		//startEventParams.put(EVENT_TYPE, DOCUMENT_EXECUTION_START);
 		if(biObjectID!=null){
 			startEventParams.put(BIOBJECT_ID, biObjectID);
 		}
 		String startEventParamsStr = getParamsStr(startEventParams);
+		logger.debug("OUT");
 		return  startEventParamsStr;
 	}
 

@@ -89,10 +89,10 @@ public class WorkDeploymentDescriptor {
 	    
 	   	document = reader.read(is);		
 	    
-	    Node job = document.selectSingleNode("//commonj/work");
-	    if (job != null) {
-	    	this.workName = job.valueOf("@workName");
-	    	this.className = job.valueOf("@className");
+	    Node work = document.selectSingleNode("//commonj/work");
+	    if (work != null) {
+	    	this.workName = work.valueOf("@workName");
+	    	this.className = work.valueOf("@className");
 	    }
 	}
 	
@@ -120,13 +120,13 @@ public class WorkDeploymentDescriptor {
 	 * 
 	 * @param is the is
 	 * 
-	 * @return the job deployment descriptor
+	 * @return the work deployment descriptor
 	 * 
 	 * @throws DocumentException the document exception
 	 */
 	public static WorkDeploymentDescriptor loadWorkDeploymentDescriptor(InputStream is) throws DocumentException {
-		WorkDeploymentDescriptor job = new WorkDeploymentDescriptor();
-		job.load(is);
-		return job;
+		WorkDeploymentDescriptor work = new WorkDeploymentDescriptor();
+		work.load(is);
+		return work;
 	}
 }

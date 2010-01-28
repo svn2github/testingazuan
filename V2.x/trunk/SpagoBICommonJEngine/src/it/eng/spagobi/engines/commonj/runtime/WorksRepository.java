@@ -46,8 +46,12 @@ import java.util.zip.ZipFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 public class WorksRepository {
 	private File rootDir;
+
+	private static transient Logger logger = Logger.getLogger(WorksRepository.class);
 
 	/**
 	 * Instantiates a new runtime repository.
@@ -68,14 +72,16 @@ public class WorksRepository {
 	 * @param env the environment
 
 	 * 
-	 * @throws WorkNotFoundException the job not found exception
-	 * @throws WorkExecutionException the job execution exception
+	 * @throws WorkNotFoundException the work not found exception
+	 * @throws WorkExecutionException the work execution exception
 	 */
-	public void runJob(CommonjWork work, Map env) throws WorkNotFoundException, WorkExecutionException {
+	public void runWork(CommonjWork work, Map env) throws WorkNotFoundException, WorkExecutionException {
+		logger.debug("IN");
 		CommonjWorkRunner workRunner=new CommonjWorkRunner(this);
 		if(workRunner != null) {
 			workRunner.run(work, env);
 		}		
+		logger.debug("OUT");
 	}
 
 
@@ -104,74 +110,56 @@ public class WorksRepository {
 	 * 
 	 * @return the executable work project dir
 	 */
-	public File getExecutableJobProjectDir(CommonjWork work) {
-	File workDir = new File(rootDir, work.getWorkName());
-	File projectDir = new File(workDir, work.getWorkName());
-	return projectDir;
-	}
-
-
 
 	public File getExecutableWorkProjectDir(CommonjWork work) {
+		logger.debug("IN");
 		File worksDir = new File(rootDir, work.getWorkName());
+		logger.debug("OUT");
 		return worksDir;
 	}
 
 
 	/**
-	 * Gets the executable job dir.
+	 * Gets the executable work dir.
 	 * 
-	 * @param job the job
+	 * @param work the work
 	 * 
-	 * @return the executable job dir
+	 * @return the executable work dir
 	 */
 	public File getExecutableWorkDir(CommonjWork work) {
+		logger.debug("IN");
 		File workDir = new File(rootDir, work.getWorkName());
+		logger.debug("OUT");
 		return workDir;
 	}
 
-	
+
 	/**
-	 * Gets the executable job file.
+	 * Gets the executable work file.
 	 * 
-	 * @param job the job
+	 * @param work the work
 	 * 
-	 * @return the executable job file
+	 * @return the executable work file
 	 */
 	public File getExecutableWorkFile(CommonjWork work) {
-		File jobExecutableFile = new File(getExecutableWorkDir(work), work.getWorkName());	
-		return jobExecutableFile;
+		File workExecutableFile = new File(getExecutableWorkDir(work), work.getWorkName());	
+		return workExecutableFile;
 	}
 
 	/**
-	 * Contains job.
+	 * Contains work.
 	 * 
-	 * @param job the job
+	 * @param work the work
 	 * 
 	 * @return true, if successful
 	 */
 	public boolean containsWork(CommonjWork work) {
-	
+
 		File workFolder=new File(rootDir, work.getWorkName());	
 		boolean exists=workFolder.exists();
 		return exists;
 	}
-	
-	
 
-	/**
-	 * The main method.
-	 * 
-	 * @param args the arguments
-	 * 
-	 * @throws ZipException the zip exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static void main(String[] args) throws ZipException, IOException {
-		File rootDir = new File("C:\\Prototipi\\SpagoBI-Demo-1.9.2\\webapps\\SpagoBITalendEngine\\RuntimeRepository");
-		File zipFile = new File("C:\\Prototipi\\TalendJob2.zip");
-		WorksRepository runtimeRepository = new WorksRepository(rootDir);
-		WorkDeploymentDescriptor jobDeploymentDescriptor = new WorkDeploymentDescriptor("PP2", "perl");
-		//runtimeRepository.deployJob(jobDeploymentDescriptor, new ZipFile(zipFile));
-	}
+
+
 }

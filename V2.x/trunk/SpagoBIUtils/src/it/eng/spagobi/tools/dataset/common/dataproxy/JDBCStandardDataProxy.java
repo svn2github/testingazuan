@@ -98,7 +98,7 @@ public class JDBCStandardDataProxy extends AbstractDataProxy {
 			}
 			
 			try {
-				stmt = connection.createStatement();
+				stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			} catch (Throwable t) {
 				throw new SpagoBIRuntimeException("An error occurred while creating connection steatment", t);
 			}

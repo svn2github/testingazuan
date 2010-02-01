@@ -552,7 +552,7 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 			String fileExtension = FileUtils.getFileExtension(tmpFile);
 			String fileName = null;
 			if (fileExtension != null && !fileExtension.trim().equals("")) {
-				fileName = biobj.getLabel() + "" + fileExtension;
+				fileName = biobj.getLabel() + "." + fileExtension;
 			} else {
 				fileName = biobj.getLabel();
 			}

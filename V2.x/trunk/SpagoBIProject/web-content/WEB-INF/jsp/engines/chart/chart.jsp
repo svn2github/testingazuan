@@ -240,7 +240,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		else linkableBar=false;
 
 		String rootDocParameter="";
-		rootDocParameter=((ILinkableChart)sbi).getDocument_Parameters(((ILinkableChart)sbi).getDrillParameter());
+		rootDocParameter=((ILinkableChart)sbi).getDocument_Parameters(((ILinkableChart)sbi).getDrillParametersMap());
 
 		//rootPar.put(ObjectsTreeConstants.PARAMETERS,rootDocParameter);
 	

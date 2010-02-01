@@ -7,13 +7,11 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
-import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.config.metadata.SbiKpi;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstanceHistory;
-import it.eng.spagobi.kpi.config.metadata.SbiKpiRole;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiValue;
 import it.eng.spagobi.kpi.model.bo.Resource;
 import it.eng.spagobi.kpi.model.dao.IResourceDAO;
@@ -319,7 +317,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
-			String hql = "select max(s.idKpiInstanceValue)";
+			String hql = "select max(s.idKpiInstanceValue), s.beginDt";
 			hql += " from SbiKpiValue s where s.sbiKpiInstance.idKpiInstance = ? ";
 			hql += " and s.beginDt <= ? and s.beginDt >= ? ";
 			if (resId != null) {
@@ -346,7 +344,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			if (!l.isEmpty()) {
 				logger.debug("The result list is not empty");
 				for (int k = l.size() - 1; k >= 0; k--) {
-					Integer kpiValueId = (Integer) l.get(k);
+					Object[] tempL =  (Object[])l.get(k);
+					Integer kpiValueId = (Integer) tempL[0];
 					SbiKpiValue temp = (SbiKpiValue) aSession.load(SbiKpiValue.class, kpiValueId);
 					SourceBean sb2 = new SourceBean("ROW");
 					if (temp !=null && temp.getValue() != null) {

@@ -47,6 +47,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
@@ -271,7 +272,8 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot) {
 		
 		String nameLabel = folder.getName();
-		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
+		String name = msgBuilder.getUserMessage(nameLabel, null, httpRequest);
+		name = StringEscapeUtils.escapeJavaScript(name);
 		Integer idFolder = folder.getId();
 		Integer parentId = folder.getParentId();
 		boolean canExec = ObjectsAccessVerifier.canExec(idFolder, profile);
@@ -298,7 +300,7 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 					String stateObj = obj.getStateCode();
 					String prog = idObj.toString();
 					String localizedName=msgBuilder.getUserMessage(obj.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, httpRequest);
-
+					localizedName = StringEscapeUtils.escapeJavaScript(localizedName);
 					if (canDev && (stateObj.equals("DEV"))) {
 						htmlStream.append("	treeDevObjects.add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + localizedName + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\', \\'\\', \\'" +createMoveUpObjectLink(idObj) + "\\')' );\n");
 					} else if(canExec && (stateObj.equals("REL"))) {

@@ -54,6 +54,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
@@ -133,7 +134,7 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 
 
 		// Calculate which are the leaves at the 3rd level
-		List limitLeaves=fillDepths(objectsList);
+		//List limitLeaves=fillDepths(objectsList);
 
 		Iterator it = objectsList.iterator();
 		while (it.hasNext()) {
@@ -145,11 +146,11 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 			IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			/* ********* end luca changes ***************** */
 			if (initialPath != null) {
-				if (initialPath.equalsIgnoreCase(menu.getName())) addItemForJSTree(htmlStream, menu, true, limitLeaves);
-				else addItemForJSTree(htmlStream, menu, false,limitLeaves);
+				if (initialPath.equalsIgnoreCase(menu.getName())) addItemForJSTree(htmlStream, menu, true);
+				else addItemForJSTree(htmlStream, menu, false);
 			} else {
-				if (menu.getParentId() == null || menu.getParentId().intValue()==0) addItemForJSTree(htmlStream, menu, true,limitLeaves);
-				else addItemForJSTree(htmlStream, menu, false,limitLeaves);
+				if (menu.getParentId() == null || menu.getParentId().intValue()==0) addItemForJSTree(htmlStream, menu, true);
+				else addItemForJSTree(htmlStream, menu, false);
 			}
 		}
 		//htmlStream.append("				document.write(treeFunct);\n");
@@ -161,11 +162,12 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 		return htmlStream;
 	}
 
-	private void addItemForJSTree(StringBuffer htmlStream, Menu menu, boolean isRoot, List leaves) {
+	private void addItemForJSTree(StringBuffer htmlStream, Menu menu, boolean isRoot) {
 
 		String nameLabel = menu.getName();
 
 		String name = msgBuilder.getUserMessage(nameLabel, SpagoBIConstants.DEFAULT_USER_BUNDLE, httpRequest);
+		name = StringEscapeUtils.escapeJavaScript(name);
 		//String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
 		Integer id = menu.getMenuId();
 		Integer parentId = menu.getParentId();
@@ -215,9 +217,9 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 			if(hasChildren){
 				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(id.toString())+"\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'\\', \\'"+createMasterNodeMenuLink(menu)+"\\',\\'"+createMoveUpMenuLink(menu)+"\\',\\'"+createMoveDownMenuLink(menu)+"\\')');\n");
 			}
-			else if(leaves.contains(id)){
-				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'"+createRemoveFunctionalityLink(id.toString())+"\\', \\'"+createMasterNodeMenuLink(menu)+"\\',\\'"+createMoveUpMenuLink(menu)+"\\',\\'"+createMoveDownMenuLink(menu)+"\\')');\n");				
-			}
+//			else if(leaves.contains(id)){
+//				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'"+createRemoveFunctionalityLink(id.toString())+"\\', \\'"+createMasterNodeMenuLink(menu)+"\\',\\'"+createMoveUpMenuLink(menu)+"\\',\\'"+createMoveDownMenuLink(menu)+"\\')');\n");				
+//			}
 			else{
 				htmlStream.append("	treeFunct.add(" + id + ", " + parentId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '"+imgFolder+"', '"+imgFolderOp+"', '', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(id.toString())+"\\', \\'"+createDetailFunctionalityLink(id.toString())+"\\', \\'"+createRemoveFunctionalityLink(id.toString())+"\\', \\'"+createMasterNodeMenuLink(menu)+"\\',\\'"+createMoveUpMenuLink(menu)+"\\',\\'"+createMoveDownMenuLink(menu)+"\\')');\n");
 
@@ -398,7 +400,7 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 		return createUrl;
 	}
 
-
+	/*
 	public List fillDepths(List objectsList){
 		HashMap idsMenus=new HashMap();
 		ArrayList limitLeaves=new ArrayList();
@@ -408,7 +410,7 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 				Integer id=menu.getMenuId();
 				idsMenus.put(id, menu);
 			}
-			/* deleted check on the menu's depth. Number of menu levels is free.
+
 			for (Iterator iterator = objectsList.iterator(); iterator.hasNext();) {
 				Menu menu= (Menu) iterator.next();
 				Integer id=menu.getMenuId();
@@ -417,12 +419,11 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 					limitLeaves.add(id);
 				
 			}
-			*/
 		}
 		return limitLeaves;
 
 	}
-
+	*/
 
 	public int calculateDepth(HashMap idsMenues, Menu menu){
 		if(menu.getParentId()==null || menu.getParentId().intValue()==0) {

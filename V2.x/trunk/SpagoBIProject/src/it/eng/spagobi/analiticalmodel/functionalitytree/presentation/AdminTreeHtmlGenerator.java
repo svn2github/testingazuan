@@ -46,6 +46,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
@@ -293,7 +294,8 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 			boolean isRoot, boolean isInitialPath) {
 		logger.debug("IN");
 		String nameLabel = folder.getName();
-		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
+		String name = msgBuilder.getUserMessage(nameLabel, null, httpRequest);
+		name = StringEscapeUtils.escapeJavaScript(name);
 		String codeType = folder.getCodType();
 		Integer idFolder = folder.getId();
 		Integer parentId = null;
@@ -321,7 +323,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 					Integer idObj = obj.getId();		
 					String prog = idObj.toString();
 					String localizedName=msgBuilder.getUserMessage(obj.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, httpRequest);
-
+					localizedName = StringEscapeUtils.escapeJavaScript(localizedName);
 					if (biObjState.equals("DEV")) {
 						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + localizedName + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\', \\'\\', \\'" +createMoveUpObjectLink(idObj) + "\\')' );\n");
 					} else if (biObjState.equals("TEST")) {
@@ -357,7 +359,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 				Integer idObj = obj.getId();		
 				String prog = idObj.toString();
 				String localizedName=msgBuilder.getUserMessage(obj.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, httpRequest);
-				
+				localizedName = StringEscapeUtils.escapeJavaScript(localizedName);
 				if (biObjState.equals("DEV")) {
 					htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + localizedName + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'" + createDetailObjectLink(idObj) + "\\', \\'" + createEraseObjectLink(idObj, idFolder) + "\\', \\'\\', \\'" +createMoveUpObjectLink(idObj) + "\\')' );\n");
 				} else if (biObjState.equals("TEST")) {

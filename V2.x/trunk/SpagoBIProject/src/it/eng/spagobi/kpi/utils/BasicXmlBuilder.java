@@ -39,6 +39,7 @@ import it.eng.spagobi.kpi.model.dao.IModelInstanceDAO;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -140,7 +141,7 @@ public class BasicXmlBuilder  {
 		
 		String finalTemplate = docKpiBlockS.toXML(false, false);
 
-		//System.out.println(finalTemplate);
+		System.out.println(finalTemplate);
 		logger.debug("OUT");
 		return finalTemplate;
 	}
@@ -301,7 +302,10 @@ public class BasicXmlBuilder  {
 				
 				if(line.getValue()!=null){
 				SourceBean kpiValueToAdd = newKpiValue(line.getValue());
-				ThresholdValue t = line.getThresholdOfValue();
+				ThresholdValue t = null;
+				if ( line.getValue()!=null && line.getValue().getValue() != null) {
+					t = line.getValue().getThresholdOfValue();
+				}	
 				if(t!=null){
 					try {
 						Threshold tr = DAOFactory.getThresholdDAO().loadThresholdById(t.getThresholdId());

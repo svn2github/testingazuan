@@ -6,7 +6,6 @@
     <class name="it.eng.spagobi.kpi.config.metadata.SbiMeasureUnit" table="SBI_MEASURE_UNIT" >
         <id name="idMeasureUnit" type="integer">
             <column name="id_measure_unit" />
-            <generator class="assigned" />
         </id>
         <many-to-one name="scaleType" class="it.eng.spagobi.commons.metadata.SbiDomains" >
             <column name="SCALE_TYPE_ID" not-null="true" />

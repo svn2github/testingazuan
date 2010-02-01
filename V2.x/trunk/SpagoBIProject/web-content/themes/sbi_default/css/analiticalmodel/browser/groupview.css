@@ -121,6 +121,14 @@
 		!important;
 }
 
+.group-view .document-item-icon .FORM-icon {
+	width: 96px;
+	height: 96px;
+	background-image:
+		url('../../../img/analiticalmodel/browser/document_qbe.png')
+		!important;
+}
+
 .group-view  #icon {
 	width: 96px;
 	height: 96px;

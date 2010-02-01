@@ -15,6 +15,7 @@
 <DOMAIN valueCd="ETL" valueNm="sbidomains.nm.etl" domainCd="BIOBJ_TYPE" domainNm="BI Object types" valueDs="sbidomains.ds.etl"/>
 <DOMAIN valueCd="DOCUMENT_COMPOSITE" valueNm="sbidomains.nm.document_composite" domainCd="BIOBJ_TYPE" domainNm="BI Object types" valueDs="sbidomains.ds.document_composite"/>
 <DOMAIN valueCd="KPI" valueNm="Kpi" domainCd="BIOBJ_TYPE" domainNm="BI Object types" valueDs="Kpi business indicator"/>
+<DOMAIN valueCd="FORM" valueNm="sbidomains.nm.form" domainCd="BIOBJ_TYPE" domainNm="BI Object types" valueDs="sbidomains.ds.form"/>
 <DOMAIN valueCd="BOOL" valueNm="sbidomains.nm.bool" domainCd="VALUE_TYPE" domainNm="Input value types to check" valueDs="sbidomains.ds.bool"/>
 <DOMAIN valueCd="SINGLE" valueNm="sbidomains.nm.single" domainCd="VALUE_TYPE" domainNm="Input value types to check" valueDs="sbidomains.ds.single"/>
 <DOMAIN valueCd="MULTI" valueNm="sbidomains.nm.multi" domainCd="VALUE_TYPE" domainNm="Input value types to check" valueDs="sbidomains.ds.multi"/>

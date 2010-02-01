@@ -38,6 +38,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.engines.config.bo.Exporters"%>
 <%@page import="java.util.List"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.SubObject"%>
+<%@page import="it.eng.spagobi.chiron.serializer.SerializerFactory"%>
 
 <%! private static transient Logger logger = Logger.getLogger(ExecuteDocumentAction.class);%>
 
@@ -129,14 +130,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
     %>
     //var menuConfig = <%= aServiceResponse.getAttribute("metaConfiguration")%>;
-
-	var object = {id: <%= obj != null ? obj.getId() : "undefined" %>
-			, label: <%= obj != null ? ("'" + obj.getLabel() + "'") : "undefined" %>
-			, name: <%= obj != null ? ("'" + obj.getName().replace("'", "\\\'") + "'") : "undefined" %>
-			, typeCode: <%= obj != null ? ("'" + obj.getBiObjectTypeCode() + "'") : "undefined" %>
-			, refreshSeconds: <%= obj != null ? ("'" + obj.getRefreshSeconds() + "'") : "undefined" %>
-			, exporters: <%= (obj != null && exportersJSArray!=null && !exportersJSArray.equals("")) ? exportersJSArray : "undefined" %>
-			};
+    
+	<%
+	if (obj == null) {
+		%>
+		var object = {
+			id: undefined,
+			label: undefined,
+			name: undefined,
+			typeCode: undefined,
+			refreshSeconds: undefined,
+			exporters: undefined
+		};
+		<%
+	} else {
+		%>
+		var object = <%= SerializerFactory.getSerializer("application/json").serialize( obj ,locale).toString() %>
+		<%
+	}
+	%>
 
 	var parameters = <%= (parameters != null  && !parameters.trim().equals("")) ? ("'" + parameters.replace("'", "\\\'") + "'") : "undefined" %>;
 	<% if (subObject != null) { %>

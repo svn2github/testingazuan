@@ -12,6 +12,7 @@ import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 import it.eng.spagobi.studio.core.util.BiObjectUtilities;
 import it.eng.spagobi.studio.core.util.SdkSelectFolderTreeGenerator;
+import it.eng.spagobi.studio.core.util.SpagoBIStudioConstants;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -174,6 +175,7 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 		new Label(left, SWT.NONE).setText("Label:");				
 		labelText = new Text(left, SWT.BORDER);
 		labelText.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+		labelText.setTextLimit(SpagoBIStudioConstants.BIOBJECT_LABEL_LIMIT);
 		labelText.addListener(SWT.KeyDown, new Listener() {
 			public void handleEvent(Event event) {
 				//check if page is complete
@@ -191,6 +193,7 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 		new Label(left, SWT.NONE).setText("Name:");				
 		nameText = new Text(left, SWT.BORDER);
 		nameText.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+		nameText.setTextLimit(SpagoBIStudioConstants.BIOBJECT_NAME_LIMIT);
 		nameText.addListener(SWT.KeyDown, new Listener() {
 			public void handleEvent(Event event) {
 				//check if page is complete
@@ -207,6 +210,7 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 		new Label(left, SWT.NONE).setText("Description:");				
 		descriptionText = new Text(left, SWT.BORDER);
 		descriptionText.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+		descriptionText.setTextLimit(SpagoBIStudioConstants.BIOBJECT_DESCRIPTION_LIMIT);
 
 		Object objSel = selection.toList().get(0);
 		File fileSelected=(File)objSel;

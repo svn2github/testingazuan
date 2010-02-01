@@ -43,7 +43,10 @@ public class SpagoBIStudioConstants {
 	public final static String OFFICE_DOCUMENT_ENGINE_LABEL="OfficeInternalEng";
 	public final static String GEO_ENGINE_LABEL="GeoEngine";
 	public final static String DOCUMENT_COMPOSITION_ENGINE_LABEL="DocumentComposition";
-
+	
+	public final static int BIOBJECT_LABEL_LIMIT=30;
+	public final static int BIOBJECT_NAME_LIMIT=40;
+	public final static int BIOBJECT_DESCRIPTION_LIMIT=160;
 	
 	
 }

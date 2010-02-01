@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.chart.bo.charttypes;
 
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.DrillParameter;
+
 import java.util.HashMap;
 
 public interface ILinkableChart {
@@ -33,7 +35,7 @@ public interface ILinkableChart {
 	 * @return the document_ parameters
 	 */
 			
-	public String getDocument_Parameters(HashMap drillParameters);	
+	public String getDocument_Parameters(HashMap<String, DrillParameter> drillParameters);	
 	
 	
 	/**
@@ -87,14 +89,14 @@ public interface ILinkableChart {
 	 * 
 	 * @return the drill parameter
 	 */
-	public HashMap getDrillParameter();
+	public HashMap<String, DrillParameter> getDrillParametersMap();
 
 	/**
 	 * Sets the drill parameter.
 	 * 
 	 * @param drillParameter the new drill parameter
 	 */
-	public void setDrillParameter(HashMap drillParameter);
+	public void setDrillParametersMap(HashMap<String, DrillParameter> drillParametersMap);
 
 	/**
 	 * Gets the category url name.

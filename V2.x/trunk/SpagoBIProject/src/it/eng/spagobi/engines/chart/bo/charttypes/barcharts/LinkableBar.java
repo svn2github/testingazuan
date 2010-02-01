@@ -26,6 +26,7 @@ package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.DrillParameter;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.FilterZeroStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
@@ -60,7 +61,7 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 	String rootUrl=null;
 	String mode="";
 	String drillLabel="";
-	HashMap drillParameter=null;
+	HashMap<String, DrillParameter> drillParametersMap=null;
 	String categoryUrlName="";
 	String serieUrlname="";
 	boolean horizontalView=false; //false is vertical, true is horizontal
@@ -100,7 +101,7 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 
 			List parameters =drillSB.getAttributeAsList("PARAM");
 			if(parameters!=null){
-				drillParameter=new HashMap();	
+				drillParametersMap=new HashMap<String, DrillParameter>();
 
 				for (Iterator iterator = parameters.iterator(); iterator.hasNext();) {
 					SourceBean att = (SourceBean) iterator.next();
@@ -108,20 +109,21 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 					String type=(String)att.getAttribute("type");
 					String value=(String)att.getAttribute("value");
 
-					//if(type!=null && type.equalsIgnoreCase("RELATIVE")){ // Case relative
+					// default is relative
+					if(type!=null && type.equalsIgnoreCase("absolute"))
+						type="absolute";
+					else
+						type="relative";
+
 					if(name.equalsIgnoreCase("seriesurlname"))serieUrlname=value;
 					else if(name.equalsIgnoreCase("categoryurlname"))categoryUrlName=value;
-
-					//}
-					//else{			
-					// Case absolute
-
 					else{
 						if(this.getParametersObject().get(name)!=null){
 							value=(String)getParametersObject().get(name);
 						}
 
-						drillParameter.put(name, value);
+						DrillParameter drillPar=new DrillParameter(name,type,value);
+						drillParametersMap.put(name, drillPar);
 					}
 				}
 				//}
@@ -152,10 +154,10 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		ValueAxis valueAxis = new NumberAxis(valueLabel);
 		if(rangeIntegerValues==true){
 			valueAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
-			}
+		}
 
 		org.jfree.chart.renderer.category.BarRenderer renderer = new org.jfree.chart.renderer.category.BarRenderer();
-		
+
 		renderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
 //		renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
 //		renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
@@ -166,12 +168,12 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 			renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
 			renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
 		}		
-		
-		
+
+
 		if(maxBarWidth!=null){
 			renderer.setMaximumBarWidth(maxBarWidth.doubleValue());
 		}
-		
+
 		boolean document_composition=false;
 		if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
 
@@ -217,8 +219,8 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		plot.setDomainGridlinesVisible(true);
 		plot.setRangeGridlinePaint(Color.white);
 
-        NumberFormat nf = NumberFormat.getNumberInstance(locale);
-		
+		NumberFormat nf = NumberFormat.getNumberInstance(locale);
+
 		// set the range axis to display integers only...
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
@@ -226,10 +228,10 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
-        rangeAxis.setNumberFormatOverride(nf);
+		rangeAxis.setNumberFormatOverride(nf);
 
-		
-		
+
+
 		if(rangeAxisLocation != null) {
 			if(rangeAxisLocation.equalsIgnoreCase("BOTTOM_OR_LEFT")) {
 				plot.setRangeAxisLocation(0, AxisLocation.BOTTOM_OR_LEFT);
@@ -241,7 +243,7 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 				plot.setRangeAxisLocation(0, AxisLocation.TOP_OR_LEFT);
 			}
 		}
-		
+
 		// disable bar outlines...
 		//BarRenderer renderer = (BarRenderer) plot.getRenderer();
 		renderer.setDrawBarOutline(false);
@@ -295,9 +297,9 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		domainAxis.setLabelPaint(styleYaxesLabels.getColor());
 		domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
 		domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
-		
+
 		if(legend==true) drawLegend(chart);
-		
+
 		logger.debug("OUT");
 		return chart;
 
@@ -313,13 +315,14 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 	 * @return the document_ parameters
 	 */
 
-	public String getDocument_Parameters(HashMap drillParameters) { 
+	public String getDocument_Parameters(HashMap<String, DrillParameter> _drillParametersMap) { 
 		logger.debug("IN");
 		String document_parameter="";
-		if(drillParameters!=null){
-			for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
+		if(_drillParametersMap!=null){
+			for (Iterator iterator = _drillParametersMap.keySet().iterator(); iterator.hasNext();) {
 				String name = (String) iterator.next();
-				String value=(String)drillParameters.get(name);
+				DrillParameter drillPar=(DrillParameter)_drillParametersMap.get(name);
+				String value=drillPar.getValue();
 				if(name!=null && !name.equals("") && value!=null && !value.equals("")){
 					document_parameter+="%26"+name+"%3D"+value;
 					//document_parameter+="&"+name+"="+value;
@@ -386,20 +389,17 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getDrillParameter()
-	 */
-	public HashMap getDrillParameter() {
-		return drillParameter;
+	public HashMap<String, DrillParameter> getDrillParametersMap() {
+		return drillParametersMap;
 	}
 
 
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setDrillParameter(java.util.HashMap)
-	 */
-	public void setDrillParameter(HashMap drillParameter) {
-		this.drillParameter = drillParameter;
+	public void setDrillParametersMap(
+			HashMap<String, DrillParameter> drillParametersMap) {
+		this.drillParametersMap = drillParametersMap;
 	}
+
+
 
 
 	/* (non-Javadoc)

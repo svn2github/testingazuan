@@ -43,6 +43,7 @@ import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.DrillParameter;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
@@ -244,26 +245,31 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 					//category is defined both for pie and bar linkable charts
 					if(serviceRequest.getAttribute("categoryurlname")!=null){
 						categoryurlname=(String)serviceRequest.getAttribute("categoryurlname");
-
 						((ILinkableChart)sbi).setCategoryUrlName(categoryurlname);
-
 					}
 
 
 					//check if there are other parameters from the drill parameters whose value is in the request; elsewhere take them from template
 					logger.debug("Linkable chart: search in the request for other parameters");
-					HashMap drillParameters=new HashMap();
-					if(((ILinkableChart)sbi).getDrillParameter()!= null){
+					HashMap< String, DrillParameter> drillParametersMap=new HashMap<String, DrillParameter>();
 
-						drillParameters=(HashMap)((ILinkableChart)sbi).getDrillParameter().clone();
+					if(((ILinkableChart)sbi).getDrillParametersMap()!= null){
 
-						for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
+						drillParametersMap=(HashMap)((ILinkableChart)sbi).getDrillParametersMap().clone();
+
+						// if finds that a parameter is in the request substitute the value; but only if in RELATIVE MODE
+						for (Iterator iterator = drillParametersMap.keySet().iterator(); iterator.hasNext();) {
 							String name = (String) iterator.next();
-							if(serviceRequest.getAttribute(name)!=null){
-								String value=(String)serviceRequest.getAttribute(name);
-								((ILinkableChart)sbi).getDrillParameter().remove(name);
-								((ILinkableChart)sbi).getDrillParameter().put(name, value);
-
+							DrillParameter drillPar=drillParametersMap.get(name);
+							String typePar=drillPar.getType();
+							// if relative put new value!
+							if(typePar.equalsIgnoreCase("relative")){
+								if(serviceRequest.getAttribute(name)!=null){
+									String value=(String)serviceRequest.getAttribute(name);
+									((ILinkableChart)sbi).getDrillParametersMap().remove(name);
+									drillPar.setValue(value);
+									((ILinkableChart)sbi).getDrillParametersMap().put(name, drillPar);
+								}
 							}
 
 						}
@@ -352,7 +358,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				Object nVis=(Object)serviceRequest.getAttribute("n_visualization");
 				response.setAttribute("n_visualization",nVis);
 			}
-			
+
 
 
 

@@ -24,6 +24,7 @@ package it.eng.spagobi.engines.chart.bo.charttypes.piecharts;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.DrillParameter;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyPieUrlGenerator;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
@@ -56,7 +57,7 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 	String rootUrl=null;
 	String mode="";
 	String drillLabel="";
-	HashMap drillParameter=null;
+	HashMap<String, DrillParameter> drillParametersMap=null;
 	String categoryUrlName="";
 
 
@@ -119,7 +120,7 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 
 			List parameters =drillSB.getAttributeAsList("PARAM");
 			if(parameters!=null){
-				drillParameter=new HashMap();	
+				drillParametersMap=new HashMap<String, DrillParameter>();
 
 				for (Iterator iterator = parameters.iterator(); iterator.hasNext();) {
 					SourceBean att = (SourceBean) iterator.next();
@@ -127,11 +128,17 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 					String type=(String)att.getAttribute("type");
 					String value=(String)att.getAttribute("value");
 					
-					//if(type!=null && type.equalsIgnoreCase("RELATIVE")){ // Case relative
+					// default is relative
+					if(type!=null && type.equalsIgnoreCase("absolute"))
+						type="absolute";
+					else
+						type="relative";
+					
 					if(name.equalsIgnoreCase("categoryurlname"))categoryUrlName=value;
-					//}
-					else{												// Case absolute
-						drillParameter.put(name, value);
+					else{
+						DrillParameter drillPar=new DrillParameter(name,type,value);
+						drillParametersMap.put(name, drillPar);
+
 					}
 					
 				}
@@ -461,19 +468,17 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 	}
 
 
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getDrillParameter()
-	 */
-	public HashMap getDrillParameter() {
-		return drillParameter;
+
+
+
+	public HashMap<String, DrillParameter> getDrillParametersMap() {
+		return drillParametersMap;
 	}
 
 
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setDrillParameter(java.util.HashMap)
-	 */
-	public void setDrillParameter(HashMap drillParameter) {
-		this.drillParameter = drillParameter;
+	public void setDrillParametersMap(
+			HashMap<String, DrillParameter> drillParametersMap) {
+		this.drillParametersMap = drillParametersMap;
 	}
 
 
@@ -582,11 +587,12 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getDocument_Parameters(java.util.HashMap)
 	 */
-	public String getDocument_Parameters(HashMap drillParameters) {
+	public String getDocument_Parameters(HashMap<String, DrillParameter> drillParametersMap) {
 		String document_parameter="";
-		for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = drillParametersMap.keySet().iterator(); iterator.hasNext();) {
 			String name = (String) iterator.next();
-			String value=(String)drillParameters.get(name);
+			DrillParameter drillPar=(DrillParameter)drillParametersMap.get(name);
+			String value=drillPar.getValue();
 			if(name!=null && !name.equals("") && value!=null && !value.equals("")){
 				document_parameter+="%26"+name+"%3D"+value;
 				//document_parameter+="&"+name+"="+value;

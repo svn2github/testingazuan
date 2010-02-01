@@ -26,6 +26,7 @@ package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.DrillParameter;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.FilterZeroStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
@@ -75,7 +76,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 	String rootUrl=null;
 	String mode="";
 	String drillLabel="";
-	HashMap drillParameter=null;
+	HashMap<String, DrillParameter> drillParametersMap=null;
 	String categoryUrlName="";
 	List categoryNames;
 	int subCategoriesNumber=0;
@@ -334,6 +335,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 			}
 		}
 		*/
+		
 		//reading series colors if present
 		SourceBean colors = (SourceBean)content.getAttribute("SERIES_COLORS");
 		if(colors==null){
@@ -604,11 +606,12 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 	 * @return the document_ parameters
 	 */
 
-	public String getDocument_Parameters(HashMap drillParameters) {
+	public String getDocument_Parameters(HashMap<String, DrillParameter> drillParametersMap) {
 		String document_parameter="";
-		for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = drillParametersMap.keySet().iterator(); iterator.hasNext();) {
 			String name = (String) iterator.next();
-			String value=(String)drillParameters.get(name);
+			DrillParameter drillParameter=drillParametersMap.get(name);
+			String value=drillParameter.getValue();
 			if(name!=null && !name.equals("") && value!=null && !value.equals("")){
 				document_parameter+="%26"+name+"%3D"+value;
 				//document_parameter+="&"+name+"="+value;
@@ -674,20 +677,22 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getDrillParameter()
-	 */
-	public HashMap getDrillParameter() {
-		return drillParameter;
+
+
+
+	public HashMap<String, DrillParameter> getDrillParametersMap() {
+		return drillParametersMap;
 	}
 
 
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setDrillParameter(java.util.HashMap)
-	 */
-	public void setDrillParameter(HashMap drillParameter) {
-		this.drillParameter = drillParameter;
+
+
+	public void setDrillParametersMap(
+			HashMap<String, DrillParameter> drillParametersMap) {
+		this.drillParametersMap = drillParametersMap;
 	}
+
+
 
 
 	/* (non-Javadoc)

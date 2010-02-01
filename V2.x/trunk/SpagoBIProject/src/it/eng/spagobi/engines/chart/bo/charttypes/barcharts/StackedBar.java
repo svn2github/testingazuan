@@ -27,6 +27,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.DrillParameter;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.FilterZeroStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
@@ -73,7 +74,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 	String rootUrl=null;
 	String mode="";
 	String drillLabel="";
-	HashMap drillParameter=null;
+	HashMap<String, DrillParameter> drillParametersMap=null;
 	String categoryUrlName="";
 	String serieUrlname="";
 
@@ -98,7 +99,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 	public static final String PERCENTAGE_VALUE = "percentage_value";
 
 
-	
+
 
 	/**
 	 * Override this functions from BarCharts beacuse I want the hidden serie to be the first!
@@ -128,7 +129,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		if(filterCatGroups==true){
 			catGroups=new HashMap();
 		}
-		
+
 		//categories.put(new Integer(0), "All Categories");
 		boolean first=true;
 		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
@@ -194,15 +195,15 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					// for now I make like if addition value is checked he seek for an attribute with name with value+name_serie
 				}
 			}
-			
+
 			// if a category group was found add it
 			if(!cat_group_name.equalsIgnoreCase("") && !catValue.equalsIgnoreCase("") && catGroups!=null)
 			{	
 				catGroups.put(catValue, cat_group_name);
 				if(!(catGroupNames.contains(cat_group_name))){
-				catGroupNames.add(cat_group_name);}
+					catGroupNames.add(cat_group_name);}
 			}
-			
+
 
 			// if it is cumulative automatically get the vamount value
 			if(cumulative){
@@ -231,7 +232,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 						logger.warn("error in double conversion, put default to null");
 						valueD=null;
 					}
-					
+
 					dataset.addValue(valueD!=null ? valueD.doubleValue() : null, nameS, catValue);
 					cumulativeValue+=valueD!=null ? valueD.doubleValue() : 0.0;
 					if(!seriesNames.contains(nameS)){
@@ -309,7 +310,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		{
 			makePercentage=false;
 		}
-		
+
 		if(confParameters.get(PERCENTAGE_VALUE)!=null){	
 			String perc=(String)confParameters.get(PERCENTAGE_VALUE);
 			if(perc.equalsIgnoreCase("true")){
@@ -335,7 +336,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 			List parameters =drillSB.getAttributeAsList("PARAM");
 			if(parameters!=null){
-				drillParameter=new HashMap();	
+				drillParametersMap=new HashMap<String, DrillParameter>();
 
 				for (Iterator iterator = parameters.iterator(); iterator.hasNext();) {
 					SourceBean att = (SourceBean) iterator.next();
@@ -343,13 +344,34 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					String type=(String)att.getAttribute("type");
 					String value=(String)att.getAttribute("value");
 
-					if(type!=null && type.equalsIgnoreCase("RELATIVE")){ // Case relative
-						if(value.equalsIgnoreCase("serie"))serieUrlname=name;
-						if(value.equalsIgnoreCase("category"))categoryUrlName=name;
+					// default is relative
+					if(type!=null && type.equalsIgnoreCase("absolute"))
+						type="absolute";
+					else
+						type="relative";
+
+//					if(type!=null && type.equalsIgnoreCase("RELATIVE")){ // Case relative
+//					if(value.equalsIgnoreCase("serie"))serieUrlname=name;				// ?????????????'''
+//					if(value.equalsIgnoreCase("category"))categoryUrlName=name;
+//					}
+
+//					else{												// Case absolute
+//					drillParameter.put(name, value);
+//					}
+
+
+					if(name.equalsIgnoreCase("seriesurlname"))serieUrlname=value;
+					else if(name.equalsIgnoreCase("categoryurlname"))categoryUrlName=value;
+					else{
+						if(this.getParametersObject().get(name)!=null){
+							value=(String)getParametersObject().get(name);
+						}
+
+						DrillParameter drillPar=new DrillParameter(name,type,value);
+						drillParametersMap.put(name, drillPar);
 					}
-					else{												// Case absolute
-						drillParameter.put(name, value);
-					}
+
+
 				}
 			}
 		}
@@ -425,23 +447,23 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		StackedBarRenderer renderer = (StackedBarRenderer) plot.getRenderer();
 		renderer.setDrawBarOutline(false);
 		renderer.setBaseItemLabelsVisible(true);
-		
+
 		if (percentageValue)
 			renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator("{2}", new DecimalFormat("#,##.#%")));
 		else if(makePercentage)
-		       renderer.setRenderAsPercentages(true);
-		
+			renderer.setRenderAsPercentages(true);
+
 		/*
 		else
 			renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-		*/
+		 */
 		renderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
 
 		if(maxBarWidth!=null){
 			renderer.setMaximumBarWidth(maxBarWidth.doubleValue());
 		}
 
-		
+
 		boolean document_composition=false;
 		if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
 
@@ -482,9 +504,9 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 		logger.debug("Axis creation");
 		// set the range axis to display integers only...
-		
-        NumberFormat nf = NumberFormat.getNumberInstance(locale);
-		
+
+		NumberFormat nf = NumberFormat.getNumberInstance(locale);
+
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		if(makePercentage)
 			rangeAxis.setNumberFormatOverride(NumberFormat.getPercentInstance());
@@ -493,14 +515,14 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 		if(rangeIntegerValues==true){
 			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
-			}
-		
+		}
+
 		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
-        rangeAxis.setNumberFormatOverride(nf);
-		
+		rangeAxis.setNumberFormatOverride(nf);
+
 		if(rangeAxisLocation != null) {
 			if(rangeAxisLocation.equalsIgnoreCase("BOTTOM_OR_LEFT")) {
 				plot.setRangeAxisLocation(0, AxisLocation.BOTTOM_OR_LEFT);
@@ -512,7 +534,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 				plot.setRangeAxisLocation(0, AxisLocation.TOP_OR_LEFT);
 			}
 		}
-		
+
 		renderer.setDrawBarOutline(false);
 
 		logger.debug("Set series color");
@@ -545,22 +567,22 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		MyStandardCategoryItemLabelGenerator generator=null;
 		logger.debug("Are there addition labels "+additionalLabels);
 		logger.debug("Are there value labels "+showValueLabels);
-		
-		if(showValueLabels){
-        	renderer.setBaseItemLabelGenerator(new FilterZeroStandardCategoryItemLabelGenerator());
-        	renderer.setBaseItemLabelsVisible(true);
-        	renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
-        	renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
 
-        	renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+		if(showValueLabels){
+			renderer.setBaseItemLabelGenerator(new FilterZeroStandardCategoryItemLabelGenerator());
+			renderer.setBaseItemLabelsVisible(true);
+			renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+			renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
+
+			renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
 					ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
 
-        	renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+			renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
 					ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
 
 		}
 		else if(additionalLabels){
-			
+
 			generator = new MyStandardCategoryItemLabelGenerator(catSerLabels,"{1}", NumberFormat.getInstance());
 			logger.debug("generator set");
 
@@ -596,13 +618,13 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 				CategoryLabelPositions.createUpRotationLabelPositions(
 						Math.PI / 4.0));
 		domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
-        domainAxis.setLabelPaint(styleYaxesLabels.getColor());
-        domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
-        domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
-        //opacizzazione colori
-        if(!cumulative) plot.setForegroundAlpha(0.6f);
+		domainAxis.setLabelPaint(styleYaxesLabels.getColor());
+		domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+		domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
+		//opacizzazione colori
+		if(!cumulative) plot.setForegroundAlpha(0.6f);
 		if(legend==true) drawLegend(chart);
-        
+
 		logger.debug("OUT");
 		return chart;
 
@@ -618,12 +640,13 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 	 * @return the document_ parameters
 	 */
 
-	public String getDocument_Parameters(HashMap drillParameters) {
+	public String getDocument_Parameters(HashMap<String, DrillParameter> drillParametersMap) {
 		String document_parameter="";
-		if (drillParameters != null){
-			for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
+		if (drillParametersMap != null){
+			for (Iterator iterator = drillParametersMap.keySet().iterator(); iterator.hasNext();) {
 				String name = (String) iterator.next();
-				String value=(String)drillParameters.get(name);
+				DrillParameter drillPar=drillParametersMap.get(name);
+				String value=drillPar.getValue();
 				if(name!=null && !name.equals("") && value!=null && !value.equals("")){
 					document_parameter+="%26"+name+"%3D"+value;
 					//document_parameter+="&"+name+"="+value;
@@ -690,20 +713,22 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#getDrillParameter()
-	 */
-	public HashMap getDrillParameter() {
-		return drillParameter;
+
+
+
+	public HashMap<String, DrillParameter> getDrillParametersMap() {
+		return drillParametersMap;
 	}
 
 
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart#setDrillParameter(java.util.HashMap)
-	 */
-	public void setDrillParameter(HashMap drillParameter) {
-		this.drillParameter = drillParameter;
+
+
+	public void setDrillParametersMap(
+			HashMap<String, DrillParameter> drillParametersMap) {
+		this.drillParametersMap = drillParametersMap;
 	}
+
+
 
 
 	/* (non-Javadoc)

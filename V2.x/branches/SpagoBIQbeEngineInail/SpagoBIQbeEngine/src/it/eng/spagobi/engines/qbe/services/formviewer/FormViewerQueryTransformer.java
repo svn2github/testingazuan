@@ -21,14 +21,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.qbe.services.formviewer;
 
+import it.eng.qbe.query.AggregationFunctions;
 import it.eng.qbe.query.CriteriaConstants;
+import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.ExpressionNode;
+import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.query.transformers.AbstractQbeQueryTransformer;
 import it.eng.spagobi.engines.qbe.bo.FormViewerState;
 import it.eng.spagobi.engines.qbe.template.QbeJSONTemplateParser;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -149,6 +153,43 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 	
 	
 	private ExpressionNode addWhereExpressionFromClosedfilter(Query query, JSONArray expression) throws Exception {
+		/*
+		int l = expression.length();
+		for (int i = 0; i < l; i = i + 3) {
+			String operator = expression.getString(i+1);
+			if (operator == "AND") {
+				// concatena i due nodi, il nodo risultante dovrà essere concatenato con il resto
+				ExpressionNode node = new ExpressionNode("NODE_OP", operator);
+				
+				JSONObject filter1 = expression.getJSONObject(i);
+				String id = UUID.randomUUID().toString();
+				addWhereConditionFromClosedfilter(query, filter1, id);
+				node.addChild(new ExpressionNode("NODE_CONST", "$F{" + id + "}"));
+				
+				JSONObject filter2 = expression.getJSONObject(i+2);
+				id = UUID.randomUUID().toString();
+				addWhereConditionFromClosedfilter(query, filter2, id);
+				node.addChild(new ExpressionNode("NODE_CONST", "$F{" + id + "}"));
+				
+				concatenaNodoConIlResto(node, expression, i + 3);
+			} else {
+				// fatti dare il node della concatenazione del resto, poi concatena in OR 
+				ExpressionNode restante = getRestante(expression,, i+3);
+				
+				ExpressionNode node = new ExpressionNode("NODE_OP", operator);
+				
+				JSONObject filter1 = expression.getJSONObject(i);
+				String id = UUID.randomUUID().toString();
+				addWhereConditionFromClosedfilter(query, filter1, id);
+				node.addChild(new ExpressionNode("NODE_CONST", "$F{" + id + "}"));
+				
+				node.addChild(restante);
+				
+			}
+
+		}
+		*/
+		
 		String operator = expression.getString(1);
 		ExpressionNode node = new ExpressionNode("NODE_OP", operator);
 		
@@ -236,22 +277,62 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 				String id = filter.getString(QbeJSONTemplateParser.ID);
 				String field = formViewerState.getDynamicFilterField(id);
 				if (field != null && !field.trim().equals("")) {
-					WhereField.Operand leftOperand = new WhereField.Operand(field, null, "Field Content", null, null);
-					String operator = filter.getString(QbeJSONTemplateParser.OPERATOR);
-					WhereField.Operand rightOperand = null;
-					if (operator.equalsIgnoreCase("BETWEEN")) {
-						List<String> fromToValues = formViewerState.getDynamicFilterFromToValues(id);
-						rightOperand = new WhereField.Operand(fromToValues.get(0) + "," + fromToValues.get(1), null, "Static Value", null, null);
-					} else {
-						String value = formViewerState.getDynamicFilterValue(id);
-						rightOperand = new WhereField.Operand(value, null, "Static Value", null, null);
+					List fields = query.getDataMartSelectFields(false);
+					DataMartSelectField selectField = null;
+					Iterator it = fields.iterator();
+					while (it.hasNext()) {
+						selectField = (DataMartSelectField) it.next();
+						if (selectField.getFunction() != null && selectField.getFunction() != AggregationFunctions.NONE_FUNCTION) {
+							logger.debug("Selected field " + selectField.getUniqueName() + " has an aggregation function applied");
+							break;
+						}
 					}
-					query.addWhereField(id, null, false, leftOperand, filter.getString("operator"), rightOperand, "AND");
-					updateWhereClauseStructure(query, id, "AND");
+					if (selectField != null) {
+						if (selectField.getFunction() != null && selectField.getFunction() != AggregationFunctions.NONE_FUNCTION) {
+							logger.debug("Applying having filter to field " + selectField.getUniqueName());
+							addHavingFilter(query, selectField, filter);
+						} else {
+							logger.debug("Applying where filter to field " + selectField.getUniqueName());
+							addWhereFilter(query, field, filter);
+						}
+					} else {
+						logger.error("Field " + field + " not found on query selected fields");
+					}
 				}
 			}
 		}
 		logger.debug("OUT");
+	}
+	
+	private void addWhereFilter(Query query, String field, JSONObject filter) throws Exception {
+		String id = filter.getString(QbeJSONTemplateParser.ID);
+		WhereField.Operand leftOperand = new WhereField.Operand(field, null, "Field Content", null, null);
+		String operator = filter.getString(QbeJSONTemplateParser.OPERATOR);
+		WhereField.Operand rightOperand = null;
+		if (operator.equalsIgnoreCase("BETWEEN")) {
+			List<String> fromToValues = formViewerState.getDynamicFilterFromToValues(id);
+			rightOperand = new WhereField.Operand(fromToValues.get(0) + "," + fromToValues.get(1), null, "Static Value", null, null);
+		} else {
+			String value = formViewerState.getDynamicFilterValue(id);
+			rightOperand = new WhereField.Operand(value, null, "Static Value", null, null);
+		}
+		query.addWhereField(id, null, false, leftOperand, filter.getString("operator"), rightOperand, "AND");
+		updateWhereClauseStructure(query, id, "AND");
+	}
+	
+	private void addHavingFilter(Query query, DataMartSelectField field, JSONObject filter) throws Exception {
+		String id = filter.getString(QbeJSONTemplateParser.ID);
+		HavingField.Operand leftOperand = new HavingField.Operand(field.getUniqueName(), null, "Field Content", null, null, field.getFunction());
+		String operator = filter.getString(QbeJSONTemplateParser.OPERATOR);
+		HavingField.Operand rightOperand = null;
+		if (operator.equalsIgnoreCase("BETWEEN")) {
+			List<String> fromToValues = formViewerState.getDynamicFilterFromToValues(id);
+			rightOperand = new HavingField.Operand(fromToValues.get(0) + "," + fromToValues.get(1), null, "Static Value", null, null, AggregationFunctions.NONE_FUNCTION);
+		} else {
+			String value = formViewerState.getDynamicFilterValue(id);
+			rightOperand = new HavingField.Operand(value, null, "Static Value", null, null, AggregationFunctions.NONE_FUNCTION);
+		}
+		query.addHavingField(id, null, false, leftOperand, filter.getString("operator"), rightOperand, "AND");
 	}
 
 }

@@ -50,21 +50,20 @@ public class ReportExporter {
 	 * @return
 	 */
 
-	public File getReportPDF(BIObject obj, IEngUserProfile profile){
+	public File getReport(BIObject obj, IEngUserProfile profile, String output){
 		logger.debug("IN");
-		File toReturn=null;
-		if(obj==null){
+		File toReturn = null;
+		if (obj == null){
 			logger.error("object is null");
 			return null;
 		}
 
-
 		ExecutionProxy proxy = new ExecutionProxy();
 		proxy.setBiObject(obj);
-		proxy.setReturnedContentType("application/pdf");
-		String fileExtension = proxy.getFileExtensionFromContType(proxy.getReturnedContentType());
 
-		byte[] returnByteArray = proxy.exec(profile, "SDK", "pdf");
+		byte[] returnByteArray = proxy.exec(profile, "SDK", output);
+		
+		String fileExtension = proxy.getFileExtensionFromContType(proxy.getReturnedContentType());
 
 		if(returnByteArray == null || returnByteArray.length==0){
 			logger.error("error during execution; null result from execution Proxy");
@@ -82,15 +81,13 @@ public class ReportExporter {
 
 		try{
 			// file creation
-			//Creta etemp file
+			//Create temp file
 			String dirS=System.getProperty("java.io.tmpdir");
 			String dirSS=dirS+"/reportExport";;
 			File dir = new File(dirSS);
 			dir.mkdirs();
 			
-
 			logger.debug("Create Temp File");
-			String fileName="jasperReport"+executionId;
 
 			toReturn=File.createTempFile(obj.getLabel()+executionId, fileExtension, dir);
 			fos=new FileOutputStream(toReturn);

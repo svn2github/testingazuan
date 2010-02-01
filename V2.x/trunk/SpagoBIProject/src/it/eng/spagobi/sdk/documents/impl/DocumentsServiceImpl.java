@@ -55,7 +55,6 @@ import it.eng.spagobi.engines.exporters.ReportExporter;
 import it.eng.spagobi.engines.kpi.SpagoBIKpiInternalEngine;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
 import it.eng.spagobi.sdk.AbstractSDKService;
-import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
 import it.eng.spagobi.sdk.documents.DocumentsService;
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
@@ -67,7 +66,8 @@ import it.eng.spagobi.sdk.exceptions.MissingParameterValue;
 import it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException;
 import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
 import it.eng.spagobi.sdk.utilities.SDKObjectsConverter;
-import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.utilities.file.FileUtils;
+import it.eng.spagobi.utilities.mime.MimeUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -530,36 +530,43 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 	}
 
 
-	private SDKExecutedDocumentContent executeReport(SDKDocument document, BIObject biobj, IEngUserProfile profile){
+	private SDKExecutedDocumentContent executeReport(SDKDocument document, BIObject biobj, IEngUserProfile profile, String output){
 
-		ReportExporter jse=new ReportExporter();
-		File tmpFile=null;
-		SDKExecutedDocumentContent toReturn=null;
-
-		tmpFile=jse.getReportPDF(biobj, profile);
-		if(tmpFile==null){
-			logger.error("File returned from exporter is NULL!");	
-		}
-
-		try{
+		logger.debug("IN");
+		SDKExecutedDocumentContent toReturn = null;
+		
+		try {
+			
+			ReportExporter jse = new ReportExporter();
+			File tmpFile = jse.getReport(biobj, profile, output);
+			if (tmpFile == null) {
+				logger.error("File returned from exporter is NULL!");
+				return null;
+			}
+	
 			logger.debug("setting object to return of type SDKExecuteDocumentContent");
-			toReturn=new SDKExecutedDocumentContent();
-			String mimeType = "application/pdf";
+			toReturn = new SDKExecutedDocumentContent();
 			FileDataSource mods = new FileDataSource(tmpFile);
-			DataHandler dataHandler=new DataHandler(mods);
+			DataHandler dataHandler = new DataHandler(mods);
 			toReturn.setContent(dataHandler);
-			toReturn.setFileName(biobj.getLabel()+".pdf");
+			String fileExtension = FileUtils.getFileExtension(tmpFile);
+			String fileName = null;
+			if (fileExtension != null && !fileExtension.trim().equals("")) {
+				fileName = biobj.getLabel() + "" + fileExtension;
+			} else {
+				fileName = biobj.getLabel();
+			}
+			String mimeType = MimeUtils.getMimeType(tmpFile);
+			logger.debug("Produced file name is " + fileName);
+			logger.debug("Produced file mimetype is " + mimeType);
+			toReturn.setFileName(fileName);
 			toReturn.setFileType(mimeType);
 			DataHandler dhSource = new DataHandler(mods);
 			toReturn.setContent(dhSource);
 
+		} finally {
+			logger.debug("OUT");
 		}
-		finally{
-			if(tmpFile!=null){
-				//tmpFile.delete();
-			}
-		}
-
 		return toReturn;
 	}
 
@@ -637,13 +644,11 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 		logger.debug("Check the document type and call the exporter (if present)");
 		try {
 
-			if(document.getType().equalsIgnoreCase("KPI")){  // CASE KPI
-				toReturn=executeKpi(document, instance.getBIObject(), (String)profile.getUserUniqueIdentifier(),output);
-			}else if(document.getType().equalsIgnoreCase("REPORT")){  // CASE REPORT
-				Engine engine=instance.getBIObject().getEngine();
-				String engineLabel=engine.getLabel();
-				toReturn=executeReport(document, instance.getBIObject(), profile);					
-			}else {
+			if ( document.getType().equalsIgnoreCase("KPI")) {  // CASE KPI
+				toReturn = executeKpi(document, instance.getBIObject(), (String)profile.getUserUniqueIdentifier(), output);
+			} else if (document.getType().equalsIgnoreCase("REPORT")){  // CASE REPORT
+				toReturn = executeReport(document, instance.getBIObject(), profile, output);					
+			} else {
 				logger.error("NO EXPORTER AVAILABLE");
 			}
 

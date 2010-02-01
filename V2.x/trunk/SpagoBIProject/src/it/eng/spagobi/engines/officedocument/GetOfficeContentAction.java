@@ -29,6 +29,7 @@ import it.eng.spagobi.monitoring.dao.AuditManager;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.content.service.ContentServiceImplSupplier;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
+import it.eng.spagobi.utilities.mime.MimeUtils;
 
 import java.io.InputStream;
 import java.util.Properties;
@@ -98,27 +99,10 @@ public class GetOfficeContentAction extends AbstractHttpAction {
 			response.setHeader("Pragma: ",""); // leave blank to avoid IE errors 
 			response.setHeader("content-disposition","inline; filename="+templateFileName);	
 			
-			String fileExtension = null;
-			int extindex = templateFileName.lastIndexOf(".");
-			if (extindex != -1) fileExtension = templateFileName.substring(extindex + 1);
-			if (fileExtension != null) {
-			 		InputStream is;
-			 		Thread t= Thread.currentThread();
-			 		ClassLoader cl=t.getContextClassLoader();
-			 		is=cl.getResourceAsStream("MIMEtypes-extensions.properties");
-			 		Properties props = new Properties();
-			 		props.load(is);
-			 		String mimetype = props.getProperty(fileExtension);
-			 		if (mimetype != null && !mimetype.trim().equals("")) {
-			 			response.setContentType(mimetype.trim());
-			 			logger.debug("Content type: "+mimetype.trim());
-			 			}
-			 	}
-			else
-			{
-				logger.warn("no file extension");	
-			}
-	
+			String mimeType = MimeUtils.getMimeType(templateFileName);
+			logger.debug("Mime type is = " + mimeType);
+			response.setContentType(mimeType);
+
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
 			byte[] templateContent = bASE64Decoder.decodeBuffer(template.getContent());
 			response.setContentLength(templateContent.length);

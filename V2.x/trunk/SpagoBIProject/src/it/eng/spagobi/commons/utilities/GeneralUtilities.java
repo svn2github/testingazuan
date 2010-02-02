@@ -54,6 +54,7 @@ import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -61,6 +62,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Contains some SpagoBI's general utilities.
@@ -418,7 +421,50 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT:" + locale.toString());
 		return locale;
 	}
+	
+	public static List<Locale> getSupportedLocales() {
+		logger.debug("IN");
+		List<Locale> toReturn = new ArrayList<Locale>();
+		ConfigSingleton config = ConfigSingleton.getInstance();
+		String attName = "SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE";
+		List locales = config.getAttributeAsList(attName);
+		if (locales != null && locales.size() > 0) {
+			Iterator it = locales.iterator();
+			while (it.hasNext()) {
+				SourceBean languageSB = (SourceBean) it.next();
+				String language = (String) languageSB.getAttribute("language");
+				String country = (String) languageSB.getAttribute("country");
+				logger.debug("Found locale with language = [" + language + "] and country = [" + country + "]");
+				Locale locale = new Locale(language, country);
+				toReturn.add(locale);
+			}
+		} else {
+			logger.error("NO LOCALES CONFIGURED!!!");
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
 
+	public static JSONArray getSupportedLocalesAsJSONArray() {
+		logger.debug("IN");
+		JSONArray toReturn = new JSONArray();
+		try {
+			List<Locale> locales = getSupportedLocales();
+			Iterator<Locale> it = locales.iterator();
+			while (it.hasNext()) {
+				Locale locale = it.next();
+				JSONObject localeJSON = new JSONObject();
+				localeJSON.put("language", locale.getLanguage());
+				localeJSON.put("country", locale.getCountry());
+				toReturn.put(localeJSON);
+			}
+		} catch (Exception e) {
+			logger.error("Error while retrieving supported locales as JSONArray", e);
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+	
 	public static Locale getCurrentLocale(RequestContainer requestContainer) {
 		Locale locale=null;
 		if(requestContainer!=null){    	

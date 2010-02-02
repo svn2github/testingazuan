@@ -204,7 +204,8 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
         	currTheme: '<%= currTheme %>',
         	curr_country: '<%= curr_country %>',
         	curr_language: '<%= curr_language%>',
-        	contextName: '<%= GeneralUtilities.getSpagoBiContext() %>'
+        	contextName: '<%= GeneralUtilities.getSpagoBiContext() %>',
+        	supportedLocales: <%= GeneralUtilities.getSupportedLocalesAsJSONArray().toString() %>
         };
     }();
 

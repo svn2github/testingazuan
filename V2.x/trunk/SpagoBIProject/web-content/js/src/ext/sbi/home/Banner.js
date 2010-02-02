@@ -184,7 +184,14 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 								listeners: {'mouseexit': function(item) {item.hide();}},
 								items: this.getItems(menu)
 								}),
-							handler:  function() {eval(menu.href);} ,
+							handler:  function(item) {
+	 							// if toolbar button has href property, the handler will call that href, otherwise it will show the button's menu
+	 							if (menu.href !== undefined && menu.href !== null && menu.href !== '') {
+	 								eval(menu.href);
+	 							} else {
+	 								item.showMenu();
+	 							}
+	 						},
 	            			icon:  menu.icon,
 					        cls: 'x-btn-menubutton x-btn-text-icon bmenu '
 					        })
@@ -250,35 +257,22 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		 		});	
 	 		}
 	 		
+	 		var languagesMenuItems = [];
+	 		for (var i = 0; i < Sbi.config.supportedLocales.length ; i++) {
+	 			var aLocale = Sbi.config.supportedLocales[i];
+ 				var aLanguagesMenuItem = new Ext.menu.Item({
+					id: '',
+					text: aLocale.language,
+					iconCls:'icon-' + aLocale.language,
+					href: this.getLanguageUrl(aLocale)
+				})
+ 				languagesMenuItems.push(aLanguagesMenuItem);
+	 		}
+	 		
 	 		//languages menus initialization
 	 		this.languages = new Ext.menu.Menu({ 
- 			id: 'languages', 
-			 items: [ 
- 				new Ext.menu.Item({
-					 id: '',
- 					text: 'it',
- 					iconCls:'icon-it',
-					href: this.getLanguageUrl({language:'it' ,country:'IT'}) 
- 				}),
-	 			new Ext.menu.Item({
-					 id: '',
- 					text: 'en',
- 					iconCls: 'icon-en',
-					href: this.getLanguageUrl({language:'en' ,country:'US'})
- 				}),
- 				new Ext.menu.Item({
-					 id: '',
- 					text: 'fr',
- 					iconCls: 'icon-fr',
- 					href: this.getLanguageUrl({language:'fr' ,country:'FR'}) 
- 				}),
- 				new Ext.menu.Item({
-					 id: '',
- 					text: 'es',
- 					iconCls: 'icon-es',
- 					href: this.getLanguageUrl({language:'es' ,country:'ES'}) 
- 				})
-				]
+	 			id: 'languages', 
+	 			items: languagesMenuItems
 	 		});
 	 	this.languages.addListener('mouseexit', function(item) {item.hide();});	
  	    

@@ -223,12 +223,12 @@
 	        this.topmenu.mouseout = (function(){
 	          this.topmenu.mouseout = null;
 	          this.topmenu.fireEvent("mouseexit", this.topmenu, e, t);
-	        }).defer(100, this);
+	        }).defer(500, this);
 	      } else {
 	        this.mouseout = (function(){
 	          this.mouseout = null;
 	          this.fireEvent("mouseexit", this, e, t);
-	        }).defer(100, this);
+	        }).defer(500, this);
 	      }
 	    }, this);
 	    el.on("mouseup", function(e, t){

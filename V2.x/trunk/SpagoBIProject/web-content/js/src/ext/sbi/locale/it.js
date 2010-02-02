@@ -86,9 +86,9 @@ Sbi.locale.ln['sbi.execution.executionpage.toolbar.refresh'] = 'Riesegui il docu
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.rating'] = 'Dai un voto al documento';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.print'] = 'Stampa il documento';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.send'] = 'Invia il documento per posta elettronica';
-Sbi.locale.ln['sbi.execution.executionpage.toolbar.save'] = 'Salva il documento nella cartella mia cartella personale';
+Sbi.locale.ln['sbi.execution.executionpage.toolbar.save'] = 'Salva il documento nella mia cartella personale';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.bookmark'] = 'Aggiungi il documento ai preferiti';
-Sbi.locale.ln['sbi.execution.executionpage.toolbar.annotate'] = 'Annota i documento';
+Sbi.locale.ln['sbi.execution.executionpage.toolbar.annotate'] = 'Aggiungi note al documento';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.metadata'] = 'Mostra i metadati associati al documento';
 
 

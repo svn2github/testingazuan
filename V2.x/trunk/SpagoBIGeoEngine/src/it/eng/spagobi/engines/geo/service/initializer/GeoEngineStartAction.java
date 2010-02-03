@@ -30,6 +30,7 @@ import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engines.geo.GeoEngine;
 import it.eng.spagobi.engines.geo.GeoEngineAnalysisState;
 import it.eng.spagobi.engines.geo.GeoEngineConstants;
@@ -152,11 +153,20 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 				geoEngineInstance.setAnalysisState( analysisState );
 			}
 			
+			String selectedMeasureName  = getAttributeAsString("default_kpi");
+			logger.debug("Parameter [" + "default_kpi" + "] is equal to [" + selectedMeasureName + "]");
+			
+			if(!StringUtilities.isEmpty(selectedMeasureName)) {
+				geoEngineInstance.getMapRenderer().setSelectedMeasureName(selectedMeasureName);
+			}
+			
+			
 			if("TRUE".equalsIgnoreCase(isDocumentCompositionModeActive)){
 				setAttribute(DynamicPublisher.PUBLISHER_NAME, "SIMPLE_UI_PUBLISHER");
 			} else {
 				setAttribute(DynamicPublisher.PUBLISHER_NAME, "AJAX_UI_PUBLISHER");
 			}
+			
 			
 			String id = getAttributeAsString("SBI_EXECUTION_ID");
 			setAttributeInSession(GEO_ENGINE_INSTANCE, geoEngineInstance);					

@@ -20,26 +20,6 @@
  **/
 package it.eng.spagobi.engines.geo.map.renderer;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.commons.utilities.StringUtilities;
-import it.eng.spagobi.engines.geo.GeoEngineConstants;
-import it.eng.spagobi.engines.geo.GeoEngineException;
-import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
-import it.eng.spagobi.engines.geo.dataset.DataMart;
-import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
-import it.eng.spagobi.engines.geo.map.renderer.configurator.InteractiveMapRendererConfigurator;
-import it.eng.spagobi.engines.geo.map.utils.SVGMapLoader;
-import it.eng.spagobi.engines.geo.map.utils.SVGMapMerger;
-import it.eng.spagobi.engines.geo.map.utils.SVGMapSaver;
-import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
-import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
-import it.eng.spagobi.tools.dataset.common.datastore.IField;
-import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
-import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
-import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.engines.EngineConstants;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -71,6 +51,26 @@ import org.w3c.dom.svg.SVGElement;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.commons.utilities.StringUtilities;
+import it.eng.spagobi.engines.geo.GeoEngineConstants;
+import it.eng.spagobi.engines.geo.GeoEngineException;
+import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
+import it.eng.spagobi.engines.geo.dataset.DataMart;
+import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
+import it.eng.spagobi.engines.geo.map.renderer.configurator.InteractiveMapRendererConfigurator;
+import it.eng.spagobi.engines.geo.map.utils.SVGMapLoader;
+import it.eng.spagobi.engines.geo.map.utils.SVGMapMerger;
+import it.eng.spagobi.engines.geo.map.utils.SVGMapSaver;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
+import it.eng.spagobi.tools.dataset.common.datastore.IField;
+import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
+import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
+import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 
 /**
  * @author Andrea Gioia
@@ -1510,7 +1510,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 			getGuiSettings().getDetailWindowSettings().put("visible", Boolean.FALSE);
 			getGuiSettings().getLayersWindowSettings().put("visible", Boolean.FALSE);
 			//getGuiSettings().getLegendWindowSettings().put("visible", Boolean.FALSE);
-			getGuiSettings().getMeasureWindowSettings().put("visible", Boolean.FALSE);
+			//getGuiSettings().getMeasureWindowSettings().put("visible", Boolean.FALSE);
 			getGuiSettings().navigationWindowSettings.put("visible", Boolean.FALSE);
 		}
 		

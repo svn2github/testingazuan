@@ -20,12 +20,12 @@
  **/
 package it.eng.spagobi.engines.geo.map.renderer;
 
+import java.io.File;
+
 import it.eng.spagobi.engines.geo.GeoEngineException;
 import it.eng.spagobi.engines.geo.component.IGeoEngineComponent;
 import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
 import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
-
-import java.io.File;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -90,4 +90,6 @@ public interface IMapRenderer  extends IGeoEngineComponent {
 	 * Clear layers.
 	 */
 	void clearLayers();
+	
+	void setSelectedMeasureName(String selectedMeasureName);
 }

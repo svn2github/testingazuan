@@ -113,13 +113,13 @@ Utils.addSeparators = function(numberStr) {
     var chunk = numberStr.split('.');
     var s = '';
     for(var i = chunk[0].length; i > 0; i = i - 3 ) {
-        var separator = s.length === 0? '': ',';
+        var separator = s.length === 0? '': sbi.geo.conf.locale.groupingSeparator;
         var lb = i-3>0? i-3 : 0;
         s = chunk[0].substring(lb, i) + separator + s;
     }
     
     if(chunk.length > 1)  {
-        s = s + '.' + chunk[1];
+        s = s + sbi.geo.conf.locale.decimalSeparator + chunk[1];
     }
     
    return s;

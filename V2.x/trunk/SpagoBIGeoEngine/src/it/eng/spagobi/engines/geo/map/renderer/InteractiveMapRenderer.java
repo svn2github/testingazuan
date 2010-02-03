@@ -20,36 +20,6 @@
  **/
 package it.eng.spagobi.engines.geo.map.renderer;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.transform.TransformerException;
-
-import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.svg.SVGDocument;
-import org.w3c.dom.svg.SVGElement;
-
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.commons.utilities.StringUtilities;
@@ -68,6 +38,39 @@ import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.engines.EngineConstants;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.xml.transform.TransformerException;
+
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.SVGDocument;
+import org.w3c.dom.svg.SVGElement;
+
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 
 /**
  * @author Andrea Gioia
@@ -247,6 +250,20 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 			    
 			    String execId = (String)this.getEnv().get("SBI_EXECUTION_ID");
 			    conf.put("execId", execId);
+			    
+			    JSONObject localeJSON =  new JSONObject();
+			    Locale locale = (Locale) this.getEnv().get(EngineConstants.ENV_LOCALE);
+			    logger.debug("Current environment locale is: " + locale);
+			    if (locale == null) {
+			    	logger.debug("Using default english locale");
+			    	locale = Locale.ENGLISH;
+			    }
+			    localeJSON.put("language", locale.getLanguage());
+			    localeJSON.put("country", locale.getCountry());
+			    DecimalFormatSymbols dfs = new DecimalFormatSymbols(locale);
+			    localeJSON.put("decimalSeparator", new Character(dfs.getDecimalSeparator()).toString());
+			    localeJSON.put("groupingSeparator", new Character(dfs.getGroupingSeparator()).toString());
+			    conf.put("locale", localeJSON);
 			} catch (JSONException e1) {
 				GeoEngineException geoException;
 				logger.error("Impossible to create sbi.geo.conf", e1);

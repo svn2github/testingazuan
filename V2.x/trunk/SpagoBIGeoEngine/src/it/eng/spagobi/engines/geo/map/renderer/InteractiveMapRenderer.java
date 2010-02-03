@@ -216,15 +216,18 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 			try {
 				measures = getMeasuresConfigurationScript(dataMart);
 			    String selectedMeasureName = getSelectedMeasureName();
+			    logger.debug("Selected measure [" + selectedMeasureName + "]");
 			    int selectedMeasureIndexIndex = -1;
 			    for(int i = 0; i < measures.length(); i++) {
 			    	JSONObject measure = (JSONObject)measures.get(i);
-			    	
+			    	logger.debug("Comparing selected measure [" + selectedMeasureName + "] with measure [" + (String)measure.get("name") + "]");
 			    	if(selectedMeasureName.equalsIgnoreCase( (String)measure.get("name"))) {
+			    		logger.debug("Selected measure [" + selectedMeasureName + "] is equal to measure [" + (String)measure.get("name") + "]");
 			    		selectedMeasureIndexIndex = i;
 			    		break;
 			    	}
 			    }
+			    logger.debug("Selected measure index [" + selectedMeasureIndexIndex + "]");
 			    conf.put("selected_measure_index", selectedMeasureIndexIndex);
 			    conf.put("measures", measures);
 			    

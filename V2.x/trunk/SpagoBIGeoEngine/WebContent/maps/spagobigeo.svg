@@ -143,7 +143,8 @@ onload="init(evt);">
       if(myMapApp.Windows["thematic"]){ 
         myMapApp.Windows["thematic"].addThemes();
       } else {
-        setKpi(sbi.geo.conf.measures[0].name,sbi.geo.conf.measures[0].name,sbi.geo.conf.measures[0].name);
+      	var index = sbi.geo.conf.selected_measure_index >=0 ? sbi.geo.conf.selected_measure_index: 0;
+        setKpi(sbi.geo.conf.measures[index].name,sbi.geo.conf.measures[index].name,sbi.geo.conf.measures[index].name);
       }
 		
 			

@@ -1510,7 +1510,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 			getGuiSettings().getDetailWindowSettings().put("visible", Boolean.FALSE);
 			getGuiSettings().getLayersWindowSettings().put("visible", Boolean.FALSE);
 			//getGuiSettings().getLegendWindowSettings().put("visible", Boolean.FALSE);
-			//getGuiSettings().getMeasureWindowSettings().put("visible", Boolean.FALSE);
+			getGuiSettings().getMeasureWindowSettings().put("visible", Boolean.FALSE);
 			getGuiSettings().navigationWindowSettings.put("visible", Boolean.FALSE);
 		}
 		

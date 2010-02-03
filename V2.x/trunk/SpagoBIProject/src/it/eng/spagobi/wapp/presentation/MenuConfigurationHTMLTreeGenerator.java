@@ -23,9 +23,19 @@ package it.eng.spagobi.wapp.presentation;
  **/
 
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.log4j.Logger;
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
+
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.MoveDownLowFunctionality;
@@ -40,23 +50,13 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.themes.ThemesManager;
 import it.eng.spagobi.wapp.bo.Menu;
 import it.eng.spagobi.wapp.services.CreateMasterMenuAction;
 import it.eng.spagobi.wapp.services.DetailMenuModule;
 import it.eng.spagobi.wapp.services.MoveDownMenuAction;
 import it.eng.spagobi.wapp.services.MoveUpMenuAction;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringEscapeUtils;
-import org.safehaus.uuid.UUID;
-import org.safehaus.uuid.UUIDGenerator;
 
 
 
@@ -75,6 +75,9 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 	private List _objectsList = null;
 	protected String requestIdentity = null;
 	protected String currTheme="";
+	
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(MenuConfigurationHTMLTreeGenerator.class);
 
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
@@ -497,33 +500,63 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 	}
 
 	private boolean canCreateMaster(Menu menu) {
-		Integer parentId = menu.getParentId();
-		if(parentId==null || parentId.intValue()==0) return false;
-		else{
-			//check the roles.
-			Menu parentMenu;
-			try {
-				parentMenu = DAOFactory.getMenuDAO().loadMenuByID(parentId);
-			} catch (EMFUserError e) {
-				return false;
-			}
-			Role[] parentRoles=parentMenu.getRoles();
-			Role[] currentRoles=menu.getRoles();
-
-			boolean equals=true;
-			boolean found=false;
-			for(int i=0;i<parentRoles.length && equals;i++){			
-				Role role=parentRoles[i];
-				found=false;
-				for(int j=0;j<currentRoles.length && !found;j++){
-					Role roleCurr=currentRoles[j];
-					if(roleCurr.getName().equalsIgnoreCase(role.getName())) found=true;
+		boolean canCreateMaster = false;
+		Role[] currentRoles;
+		Integer parentId;
+		Menu parentMenu;
+		Role[] parentRoles;
+		
+		logger.debug("IN");
+		
+		try {
+			
+			Assert.assertNotNull(menu, "Input parameter [menu] cannot be null");
+			logger.debug("Menu id is equal to [" + menu.getMenuId()+ "]");
+			logger.debug("Menu name is equal to [" + menu.getName()+ "]");
+			logger.debug("Menu descr is equal to [" + menu.getDescr()+ "]");
+			
+			parentId = menu.getParentId();
+			logger.debug("Parent menu id is equal to [" + menu.getMenuId()+ "]");
+			if( parentId == null || parentId.intValue() == 0) {
+				canCreateMaster = false;
+			} else{
+				
+				parentMenu = null;
+				try {
+					parentMenu = DAOFactory.getMenuDAO().loadMenuByID(parentId);
+				} catch (Throwable t) {
+					logger.error("Impossible to load menu with id equal to [" + parentId + "] from database", t);
+					return false;
 				}
-				if(!found)equals=false;
-			}
-
-			return equals;
-		}	
+				
+				parentRoles = parentMenu.getRoles();
+				logger.debug("Parent menu have [" + parentRoles.length + "] role(s)");
+				currentRoles = menu.getRoles();
+				logger.debug("Menu have [" + currentRoles.length + "] role(s)");
+	
+				boolean equals=true;
+				boolean found=false;
+				for(int i = 0; i< parentRoles.length && equals; i++){			
+					Role role = parentRoles[i];
+					found = false;
+					for(int j = 0; j < currentRoles.length && !found; j++){
+						Role roleCurr=currentRoles[j];
+						if(roleCurr.getName().equalsIgnoreCase(role.getName())) found=true;
+						logger.debug("Parent menu role [" + i + "] named [" + role.getName() + "] is equal to " +
+								"menu role [" + j + "] named [" + roleCurr.getName() + "] ? [" + found + "]");
+					}
+					if(!found)equals=false;
+				}
+	
+				canCreateMaster = equals;
+			}	
+		} catch(Throwable t) {
+			logger.error("An unpredicted error occours while executing method [canCreateMaster]", t);
+		} finally {
+			logger.debug("OUT");
+		}
+		
+		return canCreateMaster;
 	}
 
 	private boolean canBeMovedUp(Menu menu) {

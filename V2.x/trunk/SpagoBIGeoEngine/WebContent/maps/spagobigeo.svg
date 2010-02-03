@@ -624,9 +624,9 @@ onload="init(evt);">
 		   				var decimal_location = value_string.indexOf(".");		
 		   				if (decimal_location != -1) {
                    	   		var value_float = parseFloat(kpi_values[sbi.geo.conf.measures[i].name]);
-                   	   		myMapApp.infoPanel[i].firstChild.nodeValue = sbi.geo.conf.measures[i].description + " " + Utils.roundDecimals(value_float,2);
+                   	   		myMapApp.infoPanel[i].firstChild.nodeValue = sbi.geo.conf.measures[i].description + " " + Utils.addSeparators(''+Utils.roundDecimals(value_float,2));
                    	   	} else {                       	
-                       		myMapApp.infoPanel[i].firstChild.nodeValue = sbi.geo.conf.measures[i].description + " " + kpi_values[sbi.geo.conf.measures[i].name];
+                       		myMapApp.infoPanel[i].firstChild.nodeValue = sbi.geo.conf.measures[i].description + " " + Utils.addSeparators(''+kpi_values[sbi.geo.conf.measures[i].name]);
                   		}
 				   }
                    if(document.getElementById(id + "_chart") != null) {

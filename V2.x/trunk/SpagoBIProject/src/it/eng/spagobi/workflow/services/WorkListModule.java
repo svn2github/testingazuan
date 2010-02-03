@@ -37,13 +37,18 @@ import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.utilities.AuditLogUtilities;
+import it.eng.spagobi.commons.utilities.HibernateUtil;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.commons.utilities.UserUtilities;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.hibernate.Session;
 import org.jbpm.JbpmConfiguration;
 import org.jbpm.JbpmContext;
 import org.jbpm.context.exe.ContextInstance;
@@ -196,6 +201,12 @@ public class WorkListModule extends AbstractBasicListModule {
 		
 		int pagedRows = 10;
 		
+		 //Start writing log in the DB
+		Session aSession = HibernateUtil.currentSession();
+		Connection jdbcConnection = aSession.connection();
+		IEngUserProfile profile = UserUtilities.getUserProfile();
+		AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.WorkFlowMenu", null);
+		//End writing log in the DB
 		
 		paginator.setPageSize(pagedRows);
 		

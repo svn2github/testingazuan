@@ -29,11 +29,16 @@ import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
+import it.eng.spagobi.commons.utilities.AuditLogUtilities;
+import it.eng.spagobi.commons.utilities.HibernateUtil;
 import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.services.common.SsoServiceInterface;
 
+import java.sql.Connection;
 import java.util.Collection;
 import java.util.Iterator;
+
+import org.hibernate.Session;
 
 /**
  * Loads the Distributionlist List
@@ -55,13 +60,17 @@ public class ListDistributionListUserModule extends AbstractBasicListModule{
 	
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
 	    
-	        RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
-	        SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-	        SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
-	        /*
-		IEngUserProfile userProfile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		*/
-	    	IEngUserProfile userProfile =UserUtilities.getUserProfile();
+		 //Start writing log in the DB
+		Session aSession = HibernateUtil.currentSession();
+		Connection jdbcConnection = aSession.connection();
+		IEngUserProfile profile = UserUtilities.getUserProfile();
+		AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.DistribListMenu", null);
+		//End writing log in the DB
+		
+        RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
+        SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
+	     
+	    IEngUserProfile userProfile =UserUtilities.getUserProfile();
 		String userId="";
 		if (userProfile!=null) userId=(String)((UserProfile)userProfile).getUserId();
 		//sets the userid as input parameter for the query fo statements.xml

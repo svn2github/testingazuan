@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.hotlink.service;
 
+import java.sql.Connection;
+
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -30,9 +34,13 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.AuditLogUtilities;
+import it.eng.spagobi.commons.utilities.HibernateUtil;
+import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.hotlink.rememberme.bo.RememberMe;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 
 /**
  * 
@@ -50,6 +58,13 @@ public class HotLinkModule extends AbstractModule {
 	public void service(SourceBean request, SourceBean response)
 			throws Exception {
 		logger.debug("IN");
+		//Start writing log in the DB
+		Session aSession = HibernateUtil.currentSession();
+		Connection jdbcConnection = aSession.connection();
+		IEngUserProfile profile = UserUtilities.getUserProfile();
+		AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.HotLinkMenu", null);
+		//End writing log in the DB
+		
 		try {
 			String operation = (String) request.getAttribute("OPERATION");
 			if (operation == null || operation.equalsIgnoreCase("GET_HOT_LINK_LIST")) {

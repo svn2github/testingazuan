@@ -21,19 +21,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.wapp.services;
 
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.AuditLogUtilities;
+import it.eng.spagobi.commons.utilities.HibernateUtil;
 import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
+import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.wapp.bo.Menu;
 
 import java.io.FileInputStream;
+import java.sql.Connection;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 
 public class ReadHtmlFile extends AbstractHttpAction{
 
@@ -43,6 +51,14 @@ public class ReadHtmlFile extends AbstractHttpAction{
 	throws Exception {
 	    logger.debug("IN");
 		freezeHttpResponse();
+		
+		//Start writing log in the DB
+		Session aSession = HibernateUtil.currentSession();
+		Connection jdbcConnection = aSession.connection();
+		IEngUserProfile profile = UserUtilities.getUserProfile();
+		AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.HTMLMenu", null);
+		//End writing log in the DB
+		
 		HttpServletResponse httpResp = getHttpResponse();
 		httpResp.setContentType("text/html");
 		ServletOutputStream out = httpResp.getOutputStream();

@@ -21,18 +21,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 
-import org.apache.log4j.Logger;
-import org.json.JSONObject;
+import java.sql.Connection;
 
 import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
-import it.eng.spagobi.analiticalmodel.functionalitytree.service.TreeObjectsModule;
 import it.eng.spagobi.chiron.ListEnginesAction;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.ChannelUtilities;
+import it.eng.spagobi.commons.utilities.AuditLogUtilities;
+import it.eng.spagobi.commons.utilities.HibernateUtil;
+import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.utilities.exceptions.SpagoBIException;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
+
+import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.json.JSONObject;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -45,9 +51,15 @@ public class UserDocumentsBrowserStartAction extends AbstractBaseHttpAction{
 	private static Logger logger = Logger.getLogger(ListEnginesAction.class);
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
-
 		
 		logger.debug("IN");
+
+		//Start writing log in the DB
+		Session aSession = HibernateUtil.currentSession();
+		Connection jdbcConnection = aSession.connection();
+		IEngUserProfile profile = UserUtilities.getUserProfile();
+		AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.DocumentsBrowserMenu", null);
+		//End writing log in the DB
 		
 		try {
 			setSpagoBIRequestContainer( request );

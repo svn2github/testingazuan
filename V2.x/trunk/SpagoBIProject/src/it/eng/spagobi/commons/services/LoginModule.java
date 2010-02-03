@@ -44,6 +44,8 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IConfigDAO;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
+import it.eng.spagobi.commons.utilities.AuditLogUtilities;
+import it.eng.spagobi.commons.utilities.HibernateUtil;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
@@ -57,6 +59,7 @@ import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 import it.eng.spagobi.wapp.services.ChangeTheme;
 import it.eng.spagobi.wapp.util.MenuUtilities;
 
+import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -68,10 +71,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.jdbc.JDBCAppender;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 public class LoginModule extends AbstractHttpModule {
 
     static Logger logger = Logger.getLogger(LoginModule.class);
+    
     private static final String PROP_NODE = "changepwd.";
 
     /**  The format date to manage the data validation. */
@@ -96,7 +103,6 @@ public class LoginModule extends AbstractHttpModule {
 
 		String theme_name=(String)request.getAttribute(ChangeTheme.THEME_NAME);
 		logger.debug("theme selected: "+theme_name);
-
 		
     	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
     	SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
@@ -251,6 +257,12 @@ public class LoginModule extends AbstractHttpModule {
 			    logger.debug("funcitonality root already exists for "+username);					
 			}
 
+			//Start writing log in the DB
+			Session aSession = HibernateUtil.currentSession();
+			Connection jdbcConnection = aSession.connection();
+			AuditLogUtilities.updateAudit(jdbcConnection, profile, "activity.Login", null);
+			//End writing log in the DB
+			
 		MenuUtilities.getMenuItems(request, response, profile);
 		// fill response attributes
 		if(userId.equals("chiron")) {

@@ -33,12 +33,18 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.util.StringUtils;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
+import it.eng.spagobi.commons.utilities.AuditLogUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.commons.utilities.HibernateUtil;
+import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.events.EventsManager;
 import it.eng.spagobi.events.bo.EventLog;
 
+import java.sql.Connection;
 import java.util.Iterator;
 import java.util.List;
+
+import org.hibernate.Session;
 
 /**
  * This class shows events' notification log 
@@ -54,6 +60,13 @@ public class ListEventsLogModule extends AbstractBasicListModule {
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
 		RequestContainer requestContainer = getRequestContainer();
 		IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		 
+		//Start writing log in the DB
+		Session aSession = HibernateUtil.currentSession();
+		Connection jdbcConnection = aSession.connection();
+		AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.EventsMenu", null);
+		//End writing log in the DB
+		
 		EventsManager eventsManager = EventsManager.getInstance();		
 		List firedEventsList = eventsManager.getRegisteredEvents(profile);
         ConfigSingleton config = ConfigSingleton.getInstance();

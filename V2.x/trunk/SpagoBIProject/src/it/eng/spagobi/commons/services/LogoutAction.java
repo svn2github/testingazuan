@@ -27,14 +27,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.commons.services;
 
+import java.sql.Connection;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.hibernate.Session;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.utilities.AuditLogUtilities;
+import it.eng.spagobi.commons.utilities.HibernateUtil;
 
 public class LogoutAction extends AbstractHttpAction {
 
@@ -46,6 +52,13 @@ public class LogoutAction extends AbstractHttpAction {
 		RequestContainer reqCont = RequestContainer.getRequestContainer();
 		SessionContainer sessCont = reqCont.getSessionContainer();
 		SessionContainer permSess = sessCont.getPermanentContainer();
+		
+		//Start writing log in the DB
+		Session aSession = HibernateUtil.currentSession();
+		Connection jdbcConnection = aSession.connection();
+		IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.Logout", null);
+		//End writing log in the DB
 		
 		permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, null);
 		

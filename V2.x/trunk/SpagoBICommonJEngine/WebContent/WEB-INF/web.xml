@@ -125,10 +125,18 @@ END-CAS -->
 		<filter-class>it.eng.spagobi.utilities.filters.SpagoBIAccessFilter</filter-class>
 	</filter>
 	
+		<filter-mapping>
+    	<filter-name>SpagoBIAccessFilter</filter-name>
+    	<url-pattern>/servlet/AdapterHTTP/*</url-pattern>
+	</filter-mapping>
+	
+	<!--
 	<filter-mapping>
     	<filter-name>SpagoBIAccessFilter</filter-name>
     	<url-pattern>/WorkRunServlet/*</url-pattern>
-	</filter-mapping>
+	</filter-mapping> 
+	 -->
+	 
 	<filter-mapping>
     	<filter-name>SpagoBIAccessFilter</filter-name>
     	<url-pattern>/EngineInfoService/*</url-pattern>
@@ -145,11 +153,27 @@ END-CAS -->
 	<!--  ============================================================================ -->
 	<!--  SERVLETS								 									   -->
 	<!--  ============================================================================ -->
-	<servlet>
+	<!--<servlet>
 		<servlet-name>WorkRunServlet</servlet-name>
 		<servlet-class>it.eng.spagobi.engines.commonj.services.WorkRunServlet</servlet-class>
 	</servlet>
-	
+	 -->
+	 
+		<servlet>
+		<servlet-name>AdapterHTTP</servlet-name>
+		<servlet-class>it.eng.spago.dispatching.httpchannel.AdapterHTTP</servlet-class>
+	</servlet>
+
+   	<servlet>
+		<servlet-name>ConfigServlet</servlet-name>
+		<servlet-class>it.eng.spago.configuration.ConfigServlet</servlet-class>
+		<init-param>
+			<param-name>AF_CONFIG_FILE</param-name>
+			<param-value>/WEB-INF/conf/master.xml</param-value>
+		</init-param>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+   
 	
 	<servlet>
 		<servlet-name>EngineTestServlet</servlet-name>
@@ -164,9 +188,16 @@ END-CAS -->
   		
 	
 	<servlet-mapping>
+		<servlet-name>AdapterHTTP</servlet-name>
+		<url-pattern>/servlet/AdapterHTTP/*</url-pattern>
+	</servlet-mapping>
+	
+	
+	<!--<servlet-mapping>
 		<servlet-name>WorkRunServlet</servlet-name>
 		<url-pattern>/WorkRunServlet</url-pattern>
 	</servlet-mapping>
+	-->
 	
 	<!-- 
 	<servlet-mapping>
@@ -206,5 +237,8 @@ END-CAS -->
 	</error-page>
 	
 	
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
 	
 </web-app>

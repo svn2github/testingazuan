@@ -96,19 +96,6 @@ END IF;
 END;
 /
 
-/** inserts data into new table for initial management of change pwd */
-INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwdmodule.len_min', 'LEN_MIN', 'Minimum length', 0, 8, (SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'PAR_TYPE' AND VALUE_CD = 'NUM') );
-INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwdmodule.special_char', 'Special char', 'Special chars', 0, '_|-<>#$', (SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'PAR_TYPE' AND VALUE_CD = 'STRING') );
-INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwdmodule.upper_char', 'Upper char', 'Minimum a char must be in upper case', 0,'ABCDEFGJKLMNOPQRSTUVWXYZ', (SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'PAR_TYPE' AND VALUE_CD = 'STRING') );
-INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwdmodule.lower_char', 'Lower char', 'Minimum a char must be in lower case', 1,'abcdefghjklmnopqrstuwxyz', (SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'PAR_TYPE' AND VALUE_CD = 'STRING'));
-INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwdmodule.number', 'Number', 'Minimum a char must be a number', 0,'0123456789', (SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'PAR_TYPE' AND VALUE_CD = 'STRING') );
-INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwdmodule.alphabetical', 'Alaphabetical', 'Minimum a char must be a letter', 1,'abcdefghjklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', (SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'PAR_TYPE' AND VALUE_CD = 'STRING') );
-INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwdmodule.change', 'Change from last', 'The new pwd must be different from the lastest', 0,null, null );
-INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwd.change_first', 'Change at first login ', 'The pwd must be changed at first login', 1,null, null );
-INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwd.disactivation_time', 'Disactivation time', 'Number of months before disactivation', 0,'6', (SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'PAR_TYPE' AND VALUE_CD = 'NUM') );
-INSERT INTO SBI_CONFIG (LABEL, NAME, DESCRIPTION, IS_ACTIVE, VALUE_CHECK, VALUE_TYPE_ID) VALUES ('changepwd.expired_time', 'Expired time', 'Number of days fo the expiration', 0,'90', (SELECT VALUE_ID FROM SBI_DOMAINS WHERE DOMAIN_CD = 'PAR_TYPE' AND VALUE_CD = 'NUM') );
-COMMIT;
-
 /** change creation date datatype (date --> timestamp) */
 ALTER TABLE SBI_VIEWPOINTS MODIFY VP_CREATION_DATE TIMESTAMP;
 

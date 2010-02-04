@@ -31,22 +31,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  **/
 package it.eng.spagobi.engines.commonj.runtime;
 
+import it.eng.spagobi.services.proxy.EventServiceProxy;
+import it.eng.spagobi.utilities.engines.AuditServiceProxy;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 
-import commonj.work.Work;
 import commonj.work.WorkEvent;
 import commonj.work.WorkException;
 import commonj.work.WorkItem;
 import commonj.work.WorkListener;
-
-import it.eng.spagobi.services.proxy.EventServiceProxy;
-import it.eng.spagobi.utilities.engines.AuditServiceProxy;
-import it.eng.spagobi.utilities.engines.EngineConstants;
 
 
 public class CommonjWorkListener implements WorkListener {

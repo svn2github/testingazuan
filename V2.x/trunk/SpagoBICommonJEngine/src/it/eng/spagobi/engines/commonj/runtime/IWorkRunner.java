@@ -52,6 +52,6 @@ public interface IWorkRunner {
  	 * @throws WorkNotFoundException the work not found exception
  	 * @throws WorkExecutionException the work execution exception
  	 */
- 	public abstract void run(CommonjWork work, Map env) throws WorkNotFoundException, WorkExecutionException;
+ 	public abstract void run(HttpSession session, CommonjWork work, Map env) throws WorkNotFoundException, WorkExecutionException;
 
 }

@@ -58,20 +58,20 @@ import de.myfoo.commonj.work.FooRemoteWorkItem;
 import de.myfoo.commonj.work.FooWorkItem;
 
 
-public class CommonjWorkRunner implements IWorkRunner {
+public class WorkConfiguration {
 
 
 	private WorksRepository worksRepository;
 
 	public static final String DEFAULT_CONTEXT = "Default";
 
-	private static transient Logger logger = Logger.getLogger(CommonjWorkRunner.class);
+	private static transient Logger logger = Logger.getLogger(WorkConfiguration.class);
 
-	CommonjWorkRunner(WorksRepository worksRepository) {
+	WorkConfiguration(WorksRepository worksRepository) {
 		this.worksRepository = worksRepository;
 	}
 
-	public void run(HttpSession session, CommonjWork work, Map parameters)  throws WorkNotFoundException, WorkExecutionException {
+	public void configure(HttpSession session, CommonjWork work, Map parameters)  throws WorkNotFoundException, WorkExecutionException {
 
 		logger.debug("IN");
 
@@ -143,10 +143,14 @@ public class CommonjWorkRunner implements IWorkRunner {
 					workToLaunch=(Work)obj;
 				}
 
-			
 
-
-			wm.setInSession(session, workToLaunch, listener, work.getWorkName());
+			CommonjWorkContainer container=new CommonjWorkContainer();
+			container.setWork(workToLaunch);
+			container.setListener(listener);
+			container.setName(work.getWorkName());
+			container.setWm(wm);
+			container.setInSession(session);
+			//	wm.setInSession(session, workToLaunch, listener, work.getWorkName());
 
 			int ti=0;			
 //			FooRemoteWorkItem wi=null;

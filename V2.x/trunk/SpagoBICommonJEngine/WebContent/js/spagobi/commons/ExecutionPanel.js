@@ -45,15 +45,17 @@ Sbi.commons.ExecutionPanel = function(config) {
 		serviceName: 'STOP_WORK'
 		, baseParams: params
 	});
+	
+	this.document_id = config.document_id;
 				
 	var buttons = [];
     buttons.push({
         text : 'Start'
-        , handler : this.startProcess(config.document_id)
+        , handler : this.startProcess
     });
     buttons.push({
         text : 'Stop'
-        , handler : this.stopProcess(config.document_id)
+        , handler : this.stopProcess
     });
  
    	 var c = Ext.apply( {}, config, {
@@ -76,12 +78,14 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
     
     // static contens and methods definitions
     services : null
+    ,document_id : null
    
     // public methods
-    ,startProcess : function(document_id) {
+    ,startProcess : function() {
+    alert('ciao');
        Ext.Ajax.request({
 	        url: this.services['getStartService'],
-	        params: {'DOCUMENT_ID' : document_id},
+	        params: {'DOCUMENT_ID' : this.document_id },
 	        success : function(response, options) {
 	      		if(response !== undefined && response.responseText !== undefined) {
 	      			var content = Ext.util.JSON.decode( response.responseText );
@@ -99,10 +103,11 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
 	   });
     }
     
-    , stopProcess : function(document_id) {
+    , stopProcess : function() {
+    alert('bau');
      	Ext.Ajax.request({
 	        url: this.services['getStopService'],
-	        params: {'DOCUMENT_ID' : document_id},
+	        params: {'DOCUMENT_ID' : this.document_id },
 	        success : function(response, options) {
 	      		if(response !== undefined && response.responseText !== undefined) {
 	      			var content = Ext.util.JSON.decode( response.responseText );

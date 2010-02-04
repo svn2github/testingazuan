@@ -94,7 +94,6 @@ Ext.extend(Sbi.commons.ServiceRegistry, Ext.util.Observable, {
         		serviceUrl += '&' + p + '=' + params[p];
         	}
         }
-        alert(serviceUrl);
         return serviceUrl;
     }     
     

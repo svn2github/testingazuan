@@ -72,6 +72,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.jdbc.JDBCAppender;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -258,9 +259,18 @@ public class LoginModule extends AbstractHttpModule {
 			}
 
 			//Start writing log in the DB
-			Session aSession = HibernateUtil.currentSession();
-			Connection jdbcConnection = aSession.connection();
-			AuditLogUtilities.updateAudit(jdbcConnection, profile, "activity.Login", null);
+			Session aSession =null;
+			try {
+				aSession = HibernateUtil.currentSession();
+				Connection jdbcConnection = aSession.connection();
+				AuditLogUtilities.updateAudit(jdbcConnection, profile, "activity.Login", null);
+			} catch (HibernateException he) {
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+			} finally {
+				if (aSession!=null){
+					if (aSession.isOpen()) aSession.close();
+				}
+			}
 			//End writing log in the DB
 			
 		MenuUtilities.getMenuItems(request, response, profile);

@@ -48,6 +48,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.jbpm.JbpmConfiguration;
 import org.jbpm.JbpmContext;
@@ -202,10 +203,19 @@ public class WorkListModule extends AbstractBasicListModule {
 		int pagedRows = 10;
 		
 		 //Start writing log in the DB
-		Session aSession = HibernateUtil.currentSession();
-		Connection jdbcConnection = aSession.connection();
-		IEngUserProfile profile = UserUtilities.getUserProfile();
-		AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.WorkFlowMenu", null);
+		Session aSession =null;
+		try {
+			aSession = HibernateUtil.currentSession();
+			Connection jdbcConnection = aSession.connection();
+			IEngUserProfile profile = UserUtilities.getUserProfile();
+			AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.WorkFlowMenu", null);
+		} catch (HibernateException he) {
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
 		//End writing log in the DB
 		
 		paginator.setPageSize(pagedRows);

@@ -32,12 +32,15 @@ import java.sql.Connection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.utilities.AuditLogUtilities;
 import it.eng.spagobi.commons.utilities.HibernateUtil;
@@ -54,10 +57,19 @@ public class LogoutAction extends AbstractHttpAction {
 		SessionContainer permSess = sessCont.getPermanentContainer();
 		
 		//Start writing log in the DB
-		Session aSession = HibernateUtil.currentSession();
-		Connection jdbcConnection = aSession.connection();
-		IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.Logout", null);
+		Session aSession =null;
+		try {
+			aSession = HibernateUtil.currentSession();
+			Connection jdbcConnection = aSession.connection();
+			IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.Logout", null);
+		} catch (HibernateException he) {
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
 		//End writing log in the DB
 		
 		permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, null);

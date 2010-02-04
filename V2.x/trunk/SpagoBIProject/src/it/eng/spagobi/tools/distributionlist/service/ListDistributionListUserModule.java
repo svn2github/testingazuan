@@ -25,6 +25,8 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
@@ -38,6 +40,7 @@ import java.sql.Connection;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
 /**
@@ -61,10 +64,19 @@ public class ListDistributionListUserModule extends AbstractBasicListModule{
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
 	    
 		 //Start writing log in the DB
-		Session aSession = HibernateUtil.currentSession();
-		Connection jdbcConnection = aSession.connection();
-		IEngUserProfile profile = UserUtilities.getUserProfile();
-		AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.DistribListMenu", null);
+		Session aSession =null;
+		try {
+			aSession = HibernateUtil.currentSession();
+			Connection jdbcConnection = aSession.connection();
+			IEngUserProfile profile = UserUtilities.getUserProfile();
+			AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.DistribListMenu", null);
+		} catch (HibernateException he) {
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
 		//End writing log in the DB
 		
         RequestContainer aRequestContainer = RequestContainer.getRequestContainer();

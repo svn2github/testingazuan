@@ -26,6 +26,8 @@ import java.sql.Connection;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.chiron.ListEnginesAction;
@@ -37,6 +39,7 @@ import it.eng.spagobi.utilities.exceptions.SpagoBIException;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.json.JSONObject;
 
@@ -55,10 +58,19 @@ public class UserDocumentsBrowserStartAction extends AbstractBaseHttpAction{
 		logger.debug("IN");
 
 		//Start writing log in the DB
-		Session aSession = HibernateUtil.currentSession();
-		Connection jdbcConnection = aSession.connection();
-		IEngUserProfile profile = UserUtilities.getUserProfile();
-		AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.DocumentsBrowserMenu", null);
+		Session aSession =null;
+		try {
+			aSession = HibernateUtil.currentSession();
+			Connection jdbcConnection = aSession.connection();
+			IEngUserProfile profile = UserUtilities.getUserProfile();
+			AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.DocumentsBrowserMenu", null);
+		} catch (HibernateException he) {
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
 		//End writing log in the DB
 		
 		try {

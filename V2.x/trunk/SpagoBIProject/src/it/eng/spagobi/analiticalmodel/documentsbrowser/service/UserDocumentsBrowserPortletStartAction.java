@@ -28,10 +28,13 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.json.JSONObject;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.services.PortletLoginAction;
 import it.eng.spagobi.commons.utilities.AuditLogUtilities;
@@ -61,10 +64,19 @@ public class UserDocumentsBrowserPortletStartAction extends PortletLoginAction {
 		
 		logger.debug("IN");
 		//Start writing log in the DB
-		Session aSession = HibernateUtil.currentSession();
-		Connection jdbcConnection = aSession.connection();
-		IEngUserProfile profile = UserUtilities.getUserProfile();
-		AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.DocumentsBrowserMenu", null);
+		Session aSession =null;
+		try {
+			aSession = HibernateUtil.currentSession();
+			Connection jdbcConnection = aSession.connection();
+			IEngUserProfile profile = UserUtilities.getUserProfile();
+			AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.DocumentsBrowserMenu", null);
+		} catch (HibernateException he) {
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
 		//End writing log in the DB
 		
 		try {

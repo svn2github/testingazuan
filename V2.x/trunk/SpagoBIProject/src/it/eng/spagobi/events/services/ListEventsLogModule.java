@@ -25,6 +25,8 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
@@ -44,6 +46,7 @@ import java.sql.Connection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
 /**
@@ -62,9 +65,18 @@ public class ListEventsLogModule extends AbstractBasicListModule {
 		IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		 
 		//Start writing log in the DB
-		Session aSession = HibernateUtil.currentSession();
-		Connection jdbcConnection = aSession.connection();
-		AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.EventsMenu", null);
+		Session aSession =null;
+		try {
+			aSession = HibernateUtil.currentSession();
+			Connection jdbcConnection = aSession.connection();
+			AuditLogUtilities.updateAudit(jdbcConnection,  profile, "activity.EventsMenu", null);
+		} catch (HibernateException he) {
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
 		//End writing log in the DB
 		
 		EventsManager eventsManager = EventsManager.getInstance();		

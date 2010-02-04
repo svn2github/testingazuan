@@ -4,9 +4,11 @@ package it.eng.spagobi.utilities.engines.commonj;
 import java.io.File;
 import java.io.IOException;
 
+import sun.java2d.pipe.SpanIterator;
+
 import commonj.work.Work;
 
-public class CmdExecWork implements Work {
+public class CmdExecWork extends SpagoBIWork {
 
 	String command;
 	String commandEnvironment;
@@ -18,8 +20,7 @@ public class CmdExecWork implements Work {
 	}
 
 	public void release() {
-		// TODO Auto-generated method stub
-
+		super.release();
 	}
 
 	public void run() {

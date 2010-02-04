@@ -61,6 +61,12 @@ public class CommonjDriver extends AbstractDriver implements IEngineDriver {
 
 	static private Logger logger = Logger.getLogger(CommonjDriver.class);
 
+    public static final String DOCUMENT_ID = "document";
+    public static final String DOCUMENT_LABEL = "DOCUMENT_LABEL";
+
+    public static final String COUNTRY = "country";
+    public static final String LANGUAGE = "language";
+
 
 
 	/**
@@ -84,6 +90,9 @@ public class CommonjDriver extends AbstractDriver implements IEngineDriver {
 			logger.error("The parameter is not a BIObject type", cce);
 		} 
 		map = applySecurity(map,profile);
+		map = applyLocale(map);
+		map = applyService(map);
+
 		logger.debug("OUT");
 		return map;
 	}
@@ -187,5 +196,52 @@ public class CommonjDriver extends AbstractDriver implements IEngineDriver {
 		throw new InvalidOperationRequest();
 	}
 
+    protected Map applyService(Map pars) {
+    	logger.debug("IN");
+    	pars.put("ACTION_NAME", "COMMONJ_ACTION");
+    	pars.put("NEW_SESSION", "TRUE");
+    	logger.debug("OUT");
+    	return pars;
+        }
+	
+    private Map applyLocale(Map map) {
+    	logger.debug("IN");
+
+    	ConfigSingleton config = ConfigSingleton.getInstance();
+    	Locale portalLocale = null;
+    	try {
+    	    portalLocale = PortletUtilities.getPortalLocale();
+    	    logger.debug("Portal locale: " + portalLocale);
+    	} catch (Exception e) {
+    	    logger.error("Error while getting portal locale.");
+    	    portalLocale = MessageBuilder.getBrowserLocaleFromSpago();
+    	    logger.debug("Spago locale: " + portalLocale);
+    	}
+
+    	SourceBean languageSB = null;
+    	if (portalLocale != null && portalLocale.getLanguage() != null) {
+    	    languageSB = (SourceBean) config.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE",
+    		    "language", portalLocale.getLanguage());
+    	}
+
+    	if (languageSB != null) {
+    	    map.put(COUNTRY, (String) languageSB.getAttribute("country"));
+    	    map.put(LANGUAGE, (String) languageSB.getAttribute("language"));
+    	    logger.debug("Added parameter: country/" + (String) languageSB.getAttribute("country"));
+    	    logger.debug("Added parameter: language/" + (String) languageSB.getAttribute("language"));
+    	} else {
+    	    logger.warn("Language " + portalLocale.getLanguage() + " is not supported by SpagoBI");
+    	    logger.warn("Portal locale will be replaced with the default lacale (country: US; language: en).");
+    	    map.put(COUNTRY, "US");
+    	    map.put(COUNTRY, "en");
+    	    logger.debug("Added parameter: country/US");
+    	    logger.debug("Added parameter: language/en");
+    	}
+
+    	logger.debug("OUT");
+    	return map;
+        }
+    
+    
 }
 

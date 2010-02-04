@@ -51,10 +51,12 @@ Sbi.commons.ExecutionPanel = function(config) {
 	var buttons = [];
     buttons.push({
         text : 'Start'
+        , scope : this
         , handler : this.startProcess
     });
     buttons.push({
         text : 'Stop'
+        , scope : this
         , handler : this.stopProcess
     });
  

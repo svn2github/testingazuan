@@ -105,6 +105,8 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 			    	   				  request.getContextPath()%>'
 			    	    
 		    	};
+		    	
+		    	alert(url);
 		
 			    Sbi.config.serviceRegistry = new Sbi.commons.ServiceRegistry({
 			    	baseUrl: url

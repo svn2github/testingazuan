@@ -31,17 +31,23 @@ Ext.ns("Sbi.commons");
 
 Sbi.commons.ServiceRegistry = function(config) {
 	
-	this.baseUrl = {
-		protocol: 'http',       
-		host: 'localhost',
-        port: '8080',
-        contextPath: 'SpagoBI',
-        controllerPath: 'servlet/AdapterHTTP',
-        execId: -1 
-    };
+	config = config || {};
 	
-	Ext.apply(this, config);
+	this.baseUrl = Ext.apply({}, config.baseUrl || {}, {
+		protocol: 'http'     
+		, host: 'localhost'
+	    , port: '8080'
+	    , contextPath: 'SpagoBI'
+	    , controllerPath: 'servlet/AdapterHTTP'    
+	});
 	
+	this.baseParams = Ext.apply({}, config.baseParams || {}, {
+		SBI_EXECUTION_ID: -1
+	});
+	
+	this.defaultAbsolute = config.defaultAbsolute !== undefined?  config.defaultAbsolute: false; 
+	this.defaultServiceType = config.defaultServiceType !== undefined?  config.defaultServiceType: 'action'; 
+		
 	//this.addEvents();	
 	
 	// constructor
@@ -51,26 +57,62 @@ Sbi.commons.ServiceRegistry = function(config) {
 Ext.extend(Sbi.commons.ServiceRegistry, Ext.util.Observable, {
     
     // static contens and methods definitions
-   
+	baseUrl: null
+	, baseParams: null
+	, defaultAbsolute: null
+	, defaultServiceType: null 
+	
    
     // public methods
     
-    setBaseUrl : function(url) {
+    , setBaseUrl : function(url) {
        Ext.apply(this.baseUrl, url); 
     }
         
-    , getServiceUrl : function(actionName, absolute){
+    , getServiceUrl : function(s){
+    	var serviceUrl;
+    	
     	var baseUrlStr;
-        var serviceUrl;
-        	
-        if(absolute === undefined || absolute === false) {
-        	baseUrlStr = 'AdapterHTTP';
-        } else {
-        	baseUrlStr = this.baseUrl.protocol + "://" + this.baseUrl.host + ":" + this.baseUrl.port + "/" + this.baseUrl.contextPath + "/" + this.baseUrl.controllerPath;
+    	var serviceType;
+    	var params;
+               
+        if(typeof s == 'string') {
+        	s = {serviceName: s};
         }
         
-        serviceUrl = baseUrlStr + "?ACTION_NAME=" + actionName + "&SBI_EXECUTION_ID=" + this.baseUrl.execId;
-        
+        serviceType = s.serviceType || this.defaultServiceType;
+        params = Ext.apply({}, s.baseParams || {}, this.baseParams);
+                
+        serviceUrl = this.getBaseUrlStr(s);
+        serviceUrl += '?';
+        serviceUrl += (serviceType === 'action')? 'ACTION_NAME': 'PAGE';
+        serviceUrl += '=';
+        serviceUrl += s.serviceName;
+      
+        for(var p in params){
+        	if(params[p] !== null) {
+        		serviceUrl += '&' + p + '=' + params[p];
+        	}
+        }
+        alert(serviceUrl);
         return serviceUrl;
     }     
+    
+    , getBaseUrlStr: function(s) {
+    	var baseUrlStr;
+
+    	if (this.baseUrl.completeUrl !== undefined) {
+    		baseUrlStr = this.baseUrl.completeUrl;
+    	} else {
+        	var isAbsolute = s.isAbsolute || this.defaultAbsolute;
+        	var url = Ext.apply({}, s.baseUrl || {}, this.baseUrl);
+        	
+        	if(isAbsolute) {
+        		baseUrlStr = url.protocol + '://' + url.host + ":" + url.port + '/' + url.contextPath + '/' + url.controllerPath;
+        	} else {
+        		baseUrlStr = '/' + url.contextPath+ '/' + url.controllerPath;
+        	}
+    	}
+    	return  baseUrlStr;
+    }
 });

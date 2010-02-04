@@ -62,8 +62,8 @@ public class CommonjWorkContainer {
 	}
 	
 	
-	public void setInSession(HttpSession session){
-		session.setAttribute("SBI_PROCESS_"+name, this);
+	public void setInSession(String documentId,HttpSession session){
+		session.setAttribute("SBI_PROCESS_"+documentId, this);
 	}
 	
 	

@@ -78,7 +78,7 @@ public class WorkConfiguration {
 		File executableWorkDir;    	
 
 		try {
-			logger.debug("Starting run method of work : " +
+			logger.debug("Starting configure method of work : " +
 					"name = [" + work.getWorkName() + "] ; " +
 					"to start class= [" + work.getClassName() + "] ; ");
 
@@ -111,7 +111,12 @@ public class WorkConfiguration {
 
 			Object documentIdO=parameters.get("DOCUMENT_ID");
 			String documentId=documentIdO!=null ? documentIdO.toString() : null; 
-
+			if(documentId==null){
+				logger.error("Could not retrieve document ID");
+				throw new Exception("Could not retrieve document ID");
+						
+			}
+			
 			CommonjWorkListener listener = new CommonjWorkListener(auditServiceProxy, eventServiceProxy);
 
 			if(documentId!=null){
@@ -149,7 +154,7 @@ public class WorkConfiguration {
 			container.setListener(listener);
 			container.setName(work.getWorkName());
 			container.setWm(wm);
-			container.setInSession(session);
+			container.setInSession(documentId, session);
 			//	wm.setInSession(session, workToLaunch, listener, work.getWorkName());
 
 			int ti=0;			

@@ -57,6 +57,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	String spagobiServerHost;
 	String spagobiContext;
 	String spagobiSpagoController;
+	String docId;
 	
 	/*qbeEngineInstance = (QbeEngineInstance)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("ENGINE_INSTANCE");
 	List datamartNames = qbeEngineInstance.getDatamartModel().getDataSource().getDatamartNames();
@@ -74,6 +75,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
     spagobiServerHost = request.getParameter(SpagoBIConstants.SBI_HOST);
     spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
     spagobiSpagoController = request.getParameter(SpagoBIConstants.SBI_SPAGO_CONTROLLER);
+    docId = request.getParameter("document");
 %>
 
 
@@ -84,7 +86,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	
 	<head>
 		<%@include file="commons/includeExtJS.jspf" %>
-	
+	    <%@include file="commons/includeSrcJS.jspf" %>
 	</head>
 	
 	<body>
@@ -93,27 +95,22 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	        Ext.onReady(function(){
 	        	Ext.QuickTips.init();   
 	        	
-	        	var buttons = [];
-		        buttons.push({
-		            text : 'sbi.execution.commonJEngine.start'
-		            , handler : this.startProcess
-		        });
-		        buttons.push({
-		            text : 'sbi.execution.commonJEngine.stop'
-		            , handler : this.stopProcess
-		        });
-			    
+	        	Sbi.config = {};
 	        	
-	        	var generalPanel = new Ext.Panel({
-		            title : 'sbi.execution.commonJEngine.title',
-		            layout : 'fit',
-		            collapsible : false,
-		            collapsed : false,
-		            buttons: buttons,
-		            autoWidth : true,
-		            autoHeight : true,
-		            region: 'center'
-		        });
+	        	var url = {
+			    	host: '<%= request.getServerName()%>'
+			    	, port: '<%= request.getServerPort()%>'
+			    	, contextPath: '<%= request.getContextPath().startsWith("/")||request.getContextPath().startsWith("\\")?
+			    	   				  request.getContextPath().substring(1):
+			    	   				  request.getContextPath()%>'
+			    	    
+		    	};
+		
+			    Sbi.config.serviceRegistry = new Sbi.commons.ServiceRegistry({
+			    	baseUrl: url
+			    });
+	        	
+	        	var generalPanel= new Sbi.commons.ExecutionPanel({document_id:<%=docId%>});
 		        
 		        var viewport = new Ext.Viewport({
 	           		items: [generalPanel]

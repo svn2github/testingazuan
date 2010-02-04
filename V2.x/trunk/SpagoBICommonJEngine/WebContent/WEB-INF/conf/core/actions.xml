@@ -13,5 +13,11 @@
 			scope="REQUEST">
     	<CONFIG></CONFIG>
   	</ACTION>
+
+  	<ACTION name="STATUS_WORK" 
+			class="it.eng.spagobi.engines.commonj.services.StatusWorkAction"  
+			scope="REQUEST">
+    	<CONFIG></CONFIG>
+  	</ACTION>
     
 </ACTIONS>

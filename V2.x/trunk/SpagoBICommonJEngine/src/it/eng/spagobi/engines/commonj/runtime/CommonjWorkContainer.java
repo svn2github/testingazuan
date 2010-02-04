@@ -5,7 +5,8 @@ import it.eng.spagobi.utilities.threadmanager.WorkManager;
 import javax.servlet.http.HttpSession;
 
 import commonj.work.Work;
-import commonj.work.WorkListener;
+import commonj.work.WorkItem;
+
 import de.myfoo.commonj.work.FooRemoteWorkItem;
 
 public class CommonjWorkContainer {
@@ -19,7 +20,7 @@ public class CommonjWorkContainer {
 	WorkManager wm=null;
 	
 	FooRemoteWorkItem fooRemoteWorkItem=null;
-		
+	WorkItem workItem = null;	
 	
 	public FooRemoteWorkItem getFooRemoteWorkItem() {
 		return fooRemoteWorkItem;
@@ -35,6 +36,15 @@ public class CommonjWorkContainer {
 
 	public void setWm(WorkManager wm) {
 		this.wm = wm;
+	}
+
+	
+	public WorkItem getWorkItem() {
+		return workItem;
+	}
+
+	public void setWorkItem(WorkItem workItem) {
+		this.workItem = workItem;
 	}
 
 	public Work getWork() {

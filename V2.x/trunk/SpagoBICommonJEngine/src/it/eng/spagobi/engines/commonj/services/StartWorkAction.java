@@ -7,6 +7,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import commonj.work.Work;
+import commonj.work.WorkEvent;
+import commonj.work.WorkItem;
 
 import de.myfoo.commonj.work.FooRemoteWorkItem;
 
@@ -35,7 +37,18 @@ public class StartWorkAction extends AbstractEngineAction {
 
 		//recover from session
 		try{
-			Object o=session.getAttribute("SBI_PROCESS_"+"lavoro");
+
+			String document_id=null;
+			Object document_idO=null;
+			document_idO=request.getAttribute("DOCUMENT_ID");
+			if(document_id!=null){
+				document_id=document_idO.toString();
+			}
+			else{
+				document_id="308";
+			}
+
+			Object o=session.getAttribute("SBI_PROCESS_"+document_id);
 
 			CommonjWorkContainer container=(CommonjWorkContainer)o;
 			WorkManager wm=container.getWm();
@@ -43,18 +56,26 @@ public class StartWorkAction extends AbstractEngineAction {
 			Work work=container.getWork();
 			CommonjWorkListener listener=container.getListener();
 
-			FooRemoteWorkItem fooRemoteWorkItem=(FooRemoteWorkItem)wm.runWithReturn(work, listener);
+			FooRemoteWorkItem fooRemoteWorkItem=wm.buildFooRemoteWorkItem(work, listener);
 			container.setFooRemoteWorkItem(fooRemoteWorkItem);
+			if(fooRemoteWorkItem.getStatus()==WorkEvent.WORK_ACCEPTED){
+				WorkItem workItem=(WorkItem)wm.runWithReturnWI(work, listener);
+				container.setWorkItem(workItem);
+//				// TODO: Put timeou
+//				while(workItem.getStatus()!=WorkEvent.WORK_STARTED){
+//				status=workItem.getStatus();
+//				Thread.sleep(2000);
+//				}
+				session.setAttribute("SBI_PROCESS_"+document_id, container);
 
-			session.setAttribute("SBI_PROCESS_"+"lavoro", container);
+				try {
+					writeBackToClient( new JSONAcknowledge() );
+				} catch (IOException e) {
+					String message = "Impossible to write back the responce to the client";
+					throw new SpagoBIEngineServiceException(getActionName(), message, e);
+				}
 
-			try {
-				writeBackToClient( new JSONAcknowledge() );
-			} catch (IOException e) {
-				String message = "Impossible to write back the responce to the client";
-				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
-
 		}
 		catch (Exception e) {
 			logger.error("Error in starting the work");

@@ -201,7 +201,7 @@
 	  <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIAccessibilityEngine" />
 	    <delete dir="${tomcat.home}/webapps/SpagoBIAccessibilityEngine" />
 	    <mkdir dir="${tomcat.home}/webapps/SpagoBIAccessibilityEngine" />
-	    <unzip src="../../../SpagoBIJPXMLAEngine/dist/SpagoBIAccessibilityEngine.war" dest="${tomcat.home}/webapps/SpagoBIAccessibilityEngine" />
+	    <unzip src="../../../SpagoBIAccessibilityEngine/dist/SpagoBIAccessibilityEngine.war" dest="${tomcat.home}/webapps/SpagoBIAccessibilityEngine" />
 	</target>
   
   <target name="create.all" depends="clean.all">

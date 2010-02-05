@@ -98,7 +98,6 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
     }
     
     ,startProcess : function() {
-    	alert('start');
        Ext.Ajax.request({
 	        url: this.services['getStartService'],
 	        params: {'DOCUMENT_ID' : this.document_id },
@@ -134,7 +133,6 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
 	  	      			this.buttons[0].disabled=false;		
 	      				this.buttons[1].disabled=true;		
 						//this.body="<h1>ciaoooo</h1>";
-		      			alert(content.status);
 		      			this.setTitle(content.status);
 	      				
 	      			} else {
@@ -158,9 +156,27 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
 	      		if(response !== undefined && response.responseText !== undefined) {
 	      			var content = Ext.util.JSON.decode( response.responseText );
 	      			if (content !== undefined) {
-					//this.body="<h1>ciaoooo</h1>";
-		      		//alert(content.status);
-	      			this.setTitle(content.status);
+						if(content.status_code==0){ // not started, enable start button
+	  	      			this.buttons[0].disabled=false;		
+	      				this.buttons[1].disabled=true;								
+						}
+						else if(content.status_code==4){ // completed, disable both buttons
+	  	      			this.buttons[0].disabled=true;		
+	      				this.buttons[1].disabled=true;								
+						}
+						else if(content.status_code==2){ // rejected, disable both buttons
+	  	      			this.buttons[0].disabled=false;		
+	      				this.buttons[1].disabled=true;								
+						}
+						else if(content.status_code==1){ // accepted,disable start button
+	  	      			this.buttons[0].disabled=true;		
+	      				this.buttons[1].disabled=true;								
+						}												
+						else{ 	// started: disable start button, enable stop button
+	  	      			this.buttons[0].disabled=true;		
+	      				this.buttons[1].disabled=false;								
+						}
+	      				this.setTitle(content.status);
 	      			} else {
 	      				Sbi.commons.ExceptionHandler.showErrorMessage('Server response cannot be decoded', 'Service Error');
 	      			}

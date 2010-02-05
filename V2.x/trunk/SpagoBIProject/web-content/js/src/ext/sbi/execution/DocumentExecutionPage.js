@@ -1016,6 +1016,14 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	                			, subobject: {'name': message.data.subobject}
 	                		}
 	            	    };
+	            	    if(message.data.target == 'tab'){
+	            	    	config.target = message.data.target;
+	            	    }
+	            	    
+	            	    if(message.data.title !== undefined){
+	            	    	config.title = message.data.title;
+	            	    }
+	            	    
 	                	// workaround for document composition with a svg map on IE: when clicking on the map, this message is thrown
 	                	// but we must invoke execCrossNavigation defined for document composition
 	                	if (Ext.isIE && this.executionInstance.document.typeCode == 'DOCUMENT_COMPOSITE') {
@@ -1040,8 +1048,8 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		
 		this.miframe.on('documentloaded', function() {
 			this.miframe.iframe.execScript("parent = document;", true);
-			var scriptFn = 	"parent.execCrossNavigation = function(d,l,p,s) {" +
-							"	sendMessage({'label': l, parameters: p, windowName: d, subobject: s},'crossnavigation');" +
+			var scriptFn = 	"parent.execCrossNavigation = function(d,l,p,s,ti,t) {" +
+							"	sendMessage({'label': l, parameters: p, windowName: d, subobject: s, target: t, title: ti},'crossnavigation');" +
 							"};";
 			this.miframe.iframe.execScript(scriptFn, true);
 			this.miframe.iframe.execScript("uiType = 'ext';", true);

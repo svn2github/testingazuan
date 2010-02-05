@@ -115,8 +115,8 @@ Sbi.browser.DocumentsBrowser = function(config) {
 						try {
 							var documentPage = anActiveTab.activeDocument.documentExecutionPage;
 							if (documentPage.isVisible()) {
-								var scriptFn = 	"parent.execCrossNavigation = function(d,l,p,s) {" +
-												"	sendMessage({'label': l, parameters: p, windowName: d, subobject: s},'crossnavigation');" +
+								var scriptFn = 	"parent.execCrossNavigation = function(d,l,p,s,ti,t) {" +
+												"	sendMessage({'label': l, parameters: p, windowName: d, subobject: s, target: t, title: ti},'crossnavigation');" +
 												"};";
 								documentPage.miframe.iframe.execScript(scriptFn, true);
 							}
@@ -184,7 +184,7 @@ Sbi.browser.DocumentsBrowser = function(config) {
     this.filterPanel.addListener('onfilter', this.onFilter, this);
     
     
-    
+   
     
     
 }
@@ -224,6 +224,10 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
     , onTreeNodeClick: function(node, e) {
 		this.selectFolder(node.id);
 	}
+	,onCrossNavigation: function(config){
+		this.onDocumentClick(null,config.document);
+		return false;
+	}
 
 	, onDocumentClick: function(panel, r) {
 	
@@ -231,6 +235,8 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
 			title: r.name
 			, closable: true
 		}, r);
+		
+		executionPanel.addListener('crossnavigationonothertab', this.onCrossNavigation, this);
 		
 		this.centerContainerPanel.add(executionPanel).show();
 		

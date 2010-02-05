@@ -161,21 +161,33 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 	}
 	
 	, executeCrossNavigation: function( config ) {
-		var prevActiveDoc = this.activeDocument;
-		
-		this.activeDocument = new Sbi.execution.ExecutionWizard( {preferences: config.preferences, isFromCross: true}, config.document );
-		this.documentsStack.push( this.activeDocument );
-		
-		this.activeDocument.on('beforetoolbarinit', this.setBreadcrumbs, this);
-		//this.activeDocument.tb.on('beforeinit', this.setBreadcrumbs, this);	
-		this.activeDocument.documentExecutionPage.on('crossnavigation', this.loadCrossNavigationTargetDocument , this);
-		
-		//this.swapPanel(prevActiveDoc, this.activeDocument);
-		this.add(this.activeDocument);
-		this.doLayout();
-		this.getLayout().setActiveItem(this.documentsStack.length -1);
-		
-		this.activeDocument.execute();
+	
+		if(config.title !== undefined){
+			config.document.name = config.title;
+		}
+		var tabblocked = true;
+		if (config.target == 'tab'){
+			tabblocked = this.fireEvent('crossnavigationonothertab', config);
+		}
+		if(tabblocked){
+			var prevActiveDoc = this.activeDocument;
+			
+			
+			
+			this.activeDocument = new Sbi.execution.ExecutionWizard( {preferences: config.preferences, isFromCross: true}, config.document );
+			this.documentsStack.push( this.activeDocument );
+			
+			this.activeDocument.on('beforetoolbarinit', this.setBreadcrumbs, this);
+			//this.activeDocument.tb.on('beforeinit', this.setBreadcrumbs, this);	
+			this.activeDocument.documentExecutionPage.on('crossnavigation', this.loadCrossNavigationTargetDocument , this);
+			
+			//this.swapPanel(prevActiveDoc, this.activeDocument);
+			this.add(this.activeDocument);
+			this.doLayout();
+			this.getLayout().setActiveItem(this.documentsStack.length -1);
+			
+			this.activeDocument.execute();
+		}
 	}
 	
 	, setBreadcrumbs: function(tb) {
@@ -235,8 +247,8 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 		// if browser is IE, re-inject parent.execCrossNavigation function in order to solve parent variable conflict that occurs when 
 		// more iframes are built and the same function in injected: it is a workaround that let cross navigation work properly
 		if (Ext.isIE) {
-			var scriptFn = 	"parent.execCrossNavigation = function(d,l,p,s) {" +
-							"	sendMessage({'label': l, parameters: p, windowName: d, subobject: s},'crossnavigation');" +
+			var scriptFn = 	"parent.execCrossNavigation = function(d,l,p,s,ti,t) {" +
+							"	sendMessage({'label': l, parameters: p, windowName: d, subobject: s, target: t, title: ti},'crossnavigation');" +
 							"};";
 			this.activeDocument.documentExecutionPage.miframe.iframe.execScript(scriptFn, true);
 		}

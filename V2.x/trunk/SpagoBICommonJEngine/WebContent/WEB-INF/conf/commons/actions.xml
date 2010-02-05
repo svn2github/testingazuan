@@ -10,7 +10,7 @@
 	<!-- TRAPS																			   -->
 	<!-- ================================================================================= -->
 	
-	<ACTION name="SERVICE_EXCEPTION_TRAP_ACTION" 
+<!-- 	<ACTION name="SERVICE_EXCEPTION_TRAP_ACTION" 
 			class="it.eng.spagobi.engines.geo.service.ServiceExceptionTrapAction" 
 			scope="REQUEST">
 		<CONFIG></CONFIG>
@@ -21,10 +21,5 @@
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
-    <!-- 
-    <ACTION name="DRAW_MAP_SERVICE_EXCEPTION_TRAP_ACTION" 
-			class="it.eng.spagobi.engines.geo.service.DrawMapServiceExceptionTrapAction" 
-			scope="REQUEST">
-		<CONFIG></CONFIG>
-	</ACTION>   -->
+   -->
 </ACTIONS>

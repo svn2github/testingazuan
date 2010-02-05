@@ -92,6 +92,9 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	<body>
 	
     	<script type="text/javascript">  
+	     
+	     var generalPanel=null;
+	        
 	        Ext.onReady(function(){
 	        	Ext.QuickTips.init();   
 	        	
@@ -110,13 +113,29 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 			    	baseUrl: url
 			    });
 	        	
-	        	var generalPanel= new Sbi.commons.ExecutionPanel({document_id:<%=docId%>});
+	        	generalPanel= new Sbi.commons.ExecutionPanel({document_id:<%=docId%>});
+	        	//generalPanel.monitorStatus();
 		        
 		        var viewport = new Ext.Viewport({
 	           		items: [generalPanel]
 	           	});  
 	           	
+	           //	setTimeout("timer()", 5000);
+	           	timer();
+	           	
 	      	});
+	      	
+	      	
+	     function timer(){
+			//alert(generalPanel);	
+			generalPanel.statusProcess(<%=docId%>);
+			setTimeout("timer()", 10000);	
+		}
+	
+		
+	      	
+	      	
+	      	
 	    </script>
 	
 	</body>

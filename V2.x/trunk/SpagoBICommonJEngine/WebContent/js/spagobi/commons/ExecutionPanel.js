@@ -45,19 +45,26 @@ Sbi.commons.ExecutionPanel = function(config) {
 		serviceName: 'STOP_WORK'
 		, baseParams: params
 	});
+
+	this.services['getStatusService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'STATUS_WORK'
+		, baseParams: params
+	});
+
 	
 	this.document_id = config.document_id;
 				
-	var buttons = [];
-    buttons.push({
+	this.buttons = [];
+    this.buttons.push({
         text : 'Start'
         , scope : this
         , handler : this.startProcess
     });
-    buttons.push({
+    this.buttons.push({
         text : 'Stop'
         , scope : this
         , handler : this.stopProcess
+        ,disabled: true
     });
  
    	 var c = Ext.apply( {}, config, {
@@ -65,7 +72,7 @@ Sbi.commons.ExecutionPanel = function(config) {
         layout : 'fit',
         collapsible : false,
         collapsed : false,
-        buttons: buttons,
+        buttons: this.buttons,
         buttonAlign: 'left',
         autoWidth : true,
         autoHeight : true,
@@ -74,6 +81,8 @@ Sbi.commons.ExecutionPanel = function(config) {
 	
 	// constructor
     Sbi.commons.ExecutionPanel.superclass.constructor.call(this,c);
+    
+    
 };
 
 Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
@@ -81,10 +90,15 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
     // static contens and methods definitions
     services : null
     ,document_id : null
+    ,buttons: null
    
     // public methods
+    ,monitorStatus: function(){
+    
+    }
+    
     ,startProcess : function() {
-    alert('ciao');
+    	alert('start');
        Ext.Ajax.request({
 	        url: this.services['getStartService'],
 	        params: {'DOCUMENT_ID' : this.document_id },
@@ -92,6 +106,36 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
 	      		if(response !== undefined && response.responseText !== undefined) {
 	      			var content = Ext.util.JSON.decode( response.responseText );
 	      			if (content !== undefined) {
+					//this.body="<h1>ciaoooo</h1>";
+	      			this.setTitle(content.status);
+	      			this.buttons[0].disabled=true;		
+	      			this.buttons[1].disabled=false;		
+	      			} else {
+	      				Sbi.commons.ExceptionHandler.showErrorMessage('Server response cannot be decoded', 'Service Error');
+	      			}
+	      		} else {
+	      			Sbi.commons.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+	      		}
+	        },
+	        scope: this,
+			failure: Sbi.commons.ExceptionHandler.handleFailure      
+	   });
+	   
+    }
+    
+    , stopProcess : function() {
+     	Ext.Ajax.request({
+	        url: this.services['getStopService'],
+	        params: {'DOCUMENT_ID' : this.document_id },
+	        success : function(response, options) {
+	      		if(response !== undefined && response.responseText !== undefined) {
+	      			var content = Ext.util.JSON.decode( response.responseText );
+	      			if (content !== undefined) {
+	  	      			this.buttons[0].disabled=false;		
+	      				this.buttons[1].disabled=true;		
+						//this.body="<h1>ciaoooo</h1>";
+		      			alert(content.status);
+		      			this.setTitle(content.status);
 	      				
 	      			} else {
 	      				Sbi.commons.ExceptionHandler.showErrorMessage('Server response cannot be decoded', 'Service Error');
@@ -104,17 +148,19 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
 			failure: Sbi.commons.ExceptionHandler.handleFailure      
 	   });
     }
+
+    ,statusProcess : function() {
     
-    , stopProcess : function() {
-    alert('bau');
-     	Ext.Ajax.request({
-	        url: this.services['getStopService'],
+       Ext.Ajax.request({
+	        url: this.services['getStatusService'],
 	        params: {'DOCUMENT_ID' : this.document_id },
 	        success : function(response, options) {
 	      		if(response !== undefined && response.responseText !== undefined) {
 	      			var content = Ext.util.JSON.decode( response.responseText );
 	      			if (content !== undefined) {
-	      				
+					//this.body="<h1>ciaoooo</h1>";
+		      		//alert(content.status);
+	      			this.setTitle(content.status);
 	      			} else {
 	      				Sbi.commons.ExceptionHandler.showErrorMessage('Server response cannot be decoded', 'Service Error');
 	      			}
@@ -125,6 +171,7 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
 	        scope: this,
 			failure: Sbi.commons.ExceptionHandler.handleFailure      
 	   });
+	   
     }
     
 

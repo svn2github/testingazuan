@@ -66,6 +66,33 @@ Sbi.commons.ExecutionPanel = function(config) {
         , handler : this.stopProcess
         ,disabled: true
     });
+    
+    this.infoStore = new Ext.data.SimpleStore({
+        fields : ['meta_name', 'meta_content' ],
+        data : [
+                ['Status', 'Data']
+        ]        
+    });
+    
+    this.tabInfo = new Ext.grid.GridPanel({
+            store : this.infoStore,
+            autoHeight : true,
+			mode: 'local',
+            columns : [ {
+                header : 'Status',
+                width : 150,
+                dataIndex : 'meta_name'
+            }, {
+                header : 'Time',
+                width : 200,
+                dataIndex : 'meta_content'
+            } ],
+            viewConfig : {
+                forceFit : false,
+                scrollOffset : 2
+            // the grid will never have scrollbars
+            }
+        });
  
    	 var c = Ext.apply( {}, config, {
         title : 'Process Execution',
@@ -74,6 +101,7 @@ Sbi.commons.ExecutionPanel = function(config) {
         collapsed : false,
         buttons: this.buttons,
         buttonAlign: 'left',
+        items: [this.tabInfo],
         autoWidth : true,
         autoHeight : true,
         region: 'center'
@@ -91,6 +119,8 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
     services : null
     ,document_id : null
     ,buttons: null
+    ,tabInfo: null
+    ,infoStore:null
    
     // public methods
     ,monitorStatus: function(){
@@ -105,8 +135,10 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
 	      		if(response !== undefined && response.responseText !== undefined) {
 	      			var content = Ext.util.JSON.decode( response.responseText );
 	      			if (content !== undefined) {
-					//this.body="<h1>ciaoooo</h1>";
-	      			this.setTitle(content.status);
+	      			//this.setTitle(content.status);
+	      				record=this.tabInfo.store.getAt(0);
+	      				record.set('meta_name',content.status);
+	      				record.set('meta_content',content.time);
 	      			this.buttons[0].disabled=true;		
 	      			this.buttons[1].disabled=false;		
 	      			} else {
@@ -133,7 +165,10 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
 	  	      			this.buttons[0].disabled=false;		
 	      				this.buttons[1].disabled=true;		
 						//this.body="<h1>ciaoooo</h1>";
-		      			this.setTitle(content.status);
+		      			//this.setTitle(content.status);
+	      				record=this.tabInfo.store.getAt(0);
+	      				record.set('meta_name',content.status);
+	      				record.set('meta_content',content.time);
 	      				
 	      			} else {
 	      				Sbi.commons.ExceptionHandler.showErrorMessage('Server response cannot be decoded', 'Service Error');
@@ -176,7 +211,11 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
 	  	      			this.buttons[0].disabled=true;		
 	      				this.buttons[1].disabled=false;								
 						}
-	      				this.setTitle(content.status);
+	      				//this.setTitle(content.status);
+	      				record=this.tabInfo.store.getAt(0);
+	      				record.set('meta_name',content.status);
+	      				record.set('meta_content',content.time);
+	      			
 	      			} else {
 	      				Sbi.commons.ExceptionHandler.showErrorMessage('Server response cannot be decoded', 'Service Error');
 	      			}

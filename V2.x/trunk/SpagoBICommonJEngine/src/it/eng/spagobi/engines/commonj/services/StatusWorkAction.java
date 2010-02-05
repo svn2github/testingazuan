@@ -72,7 +72,10 @@ public class StatusWorkAction extends AbstractEngineAction {
 	public void service(SourceBean request, SourceBean response) {
 		logger.debug("IN");
 		super.service(request, response);
+		HttpSession session=getHttpSession();
 		JSONObject info=null;
+		
+		// Get document id, must find
 		String document_id=null;
 		Object document_idO=null;
 		document_idO=request.getAttribute("DOCUMENT_ID");
@@ -85,25 +88,21 @@ public class StatusWorkAction extends AbstractEngineAction {
 			throw new SpagoBIEngineServiceException(getActionName(), "could not find document id");
 		}
 
-		HttpSession session=getHttpSession();
 
-		//recover from session
+		//recover from session, if does not find means work is completed
 		Object o=session.getAttribute("SBI_PROCESS_"+document_id);
 		try{
-			info = new JSONObject();
-			int statusRemote;
 			int statusWI;
 
-			if(o!=null){
+			if(o!=null){			// object found in session, work could be not started, running or completed
 
 				CommonjWorkContainer container=(CommonjWorkContainer)o;
-
 				FooRemoteWorkItem fooRwi=container.getFooRemoteWorkItem();
 				WorkItem wi=container.getWorkItem();
-				if(fooRwi!=null && wi!=null){
-					statusRemote=fooRwi.getStatus();
-					statusWI=wi.getStatus();
 
+				// if WorkItem is not set means work has never been started
+				if(fooRwi!=null && wi!=null){
+					statusWI=wi.getStatus();
 					// if finds that work is finished delete the attribute from session
 					if(statusWI==WorkEvent.WORK_COMPLETED){
 						logger.debug("Work is finished - remove from session");
@@ -120,10 +119,8 @@ public class StatusWorkAction extends AbstractEngineAction {
 				statusWI=WorkEvent.WORK_COMPLETED;
 			}
 
-			String message_=GeneralUtils.getEventMessage(statusWI);
-			info.put("status", message_);
-			info.put("time", (new Date()).toString());
-			System.out.println(message_);
+			info=GeneralUtils.buildJSONObject(statusWI);
+			System.out.println(GeneralUtils.getEventMessage(statusWI));
 			try {
 				writeBackToClient( new JSONSuccess(info));
 			} catch (IOException e) {
@@ -134,7 +131,6 @@ public class StatusWorkAction extends AbstractEngineAction {
 		}
 		catch (Exception e) {
 			logger.error("Error in Stopping the work");
-			//throw new SpagoBIEngineServiceException(getActionName(), "could not find document id");
 
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), e);
 		}	

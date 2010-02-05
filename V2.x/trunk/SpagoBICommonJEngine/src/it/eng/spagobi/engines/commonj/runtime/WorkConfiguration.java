@@ -31,9 +31,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  **/
 package it.eng.spagobi.engines.commonj.runtime;
 
-import it.eng.spago.base.ApplicationContainer;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.commonj.exception.WorkExecutionException;
 import it.eng.spagobi.engines.commonj.exception.WorkNotFoundException;
@@ -52,10 +49,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import commonj.work.Work;
-import commonj.work.WorkEvent;
-import commonj.work.WorkItem;
-import de.myfoo.commonj.work.FooRemoteWorkItem;
-import de.myfoo.commonj.work.FooWorkItem;
 
 
 public class WorkConfiguration {
@@ -114,63 +107,56 @@ public class WorkConfiguration {
 			if(documentId==null){
 				logger.error("Could not retrieve document ID");
 				throw new Exception("Could not retrieve document ID");
-						
-			}
-			
-			CommonjWorkListener listener = new CommonjWorkListener(auditServiceProxy, eventServiceProxy);
 
-			if(documentId!=null){
-				listener.setBiObjectID(documentId);
 			}
 
-			listener.setExecutionRole(executionRole);
-			listener.setWorkName(work.getWorkName());
-			listener.setWorkClass(work.getClassName());
-			logger.debug("Class to run "+work.getClassName());
-
-			logger.debug("listener ready");
-
-			Class clazz = Thread.currentThread().getContextClassLoader().loadClass(classToLoad);
-			Object obj = clazz.newInstance();
-			logger.debug("class loaded "+classToLoad);
-			Work workToLaunch=null;
-			// class loaded could be instance of CmdExecWork o di Work, testa se è il primo, se no è l'altra
-			if (obj instanceof CmdExecWork) {
-				logger.debug("Class specified extends CmdExecWork");
-				workToLaunch = (CmdExecWork) obj;
-				((CmdExecWork)obj).setCommand(work.getCommand());
-				((CmdExecWork)obj).setCommandEnvironment(work.getCommand_environment());
-				((CmdExecWork)obj).setParameters(work.getParameters());			
-			}
-			else
-				if (obj instanceof Work) {
-					logger.debug("Class specified extends Work");
-					workToLaunch=(Work)obj;
-				}
-
+			// check if it is already in sessione means it is already running!!
 
 			CommonjWorkContainer container=new CommonjWorkContainer();
-			container.setWork(workToLaunch);
-			container.setListener(listener);
-			container.setName(work.getWorkName());
-			container.setWm(wm);
-			container.setInSession(documentId, session);
-			//	wm.setInSession(session, workToLaunch, listener, work.getWorkName());
+			boolean already=container.isInSession(documentId, session);
+			if(already==false){
+				CommonjWorkListener listener = new CommonjWorkListener(auditServiceProxy, eventServiceProxy);
 
-			int ti=0;			
-//			FooRemoteWorkItem wi=null;
-//			if(workToLaunch!=null){			
-//			wi=(FooRemoteWorkItem)wm.runWithReturn(workToLaunch, listener);
-//			}
-//			else{
-//			logger.error("An error occurred while starting up execution for work [" + work.getWorkName() + "] type of class "+work.getClassName()+" is wrong, it must extend commonj.work.Work");
-//			throw new WorkExecutionException("An error occurred while starting up execution for work [" + work.getWorkName() + "] type is wrong, it must extend commonj.work.Work");
-//			}
+				if(documentId!=null){
+					listener.setBiObjectID(documentId);
+				}
+
+				listener.setExecutionRole(executionRole);
+				listener.setWorkName(work.getWorkName());
+				listener.setWorkClass(work.getClassName());
+				logger.debug("Class to run "+work.getClassName());
+
+				logger.debug("listener ready");
+
+				Class clazz = Thread.currentThread().getContextClassLoader().loadClass(classToLoad);
+				Object obj = clazz.newInstance();
+				logger.debug("class loaded "+classToLoad);
+				Work workToLaunch=null;
+				// class loaded could be instance of CmdExecWork o di Work, testa se è il primo, se no è l'altra
+				if (obj instanceof CmdExecWork) {
+					logger.debug("Class specified extends CmdExecWork");
+					workToLaunch = (CmdExecWork) obj;
+					((CmdExecWork)obj).setCommand(work.getCommand());
+					((CmdExecWork)obj).setCommandEnvironment(work.getCommand_environment());
+					((CmdExecWork)obj).setParameters(work.getParameters());			
+				}
+				else
+					if (obj instanceof Work) {
+						logger.debug("Class specified extends Work");
+						workToLaunch=(Work)obj;
+					}
 
 
-//			wi.release();
-
-
+				container.setWork(workToLaunch);
+				container.setListener(listener);
+				container.setName(work.getWorkName());
+				container.setWm(wm);
+				container.setInSession(documentId, session);
+			}
+			else{
+				System.out.println("Work already running");
+				logger.debug("Work already running");
+			}
 
 		} catch (Throwable e) {
 			logger.error("An error occurred while starting up execution for work [" + work.getWorkName() + "]");

@@ -74,8 +74,6 @@ public class StartWorkAction extends AbstractEngineAction {
 
 		//recover from session
 		try{
-			info = new JSONObject();
-
 			String document_id=null;
 			Object document_idO=null;
 			document_idO=request.getAttribute("DOCUMENT_ID");
@@ -88,31 +86,31 @@ public class StartWorkAction extends AbstractEngineAction {
 				return;
 			}
 
+			// Get the container object from session: it MUST be present if start button is enabled
 			Object o=session.getAttribute("SBI_PROCESS_"+document_id);
 
-			CommonjWorkContainer container=(CommonjWorkContainer)o;
-			WorkManager wm=container.getWm();
 
+			CommonjWorkContainer container=(CommonjWorkContainer)o;
+
+			WorkManager wm=container.getWm();
 			Work work=container.getWork();
 			CommonjWorkListener listener=container.getListener();
-
 			FooRemoteWorkItem fooRemoteWorkItem=wm.buildFooRemoteWorkItem(work, listener);
-			container.setFooRemoteWorkItem(fooRemoteWorkItem);
+
+			int statusWI;
+			
+			// Check if work was accepted
 			if(fooRemoteWorkItem.getStatus()==WorkEvent.WORK_ACCEPTED){
+				container.setFooRemoteWorkItem(fooRemoteWorkItem);
+				// run work!
 				WorkItem workItem=(WorkItem)wm.runWithReturnWI(work, listener);
 				container.setWorkItem(workItem);
-				int statusWI=workItem.getStatus();
-				//				// TODO: Put timeou
-//				while(workItem.getStatus()!=WorkEvent.WORK_STARTED){
-//				status=workItem.getStatus();
-//				Thread.sleep(2000);
-//				}
+				statusWI=workItem.getStatus();
+				// put new Object in session
 				session.setAttribute("SBI_PROCESS_"+document_id, container);
 
 				try {
-					String message=GeneralUtils.getEventMessage(statusWI);
-					info.put("status", message);
-					info.put("time", (new Date()).toString());
+					info=GeneralUtils.buildJSONObject(statusWI);
 					writeBackToClient( new JSONSuccess(info));
 
 				} catch (IOException e) {
@@ -121,9 +119,18 @@ public class StartWorkAction extends AbstractEngineAction {
 				}
 
 			}
+			else{ // WORK is rejected
+				try {
+					statusWI=fooRemoteWorkItem.getStatus();
+					info=GeneralUtils.buildJSONObject(statusWI);
+					writeBackToClient( new JSONSuccess(info));
+				} catch (IOException e) {
+					String message = "Impossible to write back the responce to the client";
+					throw new SpagoBIEngineServiceException(getActionName(), message, e);
+				}
+			}
 		}
 		catch (Exception e) {
-
 			logger.error("Error in starting the work");
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), e);
 		}

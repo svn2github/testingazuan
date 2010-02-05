@@ -44,16 +44,16 @@ import de.myfoo.commonj.work.FooRemoteWorkItem;
 public class CommonjWorkContainer {
 
 	Work work=null;
-	
+
 	CommonjWorkListener listener;
-	
+
 	String name=null;
 
 	WorkManager wm=null;
-	
+
 	FooRemoteWorkItem fooRemoteWorkItem=null;
 	WorkItem workItem = null;	
-	
+
 	public FooRemoteWorkItem getFooRemoteWorkItem() {
 		return fooRemoteWorkItem;
 	}
@@ -70,7 +70,7 @@ public class CommonjWorkContainer {
 		this.wm = wm;
 	}
 
-	
+
 	public WorkItem getWorkItem() {
 		return workItem;
 	}
@@ -102,11 +102,19 @@ public class CommonjWorkContainer {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
+
+
 	public void setInSession(String documentId,HttpSession session){
 		session.setAttribute("SBI_PROCESS_"+documentId, this);
 	}
-	
-	
+
+	public boolean isInSession(String documentId,HttpSession session){
+		Object o=session.getAttribute("SBI_PROCESS_"+documentId);
+		if(o!=null){
+			return true;
+		}
+		else return false;
+	}
+
+
 }

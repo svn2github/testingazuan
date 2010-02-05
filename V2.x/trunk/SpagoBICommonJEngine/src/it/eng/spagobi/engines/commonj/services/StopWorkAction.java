@@ -71,9 +71,13 @@ public class StopWorkAction extends AbstractEngineAction {
 	public void service(SourceBean request, SourceBean response) {
 		logger.debug("IN");
 		super.service(request, response);
+		int statusWI;
+		HttpSession session=getHttpSession();
+
+//		get document id, must be		
 		String document_id=null;
 		Object document_idO=null;
-
+		JSONObject info=null;
 		try{
 			document_idO=request.getAttribute("DOCUMENT_ID");
 			if(document_idO!=null){
@@ -84,42 +88,30 @@ public class StopWorkAction extends AbstractEngineAction {
 				throw new SpagoBIEngineServiceException(getActionName(), "could not find document id");
 			}
 
-
-			int statusWI;
-			
-			HttpSession session=getHttpSession();
-
 			//recover from session
 			Object o=session.getAttribute("SBI_PROCESS_"+document_id);
-			// if process still in session stop the process and delete the attribute
+			// if process still in session stop the process and delete the attribute, otherwise it could have been finished
 			if(o!=null){
 				CommonjWorkContainer container=(CommonjWorkContainer)o;
 				FooRemoteWorkItem fooRwi=container.getFooRemoteWorkItem();
 				// release the resource
 				fooRwi.release();
-//				remove the attribute
-				
 				// Use it to give time to set the status
 				Thread.sleep(1000);
 				statusWI=container.getWorkItem().getStatus();
 				session.removeAttribute("SBI_PROCESS_"+document_id);
 
-				
-			}
+
+			} // if no more in session is completed
 			else statusWI=WorkEvent.WORK_COMPLETED;
 
-			JSONObject info = new JSONObject();
-			String message_=GeneralUtils.getEventMessage(statusWI);
-			info.put("status", message_);
-			info.put("time", (new Date()).toString());
-
+			info=GeneralUtils.buildJSONObject(statusWI);
 			try {
 				writeBackToClient( new JSONSuccess(info));
 			} catch (IOException e) {
 				String message = "Impossible to write back the responce to the client";
 				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
-
 		}
 		catch (Exception e) {
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), e);

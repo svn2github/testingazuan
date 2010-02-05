@@ -1,5 +1,10 @@
 package it.eng.spagobi.engines.commonj.utils;
 
+import java.util.Date;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import commonj.work.WorkEvent;
 
 public class GeneralUtils {
@@ -28,6 +33,16 @@ public class GeneralUtils {
 			return WORK_NOT_STARTED;
 		}
 		return "";
+
+	}
+
+	static public JSONObject buildJSONObject (int statusCode) throws JSONException{
+		String message=GeneralUtils.getEventMessage(statusCode);
+		JSONObject info=new JSONObject();
+		info.put("status_code", statusCode);
+		info.put("status", message);
+		info.put("time", (new Date()).toString());
+		return info;
 
 	}
 

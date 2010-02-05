@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>SpagoBIAccessibilityEngine</display-name>
+  <welcome-file-list>  
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+	<filter>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<filter-class>
+			it.eng.spagobi.utilities.filters.SpagoBIAccessFilter
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<url-pattern>/servlet/*</url-pattern>
+	</filter-mapping>	  
+    <servlet>
+		<servlet-name>AccessibilityServlet</servlet-name>
+		<servlet-class>it.eng.spagobi.engines.accessibility.servlet.AccessibilityServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AccessibilityServlet</servlet-name>
+		<url-pattern>/servlet/AccessibilityServlet</url-pattern>
+	</servlet-mapping>	
+	<servlet-mapping>
+		<servlet-name>AccessibilityServlet</servlet-name>
+		<url-pattern>/servlet/AccessibilityServletBackEnd</url-pattern>
+	</servlet-mapping>	
+	
+</web-app>

@@ -93,6 +93,11 @@ if (user != null && password != null) {
 		%>
 		<a href="export.jsp">Export to PDF</a><br/>
 		<%
+	}else if(documentType.equals("ACCESSIBLE_HTML")){
+		%>
+		<a href="viewAccessible.jsp">View ACCESSIBLE HTML</a><br/>
+		<a href="exportAccessible.jsp">Export to ACCESSIBLE HTML</a><br/>
+		<%		
 	}
 	%>
 	<a href="documentsList.jsp">Back to documents list</a>

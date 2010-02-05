@@ -646,7 +646,7 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 
 			if ( document.getType().equalsIgnoreCase("KPI")) {  // CASE KPI
 				toReturn = executeKpi(document, instance.getBIObject(), (String)profile.getUserUniqueIdentifier(), output);
-			} else if (document.getType().equalsIgnoreCase("REPORT")){  // CASE REPORT
+			} else if (document.getType().equalsIgnoreCase("REPORT") || document.getType().equalsIgnoreCase("ACCESSIBLE_HTML")){  // CASE REPORT OR ACCESSIBLE_HTML
 				toReturn = executeReport(document, instance.getBIObject(), profile, output);					
 			} else {
 				logger.error("NO EXPORTER AVAILABLE");

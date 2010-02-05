@@ -142,11 +142,14 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 		}
 		
 		// building the filters expression
-		var filtersArray = filterGridState.concat(new Array()); // filtersArray is a clone of filterGridState
-		for (var count = 0; count < filtersArray.length; count = count + 2) {
-			filtersArray[count] = '$F{' + filtersArray[count].id + '}'; // replacing the objects with their id
+		var str = ''; // str is the filters expression
+		for (var count = 0; count < filterGridState.length; count++) {
+			if (count < filterGridState.length - 1) {
+				str += '$F{' + filterGridState[count].id + '}' + ' ' + filterGridState[count].booleanConnector + ' ';
+			} else {
+				str += '$F{' + filterGridState[count].id + '}';
+			}
 		}
-		var str = filtersArray.join(' '); // str is the filters expression
 		
 	    var error_offsets = new Array(); 
 	    var error_lookaheads = new Array(); 
@@ -180,15 +183,11 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 		
 		this.filterGrid.deleteFilters();
 		if(s.filters) {
-			for(var i = 0, l = s.filters.length; i < l; i=i+2) {
-				d = this.marshalFilterRecord(s.filters[i]); 
-				d.booleanConnector = (i+1<l)? s.filters[i+1]: 'AND';
+			for(var i = 0, l = s.filters.length; i < l; i++) {
+				d = this.marshalFilterRecord(s.filters[i]);
 				this.filterGrid.addFilter(d);
 			}
-		}/* else if(s.leftOperandValue) {
-			d = this.marshalFilterRecord(s); 
-			this.filterGrid.addFilter(d);
-		}*/
+		}
 	}
 	
 	, setFilterDetailState: function(s) {
@@ -207,15 +206,10 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 		var store, r, c;
 		
 		store = this.filterGrid.store;
-		for(var i = 0, l = store.getCount(); i < l; i++) {
+		for(var i = 0; i < store.getCount(); i++) {
 			r = store.getAt(i);
 			c = this.unmarshalFilterRecord(r)
-			var b = c.booleanConnector;
-			delete c.booleanConnector;
 			s.push(c);
-			if(i+1 < l) {
-				s.push(b);
-			}
 		}
 		
 		return s;

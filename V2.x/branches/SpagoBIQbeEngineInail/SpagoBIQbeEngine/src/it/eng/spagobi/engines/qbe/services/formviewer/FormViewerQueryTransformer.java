@@ -132,93 +132,19 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 	private void applyStaticClosedFilter(Query query, JSONObject option) throws Exception {
 		JSONArray filters = option.getJSONArray("filters");
 		// adding filters for the selected option
-		for (int i = 0; i < filters.length(); i = i + 2) {
+		for (int i = 0; i < filters.length(); i++) {
 			JSONObject filter = filters.getJSONObject(i);
-			
-			// TODO: change structure of filters, the boolean connectors between filters are no more necessary
-			String booleanConnector = "AND";
-			if (filters.length() > i + 1) {
-				booleanConnector = filters.getString(i + 1);
-			}
-			
 			WhereField.Operand leftOperand = new WhereField.Operand(filter.getString("leftOperandValue"), null, "Field Content", null, null);
 			WhereField.Operand rightOperand = null;
 			if (filter.optString("rightOperandValue") != null) {
 				rightOperand = new WhereField.Operand(filter.getString("rightOperandValue"), null, "Static Value", null, null);
 			}
-			query.addWhereField(filter.getString("id"), null, false, leftOperand, filter.getString("operator"), rightOperand, booleanConnector);
+			query.addWhereField(filter.getString("id"), null, false, leftOperand, filter.getString("operator"), rightOperand, filter.getString("booleanConnector"));
 		}
 		// updating where clause structure: the new condition must be added with AND boolean connector
 		JSONObject expression = option.getJSONObject("expression");
 		ExpressionNode node = QueryJSONDeserializer.getFilterExpTree(expression);
 		updateWhereClauseStructure(query, node, "AND");
-	}
-	
-	private ExpressionNode addWhereConditionFromClosedfilter(Query query, JSONObject filter, String id) throws Exception {
-		WhereField.Operand leftOperand = new WhereField.Operand(filter.getString("leftOperandValue"), null, "Field Content", null, null);
-		WhereField.Operand rightOperand = null;
-		if (filter.optString("rightOperandValue") != null) {
-			rightOperand = new WhereField.Operand(filter.getString("rightOperandValue"), null, "Static Value", null, null);
-		}
-		query.addWhereField(id, null, false, leftOperand, filter.getString("operator"), rightOperand, "AND");
-		
-		ExpressionNode newFilterNode = new ExpressionNode("NODE_CONST", "$F{" + id + "}");
-		return newFilterNode;
-	}
-	
-	
-	private ExpressionNode addWhereExpressionFromClosedfilter(Query query, JSONArray expression) throws Exception {
-		/*
-		int l = expression.length();
-		for (int i = 0; i < l; i = i + 3) {
-			String operator = expression.getString(i+1);
-			if (operator == "AND") {
-				// concatena i due nodi, il nodo risultante dovrà essere concatenato con il resto
-				ExpressionNode node = new ExpressionNode("NODE_OP", operator);
-				
-				JSONObject filter1 = expression.getJSONObject(i);
-				String id = UUID.randomUUID().toString();
-				addWhereConditionFromClosedfilter(query, filter1, id);
-				node.addChild(new ExpressionNode("NODE_CONST", "$F{" + id + "}"));
-				
-				JSONObject filter2 = expression.getJSONObject(i+2);
-				id = UUID.randomUUID().toString();
-				addWhereConditionFromClosedfilter(query, filter2, id);
-				node.addChild(new ExpressionNode("NODE_CONST", "$F{" + id + "}"));
-				
-				concatenaNodoConIlResto(node, expression, i + 3);
-			} else {
-				// fatti dare il node della concatenazione del resto, poi concatena in OR 
-				ExpressionNode restante = getRestante(expression,, i+3);
-				
-				ExpressionNode node = new ExpressionNode("NODE_OP", operator);
-				
-				JSONObject filter1 = expression.getJSONObject(i);
-				String id = UUID.randomUUID().toString();
-				addWhereConditionFromClosedfilter(query, filter1, id);
-				node.addChild(new ExpressionNode("NODE_CONST", "$F{" + id + "}"));
-				
-				node.addChild(restante);
-				
-			}
-
-		}
-		*/
-		
-		String operator = expression.getString(1);
-		ExpressionNode node = new ExpressionNode("NODE_OP", operator);
-		
-		JSONObject filter1 = expression.getJSONObject(0);
-		String id = UUID.randomUUID().toString();
-		addWhereConditionFromClosedfilter(query, filter1, id);
-		node.addChild(new ExpressionNode("NODE_CONST", "$F{" + id + "}"));
-		
-		JSONObject filter2 = expression.getJSONObject(2);
-		id = UUID.randomUUID().toString();
-		addWhereConditionFromClosedfilter(query, filter2, id);
-		node.addChild(new ExpressionNode("NODE_CONST", "$F{" + id + "}"));
-		
-		return node;
 	}
 	
 	private void updateWhereClauseStructure(Query query, String filterId,

@@ -66,10 +66,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Sbi.formbuilder.InlineEditor
     
 	text: null
 	, expression: null
-	, leftOperandValue: null
-	, leftOperandDescription: null
-	, operator: null
-	, rightOperandValue: null
+	, filters: null
 	
 	// --------------------------------------------------------------------------------
 	// public methods
@@ -81,7 +78,9 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Sbi.formbuilder.InlineEditor
 			//alert('filter name is changed!');
 		}
 		this.text = c.text;
-		
+		this.filters = c.filters;
+		this.expression = c.expression;
+		/*
 		if(c.expression){
 			this.expression = c.expression;
 			this.leftOperandValue = null;
@@ -95,12 +94,16 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Sbi.formbuilder.InlineEditor
 			this.operator = c.operator;
 			this.rightOperandValue = c.rightOperandValue;
 		}
+		*/
 		
 	}
 	
 	, getContents: function() {
 		var c = {};
 		c.text = this.text;
+		c.filters = this.filters;
+		c.expression = this.expression;
+		/*
 		if(this.expression !== null){
 			c.expression = this.expression;
 		} else {
@@ -109,7 +112,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Sbi.formbuilder.InlineEditor
 			c.operator = this.operator;
 			c.rightOperandValue = this.rightOperandValue;
 		}
-		
+		*/
 		
 		return c;
 	}

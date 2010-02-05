@@ -73,7 +73,9 @@ public class GroupByQueryTransformer extends AbstractQueryTransformer{
     		String aggFunc = (String)aggregateFunctions.get(i);
     		aggFunc = aggFunc.trim().toUpperCase();
     		alias = (String)(aggregateColumnAliases.get(i) == null?aggregateColumnNames.get(i): aggregateColumnAliases.get(i));
-    		
+    		if( !(alias.startsWith("'") || alias.startsWith("\"")) ) {
+				alias = "\"" + alias + "\"";
+			}
     		String columnName = (String)aggregateColumnNames.get(i);
     		columnName = columnName.trim().equalsIgnoreCase("*")? columnName: subQueryAlias + "." + columnName;
     		transformedStatment +=  ", " + aggFunc + "(" + columnName + ") AS " + alias;

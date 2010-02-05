@@ -418,7 +418,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 		*/
 	}
 	
-	private static ExpressionNode getFilterExpTree(JSONObject nodeJSON) throws SerializationException {
+	public static ExpressionNode getFilterExpTree(JSONObject nodeJSON) throws SerializationException {
 		ExpressionNode node = null;
 		String nodeType;
 		String nodeValue;

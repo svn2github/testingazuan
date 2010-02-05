@@ -33,7 +33,12 @@ import com.jamonapi.MonitorFactory;
 
 import it.eng.qbe.datasource.hibernate.DBConnection;
 import it.eng.qbe.datasource.hibernate.IHibernateDataSource;
+import it.eng.qbe.model.structure.DataMartField;
+import it.eng.qbe.query.AggregationFunctions;
+import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.HavingField;
+import it.eng.qbe.query.IAggregationFunction;
+import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.query.serializer.QuerySerializerFactory;
@@ -171,13 +176,27 @@ public class ExecuteMasterQueryAction extends AbstractQbeEngineAction {
 				String groupByField = groupFields.getString(i);
 				int fieldIndex = query.getSelectFieldIndex(groupByField);				
 				String[] f = (String[])selectFields.get(fieldIndex);				
-				String as = query.getSelectFieldByIndex(fieldIndex).getAlias();
-				
+//				String as = query.getSelectFieldByIndex(fieldIndex).getAlias();
 				transformer.addGrouByColumn(f[1]!=null? f[1]:f[0], query.getSelectFieldByIndex(fieldIndex).getAlias());
 				//transformer.addGrouByColumn(f[1]!=null? f[1]:f[0], f[1]!=null? f[1]:f[0]);
 			}
 			
-			transformer.addAggregateColumn("*"/*f[1]!=null? f[1]:f[0]*/, "COUNT", "Tot");
+			// count column
+			transformer.addAggregateColumn("*"/*f[1]!=null? f[1]:f[0]*/, "COUNT", "Records");
+			
+			// aggregate measures
+			List dataMartSelectFields = query.getDataMartSelectFields(true);
+			Iterator it = dataMartSelectFields.iterator();
+			while (it.hasNext()) {
+				DataMartSelectField field = (DataMartSelectField) it.next();
+				int fieldIndex = query.getSelectFieldIndex(field.getUniqueName());				
+				String[] f = (String[])selectFields.get(fieldIndex);
+				IAggregationFunction aggregationFunction = field.getFunction();
+				if (aggregationFunction != null && aggregationFunction != AggregationFunctions.NONE_FUNCTION) {
+					transformer.addAggregateColumn(f[1]!=null? f[1]:f[0], aggregationFunction.getName(), field.getAlias());
+				}
+			}
+			
 			sqlQuery = (String)transformer.transformQuery(sqlQuery);
 			
 			// STEP 4: execute the query

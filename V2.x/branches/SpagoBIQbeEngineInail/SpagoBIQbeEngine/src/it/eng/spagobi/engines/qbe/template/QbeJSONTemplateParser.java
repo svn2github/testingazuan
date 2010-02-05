@@ -46,7 +46,7 @@ public class QbeJSONTemplateParser implements IQbeTemplateParser {
     public static String STATIC_OPEN_FILTERS = "staticOpenFilters";
     public static String DYNAMIC_FILTERS = "dynamicFilters";
     public static String GROUPING_VARIABLES = "groupingVariables";
-    public static String FILTERS = "filters";
+    public static String OPTIONS = "options";
     public static String STATIC_CLOSED_FILTER_SINGLE_SELECTION = "singleSelection";
     public static String STATIC_CLOSED_FILTER_NO_SELECTION = "noSelection";
     
@@ -104,14 +104,14 @@ public class QbeJSONTemplateParser implements IQbeTemplateParser {
 					if (aStaticClosedFilter.getBoolean(STATIC_CLOSED_FILTER_SINGLE_SELECTION)) {
 						// xor filter
 						aStaticClosedFilter.put(ID, STATIC_XOR_FILTERS_PREFIX + xorFiltersCounter++);
-						JSONArray options = aStaticClosedFilter.getJSONArray(FILTERS);
+						JSONArray options = aStaticClosedFilter.getJSONArray(OPTIONS);
 						for (int j = 0; j < options.length(); j++) {
 							JSONObject anOption = (JSONObject) options.get(j);
 							anOption.put(ID, STATIC_XOR_OPTIONS_PREFIX + (j+1));
 						}
 					} else {
 						// on off filter
-						JSONArray filters = aStaticClosedFilter.getJSONArray(FILTERS);
+						JSONArray filters = aStaticClosedFilter.getJSONArray(OPTIONS);
 						for (int j = 0; j < filters.length(); j++) {
 							JSONObject anOption = (JSONObject) filters.get(j);
 							anOption.put(ID, STATIC_ON_OFF_FILTERS_PREFIX + onOffFiltersCounter++);

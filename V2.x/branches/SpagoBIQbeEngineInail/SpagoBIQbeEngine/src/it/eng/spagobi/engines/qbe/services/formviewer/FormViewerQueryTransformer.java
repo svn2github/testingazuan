@@ -28,6 +28,7 @@ import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
+import it.eng.qbe.query.serializer.QueryJSONDeserializer;
 import it.eng.qbe.query.transformers.AbstractQbeQueryTransformer;
 import it.eng.spagobi.engines.qbe.bo.FormViewerState;
 import it.eng.spagobi.engines.qbe.template.QbeJSONTemplateParser;
@@ -80,7 +81,7 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 			applyDynamicFilters(query);
 		} catch (Exception e) {
 			logger.error(e);
-			// TODO manage exception
+			throw new RuntimeException("Error while trasforming query" ,e);
 		} finally {
 			logger.debug("OUT");
 		}
@@ -96,28 +97,28 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 				boolean isSingleSelection = aStaticClosedFilter.optBoolean(QbeJSONTemplateParser.STATIC_CLOSED_FILTER_SINGLE_SELECTION);
 				if (isSingleSelection) {
 					String id = aStaticClosedFilter.getString(QbeJSONTemplateParser.ID);
-					String option = formViewerState.getXORFilterSelectedOption(id);
-					if (option != null && !option.trim().equals("") && !option.equalsIgnoreCase(QbeJSONTemplateParser.STATIC_CLOSED_FILTER_NO_SELECTION)) {
-						JSONObject filter = null;
-						JSONArray filters = aStaticClosedFilter.getJSONArray(QbeJSONTemplateParser.FILTERS);
-						for (int j = 0; j < filters.length(); j++) {
-							JSONObject temp = filters.getJSONObject(j);
-							if (temp.getString(QbeJSONTemplateParser.ID).equals(option)) {
-								filter = temp;
+					String optionId = formViewerState.getXORFilterSelectedOption(id);
+					if (optionId != null && !optionId.trim().equals("") && !optionId.equalsIgnoreCase(QbeJSONTemplateParser.STATIC_CLOSED_FILTER_NO_SELECTION)) {
+						JSONObject option = null;
+						JSONArray options = aStaticClosedFilter.getJSONArray(QbeJSONTemplateParser.OPTIONS);
+						for (int j = 0; j < options.length(); j++) {
+							JSONObject temp = options.getJSONObject(j);
+							if (temp.getString(QbeJSONTemplateParser.ID).equals(optionId)) {
+								option = temp;
 								break;
 							}
 						}
-						if (filter != null) {
-							applyStaticClosedFilter(query, filter, id);
+						if (option != null) {
+							applyStaticClosedFilter(query, option);
 						}
 					}
 				} else {
-					JSONArray filters = aStaticClosedFilter.getJSONArray(QbeJSONTemplateParser.FILTERS);
-					for (int j = 0; j < filters.length(); j++) {
-						JSONObject filter = filters.getJSONObject(j);
-						boolean isActive = formViewerState.isOnOffFilterActive(filter.getString(QbeJSONTemplateParser.ID));
+					JSONArray options = aStaticClosedFilter.getJSONArray(QbeJSONTemplateParser.OPTIONS);
+					for (int j = 0; j < options.length(); j++) {
+						JSONObject option = options.getJSONObject(j);
+						boolean isActive = formViewerState.isOnOffFilterActive(option.getString(QbeJSONTemplateParser.ID));
 						if (isActive) {
-							applyStaticClosedFilter(query, filter, filter.getString(QbeJSONTemplateParser.ID));
+							applyStaticClosedFilter(query, option);
 						}
 					}
 				}
@@ -128,14 +129,28 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 	}
 	
 	
-	private void applyStaticClosedFilter(Query query, JSONObject filter, String id) throws Exception {
-		JSONArray expression = filter.optJSONArray("expression");
-		ExpressionNode node = null;
-		if (expression == null) {
-			node = addWhereConditionFromClosedfilter(query, filter, id);
-		} else {
-			node = addWhereExpressionFromClosedfilter(query, expression);
+	private void applyStaticClosedFilter(Query query, JSONObject option) throws Exception {
+		JSONArray filters = option.getJSONArray("filters");
+		// adding filters for the selected option
+		for (int i = 0; i < filters.length(); i = i + 2) {
+			JSONObject filter = filters.getJSONObject(i);
+			
+			// TODO: change structure of filters, the boolean connectors between filters are no more necessary
+			String booleanConnector = "AND";
+			if (filters.length() > i + 1) {
+				booleanConnector = filters.getString(i + 1);
+			}
+			
+			WhereField.Operand leftOperand = new WhereField.Operand(filter.getString("leftOperandValue"), null, "Field Content", null, null);
+			WhereField.Operand rightOperand = null;
+			if (filter.optString("rightOperandValue") != null) {
+				rightOperand = new WhereField.Operand(filter.getString("rightOperandValue"), null, "Static Value", null, null);
+			}
+			query.addWhereField(filter.getString("id"), null, false, leftOperand, filter.getString("operator"), rightOperand, booleanConnector);
 		}
+		// updating where clause structure: the new condition must be added with AND boolean connector
+		JSONObject expression = option.getJSONObject("expression");
+		ExpressionNode node = QueryJSONDeserializer.getFilterExpTree(expression);
 		updateWhereClauseStructure(query, node, "AND");
 	}
 	

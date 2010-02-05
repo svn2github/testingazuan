@@ -134,11 +134,34 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 		
 		s.text = this.filterTitleField.getValue();
 		var filterGridState = this.getFilterGridState();
-		if(filterGridState.length === 1) {
-			s = Ext.apply(s, filterGridState[0]);
-		} else {
-			s.expression = filterGridState;
+		s.filters = filterGridState;
+		
+		// adding an id to each filter
+		for (var count = 0; count < filterGridState.length; count++) {
+			filterGridState[count].id = Sbi.qbe.commons.Utils.randomString();
 		}
+		
+		// building the filters expression
+		var filtersArray = filterGridState.concat(new Array()); // filtersArray is a clone of filterGridState
+		for (var count = 0; count < filtersArray.length; count = count + 2) {
+			filtersArray[count] = '$F{' + filtersArray[count].id + '}'; // replacing the objects with their id
+		}
+		var str = filtersArray.join(' '); // str is the filters expression
+		
+	    var error_offsets = new Array(); 
+	    var error_lookaheads = new Array(); 
+	    error_count = boolstaf.module.parse( str, error_offsets, error_lookaheads );  
+	    
+	    if(error_count > 0) {
+	      var errstr = new String(); 
+	      for( var i = 0; i < error_count; i++ ) {
+	        errstr += "Parse error in line " + ( str.substr( 0, error_offsets[i] ).match( /\n/g ) ? str.substr( 0, error_offsets[i] ).match( /\n/g ).length : 1 ) + " near \"" + str.substr( error_offsets[i] ) + "\", expecting \"" + error_lookaheads[i].join() + "\"\n" ; 
+	        alert( errstr);
+	      }
+	    }
+	    
+	    var expressionNode = boolstaf.module.getExperssionNode();
+	    s.expression = this.getExpressionAsObject(expressionNode);
 		
 		return s;
 	}
@@ -156,16 +179,16 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 		}
 		
 		this.filterGrid.deleteFilters();
-		if(s.expression) {
-			for(var i = 0, l = s.expression.length; i < l; i=i+2) {
-				d = this.marshalFilterRecord(s.expression[i]); 
-				d.booleanConnector = (i+1<l)? s.expression[i+1]: 'AND';
+		if(s.filters) {
+			for(var i = 0, l = s.filters.length; i < l; i=i+2) {
+				d = this.marshalFilterRecord(s.filters[i]); 
+				d.booleanConnector = (i+1<l)? s.filters[i+1]: 'AND';
 				this.filterGrid.addFilter(d);
 			}
-		} else if(s.leftOperandValue) {
+		}/* else if(s.leftOperandValue) {
 			d = this.marshalFilterRecord(s); 
 			this.filterGrid.addFilter(d);
-		}
+		}*/
 	}
 	
 	, setFilterDetailState: function(s) {
@@ -404,5 +427,22 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 		}
 		//alert('onFormStateChange OUT');
 	}
+	
+    , getExpressionAsObject: function(tree) {
+        var o = {}; 
+        var types = ['UNDEF', 'NODE_OP', 'NODE_CONST']; 
+		  	var values = ['UNDEF', 'AND', 'OR', 'GROUP'];
+		  	
+		  	o.type = types[tree.attributes.type];
+		    o.value = (tree.attributes.type==1? values[tree.attributes.value]: tree.attributes.value);
+		    o.childNodes = [];
+        if(tree.childNodes && tree.childNodes.length > 0) {             
+          for(var i = 0; i < tree.childNodes.length; i++) {
+        	  o.childNodes.push( this.getExpressionAsObject(tree.childNodes[i]) );
+          }           
+        }   
+        
+        return o;        
+    }
 	
 });

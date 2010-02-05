@@ -103,7 +103,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupEditor, Sbi.formbuilder.EditorP
 		if(this.singleSelection === true) {
 			c.noSelectionText = this.noSelectionText;
 		}
-		c.filters = Sbi.formbuilder.StaticCloseFilterGroupEditor.superclass.getContents.call(this);
+		c.options = Sbi.formbuilder.StaticCloseFilterGroupEditor.superclass.getContents.call(this);
 		
 		return c;
 	}

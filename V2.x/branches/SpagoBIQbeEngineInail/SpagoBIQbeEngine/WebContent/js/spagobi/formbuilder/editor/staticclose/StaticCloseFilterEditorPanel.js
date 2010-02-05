@@ -93,11 +93,12 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditorPanel, Sbi.formbuilder.EditorP
 	}
 
 	, addFilterGroup: function(filtersGroupConf) {
+		
 		c = filtersGroupConf || {};
 		
-		if(c.filters){
-			c.baseContents = c.filters;
-			delete c.filters;
+		if(c.options){
+			c.baseContents = c.options;
+			delete c.options;
 		}
 		
 		if(c.title){

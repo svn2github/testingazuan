@@ -82,14 +82,14 @@ Ext.extend(Sbi.formviewer.StaticClosedOnOffFiltersPanel, Ext.form.FormPanel, {
 	, init: function(aStaticClosedOnOffFiltersGroup) {
 		this.items = [];
 		
-		for (var i = 0; i < aStaticClosedOnOffFiltersGroup.filters.length; i++) {
+		for (var i = 0; i < aStaticClosedOnOffFiltersGroup.options.length; i++) {
 			// create items
-			var aFilter = aStaticClosedOnOffFiltersGroup.filters[i];
+			var anOption = aStaticClosedOnOffFiltersGroup.options[i];
 			this.items.push({
 				xtype: 'checkbox',
 				hideLabel: true,
-                boxLabel: aFilter.text,
-                name: aFilter.id
+                boxLabel: anOption.text,
+                name: anOption.id
 			});
 		}
 		

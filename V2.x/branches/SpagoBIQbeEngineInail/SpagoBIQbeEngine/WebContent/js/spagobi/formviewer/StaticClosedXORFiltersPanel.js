@@ -105,18 +105,18 @@ Ext.extend(Sbi.formviewer.StaticClosedXORFiltersPanel, Ext.form.FormPanel, {
 			});
 		}
 		
-		for (var i = 0; i < aStaticClosedXORFiltersGroup.filters.length; i++) {
+		for (var i = 0; i < aStaticClosedXORFiltersGroup.options.length; i++) {
 			// create items
-			var aFilter = aStaticClosedXORFiltersGroup.filters[i];
+			var anOption = aStaticClosedXORFiltersGroup.options[i];
 			this.items.items.push({
 				hideLabel: true,
 				//fieldLabel: '',
 				//labelSeparator: '',
 				//labelStyle: 'width: 0px',
 				//itemCls: 'no-padding',
-                boxLabel: aFilter.text,
+                boxLabel: anOption.text,
                 name: aStaticClosedXORFiltersGroup.id,
-                inputValue: aFilter.id
+                inputValue: anOption.id
 			});
 		}
 	}

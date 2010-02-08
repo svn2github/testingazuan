@@ -59,7 +59,7 @@ Sbi.formbuilder.DynamicFilterEditorPanel = function(config) {
 	        columns: 1
 	    }
 	    */
-		, enableDebugBtn: true
+		, enableDebugBtn: false
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.dynamicFilterEditorPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.dynamicFilterEditorPanel);

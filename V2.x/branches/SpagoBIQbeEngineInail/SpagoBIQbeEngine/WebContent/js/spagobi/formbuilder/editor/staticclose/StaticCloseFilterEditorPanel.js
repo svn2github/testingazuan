@@ -58,7 +58,7 @@ Sbi.formbuilder.StaticCloseFilterEditorPanel = function(config) {
 	    /*, layoutConfig: {
 	        columns: 100
 	    }*/
-		, enableDebugBtn: true
+		, enableDebugBtn: false
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.staticCloseFilterEditorPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.staticCloseFilterEditorPanel);

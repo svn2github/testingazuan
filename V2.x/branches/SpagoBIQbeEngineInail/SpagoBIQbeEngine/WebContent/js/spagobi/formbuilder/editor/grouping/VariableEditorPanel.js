@@ -58,7 +58,7 @@ Sbi.formbuilder.VariableEditorPanel = function(config) {
 	    , layoutConfig: {
 	        columns: 100
 	    }
-		, enableDebugBtn: true
+		, enableDebugBtn: false
 		, enableAddBtn: false	
 		, enableClearBtn: false	
 	};

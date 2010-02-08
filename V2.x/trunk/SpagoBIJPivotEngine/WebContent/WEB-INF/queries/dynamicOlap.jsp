@@ -211,6 +211,8 @@ LICENSE: see LICENSE.txt file
 					for (int i = 0; i < clickables.size(); i++) {
 						Node clickable = (Node) clickables.get(i);
 						String targetDocument = clickable.valueOf("@targetDocument");
+						String target = clickable.valueOf("@target");
+						String title = clickable.valueOf("@title");
 						String targetDocumentParameters = "";
 						List clickParameters = clickable.selectNodes("clickParameter");
 						if (clickParameters != null && clickParameters.size() > 0) {
@@ -222,7 +224,13 @@ LICENSE: see LICENSE.txt file
 							}
 						}
 						String uniqueName = clickable.valueOf("@uniqueName");
-						String urlPattern = "javascript:parent.execCrossNavigation(window.name, ''" + targetDocument + "'', ''" + targetDocumentParameters + "'')";
+						String urlPattern = "javascript:parent.execCrossNavigation(window.name, ''" + targetDocument + "'', ''" + targetDocumentParameters + "''";
+						if(title!=null && target!=null && target.equalsIgnoreCase("tab")){
+							urlPattern +=",null,''"+title+"'',''tab''";
+						}else if(title!=null){
+							urlPattern +=",null,''"+title+"''";
+						}
+						urlPattern +=");";
 						%>
 						<jp:clickable urlPattern="<%=urlPattern%>" uniqueName="<%=uniqueName%>"/>
 						<%
@@ -247,6 +255,8 @@ LICENSE: see LICENSE.txt file
 					for (int i = 0; i < clickables.size(); i++) {
 						Node clickable = (Node) clickables.get(i);
 						String targetDocument = clickable.valueOf("@targetDocument");
+						String target = clickable.valueOf("@target");
+						String title = clickable.valueOf("@title");
 						String targetDocumentParameters = "";
 						List clickParameters = clickable.selectNodes("clickParameter");
 						if (clickParameters != null && clickParameters.size() > 0) {
@@ -258,7 +268,13 @@ LICENSE: see LICENSE.txt file
 							}
 						}
 						String uniqueName = clickable.valueOf("@uniqueName");
-						String urlPattern = "javascript:parent.execCrossNavigation(window.name, ''" + targetDocument + "'', ''" + targetDocumentParameters + "'')";
+						String urlPattern = "javascript:parent.execCrossNavigation(window.name, ''" + targetDocument + "'', ''" + targetDocumentParameters + "''";
+						if(title!=null && target!=null && target.equalsIgnoreCase("tab")){
+							urlPattern +=",null,''"+title+"'',''tab''";
+						}else if(title!=null){
+							urlPattern +=",null,''"+title+"''";
+						}
+						urlPattern +=");";
 						%>
 						<jp:clickable urlPattern="<%=urlPattern%>" uniqueName="<%=uniqueName%>"/>
 						<%

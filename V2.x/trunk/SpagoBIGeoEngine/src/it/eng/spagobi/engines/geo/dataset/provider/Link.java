@@ -226,6 +226,8 @@ public class Link {
 		String execIframeId = null;
 		String targetDocLabel = "";
 		String parametersStr = "";
+		String drillDocTitle = null;
+		String target = "self";
 		
 		
 		execIframeId = (String) env.get(GeoEngineConstants.ENV_EXEC_IFRAME_ID);
@@ -237,7 +239,11 @@ public class Link {
     			Parameter param = (Parameter)parameters.get(key);
     			if (param.getName().equalsIgnoreCase("DOCUMENT_LABEL")) {        			
     				targetDocLabel = param.getActualValue(resultSet, env);	
-    			} else {
+    			} else if (param.getName().equalsIgnoreCase("target")) {        			
+    				target = param.getActualValue(resultSet, env);	
+    			}else if (param.getName().equalsIgnoreCase("title")) {        			
+    				drillDocTitle = param.getActualValue(resultSet, env);	
+    			}else {
     				parametersStr += param.getName() + "=" + param.getActualValue(resultSet, env) + "&"; 
     			}
     		}
@@ -245,7 +251,13 @@ public class Link {
     			parametersStr = parametersStr.substring(0, parametersStr.length()-1);
     		}
     		
-    		link = "javascript:parent.execCrossNavigation('" + execIframeId + "', '" + targetDocLabel + "' , '" + parametersStr + "');";
+    		link = "javascript:parent.execCrossNavigation('" + execIframeId + "', '" + targetDocLabel + "' , '" + parametersStr + "'";  		
+    		if(drillDocTitle!=null && target!=null && target.equalsIgnoreCase("tab")){
+    			link +="'','"+drillDocTitle+"','tab'";
+			}else if(drillDocTitle!=null){
+				link +="'','"+drillDocTitle+"'";
+			}
+    		link += ");";
     		
     	} catch (Exception e) {
     		link = "javascript:void(0)";
@@ -266,6 +278,8 @@ public class Link {
 		String execIframeId = null;
 		String targetDocLabel = "";
 		String parametersStr = "";
+		String drillDocTitle = null;
+		String target = "self";
 		
 		
 		execIframeId = (String) env.get(GeoEngineConstants.ENV_EXEC_IFRAME_ID);
@@ -277,6 +291,10 @@ public class Link {
     			Parameter param = (Parameter)parameters.get(key);
     			if (param.getName().equalsIgnoreCase("DOCUMENT_LABEL")) {        			
     				targetDocLabel = param.getXActualValue(record, env);	
+    			}else if (param.getName().equalsIgnoreCase("target")) {        			
+    				target = param.getXActualValue(record, env);	
+    			}else if (param.getName().equalsIgnoreCase("title")) {        			
+    				drillDocTitle = param.getXActualValue(record, env);	
     			} else {
     				parametersStr += param.getName() + "=" + param.getXActualValue(record, env) + "&"; 
     			}
@@ -285,7 +303,13 @@ public class Link {
     			parametersStr = parametersStr.substring(0, parametersStr.length()-1);
     		}
     		
-    		link = "javascript:parent.execCrossNavigation('" + execIframeId + "', '" + targetDocLabel + "' , '" + parametersStr + "');";
+    		link = "javascript:parent.execCrossNavigation('" + execIframeId + "', '" + targetDocLabel + "' , '" + parametersStr + "'";  		
+    		if(drillDocTitle!=null && target!=null && target.equalsIgnoreCase("tab")){
+    			link +="'','"+drillDocTitle+"','tab'";
+			}else if(drillDocTitle!=null){
+				link +="'','"+drillDocTitle+"'";
+			}
+    		link += ");";
     		
     	} catch (Exception e) {
     		logger.error("Impossible to stringify link: ", e);

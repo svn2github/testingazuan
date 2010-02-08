@@ -253,6 +253,8 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 			MyPieUrlGenerator pieUrl=new MyPieUrlGenerator(rootUrl);
 			pieUrl.setDocument_composition(document_composition);
 			pieUrl.setCategoryUrlLabel(categoryUrlName);
+			pieUrl.setDrillDocTitle(drillDocTitle);
+			pieUrl.setTarget(target);
 
 			plot.setURLGenerator(pieUrl);			
 

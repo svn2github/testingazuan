@@ -221,7 +221,7 @@ public class Link {
 	 * @return the string
 	 */
 	public String toString(ResultSet resultSet, Map env) {
-		
+		logger.debug("IN");
 		String link = null;
 		String execIframeId = null;
 		String targetDocLabel = "";
@@ -241,8 +241,10 @@ public class Link {
     				targetDocLabel = param.getActualValue(resultSet, env);	
     			} else if (param.getName().equalsIgnoreCase("target")) {        			
     				target = param.getActualValue(resultSet, env);	
+    				logger.debug("Target:"+target!=null?target:"null");
     			}else if (param.getName().equalsIgnoreCase("title")) {        			
     				drillDocTitle = param.getActualValue(resultSet, env);	
+    				logger.debug("Drill Title:"+drillDocTitle!=null?drillDocTitle:"null");
     			}else {
     				parametersStr += param.getName() + "=" + param.getActualValue(resultSet, env) + "&"; 
     			}
@@ -258,10 +260,12 @@ public class Link {
 				link +="'','"+drillDocTitle+"'";
 			}
     		link += ");";
+    		logger.debug("Link URL:"+link);
     		
     	} catch (Exception e) {
     		link = "javascript:void(0)";
     	}
+    	logger.debug("OUT");
     	return link;
 	}
 	
@@ -273,7 +277,7 @@ public class Link {
 	 * @return the string
 	 */
 	public String toXString(IRecord record, Map env) {
-		
+		logger.debug("IN");
 		String link = null;
 		String execIframeId = null;
 		String targetDocLabel = "";
@@ -293,8 +297,10 @@ public class Link {
     				targetDocLabel = param.getXActualValue(record, env);	
     			}else if (param.getName().equalsIgnoreCase("target")) {        			
     				target = param.getXActualValue(record, env);	
+    				logger.debug("Target:"+target!=null?target:"null");
     			}else if (param.getName().equalsIgnoreCase("title")) {        			
     				drillDocTitle = param.getXActualValue(record, env);	
+    				logger.debug("Drill Title:"+drillDocTitle!=null?drillDocTitle:"null");
     			} else {
     				parametersStr += param.getName() + "=" + param.getXActualValue(record, env) + "&"; 
     			}
@@ -310,12 +316,14 @@ public class Link {
 				link +="'','"+drillDocTitle+"'";
 			}
     		link += ");";
+    		logger.debug("Link URL:"+link);
     		
     	} catch (Exception e) {
     		logger.error("Impossible to stringify link: ", e);
     		link = "javascript:void(0)";
     		
     	}
+    	logger.debug("OUT");
     	return link;
 	}
 }

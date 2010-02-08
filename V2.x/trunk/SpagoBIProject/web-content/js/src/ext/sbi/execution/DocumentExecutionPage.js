@@ -1016,7 +1016,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	                			, subobject: {'name': message.data.subobject}
 	                		}
 	            	    };
-	            	    if(message.data.target == 'tab'){
+	            	    if(message.data.target !== undefined){
 	            	    	config.target = message.data.target;
 	            	    }
 	            	    

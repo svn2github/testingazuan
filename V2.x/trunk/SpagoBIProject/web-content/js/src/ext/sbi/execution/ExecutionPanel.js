@@ -197,7 +197,7 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 		
 		
 		if (config.title !== undefined) {
-			config.document.name = config.title;
+			config.document.title = config.title;
 		}
 		var tabblocked = true;
 		if (config.target !== undefined && config.target == 'tab') {
@@ -229,7 +229,7 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 			this.documentsStack[i].document = this.documentsStack[i].document || {};
 			
 			tb.add({
-				text: this.documentsStack[i].document.name || 'doc-' + (i+1)
+				text: this.documentsStack[i].document.title || this.documentsStack[i].document.name
 				, stackIndex: i
 			    , listeners: {
         			'click': {

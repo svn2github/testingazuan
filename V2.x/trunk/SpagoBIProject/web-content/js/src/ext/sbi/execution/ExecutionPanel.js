@@ -244,7 +244,7 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 		}
 		
 		tb.add({
-			text: this.documentsStack[this.documentsStack.length-1].document.name || 'doc-' + (this.documentsStack.length)
+			text: this.documentsStack[i].document.title || this.documentsStack[i].document.name
 			, stackIndex: this.documentsStack.length-1
 			, disabled: true
 			, cls: 'sbi-last-folder'

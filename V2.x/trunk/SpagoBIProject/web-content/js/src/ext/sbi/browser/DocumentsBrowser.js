@@ -225,8 +225,24 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
 		this.selectFolder(node.id);
 	}
 	,onCrossNavigation: function(config){
-		this.onDocumentClick(null,config.document);
+		this.onCrossNavigationDocumentClick(config);
 		return false;
+	}
+	
+	, onCrossNavigationDocumentClick: function(r) {
+		
+		var config = Ext.apply({
+			title: r.document.title !== undefined ? r.document.title : r.document.name
+			, closable: true
+		}, r);
+		
+		var executionPanel = new Sbi.execution.ExecutionPanel(config, r.document);
+		
+		executionPanel.addListener('crossnavigationonothertab', this.onCrossNavigation, this);
+		
+		this.centerContainerPanel.add(executionPanel).show();
+		
+		executionPanel.execute();
 	}
 
 	, onDocumentClick: function(panel, r) {

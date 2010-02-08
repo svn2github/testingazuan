@@ -35,9 +35,9 @@
   * - Andrea Gioia (adrea.gioia@eng.it)
   */
 
-Ext.ns("Sbi.qbe.commons");
+Ext.ns("Sbi.console.commons");
 
-Sbi.qbe.commons.Format = function(){
+Sbi.console.commons.Format = function(){
  
 	return {
 		/**
@@ -74,11 +74,12 @@ Sbi.qbe.commons.Format = function(){
 
         /**
          * Cut and paste from Ext.util.Format
-         */
+         
         , dateRenderer : function(format){
             return function(v){
-                return Sbi.qbe.commons.Format.date(v, format);
+                return Sbi.console.commons.Format.date(v, format);
             };
+         */
         }
         
         
@@ -141,7 +142,7 @@ Sbi.qbe.commons.Format = function(){
         
         , numberRenderer : function(format){
             return function(v){
-                return Sbi.qbe.commons.Format.number(v, format);
+                return Sbi.console.commons.Format.number(v, format);
             };
         }
         
@@ -185,7 +186,7 @@ Sbi.qbe.commons.Format = function(){
         
         , stringRenderer : function(format){
             return function(v){
-                return Sbi.qbe.commons.Format.string(v, format);
+                return Sbi.console.commons.Format.string(v, format);
             };
         }
         
@@ -209,9 +210,10 @@ Sbi.qbe.commons.Format = function(){
         
         , booleanRenderer : function(format){
             return function(v){
-                return Sbi.qbe.commons.Format.boolean(v, format);
+                return Sbi.console.commons.Format.boolean(v, format);
             };
         }
+        
         
         , html : function(v, format) {
         	// format is not used yet but it is reserve for future use
@@ -219,12 +221,13 @@ Sbi.qbe.commons.Format = function(){
         	v = Ext.util.Format.htmlDecode(v);
         	return v;
         }
-        
+       
         , htmlRenderer : function(format){
             return function(v){
-                return Sbi.qbe.commons.Format.html(v, format);
+                return Sbi.console.commons.Format.html(v, format);
             };
         }
+        
         
 	};
 	

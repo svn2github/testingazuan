@@ -35,9 +35,9 @@
   * - Andrea Gioia (adrea.gioia@eng.it)
   */
 
-Ext.ns("Sbi.qbe.commons");
+Ext.ns("Sbi.console.commons");
 
-Sbi.qbe.commons.Utils = function(){
+Sbi.console.commons.Utils = function(){
  
     // private variables
 	
@@ -70,11 +70,11 @@ Sbi.qbe.commons.Utils = function(){
 	
 		
 		, log: function(severity, message) {
-			this.unimplementedFunction('Sbi.qbe.commons.log');
+			this.unimplementedFunction('Sbi.console.commons.log');
 		}
 		
 		, assertTrue: function(condition, msg) {
-			this.unimplementedFunction('Sbi.qbe.commons.assertTrue');
+			this.unimplementedFunction('Sbi.console.commons.assertTrue');
 		}
         
 	};
@@ -88,10 +88,10 @@ Sbi.qbe.commons.Utils = function(){
 
 
 // ----- deprecated ------------------------------------------------------------------------------
-Ext.namespace('it.eng.spagobi.engines.qbe.commons');
+Ext.namespace('it.eng.spagobi.engines.console.commons');
 
 
-it.eng.spagobi.engines.qbe.commons = function(){
+it.eng.spagobi.engines.console.commons = function(){
 	// do NOT access DOM from here; elements don't exist yet
  
     // private variables

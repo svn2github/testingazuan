@@ -44,58 +44,75 @@
   * - name (mail)
   */
 
-Ext.ns("Sbi.xxx");
+Ext.ns("Sbi.console");
 
-Sbi.xxx.Xxxx = function(config) {
+Sbi.console.ConsolePanel = function(config) {
 	
-		var defaultSettings = {
+	var defaultSettings = {
 			title: LN('sbi.qbe.queryeditor.title'),
+			layout: 'border'
 		};
 		
-		if(Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.queryBuilderPanel) {
-			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.queryBuilderPanel);
+		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.consolePanel) {
+			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.consolePanel);
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
 		
 		Ext.apply(this, c);
 		
-		
+		/*
 		this.services = this.services || new Array();	
 		this.services['doThat'] = this.services['doThat'] || Sbi.config.serviceRegistry.getServiceUrl({
 			serviceName: 'DO_THAT_ACTION'
 			, baseParams: new Object()
 		});
+		*/
 		
-		this.addEvents('customEvents');
 		
-		
-		this.initThis(c.westConfig || {});
-		this.initThat(c.westConfig || {});
+		this.initSummaryPanel(c.summaryPanelConfig || {});
+		this.initDetailPanel(c.detailPannelConfig || {});
 	
 		c = Ext.apply(c, {  	
-	      	items: [this.thisPanel, this.thatPanel]
+	      	items: [this.summaryPanel, this.detailPanel]
 		});
 
 		// constructor
-		Sbi.xxx.Xxxx.superclass.constructor.call(this, c);
+		Sbi.console.ConsolePanel.superclass.constructor.call(this, c);
     
 		this.addEvents();
 };
 
-Ext.extend(Sbi.xxx.Xxxx, Ext.util.Observable, {
+Ext.extend(Sbi.console.ConsolePanel, Ext.Panel, {
     
     services: null
-    
+    , summaryPanel: null
+    , detailPanel: null
    
-    // public methods
-    
    
+    //  -- public methods ---------------------------------------------------------
     
     
-    // private methods
     
+    //  -- private methods ---------------------------------------------------------
     
+    , initSummaryPanel: function(conf) {
+		this.summaryPanel = new Ext.Panel({
+			layout: 'fit'
+			, region: 'north'
+			, html: 'Io sono il summary panel'
+		});
+	}
+
+	, initDetailPanel: function(conf) {
+		this.detailPanel = new Ext.Panel({
+			layout: 'fit'
+			, region: 'center'
+			, html: 'Io sono il detail panel'
+		});
+	}
+
+
     
     
 });

@@ -47,31 +47,45 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 <%-- JAVA CODE 																--%>
 <%-- ---------------------------------------------------------------------- --%>
 <%
-	ConsoleEngineInstance consoleEngineInstance;
+	ConsoleEngineConfig consoleEngineConfig;
+	ConsoleEngineInstance consoleEngineInstance;	
 	UserProfile profile;
-	Locale locale;
-	String isFromCross;
+	Locale locale;	
+	
+	String engineContext;
+	String engineServerHost;
+	String enginePort;
+	String executionId;
 	String spagobiServerHost;
 	String spagobiContext;
 	String spagobiSpagoController;
 	
+	
+	consoleEngineConfig = ConsoleEngineConfig.getInstance();
 	consoleEngineInstance = (ConsoleEngineInstance)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("ENGINE_INSTANCE");
-	System.out.println("consoleEngineInstance: " + consoleEngineInstance);
-	profile = (UserProfile)consoleEngineInstance.getEnv().get(EngineConstants.ENV_USER_PROFILE);
-	System.out.println("profile: " + profile);
+	
+	profile = (UserProfile)consoleEngineInstance.getEnv().get(EngineConstants.ENV_USER_PROFILE);	
 	locale = (Locale)consoleEngineInstance.getEnv().get(EngineConstants.ENV_LOCALE);
-	System.out.println("locale: " + locale);
-	
-	isFromCross = (String)consoleEngineInstance.getEnv().get("isFromCross");
-	if (isFromCross == null) {
-		isFromCross = "false";
-	}
-	
-	ConsoleEngineConfig consoleEngineConfig = ConsoleEngineConfig.getInstance();
-    
+	    
+	// used in remote ServiceRegistry
     spagobiServerHost = request.getParameter(SpagoBIConstants.SBI_HOST);
     spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
     spagobiSpagoController = request.getParameter(SpagoBIConstants.SBI_SPAGO_CONTROLLER);
+    
+ 	// used in local ServiceRegistry
+ 	engineServerHost = request.getServerName();
+ 	enginePort = "" + request.getServerPort();
+    engineContext = request.getContextPath();
+    if( engineContext.startsWith("/") || engineContext.startsWith("\\") ) {
+    	engineContext = request.getContextPath().substring(1);
+    }
+    
+    executionId = request.getParameter("SBI_EXECUTION_ID");
+    if(executionId != null) {
+    	executionId = "'" + request.getParameter("SBI_EXECUTION_ID") + "'";
+    } else {
+    	executionId = "null";
+    }   
 %>
 
 
@@ -94,18 +108,33 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 
 	<body  >
 		<script>
-			this.template = <%=consoleEngineInstance.getTemplate().toString()%>;
-			alert(this.template.toSource());
+
+			var template = <%= consoleEngineInstance.getTemplate().toString()  %>;
+
+			Sbi.config = {};
+
+			var url = {
+				host: '<%= engineServerHost %>'
+				, port: '<%= enginePort %>'
+				, contextPath: '<%= engineContext %>'
+			};
+		
+			var params = {
+				SBI_EXECUTION_ID: <%= executionId %>
+			};
+		
+			Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({
+				baseUrl: url
+			    , baseParams: params
+			});
+
+
+			Ext.onReady(function() { 
+				var consolePanel = new Sbi.console.ConsolePanel(template);
+				var viewport = new Ext.Viewport(consolePanel);  
+			});
 		</script>
-		<%-- 
-		<script language="javascript" type="text/javascript">
-			function viewTemplate(){
-				alert("prima");
-				//var template = "<%=(consoleEngineInstance.getGuiSettings())%>";			
-				//alert (template.toSource());
-			}
-		</script>
-    --%>
+		
 	</body>
  
 </html>

@@ -1,7 +1,7 @@
 Ext.ns("Sbi.locale");
 Sbi.locale.ln = Sbi.locale.ln || new Array();
 
-Sbi.locale.formats = {
+   Sbi.locale.formats = {
 		/*
 		number: {
 			decimalSeparator: '.',

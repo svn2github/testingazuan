@@ -12,21 +12,21 @@ Sbi.locale.formatters = {
 };
 
 
-if(Sbi.qbe.commons.Format){
+if(Sbi.console.commons.Format){
 	if(Sbi.locale.formats) {
-		Sbi.locale.formatters.int  = Sbi.qbe.commons.Format.numberRenderer(Sbi.locale.formats['int']);		
-		Sbi.locale.formatters.float  = Sbi.qbe.commons.Format.numberRenderer(Sbi.locale.formats['float']);		
-		Sbi.locale.formatters.string  = Sbi.qbe.commons.Format.stringRenderer(Sbi.locale.formats['string']);		
-		Sbi.locale.formatters.date    = Sbi.qbe.commons.Format.dateRenderer(Sbi.locale.formats['date']);		
-		Sbi.locale.formatters.boolean = Sbi.qbe.commons.Format.booleanRenderer(Sbi.locale.formats['boolean']);
-		Sbi.locale.formatters.html    = Sbi.qbe.commons.Format.htmlRenderer();
+		Sbi.locale.formatters.int  = Sbi.console.commons.Format.numberRenderer(Sbi.locale.formats['int']);		
+		Sbi.locale.formatters.float  = Sbi.console.commons.Format.numberRenderer(Sbi.locale.formats['float']);		
+		Sbi.locale.formatters.string  = Sbi.console.commons.Format.stringRenderer(Sbi.locale.formats['string']);		
+		Sbi.locale.formatters.date    = Sbi.console.commons.Format.dateRenderer(Sbi.locale.formats['date']);		
+		Sbi.locale.formatters.boolean = Sbi.console.commons.Format.booleanRenderer(Sbi.locale.formats['boolean']);
+		Sbi.locale.formatters.html    = Sbi.console.commons.Format.htmlRenderer();
 	} else {
-		Sbi.locale.formatters.int  = Sbi.qbe.commons.Format.numberRenderer( );	
-		Sbi.locale.formatters.float  = Sbi.qbe.commons.Format.numberRenderer( );	
-		Sbi.locale.formatters.string  = Sbi.qbe.commons.Format.stringRenderer( );		
-		Sbi.locale.formatters.date    = Sbi.qbe.commons.Format.dateRenderer( );		
-		Sbi.locale.formatters.boolean = Sbi.qbe.commons.Format.booleanRenderer( );
-		Sbi.locale.formatters.html    = Sbi.qbe.commons.Format.htmlRenderer();
+		Sbi.locale.formatters.int  = Sbi.console.commons.Format.numberRenderer( );	
+		Sbi.locale.formatters.float  = Sbi.console.commons.Format.numberRenderer( );	
+		Sbi.locale.formatters.string  = Sbi.console.commons.Format.stringRenderer( );		
+		Sbi.locale.formatters.date    = Sbi.console.commons.Format.dateRenderer( );		
+		Sbi.locale.formatters.boolean = Sbi.console.commons.Format.booleanRenderer( );
+		Sbi.locale.formatters.html    = Sbi.console.commons.Format.htmlRenderer();
 	}
 };
 

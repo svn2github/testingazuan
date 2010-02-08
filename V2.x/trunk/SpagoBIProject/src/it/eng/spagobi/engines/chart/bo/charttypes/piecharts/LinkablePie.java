@@ -59,6 +59,8 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 	String drillLabel="";
 	HashMap<String, DrillParameter> drillParametersMap=null;
 	String categoryUrlName="";
+	String drillDocTitle = null;
+	String target = "self";
 
 
 	public static final String CHANGE_VIEW_3D_LABEL="Set View Dimension";
@@ -135,7 +137,17 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 						type="relative";
 					
 					if(name.equalsIgnoreCase("categoryurlname"))categoryUrlName=value;
-					else{
+					else if(name.equalsIgnoreCase("target")){
+						if(value!=null && value.equalsIgnoreCase("tab")){
+							setTarget("tab");
+						}else{
+							setTarget("self");
+						}
+					}else if(name.equalsIgnoreCase("title")){
+						if(value!=null && !value.equals("")){
+							setDrillDocTitle(value);
+						}
+					}else{
 						DrillParameter drillPar=new DrillParameter(name,type,value);
 						drillParametersMap.put(name, drillPar);
 
@@ -194,6 +206,8 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 			MyPieUrlGenerator pieUrl=new MyPieUrlGenerator(rootUrl);
 			pieUrl.setDocument_composition(document_composition);
 			pieUrl.setCategoryUrlLabel(categoryUrlName);
+			pieUrl.setDrillDocTitle(drillDocTitle);
+			pieUrl.setTarget(target);
 
 			plot.setURLGenerator(pieUrl);			
 
@@ -618,6 +632,26 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 	public void setSerieUrlname(String serieUrlname) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	public String getDrillDocTitle() {
+		return drillDocTitle;
+	}
+
+
+	public void setDrillDocTitle(String drillDocTitle) {
+		this.drillDocTitle = drillDocTitle;
+	}
+
+
+	public String getTarget() {
+		return target;
+	}
+
+
+	public void setTarget(String target) {
+		this.target = target;
 	}
 
 

@@ -47,6 +47,24 @@ public class MyCategoryUrlGenerator extends StandardCategoryURLGenerator{
 	private boolean document_composition=false;
 	private static transient Logger logger=Logger.getLogger(MyCategoryUrlGenerator.class);
 	private String URL=null;
+	private String drillDocTitle = null;
+	private String target = "self";
+
+	public String getDrillDocTitle() {
+		return drillDocTitle;
+	}
+
+	public void setDrillDocTitle(String drillDocTitle) {
+		this.drillDocTitle = drillDocTitle;
+	}
+
+	public String getTarget() {
+		return target;
+	}
+
+	public void setTarget(String target) {
+		this.target = target;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.jfree.chart.urls.StandardCategoryURLGenerator#generateURL(org.jfree.data.category.CategoryDataset, int, int)
@@ -78,6 +96,11 @@ public class MyCategoryUrlGenerator extends StandardCategoryURLGenerator{
 		}
 		else{*/
 			URL=URL+toMove;
+			if(drillDocTitle!=null && target!=null && target.equalsIgnoreCase("tab")){
+				URL +="','','"+drillDocTitle+"','tab";
+			}else if(drillDocTitle!=null){
+				URL +="','','"+drillDocTitle;
+			}
 			URL=URL+"');";
 		//}
 
@@ -219,52 +242,5 @@ public class MyCategoryUrlGenerator extends StandardCategoryURLGenerator{
 
 
 	}
-
-
-	/*
-	private String replaceParameter(String URL, String replace ){
-		logger.debug("IN");
-
-		// if there is already a parameter named like serieUrlLabel delete it
-
-		if(URL.contains(replace)){
-			int startIndex=URL.indexOf(replace);
-			int otherStart=URL.lastIndexOf(replace);
-			if(startIndex!=otherStart){ //menas that there are more occurrence of the same parameter... ERROR
-				logger.error("Too many occurrence of the same parameter defined in template");
-				return null;
-			}
-			else{
-
-				int endIndex=URL.indexOf('&', startIndex);
-
-				String delete="";
-				if(!(endIndex==-1)){
-				delete=URL.substring(startIndex, endIndex);
-				}
-				else{
-					delete=URL.substring(startIndex, URL.length());
-				}
-
-				char before=URL.charAt(startIndex-1);
-
-
-				if(URL.contains("?"+delete+"&")){ // in this case delete the & after
-					URL=URL.replaceAll((delete+"&"), "");
-				}
-				else if(URL.contains("&"+delete)) 
-				{
-					URL=URL.replaceAll(("&"+delete), "");
-				}
-				else{
-					URL=URL.replaceAll(delete, "");
-				}
-			}
-		}
-		logger.debug("OUT");
-		return URL;
-	}
-	 */
-
 
 }

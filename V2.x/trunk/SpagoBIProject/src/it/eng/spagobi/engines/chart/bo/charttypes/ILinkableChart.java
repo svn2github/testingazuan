@@ -127,8 +127,29 @@ public interface ILinkableChart {
 	public void setSerieUrlname(String serieUrlname);
 
 	
+	/**
+	 * Sets the title of the drill Document. If not exists, LABEL is taken
+	 * 
+	 * @param drillDocTitle the drill document Title
+	 */
+	public void setDrillDocTitle(String drillDocTitle);
 	
-	
+	/**
+	 * Gets the title of the drill Document
+	 */
+	public String getDrillDocTitle();
+
+	/**
+	 * Gets the target of the drill Document
+	 */	
+	public String getTarget();
+
+	/**
+	 * Sets the target where to open the drill Document. If not exists or wrong, default is SELF(not in a new tab)
+	 * 
+	 * @param target where to open the drill Document: tab=new Tab / self=bread Crumbs
+	 */
+	public void setTarget(String target);
 	
 	
 	

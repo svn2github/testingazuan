@@ -68,6 +68,8 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 	boolean horizontalViewConfigured=false;
 	/** Orientation of the chart: horizontal, vertical */
 	public static final String ORIENTATION = "orientation";
+	String drillDocTitle = null;
+	String target = "self";
 
 	private static transient Logger logger=Logger.getLogger(LinkableBar.class);
 
@@ -116,6 +118,17 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 						type="relative";
 
 					if(name.equalsIgnoreCase("seriesurlname"))serieUrlname=value;
+					else if(name.equalsIgnoreCase("target")){
+						if(value!=null && value.equalsIgnoreCase("tab")){
+							setTarget("tab");
+						}else{
+							setTarget("self");
+						}
+					}else if(name.equalsIgnoreCase("title")){
+						if(value!=null && !value.equals("")){
+							setDrillDocTitle(value);
+						}
+					}
 					else if(name.equalsIgnoreCase("categoryurlname"))categoryUrlName=value;
 					else{
 						if(this.getParametersObject().get(name)!=null){
@@ -182,6 +195,8 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		mycatUrl.setDocument_composition(document_composition);
 		mycatUrl.setCategoryUrlLabel(categoryUrlName);
 		mycatUrl.setSerieUrlLabel(serieUrlname);
+		mycatUrl.setDrillDocTitle(drillDocTitle);
+		mycatUrl.setTarget(target);
 
 		renderer.setItemURLGenerator(mycatUrl);
 
@@ -431,6 +446,34 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 	 */
 	public void setSerieUrlname(String serieUrlname) {
 		this.serieUrlname = serieUrlname;
+	}
+
+
+
+
+	public String getDrillDocTitle() {
+		return drillDocTitle;
+	}
+
+
+
+
+	public void setDrillDocTitle(String drillDocTitle) {
+		this.drillDocTitle = drillDocTitle;
+	}
+
+
+
+
+	public String getTarget() {
+		return target;
+	}
+
+
+
+
+	public void setTarget(String target) {
+		this.target = target;
 	}
 
 

@@ -722,6 +722,8 @@ public class CombinedCategoryBar extends LinkableBar {
 			mycatUrl.setDocument_composition(document_composition);
 			mycatUrl.setCategoryUrlLabel(super.categoryUrlName);
 			mycatUrl.setSerieUrlLabel(super.serieUrlname);
+			mycatUrl.setDrillDocTitle(drillDocTitle);
+			mycatUrl.setTarget(target);
 		}
 		if(mycatUrl!=null){
 			barRenderer1.setItemURLGenerator(mycatUrl);

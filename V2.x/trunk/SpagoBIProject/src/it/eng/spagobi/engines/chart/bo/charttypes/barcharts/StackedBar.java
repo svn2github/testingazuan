@@ -84,6 +84,8 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 	boolean percentageValue=false;
 	boolean makePercentage=false;
 	HashMap catSerLabels=null;
+	String drillDocTitle = null;
+	String target = "self";
 
 
 	private static transient Logger logger=Logger.getLogger(StackedBar.class);
@@ -361,6 +363,17 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 
 					if(name.equalsIgnoreCase("seriesurlname"))serieUrlname=value;
+					else if(name.equalsIgnoreCase("target")){
+						if(value!=null && value.equalsIgnoreCase("tab")){
+							setTarget("tab");
+						}else{
+							setTarget("self");
+						}
+					}else if(name.equalsIgnoreCase("title")){
+						if(value!=null && !value.equals("")){
+							setDrillDocTitle(value);
+						}
+					}
 					else if(name.equalsIgnoreCase("categoryurlname"))categoryUrlName=value;
 					else{
 						if(this.getParametersObject().get(name)!=null){
@@ -760,6 +773,34 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 	 */
 	public void setSerieUrlname(String serieUrlname) {
 		this.serieUrlname = serieUrlname;
+	}
+
+
+
+
+	public String getDrillDocTitle() {
+		return drillDocTitle;
+	}
+
+
+
+
+	public void setDrillDocTitle(String drillDocTitle) {
+		this.drillDocTitle = drillDocTitle;
+	}
+
+
+
+
+	public String getTarget() {
+		return target;
+	}
+
+
+
+
+	public void setTarget(String target) {
+		this.target = target;
 	}
 
 

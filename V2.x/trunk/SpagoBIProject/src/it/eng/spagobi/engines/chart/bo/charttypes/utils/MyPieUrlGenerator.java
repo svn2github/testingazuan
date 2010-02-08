@@ -33,6 +33,8 @@ public class MyPieUrlGenerator extends StandardPieURLGenerator{
 	private boolean document_composition=false;
 	private static transient Logger logger=Logger.getLogger(MyPieUrlGenerator.class);
 	private String URL=null;
+	private String drillDocTitle = null;
+	private String target = "self";
 
 	/* (non-Javadoc)
 	 * @see org.jfree.chart.urls.StandardPieURLGenerator#generateURL(org.jfree.data.general.PieDataset, java.lang.Comparable, int)
@@ -55,6 +57,11 @@ public class MyPieUrlGenerator extends StandardPieURLGenerator{
 
 		//if(document_composition){
 			URL=URL+toMove;
+			if(drillDocTitle!=null && target!=null && target.equalsIgnoreCase("tab")){
+				URL +="','','"+drillDocTitle+"','tab";
+			}else if(drillDocTitle!=null){
+				URL +="','','"+drillDocTitle;
+			}
 			URL=URL+"');";
 		//}
 
@@ -182,6 +189,22 @@ public class MyPieUrlGenerator extends StandardPieURLGenerator{
 		return toMove;
 
 
+	}
+
+	public String getDrillDocTitle() {
+		return drillDocTitle;
+	}
+
+	public void setDrillDocTitle(String drillDocTitle) {
+		this.drillDocTitle = drillDocTitle;
+	}
+
+	public String getTarget() {
+		return target;
+	}
+
+	public void setTarget(String target) {
+		this.target = target;
 	}
 	
 }

@@ -74,12 +74,12 @@ Sbi.console.commons.Format = function(){
 
         /**
          * Cut and paste from Ext.util.Format
-         
+         */
         , dateRenderer : function(format){
             return function(v){
                 return Sbi.console.commons.Format.date(v, format);
             };
-         */
+         
         }
         
         

@@ -146,7 +146,6 @@ Sbi.execution.ParametersSelectionPage = function(config, doc) {
 	this.parametersPanel.on('beforesynchronize', function(){if(this.loadingMask) this.loadingMask.show();}, this);
 	this.parametersPanel.on('synchronize', 
 		function(panel, readyForExecution, parametersPreference) {
-			if(this.loadingMask) this.loadingMask.hide();
 			this.isParameterPanelReady = true;
 			if (readyForExecution) {
 				this.isParameterPanelReadyForExecution = true;
@@ -393,6 +392,8 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 		if (this.isSubobjectPanelReady === false || this.isSnapshotPanelReady === false || this.isParameterPanelReady === false) {
 			return;
 		}
+		
+		if(this.loadingMask) this.loadingMask.hide();
 		
 		// subobject preference wins: if a subobject preference is specified, subobject is executed
 		if (this.preferenceSubobjectId != null) {

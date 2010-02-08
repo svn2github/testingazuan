@@ -47,20 +47,22 @@
 
 Ext.ns("Sbi.console");
 
-Sbi.console.ConsolePanel = function(config) {
+Sbi.console.DetailPanel = function(config) {
 	
-	var defaultSettings = {
-			title: LN('sbi.qbe.queryeditor.title'),
-			layout: 'border'
+		var defaultSettings = {
+			layout: 'fit'
+			, bodyStyle: 'padding: 8px'
+			, region: 'center'
 		};
 		
-		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.consolePanel) {
-			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.consolePanel);
+		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.detailPanel) {
+			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.detailPanel);
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
 		
 		Ext.apply(this, c);
+		
 		
 		/*
 		this.services = this.services || new Array();	
@@ -71,25 +73,27 @@ Sbi.console.ConsolePanel = function(config) {
 		*/
 		
 		
-		this.initSummaryPanel(c.summaryPanelConfig || {});
-		this.initDetailPanel(c.detailPannelConfig || {});
-	
-		c = Ext.apply(c, {  	
-	      	items: [this.summaryPanel, this.detailPanel]
+		this.initDetailPages(c.detailPagesConfig || {});
+		
+		c = Ext.apply(c, {  
+	      	items: [new Ext.TabPanel({
+	      		activeTab: 0
+	      		, items: this.pages
+	      	})]
+			//, html: 'Io sono il detail panel'
 		});
 
 		// constructor
-		Sbi.console.ConsolePanel.superclass.constructor.call(this, c);
+		Sbi.console.DetailPanel.superclass.constructor.call(this, c);
     
-		this.addEvents();
+		//this.addEvents();
 };
 
-Ext.extend(Sbi.console.ConsolePanel, Ext.Panel, {
+Ext.extend(Sbi.console.DetailPanel, Ext.Panel, {
     
     services: null
-    , summaryPanel: null
-    , detailPanel: null
-   
+    , pages: null
+    
    
     //  -- public methods ---------------------------------------------------------
     
@@ -97,30 +101,38 @@ Ext.extend(Sbi.console.ConsolePanel, Ext.Panel, {
     
     //  -- private methods ---------------------------------------------------------
     
-    , initSummaryPanel: function(conf) {
+    , initDetailPages: function(conf) {
+		this.pages = new Array();
 		
-		this.summaryPanel = new Sbi.console.SummaryPanel(conf);
-			
-		/*	new Ext.Panel({
-			layout: 'fit'
-			, region: 'north'
-			, html: 'Io sono il summary panel'
-		});
-		*/
-	}
-
-	, initDetailPanel: function(conf) {
-		this.detailPanel = new Sbi.console.DetailPanel(conf);
+		var detailPage = null;
 		
-		/*	new Ext.Panel({
-			layout: 'fit'
-			, region: 'center'
-			, html: 'Io sono il detail panel'
+		detailPage = new Sbi.console.DetailPage({
+			title: 'Pag. 1'
+			, msg: 'Io sono la prima pagina'
 		});
-		*/
+		this.pages.push(detailPage);
+		
+		detailPage = new Sbi.console.DetailPage({
+			title: 'Pag. 2'
+			, msg: 'Io sono la seconda pagina'
+		});
+		this.pages.push(detailPage);
+		
+		detailPage = new Sbi.console.DetailPage({
+			title: 'Pag. 3'
+			, msg: 'Io sono la terza pagina'
+		});
+		this.pages.push(detailPage);
+		
+		/*
+		var detailPage = new Ext.Panel({
+			layout: 'fit'
+			, title: 'Pagina 1'
+			, html: 'Io sono la prima pagina'
+		});
+		this.pages.push(detailPage);	
+		*/	
 	}
-
-
     
     
 });

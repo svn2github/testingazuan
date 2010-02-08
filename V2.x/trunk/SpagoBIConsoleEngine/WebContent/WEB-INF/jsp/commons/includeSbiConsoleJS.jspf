@@ -19,6 +19,9 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/commons/JSON.js'/></script>
 <script type="text/javascript" src='../js/spagobi/locale/LocaleUtils.js'/></script>
 
+<script type="text/javascript" src='../js/spagobi/console/SummaryPanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/console/DetailPage.js'/></script>
+<script type="text/javascript" src='../js/spagobi/console/DetailPanel.js'/></script>
 <script type="text/javascript" src='../js/spagobi/console/ConsolePanel.js'/></script>
 <!-- END-DEBUG -->
 

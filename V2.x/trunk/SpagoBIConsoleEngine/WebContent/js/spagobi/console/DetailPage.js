@@ -41,49 +41,47 @@
   * 
   * Authors
   * 
-  * - name (mail)
+  * 
+  * - Andrea Gioia (andrea.gioia@eng.it)
+  * - Antonella Giachino (antonella.giachino@eng.it)
   */
 
 Ext.ns("Sbi.console");
 
-Sbi.console.Xxxx = function(config) {
+Sbi.console.DetailPage = function(config) {
 	
 		var defaultSettings = {
-			//title: LN('sbi.qbe.queryeditor.title')
+			title: 'DeatilPage'
 		};
 		
-		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.queryBuilderPanel) {
-			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.queryBuilderPanel);
+		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.detailPage) {
+			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.detailPage);
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
 		
 		Ext.apply(this, c);
 		
-		
+		/*
 		this.services = this.services || new Array();	
 		this.services['doThat'] = this.services['doThat'] || Sbi.config.serviceRegistry.getServiceUrl({
 			serviceName: 'DO_THAT_ACTION'
 			, baseParams: new Object()
 		});
 		
-		this.addEvents('customEvents');
+		*/
 		
-		
-		this.initThis(c.westConfig || {});
-		this.initThat(c.westConfig || {});
-	
 		c = Ext.apply(c, {  	
-	      	items: [this.thisPanel, this.thatPanel]
+			html: this.msg
+	      	//items: [this.thisPanel, this.thatPanel]
 		});
 
 		// constructor
-		Sbi.xxx.Xxxx.superclass.constructor.call(this, c);
+		Sbi.console.DetailPage.superclass.constructor.call(this, c);
     
-		this.addEvents();
 };
 
-Ext.extend(Sbi.xxx.Xxxx, Ext.util.Observable, {
+Ext.extend(Sbi.console.DetailPage, Ext.Panel, {
     
     services: null
     

@@ -125,12 +125,18 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	           	
 	      	});
 	      	
-	      	
+	      	var val;
 	     function timer(){
 			//alert(generalPanel);	
 			generalPanel.statusProcess(<%=docId%>);
-			setTimeout("timer()", 10000);	
-		}
+			
+			if(generalPanel.status==2 || generalPanel.status==4)
+			{
+			}
+			else{
+			setTimeout("timer()", 3000);	
+			}
+	}
 	
 		
 	      	

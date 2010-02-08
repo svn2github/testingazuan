@@ -67,6 +67,8 @@ Sbi.commons.ExecutionPanel = function(config) {
         ,disabled: true
     });
     
+    this.infoStore ='undefined';
+    
     this.infoStore = new Ext.data.SimpleStore({
         fields : ['meta_name', 'meta_content' ],
         data : [
@@ -121,7 +123,7 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
     ,buttons: null
     ,tabInfo: null
     ,infoStore:null
-   
+    ,status:null
     // public methods
     ,monitorStatus: function(){
     
@@ -215,7 +217,7 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
 	      				record=this.tabInfo.store.getAt(0);
 	      				record.set('meta_name',content.status);
 	      				record.set('meta_content',content.time);
-	      			
+	      				this.status=content.status_code;
 	      			} else {
 	      				Sbi.commons.ExceptionHandler.showErrorMessage('Server response cannot be decoded', 'Service Error');
 	      			}

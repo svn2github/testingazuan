@@ -102,6 +102,7 @@ public class MyCategoryUrlGenerator extends StandardCategoryURLGenerator{
 				URL +="','','"+drillDocTitle;
 			}
 			URL=URL+"');";
+			logger.debug("Linked URL:"+URL);
 		//}
 
 		logger.debug("OUT");

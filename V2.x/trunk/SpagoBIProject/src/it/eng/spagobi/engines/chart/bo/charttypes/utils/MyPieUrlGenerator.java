@@ -63,6 +63,7 @@ public class MyPieUrlGenerator extends StandardPieURLGenerator{
 				URL +="','','"+drillDocTitle;
 			}
 			URL=URL+"');";
+			logger.debug("Linked URL:"+URL);
 		//}
 
 		logger.debug("OUT");

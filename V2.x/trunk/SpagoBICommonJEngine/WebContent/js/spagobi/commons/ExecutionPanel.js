@@ -64,7 +64,7 @@ Sbi.commons.ExecutionPanel = function(config) {
         text : 'Stop'
         , scope : this
         , handler : this.stopProcess
-        ,disabled: true
+        //,disabled: true
     });
     
     this.infoStore ='undefined';
@@ -141,8 +141,8 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
 	      				record=this.tabInfo.store.getAt(0);
 	      				record.set('meta_name',content.status);
 	      				record.set('meta_content',content.time);
-	      			this.buttons[0].disabled=true;		
-	      			this.buttons[1].disabled=false;		
+	      			this.buttons[0].setDisabled(true);			      			
+	      			this.buttons[1].setDisabled(false);		
 	      			} else {
 	      				Sbi.commons.ExceptionHandler.showErrorMessage('Server response cannot be decoded', 'Service Error');
 	      			}
@@ -164,10 +164,8 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
 	      		if(response !== undefined && response.responseText !== undefined) {
 	      			var content = Ext.util.JSON.decode( response.responseText );
 	      			if (content !== undefined) {
-	  	      			this.buttons[0].disabled=false;		
-	      				this.buttons[1].disabled=true;		
-						//this.body="<h1>ciaoooo</h1>";
-		      			//this.setTitle(content.status);
+	  	      			this.buttons[0].setDisabled(false);		
+	      				this.buttons[1].setDisabled(true);		
 	      				record=this.tabInfo.store.getAt(0);
 	      				record.set('meta_name',content.status);
 	      				record.set('meta_content',content.time);
@@ -194,24 +192,24 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
 	      			var content = Ext.util.JSON.decode( response.responseText );
 	      			if (content !== undefined) {
 						if(content.status_code==0){ // not started, enable start button
-	  	      			this.buttons[0].disabled=false;		
-	      				this.buttons[1].disabled=true;								
+	  	      			this.buttons[0].setDisabled(false);		
+	      				this.buttons[1].setDisabled(true);								
 						}
 						else if(content.status_code==4){ // completed, disable both buttons
-	  	      			this.buttons[0].disabled=true;		
-	      				this.buttons[1].disabled=true;								
+	  	      			this.buttons[0].setDisabled(true);		
+	      				this.buttons[1].setDisabled(true);								
 						}
 						else if(content.status_code==2){ // rejected, disable both buttons
-	  	      			this.buttons[0].disabled=false;		
-	      				this.buttons[1].disabled=true;								
+	  	      			this.buttons[0].setDisabled(false);		
+	      				this.buttons[1].setDisabled(true);								
 						}
 						else if(content.status_code==1){ // accepted,disable start button
-	  	      			this.buttons[0].disabled=true;		
-	      				this.buttons[1].disabled=true;								
+	  	      			this.buttons[0].setDisabled(true);		
+	      				this.buttons[1].setDisabled(true);								
 						}												
 						else{ 	// started: disable start button, enable stop button
-	  	      			this.buttons[0].disabled=true;		
-	      				this.buttons[1].disabled=false;								
+	  	      			this.buttons[0].setDisabled(true);		
+	      				this.buttons[1].setDisabled(false);								
 						}
 	      				//this.setTitle(content.status);
 	      				record=this.tabInfo.store.getAt(0);

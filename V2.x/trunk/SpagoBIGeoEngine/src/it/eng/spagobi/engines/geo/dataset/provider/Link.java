@@ -311,9 +311,9 @@ public class Link {
     		
     		link = "javascript:parent.execCrossNavigation('" + execIframeId + "', '" + targetDocLabel + "' , '" + parametersStr + "'";  		
     		if(drillDocTitle!=null && target!=null && target.equalsIgnoreCase("tab")){
-    			link +="'','"+drillDocTitle+"','tab'";
+    			link +=",'','"+drillDocTitle+"','tab'";
 			}else if(drillDocTitle!=null){
-				link +="'','"+drillDocTitle+"'";
+				link +=",'','"+drillDocTitle+"'";
 			}
     		link += ");";
     		logger.debug("Link URL:"+link);

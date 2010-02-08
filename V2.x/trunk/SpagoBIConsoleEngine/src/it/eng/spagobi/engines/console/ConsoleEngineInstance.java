@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.console;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -41,28 +40,36 @@ import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
  * @author Antonella Giachino (antonella.giachino@eng.it)
  */
 public class ConsoleEngineInstance extends AbstractEngineInstance {
-	private JSONObject guiSettings;
-	private List<String> includes;
-
+	private JSONObject template;
+	
 	public ConsoleEngineInstance(Object template, Map env) {
 		super( env );	
-		try {
-			this.guiSettings = new JSONObject(template);
-		} catch (Throwable t) {
-			throw new SpagoBIRuntimeException("Impossible to parse template", t);
-		}
 		
-		includes = ConsoleEngine.getConfig().getIncludes();
+		JSONObject templateJSON;
+		
+		templateJSON = null;
+		if(template instanceof JSONObject) {
+			templateJSON = (JSONObject)template;
+		} else {
+			try {
+				templateJSON = new JSONObject(template);
+			} catch (Throwable t) {
+				throw new SpagoBIRuntimeException("Impossible to parse template", t);
+			}
+		}
+				
+		setTemplate(templateJSON);		
 	}
 	
 
-	public JSONObject getGuiSettings() {
-		return guiSettings;
+	public JSONObject getTemplate() {
+		return template;
 	}
 	
-	public List getIncludes() {
-		return includes;
+	public void setTemplate(JSONObject template) {
+		this.template = template;
 	}
+
 	
 	public IDataSource getDataSource() {
 		return (IDataSource)this.getEnv().get(EngineConstants.ENV_DATASOURCE);

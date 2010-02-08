@@ -22,14 +22,14 @@ package it.eng.spagobi.engines.console.services.initializers;
 
 import java.util.Locale;
 
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.console.ConsoleEngine;
 import it.eng.spagobi.engines.console.ConsoleEngineInstance;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException;
-
-import org.apache.log4j.Logger;
 
 
 /**
@@ -77,7 +77,7 @@ public class ConsoleEngineStartAction extends AbstractEngineStartAction {
 			logger.debug("Creating engine instance ...");
 			
 			try {
-				consoleEngineInstance = ConsoleEngine.createInstance( getTemplateAsString(), getEnv() );
+				consoleEngineInstance = ConsoleEngine.createInstance( getTemplateAsJSONObject(), getEnv() );
 			} catch(Throwable t) {
 				SpagoBIEngineStartupException serviceException;
 				String msg = "Impossible to create engine instance for document [" + getDocumentId() + "].";

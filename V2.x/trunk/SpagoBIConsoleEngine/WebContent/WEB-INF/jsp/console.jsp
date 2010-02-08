@@ -94,9 +94,8 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 
 	<body  >
 		<script>
-			this.template = <%=consoleEngineInstance.getGuiSettings().toString()%>;
-			//test("<%=consoleEngineInstance.getGuiSettings().toString()%>");
-			//test("prova");
+			this.template = <%=consoleEngineInstance.getTemplate().toString()%>;
+			alert(this.template.toSource());
 		</script>
 		<%-- 
 		<script language="javascript" type="text/javascript">

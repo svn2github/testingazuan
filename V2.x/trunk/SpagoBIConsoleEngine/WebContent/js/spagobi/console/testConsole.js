@@ -4,7 +4,6 @@
   */
   
 //Ext.BLANK_IMAGE_URL = './ext-3.1/resources/images/default/s.gif';
-var template;
 
 
 

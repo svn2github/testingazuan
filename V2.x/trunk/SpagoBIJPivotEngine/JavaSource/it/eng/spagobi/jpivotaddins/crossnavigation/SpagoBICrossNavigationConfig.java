@@ -126,10 +126,18 @@ public class SpagoBICrossNavigationConfig {
     		buffer.deleteCharAt(buffer.length() - 1);
     	}
     	if (target.customizedView != null) {
-    		buffer.append("', '" + StringEscapeUtils.escapeJavaScript(target.customizedView) + "');");
+    		buffer.append("', '" + StringEscapeUtils.escapeJavaScript(target.customizedView) + "'");
     	} else {
-    		buffer.append("');");
+    		buffer.append("', ''");
     	}
+    	
+    	if(target.titleCross!=null && target.targetCross!=null && target.targetCross.equalsIgnoreCase("tab")){
+    		buffer.append(",'"+target.titleCross+"','tab'");
+		}else if(target.titleCross!=null){
+			buffer.append(",'"+target.titleCross+"'");
+		}
+    	
+    	buffer.append(");");
 	    String toReturn = buffer.toString();
 	    logger.debug("OUT: returning [" + toReturn + "]");
 		return toReturn;
@@ -222,10 +230,14 @@ public class SpagoBICrossNavigationConfig {
 		String customizedView;
 		String title;
 		String description;
+		String targetCross;
+		String titleCross;
 		List<TargetParameter> parameters;
 		Target(Node node) {
 			documentLabel = node.valueOf("@documentLabel");
 			customizedView = node.valueOf("@customizedView");
+			targetCross = node.valueOf("@target");
+			titleCross = node.valueOf("@title");
 			if (customizedView != null && customizedView.trim().equals("")) {
 				customizedView = null;
 			}

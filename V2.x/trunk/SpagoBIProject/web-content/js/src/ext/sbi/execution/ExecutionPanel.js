@@ -162,18 +162,48 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 	
 	, executeCrossNavigation: function( config ) {
 	
-		if(config.title !== undefined){
+		var targetDocument = config.document;
+		var sourceDocument = this.activeDocument.document;
+		
+		// if targetDocument and sourceDocument are the same document and config.target is "update", 
+		// does not add a new ExecutionWizard into the stack but updates the current one
+		if (targetDocument.label === sourceDocument.label && (config.target !== undefined && config.target == 'update')) {
+
+			this.activeDocument.documentExecutionPage.parametersPanel.clear();
+			var executionInstance = this.activeDocument.documentExecutionPage.executionInstance;
+			var formState;
+			try {
+				formState = Ext.urlDecode(config.preferences.parameters);
+			} catch (err) {
+				alert('Warning: error while decoding parameters');
+				formState = null;
+			}
+			if (formState !== null) {
+				this.activeDocument.documentExecutionPage.parametersPanel.setFormState(formState);
+				var formStateStr = Sbi.commons.JSON.encode( formState );
+				executionInstance.PARAMETERS = formStateStr;
+			}
+
+			if (config.preferences.subobject.id !== undefined && config.preferences.subobject.id !== null) {
+				executionInstance.SBI_SUBOBJECT_ID = config.preferences.subobject.id;
+			} else {
+				delete executionInstance.SBI_SUBOBJECT_ID;
+			}
+			
+			this.activeDocument.documentExecutionPage.synchronize(executionInstance, false);
+			
+			return;
+		}
+		
+		
+		if (config.title !== undefined) {
 			config.document.name = config.title;
 		}
 		var tabblocked = true;
-		if (config.target == 'tab'){
+		if (config.target !== undefined && config.target == 'tab') {
 			tabblocked = this.fireEvent('crossnavigationonothertab', config);
 		}
-		if(tabblocked){
-			var prevActiveDoc = this.activeDocument;
-			
-			
-			
+		if (tabblocked) {
 			this.activeDocument = new Sbi.execution.ExecutionWizard( {preferences: config.preferences, isFromCross: true}, config.document );
 			this.documentsStack.push( this.activeDocument );
 			
@@ -181,7 +211,6 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 			//this.activeDocument.tb.on('beforeinit', this.setBreadcrumbs, this);	
 			this.activeDocument.documentExecutionPage.on('crossnavigation', this.loadCrossNavigationTargetDocument , this);
 			
-			//this.swapPanel(prevActiveDoc, this.activeDocument);
 			this.add(this.activeDocument);
 			this.doLayout();
 			this.getLayout().setActiveItem(this.documentsStack.length -1);

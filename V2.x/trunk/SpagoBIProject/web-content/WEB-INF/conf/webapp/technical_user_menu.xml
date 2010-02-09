@@ -90,11 +90,11 @@
 		<ITEM	title="#menu.Roles"
 				functionality="ProfileManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?ACTION_NAME=MANAGE_ROLES_ACTION"
-				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/rolesynch16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/roles.png" />
 		<ITEM	title="#menu.Users"
 				functionality="ProfileManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?ACTION_NAME=MANAGE_USER_ACTION"
-				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/rolesynch16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/users.png" />
 	</ITEM>
 
 	<!--

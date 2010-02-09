@@ -57,7 +57,7 @@ Ext.onReady(function(){
 
 	});
    	
-	});
+});
 
 
 </script>

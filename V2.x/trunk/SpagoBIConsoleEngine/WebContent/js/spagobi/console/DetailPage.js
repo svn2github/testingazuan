@@ -65,7 +65,7 @@ Sbi.console.DetailPage = function(config) {
 		this.services = this.services || new Array();		
 		this.services['getDataset'] = this.services['getDataset'] || Sbi.config.serviceRegistry.getServiceUrl({
 			serviceName: 'TEST_DATASET_ACTION'
-			, baseParams: new Object()
+			, baseParams: {}
 		});
 		this.initDetailPage(c.detailPageConfig || {});
 		

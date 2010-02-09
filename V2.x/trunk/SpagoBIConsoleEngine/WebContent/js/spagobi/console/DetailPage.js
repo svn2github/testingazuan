@@ -81,7 +81,7 @@ Sbi.console.DetailPage = function(config) {
 
 Ext.extend(Sbi.console.DetailPage, Ext.Panel, {
     
-    //services: null
+    services: null
     
    
     // public methods
@@ -90,7 +90,7 @@ Ext.extend(Sbi.console.DetailPage, Ext.Panel, {
     
     
     // private methods
-     initDetailPage: function(conf) {
+     ,initDetailPage: function(conf) {
 		this.getDSButton = new Ext.Button({
 			  text: 'Get Dataset'
 			, handler: function() { 
@@ -104,7 +104,7 @@ Ext.extend(Sbi.console.DetailPage, Ext.Panel, {
 				      		if(response !== undefined && response.responseText !== undefined) {
 				      			var content = Ext.util.JSON.decode( response.responseText );
 				      			if (content !== undefined) {				      			  
-				      				alert(content);
+				      				alert(content.toSource());
 				      			}				      		
 				      		} else {
 				      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');

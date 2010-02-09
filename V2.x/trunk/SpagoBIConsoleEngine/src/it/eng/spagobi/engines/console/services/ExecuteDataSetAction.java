@@ -65,7 +65,6 @@ public class ExecuteDataSetAction extends AbstractConsoleEngineAction {
 		String user;
 		String callback;
 	
-		SpagoBiDataSet dataSetConfig;
 		IDataSet dataSet;
 		IDataStore dataStore;
 		JSONObject dataSetJSON;
@@ -85,13 +84,13 @@ public class ExecuteDataSetAction extends AbstractConsoleEngineAction {
 			callback = getAttributeAsString( CALLBACK );
 			logger.debug("Parameter [" + CALLBACK + "] is equals to [" + callback + "]");
 			
-			dataSetConfig = null;
+			dataSet = null;
 			try {
 				dataSet = getDataSet(dataSetLabel);
 			} catch(Throwable t) {
 				throw new SpagoBIServiceException("Impossible to find a dataset whose label is [" + dataSetLabel + "]", t);
 			}
-			Assert.assertNotNull(dataSetConfig, "Impossible to find a dataset whose label is [" + dataSetLabel + "]");
+			Assert.assertNotNull(dataSet, "Impossible to find a dataset whose label is [" + dataSetLabel + "]");
 				
 			dataSet.loadData();
 			dataStore = dataSet.getDataStore();

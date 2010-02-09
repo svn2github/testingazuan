@@ -105,22 +105,66 @@ Ext.extend(Sbi.console.DetailPanel, Ext.Panel, {
 		this.pages = new Array();
 		
 		var detailPage = null;
-		
+		/* dinamicizzare generazione tab come per i bottoni
+		this.toolbarButtons = [];
+		for(var i=0; i < documents.length; i++){
+			this.toolbarButtons.push({
+				text: documents[i].text  
+			});
+		}
+		*/
 		detailPage = new Sbi.console.DetailPage({
 			title: 'Pag. 1'
 			, msg: 'Io sono la prima pagina'
+			, navigationBar: {
+				documents: [{text: 'Bottone 1'
+								,tooltip: 'Bottone 1'
+								,label: 'QBE_FOODMART'
+								,staticParams: {param1: 'paramValue'}}
+							,{text: 'Bottone 2'
+								,tooltip: 'Bottone 2'
+								,label: 'QBE_FOODMART'}
+							,{text: 'Bottone 3'
+								,tooltip: 'Bottone 3'
+								,label: 'QBE_FOODMART'}
+				]
+			}
 		});
 		this.pages.push(detailPage);
 		
 		detailPage = new Sbi.console.DetailPage({
 			title: 'Pag. 2'
 			, msg: 'Io sono la seconda pagina'
+			, navigationBar: {
+				documents: [{text: 'Bottone 11'
+								,tooltip: 'Bottone 11'
+								,label: 'Doc. Bottone 11'}
+							,{text: 'Bottone 22'
+								,tooltip: 'Bottone 22'
+								,label: 'Doc. Bottone 22'}
+							,{text: 'Bottone 33'
+								,tooltip: 'Bottone 33'
+								,label: 'Doc. Bottone 33'}
+				]
+			}
 		});
 		this.pages.push(detailPage);
 		
 		detailPage = new Sbi.console.DetailPage({
 			title: 'Pag. 3'
 			, msg: 'Io sono la terza pagina'
+			, navigationBar: {
+				documents: [{text: 'Bottone 111'
+								,tooltip: 'Bottone 111'
+								,label: 'Doc. Bottone 111'}
+							,{text: 'Bottone 222'
+								,tooltip: 'Bottone 222'
+								,label: 'Doc. Bottone 222'}
+							,{text: 'Bottone 333'
+								,tooltip: 'Bottone 333'
+								,label: 'Doc. Bottone 333'}
+				]
+			}
 		});
 		this.pages.push(detailPage);
 		

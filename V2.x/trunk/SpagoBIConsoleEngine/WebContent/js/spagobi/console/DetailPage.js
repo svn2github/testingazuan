@@ -67,11 +67,13 @@ Sbi.console.DetailPage = function(config) {
 			serviceName: 'TEST_DATASET_ACTION'
 			, baseParams: {}
 		});
-		this.initDetailPage(c.detailPageConfig || {});
+		this.initTestButton(c.detailPageConfig || {});
+		this.initNavigationToolbar(c.navigationBar || {});
 		
 		c = Ext.apply(c, {  	
 			//html: this.msg
-	      	items: [this.getDSButton]
+			tbar: this.navigationToolbar
+	      	, items: [this.getDSButton]	      	
 		});
 
 		// constructor
@@ -82,7 +84,7 @@ Sbi.console.DetailPage = function(config) {
 Ext.extend(Sbi.console.DetailPage, Ext.Panel, {
     
     services: null
-    
+    , navigationToolbar: null
    
     // public methods
     
@@ -90,7 +92,8 @@ Ext.extend(Sbi.console.DetailPage, Ext.Panel, {
     
     
     // private methods
-     ,initDetailPage: function(conf) {
+     ,initTestButton: function(conf) {
+	
 		this.getDSButton = new Ext.Button({
 			  text: 'Get Dataset'
 			, handler: function() { 
@@ -120,7 +123,9 @@ Ext.extend(Sbi.console.DetailPage, Ext.Panel, {
 			scope: this
 		});
 	}
-    
+    ,initNavigationToolbar: function(navigationBarConf) {
+    	this.navigationToolbar = new Sbi.console.NavigationToolbar(navigationBarConf);
+    }
     
     
 });

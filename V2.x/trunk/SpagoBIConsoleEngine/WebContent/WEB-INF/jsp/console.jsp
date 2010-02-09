@@ -130,6 +130,7 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 
 
 			Ext.onReady(function() { 
+				Ext.QuickTips.init();
 				var consolePanel = new Sbi.console.ConsolePanel(template);
 				var viewport = new Ext.Viewport(consolePanel);  
 			});

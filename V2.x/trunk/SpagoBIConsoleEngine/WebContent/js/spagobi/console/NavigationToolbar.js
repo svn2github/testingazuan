@@ -46,21 +46,21 @@
 
 Ext.ns("Sbi.console");
 
-Sbi.console.Xxxx = function(config) {
+Sbi.console.NavigationToolbar = function(config) {
 	
 		var defaultSettings = {
 			//title: LN('sbi.qbe.queryeditor.title')
 		};
 		
-		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.queryBuilderPanel) {
-			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.queryBuilderPanel);
+		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.navigationToolbar) {
+			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.navigationToolbar);
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
 		
 		Ext.apply(this, c);
 		
-		
+		/*
 		this.services = this.services || new Array();	
 		this.services['doThat'] = this.services['doThat'] || Sbi.config.serviceRegistry.getServiceUrl({
 			serviceName: 'DO_THAT_ACTION'
@@ -68,24 +68,24 @@ Sbi.console.Xxxx = function(config) {
 		});
 		
 		this.addEvents('customEvents');
+		*/
 		
-		
-		this.initThis(c.westConfig || {});
-		this.initThat(c.westConfig || {});
+		this.initToolbarButtons(c.documents || {});
 	
 		c = Ext.apply(c, {  	
-	      	items: [this.thisPanel, this.thatPanel]
+	      	items: this.toolbarButtons
 		});
 
 		// constructor
-		Sbi.console.Xxxx.superclass.constructor.call(this, c);
+		Sbi.console.NavigationToolbar.superclass.constructor.call(this, c);
     
-		this.addEvents();
+	//	this.addEvents();
 };
 
-Ext.extend(Sbi.console.Xxxx, Ext.util.Observable, {
+Ext.extend(Sbi.console.NavigationToolbar, Ext.Toolbar, {
     
     services: null
+    , toolbarButtons: null
     
    
     // public methods
@@ -94,7 +94,35 @@ Ext.extend(Sbi.console.Xxxx, Ext.util.Observable, {
     
     
     // private methods
-    
+    ,initToolbarButtons: function(documents) {
+		
+		this.toolbarButtons = [];
+		for(var i=0; i < documents.length; i++){
+			this.toolbarButtons.push({
+				 text: documents[i].text
+				,tooltip: documents[i].tooltip
+				,documentConf: documents[i] 
+				,handler: function execCrossNavigation (b){
+					var msg = {
+						label: b.documentConf.label
+						,windowName: this.name										
+					};
+					if(b.documentConf.staticParams) {
+						msg.parameters = '';
+						var separator = '';
+						for(p in b.documentConf.staticParams) {
+							msg.parameters += separator + p + '=' + b.documentConf.staticParams[p];
+							separator = '&';
+						}
+						alert("msg.parameters: " + msg.parameters.toSource());
+					}
+					
+					sendMessage(msg, 'crossnavigation');
+				}
+				,scope: this
+			});
+		}
+	}
     
     
     

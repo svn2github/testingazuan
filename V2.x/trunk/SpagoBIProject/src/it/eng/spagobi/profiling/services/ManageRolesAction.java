@@ -61,22 +61,22 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 	private final String ROLE_INSERT = "ROLE_INSERT";
 	private final String ROLE_DELETE = "ROLE_DELETE";
 	
-	private final String ID = "ID";
-	private final String NAME = "NAME";
-	private final String DESCRIPTION = "DESCRIPTION";
-	private final String ROLE_TYPE_CD = "ROLE_TYPE_CD";
-	private final String CODE = "CODE";
-	private final String SAVE_SUBOBJECTS="SAVE_SUBOBJECTS";
-	private final String SEE_SUBOBJECTS="SEE_SUBOBJECTS";
-	private final String SEE_VIEWPOINTS="SEE_VIEWPOINTS";
-	private final String SEE_SNAPSHOTS="SEE_SNAPSHOTS";
-	private final String SEE_NOTES="SEE_NOTES";
-	private final String SEND_MAIL="SEND_MAIL";
-	private final String SAVE_INTO_PERSONAL_FOLDER="SAVE_INTO_PERSONAL_FOLDER";
-	private final String SAVE_REMEMBER_ME="SAVE_REMEMBER_ME";
-	private final String SEE_METADATA="SEE_METADATA";
-	private final String SAVE_METADATA="SAVE_METADATA";
-	private final String BUILD_QBE_QUERY="BUILD_QBE_QUERY";
+	private final String ID = "id";
+	private final String NAME = "name";
+	private final String DESCRIPTION = "description";
+	private final String ROLE_TYPE_CD = "typeCd";
+	private final String CODE = "code";
+	private final String SAVE_SUBOBJECTS="saveSubobj";
+	private final String SEE_SUBOBJECTS="seeSubobj";
+	private final String SEE_VIEWPOINTS="seeViewpoints";
+	private final String SEE_SNAPSHOTS="seeSnapshot";
+	private final String SEE_NOTES="seeNotes";
+	private final String SEND_MAIL="sendMail";
+	private final String SAVE_INTO_PERSONAL_FOLDER="savePersonalFolder";
+	private final String SAVE_REMEMBER_ME="saveRemember";
+	private final String SEE_METADATA="seeMeta";
+	private final String SAVE_METADATA="saveMeta";
+	private final String BUILD_QBE_QUERY="buildQbe";
 	
 	@Override
 	public void doService() {

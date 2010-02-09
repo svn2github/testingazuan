@@ -142,7 +142,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		            hideLabel  : false,
 		            fieldLabel: 'Save',
 		            items: [
-		                {boxLabel: 'Personal Folder', name: 'savePersonalFolder'},
+		                {boxLabel: 'Personal Folder', name: 'savePersonalFolder', inputValue: 'savePersonalFolder'},
 		                {boxLabel: 'Metadata', name: 'saveMeta'},
 		                {boxLabel: 'Remember Me', name: 'saveRemember'},
 		                {boxLabel: 'Subobjects', name: 'saveSubobj'}
@@ -155,6 +155,12 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		            boxMinHeight  : 100,
 		            hideLabel  : false,
 		            fieldLabel: 'See',
+		            /*
+		            style: {
+		                border: '1px solid grey',
+		                padding: '3px'
+		            },		
+		            */            
 		            items: [
 		                {boxLabel: 'Metadata', name: 'seeMeta'},
 		                {boxLabel: 'Notes', name: 'seeNotes'},
@@ -233,6 +239,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	              defaults: {width: 140, border:false},    
    	              defaultType: 'textfield',
    	              autoHeight: true,
+   	              autoScroll  : true,
    	              bodyStyle: Ext.isIE ? 'padding:0 0 5px 15px;' : 'padding:10px 15px;',
    	              border: false,
    	              style: {

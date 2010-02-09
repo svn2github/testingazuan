@@ -30,6 +30,8 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 
@@ -40,6 +42,8 @@ import it.eng.spago.configuration.ConfigSingleton;
  * @author Andrea Gioia
  */
 public class TemplateBuilder {
+	
+	private static transient Logger logger = Logger.getLogger(TemplateBuilder.class);
 	
 	/** The query. */
 	String query;
@@ -261,7 +265,24 @@ public class TemplateBuilder {
 				continue;
 			}
 			
-			buffer.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"false\" evaluationTime=\"Now\" hyperlinkType=\"None\"  hyperlinkTarget=\"Self\" >\n");
+			boolean isANumber = false;
+			String className = field.getClassType();
+			Class fieldClass = Object.class;
+			try {
+				fieldClass = Class.forName(className);
+			} catch (ClassNotFoundException e) {
+				logger.error("Class type not recognized: [" + className + "]", e);
+			}
+			if (Number.class.isAssignableFrom(fieldClass)){
+				isANumber = true;
+			}
+			
+			buffer.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"false\" evaluationTime=\"Now\" hyperlinkType=\"None\"  hyperlinkTarget=\"Self\" ");
+			if (isANumber) {
+				buffer.append(" pattern=\"#,##0.00\"");
+			}
+			buffer.append(" >\n");
+			
 			
 			buffer.append("<reportElement " + 
 						  		"mode=\"" + "Opaque" + "\" " + 
@@ -279,7 +300,7 @@ public class TemplateBuilder {
 
 			
 			buffer.append("<textElement " +
-								"textAlignment=\"" + (field.getClassType().equalsIgnoreCase("java.lang.String")? "Left": "Left") + "\" " +
+								"textAlignment=\"" + (isANumber ? "Right": "Left") + "\" " +
 								"verticalAlignment=\"Middle\"> " +
 								"<font pdfFontName=\"" + getParamValue(PN_ROW_FONT, DEFAULT_ROW_FONT)+ "\" " +
 									  "size=\"" + getParamValue(PN_ROW_FONT_SIZE, DEFAULT_ROW_FONT_SIZE)+ "\"/>" +
@@ -303,7 +324,11 @@ public class TemplateBuilder {
 			
 			
 			
-			buffer.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"false\" evaluationTime=\"Now\" hyperlinkType=\"None\"  hyperlinkTarget=\"Self\" >\n");
+			buffer.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"false\" evaluationTime=\"Now\" hyperlinkType=\"None\"  hyperlinkTarget=\"Self\" ");
+			if (isANumber) {
+				buffer.append(" pattern=\"#,##0.00\"");
+			}
+			buffer.append(" >\n");
 			buffer.append("<reportElement " + 
 					      		"mode=\"" + "Opaque" + "\" " + 
 					      		"x=\"" +  x  + "\" " + 
@@ -318,7 +343,7 @@ public class TemplateBuilder {
 			buffer.append("<box leftPadding=\"2\" rightPadding=\"2\" topBorder=\"None\" topBorderColor=\"#000000\" leftBorder=\"None\" leftBorderColor=\"#000000\" rightBorder=\"None\" rightBorderColor=\"#000000\" bottomBorder=\"None\" bottomBorderColor=\"#000000\"/>\n");
 
 			buffer.append("<textElement " +
-								"textAlignment=\"" + (field.getClassType().equalsIgnoreCase("java.lang.String")? "Left": "Left") + "\" " +
+								"textAlignment=\"" + (isANumber ? "Right": "Left") + "\" " +
 								"verticalAlignment=\"Middle\"> " +
 								"<font pdfFontName=\"" + getParamValue(PN_ROW_FONT, DEFAULT_ROW_FONT)+ "\" " +
 								  "size=\"" + getParamValue(PN_ROW_FONT_SIZE, DEFAULT_ROW_FONT_SIZE)+ "\"/>" +
@@ -348,7 +373,7 @@ public class TemplateBuilder {
 		
 		return buffer.toString();
 	}
-	
+
 	/**
 	 * Gets the column header block.
 	 * 

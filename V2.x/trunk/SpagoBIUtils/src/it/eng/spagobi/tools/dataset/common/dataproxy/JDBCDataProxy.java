@@ -92,6 +92,7 @@ public class JDBCDataProxy extends AbstractDataProxy {
 		try {
 			Connection conn = dataSource.toSpagoBiDataSource().readConnection(schema); 
 			dataConnection = getDataConnection(conn);
+			logger.debug("Executing statemnet ["  + statement + "]");
 			sqlCommand = dataConnection.createSelectCommand( statement );
 			dataResult = sqlCommand.execute();
 			if(dataResult != null){

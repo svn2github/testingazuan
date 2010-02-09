@@ -104,6 +104,7 @@ public class JDBCStandardDataReader extends AbstractDataReader {
     		logger.debug("Readed [" + recCount+ "] records");
     		logger.debug("Data readed succcesfully");
     		
+    		logger.debug("resultset type [" + rs.getType() + "] (" + (rs.getType()  == rs.TYPE_FORWARD_ONLY) + ")");
     		rs.last();
     		int resultNumber = rs.getRow();
     		dataStore.getMetaData().setProperty("resultNumber", new Integer(resultNumber));

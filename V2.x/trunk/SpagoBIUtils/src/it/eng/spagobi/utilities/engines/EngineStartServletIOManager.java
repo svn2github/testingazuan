@@ -60,6 +60,7 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 	
 	private String userId;
 	private String userUniqueIdentifier;
+	private String userExecutionRole;
 	private String auditId;
 	private String documentId;
 	private Locale locale;
@@ -74,6 +75,7 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
     
     IDataSource dataSource;
     IDataSet dataSet;
+   
 	
 	private Map env;
 	
@@ -81,6 +83,8 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 	
 	public static final String AUDIT_ID = "SPAGOBI_AUDIT_ID";
 	public static final String DOCUMENT_ID = "document";
+	public static final String EXECUTION_ROLE = "SBI_EXECUTION_ROLE";
+	
 	
 	public static final String COUNTRY = "SBI_COUNTRY";
 	public static final String LANGUAGE = "SBI_LANGUAGE";
@@ -120,6 +124,14 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 	   	
 	   	return userUniqueIdentifier;
 	 }
+	 
+	 public String getUserExecutionRole() {
+		if(userExecutionRole == null) {
+			userExecutionRole = this.getParameterAsString(EXECUTION_ROLE);
+		}
+		return userExecutionRole;
+	 }
+	    
 	    
 	 public String getDocumentId() {
 	   	String documentIdInSection = null;
@@ -330,6 +342,7 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 	    }
 	    
 	    
+	   
 	    
 	    public Map getEnv() {
 	       if(eventProxy == null) {
@@ -343,6 +356,7 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 		 	   env.put(EngineConstants.ENV_AUDIT_SERVICE_PROXY, getAuditServiceProxy() );
 		 	   env.put(EngineConstants.ENV_EVENT_SERVICE_PROXY, getEventServiceProxy() );
 		 	   env.put(EngineConstants.ENV_LOCALE, getLocale()); 
+		 	   env.put(EngineConstants.ENV_EXECUTION_ROLE, getUserExecutionRole());
 	       }
 	 		
 	 	   return env;

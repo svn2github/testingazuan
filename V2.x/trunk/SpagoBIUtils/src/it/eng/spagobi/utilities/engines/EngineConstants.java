@@ -57,4 +57,6 @@ public class EngineConstants {
 	public static final String ENV_LOCALE = "LOCALE";
 	public static final String ENV_EVENT_SERVICE_PROXY = "EVENT_SERVICE_PROXY";
 	public static final String ENV_USER_PROFILE = "ENV_USER_PROFILE";	
+	public static final String ENV_EXECUTION_ROLE = "ENV_EXECUTION_ROLE";	
+	
 }

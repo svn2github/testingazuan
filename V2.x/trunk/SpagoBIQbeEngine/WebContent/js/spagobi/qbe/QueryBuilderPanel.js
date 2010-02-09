@@ -104,6 +104,20 @@ Sbi.qbe.QueryBuilderPanel = function(config) {
 		
 	c = Ext.apply(c, {
       	layout: 'border',      	
+		/*
+		 * work-around: when executing the following operations:
+		 * 1. executing a QBE document inside SpagoBI server
+		 * 2. building the query with query builder panel
+		 * 3. executing the query
+		 * 4. expanding SpagoBI parameters panel
+		 * 5. returning to query builder panel
+		 * then:
+		 * - using IE: the west region and the east region dimensions were recalculated and new width was too narrow;
+		 * - using FF: the where clause and having close panels' dimensions were recalculated and new height was too little.
+		 * Using 'offsets' hideMode, the panel's dimensions are not re-calculated.
+		 * TODO: try to remove it when upgrading Ext library
+		 */
+        hideMode: 'offsets', //!Ext.isIE ? 'display' : 'offsets',
       	items: [this.westRegionPanel, this.centerRegionPanel, this.eastRegionPanel]
 	});
 

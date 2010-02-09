@@ -81,6 +81,22 @@
 				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/tools/distributionlist/distributionlist16.png" />
 	</ITEM>
 
+	<ITEM	code="profiling" 
+			title="#menu.ProfileMenu">
+		<ITEM	title="#menu.Attributes"
+				functionality="ProfileManagement"
+				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?ACTION_NAME=MANAGE_ATTRIBUTES_ACTION"
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/rolesynch16.png" />
+		<ITEM	title="#menu.Roles"
+				functionality="ProfileManagement"
+				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?ACTION_NAME=MANAGE_ROLES_ACTION"
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/rolesynch16.png" />
+		<ITEM	title="#menu.Users"
+				functionality="ProfileManagement"
+				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?ACTION_NAME=MANAGE_USER_ACTION"
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/rolesynch16.png" />
+	</ITEM>
+
 	<!--
 	<ITEM	code="mapCatalogue" 
 			title="#menu.MapCatalogueMenu">

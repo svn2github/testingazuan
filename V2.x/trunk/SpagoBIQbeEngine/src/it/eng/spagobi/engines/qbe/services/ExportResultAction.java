@@ -27,6 +27,7 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
@@ -222,8 +223,9 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 					connection = session.connection();
 					
 					runner = new ReportRunner( );
+					Locale locale = this.getLocale();
 					try {
-						runner.run( templateContent, reportFile, mimeType, connection);
+						runner.run( templateContent, reportFile, mimeType, connection, locale);
 					}  catch (Exception e) {
 						throw new SpagoBIEngineException("Impossible compile or to export the report", e);
 					}

@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.util.HashMap;
+import java.util.Locale;
 
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -72,13 +73,20 @@ public class ReportRunner {
 	 * 
 	 * @throws Exception the exception
 	 */
-	public void run(String templateContent, File reportFile, String outputType, Connection conn) throws Exception {
+	public void run(String templateContent, File reportFile, String outputType, Connection conn, Locale locale) throws Exception {
 		
 		InputStream is = new ByteArrayInputStream( templateContent.getBytes("ISO-8859-1") );
 		
 		JasperReport report  = JasperCompileManager.compileReport(is);
-		
+
 		HashMap params = new HashMap();
+		if (locale == null) {
+			logger.warn("Input locale is null!!!");
+		} else {
+			logger.debug("Using locale: " + locale);
+			params.put("REPORT_LOCALE", locale);
+		}
+		
 		
 		// virtualization block
 		String tmpDirectory = System.getProperty("java.io.tmpdir");

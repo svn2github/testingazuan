@@ -141,7 +141,7 @@ Sbi.qbe.commons.Format = function(){
         
         , numberRenderer : function(format){
             return function(v){
-                return Sbi.qbe.commons.Format.number(v, format);
+                return '<div style=\'text-align: right;\'>' + Sbi.qbe.commons.Format.number(v, format) + '</div>';
             };
         }
         

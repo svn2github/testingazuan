@@ -77,11 +77,7 @@ public class ExecuteDataSetAction extends AbstractConsoleEngineAction {
 		
 		try {
 			consoleEngineInstance = getConsoleEngineInstance();
-			consoleEngineInstance.getDataSetServiceProxy();
-			
-			user = getAttributeAsString( USER_ID );
-			logger.debug("Parameter [" + USER_ID + "] is equals to [" + user + "]");			
-			Assert.assertTrue(!StringUtilities.isEmpty( user ), "Parameter [" + USER_ID + "] cannot be null or empty");
+		//	consoleEngineInstance.getDataSetServiceProxy();
 			
 			dataSetLabel = getAttributeAsString( DATASET_LABEL );
 			logger.debug("Parameter [" + DATASET_LABEL + "] is equals to [" + dataSetLabel + "]");			
@@ -92,7 +88,7 @@ public class ExecuteDataSetAction extends AbstractConsoleEngineAction {
 			
 			dataSetConfig = null;
 			try {
-				dataSet = getDataSet(user, dataSetLabel);
+				dataSet = getDataSet(dataSetLabel);
 			} catch(Throwable t) {
 				throw new SpagoBIServiceException("Impossible to find a dataset whose label is [" + dataSetLabel + "]", t);
 			}
@@ -124,7 +120,7 @@ public class ExecuteDataSetAction extends AbstractConsoleEngineAction {
 		}
 	}
 	
-	private IDataSet getDataSet(String user, String label) {
+	private IDataSet getDataSet(String label) {
 		IDataSet dataSet;
 		DataSetServiceProxy datasetProxy;
 		

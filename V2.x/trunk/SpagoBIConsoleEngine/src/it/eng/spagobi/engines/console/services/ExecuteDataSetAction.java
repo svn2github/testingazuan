@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.console.services;
 
+import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engines.console.ConsoleEngineInstance;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
@@ -37,9 +38,6 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
-
-import com.sun.org.apache.xml.internal.serializer.SerializerFactory;
-//import com.sun.xml.internal.ws.encoding.soap.SerializationException;
 
 
 
@@ -61,7 +59,7 @@ public class ExecuteDataSetAction extends AbstractConsoleEngineAction {
 	
 	ConsoleEngineInstance consoleEngineInstance;
 	
-	public void doService() {
+	public void service(SourceBean request, SourceBean response) {
 		
 		String dataSetLabel;
 		String user;
@@ -76,6 +74,7 @@ public class ExecuteDataSetAction extends AbstractConsoleEngineAction {
 		logger.debug("IN");
 		
 		try {
+			super.service(request,response);
 			consoleEngineInstance = getConsoleEngineInstance();
 		//	consoleEngineInstance.getDataSetServiceProxy();
 			

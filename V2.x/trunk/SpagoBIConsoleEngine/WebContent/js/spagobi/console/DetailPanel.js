@@ -91,8 +91,8 @@ Sbi.console.DetailPanel = function(config) {
 
 Ext.extend(Sbi.console.DetailPanel, Ext.Panel, {
     
-    services: null
-    , pages: null
+    //services: null
+    pages: null
     
    
     //  -- public methods ---------------------------------------------------------

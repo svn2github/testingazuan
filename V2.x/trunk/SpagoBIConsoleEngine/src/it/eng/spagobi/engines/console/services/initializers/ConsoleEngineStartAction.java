@@ -20,16 +20,16 @@
  **/
 package it.eng.spagobi.engines.console.services.initializers;
 
-import java.util.Locale;
-
-import org.apache.log4j.Logger;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.console.ConsoleEngine;
 import it.eng.spagobi.engines.console.ConsoleEngineInstance;
+import it.eng.spagobi.services.proxy.DataSetServiceProxy;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException;
+
+import java.util.Locale;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -42,6 +42,7 @@ public class ConsoleEngineStartAction extends AbstractEngineStartAction {
 	// OUTPUT PARAMETERS
 	public static final String LANGUAGE = "LANGUAGE";
 	public static final String COUNTRY = "COUNTRY";
+	public static final String PROXY_DATASET = "PROXY_DATASET";
 	
 	// SESSION PARAMETRES	
 	public static final String ENGINE_INSTANCE = EngineConstants.ENGINE_INSTANCE;
@@ -56,6 +57,7 @@ public class ConsoleEngineStartAction extends AbstractEngineStartAction {
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse)  {
 		logger.debug("IN");		
 		Locale locale;
+		DataSetServiceProxy proxyDS = null;
 		ConsoleEngineInstance consoleEngineInstance = null;
 		
 		try {
@@ -101,6 +103,7 @@ public class ConsoleEngineStartAction extends AbstractEngineStartAction {
 			
 			setAttribute(LANGUAGE, locale.getLanguage());
 			setAttribute(COUNTRY, locale.getCountry());
+
 			
 		} catch (Exception e) {
 			SpagoBIEngineStartupException serviceException = null;
@@ -124,5 +127,4 @@ public class ConsoleEngineStartAction extends AbstractEngineStartAction {
 			logger.debug("OUT");
 		}
 	}
-	
 }

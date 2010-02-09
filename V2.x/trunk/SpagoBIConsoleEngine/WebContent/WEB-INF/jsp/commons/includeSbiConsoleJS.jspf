@@ -3,7 +3,7 @@ IMPORTANT: every time this file get modified (i.e. a new js file is added to the
 create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must be updated properly
  -->
 
-<!-- Include XXX stylesheets -->
+<!-- Include Console stylesheets -->
 <link rel="styleSheet" href ="../css/console.css" type="text/css" />
 
 <!-- Include localized labels  -->

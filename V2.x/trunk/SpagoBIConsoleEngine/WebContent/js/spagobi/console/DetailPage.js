@@ -51,7 +51,7 @@ Ext.ns("Sbi.console");
 Sbi.console.DetailPage = function(config) {
 	
 		var defaultSettings = {
-			title: 'DeatilPage'
+			title: 'DetailPage'
 		};
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.detailPage) {
@@ -62,18 +62,16 @@ Sbi.console.DetailPage = function(config) {
 		
 		Ext.apply(this, c);
 		
-		/*
-		this.services = this.services || new Array();	
-		this.services['doThat'] = this.services['doThat'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'DO_THAT_ACTION'
+		this.services = this.services || new Array();		
+		this.services['getDataset'] = this.services['getDataset'] || Sbi.config.serviceRegistry.getServiceUrl({
+			serviceName: 'TEST_DATASET_ACTION'
 			, baseParams: new Object()
 		});
-		
-		*/
+		this.initDetailPage(c.detailPageConfig || {});
 		
 		c = Ext.apply(c, {  	
-			html: this.msg
-	      	//items: [this.thisPanel, this.thatPanel]
+			//html: this.msg
+	      	items: [this.getDSButton]
 		});
 
 		// constructor
@@ -83,7 +81,7 @@ Sbi.console.DetailPage = function(config) {
 
 Ext.extend(Sbi.console.DetailPage, Ext.Panel, {
     
-    services: null
+    //services: null
     
    
     // public methods
@@ -92,7 +90,36 @@ Ext.extend(Sbi.console.DetailPage, Ext.Panel, {
     
     
     // private methods
-    
+     initDetailPage: function(conf) {
+		this.getDSButton = new Ext.Button({
+			  text: 'Get Dataset'
+			, handler: function() { 
+
+				
+				Ext.Ajax.request({
+			        url: this.services['getDataset'],
+			        params: {ds_label: 'testmeter'},
+			        callback : function(options , success, response) {
+			  	  		if (success) {
+				      		if(response !== undefined && response.responseText !== undefined) {
+				      			var content = Ext.util.JSON.decode( response.responseText );
+				      			if (content !== undefined) {				      			  
+				      				alert(content);
+				      			}				      		
+				      		} else {
+				      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+				      		}
+			  	  		} else { 
+			  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot load dataset', 'Service Error');
+			  	  		}
+			        },
+			        scope: this,
+					failure: Sbi.exception.ExceptionHandler.handleFailure      
+				});
+			},
+			scope: this
+		});
+	}
     
     
     

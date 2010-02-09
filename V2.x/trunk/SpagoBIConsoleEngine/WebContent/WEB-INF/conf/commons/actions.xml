@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!-- ================================================================================= -->
-<!-- XXX BASE ACTIONS 																   -->
+<!-- CONSOLE BASE ACTIONS 																   -->
 <!-- ================================================================================= -->
 
 <ACTIONS>
+
+	<ACTION name="TEST_DATASET_ACTION" 
+			class="it.eng.spagobi.engines.console.services.ExecuteDataSetAction"
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
 
 	<!-- ================================================================================= -->
 	<!-- TRAPS																			   -->
 	<!-- ================================================================================= -->
 	
 	<ACTION name="ENGINE_STARTUP_EXCEPTION_TRAP_ACTION" 
-			class="it.eng.spagobi.utilities.engines.EngineStartupExceptionTrapAction" 
+			class="it.eng.spagobi.utilities.engines.EngineStartupExceptionTrapAction"  
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>

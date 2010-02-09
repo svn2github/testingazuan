@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.console;
 
+import it.eng.spagobi.services.proxy.DataSetServiceProxy;
 import java.util.Locale;
 import java.util.Map;
 
@@ -89,6 +90,10 @@ public class ConsoleEngineInstance extends AbstractEngineInstance {
 	
 	public EventServiceProxy getEventServiceProxy() {
 		return (EventServiceProxy)this.getEnv().get(EngineConstants.ENV_EVENT_SERVICE_PROXY);
+	}
+
+	public DataSetServiceProxy getDataSetServiceProxy() {
+		return (DataSetServiceProxy)this.getEnv().get(EngineConstants.ENV_DATASET_PROXY);
 	}
 
 	

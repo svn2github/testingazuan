@@ -20,11 +20,6 @@
 	<!-- QBE-SQL-RESULT-LIMIT value="none" isBlocking="false"/ -->
 	<!-- QBE-SQL-RESULT-LIMIT value="10000" isBlocking="true"/ -->
 	<QBE-SQL-RESULT-LIMIT value="10000" isBlocking="false"/>
-	
-	<QBE-EXCEL-EXPORT-DEFAULT numberFormat="0,00" />
-	<QBE-EXCEL-EXPORT-IT_IT numberFormat="#.##0" />
-	<QBE-EXCEL-EXPORT-EN_US numberFormat="#.##0,00" />
-	<QBE-EXCEL-EXPORT-FR_FR numberFormat="#.###,00" />   
 		
 	<TEMPLATE-BUILDER>
 		

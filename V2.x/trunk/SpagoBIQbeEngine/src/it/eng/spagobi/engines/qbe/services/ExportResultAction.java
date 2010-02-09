@@ -159,10 +159,6 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			templateContent = templateBuilder.buildTemplate();
 			if( !"text/jrxml".equalsIgnoreCase( mimeType ) ) {
 				if( "application/vnd.ms-excel".equalsIgnoreCase( mimeType ) ) {
-					RequestContainer requestContainer = RequestContainer.getRequestContainer();
-					SessionContainer permSess = requestContainer.getSessionContainer();
-					String language=(String)permSess.getAttribute("AF_LANGUAGE");
-					String country=(String)permSess.getAttribute("AF_COUNTRY");
 					//START PART from EXECUTEQUERYACTION
 					UserProfile userProfile = (UserProfile)getEnv().get(EngineConstants.ENV_USER_PROFILE);
 					QbeDataSet dataSet = null;
@@ -191,7 +187,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 					//END PART from EXECUTEQUERYACTION
 					
 					Exporter exp = new Exporter(dataStore);
-					Workbook wb = exp.exportInExcel(language,country);
+					Workbook wb = exp.exportInExcel();
 					
 					File file = new File("workbook.xls");
 					FileOutputStream stream = new FileOutputStream(file);

@@ -288,6 +288,8 @@
 	
 	<!-- internal profiling -->
 	<CONFIGURATOR path="/WEB-INF/conf/profiling/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/profiling/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/profiling/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/profiling/business_map.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/profiling/validation.xml" />
     

@@ -387,6 +387,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        layout:'fit',
 	        collapsible: true,
 	        collapseFirst: false,
+	        split: true,
 	        
 	        tools:[{	// todo: marge pin and unpin button in one single toggle-button
 	          id:'pin',
@@ -557,6 +558,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        //collapseMode: 'mini',
 	        collapseFirst: false,
 	        collapsed: false,
+	        split: true,
 	        tools:[
 		        {
 		          id:'delete',

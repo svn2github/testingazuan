@@ -20,8 +20,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base311.jsp"%>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/service/ServiceRegistry.js")%>'></script>
+<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-3.1.1/ux/grid/Ext.ux.grid.RowEditor.js")%>"></script> 
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/profiling/ManageAttributes.js")%>'></script>
-<div>ciao!!!</div>
+<link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/execution/main.css",currTheme)%>'/>
 
 <script type="text/javascript">
 	var config = {};
@@ -42,8 +43,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	baseUrl: url
         , baseParams: params
     });
-
-Ext.onReady(function(){
+   Ext.onReady(function(){
 	Ext.QuickTips.init();
 	var manageAttribute = new Sbi.profiling.ManageAttributes(config);
 	var viewport = new Ext.Viewport({
@@ -51,16 +51,14 @@ Ext.onReady(function(){
 		, items: [
 		    {
 		       region: 'center',
-		       layout: 'fit',
+		      // layout: 'fit',
 		       items: [manageAttribute]
 		    }
 		]
 
 	});
-	//manageAttribute.execute();
    	
 	});
-
 
 </script>
 

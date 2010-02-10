@@ -18,6 +18,10 @@
 	background-image: url('../../../img/attach.png') !important;
 }
 
+.icon-add {
+    background-image:url('../../../img/commons/add.gif') !important;
+}
+
 .icon-remove {
 	background-image: url('../../../img/erase.png') !important;
 }

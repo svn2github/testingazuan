@@ -226,9 +226,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 					}
 					
 					Exporter exp = new Exporter(dataStore);
-					if (isFormEngineInstance) {
-						exp.setExtractedFields(extractedFields);
-					}
+					exp.setExtractedFields(extractedFields);
 					
 					Workbook wb = exp.exportInExcel();
 					

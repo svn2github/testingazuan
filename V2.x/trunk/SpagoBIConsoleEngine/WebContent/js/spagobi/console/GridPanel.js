@@ -47,19 +47,20 @@
 
 Ext.ns("Sbi.console");
 
-Sbi.console.NavigationToolbar = function(config) {
+Sbi.console.GridPanel = function(config) {
 	
 		var defaultSettings = {
 			//title: LN('sbi.qbe.queryeditor.title')
 		};
 		
-		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.navigationToolbar) {
-			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.navigationToolbar);
+		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.gridPanel) {
+			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.gridPanel);
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
 		
 		Ext.apply(this, c);
+		
 		
 		/*
 		this.services = this.services || new Array();	
@@ -67,64 +68,54 @@ Sbi.console.NavigationToolbar = function(config) {
 			serviceName: 'DO_THAT_ACTION'
 			, baseParams: new Object()
 		});
-		
-		this.addEvents('customEvents');
 		*/
 		
-		this.initToolbarButtons(c.documents || {});
-	
-		c = Ext.apply(c, {  	
-	      	items: this.toolbarButtons
+		
+		this.initFilterBar(c.FilterBarConf || {});
+		
+		c = Ext.apply(c, {layout: 'fit'
+		                  , region: 'center'
+		                  , bodyStyle: 'padding: 8px'
+		                  , tbar: this.filterBar
+    			            , html: 'Io sono il grid panel !!!!!!!!!'
 		});
 
 		// constructor
-		Sbi.console.NavigationToolbar.superclass.constructor.call(this, c);
+		Sbi.console.GridPanel.superclass.constructor.call(this, c);
     
-	//	this.addEvents();
+		//this.addEvents();
 };
 
-Ext.extend(Sbi.console.NavigationToolbar, Ext.Toolbar, {
+Ext.extend(Sbi.console.GridPanel, Ext.Panel, {
     
     services: null
-    , toolbarButtons: null
+   , filterBar: null
     
    
-    // public methods
-    
-   
+    //  -- public methods ---------------------------------------------------------
     
     
-    // private methods
-    ,initToolbarButtons: function(documents) {
-		
-		this.toolbarButtons = [];
-		for(var i=0; i < documents.length; i++){
-			this.toolbarButtons.push({
-				 text: documents[i].text
-				,tooltip: documents[i].tooltip
-				,documentConf: documents[i] 
-				,handler: function execCrossNavigation (b){
-					var msg = {
-						label: b.documentConf.label
-						,windowName: this.name										
-					};
-					if(b.documentConf.staticParams) {
-						msg.parameters = '';
-						var separator = '';
-						for(p in b.documentConf.staticParams) {
-							msg.parameters += separator + p + '=' + b.documentConf.staticParams[p];
-							separator = '&';
-						}
-						alert("msg.parameters: " + msg.parameters.toSource());
-					}
-					
-					sendMessage(msg, 'crossnavigation');
-				}
-				,scope: this
-			});
-		}
-	}
     
+    //  -- private methods ---------------------------------------------------------
+    
+   , initFilterBar: function(filterBar) {
+      var tmpFiltersConf = null;
+      var tmpFilterBar = null;
+      
+      tmpFilterBar = [{name: 'REFRESH'
+                    , hidden: false}
+                    , {name: 'ERRORS'
+                    , hidden: false}
+                    , {name: 'WARNINGS'
+                    , hidden: false}
+                    , {name: 'VIEWS'
+                    , hidden: false}];
+                    
+      tmpFiltersConf = {actions: tmpFilterBar};
+      
+      //  this.filterBar = new Sbi.console.FilteringToolbar(filterBar);	
+        this.filterBar = new Sbi.console.FilteringToolbar(tmpFiltersConf);
+     }
     
     
 });

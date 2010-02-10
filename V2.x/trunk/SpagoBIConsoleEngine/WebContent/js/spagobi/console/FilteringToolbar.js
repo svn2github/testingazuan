@@ -47,14 +47,14 @@
 
 Ext.ns("Sbi.console");
 
-Sbi.console.NavigationToolbar = function(config) {
+Sbi.console.FilteringToolbar = function(config) {
 	
 		var defaultSettings = {
 			//title: LN('sbi.qbe.queryeditor.title')
 		};
 		
-		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.navigationToolbar) {
-			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.navigationToolbar);
+		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.filteringToolbar) {
+			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.filteringToolbar);
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
@@ -70,61 +70,50 @@ Sbi.console.NavigationToolbar = function(config) {
 		
 		this.addEvents('customEvents');
 		*/
-		
-		this.initToolbarButtons(c.documents || {});
+		this.toolbarElements = [];
+		this.initToolbarFilters(c.filters || {});
+		this.initToolbarActions(c.actions || {});
 	
 		c = Ext.apply(c, {  	
-	      	items: this.toolbarButtons
+	      	items:  this.toolbarElements
 		});
 
 		// constructor
-		Sbi.console.NavigationToolbar.superclass.constructor.call(this, c);
+		Sbi.console.FilteringToolbar.superclass.constructor.call(this, c);
     
 	//	this.addEvents();
 };
 
-Ext.extend(Sbi.console.NavigationToolbar, Ext.Toolbar, {
+Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
     
     services: null
-    , toolbarButtons: null
+    , toolbarElements:null
     
-   
+    
+
     // public methods
     
    
     
     
     // private methods
-    ,initToolbarButtons: function(documents) {
-		
-		this.toolbarButtons = [];
-		for(var i=0; i < documents.length; i++){
-			this.toolbarButtons.push({
-				 text: documents[i].text
-				,tooltip: documents[i].tooltip
-				,documentConf: documents[i] 
-				,handler: function execCrossNavigation (b){
-					var msg = {
-						label: b.documentConf.label
-						,windowName: this.name										
-					};
-					if(b.documentConf.staticParams) {
-						msg.parameters = '';
-						var separator = '';
-						for(p in b.documentConf.staticParams) {
-							msg.parameters += separator + p + '=' + b.documentConf.staticParams[p];
-							separator = '&';
-						}
-						alert("msg.parameters: " + msg.parameters.toSource());
-					}
-					
-					sendMessage(msg, 'crossnavigation');
-				}
+    	
+    ,initToolbarFilters: function(filters) {
+    	
+		  this.toolbarElements.push({
+				 text: 'Filtro 1'//documents[i].text
+				,tooltip: 'Tooltip Filtro 1' //documents[i].tooltip
 				,scope: this
 			});
-		}
-	}
+	  }
+	  
+	  ,initToolbarActions: function(actions) {
+
+  		for(var i=0; i < actions.length; i++){
+  		//  alert("actions[i]: " + actions[i].name.toSource());
+  			this.toolbarElements.push(new Sbi.console.ActionButton(actions[i]));
+  	  }
     
-    
+    }
     
 });

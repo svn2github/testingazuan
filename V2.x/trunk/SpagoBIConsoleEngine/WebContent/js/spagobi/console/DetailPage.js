@@ -62,18 +62,21 @@ Sbi.console.DetailPage = function(config) {
 		
 		Ext.apply(this, c);
 		
+		/*
 		this.services = this.services || new Array();		
 		this.services['getDataset'] = this.services['getDataset'] || Sbi.config.serviceRegistry.getServiceUrl({
 			serviceName: 'TEST_DATASET_ACTION'
 			, baseParams: {}
 		});
-		this.initTestButton(c.detailPageConfig || {});
+		*/
+		//this.initTestButton(c.detailPageConfig || {});
 		this.initNavigationToolbar(c.navigationBar || {});
+		this.initGridPanel(c.gridPanel || {});
 		
 		c = Ext.apply(c, {  	
 			//html: this.msg
 			tbar: this.navigationToolbar
-	      	, items: [this.getDSButton]	      	
+	      	, items: [this.gridPanel]	      	
 		});
 
 		// constructor
@@ -85,6 +88,7 @@ Ext.extend(Sbi.console.DetailPage, Ext.Panel, {
     
     services: null
     , navigationToolbar: null
+    , gridPanel: null
    
     // public methods
     
@@ -92,6 +96,7 @@ Ext.extend(Sbi.console.DetailPage, Ext.Panel, {
     
     
     // private methods
+    /*
      ,initTestButton: function(conf) {
 	
 		this.getDSButton = new Ext.Button({
@@ -123,8 +128,13 @@ Ext.extend(Sbi.console.DetailPage, Ext.Panel, {
 			scope: this
 		});
 	}
+*/
     ,initNavigationToolbar: function(navigationBarConf) {
     	this.navigationToolbar = new Sbi.console.NavigationToolbar(navigationBarConf);
+    }
+    
+    ,initGridPanel: function(conf){
+      this.gridPanel = new Sbi.console.GridPanel(conf);
     }
     
     

@@ -130,7 +130,8 @@ Ext.extend(Sbi.formviewer.ResultsPage, Ext.Panel, {
 		//}
     	
     	var baseParams = {groupFields: Ext.util.JSON.encode(values), formstate: Ext.util.JSON.encode(this.formState)}
-		this.masterResultsPanel.execQuery(baseParams);		
+		this.masterResultsPanel.execQuery(baseParams);
+    	this.detailResultsPanel.store.removeAll();
 	}
     
     // -- private methods -----------------------------------------------------------------------

@@ -231,7 +231,7 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 	// Sbi.user.functionalities is a javascript array containing all user functionalities' names
 	Sbi.user.functionalities = <%= buffer.toString() %>;
 </script>
- 
+<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/lib/ext-2.0.1/ux/grid/Ext.grid.ButtonColumn.js")%>'></script> 
 <%-- <SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>--%>
 
 <!-- import css  --> 
@@ -285,6 +285,8 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 <LINK rel='StyleSheet'
       href='<%=urlBuilder.getResourceLink(request, "js/lib/ext-3.1.1/resources/css/"+extTheme)%>'
       type='text/css' />
+      
+<link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/execution/main.css",currTheme)%>'/>      
       	  
  <!--   for web menu
 <LINK rel='StyleSheet' 

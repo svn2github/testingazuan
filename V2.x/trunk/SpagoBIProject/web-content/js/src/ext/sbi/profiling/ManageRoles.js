@@ -46,6 +46,8 @@ Ext.ns("Sbi.profiling");
 Sbi.profiling.ManageRoles = function(config) { 
 	var paramsList = {MESSAGE_DET: "ROLES_LIST"};
 	var paramsSave = {MESSAGE_DET: "ROLE_INSERT"};
+	var paramsDel = {MESSAGE_DET: "ROLE_DELETE"};
+	
 	this.services = new Array();
 	this.services['manageRolesList'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'MANAGE_ROLES_ACTION'
@@ -54,6 +56,11 @@ Sbi.profiling.ManageRoles = function(config) {
 	this.services['saveRoleService'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'MANAGE_ROLES_ACTION'
 		, baseParams: paramsSave
+	});
+	
+	this.services['deleteRoleService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'MANAGE_ROLES_ACTION'
+		, baseParams: paramsDel
 	});
 	
 	this.rolesStore = new Ext.data.JsonStore({
@@ -102,10 +109,29 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	
 	,initManageRoles: function(){
 
+
+       this.deleteColumn = new Ext.grid.ButtonColumn({
+	       header:  'DELETE',
+	       dataIndex: 'id',
+	       iconCls: 'icon-remove',
+	       clickHandler: function(e, t) {
+	          var index = this.grid.getView().findRowIndex(t);
+	          var selectedRecord = this.grid.rolesStore.getAt(index);
+	          var roleId = selectedRecord.get('id');
+	          this.grid.fireEvent('deleteRoleService', roleId);
+	       }
+	       ,width: 25
+	       ,renderer : function(v, p, record){
+	           return '<center><img class="x-mybutton-'+this.id+' grid-button ' +this.iconCls+'" width="16px" height="16px" src="'+Ext.BLANK_IMAGE_URL+'"/></center>';
+	       }
+       });
        this.colModel = new Ext.grid.ColumnModel([
-          {id:'name',header: "name", width: 50, sortable: true, locked:false, dataIndex: 'name'},
-          {header: "description", width: 150, sortable: true, dataIndex: 'description'}
-       ]);
+         {id:'name',header: "name", width: 50, sortable: true, locked:false, dataIndex: 'name'},
+         {header: "description", width: 150, sortable: true, dataIndex: 'description'},
+         this.deleteColumn
+      ]);
+   	   //this.colModel.push(this.deleteColumn);
+
    	   this.typeData =[
    	                   ['22', 'USER']
    		               ,['23', 'ADMIN']
@@ -250,7 +276,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		        , itemId: 'checks'
 		    }]
 		});
- 	   
+
    	   /*
    	   *    Here is where we create the Form
    	   */
@@ -264,17 +290,16 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	          width: 750,
    	          layout: 'column',
    	          items: [{
-   	        	 //scope:this,
    	              columnWidth: 0.90,
    	              layout: 'fit',
    	              items: {
    	                  xtype: 'grid',
-   	                  //scope:this,
-   	                  ds: this.rolesStore,
+   	                  ds: this.rolesStore,   	                  
    	                  cm: this.colModel,
    	                  sm: new Ext.grid.RowSelectionModel({
    	                      singleSelect: true,
    	                      scope:this,
+   	                   
 	   	                  fillChecks : function(row, rec) {	  
 	   	                   	  Ext.getCmp("checks-form").items.each(function(item){	   	                   		  
 	   	                   		  if(item.getItemId() == 'isAbleToSave'){
@@ -306,7 +331,8 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	                      listeners: {
    	                          rowselect: function(sm, row, rec) {   	  
    	                	  		  this.fillChecks(row, rec);
-   	                              Ext.getCmp("role-form").getForm().loadRecord(rec);   	  
+   	                              Ext.getCmp("role-form").getForm().loadRecord(rec);   
+   	                              //Ext.getCmp("role-form").getForm().disable();
    	                              
    	                          }
    	                      }
@@ -319,7 +345,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	  		   	        ,qtip: 'New role'
 	  		   	        ,handler: this.addRole
 	  		   	        ,scope: this
-	   	 	   	      }],
+	   	 	   	      },],
    	                  border: true,
    	                  listeners: {
    	                      viewready: function(g) {
@@ -366,6 +392,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
         });
     }
 	, addRole : function(){
+		//Ext.getCmp("role-form").getForm().enable();
         this.tabs.items.each(function(item)
         {	//cleans every field of both tabs	
         	if(item.getItemId() == 'detail'){
@@ -375,7 +402,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	                var  data={};
 	                itemTab.items.each(function(itemform)
 	                {
-	                	alert(itemform.getItemId());
+	                	//alert(itemform.getItemId());
 	                	itemform.setValue(null);
 	                });
         		});

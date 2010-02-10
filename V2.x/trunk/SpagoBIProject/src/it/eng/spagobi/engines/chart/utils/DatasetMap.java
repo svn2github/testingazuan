@@ -2,6 +2,7 @@ package it.eng.spagobi.engines.chart.utils;
 
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBarGroup;
 import it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts;
@@ -12,6 +13,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.TreeSet;
 import java.util.Vector;
 import java.util.Set;
@@ -27,7 +29,7 @@ public class DatasetMap {
 
 	HashMap datasets;
 
-	Set<String> series;
+	Set<String> series=new TreeSet();
 	Integer seriesNumber;
 	HashMap categories;
 	HashMap subCategories;
@@ -145,7 +147,7 @@ public class DatasetMap {
 			HashMap cats=(HashMap)((BarCharts)sbi).getCategories();
 
 
-			if(categoryCurrent!=0){
+			if(categoryCurrent!=0){   // attention
 				categoryCurrentName=(String)cats.get(new Integer(categoryCurrent));
 				logger.debug("current category "+categoryCurrentName);
 				copyDataset=(DefaultCategoryDataset)sbi.filterDataset(copyDataset,categories,categoryCurrent,numberCatVisualization.intValue());				
@@ -684,6 +686,41 @@ public class DatasetMap {
 
 	public void setDatasets(HashMap datasets) {
 		this.datasets = datasets;
+	}
+	
+	
+	/**
+	 * Called by chart.jsp to build the url for series filter
+	 */
+	
+	public String getSerieUlr(String refreshUrl, Map refreshUrlPars){
+		String toReturn=refreshUrl;
+		refreshUrl+="&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=true";
+		if(!refreshUrlPars.containsKey("category")){
+			refreshUrl+="&category="+getCategoryCurrent();
+		}
+		//if(isDynamicNVisualization()==true){
+		//}
+		// checked all cats
+		if(getCategoryCurrent()==0 && !refreshUrlPars.containsKey("cat_group")){
+			//refreshUrl+="&categoryAll=0";			
+		}
+		return refreshUrl;
+	}
+	
+	
+	
+	public String getCategoriesGroupUrl(String refreshUrl, Map refreshUrlPars){
+		String toReturn=refreshUrl;
+		refreshUrl+="&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=true";
+		
+		for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
+		{
+			String name = (String) iterator.next();
+			String value=(refreshUrlPars.get(name)).toString();
+			refreshUrl="&"+name+"="+value;
+		}
+		return refreshUrl;
 	}
 
 

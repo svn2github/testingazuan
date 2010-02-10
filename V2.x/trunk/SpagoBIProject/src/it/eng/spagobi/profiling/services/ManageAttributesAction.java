@@ -23,18 +23,21 @@ package it.eng.spagobi.profiling.services;
 
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.x.AbstractSpagoBIAction;
+import it.eng.spagobi.chiron.serializer.SerializationException;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.dao.ISbiAttributeDAO;
+import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -50,9 +53,10 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 	private final String ATTR_INSERT = "ATTR_INSERT";
 	private final String ATTR_DELETE = "ATTR_DELETE";
 	
-	private final String ID = "ID";
-	private final String NAME = "NAME";
-	private final String DESCRIPTION = "DESCRIPTION";
+	private final String SAMPLES = "samples";
+	private final String ID = "id";
+	private final String NAME = "name";
+	private final String DESCRIPTION = "description";
 	/**
 	 * 
 	 */
@@ -71,6 +75,7 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 			throw new SpagoBIServiceException(SERVICE_NAME,	"Error occurred");
 		}
 		HttpServletRequest httpRequest = getHttpRequest();
+		
 		MessageBuilder m = new MessageBuilder();
 		Locale locale = m.getLocale(httpRequest);
 
@@ -91,8 +96,27 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 						"Exception occurred while retrieving attributes", e);
 			}
 		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(ATTR_INSERT)) {
-			String name = getAttributeAsString(NAME);
-			String description = getAttributeAsString(DESCRIPTION);
+
+			String name = null;
+			String description =null;
+			try {
+				BufferedReader b =httpRequest.getReader();
+				String respJsonObject = b.readLine();
+				JSONObject responseJSON = deserialize(respJsonObject);
+				JSONObject samples = responseJSON.getJSONObject(SAMPLES);
+				name = samples.getString(NAME);
+				description = samples.getString(DESCRIPTION);
+				
+			} catch (IOException e1) {
+				logger.error("IO Exception",e1);
+				e1.printStackTrace();
+			} catch (SerializationException e) {
+				logger.error("Deserialization Exception",e);
+				e.printStackTrace();
+			} catch (JSONException e) {
+				logger.error("JSONException",e);
+				e.printStackTrace();
+			}
 
 			if (name != null) {
 				SbiAttribute attribute = new SbiAttribute();
@@ -115,17 +139,37 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 				throw new SpagoBIServiceException(SERVICE_NAME,	"Please enter attribute name");
 			}
 		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(ATTR_DELETE)) {
-			Integer id = getAttributeAsInteger(ID);
+			
+			String idStr = null;
 			try {
-				attrDao.deleteSbiAttributeById(id);
-				logger.debug("Attribute deleted");
-				writeBackToClient( new JSONAcknowledge("Operazion succeded") );
-
-			} catch (Throwable e) {
-				logger.error("Exception occurred while deleting attribute", e);
-				throw new SpagoBIServiceException(SERVICE_NAME,
-						"Exception occurred while deleting attribute",
-						e);
+				BufferedReader b =httpRequest.getReader();
+				String respJsonObject = b.readLine();
+				JSONObject responseJSON = deserialize(respJsonObject);
+				idStr = responseJSON.getString(SAMPLES);
+				
+			} catch (IOException e1) {
+				logger.error("IO Exception",e1);
+				e1.printStackTrace();
+			} catch (SerializationException e) {
+				logger.error("Deserialization Exception",e);
+				e.printStackTrace();
+			} catch (JSONException e) {
+				logger.error("JSONException",e);
+				e.printStackTrace();
+			}
+			if(idStr!=null && !idStr.equals("")){
+				Integer id = new Integer(idStr);
+				try {
+					attrDao.deleteSbiAttributeById(id);
+					logger.debug("Attribute deleted");
+					writeBackToClient( new JSONAcknowledge("Operazion succeded") );
+	
+				} catch (Throwable e) {
+					logger.error("Exception occurred while deleting attribute", e);
+					throw new SpagoBIServiceException(SERVICE_NAME,
+							"Exception occurred while deleting attribute",
+							e);
+				}
 			}
 		}
 		logger.debug("OUT");
@@ -144,7 +188,33 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 
 		results = new JSONObject();
 		results.put("title", "Attributes");
-		results.put("samples", rows);
+		results.put(SAMPLES, rows);
 		return results;
 	}
+	
+	private JSONObject deserialize(Object o) throws SerializationException {
+		JSONObject responseJSON = null;
+		logger.debug("IN");
+		
+		try {
+			Assert.assertNotNull(o, "Object to be deserialized cannot be null");
+			
+			if(o instanceof String) {
+				logger.debug("Deserializing string [" + (String)o + "]");
+				try {
+					responseJSON = new JSONObject( (String)o );
+				} catch(Throwable t) {
+					logger.error("Object to be deserialized must be string encoding a JSON object",t);
+					throw new SerializationException("An error occurred while deserializing query: " + (String)o, t);
+				}
+			} else {
+				Assert.assertUnreachable("Object to be deserialized must be of type string or of type JSONObject, not of type [" + o.getClass().getName() + "]");
+			}
+		
+		} finally {
+			logger.debug("OUT");
+		}
+		return responseJSON;
+	}
+	
 }

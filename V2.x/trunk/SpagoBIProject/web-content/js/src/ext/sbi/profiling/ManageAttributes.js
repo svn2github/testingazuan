@@ -46,12 +46,30 @@ Ext.ns("Sbi.profiling");
 Sbi.profiling.ManageAttributes = function(config) { 
 
 
-	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: 'ATTR_LIST'};
+	var paramsGetList = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: 'ATTR_LIST'};
 	this.services = new Array();
 	this.services['manageAttributes'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'MANAGE_ATTRIBUTES_ACTION'
-		, baseParams: params
+		, baseParams: paramsGetList
 	});
+	
+	var paramsInsert = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: 'ATTR_INSERT'};
+	this.services['manageAttributesInsert'] = Sbi.config.serviceRegistry.getServiceUrl({
+			serviceName: 'MANAGE_ATTRIBUTES_ACTION'
+			, baseParams: paramsInsert
+		});
+		
+	var paramsUpdate = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: 'ATTR_UPDATE'};
+	this.services['manageAttributesUpdate'] = Sbi.config.serviceRegistry.getServiceUrl({
+			serviceName: 'MANAGE_ATTRIBUTES_ACTION'
+			, baseParams: paramsUpdate
+		});
+		
+	var paramsDelete = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: 'ATTR_DELETE'};
+	this.services['manageAttributesDelete'] = Sbi.config.serviceRegistry.getServiceUrl({
+			serviceName: 'MANAGE_ATTRIBUTES_ACTION'
+			, baseParams: paramsDelete
+		});
 	
 	
 
@@ -78,7 +96,6 @@ Sbi.profiling.ManageAttributes = function(config) {
 	this.store = new Ext.data.Store({
 	    id: 'user',
 	    restful: true,     // <-- This Store is RESTful
-	    //data:[{'id':3,'email':'ciao','first':'cc','last':'dd'}],
 	    proxy: new Ext.data.HttpProxy({
 					url: this.services['manageAttributes']
 			}),
@@ -93,7 +110,6 @@ Sbi.profiling.ManageAttributes = function(config) {
 	
 	// Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
 	this.userColumns =  [
-	    //{header: "ID", width: 40, sortable: true, dataIndex: 'id'},
 	    {header: "Name", width: 100, sortable: true, dataIndex: 'name', editor: new Ext.form.TextField({})},
 	    {header: "Description", width: 100, sortable: true, dataIndex: 'description', editor: new Ext.form.TextField({})},
 	];
@@ -163,11 +179,9 @@ Ext.extend(Sbi.profiling.ManageAttributes, Ext.grid.GridPanel, {
            name: '',
            description : ''
         });
-        var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: 'ATTR_INSERT'};
-		this.services['manageAttributes'] = Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'MANAGE_ATTRIBUTES_ACTION'
-			, baseParams: params
-		});
+        this.store.proxy = new Ext.data.HttpProxy({
+					url: this.services['manageAttributesInsert']
+			});
         this.editor.stopEditing();
         this.store.insert(0, u);
         this.editor.startEditing(0);
@@ -180,6 +194,9 @@ Ext.extend(Sbi.profiling.ManageAttributes, Ext.grid.GridPanel, {
         if (!rec) {
             return false;
         }
+        this.store.proxy = new Ext.data.HttpProxy({
+					url: this.services['manageAttributesDelete']
+			});
         this.store.remove(rec);
     }
 

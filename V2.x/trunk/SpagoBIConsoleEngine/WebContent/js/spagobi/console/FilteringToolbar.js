@@ -110,8 +110,9 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	  ,initToolbarActions: function(actions) {
 
   		for(var i=0; i < actions.length; i++){
-  		//  alert("actions[i]: " + actions[i].name.toSource());
+  		  //alert("actions[i]: " + actions[i].toSource());
   			this.toolbarElements.push(new Sbi.console.ActionButton(actions[i]));
+  			
   	  }
     
     }

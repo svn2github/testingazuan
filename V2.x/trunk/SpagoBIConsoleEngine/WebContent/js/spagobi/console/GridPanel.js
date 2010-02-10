@@ -102,19 +102,23 @@ Ext.extend(Sbi.console.GridPanel, Ext.Panel, {
       var tmpFiltersConf = null;
       var tmpFilterBar = null;
       
-      tmpFilterBar = [{name: 'REFRESH'
+      tmpFilterBar = [{text: 'Refresh'
+                    , name: 'REFRESH'
                     , hidden: false}
-                    , {name: 'ERRORS'
+                    , {text: 'Errors'
+                    , name: 'ERRORS'
                     , hidden: false}
-                    , {name: 'WARNINGS'
+                    , {text: 'Warnings'
+                    , name: 'WARNINGS'
                     , hidden: false}
-                    , {name: 'VIEWS'
+                    , {text: 'Views'
+                    , name: 'VIEWS'
                     , hidden: false}];
                     
       tmpFiltersConf = {actions: tmpFilterBar};
       
       //  this.filterBar = new Sbi.console.FilteringToolbar(filterBar);	
-        this.filterBar = new Sbi.console.FilteringToolbar(tmpFiltersConf);
+        this.filterBar = new Sbi.console.FilteringToolbar({actions: tmpFilterBar});
      }
     
     

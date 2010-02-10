@@ -128,6 +128,9 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 			    , baseParams: params
 			});
 
+			// javascript-side user profile object
+	        Ext.ns("Sbi.user");
+	        Sbi.user.userId = "<%= profile.getUserId() %>";
 
 			Ext.onReady(function() { 
 				Ext.QuickTips.init();

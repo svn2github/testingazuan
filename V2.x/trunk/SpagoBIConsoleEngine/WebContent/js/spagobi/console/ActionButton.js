@@ -47,9 +47,10 @@
 Ext.ns("Sbi.console");
 
 Sbi.console.ActionButton = function(config) {
-	
+	 
 		var defaultSettings = {
-			//title: LN('sbi.qbe.queryeditor.title')
+			//title: LN('sbi.console.title')
+			scope:this
 		};
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.actionButton) {
@@ -63,60 +64,67 @@ Sbi.console.ActionButton = function(config) {
 	
 		this.services = this.services || new Array();	
 		this.services['REFRESH'] = this.services['REFRESH'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'REFRESH'
+			serviceName: 'REFRESH_ACTION'
 			, baseParams: new Object()
 		});
 			this.services['ERRORS'] = this.services['ERRORS'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'ERRORS'
+			serviceName: 'ERRORS_ACTION'
 			, baseParams: new Object()
 		});
 			this.services['WARNINGS'] = this.services['WARNINGS'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'WARNINGS'
+			serviceName: 'WARNINGS_ACTION'
 			, baseParams: new Object()
 		});
 			this.services['VIEWS'] = this.services['VIEWS'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'VIEWS'
+			serviceName: 'VIEWS_ACTION'
 			, baseParams: new Object()
 		});
 		
 		//this.addEvents('customEvents');
 		
+
+	//	this.initButton(c || {});
 		
-		this.initButton(c.actionConfig || {});
-		
-	
-		c = Ext.apply(c, this.actionBtn);
+      c = Ext.apply(c, this);
 
 		// constructor
 		Sbi.console.ActionButton.superclass.constructor.call(this, c);
-    
+		this.on('click', this.execAction, this);
 		//this.addEvents();
 };
 
 Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     
     services: null
-    , actionBtn: null
     
    
     // public methods
-    
+    , execAction: function(){
+      Ext.Ajax.request({
+			        url: this.services[this.name],
+			        params: {'message': this.name, 'userId': Sbi.user.userId},
+			        callback : function(options , success, response) {
+			  	  		if (success) {
+				      		if(response !== undefined && response.responseText !== undefined) {
+				      			var content = Ext.util.JSON.decode( response.responseText );
+				      			if (content !== undefined) {				      			  
+				      				alert(content.toSource());
+				      			}				      		
+				      		} else {
+				      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+				      		}
+			  	  		} else { 
+			  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot exec action: ' + this.name, 'Service Error');
+			  	  		}
+			        },
+			        scope: this,
+					failure: Sbi.exception.ExceptionHandler.handleFailure      
+				});
+			}
    
     
     
     // private methods
-    , initButton: function(actionsConf){
-        
-        //actionsConf={name: 'REFRESH', hidden:false}
-    	  for(p in actionsConf) {
-			     alert(p.toSource() + " - " +  actionsConf[p].toSource() );
-          this.actionBtn = new Ext.Button({text: 'ActionBtn 1'
-                                           ,handler: function(){
-                                                alert('Hai pigiato il primo ActionButton...'+ p.toSource());
-                                              }
-                                           ,scope: this
-                                          });
-        }
-    }
+  
 });
     

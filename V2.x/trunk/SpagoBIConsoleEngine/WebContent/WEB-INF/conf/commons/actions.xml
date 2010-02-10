@@ -11,6 +11,30 @@
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
+	
+	<ACTION name="REFRESH_ACTION" 
+			class="it.eng.spagobi.engines.console.services.ExecuteButtonAction"
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="ERRORS_ACTION" 
+			class="it.eng.spagobi.engines.console.services.ExecuteButtonAction"
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="WARNINGS_ACTION" 
+			class="it.eng.spagobi.engines.console.services.ExecuteButtonAction"
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="VIEWS_ACTION" 
+			class="it.eng.spagobi.engines.console.services.ExecuteButtonAction"
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
 
 	<!-- ================================================================================= -->
 	<!-- TRAPS																			   -->

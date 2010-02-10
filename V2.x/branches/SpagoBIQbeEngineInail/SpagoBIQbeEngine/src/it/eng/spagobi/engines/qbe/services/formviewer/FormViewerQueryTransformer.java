@@ -223,8 +223,7 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 					Iterator it = fields.iterator();
 					while (it.hasNext()) {
 						selectField = (DataMartSelectField) it.next();
-						if (selectField.getFunction() != null && selectField.getFunction() != AggregationFunctions.NONE_FUNCTION) {
-							logger.debug("Selected field " + selectField.getUniqueName() + " has an aggregation function applied");
+						if (selectField.getUniqueName().equals(field)) {
 							break;
 						}
 					}

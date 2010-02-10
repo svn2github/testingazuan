@@ -708,29 +708,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							i=0;
 							var se;
 				
-				// function called by button for filtering serie
-							function callSeriesUrlJS(){
-							seriesURLToCallJS='<%=urlForSeriesJS%>';
-							// add each serie
-							for(j=0;j<arraySeries.length;j++){			
-								elementCheckSer=document.getElementById(arraySeries[j]);
-								valSer=elementCheckSer.value;
-								//alert(valSer);
-								valChecked=elementCheckSer.checked;
-								//alert(valChecked);
-								if(valChecked==true){
-									seriesURLToCallJS+='&serie='+valSer;
-								}
-									
-								}
-								elementAll=document.getElementById('categoryAll');
-							elementAllChecked=elementAll.checked;
-							if(elementAllChecked==true){
-								seriesURLToCallJS+='&categoryAll=0';
-							}
-							//alert(seriesURLToCallJS);	
-							window.location.href=seriesURLToCallJS;
-							}
 				</script>
 <%	                if(filterSeries==true){ 
 						 if(datasetMap.getSeries()!=null){	
@@ -742,12 +719,90 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		 									arraySeries[i]=se;
 		 									i++;
 		 									</script>
-	<%								}
-						 }
-		}
+	<%										}	
+						 			}
+							}
+	%>
 	
-	
+				
+				
+					<!-- create the javascript categories group aray to build the javascript url -->
+				<script type="text/javascript">
+					arrayCategoriesGroups=new Array(<%=((BarCharts)sbi).getCatGroupNames().size()%>);
+					z=0;
+					var te;
 
+				</script>				
+				<%
+				if(filterCatGroup==true){
+					if(((BarCharts)sbi).getCatGroupNames()!=null && !((BarCharts)sbi).getCatGroupNames().isEmpty()) {    
+				
+				String urlForCatsGroupJS=datasetMap.getCategoriesGroupUrl(refreshUrl, refreshUrlPars); %>
+				<%
+					 if(((BarCharts)sbi).getCatGroupNames()!=null){	
+								 for (Iterator iterator = ((BarCharts)sbi).getCatGroupNames().iterator(); iterator.hasNext();) {
+										String sera = (String) iterator.next(); 
+					%>
+	 								<script type="text/javascript"> 		 									
+	 									te='cat_group_<%=sera%>';
+	 									arrayCategoriesGroups[z]=te;
+	 									z++;
+	 									</script>
+								<%} 
+					}
+				}
+		}		
+				%>
+
+	<script type="text/javascript">
+
+	
+		// function called by button for filtering serie
+							function callSeriesUrlJS(){
+							seriesURLToCallJS='<%=urlForSeriesJS%>';
+							// add each serie
+							for(j=0;j<arraySeries.length;j++){			
+	
+								elementCheckSer=document.getElementById(arraySeries[j]);
+								if(elementCheckSer!=null){							
+								valSer=elementCheckSer.value;
+								//alert(valSer);
+								valChecked=elementCheckSer.checked;
+								//alert(valChecked);
+								if(valChecked==true){
+									seriesURLToCallJS+='&serie='+valSer;
+								}
+									}
+								}
+								elementAll=document.getElementById('categoryAll');
+							elementAllChecked=elementAll.checked;
+							if(elementAllChecked==true){
+								//alert('checked');
+								seriesURLToCallJS+='&categoryAll=0';
+							}
+							else{
+							
+							// filter cat series if present
+							for(j=0;j<arrayCategoriesGroups.length;j++){			
+								elementCheckCat=document.getElementById(arrayCategoriesGroups[j]);
+								if(elementCheckCat!=null){							
+								valCat=elementCheckCat.value;
+								//alert(valCat);
+								valCheckedCat=elementCheckCat.checked;
+								//alert(valCheckedCat);
+								if(valCheckedCat==true){
+									seriesURLToCallJS+='&cat_group='+valCat;
+								}
+								}
+							  }
+							}
+							//alert(seriesURLToCallJS);	
+							window.location.href=seriesURLToCallJS;
+							}
+
+				</script>	
+
+<% 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// form to limit the series if it is a barchart
 	boolean applyDrawed=false;
@@ -831,20 +886,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							//if(datasetMap.getSelectedCatGroups().contains(group) || datasetMap.getSelectedCatGroups().contains("allgroups")){
 							if(datasetMap.getSelectedCatGroups().contains(group)){
 							%> 
-								<input id="cat_group_<%=group%>" name="cat_group" value="<%=group%>" type="radio" checked='checked' /> 
+								<input id="cat_group_<%=group%>" name="cat_group" value="<%=group%>" type="checkbox" checked='checked' /> 
 								<%--<span class="portlet-font" ><%=group%></span> --%>
 								<span style="<%=datasetMap.getFilterStyle()%>" ><%=group%></span>  
 							<%}
 							else{ 
 							%> 
-							<input id="cat_group_<%=group%>" name="cat_group" value="<%=group%>" type="radio" /> 
+							<input id="cat_group_<%=group%>" name="cat_group" value="<%=group%>" type="checkbox" /> 
 							<%--<span class="portlet-font"><%=group%></span> --%> 
 							<span style="<%=datasetMap.getFilterStyle()%>"><%=group%></span> 
 							<%} 
 		 				}
 							if(applyDrawed==false){
 								applyDrawed=true; %>
-				   <input type="submit" value="Apply" width="30em" height="20em" style="<%=datasetMap.getFilterStyle()%>"/>
+	<!--  			   <input type="submit" value="Apply" width="30em" height="20em" style="<%=datasetMap.getFilterStyle()%>"/> -->
+				<input type="button" value="Apply" width="30em" height="20em" style="<%=datasetMap.getFilterStyle()%>" 	onclick="javascript:callSeriesUrlJS()" /> 
 								<% 
 							}
 					%> 
@@ -864,7 +920,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			 <tr>
 			   <td>
 				 <div align="center" class='div_detail_form'>
-				   <input type="submit" value="Apply" width="30em" height="20em" style="<%=datasetMap.getFilterStyle()%>"/>
+		<!--  		   <input type="submit" value="Apply" width="30em" height="20em" style="<%=datasetMap.getFilterStyle()%>"/>    -->
+				   <input type="button" value="Apply" width="30em" height="20em" style="<%=datasetMap.getFilterStyle()%>" onclick="javascript:callSeriesUrlJS()"/>
+					
+				
 				</div>
 			   </td>
 			 </tr>  	

@@ -78,6 +78,8 @@ Sbi.profiling.ManageRoles = function(config) {
 		, url: this.services['manageRolesList']
 		
 	});
+	
+	//this.rolesStore.on('load', this.onLoad, this);
 	this.rolesStore.load();
 	
 	//Ext.getBody().createChild({tag: 'h2', html: 'Manage Roles'});
@@ -95,6 +97,8 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	, colModel:null
 	,typeData: null
 	,buttons: null
+	, tabs: null
+
 	
 	,initManageRoles: function(){
 
@@ -117,56 +121,48 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	   }];
  	   
  	    /*====================================================================
- 	     * CheckGroup example
+ 	     * CheckGroup Is able to
  	     *====================================================================*/
+
  	    this.checkGroup = {
-           xtype:'fieldset',
-           columnWidth: 0.8,
-           title: 'Is Able to',
-           collapsible: true,
-           autoHeight:true,
-           autoWidth: true,
-           collapsed: true,   // initially collapse the group
-           collapsible: true,
-
-           defaults: {
+           xtype:'fieldset'
+           ,id: 'checks-form'
+           ,columnWidth: 0.8
+           ,autoHeight:true
+           ,autoWidth: true
+           , defaults: {
                anchor: '-20' // leave room for error icon
-           },
-
-           items :[
+           }
+           ,items :[
 				{
 		            xtype: 'checkboxgroup',
+		            itemId: 'isAbleToSave',
 		            columns: 1,
 		            boxMinWidth  : 150,
 		            boxMinHeight  : 100,
 		            hideLabel  : false,
-		            fieldLabel: 'Save',
-		            items: [
-		                {boxLabel: 'Personal Folder', name: 'savePersonalFolder', inputValue: 'savePersonalFolder'},
-		                {boxLabel: 'Metadata', name: 'saveMeta'},
-		                {boxLabel: 'Remember Me', name: 'saveRemember'},
-		                {boxLabel: 'Subobjects', name: 'saveSubobj'}
+		            fieldLabel: 'Save'
+		            ,items: [
+		                {boxLabel: 'Personal Folder', name: 'savePersonalFolder', checked:'savePersonalFolder',inputValue: 1},
+		                {boxLabel: 'Metadata', name: 'saveMeta', checked:'saveMeta',inputValue: 1},
+		                {boxLabel: 'Remember Me', name: 'saveRemember', checked:'saveRemember',inputValue: 1},
+		                {boxLabel: 'Subobjects', name: 'saveSubobj', checked:'saveSubobj',inputValue: 1}
 		            ]
 		        },
 		        {
 		            xtype: 'checkboxgroup',
+		            itemId: 'isAbleToSee',
 		            columns: 1,
 		            boxMinWidth  : 150,
 		            boxMinHeight  : 100,
 		            hideLabel  : false,
 		            fieldLabel: 'See',
-		            /*
-		            style: {
-		                border: '1px solid grey',
-		                padding: '3px'
-		            },		
-		            */            
 		            items: [
-		                {boxLabel: 'Metadata', name: 'seeMeta'},
-		                {boxLabel: 'Notes', name: 'seeNotes'},
-		                {boxLabel: 'Snapshots', name: 'seeSnapshot'},
-		                {boxLabel: 'Subobjects', name: 'seeSubobj'},
-		                {boxLabel: 'Viewpoints', name: 'seeViewpoints'}
+		                {boxLabel: 'Metadata', name: 'seeMeta', checked: 'seeMeta', inputValue: 1},
+		                {boxLabel: 'Notes', name: 'seeNotes', checked:'seeNotes',inputValue: 1},
+		                {boxLabel: 'Snapshots', name: 'seeSnapshot', checked:'seeSnapshot',inputValue: 1},
+		                {boxLabel: 'Subobjects', name: 'seeSubobj', checked:'seeSubobj',inputValue: 1},
+		                {boxLabel: 'Viewpoints', name: 'seeViewpoints', checked:'seeViewpoints',inputValue: 1}
 		            ]
 		        },
 		        {
@@ -175,9 +171,10 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		            boxMinWidth  : 150,
 		            hideLabel  : false,
 		            fieldLabel: 'Send',
+		            itemId: 'isAbleToSend',
 		            //height:200,
 		            items: [
-		                {boxLabel: 'Mail', name: 'sendMail'}
+		                {boxLabel: 'Mail', name: 'sendMail', checked:'sendMail',inputValue: 1}
 		            ]
 		        },
 		        {
@@ -186,15 +183,74 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		            boxMinWidth  : 150,
 		            hideLabel  : false,
 		            fieldLabel: 'Build',
+		            itemId: 'isAbleToBuild',
 		            //height:200,
 		            items: [
-		                {boxLabel: 'QBE', name: 'buildQbe'}
+		                {boxLabel: 'QBE', name: 'buildQbe', checked:'buildQbe',inputValue: 1}
 		            ]
 		        }
            ]
  	    };
 
-   	   
+ 	   
+ 	   this.tabs = new Ext.TabPanel({
+           enableTabScroll : true
+           , activeTab : 0
+           , autoScroll : true
+           , width: 320
+           , height: 350
+           , itemId: 'tabs'
+		   , items: [{
+		        title: 'Role detail'
+		        , itemId: 'detail'
+		        , layout: 'fit'
+		        , items: {
+		 		   	itemId: 'role-detail',   	              
+		 		   	columnWidth: 0.4,
+		             xtype: 'fieldset',
+		             labelWidth: 90,
+		             defaults: {width: 140, border:false},    
+		             defaultType: 'textfield',
+		             autoHeight: true,
+		             autoScroll  : true,
+		             bodyStyle: Ext.isIE ? 'padding:0 0 5px 15px;' : 'padding:10px 15px;',
+		             border: false,
+		             style: {
+		                 "margin-left": "10px", 
+		                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
+		             },
+		             items: [{
+		                 fieldLabel: 'Name',
+		                 name: 'name'
+		             },{
+		                 fieldLabel: 'Description',
+		                 name: 'description'
+		             },{
+		                 xtype: 'combo',
+		                 columns: 'auto',
+		                 fieldLabel: 'Role Type',
+		                 name: 'typeCd',	                  
+		                 store: new Ext.data.SimpleStore({
+		           	         id:0
+		           	        ,fields:
+		           	            [
+		           	                'typeId' , 
+		           	                'typeCd' 
+		           	            ]
+		           	        ,data: this.typeData
+		           	  })
+		             }]
+		    	
+		    	}
+		    },{
+		        title: 'Is Able to'
+		        //,html: 'Is Able to'
+		        , layout: 'fit'
+		        , items: this.checkGroup
+		        , itemId: 'checks'
+		    }]
+		});
+ 	   
    	   /*
    	   *    Here is where we create the Form
    	   */
@@ -202,28 +258,68 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	          id: 'role-form',
    	          frame: true,
    	          labelAlign: 'left',
-   	          title: 'Roles',
+   	          title: 'Manage Roles',
+   	          buttons: this.addBtn,
    	          bodyStyle:'padding:5px',
    	          width: 750,
-   	          layout: 'column',    
+   	          layout: 'column',
    	          items: [{
-   	              columnWidth: 0.60,
+   	        	 //scope:this,
+   	              columnWidth: 0.90,
    	              layout: 'fit',
    	              items: {
    	                  xtype: 'grid',
+   	                  //scope:this,
    	                  ds: this.rolesStore,
    	                  cm: this.colModel,
    	                  sm: new Ext.grid.RowSelectionModel({
    	                      singleSelect: true,
+   	                      scope:this,
+	   	                  fillChecks : function(row, rec) {	  
+	   	                   	  Ext.getCmp("checks-form").items.each(function(item){	   	                   		  
+	   	                   		  if(item.getItemId() == 'isAbleToSave'){
+		   	                   		  item.setValue('saveMeta', rec.get('saveMeta'));
+		   	                   		  item.setValue('saveRemember', rec.get('saveRemember'));
+		   	                   		  item.setValue('saveSubobj', rec.get('saveSubobj'));	   	              
+		   	                   		  item.setValue('savePersonalFolder', rec.get('savePersonalFolder'));
+	   	                   			  /*
+	   	                   			  item.items.each(function(check){
+	   	                   				  alert(check.getName());
+	   	                   				  check.setValue(check.getName(), rec.get(check.getName()));
+	   	                   			  });
+	   	                   			  */
+	   	                   		  }else if(item.getItemId() == 'isAbleToSee'){
+		   	                   		  item.setValue('seeMeta', rec.get('seeMeta'));
+		   	                   		  item.setValue('seeNotes', rec.get('seeNotes'));
+		   	                   		  item.setValue('seeSnapshot', rec.get('seeSnapshot'));	   	              
+		   	                   		  item.setValue('seeSubobj', rec.get('seeSubobj'));
+		   	                   		  item.setValue('seeViewpoints', rec.get('seeViewpoints'));
+	   	                   		  }else if(item.getItemId() == 'isAbleToSend'){
+		   	                   		  item.setValue('sendMail', rec.get('sesendMaileMeta'));
+	   	                   		  }else if(item.getItemId() == 'isAbleToBuild'){
+		   	                   		  item.setValue('buildQbe', rec.get('buildQbe'));
+	   	                   		  }
+
+			   	        	  });
+	   	                   	 
+	   	                  },
    	                      listeners: {
-   	                          rowselect: function(sm, row, rec) {
-   	                              Ext.getCmp("role-form").getForm().loadRecord(rec);
+   	                          rowselect: function(sm, row, rec) {   	  
+   	                	  		  this.fillChecks(row, rec);
+   	                              Ext.getCmp("role-form").getForm().loadRecord(rec);   	  
+   	                              
    	                          }
    	                      }
    	                  }),
    	                  autoExpandColumn: 'name',
    	                  height: 350,
    	                  title:'Roles',
+	   	 	   	      tools:[{
+	  		   	        id:'plus'
+	  		   	        ,qtip: 'New role'
+	  		   	        ,handler: this.addRole
+	  		   	        ,scope: this
+	   	 	   	      }],
    	                  border: true,
    	                  listeners: {
    	                      viewready: function(g) {
@@ -231,44 +327,8 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	                      } 
    	                  }
    	              }
-   	          },{
-   	              columnWidth: 0.4,
-   	              xtype: 'fieldset',
-   	              labelWidth: 90,
-   	              title:'Role details',
-   	              defaults: {width: 140, border:false},    
-   	              defaultType: 'textfield',
-   	              autoHeight: true,
-   	              autoScroll  : true,
-   	              bodyStyle: Ext.isIE ? 'padding:0 0 5px 15px;' : 'padding:10px 15px;',
-   	              border: false,
-   	              style: {
-   	                  "margin-left": "10px", 
-   	                  "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
-   	              },
-   	              items: [{
-   	                  fieldLabel: 'Name',
-   	                  name: 'name'
-   	              },{
-   	                  fieldLabel: 'Description',
-   	                  name: 'description'
-   	              },{
-   	                  xtype: 'combo',
-   	                  columns: 'auto',
-   	                  fieldLabel: 'Role Type',
-   	                  name: 'typeCd',	                  
-   	                  store: new Ext.data.SimpleStore({
-   	            	         id:0
-   	            	        ,fields:
-   	            	            [
-   	            	                'typeId' , 
-   	            	                'typeCd' 
-   	            	            ]
-   	            	        ,data: this.typeData
-   	            	  })
-   	              },
-   	              this.checkGroup]
-   	          }],
+   	          }, this.tabs
+   	          ],
    	          buttons: this.buttons,
    	          buttonAlign: 'right',
    	          renderTo: Ext.getBody()
@@ -305,6 +365,40 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
             params: params
         });
     }
+	, addRole : function(){
+        this.tabs.items.each(function(item)
+        {	//cleans every field of both tabs	
+        	if(item.getItemId() == 'detail'){
+        		
+        		item.items.each(function(itemTab){
+	        			        		
+	                var  data={};
+	                itemTab.items.each(function(itemform)
+	                {
+	                	alert(itemform.getItemId());
+	                	itemform.setValue(null);
+	                });
+        		});
+        	}else{
+        		//checkboxes
+        		item.items.each(function(itemTab){
+        			itemTab.items.each(function(item1){
+		                var  data={};
+		                item1.items.each(function(itemform)
+		                {
+		                	itemform.setValue(null);
+		                });
+        			});
+        		});
+        		
+        	}
+        	item.doLayout();
+        });
+        
+	}
+
+	
+	
 });
 
 Ext.reg('manageroles', Sbi.profiling.ManageRoles);

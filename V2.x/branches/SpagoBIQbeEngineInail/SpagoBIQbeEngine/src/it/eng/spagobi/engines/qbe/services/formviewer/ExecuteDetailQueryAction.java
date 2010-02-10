@@ -71,6 +71,8 @@ public class ExecuteDetailQueryAction extends AbstractQbeEngineAction {
 	public static final String FILTERS = "filters";
 	public static final String FORM_STATE = "formState";
 	
+	public static final String LAST_DETAIL_QUERY = "LAST_DETAIL_QUERY";
+	
 	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(ExecuteDetailQueryAction.class);
@@ -188,6 +190,9 @@ public class ExecuteDetailQueryAction extends AbstractQbeEngineAction {
 			}
 			
 			sqlQuery = (String)transformer.transformQuery(sqlQuery);
+			
+			// put the query into session
+			this.setAttributeInSession(LAST_DETAIL_QUERY, sqlQuery);
 			
 			// STEP 4: execute the query
 			

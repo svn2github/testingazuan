@@ -1,28 +1,22 @@
 package it.eng.qbe.export;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import it.eng.qbe.statment.QbeDataSet;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -32,6 +26,7 @@ public class Exporter {
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(Exporter.class);
 	IDataStore dataStore = null;
+	Vector extractedFields = null;
 
 	public Exporter(IDataStore dataStore) {
 		super();
@@ -51,26 +46,10 @@ public class Exporter {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Workbook exportInExcel(String language, String country){
+	public Workbook exportInExcel(){
 		Workbook wb = new HSSFWorkbook();
 	    CreationHelper createHelper = wb.getCreationHelper();
-	    Sheet sheet = wb.createSheet("new sheet");
-
-		SourceBean formatSB=null; 
-		// if a particular language is specified take the corresponding number-format
-		if(language!=null ){
-			if(country==null){
-				formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("QBE.QBE-EXCEL-EXPORT-"+language.toUpperCase()));
-			}
-			else{
-				formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("QBE.QBE-EXCEL-EXPORT-"+language.toUpperCase()+"_"+country.toUpperCase()));				
-			}		
-		}
-		if(formatSB==null){
-			formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("QBE.QBE-EXCEL-EXPORT-DEFAULT"));
-		}
-		String format = (String) formatSB.getAttribute("numberFormat");
-		logger.debug("Number Format: "+format);		
+	    Sheet sheet = wb.createSheet("new sheet");	
 	    
 	    if(dataStore!=null  && !dataStore.isEmpty()){
 	    	IDataStoreMetaData d = dataStore.getMetaData();	
@@ -79,7 +58,11 @@ public class Exporter {
 	    	for(int j =0;j<colnum;j++){
 	    		Cell cell = row.createCell(j);
 	    	    cell.setCellType(HSSFCell.CELL_TYPE_STRING);
-	    	    String fieldName = d.getFieldName(j);	
+	    	    String fieldName = d.getFieldName(j);
+	    	    if (extractedFields != null && extractedFields.get(j) != null) {
+	    	    	Field field = (Field) extractedFields.get(j);
+	    	    	fieldName = field.getAlias();
+	    	    }
 	    	    cell.setCellValue(createHelper.createRichTextString(fieldName));
 	    	}
 	    	
@@ -152,6 +135,10 @@ public class Exporter {
 	    }
 
 	    return wb;
+	}
+
+	public void setExtractedFields(Vector extractedFields) {
+		this.extractedFields = extractedFields;
 	}
 
 }

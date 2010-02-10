@@ -53,6 +53,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.engines.qbe.QbeEngineConfig;
+import it.eng.spagobi.engines.qbe.services.formviewer.ExecuteDetailQueryAction;
 import it.eng.spagobi.engines.qbe.tree.ExtJsQbeTreeBuilder;
 import it.eng.spagobi.engines.qbe.tree.filter.IQbeTreeEntityFilter;
 import it.eng.spagobi.engines.qbe.tree.filter.IQbeTreeFieldFilter;
@@ -60,7 +61,10 @@ import it.eng.spagobi.engines.qbe.tree.filter.QbeTreeAccessModalityEntityFilter;
 import it.eng.spagobi.engines.qbe.tree.filter.QbeTreeAccessModalityFieldFilter;
 import it.eng.spagobi.engines.qbe.tree.filter.QbeTreeFilter;
 import it.eng.spagobi.engines.qbe.tree.filter.QbeTreeQueryEntityFilter;
+import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
+import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
@@ -106,6 +110,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 		String templateContent = null;
 		File reportFile = null;
 		ReportRunner runner = null;
+		boolean isFormEngineInstance = false;
 		
 		logger.debug("IN");
 		
@@ -118,29 +123,40 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			logger.debug(RESPONSE_TYPE + ": " + responseType);
 					
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
-			Assert.assertNotNull(getEngineInstance().getActiveQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
-			Assert.assertTrue(getEngineInstance().getActiveQuery().isEmpty() == false, "Query object cannot be empty in oder to execute " + this.getActionName() + " service");
-					
-			Assert.assertNotNull(mimeType, "Input parameter [" + MIME_TYPE + "] cannot be null in oder to execute " + this.getActionName() + " service");		
-			Assert.assertTrue( MimeUtils.isValidMimeType( mimeType ) == true, "[" + mimeType + "] is not a valid value for " + MIME_TYPE + " parameter");
 			
-			Assert.assertNotNull(responseType, "Input parameter [" + RESPONSE_TYPE + "] cannot be null in oder to execute " + this.getActionName() + " service");		
-			Assert.assertTrue( RESPONSE_TYPE_INLINE.equalsIgnoreCase(responseType) || RESPONSE_TYPE_ATTACHMENT.equalsIgnoreCase(responseType), "[" + responseType + "] is not a valid value for " + RESPONSE_TYPE + " parameter");
-			
+			session = ((IHibernateDataSource)getEngineInstance().getDatamartModel().getDataSource()).getSessionFactory().openSession();	
 			
 			fileExtension = MimeUtils.getFileExtension( mimeType );
 			writeBackResponseInline = RESPONSE_TYPE_INLINE.equalsIgnoreCase(responseType);
 			
-			statement = getEngineInstance().getDatamartModel().createStatement( getEngineInstance().getActiveQuery() );		
-			//logger.debug("Parametric query: [" + statement.getQueryString() + "]");
-			
-			statement.setParameters( getEnv() );
-			hqlQuery = statement.getQueryString();
-			logger.debug("Executable HQL query: [" + hqlQuery + "]");
-					
-			session = ((IHibernateDataSource)getEngineInstance().getDatamartModel().getDataSource()).getSessionFactory().openSession();	
-			queryRewriter = new HqlToSqlQueryRewriter( session );
-			sqlQuery = queryRewriter.rewrite(hqlQuery);
+			isFormEngineInstance = getEngineInstance().getTemplate().getProperty("formJSONTemplate") != null;
+			if (!isFormEngineInstance) {
+				// case of standard QBE
+				
+				Assert.assertNotNull(getEngineInstance().getActiveQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
+				Assert.assertTrue(getEngineInstance().getActiveQuery().isEmpty() == false, "Query object cannot be empty in oder to execute " + this.getActionName() + " service");
+						
+				Assert.assertNotNull(mimeType, "Input parameter [" + MIME_TYPE + "] cannot be null in oder to execute " + this.getActionName() + " service");		
+				Assert.assertTrue( MimeUtils.isValidMimeType( mimeType ) == true, "[" + mimeType + "] is not a valid value for " + MIME_TYPE + " parameter");
+				
+				Assert.assertNotNull(responseType, "Input parameter [" + RESPONSE_TYPE + "] cannot be null in oder to execute " + this.getActionName() + " service");		
+				Assert.assertTrue( RESPONSE_TYPE_INLINE.equalsIgnoreCase(responseType) || RESPONSE_TYPE_ATTACHMENT.equalsIgnoreCase(responseType), "[" + responseType + "] is not a valid value for " + RESPONSE_TYPE + " parameter");
+				
+				statement = getEngineInstance().getDatamartModel().createStatement( getEngineInstance().getActiveQuery() );		
+				//logger.debug("Parametric query: [" + statement.getQueryString() + "]");
+				
+				statement.setParameters( getEnv() );
+				hqlQuery = statement.getQueryString();
+				logger.debug("Executable HQL query: [" + hqlQuery + "]");
+						
+				queryRewriter = new HqlToSqlQueryRewriter( session );
+				sqlQuery = queryRewriter.rewrite(hqlQuery);
+			} else {
+				// case of FormEngine
+				
+				sqlQuery = this.getAttributeFromSessionAsString(ExecuteDetailQueryAction.LAST_DETAIL_QUERY);
+				Assert.assertNotNull(sqlQuery, "The detail query was not found, maybe you have not execute the detail query yet.");
+			}
 			logger.debug("Executable SQL query: [" + sqlQuery + "]");
 			
 			logger.debug("Exctracting fields ...");
@@ -158,49 +174,6 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			
 			decorateExtractedFields( extractedFields );
 			
-
-			
-			
-			if("application/json".equalsIgnoreCase( mimeType )) {
-				
-				logger.debug("Filtering entities list ...");			
-				IQbeTreeEntityFilter entityFilter = new QbeTreeAccessModalityEntityFilter();
-				logger.debug("Apply entity filter [" + entityFilter.getClass().getName() + "]");
-				entityFilter = new QbeTreeQueryEntityFilter(entityFilter, getEngineInstance().getActiveQuery());
-				logger.debug("Filtering fields list ...");	
-				IQbeTreeFieldFilter fieldFilter = new QbeTreeAccessModalityFieldFilter();
-				logger.debug("Apply field filter [" + fieldFilter.getClass().getName() + "]");
-				
-				QbeTreeFilter treeFilter = new  QbeTreeFilter(entityFilter, fieldFilter);
-				ExtJsQbeTreeBuilder qbeBuilder = new ExtJsQbeTreeBuilder(treeFilter);	 
-						
-				JSONArray nodes = new JSONArray();
-				JSONArray datamartsName = new JSONArray();
-				List datamartsNames = getEngineInstance().getDatamartModel().getDataSource().getDatamartNames();
-				Iterator it = datamartsNames.iterator();
-				while (it.hasNext()) {
-					String aDatamartName = (String) it.next();
-					datamartsName.put(aDatamartName);
-					JSONArray temp = qbeBuilder.getQbeTree(getDatamartModel(), getLocale(), aDatamartName);
-					for (int i = 0; i < temp.length(); i++) {
-						Object object = temp.get(i);
-						nodes.put(object);
-					}
-				}
-				String analysisState = new String(getEngineInstance().getAnalysisState().store());
-				JSONObject queryJSON = new JSONObject(analysisState);
-				FormViewerTemplateBuilder formViewerTemplateBuilder = new FormViewerTemplateBuilder(nodes, queryJSON, datamartsName);
-				templateContent = formViewerTemplateBuilder.buildTemplate();
-				
-				try {
-					writeBackToClient(200, templateContent, writeBackResponseInline, "template." + fileExtension, mimeType);
-				} catch (IOException ioe) {
-					throw new SpagoBIEngineException("Impossible to write back the responce to the client", ioe);
-				}
-				
-				return;
-			}
-			
 			params = new HashMap();
 			params.put("pagination", getPaginationParamVaue(mimeType) );
 			
@@ -209,39 +182,55 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			
 			if( !"text/jrxml".equalsIgnoreCase( mimeType ) ) {
 				if( "application/vnd.ms-excel".equalsIgnoreCase( mimeType ) ) {
-					RequestContainer requestContainer = RequestContainer.getRequestContainer();
-					SessionContainer permSess = requestContainer.getSessionContainer();
-					String language=(String)permSess.getAttribute("AF_LANGUAGE");
-					String country=(String)permSess.getAttribute("AF_COUNTRY");
-					//START PART from EXECUTEQUERYACTION
-					UserProfile userProfile = (UserProfile)getEnv().get(EngineConstants.ENV_USER_PROFILE);
-					QbeDataSet dataSet = null;
+					
 					IDataStore dataStore = null;
-					Integer limit = 0;
-					Integer start = 0;
-					Integer maxSize = QbeEngineConfig.getInstance().getResultLimit();	
-					boolean isMaxResultsLimitBlocking = QbeEngineConfig.getInstance().isMaxResultLimitBlocking();
-					logger.debug("Executing query ...");
-					dataSet = new QbeDataSet(statement);
-					dataSet.setAbortOnOverflow(isMaxResultsLimitBlocking);
 					
-					Map userAttributes = new HashMap();
-					UserProfile profile = (UserProfile)this.getEnv().get(EngineConstants.ENV_USER_PROFILE);
-					Iterator it = profile.getUserAttributeNames().iterator();
-					while(it.hasNext()) {
-						String attributeName = (String)it.next();
-						Object attributeValue = profile.getUserAttribute(attributeName);
-						userAttributes.put(attributeName, attributeValue);
+					if (!isFormEngineInstance) {
+						// case of standard QBE
+						
+						QbeDataSet dataSet = null;
+						
+						Integer limit = 0;
+						Integer start = 0;
+						Integer maxSize = QbeEngineConfig.getInstance().getResultLimit();	
+						boolean isMaxResultsLimitBlocking = QbeEngineConfig.getInstance().isMaxResultLimitBlocking();
+						dataSet = new QbeDataSet(statement);
+						dataSet.setAbortOnOverflow(isMaxResultsLimitBlocking);
+						
+						Map userAttributes = new HashMap();
+						UserProfile profile = (UserProfile)this.getEnv().get(EngineConstants.ENV_USER_PROFILE);
+						Iterator it = profile.getUserAttributeNames().iterator();
+						while(it.hasNext()) {
+							String attributeName = (String)it.next();
+							Object attributeValue = profile.getUserAttribute(attributeName);
+							userAttributes.put(attributeName, attributeValue);
+						}
+						dataSet.addBinding("attributes", userAttributes);
+						dataSet.addBinding("parameters", this.getEnv());
+						logger.debug("Executing query ...");
+						dataSet.loadData(start, limit, (maxSize == null? -1: maxSize.intValue()));
+						
+						dataStore = dataSet.getDataStore();
+					
+					} else {
+						// case of FormEngine
+						
+						JDBCDataSet dataset = new JDBCDataSet();
+						IDataSource datasource = (IDataSource) this.getEnv().get( EngineConstants.ENV_DATASOURCE );
+						dataset.setDataSource(datasource);
+						dataset.setUserProfile((UserProfile) this.getEnv().get(EngineConstants.ENV_USER_PROFILE));
+						dataset.setQuery(sqlQuery);
+						logger.debug("Executing query ...");
+						dataset.loadData();
+						dataStore = dataset.getDataStore();
 					}
-					dataSet.addBinding("attributes", userAttributes);
-					dataSet.addBinding("parameters", this.getEnv());
-					dataSet.loadData(start, limit, (maxSize == null? -1: maxSize.intValue()));
-					
-					dataStore = dataSet.getDataStore();
-					//END PART from EXECUTEQUERYACTION
 					
 					Exporter exp = new Exporter(dataStore);
-					Workbook wb = exp.exportInExcel(language,country);
+					if (isFormEngineInstance) {
+						exp.setExtractedFields(extractedFields);
+					}
+					
+					Workbook wb = exp.exportInExcel();
 					
 					File file = new File("workbook.xls");
 					FileOutputStream stream = new FileOutputStream(file);

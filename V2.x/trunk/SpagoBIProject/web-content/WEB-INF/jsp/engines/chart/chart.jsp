@@ -86,7 +86,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		crossNavigationUrl = urlBuilder.getUrl(request, crossNavigationParameters);%>
 		
 		<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.boxcharts.BoxCharts"%>
-<form id="crossNavigationForm<%= uuid %>" method="post" action="<%= crossNavigationUrl %>" style="display:none;">
+<form id="crossNavigationForm<%= uuid %>" method="get" action="<%= crossNavigationUrl %>" style="display:none;">
 		    <input type="hidden" id="targetDocumentLabel<%= uuid %>" name="<%= ObjectsTreeConstants.OBJECT_LABEL %>" value="" />  
 			<input type="hidden" id="targetDocumentParameters<%= uuid %>" name="<%= ObjectsTreeConstants.PARAMETERS %>" value="" />
 		</form>
@@ -524,14 +524,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<% } 
 
 
- 
  if(showSlider || filterSeries==true) {%>
-			<form id='serieform' name="serie" action="<%=refreshUrl%>" method="POST"> 
+			<form id='serieform' name="serie" action="<%=refreshUrl%>" method="get"> 
 				<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE" /> 
 				<% if(!refreshUrlPars.containsKey("category")){%> 
 					<input type="hidden" name="category" value="<%=datasetMap.getCategoryCurrent()%>" /> 
 				<%}%>
 			<%} %>
+		
+<!--  I have to build the url in javascript --> 
+ <script type="text/javascript">
+ <!--
+ var refreshUrl='<%=refreshUrl%>'; 
+ -->
+ </script>
 
   <!-- Begin drawing the page -->
  <br>
@@ -604,7 +610,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     												<!-- CHECK  BOX FOR ALL CATS SELECTION-->	
     												<%String checkedAllCats=datasetMap.getCategoryCurrent()==0 ? "checked='checked'" : ""; %>														
     														<div id='selectAllCatsLabel'>  													
-    													   		<input type="checkbox" value="0" name="categoryAll" <%=checkedAllCats%> /> 			
+    													   		<input id="categoryAll" type="checkbox" value="0" name="categoryAll" <%=checkedAllCats%> /> 			
                                     <span style="<%=datasetMap.getFilterStyle()%> " >
       																<spagobi:message key = "sbi.chartEngine.selectAllCats" />
       														</span>												
@@ -652,7 +658,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 												<!-- CHECK  BOX FOR ALL CATS SELECTION-->	
 												<%String checkedAllCats=datasetMap.getCategoryCurrent()==0 ? "checked='checked'" : ""; %>														
 														<div id='selectAllCatsLabel'>  													
-													   		<input type="checkbox" value="0" name="categoryAll" <%=checkedAllCats%> /> 			
+													   		<input id="categoryAll" type="checkbox" value="0" name="categoryAll" <%=checkedAllCats%> /> 			
                                 <span style="<%=datasetMap.getFilterStyle()%> " >
   																<spagobi:message key = "sbi.chartEngine.selectAllCats" />
   														</span>												
@@ -695,13 +701,60 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						</script>
 
 
-	<% 	 
+				<!-- create the javascript serie aray to build the javascript url -->
+				<%String urlForSeriesJS=datasetMap.getSerieUlr(refreshUrl, refreshUrlPars); %>
+				<script type="text/javascript">
+							arraySeries=new Array(<%=datasetMap.getSeries().size()%>);
+							i=0;
+							var se;
+				
+				// function called by button for filtering serie
+							function callSeriesUrlJS(){
+							seriesURLToCallJS='<%=urlForSeriesJS%>';
+							// add each serie
+							for(j=0;j<arraySeries.length;j++){			
+								elementCheckSer=document.getElementById(arraySeries[j]);
+								valSer=elementCheckSer.value;
+								//alert(valSer);
+								valChecked=elementCheckSer.checked;
+								//alert(valChecked);
+								if(valChecked==true){
+									seriesURLToCallJS+='&serie='+valSer;
+								}
+									
+								}
+								elementAll=document.getElementById('categoryAll');
+							elementAllChecked=elementAll.checked;
+							if(elementAllChecked==true){
+								seriesURLToCallJS+='&categoryAll=0';
+							}
+							//alert(seriesURLToCallJS);	
+							window.location.href=seriesURLToCallJS;
+							}
+				</script>
+<%	                if(filterSeries==true){ 
+						 if(datasetMap.getSeries()!=null){	
+									 for (Iterator iterator = datasetMap.getSeries().iterator(); iterator.hasNext();) {
+											String sera = (String) iterator.next(); 
+						%>
+		 								<script type="text/javascript"> 		 									
+		 									se='serie_<%=sera%>';
+		 									arraySeries[i]=se;
+		 									i++;
+		 									</script>
+	<%								}
+						 }
+		}
+	
+	
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// form to limit the series if it is a barchart
 	boolean applyDrawed=false;
 	seriesNames=new Vector();
 	catGroupsNames=new Vector();
+	
+	
 	if(filterSeries || filterCatGroup){
 			%>
 	<tr>
@@ -728,8 +781,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 												<span style="<%=datasetMap.getFilterStyle()%>"><%=ser%></span> <% }
 											else{ %>
 												<input id="serie_<%=ser%>" name="serie" value="<%=ser%>" type="checkbox" /> 
-												<span style="<%=datasetMap.getFilterStyle()%>"><%=ser%></span> <% } 
-		 									}%>  
+												<span style="<%=datasetMap.getFilterStyle()%>"><%=ser%></span> <% 
+												}%> 
+		 									<%}%> 
+		 									 
 		 								<%if(filterSeriesButtons==true){ // if drawing select all/ unselect all buttons%>	
 		 								<a onclick="enableSerie()" title="check all series" alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
 											 <img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif", currTheme)%>' />
@@ -740,6 +795,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 										<%} // CLOSE if drawing SELECT UNSELECT BUTTONS
 								applyDrawed=true;
 										%>
+				   <input type="button" value="<spagobi:message key = "sbi.chartEngine.apply" />" width="30em" height="20em" style="<%=datasetMap.getFilterStyle()%>" onclick="javascript:callSeriesUrlJS()"/>
 				   <input type="submit" value="<spagobi:message key = "sbi.chartEngine.apply" />" width="30em" height="20em" style="<%=datasetMap.getFilterStyle()%>"/>
 								<% 
 								   } 
@@ -848,7 +904,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                 </div>
           		</td>
           		<td align="left">
-              <form name="<%=par%>" action="<%=refreshUrl%>" method="POST">
+              <form name="<%=par%>" action="<%=refreshUrl%>" method="get">
               		<%if(sbi.getChangeViewParameter(par)){ %> 
                        <input type="radio"  	name="<%=par%>" value="false" onclick="this.form.submit()" />
                        <span style="<%=datasetMap.getFilterStyle()%> " >
@@ -867,7 +923,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                   		<input type="radio" name="<%=par%>" value="true" onclick="this.form.submit()"  /> 
                       <span style="<%=datasetMap.getFilterStyle()%> " >
                         <%=sbi.getChangeViewParameterLabel(par,2)%>
-                      </span>
+                      </span>	
                   <%} %>
 
             		</form>

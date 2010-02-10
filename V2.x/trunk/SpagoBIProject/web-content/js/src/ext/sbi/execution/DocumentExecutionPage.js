@@ -535,7 +535,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 					, href: ''  
 				}));
 			}
-			else if ( executionInstance.document.typeCode == 'DATAMART') {
+			else if ( executionInstance.document.typeCode == 'DATAMART' || executionInstance.document.typeCode == 'FORM') {
 			
 					var menuItems = new Array();
 					

@@ -33,6 +33,7 @@ import it.eng.qbe.query.transformers.AbstractQbeQueryTransformer;
 import it.eng.spagobi.engines.qbe.bo.FormViewerState;
 import it.eng.spagobi.engines.qbe.template.QbeJSONTemplateParser;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -95,9 +96,9 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 			for (int i = 0; i < staticClosedFilters.length(); i++) {
 				JSONObject aStaticClosedFilter = (JSONObject) staticClosedFilters.get(i);
 				boolean isSingleSelection = aStaticClosedFilter.optBoolean(QbeJSONTemplateParser.STATIC_CLOSED_FILTER_SINGLE_SELECTION);
+				String filterGroupId = aStaticClosedFilter.getString(QbeJSONTemplateParser.ID);
 				if (isSingleSelection) {
-					String id = aStaticClosedFilter.getString(QbeJSONTemplateParser.ID);
-					String optionId = formViewerState.getXORFilterSelectedOption(id);
+					String optionId = formViewerState.getXORFilterSelectedOption(filterGroupId);
 					if (optionId != null && !optionId.trim().equals("") && !optionId.equalsIgnoreCase(QbeJSONTemplateParser.STATIC_CLOSED_FILTER_NO_SELECTION)) {
 						JSONObject option = null;
 						JSONArray options = aStaticClosedFilter.getJSONArray(QbeJSONTemplateParser.OPTIONS);
@@ -109,17 +110,24 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 							}
 						}
 						if (option != null) {
-							applyStaticClosedFilter(query, option);
+							ExpressionNode node = applyStaticClosedFilterToWhereClause(query, option);
+							updateWhereClauseStructure(query, node, "AND");
 						}
 					}
 				} else {
 					JSONArray options = aStaticClosedFilter.getJSONArray(QbeJSONTemplateParser.OPTIONS);
+					List<ExpressionNode> nodes = new ArrayList<ExpressionNode>();
 					for (int j = 0; j < options.length(); j++) {
 						JSONObject option = options.getJSONObject(j);
-						boolean isActive = formViewerState.isOnOffFilterActive(option.getString(QbeJSONTemplateParser.ID));
+						boolean isActive = formViewerState.isOnOffFilterActive(filterGroupId, option.getString(QbeJSONTemplateParser.ID));
 						if (isActive) {
-							applyStaticClosedFilter(query, option);
+							ExpressionNode node = applyStaticClosedFilterToWhereClause(query, option);
+							nodes.add(node);
 						}
+					}
+					if (!nodes.isEmpty()) {
+						String booleanConnector = aStaticClosedFilter.getString("booleanConnector");
+						updateWhereClauseStructure(query, nodes, booleanConnector, "AND");
 					}
 				}
 			}
@@ -129,7 +137,7 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 	}
 	
 	
-	private void applyStaticClosedFilter(Query query, JSONObject option) throws Exception {
+	private ExpressionNode applyStaticClosedFilterToWhereClause(Query query, JSONObject option) throws Exception {
 		JSONArray filters = option.getJSONArray("filters");
 		// adding filters for the selected option
 		for (int i = 0; i < filters.length(); i++) {
@@ -144,7 +152,7 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 		// updating where clause structure: the new condition must be added with AND boolean connector
 		JSONObject expression = option.getJSONObject("expression");
 		ExpressionNode node = QueryJSONDeserializer.getFilterExpTree(expression);
-		updateWhereClauseStructure(query, node, "AND");
+		return node;
 	}
 	
 	private void updateWhereClauseStructure(Query query, String filterId,
@@ -169,6 +177,25 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 	private void updateWhereClauseStructure(Query query, ExpressionNode nodeToInsert,
 			String booleanConnector) {
 		ExpressionNode node = query.getWhereClauseStructure();
+		if (node == null) {
+			node = nodeToInsert;
+			query.setWhereClauseStructure(node);
+		} else {
+			ExpressionNode newNode = new ExpressionNode("NODE_OP", booleanConnector);
+			newNode.addChild(node);
+			newNode.addChild(nodeToInsert);
+			query.setWhereClauseStructure(newNode);
+		}
+	}
+	
+	private void updateWhereClauseStructure(Query query, List<ExpressionNode> list,
+			String booleanConnectorBetweenNodes, String booleanConnector) {
+		ExpressionNode node = query.getWhereClauseStructure();
+		ExpressionNode nodeToInsert = new ExpressionNode("NODE_OP", booleanConnectorBetweenNodes);
+		Iterator<ExpressionNode> it = list.iterator();
+		while (it.hasNext()) {
+			nodeToInsert.addChild(it.next());
+		}
 		if (node == null) {
 			node = nodeToInsert;
 			query.setWhereClauseStructure(node);

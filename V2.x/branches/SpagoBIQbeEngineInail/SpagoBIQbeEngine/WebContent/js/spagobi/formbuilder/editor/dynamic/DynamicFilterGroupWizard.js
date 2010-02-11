@@ -92,6 +92,7 @@ Sbi.formbuilder.DynamicFilterGroupWizard = function(config) {
 Ext.extend(Sbi.formbuilder.DynamicFilterGroupWizard, Ext.Window, {
 
 	formPanel: null
+	, filterName: null
 	, operatorField: null
 	
 	
@@ -102,6 +103,7 @@ Ext.extend(Sbi.formbuilder.DynamicFilterGroupWizard, Ext.Window, {
 	, getFormState : function () {
 		var s = {};
 		s.operator = this.operatorField.getValue();
+		s.title = this.filterName.getValue();
 		return s;
 	}
 
@@ -109,9 +111,14 @@ Ext.extend(Sbi.formbuilder.DynamicFilterGroupWizard, Ext.Window, {
 		if(s.operator) {
 			this.operatorField.setValue(s.operator);
 		}
+		if(s.title) {
+			this.filterName.setValue(s.title);
+		}
 	}
 	
 	, resetFormState: function() {
+		this.filterName.setValue('');
+		this.filterName.reset();
 		this.operatorField.setValue('');
 		this.operatorField.reset();
 	}
@@ -138,6 +145,18 @@ Ext.extend(Sbi.formbuilder.DynamicFilterGroupWizard, Ext.Window, {
 	, init: function() {
 		var items = [];
 		
+		this.filterName = new Ext.form.TextField({
+			id: 'title',
+			name: 'title',
+			allowBlank: true, 
+			inputType: 'text',
+			maxLength: 100,
+			width: 250,
+			fieldLabel: LN('sbi.formbuilder.dynamicfiltergroupwizard.fields.filtername.label')
+		});
+		
+		items.push(this.filterName);
+		
 		var filterOptStore = new Ext.data.SimpleStore({
 		    fields: ['funzione', 'nome', 'descrizione'],
 		    data : [
@@ -160,7 +179,7 @@ Ext.extend(Sbi.formbuilder.DynamicFilterGroupWizard, Ext.Window, {
 			triggerAction: 'all',
 			emptyText: LN('sbi.qbe.filtergridpanel.foperators.editor.emptymsg'),
 			selectOnFocus: true, //True to select any existing text in the field immediately on focus
-			fieldLabel: LN('sbi.formbuilder.dynamicfiltergroupwizard.operatorfieldlabel')
+			fieldLabel: LN('sbi.formbuilder.dynamicfiltergroupwizard.fields.operatorfield.label')
 	    });
 
     	items.push(this.operatorField);

@@ -125,9 +125,10 @@ Ext.extend(Sbi.formviewer.StaticClosedFiltersPanel, Ext.Panel, {
 		if (this.onOffFilters !== null) {
 			for (var i = 0; i < this.onOffFilters.length; i++) {
 				var aOnOffFilter = this.onOffFilters[i];
-				Ext.apply(state.onOffFilters, aOnOffFilter.getFormState());
+				state.onOffFilters[aOnOffFilter.id] = aOnOffFilter.getFormState();
 			}
 		}
+
 		return state;
 	}
   	

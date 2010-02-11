@@ -102,6 +102,10 @@ Ext.extend(Sbi.formbuilder.DynamicFilterGroupEditor, Sbi.formbuilder.EditorPanel
 	
 	, getContents: function() {
 		var c = {};
+		c.title = undefined;
+		if (this.groupTitle !== (LN('sbi.formbuilder.dynamicfiltereditorpanel.grouptitle') + ' (' + this.operator + ')')) {
+			c.title = this.groupTitle;
+		}
 		c.operator = this.operator;
 		c.admissibleFields = Sbi.formbuilder.DynamicFilterGroupEditor.superclass.getContents.call(this)
 		return c;
@@ -127,7 +131,10 @@ Ext.extend(Sbi.formbuilder.DynamicFilterGroupEditor, Sbi.formbuilder.EditorPanel
 	
 	, modifyFilter: function(state) {
 		this.operator = state.operator;
-		this.groupTitle = LN('sbi.formbuilder.dynamicfiltereditorpanel.grouptitle') + ' (' + this.operator + ')';
+		this.groupTitle = (state.title !== undefined && state.title !== '') ? 
+				state.title 
+				: 
+				(LN('sbi.formbuilder.dynamicfiltereditorpanel.grouptitle') + ' (' + this.operator + ')');
 		this.filterItemsCt.setTitle(this.groupTitle);
 	}
 	

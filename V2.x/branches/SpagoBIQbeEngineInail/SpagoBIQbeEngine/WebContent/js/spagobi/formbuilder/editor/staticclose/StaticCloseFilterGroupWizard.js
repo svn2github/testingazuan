@@ -53,11 +53,12 @@ Sbi.formbuilder.StaticCloseFilterGroupWizard = function(config) {
 		title: LN('sbi.formbuilder.staticclosefiltergroupwizard.title')
 		, autoScroll: true
 		, width: 350
-		, height: 300
+		, height: 350
 		, baseState: {
 			groupTitle: undefined,
 			singleSelection: true,
-			allowNoSelection: true			
+			allowNoSelection: true,
+			booleanConnector: 'AND'
 		}
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.staticClosedXORFiltersWindow) {
@@ -76,7 +77,7 @@ Sbi.formbuilder.StaticCloseFilterGroupWizard = function(config) {
 		closeAction:'hide',
 		plain: true,
 		modal: true,
-		resizable: false,
+		resizable: true,
 		title: this.title,
 		items: [this.formPanel]
 	});
@@ -101,6 +102,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 	, singleSelectionField: null
 	, allowNoSelectionField: null
 	, noSelectionTextField: null
+	, booleanConnectorField: null
 	, baseState: null
 	, targetFilterGroup: null
 	, hasBuddy: null
@@ -113,11 +115,11 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 	
 	, getFormState : function () {
 		var s = {};
-		
 		s.groupTitle = this.groupTitleField.getValue(s);
 		s.singleSelection = this.singleSelectionField['true'].getValue()
 		s.allowNoSelection = this.allowNoSelectionField['true'].getValue();  
 		s.noSelectionText = this.noSelectionTextField.getValue();
+		s.booleanConnector = this.booleanConnectorField['AND'].getValue() ? 'AND' : 'OR';
 		return s;
 	}
 
@@ -135,9 +137,14 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 			this.allowNoSelectionField['true'].setValue(s.allowNoSelection === true);
 			this.allowNoSelectionField['false'].setValue(s.allowNoSelection === false);
 		}
-		
+				
 		if(s.noSelectionText) {
 			this.noSelectionTextField.setValue(s.noSelectionText);
+		}
+		
+		if(s.booleanConnector) {
+			this.booleanConnectorField['AND'].setValue(s.booleanConnector === 'AND');
+			this.booleanConnectorField['OR'].setValue(s.booleanConnector === 'OR');
 		}
 	}
 	
@@ -148,6 +155,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 			singleSelection: true
 			, allowNoSelection: false
 			, noSelectionText: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.noselectiontext')
+			, booleanConnector: 'AND'
 		})
 		this.setFormState(s);
 	}
@@ -252,6 +260,27 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
     		maxLength:150
     		//, style:'margin-bottom:10px;'
     	});
+    	    	
+    	this.booleanConnectorField = {};
+    	
+    	this.booleanConnectorField['AND'] = new Ext.form.Radio({
+    		fieldLabel: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.booleanconnector.label'),
+			boxLabel: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.booleanconnector.and'),
+			name: 'booleanConnector',
+			checked: (this.baseState.booleanConnector === 'AND'),
+			inputValue: true,
+			disabled: (this.baseState.singleSelection === true)
+		});
+    	
+    	this.booleanConnectorField['OR'] = new Ext.form.Radio({
+    		fieldLabel: '',
+    		labelSeparator: '',
+			boxLabel: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.booleanconnector.or'),
+			name: 'booleanConnector',
+			checked: (this.baseState.booleanConnector === 'OR'),
+            inputValue: false,
+            disabled: (this.baseState.singleSelection === true)
+		});
     	
     	var fieldSet = new Ext.form.FieldSet({
     		title: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.options'),
@@ -261,7 +290,8 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
     		items: [
     		   this.singleSelectionField['true'], this.singleSelectionField['false'], 
     		   this.allowNoSelectionField['true'], this.allowNoSelectionField['false'],
-    		   this.noSelectionTextField
+    		   this.noSelectionTextField,
+    		   this.booleanConnectorField['AND'], this.booleanConnectorField['OR']
     		]
     	});
     	items.push(fieldSet);
@@ -297,10 +327,14 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 			this.allowNoSelectionField['true'].enable();
 			this.allowNoSelectionField['false'].enable();
 			this.noSelectionTextField.enable();
+			this.booleanConnectorField['AND'].disable();
+			this.booleanConnectorField['OR'].disable();
 		} else {
 			this.allowNoSelectionField['true'].disable();
 			this.allowNoSelectionField['false'].disable();
 			this.noSelectionTextField.disable();
+			this.booleanConnectorField['AND'].enable();
+			this.booleanConnectorField['OR'].enable();
 		}
 	}
 });

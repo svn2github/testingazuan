@@ -82,6 +82,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupEditor, Sbi.formbuilder.EditorP
 	, singleSelection: null
 	, allowNoSelection: null
 	, noSelectionText: null
+	, booleanConnector: null
 
 	//--------------------------------------------------------------------------------
 	// public methods
@@ -100,8 +101,10 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupEditor, Sbi.formbuilder.EditorP
 		c.title = this.groupTitle;
 		c.singleSelection = this.singleSelection;
 		c.allowNoSelection = this.allowNoSelection;
-		if(this.singleSelection === true) {
+		if (this.singleSelection === true) {
 			c.noSelectionText = this.noSelectionText;
+		} else {
+			c.booleanConnector = this.booleanConnector;
 		}
 		c.options = Sbi.formbuilder.StaticCloseFilterGroupEditor.superclass.getContents.call(this);
 		

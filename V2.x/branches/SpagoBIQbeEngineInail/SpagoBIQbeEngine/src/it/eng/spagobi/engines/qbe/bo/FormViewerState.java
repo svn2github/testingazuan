@@ -62,12 +62,15 @@ public class FormViewerState {
 		return toReturn;
 	}
 	
-	public boolean isOnOffFilterActive(String onOffFilterId) {
-		logger.debug("IN: onOffFilterId = " + onOffFilterId);
+	public boolean isOnOffFilterActive(String ofOffFilterGroupId, String onOffFilterId) {
+		logger.debug("IN: ofOffFilterGroupId = " + ofOffFilterGroupId + "; onOffFilterId = " + onOffFilterId);
 		boolean toReturn = false;
 		if (onOffFilters != null ) {
-			String onOff = onOffFilters.optString(onOffFilterId);
-			toReturn = "on".equalsIgnoreCase(onOff);
+			JSONObject onOffFilterGroup = onOffFilters.optJSONObject(ofOffFilterGroupId);
+			if (onOffFilterGroup != null) {
+				String onOff = onOffFilterGroup.optString(onOffFilterId);
+				toReturn = "on".equalsIgnoreCase(onOff);
+			}
 		}
 		logger.debug("OUT: returning " + toReturn);
 		return toReturn;

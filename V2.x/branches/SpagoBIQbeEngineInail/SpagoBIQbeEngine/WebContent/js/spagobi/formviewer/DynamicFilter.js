@@ -133,10 +133,14 @@ Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
 		    fields: ['field', 'text']
 		});
 		
+		var fieldLabel = (dynamicFilter.title !== undefined && dynamicFilter.title !== '') ? 
+				dynamicFilter.title :
+					LN('sbi.formviewer.dynamicfilterspanel.variable');
+		
 		var combo = new Ext.form.ComboBox({
 			name: 'field'
             , editable: false
-            , fieldLabel: LN('sbi.formviewer.dynamicfilterspanel.variable')
+            , fieldLabel: fieldLabel
 		    , forceSelection: false
 		    , store: store
 		    , mode : 'local'

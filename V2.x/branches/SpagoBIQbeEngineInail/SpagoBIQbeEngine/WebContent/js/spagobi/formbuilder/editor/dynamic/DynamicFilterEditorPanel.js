@@ -93,8 +93,14 @@ Ext.extend(Sbi.formbuilder.DynamicFilterEditorPanel, Sbi.formbuilder.EditorPanel
 	}
 	
 	, addFilterGroup: function(content) {
+		
+		var groupTitle = (content.title !== undefined && content.title !== '') ? 
+				content.title 
+				: 
+				(LN('sbi.formbuilder.dynamicfiltereditorpanel.grouptitle') + ' (' + content.operator + ')');
+			
 		var newGroupEditor = new Sbi.formbuilder.DynamicFilterGroupEditor({
-			groupTitle: LN('sbi.formbuilder.dynamicfiltereditorpanel.grouptitle') + ' (' + content.operator + ')'
+			groupTitle: groupTitle
 			, operator: content.operator
 			, baseContents: content.admissibleFields
 		});

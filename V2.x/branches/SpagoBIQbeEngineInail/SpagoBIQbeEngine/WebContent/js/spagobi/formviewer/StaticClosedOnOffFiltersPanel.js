@@ -65,7 +65,8 @@ Sbi.formviewer.StaticClosedOnOffFiltersPanel = function(aStaticClosedOnOffFilter
 	this.init(aStaticClosedOnOffFiltersGroup);
 	
 	Ext.apply(c, {
-		items: this.items
+		id: aStaticClosedOnOffFiltersGroup.id
+		, items: this.items
 	});
 	
 	// constructor
@@ -80,17 +81,44 @@ Ext.extend(Sbi.formviewer.StaticClosedOnOffFiltersPanel, Ext.form.FormPanel, {
 	// private methods
 	
 	, init: function(aStaticClosedOnOffFiltersGroup) {
-		this.items = [];
 		
-		for (var i = 0; i < aStaticClosedOnOffFiltersGroup.options.length; i++) {
-			// create items
-			var anOption = aStaticClosedOnOffFiltersGroup.options[i];
-			this.items.push({
-				xtype: 'checkbox',
-				hideLabel: true,
-                boxLabel: anOption.text,
-                name: anOption.id
-			});
+		var title = aStaticClosedOnOffFiltersGroup.title;
+		// if a title is specified, a fieldset is created
+		if (title !== undefined && title !== null && title.trim() !== '') {
+			
+			this.items = {
+		            xtype: 'fieldset',
+		            title: aStaticClosedOnOffFiltersGroup.title,
+		            autoHeight: true,
+		            autoWidth: true,
+		            defaultType: 'checkbox',
+		            items: []
+		    }
+			
+			for (var i = 0; i < aStaticClosedOnOffFiltersGroup.options.length; i++) {
+				// create items
+				var anOption = aStaticClosedOnOffFiltersGroup.options[i];
+				this.items.items.push({
+					hideLabel: true,
+	                boxLabel: anOption.text,
+	                name: anOption.id
+				});
+			}
+			
+		} else {
+			
+			this.items = [];
+			
+			for (var i = 0; i < aStaticClosedOnOffFiltersGroup.options.length; i++) {
+				// create items
+				var anOption = aStaticClosedOnOffFiltersGroup.options[i];
+				this.items.push({
+					xtype: 'checkbox',
+					hideLabel: true,
+		            boxLabel: anOption.text,
+		            name: anOption.id
+				});
+			}
 		}
 		
 	}

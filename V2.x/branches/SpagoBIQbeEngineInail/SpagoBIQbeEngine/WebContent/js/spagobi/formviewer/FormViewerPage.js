@@ -73,6 +73,7 @@ Sbi.formviewer.FormViewerPage = function(template, config) {
 				handler: function() {
 		    		this.validateForm(function() {
 		    			var state = this.getFormState();
+		    			alert(state.toSource());
 		    			this.fireEvent('submit', state);
 		    		}, this);
 		    	},

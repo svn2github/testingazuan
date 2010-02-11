@@ -53,6 +53,7 @@ public class QbeJSONTemplateParser implements IQbeTemplateParser {
     public static String STATIC_XOR_FILTERS_PREFIX = "xorFilter-";
     public static String STATIC_XOR_OPTIONS_PREFIX = "option-";
     public static String STATIC_ON_OFF_FILTERS_PREFIX = "onOffFilter-";
+    public static String STATIC_ON_OFF_OPTIONS_PREFIX = "option-";
     public static String OPEN_FILTERS_PREFIX = "openFilter-";
     public static String DYNAMIC_FILTERS_PREFIX = "dynamicFilter-";
     public static String GROUPING_VARIABLE_PREFIX = "groupingVariable-";
@@ -103,19 +104,22 @@ public class QbeJSONTemplateParser implements IQbeTemplateParser {
 					JSONObject aStaticClosedFilter = (JSONObject) staticClosedFilters.get(i);
 					if (aStaticClosedFilter.getBoolean(STATIC_CLOSED_FILTER_SINGLE_SELECTION)) {
 						// xor filter
-						aStaticClosedFilter.put(ID, STATIC_XOR_FILTERS_PREFIX + xorFiltersCounter++);
+						aStaticClosedFilter.put(ID, STATIC_XOR_FILTERS_PREFIX + xorFiltersCounter);
 						JSONArray options = aStaticClosedFilter.getJSONArray(OPTIONS);
 						for (int j = 0; j < options.length(); j++) {
 							JSONObject anOption = (JSONObject) options.get(j);
 							anOption.put(ID, STATIC_XOR_OPTIONS_PREFIX + (j+1));
 						}
+						xorFiltersCounter++;
 					} else {
 						// on off filter
-						JSONArray filters = aStaticClosedFilter.getJSONArray(OPTIONS);
-						for (int j = 0; j < filters.length(); j++) {
-							JSONObject anOption = (JSONObject) filters.get(j);
-							anOption.put(ID, STATIC_ON_OFF_FILTERS_PREFIX + onOffFiltersCounter++);
+						aStaticClosedFilter.put(ID, STATIC_ON_OFF_FILTERS_PREFIX + onOffFiltersCounter);
+						JSONArray options = aStaticClosedFilter.getJSONArray(OPTIONS);
+						for (int j = 0; j < options.length(); j++) {
+							JSONObject anOption = (JSONObject) options.get(j);
+							anOption.put(ID, STATIC_ON_OFF_FILTERS_PREFIX + onOffFiltersCounter + "-" + STATIC_ON_OFF_OPTIONS_PREFIX + (j+1));
 						}
+						onOffFiltersCounter++;
 					}
 				}
 			}

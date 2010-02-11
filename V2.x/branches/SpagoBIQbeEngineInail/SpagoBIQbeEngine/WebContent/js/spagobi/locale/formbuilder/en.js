@@ -37,7 +37,8 @@ Sbi.locale.ln['sbi.formbuilder.dynamicfiltergroupeditor.remove'] = 'Remove';
 
 
 Sbi.locale.ln['sbi.formbuilder.dynamicfiltergroupwizard.title'] = 'Dynamic filter group definition';
-Sbi.locale.ln['sbi.formbuilder.dynamicfiltergroupwizard.operatorfieldlabel'] = 'Operator';
+Sbi.locale.ln['sbi.formbuilder.dynamicfiltergroupwizard.fields.filtername.label'] = 'Name';
+Sbi.locale.ln['sbi.formbuilder.dynamicfiltergroupwizard.fields.operatorfield.label'] = 'Operator';
 Sbi.locale.ln['sbi.formbuilder.dynamicfiltergroupwizard.buttons.apply'] = 'Apply';
 Sbi.locale.ln['sbi.formbuilder.dynamicfiltergroupwizard.buttons.cancel'] = 'Cancel';
 
@@ -102,6 +103,9 @@ Sbi.locale.ln['sbi.formbuilder.staticclosefiltergroupwizard.fields.allownoselect
 Sbi.locale.ln['sbi.formbuilder.staticclosefiltergroupwizard.fields.allownoselection.no'] = 'No';
 Sbi.locale.ln['sbi.formbuilder.staticclosefiltergroupwizard.fields.allownoselection.yes'] = 'Yes';
 Sbi.locale.ln['sbi.formbuilder.staticclosefiltergroupwizard.fields.noselectionoptionlabel.label'] = 'No selection option\'s label';
+Sbi.locale.ln['sbi.formbuilder.staticclosefiltergroupwizard.fields.booleanconnector.label'] = 'Boolean connector';
+Sbi.locale.ln['sbi.formbuilder.staticclosefiltergroupwizard.fields.booleanconnector.and'] = 'And';
+Sbi.locale.ln['sbi.formbuilder.staticclosefiltergroupwizard.fields.booleanconnector.or'] = 'Or';
 Sbi.locale.ln['sbi.formbuilder.staticclosefiltergroupwizard.fields.options'] = 'Options';
 Sbi.locale.ln['sbi.formbuilder.staticclosefiltergroupwizard.buttons.apply'] = 'Apply';
 Sbi.locale.ln['sbi.formbuilder.staticclosefiltergroupwizard.buttons.cancel'] = 'Cancel';

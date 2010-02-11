@@ -47,10 +47,11 @@
 Ext.ns("Sbi.console");
 
 Sbi.console.ActionButton = function(config) {
-	 
+	 	
 		var defaultSettings = {
-			//title: LN('sbi.console.title')
-			scope:this
+			iconCls: config.name
+			,tooltip: config.name 
+			,scope:this
 		};
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.actionButton) {
@@ -61,21 +62,21 @@ Sbi.console.ActionButton = function(config) {
 		
 		Ext.apply(this, c);
 		
-	
+		//Services definition
 		this.services = this.services || new Array();	
-		this.services['REFRESH'] = this.services['REFRESH'] || Sbi.config.serviceRegistry.getServiceUrl({
+		this.services['refresh'] = this.services['refresh'] || Sbi.config.serviceRegistry.getServiceUrl({
 			serviceName: 'REFRESH_ACTION'
 			, baseParams: new Object()
 		});
-			this.services['ERRORS'] = this.services['ERRORS'] || Sbi.config.serviceRegistry.getServiceUrl({
+			this.services['errors'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
 			serviceName: 'ERRORS_ACTION'
 			, baseParams: new Object()
 		});
-			this.services['WARNINGS'] = this.services['WARNINGS'] || Sbi.config.serviceRegistry.getServiceUrl({
+			this.services['warnings'] = this.services['warnings'] || Sbi.config.serviceRegistry.getServiceUrl({
 			serviceName: 'WARNINGS_ACTION'
 			, baseParams: new Object()
 		});
-			this.services['VIEWS'] = this.services['VIEWS'] || Sbi.config.serviceRegistry.getServiceUrl({
+			this.services['views'] = this.services['views'] || Sbi.config.serviceRegistry.getServiceUrl({
 			serviceName: 'VIEWS_ACTION'
 			, baseParams: new Object()
 		});

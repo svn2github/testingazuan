@@ -77,7 +77,7 @@ Sbi.console.GridPanel = function(config) {
 		                  , region: 'center'
 		                  , bodyStyle: 'padding: 8px'
 		                  , tbar: this.filterBar
-    			            , html: 'Io sono il grid panel !!!!!!!!!'
+    		              , html: 'Io sono il grid panel !!!!!!!!!'
 		});
 
 		// constructor
@@ -102,23 +102,34 @@ Ext.extend(Sbi.console.GridPanel, Ext.Panel, {
       var tmpFiltersConf = null;
       var tmpFilterBar = null;
       
-      tmpFilterBar = [{text: 'Refresh'
-                    , name: 'REFRESH'
+      tmpActions = [{name: 'refresh'
                     , hidden: false}
-                    , {text: 'Errors'
-                    , name: 'ERRORS'
+                    , {name: 'errors'
                     , hidden: false}
-                    , {text: 'Warnings'
-                    , name: 'WARNINGS'
+                    , {name: 'warnings'
                     , hidden: false}
-                    , {text: 'Views'
-                    , name: 'VIEWS'
+                    , {name: 'views'
                     , hidden: false}];
-                    
-      tmpFiltersConf = {actions: tmpFilterBar};
       
-      //  this.filterBar = new Sbi.console.FilteringToolbar(filterBar);	
-        this.filterBar = new Sbi.console.FilteringToolbar({actions: tmpFilterBar});
+      tmpFilters = [{text: 'Filtro 1'
+                    , column: 'column1'
+                    , operator: 'EQUALS_TO'
+                    ,operand: 'DISTINCT'}
+                    , {text: 'Filtro 2'
+                    , column: 'column2'
+                    , operator: 'EQUALS_TO'
+                    ,operand: 'DISTINCT'}
+                    , {text: 'Filtro 3'
+                    , column: 'column3'
+                    , operator: 'EQUALS_TO'
+                    ,operand: 'DISTINCT'}
+                    , {text: 'Filtro 4'
+                    , column: 'column4'
+                    , operator: 'EQUALS_TO'
+                    ,operand: 'DISTINCT'}];
+      
+      this.filterBar = new Sbi.console.FilteringToolbar({actions: tmpActions
+                                                       , filters: tmpFilters});
      }
     
     

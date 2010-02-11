@@ -50,7 +50,8 @@ Ext.ns("Sbi.console");
 Sbi.console.FilteringToolbar = function(config) {
 	
 		var defaultSettings = {
-			//title: LN('sbi.qbe.queryeditor.title')
+		    autoWidth: true
+		  , width:'100%'
 		};
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.filteringToolbar) {
@@ -74,8 +75,7 @@ Sbi.console.FilteringToolbar = function(config) {
 		this.initToolbarFilters(c.filters || {});
 		this.initToolbarActions(c.actions || {});
 	
-		c = Ext.apply(c, {  	
-	      	items:  this.toolbarElements
+		c = Ext.apply(c, {items:  this.toolbarElements
 		});
 
 		// constructor
@@ -99,22 +99,21 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
     // private methods
     	
     ,initToolbarFilters: function(filters) {
-    	
-		  this.toolbarElements.push({
-				 text: 'Filtro 1'//documents[i].text
-				,tooltip: 'Tooltip Filtro 1' //documents[i].tooltip
-				,scope: this
-			});
+    	for(var i=0; i < filters.length; i++){
+  		  this.toolbarElements.push({
+  				 text: filters[i].text
+  				,tooltip: filters[i].text
+  				,scope: this
+  			});
+  	  	}
 	  }
+	
 	  
 	  ,initToolbarActions: function(actions) {
-
-  		for(var i=0; i < actions.length; i++){
-  		  //alert("actions[i]: " + actions[i].toSource());
-  			this.toolbarElements.push(new Sbi.console.ActionButton(actions[i]));
-  			
-  	  }
-    
+		  	this.toolbarElements.push(new Ext.Toolbar.Spacer({width:1000}));
+	  		for(var i=0; i < actions.length; i++){
+	  			this.toolbarElements.push(new Sbi.console.ActionButton(actions[i]));
+	  	 	}
     }
     
 });

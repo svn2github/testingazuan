@@ -101,7 +101,6 @@ Sbi.profiling.ManageRoles = function(config) {
 	 }, this, {
 	 single: true
    });
-   	this.addEvents('delete', 'ready');
 }
 
 Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
@@ -121,20 +120,17 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	       header:  ' ',
 	       dataIndex: 'id',
 	       iconCls: 'icon-remove',
-	       scope: this,
 	       clickHandler: function(e, t) {
-	          //var index = Ext.getCmp("rolegrid").getView().findRowIndex(t);
-	          //var selectedRecord = this.rolesStore.getAt(index);
-	          //var roleId = selectedRecord.get('id');
-	          alert("dddddddd");
-	          //Ext.getCmp("rolegrid").fireEvent('delete', roleId);
+	          var index = Ext.getCmp("rolegrid").getView().findRowIndex(t);
+	          var selectedRecord = this.rolesStore.getAt(index);
+	          var roleId = selectedRecord.get('id');
+	          Ext.getCmp("rolegrid").fireEvent('deleteRoleService', roleId);
 	       }
 	       ,width: 25
 	       ,renderer : function(v, p, record){
 	           return '<center><img class="x-mybutton-'+this.id+' grid-button ' +this.iconCls+'" width="16px" height="16px" src="'+Ext.BLANK_IMAGE_URL+'"/></center>';
 	       }
        });
-
        this.colModel = new Ext.grid.ColumnModel([
          {id:'name',header: "name", width: 50, sortable: true, locked:false, dataIndex: 'name'},
          {header: "description", width: 150, sortable: true, dataIndex: 'description'},

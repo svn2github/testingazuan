@@ -19,11 +19,36 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base311.jsp"%>
+<%@ page import="it.eng.spagobi.commons.bo.Domain,
+				 java.util.ArrayList,
+				 java.util.List" %>
+<%
+
+	List<Domain> roleTypesCd = (List<Domain>) aSessionContainer.getAttribute("roleTypes");
+
+%>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/service/ServiceRegistry.js")%>'></script>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/profiling/ManageRoles.js")%>'></script>
 
+<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi.exception.ExceptionHandler.js")%>'></script>
 <script type="text/javascript">
-	var config = {};
+
+	<%
+	String types ="{}";
+	if(roleTypesCd != null){
+		types="[";
+		for(int i=0; i< roleTypesCd.size(); i++){
+			Domain domain = roleTypesCd.get(i);
+			//types+="{typeCd: '"+domain.getValueCd()+"'}";
+			types+="['"+domain.getValueCd()+"']";
+			if(i != (roleTypesCd.size()-1)){
+				types+=",";
+			}
+		}
+		types+="]";
+	}
+	%>
+	var config=<%= types%>;
 	var url = {
     	host: '<%= request.getServerName()%>'
     	, port: '<%= request.getServerPort()%>'

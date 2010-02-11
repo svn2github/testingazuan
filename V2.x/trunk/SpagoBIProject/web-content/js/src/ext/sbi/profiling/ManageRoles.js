@@ -121,6 +121,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	       dataIndex: 'id',
 	       iconCls: 'icon-remove',
 	       clickHandler: function(e, t) {
+	       		alert('Son dentro');
 	          var index = Ext.getCmp("rolegrid").getView().findRowIndex(t);
 	          var selectedRecord = this.rolesStore.getAt(index);
 	          var roleId = selectedRecord.get('id');
@@ -310,6 +311,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	                  xtype: 'grid',
    	                  ds: this.rolesStore,   	                  
    	                  cm: this.colModel,
+   	                  plugins: this.deleteColumn,
    	                  sm: new Ext.grid.RowSelectionModel({
    	                      singleSelect: true,
    	                      scope:this,   	                   

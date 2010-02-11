@@ -231,7 +231,11 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 	// Sbi.user.functionalities is a javascript array containing all user functionalities' names
 	Sbi.user.functionalities = <%= buffer.toString() %>;
 </script>
+
+<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/service/ServiceRegistry.js")%>'></script>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/lib/ext-3.1.1/ux/grid/Ext.grid.ButtonColumn.js")%>'></script> 
+<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-3.1.1/ux/grid/Ext.ux.grid.RowEditor.js")%>"></script> 
+<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/profiling/ManageAttributes.js")%>'></script>
 <%-- <SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>--%>
 
 <!-- import css  --> 
@@ -239,6 +243,11 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 	// based on mode import right css 
 	if (sbiMode.equalsIgnoreCase("WEB")) {
 %>
+
+<link rel='stylesheet' 
+		type='text/css' 
+		href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/execution/main.css",currTheme)
+		%>'/>
 <LINK rel='StyleSheet' 
       href='<%=urlBuilder.getResourceLinkByTheme(request, "css/spagobi_wa.css",currTheme)%>' 
       type='text/css' />
@@ -286,7 +295,11 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
       href='<%=urlBuilder.getResourceLink(request, "js/lib/ext-3.1.1/resources/css/"+extTheme)%>'
       type='text/css' />
       
-<link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/execution/main.css",currTheme)%>'/>      
+<link rel='stylesheet' 
+		type='text/css' 
+		href='<%=urlBuilder.getResourceLink(request, "js/lib/ext-3.1.1/ux/css/RowEditor.css")
+		%>'/> 
+      
       	  
  <!--   for web menu
 <LINK rel='StyleSheet' 

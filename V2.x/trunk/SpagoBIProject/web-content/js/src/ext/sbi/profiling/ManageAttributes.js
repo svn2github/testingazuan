@@ -104,15 +104,27 @@ Sbi.profiling.ManageAttributes = function(config) {
 	
 	// Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
 	this.userColumns =  [
-	    {header: "Name", width: 100, sortable: true, dataIndex: 'name', editor: new Ext.form.TextField({})},
-	    {header: "Description", width: 100, sortable: true, dataIndex: 'description', editor: new Ext.form.TextField({})},
+	    {header: "Name", width: 250, sortable: true, dataIndex: 'name', editor: 
+	    		new Ext.form.TextField({
+	    				maxLength:255,
+	    				minLength:1,
+	    				regex : new RegExp("[A-Za-z0-9_]", "g"),
+	    				regexText : 'Ciao voglio solo una stringa alfanumerica'
+	    				})},
+	    {header: "Description", width: 250, sortable: true, dataIndex: 'description', editor: new Ext.form.TextField({maxLength:500,minLength:1})},
 	];
-
 	
 	 // use RowEditor for editing
     this.editor = new Ext.ux.grid.RowEditor({
         saveText: 'Update'
     });
+    
+    this.editor.on({
+  			scope: this,
+  			afteredit: function() {
+ 				this.store.commitChanges();
+		  }
+		});
 
     // Create a typical GridPanel with RowEditor plugin
     
@@ -138,8 +150,8 @@ Sbi.profiling.ManageAttributes = function(config) {
         frame: true,
         title: 'Profile Attributes',
         autoScroll: true,
-        height: 300,
-        width: 500,
+        height: 400,
+        width: 600,
         store: this.store,
         plugins: [this.editor],
         columns : this.userColumns,
@@ -191,6 +203,7 @@ Ext.extend(Sbi.profiling.ManageAttributes, Ext.grid.GridPanel, {
 					url: this.services['manageAttributesDelete']
 			});
         this.store.remove(rec);
+        this.store.commitChanges();
         this.store.proxy = new Ext.data.HttpProxy({
 					url: this.services['manageAttributes']
 			});

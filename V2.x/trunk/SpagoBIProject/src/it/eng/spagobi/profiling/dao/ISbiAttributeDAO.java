@@ -39,6 +39,8 @@ public interface ISbiAttributeDAO {
 	public List<SbiAttribute> loadSbiAttributes() throws EMFUserError;
 	
 	public Integer saveSbiAttribute(SbiAttribute attribute) throws EMFUserError;
+	
+	public void saveOrUpdateSbiAttribute(SbiAttribute attribute) throws EMFUserError;
 
 	public SbiUserAttributes loadSbiAttributesByUserAndId(Integer userId, Integer id)	throws EMFUserError;
 	

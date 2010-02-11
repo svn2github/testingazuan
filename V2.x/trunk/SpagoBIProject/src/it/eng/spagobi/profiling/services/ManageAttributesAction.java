@@ -81,31 +81,76 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 
 		String serviceType = this.getAttributeAsString(MESSAGE_DET);
 		logger.debug("Service type "+serviceType);
-		if (serviceType != null && serviceType.equalsIgnoreCase(ATTR_LIST)) {
+		
+		if (serviceType != null && serviceType.contains(ATTR_LIST)) {
+			String name = null;
+			String description =null;
+			String idStr = null;
 			try {
-				ArrayList<SbiAttribute> attributes = (ArrayList<SbiAttribute>)attrDao.loadSbiAttributes();
-				logger.debug("Loaded attributes list");
-				JSONArray attributesJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(attributes,	locale);
-				JSONObject attributesResponseJSON = createJSONResponseAttributes(attributesJSON);
-
-				writeBackToClient(new JSONSuccess(attributesResponseJSON));
+				BufferedReader b =httpRequest.getReader();
+				if(b!=null){
+					String respJsonObject = b.readLine();
+					if(respJsonObject!=null){
+						JSONObject responseJSON = deserialize(respJsonObject);
+						JSONObject samples = responseJSON.getJSONObject(SAMPLES);
+						if(!samples.isNull(ID)){
+							idStr = samples.getString(ID);
+						}
+						if(!samples.isNull(NAME)){
+							name = samples.getString(NAME);
+						}
+						if(!samples.isNull(DESCRIPTION)){
+							description = samples.getString(DESCRIPTION);
+						}
+						
+						SbiAttribute attribute = new SbiAttribute();
+						if(description!=null){
+							attribute.setDescription(description);
+						}
+						if(name!=null){
+							attribute.setAttributeName(name);
+						}
+						if(idStr!=null && !idStr.equals("")){
+							Integer attributeId = new Integer(idStr);
+							attribute.setAttributeId(attributeId.intValue());
+						}
+						attrDao.saveOrUpdateSbiAttribute(attribute);
+						logger.debug("Attribute updated");
+						JSONObject attributesResponseSuccessJSON = new JSONObject();
+						attributesResponseSuccessJSON.put("success", true);
+						attributesResponseSuccessJSON.put("message", "Added User 1");
+						attributesResponseSuccessJSON.put("data", "[]");
+						writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );		
+						
+						//else the List of attributes will be sent to the client
+					}else{
+						getAttributesList(locale,attrDao);
+					}
+				}else{
+					getAttributesList(locale,attrDao);
+				}
 
 			} catch (Throwable e) {
 				logger.error(e.getMessage(), e);
 				throw new SpagoBIServiceException(SERVICE_NAME,
 						"Exception occurred while retrieving attributes", e);
 			}
-		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(ATTR_INSERT)) {
-
+		} /*else if (serviceType != null	&& serviceType.equalsIgnoreCase(ATTR_INSERT)) {
+		
 			String name = null;
 			String description =null;
 			try {
 				BufferedReader b =httpRequest.getReader();
-				String respJsonObject = b.readLine();
-				JSONObject responseJSON = deserialize(respJsonObject);
-				JSONObject samples = responseJSON.getJSONObject(SAMPLES);
-				name = samples.getString(NAME);
-				description = samples.getString(DESCRIPTION);
+				if(b!=null){
+					String respJsonObject = b.readLine();
+					if(respJsonObject!=null){
+						JSONObject responseJSON = deserialize(respJsonObject);
+						JSONObject samples = responseJSON.getJSONObject(SAMPLES);
+					
+						name = samples.getString(NAME);
+						description = samples.getString(DESCRIPTION);
+					}
+				}
 				
 			} catch (IOException e1) {
 				logger.error("IO Exception",e1);
@@ -126,7 +171,7 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 				try {
 					attrDao.saveSbiAttribute(attribute);
 					logger.debug("New attribute inserted");
-					writeBackToClient( new JSONAcknowledge("Operazion succeded") );
+					writeBackToClient( new JSONSuccess("Operation succeded") );
 
 				} catch (Throwable e) {
 					logger.error(e.getMessage(), e);
@@ -138,14 +183,18 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 				logger.error("Missing attribute name");
 				throw new SpagoBIServiceException(SERVICE_NAME,	"Please enter attribute name");
 			}
-		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(ATTR_DELETE)) {
+		}*/ else if (serviceType != null	&& serviceType.equalsIgnoreCase(ATTR_DELETE)) {
 			
 			String idStr = null;
 			try {
 				BufferedReader b =httpRequest.getReader();
-				String respJsonObject = b.readLine();
-				JSONObject responseJSON = deserialize(respJsonObject);
-				idStr = responseJSON.getString(SAMPLES);
+				if(b!=null){
+					String respJsonObject = b.readLine();
+					if(respJsonObject!=null){
+						JSONObject responseJSON = deserialize(respJsonObject);
+						idStr = responseJSON.getString(SAMPLES);
+					}
+				}
 				
 			} catch (IOException e1) {
 				logger.error("IO Exception",e1);
@@ -162,7 +211,11 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 				try {
 					attrDao.deleteSbiAttributeById(id);
 					logger.debug("Attribute deleted");
-					writeBackToClient( new JSONAcknowledge("Operazion succeded") );
+					JSONObject attributesResponseSuccessJSON = new JSONObject();
+					attributesResponseSuccessJSON.put("success", true);
+					attributesResponseSuccessJSON.put("message", "Destroyed User 1");
+					attributesResponseSuccessJSON.put("data", "[]");
+					writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );
 	
 				} catch (Throwable e) {
 					logger.error("Exception occurred while deleting attribute", e);
@@ -175,6 +228,17 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 		logger.debug("OUT");
 		
 	}
+	
+	private void getAttributesList(Locale locale,ISbiAttributeDAO attrDao) throws SerializationException, IOException, EMFUserError, JSONException{
+		ArrayList<SbiAttribute> attributes = (ArrayList<SbiAttribute>)attrDao.loadSbiAttributes();
+		logger.debug("Loaded attributes list");
+		JSONArray attributesJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(attributes,	locale);
+		JSONObject attributesResponseJSON = createJSONResponseAttributes(attributesJSON);
+
+		writeBackToClient(new JSONSuccess(attributesResponseJSON));
+
+	}
+	
 	/**
 	 * Creates a json array with children attributes informations
 	 * 

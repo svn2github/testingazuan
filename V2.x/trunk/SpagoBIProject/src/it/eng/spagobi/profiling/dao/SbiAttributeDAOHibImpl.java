@@ -27,6 +27,7 @@ import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.bean.SbiUser;
 import it.eng.spagobi.profiling.bean.SbiUserAttributes;
+import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetadata;
 
 import java.util.HashMap;
 import java.util.List;
@@ -121,6 +122,44 @@ public class SbiAttributeDAOHibImpl extends AbstractHibernateDAO implements
 			tx.commit();
 			logger.debug("OUT");
 			return id;
+		} catch (HibernateException he) {
+			logger.error(he.getMessage(),he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+			}
+		}
+
+	}
+	
+	public void saveOrUpdateSbiAttribute(SbiAttribute attribute) throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiAttribute hibAttribute = attribute;
+			int id = attribute.getAttributeId();
+			if(id!=0){
+				hibAttribute = (SbiAttribute)aSession.load(SbiAttribute.class,  attribute.getAttributeId());
+				String name = attribute.getAttributeName();
+				String description = attribute.getDescription();
+				if(name!=null){
+					hibAttribute.setAttributeName(name);
+				}
+				if(description!=null){
+					hibAttribute.setDescription(description);
+				}
+			}
+			aSession.saveOrUpdate(hibAttribute);
+
+			tx.commit();
+			logger.debug("OUT");
 		} catch (HibernateException he) {
 			logger.error(he.getMessage(),he);
 			if (tx != null)

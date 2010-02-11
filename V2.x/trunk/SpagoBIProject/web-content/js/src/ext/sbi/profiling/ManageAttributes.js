@@ -59,12 +59,6 @@ Sbi.profiling.ManageAttributes = function(config) {
 			, baseParams: paramsInsert
 		});
 		
-	var paramsUpdate = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: 'ATTR_UPDATE'};
-	this.services['manageAttributesUpdate'] = Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'MANAGE_ATTRIBUTES_ACTION'
-			, baseParams: paramsUpdate
-		});
-		
 	var paramsDelete = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: 'ATTR_DELETE'};
 	this.services['manageAttributesDelete'] = Sbi.config.serviceRegistry.getServiceUrl({
 			serviceName: 'MANAGE_ATTRIBUTES_ACTION'
@@ -179,12 +173,11 @@ Ext.extend(Sbi.profiling.ManageAttributes, Ext.grid.GridPanel, {
            name: '',
            description : ''
         });
-        this.store.proxy = new Ext.data.HttpProxy({
-					url: this.services['manageAttributesInsert']
-			});
         this.editor.stopEditing();
         this.store.insert(0, u);
         this.editor.startEditing(0);
+        this.store.commitChanges();
+
     }
     /**
      * onDelete
@@ -198,6 +191,10 @@ Ext.extend(Sbi.profiling.ManageAttributes, Ext.grid.GridPanel, {
 					url: this.services['manageAttributesDelete']
 			});
         this.store.remove(rec);
+        this.store.proxy = new Ext.data.HttpProxy({
+					url: this.services['manageAttributes']
+			});
+
     }
 
 

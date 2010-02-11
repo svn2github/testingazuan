@@ -71,12 +71,22 @@ Sbi.console.FilteringToolbar = function(config) {
 		
 		this.addEvents('customEvents');
 		*/
-		this.toolbarElements = [];
-		this.initToolbarFilters(c.filters || {});
+		
+		
+		if (c.type === 'default'){
+		    this.initDefaultFilters(c.filters || {});
+    }
+    else if (c.type === 'custom'){
+     //   this.initCustomFilters(c || {});
+      this.toolbarElements = new Sbi.console.CustomFilteringToolbar(c);
+    }
+    else if (c.type === 'automatic'){
+      this.initAutomaticFilters(c.filters || {});
+    }
+		//adds general action buttons
 		this.initToolbarActions(c.actions || {});
 	
-		c = Ext.apply(c, {items:  this.toolbarElements
-		});
+		c = Ext.apply(c, {items:  this.toolbarElements});
 
 		// constructor
 		Sbi.console.FilteringToolbar.superclass.constructor.call(this, c);
@@ -87,7 +97,7 @@ Sbi.console.FilteringToolbar = function(config) {
 Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
     
     services: null
-    , toolbarElements:null
+  , toolbarElements:null
     
     
 
@@ -98,22 +108,36 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
     
     // private methods
     	
-    ,initToolbarFilters: function(filters) {
-    	for(var i=0; i < filters.length; i++){
-  		  this.toolbarElements.push({
-  				 text: filters[i].text
-  				,tooltip: filters[i].text
-  				,scope: this
-  			});
-  	  	}
+    ,initDefaultFilters: function(filtersConf) {
+        this.toolbarElements = [];
+      	for(var i=0; i < filtersConf.length; i++){
+    		  this.toolbarElements.push({
+    				 text: filtersConf[i].text
+    				,tooltip: filtersConf[i].text
+    				,scope: this
+    			});        			
+    	  }
+	  }
+	  
+	  
+    ,initAutomaticFilters: function(filtersConf) {
+        this.toolbarElements = [];
+      	alert('initAutomaticFilters...working in progress...');
 	  }
 	
-	  
+	   //this method adds buttons for each available action
 	  ,initToolbarActions: function(actions) {
-		  	this.toolbarElements.push(new Ext.Toolbar.Spacer({width:1000}));
-	  		for(var i=0; i < actions.length; i++){
-	  			this.toolbarElements.push(new Sbi.console.ActionButton(actions[i]));
-	  	 	}
+  	   if(this.toolbarElements === null){
+  	     this.toolbarElements = [];
+       }
+       
+       this.toolbarElements.add(new Ext.Toolbar.Spacer({width:1000}));
+  	  // this.toolbarElements.push(new Ext.Toolbar.Spacer({width:1000}));
+    		for(var i=0; i < actions.length; i++){
+    			//this.toolbarElements.push(new Sbi.console.ActionButton(actions[i]));
+    			this.toolbarElements.add(new Sbi.console.ActionButton(actions[i]));
+    	  }
+    
     }
     
 });

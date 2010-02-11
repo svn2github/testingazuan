@@ -99,10 +99,9 @@ Ext.extend(Sbi.console.GridPanel, Ext.Panel, {
     //  -- private methods ---------------------------------------------------------
     
    , initFilterBar: function(filterBar) {
-      var tmpFiltersConf = null;
-      var tmpFilterBar = null;
       
-      tmpActions = [{name: 'refresh'
+      //Template simulator:
+      var tmpActions = [{name: 'refresh'
                     , hidden: false}
                     , {name: 'errors'
                     , hidden: false}
@@ -111,25 +110,30 @@ Ext.extend(Sbi.console.GridPanel, Ext.Panel, {
                     , {name: 'views'
                     , hidden: false}];
       
-      tmpFilters = [{text: 'Filtro 1'
+      var tmpFilters = [{text: 'Filtro 1'
                     , column: 'column1'
                     , operator: 'EQUALS_TO'
-                    ,operand: 'DISTINCT'}
+                    , operand: 'DISTINCT'}
                     , {text: 'Filtro 2'
                     , column: 'column2'
                     , operator: 'EQUALS_TO'
-                    ,operand: 'DISTINCT'}
+                    , operand: 'DISTINCT'}
                     , {text: 'Filtro 3'
                     , column: 'column3'
                     , operator: 'EQUALS_TO'
-                    ,operand: 'DISTINCT'}
+                    , operand: 'DISTINCT'}
                     , {text: 'Filtro 4'
                     , column: 'column4'
                     , operator: 'EQUALS_TO'
-                    ,operand: 'DISTINCT'}];
-      
-      this.filterBar = new Sbi.console.FilteringToolbar({actions: tmpActions
-                                                       , filters: tmpFilters});
+                    , operand: 'DISTINCT'}];
+                    
+      var tmpDefaults = { operator: 'EQUALS_TO'
+                        , operand: 'DISTINCT'};
+
+      this.filterBar = new Sbi.console.FilteringToolbar({type:'custom'  //custom | default | automatic
+                                                        , defaults: tmpDefaults
+                                                        , actions: tmpActions
+                                                        , filters: tmpFilters});
      }
     
     

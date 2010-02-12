@@ -64,19 +64,7 @@ Sbi.profiling.ManageUsers = function(config) {
 		, baseParams: paramsDel
 	});
 	
-	this.usersStore = new Ext.data.JsonStore({
-    	autoLoad: false    	
-    	,fields: ['userId'
-    	          , 'fullName'
-    	          , 'userRoles'
-    	          , 'userAttributes'
-    	          ]
-    	, root: 'samples'
-		, url: this.services['manageUsersList']
-		
-	});
-	
-	this.usersStore.load();
+	this.initStores();
 	
 	this.initManageUsers();
 	   
@@ -97,7 +85,36 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	, typeData: null
 	, buttons: null
 	, tabs: null
+	, attributesGridPanel: null
+	, attributesStore: null
+	, smRoles: null
+	, rolesGrid: null
+	, rolesStore: null
 
+	, initStores: function () {
+	
+		this.usersStore = new Ext.data.JsonStore({
+	    	autoLoad: false    	
+	    	,fields: ['userId'
+	    	          , 'fullName'
+	    	          , 'userRoles'
+	    	          , 'userAttributes'
+	    	          ]
+	    	, root: 'samples'
+			, url: this.services['manageUsersList']			
+		});
+		
+		this.usersStore.load();
+		
+		this.attributesStore = new Ext.data.SimpleStore({
+	        fields : [ 'id', 'name', 'value' ]
+	    });
+	    
+	    this.rolesStore = new Ext.data.SimpleStore({
+	        fields : [ 'id', 'name', 'description' ]
+	    });
+	    
+    }
 	
 	,initManageUsers: function(){
 
@@ -136,8 +153,10 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	        	}
  	   		}
 	   }];
+	   
+	   this.initAttributesGridPanel();
+	   this.initRolesGridPanel();
 
- 	   
  	   this.tabs = new Ext.TabPanel({
            enableTabScroll : true
            , activeTab : 0
@@ -177,13 +196,14 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		        title: 'Roles'
 		        //,html: 'Is Able to'
 		        , layout: 'fit'
-		        //, items: this.checkGroup
+		        , items: [this.rolesGrid]
 		        , itemId: 'roles'
 		    },{
 		        title: 'Attributes'
-		        //,html: 'Is Able to'
-		        , layout: 'fit'
-		        //, items: this.checkGroup
+	            , items : [ this.attributesGridPanel ]
+	           // , autoWidth : true
+	           // , autoHeight : true
+		        //, layout: 'fit'
 		        , itemId: 'attributes'
 		    }]
 		});
@@ -210,16 +230,35 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	                  ds: this.usersStore,   	                  
    	                  cm: this.colModel,
    	                  plugins: this.deleteColumn,
-   	                  sm: new Ext.grid.RowSelectionModel({
+   	                  sm: new Ext.grid.RowSelectionModel({   	                  	  
    	                      singleSelect: true,
    	                      scope:this,   	                   
-	   	                  //fillChecks : function(row, rec) {	  
-	   	                   	  
-	   	                 // },
+	   	                  fillRoles : function(row, rec) {	 
+							Ext.getCmp("roles-form").store.removeAll();
+	   	                   	var tempArr = rec.data.userRoles;
+	   	                  	var length = rec.data.userRoles.length;
+	   	                  	for(var i=0;i<length;i++){
+	   	                  		var tempRecord = new Ext.data.Record({"description":tempArr[i].value,"name":tempArr[i].name,"id":tempArr[i].id });
+							    Ext.getCmp("roles-form").store.add(tempRecord);	
+	   	                  	}	
+	   	                  	
+	   	                  },
+	   	                  fillAttributes : function(row, rec) {	 
+	   	                    Ext.getCmp("attributes-form").store.removeAll();
+	   	                  	var tempArr = rec.data.userAttributes;
+	   	                  	var length = rec.data.userAttributes.length;
+	   	                  	for(var i=0;i<length;i++){
+	   	                  		var tempRecord = new Ext.data.Record({"value":tempArr[i].value,"name":tempArr[i].name,"id":tempArr[i].id });
+							    Ext.getCmp("attributes-form").store.add(tempRecord);	
+	   	                  	}			        
+ 
+	   	                  },
    	                      listeners: {
-   	                          rowselect: function(sm, row, rec) {   	  
-   	                	  		  //this.fillChecks(row, rec);
-   	                              Ext.getCmp("user-form").getForm().loadRecord(rec);      	                              
+   	                          rowselect: function(sm, row, rec) {   
+   	                              Ext.getCmp("user-form").getForm().loadRecord(rec);  	
+   	                          	  this.fillRoles(row, rec);  
+   	                	  		  this.fillAttributes(row, rec);
+   	                                  	                              
    	                          }
    	                      }
    	                  }),
@@ -249,6 +288,73 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	      });
 
 	}
+	
+	, initAttributesGridPanel : function() {
+        
+        this.attributesGridPanel = new Ext.grid.EditorGridPanel({
+            id: 'attributes-form',
+            store : this.attributesStore,
+            autoHeight : true,
+            columns : [ {
+                header : 'Name',
+                width : 75,
+                sortable : true,
+                dataIndex : 'name'
+            }, {
+                header : 'Value',
+                width : 75,
+                sortable : true,
+                dataIndex : 'value',
+                editor : new Ext.form.TextField({}) 
+            } ],
+            viewConfig : {
+                forceFit : true,
+                scrollOffset : 2
+            // the grid will never have scrollbars
+            },
+            singleSelect : true,
+            clicksToEdit : 2
+        });
+
+    }
+    
+    , initRolesGridPanel : function() {
+    
+    	var cm = new Ext.grid.ColumnModel([		   
+	       {
+	       	  header: "Name",
+	       	  sortable : true,
+	          dataIndex: 'name',
+	          width: 75
+	       },{
+	       	  header: "Description",
+	       	  sortable : true,
+	          dataIndex: 'description',
+	          width: 75
+	       }	       
+	    ]);
+	    
+    	this.smRoles = new Ext.grid.CheckboxSelectionModel( {singleSelect: false } );
+		this.smRoles.on('rowselect', this.onSelect, this);
+		this.smRoles.on('rowdeselect', this.onDeselect, this);
+		
+		this.rolesGrid = new Ext.grid.GridPanel({
+			  store: this.rolesStore
+			, id: 'roles-form'
+   	     	, cm: cm
+   	     	, sm: this.smRoles
+   	     	, frame: false
+   	     	, border:false  
+   	     	, collapsible:false
+   	     	, loadMask: true
+   	     	, viewConfig: {
+   	        	forceFit:true
+   	        	, enableRowBody:true
+   	        	, showPreview:true
+   	     	}
+		});
+	}
+	
 	,save : function() {
         //get the last record
         var lastRec = this.usersStore.getCount();

@@ -68,7 +68,7 @@ public class UserJSONSerializer implements Serializer {
 			List<Integer> userRoles = userBO.getSbiExtUserRoleses();
 			Iterator itRoles = userRoles.iterator();
 			JSONArray rolesJSON = new JSONArray();
-			rolesJSON.put("roles");
+			//rolesJSON.put("roles");
 
 			while(itRoles.hasNext()){
 				JSONObject jsonRole = new JSONObject();
@@ -86,7 +86,7 @@ public class UserJSONSerializer implements Serializer {
 			HashMap<Integer, HashMap<String, String>> userAttributes = userBO.getSbiUserAttributeses();
 			Iterator itAttrs = userAttributes.keySet().iterator();
 			JSONArray attrsJSON = new JSONArray();
-			attrsJSON.put("attributes");
+			//attrsJSON.put("attributes");
 
 			while(itAttrs.hasNext()){
 				JSONObject jsonAttr = new JSONObject();

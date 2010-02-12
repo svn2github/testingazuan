@@ -29,7 +29,6 @@ import org.json.JSONObject;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.utilities.StringUtilities;
-import it.eng.spagobi.engines.qbe.QbeEngineAnalysisState;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 
@@ -181,6 +180,10 @@ public class QbeXMLTemplateParser implements IQbeTemplateParser{
 			
 			for(int i = 0; i < modalities.size(); i++) {
 				modalitySB = (SourceBean)modalities.get(i);
+				String recursiveFilteringAttr = (String)modalitySB.getAttribute(DataMartModelAccessModality.ATTR_RECURSIVE_FILTERING);
+				if(!StringUtilities.isEmpty(recursiveFilteringAttr)) {
+					compositeModalitySB.setAttribute(DataMartModelAccessModality.ATTR_RECURSIVE_FILTERING, recursiveFilteringAttr);
+				}
 				List tables = modalitySB.getAttributeAsList(TAG_MODALITY_TABLE);
 				for(int j = 0; j < tables.size(); j++) {
 					SourceBean tableSB = (SourceBean)tables.get(j);

@@ -75,6 +75,8 @@ Sbi.profiling.ManageUsers = function(config) {
 	 }, this, {
 	 single: true
    });
+   
+   	Ext.getCmp('usergrid').on('delete', this.deleteSelectedUser, this);
 	
 }
 
@@ -124,11 +126,11 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	       dataIndex: 'id',
 	       iconCls: 'icon-remove',
 	       clickHandler: function(e, t) {
-	       		alert('Son dentro');
 	          var index = Ext.getCmp("usergrid").getView().findRowIndex(t);
-	          var selectedRecord = this.usersStore.getAt(index);
-	          var roleId = selectedRecord.get('id');
-	          Ext.getCmp("usergrid").fireEvent('deleteRoleService', roleId);
+	          
+	          var selectedRecord = Ext.getCmp("usergrid").store.getAt(index);
+	          var userId = selectedRecord.get('id');
+	          Ext.getCmp("usergrid").fireEvent('delete', userId, index);
 	       }
 	       ,width: 25
 	       ,renderer : function(v, p, record){
@@ -161,8 +163,8 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
            enableTabScroll : true
            , activeTab : 0
            , autoScroll : true
-           , width: 320
-           , height: 350
+           , width: 450
+           , height: 450
            , itemId: 'tabs'
 		   , items: [{
 		        title: 'Details'
@@ -219,7 +221,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	          title: 'Users Management',
    	          buttons: this.addBtn,
    	          bodyStyle:'padding:5px',
-   	          width: 750,
+   	          width: 850,
    	          layout: 'column',
    	          items: [{
    	              columnWidth: 0.90,
@@ -240,6 +242,10 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	   	                  	for(var i=0;i<length;i++){
 	   	                  		var tempRecord = new Ext.data.Record({"description":tempArr[i].value,"name":tempArr[i].name,"id":tempArr[i].id });
 							    Ext.getCmp("roles-form").store.add(tempRecord);	
+							    if(tempArr[i].checked===true){
+							     	//alert(Ext.getCmp("roles-form").getColumnModel().getColumnById('2').toSource());
+							     	//Ext.getCmp("roles-form").getColumnModel().getColumnById('2').selectFirstRow();	
+							    }
 	   	                  	}	
 	   	                  	
 	   	                  },
@@ -263,7 +269,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	                      }
    	                  }),
    	                  //autoExpandColumn: 'fullName',
-   	                  height: 350,
+   	                  height: 450,
    	                  title:'Users list',
 	   	 	   	      tools:[{
 	  		   	        id:'plus'
@@ -295,12 +301,12 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
             id: 'attributes-form',
             store : this.attributesStore,
             autoHeight : true,
-            columns : [ {
+            columns : [ {          	
                 header : 'Name',
                 width : 75,
                 sortable : true,
                 dataIndex : 'name'
-            }, {
+            }, {           	
                 header : 'Value',
                 width : 75,
                 sortable : true,
@@ -319,24 +325,26 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
     }
     
     , initRolesGridPanel : function() {
-    
-    	var cm = new Ext.grid.ColumnModel([		   
+       
+    	this.smRoles = new Ext.grid.CheckboxSelectionModel( {id: '2',singleSelect: false } );
+		this.smRoles.on('rowselect', this.onRoleSelect, this);
+		this.smRoles.on('rowdeselect', this.onRoleDeselect, this);
+		
+		var cm = new Ext.grid.ColumnModel([		   
 	       {
+	       	  id: '0',
 	       	  header: "Name",
 	       	  sortable : true,
 	          dataIndex: 'name',
 	          width: 75
 	       },{
+	       	  id: '1',
 	       	  header: "Description",
 	       	  sortable : true,
 	          dataIndex: 'description',
 	          width: 75
-	       }	       
+	       },   this.smRoles    
 	    ]);
-	    
-    	this.smRoles = new Ext.grid.CheckboxSelectionModel( {singleSelect: false } );
-		this.smRoles.on('rowselect', this.onSelect, this);
-		this.smRoles.on('rowdeselect', this.onDeselect, this);
 		
 		this.rolesGrid = new Ext.grid.GridPanel({
 			  store: this.rolesStore
@@ -353,6 +361,14 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	        	, showPreview:true
    	     	}
 		});
+	}
+	
+	,onRoleSelect: function(){
+	
+	}
+	
+	,onRoleDeselect: function(){
+	
 	}
 	
 	,save : function() {
@@ -516,37 +532,48 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
         // commit the change (removes dirty flag):
         record.commit();		
 	}
-	, deleteSelectedRole: function() {
-		var recordSelected = this.getSelectionModel().getSelected();
-		if (recordsSelected) {
-			var id = recordSelected.get('id');
+		, deleteSelectedUser: function(userId, index) {
+		Ext.MessageBox.confirm(
+            'Please confirm',
+            'Confirm User delete?',            
+            function(btn, text) {
+                if (btn=='yes') {
+                	if (userId != null) {	
+
+						Ext.Ajax.request({
+				            url: this.services['deleteUserService'],
+				            params: {'id': userId},
+				            method: 'GET',
+				            success: function(response, options) {
+								if (response !== undefined) {
+									//this.rolesStore.load();
+									var sm = Ext.getCmp('usergrid').getSelectionModel();
+									var deleteRow = sm.getSelected();
+									this.usersStore.remove(deleteRow);
+									this.usersStore.commitChanges();
+								} else {
+									Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting User', 'Service Error');
+								}
+				            },
+				            failure: function() {
+				                Ext.MessageBox.show({
+				                    title: 'Error',
+				                    msg: 'Error in deleting User',
+				                    width: 150,
+				                    buttons: Ext.MessageBox.OK
+				               });
+				            }
+				            ,scope: this
 			
-			Ext.Ajax.request({
-		        url: this.services['deleteRoleService'],
-		        params: {'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID, 'id': id},
-		        success : function(response, options) {
-		      		if (response && response.responseText !== undefined) {
-		      			var content = Ext.util.JSON.decode( response.responseText );
-		      			if (content !== undefined && content.result == 'OK') {
-			  	  			// removes the subobjects from the store
-			  	  			for (var count = 0; count < recordsSelected.length; count++) {
-			  	  				this.subObjectsStore.remove(recordsSelected[count]);
-			  	  			}
-		      			} else {
-			      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting role', 'Service Error');
-			      		}
-		      		} else {
-		      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting role', 'Service Error');
-		      		}
-		        },
-		        scope: this,
-				failure: Sbi.exception.ExceptionHandler.handleFailure      
-			});
-		} else {
-			Sbi.exception.ExceptionHandler.showWarningMessage('Operation failed', 'Warning');
-		}
+						});
+					} else {
+						Sbi.exception.ExceptionHandler.showWarningMessage('Operation failed', 'Warning');
+					}
+                }
+            },
+            this
+		);
 	}
-  
 
 });
 

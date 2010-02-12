@@ -23,6 +23,7 @@ package it.eng.spagobi.chiron.serializer;
 
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.bean.SbiExtUserRoles;
 import it.eng.spagobi.profiling.bean.SbiUserAttributes;
 import it.eng.spagobi.profiling.bo.UserBO;
@@ -65,12 +66,34 @@ public class UserJSONSerializer implements Serializer {
 			result.put(FULL_NAME, userBO.getFullName());
 			
 			//roles
+			List allRoles = DAOFactory.getRoleDAO().loadAllRoles();
+			Iterator itAllRoles = allRoles.iterator();
+			
 			List<Integer> userRoles = userBO.getSbiExtUserRoleses();
-			Iterator itRoles = userRoles.iterator();
+			//Iterator itRoles = userRoles.iterator();
+			
 			JSONArray rolesJSON = new JSONArray();
 			//rolesJSON.put("roles");
+			
+			while(itAllRoles.hasNext()){
+				JSONObject jsonRole = new JSONObject();
+				Role role = (Role)itAllRoles.next();
+				if(role!=null){
+					Integer roleId = role.getId();
+					jsonRole.put("name", role.getName());
+					jsonRole.put("id", role.getId());
+					jsonRole.put("description", role.getDescription());
+					if(userRoles.contains(roleId)){
+						jsonRole.put("checked", true);
+					}else{
+						jsonRole.put("checked", false);
+					}
+					rolesJSON.put(jsonRole);
+				}
+				//Role role = DAOFactory.getRoleDAO().loadByID(roleId);				
+			}
 
-			while(itRoles.hasNext()){
+			/*while(itRoles.hasNext()){
 				JSONObject jsonRole = new JSONObject();
 				Integer roleId = (Integer)itRoles.next();
 
@@ -78,26 +101,39 @@ public class UserJSONSerializer implements Serializer {
 				jsonRole.put("name", role.getName());
 				jsonRole.put("id", role.getId());
 				jsonRole.put("description", role.getDescription());
+				jsonRole.put("checked", true);
 				rolesJSON.put(jsonRole);
-			}	
+			}	*/
 			result.put("userRoles", rolesJSON);
+			
+			List allAttributes = DAOFactory.getSbiAttributeDAO().loadSbiAttributes();
+			Iterator itAttrs = allAttributes.iterator();
 			
 			//attributes
 			HashMap<Integer, HashMap<String, String>> userAttributes = userBO.getSbiUserAttributeses();
-			Iterator itAttrs = userAttributes.keySet().iterator();
+			//Iterator itAttrs = userAttributes.keySet().iterator();
 			JSONArray attrsJSON = new JSONArray();
 			//attrsJSON.put("attributes");
 
 			while(itAttrs.hasNext()){
 				JSONObject jsonAttr = new JSONObject();
-				Integer userAttrID = (Integer)itAttrs.next();
-				HashMap<String, String> nameAndValueAttr = userAttributes.get(userAttrID);
-				
-				String attrName= nameAndValueAttr.keySet().iterator().next();//unique value
-				jsonAttr.put("name", attrName);
+				SbiAttribute attr =(SbiAttribute)itAttrs.next();
+				Integer userAttrID = attr.getAttributeId();
+				jsonAttr.put("name", attr.getAttributeName());
 				jsonAttr.put("id", userAttrID);
-				jsonAttr.put("value", nameAndValueAttr.get(attrName));
+				if(userAttributes.containsKey(userAttrID)){
+					HashMap<String, String> nameAndValueAttr = userAttributes.get(userAttrID);				
+					String attrName= nameAndValueAttr.keySet().iterator().next();//unique value
+
+					jsonAttr.put("value", nameAndValueAttr.get(attrName));
+									
+				}else{
+					jsonAttr.put("value","");
+				}
 				attrsJSON.put(jsonAttr);
+				//Integer userAttrID = (Integer)itAttrs.next();
+				
+				
 			}	
 			result.put("userAttributes", attrsJSON);
 		} catch (Throwable t) {

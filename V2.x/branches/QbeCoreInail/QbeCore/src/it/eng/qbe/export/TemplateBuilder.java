@@ -200,7 +200,8 @@ public class TemplateBuilder {
 			templateStr = replaceParam(templateStr, "pagination", "");
 		}
 		templateStr = replaceParam(templateStr, "lang", "sql");
-		templateStr = replaceParam(templateStr, "query", query);
+		String escapedQuery = escape(query);
+		templateStr = replaceParam(templateStr, "query", escapedQuery);
 		templateStr = replaceParam(templateStr, "fields", getFieldsBlock());
 		templateStr = replaceParam(templateStr, "body", getColumnHeaderBlock() + getDetailsBlock());
 		
@@ -397,7 +398,8 @@ public class TemplateBuilder {
 							  "isItalic=\""+getParamValue(PN_HEADER_FONT_ITALIC, DEFAULT_HEADER_FONT_ITALIC)+"\"/> " +
 			  "</textElement>\n");
 
-			buffer.append("<text><![CDATA[" + field.getAlias() + "]]></text>\n");
+			String escapedAlias = escape(field.getAlias());
+			buffer.append("<text><![CDATA[" + escapedAlias + "]]></text>\n");
 
 			buffer.append("</staticText>\n\n");		
 
@@ -580,6 +582,10 @@ public class TemplateBuilder {
 	}
 	
 
-	
+	private String escape(String pvalue) {
+		pvalue = pvalue.replace("\\", "\\\\");
+		pvalue = pvalue.replace("$", "\\$");
+		return pvalue;
+	}
 	
 }

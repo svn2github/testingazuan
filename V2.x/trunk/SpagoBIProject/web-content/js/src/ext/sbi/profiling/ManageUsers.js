@@ -39,202 +39,409 @@
  * 
  * [list]
  * 
- * Authors - Monica Franceschini (monica.franceschini@eng.it)
+ * Authors - Chiara Chiarelli
  */
 Ext.ns("Sbi.profiling");
 
-Sbi.profiling.ManageAttributes = function(config) { 
-	var params = {};
+Sbi.profiling.ManageUsers = function(config) { 
+	
+	var paramsList = {MESSAGE_DET: "USERS_LIST"};
+	var paramsSave = {MESSAGE_DET: "USER_INSERT"};
+	var paramsDel = {MESSAGE_DET: "USER_DELETE"};
+	
 	this.services = new Array();
-	this.services['manageUsers'] = Sbi.config.serviceRegistry.getServiceUrl({
+	this.services['manageUsersList'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'MANAGE_USER_ACTION'
-		, baseParams: params
+		, baseParams: paramsList
 	});
-//  Define the Grid data and create the Grid
-	   var myData = [
-	       ['3m Co',71.72,0.02,0.03,'9/1 12:00am'],
-	       ['Alcoa Inc',29.01,0.42,1.47,'9/1 12:00am'],
-	       ['Altria Group Inc',83.81,0.28,0.34,'9/1 12:00am'],
-	       ['American Express Company',52.55,0.01,0.02,'9/1 12:00am'],
-	       ['American International Group, Inc.',64.13,0.31,0.49,'9/1 12:00am'],
-	       ['AT&T Inc.',31.61,-0.48,-1.54,'9/1 12:00am'],
-	       ['Boeing Co.',75.43,0.53,0.71,'9/1 12:00am'],
-	       ['Caterpillar Inc.',67.27,0.92,1.39,'9/1 12:00am'],
-	       ['Citigroup, Inc.',49.37,0.02,0.04,'9/1 12:00am'],
-	       ['E.I. du Pont de Nemours and Company',40.48,0.51,1.28,'9/1 12:00am'],
-	       ['Exxon Mobil Corp',68.1,-0.43,-0.64,'9/1 12:00am'],
-	       ['General Electric Company',34.14,-0.08,-0.23,'9/1 12:00am'],
-	       ['General Motors Corporation',30.27,1.09,3.74,'9/1 12:00am'],
-	       ['Hewlett-Packard Co.',36.53,-0.03,-0.08,'9/1 12:00am'],
-	       ['Honeywell Intl Inc',38.77,0.05,0.13,'9/1 12:00am'],
-	       ['Intel Corporation',19.88,0.31,1.58,'9/1 12:00am'],
-	       ['International Business Machines',81.41,0.44,0.54,'9/1 12:00am'],
-	       ['Johnson & Johnson',64.72,0.06,0.09,'9/1 12:00am'],
-	       ['JP Morgan & Chase & Co',45.73,0.07,0.15,'9/1 12:00am'],
-	       ['McDonald\'s Corporation',36.76,0.86,2.40,'9/1 12:00am'],
-	       ['Merck & Co., Inc.',40.96,0.41,1.01,'9/1 12:00am'],
-	       ['Microsoft Corporation',25.84,0.14,0.54,'9/1 12:00am'],
-	       ['Pfizer Inc',27.96,0.4,1.45,'9/1 12:00am'],
-	       ['The Coca-Cola Company',45.07,0.26,0.58,'9/1 12:00am'],
-	       ['The Home Depot, Inc.',34.64,0.35,1.02,'9/1 12:00am'],
-	       ['The Procter & Gamble Company',61.91,0.01,0.02,'9/1 12:00am'],
-	       ['United Technologies Corporation',63.26,0.55,0.88,'9/1 12:00am'],
-	       ['Verizon Communications',35.57,0.39,1.11,'9/1 12:00am'],
-	       ['Wal-Mart Stores, Inc.',45.45,0.73,1.63,'9/1 12:00am']
-	   ];
-
-	   var ds = new Ext.data.Store({
-	       reader: new Ext.data.ArrayReader({}, [
-	           {name: 'company'},
-	           {name: 'price', type: 'float'},
-	           {name: 'change', type: 'float'},
-	           {name: 'pctChange', type: 'float'},
-	           {name: 'lastChange', type: 'date', dateFormat: 'n/j h:ia'},
-
-//	         Rating dependent upon performance 0 = best, 2 = worst
-	           {name: 'rating', type: 'int', convert: function(v, rec) {
-	                  if (rec[3] < 0) return 2;
-	                  if (rec[3] < 1) return 1;
-	                  return 0;
-	              }
-	           }
-	       ])
-	   });
-	   ds.loadData(myData);
+	this.services['saveUserService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'MANAGE_USER_ACTION'
+		, baseParams: paramsSave
+	});
+	
+	this.services['deleteUserService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'MANAGE_USER_ACTION'
+		, baseParams: paramsDel
+	});
+	
+	this.usersStore = new Ext.data.JsonStore({
+    	autoLoad: false    	
+    	,fields: ['userId'
+    	          , 'fullName'
+    	          , 'userRoles'
+    	          , 'userAttributes'
+    	          ]
+    	, root: 'samples'
+		, url: this.services['manageUsersList']
+		
+	});
+	
+	this.usersStore.load();
+	
+	this.initManageUsers();
 	   
-	// example of custom renderer function
-	   function italic(value){
-	       return '<i>' + value + '</i>';
-	   }
-
-	   // example of custom renderer function
-	   function change(val){
-	       if(val > 0){
-	           return '<span style="color:green;">' + val + '</span>';
-	       }else if(val < 0){
-	           return '<span style="color:red;">' + val + '</span>';
-	       }
-	       return val;
-	   }
-	   // example of custom renderer function
-	   function pctChange(val){
-	       if(val > 0){
-	           return '<span style="color:green;">' + val + '%</span>';
-	       }else if(val < 0){
-	           return '<span style="color:red;">' + val + '%</span>';
-	       }
-	       return val;
-	   }
-	   
-	   // render rating as "A", "B" or "C" depending upon numeric value.
-	   function rating(v) {
-	       if (v == 0) return "A"
-	       if (v == 1) return "B"
-	       if (v == 2) return "C"
-	   }
-
-	   // the DefaultColumnModel expects this blob to define columns. It can be extended to provide
-	   // custom or reusable ColumnModels
-	   var colModel = new Ext.grid.ColumnModel([
-	       {id:'company',header: "Company", width: 160, sortable: true, locked:false, dataIndex: 'company'},
-	       {header: "Price", width: 55, sortable: true, renderer: Ext.util.Format.usMoney, dataIndex: 'price'},
-	       {header: "Change", width: 55, sortable: true, renderer: change, dataIndex: 'change'},
-	       {header: "% Change", width: 65, sortable: true, renderer: pctChange, dataIndex: 'pctChange'},
-	       {header: "Last Updated", width: 80, sortable: true, renderer: Ext.util.Format.dateRenderer('m/d/Y'), dataIndex: 'lastChange'},
-	       {header: "Rating", width: 40, sortable: true, renderer: rating, dataIndex: 'rating'}
-	   ]);
-
-	   Ext.getBody().createChild({tag: 'h2', html: 'Using a Grid with a Form'});
-	   
-	   /*
-	   *    Here is where we create the Form
-	   */
-	   var gridForm = new Ext.FormPanel({
-	          id: 'company-form',
-	          frame: true,
-	          labelAlign: 'left',
-	          title: 'Company data',
-	          bodyStyle:'padding:5px',
-	          width: 750,
-	          layout: 'column',    // Specifies that the items will now be arranged in columns
-	          items: [{
-	              columnWidth: 0.60,
-	              layout: 'fit',
-	              items: {
-	                  xtype: 'grid',
-	                  ds: ds,
-	                  cm: colModel,
-	                  sm: new Ext.grid.RowSelectionModel({
-	                      singleSelect: true,
-	                      listeners: {
-	                          rowselect: function(sm, row, rec) {
-	                              Ext.getCmp("company-form").getForm().loadRecord(rec);
-	                          }
-	                      }
-	                  }),
-	                  autoExpandColumn: 'company',
-	                  height: 350,
-	                  title:'Company Data',
-	                  border: true,
-	                  listeners: {
-	                      viewready: function(g) {
-	                          g.getSelectionModel().selectRow(0);
-	                      } // Allow rows to be rendered.
-	                  }
-	              }
-	          },{
-	              columnWidth: 0.4,
-	              xtype: 'fieldset',
-	              labelWidth: 90,
-	              title:'Company details',
-	              defaults: {width: 140, border:false},    // Default config options for child items
-	              defaultType: 'textfield',
-	              autoHeight: true,
-	              bodyStyle: Ext.isIE ? 'padding:0 0 5px 15px;' : 'padding:10px 15px;',
-	              border: false,
-	              style: {
-	                  "margin-left": "10px", // when you add custom margin in IE 6...
-	                  "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  // you have to adjust for it somewhere else
-	              },
-	              items: [{
-	                  fieldLabel: 'Name',
-	                  name: 'company'
-	              },{
-	                  fieldLabel: 'Price',
-	                  name: 'price'
-	              },{
-	                  fieldLabel: '% Change',
-	                  name: 'pctChange'
-	              },{
-	                  xtype: 'datefield',
-	                  fieldLabel: 'Last Updated',
-	                  name: 'lastChange'
-	              }, {
-	                  xtype: 'radiogroup',
-	                  columns: 'auto',
-	                  fieldLabel: 'Rating',
-	                  name: 'rating',
-	   //A radio group: A setValue on any of the following 'radio' inputs using the numeric
-	   //'rating' field checks the radio instance which has the matching inputValue.
-	                  items: [{
-	                      inputValue: '0',
-	                      boxLabel: 'A'
-	                  }, {
-	                      inputValue: '1',
-	                      boxLabel: 'B'
-	                  }, {
-	                      inputValue: '2',
-	                      boxLabel: 'C'
-	                  }]
-	              }]
-	          }],
-	          renderTo: Ext.getBody()
-	      });
+   	Ext.getCmp('usergrid').store.on('load', function(){
+	 var grid = Ext.getCmp('usergrid');
+	 grid.getSelectionModel().selectRow(0);
+	 grid.fireEvent('rowclick', grid, 0);
+	 }, this, {
+	 single: true
+   });
+	
 }
 
-Ext.extend(profiling.ManageAttributes, Ext.FormPanel, {
+Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
+	gridForm:null
+	, usersStore:null
+	, colModel:null
+	, typeData: null
+	, buttons: null
+	, tabs: null
+
+	
+	,initManageUsers: function(){
+
+
+       this.deleteColumn = new Ext.grid.ButtonColumn({
+	       header:  ' ',
+	       dataIndex: 'id',
+	       iconCls: 'icon-remove',
+	       clickHandler: function(e, t) {
+	       		alert('Son dentro');
+	          var index = Ext.getCmp("usergrid").getView().findRowIndex(t);
+	          var selectedRecord = this.usersStore.getAt(index);
+	          var roleId = selectedRecord.get('id');
+	          Ext.getCmp("usergrid").fireEvent('deleteRoleService', roleId);
+	       }
+	       ,width: 25
+	       ,renderer : function(v, p, record){
+	           return '<center><img class="x-mybutton-'+this.id+' grid-button ' +this.iconCls+'" width="16px" height="16px" src="'+Ext.BLANK_IMAGE_URL+'"/></center>';
+	       }
+       });
+       
+       this.colModel = new Ext.grid.ColumnModel([
+        {id:'userId', header: "User ID", width: 150, sortable: true, dataIndex: 'userId'},
+         {header: "Full Name", width: 150, sortable: true, dataIndex: 'fullName'},
+         this.deleteColumn
+       ]);
+     	   
+ 	   this.buttons = [{
+        text : 'Save'
+	        , scope : this
+	        , handler : this.save
+	        , listeners:{
+	        	click: {
+	        		fn: this.fillNewRecord,
+	        		scope: this
+	        	}
+ 	   		}
+	   }];
+
+ 	   
+ 	   this.tabs = new Ext.TabPanel({
+           enableTabScroll : true
+           , activeTab : 0
+           , autoScroll : true
+           , width: 320
+           , height: 350
+           , itemId: 'tabs'
+		   , items: [{
+		        title: 'Details'
+		        , itemId: 'detail'
+		        , layout: 'fit'
+		        , items: {
+		 		   	itemId: 'user-detail',   	              
+		 		   	columnWidth: 0.4,
+		             xtype: 'fieldset',
+		             labelWidth: 90,
+		             defaults: {width: 140, border:false},    
+		             defaultType: 'textfield',
+		             autoHeight: true,
+		             autoScroll  : true,
+		             bodyStyle: Ext.isIE ? 'padding:0 0 5px 15px;' : 'padding:10px 15px;',
+		             border: false,
+		             style: {
+		                 "margin-left": "10px", 
+		                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
+		             },
+		             items: [{
+		                 fieldLabel: 'UserID',
+		                 name: 'userId'
+		             },{
+		                 fieldLabel: 'FullName',
+		                 name: 'fullName'
+		             }]
+		    	
+		    	}
+		    },{
+		        title: 'Roles'
+		        //,html: 'Is Able to'
+		        , layout: 'fit'
+		        //, items: this.checkGroup
+		        , itemId: 'roles'
+		    },{
+		        title: 'Attributes'
+		        //,html: 'Is Able to'
+		        , layout: 'fit'
+		        //, items: this.checkGroup
+		        , itemId: 'attributes'
+		    }]
+		});
+
+
+   	   /*
+   	   *    Here is where we create the Form
+   	   */
+   	   this.gridForm = new Ext.FormPanel({
+   	          id: 'user-form',
+   	          frame: true,
+   	          labelAlign: 'left',
+   	          title: 'Users Management',
+   	          buttons: this.addBtn,
+   	          bodyStyle:'padding:5px',
+   	          width: 750,
+   	          layout: 'column',
+   	          items: [{
+   	              columnWidth: 0.90,
+   	              layout: 'fit',
+   	              items: {
+   	        	  	  id: 'usergrid',
+   	                  xtype: 'grid',
+   	                  ds: this.usersStore,   	                  
+   	                  cm: this.colModel,
+   	                  plugins: this.deleteColumn,
+   	                  sm: new Ext.grid.RowSelectionModel({
+   	                      singleSelect: true,
+   	                      scope:this,   	                   
+	   	                  //fillChecks : function(row, rec) {	  
+	   	                   	  
+	   	                 // },
+   	                      listeners: {
+   	                          rowselect: function(sm, row, rec) {   	  
+   	                	  		  //this.fillChecks(row, rec);
+   	                              Ext.getCmp("user-form").getForm().loadRecord(rec);      	                              
+   	                          }
+   	                      }
+   	                  }),
+   	                  //autoExpandColumn: 'fullName',
+   	                  height: 350,
+   	                  title:'Users list',
+	   	 	   	      tools:[{
+	  		   	        id:'plus'
+	  		   	        //,iconCls: 'icon-add'
+	  		   	        ,qtip: 'New User'
+	  		   	        ,handler: this.addNewUser
+	  		   	        ,scope: this
+	   	 	   	      },],
+   	                  border: true,
+   	                  listeners: {
+   	                      viewready: function(g) {
+   	                          g.getSelectionModel().selectRow(0);
+   	                      } 
+   	                  }
+   	              }
+   	          }, this.tabs
+   	          ],
+
+   	          buttons: this.buttons,
+   	          buttonAlign: 'right',
+   	          renderTo: Ext.getBody()
+   	      });
+
+	}
+	,save : function() {
+        //get the last record
+        var lastRec = this.usersStore.getCount();
+
+        var newRec = this.usersStore.getAt(lastRec -1 );
+        this.usersStore.addSorted(newRec);
+        
+        var newRole = new Array();
+        newRole.push(newRec.data);
+
+        var params = {
+            ROLE: Ext.util.JSON.encode(newRole)
+        };
+        
+       
+        Ext.Ajax.request({
+            url: this.services['saveRoleService'],
+            params: params,
+            method: 'GET',
+            success: function(response, options) {
+				if (response !== undefined) {
+					Ext.MessageBox.hide();
+					this.usersStore.commitChanges();
+
+				} else {
+					Sbi.exception.ExceptionHandler.showErrorMessage('Error while saving Role', 'Service Error');
+				}
+            },
+            failure: function() {
+                Ext.MessageBox.show({
+                    title: 'Error',
+                    msg: 'Error on Saving Role',
+                    width: 150,
+                    buttons: Ext.MessageBox.OK
+               });
+            }
+        });
+    }
+	, addNewUser : function(){
+    	var emptyRecToAdd =new Ext.data.Record({name:'', 
+    										label:'', 
+    										description:'',
+    										typeCd:'',
+    										code:'',
+    										saveSubobj: false,
+    										seeSubobj:false,
+    										seeViewpoints:false,
+    										seeSnapshot:false,
+    										seeNotes:false,
+    										sendMail:false,
+    										savePersonalFolder:false,
+    										saveRemember:false,
+    										seeMeta:false,
+    										saveMeta:false,
+    										buildQbe:false
+    										});
+    	//this.rolesStore.addSorted(emptyRecToAdd);
+
+		Ext.getCmp("user-form").getForm().loadRecord(emptyRecToAdd);
+        this.tabs.items.each(function(item)
+        {		
+        	if(item.getItemId() == 'checks'){
+
+        		item.items.each(function(itemTab){
+
+        			itemTab.items.each(function(item1){
+
+        				item1.setValue({
+							'saveSubobj': false,
+							'seeSubobj':false,
+							'seeViewpoints':false,
+							'seeSnapshot':false,
+							'seeNotes':false,
+							'sendMail':false,
+							'savePersonalFolder':false,
+							'saveRemember':false,
+							'seeMeta':false,
+							'saveMeta':false,
+							'buildQbe':false
+        				});
+
+        			});
+        		});
+        		
+        	}
+        	item.doLayout();
+        });   
+		Ext.getCmp("user-form").doLayout();
+		
+		//do not add record to the grid
+	   	//var grid = Ext.getCmp('usergrid');	   	 
+	   	//grid.getSelectionModel().getSelected().hide(grid.getSelectionModel().getSelected());
+
+	}
+	, fillNewRecord : function(){
+        var lastRec = this.usersStore.getCount();
+
+        var record = this.usersStore.getAt(lastRec -1 );
+        var values = this.gridForm.getForm().getValues();
+        var name =values['name'];
+        var descr =values['description'];
+        var typecd =values['typeCd'];
+        var code =values['code'];
+        var savePf =values['savePersonalFolder'];
+        var saveSo =values['saveSubobj'];
+        var seeSo =values['seeSubobj'];
+        var seeV =values['seeViewpoints'];
+        var seeSn =values['seeSnapshot'];
+        var seeN =values['seeNotes'];
+        var sandM =values['sendMail'];
+        var saveRe =values['saveRemember'];
+        var seeMe =values['seeMeta'];
+        var saveMe =values['saveMeta'];
+        var builQ =values['buildQbe'];
+        
+        
+     // set the value (shows dirty flag):
+        record.set('name', name);
+        record.set('description', descr);
+        record.set('code', code);
+        record.set('typeCd', typecd);
+        if(savePf == 1){
+        	record.set('savePersonalFolder', true);
+        }
+        if(saveSo == 1){
+        	record.set('saveSubobj', true);
+        }
+        if(seeSo == 1){
+        	record.set('seeSubobj', true);
+        }
+        if(seeV == 1){
+        	record.set('seeViewpoints', true);
+        }
+        if(seeSn == 1){
+        	record.set('seeSnapshot', true);
+        }
+        if(seeN == 1){
+        	record.set('seeNotes', true);
+        }
+        if(sandM == 1){
+        	record.set('sendMail', true);
+        }
+        if(saveRe == 1){
+        	record.set('saveRemember', true);
+        }
+        if(seeMe == 1){
+        	record.set('seeMeta', true);
+        }
+        if(saveMe == 1){
+        	record.set('saveMeta', true);
+        }
+        if(builQ == 1){
+        	record.set('buildQbe', true);
+        }
+        if(savePf == 1){
+        	record.set('savePersonalFolder', true);
+        }
+
+        // commit the change (removes dirty flag):
+        record.commit();		
+	}
+	, deleteSelectedRole: function() {
+		var recordSelected = this.getSelectionModel().getSelected();
+		if (recordsSelected) {
+			var id = recordSelected.get('id');
+			
+			Ext.Ajax.request({
+		        url: this.services['deleteRoleService'],
+		        params: {'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID, 'id': id},
+		        success : function(response, options) {
+		      		if (response && response.responseText !== undefined) {
+		      			var content = Ext.util.JSON.decode( response.responseText );
+		      			if (content !== undefined && content.result == 'OK') {
+			  	  			// removes the subobjects from the store
+			  	  			for (var count = 0; count < recordsSelected.length; count++) {
+			  	  				this.subObjectsStore.remove(recordsSelected[count]);
+			  	  			}
+		      			} else {
+			      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting role', 'Service Error');
+			      		}
+		      		} else {
+		      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting role', 'Service Error');
+		      		}
+		        },
+		        scope: this,
+				failure: Sbi.exception.ExceptionHandler.handleFailure      
+			});
+		} else {
+			Sbi.exception.ExceptionHandler.showWarningMessage('Operation failed', 'Warning');
+		}
+	}
   
 
 });
 
-Ext.reg('manageattr', Sbi.profiling.ManageAttributes);
+Ext.reg('manageusers', Sbi.profiling.ManageUsers);

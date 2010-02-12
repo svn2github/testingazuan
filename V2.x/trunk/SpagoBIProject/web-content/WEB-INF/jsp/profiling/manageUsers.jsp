@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/WEB-INF/jsp/commons/portlet_base311.jsp"%>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/service/ServiceRegistry.js")%>'></script>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/profiling/ManageUsers.js")%>'></script>
-<div>ciao!!!</div>
 
 <script type="text/javascript">
 	var config = {};
@@ -43,22 +42,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         , baseParams: params
     });
 
-Ext.onReady(function(){
-	Ext.QuickTips.init();
-	var manageAttribute = new Sbi.profiling.ManageAttributes(config);
-	var viewport = new Ext.Viewport({
-		layout: 'border'
-		, items: [
-		    {
-		       region: 'center',
-		       layout: 'fit',
-		       items: [manageAttribute]
-		    }
-		]
-
-	});
-	//manageAttribute.execute();
-   	
+	Ext.onReady(function(){
+		Ext.QuickTips.init();
+		var manageUsers = new Sbi.profiling.ManageUsers(config);
+		var viewport = new Ext.Viewport({
+			layout: 'border'
+			, items: [
+			    {
+			       region: 'center',
+			       layout: 'accordion',
+			       items: [manageUsers]
+			    }
+			]
+	
+		});
+	   	
 	});
 
 

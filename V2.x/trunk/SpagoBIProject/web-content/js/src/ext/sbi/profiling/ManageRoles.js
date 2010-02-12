@@ -269,7 +269,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		                 fieldLabel: 'Code',
 		                 name: 'code'
 		             }, {
-		            	 name: 'typeCd',
+		            	  name: 'typeCd',
 		                  store: this.typesStore,
 		                  fieldLabel: 'Role Type',
 		                  displayField: 'typeCd',   // what the user sees in the popup
@@ -467,23 +467,50 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
             params: params,
             method: 'GET',
             success: function(response, options) {
-				if (response !== undefined) {
-					Ext.MessageBox.hide();
-					
-					this.rolesStore.add(newRec);
-					this.rolesStore.commitChanges();
+				if (response !== undefined) {			
+		      		if(response.responseText !== undefined) {
+		      			var content = Ext.util.JSON.decode( response.responseText );
+		      			if(content !== 'Operation succeded') {
+		                    Ext.MessageBox.show({
+		                        title: 'Error',
+		                        msg: content,
+		                        width: 150,
+		                        buttons: Ext.MessageBox.OK
+		                   });
+		      			} else{
+							Ext.MessageBox.hide();
+							
+							this.rolesStore.add(newRec);
+							this.rolesStore.commitChanges();
+		      			}
+		      		} else {
+		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+		      		}
+
 
 				} else {
 					Sbi.exception.ExceptionHandler.showErrorMessage('Error while saving Role', 'Service Error');
 				}
             },
-            failure: function() {
-                Ext.MessageBox.show({
-                    title: 'Error',
-                    msg: 'Error on Saving Role',
-                    width: 150,
-                    buttons: Ext.MessageBox.OK
-               });
+            failure: function(response) {
+            	alert(response);
+	      		if(response.responseText !== undefined) {
+	      			var content = Ext.util.JSON.decode( response.responseText );
+	      			
+	                Ext.MessageBox.show({
+	                    title: 'Validation Error',
+	                    msg: content.toSource(),
+	                    width: 400,
+	                    buttons: Ext.MessageBox.OK
+	               });
+	      		}else{
+	                Ext.MessageBox.show({
+	                    title: 'Error',
+	                    msg: 'Error on Saving Role',
+	                    width: 150,
+	                    buttons: Ext.MessageBox.OK
+	               });
+	      		}
             }
             ,scope: this
         });

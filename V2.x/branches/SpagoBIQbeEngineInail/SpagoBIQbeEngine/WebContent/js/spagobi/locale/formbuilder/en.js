@@ -90,6 +90,7 @@ Sbi.locale.ln['sbi.formbuilder.staticclosefiltereditorpanel.filteritemname'] = '
 
 
 Sbi.locale.ln['sbi.formbuilder.staticclosefiltergroupeditor.toolbar.add'] = 'Add';
+Sbi.locale.ln['sbi.formbuilder.staticclosefiltergroupeditor.toolbar.edit'] = 'Edit';
 Sbi.locale.ln['sbi.formbuilder.staticclosefiltergroupeditor.toolbar.remove'] = 'Remove';
 
 

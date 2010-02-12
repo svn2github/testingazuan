@@ -126,6 +126,32 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupEditor, Sbi.formbuilder.EditorP
 		}, this);
 	}
 	
+	, modifyFilter: function(state) {
+		var prevSingleSelection = this.singleSelection;
+		Ext.apply(this, state);
+		var newSingleSelection = this.singleSelection;
+		
+		this.filterItemsCt.setTitle(this.groupTitle);
+		
+		// if singleSelection has been changed, Radios must be trasformed into Checkboxes or Checkboxes to Radios
+		if (prevSingleSelection !== newSingleSelection) {
+			
+			// save filters config into a temp array (previousFiltersConfig)
+			var previousFiltersConfig = [];
+			for (var i = 0; i < this.contents.length; i++) {
+				var filterItem = this.contents[i];
+				previousFiltersConfig[i] = filterItem.baseConfig;
+			}
+			
+			// removing all filters
+			this.clearContents();
+			
+			// re-creating filters
+			this.setContents(previousFiltersConfig);
+			
+		}
+	}
+	
 	, deleteFilter: function(f) {
 		this.remove(f, true);
 	}
@@ -134,7 +160,9 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupEditor, Sbi.formbuilder.EditorP
 		this.onFilterWizardShow(f)
 	}
 	
-
+	, editFilterGroup: function() {
+		this.fireEvent('editrequest', this);
+	}
 	
 	// --------------------------------------------------------------------------------
 	// private methods
@@ -148,6 +176,10 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupEditor, Sbi.formbuilder.EditorP
 			    , {
 					text: LN('sbi.formbuilder.staticclosefiltergroupeditor.toolbar.add'),
 					handler: function() {this.onFilterWizardShow();},
+					scope: this
+			    }, {
+					text: LN('sbi.formbuilder.staticclosefiltergroupeditor.toolbar.edit'),
+					handler: this.editFilterGroup,
 					scope: this
 			    }, {
 					text: LN('sbi.formbuilder.staticclosefiltergroupeditor.toolbar.remove'),

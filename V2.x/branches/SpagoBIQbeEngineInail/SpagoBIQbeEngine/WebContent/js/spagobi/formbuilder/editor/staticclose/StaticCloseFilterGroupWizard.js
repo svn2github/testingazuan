@@ -124,27 +124,41 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 	}
 
 	, setFormState: function(s) {
-		if(s.groupTitle) {
-			this.groupTitleField.setValue(s.groupTitle);
+		
+		if(s.title !== undefined) {
+			this.groupTitleField.setValue(s.title);
+		} else {
+			this.groupTitleField.setValue('');
 		}
 		
-		if(s.singleSelection) {
+		if(s.singleSelection !== undefined) {
 			this.singleSelectionField['true'].setValue(s.singleSelection === true);
 			this.singleSelectionField['false'].setValue(s.singleSelection === false);
+		} else {
+			this.singleSelectionField['true'].setValue(true);
+			this.singleSelectionField['false'].setValue(false);
 		}
 		
-		if(s.allowNoSelection) {
+		if(s.allowNoSelection !== undefined) {
 			this.allowNoSelectionField['true'].setValue(s.allowNoSelection === true);
 			this.allowNoSelectionField['false'].setValue(s.allowNoSelection === false);
+		} else {
+			this.allowNoSelectionField['true'].setValue(true);
+			this.allowNoSelectionField['false'].setValue(false);
 		}
 				
-		if(s.noSelectionText) {
+		if (s.noSelectionText !== undefined) {
 			this.noSelectionTextField.setValue(s.noSelectionText);
+		} else {
+			this.noSelectionTextField.setValue('');
 		}
 		
-		if(s.booleanConnector) {
+		if(s.booleanConnector !== undefined) {
 			this.booleanConnectorField['AND'].setValue(s.booleanConnector === 'AND');
 			this.booleanConnectorField['OR'].setValue(s.booleanConnector === 'OR');
+		} else {
+			this.booleanConnectorField['AND'].setValue(true);
+			this.booleanConnectorField['OR'].setValue(false);
 		}
 	}
 	
@@ -166,7 +180,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 		if(this.targetFilterGroup === null) {
 			this.resetFormState();
 		} else {
-			this.setFormState(this.targetFilter.getContents());
+			this.setFormState(this.targetFilterGroup.getContents());
 		}
 	}
 	

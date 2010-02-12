@@ -159,7 +159,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 	      var errstr = new String(); 
 	      for( var i = 0; i < error_count; i++ ) {
 	        errstr += "Parse error in line " + ( str.substr( 0, error_offsets[i] ).match( /\n/g ) ? str.substr( 0, error_offsets[i] ).match( /\n/g ).length : 1 ) + " near \"" + str.substr( error_offsets[i] ) + "\", expecting \"" + error_lookaheads[i].join() + "\"\n" ; 
-	        //alert( errstr);
+	        alert( errstr);
 	      }
 	    }
 	    

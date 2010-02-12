@@ -55,7 +55,9 @@ Sbi.formbuilder.StaticCloseFilterEditor = function(config) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.staticCloseFilterEditor);
 	}
 	var c = Ext.apply(defaultSettings, config || {});
-		
+	
+	this.baseConfig = config;
+	
 	Ext.apply(this, c);
 	
 	// constructor
@@ -67,6 +69,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditor, Sbi.formbuilder.InlineEditor
 	text: null
 	, expression: null
 	, filters: null
+	, baseConfig: null
 	
 	// --------------------------------------------------------------------------------
 	// public methods

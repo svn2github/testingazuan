@@ -106,7 +106,12 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditorPanel, Sbi.formbuilder.EditorP
 			delete c.title;
 		}
 		
-		var filtersGroup = new Sbi.formbuilder.StaticCloseFilterGroupEditor(c);		
+		var filtersGroup = new Sbi.formbuilder.StaticCloseFilterGroupEditor(c);
+		
+		filtersGroup.on('editrequest', function(editor) {
+	    	this.showFilterGroupWizard(editor);
+	    }, this);
+		
 		this.addFilterItem(filtersGroup);
 	}
 	
@@ -117,7 +122,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterEditorPanel, Sbi.formbuilder.EditorP
 				if(target === null) {
 					this.addFilterGroup(state);
 				} else {
-					 alert('edit');
+					target.modifyFilter(state);
 				}
 				
 			}, this);

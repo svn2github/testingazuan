@@ -23,14 +23,12 @@ package it.eng.spagobi.profiling.services;
 
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.x.AbstractSpagoBIAction;
-import it.eng.spagobi.chiron.serializer.SerializationException;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IRoleDAO;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
-import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONSuccess;
@@ -128,93 +126,66 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 						e);
 			}
 		}else if (serviceType != null	&& serviceType.equalsIgnoreCase(ROLE_INSERT)) {
-			String name = null;
-			String description =null;
-			String roleTypeCD = null;
-			String code = null;
-			Boolean saveSubobjects= null;
-			Boolean seeSubobjects= null;
-			Boolean seeViewpoints= null;
-			Boolean seeSnapshots= null;
-			Boolean seeNotes= null;
-			Boolean sendMail= null;
-			Boolean saveIntoPersonalFolder= null;
-			Boolean saveRememberMe= null;
-			Boolean seeMetadata= null;
-			Boolean saveMetadata= null;
-			Boolean buildQbeQuery= null;
-			try {
-				
-				String respJsonObject = getAttributeAsString("ROLE");
-				JSONObject responseJSON = deserialize(respJsonObject);
-
-				name = responseJSON.getString(NAME);
-				description = responseJSON.getString(DESCRIPTION);
-				roleTypeCD = responseJSON.getString(ROLE_TYPE_CD);
-				code = responseJSON.getString(CODE);
-				saveSubobjects= responseJSON.getBoolean(SAVE_SUBOBJECTS);
-				seeSubobjects= responseJSON.getBoolean(SEE_SUBOBJECTS);
-				seeViewpoints= responseJSON.getBoolean(SEE_VIEWPOINTS);
-				seeSnapshots= responseJSON.getBoolean(SEE_SNAPSHOTS);
-				seeNotes= responseJSON.getBoolean(SEE_NOTES);
-				sendMail= responseJSON.getBoolean(SEND_MAIL);
-				saveIntoPersonalFolder= responseJSON.getBoolean(SAVE_INTO_PERSONAL_FOLDER);
-				saveRememberMe= responseJSON.getBoolean(SAVE_REMEMBER_ME);
-				seeMetadata= responseJSON.getBoolean(SEE_METADATA);
-				saveMetadata= responseJSON.getBoolean(SAVE_METADATA);
-				buildQbeQuery= responseJSON.getBoolean(BUILD_QBE_QUERY);
-			} catch (SerializationException e) {
-				logger.error("Deserialization Exception",e);
-				e.printStackTrace();
-			} catch (JSONException e) {
-				logger.error("JSONException",e);
-				e.printStackTrace();
-			}
-
+			String name = getAttributeAsString(NAME);
+			String roleTypeCD = getAttributeAsString(ROLE_TYPE_CD);
+			String code = getAttributeAsString(CODE);
+			String description = getAttributeAsString(DESCRIPTION);
+			
+			Boolean saveSubobjects= getAttributeAsBoolean(SAVE_SUBOBJECTS);
+			Boolean seeSubobjects= getAttributeAsBoolean(SEE_SUBOBJECTS);
+			Boolean seeViewpoints= getAttributeAsBoolean(SEE_VIEWPOINTS);
+			Boolean seeSnapshots= getAttributeAsBoolean(SEE_SNAPSHOTS);
+			Boolean seeNotes= getAttributeAsBoolean(SEE_NOTES);
+			Boolean sendMail= getAttributeAsBoolean(SEND_MAIL);
+			Boolean saveIntoPersonalFolder= getAttributeAsBoolean(SAVE_INTO_PERSONAL_FOLDER);
+			Boolean saveRememberMe= getAttributeAsBoolean(SAVE_REMEMBER_ME);
+			Boolean seeMetadata= getAttributeAsBoolean(SEE_METADATA);
+			Boolean saveMetadata= getAttributeAsBoolean(SAVE_METADATA);
+			Boolean buildQbeQuery= getAttributeAsBoolean(BUILD_QBE_QUERY);
 
 			if (name != null) {
 
-			    List<Domain> domains = (List<Domain>)getSessionContainer().getAttribute("roleTypes");
-
-			    HashMap<String, Integer> domainIds = new HashMap<String, Integer> ();
-			    for(int i=0; i< domains.size(); i++){
-			    	domainIds.put(domains.get(i).getValueCd(), domains.get(i).getValueId());
-			    }
-			    
-			    Integer roleTypeID = domainIds.get(roleTypeCD);
-			    if(roleTypeID == null){
-			    	logger.error("Role type CD not existing");
-			    	throw new SpagoBIServiceException(SERVICE_NAME,	"Role Type ID is undefined");
-			    }
-			    
-				Role role = new Role();
-				role.setCode(code);
-				role.setDescription(description);
-				role.setName(name);
-				role.setRoleTypeCD(roleTypeCD);
-				role.setRoleTypeID(roleTypeID);
-				role.setIsAbleToBuildQbeQuery(buildQbeQuery);
-				role.setIsAbleToSaveIntoPersonalFolder(saveIntoPersonalFolder);
-				role.setIsAbleToSaveMetadata(saveMetadata);
-				role.setIsAbleToSaveRememberMe(saveRememberMe);
-				role.setIsAbleToSaveSubobjects(saveSubobjects);
-				role.setIsAbleToSeeMetadata(seeMetadata);
-				role.setIsAbleToSeeNotes(seeNotes);
-				role.setIsAbleToSeeSnapshots(seeSnapshots);
-				role.setIsAbleToSeeSubobjects(seeSubobjects);
-				role.setIsAbleToSeeViewpoints(seeViewpoints);
-				role.setIsAbleToSendMail(sendMail);
-				try {
-					roleDao.insertRoleComplete(role);
-					logger.debug("New Role inserted");
-					writeBackToClient( new JSONAcknowledge("Operazion succeded") );
-
-				} catch (Throwable e) {
-					logger.error(e.getMessage(), e);
-					throw new SpagoBIServiceException(SERVICE_NAME,
-							"Exception occurred while saving new role",
-							e);
-				}
+				    List<Domain> domains = (List<Domain>)getSessionContainer().getAttribute("roleTypes");
+	
+				    HashMap<String, Integer> domainIds = new HashMap<String, Integer> ();
+				    for(int i=0; i< domains.size(); i++){
+				    	domainIds.put(domains.get(i).getValueCd(), domains.get(i).getValueId());
+				    }
+				    
+				    Integer roleTypeID = domainIds.get(roleTypeCD);
+				    if(roleTypeID == null){
+				    	logger.error("Role type CD not existing");
+				    	throw new SpagoBIServiceException(SERVICE_NAME,	"Role Type ID is undefined");
+				    }
+				    
+					Role role = new Role();
+					role.setCode(code);
+					role.setDescription(description);
+					role.setName(name);
+					role.setRoleTypeCD(roleTypeCD);
+					role.setRoleTypeID(roleTypeID);
+					role.setIsAbleToBuildQbeQuery(buildQbeQuery);
+					role.setIsAbleToSaveIntoPersonalFolder(saveIntoPersonalFolder);
+					role.setIsAbleToSaveMetadata(saveMetadata);
+					role.setIsAbleToSaveRememberMe(saveRememberMe);
+					role.setIsAbleToSaveSubobjects(saveSubobjects);
+					role.setIsAbleToSeeMetadata(seeMetadata);
+					role.setIsAbleToSeeNotes(seeNotes);
+					role.setIsAbleToSeeSnapshots(seeSnapshots);
+					role.setIsAbleToSeeSubobjects(seeSubobjects);
+					role.setIsAbleToSeeViewpoints(seeViewpoints);
+					role.setIsAbleToSendMail(sendMail);
+					try {
+						roleDao.insertRoleComplete(role);
+						logger.debug("New Role inserted");
+						writeBackToClient( new JSONAcknowledge("Operazion succeded") );
+	
+					} catch (Throwable e) {
+						logger.error(e.getMessage(), e);
+						throw new SpagoBIServiceException(SERVICE_NAME,
+								"Exception occurred while saving new role",
+								e);
+					}
 
 			}else{
 				logger.error("Missing role name");
@@ -311,31 +282,5 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 			object.put(SAVE_METADATA,saveMeta.booleanValue());
 		
 		return object;
-	}
-	private JSONObject deserialize(Object o) throws SerializationException {
-		JSONObject responseJSON = null;
-		logger.debug("IN");
-		
-		try {
-			Assert.assertNotNull(o, "Object to be deserialized cannot be null");
-			
-			if(o instanceof String) {
-				logger.debug("Deserializing string [" + (String)o + "]");
-				try {
-					JSONArray jsonArray = new JSONArray((String)o );
-					if(jsonArray != null && jsonArray.length() != 0)
-						responseJSON = jsonArray.getJSONObject(0);
-				} catch(Throwable t) {
-					logger.error("Object to be deserialized must be string encoding a JSON object",t);
-					throw new SerializationException("An error occurred while deserializing query: " + (String)o, t);
-				}
-			} else {
-				Assert.assertUnreachable("Object to be deserialized must be of type string or of type JSONObject, not of type [" + o.getClass().getName() + "]");
-			}
-		
-		} finally {
-			logger.debug("OUT");
-		}
-		return responseJSON;
 	}
 }

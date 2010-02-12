@@ -5,7 +5,7 @@
 
 <!--
      This is the XML model for Mondrian schemas.
-     Revision is $Id: //open/mondrian-release/3.1/src/main/mondrian/olap/Mondrian.xml#2 $
+     Revision is $Id: //open/mondrian-release/3.1/src/main/mondrian/olap/Mondrian.xml#6 $
   -->
 <!--
      A CubeDimension is either a usage of a Dimension ('shared
@@ -47,9 +47,10 @@
      cubes), named sets, roles, and declarations of
      user-defined functions.
   -->
-<!ELEMENT Schema ((Parameter)*,(Dimension)*,(Cube)*,(VirtualCube)*,(NamedSet)*,(Role)*,(UserDefinedFunction)*)>
+<!ELEMENT Schema (Annotations?,(Parameter)*,(Dimension)*,(Cube)*,(VirtualCube)*,(NamedSet)*,(Role)*,(UserDefinedFunction)*)>
 <!ATTLIST Schema
 name CDATA #REQUIRED
+description CDATA #IMPLIED
 measuresCaption CDATA #IMPLIED
 defaultRole CDATA #IMPLIED
 >
@@ -57,10 +58,11 @@ defaultRole CDATA #IMPLIED
 <!--
      Definition of a cube.
   -->
-<!ELEMENT Cube ((%Relation;),((%CubeDimension;))*,(Measure)*,(CalculatedMember)*,(NamedSet)*)>
+<!ELEMENT Cube (Annotations?,(%Relation;),((%CubeDimension;))*,(Measure)*,(CalculatedMember)*,(NamedSet)*)>
 <!ATTLIST Cube
 name CDATA #REQUIRED
 caption CDATA #IMPLIED
+description CDATA #IMPLIED
 defaultMeasure CDATA #IMPLIED
 cache (true|false) "true"
 enabled (true|false) "true"
@@ -70,12 +72,13 @@ enabled (true|false) "true"
      A VirtualCube is a set of dimensions and
      measures gleaned from other cubes.
   -->
-<!ELEMENT VirtualCube (CubeUsages?,(VirtualCubeDimension)*,(VirtualCubeMeasure)*,(CalculatedMember)*,(NamedSet)*)>
+<!ELEMENT VirtualCube (Annotations?,CubeUsages?,(VirtualCubeDimension)*,(VirtualCubeMeasure)*,(CalculatedMember)*,(NamedSet)*)>
 <!ATTLIST VirtualCube
 enabled (true|false) "true"
 name CDATA #IMPLIED
 defaultMeasure CDATA #IMPLIED
 caption CDATA #IMPLIED
+description CDATA #IMPLIED
 >
 
 <!--
@@ -92,10 +95,11 @@ ignoreUnrelatedDimensions (true|false) "false"
 <!--
      A VirtualCubeDimension is a usage of a Dimension in a VirtualCube.
   -->
-<!ELEMENT VirtualCubeDimension EMPTY>
+<!ELEMENT VirtualCubeDimension (Annotations?)>
 <!ATTLIST VirtualCubeDimension
 cubeName CDATA #IMPLIED
 caption CDATA #IMPLIED
+description CDATA #IMPLIED
 foreignKey CDATA #IMPLIED
 highCardinality (true|false) "false"
 name CDATA #IMPLIED
@@ -104,7 +108,7 @@ name CDATA #IMPLIED
 <!--
      A VirtualCubeMeasure is a usage of a Measure in a VirtualCube.
   -->
-<!ELEMENT VirtualCubeMeasure EMPTY>
+<!ELEMENT VirtualCubeMeasure (Annotations?)>
 <!ATTLIST VirtualCubeMeasure
 cubeName CDATA #IMPLIED
 name CDATA #IMPLIED
@@ -115,13 +119,14 @@ visible (true|false) #IMPLIED
      A DimensionUsage is usage of a shared
      Dimension within the context of a cube.
   -->
-<!ELEMENT DimensionUsage EMPTY>
+<!ELEMENT DimensionUsage (Annotations?)>
 <!ATTLIST DimensionUsage
 source CDATA #REQUIRED
 level CDATA #IMPLIED
 usagePrefix CDATA #IMPLIED
 name CDATA #REQUIRED
 caption CDATA #IMPLIED
+description CDATA #IMPLIED
 foreignKey CDATA #IMPLIED
 highCardinality (true|false) "false"
 >
@@ -134,7 +139,7 @@ highCardinality (true|false) "false"
      Cube. The foreignKey field is only
      applicable to private dimensions.
   -->
-<!ELEMENT Dimension ((Hierarchy)*)>
+<!ELEMENT Dimension (Annotations?,(Hierarchy)*)>
 <!ATTLIST Dimension
 type (StandardDimension|TimeDimension) #IMPLIED
 usagePrefix CDATA #IMPLIED
@@ -142,6 +147,7 @@ foreignKey CDATA #IMPLIED
 highCardinality (true|false) "false"
 name CDATA #REQUIRED
 caption CDATA #IMPLIED
+description CDATA #IMPLIED
 >
 
 <!--
@@ -151,7 +157,7 @@ caption CDATA #IMPLIED
      hierarchy is assumed to come from the same fact table of the
      current cube.
   -->
-<!ELEMENT Hierarchy ((%RelationOrJoin;)?,(Level)*,(MemberReaderParameter)*)>
+<!ELEMENT Hierarchy (Annotations?,(%RelationOrJoin;)?,(Level)*,(MemberReaderParameter)*)>
 <!ATTLIST Hierarchy
 name CDATA #IMPLIED
 hasAll (true|false) #REQUIRED
@@ -163,10 +169,11 @@ primaryKeyTable CDATA #IMPLIED
 defaultMember CDATA #IMPLIED
 memberReaderClass CDATA #IMPLIED
 caption CDATA #IMPLIED
+description CDATA #IMPLIED
 uniqueKeyLevelName CDATA #IMPLIED
 >
 
-<!ELEMENT Level (KeyExpression?,NameExpression?,OrdinalExpression?,ParentExpression?,Closure?,(Property)*)>
+<!ELEMENT Level (Annotations?,KeyExpression?,NameExpression?,OrdinalExpression?,ParentExpression?,Closure?,(Property)*)>
 <!ATTLIST Level
 approxRowCount CDATA #IMPLIED
 name CDATA #IMPLIED
@@ -182,6 +189,7 @@ levelType (Regular|TimeYears|TimeHalfYear|TimeQuarters|TimeMonths|TimeWeeks|Time
 hideMemberIf (Never|IfBlankName|IfParentsName) "Never"
 formatter CDATA #IMPLIED
 caption CDATA #IMPLIED
+description CDATA #IMPLIED
 captionColumn CDATA #IMPLIED
 >
 
@@ -207,10 +215,11 @@ column CDATA #IMPLIED
 type (String|Numeric|Integer|Boolean|Date|Time|Timestamp) "String"
 formatter CDATA #IMPLIED
 caption CDATA #IMPLIED
+description CDATA #IMPLIED
 dependsOnLevelValue (true|false) #IMPLIED
 >
 
-<!ELEMENT Measure (MeasureExpression?,(CalculatedMemberProperty)*)>
+<!ELEMENT Measure (Annotations?,MeasureExpression?,(CalculatedMemberProperty)*)>
 <!ATTLIST Measure
 name CDATA #REQUIRED
 column CDATA #IMPLIED
@@ -219,14 +228,16 @@ formatString CDATA #IMPLIED
 aggregator CDATA #REQUIRED
 formatter CDATA #IMPLIED
 caption CDATA #IMPLIED
+description CDATA #IMPLIED
 visible (true|false) #IMPLIED
 >
 
-<!ELEMENT CalculatedMember (Formula?,(CalculatedMemberProperty)*)>
+<!ELEMENT CalculatedMember (Annotations?,Formula?,(CalculatedMemberProperty)*)>
 <!ATTLIST CalculatedMember
 name CDATA #REQUIRED
 formatString CDATA #IMPLIED
 caption CDATA #IMPLIED
+description CDATA #IMPLIED
 formula CDATA #IMPLIED
 dimension CDATA #REQUIRED
 visible (true|false) #IMPLIED
@@ -240,6 +251,7 @@ visible (true|false) #IMPLIED
 <!ATTLIST CalculatedMemberProperty
 name CDATA #REQUIRED
 caption CDATA #IMPLIED
+description CDATA #IMPLIED
 expression CDATA #IMPLIED
 value CDATA #IMPLIED
 >
@@ -258,9 +270,11 @@ value CDATA #IMPLIED
      only valid if the cube contains dimensions with the names
      required to make the formula valid.</p>
   -->
-<!ELEMENT NamedSet (Formula?)>
+<!ELEMENT NamedSet (Annotations?,Formula?)>
 <!ATTLIST NamedSet
 name CDATA #REQUIRED
+caption CDATA #IMPLIED
+description CDATA #IMPLIED
 formula CDATA #IMPLIED
 >
 
@@ -304,7 +318,7 @@ alias CDATA #IMPLIED
 >
 
 <!--
-     Dialect-specific table optimization hints
+     Dialect-specific table optimization hints.
   -->
 <!ELEMENT Hint (#PCDATA)>
 <!ATTLIST Hint
@@ -423,7 +437,7 @@ name CDATA #REQUIRED
      A role defines an access-control profile. It has a series of grants
      (or denials) for schema elements.
   -->
-<!ELEMENT Role ((SchemaGrant)*,Union?)>
+<!ELEMENT Role (Annotations?,(SchemaGrant)*,Union?)>
 <!ATTLIST Role
 name CDATA #REQUIRED
 >
@@ -533,5 +547,18 @@ description CDATA #IMPLIED
 type (String|Numeric|Integer|Boolean|Date|Time|Timestamp|Member) "String"
 modifiable (true|false) "true"
 defaultValue CDATA #IMPLIED
+>
+
+<!--
+     Holder for an array of Annotation elements
+  -->
+<!ELEMENT Annotations ((Annotation)*)>
+
+<!--
+     User-defined property value.
+  -->
+<!ELEMENT Annotation (#PCDATA)>
+<!ATTLIST Annotation
+name CDATA #REQUIRED
 >
 

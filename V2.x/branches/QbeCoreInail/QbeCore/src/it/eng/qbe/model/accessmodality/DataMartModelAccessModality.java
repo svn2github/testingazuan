@@ -40,6 +40,7 @@ import it.eng.qbe.query.Filter;
 import it.eng.qbe.utility.StringUtils;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -49,14 +50,17 @@ import it.eng.spago.base.SourceBeanException;
  */
 public class DataMartModelAccessModality {
 	
-	/** The modality sb. */
+	
 	SourceBean modalitySB = null;
 	
-	/** The entity access modality map. */
 	Map entityAccessModalityMap = null;
+	Boolean recursiveFiltering = null;
 	
+
 	/** The Constant TAG_MODALITIES. */
 	private static final String TAG_MODALITIES = "MODALITIES";
+	
+	public static final String ATTR_RECURSIVE_FILTERING = "recursiveFiltering";
 	
 	/** The Constant TAG_MODALITY. */
 	private static final String TAG_MODALITY = "MODALITY";
@@ -84,21 +88,17 @@ public class DataMartModelAccessModality {
     public static transient Logger logger = Logger.getLogger(DataMartModelAccessModality.class);
 	
 	
-	
-	/**
-	 * Instantiates a new data mart model access modality.
-	 */
 	public DataMartModelAccessModality() {}
 	
-	/**
-	 * Instantiates a new data mart model access modality.
-	 * 
-	 * @param file the file
-	 */
+	
+	
+	
 	public DataMartModelAccessModality(File file) {
+		String recursiveFilteringAttr;
 		try {			
 			modalitySB = SourceBean.fromXMLStream(
 					new InputSource(new FileInputStream(file)));
+			initRecursiveFiltering(modalitySB);
 			entityAccessModalityMap = buildEntityAccessModalityMap(modalitySB);
 		} catch (SourceBeanException e) {
 			logger.error("Impossible to parse access modality properties from file " + file.toString() 
@@ -120,6 +120,7 @@ public class DataMartModelAccessModality {
 			SourceBean modalitiesSB = SourceBean.fromXMLStream(
 					new InputSource(new FileInputStream(file)));
 			modalitySB = getModalitySBByName(modalitiesSB, modalityName);
+			initRecursiveFiltering(modalitySB);
 			entityAccessModalityMap = buildEntityAccessModalityMap(modalitySB);
 		} catch (SourceBeanException e) {
 			logger.error(
@@ -140,6 +141,7 @@ public class DataMartModelAccessModality {
 	 */
 	public DataMartModelAccessModality(SourceBean modalitiesSB, String modalityName) {
 		modalitySB = getModalitySBByName(modalitiesSB, modalityName);
+		initRecursiveFiltering(modalitySB);
 		entityAccessModalityMap = buildEntityAccessModalityMap(modalitySB);
 	}
 	
@@ -150,7 +152,26 @@ public class DataMartModelAccessModality {
 	 */
 	public DataMartModelAccessModality(SourceBean modalitySB) {
 		this.modalitySB = modalitySB;
+		initRecursiveFiltering(modalitySB);
 		entityAccessModalityMap = buildEntityAccessModalityMap(modalitySB);
+	}
+	
+	
+	public Boolean initRecursiveFiltering(SourceBean modalitySB) {
+		String recursiveFilteringAttr;
+		
+		recursiveFilteringAttr = (String)modalitySB.getAttribute(ATTR_RECURSIVE_FILTERING);
+		if(!StringUtilities.isEmpty(recursiveFilteringAttr)) {
+			logger.debug("Attribute [" + ATTR_RECURSIVE_FILTERING + "] is equal to ["+ recursiveFilteringAttr + "]");
+			if("disabled".equalsIgnoreCase(recursiveFilteringAttr)) {
+				recursiveFiltering = Boolean.FALSE;
+			} else {
+				recursiveFiltering = Boolean.TRUE;
+			}
+			logger.debug("Recursive filtering enabled [" + recursiveFiltering + "]");
+		}
+		
+		return recursiveFiltering;
 	}
 	
 	/**
@@ -290,6 +311,13 @@ public class DataMartModelAccessModality {
 		return newFilterConditions;
 	}
 	
+	public Boolean getRecursiveFiltering() {
+		return recursiveFiltering;
+	}
+
+	public void setRecursiveFiltering(Boolean recursiveFiltering) {
+		this.recursiveFiltering = recursiveFiltering;
+	}
 	
 		
 	/**
@@ -379,5 +407,7 @@ public class DataMartModelAccessModality {
 		public List getFilterConditions() {
 			return filterConditions;
 		}
+		
+		
 	}
 }

@@ -96,6 +96,10 @@ public class DatamartProperties {
 		return getFieldUniqueNameInFile( field ) + "." + propertyName.trim();
 	}
 	
+	public Object getProperty(String prpertyName) {
+		return qbeProperties.get( prpertyName );
+	}
+	
 	public String getProperty(Object datamartItem, String propertyName) {
 		String propertyValue;
 		String propertyUniqueNameInFile;

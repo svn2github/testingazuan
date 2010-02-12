@@ -924,46 +924,50 @@ public class HQLStatement extends BasicStatement {
 				}
 			}
 			
-			//	check for condition filter on sub entities
-			List subEntities = entity.getAllSubEntities();
-			for(int i = 0; i < subEntities.size(); i++) {
-				DataMartEntity subEntity = (DataMartEntity)subEntities.get(i);
-				filters = dataMartModelAccessModality.getEntityFilterConditions(subEntity.getType());
-				for(int j = 0; j < filters.size(); j++) {
-					Filter filter = (Filter)filters.get(j);
-					Set fields = filter.getFields();
-					Properties props = new Properties();
-					Iterator fieldIterator = fields.iterator();
-					while(fieldIterator.hasNext()) {
-						String fieldName = (String)fieldIterator.next();
-						DataMartField filed = null;
-						Iterator subEntityFields = subEntity.getAllFields().iterator();
-						while(subEntityFields.hasNext()) {
-							filed = (DataMartField)subEntityFields.next();
-							if(filed.getQueryName().endsWith("." + fieldName)) break;
+			
+			
+			if(dataMartModelAccessModality.getRecursiveFiltering() == null 
+					|| dataMartModelAccessModality.getRecursiveFiltering().booleanValue() == true) {
+				//	check for condition filter on sub entities
+				List subEntities = entity.getAllSubEntities();
+				for(int i = 0; i < subEntities.size(); i++) {
+					DataMartEntity subEntity = (DataMartEntity)subEntities.get(i);
+					filters = dataMartModelAccessModality.getEntityFilterConditions(subEntity.getType());
+					for(int j = 0; j < filters.size(); j++) {
+						Filter filter = (Filter)filters.get(j);
+						Set fields = filter.getFields();
+						Properties props = new Properties();
+						Iterator fieldIterator = fields.iterator();
+						while(fieldIterator.hasNext()) {
+							String fieldName = (String)fieldIterator.next();
+							DataMartField filed = null;
+							Iterator subEntityFields = subEntity.getAllFields().iterator();
+							while(subEntityFields.hasNext()) {
+								filed = (DataMartField)subEntityFields.next();
+								if(filed.getQueryName().endsWith("." + fieldName)) break;
+							}
+							String entityAlias = (String)entityAliases.get(entityUniqueName);
+							props.put(fieldName, entityAlias + "." + filed.getQueryName());
 						}
-						String entityAlias = (String)entityAliases.get(entityUniqueName);
-						props.put(fieldName, entityAlias + "." + filed.getQueryName());
-					}
-					String filterCondition = null;
-					try {
-						filterCondition = StringUtils.replaceParameters(filter.getFilterCondition(), "F", props);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
-					if(filterCondition != null) {
-						if(buffer.toString().length() > 0) {
-							buffer.append(" and ");
-						} else {
-							buffer.append("where ");
+						String filterCondition = null;
+						try {
+							filterCondition = StringUtils.replaceParameters(filter.getFilterCondition(), "F", props);
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
-						buffer.append(filterCondition + " ");
+						
+						if(filterCondition != null) {
+							if(buffer.toString().length() > 0) {
+								buffer.append(" and ");
+							} else {
+								buffer.append("where ");
+							}
+							buffer.append(filterCondition + " ");
+						}
 					}
 				}
+				
 			}
-			
-			
 		}
 		
 		

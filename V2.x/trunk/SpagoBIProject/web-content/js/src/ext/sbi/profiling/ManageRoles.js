@@ -86,21 +86,22 @@ Sbi.profiling.ManageRoles = function(config) {
 		, url: this.services['manageRolesList']
 		
 	});
-	
-	//this.rolesStore.on('load', this.onLoad, this);
+
 	this.rolesStore.load();
-	
-	//Ext.getBody().createChild({tag: 'h2', html: 'Manage Roles'});
-	
+
 	this.initManageRoles();
 	   
    	Ext.getCmp('rolegrid').store.on('load', function(){
 	 var grid = Ext.getCmp('rolegrid');
 	 grid.getSelectionModel().selectRow(0);
-	 grid.fireEvent('rowclick', grid, 0)
+	 //grid.fireEvent('rowclick', grid, 0);
 	 }, this, {
 	 single: true
    });
+   	
+   	
+   	Ext.getCmp('rolegrid').on('delete', this.deleteSelectedRole, this);
+
 }
 
 Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
@@ -121,11 +122,10 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	       dataIndex: 'id',
 	       iconCls: 'icon-remove',
 	       clickHandler: function(e, t) {
-	       		alert('Son dentro');
 	          var index = Ext.getCmp("rolegrid").getView().findRowIndex(t);
-	          var selectedRecord = this.rolesStore.getAt(index);
+	          var selectedRecord = Ext.getCmp("rolegrid").store.getAt(index);
 	          var roleId = selectedRecord.get('id');
-	          Ext.getCmp("rolegrid").fireEvent('deleteRoleService', roleId);
+	          Ext.getCmp("rolegrid").fireEvent('delete', roleId, index);
 	       }
 	       ,width: 25
 	       ,renderer : function(v, p, record){
@@ -142,6 +142,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
      	   
  	   this.buttons = [{
         text : 'Save'
+        	, id: 'save-btn'
 	        , scope : this
 	        , handler : this.save
 	        , listeners:{
@@ -216,7 +217,6 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		            hideLabel  : false,
 		            fieldLabel: 'Build',
 		            itemId: 'isAbleToBuild',
-		            //height:200,
 		            items: [
 		                {boxLabel: 'QBE', name: 'buildQbe', checked:'buildQbe',inputValue: 1}
 		            ]
@@ -242,6 +242,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		        , itemId: 'detail'
 		        , layout: 'fit'
 		        , items: {
+			   		id: 'role-detail',   	
 		 		   	itemId: 'role-detail',   	              
 		 		   	columnWidth: 0.4,
 		             xtype: 'fieldset',
@@ -340,7 +341,10 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	                      listeners: {
    	                          rowselect: function(sm, row, rec) {   	  
    	                	  		  this.fillChecks(row, rec);
-   	                              Ext.getCmp("role-form").getForm().loadRecord(rec);      	                              
+   	                              Ext.getCmp('role-form').getForm().loadRecord(rec);      	
+   	                              Ext.getCmp('checks-form').setDisabled(true);
+   	                              Ext.getCmp('role-detail').setDisabled(true);
+   	                              Ext.getCmp('save-btn').hide();
    	                          }
    	                      }
    	                  }),
@@ -371,20 +375,34 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 
 	}
 	,save : function() {
-        //get the last record
-        var lastRec = this.rolesStore.getCount();
 
-        var newRec = this.rolesStore.getAt(lastRec -1 );
-        this.rolesStore.addSorted(newRec);
+        //get the last record
+        var lastRec = Ext.getCmp('rolegrid').getStore().getCount();
+        alert(lastRec);
+        var newRec = Ext.getCmp('rolegrid').getStore().getAt(lastRec -1 );
         
         var newRole = new Array();
         newRole.push(newRec.data);
 
         var params = {
-            ROLE: Ext.util.JSON.encode(newRole)
+        	name : newRec.data.name,
+        	description : newRec.data.description,
+        	typeCd : newRec.data.typeCd,
+        	code : newRec.data.code,
+			saveSubobj: newRec.data.saveSubobj,
+			seeSubobj:newRec.data.seeSubobj,
+			seeViewpoints:newRec.data.seeViewpoints,
+			seeSnapshot:newRec.data.seeSnapshot,
+			seeNotes:newRec.data.seeNotes,
+			sendMail:newRec.data.sendMail,
+			savePersonalFolder:newRec.data.savePersonalFolder,
+			saveRemember:newRec.data.saveRemember,
+			seeMeta:newRec.data.seeMeta,
+			saveMeta:newRec.data.saveMeta,
+			buildQbe:newRec.data.buildQbe
+            //ROLE: Ext.util.JSON.encode(newRole)
         };
         
-       
         Ext.Ajax.request({
             url: this.services['saveRoleService'],
             params: params,
@@ -392,7 +410,9 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
             success: function(response, options) {
 				if (response !== undefined) {
 					Ext.MessageBox.hide();
-					this.rolesStore.commitChanges();
+					newRec.commit();
+					Ext.getCmp('rolegrid').getStore().commitChanges();
+					lastRec = Ext.getCmp('rolegrid').getStore().getCount();
 
 				} else {
 					Sbi.exception.ExceptionHandler.showErrorMessage('Error while saving Role', 'Service Error');
@@ -406,9 +426,18 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
                     buttons: Ext.MessageBox.OK
                });
             }
+            ,scope: this
         });
     }
 	, addNewRole : function(){
+		
+        Ext.getCmp('checks-form').setDisabled(false);
+        Ext.getCmp('role-detail').setDisabled(false);
+        
+        Ext.getCmp('save-btn').show();
+
+        var lastRec = Ext.getCmp('rolegrid').getStore().getCount();
+
     	var emptyRecToAdd =new Ext.data.Record({name:'', 
     										label:'', 
     										description:'',
@@ -426,9 +455,9 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
     										saveMeta:false,
     										buildQbe:false
     										});
-    	//this.rolesStore.addSorted(emptyRecToAdd);
 
-		Ext.getCmp("role-form").getForm().loadRecord(emptyRecToAdd);
+		Ext.getCmp('role-form').getForm().loadRecord(emptyRecToAdd);
+
         this.tabs.items.each(function(item)
         {		
         	if(item.getItemId() == 'checks'){
@@ -457,18 +486,19 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
         	}
         	item.doLayout();
         });   
-		Ext.getCmp("role-form").doLayout();
-		
-		//do not add record to the grid
-	   	//var grid = Ext.getCmp('rolegrid');	   	 
-	   	//grid.getSelectionModel().getSelected().hide(grid.getSelectionModel().getSelected());
+		Ext.getCmp('role-form').doLayout();
 
 	}
 	, fillNewRecord : function(){
+		
+		this.rolesStore.commitChanges();
+		
         var lastRec = this.rolesStore.getCount();
 
-        var record = this.rolesStore.getAt(lastRec -1 );
+        var record = this.rolesStore.getAt(lastRec -1);
+        
         var values = this.gridForm.getForm().getValues();
+        
         var name =values['name'];
         var descr =values['description'];
         var typecd =values['typeCd'];
@@ -529,38 +559,42 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
         }
 
         // commit the change (removes dirty flag):
-        record.commit();		
+        //record.commit();
+
 	}
-	, deleteSelectedRole: function() {
-		var recordSelected = this.getSelectionModel().getSelected();
-		if (recordsSelected) {
-			var id = recordSelected.get('id');
-			
+	, deleteSelectedRole: function(roleId, index) {
+
+		if (roleId != null) {
+		
 			Ext.Ajax.request({
-		        url: this.services['deleteRoleService'],
-		        params: {'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID, 'id': id},
-		        success : function(response, options) {
-		      		if (response && response.responseText !== undefined) {
-		      			var content = Ext.util.JSON.decode( response.responseText );
-		      			if (content !== undefined && content.result == 'OK') {
-			  	  			// removes the subobjects from the store
-			  	  			for (var count = 0; count < recordsSelected.length; count++) {
-			  	  				this.subObjectsStore.remove(recordsSelected[count]);
-			  	  			}
-		      			} else {
-			      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting role', 'Service Error');
-			      		}
-		      		} else {
-		      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting role', 'Service Error');
-		      		}
-		        },
-		        scope: this,
-				failure: Sbi.exception.ExceptionHandler.handleFailure      
+	            url: this.services['deleteRoleService'],
+	            params: {'id': roleId},
+	            method: 'GET',
+	            success: function(response, options) {
+					if (response !== undefined) {
+						Ext.getCmp('rolegrid').store.remove(index);
+						Ext.getCmp('rolegrid').store.commitChanges();
+		  	  			
+					} else {
+						Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting Role', 'Service Error');
+					}
+	            },
+	            failure: function() {
+	                Ext.MessageBox.show({
+	                    title: 'Error',
+	                    msg: 'Error on deleting Role',
+	                    width: 150,
+	                    buttons: Ext.MessageBox.OK
+	               });
+	            }
+	            ,scope: this
+
 			});
 		} else {
 			Sbi.exception.ExceptionHandler.showWarningMessage('Operation failed', 'Warning');
 		}
 	}
+
 });
 
 Ext.reg('manageroles', Sbi.profiling.ManageRoles);

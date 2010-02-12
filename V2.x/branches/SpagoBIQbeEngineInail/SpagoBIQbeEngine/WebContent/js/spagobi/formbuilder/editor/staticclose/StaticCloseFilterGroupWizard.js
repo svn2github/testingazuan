@@ -129,6 +129,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 			this.groupTitleField.setValue(s.title);
 		} else {
 			this.groupTitleField.setValue('');
+			this.groupTitleField.clearInvalid();
 		}
 		
 		if(s.singleSelection !== undefined) {
@@ -164,6 +165,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 	
 	, resetFormState: function() {
 		this.groupTitleField.reset();
+		this.groupTitleField.clearInvalid();
 		
 		var s = Ext.apply(this.baseState || {}, {
 			singleSelection: true

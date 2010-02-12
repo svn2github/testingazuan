@@ -49,7 +49,7 @@ Ext.ns("Sbi.console");
 Sbi.console.CustomFilteringToolbar = function(config) {
 
 		var defaultSettings = {
-		    
+		    // default goes here
 		};
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.customFilteringToolbar) {
@@ -66,42 +66,42 @@ Sbi.console.CustomFilteringToolbar = function(config) {
 			serviceName: 'DO_THAT_ACTION'
 			, baseParams: new Object()
 		});
-		
-		this.addEvents('customEvents');
 		*/
-		this.initFilters(c || {});
+		
+		
+		//this.initFilters(c || {});
 	
 		c = Ext.apply(c, {items:this.customFilterBar});
 
 		// constructor
 		Sbi.console.CustomFilteringToolbar.superclass.constructor.call(this, c);
-    
-	//	this.addEvents();
 };
 
-//Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
-Ext.extend(Sbi.console.CustomFilteringToolbar, Ext.Toolbar, {  
+Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {  
     services: null
     , customFilterBar: null
    
 
-    // public methods
-    /*
+    // -- public methods ---------------------------------------------------------------
     , onRender : function(ct, position) {
-      alert('sono in onRender!' );
-	   //  alert('sono in onRender! ct: ' + ct + ' - position: ' + position);
-    		Sbi.console.CustomFilteringToolbar.superclass.onRender.call(this, ct, position);
-    	    
-    		this.addText('aaa');	
-    		this.addSpacer();
-    		
-    		
-    	    this.columnNameStore = new Ext.data.SimpleStore({
-    	        fields: ['value', 'label'],
-    	        data : []
-    	    });	 	    
-    	    this.columnNameCombo = new Ext.form.ComboBox({
-    	        store: this.columnNameStore,
+		//alert('custom IN');
+		
+		var s, cb;
+		
+		for(var i=0, l=this.filters.length; i<l; i++) {
+			s = new Ext.data.ArrayStore({
+                fields: ['value', 'label']
+                , data : [
+                         ['val1' + i, 'Value 1' + i]
+                       , ['val2' + i, 'Value 2' + i]
+                       , ['val3' + i, 'Value 3' + i]
+                       , ['val4' + i, 'Value 4' + i]
+                       , ['val5' + i, 'Value 5' + i]                              
+                  ]
+			});
+			
+			cb = new Ext.form.ComboBox({
+    	        store: s,
     	        width: 100,
     	        displayField:'label',
     	        valueField:'value',
@@ -110,52 +110,19 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Ext.Toolbar, {
     	        emptyText:'...',
     	        selectOnFocus:true,
     	        mode: 'local'
-    	    });	    
-    	    this.addField( this.columnNameCombo );	    
-    	    this.addSpacer();
-     } 
-   */
+    	    });	 
+			
+			this.addText(this.filters[i].text);
+			this.addField(cb);	    	
+		}
+		
+		//alert('custom OUT');
+		Sbi.console.CustomFilteringToolbar.superclass.onRender.call(this, ct, position);
+		
+    } 
+   
     
     
-    // private methods
-    ,initFilters: function(c) {
-    
-          this.customFilterBar = [];
-        		
-         // for(var i=0; i < c.filters.length; i++){
-   		   for(var i=0; i < 2; i++){
-        	    var columnNameStore = new Ext.data.ArrayStore({
-                      autoDestroy: true
-                      ,fields: ['value', 'label']
-                      ,data : [
-                               ['val1' + i, 'Value 1' + i]
-                             , ['val2' + i, 'Value 2' + i]
-                             , ['val3' + i, 'Value 3' + i]
-                             , ['val4' + i, 'Value 4' + i]
-                             , ['val5' + i, 'Value 5' + i]                              
-                             ]
-                          });	 	  
-             
-    	        this.customFilterBar.push(c.filters[i].text);	
-    		    //  this.customFilterBar.push('  ');
-        	    
-              var columnNameCombo = new Ext.form.ComboBox({
-        	        store: columnNameStore,
-        	        width: 100,
-        	        displayField:'label',
-        	        valueField:'value',
-        	        typeAhead: true,
-        	        triggerAction: 'all',
-        	        emptyText:'...',
-        	        selectOnFocus:true,
-        	        mode: 'local'
-        	    });	    
-        	    
-    
-        	    this.customFilterBar.push(columnNameCombo);     
-        	    //this.customFilterBar.push(addSpacer());
-        	}
-    	    
-    }
+    // -- private methods ---------------------------------------------------------------
     
 });

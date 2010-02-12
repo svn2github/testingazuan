@@ -130,7 +130,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.Panel, {
       var tmpDefaults = { operator: 'EQUALS_TO'
                         , operand: 'DISTINCT'};
 
-      this.filterBar = new Sbi.console.FilteringToolbar({type:'custom'  //custom | default | automatic
+      this.filterBar = new Sbi.console.CustomFilteringToolbar({type:'custom'  //custom | default | automatic
                                                         , defaults: tmpDefaults
                                                         , actions: tmpActions
                                                         , filters: tmpFilters});

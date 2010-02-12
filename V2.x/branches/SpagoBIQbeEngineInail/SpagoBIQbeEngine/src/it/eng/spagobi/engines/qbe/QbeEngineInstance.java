@@ -21,12 +21,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.qbe;
 
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import it.eng.qbe.catalogue.QueryCatalogue;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.hibernate.DBConnection;
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statment.IStatement;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engines.qbe.datasource.QbeDataSourceManager;
 import it.eng.spagobi.engines.qbe.template.QbeTemplate;
 import it.eng.spagobi.engines.qbe.template.QbeTemplateParser;
@@ -35,10 +41,6 @@ import it.eng.spagobi.utilities.engines.AbstractEngineInstance;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.IEngineAnalysisState;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
-
-import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -92,6 +94,20 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		datamartModel.setDataMartProperties( env ); 
 		
 		if(template.getDatamartModelAccessModality() != null) {
+			
+			if(template.getDatamartModelAccessModality().getRecursiveFiltering() == null) {
+				String recursiveFilteringAttr = (String)dataSource.getProperties().getProperty(DataMartModelAccessModality.ATTR_RECURSIVE_FILTERING);
+				if(!StringUtilities.isEmpty(recursiveFilteringAttr)) {
+					if("disabled".equalsIgnoreCase(recursiveFilteringAttr)) {
+						template.getDatamartModelAccessModality().setRecursiveFiltering( Boolean.FALSE );
+					} else {
+						template.getDatamartModelAccessModality().setRecursiveFiltering( Boolean.TRUE );
+					}
+				} else {
+					template.getDatamartModelAccessModality().setRecursiveFiltering( Boolean.TRUE );
+				}
+			}
+			
 			datamartModel.setDataMartModelAccessModality( template.getDatamartModelAccessModality() );
 		}
 		datamartModel.setName(datamartModel.getDataSource().getDatamartName());

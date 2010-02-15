@@ -60,17 +60,15 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 	private final String MESSAGE_DET = "MESSAGE_DET";
 	// type of service
 	private final String USERS_LIST = "USERS_LIST";
-	private final String USER_DETAIL = "USER_DETAIL";
 	private final String USER_INSERT = "USER_INSERT";
 	private final String USER_UPDATE = "USER_UPDATE";
 	private final String USER_DELETE = "USER_DELETE";
 
 	// USER detail
 	private final String ID = "ID";
-	private final String USER_ID = "USER_ID";
-	private final String FULL_NAME = "FULL_NAME";
-	private final String PASSWORD = "PASSWORD";
-	private final String CONFIRM_PASSWORD = "CONFIRM_PASSWORD";
+	private final String USER_ID = "userId";
+	private final String FULL_NAME = "fullName";
+	private final String PASSWORD = "pwd";
 	
 	private final String ROLES = "ROLES";
 	private final String ATTRIBUTES = "ATTRIBUTES";
@@ -107,28 +105,12 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 				throw new SpagoBIServiceException(SERVICE_NAME,
 						"Exception occurred while retrieving users", e);
 			}
-		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(USER_DETAIL)) {
-			Integer id = getAttributeAsInteger(ID);
-			try {
-				SbiUser user = userDao.loadSbiUserById(id);
-				logger.debug("Loaded user detail");
-				JSONObject userJSON = (JSONObject) SerializerFactory.getSerializer("application/json").serialize(user,locale);
-
-				writeBackToClient(new JSONSuccess(userJSON));
-
-			} catch (Throwable e) {
-				logger.error("Exception occurred while retrieving user detail", e);
-				throw new SpagoBIServiceException(SERVICE_NAME,
-						"Exception occurred while retrieving user detail",
-						e);
-			}
 		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(USER_INSERT)) {
 			String userId = getAttributeAsString(USER_ID);
 			String fullName = getAttributeAsString(FULL_NAME);
 			String password = getAttributeAsString(PASSWORD);
-			String confirmPwd = getAttributeAsString(CONFIRM_PASSWORD);
 			if (userId != null) {
-				if(password == null || confirmPwd == null || !password.equals(confirmPwd)){
+				if(password == null){
 					throw new SpagoBIServiceException(SERVICE_NAME,	"Please check password!");
 				}
 				SbiUser user = new SbiUser();
@@ -138,17 +120,25 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 				try {
 					Integer id = userDao.saveSbiUser(user);
 					logger.debug("New user inserted");
-					writeBackToClient( new JSONAcknowledge("Operazion succeded") );
+					JSONObject attributesResponseSuccessJSON = new JSONObject();
+					attributesResponseSuccessJSON.put("success", true);
+					attributesResponseSuccessJSON.put("responseText", "Operation succeded");
+					attributesResponseSuccessJSON.put("id", id);
+					writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );
+					//writeBackToClient( new JSONAcknowledge("Operation succeded") );
 
 				} catch (EMFUserError e) {
 					logger.error("Exception occurred while saving new user", e);
 					writeErrorsBackToClient();
 					throw new SpagoBIServiceException(SERVICE_NAME,	"Exception occurred while saving new user",	e);
 				} catch (IOException e) {
-					logger.error("Exception occurred while writw response to client", e);
+					logger.error("Exception occurred while writing response to client", e);
 					throw new SpagoBIServiceException(SERVICE_NAME,
-							"Exception occurred while writw response to client",
+							"Exception occurred while writing response to client",
 							e);
+				} catch (JSONException e) {
+					logger.error("JSON Exception", e);
+					e.printStackTrace();
 				}
 			}else{
 				logger.error("User name missing");
@@ -159,7 +149,7 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 			try {
 				userDao.deleteSbiUserById(id);
 				logger.debug("User deleted");
-				writeBackToClient( new JSONAcknowledge("Operazion succeded") );
+				writeBackToClient( new JSONAcknowledge("Operation succeded") );
 
 			} catch (Throwable e) {
 				logger.error("Exception occurred while retrieving user to delete", e);
@@ -172,13 +162,12 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 			String userId = getAttributeAsString(USER_ID);
 			String fullName = getAttributeAsString(FULL_NAME);
 			String password = getAttributeAsString(PASSWORD);
-			String confirmPwd = getAttributeAsString(CONFIRM_PASSWORD);
 			
 			ArrayList<String> roles = (ArrayList<String>)getAttributeAsStringList(ROLES);//roles ID
 			JSONArray attributesJSON = getAttributeAsJSONArray(ATTRIBUTES);//attributes ID-value
 			
 			if (userId != null) {
-				if(password == null || confirmPwd == null || !password.equals(confirmPwd)){
+				if(password == null){
 					throw new SpagoBIServiceException(SERVICE_NAME,	"Please check password!");
 				}
 				try {

@@ -48,6 +48,7 @@ public class UserJSONSerializer implements Serializer {
 	public static final String USER_ID = "userId";
 	public static final String FULL_NAME = "fullName";
 	public static final String ID = "id";
+	public static final String PWD = "pwd";
 
 	public Object serialize(Object o, Locale locale)
 			throws SerializationException {
@@ -64,6 +65,7 @@ public class UserJSONSerializer implements Serializer {
 			result.put(ID, userBO.getId());
 			result.put(USER_ID, userBO.getUserId());
 			result.put(FULL_NAME, userBO.getFullName());
+			result.put(PWD, userBO.getPassword());
 			
 			//roles
 			List allRoles = DAOFactory.getRoleDAO().loadAllRoles();

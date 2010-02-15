@@ -262,23 +262,27 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		             items: [{
 		            	 maxLength:100,
 		            	 minLength:1,
-		            	 regex : new RegExp("[A-Za-z0-9_]", "g"),
-		            	 regexText : 'Richiesta stringa alfanumerica',
+		            	 regex : new RegExp("[a-zA-Z1-9_\x2F]"),
+		            	 regexText : 'Richiesta stringa alfanumerica (\x2F incluso)',
 		                 fieldLabel: 'Name',
 		                 allowBlank: false,
+		                 validationEvent:false,
 		                 name: 'name'
 		             },{
 		            	 maxLength:160,
 		            	 minLength:1,
-		            	 regex : new RegExp("[A-Za-z0-9_]", "g"),
-		            	 regexText : 'Richiesta stringa alfanumerica',
+		            	 regex : new RegExp("^[a-zA-Z1-9_\x2F ]+$", "g"),
+		            	 regexText : 'Richiesta stringa alfanumerica (\x2F incluso)',
 		                 fieldLabel: 'Description',
+		                 validationEvent:false,
 		                 name: 'description'
 		             },{
 		            	 maxLength:20,
+		            	 minLength:0,
 		            	 regex : new RegExp("[A-Za-z0-9_]", "g"),
 		            	 regexText : 'Richiesta stringa alfanumerica',
 		                 fieldLabel: 'Code',
+		                 validationEvent:false,
 		                 name: 'code'
 		             }, {
 		            	  name: 'typeCd',
@@ -293,6 +297,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		                  selectOnFocus: true,
 		                  editable: false,
 		                  allowBlank: false,
+		                  validationEvent:false,
 		                  xtype: 'combo'
 		             }]
 		    	

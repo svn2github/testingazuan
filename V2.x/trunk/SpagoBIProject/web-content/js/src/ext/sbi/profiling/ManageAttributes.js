@@ -65,8 +65,6 @@ Sbi.profiling.ManageAttributes = function(config) {
 			, baseParams: paramsDelete
 		});
 	
-	
-
 		// Typical JsonReader.  Notice additional meta-data params for defining the core attributes of your json-response
 	this.reader = new Ext.data.JsonReader({
 		    totalProperty: 'total',
@@ -91,8 +89,21 @@ Sbi.profiling.ManageAttributes = function(config) {
 	    id: 'user',
 	    restful: true,     // <-- This Store is RESTful
 	    proxy: new Ext.data.HttpProxy({
-					url: this.services['manageAttributes']
+					url: this.services['manageAttributes'],
+					listeners: {
+						'exception': function(proxy, type, action, options, response, arg){
+			                Ext.MessageBox.show({
+			                    title: 'Validation Error',
+			                    msg: response.responseText,
+			                    width: 400,
+			                    buttons: Ext.MessageBox.OK
+			               });
+
+						}
+			        },
+			        scope: this
 			}),
+
 	    reader: this.reader,
 	    writer: this.writer    // <-- plug a DataWriter into the store just as you would a Reader
 	});
@@ -108,10 +119,17 @@ Sbi.profiling.ManageAttributes = function(config) {
 	    		new Ext.form.TextField({
 	    				maxLength:255,
 	    				minLength:1,
+	    				allowBlank: false,
 	    				regex : new RegExp("[A-Za-z0-9_]", "g"),
-	    				regexText : 'Ciao voglio solo una stringa alfanumerica'
+	    				regexText : 'Richiesta stringa alfanumerica'
 	    				})},
-	    {header: "Description", width: 250, sortable: true, dataIndex: 'description', editor: new Ext.form.TextField({maxLength:500,minLength:1})},
+	    {header: "Description", width: 250, sortable: true, dataIndex: 'description',  
+	    					editor: new Ext.form.TextField({
+	    						maxLength:500,
+	    						minLength:1,
+	    	    				regex : new RegExp("[A-Za-z0-9_]", "g"),
+	    	    				regexText : 'Richiesta stringa alfanumerica',
+	    						allowBlank: false})},
 	];
 	
 	 // use RowEditor for editing
@@ -119,11 +137,17 @@ Sbi.profiling.ManageAttributes = function(config) {
         saveText: 'Update'
     });
     
+    
+    
     this.editor.on({
   			scope: this,
   			afteredit: function() {
  				this.store.commitChanges();
-		  }
+		    },
+		    exceptionOnValidate: function(){
+		    	alert("ciao");
+		    	this.validationErrors();
+		    }
 		});
 
     // Create a typical GridPanel with RowEditor plugin
@@ -205,10 +229,9 @@ Ext.extend(Sbi.profiling.ManageAttributes, Ext.grid.GridPanel, {
         this.store.remove(rec);
         this.store.commitChanges();
         this.store.proxy = new Ext.data.HttpProxy({
-					url: this.services['manageAttributes']
-			});
-
-    }
+			url: this.services['manageAttributes']
+        });
+     }
 
 
 });

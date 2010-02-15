@@ -202,12 +202,14 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		    	}
 		    },{
 		        title: 'Roles'
+		        , id : 'rolesList'
 		        //,html: 'Is Able to'
 		        , layout: 'fit'
 		        , items: [this.rolesGrid]
 		        , itemId: 'roles'
 		    },{
 		        title: 'Attributes'
+		        , id : 'attrList'
 	            , items : [ this.attributesGridPanel ]
 	           // , autoWidth : true
 	           // , autoHeight : true
@@ -279,7 +281,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	                  title:'Users list',
 	   	 	   	      tools:[{
 	  		   	        id:'plus'
-	  		   	        //,iconCls: 'icon-add'
+	  		   	        ,iconCls: 'icon-add'
 	  		   	        ,qtip: 'New User'
 	  		   	        ,handler: this.addNewUser
 	  		   	        ,scope: this
@@ -379,6 +381,8 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	
 	,save : function() {
 	
+	   
+	   
 	   var values = this.gridForm.getForm().getValues();
 
        if(values['pwd']===values['confirmpwd']){
@@ -388,6 +392,18 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	        	fullName : values['fullName'],
 	        	pwd : values['pwd']            
 	        }
+	        if(values['id'] !== null && values['id'] !== undefined ){
+	        	params.id = values['id'];
+	        }
+	        
+	        var modifAttributes = this.attributesStore.getModifiedRecords();
+            var length = modifAttributes.length;
+            var attrs =new Array();
+            for(var i=0;i<length;i++){
+             	var attr ={'name':modifAttributes[i].get("name"),'id':modifAttributes[i].get("id"),'value':modifAttributes[i].get("value")};
+ 				attrs.push(attr);
+           }
+	        params.userAttributes =  Ext.util.JSON.encode(attrs);
 	        
 	        var newRec =new Ext.data.Record({'userId': values['userId'],'fullName': values['fullName'],'pwd':values['pwd']});
 	        
@@ -413,6 +429,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 								
 								this.usersStore.add(newRec);
 								this.usersStore.commitChanges();
+								this.attributesStore.commitChanges();
 			      			}
 			      		} else {
 			      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
@@ -446,7 +463,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		      		}else{
 		                Ext.MessageBox.show({
 		                    title: 'Error',
-		                    msg: 'Error on Saving Role',
+		                    msg: 'Error in Saving User',
 		                    width: 150,
 		                    buttons: Ext.MessageBox.OK
 		               });
@@ -494,22 +511,6 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
        // this.smRoles.selectFirstRow();
 		
 		Ext.getCmp('user-form').doLayout();
-	}
-	, fillNewRecord : function(){
-       var values = this.gridForm.getForm().getValues();
-
-       if(values['pwd']===values['confirmpwd']){
-	       var record = Ext.data.Record({
-					userId :values['userId'],
-			        fullName :values['fullName'],
-			        pwd :values['pwd']	        
-			});
-			return record;
-		}else{
-			alert('Password and Confirm Password fields must be equal!')
-			return null;
-		}
-		return null;
 	}
 	
 	, deleteSelectedUser: function(userId, index) {

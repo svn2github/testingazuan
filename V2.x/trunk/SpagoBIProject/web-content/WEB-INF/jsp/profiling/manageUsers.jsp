@@ -19,11 +19,55 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base311.jsp"%>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/service/ServiceRegistry.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/profiling/ManageUsers.js")%>'></script>
-
+<%@ page import="it.eng.spagobi.commons.bo.Role,
+				 it.eng.spagobi.profiling.bean.SbiAttribute,
+				 java.util.ArrayList,
+				 java.util.List" %>
+<%
+	List<SbiAttribute> attributes = (List<SbiAttribute>) aSessionContainer.getAttribute("attributesList");
+	List<Role> roles = (List<Role>) aSessionContainer.getAttribute("rolesList");
+%>
 <script type="text/javascript">
-	var config = {};
+	<%
+	String attributesList ="{}";
+	if(attributes != null){
+		attributesList="[";
+		for(int i=0; i< attributes.size(); i++){
+			SbiAttribute attr = attributes.get(i);
+			attributesList+="{";
+			attributesList+="'id':"+attr.getAttributeId()+",";
+			attributesList+="'name':'"+attr.getAttributeName()+"',";
+			attributesList+="'value':''";
+			attributesList+="}";
+			if(i != (attributes.size()-1)){
+				attributesList+=",";
+			}
+		}
+		attributesList+="]";
+	}
+	
+	String rolesList ="{}";
+	if(roles != null){
+		rolesList="[";
+		for(int i=0; i< roles.size(); i++){
+			Role role = roles.get(i);
+			rolesList+="{";
+			rolesList+="'id':"+role.getId()+",";
+			rolesList+="'name':'"+role.getName()+"',";
+			rolesList+="'description':'"+role.getDescription()+"',";
+			rolesList+="'checked':false";
+			rolesList+="}";
+			if(i != (roles.size()-1)){
+				rolesList+=",";
+			}
+		}
+		rolesList+="]";
+	}
+	%>
+	var config = {
+				  attributesEmpyList:<%=attributesList%>,
+				  rolesEmptyList:<%=rolesList%>
+				  };
 	var url = {
     	host: '<%= request.getServerName()%>'
     	, port: '<%= request.getServerPort()%>'

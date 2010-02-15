@@ -389,75 +389,70 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	        	pwd : values['pwd']            
 	        }
 	        
+	        var newRec =new Ext.data.Record({'userId': values['userId'],'fullName': values['fullName'],'pwd':values['pwd']});
+	        
 	        Ext.Ajax.request({
-            url: this.services['saveUserService'],
-            params: params,
-            method: 'GET',
-            success: function(response, options) {
-				if (response !== undefined) {			
+	            url: this.services['saveUserService'],
+	            params: params,
+	            method: 'GET',
+	            success: function(response, options) {
+					if (response !== undefined) {		
+			      		if(response.responseText !== undefined) {
+			      			var content = Ext.util.JSON.decode( response.responseText );
+			      			
+			      			if(content.responseText !== 'Operation succeded') {
+			                    Ext.MessageBox.show({
+			                        title: 'Error',
+			                        msg: content,
+			                        width: 150,
+			                        buttons: Ext.MessageBox.OK
+			                   });
+			      			}else{
+								var idTemp = content.id;
+								newRec.set('id', idTemp);
+								
+								this.usersStore.add(newRec);
+								this.usersStore.commitChanges();
+			      			}
+			      		} else {
+			      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+			      		}
+					} else {
+						Sbi.exception.ExceptionHandler.showErrorMessage('Error while saving User', 'Service Error');
+					}
+	            },
+	            failure: function(response) {
 		      		if(response.responseText !== undefined) {
 		      			var content = Ext.util.JSON.decode( response.responseText );
-		      			
-		      			if(content.responseText !== 'Operation succeded') {
-		                    Ext.MessageBox.show({
-		                        title: 'Error',
-		                        msg: content,
-		                        width: 150,
-		                        buttons: Ext.MessageBox.OK
-		                   });
-		      			}else{
-							Ext.MessageBox.hide();
-							var idTemp = content.id;
-							var newRec = Ext.data.Record.create({
-									id: idTemp,
-									userId :values['userId'],
-							        fullName :values['fullName'],
-							        pwd :values['pwd']	        
-							});
-							alert(newRec.toSource());
-							
-							this.usersStore.add([newRec]);
-							this.usersStore.commitChanges();
-		      			}
-		      		} else {
-		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+		      			var errMessage ='';
+						for (var count = 0; count < content.errors.length; count++) {
+							var anError = content.errors[count];
+		        			if (anError.localizedMessage !== undefined && anError.localizedMessage !== '') {
+		        				errMessage += anError.localizedMessage;
+		        			} else if (anError.message !== undefined && anError.message !== '') {
+		        				errMessage += anError.message;
+		        			}
+		        			if (count < content.errors.length - 1) {
+		        				errMessage += '<br/>';
+		        			}
+						}
+	
+		                Ext.MessageBox.show({
+		                    title: 'Validation Error',
+		                    msg: errMessage,
+		                    width: 400,
+		                    buttons: Ext.MessageBox.OK
+		               });
+		      		}else{
+		                Ext.MessageBox.show({
+		                    title: 'Error',
+		                    msg: 'Error on Saving Role',
+		                    width: 150,
+		                    buttons: Ext.MessageBox.OK
+		               });
 		      		}
-				} else {
-					Sbi.exception.ExceptionHandler.showErrorMessage('Error while saving User', 'Service Error');
-				}
-            },
-            failure: function(response) {
-	      		if(response.responseText !== undefined) {
-	      			var content = Ext.util.JSON.decode( response.responseText );
-	      			var errMessage ='';
-					for (var count = 0; count < content.errors.length; count++) {
-						var anError = content.errors[count];
-	        			if (anError.localizedMessage !== undefined && anError.localizedMessage !== '') {
-	        				errMessage += anError.localizedMessage;
-	        			} else if (anError.message !== undefined && anError.message !== '') {
-	        				errMessage += anError.message;
-	        			}
-	        			if (count < content.errors.length - 1) {
-	        				errMessage += '<br/>';
-	        			}
-					}
-
-	                Ext.MessageBox.show({
-	                    title: 'Validation Error',
-	                    msg: errMessage,
-	                    width: 400,
-	                    buttons: Ext.MessageBox.OK
-	               });
-	      		}else{
-	                Ext.MessageBox.show({
-	                    title: 'Error',
-	                    msg: 'Error on Saving Role',
-	                    width: 150,
-	                    buttons: Ext.MessageBox.OK
-	               });
-	      		}
-            }
-            ,scope: this
+	            }
+	            ,scope: this
        		 });
 			
 		}else{

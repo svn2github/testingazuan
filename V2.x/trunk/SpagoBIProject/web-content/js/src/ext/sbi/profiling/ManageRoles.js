@@ -373,8 +373,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	                  height: 350,
    	                  title:'Roles list',
 	   	 	   	      tools:[{
-	  		   	        id:'plus'
-	  		   	        //,iconCls: 'icon-add'
+	  		   	        id:'plusprofile'
 	  		   	        ,qtip: 'New role'
 	  		   	        ,handler: this.addNewRole
 	  		   	        ,scope: this

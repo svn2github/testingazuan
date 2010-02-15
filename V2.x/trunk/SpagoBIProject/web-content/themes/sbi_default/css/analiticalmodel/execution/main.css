@@ -181,3 +181,6 @@
     background-position:center center;
     background-repeat:no-repeat; 
 }
+.x-tool-plusprofile {
+	background-image: url('../../../img/commons/add.gif') !important;
+}

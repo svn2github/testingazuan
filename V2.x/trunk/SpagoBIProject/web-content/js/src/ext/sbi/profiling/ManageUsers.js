@@ -98,6 +98,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		this.usersStore = new Ext.data.JsonStore({
 	    	autoLoad: false    	
 	    	,fields: ['userId'
+	    			  , 'id'
 	    	          , 'fullName'
 	    	          , 'userRoles'
 	    	          , 'userAttributes'
@@ -139,7 +140,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
        });
        
        this.colModel = new Ext.grid.ColumnModel([
-        {id:'userId', header: "User ID", width: 150, sortable: true, dataIndex: 'userId'},
+         {id:'userId', header: "User ID", width: 150, sortable: true, dataIndex: 'userId'},
          {header: "Full Name", width: 150, sortable: true, dataIndex: 'fullName'},
          this.deleteColumn
        ]);
@@ -532,7 +533,8 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
         // commit the change (removes dirty flag):
         record.commit();		
 	}
-		, deleteSelectedUser: function(userId, index) {
+	
+	, deleteSelectedUser: function(userId, index) {
 		Ext.MessageBox.confirm(
             'Please confirm',
             'Confirm User delete?',            
@@ -542,7 +544,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 
 						Ext.Ajax.request({
 				            url: this.services['deleteUserService'],
-				            params: {'id': userId},
+				            params: {'ID': userId},
 				            method: 'GET',
 				            success: function(response, options) {
 								if (response !== undefined) {

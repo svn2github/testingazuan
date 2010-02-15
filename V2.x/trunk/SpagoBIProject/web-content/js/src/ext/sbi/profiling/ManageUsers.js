@@ -154,12 +154,6 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
         text : 'Save'
 	        , scope : this
 	        , handler : this.save
-	        , listeners:{
-	        	click: {
-	        		fn: this.fillNewRecord,
-	        		scope: this
-	        	}
- 	   		}
 	   }];
 	   
 	   this.initAttributesGridPanel();
@@ -202,7 +196,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		                 name: 'pwd'
 		             },{
 		                 fieldLabel: 'Confirm Password',
-		                 name: 'pwd'
+		                 name: 'confirmpwd'
 		             }]
 		    	
 		    	}
@@ -338,7 +332,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
     
     , initRolesGridPanel : function() {
        
-    	this.smRoles = new Ext.grid.CheckboxSelectionModel( {id: '2',singleSelect: false } );
+    	this.smRoles = new Ext.grid.CheckboxSelectionModel( {id: '2',singleSelect: false ,grid: this.rolesGrid} );
 		this.smRoles.on('rowselect', this.onRoleSelect, this);
 		this.smRoles.on('rowdeselect', this.onRoleDeselect, this);
 		
@@ -348,13 +342,13 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	       	  header: "Name",
 	       	  sortable : true,
 	          dataIndex: 'name',
-	          width: 75
+	          width: 65
 	       },{
 	       	  id: '1',
 	       	  header: "Description",
 	       	  sortable : true,
 	          dataIndex: 'description',
-	          width: 75
+	          width: 65
 	       },   this.smRoles    
 	    ]);
 		
@@ -362,7 +356,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 			  store: this.rolesStore
 			, id: 'roles-form'
    	     	, cm: cm
-   	     	, sm: this.smRoles
+   	     	//, sm: this.smRoles
    	     	, frame: false
    	     	, border:false  
    	     	, collapsible:false
@@ -384,58 +378,52 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	}
 	
 	,save : function() {
-        var newRec = this.fillNewRecord();
+	
+	   var values = this.gridForm.getForm().getValues();
 
-        var newRole = new Array();
-        newRole.push(newRec.data);
-
-        var params = {
-        	name : newRec.data.name,
-        	description : newRec.data.description,
-        	typeCd : newRec.data.typeCd,
-        	code : newRec.data.code,
-			saveSubobj: newRec.data.saveSubobj,
-			seeSubobj:newRec.data.seeSubobj,
-			seeViewpoints:newRec.data.seeViewpoints,
-			seeSnapshot:newRec.data.seeSnapshot,
-			seeNotes:newRec.data.seeNotes,
-			sendMail:newRec.data.sendMail,
-			savePersonalFolder:newRec.data.savePersonalFolder,
-			saveRemember:newRec.data.saveRemember,
-			seeMeta:newRec.data.seeMeta,
-			saveMeta:newRec.data.saveMeta,
-			buildQbe:newRec.data.buildQbe
-            //ROLE: Ext.util.JSON.encode(newRole)
-        };
-        
-        Ext.Ajax.request({
-            url: this.services['saveRoleService'],
+       if(values['pwd']===values['confirmpwd']){
+	      	
+			var params = {
+	        	userId : values['userId'],
+	        	fullName : values['fullName'],
+	        	pwd : values['pwd']            
+	        }
+	        
+	        Ext.Ajax.request({
+            url: this.services['saveUserService'],
             params: params,
             method: 'GET',
             success: function(response, options) {
 				if (response !== undefined) {			
 		      		if(response.responseText !== undefined) {
 		      			var content = Ext.util.JSON.decode( response.responseText );
-		      			if(content !== 'Operation succeded') {
+		      			
+		      			if(content.responseText !== 'Operation succeded') {
 		                    Ext.MessageBox.show({
 		                        title: 'Error',
 		                        msg: content,
 		                        width: 150,
 		                        buttons: Ext.MessageBox.OK
 		                   });
-		      			} else{
+		      			}else{
 							Ext.MessageBox.hide();
+							var idTemp = content.id;
+							var newRec = Ext.data.Record.create({
+									id: idTemp,
+									userId :values['userId'],
+							        fullName :values['fullName'],
+							        pwd :values['pwd']	        
+							});
+							alert(newRec.toSource());
 							
-							this.rolesStore.add(newRec);
-							this.rolesStore.commitChanges();
+							this.usersStore.add([newRec]);
+							this.usersStore.commitChanges();
 		      			}
 		      		} else {
 		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
 		      		}
-
-
 				} else {
-					Sbi.exception.ExceptionHandler.showErrorMessage('Error while saving Role', 'Service Error');
+					Sbi.exception.ExceptionHandler.showErrorMessage('Error while saving User', 'Service Error');
 				}
             },
             failure: function(response) {
@@ -470,7 +458,12 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	      		}
             }
             ,scope: this
-        });
+       		 });
+			
+		}else{
+			alert('Password and Confirm Password fields must be equal!')			
+		}
+	
     }
 	, addNewUser : function(){
 
@@ -498,108 +491,30 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
           	var tempRecord = new Ext.data.Record({"description":tempRolesArr[i].value,"name":tempRolesArr[i].name,"id":tempRolesArr[i].id });
 			Ext.getCmp("roles-form").store.add(tempRecord);								   
         }	
+        
+         this.smRoles.selectFirstRow();
+       // this.rolesGrid.getSelectionModel().selectFirstRow();
+       //this.rolesGrid.getColumnModel().getColumnById('2').selectRow(2);
+        //alert(this.rolesGrid.getColumnModel().getColumnById('2').selectRow(2)) ;
+       // this.smRoles.selectFirstRow();
 		
 		Ext.getCmp('user-form').doLayout();
-
 	}
 	, fillNewRecord : function(){
        var values = this.gridForm.getForm().getValues();
-		
-        var savePf =values['savePersonalFolder'];
-        var saveSo =values['saveSubobj'];
-        var seeSo =values['seeSubobj'];
-        var seeV =values['seeViewpoints'];
-        var seeSn =values['seeSnapshot'];
-        var seeN =values['seeNotes'];
-        var sandM =values['sendMail'];
-        var saveRe =values['saveRemember'];
-        var seeMe =values['seeMeta'];
-        var saveMe =values['saveMeta'];
-        var builQ =values['buildQbe'];      
-        
-        
-        var RoleRecord = Ext.data.Record.create(
-        	    {name: 'name', mapping: 'name'},
-        	    {name: 'description', mapping: 'description'},
-        	    {name: 'code', mapping: 'code'},
-        	    {name: 'typeCd', mapping: 'typeCd'},
-        	    {name: 'savePersonalFolder', mapping: 'savePersonalFolder'},
-        	    {name: 'saveSubobj', mapping: 'saveSubobj'},
-        	    {name: 'seeSubobj', mapping: 'seeSubobj'},
-        	    {name: 'seeViewpoints', mapping: 'seeViewpoints'},
-        	    {name: 'seeSnapshot', mapping: 'seeSnapshot'},
-        	    {name: 'seeNotes', mapping: 'seeNotes'},
-        	    {name: 'sendMail', mapping: 'sendMail'},
-        	    {name: 'saveRemember', mapping: 'saveRemember'},
-        	    {name: 'seeMeta', mapping: 'seeMeta'},
-        	    {name: 'saveMeta', mapping: 'saveMeta'},
-        	    {name: 'buildQbe', mapping: 'buildQbe'}
-        	    
-        );
 
-		var record = new RoleRecord({
-				name :values['name'],
-		        description :values['description'],
-		        typeCd :values['typeCd'],
-		        code :values['code']	        
-		});
-		if(savePf == 1){
-        	record.set('savePersonalFolder', true);
-        }else{
-        	record.set('savePersonalFolder', false);
-        }
-        if(saveSo == 1){
-        	record.set('saveSubobj', true);
-        }else{
-        	record.set('saveSubobj', false);
-        }
-        if(seeSo == 1){
-        	record.set('seeSubobj', true);
-        }else{
-        	record.set('seeSubobj', false);
-        }
-        if(seeV == 1){
-        	record.set('seeViewpoints', true);
-        }else{
-        	record.set('seeViewpoints', false);
-        }
-        if(seeSn == 1){
-        	record.set('seeSnapshot', true);
-        }else{
-        	record.set('seeSnapshot', false);
-        }
-        if(seeN == 1){
-        	record.set('seeNotes', true);
-        }else{
-        	record.set('seeNotes', false);
-        }
-        if(sandM == 1){
-        	record.set('sendMail', true);
-        }else{
-        	record.set('sendMail', false);
-        }
-        if(saveRe == 1){
-        	record.set('saveRemember', true);
-        }else{
-        	record.set('saveRemember', false);
-        }
-        if(seeMe == 1){
-        	record.set('seeMeta', true);
-        }else{
-        	record.set('seeMeta', false);
-        }
-        if(saveMe == 1){
-        	record.set('saveMeta', true);
-        }else{
-        	record.set('saveMeta', false);
-        }
-        if(builQ == 1){
-        	record.set('buildQbe', true);
-        }else{
-        	record.set('buildQbe', false);
-        }
-
-		return record;
+       if(values['pwd']===values['confirmpwd']){
+	       var record = Ext.data.Record({
+					userId :values['userId'],
+			        fullName :values['fullName'],
+			        pwd :values['pwd']	        
+			});
+			return record;
+		}else{
+			alert('Password and Confirm Password fields must be equal!')
+			return null;
+		}
+		return null;
 	}
 	
 	, deleteSelectedUser: function(userId, index) {

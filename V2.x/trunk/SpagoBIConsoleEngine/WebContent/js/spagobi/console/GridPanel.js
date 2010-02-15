@@ -102,13 +102,45 @@ Ext.extend(Sbi.console.GridPanel, Ext.Panel, {
       
       //Template simulator:
       var tmpActions = [{name: 'refresh'
-                    , hidden: false}
+                    , hidden: false
+                    , config: {}}
                     , {name: 'errors'
-                    , hidden: false}
+                    ,  hidden: false
+                    ,  config: {
+                        staticParams: {param1: 'paramValue1'
+                                      ,param2: 'paramValue2' }
+                      }
+                     }                    
+                    , {name: 'errors_inactive'
+                    ,  hidden: true
+                    ,  config: {
+                        staticParams: {param1: 'paramValue'}
+                      }
+                    }
                     , {name: 'warnings'
-                    , hidden: false}
+                    ,  hidden: false
+                    ,  config: {
+                        staticParams: {param1: 'paramValue'}
+                      }
+                     }
+                    , {name: 'warnings_inactive'
+                    ,  hidden: true
+                    ,  config: {
+                        staticParams: {param1: 'paramValue'}
+                      }
+                     }
                     , {name: 'views'
-                    , hidden: false}];
+                    ,  hidden: false
+                    ,  config: {
+                        staticParams: {param1: 'paramValue'}
+                      }
+                     }                  
+                    , {name: 'views_inactive'
+                    ,  hidden: true
+                    ,  config: {
+                        staticParams: {param1: 'paramValue'}
+                      }
+                     }];
       
       var tmpFilters = [{text: 'Filtro 1'
                     , column: 'column1'
@@ -127,14 +159,20 @@ Ext.extend(Sbi.console.GridPanel, Ext.Panel, {
                     , operator: 'EQUALS_TO'
                     , operand: 'DISTINCT'}];
                     
-      var tmpDefaults = { operator: 'EQUALS_TO'
+      var tmpDefaults = { type: 'custom'
+                        , operator: 'EQUALS_TO'
                         , operand: 'DISTINCT'};
-
-      this.filterBar = new Sbi.console.CustomFilteringToolbar({type:'custom'  //custom | default | automatic
-                                                        , defaults: tmpDefaults
-                                                        , actions: tmpActions
-                                                        , filters: tmpFilters});
-     }
-    
-    
+                        
+     // var type = 'custom'; //default | custom | automatic
+ 
+      if (tmpDefaults.type === 'default'){
+    	   alert("Default filterbar working in progress!!");
+      } else if (tmpDefaults.type === 'custom' || tmpDefaults.type === 'automatic'){
+          this.filterBar = new Sbi.console.CustomFilteringToolbar({defaults: tmpDefaults
+                                                                 , actions: tmpActions
+                                                                 , filters: tmpFilters});          	          	
+      } /*else if (type === 'automatic'){
+          alert("Automatic filterbar working in progress!!");
+      }   */  
+  }
 });

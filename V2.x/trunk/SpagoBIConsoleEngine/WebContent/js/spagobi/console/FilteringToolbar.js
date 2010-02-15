@@ -70,19 +70,6 @@ Sbi.console.FilteringToolbar = function(config) {
 	});
 	*/
 	
-	/*
-	if (c.type === 'default'){
-		this.initDefaultFilters(c.filters || {});
-    } else if (c.type === 'custom'){
-    	this.toolbarElements = new Sbi.console.CustomFilteringToolbar(c);
-    } else if (c.type === 'automatic'){
-    	this.initAutomaticFilters(c.filters || {});
-    }
-	*/
-	
-	//adds general action buttons
-	//this.initToolbarActions(c.actions || {});
-	
 	c = Ext.apply(c, {});
 
 	// constructor
@@ -118,46 +105,5 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 		
 		//alert('filtering OUT');
 	}
-  
-  	
-  
-  
-  
-  
-  
-  
-  
-/*	
-    ,initDefaultFilters: function(filtersConf) {
-        this.toolbarElements = [];
-      	for(var i=0; i < filtersConf.length; i++){
-    		  this.toolbarElements.push({
-    				 text: filtersConf[i].text
-    				,tooltip: filtersConf[i].text
-    				,scope: this
-    			});        			
-      	}
-	}
-	  
-	  
-    ,initAutomaticFilters: function(filtersConf) {
-       this.toolbarElements = [];
-       alert('initAutomaticFilters...working in progress...');
-	}
-	
-	
-	,initToolbarActions: function(actions) {
-  	   if(this.toolbarElements === null){
-  	     this.toolbarElements = [];
-  	   }
-       
-  	   this.toolbarElements.add(new Ext.Toolbar.Spacer({width:1000}));
-  	   	for(var i=0; i < actions.length; i++){
-  	   		//this.toolbarElements.push(new Sbi.console.ActionButton(actions[i]));
-    		this.toolbarElements.add(new Sbi.console.ActionButton(actions[i]));
-    	}
-    
-    }
-	*/
     
 });

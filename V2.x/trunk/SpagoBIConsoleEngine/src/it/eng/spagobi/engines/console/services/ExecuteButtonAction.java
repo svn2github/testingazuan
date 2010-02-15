@@ -82,6 +82,9 @@ public class ExecuteButtonAction extends AbstractConsoleEngineAction {
 			
 			callback = getAttributeAsString( CALLBACK );
 			logger.debug("Parameter [" + CALLBACK + "] is equals to [" + callback + "]");
+			
+			String parameters = getAttributeAsString( "parameters" );
+			logger.debug("Parameter [parameters] is equals to [" + parameters + "]");			
 					
 			//for initial test:
 			getEmptyResult(message);

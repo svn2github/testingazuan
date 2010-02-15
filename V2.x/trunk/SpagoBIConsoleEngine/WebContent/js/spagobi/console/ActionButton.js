@@ -51,33 +51,47 @@ Sbi.console.ActionButton = function(config) {
 		var defaultSettings = {
 			iconCls: config.name
 			,tooltip: config.name 
+			,hidden: config.hidden
 			,scope:this
 		};
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.actionButton) {
 			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.actionButton);
 		}
-		
+	
 		var c = Ext.apply(defaultSettings, config || {});
-		
+		//test
+    //c.xconfig = c.config;
 		Ext.apply(this, c);
-		
+
 		//Services definition
 		this.services = this.services || new Array();	
 		this.services['refresh'] = this.services['refresh'] || Sbi.config.serviceRegistry.getServiceUrl({
 			serviceName: 'REFRESH_ACTION'
 			, baseParams: new Object()
 		});
-			this.services['errors'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'ERRORS_ACTION'
+		this.services['errors'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'ERRORS_ACTION'
 			, baseParams: new Object()
 		});
-			this.services['warnings'] = this.services['warnings'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'WARNINGS_ACTION'
+		this.services['errors_inactive'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'ERRORS_ACTION'
 			, baseParams: new Object()
 		});
-			this.services['views'] = this.services['views'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'VIEWS_ACTION'
+		this.services['warnings'] = this.services['warnings'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'WARNINGS_ACTION'
+			, baseParams: new Object()
+		});
+		this.services['warnings_inactive'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'WARNINGS_ACTION'
+			, baseParams: new Object()
+		});
+		this.services['views'] = this.services['views'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'VIEWS_ACTION'
+			, baseParams: new Object()
+		});
+		this.services['views_inactive'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'VIEWS_ACTION'
 			, baseParams: new Object()
 		});
 		
@@ -89,6 +103,8 @@ Sbi.console.ActionButton = function(config) {
       c = Ext.apply(c, this);
 
 		// constructor
+		//test
+		//delete c.config;
 		Sbi.console.ActionButton.superclass.constructor.call(this, c);
 		this.on('click', this.execAction, this);
 		//this.addEvents();
@@ -101,26 +117,33 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
    
     // public methods
     , execAction: function(){
-      Ext.Ajax.request({
-			        url: this.services[this.name],
-			        params: {'message': this.name, 'userId': Sbi.user.userId},
-			        callback : function(options , success, response) {
-			  	  		if (success) {
-				      		if(response !== undefined && response.responseText !== undefined) {
-				      			var content = Ext.util.JSON.decode( response.responseText );
-				      			if (content !== undefined) {				      			  
-				      				alert(content.toSource());
-				      			}				      		
-				      		} else {
-				      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-				      		}
-			  	  		} else { 
-			  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot exec action: ' + this.name, 'Service Error');
-			  	  		}
-			        },
-			        scope: this,
-					failure: Sbi.exception.ExceptionHandler.handleFailure      
-				});
+        var inlineParams = {}; 
+        
+       //adds static and dynamic parameter (only static at the moment)
+        if(this.config.staticParams) {        
+    		  inlineParams = this.config.staticParams;  
+  			}
+  		
+        Ext.Ajax.request({
+  			        url: this.services[this.name],  			       
+  			        params: {'message': this.name, 'userId': Sbi.user.userId, 'parameters': Ext.util.JSON.encode(inlineParams) } ,  			       
+  			        callback : function(options , success, response) {
+  			  	  		if (success) {
+  				      		if(response !== undefined && response.responseText !== undefined) {
+  				      			var content = Ext.util.JSON.decode( response.responseText );
+  				      			if (content !== undefined) {				      			  
+  				      				alert(content.toSource());
+  				      			}				      		
+  				      		} else {
+  				      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+  				      		}
+  			  	  		} else { 
+  			  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot exec action: ' + this.name, 'Service Error');
+  			  	  		}
+  			        },
+  			        scope: this,
+  					failure: Sbi.exception.ExceptionHandler.handleFailure      
+  				});
 			}
    
     

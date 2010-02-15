@@ -44,10 +44,9 @@
 Ext.ns("Sbi.profiling");
 
 Sbi.profiling.ManageUsers = function(config) { 
-	
-	var paramsList = {MESSAGE_DET: "USERS_LIST"};
-	var paramsSave = {MESSAGE_DET: "USER_INSERT"};
-	var paramsDel = {MESSAGE_DET: "USER_DELETE"};
+	var paramsList = { MESSAGE_DET: "USERS_LIST"};
+	var paramsSave = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: "USER_INSERT"};
+	var paramsDel = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: "USER_DELETE"};
 	
 	this.services = new Array();
 	this.services['manageUsersList'] = Sbi.config.serviceRegistry.getServiceUrl({
@@ -62,9 +61,9 @@ Sbi.profiling.ManageUsers = function(config) {
 	this.services['deleteUserService'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'MANAGE_USER_ACTION'
 		, baseParams: paramsDel
-	});
+	});	
 	
-	this.initStores();
+	this.initStores(config);
 	
 	this.initManageUsers();
 	   
@@ -92,14 +91,17 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	, smRoles: null
 	, rolesGrid: null
 	, rolesStore: null
+	, rolesEmptyStore: null
+	, attributesEmptyStore: null
 
-	, initStores: function () {
+	, initStores: function (config) {
 	
 		this.usersStore = new Ext.data.JsonStore({
 	    	autoLoad: false    	
 	    	,fields: ['userId'
 	    			  , 'id'
 	    	          , 'fullName'
+	    	          , 'pwd'
 	    	          , 'userRoles'
 	    	          , 'userAttributes'
 	    	          ]
@@ -116,6 +118,9 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	    this.rolesStore = new Ext.data.SimpleStore({
 	        fields : [ 'id', 'name', 'description' ]
 	    });
+	    
+	    this.attributesEmptyStore = config.attributesEmpyList;
+	    this.rolesEmptyStore = config.rolesEmptyList;
 	    
     }
 	
@@ -187,11 +192,17 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
 		             },
 		             items: [{
-		                 fieldLabel: 'UserID',
+		                 fieldLabel: 'User ID',
 		                 name: 'userId'
 		             },{
-		                 fieldLabel: 'FullName',
+		                 fieldLabel: 'Full Name',
 		                 name: 'fullName'
+		             },{
+		                 fieldLabel: 'Password',
+		                 name: 'pwd'
+		             },{
+		                 fieldLabel: 'Confirm Password',
+		                 name: 'pwd'
 		             }]
 		    	
 		    	}
@@ -373,108 +384,127 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	}
 	
 	,save : function() {
-        //get the last record
-        var lastRec = this.usersStore.getCount();
+        var newRec = this.fillNewRecord();
 
-        var newRec = this.usersStore.getAt(lastRec -1 );
-        this.usersStore.addSorted(newRec);
-        
         var newRole = new Array();
         newRole.push(newRec.data);
 
         var params = {
-            ROLE: Ext.util.JSON.encode(newRole)
+        	name : newRec.data.name,
+        	description : newRec.data.description,
+        	typeCd : newRec.data.typeCd,
+        	code : newRec.data.code,
+			saveSubobj: newRec.data.saveSubobj,
+			seeSubobj:newRec.data.seeSubobj,
+			seeViewpoints:newRec.data.seeViewpoints,
+			seeSnapshot:newRec.data.seeSnapshot,
+			seeNotes:newRec.data.seeNotes,
+			sendMail:newRec.data.sendMail,
+			savePersonalFolder:newRec.data.savePersonalFolder,
+			saveRemember:newRec.data.saveRemember,
+			seeMeta:newRec.data.seeMeta,
+			saveMeta:newRec.data.saveMeta,
+			buildQbe:newRec.data.buildQbe
+            //ROLE: Ext.util.JSON.encode(newRole)
         };
         
-       
         Ext.Ajax.request({
             url: this.services['saveRoleService'],
             params: params,
             method: 'GET',
             success: function(response, options) {
-				if (response !== undefined) {
-					Ext.MessageBox.hide();
-					this.usersStore.commitChanges();
+				if (response !== undefined) {			
+		      		if(response.responseText !== undefined) {
+		      			var content = Ext.util.JSON.decode( response.responseText );
+		      			if(content !== 'Operation succeded') {
+		                    Ext.MessageBox.show({
+		                        title: 'Error',
+		                        msg: content,
+		                        width: 150,
+		                        buttons: Ext.MessageBox.OK
+		                   });
+		      			} else{
+							Ext.MessageBox.hide();
+							
+							this.rolesStore.add(newRec);
+							this.rolesStore.commitChanges();
+		      			}
+		      		} else {
+		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+		      		}
+
 
 				} else {
 					Sbi.exception.ExceptionHandler.showErrorMessage('Error while saving Role', 'Service Error');
 				}
             },
-            failure: function() {
-                Ext.MessageBox.show({
-                    title: 'Error',
-                    msg: 'Error on Saving Role',
-                    width: 150,
-                    buttons: Ext.MessageBox.OK
-               });
+            failure: function(response) {
+	      		if(response.responseText !== undefined) {
+	      			var content = Ext.util.JSON.decode( response.responseText );
+	      			var errMessage ='';
+					for (var count = 0; count < content.errors.length; count++) {
+						var anError = content.errors[count];
+	        			if (anError.localizedMessage !== undefined && anError.localizedMessage !== '') {
+	        				errMessage += anError.localizedMessage;
+	        			} else if (anError.message !== undefined && anError.message !== '') {
+	        				errMessage += anError.message;
+	        			}
+	        			if (count < content.errors.length - 1) {
+	        				errMessage += '<br/>';
+	        			}
+					}
+
+	                Ext.MessageBox.show({
+	                    title: 'Validation Error',
+	                    msg: errMessage,
+	                    width: 400,
+	                    buttons: Ext.MessageBox.OK
+	               });
+	      		}else{
+	                Ext.MessageBox.show({
+	                    title: 'Error',
+	                    msg: 'Error on Saving Role',
+	                    width: 150,
+	                    buttons: Ext.MessageBox.OK
+	               });
+	      		}
             }
+            ,scope: this
         });
     }
 	, addNewUser : function(){
-    	var emptyRecToAdd =new Ext.data.Record({name:'', 
-    										label:'', 
-    										description:'',
-    										typeCd:'',
-    										code:'',
-    										saveSubobj: false,
-    										seeSubobj:false,
-    										seeViewpoints:false,
-    										seeSnapshot:false,
-    										seeNotes:false,
-    										sendMail:false,
-    										savePersonalFolder:false,
-    										saveRemember:false,
-    										seeMeta:false,
-    										saveMeta:false,
-    										buildQbe:false
-    										});
-    	//this.rolesStore.addSorted(emptyRecToAdd);
 
-		Ext.getCmp("user-form").getForm().loadRecord(emptyRecToAdd);
-        this.tabs.items.each(function(item)
-        {		
-        	if(item.getItemId() == 'checks'){
-
-        		item.items.each(function(itemTab){
-
-        			itemTab.items.each(function(item1){
-
-        				item1.setValue({
-							'saveSubobj': false,
-							'seeSubobj':false,
-							'seeViewpoints':false,
-							'seeSnapshot':false,
-							'seeNotes':false,
-							'sendMail':false,
-							'savePersonalFolder':false,
-							'saveRemember':false,
-							'seeMeta':false,
-							'saveMeta':false,
-							'buildQbe':false
-        				});
-
-        			});
-        		});
-        		
-        	}
-        	item.doLayout();
-        });   
-		Ext.getCmp("user-form").doLayout();
+		var emptyRecToAdd =new Ext.data.Record({userId:'', 
+											fullName:'', 
+											pwd:'',
+											userRoles:'',
+											userAttributes:''
+											});
+	
+		Ext.getCmp('user-form').getForm().loadRecord(emptyRecToAdd);
 		
-		//do not add record to the grid
-	   	//var grid = Ext.getCmp('usergrid');	   	 
-	   	//grid.getSelectionModel().getSelected().hide(grid.getSelectionModel().getSelected());
+		Ext.getCmp("attributes-form").store.removeAll();
+	   	var tempAttrArr = this.attributesEmptyStore;
+	   	var length = this.attributesEmptyStore.length;
+        for(var i=0;i<length;i++){
+        	var tempRecord = new Ext.data.Record({"value":tempAttrArr[i].value,"name":tempAttrArr[i].name,"id":tempAttrArr[i].id });
+    		Ext.getCmp("attributes-form").store.add(tempRecord);	
+        }		
+        
+        Ext.getCmp("roles-form").store.removeAll();
+        var tempRolesArr = this.rolesEmptyStore;
+        var length2 = this.rolesEmptyStore.length;
+        for(var i=0;i<length2;i++){
+          	var tempRecord = new Ext.data.Record({"description":tempRolesArr[i].value,"name":tempRolesArr[i].name,"id":tempRolesArr[i].id });
+			Ext.getCmp("roles-form").store.add(tempRecord);								   
+        }	
+		
+		Ext.getCmp('user-form').doLayout();
 
 	}
 	, fillNewRecord : function(){
-        var lastRec = this.usersStore.getCount();
-
-        var record = this.usersStore.getAt(lastRec -1 );
-        var values = this.gridForm.getForm().getValues();
-        var name =values['name'];
-        var descr =values['description'];
-        var typecd =values['typeCd'];
-        var code =values['code'];
+       var values = this.gridForm.getForm().getValues();
+		
         var savePf =values['savePersonalFolder'];
         var saveSo =values['saveSubobj'];
         var seeSo =values['seeSubobj'];
@@ -485,53 +515,91 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
         var saveRe =values['saveRemember'];
         var seeMe =values['seeMeta'];
         var saveMe =values['saveMeta'];
-        var builQ =values['buildQbe'];
+        var builQ =values['buildQbe'];      
         
         
-     // set the value (shows dirty flag):
-        record.set('name', name);
-        record.set('description', descr);
-        record.set('code', code);
-        record.set('typeCd', typecd);
-        if(savePf == 1){
+        var RoleRecord = Ext.data.Record.create(
+        	    {name: 'name', mapping: 'name'},
+        	    {name: 'description', mapping: 'description'},
+        	    {name: 'code', mapping: 'code'},
+        	    {name: 'typeCd', mapping: 'typeCd'},
+        	    {name: 'savePersonalFolder', mapping: 'savePersonalFolder'},
+        	    {name: 'saveSubobj', mapping: 'saveSubobj'},
+        	    {name: 'seeSubobj', mapping: 'seeSubobj'},
+        	    {name: 'seeViewpoints', mapping: 'seeViewpoints'},
+        	    {name: 'seeSnapshot', mapping: 'seeSnapshot'},
+        	    {name: 'seeNotes', mapping: 'seeNotes'},
+        	    {name: 'sendMail', mapping: 'sendMail'},
+        	    {name: 'saveRemember', mapping: 'saveRemember'},
+        	    {name: 'seeMeta', mapping: 'seeMeta'},
+        	    {name: 'saveMeta', mapping: 'saveMeta'},
+        	    {name: 'buildQbe', mapping: 'buildQbe'}
+        	    
+        );
+
+		var record = new RoleRecord({
+				name :values['name'],
+		        description :values['description'],
+		        typeCd :values['typeCd'],
+		        code :values['code']	        
+		});
+		if(savePf == 1){
         	record.set('savePersonalFolder', true);
+        }else{
+        	record.set('savePersonalFolder', false);
         }
         if(saveSo == 1){
         	record.set('saveSubobj', true);
+        }else{
+        	record.set('saveSubobj', false);
         }
         if(seeSo == 1){
         	record.set('seeSubobj', true);
+        }else{
+        	record.set('seeSubobj', false);
         }
         if(seeV == 1){
         	record.set('seeViewpoints', true);
+        }else{
+        	record.set('seeViewpoints', false);
         }
         if(seeSn == 1){
         	record.set('seeSnapshot', true);
+        }else{
+        	record.set('seeSnapshot', false);
         }
         if(seeN == 1){
         	record.set('seeNotes', true);
+        }else{
+        	record.set('seeNotes', false);
         }
         if(sandM == 1){
         	record.set('sendMail', true);
+        }else{
+        	record.set('sendMail', false);
         }
         if(saveRe == 1){
         	record.set('saveRemember', true);
+        }else{
+        	record.set('saveRemember', false);
         }
         if(seeMe == 1){
         	record.set('seeMeta', true);
+        }else{
+        	record.set('seeMeta', false);
         }
         if(saveMe == 1){
         	record.set('saveMeta', true);
+        }else{
+        	record.set('saveMeta', false);
         }
         if(builQ == 1){
         	record.set('buildQbe', true);
-        }
-        if(savePf == 1){
-        	record.set('savePersonalFolder', true);
+        }else{
+        	record.set('buildQbe', false);
         }
 
-        // commit the change (removes dirty flag):
-        record.commit();		
+		return record;
 	}
 	
 	, deleteSelectedUser: function(userId, index) {

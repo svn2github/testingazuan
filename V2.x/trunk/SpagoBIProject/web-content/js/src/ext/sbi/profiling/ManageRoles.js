@@ -493,13 +493,24 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 				}
             },
             failure: function(response) {
-            	alert(response);
 	      		if(response.responseText !== undefined) {
 	      			var content = Ext.util.JSON.decode( response.responseText );
-	      			
+	      			var errMessage ='';
+					for (var count = 0; count < content.errors.length; count++) {
+						var anError = content.errors[count];
+	        			if (anError.localizedMessage !== undefined && anError.localizedMessage !== '') {
+	        				errMessage += anError.localizedMessage;
+	        			} else if (anError.message !== undefined && anError.message !== '') {
+	        				errMessage += anError.message;
+	        			}
+	        			if (count < content.errors.length - 1) {
+	        				errMessage += '<br/>';
+	        			}
+					}
+
 	                Ext.MessageBox.show({
 	                    title: 'Validation Error',
-	                    msg: content.toSource(),
+	                    msg: errMessage,
 	                    width: 400,
 	                    buttons: Ext.MessageBox.OK
 	               });

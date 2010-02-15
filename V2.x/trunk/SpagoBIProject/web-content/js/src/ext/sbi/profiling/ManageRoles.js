@@ -260,12 +260,24 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
 		             },
 		             items: [{
+		            	 maxLength:100,
+		            	 minLength:1,
+		            	 regex : new RegExp("[A-Za-z0-9_]", "g"),
+		            	 regexText : 'Richiesta stringa alfanumerica',
 		                 fieldLabel: 'Name',
+		                 allowBlank: false,
 		                 name: 'name'
 		             },{
+		            	 maxLength:160,
+		            	 minLength:1,
+		            	 regex : new RegExp("[A-Za-z0-9_]", "g"),
+		            	 regexText : 'Richiesta stringa alfanumerica',
 		                 fieldLabel: 'Description',
 		                 name: 'description'
 		             },{
+		            	 maxLength:20,
+		            	 regex : new RegExp("[A-Za-z0-9_]", "g"),
+		            	 regexText : 'Richiesta stringa alfanumerica',
 		                 fieldLabel: 'Code',
 		                 name: 'code'
 		             }, {
@@ -280,6 +292,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		                  triggerAction: 'all',
 		                  selectOnFocus: true,
 		                  editable: false,
+		                  allowBlank: false,
 		                  xtype: 'combo'
 		             }]
 		    	
@@ -356,7 +369,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	                  title:'Roles list',
 	   	 	   	      tools:[{
 	  		   	        id:'plus'
-	  		   	        //,iconCls: 'icon-add'
+	  		   	        ,iconCls: 'icon-add'
 	  		   	        ,qtip: 'New role'
 	  		   	        ,handler: this.addNewRole
 	  		   	        ,scope: this
@@ -469,25 +482,20 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
             success: function(response, options) {
 				if (response !== undefined) {			
 		      		if(response.responseText !== undefined) {
-		      			var content = Ext.util.JSON.decode( response.responseText );
-		      			if(content !== 'Operation succeded') {
-		                    Ext.MessageBox.show({
-		                        title: 'Error',
-		                        msg: content,
-		                        width: 150,
-		                        buttons: Ext.MessageBox.OK
-		                   });
-		      			} else{
-							Ext.MessageBox.hide();
-							
-							this.rolesStore.add(newRec);
-							this.rolesStore.commitChanges();
-		      			}
+	                    Ext.MessageBox.show({
+	                        title: 'Result',
+	                        msg: 'Operation succeded',
+	                        width: 200,
+	                        buttons: Ext.MessageBox.OK
+	                   });
+
+						this.rolesStore.add(newRec);
+
+						this.rolesStore.commitChanges();
+
 		      		} else {
 		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
 		      		}
-
-
 				} else {
 					Sbi.exception.ExceptionHandler.showErrorMessage('Error while saving Role', 'Service Error');
 				}

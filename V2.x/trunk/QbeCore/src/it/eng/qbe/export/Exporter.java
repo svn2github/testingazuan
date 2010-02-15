@@ -8,6 +8,7 @@ import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -25,6 +26,7 @@ public class Exporter {
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(Exporter.class);
 	IDataStore dataStore = null;
+	Vector extractedFields = null;
 
 	public Exporter(IDataStore dataStore) {
 		super();
@@ -56,7 +58,11 @@ public class Exporter {
 	    	for(int j =0;j<colnum;j++){
 	    		Cell cell = row.createCell(j);
 	    	    cell.setCellType(HSSFCell.CELL_TYPE_STRING);
-	    	    String fieldName = d.getFieldName(j);	
+	    	    String fieldName = d.getFieldName(j);
+	            if (extractedFields != null && extractedFields.get(j) != null) {
+	    	    	Field field = (Field) extractedFields.get(j);
+	    	    	fieldName = field.getAlias();
+	    	    }
 	    	    cell.setCellValue(createHelper.createRichTextString(fieldName));
 	    	}
 	    	
@@ -133,4 +139,8 @@ public class Exporter {
 	    return wb;
 	}
 
+	public void setExtractedFields(Vector extractedFields) {
+		this.extractedFields = extractedFields;
+	}
+	
 }

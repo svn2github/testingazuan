@@ -26,7 +26,9 @@ import it.eng.spagobi.analiticalmodel.document.x.AbstractSpagoBIAction;
 import it.eng.spagobi.analiticalmodel.document.x.SaveMetadataAction;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
+import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.bean.SbiUser;
 import it.eng.spagobi.profiling.bo.UserBO;
 import it.eng.spagobi.profiling.dao.ISbiUserDAO;
@@ -38,6 +40,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -205,6 +208,19 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 			}else{
 				logger.error("User name missing");
 				throw new SpagoBIServiceException(SERVICE_NAME,	"Please enter user name");
+			}
+		}else if(serviceType == null){
+			try {
+				List<SbiAttribute> attributes = DAOFactory.getSbiAttributeDAO().loadSbiAttributes();
+				List<SbiExtRoles> roles = DAOFactory.getRoleDAO().loadAllRoles();
+				getSessionContainer().setAttribute("attributesList", attributes);
+				getSessionContainer().setAttribute("rolesList", roles);
+				
+			} catch (EMFUserError e) {
+				logger.error(e.getMessage(), e);
+				throw new SpagoBIServiceException(SERVICE_NAME,
+						"Exception retrieving role types",
+						e);
 			}
 		}
 		logger.debug("OUT");

@@ -46,8 +46,8 @@ Ext.ns("Sbi.profiling");
 Sbi.profiling.ManageRoles = function(config) { 
 
 	var paramsList = {MESSAGE_DET: "ROLES_LIST"};
-	var paramsSave = {MESSAGE_DET: "ROLE_INSERT"};
-	var paramsDel = {MESSAGE_DET: "ROLE_DELETE"};
+	var paramsSave = {LIGHT_NAVIGATOR_DISABLED: 'TRUE',MESSAGE_DET: "ROLE_INSERT"};
+	var paramsDel = {LIGHT_NAVIGATOR_DISABLED: 'TRUE',MESSAGE_DET: "ROLE_DELETE"};
 	
 	this.services = new Array();
 	this.services['manageRolesList'] = Sbi.config.serviceRegistry.getServiceUrl({

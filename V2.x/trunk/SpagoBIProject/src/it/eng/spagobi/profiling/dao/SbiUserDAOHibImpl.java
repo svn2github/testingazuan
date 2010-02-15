@@ -375,8 +375,6 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 
 			SbiUser userToDelete =(SbiUser)aSession.load(SbiUser.class, id);
 			Hibernate.initialize(userToDelete);
-/*			Hibernate.initialize(userToDelete.getSbiExtUserRoleses());
-			Hibernate.initialize(userToDelete.getSbiUserAttributeses());*/
 			
 			Set<SbiExtUserRoles> userRoles = userToDelete.getSbiExtUserRoleses();
 			Set<SbiUserAttributes> userAttributes=userToDelete.getSbiUserAttributeses();
@@ -412,18 +410,27 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 		}
 	}
 
-	public void fullUpdateSbiUser(Integer id, String password, String fullName, ArrayList<String> roles, HashMap<Integer, String> attributes)
+	public Integer fullSaveOrUpdateSbiUser(SbiUser user, ArrayList<String> roles, HashMap<Integer, String> attributes)
 			throws EMFUserError {
 		logger.debug("IN");
 
 		Session aSession = null;
 		Transaction tx = null;
+		Integer id = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			SbiUser userToUpdate =(SbiUser)aSession.load(SbiUser.class, id);
-			userToUpdate.setPassword(password);
-			userToUpdate.setFullName(fullName);
+			boolean save = true;
+			
+			SbiUser userToUpdate = user;
+			id = userToUpdate.getId();
+			if(id!=0){
+				save = false;
+				userToUpdate =(SbiUser)aSession.load(SbiUser.class, id);
+				userToUpdate.setPassword(user.getPassword());
+				userToUpdate.setFullName(user.getFullName());
+				userToUpdate.setUserId(user.getUserId());
+			}	
 			
 			//sets roles
 			Set<SbiExtUserRoles> extUserRoles = new HashSet<SbiExtUserRoles>();
@@ -463,9 +470,15 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 				}
 				userToUpdate.setSbiUserAttributeses(userAttrList);
 			}
-			//save
-			aSession.saveOrUpdate(userToUpdate);
 			
+			if(save){
+				//save
+				id = (Integer)aSession.save(userToUpdate);		
+			}else{
+				//update
+				aSession.saveOrUpdate(userToUpdate);
+			}
+	
 			tx.commit();
 		} catch (HibernateException he) {
 			logger.error(he.getMessage(), he);
@@ -478,6 +491,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
+		return id ;
 		
 	}
 	public UserBO loadUserById(Integer id) throws EMFUserError {

@@ -60,6 +60,6 @@ public interface ISbiUserDAO {
 	
 	public void updateSbiUser(SbiUser user, Integer userID) throws EMFUserError;
 	
-	public void fullUpdateSbiUser(Integer id, String password, String fullName, ArrayList<String> roles, HashMap<Integer, String> attributes) throws EMFUserError;
+	public Integer fullSaveOrUpdateSbiUser(SbiUser user, ArrayList<String> roles, HashMap<Integer, String> attributes) throws EMFUserError;
 
 }

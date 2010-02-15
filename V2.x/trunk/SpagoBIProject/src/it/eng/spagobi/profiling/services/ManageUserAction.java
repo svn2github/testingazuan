@@ -65,13 +65,13 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 	private final String USER_DELETE = "USER_DELETE";
 
 	// USER detail
-	private final String ID = "ID";
+	private final String ID = "id";
 	private final String USER_ID = "userId";
 	private final String FULL_NAME = "fullName";
 	private final String PASSWORD = "pwd";
 	
-	private final String ROLES = "ROLES";
-	private final String ATTRIBUTES = "ATTRIBUTES";
+	private final String ROLES = "userRoles";
+	private final String ATTRIBUTES = "userAttributes";
 
 
 	@Override
@@ -106,9 +106,12 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 						"Exception occurred while retrieving users", e);
 			}
 		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(USER_INSERT)) {
+			Integer id = getAttributeAsInteger(ID);
 			String userId = getAttributeAsString(USER_ID);
 			String fullName = getAttributeAsString(FULL_NAME);
 			String password = getAttributeAsString(PASSWORD);
+			ArrayList<String> roles = (ArrayList<String>)getAttributeAsStringList(ROLES);
+			JSONArray attributesJSON = getAttributeAsJSONArray(ATTRIBUTES);
 			if (userId != null) {
 				if(password == null){
 					throw new SpagoBIServiceException(SERVICE_NAME,	"Please check password!");
@@ -117,8 +120,18 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 				user.setUserId(userId);
 				user.setFullName(fullName);
 				user.setPassword(password);
+				if(id!=null){
+					user.setId(id);
+				}
 				try {
-					Integer id = userDao.saveSbiUser(user);
+					HashMap<Integer, String> attrList = null;
+					if(attributesJSON != null){
+						attrList = deserializeJSONArray(attributesJSON);
+					}
+					id = userDao.fullSaveOrUpdateSbiUser(user, roles, attrList);
+					logger.debug("User udated or Inserted");
+					
+					//Integer id = userDao.saveSbiUser(user);
 					logger.debug("New user inserted");
 					JSONObject attributesResponseSuccessJSON = new JSONObject();
 					attributesResponseSuccessJSON.put("success", true);
@@ -176,7 +189,8 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 						attrList = deserializeJSONArray(attributesJSON);
 					}
 					try {
-						userDao.fullUpdateSbiUser(id, password, fullName, roles, attrList);
+						
+						//userDao.fullUpdateSbiUser(id, password, fullName, roles, attrList);
 						logger.debug("User udated");
 						writeBackToClient( new JSONAcknowledge("Operazion succeded") );
 

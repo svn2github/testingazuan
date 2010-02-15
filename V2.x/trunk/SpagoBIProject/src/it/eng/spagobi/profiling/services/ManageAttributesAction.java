@@ -33,13 +33,13 @@ import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.dao.ISbiAttributeDAO;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
-import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.validator.GenericValidator;

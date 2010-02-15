@@ -373,6 +373,25 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiUser userToDelete =(SbiUser)aSession.load(SbiUser.class, id);
+			Set<SbiExtUserRoles> userRoles = userToDelete.getSbiExtUserRoleses();
+			Set<SbiUserAttributes> userAttributes=userToDelete.getSbiUserAttributeses();
+			
+			//deletes roles	associations		
+			if(userRoles != null){
+				Iterator rolesIt = userRoles.iterator();
+				while(rolesIt.hasNext()){
+					SbiExtUserRolesId temp = (SbiExtUserRolesId)rolesIt.next();
+					aSession.delete(temp);
+				}
+			}
+			//deletes attributes associations
+			if(userAttributes != null){
+				Iterator attrsIt = userAttributes.iterator();
+				while(attrsIt.hasNext()){
+					SbiUserAttributes temp = (SbiUserAttributes)attrsIt.next();
+					aSession.delete(temp);				
+				}
+			}
 			aSession.delete(userToDelete);
 			tx.commit();
 		} catch (HibernateException he) {

@@ -27,7 +27,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	List<Domain> roleTypesCd = (List<Domain>) aSessionContainer.getAttribute("roleTypes");
 
 %>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/service/ServiceRegistry.js")%>'></script>
 
 <script type="text/javascript">
 

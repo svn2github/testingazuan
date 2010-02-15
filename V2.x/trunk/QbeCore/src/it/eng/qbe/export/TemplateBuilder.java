@@ -279,7 +279,7 @@ public class TemplateBuilder {
 			
 			buffer.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"false\" evaluationTime=\"Now\" hyperlinkType=\"None\"  hyperlinkTarget=\"Self\" ");
 			if (isANumber) {
-				buffer.append(" pattern=\"#,##0.00\"");
+				buffer.append(" pattern=\"#,##0.##\"");
 			}
 			buffer.append(" >\n");
 			
@@ -326,7 +326,7 @@ public class TemplateBuilder {
 			
 			buffer.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"false\" evaluationTime=\"Now\" hyperlinkType=\"None\"  hyperlinkTarget=\"Self\" ");
 			if (isANumber) {
-				buffer.append(" pattern=\"#,##0.00\"");
+				buffer.append(" pattern=\"#,##0.##\"");
 			}
 			buffer.append(" >\n");
 			buffer.append("<reportElement " + 

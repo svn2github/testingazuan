@@ -987,6 +987,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	}
 	
 	, openValuesForQbeFilterLookup: function(e) {
+			this.grid.stopEditing();
 			var store = this.createStore();
 			//store.on('beforeload', function(store, o) {
 				//var p = Sbi.commons.JSON.encode(this.getFormState());
@@ -1014,7 +1015,6 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 					this.modifyFilter(filter, this.activeEditingContext.row);
 				}
 			}, this);
-			
 	}
 	
 	, getLeftOperandTooltip: function (value, metadata, record) {

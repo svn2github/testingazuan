@@ -434,3 +434,22 @@ new Ext.tree.TreePanel({
         return node;
     }
 });
+
+Ext.override(Ext.Editor, {
+    onSpecialKey : function(field, e) {
+        var key = e.getKey();
+        if (this.completeOnEnter && key == e.ENTER) {
+            e.stopEvent();
+            this.completeEdit();
+        } else if (this.cancelOnEsc && key == e.ESC) {
+            this.cancelEdit();
+        } else if(this.field.triggerBlur && (key == e.ENTER || key == e.ESC || key == e.TAB)){
+            this.field.un('blur', this.onBlur, this);
+            this.field.triggerBlur();
+            this.field.on('blur', this.onBlur, this);
+            this.fireEvent('specialkey', field, e);
+        } else {
+            this.fireEvent('specialkey', field, e);
+        }
+    }
+});

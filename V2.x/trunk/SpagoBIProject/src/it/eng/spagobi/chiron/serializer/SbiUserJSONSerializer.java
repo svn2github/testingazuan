@@ -45,6 +45,7 @@ public class SbiUserJSONSerializer implements Serializer {
 	
 	public static final String USER_ID = "userId";
 	public static final String FULL_NAME = "fullName";
+	public static final String PWD = "pwd";
 	public static final String ID = "id";
 
 	public Object serialize(Object o, Locale locale)
@@ -62,6 +63,7 @@ public class SbiUserJSONSerializer implements Serializer {
 			result.put(ID, sbiUser.getId());
 			result.put(USER_ID, sbiUser.getUserId());
 			result.put(FULL_NAME, sbiUser.getFullName());
+			result.put(PWD, sbiUser.getPassword());
 			
 			//roles
 			Set<SbiExtUserRoles> userRoles = sbiUser.getSbiExtUserRoleses();

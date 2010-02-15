@@ -457,9 +457,6 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	,save : function() {
 		var newRec = this.fillNewRecord();
 
-        var newRole = new Array();
-        newRole.push(newRec.data);
-
         var params = {
         	name : newRec.data.name,
         	description : newRec.data.description,

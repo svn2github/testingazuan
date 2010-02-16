@@ -73,7 +73,6 @@ public class GetConsoleDataAction extends AbstractConsoleEngineAction {
 			super.service(request,response);
 			consoleEngineInstance = getConsoleEngineInstance();
 			
-			//TODO recuperare label ds dal dettaglio documento
 			dataSetLabel = getAttributeAsString( DATASET_LABEL );
 			logger.debug("Parameter [" + DATASET_LABEL + "] is equals to [" + dataSetLabel + "]");			
 			Assert.assertTrue(!StringUtilities.isEmpty( dataSetLabel ), "Parameter [" + DATASET_LABEL + "] cannot be null or empty");

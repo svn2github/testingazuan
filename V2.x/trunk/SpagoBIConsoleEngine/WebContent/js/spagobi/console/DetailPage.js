@@ -96,7 +96,21 @@ Ext.extend(Sbi.console.DetailPage, Ext.Panel, {
     }
     
     , initGridPanel: function(conf){
-      this.gridPanel = new Sbi.console.GridPanel(conf);
+     
+    	//template simulator
+        var tmpTable = {                                                            
+                          dataset: {
+                                // LABEL del dataset in spagobi
+                              	label: 'testConsole'
+                  			        // parametri statici e dinamici definiti come navigationBar
+                                 	, params: {}  
+                                 	, refreshTime: '30' // in secondi
+                          }};
+                          
+        
+        
+        this.gridPanel = new Sbi.console.GridPanel({table: tmpTable});
+     // this.gridPanel = new Sbi.console.GridPanel(conf);
     }
     
     

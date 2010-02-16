@@ -48,7 +48,7 @@
 Ext.ns("Sbi.console");
 
 Sbi.console.GridPanel = function(config) {
-	
+
 		var defaultSettings = {
 			//title: LN('sbi.qbe.queryeditor.title')
 		};
@@ -61,7 +61,8 @@ Sbi.console.GridPanel = function(config) {
 		
 		Ext.apply(this, c);
 		
-		var params = {ds_label: 'testmeter'};
+
+		var params = {ds_label: config.table.dataset.label};
 		this.services = new Array();
 	  	this.services['getDataService'] = Sbi.config.serviceRegistry.getServiceUrl({
 	  		serviceName: 'GET_CONSOLE_DATA_ACTION'
@@ -110,7 +111,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     
 	, initStore: function() {
 		this.store = new Ext.data.JsonStore({
-			url: this.services['getDataService']
+		    url: this.services['getDataService']
 			, autoLoad: true
 	    }); 
     
@@ -141,6 +142,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	
 	
 	, onMetaChange: function( store, meta ) {
+
 		for(var i = 0; i < meta.fields.length; i++) {
 			if(meta.fields[i].type) {
 				var t = meta.fields[i].type;
@@ -217,20 +219,16 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
                       }
                      }];
       
-      var tmpFilters = [{text: 'Filtro 1'
-                    , column: 'column1'
+      var tmpFilters = [{text: 'Brands'
+                    , column: 'brandname'
                     , operator: 'EQUALS_TO'
                     , operand: 'DISTINCT'}
-                    , {text: 'Filtro 2'
-                    , column: 'column2'
+                    , {text: 'Products'
+                    , column: 'productName'
                     , operator: 'EQUALS_TO'
                     , operand: 'DISTINCT'}
-                    , {text: 'Filtro 3'
-                    , column: 'column3'
-                    , operator: 'EQUALS_TO'
-                    , operand: 'DISTINCT'}
-                    , {text: 'Filtro 4'
-                    , column: 'column4'
+                    , {text: 'Years'
+                    , column: 'year'
                     , operator: 'EQUALS_TO'
                     , operand: 'DISTINCT'}];
                     
@@ -245,7 +243,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
       } else if (tmpDefaults.type === 'custom' || tmpDefaults.type === 'automatic'){
           this.filterBar = new Sbi.console.CustomFilteringToolbar({defaults: tmpDefaults
                                                                  , actions: tmpActions
-                                                                 , filters: tmpFilters});          	          	
+                                                                 , filters: tmpFilters}, this.store);          	          	
       }   
   }
 });

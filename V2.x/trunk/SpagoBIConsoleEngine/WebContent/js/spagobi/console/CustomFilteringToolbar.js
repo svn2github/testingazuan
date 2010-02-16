@@ -46,8 +46,8 @@
 
 Ext.ns("Sbi.console");
 
-Sbi.console.CustomFilteringToolbar = function(config) {
-
+Sbi.console.CustomFilteringToolbar = function(config, store) {
+	alert("store: "+ store.toSource());
 		var defaultSettings = {
 		    // default goes here
 		};
@@ -84,11 +84,13 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
 
     // -- public methods ---------------------------------------------------------------
     , onRender : function(ct, position) {
-		
+		alert("onRender");
   		var s, cb;
   		
-  		if (this.defaults.type === 'automatic' ){
+  	alert("type2: "+ config.defaults.type.toSource());
   		
+  		if (this.defaults.type === 'automatic' ){
+  		/*
       		s = new Ext.data.ArrayStore({
                           fields: ['field', 'value', 'label']
                           , data : [
@@ -108,10 +110,10 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
                                  , ['FieldD','valD2' + i, 'Value D 2' + i]                              
                             ]
       		});
-      		
+      		*/
       		
   				cb = new Ext.form.ComboBox({
-        	        store: s,
+        	        store: this.store,
         	        width: 100,
         	        displayField:'label',
         	        valueField:'value',
@@ -128,6 +130,8 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
         }
         else{
       		for(var i=0, l=this.filters.length; i<l; i++) {
+      		alert(this.filters[i].text.toSource());
+      		/*
       			s = new Ext.data.ArrayStore({
                       fields: ['value', 'label']
                       , data : [
@@ -138,12 +142,12 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
                              , ['valA5' + i, 'Value A 5' + i]        
                         ]
       			});
-
+          */
       			cb = new Ext.form.ComboBox({
-          	        store: s,
+          	        store: this.store,
           	        width: 100,
-          	        displayField:'label',
-          	        valueField:'value',
+          	        displayField:'column-1',
+          	        valueField:'column-1',
           	        typeAhead: true,
           	        triggerAction: 'all',
           	        emptyText:'...',

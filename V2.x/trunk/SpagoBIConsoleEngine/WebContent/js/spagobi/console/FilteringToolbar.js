@@ -47,7 +47,7 @@
 
 Ext.ns("Sbi.console");
 
-Sbi.console.FilteringToolbar = function(config) {
+Sbi.console.FilteringToolbar = function(config, store) {
 	
 	var defaultSettings = {
 	    autoWidth: true
@@ -93,7 +93,7 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	  
 		Sbi.console.FilteringToolbar.superclass.onRender.call(this, ct, position);
 		
-		//alert('filtering IN');
+		alert('filtering IN');
 		
 		var b;
 		
@@ -103,7 +103,7 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
     		this.addButton(b);	
     	}	
 		
-		//alert('filtering OUT');
+		alert('filtering OUT');
 	}
     
 });

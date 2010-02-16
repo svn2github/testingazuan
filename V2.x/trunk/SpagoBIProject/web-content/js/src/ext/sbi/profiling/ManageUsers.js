@@ -522,7 +522,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
         var tempRolesArr = this.rolesEmptyStore;
         var length2 = this.rolesEmptyStore.length;
         for(var i=0;i<length2;i++){
-          	var tempRecord = new Ext.data.Record({"description":tempRolesArr[i].value,"name":tempRolesArr[i].name,"id":tempRolesArr[i].id });
+          	var tempRecord = new Ext.data.Record({"description":tempRolesArr[i].description,"name":tempRolesArr[i].name,"id":tempRolesArr[i].id });
 			Ext.getCmp("roles-form").store.add(tempRecord);								   
         }	
         

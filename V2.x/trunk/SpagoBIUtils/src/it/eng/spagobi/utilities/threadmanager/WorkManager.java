@@ -118,14 +118,37 @@ public class WorkManager {
 		return fooRemoteWorkItem;
 	}
 
+
+	public FooRemoteWorkItem buildFooRemoteWorkItem(Work job, WorkListener listener) throws Exception{
+		FooRemoteWorkItem fooRemoteWorkItem=null;
+		fooRemoteWorkItem=new FooRemoteWorkItem(job, listener, wm);
+		return fooRemoteWorkItem;
+	}
+
 	
-	
+	public WorkItem runWithReturnWI(Work job, WorkListener listener) throws Exception {
+		logger.debug("IN");
+		WorkItem workItem=null;
+		try {
+			workItem  = wm.schedule(job, listener);
+
+		} catch (Exception e) {
+			logger.error("Exception", e);
+			throw e;
+		} finally {
+			logger.debug("OUT");
+		}
+		return workItem;
+	}
+
+
+
 	public void setInSession(HttpSession session, Work job, WorkListener listener, String name){
 		String id="SBI_PROCESS_"+name;
 		FooRemoteWorkItem fooRemoteWorkItem=new FooRemoteWorkItem(job, listener, wm);
 		session.setAttribute(id, fooRemoteWorkItem);
 	}
-	
+
 
 
 

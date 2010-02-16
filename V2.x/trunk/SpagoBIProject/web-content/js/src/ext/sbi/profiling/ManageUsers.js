@@ -427,6 +427,16 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	        
 	        var newRec =new Ext.data.Record({'userId': values['userId'],'fullName': values['fullName'],'pwd':values['pwd']});
 	        
+	        //Ext.getCmp("roles-form").store.removeAll();
+	      /*  var tempRolesArr = this.rolesEmptyStore;
+	        var length2 = this.rolesEmptyStore.length;
+	        for(var i=0;i<length2;i++){
+	          	var tempRecord = new Ext.data.Record({"description":tempRolesArr[i].description,"name":tempRolesArr[i].name,"id":tempRolesArr[i].id });
+				Ext.getCmp("roles-form").store.add(tempRecord);								   
+	        }	*/
+	        newRec.set('userRoles', this.rolesEmptyStore);
+	        newRec.set('userAttributes',  this.attributesEmptyStore);
+	        
 	        Ext.Ajax.request({
 	            url: this.services['saveUserService'],
 	            params: params,
@@ -435,7 +445,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 					if (response !== undefined) {		
 			      		if(response.responseText !== undefined) {
 			      			var content = Ext.util.JSON.decode( response.responseText );
-			      			alert(content.toSource());
+			      			//alert(content.toSource());
 			      			
 			      			if(content.responseText !== 'Operation succeded') {
 			                    Ext.MessageBox.show({
@@ -451,6 +461,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 								this.usersStore.add(newRec);
 								this.usersStore.commitChanges();
 								this.attributesStore.commitChanges();
+								this.rolesStore.commitChanges();
 			      			}
 			      		} else {
 			      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
@@ -554,6 +565,9 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 									var deleteRow = sm.getSelected();
 									this.usersStore.remove(deleteRow);
 									this.usersStore.commitChanges();
+									var grid = Ext.getCmp('usergrid');
+									grid.getSelectionModel().selectRow(0);
+									grid.fireEvent('rowclick', grid, 0);
 								} else {
 									Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting User', 'Service Error');
 								}

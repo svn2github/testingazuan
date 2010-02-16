@@ -3,7 +3,6 @@ IMPORTANT: every time this file get modified (i.e. a new js file is added to the
 create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must be updated properly
  -->
 
-
 <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/browser/main.css", currTheme)%>'/>
 <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/browser/listview.css", currTheme)%>'/>
 <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/browser/groupview.css",currTheme)%>'/>

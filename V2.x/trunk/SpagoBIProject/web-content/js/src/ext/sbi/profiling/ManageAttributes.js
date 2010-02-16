@@ -87,7 +87,7 @@ Sbi.profiling.ManageAttributes = function(config) {
 					listeners: {
 						'exception': function(proxy, type, action, options, response, arg){
 			                Ext.MessageBox.show({
-			                    title: 'Validation Error',
+			                    title: LN('sbi.attributes.validationError'),
 			                    msg: response.responseText,
 			                    width: 400,
 			                    buttons: Ext.MessageBox.OK
@@ -109,7 +109,7 @@ Sbi.profiling.ManageAttributes = function(config) {
 	
 	// Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
 	this.userColumns =  [
-	    {header: "Name", width: 250, sortable: true, dataIndex: 'name', editor: 
+	    {header: LN('sbi.attributes.headerName'), width: 250, sortable: true, dataIndex: 'name', editor: 
 	    		new Ext.form.TextField({
 	    				maxLength:255,
 	    				minLength:1,
@@ -117,7 +117,7 @@ Sbi.profiling.ManageAttributes = function(config) {
 	    				regex : new RegExp("[A-Za-z0-9_]", "g"),
 	    				regexText : 'Richiesta stringa alfanumerica'
 	    				})},
-	    {header: "Description", width: 250, sortable: true, dataIndex: 'description',  
+	    {header: LN('sbi.attributes.headerDescr'), width: 250, sortable: true, dataIndex: 'description',  
 	    					editor: new Ext.form.TextField({
 	    						maxLength:500,
 	    						minLength:1,
@@ -128,7 +128,7 @@ Sbi.profiling.ManageAttributes = function(config) {
 	
 	 // use RowEditor for editing
     this.editor = new Ext.ux.grid.RowEditor({
-        saveText: 'Update'
+        saveText: LN('sbi.attributes.update')
     });
     
     
@@ -148,13 +148,13 @@ Sbi.profiling.ManageAttributes = function(config) {
     var tb = new Ext.Toolbar({
     	buttonAlign : 'left',
     	items:[new Ext.Toolbar.Button({
-            text: 'Add',
+            text: LN('sbi.attributes.add'),
             iconCls: 'icon-add',
             handler: this.onAdd,
             width: 30,
             scope: this
         }), '-', new Ext.Toolbar.Button({
-            text: 'Delete',
+            text: LN('sbi.attributes.delete'),
             iconCls: 'icon-remove',
             handler: this.onDelete,
             width: 30,
@@ -165,7 +165,7 @@ Sbi.profiling.ManageAttributes = function(config) {
     
     var c = Ext.apply( {}, config, {
         frame: true,
-        title: 'Profile Attributes',
+        title: LN('sbi.attributes.title'),
         autoScroll: true,
         height: 400,
         width: 600,

@@ -148,6 +148,15 @@ Sbi.locale.ln['sbi.execution.metadata.longtextmetadata'] = 'Long Text Metadata';
 Sbi.locale.ln['sbi.execution.metadata.waitmessage'] = 'Please wait....';
 Sbi.locale.ln['sbi.execution.metadata.waittitle'] = 'Saving metadata';
 
+// Profile Management
+Sbi.locale.ln['sbi.attributes.add'] = 'Add';
+Sbi.locale.ln['sbi.attributes.delete'] = 'Delete';
+Sbi.locale.ln['sbi.attributes.title'] = 'Profile Attributes';
+Sbi.locale.ln['sbi.attributes.update'] = 'Save';
+Sbi.locale.ln['sbi.attributes.validationError'] = 'Validation Error';
+Sbi.locale.ln['sbi.attributes.headerName'] = 'Name';
+Sbi.locale.ln['sbi.attributes.headerDescr'] = 'Description';
+
 // Toolbar 
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Send to';
 // Save into personal folder

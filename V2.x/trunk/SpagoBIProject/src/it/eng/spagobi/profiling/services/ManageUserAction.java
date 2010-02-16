@@ -24,14 +24,17 @@ package it.eng.spagobi.profiling.services;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.x.AbstractSpagoBIAction;
 import it.eng.spagobi.analiticalmodel.document.x.SaveMetadataAction;
+import it.eng.spagobi.chiron.serializer.SerializationException;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.bean.SbiUser;
+import it.eng.spagobi.profiling.bean.SbiUserAttributes;
 import it.eng.spagobi.profiling.bo.UserBO;
 import it.eng.spagobi.profiling.dao.ISbiUserDAO;
+import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONSuccess;
@@ -170,7 +173,7 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 						"Exception occurred while retrieving user to delete",
 						e);
 			}
-		}else if (serviceType != null	&& serviceType.equalsIgnoreCase(USER_UPDATE)) {
+		}/*else if (serviceType != null	&& serviceType.equalsIgnoreCase(USER_UPDATE)) {
 			Integer id = getAttributeAsInteger(ID);
 			String userId = getAttributeAsString(USER_ID);
 			String fullName = getAttributeAsString(FULL_NAME);
@@ -212,7 +215,7 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 				logger.error("User name missing");
 				throw new SpagoBIServiceException(SERVICE_NAME,	"Please enter user name");
 			}
-		}else if(serviceType == null){
+		}*/else if(serviceType == null){
 			try {
 				List<SbiAttribute> attributes = DAOFactory.getSbiAttributeDAO().loadSbiAttributes();
 				List<SbiExtRoles> roles = DAOFactory.getRoleDAO().loadAllRoles();
@@ -251,12 +254,9 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 		HashMap<Integer, String> toReturn = new HashMap<Integer, String>();
 		for(int i=0; i< rows.length(); i++){
 			JSONObject obj = (JSONObject)rows.get(i);
-			Iterator it = obj.keys();
-			while(it.hasNext()){
-				String key = (String)it.next();
-				String value =(String)obj.get(key);
-				toReturn.put(Integer.valueOf(key.trim()), value);
-			}
+			Integer key = obj.getInt("id");
+			String value = obj.getString("value");
+			toReturn.put(key, value);
 		}	
 		return toReturn;
 	}

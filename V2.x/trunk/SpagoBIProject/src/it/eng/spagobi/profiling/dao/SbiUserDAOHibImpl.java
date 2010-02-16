@@ -370,8 +370,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 		Session aSession = null;
 		Transaction tx = null;
 		try {
-			aSession = getSession();
-			tx = aSession.beginTransaction();
+			aSession = getSession();			
 
 			SbiUser userToDelete =(SbiUser)aSession.load(SbiUser.class, id);
 			Hibernate.initialize(userToDelete);
@@ -381,21 +380,31 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			
 			//deletes roles	associations		
 			if(userRoles != null){
+				aSession = getSession();	
+				tx = aSession.beginTransaction();
 				Iterator rolesIt = userRoles.iterator();
 				while(rolesIt.hasNext()){
 					SbiExtUserRoles temp = (SbiExtUserRoles)rolesIt.next();
 					aSession.delete(temp);
-				}
+				}				
+				tx.commit();
+				if (aSession.isOpen()) aSession.close();
 			}
 			//deletes attributes associations
 			if(userAttributes != null){
+				aSession = getSession();	
+				tx = aSession.beginTransaction();
 				Iterator attrsIt = userAttributes.iterator();
 				while(attrsIt.hasNext()){
 					SbiUserAttributes temp = (SbiUserAttributes)attrsIt.next();
 					aSession.delete(temp);				
-				}
+				}				
+				tx.commit();
+				if (aSession.isOpen()) aSession.close();
 			}
-			aSession.delete(userToDelete);
+			aSession = getSession();	
+			tx = aSession.beginTransaction();
+			aSession.delete(userToDelete);			
 			tx.commit();
 		} catch (HibernateException he) {
 			logger.error(he.getMessage(), he);
@@ -431,6 +440,12 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 				userToUpdate.setFullName(user.getFullName());
 				userToUpdate.setUserId(user.getUserId());
 			}	
+			
+			if(save){
+				//save
+				id = (Integer)aSession.save(userToUpdate);	
+				userToUpdate.setId(id);
+			}
 			
 			//sets roles
 			Set<SbiExtUserRoles> extUserRoles = new HashSet<SbiExtUserRoles>();
@@ -471,13 +486,9 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 				userToUpdate.setSbiUserAttributeses(userAttrList);
 			}
 			
-			if(save){
-				//save
-				id = (Integer)aSession.save(userToUpdate);		
-			}else{
-				//update
-				aSession.saveOrUpdate(userToUpdate);
-			}
+			//update
+			aSession.saveOrUpdate(userToUpdate);
+
 	
 			tx.commit();
 		} catch (HibernateException he) {

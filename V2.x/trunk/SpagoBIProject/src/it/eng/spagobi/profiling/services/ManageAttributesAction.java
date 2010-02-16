@@ -63,8 +63,8 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 	private final String DESCRIPTION = "description";
 	private final int nameMaxLenght = 250;
 	private final int descriptionMaxLenght = 500;
-	private static final String ALPHANUMERIC_STRING_REGEXP_NOSPACE="^([a-zA-Z0-9\\-\\_])*$";
-	
+	//private static final String ALPHANUMERIC_STRING_REGEXP_NOSPACE="^([a-zA-Z0-9\\-\\_])*$";
+	private static final String ALPHANUMERIC_STRING_REGEXP_NOSPACE="^[a-zA-Z1-9_\\x2F\\x5F\\x2D ]*$";
 	/**
 	 * 
 	 */
@@ -105,7 +105,11 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 							idStr = samples.getString(ID);
 						}
 						if(!samples.isNull(NAME)){
-
+							
+							name = samples.getString(NAME);
+							System.out.println(GenericValidator.isBlankOrNull(name));
+							System.out.println(!GenericValidator.matchRegexp(name, ALPHANUMERIC_STRING_REGEXP_NOSPACE));
+							System.out.println(!GenericValidator.maxLength(name, nameMaxLenght));
 							if (GenericValidator.isBlankOrNull(name) || 
 									!GenericValidator.matchRegexp(name, ALPHANUMERIC_STRING_REGEXP_NOSPACE)||
 										!GenericValidator.maxLength(name, nameMaxLenght)){
@@ -119,6 +123,10 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 						}
 						if(!samples.isNull(DESCRIPTION)){
 							description = samples.getString(DESCRIPTION);
+							
+							System.out.println(GenericValidator.isBlankOrNull(description));
+							System.out.println(!GenericValidator.matchRegexp(description, ALPHANUMERIC_STRING_REGEXP_NOSPACE));
+							System.out.println(!GenericValidator.maxLength(description, nameMaxLenght));
 							if (GenericValidator.isBlankOrNull(description) ||
 									!GenericValidator.matchRegexp(description, ALPHANUMERIC_STRING_REGEXP_NOSPACE) ||
 											!GenericValidator.maxLength(description, descriptionMaxLenght)){

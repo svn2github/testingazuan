@@ -392,6 +392,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	        	fullName : values['fullName'],
 	        	pwd : values['pwd']            
 	        }
+	        alert(values['id']);
 	        if(values['id'] !== null && values['id'] !== undefined ){
 	        	params.id = values['id'];
 	        }
@@ -415,6 +416,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 					if (response !== undefined) {		
 			      		if(response.responseText !== undefined) {
 			      			var content = Ext.util.JSON.decode( response.responseText );
+			      			alert(content.toSource());
 			      			
 			      			if(content.responseText !== 'Operation succeded') {
 			                    Ext.MessageBox.show({

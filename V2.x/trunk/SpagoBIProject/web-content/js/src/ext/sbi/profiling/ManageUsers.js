@@ -377,8 +377,8 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 
 		
 		Ext.getCmp("roles-form").on('recToSelect', function(roleId, index){
-			alert(roleId);
-			alert(index);
+			//alert(roleId);
+			//alert(index);
 			
 			Ext.getCmp("roles-form").selModel.selectRow(index);
 		});
@@ -407,10 +407,19 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	        	params.id = values['id'];
 	        }
 	        
+	        var rolesSelected = Ext.getCmp("roles-form").selModel.getSelections();
+	        var lengthR = rolesSelected.length;
+            var roles =new Array();
+            for(var i=0;i<lengthR;i++){
+             	var role ={'name':rolesSelected[i].get("name"),'id':rolesSelected[i].get("id"),'description':rolesSelected[i].get("description")};
+ 				roles.push(role);
+           }
+	        params.userRoles =  Ext.util.JSON.encode(roles);
+	        
 	        var modifAttributes = this.attributesStore.getModifiedRecords();
-            var length = modifAttributes.length;
+            var lengthA = modifAttributes.length;
             var attrs =new Array();
-            for(var i=0;i<length;i++){
+            for(var i=0;i<lengthA;i++){
              	var attr ={'name':modifAttributes[i].get("name"),'id':modifAttributes[i].get("id"),'value':modifAttributes[i].get("value")};
  				attrs.push(attr);
            }
@@ -517,7 +526,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 			Ext.getCmp("roles-form").store.add(tempRecord);								   
         }	
         
-         this.smRoles.selectFirstRow();
+        // this.smRoles.selectFirstRow();
        // this.rolesGrid.getSelectionModel().selectFirstRow();
        //this.rolesGrid.getColumnModel().getColumnById('2').selectRow(2);
         //alert(this.rolesGrid.getColumnModel().getColumnById('2').selectRow(2)) ;

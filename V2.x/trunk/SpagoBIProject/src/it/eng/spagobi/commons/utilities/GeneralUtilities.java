@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 /*
  * Created on 7-lug-2005
  *
@@ -53,13 +53,17 @@ import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -70,212 +74,212 @@ import org.json.JSONObject;
  */
 public class GeneralUtilities extends SpagoBIUtilities{
 
-    private static transient Logger logger = Logger.getLogger(GeneralUtilities.class);
-    
-    public static final int MAX_DEFAULT_TEMPLATE_SIZE = 5242880;
-    private static String SPAGOBI_HOST = null; 
-    private static String SPAGOBI_DOMAIN = null;
-    
-    /**
-     * Substitutes the substrings with sintax "${code,bundle}" or "${code}" (in
-     * the second case bundle is assumed to be the default value "messages")
-     * with the correspondent internationalized messages in the input String.
-     * This method calls <code>PortletUtilities.getMessage(key, bundle)</code>.
-     * 
-     * @param message The string to be modified
-     * 
-     * @return The message with the internationalized substrings replaced.
-     */
-    public static String replaceInternationalizedMessages(String message) {
-	if (message == null)
-	    return null;
-	int startIndex = message.indexOf("${");
-	if (startIndex == -1)
-	    return message;
-	else
-	    return replaceInternationalizedMessages(message, startIndex);
-    }
+	private static transient Logger logger = Logger.getLogger(GeneralUtilities.class);
 
-    private static String replaceInternationalizedMessages(String message, int startIndex) {
-	logger.debug("IN");
-	IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
-	int endIndex = message.indexOf("}", startIndex);
-	if (endIndex == -1 || endIndex < startIndex)
-	    return message;
-	String toBeReplaced = message.substring(startIndex + 2, endIndex).trim();
-	String key = "";
-	String bundle = "messages";
-	String[] splitted = toBeReplaced.split(",");
-	if (splitted != null) {
-	    key = splitted[0].trim();
-	    if (splitted.length == 1) {
-		String replacement = msgBuilder.getMessage(key, bundle);
-		// if (!replacement.equalsIgnoreCase(key)) message =
-		// message.replaceAll("${" + toBeReplaced + "}", replacement);
-		if (!replacement.equalsIgnoreCase(key))
-		    message = message.replaceAll("\\$\\{" + toBeReplaced + "\\}", replacement);
-	    }
-	    if (splitted.length == 2) {
-		if (splitted[1] != null && !splitted[1].trim().equals(""))
-		    bundle = splitted[1].trim();
-		String replacement = msgBuilder.getMessage(key, bundle);
-		// if (!replacement.equalsIgnoreCase(key)) message =
-		// message.replaceAll("${" + toBeReplaced + "}", replacement);
-		if (!replacement.equalsIgnoreCase(key))
-		    message = message.replaceAll("\\$\\{" + toBeReplaced + "\\}", replacement);
-	    }
+	public static final int MAX_DEFAULT_TEMPLATE_SIZE = 5242880;
+	private static String SPAGOBI_HOST = null; 
+	private static String SPAGOBI_DOMAIN = null;
+
+	/**
+	 * Substitutes the substrings with sintax "${code,bundle}" or "${code}" (in
+	 * the second case bundle is assumed to be the default value "messages")
+	 * with the correspondent internationalized messages in the input String.
+	 * This method calls <code>PortletUtilities.getMessage(key, bundle)</code>.
+	 * 
+	 * @param message The string to be modified
+	 * 
+	 * @return The message with the internationalized substrings replaced.
+	 */
+	public static String replaceInternationalizedMessages(String message) {
+		if (message == null)
+			return null;
+		int startIndex = message.indexOf("${");
+		if (startIndex == -1)
+			return message;
+		else
+			return replaceInternationalizedMessages(message, startIndex);
 	}
-	startIndex = message.indexOf("${", endIndex);
-	if (startIndex != -1)
-	    message = replaceInternationalizedMessages(message, startIndex);
-	logger.debug("OUT");
-	return message;
-    }
 
- 
-    /**
-     * Subsitute bi object parameters lov profile attributes.
-     * 
-     * @param obj the obj
-     * @param session the session
-     * 
-     * @throws Exception the exception
-     * @throws EMFInternalError the EMF internal error
-     */
-    public static void subsituteBIObjectParametersLovProfileAttributes(BIObject obj, SessionContainer session)
-	    throws Exception, EMFInternalError {
-	logger.debug("IN");
-	List biparams = obj.getBiObjectParameters();
-	Iterator iterParams = biparams.iterator();
-	while (iterParams.hasNext()) {
-	    // if the param is a Fixed Lov, Make the profile attribute
-	    // substitution at runtime
-	    BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
-	    Parameter param = biparam.getParameter();
-	    ModalitiesValue modVal = param.getModalityValue();
-	    if (modVal.getITypeCd().equals(SpagoBIConstants.INPUT_TYPE_FIX_LOV_CODE)) {
-		String value = modVal.getLovProvider();
-		int profileAttributeStartIndex = value.indexOf("${");
-		if (profileAttributeStartIndex != -1) {
-		    IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(
-			    IEngUserProfile.ENG_USER_PROFILE);
-		    value = StringUtilities.substituteProfileAttributesInString(value, profile,
-			    profileAttributeStartIndex);
-		    biparam.getParameter().getModalityValue().setLovProvider(value);
+	private static String replaceInternationalizedMessages(String message, int startIndex) {
+		logger.debug("IN");
+		IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		int endIndex = message.indexOf("}", startIndex);
+		if (endIndex == -1 || endIndex < startIndex)
+			return message;
+		String toBeReplaced = message.substring(startIndex + 2, endIndex).trim();
+		String key = "";
+		String bundle = "messages";
+		String[] splitted = toBeReplaced.split(",");
+		if (splitted != null) {
+			key = splitted[0].trim();
+			if (splitted.length == 1) {
+				String replacement = msgBuilder.getMessage(key, bundle);
+				// if (!replacement.equalsIgnoreCase(key)) message =
+				// message.replaceAll("${" + toBeReplaced + "}", replacement);
+				if (!replacement.equalsIgnoreCase(key))
+					message = message.replaceAll("\\$\\{" + toBeReplaced + "\\}", replacement);
+			}
+			if (splitted.length == 2) {
+				if (splitted[1] != null && !splitted[1].trim().equals(""))
+					bundle = splitted[1].trim();
+				String replacement = msgBuilder.getMessage(key, bundle);
+				// if (!replacement.equalsIgnoreCase(key)) message =
+				// message.replaceAll("${" + toBeReplaced + "}", replacement);
+				if (!replacement.equalsIgnoreCase(key))
+					message = message.replaceAll("\\$\\{" + toBeReplaced + "\\}", replacement);
+			}
 		}
-	    }
+		startIndex = message.indexOf("${", endIndex);
+		if (startIndex != -1)
+			message = replaceInternationalizedMessages(message, startIndex);
+		logger.debug("OUT");
+		return message;
 	}
-	logger.debug("OUT");
-    }
 
- 
-    /**
-     * Gets the lov map result.
-     * 
-     * @param lovs the lovs
-     * 
-     * @return the lov map result
-     */
-    public static String getLovMapResult(Map lovs) {
-	logger.debug("IN");
-	String toReturn = "<DATA>";
-	Set keys = lovs.keySet();
-	Iterator keyIter = keys.iterator();
-	while (keyIter.hasNext()) {
-	    String key = (String) keyIter.next();
-	    String lovname = (String) lovs.get(key);
-	    String lovResult = "";
-	    try {
-		lovResult = getLovResult(lovname);
-	    } catch (Exception e) {
-		logger.error("Error while getting result of the lov " + lovname
-			+ ", the result of the won't be inserted into the response", e);
-		continue;
-	    }
-	    toReturn = toReturn + "<" + key + ">";
-	    toReturn = toReturn + lovResult;
-	    toReturn = toReturn + "</" + key + ">";
+
+	/**
+	 * Subsitute bi object parameters lov profile attributes.
+	 * 
+	 * @param obj the obj
+	 * @param session the session
+	 * 
+	 * @throws Exception the exception
+	 * @throws EMFInternalError the EMF internal error
+	 */
+	public static void subsituteBIObjectParametersLovProfileAttributes(BIObject obj, SessionContainer session)
+	throws Exception, EMFInternalError {
+		logger.debug("IN");
+		List biparams = obj.getBiObjectParameters();
+		Iterator iterParams = biparams.iterator();
+		while (iterParams.hasNext()) {
+			// if the param is a Fixed Lov, Make the profile attribute
+			// substitution at runtime
+			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
+			Parameter param = biparam.getParameter();
+			ModalitiesValue modVal = param.getModalityValue();
+			if (modVal.getITypeCd().equals(SpagoBIConstants.INPUT_TYPE_FIX_LOV_CODE)) {
+				String value = modVal.getLovProvider();
+				int profileAttributeStartIndex = value.indexOf("${");
+				if (profileAttributeStartIndex != -1) {
+					IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(
+							IEngUserProfile.ENG_USER_PROFILE);
+					value = StringUtilities.substituteProfileAttributesInString(value, profile,
+							profileAttributeStartIndex);
+					biparam.getParameter().getModalityValue().setLovProvider(value);
+				}
+			}
+		}
+		logger.debug("OUT");
 	}
-	toReturn = toReturn + "</DATA>";
-	logger.debug("OUT:" + toReturn);
-	return toReturn;
-    }
 
-    /**
-     * Gets the lov result.
-     * 
-     * @param lovLabel the lov label
-     * 
-     * @return the lov result
-     * 
-     * @throws Exception the exception
-     */
-    public static String getLovResult(String lovLabel) throws Exception {
-	logger.debug("IN");
-	IModalitiesValueDAO lovDAO = DAOFactory.getModalitiesValueDAO();
-	ModalitiesValue lov = lovDAO.loadModalitiesValueByLabel(lovLabel);
-	String toReturn = getLovResult(lov, null);
-	logger.debug("OUT:" + toReturn);
-	return toReturn;
-    }
 
-    /**
-     * Gets the lov result.
-     * 
-     * @param lovLabel the lov label
-     * @param profile the profile
-     * 
-     * @return the lov result
-     * 
-     * @throws Exception the exception
-     */
-    public static String getLovResult(String lovLabel, IEngUserProfile profile) throws Exception {
-	logger.debug("IN");
-	IModalitiesValueDAO lovDAO = DAOFactory.getModalitiesValueDAO();
-	ModalitiesValue lov = lovDAO.loadModalitiesValueByLabel(lovLabel);
-	String toReturn = getLovResult(lov, profile);
-	logger.debug("OUT" + toReturn);
-	return toReturn;
-    }
-
-    private static String getLovResult(ModalitiesValue lov, IEngUserProfile profile) throws Exception {
-	logger.debug("IN");
-	if (profile == null) {
-	    profile = new UserProfile("anonymous");
+	/**
+	 * Gets the lov map result.
+	 * 
+	 * @param lovs the lovs
+	 * 
+	 * @return the lov map result
+	 */
+	public static String getLovMapResult(Map lovs) {
+		logger.debug("IN");
+		String toReturn = "<DATA>";
+		Set keys = lovs.keySet();
+		Iterator keyIter = keys.iterator();
+		while (keyIter.hasNext()) {
+			String key = (String) keyIter.next();
+			String lovname = (String) lovs.get(key);
+			String lovResult = "";
+			try {
+				lovResult = getLovResult(lovname);
+			} catch (Exception e) {
+				logger.error("Error while getting result of the lov " + lovname
+						+ ", the result of the won't be inserted into the response", e);
+				continue;
+			}
+			toReturn = toReturn + "<" + key + ">";
+			toReturn = toReturn + lovResult;
+			toReturn = toReturn + "</" + key + ">";
+		}
+		toReturn = toReturn + "</DATA>";
+		logger.debug("OUT:" + toReturn);
+		return toReturn;
 	}
-	String dataProv = lov.getLovProvider();
-	ILovDetail lovDetail = LovDetailFactory.getLovFromXML(dataProv);
-	logger.debug("OUT:" + lovDetail.getLovResult(profile));
-	return lovDetail.getLovResult(profile);
-    }
+
+	/**
+	 * Gets the lov result.
+	 * 
+	 * @param lovLabel the lov label
+	 * 
+	 * @return the lov result
+	 * 
+	 * @throws Exception the exception
+	 */
+	public static String getLovResult(String lovLabel) throws Exception {
+		logger.debug("IN");
+		IModalitiesValueDAO lovDAO = DAOFactory.getModalitiesValueDAO();
+		ModalitiesValue lov = lovDAO.loadModalitiesValueByLabel(lovLabel);
+		String toReturn = getLovResult(lov, null);
+		logger.debug("OUT:" + toReturn);
+		return toReturn;
+	}
+
+	/**
+	 * Gets the lov result.
+	 * 
+	 * @param lovLabel the lov label
+	 * @param profile the profile
+	 * 
+	 * @return the lov result
+	 * 
+	 * @throws Exception the exception
+	 */
+	public static String getLovResult(String lovLabel, IEngUserProfile profile) throws Exception {
+		logger.debug("IN");
+		IModalitiesValueDAO lovDAO = DAOFactory.getModalitiesValueDAO();
+		ModalitiesValue lov = lovDAO.loadModalitiesValueByLabel(lovLabel);
+		String toReturn = getLovResult(lov, profile);
+		logger.debug("OUT" + toReturn);
+		return toReturn;
+	}
+
+	private static String getLovResult(ModalitiesValue lov, IEngUserProfile profile) throws Exception {
+		logger.debug("IN");
+		if (profile == null) {
+			profile = new UserProfile("anonymous");
+		}
+		String dataProv = lov.getLovProvider();
+		ILovDetail lovDetail = LovDetailFactory.getLovFromXML(dataProv);
+		logger.debug("OUT:" + lovDetail.getLovResult(profile));
+		return lovDetail.getLovResult(profile);
+	}
 
 
-    
-    /**
-     * Creates a new user profile, given his identifier.
-     * 
-     * @param userId The user identifier
-     * 
-     * @return The newly created user profile
-     * 
-     * @throws Exception the exception
-     */
-    public static IEngUserProfile createNewUserProfile(String userId) throws Exception {
-    	logger.debug("IN");
-    	IEngUserProfile profile = null;
-	    try {
-	    	ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+
+	/**
+	 * Creates a new user profile, given his identifier.
+	 * 
+	 * @param userId The user identifier
+	 * 
+	 * @return The newly created user profile
+	 * 
+	 * @throws Exception the exception
+	 */
+	public static IEngUserProfile createNewUserProfile(String userId) throws Exception {
+		logger.debug("IN");
+		IEngUserProfile profile = null;
+		try {
+			ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 			SpagoBIUserProfile user = supplier.createUserProfile(userId);
 			user.setFunctions(UserUtilities.readFunctionality(user.getRoles()));
 			profile = new UserProfile(user);
-	    } catch (Exception e) {
+		} catch (Exception e) {
 			logger.error("An error occurred while creating user profile for user [" + userId + "]");
 			throw new SecurityException("An error occurred while creating user profile for user [" + userId + "]", e);
-	    } finally {
-	    	logger.debug("OUT");
-	    }
-	    return profile;
-    }
+		} finally {
+			logger.debug("OUT");
+		}
+		return profile;
+	}
 
 
 	/**
@@ -294,18 +298,18 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		try {
 			adapUrlStr = getSpagoAdapterHttpUrl();
 			path= getSpagoBiHost()+getSpagoBiContext();
-			
-	        ConfigSingleton config = ConfigSingleton.getInstance();
-	        SourceBean configSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
-		    String active = (String) configSB.getCharacters();
-		    logger.debug("active SSO: " + active);
-		    if (active != null && active.equalsIgnoreCase("true") ){
-		    	url = path + adapUrlStr + "?NEW_SESSION=TRUE";
-		    }else{
-		    	url = path + adapUrlStr + "?NEW_SESSION=TRUE&"+SsoServiceInterface.USER_ID+"="+userId;	
-		    }
 
-			
+			ConfigSingleton config = ConfigSingleton.getInstance();
+			SourceBean configSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
+			String active = (String) configSB.getCharacters();
+			logger.debug("active SSO: " + active);
+			if (active != null && active.equalsIgnoreCase("true") ){
+				url = path + adapUrlStr + "?NEW_SESSION=TRUE";
+			}else{
+				url = path + adapUrlStr + "?NEW_SESSION=TRUE&"+SsoServiceInterface.USER_ID+"="+userId;	
+			}
+
+
 			logger.debug("using URL: " + url);
 		} catch (Exception e) {
 			logger.error("Error while recovering complete HTTP Url", e);
@@ -313,8 +317,8 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT");
 		return url;
 	}   
-	
-	
+
+
 	/**
 	 * Gets the spagoBI's dashboards servlet information as a string.
 	 * 
@@ -323,9 +327,9 @@ public class GeneralUtilities extends SpagoBIUtilities{
 	public static String getSpagoBiDashboardServlet() {
 		return getSpagoBiHost()+getSpagoBiContext() + "/DashboardService";
 	}
-	
-	
-	
+
+
+
 	public static String getSpagoBiHost() {
 		logger.debug("IN");
 		if (SPAGOBI_HOST == null) {
@@ -348,7 +352,7 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT:" + SPAGOBI_HOST);
 		return SPAGOBI_HOST;
 	}  
-	
+
 	/*
 	public static String getSpagoBiDomain() {
 		logger.debug("IN");
@@ -372,10 +376,10 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT:" + SPAGOBI_DOMAIN);
 		return SPAGOBI_DOMAIN;
 	}
-	*/
-	
-	
-	
+	 */
+
+
+
 	/**
 	 * Gets the spago adapter http url.
 	 * 
@@ -391,8 +395,8 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT:" + adapUrlStr);
 		return adapUrlStr;
 	}
-	
-	
+
+
 	/**
 	 * Gets the default locale.
 	 * 
@@ -480,7 +484,7 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		if(locale==null)locale=getDefaultLocale();
 		return locale;
 	}
-	
+
 	public static String getLocaleDateFormat(SessionContainer permSess){
 		String language=(String)permSess.getAttribute("AF_LANGUAGE");
 		String country=(String)permSess.getAttribute("AF_COUNTRY");
@@ -505,7 +509,7 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		return format;
 
 	}
-	
+
 	public static String getLocaleDateFormatForExtJs(SessionContainer permSess){
 		String language=(String)permSess.getAttribute("AF_LANGUAGE");
 		String country=(String)permSess.getAttribute("AF_COUNTRY");
@@ -548,7 +552,7 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT");
 		return format;
 	}
-	
+
 	public static String getServerTimeStampFormat(){
 		logger.debug("IN");
 		SourceBean formatSB=null; 
@@ -565,7 +569,7 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT");
 		return format;
 	}
-	
+
 	public static String getServerDateFormatExtJs(){
 		logger.debug("IN");
 		SourceBean formatSB=null; 
@@ -582,7 +586,7 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT");
 		return format;
 	}
-	
+
 	public static String getServerTimestampFormatExtJs(){
 		logger.debug("IN");
 		SourceBean formatSB=null; 
@@ -599,7 +603,7 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT");
 		return format;
 	}
-	
+
 	public static int getTemplateMaxSize() {
 		logger.debug("IN");
 		int toReturn = MAX_DEFAULT_TEMPLATE_SIZE;
@@ -622,7 +626,7 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT: max size = " + toReturn);
 		return toReturn;
 	}
-	
+
 	public static String getSpagoBiContext() {
 		logger.debug("IN");
 		String path = "";
@@ -655,16 +659,16 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("IN");
 		Assert.assertNotNull(baseUrl, "Base url in input is null");
 		StringBuffer buffer = new StringBuffer();
-	    buffer.append(baseUrl);
-	    buffer.append(baseUrl.indexOf("?") == -1 ? "?" : "&");
+		buffer.append(baseUrl);
+		buffer.append(baseUrl.indexOf("?") == -1 ? "?" : "&");
 		if (mapPars != null && !mapPars.isEmpty()) {
 			java.util.Set keys = mapPars.keySet();
 			Iterator iterKeys = keys.iterator();
 			while (iterKeys.hasNext()) {
-			  	String key = iterKeys.next().toString();
-			  	Object valueObj = mapPars.get(key);
-			  	if (valueObj != null) {
-				  	String value = valueObj.toString();
+				String key = iterKeys.next().toString();
+				Object valueObj = mapPars.get(key);
+				if (valueObj != null) {
+					String value = valueObj.toString();
 					// encoding value
 					try {
 						value = URLEncoder.encode(value, "UTF-8");
@@ -673,14 +677,66 @@ public class GeneralUtilities extends SpagoBIUtilities{
 						logger.warn("Using system encoding...");
 						value = URLEncoder.encode(value);
 					}
-				  	buffer.append(key + "=" + value);
-				  	if (iterKeys.hasNext()) {
-				  		buffer.append("&");
-				  	}
-			  	}
+					buffer.append(key + "=" + value);
+					if (iterKeys.hasNext()) {
+						buffer.append("&");
+					}
+				}
 			}
 		}
 		logger.debug("OUT: " + buffer.toString());
 		return buffer.toString();
+	}
+
+	/** getParametersFromURL: 
+	 *  takes an url and return a Map containing URL parameters
+	 * @param urlString
+	 * @return map containing url parameters
+	 */
+
+	public static Map getParametersFromURL(String urlString) {
+		logger.debug("IN");
+		Map toReturn=new HashMap<String, String>();
+		URL url;
+		try {
+			url = new URL(urlString);
+		} catch (MalformedURLException e) {
+			logger.error("Malformed URL Exception "+urlString,e);
+			return null;
+		}
+		//get parameters string
+		String parameters=url.getQuery();
+		StringTokenizer st = new StringTokenizer(parameters, "&", false);
+
+		String parameterToken = null;
+		String parameterName = null;
+		String parameterValue = null;
+		while (st.hasMoreTokens()){
+			parameterToken = st.nextToken();
+			parameterName = parameterToken.substring(0, parameterToken.indexOf("="));
+			parameterValue = parameterToken.substring(parameterToken.indexOf("=") + 1);
+			// if is already present create a list
+			if(toReturn.keySet().contains(parameterName)){
+				Object prevValue=toReturn.get(parameterName).toString();
+				List<String> toInsert=null;
+				// if was alrady a list
+				if( prevValue instanceof List ){
+					toInsert=(List<String>)prevValue;
+					toInsert.add(parameterValue);
+				}
+				else{ // else create a new list and add both elements
+					toInsert=new ArrayList<String>();
+					toInsert.add(prevValue.toString());
+					toInsert.add(parameterValue);
+				}
+				// put list
+				toReturn.put(parameterName, toInsert);
+			}
+			else{ // case single value
+				toReturn.put(parameterName, parameterValue);
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
 	}
 }

@@ -29,7 +29,7 @@
         <property name="dtLastAccess" type="timestamp">
             <column name="DT_LAST_ACCESS" length="19" />
         </property>
-        <set name="sbiExtUserRoleses" inverse="false" lazy="true" table="SBI_EXT_USER_ROLES" cascade="all" fetch="select">
+        <set name="sbiExtUserRoleses" inverse="false" lazy="true" table="SBI_EXT_USER_ROLES" cascade="all" >
             <key>
                 <column name="ID" not-null="true" />
             </key>
@@ -37,7 +37,7 @@
                 <column name="EXT_ROLE_ID" not-null="true"/>
             </many-to-many>
         </set>
-        <set name="sbiUserAttributeses" inverse="false" lazy="true" table="SBI_USER_ATTRIBUTES" cascade="all" fetch="select">
+        <set name="sbiUserAttributeses" inverse="false" lazy="true" table="SBI_USER_ATTRIBUTES" cascade="all" >
             <key>
                 <column name="ID" not-null="true" />
             </key>

@@ -12,7 +12,7 @@
                 <column name="EXT_ROLE_ID" />
             </key-property>
         </composite-id>
-        <many-to-one name="sbiUser" class="it.eng.spagobi.profiling.bean.SbiUser" update="false" insert="false" fetch="select">
+        <many-to-one name="sbiUser" class="it.eng.spagobi.profiling.bean.SbiUser" update="false" insert="false" >
             <column name="ID" not-null="true" />
         </many-to-one>
     </class>

@@ -139,7 +139,6 @@ Sbi.profiling.ManageAttributes = function(config) {
  				this.store.commitChanges();
 		    },
 		    exceptionOnValidate: function(){
-		    	alert("ciao");
 		    	this.validationErrors();
 		    }
 		});

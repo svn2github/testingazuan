@@ -1,0 +1,89 @@
+<script language="javascript" type="text/javascript">
+
+Sbi.template = {
+
+	// --------------------------------------------------------------------------------
+	// SUMMARY PANEL
+	// --------------------------------------------------------------------------------
+	summaryPanel: {
+    
+	    // layout properties
+	    collassable: true
+	    , collapsed: false
+	    , hidden: false
+    
+    
+    	// ogni dataset può avere più grafici associati (1..N)
+    	, datasets: [
+        {
+            // LABEL del dataset in spagobi
+            label: 'MY_DATA'
+            , params: {}  
+            , refreshTime: '30' // in secondi
+            , charts: [
+                // da definire
+            ]
+        }, {
+            // dataset 2 ...
+        }
+    	]
+    
+	}	
+
+	//--------------------------------------------------------------------------------
+	// DETAIL PANEL
+	// -------------------------------------------------------------------------------
+	, detailPanel: {
+    	// 1 page per tab (in futuro forse anche altri layout)
+    	pages: [
+    	{
+			title: 'Pag. 1'
+			, msg: 'Io sono la PRIMA pagina'
+			, navigationBar: {
+				documents: [
+				{
+					text: 'Bottone 1'
+					,tooltip: 'Bottone 1'
+					,label: 'QBE_FOODMART'
+					,staticParams: {param1: 'paramValue'}
+				}, {
+					text: 'Bottone 2'
+					,tooltip: 'Bottone 2'
+					,label: 'QBE_FOODMART'
+				}, {
+					text: 'Bottone 3'
+					,tooltip: 'Bottone 3'
+					,label: 'QBE_FOODMART'
+				}
+				]
+			}
+		}, {
+			title: 'Pag. 2'
+			, msg: 'Io sono la SECONDA pagina'
+			, navigationBar: {
+				documents: [
+				{
+					text: 'Bottone 11'
+					,tooltip: 'Bottone 11'
+					,label: 'QBE_FOODMART'
+					,staticParams: {param1: 'paramValue'}
+				}, {
+					text: 'Bottone 22'
+					,tooltip: 'Bottone 22'
+					,label: 'QBE_FOODMART'
+				}, {
+					text: 'Bottone 33'
+					,tooltip: 'Bottone 33'
+					,label: 'QBE_FOODMART'
+				}
+				]
+			}
+		}
+		]
+    }
+
+		
+}
+
+
+</script>

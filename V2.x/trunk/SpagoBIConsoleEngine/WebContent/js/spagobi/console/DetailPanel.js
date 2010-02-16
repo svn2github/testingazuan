@@ -59,28 +59,20 @@ Sbi.console.DetailPanel = function(config) {
 			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.detailPanel);
 		}
 		
-		var c = Ext.apply(defaultSettings, config || {});
+		var c = Ext.apply(defaultSettings, config || {});		
+		
+		var pagesConfig = c.pages || [];
+		delete c.pages;
 		
 		Ext.apply(this, c);
 		
-		
-		/*
-		this.services = this.services || new Array();	
-		this.services['doThat'] = this.services['doThat'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'DO_THAT_ACTION'
-			, baseParams: new Object()
-		});
-		*/
-		
-		
-		this.initDetailPages(c.detailPagesConfig || {});
+		this.initDetailPages(pagesConfig);
 		
 		c = Ext.apply(c, {  
 	      	items: [new Ext.TabPanel({
 	      		activeTab: 0
 	      		, items: this.pages
 	      	})]
-			//, html: 'Io sono il detail panel'
 		});
 
 		// constructor
@@ -101,81 +93,14 @@ Ext.extend(Sbi.console.DetailPanel, Ext.Panel, {
     
     //  -- private methods ---------------------------------------------------------
     
-    , initDetailPages: function(conf) {
+    , initDetailPages: function(pagesConfig) {
 		this.pages = new Array();
 		
-		var detailPage = null;
-		/* dinamicizzare generazione tab come per i bottoni
-		this.toolbarButtons = [];
-		for(var i=0; i < documents.length; i++){
-			this.toolbarButtons.push({
-				text: documents[i].text  
-			});
+		var detailPage = null;		
+		for(var i = 0, l = pagesConfig.length; i < l; i++) {
+			detailPage = new Sbi.console.DetailPage(pagesConfig[i]);
+			this.pages.push(detailPage);
 		}
-		*/
-		detailPage = new Sbi.console.DetailPage({
-			title: 'Pag. 1'
-			, msg: 'Io sono la prima pagina'
-			, navigationBar: {
-				documents: [{text: 'Bottone 1'
-								,tooltip: 'Bottone 1'
-								,label: 'QBE_FOODMART'
-								,staticParams: {param1: 'paramValue'}}
-							,{text: 'Bottone 2'
-								,tooltip: 'Bottone 2'
-								,label: 'QBE_FOODMART'}
-							,{text: 'Bottone 3'
-								,tooltip: 'Bottone 3'
-								,label: 'QBE_FOODMART'}
-				]
-			}
-		});
-		this.pages.push(detailPage);
-		
-		detailPage = new Sbi.console.DetailPage({
-			title: 'Pag. 2'
-			, msg: 'Io sono la seconda pagina'
-			, navigationBar: {
-				documents: [{text: 'Bottone 11'
-								,tooltip: 'Bottone 11'
-								,label: 'Doc. Bottone 11'}
-							,{text: 'Bottone 22'
-								,tooltip: 'Bottone 22'
-								,label: 'Doc. Bottone 22'}
-							,{text: 'Bottone 33'
-								,tooltip: 'Bottone 33'
-								,label: 'Doc. Bottone 33'}
-				]
-			}
-		});
-		this.pages.push(detailPage);
-		
-		detailPage = new Sbi.console.DetailPage({
-			title: 'Pag. 3'
-			, msg: 'Io sono la terza pagina'
-			, navigationBar: {
-				documents: [{text: 'Bottone 111'
-								,tooltip: 'Bottone 111'
-								,label: 'Doc. Bottone 111'}
-							,{text: 'Bottone 222'
-								,tooltip: 'Bottone 222'
-								,label: 'Doc. Bottone 222'}
-							,{text: 'Bottone 333'
-								,tooltip: 'Bottone 333'
-								,label: 'Doc. Bottone 333'}
-				]
-			}
-		});
-		this.pages.push(detailPage);
-		
-		/*
-		var detailPage = new Ext.Panel({
-			layout: 'fit'
-			, title: 'Pagina 1'
-			, html: 'Io sono la prima pagina'
-		});
-		this.pages.push(detailPage);	
-		*/	
 	}
     
     

@@ -50,38 +50,33 @@ Ext.ns("Sbi.console");
 Sbi.console.ConsolePanel = function(config) {
 	
 	var defaultSettings = {
-			title: LN('sbi.qbe.queryeditor.title'),
-			layout: 'border'
-		};
+		title: LN('sbi.qbe.queryeditor.title'),
+		layout: 'border'
+	};
 		
-		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.consolePanel) {
-			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.consolePanel);
-		}
+	if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.consolePanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.consolePanel);
+	}
 		
-		var c = Ext.apply(defaultSettings, config || {});
-		
-		Ext.apply(this, c);
-		
-		/*
-		this.services = this.services || new Array();	
-		this.services['doThat'] = this.services['doThat'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'DO_THAT_ACTION'
-			, baseParams: new Object()
-		});
-		*/
-		
-		
-		this.initSummaryPanel(c.summaryPanelConfig || {});
-		this.initDetailPanel(c.detailPannelConfig || {});
+	var c = Ext.apply(defaultSettings, config || {});
 	
-		c = Ext.apply(c, {  	
-	      	items: [this.summaryPanel, this.detailPanel]
-		});
+	var summaryPanelConfig = c.summaryPanel || {};
+	delete c.summaryPanel;
+	
+	var detailPanelConfig = c.detailPanel || {};
+	delete c.detailPanel;
+		
+	Ext.apply(this, c);
+		
+	this.initSummaryPanel(summaryPanelConfig);
+	this.initDetailPanel(detailPanelConfig);
+	
+	c = Ext.apply(c, {  	
+	   	items: [this.summaryPanel, this.detailPanel]
+	});
 
-		// constructor
-		Sbi.console.ConsolePanel.superclass.constructor.call(this, c);
-    
-		this.addEvents();
+	// constructor
+	Sbi.console.ConsolePanel.superclass.constructor.call(this, c);
 };
 
 Ext.extend(Sbi.console.ConsolePanel, Ext.Panel, {
@@ -98,26 +93,11 @@ Ext.extend(Sbi.console.ConsolePanel, Ext.Panel, {
     //  -- private methods ---------------------------------------------------------
     
     , initSummaryPanel: function(conf) {
-		
 		this.summaryPanel = new Sbi.console.SummaryPanel(conf);
-			
-		/*	new Ext.Panel({
-			layout: 'fit'
-			, region: 'north'
-			, html: 'Io sono il summary panel'
-		});
-		*/
 	}
 
 	, initDetailPanel: function(conf) {
 		this.detailPanel = new Sbi.console.DetailPanel(conf);
-		
-		/*	new Ext.Panel({
-			layout: 'fit'
-			, region: 'center'
-			, html: 'Io sono il detail panel'
-		});
-		*/
 	}
 
 

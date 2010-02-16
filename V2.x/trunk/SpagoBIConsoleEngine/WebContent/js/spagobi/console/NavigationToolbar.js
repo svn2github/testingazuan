@@ -58,20 +58,12 @@ Sbi.console.NavigationToolbar = function(config) {
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
+		var documentsConfig = c.documents || [];
+		delete c.documents;
 		
 		Ext.apply(this, c);
-		
-		/*
-		this.services = this.services || new Array();	
-		this.services['doThat'] = this.services['doThat'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'DO_THAT_ACTION'
-			, baseParams: new Object()
-		});
-		
-		this.addEvents('customEvents');
-		*/
-		
-		this.initToolbarButtons(c.documents || {});
+				
+		this.initToolbarButtons(documentsConfig);
 	
 		c = Ext.apply(c, {  	
 	      	items: this.toolbarButtons
@@ -80,7 +72,6 @@ Sbi.console.NavigationToolbar = function(config) {
 		// constructor
 		Sbi.console.NavigationToolbar.superclass.constructor.call(this, c);
     
-	//	this.addEvents();
 };
 
 Ext.extend(Sbi.console.NavigationToolbar, Ext.Toolbar, {
@@ -89,40 +80,60 @@ Ext.extend(Sbi.console.NavigationToolbar, Ext.Toolbar, {
     , toolbarButtons: null
     
    
-    // public methods
+    //  -- public methods ---------------------------------------------------------
     
-   
-    
-    
-    // private methods
-    ,initToolbarButtons: function(documents) {
+    //  -- private methods ---------------------------------------------------------
+    ,initToolbarButtons: function(documentsConfig) {
 		
 		this.toolbarButtons = [];
-		for(var i=0; i < documents.length; i++){
+		
+		for(var i = 0, l = documentsConfig.length; i < l; i++){
+			var d = documentsConfig[i];
+			
 			this.toolbarButtons.push({
-				 text: documents[i].text
-				,tooltip: documents[i].tooltip
-				,documentConf: documents[i] 
-				,handler: function execCrossNavigation (b){
-					var msg = {
-						label: b.documentConf.label
-						,windowName: this.name										
-					};
-					if(b.documentConf.staticParams) {
-						msg.parameters = '';
-						var separator = '';
-						for(p in b.documentConf.staticParams) {
-							msg.parameters += separator + p + '=' + b.documentConf.staticParams[p];
-							separator = '&';
-						}
-						alert("msg.parameters: " + msg.parameters.toSource());
-					}
-					
-					sendMessage(msg, 'crossnavigation');
-				}
-				,scope: this
+				text: d.text
+				, tooltip: d.tooltip
+				, documentConf: d 
+				, handler: this.execCrossNavigation
+				, scope: this
 			});
 		}
+	}
+
+	, execCrossNavigation: function (b){
+		
+		if(sendMessage === undefined) {
+			Sbi.exception.ExceptionHandler.showErrorMessage(
+					'function [sendMessage] is not defined',
+					'Cross navigation error'
+			);
+			return;
+		}
+		
+		if( (typeof sendMessage) !== 'function') {
+			Sbi.exception.ExceptionHandler.showErrorMessage(
+					'[sendMessage] is not a function',
+					'Cross navigation error'
+			);
+			return;
+		}
+		
+		var msg = {
+			label: b.documentConf.label
+			, windowName: this.name										
+		};
+			
+		if(b.documentConf.staticParams) {
+			msg.parameters = '';
+			var separator = '';
+			for(p in b.documentConf.staticParams) {
+				msg.parameters += separator + p + '=' + b.documentConf.staticParams[p];
+				separator = '&';
+			}
+			//alert("msg.parameters: " + msg.parameters.toSource());
+		}
+			
+		sendMessage(msg, 'crossnavigation');
 	}
     
     

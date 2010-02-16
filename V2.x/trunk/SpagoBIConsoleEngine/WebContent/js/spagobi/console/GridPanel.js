@@ -110,9 +110,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     
 	, initStore: function() {
 		this.store = new Ext.data.JsonStore({
-			root:'rows'
-	        , fields: ['serie', 'value']
-			, url: this.services['getDataService']
+			url: this.services['getDataService']
 			, autoLoad: true
 	    }); 
     
@@ -143,7 +141,6 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	
 	
 	, onMetaChange: function( store, meta ) {
-		alert('onMetaChange');
 		for(var i = 0; i < meta.fields.length; i++) {
 			if(meta.fields[i].type) {
 				var t = meta.fields[i].type;

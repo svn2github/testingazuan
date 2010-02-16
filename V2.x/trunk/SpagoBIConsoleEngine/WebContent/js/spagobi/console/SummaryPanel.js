@@ -67,18 +67,6 @@ Sbi.console.SummaryPanel = function(config) {
 		
 		Ext.apply(this, c);
 		
-		
-		/*
-		this.services = this.services || new Array();	
-		this.services['doThat'] = this.services['doThat'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'DO_THAT_ACTION'
-			, baseParams: new Object()
-		});
-		*/
-		
-		
-		//this.initThis(c.westConfig || {});
-		//this.initThat(c.westConfig || {});
 	
 		c = Ext.apply(c, {  	
 	      	//items: [this.thisPanel, this.thatPanel]

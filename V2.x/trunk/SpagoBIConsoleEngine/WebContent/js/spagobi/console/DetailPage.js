@@ -59,18 +59,16 @@ Sbi.console.DetailPage = function(config) {
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
+		var navigationBarConfig = c.navigationBar || {};
+		delete c.navigationBar;
+		//var navigationBar = c.navigationBar || {};
+		//delete c.navigationBar;
 		
 		Ext.apply(this, c);
 		
-		/*
-		this.services = this.services || new Array();		
-		this.services['getDataset'] = this.services['getDataset'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'TEST_DATASET_ACTION'
-			, baseParams: {}
-		});
-		*/
-		//this.initTestButton(c.detailPageConfig || {});
-		this.initNavigationToolbar(c.navigationBar || {});
+
+		
+		this.initNavigationToolbar(navigationBarConfig);
 		this.initGridPanel(c.gridPanel || {});
 		
 		c = Ext.apply(c, {  	
@@ -90,50 +88,14 @@ Ext.extend(Sbi.console.DetailPage, Ext.Panel, {
     , navigationToolbar: null
     , gridPanel: null
    
-    // public methods
+    //  -- public methods ---------------------------------------------------------
     
-   
-    
-    
-    // private methods
-    /*
-     ,initTestButton: function(conf) {
-	
-		this.getDSButton = new Ext.Button({
-			  text: 'Get Dataset'
-			, handler: function() { 
-
-				
-				Ext.Ajax.request({
-			        url: this.services['getDataset'],
-			        params: {ds_label: 'testmeter'},
-			        callback : function(options , success, response) {
-			  	  		if (success) {
-				      		if(response !== undefined && response.responseText !== undefined) {
-				      			var content = Ext.util.JSON.decode( response.responseText );
-				      			if (content !== undefined) {				      			  
-				      				alert(content.toSource());
-				      			}				      		
-				      		} else {
-				      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-				      		}
-			  	  		} else { 
-			  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot load dataset', 'Service Error');
-			  	  		}
-			        },
-			        scope: this,
-					failure: Sbi.exception.ExceptionHandler.handleFailure      
-				});
-			},
-			scope: this
-		});
-	}
-*/
-    ,initNavigationToolbar: function(navigationBarConf) {
+    //  -- private methods ---------------------------------------------------------
+    , initNavigationToolbar: function(navigationBarConf) {
     	this.navigationToolbar = new Sbi.console.NavigationToolbar(navigationBarConf);
     }
     
-    ,initGridPanel: function(conf){
+    , initGridPanel: function(conf){
       this.gridPanel = new Sbi.console.GridPanel(conf);
     }
     

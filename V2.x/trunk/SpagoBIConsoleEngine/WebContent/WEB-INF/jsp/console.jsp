@@ -98,6 +98,10 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 		<%@include file="commons/includeExtJS.jspf" %>
 		<%@include file="commons/includeSbiConsoleJS.jspf"%>
 		
+		<!-- Active TEST  -->
+		<%@include file="tests/template.jspf"%>
+		<!-- Active TEST  -->
+		
 		<%-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) --
 		<script type="text/javascript">
 		document.domain='<%= EnginConf.getInstance().getSpagoBiDomain() %>';
@@ -109,8 +113,8 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 	<body  >
 		<script>
 
-			var template = <%= consoleEngineInstance.getTemplate().toString()  %>;
-
+			var template = Sbi.template || <%= consoleEngineInstance.getTemplate().toString()  %>;
+			
 			Sbi.config = {};
 
 			var url = {

@@ -31,6 +31,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  **/
 package it.eng.spagobi.engines.commonj.services;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,10 +44,13 @@ import it.eng.spagobi.engines.commonj.runtime.WorksRepository;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
+import it.eng.spagobi.utilities.service.JSONFailure;
 
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
 
 public class CommonjEngineStartAction extends AbstractEngineStartAction {
 
@@ -61,12 +65,12 @@ public class CommonjEngineStartAction extends AbstractEngineStartAction {
 	public static final String DOCUMENT_LABEL = "DOCUMENT_LABEL";
 	public static final String OUTPUT_TYPE = "outputType";
 
-    public static transient Logger logger = Logger.getLogger(CommonjEngineStartAction.class);
-    public static final String ENGINE_NAME = "SpagoBICommonjEngine";
+	public static transient Logger logger = Logger.getLogger(CommonjEngineStartAction.class);
+	public static final String ENGINE_NAME = "SpagoBICommonjEngine";
 
 
-    
-    
+
+
 	@Override
 	public void init(SourceBean config) {
 		// TODO Auto-generated method stub
@@ -74,19 +78,19 @@ public class CommonjEngineStartAction extends AbstractEngineStartAction {
 	}
 
 
-	   public Map getEnv() {
-		   Map env = new HashMap();
-		   
-		   copyRequestParametersIntoEnv(env, getSpagoBIRequestContainer());
-		   //env.put(EngineConstants.ENV_DATASOURCE, getDataSource());
-		   env.put(EngineConstants.ENV_DOCUMENT_ID, getDocumentId());
-		   env.put(EngineConstants.ENV_USER_PROFILE, getUserProfile());
-		   //env.put(EngineConstants.ENV_CONTENT_SERVICE_PROXY, getContentServiceProxy());
-		   env.put(EngineConstants.ENV_AUDIT_SERVICE_PROXY, getAuditServiceProxy() );
-		   env.put(EngineConstants.ENV_LOCALE, getLocale()); 
-			
-		   return env;
-	   }
+	public Map getEnv() {
+		Map env = new HashMap();
+
+		copyRequestParametersIntoEnv(env, getSpagoBIRequestContainer());
+		//env.put(EngineConstants.ENV_DATASOURCE, getDataSource());
+		env.put(EngineConstants.ENV_DOCUMENT_ID, getDocumentId());
+		env.put(EngineConstants.ENV_USER_PROFILE, getUserProfile());
+		//env.put(EngineConstants.ENV_CONTENT_SERVICE_PROXY, getContentServiceProxy());
+		env.put(EngineConstants.ENV_AUDIT_SERVICE_PROXY, getAuditServiceProxy() );
+		env.put(EngineConstants.ENV_LOCALE, getLocale()); 
+
+		return env;
+	}
 
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws SpagoBIEngineException {
 
@@ -100,25 +104,45 @@ public class CommonjEngineStartAction extends AbstractEngineStartAction {
 			//servletIOManager.auditServiceStartEvent();
 
 			super.service(serviceRequest, serviceResponse);
-			
+
 			HttpSession session=getHttpSession();
-			
+
 			work = new CommonjWork( getTemplateAsSourceBean()); 
 			CommonjEngine cm=new CommonjEngine();
 			worksRepository = CommonjEngine.getWorksRepository();
 
 			try {
 				worksRepository.configureWork(session,work, getEnv());
-			} catch (WorkNotFoundException ex) {
-			logger.error(ex.getMessage());
-				throw new SpagoBIEngineException("Work not found", "work.not.existing");
-
-			}catch(WorkExecutionException ex) {
-				logger.error(ex.getMessage(), ex);
-				throw new SpagoBIEngineException("Work execution error","work.exectuion.error");
 			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-				throw new SpagoBIEngineException("Work execution error", "work.exectuion.error");
+				if(e instanceof WorkNotFoundException){
+					try {
+						logger.error("work not found!",e);
+						writeBackToClient( new JSONFailure( e) );
+					} catch (IOException ioe) {
+						String message = "Impossible to write back the responce to the client";
+						throw new SpagoBIEngineServiceException(getActionName(), message, e);
+					} catch (JSONException je) {
+						String message = "Error while serializing error into JSON object";
+						throw new SpagoBIEngineServiceException(getActionName(), message, je);
+					}
+				}
+				else if(e instanceof WorkExecutionException){
+					try {
+						logger.error("work execution exception!",e);
+						writeBackToClient( new JSONFailure( e) );
+					} catch (IOException ioe) {
+						String message = "Impossible to write back the responce to the client";
+						throw new SpagoBIEngineServiceException(getActionName(), message, e);
+					} catch (JSONException je) {
+						String message = "Error while serializing error into JSON object";
+						throw new SpagoBIEngineServiceException(getActionName(), message, je);
+					}
+				}
+				else{
+					logger.error("work execution exception!",e);
+					writeBackToClient( new JSONFailure( e) );
+
+				}
 			}
 
 			//servletIOManager.tryToWriteBackToClient(work.getWorkName()+": class "+work.getClassName());
@@ -126,7 +150,7 @@ public class CommonjEngineStartAction extends AbstractEngineStartAction {
 		}
 		catch (Exception e) {
 			logger.error("Error in servlet",e);
-			}
+		}
 		finally {
 			logger.debug("OUT");
 		}

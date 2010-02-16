@@ -37,6 +37,7 @@ import java.util.Date;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import commonj.work.Work;
@@ -52,6 +53,7 @@ import it.eng.spagobi.utilities.engines.AbstractEngineAction;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
+import it.eng.spagobi.utilities.service.JSONFailure;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 import it.eng.spagobi.utilities.threadmanager.WorkManager;
 
@@ -114,7 +116,18 @@ public class StopWorkAction extends AbstractEngineAction {
 			}
 		}
 		catch (Exception e) {
-			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), e);
+			logger.error("Error in stopping the work");
+			try {
+				writeBackToClient( new JSONFailure( e) );
+			} catch (IOException e1) {
+				logger.error("Error in stopping the work and in writing back to client",e);
+				throw new SpagoBIEngineServiceException(getActionName(), "Error in stopping the work and in writing back to client", e1);
+			} catch (JSONException e1) {
+				logger.error("Error in stopping the work and in writing back to client",e);
+				throw new SpagoBIEngineServiceException(getActionName(), "Error in stopping the work and in writing back to client", e1);
+			}
+		
+		
 		}	
 		logger.debug("OUT");
 

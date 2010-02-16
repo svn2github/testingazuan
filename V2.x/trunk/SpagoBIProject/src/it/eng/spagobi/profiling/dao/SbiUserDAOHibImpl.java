@@ -366,59 +366,64 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 		}
 	}
 	public void deleteSbiUserById(Integer id) throws EMFUserError {
-		logger.debug("IN");
+        logger.debug("IN");
 
-		Session aSession = null;
-		Transaction tx = null;
-		try {
-			aSession = getSession();			
+        Session aSession = null;
+        Transaction tx = null;
+        try {
+            aSession = getSession();
+            tx = aSession.beginTransaction();
 
-			SbiUser userToDelete =(SbiUser)aSession.load(SbiUser.class, id);
-			Hibernate.initialize(userToDelete);
-			
-			Set<SbiExtUserRoles> userRoles = userToDelete.getSbiExtUserRoleses();
-			Set<SbiUserAttributes> userAttributes=userToDelete.getSbiUserAttributeses();
-			
-			//deletes roles	associations		
-			if(userRoles != null){
-				aSession = getSession();	
-				tx = aSession.beginTransaction();
-				Iterator rolesIt = userRoles.iterator();
-				while(rolesIt.hasNext()){
-					SbiExtUserRoles temp = (SbiExtUserRoles)rolesIt.next();
-					aSession.delete(temp);
-				}				
-				tx.commit();
-				if (aSession.isOpen()) aSession.close();
-			}
-			//deletes attributes associations
-			if(userAttributes != null){
-				aSession = getSession();	
-				tx = aSession.beginTransaction();
-				Iterator attrsIt = userAttributes.iterator();
-				while(attrsIt.hasNext()){
-					SbiUserAttributes temp = (SbiUserAttributes)attrsIt.next();
-					aSession.delete(temp);				
-				}				
-				tx.commit();
-				if (aSession.isOpen()) aSession.close();
-			}
-			aSession = getSession();	
-			tx = aSession.beginTransaction();
-			aSession.delete(userToDelete);			
-			tx.commit();
-		} catch (HibernateException he) {
-			logger.error(he.getMessage(), he);
-			if (tx != null)
-				tx.rollback();
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		} finally {
-			logger.debug("OUT");
-			if (aSession!=null){
-				if (aSession.isOpen()) aSession.close();
-			}
-		}
-	}
+            String q = " from SbiUserAttributes x where x.id.id = :id ";
+            Query query = aSession.createQuery(q);
+            query.setInteger("id", id);
+
+            ArrayList<SbiUserAttributes> userAttributes = (ArrayList<SbiUserAttributes>)query.list();
+
+            //deletes attributes associations
+            if(userAttributes != null){
+                Iterator attrsIt = userAttributes.iterator();
+                while(attrsIt.hasNext()){
+                    SbiUserAttributes temp = (SbiUserAttributes)attrsIt.next();
+                    attrsIt.remove();
+
+                    aSession.delete(temp);
+                    aSession.flush();
+                }
+            }
+
+            String qr = " from SbiExtUserRoles x where x.id.id = :id ";
+            Query queryR = aSession.createQuery(qr);
+            queryR.setInteger("id", id);
+
+            ArrayList<SbiExtUserRoles> userRoles = (ArrayList<SbiExtUserRoles>)queryR.list();
+            if(userRoles != null){
+                Iterator rolesIt = userRoles.iterator();
+                while(rolesIt.hasNext()){
+                    SbiExtUserRoles temp = (SbiExtUserRoles)rolesIt.next();
+                    rolesIt.remove();
+                    aSession.delete(temp);
+                    aSession.flush();
+                }
+            }
+            SbiUser userToDelete =(SbiUser)aSession.load(SbiUser.class, id);
+
+            aSession.delete(userToDelete);
+            aSession.flush();
+            tx.commit();
+        } catch (HibernateException he) {
+            logger.error(he.getMessage(), he);
+            if (tx != null)
+                tx.rollback();
+            throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+        } finally {
+            logger.debug("OUT");
+            if (aSession!=null){
+                if (aSession.isOpen()) aSession.close();
+            }
+        }
+    }
+
 
 	public Integer fullSaveOrUpdateSbiUser(SbiUser user, List roles, HashMap<Integer, String> attributes)
 			throws EMFUserError {

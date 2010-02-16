@@ -262,8 +262,8 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 		for(int i=0; i< rows.length(); i++){
 			JSONObject obj = (JSONObject)rows.get(i);
 			Integer id = obj.getInt("id");
-			String name = obj.getString("name");
-			String description = obj.getString("description");
+			//String name = obj.getString("name");
+			//String description = obj.getString("description");
 			toReturn.add(id);
 		}	
 		return toReturn;

@@ -271,7 +271,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		             },{
 		            	 maxLength:160,
 		            	 minLength:1,
-		            	 regex : new RegExp("^[a-zA-Z1-9_\x2F ]+$", "g"),
+		            	 regex : new RegExp("[a-zA-Z1-9_\x2F]", "g"),
 		            	 regexText : 'Richiesta stringa alfanumerica (\x2F incluso)',
 		                 fieldLabel: 'Description',
 		                 validationEvent:false,
@@ -403,7 +403,9 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	    Ext.getCmp('save-btn').show();
 	
 	
-		var emptyRecToAdd =new Ext.data.Record({name:'', 
+		var emptyRecToAdd =new Ext.data.Record({
+											id:null,
+											name:'', 
 											label:'', 
 											description:'',
 											typeCd:'',
@@ -457,6 +459,9 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	,save : function() {
 		var newRec = this.fillNewRecord();
 
+        var newRole = new Array();
+        newRole.push(newRec.data);
+
         var params = {
         	name : newRec.data.name,
         	description : newRec.data.description,
@@ -483,17 +488,20 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
             success: function(response, options) {
 				if (response !== undefined) {			
 		      		if(response.responseText !== undefined) {
+		      			var content = Ext.util.JSON.decode( response.responseText );
+		      			
+		      			var roleID = content.id;
+		      			alert("roleID:::"+roleID);
+	                    newRec.set('id', roleID);
+	                    
+						this.rolesStore.add(newRec);
+						this.rolesStore.commitChanges();
 	                    Ext.MessageBox.show({
 	                        title: 'Result',
 	                        msg: 'Operation succeded',
 	                        width: 200,
 	                        buttons: Ext.MessageBox.OK
-	                   });
-
-						this.rolesStore.add(newRec);
-
-						this.rolesStore.commitChanges();
-
+	                    });
 		      		} else {
 		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
 		      		}
@@ -553,6 +561,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
         
         
         var RoleRecord = Ext.data.Record.create(
+        		{id: 'id', mapping: 'id'},
         	    {name: 'name', mapping: 'name'},
         	    {name: 'description', mapping: 'description'},
         	    {name: 'code', mapping: 'code'},

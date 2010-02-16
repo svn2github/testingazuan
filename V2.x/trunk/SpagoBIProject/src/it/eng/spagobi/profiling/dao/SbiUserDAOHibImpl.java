@@ -433,6 +433,9 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			
 			SbiUser userToUpdate = user;
 			id = userToUpdate.getId();
+			Set<SbiExtUserRoles> extUserRoles = new HashSet<SbiExtUserRoles>();
+			Set<SbiUserAttributes> userAttrList = new HashSet<SbiUserAttributes>();
+			
 			if(id!=0){
 				save = false;
 				userToUpdate =(SbiUser)aSession.load(SbiUser.class, id);
@@ -440,6 +443,8 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 				userToUpdate.setFullName(user.getFullName());
 				userToUpdate.setUserId(user.getUserId());
 				userToUpdate.setId(id);
+				userAttrList = userToUpdate.getSbiUserAttributeses();
+				extUserRoles = userToUpdate.getSbiExtUserRoleses();
 			}	
 			
 			if(save){
@@ -449,8 +454,12 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			}
 			
 			//sets roles
-			Set<SbiExtUserRoles> extUserRoles = new HashSet<SbiExtUserRoles>();
+			
 			if(roles != null){
+				boolean userRolesAlreadyExist = false;
+				if(extUserRoles.size()!=0){
+					userRolesAlreadyExist=true;
+				}
 				Iterator rolesIt = roles.iterator();
 				while(rolesIt.hasNext()){
 					String roleID = (String)rolesIt.next();
@@ -463,13 +472,35 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			    	
 			    	sbiExtUserRole.setId(extUserRoleId);
 			    	sbiExtUserRole.setSbiUser(userToUpdate);
-			    	extUserRoles.add(sbiExtUserRole);
+			    	
+			    	if(userRolesAlreadyExist){
+			    		ArrayList toRemove = new ArrayList();
+			    		Iterator it = extUserRoles.iterator();
+			    		while(it.hasNext()){
+			    			SbiExtUserRoles temp = (SbiExtUserRoles)it.next();
+			    			SbiExtUserRolesId tempSbiUserRoleId = temp.getId();
+			    			Integer tempRoleId = tempSbiUserRoleId.getId();
+			    			if(extRoleId.equals(tempRoleId)){
+			    				toRemove.add(temp);
+			    				break;
+			    			}			
+			    		}
+			    		if(!toRemove.isEmpty()){
+			    			extUserRoles.removeAll(toRemove);
+			    		}
+			    		extUserRoles.add(sbiExtUserRole);
+			    	}else{
+			    		extUserRoles.add(sbiExtUserRole);
+			    	}	
 				}
 				userToUpdate.setSbiExtUserRoleses(extUserRoles);
 			}
 			//sets attributes
 			if(attributes != null){
-				Set<SbiUserAttributes> userAttrList = new HashSet<SbiUserAttributes>();
+				boolean userAttrAlreadyExist = false;
+				if(userAttrList.size()!=0){
+					userAttrAlreadyExist=true;
+				}
 				Iterator attrsIt = attributes.keySet().iterator();
 				while(attrsIt.hasNext()){
 					Integer attrID = (Integer)attrsIt.next();
@@ -482,7 +513,25 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			    	
 			    	userAttr.setId(userAttrID);
 			    	userAttr.setSbiUser(userToUpdate);
-			    	userAttrList.add(userAttr);
+			    	if(userAttrAlreadyExist){
+			    		ArrayList toRemove = new ArrayList();
+			    		Iterator it = userAttrList.iterator();
+			    		while(it.hasNext()){
+			    			SbiUserAttributes temp = (SbiUserAttributes)it.next();
+			    			SbiUserAttributesId tempSbiUserAttrId = temp.getId();
+			    			Integer tempAttrId = tempSbiUserAttrId.getAttributeId();
+			    			if(attrID.equals(tempAttrId)){
+			    				toRemove.add(temp);
+			    				break;
+			    			}			
+			    		}
+			    		if(!toRemove.isEmpty()){
+			    			userAttrList.removeAll(toRemove);
+			    		}
+			    		userAttrList.add(userAttr);
+			    	}else{
+			    		userAttrList.add(userAttr);
+			    	}			    	
 				}
 				userToUpdate.setSbiUserAttributeses(userAttrList);
 			}

@@ -877,12 +877,12 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				//alert(cutName);
 				urlNotEncoded=childFrame.location.href;
 				// I have to substitute %25 in %
-				alert(urlNotEncoded);
+				//alert(urlNotEncoded);
 				urlNotEncoded = urlNotEncoded.replace(/%25/g,'%');
 				urlNotEncoded = urlNotEncoded.replace(/%20/g,' ');
-				alert(urlNotEncoded);
+				//alert(urlNotEncoded);
 				urlEncoded=encodeURIComponent(urlNotEncoded);
-				alert(urlEncoded);
+				//alert(urlEncoded);
 				newPars+='&TRACE_PAR_'+cutName+'='+urlEncoded;
  			}
  			//alert(newPars);

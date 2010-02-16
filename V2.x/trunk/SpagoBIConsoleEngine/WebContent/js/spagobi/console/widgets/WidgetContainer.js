@@ -20,9 +20,12 @@
  **/
  
 /**
-  * Object name 
+  * WidgetContainer
   * 
-  * [description]
+  * handle:
+  *  - widgets lifecycle management: register, unregister, lookup
+  *  - shared resources: through env
+  *  - intra-widgets comunications: sendMessage (asyncronous: point to point or broadcast)
   * 
   * 
   * Public Properties
@@ -42,81 +45,61 @@
   * Authors
   * 
   * - Andrea Gioia (andrea.gioia@eng.it)
-  * - Antonella Giachino (antonella.giachino@eng.it)
   */
 
 Ext.ns("Sbi.console");
 
-Sbi.console.SummaryPanel = function(config) {
+Sbi.console.WidgetContainer = function(config) {
 	
 		var defaultSettings = {
-			layout: 'fit'
-			, region: 'north'
-			, height: 215
-			, split: true
-			//, collapseMode: 'mini'
-			, collapsible: true
-	        , collapseFirst: false
+			
 		};
 		
-		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.summaryPanel) {
-			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.summaryPanel);
+		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.widgetContainer) {
+			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.widgetContainer);
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
 		
 		Ext.apply(this, c);
-		
-		var x, y, z, widgetPanel;
-		x = new Sbi.console.ChartWidget({chartType: 'bar'});
-		y = new Sbi.console.ChartWidget({chartType: 'column'});
-		z = new Sbi.console.ChartWidget({chartType: 'pie'});
-		
-		widgetPanel = new Ext.Panel({
-			layout:'column'
-			//, margins:'35 5 5 0'
-			, items: [{
-				columnWidth:.33
-				, baseCls:'x-plain'
-				, bodyStyle:'padding:5px 0 5px 5px'
-				, items: [x]
-			}, {
-				columnWidth:.33
-				, baseCls:'x-plain'
-				, bodyStyle:'padding:5px 0 5px 5px'
-				, items: [y]
-			}, {
-				columnWidth:.33
-				, baseCls:'x-plain'
-				, bodyStyle:'padding:5px 0 5px 5px'
-				, items: [z]
-			}]
-		});
-		
-		c = Ext.apply(c, {  	
-			
-	      	items: [widgetPanel]
-			//html: 'Io sono il summary panel'
-		});
+
+		this.init();
+	
 
 		// constructor
-		Sbi.console.SummaryPanel.superclass.constructor.call(this, c);
-    
-		//this.addEvents();
+		Sbi.console.WidgetContainer.superclass.constructor.call(this, c);
 };
 
-Ext.extend(Sbi.console.SummaryPanel, Ext.Panel, {
+Ext.extend(Sbi.console.WidgetContainer, Ext.util.Observable, {
     
-    services: null
+    widgets: null
+    , env: null
+    , storeManager: null
     
    
     //  -- public methods ---------------------------------------------------------
-    
-    
+        
+    , register: function(w) {
+		this.widgets.addAll(w);
+		w.setContainer(this);
+	}
+
+	, unregister: function(w) {
+		this.remove(w);
+		w.setContainer(null);
+	}
+	
+	, lookup: function(w) {
+		this.widgets.get(w);
+	}
+	
+	
     
     //  -- private methods ---------------------------------------------------------
     
-    
+    , init: function() {
+    	this.widgets = new Ext.util.MixedCollection();
+	}
     
     
 });

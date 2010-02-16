@@ -12,6 +12,12 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
+	<ACTION name="GET_CONSOLE_DATA_ACTION" 
+			class="it.eng.spagobi.engines.console.services.GetConsoleDataAction"
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 	<ACTION name="REFRESH_ACTION" 
 			class="it.eng.spagobi.engines.console.services.ExecuteButtonAction"
 			scope="REQUEST">

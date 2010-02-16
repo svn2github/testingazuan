@@ -61,40 +61,73 @@ Sbi.console.GridPanel = function(config) {
 		
 		Ext.apply(this, c);
 		
+		var params = {ds_label: 'testmeter'};
+		this.services = new Array();
+  	this.services['getDataService'] = Sbi.config.serviceRegistry.getServiceUrl({
+  		serviceName: 'GET_CONSOLE_DATA_ACTION'
+  		, baseParams: params
+  	});
 		
-		/*
-		this.services = this.services || new Array();	
-		this.services['doThat'] = this.services['doThat'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'DO_THAT_ACTION'
-			, baseParams: new Object()
-		});
-		*/
-		
-		
+		this.store = new Ext.data.JsonStore({
+          root: 'results'
+        , idProperty: 'serie'
+        , fields: ['serie', 'value']
+		    , url: this.services['getDataService']
+		    , autoLoad: true
+    }); 
+    this.store.on('loadexception', function(store, options, response, e){
+    	Sbi.exception.ExceptionHandler.handleFailure(response, options);
+    }, this);
+    
+    var sm = new Ext.grid.CheckboxSelectionModel();
+		//var sm = new Ext.grid.RowSelectionModel({singleSelect:true});
 		this.initFilterBar(c.FilterBarConf || {});
 		
-		c = Ext.apply(c, {layout: 'fit'
+/*		c = Ext.apply(c, {layout: 'fit'
 		                  , region: 'center'
 		                  , bodyStyle: 'padding: 8px'
 		                  , tbar: this.filterBar
-    		              , html: 'Io sono il grid panel !!!!!!!!!'
-		});
+    		            //  , html: 'Io sono il grid panel !!!!!!!!!'
+		                });
+*/
 
+    var c = Ext.apply({}, {
+          store: this.store
+          , columns: [
+                {header: 'Serie', sortable: true, width: 50, dataIndex: 'serie'}
+              , {header: 'Value', sortable: true, width: 50, dataIndex: 'value'}
+              , sm
+          ]
+       //   , plugins: [ this.applyColumn, this.execColumn ]
+    		, viewConfig: {
+            	forceFit: true
+            , emptyText: ' '
+    		}
+          , tbar: this.filterBar
+          , collapsible: false
+          , autoScroll: true
+          , sm : sm
+          , hidden: false
+  	});   
+	
 		// constructor
 		Sbi.console.GridPanel.superclass.constructor.call(this, c);
     
 		//this.addEvents();
 };
 
-Ext.extend(Sbi.console.GridPanel, Ext.Panel, {
+Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     
     services: null
+   , store: null
    , filterBar: null
     
    
     //  -- public methods ---------------------------------------------------------
     
-    
+    , synchronize: function(  ) {  		
+  			this.store.load();  	
+  	}
     
     //  -- private methods ---------------------------------------------------------
     
@@ -171,8 +204,6 @@ Ext.extend(Sbi.console.GridPanel, Ext.Panel, {
           this.filterBar = new Sbi.console.CustomFilteringToolbar({defaults: tmpDefaults
                                                                  , actions: tmpActions
                                                                  , filters: tmpFilters});          	          	
-      } /*else if (type === 'automatic'){
-          alert("Automatic filterbar working in progress!!");
-      }   */  
+      }   
   }
 });

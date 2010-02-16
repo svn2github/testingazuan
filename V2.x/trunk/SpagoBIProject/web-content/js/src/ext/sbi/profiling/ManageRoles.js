@@ -141,14 +141,14 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	       }
        });
        this.colModel = new Ext.grid.ColumnModel([
-         {id:'name',header: "name", width: 50, sortable: true, locked:false, dataIndex: 'name'},
-         {header: "description", width: 150, sortable: true, dataIndex: 'description'},
+         {id:'name',header: LN('sbi.attributes.headerName'), width: 50, sortable: true, locked:false, dataIndex: 'name'},
+         {header:  LN('sbi.attributes.headerDescr'), width: 150, sortable: true, dataIndex: 'description'},
          this.deleteColumn
       ]);
 
      	   
  	   this.buttons = [{
-        text : 'Save'
+        text : LN('sbi.attributes.update')
         	, id: 'save-btn'
 	        , scope : this
 	        , handler : this.save

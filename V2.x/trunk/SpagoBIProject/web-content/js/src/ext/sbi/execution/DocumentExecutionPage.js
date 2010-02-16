@@ -77,6 +77,11 @@ Sbi.execution.DocumentExecutionPage = function(config, doc) {
 		serviceName: 'EXPORT_PDF'
 		, baseParams: params
 	});
+
+	this.services['toDCPdf'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'EXPORT_DOCUMENT_COMPOSITION_PDF'
+		, baseParams: params
+	});
 	
 	this.services['toChartPdf'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'EXPORT_CHART_PDF'
@@ -333,7 +338,6 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		    	, handler : this.metaExecution
 			}));
 		}
-		
 	
 		if(executionInstance.document.exporters){
 			if ( executionInstance.document.typeCode == 'KPI' && executionInstance.document.exporters.contains('PDF')) {
@@ -343,7 +347,16 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			     	, scope: this
 			    	, handler : this.pdfExecution
 				}));
-			}else if( executionInstance.document.typeCode == 'REPORT') {
+			}
+			else if ( executionInstance.document.typeCode == 'DOCUMENT_COMPOSITE' ) {
+				this.toolbar.addButton(new Ext.Toolbar.Button({
+					iconCls: 'icon-pdf' 
+					, tooltip: LN('sbi.execution.PdfExport')
+			     	, scope: this
+			    	, handler : this.pdfDCExecution
+				}));
+			}
+			else if( executionInstance.document.typeCode == 'REPORT') {
 					var menuItems = new Array();
 					
 					for(i=0;i<executionInstance.document.exporters.length ;i++){
@@ -847,8 +860,31 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	
 	, pdfExecution: function () {
 		var urlExporter = this.services['toPdf'] + '&OBJECT_ID=' + this.executionInstance.OBJECT_ID;
-		//alert(urlExporter);
 		window.open(urlExporter,'name','height=750,width=1000');
+	}		
+	
+	, pdfDCExecution: function () {
+		// here I have to recover all iframe urls!
+		mainFrame=this.miframe.getFrame();
+		windowO=mainFrame.getWindow();
+		newPars='';
+		for (var i=0; i<windowO.frames.length; i++)
+  			{
+				childFrame=windowO.frames[i];
+				fullName=childFrame.name;
+				//alert(fullName);
+				cutName=fullName.substring(7);
+				//alert(cutName);
+				urlNotEncoded=childFrame.location.href;
+				//alert(urlNotEncoded);
+				urlEncoded=encodeURIComponent(urlNotEncoded);
+				//alert(urlEncoded);
+				newPars+='&TRACE_PAR_'+cutName+'='+urlEncoded;
+ 			}
+ 			//alert(newPars);
+		var urlExporter = this.services['toDCPdf'] + '&OBJECT_ID=' + this.executionInstance.OBJECT_ID;
+		urlExporter+=newPars;
+		window.open(urlExporter,'name','height=750,width=1000');	
 	}		
 	
 	,exportReportExecution: function (exportType) {

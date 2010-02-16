@@ -186,6 +186,9 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
 		             },
 		             items: [{
+		                 name: 'id',
+		                 hidden: true
+		             },{
 		                 fieldLabel: 'User ID',
 		                 name: 'userId'
 		             },{
@@ -193,10 +196,12 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		                 name: 'fullName'
 		             },{
 		                 fieldLabel: 'Password',
-		                 name: 'pwd'
+		                 name: 'pwd',
+		                 inputType: 'password'
 		             },{
 		                 fieldLabel: 'Confirm Password',
-		                 name: 'confirmpwd'
+		                 name: 'confirmpwd',
+		                 inputType: 'password'
 		             }]
 		    	
 		    	}
@@ -248,7 +253,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	   	                   	var tempArr = rec.data.userRoles;
 	   	                  	var length = rec.data.userRoles.length;
 	   	                  	for(var i=0;i<length;i++){
-	   	                  		var tempRecord = new Ext.data.Record({"description":tempArr[i].value,"name":tempArr[i].name,"id":tempArr[i].id });
+	   	                  		var tempRecord = new Ext.data.Record({"description":tempArr[i].description,"name":tempArr[i].name,"id":tempArr[i].id });
 							    Ext.getCmp("roles-form").store.add(tempRecord);	
 							    if(tempArr[i].checked===true){
 							     	//alert(Ext.getCmp("roles-form").getColumnModel().getColumnById('2').toSource());
@@ -380,9 +385,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	}
 	
 	,save : function() {
-	
-	   
-	   
+		   
 	   var values = this.gridForm.getForm().getValues();
 
        if(values['pwd']===values['confirmpwd']){
@@ -392,7 +395,6 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	        	fullName : values['fullName'],
 	        	pwd : values['pwd']            
 	        }
-	        alert(values['id']);
 	        if(values['id'] !== null && values['id'] !== undefined ){
 	        	params.id = values['id'];
 	        }

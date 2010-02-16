@@ -439,6 +439,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 				userToUpdate.setPassword(user.getPassword());
 				userToUpdate.setFullName(user.getFullName());
 				userToUpdate.setUserId(user.getUserId());
+				userToUpdate.setId(id);
 			}	
 			
 			if(save){
@@ -488,7 +489,6 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			
 			//update
 			aSession.saveOrUpdate(userToUpdate);
-
 	
 			tx.commit();
 		} catch (HibernateException he) {

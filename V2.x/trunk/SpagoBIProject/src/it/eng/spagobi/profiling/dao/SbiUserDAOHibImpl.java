@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.profiling.dao;
 
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
@@ -462,16 +463,16 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 				}
 				Iterator rolesIt = roles.iterator();
 				while(rolesIt.hasNext()){
-					String roleID = (String)rolesIt.next();
+					Integer extRoleId  = (Integer)rolesIt.next();
 					SbiExtUserRoles sbiExtUserRole = new SbiExtUserRoles();
 					SbiExtUserRolesId extUserRoleId = new SbiExtUserRolesId();
 			    	
-			    	Integer extRoleId = Integer.valueOf(roleID);
+			    	//Integer extRoleId = Integer.valueOf(roleID);
 			    	extUserRoleId.setExtRoleId(extRoleId);//role Id
-			    	extUserRoleId.setId(id);//user ID
+			    	extUserRoleId.setId(id.intValue());//user ID
 			    	
 			    	sbiExtUserRole.setId(extUserRoleId);
-			    	sbiExtUserRole.setSbiUser(userToUpdate);
+			    	sbiExtUserRole.setSbiUser(userToUpdate);    	
 			    	
 			    	if(userRolesAlreadyExist){
 			    		ArrayList toRemove = new ArrayList();

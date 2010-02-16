@@ -9,14 +9,14 @@ import it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -60,6 +60,19 @@ public class DatasetMap {
 		datasets.put(key, dataset);
 	}
 
+
+	// Call by chart JSP!!!!
+
+	public DatasetMap filteringSimpleBarChart(SourceBean aServiceResponse,HttpServletRequest request, BarCharts sbi, String sbiMode, boolean docComposition){
+
+		AttributesContainer attributesContainerrequest=new AttributesContainer(request);
+		AttributesContainer attributesContainerResponse=new AttributesContainer(aServiceResponse);
+
+		DatasetMap dsMap=filteringSimpleBarChartUtil(attributesContainerrequest, attributesContainerResponse, sbi, sbiMode, docComposition);
+
+		return dsMap;
+	}
+
 	/**
 	 * 
 	 * @param aServiceResponse: This is the service response, check it's not null, if it has requested parameters they win against request ones, cause means that chart has been re-executed
@@ -70,8 +83,9 @@ public class DatasetMap {
 	 * @return
 	 */
 
-	public DatasetMap filteringSimpleBarChart(SourceBean aServiceResponse,HttpServletRequest request, BarCharts sbi, String sbiMode, boolean docComposition){
+	public DatasetMap filteringSimpleBarChartUtil(AttributesContainer requestCont,AttributesContainer responseCont, BarCharts sbi, String sbiMode, boolean docComposition){
 		logger.debug("IN");
+
 
 		DefaultCategoryDataset dataset=(DefaultCategoryDataset)datasets.get("1");
 		Dataset copyDataset=null;
@@ -96,8 +110,8 @@ public class DatasetMap {
 			catsnum=new Integer(sbi.getCategoriesNumber());
 
 			//See if numberCatVisualization has to be updated
-			if(aServiceResponse.getAttribute("n_visualization")!=null){
-				String nVis=(String)aServiceResponse.getAttribute("n_visualization");
+			if(requestCont.getAttribute("n_visualization")!=null){
+				String nVis=(String)requestCont.getAttribute("n_visualization");
 				Integer catD=Integer.valueOf(nVis);
 				if(catD.equals(0))catD=new Integer(catsnum);
 				sbi.setNumberCatVisualization(catD);
@@ -116,18 +130,18 @@ public class DatasetMap {
 			//Should consider starting point when startFromEnd is true
 
 
-			if(aServiceResponse!=null && aServiceResponse.getAttribute("category")!=null){ // lastChange
-				String catS=(String)aServiceResponse.getAttribute("category");
+			if(!responseCont.isNull() && responseCont.getAttribute("category")!=null){ // lastChange
+				String catS=(String)responseCont.getAttribute("category");
 				logger.debug("category specified in module response by slider "+catS);
 				Double catD=Double.valueOf(catS);
 				categoryCurrent=catD.intValue();
 			}
-			else if(request.getParameter("categoryAll")!=null){  // lastChange
+			else if(requestCont.getParameter("categoryAll")!=null){  // lastChange
 				logger.debug("All categories have to be shown");
 				categoryCurrent=0;			
 			}
-			else if(request.getParameter("category")!=null){
-				String catS=(String)request.getParameter("category");
+			else if(requestCont.getParameter("category")!=null){
+				String catS=(String)requestCont.getParameter("category");
 				logger.debug("category specified in request by slider "+catS);
 				Double catD=Double.valueOf(catS);
 				categoryCurrent=catD.intValue();
@@ -147,7 +161,7 @@ public class DatasetMap {
 			HashMap cats=(HashMap)((BarCharts)sbi).getCategories();
 
 
-			if(categoryCurrent!=0){   // attention
+			if(categoryCurrent!=0 ){   // attention
 				categoryCurrentName=(String)cats.get(new Integer(categoryCurrent));
 				logger.debug("current category "+categoryCurrentName);
 				copyDataset=(DefaultCategoryDataset)sbi.filterDataset(copyDataset,categories,categoryCurrent,numberCatVisualization.intValue());				
@@ -164,19 +178,19 @@ public class DatasetMap {
 			logger.debug("check particular category groups");
 			if(sbi.isFilterCatGroups()==true){
 
-				if(request.getParameter("cat_group")!=null){
+				if(requestCont.getParameter("cat_group")!=null){
 					// Check if particular cat_groups has been chosen
 
-					String[] cio=request.getParameterValues("cat_group");
+
+					Object[] cio=requestCont.getParameterValues("cat_group");
 					//Convert array in vector
 					for(int i=0;i<cio.length;i++){
-						selectedCatGroups.add(cio[i]);
+						selectedCatGroups.add(cio[i].toString());
 					}
 				}
 				else{
 					selectedCatGroups.add("allgroups");
 				}
-
 				// if selectedSerie contains allseries 
 				if(selectedCatGroups.contains("allgroups")){
 					((BarCharts)sbi).setCurrentCatGroups(null);
@@ -195,11 +209,11 @@ public class DatasetMap {
 			if(sbi.isFilterSeries()==true){
 				// Check if particular series has been chosen
 
-				if(request.getParameter("serie")!=null){
-					String[] cio=request.getParameterValues("serie");
+				if(requestCont.getParameter("serie")!=null){
+					Object[] cio=requestCont.getParameterValues("serie");
 					//Convert array in vector
 					for(int i=0;i<cio.length;i++){
-						selectedSeries.add(cio[i]);
+						selectedSeries.add(cio[i].toString());
 					}
 				}
 				else{
@@ -278,7 +292,19 @@ public class DatasetMap {
 
 
 
+
 	public DatasetMap filteringMultiDatasetBarChart(SourceBean aServiceResponse,HttpServletRequest request, BarCharts sbi, String sbiMode, boolean docComposition){
+
+		AttributesContainer attributesContainerrequest=new AttributesContainer(request);
+		AttributesContainer attributesContainerResponse=new AttributesContainer(aServiceResponse);
+
+		DatasetMap dsMap=filteringMultiDatasetBarChartUtil(attributesContainerrequest, attributesContainerResponse, sbi, sbiMode, docComposition);
+
+		return dsMap;
+	}
+
+
+	public DatasetMap filteringMultiDatasetBarChartUtil(AttributesContainer requestCont,AttributesContainer responseCont, BarCharts sbi, String sbiMode, boolean docComposition){
 		logger.debug("IN");
 		DatasetMap newDatasetMap=new DatasetMap();
 		boolean notDisappearSlider=false;   // if n_visualization>=number total categories do not make slider disappear
@@ -326,8 +352,8 @@ public class DatasetMap {
 			catsnum=new Integer(sbi.getCategoriesNumber());
 
 			//See if numberCatVisualization has to be updated
-			if(aServiceResponse.getAttribute("n_visualization")!=null){
-				String nVis=(String)aServiceResponse.getAttribute("n_visualization");
+			if(responseCont.getAttribute("n_visualization")!=null){
+				String nVis=(String)responseCont.getAttribute("n_visualization");
 				Integer catD=Integer.valueOf(nVis);
 				if(catD.equals(0))catD=new Integer(catsnum);
 				sbi.setNumberCatVisualization(catD);
@@ -341,18 +367,18 @@ public class DatasetMap {
 			serTitle=sbi.getValueLabel();
 
 			// if slider specifies a category than set view from that point
-			if(aServiceResponse!=null && aServiceResponse.getAttribute("category")!=null){ // lastChange
-				String catS=(String)aServiceResponse.getAttribute("category");
+			if(responseCont!=null && responseCont.getAttribute("category")!=null){ // lastChange
+				String catS=(String)responseCont.getAttribute("category");
 				logger.debug("category specified in module response by slider "+catS);
 				Double catD=Double.valueOf(catS);
 				categoryCurrent=catD.intValue();
 			} 
-			else if(request.getParameter("categoryAll")!=null){
+			else if(requestCont.getParameter("categoryAll")!=null){
 				logger.debug("All categories have to be shown");
 				categoryCurrent=0;			
 			}
-			else if(request.getParameter("category")!=null){
-				String catS=(String)request.getParameter("category");
+			else if(requestCont.getParameter("category")!=null){
+				String catS=(String)requestCont.getParameter("category");
 				logger.debug("category specified in request by slider "+catS);
 				Double catD=Double.valueOf(catS);
 				categoryCurrent=catD.intValue();
@@ -384,11 +410,11 @@ public class DatasetMap {
 
 			// Check if particular series has been chosen
 			selectedSeries=new Vector();
-			if(request.getParameter("serie")!=null){
-				String[] cio=request.getParameterValues("serie");
+			if(requestCont.getParameter("serie")!=null){
+				Object[] cio=requestCont.getParameterValues("serie");
 				//Convert array in vector
 				for(int i=0;i<cio.length;i++){
-					selectedSeries.add(cio[i]);
+					selectedSeries.add(cio[i].toString());
 				}
 			}
 			else{
@@ -453,9 +479,18 @@ public class DatasetMap {
 
 
 
-
-
 	public DatasetMap filteringClusterChart(HttpServletRequest request, ClusterCharts sbi, String sbiMode, boolean docComposition){
+
+		AttributesContainer attributesContainerrequest=new AttributesContainer(request);
+
+		DatasetMap dsMap=filteringClusterChartUtil(attributesContainerrequest, sbi, sbiMode, docComposition);
+
+		return dsMap;
+	}
+
+
+
+	public DatasetMap filteringClusterChartUtil(AttributesContainer requestCont, ClusterCharts sbi, String sbiMode, boolean docComposition){
 		logger.debug("IN");
 		DefaultXYZDataset dataset=(DefaultXYZDataset)datasets.get("1");
 		DefaultXYZDataset copyDataset=null;
@@ -469,11 +504,11 @@ public class DatasetMap {
 
 		// get the selected series from request
 		selectedSeries=new Vector();
-		if(request.getParameter("serie")!=null){
-			String[] cio=request.getParameterValues("serie");
+		if(requestCont.getParameter("serie")!=null){
+			Object[] cio=requestCont.getParameterValues("serie");
 			//Convert array in vector
 			for(int i=0;i<cio.length;i++){
-				selectedSeries.add(cio[i]);
+				selectedSeries.add(cio[i].toString());
 			}
 		}
 		else{
@@ -522,8 +557,22 @@ public class DatasetMap {
 
 	}
 
-
+	
+	
 	public DatasetMap filteringGroupedBarChart(SourceBean aServiceResponse,HttpServletRequest request, StackedBarGroup sbi, String sbiMode, boolean docComposition){
+
+		AttributesContainer attributesContainerrequest=new AttributesContainer(request);
+		AttributesContainer attributesContainerResponse=new AttributesContainer(aServiceResponse);
+
+		DatasetMap dsMap=filteringSimpleBarChartUtil(attributesContainerrequest, attributesContainerResponse, sbi, sbiMode, docComposition);
+
+		return dsMap;
+	}
+
+	
+	
+
+	public DatasetMap filteringGroupedBarChartUtil(AttributesContainer requestCont,AttributesContainer responseCont, StackedBarGroup sbi, String sbiMode, boolean docComposition){
 		logger.debug("IN");
 		DefaultCategoryDataset dataset=(DefaultCategoryDataset)datasets.get("1");
 		Dataset copyDataset=null;
@@ -567,8 +616,8 @@ public class DatasetMap {
 		catsnum=new Integer(sbi.getRealCatNumber());
 
 		//See if numberCatVisualization has to be updated
-		if(aServiceResponse.getAttribute("n_visualization")!=null){
-			String nVis=(String)aServiceResponse.getAttribute("n_visualization");
+		if(responseCont.getAttribute("n_visualization")!=null){
+			String nVis=(String)responseCont.getAttribute("n_visualization");
 			Integer catD=Integer.valueOf(nVis);
 			if(catD.equals(0))catD=new Integer(catsnum);
 			sbi.setNumberCatVisualization(catD);
@@ -589,18 +638,18 @@ public class DatasetMap {
 
 		// if slider specifies a category than set view from that point
 
-		if(aServiceResponse!=null && aServiceResponse.getAttribute("category")!=null){ // lastChange
-			String catS=(String)aServiceResponse.getAttribute("category");
+		if(responseCont!=null && responseCont.getAttribute("category")!=null){ // lastChange
+			String catS=(String)responseCont.getAttribute("category");
 			logger.debug("category specified in module response by slider "+catS);
 			Double catD=Double.valueOf(catS);
 			categoryCurrent=catD.intValue();
 		}
-		else if(request.getParameter("categoryAll")!=null){
+		else if(requestCont.getParameter("categoryAll")!=null){
 			logger.debug("All categories have to be shown");
 			categoryCurrent=0;			
 		}		
-		else if(request.getParameter("category")!=null){
-			String catS=(String)request.getParameter("category");
+		else if(requestCont.getParameter("category")!=null){
+			String catS=(String)requestCont.getParameter("category");
 			logger.debug("category specified in request by slider "+catS);
 			Double catD=Double.valueOf(catS);
 			categoryCurrent=catD.intValue();
@@ -631,11 +680,11 @@ public class DatasetMap {
 
 		// Check if particular series has been chosen
 		selectedSeries=new Vector();
-		if(request.getParameter("serie")!=null){
-			String[] cio=request.getParameterValues("serie");
+		if(requestCont.getParameter("serie")!=null){
+			Object[] cio=requestCont.getParameterValues("serie");
 			//Convert array in vector
 			for(int i=0;i<cio.length;i++){
-				selectedSeries.add(cio[i]);
+				selectedSeries.add(cio[i].toString());
 			}
 		}
 		else{
@@ -687,12 +736,12 @@ public class DatasetMap {
 	public void setDatasets(HashMap datasets) {
 		this.datasets = datasets;
 	}
-	
-	
+
+
 	/**
 	 * Called by chart.jsp to build the url for series filter
 	 */
-	
+
 	public String getSerieUlr(String refreshUrl, Map refreshUrlPars){
 		String toReturn=refreshUrl;
 		refreshUrl+="&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=true";
@@ -707,13 +756,13 @@ public class DatasetMap {
 		}
 		return refreshUrl;
 	}
-	
-	
-	
+
+
+
 	public String getCategoriesGroupUrl(String refreshUrl, Map refreshUrlPars){
 		String toReturn=refreshUrl;
 		refreshUrl+="&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=true";
-		
+
 		for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
 		{
 			String name = (String) iterator.next();

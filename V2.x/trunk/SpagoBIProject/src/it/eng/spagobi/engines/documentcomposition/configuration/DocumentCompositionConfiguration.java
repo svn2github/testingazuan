@@ -59,6 +59,10 @@ public class DocumentCompositionConfiguration {
 	private Map lstPanelStyle = new LinkedHashMap();
 	private Map lstDocTitles = new LinkedHashMap();
 
+	private Integer videoHeight=null;
+	private Integer videoWidth=null;
+
+
 	//constants for convert panel dimensions from percentage into pixel values
 	Integer[] percentageValues = {new Integer("100"), new Integer("75"), new Integer("50"),new Integer("35"),  new Integer("25"), new Integer("15")};
 	Integer[] widthPxValues800= {new Integer("800"), new Integer("600"), new Integer("400"), new Integer("280"), new Integer("200"), new Integer("120")};
@@ -360,6 +364,17 @@ public class DocumentCompositionConfiguration {
 
 			documentList = documentsConfigurationSB.getAttributeAsList("DOCUMENT");
 			//create dimensions Map
+			String videoWidthS=(documentsConfigurationSB.getAttribute("video_width")!=null) ? documentsConfigurationSB.getAttribute("video_width").toString() : null;
+			String videoHeightS=(documentsConfigurationSB.getAttribute("video_height") != null) ? documentsConfigurationSB.getAttribute("video_height").toString() : null;
+			if(videoWidthS!=null & videoHeightS!=null){
+				videoWidth=Integer.valueOf(videoWidthS);
+				videoHeight=Integer.valueOf(videoHeightS);
+			}
+			else{
+				videoWidth=DEFAULT_WIDTH;
+				videoHeight=DEFAULT_HEIGHT;
+				
+			}
 
 			//loop on documents
 			for(int i = 0; i < documentList.size(); i++) {
@@ -375,6 +390,8 @@ public class DocumentCompositionConfiguration {
 
 				Integer width = (documentsConfigurationSB.getAttribute("video_width")==null)?DEFAULT_WIDTH:Integer.valueOf((String)documentsConfigurationSB.getAttribute("video_width"));
 				Integer height = (documentsConfigurationSB.getAttribute("video_height")==null)?DEFAULT_HEIGHT:Integer.valueOf((String)documentsConfigurationSB.getAttribute("video_height"));
+
+
 				document.setVideoWidth(getVideoDimensions("width", width));
 				document.setVideoHeight(getVideoDimensions("height", height));
 
@@ -937,5 +954,30 @@ public class DocumentCompositionConfiguration {
 	public void setLstPanelStyle(Map lstPanelStyle) {
 		this.lstPanelStyle = lstPanelStyle;
 	}
+
+	public Map getDocumentsMap() {
+		return documentsMap;
+	}
+
+	public void setDocumentsMap(Map documentsMap) {
+		this.documentsMap = documentsMap;
+	}
+
+	public Integer getVideoHeight() {
+		return videoHeight;
+	}
+
+	public void setVideoHeight(Integer videoHeight) {
+		this.videoHeight = videoHeight;
+	}
+
+	public Integer getVideoWidth() {
+		return videoWidth;
+	}
+
+	public void setVideoWidth(Integer videoWidth) {
+		this.videoWidth = videoWidth;
+	}
+
 
 }

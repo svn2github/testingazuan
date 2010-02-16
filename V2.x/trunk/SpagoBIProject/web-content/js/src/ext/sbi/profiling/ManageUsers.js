@@ -487,7 +487,8 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 											fullName:'', 
 											pwd:'',
 											userRoles:'',
-											userAttributes:''
+											userAttributes:'',
+											id: 0
 											});
 	
 		Ext.getCmp('user-form').getForm().loadRecord(emptyRecToAdd);

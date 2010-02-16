@@ -1,3 +1,40 @@
+/*
+Ext.override(Ext.data.JsonReader, {
+	readRecords : function(o){
+    
+		alert('read records: ' + o.toSource());
+	
+	    this.jsonData = o;
+	    if(o.metaData){
+	        this.onMetaChange(o.metaData);
+	    }
+	    var s = this.meta, Record = this.recordType,
+	        f = Record.prototype.fields, fi = f.items, fl = f.length, v;
+	
+	    var root = this.getRoot(o), c = root.length, totalRecords = c, success = true;
+	    if(s.totalProperty){
+	        v = parseInt(this.getTotal(o), 10);
+	        if(!isNaN(v)){
+	            totalRecords = v;
+	        }
+	    }
+	    if(s.successProperty){
+	        v = this.getSuccess(o);
+	        if(v === false || v === 'false'){
+	            success = false;
+	        }
+	    }
+	
+	    
+	    return {
+	        success : success,
+	        records : this.extractData(root, true), 
+	        totalRecords : totalRecords
+	    };
+	}
+}); 
+*/
+
 /* =============================================================================
 * Bug Fix: It is not possible to see the column hide menu when the sortable property
 * is set to false

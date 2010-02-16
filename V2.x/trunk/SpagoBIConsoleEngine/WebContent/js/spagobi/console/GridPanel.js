@@ -63,52 +63,31 @@ Sbi.console.GridPanel = function(config) {
 		
 		var params = {ds_label: 'testmeter'};
 		this.services = new Array();
-  	this.services['getDataService'] = Sbi.config.serviceRegistry.getServiceUrl({
-  		serviceName: 'GET_CONSOLE_DATA_ACTION'
-  		, baseParams: params
-  	});
+	  	this.services['getDataService'] = Sbi.config.serviceRegistry.getServiceUrl({
+	  		serviceName: 'GET_CONSOLE_DATA_ACTION'
+	  		, baseParams: params
+	  	});
+	  	
+	  	this.initStore();
+		this.initColumnModel();
+		this.initSelectionModel();
 		
-		this.store = new Ext.data.JsonStore({
-          root: 'results'
-        , idProperty: 'serie'
-        , fields: ['serie', 'value']
-		    , url: this.services['getDataService']
-		    , autoLoad: true
-    }); 
-    this.store.on('loadexception', function(store, options, response, e){
-    	Sbi.exception.ExceptionHandler.handleFailure(response, options);
-    }, this);
-    
-    var sm = new Ext.grid.CheckboxSelectionModel();
-		//var sm = new Ext.grid.RowSelectionModel({singleSelect:true});
 		this.initFilterBar(c.FilterBarConf || {});
 		
-/*		c = Ext.apply(c, {layout: 'fit'
-		                  , region: 'center'
-		                  , bodyStyle: 'padding: 8px'
-		                  , tbar: this.filterBar
-    		            //  , html: 'Io sono il grid panel !!!!!!!!!'
-		                });
-*/
 
-    var c = Ext.apply({}, {
-          store: this.store
-          , columns: [
-                {header: 'Serie', sortable: true, width: 50, dataIndex: 'serie'}
-              , {header: 'Value', sortable: true, width: 50, dataIndex: 'value'}
-              , sm
-          ]
-       //   , plugins: [ this.applyColumn, this.execColumn ]
-    		, viewConfig: {
-            	forceFit: true
-            , emptyText: ' '
-    		}
-          , tbar: this.filterBar
-          , collapsible: false
-          , autoScroll: true
-          , sm : sm
-          , hidden: false
-  	});   
+
+		var c = Ext.apply({}, {
+			store: this.store
+			, cm: this.columnModel
+			, sm: this.selectionModel
+			, loadMask: true
+	        , viewConfig: {
+            	forceFit:false,
+            	autoFill: true,
+            	enableRowBody:true,
+            	showPreview:true
+        	}
+		});   
 	
 		// constructor
 		Sbi.console.GridPanel.superclass.constructor.call(this, c);
@@ -118,19 +97,85 @@ Sbi.console.GridPanel = function(config) {
 
 Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     
-    services: null
-   , store: null
-   , filterBar: null
+	services: null
+	, store: null
+	, columnModel: null
+	, selectionModel: null
+	, filterBar: null
     
    
     //  -- public methods ---------------------------------------------------------
     
-    , synchronize: function(  ) {  		
-  			this.store.load();  	
-  	}
-    
     //  -- private methods ---------------------------------------------------------
     
+	, initStore: function() {
+		this.store = new Ext.data.JsonStore({
+			root:'rows'
+	        , fields: ['serie', 'value']
+			, url: this.services['getDataService']
+			, autoLoad: true
+	    }); 
+    
+		this.store.on('loadexception', function(store, options, response, e){
+	    	Sbi.exception.ExceptionHandler.handleFailure(response, options);
+	    }, this);
+		
+		this.store.on('metachange', this.onMetaChange, this);
+		//this.store.on('load', this.onDataStoreLoaded, this);
+	}
+
+	, initColumnModel: function() {
+		this.columnModel = new Ext.grid.ColumnModel([
+			new Ext.grid.RowNumberer(), 
+			{
+				header: "Data",
+			    dataIndex: 'data',
+			    width: 75
+			}
+		]);
+	}
+	
+	, initSelectionModel: function() {
+		this.selectionModel = new Ext.grid.RowSelectionModel({
+			singleSelect: false
+		});
+	}
+	
+	
+	, onMetaChange: function( store, meta ) {
+		alert('onMetaChange');
+		for(var i = 0; i < meta.fields.length; i++) {
+			if(meta.fields[i].type) {
+				var t = meta.fields[i].type;
+			    meta.fields[i].renderer  =  Sbi.locale.formatters[t];			   
+			}
+			   
+			if(meta.fields[i].subtype && meta.fields[i].subtype === 'html') {
+				meta.fields[i].renderer  =  Sbi.locale.formatters['html'];
+			}
+		}
+		
+		meta.fields[0] = new Ext.grid.RowNumberer();
+		this.getColumnModel().setConfig(meta.fields);
+	}
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
    , initFilterBar: function(filterBar) {
       
       //Template simulator:

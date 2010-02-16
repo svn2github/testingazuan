@@ -75,6 +75,8 @@ Sbi.profiling.ManageUsers = function(config) {
 	 single: true
    });
    
+   this.usersStore.load();
+   
    	Ext.getCmp('usergrid').on('delete', this.deleteSelectedUser, this);
 	
 }
@@ -107,9 +109,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	    	          ]
 	    	, root: 'samples'
 			, url: this.services['manageUsersList']			
-		});
-		
-		this.usersStore.load();
+		});	
 		
 		this.attributesStore = new Ext.data.SimpleStore({
 	        fields : [ 'id', 'name', 'value' ]
@@ -124,15 +124,16 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	    this.attributesEmptyStore = config.attributesEmpyList;
 	    this.rolesEmptyStore = config.rolesEmptyList;
 	    
+	    this.initAttributesGridPanel();
+	    this.initRolesGridPanel();
+  
+	    
+	    
     }
 	
 	,initManageUsers: function(){
 		
-	   this.initAttributesGridPanel();
-	   this.initRolesGridPanel();
-		   
-	   //alert("initManageUsers");
-       this.deleteColumn = new Ext.grid.ButtonColumn({
+	    this.deleteColumn = new Ext.grid.ButtonColumn({
 	       header:  ' ',
 	       dataIndex: 'id',
 	       iconCls: 'icon-remove',
@@ -147,13 +148,13 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	       ,renderer : function(v, p, record){
 	           return '<center><img class="x-mybutton-'+this.id+' grid-button ' +this.iconCls+'" width="16px" height="16px" src="'+Ext.BLANK_IMAGE_URL+'"/></center>';
 	       }
-       });
+        });
        
-       this.colModel = new Ext.grid.ColumnModel([
+        this.colModel = new Ext.grid.ColumnModel([
          {id:'userId', header: "User ID", width: 150, sortable: true, dataIndex: 'userId'},
          {header: "Full Name", width: 150, sortable: true, dataIndex: 'fullName'},
          this.deleteColumn
-       ]);
+        ]);
      	   
  	   this.buttons = [{
         text : 'Save'
@@ -281,10 +282,9 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	   	                  },
    	                      listeners: {
    	                          rowselect: function(sm, row, rec) {   
-   	                              Ext.getCmp("user-form").getForm().loadRecord(rec);  	
-   	                          	  this.fillRoles(row, rec);  
+   	                              Ext.getCmp("user-form").getForm().loadRecord(rec);  	  	 
    	                	  		  this.fillAttributes(row, rec);
-   	                                  	                              
+   	                	  		  this.fillRoles(row, rec);   	                                  	                              
    	                          }
    	                      }
    	                  }),
@@ -376,10 +376,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		this.rolesGrid.superclass.constructor.call(this);
 
 		
-		Ext.getCmp("roles-form").on('recToSelect', function(roleId, index){
-			//alert(roleId);
-			//alert(index);
-			
+		Ext.getCmp("roles-form").on('recToSelect', function(roleId, index){		
 			Ext.getCmp("roles-form").selModel.selectRow(index);
 		});
 
@@ -397,14 +394,18 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	   var values = this.gridForm.getForm().getValues();
 
        if(values['pwd']===values['confirmpwd']){
+	      	var newRec = null;
 	      	
 			var params = {
 	        	userId : values['userId'],
 	        	fullName : values['fullName'],
 	        	pwd : values['pwd']            
 	        }
-	        if(values['id'] !== null && values['id'] !== undefined ){
-	        	params.id = values['id'];
+	        params.id = values['id'];
+	        
+	        if(values['id'] !== null && values['id'] !== undefined && values['id']==0){
+	          newRec =new Ext.data.Record({'userId': values['userId'],'fullName': values['fullName'],'pwd':values['pwd']});
+	          
 	        }
 	        
 	        var rolesSelected = Ext.getCmp("roles-form").selModel.getSelections();
@@ -425,7 +426,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
            }
 	        params.userAttributes =  Ext.util.JSON.encode(attrs);
 	        
-	        var newRec =new Ext.data.Record({'userId': values['userId'],'fullName': values['fullName'],'pwd':values['pwd']});
+	       
 	        
 	        //Ext.getCmp("roles-form").store.removeAll();
 	      /*  var tempRolesArr = this.rolesEmptyStore;
@@ -434,8 +435,8 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	          	var tempRecord = new Ext.data.Record({"description":tempRolesArr[i].description,"name":tempRolesArr[i].name,"id":tempRolesArr[i].id });
 				Ext.getCmp("roles-form").store.add(tempRecord);								   
 	        }	*/
-	        newRec.set('userRoles', this.rolesEmptyStore);
-	        newRec.set('userAttributes',  this.attributesEmptyStore);
+	        //var tempRoleStore =  Ext.getCmp("roles-form").store;
+	       
 	        
 	        Ext.Ajax.request({
 	            url: this.services['saveUserService'],
@@ -455,13 +456,17 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 			                        buttons: Ext.MessageBox.OK
 			                   });
 			      			}else{
-								var idTemp = content.id;
-								newRec.set('id', idTemp);
-								
-								this.usersStore.add(newRec);
-								this.usersStore.commitChanges();
-								this.attributesStore.commitChanges();
+			      			    this.attributesStore.commitChanges();
 								this.rolesStore.commitChanges();
+								var idTemp = content.id;
+								if(newRec!==null){
+									newRec.set('id', idTemp);
+									newRec.set('userRoles',  this.rolesEmptyStore);
+	          						newRec.set('userAttributes',  this.attributesEmptyStore);
+									this.usersStore.add(newRec);
+								}
+								this.usersStore.commitChanges();
+								
 			      			}
 			      		} else {
 			      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
@@ -536,12 +541,6 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
           	var tempRecord = new Ext.data.Record({"description":tempRolesArr[i].description,"name":tempRolesArr[i].name,"id":tempRolesArr[i].id });
 			Ext.getCmp("roles-form").store.add(tempRecord);								   
         }	
-        
-        // this.smRoles.selectFirstRow();
-       // this.rolesGrid.getSelectionModel().selectFirstRow();
-       //this.rolesGrid.getColumnModel().getColumnById('2').selectRow(2);
-        //alert(this.rolesGrid.getColumnModel().getColumnById('2').selectRow(2)) ;
-       // this.smRoles.selectFirstRow();
 		
 		Ext.getCmp('user-form').doLayout();
 	}

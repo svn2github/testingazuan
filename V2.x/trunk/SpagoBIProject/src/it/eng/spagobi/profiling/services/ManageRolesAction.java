@@ -176,9 +176,14 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 					role.setIsAbleToSeeViewpoints(seeViewpoints);
 					role.setIsAbleToSendMail(sendMail);
 					try {
-						roleDao.insertRoleComplete(role);
+						Integer roleID = roleDao.insertRoleComplete(role);
 						logger.debug("New Role inserted");
-						writeBackToClient( new JSONAcknowledge("Operazion succeded") );
+						JSONObject attributesResponseSuccessJSON = new JSONObject();
+						attributesResponseSuccessJSON.put("success", true);
+						attributesResponseSuccessJSON.put("responseText", "Operation succeded");
+						attributesResponseSuccessJSON.put("id", roleID);
+						writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );
+
 	
 					} catch (Throwable e) {
 						logger.error(e.getMessage(), e);

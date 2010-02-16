@@ -77,13 +77,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	    
     };
 
-    var params = {
-    	LIGHT_NAVIGATOR_DISABLED: 'TRUE'
-    };
-
     Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({
     	baseUrl: url
-        , baseParams: params
     });
 
 	Ext.onReady(function(){

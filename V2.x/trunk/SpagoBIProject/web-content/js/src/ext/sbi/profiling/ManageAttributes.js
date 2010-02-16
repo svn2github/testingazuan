@@ -52,12 +52,6 @@ Sbi.profiling.ManageAttributes = function(config) {
 		serviceName: 'MANAGE_ATTRIBUTES_ACTION'
 		, baseParams: paramsGetList
 	});
-	
-	var paramsInsert = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: 'ATTR_INSERT'};
-	this.services['manageAttributesInsert'] = Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'MANAGE_ATTRIBUTES_ACTION'
-			, baseParams: paramsInsert
-		});
 		
 	var paramsDelete = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: 'ATTR_DELETE'};
 	this.services['manageAttributesDelete'] = Sbi.config.serviceRegistry.getServiceUrl({

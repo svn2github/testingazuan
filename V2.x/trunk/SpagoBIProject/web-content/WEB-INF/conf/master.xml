@@ -98,6 +98,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/engines/documentcomposition/messages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/documentcomposition/presentation.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/engines/documentcomposition/publishers.xml" /> 
+    <CONFIGURATOR path="/WEB-INF/conf/engines/documentcomposition/actions.xml" /> 
   
 <!-- event -->
 	

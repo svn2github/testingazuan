@@ -610,9 +610,10 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 		return uses;
 	}
 
-	public void insertRoleComplete(Role role) throws EMFUserError {
+	public Integer insertRoleComplete(Role role) throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
+		Integer roleId = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
@@ -640,9 +641,10 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 			hibRole.setIsAbleToSaveIntoPersonalFolder(new Boolean(role.isAbleToSaveIntoPersonalFolder()));
 			hibRole.setIsAbleToBuildQbeQuery(new Boolean(role.isAbleToBuildQbeQuery()));
 			
-			aSession.save(hibRole);
+			roleId = (Integer)aSession.save(hibRole);
 			
 			tx.commit();
+			
 		} catch (HibernateException he) {
 			logException(he);
 
@@ -651,10 +653,11 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 
-		} finally {
+		} finally {			
 			if (aSession!=null){
 				if (aSession.isOpen()) aSession.close();
 			}
+			return roleId;
 		}
 		
 	}

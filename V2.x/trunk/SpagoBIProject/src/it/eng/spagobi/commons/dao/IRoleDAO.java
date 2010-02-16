@@ -167,9 +167,10 @@ public interface IRoleDAO {
 	 * 
 	 * @param aRole The object containing all insert information, includig the 
 	 * role abilitations
+	 * @return The role id
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public void insertRoleComplete(Role aRole) throws EMFUserError;
+	public Integer insertRoleComplete(Role aRole) throws EMFUserError;
 	
 }

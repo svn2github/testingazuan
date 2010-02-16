@@ -113,7 +113,7 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 			String userId = getAttributeAsString(USER_ID);
 			String fullName = getAttributeAsString(FULL_NAME);
 			String password = getAttributeAsString(PASSWORD);
-			ArrayList<String> roles = (ArrayList<String>)getAttributeAsStringList(ROLES);
+			JSONArray rolesJSON = getAttributeAsJSONArray(ROLES);
 			JSONArray attributesJSON = getAttributeAsJSONArray(ATTRIBUTES);
 			if (userId != null) {
 				if(password == null){
@@ -129,9 +129,15 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 				try {
 					HashMap<Integer, String> attrList = null;
 					if(attributesJSON != null){
-						attrList = deserializeJSONArray(attributesJSON);
+						attrList = deserializeAttributesJSONArray(attributesJSON);
 					}
-					id = userDao.fullSaveOrUpdateSbiUser(user, roles, attrList);
+					
+					List rolesList = null;
+					if(rolesJSON != null){
+						rolesList = deserializeRolesJSONArray(rolesJSON);
+					}
+					
+					id = userDao.fullSaveOrUpdateSbiUser(user, rolesList, attrList);
 					logger.debug("User udated or Inserted");
 					
 					//Integer id = userDao.saveSbiUser(user);
@@ -250,7 +256,20 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 		return results;
 	}
 	
-	private HashMap<Integer, String> deserializeJSONArray(JSONArray rows) throws JSONException{
+	private List deserializeRolesJSONArray(JSONArray rows) throws JSONException{
+		List toReturn = new ArrayList();
+		//HashMap<Integer, String> toReturn = new HashMap<Integer, String>();
+		for(int i=0; i< rows.length(); i++){
+			JSONObject obj = (JSONObject)rows.get(i);
+			Integer id = obj.getInt("id");
+			String name = obj.getString("name");
+			String description = obj.getString("description");
+			toReturn.add(id);
+		}	
+		return toReturn;
+	}
+	
+	private HashMap<Integer, String> deserializeAttributesJSONArray(JSONArray rows) throws JSONException{
 		HashMap<Integer, String> toReturn = new HashMap<Integer, String>();
 		for(int i=0; i< rows.length(); i++){
 			JSONObject obj = (JSONObject)rows.get(i);

@@ -31,6 +31,7 @@ import it.eng.spagobi.profiling.bo.UserBO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public interface ISbiUserDAO {
 	
@@ -60,6 +61,6 @@ public interface ISbiUserDAO {
 	
 	public void updateSbiUser(SbiUser user, Integer userID) throws EMFUserError;
 	
-	public Integer fullSaveOrUpdateSbiUser(SbiUser user, ArrayList<String> roles, HashMap<Integer, String> attributes) throws EMFUserError;
+	public Integer fullSaveOrUpdateSbiUser(SbiUser user, List roles, HashMap<Integer, String> attributes) throws EMFUserError;
 
 }

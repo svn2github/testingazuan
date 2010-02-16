@@ -419,7 +419,7 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 		}
 	}
 
-	public Integer fullSaveOrUpdateSbiUser(SbiUser user, ArrayList<String> roles, HashMap<Integer, String> attributes)
+	public Integer fullSaveOrUpdateSbiUser(SbiUser user, List roles, HashMap<Integer, String> attributes)
 			throws EMFUserError {
 		logger.debug("IN");
 

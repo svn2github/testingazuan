@@ -134,3 +134,8 @@ IF :new.ID IS NULL THEN
 END IF;
 end;
 /
+
+CREATE UNIQUE INDEX XAK1SBI_USER ON SBI_USER
+(
+       USER_ID                          ASC
+);

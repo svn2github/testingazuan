@@ -17,7 +17,8 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
-<%@ page import="it.eng.spagobi.engines.documentcomposition.utils.DocumentCompositionUtils,
+<%@ page
+	import="it.eng.spagobi.engines.documentcomposition.utils.DocumentCompositionUtils,
                  it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration,
                  it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration.Document,
                  it.eng.spago.error.EMFErrorHandler,
@@ -27,9 +28,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  java.util.ArrayList,
                  java.util.Collection"%>
 <%@page import="org.apache.log4j.Logger"%>
-<%@page import="it.eng.spagobi.engines.documentcomposition.SpagoBIDocumentCompositionInternalEngine"%>
+<%@page
+	import="it.eng.spagobi.engines.documentcomposition.SpagoBIDocumentCompositionInternalEngine"%>
 <%@page import="java.util.Map"%>
-<%@page import="java.util.HashMap"%>  
+<%@page import="java.util.HashMap"%>
 <%@page import="java.util.List"%>
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 
@@ -37,7 +39,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/WEB-INF/jsp/analiticalmodel/execution/header.jsp"%>
 
 <%! private static transient Logger logger=Logger.getLogger(SpagoBIDocumentCompositionInternalEngine.class);%>
- 
+
 <%  logger.debug("IN");
 	EMFErrorHandler errorHandler = aResponseContainer.getErrorHandler();
 	AuditManager auditManager2 = AuditManager.getInstance();
@@ -58,6 +60,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     DocumentCompositionConfiguration docConfig = null;
     docConfig = (DocumentCompositionConfiguration)contextManager.get("docConfig");
      
+    // put in session 
+    if(docConfig!=null){
+    session.setAttribute("DOC_COMP_CONF",docConfig);
+    }
+    
     //get template file
     nameTemplate = docConfig.getTemplateFile();
     logger.debug("name TemplateFile: " + nameTemplate);
@@ -101,8 +108,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	}
     } 
 	%>
-    <%@ include file="/WEB-INF/jsp/engines/documentcomposition/template/dynamicTemplate.jsp"%>
-    <%
+<%@ include
+	file="/WEB-INF/jsp/engines/documentcomposition/template/dynamicTemplate.jsp"%>
+<%
     if (executionAuditId != null) {
     	auditManager2.updateAudit(executionAuditId, null,new Long(System.currentTimeMillis()), "EXECUTION_PERFORMED", null,
 		    null);
@@ -119,4 +127,4 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     logger.debug("OUT"); 
   
     %>
-  
+

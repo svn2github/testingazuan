@@ -270,7 +270,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 							    Ext.getCmp("roles-form").store.commitChanges();
 							    Ext.getCmp("roles-form").selModel.unlock();
 							    if(tempArr[i].checked){
-							    	var roleId = tempRecord.get('id');							    	
+							    	var roleId = tempRecord.get('id');				    	
 							    	Ext.getCmp("roles-form").fireEvent('recToSelect', roleId, i);
 							    }
 
@@ -387,7 +387,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 
 		
 		Ext.getCmp("roles-form").on('recToSelect', function(roleId, index){		
-			Ext.getCmp("roles-form").selModel.selectRow(index);
+			Ext.getCmp("roles-form").selModel.selectRow(index,true);
 		});
 
 	}
@@ -456,7 +456,6 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 					if (response !== undefined) {		
 			      		if(response.responseText !== undefined) {
 			      			var content = Ext.util.JSON.decode( response.responseText );
-			      			//alert(content.toSource());
 			      			
 			      			if(content.responseText !== 'Operation succeded') {
 			                    Ext.MessageBox.show({

@@ -63,7 +63,7 @@ public class ParameterForExecutionJSONSerializer implements Serializer {
 				dependencies.put(dependency);
 			}
 			result.put("dependencies", dependencies);
-			
+			result.put("parameterUseId", parameter.getParameterUseId());
 		} catch (Throwable t) {
 			throw new SerializationException("An error occurred while serializing object: " + o, t);
 		} finally {

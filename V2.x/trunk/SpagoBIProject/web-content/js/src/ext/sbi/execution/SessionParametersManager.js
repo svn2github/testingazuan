@@ -1,0 +1,169 @@
+/**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
+ 
+/**
+  * Object name 
+  * 
+  * Singleton object that handle all errors generated on the client side
+  * 
+  * 
+  * Public Properties
+  * 
+  * [list]
+  * 
+  * 
+  * Public Methods
+  * 
+  *  [list]
+  * 
+  * 
+  * Public Events
+  * 
+  *  [list]
+  * 
+  * Authors
+  * 
+  * - Davide Zerbetto (davide.zerbetto@eng.it)
+  */
+
+
+Ext.ns("Sbi.execution");
+
+Sbi.execution.SessionParametersManager = function() {
+	
+	// Ext state manager initialization
+	Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
+	
+    // private variables
+	var key = 'SBI_SESSION_PARAMETERS';
+	
+	var isEnabled = Sbi.config.sessionParametersManagerEnabled;
+
+	// public space
+	return {
+
+		/**
+		 * restores the state of all parameters used in the input parameters panel
+		 * The input parametersPanel is an instance of class Sbi.execution.ParametersPanel
+		 */
+		restoreState: function(parametersPanel) {
+			if (isEnabled) {
+				var storedParameters = Ext.state.Manager.get(key);
+				if (storedParameters) {
+					var state = {};
+					for(var p in parametersPanel.fields) {
+						var field = parametersPanel.fields[p];
+						if (!field.isTransient) {
+							var parameterStateObject = storedParameters[Sbi.execution.SessionParametersManager.getParameterStorageKey(field)];
+							if (parameterStateObject && parameterStateObject.value) {
+								state[field.name] = parameterStateObject.value;
+								if (parameterStateObject.description) {
+									state[field.name + '_field_visible_description'] = parameterStateObject.description;
+								}
+							}
+						}
+					}
+					//alert('restoring ' + state.toSource());
+					parametersPanel.setFormState(state);
+				}
+			}
+		}
+	
+		/**
+		 * saves the state of all parameters used in the input parameters panel
+		 * The input parametersPanel is an instance of class Sbi.execution.ParametersPanel
+		 */
+		, saveState: function(parametersPanel) {
+			if (isEnabled) {
+				for (var p in parametersPanel.fields) {
+					var field = parametersPanel.fields[p];
+					if (!field.isTransient) {
+						Sbi.execution.SessionParametersManager.save(field);
+					}
+				}
+			}
+		}
+		
+		/**
+		 * saves a parameter state
+		 * The input field is a field belonging to class Sbi.execution.ParametersPanel
+		 */
+		, save: function(field) {
+			if (isEnabled) {
+				var storedParameters = Ext.state.Manager.get(key);
+				if (storedParameters === undefined || storedParameters === null) {
+					storedParameters = {};
+				}
+				var value = field.getValue();
+				if (value === undefined || value === null || value === '' || value.length === 0) {
+					Sbi.execution.SessionParametersManager.clear(field);
+				} else {
+					var parameterStateObject = {};
+					parameterStateObject.value = value;
+					var rawValue = field.getRawValue();
+					if (rawValue !== undefined) {
+						parameterStateObject.description = rawValue;
+					}
+					//alert('saving ' + parameterStateObject.toSource());
+					storedParameters[Sbi.execution.SessionParametersManager.getParameterStorageKey(field)] = parameterStateObject;
+					Ext.state.Manager.set(key, storedParameters);
+				}
+				
+			}
+		}
+		
+		/**
+		 * clears a stored parameter
+		 * The input field is a field belonging to class Sbi.execution.ParametersPanel
+		 */
+		, clear: function(field) {
+			if (isEnabled) {
+				var storedParameters = Ext.state.Manager.get(key);
+				if (storedParameters !== undefined && storedParameters !== null) {
+					delete storedParameters[Sbi.execution.SessionParametersManager.getParameterStorageKey(field)];
+				}
+				Ext.state.Manager.set(key, storedParameters);
+			}
+		}
+		
+		/**
+		 * resets all stored parameters
+		 */
+		, reset: function() {
+			if (isEnabled) {
+				Ext.state.Manager.clear(key);
+			}
+		}
+		
+		/**
+		 * internal utility method that returns the key that will be used in order to store the parameter state.
+		 * The key is composed by the following information retrieved by the parameter that stands behind the input field:
+		 * - label of the parameter
+		 * - id of the parameter use mode (in order to avoid that parameters with the same labels but different modalities conflict)
+		 */
+		, getParameterStorageKey: function(field) {
+			var parameterStorageKey = field.behindParameter.label + '_' + field.behindParameter.parameterUseId;
+			return parameterStorageKey;
+		}
+		
+	};
+	
+}();

@@ -163,6 +163,8 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 	
 	String currViewThemeName = ThemesManager.getCurrentThemeName(currTheme);
 	
+	String sessionParamsManagerEnabled = (String) ConfigSingleton.getInstance().getAttribute("SPAGOBI.SESSION_PARAMETERS_MANAGER.enabled");
+	
 	%>
 
 
@@ -205,7 +207,8 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
         	curr_country: '<%= curr_country %>',
         	curr_language: '<%= curr_language%>',
         	contextName: '<%= GeneralUtilities.getSpagoBiContext() %>',
-        	supportedLocales: <%= GeneralUtilities.getSupportedLocalesAsJSONArray().toString() %>
+        	supportedLocales: <%= GeneralUtilities.getSupportedLocalesAsJSONArray().toString() %>,
+        	sessionParametersManagerEnabled: <%= Boolean.valueOf(sessionParamsManagerEnabled) %>
         };
     }();
 

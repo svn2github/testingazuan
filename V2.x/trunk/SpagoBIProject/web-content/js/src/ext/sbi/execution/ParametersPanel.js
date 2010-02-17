@@ -337,14 +337,14 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 
 		for(var p in this.fields) {
 		//patch: event changed from 'change' to 'valid' in order to make work the parameters correlation
-			this.fields[p].on('valid', function(f, newVal, oldVal) {
+			this.fields[p].on('valid', function(f) {
 				if(f.dependants !== undefined) {
 				
 					for(var i = 0; i < f.dependants.length; i++) {
 
 						var field = this.fields[ f.dependants[i] ];
 
-						if(field.initialConf.selectionType === 'COMBOBOX'){ 
+						if(field.behindParameter.selectionType === 'COMBOBOX'){ 
 							field.store.load();
 						}
 					}
@@ -365,6 +365,11 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 					break;
 				}
 			}
+		}
+		
+		// try to find from session the value used for execution
+		if (this.baseConfig.pageNumber === 2) {
+			Sbi.execution.SessionParametersManager.restoreState(this);
 		}
 		
 		this.fireEvent('synchronize', this, isReadyForExecution, this.parametersPreference);
@@ -467,7 +472,7 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			}			
 		}
 		
-		field.initialConf = p;
+		field.behindParameter = p;
 		field.dependencies = p.dependencies;
 		
 		return field;

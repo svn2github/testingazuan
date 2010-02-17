@@ -121,6 +121,7 @@ public class GetParametersForExecutionAction  extends AbstractSpagoBIAction {
 		
 		Parameter par; 
 		String id;
+		Integer parameterUseId;
 		String label;
 		String parType; // DATE, STRING, ...
 		String selectionType; // COMBOBOX, LIST, ...
@@ -178,6 +179,8 @@ public class GetParametersForExecutionAction  extends AbstractSpagoBIAction {
 			}
 			
 			Assert.assertNotNull(biParameterExecModality, "Impossible to find any valid execution modality for parameter [" + id + "] and role [" + executionInstance.getExecutionRole() + "]" );
+			
+			parameterUseId = biParameterExecModality.getUseID();
 			
 			List biParameterExecDependencies;
 			try {
@@ -327,7 +330,14 @@ public class GetParametersForExecutionAction  extends AbstractSpagoBIAction {
 		public void setDependencies(List dependencies) {
 			this.dependencies = dependencies;
 		}
+		
+		public Integer getParameterUseId() {
+			return parameterUseId;
+		}
 
+		public void setParameterUseId(Integer parameterUseId) {
+			this.parameterUseId = parameterUseId;
+		}
 		
 	}
 

@@ -198,6 +198,7 @@ END-LIFERAY -->
 	<!-- <THEME name="other_theme" default="false" view_name="other" />  -->	
 	 </THEMES>
 
+	 <SESSION_PARAMETERS_MANAGER enabled="true" />
      
      <LOOKUP numberRows = "20" />
 

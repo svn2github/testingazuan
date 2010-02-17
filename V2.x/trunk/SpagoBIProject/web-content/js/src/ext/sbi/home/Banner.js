@@ -439,7 +439,10 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	  },
 	
 	  logout: function() {
-	  		//logouturl taken by the homepage
-			window.location =logoutUrl;
-	   }
+		  // reset parameters stored in session
+		  Sbi.execution.SessionParametersManager.reset();
+		  //logouturl taken by the homepage
+		  window.location =logoutUrl;
+	  }
+	  
 });

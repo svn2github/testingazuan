@@ -206,6 +206,8 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			      				if(content.errors !== undefined && content.errors.length > 0) {
 			      					this.fireEvent('loadurlfailure', content.errors);
 			      				} else {
+			      					// save parameters into session
+			      					Sbi.execution.SessionParametersManager.saveState(this.parametersPanel);
 			      					this.miframe.getFrame().setSrc( content.url );
 			      					//this.add(this.miframe);
 			      				}

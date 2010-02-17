@@ -176,12 +176,12 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		            boxMinWidth  : 150,
 		            boxMinHeight  : 100,
 		            hideLabel  : false,
-		            fieldLabel: 'Save'
+		            fieldLabel: LN('sbi.roles.save')
 		            ,items: [
-		                {boxLabel: 'Personal Folder', name: 'savePersonalFolder', checked:'savePersonalFolder',inputValue: 1},
-		                {boxLabel: 'Metadata', name: 'saveMeta', checked:'saveMeta',inputValue: 1},
-		                {boxLabel: 'Remember Me', name: 'saveRemember', checked:'saveRemember',inputValue: 1},
-		                {boxLabel: 'Subobjects', name: 'saveSubobj', checked:'saveSubobj',inputValue: 1}
+		                {boxLabel: LN('sbi.roles.savePersonalFolder'), name: 'savePersonalFolder', checked:'savePersonalFolder',inputValue: 1},
+		                {boxLabel: LN('sbi.roles.saveMeta'), name: 'saveMeta', checked:'saveMeta',inputValue: 1},
+		                {boxLabel: LN('sbi.roles.saveRemember'), name: 'saveRemember', checked:'saveRemember',inputValue: 1},
+		                {boxLabel: LN('sbi.roles.saveSubobj'), name: 'saveSubobj', checked:'saveSubobj',inputValue: 1}
 		            ]
 		        },
 		        {
@@ -191,13 +191,13 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		            boxMinWidth  : 150,
 		            boxMinHeight  : 100,
 		            hideLabel  : false,
-		            fieldLabel: 'See',
+		            fieldLabel: LN('sbi.roles.see'),
 		            items: [
-		                {boxLabel: 'Metadata', name: 'seeMeta', checked: 'seeMeta', inputValue: 1},
-		                {boxLabel: 'Notes', name: 'seeNotes', checked:'seeNotes',inputValue: 1},
-		                {boxLabel: 'Snapshots', name: 'seeSnapshot', checked:'seeSnapshot',inputValue: 1},
-		                {boxLabel: 'Subobjects', name: 'seeSubobj', checked:'seeSubobj',inputValue: 1},
-		                {boxLabel: 'Viewpoints', name: 'seeViewpoints', checked:'seeViewpoints',inputValue: 1}
+		                {boxLabel: LN('sbi.roles.seeMeta'), name: 'seeMeta', checked: 'seeMeta', inputValue: 1},
+		                {boxLabel: LN('sbi.roles.seeNotes'), name: 'seeNotes', checked:'seeNotes',inputValue: 1},
+		                {boxLabel: LN('sbi.roles.seeSnapshot'), name: 'seeSnapshot', checked:'seeSnapshot',inputValue: 1},
+		                {boxLabel: LN('sbi.roles.seeSubobj'), name: 'seeSubobj', checked:'seeSubobj',inputValue: 1},
+		                {boxLabel: LN('sbi.roles.seeViewpoints'), name: 'seeViewpoints', checked:'seeViewpoints',inputValue: 1}
 		            ]
 		        },
 		        {
@@ -205,11 +205,11 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		            columns: 1,
 		            boxMinWidth  : 150,
 		            hideLabel  : false,
-		            fieldLabel: 'Send',
+		            fieldLabel: LN('sbi.roles.send'),
 		            itemId: 'isAbleToSend',
 		            //height:200,
 		            items: [
-		                {boxLabel: 'Mail', name: 'sendMail', checked:'sendMail',inputValue: 1}
+		                {boxLabel: LN('sbi.roles.sendMail'), name: 'sendMail', checked:'sendMail',inputValue: 1}
 		            ]
 		        },
 		        {
@@ -217,10 +217,10 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		            columns: 1,
 		            boxMinWidth  : 150,
 		            hideLabel  : false,
-		            fieldLabel: 'Build',
+		            fieldLabel: LN('sbi.roles.build'),
 		            itemId: 'isAbleToBuild',
 		            items: [
-		                {boxLabel: 'QBE', name: 'buildQbe', checked:'buildQbe',inputValue: 1}
+		                {boxLabel: LN('sbi.roles.buildQbe'), name: 'buildQbe', checked:'buildQbe',inputValue: 1}
 		            ]
 		        }
            ]
@@ -237,13 +237,14 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
            , id: 'tab-panel'
            , activeTab : 0
            , autoScroll : true
-           , width: 320
-           , height: 350
+           , width: 450
+           , height: 550
            , itemId: 'tabs'
 		   , items: [{
-		        title: 'Details'
+		        title: LN('sbi.roles.details')
 		        , itemId: 'detail'
-		        , layout: 'fit'
+		         , width: 430
+		        //, layout: 'fit'
 		        , items: {
 			   		id: 'role-detail',   	
 		 		   	itemId: 'role-detail',   	              
@@ -264,8 +265,8 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		            	 maxLength:100,
 		            	 minLength:1,
 		            	 regex : new RegExp("[a-zA-Z1-9_\x2F]"),
-		            	 regexText : 'Richiesta stringa alfanumerica (\x2F incluso)',
-		                 fieldLabel: 'Name',
+		            	 regexText : LN('sbi.roles.alfanumericString'),
+		                 fieldLabel: LN('sbi.roles.headerName'),
 		                 allowBlank: false,
 		                 validationEvent:false,
 		                 name: 'name'
@@ -273,22 +274,22 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		            	 maxLength:160,
 		            	 minLength:1,
 		            	 regex : new RegExp("[a-zA-Z1-9_\x2F]", "g"),
-		            	 regexText : 'Richiesta stringa alfanumerica (\x2F incluso)',
-		                 fieldLabel: 'Description',
+		            	 regexText : LN('sbi.roles.alfanumericString'),
+		                 fieldLabel: LN('sbi.roles.headerDescr'),
 		                 validationEvent:false,
 		                 name: 'description'
 		             },{
 		            	 maxLength:20,
 		            	 minLength:0,
 		            	 regex : new RegExp("[A-Za-z0-9_]", "g"),
-		            	 regexText : 'Richiesta stringa alfanumerica',
-		                 fieldLabel: 'Code',
+		            	 regexText : LN('sbi.roles.alfanumericString2'),
+		                 fieldLabel:LN('sbi.roles.headerCode'),
 		                 validationEvent:false,
 		                 name: 'code'
 		             }, {
 		            	  name: 'typeCd',
 		                  store: this.typesStore,
-		                  fieldLabel: 'Role Type',
+		                  fieldLabel: LN('sbi.roles.headerRoleType'),
 		                  displayField: 'typeCd',   // what the user sees in the popup
 		                  valueField: 'typeCd',        // what is passed to the 'change' event
 		                  typeAhead: true,
@@ -304,9 +305,10 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		    	
 		    	}
 		    },{
-		        title: 'Authorizations'
+		        title: LN('sbi.roles.authorizations')
 		        //,html: 'Is Able to'
-		        , layout: 'fit'
+		        //, layout: 'fit'
+		        , width: 430
 		        , items: this.checkGroup
 		        , itemId: 'checks'
 		    }]
@@ -315,7 +317,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
  	    this.tb = new Ext.Toolbar({
  	    	buttonAlign : 'right',
  	    	items:[new Ext.Toolbar.Button({
- 	            text: 'Add',
+ 	            text: LN('sbi.attributes.add'),
  	            iconCls: 'icon-add',
  	            handler: this.addNewRole,
  	            width: 30,
@@ -331,10 +333,11 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	          id: 'role-form',
    	          frame: true,
    	          labelAlign: 'left',
-   	          title: 'Roles management',
+   	          title: LN('sbi.roles.rolesManagement'),
    	          buttons: this.addBtn,
    	          bodyStyle:'padding:5px',
-   	          width: 750,
+   	          width: 850,
+   	          height: 600,
    	          layout: 'column',
    	          trackResetOnLoad: true,
    	          items: [{
@@ -382,10 +385,10 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	                      }
    	                  }),
    	                  autoExpandColumn: 'name',
-   	                  height: 350,
-   	                  width: 740,
+   	                  height: 530,
+   	                  width: 400,
    	                  layout: 'fit',
-   	                  title:'Roles list',
+   	                  title: LN('sbi.roles.rolesList'),
    	                  tbar: this.tb,
    	                  /*
 	   	 	   	      tools:[{
@@ -512,7 +515,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 						this.rolesStore.add(newRec);
 						this.rolesStore.commitChanges();
 	                    Ext.MessageBox.show({
-	                        title: 'Result',
+	                        title: LN('sbi.attributes.result'),
 	                        msg: 'Operation succeded',
 	                        width: 200,
 	                        buttons: Ext.MessageBox.OK
@@ -541,15 +544,15 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 					}
 
 	                Ext.MessageBox.show({
-	                    title: 'Validation Error',
+	                    title: LN('sbi.attributes.validationError'),
 	                    msg: errMessage,
 	                    width: 400,
 	                    buttons: Ext.MessageBox.OK
 	               });
 	      		}else{
 	                Ext.MessageBox.show({
-	                    title: 'Error',
-	                    msg: 'Error on Saving Role',
+	                    title: LN('sbi.roles.error'),
+	                    msg: 'Error while Saving Role',
 	                    width: 150,
 	                    buttons: Ext.MessageBox.OK
 	               });
@@ -685,8 +688,8 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 				            },
 				            failure: function() {
 				                Ext.MessageBox.show({
-				                    title: 'Error',
-				                    msg: 'Error on deleting Role',
+				                    title: LN('sbi.roles.error'),
+				                    msg: 'Error while deleting Role',
 				                    width: 150,
 				                    buttons: Ext.MessageBox.OK
 				               });

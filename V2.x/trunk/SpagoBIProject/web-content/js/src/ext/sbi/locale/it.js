@@ -148,6 +148,36 @@ Sbi.locale.ln['sbi.attributes.validationError'] = 'Errore di Validazione';
 Sbi.locale.ln['sbi.attributes.headerName'] = 'Nome';
 Sbi.locale.ln['sbi.attributes.headerDescr'] = 'Descrizione';
 
+Sbi.locale.ln['sbi.roles.save'] = 'Salva';
+Sbi.locale.ln['sbi.roles.savePersonalFolder'] = 'Salva nella cartella personale';
+Sbi.locale.ln['sbi.roles.saveMeta'] = 'Salva i Metadati';
+Sbi.locale.ln['sbi.roles.saveRemember'] = 'Salva i Remember Me';
+Sbi.locale.ln['sbi.roles.saveSubobj'] = 'Salva i Subobjects';
+Sbi.locale.ln['sbi.roles.see'] = 'Vede';
+Sbi.locale.ln['sbi.roles.seeMeta'] = 'Vede i Metadati';
+Sbi.locale.ln['sbi.roles.seeNotes'] = 'Vede le Note';
+Sbi.locale.ln['sbi.roles.seeSnapshot'] = 'Vede gli Snapshots';
+Sbi.locale.ln['sbi.roles.seeSubobj'] = 'Vede i Subobjects';
+Sbi.locale.ln['sbi.roles.seeViewpoints'] = 'Vede i Viewpoints';
+Sbi.locale.ln['sbi.roles.sendMail'] = 'Invio Mail';
+Sbi.locale.ln['sbi.roles.send'] = 'Invio';
+Sbi.locale.ln['sbi.roles.build'] = 'Costruisce';
+Sbi.locale.ln['sbi.roles.buildQbe'] = 'Costruzione QBE';
+Sbi.locale.ln['sbi.roles.headerName'] = 'Nome';
+Sbi.locale.ln['sbi.roles.headerDescr'] = 'Descrizione';
+Sbi.locale.ln['sbi.roles.headerCode'] = 'Codice';
+Sbi.locale.ln['sbi.roles.headerRoleType'] = 'Tipo di Ruolo';
+Sbi.locale.ln['sbi.roles.detail'] = 'Dettaglio';
+Sbi.locale.ln['sbi.roles.details'] = 'Dettagli';
+Sbi.locale.ln['sbi.roles.authorizations'] = 'Autorizzazioni';
+Sbi.locale.ln['sbi.roles.alfanumericString'] = 'Richiesta stringa alfanumerica (\x2F incluso)';
+Sbi.locale.ln['sbi.roles.alfanumericString2'] = 'Richiesta stringa alfanumerica';
+Sbi.locale.ln['sbi.roles.rolesManagement'] = 'Gestione dei Ruoli';
+Sbi.locale.ln['sbi.roles.rolesList'] = 'Lista Ruoli';
+Sbi.locale.ln['sbi.roles.error'] = 'Errore';
+Sbi.locale.ln['sbi.roles.result'] = 'Resultato';
+
+
 // Toolbar
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Invia a';
 //Save into personal folder

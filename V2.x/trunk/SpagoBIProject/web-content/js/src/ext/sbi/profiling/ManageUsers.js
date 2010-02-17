@@ -269,7 +269,17 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		    }]
 		});
 
-
+	    this.tb = new Ext.Toolbar({
+ 	    	buttonAlign : 'right',
+ 	    	items:[new Ext.Toolbar.Button({
+ 	            text: LN('sbi.attributes.add'),
+ 	            iconCls: 'icon-add',
+ 	            handler: this.addNewUser,
+ 	            width: 30,
+ 	            scope: this
+ 	        })
+ 	    	]
+ 	    });
    	   /*
    	   *    Here is where we create the Form
    	   */
@@ -334,6 +344,8 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	                  }),
    	                  height: 450,
    	                  title:'Users list',
+   	                  tbar: this.tb,
+   	                  /*
 	   	 	   	      tools:[{
 	  		   	        id:'plusprofile'
 	  		   	        ,iconCls: 'icon-add'
@@ -341,6 +353,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	  		   	        ,handler: this.addNewUser
 	  		   	        ,scope: this
 	   	 	   	      },],
+	   	 	   	      */
    	                  border: true
   	                 ,listeners: {
    	                      viewready: function(g) {

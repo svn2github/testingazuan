@@ -132,27 +132,7 @@ Sbi.profiling.ManageAttributes = function(config) {
     				regexText : 'Richiesta stringa alfanumerica',
 					allowBlank: false})}
 	];
-	/*
-	this.colModel = new Ext.grid.ColumnModel({
-	    columns: [
-	        { header: "Name", width: 60, menuDisabled: false},
-	        { header: "Description", width: 150, id: 'company'},
-	        { header: "Market Cap."},
-	        { header: "$ Sales", renderer: money},
-	        { header: "Employees", resizable: false}
-	    ],
-	    defaults: {
-	        sortable: true,
-	        menuDisabled: true,
-	        width: 100
-	    },
-	    listeners: {
-	        hiddenchange: function(cm, colIndex, hidden) {
-	            saveConfig(colIndex, hidden);
-	        }
-	    }
-	});
-	*/
+
 	 // use RowEditor for editing
     this.editor = new Ext.ux.grid.RowEditor({
         saveText: LN('sbi.attributes.update')

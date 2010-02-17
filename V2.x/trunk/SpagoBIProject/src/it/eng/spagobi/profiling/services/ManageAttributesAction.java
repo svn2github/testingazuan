@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.profiling.services;
 
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.validation.EMFValidationError;
@@ -33,6 +34,7 @@ import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.dao.ISbiAttributeDAO;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
+import it.eng.spagobi.utilities.service.IServiceResponse;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
 import java.io.BufferedReader;
@@ -124,7 +126,7 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 									!GenericValidator.matchRegexp(description, ALPHANUMERIC_STRING_REGEXP_NOSPACE) ||
 											!GenericValidator.maxLength(description, descriptionMaxLenght)){
 								logger.error("Either the field description is blank or it exceeds maxlength or it is not alfanumeric");
-								//throw new EMFValidationError(EMFErrorSeverity.ERROR, description, "9000","");
+
 								EMFValidationError e = new EMFValidationError(EMFErrorSeverity.ERROR, description, "9000","");
 								getHttpResponse().setStatus(404);	
 								writeBackToClient("Either the field description is blank or it exceeds maxlength or it is not alfanumeric");

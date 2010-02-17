@@ -16,6 +16,7 @@ Ext.ns('Ext.ux.grid');
  * @ptype roweditor
  */
 Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
+	id: 'rowEd',
     floating: true,
     shadow: false,
     layout: 'hbox',

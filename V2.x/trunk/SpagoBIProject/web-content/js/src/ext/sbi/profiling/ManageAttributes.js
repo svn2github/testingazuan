@@ -109,23 +109,50 @@ Sbi.profiling.ManageAttributes = function(config) {
 	
 	// Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
 	this.userColumns =  [
-	    {header: LN('sbi.attributes.headerName'), width: 250, sortable: true, dataIndex: 'name', editor: 
+	    {header: LN('sbi.attributes.headerName'), 
+	    	id:'name',
+	    	width: 250, 
+	    	sortable: true, dataIndex: 'name', editor: 
 	    		new Ext.form.TextField({
+	    			id:'aa',
 	    				maxLength:255,
 	    				minLength:1,
 	    				allowBlank: false,
 	    				regex : new RegExp("[A-Za-z0-9_]", "g"),
 	    				regexText : 'Richiesta stringa alfanumerica'
 	    				})},
-	    {header: LN('sbi.attributes.headerDescr'), width: 250, sortable: true, dataIndex: 'description',  
-	    					editor: new Ext.form.TextField({
-	    						maxLength:500,
-	    						minLength:1,
-	    	    				regex : new RegExp("[A-Za-z0-9_]", "g"),
-	    	    				regexText : 'Richiesta stringa alfanumerica',
-	    						allowBlank: false})},
+	    {header: LN('sbi.attributes.headerDescr'), width: 250, 
+				id:'description',
+				sortable: true, dataIndex: 'description',  
+				editor: new Ext.form.TextField({
+					id:'bb',
+					maxLength:500,
+					minLength:1,
+    				regex : new RegExp("[A-Za-z0-9_]", "g"),
+    				regexText : 'Richiesta stringa alfanumerica',
+					allowBlank: false})}
 	];
-	
+	/*
+	this.colModel = new Ext.grid.ColumnModel({
+	    columns: [
+	        { header: "Name", width: 60, menuDisabled: false},
+	        { header: "Description", width: 150, id: 'company'},
+	        { header: "Market Cap."},
+	        { header: "$ Sales", renderer: money},
+	        { header: "Employees", resizable: false}
+	    ],
+	    defaults: {
+	        sortable: true,
+	        menuDisabled: true,
+	        width: 100
+	    },
+	    listeners: {
+	        hiddenchange: function(cm, colIndex, hidden) {
+	            saveConfig(colIndex, hidden);
+	        }
+	    }
+	});
+	*/
 	 // use RowEditor for editing
     this.editor = new Ext.ux.grid.RowEditor({
         saveText: LN('sbi.attributes.update')

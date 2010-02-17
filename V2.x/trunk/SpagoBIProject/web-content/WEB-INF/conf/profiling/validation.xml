@@ -74,7 +74,7 @@
 				</FIELD>
 				<FIELD name="fullName" label="fullName">
 		 	 		<VALIDATOR validatorName="MANDATORY"/>
-				  	<VALIDATOR validatorName="REGEXP" arg0="^[a-zA-Z1-9_\x2F\x27]*$"/>
+				  	<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\x27\x3A\x3B\x2C\x21\s\x2F])*$"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="2550"/>
 				</FIELD>
 

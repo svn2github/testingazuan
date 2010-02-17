@@ -216,19 +216,38 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		                 hidden: true
 		             },{
 		                 fieldLabel: 'User ID',
-		                 name: 'userId'
+		                 name: 'userId',
+		                 allowBlank: false,
+		                 validationEvent:true,
+		            	 maxLength:100,
+		            	 minLength:1,
+		            	 regex : new RegExp("^([a-zA-Z1-9_\x2D])+$", "g"),
+		            	 regexText : 'Richiesta stringa alfanumerica (underscore e trattino inclusi)'
 		             },{
 		                 fieldLabel: 'Full Name',
-		                 name: 'fullName'
+		                 name: 'fullName',
+		                 allowBlank: false,
+		                 validationEvent:true,
+		            	 maxLength:255,
+		            	 minLength:1,
+		            	 regex : new RegExp("^([a-zA-Z0-9_\x2D\s\x2F])+$", "g"),
+		            	 regexText : 'Formato errato'
 		             },{
 		                 fieldLabel: 'Password',
 		                 name: 'pwd',
-		                 inputType: 'password'
+		                 inputType: 'password',
+		                 allowBlank: false,
+		                 validationEvent:true,
+		            	 maxLength:160,
+		            	 minLength:1
 		             },{
 		                 fieldLabel: 'Confirm Password',
-		                 id: 'confirmpwd',
 		                 name: 'confirmpwd',
-		                 inputType: 'password'
+		                 inputType: 'password',
+		                 allowBlank: false,
+		                 validationEvent:true,
+		            	 maxLength:160,
+		            	 minLength:1
 		             }]
 		    	
 		    	}

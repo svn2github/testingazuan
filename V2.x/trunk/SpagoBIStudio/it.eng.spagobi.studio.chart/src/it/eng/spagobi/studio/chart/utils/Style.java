@@ -133,26 +133,26 @@ public class Style {
 		String toReturn="<"+this.name.toUpperCase()+" ";
 		if(hasFont==true){
 			String fontDef=font!=null?font:"Arial";
-			toReturn+="font='"+fontDef+"' ";
+			toReturn+="font=\""+fontDef+"\" ";
 		}
 		if(hasSize==true){
 			Integer sizeDef=size!=null ? size: 10;
-			toReturn+="size='"+sizeDef+"' ";
+			toReturn+="size=\""+sizeDef+"\" ";
 		}
 		if(hasColor==true){
 			String colorDef=color!=null? ChartEditor.convertRGBToHexadecimal(color) :"#000000";
-			toReturn+="color='"+colorDef+"' ";
+			toReturn+="color=\""+colorDef+"\" ";
 		}
 		if(hasOrientation==true){		
 			String orientationDef=orientation!=null? orientation :"vertical";
-			toReturn+="orientation='"+orientationDef+"' ";
+			toReturn+="orientation=\""+orientationDef+"\" ";
 		}
 		
 		// Only for subtitle add the tag name
 		if(this.name.equalsIgnoreCase(STYLE_SUBTITLE)){
 			String subTitle=model.getSubTitle();
 			if(subTitle==null)subTitle="";
-			toReturn+="name='"+subTitle+"' ";			
+			toReturn+="name=\""+subTitle+"\" ";			
 		}
 		
 		toReturn+="/>\n";

@@ -106,12 +106,12 @@ public class ScatterRangeMarker {
 	public String toXML(){
 		String toReturn="";
 		if(xRangeValueLow!=null || xRangeValueHigh!=null){
-			toReturn+="<PARAMETER name='x_range' ";
+			toReturn+="<PARAMETER name=\"x_range\" ";
 			if(xRangeValueLow!=null){
-				toReturn+="value_low='"+xRangeValueLow.toString()+"' ";
+				toReturn+="value_low=\""+xRangeValueLow.toString()+"\" ";
 			}
 			if(xRangeValueHigh!=null){
-				toReturn+="value_high='"+xRangeValueHigh.toString()+"' ";
+				toReturn+="value_high=\""+xRangeValueHigh.toString()+"\" ";
 			}
 			toReturn+=" />\n";
 		}

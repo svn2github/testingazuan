@@ -57,10 +57,10 @@ public class DrillParameters {
 
 	public String toXml(){
 		String toReturn="<PARAM ";
-		toReturn+="name='"+name+"' ";
-		toReturn+="type='"+type+"' ";
+		toReturn+="name=\""+name+"\" ";
+		toReturn+="type=\""+type+"\" ";
 		if(value!=null){
-			toReturn+="value='"+value+"' ";
+			toReturn+="value=\""+value+"\" ";
 		}
 		toReturn+="/>\n";
 		return toReturn;

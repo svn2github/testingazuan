@@ -78,16 +78,16 @@ public class ZRanges {
 		String toReturn="";
 		toReturn+="<RANGE ";
 		if(label!=null){
-			toReturn+="label='"+label+"' ";	
+			toReturn+="label=\""+label+"\" ";	
 		}
 		if(valueLow!=null){
-			toReturn+="value_low='"+valueLow.toString()+"' ";	
+			toReturn+="value_low=\""+valueLow.toString()+"\" ";	
 		}
 		if(valueHigh!=null){
-			toReturn+="value_high='"+valueHigh.toString()+"' ";	
+			toReturn+="value_high=\""+valueHigh.toString()+"\" ";	
 		}
 		if(color!=null){
-			toReturn+="colour='"+ChartEditor.convertRGBToHexadecimal(color)+"' ";	
+			toReturn+="colour=\""+ChartEditor.convertRGBToHexadecimal(color)+"\" ";	
 		}
 		toReturn+=" />\n";
 		return toReturn;

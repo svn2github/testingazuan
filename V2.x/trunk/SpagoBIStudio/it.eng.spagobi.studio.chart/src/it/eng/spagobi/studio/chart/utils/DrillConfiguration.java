@@ -74,13 +74,13 @@ public class DrillConfiguration {
 	public String toXml(){
 		String toReturn="<DRILL ";
 		String docDef=url!=null ? url : "";
-		toReturn+="document='"+docDef+"' ";
+		toReturn+="document=\""+docDef+"\" ";
 		toReturn+=">\n";
 		if(categoryUrlName!=null && !categoryUrlName.equalsIgnoreCase("")){
-			toReturn+="<PARAM name='categoryurlname' value='"+categoryUrlName+"'/>\n";	
+			toReturn+="<PARAM name=\"categoryurlname\" value=\""+categoryUrlName+"\"/>\n";	
 		}
 		if(seriesUrlName!=null && !seriesUrlName.equalsIgnoreCase("")){
-			toReturn+="<PARAM name='seriesurlname' value='"+seriesUrlName+"'/>\n";	
+			toReturn+="<PARAM name=\"seriesurlname\" value=\""+seriesUrlName+"\"/>\n";	
 		}
 
 		// run all parameters

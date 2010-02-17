@@ -441,6 +441,8 @@ public final class ChartEditor extends EditorPart {
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 		});
+	
+		setIsDirty(true); // first time must be dirty
 	}
 
 

@@ -99,16 +99,16 @@ public class Interval {
 		String toReturn="";
 		toReturn+="<INTERVAL ";
 		if(label!=null){
-			toReturn+="label='"+label+"' ";	
+			toReturn+="label=\""+label+"\" ";	
 		}
 		if(min!=null){
-			toReturn+="min='"+min.toString()+"' ";	
+			toReturn+="min=\""+min.toString()+"\" ";	
 		}
 		if(max!=null){
-			toReturn+="max='"+max.toString()+"' ";	
+			toReturn+="max=\""+max.toString()+"\" ";	
 		}
 		if(color!=null){
-			toReturn+="color='"+ChartEditor.convertRGBToHexadecimal(color)+"' ";	
+			toReturn+="color=\""+ChartEditor.convertRGBToHexadecimal(color)+"\" ";	
 		}
 		toReturn+=" />";
 		return toReturn;

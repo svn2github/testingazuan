@@ -330,7 +330,7 @@ public class ChartModel {
 				String serName = (String) iterator.next();
 				SeriePersonalization serPers=seriesPersonalizationHashMap.get(serName);
 				if(serPers.getDraw()!=null){
-					drawPersonalization+=" "+serName+"='"+serPers.getDraw()+"' ";
+					drawPersonalization+=" "+serName+"=\""+serPers.getDraw()+"\" ";
 				}
 			}
 			drawPersonalization+=" />\n";
@@ -342,7 +342,7 @@ public class ChartModel {
 				String serName = (String) iterator.next();
 				SeriePersonalization serPers=seriesPersonalizationHashMap.get(serName);
 				if(serPers.getLabel()!=null){
-					labelPersonalization+=" "+serName+"='"+serPers.getLabel()+"' ";
+					labelPersonalization+=" "+serName+"=\""+serPers.getLabel()+"\" ";
 				}
 			}
 			labelPersonalization+=" />\n";
@@ -354,7 +354,7 @@ public class ChartModel {
 				String serName = (String) iterator.next();
 				SeriePersonalization serPers=seriesPersonalizationHashMap.get(serName);
 				if(serPers.getColor()!=null){
-					colorPersonalization+=" "+serName+"='"+ChartEditor.convertRGBToHexadecimal(serPers.getColor())+"' ";
+					colorPersonalization+=" "+serName+"=\""+ChartEditor.convertRGBToHexadecimal(serPers.getColor())+"\" ";
 				}
 			}
 			colorPersonalization+=" />\n";
@@ -365,7 +365,7 @@ public class ChartModel {
 			for (Iterator iterator = seriesPersonalizationHashMap.keySet().iterator(); iterator.hasNext();) {
 				String serName = (String) iterator.next();
 				SeriePersonalization serPers=seriesPersonalizationHashMap.get(serName);
-				scalesPersonalization+=" "+serName+"='"+Integer.valueOf(serPers.getScale()).toString()+"' ";
+				scalesPersonalization+=" "+serName+"=\""+Integer.valueOf(serPers.getScale()).toString()+"\" ";
 			}
 			scalesPersonalization+=" />\n";
 		}

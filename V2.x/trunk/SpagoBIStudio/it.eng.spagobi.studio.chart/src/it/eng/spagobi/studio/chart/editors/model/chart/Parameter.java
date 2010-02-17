@@ -94,22 +94,22 @@ public class Parameter {
 		if(type==STRING_TYPE || type==COMBO_TYPE || type==COLOR_TYPE){
 			if(value!=null){
 				toReturn="<PARAMETER ";
-				toReturn+="name='"+name+"' ";
-				toReturn+="value='"+value+"' ";
+				toReturn+="name=\""+name+"\" ";
+				toReturn+="value=\""+value+"\" ";
 				toReturn+="/>\n";
 			}
 		}
 		else if(type==INTEGER_TYPE || type==FLOAT_TYPE){ // if number cannot be empty
 			if(value!=null && !value.toString().equals("")){
 				toReturn="<PARAMETER ";
-				toReturn+="name='"+name+"' ";
-				toReturn+="value='"+value+"' ";
+				toReturn+="name=\""+name+"\" ";
+				toReturn+="value=\""+value+"\" ";
 				toReturn+="/>\n";
 			}
 			if(value.toString().equals("")){
 				toReturn="<PARAMETER ";
-				toReturn+="name='"+name+"' ";
-				toReturn+="value='0.0' ";
+				toReturn+="name=\""+name+"\" ";
+				toReturn+="value=\"0.0\" ";
 				toReturn+="/>\n";
 				
 			}
@@ -120,8 +120,8 @@ public class Parameter {
 				value="false";
 			}
 			toReturn="<PARAMETER ";
-			toReturn+="name='"+name+"' ";
-			toReturn+="value='"+value+"' ";
+			toReturn+="name=\""+name+"\" ";
+			toReturn+="value=\""+value+"\" ";
 			toReturn+="/>\n";
 		}
 

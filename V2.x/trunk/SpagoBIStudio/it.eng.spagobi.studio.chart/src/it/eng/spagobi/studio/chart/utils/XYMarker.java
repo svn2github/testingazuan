@@ -127,24 +127,24 @@ public class XYMarker {
 		public String toXML(String name){
 			String toReturn="";	
 			if(label!=null || valueStartInt!=null || valueEndInt!=null || colorInt!=null || color!=null || valueMarker!=null){
-				toReturn+="<PARAMETER name='"+name+"' ";
+				toReturn+="<PARAMETER name=\""+name+"\" ";
 				if(label!=null){
-					toReturn+="label='"+label+"' ";
+					toReturn+="label=\""+label+"\" ";
 				}
 				if(valueStartInt!=null){
-					toReturn+="value_start_int='"+valueStartInt.toString()+"' ";
+					toReturn+="value_start_int=\""+valueStartInt.toString()+"\" ";
 				}
 				if(valueEndInt!=null){
-					toReturn+="value_end_int='"+valueEndInt.toString()+"' ";
+					toReturn+="value_end_int=\""+valueEndInt.toString()+"\" ";
 				}
 				if(colorInt!=null){
-					toReturn+="color_int='"+colorInt.toString()+"' ";
+					toReturn+="color_int=\""+colorInt.toString()+"\" ";
 				}
 				if(color!=null){
-					toReturn+="color='"+ChartEditor.convertRGBToHexadecimal(color)+"' ";
+					toReturn+="color=\""+ChartEditor.convertRGBToHexadecimal(color)+"\" ";
 				}
 				if(valueMarker!=null){
-					toReturn+="value_marker='"+valueMarker.toString()+"' ";
+					toReturn+="value_marker=\""+valueMarker.toString()+"\" ";
 				}
 				toReturn+=" />\n";
 			}

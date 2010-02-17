@@ -68,75 +68,116 @@ Sbi.console.CustomFilteringToolbar = function(config) {
 			, baseParams: new Object()
 		});
 		*/
-		
-		
-		//this.initFilters(c || {});
 	
 		c = Ext.apply(c, {items:this.customFilterBar});
 
 		// constructor
 		Sbi.console.CustomFilteringToolbar.superclass.constructor.call(this, c);
 		
+		//adds events		
+		this.store.on('metachange', this.onMetaChange, this);
+		
 };
 
 Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {  
     services: null
     , customFilterBar: null
+    , txtField: null
+   // , headers: null
+   // , ids: null
    
 
     // -- public methods ---------------------------------------------------------------
     , onRender : function(ct, position) {
-		  
-  		var s, cb;
-      
-  		if (this.filterBar.type === 'automatic' ){
+  		//
+  		this.txtField = new Ext.form.TextField({fieldLabel: 'Loading...'});
   		
-  			for(var i=0, l=this.filterBar.filters.length; i<l; i++) {
-    		  
-    				cb = new Ext.form.ComboBox({
-          	        store: this.store,
-          	        width: 100,
-          	        displayField:'column-'+(i+1),
-          	        valueField:'column-'+(i+1),
-          	        typeAhead: true,
-          	        triggerAction: 'all',
-          	        emptyText:'...',
-          	        selectOnFocus:true,
-          	        mode: 'local'
-          	    });	 
-      			
-      	
-      		  this.addText('header');
-      			this.addField(cb);	
-    			}
-        }
-        else{
-          //'custom' type
-      		for(var i=0, l=this.filterBar.filters.length; i<l; i++) {
-      		
-      			cb = new Ext.form.ComboBox({
-          	        store: this.store,
-          	        width: 100,
-          	        displayField:'column-'+(i+1),
-          	        valueField:'column-'+(i+1),
-          	        typeAhead: true,
-          	        triggerAction: 'all',
-          	        emptyText:'...',
-          	        selectOnFocus:true,
-          	        mode: 'local'
-          	    });	 
-      			
-      			this.addText(this.filterBar.filters[i].text);
-      			this.addField(cb);	    	
-      		}
-		} //for
-		//calls superclass for define buttons
-		Sbi.console.CustomFilteringToolbar.superclass.onRender.call(this, ct, position);
-		
-    } 
+		  Sbi.console.CustomFilteringToolbar.superclass.onRender.call(this, ct, position);
+
+    }
    
     
     
     // -- private methods ---------------------------------------------------------------
+    , onMetaChange: function( store, meta ) {
+        
+       	var cb;
+       	
+       this.cleanFilterToolbar();
+
+       	if (this.filterBar.type === 'automatic' ){
+       	  // automatic: all dataset fields are added as filter
+      		for(var i = 0; i < meta.fields.length; i++) { 		  
+      		  if (meta.fields[i].header != ''){   		  
+        		  cb = new Ext.form.ComboBox({
+              	        store: this.store,
+              	        width: 100,
+              	        displayField:'column-'+(i),
+              	        valueField:'column-'+(i),
+              	        typeAhead: true,
+              	        triggerAction: 'all',
+              	        emptyText:'...',
+              	        selectOnFocus:true,
+              	        mode: 'local'
+              	    });	 
+          			
+          	
+          		  this.addText( meta.fields[i].header);
+          			this.addField(cb);	
+          	}
+      		  
+      		} //for
+      		
+      	}
+      	else{
+      	 //custom: only configurated fields are added as filter
+        	for(var i = 0; i < meta.fields.length; i++) { 		                
+        		  if (meta.fields[i].header != '' && this.isConfiguratedFilter(meta.fields[i].header)){   		  
+                	
+          		  cb = new Ext.form.ComboBox({
+                	        store: this.store,
+                	        width: 100,
+                	        displayField:'column-'+(i),
+                	        valueField:'column-'+(i),
+                	        typeAhead: true,
+                	        triggerAction: 'all',
+                	        emptyText:'...',
+                	        selectOnFocus:true,
+                	        mode: 'local'
+                	    });	 
+            			
+            	        	    
+            		  this.addText(this.getColumnText(meta.fields[i].header));            		  
+            			this.addField(cb);	
+            	}
+        		  
+        		} //for
+      	}
+    	
+    		//adds actions
+    		this.addActionButtons();
+    		
+    		this.doLayout();
+      	
+    	}
+	
+    //returns true if the input field is a filter defined into template, false otherwise.
+    , isConfiguratedFilter: function (field){          
+          for(var i=0, l=this.filterBar.filters.length; i<l; i++) {              
+            if (field === this.filterBar.filters[i].column)
+              return true;
+      		}
+          return false;
+    }
+    
+    , getColumnText: function (columnName){         
+          for(var i=0, l=this.filterBar.filters.length; i<l; i++) {              
+            if (columnName === this.filterBar.filters[i].column)
+              return this.filterBar.filters[i].text;
+      		}
+          return columnName;
+    }
+   
+    
     
 });

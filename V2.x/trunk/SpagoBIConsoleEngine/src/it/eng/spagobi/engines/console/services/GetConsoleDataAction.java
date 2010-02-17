@@ -96,7 +96,7 @@ public class GetConsoleDataAction extends AbstractConsoleEngineAction {
 			try {
 				JSONDataWriter writer = new JSONDataWriter();
 				Object resultNumber = dataStore.getMetaData().getProperty("resultNumber");
-				if(resultNumber == null) dataStore.getMetaData().setProperty("resultNumber", new Integer(1));
+				if(resultNumber == null) dataStore.getMetaData().setProperty("resultNumber", new Integer(10));
 				JSONObject dataSetJSON = (JSONObject)writer.write(dataStore);				
 				//results.put("results", dataSetJSON);
 				results = dataSetJSON;

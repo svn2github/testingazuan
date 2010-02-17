@@ -157,6 +157,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		}
 		
 		meta.fields[0] = new Ext.grid.RowNumberer();
+		
 		this.getColumnModel().setConfig(meta.fields);
 	}
 	
@@ -171,7 +172,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     	   alert("Default filterbar working in progress!!");
     	   
       } else if (filterBarConf.type === 'custom' || filterBarConf.type === 'automatic') {
-    	     
+
           this.filterBar = new Sbi.console.CustomFilteringToolbar({filterBar: filterBarConf
                                                                  , store: this.store});          	  
         	       	

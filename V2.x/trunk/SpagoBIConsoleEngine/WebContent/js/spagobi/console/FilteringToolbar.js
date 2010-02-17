@@ -87,21 +87,29 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	// -- private methods ---------------------------------------------------------------
   
 	, onRender : function(ct, position) { 
-	    	
+	  
+    //this.txtField = new Ext.form.TextField({fieldLabel: 'Loading...'});
 	  //alert('filtering IN');
 		Sbi.console.FilteringToolbar.superclass.onRender.call(this, ct, position);
-		
-		
-		
-		var b;
-		
-		this.addFill();
-		for(var i=0; i < this.filterBar.actions.length; i++){
-			b = new Sbi.console.ActionButton(this.filterBar.actions[i]);
-    		this.addButton(b);	
-    	}	
-		
+
 		//alert('filtering OUT');
 	}
+	
+	, addActionButtons: function(){
+  	   var b;
+  		
+    		this.addFill();
+    		for(var i=0; i < this.filterBar.actions.length; i++){
+  			   b = new Sbi.console.ActionButton(this.filterBar.actions[i]);
+      		 this.addButton(b);	
+      	}	
+  }
+  
+  , cleanFilterToolbar: function(){
+        this.items.each( function(item) {
+            this.items.remove(item);
+                item.destroy();           
+            }, this);   
+    }
     
 });

@@ -62,7 +62,7 @@ Sbi.template = {
 	            // default = filtering toolbar della lookup field; 
 	            // automatic = crea un filtro per ogni colonna della griglia (operator: 'EQUALS_TO'; operand: DISTINCT) 
 	            // custom: permette di creare filtri personalizzati solo su alcune colonne della griglia. La definizione di tali filtri si trova all'interno dell'attributo filters
-	            type: 'automatic'  
+	            type: 'custom'  
 	            
 	            // nel caso di filtro custom i seguenti parametri di default vengono applicati qualora non espressamente specificati dall'utente
 	            , defaults: {
@@ -81,12 +81,12 @@ Sbi.template = {
 	               , column: 'productName'
 	               , operator: 'EQUALS_TO'
 	               , operand: 'DISTINCT'
-	               }, {
+	               }/*, {
 	                 text: 'Years'
 	               , column: 'year'
 	               , operator: 'EQUALS_TO'
 	               , operand: 'DISTINCT'
-	              }
+	              }*/
 	            ]
 	            
 	            , actions: [

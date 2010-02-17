@@ -1,23 +1,18 @@
 package it.eng.spagobi.studio.core.wizards.downloadWizard;
 
-import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
-import it.eng.spagobi.sdk.datasources.bo.SDKDataSource;
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.sdk.documents.bo.SDKTemplate;
 import it.eng.spagobi.sdk.engines.bo.SDKEngine;
-import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
-import it.eng.spagobi.sdk.proxy.DataSourcesSDKServiceProxy;
 import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
 import it.eng.spagobi.sdk.proxy.EnginesServiceProxy;
-import it.eng.spagobi.studio.core.actions.DownloadDocumentAction;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 import it.eng.spagobi.studio.core.util.BiObjectUtilities;
+import it.eng.spagobi.studio.core.util.FileFinder;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 
 import javax.activation.DataHandler;
 
@@ -32,16 +27,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IEditorDescriptor;
-import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWizard;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.FileEditorInput;
 
 public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 	private SpagoBIDownloadWizardPage page;
@@ -197,9 +185,10 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IPath workspacePath=root.getLocation();
 
+
 		// get the folder where to insert the template document
 		IProject project = root.getProject(projectName);
-		IPath pathFolder = folderSel.getProjectRelativePath();
+		IPath pathFolder = folderSel.getProjectRelativePath(); 
 
 		String templateFileName=template.getFileName();
 
@@ -226,18 +215,18 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			return false;
 		}
 
+		IPath projectFolder=project.getLocation();
+		// Check there is not another existing file with the same name inside project directory workspace!!!
+		boolean alreadyFound=FileFinder.fileExistsInSubtree(fileName, projectFolder.toString());
 
-
-		// check if file exists, in case ask user if overwrite
-		boolean write=true;
-		if(newFile.exists()==true){
+		if(alreadyFound){
 			MessageDialog.openWarning(workbench.getActiveWorkbenchWindow().getShell(), 
-					"Error", "File "+pathNewFile+" already exists: to download it againg you must first delete the existing one");
+					"Error", "File "+pathNewFile+" already exists in your project: to download it againg you must first delete the existing one");
 			return false;
 			//write=MessageDialog.openQuestion(workbench.getActiveWorkbenchWindow().getShell(), "File exists: Overwrite?", "File "+newFile.getName()+" already exists, overwrite?"); 
 		}
 
-		if(write){
+		if(true){
 
 			try{
 				newFile.create(is, true, null);

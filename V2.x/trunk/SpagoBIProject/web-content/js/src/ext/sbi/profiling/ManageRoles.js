@@ -132,7 +132,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	          
 	          var selectedRecord = Ext.getCmp("rolegrid").store.getAt(index);
 	          var roleId = selectedRecord.get('id');
-	          //alert(roleId);
+
 	          Ext.getCmp("rolegrid").fireEvent('delete', roleId, index);
 	       }
 	       ,width: 25
@@ -234,6 +234,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
  	   
  	   this.tabs = new Ext.TabPanel({
            enableTabScroll : true
+           , id: 'tab-panel'
            , activeTab : 0
            , autoScroll : true
            , width: 320
@@ -311,6 +312,17 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		    }]
 		});
 
+ 	    this.tb = new Ext.Toolbar({
+ 	    	buttonAlign : 'right',
+ 	    	items:[new Ext.Toolbar.Button({
+ 	            text: 'Add',
+ 	            iconCls: 'icon-add',
+ 	            handler: this.addNewRole,
+ 	            width: 30,
+ 	            scope: this
+ 	        })
+ 	    	]
+ 	    });
 
    	   /*
    	   *    Here is where we create the Form
@@ -360,7 +372,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	   	                   	 
 	   	                  },
    	                      listeners: {
-   	                          rowselect: function(sm, row, rec) {   	  
+   	                          rowselect: function(sm, row, rec) { 
    	                	  		  this.fillChecks(row, rec);
    	                              Ext.getCmp('role-form').getForm().loadRecord(rec);      	
    	                              Ext.getCmp('checks-form').setDisabled(true);
@@ -371,13 +383,17 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	                  }),
    	                  autoExpandColumn: 'name',
    	                  height: 350,
+   	                  width: 740,
+   	                  layout: 'fit',
    	                  title:'Roles list',
+   	                  tbar: this.tb,
+   	                  /*
 	   	 	   	      tools:[{
 	  		   	        id:'plusprofile'
 	  		   	        ,qtip: 'New role'
 	  		   	        ,handler: this.addNewRole
 	  		   	        ,scope: this
-	   	 	   	      },],
+	   	 	   	      },],*/
    	                  border: true,
    	                  listeners: {
    	                      viewready: function(g) {
@@ -395,7 +411,6 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 
 	}
 	, addNewRole : function(){
-		//alert("addNewRole");
 		
 	    Ext.getCmp('checks-form').setDisabled(false);
 	    Ext.getCmp('role-detail').setDisabled(false);
@@ -491,7 +506,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		      			var content = Ext.util.JSON.decode( response.responseText );
 		      			
 		      			var roleID = content.id;
-		      			alert("roleID:::"+roleID);
+		      			
 	                    newRec.set('id', roleID);
 	                    
 						this.rolesStore.add(newRec);

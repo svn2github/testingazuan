@@ -806,8 +806,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			cancel - Set this to true to cancel the edit or return false from your handler.
 		 */
 		
-		//alert('IN onBeforeEdit');
-		
+		/*
 		if(this.activeEditingContext) {
 			var filter = this.getFilterAt(this.activeEditingContext.row);
 			if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
@@ -828,7 +827,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				}				
 			}
 		}
-		
+		*/
 		
 		this.activeEditingContext = Ext.apply({}, e);
 		var col = this.activeEditingContext.column;

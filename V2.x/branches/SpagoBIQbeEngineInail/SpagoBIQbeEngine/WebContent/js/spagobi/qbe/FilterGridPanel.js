@@ -225,6 +225,17 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		this.setWizardExpression(false);
 	}
 	
+	, getFilterAt: function(i) {
+		var record;
+		var filter;
+		
+		record =  this.grid.store.getAt(i);
+		filter = Ext.apply({}, record.data);
+		filter.promptable = filter.promptable || false;
+		
+		return filter;
+	}
+	
 	, getFilters : function() {
 		var filters = [];
 		var record;
@@ -532,11 +543,14 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    });
 		    
 		    textEditor.on('change', function(f, newValue, oldValue){
+		    	
 		    	if(this.activeEditingContext) {
 		    		if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
 		    			this.modifyFilter({leftOperandValue: newValue, leftOperandType: 'Static Value', leftOperandLongDescription: null}, this.activeEditingContext.row);
 		    		} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
 		    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value', rightOperandLongDescription: null}, this.activeEditingContext.row);
+		    		} else {
+		    			//alert('ONCHANGE: ' + this.activeEditingContext.dataIndex);
 		    		}
 		    	}		    	
 		    }, this);
@@ -761,7 +775,20 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	      }      
 	    }, this);
 	    
-	    this.grid.on('beforeedit', this.onBeforeEdit, this);
+	    //this.grid.on('beforeedit', this.onBeforeEdit, this);
+	    this.grid.on('beforeedit', function(e) {
+	    	
+	    	var date = new Date();
+	    	var curDate = null;
+	    	var millis = 100;
+
+	    	do { curDate = new Date(); }
+	    	while(curDate-date < millis);
+	    	
+	    	this.onBeforeEdit(e);
+	    	//this.onBeforeEdit.defer(500, this, [e]);
+	        //alert('AFTER onBeforeEdit');
+	    }, this);
 	    
 	    this.grid.store.on('remove', function(e){
 	    	this.setWizardExpression(false);
@@ -778,6 +805,31 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			column - The grid column index
 			cancel - Set this to true to cancel the edit or return false from your handler.
 		 */
+		
+		//alert('IN onBeforeEdit');
+		
+		if(this.activeEditingContext) {
+			var filter = this.getFilterAt(this.activeEditingContext.row);
+			if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
+				if(filter.leftOperandValue !== filter.leftOperandDescription){
+					this.modifyFilter({
+						leftOperandValue: filter.leftOperandDescription, 
+						leftOperandType: 'Static Value', 
+						leftOperandLongDescription: null
+					}, this.activeEditingContext.row);
+				}				
+			} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
+				if(filter.rightOperandValue !== filter.rightOperandDescription){
+					this.modifyFilter({
+						rightOperandValue: filter.rightOperandDescription, 
+						rightOperandType: 'Static Value', 
+						rightOperandLongDescription: null
+					}, this.activeEditingContext.row);
+				}				
+			}
+		}
+		
+		
 		this.activeEditingContext = Ext.apply({}, e);
 		var col = this.activeEditingContext.column;
 		var row = this.activeEditingContext.row;		

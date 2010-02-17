@@ -126,6 +126,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	    			  , 'id'
 	    	          , 'fullName'
 	    	          , 'pwd'
+	    	          , 'confirmpwd'
 	    	          , 'userRoles'
 	    	          , 'userAttributes'
 	    	          ]
@@ -148,9 +149,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	    
 	    this.initAttributesGridPanel();
 	    this.initRolesGridPanel();
-  
-	    
-	    
+    
     }
 	
 	,initManageUsers: function(){
@@ -185,8 +184,6 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	        , handler : this.save
 	        , disabled : true
 	   }];
-	   
-
 
  	   this.tabs = new Ext.TabPanel({
            enableTabScroll : true
@@ -229,6 +226,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		                 inputType: 'password'
 		             },{
 		                 fieldLabel: 'Confirm Password',
+		                 id: 'confirmpwd',
 		                 name: 'confirmpwd',
 		                 inputType: 'password'
 		             }]
@@ -307,13 +305,14 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	                      listeners: {
    	                          rowselect: function(sm, row, rec) {   
    	                          	  Ext.getCmp('save-btn').enable();
-   	                              Ext.getCmp("user-form").getForm().loadRecord(rec);  	  	 
+   	                          	  rec.set('confirmpwd', '');
+   	                              Ext.getCmp("user-form").getForm().loadRecord(rec);  	
+   	                              	 
    	                	  		  this.fillAttributes(row, rec);
    	                	  		  this.fillRoles(row, rec);   	                                  	                              
    	                          }
    	                      }
    	                  }),
-   	                  //autoExpandColumn: 'fullName',
    	                  height: 450,
    	                  title:'Users list',
 	   	 	   	      tools:[{

@@ -103,10 +103,10 @@ public class DocumentContained {
 			}
 			else{			
 				i++;
-
+				
+				String localFileName=file.getName();
 				IPath ia=file.getFullPath();
-				String localFileName=ia.toString();
-
+				//String localFileName=ia.toString();
 				metadataDocument=new MetadataDocument(file);				
 				// check the document not alredy exist
 				if(metadataDocument!=null){

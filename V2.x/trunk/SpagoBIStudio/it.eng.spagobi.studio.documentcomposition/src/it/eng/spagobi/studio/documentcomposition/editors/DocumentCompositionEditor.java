@@ -36,6 +36,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -70,6 +71,7 @@ public class DocumentCompositionEditor extends EditorPart {
 	Designer designer;
 	private XmlTemplateGenerator generator = new XmlTemplateGenerator();
 	protected boolean isDirty = false;
+
 
 	@Override
 	public void dispose() {
@@ -270,6 +272,10 @@ public class DocumentCompositionEditor extends EditorPart {
 
 		designer=new Designer(composite, this);
 		designer.setEditor(this);
+
+		String projectName=retrieveProjectFile((FileEditorInput)getEditorInput());
+		designer.setProjectName(projectName);
+
 		section.setClient(sectionClient);
 
 		// Add the control resize, shell resize all the document Containers
@@ -346,6 +352,13 @@ public class DocumentCompositionEditor extends EditorPart {
 
 	}
 
+
+	String retrieveProjectFile(FileEditorInput input){
+		IFile file=input.getFile();
+		IProject project=file.getProject();
+		String toReturn=project.getName();
+		return toReturn;
+	}
 
 
 	public Designer getDesigner() {

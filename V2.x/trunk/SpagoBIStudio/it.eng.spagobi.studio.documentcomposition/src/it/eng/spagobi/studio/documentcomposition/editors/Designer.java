@@ -23,6 +23,7 @@ package it.eng.spagobi.studio.documentcomposition.editors;
 
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
+import it.eng.spagobi.studio.core.util.FileFinder;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
@@ -36,11 +37,14 @@ import it.eng.spagobi.studio.documentcomposition.util.DocCompUtilities;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -60,6 +64,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.PlatformUI;
 
 public class Designer {
 
@@ -78,6 +83,8 @@ public class Designer {
 	int currentY=0;
 	Composite mainComposite;
 	HashMap<Integer, DocContainer> containers;
+
+	String projectName=null;
 
 
 	public static final String NORMAL="normal";
@@ -522,8 +529,20 @@ public class Designer {
 				String localFileName=document.getLocalFileName();	
 				MetadataDocument metadataDocument=null;
 				if(localFileName!=null){
-					IPath w=new Path(localFileName);					
-					IFile fileToGet = ResourcesPlugin.getWorkspace().getRoot().getFile(w);
+					
+					// search for the right file
+					
+//					IPath w=new Path(localFileName);					
+//					IFile fileToGet = ResourcesPlugin.getWorkspace().getRoot().getFile(w);
+//					IFile fileToGet =null;
+					
+					IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+					IPath workspacePath=root.getLocation();
+					IProject project = root.getProject(getProjectName());
+					IPath projectLocation=project.getLocation();
+					IPath pathRetrieved=FileFinder.retrieveFile(localFileName, projectLocation.toString(), workspacePath);
+					IFile fileToGet = ResourcesPlugin.getWorkspace().getRoot().getFile(pathRetrieved);
+					
 					if(fileToGet.exists()){
 						String name=fileToGet.getName();
 						String ciao=fileToGet.getPersistentProperty(PropertyPage.DOCUMENT_NAME);
@@ -594,5 +613,14 @@ public class Designer {
 		return found;
 	}
 
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	
 
 }

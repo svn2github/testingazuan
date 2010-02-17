@@ -176,7 +176,7 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 		labelText = new Text(left, SWT.BORDER);
 		labelText.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
 		labelText.setTextLimit(SpagoBIStudioConstants.BIOBJECT_LABEL_LIMIT);
-		labelText.addListener(SWT.KeyDown, new Listener() {
+		labelText.addListener(SWT.KeyUp, new Listener() {
 			public void handleEvent(Event event) {
 				//check if page is complete
 				boolean complete=isPageComplete();
@@ -194,7 +194,7 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 		nameText = new Text(left, SWT.BORDER);
 		nameText.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
 		nameText.setTextLimit(SpagoBIStudioConstants.BIOBJECT_NAME_LIMIT);
-		nameText.addListener(SWT.KeyDown, new Listener() {
+		nameText.addListener(SWT.KeyUp, new Listener() {
 			public void handleEvent(Event event) {
 				//check if page is complete
 				boolean complete=isPageComplete();
@@ -404,9 +404,9 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 
 		boolean labelAndNameFieldSet=false;
 		String labelTextS=labelText.getText();
-		System.out.println(labelTextS);
+		//System.out.println(labelTextS);
 		String nameTextS=nameText.getText();
-		System.out.println(nameTextS);
+		//System.out.println(nameTextS);
 
 		if(labelTextS==null || nameTextS==null || labelTextS.equalsIgnoreCase("") || nameTextS.equalsIgnoreCase("")){
 			return false;

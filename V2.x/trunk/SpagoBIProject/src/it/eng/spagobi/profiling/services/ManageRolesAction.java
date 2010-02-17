@@ -57,7 +57,6 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 	private final String MESSAGE_DET = "MESSAGE_DET";
 	// type of service
 	private final String ROLES_LIST = "ROLES_LIST";
-	private final String ROLE_DETAIL = "ROLE_DETAIL";
 	private final String ROLE_INSERT = "ROLE_INSERT";
 	private final String ROLE_DELETE = "ROLE_DELETE";
 	
@@ -108,7 +107,7 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 				throw new SpagoBIServiceException(SERVICE_NAME,
 						"Exception occurred while retrieving roles", e);
 			}
-		} else if (serviceType != null && serviceType.equalsIgnoreCase(ROLE_DETAIL)) {
+		} /*else if (serviceType != null && serviceType.equalsIgnoreCase(ROLE_DETAIL)) {
 
 			Integer id = getAttributeAsInteger(ID);
 			try {
@@ -125,7 +124,7 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 						"Exception occurred while retrieving role detail",
 						e);
 			}
-		}else if (serviceType != null	&& serviceType.equalsIgnoreCase(ROLE_INSERT)) {
+		}*/else if (serviceType != null	&& serviceType.equalsIgnoreCase(ROLE_INSERT)) {
 			String name = getAttributeAsString(NAME);
 			String roleTypeCD = getAttributeAsString(ROLE_TYPE_CD);
 			String code = getAttributeAsString(CODE);

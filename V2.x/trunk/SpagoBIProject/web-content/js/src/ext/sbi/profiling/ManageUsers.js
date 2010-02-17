@@ -67,17 +67,22 @@ Sbi.profiling.ManageUsers = function(config) {
 	
 	this.initManageUsers();
 	   
-   	Ext.getCmp('usergrid').store.on('load', function(){
+   /*Ext.getCmp('usergrid').store.on('load', function(){
 	 var grid = Ext.getCmp('usergrid');
-	 grid.getSelectionModel().selectRow(0);
-	 grid.fireEvent('rowclick', grid, 0);
+	 
+	 if(this.usersStore.getTotalCount()>0){
+		 grid.fireEvent('rowclick', grid, 0);
+		 grid.getSelectionModel().selectRow(0);
+	 }
 	 }, this, {
 	 single: true
-   });
+   });*/
    
    this.usersStore.load();
    
-   	Ext.getCmp('usergrid').on('delete', this.deleteSelectedUser, this);
+   //Ext.getCmp('usergrid').refresh();
+   
+   Ext.getCmp('usergrid').on('delete', this.deleteSelectedUser, this);
 	
 }
 
@@ -157,9 +162,11 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
         ]);
      	   
  	   this.buttons = [{
-        text : 'Save'
+        	text : 'Save'
+        	, id: 'save-btn'
 	        , scope : this
 	        , handler : this.save
+	        , disabled : true
 	   }];
 	   
 
@@ -282,6 +289,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	   	                  },
    	                      listeners: {
    	                          rowselect: function(sm, row, rec) {   
+   	                          	  Ext.getCmp('save-btn').enable();
    	                              Ext.getCmp("user-form").getForm().loadRecord(rec);  	  	 
    	                	  		  this.fillAttributes(row, rec);
    	                	  		  this.fillRoles(row, rec);   	                                  	                              
@@ -301,7 +309,9 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	                  border: true
   	                 ,listeners: {
    	                      viewready: function(g) {
-   	                          g.getSelectionModel().selectRow(0);
+   	                      	  g.getView().refresh();
+	   	                      g.fireEvent('rowclick', g, 0);
+							  g.getSelectionModel().selectRow(0); 	                      
    	                      } 
    	                  }
    	              }
@@ -565,8 +575,11 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 									this.usersStore.remove(deleteRow);
 									this.usersStore.commitChanges();
 									var grid = Ext.getCmp('usergrid');
-									grid.getSelectionModel().selectRow(0);
-									grid.fireEvent('rowclick', grid, 0);
+									alert(this.usersStore.getCount());
+									if(this.usersStore.getCount()>0){
+										grid.getSelectionModel().selectRow(0);
+										grid.fireEvent('rowclick', grid, 0);
+									}
 								} else {
 									Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting User', 'Service Error');
 								}

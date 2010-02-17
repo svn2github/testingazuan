@@ -542,6 +542,19 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	             allowBlank: true
 		    });
 		    
+		    textEditor.ownerGrid = this;
+		    
+		    textEditor.fireKey = function(e){
+		        if(e.isSpecialKey()){
+		            this.fireEvent("specialkey", this, e);
+		        } else {
+		        	if(this.ownerGrid.activeEditingContext) {
+			        	this.ownerGrid.activeEditingContext.dirty = true;
+			        }
+		        }
+		        
+		    };
+		    
 		    textEditor.on('change', function(f, newValue, oldValue){
 		    	
 		    	if(this.activeEditingContext) {
@@ -806,11 +819,11 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			cancel - Set this to true to cancel the edit or return false from your handler.
 		 */
 		
-		/*
+		
 		if(this.activeEditingContext) {
 			var filter = this.getFilterAt(this.activeEditingContext.row);
 			if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
-				if(filter.leftOperandValue !== filter.leftOperandDescription){
+				if(this.activeEditingContext.dirty === true){
 					this.modifyFilter({
 						leftOperandValue: filter.leftOperandDescription, 
 						leftOperandType: 'Static Value', 
@@ -818,7 +831,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 					}, this.activeEditingContext.row);
 				}				
 			} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
-				if(filter.rightOperandValue !== filter.rightOperandDescription){
+				if(this.activeEditingContext.dirty === true){
 					this.modifyFilter({
 						rightOperandValue: filter.rightOperandDescription, 
 						rightOperandType: 'Static Value', 
@@ -827,13 +840,14 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				}				
 			}
 		}
-		*/
+		
 		
 		this.activeEditingContext = Ext.apply({}, e);
 		var col = this.activeEditingContext.column;
 		var row = this.activeEditingContext.row;		
 		var dataIndex = this.activeEditingContext.grid.getColumnModel().getDataIndex( col );
 		this.activeEditingContext.dataIndex = dataIndex;
+		this.activeEditingContext.dirty = false;
 		
 		if(dataIndex === 'leftOperandDescription' || dataIndex === 'rightOperandDescription') {
 			var editor;

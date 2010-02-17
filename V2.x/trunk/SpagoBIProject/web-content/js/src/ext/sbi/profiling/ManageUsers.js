@@ -79,8 +79,25 @@ Sbi.profiling.ManageUsers = function(config) {
    });*/
    
    this.usersStore.load();
-   
-   //Ext.getCmp('usergrid').refresh();
+		
+	Ext.getCmp("attributes-form").store.removeAll();
+   	var tempAttrArr = this.attributesEmptyStore;
+   	var length = this.attributesEmptyStore.length;
+       for(var i=0;i<length;i++){
+       	var tempRecord = new Ext.data.Record({"value":tempAttrArr[i].value,"name":tempAttrArr[i].name,"id":tempAttrArr[i].id });
+   		Ext.getCmp("attributes-form").store.add(tempRecord);	
+       }		
+       
+       Ext.getCmp("roles-form").store.removeAll();
+       var tempRolesArr = this.rolesEmptyStore;
+       var length2 = this.rolesEmptyStore.length;
+       for(var i=0;i<length2;i++){
+         	var tempRecord = new Ext.data.Record({"description":tempRolesArr[i].description,"name":tempRolesArr[i].name,"id":tempRolesArr[i].id });
+		Ext.getCmp("roles-form").store.add(tempRecord);								   
+       }	
+	
+	Ext.getCmp('roles-form').doLayout();
+	Ext.getCmp('attributes-form').doLayout();
    
    Ext.getCmp('usergrid').on('delete', this.deleteSelectedUser, this);
 	
@@ -384,7 +401,6 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 			, scope: this
 		});
 		this.rolesGrid.superclass.constructor.call(this);
-
 		
 		Ext.getCmp("roles-form").on('recToSelect', function(roleId, index){		
 			Ext.getCmp("roles-form").selModel.selectRow(index,true);
@@ -422,10 +438,34 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	        var lengthR = rolesSelected.length;
             var roles =new Array();
             for(var i=0;i<lengthR;i++){
-             	var role ={'name':rolesSelected[i].get("name"),'id':rolesSelected[i].get("id"),'description':rolesSelected[i].get("description")};
+             	var role ={'name':rolesSelected[i].get("name"),'id':rolesSelected[i].get("id"),'description':rolesSelected[i].get("description"),'checked':true};
  				roles.push(role);
            }
-	        params.userRoles =  Ext.util.JSON.encode(roles);
+	       params.userRoles =  Ext.util.JSON.encode(roles);
+	        
+	       if(newRec!==null){
+	       	   var userRoles =new Array();
+		       var tempArr = Ext.getCmp("roles-form").store;
+	           var length = Ext.getCmp("roles-form").store.data.length;
+	
+	           for(var i=0;i<length;i++){
+	           		var selected = false;
+	           		for(var j=0;j<lengthR;j++){
+	           			if(rolesSelected[j].get("id")===tempArr.getAt(i).get("id")){
+	           				selected = true;
+	           				var role ={'name':tempArr.getAt(i).get("name"),'id':tempArr.getAt(i).get("id"),'description':tempArr.getAt(i).get("description"),'checked':true};
+ 							userRoles.push(role);
+	           				break;
+	           			}
+		            }
+		            if(!selected){
+		          		var role ={'name':tempArr.getAt(i).get("name"),'id':tempArr.getAt(i).get("id"),'description':tempArr.getAt(i).get("description"),'checked':false};
+		 				userRoles.push(role);
+	 				}
+			   }	
+			   newRec.set('userRoles', userRoles);
+		   }
+		   
 	        
 	        var modifAttributes = this.attributesStore.getModifiedRecords();
             var lengthA = modifAttributes.length;
@@ -434,19 +474,19 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
              	var attr ={'name':modifAttributes[i].get("name"),'id':modifAttributes[i].get("id"),'value':modifAttributes[i].get("value")};
  				attrs.push(attr);
            }
-	        params.userAttributes =  Ext.util.JSON.encode(attrs);
+	        params.userAttributes =  Ext.util.JSON.encode(attrs);      
 	        
-	       
-	        
-	        //Ext.getCmp("roles-form").store.removeAll();
-	      /*  var tempRolesArr = this.rolesEmptyStore;
-	        var length2 = this.rolesEmptyStore.length;
-	        for(var i=0;i<length2;i++){
-	          	var tempRecord = new Ext.data.Record({"description":tempRolesArr[i].description,"name":tempRolesArr[i].name,"id":tempRolesArr[i].id });
-				Ext.getCmp("roles-form").store.add(tempRecord);								   
-	        }	*/
-	        //var tempRoleStore =  Ext.getCmp("roles-form").store;
-	       
+	        if(newRec!==null){
+	       	   var userAttributes = new Array();
+		       var tempArr = Ext.getCmp("attributes-form").store;
+	           var length = Ext.getCmp("attributes-form").store.data.length;
+	
+	           for(var i=0;i<length;i++){
+	          		var attr ={'name':tempArr.getAt(i).get("name"),'id':tempArr.getAt(i).get("id"),'value':tempArr.getAt(i).get("value")};
+	 				userAttributes.push(attr);
+			   }	
+			   newRec.set('userAttributes', userAttributes);
+		   }        
 	        
 	        Ext.Ajax.request({
 	            url: this.services['saveUserService'],
@@ -470,8 +510,6 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 								var idTemp = content.id;
 								if(newRec!==null){
 									newRec.set('id', idTemp);
-									newRec.set('userRoles',  this.rolesEmptyStore);
-	          						newRec.set('userAttributes',  this.attributesEmptyStore);
 									this.usersStore.add(newRec);
 								}
 								this.usersStore.commitChanges();
@@ -524,7 +562,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	
     }
 	, addNewUser : function(){
-
+		Ext.getCmp('save-btn').enable();
 		var emptyRecToAdd =new Ext.data.Record({userId:'', 
 											fullName:'', 
 											pwd:'',

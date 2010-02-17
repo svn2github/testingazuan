@@ -182,9 +182,23 @@ Sbi.locale.ln['sbi.roles.authorizations'] = 'Autorizations';
 Sbi.locale.ln['sbi.roles.alfanumericString'] = 'String Alfanumerique requise (\x2F inclus)';
 Sbi.locale.ln['sbi.roles.alfanumericString2'] = 'String Alfanumerique requise';
 Sbi.locale.ln['sbi.roles.rolesManagement'] = 'Gestion des Rôles';
-Sbi.locale.ln['sbi.roles.rolesList'] = 'Rôles list';
+Sbi.locale.ln['sbi.roles.rolesList'] = 'Rôles liste';
 Sbi.locale.ln['sbi.roles.error'] = 'Erreur';
 Sbi.locale.ln['sbi.roles.result'] = 'Result';
+
+Sbi.locale.ln['sbi.users.fullName'] = 'Nom et Prenom';
+Sbi.locale.ln['sbi.users.userId'] = 'User ID';
+Sbi.locale.ln['sbi.users.pwd'] = 'Môt de pass';
+Sbi.locale.ln['sbi.users.confPwd'] = 'Confirmer Môt de pass';
+Sbi.locale.ln['sbi.users.wrongFormat'] = 'Format incorrect';
+Sbi.locale.ln['sbi.users.roles'] = 'Rôles';
+Sbi.locale.ln['sbi.users.attributes'] = 'Attributes';
+Sbi.locale.ln['sbi.users.manageUsers'] = 'Gestion des Utilisateurs';
+Sbi.locale.ln['sbi.users.usersList'] = 'Liste Utilisateurs';
+Sbi.locale.ln['sbi.users.headerValue'] = 'Valeur';
+Sbi.locale.ln['sbi.users.pwdNotMatching'] = 'Môt de passe et Confirmer Môt de pass doit etre eguaux!';
+Sbi.locale.ln['sbi.users.confirm'] = 'Confirmer';
+Sbi.locale.ln['sbi.users.confirmDelete'] = 'Confirme effacer Utilisateur?';
 
 // Toolbar 
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Envoyer à';

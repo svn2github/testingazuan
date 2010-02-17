@@ -66,8 +66,16 @@ Sbi.profiling.ManageUsers = function(config) {
 	this.initStores(config);
 	
 	this.initManageUsers();
+	
+	this.usersStore.load();
+	
+	/*Ext.getCmp('usergrid').on('render',  function(){
+			alert('Rendering');
+            }, this);
+        
+    Ext.getCmp('usergrid').render();
 	   
-   /*Ext.getCmp('usergrid').store.on('load', function(){
+   Ext.getCmp('usergrid').store.on('load', function(){
 	 var grid = Ext.getCmp('usergrid');
 	 
 	 if(this.usersStore.getTotalCount()>0){
@@ -78,8 +86,8 @@ Sbi.profiling.ManageUsers = function(config) {
 	 single: true
    });*/
    
-   this.usersStore.load();
-		
+   
+	/*	
 	Ext.getCmp("attributes-form").store.removeAll();
    	var tempAttrArr = this.attributesEmptyStore;
    	var length = this.attributesEmptyStore.length;
@@ -97,7 +105,7 @@ Sbi.profiling.ManageUsers = function(config) {
        }	
 	
 	Ext.getCmp('roles-form').doLayout();
-	Ext.getCmp('attributes-form').doLayout();
+	Ext.getCmp('attributes-form').doLayout();*/
    
    Ext.getCmp('usergrid').on('delete', this.deleteSelectedUser, this);
 	
@@ -172,13 +180,13 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
         });
        
         this.colModel = new Ext.grid.ColumnModel([
-         {id:'userId', header: "User ID", width: 150, sortable: true, dataIndex: 'userId'},
-         {header: "Full Name", width: 150, sortable: true, dataIndex: 'fullName'},
+         {id:'userId', header: LN('sbi.users.userId'), width: 150, sortable: true, dataIndex: 'userId'},
+         {header: LN('sbi.users.fullName'), width: 150, sortable: true, dataIndex: 'fullName'},
          this.deleteColumn
         ]);
      	   
  	   this.buttons = [{
-        	text : 'Save'
+        	text : LN('sbi.attributes.update')
         	, id: 'save-btn'
 	        , scope : this
 	        , handler : this.save
@@ -193,7 +201,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
            , height: 450
            , itemId: 'tabs'
 		   , items: [{
-		        title: 'Details'
+		        title: LN('sbi.roles.details')
 		        , itemId: 'detail'
 		        , layout: 'fit'
 		        , items: {
@@ -215,25 +223,25 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		                 name: 'id',
 		                 hidden: true
 		             },{
-		                 fieldLabel: 'User ID',
+		                 fieldLabel: LN('sbi.users.userId'),
 		                 name: 'userId',
 		                 allowBlank: false,
 		                 validationEvent:true,
 		            	 maxLength:100,
 		            	 minLength:1,
 		            	 regex : new RegExp("^([a-zA-Z1-9_\x2D])+$", "g"),
-		            	 regexText : 'Richiesta stringa alfanumerica (underscore e trattino inclusi)'
+		            	 regexText : LN('sbi.users.wrongFormat')
 		             },{
-		                 fieldLabel: 'Full Name',
+		                 fieldLabel:  LN('sbi.users.fullName'),
 		                 name: 'fullName',
 		                 allowBlank: false,
 		                 validationEvent:true,
 		            	 maxLength:255,
 		            	 minLength:1,
 		            	 regex : new RegExp("^([a-zA-Z0-9_\x2D\s\x2F])+$", "g"),
-		            	 regexText : 'Formato errato'
+		            	 regexText : LN('sbi.users.wrongFormat')
 		             },{
-		                 fieldLabel: 'Password',
+		                 fieldLabel: LN('sbi.users.pwd'),
 		                 name: 'pwd',
 		                 inputType: 'password',
 		                 allowBlank: false,
@@ -241,7 +249,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		            	 maxLength:160,
 		            	 minLength:1
 		             },{
-		                 fieldLabel: 'Confirm Password',
+		                 fieldLabel:  LN('sbi.users.confPwd'),
 		                 name: 'confirmpwd',
 		                 inputType: 'password',
 		                 allowBlank: false,
@@ -252,14 +260,24 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		    	
 		    	}
 		    },{
-		        title: 'Roles'
+		        title: LN('sbi.users.roles')
 		        , id : 'rolesList'
 		        //,html: 'Is Able to'
 		        , layout: 'fit'
 		        , items: [this.rolesGrid]
 		        , itemId: 'roles'
+		        , scope: this
+		        , listeners: {
+   	                      activate: function(p) {
+   	                      	//alert('Viewready');
+   	                      	  var g = p.getComponent();
+   	                      	  /*g.getView().refresh();
+	   	                      g.fireEvent('rowclick', g, 0);
+							  g.getSelectionModel().selectRow(0); 	 */                     
+   	                      } 
+   	             }
 		    },{
-		        title: 'Attributes'
+		        title: LN('sbi.users.attributes')
 		        , id : 'attrList'
 	            , items : [ this.attributesGridPanel ]
 	           // , autoWidth : true
@@ -287,7 +305,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	          id: 'user-form',
    	          frame: true,
    	          labelAlign: 'left',
-   	          title: 'Users Management',
+   	          title: LN('sbi.users.manageUsers'),
    	          buttons: this.addBtn,
    	          bodyStyle:'padding:5px',
    	          width: 850,
@@ -343,7 +361,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	                      }
    	                  }),
    	                  height: 450,
-   	                  title:'Users list',
+   	                  title:LN('sbi.users.usersList'),
    	                  tbar: this.tb,
    	                  /*
 	   	 	   	      tools:[{
@@ -357,10 +375,11 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	                  border: true
   	                 ,listeners: {
    	                      viewready: function(g) {
+   	                      	//alert('Viewready');
    	                      	  g.getView().refresh();
 	   	                      g.fireEvent('rowclick', g, 0);
 							  g.getSelectionModel().selectRow(0); 	                      
-   	                      } 
+   	                      }  
    	                  }
    	              }
    	          }, this.tabs
@@ -380,12 +399,12 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
             store : this.attributesStore,
             autoHeight : true,
             columns : [ {          	
-                header : 'Name',
+                header : LN('sbi.roles.headerName'),
                 width : 75,
                 sortable : true,
                 dataIndex : 'name'
             }, {           	
-                header : 'Value',
+                header : LN('sbi.users.headerValue'),
                 width : 75,
                 sortable : true,
                 dataIndex : 'value',
@@ -410,8 +429,8 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		
         this.cmRoles = new Ext.grid.ColumnModel([
 	         //{id:'id',header: "id", dataIndex: 'id'},
-	         {header: "name", width: 45, sortable: true, dataIndex: 'name'},
-	         {header: "description", width: 65, sortable: true, dataIndex: 'description'}
+	         {header: LN('sbi.roles.headerName'), width: 45, sortable: true, dataIndex: 'name'},
+	         {header: LN('sbi.roles.headerDescr'), width: 65, sortable: true, dataIndex: 'description'}
 	         ,this.smRoles 
 	    ]);
 
@@ -570,14 +589,14 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 						}
 	
 		                Ext.MessageBox.show({
-		                    title: 'Validation Error',
+		                    title: LN('sbi.attributes.validationError'),
 		                    msg: errMessage,
 		                    width: 400,
 		                    buttons: Ext.MessageBox.OK
 		               });
 		      		}else{
 		                Ext.MessageBox.show({
-		                    title: 'Error',
+		                    title:LN('sbi.roles.error'),
 		                    msg: 'Error in Saving User',
 		                    width: 150,
 		                    buttons: Ext.MessageBox.OK
@@ -588,7 +607,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
        		 });
 			
 		}else{
-			alert('Password and Confirm Password fields must be equal!')			
+			alert(LN('sbi.users.pwdNotMatching'))			
 		}
 	
     }
@@ -625,8 +644,8 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	
 	, deleteSelectedUser: function(userId, index) {
 		Ext.MessageBox.confirm(
-            'Please confirm',
-            'Confirm User delete?',            
+		     LN('sbi.users.confirm'),
+            LN('sbi.users.confirmDelete'),            
             function(btn, text) {
                 if (btn=='yes') {
                 	if (userId != null) {	
@@ -653,7 +672,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 				            },
 				            failure: function() {
 				                Ext.MessageBox.show({
-				                    title: 'Error',
+				                    title: LN('sbi.roles.error'),
 				                    msg: 'Error in deleting User',
 				                    width: 150,
 				                    buttons: Ext.MessageBox.OK

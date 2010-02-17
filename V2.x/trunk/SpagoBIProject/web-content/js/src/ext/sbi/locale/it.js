@@ -175,8 +175,21 @@ Sbi.locale.ln['sbi.roles.alfanumericString2'] = 'Richiesta stringa alfanumerica'
 Sbi.locale.ln['sbi.roles.rolesManagement'] = 'Gestione dei Ruoli';
 Sbi.locale.ln['sbi.roles.rolesList'] = 'Lista Ruoli';
 Sbi.locale.ln['sbi.roles.error'] = 'Errore';
-Sbi.locale.ln['sbi.roles.result'] = 'Resultato';
+Sbi.locale.ln['sbi.roles.result'] = 'Risultato';
 
+Sbi.locale.ln['sbi.users.fullName'] = 'Nome Completo';
+Sbi.locale.ln['sbi.users.userId'] = 'User ID';
+Sbi.locale.ln['sbi.users.pwd'] = 'Password';
+Sbi.locale.ln['sbi.users.confPwd'] = 'Conferma Password';
+Sbi.locale.ln['sbi.users.wrongFormat'] = 'Formato errato';
+Sbi.locale.ln['sbi.users.roles'] = 'Ruoli';
+Sbi.locale.ln['sbi.users.attributes'] = 'Attributi';
+Sbi.locale.ln['sbi.users.manageUsers'] = 'Gestion Utenti';
+Sbi.locale.ln['sbi.users.usersList'] = 'Lista Utenti';
+Sbi.locale.ln['sbi.users.headerValue'] = 'Valore';
+Sbi.locale.ln['sbi.users.pwdNotMatching'] = 'Password e Conferma Password devono essere uguali!';
+Sbi.locale.ln['sbi.users.confirm'] = 'Per favore conferma';
+Sbi.locale.ln['sbi.users.confirmDelete'] = 'Confermi eliminazione utente?';
 
 // Toolbar
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Invia a';

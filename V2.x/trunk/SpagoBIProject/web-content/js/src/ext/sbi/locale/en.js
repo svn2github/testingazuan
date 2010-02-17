@@ -186,6 +186,20 @@ Sbi.locale.ln['sbi.roles.rolesList'] = 'Roles list';
 Sbi.locale.ln['sbi.roles.error'] = 'Error';
 Sbi.locale.ln['sbi.roles.result'] = 'Result';
 
+Sbi.locale.ln['sbi.users.fullName'] = 'Full Name';
+Sbi.locale.ln['sbi.users.userId'] = 'User ID';
+Sbi.locale.ln['sbi.users.pwd'] = 'Password';
+Sbi.locale.ln['sbi.users.confPwd'] = 'Confirm Password';
+Sbi.locale.ln['sbi.users.wrongFormat'] = 'Wrong Format';
+Sbi.locale.ln['sbi.users.roles'] = 'Roles';
+Sbi.locale.ln['sbi.users.attributes'] = 'Attributes';
+Sbi.locale.ln['sbi.users.manageUsers'] = 'Users Management';
+Sbi.locale.ln['sbi.users.usersList'] = 'Users list';
+Sbi.locale.ln['sbi.users.headerValue'] = 'Value';
+Sbi.locale.ln['sbi.users.pwdNotMatching'] = 'Password and Confirm Password fields must be equal!';
+Sbi.locale.ln['sbi.users.confirm'] = 'Please confirm';
+Sbi.locale.ln['sbi.users.confirmDelete'] = 'Confirm User delete?';
+
 // Toolbar 
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Send to';
 // Save into personal folder

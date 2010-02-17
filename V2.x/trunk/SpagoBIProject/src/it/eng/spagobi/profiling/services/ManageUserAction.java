@@ -24,17 +24,14 @@ package it.eng.spagobi.profiling.services;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.x.AbstractSpagoBIAction;
 import it.eng.spagobi.analiticalmodel.document.x.SaveMetadataAction;
-import it.eng.spagobi.chiron.serializer.SerializationException;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.bean.SbiUser;
-import it.eng.spagobi.profiling.bean.SbiUserAttributes;
 import it.eng.spagobi.profiling.bo.UserBO;
 import it.eng.spagobi.profiling.dao.ISbiUserDAO;
-import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONSuccess;
@@ -42,7 +39,6 @@ import it.eng.spagobi.utilities.service.JSONSuccess;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -179,49 +175,7 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 						"Exception occurred while retrieving user to delete",
 						e);
 			}
-		}/*else if (serviceType != null	&& serviceType.equalsIgnoreCase(USER_UPDATE)) {
-			Integer id = getAttributeAsInteger(ID);
-			String userId = getAttributeAsString(USER_ID);
-			String fullName = getAttributeAsString(FULL_NAME);
-			String password = getAttributeAsString(PASSWORD);
-			
-			ArrayList<String> roles = (ArrayList<String>)getAttributeAsStringList(ROLES);//roles ID
-			JSONArray attributesJSON = getAttributeAsJSONArray(ATTRIBUTES);//attributes ID-value
-			
-			if (userId != null) {
-				if(password == null){
-					throw new SpagoBIServiceException(SERVICE_NAME,	"Please check password!");
-				}
-				try {
-					HashMap<Integer, String> attrList = null;
-					if(attributesJSON != null){
-						attrList = deserializeJSONArray(attributesJSON);
-					}
-					try {
-						
-						//userDao.fullUpdateSbiUser(id, password, fullName, roles, attrList);
-						logger.debug("User udated");
-						writeBackToClient( new JSONAcknowledge("Operazion succeded") );
-
-					} catch (Throwable e) {
-						logger.error("Exception occurred while updating user", e);
-						throw new SpagoBIServiceException(SERVICE_NAME,
-								"Exception occurred while updating user",
-								e);
-					}
-				
-				} catch (JSONException e) {
-					logger.error("Exception occurred while write Back To Client after updating user", e);
-					throw new SpagoBIServiceException(SERVICE_NAME,
-							"Exception occurred while write Back To Client after updating user",
-							e);
-				}
-
-			}else{
-				logger.error("User name missing");
-				throw new SpagoBIServiceException(SERVICE_NAME,	"Please enter user name");
-			}
-		}*/else if(serviceType == null){
+		}else if(serviceType == null){
 			try {
 				List<SbiAttribute> attributes = DAOFactory.getSbiAttributeDAO().loadSbiAttributes();
 				List<SbiExtRoles> roles = DAOFactory.getRoleDAO().loadAllRoles();

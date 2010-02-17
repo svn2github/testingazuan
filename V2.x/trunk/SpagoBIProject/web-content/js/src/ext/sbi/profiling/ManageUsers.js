@@ -574,7 +574,6 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 									this.usersStore.remove(deleteRow);
 									this.usersStore.commitChanges();
 									var grid = Ext.getCmp('usergrid');
-									alert(this.usersStore.getCount());
 									if(this.usersStore.getCount()>0){
 										grid.getSelectionModel().selectRow(0);
 										grid.fireEvent('rowclick', grid, 0);

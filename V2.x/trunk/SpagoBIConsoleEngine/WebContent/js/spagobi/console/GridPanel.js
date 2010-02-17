@@ -48,7 +48,7 @@
 Ext.ns("Sbi.console");
 
 Sbi.console.GridPanel = function(config) {
-
+	
 		var defaultSettings = {
 			//title: LN('sbi.qbe.queryeditor.title')
 		};
@@ -58,10 +58,10 @@ Sbi.console.GridPanel = function(config) {
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
-		
+		//var filterBarConfig = c.filterBar || {};
+		//delete c.filterBar;
 		Ext.apply(this, c);
 		
-
 		var params = {ds_label: config.table.dataset.label};
 		this.services = new Array();
 	  	this.services['getDataService'] = Sbi.config.serviceRegistry.getServiceUrl({
@@ -73,7 +73,8 @@ Sbi.console.GridPanel = function(config) {
 		this.initColumnModel();
 		this.initSelectionModel();
 		
-		this.initFilterBar(c.FilterBarConf || {});
+		
+		this.initFilterBar(c || {});
 		
 
 
@@ -88,6 +89,7 @@ Sbi.console.GridPanel = function(config) {
             	enableRowBody:true,
             	showPreview:true
         	}
+      ,tbar: this.filterBar
 		});   
 	
 		// constructor
@@ -158,92 +160,21 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		this.getColumnModel().setConfig(meta.fields);
 	}
 	
+
+
+
+
+
+   , initFilterBar: function(filterBarConf) {
 	
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   , initFilterBar: function(filterBar) {
-      
-      //Template simulator:
-      var tmpActions = [{name: 'refresh'
-                    , hidden: false
-                    , config: {}}
-                    , {name: 'errors'
-                    ,  hidden: false
-                    ,  config: {
-                        staticParams: {param1: 'paramValue1'
-                                      ,param2: 'paramValue2' }
-                      }
-                     }                    
-                    , {name: 'errors_inactive'
-                    ,  hidden: true
-                    ,  config: {
-                        staticParams: {param1: 'paramValue'}
-                      }
-                    }
-                    , {name: 'warnings'
-                    ,  hidden: false
-                    ,  config: {
-                        staticParams: {param1: 'paramValue'}
-                      }
-                     }
-                    , {name: 'warnings_inactive'
-                    ,  hidden: true
-                    ,  config: {
-                        staticParams: {param1: 'paramValue'}
-                      }
-                     }
-                    , {name: 'views'
-                    ,  hidden: false
-                    ,  config: {
-                        staticParams: {param1: 'paramValue'}
-                      }
-                     }                  
-                    , {name: 'views_inactive'
-                    ,  hidden: true
-                    ,  config: {
-                        staticParams: {param1: 'paramValue'}
-                      }
-                     }];
-      
-      var tmpFilters = [{text: 'Brands'
-                    , column: 'brandname'
-                    , operator: 'EQUALS_TO'
-                    , operand: 'DISTINCT'}
-                    , {text: 'Products'
-                    , column: 'productName'
-                    , operator: 'EQUALS_TO'
-                    , operand: 'DISTINCT'}
-                    , {text: 'Years'
-                    , column: 'year'
-                    , operator: 'EQUALS_TO'
-                    , operand: 'DISTINCT'}];
-                    
-      var tmpDefaults = { type: 'custom'
-                        , operator: 'EQUALS_TO'
-                        , operand: 'DISTINCT'};
-                        
-     // var type = 'custom'; //default | custom | automatic
- 
-      if (tmpDefaults.type === 'default'){
+      if (filterBarConf.type === 'default'){
     	   alert("Default filterbar working in progress!!");
-      } else if (tmpDefaults.type === 'custom' || tmpDefaults.type === 'automatic'){
-          this.filterBar = new Sbi.console.CustomFilteringToolbar({defaults: tmpDefaults
-                                                                 , actions: tmpActions
-                                                                 , filters: tmpFilters}, this.store);          	          	
+    	   
+      } else if (filterBarConf.type === 'custom' || filterBarConf.type === 'automatic') {
+    	     
+          this.filterBar = new Sbi.console.CustomFilteringToolbar({filterBar: filterBarConf
+                                                                 , store: this.store});          	  
+        	       	
       }   
   }
 });

@@ -47,8 +47,8 @@
 
 Ext.ns("Sbi.console");
 
-Sbi.console.FilteringToolbar = function(config, store) {
-	
+Sbi.console.FilteringToolbar = function(config) {
+
 	var defaultSettings = {
 	    autoWidth: true
 	  , width:'100%'
@@ -59,9 +59,8 @@ Sbi.console.FilteringToolbar = function(config, store) {
 	}
 	
 	var c = Ext.apply(defaultSettings, config || {});
-	
 	Ext.apply(this, c);
-	
+		
 	/*
 	this.services = this.services || new Array();	
 	this.services['doThat'] = this.services['doThat'] || Sbi.config.serviceRegistry.getServiceUrl({
@@ -71,10 +70,10 @@ Sbi.console.FilteringToolbar = function(config, store) {
 	*/
 	
 	c = Ext.apply(c, {});
-
+	
 	// constructor
 	Sbi.console.FilteringToolbar.superclass.constructor.call(this, c);
-    
+    	
 	//	this.addEvents();
 };
 
@@ -84,26 +83,25 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	
 	// -- public methods -----------------------------------------------------------------
     
-   
-    
     
 	// -- private methods ---------------------------------------------------------------
   
 	, onRender : function(ct, position) { 
-	  
+	    	
+	  //alert('filtering IN');
 		Sbi.console.FilteringToolbar.superclass.onRender.call(this, ct, position);
 		
-		alert('filtering IN');
+		
 		
 		var b;
 		
 		this.addFill();
-		for(var i=0; i < this.actions.length; i++){
-			b = new Sbi.console.ActionButton(this.actions[i]);
+		for(var i=0; i < this.filterBar.actions.length; i++){
+			b = new Sbi.console.ActionButton(this.filterBar.actions[i]);
     		this.addButton(b);	
     	}	
 		
-		alert('filtering OUT');
+		//alert('filtering OUT');
 	}
     
 });

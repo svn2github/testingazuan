@@ -61,15 +61,14 @@ Sbi.console.DetailPage = function(config) {
 		var c = Ext.apply(defaultSettings, config || {});
 		var navigationBarConfig = c.navigationBar || {};
 		delete c.navigationBar;
-		//var navigationBar = c.navigationBar || {};
-		//delete c.navigationBar;
-		
+		var filterBarConfig = c.filterBar || {};
+		delete c.filterBar;
 		Ext.apply(this, c);
 		
 
 		
 		this.initNavigationToolbar(navigationBarConfig);
-		this.initGridPanel(c.gridPanel || {});
+		this.initGridPanel(filterBarConfig || {});
 		
 		c = Ext.apply(c, {  	
 			//html: this.msg
@@ -95,22 +94,8 @@ Ext.extend(Sbi.console.DetailPage, Ext.Panel, {
     	this.navigationToolbar = new Sbi.console.NavigationToolbar(navigationBarConf);
     }
     
-    , initGridPanel: function(conf){
-     
-    	//template simulator
-        var tmpTable = {                                                            
-                          dataset: {
-                                // LABEL del dataset in spagobi
-                              	label: 'testConsole'
-                  			        // parametri statici e dinamici definiti come navigationBar
-                                 	, params: {}  
-                                 	, refreshTime: '30' // in secondi
-                          }};
-                          
-        
-        
-        this.gridPanel = new Sbi.console.GridPanel({table: tmpTable});
-     // this.gridPanel = new Sbi.console.GridPanel(conf);
+    , initGridPanel: function(conf){       
+      this.gridPanel = new Sbi.console.GridPanel(conf);
     }
     
     

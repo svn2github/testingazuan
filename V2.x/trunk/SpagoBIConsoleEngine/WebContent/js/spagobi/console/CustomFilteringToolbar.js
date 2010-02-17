@@ -46,8 +46,8 @@
 
 Ext.ns("Sbi.console");
 
-Sbi.console.CustomFilteringToolbar = function(config, store) {
-	alert("store: "+ store.toSource());
+Sbi.console.CustomFilteringToolbar = function(config) {
+
 		var defaultSettings = {
 		    // default goes here
 		};
@@ -57,7 +57,8 @@ Sbi.console.CustomFilteringToolbar = function(config, store) {
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
-		
+	//	var filterBarConfig = c.filterBar || {};
+	//	delete c.filterBar;
 		Ext.apply(this, c);
 		
 		/*
@@ -75,6 +76,7 @@ Sbi.console.CustomFilteringToolbar = function(config, store) {
 
 		// constructor
 		Sbi.console.CustomFilteringToolbar.superclass.constructor.call(this, c);
+		
 };
 
 Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {  
@@ -84,70 +86,18 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
 
     // -- public methods ---------------------------------------------------------------
     , onRender : function(ct, position) {
-		alert("onRender");
+		  
   		var s, cb;
+      
+  		if (this.filterBar.type === 'automatic' ){
   		
-  	alert("type2: "+ config.defaults.type.toSource());
-  		
-  		if (this.defaults.type === 'automatic' ){
-  		/*
-      		s = new Ext.data.ArrayStore({
-                          fields: ['field', 'value', 'label']
-                          , data : [
-                                   ['FieldA','valA1' + i, 'Value A 1' + i]
-                                 , ['FieldA','valA2' + i, 'Value A 2' + i]
-                                 , ['FieldA','valA3' + i, 'Value A 3' + i]
-                                 , ['FieldA','valA4' + i, 'Value A 4' + i]
-                                 , ['FieldA','valA5' + i, 'Value A 5' + i]
-                                 , ['FieldB','valB1' + i, 'Value B 1' + i]
-                                 , ['FieldB','valB2' + i, 'Value B 2' + i]
-                                 , ['FieldB','valB3' + i, 'Value B 3' + i]
-                                 , ['FieldB','valB4' + i, 'Value B 4' + i]
-                                 , ['FieldC','valC1' + i, 'Value C 1' + i]
-                                 , ['FieldC','valC2' + i, 'Value C 2' + i]
-                                 , ['FieldC','valC3' + i, 'Value C 3' + i]
-                                 , ['FieldD','valD1' + i, 'Value D 1' + i]
-                                 , ['FieldD','valD2' + i, 'Value D 2' + i]                              
-                            ]
-      		});
-      		*/
-      		
-  				cb = new Ext.form.ComboBox({
-        	        store: this.store,
-        	        width: 100,
-        	        displayField:'label',
-        	        valueField:'value',
-        	        typeAhead: true,
-        	        triggerAction: 'all',
-        	        emptyText:'...',
-        	        selectOnFocus:true,
-        	        mode: 'local'
-        	    });	 
-    			
-    		
-    		//	this.addText(s.data.field);
-    			this.addField(cb);	
-        }
-        else{
-      		for(var i=0, l=this.filters.length; i<l; i++) {
-      		alert(this.filters[i].text.toSource());
-      		/*
-      			s = new Ext.data.ArrayStore({
-                      fields: ['value', 'label']
-                      , data : [
-                               ['valA1' + i, 'Value A 1' + i]
-                             , ['valA2' + i, 'Value A 2' + i]
-                             , ['valA3' + i, 'Value A 3' + i]
-                             , ['valA4' + i, 'Value A 4' + i]
-                             , ['valA5' + i, 'Value A 5' + i]        
-                        ]
-      			});
-          */
-      			cb = new Ext.form.ComboBox({
+  			for(var i=0, l=this.filterBar.filters.length; i<l; i++) {
+    		  
+    				cb = new Ext.form.ComboBox({
           	        store: this.store,
           	        width: 100,
-          	        displayField:'column-1',
-          	        valueField:'column-1',
+          	        displayField:'column-'+(i+1),
+          	        valueField:'column-'+(i+1),
           	        typeAhead: true,
           	        triggerAction: 'all',
           	        emptyText:'...',
@@ -155,12 +105,33 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
           	        mode: 'local'
           	    });	 
       			
-      			this.addText(this.filters[i].text);
+      	
+      		  this.addText('header');
+      			this.addField(cb);	
+    			}
+        }
+        else{
+          //'custom' type
+      		for(var i=0, l=this.filterBar.filters.length; i<l; i++) {
+      		
+      			cb = new Ext.form.ComboBox({
+          	        store: this.store,
+          	        width: 100,
+          	        displayField:'column-'+(i+1),
+          	        valueField:'column-'+(i+1),
+          	        typeAhead: true,
+          	        triggerAction: 'all',
+          	        emptyText:'...',
+          	        selectOnFocus:true,
+          	        mode: 'local'
+          	    });	 
+      			
+      			this.addText(this.filterBar.filters[i].text);
       			this.addField(cb);	    	
       		}
-    		} //for
-    		//calls superclass for define buttons
-    		Sbi.console.CustomFilteringToolbar.superclass.onRender.call(this, ct, position);
+		} //for
+		//calls superclass for define buttons
+		Sbi.console.CustomFilteringToolbar.superclass.onRender.call(this, ct, position);
 		
     } 
    

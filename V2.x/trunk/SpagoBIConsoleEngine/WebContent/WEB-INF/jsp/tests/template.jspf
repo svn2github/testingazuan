@@ -57,7 +57,163 @@ Sbi.template = {
 				}
 				]
 			}
-		}, {
+	    	// tollbar con filtri sui dati mostarti nella griglia
+	        ,filterBar: {
+	            // default = filtering toolbar della lookup field; 
+	            // automatic = crea un filtro per ogni colonna della griglia (operator: 'EQUALS_TO'; operand: DISTINCT) 
+	            // custom: permette di creare filtri personalizzati solo su alcune colonne della griglia. La definizione di tali filtri si trova all'interno dell'attributo filters
+	            type: 'automatic'  
+	            
+	            // nel caso di filtro custom i seguenti parametri di default vengono applicati qualora non espressamente specificati dall'utente
+	            , defaults: {
+	                operator: 'EQUALS_TO'
+	                ,operand: 'DISTINCT' // DISTINCT | MANUAL
+	            }     
+	
+	            , filters: [
+	              {
+	           	  	 text: 'Brands'
+	               , column: 'brandname'
+	               , operator: 'EQUALS_TO'
+	               , operand: 'DISTINCT'
+	               }, {
+	                 text: 'Products'
+	               , column: 'productName'
+	               , operator: 'EQUALS_TO'
+	               , operand: 'DISTINCT'
+	               }, {
+	                 text: 'Years'
+	               , column: 'year'
+	               , operator: 'EQUALS_TO'
+	               , operand: 'DISTINCT'
+	              }
+	            ]
+	            
+	            , actions: [
+	                {
+	                    name: 'refresh'
+	                    , hidden: false
+	                    , config: {}}
+	                    , {name: 'errors'
+	                    ,  hidden: false
+	                    ,  config: 
+	                       {
+	                        staticParams: {param1: 'paramValue1'
+	                                      ,param2: 'paramValue2' }
+	                        }
+	                     }, {
+	                       name: 'errors_inactive'
+	                    ,  hidden: true
+	                    ,  config: {
+	                       		staticParams: {param1: 'paramValue'}
+	                      }
+	                    }, {
+	                       name: 'warnings'
+	                    ,  hidden: false
+	                    ,  config: {
+	                       		staticParams: {param1: 'paramValue'}
+	                       }
+	                     }, {name: 'warnings_inactive'
+	                    ,  hidden: true
+	                    ,  config: {
+	                        	staticParams: {param1: 'paramValue'}
+	                       }
+	                     },{
+	                       name: 'views'
+	                    ,  hidden: false
+	                    ,  config: {
+	                        	staticParams: {param1: 'paramValue'}
+	                       }
+	                     }, {name: 'views_inactive'
+	                    ,  hidden: true
+	                    ,  config: {
+	                        	staticParams: {param1: 'paramValue'}
+	                       }
+	                     }
+	            ]
+	
+	            , table: {
+		            
+		            // colonne aggiungibili alla griglia di base
+		            dataset: {
+		                  // LABEL del dataset in spagobi
+		                	label: 'testConsole'
+		    			        // parametri statici e dinamici definiti come navigationBar
+		                   	, params: {}  
+		                   	, refreshTime: '30' // in secondi
+		            } 
+		
+		            , inlineCharts: [
+		                { // 0..n volte
+		                    type: 'bar'
+		                    , column: 'sales'
+		                    , color: 'gray'
+		                    // se è di tipo numerico usa il valore passato; 
+		                    // se è 'remote' calcola il massimo lato server (NOTA: il calcolo viene fatto contestualmente al refresh dei dati ed il valore ottenuto viene copiato nei metadati del resultset)
+		                    // se locale è uguale al massimo dei valori presenti nella pagina attualmente visualizzata
+		                    , maxValue: 45 // <absolute value>| 'remote' | 'local'
+		                    , tooltip: 'volume vendite'
+		                }, { // 0..n volte
+		                     type: 'point'
+		                     , column: 'errorNum'
+		                     , color: 'red'
+		                     // soglia oltre alla quale il simbolo deve essere visualizzato
+		                     , treshhold: '25'
+		                     , tooltip: 'superata la soglia di 25 errori'
+		                }
+		            ]
+		            
+		            , inlineActions: [
+		                {
+		                    name: 'start'
+		                    , hidden: false
+		                    , config: {
+		                        params: {
+		                            // parametri statici e dinamici definiti come in detailPanel.pages.navigationBar.documents
+		                        }
+		                    }
+		                }, {
+		                    name: 'stop'
+		                    , hidden: false
+		                    , config: {
+		                        params: {
+		                            // parametri statici e dinamici definiti come in detailPanel.pages.navigationBar.documents
+		                        }
+		                    }
+		                }, {
+		                    name: 'errors'
+		                    , hidden: false
+		                    , config: {}
+		                }, {
+		                    name: 'warnings'
+		                    , hidden: false
+		                    , config: {}
+		                }, {
+		                    name: 'informationlog'
+		                    , hidden: false
+		                    , config: {}
+		                }, { // 0..n volte
+		                    name: 'crossnav'
+		                    , hidden: false
+		                    , config: {
+		                        target: 'self' // self | new
+		                       //,document: // definito come in detailPanel.pages.navigationBar.documents
+		                    }
+		                }, {
+		                    name: 'monitor'
+		                    , hidden: false
+		                    , config: {}
+		                }, {
+		                    name: 'monitor'
+		                    , hidden: false
+		                    , config: {}
+		                }
+		            ]    
+		        }//table
+	    	} //filterBar
+	
+			
+		}/*, {
 			title: 'Pag. 2'
 			, msg: 'Io sono la SECONDA pagina'
 			, navigationBar: {
@@ -78,12 +234,10 @@ Sbi.template = {
 				}
 				]
 			}
-		}
-		]
-    }
-
-		
-}
+		}	*/
+		] //pages
+	}	//detailPanel
+} //template
 
 
 </script>

@@ -56,6 +56,7 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 	// type of service
 	private final String ATTR_LIST = "ATTR_LIST";
 	private final String ATTR_DELETE = "ATTR_DELETE";
+	private final String IS_NEW_ATTR = "IS_NEW_ATTR";
 	
 	private final String SAMPLES = "samples";
 	private final String ID = "id";
@@ -104,55 +105,68 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 						if(!samples.isNull(ID)){
 							idStr = samples.getString(ID);
 						}
-						if(!samples.isNull(NAME)){
-							
-							name = samples.getString(NAME);
-
-							if (GenericValidator.isBlankOrNull(name) || 
-									!GenericValidator.matchRegexp(name, ALPHANUMERIC_STRING_REGEXP_NOSPACE)||
-										!GenericValidator.maxLength(name, nameMaxLenght)){
-								logger.error("Either the field name is blank or it exceeds maxlength or it is not alfanumeric");
-								EMFValidationError e = new EMFValidationError(EMFErrorSeverity.ERROR, description, "9000","");
-								getHttpResponse().setStatus(404);								
-								writeBackToClient("Either the field name is blank or it exceeds maxlength or it is not alfanumeric");
-								return;
-
-							}
-						}
-						if(!samples.isNull(DESCRIPTION)){
-							description = samples.getString(DESCRIPTION);
-
-							if (GenericValidator.isBlankOrNull(description) ||
-									!GenericValidator.matchRegexp(description, ALPHANUMERIC_STRING_REGEXP_NOSPACE) ||
-											!GenericValidator.maxLength(description, descriptionMaxLenght)){
-								logger.error("Either the field description is blank or it exceeds maxlength or it is not alfanumeric");
-
-								EMFValidationError e = new EMFValidationError(EMFErrorSeverity.ERROR, description, "9000","");
-								getHttpResponse().setStatus(404);	
-								writeBackToClient("Either the field description is blank or it exceeds maxlength or it is not alfanumeric");
-								return;
-							}
-						}
 						
-						SbiAttribute attribute = new SbiAttribute();
-						if(description!=null){
-							attribute.setDescription(description);
-						}
-						if(name!=null){
-							attribute.setAttributeName(name);
-						}
-						if(idStr!=null && !idStr.equals("")){
-							Integer attributeId = new Integer(idStr);
-							attribute.setAttributeId(attributeId.intValue());
-						}
-						attrDao.saveOrUpdateSbiAttribute(attribute);
-						logger.debug("Attribute updated");
-						JSONObject attributesResponseSuccessJSON = new JSONObject();
-						attributesResponseSuccessJSON.put("success", true);
-						attributesResponseSuccessJSON.put("message", "");
-						attributesResponseSuccessJSON.put("data", "[]");
-						writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );		
+						//checks if it is empty attribute to start insert
+						boolean isNewAttr = this.getAttributeAsBoolean(IS_NEW_ATTR);
+						System.out.println(isNewAttr);
+						if(!isNewAttr){
+							if(!samples.isNull(NAME)){
+								
+								name = samples.getString(NAME);
+								if (GenericValidator.isBlankOrNull(name) || 
+										!GenericValidator.matchRegexp(name, ALPHANUMERIC_STRING_REGEXP_NOSPACE)||
+											!GenericValidator.maxLength(name, nameMaxLenght)){
+									logger.error("Either the field name is blank or it exceeds maxlength or it is not alfanumeric");
+									EMFValidationError e = new EMFValidationError(EMFErrorSeverity.ERROR, description, "9000","");
+									getHttpResponse().setStatus(404);	
+									JSONObject attributesResponseSuccessJSON = new JSONObject();
+									attributesResponseSuccessJSON.put("success", false);
+									attributesResponseSuccessJSON.put("message", "Either the field name is blank or it exceeds maxlength or it is not alfanumeric");
+									attributesResponseSuccessJSON.put("data", "[]");
+									writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );
+
+									return;
+	
+								}
+							}
+							if(!samples.isNull(DESCRIPTION)){
+								description = samples.getString(DESCRIPTION);
+	
+								if (GenericValidator.isBlankOrNull(description) ||
+										!GenericValidator.matchRegexp(description, ALPHANUMERIC_STRING_REGEXP_NOSPACE) ||
+												!GenericValidator.maxLength(description, descriptionMaxLenght)){
+									logger.error("Either the field description is blank or it exceeds maxlength or it is not alfanumeric");
+	
+									EMFValidationError e = new EMFValidationError(EMFErrorSeverity.ERROR, description, "9000","");
+									getHttpResponse().setStatus(404);	
+									JSONObject attributesResponseSuccessJSON = new JSONObject();
+									attributesResponseSuccessJSON.put("success", false);
+									attributesResponseSuccessJSON.put("message", "Either the field description is blank or it exceeds maxlength or it is not alfanumeric");
+									attributesResponseSuccessJSON.put("data", "[]");
+									writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );
+									return;
+								}
+							}
 						
+							SbiAttribute attribute = new SbiAttribute();
+							if(description!=null){
+								attribute.setDescription(description);
+							}
+							if(name!=null){
+								attribute.setAttributeName(name);
+							}
+							if(idStr!=null && !idStr.equals("")){
+								Integer attributeId = new Integer(idStr);
+								attribute.setAttributeId(attributeId.intValue());
+							}
+							attrDao.saveOrUpdateSbiAttribute(attribute);
+							logger.debug("Attribute updated");
+							JSONObject attributesResponseSuccessJSON = new JSONObject();
+							attributesResponseSuccessJSON.put("success", true);
+							attributesResponseSuccessJSON.put("message", "");
+							attributesResponseSuccessJSON.put("data", "[]");
+							writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );		
+						}
 						//else the List of attributes will be sent to the client
 					}else{
 						getAttributesList(locale,attrDao);
@@ -165,9 +179,15 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 				logger.error(e.getMessage(), e);
 				getHttpResponse().setStatus(404);								
 				try {
-					writeBackToClient("Exception occurred while saving attribute");
+					JSONObject attributesResponseSuccessJSON = new JSONObject();
+					attributesResponseSuccessJSON.put("success", true);
+					attributesResponseSuccessJSON.put("message", "Exception occurred while saving attribute");
+					attributesResponseSuccessJSON.put("data", "[]");
+					writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );	
 				} catch (IOException e1) {
 					logger.error(e1.getMessage(), e1);
+				} catch (JSONException e2) {
+					logger.error(e2.getMessage(), e2);
 				}
 				throw new SpagoBIServiceException(SERVICE_NAME,
 						"Exception occurred while retrieving attributes", e);
@@ -210,9 +230,16 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 					logger.error("Exception occurred while deleting attribute", e);
 					getHttpResponse().setStatus(404);								
 					try {
-						writeBackToClient("Exception occurred while deleting attribute");
+						JSONObject attributesResponseSuccessJSON = new JSONObject();
+						attributesResponseSuccessJSON.put("success", true);
+						attributesResponseSuccessJSON.put("message", "Exception occurred while deleting attribute");
+						attributesResponseSuccessJSON.put("data", "[]");
+						writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );	
 					} catch (IOException e1) {
 						logger.error(e1.getMessage(), e1);
+					} catch (JSONException e2) {
+						// TODO Auto-generated catch block
+						logger.error(e2.getMessage(), e2);
 					}
 					throw new SpagoBIServiceException(SERVICE_NAME,
 							"Exception occurred while deleting attribute",

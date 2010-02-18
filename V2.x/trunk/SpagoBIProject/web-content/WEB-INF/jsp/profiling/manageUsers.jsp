@@ -26,6 +26,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%
 	List<SbiAttribute> attributes = (List<SbiAttribute>) aSessionContainer.getAttribute("attributesList");
 	List<Role> roles = (List<Role>) aSessionContainer.getAttribute("rolesList");
+	ConfigSingleton spagoconfig = ConfigSingleton.getInstance(); 
+	SourceBean b = (SourceBean)spagoconfig.getAttribute("SPAGOBI.INTERNAL_PROFILING_INITIALIZER");
+	String passwordAbilitated = (String)b.getAttribute("passwordAbilitated");
 %>
 <script type="text/javascript">
 	<%
@@ -64,6 +67,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		rolesList+="]";
 	}
 	%>
+	Sbi.config.passwordAbilitated = <%=passwordAbilitated%>;
+	
 	var config = {
 				  attributesEmpyList:<%=attributesList%>,
 				  rolesEmptyList:<%=rolesList%>

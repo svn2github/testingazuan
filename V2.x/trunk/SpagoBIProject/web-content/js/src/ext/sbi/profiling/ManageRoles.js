@@ -426,17 +426,17 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 											description:'',
 											typeCd:'',
 											code:'',
-											saveSubobj: false,
-											seeSubobj:false,
-											seeViewpoints:false,
-											seeSnapshot:false,
-											seeNotes:false,
-											sendMail:false,
-											savePersonalFolder:false,
-											saveRemember:false,
-											seeMeta:false,
-											saveMeta:false,
-											buildQbe:false
+											saveSubobj: true,
+											seeSubobj:true,
+											seeViewpoints:true,
+											seeSnapshot:true,
+											seeNotes:true,
+											sendMail:true,
+											savePersonalFolder:true,
+											saveRemember:true,
+											seeMeta:true,
+											saveMeta:true,
+											buildQbe:true
 											});
 	
 		Ext.getCmp('role-form').getForm().loadRecord(emptyRecToAdd);
@@ -450,17 +450,17 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	    			itemTab.items.each(function(item1){
 	
 	    				item1.setValue({
-							'saveSubobj': false,
-							'seeSubobj':false,
-							'seeViewpoints':false,
-							'seeSnapshot':false,
-							'seeNotes':false,
-							'sendMail':false,
-							'savePersonalFolder':false,
-							'saveRemember':false,
-							'seeMeta':false,
-							'saveMeta':false,
-							'buildQbe':false
+							'saveSubobj': true,
+							'seeSubobj':true,
+							'seeViewpoints':true,
+							'seeSnapshot':true,
+							'seeNotes':true,
+							'sendMail':true,
+							'savePersonalFolder':true,
+							'saveRemember':true,
+							'seeMeta':true,
+							'saveMeta':true,
+							'buildQbe':true
 	    				});
 	
 	    			});

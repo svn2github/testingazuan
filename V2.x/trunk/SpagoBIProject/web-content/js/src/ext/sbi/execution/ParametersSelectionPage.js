@@ -150,6 +150,8 @@ Sbi.execution.ParametersSelectionPage = function(config, doc) {
 			if (readyForExecution) {
 				this.isParameterPanelReadyForExecution = true;
 			}
+			// try to find from session the value used for execution
+			Sbi.execution.SessionParametersManager.restoreState(panel);
 			this.checkAutomaticStart();
 		}
 	, this);

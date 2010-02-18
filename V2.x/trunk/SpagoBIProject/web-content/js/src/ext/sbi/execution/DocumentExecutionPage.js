@@ -117,12 +117,16 @@ Sbi.execution.DocumentExecutionPage = function(config, doc) {
     	this.southPanel.collapse();
     	this.northPanel.collapse();
     	this.parametersPanel.applyViewPoint(v);
+    	// save parameters into session
+		Sbi.execution.SessionParametersManager.saveState(this.parametersPanel);
 		this.refreshExecution();
     }, this);
     
     this.shortcutsPanel.on('subobjectexecutionrequest', function (subObjectId) {
     	this.southPanel.collapse();
     	this.northPanel.collapse();
+    	// save parameters into session
+		Sbi.execution.SessionParametersManager.saveState(this.parametersPanel);
 		this.executionInstance.SBI_SUBOBJECT_ID = subObjectId;
 		var formState = this.parametersPanel.getFormState();
 		var formStateStr = Sbi.commons.JSON.encode( formState );
@@ -134,7 +138,7 @@ Sbi.execution.DocumentExecutionPage = function(config, doc) {
     	this.southPanel.collapse();
     	this.northPanel.collapse();
 		this.executionInstance.SBI_SNAPSHOT_ID = snapshotId;
-		this.synchronize(this.executionInstance);
+		this.synchronize(this.executionInstance, false);
 	}, this);
 	
 	this.shortcutsPanel.on('subobjectshowmetadatarequest', function (subObjectId) {
@@ -206,8 +210,6 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			      				if(content.errors !== undefined && content.errors.length > 0) {
 			      					this.fireEvent('loadurlfailure', content.errors);
 			      				} else {
-			      					// save parameters into session
-			      					Sbi.execution.SessionParametersManager.saveState(this.parametersPanel);
 			      					this.miframe.getFrame().setSrc( content.url );
 			      					//this.add(this.miframe);
 			      				}
@@ -262,6 +264,8 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			, tooltip: LN('sbi.execution.executionpage.toolbar.refresh')
 		    , scope: this
 		    , handler : function() {
+					// save parameters into session
+					Sbi.execution.SessionParametersManager.saveState(this.parametersPanel);
 					this.southPanel.collapse();
 					this.northPanel.collapse();
 					this.refreshExecution();

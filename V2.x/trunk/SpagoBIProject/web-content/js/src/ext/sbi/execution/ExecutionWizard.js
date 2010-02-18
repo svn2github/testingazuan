@@ -184,6 +184,8 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 			this.startExecution();
 		}
 		if(this.prevActivePageNumber == this.PARAMETER_SELECTION_PAGE_NUMBER && this.activePageNumber == this.EXECUTION_PAGE_NUMBER) {
+			// save parameters into session
+			Sbi.execution.SessionParametersManager.saveState(this.parametersSelectionPage.parametersPanel);
 			this.documentExecutionPage.southPanel.collapse();
 			this.documentExecutionPage.northPanel.collapse();
 			this.loadUrlForExecution();

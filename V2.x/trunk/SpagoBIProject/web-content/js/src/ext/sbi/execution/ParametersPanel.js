@@ -367,11 +367,6 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			}
 		}
 		
-		// try to find from session the value used for execution
-		if (this.baseConfig.pageNumber === 2) {
-			Sbi.execution.SessionParametersManager.restoreState(this);
-		}
-		
 		this.fireEvent('synchronize', this, isReadyForExecution, this.parametersPreference);
 		
 	}

@@ -163,6 +163,12 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 
 			} catch (Throwable e) {
 				logger.error(e.getMessage(), e);
+				getHttpResponse().setStatus(404);								
+				try {
+					writeBackToClient("Exception occurred while saving attribute");
+				} catch (IOException e1) {
+					logger.error(e1.getMessage(), e1);
+				}
 				throw new SpagoBIServiceException(SERVICE_NAME,
 						"Exception occurred while retrieving attributes", e);
 			}
@@ -202,6 +208,12 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 	
 				} catch (Throwable e) {
 					logger.error("Exception occurred while deleting attribute", e);
+					getHttpResponse().setStatus(404);								
+					try {
+						writeBackToClient("Exception occurred while deleting attribute");
+					} catch (IOException e1) {
+						logger.error(e1.getMessage(), e1);
+					}
 					throw new SpagoBIServiceException(SERVICE_NAME,
 							"Exception occurred while deleting attribute",
 							e);

@@ -156,6 +156,7 @@ Sbi.locale.ln['sbi.attributes.update'] = 'Save';
 Sbi.locale.ln['sbi.attributes.validationError'] = 'Validation Error';
 Sbi.locale.ln['sbi.attributes.headerName'] = 'Name';
 Sbi.locale.ln['sbi.attributes.headerDescr'] = 'Description';
+Sbi.locale.ln['sbi.attributes.error'] = 'Error';
 
 Sbi.locale.ln['sbi.roles.save'] = 'Save';
 Sbi.locale.ln['sbi.roles.savePersonalFolder'] = 'Save into Personal Folder';

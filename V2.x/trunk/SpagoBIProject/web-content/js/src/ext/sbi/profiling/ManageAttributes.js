@@ -85,14 +85,23 @@ Sbi.profiling.ManageAttributes = function(config) {
 	    proxy: new Ext.data.HttpProxy({
 					url: this.services['manageAttributes'],
 					listeners: {
-						'exception': function(proxy, type, action, options, response, arg){
-			                Ext.MessageBox.show({
-			                    title: LN('sbi.attributes.validationError'),
-			                    msg: response.responseText,
-			                    width: 400,
-			                    buttons: Ext.MessageBox.OK
-			               });
-
+						'exception': function(proxy, type, action, options, response, arg){	    	
+	    					var content = Ext.util.JSON.decode( response.responseText );
+	    					if(content.success !== undefined && content.success){
+				                Ext.MessageBox.show({
+				                    title: 'OK',
+				                    msg: 'Operation succeded',
+				                    width: 200,
+				                    buttons: Ext.MessageBox.OK
+				               });
+	    					}else{
+				                Ext.MessageBox.show({
+				                    title: LN('sbi.attributes.error'),
+				                    msg: response.responseText,
+				                    width: 400,
+				                    buttons: Ext.MessageBox.OK
+				               });
+	    					}
 						}
 			        },
 			        scope: this
@@ -223,11 +232,28 @@ Ext.extend(Sbi.profiling.ManageAttributes, Ext.grid.GridPanel, {
         if (!rec) {
             return false;
         }
+        var remove = true;
         this.store.proxy = new Ext.data.HttpProxy({
 					url: this.services['manageAttributesDelete']
+					, listeners: {
+						'exception': function(proxy, type, action, options, response, arg){	    	
+
+			                Ext.MessageBox.show({
+			                    title: LN('sbi.attributes.error'),
+			                    msg: "Operation failed",
+			                    width: 400,
+			                    buttons: Ext.MessageBox.OK
+			               });
+			                remove = false;
+						}
+			        }
+			        ,scope: this
 			});
-        this.store.remove(rec);
-        this.store.commitChanges();
+        if(remove){
+            this.store.remove(rec);
+            this.store.commitChanges();
+        }
+
         this.store.proxy = new Ext.data.HttpProxy({
 			url: this.services['manageAttributes']
         });

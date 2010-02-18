@@ -67,15 +67,7 @@ Sbi.profiling.ManageUsers = function(config) {
 	
 	this.initManageUsers();
 	
-	this.usersStore.load();
-	
-	/*Ext.getCmp('usergrid').on('render',  function(){
-			alert('Rendering');
-            }, this);
-        
-    Ext.getCmp('usergrid').render();
-	   
-   Ext.getCmp('usergrid').store.on('load', function(){
+	Ext.getCmp('usergrid').store.on('load', function(){
 	 var grid = Ext.getCmp('usergrid');
 	 
 	 if(this.usersStore.getTotalCount()>0){
@@ -84,30 +76,11 @@ Sbi.profiling.ManageUsers = function(config) {
 	 }
 	 }, this, {
 	 single: true
-   });*/
-   
-   
-	/*	
-	Ext.getCmp("attributes-form").store.removeAll();
-   	var tempAttrArr = this.attributesEmptyStore;
-   	var length = this.attributesEmptyStore.length;
-       for(var i=0;i<length;i++){
-       	var tempRecord = new Ext.data.Record({"value":tempAttrArr[i].value,"name":tempAttrArr[i].name,"id":tempAttrArr[i].id });
-   		Ext.getCmp("attributes-form").store.add(tempRecord);	
-       }		
-       
-       Ext.getCmp("roles-form").store.removeAll();
-       var tempRolesArr = this.rolesEmptyStore;
-       var length2 = this.rolesEmptyStore.length;
-       for(var i=0;i<length2;i++){
-         	var tempRecord = new Ext.data.Record({"description":tempRolesArr[i].description,"name":tempRolesArr[i].name,"id":tempRolesArr[i].id });
-		Ext.getCmp("roles-form").store.add(tempRecord);								   
-       }	
+   });
 	
-	Ext.getCmp('roles-form').doLayout();
-	Ext.getCmp('attributes-form').doLayout();*/
-   
-   Ext.getCmp('usergrid').on('delete', this.deleteSelectedUser, this);
+	this.usersStore.load();
+ 
+    Ext.getCmp('usergrid').on('delete', this.deleteSelectedUser, this);
 	
 }
 
@@ -244,7 +217,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		                 fieldLabel: LN('sbi.users.pwd'),
 		                 name: 'pwd',
 		                 inputType: 'password',
-		                 allowBlank: false,
+		                 //allowBlank: false,
 		                 validationEvent:true,
 		            	 maxLength:160,
 		            	 minLength:1
@@ -252,7 +225,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		                 fieldLabel:  LN('sbi.users.confPwd'),
 		                 name: 'confirmpwd',
 		                 inputType: 'password',
-		                 allowBlank: false,
+		                 //allowBlank: false,
 		                 validationEvent:true,
 		            	 maxLength:160,
 		            	 minLength:1
@@ -262,27 +235,14 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		    },{
 		        title: LN('sbi.users.roles')
 		        , id : 'rolesList'
-		        //,html: 'Is Able to'
 		        , layout: 'fit'
 		        , items: [this.rolesGrid]
 		        , itemId: 'roles'
 		        , scope: this
-		        , listeners: {
-   	                      activate: function(p) {
-   	                      	//alert('Viewready');
-   	                      	  var g = p.getComponent();
-   	                      	  /*g.getView().refresh();
-	   	                      g.fireEvent('rowclick', g, 0);
-							  g.getSelectionModel().selectRow(0); 	 */                     
-   	                      } 
-   	             }
 		    },{
 		        title: LN('sbi.users.attributes')
 		        , id : 'attrList'
 	            , items : [ this.attributesGridPanel ]
-	           // , autoWidth : true
-	           // , autoHeight : true
-		        //, layout: 'fit'
 		        , itemId: 'attributes'
 		    }]
 		});
@@ -375,7 +335,6 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	                  border: true
   	                 ,listeners: {
    	                      viewready: function(g) {
-   	                      	//alert('Viewready');
    	                      	  g.getView().refresh();
 	   	                      g.fireEvent('rowclick', g, 0);
 							  g.getSelectionModel().selectRow(0); 	                      
@@ -469,7 +428,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		   
 	   var values = this.gridForm.getForm().getValues();
 
-       if(values['pwd']===values['confirmpwd']){
+       if(!Sbi.config.passwordAbilitated || (values['pwd']===values['confirmpwd'])){
 	      	var newRec = null;
 	      	
 			var params = {

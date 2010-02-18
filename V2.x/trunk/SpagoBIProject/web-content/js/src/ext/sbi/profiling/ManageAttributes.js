@@ -119,7 +119,7 @@ Sbi.profiling.ManageAttributes = function(config) {
 	    				minLength:1,
 	    				allowBlank: false,
 	    				regex : new RegExp("[A-Za-z0-9_]", "g"),
-	    				regexText : 'Richiesta stringa alfanumerica'
+	    				regexText : LN('sbi.roles.alfanumericString')
 	    				})},
 	    {header: LN('sbi.attributes.headerDescr'), width: 250, 
 				id:'description',
@@ -129,7 +129,7 @@ Sbi.profiling.ManageAttributes = function(config) {
 					maxLength:500,
 					minLength:1,
     				regex : new RegExp("[A-Za-z0-9_]", "g"),
-    				regexText : 'Richiesta stringa alfanumerica',
+    				regexText : LN('sbi.roles.alfanumericString'),
 					allowBlank: false})}
 	];
 

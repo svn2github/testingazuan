@@ -240,7 +240,7 @@ Ext.extend(Sbi.profiling.ManageAttributes, Ext.grid.GridPanel, {
 
 			                Ext.MessageBox.show({
 			                    title: LN('sbi.attributes.error'),
-			                    msg: "Operation failed",
+			                    msg: LN('sbi.attributes.error.msg'),
 			                    width: 400,
 			                    buttons: Ext.MessageBox.OK
 			               });
@@ -252,6 +252,12 @@ Ext.extend(Sbi.profiling.ManageAttributes, Ext.grid.GridPanel, {
         if(remove){
             this.store.remove(rec);
             this.store.commitChanges();
+            Ext.MessageBox.show({
+                title: LN('sbi.attributes.ok'),
+                msg: LN('sbi.attributes.ok.msg'),
+                width: 400,
+                buttons: Ext.MessageBox.OK
+           });
         }
 
         this.store.proxy = new Ext.data.HttpProxy({

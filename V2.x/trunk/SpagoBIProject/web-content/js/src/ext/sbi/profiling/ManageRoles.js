@@ -399,7 +399,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	                      }
    	                  }),
    	                  autoExpandColumn: 'name',
-   	                  height: 530,
+   	                  height: 500,
    	                  width: 400,
    	                  layout: 'fit',
    	                  title: LN('sbi.roles.rolesList'),

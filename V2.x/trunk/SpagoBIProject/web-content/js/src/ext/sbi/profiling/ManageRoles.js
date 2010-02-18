@@ -63,6 +63,7 @@ Sbi.profiling.ManageRoles = function(config) {
 		serviceName: 'MANAGE_ROLES_ACTION'
 		, baseParams: paramsDel
 	});
+
 	// The new DataWriter component.
 /*	this.writer = new Ext.data.JsonWriter({
 	    encode: false   // <-- don't return encoded JSON -- causes Ext.Ajax#request to send data using jsonData config rather than HTTP params
@@ -126,8 +127,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	       dataIndex: 'id',
 	       iconCls: 'icon-remove',
 	       clickHandler: function(e, t) {
-    	   	  //Ext.getCmp("rolegrid").getStore().load();
-    	   	  //Ext.getCmp("rolegrid").getView().refresh();
+
 	          var index = Ext.getCmp("rolegrid").getView().findRowIndex(t);
 	          
 	          var selectedRecord = Ext.getCmp("rolegrid").store.getAt(index);
@@ -146,14 +146,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
          this.deleteColumn
       ]);
 
-     	   
- 	   this.buttons = [{
-        text : LN('sbi.attributes.update')
-        	, id: 'save-btn'
-	        , scope : this
-	        , handler : this.save
 
-	   }];
  	   
  	    /*====================================================================
  	     * CheckGroup Is able to
@@ -230,21 +223,33 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
  	        data: config,
  	        autoLoad: false
  	    });
+ 	    
+ 	    this.tbSave = new Ext.Toolbar({
+ 	    	buttonAlign : 'right', 	    	
+ 	    	items:[new Ext.Toolbar.Button({
+ 	            text: LN('sbi.attributes.update'),
+ 	            iconCls: 'icon-save',
+ 	            handler: this.save,
+ 	            width: 30,
+ 	            id: 'save-btn',
+ 	            scope: this
+ 	        })
+ 	    	]
+ 	    });
 
- 	   
  	   this.tabs = new Ext.TabPanel({
            enableTabScroll : true
            , id: 'tab-panel'
            , activeTab : 0
            , autoScroll : true
            , width: 450
-           , height: 550
-           , itemId: 'tabs'
+           , height: 500
+           , itemId: 'tabs' 
+           , tbar: this.tbSave
 		   , items: [{
 		        title: LN('sbi.roles.details')
 		        , itemId: 'detail'
-		         , width: 430
-		        //, layout: 'fit'
+		        , width: 430
 		        , items: {
 			   		id: 'role-detail',   	
 		 		   	itemId: 'role-detail',   	              
@@ -262,18 +267,22 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
 		             },
 		             items: [{
+		                 name: 'id',
+		                 hidden: true
+		             },{
 		            	 maxLength:100,
 		            	 minLength:1,
-		            	 regex : new RegExp("^[a-zA-Z1-9_\x2F]+$"),
+		            	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
 		            	 regexText : LN('sbi.roles.alfanumericString'),
 		                 fieldLabel: LN('sbi.roles.headerName'),
 		                 allowBlank: false,
 		                 validationEvent:true,
+		                 //preventMark: true,
 		                 name: 'name'
 		             },{
 		            	 maxLength:160,
 		            	 minLength:1,
-		            	 regex : new RegExp("^[a-zA-Z1-9_\x2F]+$", "g"),
+		            	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
 		            	 regexText : LN('sbi.roles.alfanumericString'),
 		                 fieldLabel: LN('sbi.roles.headerDescr'),
 		                 validationEvent:true,
@@ -281,7 +290,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		             },{
 		            	 maxLength:20,
 		            	 minLength:0,
-		            	 regex : new RegExp("^[A-Za-z0-9_]+$", "g"),
+		            	 regex : new RegExp("^([A-Za-z0-9_])+$", "g"),
 		            	 regexText : LN('sbi.roles.alfanumericString2'),
 		                 fieldLabel:LN('sbi.roles.headerCode'),
 		                 validationEvent:true,
@@ -306,8 +315,6 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		    	}
 		    },{
 		        title: LN('sbi.roles.authorizations')
-		        //,html: 'Is Able to'
-		        //, layout: 'fit'
 		        , width: 430
 		        , items: this.checkGroup
 		        , itemId: 'checks'
@@ -325,7 +332,15 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
  	        })
  	    	]
  	    });
-
+  	   /*
+  	   this.buttons = [{
+         text : LN('sbi.attributes.update')
+     	, id: 'save-btn'
+        , scope : this
+        , handler : this.save
+        //, style: "position: absolute; top: 70; left: 700;"
+ 	   }];
+  	    */
    	   /*
    	   *    Here is where we create the Form
    	   */
@@ -334,12 +349,14 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	          frame: true,
    	          labelAlign: 'left',
    	          title: LN('sbi.roles.rolesManagement'),
-   	          buttons: this.addBtn,
    	          bodyStyle:'padding:5px',
    	          width: 850,
    	          height: 600,
    	          layout: 'column',
    	          trackResetOnLoad: true,
+	          //buttons: this.buttons,
+	          //buttonAlign: 'right',
+	          renderTo: Ext.getBody(),
    	          items: [{
    	              columnWidth: 0.90,
    	              layout: 'fit',
@@ -378,9 +395,6 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	                          rowselect: function(sm, row, rec) { 
    	                	  		  this.fillChecks(row, rec);
    	                              Ext.getCmp('role-form').getForm().loadRecord(rec);      	
-   	                              Ext.getCmp('checks-form').setDisabled(true);
-   	                              Ext.getCmp('role-detail').setDisabled(true);
-   	                              Ext.getCmp('save-btn').hide();
    	                          }
    	                      }
    	                  }),
@@ -390,13 +404,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	                  layout: 'fit',
    	                  title: LN('sbi.roles.rolesList'),
    	                  tbar: this.tb,
-   	                  /*
-	   	 	   	      tools:[{
-	  		   	        id:'plusprofile'
-	  		   	        ,qtip: 'New role'
-	  		   	        ,handler: this.addNewRole
-	  		   	        ,scope: this
-	   	 	   	      },],*/
+
    	                  border: true,
    	                  listeners: {
    	                      viewready: function(g) {
@@ -405,21 +413,11 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
    	                  }
    	              }
    	          }, this.tabs
-   	          ],
-
-   	          buttons: this.buttons,
-   	          buttonAlign: 'right',
-   	          renderTo: Ext.getBody()
+   	          ]
    	      });
 
 	}
 	, addNewRole : function(){
-		
-	    Ext.getCmp('checks-form').setDisabled(false);
-	    Ext.getCmp('role-detail').setDisabled(false);
-	    
-	    Ext.getCmp('save-btn').show();
-	
 	
 		var emptyRecToAdd =new Ext.data.Record({
 											id:null,
@@ -475,12 +473,51 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	
 	}
 	,save : function() {
-		var newRec = this.fillNewRecord();
+		var values = this.gridForm.getForm().getValues();
+		var idRec =values['id'];
+		var newRec;
+        
 
-        var newRole = new Array();
-        newRole.push(newRec.data);
+		
+		if(idRec == null || idRec === ''){
+
+	        var RoleRecord = Ext.data.Record.create(
+	        		{id: 'id', mapping: 'id'},
+	        	    {name: 'name', mapping: 'name'},
+	        	    {name: 'description', mapping: 'description'},
+	        	    {name: 'code', mapping: 'code'},
+	        	    {name: 'typeCd', mapping: 'typeCd'},
+	        	    {name: 'savePersonalFolder', mapping: 'savePersonalFolder'},
+	        	    {name: 'saveSubobj', mapping: 'saveSubobj'},
+	        	    {name: 'seeSubobj', mapping: 'seeSubobj'},
+	        	    {name: 'seeViewpoints', mapping: 'seeViewpoints'},
+	        	    {name: 'seeSnapshot', mapping: 'seeSnapshot'},
+	        	    {name: 'seeNotes', mapping: 'seeNotes'},
+	        	    {name: 'sendMail', mapping: 'sendMail'},
+	        	    {name: 'saveRemember', mapping: 'saveRemember'},
+	        	    {name: 'seeMeta', mapping: 'seeMeta'},
+	        	    {name: 'saveMeta', mapping: 'saveMeta'},
+	        	    {name: 'buildQbe', mapping: 'buildQbe'}
+	        	    
+	        );
+
+			var record = new RoleRecord({
+					id: values['id'],
+					name :values['name'],
+			        description :values['description'],
+			        typeCd :values['typeCd'],
+			        code :values['code']	        
+			});
+			newRec = this.fillRecord(record);
+		}else{
+			var record = this.rolesStore.getById(idRec);
+			
+			newRec = this.fillRecord(record);
+		}
+
 
         var params = {
+        	id: newRec.data.id,
         	name : newRec.data.name,
         	description : newRec.data.description,
         	typeCd : newRec.data.typeCd,
@@ -507,19 +544,21 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 				if (response !== undefined) {			
 		      		if(response.responseText !== undefined) {
 		      			var content = Ext.util.JSON.decode( response.responseText );
-		      			
 		      			var roleID = content.id;
-		      			
-	                    newRec.set('id', roleID);
-	                    
-						this.rolesStore.add(newRec);
-						this.rolesStore.commitChanges();
-	                    Ext.MessageBox.show({
-	                        title: LN('sbi.attributes.result'),
-	                        msg: 'Operation succeded',
-	                        width: 200,
-	                        buttons: Ext.MessageBox.OK
-	                    });
+		      			if(roleID != null && roleID !==''){
+		      				newRec.set('id', roleID);
+		      				this.rolesStore.add(newRec);
+		                    Ext.MessageBox.show({
+		                        title: LN('sbi.attributes.result'),
+		                        msg: 'Operation succeded',
+		                        width: 200,
+		                        buttons: Ext.MessageBox.OK
+		                    });
+		      			}
+	      				//this.rolesStore.save();
+	      				this.rolesStore.commitChanges();
+	      				Ext.getCmp("rolegrid").getView().refresh();		 
+
 		      		} else {
 		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
 		      		}
@@ -562,9 +601,15 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
         });
     }
 
-	, fillNewRecord : function(){
+	, fillRecord : function(record){
 		var values = this.gridForm.getForm().getValues();
 		
+		//record.set('id'values['id']),
+		record.set('name',values['name']);
+		record.set('description',values['description']);
+		record.set('typeCd',values['typeCd']);
+		record.set('code',values['code']);
+ 
         var savePf =values['savePersonalFolder'];
         var saveSo =values['saveSubobj'];
         var seeSo =values['seeSubobj'];
@@ -577,33 +622,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
         var saveMe =values['saveMeta'];
         var builQ =values['buildQbe'];      
         
-        
-        var RoleRecord = Ext.data.Record.create(
-        		{id: 'id', mapping: 'id'},
-        	    {name: 'name', mapping: 'name'},
-        	    {name: 'description', mapping: 'description'},
-        	    {name: 'code', mapping: 'code'},
-        	    {name: 'typeCd', mapping: 'typeCd'},
-        	    {name: 'savePersonalFolder', mapping: 'savePersonalFolder'},
-        	    {name: 'saveSubobj', mapping: 'saveSubobj'},
-        	    {name: 'seeSubobj', mapping: 'seeSubobj'},
-        	    {name: 'seeViewpoints', mapping: 'seeViewpoints'},
-        	    {name: 'seeSnapshot', mapping: 'seeSnapshot'},
-        	    {name: 'seeNotes', mapping: 'seeNotes'},
-        	    {name: 'sendMail', mapping: 'sendMail'},
-        	    {name: 'saveRemember', mapping: 'saveRemember'},
-        	    {name: 'seeMeta', mapping: 'seeMeta'},
-        	    {name: 'saveMeta', mapping: 'saveMeta'},
-        	    {name: 'buildQbe', mapping: 'buildQbe'}
-        	    
-        );
 
-		var record = new RoleRecord({
-				name :values['name'],
-		        description :values['description'],
-		        typeCd :values['typeCd'],
-		        code :values['code']	        
-		});
 		if(savePf == 1){
         	record.set('savePersonalFolder', true);
         }else{

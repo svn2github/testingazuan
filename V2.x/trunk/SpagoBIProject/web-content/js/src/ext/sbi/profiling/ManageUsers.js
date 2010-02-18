@@ -158,14 +158,19 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
          this.deleteColumn
         ]);
      	   
- 	   this.buttons = [{
-        	text : LN('sbi.attributes.update')
-        	, id: 'save-btn'
-	        , scope : this
-	        , handler : this.save
-	        , disabled : true
-	   }];
 
+	    this.tbSave = new Ext.Toolbar({
+ 	    	buttonAlign : 'right', 	    	
+ 	    	items:[new Ext.Toolbar.Button({
+ 	            text: LN('sbi.attributes.update'),
+ 	            iconCls: 'icon-save',
+ 	            handler: this.save,
+ 	            width: 30,
+ 	            id: 'save-btn',
+ 	            scope: this
+ 	        })
+ 	    	]
+ 	    });
  	   this.tabs = new Ext.TabPanel({
            enableTabScroll : true
            , activeTab : 1
@@ -173,6 +178,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
            , width: 450
            , height: 450
            , itemId: 'tabs'
+           , tbar: this.tbSave 
 		   , items: [{
 		        title: LN('sbi.roles.details')
 		        , itemId: 'detail'
@@ -266,7 +272,6 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	          frame: true,
    	          labelAlign: 'left',
    	          title: LN('sbi.users.manageUsers'),
-   	          buttons: this.addBtn,
    	          bodyStyle:'padding:5px',
    	          width: 850,
    	          layout: 'column',
@@ -323,15 +328,6 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	                  height: 450,
    	                  title:LN('sbi.users.usersList'),
    	                  tbar: this.tb,
-   	                  /*
-	   	 	   	      tools:[{
-	  		   	        id:'plusprofile'
-	  		   	        ,iconCls: 'icon-add'
-	  		   	        ,qtip: 'New User'
-	  		   	        ,handler: this.addNewUser
-	  		   	        ,scope: this
-	   	 	   	      },],
-	   	 	   	      */
    	                  border: true
   	                 ,listeners: {
    	                      viewready: function(g) {
@@ -344,8 +340,8 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	          }, this.tabs
    	          ],
 
-   	          buttons: this.buttons,
-   	          buttonAlign: 'right',
+   	          //buttons: this.buttons,   	          
+   	          //buttonAlign: 'right',
    	          renderTo: Ext.getBody()
    	      });
 

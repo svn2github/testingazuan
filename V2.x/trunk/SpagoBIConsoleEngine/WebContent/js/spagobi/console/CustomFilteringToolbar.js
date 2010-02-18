@@ -83,16 +83,13 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
     services: null
     , customFilterBar: null
     , txtField: null
-   // , headers: null
-   // , ids: null
    
 
     // -- public methods ---------------------------------------------------------------
     , onRender : function(ct, position) {
-  		//
-  		this.txtField = new Ext.form.TextField({fieldLabel: 'Loading...'});
   		
-		  Sbi.console.CustomFilteringToolbar.superclass.onRender.call(this, ct, position);
+  		this.txtField = new Ext.form.TextField({fieldLabel: 'Loading...'});  		
+		Sbi.console.CustomFilteringToolbar.superclass.onRender.call(this, ct, position);
 
     }
    
@@ -100,63 +97,28 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
     
     // -- private methods ---------------------------------------------------------------
     , onMetaChange: function( store, meta ) {
-        
-       	var cb;
        	
        this.cleanFilterToolbar();
 
        	if (this.filterBar.type === 'automatic' ){
        	  // automatic: all dataset fields are added as filter
       		for(var i = 0; i < meta.fields.length; i++) { 		  
-      		  if (meta.fields[i].header != ''){   		  
-        		  cb = new Ext.form.ComboBox({
-              	        store: this.store,
-              	        width: 100,
-              	        displayField:'column-'+(i),
-              	        valueField:'column-'+(i),
-              	        typeAhead: true,
-              	        triggerAction: 'all',
-              	        emptyText:'...',
-              	        selectOnFocus:true,
-              	        mode: 'local'
-              	    });	 
-          			
-          	
-          		  this.addText( meta.fields[i].header);
-          			this.addField(cb);	
-          	}
-      		  
-      		} //for
-      		
+      		  if (meta.fields[i].header != ''){   
+          	   this.createFilterField(this.filterBar.defaults.operator,  meta.fields[i].header, i);  
+      		  }
+      		} 
       	}
       	else{
-      	 //custom: only configurated fields are added as filter
+      	 //custom: only configurated fields are added as filter      	 
         	for(var i = 0; i < meta.fields.length; i++) { 		                
-        		  if (meta.fields[i].header != '' && this.isConfiguratedFilter(meta.fields[i].header)){   		  
-                	
-          		  cb = new Ext.form.ComboBox({
-                	        store: this.store,
-                	        width: 100,
-                	        displayField:'column-'+(i),
-                	        valueField:'column-'+(i),
-                	        typeAhead: true,
-                	        triggerAction: 'all',
-                	        emptyText:'...',
-                	        selectOnFocus:true,
-                	        mode: 'local'
-                	    });	 
-            			
-            	        	    
-            		  this.addText(this.getColumnText(meta.fields[i].header));            		  
-            			this.addField(cb);	
-            	}
-        		  
-        		} //for
+        		 if (meta.fields[i].header != '' && this.isConfiguratedFilter(meta.fields[i].header)){         		   
+                  this.createFilterField(this.getFilterOperator(meta.fields[i].header), this.getColumnText(meta.fields[i].header), i);  	
+            	}        		  
+        	} 
       	}
     	
     		//adds actions
-    		this.addActionButtons();
-    		
+    		this.addActionButtons();    		
     		this.doLayout();
       	
     	}
@@ -178,6 +140,12 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
           return columnName;
     }
    
-    
+    , getFilterOperator: function (columnName){         
+      	for(var i=0, l=this.filterBar.filters.length; i<l; i++) {              
+            if (columnName === this.filterBar.filters[i].column)
+              return this.filterBar.filters[i].operator;
+  		}
+      	return null;
+    }
     
 });

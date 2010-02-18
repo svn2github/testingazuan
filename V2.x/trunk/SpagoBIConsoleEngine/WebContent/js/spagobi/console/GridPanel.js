@@ -174,7 +174,8 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
       } else if (filterBarConf.type === 'custom' || filterBarConf.type === 'automatic') {
 
           this.filterBar = new Sbi.console.CustomFilteringToolbar({filterBar: filterBarConf
-                                                                 , store: this.store});          	  
+                                                                 , store: this.store
+                                                                  });          	  
         	       	
       }   
   }

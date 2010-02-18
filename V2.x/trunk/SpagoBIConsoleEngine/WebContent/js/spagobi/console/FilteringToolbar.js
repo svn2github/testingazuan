@@ -80,6 +80,8 @@ Sbi.console.FilteringToolbar = function(config) {
 Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
     
 	services: null
+	, store: null
+	, cbStores: null
 	
 	// -- public methods -----------------------------------------------------------------
     
@@ -87,14 +89,9 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	// -- private methods ---------------------------------------------------------------
   
 	, onRender : function(ct, position) { 
-	  
-    //this.txtField = new Ext.form.TextField({fieldLabel: 'Loading...'});
-	  //alert('filtering IN');
 		Sbi.console.FilteringToolbar.superclass.onRender.call(this, ct, position);
-
-		//alert('filtering OUT');
 	}
-	
+	//adds action buttons
 	, addActionButtons: function(){
   	   var b;
   		
@@ -105,11 +102,59 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
       	}	
   }
   
+  //reset the toolbar (delete every elements)
   , cleanFilterToolbar: function(){
+       delete this.cbStores; 
         this.items.each( function(item) {
             this.items.remove(item);
                 item.destroy();           
             }, this);   
+       
     }
-    
+   
+   
+   , reloadComboStore: function(index) {
+      var distinctValues = this.store.collect('column-'+(index+1));  
+      var data = [];
+      for(var i = 0, l = distinctValues.length; i < l; i++) {
+        var row = {};
+        row.name = distinctValues[i];
+        row.value = distinctValues[i];
+        row.description = distinctValues[i];
+        data.push(row);
+      }
+      
+      this.cbStores[index].loadData(data);
+   }
+   
+   //defines fields depending from operator type
+  , createFilterField: function(operator, header, idx){
+     if (operator === 'EQUALS_TO'){
+      
+	     this.cbStores = this.cbStores || []; 
+	     var s = new Ext.data.JsonStore({
+	           fields:['name', 'value', 'description'],
+	           data: []
+	     });
+	     this.cbStores.push( s );
+	     
+	     this.store.on('load', this.reloadComboStore.createDelegate(this, [idx-1]), this);
+	      
+	     var cb = new Ext.form.ComboBox({
+	              	        store: s,
+	              	        width: 100,
+	              	        displayField:'name',
+	              	        valueField:'value',
+	              	        typeAhead: true,
+	              	        triggerAction: 'all',
+	              	        emptyText:'...',
+	              	        selectOnFocus:true,
+	              	        mode: 'local'
+	              	    });	 
+	      this.addText(header + "  ");
+	      this.addField(cb);	 
+     }
+  
+  } 
+  
 });

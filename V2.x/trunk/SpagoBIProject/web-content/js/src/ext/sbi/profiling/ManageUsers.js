@@ -435,8 +435,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	        params.id = values['id'];
 	        
 	        if(values['id'] !== null && values['id'] !== undefined && values['id']==0){
-	          newRec =new Ext.data.Record({'userId': values['userId'],'fullName': values['fullName'],'pwd':values['pwd']});
-	          
+	          newRec =new Ext.data.Record({'userId': values['userId'],'fullName': values['fullName'],'pwd':values['pwd']});	          
 	        }
 	        
 	        var rolesSelected = Ext.getCmp("roles-form").selModel.getSelections();
@@ -447,49 +446,48 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
  				roles.push(role);
            }
 	       params.userRoles =  Ext.util.JSON.encode(roles);
-	        
-	       if(newRec!==null){
-	       	   var userRoles =new Array();
-		       var tempArr = Ext.getCmp("roles-form").store;
-	           var length = Ext.getCmp("roles-form").store.data.length;
-	
-	           for(var i=0;i<length;i++){
-	           		var selected = false;
-	           		for(var j=0;j<lengthR;j++){
-	           			if(rolesSelected[j].get("id")===tempArr.getAt(i).get("id")){
-	           				selected = true;
-	           				var role ={'name':tempArr.getAt(i).get("name"),'id':tempArr.getAt(i).get("id"),'description':tempArr.getAt(i).get("description"),'checked':true};
- 							userRoles.push(role);
-	           				break;
-	           			}
-		            }
-		            if(!selected){
-		          		var role ={'name':tempArr.getAt(i).get("name"),'id':tempArr.getAt(i).get("id"),'description':tempArr.getAt(i).get("description"),'checked':false};
-		 				userRoles.push(role);
-	 				}
-			   }	
-			   newRec.set('userRoles', userRoles);
-		   }
-		   
-	        
+  
+       	   var userRoles =new Array();
+	       var tempArr = Ext.getCmp("roles-form").store;
+           var length = Ext.getCmp("roles-form").store.data.length;
+
+           for(var i=0;i<length;i++){
+           		var selected = false;
+           		for(var j=0;j<lengthR;j++){
+           			if(rolesSelected[j].get("id")===tempArr.getAt(i).get("id")){
+           				selected = true;
+           				var role ={'name':tempArr.getAt(i).get("name"),'id':tempArr.getAt(i).get("id"),'description':tempArr.getAt(i).get("description"),'checked':true};
+							userRoles.push(role);
+           				break;
+           			}
+	            }
+	            if(!selected){
+	          		var role ={'name':tempArr.getAt(i).get("name"),'id':tempArr.getAt(i).get("id"),'description':tempArr.getAt(i).get("description"),'checked':false};
+	 				userRoles.push(role);
+ 				}
+		    }	
+      
 	        var modifAttributes = this.attributesStore.getModifiedRecords();
             var lengthA = modifAttributes.length;
             var attrs =new Array();
             for(var i=0;i<lengthA;i++){
              	var attr ={'name':modifAttributes[i].get("name"),'id':modifAttributes[i].get("id"),'value':modifAttributes[i].get("value")};
  				attrs.push(attr);
-           }
+            }
 	        params.userAttributes =  Ext.util.JSON.encode(attrs);      
 	        
-	        if(newRec!==null){
-	       	   var userAttributes = new Array();
-		       var tempArr = Ext.getCmp("attributes-form").store;
-	           var length = Ext.getCmp("attributes-form").store.data.length;
-	
-	           for(var i=0;i<length;i++){
-	          		var attr ={'name':tempArr.getAt(i).get("name"),'id':tempArr.getAt(i).get("id"),'value':tempArr.getAt(i).get("value")};
-	 				userAttributes.push(attr);
-			   }	
+	        
+       	    var userAttributes = new Array();
+	        var tempArr = Ext.getCmp("attributes-form").store;
+            var length = Ext.getCmp("attributes-form").store.data.length;
+
+            for(var i=0;i<length;i++){
+          		var attr ={'name':tempArr.getAt(i).get("name"),'id':tempArr.getAt(i).get("id"),'value':tempArr.getAt(i).get("value")};
+ 				userAttributes.push(attr);
+		    }	
+
+		    if(newRec!==null){
+			   newRec.set('userRoles', userRoles);
 			   newRec.set('userAttributes', userAttributes);
 		   }        
 	        
@@ -510,14 +508,19 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 			                        buttons: Ext.MessageBox.OK
 			                   });
 			      			}else{
-			      			    this.attributesStore.commitChanges();
-								this.rolesStore.commitChanges();
+			      			    
 								var idTemp = content.id;
 								if(newRec!==null){
 									newRec.set('id', idTemp);
 									this.usersStore.add(newRec);
+								}else{
+									this.usersStore.getById(idTemp).set('userAttributes', userAttributes);
+									this.usersStore.getById(idTemp).set('userRoles', userRoles);
 								}
+								this.attributesStore.commitChanges();
+								this.rolesStore.commitChanges();
 								this.usersStore.commitChanges();
+								
 								
 			      			}
 			      		} else {

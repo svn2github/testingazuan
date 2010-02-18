@@ -46,8 +46,14 @@ Ext.ns("Sbi.profiling");
 Sbi.profiling.ManageAttributes = function(config) { 
 
 
-	var paramsGetList = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: 'ATTR_LIST'};
+	var paramsGetListNew = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: 'ATTR_LIST', IS_NEW_ATTR : 'true'};
 	this.services = new Array();
+	this.services['manageAttributesNew'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'MANAGE_ATTRIBUTES_ACTION'
+		, baseParams: paramsGetListNew
+	});
+	
+	var paramsGetList = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: 'ATTR_LIST'};
 	this.services['manageAttributes'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'MANAGE_ATTRIBUTES_ACTION'
 		, baseParams: paramsGetList
@@ -68,8 +74,8 @@ Sbi.profiling.ManageAttributes = function(config) {
 		    messageProperty: 'message'  // <-- New "messageProperty" meta-data
 		}, [
 		    {name: 'id'},
-		    {name: 'name', allowBlank: false},
-		    {name: 'description', allowBlank: false}
+		    {name: 'name'},
+		    {name: 'description'}
 	]);
 
 	
@@ -85,24 +91,44 @@ Sbi.profiling.ManageAttributes = function(config) {
 	    proxy: new Ext.data.HttpProxy({
 					url: this.services['manageAttributes'],
 					listeners: {
-						'exception': function(proxy, type, action, options, response, arg){	    	
-	    					var content = Ext.util.JSON.decode( response.responseText );
-	    					if(content.success !== undefined && content.success){
-				                Ext.MessageBox.show({
-				                    title: 'OK',
-				                    msg: 'Operation succeded',
-				                    width: 200,
-				                    buttons: Ext.MessageBox.OK
-				               });
-	    					}else{
-				                Ext.MessageBox.show({
-				                    title: LN('sbi.attributes.error'),
-				                    msg: response.responseText,
-				                    width: 400,
-				                    buttons: Ext.MessageBox.OK
-				               });
+						'exception': function(proxy, type, action, options, response, arg){	
+	    					try{
+	    						var content = Ext.util.JSON.decode( response.responseText );
+	    						
+	    						if(content !== undefined){
+			    					if(content.success){
+			    						if(content.message !==''){
+			    							this.store.commitChanges();
+							                Ext.MessageBox.show({
+							                    title: LN('sbi.attributes.ok'),
+							                    msg: LN('sbi.attributes.ok.msg'),
+							                    width: 200,
+							                    buttons: Ext.MessageBox.OK
+							               });
+			    						}
+			    					}else if(!content.success){
+						                Ext.MessageBox.show({
+						                    title: LN('sbi.attributes.error'),
+						                    msg: content.message,
+						                    width: 400,
+						                    buttons: Ext.MessageBox.OK
+						               });
+
+			    					}
+	    						}else{
+					                Ext.MessageBox.show({
+					                    title: LN('sbi.attributes.error'),
+					                    msg: LN('sbi.attributes.error.msg'),
+					                    width: 400,
+					                    buttons: Ext.MessageBox.OK
+					               }); 
+	    						}
+	    					}catch(exception){
+	    						
+	    						return;
 	    					}
 						}
+
 			        },
 			        scope: this
 			}),
@@ -123,23 +149,13 @@ Sbi.profiling.ManageAttributes = function(config) {
 	    	width: 250, 
 	    	sortable: true, dataIndex: 'name', editor: 
 	    		new Ext.form.TextField({
-	    			id:'aa',
-	    				maxLength:255,
-	    				minLength:1,
-	    				allowBlank: false,
-	    				regex : new RegExp("[A-Za-z0-9_]", "g"),
-	    				regexText : LN('sbi.roles.alfanumericString')
+	    			id:'aa'
 	    				})},
 	    {header: LN('sbi.attributes.headerDescr'), width: 250, 
 				id:'description',
 				sortable: true, dataIndex: 'description',  
 				editor: new Ext.form.TextField({
-					id:'bb',
-					maxLength:500,
-					minLength:1,
-    				regex : new RegExp("[A-Za-z0-9_]", "g"),
-    				regexText : LN('sbi.roles.alfanumericString'),
-					allowBlank: false})}
+					id:'bb'})}
 	];
 
 	 // use RowEditor for editing
@@ -153,11 +169,13 @@ Sbi.profiling.ManageAttributes = function(config) {
   			scope: this,
   			afteredit: function() {
  				this.store.commitChanges();
+ 				//this.store.save();
 		    },
 		    exceptionOnValidate: function(){
 		    	this.validationErrors();
 		    }
 		});
+
 
     // Create a typical GridPanel with RowEditor plugin
     
@@ -218,10 +236,14 @@ Ext.extend(Sbi.profiling.ManageAttributes, Ext.grid.GridPanel, {
            name: '',
            description : ''
         });
+        this.store.proxy.setUrl(this.services['manageAttributesNew']);
+
         this.editor.stopEditing();
         this.store.insert(0, u);
+
         this.editor.startEditing(0);
-        this.store.commitChanges();
+        //this.store.commitChanges();
+        
 
     }
     /**
@@ -246,6 +268,7 @@ Ext.extend(Sbi.profiling.ManageAttributes, Ext.grid.GridPanel, {
 			               });
 			                remove = false;
 						}
+        				
 			        }
 			        ,scope: this
 			});

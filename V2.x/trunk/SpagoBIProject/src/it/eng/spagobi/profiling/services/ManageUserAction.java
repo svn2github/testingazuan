@@ -112,13 +112,14 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 			JSONArray rolesJSON = getAttributeAsJSONArray(ROLES);
 			JSONArray attributesJSON = getAttributeAsJSONArray(ATTRIBUTES);
 			if (userId != null) {
-				if(password == null){
-					throw new SpagoBIServiceException(SERVICE_NAME,	"Please check password!");
-				}
 				SbiUser user = new SbiUser();
 				user.setUserId(userId);
 				user.setFullName(fullName);
-				user.setPassword(password);
+				if(password != null){
+					user.setPassword(password);
+					//throw new SpagoBIServiceException(SERVICE_NAME,	"Please check password!");
+				}				
+				
 				if(id!=null){
 					user.setId(id);
 				}

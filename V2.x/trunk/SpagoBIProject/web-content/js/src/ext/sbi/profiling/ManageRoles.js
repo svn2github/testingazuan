@@ -557,7 +557,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 		      			}
 	      				//this.rolesStore.save();
 	      				this.rolesStore.commitChanges();
-	      				Ext.getCmp("rolegrid").getView().refresh();		 
+	      				//Ext.getCmp("rolegrid").getView().refresh();		 
 
 		      		} else {
 		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
@@ -701,6 +701,10 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 									var deleteRow = sm.getSelected();
 									this.rolesStore.remove(deleteRow);
 									this.rolesStore.commitChanges();
+									if(this.rolesStore.getCount()>0){
+										grid.getSelectionModel().selectRow(0);
+										grid.fireEvent('rowclick', grid, 0);
+									}
 								} else {
 									Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting Role', 'Service Error');
 								}

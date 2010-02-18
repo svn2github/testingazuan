@@ -50,25 +50,19 @@ Sbi.console.ChartWidget = function(config) {
 	
 		var defaultSettings = {
 			chartType: 'bar'
+			, height: 170
 		};
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.chartWidget) {
 			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.chartWidget);
 		}
 		
-		var c = Ext.apply(defaultSettings, config || {});
-		
+		var c = Ext.apply(defaultSettings, config || {});		
 		Ext.apply(this, c);
-		
-		this.initChart();
-		
-		c = Ext.apply(c, {  	
-	      	items: [this.chart]
-			//html: 'Io sono un chart widget'
-		});
 
 		// constructor
 		Sbi.console.ChartWidget.superclass.constructor.call(this, c);
+		
 };
 
 Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
@@ -82,45 +76,68 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
    
     
     //  -- private methods ---------------------------------------------------------
-    
-    , initChart: function() {
-		this.store = new Ext.data.JsonStore({
-	        fields:['name', 'visits', 'views'],
-	        data: [
-	            {name:'Jul 07', visits: 245000, views: 3000000},
-	            {name:'Aug 07', visits: 240000, views: 3500000},
-	            {name:'Sep 07', visits: 355000, views: 4000000},
-	            {name:'Oct 07', visits: 375000, views: 4200000},
-	            {name:'Nov 07', visits: 490000, views: 4500000},
-	            {name:'Dec 07', visits: 495000, views: 5800000},
-	            {name:'Jan 08', visits: 520000, views: 6000000},
-	            {name:'Feb 08', visits: 620000, views: 7500000}
-	        ]
-	    });
-		
-		if(this.chartType === 'bar') {
-			this.chart = new Ext.Panel({
-		        //title: 'ExtJS.com Visits Trend, 2007/2008 (No styling)',
-		        //width:500,
-		        //height:300,
-		        layout:'fit'
-		        , height: 170
 	
-		        , items: {
-		            xtype: 'linechart',
-		            store: this.store,
-		            xField: 'name',
-		            yField: 'visits',
-					listeners: {
-						itemclick: function(o){
-							var rec = this.store.getAt(o.index);
-							alert('Item Selected', 'You chose ' + rec.get('name'));
-						}
+	
+
+	, onRender: function(ct, position) {
+		Sbi.console.ChartWidget.superclass.onRender.call(this, ct, position);
+		
+		this.store = this.getStore('testStore');
+		if(!this.store) return;
+		
+		this.chart = null;
+		this.chart = this.createChart(this);
+			
+		this.items.each( function(item) {
+			this.items.remove(item);
+	        item.destroy();           
+	    }, this);   
+		
+		if(this.chart !== null) {
+			this.add(this.chart);
+			this.doLayout();
+		}
+	}
+    
+	, createChart: function(chartConfig) {
+		var chart = null;
+		
+		chartConfig = chartConfig || {};
+		
+		if(chartConfig.chartType === 'line') {
+			chart = this.createLineChart(chartConfig);
+		} else if(chartConfig.chartType === 'bar') {
+			chart = this.createBarChart(chartConfig);
+		} else if(chartConfig.chartType === 'pie'){
+			chart = this.createPieChart(chartConfig);
+		} else {
+			Sbi.exception.ExceptionHandler.showErrorMessage('Chart type [' + chartConfig.chartType + '] not supported by [ChartWidget]');
+		}
+		
+		return chart;
+	}
+	
+	, createLineChart: function(chartConfig) {
+		return new Ext.Panel({
+	        layout:'fit'
+	        , height: this.height
+	        , items: {
+	            xtype: 'linechart',
+	            store: this.store,
+	            xField: 'name',
+	            yField: 'visits',
+				listeners: {
+					itemclick: function(o){
+						var rec = this.store.getAt(o.index);
+						alert('Item Selected', 'You chose ' + rec.get('name'));
 					}
-		        }
-		    });
-		} else if(this.chartType === 'column') {
-			this.chart = new Ext.Panel({
+				}
+	        }
+	    });
+	}
+	
+	, createBarChart: function(chartConfig) {
+		return new Ext.Panel({
 		        layout:'fit'
 		        , height: 170
 	
@@ -135,10 +152,12 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 							alert('Item Selected', 'You chose ' + rec.get('name'));
 						}
 					}
-		        }
-		    });
-		} else if (this.chartType === 'pie') {
-			this.chart = new Ext.Panel({
+		     }
+		});
+	}
+	
+	, createPieChart: function(chartConfig) {
+		return new Ext.Panel({
 		        layout:'fit'	
 		        , height: 170
 		        
@@ -163,8 +182,6 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		            }
 		        }
 			});
-		}
 	}
-    
     
 });

@@ -49,7 +49,8 @@ Ext.ns("Sbi.console");
 Sbi.console.WidgetPanel = function(config) {
 	
 		var defaultSettings = {
-			
+			layout:'column'
+			, columnNumber: 3
 		};
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.widgetPanel) {
@@ -58,13 +59,34 @@ Sbi.console.WidgetPanel = function(config) {
 		
 		var c = Ext.apply(defaultSettings, config || {});
 		
+		this.widgetContainer = new Sbi.console.WidgetContainer();
+		
+		if(c.items !== undefined) {
+			this.widgetContainer.register(c.items);
+			var x = c.items[0];
+			delete c.items;
+			alert('Costruttore WidgetPanel: ' + x.getStore('testStore'));
+		}
+		
 		Ext.apply(this, c);
 				
-		/*
+		this.widgetColumns = [];
+		for(var i = 0; i < this.columnNumber; i++) {
+			var w = this.columnWidths? this.columnWidths[i]: 1/this.columnNumber; 
+			this.widgetColumns.push(
+				new Ext.Panel({
+					columnWidth: w
+					, baseCls:'x-plain'
+					, bodyStyle:'padding:5px 3px 3px 5px'
+				})
+			);
+		}
+		
+		
 		c = Ext.apply(c, {  	
-	      	items: [this.thisPanel, this.thatPanel]
+	      	items: this.widgetColumns
 		});
-		 */
+
 		
 		// constructor
 		Sbi.console.WidgetPanel.superclass.constructor.call(this, c);
@@ -73,14 +95,38 @@ Sbi.console.WidgetPanel = function(config) {
 
 Ext.extend(Sbi.console.WidgetPanel, Ext.Panel, {
     
+	columnNumber: null
+	, widgetColumns: null
+	, widgetContainer: null
     
     //  -- public methods ---------------------------------------------------------
     
-    
+    , addWidget: function(widget) {
+		var widgets = this.widgetContainer.getWidgets();
+		var index = widgets.getCount();
+		this.widgetContainer.register(widget);
+		this.widgetColumns[index%this.columnNumber].add(widget);
+	}
     
     //  -- private methods ---------------------------------------------------------
     
-    
+    , onRender: function(ct, position) {
+		Sbi.console.WidgetPanel.superclass.onRender.call(this, ct, position);
+		
+		alert('widgetPanel RENDER');
+		
+		var widgets = this.widgetContainer.getWidgets();
+		
+		alert('WidgetPanel IN: ' + widgets.get(0).getStore('testStore'));
+		
+		widgets.each(function(widget, index, length) {
+			this.widgetColumns[index%this.columnNumber].add(widget);
+		}, this);
+		
+		alert('WidgetPanel OUT: ' + widgets.get(0).getStore('testStore'));
+	}
+
+	
     
     
 });

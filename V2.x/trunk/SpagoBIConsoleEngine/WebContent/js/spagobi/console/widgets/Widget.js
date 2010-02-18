@@ -49,7 +49,7 @@ Ext.ns("Sbi.console");
 Sbi.console.Widget = function(config) {
 	
 		var defaultSettings = {
-			
+			defaultMsg: 'Empty widget'
 		};
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.widget) {
@@ -57,36 +57,55 @@ Sbi.console.Widget = function(config) {
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
-		
 		Ext.apply(this, c);
 		
-		/*
-		c = Ext.apply(c, {  	
-	      	items: [this.thisPanel, this.thatPanel]
+		this.msgPanel = new Ext.Panel({
+			html: this.defaultMsg
 		});
-		*/
+		
+		c = Ext.apply(c, {  	
+	      	items: [this.msgPanel]
+		});
+		
 
 		// constructor
 		Sbi.console.Widget.superclass.constructor.call(this, c);
     
-		this.addEvents();
 };
 
 Ext.extend(Sbi.console.Widget, Ext.Panel, {
     
     services: null
-    , container: null
+    , widgetContainer: null
     
    
     //  -- public methods ---------------------------------------------------------
     
     , setContainer: function(c) {
-		this.container = c;
+		this.widgetContainer = c;
+	}
+
+	, getStore: function(storeiId) {
+		var store;
+		
+		if(this.widgetContainer) {
+			if(this.widgetContainer.xstoreManager) {
+				store = this.widgetContainer.xstoreManager.get(storeiId);
+			} else {
+				alert("getStore: storeManager not defined");
+			}
+		} else {
+			alert("getStore: container not defined");
+		}
+		
+		return store;
 	}
     
     //  -- private methods ---------------------------------------------------------
     
-    
+	, onRender: function(ct, position) {
+		Sbi.console.Widget.superclass.onRender.call(this, ct, position);
+	}
     
     
 });

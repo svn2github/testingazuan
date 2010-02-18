@@ -68,29 +68,12 @@ Sbi.console.SummaryPanel = function(config) {
 		Ext.apply(this, c);
 		
 		var x, y, z, widgetPanel;
-		x = new Sbi.console.ChartWidget({chartType: 'bar'});
-		y = new Sbi.console.ChartWidget({chartType: 'column'});
-		z = new Sbi.console.ChartWidget({chartType: 'pie'});
 		
-		widgetPanel = new Ext.Panel({
-			layout:'column'
-			//, margins:'35 5 5 0'
-			, items: [{
-				columnWidth:.33
-				, baseCls:'x-plain'
-				, bodyStyle:'padding:5px 0 5px 5px'
-				, items: [x]
-			}, {
-				columnWidth:.33
-				, baseCls:'x-plain'
-				, bodyStyle:'padding:5px 0 5px 5px'
-				, items: [y]
-			}, {
-				columnWidth:.33
-				, baseCls:'x-plain'
-				, bodyStyle:'padding:5px 0 5px 5px'
-				, items: [z]
-			}]
+		x = new Sbi.console.ChartWidget({chartType: 'line'});
+		y = new Sbi.console.ChartWidget({chartType: 'bar'});
+		z = new Sbi.console.ChartWidget({chartType: 'pie'});
+		widgetPanel = new Sbi.console.WidgetPanel({
+			items: [x, y, z]
 		});
 		
 		c = Ext.apply(c, {  	

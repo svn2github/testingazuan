@@ -83,6 +83,7 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
     services: null
     , customFilterBar: null
     , txtField: null
+    , headers: null
    
 
     // -- public methods ---------------------------------------------------------------
@@ -99,12 +100,23 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
     , onMetaChange: function( store, meta ) {
        	
        this.cleanFilterToolbar();
-
+       
+       //loads headers map with dataIndex info
+       this.headers = [];
+       
+       for(var i = 0; i < meta.fields.length; i++) {
+          var localHeader = meta.fields[i].header;
+          var localDataIndex = meta.fields[i].dataIndex;
+          if (localHeader != ''){
+            this.headers[localHeader] = localDataIndex;
+          }
+       } 
+       
        	if (this.filterBar.type === 'automatic' ){
        	  // automatic: all dataset fields are added as filter
       		for(var i = 0; i < meta.fields.length; i++) { 		  
       		  if (meta.fields[i].header != ''){   
-          	   this.createFilterField(this.filterBar.defaults.operator,  meta.fields[i].header, i);  
+          	   this.createFilterField(this.filterBar.defaults.operator,  meta.fields[i].header, this.headers[meta.fields[i].header]);  
       		  }
       		} 
       	}
@@ -112,7 +124,7 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
       	 //custom: only configurated fields are added as filter      	 
         	for(var i = 0; i < meta.fields.length; i++) { 		                
         		 if (meta.fields[i].header != '' && this.isConfiguratedFilter(meta.fields[i].header)){         		   
-                  this.createFilterField(this.getFilterOperator(meta.fields[i].header), this.getColumnText(meta.fields[i].header), i);  	
+                  this.createFilterField(this.getFilterOperator(meta.fields[i].header), this.getColumnText(meta.fields[i].header),  this.headers[meta.fields[i].header]);  	
             	}        		  
         	} 
       	}

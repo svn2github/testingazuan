@@ -89,7 +89,7 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	// -- private methods ---------------------------------------------------------------
   
 	, onRender : function(ct, position) { 
-		Sbi.console.FilteringToolbar.superclass.onRender.call(this, ct, position);
+		  Sbi.console.FilteringToolbar.superclass.onRender.call(this, ct, position);
 	}
 	//adds action buttons
 	, addActionButtons: function(){
@@ -113,8 +113,8 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
     }
    
    
-   , reloadComboStore: function(index) {
-      var distinctValues = this.store.collect('column-'+(index+1));  
+   , reloadComboStore: function(dataIdx) {
+      var distinctValues = this.store.collect(dataIdx);  
       var data = [];
       for(var i = 0, l = distinctValues.length; i < l; i++) {
         var row = {};
@@ -123,12 +123,13 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
         row.description = distinctValues[i];
         data.push(row);
       }
-      
-      this.cbStores[index].loadData(data);
+   
+      this.cbStores[dataIdx].loadData(data);
    }
    
    //defines fields depending from operator type
-  , createFilterField: function(operator, header, idx){
+  , createFilterField: function(operator, header, dataIndex){
+  
      if (operator === 'EQUALS_TO'){
       
 	     this.cbStores = this.cbStores || []; 
@@ -136,9 +137,10 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	           fields:['name', 'value', 'description'],
 	           data: []
 	     });
-	     this.cbStores.push( s );
-	     
-	     this.store.on('load', this.reloadComboStore.createDelegate(this, [idx-1]), this);
+	    // this.cbStores.push( s );
+	     this.cbStores[dataIndex] = s;
+	  
+	     this.store.on('load', this.reloadComboStore.createDelegate(this, [dataIndex]), this);
 	      
 	     var cb = new Ext.form.ComboBox({
 	              	        store: s,

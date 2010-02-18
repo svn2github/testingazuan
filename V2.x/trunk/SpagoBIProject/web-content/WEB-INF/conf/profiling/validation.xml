@@ -79,7 +79,6 @@
 				</FIELD>
 
 				<FIELD name="pwd" label="pwd">
-					<VALIDATOR validatorName="MANDATORY"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="150"/>
 				</FIELD>
 				

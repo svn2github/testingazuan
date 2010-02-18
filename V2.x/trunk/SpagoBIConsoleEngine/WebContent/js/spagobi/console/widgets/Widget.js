@@ -89,8 +89,9 @@ Ext.extend(Sbi.console.Widget, Ext.Panel, {
 		var store;
 		
 		if(this.widgetContainer) {
-			if(this.widgetContainer.xstoreManager) {
-				store = this.widgetContainer.xstoreManager.get(storeiId);
+			var sm = this.widgetContainer.getStoreManager();
+			if(sm) {
+				store = sm.get(storeiId);
 			} else {
 				alert("getStore: storeManager not defined");
 			}

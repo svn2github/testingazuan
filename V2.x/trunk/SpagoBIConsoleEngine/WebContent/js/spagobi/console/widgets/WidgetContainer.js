@@ -74,7 +74,7 @@ Ext.extend(Sbi.console.WidgetContainer, Ext.util.Observable, {
     
     widgets: null
     , env: null
-    , xstoreManager: null
+    , storeManager: null
     
    
     //  -- public methods ---------------------------------------------------------
@@ -95,27 +95,34 @@ Ext.extend(Sbi.console.WidgetContainer, Ext.util.Observable, {
 		return this.widgets;
 	}
 	
+	, getStoreManager: function() {
+		return this.storeManager;
+	}
+	
 	
     
     //  -- private methods ---------------------------------------------------------
     
     , init: function() {
-    	alert('init Container');
-    	this.xstoreManager = new Ext.util.MixedCollection();
-    	var testStore = new Ext.data.JsonStore({
-	        fields:['name', 'visits', 'views'],
-	        data: [
-	            {name:'Jul 07', visits: 245000, views: 3000000},
-	            {name:'Aug 07', visits: 240000, views: 3500000},
-	            {name:'Sep 07', visits: 355000, views: 4000000},
-	            {name:'Oct 07', visits: 375000, views: 4200000},
-	            {name:'Nov 07', visits: 490000, views: 4500000},
-	            {name:'Dec 07', visits: 495000, views: 5800000},
-	            {name:'Jan 08', visits: 520000, views: 6000000},
-	            {name:'Feb 08', visits: 620000, views: 7500000}
-	        ]
-	    });
-    	this.xstoreManager.add('testStore', testStore);
+  
+    	if(!this.storeManager) {
+    		alert("Store manager not defined");
+    		this.storeManager = new Ext.util.MixedCollection();
+	    	var testStore = new Ext.data.JsonStore({
+		        fields:['name', 'visits', 'views'],
+		        data: [
+		            {name:'Jul 07', visits: 245000, views: 3000000},
+		            {name:'Aug 07', visits: 240000, views: 3500000},
+		            {name:'Sep 07', visits: 355000, views: 4000000},
+		            {name:'Oct 07', visits: 375000, views: 4200000},
+		            {name:'Nov 07', visits: 490000, views: 4500000},
+		            {name:'Dec 07', visits: 495000, views: 5800000},
+		            {name:'Jan 08', visits: 520000, views: 6000000},
+		            {name:'Feb 08', visits: 620000, views: 7500000}
+		        ]
+		    });
+	    	this.storeManager.add('testStore', testStore);
+    	}
     	
     	this.widgets = new Ext.util.MixedCollection();
     	this.widgets.on('add', this.onWidgetAdd, this);

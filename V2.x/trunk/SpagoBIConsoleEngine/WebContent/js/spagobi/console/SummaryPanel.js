@@ -73,7 +73,8 @@ Sbi.console.SummaryPanel = function(config) {
 		y = new Sbi.console.ChartWidget({chartType: 'bar'});
 		z = new Sbi.console.ChartWidget({chartType: 'pie'});
 		widgetPanel = new Sbi.console.WidgetPanel({
-			items: [x, y, z]
+			storeManager: this.storeManager
+			, items: [x, y, z]
 		});
 		
 		c = Ext.apply(c, {  	

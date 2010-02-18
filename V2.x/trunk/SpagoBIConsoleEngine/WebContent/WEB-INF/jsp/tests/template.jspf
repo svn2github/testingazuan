@@ -2,10 +2,24 @@
 
 Sbi.template = {
 
+
+	// --------------------------------------------------------------------------------
+	// DATASETS
+	// --------------------------------------------------------------------------------
+	datasets: [
+        {
+            id: 'testConsoleChart'
+            , label: 'testConsoleChart'
+            , params: {}  
+            , refreshTime: '30'
+        }
+	]
+	
+	
 	// --------------------------------------------------------------------------------
 	// SUMMARY PANEL
 	// --------------------------------------------------------------------------------
-	summaryPanel: {
+	, summaryPanel: {
     
 	    // layout properties
 	    collassable: true
@@ -14,17 +28,11 @@ Sbi.template = {
     
     
     	// ogni dataset può avere più grafici associati (1..N)
-    	, datasets: [
+    	, charts: [
         {
-            // LABEL del dataset in spagobi
-            label: 'MY_DATA'
-            , params: {}  
-            , refreshTime: '30' // in secondi
-            , charts: [
-                // da definire
-            ]
+         	// chart 1 ...
         }, {
-            // dataset 2 ...
+            // chart 2 ...
         }
     	]
     

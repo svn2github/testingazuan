@@ -59,13 +59,15 @@ Sbi.console.WidgetPanel = function(config) {
 		
 		var c = Ext.apply(defaultSettings, config || {});
 		
-		this.widgetContainer = new Sbi.console.WidgetContainer();
+		this.widgetContainer = new Sbi.console.WidgetContainer({storeManager: c.storeManager});
+		if(c.storeManager) {
+			delete c.storeManager;
+		}
 		
 		if(c.items !== undefined) {
 			this.widgetContainer.register(c.items);
 			var x = c.items[0];
 			delete c.items;
-			alert('Costruttore WidgetPanel: ' + x.getStore('testStore'));
 		}
 		
 		Ext.apply(this, c);
@@ -113,17 +115,12 @@ Ext.extend(Sbi.console.WidgetPanel, Ext.Panel, {
     , onRender: function(ct, position) {
 		Sbi.console.WidgetPanel.superclass.onRender.call(this, ct, position);
 		
-		alert('widgetPanel RENDER');
 		
 		var widgets = this.widgetContainer.getWidgets();
-		
-		alert('WidgetPanel IN: ' + widgets.get(0).getStore('testStore'));
 		
 		widgets.each(function(widget, index, length) {
 			this.widgetColumns[index%this.columnNumber].add(widget);
 		}, this);
-		
-		alert('WidgetPanel OUT: ' + widgets.get(0).getStore('testStore'));
 	}
 
 	

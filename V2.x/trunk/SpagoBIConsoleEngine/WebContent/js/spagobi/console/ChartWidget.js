@@ -137,35 +137,49 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	}
 	
 	, createBarChart: function(chartConfig) {
-		return new Ext.Panel({
+		var s = this.getStore('testConsoleChart');
+		//alert('BarChart: ' + s);
+		var chart = new Ext.Panel({
 		        layout:'fit'
 		        , height: 170
 	
 		        , items: {
 		            xtype: 'columnchart',
-		            store: this.store,
-		            xField: 'name',
-		            yField: 'visits',
+		            store: s,
+		            xField: 'column-2',
+		            yField: 'column-3',
 					listeners: {
 						itemclick: function(o){
-							var rec = this.store.getAt(o.index);
-							alert('Item Selected', 'You chose ' + rec.get('name'));
+							//alert(this.store + ' - ' + this.getStore('testConsoleChart'));
+							//var rec = this.store.getAt(o.index);
+							//alert('Item Selected', 'You chose ' + rec.get('column-2'));
 						}
 					}
 		     }
 		});
+		s.load({
+			params: {}, 
+			callback: function(){}, 
+			scope: this, 
+			add: false
+		});
+		return chart;
+		/*
+		 
+		 */
 	}
 	
 	, createPieChart: function(chartConfig) {
+		var s = this.getStore('testConsoleChart');
 		return new Ext.Panel({
 		        layout:'fit'	
 		        , height: 170
 		        
 				, items: {
-		            store: this.store,
+		            store: s,
 		            xtype: 'piechart',
-		            dataField: 'visits',
-		            categoryField: 'name',
+		            dataField: 'column-3',
+		            categoryField: 'column-2',
 		            //extra styles get applied to the chart defaults
 		            extraStyle:
 		            {

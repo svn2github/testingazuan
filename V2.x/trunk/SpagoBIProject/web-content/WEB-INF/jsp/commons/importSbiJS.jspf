@@ -2,6 +2,9 @@
 IMPORTANT: every time this file get modified (i.e. a new js file is added to the importation list or an old one is removed) also the target
 create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must be updated properly
  -->
+ 
+<!-- Persist library -->
+<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/lib/persist-0.1.0/persist-all-min.js")%>'></script>
 
 <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/browser/main.css", currTheme)%>'/>
 <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/browser/listview.css", currTheme)%>'/>
@@ -63,8 +66,13 @@ END-PRODUCTION -->
 
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/commons/Settings.js")%>'></script>
 
+<script>
+	// Session parameters manager must be initialized
+	document.onload = Sbi.execution.SessionParametersManager.init();
+</script>
+
 <!-- 
 <script type="text/javascript">
 Ext.Ajax.timeout = 300000;
--->
 </script>
+-->

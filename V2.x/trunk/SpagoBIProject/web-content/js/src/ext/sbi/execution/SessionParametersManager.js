@@ -50,45 +50,49 @@ Ext.ns("Sbi.execution");
 Sbi.execution.SessionParametersManager = function() {
 	
     // private variables
-	var key = 'SBI_SESSION_PARAMETERS';
+	var storeName = 'Sbi_execution_SessionParametersManager'; // dots are not allowed by the Persist library
+	
+	var key = 'state';
 	
 	var isEnabled = Sbi.config.sessionParametersManagerEnabled;
-	
-	if (isEnabled !== undefined && isEnabled === true) {
-		// Ext state manager initialization
-		Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
-			path: Sbi.config.adapterPath
-			, expires: new Date(new Date().getTime()+(1000*60*60*24)), // 1 day
-		}));
-	}
 
 	// public space
 	return {
 
+		init: function() {
+			if (isEnabled) {
+				Sbi.execution.SessionParametersManager.store = new Persist.Store(storeName, {
+				      swf_path: Sbi.config.contextName + '/js/lib/persist-0.1.0/persist.swf'
+			    });
+			}
+		}
+		
 		/**
 		 * restores the state of all parameters used in the input parameters panel
 		 * The input parametersPanel is an instance of class Sbi.execution.ParametersPanel
 		 */
-		restoreState: function(parametersPanel) {
+		, restoreState: function(parametersPanel) {
 			if (isEnabled) {
-				var storedParameters = Ext.state.Manager.get(key);
-				if (storedParameters) {
-					var state = {};
-					for(var p in parametersPanel.fields) {
-						var field = parametersPanel.fields[p];
-						if (!field.isTransient) {
-							var parameterStateObject = storedParameters[Sbi.execution.SessionParametersManager.getParameterStorageKey(field)];
-							if (parameterStateObject && parameterStateObject.value) {
-								state[field.name] = parameterStateObject.value;
-								if (parameterStateObject.description) {
-									state[field.name + '_field_visible_description'] = parameterStateObject.description;
+				Sbi.execution.SessionParametersManager.store.get(key, function(ok, value) {
+					if (ok && value !== undefined && value !== null) {
+						var storedParameters = Sbi.commons.JSON.decode(value);
+						var state = {};
+						for(var p in parametersPanel.fields) {
+							var field = parametersPanel.fields[p];
+							if (!field.isTransient) {
+								var parameterStateObject = storedParameters[Sbi.execution.SessionParametersManager.getParameterStorageKey(field)];
+								if (parameterStateObject && parameterStateObject.value) {
+									state[field.name] = parameterStateObject.value;
+									if (parameterStateObject.description) {
+										state[field.name + '_field_visible_description'] = parameterStateObject.description;
+									}
 								}
 							}
 						}
+						//alert('restoring ' + state.toSource());
+						parametersPanel.setFormState(state);
 					}
-					//alert('restoring ' + state.toSource());
-					parametersPanel.setFormState(state);
-				}
+				});
 			}
 		}
 	
@@ -113,25 +117,30 @@ Sbi.execution.SessionParametersManager = function() {
 		 */
 		, save: function(field) {
 			if (isEnabled) {
-				var storedParameters = Ext.state.Manager.get(key);
-				if (storedParameters === undefined || storedParameters === null) {
-					storedParameters = {};
-				}
-				var value = field.getValue();
-				if (value === undefined || value === null || value === '' || value.length === 0) {
-					Sbi.execution.SessionParametersManager.clear(field);
-				} else {
-					var parameterStateObject = {};
-					parameterStateObject.value = value;
-					var rawValue = field.getRawValue();
-					if (rawValue !== undefined) {
-						parameterStateObject.description = rawValue;
+				Sbi.execution.SessionParametersManager.store.get(key, function(ok, value) {
+					if (ok) {
+						var storedParameters = null;
+						if (value === undefined || value === null) {
+							storedParameters = {};
+						} else {
+							storedParameters = Sbi.commons.JSON.decode(value);
+						}
+						var fieldValue = field.getValue();
+						if (fieldValue === undefined || fieldValue === null || fieldValue === '' || fieldValue.length === 0) {
+							Sbi.execution.SessionParametersManager.clear(field);
+						} else {
+							var parameterStateObject = {};
+							parameterStateObject.value = fieldValue;
+							var rawValue = field.getRawValue();
+							if (rawValue !== undefined) {
+								parameterStateObject.description = rawValue;
+							}
+							//alert('saving ' + parameterStateObject.toSource());
+							storedParameters[Sbi.execution.SessionParametersManager.getParameterStorageKey(field)] = parameterStateObject;
+							Sbi.execution.SessionParametersManager.store.set(key, Sbi.commons.JSON.encode(storedParameters));
+						}
 					}
-					//alert('saving ' + parameterStateObject.toSource());
-					storedParameters[Sbi.execution.SessionParametersManager.getParameterStorageKey(field)] = parameterStateObject;
-					Ext.state.Manager.set(key, storedParameters);
-				}
-				
+				});
 			}
 		}
 		
@@ -141,11 +150,15 @@ Sbi.execution.SessionParametersManager = function() {
 		 */
 		, clear: function(field) {
 			if (isEnabled) {
-				var storedParameters = Ext.state.Manager.get(key);
-				if (storedParameters !== undefined && storedParameters !== null) {
-					delete storedParameters[Sbi.execution.SessionParametersManager.getParameterStorageKey(field)];
-				}
-				Ext.state.Manager.set(key, storedParameters);
+				Sbi.execution.SessionParametersManager.store.get(key, function(ok, value) {
+					if (ok) {
+						var storedParameters = Sbi.commons.JSON.decode(value);
+						if (storedParameters !== undefined && storedParameters !== null) {
+							delete storedParameters[Sbi.execution.SessionParametersManager.getParameterStorageKey(field)];
+						}
+						Sbi.execution.SessionParametersManager.store.set(key, Sbi.commons.JSON.encode(storedParameters));
+					}
+				});
 			}
 		}
 		
@@ -154,7 +167,8 @@ Sbi.execution.SessionParametersManager = function() {
 		 */
 		, reset: function() {
 			if (isEnabled) {
-				Ext.state.Manager.clear(key);
+				//Sbi.execution.SessionParametersManager.store.remove(key);
+				Sbi.execution.SessionParametersManager.store.set(key, Sbi.commons.JSON.encode({}));
 			}
 		}
 		

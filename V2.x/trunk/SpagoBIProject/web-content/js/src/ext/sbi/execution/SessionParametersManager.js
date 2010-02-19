@@ -56,7 +56,10 @@ Sbi.execution.SessionParametersManager = function() {
 	
 	if (isEnabled !== undefined && isEnabled === true) {
 		// Ext state manager initialization
-		Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
+		Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
+			path: Sbi.config.adapterPath
+			, expires: new Date(new Date().getTime()+(1000*60*60*24)), // 1 day
+		}));
 	}
 
 	// public space

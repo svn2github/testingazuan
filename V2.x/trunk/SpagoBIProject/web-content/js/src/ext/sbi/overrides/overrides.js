@@ -354,3 +354,24 @@
             //this.el.focus();
         }
 	});
+	
+	
+	/**
+	 * patch for Ext state management bug
+	 * http://www.jasonclawson.com/2008/05/20/ext-21-state-managment-issues-dont-use-it/
+	 */
+	Ext.override(Ext.Component, {
+		
+	    saveState : function(){
+	        if(Ext.state.Manager && this.stateful !== false){
+	            var state = this.getState();
+	            if(this.fireEvent('beforestatesave', this, state) !== false){
+	                Ext.state.Manager.set(this.stateId || this.id, state);
+	                this.fireEvent('statesave', this, state);
+	            }
+	        }
+	    },
+	    
+	    stateful : false
+	 
+	});

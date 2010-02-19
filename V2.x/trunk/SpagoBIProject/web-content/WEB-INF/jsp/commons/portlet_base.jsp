@@ -190,7 +190,7 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/src/ext/sbi/overrides/overrides.js")%>"></script>
 
 <script type="text/javascript">
-    Ext.BLANK_IMAGE_URL = '<%=urlBuilder.getResourceLink(request, "/js/lib/ext-2.0.1/resources/images/default/s.gif")%>';
+	Ext.BLANK_IMAGE_URL = '<%=urlBuilder.getResourceLink(request, "/js/lib/ext-2.0.1/resources/images/default/s.gif")%>';
 
 
 	Ext.Ajax.defaultHeaders = {
@@ -207,6 +207,7 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
         	curr_country: '<%= curr_country %>',
         	curr_language: '<%= curr_language%>',
         	contextName: '<%= GeneralUtilities.getSpagoBiContext() %>',
+        	adapterPath: '<%= GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() %>',
         	supportedLocales: <%= GeneralUtilities.getSupportedLocalesAsJSONArray().toString() %>,
         	sessionParametersManagerEnabled: <%= Boolean.valueOf(sessionParamsManagerEnabled) %>
         };

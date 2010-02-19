@@ -86,14 +86,14 @@ Sbi.profiling.ManageAttributes = function(config) {
 		url: this.services['manageAttributes'],
         scope: this,
 		success: function(response, o){
-			alert("Inizio");
+
 			var content = Ext.util.JSON.decode( response.responseText );
 			if(content.newAttr !== undefined && content.newAttr){
-				alert("new attr");
+
 				var respObj = o.reader.read(response);
-				alert("reader read");
+
 				var attrID = content.id;
-				alert("success:::setto attr id::"+attrID);
+
 				if(attrID != null && attrID !==''){
 
 					if(content.message !==''){
@@ -112,11 +112,11 @@ Sbi.profiling.ManageAttributes = function(config) {
 			'exception': function(proxy, type, action, options, response, arg){	
 				try{
 					var content = Ext.util.JSON.decode( response.responseText );
-					//alert(content);
+
 					if(content !== undefined){
     					if(content.success){
         					var attrID = content.id;
-        					//alert("exception:::setto attr id::"+attrID);
+
         					if(attrID != null && attrID !==''){
         						rec.set('id', attrID);
         						this.store.commitChanges();
@@ -194,7 +194,7 @@ Sbi.profiling.ManageAttributes = function(config) {
     			alert("caio2");
     		}
 
-    	},
+    	}
     });
 
     
@@ -285,7 +285,7 @@ Ext.extend(Sbi.profiling.ManageAttributes, Ext.grid.GridPanel, {
      */
     ,onDelete: function() {
         var rec = this.getSelectionModel().getSelected();
-        alert(rec.data.id);
+
         var remove = true;
 
         this.store.proxy = new Ext.data.HttpProxy({

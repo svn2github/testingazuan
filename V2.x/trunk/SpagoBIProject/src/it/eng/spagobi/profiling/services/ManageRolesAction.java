@@ -107,24 +107,7 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 				throw new SpagoBIServiceException(SERVICE_NAME,
 						"Exception occurred while retrieving roles", e);
 			}
-		} /*else if (serviceType != null && serviceType.equalsIgnoreCase(ROLE_DETAIL)) {
-
-			Integer id = getAttributeAsInteger(ID);
-			try {
-				Role role = roleDao.loadByID(id);
-				logger.debug("Loaded role detail");
-				JSONObject roleJSON = (JSONObject) SerializerFactory.getSerializer("application/json").serialize(role,locale);
-				//add flags
-				roleJSON = addFlagsToJSONRoles(roleJSON, role);
-				writeBackToClient(new JSONSuccess(roleJSON));
-
-			} catch (Throwable e) {
-				logger.error(e.getMessage(), e);
-				throw new SpagoBIServiceException(SERVICE_NAME,
-						"Exception occurred while retrieving role detail",
-						e);
-			}
-		}*/else if (serviceType != null	&& serviceType.equalsIgnoreCase(ROLE_INSERT)) {
+		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(ROLE_INSERT)) {
 			String name = getAttributeAsString(NAME);
 			String roleTypeCD = getAttributeAsString(ROLE_TYPE_CD);
 			String code = getAttributeAsString(CODE);
@@ -176,7 +159,7 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 					role.setIsAbleToSendMail(sendMail);
 					try {
 						String id = getAttributeAsString(ID);
-						if(id != null && !id.equals("")){							
+						if(id != null && !id.equals("") && !id.equals("0")){							
 							role.setId(Integer.valueOf(id));
 							roleDao.modifyRole(role);
 							logger.debug("Role "+id+" updated");

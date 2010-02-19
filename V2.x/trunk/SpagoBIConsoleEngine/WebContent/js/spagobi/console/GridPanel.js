@@ -240,16 +240,20 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 
 
     //adds inline action buttons
-    var bc;
-
-   // meta.fields.push(addFill())
 		for(var i=0; i < this.table.inlineActions.length; i++){
-      bc = new Ext.grid.ButtonColumn({
+		
+		  var img = this.images[this.table.inlineActions[i].name];
+		  if (this.table.inlineActions[i].name === 'crossnav'){
+		    if (this.table.inlineActions[i].config.target === 'new')
+		      img = this.images['cross_detail'];
+		    else
+		      img = this.images['popup_detail'];
+      }
+      
+      var bc = new Ext.grid.ButtonColumn({
            dataIndex: 'inlineAction-'+i
 			   , tooltip: this.table.inlineActions[i].name 
-         , imgSrc: (this.table.inlineActions[i].name === 'crossnav' && this.table.inlineActions[i].config.target === 'self' )?
-                      this.images['popup_detail']:(this.table.inlineActions[i].name === 'crossnav' && this.table.inlineActions[i].config.target === 'new' )?
-                      this.images['cross_detail']:this.images[this.table.inlineActions[i].name]
+         , imgSrc: img
          , clickHandler:function(e, t){
                 alert("clikkato!!");
                 var index = this.grid.getView().findRowIndex(t);

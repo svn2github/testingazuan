@@ -40,7 +40,7 @@ public interface ISbiAttributeDAO {
 	
 	public Integer saveSbiAttribute(SbiAttribute attribute) throws EMFUserError;
 	
-	public void saveOrUpdateSbiAttribute(SbiAttribute attribute) throws EMFUserError;
+	public Integer saveOrUpdateSbiAttribute(SbiAttribute attribute) throws EMFUserError;
 
 	public SbiUserAttributes loadSbiAttributesByUserAndId(Integer userId, Integer id)	throws EMFUserError;
 	

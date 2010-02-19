@@ -78,61 +78,89 @@ Sbi.profiling.ManageAttributes = function(config) {
 		    {name: 'description'}
 	]);
 
-	
 	// The new DataWriter component.
 	this.writer = new Ext.data.JsonWriter({
 	    encode: false   // <-- don't return encoded JSON -- causes Ext.Ajax#request to send data using jsonData config rather than HTTP params
 	});
+	this.httpproxy = new Ext.data.HttpProxy({
+		url: this.services['manageAttributes'],
+        scope: this,
+		success: function(response, o){
+			alert("Inizio");
+			var content = Ext.util.JSON.decode( response.responseText );
+			if(content.newAttr !== undefined && content.newAttr){
+				alert("new attr");
+				var respObj = o.reader.read(response);
+				alert("reader read");
+				var attrID = content.id;
+				alert("success:::setto attr id::"+attrID);
+				if(attrID != null && attrID !==''){
 
+					if(content.message !==''){
+						//store.commitChanges();
+		                Ext.MessageBox.show({
+		                    title: LN('sbi.attributes.ok'),
+		                    msg: LN('sbi.attributes.ok.msg'),
+		                    width: 200,
+		                    buttons: Ext.MessageBox.OK
+		               });
+					}
+				}
+			}
+		}
+		,listeners: {
+			'exception': function(proxy, type, action, options, response, arg){	
+				try{
+					var content = Ext.util.JSON.decode( response.responseText );
+					//alert(content);
+					if(content !== undefined){
+    					if(content.success){
+        					var attrID = content.id;
+        					//alert("exception:::setto attr id::"+attrID);
+        					if(attrID != null && attrID !==''){
+        						rec.set('id', attrID);
+        						this.store.commitChanges();
+	    						if(content.message !==''){
+	    							this.store.commitChanges();
+					                Ext.MessageBox.show({
+					                    title: LN('sbi.attributes.ok'),
+					                    msg: LN('sbi.attributes.ok.msg'),
+					                    width: 200,
+					                    buttons: Ext.MessageBox.OK
+					               });
+	    						}
+        					}
+    					}else if(!content.success){
+			                Ext.MessageBox.show({
+			                    title: LN('sbi.attributes.error'),
+			                    msg: content.message,
+			                    width: 400,
+			                    buttons: Ext.MessageBox.OK
+			               });
+
+    					}
+					}else{
+		                Ext.MessageBox.show({
+		                    title: LN('sbi.attributes.error'),
+		                    msg: LN('sbi.attributes.error.msg'),
+		                    width: 400,
+		                    buttons: Ext.MessageBox.OK
+		               }); 
+					}
+				}catch(exception){
+					return;
+				}
+			}
+
+        }
+	});
 	// Typical Store collecting the Proxy, Reader and Writer together.
 	this.store = new Ext.data.Store({
 	    id: 'user',
+		storeId:'storeattr1',
+	    scope:this,
 	    restful: true,     // <-- This Store is RESTful
-	    proxy: new Ext.data.HttpProxy({
-					url: this.services['manageAttributes'],
-					listeners: {
-						'exception': function(proxy, type, action, options, response, arg){	
-	    					try{
-	    						var content = Ext.util.JSON.decode( response.responseText );
-	    						
-	    						if(content !== undefined){
-			    					if(content.success){
-			    						if(content.message !==''){
-			    							this.store.commitChanges();
-							                Ext.MessageBox.show({
-							                    title: LN('sbi.attributes.ok'),
-							                    msg: LN('sbi.attributes.ok.msg'),
-							                    width: 200,
-							                    buttons: Ext.MessageBox.OK
-							               });
-			    						}
-			    					}else if(!content.success){
-						                Ext.MessageBox.show({
-						                    title: LN('sbi.attributes.error'),
-						                    msg: content.message,
-						                    width: 400,
-						                    buttons: Ext.MessageBox.OK
-						               });
-
-			    					}
-	    						}else{
-					                Ext.MessageBox.show({
-					                    title: LN('sbi.attributes.error'),
-					                    msg: LN('sbi.attributes.error.msg'),
-					                    width: 400,
-					                    buttons: Ext.MessageBox.OK
-					               }); 
-	    						}
-	    					}catch(exception){
-	    						
-	    						return;
-	    					}
-						}
-
-			        },
-			        scope: this
-			}),
-
+	    proxy: this.httpproxy,
 	    reader: this.reader,
 	    writer: this.writer    // <-- plug a DataWriter into the store just as you would a Reader
 	});
@@ -161,8 +189,14 @@ Sbi.profiling.ManageAttributes = function(config) {
 	 // use RowEditor for editing
     this.editor = new Ext.ux.grid.RowEditor({
         saveText: LN('sbi.attributes.update')
+        ,listeners:{
+    		'new': function(){
+    			alert("caio2");
+    		}
+
+    	},
     });
-    
+
     
     
     this.editor.on({
@@ -251,37 +285,45 @@ Ext.extend(Sbi.profiling.ManageAttributes, Ext.grid.GridPanel, {
      */
     ,onDelete: function() {
         var rec = this.getSelectionModel().getSelected();
-        if (!rec) {
-            return false;
-        }
+        alert(rec.data.id);
         var remove = true;
-        this.store.proxy = new Ext.data.HttpProxy({
-					url: this.services['manageAttributesDelete']
-					, listeners: {
-						'exception': function(proxy, type, action, options, response, arg){	    	
 
+        this.store.proxy = new Ext.data.HttpProxy({
+				url: this.services['manageAttributesDelete']
+				, listeners: {
+					'exception': function(proxy, type, action, options, response, arg){	    	
+        				var content = Ext.util.JSON.decode( response.responseText );
+        				if(content == undefined || !content.success){
 			                Ext.MessageBox.show({
 			                    title: LN('sbi.attributes.error'),
 			                    msg: LN('sbi.attributes.error.msg'),
 			                    width: 400,
 			                    buttons: Ext.MessageBox.OK
-			               });
-			                remove = false;
-						}
-        				
-			        }
-			        ,scope: this
+			                });
+
+			               remove = false;
+        				}else{
+			                Ext.MessageBox.show({
+			                    title: LN('sbi.attributes.ok'),
+			                    msg: LN('sbi.attributes.ok.msg'),
+			                    width: 400,
+			                    buttons: Ext.MessageBox.OK
+			                });
+        				}
+					}
+    				
+		        }
+		        ,scope: this
 			});
-        if(remove){
-            this.store.remove(rec);
+        this.store.remove(rec);
+        this.store.commitChanges();
+
+        if(!remove){
+        	//readd record
+            this.store.add(rec);
             this.store.commitChanges();
-            Ext.MessageBox.show({
-                title: LN('sbi.attributes.ok'),
-                msg: LN('sbi.attributes.ok.msg'),
-                width: 400,
-                buttons: Ext.MessageBox.OK
-           });
         }
+
 
         this.store.proxy = new Ext.data.HttpProxy({
 			url: this.services['manageAttributes']

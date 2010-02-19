@@ -108,7 +108,7 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 						
 						//checks if it is empty attribute to start insert
 						boolean isNewAttr = this.getAttributeAsBoolean(IS_NEW_ATTR);
-						System.out.println(isNewAttr);
+
 						if(!isNewAttr){
 							if(!samples.isNull(NAME)){
 								
@@ -123,6 +123,7 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 									attributesResponseSuccessJSON.put("success", false);
 									attributesResponseSuccessJSON.put("message", "Either the field name is blank or it exceeds maxlength or it is not alfanumeric");
 									attributesResponseSuccessJSON.put("data", "[]");
+									
 									writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );
 
 									return;
@@ -155,17 +156,21 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 							if(name!=null){
 								attribute.setAttributeName(name);
 							}
+							boolean isNewAttrForRes = true;
 							if(idStr!=null && !idStr.equals("")){
 								Integer attributeId = new Integer(idStr);
 								attribute.setAttributeId(attributeId.intValue());
+								isNewAttrForRes = false;
 							}
-							attrDao.saveOrUpdateSbiAttribute(attribute);
+							Integer attrID = attrDao.saveOrUpdateSbiAttribute(attribute);
 							logger.debug("Attribute updated");
-							JSONObject attributesResponseSuccessJSON = new JSONObject();
-							attributesResponseSuccessJSON.put("success", true);
-							attributesResponseSuccessJSON.put("message", "");
-							attributesResponseSuccessJSON.put("data", "[]");
-							writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );		
+
+							ArrayList<SbiAttribute> attributes = new ArrayList<SbiAttribute> ();
+							attribute.setAttributeId(attrID);
+							attributes.add(attribute);
+							
+							getAttributesListAdded(locale,attributes,isNewAttrForRes, attrID);
+
 						}
 						//else the List of attributes will be sent to the client
 					}else{
@@ -231,7 +236,7 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 					getHttpResponse().setStatus(404);								
 					try {
 						JSONObject attributesResponseSuccessJSON = new JSONObject();
-						attributesResponseSuccessJSON.put("success", true);
+						attributesResponseSuccessJSON.put("success", false);
 						attributesResponseSuccessJSON.put("message", "Exception occurred while deleting attribute");
 						attributesResponseSuccessJSON.put("data", "[]");
 						writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );	
@@ -241,9 +246,9 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 						// TODO Auto-generated catch block
 						logger.error(e2.getMessage(), e2);
 					}
-					throw new SpagoBIServiceException(SERVICE_NAME,
+/*					throw new SpagoBIServiceException(SERVICE_NAME,
 							"Exception occurred while deleting attribute",
-							e);
+							e);*/
 				}
 			}
 		}
@@ -261,7 +266,17 @@ public class ManageAttributesAction extends AbstractSpagoBIAction{
 
 	}
 	
-	
+	private void getAttributesListAdded(Locale locale, ArrayList<SbiAttribute> attributes, boolean isAdded, Integer attrID) throws SerializationException, IOException, EMFUserError, JSONException{
+
+		JSONArray attributesJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(attributes,locale);
+		JSONObject attributesResponseJSON = createJSONResponseAttributes(attributesJSON);
+		attributesResponseJSON.put("success", true);
+		attributesResponseJSON.put("id", attrID);
+		attributesResponseJSON.put("newAttr", isAdded);
+
+		writeBackToClient(new JSONSuccess(attributesResponseJSON));
+
+	}	
 	
 	/**
 	 * Creates a json array with children attributes informations

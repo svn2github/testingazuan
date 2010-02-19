@@ -136,10 +136,11 @@ public class SbiAttributeDAOHibImpl extends AbstractHibernateDAO implements
 
 	}
 	
-	public void saveOrUpdateSbiAttribute(SbiAttribute attribute) throws EMFUserError {
+	public Integer saveOrUpdateSbiAttribute(SbiAttribute attribute) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
+		Integer idToReturn = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
@@ -156,8 +157,13 @@ public class SbiAttributeDAOHibImpl extends AbstractHibernateDAO implements
 					hibAttribute.setDescription(description);
 				}
 			}
-			aSession.saveOrUpdate(hibAttribute);
-
+			Integer idAttrPassed = attribute.getAttributeId();
+			if(idAttrPassed != null && !String.valueOf(idAttrPassed.intValue()).equals("")){
+				idToReturn = (Integer)aSession.save(hibAttribute);
+			}else{
+				aSession.saveOrUpdate(hibAttribute);
+				idToReturn = idAttrPassed;
+			}
 			tx.commit();
 			logger.debug("OUT");
 		} catch (HibernateException he) {
@@ -166,10 +172,12 @@ public class SbiAttributeDAOHibImpl extends AbstractHibernateDAO implements
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		} finally {
+			
 			if (aSession != null) {
 				if (aSession.isOpen())
 					aSession.close();
 			}
+			return idToReturn;
 		}
 
 	}

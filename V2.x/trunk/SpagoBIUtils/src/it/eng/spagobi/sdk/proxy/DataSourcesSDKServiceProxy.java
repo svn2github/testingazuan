@@ -10,7 +10,7 @@ import it.eng.spagobi.sdk.datasources.stub.DataSourcesSDKService;
 import it.eng.spagobi.sdk.datasources.stub.DataSourcesSDKServiceServiceLocator;
 
 
-public class DataSourcesSDKServiceProxy implements DataSourcesSDKService {
+public class DataSourcesSDKServiceProxy extends AbstractSDKServiceProxy implements DataSourcesSDKService {
 	private String _endpoint = null;
 	private DataSourcesSDKService dataSourcesSDKService = null;
 	private ClientCredentialsHolder cch = null;
@@ -39,7 +39,6 @@ public class DataSourcesSDKServiceProxy implements DataSourcesSDKService {
 			Stub axisPort = (Stub) remote;
 			axisPort._setProperty(WSHandlerConstants.USER, cch.getUsername());
 			axisPort._setProperty(WSHandlerConstants.PW_CALLBACK_REF, cch);
-
 			dataSourcesSDKService = (it.eng.spagobi.sdk.datasources.stub.DataSourcesSDKService) axisPort;        
 			//dataSourcesSDKService = (new DataSourcesSDKServiceServiceLocator()).getDataSourcesSDKService();
 			if (dataSourcesSDKService != null) {

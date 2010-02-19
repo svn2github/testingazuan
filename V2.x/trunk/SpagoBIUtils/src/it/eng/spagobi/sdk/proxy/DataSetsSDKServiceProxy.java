@@ -7,7 +7,7 @@ import org.apache.ws.security.handler.WSHandlerConstants;
 
 import it.eng.spagobi.sdk.callbacks.ClientCredentialsHolder;
 
-public class DataSetsSDKServiceProxy implements it.eng.spagobi.sdk.datasets.stub.DataSetsSDKService {
+public class DataSetsSDKServiceProxy extends AbstractSDKServiceProxy implements it.eng.spagobi.sdk.datasets.stub.DataSetsSDKService {
   private String _endpoint = null;
   private it.eng.spagobi.sdk.datasets.stub.DataSetsSDKService dataSetsSDKService = null;
   private ClientCredentialsHolder cch = null;

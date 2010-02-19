@@ -7,7 +7,7 @@ import org.apache.ws.security.handler.WSHandlerConstants;
 
 import it.eng.spagobi.sdk.callbacks.ClientCredentialsHolder;
 
-public class TestConnectionServiceProxy implements it.eng.spagobi.sdk.test.stub.TestConnectionService {
+public class TestConnectionServiceProxy extends AbstractSDKServiceProxy implements it.eng.spagobi.sdk.test.stub.TestConnectionService {
   private String _endpoint = null;
   private it.eng.spagobi.sdk.test.stub.TestConnectionService testConnectionService = null;
   private ClientCredentialsHolder cch = null;

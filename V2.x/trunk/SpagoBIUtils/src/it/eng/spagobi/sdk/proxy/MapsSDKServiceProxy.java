@@ -9,7 +9,7 @@ import it.eng.spagobi.sdk.callbacks.ClientCredentialsHolder;
 import it.eng.spagobi.sdk.maps.stub.MapsSDKService;
 import it.eng.spagobi.sdk.maps.stub.MapsSDKServiceServiceLocator;
 
-public class MapsSDKServiceProxy implements MapsSDKService {
+public class MapsSDKServiceProxy extends AbstractSDKServiceProxy implements MapsSDKService {
   private String _endpoint = null;
   private MapsSDKService mapsSDKService = null;
   private ClientCredentialsHolder cch = null;

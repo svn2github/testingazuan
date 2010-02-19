@@ -7,7 +7,7 @@ import org.apache.ws.security.handler.WSHandlerConstants;
 
 import it.eng.spagobi.sdk.callbacks.ClientCredentialsHolder;
 
-public class EnginesServiceProxy implements it.eng.spagobi.sdk.engines.stub.EnginesService {
+public class EnginesServiceProxy extends AbstractSDKServiceProxy implements it.eng.spagobi.sdk.engines.stub.EnginesService {
   private String _endpoint = null;
   private it.eng.spagobi.sdk.engines.stub.EnginesService enginesService = null;
   private ClientCredentialsHolder cch = null;

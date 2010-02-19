@@ -10,7 +10,7 @@ import it.eng.spagobi.sdk.documents.stub.DocumentsService;
 import it.eng.spagobi.sdk.documents.stub.DocumentsServiceServiceLocator;
 
 
-public class DocumentsServiceProxy implements DocumentsService {
+public class DocumentsServiceProxy extends AbstractSDKServiceProxy implements DocumentsService {
   private String _endpoint = null;
   private DocumentsService documentsService = null;
   private ClientCredentialsHolder cch = null;

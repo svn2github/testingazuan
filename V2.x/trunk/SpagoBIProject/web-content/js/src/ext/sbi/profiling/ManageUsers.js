@@ -102,7 +102,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	, initStores: function (config) {
 	
 		this.usersStore = new Ext.data.JsonStore({
-	    	autoLoad: false    	
+	    	autoLoad: false  
 	    	,fields: ['userId'
 	    			  , 'id'
 	    	          , 'fullName'
@@ -502,7 +502,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 			      			
 			      			if(content.responseText !== 'Operation succeded') {
 			                    Ext.MessageBox.show({
-			                        title: 'Error',
+			                        title: LN('sbi.roles.error'),
 			                        msg: content,
 			                        width: 150,
 			                        buttons: Ext.MessageBox.OK

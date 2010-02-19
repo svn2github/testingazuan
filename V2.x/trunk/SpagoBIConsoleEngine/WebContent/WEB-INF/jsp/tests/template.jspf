@@ -30,9 +30,27 @@ Sbi.template = {
     	// ogni dataset può avere più grafici associati (1..N)
     	, charts: [
         {
-         	// chart 1 ...
+        	dataset: 'testStore'
+            , widgetConfig: {
+            	type: 'chart.ext.line'
+        		, xField: 'name'
+                , yField: 'visits'
+            }
+         	
         }, {
-            // chart 2 ...
+        	dataset: 'testConsoleChart'
+        	, widgetConfig: {
+        		type: 'chart.ext.bar'
+            	, xField: 'column-2'
+            	, yField: 'column-3'
+        	}
+        } , {
+        	dataset: 'testConsoleChart'
+        	, widgetConfig: {
+        		type: 'chart.ext.pie'
+        		, dataField: 'column-3'
+	        	, categoryField: 'column-2'
+        	}
         }
     	]
     

@@ -96,6 +96,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if(viewTrack!=null && viewTrack.equalsIgnoreCase("TRUE")){
 	viewTrackPath=true;	
 	}
+	
+	Boolean userHasChanged = (Boolean) moduleResponse.getAttribute("USER_HAS_CHANGED"); 
 %>
 
 <%-- Javascript object useful for session expired management (see also sessionExpired.jsp) --%>
@@ -385,6 +387,12 @@ if(showfooter){%>
 	  
 	  viewport.render();
 	  viewport.doLayout(true,true);
+
+
+	  <% if (userHasChanged != null && userHasChanged.booleanValue()) { %>
+	  // reset parameters stored in session
+	  Sbi.execution.SessionParametersManager.reset();
+	  <% } %>
     });
     
 

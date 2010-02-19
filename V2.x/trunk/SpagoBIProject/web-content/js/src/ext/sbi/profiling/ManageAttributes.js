@@ -189,12 +189,6 @@ Sbi.profiling.ManageAttributes = function(config) {
 	 // use RowEditor for editing
     this.editor = new Ext.ux.grid.RowEditor({
         saveText: LN('sbi.attributes.update')
-        ,listeners:{
-    		'new': function(){
-    			alert("caio2");
-    		}
-
-    	}
     });
 
     

@@ -36,6 +36,7 @@ public class SDKProxyFactory {
 			serverUrl += "/";
 		}
 		proxy.setEndpoint(serverUrl + "sdk/DocumentsService");
+		new ProxyDataRetriever().initProxyData(proxy, serverUrl);
 		return proxy;
 	}
 	
@@ -47,6 +48,7 @@ public class SDKProxyFactory {
 			serverUrl += "/";
 		}
 		proxy.setEndpoint(serverUrl + "sdk/EnginesService");
+		new ProxyDataRetriever().initProxyData(proxy, serverUrl);
 		return proxy;
 	}
 	
@@ -58,6 +60,7 @@ public class SDKProxyFactory {
 			serverUrl += "/";
 		}
 		proxy.setEndpoint(serverUrl + "sdk/DataSetsSDKService");
+		new ProxyDataRetriever().initProxyData(proxy, serverUrl);
 		return proxy;
 	}
 
@@ -69,6 +72,7 @@ public class SDKProxyFactory {
 			serverUrl += "/";
 		}
 		proxy.setEndpoint(serverUrl + "sdk/DataSourcesSDKService");
+		new ProxyDataRetriever().initProxyData(proxy, serverUrl);
 		return proxy;
 	}
 
@@ -80,6 +84,7 @@ public class SDKProxyFactory {
 			serverUrl += "/";
 		}
 		proxy.setEndpoint(serverUrl + "sdk/MapsSDKService");
+		new ProxyDataRetriever().initProxyData(proxy, serverUrl);
 		return proxy;
 	}
 	

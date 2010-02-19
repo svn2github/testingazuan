@@ -49,13 +49,15 @@ Ext.ns("Sbi.execution");
 
 Sbi.execution.SessionParametersManager = function() {
 	
-	// Ext state manager initialization
-	Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
-	
     // private variables
 	var key = 'SBI_SESSION_PARAMETERS';
 	
 	var isEnabled = Sbi.config.sessionParametersManagerEnabled;
+	
+	if (isEnabled !== undefined && isEnabled === true) {
+		// Ext state manager initialization
+		Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
+	}
 
 	// public space
 	return {

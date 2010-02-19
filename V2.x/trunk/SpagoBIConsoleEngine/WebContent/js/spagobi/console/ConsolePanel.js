@@ -60,9 +60,6 @@ Sbi.console.ConsolePanel = function(config) {
 		
 	var c = Ext.apply(defaultSettings, config || {});
 	
-	var datasetsConfig = c.datasets || [];
-	delete c.datasets;
-	
 	var summaryPanelConfig = c.summaryPanel || {};
 	delete c.summaryPanel;
 	
@@ -71,10 +68,7 @@ Sbi.console.ConsolePanel = function(config) {
 		
 	Ext.apply(this, c);
 		
-	this.initStoreManager(datasetsConfig);
-	summaryPanelConfig.storeManager = this.storeManager;
 	this.initSummaryPanel(summaryPanelConfig);
-	detailPanelConfig.storeManager = this.storeManager;
 	this.initDetailPanel(detailPanelConfig);
 	
 	c = Ext.apply(c, {  	
@@ -88,7 +82,6 @@ Sbi.console.ConsolePanel = function(config) {
 Ext.extend(Sbi.console.ConsolePanel, Ext.Panel, {
     
     services: null
-    , storeManager: null
     , summaryPanel: null
     , detailPanel: null
    
@@ -98,40 +91,6 @@ Ext.extend(Sbi.console.ConsolePanel, Ext.Panel, {
     
     
     //  -- private methods ---------------------------------------------------------
-    
-    , initStoreManager: function(datasetsConfig) {
-		
-		datasetsConfig = datasetsConfig || [];
-		
-		this.storeManager = new Ext.util.MixedCollection();
-		for(var i = 0, l = datasetsConfig.length, s; i < l; i++) {
-			s = new Ext.data.JsonStore({
-				id: datasetsConfig[i].id
-				, url: Sbi.config.serviceRegistry.getServiceUrl({
-					serviceName: 'GET_CONSOLE_DATA_ACTION'
-					, baseParams: {ds_label: datasetsConfig[i].label}
-				})
-				, autoLoad: false
-			}); 
-			this.storeManager.add(datasetsConfig[i].id, s);
-		}
-		
-		// for easy debug purpose
-		var testStore = new Ext.data.JsonStore({
-	        fields:['name', 'visits', 'views'],
-	        data: [
-	            {name:'Jul 07', visits: 245000, views: 3000000},
-	            {name:'Aug 07', visits: 240000, views: 3500000},
-	            {name:'Sep 07', visits: 355000, views: 4000000},
-	            {name:'Oct 07', visits: 375000, views: 4200000},
-	            {name:'Nov 07', visits: 490000, views: 4500000},
-	            {name:'Dec 07', visits: 495000, views: 5800000},
-	            {name:'Jan 08', visits: 520000, views: 6000000},
-	            {name:'Feb 08', visits: 620000, views: 7500000}
-	        ]
-	    });
-		this.storeManager.add('testStore', testStore);
-	}
     
     , initSummaryPanel: function(conf) {
 		this.summaryPanel = new Sbi.console.SummaryPanel(conf);

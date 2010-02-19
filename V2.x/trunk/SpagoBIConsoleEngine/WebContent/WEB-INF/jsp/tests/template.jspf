@@ -169,72 +169,59 @@ Sbi.template = {
 		                   	, refreshTime: '30' // in secondi
 		            } 
 		
-		            , inlineCharts: [
-		                { // 0..n volte
-		                    type: 'bar'
-		                    , column: 'sales'
-		                    , color: 'gray'
-		                    // se è di tipo numerico usa il valore passato; 
-		                    // se è 'remote' calcola il massimo lato server (NOTA: il calcolo viene fatto contestualmente al refresh dei dati ed il valore ottenuto viene copiato nei metadati del resultset)
-		                    // se locale è uguale al massimo dei valori presenti nella pagina attualmente visualizzata
-		                    , maxValue: 45 // <absolute value>| 'remote' | 'local'
-		                    , tooltip: 'volume vendite'
-		                }, { // 0..n volte
-		                     type: 'point'
-		                     , column: 'errorNum'
-		                     , color: 'red'
-		                     // soglia oltre alla quale il simbolo deve essere visualizzato
-		                     , treshhold: '25'
-		                     , tooltip: 'superata la soglia di 25 errori'
-		                }
-		            ]
-		            
-		            , inlineActions: [
-		                {
-		                    name: 'start'
-		                    , hidden: false
-		                    , config: {
-		                        params: {
-		                            // parametri statici e dinamici definiti come in detailPanel.pages.navigationBar.documents
-		                        }
-		                    }
-		                }, {
-		                    name: 'stop'
-		                    , hidden: false
-		                    , config: {
-		                        params: {
-		                            // parametri statici e dinamici definiti come in detailPanel.pages.navigationBar.documents
-		                        }
-		                    }
-		                }, {
-		                    name: 'errors'
-		                    , hidden: false
-		                    , config: {}
-		                }, {
-		                    name: 'warnings'
-		                    , hidden: false
-		                    , config: {}
-		                }, {
-		                    name: 'informationlog'
-		                    , hidden: false
-		                    , config: {}
-		                }, { // 0..n volte
-		                    name: 'crossnav'
-		                    , hidden: false
-		                    , config: {
-		                        target: 'self' // self | new
-		                       //,document: // definito come in detailPanel.pages.navigationBar.documents
-		                    }
-		                }, {
-		                    name: 'monitor'
-		                    , hidden: false
-		                    , config: {}
-		                }, {
-		                    name: 'monitor'
-		                    , hidden: false
-		                    , config: {}
-		                }
-		            ]    
+	            , inlineActions: [
+	      		                {
+	      		                    name: 'start'
+	      		                    , hidden: false
+	      		                    , config: {
+	      		                        params: {
+	      		                            // parametri statici e dinamici definiti come in detailPanel.pages.navigationBar.documents
+	      		                        }
+	      		                    }
+	      		                }, {
+	      		                    name: 'stop'
+	      		                    , hidden: false
+	      		                    , config: {
+	      		                        params: {
+	      		                            // parametri statici e dinamici definiti come in detailPanel.pages.navigationBar.documents
+	      		                        }
+	      		                    }
+	      		                }, {
+	      		                    name: 'errors'
+	      		                    , hidden: false
+	      		                    , config: {}
+	      		                }, {
+	      		                    name: 'warnings'
+	      		                    , hidden: false
+	      		                    , config: {}
+	      		                }, {
+	      		                    name: 'informationlog'
+	      		                    , hidden: false
+	      		                    , config: {}
+	      		                }, { // 0..n volte
+	      		                    name: 'crossnav'
+	      		                    , hidden: false
+	      		                    , config: {
+	      		                        target: 'self' // self | new
+	      		                       //,document: // definito come in detailPanel.pages.navigationBar.documents
+	      		                    }
+	      		                }, { // 0..n volte
+	      		                    name: 'crossnav'
+	      		                    , hidden: false
+	      		                    , config: {
+	      		                        target: 'new' // self | new
+	      		                       //,document: // definito come in detailPanel.pages.navigationBar.documents
+	      		                    }
+	      		                },{
+	      		                    name: 'monitor'
+	      		                    , hidden: false
+	      		                    , config: {}
+	      		                }, {
+	      		                    name: 'views'
+	      		                    , hidden: false
+	      		                    , config: {}
+	      		                }
+	      		            ]    
 		        }//table
 	    	} //filterBar
 	

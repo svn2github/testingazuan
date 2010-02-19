@@ -48,7 +48,7 @@
 Ext.ns("Sbi.console");
 
 Sbi.console.GridPanel = function(config) {
-	
+
 		var defaultSettings = {
 			//title: LN('sbi.qbe.queryeditor.title')
 		};
@@ -62,21 +62,100 @@ Sbi.console.GridPanel = function(config) {
 		//delete c.filterBar;
 		Ext.apply(this, c);
 		
+		this.services = this.services || new Array();	
+		this.images = this.images || new Array();	
+		
 		var params = {ds_label: config.table.dataset.label};
-		this.services = new Array();
-	  	this.services['getDataService'] = Sbi.config.serviceRegistry.getServiceUrl({
+	  this.services['getDataService'] = Sbi.config.serviceRegistry.getServiceUrl({
 	  		serviceName: 'GET_CONSOLE_DATA_ACTION'
 	  		, baseParams: params
 	  	});
 	  	
-	  	this.initStore();
+	 	this.services['start'] = this.services['start'] || Sbi.config.serviceRegistry.getServiceUrl({
+			serviceName: 'START_ACTION'
+			, baseParams: new Object()
+		});
+		this.images['start'] = this.images['start'] || "../img/ico_start.gif";
+		
+		this.services['stop'] = this.services['stop'] || Sbi.config.serviceRegistry.getServiceUrl({
+			serviceName: 'STOP_ACTION'
+			, baseParams: new Object()
+		});
+		this.images['stop'] = this.images['stop'] || "../img/ico_stop.gif";
+		
+		this.services['informationlog'] = this.services['informationlog'] || Sbi.config.serviceRegistry.getServiceUrl({
+			serviceName: 'LOG_ACTION'
+			, baseParams: new Object()
+		});
+		this.images['informationlog'] = this.images['informationlog'] || "../img/ico_info.gif";
+		
+		this.services['crossnav'] = this.services['crossnav'] || Sbi.config.serviceRegistry.getServiceUrl({
+			serviceName: 'CROSS_ACTION'
+			, baseParams: new Object()
+		});
+		this.images['cross_detail'] = this.images['cross_detail'] || "../img/ico_cross_detail.gif";
+		this.images['popup_detail'] = this.images['popup_detail'] || "../img/ico_popup_detail.gif";
+		
+		this.services['monitor'] = this.services['monitor'] || Sbi.config.serviceRegistry.getServiceUrl({
+			serviceName: 'MONITOR_INACTIVE_ACTION'
+			, baseParams: new Object()
+		});
+		this.images['monitor'] = this.images['monitor'] || "../img/ico_monitor.gif";
+		
+		this.services['monitor_inactive'] = this.services['monitor_inactive'] || Sbi.config.serviceRegistry.getServiceUrl({
+			serviceName: 'MONITOR_ACTION'
+			, baseParams: new Object()
+		});
+		this.images['monitor_inactive'] = this.images['monitor_inactive'] || "../img/ico_monitor_inactive.gif";
+		
+		this.services['errors'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'ERRORS_ACTION'
+			, baseParams: new Object()
+		});
+		this.images['errors'] = this.images['errors'] || "../img/ico_errors.gif";
+		
+		this.services['errors_inactive'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'ERRORS_ACTION'
+			, baseParams: new Object()
+		});
+		this.images['errors_inactive'] = this.images['errors_inactive'] || "../img/ico_errors_inactive.gif";
+		
+		this.services['warnings'] = this.services['warnings'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'WARNINGS_ACTION'
+			, baseParams: new Object()
+		});
+		this.images['warnings'] = this.images['warnings'] || "../img/ico_warnings.gif";
+		
+		this.services['warnings_inactive'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'WARNINGS_ACTION'
+			, baseParams: new Object()
+		});
+		this.images['warnings_inactive'] = this.images['warnings_inactive'] || "../img/ico_warnings_inactive.gif";
+		
+		this.services['views'] = this.services['views'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'VIEWS_ACTION'
+			, baseParams: new Object()
+		});
+		this.images['views'] = this.images['views'] || "../img/ico_views.gif";
+		
+		this.services['views_inactive'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'VIEWS_ACTION'
+			, baseParams: new Object()
+		});
+		this.images['views_inactive'] = this.images['views_inactive'] || "../img/ico_views_inactive.gif";
+		
+		this.services['refresh'] = this.services['refresh'] || Sbi.config.serviceRegistry.getServiceUrl({
+			serviceName: 'REFRESH_ACTION'
+			, baseParams: new Object()
+		});
+		this.images['refresh'] = this.images['refresh'] || "../img/ico_refresh.gif";
+	  	
+	  this.initStore();
 		this.initColumnModel();
 		this.initSelectionModel();
 		
 		
 		this.initFilterBar(c || {});
-		
-
 
 		var c = Ext.apply({}, {
 			store: this.store
@@ -90,6 +169,7 @@ Sbi.console.GridPanel = function(config) {
             	showPreview:true
         	}
       ,tbar: this.filterBar
+      //,plugins: this.plgins
 		});   
 	
 		// constructor
@@ -105,7 +185,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	, columnModel: null
 	, selectionModel: null
 	, filterBar: null
-    
+ // , plgins: null
    
     //  -- public methods ---------------------------------------------------------
     
@@ -126,7 +206,8 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	}
 
 	, initColumnModel: function() {
-		this.columnModel = new Ext.grid.ColumnModel([
+	
+  	this.columnModel = new Ext.grid.ColumnModel([
 			new Ext.grid.RowNumberer(), 
 			{
 				header: "Data",
@@ -134,6 +215,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			    width: 75
 			}
 		]);
+		
 	}
 	
 	, initSelectionModel: function() {
@@ -155,14 +237,38 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 				meta.fields[i].renderer  =  Sbi.locale.formatters['html'];
 			}
 		}
-		
+
+
+    //adds inline action buttons
+    var bc;
+
+   // meta.fields.push(addFill())
+		for(var i=0; i < this.table.inlineActions.length; i++){
+      bc = new Ext.grid.ButtonColumn({
+           dataIndex: 'inlineAction-'+i
+			   , tooltip: this.table.inlineActions[i].name 
+         , imgSrc: (this.table.inlineActions[i].name === 'crossnav' && this.table.inlineActions[i].config.target === 'self' )?
+                      this.images['popup_detail']:(this.table.inlineActions[i].name === 'crossnav' && this.table.inlineActions[i].config.target === 'new' )?
+                      this.images['cross_detail']:this.images[this.table.inlineActions[i].name]
+         , clickHandler:function(e, t){
+                alert("clikkato!!");
+                var index = this.grid.getView().findRowIndex(t);
+			          var record = this.grid.store.getAt(index);        
+            //this.grid.store.remove(record);           
+         }
+         , hideable: true
+         , hidden: this.table.inlineActions[i].hidden
+         , width: 25
+      });
+      bc.init(this);
+      meta.fields.push(bc);	
+  	}	
+    //adds numeration column    
 		meta.fields[0] = new Ext.grid.RowNumberer();
-		
+    //update columnmodel configuration
 		this.getColumnModel().setConfig(meta.fields);
+
 	}
-	
-
-
 
 
 

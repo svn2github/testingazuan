@@ -23,6 +23,7 @@ package it.eng.spagobi.studio.core.preferences;
 import it.eng.spagobi.sdk.proxy.TestConnectionServiceProxy;
 import it.eng.spagobi.studio.core.Activator;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
+import it.eng.spagobi.studio.core.sdk.ProxyDataRetriever;
 
 import org.apache.axis.AxisFault;
 import org.apache.ws.security.WSSecurityException;
@@ -105,7 +106,11 @@ public class SpagoBIPreferencePage
 	private void testConnection() {
         TestConnectionServiceProxy proxy = new TestConnectionServiceProxy(userName.getStringValue(), userPassword.getStringValue());
         proxy.setEndpoint(serverUrl.getStringValue() + "/sdk/TestConnectionService");
-    	try {
+    	// set proxy configurations!
+        String value=serverUrl.getStringValue();
+		new ProxyDataRetriever().initProxyData(proxy,value);        
+        
+        try {
     		// testing connection
     		boolean result = proxy.connect();
     		if (result) {

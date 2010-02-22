@@ -35,6 +35,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IRoleDAO;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmContactDAO;
+import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact;
 import it.eng.spagobi.profiling.services.ManageRolesAction;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
@@ -68,7 +69,7 @@ public class ManageContactsAction extends AbstractSpagoBIAction{
 		String serviceType = this.getAttributeAsString(MESSAGE_DET);
 		logger.debug("Service type "+serviceType);
 		if(serviceType != null && serviceType.equals(CONTACTS_LIST)){
-			
+			List<SbiAlarmContact> contacts = contactDao.findAll();
 		}else if(serviceType != null && serviceType.equals(CONTACT_DETAIL)){
 			
 		}

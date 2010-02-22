@@ -32,6 +32,8 @@ import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.kpi.alarm.metadata.SbiAlarm;
+import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact;
 import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.bean.SbiUser;
 import it.eng.spagobi.profiling.bo.UserBO;
@@ -70,7 +72,8 @@ public class JSONSerializer implements Serializer {
 		mappings.put( SbiUser.class, new SbiUserJSONSerializer());
 		mappings.put( UserBO.class, new UserJSONSerializer());
 		mappings.put( SbiAttribute.class, new AttributeJSONSerializer());
-		
+		mappings.put( SbiAlarm.class, new AlarmJSONSerializer());
+		mappings.put( SbiAlarmContact.class, new AlarmContactJSONSerializer());
 		
 		mappings.put( GetParametersForExecutionAction.ParameterForExecution.class, new ParameterForExecutionJSONSerializer() );
 	}

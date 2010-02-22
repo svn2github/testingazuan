@@ -24,10 +24,6 @@ package it.eng.spagobi.engines.console.services;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engines.console.ConsoleEngineInstance;
-import it.eng.spagobi.services.proxy.DataSetServiceProxy;
-import it.eng.spagobi.tools.dataset.bo.IDataSet;
-import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
-import it.eng.spagobi.tools.dataset.common.datawriter.JSONDataWriter;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
@@ -44,6 +40,12 @@ import org.json.JSONObject;
 
 
 /**
+ * This action execute operations available on the toolbar:
+ * - refresh (managed here?)
+ * - getting error informations
+ * - getting warning informations
+ * - getting view informations
+ * 
  * @author Antonella Giachino (antonella.giachino@eng.it)
  */
 public class ExecuteButtonAction extends AbstractConsoleEngineAction {
@@ -83,9 +85,18 @@ public class ExecuteButtonAction extends AbstractConsoleEngineAction {
 			callback = getAttributeAsString( CALLBACK );
 			logger.debug("Parameter [" + CALLBACK + "] is equals to [" + callback + "]");
 			
-			String parameters = getAttributeAsString( "parameters" );
-			logger.debug("Parameter [parameters] is equals to [" + parameters + "]");			
+			String staticParameters = getAttributeAsString( "statParams" );
+			logger.debug("Parameter [statParams] is equals to [" + staticParameters + "]");
+			
+			String dynamicParameters = getAttributeAsString( "dynParams" );
+			logger.debug("Parameter [dynParams] is equals to [" + dynamicParameters + "]");			
 					
+			JSONArray parameters = new JSONArray( dynamicParameters );
+			for(int i = 0; i < parameters.length(); i++) {					
+				JSONObject param = parameters.getJSONObject(i);
+				logger.debug("Parameter [param] is equals to [" + param + "]");
+			}
+			
 			//for initial test:
 			getEmptyResult(message);
 			

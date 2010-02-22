@@ -103,7 +103,6 @@ Sbi.console.ActionButton = function(config) {
       c = Ext.apply(c, this);
 
 		// constructor
-		//test
 		//delete c.config;
 		Sbi.console.ActionButton.superclass.constructor.call(this, c);
 		this.on('click', this.execAction, this);
@@ -122,7 +121,7 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
        //adds static and dynamic parameter (only static at the moment)
         if(this.config.staticParams) {        
     		  inlineParams = this.config.staticParams;  
-  			}
+  		}
   		
         Ext.Ajax.request({
   			        url: this.services[this.name],  			       

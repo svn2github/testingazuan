@@ -97,7 +97,7 @@ Sbi.console.GridPanel = function(config) {
 		this.images['popup_detail'] = this.images['popup_detail'] || "../img/ico_popup_detail.gif";
 		
 		this.services['monitor'] = this.services['monitor'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'MONITOR_INACTIVE_ACTION'
+			serviceName: 'MONITOR_ACTION'
 			, baseParams: new Object()
 		});
 		this.images['monitor'] = this.images['monitor'] || "../img/ico_monitor.gif";
@@ -152,9 +152,7 @@ Sbi.console.GridPanel = function(config) {
 	  	
 	  this.initStore();
 		this.initColumnModel();
-		this.initSelectionModel();
-		
-		
+		this.initSelectionModel();	
 		this.initFilterBar(c || {});
 
 		var c = Ext.apply(c, {
@@ -169,9 +167,8 @@ Sbi.console.GridPanel = function(config) {
             	showPreview:true
         	}
       ,tbar: this.filterBar
-      //,plugins: this.plgins
 		});   
-	
+		
 		// constructor
 		Sbi.console.GridPanel.superclass.constructor.call(this, c);
     
@@ -185,9 +182,53 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	, columnModel: null
 	, selectionModel: null
 	, filterBar: null
- // , plgins: null
+	, headers: null
    
     //  -- public methods ---------------------------------------------------------
+    
+    , execInlineAction: function(e, t, action, paramConf){
+        
+        var index = this.getView().findRowIndex(t);
+  		var record = this.store.getAt(index);   
+        var dynParams =[];        
+        	
+  	    //adds dynamic parameters 
+        if(paramConf.dynamicParams) {        
+      		 var separator = '';
+      		 for (var i=0, l=paramConf.dynamicParams.length; i < l; i++){
+      		   var tmp = paramConf.dynamicParams[i];
+      	 	 	 for(p in tmp) {
+        	 	 	   if (p != 'scope'){
+        	 	 		   var param = {};
+        	 	 		   param [tmp[p]] = record.get(this.headers[p]);       	 	 		 
+        	 	 		   dynParams.push(param);
+        		     }
+      			 }    			  
+    		}
+  		}  		   
+        Ext.Ajax.request({
+  			        url: this.services[action],  			       
+  			        params: {'message': action, 'userId': Sbi.user.userId, 
+        					 'statParams': Ext.util.JSON.encode(paramConf.staticParams), 'dynParams': Ext.util.JSON.encode(dynParams)} ,			       
+  			        callback : function(options , success, response) {
+  			  	  		if (success) {
+  				      		if(response !== undefined && response.responseText !== undefined) {
+  				      			var content = Ext.util.JSON.decode( response.responseText );
+  				      			if (content !== undefined) {				      			  
+  				      				alert(content.toSource());
+  				      			}				      		
+  				      		} else {
+  				      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+  				      		}
+  			  	  		} else { 
+  			  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot exec action: ' + this.name, 'Service Error');
+  			  	  		}
+  			        },
+  			        scope: this,
+  					failure: Sbi.exception.ExceptionHandler.handleFailure      
+  				});
+  			
+			}
     
     //  -- private methods ---------------------------------------------------------
     
@@ -226,8 +267,17 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	
 	
 	, onMetaChange: function( store, meta ) {
+    //loads headers map with dataIndex info
+    this.headers = [];
+    
 
 		for(var i = 0; i < meta.fields.length; i++) {
+		
+		  var localHeader = meta.fields[i].header;
+          var localDataIndex = meta.fields[i].dataIndex;
+          if (localHeader != ''){
+            this.headers[localHeader] = localDataIndex;
+      }
 			if(meta.fields[i].type) {
 				var t = meta.fields[i].type;
 			    meta.fields[i].renderer  =  Sbi.locale.formatters[t];			   
@@ -240,29 +290,30 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 
 
     //adds inline action buttons
-		for(var i=0; i < this.table.inlineActions.length; i++){
-		
+		for(var i=0, l= this.table.inlineActions.length; i < l; i++){
+		 
 		  var img = this.images[this.table.inlineActions[i].name];
+
+		  //defines image's path
 		  if (this.table.inlineActions[i].name === 'crossnav'){
 		    if (this.table.inlineActions[i].config.target === 'new')
 		      img = this.images['cross_detail'];
 		    else
 		      img = this.images['popup_detail'];
       }
-      
+
       var bc = new Ext.grid.ButtonColumn({
-           dataIndex: 'inlineAction-'+i
-			   , tooltip: this.table.inlineActions[i].name 
+           dataIndex: this.table.inlineActions[i].name + "-"+ i
+			   , tooltip: this.table.inlineActions[i].name
          , imgSrc: img
-         , clickHandler:function(e, t){
-                alert("clikkato!!");
-                var index = this.grid.getView().findRowIndex(t);
-			          var record = this.grid.store.getAt(index);        
-            //this.grid.store.remove(record);           
+         , clickHandler:  function(e, t){   
+                this.grid.execInlineAction(e, t, this.action, this.parameters)     
          }
          , hideable: true
          , hidden: this.table.inlineActions[i].hidden
          , width: 25
+         , action: this.table.inlineActions[i].name
+         , parameters: this.table.inlineActions[i].config
       });
       bc.init(this);
       meta.fields.push(bc);	
@@ -289,4 +340,5 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
         	       	
       }   
   }
+
 });

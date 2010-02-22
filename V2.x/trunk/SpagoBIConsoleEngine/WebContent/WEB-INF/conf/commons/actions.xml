@@ -41,6 +41,37 @@
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
+	
+	<ACTION name="START_ACTION" 
+			class="it.eng.spagobi.engines.console.services.ExecuteButtonAction"
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="STOP_ACTION" 
+			class="it.eng.spagobi.engines.console.services.ExecuteButtonAction"
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="LOG_ACTION" 
+			class="it.eng.spagobi.engines.console.services.ExecuteButtonAction"
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="CROSS_ACTION" 
+			class="it.eng.spagobi.engines.console.services.ExecuteButtonAction"
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="MONITOR_ACTION" 
+			class="it.eng.spagobi.engines.console.services.ExecuteButtonAction"
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 
 	<!-- ================================================================================= -->
 	<!-- TRAPS																			   -->

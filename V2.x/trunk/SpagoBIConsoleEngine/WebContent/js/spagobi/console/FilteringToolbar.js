@@ -137,7 +137,6 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	           fields:['name', 'value', 'description'],
 	           data: []
 	     });
-	    // this.cbStores.push( s );
 	     this.cbStores[dataIndex] = s;
 	  
 	     this.store.on('load', this.reloadComboStore.createDelegate(this, [dataIndex]), this);
@@ -153,7 +152,7 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	              	        selectOnFocus:true,
 	              	        mode: 'local'
 	              	    });	 
-	      this.addText(header + "  ");
+	      this.addText("    " + header + "  ");
 	      this.addField(cb);	 
      }
   

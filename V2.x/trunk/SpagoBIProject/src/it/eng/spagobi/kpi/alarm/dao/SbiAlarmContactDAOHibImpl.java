@@ -14,16 +14,10 @@ package it.eng.spagobi.kpi.alarm.dao;
 
 
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.kpi.alarm.bo.Alarm;
 import it.eng.spagobi.kpi.alarm.bo.AlarmContact;
-import it.eng.spagobi.kpi.alarm.metadata.SbiAlarm;
 import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;

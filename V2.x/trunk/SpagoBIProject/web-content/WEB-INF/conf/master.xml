@@ -294,4 +294,10 @@
 	<CONFIGURATOR path="/WEB-INF/conf/profiling/business_map.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/profiling/validation.xml" />
     
+    <!-- kpi - alarm -->
+	<CONFIGURATOR path="/WEB-INF/conf/alarm/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/alarm/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/alarm/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/alarm/business_map.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/alarm/validation.xml" />
 </MASTER>

@@ -184,7 +184,7 @@ Ext.extend(Sbi.alarm.ManageContacts, Ext.FormPanel, {
 		             },{
 		            	 maxLength:100,
 		            	 minLength:1,
-		            	 regex : new RegExp("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-]{2,})+\.)+([a-zA-Z0-9]{2,})+$/", "g"),
+		            	 regex : new RegExp("/^([\w]+)(.[\w]+)*@([\w-]+\.){1,5}([A-Za-z]){2,4}$/", "g"),
 		            	 regexText : LN('sbi.alarmcontact.validEmailString'),
 		                 fieldLabel: LN('sbi.alarmcontact.email'),
 		                 validationEvent:true,

@@ -76,7 +76,7 @@
 		.getAttribute("DetailThresholdValueModule");
 		// validation error patch
 		if(type == null || type.trim().equals("")){
-			severity_id = DAOFactory.getThresholdDAO().loadThresholdById(Integer.parseInt(threshold_id)).getThresholdTypeId();
+			severity_id = DAOFactory.getThresholdDAO().loadThresholdById(new Integer(threshold_id)).getThresholdTypeId();
 			type = DAOFactory.getDomainDAO().loadDomainById(severity_id).getValueCd();
 		}
 		messageIn = (String) moduleResponse.getAttribute("MESSAGE");
@@ -88,7 +88,7 @@
 			&& messageIn
 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_NEW)) {
 		messageSave = DelegatedDetailService.DETAIL_INSERT;
-		severity_id = DAOFactory.getThresholdDAO().loadThresholdById(Integer.parseInt(threshold_id)).getThresholdTypeId();
+		severity_id = DAOFactory.getThresholdDAO().loadThresholdById(new Integer(threshold_id)).getThresholdTypeId();
 		type = DAOFactory.getDomainDAO().loadDomainById(severity_id).getValueCd();
 	}
 	//DETAIL_INSERT
@@ -103,7 +103,7 @@
 			messageIn = (String) moduleResponse.getAttribute("MESSAGE");
 			messageSave = DelegatedDetailService.DETAIL_UPDATE;
 		} else {
-			severity_id = DAOFactory.getThresholdDAO().loadThresholdById(Integer.parseInt(threshold_id)).getThresholdTypeId();
+			severity_id = DAOFactory.getThresholdDAO().loadThresholdById(new Integer(threshold_id)).getThresholdTypeId();
 			type = DAOFactory.getDomainDAO().loadDomainById(severity_id).getValueCd();
 			messageIn = DelegatedDetailService.DETAIL_SELECT;
 			messageSave = DelegatedDetailService.DETAIL_INSERT;

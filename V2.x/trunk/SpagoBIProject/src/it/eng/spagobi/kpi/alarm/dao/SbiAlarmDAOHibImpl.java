@@ -23,6 +23,8 @@ import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
+import it.eng.spagobi.profiling.bean.SbiUser;
+import it.eng.spagobi.profiling.bean.SbiUserAttributes;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,6 +33,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -308,6 +311,18 @@ public class SbiAlarmDAOHibImpl extends AbstractHibernateDAO implements ISbiAlar
 			tx = session.beginTransaction();
 
 			List<SbiAlarm> list = (List<SbiAlarm>)session.createQuery("from SbiAlarm").list();
+			Iterator it = list.iterator();
+			while(it.hasNext()){
+				SbiAlarm alarm = (SbiAlarm)it.next();
+				Hibernate.initialize(alarm);
+				Hibernate.initialize(alarm.getModality());
+				Hibernate.initialize(alarm.getSbiAlarmContacts());
+				Iterator it2 = alarm.getSbiAlarmContacts().iterator();
+				while(it2.hasNext()){
+					Hibernate.initialize(it2.next());
+				}
+			}
+
 			tx.commit();
 			return list;
 

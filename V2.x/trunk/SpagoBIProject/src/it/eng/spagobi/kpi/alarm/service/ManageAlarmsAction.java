@@ -92,9 +92,9 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 		if (serviceType != null && serviceType.equalsIgnoreCase(ALARMS_LIST)) {
 			
 			try {				
-				List<SbiAlarm> users = alarmDao.findAll();
+				List<SbiAlarm> alarms = alarmDao.findAll();
 				logger.debug("Loaded users list");
-				JSONArray alarmsJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(users,	locale);
+				JSONArray alarmsJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(alarms,locale);
 				JSONObject usersResponseJSON = createJSONResponseAlarms(alarmsJSON);
 
 				writeBackToClient(new JSONSuccess(usersResponseJSON));

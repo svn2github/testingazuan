@@ -21,23 +21,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.kpi.alarm.service;
 
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.analiticalmodel.document.x.AbstractSpagoBIAction;
+import it.eng.spagobi.chiron.serializer.SerializerFactory;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
+import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmContactDAO;
+import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact;
+import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
+import it.eng.spagobi.utilities.service.JSONSuccess;
+
 import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
-
-import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.analiticalmodel.document.x.AbstractSpagoBIAction;
-import it.eng.spagobi.commons.bo.Domain;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.dao.IRoleDAO;
-import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
-import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmContactDAO;
-import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact;
-import it.eng.spagobi.profiling.services.ManageRolesAction;
-import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ManageContactsAction extends AbstractSpagoBIAction{
 	/**
@@ -69,12 +71,40 @@ public class ManageContactsAction extends AbstractSpagoBIAction{
 		String serviceType = this.getAttributeAsString(MESSAGE_DET);
 		logger.debug("Service type "+serviceType);
 		if(serviceType != null && serviceType.equals(CONTACTS_LIST)){
-			List<SbiAlarmContact> contacts = contactDao.findAll();
+			try {
+				List<SbiAlarmContact> contacts = contactDao.findAll();
+				logger.debug("Loaded contacts list");
+				JSONArray rolesJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(contacts,locale);
+				JSONObject rolesResponseJSON = createJSONResponseContacts(rolesJSON);
+
+				writeBackToClient(new JSONSuccess(rolesResponseJSON));
+
+			} catch (Throwable e) {
+				logger.error(e.getMessage(), e);
+				throw new SpagoBIServiceException(SERVICE_NAME,
+						"Exception occurred while retrieving contacts", e);
+			}
+			
 		}else if(serviceType != null && serviceType.equals(CONTACT_DETAIL)){
 			
 		}
 		logger.debug("OUT");
 		
 	}
+	/**
+	 * Creates a json array with children roles informations
+	 * 
+	 * @param rows
+	 * @return
+	 * @throws JSONException
+	 */
+	private JSONObject createJSONResponseContacts(JSONArray rows)
+			throws JSONException {
+		JSONObject results;
 
+		results = new JSONObject();
+		results.put("title", "Contacts");
+		results.put("samples", rows);
+		return results;
+	}
 }

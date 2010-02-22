@@ -204,6 +204,23 @@ Sbi.locale.ln['sbi.users.pwdNotMatching'] = 'Password and Confirm Password field
 Sbi.locale.ln['sbi.users.confirm'] = 'Please confirm';
 Sbi.locale.ln['sbi.users.confirmDelete'] = 'Confirm User delete?';
 
+//KPI ALARMS
+Sbi.locale.ln['sbi.alarmcontact.contactsManagement'] = 'Contacts Management';
+Sbi.locale.ln['sbi.alarmcontact.contactsList'] = 'Contacts List';
+Sbi.locale.ln['sbi.alarmcontact.name'] = 'Name';
+Sbi.locale.ln['sbi.alarmcontact.email'] = 'E-mail';
+Sbi.locale.ln['sbi.alarmcontact.mobile'] = 'Mobile';
+Sbi.locale.ln['sbi.alarmcontact.resources'] = 'Resources';
+Sbi.locale.ln['sbi.alarmcontact.save'] = 'Save';
+Sbi.locale.ln['sbi.alarmcontact.add'] = 'Add';
+Sbi.locale.ln['sbi.alarmcontact.detail'] = 'Detail';
+Sbi.locale.ln['sbi.alarmcontact.validString'] = 'Alfanumeric string required (\x2F - included)';
+Sbi.locale.ln['sbi.alarmcontact.validEmailString'] = 'Email type required';
+Sbi.locale.ln['sbi.alarmcontact.validMobileString'] = 'Only digits allowed';
+Sbi.locale.ln['sbi.alarmcontact.error'] = 'Error';
+Sbi.locale.ln['sbi.alarmcontact.result'] = 'Result';
+Sbi.locale.ln['sbi.alarmcontact.validationError'] = 'Validation Error';
+
 // Toolbar 
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Send to';
 // Save into personal folder

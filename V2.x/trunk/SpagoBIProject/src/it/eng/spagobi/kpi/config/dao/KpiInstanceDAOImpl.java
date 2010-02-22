@@ -5,6 +5,7 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
+import it.eng.spagobi.kpi.config.bo.KpiAlarmInstance;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.metadata.SbiKpi;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstPeriod;
@@ -12,10 +13,12 @@ import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstanceHistory;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
 import it.eng.spagobi.kpi.config.metadata.SbiMeasureUnit;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.threshold.dao.IThresholdDAO;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
+import it.eng.spagobi.profiling.bean.SbiUser;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -414,6 +417,59 @@ public class KpiInstanceDAOImpl extends AbstractHibernateDAO implements IKpiInst
 		}
 		logger.debug("OUT");
 		return thresholds;
+	}
+
+	public List<KpiAlarmInstance> loadKpiAlarmInstances() throws EMFUserError {
+		logger.debug("IN");
+		List<KpiAlarmInstance> kpiAlarmInst = new ArrayList();
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String q = " from SbiKpiModelInst ";
+			Query query = aSession.createQuery(q);
+			
+			List<SbiKpiModelInst> hibSbiKpiModelInstances = (List<SbiKpiModelInst>)query.list();
+
+			if(hibSbiKpiModelInstances!=null && hibSbiKpiModelInstances.size() != 0){
+
+				Iterator it = hibSbiKpiModelInstances.iterator();
+				while (it.hasNext()) {
+					KpiAlarmInstance kpiAlarm = new KpiAlarmInstance();
+					SbiKpiModelInst kpiModelInst = (SbiKpiModelInst) it.next();
+					String modelName = kpiModelInst.getName();
+					kpiAlarm.setKpiModelName(modelName);
+					SbiKpiInstance kpiInst = kpiModelInst.getSbiKpiInstance();
+					Integer kpiInstId = kpiInst.getIdKpiInstance();
+					kpiAlarm.setKpiInstanceId(kpiInstId);
+					String kpiName = kpiInst.getSbiKpi().getName();
+					kpiAlarm.setKpiName(kpiName);
+					
+					kpiAlarmInst.add(kpiAlarm);
+				}
+			}			
+
+		} catch (HibernateException he) {
+			logger
+			.error(
+					"Error while loading the current list of KpiAlarmInstance", he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10104);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return kpiAlarmInst;
 	}
 	
 	

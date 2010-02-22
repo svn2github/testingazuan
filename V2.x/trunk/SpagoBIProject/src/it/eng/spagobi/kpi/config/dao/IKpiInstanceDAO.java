@@ -1,6 +1,7 @@
 package it.eng.spagobi.kpi.config.dao;
 
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.kpi.config.bo.KpiAlarmInstance;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 
@@ -46,5 +47,7 @@ public interface IKpiInstanceDAO {
 	throws EMFUserError;
 
 	public String getChartType(Integer kpiInstanceID) throws EMFUserError;
+	
+	public List<KpiAlarmInstance> loadKpiAlarmInstances()throws EMFUserError;
 
 }

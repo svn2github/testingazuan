@@ -112,13 +112,16 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	
 		this.alarmsStore = new Ext.data.JsonStore({
 	    	autoLoad: false  
-	    	,fields: ['userId'
-	    			  , 'id'
-	    	          , 'fullName'
-	    	          , 'pwd'
-	    	          , 'confirmpwd'
-	    	          , 'userRoles'
-	    	          , 'userAttributes'
+	    	,fields: ['id'
+	    			  , 'name'
+	    	          , 'description'
+	    	          , 'label'
+	    	          , 'modality'
+	    	          , 'singleEvent'
+	    	          , 'autoDisabled'
+	    	          , 'text'
+	    	          , 'url'
+	    	          , 'contacts'
 	    	          ]
 	    	, root: 'samples'
 			, url: this.services['manageAlarmsList']			
@@ -140,7 +143,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	    
 	    this.contactsStore = new Ext.data.SimpleStore({
 	    	id: 'id',
-	        fields : [ 'id', 'name', 'description', 'checked' ]
+	        fields : [ 'id', 'name', 'email', 'mobile', 'resources' ]
 	    });
 	    
 	    this.kpisEmptyStore = config.kpisEmptyList;
@@ -155,8 +158,8 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		                 name: 'id',
 		                 hidden: true
 		             },{
-		                 fieldLabel: LN('sbi.alarms.alarmId'),
-		                 name: 'alarmId',
+		                 fieldLabel: LN('sbi.alarms.alarmLabel'),
+		                 name: 'label',
 		                 allowBlank: false,
 		                // validationEvent:true,
   		            	// maxLength:100,
@@ -165,7 +168,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
   		            	// regexText : LN('sbi.users.wrongFormat')
 		             },{
 		                 fieldLabel:  LN('sbi.alarms.alarmName'),
-		                 name: 'alarmName',
+		                 name: 'name',
 		                 allowBlank: false,
 		                // validationEvent:true,
   		            	// maxLength:255,
@@ -174,42 +177,42 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
   		            	// regexText : LN('sbi.users.wrongFormat')
 		             },{
 		                 fieldLabel: LN('sbi.alarms.alarmDescr'),
-		                 name: 'alarmDescr',
+		                 name: 'description',
 		                // allowBlank: false,
 		                // validationEvent:true,
   		            	// maxLength:160,
   		            	// minLength:1
 		             },{
 		                 fieldLabel:  LN('sbi.alarms.alarmModality'),
-		                 name: 'alarmModality',
+		                 name: 'modality',
 		                // allowBlank: false,
 		                // validationEvent:true,
   		            	// maxLength:160,
   		            	// minLength:1
 		             },{
 		                 fieldLabel:  LN('sbi.alarms.alarmSingleEvent'),
-		                 name: 'alarmSingleEvent',
+		                 name: 'singleEvent',
 		                // allowBlank: false,
 		                // validationEvent:true,
   		            	// maxLength:160,
   		            	// minLength:1
 		             },{
 		                 fieldLabel:  LN('sbi.alarms.alarmAutoDisabled'),
-		                 name: 'alarmAutoDisabled',
+		                 name: 'autoDisabled',
 		                // allowBlank: false,
 		                // validationEvent:true,
   		            	// maxLength:160,
   		            	// minLength:1
 		             },{
 		                 fieldLabel:  LN('sbi.alarms.alarmMailUrl'),
-		                 name: 'alarmMailUrl',
+		                 name: 'url',
 		                // allowBlank: false,
 		                // validationEvent:true,
   		            	// maxLength:160,
   		            	// minLength:1
 		             },{
 		                 fieldLabel:  LN('sbi.alarms.alarmMailText'),
-		                 name: 'alarmMailText',
+		                 name: 'text',
 		                // allowBlank: false,
 		                // validationEvent:true,
   		            	// maxLength:160,
@@ -273,7 +276,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
       this.contactsTab = new Ext.Panel(){
 		        title: LN('sbi.alarms.contacts')
 		        , id : 'contactsList'
-	          , items : [ this.contactsGridPanel ]
+	            , items : [ this.contactsGridPanel ]
 		        , itemId: 'contacts'
 		    };
   }
@@ -309,7 +312,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	    this.tbSave = new Ext.Toolbar({
  	    	buttonAlign : 'right', 	    	
  	    	items:[new Ext.Toolbar.Button({
- 	            text: LN('sbi.attributes.update'),
+ 	            text: LN('sbi.alarms.update'),
  	            iconCls: 'icon-save',
  	            handler: this.save,
  	            width: 30,
@@ -335,7 +338,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	    this.tb = new Ext.Toolbar({
  	    	buttonAlign : 'right',
  	    	items:[new Ext.Toolbar.Button({
- 	            text: LN('sbi.attributes.add'),
+ 	            text: LN('sbi.alarms.add'),
  	            iconCls: 'icon-add',
  	            handler: this.addNewAlarm,
  	            width: 30,
@@ -415,9 +418,6 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
    	              }
    	          }, this.tabs
    	          ],
-
-   	          //buttons: this.buttons,   	          
-   	          //buttonAlign: 'right',
    	          renderTo: Ext.getBody()
    	      });
 
@@ -458,17 +458,19 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		//this.smContacts.on('rowselect', this.onRoleSelect, this);
 		//this.smContacts.on('rowdeselect', this.onRoleDeselect, this);
 		
-        this.cmRoles = new Ext.grid.ColumnModel([
+        this.cmContacts = new Ext.grid.ColumnModel([
 	         //{id:'id',header: "id", dataIndex: 'id'},
-	         {header: LN('sbi.alarms.headerName'), width: 45, sortable: true, dataIndex: 'name'},
-	         {header: LN('sbi.alarms.headerDescr'), width: 65, sortable: true, dataIndex: 'description'}
-	         ,this.smContacts 
+	         {header: LN('sbi.contacts.headerFullName'), width: 45, sortable: true, dataIndex: 'name'},
+	         {header: LN('sbi.contacts.headerResource'), width: 65, sortable: true, dataIndex: 'resources'},
+	         {header: LN('sbi.contacts.headerEmail'), width: 45, sortable: true, dataIndex: 'email'},
+	         {header: LN('sbi.contacts.headerMobile'), width: 45, sortable: true, dataIndex: 'mobile'},
+	         this.smContacts 
 	    ]);
 
 		this.contactsGrid = new Ext.grid.GridPanel({
 			  store: this.thresholdsStore
 			, id: 'contacts-form'
-   	     	, cm: this.cmRoles
+   	     	, cm: this.cmContacts
    	     	, sm: this.smContacts
    	     	, frame: false
    	     	, border:false  

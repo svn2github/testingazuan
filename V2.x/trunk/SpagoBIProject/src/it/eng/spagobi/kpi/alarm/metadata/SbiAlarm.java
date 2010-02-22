@@ -104,7 +104,7 @@ public class SbiAlarm  implements java.io.Serializable {
         return this.singleEvent;
     }    
     
-    public void setSingleEvent(boolean singleEvent) {
+    public void setSingleEvent(Boolean singleEvent) {
         this.singleEvent = singleEvent;
     }
     public Boolean isAutoDisabled() {
@@ -179,16 +179,6 @@ public class SbiAlarm  implements java.io.Serializable {
 			.append("url = ").append(this.url).append(TAB)
 	        .append(" )");
 	    return retValue.toString();
-	}
-
-
-	public Boolean getSingleEvent() {
-		return singleEvent;
-	}
-
-
-	public void setSingleEvent(Boolean singleEvent) {
-		this.singleEvent = singleEvent;
 	}
 
 

@@ -2686,7 +2686,7 @@ public class ImportUtilities {
 			newAlarm.setDescr(alarm.getDescr());
 			newAlarm.setText(alarm.getText());
 			newAlarm.setUrl(alarm.getUrl());
-			newAlarm.setSingleEvent(alarm.getSingleEvent());
+			newAlarm.setSingleEvent(alarm.isSingleEvent());
 			newAlarm.setAutoDisabled(alarm.getAutoDisabled());
 
 			// associations
@@ -2726,7 +2726,7 @@ public class ImportUtilities {
 			existingAlarm.setDescr(exportedAlarm.getDescr());
 			existingAlarm.setText(exportedAlarm.getText());
 			existingAlarm.setUrl(exportedAlarm.getUrl());
-			existingAlarm.setSingleEvent(exportedAlarm.getSingleEvent());
+			existingAlarm.setSingleEvent(exportedAlarm.isSingleEvent());
 			existingAlarm.setAutoDisabled(exportedAlarm.getAutoDisabled());
 
 			// associations

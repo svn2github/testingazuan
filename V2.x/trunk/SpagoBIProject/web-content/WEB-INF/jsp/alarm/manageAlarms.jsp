@@ -50,7 +50,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 	%>
 	var config = {
-				  contactsEmpyList:<%=contactsList%>
 				  };
 	var url = {
     	host: '<%= request.getServerName()%>'

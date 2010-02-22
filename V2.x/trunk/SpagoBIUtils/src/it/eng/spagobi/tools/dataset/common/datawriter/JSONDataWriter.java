@@ -79,6 +79,9 @@ public class JSONDataWriter implements IDataWriter {
 			result.put("metaData", metadata);
 			
 			propertyRawValue = dataStore.getMetaData().getProperty("resultNumber");
+			//test anto forzatura!!!!
+			//propertyRawValue = 1;
+			//fine test
 			Assert.assertNotNull(propertyRawValue, "DataStore property [resultNumber] cannot be null");
 			Assert.assertTrue(propertyRawValue instanceof Integer, "DataStore property [resultNumber] must be of type [Integer]");
 			resultNumber = ((Integer)propertyRawValue).intValue();
@@ -103,8 +106,8 @@ public class JSONDataWriter implements IDataWriter {
 				
 				fieldMetaDataJSON = new JSONObject();
 				fieldMetaDataJSON.put("header", fieldMetaData.getAlias() != null? fieldMetaData.getAlias(): fieldMetaData.getName());
-				fieldMetaDataJSON.put("name", "column-" + (i+1));						
-				fieldMetaDataJSON.put("dataIndex", "column-" + (i+1));
+				fieldMetaDataJSON.put("name", "column_" + (i+1));						
+				fieldMetaDataJSON.put("dataIndex", "column_" + (i+1));
 											
 							
 				Class clazz = fieldMetaData.getType();
@@ -191,7 +194,7 @@ public class JSONDataWriter implements IDataWriter {
 					}
 					
 					
-					recordJSON.put("column-" + (i+1), fieldValue);
+					recordJSON.put("column_" + (i+1), fieldValue);
 				}
 				
 				recordsJSON.put(recordJSON);

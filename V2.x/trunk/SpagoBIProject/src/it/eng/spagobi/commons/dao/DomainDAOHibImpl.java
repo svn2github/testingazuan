@@ -165,6 +165,58 @@ public class DomainDAOHibImpl extends AbstractHibernateDAO implements
 	}
 	
 	/**
+	 * Load domain by code and value.
+	 * 
+	 * @param codeDomain the code domain
+	 * @param codeValue the code value
+	 * 
+	 * @return the domain
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.commons.dao.IDomainDAO#loadDomainByCodeAndValue(java.lang.String,
+	 * java.lang.String)
+	 */
+	public SbiDomains loadSbiDomainByCodeAndValue(String codeDomain, String codeValue) throws EMFUserError {
+		/*
+		 * <STATEMENT name="SELECT_DOMAIN_FROM_CODE_VALUE" query="SELECT
+		 * D.VALUE_NM AS VALUE_NAME, D.VALUE_ID AS VALUE_ID, D.VALUE_CD AS
+		 * VALUE_CD FROM SBI_DOMAINS D WHERE DOMAIN_CD = ? AND VALUE_CD = ? "/>
+		 */
+		SbiDomains aSbiDomains = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+
+			Criterion aCriterion = Expression.and(Expression.eq("domainCd",
+					codeDomain), Expression.eq("valueCd", codeValue));
+			Criteria criteria = aSession.createCriteria(SbiDomains.class);
+			criteria.add(aCriterion);
+
+			aSbiDomains = (SbiDomains) criteria.uniqueResult();
+			if (aSbiDomains == null) return null;
+
+			tx.commit();
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		
+		return aSbiDomains;
+	}
+	
+	/**
 	 * From the hibernate domain object at input, gives
 	 * the corrispondent <code>Domain</code> object.
 	 * 

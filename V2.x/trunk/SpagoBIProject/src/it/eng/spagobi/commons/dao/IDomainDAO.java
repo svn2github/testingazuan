@@ -29,6 +29,7 @@ package it.eng.spagobi.commons.dao;
 
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.bo.Domain;
+import it.eng.spagobi.commons.metadata.SbiDomains;
 
 import java.util.List;
 
@@ -76,6 +77,20 @@ public interface IDomainDAO {
 	 * @throws EMFUserError if an Exception occurs
 	 */
 	public  Domain loadDomainByCodeAndValue(String codeDomain, String codeValue)
+			throws EMFUserError;
+	
+	/**
+	 * Returns the domain identified by the two input parameters <code>codeDomain</code>
+	 * and <code>codeValue</code>, storing it in a <code>Domain</code> object.
+	 * 
+	 * @param codeDomain The identifier domain code
+	 * @param codeValue The identifier domain value code
+	 * 
+	 * @return The <code>Domain</code> object storing the domain
+	 * 
+	 * @throws EMFUserError if an Exception occurs
+	 */
+	public  SbiDomains loadSbiDomainByCodeAndValue(String codeDomain, String codeValue)
 			throws EMFUserError;
 	
 	

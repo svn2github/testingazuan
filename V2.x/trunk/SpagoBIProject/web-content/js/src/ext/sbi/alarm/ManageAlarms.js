@@ -67,7 +67,6 @@ Sbi.alarms.ManageAlarms = function(config) {
 	this.initStores(config);
 
 	this.initManageAlarms();
-	alert('5');
 	
 	Ext.getCmp('alarmsgrid').store.on('load', function(){
 		 var grid = Ext.getCmp('alarmsgrid');
@@ -286,7 +285,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	,initManageAlarms: function(){
 	
 		//this.initContactsGridPanel();
-		alert('1');
+
 	    this.deleteColumn = new Ext.grid.ButtonColumn({
 	       header:  ' ',
 	       dataIndex: 'id',
@@ -324,9 +323,9 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
  	    	]
  	    });
  	    
- 	    alert('2');
+
  	   this.initTabs();	  
- 	   alert('3');
+
  	    
  	   this.tabs = new Ext.TabPanel({
            enableTabScroll : true
@@ -352,7 +351,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
  	        })
  	    	]
  	    });
- 	    alert('4');
+ 	
  	    
    	   this.gridForm = new Ext.FormPanel({
    	          id: 'alarm-form',

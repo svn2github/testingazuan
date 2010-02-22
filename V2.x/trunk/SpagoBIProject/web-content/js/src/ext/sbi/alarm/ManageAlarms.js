@@ -63,9 +63,11 @@ Sbi.alarms.ManageAlarms = function(config) {
 		, baseParams: paramsDel
 	});	
 	
+
 	this.initStores(config);
-	
+
 	this.initManageAlarms();
+	alert('5');
 	
 	Ext.getCmp('alarmsgrid').store.on('load', function(){
 		 var grid = Ext.getCmp('alarmsgrid');
@@ -146,9 +148,9 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	        fields : [ 'id', 'name', 'email', 'mobile', 'resources' ]
 	    });
 	    
-	    this.kpisEmptyStore = config.kpisEmptyList;
-	    this.alarmsEmptyStore = config.alarmsEmptyList;
-	    this.documentsEmptyStore = config.documentsEmptyList;
+	   // this.kpisEmptyStore = config.kpisEmptyList;
+	   // this.alarmsEmptyStore = config.alarmsEmptyList;
+	   // this.documentsEmptyStore = config.documentsEmptyList;
   
     }
     
@@ -242,7 +244,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		    	}
 		    });
 		    
-      this.kpiTab = new Ext.Panel({
+     /* this.kpiTab = new Ext.Panel({
 		        title: LN('sbi.alarms.kpis')
 		        , id : 'alarmKpi'
 		        , layout: 'fit'
@@ -278,13 +280,13 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		        , id : 'contactsList'
 	            , items : [ this.contactsGridPanel ]
 		        , itemId: 'contacts'
-		    });
+		    });*/
   }
 	
 	,initManageAlarms: function(){
 	
-		this.initContactsGridPanel();
-		
+		//this.initContactsGridPanel();
+		alert('1');
 	    this.deleteColumn = new Ext.grid.ButtonColumn({
 	       header:  ' ',
 	       dataIndex: 'id',
@@ -322,7 +324,9 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
  	    	]
  	    });
  	    
+ 	    alert('2');
  	   this.initTabs();	  
+ 	   alert('3');
  	    
  	   this.tabs = new Ext.TabPanel({
            enableTabScroll : true
@@ -332,7 +336,9 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
            , height: 450
            , itemId: 'tabs'
            , tbar: this.tbSave 
-		   , items: [ this.detailTab, this.kpiTab, this.contactsTab]
+		   , items: [ this.detailTab
+		   //, this.kpiTab, this.contactsTab
+		   ]
 		 });
 
 	    this.tb = new Ext.Toolbar({
@@ -346,6 +352,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
  	        })
  	    	]
  	    });
+ 	    alert('4');
  	    
    	   this.gridForm = new Ext.FormPanel({
    	          id: 'alarm-form',

@@ -60,7 +60,6 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 	// type of service
 	private final String USERS_LIST = "USERS_LIST";
 	private final String USER_INSERT = "USER_INSERT";
-	private final String USER_UPDATE = "USER_UPDATE";
 	private final String USER_DELETE = "USER_DELETE";
 
 	// USER detail

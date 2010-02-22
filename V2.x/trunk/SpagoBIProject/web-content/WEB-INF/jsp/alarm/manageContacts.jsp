@@ -19,9 +19,30 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base311.jsp"%>
+<%@ page import="java.util.ArrayList,
+				 java.util.List" %>
+<%
+
+	List<String> resourcesList = (List<String>) aSessionContainer.getAttribute("RESOURCES_LIST");
+
+%>
 
 <script type="text/javascript">
-	var config = {};
+<%
+String resourcesJSON ="{}";
+if(resourcesList != null){
+	resourcesJSON="[";
+	for(int i=0; i< resourcesList.size(); i++){
+		String res = (String)resourcesList.get(i);
+		resourcesJSON+="['"+res+"']";
+		if(i != (resourcesList.size()-1)){
+			resourcesJSON+=",";
+		}
+	}
+	resourcesJSON+="]";
+}
+%>
+	var config=<%= resourcesJSON%>;
 	var url = {
     	host: '<%= request.getServerName()%>'
     	, port: '<%= request.getServerPort()%>'

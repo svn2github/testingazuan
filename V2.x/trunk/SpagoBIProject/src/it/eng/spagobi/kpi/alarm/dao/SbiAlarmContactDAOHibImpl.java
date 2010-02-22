@@ -41,12 +41,13 @@ public class SbiAlarmContactDAOHibImpl extends AbstractHibernateDAO implements I
 	private static final Logger logger = Logger.getLogger(SbiAlarmContactDAOHibImpl.class);
 
 	
-    public void insert(SbiAlarmContact item) {
+    public Integer insert(SbiAlarmContact item) {
         Session session = getSession();
         Transaction tx = null;
+        Integer id = null;
         try {
         	tx = session.beginTransaction();
-			session.save(item);
+			id = (Integer)session.save(item);
 			tx.commit();
 			
 		} catch (HibernateException e) {
@@ -56,7 +57,11 @@ public class SbiAlarmContactDAOHibImpl extends AbstractHibernateDAO implements I
 			throw e;
 			
 		}finally{
-			session.close();
+			if(session != null){
+				session.close();
+			}
+			
+			return id;
 		}
     }
     

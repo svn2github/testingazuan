@@ -118,7 +118,7 @@ Ext.extend(Sbi.alarm.ManageContacts, Ext.FormPanel, {
 	    });
 	    this.colModel = new Ext.grid.ColumnModel([
 	      {id:'name',header: LN('sbi.alarmcontact.name'), width: 50, sortable: true, locked:false, dataIndex: 'name'}
-	      this.deleteColumn
+	      , this.deleteColumn
 	   ]);
 
 	    this.typesStore = new Ext.data.SimpleStore({
@@ -175,7 +175,7 @@ Ext.extend(Sbi.alarm.ManageContacts, Ext.FormPanel, {
 		             },{
 		            	 maxLength:100,
 		            	 minLength:1,
-		            	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
+		            	 regex : new RegExp("^([a-zA-Z1-9_\x2F\s])+$", "g"),
 		            	 regexText : LN('sbi.alarmcontact.validString'),
 		                 fieldLabel: LN('sbi.alarmcontact.name'),
 		                 allowBlank: false,
@@ -184,7 +184,7 @@ Ext.extend(Sbi.alarm.ManageContacts, Ext.FormPanel, {
 		             },{
 		            	 maxLength:100,
 		            	 minLength:1,
-		            	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
+		            	 regex : new RegExp("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-]{2,})+\.)+([a-zA-Z0-9]{2,})+$/", "g"),
 		            	 regexText : LN('sbi.alarmcontact.validEmailString'),
 		                 fieldLabel: LN('sbi.alarmcontact.email'),
 		                 validationEvent:true,
@@ -209,7 +209,7 @@ Ext.extend(Sbi.alarm.ManageContacts, Ext.FormPanel, {
 		                  triggerAction: 'all',
 		                  selectOnFocus: true,
 		                  editable: false,
-		                  allowBlank: false,
+		                  allowBlank: true,
 		                  validationEvent:true,
 		                  xtype: 'combo'
 		             }]
@@ -304,12 +304,11 @@ Ext.extend(Sbi.alarm.ManageContacts, Ext.FormPanel, {
 		if(idRec ==0 || idRec == null || idRec === ''){
 			newRec =new Ext.data.Record({
 					name :values['name'],
-			        description :values['email'],
-			        typeCd :values['resources'],
-			        code :values['mobile']
+			        email :values['email'],
+			        resources :values['resources'],
+			        mobile :values['mobile']
 			});	  
 
-			newRec = this.fillRecord(newRec);
 			
 		}else{
 			var newRec;
@@ -341,7 +340,7 @@ Ext.extend(Sbi.alarm.ManageContacts, Ext.FormPanel, {
      }
      
      Ext.Ajax.request({
-         url: this.services['saveContactService'],
+         url: this.services['saveContactsService'],
          params: params,
          method: 'GET',
          success: function(response, options) {
@@ -349,6 +348,7 @@ Ext.extend(Sbi.alarm.ManageContacts, Ext.FormPanel, {
 		      		if(response.responseText !== undefined) {
 
 		      			var content = Ext.util.JSON.decode( response.responseText );
+
 		      			if(content.responseText !== 'Operation succeded') {
 			                    Ext.MessageBox.show({
 			                        title: LN('sbi.alarmcontact.error'),
@@ -426,7 +426,7 @@ Ext.extend(Sbi.alarm.ManageContacts, Ext.FormPanel, {
              	if (contactId != null) {	
 
 						Ext.Ajax.request({
-				            url: this.services['deleteContactService'],
+				            url: this.services['deleteContactsService'],
 				            params: {'id': contactId},
 				            method: 'GET',
 				            success: function(response, options) {
@@ -467,4 +467,3 @@ Ext.extend(Sbi.alarm.ManageContacts, Ext.FormPanel, {
 });
 
 Ext.reg('managecontacts', Sbi.alarm.ManageContacts);
-}

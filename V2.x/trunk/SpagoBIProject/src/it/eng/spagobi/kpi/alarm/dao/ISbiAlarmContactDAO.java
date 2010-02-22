@@ -25,7 +25,7 @@ import org.hibernate.Session;
  */
 public interface ISbiAlarmContactDAO {
 
-    public void insert(SbiAlarmContact item);
+    public Integer insert(SbiAlarmContact item);
     
     public void insert(Session session, SbiAlarmContact item);
 

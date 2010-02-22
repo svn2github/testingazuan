@@ -50,4 +50,3 @@ Ext.extend(Sbi.alarm.ManageAlarms, Ext.FormPanel, {
 });
 
 Ext.reg('managealarms', Sbi.alarm.ManageAlarms);
-}

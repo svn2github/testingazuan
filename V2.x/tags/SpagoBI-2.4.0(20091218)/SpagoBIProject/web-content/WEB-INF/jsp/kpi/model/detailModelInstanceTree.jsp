@@ -273,7 +273,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
 <select class='portlet-form-field' name="KPI_MODEL_ID">
 	<%
-		List modelList = DetailModelInstanceUtil.getCandidateModelChildren(Integer.parseInt(modelId));
+		List modelList = DetailModelInstanceUtil.getCandidateModelChildren(new Integer(modelId));
 			Iterator itt = modelList.iterator();
 			while (itt.hasNext()) {
 				Model model = (Model) itt.next();

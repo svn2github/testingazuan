@@ -96,9 +96,9 @@ public class GetConsoleDataAction extends AbstractConsoleEngineAction {
 			try {
 				JSONDataWriter writer = new JSONDataWriter();
 				Object resultNumber = dataStore.getMetaData().getProperty("resultNumber");
-				if(resultNumber == null) dataStore.getMetaData().setProperty("resultNumber", new Integer(10));
+				
+				if(resultNumber == null) dataStore.getMetaData().setProperty("resultNumber", new Integer((int)dataStore.getRecordsCount()));
 				JSONObject dataSetJSON = (JSONObject)writer.write(dataStore);				
-				//results.put("results", dataSetJSON);
 				results = dataSetJSON;
 			} catch (Throwable e) {
 				throw new SpagoBIServiceException("Impossible to serialize datastore", e);

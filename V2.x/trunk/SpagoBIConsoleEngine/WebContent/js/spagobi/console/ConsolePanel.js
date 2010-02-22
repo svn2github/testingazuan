@@ -101,7 +101,9 @@ Ext.extend(Sbi.console.ConsolePanel, Ext.Panel, {
     //  -- private methods ---------------------------------------------------------
     
     , initStoreManager: function(datasetsConfig) {
-		
+	
+		this.storeManager = new Sbi.console.StoreManager({datasetsConfig: datasetsConfig});
+		/*
 		datasetsConfig = datasetsConfig || [];
 		
 		this.storeManager = new Ext.util.MixedCollection();
@@ -132,6 +134,7 @@ Ext.extend(Sbi.console.ConsolePanel, Ext.Panel, {
 	        ]
 	    });
 		this.storeManager.add('testStore', testStore);
+		*/
 	}
     
     , initSummaryPanel: function(conf) {

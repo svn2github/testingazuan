@@ -91,6 +91,7 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	, LINE_CHART: 'chart.ext.line'
 	, BAR_CHART: 'chart.ext.bar'
 	, PIE_CHART: 'chart.ext.pie'
+	, ROTATE_CHART: 'chart.sbi.rotate'
 	
     //  -- public methods ---------------------------------------------------------
     
@@ -116,15 +117,29 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		if(this.store.proxy) {
 			this.store.load({
 				params: {}, 
-				callback: function(){}, 
+				callback: function(){this.store.ready = true;}, 
 				scope: this, 
 				add: false
 			});
 		}
 		
 		this.chart = null;
-		this.chart = this.createChart(this.widgetConfig);
+		if(this.store.ready === true) {
+			this.initChart();
+		} else {
+			this.store.on('load', this.initChart, this);
+		}
 			
+		
+	}
+
+	, initChart: function() {
+		if(this.chart == null) {
+			this.store.un('load', this.initChart, this);
+		}
+		
+		this.chart = this.createChart(this.widgetConfig);
+		
 		this.items.each( function(item) {
 			this.items.remove(item);
 	        item.destroy();           
@@ -152,7 +167,9 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 			chart = this.createBarChart(chartConfig);
 		} else if(chartType === this.PIE_CHART){
 			chart = this.createPieChart(chartConfig);
-		} else {
+		} else if(chartType === this.ROTATE_CHART){
+			chart = this.createRotateChart(chartConfig);
+		}else {
 			Sbi.exception.ExceptionHandler.showErrorMessage('Chart type [' + chartType + '] not supported by [ChartWidget]');
 		}
 		
@@ -162,11 +179,11 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	, createLineChart: function(chartConfig) {
 		
 		var c = Ext.apply({}, chartConfig, {
-			xtype: 'linechart',
-	        store: this.store,
-	        //xField: 'name',
-	        //yField: 'visits',
-			listeners: {
+			xtype: 'linechart'
+			, xField: 'category'
+            , yField: 'value'
+	        , store: this.store
+			, listeners: {
 				itemclick: function(o){
 					//var rec = this.store.getAt(o.index);
 					//alert('Item Selected', 'You chose ' + rec.get('name'));
@@ -174,6 +191,9 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 			}
 		});
 		
+		c.xField = this.getFieldNameByAlias(c.xField);
+		c.yField = this.getFieldNameByAlias(c.yField);
+				
 		return new Ext.Panel({
 	        layout:'fit'
 	        , height: this.height
@@ -181,21 +201,26 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	    });
 	}
 	
+	
 	, createBarChart: function(chartConfig) {
 		
 		var c = Ext.apply({}, chartConfig, {
-			xtype: 'columnchart',
-			store: this.store,
-            //xField: 'column-2',
-            //yField: 'column-3',
-			listeners: {
+			xtype: 'columnchart'
+			, xField: 'category'
+	        , yField: 'value'
+			, store: this.store
+			, listeners: {
 				itemclick: function(o){
-					//alert(this.store + ' - ' + this.getStore('testConsoleChart'));
-					//var rec = this.store.getAt(o.index);
-					//alert('Item Selected', 'You chose ' + rec.get('column-2'));
+					var rec = this.store.getAt(o.index);
+					alert('Item Selected', 'You chose ' + rec.get('column-2'));
 				}
 			}
 		});
+		
+		c.xField = this.getFieldNameByAlias(c.xField);
+		c.yField = this.getFieldNameByAlias(c.yField);
+		
+		
 		
 		return new Ext.Panel({
 			layout:'fit'
@@ -206,12 +231,11 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	
 	, createPieChart: function(chartConfig) {
 		var c = Ext.apply({}, chartConfig, {
-			 store: this.store,
-	         xtype: 'piechart',
-	         //dataField: 'column-3',
-	         //categoryField: 'column-2',
-	         //extra styles get applied to the chart defaults
-	         extraStyle:
+			xtype: 'piechart'
+			, dataField: 'value'
+	        , categoryField: 'category'
+			, store: this.store
+	        , extraStyle:
 	         {
 	         	legend:
 	            {
@@ -226,11 +250,42 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	         }
 		});
 		
+		c.categoryField = this.getFieldNameByAlias(c.categoryField);
+		c.dataField = this.getFieldNameByAlias(c.dataField);
+		
+		
 		return new Ext.Panel({
 			layout:'fit'	
-		    , height: 170
+			, height: this.height	
 			, items: c
 		});
+	}
+	
+	, createRotateChart: function(chartConfig) {
+		
+		return new Ext.Panel({
+			layout:'fit'
+		    , height: this.height	
+		    , items: [new Sbi.chart.Chart()]
+		});		
+	}
+	
+	, getFieldNameByAlias: function(alias) {
+		var fname;
+		
+		fname = alias;
+		if(this.store.getFieldNameByAlias) {
+			fname = this.store.getFieldNameByAlias(alias);
+			if(!fname) {
+				Sbi.exception.ExceptionHandler.showErrorMessage(
+					'Dataset [' + this.storeId + '] does not contain a field whose alias is  [' + alias + ']', 
+					'Error in chart configuration'
+				);
+				fname = alias;
+			}
+		}
+		
+		return fname;
 	}
     
 });

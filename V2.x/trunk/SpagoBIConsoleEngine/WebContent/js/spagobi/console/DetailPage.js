@@ -52,6 +52,7 @@ Sbi.console.DetailPage = function(config) {
 	
 		var defaultSettings = {
 			title: 'DetailPage'
+			, layout: 'fit'
 		};
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.detailPage) {

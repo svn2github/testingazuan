@@ -50,7 +50,7 @@ Ext.ns("Sbi.console");
 Sbi.console.GridPanel = function(config) {
 
 		var defaultSettings = {
-			//title: LN('sbi.qbe.queryeditor.title')
+			layout: 'fit'
 		};
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.gridPanel) {
@@ -157,7 +157,7 @@ Sbi.console.GridPanel = function(config) {
 		
 		this.initFilterBar(c || {});
 
-		var c = Ext.apply({}, {
+		var c = Ext.apply(c, {
 			store: this.store
 			, cm: this.columnModel
 			, sm: this.selectionModel

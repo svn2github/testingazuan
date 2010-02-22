@@ -50,16 +50,16 @@ Sbi.alarms.ManageAlarms = function(config) {
 	
 	this.services = new Array();
 	this.services['manageAlarmsList'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'MANAGE_ALARM_ACTION'
+		serviceName: 'MANAGE_ALARMS_ACTION'
 		, baseParams: paramsList
 	});
 	this.services['saveAlarmService'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'MANAGE_ALARM_ACTION'
+		serviceName: 'MANAGE_ALARMS_ACTION'
 		, baseParams: paramsSave
 	});
 	
 	this.services['deleteAlarmService'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'MANAGE_ALARM_ACTION'
+		serviceName: 'MANAGE_ALARMS_ACTION'
 		, baseParams: paramsDel
 	});	
 	

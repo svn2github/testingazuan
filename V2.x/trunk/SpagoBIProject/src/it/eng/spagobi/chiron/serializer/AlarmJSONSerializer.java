@@ -37,6 +37,8 @@ public class AlarmJSONSerializer implements Serializer{
 	public static final String MODALITY = "modality";
 	public static final String SINGLE_EVENT = "singleEvent";
 	public static final String AUTO_DISABLED = "autoDisabled";
+	public static final String TEXT = "text";
+	public static final String URL = "url";
 	
 	public Object serialize(Object o, Locale locale)
 			throws SerializationException {
@@ -52,9 +54,11 @@ public class AlarmJSONSerializer implements Serializer{
 			result.put(ID, sbiAlarm.getId());
 			result.put(NAME, sbiAlarm.getName());
 			result.put(LABEL, sbiAlarm.getLabel());			
-			result.put(SINGLE_EVENT, sbiAlarm.getSingleEvent());
+			result.put(SINGLE_EVENT, sbiAlarm.isSingleEvent());
 			result.put(AUTO_DISABLED, sbiAlarm.getAutoDisabled());
 			result.put(DESCRIPTION, sbiAlarm.getDescr());	
+			result.put(TEXT, sbiAlarm.getText());	
+			result.put(URL, sbiAlarm.getUrl());	
 			SbiDomains modalityDomain = sbiAlarm.getModality();
 			if(modalityDomain != null)
 				result.put(MODALITY, modalityDomain.getValueCd());

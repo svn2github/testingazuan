@@ -304,8 +304,8 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
         });
        
         this.colModel = new Ext.grid.ColumnModel([
-         {header: LN('sbi.alarms.Label'), width: 150, sortable: true, dataIndex: 'alarmLabel'},
-         {header: LN('sbi.alarms.Name'), width: 150, sortable: true, dataIndex: 'alarmName'},
+         {header: LN('sbi.alarms.Label'), width: 150, sortable: true, dataIndex: 'label'},
+         {header: LN('sbi.alarms.Name'), width: 150, sortable: true, dataIndex: 'name'},
          this.deleteColumn
         ]);
      	   

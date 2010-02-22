@@ -119,7 +119,7 @@
 			if (kpi.getStandardWeight() != null)
 				weight = kpi.getStandardWeight().toString();
 			if(kpi.getKpiDs()!=null)
-				ds_id = kpi.getKpiDs().getId();
+				ds_id = new Integer(kpi.getKpiDs().getId());
 			else
 				ds_id = null;
 			if (kpi.getThreshold()!=null)

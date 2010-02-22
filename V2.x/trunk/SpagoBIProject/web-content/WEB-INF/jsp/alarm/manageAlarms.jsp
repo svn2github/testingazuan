@@ -19,9 +19,39 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base311.jsp"%>
+<%@page import="it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact"%>
+<%@page import="java.util.ArrayList,
+				 java.util.List" %>
+
+<%
+	List<SbiAlarmContact> contacts = (List<SbiAlarmContact>) aSessionContainer.getAttribute("contactsList");
+	//List<Role> roles = (List<Role>) aSessionContainer.getAttribute("rolesList");
+%>
 
 <script type="text/javascript">
-	var config = {};
+<%		
+	String contactsList ="{}";
+	if(contacts != null){
+		contactsList="[";
+		for(int i=0; i< contacts.size(); i++){
+			SbiAlarmContact contact = contacts.get(i);
+			contactsList+="{";
+			contactsList+="'id':"+contact.getId()+",";
+			contactsList+="'name':'"+contact.getName()+"',";
+			contactsList+="'mobile':'"+contact.getMobile()+"',";
+			contactsList+="'email':'"+contact.getEmail()+"',";
+			contactsList+="'resources':'"+contact.getResources()+"'";
+			contactsList+="}";
+			if(i != (contacts.size()-1)){
+				contactsList+=",";
+			}
+		}
+		contactsList+="]";
+	}
+	%>
+	var config = {
+				  contactsEmpyList:<%=contactsList%>
+				  };
 	var url = {
     	host: '<%= request.getServerName()%>'
     	, port: '<%= request.getServerPort()%>'
@@ -34,9 +64,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({
     	baseUrl: url
     });
-   Ext.onReady(function(){
+    
+    Ext.onReady(function(){
 	Ext.QuickTips.init();
-	var manageAlarms = new Sbi.alarm.ManageAlarms(config);
+	var manageAlarms = new Sbi.alarms.ManageAlarms(config);
 	var viewport = new Ext.Viewport({
 		layout: 'border'
 		, items: [

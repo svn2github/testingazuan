@@ -122,7 +122,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	    	          , 'autoDisabled'
 	    	          , 'text'
 	    	          , 'url'
-	    	          , 'contacts'
+	    	         // , 'contacts'
 	    	          ]
 	    	, root: 'samples'
 			, url: this.services['manageAlarmsList']			
@@ -406,7 +406,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
    	                              Ext.getCmp("alarm-form").getForm().loadRecord(rec);  	
    	                              	 
    	                	  		  //this.fillAttributes(row, rec);
-   	                	  		  this.fillContacts(row, rec);   	                                  	                              
+   	                	  		  //this.fillContacts(row, rec);   	                                  	                              
    	                          }
    	                      }
    	                  }),

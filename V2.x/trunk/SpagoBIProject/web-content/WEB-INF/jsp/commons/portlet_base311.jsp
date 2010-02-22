@@ -245,7 +245,8 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/profiling/ManageAttributes.js")%>'></script>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/profiling/ManageRoles.js")%>'></script>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/profiling/ManageUsers.js")%>'></script>
-
+<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/alarm/ManageContacts.js")%>'></script>
+<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/alarm/ManageAlarms.js")%>'></script>
 <%-- <SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>--%>
 
 <!-- import css  --> 

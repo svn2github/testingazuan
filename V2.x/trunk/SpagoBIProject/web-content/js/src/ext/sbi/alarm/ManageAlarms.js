@@ -82,7 +82,7 @@ Sbi.alarms.ManageAlarms = function(config) {
 	this.alarmsStore.load();
  
     Ext.getCmp('alarmsgrid').on('delete', this.deleteSelectedAlarm, this);	
-}
+};
 
 Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	  gridForm:null
@@ -155,70 +155,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
     
   ,initTabs: function(){
   
-      this.detailItems = [{
-		                 name: 'id',
-		                 hidden: true
-		             },{
-		                 fieldLabel: LN('sbi.alarms.alarmLabel'),
-		                 name: 'label',
-		                 allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:100,
-  		            	// minLength:1,
-  		            	// regex : new RegExp("^([a-zA-Z1-9_\x2D])+$", "g"),
-  		            	// regexText : LN('sbi.users.wrongFormat')
-		             },{
-		                 fieldLabel:  LN('sbi.alarms.alarmName'),
-		                 name: 'name',
-		                 allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:255,
-  		            	// minLength:1,
-  		            	// regex : new RegExp("^([a-zA-Z0-9_\x2D\s\x2F])+$", "g"),
-  		            	// regexText : LN('sbi.users.wrongFormat')
-		             },{
-		                 fieldLabel: LN('sbi.alarms.alarmDescr'),
-		                 name: 'description',
-		                // allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:160,
-  		            	// minLength:1
-		             },{
-		                 fieldLabel:  LN('sbi.alarms.alarmModality'),
-		                 name: 'modality',
-		                // allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:160,
-  		            	// minLength:1
-		             },{
-		                 fieldLabel:  LN('sbi.alarms.alarmSingleEvent'),
-		                 name: 'singleEvent',
-		                // allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:160,
-  		            	// minLength:1
-		             },{
-		                 fieldLabel:  LN('sbi.alarms.alarmAutoDisabled'),
-		                 name: 'autoDisabled',
-		                // allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:160,
-  		            	// minLength:1
-		             },{
-		                 fieldLabel:  LN('sbi.alarms.alarmMailUrl'),
-		                 name: 'url',
-		                // allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:160,
-  		            	// minLength:1
-		             },{
-		                 fieldLabel:  LN('sbi.alarms.alarmMailText'),
-		                 name: 'text',
-		                // allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:160,
-  		            	// minLength:1
-		             }];
+     // this.detailItems = ;
   
       this.detailTab = new Ext.Panel({
 		        title: LN('sbi.alarms.details')
@@ -239,7 +176,70 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 			                 "margin-left": "10px", 
 			                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
 			             },
-			             items: this.detailItems
+			             items: [{
+		                 name: 'id',
+		                 hidden: true
+		             },{
+		                 fieldLabel: LN('sbi.alarms.alarmLabel'),
+		                 name: 'label',
+		                 allowBlank: false
+		                // validationEvent:true,
+  		            	// maxLength:100,
+  		            	// minLength:1,
+  		            	// regex : new RegExp("^([a-zA-Z1-9_\x2D])+$", "g"),
+  		            	// regexText : LN('sbi.users.wrongFormat')
+		             },{
+		                 fieldLabel:  LN('sbi.alarms.alarmName'),
+		                 name: 'name',
+		                 allowBlank: false
+		                // validationEvent:true,
+  		            	// maxLength:255,
+  		            	// minLength:1,
+  		            	// regex : new RegExp("^([a-zA-Z0-9_\x2D\s\x2F])+$", "g"),
+  		            	// regexText : LN('sbi.users.wrongFormat')
+		             },{
+		                 fieldLabel: LN('sbi.alarms.alarmDescr'),
+		                 name: 'description'
+		                // allowBlank: false,
+		                // validationEvent:true,
+  		            	// maxLength:160,
+  		            	// minLength:1
+		             },{
+		                 fieldLabel:  LN('sbi.alarms.alarmModality'),
+		                 name: 'modality'
+		                // allowBlank: false,
+		                // validationEvent:true,
+  		            	// maxLength:160,
+  		            	// minLength:1
+		             },{
+		                 fieldLabel:  LN('sbi.alarms.alarmSingleEvent'),
+		                 name: 'singleEvent'
+		                // allowBlank: false,
+		                // validationEvent:true,
+  		            	// maxLength:160,
+  		            	// minLength:1
+		             },{
+		                 fieldLabel:  LN('sbi.alarms.alarmAutoDisabled'),
+		                 name: 'autoDisabled'
+		                // allowBlank: false,
+		                // validationEvent:true,
+  		            	// maxLength:160,
+  		            	// minLength:1
+		             },{
+		                 fieldLabel:  LN('sbi.alarms.alarmMailUrl'),
+		                 name: 'url'
+		                // allowBlank: false,
+		                // validationEvent:true,
+  		            	// maxLength:160,
+  		            	// minLength:1
+		             },{
+		                 fieldLabel:  LN('sbi.alarms.alarmMailText'),
+		                 name: 'text'
+		                // allowBlank: false,
+		                // validationEvent:true,
+  		            	// maxLength:160,
+  		            	// minLength:1
+		             }]
 		    	}
 		    });
 		    
@@ -329,7 +329,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
  	    
  	   this.tabs = new Ext.TabPanel({
            enableTabScroll : true
-           , activeTab : 1
+           , activeTab : 0
            , autoScroll : true
            , width: 450
            , height: 450

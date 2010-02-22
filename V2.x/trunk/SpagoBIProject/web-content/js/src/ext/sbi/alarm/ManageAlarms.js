@@ -219,7 +219,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
   		            	// minLength:1
 		             }];
   
-      this.detailTab = new Ext.Panel(){
+      this.detailTab = new Ext.Panel({
 		        title: LN('sbi.alarms.details')
 		        , itemId: 'detail'
 		        , layout: 'fit'
@@ -240,9 +240,9 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 			             },
 			             items: this.detailItems
 		    	}
-		    };
+		    });
 		    
-      this.kpiTab = new Ext.Panel(){
+      this.kpiTab = new Ext.Panel({
 		        title: LN('sbi.alarms.kpis')
 		        , id : 'alarmKpi'
 		        , layout: 'fit'
@@ -271,14 +271,14 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
   		            	// maxLength:160,
   		            	// minLength:1
 		             }]
-		    };
+		    });
 		    
-      this.contactsTab = new Ext.Panel(){
+      this.contactsTab = new Ext.Panel({
 		        title: LN('sbi.alarms.contacts')
 		        , id : 'contactsList'
 	            , items : [ this.contactsGridPanel ]
 		        , itemId: 'contacts'
-		    };
+		    });
   }
 	
 	,initManageAlarms: function(){

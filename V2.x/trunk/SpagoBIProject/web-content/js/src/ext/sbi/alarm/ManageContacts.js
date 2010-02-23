@@ -332,8 +332,7 @@ Ext.extend(Sbi.alarm.ManageContacts, Ext.FormPanel, {
      	name : newRec.data.name,
      	resources : newRec.data.resources,
      	email : newRec.data.email,
-     	mobile : newRec.data.mobile,
-
+     	mobile : newRec.data.mobile
      };
      if(idRec){
      	params.id = newRec.data.id;

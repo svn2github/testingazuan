@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%
 	List<SbiAlarmContact> contacts = (List<SbiAlarmContact>) aSessionContainer.getAttribute("contactsList");
 	List<KpiAlarmInstance> kpis = (List<KpiAlarmInstance>) aSessionContainer.getAttribute("KPI_LIST");
+	//List<ThresholdValue> tresholds = (List<ThresholdValue>) aResponseContainer.getAttribute("TRESHOLD_LIST");
 %>
 
 <script type="text/javascript">
@@ -66,10 +67,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		}
 		kpisEmptyList+="]";
 	}
+	String tresholdsList ="{}";
+
 	%>
 	var config = {
 				  contactsEmpyList:<%=contactsList%>
 	  			  , kpisEmptyList:<%=kpisEmptyList%>
+	  			  , tresholdsList:<%=tresholdsList%>
 				  };
 	var url = {
     	host: '<%= request.getServerName()%>'

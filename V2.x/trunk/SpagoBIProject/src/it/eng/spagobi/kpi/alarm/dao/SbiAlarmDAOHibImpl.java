@@ -217,7 +217,7 @@ public class SbiAlarmDAOHibImpl extends AbstractHibernateDAO implements ISbiAlar
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
-			session.update(item);
+			session.saveOrUpdate(item);
 			tx.commit();
 
 		} catch (HibernateException e) {

@@ -162,7 +162,7 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 				alarm.setModality(dModality);
 			}
 			
-			if(id!=null){
+			if(id!=null && id!=0){
 				alarm.setId(id);
 			}
 			

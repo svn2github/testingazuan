@@ -123,6 +123,9 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	    	          , 'text'
 	    	          , 'url'
 	    	         // , 'contacts'
+	    	         //, 'kpi'
+	    	          //, 'thr'
+	    	           //, 'doc'
 	    	          ]
 	    	, root: 'samples'
 			, url: this.services['manageAlarmsList']			
@@ -231,7 +234,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 				            fieldLabel: LN('sbi.alarms.options'),
 				            items: [
 				                {boxLabel: LN('sbi.alarms.alarmSingleEvent'), name: 'singleEvent', checked:false},
-				                {boxLabel: LN('sbi.alarms.alarmAutoDisabled'), name: 'autoDisabled', checked:true}
+				                {boxLabel: LN('sbi.alarms.alarmAutoDisabled'), name: 'autoDisabled', checked:false}
 				            ]
 			             },{
 			                 fieldLabel:  LN('sbi.alarms.alarmMailUrl'),
@@ -580,20 +583,49 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	,save : function() {
 		   
 	   var values = this.gridForm.getForm().getValues();
+	   alert(values.toSource());
 
        var newRec = null;
-    	
+
 	   var params = {
-	      	userId : values['userId'],
-	      	fullName : values['fullName'],
-	      	pwd : values['pwd']            
+	      	name : values['name'],
+	      	description : values['description'],
+	      	text : values['text'],
+	      	url : values['url'],
+	      	label : values['label']            
 	   }
        params.id = values['id'];
-      
-       if(values['id'] !== null && values['id'] !== undefined && values['id']==0){
-          newRec =new Ext.data.Record({'userId': values['userId'],'fullName': values['fullName'],'pwd':values['pwd']});	          
+       
+       var mod = 'MAIL';
+       if(values['modality']==2){
+          params.modality ='SMS';
+          mod =	'SMS';       
+       }else{
+       	  params.modality ='MAIL';
+       }
+       
+       var autoDis = false;
+       if(values['autoDisabled']=='on'){
+          params.autoDisabled = true;	 
+          autoDis = true;         
+       }else{
+       	  params.autoDisabled = false;
+       }
+       
+       var singleEv = false;
+       if(values['singleEvent']=='on'){
+          params.singleEvent = true;     
+          singleEv = true;         
+       }else{
+       	  params.singleEvent = false;
        }
       
+       if(values['id'] !== null && values['id'] !== undefined && values['id']==0){
+	       newRec =new Ext.data.Record({'name': values['name'],'description': values['description'],'text':values['text']
+	       							   ,'url': values['url'],'label': values['label'],'modality':mod,'autoDisabled':autoDis,'singleEvent':singleEv});	          
+	   }
+      
+       /*
       var rolesSelected = Ext.getCmp("contacts-form").selModel.getSelections();
       var lengthR = rolesSelected.length;
          var roles =new Array();
@@ -623,7 +655,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		 }
        }	
    
-       var modifAttributes = this.kpiStore.getModifiedRecords();
+      var modifAttributes = this.kpiStore.getModifiedRecords();
        var lengthA = modifAttributes.length;
        var attrs =new Array();
        for(var i=0;i<lengthA;i++){
@@ -645,7 +677,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
    	   if(newRec!==null){
 		   newRec.set('userRoles', userRoles);
 		   newRec.set('userAttributes', userAttributes);
-	   }        
+	   }   */     
       
       Ext.Ajax.request({
           url: this.services['saveAlarmService'],
@@ -653,47 +685,46 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
           method: 'GET',
           success: function(response, options) {
 			if (response !== undefined) {		
-      		if(response.responseText !== undefined) {
-      			var content = Ext.util.JSON.decode( response.responseText );
-      			if(content.responseText !== 'Operation succeded') {
-                    Ext.MessageBox.show({
-                        title: LN('sbi.alarms.error'),
-                        msg: content,
-                        width: 150,
-                        buttons: Ext.MessageBox.OK
-                   });
-      			}else{
-      			    
-					var idTemp = content.id;
-					if(newRec!==null){
-						newRec.set('id', idTemp);
-						this.alarmsStore.add(newRec);
-					}else{
-						var record;
-						var lengthS = this.alarmsStore.getCount();
-						for(var i=0;i<lengthS;i++){
-				   	        var tempRecord = this.alarmsStore.getAt(i);
-				   	        if(tempRecord.data.id==idTemp){
-				   	        	record = tempRecord;
-							}			   
-				   	    }	
-				   	    record.set('userAttributes', userAttributes);
-				   	    record.set('userRoles', userRoles);
-						//this.alarmsStore.getById(idTemp).set('userAttributes', userAttributes);
-						//this.alarmsStore.getById(idTemp).set('userRoles', userRoles);
-					}
-					this.kpiStore.commitChanges();
-					this.thresholdsStore.commitChanges();
-					this.alarmsStore.commitChanges();
-				
-      			}
-      		} else {
-      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-      		}
-		} else {
-			Sbi.exception.ExceptionHandler.showErrorMessage('Error while saving User', 'Service Error');
-		}
-          },
+	      		if(response.responseText !== undefined) {
+	      			var content = Ext.util.JSON.decode( response.responseText );
+	      			if(content.responseText !== 'Operation succeded') {
+	                    Ext.MessageBox.show({
+	                        title: LN('sbi.alarms.error'),
+	                        msg: content,
+	                        width: 150,
+	                        buttons: Ext.MessageBox.OK
+	                   });
+	      			}else{
+	      			    
+						var idTemp = content.id;
+						if(newRec!==null){
+							newRec.set('id', idTemp);
+							this.alarmsStore.add(newRec);
+						}else{
+							var record;
+							var lengthS = this.alarmsStore.getCount();
+							for(var i=0;i<lengthS;i++){
+					   	        var tempRecord = this.alarmsStore.getAt(i);
+					   	        if(tempRecord.data.id==idTemp){
+					   	        	record = tempRecord;
+								}			   
+					   	    }	
+					   	    //record.set('userAttributes', userAttributes);
+					   	   // record.set('userRoles', userRoles);
+							//this.alarmsStore.getById(idTemp).set('userAttributes', userAttributes);
+							//this.alarmsStore.getById(idTemp).set('userRoles', userRoles);
+						}
+						//this.kpiStore.commitChanges();
+						//this.thresholdsStore.commitChanges();
+						this.alarmsStore.commitChanges();				
+	      			 }
+		      	}else{
+		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+		      	}
+			}else{
+				Sbi.exception.ExceptionHandler.showErrorMessage('Error while saving User', 'Service Error');
+			}
+	      },
           failure: function(response) {
      		if(response.responseText !== undefined) {
      			var content = Ext.util.JSON.decode( response.responseText );
@@ -709,7 +740,6 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
        				errMessage += '<br/>';
        			}
 			}
-
                Ext.MessageBox.show({
                    title: LN('sbi.alarms.validationError'),
                    msg: errMessage,
@@ -726,17 +756,24 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
      		}
           }
           ,scope: this
-    		 });
-	
+       });	
     }
 	, addNewAlarm : function(){
 		Ext.getCmp('save-btn').enable();
-		var emptyRecToAdd =new Ext.data.Record({userId:'', 
-											fullName:'', 
-											pwd:'',
-											userRoles:'',
-											userAttributes:'',
-											id: 0
+
+		var emptyRecToAdd =new Ext.data.Record({id:0, 
+											name:'', 
+											description:'',
+											label:'',
+											modality:'MAIL',
+											singleEvent: false,
+											autoDisabled: false,
+											text:'',
+											url: ''
+											//,contacts: 0,
+											// 'kpi'
+							    	        //, 'thr'
+							    	        //, 'doc'
 											});
 	
 		Ext.getCmp('alarm-form').getForm().loadRecord(emptyRecToAdd);

@@ -129,7 +129,9 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		});	
 		
 		this.kpiStore = new Ext.data.SimpleStore({
-	        fields : [ 'id', 'name', 'value' ]
+			autoLoad: false 
+			, data: config.kpisEmptyList
+	        , fields : [ 'id', 'kpiName', 'kpiModel' ]
 	    });
 	    
 	    this.thresholdsStore = new Ext.data.SimpleStore({
@@ -147,15 +149,16 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	        fields : [ 'id', 'name', 'email', 'mobile', 'resources' ]
 	    });
 	    
-	   // this.kpisEmptyStore = config.kpisEmptyList;
-	   // this.alarmsEmptyStore = config.alarmsEmptyList;
-	   // this.documentsEmptyStore = config.documentsEmptyList;
+	    this.kpisEmptyStore = config.kpisEmptyList;
+
+	    /*
+	    this.alarmsEmptyStore = config.alarmsEmptyList;
+	    this.documentsEmptyStore = config.documentsEmptyList;
+	    */
   
     }
     
   ,initTabs: function(){
-  
-     // this.detailItems = ;
   
       this.detailTab = new Ext.Panel({
 		        title: LN('sbi.alarms.details')
@@ -250,46 +253,86 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	  		            	// minLength:1
 		             }]
 		    	}
-		    });
-		    
-     /* this.kpiTab = new Ext.Panel({
+		 });
+      
+
+    	 this.kpiCheckColumn = new Ext.grid.CheckboxSelectionModel( {header: ' ',singleSelect: false, scope:this, dataIndex: 'id'} );
+		 this.kpiCheckColumn.on('rowselect', this.onKpiSelect, this);
+		 this.kpiCheckColumn.on('rowdeselect', this.onKpiDeselect, this);
+	     this.kpiCm = new Ext.grid.ColumnModel({
+	         // specify any defaults for each column
+	         defaults: {
+	             sortable: true // columns are not sortable by default           
+	         },
+	         columns: [
+	             {
+	                 id: 'id',
+	                 header: 'Kpi Instance Id',
+	                 dataIndex: 'id',
+	                 width: 120
+	             }, {
+	                 header: 'Kpi Model',
+	                 dataIndex: 'kpiModel',
+	                 width: 130
+	             }, {
+	                 header: 'Kpi Name',
+	                 dataIndex: 'kpiName',
+	                 width: 120
+	             },
+	             this.kpiCheckColumn // the plugin instance
+	         ]
+	     });
+		this.kpiGrid = new Ext.grid.EditorGridPanel ({
+			id: 'kpi-grid',
+			store: this.kpiStore,
+			autoHeight : true,
+			cm: this.kpiCm,
+			sm: this.kpiCheckColumn,
+			frame: true,
+			//plugins: this.kpiCheckColumn,
+            viewConfig : {
+	            forceFit : true,
+	            scrollOffset : 2
+	        // the grid will never have scrollbars
+	        },
+	        singleSelect : true,
+	        clicksToEdit : 2
+
+		}); 
+
+		
+      	this.kpiTab = new Ext.Panel({
 		        title: LN('sbi.alarms.kpis')
 		        , id : 'alarmKpi'
 		        , layout: 'fit'
-		        , items: [this.contactsGrid]
 		        , itemId: 'kpis'
 		        , scope: this
-		        , items: [{
-		                 fieldLabel:  LN('sbi.alarms.alarmKpi'),
-		                 name: 'alarmKpi',
-		                // allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:160,
-  		            	// minLength:1
-		             },{
+		        , items: [
+		            this.kpiGrid
+		        	,{
 		                 fieldLabel:  LN('sbi.alarms.alarmKpiThreshold'),
-		                 name: 'alarmKpiThreshold',
-		                // allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:160,
-  		            	// minLength:1
+		                 name: 'alarmKpiThreshold'
+
 		             },{
 		                 fieldLabel:  LN('sbi.alarms.alarmKpiDetailDoc'),
-		                 name: 'alarmKpiDetailDoc',
-		                // allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:160,
-  		            	// minLength:1
+		                 name: 'alarmKpiDetailDoc'
 		             }]
 		    });
-		    
+
+		/*    
       this.contactsTab = new Ext.Panel({
 		        title: LN('sbi.alarms.contacts')
 		        , id : 'contactsList'
 	            , items : [ this.contactsGridPanel ]
 		        , itemId: 'contacts'
 		    });*/
-  }
+    }
+	,onKpiSelect: function(){
+	}
+	
+	,onKpiDeselect: function(){
+	
+	}
 	
 	,initManageAlarms: function(){
 	
@@ -345,7 +388,8 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
            , itemId: 'tabs'
            , tbar: this.tbSave 
 		   , items: [ this.detailTab
-		   //, this.kpiTab, this.contactsTab
+		   , this.kpiTab
+		   //, this.contactsTab
 		   ]
 		 });
 
@@ -427,7 +471,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	   	                  	}
 	   	                  		        
 	   	                  },
-	   	                 /* fillAttributes : function(row, rec) {	 
+	   	                  /*fillAttributes : function(row, rec) {	 
 	   	                    Ext.getCmp("attributes-form").store.removeAll();
 	   	                  	var tempArr = rec.data.userAttributes;
 	   	                  	var length = rec.data.userAttributes.length;
@@ -437,6 +481,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	   	                  	}			        
  
 	   	                  },*/
+
    	                      listeners: {
    	                          rowselect: function(sm, row, rec) {   
    	                          	  Ext.getCmp('save-btn').enable();
@@ -699,14 +744,14 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	
 		Ext.getCmp('alarm-form').getForm().loadRecord(emptyRecToAdd);
 		
-		Ext.getCmp("attributes-form").store.removeAll();
+		Ext.getCmp("kpi-grid").store.removeAll();
 	   	var tempAttrArr = this.kpisEmptyStore;
 	   	var length = this.kpisEmptyStore.length;
         for(var i=0;i<length;i++){
-        	var tempRecord = new Ext.data.Record({"value":tempAttrArr[i].value,"name":tempAttrArr[i].name,"id":tempAttrArr[i].id });
-    		Ext.getCmp("attributes-form").store.add(tempRecord);	
+        	var tempRecord = new Ext.data.Record({"kpiName":tempAttrArr[i].kpiName, "kpiModel":tempAttrArr[i].kpiModel,"id":tempAttrArr[i].id });
+    		Ext.getCmp("kpi-grid").store.add(tempRecord);	
         }		
-        
+        /*
         Ext.getCmp("contacts-form").store.removeAll();
         var tempRolesArr = this.alarmsEmptyStore;
         var length2 = this.alarmsEmptyStore.length;
@@ -714,7 +759,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
           	var tempRecord = new Ext.data.Record({"description":tempRolesArr[i].description,"name":tempRolesArr[i].name,"id":tempRolesArr[i].id });
 			Ext.getCmp("contacts-form").store.add(tempRecord);								   
         }	
-		
+		*/
 		Ext.getCmp('alarm-form').doLayout();
 	}
 	

@@ -32,7 +32,7 @@ public class SpagoBIStudioConstants {
 	public final static String GEO_ENGINE_EXTENSION="sbigeo";
 
 	public final static String DASHBOARD_ENGINE_LABEL="DashboardInternalEng";
-	public final static String CHART_ENGINE_LABEL="ChartEngine";
+	public final static String CHART_ENGINE_LABEL="ChartInternalEng";
 	public final static String JASPER_REPORT_ENGINE_LABEL="JasperReport";
 	public final static String BIRT_REPORT_ENGINE_LABEL="Birt";
 	public final static String OLAP_ENGINE_LABEL="JPIVOT";

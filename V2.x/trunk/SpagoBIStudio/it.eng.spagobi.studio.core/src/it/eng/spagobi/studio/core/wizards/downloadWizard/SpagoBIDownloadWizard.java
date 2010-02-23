@@ -183,9 +183,6 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 
 		//Take workspace
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IPath workspacePath=root.getLocation();
-
-
 		// get the folder where to insert the template document
 		IProject project = root.getProject(projectName);
 		IPath pathFolder = folderSel.getProjectRelativePath(); 

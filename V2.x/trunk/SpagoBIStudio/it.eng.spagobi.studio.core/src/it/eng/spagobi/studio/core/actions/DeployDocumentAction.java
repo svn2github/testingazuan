@@ -68,6 +68,11 @@ public class DeployDocumentAction implements IViewActionDelegate {
 	}
 
 	public void run(IAction action) {
+
+		
+		
+		
+		
 		SpagoBIDeployWizard sbindw = new SpagoBIDeployWizard();
 		CommonViewer commViewer=((CommonNavigator) view).getCommonViewer();
 		IStructuredSelection sel=(IStructuredSelection)commViewer.getSelection();

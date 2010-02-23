@@ -21,11 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/WEB-INF/jsp/commons/portlet_base311.jsp"%>
 <%@page import="it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact"%>
 <%@page import="java.util.ArrayList,
-				 java.util.List" %>
+				it.eng.spagobi.kpi.config.bo.KpiAlarmInstance,
+				java.util.List" %>
 
 <%
 	List<SbiAlarmContact> contacts = (List<SbiAlarmContact>) aSessionContainer.getAttribute("contactsList");
-	//List<Role> roles = (List<Role>) aSessionContainer.getAttribute("rolesList");
+	List<KpiAlarmInstance> kpis = (List<KpiAlarmInstance>) aSessionContainer.getAttribute("KPI_LIST");
 %>
 
 <script type="text/javascript">
@@ -48,8 +49,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		}
 		contactsList+="]";
 	}
+	
+	String kpisEmptyList ="{}";
+	if(kpis != null){
+		kpisEmptyList="[";
+		for(int i=0; i< kpis.size(); i++){
+			KpiAlarmInstance kpiAlarm = (KpiAlarmInstance)kpis.get(i);
+			kpisEmptyList+="{";
+			kpisEmptyList+="'id':"+kpiAlarm.getKpiInstanceId()+",";
+			kpisEmptyList+="'kpiModel':'"+kpiAlarm.getKpiModelName()+"',";
+			kpisEmptyList+="'kpiName':'"+kpiAlarm.getKpiName()+"'";
+			kpisEmptyList+="}";
+			if(i != (kpis.size()-1)){
+				kpisEmptyList+=",";
+			}
+		}
+		kpisEmptyList+="]";
+	}
 	%>
 	var config = {
+				  contactsEmpyList:<%=contactsList%>
+	  			  , kpisEmptyList:<%=kpisEmptyList%>
 				  };
 	var url = {
     	host: '<%= request.getServerName()%>'

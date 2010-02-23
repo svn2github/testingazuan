@@ -30,6 +30,8 @@ import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmDAO;
 import it.eng.spagobi.kpi.alarm.metadata.SbiAlarm;
 import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact;
+import it.eng.spagobi.kpi.config.bo.KpiAlarmInstance;
+import it.eng.spagobi.kpi.config.dao.IKpiInstanceDAO;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONSuccess;
@@ -71,6 +73,8 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 	public static final String CONTACTS = "alarmContacts";
 	public static final String DOMAIN_CD = "ALARM_MODALITY";
 	
+	public static final String KPI_LIST = "KPI_LIST";
+	
 	@Override
 	public void doService() {
 		logger.debug("IN");
@@ -88,9 +92,29 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 
 		String serviceType = this.getAttributeAsString(MESSAGE_DET);
 		logger.debug("Service type "+serviceType);
-		
+
 		if (serviceType != null && serviceType.equalsIgnoreCase(ALARMS_LIST)) {
-			
+			//loads kpi 
+			try {
+				IKpiInstanceDAO kpiDao = DAOFactory.getKpiInstanceDAO();
+				List<String> kpis = (List<String>)getSessionContainer().getAttribute(KPI_LIST);
+				if(kpis != null){
+					getSessionContainer().delAttribute(KPI_LIST);				
+				}
+				List<KpiAlarmInstance> kpisAlarm = kpiDao.loadKpiAlarmInstances();
+				getSessionContainer().setAttribute(KPI_LIST, kpisAlarm);
+
+
+			} catch (EMFUserError e) {
+				logger.error(e.getMessage(), e);
+				try {
+					writeBackToClient("Exception occurred while retrieving kpis list");
+				} catch (IOException e1) {
+					logger.error(e1.getMessage(), e1);
+				}
+				throw new SpagoBIServiceException(SERVICE_NAME,
+						"Exception occurred while retrieving kpis", e);
+			}
 			try {				
 				List<SbiAlarm> alarms = alarmDao.findAll();
 				logger.debug("Loaded users list");

@@ -47,6 +47,7 @@ Sbi.alarms.ManageAlarms = function(config) {
 	var paramsList = { MESSAGE_DET: "ALARMS_LIST"};
 	var paramsSave = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: "ALARM_INSERT"};
 	var paramsDel = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: "ALARM_DELETE"};
+	var paramsTresholds = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: "TRESHOLDS_LIST"};
 	
 	this.services = new Array();
 	this.services['manageAlarmsList'] = Sbi.config.serviceRegistry.getServiceUrl({
@@ -63,7 +64,10 @@ Sbi.alarms.ManageAlarms = function(config) {
 		, baseParams: paramsDel
 	});	
 	
-
+	this.services['loadTresholdsService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'MANAGE_ALARMS_ACTION'
+		, baseParams: paramsTresholds
+	});	
 	this.initStores(config);
 
 	this.initManageAlarms();
@@ -137,11 +141,12 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	        , fields : [ 'id', 'kpiName', 'kpiModel' ]
 	    });
 	    
-	    this.thresholdsStore = new Ext.data.SimpleStore({
+	    this.thresholdsStore = new Ext.data.JsonStore({
 	    	id: 'id',
-	        fields : [ 'id', 'name', 'description', 'checked' ]
+	    	root: 'samples',
+	        fields : ['id', 'label']
 	    });
-	    
+
 	    this.documentsStore = new Ext.data.SimpleStore({
 	    	id: 'id',
 	        fields : [ 'id', 'name', 'description', 'checked' ]
@@ -153,6 +158,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	    });
 	    
 	    this.kpisEmptyStore = config.kpisEmptyList;
+	    this.tresholdsEmptyStore = config.tresholdsList;
 
 	    /*
 	    this.alarmsEmptyStore = config.alarmsEmptyList;
@@ -302,24 +308,36 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	        clicksToEdit : 2
 
 		}); 
-
+		this.tresholdsCombo = new Ext.form.ComboBox(
+			{
+				 id: 'tresholds-combo',
+                 //fieldLabel:  LN('sbi.alarms.alarmKpiThreshold'),
+                 fieldLabel: 'Kpi Treshold',
+                 name: 'alarmKpiThreshold',
+	             store: this.thresholdsStore,
+	             forceReload:true,
+	             displayField:'label',
+	             valueField: 'id',
+	             typeAhead: true,
+	             mode: 'local',
+	             triggerAction: 'all',
+	             emptyText:'Select a treshold...',
+	             selectOnFocus:true
+             }
+		);
 		
       	this.kpiTab = new Ext.Panel({
 		        title: LN('sbi.alarms.kpis')
 		        , id : 'alarmKpi'
-		        , layout: 'fit'
+		        , layout: 'form'
 		        , itemId: 'kpis'
 		        , scope: this
+	            , bodyStyle: Ext.isIE ? 'padding:0 0 5px 15px;' : 'padding:10px 15px;'
+			    , border: false
 		        , items: [
 		            this.kpiGrid
-		        	,{
-		                 fieldLabel:  LN('sbi.alarms.alarmKpiThreshold'),
-		                 name: 'alarmKpiThreshold'
-
-		             },{
-		                 fieldLabel:  LN('sbi.alarms.alarmKpiDetailDoc'),
-		                 name: 'alarmKpiDetailDoc'
-		             }]
+		        	,this.tresholdsCombo
+		        	]
 		    });
 		    
      /* 
@@ -331,6 +349,30 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		    });*/
     }
 	,onKpiSelect: function(){
+		//loads tresholds
+		var sm = this.kpiGrid.getSelectionModel();
+		var row = sm.getSelected();
+		//alert(row.data.id);
+		this.kpiInstId = row.data.id;
+		Ext.Ajax.request({
+	          url: this.services['loadTresholdsService'],
+	          params: {id: this.kpiInstId},
+	          method: 'GET',
+	          success: function(response, options) {
+				if (response !== undefined) {		
+	      			var content = Ext.util.JSON.decode( response.responseText );
+	      			//alert(content.samples.toSource());
+	      			if(content !== undefined) {	     				
+
+	      				this.tresholdsCombo.getStore().loadData(content);
+	      				this.tresholdsCombo.getStore().commitChanges();
+
+	      			}
+				} 	
+	          }
+	          ,scope: this
+	    });
+
 	}
 	
 	,onKpiDeselect: function(){
@@ -471,17 +513,18 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	   	                  		}  
 	   	                   	});	      
 	   	                  },
-	   	                  /*fillAttributes : function(row, rec) {	 
-	   	                    Ext.getCmp("attributes-form").store.removeAll();
-	   	                  	var tempArr = rec.data.userAttributes;
-	   	                  	var length = rec.data.userAttributes.length;
+	   	                  /*
+	   	                  fillKpis : function(row, rec) {	 
+	   	                    Ext.getCmp("kpi-grid").store.removeAll();
+	   	                  	var tempArr = rec.data.kpis;
+	   	                  	var length = rec.data.kpis.length;
 	   	                  	for(var i=0;i<length;i++){
-	   	                  		var tempRecord = new Ext.data.Record({"value":tempArr[i].value,"name":tempArr[i].name,"id":tempArr[i].id });
-							    Ext.getCmp("attributes-form").store.add(tempRecord);	
+	   	                  		var tempRecord = new Ext.data.Record({"kpiName":tempArr[i].kpiName,"kpiModel":tempArr[i].kpiModel,"id":tempArr[i].id });
+							    Ext.getCmp("kpi-grid").store.add(tempRecord);	
 	   	                  	}			        
  
-	   	                  },*/
-
+	   	                  },
+							*/
    	                      listeners: {
    	                          rowselect: function(sm, row, rec) {   
    	                          	  Ext.getCmp('save-btn').enable();

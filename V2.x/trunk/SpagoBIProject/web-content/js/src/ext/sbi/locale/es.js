@@ -248,6 +248,9 @@ Sbi.locale.ln['sbi.alarms.confirm'] = 'Confirm?';
 Sbi.locale.ln['sbi.alarms.confirmDelete'] = 'Do you really want to delete this alarm?';
 Sbi.locale.ln['sbi.alarms.alarmKpiThreshold'] = 'Umbral';
 Sbi.locale.ln['sbi.alarms.kpis'] = 'KPI';
+Sbi.locale.ln['sbi.alarms.kpiInstanceIdHeader'] = 'Kpi Instance Id';
+Sbi.locale.ln['sbi.alarms.kpiModelHeader'] = 'Kpi Model';
+Sbi.locale.ln['sbi.alarms.kpiNameHeader'] = 'Kpi Name';
 
 // Toolbar 
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Enviar a';

@@ -276,15 +276,15 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	         columns: [
 	             {
 	                 id: 'id',
-	                 header: 'Kpi Instance Id',
+	                 header: LN('sbi.alarms.kpiInstanceIdHeader'),
 	                 dataIndex: 'id',
 	                 width: 120
 	             }, {
-	                 header: 'Kpi Model',
+	                 header: LN('sbi.alarms.kpiModelHeader'),
 	                 dataIndex: 'kpiModel',
 	                 width: 130
 	             }, {
-	                 header: 'Kpi Name',
+	                 header: LN('sbi.alarms.kpiNameHeader'),
 	                 dataIndex: 'kpiName',
 	                 width: 120
 	             },

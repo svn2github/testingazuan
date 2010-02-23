@@ -32,6 +32,8 @@ import it.eng.spagobi.kpi.alarm.metadata.SbiAlarm;
 import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact;
 import it.eng.spagobi.kpi.config.bo.KpiAlarmInstance;
 import it.eng.spagobi.kpi.config.dao.IKpiInstanceDAO;
+import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
+import it.eng.spagobi.kpi.threshold.dao.IThresholdValueDAO;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONSuccess;
@@ -60,6 +62,7 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 	private final String ALARMS_LIST = "ALARMS_LIST";
 	private final String ALARM_INSERT = "ALARM_INSERT";
 	private final String ALARM_DELETE = "ALARM_DELETE";
+	private final String TRESHOLDS_LIST = "TRESHOLDS_LIST";
 	
 	public static final String ID = "id";
 	public static final String NAME = "name";
@@ -74,6 +77,7 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 	public static final String DOMAIN_CD = "ALARM_MODALITY";
 	
 	public static final String KPI_LIST = "KPI_LIST";
+	public static final String TRESHOLD_LIST = "TRESHOLD_LIST";
 	
 	@Override
 	public void doService() {
@@ -102,8 +106,9 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 					getSessionContainer().delAttribute(KPI_LIST);				
 				}
 				List<KpiAlarmInstance> kpisAlarm = kpiDao.loadKpiAlarmInstances();
-				getSessionContainer().setAttribute(KPI_LIST, kpisAlarm);
-
+				if(kpisAlarm != null){
+					getSessionContainer().setAttribute(KPI_LIST, kpisAlarm);
+				}
 
 			} catch (EMFUserError e) {
 				logger.error(e.getMessage(), e);
@@ -161,7 +166,6 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 				alarm.setId(id);
 			}
 			
-				
 				Set<SbiAlarmContact> contactsList = null;
 				if(contactsJSON != null){
 					contactsList = deserializeContactsJSONArray(contactsJSON);
@@ -196,6 +200,23 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 				alarmDao.delete(id);
 				logger.debug("Alarm deleted");
 				writeBackToClient( new JSONAcknowledge("Operation succeded") );
+
+			} catch (Throwable e) {
+				logger.error("Exception occurred while retrieving user to delete", e);
+				throw new SpagoBIServiceException(SERVICE_NAME,
+						"Exception occurred while retrieving user to delete",e);
+			}
+		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(TRESHOLDS_LIST)) {
+			Integer id =  getAttributeAsInteger(ID);
+			try {
+				IThresholdValueDAO tresholdDao = DAOFactory.getThresholdValueDAO();
+				List<ThresholdValue> tresholds = tresholdDao.loadThresholdValuesByThresholdId(id);
+				logger.debug("Threshold values loaded");
+				JSONArray trshJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(tresholds,locale);
+				JSONObject trashResponseJSON = createJSONResponseAlarms(trshJSON);
+
+				writeBackToClient(new JSONSuccess(trashResponseJSON));
+				//getResponseContainer().setAttribute(TRESHOLD_LIST, tresholds);
 
 			} catch (Throwable e) {
 				logger.error("Exception occurred while retrieving user to delete", e);

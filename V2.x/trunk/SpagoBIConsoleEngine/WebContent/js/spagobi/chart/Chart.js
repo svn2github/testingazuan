@@ -77,7 +77,7 @@ Ext.extend(Sbi.chart.Chart, Ext.FlashComponent, {
     		, lowValue: -50
     		, highValue: 50
     	};
-
+    	
 	}
 
 	,  onRender : function(ct, position){
@@ -87,7 +87,7 @@ Ext.extend(Sbi.chart.Chart, Ext.FlashComponent, {
 				
 		Sbi.chart.Chart.superclass.onRender.call(this, ct, position);
 		
-        this.testFn.defer(1000, this);
+        this.testFn.defer(2000, this);
 	}
 	
 	, testFn: function() {

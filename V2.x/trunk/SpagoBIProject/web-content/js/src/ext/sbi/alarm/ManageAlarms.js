@@ -177,68 +177,77 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 			                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
 			             },
 			             items: [{
-		                 name: 'id',
-		                 hidden: true
-		             },{
-		                 fieldLabel: LN('sbi.alarms.alarmLabel'),
-		                 name: 'label',
-		                 allowBlank: false
-		                // validationEvent:true,
-  		            	// maxLength:100,
-  		            	// minLength:1,
-  		            	// regex : new RegExp("^([a-zA-Z1-9_\x2D])+$", "g"),
-  		            	// regexText : LN('sbi.users.wrongFormat')
-		             },{
-		                 fieldLabel:  LN('sbi.alarms.alarmName'),
-		                 name: 'name',
-		                 allowBlank: false
-		                // validationEvent:true,
-  		            	// maxLength:255,
-  		            	// minLength:1,
-  		            	// regex : new RegExp("^([a-zA-Z0-9_\x2D\s\x2F])+$", "g"),
-  		            	// regexText : LN('sbi.users.wrongFormat')
-		             },{
-		                 fieldLabel: LN('sbi.alarms.alarmDescr'),
-		                 name: 'description'
-		                // allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:160,
-  		            	// minLength:1
-		             },{
-		                 fieldLabel:  LN('sbi.alarms.alarmModality'),
-		                 name: 'modality'
-		                // allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:160,
-  		            	// minLength:1
-		             },{
-		                 fieldLabel:  LN('sbi.alarms.alarmSingleEvent'),
-		                 name: 'singleEvent'
-		                // allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:160,
-  		            	// minLength:1
-		             },{
-		                 fieldLabel:  LN('sbi.alarms.alarmAutoDisabled'),
-		                 name: 'autoDisabled'
-		                // allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:160,
-  		            	// minLength:1
-		             },{
-		                 fieldLabel:  LN('sbi.alarms.alarmMailUrl'),
-		                 name: 'url'
-		                // allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:160,
-  		            	// minLength:1
-		             },{
-		                 fieldLabel:  LN('sbi.alarms.alarmMailText'),
-		                 name: 'text'
-		                // allowBlank: false,
-		                // validationEvent:true,
-  		            	// maxLength:160,
-  		            	// minLength:1
+			                 name: 'id',
+			                 hidden: true
+			             },{
+			                 fieldLabel: LN('sbi.alarms.alarmLabel'),
+			                 name: 'label',
+			                 width : 250,
+			                 allowBlank: false
+			                // validationEvent:true,
+	  		            	// maxLength:100,
+	  		            	// minLength:1,
+	  		            	// regex : new RegExp("^([a-zA-Z1-9_\x2D])+$", "g"),
+	  		            	// regexText : LN('sbi.users.wrongFormat')
+			             },{
+			                 fieldLabel:  LN('sbi.alarms.alarmName'),
+			                 name: 'name',
+			                 width : 250,
+			                 allowBlank: false
+			                // validationEvent:true,
+	  		            	// maxLength:255,
+	  		            	// minLength:1,
+	  		            	// regex : new RegExp("^([a-zA-Z0-9_\x2D\s\x2F])+$", "g"),
+	  		            	// regexText : LN('sbi.users.wrongFormat')
+			             },{
+			                 fieldLabel: LN('sbi.alarms.alarmDescr'),
+			                 width : 250,
+			                 name: 'description'
+			                // allowBlank: false,
+			                // validationEvent:true,
+	  		            	// maxLength:160,
+	  		            	// minLength:1
+			             },{
+				            xtype: 'radiogroup',
+				            itemId: 'modality',
+				            name: 'mod',
+				            boxMinWidth  : 50,
+				            boxMinHeight  : 100,
+				            fieldLabel: LN('sbi.alarms.alarmModality'),
+				            items: [
+				             		{boxLabel: LN('sbi.alarms.MAIL'),name: 'modality', inputValue: 1, checked: true},
+							        {boxLabel: LN('sbi.alarms.SMS'),name: 'modality', inputValue: 2}	
+				            ]
+				         },{
+				            xtype: 'checkboxgroup',
+				            itemId: 'options',
+				            columns: 2,
+				            boxMinWidth  : 200,
+				            boxMinHeight  : 100,
+				            hideLabel  : false,
+				            fieldLabel: LN('sbi.alarms.options'),
+				            items: [
+				                {boxLabel: LN('sbi.alarms.alarmSingleEvent'), name: 'singleEvent', checked:false},
+				                {boxLabel: LN('sbi.alarms.alarmAutoDisabled'), name: 'autoDisabled', checked:true}
+				            ]
+			             },{
+			                 fieldLabel:  LN('sbi.alarms.alarmMailUrl'),
+			                 width : 250,
+			                 name: 'url'
+			                // allowBlank: false,
+			                // validationEvent:true,
+	  		            	// maxLength:160,
+	  		            	// minLength:1
+			             },{
+			                 fieldLabel:  LN('sbi.alarms.alarmMailText'),
+			                 xtype: 'textarea',
+			                 width : 250,
+			                 height : 80,
+			                 name: 'text'
+			                // allowBlank: false,
+			                // validationEvent:true,
+	  		            	// maxLength:160,
+	  		            	// minLength:1
 		             }]
 		    	}
 		    });
@@ -390,6 +399,34 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	   	                  	}	
 	   	                  	
 	   	                  },
+	   	                  fillOptions : function(row, rec) {	 
+	   	                  	var singleEvent = rec.get('singleEvent');
+	   	                  	var autoDisabled = rec.get('autoDisabled');
+	   	                  	alert(singleEvent);
+	   	                  	alert(autoDisabled);
+	   	                  	Ext.getCmp("detail").items.each(function(item){	   	                   		  
+	   	                   		  if(item.getItemId() == 'options'){
+	   	                   		  	item.setValue({
+									    'singleEvent': singleEvent,
+									    'autoDisabled': autoDisabled
+									});
+	   	                   		  }
+	   	                   	});
+	   	                   	/*
+	   	                  	Ext.getCmp("detail").items[7].setValue({
+							    'singleEvent': singleEvent,
+							    'autoDisabled': autoDisabled
+							});*/
+	   	                  	
+	   	                  	var modality = rec.get('modality');
+	   	                  	alert(modality);
+	   	                  	if(modality =='SMS'){
+	   	                  		Ext.getCmp("modality").setValue([false, true]);
+	   	                  	}else{
+	   	                  		Ext.getCmp("modality").setValue([true, false]);
+	   	                  	}
+	   	                  		        
+	   	                  },
 	   	                 /* fillAttributes : function(row, rec) {	 
 	   	                    Ext.getCmp("attributes-form").store.removeAll();
 	   	                  	var tempArr = rec.data.userAttributes;
@@ -404,6 +441,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
    	                          rowselect: function(sm, row, rec) {   
    	                          	  Ext.getCmp('save-btn').enable();
    	                              Ext.getCmp("alarm-form").getForm().loadRecord(rec);  	
+   	                              this.fillOptions(row, rec);
    	                              	 
    	                	  		  //this.fillAttributes(row, rec);
    	                	  		  //this.fillContacts(row, rec);   	                                  	                              

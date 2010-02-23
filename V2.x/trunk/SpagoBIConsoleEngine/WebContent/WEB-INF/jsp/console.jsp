@@ -87,6 +87,8 @@ author: Antonella Giachino (antonella.giachino@eng.it)
     } else {
     	executionId = "null";
     }   
+    // gets analytical driver
+    Map analyticalDrivers  = consoleEngineInstance.getAnalyticalDrivers();
 %>
 
 
@@ -137,8 +139,20 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 	        Ext.ns("Sbi.user");
 	        Sbi.user.userId = "<%= profile.getUserId() %>";
 
+	       var executionContext = {};
+	       <% Iterator it = analyticalDrivers.keySet().iterator();
+			  while(it.hasNext()) {
+				String parameterName = (String)it.next();
+				String parameterValue = (String)analyticalDrivers.get(parameterName);
+		   %>
+		   executionContext ['<%=parameterName%>'] = <%=parameterValue%>;
+		   <%		
+			  }
+	       %>
+	       template.executionContext = executionContext;
+
 			Ext.onReady(function() { 
-				Ext.QuickTips.init();
+				Ext.QuickTips.init();				
 				var consolePanel = new Sbi.console.ConsolePanel(template);
 				var viewport = new Ext.Viewport(consolePanel);  
 			});

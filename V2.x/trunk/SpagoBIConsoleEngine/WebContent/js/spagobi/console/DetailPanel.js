@@ -48,7 +48,7 @@
 Ext.ns("Sbi.console");
 
 Sbi.console.DetailPanel = function(config) {
-	
+
 		var defaultSettings = {
 			layout: 'fit'
 			, bodyStyle: 'padding: 8px'
@@ -62,6 +62,7 @@ Sbi.console.DetailPanel = function(config) {
 		var c = Ext.apply(defaultSettings, config || {});		
 		
 		var pagesConfig = c.pages || [];
+		pagesConfig.executionContext = c.executionContext;
 		delete c.pages;
 		
 		Ext.apply(this, c);
@@ -98,6 +99,8 @@ Ext.extend(Sbi.console.DetailPanel, Ext.Panel, {
 		
 		var detailPage = null;		
 		for(var i = 0, l = pagesConfig.length; i < l; i++) {
+		  var conf = pagesConfig[i];
+		  conf.executionContext = pagesConfig.executionContext;
 			detailPage = new Sbi.console.DetailPage(pagesConfig[i]);
 			this.pages.push(detailPage);
 		}

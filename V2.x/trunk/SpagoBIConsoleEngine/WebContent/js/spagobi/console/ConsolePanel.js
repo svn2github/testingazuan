@@ -48,7 +48,7 @@
 Ext.ns("Sbi.console");
 
 Sbi.console.ConsolePanel = function(config) {
-	
+
 	var defaultSettings = {
 		title: LN('sbi.qbe.queryeditor.title'),
 		layout: 'border'
@@ -67,6 +67,7 @@ Sbi.console.ConsolePanel = function(config) {
 	delete c.summaryPanel;
 	
 	var detailPanelConfig = c.detailPanel || {};
+	detailPanelConfig.executionContext = c.executionContext; 
 	delete c.detailPanel;
 		
 	Ext.apply(this, c);

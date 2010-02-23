@@ -49,7 +49,6 @@
 Ext.ns("Sbi.console");
 
 Sbi.console.DetailPage = function(config) {
-	
 		var defaultSettings = {
 			title: 'DetailPage'
 			, layout: 'fit'
@@ -63,6 +62,7 @@ Sbi.console.DetailPage = function(config) {
 		var navigationBarConfig = c.navigationBar || {};
 		delete c.navigationBar;
 		var filterBarConfig = c.filterBar || {};
+		filterBarConfig.executionContext = c.executionContext; 
 		delete c.filterBar;
 		Ext.apply(this, c);
 		

@@ -174,7 +174,7 @@ Sbi.template = {
 		                   	, refreshTime: '30' // in secondi
 		            } 
 		
-	            , inlineActions: [
+	            , inlineActions: [/*
 	      		                {
 	      		                    name: 'start'
 	      		                    , hidden: false
@@ -187,7 +187,7 @@ Sbi.template = {
 	      		                            // parametri statici e dinamici definiti come in detailPanel.pages.navigationBar.documents
 	      		                        }
 	      		                    }
-	      		                }, {
+	      		                },*/ {
 	      		                    name: 'errors'
 	      		                    , hidden: false
 	      		                   
@@ -196,12 +196,18 @@ Sbi.template = {
 				                                        param1: 'param1Value'
 				                                       ,param2: 'paramValue2' 
                                     				   }
-	      		                     ,    dynamicParams: [{
-                                                        brandname: 'brandname'
-                                                      , scope: 'dataset'  // [environment|dataset] anche se dataset non ha senso in questo caso
+	      		                     ,   dynamicParams: [{
+                                                        brandnamexxx: 'Brand'  //dataindex: url new request
+                                                      , scope: 'dataset'    // [env|dataset] 
                                                       },{
-                                                        year: 'year'
+                                                        year: 'Year'
                                                       , scope: 'dataset'
+                                                      },{
+                                                        productsxxx: 'Product' //executionContext: url new request
+                                                      , scope: 'env'
+                                                      },{
+                                                        month: 'Month'
+                                                      , scope: 'env'
                                                       }]	      		                        
 	      		                    }
 	      		                }, {

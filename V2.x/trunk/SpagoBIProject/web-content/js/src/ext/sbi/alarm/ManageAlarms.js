@@ -311,8 +311,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		this.tresholdsCombo = new Ext.form.ComboBox(
 			{
 				 id: 'tresholds-combo',
-                 //fieldLabel:  LN('sbi.alarms.alarmKpiThreshold'),
-                 fieldLabel: 'Kpi Treshold',
+                 fieldLabel:  LN('sbi.alarms.alarmKpiThreshold'),                 
                  name: 'alarmKpiThreshold',
 	             store: this.thresholdsStore,
 	             forceReload:true,

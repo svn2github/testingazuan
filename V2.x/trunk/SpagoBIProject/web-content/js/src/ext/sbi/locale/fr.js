@@ -246,6 +246,8 @@ Sbi.locale.ln['sbi.alarms.result'] = 'Result';
 Sbi.locale.ln['sbi.alarms.validationError'] = 'Validation Error';
 Sbi.locale.ln['sbi.alarms.confirm'] = 'Confirm?';
 Sbi.locale.ln['sbi.alarms.confirmDelete'] = 'Do you really want to delete this alarm?';
+Sbi.locale.ln['sbi.alarms.alarmKpiThreshold'] = 'Seuil';
+Sbi.locale.ln['sbi.alarms.kpis'] = 'KPI';
 
 // Toolbar 
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Envoyer à';

@@ -44,6 +44,8 @@
   * - Andrea Gioia (andrea.gioia@eng.it)
   */
 
+Ext.chart.Chart.CHART_URL = '/SpagoBIConsoleEngine/swf/charts.swf';
+
 Ext.ns("Sbi.console");
 
 Sbi.console.ChartWidget = function(config) {

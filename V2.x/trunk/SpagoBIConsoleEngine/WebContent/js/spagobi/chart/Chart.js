@@ -69,63 +69,31 @@ Ext.extend(Sbi.chart.Chart, Ext.FlashComponent, {
     	   	
     	this.autoScroll = true;
     	
-    	// not used ...
     	this.flashVars = {
     		paramWidth: 100
     		, paramHeight: 100
-    		, minValue: 0
-    		, maxValue: 20
-    		, lowValue: 4
-    		, highValue: 10
+    		, minValue: -100
+    		, maxValue: 100
+    		, lowValue: -50
+    		, highValue: 50
     	};
-    	
-    	// ...so we pass them through url
-    	/*
-    	var s = '?';
-    	for(v in this.flashVars) {
-    		this.url += s + v + '=' + this.flashVars[v];
-    		s = '&';
-    	}
-    	*/
+
 	}
 
 	,  onRender : function(ct, position){
-		//Sbi.chart.Chart.superclass.onRender.call(this, ct, position);
-		Ext.FlashComponent.superclass.onRender.apply(this, arguments);
 		
-		//alert('Height: ' + ct.getHeight());
-		//alert('Width: ' + ct.getWidth());
-		//this.swfWidth = ct.getWidth();
-	    //this.swfHeight =  ct.getHeight();
 		this.flashVars.paramWidth = ct.getWidth();
 		this.flashVars.paramHeight = ct.getHeight();
+				
+		Sbi.chart.Chart.superclass.onRender.call(this, ct, position);
 		
-		var s = '?';
-    	for(v in this.flashVars) {
-    		this.url += s + v + '=' + this.flashVars[v];
-    		s = '&';
-    	}
-		
-        var params = Ext.apply({
-            allowScriptAccess: 'always',
-            bgcolor: this.backgroundColor,
-            wmode: this.wmode
-        }, this.flashParams), vars = Ext.apply({
-            allowedDomain: document.location.hostname,
-            elementID: this.getId(),
-            eventHandler: 'Ext.FlashEventProxy.onEvent'
-        }, this.flashVars);
-
-        new swfobject.embedSWF(this.url, this.id, this.swfWidth, this.swfHeight, this.flashVersion,
-            this.expressInstall ? Ext.FlashComponent.EXPRESS_INSTALL_URL : undefined, vars, params);
-
-        this.swf = Ext.getDom(this.id);
-        this.el = Ext.get(this.swf);
-        
-		
+        this.testFn.defer(1000, this);
 	}
+	
+	, testFn: function() {
+    	this.swf.setValue(35);
+    }
     
 });
 
-Sbi.chart.Chart.CHART_URL = '/SpagoBIConsoleEngine/swf/rotate.swf';
-//Sbi.chart.Chart.CHART_URL = 'http:/' + '/localhost:8080/SpagoBI/dashboards/rot.lzx.swf';
+Sbi.chart.Chart.CHART_URL = '/SpagoBIConsoleEngine/swf/rotation.swf';

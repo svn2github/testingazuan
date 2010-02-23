@@ -511,35 +511,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
    	      });
 
 	}
-	
-	/*, initContactsGridPanel : function() {
-        
-        this.contactsGridPanel = new Ext.grid.EditorGridPanel({
-            id: 'attributes-form',
-            store : this.kpiStore,
-            autoHeight : true,
-            columns : [ {          	
-                header : LN('sbi.roles.headerName'),
-                width : 75,
-                sortable : true,
-                dataIndex : 'name'
-            }, {           	
-                header : LN('sbi.users.headerValue'),
-                width : 75,
-                sortable : true,
-                dataIndex : 'value',
-                editor : new Ext.form.TextField({}) 
-            } ],
-            viewConfig : {
-                forceFit : true,
-                scrollOffset : 2
-            // the grid will never have scrollbars
-            },
-            singleSelect : true,
-            clicksToEdit : 2
-        });
 
-    }*/
     
     , initContactsGridPanel : function() {
        

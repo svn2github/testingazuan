@@ -212,14 +212,18 @@ Sbi.locale.ln['sbi.alarmcontact.error'] = 'Errore';
 Sbi.locale.ln['sbi.alarmcontact.result'] = 'Risultato';
 Sbi.locale.ln['sbi.alarmcontact.validationError'] = 'Errore di Validazione';
 
+Sbi.locale.ln['sbi.alarms.options'] = 'Opzioni';
 Sbi.locale.ln['sbi.alarms.alarmSingleEvent'] = 'Evento Singolo';
 Sbi.locale.ln['sbi.alarms.alarmAutoDisabled'] = 'Automatico';
 Sbi.locale.ln['sbi.alarms.alarmName'] = 'Nome';
 Sbi.locale.ln['sbi.alarms.alarmLabel'] = 'Label';
 Sbi.locale.ln['sbi.alarms.alarmDescr'] = 'Descrizione';
 Sbi.locale.ln['sbi.alarms.alarmModality'] = 'Modalità';
+Sbi.locale.ln['sbi.alarms.SMS'] = 'SMS';
+Sbi.locale.ln['sbi.alarms.MAIL'] = 'MAIL';
 Sbi.locale.ln['sbi.alarms.alarmMailUrl'] = 'Url';
 Sbi.locale.ln['sbi.alarms.alarmMailText'] = 'Testo della Mail';
+
 
 Sbi.locale.ln['sbi.alarms.manageAlarms'] = 'Gestisci Allarmi';
 Sbi.locale.ln['sbi.alarms.alarmsList'] = 'Lista Allarmi';

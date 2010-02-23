@@ -221,12 +221,15 @@ Sbi.locale.ln['sbi.alarmcontact.error'] = 'Error';
 Sbi.locale.ln['sbi.alarmcontact.result'] = 'Result';
 Sbi.locale.ln['sbi.alarmcontact.validationError'] = 'Validation Error';
 
+Sbi.locale.ln['sbi.alarms.options'] = 'Options';
 Sbi.locale.ln['sbi.alarms.alarmSingleEvent'] = 'Single Event';
 Sbi.locale.ln['sbi.alarms.alarmAutoDisabled'] = 'Automatic';
 Sbi.locale.ln['sbi.alarms.alarmName'] = 'Name';
 Sbi.locale.ln['sbi.alarms.alarmLabel'] = 'Label';
 Sbi.locale.ln['sbi.alarms.alarmDescr'] = 'Description';
 Sbi.locale.ln['sbi.alarms.alarmModality'] = 'Modality';
+Sbi.locale.ln['sbi.alarms.SMS'] = 'SMS';
+Sbi.locale.ln['sbi.alarms.MAIL'] = 'MAIL';
 Sbi.locale.ln['sbi.alarms.alarmMailUrl'] = 'Url';
 Sbi.locale.ln['sbi.alarms.alarmMailText'] = 'Mail Text';
 

@@ -221,6 +221,29 @@ Sbi.locale.ln['sbi.alarmcontact.error'] = 'Error';
 Sbi.locale.ln['sbi.alarmcontact.result'] = 'Result';
 Sbi.locale.ln['sbi.alarmcontact.validationError'] = 'Validation Error';
 
+Sbi.locale.ln['sbi.alarms.alarmSingleEvent'] = 'Single Event';
+Sbi.locale.ln['sbi.alarms.alarmAutoDisabled'] = 'Automatic';
+Sbi.locale.ln['sbi.alarms.alarmName'] = 'Name';
+Sbi.locale.ln['sbi.alarms.alarmLabel'] = 'Label';
+Sbi.locale.ln['sbi.alarms.alarmDescr'] = 'Description';
+Sbi.locale.ln['sbi.alarms.alarmModality'] = 'Modality';
+Sbi.locale.ln['sbi.alarms.alarmMailUrl'] = 'Url';
+Sbi.locale.ln['sbi.alarms.alarmMailText'] = 'Mail Text';
+
+Sbi.locale.ln['sbi.alarms.manageAlarms'] = 'Manage Alarms';
+Sbi.locale.ln['sbi.alarms.alarmsList'] = 'Alarms List';
+Sbi.locale.ln['sbi.alarms.details'] = 'Detail';
+Sbi.locale.ln['sbi.alarms.update'] = 'Save';
+Sbi.locale.ln['sbi.alarms.add'] = 'Add';
+Sbi.locale.ln['sbi.alarms.validString'] = 'Alfanumeric String required (\x2F - included)';
+Sbi.locale.ln['sbi.alarms.validEmailString'] = 'Email Required';
+Sbi.locale.ln['sbi.alarms.validMobileString'] = 'Only numbers allowed';
+Sbi.locale.ln['sbi.alarms.error'] = 'Error';
+Sbi.locale.ln['sbi.alarms.result'] = 'Result';
+Sbi.locale.ln['sbi.alarms.validationError'] = 'Validation Error';
+Sbi.locale.ln['sbi.alarms.confirm'] = 'Confirm?';
+Sbi.locale.ln['sbi.alarms.confirmDelete'] = 'Do you really want to delete this alarm?';
+
 // Toolbar 
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Send to';
 // Save into personal folder

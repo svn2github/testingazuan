@@ -212,6 +212,29 @@ Sbi.locale.ln['sbi.alarmcontact.error'] = 'Errore';
 Sbi.locale.ln['sbi.alarmcontact.result'] = 'Risultato';
 Sbi.locale.ln['sbi.alarmcontact.validationError'] = 'Errore di Validazione';
 
+Sbi.locale.ln['sbi.alarms.alarmSingleEvent'] = 'Evento Singolo';
+Sbi.locale.ln['sbi.alarms.alarmAutoDisabled'] = 'Automatico';
+Sbi.locale.ln['sbi.alarms.alarmName'] = 'Nome';
+Sbi.locale.ln['sbi.alarms.alarmLabel'] = 'Label';
+Sbi.locale.ln['sbi.alarms.alarmDescr'] = 'Descrizione';
+Sbi.locale.ln['sbi.alarms.alarmModality'] = 'Modalità';
+Sbi.locale.ln['sbi.alarms.alarmMailUrl'] = 'Url';
+Sbi.locale.ln['sbi.alarms.alarmMailText'] = 'Testo della Mail';
+
+Sbi.locale.ln['sbi.alarms.manageAlarms'] = 'Gestisci Allarmi';
+Sbi.locale.ln['sbi.alarms.alarmsList'] = 'Lista Allarmi';
+Sbi.locale.ln['sbi.alarms.details'] = 'Dettaglio';
+Sbi.locale.ln['sbi.alarms.update'] = 'Salva';
+Sbi.locale.ln['sbi.alarms.add'] = 'Aggiungi';
+Sbi.locale.ln['sbi.alarms.validString'] = 'Richiesta stringa alfanumerica (\x2F - incluso)';
+Sbi.locale.ln['sbi.alarms.validEmailString'] = 'Richiesta email';
+Sbi.locale.ln['sbi.alarms.validMobileString'] = 'Richiesta stringa di sole cifre';
+Sbi.locale.ln['sbi.alarms.error'] = 'Errore';
+Sbi.locale.ln['sbi.alarms.result'] = 'Risultato';
+Sbi.locale.ln['sbi.alarms.validationError'] = 'Errore di Validazione';
+Sbi.locale.ln['sbi.alarms.confirm'] = 'Confermi?';
+Sbi.locale.ln['sbi.alarms.confirmDelete'] = 'Confermi eliminazione allarme?';
+
 // Toolbar
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Invia a';
 //Save into personal folder

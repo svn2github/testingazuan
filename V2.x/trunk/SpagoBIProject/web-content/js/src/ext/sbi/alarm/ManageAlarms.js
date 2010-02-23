@@ -304,8 +304,8 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
         });
        
         this.colModel = new Ext.grid.ColumnModel([
-         {header: LN('sbi.alarms.Label'), width: 150, sortable: true, dataIndex: 'label'},
-         {header: LN('sbi.alarms.Name'), width: 150, sortable: true, dataIndex: 'name'},
+         {header: LN('sbi.alarms.alarmLabel'), width: 150, sortable: true, dataIndex: 'label'},
+         {header: LN('sbi.alarms.alarmName'), width: 150, sortable: true, dataIndex: 'name'},
          this.deleteColumn
         ]);
      	   
@@ -466,10 +466,10 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		
         this.cmContacts = new Ext.grid.ColumnModel([
 	         //{id:'id',header: "id", dataIndex: 'id'},
-	         {header: LN('sbi.contacts.headerFullName'), width: 45, sortable: true, dataIndex: 'name'},
-	         {header: LN('sbi.contacts.headerResource'), width: 65, sortable: true, dataIndex: 'resources'},
-	         {header: LN('sbi.contacts.headerEmail'), width: 45, sortable: true, dataIndex: 'email'},
-	         {header: LN('sbi.contacts.headerMobile'), width: 45, sortable: true, dataIndex: 'mobile'},
+	         {header: LN('sbi.alarmcontact.name'), width: 45, sortable: true, dataIndex: 'name'},
+	         {header: LN('sbi.alarmcontact.resources'), width: 65, sortable: true, dataIndex: 'resources'},
+	         {header: LN('sbi.alarmcontact.email'), width: 45, sortable: true, dataIndex: 'email'},
+	         {header: LN('sbi.alarmcontact.mobile'), width: 45, sortable: true, dataIndex: 'mobile'},
 	         this.smContacts 
 	    ]);
 
@@ -577,7 +577,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
       			var content = Ext.util.JSON.decode( response.responseText );
       			if(content.responseText !== 'Operation succeded') {
                     Ext.MessageBox.show({
-                        title: LN('sbi.roles.error'),
+                        title: LN('sbi.alarms.error'),
                         msg: content,
                         width: 150,
                         buttons: Ext.MessageBox.OK
@@ -631,14 +631,14 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 			}
 
                Ext.MessageBox.show({
-                   title: LN('sbi.attributes.validationError'),
+                   title: LN('sbi.alarms.validationError'),
                    msg: errMessage,
                    width: 400,
                    buttons: Ext.MessageBox.OK
               });
      		}else{
                Ext.MessageBox.show({
-                   title:LN('sbi.roles.error'),
+                   title:LN('sbi.alarms.error'),
                    msg: 'Error in Saving User',
                    width: 150,
                    buttons: Ext.MessageBox.OK

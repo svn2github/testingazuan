@@ -69,7 +69,7 @@ Sbi.console.FilteringToolbar = function(config) {
 	});
 	*/
 	
-	c = Ext.apply(c, {});
+	//c = Ext.apply(c, {});
 	
 	// constructor
 	Sbi.console.FilteringToolbar.superclass.constructor.call(this, c);
@@ -93,11 +93,13 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	}
 	//adds action buttons
 	, addActionButtons: function(){
-  	   var b;
-  		
+  	    var b;
+  		  var conf = {}; 
+        conf.executionContext = this.filterBar.executionContext;     
     		this.addFill();
     		for(var i=0; i < this.filterBar.actions.length; i++){
-  			   b = new Sbi.console.ActionButton(this.filterBar.actions[i]);
+    		   conf.actionConf = this.filterBar.actions[i];
+  			   b = new Sbi.console.ActionButton(conf);
       		 this.addButton(b);	
       	}	
   }

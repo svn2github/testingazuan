@@ -59,7 +59,9 @@ Sbi.console.NavigationToolbar = function(config) {
 		
 		var c = Ext.apply(defaultSettings, config || {});
 		var documentsConfig = c.documents || [];
+		documentsConfig.executionContext = c.executionContext;
 		delete c.documents;
+		delete c.executionContext;
 		
 		Ext.apply(this, c);
 				
@@ -94,6 +96,7 @@ Ext.extend(Sbi.console.NavigationToolbar, Ext.Toolbar, {
 				text: d.text
 				, tooltip: d.tooltip
 				, documentConf: d 
+				, executionContext: documentsConfig.executionContext
 				, handler: this.execCrossNavigation
 				, scope: this
 			});
@@ -123,16 +126,41 @@ Ext.extend(Sbi.console.NavigationToolbar, Ext.Toolbar, {
 			, windowName: this.name										
 		};
 			
+		var separator = '';
+		//adds static parameters
 		if(b.documentConf.staticParams) {
-			msg.parameters = '';
-			var separator = '';
+			msg.parameters = '';		
 			for(p in b.documentConf.staticParams) {
 				msg.parameters += separator + p + '=' + b.documentConf.staticParams[p];
 				separator = '&';
 			}
 			//alert("msg.parameters: " + msg.parameters.toSource());
 		}
-			
+		
+    //adds dynamic parameters (environment type) 
+		if(b.documentConf.dynamicParams) {
+		    var msgErr = ""; 
+		    for (var i=0, l=b.documentConf.dynamicParams.length; i < l; i++){     
+  		    var tmp = b.documentConf.dynamicParams[i];
+          for(p in tmp) {
+     	 	    if (p != 'scope'){
+       	 		   var param = {};   
+               if (tmp['scope'] === 'env'){ 
+                    if (b.executionContext[p] === undefined) {              	 	 	      
+        	 	 	        msgErr += 'Parameter "' + p + '" undefined into request. <p>';
+                    } else {          	 	 		           	 	 		  
+          	 	 		    msg.parameters += separator + tmp[p] + '=' + b.executionContext[p];
+  				            separator = '&';
+                    } 	 		 
+                }          	 	 		   
+    	      }
+    	   }
+  	    if  (msgErr != ""){
+      		Sbi.exception.ExceptionHandler.showErrorMessage(msgErr, 'Service Error');
+        }	
+    	}
+		}
+	//	alert("msg.parameters: " + msg.parameters.toSource());
 		sendMessage(msg, 'crossnavigation');
 	}
     

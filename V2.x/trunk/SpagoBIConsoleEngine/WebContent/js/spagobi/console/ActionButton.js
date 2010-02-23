@@ -47,11 +47,11 @@
 Ext.ns("Sbi.console");
 
 Sbi.console.ActionButton = function(config) {
-	 	
+
 		var defaultSettings = {
-			iconCls: config.name
-			,tooltip: config.name 
-			,hidden: config.hidden
+			iconCls: config.actionConf.name
+			,tooltip: config.actionConf.name 
+			,hidden: config.actionConf.hidden
 			,scope:this
 		};
 		
@@ -61,7 +61,8 @@ Sbi.console.ActionButton = function(config) {
 	
 		var c = Ext.apply(defaultSettings, config || {});
 		//test
-    //c.xconfig = c.config;
+//    c.xconfig = c.config;
+
 		Ext.apply(this, c);
 
 		//Services definition
@@ -97,9 +98,6 @@ Sbi.console.ActionButton = function(config) {
 		
 		//this.addEvents('customEvents');
 		
-
-	//	this.initButton(c || {});
-		
       c = Ext.apply(c, this);
 
 		// constructor
@@ -117,15 +115,37 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     // public methods
     , execAction: function(){
         var inlineParams = {}; 
+        var dynParams =[];       
         
-       //adds static and dynamic parameter (only static at the moment)
-        if(this.config.staticParams) {        
-    		  inlineParams = this.config.staticParams;  
-  		}
-  		
+  		//adds dynamic parameters (from dataset or request)
+        if(this.actionConf.config.dynamicParams) {    
+           var msgErr = ""; 
+      		 for (var i=0, l= this.actionConf.config.dynamicParams.length; i < l; i++){      		     
+      		     var tmp = this.actionConf.config.dynamicParams[i];
+        	 	 	 for(p in tmp) {
+          	 	 	   if (p != 'scope'){
+          	 	 		   var param = {};   
+                     if (tmp['scope'] === 'env'){ 
+                          if (this.executionContext[p] === undefined) {              	 	 	      
+              	 	 	        msgErr += 'Parameter "' + p + '" undefined into request. <p>';
+                          } else {          	 	 		           	 	 		  
+                	 	 		    param [tmp[p]] = this.executionContext[p];
+                	 	 		    dynParams.push(param);
+                          } 	 		 
+                      }          	 	 		   
+          		     }
+        			   }          			   
+              } 	
+              if  (msgErr != ""){
+        			     Sbi.exception.ExceptionHandler.showErrorMessage(msgErr, 'Service Error');
+              }		  
+    		}
+
         Ext.Ajax.request({
-  			        url: this.services[this.name],  			       
-  			        params: {'message': this.name, 'userId': Sbi.user.userId, 'parameters': Ext.util.JSON.encode(inlineParams) } ,  			       
+  			        url: this.services[this.actionConf.name],  			       
+  			       //params: {'message': this.name, 'userId': Sbi.user.userId, 'parameters': Ext.util.JSON.encode(inlineParams) } ,  			       
+  			        params: {'message': this.actionConf.name, 'userId': Sbi.user.userId, 
+      					 'statParams': Ext.util.JSON.encode( this.actionConf.config.staticParams), 'dynParams': Ext.util.JSON.encode(dynParams)} ,			    
   			        callback : function(options , success, response) {
   			  	  		if (success) {
   				      		if(response !== undefined && response.responseText !== undefined) {

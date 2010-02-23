@@ -442,11 +442,18 @@ public class KpiInstanceDAOImpl extends AbstractHibernateDAO implements IKpiInst
 					String modelName = kpiModelInst.getName();
 					kpiAlarm.setKpiModelName(modelName);
 					SbiKpiInstance kpiInst = kpiModelInst.getSbiKpiInstance();
-					Integer kpiInstId = kpiInst.getIdKpiInstance();
-					kpiAlarm.setKpiInstanceId(kpiInstId);
-					String kpiName = kpiInst.getSbiKpi().getName();
-					kpiAlarm.setKpiName(kpiName);
-					
+					if(kpiInst != null){
+						Integer kpiInstId = kpiInst.getIdKpiInstance();
+						kpiAlarm.setKpiInstanceId(kpiInstId);
+						if(kpiInst.getSbiKpi() != null){
+							String kpiName = kpiInst.getSbiKpi().getName();
+							kpiAlarm.setKpiName(kpiName);
+						}else{
+							return null;
+						}
+					}else{
+						return null;
+					}
 					kpiAlarmInst.add(kpiAlarm);
 				}
 			}			

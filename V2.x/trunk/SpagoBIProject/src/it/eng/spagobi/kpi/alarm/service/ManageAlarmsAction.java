@@ -209,19 +209,21 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(TRESHOLDS_LIST)) {
 			Integer id =  getAttributeAsInteger(ID);
 			try {
-				IThresholdValueDAO tresholdDao = DAOFactory.getThresholdValueDAO();
-				List<ThresholdValue> tresholds = tresholdDao.loadThresholdValuesByThresholdId(id);
-				logger.debug("Threshold values loaded");
-				JSONArray trshJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(tresholds,locale);
-				JSONObject trashResponseJSON = createJSONResponseAlarms(trshJSON);
-
-				writeBackToClient(new JSONSuccess(trashResponseJSON));
-				//getResponseContainer().setAttribute(TRESHOLD_LIST, tresholds);
+				if(id != null){
+					IThresholdValueDAO tresholdDao = DAOFactory.getThresholdValueDAO();
+					List<ThresholdValue> tresholds = tresholdDao.loadThresholdValuesByThresholdId(id);
+					logger.debug("Threshold values loaded");
+					JSONArray trshJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(tresholds,locale);
+					JSONObject trashResponseJSON = createJSONResponseAlarms(trshJSON);
+	
+					writeBackToClient(new JSONSuccess(trashResponseJSON));
+					//getResponseContainer().setAttribute(TRESHOLD_LIST, tresholds);
+				}
 
 			} catch (Throwable e) {
-				logger.error("Exception occurred while retrieving user to delete", e);
+				logger.error("Exception occurred while retrieving tresholds", e);
 				throw new SpagoBIServiceException(SERVICE_NAME,
-						"Exception occurred while retrieving user to delete",e);
+						"Exception occurred while retrieving tresholds",e);
 			}
 		}else if(serviceType == null){
 			try {

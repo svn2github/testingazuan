@@ -253,7 +253,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		    });
 		    
 		    
-	this.kpiCheckColumn = new Ext.grid.CheckboxSelectionModel( {header: ' ',singleSelect: true, scope:this, dataIndex: 'id'} );
+      	 this.kpiCheckColumn = new Ext.grid.CheckboxSelectionModel( {header: ' ',singleSelect: true, scope:this, dataIndex: 'id'} );
 		 this.kpiCheckColumn.on('rowselect', this.onKpiSelect, this);
 		 this.kpiCheckColumn.on('rowdeselect', this.onKpiDeselect, this);
 	     this.kpiCm = new Ext.grid.ColumnModel({
@@ -378,6 +378,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	}
     
 	,onKpiSelect: function(){
+		alert("onKpiSelect");
 		//loads tresholds
 		var sm = this.kpiGrid.getSelectionModel();
 		var row = sm.getSelected();
@@ -541,7 +542,8 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	   	                   	});	      
 	   	                  },
 
-	   	                  fillKpis : function(row, rec) {	   	                    
+	   	                  fillKpis : function(row, rec) {	
+	   	                	  alert("fillkpis");
 		   	         		Ext.getCmp("kpi-grid").store.removeAll();
 		   	         		var tempAttrArr = config.kpisEmptyList;
 		   	         		var length = tempAttrArr.length;
@@ -550,10 +552,11 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		   	         			Ext.getCmp("kpi-grid").store.add(tempRecord);
 							    Ext.getCmp("kpi-grid").store.commitChanges();
 							    Ext.getCmp("kpi-grid").selModel.unlock();
-							    Ext.getCmp("kpi-grid").getView().refresh();
+							    //Ext.getCmp("kpi-grid").getView().refresh();
 		   	         			if(tempAttrArr[i].id === rec.data.kpi){
 		   	         				var checkedArr = [];
 		   	         				checkedArr.push(tempRecord);		   	         				
+		   	         				Ext.getCmp("kpi-grid").getSelectionModel().selectRecords(checkedArr, false);
 		   	         				
 		   	         				//selects threshold	
 		   	         				alert("checked"+rec.data.threshold);
@@ -798,6 +801,8 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
         	var tempRecord = new Ext.data.Record({"kpiName":tempAttrArr[i].kpiName, "kpiModel":tempAttrArr[i].kpiModel,"id":tempAttrArr[i].id });
     		Ext.getCmp("kpi-grid").store.add(tempRecord);	
         }		
+        Ext.getCmp("kpi-grid").store.commitChanges();
+        
         
         Ext.getCmp("contacts-form").store.removeAll();
         var tempContactsArr = this.contactsEmptyStore;

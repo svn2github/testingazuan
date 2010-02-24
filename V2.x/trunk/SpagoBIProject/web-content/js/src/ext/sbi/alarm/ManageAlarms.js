@@ -378,7 +378,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	}
     
 	,onKpiSelect: function(){
-		alert("onKpiSelect");
+		//alert("onKpiSelect");
 		//loads tresholds
 		var sm = this.kpiGrid.getSelectionModel();
 		var row = sm.getSelected();
@@ -543,7 +543,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	   	                  },
 
 	   	                  fillKpis : function(row, rec) {	
-	   	                	  alert("fillkpis");
+	   	                	  //alert("fillkpis");
 		   	         		Ext.getCmp("kpi-grid").store.removeAll();
 		   	         		var tempAttrArr = config.kpisEmptyList;
 		   	         		var length = tempAttrArr.length;
@@ -552,19 +552,16 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		   	         			Ext.getCmp("kpi-grid").store.add(tempRecord);
 							    Ext.getCmp("kpi-grid").store.commitChanges();
 							    Ext.getCmp("kpi-grid").selModel.unlock();
-							    //Ext.getCmp("kpi-grid").getView().refresh();
+
 		   	         			if(tempAttrArr[i].id === rec.data.kpi){
 		   	         				var checkedArr = [];
 		   	         				checkedArr.push(tempRecord);		   	         				
-		   	         				Ext.getCmp("kpi-grid").getSelectionModel().selectRecords(checkedArr, false);
-		   	         				
-		   	         				//selects threshold	
-		   	         				alert("checked"+rec.data.threshold);
+		   	         				Ext.getCmp("kpi-grid").getSelectionModel().selectRecords(checkedArr, false);		   	         				
+		   	         				//selects threshold
 		   	         				Ext.getCmp("tresholds-combo").focus();
 		   	         				//Ext.getCmp("tresholds-combo").value = rec.data.threshold;
-		   	         				//Ext.getCmp("tresholds-combo").setValue(rec.data.threshold);
-		   	         				
-		   	         				Ext.getCmp("tresholds-combo").selectByValue(rec.data.threshold, true);
+		   	         				Ext.getCmp("tresholds-combo").setValue(rec.data.threshold);		   	         				
+		   	         				//Ext.getCmp("tresholds-combo").selectByValue(rec.data.threshold, true);
 		   	         			}
 		   	         		}
 	   	                  		

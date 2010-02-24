@@ -78,6 +78,7 @@ public abstract class AbstractDataSet implements IDataSet {
 		setPivotRowName(dataSetConfig.getPivotRowName());
 		setPivotColumnValue(dataSetConfig.getPivotColumnValue());
 		setNumRows(dataSetConfig.isNumRows());
+		setDsMetadata(dataSetConfig.getDsMetadata());
 		
 		if(this.getPivotColumnName() != null 
 				&& this.getPivotColumnValue() != null

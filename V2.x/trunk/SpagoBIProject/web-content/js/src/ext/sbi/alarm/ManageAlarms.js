@@ -682,7 +682,6 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
        params.kpi = kpiSelected.get("id");
        
        //threshold       
-       alert(Ext.getCmp("tresholds-combo").value);
       params.threshold = Ext.getCmp("tresholds-combo").value;
       
       Ext.Ajax.request({

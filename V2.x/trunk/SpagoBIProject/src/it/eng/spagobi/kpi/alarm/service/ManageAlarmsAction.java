@@ -75,7 +75,7 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 	public static final String AUTO_DISABLED = "autoDisabled";
 	public static final String TEXT = "text";
 	public static final String URL = "url";
-	public static final String CONTACTS = "alarmContacts";
+	public static final String CONTACTS = "contacts";
 	public static final String DOMAIN_CD = "ALARM_MODALITY";
 	public static final String KPI = "kpi";
 	public static final String THRESHOLD = "threshold";

@@ -231,7 +231,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 				             		{boxLabel: LN('sbi.alarms.MAIL'),id:'mail',name: 'modality', inputValue: 1, checked: true},
 							        {boxLabel: LN('sbi.alarms.SMS'),id:'sms',name: 'modality', inputValue: 2}	
 				            ]
-				         },{
+				         },new Ext.form.CheckboxGroup({
 				            xtype: 'checkboxgroup',
 				            itemId: 'options',
 				            columns: 2,
@@ -243,7 +243,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 				                {boxLabel: LN('sbi.alarms.alarmSingleEvent'), name: 'singleEvent', checked:false},
 				                {boxLabel: LN('sbi.alarms.alarmAutoDisabled'), name: 'autoDisabled', checked:false}
 				            ]
-			             },{
+			             }),{
 			                 fieldLabel:  LN('sbi.alarms.alarmMailUrl'),
 			                 width : 250,
 			                 name: 'url'
@@ -392,7 +392,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		//loads tresholds
 		var sm = this.kpiGrid.getSelectionModel();
 		var row = sm.getSelected();
-		//alert(row.data.id);
+	
 		this.kpiInstId = row.data.id;
 		Ext.Ajax.request({
 	          url: this.services['loadTresholdsService'],
@@ -467,6 +467,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
            , autoScroll : true
            , width: 450
            , height: 450
+           , deferredRender: false
            , itemId: 'tabs'
            , tbar: this.tbSave 
 		   , items: [ this.detailTab
@@ -554,8 +555,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 
 	   	                  fillKpis : function(row, rec) {	 
 	   	                    Ext.getCmp("kpi-grid").store.removeAll();
-	   	                    alert(row);
-	   	                    alert(rec.data);
+	   	                    
 /*	   	                  	var tempArr = rec.data.kpis;
 	   	                  	var length = rec.data.kpis.length;
 	   	                  	for(var i=0;i<length;i++){

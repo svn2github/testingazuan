@@ -185,23 +185,25 @@ Sbi.template = {
 		                   	, refreshTime: '30' // in secondi
 		            } 
 		
-	            , inlineActions: [/*
+	            , inlineActions: [
 	      		                {
 	      		                    name: 'start'
 	      		                    , hidden: false
+	      		                    , tooltip: 'Start the process'
 	      		                    , config: {}
 	      		                }, {
 	      		                    name: 'stop'
 	      		                    , hidden: false
+	      		                    , tooltip: 'Stop the process'
 	      		                    , config: {
 	      		                        params: {
 	      		                            // parametri statici e dinamici definiti come in detailPanel.pages.navigationBar.documents
 	      		                        }
 	      		                    }
-	      		                },*/ {
+	      		                }, {
 	      		                    name: 'errors'
 	      		                    , hidden: false
-	      		                   
+	      		                    , tooltip: 'View Error messages'
 	      		                    , config: {
 	      		                         staticParams: {
 				                                        param1: 'param1Value'
@@ -222,34 +224,77 @@ Sbi.template = {
                                                       }]	      		                        
 	      		                    }
 	      		                }, {
+	      		                    name: 'errors_inactive'
+	      		                    , hidden: false
+	      		                    , tooltip: 'Enable Errors'
+	      		                    , config: {}
+	      		                }, {
 	      		                    name: 'warnings'
 	      		                    , hidden: false
+	      		                    , tooltip: 'View allarms'
+	      		                    , config: {}
+	      		                }, {
+	      		                    name: 'warnings_inactive'
+	      		                    , hidden: false
+	      		                    , tooltip: 'Enable allarms'
 	      		                    , config: {}
 	      		                }, {
 	      		                    name: 'informationlog'
 	      		                    , hidden: false
+	      		                    , tooltip: 'Download log files'
 	      		                    , config: {}
 	      		                }, { // 0..n volte
 	      		                    name: 'crossnav'
 	      		                    , hidden: false
+	      		                    , tooltip: 'Cross on XXX document'
 	      		                    , config: {
-	      		                        target: 'self' // self | new
-	      		                       //,document: // definito come in detailPanel.pages.navigationBar.documents
+	      		                        target: 'new' // self | new
+	      		                       , document: 
+                            				{
+                            					label: 'testReportParams'
+                            				, staticParams: {P5: 'paramValue'} 
+                                    , dynamicParams: [{
+                                                        brandname: 'P1'  //dataindex: url new request
+                                                      , scope: 'dataset'    // [env|dataset] 
+                                                      },{
+                                                        year: 'P2'
+                                                      , scope: 'dataset'
+                                                      },{
+                                                        products: 'P3' //executionContext: url new request
+                                                      , scope: 'env'
+                                                      },{
+                                                        month: 'P4'
+                                                      , scope: 'env'
+                                                     }]	 
+                            				}
 	      		                    }
 	      		                }, { // 0..n volte
 	      		                    name: 'crossnav'
 	      		                    , hidden: false
+	      		                    , tooltip: 'Cross on YYY document (popup)'
 	      		                    , config: {
-	      		                        target: 'new' // self | new
+	      		                        target: 'self' // self | new
 	      		                       //,document: // definito come in detailPanel.pages.navigationBar.documents
 	      		                    }
 	      		                },{
 	      		                    name: 'monitor'
 	      		                    , hidden: false
+	      		                    , tooltip: 'Active monitoring'
 	      		                    , config: {}
-	      		                }, {
+	      		                },{
+	      		                    name: 'monitor_inactive'
+	      		                    , hidden: false
+	      		                    , tooltip: 'Disable monitoring'
+	      		                    , config: {}
+	      		                },{
 	      		                    name: 'views'
 	      		                    , hidden: false
+	      		                    , tooltip: 'View taken'
+	      		                    , config: {}
+	      		                },{
+	      		                    name: 'views_inactive'
+	      		                    , hidden: false
+	      		                    , tooltip: 'View taken'
 	      		                    , config: {}
 	      		                }
 	      		            ]    

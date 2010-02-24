@@ -144,7 +144,7 @@ Ext.extend(Sbi.console.NavigationToolbar, Ext.Toolbar, {
   		    var tmp = b.documentConf.dynamicParams[i];
           for(p in tmp) {
      	 	    if (p != 'scope'){
-       	 		   var param = {};   
+       	 		 //  var param = {};   
                if (tmp['scope'] === 'env'){ 
                     if (b.executionContext[p] === undefined) {              	 	 	      
         	 	 	        msgErr += 'Parameter "' + p + '" undefined into request. <p>';

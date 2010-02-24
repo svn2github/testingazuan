@@ -18,7 +18,14 @@ public interface IKpiInstanceDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public KpiInstance loadKpiInstanceById(Integer id) throws EMFUserError ;
-	
+	/**
+	 * Returns the SbiKpiInstance of the referred id
+	 * 
+	 * @param id of the KpiInstance
+	 * @return KpiInstance of the referred id
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public SbiKpiInstance loadSbiKpiInstanceById(Integer id) throws EMFUserError ;	
 	/**
 	 * Returns the KpiInstance with id 'id' that was valid in date d 
 	 * 

@@ -479,6 +479,37 @@ public class KpiInstanceDAOImpl extends AbstractHibernateDAO implements IKpiInst
 		return kpiAlarmInst;
 	}
 	
-	
+	public SbiKpiInstance loadSbiKpiInstanceById(Integer id) throws EMFUserError {
+		logger.debug("IN");
+		SbiKpiInstance toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiKpiInstance hibSbiKpiInstance = (SbiKpiInstance) aSession.load(
+					SbiKpiInstance.class, id);
+			toReturn = hibSbiKpiInstance;
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the Model Instance with id "
+					+ ((id == null) ? "" : id.toString()), he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10110);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
 	
 }

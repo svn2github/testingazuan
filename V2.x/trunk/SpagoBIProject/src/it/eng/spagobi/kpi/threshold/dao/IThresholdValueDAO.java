@@ -12,6 +12,8 @@ public interface IThresholdValueDAO {
 	List loadThresholdValueList(Integer thresholdId,String fieldOrder, String typeOrder) throws EMFUserError;
 
 	ThresholdValue loadThresholdValueById(Integer id) throws EMFUserError;
+	
+	SbiThresholdValue loadSbiThresholdValueById(Integer id) throws EMFUserError;
 
 	void modifyThresholdValue(ThresholdValue threshold) throws EMFUserError;
 

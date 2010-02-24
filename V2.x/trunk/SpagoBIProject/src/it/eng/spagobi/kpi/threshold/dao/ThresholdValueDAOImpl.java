@@ -261,7 +261,38 @@ IThresholdValueDAO {
 		}
 		return toReturn;
 	}
+	public SbiThresholdValue loadSbiThresholdValueById(Integer id)
+	throws EMFUserError {
+		logger.debug("IN");
+		SbiThresholdValue toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiThresholdValue hibThresholdValue = (SbiThresholdValue) aSession
+			.load(SbiThresholdValue.class, id);
+			toReturn = hibThresholdValue;
 
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error("Error while loading the ThresholdValue with id "
+					+ ((id == null) ? "" : id.toString()), he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10101);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		return toReturn;
+	}
 	public void modifyThresholdValue(ThresholdValue thresholdValue)
 	throws EMFUserError {
 		logger.debug("IN");

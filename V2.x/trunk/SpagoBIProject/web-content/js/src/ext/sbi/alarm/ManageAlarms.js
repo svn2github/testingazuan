@@ -111,7 +111,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	
 	, alarmsEmptyStore: null
 	, kpisEmptyStore: null
-	, documentsEmptyStore: null
+	, contactsEmptyStore: null
 
 	, initStores: function (config) {
 	
@@ -159,6 +159,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	    
 	    this.kpisEmptyStore = config.kpisEmptyList;
 	    this.tresholdsEmptyStore = config.tresholdsList;
+	    this.contactsEmptyStore = config.contactsEmpyList;
 
 	    /*
 	    this.alarmsEmptyStore = config.alarmsEmptyList;
@@ -411,7 +412,6 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	          }
 	          ,scope: this
 	    });
-
 	}
 	
 	,onKpiDeselect: function(){
@@ -527,7 +527,6 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 							    }
 
 	   	                  	}	
-	   	                  	alert(Ext.getCmp("contacts-form").store.toSource());
 	   	                  	
 	   	                  },
 	   	                  fillOptions : function(row, rec) {	 
@@ -638,36 +637,40 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	       							   ,'url': values['url'],'label': values['label'],'modality':mod,'autoDisabled':autoDis,'singleEvent':singleEv});	          
 	   }
       
-       /*
-      var rolesSelected = Ext.getCmp("contacts-form").selModel.getSelections();
-      var lengthR = rolesSelected.length;
-         var roles =new Array();
-         for(var i=0;i<lengthR;i++){
-          	var role ={'name':rolesSelected[i].get("name"),'id':rolesSelected[i].get("id"),'description':rolesSelected[i].get("description"),'checked':true};
-			roles.push(role);
-        }
-      params.userRoles =  Ext.util.JSON.encode(roles);
+      
+      var contactsSelected = Ext.getCmp("contacts-form").selModel.getSelections();
+      var lengthR = contactsSelected.length;
+      var contacts =new Array();
+      for(var i=0;i<lengthR;i++){
+        var contact ={'name':contactsSelected[i].get("name"),'id':contactsSelected[i].get("id"),'mobile':contactsSelected[i].get("mobile"),'resources':contactsSelected[i].get("resources")
+        			 ,'email':contactsSelected[i].get("email"),'checked':true};
+		contacts.push(contact);
+      }
+      params.contacts =  Ext.util.JSON.encode(contacts);
 
-      var userRoles =new Array();
+      var alarmContacts = new Array();
       var tempArr = Ext.getCmp("contacts-form").store;
       var length = Ext.getCmp("contacts-form").store.data.length;
 
       for(var i=0;i<length;i++){
         var selected = false;
         for(var j=0;j<lengthR;j++){
-        	if(rolesSelected[j].get("id")===tempArr.getAt(i).get("id")){
+        	if(contactsSelected[j].get("id")===tempArr.getAt(i).get("id")){
         		selected = true;
-        		var role ={'name':tempArr.getAt(i).get("name"),'id':tempArr.getAt(i).get("id"),'description':tempArr.getAt(i).get("description"),'checked':true};
-				userRoles.push(role);
+        		var contact ={'name':tempArr.getAt(i).get("name"),'id':tempArr.getAt(i).get("id"),'mobile':tempArr.getAt(i).get("mobile"),'resources':tempArr.getAt(i).get("resources")
+        						,'email':tempArr.getAt(i).get("email"),'checked':true};
+				alarmContacts.push(contact);
         		break;
         	}
         }
         if(!selected){
-        	var role ={'name':tempArr.getAt(i).get("name"),'id':tempArr.getAt(i).get("id"),'description':tempArr.getAt(i).get("description"),'checked':false};
-			userRoles.push(role);
-		 }
+        	var contact ={'name':tempArr.getAt(i).get("name"),'id':tempArr.getAt(i).get("id"),'mobile':tempArr.getAt(i).get("mobile"),'resources':tempArr.getAt(i).get("resources")
+        						,'email':tempArr.getAt(i).get("email"),'checked':false};
+			alarmContacts.push(contact);
+		}
        }	
    
+    /*
       var modifAttributes = this.kpiStore.getModifiedRecords();
        var lengthA = modifAttributes.length;
        var attrs =new Array();
@@ -722,13 +725,10 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 					   	        	record = tempRecord;
 								}			   
 					   	    }	
-					   	    //record.set('userAttributes', userAttributes);
-					   	   // record.set('userRoles', userRoles);
-							//this.alarmsStore.getById(idTemp).set('userAttributes', userAttributes);
-							//this.alarmsStore.getById(idTemp).set('userRoles', userRoles);
+					   	    record.set('contacts', alarmContacts);
+					   	    this.alarmsStore.getById(idTemp).set('contacts', alarmContacts);							
 						}
-						//this.kpiStore.commitChanges();
-						//this.thresholdsStore.commitChanges();
+						this.contactsStore.commitChanges();
 						this.alarmsStore.commitChanges();				
 	      			 }
 		      	}else{
@@ -810,15 +810,16 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
         	var tempRecord = new Ext.data.Record({"kpiName":tempAttrArr[i].kpiName, "kpiModel":tempAttrArr[i].kpiModel,"id":tempAttrArr[i].id });
     		Ext.getCmp("kpi-grid").store.add(tempRecord);	
         }		
-        /*
+        
         Ext.getCmp("contacts-form").store.removeAll();
-        var tempRolesArr = this.alarmsEmptyStore;
-        var length2 = this.alarmsEmptyStore.length;
+        var tempContactsArr = this.contactsEmptyStore;
+        var length2 = this.contactsEmptyStore.length;
         for(var i=0;i<length2;i++){
-          	var tempRecord = new Ext.data.Record({"description":tempRolesArr[i].description,"name":tempRolesArr[i].name,"id":tempRolesArr[i].id });
+          	var tempRecord = new Ext.data.Record({"id":tempContactsArr[i].id, "name":tempContactsArr[i].name, 
+	   	                  						  "email":tempContactsArr[i].email, "mobile":tempContactsArr[i].mobile, "resources":tempContactsArr[i].resources});
 			Ext.getCmp("contacts-form").store.add(tempRecord);								   
         }	
-		*/
+		
 		Ext.getCmp('alarm-form').doLayout();
 	}
 	

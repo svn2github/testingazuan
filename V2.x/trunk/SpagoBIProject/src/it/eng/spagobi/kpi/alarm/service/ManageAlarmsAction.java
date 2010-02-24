@@ -32,8 +32,10 @@ import it.eng.spagobi.kpi.alarm.metadata.SbiAlarm;
 import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact;
 import it.eng.spagobi.kpi.config.bo.KpiAlarmInstance;
 import it.eng.spagobi.kpi.config.dao.IKpiInstanceDAO;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 import it.eng.spagobi.kpi.threshold.dao.IThresholdValueDAO;
+import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONSuccess;
@@ -75,6 +77,8 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 	public static final String URL = "url";
 	public static final String CONTACTS = "alarmContacts";
 	public static final String DOMAIN_CD = "ALARM_MODALITY";
+	public static final String KPI = "kpi";
+	public static final String THRESHOLD = "threshold";
 	
 	public static final String KPI_LIST = "KPI_LIST";
 	public static final String TRESHOLD_LIST = "TRESHOLD_LIST";
@@ -143,6 +147,8 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 			Boolean autoDisabled = getAttributeAsBoolean(AUTO_DISABLED);
 			String text = getAttributeAsString(TEXT);
 			String url = getAttributeAsString(URL);
+			Integer kpiInstId = getAttributeAsInteger(KPI);
+			Integer thresholdId = getAttributeAsInteger(THRESHOLD);
 			JSONArray contactsJSON = getAttributeAsJSONArray(CONTACTS);
 
 			SbiAlarm alarm = new SbiAlarm();
@@ -153,13 +159,22 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 			alarm.setSingleEvent(singleEvent);
 			alarm.setText(text);
 			alarm.setUrl(url);	
+
 			try {
 			if(modality!=null){
 				SbiDomains dModality = DAOFactory.getDomainDAO().loadSbiDomainByCodeAndValue(DOMAIN_CD, modality);
 				
 				alarm.setModality(dModality);
 			}
-			
+			if(kpiInstId != null){
+				SbiKpiInstance sbiKpiInstance = DAOFactory.getKpiInstanceDAO().loadSbiKpiInstanceById(kpiInstId);
+				alarm.setSbiKpiInstance(sbiKpiInstance);
+			}
+			if(thresholdId != null){
+				SbiThresholdValue sbiThresholdValue = DAOFactory.getThresholdValueDAO().loadSbiThresholdValueById(thresholdId);
+				alarm.setSbiThresholdValue(sbiThresholdValue);
+			}
+				
 			if(id!=null && id!=0){
 				alarm.setId(id);
 			}

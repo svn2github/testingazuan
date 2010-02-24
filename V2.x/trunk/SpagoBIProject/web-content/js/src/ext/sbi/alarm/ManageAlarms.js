@@ -266,7 +266,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		    });
 		    
 		    
-	     this.kpiCheckColumn = new Ext.grid.CheckboxSelectionModel( {header: ' ',singleSelect: false, scope:this, dataIndex: 'id'} );
+	this.kpiCheckColumn = new Ext.grid.CheckboxSelectionModel( {header: ' ',singleSelect: true, scope:this, dataIndex: 'id'} );
 		 this.kpiCheckColumn.on('rowselect', this.onKpiSelect, this);
 		 this.kpiCheckColumn.on('rowdeselect', this.onKpiDeselect, this);
 	     this.kpiCm = new Ext.grid.ColumnModel({
@@ -552,23 +552,27 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	   	                   	});	      
 	   	                  },
 
-	   	                  /*
 	   	                  fillKpis : function(row, rec) {	 
 	   	                    Ext.getCmp("kpi-grid").store.removeAll();
-	   	                  	var tempArr = rec.data.kpis;
+	   	                    alert(row);
+	   	                    alert(rec.data);
+/*	   	                  	var tempArr = rec.data.kpis;
 	   	                  	var length = rec.data.kpis.length;
 	   	                  	for(var i=0;i<length;i++){
 	   	                  		var tempRecord = new Ext.data.Record({"kpiName":tempArr[i].kpiName,"kpiModel":tempArr[i].kpiModel,"id":tempArr[i].id });
 							    Ext.getCmp("kpi-grid").store.add(tempRecord);	
-	   	                  	}			        
+	   	                  	}*/			        
  
 	   	                  },
-							*/
+
    	                      listeners: {
    	                          rowselect: function(sm, row, rec) {   
    	                          	  Ext.getCmp('save-btn').enable();
    	                              Ext.getCmp("alarm-form").getForm().loadRecord(rec);  	
    	                              this.fillOptions(row, rec);
+   	                              	 
+   	                	  		  this.fillKpis(row, rec);
+   	                	  		  //this.fillContacts(row, rec);   	                                  	                              
    	                              this.fillContacts(row, rec); 	                                    	                              
    	                          }
    	                      }
@@ -604,7 +608,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	      	description : values['description'],
 	      	text : values['text'],
 	      	url : values['url'],
-	      	label : values['label']            
+	      	label : values['label'] 
 	   }
        params.id = values['id'];
        
@@ -669,31 +673,14 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 			alarmContacts.push(contact);
 		}
        }	
-   
-    /*
-      var modifAttributes = this.kpiStore.getModifiedRecords();
-       var lengthA = modifAttributes.length;
-       var attrs =new Array();
-       for(var i=0;i<lengthA;i++){
-          	var attr ={'name':modifAttributes[i].get("name"),'id':modifAttributes[i].get("id"),'value':modifAttributes[i].get("value")};
-			attrs.push(attr);
-       }
-       params.userAttributes =  Ext.util.JSON.encode(attrs);      
-      
-      
-       var userAttributes = new Array();
-       var tempArr = Ext.getCmp("attributes-form").store;
-       var length = Ext.getCmp("attributes-form").store.data.length;
-
-       for(var i=0;i<length;i++){
-       		var attr ={'name':tempArr.getAt(i).get("name"),'id':tempArr.getAt(i).get("id"),'value':tempArr.getAt(i).get("value")};
-		    userAttributes.push(attr);
-   		}	
-
-   	   if(newRec!==null){
-		   newRec.set('userRoles', userRoles);
-		   newRec.set('userAttributes', userAttributes);
-	   }   */     
+        
+      //kpi
+       var kpiSelected = Ext.getCmp("kpi-grid").getSelectionModel().getSelected();
+       params.kpi = kpiSelected.get("id");
+       
+       //threshold       
+       alert(Ext.getCmp("tresholds-combo").value);
+      params.threshold = Ext.getCmp("tresholds-combo").value;
       
       Ext.Ajax.request({
           url: this.services['saveAlarmService'],

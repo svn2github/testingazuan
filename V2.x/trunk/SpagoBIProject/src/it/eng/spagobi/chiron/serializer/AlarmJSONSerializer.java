@@ -89,9 +89,17 @@ public class AlarmJSONSerializer implements Serializer{
 					jsonContact.put("mobile", contact.getMobile());
 					jsonContact.put("email", contact.getEmail());
 					jsonContact.put("resources", contact.getResources());
-					if(alarmContacts.contains(contactId)){
-						jsonContact.put("checked", true);
-					}else{
+					Iterator itTemp = alarmContacts.iterator();
+					boolean contained = false;
+					while(itTemp.hasNext()){
+						SbiAlarmContact c =(SbiAlarmContact)itTemp.next();
+						if(c.getId().equals(contactId)){
+							jsonContact.put("checked", true);
+							contained = true;
+							break;
+						}
+					}
+					if(!contained){
 						jsonContact.put("checked", false);
 					}
 					contactsJSON.put(jsonContact);

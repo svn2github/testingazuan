@@ -229,6 +229,17 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		this.setWizardExpression(false);
 	}
 	
+	, getFilterAt: function(i) {
+		var record;
+		var filter;
+		
+		record =  this.grid.store.getAt(i);
+		filter = Ext.apply({}, record.data);
+		filter.promptable = filter.promptable || false;
+		
+		return filter;
+	}
+	
 	, getFilters : function() {
 		var filters = [];
 		var record;
@@ -559,6 +570,9 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	             allowBlank: true
 		    });
 		    
+		    textEditor.ownerGrid = this;
+		    textEditor.fireKey = this.fireKeyHandler;
+		    
 		    textEditor.on('change', function(f, newValue, oldValue){
 		    	if(this.activeEditingContext) {
 		    		if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
@@ -574,25 +588,30 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		   var lookupFieldEditor = new Ext.form.TriggerField({
 	             allowBlank: true
 	             , triggerClass: 'x-form-search-trigger'
-
-		    });
-		    lookupFieldEditor.onTriggerClick = this.openValuesForQbeFilterLookup.createDelegate(this);
-		    lookupFieldEditor.on('change', function(f, newValue, oldValue){
+		   });
+		   
+		   lookupFieldEditor.ownerGrid = this;
+		   lookupFieldEditor.fireKey = this.fireKeyHandler;
+		   
+		   lookupFieldEditor.onTriggerClick = this.openValuesForQbeFilterLookup.createDelegate(this);
+		   lookupFieldEditor.on('change', function(f, newValue, oldValue){
 		    	if(this.activeEditingContext) {
 		    		if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
 		    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value', rightOperandLongDescription: null}, this.activeEditingContext.row);
 		    		}
 		    	}		    	
-		    }, this);
+		   }, this);
 		    
 		    
 		    var multiButtonEditor = new Sbi.widgets.TriggerFieldMultiButton({
 	         		allowBlank: true
-	         		
 		    });
 		    
+		    multiButtonEditor.ownerGrid = this;
+		    multiButtonEditor.fireKey = this.fireKeyHandler;
+		    
 		    multiButtonEditor.onTrigger1Click = this.openValuesForQbeFilterLookup.createDelegate(this);
-		    multiButtonEditor.onTrigger2Click = this.onOpenValueEditor.createDelegate(this);  	
+		    multiButtonEditor.onTrigger2Click = this.onOpenValueEditor.createDelegate(this);
 		    
 		   /* multiButtonEditor.on('onlookupvalues', function(f){
 		    	this.openValuesForQbeFilterLookup.createDelegate(this);	    	
@@ -755,6 +774,16 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    
 		    this.plgins = [delButtonColumn, isFreeCheckColumn];
 	}
+	
+	, fireKeyHandler: function(e) {
+        if(e.isSpecialKey()){
+            this.fireEvent("specialkey", this, e);
+        } else {
+        	if(this.ownerGrid.activeEditingContext) {
+	        	this.ownerGrid.activeEditingContext.dirty = true;
+	        }
+        }
+	}
 
 	, initToolbar: function(config) {
 		this.toolbar = new Ext.Toolbar({
@@ -881,11 +910,34 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			column - The grid column index
 			cancel - Set this to true to cancel the edit or return false from your handler.
 		 */
+		
+		if(this.activeEditingContext) {
+			var filter = this.getFilterAt(this.activeEditingContext.row);
+			if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
+				if(this.activeEditingContext.dirty === true){
+					this.modifyFilter({
+						leftOperandValue: filter.leftOperandDescription, 
+						leftOperandType: 'Static Value', 
+						leftOperandLongDescription: null
+					}, this.activeEditingContext.row);
+				}				
+			} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
+				if(this.activeEditingContext.dirty === true){
+					this.modifyFilter({
+						rightOperandValue: filter.rightOperandDescription, 
+						rightOperandType: 'Static Value', 
+						rightOperandLongDescription: null
+					}, this.activeEditingContext.row);
+				}				
+			}
+		}
+		
 		this.activeEditingContext = Ext.apply({}, e);
 		var col = this.activeEditingContext.column;
 		var row = this.activeEditingContext.row;		
 		var dataIndex = this.activeEditingContext.grid.getColumnModel().getDataIndex( col );
 		this.activeEditingContext.dataIndex = dataIndex;
+		this.activeEditingContext.dirty = false;
 		
 		if(dataIndex === 'leftOperandDescription' || dataIndex === 'rightOperandDescription') {
 			var editor;

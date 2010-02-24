@@ -233,6 +233,17 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 		this.grid.store.removeAll();
 	}
 	
+	, getFilterAt: function(i) {
+		var record;
+		var filter;
+		
+		record =  this.grid.store.getAt(i);
+		filter = Ext.apply({}, record.data);
+		filter.promptable = filter.promptable || false;
+		
+		return filter;
+	}
+	
 	, getFilters : function() {
 		var filters = [];
 		var record;
@@ -572,6 +583,9 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 	             allowBlank: true
 		    });
 		    
+		    textEditor.ownerGrid = this;
+		    textEditor.fireKey = this.fireKeyHandler;
+		    
 		    textEditor.on('change', function(f, newValue, oldValue){
 		    	if(this.activeEditingContext) {
 		    		if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
@@ -741,6 +755,16 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 		    this.plgins = [delButtonColumn, isFreeCheckColumn];
 	}
 
+	, fireKeyHandler: function(e) {
+        if(e.isSpecialKey()){
+            this.fireEvent("specialkey", this, e);
+        } else {
+        	if(this.ownerGrid.activeEditingContext) {
+	        	this.ownerGrid.activeEditingContext.dirty = true;
+	        }
+        }
+	}
+	
 	, initToolbar: function(config) {
 		this.toolbar = new Ext.Toolbar({
 			items: [
@@ -846,11 +870,33 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 			column - The grid column index
 			cancel - Set this to true to cancel the edit or return false from your handler.
 		 */
+		if(this.activeEditingContext) {
+			var filter = this.getFilterAt(this.activeEditingContext.row);
+			if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
+				if(this.activeEditingContext.dirty === true){
+					this.modifyFilter({
+						leftOperandValue: filter.leftOperandDescription, 
+						leftOperandType: 'Static Value', 
+						leftOperandLongDescription: null
+					}, this.activeEditingContext.row);
+				}				
+			} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
+				if(this.activeEditingContext.dirty === true){
+					this.modifyFilter({
+						rightOperandValue: filter.rightOperandDescription, 
+						rightOperandType: 'Static Value', 
+						rightOperandLongDescription: null
+					}, this.activeEditingContext.row);
+				}				
+			}
+		}
+		
 		this.activeEditingContext = Ext.apply({}, e);
 		var col = this.activeEditingContext.column;
 		var row = this.activeEditingContext.row;		
 		var dataIndex = this.activeEditingContext.grid.getColumnModel().getDataIndex( col );
 		this.activeEditingContext.dataIndex = dataIndex;
+		this.activeEditingContext.dirty = false;
 		
 		if(dataIndex === 'leftOperandDescription' || dataIndex === 'rightOperandDescription') {
 			var editor = this.valueColumnEditors.textEditor;

@@ -21,8 +21,9 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/locale/LocaleUtils.js'/></script>
 <script type="text/javascript" src='../js/spagobi/data/Store.js'/></script>
 <script type="text/javascript" src='../js/spagobi/data/StoreManager.js'/></script>
-<script type="text/javascript" src='../js/spagobi/chart/OFChart.js'/></script>
-<script type="text/javascript" src='../js/spagobi/chart/Chart.js'/></script>
+<script type="text/javascript" src='../js/spagobi/chart/FusionFreeChart.js'/></script>
+<script type="text/javascript" src='../js/spagobi/chart/OpenFlashChart.js'/></script>
+<script type="text/javascript" src='../js/spagobi/chart/SpagoBIChart.js'/></script>
 
 
 <script type="text/javascript" src='../js/spagobi/console/widgets/WidgetContainer.js'/></script>

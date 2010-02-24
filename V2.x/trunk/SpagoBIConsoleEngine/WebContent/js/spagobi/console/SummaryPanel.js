@@ -52,7 +52,7 @@ Sbi.console.SummaryPanel = function(config) {
 		var defaultSettings = {
 			layout: 'fit'
 			, region: 'north'
-			, height: 215
+			, height: 410
 			, split: true
 			//, collapseMode: 'mini'
 			, collapsible: true

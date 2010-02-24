@@ -95,6 +95,8 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	, PIE_CHART: 'chart.ext.pie'
 	, ROTATE_CHART: 'chart.sbi.rotate'
 	, OF_BAR_CHART: 'chart.of.bar'
+	, FCF_BAR_CHART: 'chart.fcf.bar'
+		
 	
     //  -- public methods ---------------------------------------------------------
     
@@ -174,7 +176,9 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 			chart = this.createRotateChart(chartConfig);
 		} else if(chartType === this.OF_BAR_CHART){
 			chart = this.createOFBarChart(chartConfig);
-		}else {
+		} else if(chartType === this.FCF_BAR_CHART){
+			chart = this.createFCFBarChart(chartConfig);
+		} else {
 			Sbi.exception.ExceptionHandler.showErrorMessage('Chart type [' + chartType + '] not supported by [ChartWidget]');
 		}
 		
@@ -271,7 +275,7 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		return new Ext.Panel({
 			layout:'fit'
 		    , height: this.height	
-		    , items: [new Sbi.chart.Chart()]
+		    , items: [new Sbi.chart.SpagoBIChart()]
 		});		
 	}
 	
@@ -280,7 +284,16 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		return new Ext.Panel({
 			layout:'fit'
 		    , height: this.height	
-		    , items: [new Sbi.chart.OFChart()]
+		    , items: [new Sbi.chart.OpenFlashChart()]
+		});		
+	}
+	
+	, createFCFBarChart: function(chartConfig) {
+		
+		return new Ext.Panel({
+			layout:'fit'
+		    , height: this.height	
+		    , items: [new Sbi.chart.FusionFreeChart()]
 		});		
 	}
 	

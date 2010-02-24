@@ -63,6 +63,12 @@ Sbi.template = {
             	type: 'chart.sbi.rotate'
                	//type: 'chart.of.bar'
             }
+        } ,  {
+        	dataset: 'testConsoleChart'
+            , widgetConfig: {
+               	type: 'chart.fcf.bar'
+               	//type: 'chart.of.bar'
+            }
         }
     	]
     

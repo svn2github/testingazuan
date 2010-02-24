@@ -269,12 +269,16 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 		for(int i=0; i< rows.length(); i++){
 			JSONObject obj = (JSONObject)rows.get(i);
 			SbiAlarmContact c = new SbiAlarmContact();
-			Integer id = obj.getInt("id");
-			//c.setEmail(email);
+			Integer id = obj.getInt("id");	
+			String email = obj.getString("email");	
+			String mobile = obj.getString("mobile");	
+			String resources = obj.getString("resources");	
+			String name = obj.getString("name");	
+			c.setEmail(email);
 			c.setId(id);
-			//c.setMobile(mobile);
-			//c.setName(name);
-			//c.setResources(resources);
+			c.setMobile(mobile);
+			c.setName(name);
+			c.setResources(resources);
 			toReturn.add(c);
 		}	
 		return toReturn;

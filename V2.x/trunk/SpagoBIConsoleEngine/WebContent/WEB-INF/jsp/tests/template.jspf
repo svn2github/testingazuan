@@ -168,9 +168,7 @@ Sbi.template = {
 		            // colonne aggiungibili alla griglia di base
 		            dataset: {
 		                  // LABEL del dataset in spagobi
-		                	label: 'testConsole'
-		    			        // parametri statici e dinamici definiti come navigationBar
-		                   	, params: {}  
+		                	label: 'testConsole' 
 		                   	, refreshTime: '30' // in secondi
 		            } 
 		

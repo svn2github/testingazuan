@@ -126,7 +126,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	    	          , 'autoDisabled'
 	    	          , 'text'
 	    	          , 'url'
-	    	         // , 'contacts'
+	    	          , 'contacts'
 	    	         //, 'kpi'
 	    	          //, 'thr'
 	    	           //, 'doc'
@@ -146,11 +146,11 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	    	root: 'samples',
 	        fields : ['id', 'label']
 	    });
-
-	    this.documentsStore = new Ext.data.SimpleStore({
+	    
+	   /* this.documentsStore = new Ext.data.SimpleStore({
 	    	id: 'id',
 	        fields : [ 'id', 'name', 'description', 'checked' ]
-	    });
+	    });*/
 	    
 	    this.contactsStore = new Ext.data.SimpleStore({
 	    	id: 'id',
@@ -265,7 +265,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		    });
 		    
 		    
-	this.kpiCheckColumn = new Ext.grid.CheckboxSelectionModel( {header: ' ',singleSelect: false, scope:this, dataIndex: 'id'} );
+	     this.kpiCheckColumn = new Ext.grid.CheckboxSelectionModel( {header: ' ',singleSelect: false, scope:this, dataIndex: 'id'} );
 		 this.kpiCheckColumn.on('rowselect', this.onKpiSelect, this);
 		 this.kpiCheckColumn.on('rowdeselect', this.onKpiDeselect, this);
 	     this.kpiCm = new Ext.grid.ColumnModel({
@@ -338,15 +338,55 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		        	,this.tresholdsCombo
 		        	]
 		    });
+		
+		this.initContactsGridPanel();
 		    
-     /* 
-     this.contactsTab = new Ext.Panel({
+        this.contactsTab = new Ext.Panel({
 		        title: LN('sbi.alarms.contacts')
 		        , id : 'contactsList'
 	            , items : [ this.contactsGridPanel ]
 		        , itemId: 'contacts'
-		    });*/
+		    });
+		    
     }
+    
+     , initContactsGridPanel : function() {
+       
+    	this.smContacts = new Ext.grid.CheckboxSelectionModel( {header: ' ',singleSelect: false, scope:this, dataIndex: 'id'} );
+		
+        this.cmContacts = new Ext.grid.ColumnModel([
+	         //{id:'id',header: "id", dataIndex: 'id'},
+	         {header: LN('sbi.alarmcontact.name'), width: 45, sortable: true, dataIndex: 'name'},
+	         {header: LN('sbi.alarmcontact.email'), width: 45, sortable: true, dataIndex: 'email'},
+	         {header: LN('sbi.alarmcontact.mobile'), width: 45, sortable: true, dataIndex: 'mobile'},
+	         {header: LN('sbi.alarmcontact.resources'), width: 45, sortable: true, dataIndex: 'resources'},
+	         this.smContacts 
+	    ]);
+
+		this.contactsGridPanel = new Ext.grid.GridPanel({
+			  store: this.thresholdsStore
+			, id: 'contacts-form'
+   	     	, cm: this.cmContacts
+   	     	, sm: this.smContacts
+   	     	, frame: false
+   	     	, border:false  
+   	     	, height: 450
+   	     	, collapsible:false
+   	     	, loadMask: true
+   	     	, viewConfig: {
+   	        	forceFit:true
+   	        	, enableRowBody:true
+   	        	, showPreview:true
+   	     	}
+			, scope: this
+		});
+		
+		Ext.getCmp("contacts-form").on('recToSelect', function(roleId, index){		
+			Ext.getCmp("contacts-form").selModel.selectRow(index,true);
+		});
+
+	}
+    
 	,onKpiSelect: function(){
 		//loads tresholds
 		var sm = this.kpiGrid.getSelectionModel();
@@ -379,8 +419,6 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	}
 	
 	,initManageAlarms: function(){
-	
-		//this.initContactsGridPanel();
 
 	    this.deleteColumn = new Ext.grid.ButtonColumn({
 	       header:  ' ',
@@ -433,7 +471,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
            , tbar: this.tbSave 
 		   , items: [ this.detailTab
 		   , this.kpiTab
-		   //, this.contactsTab
+		   , this.contactsTab
 		   ]
 		 });
 
@@ -475,19 +513,21 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
    	                      scope: this,   	                   
 	   	                  fillContacts : function(row, rec) {	 
 							Ext.getCmp("contacts-form").store.removeAll();
-	   	                   	var tempArr = rec.data.userRoles;
-	   	                  	var length = rec.data.userRoles.length;
+	   	                   	var tempArr = rec.data.contacts;
+	   	                  	var length = rec.data.contacts.length;
 	   	                  	for(var i=0;i<length;i++){
-	   	                  		var tempRecord = new Ext.data.Record({"description":tempArr[i].description, "name":tempArr[i].name, "id":tempArr[i].id });
+	   	                  		var tempRecord = new Ext.data.Record({"id":tempArr[i].id, "name":tempArr[i].name, 
+	   	                  											  "email":tempArr[i].email, "mobile":tempArr[i].mobile, "resources":tempArr[i].resources});
 							    Ext.getCmp("contacts-form").store.addSorted(tempRecord);
 							    Ext.getCmp("contacts-form").store.commitChanges();
 							    Ext.getCmp("contacts-form").selModel.unlock();
 							    if(tempArr[i].checked){
-							    	var roleId = tempRecord.get('id');				    	
-							    	Ext.getCmp("contacts-form").fireEvent('recToSelect', roleId, i);
+							    	var contactId = tempRecord.get('id');				    	
+							    	Ext.getCmp("contacts-form").fireEvent('recToSelect', contactId, i);
 							    }
 
 	   	                  	}	
+	   	                  	alert(Ext.getCmp("contacts-form").store.toSource());
 	   	                  	
 	   	                  },
 	   	                  fillOptions : function(row, rec) {	 
@@ -512,6 +552,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	   	                  		}  
 	   	                   	});	      
 	   	                  },
+
 	   	                  /*
 	   	                  fillKpis : function(row, rec) {	 
 	   	                    Ext.getCmp("kpi-grid").store.removeAll();
@@ -529,9 +570,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
    	                          	  Ext.getCmp('save-btn').enable();
    	                              Ext.getCmp("alarm-form").getForm().loadRecord(rec);  	
    	                              this.fillOptions(row, rec);
-   	                              	 
-   	                	  		  //this.fillAttributes(row, rec);
-   	                	  		  //this.fillContacts(row, rec);   	                                  	                              
+   	                              this.fillContacts(row, rec); 	                                    	                              
    	                          }
    	                      }
    	                  }),
@@ -551,74 +590,6 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
    	          ],
    	          renderTo: Ext.getBody()
    	      });
-
-	}
-	
-	/*, initContactsGridPanel : function() {
-        
-        this.contactsGridPanel = new Ext.grid.EditorGridPanel({
-            id: 'attributes-form',
-            store : this.kpiStore,
-            autoHeight : true,
-            columns : [ {          	
-                header : LN('sbi.roles.headerName'),
-                width : 75,
-                sortable : true,
-                dataIndex : 'name'
-            }, {           	
-                header : LN('sbi.users.headerValue'),
-                width : 75,
-                sortable : true,
-                dataIndex : 'value',
-                editor : new Ext.form.TextField({}) 
-            } ],
-            viewConfig : {
-                forceFit : true,
-                scrollOffset : 2
-            // the grid will never have scrollbars
-            },
-            singleSelect : true,
-            clicksToEdit : 2
-        });
-
-    }*/
-    
-    , initContactsGridPanel : function() {
-       
-    	this.smContacts = new Ext.grid.CheckboxSelectionModel( {header: ' ',singleSelect: false, scope:this, dataIndex: 'id'} );
-		//this.smContacts.on('rowselect', this.onRoleSelect, this);
-		//this.smContacts.on('rowdeselect', this.onRoleDeselect, this);
-		
-        this.cmContacts = new Ext.grid.ColumnModel([
-	         //{id:'id',header: "id", dataIndex: 'id'},
-	         {header: LN('sbi.alarmcontact.name'), width: 45, sortable: true, dataIndex: 'name'},
-	         {header: LN('sbi.alarmcontact.resources'), width: 65, sortable: true, dataIndex: 'resources'},
-	         {header: LN('sbi.alarmcontact.email'), width: 45, sortable: true, dataIndex: 'email'},
-	         {header: LN('sbi.alarmcontact.mobile'), width: 45, sortable: true, dataIndex: 'mobile'},
-	         this.smContacts 
-	    ]);
-
-		this.contactsGrid = new Ext.grid.GridPanel({
-			  store: this.thresholdsStore
-			, id: 'contacts-form'
-   	     	, cm: this.cmContacts
-   	     	, sm: this.smContacts
-   	     	, frame: false
-   	     	, border:false  
-   	     	, collapsible:false
-   	     	, loadMask: true
-   	     	, viewConfig: {
-   	        	forceFit:true
-   	        	, enableRowBody:true
-   	        	, showPreview:true
-   	     	}
-			, scope: this
-		});
-		this.contactsGrid.superclass.constructor.call(this);
-		
-		Ext.getCmp("contacts-form").on('recToSelect', function(roleId, index){		
-			Ext.getCmp("contacts-form").selModel.selectRow(index,true);
-		});
 
 	}
 	
@@ -819,6 +790,18 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 											});
 	
 		Ext.getCmp('alarm-form').getForm().loadRecord(emptyRecToAdd);
+		Ext.getCmp("detail").items.each(function(item){	  
+	   		if(item.getItemId() == 'alarm-detail'){ 
+	   		  item.items.each(function(item){	  
+	    		   if(item.getItemId() == 'options'){
+	    		   		item.setValue('singleEvent', false);
+	    		   		item.setValue('autoDisabled', false);
+	     		   }else if(item.getItemId() == 'modality'){
+		      		  	item.onSetValue( 'mail',true);
+	     		   }
+	     	   });
+	   		}  
+    	});	
 		
 		Ext.getCmp("kpi-grid").store.removeAll();
 	   	var tempAttrArr = this.kpisEmptyStore;

@@ -384,6 +384,8 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		var row = sm.getSelected();
 	
 		this.kpiInstId = row.data.id;
+		this.thresholdsStore.removeAll();
+		this.tresholdsCombo.clearValue();
 		
 		Ext.Ajax.request({
 	          url: this.services['loadTresholdsService'],
@@ -545,7 +547,6 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	   	                  },
 
 	   	                  fillKpis : function(row, rec) {	
-	   	                	  //alert("fillkpis");
 		   	         		Ext.getCmp("kpi-grid").store.removeAll();
 		   	         		var tempAttrArr = config.kpisEmptyList;
 		   	         		var length = tempAttrArr.length;
@@ -554,7 +555,6 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		   	         			Ext.getCmp("kpi-grid").store.add(tempRecord);
 							    Ext.getCmp("kpi-grid").store.commitChanges();
 							    Ext.getCmp("kpi-grid").selModel.unlock();
-
 		   	         			if(tempAttrArr[i].id === rec.data.kpi){
 		   	         				var checkedArr = [];
 		   	         				checkedArr.push(tempRecord);		   	         				
@@ -801,6 +801,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
     		Ext.getCmp("kpi-grid").store.add(tempRecord);	
         }		
         Ext.getCmp("kpi-grid").store.commitChanges();
+        this.tresholdsCombo.clearValue();
         
         
         Ext.getCmp("contacts-form").store.removeAll();

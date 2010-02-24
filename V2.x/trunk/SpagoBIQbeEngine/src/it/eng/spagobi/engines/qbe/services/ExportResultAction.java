@@ -279,6 +279,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			DataMartSelectField selectedField = (DataMartSelectField)selectedFieldsIterator.next();
 			exctractedField.setAlias( selectedField.getAlias() );
 			exctractedField.setVisible( selectedField.isVisible() );
+			exctractedField.setPattern( selectedField.getPattern() );
 		}
 	}
 	

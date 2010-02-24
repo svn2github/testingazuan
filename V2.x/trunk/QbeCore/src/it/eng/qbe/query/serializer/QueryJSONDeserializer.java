@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.query.AggregationFunctions;
@@ -129,6 +130,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 		String group;
 		String order;
 		String funct;
+		String pattern;
 		
 		JSONObject fieldClaculationDescriptor;
 		String type;
@@ -140,6 +142,8 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 		logger.debug("IN");
 		
 		try {
+			
+			DatamartProperties props = datamartModel.getProperties();
 			
 			logger.debug("Query [" + query.getId() + "] have [" + fieldsJSON.length() + "] to deserialize");			
 			for(int i = 0; i < fieldsJSON.length(); i++) {		
@@ -164,8 +168,12 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 						group = fieldJSON.getString(SerializationConstants.FIELD_GROUP);
 						order = fieldJSON.getString(SerializationConstants.FIELD_ORDER);
 						funct = fieldJSON.getString(SerializationConstants.FIELD_AGGREGATION_FUNCTION);
-							
-						query.addSelectFiled(field.getUniqueName(), funct, alias, included, visible, group.equalsIgnoreCase("true"), order);	
+						if (AggregationFunctions.get(funct).equals(AggregationFunctions.NONE_FUNCTION)) {
+							pattern = props.getFormat(field, datamartModel);
+						} else {
+							pattern = null;
+						}
+						query.addSelectFiled(field.getUniqueName(), funct, alias, included, visible, group.equalsIgnoreCase("true"), order, pattern);	
 					} else if ("calculatedField".equalsIgnoreCase(fieldType)) {
 						
 						fieldClaculationDescriptor = fieldJSON.getJSONObject(SerializationConstants.FIELD_ID);

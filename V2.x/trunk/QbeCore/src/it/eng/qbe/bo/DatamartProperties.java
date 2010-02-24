@@ -20,9 +20,12 @@
  **/
 package it.eng.qbe.bo;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
@@ -234,5 +237,36 @@ public class DatamartProperties {
 		}
 		
 		return iconCls;
+	}
+	
+	/**
+	 * Returns the format to be applied to the input field.
+	 * If there is no format for the input field, it retrieves the format defined for the relevant field in the root entity
+	 * @param field The datamart field
+	 * @param datamartModel The datamart model: it is required in order to retrieve the input field's root entity
+	 * @return the format to be applied to the input field
+	 */
+	public String getFormat(DataMartField field, DataMartModel datamartModel) {
+		String toReturn = null;
+		
+		// try first with entity unique name
+		toReturn = getProperty(field, "format");
+		if (toReturn == null) {
+			// then try with relevant field on first level entity 
+			DataMartField rootField = null;
+			DataMartEntity rootEntity = datamartModel.getDataMartModelStructure().getRootEntity(field.getParent());
+			List fields = rootEntity.getAllFields();
+			Iterator it = fields.iterator();
+			while (it.hasNext()) {
+				DataMartField aField = (DataMartField) it.next();
+				if (aField.getName().equals(field.getName())) {
+					rootField = aField;
+					break;
+				}
+			}
+			toReturn = getProperty(rootField, "format");
+		}
+		
+		return toReturn;
 	}
 }

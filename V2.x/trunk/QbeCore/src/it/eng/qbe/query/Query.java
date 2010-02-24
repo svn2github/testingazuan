@@ -98,8 +98,8 @@ public class Query {
 	}
 	
 	public void addSelectFiled(String fieldUniqueName, String function, String fieldAlias, boolean include, boolean visible,
-			boolean groupByField, String orderType) {
-		selectFields.add( new DataMartSelectField(fieldUniqueName, function, fieldAlias, include, visible, groupByField, orderType) );
+			boolean groupByField, String orderType, String pattern) {
+		selectFields.add( new DataMartSelectField(fieldUniqueName, function, fieldAlias, include, visible, groupByField, orderType, pattern) );
 	}
 	
 	public void addCalculatedFiled(String fieldAlias, String expression, String type, boolean included, boolean visible) {

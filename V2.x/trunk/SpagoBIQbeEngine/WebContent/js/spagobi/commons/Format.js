@@ -189,7 +189,7 @@ Sbi.qbe.commons.Format = function(){
             };
         }
         
-        , boolean : function(v, format) {
+        , 'boolean' : function(v, format) {
         	format = Ext.apply({}, format || {}, {
 	    		trueSymbol: 'true',
 	    		falseSymbol: 'false',
@@ -209,7 +209,7 @@ Sbi.qbe.commons.Format = function(){
         
         , booleanRenderer : function(format){
             return function(v){
-                return Sbi.qbe.commons.Format.boolean(v, format);
+                return Sbi.qbe.commons.Format['boolean'](v, format);
             };
         }
         
@@ -226,6 +226,30 @@ Sbi.qbe.commons.Format = function(){
             };
         }
         
+        , getFormatFromJavaPattern: function(pattern) {
+        	var toReturn = {};
+        	if (pattern === undefined || pattern === null || pattern.trim() === '') {
+        		return toReturn;
+        	}
+        	
+        	var decimalSeparatorIndex = pattern.indexOf(".");
+        	if (decimalSeparatorIndex !== -1) {
+        		toReturn.decimalPrecision = (pattern.length - decimalSeparatorIndex) - 1;
+        	} else {
+        		toReturn.decimalPrecision = 0;
+        		decimalSeparatorIndex = pattern.length;
+        	}
+        	
+        	var groupingSeparatorIndex = pattern.lastIndexOf(",");
+        	if (groupingSeparatorIndex !== -1) {
+        		toReturn.groupingSize = (decimalSeparatorIndex - 1) - groupingSeparatorIndex;
+        	} else {
+        		toReturn.groupingSize = Number.MAX_VALUE;
+        	}
+        	
+        	return toReturn;
+        	
+        }
 	};
 	
 }();

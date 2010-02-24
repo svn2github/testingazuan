@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.query;
 
+import it.eng.qbe.model.structure.DataMartField;
+
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -32,11 +34,11 @@ public class DataMartSelectField extends AbstractSelectField {
 	private IAggregationFunction function;
 	private boolean groupByField;
 	private String orderType;
-	
+	private String pattern;
 
 
 	public DataMartSelectField(String uniqueName, String function, String alias, boolean include, boolean visible,
-		boolean groupByField, String orderType ) {
+		boolean groupByField, String orderType, String pattern ) {
 		
 		super(alias, ISelectField.DATAMART_FIELD, include, visible);
 				
@@ -44,6 +46,7 @@ public class DataMartSelectField extends AbstractSelectField {
 		setFunction( AggregationFunctions.get(function) );		
 		setGroupByField(groupByField);
 		setOrderType(orderType);
+		setPattern(pattern);
 	}
 
 	
@@ -90,5 +93,13 @@ public class DataMartSelectField extends AbstractSelectField {
 
 	public void setOrderType(String orderType) {
 		this.orderType = orderType;
+	}
+	
+	public String getPattern() {
+		return pattern;
+	}
+
+	public void setPattern(String pattern) {
+		this.pattern = pattern;
 	}
 }

@@ -3,6 +3,7 @@ package it.eng.qbe.export;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
+import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 
 import java.util.Date;
@@ -55,26 +56,41 @@ public class Exporter {
 	    	IDataStoreMetaData d = dataStore.getMetaData();	
 	    	int colnum = d.getFieldCount();
 	    	Row row = sheet.createRow((short)0);
+	    	CellStyle[] cellTypes = new CellStyle[colnum]; // array for numbers patterns storage
 	    	for(int j =0;j<colnum;j++){
 	    		Cell cell = row.createCell(j);
 	    	    cell.setCellType(HSSFCell.CELL_TYPE_STRING);
 	    	    String fieldName = d.getFieldName(j);
+	    	    IFieldMetaData fieldMetaData = d.getFieldMeta(j);
+	    	    String format = (String) fieldMetaData.getProperty("format");
 	            if (extractedFields != null && extractedFields.get(j) != null) {
 	    	    	Field field = (Field) extractedFields.get(j);
 	    	    	fieldName = field.getAlias();
+	    	    	if (field.getPattern() != null) {
+	    	    		format = field.getPattern();
+	    	    	}
 	    	    }
+	            if (format != null) {
+    	    		short formatInt = HSSFDataFormat.getBuiltinFormat(format);
+    	    		CellStyle aCellStyle = wb.createCellStyle();   
+    	    		aCellStyle.setDataFormat(formatInt);
+    		    	cellTypes[j] = aCellStyle;
+	            }
 	    	    cell.setCellValue(createHelper.createRichTextString(fieldName));
 	    	}
 	    	
 	    	Iterator it = dataStore.iterator();
 	    	int rownum = 1;
 	    	short formatIndexInt = HSSFDataFormat.getBuiltinFormat("#,##0");
-		    CellStyle cellStyleInt = wb.createCellStyle();   
+		    CellStyle cellStyleInt = wb.createCellStyle(); // cellStyleInt is the default cell style for integers
 		    cellStyleInt.setDataFormat(formatIndexInt);
 		    
 		    short formatIndexDoub = HSSFDataFormat.getBuiltinFormat("#,##0.00");
-		    CellStyle cellStyleDoub = wb.createCellStyle();   
+		    CellStyle cellStyleDoub = wb.createCellStyle(); // cellStyleDoub is the default cell style for doubles
 		    cellStyleDoub.setDataFormat(formatIndexDoub);
+		    
+			CellStyle cellStyleDate = wb.createCellStyle(); // cellStyleDate is the default cell style for dates
+			cellStyleDate.setDataFormat(createHelper.createDataFormat().getFormat("m/d/yy"));
 		    
 			while(it.hasNext()){
 				Row rowVal = sheet.createRow(rownum);
@@ -93,7 +109,7 @@ public class Exporter {
 						    Number val = (Number)f.getValue();
 						    cell.setCellValue(val.intValue());
 						    cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-						    cell.setCellStyle(cellStyleInt);
+						    cell.setCellStyle((cellTypes[fieldIndex] != null) ? cellTypes[fieldIndex] : cellStyleInt);
 						}else if( Number.class.isAssignableFrom(c) ) {
 							logger.debug("Column [" + (fieldIndex+1) + "] type is equal to [" + "NUMBER" + "]");
 							Cell cell = rowVal.createCell(fieldIndex);
@@ -101,7 +117,7 @@ public class Exporter {
 						    cell.setCellValue(val.doubleValue());
 						    cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
 						   // List formats = HSSFDataFormat.getBuiltinFormats();
-						    cell.setCellStyle(cellStyleDoub);
+						    cell.setCellStyle((cellTypes[fieldIndex] != null) ? cellTypes[fieldIndex] : cellStyleDoub);
 						}else if( String.class.isAssignableFrom(c)){
 							logger.debug("Column [" + (fieldIndex+1) + "] type is equal to [" + "STRING" + "]");
 							Cell cell = rowVal.createCell(fieldIndex);		    
@@ -116,12 +132,10 @@ public class Exporter {
 						    cell.setCellType(HSSFCell.CELL_TYPE_BOOLEAN);
 						}else if(Date.class.isAssignableFrom(c)){
 							logger.debug("Column [" + (fieldIndex+1) + "] type is equal to [" + "DATE" + "]");
-							CellStyle cellStyle = wb.createCellStyle();
-						    cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("m/d/yy"));
 						    Cell cell = rowVal.createCell(fieldIndex);		    
 						    Date val = (Date)f.getValue();
 						    cell.setCellValue(val);	
-						    cell.setCellStyle(cellStyle);
+						    cell.setCellStyle(cellStyleDate);
 						}else{
 							logger.warn("Column [" + (fieldIndex+1) + "] type is equal to [" + "???" + "]");
 							Cell cell = rowVal.createCell(fieldIndex);

@@ -36,6 +36,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 
+import it.eng.qbe.bo.DatamartProperties;
+import it.eng.qbe.cache.QbeCache;
+import it.eng.qbe.model.structure.DataMartField;
+import it.eng.qbe.query.AggregationFunctions;
 import it.eng.qbe.query.CalculatedSelectField;
 import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.ISelectField;
@@ -135,6 +139,8 @@ public class QbeDataSet extends AbstractDataSet {
 		
 		dataStoreMeta = new DataStoreMetaData();
 		
+		DatamartProperties props = ((DataMartModel) statement.getDataMartModel()).getProperties();
+		
 		Iterator fieldsIterator = query.getSelectFields(true).iterator();
 		while(fieldsIterator.hasNext()) {
 			queryFiled = (ISelectField)fieldsIterator.next();
@@ -142,9 +148,14 @@ public class QbeDataSet extends AbstractDataSet {
 			dataStoreFieldMeta = new FieldMetadata();
 			dataStoreFieldMeta.setName( queryFiled.getAlias() );
 			if(queryFiled.isDataMartField()) {
+				DataMartSelectField dataMartSelectField = (DataMartSelectField) queryFiled;
 				dataStoreFieldMeta.setProperty("calculated", new Boolean(false));
-				dataStoreFieldMeta.setProperty("uniqueName", ((DataMartSelectField)queryFiled).getUniqueName());
+				dataStoreFieldMeta.setProperty("uniqueName", dataMartSelectField.getUniqueName());
 				dataStoreFieldMeta.setType(Object.class);
+				String format = dataMartSelectField.getPattern();
+				if (format != null && !format.trim().equals("")) {
+					dataStoreFieldMeta.setProperty("format", format);
+				}
 			} else {
 				CalculatedSelectField claculatedQueryField = (CalculatedSelectField)queryFiled;
 				dataStoreFieldMeta.setProperty("calculated", new Boolean(true));	

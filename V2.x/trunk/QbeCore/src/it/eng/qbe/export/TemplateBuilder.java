@@ -158,6 +158,9 @@ public class TemplateBuilder {
 	/** The Constant DEFAULT_DETAIL_ODD_ROW_BACKCOLOR. */
 	public static final String DEFAULT_DETAIL_ODD_ROW_BACKCOLOR = "#FFFFFF";	
 	
+	/** The Constant DEFAULT_NUMBER_PATTERN. */
+	public static final String DEFAULT_NUMBER_PATTERN = "#,##0.##";
+	
 	/**
 	 * Gets the param value.
 	 * 
@@ -279,7 +282,8 @@ public class TemplateBuilder {
 			
 			buffer.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"false\" evaluationTime=\"Now\" hyperlinkType=\"None\"  hyperlinkTarget=\"Self\" ");
 			if (isANumber) {
-				buffer.append(" pattern=\"#,##0.##\"");
+				String pattern = field.getPattern();
+				buffer.append(" pattern=\"" + ((pattern != null) ? pattern : DEFAULT_NUMBER_PATTERN) + "\"");
 			}
 			buffer.append(" >\n");
 			
@@ -326,7 +330,8 @@ public class TemplateBuilder {
 			
 			buffer.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"false\" evaluationTime=\"Now\" hyperlinkType=\"None\"  hyperlinkTarget=\"Self\" ");
 			if (isANumber) {
-				buffer.append(" pattern=\"#,##0.##\"");
+				String pattern = field.getPattern();
+				buffer.append(" pattern=\"" + ((pattern != null) ? pattern : DEFAULT_NUMBER_PATTERN) + "\"");
 			}
 			buffer.append(" >\n");
 			buffer.append("<reportElement " + 

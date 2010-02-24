@@ -41,6 +41,9 @@ public class Field {
 	/** The disply size. */
 	private int displySize;
 	
+	/** The format pattern (used for numbers) */
+	private String pattern;
+
 	/**
 	 * Instantiates a new field.
 	 * 
@@ -147,5 +150,13 @@ public class Field {
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
+	
+	public String getPattern() {
+		return pattern;
+	}
 
+	public void setPattern(String pattern) {
+		this.pattern = pattern;
+	}
+	
 }

@@ -168,7 +168,7 @@ public class GetValuesForQbeFilterLookup  extends AbstractQbeEngineAction{
 	private Query buildQuery(String fieldUniqueName, JSONObject filtersJSON) throws JSONException {
 		logger.debug("IN: fieldUniqueName = " + fieldUniqueName);
 		Query query = new Query();
-		query.addSelectFiled(fieldUniqueName, "NONE", "Valori", true, true, false, "asc");
+		query.addSelectFiled(fieldUniqueName, "NONE", "Valori", true, true, false, "asc", null);
 		query.setDistinctClauseEnabled(true);
 		if (filtersJSON != null) {
 			

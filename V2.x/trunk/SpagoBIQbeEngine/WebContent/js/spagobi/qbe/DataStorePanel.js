@@ -145,7 +145,13 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 			   if(meta.fields[i].type) {
 				   var t = meta.fields[i].type;
 				   //if(t === 'float' || t ==='int') t = 'number';
-				   meta.fields[i].renderer  =  Sbi.locale.formatters[t];			   
+				   if (meta.fields[i].format) { // format is applied only to numbers
+					   var format = Sbi.qbe.commons.Format.getFormatFromJavaPattern(meta.fields[i].format);
+					   var f = Ext.apply( Sbi.locale.formats[t], format);
+					   meta.fields[i].renderer = Sbi.qbe.commons.Format.numberRenderer(f);
+				   } else {
+					   meta.fields[i].renderer = Sbi.locale.formatters[t];
+				   }
 			   }
 			   
 			   if(meta.fields[i].subtype && meta.fields[i].subtype === 'html') {

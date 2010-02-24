@@ -147,11 +147,6 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	        fields : ['id', 'label']
 	    });
 	    
-	   /* this.documentsStore = new Ext.data.SimpleStore({
-	    	id: 'id',
-	        fields : [ 'id', 'name', 'description', 'checked' ]
-	    });*/
-	    
 	    this.contactsStore = new Ext.data.SimpleStore({
 	    	id: 'id',
 	        fields : [ 'id', 'name', 'email', 'mobile', 'resources' ]
@@ -160,11 +155,6 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	    this.kpisEmptyStore = config.kpisEmptyList;
 	    this.tresholdsEmptyStore = config.tresholdsList;
 	    this.contactsEmptyStore = config.contactsEmpyList;
-
-	    /*
-	    this.alarmsEmptyStore = config.alarmsEmptyList;
-	    this.documentsEmptyStore = config.documentsEmptyList;
-	    */
   
     }
     
@@ -196,30 +186,29 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 			                 fieldLabel: LN('sbi.alarms.alarmLabel'),
 			                 name: 'label',
 			                 width : 250,
-			                 allowBlank: false
-			                // validationEvent:true,
-	  		            	// maxLength:100,
-	  		            	// minLength:1,
-	  		            	// regex : new RegExp("^([a-zA-Z1-9_\x2D])+$", "g"),
-	  		            	// regexText : LN('sbi.users.wrongFormat')
+			                 allowBlank: false,
+			                 validationEvent:true,
+	  		            	 maxLength:50,
+	  		            	 minLength:1,
+	  		            	 regex : new RegExp("^([a-zA-Z1-9_\x2D])+$", "g"),
+	  		            	 regexText : LN('sbi.users.wrongFormat')
 			             },{
 			                 fieldLabel:  LN('sbi.alarms.alarmName'),
 			                 name: 'name',
 			                 width : 250,
-			                 allowBlank: false
-			                // validationEvent:true,
-	  		            	// maxLength:255,
-	  		            	// minLength:1,
-	  		            	// regex : new RegExp("^([a-zA-Z0-9_\x2D\s\x2F])+$", "g"),
-	  		            	// regexText : LN('sbi.users.wrongFormat')
+			                 allowBlank: false,
+			                 validationEvent:true,
+	  		            	 maxLength:50,
+	  		            	 minLength:1,
+	  		            	 regex : new RegExp("^([a-zA-Z0-9_\x2D\s\x2F])+$", "g"),
+	  		            	 regexText : LN('sbi.users.wrongFormat')
 			             },{
 			                 fieldLabel: LN('sbi.alarms.alarmDescr'),
 			                 width : 250,
-			                 name: 'description'
-			                // allowBlank: false,
-			                // validationEvent:true,
-	  		            	// maxLength:160,
-	  		            	// minLength:1
+			                 name: 'description',
+			                 allowBlank: true,
+			                 validationEvent:true,
+	  		            	 maxLength:200
 			             },{
 				            xtype: 'radiogroup',
 				            itemId: 'modality',
@@ -246,21 +235,19 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 			             }),{
 			                 fieldLabel:  LN('sbi.alarms.alarmMailUrl'),
 			                 width : 250,
-			                 name: 'url'
-			                // allowBlank: false,
-			                // validationEvent:true,
-	  		            	// maxLength:160,
-	  		            	// minLength:1
+			                 name: 'url',
+			                 allowBlank: true,
+			                 validationEvent:true,
+	  		            	 maxLength:20
 			             },{
 			                 fieldLabel:  LN('sbi.alarms.alarmMailText'),
 			                 xtype: 'textarea',
 			                 width : 250,
 			                 height : 80,
-			                 name: 'text'
-			                // allowBlank: false,
-			                // validationEvent:true,
-	  		            	// maxLength:160,
-	  		            	// minLength:1
+			                 name: 'text',
+			                 allowBlank: true,
+			                 validationEvent:true,
+	  		            	 maxLength:1000
 		             }]
 		    	}
 		    });

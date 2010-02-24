@@ -395,8 +395,8 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	      			var content = Ext.util.JSON.decode( response.responseText );
 	      			if(content !== undefined) {	     				
 
-	      				this.thresholdsStore.loadData(content);
-	      				this.thresholdsStore.commitChanges();
+	      				this.tresholdsCombo.getStore().loadData(content);
+	      				this.tresholdsCombo.getStore().commitChanges();
 
 	      			}
 				} 	
@@ -560,8 +560,8 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		   	         				checkedArr.push(tempRecord);		   	         				
 		   	         				Ext.getCmp("kpi-grid").getSelectionModel().selectRecords(checkedArr, false);		   	         				
 		   	         				//selects threshold
-		   	         				Ext.getCmp("tresholds-combo").focus();
-		   	         				//Ext.getCmp("tresholds-combo").value = rec.data.threshold;
+		   	         				//Ext.getCmp("tresholds-combo").focus();
+		   	         				Ext.getCmp("tresholds-combo").value = rec.data.threshold;
 		   	         				Ext.getCmp("tresholds-combo").setValue(rec.data.threshold);		   	         				
 		   	         				//Ext.getCmp("tresholds-combo").selectByValue(rec.data.threshold, true);
 		   	         			}

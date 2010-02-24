@@ -348,6 +348,7 @@ public class ImportUtilities {
 		newDataset.setName(dataset.getName());
 		newDataset.setDescription(dataset.getDescription());
 		newDataset.setParameters(dataset.getParameters());
+		newDataset.setDsMetadata(dataset.getDsMetadata());
 		logger.debug("OUT");
 		return newDataset;
 	}	
@@ -1071,6 +1072,7 @@ public class ImportUtilities {
 			existingDataset.setPivotColumnValue(exportedDataset.getPivotColumnValue());
 			existingDataset.setPivotRowName(exportedDataset.getPivotRowName());
 			existingDataset.setNumRows(exportedDataset.isNumRows());
+			existingDataset.setDsMetadata(exportedDataset.getDsMetadata());
 		} finally {
 			logger.debug("OUT");
 		}

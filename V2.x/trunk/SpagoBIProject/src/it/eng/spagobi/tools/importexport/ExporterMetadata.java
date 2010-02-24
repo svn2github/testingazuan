@@ -293,6 +293,7 @@ public class ExporterMetadata {
 			hibDataset.setPivotColumnValue(dataset.getPivotColumnValue());
 			hibDataset.setPivotRowName(dataset.getPivotRowName());
 			hibDataset.setNumRows(dataset.isNumRows());
+			hibDataset.setDsMetadata(dataset.getDsMetadata());
 
 			if (dataset.getTransformerId() != null) {
 				SbiDomains transformerType = (SbiDomains) session.load(SbiDomains.class, dataset.getTransformerId());

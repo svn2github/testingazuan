@@ -34,6 +34,9 @@
         <property name="numRows" type="boolean">
             <column name="NUM_ROWS" />
         </property>
+        <property name="dsMetadata" type="string">
+            <column name="DS_METADATA" />
+        </property>
 		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet" discriminator-value="SbiFileDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" >
 	        <property name="fileName" type="string">
 	            <column name="FILE_NAME" />

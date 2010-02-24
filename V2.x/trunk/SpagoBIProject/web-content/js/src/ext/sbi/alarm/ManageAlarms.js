@@ -463,7 +463,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
  	    
  	   this.tabs = new Ext.TabPanel({
            enableTabScroll : true
-           , activeTab : 0
+           , activeTab : 2
            , autoScroll : true
            , width: 450
            , height: 450
@@ -599,7 +599,6 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	,save : function() {
 		   
 	   var values = this.gridForm.getForm().getValues();
-	   alert(values.toSource());
 
        var newRec = null;
 

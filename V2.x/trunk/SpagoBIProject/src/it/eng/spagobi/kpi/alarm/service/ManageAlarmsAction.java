@@ -109,8 +109,15 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 				if(kpisAlarm != null){
 					getSessionContainer().setAttribute(KPI_LIST, kpisAlarm);
 				}
+				
+				List<SbiAlarm> alarms = alarmDao.findAll();
+				logger.debug("Loaded users list");
+				JSONArray alarmsJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(alarms,locale);
+				JSONObject usersResponseJSON = createJSONResponseAlarms(alarmsJSON);
 
-			} catch (EMFUserError e) {
+				writeBackToClient(new JSONSuccess(usersResponseJSON));
+
+			}catch (EMFUserError e) {
 				logger.error(e.getMessage(), e);
 				try {
 					writeBackToClient("Exception occurred while retrieving kpis list");
@@ -119,19 +126,10 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 				}
 				throw new SpagoBIServiceException(SERVICE_NAME,
 						"Exception occurred while retrieving kpis", e);
-			}
-			try {				
-				List<SbiAlarm> alarms = alarmDao.findAll();
-				logger.debug("Loaded users list");
-				JSONArray alarmsJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(alarms,locale);
-				JSONObject usersResponseJSON = createJSONResponseAlarms(alarmsJSON);
-
-				writeBackToClient(new JSONSuccess(usersResponseJSON));
-
 			} catch (Throwable e) {
-				logger.error("Exception occurred while retrieving users", e);
+				logger.error("Exception occurred while retrieving alarms", e);
 				throw new SpagoBIServiceException(SERVICE_NAME,
-						"Exception occurred while retrieving users", e);
+						"Exception occurred while retrieving alarms", e);
 			}
 			
 		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(ALARM_INSERT)) {

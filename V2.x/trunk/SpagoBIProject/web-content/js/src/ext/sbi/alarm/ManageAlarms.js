@@ -354,7 +354,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	    ]);
 
 		this.contactsGridPanel = new Ext.grid.GridPanel({
-			  store: this.thresholdsStore
+			  store: this.contactsStore
 			, id: 'contacts-form'
    	     	, cm: this.cmContacts
    	     	, sm: this.smContacts
@@ -384,17 +384,19 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		var row = sm.getSelected();
 	
 		this.kpiInstId = row.data.id;
+		
 		Ext.Ajax.request({
 	          url: this.services['loadTresholdsService'],
 	          params: {id: this.kpiInstId},
 	          method: 'GET',
 	          success: function(response, options) {
+	          	
 				if (response !== undefined) {		
 	      			var content = Ext.util.JSON.decode( response.responseText );
 	      			if(content !== undefined) {	     				
 
-	      				this.tresholdsCombo.getStore().loadData(content);
-	      				this.tresholdsCombo.getStore().commitChanges();
+	      				this.thresholdsStore.loadData(content);
+	      				this.thresholdsStore.commitChanges();
 
 	      			}
 				} 	
@@ -714,13 +716,13 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 								}			   
 					   	    }	
 					   	    record.set('contacts', alarmContacts);
-					   	    this.alarmsStore.getById(idTemp).set('contacts', alarmContacts);							
+					   	    //this.alarmsStore.getById(idTemp).set('contacts', alarmContacts);							
 						}
 						this.contactsStore.commitChanges();
 						this.alarmsStore.commitChanges();				
 	      			 }
 		      	}else{
-		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+		      		Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
 		      	}
 			}else{
 				Sbi.exception.ExceptionHandler.showErrorMessage('Error while saving User', 'Service Error');

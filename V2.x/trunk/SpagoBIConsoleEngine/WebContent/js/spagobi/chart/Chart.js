@@ -47,11 +47,11 @@
 Ext.ns("Sbi.chart");
 
 
-Sbi.chart.Chart = function(config) {	
-	Sbi.chart.Chart.superclass.constructor.call(this, config);
+Sbi.chart.SpagoBIChart = function(config) {	
+	Sbi.chart.SpagoBIChart.superclass.constructor.call(this, config);
 };
 
-Ext.extend(Sbi.chart.Chart, Ext.FlashComponent, {
+Ext.extend(Sbi.chart.SpagoBIChart, Ext.FlashComponent, {
     
    
     // -- public methods -------------------------------------------------------------------
@@ -62,9 +62,9 @@ Ext.extend(Sbi.chart.Chart, Ext.FlashComponent, {
     // -- private methods ------------------------------------------------------------------
     
 	initComponent : function(){
-		Sbi.chart.Chart.superclass.initComponent.call(this);
+		Sbi.chart.SpagoBIChart.superclass.initComponent.call(this);
     	if(!this.url){
-        	this.url = Sbi.chart.Chart.CHART_URL;
+        	this.url = Sbi.chart.SpagoBIChart.CHART_URL;
     	}
     	   	
     	this.autoScroll = true;
@@ -85,7 +85,7 @@ Ext.extend(Sbi.chart.Chart, Ext.FlashComponent, {
 		this.flashVars.paramWidth = ct.getWidth();
 		this.flashVars.paramHeight = ct.getHeight();
 				
-		Sbi.chart.Chart.superclass.onRender.call(this, ct, position);
+		Sbi.chart.SpagoBIChart.superclass.onRender.call(this, ct, position);
 		
         this.testFn.defer(2000, this);
 	}
@@ -96,4 +96,4 @@ Ext.extend(Sbi.chart.Chart, Ext.FlashComponent, {
     
 });
 
-Sbi.chart.Chart.CHART_URL = '/SpagoBIConsoleEngine/swf/spagobichart/rotation.swf';
+Sbi.chart.SpagoBIChart.CHART_URL = '/SpagoBIConsoleEngine/swf/spagobichart/rotation.swf';

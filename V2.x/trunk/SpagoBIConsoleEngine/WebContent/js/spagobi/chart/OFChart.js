@@ -47,11 +47,11 @@
 Ext.ns("Sbi.chart");
 
 
-Sbi.chart.Chart = function(config) {	
-	Sbi.chart.Chart.superclass.constructor.call(this, config);
+Sbi.chart.OFChart = function(config) {	
+	Sbi.chart.OFChart.superclass.constructor.call(this, config);
 };
 
-Ext.extend(Sbi.chart.Chart, Ext.FlashComponent, {
+Ext.extend(Sbi.chart.OFChart, Ext.FlashComponent, {
     
    
     // -- public methods -------------------------------------------------------------------
@@ -62,9 +62,9 @@ Ext.extend(Sbi.chart.Chart, Ext.FlashComponent, {
     // -- private methods ------------------------------------------------------------------
     
 	initComponent : function(){
-		Sbi.chart.Chart.superclass.initComponent.call(this);
+		Sbi.chart.OFChart.superclass.initComponent.call(this);
     	if(!this.url){
-        	this.url = Sbi.chart.Chart.CHART_URL;
+        	this.url = Sbi.chart.OFChart.CHART_URL;
     	}
     	   	
     	this.autoScroll = true;
@@ -85,15 +85,62 @@ Ext.extend(Sbi.chart.Chart, Ext.FlashComponent, {
 		this.flashVars.paramWidth = ct.getWidth();
 		this.flashVars.paramHeight = ct.getHeight();
 				
-		Sbi.chart.Chart.superclass.onRender.call(this, ct, position);
+		Sbi.chart.OFChart.superclass.onRender.call(this, ct, position);
 		
-        this.testFn.defer(2000, this);
+        //this.testFn.defer(2000, this);
 	}
 	
 	, testFn: function() {
-    	this.swf.setValue(35);
+    	this.swf.load();
     }
     
 });
 
-Sbi.chart.Chart.CHART_URL = '/SpagoBIConsoleEngine/swf/spagobichart/rotation.swf';
+
+
+/*
+function open_flash_chart_data()
+{
+	var s = Ext.util.JSON.encode({
+		"elements": [
+		{
+			"type": "bar",
+			"values": [9, 8, 7, 6, 5, 4, 3, 2, 1]
+		}
+		]
+		, "title": {
+			"text": "Chart di prova"
+		}
+	});
+	return s;
+}
+*/
+function open_flash_chart_data() {
+	
+	var s = Ext.util.JSON.encode({ 
+		"elements": [ { 
+			"type": "bar_sketch", 
+			"colour": "#81AC00", 
+			"outline-colour": "#567300", 
+			"offset": 5, 
+			"values": [ { "top": 3, "tip": "Hello #val#" }, 
+			            1, 2, 3, 
+			            { "top": 3, "tip": "Hello #val#" }, 
+			            { "top": 3, "tip": "Hello #val#" },
+			            { "top": 3, "tip": "Hello #val#" }, 
+			            { "top": 3, "tip": "Hello #val#" }, 
+			            { "top": 3, "tip": "Hello #val#" }, 
+			            { "top": 3, "tip": "Hello #val#" }, 
+			            10, 11 ] 
+		} ], 
+		"title": { "text": "Open Flash Chart", "style": "{color: #567300; font-size: 14px}" } ,
+		"bg_colour": "#FFFFFF"
+	});
+	return s;
+}
+
+
+
+
+
+Sbi.chart.OFChart.CHART_URL = '/SpagoBIConsoleEngine/swf/openflashchart/open-flash-chart.swf';

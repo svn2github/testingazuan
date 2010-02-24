@@ -44,18 +44,25 @@ Sbi.template = {
             	, xField: 'quarter'
             	, yField: 'sales'
         	}
-        } , /* {
+        } , {
         	dataset: 'testConsoleChart'
         	, widgetConfig: {
         		type: 'chart.ext.pie'
         		, dataField: 'sales'
 	        	, categoryField: 'quarter'
         	}
-        } , */ {
+        } ,  {
         	dataset: 'testConsoleChart'
             , widgetConfig: {
-           		type: 'chart.sbi.rotate'
+           		//type: 'chart.sbi.rotate'
+           		type: 'chart.of.bar'
            	}
+        }  ,  {
+        	dataset: 'testConsoleChart'
+            , widgetConfig: {
+            	type: 'chart.sbi.rotate'
+               	//type: 'chart.of.bar'
+            }
         }
     	]
     

@@ -44,7 +44,7 @@
   * - Andrea Gioia (andrea.gioia@eng.it)
   */
 
-Ext.chart.Chart.CHART_URL = '/SpagoBIConsoleEngine/swf/charts.swf';
+Ext.chart.Chart.CHART_URL = '/SpagoBIConsoleEngine/swf/yuichart/charts.swf';
 
 Ext.ns("Sbi.console");
 
@@ -94,6 +94,7 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	, BAR_CHART: 'chart.ext.bar'
 	, PIE_CHART: 'chart.ext.pie'
 	, ROTATE_CHART: 'chart.sbi.rotate'
+	, OF_BAR_CHART: 'chart.of.bar'
 	
     //  -- public methods ---------------------------------------------------------
     
@@ -171,6 +172,8 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 			chart = this.createPieChart(chartConfig);
 		} else if(chartType === this.ROTATE_CHART){
 			chart = this.createRotateChart(chartConfig);
+		} else if(chartType === this.OF_BAR_CHART){
+			chart = this.createOFBarChart(chartConfig);
 		}else {
 			Sbi.exception.ExceptionHandler.showErrorMessage('Chart type [' + chartType + '] not supported by [ChartWidget]');
 		}
@@ -271,6 +274,17 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		    , items: [new Sbi.chart.Chart()]
 		});		
 	}
+	
+	, createOFBarChart: function(chartConfig) {
+		
+		return new Ext.Panel({
+			layout:'fit'
+		    , height: this.height	
+		    , items: [new Sbi.chart.OFChart()]
+		});		
+	}
+	
+	
 	
 	, getFieldNameByAlias: function(alias) {
 		var fname;

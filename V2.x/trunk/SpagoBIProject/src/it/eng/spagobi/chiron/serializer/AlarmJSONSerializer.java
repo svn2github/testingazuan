@@ -21,11 +21,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.chiron.serializer;
 
+import it.eng.spagobi.commons.bo.Role;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.kpi.alarm.metadata.SbiAlarm;
+import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class AlarmJSONSerializer implements Serializer{
@@ -64,6 +71,34 @@ public class AlarmJSONSerializer implements Serializer{
 				result.put(MODALITY, modalityDomain.getValueCd());
 			else
 				result.put(MODALITY, "");
+			
+			//contacts
+			List<SbiAlarmContact> allContacts = DAOFactory.getAlarmContactDAO().findAll();
+			Iterator itAllContacts = allContacts.iterator();
+			
+			Set<SbiAlarmContact> alarmContacts = sbiAlarm.getSbiAlarmContacts();			
+			JSONArray contactsJSON = new JSONArray();
+			
+			while(itAllContacts.hasNext()){
+				JSONObject jsonContact = new JSONObject();
+				SbiAlarmContact contact = (SbiAlarmContact)itAllContacts.next();
+				if(contact!=null){
+					Integer contactId = contact.getId();
+					jsonContact.put("id", contact.getId());
+					jsonContact.put("name", contact.getName());					
+					jsonContact.put("mobile", contact.getMobile());
+					jsonContact.put("email", contact.getEmail());
+					jsonContact.put("resources", contact.getResources());
+					if(alarmContacts.contains(contactId)){
+						jsonContact.put("checked", true);
+					}else{
+						jsonContact.put("checked", false);
+					}
+					contactsJSON.put(jsonContact);
+				}			
+			}
+			result.put("contacts", contactsJSON);
+			
 		} catch (Throwable t) {
 			throw new SerializationException("An error occurred while serializing object: " + o, t);
 		} finally {

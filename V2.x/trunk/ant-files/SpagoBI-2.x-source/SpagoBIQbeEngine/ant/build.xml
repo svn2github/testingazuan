@@ -122,6 +122,94 @@
  <target name="liferay.tomcat">                            
   </target>
   
+	
+	  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	  <!--   ATTIVITA' SPECIFICHE PER COMPRESSIONE CODICE JS                              -->
+	  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->  
+	  
+	<target name="production"  depends="create-production">
+		<replace file="${build}/${webapp_name}/WEB-INF/jsp/commons/includeSbiQbeJS.jspf">
+			 <replacetoken><![CDATA[<!-- START-PRODUCTION]]></replacetoken>      
+			 <replacevalue><![CDATA[<!-- START-PRODUCTION -->]]></replacevalue>		
+		</replace>
+		<replace file="${build}/${webapp_name}/WEB-INF/jsp/commons/includeSbiQbeJS.jspf">
+		  	 <replacetoken><![CDATA[END-PRODUCTION -->]]></replacetoken>
+		     <replacevalue><![CDATA[<!-- END-PRODUCTION -->]]></replacevalue>		
+		</replace>  
+		
+		<replace file="${build}/${webapp_name}/WEB-INF/jsp/commons/includeSbiQbeJS.jspf">
+				<replacetoken><![CDATA[<!-- START-DEBUG -->]]></replacetoken>      
+				<replacevalue><![CDATA[<!-- START-DEBUG]]></replacevalue>		
+		</replace>
+		<replace file="${build}/${webapp_name}/WEB-INF/jsp/commons/includeSbiQbeJS.jspf">
+		      	 <replacetoken><![CDATA[<!-- END-DEBUG -->]]></replacetoken>
+				<replacevalue><![CDATA[END-DEBUG -->]]></replacevalue>		
+		</replace> 
+	</target>
+	
+	<target name="delete-debug">
+		<delete file="${build}/${webapp_name}/js/spagobi/qbe-all.js"/>
+		<delete file="${build}/${webapp_name}/js/spagobi/qbe-all-debug.js"/>
+	</target>
+  
+	<target name="create-debug" depends="delete-debug">
+		<concat destfile="${build}/${webapp_name}/js/spagobi/qbe-all-debug.js" append="true">
+		    <filelist dir="${build}/${webapp_name}/js">
+		    	<file name='./spagobi/qbe/filterwizard/parser.js'/>
+		    	<file name='./spagobi/qbe/filterwizard/buttonColumn.js'/>
+
+		    	<file name='./spagobi/overrides/overrides.js'/>
+		    	<file name='./spagobi/exception/ExceptionHandler.js'/>
+		    	<file name='./spagobi/service/ServiceRegistry.js'/>
+		    	<file name='./spagobi/commons/Format.js'/>
+		    	<file name='./spagobi/commons/Utils.js'/>
+		    	<file name='./spagobi/locale/LocaleUtils.js'/>
+		    		
+		    	<file name='./spagobi/qbe/filterwizard/filterWizard.js'/>
+
+		    	<file name='./spagobi/qbe/DataStorePanel.js'/>
+		    	<file name='./spagobi/qbe/DataMartStructurePanel.js'/>
+		    	<file name='./spagobi/qbe/QueryCataloguePanel.js'/>
+		    	<file name='./spagobi/qbe/SelectGridDropTarget.js'/>
+		    	<file name='./spagobi/qbe/SelectGridPanel.js'/>
+		    	<file name='./spagobi/qbe/OperandChooserWindow.js'/>
+		    	<file name='./spagobi/qbe/FilterGridDropTarget.js'/>
+		    	<file name='./spagobi/qbe/FilterGridPanel.js'/>
+		    			
+		    	<file name='./spagobi/qbe/HavingGridPanel.js'/>
+		    	<file name='./spagobi/qbe/HavingGridDropTarget.js'/>
+		    	<file name='./spagobi/qbe/SaveWindow.js'/>
+		    	<file name='./spagobi/qbe/QueryBuilderPanel.js'/>
+		    	<file name='./spagobi/qbe/QbePanel.js'/>
+		    	<file name='./spagobi/qbe/FreeConditionsWindow.js'/>
+		    	<file name='./spagobi/qbe/CalculatedFieldWizard.js'/>
+		    			
+		    	<file name='./spagobi/qbe/DocumentParametersGridPanel.js'/>
+		    	<file name='./spagobi/qbe/DocumentParametersStore.js'/>
+		    	<file name='./spagobi/qbe/HavingGridPanel.js'/>
+		    	<file name='./spagobi/widgets/LookupField.js'/>
+		    	<file name='./spagobi/widgets/FilteringToolbar.js'/>
+		    	<file name='./spagobi/widgets/PagingToolbar.js'/>
+		    	<file name='./spagobi/widgets/TriggerFieldMultiButton.js'/>
+		    	
+		    </filelist>
+
+		</concat>
+	</target>
+	
+	<target name="create-production" depends="create-debug">
+			<java jar="./yuicompressor-2.4.2.jar" fork="true">
+				<arg line="-o ${build}/${webapp_name}/js/spagobi/qbe-all-24022010.js ${build}/${webapp_name}/js/spagobi/qbe-all-debug.js"/>		   
+			</java>
+	</target>
+
+	
+  	<target name="development"  >
+
+
+	</target>
+	
+	
   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
   <!--   ATTIVITA' SPECIFICHE PER LA GESTIONE DEL SSI                          -->
   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->	
@@ -144,7 +232,8 @@
 	
 	<target name="create.war" depends="init,copy.artifacts" >
 		  <antcall target="${sso}" />	
-	      <antcall target="${specific.ant.task}" />	        
+	      <antcall target="${specific.ant.task}" />	
+		  <antcall target="${ext.deploy}" />
 	        
 	      <mkdir dir="${dist}"/>
 	      <delete file="${dist}/${war_name}" />

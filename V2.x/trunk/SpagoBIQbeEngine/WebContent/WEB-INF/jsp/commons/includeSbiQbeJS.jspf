@@ -9,11 +9,12 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <!-- Include localized labels  -->
 <script type="text/javascript" src='../js/spagobi/locale/<%=locale.getLanguage()%>.js'/></script>
 
+<script type="text/javascript" src='../js/spagobi/commons/Settings.js'/></script>	
+
 <!-- START-DEBUG -->
 <script type="text/javascript" src='../js/spagobi/qbe/filterwizard/parser.js'/></script>
 <script type="text/javascript" src='../js/spagobi/qbe/filterwizard/buttonColumn.js'/></script>
-		
-<script type="text/javascript" src='../js/spagobi/commons/Settings.js'/></script>	
+
 <script type="text/javascript" src='../js/spagobi/overrides/overrides.js'/></script>
 <script type="text/javascript" src='../js/spagobi/exception/ExceptionHandler.js'/></script>
 <script type="text/javascript" src='../js/spagobi/service/ServiceRegistry.js'/></script>
@@ -48,7 +49,7 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/widgets/PagingToolbar.js'/></script>
 <script type="text/javascript" src='../js/spagobi/widgets/TriggerFieldMultiButton.js'/></script>
 <!-- END-DEBUG -->
-
+ 
 <!-- START-PRODUCTION
-<script type="text/javascript" src='../js/spagobi/qbe-all.js'></script>
- END-PRODUCTION -->
+<script type="text/javascript" src='../js/spagobi/qbe-all-24022010.js'></script>
+END-PRODUCTION -->

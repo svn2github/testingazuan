@@ -175,6 +175,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
            enableTabScroll : true
            , activeTab : 1
            , autoScroll : true
+           , deferredRender: false
            , width: 450
            , height: 450
            , itemId: 'tabs'

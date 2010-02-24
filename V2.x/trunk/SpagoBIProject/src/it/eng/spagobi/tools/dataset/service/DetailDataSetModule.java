@@ -230,7 +230,11 @@ public class DetailDataSetModule extends AbstractModule {
 
 
 		errorHandler = getErrorHandler();
-
+		Object datasetMetadataXMLO=session.getAttribute(DS_METADATA_XML);
+		if(datasetMetadataXMLO!=null){
+			String datasetMetadataXML=(String)datasetMetadataXMLO;
+			dsNew.setDsMetadata(datasetMetadataXML);	
+		}
 
 //		check if we are coming from the test
 		String returnFromTestMsg = (String) serviceRequest.getAttribute(DetailDataSetModule.RETURN_FROM_TEST_MSG);
@@ -239,14 +243,11 @@ public class DetailDataSetModule extends AbstractModule {
 			// save after the test
 			if ("SAVE".equalsIgnoreCase(returnFromTestMsg)) {      // Save 		
 				//DAOFactory.getDataSetDAO().modifyDataSet(dsNew);
-				String datasetMetadataXML=(String)session.getAttribute(DS_METADATA_XML);
-				if(datasetMetadataXML!=null){
-					dsNew.setDsMetadata(datasetMetadataXML);	
-				}
 				serviceResponse.setAttribute(DetailDataSetModule.DATASET, dsNew);
 				serviceResponse.setAttribute(SpagoBIConstants.MODALITY, mod);
 				session.delAttribute(DetailDataSetModule.DATASET);
 				session.delAttribute(SpagoBIConstants.MODALITY);
+				session.delAttribute(DS_METADATA_XML);
 			} 
 			// don't save after the test
 			else 
@@ -337,13 +338,13 @@ public class DetailDataSetModule extends AbstractModule {
 
 				// Test Case
 				if (testCase) {
-					
+
 					// check if is file dataset and has no file associated
 					if(dsNew.getType().equals("0") && dsNew.getFileName()==null){
 						logger.error("FIle name is empty: if you are trying to uplad new FIl save dataset before testing it"); 
 						//EMFUserError error=new EMFUserError(EMFErrorSeverity.ERROR, "FIle name is empty: if you are trying to uplad new FIl save dataset before testing it", messageBundle);
 						EMFUserError error=new EMFUserError(EMFErrorSeverity.ERROR, 9226);
-						
+
 						getErrorHandler().addError(error);
 					}
 					session.setAttribute(SpagoBIConstants.MODALITY, mod);
@@ -413,7 +414,6 @@ public class DetailDataSetModule extends AbstractModule {
 		} else {				
 			//update ds
 			DAOFactory.getDataSetDAO().modifyDataSet(DataSetFactory.getDataSet(dsNew));			
-
 			//session.setAttribute("dataset", dsNew);
 		}  
 
@@ -843,6 +843,7 @@ public class DetailDataSetModule extends AbstractModule {
 		response.setAttribute("loopback", "true");
 		session.delAttribute(DetailDataSetModule.DATASET_MODIFIED);
 		session.delAttribute(DetailDataSetModule.DATASET);
+		session.delAttribute(DetailDataSetModule.DS_METADATA_XML);
 	}
 
 

@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.tools.dataset.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
@@ -57,7 +57,7 @@ import org.hibernate.criterion.Expression;
 
 public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetDAO  {
 	static private Logger logger = Logger.getLogger(DataSetDAOHibImpl.class);
-	
+
 	/**
 	 * Load data set by id.
 	 * 
@@ -79,7 +79,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiDataSetConfig hibDataSet = (SbiDataSetConfig)aSession.load(SbiDataSetConfig.class,  dsID);
-			
+
 			toReturn = toDataSet(hibDataSet);
 			tx.commit();
 
@@ -206,7 +206,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 
 			SbiDataSetConfig hibDataSet = (SbiDataSetConfig) aSession.load(SbiDataSetConfig.class,
 					new Integer(aDataSet.getId()));			
-			
+
 			if(aDataSet instanceof FileDataSet){
 				//hibDataSet=new SbiFileDataSet();
 				if(((FileDataSet)aDataSet).getFileName()!=null){
@@ -235,7 +235,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 					((SbiWSDataSet)hibDataSet).setOperation(((WebServiceDataSet)aDataSet).getOperation());
 				}	
 			}
-			
+
 			else if(aDataSet instanceof ScriptDataSet){
 
 				if(((ScriptDataSet)aDataSet).getScript()!=null){
@@ -246,7 +246,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 				}
 
 			}
-			
+
 			else if(aDataSet instanceof JavaClassDataSet){
 
 				if(((JavaClassDataSet)aDataSet).getClassName()!=null){
@@ -258,9 +258,9 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 				Criterion aCriterion = Expression.eq("valueId",	aDataSet.getTransformerId());
 				Criteria criteria = aSession.createCriteria(SbiDomains.class);
 				criteria.add(aCriterion);
-	
+
 				transformer = (SbiDomains) criteria.uniqueResult();
-	
+
 				if (transformer == null){
 					logger.error("The Domain with value_id= "+aDataSet.getTransformerId()+" does not exist.");
 					throw new EMFUserError(EMFErrorSeverity.ERROR, 1035);
@@ -276,9 +276,9 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			hibDataSet.setDescription(aDataSet.getDescription());
 			hibDataSet.setParameters(aDataSet.getParameters());
 			hibDataSet.setDsMetadata(aDataSet.getDsMetadata());
-			
-			
-			
+
+
+
 			tx.commit();
 		} catch (HibernateException he) {
 			logger.error("Error while modifing the data Set with id " + ((aDataSet == null)?"":String.valueOf(aDataSet.getId())), he);
@@ -344,14 +344,14 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 					((SbiWSDataSet)hibDataSet).setOperation(((WebServiceDataSet)aDataSet).getOperation());
 				}	
 			}
-			
+
 			else if(aDataSet instanceof JavaClassDataSet){
 				hibDataSet=new SbiJClassDataSet();
 				if(((JavaClassDataSet)aDataSet).getClassName()!=null){
 					((SbiJClassDataSet)hibDataSet).setJavaClassName(((JavaClassDataSet)aDataSet).getClassName());
 				}
 			}
-			
+
 			else if(aDataSet instanceof ScriptDataSet){
 				hibDataSet=new SbiScriptDataSet();
 				if(((ScriptDataSet)aDataSet).getScript()!=null){
@@ -367,9 +367,9 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 				Criterion aCriterion = Expression.eq("valueId",	aDataSet.getTransformerId());
 				Criteria criteria = aSession.createCriteria(SbiDomains.class);
 				criteria.add(aCriterion);
-	
+
 				transformer = (SbiDomains) criteria.uniqueResult();
-	
+
 				if (transformer == null){
 					logger.error("The Domain with value_id= "+aDataSet.getTransformerId()+" does not exist.");
 					throw new EMFUserError(EMFErrorSeverity.ERROR, 1035);
@@ -385,6 +385,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			hibDataSet.setDescription(aDataSet.getDescription());
 			hibDataSet.setName(aDataSet.getName());
 			hibDataSet.setParameters(aDataSet.getParameters());
+			hibDataSet.setDsMetadata(aDataSet.getDsMetadata());
 
 			aSession.save(hibDataSet);
 			tx.commit();
@@ -457,16 +458,16 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			ds = new FileDataSet();
 			((FileDataSet)ds).setFileName(((SbiFileDataSet)hibDataSet).getFileName());
 		}
-		
+
 		if(hibDataSet instanceof SbiQueryDataSet){
 			ds=new JDBCDataSet();
 			((JDBCDataSet)ds).setQuery(((SbiQueryDataSet)hibDataSet).getQuery());
-			
+
 			SbiDataSource sbids=((SbiQueryDataSet)hibDataSet).getDataSource();
 			if(sbids!=null){
-			DataSourceDAOHibImpl dataSourceDao=new DataSourceDAOHibImpl();
-			IDataSource dataSource=dataSourceDao.toDataSource(sbids);
-			((JDBCDataSet)ds).setDataSource(dataSource);
+				DataSourceDAOHibImpl dataSourceDao=new DataSourceDAOHibImpl();
+				IDataSource dataSource=dataSourceDao.toDataSource(sbids);
+				((JDBCDataSet)ds).setDataSource(dataSource);
 			}
 		}
 
@@ -476,13 +477,13 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			((WebServiceDataSet)ds).setOperation(((SbiWSDataSet)hibDataSet).getOperation());
 			((WebServiceDataSet)ds).setOperation(((SbiWSDataSet)hibDataSet).getOperation());
 		}
-		
+
 		if(hibDataSet instanceof SbiScriptDataSet){
 			ds=new ScriptDataSet();
 			((ScriptDataSet)ds).setScript(((SbiScriptDataSet)hibDataSet).getScript());
 			((ScriptDataSet)ds).setLanguageScript(((SbiScriptDataSet)hibDataSet).getLanguageScript());
 		}
-		
+
 		if(hibDataSet instanceof SbiJClassDataSet){
 			ds=new JavaClassDataSet();
 			((JavaClassDataSet)ds).setClassName(((SbiJClassDataSet)hibDataSet).getJavaClassName());
@@ -499,17 +500,17 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 		ds.setDescription(hibDataSet.getDescription());		
 		ds.setParameters(hibDataSet.getParameters());		
 		ds.setDsMetadata(hibDataSet.getDsMetadata());		
-		
+
 		if(ds.getPivotColumnName() != null 
 				&& ds.getPivotColumnValue() != null
 				&& ds.getPivotRowName() != null){
 			ds.setDataStoreTransformer(
 					new PivotDataSetTransformer(ds.getPivotColumnName(), ds.getPivotColumnValue(), ds.getPivotRowName(), ds.isNumRows()));
 		}
-		
+
 		return ds;
 	}
-	
+
 	/**
 	 * Checks for bi obj associated.
 	 * 

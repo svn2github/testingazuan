@@ -46,6 +46,8 @@ public class AlarmJSONSerializer implements Serializer{
 	public static final String AUTO_DISABLED = "autoDisabled";
 	public static final String TEXT = "text";
 	public static final String URL = "url";
+	public static final String KPI = "kpi";
+	public static final String THRESHOLD = "threshold";
 	
 	public Object serialize(Object o, Locale locale)
 			throws SerializationException {
@@ -66,6 +68,12 @@ public class AlarmJSONSerializer implements Serializer{
 			result.put(DESCRIPTION, sbiAlarm.getDescr());	
 			result.put(TEXT, sbiAlarm.getText());	
 			result.put(URL, sbiAlarm.getUrl());	
+			if(sbiAlarm.getSbiKpiInstance() != null){
+				result.put(KPI, sbiAlarm.getSbiKpiInstance().getIdKpiInstance());	
+			}
+			if(sbiAlarm.getSbiThresholdValue() != null){
+				result.put(THRESHOLD, sbiAlarm.getSbiThresholdValue().getIdThresholdValue());	
+			}
 			SbiDomains modalityDomain = sbiAlarm.getModality();
 			if(modalityDomain != null)
 				result.put(MODALITY, modalityDomain.getValueCd());

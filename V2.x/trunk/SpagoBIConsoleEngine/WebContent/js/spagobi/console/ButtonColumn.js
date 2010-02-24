@@ -72,6 +72,6 @@ Ext.grid.CheckColumn = function(config){
     },
 
     renderer : function(v, p, record){
-        return '<center><img class="x-mybutton-'+this.id+'" width="13px" height="13px" src="' + this.imgSrc + '"/></center>';
+        return '<center><img class="x-mybutton-'+this.id+'" width="13px" height="13px" src="' + this.imgSrc + '" title= "' + this.tooltip + '"/></center>';
     }
   };

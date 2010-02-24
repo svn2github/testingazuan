@@ -253,6 +253,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
                 	    });
           
         	    popupDoc.show(this);
+        	    //window.open(urlExporter,'name','height=750,width=1000');
           }  		    
   		  } else {
   		      //executes back-end acrtion

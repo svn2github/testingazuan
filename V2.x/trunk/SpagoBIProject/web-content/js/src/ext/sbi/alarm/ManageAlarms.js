@@ -254,7 +254,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		    
       	 this.kpiCheckColumn = new Ext.grid.CheckboxSelectionModel( {header: ' ',singleSelect: true, scope:this, dataIndex: 'id'} );
 		 this.kpiCheckColumn.on('rowselect', this.onKpiSelect, this);
-		 this.kpiCheckColumn.on('rowdeselect', this.onKpiDeselect, this);
+		 
 	     this.kpiCm = new Ext.grid.ColumnModel({
 	         // specify any defaults for each column
 	         defaults: {
@@ -377,7 +377,6 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	}
     
 	,onKpiSelect: function(){
-		//alert("onKpiSelect");
 		//loads tresholds
 		var sm = this.kpiGrid.getSelectionModel();
 		var row = sm.getSelected();
@@ -395,19 +394,13 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 				if (response !== undefined) {		
 	      			var content = Ext.util.JSON.decode( response.responseText );
 	      			if(content !== undefined) {	     				
-
 	      				this.tresholdsCombo.getStore().loadData(content);
 	      				this.tresholdsCombo.getStore().commitChanges();
-
 	      			}
-				} 	
+				 } 	
 	          }
 	          ,scope: this
 	    });
-	}
-	
-	,onKpiDeselect: function(){
-	
 	}
 	
 	,initManageAlarms: function(){
@@ -433,8 +426,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
          {header: LN('sbi.alarms.alarmLabel'), width: 150, sortable: true, dataIndex: 'label'},
          {header: LN('sbi.alarms.alarmName'), width: 150, sortable: true, dataIndex: 'name'},
          this.deleteColumn
-        ]);
-     	   
+        ]);    	   
 
 	    this.tbSave = new Ext.Toolbar({
  	    	buttonAlign : 'right', 	    	
@@ -447,11 +439,9 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
  	            scope: this
  	        })
  	    	]
- 	    });
- 	    
+ 	    });	    
 
  	   this.initTabs();	  
-
  	    
  	   this.tabs = new Ext.TabPanel({
            enableTabScroll : true
@@ -518,9 +508,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 							    	var contactId = tempRecord.get('id');				    	
 							    	Ext.getCmp("contacts-form").fireEvent('recToSelect', contactId, i);
 							    }
-
-	   	                  	}	
-	   	                  	
+	   	                  	}		   	                  	
 	   	                  },
 	   	                  fillOptions : function(row, rec) {	 
 	   	                  	var singleEvent = rec.get('singleEvent');
@@ -557,17 +545,37 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		   	         			if(tempAttrArr[i].id === rec.data.kpi){
 		   	         				var checkedArr = [];
 		   	         				checkedArr.push(tempRecord);		   	         				
-		   	         				Ext.getCmp("kpi-grid").getSelectionModel().selectRecords(checkedArr, false);		   	         				
-		   	         				//selects threshold
-		   	         				//Ext.getCmp("tresholds-combo").focus();
-		   	         				Ext.getCmp("tresholds-combo").value = rec.data.threshold;
-		   	         				Ext.getCmp("tresholds-combo").setValue(rec.data.threshold);		   	         				
-		   	         				//Ext.getCmp("tresholds-combo").selectByValue(rec.data.threshold, true);
+		   	         				Ext.getCmp("kpi-grid").getSelectionModel().selectRecords(checkedArr, false);	
 		   	         			}
-		   	         		}
-	   	                  		
-		        
- 
+		   	         		 }
+		   	         		 var paramsTresholds = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: "TRESHOLDS_LIST"};
+		   	         		 var loadThr = Sbi.config.serviceRegistry.getServiceUrl({
+								serviceName: 'MANAGE_ALARMS_ACTION'
+								, baseParams: paramsTresholds
+							 });	
+		   	         				
+							var sm = Ext.getCmp("kpi-grid").getSelectionModel();
+							var row = sm.getSelected();
+							var kpiInstId = row.data.id;
+							Ext.getCmp("tresholds-combo").store.removeAll();
+							Ext.getCmp("tresholds-combo").clearValue();
+							
+							Ext.Ajax.request({
+						          url: loadThr,
+						          params: {id: kpiInstId},
+						          method: 'GET',
+						          success: function(response, options) {   	
+									if (response !== undefined) {		
+						      			var content = Ext.util.JSON.decode( response.responseText );
+						      			if(content !== undefined) {	     				
+						      				Ext.getCmp("tresholds-combo").store.loadData(content);
+						      				Ext.getCmp("tresholds-combo").store.commitChanges();
+									   	    Ext.getCmp("tresholds-combo").setValue(rec.data.threshold);	
+						      			}
+									 } 	
+						          }
+						          ,scope: this
+						    });
 	   	                  },
 
    	                      listeners: {

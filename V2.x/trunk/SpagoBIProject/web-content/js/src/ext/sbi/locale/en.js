@@ -250,7 +250,7 @@ Sbi.locale.ln['sbi.alarms.alarmKpiThreshold'] = 'Threshold';
 Sbi.locale.ln['sbi.alarms.kpis'] = 'KPI';
 Sbi.locale.ln['sbi.alarms.contacts'] = 'Contacts';
 Sbi.locale.ln['sbi.alarms.kpiInstanceIdHeader'] = 'Kpi Instance Id';
-Sbi.locale.ln['sbi.alarms.kpiModelHeader'] = 'Kpi Model';
+Sbi.locale.ln['sbi.alarms.kpiModelHeader'] = 'Model Instance Node';
 Sbi.locale.ln['sbi.alarms.kpiNameHeader'] = 'Kpi Name';
 
 // Toolbar 

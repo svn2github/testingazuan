@@ -116,7 +116,6 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 				user.setFullName(fullName);
 				if(password != null){
 					user.setPassword(password);
-					//throw new SpagoBIServiceException(SERVICE_NAME,	"Please check password!");
 				}				
 				
 				if(id!=null){
@@ -143,7 +142,6 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 					attributesResponseSuccessJSON.put("responseText", "Operation succeded");
 					attributesResponseSuccessJSON.put("id", id);
 					writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );
-					//writeBackToClient( new JSONAcknowledge("Operation succeded") );
 
 				} catch (EMFUserError e) {
 					logger.error("Exception occurred while saving new user", e);

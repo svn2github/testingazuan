@@ -103,33 +103,14 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 
 		if (serviceType != null && serviceType.equalsIgnoreCase(ALARMS_LIST)) {
 			//loads kpi 
-			try {
-				/*IKpiInstanceDAO kpiDao = DAOFactory.getKpiInstanceDAO();
-				List<String> kpis = (List<String>)getSessionContainer().getAttribute(KPI_LIST);
-				if(kpis != null){
-					getSessionContainer().delAttribute(KPI_LIST);				
-				}
-				List<KpiAlarmInstance> kpisAlarm = kpiDao.loadKpiAlarmInstances();
-				if(kpisAlarm != null){
-					getSessionContainer().setAttribute(KPI_LIST, kpisAlarm);
-				}*/
-				
+			try {				
 				List<SbiAlarm> alarms = alarmDao.findAll();
 				logger.debug("Loaded users list");
 				JSONArray alarmsJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(alarms,locale);
 				JSONObject usersResponseJSON = createJSONResponseAlarms(alarmsJSON);
 
 				writeBackToClient(new JSONSuccess(usersResponseJSON));
-
-			/*}catch (EMFUserError e) {
-				logger.error(e.getMessage(), e);
-				try {
-					writeBackToClient("Exception occurred while retrieving kpis list");
-				} catch (IOException e1) {
-					logger.error(e1.getMessage(), e1);
-				}
-				throw new SpagoBIServiceException(SERVICE_NAME,
-						"Exception occurred while retrieving kpis", e);*/
+			
 			} catch (Throwable e) {
 				logger.error("Exception occurred while retrieving alarms", e);
 				throw new SpagoBIServiceException(SERVICE_NAME,
@@ -184,7 +165,6 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 					contactsList = deserializeContactsJSONArray(contactsJSON);
 					alarm.setSbiAlarmContacts(contactsList);
 				}
-				//da far ritornare l'ID
 				id = alarmDao.update(alarm);
 				logger.debug("Alarm updated or Inserted");
 				
@@ -230,7 +210,6 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 					JSONObject trashResponseJSON = createJSONResponseAlarms(trshJSON);
 	
 					writeBackToClient(new JSONSuccess(trashResponseJSON));
-					//getResponseContainer().setAttribute(TRESHOLD_LIST, tresholds);
 				}
 
 			} catch (Throwable e) {
@@ -251,9 +230,7 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 				}
 				
 				List<SbiAlarmContact> contactsList = DAOFactory.getAlarmContactDAO().findAll();
-				//List<SbiExtRoles> roles = DAOFactory.getRoleDAO().loadAllRoles();
 				getSessionContainer().setAttribute("contactsList", contactsList);
-				//getSessionContainer().setAttribute("rolesList", roles);
 				
 			} catch (EMFUserError e) {
 				logger.error(e.getMessage(), e);

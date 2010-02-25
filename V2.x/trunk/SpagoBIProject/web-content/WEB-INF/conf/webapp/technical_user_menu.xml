@@ -164,7 +164,7 @@
 		<ITEM	title="#menu.ManageAlarms"
 				functionality="KpiManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?ACTION_NAME=MANAGE_ALARMS_ACTION"
-				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/kpi/alarm.gif" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/kpi/alarms.gif" />
 		<ITEM	title="#menu.ManageContacts"
 				functionality="KpiManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?ACTION_NAME=MANAGE_CONTACTS_ACTION"

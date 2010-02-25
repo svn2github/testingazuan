@@ -129,7 +129,6 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	    	          , 'contacts'
 	    	          , 'kpi'
 	    	          , 'threshold'
-	    	           //, 'doc'
 	    	          ]
 	    	, root: 'samples'
 			, url: this.services['manageAlarmsList']			
@@ -605,6 +604,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 	   var values = this.gridForm.getForm().getValues();
 
        var newRec = null;
+       var idRec = values['id'];
 
 	   var params = {
 	      	name : values['name'],
@@ -638,13 +638,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
        }else{
        	  params.singleEvent = false;
        }
-      
-       if(values['id'] !== null && values['id'] !== undefined && values['id']==0){
-	       newRec =new Ext.data.Record({'name': values['name'],'description': values['description'],'text':values['text']
-	       							   ,'url': values['url'],'label': values['label'],'modality':mod,'autoDisabled':autoDis,'singleEvent':singleEv});	          
-	   }
-      
-      
+
       var contactsSelected = Ext.getCmp("contacts-form").selModel.getSelections();
       var lengthR = contactsSelected.length;
       var contacts =new Array();
@@ -679,10 +673,37 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
         
       //kpi
        var kpiSelected = Ext.getCmp("kpi-grid").getSelectionModel().getSelected();
-       params.kpi = kpiSelected.get("id");
+       var kpiId = kpiSelected.get("id");
+       params.kpi = kpiId;
        
        //threshold       
-      params.threshold = Ext.getCmp("tresholds-combo").value;
+      var thrId = Ext.getCmp("tresholds-combo").value;
+      params.threshold = thrId;     
+      
+      if(idRec ==0 || idRec == null || idRec === ''){
+	       newRec =new Ext.data.Record({'name': values['name'],'description': values['description'],'text':values['text']
+	       							   ,'url': values['url'],'label': values['label'],'modality':mod,'autoDisabled':autoDis,'singleEvent':singleEv
+	       							   ,'contacts': alarmContacts,'kpi': kpiId,'threshold': thrId});	       
+	   }else{
+			var record;
+			var length = this.alarmsStore.getCount();
+			for(var i=0;i<length;i++){
+	   	        var tempRecord = this.alarmsStore.getAt(i);
+	   	        if(tempRecord.data.id==idRec ){
+	   	        	record = tempRecord;
+				}			   
+	   	    }	
+			record.set('name',values['name']);
+			record.set('description',values['description']);
+			record.set('text',values['text']);
+			record.set('url',values['url']);
+			record.set('modality',mod);
+			record.set('autoDisabled',autoDis);
+			record.set('singleEvent',singleEv);			
+			record.set('contacts', alarmContacts);
+			record.set('kpi', kpiId);
+			record.set('threshold', thrId);         
+		}
       
       Ext.Ajax.request({
           url: this.services['saveAlarmService'],
@@ -705,7 +726,8 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 						if(newRec!==null){
 							newRec.set('id', idTemp);
 							this.alarmsStore.add(newRec);
-						}else{
+						}
+						/*else{
 							var record;
 							var lengthS = this.alarmsStore.getCount();
 							for(var i=0;i<lengthS;i++){
@@ -714,11 +736,16 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 					   	        	record = tempRecord;
 								}			   
 					   	    }	
-					   	    record.set('contacts', alarmContacts);
-					   	    //this.alarmsStore.getById(idTemp).set('contacts', alarmContacts);							
-						}
+					   	    record.set('contacts', alarmContacts);					
+						}*/
 						this.contactsStore.commitChanges();
-						this.alarmsStore.commitChanges();				
+						this.alarmsStore.commitChanges();		
+						Ext.MessageBox.show({
+			                        title: LN('sbi.attributes.result'),
+			                        msg: 'Operation succeded',
+			                        width: 200,
+			                        buttons: Ext.MessageBox.OK
+			                });		
 	      			 }
 		      	}else{
 		      		Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
@@ -771,8 +798,8 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 											singleEvent: false,
 											autoDisabled: false,
 											text:'',
-											url: ''
-											//,contacts: 0,
+											url: '',
+											contacts: []
 											// 'kpi'
 							    	        //, 'thr'
 							    	        //, 'doc'

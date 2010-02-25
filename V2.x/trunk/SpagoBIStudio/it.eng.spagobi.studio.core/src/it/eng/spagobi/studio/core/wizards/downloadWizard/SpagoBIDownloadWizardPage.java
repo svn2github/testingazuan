@@ -9,6 +9,7 @@ import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 import it.eng.spagobi.studio.core.util.SdkFunctionalityTreeGenerator;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -39,6 +40,7 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 	//private Text containerText;
 
 	//private Text fileText;
+	private static transient Logger logger = Logger.getLogger(SpagoBIDownloadWizardPage.class);
 
 	private IStructuredSelection selection;
 	private Tree tree;
@@ -53,15 +55,18 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 	 */
 	public SpagoBIDownloadWizardPage(IStructuredSelection selection) {
 		super("wizardPage");
+		logger.debug("IN");
 		setTitle("Download Document Wizard");
 		setDescription("This wizard lets you download a BI document template from SpagoBI Server");
 		this.selection = selection;
+		logger.debug("OUT");
 	}
 
 	/** Creates the wizard form
 	 * @see IDialogPage#createControl(Composite)
 	 */
 	public void createControl(Composite parent) {
+		logger.debug("IN");
 		monitor=new ProgressMonitorPart(getShell(), null);
 
 		Composite container = new Composite(parent, SWT.NULL);
@@ -86,13 +91,13 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 
 				}
 				catch (Exception e) {
-					SpagoBILogger.errorLog("No comunication with SpagoBI server", e);
+					logger.error("No comunication with SpagoBI server", e);
 					MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
 					return;
 				}
 				monitor.done();
 				if (monitor.isCanceled())
-					SpagoBILogger.errorLog("Operation not ended",new InterruptedException("The long running operation was cancelled"));
+					logger.error("Operation not ended",new InterruptedException("The long running operation was cancelled"));
 			}
 		};	
 
@@ -100,44 +105,45 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 		try {
 			dialog.run(true, true, op);
 		} catch (InvocationTargetException e1) {
-			SpagoBILogger.errorLog("No comunication with SpagoBI server", e1);
+			logger.error("No comunication with SpagoBI server", e1);
 			dialog.close();
 			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
 			return;
-			} catch (InterruptedException e1) {
-				SpagoBILogger.errorLog("No comunication with SpagoBI server", e1);
-				dialog.close();
-				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
-				return;
-			}	
+		} catch (InterruptedException e1) {
+			logger.error("No comunication with SpagoBI server", e1);
 			dialog.close();
+			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
+			return;
+		}	
+		dialog.close();
 
 
-			SdkFunctionalityTreeGenerator treeGenerator=new SdkFunctionalityTreeGenerator();			
+		SdkFunctionalityTreeGenerator treeGenerator=new SdkFunctionalityTreeGenerator();			
 
-			try{
-				tree=treeGenerator.generateTree(container, functionality);
-			}
-			catch (Exception e) {
-				SpagoBILogger.errorLog("Error while generating tree", e);
-				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Error", "Error in generating the tree, control if SpagoBI Server is defined and service is avalaible");	
-			}
+		try{
+			tree=treeGenerator.generateTree(container, functionality);
+		}
+		catch (Exception e) {
+			logger.error("Error while generating tree", e);
+			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Error", "Error in generating the tree, control if SpagoBI Server is defined and service is avalaible");	
+		}
 
-			tree.addListener(SWT.Selection, new Listener() {
-				public void handleEvent(Event event) {
-					//check if page is complete
-					boolean complete=isPageComplete();
-					if(complete){
-						setPageComplete(true);
-					}
-					else{
-						setPageComplete(false);	        	
-					}
+		tree.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				//check if page is complete
+				boolean complete=isPageComplete();
+				if(complete){
+					setPageComplete(true);
 				}
-			});
+				else{
+					setPageComplete(false);	        	
+				}
+			}
+		});
 
-			initialize();
-			setControl(container);
+		initialize();
+		setControl(container);
+		logger.debug("OUT");
 	}
 
 
@@ -147,6 +153,7 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 	 */
 
 	private void initialize() {
+		logger.debug("IN");
 		if (selection != null && selection.isEmpty() == false
 				&& selection instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) selection;
@@ -163,6 +170,7 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 
 			}
 		}
+		logger.debug("OUT");
 	}
 
 	/**
@@ -206,13 +214,13 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 		boolean isComplete=false;
 		if(tree!=null){
 			TreeItem[] treeItems=tree.getSelection();
-//			if(treeItems!=null && treeItems.length==1){
-//				TreeItem treeItem=treeItems[0];
-//				Object data=treeItem.getData();
-//				if(data!=null && data instanceof SDKDocument){
-//					isComplete=true;
-//				}
-//			}
+			//			if(treeItems!=null && treeItems.length==1){
+			//				TreeItem treeItem=treeItems[0];
+			//				Object data=treeItem.getData();
+			//				if(data!=null && data instanceof SDKDocument){
+			//					isComplete=true;
+			//				}
+			//			}
 			if(treeItems!=null && treeItems.length>=1){
 				TreeItem treeItem=treeItems[0];
 				Object data=treeItem.getData();

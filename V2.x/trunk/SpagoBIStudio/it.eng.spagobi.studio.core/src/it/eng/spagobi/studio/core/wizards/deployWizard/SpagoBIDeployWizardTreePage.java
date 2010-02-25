@@ -7,6 +7,7 @@ import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 import it.eng.spagobi.studio.core.util.SdkFunctionalityTreeGenerator;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -35,6 +36,7 @@ public class SpagoBIDeployWizardTreePage extends WizardPage {
 
 	private IStructuredSelection selection;
 	private Tree tree;
+	private static transient Logger logger = Logger.getLogger(SpagoBIDeployWizardTreePage.class);
 
 	/**
 	 * Constructor for SampleNewWizardPage.
@@ -43,50 +45,17 @@ public class SpagoBIDeployWizardTreePage extends WizardPage {
 	 */
 	public SpagoBIDeployWizardTreePage(IStructuredSelection selection) {
 		super("wizardPage");
-		setTitle("Download Document Wizard");
+logger.debug("IN");
+setTitle("Download Document Wizard");
 		setDescription("This wizard lets you download a BI document template from SpagoBI Server");
 		this.selection = selection;
+		logger.debug("OUT");
 	}
 
 	/** Creates the wizard form
 	 * @see IDialogPage#createControl(Composite)
 	 */
 	public void createControl(Composite parent) {
-/*		Composite container = new Composite(parent, SWT.NULL);
-		FillLayout layout= new FillLayout();
-		container.setLayout(layout);
-
-		SDKProxyFactory proxyFactory=new SDKProxyFactory();
-		DocumentsServiceProxy docServiceProxy=null;
-		SDKFunctionality functionality=null;
-		try{
-			// Get documents list
-			docServiceProxy=proxyFactory.getDocumentsServiceProxy();
-			functionality=docServiceProxy.getDocumentsAsTree(null);			
-		}
-		catch (Exception e) {
-			SpagoBILogger.errorLog("No comunication with SpagoBI server", e);
-			MessageDialog.openError(getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
-			return;
-		}
-		SdkFunctionalityTreeGenerator treeGenerator=new SdkFunctionalityTreeGenerator();			
-		tree=treeGenerator.generateTree(container, functionality);
-
-		tree.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event event) {
-				//check if page is complete
-				boolean complete=isPageComplete();
-				if(complete){
-					setPageComplete(true);
-				}
-				else{
-					setPageComplete(false);	        	
-				}
-			}
-		});
-
-		initialize();
-		setControl(container);*/
 	}
 
 

@@ -521,20 +521,6 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 									newRec.set('id', idTemp);
 									this.usersStore.add(newRec);
 								}
-								/*else{
-									var record;
-									var lengthS = this.usersStore.getCount();
-									for(var i=0;i<lengthS;i++){
-							   	        var tempRecord = this.usersStore.getAt(i);
-							   	        if(tempRecord.data.id==idTemp){
-							   	        	record = tempRecord;
-										}			   
-							   	    }	
-							   	    record.set('userAttributes', userAttributes);
-							   	    record.set('userRoles', userRoles);
-									//this.usersStore.getById(idTemp).set('userAttributes', userAttributes);
-									//this.usersStore.getById(idTemp).set('userRoles', userRoles);
-								}*/
 								this.attributesStore.commitChanges();
 								this.rolesStore.commitChanges();
 								this.usersStore.commitChanges();

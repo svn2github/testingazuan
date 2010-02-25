@@ -485,7 +485,6 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 	   	        	record = tempRecord;
 				}			   
 	   	    }	
-			//var record = this.rolesStore.getById(idRec);
 			record.set('name',values['name']);
 			record.set('description',values['description']);
 			record.set('typeCd',values['typeCd']);
@@ -497,7 +496,6 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 
 
         var params = {
-        	//id: newRec.data.id,
         	name : newRec.data.name,
         	description : newRec.data.description,
         	typeCd : newRec.data.typeCd,
@@ -513,7 +511,6 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 			seeMeta:newRec.data.seeMeta,
 			saveMeta:newRec.data.saveMeta,
 			buildQbe:newRec.data.buildQbe
-            //ROLE: Ext.util.JSON.encode(newRole)
         };
         if(idRec){
         	params.id = newRec.data.id;

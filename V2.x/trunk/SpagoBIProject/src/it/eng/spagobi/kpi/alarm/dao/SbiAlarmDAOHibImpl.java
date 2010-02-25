@@ -23,6 +23,7 @@ import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
+import it.eng.spagobi.profiling.bean.SbiExtUserRoles;
 import it.eng.spagobi.profiling.bean.SbiUser;
 import it.eng.spagobi.profiling.bean.SbiUserAttributes;
 
@@ -211,13 +212,26 @@ public class SbiAlarmDAOHibImpl extends AbstractHibernateDAO implements ISbiAlar
 	public void insert(Session session, SbiAlarm item) {
 		session.save(item);
 	}
-
-	public void update(SbiAlarm item) {
+	
+	public Integer update(SbiAlarm item) {
 		Session session = getSession();
 		Transaction tx = null;
+		Integer id = null;
 		try {
+			boolean save = true;
+			id = item.getId();
+			if(id!=null && id!=0){
+				save = false;
+			}
 			tx = session.beginTransaction();
-			session.saveOrUpdate(item);
+			
+			if(save){
+				//save
+				id = (Integer)session.save(item);
+			}else{
+				session.saveOrUpdate(item);
+			}
+			
 			tx.commit();
 
 		} catch (HibernateException e) {
@@ -227,8 +241,9 @@ public class SbiAlarmDAOHibImpl extends AbstractHibernateDAO implements ISbiAlar
 			throw e;
 
 		}finally{
-			session.close();
+			session.close();			
 		}
+		return id;
 	}	
 
 	public void update(Session session, SbiAlarm item) {

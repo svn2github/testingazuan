@@ -104,7 +104,7 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 		if (serviceType != null && serviceType.equalsIgnoreCase(ALARMS_LIST)) {
 			//loads kpi 
 			try {
-				IKpiInstanceDAO kpiDao = DAOFactory.getKpiInstanceDAO();
+				/*IKpiInstanceDAO kpiDao = DAOFactory.getKpiInstanceDAO();
 				List<String> kpis = (List<String>)getSessionContainer().getAttribute(KPI_LIST);
 				if(kpis != null){
 					getSessionContainer().delAttribute(KPI_LIST);				
@@ -112,7 +112,7 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 				List<KpiAlarmInstance> kpisAlarm = kpiDao.loadKpiAlarmInstances();
 				if(kpisAlarm != null){
 					getSessionContainer().setAttribute(KPI_LIST, kpisAlarm);
-				}
+				}*/
 				
 				List<SbiAlarm> alarms = alarmDao.findAll();
 				logger.debug("Loaded users list");
@@ -121,7 +121,7 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 
 				writeBackToClient(new JSONSuccess(usersResponseJSON));
 
-			}catch (EMFUserError e) {
+			/*}catch (EMFUserError e) {
 				logger.error(e.getMessage(), e);
 				try {
 					writeBackToClient("Exception occurred while retrieving kpis list");
@@ -129,7 +129,7 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 					logger.error(e1.getMessage(), e1);
 				}
 				throw new SpagoBIServiceException(SERVICE_NAME,
-						"Exception occurred while retrieving kpis", e);
+						"Exception occurred while retrieving kpis", e);*/
 			} catch (Throwable e) {
 				logger.error("Exception occurred while retrieving alarms", e);
 				throw new SpagoBIServiceException(SERVICE_NAME,
@@ -185,7 +185,7 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 					alarm.setSbiAlarmContacts(contactsList);
 				}
 				//da far ritornare l'ID
-				alarmDao.update(alarm);
+				id = alarmDao.update(alarm);
 				logger.debug("Alarm updated or Inserted");
 				
 				JSONObject attributesResponseSuccessJSON = new JSONObject();
@@ -240,6 +240,16 @@ public class ManageAlarmsAction extends AbstractSpagoBIAction{
 			}
 		}else if(serviceType == null){
 			try {
+				IKpiInstanceDAO kpiDao = DAOFactory.getKpiInstanceDAO();
+				List<String> kpis = (List<String>)getSessionContainer().getAttribute(KPI_LIST);
+				if(kpis != null){
+					getSessionContainer().delAttribute(KPI_LIST);				
+				}
+				List<KpiAlarmInstance> kpisAlarm = kpiDao.loadKpiAlarmInstances();
+				if(kpisAlarm != null){
+					getSessionContainer().setAttribute(KPI_LIST, kpisAlarm);
+				}
+				
 				List<SbiAlarmContact> contactsList = DAOFactory.getAlarmContactDAO().findAll();
 				//List<SbiExtRoles> roles = DAOFactory.getRoleDAO().loadAllRoles();
 				getSessionContainer().setAttribute("contactsList", contactsList);

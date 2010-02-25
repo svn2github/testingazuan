@@ -47,7 +47,7 @@
             <column name="URL" length="20" not-null="false" />
         </property>   
         
-        <set name="sbiAlarmContacts" table="SBI_ALARM_DISTRIBUTION" cascade="all" inverse="false">
+        <set name="sbiAlarmContacts" table="SBI_ALARM_DISTRIBUTION"  inverse="false">
         	<key column="ALARM_ID"/>
         	<many-to-many column="ALARM_CONTACT_ID" class="it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact" />
         </set>

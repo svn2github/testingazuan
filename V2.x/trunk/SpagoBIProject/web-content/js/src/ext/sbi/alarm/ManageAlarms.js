@@ -727,17 +727,6 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 							newRec.set('id', idTemp);
 							this.alarmsStore.add(newRec);
 						}
-						/*else{
-							var record;
-							var lengthS = this.alarmsStore.getCount();
-							for(var i=0;i<lengthS;i++){
-					   	        var tempRecord = this.alarmsStore.getAt(i);
-					   	        if(tempRecord.data.id==idTemp){
-					   	        	record = tempRecord;
-								}			   
-					   	    }	
-					   	    record.set('contacts', alarmContacts);					
-						}*/
 						this.contactsStore.commitChanges();
 						this.alarmsStore.commitChanges();		
 						Ext.MessageBox.show({

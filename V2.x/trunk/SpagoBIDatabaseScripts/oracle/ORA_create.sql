@@ -773,7 +773,7 @@ Create table SBI_KPI_MODEL_INST (
 	START_DATE Timestamp(6),
 	END_DATE Timestamp(6),
 	KPI_MODEL_ID Number(38,0),
-	modelUUID VARCHAR2(400),
+	modelUUID VARCHAR2(255),
 primary key ("KPI_MODEL_INST") 
 )
 /

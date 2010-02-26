@@ -775,7 +775,7 @@ Create table `SBI_KPI_MODEL_ATTR_VAL` (
 
 Create table `SBI_KPI_PERIODICITY` (
 	`id_kpi_periodicity` Int NOT NULL AUTO_INCREMENT,
-	`name` Varchar(400) NOT NULL,
+	`name` Varchar(200) NOT NULL,
 	`months` Int,
 	`days` Int,
 	`hours` Int,

@@ -91,6 +91,13 @@ public class DocumentsServiceProxy extends AbstractSDKServiceProxy implements Do
       _initDocumentsServiceProxy();
     return documentsService.getDocumentById(in0);
   }
+
+  public it.eng.spagobi.sdk.documents.bo.SDKDocument getDocumentByLabel(java.lang.String in0) throws java.rmi.RemoteException{
+	    if (documentsService == null)
+	      _initDocumentsServiceProxy();
+	    return documentsService.getDocumentByLabel(in0);
+	  }
+
   
   public it.eng.spagobi.sdk.documents.bo.SDKFunctionality getDocumentsAsTree(java.lang.String in0) throws java.rmi.RemoteException{
     if (documentsService == null)

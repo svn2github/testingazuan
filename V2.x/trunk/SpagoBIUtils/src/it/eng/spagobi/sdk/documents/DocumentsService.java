@@ -38,6 +38,8 @@ public interface DocumentsService {
 	SDKDocument[] getDocumentsAsList(String type, String state, String folderPath);
 
 	SDKDocument getDocumentById(Integer id);
+
+	SDKDocument getDocumentByLabel(String label);
 	
 	SDKFunctionality getDocumentsAsTree(String initialPath);
 	

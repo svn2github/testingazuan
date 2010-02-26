@@ -675,7 +675,7 @@ Create table SBI_THRESHOLD_VALUE (
 	POSITION Number(38,0),
 	min_closed SMALLINT,
 	max_closed SMALLINT,
-	th_value Number,
+	th_value Number (38,0),
 primary key ("ID_THRESHOLD_VALUE") 
 ) 
 /
@@ -688,7 +688,7 @@ Create table SBI_KPI_MODEL (
 	KPI_MODEL_CD Varchar2 (40) NOT NULL,
 	KPI_MODEL_NM Varchar2 (400),
 	KPI_MODEL_DESC Varchar2 (1000),
-	KPI_MODEL_LBL VARCHAR(100) NOT NULL,
+	KPI_MODEL_LBL VARCHAR2(100) NOT NULL,
 primary key ("KPI_MODEL_ID") 
 ) 
 /
@@ -773,7 +773,7 @@ Create table SBI_KPI_MODEL_INST (
 	START_DATE Timestamp(6),
 	END_DATE Timestamp(6),
 	KPI_MODEL_ID Number(38,0),
-	modelUUID VARCHAR(400),
+	modelUUID VARCHAR2(400),
 primary key ("KPI_MODEL_INST") 
 )
 /

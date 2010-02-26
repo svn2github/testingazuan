@@ -32,7 +32,7 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/qbe/QueryCataloguePanel.js'/></script>
 <script type="text/javascript" src='../js/spagobi/qbe/SelectGridDropTarget.js'/></script>
 <script type="text/javascript" src='../js/spagobi/qbe/SelectGridPanel.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbe/OperandChooserWindow.js'/></script>
+<script type="text/javascript" src='../js/spagobi/formviewer/OperandChooserWindow.js'/></script>
 <script type="text/javascript" src='../js/spagobi/qbe/FilterGridDropTarget.js'/></script>
 <script type="text/javascript" src='../js/spagobi/qbe/FilterGridPanel.js'/></script>
 		

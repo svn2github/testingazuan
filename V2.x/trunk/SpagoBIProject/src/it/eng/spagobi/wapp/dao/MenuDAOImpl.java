@@ -389,6 +389,8 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 				SbiMenuRole role = (SbiMenuRole) iterOldRoles.next();
 				tmpSession.delete(role);
 			}
+			Integer eventualFatherId = aMenu.getMenuId();
+			eraseMenuSons(eventualFatherId,tmpSession);
 
 			// update prog column in other menu
 			//String hqlUpdateProg = "update SbiMenu s set s.prog = (s.prog - 1) where s.prog > " 
@@ -428,6 +430,44 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 				if (tmpSession.isOpen()) tmpSession.close();
 			}
 
+		}
+	}
+	
+	private void eraseMenuSons(Integer eventualFatherId,Session tmpSession) throws EMFUserError {
+		
+		String getSons = null;
+		Query queryD = null;
+		if (eventualFatherId != null) {
+			getSons = "from SbiMenu s where s.parentId = ?";
+			queryD = tmpSession.createQuery(getSons);
+			queryD.setInteger(0,eventualFatherId);
+		}
+		
+		List sons = queryD.list();
+		if(sons!=null){
+			Iterator it = sons.iterator();
+			while(it.hasNext()){
+				SbiMenu toDel = (SbiMenu)it.next();
+				eraseMenuSons(toDel.getMenuId(),tmpSession);
+				tmpSession.delete(toDel);	
+				Integer parentId = toDel.getParentId();
+				String hqlUpdateProg = null;
+				Query query = null;
+				if (parentId != null) {
+					hqlUpdateProg = "update SbiMenu s set s.prog = (s.prog - 1) where s.prog > ?" 
+						 + " and s.parentId = ? ";
+					query = tmpSession.createQuery(hqlUpdateProg);
+					query.setInteger(0, toDel.getProg().intValue());
+					query.setInteger(1,  toDel.getParentId().intValue());
+				} else {
+					hqlUpdateProg = "update SbiMenu s set s.prog = (s.prog - 1) where s.prog > ?" 
+						 + " and s.parentId = null";
+					query = tmpSession.createQuery(hqlUpdateProg);
+					query.setInteger(0, toDel.getProg().intValue());
+				}
+
+				query.executeUpdate();
+			}
 		}
 	}
 

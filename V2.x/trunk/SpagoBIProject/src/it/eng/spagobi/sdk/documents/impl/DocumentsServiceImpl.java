@@ -693,6 +693,32 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
         return toReturn;
 	}
 
+	public SDKDocument getDocumentByLabel(String label) {
+		SDKDocument toReturn = null;
+        logger.debug("IN: document in input = " + label);
+        try {
+        	super.checkUserPermissionForFunctionality(SpagoBIConstants.DOCUMENT_MANAGEMENT, "User cannot see documents congifuration.");
+        	if (label == null) {
+	        	logger.warn("Document label in input is null!");
+	        	return null;
+	        }
+        	BIObject biObject = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
+        	if (biObject == null) {
+        		logger.warn("BiObject with label [" + label + "] not existing.");
+        		return null;
+        	}
+        	toReturn = new SDKObjectsConverter().fromBIObjectToSDKDocument(biObject);
+        } catch(NotAllowedOperationException e) {
+        	
+        } catch(Exception e) {
+            logger.error("Error while retrieving SDKEngine list", e);
+            logger.debug("Returning null");
+            return null;
+        } finally {
+        	logger.debug("OUT");
+        }
+        return toReturn;
+	}
 
 
 

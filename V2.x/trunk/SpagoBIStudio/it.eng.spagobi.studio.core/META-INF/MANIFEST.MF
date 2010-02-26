@@ -33,7 +33,9 @@ Bundle-ClassPath: .,
  lib/xmlsec-1.4.2.jar,
  lib/xpp3_min-1.1.4c.jar,
  lib/xstream-1.3.1.jar,
- lib/sbiutils.jar
+ lib/sbiutils.jar,
+ lib/log4j-1.2.15.jar,
+ lib/dom4j.jar
 Export-Package: it.eng.spagobi.commons.constants,
  it.eng.spagobi.sdk.datasets,
  it.eng.spagobi.sdk.datasets.bo,

@@ -1,5 +1,6 @@
 package it.eng.spagobi.studio.core.wizards.downloadWizard;
 
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.sdk.documents.bo.SDKTemplate;
@@ -10,14 +11,23 @@ import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 import it.eng.spagobi.studio.core.util.BiObjectUtilities;
 import it.eng.spagobi.studio.core.util.FileFinder;
+import it.eng.spagobi.studio.core.util.SpagoBIStudioConstants;
 import it.eng.spagobi.studio.core.wizards.deployWizard.SpagoBIDeployWizardTreePage;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.activation.DataHandler;
 
 import org.apache.log4j.Logger;
+import org.dom4j.Document;
+import org.dom4j.Node;
+import org.dom4j.io.SAXReader;
 import org.eclipse.core.internal.resources.Folder;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -37,6 +47,8 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 	private SpagoBIDownloadWizardPage page;
 	private IStructuredSelection selection;
 	protected IWorkbench workbench;
+
+
 
 	private static transient Logger logger = Logger.getLogger(SpagoBIDownloadWizard.class);
 
@@ -75,6 +87,14 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 				TreeItem selectedItem=selectedItems[i];
 				Object docObject=selectedItem.getData();	
 				SDKDocument document=(SDKDocument)docObject;
+				// if it is a document composed download also contained documents
+				if(document.getType().equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE) ){
+					// ask user if wants to download related template
+					boolean downloadContained=MessageDialog.openConfirm(getShell(), "Download contained Documents?", "You have selected a document composition, do qyou want to download contained documents? You will be notified if they already esists in your workspace");	
+					if(downloadContained==true){
+						downloadContainedTemplate(document);
+					}
+				}
 				toReturn=downloadTemplate(document);
 			}
 			doFinish();
@@ -84,6 +104,96 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		return true;
 	}
 
+
+	public boolean downloadContainedTemplate(SDKDocument document){
+		logger.debug("IN");
+		boolean toReturn=true;
+		Integer id=document.getId();
+		SDKTemplate template=null;
+		SDKProxyFactory proxyFactory=new SDKProxyFactory();
+		DocumentsServiceProxy docServiceProxy=null;
+		int numDocs=0;
+		try{
+			docServiceProxy=proxyFactory.getDocumentsServiceProxy(); 		
+			template=docServiceProxy.downloadTemplate(id);
+		}	
+		catch (NullPointerException e) {
+			logger.error("No comunication with server, check SpagoBi Server definition in preferences page");
+			MessageDialog.openError(getShell(), "Error", "No comunication with server, check SpagoBi Server definition in preferences page");	
+			return false;
+		}
+		catch (Exception e) {
+			logger.error("No comunication with SpagoBI server, could not retrieve template",e);
+			MessageDialog.openError(getShell(), "Error", "Could not get the template from server for document with id "+id);	
+			return false;
+		}	
+
+		template.getContent();
+
+		String xmlString=null;
+		DataHandler dh=template.getContent(); 
+		InputStream is=null;		
+		try {
+			is=dh.getInputStream();
+			xmlString=readInputStreamAsString(is);
+			xmlString="<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"+xmlString;
+
+			is=new ByteArrayInputStream(xmlString.getBytes("UTF-8"));
+
+			// put all the labels in an array, so if there is a problem in parsing does not download anything
+			boolean correctParsing=true;
+			SAXReader reader = new SAXReader();
+			Document thisDocument = null;
+			List<String> labels=new ArrayList<String>();
+			try{
+				thisDocument=reader.read(is);
+				List docs= thisDocument.selectNodes("//DOCUMENTS_COMPOSITION/DOCUMENTS_CONFIGURATION/DOCUMENT");
+
+				for (int i = 0; i < docs.size(); i++) {
+					Node doc = (Node) docs.get(i);
+					String label = doc.valueOf("@sbi_obj_label");
+					if (label!=null) {
+						labels.add(label);
+					}
+					else{
+						correctParsing=false;
+					}
+				}
+			}
+			catch (Exception e) {
+				correctParsing=false;
+			}
+			if(correctParsing==false){
+				logger.error("error in reading the file searching for document labels ");				
+				MessageDialog.openError(getShell(), "Error", "error in reading template searching for document labels: will not download contained documents");	
+				return false;
+			}
+
+
+			for (int i = 0; i < labels.size(); i++) {
+				SDKDocument docToDownload=docServiceProxy.getDocumentByLabel(labels.get(i));
+				if(docToDownload!=null){
+					toReturn = downloadTemplate(docToDownload);
+					if(toReturn==true){
+						numDocs++;
+						logger.debug("Download document with label "+docToDownload.getName());
+					}
+				}
+			}
+
+
+		} catch (Exception e1) {
+			SpagoBILogger.errorLog("Error in writing the file", e1);
+			MessageDialog.openError(getShell(), "Error", "Error in downloading contained documents");	
+
+			return false;
+		}
+
+
+		logger.debug("Downloaded # document "+numDocs);
+		logger.debug("OUT");
+		return toReturn;
+	}
 
 	public boolean downloadTemplate(SDKDocument document){
 		logger.debug("IN");
@@ -297,6 +407,21 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		this.selection = _selection;
 		this.workbench=_workbench;
 
+	}
+
+
+	public static String readInputStreamAsString(InputStream in) 
+	throws IOException {
+
+		BufferedInputStream bis = new BufferedInputStream(in);
+		ByteArrayOutputStream buf = new ByteArrayOutputStream();
+		int result = bis.read();
+		while(result != -1) {
+			byte b = (byte)result;
+			buf.write(b);
+			result = bis.read();
+		}        
+		return buf.toString();
 	}
 
 

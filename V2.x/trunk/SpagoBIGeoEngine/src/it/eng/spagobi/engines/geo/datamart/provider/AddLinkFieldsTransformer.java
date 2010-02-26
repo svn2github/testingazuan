@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import it.eng.spagobi.engines.geo.GeoEngineException;
 import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;
 import it.eng.spagobi.engines.geo.dataset.provider.Link;
 import it.eng.spagobi.tools.dataset.common.datastore.Field;
@@ -37,6 +38,7 @@ import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.transformer.IDataStoreTransformer;
+import it.eng.spagobi.utilities.assertion.Assert;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -72,31 +74,65 @@ public class AddLinkFieldsTransformer implements IDataStoreTransformer {
 	
 	
 	public void addLinkField(String fieldName, Link link, IDataStore dataStore) {
-		IDataStoreMetaData dataStoreMeta = dataStore.getMetaData();
-		FieldMetadata fieldMeta = new FieldMetadata();
 		
-		logger.debug("add link column " + fieldName + ": " + link);
+		IDataStoreMetaData dataStoreMeta;
+		FieldMetadata fieldMeta;
+		IRecord record;
+		IField field;
 		
-		fieldMeta.setName(fieldName);
-		fieldMeta.setType(String.class);
-		fieldMeta.setProperty("ROLE", "CROSSNAVLINK");
 		
-		dataStoreMeta.addFiedMeta(fieldMeta);
-		
-		Iterator it = dataStore.iterator();
-		while(it.hasNext()) {
-			IRecord record = (IRecord)it.next();
-			IField field;
-			if(link != null) {
-				logger.debug("link added: " + link.toXString(record, env));
-				field = new Field( link.toXString(record, env) );	
-			} else {
-				field = new Field( Link.DEFAULT_BASE_URL );				
-			}
+		try {
+			Assert.assertNotNull(fieldName, "Input parametr [fieldName] cannot be null");
+			//Link parameter can be null; in that case Link.DEFAULT_BASE_URL will be used
+			Assert.assertNotNull(dataStore, "Input parametr [dataStore] cannot be null");
+			
+			try {
+				logger.debug("Adding link column [" + fieldName + ": " + link + "] ...");
+				
+				dataStoreMeta = dataStore.getMetaData();
+				fieldMeta = new FieldMetadata();
 					
-			record.appendField( field );
+				fieldMeta.setName(fieldName);
+				fieldMeta.setType(String.class);
+				fieldMeta.setProperty("ROLE", "CROSSNAVLINK");
+				
+				dataStoreMeta.addFiedMeta(fieldMeta);
+				
+				logger.debug("Link column [" + fieldName + ": " + link + "] added succesfully");
+			} catch(Throwable t) {
+				throw new GeoEngineException("Impossible to add link column [" + fieldName + ": " + link + "] to datastore", t);
+			}
+			
+			record = null;
+			try {
+				logger.debug("Valorizing link column [" + fieldName + ": " + link + "] for each record in the dataset ...");
+				Iterator it = dataStore.iterator();
+				while(it.hasNext()) {
+					record = (IRecord)it.next();
+					if(link != null) {
+						logger.debug("Added link value [" + link.toXString(record, env) + "]");
+						field = new Field( link.toXString(record, env) );	
+					} else {
+						field = new Field( Link.DEFAULT_BASE_URL );		
+						logger.debug("Added link value [" + Link.DEFAULT_BASE_URL + "]");
+					}
+							
+					record.appendField( field );
+				}
+				logger.debug("Link column [" + fieldName + ": " + link + "] has been succesfully valorized for each record in the dataset ");
+			} catch(Throwable t) {
+				throw new GeoEngineException("Impossible to valorize link column for record [" + record + "]", t);
+			}
+		} catch(Throwable t) {
+			GeoEngineException e;
+			if(t instanceof GeoEngineException) {
+				e = (GeoEngineException)t;
+			} else {
+				e = new GeoEngineException("An unpredicted error occurred while adding link fields to datastore", t);
+			}
+			
+			throw e;
 		}
-		
 	}
 
 }

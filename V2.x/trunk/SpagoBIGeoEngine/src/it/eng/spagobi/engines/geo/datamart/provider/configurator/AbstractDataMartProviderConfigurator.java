@@ -34,6 +34,7 @@ import it.eng.spagobi.engines.geo.datamart.provider.AbstractDataMartProvider;
 import it.eng.spagobi.engines.geo.dataset.DataSetMetaData;
 import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;
 import it.eng.spagobi.engines.geo.dataset.provider.Link;
+import it.eng.spagobi.utilities.assertion.Assert;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -164,36 +165,81 @@ public class AbstractDataMartProviderConfigurator {
 	 * @return the meta data
 	 */
 	public static DataSetMetaData getMetaData(SourceBean confSB) {
-		DataSetMetaData metaData = null;
+		DataSetMetaData metaData;
+		SourceBean metadataSB;
+		List columns;
+		SourceBean columnSB;
+		String columnName;
+		String columnType;
 		
-		SourceBean metadataSB = (SourceBean)confSB.getAttribute(GeoEngineConstants.METADATA_TAG);
-		if(metadataSB == null) {
-			logger.warn("Cannot find metadata configuration settings: tag name " + GeoEngineConstants.METADATA_TAG);
-			logger.info("Metadata configuration settings must be injected at execution time");
-			return null;
-		}
+		logger.debug("IN");
 		
-		metaData = new DataSetMetaData();
+		metaData = null;
+		metadataSB = null;
 		
-		List columns = metadataSB.getAttributeAsList(GeoEngineConstants.COLUMN_TAG);
-		for(int i = 0; i < columns.size(); i++) {
-			SourceBean columnSB = (SourceBean)columns.get(i);
-			String columnName = (String)columnSB.getAttribute(GeoEngineConstants.COLUMN_NAME_ATTRIBUTE);
-			String columnType = (String)columnSB.getAttribute(GeoEngineConstants.COLUMN_TYPE_ATTRIBUTE);			
-			metaData.addColumn(columnName);
-			metaData.setColumnProperty(columnName, "column_id", columnName);
-			metaData.setColumnProperty(columnName, "type", columnType);
-			
-			if( columnType.equalsIgnoreCase("geoid")) {
-				String hierarchyName = (String)columnSB.getAttribute(GeoEngineConstants.COLUMN_HIERARCHY_REF_ATTRIBUTE);
-				metaData.setColumnProperty(columnName, "hierarchy", hierarchyName);				
-				String levelName = (String)columnSB.getAttribute(GeoEngineConstants.COLUMN_LEVEL_REF_ATTRIBUTE);				
-				metaData.setColumnProperty(columnName, "level", levelName);
-			} else if( columnType.equalsIgnoreCase("measure")) {
-				String aggFunc = (String)columnSB.getAttribute(GeoEngineConstants.COLUMN_AFUNC_REF_ATTRIBUTE);
-				metaData.setColumnProperty(columnName, "func", aggFunc);				
+		try {
+		
+			metadataSB = (SourceBean)confSB.getAttribute(GeoEngineConstants.METADATA_TAG);
+			if(metadataSB == null) {
+				logger.warn("Cannot find metadata configuration settings: tag name " + GeoEngineConstants.METADATA_TAG);
+				logger.info("Metadata configuration settings must be injected at execution time");
+				return null;
 			}
 			
+			
+			logger.debug("Metadata block has been found in configuration");
+			
+			metaData = new DataSetMetaData();
+			
+			columns = metadataSB.getAttributeAsList(GeoEngineConstants.COLUMN_TAG);
+			logger.debug("Metadata block contains settings for [" + columns + "] columns");
+			
+			for(int i = 0; i < columns.size(); i++) {
+				columnSB = null;
+				try {
+					logger.debug("Parsing column  [" + i + "]");
+					columnSB = (SourceBean)columns.get(i);
+					
+					columnName = (String)columnSB.getAttribute(GeoEngineConstants.COLUMN_NAME_ATTRIBUTE);
+					logger.debug("Column [" + i + "] name [" + columnName + "]");
+					Assert.assertNotNull(columnName, "Attribute [" + GeoEngineConstants.COLUMN_NAME_ATTRIBUTE + "] of tag [" + GeoEngineConstants.COLUMN_TAG + "] cannot be null");
+					
+					columnType = (String)columnSB.getAttribute(GeoEngineConstants.COLUMN_TYPE_ATTRIBUTE);	
+					logger.debug("Column [" + i + "] name [" + columnType + "]");
+					Assert.assertNotNull(columnName, "Attribute [" + GeoEngineConstants.COLUMN_TYPE_ATTRIBUTE + "] of tag [" + GeoEngineConstants.COLUMN_TAG + "] cannot be null");
+									
+					metaData.addColumn(columnName);
+					metaData.setColumnProperty(columnName, "column_id", columnName);
+					metaData.setColumnProperty(columnName, "type", columnType);
+					
+					if( columnType.equalsIgnoreCase("geoid")) {
+						String hierarchyName = (String)columnSB.getAttribute(GeoEngineConstants.COLUMN_HIERARCHY_REF_ATTRIBUTE);
+						logger.debug("Column [" + i + "] attribute [" + GeoEngineConstants.COLUMN_HIERARCHY_REF_ATTRIBUTE + "]is equal to [" + hierarchyName + "]");
+						Assert.assertNotNull(hierarchyName, "Attribute [" + GeoEngineConstants.COLUMN_HIERARCHY_REF_ATTRIBUTE + "] of tag [" + GeoEngineConstants.COLUMN_TAG + "] cannot be null");
+						metaData.setColumnProperty(columnName, "hierarchy", hierarchyName);	
+						
+						String levelName = (String)columnSB.getAttribute(GeoEngineConstants.COLUMN_LEVEL_REF_ATTRIBUTE);
+						logger.debug("Column [" + i + "] attribute [" + GeoEngineConstants.COLUMN_LEVEL_REF_ATTRIBUTE + "]is equal to [" + levelName + "]");
+						Assert.assertNotNull(hierarchyName, "Attribute [" + GeoEngineConstants.COLUMN_LEVEL_REF_ATTRIBUTE + "] of tag [" + GeoEngineConstants.COLUMN_TAG + "] cannot be null");
+						metaData.setColumnProperty(columnName, "level", levelName);
+					} else if( columnType.equalsIgnoreCase("measure")) {
+						String aggFunc = (String)columnSB.getAttribute(GeoEngineConstants.COLUMN_AFUNC_REF_ATTRIBUTE);
+						logger.debug("Column [" + i + "] attribute [" + GeoEngineConstants.COLUMN_AFUNC_REF_ATTRIBUTE + "]is equal to [" + aggFunc + "]");
+						Assert.assertNotNull(aggFunc, "Attribute [" + GeoEngineConstants.COLUMN_AFUNC_REF_ATTRIBUTE + "] of tag [" + GeoEngineConstants.COLUMN_TAG + "] cannot be null");
+						metaData.setColumnProperty(columnName, "func", aggFunc);				
+					}
+					logger.debug("Column  [" + i + "] parsed succesfully");
+				} catch (Throwable t) {
+					throw new GeoEngineException("An error occurred while parsing column [" + columnSB + "]", t);
+				}
+			}
+		
+		} catch (Throwable t) {
+			GeoEngineException e = new GeoEngineException("An error occurred while parsing metadata [" + metadataSB + "]", t);
+			e.addHint("Download document template and fix the problem that have coused the syntax/semantic error");
+			throw e;
+		} finally {
+			logger.debug("OUT");
 		}
 		
 		return metaData;

@@ -197,12 +197,22 @@ public class Link {
 			return actualValue;
 		}
 		
-		public String getXActualValue(IRecord record, Map env) throws SQLException {
+		public String getXActualValue(IRecord record, Map env) {
+			IField field;
+			
 			String actualValue = null;
 			if( isRelative() ) {
 				if( isRealtiveToDataset() ) {
-					IField field = record.getFieldAt( record.getDataStore().getMetaData().getFieldIndex( getValue() ) );
-					actualValue = "" + field.getValue();
+					int recordIndex = record.getDataStore().getMetaData().getFieldIndex( getValue() );
+					if(recordIndex < 0) {
+						logger.warn("Impossible to find column [" + getValue() + "] in datstore");
+						actualValue = "undefined";
+					} else {
+						field = record.getFieldAt( recordIndex );
+						actualValue = "" + field.getValue();
+					}
+					
+					
 				} else if ( isRealtiveToEnvironment()) {
 					actualValue = "" + env.get( getValue() );
 				}

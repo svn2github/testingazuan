@@ -137,7 +137,19 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 				env.put(GeoEngineConstants.ENV_OUTPUT_TYPE, outputType);
 			}			
 			
+			try {
 			geoEngineInstance = GeoEngine.createInstance(getTemplateAsSourceBean(), env);
+			} catch (Throwable t) {
+				Throwable rootException = t;
+				while(rootException.getCause() != null) {
+					rootException = rootException.getCause();
+				}
+				String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+				
+				SpagoBIEngineStartupException se = new SpagoBIEngineStartupException(getEngineName(), "Impossible to create engine instance. \nThe root cause of the error is: " + str, t);
+				throw se; 
+			}
+			
 			geoEngineInstance.setAnalysisMetadata( getAnalysisMetadata() );
 			
 			analysisStateRowData = getAnalysisStateRowData();

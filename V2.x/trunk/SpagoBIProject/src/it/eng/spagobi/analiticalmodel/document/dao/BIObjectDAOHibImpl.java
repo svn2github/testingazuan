@@ -1675,8 +1675,14 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				buffer.append("select o from SbiObjects o, SbiObjFunc sof, SbiFunctions f,  SbiFuncRole fr " +
 					"where sof.id.sbiFunctions.functId = f.functId and o.biobjId = sof.id.sbiObjects.biobjId  " +
 					" and fr.id.role.extRoleId IN (select extRoleId from SbiExtRoles e  where  e.name in (:ROLES)) " +
-					" and fr.id.function.functId = f.functId and fr.id.state.valueId = o.state " + 
+					" and fr.id.function.functId = f.functId " + 
 					" and f.functId = :FOLDER_ID  " );
+				
+				if(profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)){
+					buffer.append(" and ( fr.id.state.valueId = o.state OR o.stateCode = 'SUSP') " ); 
+				}else{
+					buffer.append(" and fr.id.state.valueId = o.state " ); 
+				}
 				
 				if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) &&
 					!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)){

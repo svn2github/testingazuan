@@ -5,7 +5,7 @@
     <class name="it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact" table="SBI_ALARM_CONTACT">
         <id name="id" type="integer">
             <column name="ALARM_CONTACT_ID" />
-            <generator class="native"/>
+            <generator class="increment"/>
         </id>
 
         <property name="name" type="string">

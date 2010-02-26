@@ -5,7 +5,7 @@
     <class name="it.eng.spagobi.kpi.alarm.metadata.SbiAlarmEvent" table="SBI_ALARM_EVENT">
         <id name="id" type="integer">
             <column name="ALARM_EVENT_ID" />
-            <generator class="native"/>
+            <generator class="increment"/>
         </id>
                 
         <property name="eventTs" type="timestamp">

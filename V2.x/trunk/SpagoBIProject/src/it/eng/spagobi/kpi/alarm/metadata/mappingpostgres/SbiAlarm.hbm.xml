@@ -5,7 +5,7 @@
     <class name="it.eng.spagobi.kpi.alarm.metadata.SbiAlarm" table="SBI_ALARM">
         <id name="id" type="integer">
             <column name="ALARM_ID" />
-            <generator class="native"/>
+            <generator class="increment"/>
         </id>
         <many-to-one name="sbiObjects" class="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects" >
             <column name="DOCUMENT_ID" />

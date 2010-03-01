@@ -224,39 +224,10 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     		}
 
   		  if (action === 'crossnav'){
-          if (paramConf.target === 'new'){
-            //cross to new page
-  		      this.execCrossNav(paramConf, index);
-  		    } else {
-  		    alert("self!!! I tryng to open popup window...");
-  		      //open popup
-  		      var popupDoc = new Ext.Window({
-                	          layout: 'fit',                	          
-                        		title: this.name,
-                  	        width: 700,
-                  	        height: 400,
-                        	//	modal: true,
-                        		closable: true,
-                        	  closeAction:'hide',
-                        		resizable: true, 
-                        		minimizable :false,
-                        		maximizable : false,
-                        	  plain: true,
-                        	  buttons: [{
-                                        text: 'Close',
-                                        handler: function(){
-                                            popupDoc.hide();
-                                        }
-                                    }]
-
-                        	  //autoLoad: {url:'page.jsp',scripts: true}
-                	    });
-          
-        	    popupDoc.show(this);
-        	    //window.open(urlExporter,'name','height=750,width=1000');
-          }  		    
+            //cross to new document
+  		      this.execCrossNav(paramConf, index); 		    
   		  } else {
-  		      //executes back-end acrtion
+  		      //executes back-end action
             Ext.Ajax.request({
     			        url: this.services[action],  			       
     			        params: {'message': action, 'userId': Sbi.user.userId, 
@@ -396,7 +367,8 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
   		  var record = this.store.getAt(index);   
         var msg = {
     			label:docConfig.document.label
-    			, windowName: this.name										
+    			, windowName: this.name				
+          , target: (docConfig.target === 'new')?'self':'popup'						
     		};
     			
     		var separator = '';

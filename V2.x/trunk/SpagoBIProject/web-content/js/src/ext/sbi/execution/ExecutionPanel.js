@@ -161,7 +161,7 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 	}
 	
 	, executeCrossNavigation: function( config ) {
-	
+
 		var targetDocument = config.document;
 		var sourceDocument = this.activeDocument.document;
 		
@@ -200,9 +200,39 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 			config.document.title = config.title;
 		}
 		var tabblocked = true;
-		if (config.target !== undefined && config.target == 'tab') {
+		if (config.target === 'tab') {
 			tabblocked = this.fireEvent('crossnavigationonothertab', config);
+		}else if (config.target === 'popup') {
+		  // load the document in a popup window
+		  tabblocked = false;
+		  config.preferences.executionToolbarConfig = {};
+		  config.preferences.executionToolbarConfig.expandBtnVisible = false
+      var activeDocument = new Sbi.execution.ExecutionPanel( {preferences: config.preferences, isFromCross: true}, config.document );
+			var popupWin = new Ext.Window({
+	   	        layout: 'fit',                	          
+	           	title: config.title,
+	     	      width: 500,
+	     	      height: 300,
+	           	//	modal: true,
+	           	closable: true,
+	           	closeAction:'hide',
+	           	resizable: true, 
+	           	minimizable :false,
+	           	maximizable : false,
+	           	plain: true,
+	           	buttons: [{
+	                       text: 'Close',
+	                       handler: function(){
+	                          popupWin.hide();
+	                       }
+	                   }]
+				});
+        popupWin.add(activeDocument);
+        popupWin.show();
+				activeDocument.execute();
+        popupWin.doLayout();
 		}
+		
 		if (tabblocked) {
 			this.activeDocument = new Sbi.execution.ExecutionWizard( {preferences: config.preferences, isFromCross: true}, config.document );
 			this.documentsStack.push( this.activeDocument );

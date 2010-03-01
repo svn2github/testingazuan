@@ -271,8 +271,9 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 					this.refreshExecution();
 			}			
 		}));
-
-		if(Sbi.user.ismodeweb){
+		//
+    this.toolbarConfig.expandBtnVisible = (this.toolbarConfig.expandBtnVisible === undefined)? true: this.toolbarConfig.expandBtnVisible ; 
+		if(Sbi.user.ismodeweb && this.toolbarConfig.expandBtnVisible  === true){
 			this.toolbar.addButton(new Ext.Toolbar.Button({
 				iconCls: 'icon-expand' 
 				, tooltip: LN('sbi.execution.executionpage.toolbar.expand')
@@ -989,7 +990,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	// ----------------------------------------------------------------------------------------
 	// private methods
 	// ----------------------------------------------------------------------------------------
-	
+	 
 	, init: function( config, doc ) {
 		this.initToolbar(config);
 		this.initNorthPanel(config);
@@ -998,6 +999,8 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	}
 	
 	, initToolbar: function( config ) {
+		
+    this.toolbarConfig = config.executionToolbarConfig || {} ;
 		
 		if (this.toolbarHiddenPreference) 
 			return;

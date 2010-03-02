@@ -153,6 +153,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 		
 	    var error_offsets = new Array(); 
 	    var error_lookaheads = new Array(); 
+	    var error_count = 0;
 	    error_count = boolstaf.module.parse( str, error_offsets, error_lookaheads );  
 	    
 	    if(error_count > 0) {

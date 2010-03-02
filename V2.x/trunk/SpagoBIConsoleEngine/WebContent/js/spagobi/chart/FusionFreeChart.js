@@ -22,7 +22,8 @@
 /**
   * Object name 
   * 
-  * [description]
+  * see ...
+  *  - docs: http://www.fusioncharts.com/free/docs/
   * 
   * 
   * Public Properties

@@ -728,8 +728,8 @@ public class BirtReportServlet extends HttpServlet {
 	    	
 	    	//Set the HTTP response
 			response.setContentType("text/csv");
-			//response.setHeader("Content-disposition", "inline; filename=reportcsv.csv");
-			response.setHeader("Content-disposition", "inline; filename=reportcsv.txt");
+			response.setHeader("Content-disposition", "inline; filename=reportcsv.csv");
+			//response.setHeader("Content-disposition", "inline; filename=reportcsv.txt");
 	    	
 	    	IResultSetItem resultItem = (IResultSetItem)resultSetList.get(0);
 			
@@ -774,8 +774,8 @@ public class BirtReportServlet extends HttpServlet {
 					logger.debug("Extraction successfull "+dispName);
 					 
 					// Add ZIP entry to ZIP output stream
-					//outZip.putNextEntry(new ZipEntry("reportcsv"+i+".csv"));
-					outZip.putNextEntry(new ZipEntry("reportcsv"+i+".txt"));
+					outZip.putNextEntry(new ZipEntry("reportcsv"+i+".csv"));
+					//outZip.putNextEntry(new ZipEntry("reportcsv"+i+".txt"));
 					
 					//convert temp outputStream to InputStream
 					tempIn = new ByteArrayInputStream (((ByteArrayOutputStream) tempOut).toByteArray());

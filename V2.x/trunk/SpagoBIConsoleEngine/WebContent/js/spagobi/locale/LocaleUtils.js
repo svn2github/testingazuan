@@ -8,7 +8,9 @@ Sbi.locale.formatters = {
 	string: Sbi.locale.dummyFormatter,		
 	date: Sbi.locale.dummyFormatter,		
 	boolean: Sbi.locale.dummyFormatter,
-	html: Sbi.locale.dummyFormatter
+	html: Sbi.locale.dummyFormatter,
+	inlineBar: Sbi.locale.dummyFormatter,
+	inlinePoint: Sbi.locale.dummyFormatter
 };
 
 
@@ -20,6 +22,18 @@ if(Sbi.console.commons.Format){
 		Sbi.locale.formatters.date    = Sbi.console.commons.Format.dateRenderer(Sbi.locale.formats['date']);		
 		Sbi.locale.formatters.boolean = Sbi.console.commons.Format.booleanRenderer(Sbi.locale.formats['boolean']);
 		Sbi.locale.formatters.html    = Sbi.console.commons.Format.htmlRenderer();
+		Sbi.locale.formatters.inlineBar    = Sbi.console.commons.Format.inlineBarRenderer({ type: 'bar'
+	                																		, column: 'chart_store_cost'
+	                																		, color: 'gray'																		
+	                																		, maxValue: 200 
+	                																		, tooltip: 'volume vendite'
+	                															   	});
+		Sbi.locale.formatters.inlinePoint = Sbi.console.commons.Format.inlinePointRenderer({ type: 'point'
+	                  																		 , column: 'chart_unit_sales'
+	                  																		 , color: 'red'                                                  																	
+	                  																		 , threshold: '25'
+	                  																		 , tooltip: 'superata la soglia di 25 errori'
+	                        																});
 	} else {
 		Sbi.locale.formatters.int  = Sbi.console.commons.Format.numberRenderer( );	
 		Sbi.locale.formatters.float  = Sbi.console.commons.Format.numberRenderer( );	
@@ -27,6 +41,8 @@ if(Sbi.console.commons.Format){
 		Sbi.locale.formatters.date    = Sbi.console.commons.Format.dateRenderer( );		
 		Sbi.locale.formatters.boolean = Sbi.console.commons.Format.booleanRenderer( );
 		Sbi.locale.formatters.html    = Sbi.console.commons.Format.htmlRenderer();
+		Sbi.locale.formatters.inlineBar   = Sbi.console.commons.Format.inlineBarRenderer();
+		Sbi.locale.formatters.inlinePoint = Sbi.console.commons.Format.inlinePointRenderer();
 	}
 };
 

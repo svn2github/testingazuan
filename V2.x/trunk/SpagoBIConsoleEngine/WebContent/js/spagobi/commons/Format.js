@@ -32,7 +32,7 @@
   * 
   * Authors
   * 
-  * - Andrea Gioia (adrea.gioia@eng.it)
+  * - Andrea Gioia (andrea.gioia@eng.it)
   */
 
 Ext.ns("Sbi.console.commons");
@@ -227,7 +227,37 @@ Sbi.console.commons.Format = function(){
                 return Sbi.console.commons.Format.html(v, format);
             };
         }
-        
+      
+       , inlineBar : function(v, format) {
+        	format = Ext.apply({}, format || {}, {
+	    		tooltip: 'prova tooltip',
+	    		color: 'red',
+	    		maxValue: 110,
+	    		threshold: 40
+    		});
+         
+          v = (v / format.maxValue) * 100; 
+        	
+        	return v;
+        } 
+      
+        , inlineBarRenderer : function(format){
+            return function(v){
+                return '<div style="width:' +  Sbi.console.commons.Format.inlineBar(v, format)  + '%;height:10px;border:1px solid #000;background:' + format.color + ';title:'+ format.tooltip +';/>'
+                //var value = (v / format.maxValue) * 100; 
+                //return '<div style="width:' +  value + '%;height:10px;border:1px solid #000;background:' + format.color + ';title:'+ format.tooltip +';/>'
+            };
+        }
+       
+        , inlinePointRenderer : function(format){
+            return function(v){
+               if (v > format.threshold) {  
+                  return '<div align=center style="width:100%;title:'+ format.tooltip +';"><img  src="../img/ico_point.gif"></img></div>';   
+                } else {  
+                  return '';  
+                }
+            };
+        }
         
 	};
 	

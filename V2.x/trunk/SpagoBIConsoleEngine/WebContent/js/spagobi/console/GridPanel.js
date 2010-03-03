@@ -313,42 +313,56 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
           if(meta.fields[i].subtype && meta.fields[i].subtype === 'html') {
 			meta.fields[i].renderer  =  Sbi.locale.formatters['html'];
           }
-		}
+	    
+	     //adds inline charts if it's necessary
+	  	 for(var j=0, len= this.table.inlineCharts.length; j < len; j++){
+	
+	  	   if (this.table.inlineCharts[j].column === localHeader){
+	  	  // alert(this.table.inlineCharts[j].column + " - " + this.table.inlineCharts[j].type + " - " + i );
+	            if(this.table.inlineCharts[j].type && this.table.inlineCharts[j].type === 'bar' ) {
+	  			       meta.fields[i].renderer  =  Sbi.locale.formatters['inlineBar'];
+	            }
+	            
+	            if(this.table.inlineCharts[j].type && this.table.inlineCharts[j].type === 'point') {
+	  		        	meta.fields[i].renderer  =  Sbi.locale.formatters['inlinePoint'];
+	            }
+	        }            
+	      } //for on j
+	    } // for on i
 
-
-    //adds inline action buttons
-	for(var i=0, l= this.table.inlineActions.length; i < l; i++){
-	 
-	  var img = this.images[this.table.inlineActions[i].name];
-
-	  //defines image's path
-	  if (this.table.inlineActions[i].name === 'crossnav'){
-	    if (this.table.inlineActions[i].config.target === 'new')
-	      img = this.images['cross_detail'];
-	    else
-	      img = this.images['popup_detail'];
-	  }
-
-      var bc = new Ext.grid.ButtonColumn({
-           dataIndex: this.table.inlineActions[i].name + "-"+ i
-			   , tooltip: (this.table.inlineActions[i].tooltip != undefined)? this.table.inlineActions[i].tooltip:this.table.inlineActions[i].name
-         , imgSrc: img
-         , clickHandler:  function(e, t){   
-                this.grid.execInlineAction(e, t, this.action, this.parameters)     
-         }
-         , hideable: true
-         , hidden: this.table.inlineActions[i].hidden
-         , width: 25
-         , action: this.table.inlineActions[i].name
-         , parameters: this.table.inlineActions[i].config
-      });
-      bc.init(this);
-      meta.fields.push(bc);	
-  	}	
-    //adds numeration column    
-	meta.fields[0] = new Ext.grid.RowNumberer();
-    //update columnmodel configuration
-	this.getColumnModel().setConfig(meta.fields);
+	    //adds inline action buttons
+		for(var i=0, l= this.table.inlineActions.length; i < l; i++){
+		 
+		  var img = this.images[this.table.inlineActions[i].name];
+	
+		  //defines image's path
+		  if (this.table.inlineActions[i].name === 'crossnav'){
+		    if (this.table.inlineActions[i].config.target === 'new')
+		      img = this.images['cross_detail'];
+		    else
+		      img = this.images['popup_detail'];
+		  }
+	
+	      var bc = new Ext.grid.ButtonColumn({
+	           dataIndex: this.table.inlineActions[i].name + "-"+ i
+				   , tooltip: (this.table.inlineActions[i].tooltip != undefined)? this.table.inlineActions[i].tooltip:this.table.inlineActions[i].name
+	         , imgSrc: img
+	         , clickHandler:  function(e, t){   
+	                this.grid.execInlineAction(e, t, this.action, this.parameters)     
+	         }
+	         , hideable: true
+	         , hidden: this.table.inlineActions[i].hidden
+	         , width: 25
+	         , action: this.table.inlineActions[i].name
+	         , parameters: this.table.inlineActions[i].config
+	      });
+	      bc.init(this);
+	      meta.fields.push(bc);	
+	  	}	
+	    //adds numeration column    
+		meta.fields[0] = new Ext.grid.RowNumberer();
+	    //update columnmodel configuration
+		this.getColumnModel().setConfig(meta.fields);
 
 	}
 

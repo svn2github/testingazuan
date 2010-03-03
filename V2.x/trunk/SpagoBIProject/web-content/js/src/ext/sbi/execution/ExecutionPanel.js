@@ -206,7 +206,7 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 		  // load the document in a popup window
 		  tabblocked = false;
 		  config.preferences.executionToolbarConfig = {};
-		  config.preferences.executionToolbarConfig.expandBtnVisible = false
+		  config.preferences.executionToolbarConfig.expandBtnVisible = false;
       var activeDocument = new Sbi.execution.ExecutionPanel( {preferences: config.preferences, isFromCross: true}, config.document );
 			var popupWin = new Ext.Window({
 	   	        layout: 'fit',                	          

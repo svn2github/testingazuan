@@ -11,8 +11,14 @@ Sbi.template = {
             id: 'testConsoleChart'
             , label: 'testConsoleChart'
             , params: {}  
-            , refreshTime: '30'
+        }, {
+            id: 'testConsLiveLine'
+            , label: 'testConsLiveLine'
+            , params: {}  
+            , refreshTime: 5
         }
+
+        
 	]
 	
 	
@@ -58,16 +64,14 @@ Sbi.template = {
            		type: 'chart.of.bar'
            	}
         }  ,  {
-        	dataset: 'testConsoleChart'
+        	dataset: 'testConsLiveLine'
             , widgetConfig: {
-            	type: 'chart.sbi.rotate'
-               	//type: 'chart.of.bar'
+            	type: 'chart.sbi.liveline'
             }
         } ,  {
         	dataset: 'testConsoleChart'
             , widgetConfig: {
                	type: 'chart.fcf.bar'
-               	//type: 'chart.of.bar'
             }
         }
     	]

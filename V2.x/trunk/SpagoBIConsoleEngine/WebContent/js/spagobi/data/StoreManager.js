@@ -75,6 +75,20 @@ Ext.extend(Sbi.console.StoreManager, Ext.util.Observable, {
 		s.ready = s.ready || false;
 		s.storeType = s.storeType || 'ext';
 		this.stores.add(s);
+		if(s.refreshTime) {
+			var task = {
+				run: function(){
+					s.load({
+						params: {}, 
+						callback: function(){this.ready = true;}, 
+						scope: s, 
+						add: false
+					});
+				},
+				interval: s.refreshTime * 1000 //1 second
+			}
+			Ext.TaskMgr.start(task);
+		}
 	}
 
 	, getStore: function(storeId) {
@@ -97,6 +111,7 @@ Ext.extend(Sbi.console.StoreManager, Ext.util.Observable, {
 				storeId: c[i].id
 				, datasetLabel: c[i].label
 				, autoLoad: false
+				, refreshTime: c[i].refreshTime
 			}); 
 		
 			s.ready = c[i].ready || false;

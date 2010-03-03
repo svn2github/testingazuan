@@ -48,12 +48,22 @@ Ext.ns("Sbi.chart");
 
 
 Sbi.chart.SpagoBIChart = function(config) {	
+	
+	this.store = config.store;
+	if(this.store) {
+		this.store.on('load', this.onStoreLoad, this);
+		this.store.on('metachange', this.onStoreMetaChange, this);
+	}
+	
 	Sbi.chart.SpagoBIChart.superclass.constructor.call(this, config);
 };
 
 Ext.extend(Sbi.chart.SpagoBIChart, Ext.FlashComponent, {
     
-	CHART_BASE_URL: '/SpagoBIConsoleEngine/swf/spagobichart/'
+	store: null
+	, storeMeta: null
+	
+	, CHART_BASE_URL: '/SpagoBIConsoleEngine/swf/spagobichart/'
 	, CHART_SWF: {
 		rotate: 'rotation.swf'
 		, liveline: 'liveline.swf'
@@ -67,11 +77,11 @@ Ext.extend(Sbi.chart.SpagoBIChart, Ext.FlashComponent, {
 			, lowValue: -50
 			, highValue: 50
 		}, liveline: {
-			minYValue: 0
-			, maxYValue: 180 
-			, stepNumValue: 10
-			, refreshRate: 15000
-			, xColName: 'name'
+			rangeMinValue: 0
+			, rangeMaxValue: 120 
+			, stepY: 40
+			, domainValueNumber: 18
+			, chartTitle:'SpagoBI Liveline'
 		}
 		
 	}
@@ -101,12 +111,38 @@ Ext.extend(Sbi.chart.SpagoBIChart, Ext.FlashComponent, {
 		this.flashVars.paramHeight = ct.getHeight();
 				
 		Sbi.chart.SpagoBIChart.superclass.onRender.call(this, ct, position);
-		
-        this.testFn.defer(2000, this);
+	
+		if(this.chartType === 'rotate') {
+			this.testFn.defer(3000, this);
+		}
 	}
 	
 	, testFn: function() {
     	this.swf.setValue(35);
     }
+	
+	, onStoreLoad: function(s, records, option) {
+		var data = {};
+		var rec = this.store.getAt(0);
+		if(rec) {
+			var fields = this.storeMeta.fields;
+			for(var i = 0, l = fields.length, f; i < l; i++) {
+				f = fields[i];
+				if( (typeof f) === 'string') {
+					f = {name: f};
+				}
+				var alias = f.header || f.name;
+				if(alias === 'recNo') continue;
+				data[alias] = rec.get(f.name);				
+			}
+			if(this.swf.loadData) {
+				this.swf.loadData(data);
+			}
+		}
+	}
+	
+	, onStoreMetaChange: function(s, m) {
+		this.storeMeta = m;
+	}
     
 });

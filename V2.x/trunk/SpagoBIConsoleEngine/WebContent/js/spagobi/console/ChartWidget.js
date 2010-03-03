@@ -94,6 +94,7 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	, BAR_CHART: 'chart.ext.bar'
 	, PIE_CHART: 'chart.ext.pie'
 	, ROTATE_CHART: 'chart.sbi.rotate'
+	, LIVELINE_CHART: 'chart.sbi.liveline'
 	, OF_BAR_CHART: 'chart.of.bar'
 	, FCF_BAR_CHART: 'chart.fcf.bar'
 		
@@ -178,6 +179,8 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 			chart = this.createOFBarChart(chartConfig);
 		} else if(chartType === this.FCF_BAR_CHART){
 			chart = this.createFCFBarChart(chartConfig);
+		} else if(chartType === this.LIVELINE_CHART){
+			chart = this.createLivelineChart(chartConfig);
 		} else {
 			Sbi.exception.ExceptionHandler.showErrorMessage('Chart type [' + chartType + '] not supported by [ChartWidget]');
 		}
@@ -278,6 +281,22 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		    , items: [new Sbi.chart.SpagoBIChart({chartType: 'rotate'})]
 		});		
 	}
+	
+	, createLivelineChart: function(chartConfig) {
+		
+		return new Ext.Panel({
+			layout:'fit'
+		    , height: this.height	
+		    , items: [
+		        new Sbi.chart.SpagoBIChart({
+		        	chartType: 'liveline'
+		        	, store: this.store
+		        })
+		    ]
+		});		
+	}
+	
+	
 	
 	, createOFBarChart: function(chartConfig) {
 		

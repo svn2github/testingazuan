@@ -73,12 +73,16 @@ Sbi.data.Store = function(config) {
 		}	
 	}
 	
+	this.refreshTime = config.refreshTime;
+	delete config.refreshTime;
+	
 	Sbi.data.Store.superclass.constructor.call(this, config);
 };
 
 Ext.extend(Sbi.data.Store, Ext.data.JsonStore, {
     
 	alias2FieldMetaMap: null
+	, refreshTime: null
 	
     // -- public methods ----------------------------------------------------------------
     

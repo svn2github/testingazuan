@@ -318,14 +318,11 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	  	 for(var j=0, len= this.table.inlineCharts.length; j < len; j++){
 	
 	  	   if (this.table.inlineCharts[j].column === localHeader){
-	  	  // alert(this.table.inlineCharts[j].column + " - " + this.table.inlineCharts[j].type + " - " + i );
 	            if(this.table.inlineCharts[j].type && this.table.inlineCharts[j].type === 'bar' ) {
-	            	//meta.fields[i].renderer  =  Sbi.locale.formatters['inlineBar'];
 	  			    meta.fields[i].renderer  =  Sbi.console.commons.Format.inlineBarRenderer(this.table.inlineCharts[j]);
 	            }
 	            
 	            if(this.table.inlineCharts[j].type && this.table.inlineCharts[j].type === 'point') {
-	  		        //meta.fields[i].renderer  =  Sbi.locale.formatters['inlinePoint'];
 	            	meta.fields[i].renderer  =  Sbi.console.commons.Format.inlinePointRenderer(this.table.inlineCharts[j]);
 	            }
 	        }            

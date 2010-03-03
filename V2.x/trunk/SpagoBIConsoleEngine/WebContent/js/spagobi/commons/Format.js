@@ -243,7 +243,7 @@ Sbi.console.commons.Format = function(){
       
         , inlineBarRenderer : function(format){
             return function(v){
-                return '<div style="width:' +  Sbi.console.commons.Format.inlineBar(v, format)  + '%;height:10px;border:1px solid #000;background:' + format.color + ';title:'+ format.tooltip +';/>'
+                return '<div title="'+ format.tooltip + '" style="width:' +  Sbi.console.commons.Format.inlineBar(v, format)  + '%;height:10px;border:1px solid #000;background:' + format.color + ';"/>'
                 //var value = (v / format.maxValue) * 100; 
                 //return '<div style="width:' +  value + '%;height:10px;border:1px solid #000;background:' + format.color + ';title:'+ format.tooltip +';/>'
             };
@@ -252,7 +252,7 @@ Sbi.console.commons.Format = function(){
         , inlinePointRenderer : function(format){
             return function(v){
                if (v > format.threshold) {  
-                  return '<div align=center style="width:100%;title:'+ format.tooltip +';"><img  src="../img/ico_point.gif"></img></div>';   
+                  return '<div align=center title="'+ format.tooltip + '" style="width:100%;"><img  src="../img/ico_point.gif"></img></div>';   
                 } else {  
                   return '';  
                 }

@@ -47,7 +47,7 @@
 Ext.ns("Sbi.console");
 
 Sbi.console.CustomFilteringToolbar = function(config) {
-
+  
 		var defaultSettings = {
 		    // default goes here
 		};
@@ -98,9 +98,9 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
     
     // -- private methods ---------------------------------------------------------------
     , onMetaChange: function( store, meta ) {
-       	
+
        this.cleanFilterToolbar();
-       
+      
        //loads headers map with dataIndex info
        this.headers = [];
        
@@ -111,7 +111,7 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
             this.headers[localHeader] = localDataIndex;
           }
        } 
-       
+      
        	if (this.filterBar.type === 'automatic' ){
        	  // automatic: all dataset fields are added as filter
       		for(var i = 0; i < meta.fields.length; i++) { 		  
@@ -122,13 +122,13 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
       	}
       	else{
       	 //custom: only configurated fields are added as filter      	 
-        	for(var i = 0; i < meta.fields.length; i++) { 		                
+        	for(var i = 0; i < meta.fields.length; i++) { 		           
         		 if (meta.fields[i].header != '' && this.isConfiguratedFilter(meta.fields[i].header)){         		   
                   this.createFilterField(this.getFilterOperator(meta.fields[i].header), this.getColumnText(meta.fields[i].header),  this.headers[meta.fields[i].header]);  	
             	}        		  
         	} 
       	}
-    	
+
     		//adds actions
     		this.addActionButtons();    		
     		this.doLayout();
@@ -136,20 +136,24 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
     	}
 	
     //returns true if the input field is a filter defined into template, false otherwise.
-    , isConfiguratedFilter: function (field){          
-          for(var i=0, l=this.filterBar.filters.length; i<l; i++) {              
-            if (field === this.filterBar.filters[i].column)
-              return true;
-      		}
+    , isConfiguratedFilter: function (field){   
+          if (this.filterBar.filters){    
+            for(var i=0, l=this.filterBar.filters.length; i<l; i++) {              
+              if (field === this.filterBar.filters[i].column)
+                return true;
+        		}
+        	}
           return false;
     }
     
-    , getColumnText: function (columnName){         
+    , getColumnText: function (columnName){  
+        if (this.filterBar.filters){       
           for(var i=0, l=this.filterBar.filters.length; i<l; i++) {              
             if (columnName === this.filterBar.filters[i].column)
               return this.filterBar.filters[i].text;
       		}
-          return columnName;
+      	}
+        return columnName;
     }
    
     , getFilterOperator: function (columnName){         

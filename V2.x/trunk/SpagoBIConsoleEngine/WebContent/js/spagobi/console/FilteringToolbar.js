@@ -97,20 +97,25 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
   		  var conf = {}; 
         conf.executionContext = this.filterBar.executionContext;     
     		this.addFill();
-    		for(var i=0; i < this.filterBar.actions.length; i++){
-    		   conf.actionConf = this.filterBar.actions[i];
-  			   b = new Sbi.console.ActionButton(conf);
-      		 this.addButton(b);	
-      	}	
+    		if (this.filterBar.actions){
+      		for(var i=0; i < this.filterBar.actions.length; i++){
+      		   conf.actionConf = this.filterBar.actions[i];
+    			   b = new Sbi.console.ActionButton(conf);
+        		 this.addButton(b);	
+        	}	
+        }
   }
   
   //reset the toolbar (delete every elements)
   , cleanFilterToolbar: function(){
-       delete this.cbStores; 
-        this.items.each( function(item) {
-            this.items.remove(item);
-                item.destroy();           
-            }, this);   
+
+      if (this.cbStores !== null ){
+         delete this.cbStores; 
+          this.items.each( function(item) {
+              this.items.remove(item);
+                  item.destroy();           
+              }, this);   
+      }
        
     }
    

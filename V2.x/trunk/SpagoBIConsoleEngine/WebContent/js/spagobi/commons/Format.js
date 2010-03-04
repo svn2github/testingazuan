@@ -238,7 +238,7 @@ Sbi.console.commons.Format = function(){
         , inlinePointRenderer : function(format){
             return function(v){
                if (v > format.threshold) {  
-                  return '<div align=center title="'+ format.tooltip + '" style="width:100%;"><img  src="../img/ico_point.gif"></img></div>';   
+                  return '<div align=center title="'+ format.tooltip + '" style="width:100%;"><img  src="../img/ico_point_'+ format.color +'.gif"></img></div>';   
                 } else {  
                   return '';  
                 }

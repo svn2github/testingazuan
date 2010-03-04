@@ -11,13 +11,13 @@ Sbi.template = {
             id: 'testConsoleChart'
             , label: 'testConsoleChart'
             , params: {}  
-        }, {
+        }/*, {
             id: 'testConsLiveLine'
             , label: 'testConsLiveLine'
             , params: {}  
             , refreshTime: 5
         }
-
+*/
         
 	]
 	
@@ -63,12 +63,12 @@ Sbi.template = {
            		//type: 'chart.sbi.rotate'
            		type: 'chart.of.bar'
            	}
-        }  ,  {
+        } /* ,  {
         	dataset: 'testConsLiveLine'
             , widgetConfig: {
             	type: 'chart.sbi.liveline'
             }
-        } ,  {
+        } */,  {
         	dataset: 'testConsoleChart'
             , widgetConfig: {
                	type: 'chart.fcf.bar'
@@ -231,7 +231,7 @@ Sbi.template = {
 																														brandnamexxx: 'Brand'  //dataindex: url new request
 																													, scope: 'dataset'    // [env|dataset] 
 																													},{
-																														products: 'Products'
+																														productName: 'Products'
 																													, scope: 'dataset'
 																													},{
 																														month: 'Month'
@@ -328,7 +328,7 @@ Sbi.template = {
 	    	} //filterBar
 	
 			
-		}/*,{
+		},{
 			title: 'Pag. 2'
 			, msg: 'Io sono la SECONDA pagina'
 			, navigationBar: {
@@ -345,34 +345,35 @@ Sbi.template = {
 				}
 				]
 			}
-			
-	    	// tollbar con filtri sui dati mostarti nella griglia
+		
 	        ,filterBar: {
 	            // default = filtering toolbar della lookup field; 
 	            // automatic = crea un filtro per ogni colonna della griglia (operator: 'EQUALS_TO'; operand: DISTINCT) 
 	            // custom: permette di creare filtri personalizzati solo su alcune colonne della griglia. La definizione di tali filtri si trova all'interno dell'attributo filters
-	            type: 'custom'  
-	            
+	            type: 'default'  
+	           
 	            // nel caso di filtro custom i seguenti parametri di default vengono applicati qualora non espressamente specificati dall'utente
 	            , defaults: {
 	                operator: 'EQUALS_TO'
 	                ,operand: 'DISTINCT' // DISTINCT | MANUAL
 	            }     
-								
+								/*
 	            , filters: [
 	              {
 	           	  	 text: 'Brands'
-	               , column: 'brandname'
+	               , column: 'Brand'
+								// , column: 'brandname'
 	               , operator: 'EQUALS_TO'
 	               , operand: 'DISTINCT'
 	               }, {
 	                 text: 'Products'
-	               , column: 'productName'
+	               , column: 'Product'
+								 //, column: 'productName'
 	               , operator: 'EQUALS_TO'
 	               , operand: 'DISTINCT'
 	               }
 	            ]
-	           
+	       */
 	            , actions: [
 	                {
 	                    name: 'refresh'
@@ -424,6 +425,25 @@ Sbi.template = {
 		                	label: 'testConsole' 
 		                   	, refreshTime: '30' // in secondi
 		            } 
+								, inlineCharts: [
+									{ // 0..n volte
+											type: 'bar'
+											, column: 'BarChart'
+											, color: 'blue'
+											// se e di tipo numerico usa il valore passato; 
+											// se e 'remote' calcola il massimo lato server (NOTA: il calcolo viene fatto contestualmente al refresh dei dati ed il valore ottenuto viene copiato nei metadati del resultset)
+											// se locale e uguale al massimo dei valori presenti nella pagina attualmente visualizzata
+											, maxValue: 200 // | 'remote' | 'local'
+											, tooltip: 'volume vendite'
+									}, { // 0..n volte
+											 type: 'point'
+											 , column: 'Bullet'
+											 , color: 'grey' //red | grey | ...
+											 // soglia oltre alla quale il simbolo deve essere visualizzato
+											 , threshold: '25'
+											 , tooltip: 'superata la soglia di 25 errori'
+									}
+								]
 
 	            , inlineActions: [
 	      		                {
@@ -450,10 +470,12 @@ Sbi.template = {
 				                                       ,param2: 'paramValue2' 
                                     				   }
 	      		                     ,   dynamicParams: [{
-                                                        brandname: 'Brand'  //dataindex: url new request
+                                                        //Brand: 'Brand'  //dataindex: url new request
+																												brandname: 'Brand'  //dataindex: url new request
                                                       , scope: 'dataset'    // [env|dataset] 
                                                       },{
-                                                        productName: 'Product'
+                                                        //Product: 'Product'
+																												productName: 'Product'
                                                       , scope: 'dataset'
                                                       },{
                                                         month: 'Month'		 //executionContext: url new request
@@ -480,21 +502,21 @@ Sbi.template = {
 	      		                    , hidden: false
 	      		                    , tooltip: 'Download log files'
 	      		                    , config: {}
-	      		                }, { // 0..n volte
+	      		                }, { 
 	      		                    name: 'crossnav'
 	      		                    , hidden: false
-	      		                    , tooltip: 'Cross on XXX document'
+	      		                    , tooltip: 'Cross on document'
 	      		                    , config: {
-	      		                        target: 'new' // self | new
+	      		                        target: 'new' 
 	      		                       , document: 
                             				{
                             					label: 'testReportParams'
                             				, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
                                     , dynamicParams: [{
-                                                        brandname: 'P1'  //dataindex: url new request
-                                                      , scope: 'dataset'    // [env|dataset] 
+                                                        Brand: 'P1' 
+                                                      , scope: 'dataset'   
                                                       },{
-                                                        productName: 'P2'
+                                                        Product: 'P2'
                                                       , scope: 'dataset'
                                                       },{
                                                         month: 'P3'
@@ -502,21 +524,21 @@ Sbi.template = {
                                                      }]	 
                             				}
 	      		                    }
-	      		                }, { // 0..n volte
+	      		                }, { 
 	      		                    name: 'crossnav'
 	      		                    , hidden: false
 	      		                    , tooltip: 'Cross on YYY document (popup)'
 	      		                    , config: {
-																				target: 'self' // self | new
+																				target: 'self' 
 																			, document: 
 																			{
 																				label: 'testReportParams'
 																			, staticParams: {P3:'paramValue_A' , P5: 'paramValue_B'} 
 																			, dynamicParams: [{
-																								brandname: 'P1'  //dataindex: url new request
-																							, scope: 'dataset'    // [env|dataset] 
+																								Brand: 'P1'  
+																							, scope: 'dataset'    
 																							},{
-																								productName: 'P2'
+																								Product: 'P2'
 																							, scope: 'dataset'
 																							},{
 																								month: 'P4'
@@ -547,12 +569,12 @@ Sbi.template = {
 	      		                }
 	      		            ]  
 												
-		        }//table
 						
-	    	} //filterBar
-	
+	    	} //table
+			}//filterBar
 			
-		}*/
+		} //page
+		
 		] //pages
 	}	//detailPanel
 } //template

@@ -144,10 +144,12 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 			  while(it.hasNext()) {
 				String parameterName = (String)it.next();
 				String parameterValue = (String)analyticalDrivers.get(parameterName);
+				if (parameterValue != null && !parameterValue.equals("")){
 		   %>
-		   executionContext ['<%=parameterName%>'] = <%=parameterValue%>;
+		   executionContext ['<%=parameterName%>'] = '<%=parameterValue%>';
 		   <%		
 			  }
+        }
 	       %>
 	       template.executionContext = executionContext;
 

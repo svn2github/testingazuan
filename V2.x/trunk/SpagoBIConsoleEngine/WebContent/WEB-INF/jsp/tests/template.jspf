@@ -11,13 +11,13 @@ Sbi.template = {
             id: 'testConsoleChart'
             , label: 'testConsoleChart'
             , params: {}  
-        }/*, {
+        }, {
             id: 'testConsLiveLine'
             , label: 'testConsLiveLine'
             , params: {}  
             , refreshTime: 5
         }
-*/
+
         
 	]
 	
@@ -63,12 +63,12 @@ Sbi.template = {
            		//type: 'chart.sbi.rotate'
            		type: 'chart.of.bar'
            	}
-        } /* ,  {
+        } ,  {
         	dataset: 'testConsLiveLine'
             , widgetConfig: {
             	type: 'chart.sbi.liveline'
             }
-        } */,  {
+        } ,  {
         	dataset: 'testConsoleChart'
             , widgetConfig: {
                	type: 'chart.fcf.bar'
@@ -350,30 +350,28 @@ Sbi.template = {
 	            // default = filtering toolbar della lookup field; 
 	            // automatic = crea un filtro per ogni colonna della griglia (operator: 'EQUALS_TO'; operand: DISTINCT) 
 	            // custom: permette di creare filtri personalizzati solo su alcune colonne della griglia. La definizione di tali filtri si trova all'interno dell'attributo filters
-	            type: 'default'  
+	            type: 'automatic'  
 	           
 	            // nel caso di filtro custom i seguenti parametri di default vengono applicati qualora non espressamente specificati dall'utente
 	            , defaults: {
 	                operator: 'EQUALS_TO'
 	                ,operand: 'DISTINCT' // DISTINCT | MANUAL
 	            }     
-								/*
+								
 	            , filters: [
 	              {
-	           	  	 text: 'Brands'
+	           	  	 text: 'Brand'
 	               , column: 'Brand'
-								// , column: 'brandname'
 	               , operator: 'EQUALS_TO'
 	               , operand: 'DISTINCT'
 	               }, {
-	                 text: 'Products'
+	                 text: 'Product'
 	               , column: 'Product'
-								 //, column: 'productName'
 	               , operator: 'EQUALS_TO'
 	               , operand: 'DISTINCT'
 	               }
 	            ]
-	       */
+	      
 	            , actions: [
 	                {
 	                    name: 'refresh'
@@ -425,6 +423,7 @@ Sbi.template = {
 		                	label: 'testConsole' 
 		                   	, refreshTime: '30' // in secondi
 		            } 
+								
 								, inlineCharts: [
 									{ // 0..n volte
 											type: 'bar'

@@ -50,7 +50,7 @@ Ext.ns("Sbi.console");
 Sbi.console.ConsolePanel = function(config) {
 
 	var defaultSettings = {
-		title: LN('sbi.qbe.queryeditor.title'),
+		title: LN('sbi.console.consolepanel.title'),
 		layout: 'border'
 	};
 		

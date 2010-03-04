@@ -150,7 +150,7 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	      
 	     var cb = new Ext.form.ComboBox({
 	              	        store: s,
-	              	        width: 100,
+	              	        width: 130,
 	              	        displayField:'name',
 	              	        valueField:'value',
 	              	        typeAhead: true,

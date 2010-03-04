@@ -50,7 +50,7 @@ Ext.ns("Sbi.console");
 
 Sbi.console.DetailPage = function(config) {
 		var defaultSettings = {
-			title: 'DetailPage'
+			title: LN('sbi.console.detailpage.title')
 			, layout: 'fit'
 		};
 		

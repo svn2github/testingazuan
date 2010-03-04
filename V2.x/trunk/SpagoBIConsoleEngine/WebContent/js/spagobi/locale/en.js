@@ -59,3 +59,5 @@ Sbi.locale.ln['sbi.console.messagewin.warning.title'] = 'Warning message';
 Sbi.locale.ln['sbi.console.messagewin.error.title'] = 'Error message';
 Sbi.locale.ln['sbi.console.messagewin.info.title'] = 'Info message';
 
+Sbi.locale.ln['sbi.console.detailpage.title'] = 'Detail Page';
+Sbi.locale.ln['sbi.console.consolepanel.title'] = 'Console';

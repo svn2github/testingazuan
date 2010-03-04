@@ -278,7 +278,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			{
 				header: "Data",
 			    dataIndex: 'data',
-			    width: 75
+			    width: 100
 			}
 		]);
 		

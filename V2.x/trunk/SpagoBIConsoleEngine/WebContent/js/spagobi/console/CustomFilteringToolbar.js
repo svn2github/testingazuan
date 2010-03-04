@@ -115,7 +115,7 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
        	if (this.filterBar.type === 'automatic' ){
        	  // automatic: all dataset fields are added as filter
       		for(var i = 0; i < meta.fields.length; i++) { 		  
-      		  if (meta.fields[i].header != ''){   
+      		  if (meta.fields[i].header !== undefined && meta.fields[i].header !== ''){   
           	   this.createFilterField(this.filterBar.defaults.operator,  meta.fields[i].header, this.headers[meta.fields[i].header]);  
       		  }
       		} 
@@ -123,7 +123,7 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
       	else{
       	 //custom: only configurated fields are added as filter      	 
         	for(var i = 0; i < meta.fields.length; i++) { 		           
-        		 if (meta.fields[i].header != '' && this.isConfiguratedFilter(meta.fields[i].header)){         		   
+        		 if (meta.fields[i].header !== undefined &&  meta.fields[i].header !== '' && this.isConfiguratedFilter(meta.fields[i].header)){         		   
                   this.createFilterField(this.getFilterOperator(meta.fields[i].header), this.getColumnText(meta.fields[i].header),  this.headers[meta.fields[i].header]);  	
             	}        		  
         	} 

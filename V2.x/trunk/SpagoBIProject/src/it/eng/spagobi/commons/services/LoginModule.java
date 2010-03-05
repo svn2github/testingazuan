@@ -101,8 +101,6 @@ public class LoginModule extends AbstractHttpModule {
 	public void service(SourceBean request, SourceBean response) throws Exception {
 	    logger.debug("IN");
 	    
-	    Boolean userHasChanged = Boolean.FALSE;
-
 		String theme_name=(String)request.getAttribute(ChangeTheme.THEME_NAME);
 		logger.debug("theme selected: "+theme_name);
 		
@@ -236,12 +234,14 @@ public class LoginModule extends AbstractHttpModule {
 	    			return;
 	            }
 	          
+	            Boolean userHasChanged = Boolean.TRUE;
 	    		// try to find if the user has changed: if so, the session parameters must be reset, see also homebis.jsp
 	    		UserProfile previousProfile = (UserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	    		// check previous userId with current one: if they are not equals, user has changed
-	    		if (previousProfile != null && !previousProfile.getUserId().equals(((UserProfile)profile).getUserId())) {
-	    			userHasChanged = Boolean.TRUE;
+	    		// check previous userId with current one: if they are equals, user has not changed
+	    		if (previousProfile != null && previousProfile.getUserId().equals(((UserProfile)profile).getUserId())) {
+	    			userHasChanged = Boolean.FALSE;
 	    		}
+	    		response.setAttribute("USER_HAS_CHANGED", userHasChanged);
 	            // put user profile into session
 	            permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
 	    		// updates locale information on permanent container for Spago messages mechanism
@@ -295,7 +295,6 @@ public class LoginModule extends AbstractHttpModule {
 			 	docTest = functionalities.contains("DocumentTestManagement");
 			}
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "userhome");
-			response.setAttribute("USER_HAS_CHANGED", userHasChanged);
 		}
 		
 		logger.debug("OUT");		

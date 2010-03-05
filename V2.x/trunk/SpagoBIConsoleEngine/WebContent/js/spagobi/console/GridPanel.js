@@ -64,7 +64,7 @@ Sbi.console.GridPanel = function(config) {
 		
 		this.services = this.services || new Array();	
 		this.images = this.images || new Array();	
-		
+		/*
 		if (config.table !== undefined){
 	  		var params = {ds_label: config.table.dataset.label};
 	  		this.services['getDataService'] = Sbi.config.serviceRegistry.getServiceUrl({
@@ -72,7 +72,7 @@ Sbi.console.GridPanel = function(config) {
 	  	  		, baseParams: params
 	  	  	});
   	}
-	  	
+	  	*/
 	 	this.services['start'] = this.services['start'] || Sbi.config.serviceRegistry.getServiceUrl({
 			serviceName: 'START_ACTION'
 			, baseParams: new Object()
@@ -152,7 +152,7 @@ Sbi.console.GridPanel = function(config) {
 		});
 		this.images['refresh'] = this.images['refresh'] || "../img/ico_refresh.gif";
 	  	
-		this.initStore();
+		this.initStore(config.storeManager, config.table.dataset);
 		this.initColumnModel();
 		this.initSelectionModel();	
 		this.initFilterBar(c || {});
@@ -161,7 +161,7 @@ Sbi.console.GridPanel = function(config) {
 			store: this.store
 			, cm: this.columnModel
 			, sm: this.selectionModel
-			, loadMask: true
+			, loadMask: false
 	        , viewConfig: {
             	forceFit:false,
             	autoFill: true,
@@ -189,7 +189,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     //  -- public methods ---------------------------------------------------------
     
     , execInlineAction: function(e, t, action, paramConf){
-        
+        alert(action);
         var index = this.getView().findRowIndex(t);
 
   		  if (action === 'crossnav'){
@@ -257,18 +257,20 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     
     //  -- private methods ---------------------------------------------------------
     
-	, initStore: function() {
-		this.store = new Ext.data.JsonStore({
+	, initStore: function(storeManager, storeId) {
+		/*this.store = new Ext.data.JsonStore({
 		    url: this.services['getDataService']
 			, autoLoad: true
 	    }); 
+    */
     
+    this.store = storeManager.getStore(storeId);
+
 		this.store.on('loadexception', function(store, options, response, e){
 	    	Sbi.exception.ExceptionHandler.handleFailure(response, options);
 	    }, this);
 		
 		this.store.on('metachange', this.onMetaChange, this);
-		//this.store.on('load', this.onDataStoreLoaded, this);
 	}
 
 	, initColumnModel: function() {
@@ -295,16 +297,12 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     //loads headers map with dataIndex info
 		this.headers = [];
     
+//alert("inlinecharts: " + this.table.inlineCharts.length + " - " +this.table.inlineCharts.toSource());
 
 		for(var i = 0; i < meta.fields.length; i++) {
-		
-		  var localHeader = meta.fields[i].header;
-          var localDataIndex = meta.fields[i].dataIndex;
-          
-          if (localHeader != ''){
-            this.headers[localHeader] = localDataIndex;
-          }		
-          
+
+          var localHeader = meta.fields[i].header;
+          this.headers[localHeader] = this.store.getFieldNameByAlias(localHeader);
           if(meta.fields[i].type) {
 			var t = meta.fields[i].type;
 		    meta.fields[i].renderer  =  Sbi.locale.formatters[t];			   
@@ -317,8 +315,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
       //adds inline charts if it's necessary
 	    if (this.table.inlineCharts){  	     
   	  	 for(var j=0, len= this.table.inlineCharts.length; j < len; j++){
-  	
-  	  	   if (this.table.inlineCharts[j].column === localHeader){
+  	  	   if (this.table.inlineCharts[j].column === meta.fields[i].header){
   	            if(this.table.inlineCharts[j].type && this.table.inlineCharts[j].type === 'bar' ) {
   	  			    meta.fields[i].renderer  =  Sbi.console.commons.Format.inlineBarRenderer(this.table.inlineCharts[j]);
   	            }
@@ -358,6 +355,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
   	         , parameters: this.table.inlineActions[i].config
   	      });
   	      bc.init(this);
+  	   //   alert(bc.toSource());
   	      meta.fields.push(bc);	
   	  	}	
   	}
@@ -409,8 +407,8 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
   		    var tmp = docConfig.document.dynamicParams[i];
   		    for(p in tmp) {
      	 	    if (p != 'scope'){
-     	 	    	if (tmp['scope'] === 'dataset') {       	
-     	 	    	   if(record.get(this.headers[p]) === undefined) {            	 	 		    
+     	 	    	if (tmp['scope'] === 'dataset') {       	        	 	 		    
+     	 	    	   if(record.get(this.headers[p]) === undefined) {
             	 	 		     msgErr += 'Parameter "' + p + '" undefined into dataset.<p>';
                        } else {
                           msg.parameters += separator + tmp[p] + '=' +record.get(this.headers[p]);

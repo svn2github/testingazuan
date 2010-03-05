@@ -63,6 +63,7 @@ Sbi.console.DetailPanel = function(config) {
 		
 		var pagesConfig = c.pages || [];
 		pagesConfig.executionContext = c.executionContext;
+		pagesConfig.storeManager = c.storeManager;
 		delete c.pages;
 		
 		Ext.apply(this, c);
@@ -100,7 +101,8 @@ Ext.extend(Sbi.console.DetailPanel, Ext.Panel, {
 		var detailPage = null;		
 		for(var i = 0, l = pagesConfig.length; i < l; i++) {
 		  var conf = pagesConfig[i];
-		  conf.executionContext = pagesConfig.executionContext;
+		  conf.executionContext = pagesConfig.executionContext; //conf è ancora usato???
+		  conf.storeManager = pagesConfig.storeManager;
 			detailPage = new Sbi.console.DetailPage(pagesConfig[i]);
 			this.pages.push(detailPage);
 		}

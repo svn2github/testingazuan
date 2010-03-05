@@ -63,7 +63,8 @@ Sbi.console.DetailPage = function(config) {
 		navigationBarConfig.executionContext = c.executionContext;
 		delete c.navigationBar;
 		var filterBarConfig = c.filterBar || {};
-		filterBarConfig.executionContext = c.executionContext; 
+		filterBarConfig.executionContext = c.executionContext;
+    filterBarConfig.storeManager = c.storeManager;
 		delete c.filterBar;
 		Ext.apply(this, c);
 		

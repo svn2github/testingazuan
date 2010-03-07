@@ -1,0 +1,385 @@
+<canvas debug="false" width="100%" height="100%"> 
+
+ 	<script src="json.js"/>
+ 	
+	<script>
+	<![CDATA[ 
+		
+		// -- utils functions -------------------------------------------------------------
+		var jsonParserOptions = {
+			errorHandler: function(msg, index) {
+					Debug.write('Error[' + index + ']: ' + msg);
+			}
+		}
+		
+		var apply = function(o, c, defaults){
+		    if(defaults){
+		        // no "this" reference for friendly out of scope calls
+		        Sbi.sdk.apply(o, defaults);
+		    }
+		    if(o && c && typeof(c) == 'object'){
+		        for(var p in c){
+		            o[p] = c[p];
+		        }
+		    }
+		    return o;
+		};
+		
+		// -- core ----------------------------------------------------------------------
+		
+		global.title = global.title || 'Multiled';
+		Debug.write("title: " + title);
+		
+		global.xField = global.xField || 'name';
+		Debug.write("xField: " + xField);
+		
+		global.yField = global.yField || 'value';
+		Debug.write("yField: " + yField);
+		
+		global.pivoted = global.pivoted || true;
+		Debug.write("pivoted: " + pivoted);
+		
+		global.fieldsDefault =	[
+			{header: 'Valore 1',name:'value1', rangeMaxValue: 100, secondIntervalUb: 50, firstIntervalUb: 10, rangeMinValue: 0}, 
+			{header: 'Valore 2',name:'value2', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}, 
+			{header: 'Valore 3',name:'value3', rangeMaxValue: 100, secondIntervalUb: 90, firstIntervalUb: 50, rangeMinValue: 0}
+		];
+		
+		
+		global.fields = global.fields || '{}';
+		global.fields = JSON.parse(global.fields, jsonParserOptions);
+		global.fields = apply(fieldsDefault, global.fields);
+		
+		
+		// -- style ----------------------------------------------------------------------
+		
+		// Style to use in rendering text fields appearing inside the view; 
+		// valid values are plain, bold , italic, or bolditalic.
+		global.fontDefault = {name: "serif", color: "black", size: 8, style: "plain"};
+		
+		global.stylesDefault =	{
+		
+			title: { text: title, visible: true,  align: "center", valign: "top", font: apply(global.fontDefault, {size: 18, style: "bold"}) }
+			
+			, border: {color: "black", size: "0"}
+			
+			// A numeric value that specifies the spacing around 
+			// the edges of the chart's plot area
+			, padding: {top: 28, right: 8, bottom: 3, left: 8}
+			
+			, plot: {}
+			
+			, gauge: {
+				padding: {right: 2, left: 2},
+				colors: {firstInterval: "green", secondInterval: "orange", thirdInterval: "red"},
+				led: {height: 10, gap: 1}
+			} 
+		}
+		
+		global.styles = global.styles || '{}';
+		global.styles = JSON.parse(global.styles, jsonParserOptions);
+		global.styles = apply(stylesDefault, global.styles);
+		
+			
+		
+		
+	  	
+		// -- private ----------------------------------------------------------------------
+		var ledGuages;
+		
+		flash.external.ExternalInterface.addCallback("loadData", null, loadData);
+	    function loadData(data) {
+            canvas.chart.loadData(data);
+        };
+        
+         ]]>
+	</script>  
+
+
+	<drawview name="chart"> 
+		
+		<text name="title"></text>
+		<drawview name="plot"/> 
+		
+		<handler name="oninit">
+			Debug.write("start IN");						
+	        canvas.chart.render();
+			Debug.write("start OUT");	
+    	</handler>
+    	
+  		<method name="render">
+  		<![CDATA[ 
+  			Debug.write("chart.render IN");
+  			Debug.write("canvas.width: " + canvas.width);
+  			Debug.write("canvas.height: " + canvas.height);
+  			
+  			var chartWidth = canvas.width;
+  			var chartHeight = canvas.height;
+			
+			
+			
+			// -- render title --------------------------------------------------------
+						
+			if(styles.title.visible) {			
+				this.title.setAttribute('x', 0);
+				this.title.setAttribute('y', 3);
+				this.title.setAttribute('width', chartWidth);
+				this.title.setAttribute('height', styles.title.font.size + 6);
+				
+				this.title.setAttribute('font', styles.title.font.name);
+				this.title.setAttribute('fontsize', styles.title.font.size);
+				this.title.setAttribute('fontstyle', styles.title.font.style);
+				this.title.setAttribute('fgcolor', styles.title.font.color);
+				this.title.setAttribute('align', styles.title.align);
+				this.title.setAttribute('valign', styles.title.valign);
+				this.title.setAttribute('text', styles.title.text);
+			}
+			
+			
+			// -- render plot --------------------------------------------------------
+				
+			var plotAreaX = styles.padding.left;
+			var plotAreaY = styles.padding.top;
+			var plotAreaWidth = chartWidth - styles.padding.right - styles.padding.left;
+			var plotAreaHeight = chartHeight - styles.padding.top - styles.padding.bottom;
+			
+			this.plot.setAttribute('x', plotAreaX);
+			this.plot.setAttribute('y', plotAreaY);
+			this.plot.setAttribute('width', plotAreaWidth);
+			this.plot.setAttribute('height', plotAreaHeight);
+			
+			// -- render gauges --------------------------------------------------------
+			if(pivoted == true) {
+				ledGuages = {};
+				var gaugeNo = fields.length;
+				var gaugeWidth = (this.plot.width / gaugeNo) - (styles.gauge.padding.left + styles.gauge.padding.right);
+				
+				for(var i = 0, offset = 0; i < gaugeNo; i++) {
+					offset += styles.gauge.padding.left;
+					ledGuages[fields[i].name] = new lz.LedGauge(this.plot, {
+						x: offset,
+						width: gaugeWidth,
+						gaugeTitle: fields[i].header,
+						rangeMaxValue: fields[i].rangeMaxValue,
+						secondIntervalUb: fields[i].secondIntervalUb,
+						firstIntervalUb: fields[i].firstIntervalUb,
+						rangeMinValue: fields[i].rangeMinValue,
+						ledHeight: styles.gauge.led.hight,
+						gapBetweenLed: styles.gauge.led.gap
+					});			
+					offset += (gaugeWidth + styles.gauge.padding.right);
+				}
+			}
+			
+			/*
+			this.loadData({
+				value1: 62
+				, value2: 25
+				, value3: 89
+			});
+			
+			this.loadData({
+				value1: 100
+				, value2: 100
+				, value3: 100
+			});
+			*/
+        	
+        	Debug.write("chart.render OUT");
+        ]]>
+  		</method>
+  		
+  		<method name="loadData" args="data">
+  		<![CDATA[ 
+  			Debug.write("chart.render OUT");
+  			for(p in ledGuages) {
+  				ledGuages[p].setValue(data[p]);
+  			}
+  			Debug.write("chart.render OUT");
+  		]]>
+  		</method>
+  	</drawview>
+  	
+  	
+  	<class name="LedGauge" extends="drawview"> 
+  		<attribute name="x" value="0"/>
+		<attribute name="y" value="0"/>
+		<attribute name="width" value="100%"/>
+		<attribute name="height" value="100%"/>
+		
+		<attribute name="gaugeTitle" type="string" value="LedGauge"/>
+		<attribute name="rangeMaxValue" value="100"/>
+		<attribute name="secondIntervalUb" value="50"/>
+		<attribute name="firstIntervalUb" value="10"/>
+		<attribute name="rangeMinValue" value="0"/>
+		
+		
+		<attribute name="padding" value="10"/>
+		<attribute name="leds" value="undefined"/>
+		<attribute name="gapBetweenLed" value="1"/>
+		<attribute name="ledHeight" value="10"/>
+  	
+  		<drawview name="ledContainer" strokeStyle="0xAAAAAA" lineWidth="1"/>
+  		<drawview name="infoContainer" strokeStyle="0xAAAAAA" lineWidth="1">
+  			<text name="title" fontsize="12">Led Gauge</text>
+  			<text name="valueLabel" fontsize="18">???</text>
+  		</drawview>
+  		
+		
+  		<handler name="oninit">
+            super.init(); 
+            this.render();
+		</handler>
+	
+  		<method name="render">
+  		<![CDATA[ 
+  			Debug.write("led.render IN");
+  			
+  			Debug.write("this.height: " + this.height);
+  					
+  			var yOffset	= this.height - padding;
+  			yOffset -= this.infoContainer.title.fontsize;
+  			yOffset -= this.infoContainer.valueLabel.fontsize;
+  			yOffset -= 10
+  			
+  			Debug.write("this.infoContainer.title.height: " + this.infoContainer.title.height);
+  			Debug.write("this.infoContainer.valueLabel.height: " + this.infoContainer.valueLabel.height);
+  			Debug.write("infoContainer.y: " + yOffset);
+  						
+  			// info containers ....
+  			this.infoContainer.setAttribute('x', padding);
+			this.infoContainer.setAttribute('y', yOffset);
+			this.infoContainer.setAttribute('height', 10 + this.infoContainer.title.fontsize + this.infoContainer.valueLabel.fontsize);
+			this.infoContainer.setAttribute('width', (this.width - (2*padding)) );
+						
+			this.infoContainer.rect(0, 0, this.infoContainer.width, this.infoContainer.height);	
+  			this.infoContainer.stroke();	
+  			
+  			this.infoContainer.title.setAttribute('y', 0);
+			this.infoContainer.title.setAttribute('align', 'center');
+			this.infoContainer.title.setAttribute('text', gaugeTitle);
+			
+			this.infoContainer.valueLabel.setAttribute('y', this.infoContainer.title.fontsize);
+			this.infoContainer.valueLabel.setAttribute('align', 'center');
+			this.infoContainer.valueLabel.setAttribute('text', '???');
+					
+					
+			// led containers ...	
+			yOffset -= 5;
+			Debug.write("ledContainer.y" + yOffset);
+  			this.ledContainer.setAttribute('x', padding);
+			this.ledContainer.setAttribute('y', padding);
+			this.ledContainer.setAttribute('width', (this.width - (2*padding)) );
+			this.ledContainer.setAttribute('height', yOffset - this.ledContainer.y);		
+			this.ledContainer.rect(0, 0, this.ledContainer.width, this.ledContainer.height);	
+  			this.ledContainer.stroke();	
+  					
+			rect(0, 0, this.width, this.height);
+        	strokeStyle = 0x000000;
+        	lineWidth = 4;
+        	stroke();
+        	
+        	
+        	//var colors = ["green", "orange", "red"]; 
+        	//colors = colors.reverse();
+        	var colors = [];
+        	
+        	colors.push(styles.gauge.colors.firstInterval);
+        	colors.push(styles.gauge.colors.secondInterval);
+        	colors.push(styles.gauge.colors.thirdInterval);
+        	
+        	
+        	var colorIndex = 0;
+        	leds = [];
+        	var offset = ledContainer.height;
+        	var ledNo = ledContainer.height / (ledHeight + gapBetweenLed);
+        	
+        	var range = rangeMaxValue - rangeMinValue;
+        	var r = ledNo / range;
+        	var firstIntervalLastLedIndex = Math.round(firstIntervalUb * r);
+        	Debug.write("firstIntervalLastLedIndex: " + firstIntervalLastLedIndex);
+        	var secondIntervalLastLedIndex = Math.round(secondIntervalUb * r);
+        	Debug.write("secondIntervalLastLedIndex: " + secondIntervalLastLedIndex);
+        	
+        	
+        	for(var i = 0; i < ledNo; i++) {
+        		offset -= (gapBetweenLed + ledHeight)
+        		var led = new lz.Led(this.ledContainer, {
+        			name: "led" + (i+1),
+        			x: 0,
+        			y: offset,
+        			width: ledContainer.width,
+        			height: ledHeight,
+        			color: colors[colorIndex]
+        		});
+        		leds.push(led);
+        		
+        		if(i > secondIntervalLastLedIndex) colorIndex = 2; 
+        		else if(i > firstIntervalLastLedIndex) colorIndex = 1;
+        	}
+        	
+        	//leds.reverse();
+        	
+        	Debug.write("led.render IN");
+        ]]>
+  		</method>
+  		
+  		<method name="setValue" args="value">
+  		<![CDATA[ 
+  			var range = rangeMaxValue - rangeMinValue;
+        	var r = leds.length / range;
+        	var ledIndex = 0;
+        	var indexOfLastLedToTurnOn = r*value;
+        	
+        	this.reset();
+        	while(ledIndex < indexOfLastLedToTurnOn) {
+        		leds[ledIndex].turnOn();
+        		ledIndex++;
+        	}
+        	
+        	this.infoContainer.valueLabel.setAttribute('text', value);
+  		]]>
+  		</method>
+  		
+  		<method name="reset">
+  		<![CDATA[ 
+  			for(var i = 0; i < leds.length; i++) {
+        		leds[i].turnOff();
+        	}        	
+        	this.infoContainer.valueLabel.setAttribute('text', '???');
+  		]]>
+  		</method>
+  	</class>
+  	
+  	<class name="Led" extends="drawview"> 
+  		<attribute name="color" value="0xBBBCCC"/>
+  		<attribute name="isOn" value="false"/>
+		
+  		
+  		<handler name="oninit">
+            super.init(); 
+            rect(0, 0, this.width, this.height);
+        	strokeStyle = 0xAAAAAA;
+        	lineWidth = 1;
+        	stroke();
+        	
+        	if(isOn) {
+        		turnOn();
+        	} else {
+        		turnOff();
+        	}
+		</handler>
+		
+		<method name="turnOff">
+			this.setAttribute("bgcolor", "#999999");
+			isOn = false;
+		</method>
+		
+		<method name="turnOn">
+			this.setAttribute("bgcolor", color);
+			isOn = true;
+		</method>
+  		
+  	</class>
+
+</canvas>

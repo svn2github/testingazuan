@@ -1,0 +1,621 @@
+<canvas debug="false" width="100%" height="100%"> 
+
+ 
+	<script>
+		// -- core ----------------------------------------------------------------------
+		
+		global.chartTitle = global.chartTitle || 'Livelines';
+		Debug.write("chartTitle: " + chartTitle);
+		
+		global.rangeMinValue = global.rangeMinValue || 0;
+		Debug.write("rangeMinValue: " + rangeMinValue);
+		
+		global.rangeMaxValue = global.rangeMaxValue || 200;
+		Debug.write("rangeMaxValue: " + rangeMaxValue);
+		
+		
+		global.rangeMaxValue = global.rangeMaxValue || null; // ['01/02/2010', '15/02/2010', '28/02/210'];
+		Debug.write("domainValues: " + domainValues);
+		
+		global.domainValueNumber = global.domainValueNumber || 5;
+		Debug.write("domainValueNumber: " + domainValueNumber);
+		
+		global.stepY = global.stepY || 20;
+		Debug.write("stepY: " + stepY);
+		
+		// -- style ----------------------------------------------------------------------
+		
+		var padding = {
+	  		top: 50, // 20 + 30 per il titolo
+	  		right: 20,
+	  		bottom: 50,
+	  		left: 50  				
+	  	};
+		
+		// -- private ----------------------------------------------------------------------
+		var colors = [0xf92525, 0x17e512, 0xbe4ce3, 0x5420ff, 0xf442ff, 0xfb7819, 0x19fbee, 0xe570ad, 0xfd0c23, 0x4618de];
+	    var isSetup = true;
+	    
+	    flash.external.ExternalInterface.addCallback("loadData", null, loadData);
+	    function loadData(data) {
+            canvas.chart.load(data);
+        };
+	</script>  
+
+
+	<drawview name="chart"> 
+		
+		<text name="title">No title</text>
+		<drawview name="plot"/> 
+
+  		<method name="render">
+  		
+  			Debug.write("render IN");
+  			Debug.write("canvas.width: " + canvas.width);
+  			Debug.write("canvas.height: " + canvas.height);
+  			
+  			var chartWidth = canvas.width;
+  			var chartHeight = canvas.height;
+  			
+  			var range, vLineNumber, hLineNumber;  
+				
+			var plotAreaX = padding.left;
+			var plotAreaY = padding.top;
+			var plotAreaWidth = chartWidth - padding.right - padding.left;
+			var plotAreaHeight = chartHeight - padding.top - padding.bottom;
+			
+	        this.plot.setAttribute('x', plotAreaX);
+			this.plot.setAttribute('y', plotAreaY);
+			this.plot.setAttribute('width', plotAreaWidth);
+			this.plot.setAttribute('height', plotAreaHeight);
+
+			this.title.setAttribute('x', 10);
+			this.title.setAttribute('y', 0);
+			this.title.setAttribute('width', chartWidth);
+			this.title.setAttribute('height', 20);
+			this.title.setAttribute('align', 'center');
+			this.title.setAttribute('text', chartTitle);
+			
+			domainValueNumber = (domainValues != null)? domainValues.length: domainValueNumber;
+			domainValueNumber = domainValueNumber || 10;
+			Debug.write("domainValueNumber: " + domainValueNumber);
+			vLineNumber = domainValueNumber;
+			
+			range = rangeMaxValue - rangeMinValue ;
+			Debug.write("range: " + range);
+			
+			hLineNumber = range/stepY;
+			Debug.write("hLineNumber: " + hLineNumber);
+		
+			<!--Define chart dimensions-->
+	   	 	this.setWidth(chartWidth);
+	  	 	this.setHeight(chartHeight);
+	        
+			<!--draw chart-->
+			
+			
+			var background = new lz.Background(this.plot, {
+				name : "chartBackground",
+				fillColor: "0xBBBDDD",
+				enableGradient: true,
+				gradientLbColor: "0x000000",
+				gradientLbGlobalAlpha: 0,
+				gradientUbColor: "0xffffff",
+				gradientUbGlobalAlpha: 0.5,
+				borderColor: "0xAAACCC",
+				borderWidth: 3
+			});
+			
+			
+			var grid = new lz.Grid(this.plot, {
+				name : "chartGrid", 
+				vLineNumber: vLineNumber-1,
+				hLineNumber: hLineNumber
+			});	
+	
+			var axis = new lz.Axis(this.plot, {
+				name : "chartAxis",
+				domainValues: domainValues,
+				domainMajorTickVisible: true,
+				domainMajorTickNumber: vLineNumber,
+				domainMinorTickVisible: false,
+				rangeMinValue: rangeMinValue,
+				rangeMaxValue: rangeMaxValue,
+				rangeMajorTickNumber: hLineNumber,
+				rangeMinorTickVisible: false				
+			});
+			
+			Debug.write("render OUT");	
+		</method>
+
+
+	
+	
+	
+	<method name="getColor" args="colorIndex">
+	<![CDATA[ 
+		var color;
+		if(colorIndex < colors.length) {
+			color = colors[colorIndex];
+		} else {
+			color = 0xCCCBBB;
+		}
+		return color;
+	]]>
+    </method>
+	
+	
+	<method name="load" args="attributeMap" >
+	<![CDATA[ 
+		if (isSetup == true) {
+			this.initSeries(attributeMap);
+			isSetup = false;
+		}
+		
+		for ( var attributeName in attributeMap ) {
+			var attributeValue = parseFloat(attributeMap[attributeName]);
+			var series = canvas.chart.plot[attributeName];
+			series.addDataPoint(attributeValue);
+		}
+	]]>
+	</method>
+	
+	
+	<method name="initSeries" args="attributeMap" >
+	<![CDATA[ 
+		var seriesId = 0;
+		for ( var attributeName in attributeMap ) {
+			var series = new lz.DataSeries(canvas.chart.plot, {
+				name : attributeName, 
+				dataPointNumber : domainValueNumber, 
+				minDataValue: rangeMinValue, 
+				maxDataValue: rangeMaxValue,
+				color: canvas.chart.getColor(seriesId++)
+			});
+		}
+	]]>
+	</method>
+	
+	
+	
+	
+	
+	<method name="loadPointA">
+		Debug.write("loadPointA");	
+        this.load({
+			Effort_Index: 55
+			, Competitiveness: 98
+			, Cost_Optimization: 35
+			, Health: 68
+			//, xLabel: 'wundabar1'
+		});
+    </method>  
+    
+    <method name="loadPointB">
+    	Debug.write("loadPointB");	
+        this.load({
+			Effort_Index: 40
+			, Competitiveness: 78
+			, Cost_Optimization: 10
+			, Health: 89
+			//, xLabel: 'wundabar2'
+		});
+    </method>  
+	
+
+
+    <method name="start" event="oninit">
+		Debug.write("start IN");	
+		
+		
+		
+        canvas.chart.render();
+
+   
+		//loadDelegate = new LzDelegate( this, "loadPointA" );
+   		//lz.Timer.addTimer( loadDelegate, 5000 ); 
+   		
+   		//loadDelegate = new LzDelegate( this, "loadPointB" );
+   		//lz.Timer.addTimer( loadDelegate, 10000 ); 
+   		
+   		//loadDelegate = new LzDelegate( this, "loadPointA" );
+   		//lz.Timer.addTimer( loadDelegate, 15000 ); 
+   	
+		//Debug.write("start OUT");	
+    </method>
+
+    
+ </drawview>
+
+
+
+
+<class name="DataSeries" extends="drawview">
+	
+	<attribute name="x" value="0"/>
+	<attribute name="y" value="0"/>
+	<attribute name="width" value="100%"/>
+	<attribute name="height" value="100%"/>
+	
+	<attribute name="data" value="undefined"/>
+	<attribute name="dataPointNumber" value="3"/>
+	<attribute name="minDataValue" value="0"/>
+	<attribute name="maxDataValue" value="200"/>
+	
+	<attribute name="color" value="0xCCCFFF"/>
+	
+	<method name="init">
+		super.init(); 
+		data = [];  
+	</method>
+
+
+
+  	<method name="addDataPoint" args="dataValue">	
+		Debug.write("addDataPoint " + dataValue + " to " + this.name);
+		var dataRange = maxDataValue - minDataValue;
+		var dataGap = this.width/(dataPointNumber-1);
+		
+		var r = this.height/dataRange;
+		
+		data.push(dataValue);
+		
+		if(data.length > 1) {
+			var dataPointIndex = data.length - 2;
+			var dataPoint1 = {};
+			dataPoint1.x = dataPointIndex * dataGap;
+			dataPoint1.y = this.height - (data[dataPointIndex] * r);
+			
+			var dataPointIndex = data.length - 1;
+			var dataPoint2 = {};
+			dataPoint2.x = dataPointIndex * dataGap;
+			dataPoint2.y = this.height - (data[dataPointIndex] * r);
+		
+			this.moveTo(dataPoint1.x, dataPoint1.y);
+			this.lineTo(dataPoint2.x, dataPoint2.y);
+        	this.strokeStyle = color;
+        	this.lineWidth = 4;
+        	this.stroke();
+		}
+		
+	</method>
+</class>
+
+
+
+
+
+
+
+<class name="Label" extends="drawview">
+	<text name="textContent" resize="true">
+		label
+	</text>
+	 
+	<method name="render" args="txt">
+    <![CDATA[ 
+    	//this.textContent.setAttribute('text', txt);  
+        this.textContent.setAttribute('x', 0);
+        this.textContent.setAttribute('y', 0);
+        
+        this.textContent.setAttribute('fontsize', 10);
+        this.textContent.setAttribute('strokeStyle', '0x000000');
+        this.textContent.setAttribute('fgcolor', '0x000000');
+        
+        this.setAttribute('rotation', 45);
+        this.setAttribute('height', textContent.height);
+        this.setAttribute('width', textContent.width);
+    ]]>
+    </method>
+
+</class>
+
+
+<!--  =================================================================== -->
+<!--  Axis															  	  -->
+<!--  =================================================================== -->
+<class name="Axis" extends="drawview">
+	
+	
+	<attribute name="x" value="0"/>
+	<attribute name="y" value="0"/>
+	<attribute name="width" value="100%"/>
+	<attribute name="height" value="100%"/>
+	
+	<attribute name="domainValues" value="undefined"/>
+	<attribute name="domainMajorTickNumber" value="24"/>
+	<attribute name="domainMajorTicVisible" value="true"/>
+	<attribute name="domainMinorTickVisible" value="false"/>
+	
+	<attribute name="rangeMinValue" value="0"/>
+	<attribute name="rangeMaxValue" value="200"/>
+	<attribute name="rangeMajorTickNumber" value="20"/>
+	<attribute name="rangeMinorTickVisible" value="true"/>
+	
+	
+	
+	
+	<method name="init">
+    	super.init(); 
+		this.render(); 
+	</method>
+	
+	<method name="render">
+		Debug.write("Axis.render IN");
+	    
+	   	this.renderRangeAxis();
+	   	this.renderDomainAxis();
+	    
+	    Debug.write("Axis.render OUT");
+	</method>
+	
+	<method name="renderRangeAxis">
+	<![CDATA[
+		
+		Debug.write("Axis.renderRangeAxis IN");
+			
+		this.beginPath();  
+		this.moveTo(0,0);
+		this.lineTo(0, this.height);	
+		this.closePath();  
+		
+		this.strokeStyle = '0x000000';
+	    this.lineWidth = 2;
+	    this.stroke();
+	    
+	    var range = rangeMaxValue - rangeMinValue;
+	    var majorInterval = range/rangeMajorTickNumber;
+	    var majorGap = this.height/rangeMajorTickNumber;
+	    
+	    var posY = 0;
+	    for (var i = 0; i < rangeMajorTickNumber; i++){
+	    	var txt = rangeMaxValue - (i*majorInterval);
+			var label = new LzText(this ,{name : "xlabel"+i, align:"center"});
+			
+			
+			//var label = new lz.Label(canvas.chart, {x: this.x + posX-10, y: this.y + this.height + 5});
+			//label.render(txt);
+			
+			
+			label.setAttribute("fontsize", 10);
+			label.setColor(0x000000);
+			label.setText(txt);
+			
+			label.setX(-1*(label.width + 5));					
+			label.setY(posY - (label.height/2));
+			
+			this.beginPath(); 
+			this.moveTo(0,posY);
+			this.lineTo(-3, posY);
+			this.closePath(); 
+			
+			this.strokeStyle = '0x000000';
+	    	this.lineWidth = 4;
+	    	this.stroke();
+			
+			
+			posY = posY+majorGap;
+	    }
+	    
+		Debug.write("Axis.renderRangeAxis OUT");
+	
+	]]>
+	</method>
+
+	<method name="renderDomainAxis" >
+	<![CDATA[
+		
+		Debug.write("Axis.renderDomainAxis IN");
+	      
+	    this.beginPath();  
+		this.moveTo(0,this.height);
+		this.lineTo(this.width, this.height);	
+		this.closePath();  
+		
+		this.strokeStyle = '0x000000';
+	    this.lineWidth = 2;
+	    this.stroke();
+			 
+		
+		if(domainValues != null) {
+			domainMajorTickNumber = domainValues.length;
+		}
+		var stepOnAxis = width/(domainMajorTickNumber-1);
+
+		
+		var posX = 0;
+
+		for (var i = 0; i < domainMajorTickNumber; i++){
+			
+			var txt = (domainValues != null)? domainValues[i]: i;
+			var label = new LzText(this ,{name : "xlabel"+i, align:"center"});
+			
+			
+			//var label = new lz.Label(canvas.chart, {x: this.x + posX-10, y: this.y + this.height + 5});
+			//label.render(txt);
+			
+			
+			label.setAttribute("fontsize", 10);
+			label.setColor(0x000000);
+			label.setText(txt);
+			
+			label.setX(posX-(label.width/2));					
+			label.setY(this.height + 5);
+			
+			this.beginPath(); 
+			this.moveTo(posX,this.height);
+			this.lineTo(posX, this.height+3);
+			this.closePath(); 
+			
+			this.strokeStyle = '0x000000';
+	    	this.lineWidth = 4;
+	    	this.stroke();
+			
+			
+			posX = posX+stepOnAxis;
+		}
+		
+		Debug.write("Axis.renderDomainAxis OUT");
+	
+	]]>			
+	</method>
+</class>
+
+
+
+
+<!--  =================================================================== -->
+<!--  Chart Grid													  	  -->
+<!--  =================================================================== -->
+<class name="Grid" extends="drawview">
+
+	<attribute name="x" value="0"/>
+	<attribute name="y" value="0"/>
+	<attribute name="width" value="100%"/>
+	<attribute name="height" value="100%"/>
+	
+	<attribute name="hLineNumber" value="20"/>
+	<attribute name="vLineNumber" value="24"/>
+	
+	<attribute name="borderVisible" value="true"/>
+	<attribute name="borderColor" value="0x000000"/>
+	<attribute name="borderWidth" value="1"/>
+	
+	
+	<method name="init">
+    	super.init();  
+    	this.render(); 
+	</method>
+	
+	<method name="render">
+		Debug.write("Grid.render IN");
+	    
+	    Debug.write("hLineNumber: " + hLineNumber);	
+	    Debug.write("vLineNumber: " + vLineNumber);	
+	    
+	    if(hLineNumber > 0) this.renderHLines();
+	    if(vLineNumber > 0)  this.renderVLines();
+	    
+	    if(borderVisible){
+	    	this.strokeStyle = borderColor;
+	    	this.lineWidth = borderWidth;
+	    	this.stroke();
+	    }
+	    
+	    Debug.write("Grid.render OUT");
+	</method>
+	
+	<method name="renderHLines">
+	<![CDATA[
+		// The distance between two adjacent gridLineY
+		var hLineGap;  
+		
+		Debug.write("Grid.renderHLines IN");
+			
+		hLineGap = this.height/hLineNumber;
+			
+		var posY = this.height-hLineGap;
+		
+		for (var i = 0; i < hLineNumber ; i++){	
+			moveTo(0,posY);
+			lineTo(this.width, posY);	
+			posY -= hLineGap;
+		}
+
+		Debug.write("Grid.renderHLines OUT");
+	
+	]]>
+	</method>
+
+	<method name="renderVLines" >
+	<![CDATA[
+		// The distance between two adjacent gridLineY
+		var vLineGap;  
+		
+		Debug.write("Grid.renderVLines IN");
+			
+		vLineGap = this.width/vLineNumber;
+			
+		var posX = vLineGap;	
+		for (var i = 0; i < vLineNumber ; i++){	
+			moveTo(posX, 0);
+			lineTo(posX, this.height);		
+			posX += vLineGap;
+		}
+
+		Debug.write("Grid.renderVLines OUT");
+	
+	]]>			
+	</method>
+</class>
+
+<!--  =================================================================== -->
+<!--  Chart Background													  -->
+<!--  =================================================================== -->
+<class name="Background" extends="drawview">
+
+	<attribute name="x" value="0"/>
+	<attribute name="y" value="0"/>
+	<attribute name="width" value="100%"/>
+	<attribute name="height" value="100%"/>
+	
+	<attribute name="fillColor" value="0xffffff"/>
+	<attribute name="enableGradient" value="false"/>
+	<attribute name="gradientLbColor" value="0x000000"/>
+	<attribute name="gradientLbGlobalAlpha" value="0"/>
+	<attribute name="gradientUbColor" value="0xffffff"/>
+	<attribute name="gradientUbGlobalAlpha" value="0.5"/>
+	
+	<attribute name="borderColor" value="0x000000"/>
+	<attribute name="borderWidth" value="1"/>
+
+	<method name="init">
+            super.init(); 
+            this.render();
+	</method>
+
+	<method name="render">
+		
+		// rectangle
+		if(borderColor) {
+			this.beginPath();
+			this.rect(0, 0, this.width, this.height);
+			this.closePath();
+		    this.strokeStyle = this.borderColor;
+		    this.lineWidth = this.borderWidth;
+		    this.stroke();
+	    }
+
+		// fill
+		if(this.fillStyle) {
+			this.fillStyle = this.fillColor;
+	    	this.fill();
+	    }
+		
+		
+		// gradient		
+		if(this.enableGradient == true) {
+	        var g = this.createLinearGradient(0, 0, this.width, this.height);
+	      	this.globalAlpha = this.gradientLbGlobalAlpha;;
+		    g.addColorStop(0, this.gradientLbColor);
+	      	this.globalAlpha = this.gradientUbGlobalAlpha;
+		    g.addColorStop(1, this.gradientUbColor);
+	      	this.fillStyle = g;
+	       	this.fill();
+       	}
+	</method>
+</class>
+
+</canvas>
+
+
+		
+		
+		
+		
+
+	        
+	        
+
+		
+		

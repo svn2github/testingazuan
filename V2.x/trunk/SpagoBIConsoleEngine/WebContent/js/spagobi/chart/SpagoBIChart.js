@@ -112,8 +112,7 @@ Ext.extend(Sbi.chart.SpagoBIChart, Ext.FlashComponent, {
     	   	
     	this.autoScroll = true;
     	
-    	this.flashVars = this.CHART_DEFAULT_CONFIG[this.chartType];
-    	
+    	this.flashVars = this.CHART_DEFAULT_CONFIG[this.chartType];    	
 	}
 
 	,  onRender : function(ct, position){

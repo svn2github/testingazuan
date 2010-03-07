@@ -281,7 +281,10 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		return new Ext.Panel({
 			layout:'fit'
 		    , height: this.height	
-		    , items: [new Sbi.chart.SpagoBIChart({chartType: 'speedometer'})]
+		    , items: [new Sbi.chart.SpagoBIChart({
+		    	chartType: 'speedometer'
+		    	, store: this.store
+		    })]
 		});		
 	}
 	

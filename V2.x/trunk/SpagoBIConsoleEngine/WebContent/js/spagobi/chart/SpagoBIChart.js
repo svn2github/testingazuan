@@ -65,23 +65,34 @@ Ext.extend(Sbi.chart.SpagoBIChart, Ext.FlashComponent, {
 	
 	, CHART_BASE_URL: '/SpagoBIConsoleEngine/swf/spagobichart/'
 	, CHART_SWF: {
-		rotate: 'rotation.swf'
-		, liveline: 'liveline.swf'
+		speedometer: 'speedometer.swf'
+		, livelines: 'livelines.swf'
+		, multileds: 'multileds.swf'
 	}
 	, CHART_DEFAULT_CONFIG: {
-		rotate: {
+		speedometer: {
 			paramWidth: 100
 			, paramHeight: 100
-			, minValue: -100
+			, minValue: 0
 			, maxValue: 100
-			, lowValue: -50
-			, highValue: 50
-		}, liveline: {
+			, lowValue: 33
+			, highValue: 66
+			, field: 'EffortIndex'
+		}, livelines: {
 			rangeMinValue: 0
 			, rangeMaxValue: 120 
 			, stepY: 40
 			, domainValueNumber: 18
-			, chartTitle:'SpagoBI Liveline'
+			, title:'SpagoBI Liveline'
+		} , multileds: {
+			title:'SpagoBI Multileds'
+			, fields: Ext.util.JSON.encode([
+			    {header: 'Effort Idx',name:'EffortIndex', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 10, rangeMinValue: 0}, 
+				{header: 'Compet.',name:'Competitiveness', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}, 
+				{header: 'Cost Opt.',name:'CostOptimization', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0},
+				{header: 'Health',name:'Health', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}
+			])
+			
 		}
 		
 	}
@@ -111,17 +122,59 @@ Ext.extend(Sbi.chart.SpagoBIChart, Ext.FlashComponent, {
 		this.flashVars.paramHeight = ct.getHeight();
 				
 		Sbi.chart.SpagoBIChart.superclass.onRender.call(this, ct, position);
+	}
 	
-		if(this.chartType === 'rotate') {
-			this.testFn.defer(3000, this);
+	, onStoreLoad: function(s, records, option) {
+		
+		if(this.chartType === 'livelines')  {
+			this.livlinesLoad(s, records, option);
+		} else if(this.chartType === 'multileds')  {
+			this.multiledsLoad(s, records, option);
+		} else if(this.chartType === 'speedometer')  {
+			this.speedometerLoad(s, records, option);
+		} else {
+			alert('Unsupported: ' + this.chartType);
+			return;
+		}
+	}
+		
+	, multiledsLoad: function(s, records, option) {
+		var data = {};
+		var rec = this.store.getAt(0);
+		if(rec) {
+			var fields = this.storeMeta.fields;
+			for(var i = 0, l = fields.length, f; i < l; i++) {
+				f = fields[i];
+				if( (typeof f) === 'string') {
+					f = {name: f};
+				}
+				var alias = f.header || f.name;
+				if(alias === 'recNo') continue;
+				data[alias] = rec.get(f.name);				
+			}
+			if(this.swf.loadData) {
+				this.swf.loadData(data);
+			}
 		}
 	}
 	
-	, testFn: function() {
-    	this.swf.setValue(35);
-    }
+	, speedometerLoad: function(s, records, option) {
+		//alert('speedometerLoad');
+		if(this.swf.setValue) {
+			var value;
+			var rec = this.store.getAt(0);
+			if(rec) {
+				//alert('fAlias: ' + this.flashVars.field);
+				var fName = s.getFieldNameByAlias(this.flashVars.field);
+				//alert('fName: ' + fName);
+				value = rec.get(fName);
+				//alert('value: ' + value);
+			}
+			this.swf.setValue(value);
+		}
+	}
 	
-	, onStoreLoad: function(s, records, option) {
+	, livlinesLoad: function(s, records, option) {
 		var data = {};
 		var rec = this.store.getAt(0);
 		if(rec) {

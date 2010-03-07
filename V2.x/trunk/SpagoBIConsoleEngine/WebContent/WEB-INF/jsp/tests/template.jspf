@@ -17,7 +17,7 @@ Sbi.template = {
         }, {
             id: 'testConsole'
             , label: 'testConsole'
-            , refreshTime: 30
+            , refreshTime: 10
         }, {
             id: 'testConsole2'
             , label: 'testConsole2'
@@ -36,8 +36,8 @@ Sbi.template = {
 	    , collapsed: false
 	    , hidden: false
     
-    
-    	// ogni dataset puo avere più grafici associati (1..N)
+
+    	// ogni dataset può avere più grafici associati (1..N)
     	, charts: [
         {
         	dataset: 'testStore'
@@ -62,20 +62,22 @@ Sbi.template = {
 	        	, categoryField: 'quarter'
         	}
         } ,  {
-        	dataset: 'testConsoleChart'
+        	dataset: 'testConsLiveLine'
             , widgetConfig: {
-           		//type: 'chart.sbi.rotate'
-           		type: 'chart.of.bar'
+           		//type: 'chart.sbi.speedometer'
+           		//type: 'chart.of.bar'
+            	type: 'chart.sbi.multileds'
            	}
         } ,  {
         	dataset: 'testConsLiveLine'
             , widgetConfig: {
-            	type: 'chart.sbi.liveline'
+            	type: 'chart.sbi.livelines'
             }
         } ,  {
-        	dataset: 'testConsoleChart'
+        	dataset: 'testConsLiveLine'
             , widgetConfig: {
-               	type: 'chart.fcf.bar'
+               	//type: 'chart.fcf.bar'
+               	type: 'chart.sbi.speedometer'
             }
         }
     	]
@@ -87,9 +89,15 @@ Sbi.template = {
 	// -------------------------------------------------------------------------------
 	, detailPanel: {
     	pages: [
+    		
+			//--------------------------------------------------------------------------------
+			// Page 1
+			// -------------------------------------------------------------------------------
     		{
 			title: 'Pag. 1'
 			, msg: 'Io sono la PRIMA pagina'
+
+			// -- Navigation bar -------------------------------------------------------------
 			, navigationBar: {
 				documents: [
 				{
@@ -108,7 +116,8 @@ Sbi.template = {
 				}
 				]
 			}
-	        ,filterBar: {
+    		// -- Filter bar -----------------------------------------------------------------
+	        , filterBar: {
 	            type: 'custom'  
 	            , defaults: {
 	                operator: 'EQUALS_TO'
@@ -128,7 +137,7 @@ Sbi.template = {
 	               , operand: 'DISTINCT'
 	               }
 	            ]
-	            
+
 	            , actions: [
 	                {
 	                    name: 'refresh'
@@ -171,148 +180,154 @@ Sbi.template = {
 	                       }
 	                     }
 	            ]
-	
+
+				
 	            , table: {
 		            dataset: 'testConsole'
-                
-							, inlineCharts: [
-																{ 
-																		type: 'bar'
-																		, column: 'chart_store_cost'
-																		, color: 'gray'
-																		, maxValue: 200 
-																		, tooltip: 'volume vendite'
-																}, { 
-																		 type: 'point'
-																		 , column: 'chart_unit_sales'
-																		 , color: 'red'
-																		 , threshold: '25'
-																		 , tooltip: 'superata la soglia di 25 errori'
-																}
-															]
+                	, inlineCharts: [
+						{ 
+							type: 'bar'
+							, column: 'chart_store_cost'
+							, color: 'gray'
+							, maxValue: 200 
+							, tooltip: 'volume vendite'
+						}, { 
+							type: 'point'
+							, column: 'chart_unit_sales'
+							, color: 'red'
+							, threshold: '25'
+							, tooltip: 'superata la soglia di 25 errori'
+						}
+	            	]
 		
-	            , inlineActions: [
-																{
-																		name: 'start'
-																		, hidden: false
-																		, tooltip: 'Start the process'
-																		, config: {}
-																}, {
-																		name: 'stop'
-																		, hidden: false
-																		, tooltip: 'Stop the process'
-																		, config: {
-																				params: {}
-																		}
-																}, {
-																		name: 'errors'
-																		, hidden: false
-																		, tooltip: 'View Error messages'
-																		, config: {
-																				 staticParams: {
-																										param1: 'param1Value'
-																									 ,param2: 'paramValue2' 
-																									 }
-																		 ,   dynamicParams: [{
-																														brandnamexxx: 'Brand'  
-																													, scope: 'dataset'   
-																													},{
-																														productName: 'Products'
-																													, scope: 'dataset'
-																													},{
-																														month: 'Month'
-																													, scope: 'env'
-																													}]	      		                        
-																		}
-																}, {
-																		name: 'errors_inactive'
-																		, hidden: false
-																		, tooltip: 'Enable Errors'
-																		, config: {}
-																}, {
-																		name: 'warnings'
-																		, hidden: false
-																		, tooltip: 'View allarms'
-																		, config: {}
-																}, {
-																		name: 'warnings_inactive'
-																		, hidden: false
-																		, tooltip: 'Enable allarms'
-																		, config: {}
-																}, {
-																		name: 'informationlog'
-																		, hidden: false
-																		, tooltip: 'Download log files'
-																		, config: {}
-																}, { 
-																		name: 'crossnav'
-																		, hidden: false
-																		, tooltip: 'Cross on XXX document'
-																		, config: {
-																				target: 'new'
-																			 , document: 
-																				{
-																					label: 'testReportParams'
-																						, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
-																						, dynamicParams: [{
-																																brandname: 'P1' 
-																															, scope: 'dataset'   
-																															},{
-																																productName: 'P2'
-																															, scope: 'dataset'
-																															},{
-																																month: 'P3'
-																															, scope: 'env'
-																														 }]	 
-																				}
-																		}
-																}, { 
-																		name: 'crossnav'
-																		, hidden: false
-																		, tooltip: 'Cross on YYY document (popup)'
-																		, config: {
-																				target: 'self' 
-																			, document: 
-																			{
-																				label: 'testReportParams'
-																			, staticParams: {P3:'paramValue_A' , P5: 'paramValue_B'} 
-																			, dynamicParams: [{
-																								brandname: 'P1' 
-																							, scope: 'dataset'  
-																							},{
-																								productName: 'P2'
-																							, scope: 'dataset'
-																							},{
-																								month: 'P4'
-																							, scope: 'env'
-																						 }]	 
-																			}
-																		}
-																},{
-																		name: 'monitor'
-																		, hidden: false
-																		, tooltip: 'Active monitoring'
-																		, config: {}
-																},{
-																		name: 'monitor_inactive'
-																		, hidden: false
-																		, tooltip: 'Disable monitoring'
-																		, config: {}
-																},{
-																		name: 'views'
-																		, hidden: false
-																		, tooltip: 'View taken'
-																		, config: {}
-																},{
-																		name: 'views_inactive'
-																		, hidden: false
-																		, tooltip: 'View taken'
-																		, config: {}
-																}
-															] 
+	            	, inlineActions: [
+						{
+							name: 'start'
+							, hidden: false
+							, tooltip: 'Start the process'
+							, config: {}
+						}, {
+							name: 'stop'
+							, hidden: false
+							, tooltip: 'Stop the process'
+							, config: {
+								params: {}
+							}
+						}, {
+							name: 'errors'
+							, hidden: false
+							, tooltip: 'View Error messages'
+							, config: {
+								staticParams: {
+									param1: 'param1Value'
+									, param2: 'paramValue2' 
+								}
+								,   dynamicParams: [{
+									brandnamexxx: 'Brand'  
+									, scope: 'dataset'   
+								},{
+									productName: 'Products'
+									, scope: 'dataset'
+								},{
+									month: 'Month'
+									, scope: 'env'
+								}]	      		                        
+							}
+						}, {
+							name: 'errors_inactive'
+							, hidden: false
+							, tooltip: 'Enable Errors'
+							, config: {}
+						}, {
+							name: 'warnings'
+							, hidden: false
+							, tooltip: 'View allarms'
+							, config: {}
+						}, {
+							name: 'warnings_inactive'
+							, hidden: false
+							, tooltip: 'Enable allarms'
+							, config: {}
+						}, {
+							name: 'informationlog'
+							, hidden: false
+							, tooltip: 'Download log files'
+							, config: {}
+						}, { 
+							name: 'crossnav'
+							, hidden: false
+							, tooltip: 'Cross on XXX document'
+							, config: {
+								target: 'new'
+								 , document: 
+							 	 {
+									label: 'testReportParams'
+									, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
+									, dynamicParams: [{
+										brandname: 'P1' 
+										, scope: 'dataset'   
+									},{
+										productName: 'P2'
+										, scope: 'dataset'
+									},{
+										month: 'P3'
+										, scope: 'env'
+									}]	 
+								}
+							}
+						}, { 
+							name: 'crossnav'
+							, hidden: false
+							, tooltip: 'Cross on YYY document (popup)'
+							, config: {
+								target: 'self' 
+								, document: 
+								{
+									label: 'testReportParams'
+									, staticParams: {P3:'paramValue_A' , P5: 'paramValue_B'} 
+									, dynamicParams: [{
+										brandname: 'P1' 
+										, scope: 'dataset'  
+									},{
+										productName: 'P2'
+										, scope: 'dataset'
+									},{
+										month: 'P4'
+										, scope: 'env'
+									}]	 
+								}
+							}
+						},{
+							name: 'monitor'
+							, hidden: false
+							, tooltip: 'Active monitoring'
+							, config: {}
+						},{
+							name: 'monitor_inactive'
+							, hidden: false
+							, tooltip: 'Disable monitoring'
+							, config: {}
+						},{
+							name: 'views'
+							, hidden: false
+							, tooltip: 'View taken'
+							, config: {}
+						},{
+							name: 'views_inactive'
+							, hidden: false
+							, tooltip: 'View taken'
+							, config: {}
+						}
+					] 
 		        }//table
 	    	} //filterBa
-		},{
+		}, 
+
+		//--------------------------------------------------------------------------------
+		// Page 2
+		// -------------------------------------------------------------------------------
+		{
+			
 			title: 'Pag. 2'
 			, msg: 'Io sono la SECONDA pagina'
 			, navigationBar: {
@@ -536,7 +551,12 @@ Sbi.template = {
 	    	} //table
 			}//filterBar
 			
-		},{
+		}
+
+		//--------------------------------------------------------------------------------
+		// Page 3
+		// -------------------------------------------------------------------------------
+		/*, {
 			title: 'Pag. 3'
 			, msg: 'Io sono la TERZA pagina'
 			, navigationBar: {
@@ -620,28 +640,29 @@ Sbi.template = {
 
 	            , table: {
 		            dataset: 'testConsole'								
-							, inlineCharts: [
-                  { 	type: 'bar'
-                    //, column: 'BarChart'
-                    , column: 'chart_store_cost'
-                    , color: 'yellow'
-                    , maxValue: 200 
-                    , tooltip: 'volume vendite'
-									}, { type: 'point'
-                     //, column: 'Bullet'
-                     , column: 'chart_unit_sales'
-                     , color: 'red' //red | grey | ...											
-                     , threshold: '25'
-                     , tooltip: 'superata la soglia di 25 errori'
-									}
-								]
+					, inlineCharts: [
+                  	{ 	
+                      	type: 'bar'
+                        , column: 'chart_store_cost'
+                    	, color: 'green'
+                    	, maxValue: 200 
+                    	, tooltip: 'volume vendite'
+					}, { type: 'point'
+                    	//, column: 'Bullet'
+                     	, column: 'chart_unit_sales'
+                     	, color: 'red' //red | grey | ...											
+                     	, threshold: '25'
+                     	, tooltip: 'superata la soglia di 25 errori'
+					}
+					]
 
-	            , inlineActions: [
-                            {   name: 'start'
-                              , hidden: false
-                              , tooltip: 'Start the process'
-                              , config: {}
-	      		                },{ name: 'stop'
+	            	, inlineActions: [
+                    {   
+                        name: 'start'
+                        , hidden: false
+                        , tooltip: 'Start the process'
+                        , config: {}
+	      		     },{ name: 'stop'
                               , hidden: false
                               , tooltip: 'Stop the process'
                               , config: {}
@@ -753,7 +774,7 @@ Sbi.template = {
 			}//filterBar
 			
 		}
-	
+		*/
     
 		] //pages
 	}	//detailPanel

@@ -60,9 +60,7 @@ Sbi.console.ActionButton = function(config) {
 		}
 	
 		var c = Ext.apply(defaultSettings, config || {});
-		//test
-//    c.xconfig = c.config;
-
+	
 		Ext.apply(this, c);
 
 		//Services definition

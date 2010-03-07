@@ -51,6 +51,13 @@ Sbi.console.GridPanel = function(config) {
 
 		var defaultSettings = {
 			layout: 'fit'
+			, loadMask: false
+		    , viewConfig: {
+	          	forceFit:false,
+	           	autoFill: true,
+	           	enableRowBody:true,
+	           	showPreview:true
+	        }
 		};
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.gridPanel) {
@@ -58,101 +65,14 @@ Sbi.console.GridPanel = function(config) {
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
-		//var filterBarConfig = c.filterBar || {};
-		//delete c.filterBar;
+		
+		c.storeId = c.table.dataset;
+		delete c.table.dataset;
+		
 		Ext.apply(this, c);
 		
-		this.services = this.services || new Array();	
-		this.images = this.images || new Array();	
-		/*
-		if (config.table !== undefined){
-	  		var params = {ds_label: config.table.dataset.label};
-	  		this.services['getDataService'] = Sbi.config.serviceRegistry.getServiceUrl({
-	  	  		serviceName: 'GET_CONSOLE_DATA_ACTION'
-	  	  		, baseParams: params
-	  	  	});
-  	}
-	  	*/
-	 	this.services['start'] = this.services['start'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'START_ACTION'
-			, baseParams: new Object()
-		});
-		this.images['start'] = this.images['start'] || "../img/ico_start.gif";
-		
-		this.services['stop'] = this.services['stop'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'STOP_ACTION'
-			, baseParams: new Object()
-		});
-		this.images['stop'] = this.images['stop'] || "../img/ico_stop.gif";
-		
-		this.services['informationlog'] = this.services['informationlog'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'LOG_ACTION'
-			, baseParams: new Object()
-		});
-		this.images['informationlog'] = this.images['informationlog'] || "../img/ico_info.gif";
-		
-		this.services['crossnav'] = this.services['crossnav'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'CROSS_ACTION'
-			, baseParams: new Object()
-		});
-		this.images['cross_detail'] = this.images['cross_detail'] || "../img/ico_cross_detail.gif";
-		this.images['popup_detail'] = this.images['popup_detail'] || "../img/ico_popup_detail.gif";
-		
-		this.services['monitor'] = this.services['monitor'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'MONITOR_ACTION'
-			, baseParams: new Object()
-		});
-		this.images['monitor'] = this.images['monitor'] || "../img/ico_monitor.gif";
-		
-		this.services['monitor_inactive'] = this.services['monitor_inactive'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'MONITOR_ACTION'
-			, baseParams: new Object()
-		});
-		this.images['monitor_inactive'] = this.images['monitor_inactive'] || "../img/ico_monitor_inactive.gif";
-		
-		this.services['errors'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'ERRORS_ACTION'
-			, baseParams: new Object()
-		});
-		this.images['errors'] = this.images['errors'] || "../img/ico_errors.gif";
-		
-		this.services['errors_inactive'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'ERRORS_ACTION'
-			, baseParams: new Object()
-		});
-		this.images['errors_inactive'] = this.images['errors_inactive'] || "../img/ico_errors_inactive.gif";
-		
-		this.services['warnings'] = this.services['warnings'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'WARNINGS_ACTION'
-			, baseParams: new Object()
-		});
-		this.images['warnings'] = this.images['warnings'] || "../img/ico_warnings.gif";
-		
-		this.services['warnings_inactive'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'WARNINGS_ACTION'
-			, baseParams: new Object()
-		});
-		this.images['warnings_inactive'] = this.images['warnings_inactive'] || "../img/ico_warnings_inactive.gif";
-		
-		this.services['views'] = this.services['views'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'VIEWS_ACTION'
-			, baseParams: new Object()
-		});
-		this.images['views'] = this.images['views'] || "../img/ico_views.gif";
-		
-		this.services['views_inactive'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'VIEWS_ACTION'
-			, baseParams: new Object()
-		});
-		this.images['views_inactive'] = this.images['views_inactive'] || "../img/ico_views_inactive.gif";
-		
-		this.services['refresh'] = this.services['refresh'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'REFRESH_ACTION'
-			, baseParams: new Object()
-		});
-		this.images['refresh'] = this.images['refresh'] || "../img/ico_refresh.gif";
-	  	
-		this.initStore(config.storeManager, config.table.dataset);
+		this.initServices();
+		this.initStore();
 		this.initColumnModel();
 		this.initSelectionModel();	
 		this.initFilterBar(c || {});
@@ -161,20 +81,11 @@ Sbi.console.GridPanel = function(config) {
 			store: this.store
 			, cm: this.columnModel
 			, sm: this.selectionModel
-			, loadMask: false
-	        , viewConfig: {
-            	forceFit:false,
-            	autoFill: true,
-            	enableRowBody:true,
-            	showPreview:true
-        	}
-			,tbar: this.filterBar
+			, tbar: this.filterBar
 		});   
 		
 		// constructor
 		Sbi.console.GridPanel.superclass.constructor.call(this, c);
-    
-		//this.addEvents();
 };
 
 Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
@@ -185,6 +96,22 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	, selectionModel: null
 	, filterBar: null
 	, headers: null
+	
+	, GRID_ACTIONS: {
+		start: {serviceName: 'START_ACTION', images: '../img/ico_start.gif'}
+		, stop: {serviceName: 'STOP_ACTION', images: '../img/ico_stop.gif'}
+		, informationlog: {serviceName: 'START_ACTION', images: '../img/ico_info.gif'}
+		, crossnav: {serviceName: 'CROSS_ACTION', images: {cross_detail: '../img/ico_cross_detail.gif', popup_detail: '../img/ico_popup_detail.gif'}}
+		, monitor: {serviceName: 'MONITOR_ACTION', images: '../img/ico_monitor.gif'}
+		, monitor_inactive: {serviceName: 'MONITOR_ACTION', images: '../img/ico_monitor_inactive.gif'}
+		, errors: {serviceName: 'ERRORS_ACTION', images: '../img/ico_errors.gif'}
+		, errors_inactive: {serviceName: 'ERRORS_ACTION', images: '../img/ico_errors_inactive.gif'}
+		, warnings: {serviceName: 'WARNINGS_ACTION', images: '../img/ico_warnings.gif'}
+		, warnings_inactive: {serviceName: 'WARNINGS_ACTION', images: '../img/ico_warnings_inactive.gif'}
+		, views: {serviceName: 'VIEWS_ACTION', images: '../img/ico_views.gif'}
+		, views_inactive: {serviceName: 'VIEWS_ACTION', images: '../img/ico_views_inactive.gif'}
+		, refresh: {serviceName: 'REFRESH_ACTION', images: '../img/ico_refresh.gif'}
+	}
    
     //  -- public methods ---------------------------------------------------------
     
@@ -257,15 +184,30 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     
     //  -- private methods ---------------------------------------------------------
     
-	, initStore: function(storeManager, storeId) {
-		/*this.store = new Ext.data.JsonStore({
-		    url: this.services['getDataService']
-			, autoLoad: true
-	    }); 
-    */
     
-    this.store = storeManager.getStore(storeId);
-
+    , initServices: function() {
+    	this.services = this.services || new Array();	
+		this.images = this.images || new Array();	
+				
+		for(var actionName in this.GRID_ACTIONS) {
+			var actionConf = this.GRID_ACTIONS[actionName];
+			this.services[actionName] = this.services[actionName] || Sbi.config.serviceRegistry.getServiceUrl({
+				serviceName: actionConf.serviceName
+				, baseParams: new Object()
+			});
+			if( (typeof actionConf.images) === 'string' ) {
+				this.images[actionName] = this.images[actionName] || actionConf.images;
+			} else {
+				for(var actionState in actionConf.images) {
+					this.images[actionState] = this.images[actionState] || actionConf.images[actionState];
+				}
+			}
+		}
+    }
+    
+	, initStore: function() {
+		this.store = this.storeManager.getStore(this.storeId);
+		
 		this.store.on('loadexception', function(store, options, response, e){
 	    	Sbi.exception.ExceptionHandler.handleFailure(response, options);
 	    }, this);
@@ -294,76 +236,83 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	
 	
 	, onMetaChange: function( store, meta ) {
-    //loads headers map with dataIndex info
+		//if(store.storeId === 'testConsole') alert('onMetaChange IN');
+		
+		var tmpMeta =  Ext.apply({}, meta); // meta;
+		
+		
 		this.headers = [];
-    
-//alert("inlinecharts: " + this.table.inlineCharts.length + " - " +this.table.inlineCharts.toSource());
 
-		for(var i = 0; i < meta.fields.length; i++) {
+		for(var i = 0; i < tmpMeta.fields.length; i++) {
 
-          var localHeader = meta.fields[i].header;
-          this.headers[localHeader] = this.store.getFieldNameByAlias(localHeader);
-          if(meta.fields[i].type) {
-			var t = meta.fields[i].type;
-		    meta.fields[i].renderer  =  Sbi.locale.formatters[t];			   
-          }
+			var localHeader = tmpMeta.fields[i].header;
+			this.headers[localHeader] = this.store.getFieldNameByAlias(localHeader);
+			if(tmpMeta.fields[i].type) {
+				var t = tmpMeta.fields[i].type;
+				tmpMeta.fields[i].renderer  =  Sbi.locale.formatters[t];			   
+			}
 			   
-          if(meta.fields[i].subtype && meta.fields[i].subtype === 'html') {
-			meta.fields[i].renderer  =  Sbi.locale.formatters['html'];
-          }
+			if(tmpMeta.fields[i].subtype && tmpMeta.fields[i].subtype === 'html') {
+				tmpMeta.fields[i].renderer  =  Sbi.locale.formatters['html'];
+			}
 	    
-      //adds inline charts if it's necessary
-	    if (this.table.inlineCharts){  	     
-  	  	 for(var j=0, len= this.table.inlineCharts.length; j < len; j++){
-  	  	   if (this.table.inlineCharts[j].column === meta.fields[i].header){
-  	            if(this.table.inlineCharts[j].type && this.table.inlineCharts[j].type === 'bar' ) {
-  	  			    meta.fields[i].renderer  =  Sbi.console.commons.Format.inlineBarRenderer(this.table.inlineCharts[j]);
-  	            }
+			//adds inline charts if it's necessary
+			if (this.table.inlineCharts){  	     
+				for(var j=0, len= this.table.inlineCharts.length; j < len; j++){
+					if (this.table.inlineCharts[j].column === tmpMeta.fields[i].header){
+						if(this.table.inlineCharts[j].type && this.table.inlineCharts[j].type === 'bar' ) {
+							tmpMeta.fields[i].renderer  =  Sbi.console.commons.Format.inlineBarRenderer(this.table.inlineCharts[j]);
+						}
   	            
-  	            if(this.table.inlineCharts[j].type && this.table.inlineCharts[j].type === 'point') {
-  	            	meta.fields[i].renderer  =  Sbi.console.commons.Format.inlinePointRenderer(this.table.inlineCharts[j]);
-  	            }
-  	        }            
-  	      } //for on j
-  	    } // for on i
-  	}
+						if(this.table.inlineCharts[j].type && this.table.inlineCharts[j].type === 'point') {
+							tmpMeta.fields[i].renderer  =  Sbi.console.commons.Format.inlinePointRenderer(this.table.inlineCharts[j]);
+						}
+					}            
+				} //for on j
+			} 
+		} // for on i
 
 	    //adds inline action buttons
-	  if (this.table.inlineActions){
-  		for(var i=0, l= this.table.inlineActions.length; i < l; i++){ 
-  		  var img = this.images[this.table.inlineActions[i].name];
+		if (this.table.inlineActions){
+			for(var i=0, l= this.table.inlineActions.length; i < l; i++){ 
+				var img = this.images[this.table.inlineActions[i].name];
   	
-  		  //defines image's path
-  		  if (this.table.inlineActions[i].name === 'crossnav'){
-  		    if (this.table.inlineActions[i].config.target === 'new')
-  		      img = this.images['cross_detail'];
-  		    else
-  		      img = this.images['popup_detail'];
-  		  }
+				//defines image's path
+				if (this.table.inlineActions[i].name === 'crossnav'){
+					if (this.table.inlineActions[i].config.target === 'new')
+						img = this.images['cross_detail'];
+					else
+						img = this.images['popup_detail'];
+					}
   	
-  	      var bc = new Ext.grid.ButtonColumn({
-  	           dataIndex: this.table.inlineActions[i].name + "-"+ i
-  				   , tooltip: (this.table.inlineActions[i].tooltip != undefined)? this.table.inlineActions[i].tooltip:this.table.inlineActions[i].name
-  	         , imgSrc: img
-  	         , clickHandler:  function(e, t){   
-  	                this.grid.execInlineAction(e, t, this.action, this.parameters)     
-  	         }
-  	         , hideable: true
-  	         , hidden: this.table.inlineActions[i].hidden
-  	         , width: 25
-  	         , action: this.table.inlineActions[i].name
-  	         , parameters: this.table.inlineActions[i].config
-  	      });
-  	      bc.init(this);
-  	   //   alert(bc.toSource());
-  	      meta.fields.push(bc);	
-  	  	}	
-  	}
+					var bc = new Ext.grid.ButtonColumn({
+						dataIndex: this.table.inlineActions[i].name + "-"+ i
+						, tooltip: (this.table.inlineActions[i].tooltip != undefined)? this.table.inlineActions[i].tooltip:this.table.inlineActions[i].name
+						, imgSrc: img
+						, clickHandler:  function(e, t){   
+							this.grid.execInlineAction(e, t, this.action, this.parameters)     
+						}
+						, hideable: true
+						, hidden: this.table.inlineActions[i].hidden
+						, width: 25
+						, action: this.table.inlineActions[i].name
+						, parameters: this.table.inlineActions[i].config
+					});
+					bc.init(this);
+					tmpMeta.fields.push(bc);	
+  	  		}	
+		}
 	    //adds numeration column    
-		meta.fields[0] = new Ext.grid.RowNumberer();
+		tmpMeta.fields[0] = new Ext.grid.RowNumberer();
+		
+		//if(store.storeId === 'testConsole') alert('onMetaChange POW');
+		
 	    //update columnmodel configuration
-		this.getColumnModel().setConfig(meta.fields);
-
+		this.getColumnModel().setConfig(tmpMeta.fields);
+		
+		//if(store.storeId === 'testConsole') alert('onMetaChange OUT');
+		
+		
 	}
 
 

@@ -90,13 +90,14 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	, widgetConfig: null
 	, chart: null
 	
-	, LINE_CHART: 'chart.ext.line'
-	, BAR_CHART: 'chart.ext.bar'
-	, PIE_CHART: 'chart.ext.pie'
-	, ROTATE_CHART: 'chart.sbi.rotate'
-	, LIVELINE_CHART: 'chart.sbi.liveline'
-	, OF_BAR_CHART: 'chart.of.bar'
-	, FCF_BAR_CHART: 'chart.fcf.bar'
+	, YUI_CHART_LINE: 'chart.ext.line'
+	, YUI_CHART_BAR: 'chart.ext.bar'
+	, YUI_CHART_PIE: 'chart.ext.pie'
+	, SBI_CHART_SPEEDOMETER: 'chart.sbi.speedometer'
+	, SBI_CHART_LIVELINES: 'chart.sbi.livelines'
+	, SBI_CHART_MULTILEDS: 'chart.sbi.multileds'
+	, OFC_CHART_BAR: 'chart.of.bar'
+	, FCF_CHART_BAR: 'chart.fcf.bar'
 		
 	
     //  -- public methods ---------------------------------------------------------
@@ -166,21 +167,23 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		if(chartConfig.type) {
 			delete chartConfig.type;
 		}
-		
-		if(chartType === this.LINE_CHART) {
+	
+		if(chartType === this.YUI_CHART_LINE) {
 			chart = this.createLineChart(chartConfig);
-		} else if(chartType === this.BAR_CHART) {
+		} else if(chartType === this.YUI_CHART_BAR) {
 			chart = this.createBarChart(chartConfig);
-		} else if(chartType === this.PIE_CHART){
+		} else if(chartType === this.YUI_CHART_PIE){
 			chart = this.createPieChart(chartConfig);
-		} else if(chartType === this.ROTATE_CHART){
+		} else if(chartType === this.SBI_CHART_SPEEDOMETER){
 			chart = this.createRotateChart(chartConfig);
-		} else if(chartType === this.OF_BAR_CHART){
-			chart = this.createOFBarChart(chartConfig);
-		} else if(chartType === this.FCF_BAR_CHART){
-			chart = this.createFCFBarChart(chartConfig);
-		} else if(chartType === this.LIVELINE_CHART){
+		} else if(chartType === this.SBI_CHART_LIVELINES){
 			chart = this.createLivelineChart(chartConfig);
+		} else if(chartType === this.SBI_CHART_MULTILEDS){
+			chart = this.createMultiledsChart(chartConfig);
+		} else if(chartType === this.OFC_CHART_BAR){
+			chart = this.createOFBarChart(chartConfig);
+		} else if(chartType === this.FCF_CHART_BAR){
+			chart = this.createFCFBarChart(chartConfig);
 		} else {
 			Sbi.exception.ExceptionHandler.showErrorMessage('Chart type [' + chartType + '] not supported by [ChartWidget]');
 		}
@@ -278,7 +281,7 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		return new Ext.Panel({
 			layout:'fit'
 		    , height: this.height	
-		    , items: [new Sbi.chart.SpagoBIChart({chartType: 'rotate'})]
+		    , items: [new Sbi.chart.SpagoBIChart({chartType: 'speedometer'})]
 		});		
 	}
 	
@@ -289,7 +292,21 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		    , height: this.height	
 		    , items: [
 		        new Sbi.chart.SpagoBIChart({
-		        	chartType: 'liveline'
+		        	chartType: 'livelines'
+		        	, store: this.store
+		        })
+		    ]
+		});		
+	}
+	
+	, createMultiledsChart: function(chartConfig) {
+		
+		return new Ext.Panel({
+			layout:'fit'
+		    , height: this.height	
+		    , items: [
+		        new Sbi.chart.SpagoBIChart({
+		        	chartType: 'multileds'
 		        	, store: this.store
 		        })
 		    ]

@@ -75,6 +75,32 @@ Ext.extend(Sbi.console.StoreManager, Ext.util.Observable, {
 		s.ready = s.ready || false;
 		s.storeType = s.storeType || 'ext';
 		this.stores.add(s);
+		/*
+		if(s.storeId === 'testConsole') {		
+			s.load = function(options) {
+				alert('Load IN');
+		        options = options || {};
+		        this.storeOptions(options);
+		        if(this.sortInfo && this.remoteSort){
+		            var pn = this.paramNames;
+		            options.params = options.params || {};
+		            options.params[pn.sort] = this.sortInfo.field;
+		            options.params[pn.dir] = this.sortInfo.direction;
+		        }
+		        try {
+		        	var r = this.execute('read', null, options); // <-- null represents rs.  No rs for load actions.
+		        	alert('Load OUT');
+		            return r;
+		        } catch(e) {
+		        	alert('error: ' + e.toSource());
+		            this.handleException(e);
+		            return false;
+		        }
+		    };
+		}
+		*/
+		
+		
 		if(s.refreshTime) {
 			var task = {
 				run: function(){

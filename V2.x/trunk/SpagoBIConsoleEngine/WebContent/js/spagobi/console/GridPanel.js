@@ -239,7 +239,14 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		//if(store.storeId === 'testConsole') alert('onMetaChange IN');
 		
 		var tmpMeta =  Ext.apply({}, meta); // meta;
-		
+		var fields = tmpMeta.fields;
+		tmpMeta.fields = new Array(fields.length);
+		for(var i = 0; i < fields.length; i++) {
+			if( (typeof fields[i]) === 'string') {
+				fields[i] = {name: fields[i]};
+			}
+			tmpMeta.fields[i] = Ext.apply({}, fields[i]);
+		}
 		
 		this.headers = [];
 

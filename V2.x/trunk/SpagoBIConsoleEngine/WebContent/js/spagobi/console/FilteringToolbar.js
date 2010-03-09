@@ -140,7 +140,7 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
    , filterGrid: function(combo, record, index) {
 	  // this.store.clearFilter(true);
 	   if (this.filters === null){
-		   this.filters = [];
+		   this.filters = {};
 	   }
 	   this.filters[combo.index] = record.get(combo.valueField);
 	   this.store.filter(combo.index, record.get(combo.valueField));

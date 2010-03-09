@@ -108,7 +108,7 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
                   this.createFilterField(this.getFilterOperator(meta.fields[i].header), this.getColumnText(meta.fields[i].header),  store.getFieldNameByAlias(meta.fields[i].header));  	                  
             	}        		  
         	} 
-      	}
+      	}	
 
       //store.ready is true only after the first load, so in next reloads the toolbar's action items aren't re-designed!
        	if (this.store.ready !== true){
@@ -119,7 +119,7 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
        	
        	if (this.filters !== null) {
 	       	for(var f in this.filters) { 
-	       	    alert(f + " - " + this.filters[f]);   
+	       	   // alert(f + " - " + this.filters[f]);   
 	       		this.filterGrid(f, this.filters[f]);
 	       		   		  
 	       	} 

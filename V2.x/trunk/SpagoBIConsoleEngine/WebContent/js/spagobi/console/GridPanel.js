@@ -210,11 +210,8 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     
 	, initStore: function() {
 		this.store = this.storeManager.getStore(this.storeId);
-		//instructions for ordering:
 		this.store.remoteSort = false;  //local type
-		/*this.store.storeInfo = {field: 'column_1',
-			    				direction: 'ASC' };// or 'DESC' (case sensitive for local sorting)};
-		*/
+
 		this.store.on('loadexception', function(store, options, response, e){
 	    	Sbi.exception.ExceptionHandler.handleFailure(response, options);
 	    }, this);

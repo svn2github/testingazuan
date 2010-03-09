@@ -50,7 +50,7 @@ Sbi.console.ActionButton = function(config) {
 
 		var defaultSettings = {
 			iconCls: config.actionConf.name
-			,tooltip: config.actionConf.name 
+			,tooltip: (config.actionConf.tooltip === undefined)?config.actionConf.name : config.actionConf.tooltip 
 			,hidden: config.actionConf.hidden
 			,scope:this
 		};
@@ -92,6 +92,14 @@ Sbi.console.ActionButton = function(config) {
 		this.services['views_inactive'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'VIEWS_ACTION'
 			, baseParams: new Object()
+		});
+		this.services['monitor'] = this.services['monitor'] || Sbi.config.serviceRegistry.getServiceUrl({
+			serviceName: 'MONITOR_ACTION'
+		  , baseParams: new Object()
+		});
+		this.services['monitor_inactive'] = this.services['monitor_inactive'] || Sbi.config.serviceRegistry.getServiceUrl({
+			serviceName: 'MONITOR_ACTION'
+		  , baseParams: new Object()
 		});
 		
 		//this.addEvents('customEvents');

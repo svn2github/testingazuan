@@ -102,8 +102,8 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 		if (this.filterBar.actions){
       		for(var i=0; i < this.filterBar.actions.length; i++){
       		   conf.actionConf = this.filterBar.actions[i];
-    			   b = new Sbi.console.ActionButton(conf);
-        		 this.addButton(b);	
+    		   b = new Sbi.console.ActionButton(conf);
+        	   this.addButton(b);	
         	}	
         }
   }
@@ -137,13 +137,16 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
       this.cbStores[dataIdx].loadData(data);
    }
    
-   , filterGrid: function(combo, record, index) {
-	  // this.store.clearFilter(true);
+   , filterGrid: function(f, exp) {
+	   this.store.clearFilter(true);
+	   //alert("filterGrid: " + f + " - " + exp);
+	   
 	   if (this.filters === null){
 		   this.filters = {};
 	   }
-	   this.filters[combo.index] = record.get(combo.valueField);
-	   this.store.filter(combo.index, record.get(combo.valueField));
+	   //alert(this.filters.toSource());
+	   this.filters[f] = exp;
+	   this.store.filter(f, exp);
 	  
    }
    
@@ -174,9 +177,13 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 		              	        index: dataIndex,
 		              	       	listeners: {
 						        	'select': {
-							    		fn: this.filterGrid,
+									   fn: function(combo, record, index) {
+							                 var field = combo.index;
+							                 var exp = record.get(combo.valueField);
+							                 this.filterGrid(field, exp);							                
+							            },
 						    			scope: this
-						     			}				     					
+						     		}				     					
 						         }
 		              	    });	
 		     

@@ -118,8 +118,10 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
        	this.doLayout();
        	
        	if (this.filters !== null) {
-	       	for(var f in this.filters) { 		           
-	       		alert(this.filters[f]);      		  
+	       	for(var f in this.filters) { 
+	       	    alert(f + " - " + this.filters[f]);   
+	       		this.filterGrid(f, this.filters[f]);
+	       		   		  
 	       	} 
        	}
     }

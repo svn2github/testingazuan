@@ -62,16 +62,16 @@ Sbi.console.DetailPage = function(config) {
 		var navigationBarConfig = c.navigationBar || {};
 		navigationBarConfig.executionContext = c.executionContext;
 		delete c.navigationBar;
-		var filterBarConfig = c.filterBar || {};
-		filterBarConfig.executionContext = c.executionContext;
-    filterBarConfig.storeManager = c.storeManager;
-		delete c.filterBar;
+		var tableConfig = c.table || {};
+		tableConfig.executionContext = c.executionContext;
+		tableConfig.storeManager = c.storeManager;
+		delete c.table;
 		Ext.apply(this, c);
 		
 
 		
 		this.initNavigationToolbar(navigationBarConfig);
-		this.initGridPanel(filterBarConfig || {});
+		this.initGridPanel(tableConfig);
 		
 		c = Ext.apply(c, {  	
 			//html: this.msg

@@ -238,7 +238,8 @@ Sbi.console.commons.Format = function(){
         , inlinePointRenderer : function(format){
             return function(v){
                if (v > format.threshold) {  
-                  return '<div align=center title="'+ format.tooltip + '" style="width:100%;"><img  src="../img/ico_point_'+ format.color +'.gif"></img></div>';   
+                  var width = (format.width === undefined) ? "100%" : format.width+"px";                  
+                  return '<div align=center title="'+ format.tooltip + '" style="width:'+ width +'"><img  src="../img/ico_point_'+ format.color +'.gif"></img></div>';  
                 } else {  
                   return '';  
                 }

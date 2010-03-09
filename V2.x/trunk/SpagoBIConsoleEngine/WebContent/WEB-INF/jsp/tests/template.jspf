@@ -116,211 +116,212 @@ Sbi.template = {
 				}
 				]
 			}
-    		// -- Filter bar -----------------------------------------------------------------
-	        , filterBar: {
-	            type: 'custom'  
-	            , defaults: {
-	                operator: 'EQUALS_TO'
-	                ,operand: 'DISTINCT'
-	            }     
 	
-	            , filters: [
-	              {
-	           	  	 text: 'Brands'
-	               , column: 'brandname'
-	               , operator: 'EQUALS_TO'
-	               , operand: 'DISTINCT'
-	               }, {
-	                 text: 'Products'
-	               , column: 'productName'
-	               , operator: 'EQUALS_TO'
-	               , operand: 'DISTINCT'
-	               }
-	            ]
+            , table: {
+	            dataset: 'testConsole'
 
-	            , actions: [
-	                {
-	                    name: 'refresh'
-	                    , hidden: false
-	                    , config: {}}
-	                    , {name: 'errors'
-	                    ,  hidden: false
-	                    ,  config: 
-	                       {
-	                        staticParams: {param1: 'paramValue1'
-	                                      ,param2: 'paramValue2' }
-	                        }
-	                     }, {
-	                       name: 'errors_inactive'
-	                    ,  hidden: true
-	                    ,  config: {
-	                       		staticParams: {param1: 'paramValue'}
-	                      }
-	                    }, {
-	                       name: 'warnings'
-	                    ,  hidden: false
-	                    ,  config: {
-	                       		staticParams: {param1: 'paramValue'}
-	                       }
-	                     }, {name: 'warnings_inactive'
-	                    ,  hidden: true
-	                    ,  config: {
-	                        	staticParams: {param1: 'paramValue'}
-	                       }
-	                     },{
-	                       name: 'views'
-	                    ,  hidden: false
-	                    ,  config: {
-	                        	staticParams: {param1: 'paramValue'}
-	                       }
-	                     }, {name: 'views_inactive'
-	                    ,  hidden: true
-	                    ,  config: {
-	                        	staticParams: {param1: 'paramValue'}
-	                       }
-	                     }
-	            ]
+	            	// -- Filter bar -----------------------------------------------------------------
+	    	        , filterBar: {
+	    	            type: 'custom'  
+	    	            , defaults: {
+	    	                operator: 'EQUALS_TO'
+	    	                ,operand: 'DISTINCT'
+	    	            }     
+	    	
+	    	            , filters: [
+	    	              {
+	    	           	  	 text: 'Brands'
+	    	               , column: 'brandname'
+	    	               , operator: 'EQUALS_TO'
+	    	               , operand: 'DISTINCT'
+	    	               }, {
+	    	                 text: 'Products'
+	    	               , column: 'productName'
+	    	               , operator: 'EQUALS_TO'
+	    	               , operand: 'DISTINCT'
+	    	               }
+	    	            ]
 
-				
-	            , table: {
-		            dataset: 'testConsole'
-                	, inlineCharts: [
-						{ 
-							type: 'bar'
-							, column: 'chart_store_cost'
-							, color: 'gray'
-							, maxValue: 200 
-							, tooltip: 'volume vendite'
-						}, { 
-							type: 'point'
-							, column: 'chart_unit_sales'
-							, color: 'red'
-							, threshold: '25'
-							, tooltip: 'superata la soglia di 25 errori'
-						}
-	            	]
-		
-	            	, inlineActions: [
-						{
-							name: 'start'
-							, hidden: false
-							, tooltip: 'Start the process'
-							, config: {}
-						}, {
-							name: 'stop'
-							, hidden: false
-							, tooltip: 'Stop the process'
-							, config: {
-								params: {}
+	    	            , actions: [
+	    	                {
+	    	                    name: 'refresh'
+	    	                    , hidden: false
+	    	                    , config: {}}
+	    	                    , {name: 'errors'
+	    	                    ,  hidden: false
+	    	                    ,  config: 
+	    	                       {
+	    	                        staticParams: {param1: 'paramValue1'
+	    	                                      ,param2: 'paramValue2' }
+	    	                        }
+	    	                     }, {
+	    	                       name: 'errors_inactive'
+	    	                    ,  hidden: true
+	    	                    ,  config: {
+	    	                       		staticParams: {param1: 'paramValue'}
+	    	                      }
+	    	                    }, {
+	    	                       name: 'warnings'
+	    	                    ,  hidden: false
+	    	                    ,  config: {
+	    	                       		staticParams: {param1: 'paramValue'}
+	    	                       }
+	    	                     }, {name: 'warnings_inactive'
+	    	                    ,  hidden: true
+	    	                    ,  config: {
+	    	                        	staticParams: {param1: 'paramValue'}
+	    	                       }
+	    	                     },{
+	    	                       name: 'views'
+	    	                    ,  hidden: false
+	    	                    ,  config: {
+	    	                        	staticParams: {param1: 'paramValue'}
+	    	                       }
+	    	                     }, {name: 'views_inactive'
+	    	                    ,  hidden: true
+	    	                    ,  config: {
+	    	                        	staticParams: {param1: 'paramValue'}
+	    	                       }
+	    	                     }
+	    	            ]
+	    	            
+		               	, inlineCharts: [
+							{ 
+								type: 'bar'
+								, column: 'chart_store_cost'
+								, color: 'gray'
+								, maxValue: 200 
+								, tooltip: 'volume vendite'
+							}, { 
+								type: 'point'
+								, column: 'chart_unit_sales'
+								, color: 'red'
+								, threshold: '25'
+								, tooltip: 'superata la soglia di 25 errori'
 							}
-						}, {
-							name: 'errors'
-							, hidden: false
-							, tooltip: 'View Error messages'
-							, config: {
-								staticParams: {
-									param1: 'param1Value'
-									, param2: 'paramValue2' 
+		            	]
+			
+		            	, inlineActions: [
+							{
+								name: 'start'
+								, hidden: false
+								, tooltip: 'Start the process'
+								, config: {}
+							}, {
+								name: 'stop'
+								, hidden: false
+								, tooltip: 'Stop the process'
+								, config: {
+									params: {}
 								}
-								,   dynamicParams: [{
-									brandnamexxx: 'Brand'  
-									, scope: 'dataset'   
-								},{
-									productName: 'Products'
-									, scope: 'dataset'
-								},{
-									month: 'Month'
-									, scope: 'env'
-								}]	      		                        
-							}
-						}, {
-							name: 'errors_inactive'
-							, hidden: false
-							, tooltip: 'Enable Errors'
-							, config: {}
-						}, {
-							name: 'warnings'
-							, hidden: false
-							, tooltip: 'View allarms'
-							, config: {}
-						}, {
-							name: 'warnings_inactive'
-							, hidden: false
-							, tooltip: 'Enable allarms'
-							, config: {}
-						}, {
-							name: 'informationlog'
-							, hidden: false
-							, tooltip: 'Download log files'
-							, config: {}
-						}, { 
-							name: 'crossnav'
-							, hidden: false
-							, tooltip: 'Cross on XXX document'
-							, config: {
-								target: 'new'
-								 , document: 
-							 	 {
-									label: 'testReportParams'
-									, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
-									, dynamicParams: [{
-										brandname: 'P1' 
+							}, {
+								name: 'errors'
+								, hidden: false
+								, tooltip: 'View Error messages'
+								, config: {
+									staticParams: {
+										param1: 'param1Value'
+										, param2: 'paramValue2' 
+									}
+									,   dynamicParams: [{
+										brandnamexxx: 'Brand'  
 										, scope: 'dataset'   
 									},{
-										productName: 'P2'
+										productName: 'Products'
 										, scope: 'dataset'
 									},{
-										month: 'P3'
+										month: 'Month'
 										, scope: 'env'
-									}]	 
+									}]	      		                        
 								}
-							}
-						}, { 
-							name: 'crossnav'
-							, hidden: false
-							, tooltip: 'Cross on YYY document (popup)'
-							, config: {
-								target: 'self' 
-								, document: 
-								{
-									label: 'testReportParams'
-									, staticParams: {P3:'paramValue_A' , P5: 'paramValue_B'} 
-									, dynamicParams: [{
-										brandname: 'P1' 
-										, scope: 'dataset'  
-									},{
-										productName: 'P2'
-										, scope: 'dataset'
-									},{
-										month: 'P4'
-										, scope: 'env'
-									}]	 
+							}, {
+								name: 'errors_inactive'
+								, hidden: false
+								, tooltip: 'Enable Errors'
+								, config: {}
+							}, {
+								name: 'warnings'
+								, hidden: false
+								, tooltip: 'View allarms'
+								, config: {}
+							}, {
+								name: 'warnings_inactive'
+								, hidden: false
+								, tooltip: 'Enable allarms'
+								, config: {}
+							}, {
+								name: 'informationlog'
+								, hidden: false
+								, tooltip: 'Download log files'
+								, config: {}
+							}, { 
+								name: 'crossnav'
+								, hidden: false
+								, tooltip: 'Cross on XXX document'
+								, config: {
+									target: 'new'
+									 , document: 
+								 	 {
+										label: 'testReportParams'
+										, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
+										, dynamicParams: [{
+											brandname: 'P1' 
+											, scope: 'dataset'   
+										},{
+											productName: 'P2'
+											, scope: 'dataset'
+										},{
+											month: 'P3'
+											, scope: 'env'
+										}]	 
+									}
 								}
+							}, { 
+								name: 'crossnav'
+								, hidden: false
+								, tooltip: 'Cross on YYY document (popup)'
+								, config: {
+									target: 'self' 
+									, document: 
+									{
+										label: 'testReportParams'
+										, staticParams: {P3:'paramValue_A' , P5: 'paramValue_B'} 
+										, dynamicParams: [{
+											brandname: 'P1' 
+											, scope: 'dataset'  
+										},{
+											productName: 'P2'
+											, scope: 'dataset'
+										},{
+											month: 'P4'
+											, scope: 'env'
+										}]	 
+									}
+								}
+							},{
+								name: 'monitor'
+								, hidden: false
+								, tooltip: 'Active monitoring'
+								, config: {}
+							},{
+								name: 'monitor_inactive'
+								, hidden: false
+								, tooltip: 'Disable monitoring'
+								, config: {}
+							},{
+								name: 'views'
+								, hidden: false
+								, tooltip: 'View taken'
+								, config: {}
+							},{
+								name: 'views_inactive'
+								, hidden: false
+								, tooltip: 'View taken'
+								, config: {}
 							}
-						},{
-							name: 'monitor'
-							, hidden: false
-							, tooltip: 'Active monitoring'
-							, config: {}
-						},{
-							name: 'monitor_inactive'
-							, hidden: false
-							, tooltip: 'Disable monitoring'
-							, config: {}
-						},{
-							name: 'views'
-							, hidden: false
-							, tooltip: 'View taken'
-							, config: {}
-						},{
-							name: 'views_inactive'
-							, hidden: false
-							, tooltip: 'View taken'
-							, config: {}
-						}
-					] 
-		        }//table
-	    	} //filterBa
+						] 
+	    	        } //filterBar
+	        }//table	    	
 		}, 
 
 		//--------------------------------------------------------------------------------
@@ -345,212 +346,209 @@ Sbi.template = {
 				]
 			}
 		
-	        ,filterBar: {
-	            type: 'automatic'  
-	            , defaults: {
-	                operator: 'EQUALS_TO'
-	                ,operand: 'DISTINCT' 
-	            }     
-								
-	            , filters: [
-	              {
-	           	  	 text: 'Brand'
-	               , column: 'Brand'
-	               , operator: 'EQUALS_TO'
-	               , operand: 'DISTINCT'
-	               }, {
-	                 text: 'Product'
-	               , column: 'Product'
-	               , operator: 'EQUALS_TO'
-	               , operand: 'DISTINCT'
-	               }
-	            ]
-	      
-	            , actions: [
-	                {
-	                    name: 'refresh'
-	                    , hidden: false
-	                    , config: {}}
-	                    , {name: 'errors'
-	                    ,  hidden: false
-	                    ,  config: 
-	                       {
-	                        staticParams: {param1: 'paramValue1'
-	                                      ,param2: 'paramValue2' }
-	                        }
-	                     }, {
-	                       name: 'errors_inactive'
-	                    ,  hidden: true
-	                    ,  config: {
-	                       		staticParams: {param1: 'paramValue'}
-	                      }
-	                    }, {
-	                       name: 'warnings'
-	                    ,  hidden: false
-	                    ,  config: {
-	                       		staticParams: {param1: 'paramValue'}
-	                       }
-	                     }, {name: 'warnings_inactive'
-	                    ,  hidden: true
-	                    ,  config: {
-	                        	staticParams: {param1: 'paramValue'}
-	                       }
-	                     },{
-	                       name: 'views'
-	                    ,  hidden: false
-	                    ,  config: {
-	                        	staticParams: {param1: 'paramValue'}
-	                       }
-	                     }, {name: 'views_inactive'
-	                    ,  hidden: true
-	                    ,  config: {
-	                        	staticParams: {param1: 'paramValue'}
-	                       }
-	                     }
-	            ]
-
+	        
 	            , table: {
-		            dataset: 'testConsole2'								
-              , inlineCharts: [
-									{
-											type: 'bar'
-											, column: 'BarChart'
-											, color: 'blue'
-											, maxValue: 200 
-											, tooltip: 'volume vendite'
-									}, {
-											 type: 'point'
-											 , column: 'Bullet'
-											 , color: 'grey' //red | grey | ...
-											 , threshold: '25'
-											 , tooltip: 'superata la soglia di 25 errori'
-									}
-								]
+		            dataset: 'testConsole2'		
+	              , filterBar: {
+		            	type: 'automatic'  
+		              , defaults: {
+			                operator: 'EQUALS_TO'
+			                ,operand: 'DISTINCT' 
+			            }     
+									
+		              , filters: [
+			              {
+			           	  	 text: 'Brand'
+			               , column: 'Brand'
+			               , operator: 'EQUALS_TO'
+			               , operand: 'DISTINCT'
+			               }, {
+			                 text: 'Product'
+			               , column: 'Product'
+			               , operator: 'EQUALS_TO'
+			               , operand: 'DISTINCT'
+			               }
+		            ]
+		      
+		              , actions: [
+		                	   {
+			                    name: 'refresh'
+			                    , hidden: false
+			                    , config: {}
+		                	   }, {name: 'errors'
+			                    ,  hidden: false
+			                    ,  config: 
+			                       {
+			                        staticParams: {param1: 'paramValue1'
+			                                      ,param2: 'paramValue2' }
+			                        }
+			                     }, {
+			                       name: 'errors_inactive'
+			                    ,  hidden: true
+			                    ,  config: {
+			                       		staticParams: {param1: 'paramValue'}
+			                      }
+			                    }, {
+			                       name: 'warnings'
+			                    ,  hidden: false
+			                    ,  config: {
+			                       		staticParams: {param1: 'paramValue'}
+			                       }
+			                     }, {name: 'warnings_inactive'
+			                    ,  hidden: true
+			                    ,  config: {
+			                        	staticParams: {param1: 'paramValue'}
+			                       }
+			                     },{
+			                       name: 'views'
+			                    ,  hidden: false
+			                    ,  config: {
+			                        	staticParams: {param1: 'paramValue'}
+			                       }
+			                     }, {name: 'views_inactive'
+			                    ,  hidden: true
+			                    ,  config: {
+			                        	staticParams: {param1: 'paramValue'}
+			                       }
+			                     }
+			            ]
+					            						
+              		  , inlineCharts: [
+										{
+												type: 'bar'
+												, column: 'BarChart'
+												, color: 'blue'
+												, maxValue: 200 
+												, tooltip: 'volume vendite'
+										}, {
+												 type: 'point'
+												 , column: 'Bullet'
+												 , color: 'grey' //red | grey | ...
+												 , threshold: '25'
+												 , tooltip: 'superata la soglia di 25 errori'
+										}
+									  ]
 
-	            , inlineActions: [
-	      		                {
-	      		                    name: 'start'
-	      		                    , hidden: false
-	      		                    , tooltip: 'Start the process'
-	      		                    , config: {}
-	      		                }, {
-	      		                    name: 'stop'
-	      		                    , hidden: false
-	      		                    , tooltip: 'Stop the process'
-	      		                    , config: {
-	      		                        params: {}
-	      		                    }
-	      		                }, {
-	      		                    name: 'errors'
-	      		                    , hidden: false
-	      		                    , tooltip: 'View Error messages'
-	      		                    , config: {
-	      		                         staticParams: {
-				                                        param1: 'param1Value'
-				                                       ,param2: 'paramValue2' 
-                                    				   }
-	      		                     ,   dynamicParams: [{
-																												brandname: 'Brand'  
-                                                      , scope: 'dataset'   
-                                                      },{
-																												productName: 'Product'
-                                                      , scope: 'dataset'
-                                                      },{
-                                                        month: 'Month'	
-                                                      , scope: 'env'
-                                                      }]	      		                        
-	      		                    }
-	      		                }, {
-	      		                    name: 'errors_inactive'
-	      		                    , hidden: false
-	      		                    , tooltip: 'Enable Errors'
-	      		                    , config: {}
-	      		                }, {
-	      		                    name: 'warnings'
-	      		                    , hidden: false
-	      		                    , tooltip: 'View allarms'
-	      		                    , config: {}
-	      		                }, {
-	      		                    name: 'warnings_inactive'
-	      		                    , hidden: false
-	      		                    , tooltip: 'Enable allarms'
-	      		                    , config: {}
-	      		                }, {
-	      		                    name: 'informationlog'
-	      		                    , hidden: false
-	      		                    , tooltip: 'Download log files'
-	      		                    , config: {}
-	      		                }, { 
-	      		                    name: 'crossnav'
-	      		                    , hidden: false
-	      		                    , tooltip: 'Cross on document'
-	      		                    , config: {
-	      		                        target: 'new' 
-	      		                       , document: 
-                            				{
-                            					label: 'testReportParams'
-                            				, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
-                                    , dynamicParams: [{
-                                                        Brand: 'P1' 
-                                                      , scope: 'dataset'   
-                                                      },{
-                                                        Product: 'P2'
-                                                      , scope: 'dataset'
-                                                      },{
-                                                        month: 'P3'
-                                                      , scope: 'env'
-                                                     }]	 
-                            				}
-	      		                    }
-	      		                }, { 
-	      		                    name: 'crossnav'
-	      		                    , hidden: false
-	      		                    , tooltip: 'Cross on YYY document (popup)'
-	      		                    , config: {
-																				target: 'self' 
-																			, document: 
-																			{
-																				label: 'testReportParams'
-																			, staticParams: {P3:'paramValue_A' , P5: 'paramValue_B'} 
-																			, dynamicParams: [{
-																								Brand: 'P1'  
-																							, scope: 'dataset'    
-																							},{
-																								Product: 'P2'
-																							, scope: 'dataset'
-																							},{
-																								month: 'P4'
-																							, scope: 'env'
-																						 }]	 
-																			}
-																		}
-	      		                },{
-	      		                    name: 'monitor'
-	      		                    , hidden: false
-	      		                    , tooltip: 'Active monitoring'
-	      		                    , config: {}
-	      		                },{
-	      		                    name: 'monitor_inactive'
-	      		                    , hidden: false
-	      		                    , tooltip: 'Disable monitoring'
-	      		                    , config: {}
-	      		                },{
-	      		                    name: 'views'
-	      		                    , hidden: false
-	      		                    , tooltip: 'View taken'
-	      		                    , config: {}
-	      		                },{
-	      		                    name: 'views_inactive'
-	      		                    , hidden: false
-	      		                    , tooltip: 'View taken'
-	      		                    , config: {}
-	      		                }
-	      		            ]  
+	            	  , inlineActions: [
+			      		                {
+			      		                    name: 'start'
+			      		                    , hidden: false
+			      		                    , tooltip: 'Start the process'
+			      		                    , config: {}
+			      		                }, {
+			      		                    name: 'stop'
+			      		                    , hidden: false
+			      		                    , tooltip: 'Stop the process'
+			      		                    , config: {
+			      		                        params: {}
+			      		                    }
+			      		                }, {
+			      		                    name: 'errors'
+			      		                    , hidden: false
+			      		                    , tooltip: 'View Error messages'
+			      		                    , config: {
+			      		                         staticParams: {
+						                                        param1: 'param1Value'
+						                                       ,param2: 'paramValue2' 
+		                                    				   }
+			      		                     ,   dynamicParams: [{
+																	brandname: 'Brand'  
+			                                                      , scope: 'dataset'   
+			                                                      },{
+																	productName: 'Product'
+			                                                      , scope: 'dataset'
+			                                                      },{
+			                                                        month: 'Month'	
+			                                                      , scope: 'env'
+		                                                      }]	      		                        
+			      		                    }
+			      		                }, {
+			      		                    name: 'errors_inactive'
+			      		                    , hidden: false
+			      		                    , tooltip: 'Enable Errors'
+			      		                    , config: {}
+			      		                }, {
+			      		                    name: 'warnings'
+			      		                    , hidden: false
+			      		                    , tooltip: 'View allarms'
+			      		                    , config: {}
+			      		                }, {
+			      		                    name: 'warnings_inactive'
+			      		                    , hidden: false
+			      		                    , tooltip: 'Enable allarms'
+			      		                    , config: {}
+			      		                }, {
+			      		                    name: 'informationlog'
+			      		                    , hidden: false
+			      		                    , tooltip: 'Download log files'
+			      		                    , config: {}
+			      		                }, { 
+			      		                    name: 'crossnav'
+			      		                    , hidden: false
+			      		                    , tooltip: 'Cross on document'
+			      		                    , config: {
+			      		                        target: 'new' 
+			      		                       , document: 
+		                            				{label: 'testReportParams'
+		                            				, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
+		                                    , dynamicParams: [{
+		                                                        Brand: 'P1' 
+		                                                      , scope: 'dataset'   
+		                                                      },{
+		                                                        Product: 'P2'
+		                                                      , scope: 'dataset'
+		                                                      },{
+		                                                        month: 'P3'
+		                                                      , scope: 'env'
+		                                                     }]	 
+		                            				}
+			      		                    }
+			      		                }, { 
+			      		                    name: 'crossnav'
+			      		                    , hidden: false
+			      		                    , tooltip: 'Cross on YYY document (popup)'
+			      		                    , config: {target: 'self' 
+														, document: 
+														{
+														  label: 'testReportParams'
+														, staticParams: {P3:'paramValue_A' , P5: 'paramValue_B'} 
+														, dynamicParams: [{
+																			  Brand: 'P1'  
+																			, scope: 'dataset'    
+																			},{
+																			  Product: 'P2'
+																			, scope: 'dataset'
+																			},{
+																		      month: 'P4'
+																			, scope: 'env'
+																		 }]	 
+														}
+													}
+			      		                },{
+			      		                    name: 'monitor'
+			      		                    , hidden: false
+			      		                    , tooltip: 'Active monitoring'
+			      		                    , config: {}
+			      		                },{
+			      		                    name: 'monitor_inactive'
+			      		                    , hidden: false
+			      		                    , tooltip: 'Disable monitoring'
+			      		                    , config: {}
+			      		                },{
+			      		                    name: 'views'
+			      		                    , hidden: false
+			      		                    , tooltip: 'View taken'
+			      		                    , config: {}
+			      		                },{
+			      		                    name: 'views_inactive'
+			      		                    , hidden: false
+			      		                    , tooltip: 'View taken'
+			      		                    , config: {}
+			      		                }
+			      		            ]  
 												
-						
+	              }//filterBar	
 	    	} //table
-			}//filterBar
-			
 		}
 
 		//--------------------------------------------------------------------------------
@@ -573,13 +571,12 @@ Sbi.template = {
 				}
 				]
 			}
-		
-	        ,filterBar: {
-	            type: 'automatic'  
-	            , defaults: {
-	                operator: 'EQUALS_TO'
-                , operand: 'DISTINCT' 
-	            }     
+            , table: {
+	            dataset: 'testConsole'		
+              , filterBar: {type: 'automatic'  
+				          , defaults: {operator: 'EQUALS_TO'
+				               		 , operand: 'DISTINCT' 
+				            		  }     
 								
 	            , filters: [
 	              {
@@ -636,145 +633,139 @@ Sbi.template = {
 	                        	staticParams: {param1: 'paramValue'}
 	                       }
 	                     }
-	            ]
-
-	            , table: {
-		            dataset: 'testConsole'								
-					, inlineCharts: [
-                  	{ 	
-                      	type: 'bar'
+	            ]		
+	            				
+				, inlineCharts: [
+                 	{ 	type: 'bar'
                         , column: 'chart_store_cost'
-                    	, color: 'green'
-                    	, maxValue: 200 
-                    	, tooltip: 'volume vendite'
+	                   	, color: 'green'
+	                   	, maxValue: 200 
+	                   	, tooltip: 'volume vendite'
 					}, { type: 'point'
-                    	//, column: 'Bullet'
-                     	, column: 'chart_unit_sales'
-                     	, color: 'red' //red | grey | ...											
-                     	, threshold: '25'
-                     	, tooltip: 'superata la soglia di 25 errori'
+                    	, column: 'chart_unit_sales'
+                    	, color: 'red' //red | grey | ...											
+                    	, threshold: '25'
+                    	, tooltip: 'superata la soglia di 25 errori'
 					}
-					]
+				]
 
-	            	, inlineActions: [
-                    {   
-                        name: 'start'
-                        , hidden: false
-                        , tooltip: 'Start the process'
-                        , config: {}
-	      		     },{ name: 'stop'
-                              , hidden: false
-                              , tooltip: 'Stop the process'
-                              , config: {}
-	      		                },{ name: 'errors'
-                              , hidden: false
-                              , tooltip: 'View Error messages'
-                              , config: {
-                                   staticParams: {param1: 'param1Value'
-                                                , param2: 'paramValue2' 
-                                                 }
-                               ,   dynamicParams: [{  
-                                                     brandname: 'Brand' 
-                                                   , scope: 'dataset'    
-                                                   },{
-                                                      productName: 'Product'
-                                                    , scope: 'dataset'
-                                                    },{
-                                                      month: 'Month'		
-                                                    , scope: 'env'
-                                                    }]	      		                        
-                              }
-	      		                }, {
-	      		                    name: 'errors_inactive'
-	      		                    , hidden: false
-	      		                    , tooltip: 'Enable Errors'
-	      		                    , config: {}
-	      		                }, {
-	      		                    name: 'warnings'
-	      		                    , hidden: false
-	      		                    , tooltip: 'View allarms'
-	      		                    , config: {}
-	      		                }, {
-	      		                    name: 'warnings_inactive'
-	      		                    , hidden: false
-	      		                    , tooltip: 'Enable allarms'
-	      		                    , config: {}
-	      		                }, {
-	      		                    name: 'informationlog'
-	      		                    , hidden: false
-	      		                    , tooltip: 'Download log files'
-	      		                    , config: {}
-	      		                }, { 
-	      		                    name: 'crossnav'
-	      		                    , hidden: false
-	      		                    , tooltip: 'Cross on document'
-	      		                    , config: {
-	      		                        target: 'new' 
-	      		                       , document: 
-                            				{
-                            					label: 'testReportParams'
-                            				, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
-                                    , dynamicParams: [{
-                                                        Brand: 'P1' 
-                                                      , scope: 'dataset'   
-                                                      },{
-                                                        Product: 'P2'
-                                                      , scope: 'dataset'
-                                                      },{
-                                                        month: 'P3'
-                                                      , scope: 'env'
-                                                     }]	 
-                            				}
-	      		                    }
-	      		                }, { 
-	      		                    name: 'crossnav'
-	      		                    , hidden: false
-	      		                    , tooltip: 'Cross on YYY document (popup)'
-	      		                    , config: {
-																				target: 'self' 
-																			, document: 
-																			{
-																				label: 'testReportParams'
-																			, staticParams: {P3:'paramValue_A' , P5: 'paramValue_B'} 
-																			, dynamicParams: [{
-																								Brand: 'P1'  
-																							, scope: 'dataset'    
-																							},{
-																								Product: 'P2'
-																							, scope: 'dataset'
-																							},{
-																								month: 'P4'
-																							, scope: 'env'
-																						 }]	 
-																			}
-																		}
-	      		                },{
-	      		                    name: 'monitor'
-	      		                    , hidden: false
-	      		                    , tooltip: 'Active monitoring'
-	      		                    , config: {}
-	      		                },{
-	      		                    name: 'monitor_inactive'
-	      		                    , hidden: false
-	      		                    , tooltip: 'Disable monitoring'
-	      		                    , config: {}
-	      		                },{
-	      		                    name: 'views'
-	      		                    , hidden: false
-	      		                    , tooltip: 'View taken'
-	      		                    , config: {}
-	      		                },{
-	      		                    name: 'views_inactive'
-	      		                    , hidden: false
-	      		                    , tooltip: 'View taken'
-	      		                    , config: {}
-	      		                }
-	      		            ]  
-	    	} //table
-			}//filterBar
-			
-		}
-    
+            	, inlineActions: [
+                     {   
+                       name: 'start'
+                       , hidden: false
+                       , tooltip: 'Start the process'
+                       , config: {}
+      		    	 },{ name: 'stop'
+                       , hidden: false
+                       , tooltip: 'Stop the process'
+                       , config: {}
+		                },{ name: 'errors'
+                       , hidden: false
+                       , tooltip: 'View Error messages'
+                       , config: {
+                            staticParams: {param1: 'param1Value'
+                                         , param2: 'paramValue2' 
+                                          }
+                        ,   dynamicParams: [{  
+                                              brandname: 'Brand' 
+                                            , scope: 'dataset'    
+                                            },{
+                                               productName: 'Product'
+                                             , scope: 'dataset'
+                                             },{
+                                               month: 'Month'		
+                                             , scope: 'env'
+                                             }]	      		                        
+                       }
+		                }, {
+		                    name: 'errors_inactive'
+		                    , hidden: false
+		                    , tooltip: 'Enable Errors'
+		                    , config: {}
+		                }, {
+		                    name: 'warnings'
+		                    , hidden: false
+		                    , tooltip: 'View allarms'
+		                    , config: {}
+		                }, {
+		                    name: 'warnings_inactive'
+		                    , hidden: false
+		                    , tooltip: 'Enable allarms'
+		                    , config: {}
+		                }, {
+		                    name: 'informationlog'
+		                    , hidden: false
+		                    , tooltip: 'Download log files'
+		                    , config: {}
+		                }, { 
+		                    name: 'crossnav'
+		                    , hidden: false
+		                    , tooltip: 'Cross on document'
+		                    , config: {
+		                        target: 'new' 
+		                       , document: 
+                     			{
+                     				  label: 'testReportParams'
+                     				, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
+                             		, dynamicParams: [{
+	                                                 Brand: 'P1' 
+	                                               , scope: 'dataset'   
+	                                               },{
+	                                                 Product: 'P2'
+	                                               , scope: 'dataset'
+	                                               },{
+	                                                 month: 'P3'
+	                                               , scope: 'env'
+                                           			}]	 
+                     			}
+		                    }
+		                }, { 
+		                    name: 'crossnav'
+		                    , hidden: false
+		                    , tooltip: 'Cross on YYY document (popup)'
+		                    , config: {
+										target: 'self' 
+										, document: 
+										{
+										  label: 'testReportParams'
+										, staticParams: {P3:'paramValue_A' , P5: 'paramValue_B'} 
+										, dynamicParams: [{
+															Brand: 'P1'  
+														  , scope: 'dataset'    
+															},{
+															  Product: 'P2'
+															, scope: 'dataset'
+															},{
+															  month: 'P4'
+															, scope: 'env'
+														 }]	 
+										}
+									}
+		                },{
+		                    name: 'monitor'
+		                    , hidden: false
+		                    , tooltip: 'Active monitoring'
+		                    , config: {}
+		                },{
+		                    name: 'monitor_inactive'
+		                    , hidden: false
+		                    , tooltip: 'Disable monitoring'
+		                    , config: {}
+		                },{
+		                    name: 'views'
+		                    , hidden: false
+		                    , tooltip: 'View taken'
+		                    , config: {}
+		                },{
+		                    name: 'views_inactive'
+		                    , hidden: false
+		                    , tooltip: 'View taken'
+		                    , config: {}
+		                }
+		            ]  
+              }//filterBar
+    		} //table
+		   }
 		] //pages
 	}	//detailPanel
 } //template

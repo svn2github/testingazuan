@@ -94,7 +94,7 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	//adds action buttons
 	, addActionButtons: function(){
   	    var b;
-  		  var conf = {}; 
+  	    var conf = {}; 
         conf.executionContext = this.filterBar.executionContext;     
     		this.addFill();
     		if (this.filterBar.actions){
@@ -108,15 +108,16 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
   
   //reset the toolbar (delete every elements)
   , cleanFilterToolbar: function(){
-
       if (this.cbStores !== null ){
          delete this.cbStores; 
+         /*
           this.items.each( function(item) {
               this.items.remove(item);
                   item.destroy();           
-              }, this);   
+              }, this);
+          */    
       }
-       
+  
     }
    
    
@@ -136,7 +137,6 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
    
    //defines fields depending from operator type
   , createFilterField: function(operator, header, dataIndex){
-  
      if (operator === 'EQUALS_TO'){
       
 	     this.cbStores = this.cbStores || []; 
@@ -147,20 +147,22 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	     this.cbStores[dataIndex] = s;
 	  
 	     this.store.on('load', this.reloadComboStore.createDelegate(this, [dataIndex]), this);
-	      
-	     var cb = new Ext.form.ComboBox({
-	              	        store: s,
-	              	        width: 130,
-	              	        displayField:'name',
-	              	        valueField:'value',
-	              	        typeAhead: true,
-	              	        triggerAction: 'all',
-	              	        emptyText:'...',
-	              	        selectOnFocus:true,
-	              	        mode: 'local'
-	              	    });	 
-	      this.addText("    " + header + "  ");
-	      this.addField(cb);	 
+	     //store.ready is true only after the first load, so in next reloads the toolbar's items aren't re-designed!
+	     if (this.store.ready !== true){
+		     var cb = new Ext.form.ComboBox({
+		              	        store: s,
+		              	        width: 130,
+		              	        displayField:'name',
+		              	        valueField:'value',
+		              	        typeAhead: true,
+		              	        triggerAction: 'all',
+		              	        emptyText:'...',
+		              	        selectOnFocus:true,
+		              	        mode: 'local'
+		              	    });	 
+		      this.addText("    " + header + "  ");
+		      this.addField(cb);	 
+	     }
      }
   
   } 

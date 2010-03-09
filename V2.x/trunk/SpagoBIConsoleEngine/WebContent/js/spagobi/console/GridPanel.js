@@ -66,16 +66,19 @@ Sbi.console.GridPanel = function(config) {
 		
 		var c = Ext.apply(defaultSettings, config || {});
 		
-		c.storeId = c.table.dataset;
-		delete c.table.dataset;
-		
+		c.storeId = c.dataset;
+		delete c.dataset;	
+		var tableConfig = c.table || {};
+		var filterConfig =  c.filterBar || {};
+		filterConfig.executionContext = c.executionContext;
+		//delete c.filterBar;
 		Ext.apply(this, c);
 		
 		this.initServices();
 		this.initStore();
 		this.initColumnModel();
 		this.initSelectionModel();	
-		this.initFilterBar(c || {});
+		this.initFilterBar(filterConfig);
 
 		var c = Ext.apply(c, {
 			store: this.store
@@ -116,7 +119,6 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     //  -- public methods ---------------------------------------------------------
     
     , execInlineAction: function(e, t, action, paramConf){
-        alert(action);
         var index = this.getView().findRowIndex(t);
 
   		  if (action === 'crossnav'){
@@ -237,7 +239,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	
 	, onMetaChange: function( store, meta ) {
 		//if(store.storeId === 'testConsole') alert('onMetaChange IN');
-		
+
 		var tmpMeta =  Ext.apply({}, meta); // meta;
 		var fields = tmpMeta.fields;
 		tmpMeta.fields = new Array(fields.length);
@@ -264,15 +266,15 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			}
 	    
 			//adds inline charts if it's necessary
-			if (this.table.inlineCharts){  	     
-				for(var j=0, len= this.table.inlineCharts.length; j < len; j++){
-					if (this.table.inlineCharts[j].column === tmpMeta.fields[i].header){
-						if(this.table.inlineCharts[j].type && this.table.inlineCharts[j].type === 'bar' ) {
-							tmpMeta.fields[i].renderer  =  Sbi.console.commons.Format.inlineBarRenderer(this.table.inlineCharts[j]);
+			if (this.filterBar.inlineCharts){  	     
+				for(var j=0, len= this.filterBar.inlineCharts.length; j < len; j++){
+					if (this.filterBar.inlineCharts[j].column === tmpMeta.fields[i].header){
+						if(this.filterBar.inlineCharts[j].type && this.filterBar.inlineCharts[j].type === 'bar' ) {
+							tmpMeta.fields[i].renderer  =  Sbi.console.commons.Format.inlineBarRenderer(this.filterBar.inlineCharts[j]);
 						}
   	            
-						if(this.table.inlineCharts[j].type && this.table.inlineCharts[j].type === 'point') {
-							tmpMeta.fields[i].renderer  =  Sbi.console.commons.Format.inlinePointRenderer(this.table.inlineCharts[j]);
+						if(this.filterBar.inlineCharts[j].type && this.filterBar.inlineCharts[j].type === 'point') {
+							tmpMeta.fields[i].renderer  =  Sbi.console.commons.Format.inlinePointRenderer(this.filterBar.inlineCharts[j]);
 						}
 					}            
 				} //for on j
@@ -280,30 +282,30 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		} // for on i
 
 	    //adds inline action buttons
-		if (this.table.inlineActions){
-			for(var i=0, l= this.table.inlineActions.length; i < l; i++){ 
-				var img = this.images[this.table.inlineActions[i].name];
+		if (this.filterBar.inlineActions){
+			for(var i=0, l= this.filterBar.inlineActions.length; i < l; i++){ 
+				var img = this.images[this.filterBar.inlineActions[i].name];
   	
 				//defines image's path
-				if (this.table.inlineActions[i].name === 'crossnav'){
-					if (this.table.inlineActions[i].config.target === 'new')
+				if (this.filterBar.inlineActions[i].name === 'crossnav'){
+					if (this.filterBar.inlineActions[i].config.target === 'new')
 						img = this.images['cross_detail'];
 					else
 						img = this.images['popup_detail'];
 					}
   	
 					var bc = new Ext.grid.ButtonColumn({
-						dataIndex: this.table.inlineActions[i].name + "-"+ i
-						, tooltip: (this.table.inlineActions[i].tooltip != undefined)? this.table.inlineActions[i].tooltip:this.table.inlineActions[i].name
+						dataIndex: this.filterBar.inlineActions[i].name + "-"+ i
+						, tooltip: (this.filterBar.inlineActions[i].tooltip != undefined)? this.filterBar.inlineActions[i].tooltip:this.filterBar.inlineActions[i].name
 						, imgSrc: img
 						, clickHandler:  function(e, t){   
 							this.grid.execInlineAction(e, t, this.action, this.parameters)     
 						}
 						, hideable: true
-						, hidden: this.table.inlineActions[i].hidden
+						, hidden: this.filterBar.inlineActions[i].hidden
 						, width: 25
-						, action: this.table.inlineActions[i].name
-						, parameters: this.table.inlineActions[i].config
+						, action: this.filterBar.inlineActions[i].name
+						, parameters: this.filterBar.inlineActions[i].config
 					});
 					bc.init(this);
 					tmpMeta.fields.push(bc);	

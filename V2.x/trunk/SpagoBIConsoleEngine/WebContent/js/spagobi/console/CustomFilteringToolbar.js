@@ -47,7 +47,7 @@
 Ext.ns("Sbi.console");
 
 Sbi.console.CustomFilteringToolbar = function(config) {
-  
+
 		var defaultSettings = {
 		    // default goes here
 		};
@@ -57,8 +57,6 @@ Sbi.console.CustomFilteringToolbar = function(config) {
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
-	//	var filterBarConfig = c.filterBar || {};
-	//	delete c.filterBar;
 		Ext.apply(this, c);
 		
 		/*
@@ -70,53 +68,34 @@ Sbi.console.CustomFilteringToolbar = function(config) {
 		*/
 	
 		c = Ext.apply(c, {items:this.customFilterBar});
-
 		// constructor
 		Sbi.console.CustomFilteringToolbar.superclass.constructor.call(this, c);
-		
 		//adds events		
 		this.store.on('metachange', this.onMetaChange, this);
-		
 };
 
 Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {  
     services: null
     , customFilterBar: null
     , txtField: null
-   // , headers: null
    
 
     // -- public methods ---------------------------------------------------------------
     , onRender : function(ct, position) {
-  		
   		this.txtField = new Ext.form.TextField({fieldLabel: 'Loading...'});  		
 		Sbi.console.CustomFilteringToolbar.superclass.onRender.call(this, ct, position);
-
     }
    
     
     
     // -- private methods ---------------------------------------------------------------
     , onMetaChange: function( store, meta ) {
-
        this.cleanFilterToolbar();
-      
-       //loads headers map with dataIndex info
-       //this.headers = [];
-       
-       for(var i = 0; i < meta.fields.length; i++) {
-          var localHeader = meta.fields[i].header;
-          var localDataIndex = meta.fields[i].dataIndex;
-      /*    if (localHeader != ''){
-            this.headers[localHeader] = localDataIndex;
-          }*/
-       } 
-      
+
        	if (this.filterBar.type === 'automatic' ){
        	  // automatic: all dataset fields are added as filter
       		for(var i = 0; i < meta.fields.length; i++) { 		  
       		  if (meta.fields[i].header !== undefined && meta.fields[i].header !== ''){   
-          	   //this.createFilterField(this.filterBar.defaults.operator,  meta.fields[i].header, this.headers[meta.fields[i].header]);
           	   this.createFilterField(this.filterBar.defaults.operator,  meta.fields[i].header, store.getFieldNameByAlias(meta.fields[i].header));
                 
       		  }
@@ -125,18 +104,19 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
       	else{
       	 //custom: only configurated fields are added as filter      	 
         	for(var i = 0; i < meta.fields.length; i++) { 		           
-        		 if (meta.fields[i].header !== undefined &&  meta.fields[i].header !== '' && this.isConfiguratedFilter(meta.fields[i].header)){         		   
-                  //this.createFilterField(this.getFilterOperator(meta.fields[i].header), this.getColumnText(meta.fields[i].header),  this.headers[meta.fields[i].header]);  	
+        		 if (meta.fields[i].header !== undefined &&  meta.fields[i].header !== '' && this.isConfiguratedFilter(meta.fields[i].header)){         		     	
                   this.createFilterField(this.getFilterOperator(meta.fields[i].header), this.getColumnText(meta.fields[i].header),  store.getFieldNameByAlias(meta.fields[i].header));  	                  
             	}        		  
         	} 
       	}
 
-    		//adds actions
-    		this.addActionButtons();    		
-    		this.doLayout();
-      	
-    	}
+      //store.ready is true only after the first load, so in next reloads the toolbar's action items aren't re-designed!
+       	if (this.store.ready !== true){
+       		//adds actions
+			this.addActionButtons();    					
+		}
+       	this.doLayout();
+    }
 	
     //returns true if the input field is a filter defined into template, false otherwise.
     , isConfiguratedFilter: function (field){   

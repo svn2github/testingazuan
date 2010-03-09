@@ -20,10 +20,12 @@
  **/
 package it.eng.spagobi.engines.qbe.namingstrategy;
 
-import java.util.List;
-
 import it.eng.qbe.datasource.hibernate.DBConnection;
 import it.eng.qbe.naming.NamingStrategy;
+
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -41,6 +43,9 @@ public class QbeNamingStrategy implements NamingStrategy {
 	
 	/** The Constant STRING_SEPARETOR. */
 	public static final String STRING_SEPARETOR = "_";
+	
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(QbeNamingStrategy.class);
 	
 	/* (non-Javadoc)
 	 * @see it.eng.qbe.naming.NamingStrategy#getDatamartName(java.util.List)
@@ -82,7 +87,12 @@ public class QbeNamingStrategy implements NamingStrategy {
 	 */
 	private String getDatasourceUnqualifiedName(List datamartNames, DBConnection connection) {
 		String datasourceName = getDatamartName(datamartNames);
-		datasourceName += "@" + connection.getName();
+		if (connection.isJndiConncetion()) {
+			datasourceName += "@" + connection.getJndiName();
+		} else {
+			datasourceName += "@" + connection.getUsername() + "@" + connection.getUrl();
+		}
+		logger.info("Using " + datasourceName + " as datasource unqualified name");
 		return datasourceName;
 	}
 	

@@ -82,12 +82,14 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	services: null
 	, store: null
 	, cbStores: null
+	, filters: null
+
 	
 	// -- public methods -----------------------------------------------------------------
     
     
 	// -- private methods ---------------------------------------------------------------
-  
+
 	, onRender : function(ct, position) { 
 		  Sbi.console.FilteringToolbar.superclass.onRender.call(this, ct, position);
 	}
@@ -96,8 +98,8 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
   	    var b;
   	    var conf = {}; 
         conf.executionContext = this.filterBar.executionContext;     
-    		this.addFill();
-    		if (this.filterBar.actions){
+		this.addFill();
+		if (this.filterBar.actions){
       		for(var i=0; i < this.filterBar.actions.length; i++){
       		   conf.actionConf = this.filterBar.actions[i];
     			   b = new Sbi.console.ActionButton(conf);
@@ -135,6 +137,16 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
       this.cbStores[dataIdx].loadData(data);
    }
    
+   , filterGrid: function(combo, record, index) {
+	  // this.store.clearFilter(true);
+	   if (this.filters === null){
+		   this.filters = [];
+	   }
+	   this.filters[combo.index] = record.get(combo.valueField);
+	   this.store.filter(combo.index, record.get(combo.valueField));
+	  
+   }
+   
    //defines fields depending from operator type
   , createFilterField: function(operator, header, dataIndex){
      if (operator === 'EQUALS_TO'){
@@ -158,13 +170,22 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 		              	        triggerAction: 'all',
 		              	        emptyText:'...',
 		              	        selectOnFocus:true,
-		              	        mode: 'local'
-		              	    });	 
+		              	        mode: 'local',
+		              	        index: dataIndex,
+		              	       	listeners: {
+						        	'select': {
+							    		fn: this.filterGrid,
+						    			scope: this
+						     			}				     					
+						         }
+		              	    });	
+		     
 		      this.addText("    " + header + "  ");
 		      this.addField(cb);	 
 	     }
      }
   
-  } 
+  }
+
   
 });

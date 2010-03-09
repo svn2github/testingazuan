@@ -57,6 +57,7 @@ Sbi.console.GridPanel = function(config) {
 	           	autoFill: true,
 	           	enableRowBody:true,
 	           	showPreview:true
+	      //    ,  stateful: true
 	        }
 		};
 		
@@ -209,7 +210,11 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     
 	, initStore: function() {
 		this.store = this.storeManager.getStore(this.storeId);
-		
+		//instructions for ordering:
+		this.store.remoteSort = false;  //local type
+		/*this.store.storeInfo = {field: 'column_1',
+			    				direction: 'ASC' };// or 'DESC' (case sensitive for local sorting)};
+		*/
 		this.store.on('loadexception', function(store, options, response, e){
 	    	Sbi.exception.ExceptionHandler.handleFailure(response, options);
 	    }, this);
@@ -227,6 +232,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			    width: 100
 			}
 		]);
+		this.columnModel.defaultSortable = true;  
 		
 	}
 	
@@ -264,6 +270,8 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			if(tmpMeta.fields[i].subtype && tmpMeta.fields[i].subtype === 'html') {
 				tmpMeta.fields[i].renderer  =  Sbi.locale.formatters['html'];
 			}
+			
+			tmpMeta.fields[i].sortable = true;
 	    
 			//adds inline charts if it's necessary
 			if (this.filterBar.inlineCharts){  	     

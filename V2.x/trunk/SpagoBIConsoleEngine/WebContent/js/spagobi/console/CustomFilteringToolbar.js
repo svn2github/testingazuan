@@ -116,6 +116,14 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
 			this.addActionButtons();    					
 		}
        	this.doLayout();
+       	
+       	if (this.filters !== null) {
+	       	for(var j = 0; j < this.filters.length; j++) { 		           
+		   		if (this.filters[j] !== undefined ){         		     	
+		            alert(this.filters[j]);  	                  
+		       	}        		  
+	       	} 
+       	}
     }
 	
     //returns true if the input field is a filter defined into template, false otherwise.

@@ -164,9 +164,7 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		chartConfig = chartConfig || {};
 		
 		var chartType = chartConfig.type;
-		if(chartConfig.type) {
-			delete chartConfig.type;
-		}
+			
 	
 		if(chartType === this.YUI_CHART_LINE) {
 			chart = this.createLineChart(chartConfig);
@@ -174,12 +172,12 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 			chart = this.createBarChart(chartConfig);
 		} else if(chartType === this.YUI_CHART_PIE){
 			chart = this.createPieChart(chartConfig);
-		} else if(chartType === this.SBI_CHART_SPEEDOMETER){
-			chart = this.createRotateChart(chartConfig);
-		} else if(chartType === this.SBI_CHART_LIVELINES){
-			chart = this.createLivelineChart(chartConfig);
-		} else if(chartType === this.SBI_CHART_MULTILEDS){
-			chart = this.createMultiledsChart(chartConfig);
+		} else if(chartType === this.SBI_CHART_SPEEDOMETER 
+				|| chartType === this.SBI_CHART_LIVELINES
+				|| chartType === this.SBI_CHART_MULTILEDS){
+			
+			chart = this.createSpagoBIChart(chartConfig);
+			
 		} else if(chartType === this.OFC_CHART_BAR){
 			chart = this.createOFBarChart(chartConfig);
 		} else if(chartType === this.FCF_CHART_BAR){
@@ -191,8 +189,22 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		return chart;
 	}
 	
-	, createLineChart: function(chartConfig) {
+	, createSpagoBIChart: function(chartConfig) {
 		
+		chartConfig.store = this.store;
+		chartConfig.xtype = chartConfig.type;
+		delete chartConfig.type;
+		
+		return new Ext.Panel({
+			layout:'fit'
+		    , height: this.height	
+		    , items: [chartConfig]
+		});		
+	}
+	
+	, createLineChart: function(chartConfig) {
+		// type attribute is reseved 
+		delete chartConfig.type;
 		var c = Ext.apply({}, chartConfig, {
 			xtype: 'linechart'
 			, xField: 'category'
@@ -208,7 +220,6 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		
 		c.xField = this.getFieldNameByAlias(c.xField);
 		c.yField = this.getFieldNameByAlias(c.yField);
-				
 		return new Ext.Panel({
 	        layout:'fit'
 	        , height: this.height
@@ -218,7 +229,8 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	
 	
 	, createBarChart: function(chartConfig) {
-		
+		// type attribute is reseved 
+		delete chartConfig.type;
 		var c = Ext.apply({}, chartConfig, {
 			xtype: 'columnchart'
 			, xField: 'category'
@@ -245,6 +257,9 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	}
 	
 	, createPieChart: function(chartConfig) {
+		// type attribute is reseved 
+		delete chartConfig.type;
+		
 		var c = Ext.apply({}, chartConfig, {
 			xtype: 'piechart'
 			, dataField: 'value'
@@ -275,48 +290,6 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 			, items: c
 		});
 	}
-	
-	, createRotateChart: function(chartConfig) {
-		
-		return new Ext.Panel({
-			layout:'fit'
-		    , height: this.height	
-		    , items: [new Sbi.chart.SpagoBIChart({
-		    	chartType: 'speedometer'
-		    	, store: this.store
-		    })]
-		});		
-	}
-	
-	, createLivelineChart: function(chartConfig) {
-		
-		return new Ext.Panel({
-			layout:'fit'
-		    , height: this.height	
-		    , items: [
-		        new Sbi.chart.SpagoBIChart({
-		        	chartType: 'livelines'
-		        	, store: this.store
-		        })
-		    ]
-		});		
-	}
-	
-	, createMultiledsChart: function(chartConfig) {
-		
-		return new Ext.Panel({
-			layout:'fit'
-		    , height: this.height	
-		    , items: [
-		        new Sbi.chart.SpagoBIChart({
-		        	chartType: 'multileds'
-		        	, store: this.store
-		        })
-		    ]
-		});		
-	}
-	
-	
 	
 	, createOFBarChart: function(chartConfig) {
 		

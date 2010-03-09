@@ -64,20 +64,36 @@ Sbi.template = {
         } ,  {
         	dataset: 'testConsLiveLine'
             , widgetConfig: {
-           		//type: 'chart.sbi.speedometer'
-           		//type: 'chart.of.bar'
             	type: 'chart.sbi.multileds'
+            	, title:'Multileds'
+            	, fields: [
+            		{header: 'Effort Idx',name:'EffortIndex', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 10, rangeMinValue: 0}, 
+            		{header: 'Compet.',name:'Competitiveness', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}, 
+            		{header: 'Cost Opt.',name:'CostOptimization', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0},
+            		{header: 'Health',name:'Health', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}
+            	]
            	}
         } ,  {
         	dataset: 'testConsLiveLine'
             , widgetConfig: {
             	type: 'chart.sbi.livelines'
+            	, title:'Liveline'
+                , rangeMinValue: 0
+        		, rangeMaxValue: 120 
+        		, stepY: 40
+        		, domainValueNumber: 18
             }
         } ,  {
         	dataset: 'testConsLiveLine'
             , widgetConfig: {
-               	//type: 'chart.fcf.bar'
                	type: 'chart.sbi.speedometer'
+               	, paramWidth: 100
+            	, paramHeight: 100
+            	, minValue: 0
+            	, maxValue: 100
+            	, lowValue: 33
+            	, highValue: 66
+            	, field: 'EffortIndex'
             }
         }
     	]

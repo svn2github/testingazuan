@@ -12,7 +12,7 @@ public class CmdExecWork extends SpagoBIWork {
 
 	String command;
 	String commandEnvironment;
-	String[] parameters;
+	String[] cmdParameters;
 
 	public boolean isDaemon() {
 		// TODO Auto-generated method stub
@@ -33,7 +33,7 @@ public class CmdExecWork extends SpagoBIWork {
 		try {
 			Runtime rt = Runtime.getRuntime();
 			String[] pars=null;
-			if(parameters!=null)pars=parameters;
+			if(cmdParameters!=null)pars=cmdParameters;
 			Process proc  = rt.exec(cmd, pars, envFile);		
 			proc.waitFor();
 			exitValue=proc.exitValue();
@@ -64,12 +64,12 @@ public class CmdExecWork extends SpagoBIWork {
 		this.commandEnvironment = commandEnvironment;
 	}
 
-	public String[] getParameters() {
-		return parameters;
+	public String[] getCmdParameters() {
+		return cmdParameters;
 	}
 
-	public void setParameters(String[] parameters) {
-		this.parameters = parameters;
+	public void setCmdParameters(String[] parameters) {
+		this.cmdParameters = parameters;
 	}
 
 

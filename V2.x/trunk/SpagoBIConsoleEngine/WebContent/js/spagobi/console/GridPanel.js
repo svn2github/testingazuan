@@ -72,7 +72,6 @@ Sbi.console.GridPanel = function(config) {
 		var tableConfig = c.table || {};
 		var filterConfig =  c.filterBar || {};
 		filterConfig.executionContext = c.executionContext;
-		//delete c.filterBar;
 		Ext.apply(this, c);
 		
 		this.initServices();
@@ -90,6 +89,7 @@ Sbi.console.GridPanel = function(config) {
 		
 		// constructor
 		Sbi.console.GridPanel.superclass.constructor.call(this, c);
+		
 };
 
 Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
@@ -99,7 +99,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	, columnModel: null
 	, selectionModel: null
 	, filterBar: null
-	, headers: null
+	
 	
 	, GRID_ACTIONS: {
 		start: {serviceName: 'START_ACTION', images: '../img/ico_start.gif'}
@@ -119,72 +119,94 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
    
     //  -- public methods ---------------------------------------------------------
     
-    , execInlineAction: function(e, t, action, paramConf){
-        var index = this.getView().findRowIndex(t);
-
-  		  if (action === 'crossnav'){
-            //cross to new document
-  		      this.execCrossNav(paramConf, index); 		    
-  		  } else {
-	  		    //executes back-end action
-	  		    var dynParams =[];  
-	  		    var record = this.store.getAt(index);
-	            //adds dynamic parameters (from dataset or request)
-	            if(paramConf.dynamicParams) {    
-	               var msgErr = ""; 
-	          		 for (var i=0, l=paramConf.dynamicParams.length; i < l; i++){      		     
-	          		     var tmp = paramConf.dynamicParams[i];
-	            	 	 	 for(p in tmp) {
-	              	 	 	   if (p != 'scope'){
-	              	 	 		   var param = {};   
-			                       if (tmp['scope'] === 'dataset') {       	
-	                	 	 		   if(record.get(this.headers[p]) === undefined) {            	 	 		    
-	                	 	 		     msgErr += 'Parameter "' + p + '" undefined into dataset.<p>';
-				                       } else {
-				                	 	 		      param [tmp[p]] = record.get(this.headers[p]); 
-				                	 	 		      dynParams.push(param);
-				                       }
-		                          } else if (tmp['scope'] === 'env'){ 
-		                              if (this.executionContext[p] === undefined) {              	 	 	      
-		                  	 	 	        msgErr += 'Parameter "' + p + '" undefined into request. <p>';
-		                              } else {          	 	 		           	 	 		  
-		                    	 	 		    param [tmp[p]] = this.executionContext[p];
-		                    	 	 		    dynParams.push(param);
-		                              } 	 		 
-		                          }          	 	 		   
-	              		     }
-	            	 	 	} //for          			   
-	                  } 	
-	                  if  (msgErr != ""){
-	                	  Sbi.Msg.showError(msgErr, 'Service Error');
-	                  }		  
-	        	}
-	    		
-	            Ext.Ajax.request({
-	    			        url: this.services[action],  			       
-	    			        params: {'message': action, 'userId': Sbi.user.userId, 
-	          					 'statParams': Ext.util.JSON.encode(paramConf.staticParams), 'dynParams': Ext.util.JSON.encode(dynParams)} ,			       
-	    			        callback : function(options , success, response) {
-	    			  	  		if (success) {
-	    				      		if(response !== undefined && response.responseText !== undefined) {
-	    				      			var content = Ext.util.JSON.decode( response.responseText );
-	    				      			if (content !== undefined) {				      			  
-	    				      				alert(content.toSource());
-	    				      			}				      		
-	    				      		} else {
-	    				      			Sbi.Msg.showError('Server response is empty', 'Service Error');
-	    				      		}
-	    			  	  		} else { 
-	    			  	  		Sbi.Msg.showError('Cannot exec action: ' + this.name, 'Service Error');
-	    			  	  		}
-	    			        },
-	    			        scope: this,
-	    					failure: Sbi.exception.ExceptionHandler.handleFailure      
-	    				});
-	      }
-  			
-	}
     
+	, resolveParameters: function(parameters, record, context) {
+		var results = {};  
+		
+		results = Ext.apply(results, parameters.staticParams);
+		
+		var dynamicParams = parameters.dynamicParams;
+	    if(dynamicParams) {        	
+	    	var msgErr = ""; 
+	      	for (var i = 0, l = dynamicParams.length; i < l; i++) {      		     
+	      		var param = dynamicParams[i]; 
+	        	for(p in param) { 
+	        		if(p === 'scope') continue;
+		            if (param.scope === 'dataset') {       	
+	                	if(record.get(this.store.getFieldNameByAlias(p)) === undefined) {            	 	 		    
+	                		msgErr += 'Parameter "' + p + '" undefined into dataset.<p>';
+				        } else {
+				        	results[param[p]] = record.get(this.store.getFieldNameByAlias(p)); 
+				        }
+		            } else if (param.scope === 'env'){ 
+		            	if (context[p] === undefined) {              	 	 	      
+		            		msgErr += 'Parameter "' + p + '" undefined into request. <p>';
+	                    } else {          	 	 		           	 	 		  
+	                    	results[param[p]] = context[p];
+	                    } 	 		 
+	                }          	 	 		   
+	          		    
+	        	 }          			   
+	      	} 
+	      	
+	        if  (msgErr != ""){
+	        	Sbi.Msg.showError(msgErr, 'Service Error');
+	        }		  
+	    }
+	    
+	    return results;
+	}
+	
+	//, execCrossNav: function(docConfig, index){
+	, execCrossNav: function(actionName, record, index, options){
+		
+		
+		var msg = {
+			label: options.document.label
+	    	, windowName: this.name				
+	    	, target: (options.target === 'new')? 'self': 'popup'						
+	    };
+	    
+		var params =  this.resolveParameters(options.document, record, this.executionContext);
+		var separator = '';
+		msg.parameters = '';
+		for(p in params) {
+			msg.parameters += separator + p + '=' + params[p];
+			separator = '&';
+		}
+	
+		sendMessage(msg, 'crossnavigation');
+	}
+
+	
+	, execAction: function(actionName, r, index, options) {
+		
+		var params = this.resolveParameters(options, r, this.executionContext);
+		params = Ext.apply(params, {
+  			message: actionName, 
+        	userId: Sbi.user.userId 
+  		}); 
+  			 
+  		Ext.Ajax.request({
+	       	url: this.services[actionName] 			       
+	       	, params: params 			       
+	    	, success: function(response, options) {
+	    		if(response !== undefined && response.responseText !== undefined) {
+						var content = Ext.util.JSON.decode( response.responseText );
+						if (content !== undefined) {				      			  
+							alert(content.toSource());
+						}				      		
+    			} else {
+    				Sbi.Msg.showError('Server response is empty', 'Service Error');
+    			}
+	    	}
+	    	, failure: Sbi.exception.ExceptionHandler.onServiceRequestFailure
+	    	, scope: this     
+	    });
+
+    }
+
+
     //  -- private methods ---------------------------------------------------------
     
     
@@ -210,12 +232,8 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     
 	, initStore: function() {
 		this.store = this.storeManager.getStore(this.storeId);
-		this.store.remoteSort = false;  //local type
-
-		this.store.on('loadexception', function(store, options, response, e){
-	    	Sbi.exception.ExceptionHandler.handleFailure(response, options);
-	    }, this);
-		
+		this.store.remoteSort = false;  //local type		
+		this.store.on('exception', Sbi.exception.ExceptionHandler.onStoreLoadException, this);
 		this.store.on('metachange', this.onMetaChange, this);
 	}
 
@@ -253,12 +271,12 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			tmpMeta.fields[i] = Ext.apply({}, fields[i]);
 		}
 		
-		this.headers = [];
-
+		
 		for(var i = 0; i < tmpMeta.fields.length; i++) {
 
 			var localHeader = tmpMeta.fields[i].header;
-			this.headers[localHeader] = this.store.getFieldNameByAlias(localHeader);
+			
+			
 			if(tmpMeta.fields[i].type) {
 				var t = tmpMeta.fields[i].type;
 				tmpMeta.fields[i].renderer  =  Sbi.locale.formatters[t];			   
@@ -288,32 +306,31 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 
 	    //adds inline action buttons
 		if (this.filterBar.inlineActions){
-			for(var i=0, l= this.filterBar.inlineActions.length; i < l; i++){ 
-				var img = this.images[this.filterBar.inlineActions[i].name];
-  	
-				//defines image's path
-				if (this.filterBar.inlineActions[i].name === 'crossnav'){
-					if (this.filterBar.inlineActions[i].config.target === 'new')
-						img = this.images['cross_detail'];
-					else
-						img = this.images['popup_detail'];
+			for(var i = 0, l= this.filterBar.inlineActions.length; i < l; i++){ 
+							
+				var inlineActionColumnConfig = this.filterBar.inlineActions[i];
+				inlineActionColumnConfig.grid = this;
+				
+				if (inlineActionColumnConfig.name === 'crossnav'){
+					if (inlineActionColumnConfig.config.target === 'new') {
+						inlineActionColumnConfig.imgSrc = this.images['cross_detail'];
+					} else {
+						inlineActionColumnConfig.imgSrc = this.images['popup_detail'];
 					}
-  	
-					var bc = new Ext.grid.ButtonColumn({
-						dataIndex: this.filterBar.inlineActions[i].name + "-"+ i
-						, tooltip: (this.filterBar.inlineActions[i].tooltip != undefined)? this.filterBar.inlineActions[i].tooltip:this.filterBar.inlineActions[i].name
-						, imgSrc: img
-						, clickHandler:  function(e, t){   
-							this.grid.execInlineAction(e, t, this.action, this.parameters)     
-						}
-						, hideable: true
-						, hidden: this.filterBar.inlineActions[i].hidden
-						, width: 25
-						, action: this.filterBar.inlineActions[i].name
-						, parameters: this.filterBar.inlineActions[i].config
-					});
-					bc.init(this);
-					tmpMeta.fields.push(bc);	
+					inlineActionColumnConfig.handler = this.execCrossNav;
+				} else {
+					inlineActionColumnConfig.imgSrc = this.images[inlineActionColumnConfig.name];
+					inlineActionColumnConfig.handler = this.execAction;
+				}
+				inlineActionColumnConfig.scope = this;
+				
+				inlineActionColumnConfig = Ext.apply({
+					// no defaults
+				}, inlineActionColumnConfig);
+				
+				var bc = new Sbi.console.InlineActionColumn(inlineActionColumnConfig);
+				//bc.init(this);
+				tmpMeta.fields.push(bc);	
   	  		}	
 		}
 	    //adds numeration column    
@@ -344,56 +361,6 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
       }   
   }
 
-  , execCrossNav: function(docConfig, index){
-
-	var record = this.store.getAt(index);   
-    var msg = {
-    			label:docConfig.document.label
-    		  , windowName: this.name				
-    		  , target: (docConfig.target === 'new')?'self':'popup'						
-    		  };
-    			
-	var separator = '';
-	//adds static parameters for cross navigation
-	if(docConfig.document.staticParams) {
-		msg.parameters = '';		
-		for(p in docConfig.document.staticParams) {
-			msg.parameters += separator + p + '=' + docConfig.document.staticParams[p];
-			separator = '&';
-		}
-	}
-	  
-    //adds dynamic parameters (environment type) 
-	if(docConfig.document.dynamicParams) {
-	    var msgErr = ""; 
-	    for (var i=0, l=docConfig.document.dynamicParams.length; i < l; i++){     
-  		    var tmp = docConfig.document.dynamicParams[i];
-  		    for(p in tmp) {
-     	 	    if (p != 'scope'){
-     	 	    	if (tmp['scope'] === 'dataset') {       	        	 	 		    
-     	 	    	   if(record.get(this.headers[p]) === undefined) {
-            	 	 		     msgErr += 'Parameter "' + p + '" undefined into dataset.<p>';
-                       } else {
-                          msg.parameters += separator + tmp[p] + '=' +record.get(this.headers[p]);
-    				              separator = '&';            	 	 		  
-                       }
-                    } else  if (tmp['scope'] === 'env'){ 
-                       if (this.executionContext[p] === undefined) {              	 	 	      
-          	 	 	        msgErr += 'Parameter "' + p + '" undefined into request. <p>';
-                       } else {          	 	 		           	 	 		  
-        	 	 		    msg.parameters += separator + tmp[p] + '=' + this.executionContext[p];
-				            separator = '&';
-                       } 	 		 
-                    }          	 	 		   
-    	      }
-    	   }
-      	   if  (msgErr != ""){
-      		 Sbi.Msg.showError(msgErr, 'Service Error');
-           }	
-	    }	
-	}
-//		alert("msg.parameters: " + msg.parameters.toSource());
-	sendMessage(msg, 'crossnavigation');
-  }
+  
   
 });

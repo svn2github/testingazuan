@@ -76,6 +76,48 @@ author: Andrea Gioia (andrea.gioia@eng.it)
     spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
     spagobiSpagoController = request.getParameter(SpagoBIConstants.SBI_SPAGO_CONTROLLER);
     docId = request.getParameter("document");
+
+    
+    
+    
+	Map parsMap=request.getParameterMap();
+	String parametersString="";
+	for (Iterator iterator = parsMap.keySet().iterator(); iterator.hasNext();) {
+		String url= (String) iterator.next();
+		if(url.equals("ACTION_NAME")) continue;
+		Object val=parsMap.get(url);
+		// take only String or numbers
+		if(val!=null && val instanceof String[]){
+			String[] strs=(String[])val;
+			
+			if(strs.length==1){
+			parametersString+="&"+url+"="+strs[0];	
+			}
+			else{
+			parametersString+="&"+url+"=[";
+			for(int i=0; i< strs.length;i++){
+				String valS=strs[i];
+			if(i==0){
+				parametersString+=valS;
+			}
+			else{
+				parametersString+=","+valS;				
+			}
+			}
+			parametersString+="]";
+			}
+		}
+		else
+		if(val!=null && (val instanceof String || val instanceof Integer)) {
+			parametersString+="&"+url+"="+val.toString();
+		}
+	}
+	if(parametersString.indexOf('&')==0){
+		parametersString=parametersString.substring(1,parametersString.length());
+	}
+int i=0;
+
+
 %>
 
 
@@ -112,8 +154,9 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 			    Sbi.config.serviceRegistry = new Sbi.commons.ServiceRegistry({
 			    	baseUrl: url
 			    });
-	        	
-	        	generalPanel= new Sbi.commons.ExecutionPanel({document_id:<%=docId%>});
+	        	//alert('prima');
+	        	generalPanel= new Sbi.commons.ExecutionPanel({document_id:<%=docId%>, parameters:'<%=parametersString%>'});
+	        	//alert('dopo');
 	        	//generalPanel.monitorStatus();
 		        
 		        var viewport = new Ext.Viewport({

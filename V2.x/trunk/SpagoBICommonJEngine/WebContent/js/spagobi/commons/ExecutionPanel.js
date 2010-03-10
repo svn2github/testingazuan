@@ -53,6 +53,8 @@ Sbi.commons.ExecutionPanel = function(config) {
 
 	
 	this.document_id = config.document_id;
+
+	this.parameters=config.parameters;
 				
 	this.buttons = [];
     this.buttons.push({
@@ -70,9 +72,9 @@ Sbi.commons.ExecutionPanel = function(config) {
     this.infoStore ='undefined';
     
     this.infoStore = new Ext.data.SimpleStore({
-        fields : ['meta_name', 'meta_content' ],
+        fields : ['meta_id','meta_name', 'meta_content' ],
         data : [
-                ['Status', 'Data']
+                ['ProcessId', 'Status', 'Data']
         ]        
     });
     
@@ -80,7 +82,13 @@ Sbi.commons.ExecutionPanel = function(config) {
             store : this.infoStore,
             autoHeight : true,
 			mode: 'local',
-            columns : [ {
+            columns : 
+            [ {
+                header : 'ProcessId',
+                width : 150,
+                dataIndex : 'meta_id'
+            },
+            {
                 header : 'Status',
                 width : 150,
                 dataIndex : 'meta_name'
@@ -124,42 +132,56 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
     ,tabInfo: null
     ,infoStore:null
     ,status:null
+    ,pid:null
     // public methods
     ,monitorStatus: function(){
     
     }
     
     ,startProcess : function() {
+    
+    //alert(this.parameters);
+    var parJSON=Ext.urlDecode(this.parameters);
+    //alert(parJSON.toSource());
+    
+    	var params = {
+        'DOCUMENT_ID' : this.document_id
+    	};
+    	
+    	var applied=Ext.apply(parJSON,params);
+    //alert(applied.toSource());
+    
        Ext.Ajax.request({
 	        url: this.services['getStartService'],
-	        params: {'DOCUMENT_ID' : this.document_id },
+	        //params: {'DOCUMENT_ID' : this.document_id },
+	        params:  applied ,
 	        success : function(response, options) {
 	      		if(response !== undefined && response.responseText !== undefined) {
 	      			var content = Ext.util.JSON.decode( response.responseText );
 	      			if (content !== undefined) {
 	      			//this.setTitle(content.status);
 	      				record=this.tabInfo.store.getAt(0);
+	      				record.set('meta_id',content.pid);
 	      				record.set('meta_name',content.status);
 	      				record.set('meta_content',content.time);
+				      	this.pid=content.pid;
 	      			this.buttons[0].setDisabled(true);			      			
 	      			this.buttons[1].setDisabled(false);		
 	      			} else {
 	      				Sbi.commons.ExceptionHandler.showErrorMessage('Server response cannot be decoded', 'Service Error');
 	      			}
 	      		} else {
-	      			Sbi.commons.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+	      				Sbi.commons.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
 	      		}
 	        },
 	        scope: this,
 			failure: Sbi.commons.ExceptionHandler.handleFailure      
-	   });
-	   
-    }
-    
+	   });	
+	       }
     , stopProcess : function() {
      	Ext.Ajax.request({
 	        url: this.services['getStopService'],
-	        params: {'DOCUMENT_ID' : this.document_id },
+	        params: {'DOCUMENT_ID' : this.document_id, 'PROCESS_ID' : this.pid },
 	        success : function(response, options) {
 	      		if(response !== undefined && response.responseText !== undefined) {
 	      			var content = Ext.util.JSON.decode( response.responseText );
@@ -167,9 +189,10 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
 	  	      			this.buttons[0].setDisabled(false);		
 	      				this.buttons[1].setDisabled(true);		
 	      				record=this.tabInfo.store.getAt(0);
+	      				record.set('meta_id',content.pid);
 	      				record.set('meta_name',content.status);
 	      				record.set('meta_content',content.time);
-	      				
+	      				//this.pid=null;
 	      			} else {
 	      				Sbi.commons.ExceptionHandler.showErrorMessage('Server response cannot be decoded', 'Service Error');
 	      			}
@@ -186,7 +209,7 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
     
        Ext.Ajax.request({
 	        url: this.services['getStatusService'],
-	        params: {'DOCUMENT_ID' : this.document_id },
+	        params: {'DOCUMENT_ID' : this.document_id, 'PROCESS_ID' : this.pid },
 	        success : function(response, options) {
 	      		if(response !== undefined && response.responseText !== undefined) {
 	      			var content = Ext.util.JSON.decode( response.responseText );
@@ -213,6 +236,7 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
 						}
 	      				//this.setTitle(content.status);
 	      				record=this.tabInfo.store.getAt(0);
+	      				record.set('meta_id',content.pid);
 	      				record.set('meta_name',content.status);
 	      				record.set('meta_content',content.time);
 	      				this.status=content.status_code;
@@ -231,3 +255,4 @@ Ext.extend(Sbi.commons.ExecutionPanel, Ext.Panel, {
     
 
 });
+

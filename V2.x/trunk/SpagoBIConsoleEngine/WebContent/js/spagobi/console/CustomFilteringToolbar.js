@@ -72,6 +72,7 @@ Sbi.console.CustomFilteringToolbar = function(config) {
 		Sbi.console.CustomFilteringToolbar.superclass.constructor.call(this, c);
 		//adds events		
 		this.store.on('metachange', this.onMetaChange, this);
+		this.store.on('load', this.filterGrid, this);
 };
 
 Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {  
@@ -117,13 +118,6 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
 		}
        	this.doLayout();
        	
-       	if (this.filters !== null) {
-	       	for(var f in this.filters) { 
-	       	   // alert(f + " - " + this.filters[f]);   
-	       		this.filterGrid(f, this.filters[f]);
-	       		   		  
-	       	} 
-       	}
     }
 	
     //returns true if the input field is a filter defined into template, false otherwise.

@@ -60,6 +60,7 @@ Sbi.console.FilteringToolbar = function(config) {
 	
 	var c = Ext.apply(defaultSettings, config || {});
 	Ext.apply(this, c);
+
 		
 	/*
 	this.services = this.services || new Array();	
@@ -89,10 +90,10 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
     
     
 	// -- private methods ---------------------------------------------------------------
-
 	, onRender : function(ct, position) { 
 		  Sbi.console.FilteringToolbar.superclass.onRender.call(this, ct, position);
 	}
+
 	//adds action buttons
 	, addActionButtons: function(){
   	    var b;
@@ -126,6 +127,14 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
    , reloadComboStore: function(dataIdx) {
       var distinctValues = this.store.collect(dataIdx);  
       var data = [];
+      
+      //define the empty (for reset) element
+      var firstRow = {};
+      firstRow.name = '...';
+      firstRow.value = 'emptyEl';
+      firstRow.description = '';
+      data.push(firstRow);
+      
       for(var i = 0, l = distinctValues.length; i < l; i++) {
         var row = {};
         row.name = distinctValues[i];
@@ -137,23 +146,48 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
       this.cbStores[dataIdx].loadData(data);
    }
    
-   , filterGrid: function(f, exp) {
-	   this.store.clearFilter(true);
-	   //alert("filterGrid: " + f + " - " + exp);
+   //filters functions
+   , filterGrid: function() {
 	   
-	   if (this.filters === null){
+	   //apply the ordering if it's presents
+       if (this.store.getSortState() !== undefined){
+      		this.store.sort(this.store.getSortState().field, this.store.getSortState().direction);
+       }
+      	
+	   if (this.filters !== null) {
+		   if (this.filters === {}){
+			   alert("clearFilter!!");
+			   this.store.clearFilter(true);
+			   return;
+		   }
+		    //apply the filter	       	       		
+	 	   this.store.filterBy(function(record,id){		
+	           for(var f in this.filters){     	        	 
+	               if(record.data[f] !== this.filters[f]) return false;              
+	           }
+	           return true;
+	       }, this);
+	       	     
+      	}else{
 		   this.filters = {};
+	   }	  
+   }
+   
+   //adds the single filter or delete if it's the reset field
+   , addFilterGrid: function(f, exp){  
+
+	   if (exp === 'emptyEl'){
+		   delete this.filters[f];
+	   }else{
+		   this.filters[f] = exp;	 
 	   }
-	   //alert(this.filters.toSource());
-	   this.filters[f] = exp;
-	   this.store.filter(f, exp);
-	  
+	   this.filterGrid();
    }
    
    //defines fields depending from operator type
   , createFilterField: function(operator, header, dataIndex){
      if (operator === 'EQUALS_TO'){
-      
+    	 //defines combobox
 	     this.cbStores = this.cbStores || []; 
 	     var s = new Ext.data.JsonStore({
 	           fields:['name', 'value', 'description'],
@@ -180,13 +214,13 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 									   fn: function(combo, record, index) {
 							                 var field = combo.index;
 							                 var exp = record.get(combo.valueField);
-							                 this.filterGrid(field, exp);							                
+							                 this.addFilterGrid(field, exp);							                
 							            },
 						    			scope: this
 						     		}				     					
 						         }
 		              	    });	
-		     
+
 		      this.addText("    " + header + "  ");
 		      this.addField(cb);	 
 	     }

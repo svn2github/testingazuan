@@ -48,7 +48,10 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
 import it.eng.spagobi.tools.dataset.bo.DataSetVariable;
+import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCStandardDataSet;
+import it.eng.spagobi.tools.dataset.common.dataproxy.JDBCDataProxy;
+import it.eng.spagobi.tools.dataset.common.dataproxy.JDBCSharedConnectionDataProxy;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.Field;
@@ -92,7 +95,7 @@ public class QbeDataSet extends AbstractDataSet {
 			
 			// execute query
 			hibernateQuery = session.createQuery( statement.getQueryString() );	
-			resultNumber = getResultNumber(hibernateQuery);
+			resultNumber = getResultNumber(hibernateQuery, session);
 			logger.info("Number of fetched records: " + resultNumber + " for query " + statement.getQueryString());
 			overflow = (maxResults > 0) && (resultNumber >= maxResults);
 			
@@ -121,41 +124,48 @@ public class QbeDataSet extends AbstractDataSet {
 		}		
 	}
 	
-	private int getResultNumber(org.hibernate.Query hibernateQuery) throws EMFUserError, EMFInternalError {
+	private int getResultNumber(org.hibernate.Query hibernateQuery, Session session) throws EMFUserError, EMFInternalError {
 		int resultNumber = 0;
-		String sqlQuery = "SELECT COUNT(*) FROM (" + ((HQLStatement)statement).getSqlQueryString() + ") temptable";
-		logger.debug("Executing query " + sqlQuery + " ...");
-		JDBCStandardDataSet dataSet = new JDBCStandardDataSet();
-		DBConnection connection = ((IHibernateDataSource)statement.getDataSource()).getConnection();
-		DataSource dataSource = new DataSource();
-		dataSource.setJndi(connection.getJndiName());
-		dataSource.setHibDialectName(connection.getDialect());
-		dataSource.setUrlConnection(connection.getUrl());
-		dataSource.setDriver(connection.getDriverClass());
-		dataSource.setUser(connection.getUsername());
-		dataSource.setPwd(connection.getPassword());
-		dataSet.setDataSource(dataSource);
-		dataSet.setQuery(sqlQuery);
-		dataSet.loadData(0, 1, -1);
-		IDataStore dataStore = dataSet.getDataStore();
-		resultNumber = ((Number)dataStore.getRecordAt(0).getFieldAt(0).getValue()).intValue();
-		resultNumber = resultNumber < 0? 0: resultNumber;
+		try {
+			resultNumber = getResultNumberUsingInlineView(hibernateQuery, session);
+		} catch (Exception e) {
+			logger.warn("Error getting result number using inline view!!", e);
+			resultNumber = getResultNumberUsingScrollableResults(hibernateQuery, session);
+		}
 		return resultNumber;
 	}
 	
-	/*
-	private int getResultNumber(org.hibernate.Query hibernateQuery, Session session) {
+	private int getResultNumberUsingInlineView(org.hibernate.Query hibernateQuery, Session session) throws Exception {
+		int resultNumber = 0;
+		logger.debug("IN");
+		String sqlQuery = "SELECT COUNT(*) FROM (" + ((HQLStatement)statement).getSqlQueryString() + ") temptable";
+		logger.debug("Executing query " + sqlQuery + " ...");
+		JDBCDataSet dataSet = new JDBCDataSet();
+		JDBCSharedConnectionDataProxy proxy = new JDBCSharedConnectionDataProxy(session.connection());
+		dataSet.setDataProxy(proxy);
+		dataSet.setQuery(sqlQuery);
+		dataSet.loadData(0, 1, -1);
+		logger.debug("Query " + sqlQuery + " executed");
+		IDataStore dataStore = dataSet.getDataStore();
+		logger.debug("Data store retrieved");
+		resultNumber = ((Number)dataStore.getRecordAt(0).getFieldAt(0).getValue()).intValue();
+		logger.debug("Result number is " + resultNumber);
+		resultNumber = resultNumber < 0? 0: resultNumber;
+		logger.debug("OUT: returning " + resultNumber);
+		return resultNumber;
+	}
+	
+	private int getResultNumberUsingScrollableResults(org.hibernate.Query hibernateQuery, Session session) {
 		int resultNumber = 0;
 		logger.debug("Scrolling query " + statement.getQueryString() + " ...");
 		ScrollableResults scrollableResults = hibernateQuery.scroll();
 		scrollableResults.last();
 		logger.debug("Scrolled query " + statement.getQueryString());
 		resultNumber = scrollableResults.getRowNumber() + 1; // Hibernate ScrollableResults row number starts with 0
-		logger.info("Number of fetched records: " + resultNumber + " for query " + statement.getQueryString());
+		logger.debug("Number of fetched records: " + resultNumber + " for query " + statement.getQueryString());
 		resultNumber = resultNumber < 0? 0: resultNumber;
 		return resultNumber;
 	}
-	*/
 
 
 	public IDataStore getDataStore() {

@@ -36,16 +36,19 @@ import org.apache.log4j.Logger;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 
+import it.eng.qbe.datasource.hibernate.DBConnection;
 import it.eng.qbe.datasource.hibernate.IHibernateDataSource;
 import it.eng.qbe.query.CalculatedSelectField;
 import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.query.Query;
+import it.eng.qbe.statment.hibernate.HQLStatement;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
 import it.eng.spagobi.tools.dataset.bo.DataSetVariable;
+import it.eng.spagobi.tools.dataset.bo.JDBCStandardDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.Field;
@@ -55,6 +58,7 @@ import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 /**
@@ -88,10 +92,8 @@ public class QbeDataSet extends AbstractDataSet {
 			
 			// execute query
 			hibernateQuery = session.createQuery( statement.getQueryString() );	
-			ScrollableResults scrollableResults = hibernateQuery.scroll();
-			scrollableResults.last();
-			resultNumber = scrollableResults.getRowNumber() + 1; // Hibernate ScrollableResults row number starts with 0
-			resultNumber = resultNumber < 0? 0: resultNumber;
+			resultNumber = getResultNumber(hibernateQuery);
+			logger.info("Number of fetched records: " + resultNumber + " for query " + statement.getQueryString());
 			overflow = (maxResults > 0) && (resultNumber >= maxResults);
 			
 			List result = null;
@@ -104,10 +106,11 @@ public class QbeDataSet extends AbstractDataSet {
 				if(maxResults > 0) {
 					fetchSize = (fetchSize > 0)? Math.min(fetchSize, maxResults): maxResults;
 				}
-				
+				logger.debug("Executing query " + statement.getQueryString() + " with offset = " + offset + " and fetch size = " + fetchSize);
 				hibernateQuery.setFirstResult(offset);
 				if(fetchSize > 0) hibernateQuery.setMaxResults(fetchSize);			
 				result = hibernateQuery.list();
+				logger.debug("Query " + statement.getQueryString() + " with offset = " + offset + " and fetch size = " + fetchSize + " executed");
 			}	
 			
 			dataStore = toDataStore(result);
@@ -118,6 +121,43 @@ public class QbeDataSet extends AbstractDataSet {
 		}		
 	}
 	
+	private int getResultNumber(org.hibernate.Query hibernateQuery) throws EMFUserError, EMFInternalError {
+		int resultNumber = 0;
+		String sqlQuery = "SELECT COUNT(*) FROM (" + ((HQLStatement)statement).getSqlQueryString() + ") temptable";
+		logger.debug("Executing query " + sqlQuery + " ...");
+		JDBCStandardDataSet dataSet = new JDBCStandardDataSet();
+		DBConnection connection = ((IHibernateDataSource)statement.getDataSource()).getConnection();
+		DataSource dataSource = new DataSource();
+		dataSource.setJndi(connection.getJndiName());
+		dataSource.setHibDialectName(connection.getDialect());
+		dataSource.setUrlConnection(connection.getUrl());
+		dataSource.setDriver(connection.getDriverClass());
+		dataSource.setUser(connection.getUsername());
+		dataSource.setPwd(connection.getPassword());
+		dataSet.setDataSource(dataSource);
+		dataSet.setQuery(sqlQuery);
+		dataSet.loadData(0, 1, -1);
+		IDataStore dataStore = dataSet.getDataStore();
+		resultNumber = ((Number)dataStore.getRecordAt(0).getFieldAt(0).getValue()).intValue();
+		resultNumber = resultNumber < 0? 0: resultNumber;
+		return resultNumber;
+	}
+	
+	/*
+	private int getResultNumber(org.hibernate.Query hibernateQuery, Session session) {
+		int resultNumber = 0;
+		logger.debug("Scrolling query " + statement.getQueryString() + " ...");
+		ScrollableResults scrollableResults = hibernateQuery.scroll();
+		scrollableResults.last();
+		logger.debug("Scrolled query " + statement.getQueryString());
+		resultNumber = scrollableResults.getRowNumber() + 1; // Hibernate ScrollableResults row number starts with 0
+		logger.info("Number of fetched records: " + resultNumber + " for query " + statement.getQueryString());
+		resultNumber = resultNumber < 0? 0: resultNumber;
+		return resultNumber;
+	}
+	*/
+
+
 	public IDataStore getDataStore() {
 		return dataStore;
 	}

@@ -80,35 +80,11 @@ Sbi.exception.ExceptionHandler = function(){
         		
         	errMessage = errMessage || 'An error occurred while processing the server error response';
         	
-        	Sbi.exception.ExceptionHandler.showErrorMessage(errMessage, 'Service Error');
+        	Sbi.Msg.showError(errMessage, 'Service Error');
        	
-        },
-        
-        showErrorMessage : function(errMessage, title) {
-        	var m = errMessage || 'Generic error';
-        	var t = title || 'Error';
-        	
-        	Ext.MessageBox.show({
-           		title: t
-           		, msg: m
-           		, buttons: Ext.MessageBox.OK     
-           		, icon: Ext.MessageBox.ERROR
-           		, modal: false
-       		});
-        },
-        
-        showWarningMessage : function(errMessage, title) {
-        	var m = errMessage || 'Generic warning';
-        	var t = title || 'Warning';
-        	
-        	Ext.MessageBox.show({
-           		title: t
-           		, msg: m
-           		, buttons: Ext.MessageBox.OK     
-           		, icon: Ext.MessageBox.WARNING
-           		, modal: false
-       		});
         }
+        
+
 
 	};
 }();

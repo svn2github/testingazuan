@@ -156,7 +156,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	            	 	 	} //for          			   
 	                  } 	
 	                  if  (msgErr != ""){
-	                	  	Sbi.exception.ExceptionHandler.showErrorMessage(msgErr, 'Service Error');
+	                	  Sbi.Msg.showError(msgErr, 'Service Error');
 	                  }		  
 	        	}
 	    		
@@ -172,10 +172,10 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	    				      				alert(content.toSource());
 	    				      			}				      		
 	    				      		} else {
-	    				      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+	    				      			Sbi.Msg.showError('Server response is empty', 'Service Error');
 	    				      		}
 	    			  	  		} else { 
-	    			  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot exec action: ' + this.name, 'Service Error');
+	    			  	  		Sbi.Msg.showError('Cannot exec action: ' + this.name, 'Service Error');
 	    			  	  		}
 	    			        },
 	    			        scope: this,
@@ -388,7 +388,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     	      }
     	   }
       	   if  (msgErr != ""){
-          		Sbi.exception.ExceptionHandler.showErrorMessage(msgErr, 'Service Error');
+      		 Sbi.Msg.showError(msgErr, 'Service Error');
            }	
 	    }	
 	}

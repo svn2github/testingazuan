@@ -89,7 +89,7 @@ Ext.extend(Sbi.data.Store, Ext.data.JsonStore, {
 	, getFieldMetaByAlias: function(alias) {
 		// assert
 		if(!this.alias2FieldMetaMap) {
-			Sbi.exception.ExceptionHandler.showErrorMessage('Impossible to [getFieldMetaByAlias]. Store has not loaded yet.', 'Wrong function call');
+			Sbi.Msg.showError('Impossible to [getFieldMetaByAlias]. Store has not loaded yet.', 'Wrong function call');
 		}
 	
 		var m = this.alias2FieldMetaMap[alias];

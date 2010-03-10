@@ -49,11 +49,21 @@ Ext.ns("Sbi.chart");
 
 Sbi.chart.SpagoBIChart = function(config) {	
 	
+	this.bindStoreBeforeSwfInit = config.bindStoreBeforeSwfInit | false;
 	
-	this.bindStore(config.store, true);
-	if(config.store) {
-		delete config.store;
+	// because swfInit do not work for spago chart...
+	/*
+	if(this.bindStoreBeforeSwfInit) {
+		this.bindStore(config.store, true);
+	} else {
+		this.store = config.store;
 	}
+	*/
+	//... always bind store in constructor
+	this.bindStore(config.store, true);
+	
+	if(config.bindStoreBeforeSwfInit) { delete config.bindStoreBeforeSwfInit; }
+	if(config.store) { delete config.store; }
 	
 	
 	
@@ -71,6 +81,10 @@ Sbi.chart.SpagoBIChart = function(config) {
 	
 	this.flashVars = Ext.applyIf(c, this.CHART_DEFAULT_CONFIG);
 	
+	this.flashVars.scale = 'exactfit'; 
+	this.flashParams = this.flashParams | {};
+	this.flashParams.scale = 'exactfit'; 
+	
 	
 	Sbi.chart.SpagoBIChart.superclass.constructor.call(this, config);
 };
@@ -79,7 +93,12 @@ Ext.extend(Sbi.chart.SpagoBIChart, Ext.FlashComponent, {
     
 	store: null
 	, storeMeta: null
+	, bindStoreBeforeSwfInit: null
 	, url: null
+	
+	// if it is good for ext chart it is also good for us :)
+	, disableCaching: Ext.isIE || Ext.isOpera
+    , disableCacheParam: '_dc'
 	
 	, CHART_BASE_URL: '/SpagoBIConsoleEngine/swf/spagobichart/'
 	
@@ -96,13 +115,57 @@ Ext.extend(Sbi.chart.SpagoBIChart, Ext.FlashComponent, {
     	if(!this.url){
         	this.url = this.CHART_BASE_URL + this.CHART_SWF;
     	}
+    	if(this.disableCaching){
+            this.url = Ext.urlAppend(this.url, String.format('{0}={1}', this.disableCacheParam, new Date().getTime()));
+        }
     	   	
+    	this.addEvents(
+    		'beforerefresh'
+    		, 'refresh'
+    	);
+    	
     	this.autoScroll = true;  	
 	}
 	
-	, refresh: function(s, records, option) {}
+	, isSwfReady: function() {
+		return true;
+	}
+
+	// never invoked for the moment
+	, onSwfReady : function(isReset){
+        Ext.chart.Chart.superclass.onSwfReady.call(this, isReset);
+        alert('onSwfReady');
+        if(!isReset && !this.bindStoreBeforeSwfInit){
+        	alert('Bind store');
+            this.bindStore(this.store, true);
+        }
+        
+        this.refresh.defer(10, this);
+    }
+
+
+	, refresh: function() {
+		if( !this.isSwfReady() ) {
+			if(this.bindStoreBeforeSwfInit) {
+				// some charts can queue pending data refresh and then apply 
+				// them as soon as the swf object is initialized
+				this.onPendingRefresh();
+			}
+			return;
+		}
+		
+		if(this.fireEvent('beforerefresh', this) !== false){
+			this.onRefresh();			
+			this.fireEvent('refresh', this);
+		}
+    	
+    }
 	
+	, onRefresh: Ext.emptyFn
 	
+	, onPendingRefresh: function() {
+		alert('Chart is unable to handle incoming data before inizialization');
+	}
 	
     , bindStore : function(store, initial){
         if(!initial && this.store){
@@ -158,24 +221,29 @@ Sbi.chart.Multileds = Ext.extend(Sbi.chart.SpagoBIChart, {
 		])
 	}
 		
-	, refresh: function() {
-		if(!this.swf.loadData) return;
+	, isSwfReady: function() {
+		return !!this.swf.loadData;
+	}
 	
-		var data = {};
-		var rec = this.store.getAt(0);
-		if(rec) {
-			var fields = this.storeMeta.fields;
-			for(var i = 0, l = fields.length, f; i < l; i++) {
-				f = fields[i];
-				if( (typeof f) === 'string') {
-					f = {name: f};
+	, onRefresh: function() {
+		
+			var data = {};
+			var rec = this.store.getAt(0);
+			if(rec) {
+				var fields = this.storeMeta.fields;
+				for(var i = 0, l = fields.length, f; i < l; i++) {
+					f = fields[i];
+					if( (typeof f) === 'string') {
+						f = {name: f};
+					}
+					var alias = f.header || f.name;
+					if(alias === 'recNo') continue;
+					data[alias] = rec.get(f.name);				
 				}
-				var alias = f.header || f.name;
-				if(alias === 'recNo') continue;
-				data[alias] = rec.get(f.name);				
+				this.swf.loadData(data);
 			}
-			this.swf.loadData(data);
-		}
+			
+			
 	}
 });
 Ext.reg('chart.sbi.multileds', Sbi.chart.Multileds);
@@ -192,24 +260,28 @@ Sbi.chart.Livelines = Ext.extend(Sbi.chart.SpagoBIChart, {
 		, title:'SpagoBI Liveline'
 	}
 	
-	, refresh: function() {
-		if(!this.swf.loadData) return;
+	, isSwfReady: function() {
+		return !!this.swf.loadData;
+	}
 	
-		var data = {};
-		var rec = this.store.getAt(0);
-		if(rec) {
-			var fields = this.storeMeta.fields;
-			for(var i = 0, l = fields.length, f; i < l; i++) {
-				f = fields[i];
-				if( (typeof f) === 'string') {
-					f = {name: f};
+	, onRefresh: function() {
+		
+			var data = {};
+			var rec = this.store.getAt(0);
+			if(rec) {
+				var fields = this.storeMeta.fields;
+				for(var i = 0, l = fields.length, f; i < l; i++) {
+					f = fields[i];
+					if( (typeof f) === 'string') {
+						f = {name: f};
+					}
+					var alias = f.header || f.name;
+					if(alias === 'recNo') continue;
+					data[alias] = rec.get(f.name);				
 				}
-				var alias = f.header || f.name;
-				if(alias === 'recNo') continue;
-				data[alias] = rec.get(f.name);				
+				this.swf.loadData(data);
 			}
-			this.swf.loadData(data);
-		}
+			
 	}
 });
 Ext.reg('chart.sbi.livelines', Sbi.chart.Livelines);
@@ -228,22 +300,24 @@ Sbi.chart.Speedometer = Ext.extend(Sbi.chart.SpagoBIChart, {
 		, field: 'EffortIndex'
 	}
 		
+	, isSwfReady: function() {
+		return !!this.swf.setValue;
+	}
+
 	, onRender : function(ct, position) {
 		this.flashVars.paramWidth = ct.getWidth();
 		this.flashVars.paramHeight = ct.getHeight();
 		Sbi.chart.SpagoBIChart.superclass.onRender.call(this, ct, position);
 	}
 	
-	, refresh: function() {
-		if(!this.swf.setValue) return ;
-		
+	, onRefresh: function() {
 		var value;
 		var rec = this.store.getAt(0);
 		if(rec) {
 			var fName = this.store.getFieldNameByAlias(this.flashVars.field);
 			value = rec.get(fName);
 		}
-		this.swf.setValue(value);
+		this.swf.setValue(value);			
 	}
 });
 Ext.reg('chart.sbi.speedometer', Sbi.chart.Speedometer);

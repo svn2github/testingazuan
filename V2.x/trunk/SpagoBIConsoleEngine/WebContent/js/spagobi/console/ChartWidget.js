@@ -183,7 +183,7 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		} else if(chartType === this.FCF_CHART_BAR){
 			chart = this.createFCFBarChart(chartConfig);
 		} else {
-			Sbi.exception.ExceptionHandler.showErrorMessage('Chart type [' + chartType + '] not supported by [ChartWidget]');
+			Sbi.Msg.showError('Chart type [' + chartType + '] not supported by [ChartWidget]');
 		}
 		
 		return chart;
@@ -203,6 +203,7 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	}
 	
 	, createLineChart: function(chartConfig) {
+		
 		// type attribute is reseved 
 		delete chartConfig.type;
 		var c = Ext.apply({}, chartConfig, {
@@ -220,6 +221,7 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		
 		c.xField = this.getFieldNameByAlias(c.xField);
 		c.yField = this.getFieldNameByAlias(c.yField);
+		
 		return new Ext.Panel({
 	        layout:'fit'
 	        , height: this.height
@@ -318,7 +320,7 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		if(this.store.getFieldNameByAlias) {
 			fname = this.store.getFieldNameByAlias(alias);
 			if(!fname) {
-				Sbi.exception.ExceptionHandler.showErrorMessage(
+				Sbi.Msg.showError(
 					'Dataset [' + this.storeId + '] does not contain a field whose alias is  [' + alias + ']', 
 					'Error in chart configuration'
 				);

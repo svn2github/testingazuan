@@ -106,7 +106,7 @@ Ext.extend(Sbi.console.NavigationToolbar, Ext.Toolbar, {
 	, execCrossNavigation: function (b){
 		
 		if(sendMessage === undefined) {
-			Sbi.exception.ExceptionHandler.showErrorMessage(
+			Sbi.Msg.showError(
 					'function [sendMessage] is not defined',
 					'Cross navigation error'
 			);
@@ -114,7 +114,7 @@ Ext.extend(Sbi.console.NavigationToolbar, Ext.Toolbar, {
 		}
 		
 		if( (typeof sendMessage) !== 'function') {
-			Sbi.exception.ExceptionHandler.showErrorMessage(
+			Sbi.Msg.showError(
 					'[sendMessage] is not a function',
 					'Cross navigation error'
 			);
@@ -156,7 +156,7 @@ Ext.extend(Sbi.console.NavigationToolbar, Ext.Toolbar, {
     	      }
     	   }
   	    if  (msgErr != ""){
-      		Sbi.exception.ExceptionHandler.showErrorMessage(msgErr, 'Service Error');
+  	    	Sbi.Msg.showError(msgErr, 'Service Error');
         }	
     	}
 		}

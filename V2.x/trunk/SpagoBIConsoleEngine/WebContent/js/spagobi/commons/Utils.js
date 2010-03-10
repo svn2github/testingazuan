@@ -35,96 +35,85 @@
   * - Andrea Gioia (adrea.gioia@eng.it)
   */
 
-Ext.ns("Sbi.console.commons");
+Ext.ns("Sbi");
 
-Sbi.console.commons.Utils = function(){
- 
-    // private variables
+Sbi.Msg = function(){
+    
+	// private variables
+	// ...
 	
     // public space
 	return {
-		
-		unimplementedFunction: function(fnName) {
+
+		showError : function(errMessage, title) {
+    		var m = errMessage || 'Generic error';
+    		var t = title || 'Error';
+    	
+    		Ext.MessageBox.show({
+	       		title: t
+	       		, msg: m
+	       		, buttons: Ext.MessageBox.OK     
+	       		, icon: Ext.MessageBox.ERROR
+	       		, modal: false
+	   		});
+	    },
+    
+	    showWarning : function(errMessage, title) {
+	    	var m = errMessage || 'Generic warning';
+	    	var t = title || 'Warning';
+	    	
+	    	Ext.MessageBox.show({
+	       		title: t
+	       		, msg: m
+	       		, buttons: Ext.MessageBox.OK     
+	       		, icon: Ext.MessageBox.WARNING
+	       		, modal: false
+	   		});
+	    }, 
+	    
+	    showInfo : function(errMessage, title) {
+	    	var m = errMessage || 'Generic info';
+	    	var t = title || 'Info';
+	    	
+	    	Ext.MessageBox.show({
+	       		title: t
+	       		, msg: m
+	       		, buttons: Ext.MessageBox.OK     
+	       		, icon: Ext.MessageBox.INFO
+	       		, modal: false
+	   		});
+	    },
+	    
+	    unimplementedFunction: function(fnName) {
 			var msg = fnName? 
-				'Sorry, the functionality [' + fnName + '] has not been implemented yet':
-				'Sorry, this functionality has not been implemented yet';
-				
-			Ext.Msg.show({
-				   title:'Unimplemented functionality',
-				   msg: msg,
-				   buttons: Ext.Msg.OK,
-				   icon: Ext.MessageBox.INFO
-			});
-		}
-	
-	    , deprectadeFunction: function(fnClass, fnName) {
-			var msg = fnName + ' in class ' + fnClass + 'is deprecated';
-				
-			Ext.Msg.show({
-				   title:'Deprecated functionality',
-				   msg: msg,
-				   buttons: Ext.Msg.OK,
-				   icon: Ext.MessageBox.ERROR
-			});
-		}
-	
-		
-		, log: function(severity, message) {
-			this.unimplementedFunction('Sbi.console.commons.log');
-		}
-		
-		, assertTrue: function(condition, msg) {
-			this.unimplementedFunction('Sbi.console.commons.assertTrue');
-		}
-        
-	};
-}();
+					'Sorry, the functionality [' + fnName + '] has not been implemented yet':
+					'Sorry, this functionality has not been implemented yet';
+			
+			Sbi.Msg.showInfo(msg, 'Unimplemented functionality');
+	    },
+	    
+	    deprectadeFunction: function(fnClass, fnName) {
+	    	var msg = fnName + ' in class ' + fnClass + 'is deprecated';
+			
+	    	Sbi.Msg.showWarning(msg, 'Deprecated functionality');
+	    }
+}();	
 
-
-
-
-
-
-
-
-// ----- deprecated ------------------------------------------------------------------------------
-Ext.namespace('it.eng.spagobi.engines.console.commons');
-
-
-it.eng.spagobi.engines.console.commons = function(){
-	// do NOT access DOM from here; elements don't exist yet
+Sbi.Assert = function(){
  
     // private variables
-   
- 
+	
     // public space
 	return {
+		assertTrue: function(condition, msg) {
+			if(!condition) Sbi.Msg.showError(msg);
+		}
 	
-		init : function() {
-			//alert("init");
-		},
-		
-		toStr : function(o) {
-			var str = "";
-			
-			if(o === 'undefined') return 'undefined';
-			
-			str += "Type: [" + typeof(o) + "]\n------------------------\n";
-			
-	        for(p in o) {
-	        	str += p + ": " +  o[p] + "\n";
-	        }
-	        return str;
-		},
-		
-		dump : function(o) {
-			alert(this.toStr(o));
+		, assertDefined: function(o, msg) {
+			Sbi.Assert.assertTrue( (o !== undefined && o !== null),  msg);
 		}
         
 	};
-}();
-
-//----- deprecated ------------------------------------------------------------------------------
+}();	
 
 
-						

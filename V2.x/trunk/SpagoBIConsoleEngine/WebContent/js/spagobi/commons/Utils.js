@@ -97,6 +97,7 @@ Sbi.Msg = function(){
 			
 	    	Sbi.Msg.showWarning(msg, 'Deprecated functionality');
 	    }
+	}
 }();	
 
 Sbi.Assert = function(){

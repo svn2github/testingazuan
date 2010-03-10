@@ -42,6 +42,7 @@ import it.eng.spagobi.utilities.DynamicClassLoader;
 import it.eng.spagobi.utilities.engines.AuditServiceProxy;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.commonj.CmdExecWork;
+import it.eng.spagobi.utilities.engines.commonj.SpagoBIWork;
 import it.eng.spagobi.utilities.threadmanager.WorkManager;
 
 import java.io.File;
@@ -128,25 +129,26 @@ public class CommonjWorkRunner implements IWorkRunner {
 			Class clazz = Thread.currentThread().getContextClassLoader().loadClass(classToLoad);
 			Object obj = clazz.newInstance();
 			logger.debug("class loaded "+classToLoad);
-			Work workToLaunch=null;
+			SpagoBIWork workToLaunch=null;
 			// class loaded could be instance of CmdExecWork o di Work, testa se è il primo, se no è l'altra
 			if (obj instanceof CmdExecWork) {
 				logger.debug("Class specified extends CmdExecWork");
 				workToLaunch = (CmdExecWork) obj;
 				((CmdExecWork)obj).setCommand(work.getCommand());
 				((CmdExecWork)obj).setCommandEnvironment(work.getCommand_environment());
-				((CmdExecWork)obj).setParameters(work.getParameters());			
+				((CmdExecWork)obj).setCmdParameters(work.getCmdParameters());			
+				((CmdExecWork)obj).setCmdParameters(work.getCmdParameters());			
+
 			}
 			else
-				if (obj instanceof Work) {
+				if (obj instanceof SpagoBIWork) {
 					logger.debug("Class specified extends Work");
-					workToLaunch=(Work)obj;
+					workToLaunch=(SpagoBIWork)obj;
+					workToLaunch.setSbiParameters(work.getSbiParametersMap());							
 				}
 
-			
 
-
-			wm.setInSession(session, workToLaunch, listener, work.getWorkName());
+			//wm.setInSession(session, workToLaunch, listener, work.getWorkName());
 
 			int ti=0;			
 //			FooRemoteWorkItem wi=null;

@@ -36,9 +36,10 @@ public class GeneralUtils {
 
 	}
 
-	static public JSONObject buildJSONObject (int statusCode) throws JSONException{
+	static public JSONObject buildJSONObject (String pid,int statusCode) throws JSONException{
 		String message=GeneralUtils.getEventMessage(statusCode);
 		JSONObject info=new JSONObject();
+		info.put("pid", pid);
 		info.put("status_code", statusCode);
 		info.put("status", message);
 		info.put("time", (new Date()).toString());

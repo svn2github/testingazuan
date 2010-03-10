@@ -49,6 +49,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.commonj.runtime.CommonjWorkContainer;
 import it.eng.spagobi.engines.commonj.runtime.CommonjWorkListener;
 import it.eng.spagobi.engines.commonj.utils.GeneralUtils;
+import it.eng.spagobi.engines.commonj.utils.ProcessesStatusContainer;
 import it.eng.spagobi.utilities.engines.AbstractEngineAction;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
@@ -76,6 +77,18 @@ public class StopWorkAction extends AbstractEngineAction {
 		int statusWI;
 		HttpSession session=getHttpSession();
 
+		Object pidO=request.getAttribute("PROCESS_ID");
+		String pid="";
+		if(pidO!=null){
+			pid=pidO.toString();
+
+		}
+		else{   // if pidO not found just return an empty xml Object
+			
+			return;
+			
+		}
+		
 //		get document id, must be		
 		String document_id=null;
 		Object document_idO=null;
@@ -91,7 +104,10 @@ public class StopWorkAction extends AbstractEngineAction {
 			}
 
 			//recover from session
-			Object o=session.getAttribute("SBI_PROCESS_"+document_id);
+			//Object o=session.getAttribute("SBI_PROCESS_"+document_id);
+			ProcessesStatusContainer processesStatusContainer = ProcessesStatusContainer.getInstance();
+			Object o=processesStatusContainer.getPidContainerMap().get(pid);
+
 			// if process still in session stop the process and delete the attribute, otherwise it could have been finished
 			if(o!=null){
 				CommonjWorkContainer container=(CommonjWorkContainer)o;
@@ -101,13 +117,14 @@ public class StopWorkAction extends AbstractEngineAction {
 				// Use it to give time to set the status
 				Thread.sleep(1000);
 				statusWI=container.getWorkItem().getStatus();
-				session.removeAttribute("SBI_PROCESS_"+document_id);
+				//session.removeAttribute("SBI_PROCESS_"+document_id);
+				processesStatusContainer.getPidContainerMap().remove(pid);
 
 
 			} // if no more in session is completed
 			else statusWI=WorkEvent.WORK_COMPLETED;
 
-			info=GeneralUtils.buildJSONObject(statusWI);
+			info=GeneralUtils.buildJSONObject(pid,statusWI);
 			try {
 				writeBackToClient( new JSONSuccess(info));
 			} catch (IOException e) {

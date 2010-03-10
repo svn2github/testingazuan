@@ -65,24 +65,6 @@ public class WorksRepository {
 
 
 
-	/**
-	 * COnfigure work.
-	 * 
-	 * @param work the CommonJWork
-	 * @param env the environment
-
-	 * 
-	 * @throws WorkNotFoundException the work not found exception
-	 * @throws WorkExecutionException the work execution exception
-	 */
-	public void configureWork(HttpSession session,CommonjWork work, Map env) throws WorkNotFoundException, WorkExecutionException {
-		logger.debug("IN");
-		WorkConfiguration workConfiguration=new WorkConfiguration(this);
-		if(workConfiguration != null) {
-			workConfiguration.configure(session,work, env);
-		}		
-		logger.debug("OUT");
-	}
 
 
 	/**

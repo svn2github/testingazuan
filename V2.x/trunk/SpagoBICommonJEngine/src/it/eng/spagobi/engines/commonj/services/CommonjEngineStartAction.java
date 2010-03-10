@@ -33,6 +33,7 @@ package it.eng.spagobi.engines.commonj.services;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import it.eng.spago.base.SourceBean;
@@ -40,6 +41,7 @@ import it.eng.spagobi.engines.commonj.CommonjEngine;
 import it.eng.spagobi.engines.commonj.exception.WorkExecutionException;
 import it.eng.spagobi.engines.commonj.exception.WorkNotFoundException;
 import it.eng.spagobi.engines.commonj.runtime.CommonjWork;
+import it.eng.spagobi.engines.commonj.runtime.WorkConfiguration;
 import it.eng.spagobi.engines.commonj.runtime.WorksRepository;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
@@ -104,15 +106,52 @@ public class CommonjEngineStartAction extends AbstractEngineStartAction {
 			//servletIOManager.auditServiceStartEvent();
 
 			super.service(serviceRequest, serviceResponse);
-
 			HttpSession session=getHttpSession();
 
+			// get parameters in request
+			Map parameters=getEnv();
+
+			// get documentId
+			Object documentIdO=parameters.get("DOCUMENT_ID");
+			String documentId=documentIdO!=null ? documentIdO.toString() : null; 
+			if(documentId==null){
+				logger.error("Could not retrieve document ID");
+				throw new Exception("Could not retrieve document ID");
+
+			}
+
+			//getAnalytical driver of document with id documentId
+
+			// instantiate a work from template definition
 			work = new CommonjWork( getTemplateAsSourceBean()); 
+
+			String parametersString="";
+			for (Iterator iterator = parameters.keySet().iterator(); iterator.hasNext();) {
+				String url= (String) iterator.next();
+				Object val=parameters.get(url);
+				if(val!=null){
+					parametersString+="&"+url+"="+val.toString();
+				}
+			}
+
+			// calculate process Id
+			/*
+			work.calculatePId(documentId, parameters);
+
+			work.setSbiParametersMap(parameters);
+
 			CommonjEngine cm=new CommonjEngine();
 			worksRepository = CommonjEngine.getWorksRepository();
 
 			try {
-				worksRepository.configureWork(session,work, getEnv());
+				// call Work configurqations's configure method
+				WorkConfiguration workConfiguration=new WorkConfiguration(worksRepository);
+				if(workConfiguration != null) {
+					workConfiguration.configure(session,work,parameters,documentId);
+				}		
+
+
+
 			} catch (Exception e) {
 				if(e instanceof WorkNotFoundException){
 					try {
@@ -144,7 +183,7 @@ public class CommonjEngineStartAction extends AbstractEngineStartAction {
 
 				}
 			}
-
+			 */
 			//servletIOManager.tryToWriteBackToClient(work.getWorkName()+": class "+work.getClassName());
 
 		}

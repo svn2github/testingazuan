@@ -50,6 +50,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.commonj.runtime.CommonjWorkContainer;
 import it.eng.spagobi.engines.commonj.runtime.CommonjWorkListener;
 import it.eng.spagobi.engines.commonj.utils.GeneralUtils;
+import it.eng.spagobi.engines.commonj.utils.ProcessesStatusContainer;
 import it.eng.spagobi.utilities.engines.AbstractEngineAction;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
@@ -73,10 +74,24 @@ public class StatusWorkAction extends AbstractEngineAction {
 	@Override
 	public void service(SourceBean request, SourceBean response) {
 		logger.debug("IN");
+
+
+		Object pidO=request.getAttribute("PROCESS_ID");
+		String pid="";
+		if(pidO!=null){
+			pid=pidO.toString();
+
+		}
+		else{   // if pidO not found just return an empty xml Object
+			
+			return;
+			
+		}
+
 		super.service(request, response);
 		HttpSession session=getHttpSession();
 		JSONObject info=null;
-		
+
 		// Get document id, must find
 		String document_id=null;
 		Object document_idO=null;
@@ -90,15 +105,17 @@ public class StatusWorkAction extends AbstractEngineAction {
 			throw new SpagoBIEngineServiceException(getActionName(), "could not find document id");
 		}
 
-
+		CommonjWorkContainer container=null;
+		ProcessesStatusContainer processesStatusContainer = ProcessesStatusContainer.getInstance();
+		Object o=processesStatusContainer.getPidContainerMap().get(pid);
 		//recover from session, if does not find means work is completed
-		Object o=session.getAttribute("SBI_PROCESS_"+document_id);
+		//Object o=session.getAttribute("SBI_PROCESS_"+document_id);
 		try{
 			int statusWI;
 
 			if(o!=null){			// object found in session, work could be not started, running or completed
 
-				CommonjWorkContainer container=(CommonjWorkContainer)o;
+				container=(CommonjWorkContainer)o;
 				FooRemoteWorkItem fooRwi=container.getFooRemoteWorkItem();
 				WorkItem wi=container.getWorkItem();
 
@@ -108,7 +125,8 @@ public class StatusWorkAction extends AbstractEngineAction {
 					// if finds that work is finished delete the attribute from session
 					if(statusWI==WorkEvent.WORK_COMPLETED){
 						logger.debug("Work is finished - remove from session");
-						session.removeAttribute("SBI_PROCESS_"+document_id);
+						//session.removeAttribute("SBI_PROCESS_"+document_id);
+						processesStatusContainer.getPidContainerMap().remove(pid);
 					}
 				}
 				else{
@@ -121,7 +139,7 @@ public class StatusWorkAction extends AbstractEngineAction {
 				statusWI=WorkEvent.WORK_COMPLETED;
 			}
 
-			info=GeneralUtils.buildJSONObject(statusWI);
+			info=GeneralUtils.buildJSONObject(pid,statusWI);
 			System.out.println(GeneralUtils.getEventMessage(statusWI));
 			try {
 				writeBackToClient( new JSONSuccess(info));

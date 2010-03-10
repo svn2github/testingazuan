@@ -32,8 +32,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.engines.commonj.runtime;
 
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -44,11 +47,18 @@ import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
 public class CommonjWork {
+
+	String pId;
 	String workName;
 	String className;
 	String command;
 	String command_environment;
-	String[] parameters;
+
+	/** parameters set in template*/
+	String[] cmdParameters;
+
+	/** map of analyticalDriver from SpagoBIDocument*/
+	Map sbiParametersMap;
 
 	static final String COMMAND="cmd";
 	static final String COMMAND_ENVIRONMENT="cmd_env";
@@ -56,7 +66,7 @@ public class CommonjWork {
 	private static transient Logger logger = Logger.getLogger(CommonjWork.class);
 
 	public CommonjWork(SourceBean template) throws SpagoBIEngineException {
-logger.debug("IN");
+		logger.debug("IN");
 		this.load(template);
 		logger.debug("OUT");
 	}
@@ -120,11 +130,11 @@ logger.debug("IN");
 						}
 				}
 				if(parametersVect.size()>0){
-					parameters=new String[parametersVect.size()];
+					cmdParameters=new String[parametersVect.size()];
 					int i=0;
 					for (Iterator iterator = parametersVect.iterator(); iterator.hasNext();) {
 						String string = (String) iterator.next();
-						parameters[i]=string;
+						cmdParameters[i]=string;
 						i++;
 					}
 				}
@@ -203,13 +213,58 @@ logger.debug("IN");
 	}
 
 
-	public String[] getParameters() {
-		return parameters;
+	public String[] getCmdParameters() {
+		return cmdParameters;
 	}
 
 
-	public void setParameters(String[] parameters) {
-		this.parameters = parameters;
+	public void setCmdParameters(String[] parameters) {
+		this.cmdParameters = parameters;
+	}
+
+
+
+	public String getPId() {
+		return pId;
+	}
+
+	/** calculate work pid, like document_id_par_value_randomNumber
+	 * 
+	 * @param documentId
+	 * @param pars
+	 */
+
+	public String calculatePId(String documentId, Map pars) {
+		String tempPId=documentId+"_";
+//		if(pars!=null){
+//		for (Iterator iterator = pars.keySet().iterator(); iterator.hasNext();) {
+//		String url = (String) iterator.next();
+//		Object val=pars.get(url);
+//		if(val!=null){
+//		tempPId+=url+"_"+val.toString()+"_";
+//		}
+//		}
+		// random numebr
+		Random random=new Random();
+		int r=random.nextInt();
+		if(r<0) r=r*-1;
+		Integer rInteger=Integer.valueOf(r);
+		tempPId+=rInteger.toString();
+		pId=tempPId;
+		return pId;	
+	}
+
+
+	//}
+
+
+	public Map getSbiParametersMap() {
+		return sbiParametersMap;
+	}
+
+
+	public void setSbiParametersMap(Map sbiParametersMap) {
+		this.sbiParametersMap = sbiParametersMap;
 	}
 
 

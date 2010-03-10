@@ -34,14 +34,17 @@ package it.eng.spagobi.engines.commonj.runtime;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.commonj.exception.WorkExecutionException;
 import it.eng.spagobi.engines.commonj.exception.WorkNotFoundException;
+import it.eng.spagobi.engines.commonj.utils.ProcessesStatusContainer;
 import it.eng.spagobi.services.proxy.EventServiceProxy;
 import it.eng.spagobi.utilities.DynamicClassLoader;
 import it.eng.spagobi.utilities.engines.AuditServiceProxy;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.commonj.CmdExecWork;
+import it.eng.spagobi.utilities.engines.commonj.SpagoBIWork;
 import it.eng.spagobi.utilities.threadmanager.WorkManager;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -60,15 +63,29 @@ public class WorkConfiguration {
 
 	private static transient Logger logger = Logger.getLogger(WorkConfiguration.class);
 
-	WorkConfiguration(WorksRepository worksRepository) {
+	public WorkConfiguration(WorksRepository worksRepository) {
 		this.worksRepository = worksRepository;
 	}
 
-	public void configure(HttpSession session, CommonjWork work, Map parameters)  throws WorkNotFoundException, WorkExecutionException {
+
+	/** This function prepare the execution of the new Process, 
+	 * builds Listener and work manager
+	 *  Loads work class
+	 * Builds WorkCOntainer and adds it to Singleton class, from where will be retrieved by startWorkAction
+	 * 
+	 * @param session
+	 * @param work
+	 * @param parameters
+	 * @throws WorkNotFoundException
+	 * @throws WorkExecutionException
+	 */
+
+	public void configure(HttpSession session, CommonjWork work, Map parameters, String documentId)  throws WorkNotFoundException, WorkExecutionException {
 
 		logger.debug("IN");
 
 		File executableWorkDir;    	
+		ProcessesStatusContainer processesStatusContainer = ProcessesStatusContainer.getInstance();
 
 		try {
 			logger.debug("Starting configure method of work : " +
@@ -96,19 +113,16 @@ public class WorkConfiguration {
 			WorkManager wm = new WorkManager();
 			logger.debug("work manager instanziated");
 
-			AuditServiceProxy auditServiceProxy=(AuditServiceProxy)parameters.get(EngineConstants.ENV_AUDIT_SERVICE_PROXY);
-			EventServiceProxy eventServiceProxy=(EventServiceProxy)parameters.get(EngineConstants.ENV_EVENT_SERVICE_PROXY);
+			AuditServiceProxy auditServiceProxy=null;
+			Object auditO=parameters.get(EngineConstants.ENV_AUDIT_SERVICE_PROXY);			
+			if(auditO!=null) auditServiceProxy=(AuditServiceProxy)auditO;
+			Object eventO=parameters.get(EngineConstants.ENV_EVENT_SERVICE_PROXY);
+			EventServiceProxy eventServiceProxy=null;
+			eventServiceProxy=(EventServiceProxy)eventO;
 
 			Object executionRoleO=parameters.get(SpagoBIConstants.EXECUTION_ROLE);
 			String executionRole=executionRoleO!=null ? executionRoleO.toString() : ""; 
 
-			Object documentIdO=parameters.get("DOCUMENT_ID");
-			String documentId=documentIdO!=null ? documentIdO.toString() : null; 
-			if(documentId==null){
-				logger.error("Could not retrieve document ID");
-				throw new Exception("Could not retrieve document ID");
-
-			}
 
 			// check if it is already in sessione means it is already running!!
 
@@ -131,27 +145,35 @@ public class WorkConfiguration {
 				Class clazz = Thread.currentThread().getContextClassLoader().loadClass(classToLoad);
 				Object obj = clazz.newInstance();
 				logger.debug("class loaded "+classToLoad);
-				Work workToLaunch=null;
+				SpagoBIWork workToLaunch=null;
 				// class loaded could be instance of CmdExecWork o di Work, testa se è il primo, se no è l'altra
 				if (obj instanceof CmdExecWork) {
 					logger.debug("Class specified extends CmdExecWork");
 					workToLaunch = (CmdExecWork) obj;
 					((CmdExecWork)obj).setCommand(work.getCommand());
 					((CmdExecWork)obj).setCommandEnvironment(work.getCommand_environment());
-					((CmdExecWork)obj).setParameters(work.getParameters());			
+					((CmdExecWork)obj).setCmdParameters(work.getCmdParameters());			
 				}
 				else
-					if (obj instanceof Work) {
+					if (obj instanceof SpagoBIWork) {
 						logger.debug("Class specified extends Work");
-						workToLaunch=(Work)obj;
+						workToLaunch=(SpagoBIWork)obj;
+						workToLaunch.setSbiParameters(work.getSbiParametersMap());
 					}
 
-
+				container.setPid(work.getPId());
 				container.setWork(workToLaunch);
 				container.setListener(listener);
 				container.setName(work.getWorkName());
 				container.setWm(wm);
-				container.setInSession(documentId, session);
+				//container.setInSession(documentId, session);
+				processesStatusContainer.getPidContainerMap().put(work.getPId(), container);
+
+				for (Iterator iterator = processesStatusContainer.getPidContainerMap().keySet().iterator(); iterator.hasNext();) {
+					String id = (String) iterator.next();
+					System.out.println("ID: "+id);
+
+				}
 			}
 			else{
 				System.out.println("Work already running");

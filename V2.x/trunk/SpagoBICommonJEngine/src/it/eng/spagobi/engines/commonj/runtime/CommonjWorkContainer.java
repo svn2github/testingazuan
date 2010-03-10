@@ -43,6 +43,8 @@ import de.myfoo.commonj.work.FooRemoteWorkItem;
 
 public class CommonjWorkContainer {
 
+	String pid=null;
+	
 	Work work=null;
 
 	CommonjWorkListener listener;
@@ -104,10 +106,18 @@ public class CommonjWorkContainer {
 	}
 
 
+	/**
+	 *  No more used
+	 * @param documentId
+	 * @param session
+	 */
+	
 	public void setInSession(String documentId,HttpSession session){
 		session.setAttribute("SBI_PROCESS_"+documentId, this);
 	}
 
+	
+	
 	public boolean isInSession(String documentId,HttpSession session){
 		Object o=session.getAttribute("SBI_PROCESS_"+documentId);
 		if(o!=null){
@@ -116,5 +126,15 @@ public class CommonjWorkContainer {
 		else return false;
 	}
 
+	public String getPid() {
+		return pid;
+	}
+
+	public void setPid(String pid) {
+		this.pid = pid;
+	}
+
+	
+	
 
 }

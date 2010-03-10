@@ -31,4 +31,10 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
+	<ACTION name="SESSION_EXPIRED_ACTION" 
+			class="it.eng.spagobi.commons.services.SessionExpiredAction" 
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 </ACTIONS>

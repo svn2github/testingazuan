@@ -9,4 +9,8 @@
 	      trap_name="ENGINE_STARTUP_EXCEPTION_TRAP_ACTION" 
 	      name="startupError" CATEGORY="startupError"/>	
 	
+	<TRAP trap_type="ACTION" 
+		  trap_name="SESSION_EXPIRED_ACTION" 
+		  name="sessionExpiredError" CATEGORY="sessionExpiredError"/>
+	
 </TRAPS>

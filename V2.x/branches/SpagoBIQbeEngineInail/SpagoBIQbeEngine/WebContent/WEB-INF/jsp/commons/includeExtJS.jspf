@@ -9,6 +9,9 @@
 
 <script type="text/javascript">
 	Ext.Ajax.timeout = 300000;
+	Ext.Ajax.defaultHeaders = {
+		'Powered-By': 'Ext'
+	};
 	Ext.BLANK_IMAGE_URL = '../js/lib/ext-2.0.1/resources/images/default/s.gif';
 </script>
 

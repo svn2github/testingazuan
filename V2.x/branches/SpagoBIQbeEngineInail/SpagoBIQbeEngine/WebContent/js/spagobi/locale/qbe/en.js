@@ -10,6 +10,11 @@ Sbi.locale.ln['sbi.qbe.messagewin.error.title'] = 'Error message';
 Sbi.locale.ln['sbi.qbe.messagewin.info.title'] = 'Info message';
 
 
+//===================================================================
+//SESSION EXPIRED
+//===================================================================
+Sbi.locale.ln['sbi.qbe.sessionexpired.msg'] = 'Session has expired. Try re-executing the document';
+
 
 //===================================================================
 //QUERY EDITOR PANEL

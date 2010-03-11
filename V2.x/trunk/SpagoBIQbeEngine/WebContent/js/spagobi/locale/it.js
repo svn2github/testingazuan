@@ -58,6 +58,12 @@ Sbi.locale.ln['sbi.qbe.messagewin.error.title'] = 'Messaggio di Errore';
 Sbi.locale.ln['sbi.qbe.messagewin.info.title'] = 'Informazione';
 
 
+//===================================================================
+//SESSION EXPIRED
+//===================================================================
+Sbi.locale.ln['sbi.qbe.sessionexpired.msg'] = 'La session di lavoro è scaduta. Prova a rieseguire il documento';
+
+
 
 //===================================================================
 //QUERY EDITOR PANEL

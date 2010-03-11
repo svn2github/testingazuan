@@ -59,6 +59,13 @@ Sbi.locale.ln['sbi.qbe.messagewin.warning.title'] = 'Warning message';
 Sbi.locale.ln['sbi.qbe.messagewin.error.title'] = 'Error message';
 Sbi.locale.ln['sbi.qbe.messagewin.info.title'] = 'Info message';
 
+
+//===================================================================
+//SESSION EXPIRED
+//===================================================================
+Sbi.locale.ln['sbi.qbe.sessionexpired.msg'] = 'Session has expired. Try re-executing the document';
+
+
 //LookupField 
 Sbi.locale.ln['sbi.lookup.Confirm'] = 'Confirm';
 Sbi.locale.ln['sbi.lookup.Annulla'] = 'Cancel';

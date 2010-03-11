@@ -68,8 +68,12 @@ Sbi.exception.ExceptionHandler = function(){
         			var content = Ext.util.JSON.decode( response.responseText );
         			if(content.errors !== undefined && content.errors.length > 0) {
         				errMessage = '';
-        				for(var i = 0; i < content.errors.length; i++) {
-        					errMessage += content.errors[i].message + '<br>';
+        				if (content.errors[0].message === 'session-expired') {
+        					errMessage = LN('sbi.qbe.sessionexpired.msg');
+        				} else {
+	        				for(var i = 0; i < content.errors.length; i++) {
+	        					errMessage += content.errors[i].message + '<br>';
+	        				}
         				}
         			} 
         		} 
@@ -105,7 +109,7 @@ Sbi.exception.ExceptionHandler = function(){
            		title: t
            		, msg: m
            		, buttons: Ext.MessageBox.OK     
-           		, icon: Ext.MessageBox. WARNING
+           		, icon: Ext.MessageBox.WARNING
            		, modal: false
        		});
         }

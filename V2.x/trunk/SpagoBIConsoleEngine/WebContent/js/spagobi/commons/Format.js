@@ -230,8 +230,10 @@ Sbi.console.commons.Format = function(){
       
         , inlineBarRenderer : function(format){
             return function(v){
-                v = (v / format.maxValue) * 100; 
-                return '<div title="'+ format.tooltip + '" style="width:' +  v  + '%;height:10px;border:1px solid #000;background:' + format.color + ';"/>'
+                v = (v / format.totValue) * 100; 
+                v = Sbi.console.commons.Format.number(v, {decimalPrecision: 2});
+                var tip = (format.tooltip !== undefined)? format.tooltip : v;
+                return '<div title="'+ tip + '" style="width:' +  v  + '%;height:10px;border:1px solid #000;background:' + format.color + ';"/>'
             };
         }
        

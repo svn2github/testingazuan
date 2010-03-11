@@ -17,11 +17,15 @@ Sbi.template = {
         }, {
             id: 'testConsole'
             , label: 'testConsole'
-            , refreshTime: 10
+            , refreshTime: 30
         }, {
             id: 'testConsole2'
             , label: 'testConsole2'
             , refreshTime: 30
+        }, {
+            id: 'testConsole3'
+                , label: 'testConsole'
+                , refreshTime: 30
         }    
 	]
 	
@@ -227,8 +231,7 @@ Sbi.template = {
 								type: 'bar'
 								, column: 'chart_store_cost'
 								, color: 'gray'
-								, maxValue: 200 
-								, tooltip: 'volume vendite'
+								, totValue: 500 
 							}, { 
 								type: 'point'
 								, column: 'chart_unit_sales'
@@ -454,8 +457,8 @@ Sbi.template = {
 												type: 'bar'
 												, column: 'BarChart'
 												, color: 'blue'
-												, maxValue: 200 
-												, tooltip: 'volume vendite'
+												, totValue: 200 
+												//, tooltip: 'volume vendite'
 										}, {
 												 type: 'point'
 												 , column: 'Bullet'
@@ -608,7 +611,7 @@ Sbi.template = {
 				]
 			}
             , table: {
-	            dataset: 'testConsole'		
+	            dataset: 'testConsole3'		
               , filterBar: {type: 'automatic'  
 				          , defaults: {operator: 'EQUALS_TO'
 				               		 , operand: 'DISTINCT' 
@@ -675,8 +678,8 @@ Sbi.template = {
                  	{ 	type: 'bar'
                         , column: 'chart_store_cost'
 	                   	, color: 'green'
-	                   	, maxValue: 200 
-	                   	, tooltip: 'volume vendite'
+	                   	, totValue: 200 
+	                  // 	, tooltip: 'volume vendite'
 					}, { type: 'point'
                     	, column: 'chart_unit_sales'
                     	, color: 'red' //red | grey | ...											

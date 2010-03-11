@@ -243,6 +243,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		this.store = this.storeManager.getStore(this.storeId);
 		this.store.remoteSort = false;  //local type		
 		this.store.on('exception', Sbi.exception.ExceptionHandler.onStoreLoadException, this);
+		this.store.on('load', this.onLoad, this);
 		this.store.on('metachange', this.onMetaChange, this);
 	}
 
@@ -276,8 +277,49 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		}
 	}
 	
+	//redefines the renderer for inline charts.
+	, updateInLineCharts: function(){
+
+		for(var j = 0, len = this.inlineCharts.length; j < len; j++) {
+			var idx = this.getColumnModel().findColumnIndex(this.store.getFieldNameByAlias(this.inlineCharts[j].column));
+			this.getColumnModel().setRenderer(idx, this.createInlineChartRenderer(this.inlineCharts[j]) );			
+		}
+	}
 	
 	// -- callbacks ---------------------------------------------------------------------------------------------
+	//defines the max, min and tot value on all records (only for columns visualized as chart)
+	, onLoad: function(){
+		var numRec = this.store.getCount();
+		var minValue = 0;
+		var maxValue = 0;
+		var totValue = 0;
+		
+		//for(p in this.inlineCharts ){	
+		for(var p = 0, len = this.inlineCharts.length; p < len; p++) {
+			minValue = 0;
+			maxValue = 0;
+			totValue = 0;		
+			if (this.inlineCharts[p] !== undefined){		
+				for (var i=0; i < numRec; i++){
+					var tmpRec = this.store.getAt(i);
+					var tmpValue = tmpRec.get(this.store.getFieldNameByAlias(this.inlineCharts[p].column));
+					if (tmpValue !== undefined){
+						totValue = totValue + tmpValue;
+						if ( tmpValue < minValue || i === 0) minValue = tmpValue;
+						
+						if ( tmpValue > maxValue ) maxValue = tmpValue;
+					}
+				}  
+
+				//update initial value config with news								
+				this.inlineCharts[p].maxValue = maxValue;
+				this.inlineCharts[p].minValue = minValue;
+				this.inlineCharts[p].totValue = totValue; 	
+			}
+		}
+		
+		this.updateInLineCharts();
+	}
 	
 	, onMetaChange: function( store, meta ) {
 		var i;
@@ -384,6 +426,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	}
 
   
+
 
   
   

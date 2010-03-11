@@ -49,8 +49,12 @@ Ext.ns("Sbi.console");
 Sbi.console.CustomFilteringToolbar = function(config) {
 
 		var defaultSettings = {
-		    // default goes here
+		    showIfEmpty: true
+		    , emptyMsg: 'No filters'
+		    , tbInizialzed: false
 		};
+		
+		
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.customFilteringToolbar) {
 			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.customFilteringToolbar);
@@ -59,65 +63,70 @@ Sbi.console.CustomFilteringToolbar = function(config) {
 		var c = Ext.apply(defaultSettings, config || {});
 		Ext.apply(this, c);
 		
-		/*
-		this.services = this.services || new Array();	
-		this.services['doThat'] = this.services['doThat'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'DO_THAT_ACTION'
-			, baseParams: new Object()
-		});
-		*/
-	
-		c = Ext.apply(c, {items:this.customFilterBar});
+		if(this.showIfEmpty === true) {
+			c = Ext.apply(c, {
+				items: [{
+					xtype: 'tbtext',
+		            text: this.emptyMsg
+				}]
+			});
+		}
+		
 		// constructor
 		Sbi.console.CustomFilteringToolbar.superclass.constructor.call(this, c);
+		
 		//adds events		
 		this.store.on('metachange', this.onMetaChange, this);
 		this.store.on('load', this.filterGrid, this);
 };
 
 Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {  
-    services: null
+    
+	services: null
     , customFilterBar: null
-    , txtField: null
-   
-
+    , tbInizialzed: null
+    
+    // automatic: all dataset fields are added as filter
+    , AUTOMATIC_FILTERBAR: 'automatic'
+    	//custom: only configurated fields are added as filter  
+    , CUSTOM_FILTERBAR: 'custom'
+    
     // -- public methods ---------------------------------------------------------------
-    , onRender : function(ct, position) {
-  		this.txtField = new Ext.form.TextField({fieldLabel: 'Loading...'});  		
-		Sbi.console.CustomFilteringToolbar.superclass.onRender.call(this, ct, position);
-    }
-   
+      
     
     
     // -- private methods ---------------------------------------------------------------
+   
+    , onRender : function(ct, position) {
+		Sbi.console.CustomFilteringToolbar.superclass.onRender.call(this, ct, position);
+    }
+    
     , onMetaChange: function( store, meta ) {
-       this.cleanFilterToolbar();
-
-       	if (this.filterBar.type === 'automatic' ){
-       	  // automatic: all dataset fields are added as filter
-      		for(var i = 0; i < meta.fields.length; i++) { 		  
-      		  if (meta.fields[i].header !== undefined && meta.fields[i].header !== ''){   
-          	   this.createFilterField(this.filterBar.defaults.operator,  meta.fields[i].header, store.getFieldNameByAlias(meta.fields[i].header));
-                
-      		  }
-      		} 
-      	}
-      	else{
-      	 //custom: only configurated fields are added as filter      	 
-        	for(var i = 0; i < meta.fields.length; i++) { 		           
-        		 if (meta.fields[i].header !== undefined &&  meta.fields[i].header !== '' && this.isConfiguratedFilter(meta.fields[i].header)){         		     	
-                  this.createFilterField(this.getFilterOperator(meta.fields[i].header), this.getColumnText(meta.fields[i].header),  store.getFieldNameByAlias(meta.fields[i].header));  	                  
-            	}        		  
-        	} 
-      	}	
-
-      //store.ready is true only after the first load, so in next reloads the toolbar's action items aren't re-designed!
-       	if (this.store.ready !== true){
-       		//adds actions
+    	var i;
+    	
+    	if(this.tbInizialzed === false) {
+	    	if (this.filterBar.type ===  this.AUTOMATIC_FILTERBAR){
+	    	   for(i = 0; i < meta.fields.length; i++) { 		  
+	    		   if (meta.fields[i].header && meta.fields[i].header !== ''){   
+	    			   this.createFilterField(this.filterBar.defaults.operator,  meta.fields[i].header, store.getFieldNameByAlias(meta.fields[i].header));
+	    		   }
+	    	   } 
+	      	} else if(this.filterBar.type === this.CUSTOM_FILTERBAR){
+	        	for(i = 0; i < meta.fields.length; i++) { 		           
+	        		 if (meta.fields[i].header &&  meta.fields[i].header !== '' && this.isConfiguratedFilter(meta.fields[i].header)){         		     	
+	                  this.createFilterField(this.getFilterOperator(meta.fields[i].header), this.getColumnText(meta.fields[i].header),  store.getFieldNameByAlias(meta.fields[i].header));  	                  
+	            	}        		  
+	        	} 
+	      	} else {
+	      		Sbi.Msg.showError('Toolbar type [' + this.filterBar.type + '] is not supported');
+	      	}	
+	       	
 			this.addActionButtons();    					
-		}
-       	this.doLayout();
+			
+	       	this.doLayout();
        	
+	       	this.tbInizialzed = true;
+    	}
     }
 	
     //returns true if the input field is a filter defined into template, false otherwise.

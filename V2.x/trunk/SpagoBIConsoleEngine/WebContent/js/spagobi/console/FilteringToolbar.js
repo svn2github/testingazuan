@@ -52,6 +52,7 @@ Sbi.console.FilteringToolbar = function(config) {
 	var defaultSettings = {
 	    autoWidth: true
 	  , width:'100%'
+	  , filters: {}
 	};
 		
 	if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.filteringToolbar) {
@@ -60,17 +61,6 @@ Sbi.console.FilteringToolbar = function(config) {
 	
 	var c = Ext.apply(defaultSettings, config || {});
 	Ext.apply(this, c);
-
-		
-	/*
-	this.services = this.services || new Array();	
-	this.services['doThat'] = this.services['doThat'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'DO_THAT_ACTION'
-		, baseParams: new Object()
-	});
-	*/
-	
-	//c = Ext.apply(c, {});
 	
 	// constructor
 	Sbi.console.FilteringToolbar.superclass.constructor.call(this, c);
@@ -91,7 +81,7 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
     
 	// -- private methods ---------------------------------------------------------------
 	, onRender : function(ct, position) { 
-		  Sbi.console.FilteringToolbar.superclass.onRender.call(this, ct, position);
+		Sbi.console.FilteringToolbar.superclass.onRender.call(this, ct, position);
 	}
 
 	//adds action buttons
@@ -107,44 +97,92 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
         	   this.addButton(b);	
         	}	
         }
-  }
-  
-  //reset the toolbar (delete every elements)
-  , cleanFilterToolbar: function(){
-      if (this.cbStores !== null ){
-         delete this.cbStores; 
-         /*
-          this.items.each( function(item) {
-              this.items.remove(item);
-                  item.destroy();           
-              }, this);
-          */    
-      }
-  
-    }
-   
-   
-   , reloadComboStore: function(dataIdx) {
-      var distinctValues = this.store.collect(dataIdx);  
-      var data = [];
+	}
+	
+	 //defines fields depending from operator type
+	 , createFilterField: function(operator, header, dataIndex){
+		   if (operator === 'EQUALS_TO') {
+			   this.cbStores = this.cbStores || []; 
+			   var s = new Ext.data.JsonStore({
+				   fields:['name', 'value', 'description'],
+		           data: []
+			   });
+			   this.cbStores[dataIndex] = s;
+		  
+			   this.store.on('load', this.reloadComboStore.createDelegate(this, [dataIndex]), this);
+		     
+			   var combDefaultConfig = {
+					   width: 130,
+				       displayField:'name',
+				       valueField:'value',
+				       typeAhead: true,
+				       triggerAction: 'all',
+				       emptyText:'...',
+				       selectOnFocus:true,
+				       mode: 'local'
+			   };
+			   
+			   
+			   var cb = new Ext.form.ComboBox(
+			       Ext.apply(combDefaultConfig, {
+			    	   store: s,
+				       index: dataIndex,
+				       listeners: {
+						   'select': {
+						   		fn: function(combo, record, index) {
+									var field = combo.index;
+									var exp = record.get(combo.valueField);
+									this.addFilterGrid(field, exp);							                
+								},
+								scope: this
+							}				     					
+					   }
+			       	})
+			   );	
+
+			   this.addText("    " + header + "  ");
+			   this.addField(cb);	 
+	     } else {
+	    	 Sbi.Msg.showWarning('Filter operator type [' + operator + '] not supported');
+	     }
+	  
+	 }
+	   
+	    
+	 , reloadComboStore: function(dataIdx) {
+		 var distinctValues; 
+		 var data;
       
-      //define the empty (for reset) element
-      var firstRow = {};
-      firstRow.name = '...';
-      firstRow.value = 'emptyEl';
-      firstRow.description = '';
-      data.push(firstRow);
+		 var s = this.cbStores[dataIdx];
+	   
+		 if(!s) {
+		   Sbi.msg.showError('Impossible to refresh filter associated to column [' + dataIdx + ']');
+		   return;
+		 }
+	   
+		 distinctValues = this.store.collect(dataIdx);
+		 data = [];
+	   
+		 //define the empty (for reset) element
+	   	var firstRow = {
+	      name: '...'
+		  , value: 'emptyEl'
+		  , description: ''
+	   	};
+	   	data.push(firstRow);
       
-      for(var i = 0, l = distinctValues.length; i < l; i++) {
-        var row = {};
-        row.name = distinctValues[i];
-        row.value = distinctValues[i];
-        row.description = distinctValues[i];
-        data.push(row);
-      }
-   
-      this.cbStores[dataIdx].loadData(data);
-   }
+	   	for(var i = 0, l = distinctValues.length; i < l; i++) {
+		   var row = {
+			  name: distinctValues[i]
+			  , value: distinctValues[i]
+			  , description: distinctValues[i]
+		   };
+		   data.push(row);
+	   	}
+	   
+	   	// replace previous records with the new one
+	   	s.loadData(data, false);
+	 }
    
    //filters functions
    , filterGrid: function() {
@@ -154,23 +192,14 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
       		this.store.sort(this.store.getSortState().field, this.store.getSortState().direction);
        }
       	
-	   if (this.filters !== null) {
-		   if (this.filters === {}){
-			   alert("clearFilter!!");
-			   this.store.clearFilter(true);
-			   return;
-		   }
-		    //apply the filter	       	       		
-	 	   this.store.filterBy(function(record,id){		
-	           for(var f in this.filters){     	        	 
-	               if(record.data[f] !== this.filters[f]) return false;              
-	           }
-	           return true;
-	       }, this);
-	       	     
-      	}else{
-		   this.filters = {};
-	   }	  
+	   //apply the filter	       	       		
+	   this.store.filterBy(function(record,id){		
+		   for(var f in this.filters){     	        	 
+			   if(record.data[f] !== this.filters[f]) return false;              
+	       }
+	       return true;
+	    }, this);
+	       	    
    }
    
    //adds the single filter or delete if it's the reset field
@@ -184,49 +213,8 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	   this.filterGrid();
    }
    
-   //defines fields depending from operator type
-  , createFilterField: function(operator, header, dataIndex){
-     if (operator === 'EQUALS_TO'){
-    	 //defines combobox
-	     this.cbStores = this.cbStores || []; 
-	     var s = new Ext.data.JsonStore({
-	           fields:['name', 'value', 'description'],
-	           data: []
-	     });
-	     this.cbStores[dataIndex] = s;
-	  
-	     this.store.on('load', this.reloadComboStore.createDelegate(this, [dataIndex]), this);
-	     //store.ready is true only after the first load, so in next reloads the toolbar's items aren't re-designed!
-	     if (this.store.ready !== true){
-		     var cb = new Ext.form.ComboBox({
-		              	        store: s,
-		              	        width: 130,
-		              	        displayField:'name',
-		              	        valueField:'value',
-		              	        typeAhead: true,
-		              	        triggerAction: 'all',
-		              	        emptyText:'...',
-		              	        selectOnFocus:true,
-		              	        mode: 'local',
-		              	        index: dataIndex,
-		              	       	listeners: {
-						        	'select': {
-									   fn: function(combo, record, index) {
-							                 var field = combo.index;
-							                 var exp = record.get(combo.valueField);
-							                 this.addFilterGrid(field, exp);							                
-							            },
-						    			scope: this
-						     		}				     					
-						         }
-		              	    });	
-
-		      this.addText("    " + header + "  ");
-		      this.addField(cb);	 
-	     }
-     }
   
-  }
+   
 
   
 });

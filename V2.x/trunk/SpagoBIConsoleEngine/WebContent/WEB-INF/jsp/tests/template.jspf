@@ -136,92 +136,94 @@ Sbi.template = {
             , table: {
 	            dataset: 'testConsole'
 
-	            	// -- Filter bar -----------------------------------------------------------------
-	    	        , filterBar: {
-	    	            type: 'custom'  
-	    	            , defaults: {
-	    	                operator: 'EQUALS_TO'
-	    	                ,operand: 'DISTINCT'
-	    	            }     
+	            // -- Filter bar -----------------------------------------------------------------
+	    	    , filterBar: {
+	    	    	type: 'custom'  
+	    	        , defaults: {
+	    	        	operator: 'EQUALS_TO'
+	    	            , operand: 'DISTINCT'
+	    	        }     
 	    	
-	    	            , filters: [
-	    	              {
-	    	           	  	 text: 'Brands'
-	    	               , column: 'brandname'
-	    	               , operator: 'EQUALS_TO'
-	    	               , operand: 'DISTINCT'
-	    	               }, {
-	    	                 text: 'Products'
-	    	               , column: 'productName'
-	    	               , operator: 'EQUALS_TO'
-	    	               , operand: 'DISTINCT'
-	    	               }
-	    	            ]
+	    	        , filters: [{
+	    	        	text: 'Brands'
+	    	            , column: 'brandname'
+	    	            , operator: 'EQUALS_TO'
+	    	            , operand: 'DISTINCT'
+	    	        }, {
+	    	        	text: 'Products'
+	    	            , column: 'productName'
+	    	            , operator: 'EQUALS_TO'
+	    	            , operand: 'DISTINCT'
+	    	        }]
 
-	    	            , actions: [
-	    	                {
-	    	                    name: 'refresh'
-		    	                , tooltip: 'Refresh console data'
-	    	                    , hidden: false
-	    	                    , config: {}}
-	    	                    , {name: 'errors'
-		    	                ,  tooltip: 'Mark all errors as viewed'
-	    	                    ,  hidden: false
-	    	                    ,  config: 
-	    	                       {
-	    	                        staticParams: {param1: 'paramValue1'
-	    	                                      ,param2: 'paramValue2' }
-	    	                        }
-	    	                     }, {
-	    	                       name: 'errors_inactive'
-		    	                ,  tooltip: 'Mark all errors as not viewed'
-	    	                    ,  hidden: true
-	    	                    ,  config: {
-	    	                       		staticParams: {param1: 'paramValue'}
-	    	                      }
-	    	                    }, {
-	    	                       name: 'warnings'
-		    	                ,  tooltip: 'Turn on all alarms'
-	    	                    ,  hidden: false
-	    	                    ,  config: {
-	    	                       		staticParams: {param1: 'paramValue'}
-	    	                       }
-	    	                     }, {name: 'warnings_inactive'
-	    	                    ,  hidden: true
-	    	                    ,  tooltip: 'Turn off all alarms'
-	    	                    ,  config: {
-	    	                        	staticParams: {param1: 'paramValue'}
-	    	                       }
-	    	                     },{
-	    	                       name: 'views'
-	    	                    ,  tooltip: 'Mark all rows as viewed'		    	                       
-	    	                    ,  hidden: false
-	    	                    ,  config: {
-	    	                        	staticParams: {param1: 'paramValue'}
-	    	                       }
-	    	                     },{ name: 'views_inactive'
-	    	                      ,  tooltip: 'Mark all rows as not viewed'	
-	    	                      ,  hidden: true
-	    	                      ,  config: {
-	    	                        	staticParams: {param1: 'paramValue'}
-	    	                         }
-	    	                     },{ name: 'monitor'
-		    	                  ,  hidden: false
-		    	                  ,  tooltip: 'View all active'
-		    	                  ,  config: {
-		    	                      	staticParams: {param1: 'paramValue'}
-		    	                     }
-	    	                     },{ name: 'monitor_inactive'
-		    	                  ,  hidden: false
-		    	                  ,  tooltip: 'View all inactive'
-		    	                  ,  config: {
-		    	                      	staticParams: {param1: 'paramValue'}
-		    	                    }
-		    	                 }
-	    	            ]
-	    	            
-		               	, inlineCharts: [
-							{ 
+	    	        , actions: [{
+	    	            name: 'refresh'
+		    	        , tooltip: 'Refresh console data'
+	    	            , hidden: false
+	    	            , config: {}
+    	            }, {
+        	            name: 'errors'
+		    	        , tooltip: 'Mark all errors as viewed'
+	    	            , hidden: false
+	    	            , config: {
+	    	            	staticParams: {
+    	            			param1: 'paramValue1'
+	    	                	, param2: 'paramValue2' 
+		    	            }
+    	            	}
+	    	        }, {
+	    	        	name: 'errors_inactive'
+		    	        , tooltip: 'Mark all errors as not viewed'
+	    	            , hidden: true
+	    	            , config: {
+	    	            	staticParams: {param1: 'paramValue'}
+	    	            }
+	    	        }, {
+	    	            name: 'warnings'
+		    	        , tooltip: 'Turn on all alarms'
+	    	            , hidden: false
+	    	            , config: {
+	    	        		staticParams: {param1: 'paramValue'}
+	    	            }
+	    	        }, {
+		    	        name: 'warnings_inactive'
+	    	            , hidden: true
+	    	            , tooltip: 'Turn off all alarms'
+	    	            , config: {
+	    	              	staticParams: {param1: 'paramValue'}
+	    	            }
+	    	        }, {
+                       name: 'views'
+	                   , tooltip: 'Mark all rows as viewed'		    	                       
+	    	           , hidden: false
+	    	           , config: {
+	    	           		staticParams: {param1: 'paramValue'}
+	    	           }
+	    	        },{ 
+		    	       name: 'views_inactive'
+	    	           , tooltip: 'Mark all rows as not viewed'	
+	    	           , hidden: true
+	    	           , config: {
+	    	           		staticParams: {param1: 'paramValue'}
+	    	            }
+	    	        },{ name: 'monitor'
+		    	        ,  hidden: false
+		    	        ,  tooltip: 'View all active'
+		    	        ,  config: {
+		    	        	staticParams: {param1: 'paramValue'}
+		    	        }
+	    	        },{ name: 'monitor_inactive'
+		    	    	,  hidden: false
+		    	        ,  tooltip: 'View all inactive'
+		    	        ,  config: {
+		    	        	staticParams: {param1: 'paramValue'}
+		    	        }
+		    	    }
+	    	        ]
+	    	    } //filterBar   
+	    	     
+		        , inlineCharts: [
+						{ 
 								type: 'bar'
 								, column: 'chart_store_cost'
 								, color: 'gray'
@@ -354,8 +356,7 @@ Sbi.template = {
 								, tooltip: 'View taken'
 								, config: {}
 							}
-						] 
-	    	        } //filterBar
+						]  
 	        }//table	    	
 		}, 
 
@@ -447,7 +448,7 @@ Sbi.template = {
 			                       }
 			                     }
 			            ]
-					            						
+	              }//filterBar	      						
               		  , inlineCharts: [
 										{
 												type: 'bar'
@@ -582,7 +583,7 @@ Sbi.template = {
 			      		                }
 			      		            ]  
 												
-	              }//filterBar	
+	             
 	    	} //table
 		}
 
@@ -669,7 +670,7 @@ Sbi.template = {
 	                       }
 	                     }
 	            ]		
-	            				
+              }//filterBar	
 				, inlineCharts: [
                  	{ 	type: 'bar'
                         , column: 'chart_store_cost'
@@ -798,7 +799,7 @@ Sbi.template = {
 		                    , config: {}
 		                }
 		            ]  
-              }//filterBar
+              
     		} //table
 		   }
 		] //pages

@@ -98,7 +98,11 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	, store: null
 	, columnModel: null
 	, selectionModel: null
+	
+	// conf bloks
 	, filterBar: null
+	, inlineCharts: null
+	, inlineActions: null
 	
 	
 	, GRID_ACTIONS: {
@@ -258,23 +262,25 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	}
 	
 	, initFilterBar: function(filterBarConf) {
-		if (filterBarConf.type === 'default'){
-			alert("Default filterbar working in progress!!");
+		if (filterBarConf.type === 'default') {
+			Sbi.Msg.showError('Toolbar of type [' + filterBarConf.type + '] is not yet supported');
 		} else if (filterBarConf.type === 'custom' || filterBarConf.type === 'automatic') {
 		    this.filterBar = new Sbi.console.CustomFilteringToolbar({filterBar: filterBarConf, store: this.store});          	  
-		}   
+		}  else {
+			Sbi.Msg.showError('Toolbar of type [' + filterBarConf.type + '] is not supported');
+		}
 	}
 	
 	
 	// -- callbacks ---------------------------------------------------------------------------------------------
 	
 	, onMetaChange: function( store, meta ) {
-		//if(store.storeId === 'testConsole') alert('onMetaChange IN');
+		var i;
 
 		var tmpMeta =  Ext.apply({}, meta); // meta;
 		var fields = tmpMeta.fields;
 		tmpMeta.fields = new Array(fields.length);
-		for(var i = 0; i < fields.length; i++) {
+		for(i = 0; i < fields.length; i++) {
 			if( (typeof fields[i]) === 'string') {
 				fields[i] = {name: fields[i]};
 			}
@@ -282,13 +288,13 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		}
 		
 		var inlineChartMap = {};
-		if (this.filterBar.inlineCharts) { 
-			for(var j=0, len= this.filterBar.inlineCharts.length; j < len; j++) {
-				inlineChartMap[ this.filterBar.inlineCharts[j].column ] = this.filterBar.inlineCharts[j];
+		if (this.inlineCharts) { 
+			for(var j = 0, len = this.inlineCharts.length; j < len; j++) {
+				inlineChartMap[ this.inlineCharts[j].column ] = this.inlineCharts[j];
 			}
 		}
 		
-		for(var i = 0; i < tmpMeta.fields.length; i++) {			
+		for(i = 0; i < tmpMeta.fields.length; i++) {			
 			if(tmpMeta.fields[i].type) {
 				var t = tmpMeta.fields[i].type;
 				tmpMeta.fields[i].renderer  =  Sbi.locale.formatters[t];			   
@@ -312,13 +318,13 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		} 
 
 	    //adds inline action buttons
-		if (this.filterBar.inlineActions) {
-			for(var i = 0, l = this.filterBar.inlineActions.length; i < l; i++){ 
-				var column = this.createInlineActionColumn(this.filterBar.inlineActions[i]);
+		if (this.inlineActions) {
+			for(var i = 0, l = this.inlineActions.length; i < l; i++){ 
+				var column = this.createInlineActionColumn(this.inlineActions[i]);
 				if(column !== null) {
 					tmpMeta.fields.push( column );
 				} else {
-					Sbi.Msg.showWarning('Impossible to create inlineActionColumn [' + this.filterBar.inlineActions[i].name + ']');
+					Sbi.Msg.showWarning('Impossible to create inlineActionColumn [' + this.inlineActions[i].name + ']');
 				}
   	  		}	
 		}

@@ -160,7 +160,7 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 		   return;
 		 }
 		 
-		 this.store.clearFilter( false );
+		 this.store.clearFilter( true );
 	   
 		 distinctValues = this.store.collect(dataIdx);
 		 data = [];

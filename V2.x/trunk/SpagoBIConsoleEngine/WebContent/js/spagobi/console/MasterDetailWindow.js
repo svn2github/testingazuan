@@ -83,7 +83,7 @@ Sbi.console.MasterDetailWindow = function(config) {
 		title: this.title,
 		buttonAlign : 'center',
 		buttons: [{
-			text: 'Cancel',
+			text: 'Ok',
 			handler: function(){
 	        	this.hide();
 	        }
@@ -127,19 +127,57 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
 	, initMasterlPanel: function() {
 		this.masterPanel = new Ext.Panel({
 			region:'north',
-		    frame: false, 
-		    border: false,
+    		split: true,
+    		frame:false,
+    		border:false,
+    		height: 70,
+    	    bodyStyle:'padding:5px;background:#E8E8E8;border-width:1px;border-color:#D0D0D0;',
+    	    style: 'padding-bottom:3px',
 		    html: 'Io sono il master ...'
 		});
 	}
 
 	, initDetailPanel: function() {
+		
+		this.detailText = new Ext.form.HtmlEditor({
+			 enableAlignments : false,
+	    	 enableColors : false,
+	    	 enableFont :  false,
+	    	 enableFontSize : false, 
+	    	 enableFormat : false,
+	    	 enableLinks :  false,
+	    	 enableLists : false,
+	    	 enableSourceEdit : false,
+	    	 autoScroll: true
+		});
+		
+		this.detailText.setValue('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed nibh ipsum. Ut dui nulla, viverra vitae condimentum eget, faucibus id quam. Praesent dapibus velit ut sem tincidunt pretium. Quisque scelerisque nisl in turpis ornare at vulputate nulla varius. Donec ut sem sed nunc accumsan mattis. In hac habitasse platea dictumst. Nulla et est eros, quis aliquet massa. Aliquam non ante ut sapien tincidunt porttitor. Duis commodo tincidunt egestas. Pellentesque eget pulvinar quam. Etiam lorem augue, fringilla et commodo in, viverra nec leo. Fusce molestie vehicula neque, sit amet tempus neque mattis vitae. Donec viverra vestibulum lectus, sit amet vestibulum ligula auctor sed. Maecenas lorem urna, congue id auctor eu, pharetra a libero. Quisque aliquam, enim nec auctor molestie, mi ipsum convallis dui, non condimentum leo quam nec dui. Fusce augue nisl, laoreet at tincidunt ut, malesuada et tellus. Maecenas sit amet nulla nisi, id rutrum orci. ');
+			
+		this.detailText.setReadOnly(true);
+		
+		this.detailText.on('render', function() {
+			//alert( this.detailPanel.getSize().toSource() );
+			this.detailText.setHeight( this.detailPanel.getSize().height - 12 );
+		}, this);
+		
 		this.detailPanel = new Ext.Panel({
 			region:'center',
 		    frame: false, 
 		    border: false,
-		    html: '... e io sono il detail'
+		    autoScroll: false,
+		    //html: '... e io sono il detail'
+		    items: [
+			    new Ext.Panel({
+			    	layout: 'fit'
+			    	, bodyStyle:'padding:5px;background:#E8E8E8;border-width:1px;border-color:#D0D0D0;'
+			    	, items: [this.detailText]
+			    })
+		    ]
 		});
+		
+		this.detailPanel.on('resize', function(panel, w, h) {
+			this.detailText.setHeight( h - 12 );
+		}, this);
 	}
     
     

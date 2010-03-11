@@ -159,6 +159,8 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 		   Sbi.msg.showError('Impossible to refresh filter associated to column [' + dataIdx + ']');
 		   return;
 		 }
+		 
+		 this.store.clearFilter( false );
 	   
 		 distinctValues = this.store.collect(dataIdx);
 		 data = [];
@@ -182,6 +184,8 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	   
 	   	// replace previous records with the new one
 	   	s.loadData(data, false);
+	   	
+	   	this.filterGrid();
 	 }
    
    //filters functions
@@ -192,7 +196,8 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
       		this.store.sort(this.store.getSortState().field, this.store.getSortState().direction);
        }
       	
-	   //apply the filter	       	       		
+	   //apply the filter
+       this.filters = this.store.filterPlugin.getFilters();
 	   this.store.filterBy(function(record,id){		
 		   for(var f in this.filters){     	        	 
 			   if(record.data[f] !== this.filters[f]) return false;              
@@ -204,7 +209,7 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
    
    //adds the single filter or delete if it's the reset field
    , addFilterGrid: function(f, exp){  
-
+	   this.filters = this.store.filterPlugin.getFilters();
 	   if (exp === 'emptyEl'){
 		   delete this.filters[f];
 	   }else{

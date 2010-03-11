@@ -41,7 +41,7 @@ public class EnginConf {
 	private String resourcePath = null;
 	private String spagoBiServerUrl = null;
 	private String spagoBiSsoClass = null;
-	//private String spagoBiDomain = null;
+	private String sessionExpiredUrl = null;
 	
 
 
@@ -69,7 +69,7 @@ public class EnginConf {
 				setResourcePath();
 				setSpagoBiServerUrl();
 				setSpagoBiSsoClass();
-				//setSpagoBiDomain();
+				setSessionExpiredUrl();
 			}else logger.debug("Impossible to load configuration for report engine");
 		} catch (SourceBeanException e) {
 			logger.error("Impossible to load configuration for report engine", e);
@@ -109,7 +109,20 @@ public class EnginConf {
 		logger.debug("OUT");
 	}
 
+	public String getSessionExpiredUrl() {
+	    return sessionExpiredUrl;
+	}
 	
+	private void setSessionExpiredUrl() {
+		logger.debug("IN");
+		SourceBean sb = (SourceBean)config.getAttribute("SESSION_EXPIRED_URL");
+		if (sb != null) {
+			sessionExpiredUrl = sb.getCharacters();
+		} else {
+			sessionExpiredUrl = null;
+		}
+		logger.debug("OUT");
+	}
 
 
 	public String getResourcePath() {

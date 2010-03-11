@@ -12,8 +12,10 @@
 	<SPAGOBI_SERVER_URL_JNDI_NAME>java://comp/env/spagobi_service_url</SPAGOBI_SERVER_URL_JNDI_NAME>	
 	<!--  THE JNDI RESOURCE NAME FOR RETRIVE THE RESOURCE PATH -->
 	<RESOURCE_PATH_JNDI_NAME>java://comp/env/spagobi_resource_path</RESOURCE_PATH_JNDI_NAME>
-	<!--  THE JNDI NAME FOR SPAGOBI DOMAIN -->
-	<!--SPAGOBI_DOMAIN_JNDI_NAME>java://comp/env/spagobi_domain</SPAGOBI_DOMAIN_JNDI_NAME-->	
+	
+	<!-- The URL to FORWARD to when session has expired -->
+	<SESSION_EXPIRED_URL>/WEB-INF/jsp/commons/sessionExpired.jsp</SESSION_EXPIRED_URL>
+
 	<SecurityServiceProxy_URL>/services/SecurityService</SecurityServiceProxy_URL>
 	<SchedulerServiceProxy_URL>/services/SchedulerService</SchedulerServiceProxy_URL>
 	<EventServiceProxy_URL>/services/EventService</EventServiceProxy_URL>

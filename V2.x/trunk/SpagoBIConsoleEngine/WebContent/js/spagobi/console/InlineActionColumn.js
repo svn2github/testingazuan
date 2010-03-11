@@ -10,7 +10,8 @@ Sbi.console.InlineActionColumn = function(config){
 	}, config || {});
 	
 	config.options = config.config;
-	config.tooltip = config.tooltip || inlineActionColumnConfig.name;
+	//config.tooltip = config.tooltip || inlineActionColumnConfig.name;
+	config.tooltip = config.tooltip || {};
 	config.handler = config.handler || Ext.emptyFn;
 	config.scope = config.scope || this;
 

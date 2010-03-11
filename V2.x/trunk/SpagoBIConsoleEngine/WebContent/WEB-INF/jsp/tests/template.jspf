@@ -37,7 +37,7 @@ Sbi.template = {
     
 	    // layout properties
 	    collassable: true
-	    , collapsed: false
+	    , collapsed: true
 	    , hidden: false
     
 
@@ -65,7 +65,7 @@ Sbi.template = {
         		, dataField: 'sales'
 	        	, categoryField: 'quarter'
         	}
-        } ,  {
+        } , {
         	dataset: 'testConsLiveLine'
             , widgetConfig: {
             	type: 'chart.sbi.multileds'
@@ -341,12 +341,10 @@ Sbi.template = {
 							},{
 								name: 'monitor'
 								, hidden: false
-								, tooltip: 'Active monitoring'
-								, config: {}
-							},{
-								name: 'monitor_inactive'
-								, hidden: false
-								, tooltip: 'Disable monitoring'
+								//, tooltip:'aaa'
+							 	, tooltipActive: 'Enable monitoring'
+						        , tooltipInactive: 'Disable monitoring'
+								, column: 'ico_monitor'
 								, config: {}
 							},{
 								name: 'views'
@@ -566,12 +564,9 @@ Sbi.template = {
 			      		                },{
 			      		                    name: 'monitor'
 			      		                    , hidden: false
-			      		                    , tooltip: 'Active monitoring'
-			      		                    , config: {}
-			      		                },{
-			      		                    name: 'monitor_inactive'
-			      		                    , hidden: false
-			      		                    , tooltip: 'Disable monitoring'
+			      		                    //, tooltip:'bbb'
+			      		                  	, tooltipActive: 'Enable monitoring'
+			      			                , tooltipInactive: 'Disable monitoring'
 			      		                    , config: {}
 			      		                },{
 			      		                    name: 'views'
@@ -783,12 +778,10 @@ Sbi.template = {
 		                },{
 		                    name: 'monitor'
 		                    , hidden: false
-		                    , tooltip: 'Active monitoring'
-		                    , config: {}
-		                },{
-		                    name: 'monitor_inactive'
-		                    , hidden: false
-		                    , tooltip: 'Disable monitoring'
+		                    //, tooltip: 'ccc'
+		                    , tooltipActive: 'Enable monitoring'
+			                , tooltipInactive: 'Disable monitoring'
+			                , column: 'ico_monitor'
 		                    , config: {}
 		                },{
 		                    name: 'views'

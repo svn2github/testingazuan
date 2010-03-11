@@ -119,57 +119,62 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     
    
     // public methods
-    , execAction: function(){
-        var inlineParams = {}; 
-        var dynParams =[];       
-        
-  		//adds dynamic parameters (from dataset or request)
-        if(this.actionConf.config.dynamicParams) {    
-           var msgErr = ""; 
-      		 for (var i=0, l= this.actionConf.config.dynamicParams.length; i < l; i++){      		     
-      		     var tmp = this.actionConf.config.dynamicParams[i];
-        	 	 	 for(p in tmp) {
-          	 	 	   if (p != 'scope'){
-          	 	 		   var param = {};   
-                     if (tmp['scope'] === 'env'){ 
-                          if (this.executionContext[p] === undefined) {              	 	 	      
-              	 	 	        msgErr += 'Parameter "' + p + '" undefined into request. <p>';
-                          } else {          	 	 		           	 	 		  
-                	 	 		    param [tmp[p]] = this.executionContext[p];
-                	 	 		    dynParams.push(param);
-                          } 	 		 
-                      }          	 	 		   
-          		     }
-        			   }          			   
-              } 	
-              if  (msgErr != ""){
-        			     Sbi.Msg.showError(msgErr, 'Service Error');
-              }		  
-    		}
+	, resolveParameters: function(parameters, context) {
+		var results = {};  
+		
+		results = Ext.apply(results, parameters.staticParams);
+		
+		var dynamicParams = parameters.dynamicParams;
+	    if(dynamicParams) {        	
+	    	var msgErr = ""; 
+	      	for (var i = 0, l = dynamicParams.length; i < l; i++) {      		     
+	      		var param = dynamicParams[i]; 
+	        	for(p in param) { 
+	        		if(p === 'scope') continue;
+	        			if (param.scope === 'env'){ 
+			            	if (context[p] === undefined) {              	 	 	      
+			            		msgErr += 'Parameter "' + p + '" undefined into request. <p>';
+		                    } else {          	 	 		           	 	 		  
+		                    	results[param[p]] = context[p];
+		                    } 	 		 
+	                }          	 	 		   
+	          		    
+	        	 }          			   
+	      	} 
+	      	
+	        if  (msgErr != ""){
+	        	Sbi.Msg.showError(msgErr, 'Service Error');
+	        }		  
+	    }
+	    
+	    return results;
+	}
 
-        Ext.Ajax.request({
-  			        url: this.services[this.actionConf.name],  			       
-  			       //params: {'message': this.name, 'userId': Sbi.user.userId, 'parameters': Ext.util.JSON.encode(inlineParams) } ,  			       
-  			        params: {'message': this.actionConf.name, 'userId': Sbi.user.userId, 
-      					 'statParams': Ext.util.JSON.encode( this.actionConf.config.staticParams), 'dynParams': Ext.util.JSON.encode(dynParams)} ,			    
-  			        callback : function(options , success, response) {
-  			  	  		if (success) {
-  				      		if(response !== undefined && response.responseText !== undefined) {
-  				      			var content = Ext.util.JSON.decode( response.responseText );
-  				      			if (content !== undefined) {				      			  
-  				      				alert(content.toSource());
-  				      			}				      		
-  				      		} else {
-  				      			Sbi.Msg.showError('Server response is empty', 'Service Error');
-  				      		}
-  			  	  		} else { 
-  			  	  		Sbi.Msg.showError('Cannot exec action: ' + this.name, 'Service Error');
-  			  	  		}
-  			        },
-  			        scope: this,
-  					failure: Sbi.exception.ExceptionHandler.handleFailure      
-  				});
-			}
+    , execAction: function(){
+	
+		var params = this.resolveParameters(this.actionConf.config, this.executionContext);
+		params = Ext.apply(params, {
+				message: this.actionConf.name, 
+				userId: Sbi.user.userId 
+			}); 
+				 
+			Ext.Ajax.request({
+			url: this.services[this.actionConf.name]	       
+	       	, params: params 			       
+	    	, success: function(response, options) {
+	    		if(response !== undefined && response.responseText !== undefined) {
+						var content = Ext.util.JSON.decode( response.responseText );
+						if (content !== undefined) {				      			  
+							alert(content.toSource());
+						}				      		
+				} else {
+					Sbi.Msg.showError('Server response is empty', 'Service Error');
+				}
+	    	}
+	    	, failure: Sbi.exception.ExceptionHandler.onServiceRequestFailure
+	    	, scope: this     
+	    });
+	}
    
     
     

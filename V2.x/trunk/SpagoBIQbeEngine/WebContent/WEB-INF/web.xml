@@ -11,6 +11,12 @@
 	<!--  ============================================================================ -->
 	<!--  FILTERS								 									   -->
 	<!--  ============================================================================ -->
+	
+	<filter>
+		<filter-name>EngineCheckSessionFilter</filter-name>
+		<filter-class>it.eng.spagobi.utilities.filters.EngineCheckSessionFilter</filter-class>
+	</filter>
+	
 <!-- START-CAS   	
 	<filter>
 	  <filter-name>CAS Authentication Filter</filter-name>
@@ -64,6 +70,11 @@ END-CAS -->
 	<!--  ============================================================================ -->
 	<!--  FILTER MAPPINGS						 									   -->
 	<!--  ============================================================================ -->
+
+	<filter-mapping>
+		<filter-name>EngineCheckSessionFilter</filter-name>
+		<url-pattern>/servlet/*</url-pattern>
+	</filter-mapping>
 
 <!-- START-CAS 
   <filter-mapping>

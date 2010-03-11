@@ -257,6 +257,16 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		});
 	}
 	
+	, initFilterBar: function(filterBarConf) {
+		if (filterBarConf.type === 'default'){
+			alert("Default filterbar working in progress!!");
+		} else if (filterBarConf.type === 'custom' || filterBarConf.type === 'automatic') {
+		    this.filterBar = new Sbi.console.CustomFilteringToolbar({filterBar: filterBarConf, store: this.store});          	  
+		}   
+	}
+	
+	
+	// -- callbacks ---------------------------------------------------------------------------------------------
 	
 	, onMetaChange: function( store, meta ) {
 		//if(store.storeId === 'testConsole') alert('onMetaChange IN');
@@ -271,12 +281,14 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			tmpMeta.fields[i] = Ext.apply({}, fields[i]);
 		}
 		
+		var inlineChartMap = {};
+		if (this.filterBar.inlineCharts) { 
+			for(var j=0, len= this.filterBar.inlineCharts.length; j < len; j++) {
+				inlineChartMap[ this.filterBar.inlineCharts[j].column ] = this.filterBar.inlineCharts[j];
+			}
+		}
 		
-		for(var i = 0; i < tmpMeta.fields.length; i++) {
-
-			var localHeader = tmpMeta.fields[i].header;
-			
-			
+		for(var i = 0; i < tmpMeta.fields.length; i++) {			
 			if(tmpMeta.fields[i].type) {
 				var t = tmpMeta.fields[i].type;
 				tmpMeta.fields[i].renderer  =  Sbi.locale.formatters[t];			   
@@ -288,78 +300,76 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			
 			tmpMeta.fields[i].sortable = true;
 	    
-			//adds inline charts if it's necessary
-			if (this.filterBar.inlineCharts){  	     
-				for(var j=0, len= this.filterBar.inlineCharts.length; j < len; j++){
-					if (this.filterBar.inlineCharts[j].column === tmpMeta.fields[i].header){
-						if(this.filterBar.inlineCharts[j].type && this.filterBar.inlineCharts[j].type === 'bar' ) {
-							tmpMeta.fields[i].renderer  =  Sbi.console.commons.Format.inlineBarRenderer(this.filterBar.inlineCharts[j]);
-						}
-  	            
-						if(this.filterBar.inlineCharts[j].type && this.filterBar.inlineCharts[j].type === 'point') {
-							tmpMeta.fields[i].renderer  =  Sbi.console.commons.Format.inlinePointRenderer(this.filterBar.inlineCharts[j]);
-						}
-					}            
-				} //for on j
-			} 
-		} // for on i
+			var chartConf = null;
+			if( (chartConf = inlineChartMap[tmpMeta.fields[i].header]) !== undefined ) {
+				var renderer = this.createInlineChartRenderer(chartConf);
+				if( renderer !== null ) {
+					tmpMeta.fields[i].renderer  =  renderer;
+				} else{
+					Sbi.Msg.showWarning('Impossible to create inlineChart on column [' + tmpMeta.fields[i].header + ']');
+				}
+			}
+		} 
 
 	    //adds inline action buttons
-		if (this.filterBar.inlineActions){
-			for(var i = 0, l= this.filterBar.inlineActions.length; i < l; i++){ 
-							
-				var inlineActionColumnConfig = this.filterBar.inlineActions[i];
-				inlineActionColumnConfig.grid = this;
-				
-				if (inlineActionColumnConfig.name === 'crossnav'){
-					if (inlineActionColumnConfig.config.target === 'new') {
-						inlineActionColumnConfig.imgSrc = this.images['cross_detail'];
-					} else {
-						inlineActionColumnConfig.imgSrc = this.images['popup_detail'];
-					}
-					inlineActionColumnConfig.handler = this.execCrossNav;
+		if (this.filterBar.inlineActions) {
+			for(var i = 0, l = this.filterBar.inlineActions.length; i < l; i++){ 
+				var column = this.createInlineActionColumn(this.filterBar.inlineActions[i]);
+				if(column !== null) {
+					tmpMeta.fields.push( column );
 				} else {
-					inlineActionColumnConfig.imgSrc = this.images[inlineActionColumnConfig.name];
-					inlineActionColumnConfig.handler = this.execAction;
+					Sbi.Msg.showWarning('Impossible to create inlineActionColumn [' + this.filterBar.inlineActions[i].name + ']');
 				}
-				inlineActionColumnConfig.scope = this;
-				
-				inlineActionColumnConfig = Ext.apply({
-					// no defaults
-				}, inlineActionColumnConfig);
-				
-				var bc = new Sbi.console.InlineActionColumn(inlineActionColumnConfig);
-				//bc.init(this);
-				tmpMeta.fields.push(bc);	
   	  		}	
 		}
-	    //adds numeration column    
+
+		//adds numeration column    
 		tmpMeta.fields[0] = new Ext.grid.RowNumberer();
-		
-		//if(store.storeId === 'testConsole') alert('onMetaChange POW');
 		
 	    //update columnmodel configuration
 		this.getColumnModel().setConfig(tmpMeta.fields);
-		
-		//if(store.storeId === 'testConsole') alert('onMetaChange OUT');
-		
-		
 	}
 
+	
+	, createInlineChartRenderer: function(config) {
+		var chartRenderer = null;
+		if(config.type === 'bar') {
+			renderer  =  Sbi.console.commons.Format.inlineBarRenderer(config);
+		} else if(config.type === 'point') {
+			renderer  =  Sbi.console.commons.Format.inlinePointRenderer(config);
+		} else{
+			Sbi.Msg.showWarning('InlineChart type [' + chartConf.type + '] is not supported');
+		}
+		return renderer;
+	}
+		
+	, createInlineActionColumn: function(config) {
+		var inlineActionColumn = null;
+		var inlineActionColumnConfig = config;
+		
+		if (inlineActionColumnConfig.name === 'crossnav'){
+			if (inlineActionColumnConfig.config.target === 'new') {
+				inlineActionColumnConfig.imgSrc = this.images['cross_detail'];
+			} else {
+				inlineActionColumnConfig.imgSrc = this.images['popup_detail'];
+			}
+			inlineActionColumnConfig.handler = this.execCrossNav;
+		} else {
+			inlineActionColumnConfig.imgSrc = this.images[inlineActionColumnConfig.name];
+			inlineActionColumnConfig.handler = this.execAction;
+		}
+						
+		inlineActionColumnConfig = Ext.apply({
+			grid: this
+			, scope: this
+		}, inlineActionColumnConfig);
+		
+		inlineActionColumn = new Sbi.console.InlineActionColumn(inlineActionColumnConfig);
+		
+		return inlineActionColumn;
+	}
 
-
-   , initFilterBar: function(filterBarConf) {
-
-      if (filterBarConf.type === 'default'){
-    	   alert("Default filterbar working in progress!!");
-    	   
-      } else if (filterBarConf.type === 'custom' || filterBarConf.type === 'automatic') {
-          this.filterBar = new Sbi.console.CustomFilteringToolbar({filterBar: filterBarConf
-                                                                 , store: this.store
-                                                                  });          	  
-        	       	
-      }   
-  }
+  
 
   
   

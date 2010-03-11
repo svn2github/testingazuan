@@ -80,12 +80,19 @@ Sbi.console.MasterDetailWindow = function(config) {
 		layout: 'fit',
 		closeAction:'hide',
 		plain: true,
+		modal:true,
 		title: this.title,
 		buttonAlign : 'center',
 		buttons: [{
 			text: 'Ok',
 			handler: function(){
 	        	this.hide();
+	        }
+	        , scope: this
+		}, {
+			text: 'Presa visione',
+			handler: function() {
+	        	alert('Bene ora sappiamo chi contattare in caso di problemi :)');
 	        }
 	        , scope: this
 		}],
@@ -151,20 +158,15 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
 	    	 autoScroll: true
 		});
 		
-		this.detailText.setValue('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed nibh ipsum. Ut dui nulla, viverra vitae condimentum eget, faucibus id quam. Praesent dapibus velit ut sem tincidunt pretium. Quisque scelerisque nisl in turpis ornare at vulputate nulla varius. Donec ut sem sed nunc accumsan mattis. In hac habitasse platea dictumst. Nulla et est eros, quis aliquet massa. Aliquam non ante ut sapien tincidunt porttitor. Duis commodo tincidunt egestas. Pellentesque eget pulvinar quam. Etiam lorem augue, fringilla et commodo in, viverra nec leo. Fusce molestie vehicula neque, sit amet tempus neque mattis vitae. Donec viverra vestibulum lectus, sit amet vestibulum ligula auctor sed. Maecenas lorem urna, congue id auctor eu, pharetra a libero. Quisque aliquam, enim nec auctor molestie, mi ipsum convallis dui, non condimentum leo quam nec dui. Fusce augue nisl, laoreet at tincidunt ut, malesuada et tellus. Maecenas sit amet nulla nisi, id rutrum orci. ');
-			
+		this.detailText.setValue('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed nibh ipsum. Ut dui nulla, viverra vitae condimentum eget, faucibus id quam. Praesent dapibus velit ut sem tincidunt pretium. Quisque scelerisque nisl in turpis ornare at vulputate nulla varius. Donec ut sem sed nunc accumsan mattis. In hac habitasse platea dictumst. Nulla et est eros, quis aliquet massa. Aliquam non ante ut sapien tincidunt porttitor. Duis commodo tincidunt egestas. Pellentesque eget pulvinar quam. Etiam lorem augue, fringilla et commodo in, viverra nec leo. Fusce molestie vehicula neque, sit amet tempus neque mattis vitae. Donec viverra vestibulum lectus, sit amet vestibulum ligula auctor sed. Maecenas lorem urna, congue id auctor eu, pharetra a libero. Quisque aliquam, enim nec auctor molestie, mi ipsum convallis dui, non condimentum leo quam nec dui. Fusce augue nisl, laoreet at tincidunt ut, malesuada et tellus. Maecenas sit amet nulla nisi, id rutrum orci. ');	
 		this.detailText.setReadOnly(true);
-		
-		this.detailText.on('render', function() {
-			//alert( this.detailPanel.getSize().toSource() );
-			this.detailText.setHeight( this.detailPanel.getSize().height - 12 );
-		}, this);
 		
 		this.detailPanel = new Ext.Panel({
 			region:'center',
 		    frame: false, 
 		    border: false,
 		    autoScroll: false,
+		    height: 'auto',
 		    //html: '... e io sono il detail'
 		    items: [
 			    new Ext.Panel({
@@ -175,9 +177,18 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
 		    ]
 		});
 		
-		this.detailPanel.on('resize', function(panel, w, h) {
-			this.detailText.setHeight( h - 12 );
+		// dirty fix: without it do not fit :(
+		/*
+		this.detailText.on('render', function() {
+			//alert( this.detailPanel.getSize().toSource() );
+			this.detailText.setHeight( this.detailPanel.getSize().height - 12 );
 		}, this);
+		*/
+		
+		this.detailPanel.on('resize', function(panel, w, h, w1, h1) {
+			this.detailText.setHeight( this.detailPanel.getSize().height - 12 );
+		}, this);
+		// dirty fix
 	}
     
     

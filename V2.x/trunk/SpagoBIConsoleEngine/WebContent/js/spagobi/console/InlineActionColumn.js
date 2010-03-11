@@ -62,13 +62,7 @@ Ext.extend(Sbi.console.InlineActionColumn, Ext.util.Observable, {
             this.handler.call(this.scope, this.name, record, index, this.options);          
         }
     }
-    
-    
-    
-    
-    
-    
-   
+       
 
     , renderer : function(v, p, record){
         return '<center><img class="x-mybutton-'+this.id+'" width="13px" height="13px" src="' + this.imgSrc + '" title= "' + this.tooltip + '"/></center>';

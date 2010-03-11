@@ -48,7 +48,8 @@ Ext.ns("Sbi.console");
 
 Sbi.console.MasterDetailWindow = function(config) {
 	
-	var c = Ext.apply({}, config || {}, {
+
+	var defaultSettings = Ext.apply({}, config || {}, {
 		title: 'Master/Detail windows'
 		, width: 500
 		, height: 250
@@ -82,34 +83,25 @@ Sbi.console.MasterDetailWindow = function(config) {
 		title: this.title,
 		buttonAlign : 'center',
 		buttons: [{
-				text: 'Save',
-			    handler: function(){
-		    		this.fireEvent('apply', this, this.getFormState(), this.target);
-	            	this.hide();
-	            	//alert(sendMessage || 'sendMessage not defined');
-	        	}
-	        	, scope: this
-		    },{
-			    text: 'Cancel',
-			    handler: function(){
-	            	this.hide();
-	        	}
-	        	, scope: this
-			}],
-			items: [this.mainPanel]
-	    }
+			text: 'Cancel',
+			handler: function(){
+	        	this.hide();
+	        }
+	        , scope: this
+		}],
+		items: [this.mainPanel]
 	});
 
 	// constructor
 	Sbi.console.MasterDetailWindow.superclass.constructor.call(this, c);
     
-	this.addEvents();
 };
 
 Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
     
-    services: null
-    
+	mainPanel: null
+	, masterPanel: null
+	, detailPanel: null
    
     // public methods
     
@@ -118,7 +110,37 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
     
     // private methods
     
-    this.initMainPanel(c);	
+    , initMainPanel: function() {
+		this.initMasterlPanel();
+		this.initDetailPanel();
+		
+		this.mainPanel = new Ext.Panel({
+			layout: 'border',
+		    frame: false, 
+		    border: false,
+		    bodyStyle:'background:#E8E8E8;',
+		    style:'padding:3px;',
+		    items: [this.masterPanel, this.detailPanel]
+		});
+    }
+
+	, initMasterlPanel: function() {
+		this.masterPanel = new Ext.Panel({
+			region:'north',
+		    frame: false, 
+		    border: false,
+		    html: 'Io sono il master ...'
+		});
+	}
+
+	, initDetailPanel: function() {
+		this.detailPanel = new Ext.Panel({
+			region:'center',
+		    frame: false, 
+		    border: false,
+		    html: '... e io sono il detail'
+		});
+	}
     
     
 });

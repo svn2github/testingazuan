@@ -210,6 +210,11 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 
     }
 
+	, showErrors: function(actionName, r, index, options) {
+		var win = new Sbi.console.MasterDetailWindow();
+		win.show();
+	}
+	
 
     //  -- private methods ---------------------------------------------------------
     
@@ -360,6 +365,9 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 				inlineActionColumnConfig.imgSrc = this.images['popup_detail'];
 			}
 			inlineActionColumnConfig.handler = this.execCrossNav;
+		} else if (inlineActionColumnConfig.name === 'errors'){	
+			inlineActionColumnConfig.imgSrc = this.images[inlineActionColumnConfig.name];
+			inlineActionColumnConfig.handler = this.showErrors;
 		} else {
 			inlineActionColumnConfig.imgSrc = this.images[inlineActionColumnConfig.name];
 			inlineActionColumnConfig.handler = this.execAction;

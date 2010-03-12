@@ -481,20 +481,7 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 		});
 		
 		store.on('loadexception', function(store, options, response, e) {
-			var msg = '';
-			var content = Ext.util.JSON.decode( response.responseText );
-  			if(content !== undefined) {
-  				//msg += 'Service name: ' + content.serviceName + '\n';
-  				//msg += 'Error description: ' + content.message + '\n';
-  				//msg += 'Error cause: ' + content.cause + '\n';
-  				//msg += 'Stacktrace: ' + Ext.util.Format.ellipsis(content.stacktrace, 200);
-  				msg += content.serviceName + ' : ' + content.message;
-  			} else {
-  				msg += 'Server response is empty';
-  			}
-			
-			
-			Sbi.exception.ExceptionHandler.showErrorMessage(msg, response.statusText);
+			Sbi.exception.ExceptionHandler.handleFailure(response, options);
 		});
 		
 		return store;

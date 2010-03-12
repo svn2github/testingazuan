@@ -192,15 +192,7 @@ Ext.extend(Sbi.execution.RoleSelectionPage, Ext.FormPanel, {
 	    }, this);
 	    
 	    this.store.on('loadexception', function(store, options, response, e) {
-			var msg = '';
-			var content = Ext.util.JSON.decode( response.responseText );
-			if(content !== undefined) {
-				msg += content.serviceName + ' : ' + content.message;
-			} else {
-				msg += 'Server response is empty probably due to a timeout';
-			}
-				
-			Sbi.exception.ExceptionHandler.showErrorMessage(msg, response.statusText);
+			Sbi.exception.ExceptionHandler.handleFailure(response, options);
 			this.fireEvent('synchronizeexception', this, store, options, response, e);
 		}, this);	    
 	}

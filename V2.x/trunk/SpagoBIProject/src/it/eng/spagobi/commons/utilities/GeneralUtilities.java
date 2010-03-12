@@ -647,6 +647,24 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT:" + path);
 		return path;
 	}      
+	
+	
+	public static String getSessionExpiredURL() {
+		logger.debug("IN");
+		String sessionExpiredUrl = null;
+		try {
+			logger.debug("Trying to recover SpagoBI session expired url from ConfigSingleton");
+			ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
+			SourceBean sbTmp = (SourceBean) spagoConfig.getAttribute("SPAGOBI.SESSION_EXPIRED_URL");
+			if (sbTmp != null) {
+				sessionExpiredUrl = sbTmp.getCharacters();
+			}
+		} catch (Exception e) {
+			logger.error("Error while recovering SpagoBI session expired url", e);
+		}
+		logger.debug("OUT: SpagoBI session expired url is " + sessionExpiredUrl);
+		return sessionExpiredUrl;
+	}  
 
 	/**
 	 * Returns an url starting with the given base url and adding parameters retrieved by the input parameters map.

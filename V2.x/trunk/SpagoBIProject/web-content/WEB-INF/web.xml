@@ -5,6 +5,10 @@
         This application is a portlet. It can not be used outside a portal.
 	</description>
 
+	<filter>
+		<filter-name>SpagoBICoreCheckSessionFilter</filter-name>
+		<filter-class>it.eng.spagobi.commons.filters.SpagoBICoreCheckSessionFilter</filter-class>
+	</filter>
 
 <!-- START-CAS
 <filter>
@@ -52,7 +56,12 @@
 		<filter-name>ProfileFilter</filter-name>
 		<filter-class>it.eng.spagobi.commons.filters.ProfileFilter</filter-class>
 	</filter>
-  	
+
+	<filter-mapping>
+		<filter-name>SpagoBICoreCheckSessionFilter</filter-name>
+		<url-pattern>/servlet/*</url-pattern>
+	</filter-mapping>
+
 <!-- START-CAS
    <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>

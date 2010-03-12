@@ -47,10 +47,22 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
+/**
+ * This filter is in charge of checking if the session has expired on external engines.
+ * If the session has expired and there is no request to open a new session,
+ * call is forwarded to configured (in engine-config.xml) session expired URL.
+ * This filter is required when using CAS: if the engine session has expired, there is no actual need 
+ * to check if the CAS ticket is still valid, since most likely the engine will not work anymore with a 
+ * new clean session. Moreover, if the CAS ticket is not valid, the call is redirected to CAS login page 
+ * and Ajax requests will not be able to handle the resulting HTML page.
+ * Therefore this filter must be put just before the CAS filter.
+ * 
+ * @author Davide Zerbetto (davide.zerbetto@eng.it)
+ *
+ */
 public class EngineCheckSessionFilter implements Filter {
 
 	public static final String NEW_SESSION = "NEW_SESSION";
-	public static final String VALID_SESSION = "VALID_SESSION";
 	
 	private static transient Logger logger = Logger.getLogger(EngineCheckSessionFilter.class);
 

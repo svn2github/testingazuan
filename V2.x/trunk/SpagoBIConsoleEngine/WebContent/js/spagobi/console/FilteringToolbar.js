@@ -185,23 +185,8 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	   	// replace previous records with the new one
 	   	s.loadData(data, false);
 	   	
-	   	this.store.filterPlugin.filterGrid();
+	   	this.store.filterPlugin.applyFilters();
 	 }
    
-
-   
-   //adds the single filter or delete if it's the reset field
-   , addFilterGrid: function(f, exp){  
-	   if (exp === 'emptyEl'){
-		   this.store.filterPlugin.removeFilter(f);
-	   }else{
-		   this.store.filterPlugin.addFilter(f, exp);
-	   }
-	   this.store.filterPlugin.filterGrid();
-   }
-   
-  
-   
-
   
 });

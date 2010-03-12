@@ -26,17 +26,15 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
             else
             	value = 1; //true
             
-            this.column = value;
+            //this.column = value;
             
             record.set (this.grid.store.getFieldNameByAlias(this.column), value);
-            //record.data[this.grid.store.getFieldNameByAlias(this.column)] = value;
             record.commit();
-            //this.grid.store.commitChanges();
             
             if (this.name === 'monitor'){
 	            //force the list refresh	         
             	//alert(this.grid.store.filterPlugin.getFilters().toSource());
-	            this.grid.store.filterPlugin.filterGrid();	            
+	            this.grid.store.filterPlugin.applyFilters();	            
             }
             this.handler.call(this.scope, this.name, record, index, this.options);          
         }
@@ -46,7 +44,6 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
     , renderer : function(v, p, record){
 
     	var value = record.get(this.grid.store.getFieldNameByAlias(this.column));
-    	//alert("value:  " + value);
     	if (value === undefined) return '';
     	
     	var img= '';

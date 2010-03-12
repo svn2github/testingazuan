@@ -93,7 +93,7 @@ Ext.extend(Sbi.console.StorePlugin, Ext.util.Observable, {
 	}
 	
    //filters functions
-   , filterGrid: function() {
+   , applyFilters: function() {
 	   //apply the ordering if it's presents
        if (this.store.getSortState() !== undefined){
       		this.store.sort(this.store.getSortState().field, this.store.getSortState().direction);

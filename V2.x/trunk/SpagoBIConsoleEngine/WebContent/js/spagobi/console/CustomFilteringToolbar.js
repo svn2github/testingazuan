@@ -83,7 +83,7 @@ Sbi.console.CustomFilteringToolbar = function(config) {
 Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {  
     
 	services: null
-    , customFilterBar: null
+   // , customFilterBar: null
     , tbInizialzed: null
     
     // automatic: all dataset fields are added as filter

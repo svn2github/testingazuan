@@ -76,7 +76,10 @@ Ext.extend(Sbi.console.StorePlugin, Ext.util.Observable, {
    
     // public methods
     
-    
+    , removeFilter: function(fieldName) {
+		delete this.filters[fieldName];
+	}
+
     , addFilter: function(fieldName, filter) {
 		this.filters[fieldName] = filter;
 	}
@@ -84,16 +87,37 @@ Ext.extend(Sbi.console.StorePlugin, Ext.util.Observable, {
 	, getFilter: function(fieldName) {
 		return this.filters[fieldName];
 	}
-	
-	// just for test: remove asap
-	, getFilters: function(fieldName) {
-		return this.filters;
-	}
 
 	, resetFilters: function() {
 		filters = {};
 	}
-    
+	
+   //filters functions
+   , filterGrid: function() {
+	   //apply the ordering if it's presents
+       if (this.store.getSortState() !== undefined){
+      		this.store.sort(this.store.getSortState().field, this.store.getSortState().direction);
+       }
+      	
+	   //apply the filters
+	   this.store.filterBy(function(record,id){		
+		   for(var f in this.filters){ 
+			   /*  if (f === 'column_8'){
+				   alert("record.data[f]: " + record.data[f]);
+				   alert("typeof record.data[f]: " + typeof record.data[f]);
+				   alert("(record.data[f] !== this.filters[f]) : " +(record.data[f] !== this.filters[f]) );
+			   }*/
+			   if(record.data[f] != this.filters[f]) return false;              
+	       }
+	       return true;
+	    }, this);
+	       	    
+   }
+   
+	// just for test: remove asap
+	, getFilters: function(fieldName) {
+		return this.filters;
+	}
     
     // private methods
     

@@ -185,37 +185,20 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	   	// replace previous records with the new one
 	   	s.loadData(data, false);
 	   	
-	   	this.filterGrid();
+	   	this.store.filterPlugin.filterGrid();
 	 }
    
-   //filters functions
-   , filterGrid: function() {
-	   
-	   //apply the ordering if it's presents
-       if (this.store.getSortState() !== undefined){
-      		this.store.sort(this.store.getSortState().field, this.store.getSortState().direction);
-       }
-      	
-	   //apply the filter
-       this.filters = this.store.filterPlugin.getFilters();
-	   this.store.filterBy(function(record,id){		
-		   for(var f in this.filters){     	        	 
-			   if(record.data[f] !== this.filters[f]) return false;              
-	       }
-	       return true;
-	    }, this);
-	       	    
-   }
+
    
    //adds the single filter or delete if it's the reset field
    , addFilterGrid: function(f, exp){  
-	   this.filters = this.store.filterPlugin.getFilters();
 	   if (exp === 'emptyEl'){
-		   delete this.filters[f];
+		   alert("in remove call...");
+		   this.store.filterPlugin.removeFilter(f);
 	   }else{
-		   this.filters[f] = exp;	 
+		   this.store.filterPlugin.addFilter(f, exp);
 	   }
-	   this.filterGrid();
+	   this.store.filterPlugin.filterGrid();
    }
    
   

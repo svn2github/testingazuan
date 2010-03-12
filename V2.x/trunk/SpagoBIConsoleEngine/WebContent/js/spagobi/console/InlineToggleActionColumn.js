@@ -20,15 +20,24 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
             var record = this.grid.store.getAt(index);   
             
             var value = record.get(this.grid.store.getFieldNameByAlias(this.column));
-            alert(this.grid.store.getFieldNameByAlias(this.column));
-            if (value === true || value === 1)
-            	this.column = 0; //false
+          
+            if (value == 1)
+            	value = 0; //false
             else
-            	this.column = 1; //true
+            	value = 1; //true
             
-           // alert("orig value: " + value + " - new value: " +  this.column);
+            this.column = value;
             
-            //this.renderer(null, null, record),
+            record.set (this.grid.store.getFieldNameByAlias(this.column), value);
+            //record.data[this.grid.store.getFieldNameByAlias(this.column)] = value;
+            record.commit();
+            //this.grid.store.commitChanges();
+            
+            if (this.name === 'monitor'){
+	            //force the list refresh	         
+            	//alert(this.grid.store.filterPlugin.getFilters().toSource());
+	            this.grid.store.filterPlugin.filterGrid();	            
+            }
             this.handler.call(this.scope, this.name, record, index, this.options);          
         }
     }
@@ -37,14 +46,15 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
     , renderer : function(v, p, record){
 
     	var value = record.get(this.grid.store.getFieldNameByAlias(this.column));
+    	//alert("value:  " + value);
     	if (value === undefined) return '';
     	
     	var img= '';
     	if (this.column){
-	    	if (value === true || value === 1)
-	    		img = '<center><img class="x-mybutton-'+this.id+'" width="13px" height="13px" src="' + this.imgSrcActive + '" title= "' + this.tooltipActive + '"/></center>';
-	    	else
+	    	if (value == 1)
 	    		img = '<center><img class="x-mybutton-'+this.id+'" width="13px" height="13px" src="' + this.imgSrcInactive + '" title= "' + this.tooltipInactive + '"/></center>';
+	    	else
+	    		img = '<center><img class="x-mybutton-'+this.id+'" width="13px" height="13px" src="' + this.imgSrcActive + '" title= "' + this.tooltipActive + '"/></center>';
     	}	
     	
         return img;

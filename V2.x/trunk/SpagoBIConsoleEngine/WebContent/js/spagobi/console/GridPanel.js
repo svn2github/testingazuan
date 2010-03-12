@@ -75,10 +75,11 @@ Sbi.console.GridPanel = function(config) {
 		Ext.apply(this, c);
 		
 		this.initServices();
-		this.initStore();
+		this.initStore();		
 		this.initColumnModel();
 		this.initSelectionModel();	
 		this.initFilterBar(filterConfig);
+		
 
 		var c = Ext.apply(c, {
 			store: this.store
@@ -427,6 +428,12 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 				inlineActionColumnConfig.imgSrcActive = this.images['active'];			
 				inlineActionColumnConfig.imgSrcInactive = this.images['inactive'];			
 				inlineActionColumnConfig.handler = this.execMonitor;		
+				//set the filter for view only active item (default)
+				var tmpName = this.store.getFieldNameByAlias(inlineActionColumnConfig.column);
+				if (tmpName !== undefined){
+					if (this.store.filterPlugin.getFilter(tmpName) === undefined)
+						this.store.filterPlugin.addFilter (tmpName, 1);
+				}
 			}else
 				inlineActionColumnConfig.hidden = true;
 			

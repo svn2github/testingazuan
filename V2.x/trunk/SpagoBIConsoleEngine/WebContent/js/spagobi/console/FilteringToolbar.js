@@ -193,7 +193,6 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
    //adds the single filter or delete if it's the reset field
    , addFilterGrid: function(f, exp){  
 	   if (exp === 'emptyEl'){
-		   alert("in remove call...");
 		   this.store.filterPlugin.removeFilter(f);
 	   }else{
 		   this.store.filterPlugin.addFilter(f, exp);

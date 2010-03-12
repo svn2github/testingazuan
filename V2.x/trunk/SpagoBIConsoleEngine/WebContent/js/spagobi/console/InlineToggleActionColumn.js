@@ -20,13 +20,13 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
             var record = this.grid.store.getAt(index);   
             
             var value = record.get(this.grid.store.getFieldNameByAlias(this.column));
-           // alert(this.grid.store.getFieldNameByAlias(this.column));
+            alert(this.grid.store.getFieldNameByAlias(this.column));
             if (value === true || value === 1)
             	this.column = 0; //false
             else
             	this.column = 1; //true
             
-      //      alert("orig value: " + value + " - new value: " +  this.column);
+           // alert("orig value: " + value + " - new value: " +  this.column);
             
             //this.renderer(null, null, record),
             this.handler.call(this.scope, this.name, record, index, this.options);          

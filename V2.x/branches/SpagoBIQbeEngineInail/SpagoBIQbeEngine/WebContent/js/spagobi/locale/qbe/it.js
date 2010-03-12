@@ -13,7 +13,7 @@ Sbi.locale.ln['sbi.qbe.messagewin.info.title'] = 'Informazione';
 //===================================================================
 //SESSION EXPIRED
 //===================================================================
-Sbi.locale.ln['sbi.qbe.sessionexpired.msg'] = 'La session di lavoro è scaduta. Prova a rieseguire il documento';
+Sbi.locale.ln['sbi.qbe.sessionexpired.msg'] = 'La sessione di lavoro è scaduta. Prova a rieseguire il documento';
 
 
 //===================================================================

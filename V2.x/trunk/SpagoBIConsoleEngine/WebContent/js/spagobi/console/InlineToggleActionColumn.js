@@ -37,7 +37,8 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
     , renderer : function(v, p, record){
 
     	var value = record.get(this.grid.store.getFieldNameByAlias(this.column));
-
+    	if (value === undefined) return '';
+    	
     	var img= '';
     	if (this.column){
 	    	if (value === true || value === 1)

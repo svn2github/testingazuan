@@ -96,9 +96,14 @@ Sbi.console.GridPanel = function(config) {
 Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     
 	services: null
+	// grid
 	, store: null
 	, columnModel: null
 	, selectionModel: null
+	
+	// popup
+	, errorWin: null
+	, warningWin: null
 	
 	// conf bloks
 	, filterBar: null
@@ -211,8 +216,23 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     }
 
 	, showErrors: function(actionName, r, index, options) {
-		var win = new Sbi.console.MasterDetailWindow();
-		win.show();
+		if(this.errorWin === null) {
+			this.errorWin = new Sbi.console.MasterDetailWindow({
+				serviceName: 'GET_ERROR_LIST_ACTION'
+			});
+		}
+		this.errorWin.reloadMasterList({id: 'Blue Label'});
+		this.errorWin.show();
+	}
+	
+	, showWarnings: function(actionName, r, index, options) {
+		if(this.warningWin === null) {
+			this.warningWin = new Sbi.console.MasterDetailWindow({
+				serviceName: 'GET_WARNING_LIST_ACTION'
+			});
+		}
+		this.warningWin.reloadMasterList({id: 'Jeffers'});
+		this.warningWin.show();
 	}
 	
 	, execMonitor: function(actionName, r, index, options) {
@@ -440,11 +460,14 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			inlineActionColumn = new Sbi.console.InlineToggleActionColumn(inlineActionColumnConfig);			
 			return inlineActionColumn;		
 		} else if (inlineActionColumnConfig.name === 'errors'){	
-			
 			inlineActionColumnConfig.imgSrc = this.images[inlineActionColumnConfig.name];
 			inlineActionColumnConfig.handler = this.showErrors;
 			
-		} else {
+		} else if (inlineActionColumnConfig.name === 'warnings'){	
+			inlineActionColumnConfig.imgSrc = this.images[inlineActionColumnConfig.name];
+			inlineActionColumnConfig.handler = this.showWarnings;
+			
+		}else {
 			
 			inlineActionColumnConfig.imgSrc = this.images[inlineActionColumnConfig.name];
 			inlineActionColumnConfig.handler = this.execAction;

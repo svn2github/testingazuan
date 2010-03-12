@@ -72,6 +72,18 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
+	<ACTION name="GET_ERROR_LIST_ACTION" 
+			class="it.eng.spagobi.engines.console.services.GetErrorListAction"
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="GET_WARNING_LIST_ACTION" 
+			class="it.eng.spagobi.engines.console.services.GetWarningListAction"
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 
 	<!-- ================================================================================= -->
 	<!-- TRAPS																			   -->

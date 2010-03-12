@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.console.services;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -29,7 +30,6 @@ import org.json.JSONObject;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engines.console.ConsoleEngineInstance;
 import it.eng.spagobi.services.proxy.DataSetServiceProxy;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
@@ -47,17 +47,21 @@ import it.eng.spagobi.utilities.service.JSONSuccess;
 /**
  * @author Antonella Giachino (antonella.giachino@eng.it)
  */
-public class GetConsoleDataAction extends AbstractConsoleEngineAction {
+public class GetWarningListAction extends AbstractConsoleEngineAction {
 	
-	public static final String SERVICE_NAME = "EXECUTE_DATASET";
+	public static final String SERVICE_NAME = "GET_WARNING_LIST";
 	
 	// request parameters
-	public static String DATASET_LABEL = "ds_label";
+	public static String ERRORS_DATASET_LABEL = "consoleWarnings";
+	public static String ERRORS_DETAIL_COLUMN = "SKU";
+	public static String ROW_ID = "Jeffers";
+	public static String ID = "id";
+	
 	public static String USER_ID = "userId";
 	public static String CALLBACK = "callback";
 	
 	// logger component
-	private static Logger logger = Logger.getLogger(GetConsoleDataAction.class);
+	private static Logger logger = Logger.getLogger(GetWarningListAction.class);
 	
 	ConsoleEngineInstance consoleEngineInstance;
 	
@@ -66,22 +70,26 @@ public class GetConsoleDataAction extends AbstractConsoleEngineAction {
 		String dataSetLabel;
 		String user;
 		String callback;
-	
+		String rowId;
+		
 		IDataSet dataSet;
 		IDataStore dataStore;
+		JSONObject dataSetJSON;
+		
 		
 		logger.debug("IN");
 		
 		try {
 			super.service(request,response);
 			consoleEngineInstance = getConsoleEngineInstance();
-			
-			dataSetLabel = getAttributeAsString( DATASET_LABEL );
-			logger.debug("Parameter [" + DATASET_LABEL + "] is equals to [" + dataSetLabel + "]");			
-			Assert.assertTrue(!StringUtilities.isEmpty( dataSetLabel ), "Parameter [" + DATASET_LABEL + "] cannot be null or empty");
-			
+		
+			dataSetLabel = ERRORS_DATASET_LABEL;
 			callback = getAttributeAsString( CALLBACK );
 			logger.debug("Parameter [" + CALLBACK + "] is equals to [" + callback + "]");
+			
+			rowId = getAttributeAsString( ID );
+			logger.debug("Parameter [" + ID + "] is equals to [" + callback + "]");
+			Assert.assertNotNull(rowId, "Input parameters [" + ID + "] cannot be null");
 			
 			dataSet = null;
 			try {
@@ -90,29 +98,37 @@ public class GetConsoleDataAction extends AbstractConsoleEngineAction {
 				throw new SpagoBIServiceException("Impossible to find a dataset whose label is [" + dataSetLabel + "]", t);
 			}
 			Assert.assertNotNull(dataSet, "Impossible to find a dataset whose label is [" + dataSetLabel + "]");
-			Map params = consoleEngineInstance.getAnalyticalDrivers();
+				
+			Map params = new HashMap();
+			params.put("id", rowId);
 			dataSet.setParamsMap(params);
 			dataSet.setUserProfile((UserProfile)consoleEngineInstance.getEnv().get(EngineConstants.ENV_USER_PROFILE));
-			//dataSet.setParamsMap(getEnv());
 			dataSet.loadData();
 			dataStore = dataSet.getDataStore();
 			Assert.assertNotNull(dataStore, "The dataStore returned by loadData method of the class [" + dataSet.getClass().getName()+ "] cannot be null");
 					
-			JSONObject results = new JSONObject();
+			dataStore.getMetaData().setProperty("detailProperty", ERRORS_DETAIL_COLUMN);
+			//int fieldIndex = dataStore.getMetaData().getFieldIndex(ERRORS_DETAIL_COLUMN);
+			//dataStore.getMetaData().getFieldMeta(fieldIndex).setProperty("detail", true);
+			
+			
+			
+			dataSetJSON = null;
+			
 			try {
 				JSONDataWriter writer = new JSONDataWriter();
 				
 				Object resultNumber = dataStore.getMetaData().getProperty("resultNumber");
 				if(resultNumber == null) dataStore.getMetaData().setProperty("resultNumber", new Integer((int)dataStore.getRecordsCount()));
 				
-				JSONObject dataSetJSON = (JSONObject)writer.write(dataStore);				
-				results = dataSetJSON;
+				
+				dataSetJSON = (JSONObject)writer.write(dataStore);
 			} catch (Throwable e) {
 				throw new SpagoBIServiceException("Impossible to serialize datastore", e);
 			}
 			
 			try {
-				writeBackToClient( new JSONSuccess( results, callback ) );
+				writeBackToClient( new JSONSuccess( dataSetJSON, callback ) );
 			} catch (IOException e) {
 				throw new SpagoBIServiceException("Impossible to write back the responce to the client", e);
 			}

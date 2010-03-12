@@ -52,7 +52,7 @@ Sbi.console.MasterDetailWindow = function(config) {
 	var defaultSettings = Ext.apply({}, config || {}, {
 		title: 'Master/Detail windows'
 		, width: 500
-		, height: 250
+		, height: 300
 		, hasBuddy: false		
 	});
 	
@@ -64,15 +64,6 @@ Sbi.console.MasterDetailWindow = function(config) {
 	var c = Ext.apply(defaultSettings, config || {});
 		
 	Ext.apply(this, c);
-		
-		
-	this.services = this.services || new Array();	
-	this.services['doThat'] = this.services['doThat'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'DO_THAT_ACTION'
-		, baseParams: new Object()
-	});
-		
-	this.addEvents('customEvents');
 		
 	this.initMainPanel(c);	
 	
@@ -109,11 +100,18 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
 	mainPanel: null
 	, masterPanel: null
 	, detailPanel: null
-   
+    , store: null
+    , detailField: null
+    , serviceName: null
+    
     // public methods
     
    
-    
+    , reloadMasterList: function(params) {
+		this.store.load({
+			params: params
+		});
+	}
     
     // private methods
     
@@ -132,16 +130,90 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
     }
 
 	, initMasterlPanel: function() {
+		
+		this.columnModel = new Ext.grid.ColumnModel([
+			new Ext.grid.RowNumberer(), 
+			{
+				header: "Data",
+			    dataIndex: 'data',
+			    width: 100
+			}
+		]);
+		
+		this.store = new Sbi.data.Store({
+			serviceName: this.serviceName
+			//datasetLabel: 'testConsole2'
+			, autoLoad: false
+		}); 
+		
+		this.store.on('exception', Sbi.exception.ExceptionHandler.onStoreLoadException, this);
+		this.store.on('metachange', function( store, meta ) {
+			var i;
+
+			var tmpMeta =  Ext.apply({}, meta); // meta;
+			
+			this.detailField = tmpMeta.detailProperty;
+			
+			var fields = tmpMeta.fields;
+			tmpMeta.fields = new Array(fields.length);
+			for(i = 0; i < fields.length; i++) {
+				if( (typeof fields[i]) === 'string') {
+					fields[i] = {name: fields[i]};
+				}
+				tmpMeta.fields[i] = Ext.apply({}, fields[i]);
+			}
+			
+			//adds numeration column    
+			tmpMeta.fields[0] = new Ext.grid.RowNumberer();
+		
+	    	//update columnmodel configuration
+			this.grid.getColumnModel().setConfig(tmpMeta.fields);
+		
+		}, this);
+		
+		this.grid =  new Ext.grid.GridPanel({
+			layout: 'fit'
+			, loadMask: true
+			, viewConfig: {
+		    	forceFit:false,
+		        autoFill: true,
+		        enableRowBody:true,
+		        showPreview:true
+		    }
+			, store: this.store
+			, cm: this.columnModel
+		});
+		
+		this.grid.on("rowclick", function(grid,  rowIndex, e){
+	       	var record = this.store.getAt( rowIndex );
+	       	if(!this.detailField) return;
+	       	var detailValue = record.get(this.detailField);
+	       	if(!detailValue) return;
+	       	this.detailText.setValue(detailValue);
+		}, this);
+		
 		this.masterPanel = new Ext.Panel({
 			region:'north',
     		split: true,
     		frame:false,
     		border:false,
-    		height: 70,
+    		height: 120,
     	    bodyStyle:'padding:5px;background:#E8E8E8;border-width:1px;border-color:#D0D0D0;',
     	    style: 'padding-bottom:3px',
-		    html: 'Io sono il master ...'
+		    //html: 'Io sono il master ...'
+    	    items: [this.grid]
 		});
+		
+		// dirty fix: without it do not fit :(
+		this.store.on('load', function() {
+			this.grid.setHeight( this.masterPanel.getSize().height - 12 );
+			this.grid.setWidth( this.masterPanel.getSize().width - 12 );
+		}, this);
+		this.masterPanel.on('resize', function(panel, w, h, w1, h1) {
+			this.grid.setHeight( this.masterPanel.getSize().height - 12 );
+			this.grid.setWidth( this.masterPanel.getSize().width - 12 );
+		}, this);
+		// dirty fix
 	}
 
 	, initDetailPanel: function() {
@@ -178,13 +250,6 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
 		});
 		
 		// dirty fix: without it do not fit :(
-		/*
-		this.detailText.on('render', function() {
-			//alert( this.detailPanel.getSize().toSource() );
-			this.detailText.setHeight( this.detailPanel.getSize().height - 12 );
-		}, this);
-		*/
-		
 		this.detailPanel.on('resize', function(panel, w, h, w1, h1) {
 			this.detailText.setHeight( this.detailPanel.getSize().height - 12 );
 		}, this);

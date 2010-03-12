@@ -202,34 +202,23 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			Ext.Ajax.request({
 		        url: this.services['getUrlForExecutionService'],
 		        params: executionInstance,
-		        callback : function(options , success, response){
-		  	  		if(success) {   
-			      		if(response !== undefined && response.responseText !== undefined) {
-			      			var content = Ext.util.JSON.decode( response.responseText );
-			      			if(content !== undefined) {
-			      				if(content.errors !== undefined && content.errors.length > 0) {
-			      					this.fireEvent('loadurlfailure', content.errors);
-			      				} else {
-			      					this.miframe.getFrame().setSrc( content.url );
-			      					//this.add(this.miframe);
-			      				}
-			      			} 
-			      		} else {
-			      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-			      		}
-		  	  		} else { 
-			  	  		if(response !== undefined && response.responseText !== undefined) {
-			      			var content = Ext.util.JSON.decode( response.responseText );
-			      			if(content !== undefined && content.errors !== undefined) {
-			      				this.fireEvent('loadurlfailure', content.errors);
-			      			} 
-			      		} else {
-			      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-			      		}
-		  	  		}
+		        success: function(response, options) {
+		      		if(response !== undefined && response.responseText !== undefined) {
+		      			var content = Ext.util.JSON.decode( response.responseText );
+		      			if(content !== undefined) {
+		      				if(content.errors !== undefined && content.errors.length > 0) {
+		      					this.fireEvent('loadurlfailure', content.errors);
+		      				} else {
+		      					this.miframe.getFrame().setSrc( content.url );
+		      					//this.add(this.miframe);
+		      				}
+		      			} 
+		      		} else {
+		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+		      		}
 		        },
 		        scope: this,
-				  failure: Sbi.exception.ExceptionHandler.handleFailure      
+				failure: Sbi.exception.ExceptionHandler.handleFailure      
 		   });
 		}
 	}
@@ -750,12 +739,22 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		var formStateStr = Sbi.commons.JSON.encode( formState );
 		
 		if(this.fireEvent('beforerefresh', this, this.executionInstance, formState) !== false){
+			/*
+			 * better synchronizing with server anyway, also in case parameters' values were not changed,
+			 * since SpagoBI session may have expired: is this case, it is better to re-authenticate user instead 
+			 * of calling the engine directly
+			 */
+			this.executionInstance.PARAMETERS = formStateStr;
+			this.synchronize( this.executionInstance, false );
+			/*
+			 * Previous code
 			if(formStateStr !== this.executionInstance.PARAMETERS) { // todo: if(parametersPanel.isDirty())		
 				this.executionInstance.PARAMETERS = formStateStr;
 				this.synchronize( this.executionInstance, false );
 			} else {
 				this.miframe.getFrame().setSrc( null ); // refresh the iframe with the latest url
 			}
+			*/
 		}
 	}
 	
@@ -781,9 +780,8 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		Ext.Ajax.request({
 	          url: this.services['saveIntoPersonalFolder'],
 	          params: {documentId: this.executionInstance.OBJECT_ID},
-	          callback : function(options , success, response){
-	    	  	if (success && response !== undefined) {   
-		      		if(response.responseText !== undefined) {
+	          success: function(response, options) {
+		      		if (response.responseText !== undefined) {
 		      			var responseText = response.responseText;
 		      			var iconSaveToPF;
 		      			var message;
@@ -799,7 +797,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		      				message = LN('sbi.execution.stpf.error');
 		      				iconSaveToPF = Ext.MessageBox.ERROR;
 		      			}
-
+	
 		      			var messageBox = Ext.MessageBox.show({
 		      				title: 'Status',
 		      				msg: message,
@@ -812,7 +810,6 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		      		} else {
 		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
 		      		}
-	    	  	}
 	          },
 	          scope: this,
 	  		  failure: Sbi.exception.ExceptionHandler.handleFailure      
@@ -828,21 +825,17 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
   		Ext.Ajax.request({
   	        url: this.services['getNotesService'],
   	        params: {SBI_EXECUTION_ID: this.executionInstance.SBI_EXECUTION_ID, MESSAGE: 'GET_LIST_NOTES'},
-  	        callback : function(options , success, response) {
-  	  	  		if (success) {
-  		      		if(response !== undefined && response.responseText !== undefined) {
-  		      			var content = Ext.util.JSON.decode( response.responseText );		 
-                  //checks if documents has some note for change icon     			
-  		      			if (content !== undefined && content.totalCount > 0) {		      		
-                    var el = Ext.getCmp('noteIcon');                
-                    el.setIconClass('icon-notes');
-  		      			}
-  		      		} else {
-  		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-  		      		}
-  	  	  		} else { 
-  	  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot load notes', 'Service Error');
-  	  	  		}
+  	        success : function(response, options) {
+	      		if(response !== undefined && response.responseText !== undefined) {
+	      			var content = Ext.util.JSON.decode( response.responseText );		 
+	      			//checks if documents has some note for change icon     			
+	      			if (content !== undefined && content.totalCount > 0) {		      		
+	      				var el = Ext.getCmp('noteIcon');                
+	      				el.setIconClass('icon-notes');
+	      			}
+	      		} else {
+	      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+	      		}
   	        },
   	        scope: this,
   			failure: Sbi.exception.ExceptionHandler.handleFailure      

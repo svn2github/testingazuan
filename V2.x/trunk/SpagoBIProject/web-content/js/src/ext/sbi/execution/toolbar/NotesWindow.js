@@ -168,29 +168,25 @@ Ext.extend(Sbi.execution.toolbar.NotesWindow, Ext.Window, {
 		Ext.Ajax.request({
 	        url: this.services['getNotesService'],
 	        params: {SBI_EXECUTION_ID: this.SBI_EXECUTION_ID, NOTE_ID: this.idNote, OWNER: this.owner},
-	        callback : function(options , success, response) {
-	  	  		if (success) {
-		      		if(response !== undefined && response.responseText !== undefined) {
-		      			var content = Ext.util.JSON.decode( response.responseText );
-		      			if (content !== undefined) {
-		      			  
-		      				this.previousNotes = content.notes;
-		      				this.editor.setValue(Ext.util.Format.htmlDecode(content.notes));
-		      				if (options.params.OWNER == Sbi.user.userId){		      				  
-		      				  //this.editor.enable();
-		      				   this.editor.setDisabled(false);
-		      				}
-		      				else{
-		      				  this.editor.setDisabled(true);
-		      				}
-		      				this.scopeField.setValue((content.visibility==true)?'PUBLIC':'PRIVATE');		      			
-		      			} 
-		      		} else {
-		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-		      		}
-	  	  		} else { 
-	  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot load notes', 'Service Error');
-	  	  		}
+	        success : function(response, options) {
+	      		if(response !== undefined && response.responseText !== undefined) {
+	      			var content = Ext.util.JSON.decode( response.responseText );
+	      			if (content !== undefined) {
+	      			  
+	      				this.previousNotes = content.notes;
+	      				this.editor.setValue(Ext.util.Format.htmlDecode(content.notes));
+	      				if (options.params.OWNER == Sbi.user.userId){		      				  
+	      				  //this.editor.enable();
+	      				   this.editor.setDisabled(false);
+	      				}
+	      				else{
+	      				  this.editor.setDisabled(true);
+	      				}
+	      				this.scopeField.setValue((content.visibility==true)?'PUBLIC':'PRIVATE');		      			
+	      			} 
+	      		} else {
+	      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+	      		}
 	        },
 	        scope: this,
 			failure: Sbi.exception.ExceptionHandler.handleFailure      
@@ -202,32 +198,28 @@ Ext.extend(Sbi.execution.toolbar.NotesWindow, Ext.Window, {
 	        url: this.services['saveNotesService'],
 	        params: {'SBI_EXECUTION_ID': this.SBI_EXECUTION_ID, 
 					 'PREVIOUS_NOTES': this.previousNotes, 'NOTES':  this.checkEmptyValues(this.editor.getValue()), 'VISIBILITY': this.scopeField.getValue()},
-	        callback : function(options , success, response) {
-	  	  		if (success) {
-		      		if(response !== undefined && response.responseText !== undefined) {
-		      			var content = Ext.util.JSON.decode( response.responseText );
-		      			if (content !== undefined) {
-		      				//if (content.result === 'conflict') {
-		      				//	Sbi.exception.ExceptionHandler.showErrorMessage(LN('sbi.execution.notes.notesConflict'), 'Service Error');
-		      				//} else {
-				      			Ext.MessageBox.show({
-				      				title: 'Status',
-				      				msg: LN('sbi.execution.notes.notedSaved'),
-				      				modal: false,
-				      				buttons: Ext.MessageBox.OK,
-				      				width:300,
-				      				icon: Ext.MessageBox.INFO,
-				      				animEl: 'root-menu'        			
-				      			});
-				      			this.previousNotes = this.editor.getValue();
-		      				//}
-		      			}
-		      		} else {
-		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-		      		}
-	  	  		} else { 
-	  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot save notes', 'Service Error');
-	  	  		}
+			success: function(response, options) {
+	      		if(response !== undefined && response.responseText !== undefined) {
+	      			var content = Ext.util.JSON.decode( response.responseText );
+	      			if (content !== undefined) {
+	      				//if (content.result === 'conflict') {
+	      				//	Sbi.exception.ExceptionHandler.showErrorMessage(LN('sbi.execution.notes.notesConflict'), 'Service Error');
+	      				//} else {
+			      			Ext.MessageBox.show({
+			      				title: 'Status',
+			      				msg: LN('sbi.execution.notes.notedSaved'),
+			      				modal: false,
+			      				buttons: Ext.MessageBox.OK,
+			      				width:300,
+			      				icon: Ext.MessageBox.INFO,
+			      				animEl: 'root-menu'        			
+			      			});
+			      			this.previousNotes = this.editor.getValue();
+	      				//}
+	      			}
+	      		} else {
+	      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+	      		}
 	        },
 	        scope: this,
 			failure: Sbi.exception.ExceptionHandler.handleFailure      

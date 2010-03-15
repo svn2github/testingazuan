@@ -13,57 +13,79 @@ Sbi.console.InlineToggleActionColumn = function(config){
 
 Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn, {
 	
-	column: null
+	checkColumn: null
+	, flagColumn: null
 	
-	, ACTIVE_VALUE: 0
-	, INACTIVE_VALUE: 1
+	
+	, UNFLAGGED_VALUE: 0
+	, CHECKED_VALUE: 0
+	, UNCHECKED_VALUE: 1
 	
 	// -- public methods ------------------------------------------------------------------------
 	
 	, isBoundToColumn: function() {
-		return (this.column !== null);
+		return (this.checkColumn !== null);
 	}
+
+	
 
 	, getBoundColumnValue: function(record) {
 		var v, s;
 		
 		s = this.grid.store;
-		v = record.get(s.getFieldNameByAlias(this.column));
+		v = record.get(s.getFieldNameByAlias(this.checkColumn));
     	if (v === undefined || v === null) {
-    		Sbi.Msg.showError('Impossible to draw toggle column [' + this.dataIndex + ']. Dataset [' + s.storeId + ']does not contain column [' + this.column + ']');
+    		Sbi.Msg.showError('Impossible to draw toggle column [' + this.dataIndex + ']. Dataset [' + s.storeId + ']does not contain column [' + this.checkColumn + ']');
     	};
     	
-    	if(v !== this.ACTIVE_VALUE && v !== this.INACTIVE_VALUE) {
-    		Sbi.Msg.showError('Column [' + this.column + '] of dataset [' + s.storeId + '] contains a wrong value [' + v + ']. Impossible to determinate the state of the bounded toglle column [' + this.column + ']');
+    	if(v !== this.CHECKED_VALUE && v !== this.UNCHECKED_VALUE) {
+    		Sbi.Msg.showError('Column [' + this.checkColumn + '] of dataset [' + s.storeId + '] contains a wrong value [' + v + ']. Impossible to determinate the state of the bounded togle column [' + this.checkColumn + ']');
     	}
     	
     	return v;
 	}
-
+	
 	, isActive: function(record) {
+		var active = true;
+		if(this.flagColumn) {
+			var v, s;
+			
+			s = this.grid.store;
+			v = record.get(s.getFieldNameByAlias(this.flagColumn));
+	    	if (v === undefined || v === null) {
+	    		Sbi.Msg.showError('Impossible to draw toggle column [' + this.dataIndex + ']. Dataset [' + s.storeId + ']does not contain column [' + this.flagColumn + ']');
+	    	};
+	    	active = (this.UNFLAGGED_VALUE !== v);
+	    	//alert(v + ' !== '+ this.UNFLAGGED_VALUE + ' : ' + active);
+		}
+			
+		return active;
+	}
+
+	, isChecked: function(record) {
 		var v, active;
 		if(this.isBoundToColumn()) {
 			v = this.getBoundColumnValue(record);
 			
-	    	active = (v === this.ACTIVE_VALUE);
+	    	active = (v === this.CHECKED_VALUE);
 	    	//alert(v + ' === '+ this.ACTIVE_VALUE + ' : ' + active);
 		}
 		
 		return active;		
 	}
 	
-	, setActive: function(record, b) {
+	, setChecked: function(record, b) {
 		var v, s;
 		if(this.isBoundToColumn()) {
 			s = this.grid.store;
-			v = (b? this.ACTIVE_VALUE: this.INACTIVE_VALUE);
-			record.set (s.getFieldNameByAlias(this.column), v );
+			v = (b? this.CHECKED_VALUE: this.UNCHECKED_VALUE);
+			record.set (s.getFieldNameByAlias(this.checkColumn), v );
             //record.commit();
 		}
 	}
 	
 	, toggle: function(record) {
-		this.setActive(record, !this.isActive(record));
+		this.setChecked(record, !this.isChecked(record));
 	}
 
 	
@@ -88,8 +110,12 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
 
 
     , renderer : function(v, p, record){
+    	
+    	if(this.isActive(record) === false) {
+    		return '';
+    	}
 
-	    if (this.isActive(record)) {
+	    if (this.isChecked(record)) {
 	    	img = '<center><img class="x-mybutton-'+this.id+'" width="13px" height="13px" src="' + this.imgSrcActive + '" title= "' + this.tooltipActive + '"/></center>';
 	    } else {
 	    	img = '<center><img class="x-mybutton-'+this.id+'" width="13px" height="13px" src="' + this.imgSrcInactive + '" title= "' + this.tooltipInactive + '"/></center>';  

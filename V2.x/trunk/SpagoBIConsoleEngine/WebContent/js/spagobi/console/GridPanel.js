@@ -409,10 +409,16 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 					Sbi.Msg.showWarning('Impossible to create inlineActionColumn [' + this.inlineActions[i].name + ']');
 				}
 				//hidden the configuration column linked to inlineActions				
-				if (this.inlineActions[i].column) {
-					var tmpName = this.store.getFieldNameByAlias(this.inlineActions[i].column);						
+				var tmpName;
+				if(this.inlineActions[i].checkColumn) {
+					tmpName = this.store.getFieldNameByAlias(this.inlineActions[i].checkColumn);						
 					if (tmpName !== undefined)  tmpMeta.fields[fieldsMap[tmpName]].hidden = true;
 				}
+				if(this.inlineActions[i].flagColumn) {
+					tmpName = this.store.getFieldNameByAlias(this.inlineActions[i].flagColumn);						
+					if (tmpName !== undefined)  tmpMeta.fields[fieldsMap[tmpName]].hidden = true;
+				}
+				
   	  		}	
 		}
 

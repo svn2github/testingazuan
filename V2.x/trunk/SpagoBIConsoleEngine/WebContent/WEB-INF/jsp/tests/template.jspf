@@ -213,11 +213,11 @@ Sbi.template = {
 	    	        },{ name: 'monitor'
 		    	        ,  hidden: false
 		    	        ,  tooltip: 'View all active'
-		    	        ,  column: 'monitor_flag'	//the column on db with the flag value	    	        
+		    	        ,  column: 'monitor_check'	//the column on db with the check value	    	        
 	    	        },{ name: 'monitor_inactive'
 		    	    	,  hidden: false
 		    	        ,  tooltip: 'View all inactive'	
-		    	        ,  column: 'monitor_flag'	//the column on db with the flag value	 	    	        
+		    	        ,  column: 'monitor_check'	//the column on db with the check value	 	    	        
 		    	    }
 	    	        ]
 	    	    } //filterBar   
@@ -253,7 +253,8 @@ Sbi.template = {
 							}, {
 								name: 'errors'
 								, hidden: false
-								, column: 'errors_flag'
+								, checkColumn: 'errors_check'
+								, flagColumn: 'errors_flag'
 								, tooltipActive: 'View unchecked error messages'
 							    , tooltipInactive: 'View checked error messages'
 								, config: {
@@ -275,7 +276,8 @@ Sbi.template = {
 							}, {
 								name: 'alarms'
 								, hidden: false
-								, column: 'alarms_flag'
+								, checkColumn: 'alarms_check'
+								, flagColumn: 'alarms_flag'
 								, tooltipActive: 'View unchecked alarm messages'
 								, tooltipInactive: 'View checked alarm messages'
 								, config: {}
@@ -333,7 +335,7 @@ Sbi.template = {
 								, hidden: false							
 							 	, tooltipActive: 'Enable monitoring'
 						        , tooltipInactive: 'Disable monitoring'							    
-						        , column: 'monitor_flag'						
+						        , checkColumn: 'monitor_check'					
 								, config: {staticParams: {
 											//generic params for the execution of query on generic db
 											   schema: 'foodmart'								
@@ -344,7 +346,7 @@ Sbi.template = {
 											 , typePar2: 'num'														    			     									
 											}
 										  , dynamicParams: [{
-											 'monitor_flag': 'par1'  
+											 'monitor_check': 'par1'  
 											, scope: 'dataset'
 											},{ID: 'par2'  
 											, scope: 'dataset'
@@ -353,7 +355,7 @@ Sbi.template = {
 							},{
 								name: 'views'
 								, hidden: false
-								, column: 'views_flag'
+								, checkColumn: 'views_check'
 	      		                , tooltipActive: 'Checked. Click to uncheck'
 		  						, tooltipInactive: 'Unchecked. Click to check'
 								, config: {}
@@ -483,7 +485,8 @@ Sbi.template = {
 			      		                }, {
 			      		                    name: 'errors'
 			      		                    , hidden: false
-			      		                    , column: 'errors_flag'
+			      		                    , checkColumn: 'errors_check'
+											, flagColumn: 'errors_flag'	
 			      		                  	, tooltipActive: 'View unchecked errors messages'
 			  								, tooltipInactive: 'View checked errors messages'
 			      		                    , config: {
@@ -505,7 +508,8 @@ Sbi.template = {
 			      		                },  {
 			      		                    name: 'alarms'
 			      		                    , hidden: false
-			      		                  	, column: 'alarms_flag'
+			      		                    , checkColumn: 'alarms_check'
+											, flagColumn: 'alarms_flag'	
 			      		                  	, tooltipActive: 'View unchecked alarm messages'
 			  								, tooltipInactive: 'View checked alarm messages'
 			      		                    , config: {}
@@ -559,15 +563,14 @@ Sbi.template = {
 			      		                },{
 			      		                    name: 'monitor'
 			      		                    , hidden: false
-			      		                   , column: 'monitor_flag'
-			      		                    //, tooltip:'bbb'
-			      		                  	, tooltipActive: 'Enable monitoring'
+			      		                    , checkColumn: 'monitor_check'
+							               	, tooltipActive: 'Enable monitoring'
 			      			                , tooltipInactive: 'Disable monitoring'
 			      		                    , config: {}
 			      		                },{
 			      		                    name: 'views'
 			      		                    , hidden: false
-			      		                    , column: 'views_flag'
+			      		                    , checkColumn: 'views_check'	
 			      		                    , tooltipActive: 'Checked. Click to uncheck'
 				  							, tooltipInactive: 'Unchecked. Click to check'
 			      		                    , config: {}
@@ -689,7 +692,8 @@ Sbi.template = {
                        , config: {}
 		                },{ name: 'errors'
                        , hidden: false
-                       , column: 'errors_flag'
+                       , checkColumn: 'errors_check'
+						, flagColumn: 'errors_flag'	
                        , tooltipActive: 'View unchecked error messages'
 							, tooltipInactive: 'View checked error messages'
                        , config: {
@@ -710,7 +714,8 @@ Sbi.template = {
 		                }, {
 		                    name: 'alarms'
 		                    , hidden: false
-		                    , column: 'alarms_flag'
+		                    , checkColumn: 'alarms_check'
+						    , flagColumn: 'alarms_flag'	
 		                    , tooltipActive: 'View unchecked alarm messages'
 							, tooltipInactive: 'View checked alarm messages'
 		                    , config: {}
@@ -769,12 +774,12 @@ Sbi.template = {
 		                    //, tooltip: 'ccc'
 		                    , tooltipActive: 'Enable monitoring'
 			                , tooltipInactive: 'Disable monitoring'
-			                , column: 'monitor_flag'
+			                , checkColumn: 'monitor_check'
 		                    , config: {}
 		                },{
 		                    name: 'views'
 		                    , hidden: false
-		                    , column: 'views_flag'
+		                    , checkColumn: 'views_check'
       		                , tooltipActive: 'Checked. Click to uncheck'
 	  						, tooltipInactive: 'Unchecked. Click to check'
 		                    , config: {}

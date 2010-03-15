@@ -465,7 +465,12 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			inlineActionColumnConfig.imgSrc = this.images[inlineActionColumnConfig.name];
 			inlineActionColumnConfig.handler = this.showErrors;
 			
-		} else {
+		} else if (inlineActionColumnConfig.name === 'warnings'){	
+			
+			inlineActionColumnConfig.imgSrc = this.images[inlineActionColumnConfig.name];
+			inlineActionColumnConfig.handler = this.showWarnings;
+			
+		}else {
 			
 			inlineActionColumnConfig.imgSrc = this.images[inlineActionColumnConfig.name];
 			inlineActionColumnConfig.handler = this.execAction;

@@ -116,7 +116,7 @@ Sbi.console.ActionButton = function(config) {
 Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     
     services: null
-   // , store: null
+    //, store: null
    
     // public methods
 	, resolveParameters: function(parameters, context) {
@@ -151,8 +151,12 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 	}
 
     , execAction: function(){
-    	if (this.actionConf.name === 'monitor' || this.actionConf.name === 'monitor_inactive'){
-    		alert("I'd like view only monitoring or not monitoring rows!! How can I get the store object ????? ");
+    	
+    	if (this.actionConf.name === 'monitor' || this.actionConf.name === 'monitor_inactive'){     		
+    		this.store.filterPlugin.removeFilter(this.store.getFieldNameByAlias(this.actionConf.column));
+    		var newFilter = (this.actionConf.name === 'monitor') ? '1' : '0';    	
+    		this.store.filterPlugin.addFilter(this.store.getFieldNameByAlias(this.actionConf.column), newFilter);    		
+    		this.store.filterPlugin.applyFilters();	   
     		return;
     	}
 		var params = this.resolveParameters(this.actionConf.config, this.executionContext);

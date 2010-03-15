@@ -89,6 +89,7 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
   	    var b;
   	    var conf = {}; 
         conf.executionContext = this.filterBar.executionContext;     
+        conf.store = this.store;
 		this.addFill();
 		if (this.filterBar.actions){
       		for(var i=0; i < this.filterBar.actions.length; i++){

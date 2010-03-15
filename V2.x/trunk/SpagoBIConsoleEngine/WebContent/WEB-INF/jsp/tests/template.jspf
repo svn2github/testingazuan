@@ -213,15 +213,11 @@ Sbi.template = {
 	    	        },{ name: 'monitor'
 		    	        ,  hidden: false
 		    	        ,  tooltip: 'View all active'
-		    	        ,  config: {
-	    	        	staticParams: {message: 'view_active'}
-		    	        }
+		    	        ,  column: 'ico_monitor'	//the column on db with the flag value	    	        
 	    	        },{ name: 'monitor_inactive'
 		    	    	,  hidden: false
-		    	        ,  tooltip: 'View all inactive'
-		    	        ,  config: {
-		    	        	staticParams: {message: 'view_inactive'}
-		    	        }
+		    	        ,  tooltip: 'View all inactive'	
+		    	        ,  column: 'ico_monitor'	//the column on db with the flag value	 	    	        
 		    	    }
 	    	        ]
 	    	    } //filterBar   
@@ -350,7 +346,7 @@ Sbi.template = {
 											 , stmt: 'UPDATE_MONITOR_STATE'
 											 , numPars: '2'			//the number of params in the query		
 											 //for each param define the single type:						
-											 , typePar1: 'num'		
+											 , typePar1: 'num'		//num | string
 											 , typePar2: 'num'														    			     									
 											}
 										  , dynamicParams: [{

@@ -120,8 +120,8 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
 	      		Sbi.Msg.showError('Toolbar type [' + this.filterBar.type + '] is not supported');
 	      	}	
 	       //	alert("custom store: " + store);
-			//this.addActionButtons(store);    					
-			this.addActionButtons();
+			this.addActionButtons();    					
+			//this.addActionButtons();
 			
 	       	this.doLayout();
        	

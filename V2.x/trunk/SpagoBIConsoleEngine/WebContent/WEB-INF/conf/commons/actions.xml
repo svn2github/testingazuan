@@ -66,8 +66,8 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
-	<ACTION name="MONITOR_ACTION" 
-			class="it.eng.spagobi.engines.console.services.MonitorAction"
+	<ACTION name="UPDATE_ACTION" 
+			class="it.eng.spagobi.engines.console.services.ExecuteUpdateAction"
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>

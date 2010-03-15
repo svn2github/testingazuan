@@ -116,7 +116,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		, stop: {serviceName: 'STOP_ACTION', images: '../img/ico_stop.gif'}
 		, informationlog: {serviceName: 'START_ACTION', images: '../img/ico_info.gif'}
 		, crossnav: {serviceName: 'CROSS_ACTION', images: {cross_detail: '../img/ico_cross_detail.gif', popup_detail: '../img/ico_popup_detail.gif'}}
-		, monitor: {serviceName: 'MONITOR_ACTION', images: {active: '../img/ico_monitor.gif', inactive: '../img/ico_monitor_inactive.gif'}}
+		, monitor: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_monitor.gif', inactive: '../img/ico_monitor_inactive.gif'}}
 		, errors: {serviceName: 'ERRORS_ACTION', images: '../img/ico_errors.gif'}
 		, errors_inactive: {serviceName: 'ERRORS_ACTION', images: '../img/ico_errors_inactive.gif'}
 		, warnings: {serviceName: 'WARNINGS_ACTION', images: '../img/ico_warnings.gif'}

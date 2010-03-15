@@ -48,7 +48,7 @@ import utilities.DataSourceUtilities;
 /**
  * @author Antonella Giachino (antonella.giachino@eng.it)
  */
-public class MonitorAction extends AbstractConsoleEngineAction {
+public class ExecuteUpdateAction extends AbstractConsoleEngineAction {
 	
 	
 	public static final String SERVICE_NAME = "MONITOR";
@@ -63,7 +63,7 @@ public class MonitorAction extends AbstractConsoleEngineAction {
 
 	
 	// logger component
-	private static Logger logger = Logger.getLogger(MonitorAction.class);
+	private static Logger logger = Logger.getLogger(ExecuteUpdateAction.class);
 	
 	ConsoleEngineInstance consoleEngineInstance;
 	

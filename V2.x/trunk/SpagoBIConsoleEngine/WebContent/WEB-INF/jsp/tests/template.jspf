@@ -139,7 +139,7 @@ Sbi.template = {
 	
             , table: {
 	            dataset: 'testConsole'
-
+	          , columnId: 'ID' //the column ID of the single row
 	            // -- Filter bar -----------------------------------------------------------------
 	    	    , filterBar: {
 	    	    	type: 'custom'  
@@ -338,7 +338,7 @@ Sbi.template = {
 								name: 'monitor'
 								, hidden: false							
 							 	, tooltipActive: 'Enable monitoring'
-						        , tooltipInactive: 'Disable monitoring'
+						        , tooltipInactive: 'Disable monitoring'							    
 								, column: 'ico_monitor'								
 								, config: {staticParams: {
 											//generic params for the execution of query on generic db

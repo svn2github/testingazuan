@@ -350,11 +350,14 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		var tmpMeta =  Ext.apply({}, meta); // meta;
 		var fields = tmpMeta.fields;
 		tmpMeta.fields = new Array(fields.length);
+		
 		for(i = 0; i < fields.length; i++) {
 			if( (typeof fields[i]) === 'string') {
 				fields[i] = {name: fields[i]};
 			}
-			
+			if (this.columnId !== undefined && this.columnId === fields[i].header ){
+				fields[i].hidden = true;
+			}
 			tmpMeta.fields[i] = Ext.apply({}, fields[i]);
 			fieldsMap[fields[i].name] = i;
 		}

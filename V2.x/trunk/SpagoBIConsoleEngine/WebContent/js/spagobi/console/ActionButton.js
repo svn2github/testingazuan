@@ -116,7 +116,7 @@ Sbi.console.ActionButton = function(config) {
 Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     
     services: null
-    
+   // , store: null
    
     // public methods
 	, resolveParameters: function(parameters, context) {
@@ -151,10 +151,13 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 	}
 
     , execAction: function(){
-	
+    	if (this.actionConf.name === 'monitor' || this.actionConf.name === 'monitor_inactive'){
+    		alert("I'd like view only monitoring or not monitoring rows!! How can I get the store object ????? ");
+    		return;
+    	}
 		var params = this.resolveParameters(this.actionConf.config, this.executionContext);
 		params = Ext.apply(params, {
-				message: this.actionConf.name, 
+				message: (this.actionConf.messagge !== undefined)?this.actionConf.message : this.actionConf.name, 
 				userId: Sbi.user.userId 
 			}); 
 				 
@@ -173,9 +176,9 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 	    	}
 	    	, failure: Sbi.exception.ExceptionHandler.onServiceRequestFailure
 	    	, scope: this     
-	    });
+	    });  
 	}
-   
+ 
     
     
     // private methods

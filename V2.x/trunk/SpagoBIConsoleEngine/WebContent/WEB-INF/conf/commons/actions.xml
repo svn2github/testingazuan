@@ -67,7 +67,7 @@
 	</ACTION>
 	
 	<ACTION name="MONITOR_ACTION" 
-			class="it.eng.spagobi.engines.console.services.ExecuteButtonAction"
+			class="it.eng.spagobi.engines.console.services.MonitorAction"
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>

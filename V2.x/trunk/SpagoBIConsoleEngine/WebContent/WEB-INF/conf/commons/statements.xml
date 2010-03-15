@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<STATEMENTS>	 					
+<STATEMENTS>	 			
+
+	<STATEMENT name="UPDATE_MONITOR_STATE" 
+  			   query="UPDATE TEST_CONSOLE SET FLG1 = ? WHERE ID = ? "/>	
+  			   	
 </STATEMENTS>

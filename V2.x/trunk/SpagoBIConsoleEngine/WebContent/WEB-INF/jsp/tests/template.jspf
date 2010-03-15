@@ -214,13 +214,13 @@ Sbi.template = {
 		    	        ,  hidden: false
 		    	        ,  tooltip: 'View all active'
 		    	        ,  config: {
-		    	        	staticParams: {param1: 'paramValue'}
+	    	        	staticParams: {message: 'view_active'}
 		    	        }
 	    	        },{ name: 'monitor_inactive'
 		    	    	,  hidden: false
 		    	        ,  tooltip: 'View all inactive'
 		    	        ,  config: {
-		    	        	staticParams: {param1: 'paramValue'}
+		    	        	staticParams: {message: 'view_inactive'}
 		    	        }
 		    	    }
 	    	        ]
@@ -340,12 +340,26 @@ Sbi.template = {
 								}
 							},{
 								name: 'monitor'
-								, hidden: false
-								//, tooltip:'aaa'
+								, hidden: false							
 							 	, tooltipActive: 'Enable monitoring'
 						        , tooltipInactive: 'Disable monitoring'
-								, column: 'ico_monitor'
-								, config: {}
+								, column: 'ico_monitor'								
+								, config: {staticParams: {
+											//generic params for the execution of query on generic db
+											   schema: 'foodmart'								
+											 , stmt: 'UPDATE_MONITOR_STATE'
+											 , numPars: '2'			//the number of params in the query		
+											 //for each param define the single type:						
+											 , typePar1: 'num'		
+											 , typePar2: 'num'														    			     									
+											}
+										  , dynamicParams: [{
+											 'ico_monitor': 'par1'  
+											, scope: 'dataset'
+											},{ID: 'par2'  
+											, scope: 'dataset'
+											}]
+									}
 							},{
 								name: 'views'
 								, hidden: false
@@ -564,6 +578,7 @@ Sbi.template = {
 			      		                },{
 			      		                    name: 'monitor'
 			      		                    , hidden: false
+			      		                   , column: 'ico_monitor'
 			      		                    //, tooltip:'bbb'
 			      		                  	, tooltipActive: 'Enable monitoring'
 			      			                , tooltipInactive: 'Disable monitoring'
@@ -588,6 +603,7 @@ Sbi.template = {
 		//--------------------------------------------------------------------------------
 		// Page 3
 		// -------------------------------------------------------------------------------
+		/*
 		, {
 			title: 'Pag. 3'
 			, msg: 'Io sono la TERZA pagina'
@@ -797,7 +813,7 @@ Sbi.template = {
 		            ]  
               
     		} //table
-		   }
+		   }*/
 		] //pages
 	}	//detailPanel
 } //template

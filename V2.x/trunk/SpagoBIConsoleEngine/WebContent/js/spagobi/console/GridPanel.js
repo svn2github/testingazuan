@@ -444,32 +444,28 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			inlineActionColumnConfig.handler = this.execCrossNav;
 			
 		}else if (inlineActionColumnConfig.name === 'monitor'){		
+			
 			if (inlineActionColumnConfig.column !== undefined){
 				inlineActionColumnConfig.imgSrcActive = this.images['active'];			
 				inlineActionColumnConfig.imgSrcInactive = this.images['inactive'];			
-				inlineActionColumnConfig.handler = this.execMonitor;		
-				
-				//set the filter for view only active item (default)
+				//inlineActionColumnConfig.handler = this.execMonitor;		
+				inlineActionColumnConfig.handler = this.execAction;
+				//set the filter for view only active items (default)
 				var tmpName = this.store.getFieldNameByAlias(inlineActionColumnConfig.column);
 				if (tmpName !== undefined){
-					if (this.store.filterPlugin.getFilter(tmpName) === undefined) {
-						this.store.filterPlugin.addFilter(tmpName, 1);
-					}
+					if (this.store.filterPlugin.getFilter(tmpName) === undefined)
+						this.store.filterPlugin.addFilter (tmpName, 1);
 				}
-			}else
-				inlineActionColumnConfig.hidden = true;
+			}else inlineActionColumnConfig.hidden = true;
 			
 			inlineActionColumn = new Sbi.console.InlineToggleActionColumn(inlineActionColumnConfig);			
 			return inlineActionColumn;		
 		} else if (inlineActionColumnConfig.name === 'errors'){	
+			
 			inlineActionColumnConfig.imgSrc = this.images[inlineActionColumnConfig.name];
 			inlineActionColumnConfig.handler = this.showErrors;
 			
-		} else if (inlineActionColumnConfig.name === 'warnings'){	
-			inlineActionColumnConfig.imgSrc = this.images[inlineActionColumnConfig.name];
-			inlineActionColumnConfig.handler = this.showWarnings;
-			
-		}else {
+		} else {
 			
 			inlineActionColumnConfig.imgSrc = this.images[inlineActionColumnConfig.name];
 			inlineActionColumnConfig.handler = this.execAction;

@@ -32,7 +32,7 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
             record.commit();
             
             if (this.name === 'monitor'){
-	            //force the list refresh	         
+	            //force the list refresh	                   
             	//alert(this.grid.store.filterPlugin.getFilters().toSource());
 	            this.grid.store.filterPlugin.applyFilters();	            
             }

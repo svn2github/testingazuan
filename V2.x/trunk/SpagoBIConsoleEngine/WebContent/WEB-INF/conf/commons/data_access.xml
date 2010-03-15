@@ -6,4 +6,15 @@
 		<CONNECTION name="artemis" jndiResourceName="jdbc/artemis" jndiContext="java:comp/env" />
 		<CONNECTION name="bam" jndiResourceName="jdbc/bam" jndiContext="java:comp/env" />
 -->
+	 <CONNECTION-POOL connectionPoolName="foodmart" connectionPoolFactoryClass="it.eng.spago.dbaccess.factory.AppServerManagedConnectionPoolFactory">
+        <CONNECTION-POOL-PARAMETER parameterName="jndiName" parameterValue="java:comp/env/jdbc/foodmart" />
+        <CONNECTION-POOL-PARAMETER parameterName="driverVersion" parameterValue="2.1" />
+        <CONNECTION-POOL-PARAMETER parameterName="passwordCipher" parameterValue="it.eng.spago.security.DefaultCipher" />
+        <CONNECTION-POOL-PARAMETER parameterName="sqlMapperClass" parameterValue="it.eng.spago.dbaccess.sql.mappers.MySQLMapper" />
+    </CONNECTION-POOL>
+    
+    <CONNECTION-MANAGER>
+        <REGISTER-POOL registeredPoolName="foodmart" />
+    </CONNECTION-MANAGER>
+
 </DATA-ACCESS>

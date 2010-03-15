@@ -119,8 +119,9 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
 	      	} else {
 	      		Sbi.Msg.showError('Toolbar type [' + this.filterBar.type + '] is not supported');
 	      	}	
-	       	
-			this.addActionButtons();    					
+	       //	alert("custom store: " + store);
+			//this.addActionButtons(store);    					
+			this.addActionButtons();
 			
 	       	this.doLayout();
        	

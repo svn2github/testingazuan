@@ -21,19 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.console.services;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spagobi.commons.utilities.StringUtilities;
-import it.eng.spagobi.engines.console.ConsoleEngineInstance;
-import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
-import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
-import it.eng.spagobi.utilities.service.JSONSuccess;
-
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -41,6 +30,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import utilities.DataSourceUtilities;
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.commons.utilities.StringUtilities;
+import it.eng.spagobi.engines.console.ConsoleEngineInstance;
+import it.eng.spagobi.engines.console.ConsoleEngineRuntimeException;
+import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
+import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
+import it.eng.spagobi.utilities.service.JSONAcknowledge;
+import it.eng.spagobi.utilities.service.JSONSuccess;
 
 
 
@@ -98,7 +98,14 @@ public void service(SourceBean request, SourceBean response) {
 			
 			boolean result = utility.executeUpdateQuery(params);
 			if ( !result ){
-				//something in update goes wrong...				
+				throw new ConsoleEngineRuntimeException("Impossible to perform update statement");		
+			}
+			
+			try {
+				writeBackToClient( new JSONAcknowledge() );
+			} catch (IOException e) {
+				String msg = "Impossible to write back the responce to the client";
+				throw new SpagoBIEngineServiceException(getActionName(), msg, e);
 			}
 			
 		} catch (Throwable t) {

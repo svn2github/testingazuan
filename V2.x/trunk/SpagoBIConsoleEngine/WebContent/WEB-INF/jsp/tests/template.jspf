@@ -253,7 +253,9 @@ Sbi.template = {
 							}, {
 								name: 'errors'
 								, hidden: false
-								, tooltip: 'View Error messages'
+								, column: 'errors_flag'
+								, tooltipActive: 'View unchecked error messages'
+							    , tooltipInactive: 'View checked error messages'
 								, config: {
 									staticParams: {
 										param1: 'param1Value'
@@ -271,19 +273,11 @@ Sbi.template = {
 									}]	      		                        
 								}
 							}, {
-								name: 'errors_inactive'
+								name: 'alarms'
 								, hidden: false
-								, tooltip: 'Enable Errors'
-								, config: {}
-							}, {
-								name: 'warnings'
-								, hidden: false
-								, tooltip: 'View allarms'
-								, config: {}
-							}, {
-								name: 'warnings_inactive'
-								, hidden: false
-								, tooltip: 'Enable allarms'
+								, column: 'alarms_flag'
+								, tooltipActive: 'View unchecked alarm messages'
+								, tooltipInactive: 'View checked alarm messages'
 								, config: {}
 							}, {
 								name: 'informationlog'
@@ -339,7 +333,7 @@ Sbi.template = {
 								, hidden: false							
 							 	, tooltipActive: 'Enable monitoring'
 						        , tooltipInactive: 'Disable monitoring'							    
-								, column: 'ico_monitor'								
+						        , column: 'monitor_flag'						
 								, config: {staticParams: {
 											//generic params for the execution of query on generic db
 											   schema: 'foodmart'								
@@ -350,7 +344,7 @@ Sbi.template = {
 											 , typePar2: 'num'														    			     									
 											}
 										  , dynamicParams: [{
-											 'ico_monitor': 'par1'  
+											 'monitor_flag': 'par1'  
 											, scope: 'dataset'
 											},{ID: 'par2'  
 											, scope: 'dataset'
@@ -359,12 +353,9 @@ Sbi.template = {
 							},{
 								name: 'views'
 								, hidden: false
-								, tooltip: 'View taken'
-								, config: {}
-							},{
-								name: 'views_inactive'
-								, hidden: false
-								, tooltip: 'View taken'
+								, column: 'views_flag'
+	      		                , tooltipActive: 'Checked. Click to uncheck'
+		  						, tooltipInactive: 'Unchecked. Click to check'
 								, config: {}
 							}
 						]  
@@ -492,7 +483,9 @@ Sbi.template = {
 			      		                }, {
 			      		                    name: 'errors'
 			      		                    , hidden: false
-			      		                    , tooltip: 'View Error messages'
+			      		                    , column: 'errors_flag'
+			      		                  	, tooltipActive: 'View unchecked errors messages'
+			  								, tooltipInactive: 'View checked errors messages'
 			      		                    , config: {
 			      		                         staticParams: {
 						                                        param1: 'param1Value'
@@ -509,20 +502,12 @@ Sbi.template = {
 			                                                      , scope: 'env'
 		                                                      }]	      		                        
 			      		                    }
-			      		                }, {
-			      		                    name: 'errors_inactive'
+			      		                },  {
+			      		                    name: 'alarms'
 			      		                    , hidden: false
-			      		                    , tooltip: 'Enable Errors'
-			      		                    , config: {}
-			      		                }, {
-			      		                    name: 'warnings'
-			      		                    , hidden: false
-			      		                    , tooltip: 'View allarms'
-			      		                    , config: {}
-			      		                }, {
-			      		                    name: 'warnings_inactive'
-			      		                    , hidden: false
-			      		                    , tooltip: 'Enable allarms'
+			      		                  	, column: 'alarms_flag'
+			      		                  	, tooltipActive: 'View unchecked alarm messages'
+			  								, tooltipInactive: 'View checked alarm messages'
 			      		                    , config: {}
 			      		                }, {
 			      		                    name: 'informationlog'
@@ -574,7 +559,7 @@ Sbi.template = {
 			      		                },{
 			      		                    name: 'monitor'
 			      		                    , hidden: false
-			      		                   , column: 'ico_monitor'
+			      		                   , column: 'monitor_flag'
 			      		                    //, tooltip:'bbb'
 			      		                  	, tooltipActive: 'Enable monitoring'
 			      			                , tooltipInactive: 'Disable monitoring'
@@ -582,12 +567,9 @@ Sbi.template = {
 			      		                },{
 			      		                    name: 'views'
 			      		                    , hidden: false
-			      		                    , tooltip: 'View taken'
-			      		                    , config: {}
-			      		                },{
-			      		                    name: 'views_inactive'
-			      		                    , hidden: false
-			      		                    , tooltip: 'View taken'
+			      		                    , column: 'views_flag'
+			      		                    , tooltipActive: 'Checked. Click to uncheck'
+				  							, tooltipInactive: 'Unchecked. Click to check'
 			      		                    , config: {}
 			      		                }
 			      		            ]  
@@ -707,7 +689,9 @@ Sbi.template = {
                        , config: {}
 		                },{ name: 'errors'
                        , hidden: false
-                       , tooltip: 'View Error messages'
+                       , column: 'errors_flag'
+                       , tooltipActive: 'View unchecked error messages'
+							, tooltipInactive: 'View checked error messages'
                        , config: {
                             staticParams: {param1: 'param1Value'
                                          , param2: 'paramValue2' 
@@ -724,19 +708,11 @@ Sbi.template = {
                                              }]	      		                        
                        }
 		                }, {
-		                    name: 'errors_inactive'
+		                    name: 'alarms'
 		                    , hidden: false
-		                    , tooltip: 'Enable Errors'
-		                    , config: {}
-		                }, {
-		                    name: 'warnings'
-		                    , hidden: false
-		                    , tooltip: 'View allarms'
-		                    , config: {}
-		                }, {
-		                    name: 'warnings_inactive'
-		                    , hidden: false
-		                    , tooltip: 'Enable allarms'
+		                    , column: 'alarms_flag'
+		                    , tooltipActive: 'View unchecked alarm messages'
+							, tooltipInactive: 'View checked alarm messages'
 		                    , config: {}
 		                }, {
 		                    name: 'informationlog'
@@ -793,17 +769,14 @@ Sbi.template = {
 		                    //, tooltip: 'ccc'
 		                    , tooltipActive: 'Enable monitoring'
 			                , tooltipInactive: 'Disable monitoring'
-			                , column: 'ico_monitor'
+			                , column: 'monitor_flag'
 		                    , config: {}
 		                },{
 		                    name: 'views'
 		                    , hidden: false
-		                    , tooltip: 'View taken'
-		                    , config: {}
-		                },{
-		                    name: 'views_inactive'
-		                    , hidden: false
-		                    , tooltip: 'View taken'
+		                    , column: 'views_flag'
+      		                , tooltipActive: 'Checked. Click to uncheck'
+	  						, tooltipInactive: 'Unchecked. Click to check'
 		                    , config: {}
 		                }
 		            ]  

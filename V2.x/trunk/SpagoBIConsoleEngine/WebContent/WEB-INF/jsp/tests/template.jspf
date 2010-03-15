@@ -213,11 +213,11 @@ Sbi.template = {
 	    	        },{ name: 'monitor'
 		    	        ,  hidden: false
 		    	        ,  tooltip: 'View all active'
-		    	        ,  column: 'ico_monitor'	//the column on db with the flag value	    	        
+		    	        ,  column: 'monitor_flag'	//the column on db with the flag value	    	        
 	    	        },{ name: 'monitor_inactive'
 		    	    	,  hidden: false
 		    	        ,  tooltip: 'View all inactive'	
-		    	        ,  column: 'ico_monitor'	//the column on db with the flag value	 	    	        
+		    	        ,  column: 'monitor_flag'	//the column on db with the flag value	 	    	        
 		    	    }
 	    	        ]
 	    	    } //filterBar   

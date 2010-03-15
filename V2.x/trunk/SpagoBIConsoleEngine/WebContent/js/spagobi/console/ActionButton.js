@@ -116,7 +116,8 @@ Sbi.console.ActionButton = function(config) {
 Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     
     services: null
-    //, store: null
+    , ACTIVE_VALUE: 0
+	, INACTIVE_VALUE: 1
    
     // public methods
 	, resolveParameters: function(parameters, context) {
@@ -154,7 +155,7 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     	
     	if (this.actionConf.name === 'monitor' || this.actionConf.name === 'monitor_inactive'){     		
     		this.store.filterPlugin.removeFilter(this.store.getFieldNameByAlias(this.actionConf.column));
-    		var newFilter = (this.actionConf.name === 'monitor') ? '1' : '0';    	
+    		var newFilter = (this.actionConf.name === 'monitor') ? this.ACTIVE_VALUE : this.INACTIVE_VALUE;    	
     		this.store.filterPlugin.addFilter(this.store.getFieldNameByAlias(this.actionConf.column), newFilter);    		
     		this.store.filterPlugin.applyFilters();	   
     		return;

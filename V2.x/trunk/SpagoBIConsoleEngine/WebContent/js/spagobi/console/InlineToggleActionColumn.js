@@ -15,8 +15,8 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
 	
 	column: null
 	
-	, ACTIVE_VALUE: 1
-	, INACTIVE_VALUE: 0
+	, ACTIVE_VALUE: 0
+	, INACTIVE_VALUE: 1
 	
 	// -- public methods ------------------------------------------------------------------------
 	

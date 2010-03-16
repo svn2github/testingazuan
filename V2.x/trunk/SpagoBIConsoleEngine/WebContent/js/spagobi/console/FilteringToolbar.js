@@ -94,6 +94,8 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 		if (this.filterBar.actions){
       		for(var i=0; i < this.filterBar.actions.length; i++){
       		   conf.actionConf = this.filterBar.actions[i];
+      		  // if (conf.actionConf.name === 'errors' || conf.actionConf.name === 'alarms' || conf.actionConf.name === 'errors')
+      		   
     		   b = new Sbi.console.ActionButton(conf);
         	   this.addButton(b);	
         	}	
@@ -132,8 +134,8 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 						   'select': {
 						   		fn: function(combo, record, index) {
 									var field = combo.index;
-									var exp = record.get(combo.valueField);
-									this.addFilterGrid(field, exp);							                
+									var exp = record.get(combo.valueField);									
+									this.addFilterGrid(field, exp);	  
 								},
 								scope: this
 							}				     					
@@ -189,5 +191,14 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	   	this.store.filterPlugin.applyFilters();
 	 }
    
+	//adds the single filter or delete if it's the reset field
+	 , addFilterGrid: function(f, exp){  
+		   if (exp === 'emptyEl'){
+			   this.store.filterPlugin.removeFilter(f);
+		   }else{
+			   this.store.filterPlugin.addFilter(f, exp);
+		   }
+		   this.store.filterPlugin.applyFilters();
+	   }
   
 });

@@ -63,67 +63,59 @@ Sbi.console.ActionButton = function(config) {
 	
 		Ext.apply(this, c);
 
-		//Services definition
-		this.services = this.services || new Array();	
-		this.services['refresh'] = this.services['refresh'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'REFRESH_ACTION'
-			, baseParams: new Object()
-		});
-		this.services['errors'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'ERRORS_ACTION'
-			, baseParams: new Object()
-		});
-		this.services['errors_inactive'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'ERRORS_ACTION'
-			, baseParams: new Object()
-		});
-		this.services['warnings'] = this.services['warnings'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'WARNINGS_ACTION'
-			, baseParams: new Object()
-		});
-		this.services['warnings_inactive'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'WARNINGS_ACTION'
-			, baseParams: new Object()
-		});
-		this.services['views'] = this.services['views'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'VIEWS_ACTION'
-			, baseParams: new Object()
-		});
-		this.services['views_inactive'] = this.services['errors'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'VIEWS_ACTION'
-			, baseParams: new Object()
-		});
-		this.services['monitor'] = this.services['monitor'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'MONITOR_ACTION'
-		  , baseParams: new Object()
-		});
-		this.services['monitor_inactive'] = this.services['monitor_inactive'] || Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'MONITOR_ACTION'
-		  , baseParams: new Object()
-		});
-		
 		//this.addEvents('customEvents');
-		
-      c = Ext.apply(c, this);
-
-		// constructor
-		//delete c.config;
-		Sbi.console.ActionButton.superclass.constructor.call(this, c);
-		this.on('click', this.execAction, this);
-		//this.addEvents();
-};
+	    this.initServices();
+	    this.initButton();
+	    
+        c = Ext.apply(c, this);
+      
+      
+	    // constructor
+	    Sbi.console.ActionButton.superclass.constructor.call(this, c);
+	    this.on('click', this.execAction, this);
+       //this.addEvents();
+}; 
 
 Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     
     services: null
     , ACTIVE_VALUE: 0
 	, INACTIVE_VALUE: 1
+	
+	, FILTERBAR_ACTIONS: {		
+		  monitor: {serviceName: 'UPDATE_ACTION', images: 'monitor'}
+		, monitor_inactive: {serviceName: 'UPDATE_ACTION', images: 'monitor_inactive'}
+		, errors: {serviceName: 'ERRORS_ACTION', images: {active: 'errors', inactive: 'errors_inactive'}} 
+		, alarms: {serviceName: 'ALARMS_ACTION', images: {active: 'alarms', inactive: 'alarms_inactive'}}
+		, views: {serviceName: 'VIEWS_ACTION', images: {active: '../img/ico_views.gif', inactive: '../img/ico_views_inactive.gif'}}
+		, refresh: {serviceName: 'REFRESH_ACTION', images: 'refresh'}
+	}
    
     // public methods
 	, resolveParameters: function(parameters, context) {
 		var results = {};  
-		
-		results = Ext.apply(results, parameters.staticParams);
+	
+		var staticParams = parameters.staticParams;
+		if(staticParams) { 
+			for (p in staticParams){
+				
+				 if(Ext.isArray(staticParams[p]) === true) {
+					var params = staticParams[p]; 
+					for(par in params) {
+						var singlePar = params[par];
+						for (subPar in singlePar){
+							
+							results[subPar] = singlePar[subPar];	
+							//alert(results[subPar] + " " +  singlePar[subPar])
+						}					
+					} 
+				 } else {
+					 results[p] = staticParams[p];
+				 } 	
+				 
+			}
+		}
+			//results = Ext.apply(results, parameters.staticParams);
 		
 		var dynamicParams = parameters.dynamicParams;
 	    if(dynamicParams) {        	
@@ -137,6 +129,7 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 			            		msgErr += 'Parameter "' + p + '" undefined into request. <p>';
 		                    } else {          	 	 		           	 	 		  
 		                    	results[param[p]] = context[p];
+		                    	//alert("" +  param[p] + " " +  context[p]);
 		                    } 	 		 
 	                }          	 	 		   
 	          		    
@@ -153,19 +146,40 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 
     , execAction: function(){
     	
+    	var flgValue = null;
+    	
     	if (this.actionConf.name === 'monitor' || this.actionConf.name === 'monitor_inactive'){     		
-    		this.store.filterPlugin.removeFilter(this.store.getFieldNameByAlias(this.actionConf.column));
-    		var newFilter = (this.actionConf.name === 'monitor') ? this.ACTIVE_VALUE : this.INACTIVE_VALUE;    	
-    		this.store.filterPlugin.addFilter(this.store.getFieldNameByAlias(this.actionConf.column), newFilter);    		
+    		this.store.filterPlugin.removeFilter(this.store.getFieldNameByAlias(this.actionConf.checkColumn));
+    		var newFilter = (this.actionConf.name === 'monitor') ? this.INACTIVE_VALUE : this.ACTIVE_VALUE;    	
+    		this.store.filterPlugin.addFilter(this.store.getFieldNameByAlias(this.actionConf.checkColumn), newFilter);    		
     		this.store.filterPlugin.applyFilters();	   
     		return;
+    	}else if (this.actionConf.name === 'refresh'){    		
+    		
+    		//this.store.filterPlugin.
+    		this.store.load({
+    		      params: {}, 
+    		      callback: function(){this.ready = true;}, 
+    		      scope: this.store, 
+    		      add: false
+    		     });
+    		/*
+    		this.store.filterPlugin.resetFilters;
+    		this.store.filterPlugin.applyFilters();
+    		*/
+    		return;
+    	} else if (this.actionConf.name === 'errors' || this.actionConf.name === 'errors_inactive'){  
+    		flgValue = (this.iconCls === 'errors')? this.ACTIVE_VALUE: this.INACTIVE_VALUE;
+    		this.executionContext.error_flag = flgValue;
+    	//	alert(this.executionContext.toSource());
     	}
+    	
 		var params = this.resolveParameters(this.actionConf.config, this.executionContext);
 		params = Ext.apply(params, {
-				message: (this.actionConf.messagge !== undefined)?this.actionConf.message : this.actionConf.name, 
+				message: this.actionConf.name, 
 				userId: Sbi.user.userId 
 			}); 
-				 
+				
 			Ext.Ajax.request({
 			url: this.services[this.actionConf.name]	       
 	       	, params: params 			       
@@ -173,7 +187,7 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 	    		if(response !== undefined && response.responseText !== undefined) {
 						var content = Ext.util.JSON.decode( response.responseText );
 						if (content !== undefined) {				      			  
-							alert(content.toSource());
+						//	alert(content.toSource());
 						}				      		
 				} else {
 					Sbi.Msg.showError('Server response is empty', 'Service Error');
@@ -187,6 +201,33 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     
     
     // private methods
+    , initServices: function() {
+    	this.services = this.services || new Array();	
+		this.images = this.images || new Array();	
+				
+		for(var actionName in this.FILTERBAR_ACTIONS) {
+			var actionConfig = this.FILTERBAR_ACTIONS[actionName];
+			this.services[actionName] = this.services[actionName] || Sbi.config.serviceRegistry.getServiceUrl({
+				serviceName: actionConfig.serviceName
+				, baseParams: new Object()
+			});
+		}
+    }
+    
+    , initButton: function(){
+    	var dataIdx = this.store.getFieldNameByAlias(this.actionConf.column);
+    	if (dataIdx !== undefined && this.actionConf.checkColumn !== 'monitor_check' ){
+    	//	alert(dataIdx);
+    		//var resFindActive = this.store.findExact(dataIdx,this.ACTIVE_VALUE);
+    		var resFindActive = this.store.findExact(dataIdx,"0");
+    		//alert("resFindActive: " + resFindActive);
+    		if (resFindActive != -1){    	
+	    		this.iconCls = this.FILTERBAR_ACTIONS[ this.actionConf.name ].images["active"]; 
+    		}else{    		    			
+    			this.iconCls = this.FILTERBAR_ACTIONS[ this.actionConf.name ].images[ "inactive"]; 
+    	    }
+    	}
+    }
   
 });
     

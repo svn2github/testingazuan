@@ -17,20 +17,20 @@
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
-	
+<!-- 	only client operation:
 	<ACTION name="REFRESH_ACTION" 
 			class="it.eng.spagobi.engines.console.services.ExecuteButtonAction"
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
-	
+-->
 	<ACTION name="ERRORS_ACTION" 
-			class="it.eng.spagobi.engines.console.services.ExecuteButtonAction"
+			class="it.eng.spagobi.engines.console.services.ExecuteUpdateAction"
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
 	
-	<ACTION name="WARNINGS_ACTION" 
+	<ACTION name="ALARMS_ACTION" 
 			class="it.eng.spagobi.engines.console.services.ExecuteButtonAction"
 			scope="REQUEST">
 		<CONFIG></CONFIG>

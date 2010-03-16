@@ -50,7 +50,7 @@ Sbi.console.CustomFilteringToolbar = function(config) {
 
 		var defaultSettings = {
 		    showIfEmpty: true
-		    , emptyMsg: 'No filters'
+		    //, emptyMsg: 'No filters'
 		    , tbInizialzed: false
 		};
 		

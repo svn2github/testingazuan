@@ -95,26 +95,32 @@ public class DataSourceUtilities {
 			logger.debug("Parameter [" + STMT + "] is equals to [" + statement + "]");			
 			Assert.assertTrue(!StringUtilities.isEmpty( statement ), "Parameter [" + STMT + "] cannot be null or empty");
 			
-			int numQueryPars = Integer.parseInt((String) params.get( NUM_PARS ));
-			logger.debug("Parameter [ numPars ] is equals to [" + numQueryPars + "]");
+			String numParsStr = (String) params.get( NUM_PARS );
+			int numPars = (numParsStr != null)?Integer.parseInt(numParsStr):0;
+			logger.debug("Parameter [ numPars ] is equals to [" + numPars + "]");
 			
 			sqlCommand = dataConnection.createUpdateCommand(statement);
-			List inputParameter = new ArrayList(numQueryPars);
-					
-			Iterator iterator =  params.keySet().iterator();
-			int i=1;
-			while (iterator.hasNext()) {
-				String paramName = (String) iterator.next();
-				String paramValue = (String)params.get( paramName );
-	
-				if (paramName.equalsIgnoreCase("par"+i)){
-					String parType = (String)params.get("typePar"+i);
-					inputParameter.add(dataConnection.createDataField(paramName,getParamType(parType), paramValue));
-					i++;
-				}					
-			}								
-			dataResult = sqlCommand.execute(inputParameter);
-			dataConnection.commitTransaction();							
+			
+			if (numPars > 0){
+				List inputParameter = new ArrayList(numPars);
+						
+				Iterator iterator =  params.keySet().iterator();
+				int i=1;
+				while (iterator.hasNext()) {
+					String paramName = (String) iterator.next();
+					String paramValue = (String)params.get( paramName );
+		
+					if (paramName.equalsIgnoreCase("par"+i)){
+						String parType = (String)params.get("typePar"+i);
+						inputParameter.add(dataConnection.createDataField(paramName,getParamType(parType), paramValue));
+						i++;
+					}					
+				}								
+				dataResult = sqlCommand.execute(inputParameter);
+			}else{
+				dataResult = sqlCommand.execute();
+			}
+			dataConnection.commitTransaction();
 		} // try
 		catch (Exception ex) {
 			toReturn = false;
@@ -126,6 +132,7 @@ public class DataSourceUtilities {
 				//throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 				throw new Throwable(t);
 			}
+			throw new Throwable(ex);
 			
 		} 
 		finally {
@@ -141,83 +148,15 @@ public class DataSourceUtilities {
 	private int getParamType(String parType){
 		int toReturn = 0;
 		if (parType.equalsIgnoreCase("num") || parType.equalsIgnoreCase("integer")) return java.sql.Types.INTEGER;	
+		else if (parType.equalsIgnoreCase("decimal") ) return java.sql.Types.DECIMAL;	
+		else if (parType.equalsIgnoreCase("double")) return java.sql.Types.DOUBLE;
 		else if (parType.equalsIgnoreCase("string") || parType.equalsIgnoreCase("char")) return java.sql.Types.VARCHAR;
 		else if (parType.equalsIgnoreCase("boolean") ) return java.sql.Types.BOOLEAN;
+		else if (parType.equalsIgnoreCase("date") || parType.equalsIgnoreCase("datetime")) return java.sql.Types.DATE;
 		return toReturn;
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	/**
-	 * This method, based on the data sources table, gets a
-	 * database connection and return it.
-	 * 
-	 * @param dsLabel the ds label
-	 * 
-	 * @return the database connection
-	 * 
-	 * N.B. You MUST use this method only when RequestContainer is OK.
-	
-	public Connection getConnection(RequestContainer requestContainer,String dsLabel) {
-		Connection connection =  null;
-		//calls implementation for gets data source object
-		
-		DataSourceSupplier supplierDS = new DataSourceSupplier();		
-		SpagoBiDataSource ds = supplierDS.getDataSourceByLabel(dsLabel);
-		logger.debug("Schema Attributes:"+ ds.getSchemaAttribute());
-		String schema=UserUtilities.getSchema(ds.getSchemaAttribute(),requestContainer);
-		logger.debug("Schema:"+ schema);
-		
-		try {
-			connection = ds.readConnection(schema);
-		} catch (NamingException e) {
-			logger.error("JNDI error", e);
-		} catch (SQLException e) {
-			logger.error("Cannot retrive connection", e);
-		} catch (ClassNotFoundException e) {
-			logger.error("Driver not found", e);
-		}
-		
-		return connection;
-	}
-	 */
-	/**
-	 * use this method in service implementation. If RequestContainer isn't correct.
-	 * @param profile
-	 * @param dsLabel
-	 * @return
-	
-	public Connection getConnection(IEngUserProfile profile,String dsLabel) {
-		Connection connection =  null;
-		//calls implementation for gets data source object
-		
-		
-		DataSourceSupplier supplierDS = new DataSourceSupplier();		
-		SpagoBiDataSource ds = supplierDS.getDataSourceByLabel(dsLabel);
-		logger.debug("Schema Attribute:"+ ds.getSchemaAttribute());
-		String schema=null;
-		if (profile!=null){
-			schema=UserUtilities.getSchema(ds.getSchemaAttribute(),profile);
-			logger.debug("Schema:"+ schema);
-		}
-		try {
-			connection = ds.readConnection(schema);
-		} catch (NamingException e) {
-			logger.error("JNDI error", e);
-		} catch (SQLException e) {
-			logger.error("Cannot retrive connection", e);
-		} catch (ClassNotFoundException e) {
-			logger.error("Driver not found", e);
-		}
-		
-		return connection;
-	}
-	 */
 	/**
 	 * Creates a Spago DataConnection object starting from a sql connection.
 	 * 

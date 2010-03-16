@@ -110,6 +110,11 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	, inlineCharts: null
 	, inlineActions: null
 	
+	// automatic: all dataset fields are added as filter
+    , AUTOMATIC_FILTERBAR: 'automatic'
+    	//custom: only configurated fields are added as filter  
+    , CUSTOM_FILTERBAR: 'custom'
+	
 	
 	, GRID_ACTIONS: {
 		start: {serviceName: 'START_ACTION', images: '../img/ico_start.gif'}
@@ -117,7 +122,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		, informationlog: {serviceName: 'START_ACTION', images: '../img/ico_info.gif'}
 		, crossnav: {serviceName: 'CROSS_ACTION', images: {cross_detail: '../img/ico_cross_detail.gif', popup_detail: '../img/ico_popup_detail.gif'}}
 		, monitor: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_monitor.gif', inactive: '../img/ico_monitor_inactive.gif'}}
-		, errors: {serviceName: 'ERRORS_ACTION', images: {active: '../img/ico_errors.gif', inactive: '../img/ico_errors_inactive.gif'}}
+		, errors: {serviceName: 'ERRORS_ACTION', images: {active: '../img/ico_errors.gif', inactive: '../img/ico_errors_inactive.gif'}} 
 		, alarms: {serviceName: 'WARNINGS_ACTION', images: {active: '../img/ico_warnings.gif', inactive: '../img/ico_warnings_inactive.gif'}}
 		, views: {serviceName: 'VIEWS_ACTION', images: '../img/ico_views.gif'}
 		, views_inactive: {serviceName: 'VIEWS_ACTION', images: '../img/ico_views_inactive.gif'}
@@ -130,7 +135,27 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	, resolveParameters: function(parameters, record, context) {
 		var results = {};  
 		
-		results = Ext.apply(results, parameters.staticParams);
+		var staticParams = parameters.staticParams;
+		
+		
+		if(staticParams) { 
+			for (p in staticParams){
+				
+				 if(Ext.isArray(staticParams[p]) === true) {
+					var params = staticParams[p]; 
+					for(par in params) {
+						var singlePar = params[par];
+						for (subPar in singlePar){
+							results[subPar] = singlePar[subPar];							
+						}					
+					} 
+				 } else {
+					 results[p] = staticParams[p];
+				 } 	
+				 
+			}
+		}
+			//results = Ext.apply(results, parameters.staticParams);
 		
 		var dynamicParams = parameters.dynamicParams;
 	    if(dynamicParams) {        	
@@ -201,7 +226,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	    		if(response !== undefined && response.responseText !== undefined) {
 						var content = Ext.util.JSON.decode( response.responseText );
 						if (content !== undefined) {				      			  
-							alert(content.toSource());
+						//	alert(content.toSource());
 						}				      		
     			} else {
     				Sbi.Msg.showError('Server response is empty', 'Service Error');
@@ -300,7 +325,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	, initFilterBar: function(filterBarConf) {
 		if (filterBarConf.type === 'default') {
 			Sbi.Msg.showError('Toolbar of type [' + filterBarConf.type + '] is not yet supported');
-		} else if (filterBarConf.type === 'custom' || filterBarConf.type === 'automatic') {
+		} else if (filterBarConf.type === this.CUSTOM_FILTERBAR || filterBarConf.type === this.AUTOMATIC_FILTERBAR) {
 		    this.filterBar = new Sbi.console.CustomFilteringToolbar({filterBar: filterBarConf, store: this.store});          	  
 		}  else {
 			Sbi.Msg.showError('Toolbar of type [' + filterBarConf.type + '] is not supported');

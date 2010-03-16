@@ -102,11 +102,6 @@ Ext.extend(Sbi.console.StorePlugin, Ext.util.Observable, {
 	   //apply the filters
 	   this.store.filterBy(function(record,id){		
 		   for(var f in this.filters){ 
-			   /*  if (f === 'column_8'){
-				   alert("record.data[f]: " + record.data[f]);
-				   alert("typeof record.data[f]: " + typeof record.data[f]);
-				   alert("(record.data[f] !== this.filters[f]) : " +(record.data[f] !== this.filters[f]) );
-			   }*/
 			   if(record.data[f] != this.filters[f]) return false;              
 	       }
 	       return true;

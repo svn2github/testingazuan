@@ -18,15 +18,7 @@ Sbi.template = {
             id: 'testConsole'
             , label: 'testConsole'
             , refreshTime: 30
-        }, {
-            id: 'testConsole2'
-            , label: 'testConsole2'
-            , refreshTime: 30
-        }, {
-            id: 'testConsole3'
-                , label: 'testConsole'
-                , refreshTime: 30
-        }    
+        } 
 	]
 	
 	
@@ -168,35 +160,56 @@ Sbi.template = {
     	            }, {
         	            name: 'errors'
 		    	        , tooltip: 'Mark all errors as viewed'
+		    	        , column: 'errors_flag'	//the column on db with the flag value	
 	    	            , hidden: false
 	    	            , config: {
 	    	            	staticParams: {
-    	            			param1: 'paramValue1'
-	    	                	, param2: 'paramValue2' 
-		    	            }
+							//generic params for the execution of query on generic db
+							   schema: 'foodmart'								
+							 , stmt: 'UPDATE_ALL_ERRORS_STATE'
+							 , numPars: '1'			//the number of params in the query		
+							 //for each param define the single type:	
+							 , types: [{typePar1: 'num' }]		//num | string | boolean |date														 													    			     									
+							}
+						  , dynamicParams: [{
+							 'error_flag': 'par1'  
+							, scope: 'env'
+							}]
     	            	}
-	    	        }, {
+	    	        }/*, {
 	    	        	name: 'errors_inactive'
-		    	        , tooltip: 'Mark all errors as not viewed'
-	    	            , hidden: true
+		    	        , tooltip: 'Turn off all errors'
+		    	        , column: 'error_flag'	//the column on db with the flag value	
+	    	            , hidden: false
 	    	            , config: {
-	    	            	staticParams: {param1: 'paramValue'}
+		    	        	staticParams: {
+							//generic params for the execution of query on generic db
+							   schema: 'foodmart'								
+							 , stmt: 'UPDATE_ALL_ERRORS_STATE'
+							 , numPars: '1'			//the number of params in the query		
+							 //for each param define the single type:	
+							 , types: [{typePar1: 'num' }]		//num | string | boolean |date							 												 													    			     								
+							}	
+			    	        , dynamicParams: [{
+								 'error_flag': 'par1'  
+								, scope: 'env'
+								}]			            						  
 	    	            }
-	    	        }, {
-	    	            name: 'warnings'
+	    	        }*/, {
+	    	            name: 'alarms'
 		    	        , tooltip: 'Turn on all alarms'
 	    	            , hidden: false
 	    	            , config: {
 	    	        		staticParams: {param1: 'paramValue'}
 	    	            }
-	    	        }, {
-		    	        name: 'warnings_inactive'
+	    	        }/*, {
+		    	        name: 'alarms_inactive'
 	    	            , hidden: true
 	    	            , tooltip: 'Turn off all alarms'
 	    	            , config: {
 	    	              	staticParams: {param1: 'paramValue'}
 	    	            }
-	    	        }, {
+	    	        }*/, {
                        name: 'views'
 	                   , tooltip: 'Mark all rows as viewed'		    	                       
 	    	           , hidden: false
@@ -213,11 +226,11 @@ Sbi.template = {
 	    	        },{ name: 'monitor'
 		    	        ,  hidden: false
 		    	        ,  tooltip: 'View all active'
-		    	        ,  column: 'monitor_check'	//the column on db with the check value	    	        
+		    	        ,  checkColumn: 'monitor_check'	//the column on db with the flag value	    	        
 	    	        },{ name: 'monitor_inactive'
 		    	    	,  hidden: false
 		    	        ,  tooltip: 'View all inactive'	
-		    	        ,  column: 'monitor_check'	//the column on db with the check value	 	    	        
+		    	        ,  checkColumn: 'monitor_check'	//the column on db with the flag value	 	    	        
 		    	    }
 	    	        ]
 	    	    } //filterBar   
@@ -336,15 +349,16 @@ Sbi.template = {
 								, hidden: false							
 							 	, tooltipActive: 'Enable monitoring'
 						        , tooltipInactive: 'Disable monitoring'							    
-						        , checkColumn: 'monitor_check'					
+								, checkColumn: 'monitor_check'								
 								, config: {staticParams: {
 											//generic params for the execution of query on generic db
 											   schema: 'foodmart'								
 											 , stmt: 'UPDATE_MONITOR_STATE'
 											 , numPars: '2'			//the number of params in the query		
-											 //for each param define the single type:						
-											 , typePar1: 'num'		//num | string
-											 , typePar2: 'num'														    			     									
+											 //for each param define the single type:	
+											 , types: [{typePar1: 'num' }		//num | string | boolean |date
+												 	 , {typePar2: 'num'	}
+												 	  ]																 													    			     									
 											}
 										  , dynamicParams: [{
 											 'monitor_check': 'par1'  
@@ -363,432 +377,7 @@ Sbi.template = {
 							}
 						]  
 	        }//table	    	
-		}, 
-
-		//--------------------------------------------------------------------------------
-		// Page 2
-		// -------------------------------------------------------------------------------
-		{
-			
-			title: 'Pag. 2'
-			, msg: 'Io sono la SECONDA pagina'
-			, navigationBar: {
-				documents: [
-				{
-					text: 'Bottone 4'
-					,tooltip: 'Bottone 4'
-					,label: 'QBE_FOODMART'
-					,staticParams: {param1: 'paramValue'}
-				}, {
-					text: 'Bottone 5'
-					,tooltip: 'Bottone 5'
-					,label: 'QBE_FOODMART'
-				}
-				]
-			}
-		
-	        
-	            , table: {
-		            dataset: 'testConsole2'		
-	              , filterBar: {
-		            	type: 'automatic'  
-		              , defaults: {
-			                operator: 'EQUALS_TO'
-			                ,operand: 'DISTINCT' 
-			            }     
-									
-		              , filters: [
-			              {
-			           	  	 text: 'Brand'
-			               , column: 'Brand'
-			               , operator: 'EQUALS_TO'
-			               , operand: 'DISTINCT'
-			               }, {
-			                 text: 'Product'
-			               , column: 'Product'
-			               , operator: 'EQUALS_TO'
-			               , operand: 'DISTINCT'
-			               }
-		            ]
-		      
-		              , actions: [
-		                	   {
-			                    name: 'refresh'
-			                    , hidden: false
-			                    , config: {}
-		                	   }, {name: 'errors'
-			                    ,  hidden: false
-			                    ,  config: 
-			                       {
-			                        staticParams: {param1: 'paramValue1'
-			                                      ,param2: 'paramValue2' }
-			                        }
-			                     }, {
-			                       name: 'errors_inactive'
-			                    ,  hidden: true
-			                    ,  config: {
-			                       		staticParams: {param1: 'paramValue'}
-			                      }
-			                    }, {
-			                       name: 'warnings'
-			                    ,  hidden: false
-			                    ,  config: {
-			                       		staticParams: {param1: 'paramValue'}
-			                       }
-			                     }, {name: 'warnings_inactive'
-			                    ,  hidden: true
-			                    ,  config: {
-			                        	staticParams: {param1: 'paramValue'}
-			                       }
-			                     },{
-			                       name: 'views'
-			                    ,  hidden: false
-			                    ,  config: {
-			                        	staticParams: {param1: 'paramValue'}
-			                       }
-			                     }, {name: 'views_inactive'
-			                    ,  hidden: true
-			                    ,  config: {
-			                        	staticParams: {param1: 'paramValue'}
-			                       }
-			                     }
-			            ]
-	              }//filterBar	      						
-              		  , inlineCharts: [
-										{
-												type: 'bar'
-												, column: 'BarChart'
-												, color: 'blue'
-												, totValue: 200 
-												//, tooltip: 'volume vendite'
-										}, {
-												 type: 'point'
-												 , column: 'Bullet'
-												 , color: 'grey' //red | grey | ...
-												 , threshold: '25'
-												 , tooltip: 'superata la soglia di 25 errori'
-										}
-									  ]
-
-	            	  , inlineActions: [
-			      		                {
-			      		                    name: 'start'
-			      		                    , hidden: false
-			      		                    , tooltip: 'Start the process'
-			      		                    , config: {}
-			      		                }, {
-			      		                    name: 'stop'
-			      		                    , hidden: false
-			      		                    , tooltip: 'Stop the process'
-			      		                    , config: {
-			      		                        params: {}
-			      		                    }
-			      		                }, {
-			      		                    name: 'errors'
-			      		                    , hidden: false
-			      		                    , checkColumn: 'errors_check'
-											, flagColumn: 'errors_flag'	
-			      		                  	, tooltipActive: 'View unchecked errors messages'
-			  								, tooltipInactive: 'View checked errors messages'
-			      		                    , config: {
-			      		                         staticParams: {
-						                                        param1: 'param1Value'
-						                                       ,param2: 'paramValue2' 
-		                                    				   }
-			      		                     ,   dynamicParams: [{
-																	brandname: 'Brand'  
-			                                                      , scope: 'dataset'   
-			                                                      },{
-																	productName: 'Product'
-			                                                      , scope: 'dataset'
-			                                                      },{
-			                                                        month: 'Month'	
-			                                                      , scope: 'env'
-		                                                      }]	      		                        
-			      		                    }
-			      		                },  {
-			      		                    name: 'alarms'
-			      		                    , hidden: false
-			      		                    , checkColumn: 'alarms_check'
-											, flagColumn: 'alarms_flag'	
-			      		                  	, tooltipActive: 'View unchecked alarm messages'
-			  								, tooltipInactive: 'View checked alarm messages'
-			      		                    , config: {}
-			      		                }, {
-			      		                    name: 'informationlog'
-			      		                    , hidden: false
-			      		                    , tooltip: 'Download log files'
-			      		                    , config: {}
-			      		                }, { 
-			      		                    name: 'crossnav'
-			      		                    , hidden: false
-			      		                    , tooltip: 'Cross on document'
-			      		                    , config: {
-			      		                        target: 'new' 
-			      		                       , document: 
-		                            				{label: 'testReportParams'
-		                            				, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
-		                                    , dynamicParams: [{
-		                                                        Brand: 'P1' 
-		                                                      , scope: 'dataset'   
-		                                                      },{
-		                                                        Product: 'P2'
-		                                                      , scope: 'dataset'
-		                                                      },{
-		                                                        month: 'P3'
-		                                                      , scope: 'env'
-		                                                     }]	 
-		                            				}
-			      		                    }
-			      		                }, { 
-			      		                    name: 'crossnav'
-			      		                    , hidden: false
-			      		                    , tooltip: 'Cross on YYY document (popup)'
-			      		                    , config: {target: 'self' 
-														, document: 
-														{
-														  label: 'testReportParams'
-														, staticParams: {P3:'paramValue_A' , P5: 'paramValue_B'} 
-														, dynamicParams: [{
-																			  Brand: 'P1'  
-																			, scope: 'dataset'    
-																			},{
-																			  Product: 'P2'
-																			, scope: 'dataset'
-																			},{
-																		      month: 'P4'
-																			, scope: 'env'
-																		 }]	 
-														}
-													}
-			      		                },{
-			      		                    name: 'monitor'
-			      		                    , hidden: false
-			      		                    , checkColumn: 'monitor_check'
-							               	, tooltipActive: 'Enable monitoring'
-			      			                , tooltipInactive: 'Disable monitoring'
-			      		                    , config: {}
-			      		                },{
-			      		                    name: 'views'
-			      		                    , hidden: false
-			      		                    , checkColumn: 'views_check'	
-			      		                    , tooltipActive: 'Checked. Click to uncheck'
-				  							, tooltipInactive: 'Unchecked. Click to check'
-			      		                    , config: {}
-			      		                }
-			      		            ]  
-												
-	             
-	    	} //table
 		}
-
-		//--------------------------------------------------------------------------------
-		// Page 3
-		// -------------------------------------------------------------------------------
-		/*
-		, {
-			title: 'Pag. 3'
-			, msg: 'Io sono la TERZA pagina'
-			, navigationBar: {
-				documents: [
-				{
-					text: 'Bottone 6'
-					,tooltip: 'Bottone 6'
-					,label: 'QBE_FOODMART'
-					,staticParams: {param1: 'paramValue'}
-				}, {
-					text: 'Bottone 7'
-					,tooltip: 'Bottone 7'
-					,label: 'QBE_FOODMART'
-				}
-				]
-			}
-            , table: {
-	            dataset: 'testConsole3'		
-              , filterBar: {type: 'automatic'  
-				          , defaults: {operator: 'EQUALS_TO'
-				               		 , operand: 'DISTINCT' 
-				            		  }     
-								
-	            , filters: [
-	              {
-	           	  	 text: 'Brand'
-	               , column: 'Brand'
-	               , operator: 'EQUALS_TO'
-	               , operand: 'DISTINCT'
-	               }, {
-	                 text: 'Product'
-	               , column: 'Product'
-	               , operator: 'EQUALS_TO'
-	               , operand: 'DISTINCT'
-	               }
-	            ]
-	      
-	            , actions: [
-	                {
-	                    name: 'refresh'
-	                    , hidden: false
-	                    , config: {}}
-	                    , {name: 'errors'
-	                    ,  hidden: false
-	                    ,  config: 
-                          {
-                            staticParams: {param1: 'paramValue1'
-                                          ,param2: 'paramValue2' }
-                          }
-	                     }, {
-	                       name: 'errors_inactive'
-	                    ,  hidden: true
-	                    ,  config: {
-	                       		staticParams: {param1: 'paramValue'}
-	                      }
-	                    }, {
-	                       name: 'warnings'
-	                    ,  hidden: false
-	                    ,  config: {
-	                       		staticParams: {param1: 'paramValue'}
-	                       }
-	                     }, {name: 'warnings_inactive'
-	                    ,  hidden: true
-	                    ,  config: {
-	                        	staticParams: {param1: 'paramValue'}
-	                       }
-	                     },{
-	                       name: 'views'
-	                    ,  hidden: false
-	                    ,  config: {
-	                        	staticParams: {param1: 'paramValue'}
-	                       }
-	                     }, {name: 'views_inactive'
-	                    ,  hidden: true
-	                    ,  config: {
-	                        	staticParams: {param1: 'paramValue'}
-	                       }
-	                     }
-	            ]		
-              }//filterBar	
-				, inlineCharts: [
-                 	{ 	type: 'bar'
-                        , column: 'chart_store_cost'
-	                   	, color: 'green'
-	                   	, totValue: 200 
-	                  // 	, tooltip: 'volume vendite'
-					}, { type: 'point'
-                    	, column: 'chart_unit_sales'
-                    	, color: 'red' //red | grey | ...											
-                    	, threshold: '25'
-                    	, tooltip: 'superata la soglia di 25 errori'
-					}
-				]
-
-            	, inlineActions: [
-                     {   
-                       name: 'start'
-                       , hidden: false
-                       , tooltip: 'Start the process'
-                       , config: {}
-      		    	 },{ name: 'stop'
-                       , hidden: false
-                       , tooltip: 'Stop the process'
-                       , config: {}
-		                },{ name: 'errors'
-                       , hidden: false
-                       , checkColumn: 'errors_check'
-						, flagColumn: 'errors_flag'	
-                       , tooltipActive: 'View unchecked error messages'
-							, tooltipInactive: 'View checked error messages'
-                       , config: {
-                            staticParams: {param1: 'param1Value'
-                                         , param2: 'paramValue2' 
-                                          }
-                        ,   dynamicParams: [{  
-                                              brandname: 'Brand' 
-                                            , scope: 'dataset'    
-                                            },{
-                                               productName: 'Product'
-                                             , scope: 'dataset'
-                                             },{
-                                               month: 'Month'		
-                                             , scope: 'env'
-                                             }]	      		                        
-                       }
-		                }, {
-		                    name: 'alarms'
-		                    , hidden: false
-		                    , checkColumn: 'alarms_check'
-						    , flagColumn: 'alarms_flag'	
-		                    , tooltipActive: 'View unchecked alarm messages'
-							, tooltipInactive: 'View checked alarm messages'
-		                    , config: {}
-		                }, {
-		                    name: 'informationlog'
-		                    , hidden: false
-		                    , tooltip: 'Download log files'
-		                    , config: {}
-		                }, { 
-		                    name: 'crossnav'
-		                    , hidden: false
-		                    , tooltip: 'Cross on document'
-		                    , config: {
-		                        target: 'new' 
-		                       , document: 
-                     			{
-                     				  label: 'testReportParams'
-                     				, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
-                             		, dynamicParams: [{
-	                                                 Brand: 'P1' 
-	                                               , scope: 'dataset'   
-	                                               },{
-	                                                 Product: 'P2'
-	                                               , scope: 'dataset'
-	                                               },{
-	                                                 month: 'P3'
-	                                               , scope: 'env'
-                                           			}]	 
-                     			}
-		                    }
-		                }, { 
-		                    name: 'crossnav'
-		                    , hidden: false
-		                    , tooltip: 'Cross on YYY document (popup)'
-		                    , config: {
-										target: 'self' 
-										, document: 
-										{
-										  label: 'testReportParams'
-										, staticParams: {P3:'paramValue_A' , P5: 'paramValue_B'} 
-										, dynamicParams: [{
-															Brand: 'P1'  
-														  , scope: 'dataset'    
-															},{
-															  Product: 'P2'
-															, scope: 'dataset'
-															},{
-															  month: 'P4'
-															, scope: 'env'
-														 }]	 
-										}
-									}
-		                },{
-		                    name: 'monitor'
-		                    , hidden: false
-		                    //, tooltip: 'ccc'
-		                    , tooltipActive: 'Enable monitoring'
-			                , tooltipInactive: 'Disable monitoring'
-			                , checkColumn: 'monitor_check'
-		                    , config: {}
-		                },{
-		                    name: 'views'
-		                    , hidden: false
-		                    , checkColumn: 'views_check'
-      		                , tooltipActive: 'Checked. Click to uncheck'
-	  						, tooltipInactive: 'Unchecked. Click to check'
-		                    , config: {}
-		                }
-		            ]  
-              
-    		} //table
-		   }*/
 		] //pages
 	}	//detailPanel
 } //template

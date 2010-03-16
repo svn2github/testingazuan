@@ -5,15 +5,6 @@
  */
 package utilities;
 
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.dbaccess.DataConnectionManager;
@@ -29,10 +20,22 @@ import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 
 
 public class DataSourceUtilities {
-	
+
 	public static String SCHEMA = "schema";
 	public static String STMT = "stmt";
 	public static String NUM_PARS = "numPars";
@@ -77,7 +80,7 @@ public class DataSourceUtilities {
 	 * @return a boolean value with the response of the operation.
 	 * 
 	 */
-	public boolean executeUpdateQuery(Map<String , Object> params) throws Throwable, Exception{
+	public boolean executeUpdateQuery(Map<String , Object> params, JSONObject metaParams) throws Throwable, Exception{
 		boolean toReturn = true;
 		DataConnection dataConnection = null;
 		SQLCommand sqlCommand = null;
@@ -106,19 +109,20 @@ public class DataSourceUtilities {
 			
 			if (numPars > 0){
 				List inputParameter = new ArrayList(numPars);
-						
-				Iterator iterator =  params.keySet().iterator();
-				int i=1;
-				while (iterator.hasNext()) {
-					String paramName = (String) iterator.next();
-					String paramValue = (String)params.get( paramName );
-		
-					if (paramName.equalsIgnoreCase("par"+i)){
-						String parType = (String)params.get("typePar"+i);
-						inputParameter.add(dataConnection.createDataField(paramName,getParamType(parType), paramValue));
-						i++;
-					}					
-				}								
+
+				if (metaParams == null){	
+					Assert.assertTrue(metaParams == null, "Parameter [" + metaParams + "] cannot be null or empty.");					
+				}else{
+					JSONArray queryPars = (JSONArray)metaParams.get("queryParams");
+					for (int j=0; j<queryPars.length(); j++){
+						JSONObject obj = (JSONObject)queryPars.get(j);							
+						String paramName = (String)obj.get("name");
+						String paramValue = (String)params.get(paramName);		
+						String paramType = (String)obj.get("type");
+						inputParameter.add(dataConnection.createDataField(paramName,getParamType(paramType), paramValue));							
+					}	
+				}
+				
 				dataResult = sqlCommand.execute(inputParameter);
 			}else{
 				dataResult = sqlCommand.execute();
@@ -132,7 +136,6 @@ public class DataSourceUtilities {
 				dataConnection.rollBackTransaction();
 			} catch (Throwable t) {
 				toReturn = false;
-				//throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 				throw new Throwable(t);
 			}
 			throw new Throwable(ex);
@@ -156,6 +159,30 @@ public class DataSourceUtilities {
 		else if (parType.equalsIgnoreCase("string") || parType.equalsIgnoreCase("char")) return java.sql.Types.VARCHAR;
 		else if (parType.equalsIgnoreCase("boolean") ) return java.sql.Types.BOOLEAN;
 		else if (parType.equalsIgnoreCase("date") || parType.equalsIgnoreCase("datetime")) return java.sql.Types.DATE;
+		return toReturn;
+	}
+	
+	private int getParamType(String colName, JSONObject metaParams) throws Throwable, Exception{
+		logger.debug("IN");
+		int toReturn = 0;
+
+		try{
+			if (metaParams !=  null){
+				JSONArray queryPars = (JSONArray)metaParams.get("queryParams");
+				for (int i=0; i<queryPars.length(); i++){
+					JSONObject obj = (JSONObject)queryPars.get(i);
+					String type = (String)obj.get("name");
+					if (type.equalsIgnoreCase(colName)){
+						toReturn = getParamType(type);
+					}
+				}
+			}
+		} catch (Throwable t) {
+			throw new Throwable(t);
+		} finally {
+			logger.debug("OUT");
+		}
+	
 		return toReturn;
 	}
 	

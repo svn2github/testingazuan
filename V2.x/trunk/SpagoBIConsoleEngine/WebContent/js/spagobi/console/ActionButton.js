@@ -50,7 +50,7 @@ Sbi.console.ActionButton = function(config) {
 
 		var defaultSettings = {
 			iconCls: config.actionConf.name
-			,tooltip: (config.actionConf.tooltip === undefined)?config.actionConf.name : config.actionConf.tooltip 
+			//,tooltip: (config.actionConf.tooltip === undefined)?config.actionConf.name : config.actionConf.tooltip 
 			,hidden: config.actionConf.hidden
 			,scope:this
 		};
@@ -65,7 +65,7 @@ Sbi.console.ActionButton = function(config) {
 
 		//this.addEvents('customEvents');
 	    this.initServices();
-	    this.initButton();
+	  //  this.initButton();
 	    
         c = Ext.apply(c, this);
       
@@ -73,6 +73,7 @@ Sbi.console.ActionButton = function(config) {
 	    // constructor
 	    Sbi.console.ActionButton.superclass.constructor.call(this, c);
 	    this.on('click', this.execAction, this);
+	    this.store.on('load', this.initButton, this);
        //this.addEvents();
 }; 
 
@@ -81,7 +82,8 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     services: null
     , ACTIVE_VALUE: 0
 	, INACTIVE_VALUE: 1
-	
+	, USER_ID: 'userId'
+		
 	, FILTERBAR_ACTIONS: {		
 		  monitor: {serviceName: 'UPDATE_ACTION', images: 'monitor'}
 		, monitor_inactive: {serviceName: 'UPDATE_ACTION', images: 'monitor_inactive'}
@@ -94,28 +96,8 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     // public methods
 	, resolveParameters: function(parameters, context) {
 		var results = {};  
-	
-		var staticParams = parameters.staticParams;
-		if(staticParams) { 
-			for (p in staticParams){
-				
-				 if(Ext.isArray(staticParams[p]) === true) {
-					var params = staticParams[p]; 
-					for(par in params) {
-						var singlePar = params[par];
-						for (subPar in singlePar){
-							
-							results[subPar] = singlePar[subPar];	
-							//alert(results[subPar] + " " +  singlePar[subPar])
-						}					
-					} 
-				 } else {
-					 results[p] = staticParams[p];
-				 } 	
-				 
-			}
-		}
-			//results = Ext.apply(results, parameters.staticParams);
+
+		results = Ext.apply(results, parameters.staticParams);
 		
 		var dynamicParams = parameters.dynamicParams;
 	    if(dynamicParams) {        	
@@ -125,7 +107,7 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 	        	for(p in param) { 
 	        		if(p === 'scope') continue;
 	        			if (param.scope === 'env'){ 
-			            	if (context[p] === undefined) {              	 	 	      
+			            	if (p !== this.USER_ID && context[p] === undefined ) {              	 	 	      
 			            		msgErr += 'Parameter "' + p + '" undefined into request. <p>';
 		                    } else {          	 	 		           	 	 		  
 		                    	results[param[p]] = context[p];
@@ -135,6 +117,11 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 	          		    
 	        	 }          			   
 	      	} 
+	      	
+	      	var metaParams = parameters.metaParams;
+		    if(metaParams) {  
+		    	results['metaParams'] = Ext.util.JSON.encode(metaParams);
+		    }
 	      	
 	        if  (msgErr != ""){
 	        	Sbi.Msg.showError(msgErr, 'Service Error');
@@ -155,18 +142,11 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     		this.store.filterPlugin.applyFilters();	   
     		return;
     	}else if (this.actionConf.name === 'refresh'){    		
+    		this.store.loadStore();
     		
-    		//this.store.filterPlugin.
-    		this.store.load({
-    		      params: {}, 
-    		      callback: function(){this.ready = true;}, 
-    		      scope: this.store, 
-    		      add: false
-    		     });
-    		/*
     		this.store.filterPlugin.resetFilters;
-    		this.store.filterPlugin.applyFilters();
-    		*/
+    		//this.store.filterPlugin.applyFilters();
+    		
     		return;
     	} else if (this.actionConf.name === 'errors' || this.actionConf.name === 'errors_inactive'){  
     		flgValue = (this.iconCls === 'errors')? this.INACTIVE_VALUE: this.ACTIVE_VALUE;
@@ -215,18 +195,27 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     }
     
     , initButton: function(){
-    	var dataIdx = this.store.getFieldNameByAlias(this.actionConf.checkColumn);
-    	if (dataIdx !== undefined && this.actionConf.checkColumn !== 'monitor_check' ){
-    	//	alert(dataIdx);
-    		//var resFindActive = this.store.findExact(dataIdx,this.ACTIVE_VALUE);
-    		var resFindActive = this.store.findExact(dataIdx,"0");
+    	//this.store.loadStore();
+    	
+    	var dataIdx = this.store.getFieldNameByAlias(this.actionConf.flagColumn);
+    	
+    	if (dataIdx !== undefined ){
+    		//alert(dataIdx);
+    		var resFindActive = this.store.findExact(dataIdx,this.ACTIVE_VALUE);
+    		
     		//alert("resFindActive: " + resFindActive);
-    		if (resFindActive != -1){    	
+    		if (resFindActive != -1){  
+    			//alert("it should be active icon...");
 	    		this.iconCls = this.FILTERBAR_ACTIONS[ this.actionConf.name ].images["active"]; 
-    		}else{    		    			
+	    		this.tooltip = this.actionConf.tooltipActive;
+    		}else {    		    		
+    			//alert("it should be inactive icon...");
     			this.iconCls = this.FILTERBAR_ACTIONS[ this.actionConf.name ].images[ "inactive"]; 
+    			this.tooltip = this.actionConf.tooltipInactive;
     	    }
+    		//alert(this.tooltip);
     	}
+    	
     }
   
 });

@@ -29,7 +29,7 @@ Sbi.template = {
     
 	    // layout properties
 	    collassable: true
-	    , collapsed: true
+	    , collapsed: false
 	    , hidden: false
     
 
@@ -159,57 +159,35 @@ Sbi.template = {
 	    	            , config: {}
     	            }, {
         	            name: 'errors'
-		    	        , tooltip: 'Mark all errors as viewed'
-		    	        , column: 'errors_flag'	//the column on db with the flag value	
+		    	        , tooltipActive: 'Mark all errors as viewed'
+			    	    , tooltipInactive: 'Mark all errors as not viewed'		    	   
+		    	        , checkColumn: 'errors_check'	//the column on db that defines if the icon was checked	
+						, flagColumn: 'errors_flag'		//the column on db that defines if the icon was visible	
 	    	            , hidden: false
 	    	            , config: {
 	    	            	staticParams: {
 							//generic params for the execution of query on generic db
 							   schema: 'foodmart'								
 							 , stmt: 'UPDATE_ALL_ERRORS_STATE'
-							 , numPars: '1'			//the number of params in the query		
-							 //for each param define the single type:	
-							 , types: [{typePar1: 'num' }]		//num | string | boolean |date														 													    			     									
+							 , numPars: '2'			//the number of params in the query																																	 													    			     									
 							}
 						  , dynamicParams: [{
-							 'errors_flag': 'par1'  
+							 'errors_flag': 'errors_flag'  
+							, scope: 'env'
+							},{
+							 'userId': 'userId'  
 							, scope: 'env'
 							}]
+						 , metaParams: {queryParams: [{"name":"errors_flag","type":"num"},{"name":"userId","type":"string"}]}
     	            	}
-	    	        }/*, {
-	    	        	name: 'errors_inactive'
-		    	        , tooltip: 'Turn off all errors'
-		    	        , column: 'error_flag'	//the column on db with the flag value	
-	    	            , hidden: false
-	    	            , config: {
-		    	        	staticParams: {
-							//generic params for the execution of query on generic db
-							   schema: 'foodmart'								
-							 , stmt: 'UPDATE_ALL_ERRORS_STATE'
-							 , numPars: '1'			//the number of params in the query		
-							 //for each param define the single type:	
-							 , types: [{typePar1: 'num' }]		//num | string | boolean |date							 												 													    			     								
-							}	
-			    	        , dynamicParams: [{
-								 'error_flag': 'par1'  
-								, scope: 'env'
-								}]			            						  
-	    	            }
-	    	        }*/, {
+	    	        }, {
 	    	            name: 'alarms'
 		    	        , tooltip: 'Turn on all alarms'
 	    	            , hidden: false
 	    	            , config: {
 	    	        		staticParams: {param1: 'paramValue'}
 	    	            }
-	    	        }/*, {
-		    	        name: 'alarms_inactive'
-	    	            , hidden: true
-	    	            , tooltip: 'Turn off all alarms'
-	    	            , config: {
-	    	              	staticParams: {param1: 'paramValue'}
-	    	            }
-	    	        }*/, {
+	    	        }, {
                        name: 'views'
 	                   , tooltip: 'Mark all rows as viewed'		    	                       
 	    	           , hidden: false
@@ -344,33 +322,27 @@ Sbi.template = {
 										}]	 
 									}
 								}
-							}, {
+							},{
 								name: 'monitor'
 								, hidden: false							
 							 	, tooltipActive: 'Enable monitoring'
 						        , tooltipInactive: 'Disable monitoring'							    
 								, checkColumn: 'monitor_check'								
-								, config: {
-									staticParams: {
-										//generic params for the execution of query on generic db
-										schema: 'foodmart'								
-										, stmt: 'UPDATE_MONITOR_STATE'
-										, numPars: '2'			//the number of params in the query		
-										//for each param define the single type:	
-										, types: [
-											{typePar1: 'num' }		//num | string | boolean |date
-											, {typePar2: 'num'	}
-										]																 													    			     									
+								, config: {staticParams: {
+											//generic params for the execution of query on generic db
+											   schema: 'foodmart'								
+											 , stmt: 'UPDATE_MONITOR_STATE'
+											 , numPars: '2'			//the number of params in the query													 														 													    			     									
+											}
+										  , dynamicParams: [{
+											 'monitor_check': 'monitor_check'  //value: logical name
+											, scope: 'dataset'
+											},{ID: 'id'  						//value: logical name
+											, scope: 'dataset'
+											}]
+										, metaParams: {queryParams: [{"name":"monitor_check","type":"num"},{"name":"id","type":"num"}]}
 									}
-									, dynamicParams: [{
-										monitor_check: 'par1'  
-										, scope: 'dataset'
-									}, {
-										ID: 'par2'  
-										, scope: 'dataset'
-									}]
-								}
-							}, {
+							},{
 								name: 'views'
 								, hidden: false
 								, checkColumn: 'views_check'

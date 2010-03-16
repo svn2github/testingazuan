@@ -137,25 +137,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		
 		var staticParams = parameters.staticParams;
 		
-		
-		if(staticParams) { 
-			for (p in staticParams){
-				
-				 if(Ext.isArray(staticParams[p]) === true) {
-					var params = staticParams[p]; 
-					for(par in params) {
-						var singlePar = params[par];
-						for (subPar in singlePar){
-							results[subPar] = singlePar[subPar];							
-						}					
-					} 
-				 } else {
-					 results[p] = staticParams[p];
-				 } 	
-				 
-			}
-		}
-			//results = Ext.apply(results, parameters.staticParams);
+		results = Ext.apply(results, parameters.staticParams);
 		
 		var dynamicParams = parameters.dynamicParams;
 	    if(dynamicParams) {        	
@@ -180,6 +162,11 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	          		    
 	        	 }          			   
 	      	} 
+	      	
+	      	var metaParams = parameters.metaParams;
+		    if(metaParams) {  
+		    	results['metaParams'] = Ext.util.JSON.encode(metaParams);
+		    }
 	      	
 	        if  (msgErr != ""){
 	        	Sbi.Msg.showError(msgErr, 'Service Error');

@@ -114,6 +114,16 @@ Ext.extend(Sbi.data.Store, Ext.data.JsonStore, {
 		}
 		return fname;
 	}
+	
+	, loadStore: function(){
+		alert("loadStore!!");
+		this.load({
+			params: {}, 
+			callback: function(){this.ready = true;}, 
+			scope: this, 
+			add: false
+		});
+	}
     
     // -- private methods ----------------------------------------------------------------
    

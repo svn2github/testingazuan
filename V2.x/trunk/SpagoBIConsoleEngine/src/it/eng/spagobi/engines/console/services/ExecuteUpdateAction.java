@@ -93,11 +93,11 @@ public class ExecuteUpdateAction extends AbstractConsoleEngineAction {
 			//gets hashmap with all parameters			
 			Map<String , Object> params;
 			//params =  utility.getAttributesAsMap(request);
-			params = getAttributesAsMap();
-						
+			params = getAttributesAsMap();	
+			JSONObject metaParams = getAttributeAsJSONObject( "metaParams" );
+			logger.debug("Parameter [metaParams] is equals to [" + metaParams + "]");
 			
-			
-			boolean result = utility.executeUpdateQuery(params);
+			boolean result = utility.executeUpdateQuery(params, metaParams);
 			if ( !result ){
 				throw new ConsoleEngineRuntimeException("Impossible to perform update statement");		
 			}

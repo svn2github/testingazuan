@@ -98,8 +98,7 @@ Ext.extend(Sbi.console.StoreManager, Ext.util.Observable, {
 	, getStore: function(storeId) {
 		return this.stores.get(storeId);
 	}
-    
-    
+	
 	//  -- private methods ---------------------------------------------------------
     
     , init: function(c) {

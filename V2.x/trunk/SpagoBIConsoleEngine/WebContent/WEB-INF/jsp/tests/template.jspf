@@ -344,30 +344,33 @@ Sbi.template = {
 										}]	 
 									}
 								}
-							},{
+							}, {
 								name: 'monitor'
 								, hidden: false							
 							 	, tooltipActive: 'Enable monitoring'
 						        , tooltipInactive: 'Disable monitoring'							    
 								, checkColumn: 'monitor_check'								
-								, config: {staticParams: {
-											//generic params for the execution of query on generic db
-											   schema: 'foodmart'								
-											 , stmt: 'UPDATE_MONITOR_STATE'
-											 , numPars: '2'			//the number of params in the query		
-											 //for each param define the single type:	
-											 , types: [{typePar1: 'num' }		//num | string | boolean |date
-												 	 , {typePar2: 'num'	}
-												 	  ]																 													    			     									
-											}
-										  , dynamicParams: [{
-											 'monitor_check': 'par1'  
-											, scope: 'dataset'
-											},{ID: 'par2'  
-											, scope: 'dataset'
-											}]
+								, config: {
+									staticParams: {
+										//generic params for the execution of query on generic db
+										schema: 'foodmart'								
+										, stmt: 'UPDATE_MONITOR_STATE'
+										, numPars: '2'			//the number of params in the query		
+										//for each param define the single type:	
+										, types: [
+											{typePar1: 'num' }		//num | string | boolean |date
+											, {typePar2: 'num'	}
+										]																 													    			     									
 									}
-							},{
+									, dynamicParams: [{
+										monitor_check: 'par1'  
+										, scope: 'dataset'
+									}, {
+										ID: 'par2'  
+										, scope: 'dataset'
+									}]
+								}
+							}, {
 								name: 'views'
 								, hidden: false
 								, checkColumn: 'views_check'

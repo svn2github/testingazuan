@@ -21,19 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.console.services;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.commons.utilities.StringUtilities;
-import it.eng.spagobi.engines.console.ConsoleEngineInstance;
-import it.eng.spagobi.engines.console.ConsoleEngineRuntimeException;
-import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
-import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
-import it.eng.spagobi.utilities.service.JSONAcknowledge;
-import it.eng.spagobi.utilities.service.JSONSuccess;
-
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -41,6 +30,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import utilities.DataSourceUtilities;
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.commons.utilities.StringUtilities;
+import it.eng.spagobi.engines.console.ConsoleEngineRuntimeException;
+import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
+import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
+import it.eng.spagobi.utilities.service.JSONAcknowledge;
+import it.eng.spagobi.utilities.service.JSONSuccess;
 
 
 
@@ -65,9 +64,7 @@ public class ExecuteUpdateAction extends AbstractConsoleEngineAction {
 	// logger component
 	private static Logger logger = Logger.getLogger(ExecuteUpdateAction.class);
 	
-	ConsoleEngineInstance consoleEngineInstance;
-	
-public void service(SourceBean request, SourceBean response) {
+	public void service(SourceBean request, SourceBean response) {
 		
 		String message;
 		String user;
@@ -77,15 +74,10 @@ public void service(SourceBean request, SourceBean response) {
 		
 		try {
 			super.service(request,response);
-			consoleEngineInstance = getConsoleEngineInstance();
-					
-			DataSourceUtilities utility = new DataSourceUtilities();
-			//gets hashmap with all parameters			
-			HashMap<String , Object> params = new HashMap <String , Object>();
-			params =  utility.getAttributesAsMap(request);
-						
+				
+			
 			//check for mandatory parameters 
-			message  = (String) params.get(MESSAGE);
+			message  = getAttributeAsString(MESSAGE);
 			logger.debug("Parameter [" + MESSAGE + "] is equals to [" + message + "]");			
 			Assert.assertTrue(!StringUtilities.isEmpty( message ), "Parameter [" + MESSAGE + "] cannot be null or empty");
 			
@@ -95,6 +87,15 @@ public void service(SourceBean request, SourceBean response) {
 			
 			callback = getAttributeAsString( CALLBACK );
 			logger.debug("Parameter [" + CALLBACK + "] is equals to [" + callback + "]");
+			
+			
+			DataSourceUtilities utility = new DataSourceUtilities();
+			//gets hashmap with all parameters			
+			Map<String , Object> params;
+			//params =  utility.getAttributesAsMap(request);
+			params = getAttributesAsMap();
+						
+			
 			
 			boolean result = utility.executeUpdateQuery(params);
 			if ( !result ){

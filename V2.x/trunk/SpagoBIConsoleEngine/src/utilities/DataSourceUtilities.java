@@ -5,6 +5,15 @@
  */
 package utilities;
 
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.dbaccess.DataConnectionManager;
@@ -20,21 +29,15 @@ import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 
 
 public class DataSourceUtilities {
-	private static transient Logger logger = Logger.getLogger(DataSourceUtilities.class);
+	
 	public static String SCHEMA = "schema";
 	public static String STMT = "stmt";
 	public static String NUM_PARS = "numPars";
+	
+	private static transient Logger logger = Logger.getLogger(DataSourceUtilities.class);
 
 	/**  This method gets all request parameters and define an hashmap object
 	 * 
@@ -74,7 +77,7 @@ public class DataSourceUtilities {
 	 * @return a boolean value with the response of the operation.
 	 * 
 	 */
-	public boolean executeUpdateQuery(HashMap<String , Object> params) throws Throwable, Exception{
+	public boolean executeUpdateQuery(Map<String , Object> params) throws Throwable, Exception{
 		boolean toReturn = true;
 		DataConnection dataConnection = null;
 		SQLCommand sqlCommand = null;

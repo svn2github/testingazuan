@@ -14,10 +14,7 @@ Sbi.console.InlineToggleActionColumn = function(config){
 Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn, {
 	
 	checkColumn: null
-	, flagColumn: null
-	
-	
-	, UNFLAGGED_VALUE: 0
+
 	, CHECKED_VALUE: 0
 	, UNCHECKED_VALUE: 1
 	
@@ -45,23 +42,7 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
     	return v;
 	}
 	
-	, isActive: function(record) {
-		var active = true;
-		if(this.flagColumn) {
-			var v, s;
-			
-			s = this.grid.store;
-			v = record.get(s.getFieldNameByAlias(this.flagColumn));
-	    	if (v === undefined || v === null) {
-	    		Sbi.Msg.showError('Impossible to draw toggle column [' + this.dataIndex + ']. Dataset [' + s.storeId + ']does not contain column [' + this.flagColumn + ']');
-	    	};
-	    	active = (this.UNFLAGGED_VALUE !== v);
-	    	//alert(v + ' !== '+ this.UNFLAGGED_VALUE + ' : ' + active);
-		}
-			
-		return active;
-	}
-
+	
 	, isChecked: function(record) {
 		var v, active;
 		if(this.isBoundToColumn()) {

@@ -35,11 +35,41 @@ Sbi.console.InlineActionColumn = function(config){
 Ext.extend(Sbi.console.InlineActionColumn, Ext.util.Observable, {
 	
 	grid: null
+	
+	// action name and options
 	, name: null
 	, options: null
+	
+	// click handler function
 	, handler: null
 	, scope: null
+	
+	// control column. If flagColumn is defined and its value is equal to 
+	// UNFLAGGED_VALUE the button will be not active (i.e. not visible and actionable)
+	, flagColumn: null
+	, UNFLAGGED_VALUE: 0
+	
+	// -- public methods --------------------------------------------------------------------------
+	, isActive: function(record) {
+		var active = true;
+		if(this.flagColumn) {
+			var v, s;
+			
+			s = this.grid.store;
+			v = record.get(s.getFieldNameByAlias(this.flagColumn));
+	    	if (v === undefined || v === null) {
+	    		Sbi.Msg.showError('Impossible to draw button column [' + this.dataIndex + ']. Dataset [' + s.storeId + ']does not contain column [' + this.flagColumn + ']');
+	    	};
+	    	active = (this.UNFLAGGED_VALUE !== v);
+	    	//alert(v + ' !== '+ this.UNFLAGGED_VALUE + ' : ' + active);
+		}
+			
+		return active;
+	}
 
+	
+	
+	// -- private methods -------------------------------------------------------------------------
 	, init : function(grid){
 		this.grid = grid;
         if(this.grid.rendered === true) {
@@ -65,6 +95,9 @@ Ext.extend(Sbi.console.InlineActionColumn, Ext.util.Observable, {
        
 
     , renderer : function(v, p, record){
+    	if(this.isActive(record) === false) {
+    		return '';
+    	}
         return '<center><img class="x-mybutton-'+this.id+'" width="13px" height="13px" src="' + this.imgSrc + '" title= "' + this.tooltip + '"/></center>';
     }
   });

@@ -284,6 +284,7 @@ Sbi.template = {
 							}, {
 								name: 'informationlog'
 								, hidden: false
+								, flagColumn: 'errors_flag'
 								, tooltip: 'Download log files'
 								, config: {}
 							}, { 

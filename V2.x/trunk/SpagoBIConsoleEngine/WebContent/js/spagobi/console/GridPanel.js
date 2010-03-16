@@ -211,16 +211,16 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	}
 
 	
-	, execAction: function(actionName, r, index, options) {
+	, execAction: function(action, r, index, options) {
 		
 		var params = this.resolveParameters(options, r, this.executionContext);
 		params = Ext.apply(params, {
-  			message: actionName, 
+  			message: action.name, 
         	userId: Sbi.user.userId 
   		}); 
   			 
   		Ext.Ajax.request({
-	       	url: this.services[actionName] 			       
+	       	url: this.services[action.name] 			       
 	       	, params: params 			       
 	    	, success: function(response, options) {
 	    		if(response !== undefined && response.responseText !== undefined) {
@@ -238,34 +238,44 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 
     }
 	
-	, toggleMonitor: function(actionName, r, index, options) {
+	, toggleMonitor: function(action, r, index, options) {
 		//force the list refresh	                   
         //alert(this.grid.store.filterPlugin.getFilters().toSource());
         this.store.filterPlugin.applyFilters();	            
-        this.execAction(actionName, r, index, options);
+        this.execAction(action, r, index, options);
 	}
 
-	, showErrors: function(actionName, r, index, options) {
+	, showErrors: function(action, r, index, options) {
 		if(this.errorWin === null) {
 			this.errorWin = new Sbi.console.MasterDetailWindow({
 				serviceName: 'GET_ERROR_LIST_ACTION'
+				, action: action
 			});
+			this.errorWin.on('checked', function(win, record) {
+				this.errorWin.action.toggle(record);
+			}, this);
 		}
 		this.errorWin.reloadMasterList({id: 'Blue Label'});
+		this.errorWin.setTarget(r);
 		this.errorWin.show();
 	}
 	
-	, showAlarms: function(actionName, r, index, options) {
+	, showAlarms: function(action, r, index, options) {
 		if(this.alarmWin === null) {
 			this.alarmWin = new Sbi.console.MasterDetailWindow({
 				serviceName: 'GET_WARNING_LIST_ACTION'
+				, action: action
 			});
+			this.alarmWin.on('checked', function(win, record) {
+				this.alarmWin.action.toggle(record);
+			}, this);
 		}
 		this.alarmWin.reloadMasterList({id: 'Jeffers'});
+		this.alarmWin.setTarget(r);
 		this.alarmWin.show();
 	}
 	
-	, execMonitor: function(actionName, r, index, options) {
+	, execMonitor: function(action, r, index, options) {
 		
 	}
 

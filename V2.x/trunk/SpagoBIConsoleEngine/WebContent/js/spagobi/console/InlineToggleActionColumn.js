@@ -85,7 +85,7 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
                       
             if(this.toggleOnClick) this.toggle(record);
   
-            this.handler.call(this.scope, this.name, record, index, this.options);          
+            this.handler.call(this.scope, this, record, index, this.options);          
         }
     }
 

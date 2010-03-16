@@ -81,9 +81,10 @@ Sbi.console.MasterDetailWindow = function(config) {
 	        }
 	        , scope: this
 		}, {
-			text: 'Presa visione',
+			text: 'Mark as checked',
 			handler: function() {
-	        	alert('Bene ora sappiamo chi contattare in caso di problemi :)');
+				this.hide();
+	        	this.fireEvent('checked', this, this.target);
 	        }
 	        , scope: this
 		}],
@@ -92,6 +93,8 @@ Sbi.console.MasterDetailWindow = function(config) {
 
 	// constructor
 	Sbi.console.MasterDetailWindow.superclass.constructor.call(this, c);
+	
+	this.addEvents('checked');
     
 };
 
@@ -106,9 +109,16 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
     , detailField: null
     , serviceName: null
     
+    // this is the object uppon witch the window has been opened, usually a record
+    , target: null
+    
     // public methods
     
    
+    , setTarget: function(t) {
+		this.target = t;
+	}
+    
     , reloadMasterList: function(params) {
 		this.clearDetailPanel();
 		this.store.load({

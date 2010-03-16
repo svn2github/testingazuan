@@ -461,24 +461,18 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			inlineActionColumn = new Sbi.console.InlineActionColumn(inlineActionColumnConfig);
 			
 		}else if (inlineActionColumnConfig.name === 'monitor'){		
-			
-			if (inlineActionColumnConfig.column !== undefined) {
+			inlineActionColumnConfig.imgSrcActive = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images['active'];			
+			inlineActionColumnConfig.imgSrcInactive = this.GRID_ACTIONS[inlineActionColumnConfig.name ].images['inactive'];				
+			inlineActionColumnConfig.handler = this.toggleMonitor;
 				
-				inlineActionColumnConfig.imgSrcActive = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images['active'];			
-				inlineActionColumnConfig.imgSrcInactive = this.GRID_ACTIONS[inlineActionColumnConfig.name ].images['inactive'];				
-				inlineActionColumnConfig.handler = this.toggleMonitor;
-				
-				//set the filter for view only active items (default)
-				var tmpName = this.store.getFieldNameByAlias(inlineActionColumnConfig.column);
-				if (tmpName !== undefined){
-					if (this.store.filterPlugin.getFilter(tmpName) === undefined) {
-						this.store.filterPlugin.addFilter (tmpName, 1);
-					}
+			//set the filter for view only active items (default)
+			var tmpName = this.store.getFieldNameByAlias(inlineActionColumnConfig.checkColumn);
+			if (tmpName !== undefined){
+				if (this.store.filterPlugin.getFilter(tmpName) === undefined) {
+					this.store.filterPlugin.addFilter (tmpName, 1);
 				}
-			}else {
-				inlineActionColumnConfig.hidden = true;
 			}
-			
+						
 			inlineActionColumn = new Sbi.console.InlineToggleActionColumn(inlineActionColumnConfig);			
 				
 		} else if (inlineActionColumnConfig.name === 'errors'){	

@@ -5,15 +5,15 @@ Sbi.console.InlineToggleActionColumn = function(config){
 	
     // parent constructor
     Sbi.console.InlineToggleActionColumn.superclass.constructor.call(this, config);
-    
-    
-    
+  
 };
 
 
 Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn, {
 	
-	checkColumn: null
+	toggleOnClick: true
+	
+	, checkColumn: null
 
 	, CHECKED_VALUE: 0
 	, UNCHECKED_VALUE: 1
@@ -83,7 +83,7 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
             var index = this.grid.getView().findRowIndex(t);
             var record = this.grid.store.getAt(index);   
                       
-            this.toggle(record);
+            if(this.toggleOnClick) this.toggle(record);
   
             this.handler.call(this.scope, this.name, record, index, this.options);          
         }

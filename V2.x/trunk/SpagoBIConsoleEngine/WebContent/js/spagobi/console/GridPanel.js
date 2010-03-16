@@ -479,6 +479,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			
 			inlineActionColumnConfig.imgSrcActive = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images['active'];			
 			inlineActionColumnConfig.imgSrcInactive = this.GRID_ACTIONS[inlineActionColumnConfig.name ].images['inactive'];	
+			inlineActionColumnConfig.toggleOnClick = false;
 			inlineActionColumnConfig.handler = this.showErrors;
 			inlineActionColumn = new Sbi.console.InlineActionColumn(inlineActionColumnConfig);
 			
@@ -488,6 +489,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			
 			inlineActionColumnConfig.imgSrcActive = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images['active'];			
 			inlineActionColumnConfig.imgSrcInactive = this.GRID_ACTIONS[inlineActionColumnConfig.name ].images['inactive'];			
+			inlineActionColumnConfig.toggleOnClick = false;
 			inlineActionColumnConfig.handler = this.showAlarms;
 			inlineActionColumn = new Sbi.console.InlineActionColumn(inlineActionColumnConfig);
 			

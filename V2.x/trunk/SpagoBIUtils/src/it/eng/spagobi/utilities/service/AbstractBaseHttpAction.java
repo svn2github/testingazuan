@@ -37,7 +37,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -136,6 +139,27 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 	public JSONArray getAttributeAsJSONArray(String attrName) {
 		return getSpagoBIRequestContainer().toJSONArray( attrName );
 	}	
+	
+	public Map<String,Object> getAttributesAsMap() {
+		
+		List attributeNames;
+		String attributeName;
+		Object attributeVaue;
+		HashMap<String , Object> attributesMap;
+		Iterator it;
+		
+		attributesMap = new HashMap <String , Object> ();
+		attributeNames = getSpagoBIRequestContainer().getKeys();
+		
+		it = attributeNames.iterator();
+		while( it.hasNext() ) {
+			attributeName = (String)it.next();
+			attributeVaue = getAttribute(attributeName);
+			attributesMap.put(attributeName, attributeVaue);
+		}
+		
+		return attributesMap;
+	}
 	
 	
 	// =================================================================================================

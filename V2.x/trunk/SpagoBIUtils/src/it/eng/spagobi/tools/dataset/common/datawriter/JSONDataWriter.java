@@ -45,6 +45,7 @@ public class JSONDataWriter implements IDataWriter {
 	public static final String TOTAL_PROPERTY = "results";
 	public static final String ROOT = "rows";
 	
+	
 	private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( "dd/MM/yyyy hh:mm:ss" );
 
 	
@@ -65,6 +66,7 @@ public class JSONDataWriter implements IDataWriter {
 		JSONArray recordsJSON;
 		int resultNumber;
 		Object propertyRawValue;
+		String detailProperty;
 		
 		Assert.assertNotNull(dataStore, "Object to be serialized connot be null");
 		
@@ -79,9 +81,8 @@ public class JSONDataWriter implements IDataWriter {
 			result.put("metaData", metadata);
 			
 			propertyRawValue = dataStore.getMetaData().getProperty("resultNumber");
-			//test anto forzatura!!!!
-			//propertyRawValue = 1;
-			//fine test
+			detailProperty = (String)dataStore.getMetaData().getProperty("detailProperty");
+			
 			Assert.assertNotNull(propertyRawValue, "DataStore property [resultNumber] cannot be null");
 			Assert.assertTrue(propertyRawValue instanceof Integer, "DataStore property [resultNumber] must be of type [Integer]");
 			resultNumber = ((Integer)propertyRawValue).intValue();
@@ -104,12 +105,15 @@ public class JSONDataWriter implements IDataWriter {
 					continue;
 				}
 				
+				String fieldName = "column_" + (i+1);
+				String fieldHeader = fieldMetaData.getAlias() != null? fieldMetaData.getAlias(): fieldMetaData.getName();
+				
 				fieldMetaDataJSON = new JSONObject();
-				fieldMetaDataJSON.put("header", fieldMetaData.getAlias() != null? fieldMetaData.getAlias(): fieldMetaData.getName());
-				fieldMetaDataJSON.put("name", "column_" + (i+1));						
-				fieldMetaDataJSON.put("dataIndex", "column_" + (i+1));
-											
-							
+				fieldMetaDataJSON.put("name", fieldName);						
+				fieldMetaDataJSON.put("dataIndex", fieldName);
+				fieldMetaDataJSON.put("header", fieldHeader);
+				
+				
 				Class clazz = fieldMetaData.getType();
 				if (clazz == null) {
 					logger.debug("Metadata class is null; considering String as default");
@@ -157,7 +161,12 @@ public class JSONDataWriter implements IDataWriter {
 					}
 					
 				}
-
+				
+				if(detailProperty != null && fieldHeader.equalsIgnoreCase(detailProperty)) {
+					metadata.put("detailProperty", fieldName);
+					fieldMetaDataJSON.put("hidden", true);
+				}
+				
 				fieldsMetaDataJSON.put(fieldMetaDataJSON);
 			}
 			metadata.put("fields", fieldsMetaDataJSON);

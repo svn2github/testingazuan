@@ -172,7 +172,7 @@ Sbi.template = {
 							 , types: [{typePar1: 'num' }]		//num | string | boolean |date														 													    			     									
 							}
 						  , dynamicParams: [{
-							 'error_flag': 'par1'  
+							 'errors_flag': 'par1'  
 							, scope: 'env'
 							}]
     	            	}

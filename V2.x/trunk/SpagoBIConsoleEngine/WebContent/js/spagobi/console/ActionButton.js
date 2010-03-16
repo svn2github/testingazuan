@@ -169,8 +169,8 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     		*/
     		return;
     	} else if (this.actionConf.name === 'errors' || this.actionConf.name === 'errors_inactive'){  
-    		flgValue = (this.iconCls === 'errors')? this.ACTIVE_VALUE: this.INACTIVE_VALUE;
-    		this.executionContext.error_flag = flgValue;
+    		flgValue = (this.iconCls === 'errors')? this.INACTIVE_VALUE: this.ACTIVE_VALUE;
+    		this.executionContext.errors_flag = flgValue;
     	//	alert(this.executionContext.toSource());
     	}
     	
@@ -215,7 +215,7 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     }
     
     , initButton: function(){
-    	var dataIdx = this.store.getFieldNameByAlias(this.actionConf.column);
+    	var dataIdx = this.store.getFieldNameByAlias(this.actionConf.checkColumn);
     	if (dataIdx !== undefined && this.actionConf.checkColumn !== 'monitor_check' ){
     	//	alert(dataIdx);
     		//var resFindActive = this.store.findExact(dataIdx,this.ACTIVE_VALUE);

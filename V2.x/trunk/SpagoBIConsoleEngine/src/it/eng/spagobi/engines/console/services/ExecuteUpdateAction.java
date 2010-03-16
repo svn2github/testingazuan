@@ -92,7 +92,6 @@ public class ExecuteUpdateAction extends AbstractConsoleEngineAction {
 			DataSourceUtilities utility = new DataSourceUtilities();
 			//gets hashmap with all parameters			
 			Map<String , Object> params;
-			//params =  utility.getAttributesAsMap(request);
 			params = getAttributesAsMap();	
 			JSONObject metaParams = getAttributeAsJSONObject( "metaParams" );
 			logger.debug("Parameter [metaParams] is equals to [" + metaParams + "]");

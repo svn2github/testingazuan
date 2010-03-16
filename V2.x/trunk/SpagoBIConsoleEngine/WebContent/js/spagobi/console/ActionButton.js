@@ -87,9 +87,9 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 	, FILTERBAR_ACTIONS: {		
 		  monitor: {serviceName: 'UPDATE_ACTION', images: 'monitor'}
 		, monitor_inactive: {serviceName: 'UPDATE_ACTION', images: 'monitor_inactive'}
-		, errors: {serviceName: 'ERRORS_ACTION', images: {active: 'errors', inactive: 'errors_inactive'}} 
-		, alarms: {serviceName: 'ALARMS_ACTION', images: {active: 'alarms', inactive: 'alarms_inactive'}}
-		, views: {serviceName: 'VIEWS_ACTION', images: {active: '../img/ico_views.gif', inactive: '../img/ico_views_inactive.gif'}}
+		, errors: {serviceName: 'UPDATE_ACTION', images: {active: 'errors', inactive: 'errors_inactive'}} 
+		, alarms: {serviceName: 'UPDATE_ACTION', images: {active: 'alarms', inactive: 'alarms_inactive'}}
+		, views: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_views.gif', inactive: '../img/ico_views_inactive.gif'}}
 		, refresh: {serviceName: 'REFRESH_ACTION', images: 'refresh'}
 	}
    
@@ -151,8 +151,14 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     	} else if (this.actionConf.name === 'errors' || this.actionConf.name === 'errors_inactive'){  
     		flgValue = (this.iconCls === 'errors')? this.INACTIVE_VALUE: this.ACTIVE_VALUE;
     		this.executionContext.errors_flag = flgValue;
-    	//	alert(this.executionContext.toSource());
+    	} else if (this.actionConf.name === 'alarms' || this.actionConf.name === 'alarms_inactive'){      		
+    		flgValue = (this.iconCls === 'alarms')? this.INACTIVE_VALUE: this.ACTIVE_VALUE;
+    		this.executionContext.alarms_flag = flgValue;
+    	} else if (this.actionConf.name === 'views' || this.actionConf.name === 'views_inactive'){      		
+    		flgValue = (this.iconCls === 'views')? this.INACTIVE_VALUE: this.ACTIVE_VALUE;
+    		this.executionContext.views_check = flgValue;
     	}
+    	
     	
 		var params = this.resolveParameters(this.actionConf.config, this.executionContext);
 		params = Ext.apply(params, {
@@ -215,6 +221,7 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     	    }
     		//alert(this.tooltip);
     	}
+    	this.doLayout();
     	
     }
   

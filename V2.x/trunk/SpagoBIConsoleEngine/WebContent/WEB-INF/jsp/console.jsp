@@ -135,6 +135,13 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 			    , baseParams: params
 			});
 
+			Sbi.config.commonjServiceRegistry = new Sbi.service.ServiceRegistry({
+				baseUrl: {
+					contextPath: 'SpagoBICommonJEngine'
+				}
+			    , baseParams: {}
+			});
+
 			// javascript-side user profile object
 	        Ext.ns("Sbi.user");
 	        Sbi.user.userId = "<%= profile.getUserId() %>";

@@ -89,7 +89,7 @@ Ext.extend(Sbi.console.InlineActionColumn, Ext.util.Observable, {
             
             var index = this.grid.getView().findRowIndex(t);
             var record = this.grid.store.getAt(index);   
-            this.handler.call(this.scope, this.name, record, index, this.options);          
+            this.handler.call(this.scope, this, record, index, this.options);          
         }
     }
        

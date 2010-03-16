@@ -61,19 +61,27 @@ Sbi.exception.ExceptionHandler = function(){
 		
 		
 		, onServiceRequestFailure : function(response, options) {
-        	var errMessage = null;
+        	var errMessage;
+        	
+        	
         	
         	if(response !== undefined) {        		
         		if(response.responseText !== undefined) {
         			var content = Ext.util.JSON.decode( response.responseText );
         			if(content.errors !== undefined && content.errors.length > 0) {
-        				errMessage = '';
         				for(var i = 0; i < content.errors.length; i++) {
+        					if(!content.errors[i].message) continue;
+        					if(!errMessage) errMessage = '';
         					errMessage += content.errors[i].message + '<br>';
         				}
-        			} 
+        			}
+        			
+        			if(content.message) {
+        				errMessage = errMessage || content.message;
+        			}
+        			
         		} 
-        		if(errMessage === null)	errMessage = 'An unspecified error occurred on the server side';
+        		if(!errMessage)	errMessage = 'An unspecified error occurred on the server side';
         	} else {
         		errMessage = 'Request has been aborted due to a timeout trigger';
         	}

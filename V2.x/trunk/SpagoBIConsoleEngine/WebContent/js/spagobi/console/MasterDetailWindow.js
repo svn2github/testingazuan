@@ -66,6 +66,24 @@ Sbi.console.MasterDetailWindow = function(config) {
 	Ext.apply(this, c);
 		
 	this.initMainPanel(c);	
+
+
+	this.okButton = new Ext.Button({
+		text: 'Ok',
+		handler: function(){
+        	this.hide();
+        }
+        , scope: this
+	});
+	
+	this.checkButton = new Ext.Button({
+		text: 'Mark as checked',
+		handler: function() {
+			this.hide();
+        	this.fireEvent('checked', this, this.target);
+        }
+        , scope: this
+	});
 	
 	c = Ext.apply(c, {  	
 		layout: 'fit',
@@ -74,20 +92,7 @@ Sbi.console.MasterDetailWindow = function(config) {
 		modal:true,
 		title: this.title,
 		buttonAlign : 'center',
-		buttons: [{
-			text: 'Ok',
-			handler: function(){
-	        	this.hide();
-	        }
-	        , scope: this
-		}, {
-			text: 'Mark as checked',
-			handler: function() {
-				this.hide();
-	        	this.fireEvent('checked', this, this.target);
-	        }
-	        , scope: this
-		}],
+		buttons: [this.okButton, this.checkButton],
 		items: [this.mainPanel]
 	});
 
@@ -111,6 +116,9 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
     
     // this is the object uppon witch the window has been opened, usually a record
     , target: null
+    
+   , okButton: null
+   , checkButton: null
     
     // public methods
     

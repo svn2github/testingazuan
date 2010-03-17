@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <MASTER>
-	<!-- start GEO COMMONS -->
+	<!-- start COMMONJ COMMONS -->
 	<CONFIGURATOR path="/WEB-INF/conf/commons/data_access.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/commons/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/commons/common.xml" />

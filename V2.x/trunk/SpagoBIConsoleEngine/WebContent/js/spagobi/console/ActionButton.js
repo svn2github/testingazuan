@@ -137,7 +137,7 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 
     , execAction: function(){
     	
-    	var flgValue = null;
+    	var flgCheck = null;
     	var checkCol = null;
     	
     	checkCol = this.actionConf.checkColumn;
@@ -152,14 +152,14 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     		this.store.loadStore();    		
     		return;
     	} else if (this.actionConf.name === 'errors' || this.actionConf.name === 'errors_inactive'){  
-    		flgValue = (this.iconCls === 'errors')? this.ACTIVE_VALUE: this.INACTIVE_VALUE;    		    	
+    		flgCheck = (this.iconCls === 'errors')? this.ACTIVE_VALUE: this.INACTIVE_VALUE;    		    	
     	} else if (this.actionConf.name === 'alarms' || this.actionConf.name === 'alarms_inactive'){      		
-    		flgValue = (this.iconCls === 'alarms')? this.ACTIVE_VALUE: this.INACTIVE_VALUE;    		
+    		flgCheck = (this.iconCls === 'alarms')? this.ACTIVE_VALUE: this.INACTIVE_VALUE;    		
     	} else if (this.actionConf.name === 'views' || this.actionConf.name === 'views_inactive'){      		
-    		flgValue = (this.iconCls === 'views')? this.ACTIVE_VALUE: this.INACTIVE_VALUE;    		
+    		flgCheck = (this.iconCls === 'views')? this.ACTIVE_VALUE: this.INACTIVE_VALUE;    		
     	}
     	
-    	this.executionContext[checkCol] = flgValue;
+    	this.executionContext[checkCol] = flgCheck;
 		var params = this.resolveParameters(this.actionConf.config, this.executionContext);
 		params = Ext.apply(params, {
 				message: this.actionConf.name, 
@@ -184,7 +184,7 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 	    });  
 			
 		//updates the row's icons
-		this.setCheckValue(this.actionConf.checkColumn, flgValue);        
+		this.setCheckValue(this.actionConf.checkColumn, flgCheck);        
 
 	}
  

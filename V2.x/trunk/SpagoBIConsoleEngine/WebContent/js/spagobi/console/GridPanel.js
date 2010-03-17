@@ -104,6 +104,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	// popup
 	, errorWin: null
 	, alarmWin: null
+	, logsWin: null
 	
 	// conf bloks
 	, filterBar: null
@@ -127,7 +128,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		, monitor: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_monitor.gif', inactive: '../img/ico_monitor_inactive.gif'}}
 		, errors: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_errors.gif', inactive: '../img/ico_errors_inactive.gif'}} 
 		, alarms: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_warnings.gif', inactive: '../img/ico_warnings_inactive.gif'}}
-		, views: {serviceName: 'VIEWS_ACTION', images: {active: '../img/ico_views.gif', inactive: '../img/ico_views_inactive.gif'}} 
+		, views: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_views.gif', inactive: '../img/ico_views_inactive.gif'}} 
 		, refresh: {serviceName: 'REFRESH_ACTION', images: '../img/ico_refresh.gif'}
 	}
    
@@ -200,9 +201,10 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	}
 
 	
-	, execAction: function(action, r, index, options) {
+	, execAction: function(action, r, index, options) {		
 		
 		var params = this.resolveParameters(options, r, this.executionContext);
+	
 		params = Ext.apply(params, {
   			message: action.name, 
         	userId: Sbi.user.userId 
@@ -229,7 +231,6 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	
 	, toggleMonitor: function(action, r, index, options) {
 		//force the list refresh	                   
-        //alert(this.grid.store.filterPlugin.getFilters().toSource());
         this.store.filterPlugin.applyFilters();	            
         this.execAction(action, r, index, options);
 	}
@@ -243,15 +244,17 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			this.errorWin.on('checked', function(win, record) {
 				this.errorWin.action.toggle(record);
 				this.errorWin.checkButton.disable();
-				this.execAction(this.errorWin.action, record, null, {});
+				this.execAction(this.errorWin.action, record, null, options);
 			}, this);
 		}
 		this.errorWin.reloadMasterList({id: 'Blue Label'});
 		this.errorWin.setTarget(r);
 		if(action.isChecked(r)) {
-			this.errorWin.checkButton.disable();
-		} else {
+			//this.errorWin.checkButton.disable();
 			this.errorWin.checkButton.enable();
+		} else {
+			//this.errorWin.checkButton.enable();
+			this.errorWin.checkButton.disable();
 		}
 		this.errorWin.show();
 	}
@@ -265,15 +268,17 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			this.alarmWin.on('checked', function(win, record) {
 				this.alarmWin.action.toggle(record);
 				this.alarmWin.checkButton.disable();
-				this.execAction(action, record, null, {});
+				this.execAction(action, record, null, options);
 			}, this);
 		}
 		this.alarmWin.reloadMasterList({id: 'Jeffers'});
 		this.alarmWin.setTarget(r);
 		if(action.isChecked(r)) {
-			this.alarmWin.checkButton.disable();
-		} else {
+			//this.alarmWin.checkButton.disable();
 			this.alarmWin.checkButton.enable();
+		} else {
+			//this.alarmWin.checkButton.enable();
+			this.alarmWin.checkButton.disable();
 		}
 		this.alarmWin.show();
 	}
@@ -292,7 +297,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	    		if(response !== undefined && response.responseText !== undefined) {
 						var content = Ext.util.JSON.decode( response.responseText );
 						if (content !== undefined) {				      			  
-							alert(content.toSource());
+							//alert(content.toSource());
 						}				      		
     			} else {
     				Sbi.Msg.showError('Server response is empty', 'Service Error');
@@ -309,7 +314,34 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		alert(options.toSource());
 	}
 	
-
+	, downloadLogs: function(action, r, index, options) {
+		if(this.logsWin === null) {
+			/*
+			this.logsWin = new Sbi.console.MasterDetailWindow({
+				serviceName: 'GET_WARNING_LIST_ACTION'
+				, action: action
+			});*/
+			
+			this.logsWin = new Ext.Window({title: 'Download windows'
+										 , width: 500
+										 , height: 300});
+			
+			this.logsWin.on('checked', function(win, record) {
+				this.logsWin.action.toggle(record);
+				this.logsWin.checkButton.disable();
+				this.execAction(action, record, null, {});
+			}, this);
+		}
+		this.logsWin.reloadMasterList({id: 'Jeffers'});
+		this.logsWin.setTarget(r);
+		/*
+		if(action.isChecked(r)) {
+			this.logsWin.checkButton.disable();
+		} else {
+			this.logsWin.checkButton.enable();
+		}*/
+		this.logsWin.show();
+	}
     //  -- private methods ---------------------------------------------------------
     
     
@@ -565,11 +597,10 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			
 			inlineActionColumnConfig.imgSrcActive = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images['active'];			
 			inlineActionColumnConfig.imgSrcInactive = this.GRID_ACTIONS[inlineActionColumnConfig.name ].images['inactive'];			
-			inlineActionColumnConfig.toggleOnClick = false;
+			inlineActionColumnConfig.toggleOnClick = true;
 			inlineActionColumnConfig.handler = this.execAction;
-			inlineActionColumn = new Sbi.console.InlineActionColumn(inlineActionColumnConfig);
-			
 			inlineActionColumn = new Sbi.console.InlineToggleActionColumn(inlineActionColumnConfig);	
+			
 		} else if (inlineActionColumnConfig.name === 'start'){			
 			inlineActionColumnConfig.imgSrc = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images
 			inlineActionColumnConfig.handler = this.startProcess;

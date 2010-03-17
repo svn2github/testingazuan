@@ -159,8 +159,8 @@ Sbi.template = {
 	    	            , config: {}
     	            }, {
         	            name: 'errors'
-		    	        , tooltipActive: 'Mark all errors as viewed'
-			    	    , tooltipInactive: 'Mark all errors as not viewed'		    	   
+		    	        , tooltipActive:  'Mark all errors as not viewed'	
+			    	    , tooltipInactive: 	 'Mark all errors as viewed'    	   
 		    	        , checkColumn: 'errors_check'	//the column on db that defines if the icon was checked	
 						, flagColumn: 'errors_flag'		//the column on db that defines if the icon was visible	
 	    	            , hidden: false
@@ -181,8 +181,8 @@ Sbi.template = {
     	            	}
 	    	        }, {
 	    	            name: 'alarms'
-	    	        	, tooltipActive: 'Mark all allarms as viewed'
-			    	    , tooltipInactive: 'Mark all allarms as not viewed'		    	   
+	    	        	, tooltipActive:'Mark all allarms as not viewed'  
+			    	    , tooltipInactive:'Mark all allarms as viewed'  	    	   
 		    	        , checkColumn: 'alarms_check'	//the column on db that defines if the icon was checked	
 						, flagColumn: 'alarms_flag'		//the column on db that defines if the icon was visible	
 	    	            , hidden: false
@@ -203,8 +203,8 @@ Sbi.template = {
     	            	}	    	            
 	    	        }, {
                        name: 'views'
-                   	    , tooltipActive: 'Mark all rows as viewed'
-   			    	    , tooltipInactive: 'Mark all rows as not viewed'		    	   
+                   	    , tooltipActive: 'Mark all rows as viewed'    
+   			    	    , tooltipInactive: 	'Mark all rows as not viewed'		   
    		    	        , checkColumn: 'views_check'	//the column on db that defines if the icon was checked	   						
    	    	            , hidden: false
    	    	            , config: {
@@ -269,21 +269,18 @@ Sbi.template = {
 								, flagColumn: 'errors_flag'
 								, tooltipActive: 'View unchecked error messages'
 							    , tooltipInactive: 'View checked error messages'
-								, config: {
-									staticParams: {
-										param1: 'param1Value'
-										, param2: 'paramValue2' 
+							    , config: {staticParams: {
+									//generic params for the execution of query on generic db
+									   stmt: 'UPDATE_ERROR_STATE'
+									 , numPars: '2'			//the number of params in the query													 														 													    			     									
 									}
-									,   dynamicParams: [{
-										brandnamexxx: 'Brand'  
-										, scope: 'dataset'   
-									},{
-										productName: 'Products'
-										, scope: 'dataset'
-									},{
-										month: 'Month'
-										, scope: 'env'
-									}]	      		                        
+								  , dynamicParams: [{
+									 'errors_check': 'errors_check'  //value: logical name
+									, scope: 'dataset'
+									},{ID: 'id'  					   //value: logical name
+									, scope: 'dataset'
+									}]
+								 , metaParams: {queryParams: [{"name":"errors_check","type":"num"},{"name":"id","type":"num"}]}
 								}
 							}, {
 								name: 'alarms'
@@ -292,7 +289,19 @@ Sbi.template = {
 								, flagColumn: 'alarms_flag'
 								, tooltipActive: 'View unchecked alarm messages'
 								, tooltipInactive: 'View checked alarm messages'
-								, config: {}
+								, config: {staticParams: {
+									//generic params for the execution of query on generic db
+									   stmt: 'UPDATE_ALARM_STATE'
+									 , numPars: '2'			//the number of params in the query													 														 													    			     									
+									}
+								  , dynamicParams: [{
+									 'alarms_check': 'alarms_check'  //value: logical name
+									, scope: 'dataset'
+									},{ID: 'id'  					   //value: logical name
+									, scope: 'dataset'
+									}]
+								 , metaParams: {queryParams: [{"name":"alarms_check","type":"num"},{"name":"id","type":"num"}]}
+								}
 							}, {
 								name: 'informationlog'
 								, hidden: false
@@ -346,8 +355,8 @@ Sbi.template = {
 							},{
 								name: 'monitor'
 								, hidden: false							
-							 	, tooltipActive: 'Enable monitoring'
-						        , tooltipInactive: 'Disable monitoring'							    
+							 	, tooltipActive: 'Disable monitoring'	
+						        , tooltipInactive: 'Enable monitoring' 						    
 								, checkColumn: 'monitor_check'								
 								, config: {staticParams: {
 											//generic params for the execution of query on generic db
@@ -357,7 +366,7 @@ Sbi.template = {
 										  , dynamicParams: [{
 											 'monitor_check': 'monitor_check'  //value: logical name
 											, scope: 'dataset'
-											},{ID: 'id'  						//value: logical name
+											},{ID: 'id'  					   //value: logical name
 											, scope: 'dataset'
 											}]
 										, metaParams: {queryParams: [{"name":"monitor_check","type":"num"},{"name":"id","type":"num"}]}
@@ -368,7 +377,19 @@ Sbi.template = {
 								, checkColumn: 'views_check'
 	      		                , tooltipActive: 'Checked. Click to uncheck'
 		  						, tooltipInactive: 'Unchecked. Click to check'
-								, config: {}
+		  							, config: {staticParams: {
+									//generic params for the execution of query on generic db
+									   stmt: 'UPDATE_CHECK_STATE'
+									 , numPars: '2'			//the number of params in the query													 														 													    			     									
+									}
+								  , dynamicParams: [{
+									 'views_check': 'views_check'  //value: logical name
+									, scope: 'dataset'
+									},{ID: 'id'  					//value: logical name
+									, scope: 'dataset'
+									}]
+								, metaParams: {queryParams: [{"name":"views_check","type":"num"},{"name":"id","type":"num"}]}
+							}
 							}
 						]  
 	        }//table	    	

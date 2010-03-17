@@ -57,7 +57,8 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
 		var v, s;
 		if(this.isBoundToColumn()) {
 			s = this.grid.store;
-			v = (b? this.CHECKED_VALUE: this.UNCHECKED_VALUE);
+			
+			v = (b? this.CHECKED_VALUE: this.UNCHECKED_VALUE);			
 			record.set (s.getFieldNameByAlias(this.checkColumn), v );
             //record.commit();
 		}

@@ -76,6 +76,7 @@ public class StatusWorkAction extends AbstractEngineAction {
 		logger.debug("IN");
 
 
+		JSONObject info=null;
 		Object pidO=request.getAttribute("PROCESS_ID");
 		String pid="";
 		if(pidO!=null){
@@ -83,14 +84,22 @@ public class StatusWorkAction extends AbstractEngineAction {
 
 		}
 		else{   // if pidO not found just return an empty xml Object
-			
+			try {
+
+				info=GeneralUtils.buildJSONObject(pid,0);
+				writeBackToClient( new JSONSuccess(info));
+			} catch (Exception e) {
+				String message = "Impossible to write back the responce to the client";
+				throw new SpagoBIEngineServiceException(getActionName(), message, e);
+			}
+
 			return;
-			
+
+
 		}
 
 		super.service(request, response);
 		HttpSession session=getHttpSession();
-		JSONObject info=null;
 
 		// Get document id, must find
 		String document_id=null;

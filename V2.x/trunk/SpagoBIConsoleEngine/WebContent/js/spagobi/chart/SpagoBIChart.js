@@ -265,7 +265,6 @@ Sbi.chart.Livelines = Ext.extend(Sbi.chart.SpagoBIChart, {
 	}
 	
 	, onRefresh: function() {
-		
 			var data = {};
 			var rec = this.store.getAt(0);
 			if(rec) {
@@ -276,12 +275,26 @@ Sbi.chart.Livelines = Ext.extend(Sbi.chart.SpagoBIChart, {
 						f = {name: f};
 					}
 					var alias = f.header || f.name;
-					if(alias === 'recNo') continue;
+					if(alias === 'recNo' || !this.isVisible(alias)) continue;
+					
 					data[alias] = rec.get(f.name);				
 				}
 				this.swf.loadData(data);
 			}
 			
+	}
+	
+	// checks if the column is configurated as visible into template
+	, isVisible: function(alias){
+		if (this.fields === undefined) return true;
+		
+		for (var i = 0; i < this.fields.length; i++){
+			if (alias === this.fields[i] ){
+				return true;
+			}				
+		}
+		return false;	
+		
 	}
 });
 Ext.reg('chart.sbi.livelines', Sbi.chart.Livelines);

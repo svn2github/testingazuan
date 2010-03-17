@@ -45,7 +45,6 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 <%-- JAVA CODE 																--%>
 <%-- ---------------------------------------------------------------------- --%>
 <%
-	//QbeEngineInstance qbeEngineInstance;
 	UserProfile profile;
 	Locale locale;
 	String isFromCross;
@@ -59,16 +58,6 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	String spagobiSpagoController;
 	String docId;
 	
-	/*qbeEngineInstance = (QbeEngineInstance)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("ENGINE_INSTANCE");
-	List datamartNames = qbeEngineInstance.getDatamartModel().getDataSource().getDatamartNames();
-	profile = (UserProfile)qbeEngineInstance.getEnv().get(EngineConstants.ENV_USER_PROFILE);
-	locale = (Locale)qbeEngineInstance.getEnv().get(EngineConstants.ENV_LOCALE);
-	
-	isFromCross = (String)qbeEngineInstance.getEnv().get("isFromCross");
-	if (isFromCross == null) {
-		isFromCross = "false";
-	}
-	isPowerUser = profile.getFunctionalities().contains(SpagoBIConstants.BUILD_QBE_QUERIES_FUNCTIONALITY);*/
 	
 	CommonjEngineConfig qcommonJEngineConfig = CommonjEngineConfig.getInstance();
 
@@ -175,6 +164,7 @@ int i=0;
 			
 			if(generalPanel.status==2 || generalPanel.status==4)
 			{
+			alert('fine');
 			}
 			else{
 			setTimeout("timer()", 3000);	

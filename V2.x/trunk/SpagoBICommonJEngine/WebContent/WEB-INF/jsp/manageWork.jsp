@@ -164,7 +164,6 @@ int i=0;
 			
 			if(generalPanel.status==2 || generalPanel.status==4)
 			{
-			alert('fine');
 			}
 			else{
 			setTimeout("timer()", 3000);	

@@ -50,7 +50,7 @@ Sbi.console.ActionButton = function(config) {
 
 		var defaultSettings = {
 			iconCls: config.actionConf.name
-			//,tooltip: (config.actionConf.tooltip === undefined)?config.actionConf.name : config.actionConf.tooltip 
+			,tooltip: (config.actionConf.tooltip === undefined)?config.actionConf.name : config.actionConf.tooltip 
 			,hidden: config.actionConf.hidden
 			,scope:this
 		};
@@ -80,16 +80,20 @@ Sbi.console.ActionButton = function(config) {
 Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     
     services: null
-    , ACTIVE_VALUE: 0
-	, INACTIVE_VALUE: 1
+    , ACTIVE_VALUE: 1
+	, INACTIVE_VALUE: 0
 	, USER_ID: 'userId'
+	, ERRORS: 'errors'
+	, ALARMS: 'alarms'
+	, MONITOR: 'monitor'
+	, MONITOR_INACTIVE: 'monitor_inactive'
 		
 	, FILTERBAR_ACTIONS: {		
 		  monitor: {serviceName: 'UPDATE_ACTION', images: 'monitor'}
 		, monitor_inactive: {serviceName: 'UPDATE_ACTION', images: 'monitor_inactive'}
 		, errors: {serviceName: 'UPDATE_ACTION', images: {active: 'errors', inactive: 'errors_inactive'}} 
 		, alarms: {serviceName: 'UPDATE_ACTION', images: {active: 'alarms', inactive: 'alarms_inactive'}}
-		, views: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_views.gif', inactive: '../img/ico_views_inactive.gif'}}
+		, views: {serviceName: 'UPDATE_ACTION', images: {active: 'views', inactive: 'views_inactive'}}
 		, refresh: {serviceName: 'REFRESH_ACTION', images: 'refresh'}
 	}
    
@@ -134,58 +138,57 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     , execAction: function(){
     	
     	var flgValue = null;
+    	var checkCol = null;
+    	
+    	checkCol = this.actionConf.checkColumn;
     	
     	if (this.actionConf.name === 'monitor' || this.actionConf.name === 'monitor_inactive'){     		
     		this.store.filterPlugin.removeFilter(this.store.getFieldNameByAlias(this.actionConf.checkColumn));
-    		var newFilter = (this.actionConf.name === 'monitor') ? this.INACTIVE_VALUE : this.ACTIVE_VALUE;    	
+    		var newFilter = (this.actionConf.name === 'monitor') ? this.ACTIVE_VALUE : this.INACTIVE_VALUE;    	
     		this.store.filterPlugin.addFilter(this.store.getFieldNameByAlias(this.actionConf.checkColumn), newFilter);    		
     		this.store.filterPlugin.applyFilters();	   
     		return;
     	}else if (this.actionConf.name === 'refresh'){    		
-    		this.store.loadStore();
-    		
-    		this.store.filterPlugin.resetFilters;
-    		//this.store.filterPlugin.applyFilters();
-    		
+    		this.store.loadStore();    		
     		return;
     	} else if (this.actionConf.name === 'errors' || this.actionConf.name === 'errors_inactive'){  
-    		flgValue = (this.iconCls === 'errors')? this.INACTIVE_VALUE: this.ACTIVE_VALUE;
-    		this.executionContext.errors_flag = flgValue;
+    		flgValue = (this.iconCls === 'errors')? this.ACTIVE_VALUE: this.INACTIVE_VALUE;    		    	
     	} else if (this.actionConf.name === 'alarms' || this.actionConf.name === 'alarms_inactive'){      		
-    		flgValue = (this.iconCls === 'alarms')? this.INACTIVE_VALUE: this.ACTIVE_VALUE;
-    		this.executionContext.alarms_flag = flgValue;
+    		flgValue = (this.iconCls === 'alarms')? this.ACTIVE_VALUE: this.INACTIVE_VALUE;    		
     	} else if (this.actionConf.name === 'views' || this.actionConf.name === 'views_inactive'){      		
-    		flgValue = (this.iconCls === 'views')? this.INACTIVE_VALUE: this.ACTIVE_VALUE;
-    		this.executionContext.views_check = flgValue;
+    		flgValue = (this.iconCls === 'views')? this.ACTIVE_VALUE: this.INACTIVE_VALUE;    		
     	}
     	
-    	
+    	this.executionContext[checkCol] = flgValue;
 		var params = this.resolveParameters(this.actionConf.config, this.executionContext);
 		params = Ext.apply(params, {
 				message: this.actionConf.name, 
 				userId: Sbi.user.userId 
 			}); 
 				
-			Ext.Ajax.request({
-			url: this.services[this.actionConf.name]	       
-	       	, params: params 			       
-	    	, success: function(response, options) {
-	    		if(response !== undefined && response.responseText !== undefined) {
-						var content = Ext.util.JSON.decode( response.responseText );
-						if (content !== undefined) {				      			  
-						//	alert(content.toSource());
-						}				      		
-				} else {
-					Sbi.Msg.showError('Server response is empty', 'Service Error');
-				}
-	    	}
-	    	, failure: Sbi.exception.ExceptionHandler.onServiceRequestFailure
-	    	, scope: this     
+		Ext.Ajax.request({
+		url: this.services[this.actionConf.name]	       
+       	, params: params 			       
+    	, success: function(response, options) {
+    		if(response !== undefined && response.responseText !== undefined) {
+					var content = Ext.util.JSON.decode( response.responseText );
+					if (content !== undefined) {				      			  
+					//	alert(content.toSource());
+					}				      		
+			} else {
+				Sbi.Msg.showError('Server response is empty', 'Service Error');
+			}
+    	}
+    	, failure: Sbi.exception.ExceptionHandler.onServiceRequestFailure
+    	, scope: this     
 	    });  
+			
+		//updates the row's icons
+		this.setCheckValue(this.actionConf.checkColumn, flgValue);        
+
 	}
  
-    
-    
+
     // private methods
     , initServices: function() {
     	this.services = this.services || new Array();	
@@ -200,30 +203,50 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 		}
     }
     
-    , initButton: function(){
-    	//this.store.loadStore();
-    	
-    	var dataIdx = this.store.getFieldNameByAlias(this.actionConf.flagColumn);
-    	
-    	if (dataIdx !== undefined ){
-    		//alert(dataIdx);
-    		var resFindActive = this.store.findExact(dataIdx,this.ACTIVE_VALUE);
-    		
-    		//alert("resFindActive: " + resFindActive);
-    		if (resFindActive != -1){  
-    			//alert("it should be active icon...");
-	    		this.iconCls = this.FILTERBAR_ACTIONS[ this.actionConf.name ].images["active"]; 
-	    		this.tooltip = this.actionConf.tooltipActive;
-    		}else {    		    		
-    			//alert("it should be inactive icon...");
-    			this.iconCls = this.FILTERBAR_ACTIONS[ this.actionConf.name ].images[ "inactive"]; 
-    			this.tooltip = this.actionConf.tooltipInactive;
-    	    }
-    		//alert(this.tooltip);
+    , initButton: function(){    	
+    	//icons about monitoring are ever enabled
+    	if (this.actionConf.name === this.MONITOR || this.actionConf.name === this.MONITOR_INACTIVE){
+    		return;
     	}
-    	this.doLayout();
     	
+    	//checks if the button is visible (when the action is errors or alarms)
+    	if (this.actionConf.name === this.ERROR || this.actionConf.name === this.ALARMS){
+    		var flagCol = this.store.getFieldNameByAlias(this.actionConf.flagColumn);    
+        	if (flagCol === undefined ){
+        		return;
+        	}else{
+        		var flagValue = this.store.findExact(flagCol, this.ACTIVE_VALUE);
+        		if (flagValue === -1) {
+        			return;
+        		}
+        	}    		
+    	}
+
+    	var isCheck = this.store.getFieldNameByAlias(this.actionConf.checkColumn);
+    	if (isCheck !== undefined ){
+    		//checkValue: -1 if all rows are INACTIVE, greater then -1 otherwise
+    		var checkValue = this.store.findExact(isCheck,this.ACTIVE_VALUE);
+    		if (checkValue > -1){  //there's any active --> enable disactive actions
+    			this.setIconClass(this.FILTERBAR_ACTIONS[ this.actionConf.name ].images[ "inactive"]); 
+    			this.setTooltip(this.actionConf.tooltipInactive);
+    		}else{      		    		
+    			this.setIconClass(this.FILTERBAR_ACTIONS[ this.actionConf.name ].images["active"]); 
+	    		this.setTooltip(this.actionConf.tooltipActive);    			
+    	    }
+    	}	
     }
   
+    //updates checkColumn value in each store's row
+    , setCheckValue: function(columnAlias, value){
+    	for (var i=0, l= this.store.getCount(); i < l; i++){
+            var record = this.store.getAt(i);  
+            record.set (this.store.getFieldNameByAlias(columnAlias), value );
+        } 
+    	if (value === this.ACTIVE_VALUE){
+    		this.setIconClass(this.FILTERBAR_ACTIONS[ this.actionConf.name ].images[ "inactive"]); 
+    	}else{
+    		this.setIconClass(this.FILTERBAR_ACTIONS[ this.actionConf.name ].images[ "active"]); 
+    	}
+    }
 });
     

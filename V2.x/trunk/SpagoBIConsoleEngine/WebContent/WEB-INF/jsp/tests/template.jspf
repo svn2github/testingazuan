@@ -161,60 +161,56 @@ Sbi.template = {
         	            name: 'errors'
 		    	        , tooltipActive: 'Mark all errors as viewed'
 			    	    , tooltipInactive: 'Mark all errors as not viewed'		    	   
-		    	        //, checkColumn: 'errors_check'	//the column on db that defines if the icon was checked	
+		    	        , checkColumn: 'errors_check'	//the column on db that defines if the icon was checked	
 						, flagColumn: 'errors_flag'		//the column on db that defines if the icon was visible	
 	    	            , hidden: false
 	    	            , config: {
 	    	            	staticParams: {
 							//generic params for the execution of query on generic db
-							   schema: 'foodmart'								
-							 , stmt: 'UPDATE_ALL_ERRORS_STATE'
-							 , numPars: '2'			//the number of params in the query																																	 													    			     									
+							   stmt: 'UPDATE_ALL_ERRORS_STATE'
+							 , numPars: '2'			//the number of params in the query							     																																 													    			     									
 							}
 						  , dynamicParams: [{
-							 'errors_flag': 'errors_flag'  
+							 'errors_check': 'errors_check'  
 							, scope: 'env'
 							},{
 							 'userId': 'userId'  
 							, scope: 'env'
 							}]
-						 , metaParams: {queryParams: [{"name":"errors_flag","type":"num"},{"name":"userId","type":"string"}]}
+						 , metaParams: {queryParams: [{"name":"errors_check","type":"num"},{"name":"userId","type":"string"}]}
     	            	}
 	    	        }, {
 	    	            name: 'alarms'
 	    	        	, tooltipActive: 'Mark all allarms as viewed'
 			    	    , tooltipInactive: 'Mark all allarms as not viewed'		    	   
-		    	        //, checkColumn: 'errors_check'	//the column on db that defines if the icon was checked	
+		    	        , checkColumn: 'alarms_check'	//the column on db that defines if the icon was checked	
 						, flagColumn: 'alarms_flag'		//the column on db that defines if the icon was visible	
 	    	            , hidden: false
 	    	            , config: {
 	    	            	staticParams: {
-							//generic params for the execution of query on generic db
-							   schema: 'foodmart'								
-							 , stmt: 'UPDATE_ALL_ALLARMS_STATE'
+							//generic params for the execution of query on generic db							 							
+							   stmt: 'UPDATE_ALL_ALARMS_STATE'
 							 , numPars: '2'			//the number of params in the query																																	 													    			     									
 							}
 						  , dynamicParams: [{
-							 'alarms_flag': 'alarms_flag'  //value: label in new request
+							 'alarms_check': 'alarms_check'  //value: label in new request
 							, scope: 'env'
 							},{
 							 'userId': 'userId'  
 							, scope: 'env'
 							}]
-						 , metaParams: {queryParams: [{"name":"alarms_flag","type":"num"},{"name":"userId","type":"string"}]}
+						 , metaParams: {queryParams: [{"name":"alarms_check","type":"num"},{"name":"userId","type":"string"}]}
     	            	}	    	            
 	    	        }, {
                        name: 'views'
                    	    , tooltipActive: 'Mark all rows as viewed'
    			    	    , tooltipInactive: 'Mark all rows as not viewed'		    	   
-   		    	        //, checkColumn: 'errors_check'	//the column on db that defines if the icon was checked	
-   						, flagColumn: 'alarms_flag'		//the column on db that defines if the icon was visible	
+   		    	        , checkColumn: 'views_check'	//the column on db that defines if the icon was checked	   						
    	    	            , hidden: false
    	    	            , config: {
    	    	            	staticParams: {
    							//generic params for the execution of query on generic db
-   							   schema: 'foodmart'								
-   							 , stmt: 'UPDATE_ALL_VIEWING_STATE'
+							   stmt: 'UPDATE_ALL_VIEWING_STATE'
    							 , numPars: '2'			//the number of params in the query																																	 													    			     									
    							}
    						  , dynamicParams: [{
@@ -226,14 +222,7 @@ Sbi.template = {
    							}]
    						 , metaParams: {queryParams: [{"name":"views_check","type":"num"},{"name":"userId","type":"string"}]}
        	            	}	 	                   
-	    	        }/*,{ 
-		    	       name: 'views_inactive'
-	    	           , tooltip: 'Mark all rows as not viewed'	
-	    	           , hidden: true
-	    	           , config: {
-	    	           		staticParams: {param1: 'paramValue'}
-	    	            }
-	    	        }*/,{ name: 'monitor'
+	    	        },{ name: 'monitor'
 		    	        ,  hidden: false
 		    	        ,  tooltip: 'View all active'
 		    	        ,  checkColumn: 'monitor_check'	//the column on db with the flag value	    	        
@@ -362,8 +351,7 @@ Sbi.template = {
 								, checkColumn: 'monitor_check'								
 								, config: {staticParams: {
 											//generic params for the execution of query on generic db
-											   schema: 'foodmart'								
-											 , stmt: 'UPDATE_MONITOR_STATE'
+											    stmt: 'UPDATE_MONITOR_STATE'
 											 , numPars: '2'			//the number of params in the query													 														 													    			     									
 											}
 										  , dynamicParams: [{

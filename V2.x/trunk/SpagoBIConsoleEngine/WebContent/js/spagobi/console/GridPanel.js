@@ -114,6 +114,9 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     , AUTOMATIC_FILTERBAR: 'automatic'
     	//custom: only configurated fields are added as filter  
     , CUSTOM_FILTERBAR: 'custom'
+    	
+    , ACTIVE_VALUE: 1
+	, INACTIVE_VALUE: 0
 	
 	
 	, GRID_ACTIONS: {
@@ -122,10 +125,9 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		, informationlog: {serviceName: 'START_ACTION', images: '../img/ico_info.gif'}
 		, crossnav: {serviceName: 'CROSS_ACTION', images: {cross_detail: '../img/ico_cross_detail.gif', popup_detail: '../img/ico_popup_detail.gif'}}
 		, monitor: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_monitor.gif', inactive: '../img/ico_monitor_inactive.gif'}}
-		, errors: {serviceName: 'UPDATE_ACTION', images: {inactive: '../img/ico_errors.gif', active: '../img/ico_errors_inactive.gif'}} 
-		, alarms: {serviceName: 'UPDATE_ACTION', images: {inactive: '../img/ico_warnings.gif', active: '../img/ico_warnings_inactive.gif'}}
-		, views: {serviceName: 'VIEWS_ACTION', images: '../img/ico_views.gif'}
-		, views_inactive: {serviceName: 'VIEWS_ACTION', images: '../img/ico_views_inactive.gif'}
+		, errors: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_errors.gif', inactive: '../img/ico_errors_inactive.gif'}} 
+		, alarms: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_warnings.gif', inactive: '../img/ico_warnings_inactive.gif'}}
+		, views: {serviceName: 'VIEWS_ACTION', images: {active: '../img/ico_views.gif', inactive: '../img/ico_views_inactive.gif'}} 
 		, refresh: {serviceName: 'REFRESH_ACTION', images: '../img/ico_refresh.gif'}
 	}
    
@@ -536,7 +538,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			var tmpName = this.store.getFieldNameByAlias(inlineActionColumnConfig.checkColumn);
 			if (tmpName !== undefined){
 				if (this.store.filterPlugin.getFilter(tmpName) === undefined) {
-					this.store.filterPlugin.addFilter (tmpName, 1);
+					this.store.filterPlugin.addFilter (tmpName, this.ACTIVE_VALUE);
 				}
 			}
 						
@@ -559,6 +561,15 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			inlineActionColumnConfig.handler = this.showAlarms;
 			inlineActionColumn = new Sbi.console.InlineToggleActionColumn(inlineActionColumnConfig);	
 			
+		} else if (inlineActionColumnConfig.name === 'views'){	
+			
+			inlineActionColumnConfig.imgSrcActive = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images['active'];			
+			inlineActionColumnConfig.imgSrcInactive = this.GRID_ACTIONS[inlineActionColumnConfig.name ].images['inactive'];			
+			inlineActionColumnConfig.toggleOnClick = false;
+			inlineActionColumnConfig.handler = this.execAction;
+			inlineActionColumn = new Sbi.console.InlineActionColumn(inlineActionColumnConfig);
+			
+			inlineActionColumn = new Sbi.console.InlineToggleActionColumn(inlineActionColumnConfig);	
 		} else if (inlineActionColumnConfig.name === 'start'){			
 			inlineActionColumnConfig.imgSrc = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images
 			inlineActionColumnConfig.handler = this.startProcess;
@@ -568,8 +579,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			inlineActionColumnConfig.imgSrc = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images
 			inlineActionColumnConfig.handler = this.stopProcess;
 			inlineActionColumn = new Sbi.console.InlineActionColumn(inlineActionColumnConfig);
-		
-		} else {
+		}else {
 			
 			inlineActionColumnConfig.imgSrc = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images
 			inlineActionColumnConfig.handler = this.execAction;

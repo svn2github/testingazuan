@@ -102,7 +102,6 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
     
     , onMetaChange: function( store, meta ) {
     	var i;
-    	
     	if(this.tbInizialzed === false) {
 	    	if (this.filterBar.type ===  this.AUTOMATIC_FILTERBAR){
 	    	   for(i = 0; i < meta.fields.length; i++) { 		  
@@ -119,9 +118,8 @@ Ext.extend(Sbi.console.CustomFilteringToolbar, Sbi.console.FilteringToolbar, {
 	      	} else {
 	      		Sbi.Msg.showError('Toolbar type [' + this.filterBar.type + '] is not supported');
 	      	}	
-	       //	alert("custom store: " + store);
+
 			this.addActionButtons();    					
-			//this.addActionButtons();
 			
 	       	this.doLayout();
        	

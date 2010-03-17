@@ -15,8 +15,8 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
 	
 	, checkColumn: null
 
-	, CHECKED_VALUE: 0
-	, UNCHECKED_VALUE: 1
+	, CHECKED_VALUE: 1
+	, UNCHECKED_VALUE: 0
 	
 	// -- public methods ------------------------------------------------------------------------
 	
@@ -33,9 +33,7 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
 		v = record.get(s.getFieldNameByAlias(this.checkColumn));
     	if (v === undefined || v === null) {
     		Sbi.Msg.showError('Impossible to draw toggle column [' + this.dataIndex + ']. Dataset [' + s.storeId + ']does not contain column [' + this.checkColumn + ']');
-    	};
-    	
-    	if(v !== this.CHECKED_VALUE && v !== this.UNCHECKED_VALUE) {
+    	}else if(v !== this.CHECKED_VALUE && v !== this.UNCHECKED_VALUE) {
     		Sbi.Msg.showError('Column [' + this.checkColumn + '] of dataset [' + s.storeId + '] contains a wrong value [' + v + ']. Impossible to determinate the state of the bounded togle column [' + this.checkColumn + ']');
     	}
     	

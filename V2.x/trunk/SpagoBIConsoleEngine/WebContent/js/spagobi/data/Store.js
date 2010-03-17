@@ -116,7 +116,6 @@ Ext.extend(Sbi.data.Store, Ext.data.JsonStore, {
 	}
 	
 	, loadStore: function(){
-		alert("loadStore!!");
 		this.load({
 			params: {}, 
 			callback: function(){this.ready = true;}, 

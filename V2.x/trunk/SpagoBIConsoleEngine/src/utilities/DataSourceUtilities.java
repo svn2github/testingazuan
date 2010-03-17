@@ -17,12 +17,12 @@ import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spagobi.commons.utilities.StringUtilities;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -41,7 +41,17 @@ public class DataSourceUtilities {
 	public static String NUM_PARS = "numPars";
 	
 	private static transient Logger logger = Logger.getLogger(DataSourceUtilities.class);
+	private IDataSource datasource = null;
+	
+	public DataSourceUtilities(){
+		//default
+	}
 
+	public DataSourceUtilities(IDataSource ds){		
+		datasource = ds;		
+		Assert.assertNotNull(datasource, "IDatasource object cannot be null!");
+	}
+	
 	/**  This method gets all request parameters and define an hashmap object
 	 * 
 	 * @param request the sourcebean with the request
@@ -89,14 +99,10 @@ public class DataSourceUtilities {
 		logger.debug("IN");
 		
 		try {
-			String schema = (String)params.get( SCHEMA ); 
-			logger.debug("Parameter [" + SCHEMA + "] is equals to [" + schema + "]");			
-			Assert.assertTrue(!StringUtilities.isEmpty( schema ), "Parameter [" + SCHEMA + "] cannot be null or empty");
-			
-			DataConnectionManager dataConnectionManager = DataConnectionManager.getInstance();
-			dataConnection = dataConnectionManager.getConnection(schema); 
-			dataConnection.initTransaction();
-			
+
+			Connection jdbcConnection = datasource.getConnection();
+			dataConnection = getDataConnection(jdbcConnection);
+
 			String statement = SQLStatements.getStatement((String)params.get( STMT )); 
 			logger.debug("Parameter [" + STMT + "] is equals to [" + statement + "]");			
 			Assert.assertTrue(!StringUtilities.isEmpty( statement ), "Parameter [" + STMT + "] cannot be null or empty");
@@ -106,6 +112,7 @@ public class DataSourceUtilities {
 			logger.debug("Parameter [ numPars ] is equals to [" + numPars + "]");
 			
 			sqlCommand = dataConnection.createUpdateCommand(statement);
+			dataConnection.initTransaction();
 			
 			if (numPars > 0){
 				List inputParameter = new ArrayList(numPars);
@@ -127,7 +134,7 @@ public class DataSourceUtilities {
 			}else{
 				dataResult = sqlCommand.execute();
 			}
-			dataConnection.commitTransaction();
+			dataConnection.commitTransaction(); 
 		} // try
 		catch (Exception ex) {
 			toReturn = false;

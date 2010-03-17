@@ -101,6 +101,7 @@ public class DataSourceUtilities {
 		try {
 
 			Connection jdbcConnection = datasource.getConnection();
+			jdbcConnection.setAutoCommit(false);
 			dataConnection = getDataConnection(jdbcConnection);
 
 			String statement = SQLStatements.getStatement((String)params.get( STMT )); 

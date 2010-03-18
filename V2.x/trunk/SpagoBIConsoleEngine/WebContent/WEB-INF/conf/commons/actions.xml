@@ -54,8 +54,8 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
-	<ACTION name="LOG_ACTION" 
-			class="it.eng.spagobi.engines.console.services.ExecuteButtonAction"
+	<ACTION name="DOWNLOAD_LOGS_ACTION" 
+			class="it.eng.spagobi.engines.console.services.DownloadLogsAction"
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>

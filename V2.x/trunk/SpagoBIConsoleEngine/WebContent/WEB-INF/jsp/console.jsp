@@ -142,6 +142,14 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 			    , baseParams: {}
 			});
 
+			Sbi.config.spagobiServiceRegistry = new Sbi.service.ServiceRegistry({
+				baseUrl: {
+					contextPath: 'SpagoBI'
+				}
+			    , baseParams: {}
+			});
+			
+
 			// javascript-side user profile object
 	        Ext.ns("Sbi.user");
 	        Sbi.user.userId = "<%= profile.getUserId() %>";

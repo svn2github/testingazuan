@@ -123,7 +123,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	, GRID_ACTIONS: {
 		start: {serviceName: 'START_WORK', images: '../img/ico_start.gif'}
 		, stop: {serviceName: 'STOP_WORK', images: '../img/ico_stop.gif'}
-		, informationlog: {serviceName: 'START_ACTION', images: '../img/ico_info.gif'}
+		, informationlog: {serviceName: 'DOWNLOAD_ZIP', images: '../img/ico_info.gif'}
 		, crossnav: {serviceName: 'CROSS_ACTION', images: {cross_detail: '../img/ico_cross_detail.gif', popup_detail: '../img/ico_popup_detail.gif'}}
 		, monitor: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_monitor.gif', inactive: '../img/ico_monitor_inactive.gif'}}
 		, errors: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_errors.gif', inactive: '../img/ico_errors_inactive.gif'}} 
@@ -209,7 +209,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
   			message: action.name, 
         	userId: Sbi.user.userId 
   		}); 
-  			 
+		
   		Ext.Ajax.request({
 	       	url: this.services[action.name] 			       
 	       	, params: params 			       
@@ -314,33 +314,30 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		alert(options.toSource());
 	}
 	
-	, downloadLogs: function(action, r, index, options) {
+	, downloadLogs: function(action, r, index, options) {		
+		
+		var params = this.resolveParameters(options, r, this.executionContext);
+		var url =  Sbi.config.spagobiServiceRegistry.getServiceUrl({serviceName: 'DOWNLOAD_ZIP'
+																   , baseParams: new Object()
+																	});
+		params = Ext.apply(params, {
+        	USER_ID: Sbi.user.userId 
+          , URL: url
+  		}); 
+		
 		if(this.logsWin === null) {
-			/*
-			this.logsWin = new Sbi.console.MasterDetailWindow({
-				serviceName: 'GET_WARNING_LIST_ACTION'
-				, action: action
-			});*/
+			this.logsWin = new Sbi.console.DownloadLogsWindow({
+				serviceName: 'DOWNLOAD_ZIP' 
+			  , action: action
+			});
 			
-			this.logsWin = new Ext.Window({title: 'Download windows'
-										 , width: 500
-										 , height: 300});
-			
-			this.logsWin.on('checked', function(win, record) {
-				this.logsWin.action.toggle(record);
-				this.logsWin.checkButton.disable();
-				this.execAction(action, record, null, {});
+			this.logsWin.on('checked', function(win, record) {	
+				this.logsWin.downloadLogs(action, record, null, params);
 			}, this);
 		}
-		this.logsWin.reloadMasterList({id: 'Jeffers'});
-		this.logsWin.setTarget(r);
-		/*
-		if(action.isChecked(r)) {
-			this.logsWin.checkButton.disable();
-		} else {
-			this.logsWin.checkButton.enable();
-		}*/
+
 		this.logsWin.show();
+
 	}
     //  -- private methods ---------------------------------------------------------
     
@@ -358,6 +355,11 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 				});
 			} else if(actionName === 'stop') {
 				this.services[actionName] = this.services[actionName] || Sbi.config.commonjServiceRegistry.getServiceUrl({
+					serviceName: actionConf.serviceName
+					, baseParams: new Object()
+				});
+			}else if(actionName === 'informationlog') {
+				this.services[actionName] = this.services[actionName] || Sbi.config.spagobiServiceRegistry.getServiceUrl({
 					serviceName: actionConf.serviceName
 					, baseParams: new Object()
 				});
@@ -543,6 +545,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	}
 		
 	, createInlineActionColumn: function(config) {
+		
 		var inlineActionColumn = null;
 		var inlineActionColumnConfig = config;
 		
@@ -552,11 +555,12 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		}, inlineActionColumnConfig);
 		
 		if (inlineActionColumnConfig.name === 'crossnav'){
-			
-			if (inlineActionColumnConfig.config.target === 'new') {
-				inlineActionColumnConfig.imgSrc = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images['cross_detail'];	
-			} else {
-				inlineActionColumnConfig.imgSrc = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images['popup_detail'];	
+			// for default
+			inlineActionColumnConfig.imgSrc = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images['cross_detail'];
+			if (inlineActionColumnConfig.config){			
+				if (inlineActionColumnConfig.config.target === 'self') {					
+					inlineActionColumnConfig.imgSrc = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images['popup_detail'];	
+				}
 			}
 			inlineActionColumnConfig.handler = this.execCrossNav;
 			inlineActionColumn = new Sbi.console.InlineActionColumn(inlineActionColumnConfig);
@@ -610,6 +614,12 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			inlineActionColumnConfig.imgSrc = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images
 			inlineActionColumnConfig.handler = this.stopProcess;
 			inlineActionColumn = new Sbi.console.InlineActionColumn(inlineActionColumnConfig);
+			
+		}else if (inlineActionColumnConfig.name === 'informationlog'){			
+			inlineActionColumnConfig.imgSrc = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images
+			inlineActionColumnConfig.handler = this.downloadLogs;			
+			inlineActionColumn = new Sbi.console.InlineActionColumn(inlineActionColumnConfig);
+			
 		}else {
 			
 			inlineActionColumnConfig.imgSrc = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images

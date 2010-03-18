@@ -78,6 +78,7 @@ Sbi.template = {
         		, rangeMaxValue: 120 
         		, stepY: 40
         		, domainValueNumber: 18
+        		, fields: ['EffortIndex', 'Competitiveness']
             }
         } ,  {
         	dataset: 'testConsLiveLine'
@@ -233,8 +234,9 @@ Sbi.template = {
 		    	    }
 	    	        ]
 	    	    } //filterBar   
-	    	     
+	    	    
 		        , inlineCharts: [
+		                         /*
 						{ 
 								type: 'bar'
 								, column: 'chart_store_cost'
@@ -247,6 +249,7 @@ Sbi.template = {
 								, threshold: '25'
 								, tooltip: 'superata la soglia di 25 errori'
 							}
+		                         */
 		            	]
 			
 		            	, inlineActions: [
@@ -297,7 +300,7 @@ Sbi.template = {
 								  , dynamicParams: [{
 									 'alarms_check': 'alarms_check'  //value: logical name
 									, scope: 'dataset'
-									},{ID: 'id'  					   //value: logical name
+									},{ID: 'id'  					 //value: logical name
 									, scope: 'dataset'
 									}]
 								 , metaParams: {queryParams: [{"name":"alarms_check","type":"num"},{"name":"id","type":"num"}]}
@@ -307,7 +310,12 @@ Sbi.template = {
 								, hidden: false
 								, flagColumn: 'errors_flag'
 								, tooltip: 'Download log files'
-								, config: {}
+								, config: {
+											staticParams: {											
+															DIRECTORY: 'D:/Progetti/eBam/Test'		
+														  ,	PREFIX: 'U'																			 														 													    			     									
+														 }															
+								}
 							}, { 
 								name: 'crossnav'
 								, hidden: false

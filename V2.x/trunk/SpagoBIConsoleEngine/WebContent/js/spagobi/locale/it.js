@@ -59,3 +59,9 @@ Sbi.locale.ln['sbi.console.messagewin.info.title'] = 'Informazione';
 
 Sbi.locale.ln['sbi.console.detailpage.title'] = 'Dettaglio Pagina';
 Sbi.locale.ln['sbi.console.consolepanel.title'] = 'Console';
+
+Sbi.locale.ln['sbi.console.downloadlogs.title'] = 'Specifica i parametri per il download dei files:';
+Sbi.locale.ln['sbi.console.downloadlogs.initialDate'] = 'Data inizio';
+Sbi.locale.ln['sbi.console.downloadlogs.finalDate'] = 'Data fine';
+Sbi.locale.ln['sbi.console.downloadlogs.initialTime'] = 'Ora inizio';
+Sbi.locale.ln['sbi.console.downloadlogs.finalTime'] = 'Ora fine';

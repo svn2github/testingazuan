@@ -214,29 +214,7 @@ public class CommonjDriver extends AbstractDriver implements IEngineDriver {
     	Locale locale = getLocale();
     	map.put("COUNTRY", locale.getCountry());
     	map.put("LANGUAGE", locale.getLanguage());
-//    	ConfigSingleton config = ConfigSingleton.getInstance();
-//    	Locale portalLocale = null;
-//
-//    	SourceBean languageSB = null;
-//    	if (portalLocale != null && portalLocale.getLanguage() != null) {
-//    	    languageSB = (SourceBean) config.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE",
-//    		    "language", portalLocale.getLanguage());
-//    	}
-//
-//    	if (languageSB != null) {
-//    	    map.put(COUNTRY, (String) languageSB.getAttribute("country"));
-//    	    map.put(LANGUAGE, (String) languageSB.getAttribute("language"));
-//    	    logger.debug("Added parameter: country/" + (String) languageSB.getAttribute("country"));
-//    	    logger.debug("Added parameter: language/" + (String) languageSB.getAttribute("language"));
-//    	} else {
-//    	    logger.warn("Language " + portalLocale.getLanguage() + " is not supported by SpagoBI");
-//    	    logger.warn("Portal locale will be replaced with the default lacale (country: US; language: en).");
-//    	    map.put(COUNTRY, "US");
-//    	    map.put(COUNTRY, "en");
-//    	    logger.debug("Added parameter: country/US");
-//    	    logger.debug("Added parameter: language/en");
-//    	}
-//
+
     	logger.debug("OUT");
     	return map;
         }

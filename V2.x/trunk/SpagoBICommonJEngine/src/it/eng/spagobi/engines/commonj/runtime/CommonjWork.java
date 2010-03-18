@@ -55,13 +55,18 @@ public class CommonjWork {
 	String command_environment;
 
 	/** parameters set in template*/
-	String[] cmdParameters;
+	Vector<String> cmdParameters;
+	Vector<String> analyticalParameters;
+	Vector<String> classpathParameters;
 
 	/** map of analyticalDriver from SpagoBIDocument*/
 	Map sbiParametersMap;
 
 	static final String COMMAND="cmd";
 	static final String COMMAND_ENVIRONMENT="cmd_env";
+	static final String SBI_ANALYTICAL_DRIVER="sbi_Analytical_Driver";
+	static final String CMD_PAR="CMD_PAR";
+	static final String CLASSPATH="classpath";
 
 	private static transient Logger logger = Logger.getLogger(CommonjWork.class);
 
@@ -105,39 +110,79 @@ public class CommonjWork {
 			throw new CommonjEngineException("Missing class specification in document template");
 		}
 
+		cmdParameters= new Vector<String>();
+		analyticalParameters=new Vector<String>();
+		classpathParameters=new Vector<String>();
+
 		// check for parameters, in particular cmd and cmd_env
 		SourceBean parametersSB=(SourceBean)workSB.getAttribute("PARAMETERS");
 		if(parametersSB!=null){
 			List parameterList=parametersSB.getAttributeAsList("PARAMETER");
 			if(parameterList!=null){
-				Vector<String> parametersVect=new Vector<String>();
 				for (Iterator iterator = parameterList.iterator(); iterator.hasNext();) {
 					SourceBean parameter = (SourceBean) iterator.next();
 					String name=(String)parameter.getAttribute("name");
 					String value=(String)parameter.getAttribute("value");
+
+					// if it is the command name
 					if(name.equalsIgnoreCase(COMMAND)){
 						logger.debug("command parameter "+value);
 						command=value;				
 					}
-					else
+					else // if it is the command environment
 						if(name.equalsIgnoreCase(COMMAND_ENVIRONMENT)){
 							logger.debug("command environment parameter"+value);
 							command_environment=value;	
 						}
 						else{
 							logger.debug("general parameter"+value);
-							parametersVect.add(value);
+							// if it is a spagobi Analytical driver url name
+							if(name.equalsIgnoreCase(SBI_ANALYTICAL_DRIVER)){
+								analyticalParameters.add(value);
+							}
+							// if it is a classpath variable
+							else if(name.equalsIgnoreCase(CLASSPATH)){
+								classpathParameters.add(value);
+							}
+							else if(name.equalsIgnoreCase(CMD_PAR)){
+								// else it is a command parameter name = value
+								cmdParameters.add(value);
+							}
+
+
+
+
 						}
+
 				}
-				if(parametersVect.size()>0){
-					cmdParameters=new String[parametersVect.size()];
-					int i=0;
-					for (Iterator iterator = parametersVect.iterator(); iterator.hasNext();) {
-						String string = (String) iterator.next();
-						cmdParameters[i]=string;
-						i++;
-					}
-				}
+
+				// Build arrays
+//				if(cmdparametersVect.size()>0){
+//					cmdParameters=new String[cmdparametersVect.size()];
+//					int i=0;
+//					for (Iterator iterator = cmdparametersVect.iterator(); iterator.hasNext();) {
+//						String string = (String) iterator.next();
+//						cmdParameters[i]=string;
+//					}
+//				}
+//				if(analyticalVect.size()>0){
+//					analyticalDriverParameters=new String[analyticalVect.size()];
+//					int i=0;
+//					for (Iterator iterator = analyticalVect.iterator(); iterator.hasNext();) {
+//						String string = (String) iterator.next();
+//						analyticalDriverParameters[i]=string;
+//					}
+//				}
+//				if(classPathVect.size()>0){
+//					classpathParameters=new String[classPathVect.size()];
+//					int i=0;
+//					for (Iterator iterator = classPathVect.iterator(); iterator.hasNext();) {
+//						String string = (String) iterator.next();
+//						classpathParameters[i]=string;
+//					}
+//				}
+				
+				
 			}
 		}
 		logger.debug("OUT");
@@ -213,14 +258,6 @@ public class CommonjWork {
 	}
 
 
-	public String[] getCmdParameters() {
-		return cmdParameters;
-	}
-
-
-	public void setCmdParameters(String[] parameters) {
-		this.cmdParameters = parameters;
-	}
 
 
 
@@ -266,6 +303,37 @@ public class CommonjWork {
 	public void setSbiParametersMap(Map sbiParametersMap) {
 		this.sbiParametersMap = sbiParametersMap;
 	}
+
+
+	public Vector<String> getAnalyticalParameters() {
+		return analyticalParameters;
+	}
+
+
+	public void setAnalyticalParameters(Vector<String> analyticalParameters) {
+		this.analyticalParameters = analyticalParameters;
+	}
+
+
+	public Vector<String> getClasspathParameters() {
+		return classpathParameters;
+	}
+
+
+	public void setClasspathParameters(Vector<String> classpathParameters) {
+		this.classpathParameters = classpathParameters;
+	}
+
+
+	public void setCmdParameters(Vector<String> cmdParameters) {
+		this.cmdParameters = cmdParameters;
+	}
+
+
+	public Vector<String> getCmdParameters() {
+		return cmdParameters;
+	}
+
 
 
 

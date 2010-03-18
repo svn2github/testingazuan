@@ -96,8 +96,6 @@ public class CommonjEngineStartAction extends AbstractEngineStartAction {
 
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws SpagoBIEngineException {
 
-		WorksRepository worksRepository;
-		CommonjWork work;
 
 		logger.debug("IN");
 
@@ -106,7 +104,6 @@ public class CommonjEngineStartAction extends AbstractEngineStartAction {
 			//servletIOManager.auditServiceStartEvent();
 
 			super.service(serviceRequest, serviceResponse);
-			HttpSession session=getHttpSession();
 
 			// get parameters in request
 			Map parameters=getEnv();
@@ -123,7 +120,7 @@ public class CommonjEngineStartAction extends AbstractEngineStartAction {
 			//getAnalytical driver of document with id documentId
 
 			// instantiate a work from template definition
-			work = new CommonjWork( getTemplateAsSourceBean()); 
+			//work = new CommonjWork( getTemplateAsSourceBean()); 
 
 			String parametersString="";
 			for (Iterator iterator = parameters.keySet().iterator(); iterator.hasNext();) {

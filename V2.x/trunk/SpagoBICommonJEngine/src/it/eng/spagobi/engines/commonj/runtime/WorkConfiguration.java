@@ -153,12 +153,16 @@ public class WorkConfiguration {
 					((CmdExecWork)obj).setCommand(work.getCommand());
 					((CmdExecWork)obj).setCommandEnvironment(work.getCommand_environment());
 					((CmdExecWork)obj).setCmdParameters(work.getCmdParameters());			
+					((CmdExecWork)obj).setClasspathParameters(work.getClasspathParameters());
+					workToLaunch.setAnalyticalParameters(work.getAnalyticalParameters());
+					
 				}
 				else
 					if (obj instanceof SpagoBIWork) {
 						logger.debug("Class specified extends Work");
 						workToLaunch=(SpagoBIWork)obj;
 						workToLaunch.setSbiParameters(work.getSbiParametersMap());
+						workToLaunch.setAnalyticalParameters(work.getAnalyticalParameters());
 					}
 
 				container.setPid(work.getPId());

@@ -1,5 +1,11 @@
 package it.eng.spagobi.tools.downloadFiles.service;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.tools.importexport.ImportUtilities;
+import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -17,15 +23,6 @@ import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.DateFormatter;
-
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractHttpAction;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException;
-import it.eng.spagobi.tools.importexport.ImportUtilities;
-import it.eng.spagobi.tools.importexport.services.DownloadFileAction;
-import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
 import org.apache.log4j.Logger;
 
@@ -40,6 +37,7 @@ public class DownloadZipAction extends AbstractHttpAction {
 	public static final String BEGIN_TIME = "BEGIN_TIME";
 	public static final String END_DATE = "END_DATE";
 	public static final String END_TIME = "END_TIME";
+	public static final String PREFIX = "PREFIX";
 
 	public static final String PARAMETERS_DATE_FORMAT="dd/MM";
 	public static final String PARAMETERS_TIME_FORMAT="hh:mm";
@@ -53,36 +51,39 @@ public class DownloadZipAction extends AbstractHttpAction {
 
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		logger.debug("IN");
-			freezeHttpResponse();
-			
-			HttpServletRequest httpRequest = getHttpRequest();
-			HttpServletResponse httpResponse = getHttpResponse();
+		freezeHttpResponse();
+
+		HttpServletRequest httpRequest = getHttpRequest();
+		HttpServletResponse httpResponse = getHttpResponse();
 
 
-			// get Attribute DATE, MINUTE, DIRECTORY
-			String directory = (String) request.getAttribute(DIRECTORY);
+		// get Attribute DATE, MINUTE, DIRECTORY
+		String directory = (String) request.getAttribute(DIRECTORY);
 
-			String beginDate = (String) request.getAttribute(BEGIN_DATE);
-			String beginTime = (String) request.getAttribute(BEGIN_TIME);
-			String endDate = (String) request.getAttribute(END_DATE);
-			String endTime = (String) request.getAttribute(END_TIME);
+		String beginDate = (String) request.getAttribute(BEGIN_DATE);
+		String beginTime = (String) request.getAttribute(BEGIN_TIME);
+		String endDate = (String) request.getAttribute(END_DATE);
+		String endTime = (String) request.getAttribute(END_TIME);
+		String prefix = (String) request.getAttribute(PREFIX);
 
-			// build begin Date			
+		// build begin Date			
 
-			if(directory==null){
-				logger.error("search directory not specified");
-				throw new SpagoBIServiceException(SERVICE_NAME, "Missing directory parameter");
-			}
+		if(directory==null){
+			logger.error("search directory not specified");
+			throw new SpagoBIServiceException(SERVICE_NAME, "Missing directory parameter");
+		}
 
-			if(beginDate==null || beginTime==null){
-				throw new SpagoBIServiceException(SERVICE_NAME, "Missing begin date parameter");
-			}
+		if(beginDate==null || beginTime==null){
+			throw new SpagoBIServiceException(SERVICE_NAME, "Missing begin date parameter");
+		}
 
-			if(endDate==null || endTime==null){
-				throw new SpagoBIServiceException(SERVICE_NAME, "Missing end date parameter");
-			}
+		if(endDate==null || endTime==null){
+			throw new SpagoBIServiceException(SERVICE_NAME, "Missing end date parameter");
+		}
 
-			try {
+		if(prefix == null) prefix = "";
+
+		try {
 
 			// remove / from days name
 			beginDate = beginDate.replaceAll("/", "");
@@ -101,16 +102,18 @@ public class DownloadZipAction extends AbstractHttpAction {
 
 			logger.debug("earch file from begin date " + begin.toString() + " to end date " + end.toString());
 
+			directory=directory.replaceAll("\\\\", "/");
+
 			File dir=new File(directory);
 			if(!dir.isDirectory()){
 				logger.error("Not a valid directory specified");
 				return;
 			}
-			
+
 
 			// get all files that has to be zipped
-			Vector filesToZip = searchDateFiles(dir, begin, end);
-			
+			Vector filesToZip = searchDateFiles(dir, begin, end, prefix);
+
 			Date today=(new Date());
 			DateFormat formatter = new SimpleDateFormat("dd-MMM-yy hh:mm:ss");
 			//date = (Date)formatter.parse("11-June-07");    
@@ -118,7 +121,10 @@ public class DownloadZipAction extends AbstractHttpAction {
 			randomName=randomName.replaceAll(" ", "_");
 			randomName=randomName.replaceAll(":", "-");
 
-			String directoryZip=System.getProperty("java.io.tmpdir");
+			String directoryZip=System.getProperty("java.io.tmpdir");			
+			if (!directoryZip.endsWith(System.getProperty("file.separator"))) {
+				directoryZip += System.getProperty("file.separator");
+			}
 			String fileZip=randomName+".zip";
 			String pathZip=directoryZip+fileZip;
 			pathZip=pathZip.replaceAll("\\\\","/");			
@@ -131,7 +137,7 @@ public class DownloadZipAction extends AbstractHttpAction {
 			createZipFromFiles(filesToZip, pathZip, directory);
 
 			//Vector<File> filesToZip = searchDateFiles(dir, beginDate, endDate)
-			
+
 			manageDownloadZipFile(httpRequest, httpResponse, directoryZip, fileZip);
 
 			//manageDownloadExportFile(httpRequest, httpResponse);
@@ -159,26 +165,26 @@ public class DownloadZipAction extends AbstractHttpAction {
 
 
 //	public void searchDateFiles(Vector<String> vector, File  file, String match){
-//		logger.debug("IN");
-//		if(file.isDirectory() && file.list()!=null && file.list().length!=0){
-//			for (int i = 0; i < file.list().length; i++) {
-//				String childFileName=file.list()[i];
-//				File childFile=new File(file.getAbsolutePath()+"/"+childFileName);
-//				if(!childFile.exists()){
-//					logger.warn(childFile.getName()+" not exists");
-//				}
-//				else{
-//					searchDateFiles(vector, childFile, match);
-//				}
-//			}
-//		}
-//		else{
-//			String fileName=file.getName();
-//			if(fileName.indexOf(match)!=-1){
-//				vector.add(file.getAbsolutePath());
-//			}
-//		}
-//		logger.debug("OUT");
+//	logger.debug("IN");
+//	if(file.isDirectory() && file.list()!=null && file.list().length!=0){
+//	for (int i = 0; i < file.list().length; i++) {
+//	String childFileName=file.list()[i];
+//	File childFile=new File(file.getAbsolutePath()+"/"+childFileName);
+//	if(!childFile.exists()){
+//	logger.warn(childFile.getName()+" not exists");
+//	}
+//	else{
+//	searchDateFiles(vector, childFile, match);
+//	}
+//	}
+//	}
+//	else{
+//	String fileName=file.getName();
+//	if(fileName.indexOf(match)!=-1){
+//	vector.add(file.getAbsolutePath());
+//	}
+//	}
+//	logger.debug("OUT");
 //	}
 
 
@@ -227,8 +233,6 @@ public class DownloadZipAction extends AbstractHttpAction {
 	private void manageDownloadZipFile(HttpServletRequest request, HttpServletResponse response, String folderName, String exportFileName) {
 		logger.debug("IN");
 		try {
-			String importBasePath = ImportUtilities.getImportTempFolderPath();
-			String folderPath = importBasePath + "/" + folderName;
 			String fileExtension = "zip";
 			manageDownload(exportFileName, fileExtension, folderName, response, false);
 		} catch (Exception e) {
@@ -276,12 +280,19 @@ public class DownloadZipAction extends AbstractHttpAction {
 	 * @throws ParseException
 	 */
 
-	static public Date extractDate(String fileName) throws ParseException{
-		// remove first letter
-		fileName = fileName.substring(1);
+	static public Date extractDate(String fileName, String prefix) throws ParseException{
+		// remove prefix
+		//fileName = fileName.substring(1);
+		int prefixToRemove = prefix.length();
+		fileName = fileName.substring(prefixToRemove);
+
 		// remove extension
-		int point=fileName.indexOf('.');
-		fileName = fileName.substring(0, point);
+		// int point=fileName.indexOf('.');
+		// fileName = fileName.substring(0, point);
+		int dateLenghtToRemove = FILES_DATE_FORMAT.length();
+
+		fileName = fileName.substring(0, dateLenghtToRemove);
+
 		java.text.DateFormat myTimeFormat = new java.text.SimpleDateFormat(FILES_DATE_FORMAT);
 		Date timeFile=myTimeFormat.parse(fileName);
 		return timeFile;
@@ -299,15 +310,21 @@ public class DownloadZipAction extends AbstractHttpAction {
 	 * @throws ParseException
 	 */
 
-	static public Vector<File> searchDateFiles(File  dir, Date beginDate, Date endDate) {
+	static public Vector<File> searchDateFiles(File  dir, Date beginDate, Date endDate, String prefix) {
 
 		Vector<File> toReturn=new Vector<File>();
 
 		// if directory ha files 
 		if(dir.isDirectory() && dir.list()!=null && dir.list().length!=0){
-			// get sorted array
-			File[] files=getSortedArray(dir);
 
+//			serach only files starting with prefix
+
+			// get sorted array
+			File[] files=getSortedArray(dir, prefix);
+
+			if (files == null){
+				throw new SpagoBIServiceException(SERVICE_NAME, "Missing file in specified interval");
+			}
 
 			// cycle on all files
 			boolean exceeded = false;
@@ -317,7 +334,7 @@ public class DownloadZipAction extends AbstractHttpAction {
 				// extract date from file Name
 				Date fileDate=null;
 				try {
-					fileDate = extractDate(childFile.getName());
+					fileDate = extractDate(childFile.getName(), prefix);
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					logger.error("error in parsing log file date, file will be ignored!",e);
@@ -349,12 +366,18 @@ public class DownloadZipAction extends AbstractHttpAction {
 	 * 
 	 * @return File[]
 	 */
-	static public final File[] getSortedArray(File directory) {
+	static public final File[] getSortedArray(File directory, String prefix) {
 		File [] allFiles = directory.listFiles();
 		Vector labelFilesVector = new Vector<File>();
 		for (int i = 0; i < allFiles.length; i++) {
 			String fileName = allFiles[i].getName();
-			labelFilesVector.add(allFiles[i]);
+			if(fileName.startsWith(prefix)){
+				labelFilesVector.add(allFiles[i]);
+			}
+		}
+
+		if(labelFilesVector.size() == 0){
+			return null;
 		}
 
 		// I need an array

@@ -72,7 +72,7 @@ Sbi.console.DownloadLogsWindow = function(config) {
 	this.initFormPanel();	
 
 	this.closeButton = new Ext.Button({
-		text: 'Close',
+		text: LN('sbi.console.downloadlogs.btnClose'),
 		handler: function(){
         	this.hide();
         }
@@ -80,7 +80,7 @@ Sbi.console.DownloadLogsWindow = function(config) {
 	});
 	
 	this.downloadButton = new Ext.Button({
-		text: 'Download'
+		text: LN('sbi.console.downloadlogs.btnDownload')
 		, handler: function() {
 			//check parameters
 			if (!this.checkParameters()) { return; }			

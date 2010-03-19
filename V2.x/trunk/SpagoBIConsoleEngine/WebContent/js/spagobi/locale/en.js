@@ -67,3 +67,5 @@ Sbi.locale.ln['sbi.console.downloadlogs.initialDate'] = 'Initial date';
 Sbi.locale.ln['sbi.console.downloadlogs.finalDate'] = 'Final date';
 Sbi.locale.ln['sbi.console.downloadlogs.initialTime'] = 'Initial time';
 Sbi.locale.ln['sbi.console.downloadlogs.finalTime'] = 'Final time';
+Sbi.locale.ln['sbi.console.downloadlogs.btnClose'] = 'Close';
+Sbi.locale.ln['sbi.console.downloadlogs.btnDownload'] = 'Download';

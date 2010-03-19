@@ -204,8 +204,8 @@ Sbi.template = {
     	            	}	    	            
 	    	        }, {
                        name: 'views'
-                   	    , tooltipActive: 'Mark all rows as viewed'    
-   			    	    , tooltipInactive: 	'Mark all rows as not viewed'		   
+                   	    , tooltipActive: 'Mark all rows as not viewed'    
+   			    	    , tooltipInactive: 	'Mark all rows as viewed'		   
    		    	        , checkColumn: 'views_check'	//the column on db that defines if the icon was checked	   						
    	    	            , hidden: false
    	    	            , config: {
@@ -363,8 +363,8 @@ Sbi.template = {
 							},{
 								name: 'monitor'
 								, hidden: false							
-							 	, tooltipActive: 'Disable monitoring'	
-						        , tooltipInactive: 'Enable monitoring' 						    
+							 	, tooltipActive: 'Enable monitoring'	
+						        , tooltipInactive: 'Disable monitoring' 						    
 								, checkColumn: 'monitor_check'								
 								, config: {staticParams: {
 											//generic params for the execution of query on generic db
@@ -383,8 +383,8 @@ Sbi.template = {
 								name: 'views'
 								, hidden: false
 								, checkColumn: 'views_check'
-	      		                , tooltipActive: 'Checked. Click to uncheck'
-		  						, tooltipInactive: 'Unchecked. Click to check'
+	      		                , tooltipInactive: 'Checked. Click to uncheck'
+		  						, tooltipActive: 'Unchecked. Click to check'
 		  							, config: {staticParams: {
 									//generic params for the execution of query on generic db
 									   stmt: 'UPDATE_CHECK_STATE'

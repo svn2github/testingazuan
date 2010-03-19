@@ -224,13 +224,14 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 
     	var isCheck = this.store.getFieldNameByAlias(this.actionConf.checkColumn);
     	if (isCheck !== undefined ){
-    		//checkValue: -1 if all rows are INACTIVE, greater then -1 otherwise
-    		var checkValue = this.store.findExact(isCheck,this.ACTIVE_VALUE);
-    		if (checkValue > -1){  //there's any active --> enable disactive actions
-    			this.setIconClass(this.FILTERBAR_ACTIONS[ this.actionConf.name ].images[ "inactive"]); 
+    		//checkValue: -1 if all rows are ACTIVE, greater then -1 when ther's almost one acitve 
+    		var checkValue = this.store.findExact(isCheck,this.INACTIVE_VALUE);
+    	//	alert(checkValue);
+    		if (checkValue > -1){  //there's any inactive --> enable active actions
+    			this.setIconClass(this.FILTERBAR_ACTIONS[ this.actionConf.name ].images[ "active"]); 
     			this.setTooltip(this.actionConf.tooltipInactive);
     		}else{      		    		
-    			this.setIconClass(this.FILTERBAR_ACTIONS[ this.actionConf.name ].images["active"]); 
+    			this.setIconClass(this.FILTERBAR_ACTIONS[ this.actionConf.name ].images["inactive"]); 
 	    		this.setTooltip(this.actionConf.tooltipActive);    			
     	    }
     	}	

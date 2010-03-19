@@ -125,7 +125,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		, stop: {serviceName: 'STOP_WORK', images: '../img/ico_stop.gif'}
 		, informationlog: {serviceName: 'DOWNLOAD_ZIP', images: '../img/ico_info.gif'}
 		, crossnav: {serviceName: 'CROSS_ACTION', images: {cross_detail: '../img/ico_cross_detail.gif', popup_detail: '../img/ico_popup_detail.gif'}}
-		, monitor: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_monitor.gif', inactive: '../img/ico_monitor_inactive.gif'}}
+		, monitor: {serviceName: 'UPDATE_ACTION', images: {inactive: '../img/ico_monitor.gif', active: '../img/ico_monitor_inactive.gif'}}
 		, errors: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_errors.gif', inactive: '../img/ico_errors_inactive.gif'}} 
 		, alarms: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_warnings.gif', inactive: '../img/ico_warnings_inactive.gif'}}
 		, views: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_views.gif', inactive: '../img/ico_views_inactive.gif'}} 
@@ -250,11 +250,11 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		this.errorWin.reloadMasterList({id: 'Blue Label'});
 		this.errorWin.setTarget(r);
 		if(action.isChecked(r)) {
-			//this.errorWin.checkButton.disable();
-			this.errorWin.checkButton.enable();
-		} else {
-			//this.errorWin.checkButton.enable();
 			this.errorWin.checkButton.disable();
+			//this.errorWin.checkButton.enable();
+		} else {
+			this.errorWin.checkButton.enable();
+			//this.errorWin.checkButton.disable();
 		}
 		this.errorWin.show();
 	}
@@ -274,11 +274,11 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		this.alarmWin.reloadMasterList({id: 'Jeffers'});
 		this.alarmWin.setTarget(r);
 		if(action.isChecked(r)) {
-			//this.alarmWin.checkButton.disable();
-			this.alarmWin.checkButton.enable();
-		} else {
-			//this.alarmWin.checkButton.enable();
 			this.alarmWin.checkButton.disable();
+			//this.alarmWin.checkButton.enable();
+		} else {
+			this.alarmWin.checkButton.enable();
+			//this.alarmWin.checkButton.disable();
 		}
 		this.alarmWin.show();
 	}

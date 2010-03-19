@@ -96,9 +96,9 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
     	}
 
 	    if (this.isChecked(record)) {
-	    	img = '<center><img class="x-mybutton-'+this.id+'" width="13px" height="13px" src="' + this.imgSrcActive + '" title= "' + this.tooltipActive + '"/></center>';
+	    	img = '<center><img class="x-mybutton-'+this.id+'" width="13px" height="13px" src="' + this.imgSrcInactive + '" title= "' + this.tooltipInactive + '"/></center>';
 	    } else {
-	    	img = '<center><img class="x-mybutton-'+this.id+'" width="13px" height="13px" src="' + this.imgSrcInactive + '" title= "' + this.tooltipInactive + '"/></center>';  
+	    	img = '<center><img class="x-mybutton-'+this.id+'" width="13px" height="13px" src="' + this.imgSrcActive + '" title= "' + this.tooltipActive + '"/></center>';  
 	    }	    		
     	
         return img;

@@ -43,6 +43,7 @@ import it.eng.spagobi.engines.commonj.exception.WorkNotFoundException;
 import it.eng.spagobi.engines.commonj.runtime.CommonjWork;
 import it.eng.spagobi.engines.commonj.runtime.WorkConfiguration;
 import it.eng.spagobi.engines.commonj.runtime.WorksRepository;
+import it.eng.spagobi.engines.commonj.utils.ProcessesStatusContainer;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
@@ -131,6 +132,7 @@ public class CommonjEngineStartAction extends AbstractEngineStartAction {
 				}
 			}
 
+			
 			// calculate process Id
 			/*
 			work.calculatePId(documentId, parameters);

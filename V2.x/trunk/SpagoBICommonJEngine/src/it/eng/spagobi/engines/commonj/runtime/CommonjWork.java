@@ -107,7 +107,7 @@ public class CommonjWork {
 		className = (String)workSB.getAttribute("className");
 		if(className == null) {
 			logger.error("Missing class specification in document template");
-			throw new CommonjEngineException("Missing class specification in document template");
+			throw new it.eng.spagobi.engines.commonj.exception.CommonjEngineException("Missing class specification in document template");
 		}
 
 		cmdParameters= new Vector<String>();

@@ -16,6 +16,7 @@ public class ProcessesStatusContainer {
 	public HashMap<String, java.util.Map> pidParametersMap;
 
 	
+	
 	private ProcessesStatusContainer()
 	{
 		pidContainerMap = new HashMap<String, CommonjWorkContainer>();

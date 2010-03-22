@@ -169,7 +169,7 @@ Sbi.template = {
 	    	            	staticParams: {
 							//generic params for the execution of query on generic db
 							   stmt: 'UPDATE_ALL_ERRORS_STATE'
-							 , numPars: '2'			//the number of params in the query							     																																 													    			     									
+							 , numPars: '5'			//the number of params in the query	(number of '?' placeholder)						     																																 													    			     									
 							}
 						  , dynamicParams: [{
 							 'errors_check': 'errors_check'  
@@ -177,8 +177,20 @@ Sbi.template = {
 							},{
 							 'userId': 'userId'  
 							, scope: 'env'
+							},{
+							 'brandname': 'brandname'  
+							, scope: 'env'
+							},{
+							 'productName': 'productName'  
+							, scope: 'env'
+							},{
+							 'column_data': 'column_data'  //data is passed as a string. It's converted into the stmt.
+							, scope: 'env'
 							}]
-						 , metaParams: {queryParams: [{"name":"errors_check","type":"num"},{"name":"userId","type":"string"}]}
+						 , metaParams: {queryParams: [{"name":"errors_check","type":"num"},{"name":"userId","type":"string"},
+						                              {"name":"brandname","type":"string", "default":"%"},
+						                              {"name":"productName","type":"string", "default":"%"}, 
+						                              {"name":"column_data","type":"string", "default":"%"}]}
     	            	}
 	    	        }, {
 	    	            name: 'alarms'
@@ -191,7 +203,7 @@ Sbi.template = {
 	    	            	staticParams: {
 							//generic params for the execution of query on generic db							 							
 							   stmt: 'UPDATE_ALL_ALARMS_STATE'
-							 , numPars: '2'			//the number of params in the query																																	 													    			     									
+							 , numPars: '5'			//the number of params in the query																																	 													    			     									
 							}
 						  , dynamicParams: [{
 							 'alarms_check': 'alarms_check'  //value: label in new request
@@ -199,8 +211,20 @@ Sbi.template = {
 							},{
 							 'userId': 'userId'  
 							, scope: 'env'
+							},{
+							 'brandname': 'brandname'  
+							, scope: 'env'
+							},{
+							 'productName': 'productName'  
+							, scope: 'env'
+							},{
+							 'column_data': 'column_data'  //data is passed as a string. It's converted into the stmt.
+							, scope: 'env'
 							}]
-						 , metaParams: {queryParams: [{"name":"alarms_check","type":"num"},{"name":"userId","type":"string"}]}
+						 , metaParams: {queryParams: [{"name":"alarms_check","type":"num"},{"name":"userId","type":"string"},
+													  {"name":"brandname","type":"string", "default":"%"},
+							                          {"name":"productName","type":"string", "default":"%"}, 
+							                          {"name":"column_data","type":"string", "default":"%"}]}
     	            	}	    	            
 	    	        }, {
                        name: 'views'
@@ -212,7 +236,7 @@ Sbi.template = {
    	    	            	staticParams: {
    							//generic params for the execution of query on generic db
 							   stmt: 'UPDATE_ALL_VIEWING_STATE'
-   							 , numPars: '2'			//the number of params in the query																																	 													    			     									
+   							 , numPars: '5'			//the number of params in the query																																	 													    			     									
    							}
    						  , dynamicParams: [{
    							 'views_check': 'views_check'  //param value: label in new request
@@ -220,8 +244,20 @@ Sbi.template = {
    							},{
    							 'userId': 'userId'  
    							, scope: 'env'
-   							}]
-   						 , metaParams: {queryParams: [{"name":"views_check","type":"num"},{"name":"userId","type":"string"}]}
+   							},{
+   							 'brandname': 'brandname'  
+							, scope: 'env'
+							},{
+							 'productName': 'productName'  
+							, scope: 'env'
+							},{
+							 'column_data': 'column_data'  //data is passed as a string. It's converted into the stmt.
+							, scope: 'env'
+							}]
+   						 , metaParams: {queryParams: [{"name":"views_check","type":"num"},{"name":"userId","type":"string"},
+   						                          	  {"name":"brandname","type":"string", "default":"%"},
+						                              {"name":"productName","type":"string", "default":"%"}, 
+						                              {"name":"column_data","type":"string", "default":"%"}]}
        	            	}	 	                   
 	    	        },{ name: 'monitor'
 		    	        ,  hidden: false
@@ -280,10 +316,13 @@ Sbi.template = {
 								  , dynamicParams: [{
 									 'errors_check': 'errors_check'  //value: logical name
 									, scope: 'dataset'
-									},{ID: 'id'  					   //value: logical name
+									},{ID: 'id'  					//value: logical name
+									, scope: 'dataset'
+									},{'column_data': 'column_data' //value: logical name
 									, scope: 'dataset'
 									}]
-								 , metaParams: {queryParams: [{"name":"errors_check","type":"num"},{"name":"id","type":"num"}]}
+								 , metaParams: {queryParams: [{"name":"errors_check","type":"num"},{"name":"id","type":"num"}
+								 							 ,{"name":"column_data","type":"string", "default":"%"}]}
 								}
 							}, {
 								name: 'alarms'

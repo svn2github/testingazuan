@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engines.console.ConsoleEngineInstance;
 import it.eng.spagobi.services.proxy.DataSetServiceProxy;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
@@ -51,10 +52,11 @@ public class GetWarningListAction extends AbstractConsoleEngineAction {
 	
 	public static final String SERVICE_NAME = "GET_WARNING_LIST";
 	
+	
 	// request parameters
-	public static String ERRORS_DATASET_LABEL = "consoleWarnings";
-	public static String ERRORS_DETAIL_COLUMN = "SKU";
-	public static String ROW_ID = "Jeffers";
+	//public static String ERRORS_DATASET_LABEL = "consoleWarnings";
+	public static String DATASET_LABEL = "ds_label"; 
+	public static String ERRORS_DETAIL_COLUMN = "detailColumn"; //alias for the detail column
 	public static String ID = "id";
 	
 	public static String USER_ID = "userId";
@@ -83,7 +85,10 @@ public class GetWarningListAction extends AbstractConsoleEngineAction {
 			super.service(request,response);
 			consoleEngineInstance = getConsoleEngineInstance();
 		
-			dataSetLabel = ERRORS_DATASET_LABEL;
+			dataSetLabel = getAttributeAsString( DATASET_LABEL );
+			logger.debug("Parameter [" + DATASET_LABEL + "] is equals to [" + dataSetLabel + "]");			
+			Assert.assertTrue(!StringUtilities.isEmpty( dataSetLabel ), "Parameter [" + DATASET_LABEL + "] cannot be null or empty");
+			
 			callback = getAttributeAsString( CALLBACK );
 			logger.debug("Parameter [" + CALLBACK + "] is equals to [" + callback + "]");
 			
@@ -98,8 +103,12 @@ public class GetWarningListAction extends AbstractConsoleEngineAction {
 				throw new SpagoBIServiceException("Impossible to find a dataset whose label is [" + dataSetLabel + "]", t);
 			}
 			Assert.assertNotNull(dataSet, "Impossible to find a dataset whose label is [" + dataSetLabel + "]");
-				
+				/*
 			Map params = new HashMap();
+			params.put("id", rowId);
+			dataSet.setParamsMap(params);
+			*/
+			Map params = consoleEngineInstance.getAnalyticalDrivers();
 			params.put("id", rowId);
 			dataSet.setParamsMap(params);
 			dataSet.setUserProfile((UserProfile)consoleEngineInstance.getEnv().get(EngineConstants.ENV_USER_PROFILE));

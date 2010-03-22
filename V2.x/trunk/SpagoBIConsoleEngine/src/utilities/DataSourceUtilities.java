@@ -122,7 +122,8 @@ public class DataSourceUtilities {
 					Assert.assertTrue(metaParams == null, "Parameter [" + metaParams + "] cannot be null or empty.");					
 				}else{
 					JSONArray queryPars = (JSONArray)metaParams.get("queryParams");
-					for (int j=0; j<queryPars.length(); j++){
+					//for (int j=0; j<queryPars.length(); j++){
+					for (int j=0; j<numPars; j++){
 						JSONObject obj = (JSONObject)queryPars.get(j);
 						String paramType = (String)obj.get("type");
 						String paramName = (String)obj.get("name");

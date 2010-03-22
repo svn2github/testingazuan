@@ -48,6 +48,7 @@ Ext.ns("Sbi.data");
 
 Sbi.data.Store = function(config) {
 	this.alias2NameMap = {};
+	this.dsLabel = config.datasetLabel;
 	
 	if(!config.url) {
 		var serviceConfig;
@@ -65,7 +66,8 @@ Sbi.data.Store = function(config) {
 						
 			config.baseParams = config.baseParams || {};
 			config.baseParams.ds_label = config.datasetLabel;
-			serviceConfig.baseParams = config.baseParams;
+			this.dsLabel = config.baseParams.ds_label;
+			serviceConfig.baseParams = config.baseParams;			
 			delete config.datasetLabel;
 			delete config.baseParams;			
 			
@@ -73,7 +75,7 @@ Sbi.data.Store = function(config) {
 		}	
 	}
 	
-	this.refreshTime = config.refreshTime;
+	this.refreshTime = config.refreshTime;	
 	delete config.refreshTime;
 	
 	Sbi.data.Store.superclass.constructor.call(this, config);
@@ -83,6 +85,7 @@ Ext.extend(Sbi.data.Store, Ext.data.JsonStore, {
     
 	alias2FieldMetaMap: null
 	, refreshTime: null
+	, dsLabel: null
 	
     // -- public methods ----------------------------------------------------------------
     
@@ -124,6 +127,10 @@ Ext.extend(Sbi.data.Store, Ext.data.JsonStore, {
 		});
 	}
     
+	, getDsLabel: function(){
+		return this.dsLabel;
+	}
+	
     // -- private methods ----------------------------------------------------------------
    
     , onMetaChange : function(meta){

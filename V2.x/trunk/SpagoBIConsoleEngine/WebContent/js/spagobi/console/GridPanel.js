@@ -105,6 +105,9 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	, errorWin: null
 	, alarmWin: null
 	, logsWin: null
+	// popup dataset label postfix (the complete name is given by <table_dataset_label><postfix> ie: 'testConsoleErrors')
+	, errorDs: 'Errors'
+	, alarmDs: 'Alarms'
 	
 	// conf bloks
 	, filterBar: null
@@ -118,6 +121,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     	
     , ACTIVE_VALUE: 1
 	, INACTIVE_VALUE: 0
+	
 	
 	
 	, GRID_ACTIONS: {
@@ -239,11 +243,10 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		if(this.errorWin === null) {
 			this.errorWin = new Sbi.console.MasterDetailWindow({
 				serviceName: 'GET_ERROR_LIST_ACTION'
-				, action: action
+			  , action: action				
 			});
 			this.errorWin.on('checked', function(win, record) {
 				this.errorWin.action.toggle(record);
-			//	this.errorWin.checkButton.disable();	
 				this.execAction(this.errorWin.action, record, null, options);
 				if(this.errorWin.action.isChecked(record)) {
 					this.errorWin.checkButton.setText(LN('sbi.console.error.btnSetNotChecked'));
@@ -252,15 +255,16 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 				}				
 			}, this);
 		}
-		this.errorWin.reloadMasterList({id: 'Blue Label'});
+		var params = {};
+		params = this.resolveParameters(options, r, this.executionContext);
+		params.ds_label = this.store.getDsLabel() + this.errorDs;
+		this.errorWin.reloadMasterList(params);
 		this.errorWin.setTarget(r);
 		var isChecked = action.isChecked(r);
 		if(isChecked) {
 			this.errorWin.checkButton.setText(LN('sbi.console.error.btnSetNotChecked'));
-			//this.errorWin.checkButton.disable();
 		} else if(!isChecked){
 			this.errorWin.checkButton.setText(LN('sbi.console.error.btnSetChecked'));
-			//this.errorWin.checkButton.enable();
 		}
 		this.errorWin.show();
 	}
@@ -269,11 +273,10 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		if(this.alarmWin === null) {
 			this.alarmWin = new Sbi.console.MasterDetailWindow({
 				serviceName: 'GET_WARNING_LIST_ACTION'
-				, action: action
+			  , action: action
 			});
 			this.alarmWin.on('checked', function(win, record) {
 				this.alarmWin.action.toggle(record);
-				//this.alarmWin.checkButton.disable();
 				this.execAction(action, record, null, options);
 				if(this.alarmWin.action.isChecked(record)) {
 					this.alarmWin.checkButton.setText(LN('sbi.console.error.btnSetNotChecked'));
@@ -282,14 +285,18 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 				}	
 			}, this);
 		}
-		this.alarmWin.reloadMasterList({id: 'Jeffers'});
+
+		var params = {};
+		params = this.resolveParameters(options, r, this.executionContext);
+		params.ds_label = this.store.getDsLabel() + this.alarmDs;
+		this.alarmWin.reloadMasterList(params);
+		
+		
 		this.alarmWin.setTarget(r);
 		if(action.isChecked(r)) {
 			this.alarmWin.checkButton.setText(LN('sbi.console.error.btnSetNotChecked'));
-			//this.alarmWin.checkButton.disable();
 		} else {
 			this.alarmWin.checkButton.setText(LN('sbi.console.error.btnSetChecked'));
-			//this.alarmWin.checkButton.enable();
 		}
 		this.alarmWin.show();
 	}

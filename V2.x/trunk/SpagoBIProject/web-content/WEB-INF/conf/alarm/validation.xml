@@ -54,7 +54,7 @@
 
 				<FIELD name="mobile" label="mobile">
 					<VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
-					<VALIDATOR validatorName="NUMERIC"/>
+					<VALIDATOR validatorName="REGEXP" arg0="^[0-9/]*$"/>
 				</FIELD>
 				<FIELD name="resources" label="resources">
 					<VALIDATOR validatorName="MAXLENGTH" arg0="200"/>

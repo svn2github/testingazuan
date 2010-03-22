@@ -539,6 +539,10 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 			      				this.rolesStore.add(newRec);  
 			      			}
 			      			this.rolesStore.commitChanges();
+			      			if(roleID != null && roleID !==''){
+								var grid = Ext.getCmp('rolegrid');
+					            grid.getSelectionModel().selectLastRow(true);
+				            }
 			      			
 			      			Ext.MessageBox.show({
 			                        title: LN('sbi.attributes.result'),
@@ -546,9 +550,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 			                        width: 200,
 			                        buttons: Ext.MessageBox.OK
 			                });
-			                
-			                
-			                
+
 			      		}      				 
 
 		      		} else {
@@ -694,6 +696,8 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 										var grid = Ext.getCmp('rolegrid');
 										grid.getSelectionModel().selectRow(0);
 										grid.fireEvent('rowclick', grid, 0);
+									}else{
+										this.addNewRole();
 									}
 								} else {
 									Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting Role', 'Service Error');

@@ -524,6 +524,10 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 								this.attributesStore.commitChanges();
 								this.rolesStore.commitChanges();
 								this.usersStore.commitChanges();
+								if(newRec!==null){
+									var grid = Ext.getCmp('usergrid');
+						            grid.getSelectionModel().selectLastRow(true);
+					            }
 								Ext.MessageBox.show({
 			                        title: LN('sbi.attributes.result'),
 			                        msg: 'Operation succeded',
@@ -632,6 +636,8 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 									if(this.usersStore.getCount()>0){
 										grid.getSelectionModel().selectRow(0);
 										grid.fireEvent('rowclick', grid, 0);
+									}else{
+										this.addNewUser();
 									}
 								} else {
 									Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting User', 'Service Error');

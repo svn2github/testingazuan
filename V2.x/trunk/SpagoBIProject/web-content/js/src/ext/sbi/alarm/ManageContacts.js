@@ -192,7 +192,7 @@ Ext.extend(Sbi.alarm.ManageContacts, Ext.FormPanel, {
 		             },{
 		            	 maxLength:50,
 		            	 minLength:0,
-		            	 regex : new RegExp("^([0-9])+$", "g"),
+		            	 regex : new RegExp("^([0-9/])+$", "g"),
 		            	 regexText : LN('sbi.alarmcontact.validMobileString'),
 		                 fieldLabel:LN('sbi.alarmcontact.mobile'),
 		                 validationEvent:true,
@@ -439,6 +439,8 @@ Ext.extend(Sbi.alarm.ManageContacts, Ext.FormPanel, {
 										var grid = Ext.getCmp('contactsgrid');
 										grid.getSelectionModel().selectRow(0);
 										grid.fireEvent('rowclick', grid, 0);
+									}else{
+										this.addNewContact();
 									}
 								} else {
 									Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting Contact', 'Service Error');

@@ -252,6 +252,7 @@ Sbi.locale.ln['sbi.alarms.contacts'] = 'Contacts';
 Sbi.locale.ln['sbi.alarms.kpiInstanceIdHeader'] = 'Kpi Instance Id';
 Sbi.locale.ln['sbi.alarms.kpiModelHeader'] = 'Model Instance Node';
 Sbi.locale.ln['sbi.alarms.kpiNameHeader'] = 'Kpi Name';
+Sbi.locale.ln['sbi.alarms.noThrOrKpiI'] = 'No Threshold and/or Kpi Instance selected do you want to save the alarm anyway?';
 
 // Toolbar 
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Send to';

@@ -98,6 +98,9 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 	}
    
     // public methods
+
+	//This method search the dynamic parameter value before in the request, if it isn't found it search into filter.
+	//If it isn't found again it shows a message error.
 	, resolveParameters: function(parameters, context) {
 		var results = {};  
 
@@ -110,12 +113,19 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 	      		var param = dynamicParams[i]; 
 	        	for(p in param) { 
 	        		if(p === 'scope') continue;
+	        			//Searchs into request
 	        			if (param.scope === 'env'){ 
-			            	if (p !== this.USER_ID && context[p] === undefined ) {              	 	 	      
-			            		msgErr += 'Parameter "' + p + '" undefined into request. <p>';
+			            	if (p !== this.USER_ID && context[p] === undefined ) {
+			            		//search into filters
+			            		var paramValue = this.store.filterPlugin.getFilter(this.store.getFieldNameByAlias(p)); 
+			            		if (paramValue !== undefined){
+			            			results[param[p]] = paramValue;
+			            		}
+			            		else{
+			            		//	msgErr += 'Parameter "' + p + '" undefined into request or filter. <p>';
+			            		}
 		                    } else {          	 	 		           	 	 		  
 		                    	results[param[p]] = context[p];
-		                    	//alert("" +  param[p] + " " +  context[p]);
 		                    } 	 		 
 	                }          	 	 		   
 	          		    
@@ -134,6 +144,7 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 	    
 	    return results;
 	}
+	
 
     , execAction: function(){
     	
@@ -249,5 +260,6 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     		this.setIconClass(this.FILTERBAR_ACTIONS[ this.actionConf.name ].images[ "active"]); 
     	}
     }
+    
 });
     

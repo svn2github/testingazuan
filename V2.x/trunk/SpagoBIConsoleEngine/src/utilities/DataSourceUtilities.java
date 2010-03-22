@@ -123,10 +123,14 @@ public class DataSourceUtilities {
 				}else{
 					JSONArray queryPars = (JSONArray)metaParams.get("queryParams");
 					for (int j=0; j<queryPars.length(); j++){
-						JSONObject obj = (JSONObject)queryPars.get(j);							
-						String paramName = (String)obj.get("name");
-						String paramValue = (String)params.get(paramName);		
+						JSONObject obj = (JSONObject)queryPars.get(j);
 						String paramType = (String)obj.get("type");
+						String paramName = (String)obj.get("name");
+						String paramValue = (String)params.get(paramName);
+						//if value isn't valorized, checks the defualt (if it's defined into meta section)
+						if (paramValue == null){
+							paramValue =  (String)obj.get("default");
+						}
 						inputParameter.add(dataConnection.createDataField(paramName,getParamType(paramType), paramValue));							
 					}	
 				}

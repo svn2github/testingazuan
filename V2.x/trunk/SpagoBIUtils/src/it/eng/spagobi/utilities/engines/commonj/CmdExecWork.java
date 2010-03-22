@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 public class CmdExecWork extends SpagoBIWork {
 
 	String command;
@@ -15,6 +17,8 @@ public class CmdExecWork extends SpagoBIWork {
 	Vector<String> cmdParameters;
 	/** to be added to classpath*/
 	Vector<String> classpathParameters;
+	/** Logger */
+	static private Logger logger = Logger.getLogger(CmdExecWork.class);
 
 
 
@@ -24,7 +28,9 @@ public class CmdExecWork extends SpagoBIWork {
 	}
 
 	public void release() {
+		logger.debug("IN");
 		super.release();
+		logger.debug("OUT");
 	}
 
 
@@ -42,7 +48,7 @@ public class CmdExecWork extends SpagoBIWork {
 	 */
 
 	public int execCommand() throws InterruptedException, IOException {
-
+		logger.debug("IN");
 		File directoryExec = null;
 		if(commandEnvironment != null) {
 			directoryExec = new File(commandEnvironment);
@@ -90,8 +96,12 @@ public class CmdExecWork extends SpagoBIWork {
 //		Process p = pb.start();
 		Process p = null;
 		if(isRunning()){
+			logger.debug("launch command "+command);
 			p = Runtime.getRuntime().exec(command, null, directoryExec);
 			//p.destroy();
+		}
+		else{
+			logger.warn("Command not launched cause work has been stopper");
 		}
 		//int exitValue = p.exitValue();
 		//p.exitValue();
@@ -103,7 +113,7 @@ public class CmdExecWork extends SpagoBIWork {
 //		p.destroy();
 //		}
 
-
+		logger.debug("OUT");
 		return 0;
 
 	}

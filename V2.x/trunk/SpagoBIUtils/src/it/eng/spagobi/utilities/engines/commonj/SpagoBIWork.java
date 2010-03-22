@@ -4,18 +4,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 import commonj.work.Work;
 
 public class SpagoBIWork implements Work{
-
+	/** pid of the work */ 
 	String pid;
-
+	/** boolean to check to see if work has been stopped, set to false by release method*/
 	boolean running=false;
-
+	/** here are put allr equests parameters */ 
 	Map sbiParameters=new HashMap();
-
-	// names of those in sbiParameters that are analytical drivers
+	/**names of those in sbiParameters that are analytical drivers*/
 	Vector<String> analyticalParameters;
+	/** Logger */
+	static private Logger logger = Logger.getLogger(SpagoBIWork.class);
 
 	public boolean isDaemon() {
 		// TODO Auto-generated method stub

@@ -243,18 +243,24 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			});
 			this.errorWin.on('checked', function(win, record) {
 				this.errorWin.action.toggle(record);
-				this.errorWin.checkButton.disable();
+			//	this.errorWin.checkButton.disable();	
 				this.execAction(this.errorWin.action, record, null, options);
+				if(this.errorWin.action.isChecked(record)) {
+					this.errorWin.checkButton.setText(LN('sbi.console.error.btnSetNotChecked'));
+				} else {
+					this.errorWin.checkButton.setText(LN('sbi.console.error.btnSetChecked'));
+				}				
 			}, this);
 		}
 		this.errorWin.reloadMasterList({id: 'Blue Label'});
 		this.errorWin.setTarget(r);
-		if(action.isChecked(r)) {
-			this.errorWin.checkButton.disable();
-			//this.errorWin.checkButton.enable();
-		} else {
-			this.errorWin.checkButton.enable();
+		var isChecked = action.isChecked(r);
+		if(isChecked) {
+			this.errorWin.checkButton.setText(LN('sbi.console.error.btnSetNotChecked'));
 			//this.errorWin.checkButton.disable();
+		} else if(!isChecked){
+			this.errorWin.checkButton.setText(LN('sbi.console.error.btnSetChecked'));
+			//this.errorWin.checkButton.enable();
 		}
 		this.errorWin.show();
 	}
@@ -267,18 +273,23 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			});
 			this.alarmWin.on('checked', function(win, record) {
 				this.alarmWin.action.toggle(record);
-				this.alarmWin.checkButton.disable();
+				//this.alarmWin.checkButton.disable();
 				this.execAction(action, record, null, options);
+				if(this.alarmWin.action.isChecked(record)) {
+					this.alarmWin.checkButton.setText(LN('sbi.console.error.btnSetNotChecked'));
+				} else {
+					this.alarmWin.checkButton.setText(LN('sbi.console.error.btnSetChecked'));
+				}	
 			}, this);
 		}
 		this.alarmWin.reloadMasterList({id: 'Jeffers'});
 		this.alarmWin.setTarget(r);
 		if(action.isChecked(r)) {
-			this.alarmWin.checkButton.disable();
-			//this.alarmWin.checkButton.enable();
-		} else {
-			this.alarmWin.checkButton.enable();
+			this.alarmWin.checkButton.setText(LN('sbi.console.error.btnSetNotChecked'));
 			//this.alarmWin.checkButton.disable();
+		} else {
+			this.alarmWin.checkButton.setText(LN('sbi.console.error.btnSetChecked'));
+			//this.alarmWin.checkButton.enable();
 		}
 		this.alarmWin.show();
 	}

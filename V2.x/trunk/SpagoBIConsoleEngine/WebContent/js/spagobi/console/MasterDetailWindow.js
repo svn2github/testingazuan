@@ -69,7 +69,7 @@ Sbi.console.MasterDetailWindow = function(config) {
 
 
 	this.okButton = new Ext.Button({
-		text: 'Ok',
+		text: LN('sbi.console.error.btnClose'),
 		handler: function(){
         	this.hide();
         }

@@ -62,6 +62,12 @@ Sbi.locale.ln['sbi.console.messagewin.info.title'] = 'Info message';
 Sbi.locale.ln['sbi.console.detailpage.title'] = 'Detail Page';
 Sbi.locale.ln['sbi.console.consolepanel.title'] = 'Console';
 
+//error / alarms window
+Sbi.locale.ln['sbi.console.error.btnClose'] = 'Close';
+Sbi.locale.ln['sbi.console.error.btnSetChecked'] = 'Marck as checked';
+Sbi.locale.ln['sbi.console.error.btnSetNotChecked'] = 'Mark as not checked';
+
+//download window
 Sbi.locale.ln['sbi.console.downloadlogs.title'] = 'Specify parameters to download log files:';
 Sbi.locale.ln['sbi.console.downloadlogs.initialDate'] = 'Initial date';
 Sbi.locale.ln['sbi.console.downloadlogs.finalDate'] = 'Final date';

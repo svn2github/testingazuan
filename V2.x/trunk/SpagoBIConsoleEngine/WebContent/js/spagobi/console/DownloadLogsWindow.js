@@ -140,12 +140,41 @@ Ext.extend(Sbi.console.DownloadLogsWindow, Ext.Window, {
 			    , cls: 'download-form'
 			});
 		}
+		//call by ajax for test correct file
+		params = Ext.apply(params, {
+  			message: action.name, 
+        	userId: Sbi.user.userId ,
+        	BEGIN_DATE: this.initialDate.value,
+        	END_DATE: this.finalDate.value,
+        	BEGIN_TIME: this.initialTime.value,
+        	END_TIME: this.finalTime.value
+  		}); 
 		
+  		Ext.Ajax.request({
+	       	url: params.URL			       
+	       	, params: params 			       
+	    	, success: function(response, options) {
+	    		if(response !== undefined && response.responseText !== undefined) {														     
+						//call by submit to download really 
+						form.action = params.URL +  '&PREFIX=' + params.PREFIX +  '&DIRECTORY=' + params.DIRECTORY + 
+									  '&BEGIN_DATE=' + this.initialDate.value + '&END_DATE=' + this.finalDate.value + 
+									  '&BEGIN_TIME=' + this.initialTime.value + '&END_TIME=' + this.finalTime.value;
+						form.submit();
+										      		
+    			} else {
+    				Sbi.Msg.showError('Server response is empty', 'Service Error');
+    			}
+	    	}
+	    	, failure: Sbi.exception.ExceptionHandler.onServiceRequestFailure
+	    	, scope: this     
+	    });
+		//call by submit to download really
+  		/*
 		form.action = params.URL +  '&PREFIX=' + params.PREFIX +  '&DIRECTORY=' + params.DIRECTORY + 
 					  '&BEGIN_DATE=' + this.initialDate.value + '&END_DATE=' + this.finalDate.value + 
 					  '&BEGIN_TIME=' + this.initialTime.value + '&END_TIME=' + this.finalTime.value;
 		form.submit();
-	
+	*/
 	}
 
     
@@ -182,6 +211,7 @@ Ext.extend(Sbi.console.DownloadLogsWindow, Ext.Window, {
     	
     	this.formPanel = new  Ext.FormPanel({
     		  title:  LN('sbi.console.downloadlogs.title'),
+    		  margins: '50 50 50 50',
 	          labelAlign: 'left',
 	          bodyStyle:'padding:5px',
 	          width: 850,
@@ -195,27 +225,27 @@ Ext.extend(Sbi.console.DownloadLogsWindow, Ext.Window, {
     
     , checkParameters: function(){
     	if (this.initialDate.getValue() === undefined ||  this.initialDate.getValue() === ''){
-			Sbi.Msg.showWarning('Initial date is mandatory.');
+			Sbi.Msg.showWarning( LN('sbi.console.downloadlogs.initialDateMandatory'));
 			this.initialDate.focus();
 			return false;
 		}
 		if (this.initialTime.getValue() === undefined ||  this.initialTime.getValue() === ''){
-			Sbi.Msg.showWarning('Initial time is mandatory.');
+			Sbi.Msg.showWarning( LN('sbi.console.downloadlogs.initialTimeMandatory'));
 			this.initialTime.focus();
 			return false;
 		}
 		if (this.finalDate.getValue() === undefined ||  this.finalDate.getValue() === ''){
-			Sbi.Msg.showWarning('Final date is mandatory.');
+			Sbi.Msg.showWarning( LN('sbi.console.downloadlogs.finalDateMandatory'));
 			this.finalDate.focus();
 			return false;
 		}
 		if (this.finalTime.getValue() === undefined ||  this.finalTime.getValue() === ''){
-			Sbi.Msg.showWarning('Finale time is mandatory.');
+			Sbi.Msg.showWarning( LN('sbi.console.downloadlogs.finalTimeMandatory'));
 			this.finalTime.focus();
 			return false;
 		}
 		if (this.initialDate.getValue() > this.finalDate.getValue()){
-			Sbi.Msg.showWarning('Invalid range date.');
+			Sbi.Msg.showWarning( LN('sbi.console.downloadlogs.rangeInvalid'));
 			this.initialDate.focus();
 			return false;
 		}

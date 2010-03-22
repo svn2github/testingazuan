@@ -36,7 +36,6 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
     	}else if(v !== this.CHECKED_VALUE && v !== this.UNCHECKED_VALUE) {
     		Sbi.Msg.showError('Column [' + this.checkColumn + '] of dataset [' + s.storeId + '] contains a wrong value [' + v + ']. Impossible to determinate the state of the bounded togle column [' + this.checkColumn + ']');
     	}
-    	
     	return v;
 	}
 	

@@ -800,7 +800,7 @@ Create table SBI_KPI_MODEL_RESOURCES (
 
 Create table SBI_ALARM (
 	ALARM_ID Number(38,0)  NOT NULL ,
-	ID_KPI_INSTANCE Number(38,0)  NOT NULL ,
+	ID_KPI_INSTANCE Number(38,0),
 	MODALITY_ID Number(38,0)  NOT NULL ,
 	DOCUMENT_ID Number(38,0),
 	LABEL Varchar2 (50) NOT NULL,

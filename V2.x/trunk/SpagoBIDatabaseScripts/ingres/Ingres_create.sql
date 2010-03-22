@@ -790,7 +790,7 @@ Primary Key (KPI_MODEL_RESOURCES_ID)
 CREATE SEQUENCE SBI_ALARM_SEQ;\p\g
 Create table SBI_ALARM (
 	ALARM_ID Integer NOT NULL with default next value for SBI_ALARM_SEQ,
-	id_kpi_instance Integer NOT NULL,
+	id_kpi_instance Integer,
 	MODALITY_ID Integer NOT NULL,
 	DOCUMENT_ID Integer,
 	LABEL Varchar(50) NOT NULL,
@@ -800,7 +800,7 @@ Create table SBI_ALARM (
 	URL Varchar(20),
 	SINGLE_EVENT Char(1),
 	AUTO_DISABLED Char(1),
-	id_threshold_value Integer NOT NULL,
+	id_threshold_value Integer,
 UNIQUE(LABEL),	
 Primary Key (ALARM_ID)
 ) ;\p\g

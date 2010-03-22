@@ -4,12 +4,7 @@ package it.eng.spagobi.utilities.engines.commonj;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Vector;
-
-import sun.java2d.pipe.SpanIterator;
-
-import commonj.work.Work;
 
 public class CmdExecWork extends SpagoBIWork {
 
@@ -32,10 +27,7 @@ public class CmdExecWork extends SpagoBIWork {
 		super.release();
 	}
 
-	public void run() {
-		// TODO Auto-generated method stub
 
-	}
 
 
 	/** this method executes command followed by command parameters taken from template
@@ -49,13 +41,12 @@ public class CmdExecWork extends SpagoBIWork {
 	 * @throws IOException
 	 */
 
-	public int execCommand(String cmd, File envFile) throws InterruptedException, IOException {
+	public int execCommand() throws InterruptedException, IOException {
 
-		File directoryExec = new File(commandEnvironment);
-
-		// build command
-		String commandToLaunch = command;
-
+		File directoryExec = null;
+		if(commandEnvironment != null) {
+			directoryExec = new File(commandEnvironment);
+		}
 		// add -cp 
 		if(classpathParameters.size()>0){
 			command += " -cp ";
@@ -82,54 +73,41 @@ public class CmdExecWork extends SpagoBIWork {
 			String url= (String) iterator.next();
 			if (sbiParameters.get(url) != null){
 				Object value = sbiParameters.get(url);
-				command += " " + url + "=" + value +" "; 
+				command += url + "=" + value +" "; 
 			}
 		}
 
 
-		ProcessBuilder pb = new ProcessBuilder(command);
-		Map<String, String> env = pb.environment();
+//		ProcessBuilder pb = new ProcessBuilder(command);
+//		pb.directory(envFile);
+//		Map<String, String> env = pb.environment();
 
 		//env.put("Var1", "myValue");
 		//env.remove("OTHERVAR");
 		//env.put("VAR2", env.get("VAR1") + "suffix");
 
-		pb.directory(envFile);
 
-		//Process p = pb.start();
-
-		Process p = Runtime.getRuntime().exec(command, null, envFile);
-		
-		int exitValue = p.exitValue();
+//		Process p = pb.start();
+		Process p = null;
+		if(isRunning()){
+			p = Runtime.getRuntime().exec(command, null, directoryExec);
+			//p.destroy();
+		}
+		//int exitValue = p.exitValue();
 		//p.exitValue();
+		//p.wait(1000);
 
-		return exitValue;
+//		try{
+//		p.waitFor();
+//		}catch(InterruptedException ie){
+//		p.destroy();
+//		}
 
-	}
 
-
-	/*	
-
-	public int execCommand(String cmd, File envFile) throws InterruptedException, IOException {
-		int exitValue;
-		try {
-			Runtime rt = Runtime.getRuntime();
-			String[] pars=null;
-			if(cmdParameters!=null)pars=cmdParameters;
-			Process proc  = rt.exec(cmd, pars, envFile);		
-			proc.waitFor();
-			exitValue=proc.exitValue();
-		} catch (InterruptedException e) {
-			throw(e);			
-		}
-		catch (IOException e) {
-			throw(e);			
-		}
-		return exitValue;
+		return 0;
 
 	}
 
-	 */
 
 	public String getCommand() {
 		return command;

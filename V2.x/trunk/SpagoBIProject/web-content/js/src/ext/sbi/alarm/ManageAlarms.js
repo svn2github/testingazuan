@@ -758,12 +758,16 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 										}
 										this.contactsStore.commitChanges();
 										this.alarmsStore.commitChanges();		
+										if(newRec!==null){
+											var grid = Ext.getCmp('alarmsgrid');
+								            grid.getSelectionModel().selectLastRow(true);
+							            }
 										Ext.MessageBox.show({
 							                        title: LN('sbi.attributes.result'),
 							                        msg: 'Operation succeded',
 							                        width: 200,
 							                        buttons: Ext.MessageBox.OK
-							                });		
+							                });	
 					      			 }
 						      	}else{
 						      		Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
@@ -832,7 +836,12 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 								this.alarmsStore.add(newRec);
 							}
 							this.contactsStore.commitChanges();
-							this.alarmsStore.commitChanges();		
+							this.alarmsStore.commitChanges();	
+							if(newRec!==null){
+								var grid = Ext.getCmp('alarmsgrid');
+					            grid.getSelectionModel().selectLastRow(true);
+				            }
+				            	
 							Ext.MessageBox.show({
 				                        title: LN('sbi.attributes.result'),
 				                        msg: 'Operation succeded',

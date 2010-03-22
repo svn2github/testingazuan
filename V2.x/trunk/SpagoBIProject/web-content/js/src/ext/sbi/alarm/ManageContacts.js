@@ -322,11 +322,8 @@ Ext.extend(Sbi.alarm.ManageContacts, Ext.FormPanel, {
 			newRec.set('name',values['name']);
 			newRec.set('email',values['email']);
 			newRec.set('resources',values['resources']);
-			newRec.set('mobile',values['mobile']);
-
-			
+			newRec.set('mobile',values['mobile']);		
 		}
-
 
      var params = {
      	name : newRec.data.name,
@@ -362,16 +359,17 @@ Ext.extend(Sbi.alarm.ManageContacts, Ext.FormPanel, {
 			      				this.contactsStore.add(newRec);  
 			      			}
 			      			this.contactsStore.commitChanges();
+			      		    if(contactID != null && contactID !==''){
+								var grid = Ext.getCmp('contactsgrid');
+					            grid.getSelectionModel().selectLastRow(true);
+				            }
 			      			
 			      			Ext.MessageBox.show({
 			                        title: LN('sbi.alarmcontact.result'),
 			                        msg: 'Operation succeded',
 			                        width: 200,
 			                        buttons: Ext.MessageBox.OK
-			                });
-			                
-			                
-			                
+			                });    
 			      		}      				 
 
 		      		} else {

@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
@@ -101,11 +102,36 @@ public class QuerableBehaviour extends AbstractDataSetBehaviour {
 			logger.debug("Dataset paramMap [" + getTargetDataSet().getParamsMap() + "]");
 	
 			//check if there are parameters filled
-			if( getTargetDataSet().getParamsMap() != null && !getTargetDataSet().getParamsMap().isEmpty()){
+			//if( getTargetDataSet().getParamsMap() != null && !getTargetDataSet().getParamsMap().isEmpty()){
+			if( getTargetDataSet().getParamsMap() != null){
 				logger.debug("Dataset paramMap contains [" + getTargetDataSet().getParamsMap().size() + "] parameters");
+			
+				// if a parameter has value '' put null!
+				Map parameterValues = getTargetDataSet().getParamsMap();
+				Vector<String> parsToChange = new Vector<String>();
+				
+				for (Iterator iterator = parameterValues.keySet().iterator(); iterator.hasNext();) {
+					String parName = (String) iterator.next();
+					Object val = parameterValues.get(parName);
+					if( val != null && val.equals("")){
+						val = null;
+						parsToChange.add(parName);
+					}
+					//parameterValues.remove(parName);
+					//parameterValues.put(parName, val);
+				}
+				for (Iterator iterator = parsToChange.iterator(); iterator.hasNext();) {
+					String parName = (String) iterator.next();
+					parameterValues.remove(parName);
+					parameterValues.put(parName, null);
+				}
+				
+				
+				
+				
 				try{
 					Map parTypeMap = getParTypeMap(getTargetDataSet());
-					statement = StringUtilities.substituteParametersInString(statement, getTargetDataSet().getParamsMap(), parTypeMap ,false );
+					statement = StringUtilities.substituteDatasetParametersInString(statement, getTargetDataSet().getParamsMap(), parTypeMap ,false );
 				}catch (Exception e) {
 					EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9220);
 					logger.error("Errore nella valorizzazione dei parametri",e);

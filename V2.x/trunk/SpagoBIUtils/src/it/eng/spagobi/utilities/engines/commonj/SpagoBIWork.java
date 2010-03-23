@@ -12,7 +12,7 @@ public class SpagoBIWork implements Work{
 	/** pid of the work */ 
 	String pid;
 	/** boolean to check to see if work has been stopped, set to false by release method*/
-	boolean running=false;
+	volatile boolean running=false;
 	/** here are put allr equests parameters */ 
 	Map sbiParameters=new HashMap();
 	/**names of those in sbiParameters that are analytical drivers*/

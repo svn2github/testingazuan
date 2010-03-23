@@ -63,7 +63,7 @@ Sbi.console.ConsolePanel = function(config) {
 	var datasetsConfig = c.datasets || [];
 	delete c.datasets;
 	
-	var summaryPanelConfig = c.summaryPanel || {};
+	var summaryPanelConfig = c.summaryPanel;
 	delete c.summaryPanel;
 	
 	var detailPanelConfig = c.detailPanel || {};
@@ -74,8 +74,12 @@ Sbi.console.ConsolePanel = function(config) {
 		
 	
 	this.initStoreManager(datasetsConfig);
-	summaryPanelConfig.storeManager = this.storeManager;
-	this.initSummaryPanel(summaryPanelConfig);
+	if (summaryPanelConfig !== undefined){
+		summaryPanelConfig.storeManager = this.storeManager;
+		this.initSummaryPanel(summaryPanelConfig);
+	}else{
+		this.summaryPanel = {};
+	}
 	detailPanelConfig.storeManager = this.storeManager;
 	this.initDetailPanel(detailPanelConfig);
 	

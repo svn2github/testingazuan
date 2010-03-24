@@ -40,6 +40,15 @@ public interface ContentService {
 	 * @return
 	 */
     Content readTemplate(String token,String user,String document,HashMap attributes);  
+
+    
+	/**
+	 * get template by doc label
+	 * @param token
+	 * @return
+	 */
+    Content readTemplateByLabel(String token,String user,String document,HashMap attributes);  
+
     /**
      * 
      * @param token String

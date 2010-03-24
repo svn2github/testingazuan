@@ -126,6 +126,32 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
 	return null;
     }
     
+    
+    /**
+     * Read template by label.
+     * 
+     * @param document String
+     * 
+     * @return Content
+     */
+    public Content readTemplateByLabel(String label,HashMap attributes) {
+	logger.debug("IN.document="+label);
+	if (label==null || label.length()==0){
+	    logger.error("Documenti Label is NULL");
+	    return null;
+	}
+	try {
+	    return lookUp().readTemplateByLabel(readTicket(), userId, label,attributes);
+	} catch (Exception e) {
+	    logger.error("Error during service execution",e);
+
+	}finally{
+	    logger.debug("OUT");
+	}
+	return null;
+    }
+    
+    
     /**
      * Publish template.
      * 

@@ -60,6 +60,9 @@ Sbi.qbe.SelectGridPanel = function(config) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.selectGridPanel);
 	}
 	
+	//alert(Sbi.settings.qbe.selectGridPanel.enableTbAddCalculatedBtn);
+	//alert(Sbi.settings.qbe.selectGridPanel.enableTbAddCalculatedBtn);
+	
 	var c = Ext.apply(defaultSettings, config || {});	
 	Ext.apply(this, c);
 	

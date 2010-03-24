@@ -102,6 +102,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	, selectionModel: null
 	
 	// popup
+	, waitWin: null
 	, errorWin: null
 	, alarmWin: null
 	, logsWin: null
@@ -125,14 +126,14 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	
 	
 	, GRID_ACTIONS: {
-		start: {serviceName: 'START_WORK', images: '../img/ico_start.gif'}
-		, stop: {serviceName: 'STOP_WORK', images: '../img/ico_stop.gif'}
+		start: {serviceName: 'START_WORK', images: {active:'../img/ico_start.gif', inactive:'../img/ico_start_gray.gif'}}
+		, stop: {serviceName: 'STOP_WORK', images: {active:'../img/ico_stop.gif', inactive:'../img/ico_stop_gray.gif'}}
 		, informationlog: {serviceName: 'DOWNLOAD_ZIP', images: '../img/ico_info.gif'}
 		, crossnav: {serviceName: 'CROSS_ACTION', images: {cross_detail: '../img/ico_cross_detail.gif', popup_detail: '../img/ico_popup_detail.gif'}}
-		, monitor: {serviceName: 'UPDATE_ACTION', images: {inactive: '../img/ico_monitor.gif', active: '../img/ico_monitor_inactive.gif'}}
-		, errors: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_errors.gif', inactive: '../img/ico_errors_inactive.gif'}} 
-		, alarms: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_warnings.gif', inactive: '../img/ico_warnings_inactive.gif'}}
-		, views: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_views.gif', inactive: '../img/ico_views_inactive.gif'}} 
+		, monitor: {serviceName: 'UPDATE_ACTION', images: {inactive: '../img/ico_monitor.gif', active: '../img/ico_monitor_gray.gif'}}
+		, errors: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_errors.gif', inactive: '../img/ico_errors_gray.gif'}} 
+		, alarms: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_alarms.gif', inactive: '../img/ico_alarms_gray.gif'}}
+		, views: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_views.gif', inactive: '../img/ico_views_gray.gif'}} 
 		, refresh: {serviceName: 'REFRESH_ACTION', images: '../img/ico_refresh.gif'}
 	}
    
@@ -302,34 +303,88 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	}
 	
 	, startProcess: function(action, r, index, options) {
-		var params = {}; //this.resolveParameters(options, r, this.executionContext);
+		if(action.isChecked(r)) {
+			Sbi.Msg.showWarning('Process is already running');
+			return;
+		}
+	
+		var params = this.resolveParameters(options.document, r, this.executionContext);
 		params = Ext.apply(params, {
         	USER_ID: Sbi.user.userId 
-        	, DOCUMENT_ID: '155'
+        	, DOCUMENT_ID: options.document.label
   		}); 
+		
+		if(this.waitWin === null) {
+			this.waitWin = new Sbi.console.WaitWindow({});
+		}
+		this.waitWin.startingTxt = 'Starting process';
+		this.waitWin.start();
+		this.waitWin.show();
   			 
   		Ext.Ajax.request({
 	       	url: this.services[action.name] 			       
 	       	, params: params 			       
 	    	, success: function(response, options) {
-	    		if(response !== undefined && response.responseText !== undefined) {
-						var content = Ext.util.JSON.decode( response.responseText );
-						if (content !== undefined) {				      			  
-							//alert(content.toSource());
-						}				      		
-    			} else {
-    				Sbi.Msg.showError('Server response is empty', 'Service Error');
-    			}
+  				
+	    		if(!response || !response.responseText) {
+	    			Sbi.Msg.showError('Server response is empty', 'Service Error');
+	    			return;
+	    		}
+  				var content = Ext.util.JSON.decode( response.responseText );
+  				action.setBoundColumnValue(r, content.pid);
+  				this.waitWin.stop('Proecess started succesfully');
+				action.toggle(r);				
 	    	}
-	    	, failure: Sbi.exception.ExceptionHandler.onServiceRequestFailure
+	    	, failure: function(response, options) {
+	    		Sbi.exception.ExceptionHandler.onServiceRequestFailure(response, options);
+	    		this.waitWin.stop('Impossible to start process');
+	    	}
 	    	, scope: this     
 	    });
 		
 	}
 	
 	, stopProcess: function(action, r, index, options) {
-		alert(action.name + ' -> '+ this.services[action.name]);
-		alert(options.toSource());
+		if(action.isChecked(r)) {
+			Sbi.Msg.showWarning('Process is already stopped');
+			return;
+		}
+		
+		var params = this.resolveParameters(options.document, r, this.executionContext);
+		params = Ext.apply(params, {
+        	USER_ID: Sbi.user.userId 
+        	, DOCUMENT_ID: options.document.label
+  		}); 
+		
+		alert(params.toSource());
+		
+		if(this.waitWin === null) {
+			this.waitWin = new Sbi.console.WaitWindow({});
+		}
+		this.waitWin.startingTxt = 'Stopping process';
+		this.waitWin.start();
+		this.waitWin.show();
+		
+		Ext.Ajax.request({
+	       	url: this.services[action.name] 			       
+	       	, params: params 			       
+	    	, success: function(response, options) {
+  				
+	    		if(!response || !response.responseText) {
+	    			Sbi.Msg.showError('Server response is empty', 'Service Error');
+	    			return;
+	    		}
+  				var content = Ext.util.JSON.decode( response.responseText );
+  				action.setBoundColumnValue(r, content.pid);
+  				this.waitWin.stop('Proecess stopped succesfully');
+				action.toggle(r);				
+	    	}
+	    	, failure: function(response, options) {
+	    		Sbi.exception.ExceptionHandler.onServiceRequestFailure(response, options);
+	    		this.waitWin.stop('Impossible to stop process');
+	    	}
+	    	, scope: this     
+	    });
 	}
 	
 	, downloadLogs: function(action, r, index, options) {		
@@ -623,15 +678,55 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			inlineActionColumnConfig.handler = this.execAction;
 			inlineActionColumn = new Sbi.console.InlineToggleActionColumn(inlineActionColumnConfig);	
 			
-		} else if (inlineActionColumnConfig.name === 'start'){			
-			inlineActionColumnConfig.imgSrc = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images
+		} else if (inlineActionColumnConfig.name === 'start'){	
+			inlineActionColumnConfig.imgSrcActive = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images['active'];			
+			inlineActionColumnConfig.imgSrcInactive = this.GRID_ACTIONS[inlineActionColumnConfig.name ].images['inactive'];	
+			inlineActionColumnConfig.toggleOnClick = false;
 			inlineActionColumnConfig.handler = this.startProcess;
-			inlineActionColumn = new Sbi.console.InlineActionColumn(inlineActionColumnConfig);
+			inlineActionColumnConfig.isChecked = function(record) {
+				var v, active;
+				if(this.isBoundToColumn()) {
+					v = this.getBoundColumnValue(record);
+			    	active = (v != 0);
+				}
+				
+				return active;		
+			};
+			inlineActionColumnConfig.setChecked = function(record, b) {
+				var v, s;
+				if(this.isBoundToColumn()) {
+					s = this.grid.store;
+					if(b) {
+						record.set (s.getFieldNameByAlias(this.checkColumn), '34' );
+					}
+				}
+			};
+			inlineActionColumn = new Sbi.console.InlineToggleActionColumn(inlineActionColumnConfig);
 		
 		} else if (inlineActionColumnConfig.name === 'stop'){			
-			inlineActionColumnConfig.imgSrc = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images
+			inlineActionColumnConfig.imgSrcActive = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images['active'];			
+			inlineActionColumnConfig.imgSrcInactive = this.GRID_ACTIONS[inlineActionColumnConfig.name ].images['inactive'];	
+			inlineActionColumnConfig.toggleOnClick = false;
 			inlineActionColumnConfig.handler = this.stopProcess;
-			inlineActionColumn = new Sbi.console.InlineActionColumn(inlineActionColumnConfig);
+			inlineActionColumnConfig.isChecked = function(record) {
+				var v, active;
+				if(this.isBoundToColumn()) {
+					v = this.getBoundColumnValue(record);					
+			    	active = (v == 0);
+				}
+				
+				return active;		
+			};
+			inlineActionColumnConfig.setChecked = function(record, b) {
+				var v, s;
+				if(this.isBoundToColumn()) {
+					s = this.grid.store;
+					if(b) {
+						record.set (s.getFieldNameByAlias(this.checkColumn), 0 );
+					}
+				}
+			};
+			inlineActionColumn = new Sbi.console.InlineToggleActionColumn(inlineActionColumnConfig);
 			
 		}else if (inlineActionColumnConfig.name === 'informationlog'){			
 			inlineActionColumnConfig.imgSrc = this.GRID_ACTIONS[ inlineActionColumnConfig.name ].images

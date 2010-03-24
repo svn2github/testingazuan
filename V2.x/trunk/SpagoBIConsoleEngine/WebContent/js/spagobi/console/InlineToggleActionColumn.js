@@ -33,10 +33,16 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
 		v = record.get(s.getFieldNameByAlias(this.checkColumn));
     	if (v === undefined || v === null) {
     		Sbi.Msg.showError('Impossible to draw toggle column [' + this.dataIndex + ']. Dataset [' + s.storeId + ']does not contain column [' + this.checkColumn + ']');
-    	}else if(v !== this.CHECKED_VALUE && v !== this.UNCHECKED_VALUE) {
+    	} /*else if(v !== this.CHECKED_VALUE && v !== this.UNCHECKED_VALUE) {
     		Sbi.Msg.showError('Column [' + this.checkColumn + '] of dataset [' + s.storeId + '] contains a wrong value [' + v + ']. Impossible to determinate the state of the bounded togle column [' + this.checkColumn + ']');
-    	}
+    	}*/
     	return v;
+	}
+	
+	, setBoundColumnValue: function(record, value) {
+		var s;
+		s = this.grid.store;
+		record.set (s.getFieldNameByAlias(this.checkColumn), value );
 	}
 	
 	
@@ -53,13 +59,8 @@ Ext.extend(Sbi.console.InlineToggleActionColumn, Sbi.console.InlineActionColumn,
 	}
 	
 	, setChecked: function(record, b) {
-		var v, s;
 		if(this.isBoundToColumn()) {
-			s = this.grid.store;
-			
-			v = (b? this.CHECKED_VALUE: this.UNCHECKED_VALUE);			
-			record.set (s.getFieldNameByAlias(this.checkColumn), v );
-            //record.commit();
+			this.setBoundColumnValue(record, (b? this.CHECKED_VALUE: this.UNCHECKED_VALUE));
 		}
 	}
 	

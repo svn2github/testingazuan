@@ -292,14 +292,41 @@ Sbi.template = {
 							{
 								name: 'start'
 								, hidden: false
-								, tooltip: 'Start the process'
-								, config: {}
+								, checkColumn: 'pid'
+								, tooltipActive: 'Click to start the process'
+								, tooltipInactive: 'Process is running ...'
+								, config: {
+									document: 
+							 	 	{
+										label: '155'
+										, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
+										, dynamicParams: [{
+											brandname: 'P1' 
+											, scope: 'dataset'   
+										}, {ID: 'id'  					//value: logical name
+											, scope: 'dataset'
+										}]	 
+									}
+								}
 							}, {
 								name: 'stop'
 								, hidden: false
 								, tooltip: 'Stop the process'
+								, checkColumn: 'pid'
+								, tooltipActive: 'Click to sto the process'
+								, tooltipInactive: 'Process is not running'
 								, config: {
-									params: {}
+									document: 
+							 	 	{
+										label: '155'
+										, dynamicParams: [{
+											ID: 'id'  					//value: logical name
+											, scope: 'dataset'
+										}, {
+											pid: 'PROCESS_ID'
+											, scope: 'dataset'
+										}]	 
+									}
 								}
 							}, {
 								name: 'errors'
@@ -318,11 +345,8 @@ Sbi.template = {
 									, scope: 'dataset'
 									},{ID: 'id'  					//value: logical name
 									, scope: 'dataset'
-									},{'column_data': 'column_data' //value: logical name
-									, scope: 'dataset'
 									}]
-								 , metaParams: {queryParams: [{"name":"errors_check","type":"num"},{"name":"id","type":"num"}
-								 							 ,{"name":"column_data","type":"string", "default":"%"}]}
+								 , metaParams: {queryParams: [{"name":"errors_check","type":"num"},{"name":"id","type":"num"}]}
 								}
 							}, {
 								name: 'alarms'

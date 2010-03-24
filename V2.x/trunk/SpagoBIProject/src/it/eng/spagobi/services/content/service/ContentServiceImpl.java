@@ -86,6 +86,33 @@ public class ContentServiceImpl extends AbstractServiceImpl{
     }
 
     /**
+     * Read template by label.
+     * 
+     * @param token the token
+     * @param user the user
+     * @param document the document
+     * 
+     * @return the content
+     */
+    public Content readTemplateByLabel(String token, String user, String label, HashMap attributes) {
+
+	Monitor monitor =MonitorFactory.start("spagobi.service.content.readTemplate");
+        logger.debug("IN");
+        try {
+            validateTicket(token,user);
+            ContentServiceImplSupplier c=new ContentServiceImplSupplier();
+	    return c.readTemplateByLabel(user, label, attributes);
+	} catch (Exception e) {
+	    logger.error("Exception",e); 
+	    return null;
+	}finally{
+	    monitor.stop();
+	    logger.debug("OUT");
+	}        
+    }
+
+    
+    /**
      * Read sub object content.
      * 
      * @param token the token

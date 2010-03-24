@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 /*
  * Created on 21-giu-2005
  *
@@ -34,6 +34,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjTemplates;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ import org.hibernate.Transaction;
 public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjTemplateDAO {
 
 	static private Logger logger = Logger.getLogger(ObjTemplateDAOHibImpl.class);
-	
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO#loadBIObjectTemplate(java.lang.Integer)
 	 */
@@ -75,8 +76,8 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 		}
 		return objTemp;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO#getBIObjectActiveTemplate(java.lang.Integer)
 	 */
@@ -89,7 +90,7 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 			tx = aSession.beginTransaction();
 			//String hql = "from SbiObjTemplates sot where sot.active=true and sot.sbiObject.biobjId="+biobjId;
 			String hql = "from SbiObjTemplates sot where sot.active=true and sot.sbiObject.biobjId=?";
-			
+
 			Query query = aSession.createQuery(hql);
 			query.setInteger(0, biobjId.intValue());
 			SbiObjTemplates hibObjTemp = (SbiObjTemplates)query.uniqueResult();
@@ -111,8 +112,51 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 		return objTemp;
 	}
 
-	
-	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO#getBIObjectActiveTemplate(java.lang.Integer)
+	 */
+	public ObjTemplate getBIObjectActiveTemplateByLabel(String label) throws EMFInternalError {
+
+
+
+		ObjTemplate objTemp = new ObjTemplate();
+		Session aSession = null;
+		Transaction tx = null;		
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+
+			String hqlObj = "from SbiObjects sot where sot.label=?";
+			Query queryObj = aSession.createQuery(hqlObj);
+			queryObj.setString(0, label);
+			SbiObjects biobj = (SbiObjects)queryObj.uniqueResult();
+			Integer biobjId = biobj.getBiobjId();
+
+			//String hql = "from SbiObjTemplates sot where sot.active=true and sot.sbiObject.biobjId="+biobjId;
+			String hql = "from SbiObjTemplates sot where sot.active=true and sot.sbiObject.biobjId=?";
+
+			Query query = aSession.createQuery(hql);
+			query.setInteger(0, biobjId.intValue());
+			SbiObjTemplates hibObjTemp = (SbiObjTemplates)query.uniqueResult();
+			if(hibObjTemp==null) {
+				objTemp = null;
+			} else {
+				objTemp = toObjTemplate(hibObjTemp);
+			}
+			tx.commit();
+		}catch(HibernateException he){
+			logException(he);
+			if (tx != null) tx.rollback();	
+			throw new EMFInternalError(EMFErrorSeverity.ERROR, "100");  
+		}finally{
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return objTemp;
+	}
+
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO#getBIObjectTemplateList(java.lang.Integer)
 	 */
@@ -125,12 +169,12 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 			tx = aSession.beginTransaction();
 			//String hql = "from SbiObjTemplates sot where sot.sbiObject.biobjId="+biobjId+" order by sot.prog desc";
 			String hql = "from SbiObjTemplates sot where sot.sbiObject.biobjId=? order by sot.prog desc";
-			
+
 			Query query = aSession.createQuery(hql);
 			query.setInteger(0, biobjId.intValue());
 			List result = query.list();
 			Iterator it = result.iterator();
- 			while (it.hasNext()){
+			while (it.hasNext()){
 				templates.add(toObjTemplate((SbiObjTemplates)it.next()));
 			}
 			tx.commit();
@@ -146,8 +190,8 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 		return templates;
 	}
 
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO#getNextProgForTemplate(java.lang.Integer)
 	 */
@@ -161,7 +205,7 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 			//String hql = "select max(sot.prog) as maxprog from SbiObjTemplates sot where sot.sbiObject.biobjId="+biobjId;
 			String hql = "select max(sot.prog) as maxprog from SbiObjTemplates sot where sot.sbiObject.biobjId=?";
 			Query query = aSession.createQuery(hql);
-			
+
 			query.setInteger(0, biobjId.intValue());
 			List result = query.list();
 			Iterator it = result.iterator();
@@ -185,9 +229,9 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 		}
 		return maxProg;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * To obj template.
 	 * 
@@ -238,7 +282,7 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 
 
 	public void insertBIObjectTemplate(ObjTemplate objTemplate)
-			throws EMFUserError, EMFInternalError {
+	throws EMFUserError, EMFInternalError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;		
@@ -249,26 +293,26 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 			SbiBinContents hibBinContent = new SbiBinContents();
 			byte[] bytes = objTemplate.getContent();
 			hibBinContent.setContent(bytes);
-			
+
 			Integer idBin = (Integer) aSession.save(hibBinContent);
 			// recover the saved binary hibernate object
 			hibBinContent = (SbiBinContents) aSession.load(SbiBinContents.class, idBin);
 			// set to not active the current active template
 			String hql = "update SbiObjTemplates sot set sot.active = false where sot.active = true and sot.sbiObject.biobjId=?";
-	        Query query = aSession.createQuery(hql);
-	        query.setInteger(0, objTemplate.getBiobjId().intValue());
-	        try{
-	        	query.executeUpdate();
-	        } catch (Exception e) {
-	            logger.error("Exception",e);
-	        }
-	        // get the next prog for the new template
-	        Integer maxProg = null;
-	        Integer nextProg = null;
-	        
+			Query query = aSession.createQuery(hql);
+			query.setInteger(0, objTemplate.getBiobjId().intValue());
+			try{
+				query.executeUpdate();
+			} catch (Exception e) {
+				logger.error("Exception",e);
+			}
+			// get the next prog for the new template
+			Integer maxProg = null;
+			Integer nextProg = null;
+
 			hql = "select max(sot.prog) as maxprog from SbiObjTemplates sot where sot.sbiObject.biobjId=?";
 			query = aSession.createQuery(hql);
-			
+
 			query.setInteger(0, objTemplate.getBiobjId().intValue());
 			List result = query.list();
 			Iterator it = result.iterator();
@@ -280,29 +324,29 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 			} else {
 				nextProg = new Integer(maxProg.intValue() + 1);
 			}
-	        
-	        // store the object template
+
+			// store the object template
 			SbiObjTemplates hibObjTemplate = new SbiObjTemplates();
-	        //check if id is already defined. In positive case update template else insert a new one
-	         if (objTemplate.getId() != null && objTemplate.getId().compareTo(new Integer("-1")) != 0){
-	        	hibObjTemplate = (SbiObjTemplates)aSession.load(SbiObjTemplates.class, objTemplate.getId());
-	        	hibObjTemplate.setActive(new Boolean(true));
-	         } else {
-	        	hibObjTemplate.setActive(new Boolean(true));
-	     		hibObjTemplate.setCreationDate(new Date());
-	     		hibObjTemplate.setName(objTemplate.getName());
-	     		hibObjTemplate.setProg(nextProg);
-	     		hibObjTemplate.setSbiBinContents(hibBinContent);
-	     		SbiObjects obj = (SbiObjects) aSession.load(SbiObjects.class, objTemplate.getBiobjId());
-	     		hibObjTemplate.setSbiObject(obj);
-	     		// metadata
-	     		String user = objTemplate.getCreationUser();
-	     		if (user == null || user.equals(""))user = obj.getCreationUser();
-	     		hibObjTemplate.setCreationUser(user);
-	     		hibObjTemplate.setDimension(objTemplate.getDimension());
-	     		
-	     		aSession.save(hibObjTemplate);
-	         }
+			//check if id is already defined. In positive case update template else insert a new one
+			if (objTemplate.getId() != null && objTemplate.getId().compareTo(new Integer("-1")) != 0){
+				hibObjTemplate = (SbiObjTemplates)aSession.load(SbiObjTemplates.class, objTemplate.getId());
+				hibObjTemplate.setActive(new Boolean(true));
+			} else {
+				hibObjTemplate.setActive(new Boolean(true));
+				hibObjTemplate.setCreationDate(new Date());
+				hibObjTemplate.setName(objTemplate.getName());
+				hibObjTemplate.setProg(nextProg);
+				hibObjTemplate.setSbiBinContents(hibBinContent);
+				SbiObjects obj = (SbiObjects) aSession.load(SbiObjects.class, objTemplate.getBiobjId());
+				hibObjTemplate.setSbiObject(obj);
+				// metadata
+				String user = objTemplate.getCreationUser();
+				if (user == null || user.equals(""))user = obj.getCreationUser();
+				hibObjTemplate.setCreationUser(user);
+				hibObjTemplate.setDimension(objTemplate.getDimension());
+
+				aSession.save(hibObjTemplate);
+			}
 			tx.commit();
 		} catch(HibernateException he) {
 			logException(he);

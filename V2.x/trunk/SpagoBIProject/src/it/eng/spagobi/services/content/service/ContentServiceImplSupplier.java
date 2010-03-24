@@ -115,6 +115,66 @@ public class ContentServiceImplSupplier {
     }
 
     /**
+     * Read template by label.
+     * 
+     * @param user the user
+     * @param document the document
+     * 
+     * @return the content
+     * 
+     * @throws SecurityException the security exception
+     * @throws EMFUserError the EMF user error
+     * @throws EMFInternalError the EMF internal error
+     */
+    public Content readTemplateByLabel(String user, String label, HashMap parameters) throws SecurityException, EMFUserError, EMFInternalError {
+    	Content content;
+    	BIObject biobj;
+    	
+    	logger.debug("IN");
+		
+    	logger.debug("user: [" + user + "]");
+		logger.debug("document: [" + label + "]");
+		
+		
+		content = new Content();
+		try {
+		    biobj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
+		    // only if the user is not Scheduler or Workflow system user or it is a call to retrieve a subreport, 
+		    //check visibility on document and parameter values
+		    if (!UserProfile.isSchedulerUser(user) && !UserProfile.isWorkflowUser(user)  && !isSubReportCall(biobj, parameters)) {
+		    	checkRequestCorrectness(user, biobj, parameters);
+		    }
+	    	
+		    IObjTemplateDAO tempdao = DAOFactory.getObjTemplateDAO();
+		    ObjTemplate temp = tempdao.getBIObjectActiveTemplate(biobj.getId());
+		    if (temp==null){
+		       logger.warn("The template dor document [" + label + "] is NULL");
+		       throw new SecurityException("The template dor document [" + label + "] is NULL");
+		    } 
+		    byte[] template = temp.getContent();
+	
+		    BASE64Encoder bASE64Encoder = new BASE64Encoder();
+		    content.setContent(bASE64Encoder.encode(template));
+		    logger.debug("template read");
+		    content.setFileName(temp.getName());		    
+		} catch (NumberFormatException e) {
+		    logger.error("NumberFormatException", e);
+		    throw e;
+		} catch (EMFUserError e) {
+		    logger.error("EMFUserError", e);
+		    throw e;
+		} catch (EMFInternalError e) {
+		    logger.error("EMFUserError", e);
+		    throw e;
+		} finally {
+		    logger.debug("OUT");
+		}
+		
+		return content;
+    }
+
+    
+    /**
      * Since SpagoBIJasperReportEngine invokes the readTemplate method also for subreports, subreport parameters are managed by Jasper.
      * In order to understand if the required document is a valid subreport, take a look at execution parameters: the 
      * parameter document should be the document id of the master document and the required document should be a subreport of its.

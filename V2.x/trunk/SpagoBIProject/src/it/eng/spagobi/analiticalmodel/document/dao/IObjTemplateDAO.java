@@ -41,6 +41,19 @@ public interface IObjTemplateDAO {
 	 */
 	public ObjTemplate getBIObjectActiveTemplate(Integer biobjId) throws EMFInternalError; 
 	
+	
+	/**
+	 * Gets the bI object active template starting by document label
+	 * 
+	 * @param biobjLabel the BiObject label
+	 * 
+	 * @return the bI object active template
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
+	public ObjTemplate getBIObjectActiveTemplateByLabel(String label) throws EMFInternalError; 
+
+	
 	/**
 	 * Gets the bI object template list.
 	 * 

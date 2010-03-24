@@ -139,7 +139,7 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 				baseUrl: {
 					contextPath: 'SpagoBICommonJEngine'
 				}
-			    , baseParams: {}
+			    , baseParams: {NEW_SESSION: 'TRUE'}
 			});
 
 			Sbi.config.spagobiServiceRegistry = new Sbi.service.ServiceRegistry({

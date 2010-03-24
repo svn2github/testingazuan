@@ -32,35 +32,32 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.engines.commonj.services;
 
 import java.io.IOException;
-import java.util.Date;
-
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import commonj.work.Work;
 import commonj.work.WorkEvent;
 
 import de.myfoo.commonj.work.FooRemoteWorkItem;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engines.commonj.runtime.CommonjWorkContainer;
-import it.eng.spagobi.engines.commonj.runtime.CommonjWorkListener;
 import it.eng.spagobi.engines.commonj.utils.GeneralUtils;
 import it.eng.spagobi.engines.commonj.utils.ProcessesStatusContainer;
+import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.AbstractEngineAction;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
-import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONFailure;
 import it.eng.spagobi.utilities.service.JSONSuccess;
-import it.eng.spagobi.utilities.threadmanager.WorkManager;
 
 
 public class StopWorkAction extends AbstractEngineAction {
 
+	
+	private static final String PID = "PROCESS_ID";
+	
 	private static transient Logger logger = Logger.getLogger(StopWorkAction.class);
 
 
@@ -72,39 +69,23 @@ public class StopWorkAction extends AbstractEngineAction {
 
 	@Override
 	public void service(SourceBean request, SourceBean response) {
-		logger.debug("IN");
-		super.service(request, response);
+		String pid;
+		JSONObject info;
 		int statusWI;
-		HttpSession session=getHttpSession();
-
-		Object pidO=request.getAttribute("PROCESS_ID");
-		String pid="";
-		if(pidO!=null){
-			pid=pidO.toString();
-
-		}
-		else{   // if pidO not found just return an empty xml Object
-			
-			return;
-			
-		}
 		
-//		get document id, must be		
-//		String document_id=null;
-//		Object document_idO=null;
-		JSONObject info=null;
+		logger.debug("IN");
+		
+		
+		
+		
 		try{
-//			document_idO=request.getAttribute("DOCUMENT_ID");
-//			if(document_idO!=null){
-//				document_id=document_idO.toString();
-//			}
-//			else{
-//				logger.error("Could not retrieve document_id");
-//				throw new SpagoBIEngineServiceException(getActionName(), "could not find document id");
-//			}
-
-			//recover from session
-			//Object o=session.getAttribute("SBI_PROCESS_"+document_id);
+			super.service(request, response);
+			
+			pid = getAttributeAsString( PID );
+			logger.debug("Parameter [" + PID + "] is equals to [" + pid + "]");			
+			Assert.assertTrue(!StringUtilities.isEmpty( pid ), "Parameter [" + PID + "] cannot be null or empty");
+			
+			
 			ProcessesStatusContainer processesStatusContainer = ProcessesStatusContainer.getInstance();
 			Object o=processesStatusContainer.getPidContainerMap().get(pid);
 
@@ -145,8 +126,10 @@ public class StopWorkAction extends AbstractEngineAction {
 			}
 		
 		
-		}	
-		logger.debug("OUT");
+		} finally {
+			logger.debug("OUT");
+		}
+		
 
 	}
 

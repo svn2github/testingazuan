@@ -51,8 +51,10 @@ import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
  */
 public class GenericDriver extends AbstractDriver implements IEngineDriver {
 	
+	private final static String PARAM_NEW_SESSION = "NEW_SESSION";
+	
 	static private Logger logger = Logger.getLogger(GenericDriver.class);
-	 
+	
 		
 	/**
 	 * Returns a map of parameters which will be send in the request to the
@@ -76,7 +78,7 @@ public class GenericDriver extends AbstractDriver implements IEngineDriver {
 		} catch (ClassCastException cce) {
 			logger.error("The parameter is not a BIObject type", cce);
 		} 
-		
+		map.put(PARAM_NEW_SESSION, "TRUE");
 		map = applySecurity(map, profile);
 		map = applyLocale(map);
 		logger.debug("OUT");
@@ -176,6 +178,8 @@ public class GenericDriver extends AbstractDriver implements IEngineDriver {
 		return pars;
 	} 
 	
+	 
+	 
     /**
      * Add into the parameters map the BIObject's BIParameter names and values
      * @param biobj BIOBject to execute

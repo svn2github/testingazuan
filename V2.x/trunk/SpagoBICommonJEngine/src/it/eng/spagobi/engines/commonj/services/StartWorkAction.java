@@ -89,6 +89,7 @@ public class StartWorkAction extends AbstractEngineAction {
 	private Content template;
 	private ContentServiceProxy contentProxy;
 	String documentId;
+	String documentLabel;
 	private String userUniqueIdentifier;
 	private static final BASE64Decoder DECODER = new BASE64Decoder();
 	String userId=null;
@@ -123,19 +124,41 @@ public class StartWorkAction extends AbstractEngineAction {
 				}
 			}
 
-
+			// can take the document id or the document label
 
 			// get DOcument ID
 			Object document_idO=null;
 			document_idO=request.getAttribute("DOCUMENT_ID");
-			documentId=null;
+			documentId = null;
+			documentLabel = null;
 			if(document_idO!=null){
 				documentId=document_idO.toString();
 			}
 			else{
-				documentId="";
-				logger.error("could not retrieve document id");
-				return;
+				logger.warn("could not retrieve document id, check for label");
+
+				Object document_label=null;
+				Object document_labelO=request.getAttribute("DOCUMENT_LABEL");
+				documentLabel=null;
+				if(document_labelO!=null){
+					documentLabel=document_labelO.toString();
+				}
+				else{
+					logger.error("could not retrieve neither document id nor document label, exception!");
+					return;
+				}
+
+			}			
+
+			boolean isLabel = false;
+			String documentUnique = null;
+			if(documentLabel != null){
+				isLabel = true;
+				documentUnique = documentLabel;
+			}
+			else if(documentId != null){
+				isLabel = false;
+				documentUnique = documentId;
 			}
 
 			// get Parameters
@@ -160,7 +183,14 @@ public class StartWorkAction extends AbstractEngineAction {
 
 
 			// calculate process Id
-			String pId=work.calculatePId(documentId, parameters);
+			String pId = null;
+
+			pId = work.calculatePId(documentUnique, parameters);					
+
+
+
+
+
 			logger.debug("process Id is "+pId);
 			work.setSbiParametersMap(parameters);
 
@@ -173,11 +203,14 @@ public class StartWorkAction extends AbstractEngineAction {
 
 			}
 
+
 			// call Work configurqations's configure method
 			try{
 				WorkConfiguration workConfiguration=new WorkConfiguration(worksRepository);
 				if(workConfiguration != null) {
-					workConfiguration.configure(session,work,parameters,documentId);
+
+					workConfiguration.configure(session,work,parameters,documentUnique, isLabel);
+
 				}
 			}
 			catch (Exception e) {
@@ -290,18 +323,22 @@ FUNCTIONS FROM ACTION ENGINE
 			}
 
 			requestParameters = ParametersDecoder.getDecodedRequestParameters(this.getHttpRequest());
-			template = contentProxy.readTemplate(getDocumentId(), requestParameters);
-		}	
-		try {
-			if(template == null)throw new SpagoBIEngineRuntimeException("There are no template associated to document [" + documentId + "]");
-			templateContent = DECODER.decodeBuffer(template.getContent());
-		} catch (Throwable e) {
-			SpagoBIEngineStartupException engineException = new SpagoBIEngineStartupException("COmmonj", "Impossible to get template's content", e);
-			engineException.setDescription("Impossible to get template's content:  " + e.getMessage());
-			engineException.addHint("Check the document's template");
-			throw engineException;
+			if(documentId != null){
+				template = contentProxy.readTemplate(documentId, requestParameters);
+			}
+			else if(documentLabel != null){
+				template = contentProxy.readTemplateByLabel(documentLabel, requestParameters);
+			}	
+			try {
+				if(template == null)throw new SpagoBIEngineRuntimeException("There are no template associated to document [" + documentId + "]");
+				templateContent = DECODER.decodeBuffer(template.getContent());
+			} catch (Throwable e) {
+				SpagoBIEngineStartupException engineException = new SpagoBIEngineStartupException("COmmonj", "Impossible to get template's content", e);
+				engineException.setDescription("Impossible to get template's content:  " + e.getMessage());
+				engineException.addHint("Check the document's template");
+				throw engineException;
+			}
 		}
-
 		return templateContent;
 	}
 

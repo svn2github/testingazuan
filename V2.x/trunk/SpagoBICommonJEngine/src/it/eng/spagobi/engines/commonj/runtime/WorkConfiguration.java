@@ -80,7 +80,7 @@ public class WorkConfiguration {
 	 * @throws WorkExecutionException
 	 */
 
-	public void configure(HttpSession session, CommonjWork work, Map parameters, String documentId)  throws WorkNotFoundException, WorkExecutionException {
+	public void configure(HttpSession session, CommonjWork work, Map parameters, String documentUnique, boolean isLabel)  throws WorkNotFoundException, WorkExecutionException {
 
 		logger.debug("IN");
 
@@ -127,12 +127,20 @@ public class WorkConfiguration {
 			// check if it is already in sessione means it is already running!!
 
 			CommonjWorkContainer container=new CommonjWorkContainer();
-			boolean already=container.isInSession(documentId, session);
-			if(already==false){
+			
+			// no more used check in sesssion!
+			//boolean already=container.isInSession(documentId, session);
+			
+			
+//			if(already==false){
 				CommonjWorkListener listener = new CommonjWorkListener(auditServiceProxy, eventServiceProxy);
 
-				if(documentId!=null){
-					listener.setBiObjectID(documentId);
+				if (documentUnique!=null && isLabel) {
+					listener.setBiObjectLabel(documentUnique);
+				}
+				else if (documentUnique!=null && !isLabel) {
+					listener.setBiObjectID(documentUnique);
+					
 				}
 
 				listener.setExecutionRole(executionRole);
@@ -157,6 +165,7 @@ public class WorkConfiguration {
 					((CmdExecWork)obj).setClasspathParameters(work.getClasspathParameters());
 					workToLaunch.setAnalyticalParameters(work.getAnalyticalParameters());
 					workToLaunch.setSbiParameters(work.getSbiParametersMap());					
+					if(isLabel) workToLaunch.setSbiLabel(documentUnique);
 				}
 				else
 					if (obj instanceof SpagoBIWork) {
@@ -165,6 +174,7 @@ public class WorkConfiguration {
 						workToLaunch.setPid(work.getPId());
 						workToLaunch.setSbiParameters(work.getSbiParametersMap());
 						workToLaunch.setAnalyticalParameters(work.getAnalyticalParameters());
+						if(isLabel) workToLaunch.setSbiLabel(documentUnique);
 					}
 
 				container.setPid(work.getPId());
@@ -180,11 +190,11 @@ public class WorkConfiguration {
 					System.out.println("ID: "+id);
 
 				}
-			}
-			else{
-				System.out.println("Work already running");
-				logger.debug("Work already running");
-			}
+//			}
+//			else{
+//				System.out.println("Work already running");
+//				logger.debug("Work already running");
+//			}
 
 		} catch (Throwable e) {
 			logger.error("An error occurred while starting up execution for work [" + work.getWorkName() + "]");

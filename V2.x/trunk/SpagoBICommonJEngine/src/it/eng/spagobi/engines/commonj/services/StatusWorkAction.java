@@ -102,17 +102,17 @@ public class StatusWorkAction extends AbstractEngineAction {
 		HttpSession session=getHttpSession();
 
 		// Get document id, must find
-		String document_id=null;
-		Object document_idO=null;
-		document_idO=request.getAttribute("DOCUMENT_ID");
-		if(document_idO!=null){
-			document_id=document_idO.toString();
-		}
-		else{
-			document_id="";
-			logger.error("could not retrieve document id");
-			throw new SpagoBIEngineServiceException(getActionName(), "could not find document id");
-		}
+//		String document_id=null;
+//		Object document_idO=null;
+//		document_idO=request.getAttribute("DOCUMENT_ID");
+//		if(document_idO!=null){
+//			document_id=document_idO.toString();
+//		}
+//		else{
+//			document_id="";
+//			logger.error("could not retrieve document id");
+//			throw new SpagoBIEngineServiceException(getActionName(), "could not find document id");
+//		}
 
 		CommonjWorkContainer container=null;
 		ProcessesStatusContainer processesStatusContainer = ProcessesStatusContainer.getInstance();

@@ -52,6 +52,7 @@ public class CommonjWorkListener implements WorkListener {
 	public static final String COMMONJ_ROLES_HANDLER_CLASS_NAME = "it.eng.spagobi.engines.drivers.commonj.CommonjRolesHandler";
 	public static final String COMMONJ_PRESENTAION_HANDLER_CLASS_NAME = "it.eng.spagobi.engines.drivers.commonj.CommonjEventPresentationHandler";
 	public static final String BIOBJECT_ID = "biobjectId";
+	public static final String BIOBJECT_LABEL = "biobjectLabel";
 	public static final String USER_NAME = "userName";
 
 	AuditServiceProxy auditServiceProxy;
@@ -60,6 +61,7 @@ public class CommonjWorkListener implements WorkListener {
 	String workClass;
 	String executionRole;
 	String biObjectID;
+	String biObjectLabel;
 
 
 	private static transient Logger logger = Logger.getLogger(CommonjWorkListener.class);
@@ -202,6 +204,10 @@ public class CommonjWorkListener implements WorkListener {
 		if(biObjectID!=null){
 			startEventParams.put(BIOBJECT_ID, biObjectID);
 		}
+		if(biObjectLabel != null){
+			startEventParams.put(BIOBJECT_LABEL, biObjectLabel);			
+		}
+		
 		String startEventParamsStr = getParamsStr(startEventParams);
 		logger.debug("OUT");
 		return  startEventParamsStr;
@@ -229,6 +235,22 @@ public class CommonjWorkListener implements WorkListener {
 	public void setBiObjectID(String biObjectID) {
 		this.biObjectID = biObjectID;
 	}
+	
+	
+
+
+	public String getBiObjectLabel() {
+		return biObjectLabel;
+	}
+
+
+
+
+	public void setBiObjectLabel(String biObjectLabel) {
+		this.biObjectLabel = biObjectLabel;
+	}
+
+
 
 
 	private String getParamsStr(Map params) {

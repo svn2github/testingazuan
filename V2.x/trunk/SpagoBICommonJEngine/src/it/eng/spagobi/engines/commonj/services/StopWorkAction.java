@@ -90,18 +90,18 @@ public class StopWorkAction extends AbstractEngineAction {
 		}
 		
 //		get document id, must be		
-		String document_id=null;
-		Object document_idO=null;
+//		String document_id=null;
+//		Object document_idO=null;
 		JSONObject info=null;
 		try{
-			document_idO=request.getAttribute("DOCUMENT_ID");
-			if(document_idO!=null){
-				document_id=document_idO.toString();
-			}
-			else{
-				logger.error("Could not retrieve document_id");
-				throw new SpagoBIEngineServiceException(getActionName(), "could not find document id");
-			}
+//			document_idO=request.getAttribute("DOCUMENT_ID");
+//			if(document_idO!=null){
+//				document_id=document_idO.toString();
+//			}
+//			else{
+//				logger.error("Could not retrieve document_id");
+//				throw new SpagoBIEngineServiceException(getActionName(), "could not find document id");
+//			}
 
 			//recover from session
 			//Object o=session.getAttribute("SBI_PROCESS_"+document_id);

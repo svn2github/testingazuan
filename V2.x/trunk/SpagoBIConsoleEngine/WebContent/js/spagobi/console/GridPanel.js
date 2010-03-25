@@ -500,6 +500,8 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		var maxValue = 0;
 		var totValue = 0;
 		
+		if (this.inlineCharts !== undefined || this.inlineCharts === null) return;
+		
 		for(var p = 0, len = this.inlineCharts.length; p < len; p++) {
 			minValue = 0;
 			maxValue = 0;

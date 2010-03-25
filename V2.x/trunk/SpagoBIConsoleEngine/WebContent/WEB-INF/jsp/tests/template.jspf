@@ -13,7 +13,7 @@ Sbi.template = {
         }, {
             id: 'testConsLiveLine'
             , label: 'testConsLiveLine'
-            , refreshTime: 5
+            //, refreshTime: 5
         }, {
             id: 'testConsole'
             , label: 'testConsole'

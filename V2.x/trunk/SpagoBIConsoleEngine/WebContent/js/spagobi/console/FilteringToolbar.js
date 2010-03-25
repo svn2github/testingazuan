@@ -65,7 +65,7 @@ Sbi.console.FilteringToolbar = function(config) {
 	// constructor
 	Sbi.console.FilteringToolbar.superclass.constructor.call(this, c);
     	
-	//	this.addEvents();
+	this.addEvents('beforefilterselect');
 };
 
 Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
@@ -81,7 +81,7 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
     
 	// -- private methods ---------------------------------------------------------------
 	, onRender : function(ct, position) { 
-		Sbi.console.FilteringToolbar.superclass.onRender.call(this, ct, position);
+		Sbi.console.FilteringToolbar.superclass.onRender.call(this, ct, position);		     
 	}
 
 	//adds action buttons
@@ -105,14 +105,14 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	 //defines fields depending from operator type
 	 , createFilterField: function(operator, header, dataIndex){
 		   if (operator === 'EQUALS_TO') {
-			   this.cbStores = this.cbStores || []; 
+			   this.cbStores = this.cbStores || {}; 
 			   var s = new Ext.data.JsonStore({
 				   fields:['name', 'value', 'description'],
 		           data: []
 			   });
 			   this.cbStores[dataIndex] = s;
-		  
-			   this.store.on('load', this.reloadComboStore.createDelegate(this, [dataIndex]), this);
+			 
+			   //this.store.on('load', this.reloadComboStore.createDelegate(this, [dataIndex]), this);
 		     
 			   var combDefaultConfig = {
 					   width: 130,
@@ -135,7 +135,7 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 						   		fn: function(combo, record, index) {
 									var field = combo.index;
 									var exp = record.get(combo.valueField);									
-									this.addFilterGrid(field, exp);	  
+									this.onFilterSelect(field, exp);	  
 								},
 								scope: this
 							}				     					
@@ -151,13 +151,19 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	  
 	 }
 	   
+	 , reloadComboStores: function() {
+		for(var cs in this.cbStores) {
+			this.reloadComboStore(cs);
+		}
+		this.store.filterPlugin.applyFilters();
+	}
 	    
 	 , reloadComboStore: function(dataIdx) {
 		 var distinctValues; 
 		 var data;
       
 		 var s = this.cbStores[dataIdx];
-	   
+		
 		 if(!s) {
 		   Sbi.msg.showError('Impossible to refresh filter associated to column [' + dataIdx + ']');
 		   return;
@@ -165,7 +171,7 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 		 
 		 this.store.clearFilter( true );
 	   
-		 distinctValues = this.store.collect(dataIdx);
+		 distinctValues = this.store.collect(dataIdx, true, true);
 		 data = [];
 	   
 		 //define the empty (for reset) element
@@ -188,17 +194,19 @@ Ext.extend(Sbi.console.FilteringToolbar, Ext.Toolbar, {
 	   	// replace previous records with the new one
 	   	s.loadData(data, false);
 	   	
-	   	this.store.filterPlugin.applyFilters();
-	 }
+	   	//this.store.filterPlugin.applyFilters();
+	}
    
-	//adds the single filter or delete if it's the reset field
-	 , addFilterGrid: function(f, exp){  
-		   if (exp === 'emptyEl'){
-			   this.store.filterPlugin.removeFilter(f);
-		   }else{
+	 //adds the single filter or delete if it's the reset field
+	 , onFilterSelect: function(f, exp) { 
+		 if(this.fireEvent('beforefilterselect', this, f, exp) !== false){	
+			 if (exp === 'emptyEl'){
+				   this.store.filterPlugin.removeFilter(f);
+			 }else{
 			   this.store.filterPlugin.addFilter(f, exp);
-		   }
-		   this.store.filterPlugin.applyFilters();
-	   }
+			 }
+			 this.store.filterPlugin.applyFilters();
+		 }
+	 }
   
 });

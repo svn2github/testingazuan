@@ -81,14 +81,24 @@ Sbi.data.Store = function(config) {
 	Sbi.data.Store.superclass.constructor.call(this, config);
 };
 
-Ext.extend(Sbi.data.Store, Ext.data.JsonStore, {
+//Ext.extend(Sbi.data.Store, Ext.data.JsonStore, {
+Ext.extend(Sbi.data.Store, Ext.ux.data.PagingJsonStore, {	
+	
     
 	alias2FieldMetaMap: null
 	, refreshTime: null
 	, dsLabel: null
 	
     // -- public methods ----------------------------------------------------------------
-    
+	
+	/*
+	, refresh: function() {
+		alert('Super refresh: '  + Sbi.data.Store.superclass.onRender.refresh);
+	 	delete this.store.lastParams;
+	 	this.doLoad(this.cursor);   
+	}
+	*/
+	
 	, getFieldMetaByAlias: function(alias) {
 		// assert
 		if(!this.alias2FieldMetaMap) {

@@ -82,8 +82,13 @@ Ext.extend(Sbi.console.StoreManager, Ext.util.Observable, {
 		if(s.refreshTime) {
 			var task = {
 				run: function(){
+					// if store is paging...
+					if(s.lastParams) {
+						// ...force remote reload
+						delete s.lastParams;
+					}
 					s.load({
-						params: {}, 
+						params: s.pagingParams || {}, 
 						callback: function(){this.ready = true;}, 
 						scope: s, 
 						add: false

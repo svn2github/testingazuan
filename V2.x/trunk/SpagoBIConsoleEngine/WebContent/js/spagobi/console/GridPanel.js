@@ -57,8 +57,9 @@ Sbi.console.GridPanel = function(config) {
 	           	autoFill: true,
 	           	enableRowBody:true,
 	           	showPreview:true
-	      //    ,  stateful: true
 	        }
+			, start: 0
+			, limit: 5
 		};
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.gridPanel) {
@@ -74,11 +75,36 @@ Sbi.console.GridPanel = function(config) {
 		filterConfig.executionContext = c.executionContext;
 		Ext.apply(this, c);
 		
+		
+		
+		
 		this.initServices();
 		this.initStore();		
 		this.initColumnModel();
 		this.initSelectionModel();	
 		this.initFilterBar(filterConfig);
+		this.initPagingBar();
+		
+		
+		this.store.pagingParams = {
+			start: this.start
+			, limit: this.limit
+		};
+		
+		
+		this.pagingBar.on('change', function() {
+			this.store.pagingParams.start = this.pagingBar.cursor;
+		}, this);
+		
+		this.filterBar.on('beforefilterselect', function() {
+			this.pagingBar.moveFirst();
+		}, this);
+		
+		if(this.store.filterPlugin) {
+			this.store.filterPlugin.on('filterschange', function(s, f) {
+				this.pagingBar.onLoad(this.store, [], {params: this.store.pagingParams || {}});
+			}, this);
+		}
 		
 
 		var c = Ext.apply(c, {
@@ -86,6 +112,7 @@ Sbi.console.GridPanel = function(config) {
 			, cm: this.columnModel
 			, sm: this.selectionModel
 			, tbar: this.filterBar
+			, bbar: this.pagingBar
 		});   
 		
 		// constructor
@@ -491,6 +518,14 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			var idx = this.getColumnModel().findColumnIndex(this.store.getFieldNameByAlias(this.inlineCharts[j].column));
 			this.getColumnModel().setRenderer(idx, this.createInlineChartRenderer(this.inlineCharts[j]) );			
 		}
+	}
+	
+	, initPagingBar: function() {
+		this.pagingBar = new Ext.PagingToolbar({
+            pageSize: this.limit,
+            store: this.store,
+            displayInfo: true
+        });
 	}
 	
 	// -- callbacks ---------------------------------------------------------------------------------------------

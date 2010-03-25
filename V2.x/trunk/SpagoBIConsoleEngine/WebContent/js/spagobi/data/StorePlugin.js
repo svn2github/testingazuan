@@ -105,7 +105,9 @@ Ext.extend(Sbi.console.StorePlugin, Ext.util.Observable, {
 			   if(record.data[f] != this.filters[f]) return false;              
 	       }
 	       return true;
-	    }, this);
+	   }, this);
+	   
+	   this.fireEvent('filterschange', this.store, this.filtrs);
 	       	    
    }
    

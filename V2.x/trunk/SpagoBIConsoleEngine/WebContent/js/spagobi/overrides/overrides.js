@@ -36,6 +36,19 @@ Ext.override(Ext.data.JsonReader, {
 */
 
 /* =============================================================================
+ * Force remote loading on refresh button click if the 
+ * store is of tye PagingStore
+============================================================================= */
+Ext.override(Ext.PagingToolbar, {
+	doRefresh: function(){
+		if(this.store.lastParams) {
+			delete this.store.lastParams;
+		}
+		this.doLoad(this.cursor);    
+	}
+});
+
+/* =============================================================================
 * Bug Fix: It is not possible to see the column hide menu when the sortable property
 * is set to false
 * See:

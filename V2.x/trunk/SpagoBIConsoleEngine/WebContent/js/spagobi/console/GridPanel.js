@@ -122,6 +122,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     	
     , ACTIVE_VALUE: 1
 	, INACTIVE_VALUE: 0
+	, USER_ID: 'userId'
 	
 	
 	
@@ -161,7 +162,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 				        	results[param[p]] = record.get(this.store.getFieldNameByAlias(p)); 
 				        }
 		            } else if (param.scope === 'env'){ 
-		            	if (context[p] === undefined) {              	 	 	      
+		            	if (p !== this.USER_ID && context[p] === undefined) {              	 	 	      
 		            		msgErr += 'Parameter "' + p + '" undefined into request. <p>';
 	                    } else {          	 	 		           	 	 		  
 	                    	results[param[p]] = context[p];

@@ -7,7 +7,6 @@ package utilities;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.dbaccess.DataConnectionManager;
 import it.eng.spago.dbaccess.SQLStatements;
 import it.eng.spago.dbaccess.Utils;
 import it.eng.spago.dbaccess.sql.DataConnection;
@@ -30,6 +29,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -129,8 +129,13 @@ public class DataSourceUtilities {
 						String paramName = (String)obj.get("name");
 						String paramValue = (String)params.get(paramName);
 						//if value isn't valorized, checks the defualt (if it's defined into meta section)
-						if (paramValue == null){
-							paramValue =  (String)obj.get("default");
+						if (paramValue == null){ 
+							try{
+								paramValue =  (String)obj.get("default");
+							}catch(JSONException je ){
+								logger.error("param " + paramName + "in JSON template not found. Parameter value is null!");
+								paramValue = null;
+							}
 						}
 						inputParameter.add(dataConnection.createDataField(paramName,getParamType(paramType), paramValue));							
 					}	

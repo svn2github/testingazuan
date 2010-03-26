@@ -156,7 +156,8 @@ Ext.extend(Sbi.console.DownloadLogsWindow, Ext.Window, {
 	    	, success: function(response, options) {
 	    		if(response !== undefined && response.responseText !== undefined) {														     
 						//call by submit to download really 
-						form.action = params.URL +  '&PREFIX=' + params.PREFIX +  '&DIRECTORY=' + params.DIRECTORY + 
+						form.action = params.URL +  '&PREFIX1=' + params.PREFIX1 + '&PREFIX2=' + params.PREFIX2 +
+									  '&DIRECTORY=' + params.DIRECTORY + 
 									  '&BEGIN_DATE=' + this.initialDate.value + '&END_DATE=' + this.finalDate.value + 
 									  '&BEGIN_TIME=' + this.initialTime.value + '&END_TIME=' + this.finalTime.value;
 						form.submit();

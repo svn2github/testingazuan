@@ -78,7 +78,7 @@ Sbi.qbe.commons.Utils = function(){
 		}
 		
 		, randomString: function() {
-			var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+			var chars = "ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
 			var string_length = 8;
 			var randomstring = '';
 			for (var i=0; i<string_length; i++) {

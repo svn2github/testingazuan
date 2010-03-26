@@ -1,15 +1,16 @@
 package it.eng.spagobi.tools.downloadFiles.service;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.tools.importexport.ImportUtilities;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
+import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringBufferInputStream;
+import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,9 +25,10 @@ import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
-public class DownloadZipAction extends AbstractHttpAction {
+public class DownloadZipAction extends AbstractBaseHttpAction{ //AbstractHttpAction {
 
 	static private Logger logger = Logger.getLogger(DownloadZipAction.class);
 
@@ -37,7 +39,8 @@ public class DownloadZipAction extends AbstractHttpAction {
 	public static final String BEGIN_TIME = "BEGIN_TIME";
 	public static final String END_DATE = "END_DATE";
 	public static final String END_TIME = "END_TIME";
-	public static final String PREFIX = "PREFIX";
+	public static final String PREFIX1 = "PREFIX1";
+	public static final String PREFIX2 = "PREFIX2";
 
 	public static final String PARAMETERS_DATE_FORMAT="dd/MM";
 	public static final String PARAMETERS_TIME_FORMAT="hh:mm";
@@ -64,7 +67,8 @@ public class DownloadZipAction extends AbstractHttpAction {
 		String beginTime = (String) request.getAttribute(BEGIN_TIME);
 		String endDate = (String) request.getAttribute(END_DATE);
 		String endTime = (String) request.getAttribute(END_TIME);
-		String prefix = (String) request.getAttribute(PREFIX);
+		String prefix1 = (request.getAttribute(PREFIX1) != null)?(String) request.getAttribute(PREFIX1)+"_": "";
+		String prefix2 = (request.getAttribute(PREFIX2) != null)?(String) request.getAttribute(PREFIX2)+"_": "";
 
 		// build begin Date			
 
@@ -80,8 +84,6 @@ public class DownloadZipAction extends AbstractHttpAction {
 		if(endDate==null || endTime==null){
 			throw new SpagoBIServiceException(SERVICE_NAME, "Missing end date parameter");
 		}
-
-		if(prefix == null) prefix = "";
 
 		try {
 
@@ -112,7 +114,14 @@ public class DownloadZipAction extends AbstractHttpAction {
 
 
 			// get all files that has to be zipped
-			Vector filesToZip = searchDateFiles(dir, begin, end, prefix);
+			Vector filesToZip = searchDateFiles(dir, begin, end, prefix1 + prefix2);
+			if (filesToZip.size() == 0){
+				throw new Exception ("Files not found with these parameters: \n" +
+									 " Directory: " + dir + "\n" +
+									 " Begin date: " + begin + "\n" + 
+									 " End date: " + end + "\n" + 
+									 " Prefix: " + prefix1 + prefix2);
+			}
 
 			Date today=(new Date());
 			DateFormat formatter = new SimpleDateFormat("dd-MMM-yy hh:mm:ss");
@@ -141,10 +150,20 @@ public class DownloadZipAction extends AbstractHttpAction {
 			manageDownloadZipFile(httpRequest, httpResponse, directoryZip, fileZip);
 
 			//manageDownloadExportFile(httpRequest, httpResponse);
-		} catch (Exception e) {
-			logger.error("Error in writing the zip ",e);
-			throw new SpagoBIServiceException(SERVICE_NAME, "Server Error in writing the zip", e);
-
+		} catch (Throwable t) {
+			logger.error("Error in writing the zip ",t);
+			throw new SpagoBIServiceException(SERVICE_NAME, "Error in writing the zip: " + t.getMessage() , t);
+			/* this manage defines a file with the error message and returns it.
+			try{							
+				File file = new File("exception.txt");
+				String text = t.getMessage() + " \n" + (( t.getStackTrace()!=null)?t.getStackTrace():"");
+				FileUtils.writeStringToFile(file, text, "UTF-8");
+				writeBackToClient(file, null, false, "exception.txt", "text/plain");								
+			}catch(Throwable t2){
+				logger.error("Error in defining error file ",t2);
+				throw new SpagoBIServiceException(SERVICE_NAME, "Server Error in writing the zip", t2);
+			}
+			 */
 		}finally {
 			logger.debug("OUT");
 		}

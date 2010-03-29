@@ -90,7 +90,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 				// if it is a document composed download also contained documents
 				if(document.getType().equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITE_TYPE) ){
 					// ask user if wants to download related template
-					boolean downloadContained=MessageDialog.openConfirm(getShell(), "Download contained Documents?", "You have selected a document composition, do qyou want to download contained documents? You will be notified if they already esists in your workspace");	
+					boolean downloadContained=MessageDialog.openQuestion(getShell(), "Download contained Documents?", "You have selected a document composition, do you want to download contained documents? You will be notified if they already esists in your workspace");	
 					if(downloadContained==true){
 						downloadContainedTemplate(document);
 					}
@@ -165,7 +165,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			}
 			if(correctParsing==false){
 				logger.error("error in reading the file searching for document labels ");				
-				MessageDialog.openError(getShell(), "Error", "error in reading template searching for document labels: will not download contained documents");	
+				MessageDialog.openWarning(getShell(), "Warning", "error in reading template searching for document labels: will not download contained documents but ony composed one");	
 				return false;
 			}
 
@@ -184,7 +184,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 
 		} catch (Exception e1) {
 			SpagoBILogger.errorLog("Error in writing the file", e1);
-			MessageDialog.openError(getShell(), "Error", "Error in downloading contained documents");	
+			MessageDialog.openWarning(getShell(), "Warning", "Error in downloading contained documents; will not download contained documents but only composed one");	
 
 			return false;
 		}

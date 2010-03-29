@@ -147,6 +147,11 @@ IWorkbenchPropertyPage {
 		this.noDefaultAndApplyButton();
 		monitor=new ProgressMonitorPart(getShell(), null);
 
+		// if it's not a file don't draw
+		if (!(this.getElement() instanceof IFile)){
+			return null;
+		}
+		
 		IFile file = (IFile) this.getElement();
 		String documentIdS=null;
 		try {

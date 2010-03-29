@@ -89,6 +89,7 @@ Sbi.console.GridPanel = function(config) {
 		this.store.pagingParams = {
 			start: this.start
 			, limit: this.limit
+			, paginator: this.pagingBar
 		};
 		
 		this.pagingBar.refresh.hide();

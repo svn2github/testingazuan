@@ -159,8 +159,17 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
     		this.store.filterPlugin.addFilter(this.store.getFieldNameByAlias(this.actionConf.checkColumn), newFilter);    		
     		this.store.filterPlugin.applyFilters();	   
     		return;
-    	}else if (this.actionConf.name === 'refresh'){    		
-    		this.store.loadStore();    		
+    	}else if (this.actionConf.name === 'refresh'){    	
+    		if(this.store.pagingParams && this.store.pagingParams.paginator) {
+    			if(this.store.lastParams) {
+    				delete this.store.lastParams;
+    			}
+    			var paginator = this.store.pagingParams.paginator;
+    			paginator.doLoad(paginator.cursor); 
+    		} else {
+    			this.store.loadStore();    
+    		}
+    				
     		return;
     	} else if (this.actionConf.name === 'errors' || this.actionConf.name === 'errors_inactive'){  
     		flgCheck = (this.iconCls === 'errors')? this.ACTIVE_VALUE: this.INACTIVE_VALUE;    		    	

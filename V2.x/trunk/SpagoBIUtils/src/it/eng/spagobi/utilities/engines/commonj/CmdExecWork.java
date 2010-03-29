@@ -19,8 +19,8 @@ public class CmdExecWork extends SpagoBIWork {
 	Vector<String> classpathParameters;
 	/** Logger */
 	static private Logger logger = Logger.getLogger(CmdExecWork.class);
-
-
+	/** the process aunche*/
+	Process process = null;
 
 	public boolean isDaemon() {
 		// TODO Auto-generated method stub
@@ -30,6 +30,9 @@ public class CmdExecWork extends SpagoBIWork {
 	public void release() {
 		logger.debug("IN");
 		super.release();
+		if(process != null){
+			process.destroy();
+		}
 		logger.debug("OUT");
 	}
 
@@ -94,11 +97,10 @@ public class CmdExecWork extends SpagoBIWork {
 
 
 //		Process p = pb.start();
-		Process p = null;
+		Process process = null;
 		if(isRunning()){
 			logger.debug("launch command "+command);
-			p = Runtime.getRuntime().exec(command, null, directoryExec);
-			//p.destroy();
+			process = Runtime.getRuntime().exec(command, null, directoryExec);
 		}
 		else{
 			logger.warn("Command not launched cause work has been stopper");

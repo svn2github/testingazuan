@@ -342,7 +342,7 @@ public class DocumentCompositionEditor extends EditorPart {
 		}
 		// Initialize Designer
 		designer.initializeDesigner(documentComposition);
-		SpagoBILogger.infoLog("END: "+DocumentCompositionEditor.class.toString()+" initialize Editor");	
+		SpagoBILogger.infoLog("END: initialize Editor");	
 	}
 
 

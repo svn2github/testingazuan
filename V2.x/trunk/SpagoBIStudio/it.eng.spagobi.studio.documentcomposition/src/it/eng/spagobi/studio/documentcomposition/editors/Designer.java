@@ -524,9 +524,10 @@ public class Designer {
 				continue;
 			}
 
+			String localFileName = "";
 			try{
 				// Recover documentInformations from File
-				String localFileName=document.getLocalFileName();	
+				localFileName=document.getLocalFileName();	
 				MetadataDocument metadataDocument=null;
 				if(localFileName!=null){
 					
@@ -582,8 +583,8 @@ public class Designer {
 			catch (Exception e) {
 				// Error in retrieving the document, download idt again
 				MessageDialog.openError(mainComposite.getShell(), 
-						"Error", "Error in retrieving metadata the file with name "+sbiObjectLabel+", download idt again!");
-				SpagoBILogger.errorLog("END "+Designer.class.toString()+": Initialize designer function: Error in retrieving metadata the file with name "+sbiObjectLabel+", download idt again!",e);
+						"Error", "The file with name "+localFileName+" was not found, download the document with label "+sbiObjectLabel+" or check that in tempate you have the right file name defined");
+				SpagoBILogger.errorLog("END Initialize designer function: Error in retrieving metadata the file with name "+localFileName+", download idt again!",e);
 
 			}
 		}

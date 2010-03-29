@@ -91,7 +91,7 @@ Sbi.console.GridPanel = function(config) {
 			, limit: this.limit
 		};
 		
-		
+		this.pagingBar.refresh.hide();
 		this.pagingBar.on('change', function() {
 			this.store.pagingParams.start = this.pagingBar.cursor;
 		}, this);

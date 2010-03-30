@@ -65,6 +65,7 @@ public class TransformerFrom2_4_0To2_5_0 implements ITransformer {
 			fixKpiModel(conn);
 			fixModelInstance(conn);
 			fixThresholdValue(conn);
+			fixDatasets(conn);
 			conn.commit();
 		} catch (Exception e) {
 			logger.error("Error while changing database", e);	
@@ -120,6 +121,31 @@ public class TransformerFrom2_4_0To2_5_0 implements ITransformer {
 		stmt.execute(sql);
 		sql =  "UPDATE SBI_KPI_MODEL_INST SET MODELUUID=NULL";
 		stmt.executeUpdate(sql);
+		logger.debug("OUT");
+	}
+	
+	/*
+	 * Adjust DataSet Table
+	 * 
+	 * @param conn The jdbc connection to export database
+	 * @throws Exception
+	 */
+	private void fixDatasets(Connection conn) {
+		logger.debug("IN");
+		try {
+			Statement stmt = conn.createStatement();
+	
+			// ALTER TABLE SBI_DATA_SET ADD COLUMN DS_METADATA VARCHAR(2000) DEFAULT NULL;
+			String sql =  "ALTER TABLE SBI_DATA_SET ADD COLUMN DS_METADATA VARCHAR(2000) DEFAULT NULL;";
+			stmt.execute(sql);
+			sql =  "UPDATE SBI_DATA_SET SET DS_METADATA=NULL";
+			stmt.executeUpdate(sql);
+			
+		} catch (SQLException e) {
+			logger.error("Already existent column");
+			e.printStackTrace();
+		}
+
 		logger.debug("OUT");
 	}
 

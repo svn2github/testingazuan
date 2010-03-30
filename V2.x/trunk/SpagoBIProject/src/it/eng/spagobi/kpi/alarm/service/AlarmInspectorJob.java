@@ -60,9 +60,9 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-public class XaltiaAlarmInspectorJob implements Job {
+public class AlarmInspectorJob implements Job {
 
-    static private Logger logger = Logger.getLogger(XaltiaAlarmInspectorJob.class);	
+    static private Logger logger = Logger.getLogger(AlarmInspectorJob.class);	
 	
 	/* (non-Javadoc)
 	 * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)

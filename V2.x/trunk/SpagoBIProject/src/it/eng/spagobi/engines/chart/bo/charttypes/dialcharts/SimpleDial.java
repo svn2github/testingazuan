@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 
 /** Configure and draw a dialChart
  *  * @author Giulio Gavardi
@@ -233,8 +233,8 @@ public class SimpleDial extends DialCharts{
 		logger.debug("out");
 	}
 
-	
-	
+
+
 	/**
 	 * Creates the chart .
 	 * 
@@ -249,7 +249,7 @@ public class SimpleDial extends DialCharts{
 		logger.debug("IN");
 		Dataset dataset=(Dataset)datasets.getDatasets().get("1");
 
-		
+
 		DialPlot plot = new DialPlot();
 		plot.setDataset((ValueDataset)dataset);
 
@@ -282,6 +282,12 @@ public class SimpleDial extends DialCharts{
 		sdb.setGradientPaintTransformer(new StandardGradientPaintTransformer(
 				gradientPaintTransformType));
 		plot.addLayer(sdb);
+
+		if(! ( increment > 0) ){
+			logger.warn("increment cannot be less than 0, put default to 0.1 ");
+			increment=0.1;
+		}
+
 
 		StandardDialScale scale=null;
 		if(!horizontalView){
@@ -320,10 +326,10 @@ public class SimpleDial extends DialCharts{
 		dvi.setFont(new Font(labelsValueStyle.getFontName(), Font.PLAIN, labelsValueStyle.getSize()));
 		dvi.setPaint(labelsValueStyle.getColor());
 		plot.addLayer(dvi);
-		
+
 		JFreeChart chart1 = new JFreeChart(plot);
 		chart1.setBackgroundPaint(color);
-		
+
 		TextTitle title = setStyleTitle(name, styleTitle);
 		chart1.setTitle(title);
 		if(subName!= null && !subName.equals("")){
@@ -331,7 +337,7 @@ public class SimpleDial extends DialCharts{
 			chart1.addSubtitle(subTitle);
 		}
 
-		
+
 		logger.debug("OUT");
 		return chart1;
 	}
@@ -410,18 +416,18 @@ public class SimpleDial extends DialCharts{
 	}
 
 
-	
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#getPossibleChangePars()
 	 */
 	public List getPossibleChangePars() {
 		List l=new Vector();
 		if(!horizontalViewConfigured){
-		l.add(CHANGE_VIEW_HORIZONTAL);}
-		
+			l.add(CHANGE_VIEW_HORIZONTAL);}
+
 		return l;
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#setChangeViewsParameter(java.lang.String, boolean)

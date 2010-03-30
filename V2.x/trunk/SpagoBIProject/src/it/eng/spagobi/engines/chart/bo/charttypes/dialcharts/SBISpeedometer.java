@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.engines.chart.bo.charttypes.dialcharts;
 
 
@@ -110,7 +110,7 @@ public class SBISpeedometer extends DialCharts{
 			else {
 				setMinorTickCount(10);
 			}
-			
+
 			if(confParameters.get("dialtextuse")!=null){	
 				String dialtextusetemp=(String)confParameters.get("dialtextuse");
 				if(dialtextusetemp.equalsIgnoreCase("true")){
@@ -118,7 +118,7 @@ public class SBISpeedometer extends DialCharts{
 				}
 				else dialtextuse = false;
 			}
-			
+
 			if(dialtextuse && confParameters.get("dialtext")!=null){
 				dialtext=(String)confParameters.get("dialtext");
 			}
@@ -174,7 +174,7 @@ public class SBISpeedometer extends DialCharts{
 			setIncrement(Double.valueOf(increment).doubleValue());
 			setMinorTickCount(Integer.valueOf(minorTickCount).intValue());
 
-		
+
 			String intervalsNumber=(String)sbRow.getAttribute("intervals_number");
 			if(intervalsNumber==null || intervalsNumber.equals("") || intervalsNumber.equals("0")){ // if intervals are not specified
 				KpiInterval interval=new KpiInterval();
@@ -217,7 +217,7 @@ public class SBISpeedometer extends DialCharts{
 	public JFreeChart createChart(DatasetMap datasets) {
 		logger.debug("IN");
 		Dataset dataset=(Dataset)datasets.getDatasets().get("1");
-		
+
 		DialPlot plot = new DialPlot();
 		plot.setDataset((ValueDataset)dataset);
 		plot.setDialFrame(new StandardDialFrame());
@@ -230,7 +230,7 @@ public class SBISpeedometer extends DialCharts{
 
 			plot.addLayer(annotation1);
 		}
-		
+
 		DialValueIndicator dvi = new DialValueIndicator(0);
 		dvi.setFont(new Font(labelsValueStyle.getFontName(), Font.PLAIN, labelsValueStyle.getSize()));
 		dvi.setPaint(labelsValueStyle.getColor());
@@ -238,7 +238,19 @@ public class SBISpeedometer extends DialCharts{
 
 		StandardDialScale scale = new StandardDialScale(lower, 
 				upper, -120, -300, 10.0, 4);
+
+		if (!( increment > 0)){
+			logger.warn("increment cannot be less than 0, put default to 0.1");
+			increment = 0.01;
+		}
+
 		scale.setMajorTickIncrement(increment);
+
+//		if (!( minorTickCount > 0)){
+//			logger.warn("minor tick count cannot be less than 0, put default to 1");
+//			minorTickCount = 1;
+//		}
+
 		scale.setMinorTickCount(minorTickCount);
 		scale.setTickRadius(0.88);
 		scale.setTickLabelOffset(0.15);
@@ -279,14 +291,14 @@ public class SBISpeedometer extends DialCharts{
 
 		logger.debug("OUT");
 		JFreeChart chart=new JFreeChart(name, plot);
-		
+
 		TextTitle title = setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
 		if(subName!= null && !subName.equals("")){
 			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
 			chart.addSubtitle(subTitle);
 		}
-		
+
 		chart.setBackgroundPaint(color);
 		return chart;
 	}

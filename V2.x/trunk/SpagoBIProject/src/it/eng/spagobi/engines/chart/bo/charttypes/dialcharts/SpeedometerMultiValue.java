@@ -379,6 +379,12 @@ public class SpeedometerMultiValue extends DialCharts{
 			
 			StandardDialScale scale = new StandardDialScale(lower, 
 					upper, -120, -300, 10.0, 4);
+			
+			if(! ( increment > 0) ){
+				logger.warn("increment cannot be less than 0, put default to 0.1 ");
+				increment=0.1;
+			}
+			
 			scale.setMajorTickIncrement(increment);
 			scale.setMinorTickCount(minorTickCount);
 			scale.setTickRadius(0.88);

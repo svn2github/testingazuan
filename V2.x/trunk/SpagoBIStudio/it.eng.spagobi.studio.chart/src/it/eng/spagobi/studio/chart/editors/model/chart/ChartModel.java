@@ -1032,6 +1032,7 @@ public class ChartModel {
 				if(predefinedValues!=null){
 					par.setPredefinedValues(predefinedValues);
 				}
+
 				if(!confSpecificParametersEditor.containsKey(par)){
 					confSpecificParametersEditor.put(par.getName(), par);
 
@@ -1052,7 +1053,8 @@ public class ChartModel {
 				}
 				else // search in config
 				{
-					parameterNode=configDocument.selectSingleNode("//"+this.type.toUpperCase()+"S/"+this.type.toUpperCase()+"[@name='commons']/CONF/SECTION/PARAMETER[@name='"+par.getName()+"']");
+					//parameterNode=thisDocument.selectSingleNode("//"+this.type.toUpperCase()+"/CONF/PARAMETER[@name='"+par.getName()+"'");	
+					parameterNode=configDocument.selectSingleNode("//"+this.type.toUpperCase()+"S/"+this.type.toUpperCase()+"[@name='"+this.subType+"']/CONF/SECTION/PARAMETER[@name='"+par.getName()+"']");
 					if(parameterNode!=null && parameterNode.valueOf("@defaultValue")!=null){
 						val=parameterNode.valueOf("@defaultValue");
 

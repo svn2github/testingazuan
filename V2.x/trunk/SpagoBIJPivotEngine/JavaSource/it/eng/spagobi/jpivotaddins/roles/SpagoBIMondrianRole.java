@@ -209,7 +209,7 @@ public class SpagoBIMondrianRole implements Role {
 	        		toReturn = false;
 	        	}
 	    	}
-			System.out.println("hasInaccessibleDescendants: returning " + toReturn + " for member " + member);
+	    	logger.debug("hasInaccessibleDescendants: returning " + toReturn + " for member " + member);
         	return toReturn;
 	    }
 	    

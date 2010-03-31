@@ -79,7 +79,7 @@ public class CommonjWorkRunner implements IWorkRunner {
 		File executableWorkDir;    	
 
 		try {
-			logger.debug("Starting run method of work : " +
+			logger.info("Starting run method of work : " +
 					"name = [" + work.getWorkName() + "] ; " +
 					"to start class= [" + work.getClassName() + "] ; ");
 
@@ -122,13 +122,13 @@ public class CommonjWorkRunner implements IWorkRunner {
 			listener.setExecutionRole(executionRole);
 			listener.setWorkName(work.getWorkName());
 			listener.setWorkClass(work.getClassName());
-			logger.debug("Class to run "+work.getClassName());
+			logger.info("Class to run "+work.getClassName());
 
-			logger.debug("listener ready");
+			logger.info("listener ready");
 
 			Class clazz = Thread.currentThread().getContextClassLoader().loadClass(classToLoad);
 			Object obj = clazz.newInstance();
-			logger.debug("class loaded "+classToLoad);
+			logger.info("class loaded "+classToLoad);
 			SpagoBIWork workToLaunch=null;
 			// class loaded could be instance of CmdExecWork o di Work, testa se è il primo, se no è l'altra
 			if (obj instanceof CmdExecWork) {
@@ -192,7 +192,7 @@ public class CommonjWorkRunner implements IWorkRunner {
 			String ext = name.substring(name.lastIndexOf('.')+1, name.length());
 			if(ext.equalsIgnoreCase("jar")){
 				//updateCurrentClassLoader(file);
-				logger.debug("loading file "+file.getName());			
+				logger.info("loading file "+file.getName());			
 				ClassLoader previous = Thread.currentThread().getContextClassLoader();
 				DynamicClassLoader dcl = new DynamicClassLoader(file, previous);
 				Thread.currentThread().setContextClassLoader(dcl);

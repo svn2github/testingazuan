@@ -31,20 +31,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
  **/
 package it.eng.spagobi.utilities;
+
+
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.log4j.Logger;
+
 public class DynamicClassLoader extends URLClassLoader {
 
+	private static transient Logger logger = Logger.getLogger(DynamicClassLoader.class);
+	
 	private ClassLoader parentCL = null;
 	private File jar;
 
@@ -88,7 +90,7 @@ public class DynamicClassLoader extends URLClassLoader {
 		try {
 			classToReturn = super.loadClass(className, resolve);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.debug("Not found class in super.loadClass(), try to find class in JAR file");
 		}
 		if(classToReturn == null) {
 			ZipFile zipFile = null;
@@ -101,7 +103,7 @@ public class DynamicClassLoader extends URLClassLoader {
 				bis = new BufferedInputStream(zipFile.getInputStream(zipEntry));
 				bis.read(res, 0, res.length);
 			} catch (Exception ex) {
-				System.out.println("className: " +  className + " Exception: "+ ex);
+				logger.error("className: " +  className + " Exception: "+ ex);
 			} finally {
 				if (bis!=null) {
 					try {
@@ -126,7 +128,7 @@ public class DynamicClassLoader extends URLClassLoader {
 				if (resolve) 
 					resolveClass(classToReturn);
 			} catch (Throwable ex) {
-				ex.printStackTrace();
+				logger.error(ex);
 				throw new ClassNotFoundException("Impossible to load class " + className, ex);
 			}
 		}

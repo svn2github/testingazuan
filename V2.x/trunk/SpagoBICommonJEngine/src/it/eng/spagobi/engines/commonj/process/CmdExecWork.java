@@ -62,6 +62,7 @@ public class CmdExecWork extends SpagoBIWork {
 		super.release();
 		if(process != null){
 			process.destroy();
+			logger.info("Release the JOB");
 		}
 		logger.debug("OUT");
 	}
@@ -127,11 +128,11 @@ public class CmdExecWork extends SpagoBIWork {
 
 
     	if(isRunning()){
-			logger.debug("launch command "+command);
+			logger.info("launch command "+command);
 			process = Runtime.getRuntime().exec(command, null, directoryExec);
-			logger.debug("Wait for the end of the process... ");
+			logger.info("Wait for the end of the process... ");
 			process.waitFor();
-			logger.debug("Process END "+command);
+			logger.info("Process END "+command);
 		}
 		else{
 			logger.warn("Command not launched cause work has been stopper");

@@ -37,6 +37,7 @@ import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.configuration.IConfigurationCreator;
 import it.eng.spago.dispatching.action.NavigationErrorUtility;
 import it.eng.spago.dispatching.action.SessionExpiredUtility;
 import it.eng.spago.dispatching.coordinator.CoordinatorIFace;
@@ -61,10 +62,12 @@ import it.eng.spago.util.PortletTracer;
 import it.eng.spago.util.Serializer;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.net.URL;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -112,6 +115,11 @@ public class AdapterPortlet extends GenericPortlet {
 	
 	public void init() throws PortletException {
 		super.init();
+
+		ConfigSingleton.setConfigFileName("/WEB-INF/conf/master.xml");
+		ConfigSingleton.setRootPath(getPortletContext().getRealPath(""));
+		ConfigSingleton.setConfigurationCreation(new StreamCreatorConfiguration());
+
 		
 		PortletTracer.info(Constants.NOME_MODULO, "AdapterPortlet", "init", "Invocato");
 		String serializeSessionStr = (String) ConfigSingleton.getInstance().getAttribute(SERIALIZE_SESSION_ATTRIBUTE);
@@ -121,6 +129,46 @@ public class AdapterPortlet extends GenericPortlet {
 		PortletInitializerManager.init();
 	}
 
+	class StreamCreatorConfiguration implements IConfigurationCreator {
+		        
+		    	public InputStream getInputStream(String resourceName) {
+		    		InputStream resourcesStream = null ;
+		    		if (resourceName.indexOf("://") != -1) {
+		    			URL url;
+					try {
+						url = new URL(resourceName);
+						resourcesStream = url.openStream() ;
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+		    		} else {
+			            resourcesStream = getPortletContext().getResourceAsStream(resourceName);
+		    		}
+		            return resourcesStream;
+		    	}
+		
+		        public SourceBean createConfiguration(String configName) throws SourceBeanException {
+		            SourceBean result = null;
+		            InputStream resourcesStream = getInputStream(configName);
+		            
+		            try {
+		                result = SourceBean.fromXMLFile(configName);
+		            }
+		            finally {
+		            	if (resourcesStream != null) {
+		            		try {
+		            			resourcesStream.close();
+		            		} catch (Exception ex) {
+		            			throw new SourceBeanException(ex.getMessage());
+		            		}
+		            	}
+		            }
+		            return result;
+		        }
+		
+		    }
+		
+		 
 	
 	
     public void processAction(

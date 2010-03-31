@@ -31,6 +31,7 @@ import it.eng.spagobi.kpi.alarm.service.AlarmInspectorJob;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import org.apache.log4j.Logger;
 import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -43,6 +44,7 @@ import org.safehaus.uuid.UUIDGenerator;
 public class AlarmQuartzInitializer implements InitializerIFace {
 	
 	private SourceBean _config = null;
+	private transient Logger logger = Logger.getLogger(AlarmQuartzInitializer.class);
 
 	
 	/* (non-Javadoc)
@@ -50,6 +52,7 @@ public class AlarmQuartzInitializer implements InitializerIFace {
 	 */
 	public void init(SourceBean config) {
 	    try{
+	    	logger.debug("IN");
 	    	Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 	    	
 		    JobDataMap data=new JobDataMap();
@@ -65,6 +68,7 @@ public class AlarmQuartzInitializer implements InitializerIFace {
 			jobDetail.setJobDataMap(data);
 			jobDetail.setJobClass(AlarmInspectorJob.class);
 			
+			
 			//scheduler.addJob(jobDetail, true);
 			
 			java.util.Calendar cal = new java.util.GregorianCalendar(2008, Calendar.DECEMBER, 24);
@@ -72,7 +76,6 @@ public class AlarmQuartzInitializer implements InitializerIFace {
 			  cal.set(cal.MINUTE, 00);
 			  cal.set(cal.SECOND, 0);
 			  cal.set(cal.MILLISECOND, 0);
-			  System.out.println(cal.getTime().getTime());
 			  
 			java.util.Calendar cal2 = new java.util.GregorianCalendar(2009, Calendar.DECEMBER, 24);
 				  cal.set(cal.HOUR, 06);
@@ -111,9 +114,11 @@ public class AlarmQuartzInitializer implements InitializerIFace {
 			  simpleTrigger.setMisfireInstruction(SimpleTrigger.INSTRUCTION_RE_EXECUTE_JOB);
 			  
 			scheduler.scheduleJob(jobDetail,simpleTrigger);
+			logger.debug("Added job with name AlarmInspectorJob");
+			logger.debug("OUT");
 	    } catch (Exception e) {
-	    	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-	    			            "init", "Error while initializing scheduler " + e);
+	    	logger.error("Error while initializing scheduler ",e);
+	    	e.printStackTrace();
 	    }
 	}
 	

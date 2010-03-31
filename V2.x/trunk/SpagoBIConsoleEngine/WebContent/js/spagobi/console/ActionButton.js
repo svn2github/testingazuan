@@ -119,13 +119,15 @@ Ext.extend(Sbi.console.ActionButton, Ext.Button, {
 			            		//search into filters
 			            		var paramValue = this.store.filterPlugin.getFilter(this.store.getFieldNameByAlias(p)); 
 			            		if (paramValue !== undefined){
-			            			results[param[p]] = paramValue;
+			            			//results[param[p]] = paramValue;
+			            			results[p] = paramValue;
 			            		}
 			            		else{
 			            		//	msgErr += 'Parameter "' + p + '" undefined into request or filter. <p>';
 			            		}
 		                    } else {          	 	 		           	 	 		  
-		                    	results[param[p]] = context[p];
+		                    	//results[param[p]] = context[p];
+		                    	results[p] = context[p];
 		                    } 	 		 
 	                }          	 	 		   
 	          		    

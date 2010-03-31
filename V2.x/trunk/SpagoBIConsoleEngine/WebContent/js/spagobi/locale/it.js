@@ -78,3 +78,6 @@ Sbi.locale.ln['sbi.console.downloadlogs.finalDateMandatory'] = 'Data fine obblig
 Sbi.locale.ln['sbi.console.downloadlogs.initialTimeMandatory'] = 'Ora inizio obbligatoria';
 Sbi.locale.ln['sbi.console.downloadlogs.finalTimeMandatory'] = 'Ora fine obbligatoria';
 Sbi.locale.ln['sbi.console.downloadlogs.rangeInvalid'] = 'Intervallo date errato';
+
+//propmtables window
+Sbi.locale.ln['sbi.console.promptables.btnOK'] = 'OK';

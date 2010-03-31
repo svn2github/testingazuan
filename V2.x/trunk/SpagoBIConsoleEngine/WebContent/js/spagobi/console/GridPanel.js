@@ -134,6 +134,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	, errorWin: null
 	, alarmWin: null
 	, logsWin: null
+	, promptWin: null
 	// popup dataset label postfix (the complete name is given by <table_dataset_label><postfix> ie: 'testConsoleErrors')
 	, errorDs: 'Errors'
 	, alarmDs: 'Alarms'
@@ -169,48 +170,67 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     //  -- public methods ---------------------------------------------------------
     
     
-	, resolveParameters: function(parameters, record, context) {
+	, resolveParameters: function(parameters, record, context, callback) {
 		var results = {};  
+		var promptables = {};
 		
 		var staticParams = parameters.staticParams;
 		
 		results = Ext.apply(results, parameters.staticParams);
 		
 		var dynamicParams = parameters.dynamicParams;
-	    if(dynamicParams) {        	
+	    if(dynamicParams) { 
+	    	
 	    	var msgErr = ""; 
 	      	for (var i = 0, l = dynamicParams.length; i < l; i++) {      		     
 	      		var param = dynamicParams[i]; 
 	        	for(p in param) { 
 	        		if(p === 'scope') continue;
-		            if (param.scope === 'dataset') {       	
-	                	if(record.get(this.store.getFieldNameByAlias(p)) === undefined) {            	 	 		    
+		            if (param.scope === 'dataset') {       	         
+	                	if(record.get(this.store.getFieldNameByAlias(param[p])) === undefined) {         
 	                		msgErr += 'Parameter "' + p + '" undefined into dataset.<p>';
 				        } else {
-				        	results[param[p]] = record.get(this.store.getFieldNameByAlias(p)); 
+				        	results[p] = record.get(this.store.getFieldNameByAlias(param[p])); 
 				        }
 		            } else if (param.scope === 'env'){ 
 		            	if (p !== this.USER_ID && context[p] === undefined) {              	 	 	      
 		            		msgErr += 'Parameter "' + p + '" undefined into request. <p>';
 	                    } else {          	 	 		           	 	 		  
-	                    	results[param[p]] = context[p];
+	                    	results[p] = context[p];
 	                    } 	 		 
-	                }          	 	 		   
+	                } else if (param.scope === 'promptable'){	                	
+	                	promptables[p] = param[p];
+	                }
 	          		    
 	        	 }          			   
 	      	} 
 	      	
-	      	var metaParams = parameters.metaParams;
+	    	var metaParams = parameters.metaParams;
 		    if(metaParams) {  
 		    	results['metaParams'] = Ext.util.JSON.encode(metaParams);
 		    }
 	      	
 	        if  (msgErr != ""){
 	        	Sbi.Msg.showError(msgErr, 'Service Error');
-	        }		  
+	        }	
+	        
+	      	//if there are some promptable field, it shows a popup for the insertion
+	      	if (promptables !== undefined){
+	      		if(this.promptWin === null) {
+	    			this.promptWin = new Sbi.console.PromptablesWindow({
+	    				promptables: promptables	    					
+	    			});
+	    			this.promptWin.on('click', function(win, record) {
+	    				alert("clicked!! " + results.toSource()) ;	    				
+	    				//calls callback function:
+	    			    callback.call (this, results);	    								
+	    			}, this);
+	    		}
+	      		this.promptWin.show();
+	      	} 	 
 	    }
 	    
-	    return results;
+	    //return results;
 	}
 	
 	//, execCrossNav: function(docConfig, index){
@@ -222,44 +242,50 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	    	, windowName: this.name				
 	    	, target: (options.target === 'new')? 'self': 'popup'						
 	    };
+		
+		var callback = function(params){
+			var separator = '';
+			msg.parameters = '';
+			for(p in params) {
+				msg.parameters += separator + p + '=' + params[p];
+				separator = '&';
+			}
+		
+			sendMessage(msg, 'crossnavigation');
+		};
 	    
-		var params =  this.resolveParameters(options.document, record, this.executionContext);
-		var separator = '';
-		msg.parameters = '';
-		for(p in params) {
-			msg.parameters += separator + p + '=' + params[p];
-			separator = '&';
-		}
-	
-		sendMessage(msg, 'crossnavigation');
+		this.resolveParameters(options.document, record, this.executionContext, callback);
+		
 	}
 
 	
 	, execAction: function(action, r, index, options) {		
-		
-		var params = this.resolveParameters(options, r, this.executionContext);
+		var callback = function(params){
+
+			params = Ext.apply(params, {
+	  			message: action.name, 
+	        	userId: Sbi.user.userId 
+	  		}); 
+			
+	  		Ext.Ajax.request({
+		       	url: this.services[action.name] 			       
+		       	, params: params 			       
+		    	, success: function(response, options) {
+		    		if(response !== undefined && response.responseText !== undefined) {
+							var content = Ext.util.JSON.decode( response.responseText );
+							if (content !== undefined) {				      			  
+							//	alert(content.toSource());
+							}				      		
+	    			} else {
+	    				Sbi.Msg.showError('Server response is empty', 'Service Error');
+	    			}
+		    	}
+		    	, failure: Sbi.exception.ExceptionHandler.onServiceRequestFailure
+		    	, scope: this     
+		    });
+		};
+		var params = this.resolveParameters(options, r, this.executionContext, callback);
 	
-		params = Ext.apply(params, {
-  			message: action.name, 
-        	userId: Sbi.user.userId 
-  		}); 
-		
-  		Ext.Ajax.request({
-	       	url: this.services[action.name] 			       
-	       	, params: params 			       
-	    	, success: function(response, options) {
-	    		if(response !== undefined && response.responseText !== undefined) {
-						var content = Ext.util.JSON.decode( response.responseText );
-						if (content !== undefined) {				      			  
-						//	alert(content.toSource());
-						}				      		
-    			} else {
-    				Sbi.Msg.showError('Server response is empty', 'Service Error');
-    			}
-	    	}
-	    	, failure: Sbi.exception.ExceptionHandler.onServiceRequestFailure
-	    	, scope: this     
-	    });
 
     }
 	
@@ -285,18 +311,21 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 				}				
 			}, this);
 		}
-		var params = {};
-		params = this.resolveParameters(options, r, this.executionContext);
-		params.ds_label = this.store.getDsLabel() + this.errorDs;
-		this.errorWin.reloadMasterList(params);
-		this.errorWin.setTarget(r);
-		var isChecked = action.isChecked(r);
-		if(isChecked) {
-			this.errorWin.checkButton.setText(LN('sbi.console.error.btnSetNotChecked'));
-		} else if(!isChecked){
-			this.errorWin.checkButton.setText(LN('sbi.console.error.btnSetChecked'));
-		}
-		this.errorWin.show();
+		var callback = function(params){ 
+			params.ds_label = this.store.getDsLabel() + this.errorDs;
+			this.errorWin.reloadMasterList(params);
+			this.errorWin.setTarget(r);
+			var isChecked = action.isChecked(r);
+			if(isChecked) {
+				this.errorWin.checkButton.setText(LN('sbi.console.error.btnSetNotChecked'));
+			} else if(!isChecked){
+				this.errorWin.checkButton.setText(LN('sbi.console.error.btnSetChecked'));
+			}
+			this.errorWin.show();
+		};
+		//var params = {};
+		this.resolveParameters(options, r, this.executionContext, callback);
+		
 	}
 	
 	, showAlarms: function(action, r, index, options) {
@@ -316,19 +345,22 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			}, this);
 		}
 
-		var params = {};
-		params = this.resolveParameters(options, r, this.executionContext);
-		params.ds_label = this.store.getDsLabel() + this.alarmDs;
-		this.alarmWin.reloadMasterList(params);
+		//var params = {};
+		var callback = function(params){ 			
+			params.ds_label = this.store.getDsLabel() + this.alarmDs;
+			this.alarmWin.reloadMasterList(params);
+			
+			
+			this.alarmWin.setTarget(r);
+			if(action.isChecked(r)) {
+				this.alarmWin.checkButton.setText(LN('sbi.console.error.btnSetNotChecked'));
+			} else {
+				this.alarmWin.checkButton.setText(LN('sbi.console.error.btnSetChecked'));
+			}
+			this.alarmWin.show();
+		};
+		this.resolveParameters(options, r, this.executionContext, callback);
 		
-		
-		this.alarmWin.setTarget(r);
-		if(action.isChecked(r)) {
-			this.alarmWin.checkButton.setText(LN('sbi.console.error.btnSetNotChecked'));
-		} else {
-			this.alarmWin.checkButton.setText(LN('sbi.console.error.btnSetChecked'));
-		}
-		this.alarmWin.show();
 	}
 	
 	, startProcess: function(action, r, index, options) {
@@ -336,40 +368,42 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			Sbi.Msg.showWarning('Process is already running');
 			return;
 		}
-	
-		var params = this.resolveParameters(options.document, r, this.executionContext);
-		params = Ext.apply(params, {
-        	USER_ID: Sbi.user.userId 
-        	, DOCUMENT_ID: options.document.label
-  		}); 
 		
-		if(this.waitWin === null) {
-			this.waitWin = new Sbi.console.WaitWindow({});
-		}
-		this.waitWin.startingTxt = 'Starting process';
-		this.waitWin.start();
-		this.waitWin.show();
-  			 
-  		Ext.Ajax.request({
-	       	url: this.services[action.name] 			       
-	       	, params: params 			       
-	    	, success: function(response, options) {
-  				
-	    		if(!response || !response.responseText) {
-	    			Sbi.Msg.showError('Server response is empty', 'Service Error');
-	    			return;
-	    		}
-  				var content = Ext.util.JSON.decode( response.responseText );
-  				action.setBoundColumnValue(r, content.pid);
-  				this.waitWin.stop('Proecess started succesfully');
-				action.toggle(r);				
-	    	}
-	    	, failure: function(response, options) {
-	    		Sbi.exception.ExceptionHandler.onServiceRequestFailure(response, options);
-	    		this.waitWin.stop('Impossible to start process');
-	    	}
-	    	, scope: this     
-	    });
+		var callback = function(params){ 		
+			params = Ext.apply(params, {
+	        	USER_ID: Sbi.user.userId 
+	        	, DOCUMENT_ID: options.document.label
+	  		}); 
+			
+			if(this.waitWin === null) {
+				this.waitWin = new Sbi.console.WaitWindow({});
+			}
+			this.waitWin.startingTxt = 'Starting process';
+			this.waitWin.start();
+			this.waitWin.show();
+	  			 
+	  		Ext.Ajax.request({
+		       	url: this.services[action.name] 			       
+		       	, params: params 			       
+		    	, success: function(response, options) {
+	  				
+		    		if(!response || !response.responseText) {
+		    			Sbi.Msg.showError('Server response is empty', 'Service Error');
+		    			return;
+		    		}
+	  				var content = Ext.util.JSON.decode( response.responseText );
+	  				action.setBoundColumnValue(r, content.pid);
+	  				this.waitWin.stop('Proecess started succesfully');
+					action.toggle(r);				
+		    	}
+		    	, failure: function(response, options) {
+		    		Sbi.exception.ExceptionHandler.onServiceRequestFailure(response, options);
+		    		this.waitWin.stop('Impossible to start process');
+		    	}
+		    	, scope: this     
+		    });
+		};
+		this.resolveParameters(options.document, r, this.executionContext, callback);
 		
 	}
 	
@@ -378,67 +412,71 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			Sbi.Msg.showWarning('Process is already stopped');
 			return;
 		}
+
+		var callback = function(params){
+			params = Ext.apply(params, {
+	        	USER_ID: Sbi.user.userId 
+	        	, DOCUMENT_ID: options.document.label
+	  		}); 
+			
+			if(this.waitWin === null) {
+				this.waitWin = new Sbi.console.WaitWindow({});
+			}
+			this.waitWin.startingTxt = 'Stopping process';
+			this.waitWin.start();
+			this.waitWin.show();
+			
+			Ext.Ajax.request({
+		       	url: this.services[action.name] 			       
+		       	, params: params 			       
+		    	, success: function(response, options) {
+	  				
+		    		if(!response || !response.responseText) {
+		    			Sbi.Msg.showError('Server response is empty', 'Service Error');
+		    			return;
+		    		}
+	  				var content = Ext.util.JSON.decode( response.responseText );
+	  				action.setBoundColumnValue(r, content.pid);
+	  				this.waitWin.stop('Proecess stopped succesfully');
+					action.toggle(r);				
+		    	}
+		    	, failure: function(response, options) {
+		    		Sbi.exception.ExceptionHandler.onServiceRequestFailure(response, options);
+		    		this.waitWin.stop('Impossible to stop process');
+		    	}
+		    	, scope: this     
+		    });
+		};
+		this.resolveParameters(options.document, r, this.executionContext, callback);
 		
-		var params = this.resolveParameters(options.document, r, this.executionContext);
-		params = Ext.apply(params, {
-        	USER_ID: Sbi.user.userId 
-        	, DOCUMENT_ID: options.document.label
-  		}); 
-		
-		alert(params.toSource());
-		
-		if(this.waitWin === null) {
-			this.waitWin = new Sbi.console.WaitWindow({});
-		}
-		this.waitWin.startingTxt = 'Stopping process';
-		this.waitWin.start();
-		this.waitWin.show();
-		
-		Ext.Ajax.request({
-	       	url: this.services[action.name] 			       
-	       	, params: params 			       
-	    	, success: function(response, options) {
-  				
-	    		if(!response || !response.responseText) {
-	    			Sbi.Msg.showError('Server response is empty', 'Service Error');
-	    			return;
-	    		}
-  				var content = Ext.util.JSON.decode( response.responseText );
-  				action.setBoundColumnValue(r, content.pid);
-  				this.waitWin.stop('Proecess stopped succesfully');
-				action.toggle(r);				
-	    	}
-	    	, failure: function(response, options) {
-	    		Sbi.exception.ExceptionHandler.onServiceRequestFailure(response, options);
-	    		this.waitWin.stop('Impossible to stop process');
-	    	}
-	    	, scope: this     
-	    });
 	}
 	
 	, downloadLogs: function(action, r, index, options) {		
-		
-		var params = this.resolveParameters(options, r, this.executionContext);
-		var url =  Sbi.config.spagobiServiceRegistry.getServiceUrl({serviceName: 'DOWNLOAD_ZIP'
-																   , baseParams: new Object()
-																	});
-		params = Ext.apply(params, {
-        	USER_ID: Sbi.user.userId 
-          , URL: url
-  		}); 
-		
-		if(this.logsWin === null) {
+		var callback = function(params){
+			var url =  Sbi.config.spagobiServiceRegistry.getServiceUrl({serviceName: 'DOWNLOAD_ZIP'
+				   , baseParams: new Object()
+					});
+			params = Ext.apply(params, {
+			USER_ID: Sbi.user.userId 
+			, URL: url
+			}); 
+			
+			if(this.logsWin === null) {
 			this.logsWin = new Sbi.console.DownloadLogsWindow({
-				serviceName: 'DOWNLOAD_ZIP' 
-			  , action: action
+			serviceName: 'DOWNLOAD_ZIP' 
+			, action: action
 			});
 			
 			this.logsWin.on('checked', function(win, record) {	
-				this.logsWin.downloadLogs(action, record, null, params);
+			this.logsWin.downloadLogs(action, record, null, params);
 			}, this);
-		}
-
-		this.logsWin.show();
+			}
+			
+			this.logsWin.show();
+		};
+		
+		this.resolveParameters(options, r, this.executionContext, callback);
+		
 
 	}
     //  -- private methods ---------------------------------------------------------

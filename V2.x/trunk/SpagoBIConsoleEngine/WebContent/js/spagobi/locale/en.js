@@ -75,3 +75,6 @@ Sbi.locale.ln['sbi.console.downloadlogs.initialTime'] = 'Initial time';
 Sbi.locale.ln['sbi.console.downloadlogs.finalTime'] = 'Final time';
 Sbi.locale.ln['sbi.console.downloadlogs.btnClose'] = 'Close';
 Sbi.locale.ln['sbi.console.downloadlogs.btnDownload'] = 'Download';
+
+//propmtables window
+Sbi.locale.ln['sbi.console.promptables.btnOK'] = 'OK';

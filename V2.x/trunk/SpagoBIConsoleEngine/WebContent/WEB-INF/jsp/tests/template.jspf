@@ -245,10 +245,10 @@ Sbi.template = {
    							 'userId': 'userId'  
    							, scope: 'env'
    							},{
-   							 'brandname': 'brandname'  
+   							 'Brand': 'brandname'  
 							, scope: 'env'
 							},{
-							 'productName': 'productName'  
+							 'Product': 'productName'  
 							, scope: 'env'
 							},{
 							 'column_data': 'column_data'  //data is passed as a string. It's converted into the stmt.
@@ -300,12 +300,13 @@ Sbi.template = {
 							 	 	{
 										label: '155'
 										, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
-										, dynamicParams: [{
-											brandname: 'P1' 
-											, scope: 'dataset'   
-										}, {ID: 'id'  					//value: logical name
-											, scope: 'dataset'
-										}]	 
+										, dynamicParams: [{label: 'debug' 
+														 , scope: 'promptable'   
+														 },{'id': 'ID'  					//logical name: value
+														  , scope: 'dataset'
+													     },{param2: 'param2' 
+														  , scope: 'promptable'   
+														 }]	 
 									}
 								}
 							}, {
@@ -320,10 +321,10 @@ Sbi.template = {
 							 	 	{
 										label: '155'
 										, dynamicParams: [{
-											ID: 'id'  					//value: logical name
+											'id': 'ID'   					//value: logical name
 											, scope: 'dataset'
 										}, {
-											pid: 'PROCESS_ID'
+											 'PROCESS_ID': 'pid'
 											, scope: 'dataset'
 										}]	 
 									}
@@ -341,9 +342,9 @@ Sbi.template = {
 									 , numPars: '2'			//the number of params in the query													 														 													    			     									
 									}
 								  , dynamicParams: [{
-									 'errors_check': 'errors_check'  //value: logical name
+									 'errors_check': 'errors_check'  //logical name: value
 									, scope: 'dataset'
-									},{ID: 'id'  					//value: logical name
+									},{'id': 'ID'  					//logical name: column with value (dataIndex)
 									, scope: 'dataset'
 									}]
 								 , metaParams: {queryParams: [{"name":"errors_check","type":"num"},{"name":"id","type":"num"}]}
@@ -363,7 +364,7 @@ Sbi.template = {
 								  , dynamicParams: [{
 									 'alarms_check': 'alarms_check'  //value: logical name
 									, scope: 'dataset'
-									},{ID: 'id'  					 //value: logical name
+									},{'id': 'ID'  					//logical name: column with value (dataIndex)
 									, scope: 'dataset'
 									}]
 								 , metaParams: {queryParams: [{"name":"alarms_check","type":"num"},{"name":"id","type":"num"}]}
@@ -390,14 +391,15 @@ Sbi.template = {
 										label: 'testReportParams'
 										, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
 										, dynamicParams: [{
-											brandname: 'P1' 
+											'P1': 'brandname' 
 											, scope: 'dataset'   
 										},{
-											productName: 'P2'
+											'P2': 'productName'
 											, scope: 'dataset'
-										},{
-											month: 'P3'
-											, scope: 'env'
+										},{'prompt1': 'debug' 			//label: fieldname
+											 , scope: 'promptable'   
+										},{'P3': 'value2' 
+										  , scope: 'promptable'   
 										}]	 
 									}
 								}
@@ -412,15 +414,15 @@ Sbi.template = {
 										label: 'testReportParams'
 										, staticParams: {P3:'paramValue_A' , P5: 'paramValue_B'} 
 										, dynamicParams: [{
-											brandname: 'P1' 
-											, scope: 'dataset'  
-										},{
-											productName: 'P2'
-											, scope: 'dataset'
-										},{
-											month: 'P4'
-											, scope: 'env'
-										}]	 
+											'P1': 'brandname' 
+											, scope: 'dataset'   
+											},{
+												'P2': 'productName'
+												, scope: 'dataset'
+											},{
+												'P3': 'month'
+												, scope: 'env'
+											}]	 
 									}
 								}
 							},{
@@ -437,7 +439,7 @@ Sbi.template = {
 										  , dynamicParams: [{
 											 'monitor_check': 'monitor_check'  //value: logical name
 											, scope: 'dataset'
-											},{ID: 'id'  					   //value: logical name
+											},{'id': 'ID'  					   //value: logical name
 											, scope: 'dataset'
 											}]
 										, metaParams: {queryParams: [{"name":"monitor_check","type":"num"},{"name":"id","type":"num"}]}
@@ -456,7 +458,7 @@ Sbi.template = {
 								  , dynamicParams: [{
 									 'views_check': 'views_check'  //value: logical name
 									, scope: 'dataset'
-									},{ID: 'id'  					//value: logical name
+									},{'id': 'ID'  					//value: logical name
 									, scope: 'dataset'
 									}]
 								, metaParams: {queryParams: [{"name":"views_check","type":"num"},{"name":"id","type":"num"}]}

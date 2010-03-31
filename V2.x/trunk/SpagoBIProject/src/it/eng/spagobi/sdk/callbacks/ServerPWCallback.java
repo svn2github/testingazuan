@@ -55,7 +55,7 @@ public class ServerPWCallback implements CallbackHandler {
                 String userId = pc.getIdentifier();
                 logger.debug("UserId found from request: " + userId);
                 if (pc.getUsage() == WSPasswordCallback.DECRYPT) {
-                	System.out.println("WSPasswordCallback.DECRYPT=" + WSPasswordCallback.DECRYPT);
+                	logger.debug("WSPasswordCallback.DECRYPT=" + WSPasswordCallback.DECRYPT);
                 	pc.setPassword("security");
 //                } else if (pc.getUsage() == WSPasswordCallback.USERNAME_TOKEN) {
 //					logger.debug("WSPasswordCallback.USERNAME_TOKEN = " + pc.getUsage() + " callback usage");

@@ -34,13 +34,13 @@ package it.eng.spagobi.engines.commonj.runtime;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.commonj.exception.WorkExecutionException;
 import it.eng.spagobi.engines.commonj.exception.WorkNotFoundException;
+import it.eng.spagobi.engines.commonj.process.CmdExecWork;
+import it.eng.spagobi.engines.commonj.process.SpagoBIWork;
 import it.eng.spagobi.engines.commonj.utils.ProcessesStatusContainer;
 import it.eng.spagobi.services.proxy.EventServiceProxy;
 import it.eng.spagobi.utilities.DynamicClassLoader;
 import it.eng.spagobi.utilities.engines.AuditServiceProxy;
 import it.eng.spagobi.utilities.engines.EngineConstants;
-import it.eng.spagobi.utilities.engines.commonj.CmdExecWork;
-import it.eng.spagobi.utilities.engines.commonj.SpagoBIWork;
 import it.eng.spagobi.utilities.threadmanager.WorkManager;
 
 import java.io.File;

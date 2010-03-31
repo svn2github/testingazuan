@@ -90,7 +90,7 @@ public class DynamicClassLoader extends URLClassLoader {
 		try {
 			classToReturn = super.loadClass(className, resolve);
 		} catch (Exception e) {
-			logger.debug("Not found class in super.loadClass(), try to find class in JAR file");
+			logger.warn("Not found class in super.loadClass(), try to find class in JAR file");
 		}
 		if(classToReturn == null) {
 			ZipFile zipFile = null;
@@ -103,7 +103,7 @@ public class DynamicClassLoader extends URLClassLoader {
 				bis = new BufferedInputStream(zipFile.getInputStream(zipEntry));
 				bis.read(res, 0, res.length);
 			} catch (Exception ex) {
-				logger.error("className: " +  className + " Exception: "+ ex);
+				logger.warn("className: " +  className + " Exception: "+ ex);
 			} finally {
 				if (bis!=null) {
 					try {
@@ -128,7 +128,7 @@ public class DynamicClassLoader extends URLClassLoader {
 				if (resolve) 
 					resolveClass(classToReturn);
 			} catch (Throwable ex) {
-				logger.error(ex);
+				logger.warn(ex);
 				throw new ClassNotFoundException("Impossible to load class " + className, ex);
 			}
 		}

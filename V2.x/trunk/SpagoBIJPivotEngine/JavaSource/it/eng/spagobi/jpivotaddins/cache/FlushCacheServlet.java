@@ -6,6 +6,7 @@
 package it.eng.spagobi.jpivotaddins.cache;
 
 import it.eng.spagobi.jpivotaddins.bean.AnalysisBean;
+import it.eng.spagobi.jpivotaddins.bean.ToolbarBean;
 import it.eng.spagobi.jpivotaddins.bean.adapter.AnalysisAdapterUtil;
 
 import java.io.IOException;
@@ -40,7 +41,6 @@ public class FlushCacheServlet extends HttpServlet {
 		OlapModel olapModel = (OlapModel) session.getAttribute("query01");
 		ChartComponent chart = (ChartComponent) session.getAttribute("chart01");
 		TableComponent table = (TableComponent) session.getAttribute("table01");
-		
 		AnalysisBean analysis = (AnalysisBean) session.getAttribute("analysisBean");
 		analysis = AnalysisAdapterUtil.createAnalysisBean(analysis.getConnectionName(), analysis.getCatalogUri(),
 			chart, table, olapModel);

@@ -74,7 +74,6 @@ public class AnalysisBean implements Serializable {
    // hide spans
    private boolean hideSpans = false;
 
-
    public AnalysisBean() {
 
    }
@@ -767,5 +766,5 @@ public class AnalysisBean implements Serializable {
    public void setLevelStyle(boolean levelStyle) {
        this.levelStyle = levelStyle;
    }
-
+   
 }

@@ -65,6 +65,22 @@ LICENSE: see LICENSE.txt file
 
 		// if into the request is defined the attribute "nameSubObject" the engine must run a subQuery
 		if (nameSubObject != null) {
+			
+			BASE64Decoder bASE64Decoder = new BASE64Decoder();
+			HashMap requestParameters = new HashMap();
+			
+			// remove the dimension_access_rules parameter because it produces an exception (not blocking but the exception 
+			// is visilble on the console) since it is not compatible with multi value parameter encoding.
+			// TODO move the cube profiling information from driver to engine 
+			requestParameters.remove("dimension_access_rules");
+			
+			Content template = contentProxy.readTemplate(documentId, requestParameters);
+			byte[] templateContent = bASE64Decoder.decodeBuffer(template.getContent());
+			is = new java.io.ByteArrayInputStream(templateContent);
+
+			org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
+		    document = reader.read(is);	
+		    
 			// if subObject execution in the request there are the description and visibility
 			String descrSO = request.getParameter("descriptionSubObject");
 			if(descrSO==null)
@@ -80,7 +96,6 @@ LICENSE: see LICENSE.txt file
 			String subObjectId = request.getParameter("subobjectId");
 			Content subObject=contentProxy.readSubObjectContent(subObjectId);
 			String subobjdata64Coded = subObject.getContent();
-			BASE64Decoder bASE64Decoder = new BASE64Decoder();
 			byte[] subobjBytes = bASE64Decoder.decodeBuffer(subobjdata64Coded);
 			is = new java.io.ByteArrayInputStream(subobjBytes);
 			InputStreamReader isr = new InputStreamReader(is);
@@ -159,13 +174,12 @@ LICENSE: see LICENSE.txt file
 			analysis.setConnectionName(nameConnection);
 			analysis.setCatalogUri(reference);
 			session.setAttribute("analysisBean",analysis);
-			
-			//Check for Toolbar Configuration
-			ToolbarBean tb = new ToolbarBean();
-			tb.setValuesFromTemplate(document);
-			session.setAttribute("toolbarButtonsVisibility",tb);
-			
+	
 		}
+		//Check for Toolbar Configuration
+		ToolbarBean tb = new ToolbarBean();
+		tb.setValuesFromTemplate(document);
+		session.setAttribute("toolbarButtonsVisibility",tb);
 		
 		// adjust reference
 		if (!reference.startsWith("file:")) {

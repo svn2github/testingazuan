@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <STATEMENTS>	 			
 
+  <!-- start statements for test document -->
 	<STATEMENT name="UPDATE_MONITOR_STATE" 
   			   query="UPDATE TEST_CONSOLE SET FLG1 = ? WHERE ID = ? "/>	
   			   
@@ -26,6 +27,17 @@
    <STATEMENT name="UPDATE_ALL_VIEWING_STATE" 
   			   query="UPDATE TEST_CONSOLE  SET FLG6 = ?, COLUMN3 = ?, COLUMN_DATA = now()
   			    	  WHERE COLUMN1 like ? and COLUMN2 like ? and DATE_FORMAT(column_data,'%Y-%m-%d') like ?"/>	
+  			    	  
+  <!-- end statements for test document -->
+    
+  <!-- start statements for pingsco console -->
+  <STATEMENT name="UPD_ERROR_STATE_PINGSCO" 
+  			     query="UPDATE SERVICE_INSTANCE SET ERRORS_CHECK = ? , USER_ID = ?, TS_UPDATE = SYSDATE
+                    WHERE ID_SERVICE_INSTANCE = SUBSTR(?,INSTR(?,'|',1,1)+1) "/>	 
   			   
+   <STATEMENT name="UPD_ALARM_STATE_PINGSCO" 
+  			     query="UPDATE SERVICE_INSTANCE SET ALARMS_CHECK = ? , USER_ID = ?, TS_UPDATE = SYSDATE
+                    WHERE ID_SERVICE_INSTANCE = SUBSTR(?,INSTR(?,'|',1,1)+1)"/>	  			
+  <!-- end statements for pingsco console -->  			   
   			   	
 </STATEMENTS>

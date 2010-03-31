@@ -562,10 +562,11 @@ public class HQLStatement extends BasicStatement {
 						|| CriteriaConstants.BETWEEN.equalsIgnoreCase( operator )
 						|| CriteriaConstants.NOT_BETWEEN.equalsIgnoreCase( operator ) 
 				)) {
-					// if the value is already surrounded by quotes, does not add quotes
+					// if the value is already surrounded by quotes, does not neither add quotes nor escape quotes 
 					if (operandValueToBound.startsWith("'") && operandValueToBound.endsWith("'")) {
 						boundedValue = operandValueToBound ;
 					} else {
+						operandValueToBound = escapeQuotes(operandValueToBound);
 						boundedValue = "'" + operandValueToBound + "'";
 					}
 				} else {
@@ -576,7 +577,8 @@ public class HQLStatement extends BasicStatement {
 						if (items[i].startsWith("'") && items[i].endsWith("'")) {
 							boundedValue += (i==0?"":",") + items[i];
 						} else {
-							boundedValue += (i==0?"":",") + "'" + items[i] + "'";
+							String temp = escapeQuotes(items[i]);
+							boundedValue += (i==0?"":",") + "'" + temp + "'";
 						}
 					}					
 				}
@@ -596,6 +598,12 @@ public class HQLStatement extends BasicStatement {
 		}
 		
 		return boundedValue;
+	}
+	
+	
+	private String escapeQuotes(String value) {
+		if (value == null) return null;
+		return value.replace("'", "''");
 	}
 	
 	private String composeStringToDt(String dialect, String date){

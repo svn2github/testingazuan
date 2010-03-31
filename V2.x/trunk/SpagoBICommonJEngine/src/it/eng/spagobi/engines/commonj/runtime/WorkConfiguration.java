@@ -146,11 +146,16 @@ public class WorkConfiguration {
 				listener.setExecutionRole(executionRole);
 				listener.setWorkName(work.getWorkName());
 				listener.setWorkClass(work.getClassName());
-				logger.debug("Class to run "+work.getClassName());
+				logger.info("Class to run "+classToLoad);
 
 				logger.debug("listener ready");
 
-				Class clazz = Thread.currentThread().getContextClassLoader().loadClass(classToLoad);
+				Class clazz=null;
+				try {
+					clazz = Thread.currentThread().getContextClassLoader().loadClass(classToLoad);
+				} catch (ClassNotFoundException e) {
+					logger.debug("class loaded not foud...",e);
+				}
 				Object obj = clazz.newInstance();
 				logger.debug("class loaded "+classToLoad);
 				SpagoBIWork workToLaunch=null;

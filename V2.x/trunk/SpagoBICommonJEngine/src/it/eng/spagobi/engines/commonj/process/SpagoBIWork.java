@@ -11,8 +11,10 @@ import commonj.work.Work;
 public class SpagoBIWork implements Work{
 	/** pid of the work */ 
 	String pid;
+	/** label of the dcument */ 
+	String sbiLabel;
 	/** boolean to check to see if work has been stopped, set to false by release method*/
-	boolean running=false;
+	volatile boolean running=false;
 	/** here are put allr equests parameters */ 
 	Map sbiParameters=new HashMap();
 	/**names of those in sbiParameters that are analytical drivers*/
@@ -74,6 +76,16 @@ public class SpagoBIWork implements Work{
 
 	public void setPid(String pid) {
 		this.pid = pid;
+	}
+
+
+	public String getSbiLabel() {
+		return sbiLabel;
+	}
+
+
+	public void setSbiLabel(String sbiLabel) {
+		this.sbiLabel = sbiLabel;
 	}
 
 

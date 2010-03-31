@@ -726,7 +726,7 @@ public class AdapterPortlet extends GenericPortlet {
         					Constants.NOME_MODULO,
             	            TracerSingleton.CRITICAL,
             	            "AdapterPortlet::doView: type of start service not find (ACTION/PAGE/JSP)");
-        			//System.out.println("AdapterPortlet::doView: type of start service not find (ACTION/PAGE/JSP)");
+        			//logger.debug("AdapterPortlet::doView: type of start service not find (ACTION/PAGE/JSP)");
         		}
         		if(!serviceType.equalsIgnoreCase(SERVICE_JSP) &&
         		   !serviceType.equalsIgnoreCase(SERVICE_ACTION) &&
@@ -735,7 +735,7 @@ public class AdapterPortlet extends GenericPortlet {
         					Constants.NOME_MODULO,
             	            TracerSingleton.CRITICAL,
             	            "AdapterPortlet::doView: type of start service unknow (ACTION/PAGE/JSP)");
-        				//System.out.println("AdapterPortlet::doView: type of start service unknow (ACTION/PAGE/JSP)");
+        				//logger.debug("AdapterPortlet::doView: type of start service unknow (ACTION/PAGE/JSP)");
         				return;
         		}
         		if(serviceName==null) {
@@ -743,7 +743,7 @@ public class AdapterPortlet extends GenericPortlet {
         					Constants.NOME_MODULO,
             	            TracerSingleton.CRITICAL,
             	            "AdapterPortlet::doView: name of start service not find");
-        			System.out.println("AdapterPortlet::doView: name of start service not find");
+
         			return;
         		}		        		
         		if(serviceType.equalsIgnoreCase(SERVICE_JSP)) {
@@ -755,7 +755,8 @@ public class AdapterPortlet extends GenericPortlet {
             	            Constants.NOME_MODULO,
             	            TracerSingleton.CRITICAL,
             	            "AdapterPortlet::doView: Error during the route to " + serviceName, ex);
-            	        System.out.println("AdapterPortlet::doView: Error during the route to " 
+            	        TracerSingleton.log(Constants.NOME_MODULO,
+                	            TracerSingleton.CRITICAL,"AdapterPortlet::doView: Error during the route to " 
             	        		            + serviceName + " (see log file)");
             	    }   
         		} else {

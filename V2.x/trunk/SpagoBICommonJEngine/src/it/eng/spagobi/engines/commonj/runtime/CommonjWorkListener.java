@@ -91,16 +91,14 @@ public class CommonjWorkListener implements WorkListener {
 	}
 
 	public void workAccepted(WorkEvent event) {
-		logger.info("IN");
-		System.out.println("Work "+workName+" accepted");
+		logger.info("IN.Work "+workName+" accepted");
 		logger.debug("Work "+workName+" accepted");
 		logger.info("OUT");
 	}
 
 
 	public void workRejected(WorkEvent event) {
-		logger.info("IN");
-		System.out.println("Work "+workName+" rejected");
+		logger.info("IN.Work "+workName+" rejected");
 		if(auditServiceProxy != null) {
 			auditServiceProxy.notifyServiceErrorEvent("An error occurred while work execution");
 		} else {
@@ -118,11 +116,7 @@ public class CommonjWorkListener implements WorkListener {
 
 
 	public void workCompleted(WorkEvent event) {
-		logger.info("IN");
-		System.out.println("Entering work "+workName+" completed");
-		logger.debug("Work "+workName+" completed");
-
-
+		logger.info("IN.Entering work "+workName+" completed");
 
 		WorkException workException;
 		//Work commonjWork;
@@ -173,7 +167,6 @@ public class CommonjWorkListener implements WorkListener {
 
 	public void workStarted(WorkEvent event) {
 		logger.info("IN");
-		System.out.println("Work started");
 		logger.debug("Work "+workName+" started");
 
 		if(auditServiceProxy != null) {

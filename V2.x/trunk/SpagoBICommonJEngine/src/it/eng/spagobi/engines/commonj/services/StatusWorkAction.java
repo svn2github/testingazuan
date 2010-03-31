@@ -149,7 +149,7 @@ public class StatusWorkAction extends AbstractEngineAction {
 			}
 
 			info=GeneralUtils.buildJSONObject(pid,statusWI);
-			System.out.println(GeneralUtils.getEventMessage(statusWI));
+			logger.debug(GeneralUtils.getEventMessage(statusWI));
 			try {
 				writeBackToClient( new JSONSuccess(info));
 			} catch (IOException e) {

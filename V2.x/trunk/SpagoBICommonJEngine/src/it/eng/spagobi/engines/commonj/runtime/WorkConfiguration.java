@@ -187,7 +187,7 @@ public class WorkConfiguration {
 
 				for (Iterator iterator = processesStatusContainer.getPidContainerMap().keySet().iterator(); iterator.hasNext();) {
 					String id = (String) iterator.next();
-					System.out.println("ID: "+id);
+					logger.debug("ID: "+id);
 
 				}
 //			}

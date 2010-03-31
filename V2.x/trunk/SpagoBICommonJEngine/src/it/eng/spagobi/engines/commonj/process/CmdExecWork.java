@@ -54,7 +54,6 @@ public class CmdExecWork extends SpagoBIWork {
 	Process process = null;
 
 	public boolean isDaemon() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -127,11 +126,12 @@ public class CmdExecWork extends SpagoBIWork {
 		//env.put("VAR2", env.get("VAR1") + "suffix");
 
 
-//		Process p = pb.start();
-		process = null;
-		if(isRunning()){
+    	if(isRunning()){
 			logger.debug("launch command "+command);
 			process = Runtime.getRuntime().exec(command, null, directoryExec);
+			logger.debug("Wait for the end of the process... ");
+			process.waitFor();
+			logger.debug("Process END "+command);
 		}
 		else{
 			logger.warn("Command not launched cause work has been stopper");

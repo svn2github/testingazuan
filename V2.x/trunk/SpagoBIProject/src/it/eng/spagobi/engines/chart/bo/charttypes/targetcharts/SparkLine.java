@@ -323,7 +323,7 @@ public class SparkLine extends TargetCharts{
 				avg += n;
 				if(n < min) min = n;
 				if(n > max) max = n;
-				System.out.println(n);
+				logger.debug(n);
 			}
 
 		}

@@ -50,7 +50,7 @@ Ext.ns("Sbi.execution");
 Sbi.execution.SessionParametersManager = function() {
 	
     // private variables
-	var storeName = 'Sbi_execution_SessionParametersManager'; // dots are not allowed by the Persist library
+	var storeName = 'Sbi_execution_SessionParametersManager'; // dots are not allowed in the store name by the Persist library
 	
 	var key = 'state';
 	
@@ -60,11 +60,13 @@ Sbi.execution.SessionParametersManager = function() {
 	return {
 
 		init: function() {
+			try {
 			if (isEnabled) {
 				Sbi.execution.SessionParametersManager.store = new Persist.Store(storeName, {
 				      swf_path: Sbi.config.contextName + '/js/lib/persist-0.1.0/persist.swf'
 			    });
 			}
+			} catch (err) {}
 		}
 		
 		/**
@@ -72,6 +74,7 @@ Sbi.execution.SessionParametersManager = function() {
 		 * The input parametersPanel is an instance of class Sbi.execution.ParametersPanel
 		 */
 		, restoreState: function(parametersPanel) {
+			try {
 			if (isEnabled) {
 				Sbi.execution.SessionParametersManager.store.get(key, function(ok, value) {
 					if (ok && value !== undefined && value !== null) {
@@ -94,6 +97,7 @@ Sbi.execution.SessionParametersManager = function() {
 					}
 				});
 			}
+			} catch (err) {}
 		}
 	
 		/**
@@ -101,6 +105,7 @@ Sbi.execution.SessionParametersManager = function() {
 		 * The input parametersPanel is an instance of class Sbi.execution.ParametersPanel
 		 */
 		, saveState: function(parametersPanel) {
+			try {
 			if (isEnabled) {
 				for (var p in parametersPanel.fields) {
 					var field = parametersPanel.fields[p];
@@ -109,6 +114,7 @@ Sbi.execution.SessionParametersManager = function() {
 					}
 				}
 			}
+			} catch (err) {}
 		}
 		
 		/**
@@ -116,6 +122,7 @@ Sbi.execution.SessionParametersManager = function() {
 		 * The input field is a field belonging to class Sbi.execution.ParametersPanel
 		 */
 		, save: function(field) {
+			try {
 			if (isEnabled) {
 				Sbi.execution.SessionParametersManager.store.get(key, function(ok, value) {
 					if (ok) {
@@ -142,6 +149,7 @@ Sbi.execution.SessionParametersManager = function() {
 					}
 				});
 			}
+			} catch (err) {}
 		}
 		
 		/**
@@ -149,6 +157,7 @@ Sbi.execution.SessionParametersManager = function() {
 		 * The input field is a field belonging to class Sbi.execution.ParametersPanel
 		 */
 		, clear: function(field) {
+			try {
 			if (isEnabled) {
 				Sbi.execution.SessionParametersManager.store.get(key, function(ok, value) {
 					if (ok) {
@@ -160,16 +169,19 @@ Sbi.execution.SessionParametersManager = function() {
 					}
 				});
 			}
+			} catch (err) {}
 		}
 		
 		/**
 		 * resets all stored parameters
 		 */
 		, reset: function() {
+			try {
 			if (isEnabled) {
 				//Sbi.execution.SessionParametersManager.store.remove(key);
 				Sbi.execution.SessionParametersManager.store.set(key, Sbi.commons.JSON.encode({}));
 			}
+			} catch (err) {}
 		}
 		
 		/**
@@ -179,8 +191,10 @@ Sbi.execution.SessionParametersManager = function() {
 		 * - id of the parameter use mode (in order to avoid that parameters with the same labels but different modalities conflict)
 		 */
 		, getParameterStorageKey: function(field) {
+			try {
 			var parameterStorageKey = field.behindParameter.label + '_' + field.behindParameter.parameterUseId;
 			return parameterStorageKey;
+			} catch (err) {}
 		}
 		
 	};

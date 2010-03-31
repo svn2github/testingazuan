@@ -172,7 +172,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
     
 	, resolveParameters: function(parameters, record, context, callback) {
 		var results = {};  
-		var promptables = {};
+		var promptables;
 		
 		var staticParams = parameters.staticParams;
 		
@@ -198,7 +198,8 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	                    } else {          	 	 		           	 	 		  
 	                    	results[p] = context[p];
 	                    } 	 		 
-	                } else if (param.scope === 'promptable'){	                	
+	                } else if (param.scope === 'promptable'){	  
+	                	promptables = promptables || {};
 	                	promptables[p] = param[p];
 	                }
 	          		    
@@ -220,9 +221,9 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	    			this.promptWin = new Sbi.console.PromptablesWindow({
 	    				promptables: promptables	    					
 	    			});
-	    			this.promptWin.on('click', function(win, record) {
-	    				alert("clicked!! " + results.toSource()) ;	    				
-	    				//calls callback function:
+	    			this.promptWin.on('click', function(win, pp) {
+	    				alert("clicked!! " + pp.toSource()) ;	    				
+	    				Ext.apply(results, pp);
 	    			    callback.call (this, results);	    								
 	    			}, this);
 	    		}

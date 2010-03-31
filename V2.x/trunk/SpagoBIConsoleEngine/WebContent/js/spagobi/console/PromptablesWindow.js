@@ -71,7 +71,7 @@ Sbi.console.PromptablesWindow = function(config) {
 		text: LN('sbi.console.promptables.btnOK'),
 		handler: function(){
         	this.hide();
-        	this.fireEvent('click', this);
+        	this.fireEvent('click', this, this.getFormState());
         }
         , scope: this
 	});
@@ -101,7 +101,7 @@ Ext.extend(Sbi.console.PromptablesWindow, Ext.Window, {
     serviceName: null
     , formPanel: null
     
-   , params: null
+   , fieldMap: null
    , closeButton: null
     
     // public methods
@@ -111,16 +111,16 @@ Ext.extend(Sbi.console.PromptablesWindow, Ext.Window, {
 
     , initFormPanel: function() {	
 		var fields = [];
+		this.fieldMap = {};
 
         	for(p in this.promptables) {       
         		var tmpField = new Ext.form.TextField({
-        			id: this.promptables[p]
-    	          , fieldLabel: p
+        		  fieldLabel: this.promptables[p]
     	          , width: 150    	     
     	        });
         		
         		fields.push(tmpField);
-        		this.params[p] = null;
+        		this.fieldMap[p] = tmpField;
 	        }  			   
 
     	this.formPanel = new  Ext.FormPanel({
@@ -133,8 +133,17 @@ Ext.extend(Sbi.console.PromptablesWindow, Ext.Window, {
 	          layout: 'form',
 	          trackResetOnLoad: true,
 	          items: fields
-	      });
-    	 
+	      }); 
+    }
+
+	, getFormState: function() {
+    	var state = {};
+    	
+    	for(f in this.fieldMap) {
+    		state[f] = this.fieldMap[f].getValue();
+    	}
+    	
+    	return state;
     }
     
     

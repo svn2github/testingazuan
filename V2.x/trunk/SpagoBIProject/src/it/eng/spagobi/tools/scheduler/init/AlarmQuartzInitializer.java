@@ -30,6 +30,7 @@ import it.eng.spagobi.kpi.alarm.service.AlarmInspectorJob;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.quartz.CronTrigger;
@@ -53,8 +54,20 @@ public class AlarmQuartzInitializer implements InitializerIFace {
 	public void init(SourceBean config) {
 	    try{
 	    	logger.debug("IN");
+	    	boolean alreadyInDB = false;
 	    	Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+	    	String[] jobNames = scheduler.getJobNames("AlarmInspectorJob");
+	    	if(jobNames != null){ 
+	    		int length = jobNames.length;
+    			for (int i=0;i<length;i++){
+    				if(jobNames[i].equalsIgnoreCase("AlarmInspectorJob")){
+    					alreadyInDB = true;
+    					break;
+    				}
+    			}
+	    	}
 	    	
+	    	if(!alreadyInDB){
 		    JobDataMap data=new JobDataMap();
 		    
 			// CREATE JOB DETAIL 
@@ -114,7 +127,9 @@ public class AlarmQuartzInitializer implements InitializerIFace {
 			  simpleTrigger.setMisfireInstruction(SimpleTrigger.INSTRUCTION_RE_EXECUTE_JOB);
 			  
 			scheduler.scheduleJob(jobDetail,simpleTrigger);
+			
 			logger.debug("Added job with name AlarmInspectorJob");
+	    	}
 			logger.debug("OUT");
 	    } catch (Exception e) {
 	    	logger.error("Error while initializing scheduler ",e);

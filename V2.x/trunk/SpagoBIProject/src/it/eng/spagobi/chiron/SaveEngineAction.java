@@ -31,7 +31,7 @@ public class SaveEngineAction extends AbstractBaseHttpAction{
 			setSpagoBIResponseContainer( response );
 			
 			JSONObject engineJSON = this.getAttributeAsJSONObject("ENGINE");
-			System.out.println(engineJSON);
+			logger.debug(engineJSON);
 		} catch (Throwable t) {
 			throw new SpagoBIException("An unexpected error occured while executing SAVE_ENGINES_ACTION", t);
 		} finally {

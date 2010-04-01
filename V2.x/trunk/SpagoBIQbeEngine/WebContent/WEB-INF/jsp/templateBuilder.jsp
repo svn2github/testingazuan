@@ -97,6 +97,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	    var remoteServiceRegistryParams = {
 		    	SBI_EXECUTION_ID: <%= request.getParameter("SBI_EXECUTION_ID")!=null?"'" + request.getParameter("SBI_EXECUTION_ID") +"'": "null" %>
 		    	, LIGHT_NAVIGATOR_DISABLED: 'TRUE'
+		    	, "NEW_SESSION" : "TRUE"
 		}; 
 		Sbi.config.remoteServiceRegistry = new Sbi.service.ServiceRegistry({
 			baseUrl: remoteUrl

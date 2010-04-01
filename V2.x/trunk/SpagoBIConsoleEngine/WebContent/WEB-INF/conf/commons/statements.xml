@@ -70,8 +70,12 @@
   			     query="UPDATE SERVICE_INSTANCE SET ERRORS_CHECK = ? , USER_ID = ?, TS_UPDATE = SYSDATE
                     WHERE ID_SERVICE_INSTANCE = SUBSTR(?,INSTR(?,'|',1,1)+1) "/>	 
   			   
-   <STATEMENT name="UPD_ALARM_STATE_PINGSCO" 
+  <STATEMENT name="UPD_ALARM_STATE_PINGSCO" 
   			     query="UPDATE SERVICE_INSTANCE SET ALARMS_CHECK = ? , USER_ID = ?, TS_UPDATE = SYSDATE
+                    WHERE ID_SERVICE_INSTANCE = SUBSTR(?,INSTR(?,'|',1,1)+1)"/>	  	
+                    
+  <STATEMENT name="UPD_PROCESS_DATE_PINGSCO" 
+  			     query="UPDATE SERVICE_INSTANCE SET  USER_ID = ?, ENDDATE = SYSDATE, TS_UPDATE = SYSDATE
                     WHERE ID_SERVICE_INSTANCE = SUBSTR(?,INSTR(?,'|',1,1)+1)"/>	  			
   <!-- end statements for pingsco console -->  	  			 
   			

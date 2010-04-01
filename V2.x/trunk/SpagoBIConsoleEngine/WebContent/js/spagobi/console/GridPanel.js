@@ -165,6 +165,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		, alarms: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_alarms.gif', inactive: '../img/ico_alarms_gray.gif'}}
 		, views: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_views.gif', inactive: '../img/ico_views_gray.gif'}} 
 		, refresh: {serviceName: 'REFRESH_ACTION', images: '../img/ico_refresh.gif'}
+		, genericUpdate: {serviceName: 'UPDATE_ACTION'}
 	}
    
     //  -- public methods ---------------------------------------------------------
@@ -212,7 +213,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
         if  (msgErr != ""){
         	Sbi.Msg.showError(msgErr, 'Service Error');
         }	
-        
+       
       	//if there are some promptable field, it shows a popup for the insertion
       	if (promptables !== undefined){
       		//if(this.promptWin === null) {
@@ -260,7 +261,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	}
 
 	
-	, execAction: function(action, r, index, options) {		
+	, execAction: function(action, r, index, options) {			
 		var callback = function(params){
 
 			params = Ext.apply(params, {
@@ -285,7 +286,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		    	, scope: this     
 		    });
 		};
-		var params = this.resolveParameters(options, r, this.executionContext, callback);
+		this.resolveParameters(options, r, this.executionContext, callback);
 	
 
     }
@@ -372,7 +373,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		
 		var callback = function(params){ 		
 			params = Ext.apply(params, {
-	        	USER_ID: Sbi.user.userId 
+				userId: Sbi.user.userId 
 	          , DOCUMENT_LABEL: options.document.label
 	  		}); 
 			
@@ -395,7 +396,26 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	  				var content = Ext.util.JSON.decode( response.responseText );
 	  				action.setBoundColumnValue(r, content.pid);
 	  				this.waitWin.stop('Proecess started succesfully');
-					action.toggle(r);				
+					action.toggle(r);		
+					if (params.stmt){
+						//calls the update action (if there's a stmt definition)
+						Ext.Ajax.request({
+					       	url: this.services['genericUpdate'] 			       
+					       	, params: params 			       
+					    	, success: function(response, options) {
+					    		if(response !== undefined && response.responseText !== undefined) {
+										var content = Ext.util.JSON.decode( response.responseText );
+										if (content !== undefined) {				      			  
+										//	alert(content.toSource());
+										}				      		
+				    			} else {
+				    				Sbi.Msg.showError('Server response is empty', 'Service Error');
+				    			}
+					    	}
+					    	, failure: Sbi.exception.ExceptionHandler.onServiceRequestFailure
+					    	, scope: this     
+					    });
+					}
 		    	}
 		    	, failure: function(response, options) {
 		    		Sbi.exception.ExceptionHandler.onServiceRequestFailure(response, options);
@@ -416,7 +436,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 
 		var callback = function(params){
 			params = Ext.apply(params, {
-	        	USER_ID: Sbi.user.userId 
+	        	userId: Sbi.user.userId 
 	          , DOCUMENT_LABEL: options.document.label
 	  		}); 
 			
@@ -439,7 +459,27 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	  				var content = Ext.util.JSON.decode( response.responseText );
 	  				action.setBoundColumnValue(r, content.pid);
 	  				this.waitWin.stop('Proecess stopped succesfully');
-					action.toggle(r);				
+					action.toggle(r);
+					
+					if (params.stmt){						
+						//calls the update action (if there's a stmt definition)
+						Ext.Ajax.request({
+					       	url: this.services['genericUpdate'] 			       
+					       	, params: params 			       
+					    	, success: function(response, options) {
+					    		if(response !== undefined && response.responseText !== undefined) {
+										var content = Ext.util.JSON.decode( response.responseText );
+										if (content !== undefined) {				      			  
+										//	alert(content.toSource());
+										}				      		
+				    			} else {
+				    				Sbi.Msg.showError('Server response is empty', 'Service Error');
+				    			}
+					    	}
+					    	, failure: Sbi.exception.ExceptionHandler.onServiceRequestFailure
+					    	, scope: this     
+					    });
+					}
 		    	}
 		    	, failure: function(response, options) {
 		    		Sbi.exception.ExceptionHandler.onServiceRequestFailure(response, options);

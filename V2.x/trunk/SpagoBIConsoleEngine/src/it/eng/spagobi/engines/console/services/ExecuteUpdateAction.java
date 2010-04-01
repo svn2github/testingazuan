@@ -79,11 +79,7 @@ public class ExecuteUpdateAction extends AbstractConsoleEngineAction {
 			super.service(request,response);
 			consoleEngineInstance = getConsoleEngineInstance();
 			
-			//check for mandatory parameters 
-			message  = getAttributeAsString(MESSAGE);
-			logger.debug("Parameter [" + MESSAGE + "] is equals to [" + message + "]");			
-			Assert.assertTrue(!StringUtilities.isEmpty( message ), "Parameter [" + MESSAGE + "] cannot be null or empty");
-			
+			//check for mandatory parameters 						
 			user = getAttributeAsString( USER_ID );
 			logger.debug("Parameter [" + USER_ID + "] is equals to [" + user + "]");			
 			Assert.assertTrue(!StringUtilities.isEmpty( user ), "Parameter [" + USER_ID + "] cannot be null or empty");

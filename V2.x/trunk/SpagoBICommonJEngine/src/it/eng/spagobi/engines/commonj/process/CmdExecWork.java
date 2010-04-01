@@ -117,6 +117,9 @@ public class CmdExecWork extends SpagoBIWork {
 			}
 		}
 
+		// add pid to command
+		command+=pid;
+		
 
 //		ProcessBuilder pb = new ProcessBuilder(command);
 //		pb.directory(envFile);

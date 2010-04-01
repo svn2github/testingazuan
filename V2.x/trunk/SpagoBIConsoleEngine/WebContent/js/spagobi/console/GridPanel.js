@@ -373,7 +373,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		var callback = function(params){ 		
 			params = Ext.apply(params, {
 	        	USER_ID: Sbi.user.userId 
-	        	, DOCUMENT_ID: options.document.label
+	          , DOCUMENT_LABEL: options.document.label
 	  		}); 
 			
 			if(this.waitWin === null) {
@@ -417,7 +417,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		var callback = function(params){
 			params = Ext.apply(params, {
 	        	USER_ID: Sbi.user.userId 
-	        	, DOCUMENT_ID: options.document.label
+	          , DOCUMENT_LABEL: options.document.label
 	  		}); 
 			
 			if(this.waitWin === null) {
@@ -528,7 +528,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			{
 				header: "Data",
 			    dataIndex: 'data',
-			    width: 100
+			    width: 150
 			}
 		]);
 		this.columnModel.defaultSortable = true;  

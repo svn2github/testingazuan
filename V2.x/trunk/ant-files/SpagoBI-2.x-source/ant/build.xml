@@ -203,6 +203,26 @@
 	    <mkdir dir="${tomcat.home}/webapps/SpagoBIAccessibilityEngine" />
 	    <unzip src="../../../SpagoBIAccessibilityEngine/dist/SpagoBIAccessibilityEngine.war" dest="${tomcat.home}/webapps/SpagoBIAccessibilityEngine" />
 	</target>
+	
+	<target name="create.SpagoBICommonJEngine.war" depends="create.sbi.utils.jar">
+	    <ant dir="../SpagoBICommonJEngine/ant" />
+	  </target>
+	  <target name="deploy.SpagoBICommonJEngine.war" depends="create.sbi.utils.jar,create.SpagoBICommonJEngine.war">
+	  <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBICommonJEngine" />
+	    <delete dir="${tomcat.home}/webapps/SpagoBICommonJEngine" />
+	    <mkdir dir="${tomcat.home}/webapps/SpagoBICommonJEngine" />
+	    <unzip src="../../../SpagoBICommonJEngine/dist/SpagoBICommonJEngine.war" dest="${tomcat.home}/webapps/SpagoBICommonJEngine" />
+	</target>
+  
+	<target name="create.SpagoBIConsoleEngine.war" depends="create.sbi.utils.jar">
+	    <ant dir="../SpagoBIConsoleEngine/ant" />
+	  </target>
+	  <target name="deploy.SpagoBIConsoleEngine.war" depends="create.sbi.utils.jar,create.SpagoBIConsoleEngine.war">
+	  <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIConsoleEngine" />
+	    <delete dir="${tomcat.home}/webapps/SpagoBIConsoleEngine" />
+	    <mkdir dir="${tomcat.home}/webapps/SpagoBIConsoleEngine" />
+	    <unzip src="../../../SpagoBIConsoleEngine/dist/SpagoBIConsoleEngine.war" dest="${tomcat.home}/webapps/SpagoBIConsoleEngine" />
+	</target>  	
   
   <target name="create.all" depends="clean.all">
     <!--  
@@ -220,7 +240,15 @@
     <antcall target="create.liferay.security.jar" />
     <antcall target="create.xlm.security.jar" />
     <antcall target="create.ldap.security.jar" />
-            
+       
+    <antcall target="create.SpagoBICommonJEngine.war" />
+    <copy file="../../../SpagoBICommonJEngine/dist/SpagoBICommonJEngine.war" 
+        todir="../../../dist" overwrite="true" />
+        
+    <antcall target="create.SpagoBIConsoleEngine.war" />
+    <copy file="../../../SpagoBIConsoleEngine/dist/SpagoBIConsoleEngine.war" 
+        todir="../../../dist" overwrite="true" />
+                    
     <antcall target="create.SpagoBI.war" />
     <copy file="../../../SpagoBIProject/dist/SpagoBI.war" 
         todir="../../../dist" overwrite="true" />
@@ -271,6 +299,9 @@
     <antcall target="create.SpagoBIAccessibilityEngine.war" />
     <copy file="../../../SpagoBIAccessibilityEngine/dist/SpagoBIAccessibilityEngine.war" 
         todir="../../../dist" overwrite="true" />
+
+
+                        
   </target>
 
   <target name="deploy.all" >
@@ -286,6 +317,8 @@
     <antcall target="deploy.SpagoBIWekaEngine.war" />
   	<antcall target="deploy.SpagoBIJPXMLAEngine.war" />
   	<antcall target="deploy.SpagoBIAccessibilityEngine.war" />
+  	<antcall target="deploy.SpagoBICommonJEngine.war" />
+  	<antcall target="deploy.SpagoBIConsoleEngine.war" />      	
   </target>
 
    <target name="clean.all" >
@@ -326,7 +359,10 @@
   <delete dir="../../../SpagoBIJPXMLAEngine/dist"/>	
   <delete dir="../../../SpagoBIAccessibilityEngine/ant-build"/>
   <delete dir="../../../SpagoBIAccessibilityEngine/dist"/>	
-
+  <delete dir="../../../SpagoBICommonJEngine/ant-build"/>
+  <delete dir="../../../SpagoBICommonJEngine/dist"/>	
+  <delete dir="../../../SpagoBIConsoleEngine/ant-build"/>
+  <delete dir="../../../SpagoBIConsoleEngine/dist"/>	  
    </target>
    
   <target name="copy.ss" >
@@ -368,6 +404,8 @@
     <ant dir="../SpagoBILdapSecurityProvider/ant" target="svn.checkout"/>  
     <ant dir="../SpagoBIDatabaseScripts" target="svn.checkout"/> 
   	<ant dir="../SpagoBIAccessibilityEngine/ant" target="svn.checkout"/>
+  	<ant dir="../SpagoBICommonJEngine/ant" target="svn.checkout"/>
+  	<ant dir="../SpagoBIConsoleEngine/ant" target="svn.checkout"/>      	
   </target>
   
   <target name="javadoc" >
@@ -389,6 +427,8 @@
     <ant dir="../SpagoBILdapSecurityProvider/ant" target="javadoc"/>  
     <ant dir="../SpagoBIJPXMLAEngine/ant" target="javadoc"/>
   	<ant dir="../SpagoBIAccessibilityEngine/ant" target="javadoc"/>
+    <ant dir="../SpagoBICommonJEngine/ant" target="javadoc"/>
+    <ant dir="../SpagoBIConsoleEngine/ant" target="javadoc"/>
   </target>
 
   <target name="package.all" >
@@ -403,8 +443,10 @@
         <ant dir="../SpagoBITalendEngine/ant" target="package"/> 
         <ant dir="../SpagoBIWekaEngine/ant" target="package"/> 
         <ant dir="../SpagoBIDatabaseScripts" target="package"/>  
-  		<ant dir="../SpagoBIJPXMLAEngine/ant" target="package"/> 
-  	    <ant dir="../SpagoBIAccessibilityEngine/ant" target="package"/>                                                                                              
+  		  <ant dir="../SpagoBIJPXMLAEngine/ant" target="package"/> 
+  	    <ant dir="../SpagoBIAccessibilityEngine/ant" target="package"/>
+  	    <ant dir="../SpagoBICommonJEngine/ant" target="package"/>
+  	    <ant dir="../SpagoBIConsoleEngine/ant" target="package"/>                                                                                                              
   </target>
  
  <target name="package.all.src" depends="clean.all">

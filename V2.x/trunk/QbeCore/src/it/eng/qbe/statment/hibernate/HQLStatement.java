@@ -1215,7 +1215,7 @@ public class HQLStatement extends BasicStatement {
 		fromClause = buildFromClause(query, entityAliasesMaps);
 		havingClause = buildHavingClause(query, entityAliasesMaps);
 		
-		queryStr = selectClause + " " + fromClause + " " + whereClause + " " +  groupByClause + " " + orderByClause + " " + havingClause;
+		queryStr = selectClause + " " + fromClause + " " + whereClause + " " +  groupByClause + " " + havingClause + " " + orderByClause;
 		
 		Set subqueryIds;
 		try {

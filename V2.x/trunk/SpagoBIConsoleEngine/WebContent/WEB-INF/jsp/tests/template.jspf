@@ -168,7 +168,7 @@ Sbi.template = {
 	    	            , config: {
 	    	            	staticParams: {
 							//generic params for the execution of query on generic db
-							   stmt: 'UPDATE_ALL_ERRORS_STATE'
+							   stmt: 'UPDATE_ALL_ERRORS_STATE_TEST'
 							 , numPars: '5'			//the number of params in the query	(number of '?' placeholder)						     																																 													    			     									
 							}
 						  , dynamicParams: [{
@@ -202,7 +202,7 @@ Sbi.template = {
 	    	            , config: {
 	    	            	staticParams: {
 							//generic params for the execution of query on generic db							 							
-							   stmt: 'UPDATE_ALL_ALARMS_STATE'
+							   stmt: 'UPDATE_ALL_ALARMS_STATE_TEST'
 							 , numPars: '5'			//the number of params in the query																																	 													    			     									
 							}
 						  , dynamicParams: [{
@@ -235,7 +235,7 @@ Sbi.template = {
    	    	            , config: {
    	    	            	staticParams: {
    							//generic params for the execution of query on generic db
-							   stmt: 'UPDATE_ALL_VIEWING_STATE'
+							   stmt: 'UPDATE_ALL_VIEWING_STATE_TEST'
    							 , numPars: '5'			//the number of params in the query																																	 													    			     									
    							}
    						  , dynamicParams: [{
@@ -300,13 +300,11 @@ Sbi.template = {
 							 	 	{
 										label: '155'
 										, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
-										, dynamicParams: [{label: 'debug' 
+										, dynamicParams: [{'level': 'Debug level: ' 
 														 , scope: 'promptable'   
-														 },{'id': 'ID'  					//logical name: value
+														 },{'id': 'ID'  					
 														  , scope: 'dataset'
-													     },{param2: 'param2' 
-														  , scope: 'promptable'   
-														 }]	 
+													     }]	 
 									}
 								}
 							}, {
@@ -321,7 +319,7 @@ Sbi.template = {
 							 	 	{
 										label: '155'
 										, dynamicParams: [{
-											'id': 'ID'   					//value: logical name
+											'id': 'ID'   					
 											, scope: 'dataset'
 										}, {
 											 'PROCESS_ID': 'pid'
@@ -338,7 +336,7 @@ Sbi.template = {
 							    , tooltipInactive: 'View checked error messages'
 							    , config: {staticParams: {
 									//generic params for the execution of query on generic db
-									   stmt: 'UPDATE_ERROR_STATE'
+									   stmt: 'UPDATE_ERROR_STATE_TEST'
 									 , numPars: '2'			//the number of params in the query													 														 													    			     									
 									}
 								  , dynamicParams: [{
@@ -358,7 +356,7 @@ Sbi.template = {
 								, tooltipInactive: 'View checked alarm messages'
 								, config: {staticParams: {
 									//generic params for the execution of query on generic db
-									   stmt: 'UPDATE_ALARM_STATE'
+									   stmt: 'UPDATE_ALARM_STATE_TEST'
 									 , numPars: '2'			//the number of params in the query													 														 													    			     									
 									}
 								  , dynamicParams: [{
@@ -375,10 +373,14 @@ Sbi.template = {
 								, flagColumn: 'errors_flag'
 								, tooltip: 'Download log files'
 								, config: {
-											staticParams: {											
-															DIRECTORY: 'D:/Progetti/eBam/Test'		
-														  ,	PREFIX: 'U'																			 														 													    			     									
-														 }															
+									staticParams: {											
+													DIRECTORY: 'D:/Progetti/eBam/Test/files_log'		
+												  ,	PREFIX1: 'P'																			 														 													    			     									
+												 }	
+									, dynamicParams: [
+										{'PREFIX2': 'brandname'  					//logical name: column with value (dataIndex)
+										, scope: 'dataset'
+										}]														
 								}
 							}, { 
 								name: 'crossnav'
@@ -396,9 +398,9 @@ Sbi.template = {
 										},{
 											'P2': 'productName'
 											, scope: 'dataset'
-										},{'prompt1': 'debug' 			//label: fieldname
+										},{'prompt1': 'debug' 			//fieldname(on req) : label
 											 , scope: 'promptable'   
-										},{'P3': 'value2' 
+										},{'P3': 'Param3' 
 										  , scope: 'promptable'   
 										}]	 
 									}
@@ -433,7 +435,7 @@ Sbi.template = {
 								, checkColumn: 'monitor_check'								
 								, config: {staticParams: {
 											//generic params for the execution of query on generic db
-											    stmt: 'UPDATE_MONITOR_STATE'
+											    stmt: 'UPDATE_MONITOR_STATE_TEST'
 											 , numPars: '2'			//the number of params in the query													 														 													    			     									
 											}
 										  , dynamicParams: [{
@@ -452,7 +454,7 @@ Sbi.template = {
 		  						, tooltipActive: 'Unchecked. Click to check'
 		  							, config: {staticParams: {
 									//generic params for the execution of query on generic db
-									   stmt: 'UPDATE_CHECK_STATE'
+									   stmt: 'UPDATE_CHECK_STATE_TEST'
 									 , numPars: '2'			//the number of params in the query													 														 													    			     									
 									}
 								  , dynamicParams: [{

@@ -1,5 +1,33 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<STATEMENTS>	 			
+<STATEMENTS>	 		
+
+  <!-- start statements for test console -->	
+  	<STATEMENT name="UPDATE_MONITOR_STATE_TEST" 
+  			   query="UPDATE TEST_CONSOLE SET FLG1 = ? WHERE ID = ? "/>	
+  			   
+	<STATEMENT name="UPDATE_CHECK_STATE_TEST" 
+  			   query="UPDATE TEST_CONSOLE SET FLG6 = ? WHERE ID = ? "/>	 
+  			   
+   <STATEMENT name="UPDATE_ERROR_STATE_TEST" 
+  			   query="UPDATE TEST_CONSOLE SET FLG3 = ? WHERE ID = ? "/>	 
+  			   
+   <STATEMENT name="UPDATE_ALARM_STATE_TEST" 
+  			   query="UPDATE TEST_CONSOLE SET FLG5 = ? WHERE ID = ? "/>	  			 
+  			   
+   <STATEMENT name="UPDATE_ALL_ERRORS_STATE_TEST" 
+  			   query="UPDATE TEST_CONSOLE  SET FLG3 = ?, COLUMN3 = ?, COLUMN_DATA = now() 
+  			   		  WHERE  FLG2 = 1  
+  			   		  AND COLUMN1 like ? and COLUMN2 like ? and DATE_FORMAT(column_data,'%Y-%m-%d') like ?"/>	
+  			   
+   <STATEMENT name="UPDATE_ALL_ALARMS_STATE_TEST" 
+  			   query="UPDATE TEST_CONSOLE  SET FLG5 = ?, COLUMN3 = ?, COLUMN_DATA = now() 
+  			   		  WHERE  FLG4 = 1  
+  			   		  AND COLUMN1 like ? and COLUMN2 like ? and DATE_FORMAT(column_data,'%Y-%m-%d') like ?"/>	
+  			   
+   <STATEMENT name="UPDATE_ALL_VIEWING_STATE_TEST" 
+  			   query="UPDATE TEST_CONSOLE  SET FLG6 = ?, COLUMN3 = ?, COLUMN_DATA = now()
+  			    	  WHERE COLUMN1 like ? and COLUMN2 like ? and DATE_FORMAT(column_data,'%Y-%m-%d') like ?"/>	
+  <!-- end statements for test console -->
 
   <!-- start statements for AGENDE & BOOKING document -->
 	<STATEMENT name="UPDATE_MONITOR_STATE" 
@@ -36,6 +64,7 @@
    <STATEMENT name="UPDATE_ALARM_STATE_BOOK" 
   			   query="UPDATE SERVICE_INSTANCE SET ALARMS_CHECK = ? , TS_UPDATE = sysdate WHERE ID_SERVICE_INSTANCE = ?"/>	
   <!-- end statements for AGENDE & BOOKING document -->
+
   <!-- start statements for pingsco console -->
   <STATEMENT name="UPD_ERROR_STATE_PINGSCO" 
   			     query="UPDATE SERVICE_INSTANCE SET ERRORS_CHECK = ? , USER_ID = ?, TS_UPDATE = SYSDATE

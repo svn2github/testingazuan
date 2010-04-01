@@ -177,10 +177,9 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		var staticParams = parameters.staticParams;
 		
 		results = Ext.apply(results, parameters.staticParams);
-		
 		var dynamicParams = parameters.dynamicParams;
+		
 	    if(dynamicParams) { 
-	    	
 	    	var msgErr = ""; 
 	      	for (var i = 0, l = dynamicParams.length; i < l; i++) {      		     
 	      		var param = dynamicParams[i]; 
@@ -204,32 +203,33 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	                }
 	          		    
 	        	 }          			   
-	      	} 
-	      	
+	      	}
 	    	var metaParams = parameters.metaParams;
 		    if(metaParams) {  
 		    	results['metaParams'] = Ext.util.JSON.encode(metaParams);
 		    }
-	      	
-	        if  (msgErr != ""){
-	        	Sbi.Msg.showError(msgErr, 'Service Error');
-	        }	
-	        
-	      	//if there are some promptable field, it shows a popup for the insertion
-	      	if (promptables !== undefined){
-	      		if(this.promptWin === null) {
-	    			this.promptWin = new Sbi.console.PromptablesWindow({
-	    				promptables: promptables	    					
-	    			});
-	    			this.promptWin.on('click', function(win, pp) {
-	    				alert("clicked!! " + pp.toSource()) ;	    				
-	    				Ext.apply(results, pp);
-	    			    callback.call (this, results);	    								
-	    			}, this);
-	    		}
-	      		this.promptWin.show();
-	      	} 	 
 	    }
+        if  (msgErr != ""){
+        	Sbi.Msg.showError(msgErr, 'Service Error');
+        }	
+        
+      	//if there are some promptable field, it shows a popup for the insertion
+      	if (promptables !== undefined){
+      		//if(this.promptWin === null) {
+    			this.promptWin = new Sbi.console.PromptablesWindow({
+    				promptables: promptables	    					
+    			});
+    			this.promptWin.on('click', function(win, pp) {				
+    				Ext.apply(results, pp);
+    			    callback.call (this, results);	    								
+    			}, this);
+    	//	}
+      		this.promptWin.show();
+      	}
+      	else {
+      		callback.call (this, results);	  
+      	}
+	    
 	    
 	    //return results;
 	}

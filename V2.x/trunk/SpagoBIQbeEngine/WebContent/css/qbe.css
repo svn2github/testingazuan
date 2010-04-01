@@ -1,0 +1,209 @@
+/*
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+*/
+
+/*******************************************************************************************************
+ * Actions
+ ********************************************************************************************************/
+        
+.add {
+    background-image:url(../img/actions/add.gif) !important;
+}
+
+
+.x-item-disabled .add{
+	background-image:url(../img/actions/add_gray.gif) !important;
+}
+
+.edit {
+    background-image:url(../img/actions/edit.png) !important;
+}
+
+.x-item-disabled .edit{
+	 background-image:url(../img/actions/edit_gray.png) !important;
+}
+
+.editremove {
+	background-image:url(../img/actions/editdelete.png) !important;
+}
+
+.x-item-disabled .editremove {
+	background-image:url(../img/actions/editdelete_gray.png) !important;
+}
+
+.remove {
+	background-image:url(../img/actions/delete.gif) !important;
+}
+
+.x-item-disabled .remove {
+	background-image:url(../img/actions/delete_gray.gif) !important;
+}
+
+.option {
+	background-image:url(../img/actions/option.gif) !important;
+}
+
+.add-calculated-filed  {
+	background-image:url(../img/actions/qbe-tb-btn-sprite.png)  no-repeat 0 -0px;
+}
+
+.hide-nonvisible-filed  {
+	background-image:url(../img/actions/qbe-tb-btn-sprite.png)  no-repeat 0 -11px;
+}
+
+
+/*******************************************************************************************************
+ * Datamart Structure
+ ********************************************************************************************************/
+  
+.calculation {
+	 background-image:url(../img/datamartstructure/calculation.gif) !important;
+}
+
+.measure {
+	 background-image:url(../img/datamartstructure/measure.gif) !important;
+}
+
+.attribute {
+	 background-image:url(../img/datamartstructure/attribute.gif) !important;
+}
+
+.cube {
+	 background-image:url(../img/datamartstructure/cube.gif) !important;
+}
+
+.database {
+	 background-image:url(../img/datamartstructure/database.png) !important;
+}
+
+.dimension {
+	 background-image:url(../img/datamartstructure/dimension.gif) !important;
+}
+
+.view {
+	 background-image:url(../img/datamartstructure/view.png) !important;
+}
+
+
+/*******************************************************************************************************
+ * Filter expression wizard
+ ********************************************************************************************************/
+  
+.operand {
+	 background-image:url(../img/datamartstructure/measure.gif) !important;
+}
+
+.operator {
+	 background-image:url(../img/datamartstructure/attribute.gif) !important;
+}
+
+.trigger-up {
+	 background-image:url(../img/triggerup.gif) !important;
+}
+
+
+/*******************************************************************************************************
+ * Mime types
+ ********************************************************************************************************/
+  
+
+.pdf {
+     background-image:url(../img/mimetypes/pdf.gif) !important;
+}
+
+.rtf {
+     background-image:url(../img/mimetypes/rtf.gif) !important;
+}
+.xls {
+     background-image:url(../img/mimetypes/xls.gif) !important;
+}
+
+.csv {
+     background-image:url(../img/mimetypes/csv.gif) !important;
+}
+
+.jrxml {
+     background-image:url(../img/mimetypes/jrxml.gif) !important;
+}
+
+
+.icon-remove {
+	background-image:url(../img/delete.gif) !important;
+}
+
+
+.icon-execute {
+	background-image:url(../img/filter.gif) !important;
+}
+
+
+.icon-grid {
+	background-image:url(../img/grid.png) !important;
+}
+
+.x-node-ctx {
+    background:#eee !important;
+    /* border:1px solid #ccc !important */;
+}
+
+
+.row-over {
+     border:1px solid #dddddd;
+     background: #efefef url(../js/ext/resources/images/default/grid/row-over.gif) repeat-x left top;
+}
+
+
+/*******************************************************************************************************
+ * Form viewer
+ ********************************************************************************************************/
+.icon-clear {
+	background-image: url('../img/formviewer/clear16.gif') !important;
+}
+
+
+
+/*******************************************************************************************************
+ * Form builder
+ ********************************************************************************************************/
+.filter {	
+    border:1px solid #eee !important;
+}
+
+.filter-select {	
+    background:#eef !important;
+    border:1px dotted #ccc !important;
+}
+
+.x-table-layout td {
+     vertical-align:top;
+}
+
+/* remove the default left,center and right images from the button border*/
+.image-button .x-btn-left, .image-button .x-btn-right, .image-button .x-btn-center{
+    background: 0;
+    padding:0px;	
+}
+
+.image-button .x-btn-center .x-btn-text  {
+	 background-repeat: no-repeat;
+	 width: 20px;
+
+}

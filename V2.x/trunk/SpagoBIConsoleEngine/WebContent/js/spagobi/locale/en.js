@@ -78,3 +78,4 @@ Sbi.locale.ln['sbi.console.downloadlogs.btnDownload'] = 'Download';
 
 //propmtables window
 Sbi.locale.ln['sbi.console.promptables.btnOK'] = 'OK';
+Sbi.locale.ln['sbi.console.promptables.btnClose'] = 'Close';

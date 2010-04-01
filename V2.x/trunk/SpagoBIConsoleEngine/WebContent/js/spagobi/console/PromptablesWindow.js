@@ -65,9 +65,17 @@ Sbi.console.PromptablesWindow = function(config) {
 
 	Ext.apply(this, c);
 		
-	this.initFormPanel();	
-
+	this.initFormPanel();
+	
 	this.closeButton = new Ext.Button({
+		text: LN('sbi.console.promptables.btnClose'),
+		handler: function(){
+        	this.hide();
+        }
+        , scope: this
+	});
+	
+	this.okButton = new Ext.Button({
 		text: LN('sbi.console.promptables.btnOK'),
 		handler: function(){
         	this.hide();
@@ -85,7 +93,7 @@ Sbi.console.PromptablesWindow = function(config) {
 	,	modal:true
 	,	title: this.title
 	,	buttonAlign : 'center'
-	,	buttons: [this.closeButton]
+	,	buttons: [this.closeButton, this.okButton]
 	,	items: [this.formPanel]
 	});
 
@@ -102,6 +110,7 @@ Ext.extend(Sbi.console.PromptablesWindow, Ext.Window, {
     , formPanel: null
     
    , fieldMap: null
+   , okButton: null
    , closeButton: null
     
     // public methods

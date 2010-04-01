@@ -181,6 +181,10 @@ public class WorkConfiguration {
 						workToLaunch.setAnalyticalParameters(work.getAnalyticalParameters());
 						if(isLabel) workToLaunch.setSbiLabel(documentUnique);
 					}
+					else{
+						logger.error("Class you want to launch should extend SpagoBIWork or CmdExecWork");
+						return;
+					}
 
 				container.setPid(work.getPId());
 				container.setWork(workToLaunch);

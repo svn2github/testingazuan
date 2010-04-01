@@ -185,7 +185,7 @@ public class StartWorkAction extends AbstractEngineAction {
 			// calculate process Id
 			String pId = null;
 
-			pId = work.calculatePId(documentUnique, parameters);					
+			pId = work.calculatePId();					
 
 
 

@@ -32,19 +32,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.engines.commonj.runtime;
 
 
-import java.util.HashMap;
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
-
-import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.commonj.exception.CommonjEngineException;
-import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 
 public class CommonjWork {
 
@@ -265,30 +264,18 @@ public class CommonjWork {
 		return pId;
 	}
 
-	/** calculate work pid, like document_id_par_value_randomNumber
+	/** calculate work pid,
 	 * 
-	 * @param documentId
-	 * @param pars
 	 */
 
-	public String calculatePId(String documentId, Map pars) {
-		String tempPId=documentId+"_";
-//		if(pars!=null){
-//		for (Iterator iterator = pars.keySet().iterator(); iterator.hasNext();) {
-//		String url = (String) iterator.next();
-//		Object val=pars.get(url);
-//		if(val!=null){
-//		tempPId+=url+"_"+val.toString()+"_";
-//		}
-//		}
-		// random numebr
-		Random random=new Random();
-		int r=random.nextInt();
-		if(r<0) r=r*-1;
-		Integer rInteger=Integer.valueOf(r);
-		tempPId+=rInteger.toString();
-		pId=tempPId;
-		return pId;	
+	public String calculatePId() {
+
+		UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+		UUID uuidObj = uuidGen.generateTimeBasedUUID();
+		String executionId = uuidObj.toString();
+		pId = executionId;
+		return executionId;	
+	
 	}
 
 

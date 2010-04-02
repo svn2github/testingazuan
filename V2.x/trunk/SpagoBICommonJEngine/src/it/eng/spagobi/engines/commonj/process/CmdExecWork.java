@@ -119,7 +119,8 @@ public class CmdExecWork extends SpagoBIWork {
 		}
 
 		// add pid to command
-		command+=pid;
+		String pidStr = "PID="+pid;
+		command += pidStr;
 		
 
 //		ProcessBuilder pb = new ProcessBuilder(command);

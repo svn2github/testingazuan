@@ -257,7 +257,7 @@ END-LIFERAY -->
      <INTERNAL_PROFILING_INITIALIZER passwordAbilitated="true">
 		<DEFAULT_USERS>
 			<USER userId="biadmin" password="biadmin" fullName="SpagoBI Administrator">
-				<ATTRIBUTE name="email" value="francesm@eng.it" />
+				<ATTRIBUTE name="email" value="admin@eng.it" />
 				<ATTRIBUTE name="name" value="SpagoBI Administrator" />
 				<ROLE name="/spagobi/admin"/>
 			</USER>

@@ -671,6 +671,8 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		}
 		
 		for(i = 0; i < tmpMeta.fields.length; i++) {			
+			var t = Ext.apply({}, this.columnDefaultConfig);
+		    tmpMeta.fields[i] = Ext.apply(t, tmpMeta.fields[i]);
 			if(tmpMeta.fields[i].type) {
 				var t = tmpMeta.fields[i].type;	
 				tmpMeta.fields[i].renderer  =  Sbi.locale.formatters[t];			   
@@ -691,6 +693,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 					Sbi.Msg.showWarning('Impossible to create inlineChart on column [' + tmpMeta.fields[i].header + ']');
 				}
 			}
+			
 		} 
 
 	    //adds inline action buttons

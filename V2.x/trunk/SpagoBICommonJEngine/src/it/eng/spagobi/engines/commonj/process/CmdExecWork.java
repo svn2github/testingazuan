@@ -86,6 +86,7 @@ public class CmdExecWork extends SpagoBIWork {
 		File directoryExec = null;
 		if(commandEnvironment != null) {
 			directoryExec = new File(commandEnvironment);
+			logger.info("commandEnvironment="+commandEnvironment);
 		}
 		// add -cp 
 		if(classpathParameters.size()>0){

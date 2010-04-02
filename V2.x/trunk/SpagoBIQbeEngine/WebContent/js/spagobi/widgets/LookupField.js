@@ -88,7 +88,10 @@ Sbi.widgets.LookupField = function(config) {
 	
 	this.on("render", function(field) {
 		field.el.on("keyup", function(e) {
-			this.xdirty = true;
+			var key = e.getKey();
+			if (key != e.TAB) {
+				this.xdirty = true;
+			}
 		}, this);
 	}, this);
 	
@@ -154,13 +157,13 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	 *  - string -> single value
 	 */
 	, setValue : function(v){	 
-		
+		//alert('v ' + v);
 		if(v === undefined) {
 			this.xvalue = {};
 			Sbi.widgets.LookupField.superclass.setValue.call(this, '');
 			return;
 		}
-		
+		//alert('v.toSource() ' + v.toSource());
 		if(typeof v === 'object') {
 			this.xvalue = {};
 			
@@ -174,6 +177,9 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 			
 			Ext.apply(this.xvalue, v);
 			
+			//alert('this.xdirty ' + this.xdirty);
+			//alert('step 1 this.getValue().toSource() ' + this.getValue().toSource());
+			
 			var displayText = '';
 			for(p in this.xvalue) {
 				displayText += this.xvalue[p] + ';';
@@ -183,6 +189,8 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 				displayText = displayText.substr(0, displayText.length-1);
 			}
 			Sbi.widgets.LookupField.superclass.setValue.call(this, displayText);
+			//alert('this.xdirty ' + this.xdirty);
+			//alert('step 2 this.getValue().toSource() ' + this.getValue().toSource());
 			
 		} else {
 			this.xvalue = {};
@@ -330,7 +338,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     }
 	
     , clean: function() {
-    	if(this.xdirty) {
+    	if(this.xdirty === true) {
 	    	var text = Sbi.widgets.LookupField.superclass.getValue.call(this);
 	    	var values = text.split(';');
 	    	this.xvalue = {};

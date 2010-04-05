@@ -13,7 +13,7 @@ Sbi.template = {
         }, {
             id: 'testConsLiveLine'
             , label: 'testConsLiveLine'
-            //, refreshTime: 5
+            , refreshTime: 15
         }, {
             id: 'testConsole'
             , label: 'testConsole'
@@ -64,9 +64,9 @@ Sbi.template = {
             	, title:'Multileds'
             	, fields: [
             		{header: 'Effort Idx',name:'EffortIndex', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 10, rangeMinValue: 0}, 
-            		{header: 'Compet.',name:'Competitiveness', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}, 
-            		{header: 'Cost Opt.',name:'CostOptimization', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0},
-            		{header: 'Health',name:'Health', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}
+            		//{header: 'Compet.',name:'Competitiveness', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}, 
+            		//{header: 'Cost Opt.',name:'CostOptimization', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0},
+            		//{header: 'Health',name:'Health', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}
             	]
            	}
         } ,  {
@@ -84,6 +84,7 @@ Sbi.template = {
         	dataset: 'testConsLiveLine'
             , widgetConfig: {
                	type: 'chart.sbi.speedometer'
+               	, title:'Speedometer'
                	, paramWidth: 100
             	, paramHeight: 100
             	, minValue: 0
@@ -132,6 +133,9 @@ Sbi.template = {
 	
             , table: {
 	            dataset: 'testConsole'
+		      , columnDefaultConfig: {
+		    	  width: 100
+		      }
 	          , columnId: 'ID' //the column ID of the single row
 	            // -- Filter bar -----------------------------------------------------------------
 	    	    , filterBar: {

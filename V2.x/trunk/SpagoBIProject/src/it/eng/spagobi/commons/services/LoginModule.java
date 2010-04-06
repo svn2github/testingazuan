@@ -351,7 +351,7 @@ public class LoginModule extends AbstractHttpModule {
 		} //for
 		
 		//general controls: check if the account is already blocked, otherwise update dtLastAccess field
-		if (user.getFlgPwdBlocked()){
+		if (user.getFlgPwdBlocked() == null || user.getFlgPwdBlocked()){
 			//if flgPwdBlocked is true the user cannot goes on
 			logger.info("The pwd needs to activate!");
 			toReturn = true;					

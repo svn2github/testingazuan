@@ -172,7 +172,7 @@ public class ExecutionProxy {
 					}
 					return response;
 				}
-				else if(eng.getLabel().equals("ChartEngine")){
+				else if(eng.getClassName().equals("it.eng.spagobi.engines.chart.SpagoBIChartInternalEngine")){
 					SourceBean request = null;
 					EMFErrorHandler errorHandler = null;
 					try {

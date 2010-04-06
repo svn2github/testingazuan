@@ -29,8 +29,8 @@ public class ChartExporter
 	private static int MAX_NUM_IMG = 5;
 	private static String HORIZONTAL_ORIENTATION = "horizontal";
 
-	public static final int MAX_WIDTH = 600;
-	public static final int MAX_HEIGHT = 1200;
+	public static final int MAX_WIDTH = 550;
+	public static final int MAX_HEIGHT = 800;
 
 	public File getChartPDF(String uuid, boolean multichart, String orientation)
 	throws Exception
@@ -129,25 +129,46 @@ public class ChartExporter
 		} 
 		else{
 			// otherwise the chart needs to be scaled (if width > height also turn!)
+			// SCALED WITH turning
 			if(width > height){
 				pdfDocument.setPageSize(PageSize.LETTER.rotate());
-				logger.debug("pdf rotation");
+				// calculate wich size is to reduce most:
+				float percentageToReduceHeight = 0;
+				float percentageToReduceWidth = 0;
+				if(height > MAX_WIDTH) {
+					percentageToReduceHeight = (height * 100 ) / MAX_WIDTH;
+				}
+				if(width > MAX_HEIGHT) {
+					percentageToReduceWidth = (width * 100 ) / MAX_HEIGHT;
+				}
+				float percToReduce = percentageToReduceHeight > percentageToReduceWidth ? percentageToReduceHeight : percentageToReduceWidth;
+				float percToScale = percToReduce - 100;
+				//						float newHeight = height - ((height/100)*percToReduce);
+//				float newWidth = width - ((width/100)*percToReduce);
+				logger.debug("pdf scale of percentage "+percToScale);
+				jpg.scalePercent(percToScale);
+
+				logger.debug("pdf rotation and scaling");
 			}
-			// calculate wich size is to reduce most:
-			float percentageToReduceHeight = 0;
-			float percentageToReduceWidth = 0;
-			if(height > MAX_HEIGHT) {
-				percentageToReduceHeight = (height * 100 ) / MAX_HEIGHT;
+			else{
+				// SCALED WITHOUT turning
+				// calculate wich size is to reduce most:
+				float percentageToReduceHeight = 0;
+				float percentageToReduceWidth = 0;
+				if(height > MAX_HEIGHT) {
+					percentageToReduceHeight = (height * 100 ) / MAX_HEIGHT;
+				}
+				if(width > MAX_WIDTH) {
+					percentageToReduceWidth = (width * 100 ) / MAX_WIDTH;
+				}
+				float percToReduce = percentageToReduceHeight > percentageToReduceWidth ? percentageToReduceHeight : percentageToReduceWidth;
+				float percToScale = percToReduce - 100;
+				//						float newHeight = height - ((height/100)*percToReduce);
+//				float newWidth = width - ((width/100)*percToReduce);
+				logger.debug("pdf scale of percentage "+percToScale);
+				jpg.scalePercent(percToScale);
+				logger.debug("pdf scaling");
 			}
-			if(width > MAX_WIDTH) {
-				percentageToReduceWidth = (width * 100 ) / MAX_WIDTH;
-			}
-			float percToReduce = percentageToReduceHeight > percentageToReduceWidth ? percentageToReduceHeight : percentageToReduceWidth;
-			float percToScale = percToReduce - 100;
-			//						float newHeight = height - ((height/100)*percToReduce);
-//			float newWidth = width - ((width/100)*percToReduce);
-			logger.debug("pdf scale of percentage "+percToScale);
-			jpg.scalePercent(percToScale);
 		}
 		logger.debug("OUT");
 	}

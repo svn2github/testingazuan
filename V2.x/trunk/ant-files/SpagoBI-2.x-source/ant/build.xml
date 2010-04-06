@@ -28,7 +28,7 @@
   <taskdef name="remove"    classname="org.apache.catalina.ant.RemoveTask" classpathref="catalina.ant.classpath" />	
   
   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-  <!--   SDK Management					                                                      -->
+  <!--   SDK Management					                                              -->
   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ --> 
   <target name="checkout.sdk" >
     <ant dir="../SpagoBISDK/ant" target="svn.checkout"/>
@@ -44,9 +44,16 @@
     <mkdir dir="${tomcat.home}/webapps/SpagoBISDK" />
     <unzip src="../../../SpagoBISDK/dist/SpagoBISDK.war" dest="${tomcat.home}/webapps/SpagoBISDK" />
   </target>
+  <target name="package.sdk">
+    <ant dir="../SpagoBISDK/ant" target="package.sdk"/>
+  </target>
+  <target name="javadoc.sdk">
+	    <ant dir="../SpagoBISDK/ant" target="javadoc.sdk"/>
+  </target>
   <target name="create.sdk.src">
     <ant dir="../SpagoBISDK/ant" target="create.sdk.src"/>
   </target>
+
   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ --> 
 
   

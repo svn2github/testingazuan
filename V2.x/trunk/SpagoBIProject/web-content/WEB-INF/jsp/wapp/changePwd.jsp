@@ -113,7 +113,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    	<table >
       			<tr>
       				<td class='header-title-column-portlet-section-nogrey' width = "100px">
-      				 <H1> Is necessary change your password... </H1>
+      				 <H1> It is necessary to change your password... </H1>
       				</td>
       			</tr>
       	</table>

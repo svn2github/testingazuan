@@ -197,9 +197,9 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 					}
 					else {
 						if (this.getNumberSerVisualization() > 0 && contSer < this.getNumberSerVisualization()){
-					
-						myseries.put(nameP, value);
-						contSer++;
+
+							myseries.put(nameP, value);
+							contSer++;
 						}
 						else if (this.getNumberSerVisualization() == 0 ) 
 							myseries.put(nameP, value);
@@ -221,11 +221,11 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 						logger.warn("error in double conversion, put default to null");
 						valueD=null;
 					}
-					
+
 					String subcat = (String)subCategoryNames.get(realSubCatNumber-1);
 					//dataset.addValue(Double.valueOf(valueS).doubleValue(), value, catValue);
 					dataset.addValue(valueD!=null ? valueD.doubleValue() : null, subcat, catValue);
-				//	System.out.println("dataset.addValue("+Double.valueOf(valueS).doubleValue()+ ", '"+subcat+"'"+",'"+catValue+"');");
+					//	System.out.println("dataset.addValue("+Double.valueOf(valueS).doubleValue()+ ", '"+subcat+"'"+",'"+catValue+"');");
 					if(!seriesNames.contains(nameS)){ 
 						seriesNames.add(nameS);
 					}
@@ -262,7 +262,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		{
 			subCategoryLabel="";
 		}
-		
+
 		if(confParameters.get(ADD_LABELS)!=null){	
 			String additional=(String)confParameters.get(ADD_LABELS);
 			if(additional.equalsIgnoreCase("true")){
@@ -287,7 +287,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		{
 			percentageValue=false;
 		}
-		
+
 		if(confParameters.get("n_serie_for_group")!=null){	
 			numSerieForGroup=Integer.valueOf((String)confParameters.get("n_serie_for_group"));
 		}
@@ -295,7 +295,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		{
 			numSerieForGroup=new Integer("1");
 		}
-		
+
 		if(confParameters.get("n_groups")!=null){	
 			numGroups=Integer.valueOf((String)confParameters.get("n_groups"));
 		}
@@ -303,7 +303,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		{
 			numGroups=new Integer("1");
 		}
-		
+
 
 		/*
 		SourceBean drillSB = (SourceBean)content.getAttribute("CONF.DRILL");
@@ -334,8 +334,8 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 				}
 			}
 		}
-		*/
-		
+		 */
+
 		//reading series colors if present
 		SourceBean colors = (SourceBean)content.getAttribute("SERIES_COLORS");
 		if(colors==null){
@@ -396,7 +396,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 			}		
 
 		}
-		
+
 		logger.debug("OUT");	
 	}
 
@@ -432,26 +432,32 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 				true,                        	// tooltips
 				false                        	// urls
 		);
-		
+
 		chart.setBackgroundPaint(Color.white);
 		CategoryPlot plot = (CategoryPlot) chart.getPlot();
 		plot.setBackgroundPaint(color);
 		plot.setRangeGridlinePaint(Color.white);
 		plot.setDomainGridlinePaint(Color.white);
 		plot.setDomainGridlinesVisible(true);
-		
+
 		GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();
 		KeyToGroupMap map = new KeyToGroupMap("G1");
 		int numElForGroup = 0;
 		for (int idx=0; idx < numGroups.intValue(); idx++){
 			for (int j=0; j < numSerieForGroup.intValue(); j++ ){
+				try{
 					String tmpSubCat = (String)subCategoryNames.get(j+idx*numSerieForGroup.intValue());
 					map.mapKeyToGroup(tmpSubCat, "G"+(idx+1));
+
+				}
+				catch (Exception e) {
+					logger.error("out of range error in inserting in stacked bar group: continue anayway", e);
+				}
 			}
 		}
-		
-        renderer.setSeriesToGroupMap(map);
-        renderer.setItemMargin(0.0);
+
+		renderer.setSeriesToGroupMap(map);
+		renderer.setItemMargin(0.0);
 		renderer.setDrawBarOutline(false);
 		renderer.setBaseItemLabelsVisible(true);
 		if (percentageValue)
@@ -463,7 +469,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		if(maxBarWidth!=null){
 			renderer.setMaximumBarWidth(maxBarWidth.doubleValue());
 		}
-		
+
 		boolean document_composition=false;
 		if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
 
@@ -474,7 +480,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		mycatUrl.setSerieUrlLabel(serieUrlname);
 
 		renderer.setItemURLGenerator(mycatUrl);
-*/
+		 */
 
 		TextTitle title = setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
@@ -488,7 +494,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		// set the background color for the chart...
 		chart.setBackgroundPaint(color);
 
-        NumberFormat nf = NumberFormat.getNumberInstance(locale);
+		NumberFormat nf = NumberFormat.getNumberInstance(locale);
 
 		// set the range axis to display integers only...
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
@@ -496,10 +502,10 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
-        rangeAxis.setNumberFormatOverride(nf);
+		rangeAxis.setNumberFormatOverride(nf);
 		if(rangeIntegerValues==true){
 			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
-			}
+		}
 		if(rangeAxisLocation != null) {
 			if(rangeAxisLocation.equalsIgnoreCase("BOTTOM_OR_LEFT")) {
 				plot.setRangeAxisLocation(0, AxisLocation.BOTTOM_OR_LEFT);
@@ -522,10 +528,10 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 					Color gradient=new Color(Integer.decode("#FFFFFF").intValue());
 					if (gradientMap != null)
 						gradient=(Color)gradientMap.get("SER"+i);
-					
+
 					if(color!=null){
-						 Paint p = new GradientPaint(
-						            0.0f, 0.0f, color, 0.0f, 0.0f, gradient);
+						Paint p = new GradientPaint(
+								0.0f, 0.0f, color, 0.0f, 0.0f, gradient);
 
 						//renderer.setSeriesPaint(numSerieColored, color);
 						renderer.setSeriesPaint(numSerieColored, p);
@@ -542,8 +548,8 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 
 			double orient=(-Math.PI / 2.0);
 			if(styleValueLabels.getOrientation().equalsIgnoreCase("horizontal")){
-					orient=0.0;
-				}
+				orient=0.0;
+			}
 			renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
 			renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
 
@@ -566,7 +572,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 			 */
 
 		}
-		
+
 		SubCategoryAxis domainAxis = new SubCategoryAxis(categoryLabel + " / " + subCategoryLabel);    
 		String subCatLabel = "";
 		for (int j=1; j <= numGroups.intValue(); j++ ){
@@ -574,22 +580,22 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 				subCatLabel=(String)subCatLabelsMap.get("CAT"+j);
 			else
 				subCatLabel = subCategoryLabel;
-			
-	        domainAxis.addSubCategory(subCatLabel);
-	        domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
-	        domainAxis.setLabelPaint(styleYaxesLabels.getColor());
-	        domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
-	        domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
+
+			domainAxis.addSubCategory(subCatLabel);
+			domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+			domainAxis.setLabelPaint(styleYaxesLabels.getColor());
+			domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+			domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
 		}
 		plot.setDomainAxis(domainAxis);
 		plot.setRenderer(renderer);
-		
+
 
 		/*
 		domainAxis.setCategoryLabelPositions(
 				CategoryLabelPositions.createUpRotationLabelPositions(
 						Math.PI / 6.0));
-		*/
+		 */
 		if(legend==true) drawLegend(chart);
 		logger.debug("OUT");
 		return chart;

@@ -117,8 +117,8 @@ public class DocumentCompositionEditor extends EditorPart {
 			FileEditorInput fei = (FileEditorInput) getEditorInput();
 			IFile file = fei.getFile();
 			String newContent =  generator.transformToXml(documentComposition);
-			System.out.println("******** SAVING ***************");
-			System.out.println(newContent);
+//			System.out.println("******** SAVING ***************");
+//			System.out.println(newContent);
 			byte[] bytes = newContent.getBytes();
 			bais = new ByteArrayInputStream(bytes);
 			file.setContents(bais, IFile.FORCE, null);
@@ -169,7 +169,7 @@ public class DocumentCompositionEditor extends EditorPart {
 			IEditorPart currentEditor = DocCompUtilities.getEditorReference(DocCompUtilities.DOCUMENT_COMPOSITION_EDITOR_ID);
 			if(currentEditor != null && currentEditor instanceof DocumentCompositionEditor){
 				SpagoBILogger.warningLog("Editor is already opened!!!");
-				System.out.println("Editor is already opened!!!");
+//				System.out.println("Editor is already opened!!!");
 				MessageDialog.openError(site.getShell(), "ERROR", "Operation denied. Another editor is opened.");
 				IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				iworkbenchpage.closeEditor(this, false);

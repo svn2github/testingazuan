@@ -147,7 +147,7 @@ public class DocContainer {
 					// Reload views
 					reloadDocumentPropertiesView(idContainer.toString());
 					reloadStyleDocumentProperties();
-					System.out.println(designer.getEditor().isDirty);
+					//System.out.println(designer.getEditor().isDirty);
 
 					// Reload navigations view
 					if(documentContained.getMetadataDocument()!=null){

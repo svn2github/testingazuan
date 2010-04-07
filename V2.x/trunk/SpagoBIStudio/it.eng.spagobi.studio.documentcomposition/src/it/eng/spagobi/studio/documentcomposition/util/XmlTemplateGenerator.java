@@ -118,7 +118,7 @@ public class XmlTemplateGenerator {
 			setAlias(xstream);	
 
 			String xml = xstream.toXML(bean);
-			System.out.println(xml);
+			//System.out.println(xml);
 			return xml;
 		}
 

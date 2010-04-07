@@ -149,7 +149,7 @@ public class DocumentPropertiesView extends ViewPart {
 			public void modifyText(ModifyEvent event) {
 				String t = textStyle.getText();
 				if(t!=null && !t.equalsIgnoreCase("") && manualMode==true){
-					System.out.println(id);
+//					System.out.println(id);
 					styleParameters.put(id, t);
 					if(metadataDocument!=null){
 						(new ModelBO()).updateModelModifyDocument(metadataDocument, new Style(t));

@@ -81,15 +81,15 @@ public class DesignerUtilities {
 	}
 
 	public static void printPointer(String nomeEvento,Event event, Rectangle container, int x, int y){
-		System.out.println("----------"+nomeEvento+"-----------------");
+//		System.out.println("----------"+nomeEvento+"-----------------");
 		if(event!=null){
-			System.out.println("Evento: "+event.x+"/"+event.y);
+//			System.out.println("Evento: "+event.x+"/"+event.y);
 		}
 		if(container!=null){
-			System.out.println("Container: "+container.x+"/"+container.y);			
+//			System.out.println("Container: "+container.x+"/"+container.y);			
 		}
-		System.out.println("Temporaneo: "+x+"/"+y);
-		System.out.println("---------------------------");
+//		System.out.println("Temporaneo: "+x+"/"+y);
+//		System.out.println("---------------------------");
 	}
 
 }

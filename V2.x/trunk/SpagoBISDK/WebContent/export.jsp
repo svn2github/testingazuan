@@ -42,7 +42,7 @@ if (user != null && password != null) {
 		SDKDocumentParameter[] parameters = (SDKDocumentParameter[]) session.getAttribute("spagobi_document_parameters"); 
 		DocumentsServiceProxy proxy = new DocumentsServiceProxy(user, password);
 		proxy.setEndpoint("http://localhost:8080/SpagoBI/sdk/DocumentsService");
-		SDKExecutedDocumentContent export = proxy.executeDocument(document, parameters, role,"XML");
+		SDKExecutedDocumentContent export = proxy.executeDocument(document, parameters, role,"PDF");
 		is = export.getContent().getInputStream();
 		response.setContentType(export.getFileType());
 		response.setHeader("content-disposition", "attachment; filename=" + export.getFileName());

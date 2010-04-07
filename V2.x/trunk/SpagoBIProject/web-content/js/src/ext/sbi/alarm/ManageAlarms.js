@@ -318,6 +318,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		        title: LN('sbi.alarms.kpis')
 		        , id : 'alarmKpi'
 		        , layout: 'form'
+		        , autoScroll: true
 		        , itemId: 'kpis'
 		        , scope: this
 	            , bodyStyle: Ext.isIE ? 'padding:0 0 5px 15px;' : 'padding:10px 15px;'
@@ -332,6 +333,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		    
         this.contactsTab = new Ext.Panel({
 		        title: LN('sbi.alarms.contacts')
+		        , autoScroll: true
 		        , id : 'contactsList'
 	            , items : [ this.contactsGridPanel ]
 		        , itemId: 'contacts'

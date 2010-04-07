@@ -243,12 +243,14 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		        title: LN('sbi.users.roles')
 		        , id : 'rolesList'
 		        , layout: 'fit'
+		        , autoScroll: true
 		        , items: [this.rolesGrid]
 		        , itemId: 'roles'
 		        , scope: this
 		    },{
 		        title: LN('sbi.users.attributes')
 		        , id : 'attrList'
+		        , autoScroll: true
 	            , items : [ this.attributesGridPanel ]
 		        , itemId: 'attributes'
 		    }]

@@ -82,8 +82,14 @@ public class AttributesContainer {
 				Object prevValue=parameters.get(name);
 				if(prevValue instanceof Object[]){
 					Object[] ooo=((Object[])prevValue);
-					ooo[ooo.length]=value;					
-					parameters.put(name, ooo);
+					//ooo[ooo.length]=value;					
+					// add a position
+					Object[] newOoo = new Object[ooo.length+1];
+					for (int i = 0; i < ooo.length; i++) {
+						newOoo[i] = ooo[i];
+					}
+					newOoo[ooo.length] = value;
+					parameters.put(name, newOoo);
 				}
 				else{
 					Object[] toInsert=new Object[2];

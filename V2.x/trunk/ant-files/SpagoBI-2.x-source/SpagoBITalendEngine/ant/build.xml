@@ -48,6 +48,10 @@
      <exec dir="${project.dir}" executable="svn" >
       <arg line="checkout ${svn.base.location}/${project.name} ."/>
     </exec>	 
+   <exec dir="${project.dir}" executable="svn" output="${web.dir}/svn.properties">
+    <arg value="info" />
+   </exec>
+
   </target>
 
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->

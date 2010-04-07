@@ -64,11 +64,16 @@ public class AuditLogUtilities {
 			updateDB=true;
 		}
 		
+		String userName = "";
+		String userRoles = "";
+		if(profile!=null){
+			userName = ((UserProfile)profile).getUserId().toString();
+			userRoles = createRolesString(profile.getRoles());
+		}
+		
 		if(jdbcConnection!=null){
 			ja = new CustomJDBCAppender(jdbcConnection);			
-			if(updateDB && profile!=null && action_code!=null){
-				String userName = ((UserProfile)profile).getUserId().toString();
-				String userRoles = createRolesString(profile.getRoles());
+			if(updateDB && action_code!=null){
 				String sqlInsert = "INSERT INTO SBI_ACTIVITY_MONITORING (ACTION_TIME, USERNAME, USERGROUP, LOG_LEVEL, ACTION_CODE, INFO)";
 				sqlInsert += "VALUES('%d{"+dbTimestampFormat+"}','"+userName+"','"+userRoles+"','%5p','"+action_code+"','"+(info!=null?info:"")+"')";
 				logger.debug("SQL INSERT:"+sqlInsert);
@@ -77,7 +82,7 @@ public class AuditLogUtilities {
 			}
 		}
 	    // These messages with Priority >= setted priority will be logged to the database.
-	    audit_logger.info("activity_info");
+	    audit_logger.info("activity_info: USERNAME="+userName+"; USERGROUP="+userRoles+" ACTION_CODE="+action_code+"");
 
 	    // not required
 	    if(updateDB && ja!=null){

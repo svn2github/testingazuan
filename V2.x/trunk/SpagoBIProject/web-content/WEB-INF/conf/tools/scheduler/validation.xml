@@ -32,7 +32,7 @@
 					<VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>
 				<FIELD name="triggerdescription" label="triggerdescription">
-					 <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="35"/>
 				</FIELD>
 				<FIELD name="startdate" label="#scheduler.startdate">

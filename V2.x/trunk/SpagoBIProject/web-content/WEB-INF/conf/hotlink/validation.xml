@@ -9,7 +9,7 @@
 			<FIELDS>
 				<FIELD name="name" label="#sbi.rememberme.name">
 					<VALIDATOR validatorName="MANDATORY"/>
-					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
 				</FIELD>
 				<FIELD name="description" label="#sbi.rememberme.descr">
@@ -31,7 +31,7 @@
 			<FIELDS>
 				<FIELD name="name" label="#sbi.rememberme.name">
 					<VALIDATOR validatorName="MANDATORY"/>
-					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
 				</FIELD>
 				<FIELD name="description" label="#sbi.rememberme.descr">

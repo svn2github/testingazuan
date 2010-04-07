@@ -329,6 +329,8 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	                      }
    	                  }),
    	                  height: 450,
+   	                  width: 400,
+   	                  layout: 'fit',
    	                  title:LN('sbi.users.usersList'),
    	                  tbar: this.tb,
    	                  border: true

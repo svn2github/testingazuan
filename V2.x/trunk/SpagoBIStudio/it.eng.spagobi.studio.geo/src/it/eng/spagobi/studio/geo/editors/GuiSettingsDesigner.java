@@ -647,7 +647,7 @@ public class GuiSettingsDesigner {
 		});
 	}
 	private void createInputStyleShell(final Window window, final Table table, final String windowName){
-		System.out.println(window);
+//		System.out.println(window);
 		final Shell dialog = new Shell (mainComposite.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		dialog.setText("Insert Styles");
 		FormLayout formLayout = new FormLayout ();
@@ -671,7 +671,7 @@ public class GuiSettingsDesigner {
 		cancel.setLayoutData (data);
 		cancel.addSelectionListener (new SelectionAdapter () {
 			public void widgetSelected (SelectionEvent e) {
-				System.out.println("User cancelled dialog");
+//				System.out.println("User cancelled dialog");
 				dialog.close ();
 			}
 		});
@@ -727,9 +727,9 @@ public class GuiSettingsDesigner {
 					paramStyle[0].setValue(style);
 				}
 				TableItem item = new TableItem(table, SWT.NONE);	
-				System.out.println(item);
-				System.out.println(table);
-				System.out.println(paramStyle[0]);
+//				System.out.println(item);
+//				System.out.println(table);
+//				System.out.println(paramStyle[0]);
 				createGUIRow(item, table, paramStyle[0]);	
 				table.redraw();
 				editor.setIsDirty(true);				

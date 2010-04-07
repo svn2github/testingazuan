@@ -175,7 +175,7 @@ public class MeasuresDesigner {
 		cancel.setLayoutData (data);
 		cancel.addSelectionListener (new SelectionAdapter () {
 			public void widgetSelected (SelectionEvent e) {
-				System.out.println("User cancelled dialog");
+//				System.out.println("User cancelled dialog");
 				dialog.close ();
 			}
 		});

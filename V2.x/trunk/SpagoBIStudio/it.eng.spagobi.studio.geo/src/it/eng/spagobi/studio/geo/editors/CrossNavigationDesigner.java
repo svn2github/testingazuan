@@ -221,7 +221,7 @@ public class CrossNavigationDesigner {
 		cancel.setLayoutData (data);
 		cancel.addSelectionListener (new SelectionAdapter () {
 			public void widgetSelected (SelectionEvent e) {
-				System.out.println("User cancelled dialog");
+//				System.out.println("User cancelled dialog");
 				dialog.close ();
 			}
 		});
@@ -634,7 +634,7 @@ public class CrossNavigationDesigner {
 		cancel.setLayoutData (data);
 		cancel.addSelectionListener (new SelectionAdapter () {
 			public void widgetSelected (SelectionEvent e) {
-				System.out.println("User cancelled dialog");
+//				System.out.println("User cancelled dialog");
 				dialog.close ();
 			}
 		});

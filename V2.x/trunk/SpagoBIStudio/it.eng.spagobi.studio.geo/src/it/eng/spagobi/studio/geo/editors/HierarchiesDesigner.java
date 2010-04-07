@@ -121,7 +121,6 @@ public class HierarchiesDesigner {
 	private void updateHierarchy(Tree hierarchiesTree, String name, String type, Hierarchy hierarchy){		
 		TreeItem iItem = hierarchiesTree.getSelection()[0];
 		iItem.setText(name);
-		hierarchiesTree.getParent().getParent().redraw();
 		hierarchy.setName(name);
 		hierarchy.setType(type);
 		editor.setIsDirty(true);
@@ -361,7 +360,7 @@ public class HierarchiesDesigner {
 		cancel.setLayoutData (data);
 		cancel.addSelectionListener (new SelectionAdapter () {
 			public void widgetSelected (SelectionEvent e) {
-				System.out.println("User cancelled dialog");
+//				System.out.println("User cancelled dialog");
 				dialog.close ();
 			}
 		});
@@ -466,7 +465,7 @@ public class HierarchiesDesigner {
 		cancel.setLayoutData (data);
 		cancel.addSelectionListener (new SelectionAdapter () {
 			public void widgetSelected (SelectionEvent e) {
-				System.out.println("User cancelled dialog");
+//				System.out.println("User cancelled dialog");
 				dialog.close ();
 			}
 		});
@@ -659,7 +658,7 @@ public class HierarchiesDesigner {
 				}
 			}
 			catch (MissingParameterValue e2) {
-				SpagoBILogger.errorLog("Could not execute dataset with label = "+datasetLabel+" metadata: probably missing parameter", e2);
+				SpagoBILogger.errorLog("Could not execute dataset with label = "+datasetLabel+" metadata: execute dataset test in server to retrieve metadata", e2);
 				MessageDialog.openError(mainComposite.getShell(), "Error", "Could not execute dataset with label = "+datasetLabel+" metadata: probably missing parameter");
 			}
 			catch (NoServerException e1) {

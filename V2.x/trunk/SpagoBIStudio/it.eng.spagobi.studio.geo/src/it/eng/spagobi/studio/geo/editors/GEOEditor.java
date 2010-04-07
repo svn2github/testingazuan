@@ -484,7 +484,7 @@ public class GEOEditor extends EditorPart {
 								.errorLog(
 										"Could not execute dataset with label = "
 												+ datasetLabel
-												+ " metadata: probably missing parameter",
+												+ " due to parameters lack: execute dataset test in server to retrieve metadata",
 										e2);
 						MessageDialog
 								.openError(
@@ -492,7 +492,7 @@ public class GEOEditor extends EditorPart {
 										"Error",
 										"Could not execute dataset with label = "
 												+ datasetLabel
-												+ " metadata: probably missing parameter");
+												+ " due to parameters lack: execute dataset test in server to retrieve metadata");
 					} catch (NoServerException e1) {
 						SpagoBILogger.errorLog(
 								"Error No comunciation with server retrieving dataset with label = "
@@ -915,11 +915,11 @@ public class GEOEditor extends EditorPart {
 		} catch (MissingParameterValue e2) {
 			SpagoBILogger.errorLog("Could not execute dataset with label = "
 					+ metadata.getDataset()
-					+ " metadata: probably missing parameter", e2);
+					+ " due to parameter lack: execute dataset test in server to retrieve metadata", e2);
 			MessageDialog.openError(sectionClient.getShell(), "Error",
 					"Could not execute dataset with label = "
 							+ metadata.getDataset()
-							+ " metadata: probably missing parameter");
+							+ " due to parameter lack: execute dataset test in server to retrieve metadata");
 		} catch (NoServerException e1) {
 			SpagoBILogger.errorLog(
 					"Error No comunciation with server retrieving dataset with label = "
@@ -1025,7 +1025,7 @@ public class GEOEditor extends EditorPart {
 
 			newDescr.addModifyListener(new ModifyListener() {
 				public void modifyText(ModifyEvent me) {
-					System.out.println("Changed");
+//					System.out.println("Changed");
 					selectedLayer.setDescription(((Text) me.widget).getText());
 					setIsDirty(true);
 				}
@@ -1272,8 +1272,8 @@ public class GEOEditor extends EditorPart {
 			modelBO.cleanGEODocument(geoDocumentToSaveOnFile);
 			String newContent = XmlTemplateGenerator
 					.transformToXml(geoDocumentToSaveOnFile);
-			System.out.println("******** SAVING ***************");
-			System.out.println(newContent);
+//			System.out.println("******** SAVING ***************");
+//			System.out.println(newContent);
 			byte[] bytes = newContent.getBytes();
 			bais = new ByteArrayInputStream(bytes);
 			file.setContents(bais, IFile.FORCE, null);

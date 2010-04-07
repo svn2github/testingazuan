@@ -110,9 +110,9 @@ public class ModelBO {
 						layToRemove.add(layer);
 					}
 				}
-				System.out.println(layToRemove.size());
+//				System.out.println(layToRemove.size());
 				layerVect.removeAll(layToRemove);
-				System.out.println("layers left on doc :"+layerVect.size());
+//				System.out.println("layers left on doc :"+layerVect.size());
 			}
 		}
 		//clean and rebiuld labels

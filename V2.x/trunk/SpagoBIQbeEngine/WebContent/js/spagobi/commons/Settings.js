@@ -16,7 +16,8 @@ Sbi.settings.qbe = {
 		}
 
 		, selectGridPanel: {
-			enableTbHideNonvisibleBtn: true
+			enableTbAddCalculatedBtn: true 
+			, enableTbHideNonvisibleBtn: true
 			, enableTbAddCalculatedBtn: true
 			, enableTbDeleteAllBtn: true
 			, columns : {

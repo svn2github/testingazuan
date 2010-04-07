@@ -409,7 +409,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		//Saving image on a temporary file
 		String dir=System.getProperty("java.io.tmpdir");
 		String path_param=executionId;
-		String path=dir+"/"+executionId+".png";
+		char c = dir.charAt(dir.length()-1);
+		String path = null;
+		if(c=='/' || c=='\\'){
+			path=dir+executionId+".png";			
+		} else {
+		path=dir+"/"+executionId+".png";
+		}
 		java.io.File file1 = new java.io.File(path);
 		ChartUtilities.saveChartAsPNG(file1, chart, sbi.getWidth(), sbi.getHeight(), info);
 
@@ -726,15 +732,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 				
 				
-					<!-- create the javascript categories group aray to build the javascript url -->
-				<script type="text/javascript">
-					arrayCategoriesGroups=new Array(<%=((BarCharts)sbi).getCatGroupNames().size()%>);
-					z=0;
-					var te;
-
-				</script>				
 				<%
 				if(filterCatGroup==true){
+%>
+					<!-- create the javascript categories group aray to build the javascript url -->
+					<script type="text/javascript">
+						arrayCategoriesGroups=new Array(<%=((BarCharts)sbi).getCatGroupNames().size()%>);
+						z=0;
+						var te;
+
+					</script>				
+<% 
 					if(((BarCharts)sbi).getCatGroupNames()!=null && !((BarCharts)sbi).getCatGroupNames().isEmpty()) {    
 				
 				String urlForCatsGroupJS=datasetMap.getCategoriesGroupUrl(refreshUrl, refreshUrlPars); %>

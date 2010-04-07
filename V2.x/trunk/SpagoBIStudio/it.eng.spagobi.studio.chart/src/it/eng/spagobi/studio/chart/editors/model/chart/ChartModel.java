@@ -1002,7 +1002,7 @@ public class ChartModel {
 			List configuredParameters = section.selectNodes("//"+type.toString()+"[@name='"+subType+"']/CONF/SECTION/PARAMETER");
 			for (int j = 0; j < configuredParameters.size(); j++) {
 				Node aConfiguredParameter = (Node) configuredParameters.get(j);
-				System.out.println(aConfiguredParameter.asXML());
+//				System.out.println(aConfiguredParameter.asXML());
 				String namePar = aConfiguredParameter.valueOf("@name");
 				String description = aConfiguredParameter.valueOf("@description");
 				String typeStr = aConfiguredParameter.valueOf("@type");

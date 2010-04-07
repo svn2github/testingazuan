@@ -139,12 +139,12 @@ public final class ChartEditor extends EditorPart {
 
 		try {
 			// Create the model of the chart that will store informations
-			model = ChartModelFactory.createChartModel(file);
 			components=new ChartEditorComponents();
+			model = ChartModelFactory.createChartModel(file);
 			model.setEditor(this);
 		} catch (Exception e) {
 			SpagoBILogger.errorLog("Error during Editor Initialization",e);
-			e.printStackTrace();
+			return;
 		}
 		setInput(input);
 		setSite(site);
@@ -324,7 +324,7 @@ public final class ChartEditor extends EditorPart {
 		components.createConfigurationSection(model,null, toolkit, form);
 
 
-		
+
 
 		// ******************	get subtypes COMBO	******************
 		SpagoBILogger.infoLog("Create the sub type combo: ");
@@ -441,7 +441,7 @@ public final class ChartEditor extends EditorPart {
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 		});
-	
+
 		setIsDirty(true); // first time must be dirty
 	}
 

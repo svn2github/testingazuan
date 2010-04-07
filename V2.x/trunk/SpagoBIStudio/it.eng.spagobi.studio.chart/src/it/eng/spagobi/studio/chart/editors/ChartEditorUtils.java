@@ -340,7 +340,7 @@ public class ChartEditorUtils {
 					public void modifyText(ModifyEvent event) {
 						model.getEditor().setIsDirty(true);
 						String parameterValueStr = parameterValueText.getText();
-						System.out.println("modificato parametro "+aParameter.getName());
+//						System.out.println("modificato parametro "+aParameter.getName());
 						aParameter.setValue(parameterValueStr);
 					}
 				});
@@ -360,7 +360,7 @@ public class ChartEditorUtils {
 			public void modifyText(ModifyEvent event) {
 				model.getEditor().setIsDirty(true);
 				String parameterValueStr = parameterValueText.getText();
-				System.out.println("modificato parametro "+aParameter.getName());
+//				System.out.println("modificato parametro "+aParameter.getName());
 				aParameter.setValue(parameterValueStr);
 			}
 		});
@@ -617,9 +617,9 @@ public class ChartEditorUtils {
 
 
 	static public void print(String titolo, Node node){
-		System.out.println("******** "+titolo+" **********");
-		System.out.println(node!=null ? node.asXML() : "NULLO");
-		System.out.println("******************************");
+//		System.out.println("******** "+titolo+" **********");
+//		System.out.println(node!=null ? node.asXML() : "NULLO");
+//		System.out.println("******************************");
 	}
 
 	public static String removeChar(String s, char c) {

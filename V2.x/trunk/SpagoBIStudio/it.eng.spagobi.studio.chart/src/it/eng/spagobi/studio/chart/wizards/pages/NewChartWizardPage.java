@@ -243,10 +243,10 @@ public class NewChartWizardPage extends WizardPage {
 
 	static void doSelection(Button button) {
 		if (button.getSelection()){
-			System.out.println("do work for selection "+button);
+//			System.out.println("do work for selection "+button);
 			selectedType=(String)button.getData();
 		} else {
-			System.out.println("do work for deselection "+button);
+//			System.out.println("do work for deselection "+button);
 		}
 	}
 

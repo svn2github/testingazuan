@@ -94,16 +94,16 @@ public class ChartModelFactory {
 			// get the general template Path
 			SpagoBILogger.infoLog("Getting template file content");									
 			String templatePath="";
-//			Document templateDocument = null;
-//			try {
-//				templatePath=ChartEditorUtils.getChartTemplatePath(type, subType);
-//				templateIs = ChartEditorUtils.getInputStreamFromResource(templatePath);
-//				templateDocument = reader.read(templateIs);
-//			} catch (Exception e) {
-//				SpagoBILogger.errorLog("Error while getting template file content",e);
-//				throw new Exception("Error while reading Template file: " + e.getMessage());
-//			}
-			
+			//			Document templateDocument = null;
+			//			try {
+			//				templatePath=ChartEditorUtils.getChartTemplatePath(type, subType);
+			//				templateIs = ChartEditorUtils.getInputStreamFromResource(templatePath);
+			//				templateDocument = reader.read(templateIs);
+			//			} catch (Exception e) {
+			//				SpagoBILogger.errorLog("Error while getting template file content",e);
+			//				throw new Exception("Error while reading Template file: " + e.getMessage());
+			//			}
+
 
 			// **** CREATE THE MODEL	****
 
@@ -138,15 +138,21 @@ public class ChartModelFactory {
 
 
 			// Set the dataset if present!
-			
+
 			String dataSetIdS=file.getPersistentProperty(PropertyPage.DATASET_ID);
 			if(dataSetIdS!=null){
 				Integer dataSetId=Integer.valueOf(dataSetIdS);
 				model.setSdkDataSetId(dataSetId);
 			}
-			
 
-		} finally {
+
+
+		} 
+		catch (Exception e) {
+			SpagoBILogger.errorLog("Error in reading the xml template", e);
+			throw new Exception("Error while reading " + ChartModel.CHART_INFO_FILE + " file: " + e.getMessage());
+		}
+		finally {
 			if (thisIs != null) thisIs.close();
 			if (configurationIs != null) configurationIs.close();
 			if (templateIs != null) templateIs.close();

@@ -73,6 +73,7 @@ public class QbeCacheManager {
 				}
 				labels.addDatamartLabels(aDatamartLabels);
 			}
+			cache.putLabels(datamartModel, labels, locale);
 		}
 		
 		return labels;

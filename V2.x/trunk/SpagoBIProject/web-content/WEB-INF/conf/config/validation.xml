@@ -12,7 +12,7 @@
 				</FIELD>
 				<FIELD name="name" label="#SBISet.eng.NameField">
 					<VALIDATOR validatorName="MANDATORY"/>
-					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 				</FIELD>
 				<FIELD name="biobjTypeId" label="biobjTypeId">
@@ -31,7 +31,7 @@
 					<VALIDATOR validatorName="NUMERIC"/>
 				</FIELD>
 				<FIELD name="description" label="#SBISet.eng.descriptionField">
-					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
 				</FIELD>
 				<FIELD name="url" label="#SBISet.eng.urlField">
@@ -66,7 +66,7 @@
 				</FIELD>
 				<FIELD name="name" label="#SBISet.eng.NameField">
 					<VALIDATOR validatorName="MANDATORY"/>
-					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 				</FIELD>
 				<FIELD name="biobjTypeId" label="biobjTypeId">
@@ -85,7 +85,7 @@
 					<VALIDATOR validatorName="NUMERIC"/>
 				</FIELD>
 				<FIELD name="description" label="#SBISet.eng.descriptionField">
-					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
 				</FIELD>
 				<FIELD name="className" label="#SBISet.eng.classNameField">
@@ -183,7 +183,7 @@
 			<CONDITIONS/>
 			<FIELDS>
 				<FIELD name="description" label="#SBIDev.param.descriptionField">
-					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				    <VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
 				</FIELD>
 				<FIELD name="label" label="#SBIDev.param.labelField">
@@ -193,7 +193,7 @@
 				</FIELD>
 				<FIELD name="name" label="#SBIDev.param.nameField">
 					<VALIDATOR validatorName="MANDATORY"/>
-					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 				</FIELD>
 				<FIELD name="length" label="#SBIDev.param.lengthField">
@@ -304,7 +304,7 @@
 		<FIELDS>
 				<FIELD name="paruseName" label="#SBIDev.paramUse.nameField">
 				    <VALIDATOR validatorName="MANDATORY"/>
-				    <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
+				    <VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				   	<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 				</FIELD>
 				<FIELD name="paruseLabel" label="#SBIDev.paramUse.labelField">
@@ -313,7 +313,7 @@
 				   	<VALIDATOR validatorName="MAXLENGTH" arg0="20"/>
 				</FIELD>
 				<FIELD name="paruseDescription" label="#SBIDev.paramUse.descriptionField">
-				<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
+				<VALIDATOR validatorName="EXTENDED_ALFANUMERIC" />
 					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
 				</FIELD>
 				<FIELD name="paruseLovId" label="#SBIDev.ListParamUse.parInfo.Name">
@@ -332,7 +332,7 @@
 		<FIELDS>
 				<FIELD name="paruseName" label="#SBIDev.paramUse.nameField">
 				    <VALIDATOR validatorName="MANDATORY"/>
-				    <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
+				    <VALIDATOR validatorName="EXTENDED_ALFANUMERIC" />
 				   	<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 				</FIELD>
 				<FIELD name="paruseLabel" label="#SBIDev.paramUse.labelField">
@@ -341,7 +341,7 @@
 				   	<VALIDATOR validatorName="MAXLENGTH" arg0="20"/>
 				</FIELD>
 				<FIELD name="paruseDescription" label="#SBIDev.paramUse.descriptionField">
-				<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
+				<VALIDATOR validatorName="EXTENDED_ALFANUMERIC" />
 					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
 				</FIELD>
 				<FIELD name="paruseLovId" label="#SBIDev.ListParamUse.parInfo.Name">
@@ -366,11 +366,11 @@
 				</FIELD>
 				<FIELD name="name" label="#SBIDev.predLov.nameField">
 				    <VALIDATOR validatorName="MANDATORY"/>
-				    <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
+				    <VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				    <VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 				</FIELD>
 				<FIELD name="description" label="#SBIDev.predLov.descriptionField">
-					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)\/])*$"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
 				</FIELD>		
 			</FIELDS>
@@ -774,11 +774,11 @@
 			</FIELD>
 			<FIELD name="name" label="#SBIDev.valConst.nameField">
 			    <VALIDATOR validatorName="MANDATORY"/>
-			    <VALIDATOR validatorName="ALFANUMERIC"/>
+			    <VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 			</FIELD>
 			<FIELD name="description" label="#SBIDev.valConst.descriptionField">
-				<VALIDATOR validatorName="ALFANUMERIC"/>
+				<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
 			</FIELD>	
 			<FIELD name="checkType" label="#SBIDev.ListConfConst.columnCheckType">
@@ -802,11 +802,11 @@
 			</FIELD>
 			<FIELD name="name" label="#SBIDev.valConst.nameField">
 			    <VALIDATOR validatorName="MANDATORY"/>
-			    <VALIDATOR validatorName="ALFANUMERIC"/>
+			   <VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 			</FIELD>
 			<FIELD name="description" label="#SBIDev.valConst.descriptionField">
-				<VALIDATOR validatorName="ALFANUMERIC"/>
+				<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
 			</FIELD>	
 			<FIELD name="checkType" label="#SBIDev.ListConfConst.columnCheckType">
@@ -862,11 +862,11 @@
 		<FIELDS>
 			<FIELD name="name" label="#SBISet.Funct.nameField">
 			    <VALIDATOR validatorName="MANDATORY"/>
-			    <VALIDATOR validatorName="ALFANUMERIC"/>
+			    <VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 			</FIELD>
 			<FIELD name="description" label="#SBISet.Funct.descriptionField">
-			    <VALIDATOR validatorName="ALFANUMERIC"/>
+			    <VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
 			</FIELD>
 			<FIELD name="code" label="#SBISet.Funct.codefield">
@@ -883,11 +883,11 @@
 		<FIELDS>
 			<FIELD name="name" label="#SBISet.Funct.nameField">
 			    <VALIDATOR validatorName="MANDATORY"/>
-			    <VALIDATOR validatorName="ALFANUMERIC"/>
+			    <VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 			</FIELD>
 			<FIELD name="description" label="#SBISet.Funct.descriptionField">
-			    <VALIDATOR validatorName="ALFANUMERIC"/>
+			    <VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
 			</FIELD>
 			<FIELD name="code" label="#SBISet.Funct.codefield">

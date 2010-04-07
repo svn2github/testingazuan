@@ -33,8 +33,8 @@ public class SpagoBIStudioConstants {
 
 	public final static String DASHBOARD_ENGINE_LABEL="DashboardInternalEng";
 	public final static String CHART_ENGINE_LABEL="ChartInternalEng";
-	public final static String JASPER_REPORT_ENGINE_LABEL="JasperReport";
-	public final static String BIRT_REPORT_ENGINE_LABEL="Birt";
+	public final static String JASPER_REPORT_ENGINE_LABEL="JasperReportEngine";
+	public final static String BIRT_REPORT_ENGINE_LABEL="BirtEngine";
 	public final static String OLAP_ENGINE_LABEL="JPIVOT";
 	public final static String ETL_ENGINE_LABEL="TALEND";
 	public final static String DOSSIER_ENGINE_LABEL="Dossier";

@@ -328,8 +328,8 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 
 		if(alreadyFound){
 			MessageDialog.openWarning(workbench.getActiveWorkbenchWindow().getShell(), 
-					"Error", "File "+pathNewFile+" already exists in your project: to download it againg you must first delete the existing one");
-			logger.warn("File "+pathNewFile+" already exists in your project: to download it againg you must first delete the existing one");
+					"Error", "File "+fileName+" already exists in your project: to download it againg you must first delete the existing one");
+			logger.warn("File "+fileName+" already exists in your project: to download it againg you must first delete the existing one");
 			return false;
 			//write=MessageDialog.openQuestion(workbench.getActiveWorkbenchWindow().getShell(), "File exists: Overwrite?", "File "+newFile.getName()+" already exists, overwrite?"); 
 		}

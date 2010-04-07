@@ -179,7 +179,7 @@ function checkFormVisibility(docType) {
 	var type = docType.substring(ind+1);
 	// hide template dynamic creation button for dossier and olap document 
 	var divLinkConf = document.getElementById("link_obj_conf");
-	if(type=="OLAP" || type=="DOSSIER" || type=="FORM") {
+	if(type=="OLAP" || type=="DOSSIER" || type=="SMART_FILTER") {
 		divLinkConf.style.display="inline";
 	} else {
 		divLinkConf.style.display="none";
@@ -754,7 +754,7 @@ function saveDocument(goBack) {
 				<% 
 					String styleDivLinkConf = " ";
 					String BIobjTypecode = obj.getBiObjectTypeCode();
-			    	if(BIobjTypecode.equalsIgnoreCase("DOSSIER") || BIobjTypecode.equalsIgnoreCase("OLAP") || BIobjTypecode.equalsIgnoreCase("FORM"))
+			    	if(BIobjTypecode.equalsIgnoreCase("DOSSIER") || BIobjTypecode.equalsIgnoreCase("OLAP") || BIobjTypecode.equalsIgnoreCase("SMART_FILTER"))
 			    		styleDivLinkConf = " style='display:inline' ";
 			    	else styleDivLinkConf = " style='display:none' ";
 			    %>	

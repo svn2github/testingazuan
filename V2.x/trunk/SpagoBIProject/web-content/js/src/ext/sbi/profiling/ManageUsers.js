@@ -358,12 +358,12 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
             autoHeight : true,
             columns : [ {          	
                 header : LN('sbi.roles.headerName'),
-                width : 75,
+                width : 70,
                 sortable : true,
                 dataIndex : 'name'
             }, {           	
                 header : LN('sbi.users.headerValue'),
-                width : 75,
+                width : 70,
                 sortable : true,
                 dataIndex : 'value',
                 editor : new Ext.form.TextField({}) 

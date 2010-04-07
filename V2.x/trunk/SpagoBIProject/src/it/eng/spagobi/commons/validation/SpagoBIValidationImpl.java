@@ -82,11 +82,13 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 	public static final String ERROR_URL="9013";
 	public static final String ERROR_BOOLEAN="9014";
 	public static final String ERROR_XSS="9015";
+	public static final String ERROR_EXTENDED_ALFANUMERIC="9016";
 	
 	// Costanti per le espressioni regolari 
-	private static final String LETTER_STRING_REGEXP= "^([a-zA-Z])*$";
+	private static final String LETTER_STRING_REGEXP= "^([a-zA-ZÈËÎÔ‚ÍÙ˚ÓÁ‡˘ÏÚ¿…Œ’‹])*$";
 	private static final String FISCAL_CODE_REGEXP="^([A-Z]{6}[A-Z\\d]{2}[A-Z][A-Z\\d]{2}[A-Z][A-Z\\d]{3}[A-Z])*$";
-	//private static final String ALPHANUMERIC_STRING_REGEXP="^([a-zA-Z0-9\\s])*$";
+	private static final String ALPHANUMERIC_EXTENDED_STRING_REGEXP="^([\\w\\s\\-\\_\\(\\)\\[\\]\\;\\:\\!\\?\\{\\,\\}\\.])*$";
+	private static final String ALPHANUMERIC_EXTENDED_STRING_REGEXP_NOSPACE="^([\\w\\-\\_\\(\\)\\[\\]\\;\\:\\!\\?\\{\\,\\}\\.])*$";
 	private static final String ALPHANUMERIC_STRING_REGEXP="^([a-zA-Z0-9\\s\\-\\_])*$";
 	private static final String ALPHANUMERIC_STRING_REGEXP_NOSPACE="^([a-zA-Z0-9\\-\\_])*$";
 	
@@ -437,6 +439,15 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 				params = new ArrayList();
 				params.add(fieldLabel);
 				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_ALFANUMERIC,params);
+				
+			}
+		} else if (validatorName.equalsIgnoreCase("EXTENDED_ALFANUMERIC")){
+			logger.debug( "Apply the ALFANUMERIC VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.matchRegexp(value, ALPHANUMERIC_EXTENDED_STRING_REGEXP)){
+			
+				params = new ArrayList();
+				params.add(fieldLabel);
+				return new EMFValidationError(EMFErrorSeverity.ERROR, fieldName, ERROR_EXTENDED_ALFANUMERIC,params);
 				
 			}
 		} else if (validatorName.equalsIgnoreCase("NUMERIC")){

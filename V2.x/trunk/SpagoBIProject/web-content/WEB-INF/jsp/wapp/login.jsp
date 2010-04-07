@@ -32,6 +32,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.utilities.urls.IUrlBuilder"%>
 <%@page import="it.eng.spago.configuration.ConfigSingleton"%>
 <%@page import="it.eng.spago.base.SourceBean"%>
+<%@page import="it.eng.spago.navigation.LightNavigationManager"%>
+<%@page import="it.eng.spagobi.utilities.themes.ThemesManager"%>
+<%@page import="it.eng.spagobi.commons.constants.ObjectsTreeConstants"%>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 
 <%      
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
@@ -75,8 +79,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
-<%@page import="it.eng.spago.navigation.LightNavigationManager"%>
-<%@page import="it.eng.spagobi.utilities.themes.ThemesManager"%>
+
 <html>
   <head>
 	<link rel="shortcut icon" href="<%=urlBuilder.getResourceLink(request, "img/favicon.ico")%>" />
@@ -102,6 +105,24 @@ else {
 %>	<jsp:include page='<%=url%>' />
         <form action="<%=contextName%>/servlet/AdapterHTTP?PAGE=LoginPage&NEW_SESSION=TRUE" method="POST" >
         	<input type="hidden" id="isInternalSecurity" name="isInternalSecurity" value="<%=isInternalSecurity %>" />
+        	<%
+        	// propagates parameters (if any) for document execution
+        	if (request.getParameter(ObjectsTreeConstants.OBJECT_LABEL) != null) {
+        		String label = request.getParameter(ObjectsTreeConstants.OBJECT_LABEL);
+        	    String parameters = request.getParameter(ObjectsTreeConstants.PARAMETERS);
+        	    String subobjectName = request.getParameter(SpagoBIConstants.SUBOBJECT_NAME);
+        	    %>
+        	    <input type="hidden" name="<%= ObjectsTreeConstants.OBJECT_LABEL %>" value="<%= StringEscapeUtils.escapeHtml(label) %>" />
+        	    <% if (parameters != null && !parameters.trim().equals("")) { %>
+        	    	<input type="hidden" name="<%= ObjectsTreeConstants.PARAMETERS %>" value="<%= StringEscapeUtils.escapeHtml(parameters) %>" />
+        	    <% } %>
+        	    <% if (subobjectName != null && !subobjectName.trim().equals("")) { %>
+        	    	<input type="hidden" name="<%= SpagoBIConstants.SUBOBJECT_NAME %>" value="<%= StringEscapeUtils.escapeHtml(subobjectName) %>" />
+        	    <% } %>
+        	    <%
+        	} 
+        	%>
+        	
 	        <div id="content" style="width:100%;">
 		        	<div style="background-color:white;width:500px;height:150px;border:1px solid gray;margin-top:130px;margin-left:50px;" >
 		        		<table>

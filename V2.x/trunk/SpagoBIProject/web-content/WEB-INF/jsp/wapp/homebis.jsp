@@ -31,6 +31,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.wapp.services.DetailMenuModule"%>
 <%@page import="it.eng.spagobi.wapp.bo.Menu"%>
 <%@page import="org.json.JSONObject"%>
+<%@page import="it.eng.spagobi.commons.constants.ObjectsTreeConstants"%>
+<%@page import="it.eng.spagobi.chiron.serializer.MenuListJSONSerializer"%>
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 <%@ include file="/WEB-INF/jsp/commons/importSbiJS.jspf"%>
@@ -41,7 +43,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	N.B.  TODO con il CAS da problemi perchè non valida il ticket ...
 	--%>
-<%@page import="it.eng.spagobi.chiron.serializer.MenuListJSONSerializer"%>
+
+
 <script type="text/javascript" src="/SpagoBI/js/src/ext/sbi/overrides/overrides.js"></script>
 	
 <script type="text/javascript" src="<%=linkSbijs%>"></script>
@@ -132,36 +135,55 @@ var themesViewName;
 <!-- I want to execute if there is an homepage, only for user!-->
 <%
     String firstUrlToCall = "";
-	if (filteredMenuList.size() > 0) {
-		//DAO method returns menu ordered by parentId, but null values are higher or lower on different database:
-		//PostgreSQL - Nulls are considered HIGHER than non-nulls.
-		//DB2 - Higher
-		//MSSQL - Lower
-		//MySQL - Lower
-		//Oracle - Higher
-		//Ingres - Higher
-		// so we must look for the first menu item with null parentId
-		Menu firtsItem = null;
-		Iterator it = filteredMenuList.iterator();
-		while (it.hasNext()) {
-			Menu aMenuElement = (Menu) it.next();
-			if (aMenuElement.getParentId() == null) {
-				firtsItem = aMenuElement;
-				break;
+	// if a document execution is required, execute it
+	if (aServiceRequest.getAttribute(ObjectsTreeConstants.OBJECT_LABEL) != null) {
+		String label = (String) aServiceRequest.getAttribute(ObjectsTreeConstants.OBJECT_LABEL);
+	    String parameters = (String) aServiceRequest.getAttribute(ObjectsTreeConstants.PARAMETERS);
+	    String subobjectName = (String) aServiceRequest.getAttribute(SpagoBIConstants.SUBOBJECT_NAME);
+		
+	    StringBuffer temp = new StringBuffer();
+	    temp.append(contextName + "/servlet/AdapterHTTP?ACTION_NAME=EXECUTE_DOCUMENT_ACTION&");
+	    temp.append(ObjectsTreeConstants.OBJECT_LABEL + "=" + label);
+	    if (parameters != null && !parameters.trim().equals("")) {
+	    	temp.append("&" + ObjectsTreeConstants.PARAMETERS + "=" + parameters);
+	    }
+	    if (subobjectName != null && !subobjectName.trim().equals("")) {
+	    	temp.append("&" + SpagoBIConstants.SUBOBJECT_NAME + "=" + subobjectName);
+	    }
+		firstUrlToCall = temp.toString();
+		
+	} else {
+	
+		if (filteredMenuList.size() > 0) {
+			//DAO method returns menu ordered by parentId, but null values are higher or lower on different database:
+			//PostgreSQL - Nulls are considered HIGHER than non-nulls.
+			//DB2 - Higher
+			//MSSQL - Lower
+			//MySQL - Lower
+			//Oracle - Higher
+			//Ingres - Higher
+			// so we must look for the first menu item with null parentId
+			Menu firtsItem = null;
+			Iterator it = filteredMenuList.iterator();
+			while (it.hasNext()) {
+				Menu aMenuElement = (Menu) it.next();
+				if (aMenuElement.getParentId() == null) {
+					firtsItem = aMenuElement;
+					break;
+				}
+			}
+			String pathInit=MenuUtilities.getMenuPath(firtsItem);
+			Integer objId=firtsItem.getObjId();
+			
+			if(objId!=null){
+				firstUrlToCall = contextName+"/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID="+firtsItem.getMenuId();
+			}else if(firtsItem.getStaticPage()!=null){
+				firstUrlToCall = contextName+"/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID="+firtsItem.getMenuId();
+			}else if(firtsItem.getFunctionality()!=null){
+				firstUrlToCall = DetailMenuModule.findFunctionalityUrl(firtsItem, contextName);
 			}
 		}
-		String pathInit=MenuUtilities.getMenuPath(firtsItem);
-		Integer objId=firtsItem.getObjId();
 		
-		if(objId!=null){
-			firstUrlToCall = "'"+contextName+"/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID="+firtsItem.getMenuId()+"'";
-		}else if(firtsItem.getStaticPage()!=null){
-			firstUrlToCall = "'"+contextName+"/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID="+firtsItem.getMenuId()+"'";
-		}else if(firtsItem.getFunctionality()!=null){
-			firstUrlToCall = "'"+DetailMenuModule.findFunctionalityUrl(firtsItem, contextName)+"'";
-		}else{
-			firstUrlToCall = "''";
-		}
 	}
 	
  %>
@@ -311,7 +333,7 @@ if(showfooter){%>
 	Ext.onReady(function(){
       Ext.QuickTips.init();              
       var menuList = <%=jsonMenuList%>;
-      var firstUrl =  <%=firstUrlToCall%>;
+      var firstUrl =  '<%= StringEscapeUtils.escapeJavaScript(firstUrlToCall) %>';
       northFrame = new Sbi.home.Banner({bannerMenu: menuList,themesMenu: jsonMenuThemesList});
       centerFrame = new  Ext.ux.ManagedIframePanel({
       					region: 'center'

@@ -783,7 +783,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									}
 								}
 								elementAll=document.getElementById('categoryAll');
+							elementAllChecked = false; 
+							if(elementAll != null){
 							elementAllChecked=elementAll.checked;
+							}
 							if(elementAllChecked==true){
 								//alert('checked');
 								seriesURLToCallJS+='&categoryAll=0';
@@ -791,6 +794,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							else{
 							
 							// filter cat series if present
+							
+							if(<%=filterCatGroup%>==true){
+							//if (arrayCategoriesGroups != null && arrayCategoriesGroups != 'undefined') {
 							for(j=0;j<arrayCategoriesGroups.length;j++){			
 								elementCheckCat=document.getElementById(arrayCategoriesGroups[j]);
 								if(elementCheckCat!=null){							
@@ -802,6 +808,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									seriesURLToCallJS+='&cat_group='+valCat;
 								}
 								}
+							  }
 							  }
 							}
 							//alert(seriesURLToCallJS);	

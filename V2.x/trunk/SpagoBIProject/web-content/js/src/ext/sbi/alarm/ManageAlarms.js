@@ -593,6 +593,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
    	                      }
    	                  }),
    	                  height: 450,
+   	                  width: 400,
    	                  title:LN('sbi.alarms.alarmsList'),
    	                  tbar: this.tb,
    	                  border: true

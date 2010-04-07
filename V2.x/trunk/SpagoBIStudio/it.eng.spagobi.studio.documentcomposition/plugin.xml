@@ -29,39 +29,44 @@
    </extension>
    <extension point="org.eclipse.ui.views">
 		<view
-	            class="it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView"
-	            icon="icons/propertiesIcon.png"
-	            id="it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView"
-	            name="Document Properties">
+        category="it.eng.spagobi.studio.doccomp"
+        class="it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView"
+        icon="icons/propertiesIcon.png"
+        id="it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView"
+        name="Document Properties">
 	</view>
 	</extension>
    <extension point="org.eclipse.ui.views">
 		<view
-	            class="it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView"
-	            icon="icons/iconAnalyticalDriverView.png"
-	            id="it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView"
-	            name="DocumentParameters">
+        category="it.eng.spagobi.studio.doccomp"
+        class="it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView"
+        icon="icons/iconAnalyticalDriverView.png"
+        id="it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView"
+        name="DocumentParameters">
 	</view>
 	</extension>
    <extension point="org.eclipse.ui.views">
 		<view
-	            class="it.eng.spagobi.studio.documentcomposition.views.VideoSizeView"
-	            icon="icons/videoSize.png"
-	            id="it.eng.spagobi.studio.documentcomposition.views.VideoSizeView"
-	            name="Video Size">
+        category="it.eng.spagobi.studio.doccomp"
+        class="it.eng.spagobi.studio.documentcomposition.views.VideoSizeView"
+        icon="icons/videoSize.png"
+        id="it.eng.spagobi.studio.documentcomposition.views.VideoSizeView"
+        name="Video Size">
 	</view>
 	</extension>
 	
 	<!-- tabs di navigazione -->
 	<extension point="org.eclipse.ui.views">
     	 <category 
-           id="org.eclipse.ui.navigation"
-           name="Navigation">
+           id="it.eng.spagobi.studio.doccomp"
+           name="Sbi Studio Doc Composition">
         </category>
-        <view id="it.eng.spagobi.studio.documentcomposition.views.NavigationView"
-                name="Navigation"
-                icon="icons\view.gif"
-                class="it.eng.spagobi.studio.documentcomposition.views.NavigationView"/>
+        <view
+              category="it.eng.spagobi.studio.doccomp"
+              class="it.eng.spagobi.studio.documentcomposition.views.NavigationView"
+              icon="icons\view.gif"
+              id="it.eng.spagobi.studio.documentcomposition.views.NavigationView"
+              name="Navigation"/>
 
 	</extension>	
 	

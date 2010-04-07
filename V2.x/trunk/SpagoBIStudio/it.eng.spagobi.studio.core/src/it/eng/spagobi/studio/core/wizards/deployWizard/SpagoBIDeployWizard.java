@@ -206,7 +206,7 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 						"Error", "Error during file deploy: label already present");		
 				return;
 			}
-			System.out.println(returnCode);
+//			System.out.println(returnCode);
 			newDocument.setId(returnCode);
 		}  catch (Exception e) {
 			SpagoBILogger.errorLog("No comunication with server, cannot deploy document on server", e);			

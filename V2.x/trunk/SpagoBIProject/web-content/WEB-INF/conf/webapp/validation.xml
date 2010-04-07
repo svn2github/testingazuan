@@ -8,19 +8,19 @@
 			<FIELDS>
 				<FIELD name="name" label="#SBISet.detailMenu.nameField">
 					<VALIDATOR validatorName="MANDATORY"/>
-					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				</FIELD>
 				<FIELD name="description" label="#SBISet.detailMenu.descriptionField">
-					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				</FIELD>
 				<FIELD name="objParameters" label="#SBISet.detailMenu.parameters">
 					<VALIDATOR validatorName="XSS"/>
 				</FIELD>
 				<FIELD name="subobjectName" label="#SBISet.detailMenu.subobject">
-					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				</FIELD>
 				<FIELD name="snapshotName" label="#SBISet.detailMenu.snapshotName">
-					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				</FIELD>
 				<FIELD name="snapshotHistory" label="#SBISet.detailMenu.snapshotHistory">
 					<VALIDATOR validatorName="NUMERIC"/>
@@ -52,19 +52,19 @@
 			<FIELDS>
 				<FIELD name="name" label="#SBISet.detailMenu.nameField">
 					<VALIDATOR validatorName="MANDATORY"/>
-					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				</FIELD>
 				<FIELD name="description" label="#SBISet.detailMenu.descriptionField">
-					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				</FIELD>
 				<FIELD name="objParameters" label="#SBISet.detailMenu.parameters">
 					<VALIDATOR validatorName="XSS"/>
 				</FIELD>
 				<FIELD name="subobjectName" label="#SBISet.detailMenu.subobject">
-					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				</FIELD>
 				<FIELD name="snapshotName" label="#SBISet.detailMenu.snapshotName">
-					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				</FIELD>
 				<FIELD name="snapshotHistory" label="#SBISet.detailMenu.snapshotHistory">
 					<VALIDATOR validatorName="NUMERIC"/>

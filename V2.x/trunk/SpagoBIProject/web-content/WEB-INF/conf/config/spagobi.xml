@@ -273,6 +273,10 @@ END-LIFERAY -->
 				<ATTRIBUTE name="name" value="SpagoBI Developer" />
 				<ROLE name="/spagobi/dev"/>
 			</USER>
+			<USER userId="bam" password="bam" fullName="Bam User">
+				<ATTRIBUTE name="name" value="Bam User" />
+				<ROLE name="/spagobi/bam"/>
+			</USER>
 		</DEFAULT_USERS>
 		<DEFAULT_ATTRIBUTES>
 			<ATTRIBUTE name="name" description="name" />
@@ -289,7 +293,8 @@ END-LIFERAY -->
 			<ROLE roleName="/spagobi/admin" description="/spagobi/admin" roleTypeCD="ADMIN" />
 			<ROLE roleName="/spagobi/modeladmin" description="/spagobi/modeladmin" roleTypeCD="MODEL_ADMIN" />
 			<ROLE roleName="/spagobi/op_reva" description="/spagobi/op_reva" roleTypeCD="USER" />
-			<ROLE roleName="/spagobi/an_reva" description="/spagobi/an_reva" roleTypeCD="USER" />			
+			<ROLE roleName="/spagobi/an_reva" description="/spagobi/an_reva" roleTypeCD="USER" />	
+			<ROLE roleName="/spagobi/bam" description="/spagobi/bam" roleTypeCD="USER" />		
 		</DEFAULT_ROLES>
 	 </INTERNAL_PROFILING_INITIALIZER>  
 	

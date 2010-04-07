@@ -8,11 +8,11 @@
 			<FIELDS>
 				<FIELD name="name" label="name">
 		 	 		<VALIDATOR validatorName="MANDATORY"/>
-				  	<VALIDATOR validatorName="REGEXP" arg0="^[a-zA-Z1-9_\x2F ]*$"/>
+				  	<VALIDATOR validatorName="EXTENDED_ALFANUMERIC" />
 					<VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
 				</FIELD>
 				<FIELD name="description" label="description">
-					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)\.\:\;\,\x2F])*$"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC" />
 		 	 		<VALIDATOR validatorName="MAXLENGTH" arg0="200"/>
 				</FIELD>
 				<FIELD name="label" label="label">
@@ -44,7 +44,7 @@
 
 				<FIELD name="name" label="name">
 					<VALIDATOR validatorName="MANDATORY"/>	
-					<VALIDATOR validatorName="REGEXP" arg0="^[a-zA-Z1-9_\x2D\s]*$"/>				
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>				
 					<VALIDATOR validatorName="MAXLENGTH" arg0="100"/>
 				</FIELD>
 				<FIELD name="email" label="email">

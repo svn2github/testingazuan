@@ -12,11 +12,11 @@
 				</FIELD>
 				<FIELD name="name" label="#SBIDev.docConf.docDet.nameField">
 				    <VALIDATOR validatorName="MANDATORY"/>
-				    <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)\:éèëïâêôûîçàù])*$"/>
+				    <VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="200"/>
 				</FIELD>
 				<FIELD name="description" label="#SBIDev.docConf.docDet.descriptionField">
-					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)\[\]\;\:àÀ])*$"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="400"/>
 				</FIELD>	
 				<FIELD name="relName" label="#SBIDev.docConf.docDet.relNameField">
@@ -55,7 +55,7 @@
 					<VALIDATOR validatorName="MAXLENGTH" arg0="45"/>
 				</FIELD>
 				<FIELD name="Keywords" label="#metadata.docKeyword">
-					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\,\-\_\(\)])*$"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="250"/>
 				</FIELD>
 			</FIELDS>
@@ -68,7 +68,7 @@
 			<FIELDS>
 				<FIELD name="objParLabel" label="#SBIDev.docConf.docDetParam.labelField">
 		 	 		<VALIDATOR validatorName="MANDATORY"/>
-				  	<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
+				  	<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>
 				</FIELD>
 				<FIELD name="par_Id" label="#SBIDev.docConf.docDetParam.paramField">
@@ -111,7 +111,7 @@
 			<FIELDS>
 				<FIELD name="name">
 					<VALIDATOR validatorName="MANDATORY"/>
-					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
 				</FIELD>
 				<FIELD name="description">

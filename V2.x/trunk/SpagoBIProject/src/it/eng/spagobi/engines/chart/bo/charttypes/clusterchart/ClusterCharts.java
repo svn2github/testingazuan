@@ -74,7 +74,7 @@ public class ClusterCharts extends ChartImpl {
 	double yMin;
 	double yMax;
 	double zMax;
-	
+
 	StyleLabel styleXaxesLabels;
 	StyleLabel styleYaxesLabels;
 	StyleLabel styleValueLabels;
@@ -153,7 +153,7 @@ public class ClusterCharts extends ChartImpl {
 					}
 					else // serie already present
 					{ newSerie=false;
-					  i++;
+					i++;
 
 					}
 				}
@@ -228,7 +228,7 @@ public class ClusterCharts extends ChartImpl {
 					//defines map with selection series informations
 					String tmpName = tmpSerieName.replaceAll(" ", "");
 					tmpName = tmpName.replace('.', ' ').trim();
-					if(!(serie_selected.keySet().contains(tmpName)))
+					if(!(serie_selected.keySet().contains(tmpName)) && !tmpName.equals(""))
 						serie_selected.put(tmpName, value);
 				}
 			}
@@ -373,7 +373,7 @@ public class ClusterCharts extends ChartImpl {
 			colSel=(String)confParameters.get("column_sel");
 		else
 			colSel="";
-		
+
 		if(confParameters.get("default_color")!=null)
 			defaultColor=(String)confParameters.get("default_color");
 		else
@@ -403,8 +403,8 @@ public class ClusterCharts extends ChartImpl {
 			}		
 		}
 
-// check if there is some info about additional labels style
-		
+//		check if there is some info about additional labels style
+
 		SourceBean styleXaxisLabelsSB = (SourceBean)content.getAttribute("STYLE_X_AXIS_LABELS");
 		if(styleXaxisLabelsSB!=null){
 
@@ -432,7 +432,7 @@ public class ClusterCharts extends ChartImpl {
 				}else{
 					size = defaultLabelsStyle.getSize();
 				}
-				
+
 				styleXaxesLabels=new StyleLabel(fontS,size,color);
 
 			}
@@ -443,7 +443,7 @@ public class ClusterCharts extends ChartImpl {
 		}else{
 			styleXaxesLabels = defaultLabelsStyle;
 		}
-		
+
 		SourceBean styleYaxisLabelsSB = (SourceBean)content.getAttribute("STYLE_Y_AXIS_LABELS");
 		if(styleYaxisLabelsSB!=null){
 
@@ -457,7 +457,7 @@ public class ClusterCharts extends ChartImpl {
 			if(orientationS==null){
 				orientationS = "horizontal";
 			}
-			
+
 			try{
 				Color color= Color.BLACK;
 				if(colorS!=null){
@@ -471,7 +471,7 @@ public class ClusterCharts extends ChartImpl {
 				}else{
 					size = defaultLabelsStyle.getSize();
 				}
-				
+
 				styleYaxesLabels=new StyleLabel(fontS,size,color);
 
 			}
@@ -482,7 +482,7 @@ public class ClusterCharts extends ChartImpl {
 		}else{
 			styleYaxesLabels = defaultLabelsStyle;
 		}
-		
+
 		SourceBean styleValueLabelsSB = (SourceBean)content.getAttribute("STYLE_VALUE_LABELS");
 		if(styleValueLabelsSB!=null){
 
@@ -510,7 +510,7 @@ public class ClusterCharts extends ChartImpl {
 				}else{
 					size = defaultLabelsStyle.getSize();
 				}
-				
+
 				styleValueLabels=new StyleLabel(fontS,size,color);
 
 			}

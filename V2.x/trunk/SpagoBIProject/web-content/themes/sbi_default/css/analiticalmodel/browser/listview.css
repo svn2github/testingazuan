@@ -95,10 +95,10 @@
         background-image:url('../../../img/analiticalmodel/browser/document_kpi.png')!important;
     }
     
-    .list-view .document-item-icon .FORM-icon {
+    .list-view .document-item-icon .SMART_FILTER-icon {
     	width:96px;
         height:96px;
-        background-image:url('../../../img/analiticalmodel/browser/document_form.png')!important;
+        background-image:url('../../../img/analiticalmodel/browser/document_smart_filter.png')!important;
     }
     
     .list-view #icon {

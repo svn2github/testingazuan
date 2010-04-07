@@ -121,11 +121,11 @@
 		!important;
 }
 
-.group-view .document-item-icon .FORM-icon {
+.group-view .document-item-icon .SMART_FILTER-icon {
 	width: 96px;
 	height: 96px;
 	background-image:
-		url('../../../img/analiticalmodel/browser/document_form.png')
+		url('../../../img/analiticalmodel/browser/document_smart_filter.png')
 		!important;
 }
 

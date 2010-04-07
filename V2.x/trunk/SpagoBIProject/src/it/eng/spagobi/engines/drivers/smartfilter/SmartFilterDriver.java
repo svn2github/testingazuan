@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.engines.drivers.form;
+package it.eng.spagobi.engines.drivers.smartfilter;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -59,9 +59,9 @@ import it.eng.spagobi.utilities.assertion.Assert;
 /**
  * Driver Implementation (IEngineDriver Interface) for Qbe External Engine. 
  */
-public class FormDriver extends AbstractDriver implements IEngineDriver {
+public class SmartFilterDriver extends AbstractDriver implements IEngineDriver {
 	
-	static private Logger logger = Logger.getLogger(FormDriver.class);
+	static private Logger logger = Logger.getLogger(SmartFilterDriver.class);
 	 
 		
 	/**

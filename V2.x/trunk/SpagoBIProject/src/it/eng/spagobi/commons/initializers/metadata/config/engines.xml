@@ -16,5 +16,6 @@
 <ENGINE label="WEKA_ENGINE" name="WEKA_ENGINE" descr="WEKA_ENGINE" mainUrl="http://localhost:8080/SpagoBIWekaEngine/WekaServlet" driverNm="it.eng.spagobi.engines.drivers.weka.WekaDriver"  engineTypeCd="EXT" classNm="" biobjTypeCd="DATA_MINING" useDataSet="false" useDataSource="true" encrypt="0" />
 <ENGINE label="AccessibilityEng" name="Accessibility Engine" descr="Accessible HTML Engine" mainUrl="http://localhost:8080/SpagoBIAccessibilityEngine/servlet/AccessibilityServlet" driverNm="it.eng.spagobi.engines.drivers.accessibility.AccessibilityDriver"  engineTypeCd="EXT" classNm="" biobjTypeCd="ACCESSIBLE_HTML" useDataSet="true" useDataSource="true" encrypt="0" />
 <ENGINE label="CommonJEngine" name="CommonJ Engine" descr="Engine to execute process" mainUrl="http://localhost:8080/SpagoBICommonJEngine/servlet/AdapterHTTP" driverNm="it.eng.spagobi.engines.drivers.commonj.CommonjDriver"  engineTypeCd="EXT" classNm="" biobjTypeCd="ETL" useDataSet="false" useDataSource="false" encrypt="0" />
+<ENGINE label="SmartFilterEngine" name="SmartFilterEngine" descr="SmartFilterEngine" mainUrl="http://localhost:8080/SpagoBIQbeEngine/servlet/AdapterHTTP" driverNm="it.eng.spagobi.engines.drivers.smartfilter.SmartFilterDriver"  engineTypeCd="EXT" classNm="" biobjTypeCd="SMART_FILTER" useDataSet="false" useDataSource="true" encrypt="0" />
 
 </ENGINES>

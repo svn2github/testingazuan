@@ -102,7 +102,7 @@
   </target>
   
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-  <!--   CREAZIONE WAR  					                                                  -->
+  <!--   CREAZIONE WAR  					                                        -->
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 	<target name="create.war" depends="svn.checkout,compile,copy.artifacts">
 	      <war warfile="${dist}/${war_name}" 
@@ -115,5 +115,16 @@
         </zip>
 
 	</target>
+	
+  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+  <!--   CREAZIONE WAR  					                                        -->
+  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+ <target name="package.src" depends="clean">
+   <mkdir dir="${dist}" />
+   <zip destfile="${dist}/CasServer-src-${project.version}_${project.date}.zip"
+        excludes="**/*.svn"  basedir="../../cas/src/">
+
+  </zip> 
+  </target>
      
 </project>

@@ -82,9 +82,7 @@ public class ManageUserAction extends AbstractSpagoBIAction {
 			logger.error(e1.getMessage(), e1);
 			throw new SpagoBIServiceException(SERVICE_NAME,	"Error occurred");
 		}
-		HttpServletRequest httpRequest = getHttpRequest();
-		MessageBuilder m = new MessageBuilder();
-		Locale locale = m.getLocale(httpRequest);
+		Locale locale = getLocale();
 
 		String serviceType = this.getAttributeAsString(MESSAGE_DET);
 		logger.debug("Service type "+serviceType);

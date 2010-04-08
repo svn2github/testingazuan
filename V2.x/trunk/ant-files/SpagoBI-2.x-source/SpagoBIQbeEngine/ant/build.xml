@@ -251,7 +251,7 @@
 	
 	<target name="create-production" depends="create-debug">
 			<java jar="./yuicompressor-2.4.2.jar" fork="true">
-				<arg line="-o ${build}/${webapp_name}/js/spagobi/qbe-all.js ${build}/${webapp_name}/js/spagobi/qbe-all-debug.js"/>		   
+				<arg line="-o ${build}/${webapp_name}/js/spagobi/qbe-all-${project.version}.js ${build}/${webapp_name}/js/spagobi/qbe-all-debug.js"/>		   
 			</java>
 	</target>
 

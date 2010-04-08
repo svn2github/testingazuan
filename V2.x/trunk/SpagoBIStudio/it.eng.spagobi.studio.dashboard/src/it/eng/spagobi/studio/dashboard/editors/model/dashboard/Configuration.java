@@ -187,8 +187,10 @@ public class Configuration {
 			"    <CONF>\n";
 		for (int i = 0; i < parameters.length; i++) {
 			Parameter aParameter = parameters[i];
-			toReturn +=
-				"		<PARAMETER name='" + aParameter.getName() + "' value='" + aParameter.getValue() + "' />\n";
+			if(aParameter.getValue() != null && !aParameter.getValue().equals("")){
+				toReturn +=
+					"		<PARAMETER name='" + aParameter.getName() + "' value='" + aParameter.getValue() + "' />\n";
+			}
 		}
 		toReturn +=
 			"    </CONF>\n";

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MAP>
+
+  <MAP_PROVIDER class_name="it.eng.spagobi.engines.geo.map.provider.SOMapProvider" map_name="SUPPLY_CHAIN_MAP" />
+  
+  <DATAMART_PROVIDER class_name="it.eng.spagobi.engines.geo.datamart.provider.DataMartProvider"
+			   hierarchy="custom"
+			   level="supply_chain">
+			  
+     
+	 
+     <METADATA>
+		     <COLUMN type="geoid"   column_id="subprocess"        hierarchy="custom" level="supply_chain"/>   
+            
+		     <COLUMN type="measure" column_id="Inwards_Goods"      agg_func="sum"/>
+		     <COLUMN type="measure" column_id="Outwards_Goods"       agg_func="sum"/>
+		     <COLUMN type="measure" column_id="Rejected_Goods"       agg_func="sum"/>
+		     <COLUMN type="measure" column_id="Tot_Exec_Time"       agg_func="sum"/>
+		     <COLUMN type="measure" column_id="Tot_Latency_Time"       agg_func="sum"/>
+		</METADATA>	  
+		
+		<DATASET>
+  <!--<DATASOURCE type="connection" driver="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:hsql://localhost:9002/foodmart" user="sa" password="sa"/>-->
+      <QUERY>
+        SELECT  DA.SUBPROCESS as subprocess, DA.CODE, DA.DESCRIPTION,
+                FT.INWARDS_ITEMS as Inwards_Goods, FT.OUTWARDS_ITEMS as Outwards_Goods,
+                FT.REJECTS_ITEMS as Rejected_Goods, FT.TOT_EXECUTION_TIME as Tot_Exec_Time, 
+                FT.TOT_LATENCY_TIME as Tot_Latency_Time             
+        FROM F_PROCESS FT, D_ACTIVITY DA, D_TIME DT
+        WHERE FT.ID_TIME = DT.ID_TIME
+              AND   FT.ID_ACTIVITY = DA.ID_ACTIVITY
+        ORDER BY category
+      </QUERY>
+		</DATASET>		 
+
+
+		<HIERARCHIES>
+			<!--HIERARCHY name="Gera. standard" type="standard"/-->
+
+			<HIERARCHY name="custom" type="custom">
+				<LEVEL name="supply_chain" column_id="subprocess" column_desc="subprocess" feature_name="supply_chain"/> 
+				<LEVEL name="supplier" column_id="code" column_desc="description" feature_name="supplier"/> 
+				<LEVEL name="warehouse" column_id="code" column_desc="description" feature_name="warehouse"/>                     
+				<LEVEL name="retailstore" column_id="code" column_desc="description" feature_name="retailstore"/>    
+			</HIERARCHY>
+			
+		</HIERARCHIES>
+		
+		<!--
+		<CROSS_NAVIGATION>
+      <LINK hierarchy="custom" level="supply_chain">
+          <PARAM type="absolute" name="DOCUMENT_LABEL" value="RPT_B_OVERVIEW" />
+          <PARAM type="absolute" name="param_output_format" value="HTML" /> 
+      </LINK>
+		</CROSS_NAVIGATION>
+		-->
+		
+	</DATAMART_PROVIDER>     
+	                       
+	
+		
+	<MAP_RENDERER class_name="it.eng.spagobi.engines.geo.map.renderer.InteractiveMapRenderer">	
+	
+		<MEASURES default_kpi="Inwards_Goods">
+			<KPI column_id="Inwards_Goods" description="Inwards Goods" colour="#FF0000">
+    		<TRESHOLDS type="quantile" lb_value="0" ub_value="none" >
+    			<PARAM name="GROUPS_NUMBER" value="5" />
+    		</TRESHOLDS>
+     		<COLOURS type="grad" outbound_colour="#CCCCCC" null_values_color="#FFFFFF" >
+    			<PARAM name="BASE_COLOR" value="#FF0000" />
+    		</COLOURS>			
+			</KPI>	
+			<KPI column_id="Outwards_Goods" description="Outwards Goods" colour="#3333CC">
+				<TRESHOLDS type="quantile" lb_value="0" ub_value="none" >
+    			<PARAM name="GROUPS_NUMBER" value="5" />
+    		</TRESHOLDS>
+     		<COLOURS type="grad" outbound_colour="#CCCCCC" null_values_color="#FFFFFF" >
+    			<PARAM name="BASE_COLOR" value="#3333CC" />
+    		</COLOURS>			
+			</KPI>
+						<KPI column_id="Rejected_Goods" description="Rejected Goods" colour="#009900">
+				<TRESHOLDS type="quantile" lb_value="0" ub_value="none" >
+    			<PARAM name="GROUPS_NUMBER" value="5" />
+    		</TRESHOLDS>
+     		<COLOURS type="grad" outbound_colour="#CCCCCC" null_values_color="#FFFFFF" >
+    			<PARAM name="BASE_COLOR" value="#009900" />
+    		</COLOURS>			
+			</KPI>
+			<KPI column_id="Tot_Exec_Time" description="Tot. Execution Time" colour="#660066">
+				<TRESHOLDS type="quantile" lb_value="0" ub_value="none" >
+    			<PARAM name="GROUPS_NUMBER" value="5" />
+    		</TRESHOLDS>
+     		<COLOURS type="grad" outbound_colour="#CCCCCC" null_values_color="#FFFFFF" >
+    			<PARAM name="BASE_COLOR" value="#660066" />
+    		</COLOURS>			
+			</KPI>
+			<KPI column_id="Tot_Latency_Time" description="Tot. Latency Time" colour="#006666">
+				<TRESHOLDS type="quantile" lb_value="0" ub_value="none" >
+    			<PARAM name="GROUPS_NUMBER" value="5" />
+    		</TRESHOLDS>
+     		<COLOURS type="grad" outbound_colour="#CCCCCC" null_values_color="#FFFFFF" >
+    			<PARAM name="BASE_COLOR" value="#006666" />
+    		</COLOURS>			
+			</KPI>
+		</MEASURES>
+		
+		<LAYERS>
+			<LAYER name="supply_chain" description="Supply Chain" selected="true" default_fill_color="#4682B4"/>
+<!--			<LAYER name="supplier" description="Supplier" selected="true" default_fill_color=""/>
+			<LAYER name="warehouse" description="Warehouse" selected="true" default_fill_color=""/>
+			<LAYER name="retailstore" description="Data Store" selected="true" default_fill_color=""/>-->
+		</LAYERS>
+		
+		<GUI_SETTINGS>
+      <WINDOWS>
+        <DEFAULTS>
+          <PARAM name='visible'>true</PARAM>
+          <PARAM name='y'>3</PARAM>
+          <PARAM name='transform'>scale(1.0)</PARAM>
+          <PARAM name='minimized'>true</PARAM>
+          <PARAM name='styles'>
+            <![CDATA[
+            {
+                winPlaceholderStyles: {"fill":"none","stroke":"dimgray","stroke-width":1.5}
+                , windowStyles: {"fill":"#fffce6","stroke":"dimgray","stroke-width":1}
+                , titlebarStyles: {"fill":"steelblue","stroke":"dimgray","stroke-width":1}
+                , titlebarHeight: 17
+                , statusbarStyles: {"fill":"aliceblue","stroke":"dimgray","stroke-width":1}
+                , statusbarHeight: 13
+                , titletextStyles: {"font-family":"Arial,Helvetica","font-size":14,"fill":"white"}
+                , statustextStyles: {"font-family":"Arial,Helvetica","font-size":10,"fill":"dimgray"}
+                , buttonStyles: {"fill":"steelblue","stroke":"white","stroke-width":2}
+            }
+            ]]>
+          </PARAM>          
+        </DEFAULTS>
+        
+        <WINDOW name='navigation'>
+          <PARAM name='visible'>true</PARAM>
+          <PARAM name='title'>Navigazione</PARAM>
+        </WINDOW>
+        
+        <WINDOW name='measures'>
+          <PARAM name='visible'>true</PARAM>
+          <PARAM name='title'>Misure</PARAM>
+        </WINDOW>
+        
+        <WINDOW name='layers'>
+          <PARAM name='visible'>true</PARAM>
+          <PARAM name='title'>Layers</PARAM>
+        </WINDOW>
+        
+        <WINDOW name='detail'>
+          <PARAM name='visible'>true</PARAM>
+          <PARAM name='title'>Dettagli</PARAM>
+        </WINDOW>
+        
+        <WINDOW name='legend'>
+          <PARAM name='visible'>true</PARAM>
+        </WINDOW>
+        
+        <WINDOW name='colourpicker'>
+          <PARAM name='visible'>true</PARAM>
+        </WINDOW>        
+        
+      </WINDOWS>
+      <!--
+      <LABELS>
+        <LABEL position="footer-right" class_name="it.eng.spagobi.engines.geo.map.renderer.DateLabelProducer">
+            <FORMAT day="dd/MM/yyyy" hour="HH:mm"/>
+            <TEXT>Last update ${day} at ${hour}</TEXT>
+            <PARAM name='font-size'>32px</PARAM>
+            <PARAM name='fill'>red</PARAM>
+        </LABEL>
+      </LABELS>-->
+      
+      <PARAM name='defaultDrillNav'>false</PARAM>
+      
+      <PARAM name='highlightOnMouseOver'>true</PARAM>
+      <PARAM name='normalizeChartValues'>true</PARAM>
+      <PARAM name='chartScale'>1.0</PARAM>
+      <PARAM name='chartWidth'>80</PARAM>
+      <PARAM name='chartHeight'>160</PARAM>
+      <PARAM name='valueFont'>16px</PARAM>
+      <PARAM name='valueScale'>1.0</PARAM>
+      
+    </GUI_SETTINGS>
+		
+	</MAP_RENDERER>
+	
+</MAP>
+

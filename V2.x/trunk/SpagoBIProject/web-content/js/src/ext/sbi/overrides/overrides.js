@@ -143,7 +143,18 @@
 	    
 	});	
 
-
+	/**
+    * Imported from Ext 2.3
+	* Returns true if the passed object is a JavaScript array, otherwise false.
+    * @param {Object} object The object to test
+    * @return {Boolean}
+    */
+	
+	
+	Ext.isArray = function(v){
+        return v && typeof v.length == 'number' && typeof v.splice == 'function';
+		//return Object.prototype.toString.apply(v) === '[object Array]';
+    }
 
 
 

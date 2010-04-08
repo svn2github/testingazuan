@@ -1040,7 +1040,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	        , loadMask  : true
 	        //, fitToParent: true  // not valid in a layout
 	        , disableMessaging :false
-	        , listeners  : {
+	        , listeners: {
 	        		
 	        	'message:subobjectsaved': {
 	        		fn: function(srcFrame, message) {
@@ -1076,6 +1076,23 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	        		}
 	        		, scope: this
 	            }
+				
+				, domready : function(frame) {
+
+						//Only for OLAP Documents
+						if (this.executionInstance.document.typeCode == 'OLAP') {
+							//intercept click on <input> elements and show load  mask
+							frame.getDoc().on('click',function(){ frame.showMask() },this,     {delegate:'input'});
+						}
+
+                }
+				
+				, documentloaded : function(frame){
+                    frame.hideMask();
+                }
+				
+                , scope: this				
+				
 	        }
 	    });
 		

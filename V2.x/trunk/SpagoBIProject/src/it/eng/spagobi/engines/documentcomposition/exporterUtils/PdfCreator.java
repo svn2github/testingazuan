@@ -75,7 +75,17 @@ public class PdfCreator {
 
 				byte[] content=docContainer.getContent();
 				if(content!=null){
-					Image img=Image.getInstance(content);
+
+					Image img = null;
+					try{					
+						img=Image.getInstance(content);
+					}
+					catch (Exception e) {
+						logger.error("Error in inserting image for document "+label+ ": not an image ", e);
+						continue;
+					}
+
+
 					table.addCell(img);							
 				}
 				else{
@@ -134,7 +144,14 @@ public class PdfCreator {
 				// get the image
 				byte[] content=docContainer.getContent();
 				if(content!=null){
-					Image img=Image.getInstance(content);
+					Image img = null;
+					try{
+						img=Image.getInstance(content);
+					}
+					catch (Exception e) {
+						logger.error("Error in inserting image for document "+label+ ": not an image ", e);
+						continue;
+					}
 
 					//if it is a REPORT and has more than one page, too large, you have to resize the image, but how to understand it?
 					// if image size is more than double of the container size cut the first part,otherwise scale it

@@ -207,7 +207,13 @@ public class AbstractMapRendererConfigurator {
 			attributeValue = (String)layerSB.getAttribute("description");
 			layer.setDescription(attributeValue);
 			attributeValue = (String)layerSB.getAttribute("selected");
+			if(attributeValue != null){
 			layer.setSelected(attributeValue.equalsIgnoreCase("true"));
+			}
+			else {
+				layer.setSelected(false);				
+			}
+			
 			attributeValue = (String)layerSB.getAttribute("default_fill_color");
 			layer.setDefaultFillColor(attributeValue);			
 			

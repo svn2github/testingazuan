@@ -278,6 +278,12 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 		
 		if(thereAreParametersToBeFilled !== true) {
 			Ext.DomHelper.append(this.body, '<div class="x-grid-empty">' + LN('sbi.execution.parametersselection.noParametersToBeFilled') + '</div>');
+		} else {
+			// set focus on first field
+			this.columns[0].items.get(0).on('render', function(theField) {
+				theField.focus();
+				theField.clearInvalid();
+			}, this);
 		}
 		
 		// Help message on Parameters Panel.

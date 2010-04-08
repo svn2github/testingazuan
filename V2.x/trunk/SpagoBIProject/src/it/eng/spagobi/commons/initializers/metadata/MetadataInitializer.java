@@ -32,6 +32,7 @@ import it.eng.spagobi.commons.metadata.SbiUserFunctionality;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.engines.config.metadata.SbiExporters;
 import it.eng.spagobi.engines.config.metadata.SbiExportersId;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -138,6 +139,17 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 			} else {
 				logger.debug("Config table is already populated");
 			}
+			
+			hql = "from SbiKpiPeriodicity";
+			hqlQuery = aSession.createQuery(hql);
+			List periodicities = hqlQuery.list();
+			if (periodicities.isEmpty()) {
+				logger.info("Periodicity table is empty. Starting populating predefined periodicities...");
+				writePeriodicities(aSession);
+			} else {
+				logger.debug("Periodicity table is already populated");
+			}
+
 
 
 			tx.commit();
@@ -288,6 +300,31 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 				logger.debug("New Domain iserted in the DB");
 			}
 		}		
+		logger.debug("OUT");
+	}
+	
+	private void writePeriodicities(Session aSession) throws Exception {
+		logger.debug("IN");
+		SourceBean kpiSB = getConfiguration("it/eng/spagobi/commons/initializers/metadata/config/kpi.xml");
+		if (kpiSB == null) {
+			throw new Exception("Kpis configuration file not found!!!");
+		}
+		List periodicitiesList = kpiSB.getAttributeAsList("PERIODICITY");
+		if (periodicitiesList == null || periodicitiesList.isEmpty()) {
+			throw new Exception("No predefined periodicities found!!!");
+		}
+		Iterator it = periodicitiesList.iterator();
+		while (it.hasNext()) {
+			SourceBean aPeriodicitySB = (SourceBean) it.next();
+			SbiKpiPeriodicity periodicity = new SbiKpiPeriodicity();
+			periodicity.setName((String) aPeriodicitySB.getAttribute("name"));
+			periodicity.setMonths(new Integer((String) aPeriodicitySB.getAttribute("months")));
+			periodicity.setDays(new Integer((String) aPeriodicitySB.getAttribute("days")));
+			periodicity.setHours(new Integer((String) aPeriodicitySB.getAttribute("hours")));
+			periodicity.setMinutes(new Integer((String) aPeriodicitySB.getAttribute("minutes")));
+			logger.debug("Inserting Periodicity with name = [" + aPeriodicitySB.getAttribute("name") + "]");
+			aSession.save(periodicity);
+		}
 		logger.debug("OUT");
 	}
 

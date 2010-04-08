@@ -24,22 +24,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
          session="true" 
 %>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
-<%@page import="it.eng.spago.configuration.ConfigSingleton"%>
-<%@page import="it.eng.spago.base.SourceBean"%>
 <% 
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
-	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
-	SourceBean ssoSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
-	String active = (String) ssoSB.getCharacters();
-	// If SSO is not active, redirect to authentication page;
-	// instead, if SSO is active, the authentication mechanism is provided by the SSO itself, so SpagoBI does not make 
-	// any authentication
-	String redirectURL = null;
-	if (active == null || active.equalsIgnoreCase("false")) {
-    	redirectURL = contextName+"/servlet/AdapterHTTP?PAGE=LoginPage&NEW_SESSION=TRUE&MESSAGE=START_LOGIN";
-	} else {
-		redirectURL = contextName+"/servlet/AdapterHTTP?PAGE=LoginPage&NEW_SESSION=TRUE";
-	}
+	String redirectURL = contextName + "/servlet/AdapterHTTP?PAGE=LoginPage&NEW_SESSION=TRUE";
     response.sendRedirect(redirectURL);
 %>
 

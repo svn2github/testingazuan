@@ -26,7 +26,7 @@
 		<CONF>
 			<PARAMETER name='paramWidth' description='Set table width' type='NUMBER' />
 			<PARAMETER name='paramHeight' description='Set table height' type='NUMBER' />
-			<PARAMETER name='xColName' description='BOOOOOOHHHHHH' type='STRING' />
+			<PARAMETER name='xColName' description='X Column Name' type='STRING' />
 			<PARAMETER name='refreshRate' description='Refresh rate (in ms)' type='NUMBER' />
 			<PARAMETER name='timeStartValue' description='Start time (hh:mm) (current time if not specified)' type='STRING' />
 			<PARAMETER name='timeStopValue' description='Stop time (hh:mm) (calculated if not specified)' type='STRING' />

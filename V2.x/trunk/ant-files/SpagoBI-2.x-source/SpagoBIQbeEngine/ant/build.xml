@@ -152,7 +152,7 @@
 	</target>
 	
 	<target name="delete-debug">
-		<delete file="${build}/${webapp_name}/js/spagobi/qbe-all.js"/>
+		<delete file="${build}/${webapp_name}/js/spagobi/qbe-all-2.5.0.js"/>
 		<delete file="${build}/${webapp_name}/js/spagobi/qbe-all-debug.js"/>
 	</target>
   

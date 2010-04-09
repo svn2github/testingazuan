@@ -198,7 +198,7 @@ public class MeasuresDesigner {
 		textAgg.add("media");
 		if(kpi != null){
 			for(int i =0; i<textAgg.getItemCount(); i++){
-				if(kpi.getAggFunct().equalsIgnoreCase(textAgg.getItem(i))){
+				if(kpi.getAggFunct() != null && kpi.getAggFunct().equalsIgnoreCase(textAgg.getItem(i))){
 					textAgg.select(i);
 				}
 			}

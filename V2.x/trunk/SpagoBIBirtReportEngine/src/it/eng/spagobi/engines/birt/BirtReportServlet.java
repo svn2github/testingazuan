@@ -711,108 +711,150 @@ public class BirtReportServlet extends HttpServlet {
 		//*** Create the data extraction task ****
 		IDataExtractionTask iDataExtract = birtReportEngine.createDataExtractionTask(rptdoc);
 		ArrayList resultSetList = (ArrayList)iDataExtract.getResultSetList( );
-	    
+			    
 	    ICSVDataExtractionOption extractionOptions = new CSVDataExtractionOption();
 	    OutputStream responseOut = response.getOutputStream();
 
 	    extractionOptions.setOutputFormat("csv");
-	    //extractionOptions.setSeparator(",");
 	    extractionOptions.setSeparator(";");
 	    
-		
-	    //check if there is only a result set and generate one CSV file
-	    if (resultSetList.size() <= 1){
-	    	
-	    	//output directly on the response OutputStream
-	    	extractionOptions.setOutputStream(responseOut);
-	    	
-	    	//Set the HTTP response
-			response.setContentType("text/csv");
-			response.setHeader("Content-disposition", "inline; filename=reportcsv.csv");
-			//response.setHeader("Content-disposition", "inline; filename=reportcsv.txt");
-	    	
-	    	IResultSetItem resultItem = (IResultSetItem)resultSetList.get(0);
+	    //flag for exportdata found
+	    boolean ed_found = false;
+	    
+	    
+	    //check if there is the ExportData element
+	    for (int j=0; j<resultSetList.size();j++){
 			
-	    	//Set the name of the element you want to retrieve.
-			String dispName = resultItem.getResultSetName( );
-			iDataExtract.selectResultSet( dispName );
-			iDataExtract.extract(extractionOptions);
-			logger.debug("Extraction successfull "+dispName);
-	    }
-	    else {
-	    	//with more resultSet generate a zip file containing more CSV file
-	    	try {
-				//Set the HTTP response
-				response.setContentType("application/zip");
-				response.setHeader("Content-disposition", "attachment; filename=reportcsv.zip");
-	    		
-	    		//ZipOutputStream directly on the response OutputStream
-	    		ZipOutputStream outZip = new ZipOutputStream(responseOut); 
-	    		
-		    	//temporary output buffer that contain a single csv
-	    		OutputStream tempOut = new ByteArrayOutputStream();
-	    		
-	    		//temporary input buffer
-	    		InputStream tempIn;
-	    		
-	    		// Create a buffer for reading the files 
-	    		byte[] buf = new byte[1024]; 
-	    		
-	    		//extracted csv is writed on the temp buffer 
-		    	extractionOptions.setOutputStream(tempOut);
+	    	//get an item
+			IResultSetItem resultItem = (IResultSetItem)resultSetList.get(j);
+			
+			//get the name of the resultSet
+			String dispName = resultItem.getResultSetName();
+			
+			if (dispName.equalsIgnoreCase("exportdata")){
+				logger.debug("Found ExportData Element in report ");
+				ed_found = true;
+				
+				//output directly on the response OutputStream
+		    	extractionOptions.setOutputStream(responseOut);
 		    	
-			    //iterate the resultSetList
-				 for (int i=0; i<resultSetList.size();i++){
-					
-					//get an item
-					IResultSetItem resultItem = (IResultSetItem)resultSetList.get(i);
-					
-					//Set the name of the element you want to retrieve.
-					String dispName = resultItem.getResultSetName( );
-					iDataExtract.selectResultSet( dispName );
-					iDataExtract.extract(extractionOptions);
-					logger.debug("Extraction successfull "+dispName);
-					 
-					// Add ZIP entry to ZIP output stream
-					outZip.putNextEntry(new ZipEntry("reportcsv"+i+".csv"));
-					//outZip.putNextEntry(new ZipEntry("reportcsv"+i+".txt"));
-					
-					//convert temp outputStream to InputStream
-					tempIn = new ByteArrayInputStream (((ByteArrayOutputStream) tempOut).toByteArray());
-					
-				    // Transfer bytes from the temp buffer to the ZIP file 
-					int len; 
-					while ((len = tempIn.read(buf)) > 0) { 
-						outZip.write(buf, 0, len); 
-				    } 
-					
-					// Complete the entry 
-					outZip.closeEntry();
-					tempIn.close(); 
-					
-					//reset the temp output buffer
-					((ByteArrayOutputStream)tempOut).reset();
-				 }
-				//**************************
-			    
-				// Complete the ZIP file
-				outZip.close();  
-
-	    	}
-	    	catch (IOException e){
-	    		logger.error("Error while generating csv zip file: " + e);
-	    	}
-
+		    	//Set the HTTP response
+				response.setContentType("text/csv");
+				response.setHeader("Content-disposition", "inline; filename=reportcsv.csv");
+				iDataExtract.selectResultSet( dispName );
+				iDataExtract.extract(extractionOptions);
+				logger.debug("Extraction successfull "+dispName);
+				break;
+			}
 	    }
-
-		//close the extract
-		iDataExtract.close();
+	    
+	    if (ed_found){
+			
+	    	//close the extract
+			iDataExtract.close();
 		
-		//close the task
-		CSVtask.close();
+			//close the task
+			CSVtask.close();
 
-		logger.debug("Finished");
-		logger.debug("OUT");
+			logger.debug("Finished");
+			logger.debug("OUT");
+	    }
+	    
+	    
+	    //ExtractData element not found, search all element to export
+		if (!ed_found) {
+			//check if there is only a result set and generate one CSV file
+			if (resultSetList.size() <= 1){
+	    	
+	    		//output directly on the response OutputStream
+	    		extractionOptions.setOutputStream(responseOut);
+	    	
+	    		//Set the HTTP response
+				response.setContentType("text/csv");
+				response.setHeader("Content-disposition", "inline; filename=reportcsv.csv");
+	    	
+	    		IResultSetItem resultItem = (IResultSetItem)resultSetList.get(0);
+			
+	    		//Set the name of the element you want to retrieve.
+				String dispName = resultItem.getResultSetName( );
+				iDataExtract.selectResultSet( dispName );
+				iDataExtract.extract(extractionOptions);
+				logger.debug("Extraction successfull "+dispName);
+	    	}
+	    	else {
+	    		//with more resultSet generate a zip file containing more CSV file
+	    		try {
+					//Set the HTTP response
+					response.setContentType("application/zip");
+					response.setHeader("Content-disposition", "attachment; filename=reportcsv.zip");
+	    		
+	    			//ZipOutputStream directly on the response OutputStream
+	    			ZipOutputStream outZip = new ZipOutputStream(responseOut); 
+	    		
+		    		//temporary output buffer that contain a single csv
+	    			OutputStream tempOut = new ByteArrayOutputStream();
+	    		
+	    			//temporary input buffer
+	    			InputStream tempIn;
+	    		
+	    			// Create a buffer for reading the files 
+	    			byte[] buf = new byte[1024]; 
+	    		
+	    			//extracted csv is writed on the temp buffer 
+		    		extractionOptions.setOutputStream(tempOut);
+		    	
+			    	//iterate the resultSetList
+				 	for (int i=0; i<resultSetList.size();i++){
+					
+					 	//get an item
+					 	IResultSetItem resultItem = (IResultSetItem)resultSetList.get(i);
+					
+						//Set the name of the element you want to retrieve.
+						String dispName = resultItem.getResultSetName( );
+						iDataExtract.selectResultSet( dispName );
+						iDataExtract.extract(extractionOptions);
+						logger.debug("Extraction successfull "+dispName);
+					 
+						// Add ZIP entry to ZIP output stream
+						outZip.putNextEntry(new ZipEntry("reportcsv"+i+".csv"));
+					
+						//convert temp outputStream to InputStream
+						tempIn = new ByteArrayInputStream (((ByteArrayOutputStream) tempOut).toByteArray());
+					
+				    	// Transfer bytes from the temp buffer to the ZIP file 
+						int len; 
+						while ((len = tempIn.read(buf)) > 0) { 
+							outZip.write(buf, 0, len); 
+				    	} 
+					
+						// Complete the entry 
+						outZip.closeEntry();
+						tempIn.close(); 
+					
+						//reset the temp output buffer
+						((ByteArrayOutputStream)tempOut).reset();
+				 	}
+				 //**************************
+			    
+				 // Complete the ZIP file
+				 outZip.close();  
+
+	    		}
+	    		catch (IOException e){
+	    			logger.error("Error while generating csv zip file: " + e);
+	    		}
+
+	    	}
+
+			//close the extract
+			iDataExtract.close();
+		
+			//close the task
+			CSVtask.close();
+
+			logger.debug("Finished");
+			logger.debug("OUT");
+		}
 	}
 
 }

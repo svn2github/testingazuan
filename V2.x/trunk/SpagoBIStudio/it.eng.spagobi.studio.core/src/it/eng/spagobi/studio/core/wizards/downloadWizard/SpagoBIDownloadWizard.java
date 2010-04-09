@@ -11,8 +11,6 @@ import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 import it.eng.spagobi.studio.core.util.BiObjectUtilities;
 import it.eng.spagobi.studio.core.util.FileFinder;
-import it.eng.spagobi.studio.core.util.SpagoBIStudioConstants;
-import it.eng.spagobi.studio.core.wizards.deployWizard.SpagoBIDeployWizardTreePage;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -24,7 +22,6 @@ import java.util.List;
 
 import javax.activation.DataHandler;
 
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
@@ -50,7 +47,6 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 
 
 
-	private static transient Logger logger = Logger.getLogger(SpagoBIDownloadWizard.class);
 
 	/**
 	 * Constructor for SampleNewWizard.
@@ -76,11 +72,10 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 	 * using wizard as execution context.
 	 */
 	public boolean performFinish() {
-		logger.debug("IN");
 		boolean toReturn;
 		TreeItem[] selectedItems=page.getTree().getSelection();
 		if(selectedItems==null){
-			logger.warn("Error; no item or multiple items selected");
+			SpagoBILogger.warningLog("Error; no item or multiple items selected");
 		}
 		else{	
 			for (int i = 0; i < selectedItems.length; i++) {
@@ -100,13 +95,11 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			doFinish();
 		}
 
-		logger.debug("OUT");
 		return true;
 	}
 
 
 	public boolean downloadContainedTemplate(SDKDocument document){
-		logger.debug("IN");
 		boolean toReturn=true;
 		Integer id=document.getId();
 		SDKTemplate template=null;
@@ -118,12 +111,12 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			template=docServiceProxy.downloadTemplate(id);
 		}	
 		catch (NullPointerException e) {
-			logger.error("No comunication with server, check SpagoBi Server definition in preferences page");
+			SpagoBILogger.errorLog("No comunication with server, check SpagoBi Server definition in preferences page", e);
 			MessageDialog.openError(getShell(), "Error", "No comunication with server, check SpagoBi Server definition in preferences page");	
 			return false;
 		}
 		catch (Exception e) {
-			logger.error("No comunication with SpagoBI server, could not retrieve template",e);
+			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve template",e);
 			MessageDialog.openError(getShell(), "Error", "Could not get the template from server for document with id "+id);	
 			return false;
 		}	
@@ -164,8 +157,8 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 				correctParsing=false;
 			}
 			if(correctParsing==false){
-				logger.error("error in reading the file searching for document labels ");				
-				MessageDialog.openWarning(getShell(), "Warning", "error in reading template searching for document labels: will not download contained documents but ony composed one");	
+				SpagoBILogger.errorLog("error in reading the file searching for document labels ", null);				
+				MessageDialog.openWarning(getShell(), "Warning", "error in reading template searching for document labels: will not download contained documents but only composed one");	
 				return false;
 			}
 
@@ -176,7 +169,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 					toReturn = downloadTemplate(docToDownload);
 					if(toReturn==true){
 						numDocs++;
-						logger.debug("Download document with label "+docToDownload.getName());
+						SpagoBILogger.infoLog("Download document with label "+docToDownload.getName());
 					}
 				}
 			}
@@ -190,13 +183,11 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		}
 
 
-		logger.debug("Downloaded # document "+numDocs);
-		logger.debug("OUT");
+		SpagoBILogger.infoLog("Downloaded # document "+numDocs);
 		return toReturn;
 	}
 
 	public boolean downloadTemplate(SDKDocument document){
-		logger.debug("IN");
 		InputStream is=null;
 		//try{
 		Integer id=document.getId();
@@ -207,12 +198,12 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			template=docServiceProxy.downloadTemplate(id);
 		}
 		catch (NullPointerException e) {
-			logger.error("No comunication with server, check SpagoBi Server definition in preferences page");
+			SpagoBILogger.errorLog("No comunication with server, check SpagoBi Server definition in preferences page",e);
 			MessageDialog.openError(getShell(), "Error", "No comunication with server, check SpagoBi Server definition in preferences page");	
 			return false;
 		}
 		catch (Exception e) {
-			logger.error("No comunication with SpagoBI server, could not retrieve template",e);
+			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve template",e);
 			MessageDialog.openError(getShell(), "Error", "Could not get the template from server");	
 			return false;
 		}			
@@ -228,17 +219,17 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			roles=docServiceProxy.getCorrectRolesForExecution(id);
 		}
 		catch (NullPointerException e) {
-			logger.error("No comunication with server, check SpagoBi Server definition in preferences page",e);
+			SpagoBILogger.errorLog("No comunication with server, check SpagoBi Server definition in preferences page",e);
 			MessageDialog.openError(getShell(), "Error", "No comunication with server, check SpagoBi Server definition in preferences page");	
 			return false;
 		}		
 		catch (Exception e) {
-			logger.error("No comunication with SpagoBI server, could not retrieve roles for execution",e);
+			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve roles for execution",e);
 			MessageDialog.openError(getShell(), "Could not retrieve roles for execution", "Could not retrieve roles for execution");	
 			return false;
 		}			
 		if(roles==null || roles.length==0){
-			logger.error("No roles for execution found",null);
+			SpagoBILogger.errorLog("No roles for execution found",null);
 			MessageDialog.openError(getShell(), "No roles for execution found", "No roles for execution found");	
 			return false;			
 		}
@@ -252,12 +243,12 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			parameters=docServiceProxy.getDocumentParameters(id, roles[0]);
 		}
 		catch (NullPointerException e) {
-			logger.error("No comunication with server, check SpagoBi Server definition in preferences page",e);
+			SpagoBILogger.errorLog("No comunication with server, check SpagoBi Server definition in preferences page",e);
 			MessageDialog.openError(getShell(), "Error", "No comunication with server, check SpagoBi Server definition in preferences page");	
 			return false;
 		}		
 		catch (Exception e) {
-			logger.error("No comunication with SpagoBI server, could not retrieve document parameters",e);
+			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve document parameters",e);
 			MessageDialog.openError(getShell(), "Could not retrieve document parameters for execution", "Could not retrieve roles for execution");	
 			return false;
 		}			
@@ -275,7 +266,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			sdkEngine=engineProxy.getEngine(engineId);
 		}
 		catch (Exception e) {
-			logger.error("No comunication with SpagoBI server, could not get engine", e);
+			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not get engine", e);
 			MessageDialog.openError(getShell(), "", "Could not get engine the template from server");	
 			return false;
 		}		
@@ -314,6 +305,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 
 		IPath pathNewFile = pathFolder.append(fileName); 
 		IFile newFile = project.getFile(pathNewFile);
+		SpagoBILogger.infoLog("file path to download "+pathNewFile.toString());
 		DataHandler dh=template.getContent(); 
 		try {
 			is=dh.getInputStream();
@@ -329,7 +321,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		if(alreadyFound){
 			MessageDialog.openWarning(workbench.getActiveWorkbenchWindow().getShell(), 
 					"Error", "File "+fileName+" already exists in your project: to download it againg you must first delete the existing one");
-			logger.warn("File "+fileName+" already exists in your project: to download it againg you must first delete the existing one");
+			SpagoBILogger.warningLog("File "+fileName+" already exists in your project: to download it againg you must first delete the existing one");
 			return false;
 			//write=MessageDialog.openQuestion(workbench.getActiveWorkbenchWindow().getShell(), "File exists: Overwrite?", "File "+newFile.getName()+" already exists, overwrite?"); 
 		}
@@ -340,7 +332,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 				newFile.create(is, true, null);
 			}
 			catch (CoreException e) {
-				logger.error("error while creating new file", e);	
+				SpagoBILogger.errorLog("error while creating new file", e);	
 				return false;
 			}
 
@@ -351,7 +343,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 				//newFile=BiObjectUtilities.setFileMetaData(newFile,document);
 			}
 			catch (CoreException e) {
-				logger.error("Error while setting meta data", e);	
+				SpagoBILogger.errorLog("Error while setting meta data", e);	
 				return false;
 			}
 
@@ -363,7 +355,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 				}
 				catch (Exception e) {
 					e.printStackTrace();
-					logger.error("Error while setting meta data", e);	
+					SpagoBILogger.errorLog("Error while setting meta data", e);	
 					return false;
 				}			
 			}
@@ -373,13 +365,13 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			}
 			catch (Exception e) {
 				e.printStackTrace();
-				logger.error("Error while setting last refresh date", e);	
+				SpagoBILogger.errorLog("Error while setting last refresh date", e);	
 				return false;
 			}			
 		}
 		else // choose not to overwrite the file
 		{
-			logger.info("Choose to not overwrite file "+newFile.getName());	
+			SpagoBILogger.infoLog("Choose to not overwrite file "+newFile.getName());	
 		}
 
 		return true;
@@ -395,7 +387,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 	 */
 
 	private void doFinish() {
-		logger.info("Documents downloaded");
+		SpagoBILogger.infoLog("Documents downloaded");
 	}
 
 	/**

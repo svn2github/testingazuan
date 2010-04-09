@@ -1,7 +1,5 @@
 package it.eng.spagobi.studio.core.wizards.downloadWizard;
 
-import java.lang.reflect.InvocationTargetException;
-
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
 import it.eng.spagobi.sdk.documents.bo.SDKFunctionality;
 import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
@@ -9,7 +7,8 @@ import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 import it.eng.spagobi.studio.core.util.SdkFunctionalityTreeGenerator;
 
-import org.apache.log4j.Logger;
+import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -40,7 +39,6 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 	//private Text containerText;
 
 	//private Text fileText;
-	private static transient Logger logger = Logger.getLogger(SpagoBIDownloadWizardPage.class);
 
 	private IStructuredSelection selection;
 	private Tree tree;
@@ -55,18 +53,15 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 	 */
 	public SpagoBIDownloadWizardPage(IStructuredSelection selection) {
 		super("wizardPage");
-		logger.debug("IN");
 		setTitle("Download Document Wizard");
 		setDescription("This wizard lets you download a BI document template from SpagoBI Server");
 		this.selection = selection;
-		logger.debug("OUT");
 	}
 
 	/** Creates the wizard form
 	 * @see IDialogPage#createControl(Composite)
 	 */
 	public void createControl(Composite parent) {
-		logger.debug("IN");
 		monitor=new ProgressMonitorPart(getShell(), null);
 
 		Composite container = new Composite(parent, SWT.NULL);
@@ -91,13 +86,13 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 
 				}
 				catch (Exception e) {
-					logger.error("No comunication with SpagoBI server", e);
+					SpagoBILogger.errorLog("No comunication with SpagoBI server", e);
 					MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
 					return;
 				}
 				monitor.done();
 				if (monitor.isCanceled())
-					logger.error("Operation not ended",new InterruptedException("The long running operation was cancelled"));
+					SpagoBILogger.errorLog("Operation not ended",new InterruptedException("The long running operation was cancelled"));
 			}
 		};	
 
@@ -105,12 +100,12 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 		try {
 			dialog.run(true, true, op);
 		} catch (InvocationTargetException e1) {
-			logger.error("No comunication with SpagoBI server", e1);
+			SpagoBILogger.errorLog("No comunication with SpagoBI server", e1);
 			dialog.close();
 			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
 			return;
 		} catch (InterruptedException e1) {
-			logger.error("No comunication with SpagoBI server", e1);
+			SpagoBILogger.errorLog("No comunication with SpagoBI server", e1);
 			dialog.close();
 			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
 			return;
@@ -124,7 +119,7 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 			tree=treeGenerator.generateTree(container, functionality);
 		}
 		catch (Exception e) {
-			logger.error("Error while generating tree", e);
+			SpagoBILogger.errorLog("Error while generating tree", e);
 			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Error", "Error in generating the tree, control if SpagoBI Server is defined and service is avalaible");	
 		}
 
@@ -143,7 +138,6 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 
 		initialize();
 		setControl(container);
-		logger.debug("OUT");
 	}
 
 
@@ -153,7 +147,6 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 	 */
 
 	private void initialize() {
-		logger.debug("IN");
 		if (selection != null && selection.isEmpty() == false
 				&& selection instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) selection;
@@ -170,7 +163,6 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 
 			}
 		}
-		logger.debug("OUT");
 	}
 
 	/**

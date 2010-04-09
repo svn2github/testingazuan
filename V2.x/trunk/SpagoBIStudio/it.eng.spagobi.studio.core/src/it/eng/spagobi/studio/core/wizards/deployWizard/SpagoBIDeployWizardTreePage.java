@@ -1,25 +1,14 @@
 package it.eng.spagobi.studio.core.wizards.deployWizard;
 
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
-import it.eng.spagobi.sdk.documents.bo.SDKFunctionality;
-import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
-import it.eng.spagobi.studio.core.log.SpagoBILogger;
-import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
-import it.eng.spagobi.studio.core.util.SdkFunctionalityTreeGenerator;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.dialogs.IDialogPage;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
@@ -36,7 +25,6 @@ public class SpagoBIDeployWizardTreePage extends WizardPage {
 
 	private IStructuredSelection selection;
 	private Tree tree;
-	private static transient Logger logger = Logger.getLogger(SpagoBIDeployWizardTreePage.class);
 
 	/**
 	 * Constructor for SampleNewWizardPage.
@@ -45,11 +33,9 @@ public class SpagoBIDeployWizardTreePage extends WizardPage {
 	 */
 	public SpagoBIDeployWizardTreePage(IStructuredSelection selection) {
 		super("wizardPage");
-logger.debug("IN");
-setTitle("Download Document Wizard");
+		setTitle("Download Document Wizard");
 		setDescription("This wizard lets you download a BI document template from SpagoBI Server");
 		this.selection = selection;
-		logger.debug("OUT");
 	}
 
 	/** Creates the wizard form
@@ -104,7 +90,7 @@ setTitle("Download Document Wizard");
 	 * Ensures that both text fields are set.
 	 */
 
-	
+
 	private void updateStatus(String message) {
 		setErrorMessage(message);
 		setPageComplete(message == null);

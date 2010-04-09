@@ -16,10 +16,8 @@ import it.eng.spagobi.studio.core.util.SpagoBIStudioConstants;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
@@ -38,7 +36,6 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -46,7 +43,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -66,7 +62,6 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 	private Combo dataSourceCombo; 
 	private Combo stateCombo; 
 	private Spinner refreshSecondsSpinner; 
-	private static transient Logger logger = Logger.getLogger(SpagoBIDeployWizardFormPage.class);
 
 	private IStructuredSelection selection;
 	private Tree tree;
@@ -91,11 +86,9 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 	 */
 	public SpagoBIDeployWizardFormPage(IStructuredSelection selection) {
 		super("wizardPage");
-		logger.debug("IN");
 		setTitle("Deploy Document Wizard");
 		setDescription("Deploy a new document; select the new document properties");
 		this.selection = selection;
-		logger.debug("OUT");
 	}
 
 
@@ -103,7 +96,6 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 	 * @see IDialogPage#createControl(Composite)
 	 */
 	public void createControl(Composite parent) {
-		logger.debug("IN");
 		Shell shell = parent.getShell();
 		//		shell.setSize(1000,1000);
 		monitor=new ProgressMonitorPart(getShell(), null);
@@ -120,7 +112,6 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 		IRunnableWithProgress op = new IRunnableWithProgress() {			
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				monitor.beginTask("Deploy a new Document: ", IProgressMonitor.UNKNOWN);
-				logger.debug("Starting monitor run method");
 
 				try{
 					enginesList=engineService.getEngines();
@@ -130,13 +121,13 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 					String ciao= functionality.getId().toString()+" "+functionality.getName()+" label: "+functionality.getName();
 				}
 				catch (Exception e) {
-					logger.error("No comunication with SpagoBI server");
+					SpagoBILogger.errorLog("No comunication with SpagoBI server",e);		
 					MessageDialog.openError(getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
 					return;
 				}
 				monitor.done();
 				if (monitor.isCanceled())
-					logger.error("Operation not ended",new InterruptedException("The long running operation was cancelled"));
+					SpagoBILogger.errorLog("Operation not ended",new InterruptedException("The long running operation was cancelled"));		
 				SpagoBILogger.errorLog("Operation not ended",new InterruptedException("The long running operation was cancelled"));
 			}
 		};
@@ -145,12 +136,11 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 		try {
 			dialog.run(true, true, op);
 		} catch (InvocationTargetException e1) {
-			logger.error("Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");
+			SpagoBILogger.errorLog("Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible",e1);		
 			dialog.close();
 			MessageDialog.openError(getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
 			return;
 		} catch (InterruptedException e1) {
-			logger.error("Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");
 			SpagoBILogger.errorLog("No comunication with SpagoBI server", e1);
 			dialog.close();
 			MessageDialog.openError(getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
@@ -224,7 +214,7 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 		typeLabel=BiObjectUtilities.getTypeFromExtension(fileSelected.getName());
 
 		if(typeLabel==null){
-			logger.error("File "+fileSelected.getName()+" has unknown exstension");
+			SpagoBILogger.errorLog("File "+fileSelected.getName()+" has unknown exstension",null);
 			MessageDialog.openError(getShell(), "No type", "File "+fileSelected.getName()+" has unknown exstension");
 			return;
 		}
@@ -333,7 +323,6 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 
 		setControl(right);
 
-		logger.debug("OUT");
 	}
 
 
@@ -348,7 +337,6 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 	 */
 
 	private void initialize() {
-		logger.debug("IN");
 		if (selection != null && selection.isEmpty() == false
 				&& selection instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) selection;
@@ -363,7 +351,6 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 					container = ((IResource) obj).getParent();
 			}
 		}
-		logger.debug("OUT");
 	}
 
 	/**

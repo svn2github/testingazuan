@@ -4,24 +4,19 @@ import it.eng.spagobi.sdk.documents.bo.SDKDocument;
 import it.eng.spagobi.sdk.documents.bo.SDKFunctionality;
 import it.eng.spagobi.sdk.documents.bo.SDKTemplate;
 import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
-import it.eng.spagobi.studio.core.actions.DownloadDocumentAction;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 import it.eng.spagobi.studio.core.util.BiObjectUtilities;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.TreeItem;
@@ -49,7 +44,6 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 	int refreshSeconds;
 	SDKFunctionality functionality;
 
-	private static transient Logger logger = Logger.getLogger(SpagoBIDeployWizard.class);
 
 
 	/**
@@ -80,7 +74,6 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 	 */
 	public boolean performFinish() {
 		// Get all selection
-		logger.debug("IN");
 		label=formPage.getLabelText().getText();
 		name=formPage.getNameText().getText();
 		description=formPage.getDescriptionText().getText();
@@ -111,7 +104,7 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 		TreeItem[] selectedItems=formPage.getTree().getSelection();
 
 		if(selectedItems==null || selectedItems.length!=1){
-			logger.error("Error; no item or multiple items selected",null);
+			SpagoBILogger.errorLog("Error; no item or multiple items selected",null);		
 		}
 		else{	
 			TreeItem selectedItem=selectedItems[0];
@@ -121,7 +114,6 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 
 		}
 
-		logger.debug("OUT");
 		return true;
 	}
 
@@ -133,7 +125,6 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 	 */
 
 	private void doFinish() {
-		logger.debug("IN");
 
 		SDKProxyFactory proxyFactory=new SDKProxyFactory();
 
@@ -180,7 +171,7 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 			fileSel=(org.eclipse.core.internal.resources.File)objSel;
 		}
 		catch (Exception e) {
-			logger.warn("No file selected",e);
+			SpagoBILogger.warningLog("No file selected",e);
 			MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
 					"Not a file", "You must select a file to deploy");		
 			return;
@@ -201,7 +192,6 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 			Integer returnCode=docServiceProxy.saveNewDocument(newDocument, sdkTemplate, functionalityId);
 			if(returnCode==null){
 				SpagoBILogger.errorLog("Error during document deploy: Check that label is not already present", null);			
-				logger.error("Error during document deploy: Check that label is not already present",null);
 				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
 						"Error", "Error during file deploy: label already present");		
 				return;
@@ -212,7 +202,6 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 			SpagoBILogger.errorLog("No comunication with server, cannot deploy document on server", e);			
 			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
 					"No comunciation with server", "No comunication with server, cannot deploy document on server");		
-			logger.error("No comunication with server, cannot deploy document on server",e);
 			return;
 
 		}
@@ -221,7 +210,7 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 			fileSel=(org.eclipse.core.internal.resources.File)BiObjectUtilities.setFileMetaData(fileSel,newDocument);
 		}
 		catch (CoreException e) {
-			logger.error("Error while setting meta data",e);
+			SpagoBILogger.errorLog("Error while setting meta data",e);		
 			return;
 		}
 
@@ -229,7 +218,7 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 			fileSel=(org.eclipse.core.internal.resources.File)BiObjectUtilities.setFileLastRefreshDateMetaData(fileSel);
 		}
 		catch (Exception e) {
-			logger.error("Error while setting last refresh date",e);
+			SpagoBILogger.errorLog("Error while setting last refresh date",e);		
 			return;
 		}			
 
@@ -237,7 +226,6 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 
 		SpagoBILogger.infoLog("Document "+label+" has been deployed");		
 		MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),"Deploy succesfull", "Document has been deployed");		
-		logger.debug("OUT");
 
 	}
 

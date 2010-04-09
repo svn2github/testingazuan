@@ -22,9 +22,7 @@ package it.eng.spagobi.studio.core.actions;
 
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.wizards.downloadWizard.SpagoBIDownloadWizard;
-import it.eng.spagobi.tools.dataset.bo.provaDataSet;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.internal.resources.Folder;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -44,7 +42,6 @@ import org.eclipse.ui.navigator.CommonViewer;
 public class DownloadDocumentAction implements IViewActionDelegate {
 
 	private IViewPart view = null;
-	private static transient Logger logger = Logger.getLogger(DownloadDocumentAction.class);
 
 	public DownloadDocumentAction() {
 	}
@@ -54,7 +51,6 @@ public class DownloadDocumentAction implements IViewActionDelegate {
 	}
 
 	public void run(IAction action) {
-logger.debug("IN");
 		SpagoBIDownloadWizard sbindw = new SpagoBIDownloadWizard();
 		CommonViewer commViewer=((CommonNavigator) view).getCommonViewer();
 		IStructuredSelection sel=(IStructuredSelection)commViewer.getSelection();
@@ -66,7 +62,7 @@ logger.debug("IN");
 			folderSel=(Folder)objSel;
 		}
 		catch (Exception e) {
-			logger.warn("No folder selected");
+			SpagoBILogger.warningLog("No folder selected");					
 			MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
 					"Not a folder", "You must select a folder in wich to download the template");		
 			return;
@@ -79,7 +75,6 @@ logger.debug("IN");
 		// Open the wizard dialog
 		dialog.open();	
 
-		logger.debug("OUT");
 
 	}
 

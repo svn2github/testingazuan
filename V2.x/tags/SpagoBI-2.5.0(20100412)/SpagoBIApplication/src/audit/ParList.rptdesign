@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.17" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 2.3.1.v20080911 Build &lt;2.3.1.v20080922-1151></property>
+    <property name="units">in</property>
+    <list-property name="propertyBindings">
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">248</property>
+            <expression name="value">params["connectionName"].value</expression>
+        </structure>
+    </list-property>
+    <property name="iconFile">/templates/first_report.gif</property>
+    <property name="cheatSheet">org.eclipse.birt.report.designer.ui.cheatsheet.firstreport</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <parameters>
+        <scalar-parameter name="connectionName" id="7">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="paramType">simple</property>
+            <text-property name="promptText">driver</text-property>
+            <property name="controlType">text-box</property>
+            <property name="defaultValue">default</property>
+            <property name="distinct">true</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="object_id" id="290">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="paramType">simple</property>
+            <property name="isRequired">false</property>
+            <property name="controlType">text-box</property>
+            <property name="defaultValue">0</property>
+            <property name="distinct">true</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+    </parameters>
+    <data-sources>
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Spagobi" id="248">
+            <property name="odaDriverClass">org.gjt.mm.mysql.Driver</property>
+            <property name="odaURL">jdbc:mysql://athos/spagobi</property>
+            <property name="odaUser">spagobi</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">YmlzcGFnbw==</encrypted-property>
+            <property name="odaJndiName">java:comp/env/spagobi</property>
+        </oda-data-source>
+    </data-sources>
+    <data-sets>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ParametersList" id="285">
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">PAR_ID</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">LABEL</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">NAME</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">PAR_TYPE_CD</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">NUM_DOC</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">BIOBJ_ID</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Spagobi</property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">object_id</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">1</property>
+                    <property name="isOptional">true</property>
+                    <property name="allowNull">true</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">PAR_ID</property>
+                    <property name="nativeName">PAR_ID</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">LABEL</property>
+                    <property name="nativeName">LABEL</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">NAME</property>
+                    <property name="nativeName">NAME</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">PAR_TYPE_CD</property>
+                    <property name="nativeName">PAR_TYPE_CD</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">NUM_DOC</property>
+                    <property name="nativeName">NUM_DOC</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">BIOBJ_ID</property>
+                    <property name="nativeName">BIOBJ_ID</property>
+                    <property name="dataType">integer</property>
+                </structure>
+            </list-property>
+            <property name="queryText"> SELECT distinct S.PAR_ID, S.LABEL, S.NAME, S.PAR_TYPE_CD,
+( SELECT COUNT(distinct P.BIOBJ_ID) FROM SBI_OBJECTS P,SBI_OBJ_PAR O 
+WHERE P.BIOBJ_ID = O.BIOBJ_ID  AND O.PAR_ID=S.PAR_ID) AS NUM_DOC, 
+( SELECT O.BIOBJ_ID FROM SBI_OBJECTS P,SBI_OBJ_PAR O WHERE P.BIOBJ_ID = O.BIOBJ_ID
+ AND O.PAR_ID=S.PAR_ID AND P.BIOBJ_ID = ? )  BIOBJ_ID
+ FROM SBI_PARAMETERS S LEFT OUTER JOIN SBI_OBJ_PAR O ON  O.PAR_ID = S.PAR_ID
+ ORDER BY S.NAME</property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>1.0</Version>
+  <design:DataSetParameters>
+    <design:parameterDefinitions>
+      <design:inOutMode>In</design:inOutMode>
+      <design:attributes>
+        <design:name></design:name>
+        <design:position>1</design:position>
+        <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+        <design:precision>0</design:precision>
+        <design:scale>0</design:scale>
+        <design:nullability>Nullable</design:nullability>
+      </design:attributes>
+      <design:inputAttributes>
+        <design:elementAttributes>
+          <design:optional>true</design:optional>
+        </design:elementAttributes>
+      </design:inputAttributes>
+    </design:parameterDefinitions>
+  </design:DataSetParameters>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+    </data-sets>
+    <styles>
+        <style name="crosstab-cell" id="246">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="crosstab" id="247">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <property name="type">custom</property>
+            <property name="height">10cm</property>
+            <property name="width">15cm</property>
+            <property name="topMargin">0mm</property>
+            <property name="leftMargin">0mm</property>
+            <property name="bottomMargin">0mm</property>
+            <property name="rightMargin">0mm</property>
+            <property name="headerHeight">0in</property>
+            <property name="footerHeight">0in</property>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <label id="245">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">x-large</property>
+            <property name="fontWeight">bold</property>
+            <property name="color">#000066</property>
+            <property name="marginTop">3mm</property>
+            <property name="textAlign">center</property>
+            <text-property name="text">Parameters List</text-property>
+        </label>
+        <table id="251">
+            <property name="marginTop">0pt</property>
+            <property name="marginLeft">3mm</property>
+            <property name="marginBottom">3mm</property>
+            <property name="marginRight">3mm</property>
+            <property name="width">100%</property>
+            <property name="dataSet">ParametersList</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">PAR_ID</property>
+                    <expression name="expression">dataSetRow["PAR_ID"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">LABEL</property>
+                    <expression name="expression">dataSetRow["LABEL"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">NAME</property>
+                    <expression name="expression">dataSetRow["NAME"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">PAR_TYPE_CD</property>
+                    <expression name="expression">dataSetRow["PAR_TYPE_CD"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">NUM_DOC</property>
+                    <expression name="expression">dataSetRow["NUM_DOC"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">BIOBJ_ID</property>
+                    <expression name="expression">dataSetRow["BIOBJ_ID"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+            </list-property>
+            <column id="281"/>
+            <column id="282"/>
+            <column id="283"/>
+            <column id="284"/>
+            <header>
+                <row id="252">
+                    <cell id="255">
+                        <label id="256">
+                            <property name="backgroundColor">#D8E3FB</property>
+                            <property name="fontSize">medium</property>
+                            <property name="color">#000066</property>
+                            <property name="textAlign">center</property>
+                            <text-property name="text">LABEL</text-property>
+                        </label>
+                    </cell>
+                    <cell id="257">
+                        <label id="258">
+                            <property name="backgroundColor">#D8E3FB</property>
+                            <property name="color">#000066</property>
+                            <property name="textAlign">center</property>
+                            <text-property name="text">NAME</text-property>
+                        </label>
+                    </cell>
+                    <cell id="259">
+                        <label id="260">
+                            <property name="backgroundColor">#D8E3FB</property>
+                            <property name="color">#000066</property>
+                            <property name="textAlign">center</property>
+                            <text-property name="text">TYPE</text-property>
+                        </label>
+                    </cell>
+                    <cell id="261">
+                        <label id="262">
+                            <property name="backgroundColor">#D8E3FB</property>
+                            <property name="color">#000066</property>
+                            <property name="textAlign">center</property>
+                            <text-property name="text"># DOCS</text-property>
+                        </label>
+                    </cell>
+                </row>
+            </header>
+            <group id="291">
+                <property name="groupName">ParGroup</property>
+                <property name="interval">none</property>
+                <property name="sortDirection">asc</property>
+                <expression name="keyExpr">row["LABEL"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue">row["LABEL"]</expression>
+                </structure>
+                <property name="repeatHeader">true</property>
+                <property name="hideDetail">false</property>
+                <property name="pageBreakAfter">auto</property>
+                <property name="pageBreakBefore">auto</property>
+                <property name="pageBreakInside">auto</property>
+                <header>
+                    <row id="292">
+                        <list-property name="highlightRules">
+                            <structure>
+                                <property name="operator">eq</property>
+                                <property name="backgroundColor">#ECF1FD</property>
+                                <expression name="testExpr">! params["object_id"].value.equals(0) ? row["BIOBJ_ID"] : row["NUM_DOC"]</expression>
+                                <simple-property-list name="value1">
+                                    <value>params["object_id"].value</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <cell id="293">
+                            <property name="borderBottomColor">#D8E3FB</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#D8E3FB</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#D8E3FB</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <data id="286">
+                                <property name="fontSize">small</property>
+                                <property name="color">#000066</property>
+                                <property name="textUnderline">underline</property>
+                                <property name="textAlign">left</property>
+                                <property name="resultSetColumn">LABEL</property>
+                                <structure name="action">
+                                    <property name="linkType">hyperlink</property>
+                                    <expression name="uri">"javascript:parent.execCrossNavigation(window.name, 'RPT_PAR_FORM', 'par_id=" + row["PAR_ID"] + "');"</expression>
+                                    <property name="targetWindow">_self</property>
+                                </structure>
+                            </data>
+                        </cell>
+                        <cell id="294">
+                            <property name="borderBottomColor">#D8E3FB</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderRightColor">#D8E3FB</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <data id="287">
+                                <property name="fontSize">small</property>
+                                <property name="resultSetColumn">NAME</property>
+                            </data>
+                        </cell>
+                        <cell id="295">
+                            <property name="borderBottomColor">#D8E3FB</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderRightColor">#D8E3FB</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <data id="288">
+                                <property name="fontSize">small</property>
+                                <property name="textAlign">center</property>
+                                <property name="resultSetColumn">PAR_TYPE_CD</property>
+                            </data>
+                        </cell>
+                        <cell id="296">
+                            <property name="borderBottomColor">#D8E3FB</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderRightColor">#D8E3FB</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <data id="289">
+                                <property name="fontSize">small</property>
+                                <property name="textAlign">center</property>
+                                <property name="resultSetColumn">NUM_DOC</property>
+                            </data>
+                        </cell>
+                    </row>
+                </header>
+            </group>
+            <group id="303">
+                <property name="groupName">ObjGroup</property>
+                <property name="interval">none</property>
+                <property name="sortDirection">asc</property>
+                <expression name="keyExpr">row["BIOBJ_ID"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue">row["BIOBJ_ID"]</expression>
+                </structure>
+                <property name="repeatHeader">true</property>
+                <property name="hideDetail">false</property>
+                <property name="pageBreakAfter">auto</property>
+                <property name="pageBreakBefore">auto</property>
+                <property name="pageBreakInside">auto</property>
+                <header>
+                    <row id="304">
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr">true</expression>
+                            </structure>
+                        </list-property>
+                        <cell id="305">
+                            <data id="314">
+                                <property name="resultSetColumn">BIOBJ_ID</property>
+                            </data>
+                        </cell>
+                        <cell id="306"/>
+                        <cell id="307"/>
+                        <cell id="308"/>
+                    </row>
+                </header>
+            </group>
+        </table>
+    </body>
+</report>

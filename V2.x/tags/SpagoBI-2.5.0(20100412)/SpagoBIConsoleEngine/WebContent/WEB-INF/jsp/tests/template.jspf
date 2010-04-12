@@ -1,0 +1,481 @@
+<script language="javascript" type="text/javascript">
+
+Sbi.template = {
+
+
+	// --------------------------------------------------------------------------------
+	// DATASETS
+	// --------------------------------------------------------------------------------
+	datasets: [
+        {
+            id: 'testConsoleChart'
+            , label: 'testConsoleChart'
+        }, {
+            id: 'testConsLiveLine'
+            , label: 'testConsLiveLine'
+            , refreshTime: 15
+        }, {
+            id: 'testConsole'
+            , label: 'testConsole'
+            , refreshTime: 30
+        } 
+	]
+	
+	
+	// --------------------------------------------------------------------------------
+	// SUMMARY PANEL
+	// --------------------------------------------------------------------------------
+	, summaryPanel: {
+    
+	    // layout properties
+	    collassable: true
+	    , collapsed: false
+	    , hidden: false
+    
+
+    	// ogni dataset può avere più grafici associati (1..N)
+    	, charts: [
+        {
+        	dataset: 'testStore'
+            , widgetConfig: {
+            	type: 'chart.ext.line'
+        		, xField: 'name'
+                , yField: 'visits'
+            }
+         	
+        }, {
+        	dataset: 'testConsoleChart'
+        	, widgetConfig: {
+        		type: 'chart.ext.bar'
+            	, xField: 'quarter'
+            	, yField: 'sales'
+        	}
+        } , {
+        	dataset: 'testConsoleChart'
+        	, widgetConfig: {
+        		type: 'chart.ext.pie'
+        		, dataField: 'sales'
+	        	, categoryField: 'quarter'
+        	}
+        } , {
+        	dataset: 'testConsLiveLine'
+            , widgetConfig: {
+            	type: 'chart.sbi.multileds'
+            	, title:'Multileds'
+            	, fields: [
+            		{header: 'Effort Idx',name:'EffortIndex', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 10, rangeMinValue: 0}, 
+            		//{header: 'Compet.',name:'Competitiveness', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}, 
+            		//{header: 'Cost Opt.',name:'CostOptimization', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0},
+            		//{header: 'Health',name:'Health', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}
+            	]
+           	}
+        } ,  {
+        	dataset: 'testConsLiveLine'
+            , widgetConfig: {
+            	type: 'chart.sbi.livelines'
+            	, title:'Liveline'
+                , rangeMinValue: 0
+        		, rangeMaxValue: 120 
+        		, stepY: 40
+        		, domainValueNumber: 18
+        		, fields: ['EffortIndex', 'Competitiveness']
+            }
+        } ,  {
+        	dataset: 'testConsLiveLine'
+            , widgetConfig: {
+               	type: 'chart.sbi.speedometer'
+               	, title:'Speedometer'
+               	, paramWidth: 100
+            	, paramHeight: 100
+            	, minValue: 0
+            	, maxValue: 100
+            	, lowValue: 33
+            	, highValue: 66
+            	, field: 'EffortIndex'
+            }
+        }
+    	]
+    
+	}	
+
+	//--------------------------------------------------------------------------------
+	// DETAIL PANEL
+	// -------------------------------------------------------------------------------
+	, detailPanel: {
+    	pages: [
+    		
+			//--------------------------------------------------------------------------------
+			// Page 1
+			// -------------------------------------------------------------------------------
+    		{
+			title: 'Pag. 1'
+			, msg: 'Io sono la PRIMA pagina'
+
+			// -- Navigation bar -------------------------------------------------------------
+			, navigationBar: {
+				documents: [
+				{
+					text: 'Bottone 1'
+					,tooltip: 'Bottone 1'
+					,label: 'QBE_FOODMART'
+					,staticParams: {param1: 'paramValue'}
+				}, {
+					text: 'Bottone 2'
+					,tooltip: 'Bottone 2'
+					,label: 'QBE_FOODMART'
+				}, {
+					text: 'Bottone 3'
+					,tooltip: 'Bottone 3'
+					,label: 'QBE_FOODMART'
+				}
+				]
+			}
+	
+            , table: {
+	            dataset: 'testConsole'
+		      , columnDefaultConfig: {
+		    	  width: 100
+		      }
+	          , columnId: 'ID' //the column ID of the single row
+	            // -- Filter bar -----------------------------------------------------------------
+	    	    , filterBar: {
+	    	    	type: 'custom'  
+	    	        , defaults: {
+	    	        	operator: 'EQUALS_TO'
+	    	            , operand: 'DISTINCT'
+	    	        }     
+	    	
+	    	        , filters: [{
+	    	        	text: 'Brands'
+	    	            , column: 'brandname'
+	    	            , operator: 'EQUALS_TO'
+	    	            , operand: 'DISTINCT'
+	    	        }, {
+	    	        	text: 'Products'
+	    	            , column: 'productName'
+	    	            , operator: 'EQUALS_TO'
+	    	            , operand: 'DISTINCT'
+	    	        }]
+
+	    	        , actions: [{
+	    	            name: 'refresh'
+		    	        , tooltip: 'Refresh console data'
+	    	            , hidden: false
+	    	            , config: {}
+    	            }, {
+        	            name: 'errors'
+		    	        , tooltipActive:  'Mark all errors as not viewed'	
+			    	    , tooltipInactive: 	 'Mark all errors as viewed'    	   
+		    	        , checkColumn: 'errors_check'	//the column on db that defines if the icon was checked	
+						, flagColumn: 'errors_flag'		//the column on db that defines if the icon was visible	
+	    	            , hidden: false
+	    	            , config: {
+	    	            	staticParams: {
+							//generic params for the execution of query on generic db
+							   stmt: 'UPDATE_ALL_ERRORS_STATE_TEST'
+							 , numPars: '5'			//the number of params in the query	(number of '?' placeholder)						     																																 													    			     									
+							}
+						  , dynamicParams: [{
+							 'errors_check': 'errors_check'  
+							, scope: 'env'
+							},{
+							 'userId': 'userId'  
+							, scope: 'env'
+							},{
+							 'brandname': 'brandname'  
+							, scope: 'env'
+							},{
+							 'productName': 'productName'  
+							, scope: 'env'
+							},{
+							 'column_data': 'column_data'  //data is passed as a string. It's converted into the stmt.
+							, scope: 'env'
+							}]
+						 , metaParams: {queryParams: [{"name":"errors_check","type":"num"},{"name":"userId","type":"string"},
+						                              {"name":"brandname","type":"string", "default":"%"},
+						                              {"name":"productName","type":"string", "default":"%"}, 
+						                              {"name":"column_data","type":"string", "default":"%"}]}
+    	            	}
+	    	        }, {
+	    	            name: 'alarms'
+	    	        	, tooltipActive:'Mark all allarms as not viewed'  
+			    	    , tooltipInactive:'Mark all allarms as viewed'  	    	   
+		    	        , checkColumn: 'alarms_check'	//the column on db that defines if the icon was checked	
+						, flagColumn: 'alarms_flag'		//the column on db that defines if the icon was visible	
+	    	            , hidden: false
+	    	            , config: {
+	    	            	staticParams: {
+							//generic params for the execution of query on generic db							 							
+							   stmt: 'UPDATE_ALL_ALARMS_STATE_TEST'
+							 , numPars: '5'			//the number of params in the query																																	 													    			     									
+							}
+						  , dynamicParams: [{
+							 'alarms_check': 'alarms_check'  //value: label in new request
+							, scope: 'env'
+							},{
+							 'userId': 'userId'  
+							, scope: 'env'
+							},{
+							 'brandname': 'brandname'  
+							, scope: 'env'
+							},{
+							 'productName': 'productName'  
+							, scope: 'env'
+							},{
+							 'column_data': 'column_data'  //data is passed as a string. It's converted into the stmt.
+							, scope: 'env'
+							}]
+						 , metaParams: {queryParams: [{"name":"alarms_check","type":"num"},{"name":"userId","type":"string"},
+													  {"name":"brandname","type":"string", "default":"%"},
+							                          {"name":"productName","type":"string", "default":"%"}, 
+							                          {"name":"column_data","type":"string", "default":"%"}]}
+    	            	}	    	            
+	    	        }, {
+                       name: 'views'
+                   	    , tooltipActive: 'Mark all rows as not viewed'    
+   			    	    , tooltipInactive: 	'Mark all rows as viewed'		   
+   		    	        , checkColumn: 'views_check'	//the column on db that defines if the icon was checked	   						
+   	    	            , hidden: false
+   	    	            , config: {
+   	    	            	staticParams: {
+   							//generic params for the execution of query on generic db
+							   stmt: 'UPDATE_ALL_VIEWING_STATE_TEST'
+   							 , numPars: '5'			//the number of params in the query																																	 													    			     									
+   							}
+   						  , dynamicParams: [{
+   							 'views_check': 'views_check'  //param value: label in new request
+   							, scope: 'env'
+   							},{
+   							 'userId': 'userId'  
+   							, scope: 'env'
+   							},{
+   							 'Brand': 'brandname'  
+							, scope: 'env'
+							},{
+							 'Product': 'productName'  
+							, scope: 'env'
+							},{
+							 'column_data': 'column_data'  //data is passed as a string. It's converted into the stmt.
+							, scope: 'env'
+							}]
+   						 , metaParams: {queryParams: [{"name":"views_check","type":"num"},{"name":"userId","type":"string"},
+   						                          	  {"name":"brandname","type":"string", "default":"%"},
+						                              {"name":"productName","type":"string", "default":"%"}, 
+						                              {"name":"column_data","type":"string", "default":"%"}]}
+       	            	}	 	                   
+	    	        },{ name: 'monitor'
+		    	        ,  hidden: false
+		    	        ,  tooltip: 'View all active'
+		    	        ,  checkColumn: 'monitor_check'	//the column on db with the flag value	    	        
+	    	        },{ name: 'monitor_inactive'
+		    	    	,  hidden: false
+		    	        ,  tooltip: 'View all inactive'	
+		    	        ,  checkColumn: 'monitor_check'	//the column on db with the flag value	 	    	        
+		    	    }
+	    	        ]
+	    	    } //filterBar   
+	    	    
+		        , inlineCharts: [
+		                         /*
+						{ 
+								type: 'bar'
+								, column: 'chart_store_cost'
+								, color: 'gray'
+								, totValue: 500 
+							}, { 
+								type: 'point'
+								, column: 'chart_unit_sales'
+								, color: 'red'
+								, threshold: '25'
+								, tooltip: 'superata la soglia di 25 errori'
+							}
+		                         */
+		            	]
+			
+		            	, inlineActions: [
+							{
+								name: 'start'
+								, hidden: false
+								, checkColumn: 'pid'
+								, tooltipActive: 'Click to start the process'
+								, tooltipInactive: 'Process is running ...'
+								, config: {
+									document: 
+							 	 	{
+										label: '155'
+										, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
+										, dynamicParams: [{'level': 'Debug level: ' 
+														 , scope: 'promptable'   
+														 },{'id': 'ID'  					
+														  , scope: 'dataset'
+													     }]	 
+									}
+								}
+							}, {
+								name: 'stop'
+								, hidden: false
+								, tooltip: 'Stop the process'
+								, checkColumn: 'pid'
+								, tooltipActive: 'Click to sto the process'
+								, tooltipInactive: 'Process is not running'
+								, config: {
+									document: 
+							 	 	{
+										label: '155'
+										, dynamicParams: [{
+											'id': 'ID'   					
+											, scope: 'dataset'
+										}, {
+											 'PROCESS_ID': 'pid'
+											, scope: 'dataset'
+										}]	 
+									}
+								}
+							}, {
+								name: 'errors'
+								, hidden: false
+								, checkColumn: 'errors_check'
+								, flagColumn: 'errors_flag'
+								, tooltipActive: 'View unchecked error messages'
+							    , tooltipInactive: 'View checked error messages'
+							    , config: {staticParams: {
+									//generic params for the execution of query on generic db
+									   stmt: 'UPDATE_ERROR_STATE_TEST'
+									 , numPars: '2'			//the number of params in the query													 														 													    			     									
+									}
+								  , dynamicParams: [{
+									 'errors_check': 'errors_check'  //logical name: value
+									, scope: 'dataset'
+									},{'id': 'ID'  					//logical name: column with value (dataIndex)
+									, scope: 'dataset'
+									}]
+								 , metaParams: {queryParams: [{"name":"errors_check","type":"num"},{"name":"id","type":"num"}]}
+								}
+							}, {
+								name: 'alarms'
+								, hidden: false
+								, checkColumn: 'alarms_check'
+								, flagColumn: 'alarms_flag'
+								, tooltipActive: 'View unchecked alarm messages'
+								, tooltipInactive: 'View checked alarm messages'
+								, config: {staticParams: {
+									//generic params for the execution of query on generic db
+									   stmt: 'UPDATE_ALARM_STATE_TEST'
+									 , numPars: '2'			//the number of params in the query													 														 													    			     									
+									}
+								  , dynamicParams: [{
+									 'alarms_check': 'alarms_check'  //value: logical name
+									, scope: 'dataset'
+									},{'id': 'ID'  					//logical name: column with value (dataIndex)
+									, scope: 'dataset'
+									}]
+								 , metaParams: {queryParams: [{"name":"alarms_check","type":"num"},{"name":"id","type":"num"}]}
+								}
+							}, {
+								name: 'informationlog'
+								, hidden: false
+								, flagColumn: 'errors_flag'
+								, tooltip: 'Download log files'
+								, config: {
+									staticParams: {											
+													DIRECTORY: 'D:/Progetti/eBam/Test/files_log'		
+												  ,	PREFIX1: 'P'																			 														 													    			     									
+												 }	
+									, dynamicParams: [
+										{'PREFIX2': 'brandname'  					//logical name: column with value (dataIndex)
+										, scope: 'dataset'
+										}]														
+								}
+							}, { 
+								name: 'crossnav'
+								, hidden: false
+								, tooltip: 'Cross on XXX document'
+								, config: {
+									target: 'new'
+									 , document: 
+								 	 {
+										label: 'testReportParams'
+										, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
+										, dynamicParams: [{
+											'P1': 'brandname' 
+											, scope: 'dataset'   
+										},{
+											'P2': 'productName'
+											, scope: 'dataset'
+										},{'prompt1': 'debug' 			//fieldname(on req) : label
+											 , scope: 'promptable'   
+										},{'P3': 'Param3' 
+										  , scope: 'promptable'   
+										}]	 
+									}
+								}
+							}, { 
+								name: 'crossnav'
+								, hidden: false
+								, tooltip: 'Cross on YYY document (popup)'
+								, config: {
+									target: 'self' 
+									, document: 
+									{
+										label: 'testReportParams'
+										, staticParams: {P3:'paramValue_A' , P5: 'paramValue_B'} 
+										, dynamicParams: [{
+											'P1': 'brandname' 
+											, scope: 'dataset'   
+											},{
+												'P2': 'productName'
+												, scope: 'dataset'
+											},{
+												'P3': 'month'
+												, scope: 'env'
+											}]	 
+									}
+								}
+							},{
+								name: 'monitor'
+								, hidden: false							
+							 	, tooltipActive: 'Enable monitoring'	
+						        , tooltipInactive: 'Disable monitoring' 						    
+								, checkColumn: 'monitor_check'								
+								, config: {staticParams: {
+											//generic params for the execution of query on generic db
+											    stmt: 'UPDATE_MONITOR_STATE_TEST'
+											 , numPars: '2'			//the number of params in the query													 														 													    			     									
+											}
+										  , dynamicParams: [{
+											 'monitor_check': 'monitor_check'  //value: logical name
+											, scope: 'dataset'
+											},{'id': 'ID'  					   //value: logical name
+											, scope: 'dataset'
+											}]
+										, metaParams: {queryParams: [{"name":"monitor_check","type":"num"},{"name":"id","type":"num"}]}
+									}
+							},{
+								name: 'views'
+								, hidden: false
+								, checkColumn: 'views_check'
+	      		                , tooltipInactive: 'Checked. Click to uncheck'
+		  						, tooltipActive: 'Unchecked. Click to check'
+		  							, config: {staticParams: {
+									//generic params for the execution of query on generic db
+									   stmt: 'UPDATE_CHECK_STATE_TEST'
+									 , numPars: '2'			//the number of params in the query													 														 													    			     									
+									}
+								  , dynamicParams: [{
+									 'views_check': 'views_check'  //value: logical name
+									, scope: 'dataset'
+									},{'id': 'ID'  					//value: logical name
+									, scope: 'dataset'
+									}]
+								, metaParams: {queryParams: [{"name":"views_check","type":"num"},{"name":"id","type":"num"}]}
+							}
+							}
+						]  
+	        }//table	    	
+		}
+		] //pages
+	}	//detailPanel
+} //template
+
+
+</script>

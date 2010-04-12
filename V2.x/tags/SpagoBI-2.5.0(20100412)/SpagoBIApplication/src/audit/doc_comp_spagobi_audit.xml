@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOCUMENTS_COMPOSITION template_value="/jsp/engines/documentcomposition/template/dynamicTemplate.jsp">
+	<DOCUMENTS_CONFIGURATION video_width="1024" video_height="768">
+	
+		<DOCUMENT label="RPT_DOC_LIST"  sbi_obj_label="RPT_DOC_LIST" >
+		   <STYLE style="float:left;top:0px;width:50%;height:220px;" />
+			 <PARAMETERS>
+			   <PARAMETER label="DocLetter" sbi_par_label="DocLetter" type="IN" default_value="%" >
+    			   <REFRESH />
+    			</PARAMETER>
+    			<PARAMETER label="param_id" sbi_par_label="param_id" type="IN" default_value="0" >
+    			   <REFRESH />
+    			</PARAMETER>
+    			<PARAMETER label="obj_id" sbi_par_label="obj_id" type="OUT" default_value="0" >
+              <REFRESH>
+                <REFRESH_DOC_LINKED labelDoc="RPT_PAR_LIST" labelParam="object_id"/>
+                <REFRESH_DOC_LINKED labelDoc="RPT_DOC_FORM" labelParam="obj_id"/>
+        			</REFRESH>
+    			</PARAMETER>
+    		</PARAMETERS>
+		</DOCUMENT> 
+		
+		<DOCUMENT label="RPT_PAR_LIST"  sbi_obj_label="RPT_PAR_LIST" >
+		   <STYLE style="float:right;top:0px;width:50%;height:220px;" />
+			 <PARAMETERS>
+			   <PARAMETER label="ParLetter" sbi_par_label="ParLetter" type="IN" default_value="%" >
+    			   <REFRESH />
+    			</PARAMETER>
+    			<PARAMETER label="object_id" sbi_par_label="object_id" type="IN" default_value="0" >
+    			   <REFRESH />
+    			</PARAMETER>
+    			<PARAMETER label="par_id" sbi_par_label="par_id" type="OUT" default_value="0" >
+              <REFRESH>
+                <REFRESH_DOC_LINKED labelDoc="RPT_DOC_LIST" labelParam="param_id"/>
+                <REFRESH_DOC_LINKED labelDoc="RPT_PAR_FORM" labelParam="par_id"/>
+        			</REFRESH>
+    			</PARAMETER>
+    		</PARAMETERS>
+		</DOCUMENT> 
+	
+		<DOCUMENT label="RPT_DOC_FORM"  sbi_obj_label="RPT_DOC_FORM" >
+		   <STYLE style="float:left;top:250px;width:36%;height:350px;" />
+			 <PARAMETERS>
+    			<PARAMETER label="obj_id" sbi_par_label="obj_id" type="IN" default_value="0" >
+    			   <REFRESH />
+    			</PARAMETER>
+    			<PARAMETER label="par_id" sbi_par_label="par_id" type="OUT" default_value="0" >
+              <REFRESH>
+                <REFRESH_DOC_LINKED labelDoc="RPT_DOC_LIST" labelParam="param_id"/>
+                <REFRESH_DOC_LINKED labelDoc="RPT_PAR_FORM" labelParam="par_id"/>
+        			</REFRESH>
+    			</PARAMETER>
+			</PARAMETERS>
+		</DOCUMENT> 
+		
+		<DOCUMENT label="RPT_PAR_FORM"  sbi_obj_label="RPT_PAR_FORM" >
+		   <STYLE style="float:left;top:250px;width:40%;height:350px;" />
+			 <PARAMETERS>
+			   <PARAMETER label="par_id" sbi_par_label="par_id" type="IN" default_value="0" >
+    			   <REFRESH />
+    			</PARAMETER>
+    			<PARAMETER label="lov_id" sbi_par_label="lov_id" type="OUT" default_value="0" >
+              <REFRESH>
+                <REFRESH_DOC_LINKED labelDoc="RPT_LOV_FORM" labelParam="lov_id"/>
+        			</REFRESH>
+    			</PARAMETER>
+			</PARAMETERS>
+		</DOCUMENT> 
+		
+		<DOCUMENT label="RPT_LOV_FORM"  sbi_obj_label="RPT_LOV_FORM" >
+		   <STYLE style="float:right;top:250px;width:24%;height:350px;" />
+			 <PARAMETERS>
+			     <PARAMETER label="lov_id" sbi_par_label="lov_id" type="IN" default_value="0" >
+    			   <REFRESH />
+    			</PARAMETER>
+			</PARAMETERS>
+		</DOCUMENT> 
+		
+  </DOCUMENTS_CONFIGURATION>
+</DOCUMENTS_COMPOSITION>

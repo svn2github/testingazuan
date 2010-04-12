@@ -31,6 +31,7 @@ import java.io.IOException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -99,8 +100,10 @@ public class DashboardEditor extends EditorPart {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	
 		setInput(input);
 		setSite(site);
+
 	}
 
 	public boolean isDirty() {
@@ -112,6 +115,12 @@ public class DashboardEditor extends EditorPart {
 	}
 
 	public void createPartControl(Composite parent) {
+		// if model type == null type is not supported
+		if(model.getType() == null){
+			SpagoBILogger.errorLog("type not supported", null);
+			MessageDialog.openError(parent.getShell(), "Error", "movie type "+model.getMovie()+" is not supported by SpagoBIStudio 2.5");
+			return;
+		}
 		SpagoBILogger.infoLog("Creating the editor for dashboard");
 		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
 		final ScrolledForm form = toolkit.createScrolledForm(parent);
@@ -142,7 +151,10 @@ public class DashboardEditor extends EditorPart {
 		Label typeLabel = new Label(sectionClient, SWT.NULL);
 		typeLabel.setText("Type:");
 		Label type = new Label(sectionClient, SWT.NULL);
+		
 		type.setText(model.getType());
+		
+		
 		Label movieLabel = new Label(sectionClient, SWT.NULL);
 		movieLabel.setText("Movie:");
 		Label movie = new Label(sectionClient, SWT.NULL);

@@ -1,5 +1,6 @@
 package it.eng.spagobi.studio.dashboard.editors.model.dashboard;
 
+import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.dashboard.editors.model.dashboard.DashboardModel.Dimension;
 
 import java.io.InputStream;
@@ -186,7 +187,8 @@ public class DashboardModelFactory {
 			List confParametersList = templateDocument.selectNodes("//DASHBOARD/CONF/PARAMETER");
 				if (confParametersList == null || confParametersList.size() == 0) {
 					// TODO manage exception
-					throw new Exception("missing configuration parameters");
+					SpagoBILogger.warningLog("missing configuration parameters");
+					//throw new Exception("missing configuration parameters");
 				}
 				configuration = new Configuration(movie, configurationDocument);
 				for (int i = 0; i < confParametersList.size(); i++) {

@@ -31,6 +31,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 <%-- ---------------------------------------------------------------------- --%>
 <%@page import="java.util.Locale"%>
 <%@page import="java.util.List"%>
+<%@page import="java.util.Map"%>
 <%@page import="it.eng.spagobi.engines.georeport.GeoReportEngineInstance"%>
 <%@page import="it.eng.spagobi.utilities.engines.EngineConstants"%>
 
@@ -40,13 +41,17 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 <%-- ---------------------------------------------------------------------- --%>
 <% 
 	GeoReportEngineInstance engineInstance;
+	Map env;
+	String executionRole;
 	Locale locale;
 	String template;
 	List<String> includes;
 	
 	engineInstance = (GeoReportEngineInstance)request.getSession().getAttribute(EngineConstants.ENGINE_INSTANCE);
+	env = engineInstance.getEnv();
 	locale = engineInstance.getLocale();
 	
+	executionRole = (String)env.get(EngineConstants.ENV_EXECUTION_ROLE);
 	template = engineInstance.getGuiSettings().toString();
 	includes = engineInstance.getIncludes();
 	
@@ -78,15 +83,23 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 		
 		<script language="javascript" type="text/javascript">
 
-			Sbi.template = <%=template%>;
+			Sbi.template = <%= template %>;
 
+			if(Sbi.template.role) {
+				Sbi.template.role = Sbi.template.role.charAt(0) == '/'? 
+									Sbi.template.role.charAt(0): 
+									'/' + Sbi.template.role.charAt(0);
+			}
+			var executionRole = '<%= executionRole%>';
+			Sbi.template.role = executionRole || Sbi.template.role;
+			
 			execDoc = function(docLab, role, params, dispToolbar, dispSlide,frameId, height) {
 
 				var h = height || '100%';
 				
 				var html = Sbi.sdk.api.getDocumentHtml({
 					documentLabel: docLab
-					, executionRole: "/" + role
+					, executionRole: role // "/" + role
 					, parameters: params 
 			      	, displayToolbar: dispToolbar
 					, displaySliders: dispSlide

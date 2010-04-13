@@ -189,7 +189,7 @@ Sbi.qbe.commons.Format = function(){
             };
         }
         
-        , boolean : function(v, format) {
+        , 'boolean': function(v, format) {
         	format = Ext.apply({}, format || {}, {
 	    		trueSymbol: 'true',
 	    		falseSymbol: 'false',

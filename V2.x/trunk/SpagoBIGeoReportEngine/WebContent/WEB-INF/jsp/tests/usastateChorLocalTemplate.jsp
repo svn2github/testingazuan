@@ -29,8 +29,9 @@
 			, displaySliders: 'false'
 		},
 
-		detailDocumentConf: {
-			label: 'DepartmentList'
+		detailDocumentConf: [{
+			text: 'Link1'
+			, label: 'DepartmentList'
 			, staticParams: {
 				departmentId: '3'
 			}
@@ -39,7 +40,18 @@
 			}
 			, displayToolbar: 'false'
 			, displaySliders: 'false'
-		} ,
+		}, {
+			text: 'Link2'
+				, label: 'DepartmentList'
+				, staticParams: {
+					departmentId: '3'
+				}
+				, dynamicParams: {
+					state: 'STATE_NAME'
+				}
+				, displayToolbar: 'false'
+				, displaySliders: 'false'
+			}] ,
 			    
 		role: "spagobi/admin",
 				

@@ -366,33 +366,45 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 	, onTargetFeatureSelect: function(feature) {
 		this.selectedFeature = feature;
 		
-        
-       
-
-		var params = Ext.apply({}, this.detailDocumentConf.staticParams);
-		for(p in this.detailDocumentConf.dynamicParams) {
-			var attrName = this.detailDocumentConf.dynamicParams[p];
-			params[p] = feature.attributes[attrName];
+		if(!Ext.isArray( this.detailDocumentConf )) {
+			this.detailDocumentConf = [this.detailDocumentConf];
 		}
 		
-		//alert(params.toSource());
+		var content = "<div style='font-size:.8em'>" + this.getInfo(feature);
 		
-        var execDetailFn = "execDoc(";
-        execDetailFn += '"' + this.detailDocumentConf.label + '",'; // documentLabel
-        execDetailFn += '"' + this.role + '",'; // execution role
-        execDetailFn += Ext.util.JSON.encode(params) + ','; // parameters
-        execDetailFn += this.detailDocumentConf.displayToolbar + ','; // displayToolbar
-        execDetailFn += this.detailDocumentConf.displaySliders + ','; // displaySliders
-        execDetailFn += '"' + this.detailDocumentConf.label + '"'; // frameId
-        execDetailFn += ")";
-       
-        var link = '';
-        link += '<center>';
-        link += '<font size="1" face="Verdana">';
-        link += '<a href="#" onclick=\'Ext.getCmp("' + this.mapPanel.getId() + '").setActiveTab("infotable");';
-        link += 'Ext.getCmp("infotable").body.dom.innerHTML=';
-        link += execDetailFn + '\';>';
-        link += 'Dettagli</a></font></center>';
+		var params;
+        
+		for(var i = 0, l = this.detailDocumentConf.length; i < l; i++) {
+
+			params = Ext.apply({}, this.detailDocumentConf[i].staticParams);
+			for(p in this.detailDocumentConf[i].dynamicParams) {
+				var attrName = this.detailDocumentConf[i].dynamicParams[p];
+				params[p] = feature.attributes[attrName];
+			}
+			
+			//alert(params.toSource());
+			
+	        var execDetailFn = "execDoc(";
+	        execDetailFn += '"' + this.detailDocumentConf[i].label + '",'; // documentLabel
+	        execDetailFn += '"' + this.role + '",'; // execution role
+	        execDetailFn += Ext.util.JSON.encode(params) + ','; // parameters
+	        execDetailFn += this.detailDocumentConf[i].displayToolbar + ','; // displayToolbar
+	        execDetailFn += this.detailDocumentConf[i].displaySliders + ','; // displaySliders
+	        execDetailFn += '"' + this.detailDocumentConf[i].label + '"'; // frameId
+	        execDetailFn += ")";
+	       
+	        this.detailDocumentConf[i].text = this.detailDocumentConf[i].text || 'Details';
+	        
+	        var link = '';
+	        link += '<center>';
+	        link += '<font size="1" face="Verdana">';
+	        link += '<a href="#" onclick=\'Ext.getCmp("' + this.mapPanel.getId() + '").setActiveTab("infotable");';
+	        link += 'Ext.getCmp("infotable").body.dom.innerHTML=';
+	        link += execDetailFn + '\';>';
+	        link += this.detailDocumentConf[i].text + '</a></font></center>';
+        
+	        content += link;
+		}
 
         params = Ext.apply({}, this.inlineDocumentConf.staticParams);
 		for(p in this.inlineDocumentConf.dynamicParams) {
@@ -400,10 +412,9 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 			params[p] = feature.attributes[attrName];
 		}
 		
-		//alert(params.toSource());
+		
+       
         
-        var content = "<div style='font-size:.8em'>" + this.getInfo(feature);
-        content += link;
         content += execDoc(
         		this.inlineDocumentConf.label, 
         		this.role, 

@@ -114,6 +114,7 @@ public class MapOlAction extends AbstractBaseServlet {
 			
 			//DataSet
 			dataSet = engineInstance.getDataSet();
+			dataSet.setParamsMap(engineInstance.getEnv());
 			dataSet.loadData();
 			
 			//Datastore 

@@ -7,6 +7,7 @@
 	
 	<INCLUDES>
 		
+		<!-- http://code.google.com/intl/it-IT/apis/maps/signup.html -->
 		<INCLUDE name="GoogleAtLocalhost" default="enabled">
 			<URL><![CDATA[http://www.google.com/jsapi?key=ABQIAAAAQ7O6ISk_yCoR4rsoNpu2yRTwM0brOpm-All5BF6PoaKBxRWWERT09-Dn64qCYckMx5v2Y0of_bmM5A]]></URL>
 			<URL><![CDATA[http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAQ7O6ISk_yCoR4rsoNpu2yRTwM0brOpm-All5BF6PoaKBxRWWERT09-Dn64qCYckMx5v2Y0of_bmM5A]]></URL>

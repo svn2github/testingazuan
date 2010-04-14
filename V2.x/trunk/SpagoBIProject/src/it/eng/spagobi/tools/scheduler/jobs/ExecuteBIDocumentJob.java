@@ -640,10 +640,7 @@ public class ExecuteBIDocumentJob implements Job {
 			String pass = (String)mailProfSB.getAttribute("password");
 			if( (pass==null) || pass.trim().equals(""))
 				throw new Exception("Smtp password not configured");
-			String mailTos = sInfo.getMailTos();
-			if( (mailTos==null) || mailTos.trim().equals("")) {	
-				throw new Exception("No recipient address found");
-			}
+			
 			String mailSubj = sInfo.getMailSubj();
 			mailSubj = StringUtilities.substituteParametersInString(mailSubj, parMap, null, false);
 

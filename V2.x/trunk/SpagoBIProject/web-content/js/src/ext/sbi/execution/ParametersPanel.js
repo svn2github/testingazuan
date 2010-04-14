@@ -280,6 +280,8 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			Ext.DomHelper.append(this.body, '<div class="x-grid-empty">' + LN('sbi.execution.parametersselection.noParametersToBeFilled') + '</div>');
 		} else {
 			// set focus on first field
+			// this is a work-around for this problem on IE: very often, the manual input field is not editable;
+			// in order to let it be editable, you should click on input label, or above + TAB button
 			this.columns[0].items.get(0).on('render', function(theField) {
 				theField.focus();
 				theField.clearInvalid();

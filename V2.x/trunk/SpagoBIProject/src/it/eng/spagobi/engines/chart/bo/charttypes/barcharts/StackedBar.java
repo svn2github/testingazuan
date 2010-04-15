@@ -294,7 +294,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			}
 		}
 
-		
+
 		if(confParameters.get(CUMULATIVE)!=null){	
 			String orientation=(String)confParameters.get(CUMULATIVE);
 			if(orientation.equalsIgnoreCase("true")){
@@ -452,15 +452,15 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 		logger.debug("Taken Dataset");
 
-		
+
 		logger.debug("Get plot orientaton");
 		PlotOrientation plotOrientation=PlotOrientation.VERTICAL;
 		if(horizontalView)
 		{
 			plotOrientation=PlotOrientation.HORIZONTAL;
 		}
-		
-		
+
+
 		logger.debug("Call Chart Creation");
 		JFreeChart chart = ChartFactory.createStackedBarChart(
 				name,  // chart title
@@ -613,12 +613,17 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
 			renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
 
-			renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-					ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
-
-			renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-					ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
-
+			if (valueLabelsPosition.equalsIgnoreCase("inside")) {
+				renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+						ItemLabelAnchor.CENTER, TextAnchor.BASELINE_LEFT));
+				renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+						ItemLabelAnchor.CENTER, TextAnchor.BASELINE_LEFT));
+			} else {
+				renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+						ItemLabelAnchor.OUTSIDE3, TextAnchor.BASELINE_LEFT));
+				renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+						ItemLabelAnchor.OUTSIDE3, TextAnchor.BASELINE_LEFT));
+			}
 		}
 		else if(additionalLabels){
 

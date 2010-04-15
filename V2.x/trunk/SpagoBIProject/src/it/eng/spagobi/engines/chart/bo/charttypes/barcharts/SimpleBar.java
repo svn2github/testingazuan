@@ -43,12 +43,15 @@ import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.CategorySeriesLabelGenerator;
+import org.jfree.chart.labels.ItemLabelAnchor;
+import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.labels.StandardCategorySeriesLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.CategoryDataset;
+import org.jfree.ui.TextAnchor;
 
 /**   @author Giulio Gavardi
  *     giulio.gavardi@eng.it
@@ -134,8 +137,8 @@ public class SimpleBar extends BarCharts{
 		plot.setDomainGridlinesVisible(true);
 		plot.setRangeGridlinePaint(Color.white);
 
-        NumberFormat nf = NumberFormat.getNumberInstance(locale);
-		
+		NumberFormat nf = NumberFormat.getNumberInstance(locale);
+
 		// set the range axis to display integers only...
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
@@ -143,11 +146,11 @@ public class SimpleBar extends BarCharts{
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setUpperMargin(0.10);
-        rangeAxis.setNumberFormatOverride(nf);
-		
+		rangeAxis.setNumberFormatOverride(nf);
+
 		if(rangeIntegerValues==true){
 			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-			}
+		}
 		else rangeAxis.setStandardTickUnits(NumberAxis.createStandardTickUnits());
 
 		if(rangeAxisLocation != null) {
@@ -161,7 +164,7 @@ public class SimpleBar extends BarCharts{
 				plot.setRangeAxisLocation(0, AxisLocation.TOP_OR_LEFT);
 			}
 		}
-		
+
 		// disable bar outlines...
 		BarRenderer renderer = (BarRenderer) plot.getRenderer();
 		renderer.setDrawBarOutline(false);
@@ -173,12 +176,25 @@ public class SimpleBar extends BarCharts{
 		if(maxBarWidth!=null){
 			renderer.setMaximumBarWidth(maxBarWidth.doubleValue());
 		}
-		
+
 		if(showValueLabels){
 			renderer.setBaseItemLabelsVisible(true);
 			renderer.setBaseItemLabelGenerator(new FilterZeroStandardCategoryItemLabelGenerator());			
 			renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
 			renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
+
+//			if(valueLabelsPosition.equalsIgnoreCase("inside")){
+//				renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+//						ItemLabelAnchor.CENTER, TextAnchor.BASELINE_LEFT));
+//				renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+//						ItemLabelAnchor.CENTER, TextAnchor.BASELINE_LEFT));
+//			} else {
+//				renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+//						ItemLabelAnchor.OUTSIDE3, TextAnchor.BASELINE_LEFT));
+//				renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+//						ItemLabelAnchor.OUTSIDE3, TextAnchor.BASELINE_LEFT));
+//			}
+
 		}
 
 		// PROVA LEGENDA		
@@ -224,7 +240,7 @@ public class SimpleBar extends BarCharts{
 				}
 				else
 					index=dataset.getRowIndex(serieName);
-				
+
 				Color color=(Color)colorMap.get(serieName);
 				if(color!=null){
 					//renderer.setSeriesPaint(i, color);

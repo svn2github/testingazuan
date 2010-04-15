@@ -98,6 +98,8 @@ public class BarCharts extends ChartImpl {
 	boolean filterSeriesButtons=true;
 
 	boolean showValueLabels=false;
+	String valueLabelsPosition="inside";
+
 
 	HashMap catGroups=null; // only if filterCatGroups is set to true, trace cat_name /cat_group_name
 	Vector currentCatGroups=null;
@@ -128,6 +130,8 @@ public class BarCharts extends ChartImpl {
 	public static final String FILTER_CATEGORIES = "filter_categories";
 	/** If true show value labels*/
 	public static final String SHOW_VALUE_LABLES = "show_value_labels";
+	/** value labels position: values inside and outside*/
+	public static final String VALUE_LABELS_POSITION = "value_labels_position";
 	/** If true enables tooltips*/
 	public static final String ENABLE_TOOLTIPS = "enable_tooltips";
 	/** the maximum bar width, which is specified as a percentage of the available space for all bars 
@@ -459,6 +463,13 @@ public class BarCharts extends ChartImpl {
 		if(confParameters.get(SHOW_VALUE_LABLES)!=null){		
 			String valueLabelsS=(String)confParameters.get(SHOW_VALUE_LABLES);
 			if(valueLabelsS.equalsIgnoreCase("true"))showValueLabels=true;
+		}
+
+		valueLabelsPosition = "inside";
+		if(confParameters.get(VALUE_LABELS_POSITION)!=null){		
+			String valueLabelpos=(String)confParameters.get(VALUE_LABELS_POSITION);
+			if(valueLabelpos.equalsIgnoreCase("outside"))
+				valueLabelsPosition = "outside";
 		}
 
 		if(confParameters.get(ENABLE_TOOLTIPS)!=null){		

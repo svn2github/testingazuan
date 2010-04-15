@@ -26,7 +26,7 @@
 				</FIELD>
 				<FIELD name="QUERY" label="QUERY">	
 					<VALIDATOR validatorName="XSS"/>		
-					<VALIDATOR validatorName="MAXLENGTH" arg0="10000"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="20000"/>
 				</FIELD>
 				<FIELD name="DATASOURCE" label="DATASOURCE">		
 					<VALIDATOR validatorName="NUMERIC"/>

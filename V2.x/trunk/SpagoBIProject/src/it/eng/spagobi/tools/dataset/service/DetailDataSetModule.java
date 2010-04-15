@@ -1125,32 +1125,33 @@ public class DetailDataSetModule extends AbstractModule {
 
 					}
 					else if(type.equals("Number")){
-						try {
-							StringTokenizer st = new StringTokenizer(value);
-
-							String numTemp = "";
-							Double doubleValue = null;
-							value = "";
-
-
-							while(st.hasMoreTokens()){
-
-								numTemp = st.nextToken(",");
-								doubleValue=new Double(Double.parseDouble(numTemp));
-								value = value + doubleValue.toString();
-
-								if(st.hasMoreTokens()){
-									value = value + ",";
-								}
-							}
-
-
-							valueToPass = value;
-
-
-						} catch (NumberFormatException e) {
-							throw new Exception();
-						}
+						valueToPass = value;
+//						try {
+//							StringTokenizer st = new StringTokenizer(value);
+//
+//							String numTemp = "";
+//							Double doubleValue = null;
+//							value = "";
+//
+//
+//							while(st.hasMoreTokens()){
+//
+//								numTemp = st.nextToken(",");
+//								doubleValue=new Double(Double.parseDouble(numTemp));
+//								value = value + doubleValue.toString();
+//
+//								if(st.hasMoreTokens()){
+//									value = value + ",";
+//								}
+//							}
+//
+//
+//							valueToPass = value;
+//
+//
+//						} catch (NumberFormatException e) {
+//							throw new Exception();
+//						}
 
 					}
 					else if(type.equals("Date")){

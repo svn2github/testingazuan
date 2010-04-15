@@ -87,6 +87,9 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 	String drillDocTitle = null;
 	String target = "self";
 
+	boolean horizontalView=false; //false is vertical, true is horizontal
+	boolean horizontalViewConfigured=false;
+
 
 	private static transient Logger logger=Logger.getLogger(StackedBar.class);
 
@@ -99,6 +102,8 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 	public static final String MAKE_PERCENTAGE = "make_percentage";
 	/** if percentage value */
 	public static final String PERCENTAGE_VALUE = "percentage_value";
+	/** Orientation of the chart: horizontal, vertical */
+	public static final String ORIENTATION = "orientation";
 
 
 
@@ -277,7 +282,19 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		logger.debug("IN");
 		super.configureChart(content);
 
+		if(confParameters.get(ORIENTATION)!=null){	
+			String orientation=(String)confParameters.get(ORIENTATION);
+			if(orientation.equalsIgnoreCase("vertical")){
+				horizontalViewConfigured=true;
+				horizontalView=false;
+			}
+			else if(orientation.equalsIgnoreCase("horizontal")){
+				horizontalViewConfigured=true;
+				horizontalView=true;
+			}
+		}
 
+		
 		if(confParameters.get(CUMULATIVE)!=null){	
 			String orientation=(String)confParameters.get(CUMULATIVE);
 			if(orientation.equalsIgnoreCase("true")){
@@ -435,13 +452,22 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 		logger.debug("Taken Dataset");
 
+		
+		logger.debug("Get plot orientaton");
+		PlotOrientation plotOrientation=PlotOrientation.VERTICAL;
+		if(horizontalView)
+		{
+			plotOrientation=PlotOrientation.HORIZONTAL;
+		}
+		
+		
 		logger.debug("Call Chart Creation");
 		JFreeChart chart = ChartFactory.createStackedBarChart(
 				name,  // chart title
 				categoryLabel,                  // domain axis label
 				valueLabel,                     // range axis label
 				dataset,                     // data
-				PlotOrientation.VERTICAL,    // the plot orientation
+				plotOrientation,    // the plot orientation
 				false,                        // legend
 				true,                        // tooltips
 				false                        // urls

@@ -96,6 +96,10 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 	HashMap catSerLabels=null;
 	HashMap gradientMap=null;  // keeps user selected last gradient colors
 
+	boolean horizontalView=false; //false is vertical, true is horizontal
+	boolean horizontalViewConfigured=false;
+
+	
 	private static transient Logger logger=Logger.getLogger(StackedBarGroup.class);
 
 
@@ -109,6 +113,8 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 	public static final String N_GROUPS = "n_groups";
 	/** percentage value */
 	public static final String PERCENTAGE_VALUE = "percentage_value";
+	/** Orientation of the chart: horizontal, vertical */
+	public static final String ORIENTATION = "orientation";
 
 
 
@@ -255,6 +261,19 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		logger.debug("IN");
 		super.configureChart(content);
 
+		if(confParameters.get(ORIENTATION)!=null){	
+			String orientation=(String)confParameters.get(ORIENTATION);
+			if(orientation.equalsIgnoreCase("vertical")){
+				horizontalViewConfigured=true;
+				horizontalView=false;
+			}
+			else if(orientation.equalsIgnoreCase("horizontal")){
+				horizontalViewConfigured=true;
+				horizontalView=true;
+			}
+		}
+
+		
 		if(confParameters.get(SUBCATEGORY_LABEL)!=null){	
 			subCategoryLabel=(String)confParameters.get(SUBCATEGORY_LABEL);
 		}
@@ -421,13 +440,21 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		logger.debug("IN");
 		CategoryDataset dataset=(CategoryDataset)datasets.getDatasets().get("1");
 
+		logger.debug("Get plot orientaton");
+		PlotOrientation plotOrientation=PlotOrientation.VERTICAL;
+		if(horizontalView)
+		{
+			plotOrientation=PlotOrientation.HORIZONTAL;
+		}
+		
+		
 
 		JFreeChart chart = ChartFactory.createStackedBarChart(
 				name,  							// chart title
 				categoryLabel,                  // domain axis label
 				valueLabel,                     // range axis label
 				dataset,                     	// data
-				PlotOrientation.VERTICAL,    	// the plot orientation
+				plotOrientation,    	// the plot orientation
 				legend,                        	// legend
 				true,                        	// tooltips
 				false                        	// urls

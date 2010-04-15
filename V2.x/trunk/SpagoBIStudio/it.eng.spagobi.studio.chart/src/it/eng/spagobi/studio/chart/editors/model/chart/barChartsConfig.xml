@@ -149,6 +149,9 @@
 		templatePath='it/eng/spagobi/studio/chart/resources/chart/stacked_bar.xml'>
 		<CONF>
 			<SECTION>
+				<PARAMETER name='orientation' description='Orientation'
+					type='COMBO' values='vertical,horizontal' defaultValue='vertical'
+					tooltip='set the orientation of the chart'/>
 				<PARAMETER name='Cumulative' description='Add cumulative serie'
 					type='BOOLEAN' defaultValue='false' tooltip='add the cumulative serie in the chart'/>
 				<PARAMETER name='make_percentage' description='Make percentage'
@@ -157,6 +160,9 @@
 					type='BOOLEAN' defaultValue='false' tooltip='show percentage values'/>
 				<PARAMETER name='add_labels' description='Add Labels'
 					type='BOOLEAN' defaultValue='true' tooltip='add labels'/>
+				<PARAMETER name='value_labels_position' description='Value Labels Position'
+					type='COMBO' values='outside,inside' defaultValue='inside'
+					tooltip='set the Position of the labels'/>										
 			</SECTION>
 		</CONF>
 		<DRILL document="DocLabel" type="STRING" defaultValue='labeltocall'>
@@ -175,6 +181,9 @@
 		templatePath='it/eng/spagobi/studio/chart/resources/chart/stacked_bar_group.xml'>
 		<CONF>
 			<SECTION>
+				<PARAMETER name='orientation' description='Orientation'
+					type='COMBO' values='vertical,horizontal' defaultValue='vertical'
+					tooltip='set the orientation of the chart'/>
 				<PARAMETER name='subcategory_label' description='Label for subcategories'
 					type='STRING' defaultValue='subCat_Label' tooltip='Label for subcategory'/>
 				<PARAMETER name='add_labels' description='Add Labels'

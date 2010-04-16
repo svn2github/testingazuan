@@ -41,6 +41,13 @@ public interface IDataStore {
     void prependRecord(IRecord record);
 	void insertRecord(int recordIndex, IRecord record);
     
+	/**
+	 * @deprecated use the proper DataWriter instead
+	 */
     String toXml();
+    
+    /**
+	 * @deprecated use the proper DataWriter instead
+	 */
     SourceBean toSourceBean() throws SourceBeanException;
 }

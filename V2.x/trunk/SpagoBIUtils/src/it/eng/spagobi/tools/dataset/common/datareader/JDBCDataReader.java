@@ -37,7 +37,8 @@ public class JDBCDataReader extends AbstractDataReader {
 
     
     public IDataStore read(Object data) throws EMFUserError, EMFInternalError {
-	logger.debug("IN");
+    	
+    	logger.debug("IN");
     	DataStore dataStore;
     	DataStoreMetaData dataStoreMeta;
     	FieldMetadata fieldMeta;
@@ -46,45 +47,70 @@ public class JDBCDataReader extends AbstractDataReader {
     	List columnsNames;
     	SourceBean resultSB;
     	
-    	scrollableDataResult = (ScrollableDataResult)data;
     	
-    	dataStore = new DataStore();
-    	dataStoreMeta = new DataStoreMetaData();
-    		
-    	columnsNames = Arrays.asList(scrollableDataResult.getColumnNames());
-    	for(int i = 0; i < columnsNames.size(); i++) {
-    		fieldMeta = new FieldMetadata();
-    		fieldMeta.setName( (String)columnsNames.get(i) );
-    		dataStoreMeta.addFiedMeta(fieldMeta);
-    	}    	
-		dataStore.setMetaData(dataStoreMeta);
-		
-		
-		resultSB = scrollableDataResult.getSourceBean();
-		if( resultSB != null) {
+    	try {
+    	
+	    	scrollableDataResult = (ScrollableDataResult)data;
+	    	
+	    	dataStore = new DataStore();
+	    	dataStoreMeta = new DataStoreMetaData();
+	    	
+	    	logger.debug("Reading dataStore metadata ...");
+	    	columnsNames = Arrays.asList(scrollableDataResult.getColumnNames());
+	    	for(int i = 0; i < columnsNames.size(); i++) {
+	    		fieldMeta = new FieldMetadata();
+	    		fieldMeta.setName( (String)columnsNames.get(i) );
+	    		dataStoreMeta.addFiedMeta(fieldMeta);
+	    		logger.debug("Field [" + (i+1) + "] name is equak to [" + fieldMeta.getName() + "]");
+	    	}    	
+			dataStore.setMetaData(dataStoreMeta);
+			logger.debug("dataStore metadata read succefully");
 			
+			try {
+				resultSB = scrollableDataResult.getSourceBean();
+			} catch(Throwable t ) {
+				throw new RuntimeException("Impossible to extract xml data", t);
+			}	
+			if( resultSB != null) {
+				List rows;
+				Iterator rowIterator;
 				
-			List rows = resultSB.getAttributeAsList("ROW");
-			Iterator rowIterator = rows.iterator(); 
-			while(rowIterator.hasNext()) {										
-				SourceBean rowSB = (SourceBean) rowIterator.next();
-				IRecord record = new Record(dataStore);
-				
-				for(int i = 0; i < dataStoreMeta.getFieldCount(); i++) {
-					IFieldMetaData fieldMetaData = dataStoreMeta.getFieldMeta(i);
-					Object value = rowSB.getAttribute( dataStoreMeta.getFieldName(i) );
-					//SourceBeanAttribute columnSB = (SourceBeanAttribute) columns.get(i);						
-					IField field = new Field( value );
-					if(value != null) {
-						dataStoreMeta.getFieldMeta(i).setType( value.getClass() );
+				rows = null;
+				rowIterator = null;
+				try {
+					rows = resultSB.getAttributeAsList("ROW");
+					rowIterator = rows.iterator(); 
+				} catch(Throwable t ) {
+					throw new RuntimeException("Impossible to extract rows content from sourcebean [" + resultSB + "]", t);
+				}	
+					
+				while(rowIterator.hasNext()) {		
+					SourceBean rowSB = (SourceBean) rowIterator.next();
+					IRecord record = new Record(dataStore);
+						
+					for(int i = 0; i < dataStoreMeta.getFieldCount(); i++) {
+						IFieldMetaData fieldMetaData = dataStoreMeta.getFieldMeta(i);
+						try {
+							Object value = rowSB.getAttribute( dataStoreMeta.getFieldName(i) );
+							logger.debug("Column [" + fieldMetaData.getName() + "] of type [" + (value!=null? value.getClass(): "undef") + "] is equal to [" + value + "]");					
+							IField field = new Field( value );
+							if(value != null) {
+								dataStoreMeta.getFieldMeta(i).setType( value.getClass() );
+							}
+							record.appendField( field );
+						} catch(Throwable t ) {
+							throw new RuntimeException("Impossible to read column [" + fieldMetaData.getName()+ "] value", t);
+						}
 					}
-					record.appendField( field );
+					dataStore.appendRecord(record);
 				}
-				dataStore.appendRecord(record);
-			}
-			
+			}				
+		
+    	} catch(Throwable t) {
+			throw new RuntimeException("An umpredeicted error occurred while reading data", t);
+		} finally {
+			logger.debug("OUT");
 		}
-		logger.debug("OUT");
 		return dataStore;
     }
 }

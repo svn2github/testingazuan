@@ -69,12 +69,10 @@ Sbi.console.DetailPanel = function(config) {
 		Ext.apply(this, c);
 		
 		this.initDetailPages(pagesConfig);
+		this.initTabPanel();
 		
 		c = Ext.apply(c, {  
-	      	items: [new Ext.TabPanel({
-	      		activeTab: 0
-	      		, items: this.pages
-	      	})]
+	      	items: [this.tabPanel]
 		});
 
 		// constructor
@@ -87,11 +85,15 @@ Ext.extend(Sbi.console.DetailPanel, Ext.Panel, {
     
     //services: null
     pages: null
+    , activePage: null
+    , tabPanel: null
     
    
     //  -- public methods ---------------------------------------------------------
     
-    
+    , getActivePage: function() {
+		return this.activePage;
+	}
     
     //  -- private methods ---------------------------------------------------------
     
@@ -106,6 +108,17 @@ Ext.extend(Sbi.console.DetailPanel, Ext.Panel, {
 			detailPage = new Sbi.console.DetailPage(pagesConfig[i]);
 			this.pages.push(detailPage);
 		}
+	}
+
+	, initTabPanel: function() {
+		this.tabPanel = new Ext.TabPanel({
+      		activeTab: 0
+      		, items: this.pages
+      	});
+		
+		this.tabPanel.on('tabchange', function( tabPanel, tab ) {
+			this.activePage = tab;
+		}, this );
 	}
     
     

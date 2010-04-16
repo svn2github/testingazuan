@@ -90,7 +90,11 @@ Ext.extend(Sbi.console.DetailPage, Ext.Panel, {
     , navigationToolbar: null
     , gridPanel: null
    
-    //  -- public methods ---------------------------------------------------------
+    //  -- public methods ----------------------------------------------------------
+    
+    , getStore: function() {
+		return this.gridPanel.store;
+	}
     
     //  -- private methods ---------------------------------------------------------
     , initNavigationToolbar: function(navigationBarConf) {

@@ -58,9 +58,7 @@ public class GetConsoleDataAction extends AbstractConsoleEngineAction {
 	
 	// logger component
 	private static Logger logger = Logger.getLogger(GetConsoleDataAction.class);
-	
-	ConsoleEngineInstance consoleEngineInstance;
-	
+		
 	public void service(SourceBean request, SourceBean response) {
 		
 		String dataSetLabel;
@@ -74,7 +72,7 @@ public class GetConsoleDataAction extends AbstractConsoleEngineAction {
 		
 		try {
 			super.service(request,response);
-			consoleEngineInstance = getConsoleEngineInstance();
+			ConsoleEngineInstance consoleEngineInstance = getConsoleEngineInstance();
 			
 			dataSetLabel = getAttributeAsString( DATASET_LABEL );
 			logger.debug("Parameter [" + DATASET_LABEL + "] is equals to [" + dataSetLabel + "]");			
@@ -127,7 +125,7 @@ public class GetConsoleDataAction extends AbstractConsoleEngineAction {
 		IDataSet dataSet;
 		DataSetServiceProxy datasetProxy;
 		
-		datasetProxy = consoleEngineInstance.getDataSetServiceProxy();
+		datasetProxy = getConsoleEngineInstance().getDataSetServiceProxy();
 		dataSet =  datasetProxy.getDataSetByLabel(label);
 		
 		return dataSet;

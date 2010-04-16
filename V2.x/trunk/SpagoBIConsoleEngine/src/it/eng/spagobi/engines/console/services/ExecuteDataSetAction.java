@@ -21,10 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.console.services;
 
+import java.io.IOException;
+
+import org.apache.log4j.Logger;
+import org.json.JSONObject;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.utilities.StringUtilities;
-import it.eng.spagobi.engines.console.ConsoleEngineInstance;
-import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.services.proxy.DataSetServiceProxy;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
@@ -33,11 +36,6 @@ import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONSuccess;
-
-import java.io.IOException;
-
-import org.apache.log4j.Logger;
-import org.json.JSONObject;
 
 
 
@@ -57,7 +55,6 @@ public class ExecuteDataSetAction extends AbstractConsoleEngineAction {
 	// logger component
 	private static Logger logger = Logger.getLogger(ExecuteDataSetAction.class);
 	
-	ConsoleEngineInstance consoleEngineInstance;
 	
 	public void service(SourceBean request, SourceBean response) {
 		
@@ -74,8 +71,6 @@ public class ExecuteDataSetAction extends AbstractConsoleEngineAction {
 		
 		try {
 			super.service(request,response);
-			consoleEngineInstance = getConsoleEngineInstance();
-		//	consoleEngineInstance.getDataSetServiceProxy();
 			
 			dataSetLabel = getAttributeAsString( DATASET_LABEL );
 			logger.debug("Parameter [" + DATASET_LABEL + "] is equals to [" + dataSetLabel + "]");			
@@ -122,7 +117,7 @@ public class ExecuteDataSetAction extends AbstractConsoleEngineAction {
 		IDataSet dataSet;
 		DataSetServiceProxy datasetProxy;
 		
-		datasetProxy = consoleEngineInstance.getDataSetServiceProxy();
+		datasetProxy = getConsoleEngineInstance().getDataSetServiceProxy();
 		dataSet =  datasetProxy.getDataSetByLabel(label);
 		
 		return dataSet;

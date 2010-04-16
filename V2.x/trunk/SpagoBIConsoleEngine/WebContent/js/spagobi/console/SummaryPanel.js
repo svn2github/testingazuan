@@ -64,12 +64,9 @@ Sbi.console.SummaryPanel = function(config) {
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
-		
 		Ext.apply(this, c);
 		
 		var x, y, z, widgetPanel;
-		
-		
 		var items = [];
 		for(var i = 0, l = config.charts.length ; i < l; i++) {
 			items.push(new Sbi.console.ChartWidget(config.charts[i]));
@@ -81,8 +78,7 @@ Sbi.console.SummaryPanel = function(config) {
 		});
 		
 		c = Ext.apply(c, {  	
-			
-	      	items: [widgetPanel]
+			items: [widgetPanel]
 			//html: 'Io sono il summary panel'
 		});
 

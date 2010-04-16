@@ -72,6 +72,12 @@ Sbi.console.ConsolePanel = function(config) {
 		
 	Ext.apply(this, c);
 		
+	this.services = this.services || new Array();	
+	this.services['export'] = this.services['export'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'EXPORT_ACTION'
+		, baseParams: new Object()
+	});
+	
 	
 	this.initStoreManager(datasetsConfig);
 	if (summaryPanelConfig !== undefined){
@@ -84,8 +90,21 @@ Sbi.console.ConsolePanel = function(config) {
 	this.initDetailPanel(detailPanelConfig);
 	
 	c = Ext.apply(c, {  	
-	   	items: [this.summaryPanel, this.detailPanel]
+		items: [this.summaryPanel, this.detailPanel, {
+			title: 'Export panel'
+			, hidden: true
+			,region: 'south'
+				, tools: [{
+					id:'gear',
+					qtip: LN('export as text'),
+					hidden: false,
+					handler: this.exportConsole,
+					scope: this
+				}]
+				, html: 'Click on the button up here to export console document'
+		}]
 	});
+	
 
 	// constructor
 	Sbi.console.ConsolePanel.superclass.constructor.call(this, c);
@@ -108,38 +127,7 @@ Ext.extend(Sbi.console.ConsolePanel, Ext.Panel, {
     , initStoreManager: function(datasetsConfig) {
 	
 		this.storeManager = new Sbi.console.StoreManager({datasetsConfig: datasetsConfig});
-		/*
-		datasetsConfig = datasetsConfig || [];
 		
-		this.storeManager = new Ext.util.MixedCollection();
-		for(var i = 0, l = datasetsConfig.length, s; i < l; i++) {
-			s = new Ext.data.JsonStore({
-				id: datasetsConfig[i].id
-				, url: Sbi.config.serviceRegistry.getServiceUrl({
-					serviceName: 'GET_CONSOLE_DATA_ACTION'
-					, baseParams: {ds_label: datasetsConfig[i].label}
-				})
-				, autoLoad: false
-			}); 
-			this.storeManager.add(datasetsConfig[i].id, s);
-		}
-		
-		// for easy debug purpose
-		var testStore = new Ext.data.JsonStore({
-	        fields:['name', 'visits', 'views'],
-	        data: [
-	            {name:'Jul 07', visits: 245000, views: 3000000},
-	            {name:'Aug 07', visits: 240000, views: 3500000},
-	            {name:'Sep 07', visits: 355000, views: 4000000},
-	            {name:'Oct 07', visits: 375000, views: 4200000},
-	            {name:'Nov 07', visits: 490000, views: 4500000},
-	            {name:'Dec 07', visits: 495000, views: 5800000},
-	            {name:'Jan 08', visits: 520000, views: 6000000},
-	            {name:'Feb 08', visits: 620000, views: 7500000}
-	        ]
-	    });
-		this.storeManager.add('testStore', testStore);
-		*/
 	}
     
     , initSummaryPanel: function(conf) {
@@ -148,6 +136,38 @@ Ext.extend(Sbi.console.ConsolePanel, Ext.Panel, {
 
 	, initDetailPanel: function(conf) {
 		this.detailPanel = new Sbi.console.DetailPanel(conf);
+	}
+	
+	, exportConsole: function() {
+		
+		var detailPage = this.detailPanel.getActivePage();
+	
+		var columnConfigs = new Array();
+		var cm, colNo;
+		cm = detailPage.gridPanel.columnModel;
+		colNo = cm.getColumnCount();
+		for(var i = 0; i < colNo; i++) {
+			var c = {};
+			c.header = cm.getColumnHeader(i);
+			c.id = cm.getColumnId(i);
+			c.tooltip = cm.getColumnTooltip(i);
+			c.width = cm.getColumnWidth(i);
+			c.dataIndex = cm.getDataIndex(i);
+			c.hidden = cm.isHidden(i);
+			columnConfigs.push(c);
+		}
+		
+		var params = {
+			mimeType: 'application/pdf'
+			, responseType: 'attachment'
+			, datasetLabel: detailPage.getStore().getDsLabel()
+			, meta: Ext.util.JSON.encode(columnConfigs)
+		};
+		
+		Sbi.Sync.request({
+			url: this.services['export']
+			, params: params
+		});
 	}
 
 

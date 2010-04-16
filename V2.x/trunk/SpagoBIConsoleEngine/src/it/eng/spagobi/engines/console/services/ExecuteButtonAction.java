@@ -60,8 +60,6 @@ public class ExecuteButtonAction extends AbstractConsoleEngineAction {
 	// logger component
 	private static Logger logger = Logger.getLogger(ExecuteButtonAction.class);
 	
-	ConsoleEngineInstance consoleEngineInstance;
-	
 	public void service(SourceBean request, SourceBean response) {
 		
 		String message;
@@ -72,7 +70,7 @@ public class ExecuteButtonAction extends AbstractConsoleEngineAction {
 		
 		try {
 			super.service(request,response);
-			consoleEngineInstance = getConsoleEngineInstance();
+			ConsoleEngineInstance consoleEngineInstance = getConsoleEngineInstance();
 		
 			message = getAttributeAsString( MESSAGE );
 			logger.debug("Parameter [" + MESSAGE + "] is equals to [" + message + "]");			

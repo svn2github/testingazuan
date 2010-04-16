@@ -166,6 +166,8 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		, views: {serviceName: 'UPDATE_ACTION', images: {active: '../img/ico_views.gif', inactive: '../img/ico_views_gray.gif'}} 
 		, refresh: {serviceName: 'REFRESH_ACTION', images: '../img/ico_refresh.gif'}
 		, genericUpdate: {serviceName: 'UPDATE_ACTION'}
+		, notifyStartAction: {serviceName: 'NOTIFY_START_ACTION'}
+		
 	}
    
     //  -- public methods ---------------------------------------------------------
@@ -376,7 +378,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 				userId: Sbi.user.userId 
 	          , DOCUMENT_LABEL: options.document.label
 	  		}); 
-			
+		
 			if(this.waitWin === null) {
 				this.waitWin = new Sbi.console.WaitWindow({});
 			}
@@ -396,11 +398,11 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	  				var content = Ext.util.JSON.decode( response.responseText );
 	  				action.setBoundColumnValue(r, content.pid);
 	  				this.waitWin.stop('Proecess started succesfully');
-					action.toggle(r);		
+					action.toggle(r);	
 					if (params.stmt){
 						//calls the update action (if there's a stmt definition)
 						Ext.Ajax.request({
-					       	url: this.services['genericUpdate'] 			       
+					       	url: this.services['notifyStartAction'] 			       
 					       	, params: params 			       
 					    	, success: function(response, options) {
 					    		if(response !== undefined && response.responseText !== undefined) {

@@ -48,6 +48,12 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
+	<ACTION name="NOTIFY_START_ACTION" 
+			class="it.eng.spagobi.engines.console.services.NotifyStartAction"
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 	<ACTION name="STOP_ACTION" 
 			class="it.eng.spagobi.engines.console.services.ExecuteButtonAction"
 			scope="REQUEST">
@@ -72,6 +78,8 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
+	
+	
 	<ACTION name="GET_ERROR_LIST_ACTION" 
 			class="it.eng.spagobi.engines.console.services.GetErrorListAction"
 			scope="REQUEST">
@@ -80,6 +88,13 @@
 	
 	<ACTION name="GET_WARNING_LIST_ACTION" 
 			class="it.eng.spagobi.engines.console.services.GetWarningListAction"
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	<ACTION name="EXPORT_ACTION" 
+			class="it.eng.spagobi.engines.console.exporter.ExportAction"
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>

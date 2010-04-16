@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.console.services;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -64,7 +63,6 @@ public class GetErrorListAction extends AbstractConsoleEngineAction {
 	// logger component
 	private static Logger logger = Logger.getLogger(GetErrorListAction.class);
 	
-	ConsoleEngineInstance consoleEngineInstance;
 	
 	public void service(SourceBean request, SourceBean response) {
 		
@@ -82,7 +80,7 @@ public class GetErrorListAction extends AbstractConsoleEngineAction {
 		
 		try {
 			super.service(request,response);
-			consoleEngineInstance = getConsoleEngineInstance();
+			ConsoleEngineInstance consoleEngineInstance = getConsoleEngineInstance();
 		
 			dataSetLabel = getAttributeAsString( DATASET_LABEL );
 			logger.debug("Parameter [" + DATASET_LABEL + "] is equals to [" + dataSetLabel + "]");			
@@ -151,7 +149,7 @@ public class GetErrorListAction extends AbstractConsoleEngineAction {
 		IDataSet dataSet;
 		DataSetServiceProxy datasetProxy;
 		
-		datasetProxy = consoleEngineInstance.getDataSetServiceProxy();
+		datasetProxy = getConsoleEngineInstance().getDataSetServiceProxy();
 		dataSet =  datasetProxy.getDataSetByLabel(label);
 		
 		return dataSet;

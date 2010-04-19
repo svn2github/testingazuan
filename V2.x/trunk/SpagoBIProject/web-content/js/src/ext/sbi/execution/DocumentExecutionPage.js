@@ -1082,7 +1082,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 						//Only for OLAP Documents
 						if (this.executionInstance.document.typeCode == 'OLAP') {
 							//intercept click on <input> elements and show load  mask
-							frame.getDoc().on('click',function(){ frame.showMask() },this,     {delegate:'input'});
+							frame.getDoc().on('click',function(){ frame.showMask() },this,     {delegate:'input[type=image]'});
 						}
 
                 }

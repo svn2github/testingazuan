@@ -137,7 +137,7 @@ public class ChartImpl implements IChart {
 	public static final String overlaid_barline = "overlaid_barline";
 	public static final String stacked_bar = "stacked_bar";
 	public static final String stacked_bar_group = "stacked_bar_group";
-	public static final String overlaid_stackedbarline= "overlaid_stackedbarline";
+	public static final String overlaid_stacked_barline= "overlaid_stacked_barline";
 	public static final String combined_category_bar= "combined_category_bar";
 
 	public static final String BOXCHART = "BOXCHART";
@@ -550,7 +550,7 @@ public class ChartImpl implements IChart {
 			else if(subtype.equalsIgnoreCase(stacked_bar_group)){
 				sbi=new StackedBarGroup();
 			}	
-			else if(subtype.equalsIgnoreCase(overlaid_stackedbarline)){
+			else if(subtype.equalsIgnoreCase(overlaid_stacked_barline)){
 				sbi=new OverlaidStackedBarLine();
 			}
 			else if(subtype.equalsIgnoreCase(combined_category_bar)){

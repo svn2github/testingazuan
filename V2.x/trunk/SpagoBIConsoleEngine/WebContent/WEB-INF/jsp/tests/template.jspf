@@ -336,6 +336,7 @@ Sbi.template = {
 							}, {
 								name: 'errors'
 								, hidden: false
+								, titleWin: 'La sessione non esegue operazioni da più di 20 minuti. Operazioni compiute: ' 
 								, checkColumn: 'errors_check'
 								, flagColumn: 'errors_flag'
 								, tooltipActive: 'View unchecked error messages'
@@ -356,6 +357,7 @@ Sbi.template = {
 							}, {
 								name: 'alarms'
 								, hidden: false
+								, titleWin: 'La sessione ha superato n controlli. '
 								, checkColumn: 'alarms_check'
 								, flagColumn: 'alarms_flag'
 								, tooltipActive: 'View unchecked alarm messages'

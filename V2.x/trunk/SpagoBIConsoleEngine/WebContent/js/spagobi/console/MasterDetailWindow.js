@@ -214,6 +214,7 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
 	       	var record = this.store.getAt( rowIndex );
 	       	if(!this.detailField) return;
 	       	var detailValue = record.get(this.detailField);
+	       	
 	       	if(!detailValue) return;
 	       	this.detailText.setValue(detailValue);
 		}, this);
@@ -244,7 +245,7 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
 
 	, initDetailPanel: function() {
 		
-		this.detailText = new Ext.form.HtmlEditor({
+		/*this.detailText = new Ext.form.HtmlEditor({
 			 enableAlignments : false,
 	    	 enableColors : false,
 	    	 enableFont :  false,
@@ -253,6 +254,10 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
 	    	 enableLinks :  false,
 	    	 enableLists : false,
 	    	 enableSourceEdit : false,
+	    	 autoScroll: true
+		});*/
+		
+		this.detailText = new Ext.form.TextArea({			
 	    	 autoScroll: true
 		});
 		

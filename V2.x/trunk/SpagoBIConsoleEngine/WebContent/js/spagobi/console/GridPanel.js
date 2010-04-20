@@ -263,7 +263,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	}
 
 	
-	, execAction: function(action, r, index, options) {			
+	, execAction: function(action, r, index, options) {	
 		var callback = function(params){
 
 			params = Ext.apply(params, {

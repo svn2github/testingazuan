@@ -213,7 +213,7 @@
 					type='BOOLEAN' defaultValue='true' tooltip='Put bars in stake'/>
 			</SECTION>
 		</CONF>
-		<SERIES_DRAWS />
+		<SERIES_DRAW />
 		<SERIES_COLORS />
 		<SERIES_LABELS />
 		<SERIES_SCALES />
@@ -228,7 +228,7 @@
 					type='BOOLEAN' defaultValue='true' tooltip='add labels'/>
 			</SECTION>
 		</CONF>
-		<SERIES_DRAWS />
+		<SERIES_DRAW />
 		<SERIES_COLORS />
 		<SERIES_LABELS />
 	</BARCHART>

@@ -88,7 +88,12 @@ Sbi.exception.ExceptionHandler = function(){
         		
         	errMessage = errMessage || 'An error occurred while processing the server error response';
         	
-        	Sbi.Msg.showError(errMessage, 'Service Error');
+        	if (errMessage.indexOf('Warning') >= 0) {
+        		Sbi.Msg.showWarning(errMessage, 'Service Warning');
+        	}
+        	else{
+        		Sbi.Msg.showError(errMessage, 'Service Error');
+        	}
        	
         }
 		

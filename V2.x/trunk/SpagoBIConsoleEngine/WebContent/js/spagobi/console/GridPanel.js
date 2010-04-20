@@ -505,14 +505,14 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			}); 
 			
 			if(this.logsWin === null) {
-			this.logsWin = new Sbi.console.DownloadLogsWindow({
-			serviceName: 'DOWNLOAD_ZIP' 
-			, action: action
-			});
-			
-			this.logsWin.on('checked', function(win, record) {	
-			this.logsWin.downloadLogs(action, record, null, params);
-			}, this);
+				this.logsWin = new Sbi.console.DownloadLogsWindow({
+				serviceName: 'DOWNLOAD_ZIP' 
+				, action: action
+				});
+				
+				this.logsWin.on('checked', function(win, record) {	
+				this.logsWin.downloadLogs(action, record, null, params);
+				}, this);
 			}
 			
 			this.logsWin.show();
@@ -701,14 +701,15 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	    //adds inline action buttons
 		if (this.inlineActions) {
 			for(var i = 0, l = this.inlineActions.length; i < l; i++){ 
-				var column = this.createInlineActionColumn(this.inlineActions[i]);
+				var column = this.createInlineActionColumn(this.inlineActions[i]);				
 				if(column !== null) {
+					column.id = this.inlineActions[i].name + '_header';				
 					tmpMeta.fields.push( column );
 				} else {
 					Sbi.Msg.showWarning('Impossible to create inlineActionColumn [' + this.inlineActions[i].name + ']');
 				}
 				//hidden the configuration column linked to inlineActions				
-				var tmpName;
+				var tmpName; 
 				if(this.inlineActions[i].checkColumn) {
 					tmpName = this.store.getFieldNameByAlias(this.inlineActions[i].checkColumn);						
 					if (tmpName !== undefined)  tmpMeta.fields[fieldsMap[tmpName]].hidden = true;
@@ -748,6 +749,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		inlineActionColumnConfig = Ext.apply({
 			grid: this
 			, scope: this
+			, headerIconCls: inlineActionColumnConfig.name + '_header' //doesn't work
 		}, inlineActionColumnConfig);
 		
 		if (inlineActionColumnConfig.name === 'crossnav'){

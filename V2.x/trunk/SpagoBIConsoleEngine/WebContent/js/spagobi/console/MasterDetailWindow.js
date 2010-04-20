@@ -47,7 +47,7 @@
 Ext.ns("Sbi.console");
 
 Sbi.console.MasterDetailWindow = function(config) {
-	
+
 
 	var defaultSettings = Ext.apply({}, config || {}, {
 		title: 'Master/Detail windows'
@@ -196,8 +196,9 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
 		
 		}, this);
 		
-		this.grid =  new Ext.grid.GridPanel({
+		this.grid =  new Ext.grid.GridPanel({			
 			layout: 'fit'
+			, title: this.action.titleWin
 			, loadMask: true
 			, viewConfig: {
 		    	forceFit:false,

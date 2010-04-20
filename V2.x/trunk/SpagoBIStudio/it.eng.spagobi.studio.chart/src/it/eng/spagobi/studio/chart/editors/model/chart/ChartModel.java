@@ -803,7 +803,7 @@ public class ChartModel {
 		}
 
 		// DRAW
-		Element drawThis = (Element)thisDocument.selectSingleNode("//"+upperCaseNameSl+"/SERIES_DRAWS");
+		Element drawThis = (Element)thisDocument.selectSingleNode("//"+upperCaseNameSl+"/SERIES_DRAW");
 		ChartEditorUtils.print("", labelThis);
 		if(drawThis!=null){
 			for (Iterator iterator = drawThis.attributeIterator(); iterator.hasNext();) {
@@ -922,7 +922,7 @@ public class ChartModel {
 	//		}
 	//
 	//		// DRAW
-	//		Element drawThis = (Element)thisDocument.selectSingleNode("//"+upperCaseNameSl+"/SERIES_DRAWS");
+	//		Element drawThis = (Element)thisDocument.selectSingleNode("//"+upperCaseNameSl+"/SERIES_DRAW");
 	//		ChartEditorUtils.print("", labelThis);
 	//		if(drawThis!=null){
 	//			for (Iterator iterator = drawThis.attributeIterator(); iterator.hasNext();) {
@@ -1148,7 +1148,7 @@ public class ChartModel {
 			seriesColorPersonalization=true;
 		}
 
-		Node seriesDrawNode = specificConfig.selectSingleNode("//"+upperCaseNameSl+"[@name='"+chartSubType+"']/SERIES_DRAWS");
+		Node seriesDrawNode = specificConfig.selectSingleNode("//"+upperCaseNameSl+"[@name='"+chartSubType+"']/SERIES_DRAW");
 		if(seriesDrawNode!=null){
 			seriesDrawPersonalization=true;
 		}

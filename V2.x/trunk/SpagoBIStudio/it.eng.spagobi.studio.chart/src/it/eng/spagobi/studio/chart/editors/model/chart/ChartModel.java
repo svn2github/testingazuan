@@ -325,7 +325,7 @@ public class ChartModel {
 
 		SpagoBILogger.infoLog("Series personalization: labels, colors, draws");		
 		if(seriesDrawPersonalization){
-			drawPersonalization="<SERIES_DRAWS ";
+			drawPersonalization="<SERIES_DRAW ";
 			for (Iterator iterator = seriesPersonalizationHashMap.keySet().iterator(); iterator.hasNext();) {
 				String serName = (String) iterator.next();
 				SeriePersonalization serPers=seriesPersonalizationHashMap.get(serName);

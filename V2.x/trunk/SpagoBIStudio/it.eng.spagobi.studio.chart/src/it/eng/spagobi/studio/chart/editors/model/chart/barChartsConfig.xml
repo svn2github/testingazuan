@@ -207,6 +207,10 @@
 					type='STRING' defaultValue='second axis label' tooltip='Activate the second axis and set the label'/>
 				<PARAMETER name='add_labels' description='Add Labels'
 					type='BOOLEAN' defaultValue='true' tooltip='add labels'/>
+				<PARAMETER name='stacked_bar_renderer_1' description='StackedBar renderer'
+					type='BOOLEAN' defaultValue='true' tooltip='Put bars in stake'/>
+				<PARAMETER name='stacked_bar_renderer_2' description='StackedBar renderer'
+					type='BOOLEAN' defaultValue='true' tooltip='Put bars in stake'/>
 			</SECTION>
 		</CONF>
 		<SERIES_DRAWS />

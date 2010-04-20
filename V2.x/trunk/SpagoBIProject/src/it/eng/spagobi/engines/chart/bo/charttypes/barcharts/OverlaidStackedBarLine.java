@@ -148,7 +148,7 @@ public class OverlaidStackedBarLine extends LinkableBar {
 					}					
 					else{						
 						if(seriesLabelsMap!=null){
-							if((this.getNumberSerVisualization() > 0 && contSer < this.getNumberSerVisualization()) &&
+							if((this.getNumberSerVisualization() > 0 && contSer < this.getNumberSerVisualization()) && seriesDraw.get(nameP)!= null &&
 									((String)seriesDraw.get(nameP)).equalsIgnoreCase("StackedBar")){
 								String serieLabel = (String)seriesLabelsMap.get(nameP);
 								series.put(serieLabel, value);

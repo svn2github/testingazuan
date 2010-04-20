@@ -32,6 +32,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+import org.jfree.chart.renderer.category.StackedBarRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -53,6 +54,9 @@ public class OverlaidBarLine extends LinkableBar {
 	String secondAxisLabel=null;
 	boolean freeToolTips=false;   //automatically set
 
+	boolean stackedBarRenderer_1=false;
+	boolean stackedBarRenderer_2=false;
+	
 	// maps the element with the tooltip information. tip_element or freetip_element
 	HashMap<String, String> seriesTooltip=null; 
 	HashMap<String, String> categoriesTooltip=null; 
@@ -62,7 +66,10 @@ public class OverlaidBarLine extends LinkableBar {
 
 	/** If present gives the second axis a name and enable the presence of the second axis */
 	public static final String SECOND_AXIS_LABEL = "second_axis_label";
+	public static final String STACKED_BAR_RENDERER_1 = "stacked_bar_renderer_1";
+	public static final String STACKED_BAR_RENDERER_2 = "stacked_bar_renderer_2";
 
+	
 	private static transient Logger logger=Logger.getLogger(OverlaidBarLine.class);
 
 
@@ -288,6 +295,22 @@ public class OverlaidBarLine extends LinkableBar {
 		{
 			additionalLabels=false;
 		}
+		
+
+		
+		if(confParameters.get("stacked_bar_renderer_1")!=null){	
+			String stacked=(String)confParameters.get("stacked_bar_renderer_1");
+			if(stacked.equalsIgnoreCase("true")){
+				stackedBarRenderer_1=true;
+			}
+		}
+		if(confParameters.get("stacked_bar_renderer_2")!=null){	
+			String stacked=(String)confParameters.get("stacked_bar_renderer_2");
+			if(stacked.equalsIgnoreCase("true")){
+				stackedBarRenderer_2=true;
+			}
+		}
+		
 
 
 		//reading series draw: there is specified if a serie has to be drawn as a bar or as a line.
@@ -425,9 +448,25 @@ public class OverlaidBarLine extends LinkableBar {
 
 		if(useBars){
 
-			CategoryItemRenderer barRenderer = new BarRenderer();
+			CategoryItemRenderer barRenderer = null; 
+			if(stackedBarRenderer_1 == true){
+				barRenderer = new StackedBarRenderer();				
+			}
+			else{
+				barRenderer = new BarRenderer();
+			}
+			
+			
 			CategoryItemRenderer barRenderer2 = new BarRenderer();
 
+			if(stackedBarRenderer_2 == true){
+				barRenderer2 = new StackedBarRenderer();				
+			}
+			else{
+				barRenderer2 = new BarRenderer();
+			}
+
+			
 			if(maxBarWidth!=null){
 				((BarRenderer)barRenderer).setMaximumBarWidth(maxBarWidth.doubleValue());
 				((BarRenderer)barRenderer2).setMaximumBarWidth(maxBarWidth.doubleValue());

@@ -63,73 +63,41 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /* icons for grid's header 
 */
 .x-grid3-hd-errors_header {
-    background:url(../img/ico_errors_gray.gif) no-repeat  !important;
-    width:11px; 
-    height:11px;
-    horizontal-align: center;
-	vertical-align: middle;
-	text-align:center;
+    background:url(../img/ico_errors_gray.gif) center center no-repeat ;
+    height:20px;
 }
 
 .x-grid3-hd-alarms_header {
-    background:url(../img/ico_alarms_gray.gif)  no-repeat; 
-    width:11px; 
-    height:11px;
-    horizontal-align: center;
-	vertical-align: middle;
-	text-align:center;
+    background:url(../img/ico_alarms_gray.gif) center center no-repeat; 
+    height:20px;
 }
 
 .x-grid3-hd-views_header {
-    background:url(../img/ico_views_gray.gif)  no-repeat; 
-    width:11px; 
-    height:11px;
-    horizontal-align: center;
-	vertical-align: middle;
-	text-align:center;
+    background:url(../img/ico_views_gray.gif) center center no-repeat; 
+    height:20px;
 }
 
 .x-grid3-hd-monitor_header {
-    background:url(../img/ico_monitor_gray.gif)  no-repeat;
-    width:10px; 
-    height:10px;
-    horizontal-align: center;
-	vertical-align: middle;
-	text-align:center;
+    background:url(../img/ico_monitor_gray.gif) center center no-repeat;
+    height:20px;
 }
 
 .x-grid3-hd-start_header {
-    background:url(../img/ico_start_gray.gif)  no-repeat;
-    width:10px; 
-    height:10px;
-    horizontal-align: center;
-	vertical-align: middle;
-	text-align:center;
+    background:url(../img/ico_start_gray.gif) center center no-repeat;
+    height:20px;
 }
 
 .x-grid3-hd-stop_header {
-    background:url(../img/ico_stop_gray.gif)  no-repeat;
-    width:10px; 
-    height:10px;
-    horizontal-align: center;
-	vertical-align: middle;
-	text-align:center;
+    background:url(../img/ico_stop_gray.gif) center center no-repeat;
+    height:20px;
 }
 
 .x-grid3-hd-crossnav_header {
-    background:url(../img/ico_popup_detail.gif)  no-repeat;
-    width:10px; 
-    height:10px;
-    horizontal-align: center;
-	vertical-align: middle;
-	text-align:center;
+    background:url(../img/ico_popup_detail.gif) center center  no-repeat;
+    height:20px;
 }
 
 .x-grid3-hd-informationlog_header {
-    background:url(../img/ico_info_grey.gif)  no-repeat;
-    width:10px; 
-    height:10px;
-    horizontal-align: center;
-	vertical-align: middle;
-	text-align:center;
+    background:url(../img/ico_info_grey.gif) center center no-repeat;
+    height:20px;
 }

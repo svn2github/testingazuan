@@ -116,11 +116,11 @@ public class DownloadZipAction extends AbstractBaseHttpAction{ //AbstractHttpAct
 			// get all files that has to be zipped
 			Vector filesToZip = searchDateFiles(dir, begin, end, prefix1 + prefix2);
 			if (filesToZip.size() == 0){
-				throw new Exception ("Files not found with these parameters: \n" +
-									 " Directory: " + dir + "\n" +
-									 " Begin date: " + begin + "\n" + 
-									 " End date: " + end + "\n" + 
-									 " Prefix: " + prefix1 + prefix2);
+				throw new Exception ("Warning: Files not found with these parameters: <p><br>" +
+									 " <b>Directory:</b> " + dir + "<p>" +
+									 " <b>Begin date:</b> " + begin + "<p>" + 
+									 " <b>End date:</b> " + end + "<p>" + 
+									 " <b>Prefix:</b> " + prefix1 + prefix2 );
 			}
 
 			Date today=(new Date());
@@ -152,7 +152,7 @@ public class DownloadZipAction extends AbstractBaseHttpAction{ //AbstractHttpAct
 			//manageDownloadExportFile(httpRequest, httpResponse);
 		} catch (Throwable t) {
 			logger.error("Error in writing the zip ",t);
-			throw new SpagoBIServiceException(SERVICE_NAME, "Error in writing the zip: " + t.getMessage() , t);
+			throw new SpagoBIServiceException(SERVICE_NAME, t.getMessage() , t);
 			/* this manage defines a file with the error message and returns it.
 			try{							
 				File file = new File("exception.txt");

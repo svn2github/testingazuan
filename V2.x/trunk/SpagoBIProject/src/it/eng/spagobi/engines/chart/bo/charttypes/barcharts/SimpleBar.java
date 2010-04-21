@@ -184,15 +184,15 @@ public class SimpleBar extends BarCharts{
 			renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
 
 //			if(valueLabelsPosition.equalsIgnoreCase("inside")){
-//				renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-//						ItemLabelAnchor.CENTER, TextAnchor.BASELINE_LEFT));
-//				renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-//						ItemLabelAnchor.CENTER, TextAnchor.BASELINE_LEFT));
+//			renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+//			ItemLabelAnchor.CENTER, TextAnchor.BASELINE_LEFT));
+//			renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+//			ItemLabelAnchor.CENTER, TextAnchor.BASELINE_LEFT));
 //			} else {
-//				renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-//						ItemLabelAnchor.OUTSIDE3, TextAnchor.BASELINE_LEFT));
-//				renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-//						ItemLabelAnchor.OUTSIDE3, TextAnchor.BASELINE_LEFT));
+//			renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+//			ItemLabelAnchor.OUTSIDE3, TextAnchor.BASELINE_LEFT));
+//			renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+//			ItemLabelAnchor.OUTSIDE3, TextAnchor.BASELINE_LEFT));
 //			}
 
 		}
@@ -228,7 +228,20 @@ public class SimpleBar extends BarCharts{
 
 
 		int seriesN=dataset.getRowCount();
-		if(colorMap!=null){
+
+		// the order color vedctor overrides the color map!!
+
+		if(orderColorVector != null && orderColorVector.size()>0){
+			logger.debug("color serie by SERIES_ORDER_COLORS template specification");
+			for (int i = 0; i < seriesN; i++) {
+				if( orderColorVector.get(i)!= null){
+					Color color = orderColorVector.get(i);
+					renderer.setSeriesPaint(i, color);
+				}		
+			}	
+		}		
+		else if(colorMap!=null){
+			logger.debug("color serie by SERIES_COLORS template specification");
 			for (int i = 0; i < seriesN; i++) {
 				String serieName=(String)dataset.getRowKey(i);	
 				String labelName = "";

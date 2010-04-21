@@ -293,6 +293,17 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		}*/
 
 		int seriesN=dataset.getRowCount();
+		
+		if(orderColorVector != null && orderColorVector.size()>0){
+			logger.debug("color serie by SERIES_ORDER_COLORS template specification");
+			for (int i = 0; i < seriesN; i++) {
+				if( orderColorVector.get(i)!= null){
+					Color color = orderColorVector.get(i);
+					renderer.setSeriesPaint(i, color);
+				}		
+			}	
+		}		
+		else 
 		if(colorMap!=null){
 			for (int i = 0; i < seriesN; i++) {
 				String serieName=(String)dataset.getRowKey(i);

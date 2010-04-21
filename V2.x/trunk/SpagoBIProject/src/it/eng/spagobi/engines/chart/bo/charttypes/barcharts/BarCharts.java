@@ -67,7 +67,10 @@ public class BarCharts extends ChartImpl {
 	// <PARAMETER name="enable_tooltips" value="true" />
 	boolean enableToolTips=false;	
 
+	/** mapping name_serie => color*/
 	HashMap colorMap=null;  // keeps user selected colors// serie position - color
+	/** Colors in order for series (override color Map)*/
+	Vector<Color> orderColorVector = null;
 	HashMap seriesNumber=null; //track serie name with number position (to preserve color)
 	HashMap seriesCaptions=null;
 	int categoriesNumber=0;
@@ -146,6 +149,13 @@ public class BarCharts extends ChartImpl {
 	 * Possibe values:  BOTTOM_OR_LEFT, BOTTOM_OR_RIGHT, TOP_OR_RIGHT, TOP_OR_LEFT 
 	 * This parameter is avalaible only for those charts with one single axis*/
 	public static final String RANGE_AXIS_LOCATION = "range_axis_location";
+
+	/** name of the tag that specifies color for series in order of apparition*/
+	public static final String SERIES_ORDER_COLORS = "SERIES_ORDER_COLORS";
+
+	/** name of the tag that specifies color for each serie name */
+	public static final String SERIES_COLORS = "SERIES_COLORS";
+
 
 
 
@@ -505,7 +515,7 @@ public class BarCharts extends ChartImpl {
 		}
 
 		//reading series colors if present
-		SourceBean colors = (SourceBean)content.getAttribute("SERIES_COLORS");
+		SourceBean colors = (SourceBean)content.getAttribute(SERIES_COLORS);
 		if(colors==null){
 			colors = (SourceBean)content.getAttribute("CONF.SERIES_COLORS");
 		}
@@ -524,19 +534,34 @@ public class BarCharts extends ChartImpl {
 				if(col!=null){
 					colorMap.put(serieName,col); 
 				}
-
-				/*
-				colorNum=new String(object.getKey());
-				num=colorNum.substring(5, colorNum.length()); // gets the number from color1, color2 
-
-				colorSerie=new String((String)object.getValue());
-				Color col=new Color(Integer.decode(colorSerie).intValue());
-				if(col!=null){
-					colorMap.put("color"+num,col); 
-				}*/
 			}		
 
 		}
+
+
+		//reading series colors if present, if present this overrides series colors!!!
+		SourceBean orderColors = (SourceBean)content.getAttribute(SERIES_ORDER_COLORS);
+		if(orderColors==null){
+			orderColors = (SourceBean)content.getAttribute("CONF."+SERIES_ORDER_COLORS);
+		}
+		if(orderColors!=null){
+			orderColorVector=new Vector<Color>();
+			List atts=orderColors.getContainedAttributes();
+			String numSerie="";
+			String colorSerie="";
+			for (Iterator iterator = atts.iterator(); iterator.hasNext();) {
+				SourceBeanAttribute object = (SourceBeanAttribute) iterator.next();
+				numSerie=new String(object.getKey());
+				colorSerie=new String((String)object.getValue());
+				Color col=new Color(Integer.decode(colorSerie).intValue());
+				if(col!=null){
+					orderColorVector.add(col);
+					//colorMap.put(numSerie,col); 
+				}
+			}		
+
+		}
+
 
 		//reading filter style if present
 		SourceBean sbSerieStyle = (SourceBean)content.getAttribute("STYLE_SLIDER_AREA");

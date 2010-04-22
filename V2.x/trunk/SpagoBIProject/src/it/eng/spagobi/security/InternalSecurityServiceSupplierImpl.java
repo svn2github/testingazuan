@@ -57,6 +57,10 @@ public class InternalSecurityServiceSupplierImpl implements
 		
 		try {
 			SbiUser user = DAOFactory.getSbiUserDAO().loadSbiUserByUserId(userId);
+			if(user == null){
+				logger.error("UserName not found into database");
+				return null;
+			}
 			String password = user.getPassword();
 			if (password == null || password.length() == 0) {
 			    logger.error("UserName/pws not defined into database");

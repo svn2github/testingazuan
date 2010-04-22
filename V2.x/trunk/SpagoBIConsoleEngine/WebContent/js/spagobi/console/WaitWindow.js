@@ -116,7 +116,8 @@ Ext.extend(Sbi.console.WaitWindow, Ext.Window, {
 	}
 
 	, stop: function(msg) {
-		//this.progressBar.reset();
+		this.progressBar.reset();
+		this.progressBar.updateProgress(1,'',true);
 		this.statusText.setText(msg || this.startedTxt);
 		this.okButton.enable();
 		

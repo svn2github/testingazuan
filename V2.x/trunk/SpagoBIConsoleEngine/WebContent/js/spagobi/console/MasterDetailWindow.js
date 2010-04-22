@@ -216,9 +216,9 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
 	       	var detailValue = record.get(this.detailField);
 	       	
 	       	if(!detailValue) return;
-	       	//test
-	       //	detailValue = detailValue.replace(/</g, '\n <');
+	       	
 	       	this.detailText.setValue(detailValue);
+	       	//this.detailText.setValue(Ext.util.Format.htmlEncode(detailValue));
 		}, this);
 		
 		this.masterPanel = new Ext.Panel({
@@ -246,8 +246,9 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
 	}
 
 	, initDetailPanel: function() {
-		
-		/*this.detailText = new Ext.form.HtmlEditor({
+		//HTMLEditor isn't used because hide XML tags.
+		/*
+		this.detailText = new Ext.form.HtmlEditor({
 			 enableAlignments : false,
 	    	 enableColors : false,
 	    	 enableFont :  false,
@@ -261,7 +262,7 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
 		
 		this.detailText = new Ext.form.TextArea({			
 	    	 autoScroll: true
-		});
+		});				
 		
 		//this.detailText.setValue('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed nibh ipsum. Ut dui nulla, viverra vitae condimentum eget, faucibus id quam. Praesent dapibus velit ut sem tincidunt pretium. Quisque scelerisque nisl in turpis ornare at vulputate nulla varius. Donec ut sem sed nunc accumsan mattis. In hac habitasse platea dictumst. Nulla et est eros, quis aliquet massa. Aliquam non ante ut sapien tincidunt porttitor. Duis commodo tincidunt egestas. Pellentesque eget pulvinar quam. Etiam lorem augue, fringilla et commodo in, viverra nec leo. Fusce molestie vehicula neque, sit amet tempus neque mattis vitae. Donec viverra vestibulum lectus, sit amet vestibulum ligula auctor sed. Maecenas lorem urna, congue id auctor eu, pharetra a libero. Quisque aliquam, enim nec auctor molestie, mi ipsum convallis dui, non condimentum leo quam nec dui. Fusce augue nisl, laoreet at tincidunt ut, malesuada et tellus. Maecenas sit amet nulla nisi, id rutrum orci. ');	
 		this.detailText.setReadOnly(true);

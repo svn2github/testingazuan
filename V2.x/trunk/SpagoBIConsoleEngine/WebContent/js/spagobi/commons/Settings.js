@@ -12,4 +12,8 @@ Sbi.settings.console = {
   , summaryPanel: {
 	  height: 300
   }
-}; 
+};
+
+Sbi.settings.console.masterDetailWindow = {
+	height: 600
+};

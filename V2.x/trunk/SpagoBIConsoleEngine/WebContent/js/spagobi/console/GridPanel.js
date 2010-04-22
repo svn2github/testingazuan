@@ -400,6 +400,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	  				this.waitWin.stop('Proecess started succesfully');
 					action.toggle(r);	
 					if (params.stmt){
+						params.pid = content.pid;
 						//calls the update action (if there's a stmt definition)
 						Ext.Ajax.request({
 					       	url: this.services['notifyStartAction'] 			       

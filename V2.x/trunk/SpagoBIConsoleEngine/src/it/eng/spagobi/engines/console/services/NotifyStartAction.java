@@ -56,6 +56,7 @@ public class NotifyStartAction extends AbstractConsoleEngineAction {
 	public static String USER_ID = "userId";
 	public static String ID_SERVICE = "idService";
 	public static String RESOURCE_NAME = "resourceName";
+	public static String PID = "pid";
 	
 
 		
@@ -68,6 +69,7 @@ public class NotifyStartAction extends AbstractConsoleEngineAction {
 		String user;
 		Integer idService = null;
 		String resourceName = null; // es. 'azienda_0'
+		String pid = null; // es. 'azienda_0'
 		
 		IDataSource dataSource;
 		
@@ -78,6 +80,7 @@ public class NotifyStartAction extends AbstractConsoleEngineAction {
 		Double idServiceInstanceParam = null;
 		Integer idServiceParam = null;
 		Date sysDate = null;
+		String pidParam = null;
 		Integer resourceIdParam = null;
 		
 
@@ -97,6 +100,10 @@ public class NotifyStartAction extends AbstractConsoleEngineAction {
 			logger.debug("Parameter [" + ID_SERVICE + "] is equals to [" + idService + "]");			
 			Assert.assertNotNull(idService, "Parameter [" + ID_SERVICE + "] cannot be null or empty");
 			
+			pid = getAttributeAsString( PID );
+			logger.debug("Parameter [" + PID + "] is equals to [" + pid + "]");			
+			Assert.assertTrue(!StringUtilities.isEmpty( pid ), "Parameter [" + PID + "] cannot be null or empty");
+			
 			resourceName = getAttributeAsString( RESOURCE_NAME );
 			logger.debug("Parameter [" + RESOURCE_NAME + "] is equals to [" + resourceName + "]");			
 			Assert.assertTrue(!StringUtilities.isEmpty( resourceName ), "Parameter [" + RESOURCE_NAME + "] cannot be null or empty");
@@ -105,6 +112,8 @@ public class NotifyStartAction extends AbstractConsoleEngineAction {
 			
 			dataSource = getConsoleEngineInstance().getDataSource();	
 			conn = dataSource.getConnection();
+			conn.setAutoCommit(false);
+
 			
 			sql = "INSERT INTO SERVICE_INSTANCE " 
 			    + "(ID_SERVICE_INSTANCE, " +					// 1
@@ -126,7 +135,7 @@ public class NotifyStartAction extends AbstractConsoleEngineAction {
 			    		"RESOURCE_ID) "							// 17
 			    + "VALUES "
 			    + " (?, ?, NULL, NULL, NULL, " +
-			    	"0, ?, NULL, '', 0, " +
+			    	"0, ?, NULL, ?, 0, " +
 			    	"0, 0, 0, 0, NULL, ?, ?)";
 			
 			
@@ -138,6 +147,10 @@ public class NotifyStartAction extends AbstractConsoleEngineAction {
 			
 			sysDate = new Date( System.currentTimeMillis() );
 			logger.debug("Query parameter [sysDate] is equals to [" + sysDate + "]");			
+			
+			
+			pidParam = pid;
+			logger.debug("Query parameter [pid] is equals to [" + pidParam + "]");			
 			
 			resourceIdParam = getResourceId(conn, resourceName);
 			logger.debug("Query parameter [resourceIdParam] is equals to [" + resourceIdParam + "]");			
@@ -152,8 +165,9 @@ public class NotifyStartAction extends AbstractConsoleEngineAction {
 				stmt.setDouble(1, idServiceInstanceParam);
 				stmt.setInt(2, idServiceParam);
 				stmt.setDate(3, sysDate);
-				stmt.setDate(4, sysDate);
-				stmt.setInt(5, resourceIdParam.intValue());
+				stmt.setString(4, pidParam);
+				stmt.setDate(5, sysDate);
+				stmt.setInt(6, resourceIdParam.intValue());
 			} catch (SQLException e) {
 				throw new ConsoleEngineRuntimeException("Impossible to set the value of the parameter [resourceName] to [" + resourceName + "] in query [" + sql + "]", e);
 			}
@@ -274,7 +288,7 @@ public class NotifyStartAction extends AbstractConsoleEngineAction {
 			Assert.assertNotNull(conn, "Input parameter [conn] cannot be null");
 			Assert.assertTrue(!StringUtilities.isEmpty(resourceName), "Input parameter [" + resourceName + "] cannot be null or empty");
 			
-			sql = "SELECT RESOURCE_ID FROM SBI_RESOURCE WHERE RESOURCE_NAME = ?";
+			sql = "SELECT RESOURCE_ID FROM SBI_RESOURCES WHERE RESOURCE_NAME = ?";
 			
 			try {
 				stmt = conn.prepareStatement(sql);

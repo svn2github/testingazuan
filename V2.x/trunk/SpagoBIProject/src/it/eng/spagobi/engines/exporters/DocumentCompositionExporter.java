@@ -6,6 +6,7 @@ import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
+import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration;
 import it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration.Document;
 import it.eng.spagobi.engines.documentcomposition.exporterUtils.CurrentConfigurationDocComp;
@@ -76,7 +77,15 @@ public class DocumentCompositionExporter {
 			// Calling execution proxy
 			ExecutionProxy proxy = new ExecutionProxy();
 			proxy.setBiObject(object);
-			output="JPG";
+			
+			// if engine is Birt, export in PDF, elsewhere in JPG
+			Engine engine = object.getEngine();
+			String driverName = engine.getDriverName();
+			if (driverName != null && driverName.endsWith("BirtReportDriver")) {
+				output = "PDF";
+			} else {
+				output = "JPG";
+			}
 			byte[] returnByteArray = proxy.exec(profile, "SDK", output);
 
 			// add content retrieved to Document Container

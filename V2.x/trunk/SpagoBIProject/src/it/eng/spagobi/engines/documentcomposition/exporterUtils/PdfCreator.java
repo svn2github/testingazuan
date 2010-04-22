@@ -26,8 +26,13 @@ import com.lowagie.text.Image;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfCopy;
+import com.lowagie.text.pdf.PdfImportedPage;
+import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class PdfCreator {
@@ -70,31 +75,30 @@ public class PdfCreator {
 
 			for (Iterator iterator = documentsMap.keySet().iterator(); iterator.hasNext();) {
 				String label = (String) iterator.next();
-				DocumentContainer docContainer=	documentsMap.get(label);
-				MetadataStyle style=docContainer.getStyle();
-
-				byte[] content=docContainer.getContent();
-				if(content!=null){
-
+				DocumentContainer docContainer = documentsMap.get(label);
+				byte[] content = docContainer.getContent();
+				if (content != null) {
 					Image img = null;
-					try{					
-						img=Image.getInstance(content);
+					try {
+						img = Image.getInstance(content);
+						table.addCell(img);	
+					} catch (Exception e) {
+						logger.debug("Trying to evaluate response as a PDF file... ");
+						table.addCell("");
+//						try {
+//							PdfReader reader = new PdfReader(content);
+//							PdfImportedPage page = writer.getImportedPage(reader, 1);
+//							writer.addPage(page);
+//							table.addCell("");
+//						} catch (Exception x) {
+//							logger.error("Error in inserting image for document " + label, e);
+//							logger.error("Error in inserting pdf file for document " + label, x);
+//							table.addCell("");
+//						}
 					}
-					catch (Exception e) {
-						logger.error("Error in inserting image for document "+label+ ": not an image ", e);
-						continue;
-					}
-
-
-					table.addCell(img);							
 				}
-				else{
-					// TODO: setALT!
-				}
-
 				cellsCounter++;
-
-			}		// default style ended
+			}
 
 			// if cell counter is not pair make it pair
 			if(cellsCounter%2!=0){
@@ -143,13 +147,23 @@ public class PdfCreator {
 
 				// get the image
 				byte[] content=docContainer.getContent();
-				if(content!=null){
+				if(content != null){
 					Image img = null;
-					try{
-						img=Image.getInstance(content);
+					try {
+						img = Image.getInstance(content);
 					}
 					catch (Exception e) {
-						logger.error("Error in inserting image for document "+label+ ": not an image ", e);
+						logger.debug("Trying to evaluate response as a PDF file... ");
+						try {
+							PdfReader reader = new PdfReader(content);
+							PdfContentByte cb = writer.getDirectContent();
+							PdfImportedPage page = writer.getImportedPage(reader, 1);
+							float[] tm = getTransformationMatrix(page, xPos, yPos, tableWidth, tableHeight);
+							cb.addTemplate(page, tm[0], tm[1], tm[2], tm[3], tm[4], tm[5]);
+						} catch (Exception x) {
+							logger.error("Error in inserting image for document " + label, e);
+							logger.error("Error in inserting pdf file for document " + label, x);
+						}
 						continue;
 					}
 
@@ -174,7 +188,7 @@ public class PdfCreator {
 					int percToResize=percentageToResize((int)img.getWidth(), (int)img.getHeight(), tableWidth, tableHeight);
 					logger.debug("image will be scaled of percentage "+percToResize);
 					img.scalePercent(percToResize);
-
+					
 					PdfPCell cell= new PdfPCell(img);
 					cell.setNoWrap(true);
 					cell.setFixedHeight(tableHeight);
@@ -202,7 +216,18 @@ public class PdfCreator {
 		return fileOutputStream;
 	}
 
-
+	private float[] getTransformationMatrix(PdfImportedPage page, int xPos, int yPos, int tableWidth, int tableHeight) {
+		float pageWidth = page.getWidth();
+		float pageHeight = page.getHeight();
+		float scaleX = tableWidth/pageWidth;
+		float scaleY = tableHeight/pageHeight;
+		float scale = Math.min(scaleX, scaleY);		
+		//float[] toReturn = {scale, 0f, 0f, scale, xPos, docHeight - tableHeight};
+		float dX = (float) xPos;
+		float dY = yPos - tableHeight;
+		float[] toReturn = {scale, 0f, 0f, scale, dX, dY};
+		return toReturn;
+	}
 
 	int chooseDefaultColumnsNumber(int documentsNumber){
 

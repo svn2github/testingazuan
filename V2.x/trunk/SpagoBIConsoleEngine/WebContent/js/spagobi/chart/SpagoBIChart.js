@@ -82,6 +82,7 @@ Sbi.chart.SpagoBIChart = function(config) {
 	this.flashVars = Ext.applyIf(c, this.CHART_DEFAULT_CONFIG);
 	if(c.xtype === 'chart.sbi.multileds') {
 		c.fields = c.fields.replace(new RegExp('"','g'), '|');
+		if(c.styles) c.styles = c.styles.replace(new RegExp('"','g'), '|');
 		//Sbi.Msg.showInfo('x-> ' + c.fields);
 	}
 	

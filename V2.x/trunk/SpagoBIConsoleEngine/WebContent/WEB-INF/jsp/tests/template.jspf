@@ -67,6 +67,19 @@ Sbi.template = {
             		, {header: 'Cost Opt.',name:'CostOptimization', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}
             		, {header: 'Health',name:'Health', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}
             	]
+            	, styles: {
+        			 border: {color: 'black', size: '0'}
+        			, padding: {top: 28, right: 8, bottom: 3, left: 8}
+        			, gauge: {
+        				padding: {right: 2, left: 2},
+        				colors: {firstInterval: "green", secondInterval: "orange", thirdInterval: "red"},
+        				led: {height: 5, gap: 1, margin: 10},
+        				title: { font: {name: "serif", color: "black", size: 10, style: "plain"}},
+        				value: { font:  {name: "serif", color: "black", size: 12, style: "bold"}}
+        			
+        				
+        			} 
+        		}
            	}
         } ,  {
         	dataset: 'testConsLiveLine'

@@ -80,7 +80,12 @@ Sbi.chart.SpagoBIChart = function(config) {
 	}
 	
 	this.flashVars = Ext.applyIf(c, this.CHART_DEFAULT_CONFIG);
+	if(c.xtype === 'chart.sbi.multileds') {
+		c.fields = c.fields.replace(new RegExp('"','g'), '|');
+		//Sbi.Msg.showInfo('x-> ' + c.fields);
+	}
 	
+
 	this.flashVars.scale = 'exactfit'; 
 	this.flashParams = this.flashParams | {};
 	this.flashParams.scale = 'exactfit'; 
@@ -214,10 +219,35 @@ Sbi.chart.Multileds = Ext.extend(Sbi.chart.SpagoBIChart, {
 	, CHART_DEFAULT_CONFIG: {
 		title:'SpagoBI Multileds'
 		, fields: Ext.util.JSON.encode([
-		    {header: 'Effort Idx',name:'EffortIndex', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 10, rangeMinValue: 0}, 
-			{header: 'Compet.',name:'Competitiveness', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}, 
-			{header: 'Cost Opt.',name:'CostOptimization', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0},
-			{header: 'Health',name:'Health', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}
+		    {
+		    	header: 'EffortIdx',
+		    	name:'EffortIndex', 
+		    	rangeMaxValue: 100, 
+		    	secondIntervalUb: 66, 
+		    	firstIntervalUb: 10, 
+		    	rangeMinValue: 0
+		    }, {
+		    	header: 'Compet.',
+		    	name:'Competitiveness', 
+		    	rangeMaxValue: 100, 
+		    	secondIntervalUb: 66, 
+		    	firstIntervalUb: 33, 
+		    	rangeMinValue: 0
+		    }, {
+		    	header: 'CostOpt.',
+		    	name:'CostOptimization', 
+		    	rangeMaxValue: 100, 
+		    	secondIntervalUb: 66, 
+		    	firstIntervalUb: 33, 
+		    	rangeMinValue: 0
+		    }, {
+		    	header: 'Health',
+		    	name:'Health', 
+		    	rangeMaxValue: 100, 
+		    	secondIntervalUb: 66, 
+		    	firstIntervalUb: 33, 
+		    	rangeMinValue: 0
+		    }
 		])
 	}
 		
@@ -226,7 +256,8 @@ Sbi.chart.Multileds = Ext.extend(Sbi.chart.SpagoBIChart, {
 	}
 	
 	, onRefresh: function() {
-		
+			
+			//alert('refresh multileds');
 			var data = {};
 			var rec = this.store.getAt(0);
 			if(rec) {

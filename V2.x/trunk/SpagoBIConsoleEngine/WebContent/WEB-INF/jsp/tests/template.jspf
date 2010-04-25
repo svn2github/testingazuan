@@ -13,7 +13,7 @@ Sbi.template = {
         }, {
             id: 'testConsLiveLine'
             , label: 'testConsLiveLine'
-            , refreshTime: 200
+            , refreshTime: 20
         }, {
             id: 'testConsole'
             , label: 'testConsole'
@@ -57,16 +57,15 @@ Sbi.template = {
         		, dataField: 'sales'
 	        	, categoryField: 'quarter'
         	}
-        } , {
+        } ,  {
         	dataset: 'testConsLiveLine'
             , widgetConfig: {
             	type: 'chart.sbi.multileds'
             	, title:'Multileds'
-            	, fields: [
-            		{header: 'Effort Idx',name:'EffortIndex', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 10, rangeMinValue: 0}, 
-            		//{header: 'Compet.',name:'Competitiveness', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}, 
-            		//{header: 'Cost Opt.',name:'CostOptimization', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0},
-            		//{header: 'Health',name:'Health', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}
+            	, fields: [{header: 'Effort Idx',name:'EffortIndex', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 10, rangeMinValue: 0}
+            		, {header: 'Compet.',name:'Competitiveness', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}
+            		, {header: 'Cost Opt.',name:'CostOptimization', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}
+            		, {header: 'Health',name:'Health', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}
             	]
            	}
         } ,  {

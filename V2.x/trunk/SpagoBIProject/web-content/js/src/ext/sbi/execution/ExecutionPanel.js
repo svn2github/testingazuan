@@ -221,7 +221,7 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 	     	      height: 300,
 	           	//	modal: true,
 	           	closable: true,
-	           	closeAction:'hide',
+	           	//closeAction:'hide',
 	           	resizable: true, 
 	           	minimizable :false,
 	           	maximizable : false,

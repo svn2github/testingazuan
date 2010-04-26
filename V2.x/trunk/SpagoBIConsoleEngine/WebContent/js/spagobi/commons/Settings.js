@@ -12,6 +12,10 @@ Sbi.settings.console = {
   , summaryPanel: {
 	  height: 300
   }
+  
+  , gridPanel: {
+	   limit: 15
+	  }
 };
 
 Sbi.settings.console.masterDetailWindow = {

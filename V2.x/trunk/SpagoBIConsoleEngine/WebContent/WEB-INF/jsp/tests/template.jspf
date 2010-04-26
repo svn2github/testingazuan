@@ -85,12 +85,23 @@ Sbi.template = {
         	dataset: 'testConsLiveLine'
             , widgetConfig: {
             	type: 'chart.sbi.livelines'
-            	, title:'Liveline'
+            	//, title:'LivelineAAA'
                 , rangeMinValue: 0
         		, rangeMaxValue: 120 
         		, stepY: 40
         		, domainValueNumber: 18
-        		, fields: ['EffortIndex', 'Competitiveness']
+        		//, fields: ['EffortIndex', 'Competitiveness']
+        		, styles: {
+		        	title: { text: 'Liveline', visible: true,  align: "center", valign: "top", font: {name: "serif", color: "black", size: 10, style: "bold"} }
+					, border: {color: "black", size: "0"}
+					, padding: {top: 15, right: 50, bottom: 0, left: 50}
+					, legend: {
+						text: 'Lege.'
+						, active: false
+						, valign: 'top'
+						, halign: 'right'
+					}
+				}
             }
         } ,  {
         	dataset: 'testConsLiveLine'

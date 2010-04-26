@@ -76,16 +76,18 @@ Sbi.chart.SpagoBIChart = function(config) {
 	for(p in c) {
 		if( (typeof c[p]) === 'object') {
 			c[p] = Ext.util.JSON.encode(c[p]);
+			c[p] = c[p].replace(new RegExp('"','g'), '|');
 		}
 	}
 	
 	this.flashVars = Ext.applyIf(c, this.CHART_DEFAULT_CONFIG);
+	/*
 	if(c.xtype === 'chart.sbi.multileds') {
 		c.fields = c.fields.replace(new RegExp('"','g'), '|');
 		if(c.styles) c.styles = c.styles.replace(new RegExp('"','g'), '|');
 		//Sbi.Msg.showInfo('x-> ' + c.fields);
 	}
-	
+	*/
 
 	this.flashVars.scale = 'exactfit'; 
 	this.flashParams = this.flashParams | {};

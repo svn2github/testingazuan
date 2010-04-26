@@ -120,12 +120,17 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 
 	documentsStack: null
 	, activeDocument: null
+	, origDocumentTarget: null
 	
 	, execute : function() {
 		this.activeDocument.execute();
 	}
 
 	, loadCrossNavigationTargetDocument: function( config ) {
+//	alert(config.target);
+	// alert("1 " + this.origDocumentTarget);
+	  this.origDocumentTarget = (this.origDocumentTarget === null)?config.target:this.origDocumentTarget;
+	 // alert("2 " + this.origDocumentTarget);
 		Ext.Ajax.request({
 	        url: this.services['getDocumentInfoService'],
 	        params: {'OBJECT_LABEL' : config.document.label, 'SUBOBJECT_NAME' : config.preferences.subobject.name},
@@ -164,6 +169,7 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 
 		var targetDocument = config.document;
 		var sourceDocument = this.activeDocument.document;
+		var sourceTarget = config.target;
 		
 		// if targetDocument and sourceDocument are the same document and config.target is "update", 
 		// does not add a new ExecutionWizard into the stack but updates the current one
@@ -207,7 +213,7 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 		  tabblocked = false;
 		  config.preferences.executionToolbarConfig = {};
 		  config.preferences.executionToolbarConfig.expandBtnVisible = false;
-      var activeDocument = new Sbi.execution.ExecutionPanel( {preferences: config.preferences, isFromCross: true}, config.document );
+		  	var activeDocument = new Sbi.execution.ExecutionPanel( {preferences: config.preferences, isFromCross: true}, config.document );
 			var popupWin = new Ext.Window({
 	   	        layout: 'fit',                	          
 	           	title: config.title,
@@ -223,17 +229,24 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 	           	buttons: [{
 	                       text: 'Close',
 	                       handler: function(){
-	                          popupWin.hide();
+	                        //  popupWin.hide();
+	           				popupWin.destroy();
 	                       }
 	                   }]
 				});
-        popupWin.add(activeDocument);
-        popupWin.show();
+		        popupWin.add(activeDocument);
+		        popupWin.show();
 				activeDocument.execute();
-        popupWin.doLayout();
+		        popupWin.doLayout();
 		}
 		
 		if (tabblocked) {
+		
+		  if (this.origDocumentType === 'popup'){
+			 config.preferences.executionToolbarConfig = {};
+		     config.preferences.executionToolbarConfig.expandBtnVisible = false;
+      }
+		  
 			this.activeDocument = new Sbi.execution.ExecutionWizard( {preferences: config.preferences, isFromCross: true}, config.document );
 			this.documentsStack.push( this.activeDocument );
 			

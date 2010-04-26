@@ -70,7 +70,7 @@ Sbi.console.PromptablesWindow = function(config) {
 	this.closeButton = new Ext.Button({
 		text: LN('sbi.console.promptables.btnClose'),
 		handler: function(){
-        	this.hide();
+        	this.destroy();
         }
         , scope: this
 	});
@@ -88,7 +88,7 @@ Sbi.console.PromptablesWindow = function(config) {
 
 	c = Ext.apply(c, {  	
 		layout: 'fit'
-	,	closeAction:'hide'
+	//,	closeAction:'hide'
 	,	plain: true
 	,	modal:true
 	,	title: this.title

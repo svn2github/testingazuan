@@ -703,7 +703,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			for(var i = 0, l = this.inlineActions.length; i < l; i++){ 
 				var column = this.createInlineActionColumn(this.inlineActions[i]);				
 				if(column !== null) {
-					column.id = this.inlineActions[i].name + '_header';				
+					//column.id = this.inlineActions[i].name + '_header';				
 					tmpMeta.fields.push( column );
 				} else {
 					Sbi.Msg.showWarning('Impossible to create inlineActionColumn [' + this.inlineActions[i].name + ']');

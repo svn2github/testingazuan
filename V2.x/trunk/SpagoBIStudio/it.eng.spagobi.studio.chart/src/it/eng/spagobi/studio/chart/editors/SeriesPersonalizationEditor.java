@@ -89,7 +89,8 @@ public class SeriesPersonalizationEditor {
 	final Text newSerName; 
 	// Field for personalization
 	final Table orderTable;
-
+	final Label orderLabelTitle;
+	final Group orderGroup;
 
 	public final static int NAME=0;
 	public final static int COLOR=1;
@@ -526,9 +527,9 @@ public class SeriesPersonalizationEditor {
 		GridData gd=new GridData(GridData.FILL_BOTH);
 		gd.horizontalSpan=2	;
 		l.setLayoutData(gd);
-		Label label = new Label(sectionClientSeries, SWT.NULL);
-		label.setText(" Section to set series order colors (overrides series settings) ");		
-		label.setLayoutData(gd);
+		orderLabelTitle = new Label(sectionClientSeries, SWT.NULL);
+		orderLabelTitle.setText(" Section to set series order colors (overrides series settings) ");		
+		orderLabelTitle.setLayoutData(gd);
 
 		orderTable = new Table (sectionClientSeries, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL);
 		orderTable.setLinesVisible (true);
@@ -566,7 +567,7 @@ public class SeriesPersonalizationEditor {
 
 
 		//******************	Serie NAME *********************
-		final Group orderGroup=new Group(sectionClientSeries, SWT.NULL);
+		orderGroup=new Group(sectionClientSeries, SWT.NULL);
 		orderGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		GridLayout g3 = new GridLayout();
@@ -718,9 +719,14 @@ public class SeriesPersonalizationEditor {
 
 		// disable if not 
 		if(!model.isSeriesOrderColorPersonalization()){
+			orderTable.setVisible(false);
 			orderGroup.setVisible(false);
+			orderLabelTitle.setVisible(false);
 		}
-		else orderGroup.setVisible(true);
+		else {
+			orderTable.setVisible(true);			
+			orderGroup.setVisible(true);
+			orderLabelTitle.setVisible(true);		}
 
 
 
@@ -758,7 +764,7 @@ public class SeriesPersonalizationEditor {
 	 * @param colors
 	 * @param draws
 	 */
-	public void enablePersonalizations(boolean labels, boolean colors, boolean draws, boolean scales){
+	public void enablePersonalizations(boolean labels, boolean colors, boolean draws, boolean scales, boolean orderColors){
 		newSerLabel.setVisible(labels);
 		newSerLabelText.setVisible(labels);
 		colorLabel.setVisible(colors);
@@ -768,6 +774,9 @@ public class SeriesPersonalizationEditor {
 		scaleLabel.setVisible(scales);
 		comboScale.setVisible(scales);
 		newColorLabel.setVisible(colors);
+		orderTable.setVisible(orderColors);
+		orderLabelTitle.setVisible(orderColors);
+		orderGroup.setVisible(orderColors);
 	}
 
 	public void eraseComposite(){
@@ -777,6 +786,11 @@ public class SeriesPersonalizationEditor {
 		colorLabel.setBackground(null);
 		comboDraw.select(0);
 		comboScale.select(0);
+		if(orderTable != null) {
+			orderTable.removeAll();
+			newOrderColorLabel.setBackground(new Color(newColorLabel.getDisplay(), new RGB(255,255,255)));
+		}
+
 	}
 
 	public void refillFieldsSeriesPersonalization(final ChartModel model, final ChartEditor editor, FormToolkit toolkit, final ScrolledForm form){

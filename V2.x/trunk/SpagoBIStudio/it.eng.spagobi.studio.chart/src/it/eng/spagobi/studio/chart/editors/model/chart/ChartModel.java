@@ -1259,7 +1259,7 @@ seriesOrderColorPersonalization = false;
 		if(isSerieLabel==true){
 			components.getSeriesPersonalizationEditor().setVisible(true);
 			SpagoBILogger.infoLog("Enable only allowed series personalization");
-			components.getSeriesPersonalizationEditor().enablePersonalizations(seriesLabelPersonalization, seriesColorPersonalization, seriesDrawPersonalization, seriesScalesPersonalization);
+			components.getSeriesPersonalizationEditor().enablePersonalizations(seriesLabelPersonalization, seriesColorPersonalization, seriesDrawPersonalization, seriesScalesPersonalization, seriesOrderColorPersonalization);
 		}
 		else{
 			components.getSeriesPersonalizationEditor().setVisible(false);
@@ -1288,7 +1288,7 @@ seriesOrderColorPersonalization = false;
 			SpagoBILogger.infoLog("re fill the fields");
 			components.getSeriesPersonalizationEditor().refillFieldsSeriesPersonalization(this, null, toolkit, form);
 			SpagoBILogger.infoLog("Enable personalizations");
-			components.getSeriesPersonalizationEditor().enablePersonalizations(seriesLabelPersonalization, seriesColorPersonalization, seriesDrawPersonalization,seriesScalesPersonalization);
+			components.getSeriesPersonalizationEditor().enablePersonalizations(seriesLabelPersonalization, seriesColorPersonalization, seriesDrawPersonalization,seriesScalesPersonalization, seriesOrderColorPersonalization);
 			components.getSeriesPersonalizationEditor().setVisible(true);
 		}
 		else{

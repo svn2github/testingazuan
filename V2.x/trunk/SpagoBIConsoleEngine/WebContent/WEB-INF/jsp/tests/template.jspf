@@ -421,9 +421,9 @@ Sbi.template = {
 									target: 'new'
 									 , document: 
 								 	 {
-										label: 'testReportParams'
+										label: 'DepartmentList'
 										, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
-										, dynamicParams: [{
+										, dynamicParams: [/*{
 											'P1': 'brandname' 
 											, scope: 'dataset'   
 										},{
@@ -433,20 +433,20 @@ Sbi.template = {
 											 , scope: 'promptable'   
 										},{'P3': 'Param3' 
 										  , scope: 'promptable'   
-										}]	 
+										}*/]	 
 									}
 								}
 							}, { 
 								name: 'crossnav'
 								, hidden: false
-								, tooltip: 'Cross on YYY document (popup)'
+								, tooltip: 'Cross on BARCHART_overlaidbar document (inline)'
 								, config: {
-									target: 'self' 
+									target: 'new' 
 									, document: 
 									{
-										label: 'testReportParams'
+										label: 'BARCHART_overlaidbar'
 										, staticParams: {P3:'paramValue_A' , P5: 'paramValue_B'} 
-										, dynamicParams: [{
+										, dynamicParams: [/*{
 											'P1': 'brandname' 
 											, scope: 'dataset'   
 											},{
@@ -455,7 +455,7 @@ Sbi.template = {
 											},{
 												'P3': 'month'
 												, scope: 'env'
-											}]	 
+											}*/]	 
 									}
 								}
 							},{

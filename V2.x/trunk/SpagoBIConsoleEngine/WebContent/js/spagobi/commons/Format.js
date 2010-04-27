@@ -98,8 +98,8 @@ Sbi.console.commons.Format = function(){
 	    		
     		});
 
-        	if(!v) {
-        		 return format.nullValue;
+        	if(v === undefined || v === null) {
+        		return format.nullValue;
         	}
         	
         	if (typeof v !== 'number') {

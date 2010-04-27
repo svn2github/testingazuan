@@ -128,6 +128,7 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 		
 			var params = {
 				SBI_EXECUTION_ID: <%= executionId %>
+				, LIGHT_NAVIGATOR_DISABLED: 'TRUE'
 			};
 		
 			Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({
@@ -139,14 +140,14 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 				baseUrl: {
 					contextPath: 'SpagoBICommonJEngine'
 				}
-			    , baseParams: {NEW_SESSION: 'TRUE'}
+			    , baseParams: {NEW_SESSION: 'TRUE', LIGHT_NAVIGATOR_DISABLED: 'TRUE'}
 			});
 
 			Sbi.config.spagobiServiceRegistry = new Sbi.service.ServiceRegistry({
 				baseUrl: {
 					contextPath: 'SpagoBI'
 				}
-			    , baseParams: {}
+			    , baseParams: {LIGHT_NAVIGATOR_DISABLED: 'TRUE'}
 			});
 			
 

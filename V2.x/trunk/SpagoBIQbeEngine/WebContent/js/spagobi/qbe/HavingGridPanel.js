@@ -55,7 +55,7 @@ Sbi.qbe.HavingGridPanel = function(config) {
 	
 	this.services = new Array();
 	
-	this.filterIdPrefix = 'having';
+	this.filterIdPrefix = 'having'; 
 	
 	this.idCount = 0;
 	this.initStore(c);

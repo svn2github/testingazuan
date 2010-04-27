@@ -254,12 +254,9 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 				msg.parameters += separator + p + '=' + params[p];
 				separator = '&';
 			}
-			alert('shoot message: ' + msg.label);
 			sendMessage(msg, 'crossnavigation');
 		};
 	    
-		alert('pre shooting: ' + msg.label);
-		
 		this.resolveParameters(options.document, record, this.executionContext, callback);
 		
 	}

@@ -25,6 +25,7 @@ import it.eng.spagobi.studio.chart.utils.SeriePersonalization;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 
 import java.util.Iterator;
+import java.util.Vector;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -73,9 +74,13 @@ public class SeriesPersonalizationEditor {
 	final Label newSerLabel;
 	final Text newSerLabelText;
 	final Label newColorLabel;	
+	final Label newOrderColorLabel;	
 	Composite innerSection; 
+	Composite orderInnerSection; 
 	final Label colorLabel;
+	final Label orderColorLabel;
 	final Button colorButton;	
+	final Button orderColorButton;	
 	final Label drawLabel;
 	final Combo comboDraw;
 	final Label scaleLabel;
@@ -83,6 +88,8 @@ public class SeriesPersonalizationEditor {
 	final Table parsTable;
 	final Text newSerName; 
 	// Field for personalization
+	final Table orderTable;
+
 
 	public final static int NAME=0;
 	public final static int COLOR=1;
@@ -105,7 +112,7 @@ public class SeriesPersonalizationEditor {
 			}
 		});
 		sectionSeries.setText("Series Labels parameters");
-		sectionSeries.setDescription("Set all the drill parameteres");
+		sectionSeries.setDescription("Define series settings");
 
 
 
@@ -167,7 +174,7 @@ public class SeriesPersonalizationEditor {
 
 		final Group group=new Group(sectionClientSeries, SWT.NULL);
 		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+
 		GridLayout g2 = new GridLayout();
 		g2.numColumns =4 ;
 		group.setLayout(g2);
@@ -193,8 +200,8 @@ public class SeriesPersonalizationEditor {
 
 		ChartEditorUtils.addBlanckSpace(group);
 		ChartEditorUtils.addBlanckSpace(group);
-		
-		
+
+
 		Label newNameLabel = new Label(group, SWT.NULL); 
 		newNameLabel.setText("    Serie Name: ");
 		newNameLabel.setToolTipText("New serie's name");
@@ -470,8 +477,8 @@ public class SeriesPersonalizationEditor {
 					comboScale.select(index);
 				}
 
-
 				parsTable.redraw();
+
 				newSerLabel.setEnabled(true);
 				newSerLabelText.setEnabled(true);
 				colorLabel.setEnabled(true);
@@ -509,11 +516,220 @@ public class SeriesPersonalizationEditor {
 		buttonRem.addListener(SWT.Selection, cancelListener);
 		buttonRem.setEnabled(false);
 		group.pack();
+
+
+
+		// SET SERIES_ORDER_COLORS
+
+		Label l = new Label(sectionClientSeries, SWT.NULL);
+		l.setText("");		
+		GridData gd=new GridData(GridData.FILL_BOTH);
+		gd.horizontalSpan=2	;
+		l.setLayoutData(gd);
+		Label label = new Label(sectionClientSeries, SWT.NULL);
+		label.setText(" Section to set series order colors (overrides series settings) ");		
+		label.setLayoutData(gd);
+
+		orderTable = new Table (sectionClientSeries, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL);
+		orderTable.setLinesVisible (true);
+		orderTable.setHeaderVisible (true);
+		orderTable.setLayoutData(gd);
+
+
+		GridData dataOrder = new GridData(SWT.FILL, SWT.FILL, true, true);
+		dataOrder.heightHint = 150;
+		dataOrder.widthHint=500;
+		orderTable.setLayoutData(dataOrder);
+
+		ChartEditorUtils.addBlanckSpace(sectionClientSeries);
+
+
+		String[] titlesOrder = {"       Color      "};
+		for (int i=0; i<titlesOrder.length; i++) {
+			TableColumn column = new TableColumn (orderTable, SWT.NONE);
+			column.setText (titlesOrder [i]);
+		}
+		if(model.getSeriesOrderPersonalizationVector()!=null){
+			for (Iterator iterator = model.getSeriesOrderPersonalizationVector().iterator(); iterator.hasNext();) {
+				RGB rgb = (RGB) iterator.next();
+
+				TableItem item = new TableItem (orderTable, SWT.NONE);
+				item.setText(0, ChartEditor.convertRGBToHexadecimal(rgb	));
+				item.setBackground(new Color(orderTable.getDisplay(),rgb));
+			}
+			for (int i=0; i<titlesOrder.length; i++) {
+				orderTable.getColumn (i).pack ();
+			}	
+		} 
+		orderTable.pack();
+
+
+
+		//******************	Serie NAME *********************
+		final Group orderGroup=new Group(sectionClientSeries, SWT.NULL);
+		orderGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+		GridLayout g3 = new GridLayout();
+		g3.numColumns =2 ;
+		orderGroup.setLayout(g3);
+
+		//Image imageAdd = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_OBJ_ELEMENT);
+		Button orderButtonAdd = new Button(orderGroup, SWT.PUSH);
+		orderButtonAdd.setText("    Add Color   ");
+		//buttonAdd.setImage(imageAdd);
+		orderButtonAdd.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
+		orderButtonAdd.setBackground(new Color(orderGroup.getDisplay(), new RGB( 0,255,255)));
+		orderButtonAdd.setToolTipText("Add Color");
+		orderButtonAdd.pack();
+
+		final Button orderButtonRem = new Button(orderGroup, SWT.PUSH);
+		orderButtonRem.setToolTipText("Remove");
+		//		Image imageRem = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_TOOL_DELETE);
+		orderButtonRem.setText("  Cancel Serie ");
+		orderButtonRem.setBackground(new Color(orderGroup.getDisplay(), new RGB( 0,255,255)));
+		orderButtonRem.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		orderButtonRem.setToolTipText("Remove serie");
+		//		buttonRem.setImage(imageRem);
+		orderButtonRem.pack();
+
+		//		ChartEditorUtils.addBlanckSpace(orderGroup);
+		//		ChartEditorUtils.addBlanckSpace(orderGroup);
+
+
+		newOrderColorLabel=new Label(orderGroup, SWT.NULL);
+
+		orderInnerSection = toolkit.createComposite(orderGroup);
+		orderColorLabel = new Label(orderInnerSection, SWT.BORDER);
+		orderColorButton = new Button(orderInnerSection, SWT.PUSH);
+		orderColorButton.setToolTipText("Color of the serie");
+		//newColorLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		newOrderColorLabel.setText("    Color serie: ");
+		//		newColorLabel.setEnabled(false);
+		newOrderColorLabel.pack();
+
+		final Color orderColor = new org.eclipse.swt.graphics.Color(orderGroup.getDisplay(), new RGB(255,255,255));
+		GridLayout orderColorGd = new GridLayout();
+		orderColorGd.numColumns = 2;
+		orderColorGd.marginHeight = 0;
+		orderColorGd.marginBottom = 0;
+		orderInnerSection.setLayout(orderColorGd);
+		orderColorLabel.setText("          ");
+		orderColorLabel.setBackground(orderColor);
+		orderColorButton.setText("Color...");
+		final Shell orderParentShell = orderGroup.getShell();
+		orderColorButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				final Shell centerShell = new Shell(orderParentShell, SWT.NO_TRIM);
+				centerShell.setLocation(
+						(orderParentShell.getSize().x - ChartEditor.COLORDIALOG_WIDTH) / 2,
+						(orderParentShell.getSize().y - ChartEditor.COLORDIALOG_HEIGHT) / 2);
+				ColorDialog colorDg = new ColorDialog(centerShell,
+						SWT.APPLICATION_MODAL);
+				colorDg.setRGB(colorLabel.getBackground().getRGB());
+				colorDg.setText("Choose a color");
+				RGB rgb = colorDg.open();
+				//final Map<String, SeriePersonalization> parsMap=model.getSeriesPersonalizationHashMap();					
+				if (rgb != null) {
+					// Dispose the old color, create the
+					// new one, and set into the label
+					color.dispose();
+					Color newColor = new Color(orderParentShell.getDisplay(), rgb);
+					orderColorLabel.setBackground(newColor);
+					String newHexadecimal = ChartEditor.convertRGBToHexadecimal(rgb);
+					int selection = orderTable.getSelectionIndex();
+					//get ParSelected
+					TableItem tableItem=orderTable.getItem(selection);
+					String parNameSelected=tableItem.getText(0);
+					//					SeriePersonalization seriePers=model.getSeriesOrderPersonalizationVector()().get(parNameSelected);
+					//					if(seriePers!=null){
+					//						seriePers.setColor(ChartEditor.convertHexadecimalToRGB(newHexadecimal));
+					//						tableItem.setText(COLOR, newHexadecimal);
+					//						tableItem.setBackground(COLOR, new Color(tableItem.getDisplay(),ChartEditor.convertHexadecimalToRGB(newHexadecimal)));
+					//					}
+					centerShell.dispose();
+				}
+			}
+		});			
+
+		// Add Button Listener
+		Listener addOrderListener = new Listener() {
+			public void handleEvent(Event event) {
+				model.getEditor().setIsDirty(true);
+				RGB rgb=orderColorLabel.getBackground().getRGB();
+				String color=ChartEditor.convertRGBToHexadecimal(rgb);
+
+				//parsMap=model.getSeriesPersonalizationHashMap();
+
+				TableItem item = new TableItem (orderTable, SWT.NONE);
+				item.setBackground(new Color(item.getDisplay(),rgb));						
+				item.setText (0, color);
+				model.getSeriesOrderPersonalizationVector().add(rgb);
+				orderTable.redraw();
+
+			}
+		};
+		orderButtonAdd.addListener(SWT.Selection, addOrderListener);
+		orderButtonAdd.pack();
+
+
+		// Add listener that show details of parameter selected
+		orderTable.addListener (SWT.Selection, new Listener () {
+			public void handleEvent (Event e) {
+				model.getEditor().setIsDirty(true);				
+				// get par selected
+				int selection = orderTable.getSelectionIndex();
+				TableItem itemSelected=orderTable.getItem(selection);
+				String colorSerie=itemSelected.getText(0);
+
+				orderTable.redraw();
+
+				orderButtonRem.setEnabled(true);
+			}	
+		});
+
+
+
+		// Add Button Listener
+		Listener cancelOrderListener = new Listener() {
+			public void handleEvent(Event event) {
+				model.getEditor().setIsDirty(true);			
+				int index=orderTable.getSelectionIndex();
+				if( index != -1) {
+					TableItem item=orderTable.getItem(index);
+					String color = item.getText(0);
+					RGB rgb = ChartEditor.convertHexadecimalToRGB(color);
+					colorLabel.setBackground(null);
+
+					Vector<RGB> vect =model.getSeriesOrderPersonalizationVector();
+					if(model.getSeriesOrderPersonalizationVector().contains(rgb)){
+						model.getSeriesOrderPersonalizationVector().remove(rgb);
+					}
+
+					orderTable.remove(index);
+					orderButtonRem.setEnabled(false);
+					//				parsList.pack();			
+				}
+			}
+		};
+		orderButtonRem.addListener(SWT.Selection, cancelOrderListener);
+		orderButtonRem.setEnabled(false);
+		orderGroup.pack();
+
+
+		// disable if not 
+		if(!model.isSeriesOrderColorPersonalization()){
+			orderGroup.setVisible(false);
+		}
+		else orderGroup.setVisible(true);
+
+
+
+
 		sectionClientSeries.pack();
 		sectionSeries.setClient(sectionClientSeries);
 		sectionSeries.setExpanded(true);
 		sectionSeries.setExpanded(false);
-		
+
 
 
 	}

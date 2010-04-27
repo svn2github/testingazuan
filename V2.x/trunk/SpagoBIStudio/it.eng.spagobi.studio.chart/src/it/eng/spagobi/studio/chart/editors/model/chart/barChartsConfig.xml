@@ -122,7 +122,8 @@
 					type='BOOLEAN' defaultValue='true' tooltip='add labels'/>
 			</SECTION>
 		</CONF>
-		<SERIES_COLORS />		
+		<SERIES_COLORS />
+		<SERIES_ORDER_COLORS />		
 	</BARCHART>
 	<BARCHART name='linkablebar'
 		templatePath='it/eng/spagobi/studio/chart/resources/chart/linkablebar.xml'>
@@ -144,6 +145,7 @@
 		</DRILL>
 		<SERIES_COLORS />
 		<SERIES_LABELS />
+		<SERIES_ORDER_COLORS />				
 	</BARCHART>
 	<BARCHART name='stacked_bar'
 		templatePath='it/eng/spagobi/studio/chart/resources/chart/stacked_bar.xml'>
@@ -176,6 +178,7 @@
 		</DRILL>
 		<SERIES_COLORS />
 		<SERIES_LABELS />
+		<SERIES_ORDER_COLORS />				
 	</BARCHART>
 	<BARCHART name='stacked_bar_group'
 		templatePath='it/eng/spagobi/studio/chart/resources/chart/stacked_bar_group.xml'>
@@ -198,6 +201,7 @@
 		</CONF>
 		<SERIES_COLORS />
 		<SERIES_LABELS />
+		<SERIES_ORDER_COLORS />		
 	</BARCHART>
 	<BARCHART name='overlaid_barline'
 		templatePath='it/eng/spagobi/studio/chart/resources/chart/overlaid_barline.xml'>

@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
+import java.util.Vector;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -101,8 +102,10 @@ public class ChartModel {
 
 	// Series COlors and series Labels Map:    SERIE => COLOR  and SERIE => LABEL
 	HashMap<String, SeriePersonalization> seriesPersonalizationHashMap;
+	Vector<RGB> seriesOrderPersonalizationVector;
 	boolean seriesLabelPersonalization=false;
 	boolean seriesColorPersonalization=false;
+	boolean seriesOrderColorPersonalization=false;
 	boolean seriesDrawPersonalization=false;
 	boolean seriesScalesPersonalization=false;
 
@@ -322,10 +325,11 @@ public class ChartModel {
 		String colorPersonalization="";
 		String labelPersonalization="";
 		String scalesPersonalization="";
+		String orderColorPersonalization="";
 
 		SpagoBILogger.infoLog("Series personalization: labels, colors, draws");		
 		if(seriesDrawPersonalization){
-			drawPersonalization="<	 ";
+			drawPersonalization="<SERIES_DRAW ";
 			for (Iterator iterator = seriesPersonalizationHashMap.keySet().iterator(); iterator.hasNext();) {
 				String serName = (String) iterator.next();
 				SeriePersonalization serPers=seriesPersonalizationHashMap.get(serName);
@@ -360,6 +364,18 @@ public class ChartModel {
 			colorPersonalization+=" />\n";
 		}
 
+		String root = "a_";
+		int i = 0;
+		if(seriesOrderColorPersonalization){
+			orderColorPersonalization="<SERIES_ORDER_COLORS ";
+			for (Iterator iterator = seriesOrderPersonalizationVector.iterator(); iterator.hasNext();) {
+				RGB color = (RGB) iterator.next();
+				orderColorPersonalization+=" "+root+Integer.valueOf(i).toString()+"=\""+ChartEditor.convertRGBToHexadecimal(color)+"\" ";
+				i++;
+			}
+			orderColorPersonalization+=" />\n";
+		}
+
 		if(seriesScalesPersonalization){
 			scalesPersonalization="<SERIES_SCALES";
 			for (Iterator iterator = seriesPersonalizationHashMap.keySet().iterator(); iterator.hasNext();) {
@@ -370,13 +386,11 @@ public class ChartModel {
 			scalesPersonalization+=" />\n";
 		}
 
-
 		toReturn+=colorPersonalization;
 		toReturn+=drawPersonalization;
 		toReturn+=labelPersonalization;
 		toReturn+=scalesPersonalization;
-
-
+		toReturn+=orderColorPersonalization;
 
 		return toReturn;
 	}
@@ -742,6 +756,39 @@ public class ChartModel {
 		String upperCaseNameSl=getType().toUpperCase();
 		String upperCaseNamePl=upperCaseNameSl+"S";
 		seriesPersonalizationHashMap=new HashMap<String, SeriePersonalization>();
+		seriesOrderPersonalizationVector = new Vector<RGB>();
+
+		// SERIES ORDE COLOR
+		Element orderColorsThis = (Element)thisDocument.selectSingleNode("//"+upperCaseNameSl+"/SERIES_ORDER_COLORS");
+		ChartEditorUtils.print("", orderColorsThis);
+		if(orderColorsThis!=null){
+			for (Iterator iterator = orderColorsThis.attributeIterator(); iterator.hasNext();) {
+				DefaultAttribute att = (DefaultAttribute) iterator.next();
+				//String name=att.getName();
+				String value=null;
+				if(att.getData()!=null){
+					value=att.getData().toString();
+					// add seriePers if not present
+					RGB rgb=null;
+					try{
+						rgb=ChartEditor.convertHexadecimalToRGB(value);
+					}
+					catch (Exception e) {
+						continue;
+					}
+
+					seriesOrderPersonalizationVector.add(rgb);
+				}
+				//					else{
+				//						SeriePersonalization serPers = seriesPersonalizationHashMap.get(name);
+				//						serPers.setColor(ChartEditor.convertHexadecimalToRGB(value));
+				//					}
+
+			}
+
+		}
+
+
 
 		// COLOR
 		Element colorsThis = (Element)thisDocument.selectSingleNode("//"+upperCaseNameSl+"/SERIES_COLORS");
@@ -776,6 +823,7 @@ public class ChartModel {
 
 			}
 		}
+
 
 		// LABEL
 		Element labelThis = (Element)thisDocument.selectSingleNode("//"+upperCaseNameSl+"/SERIES_LABELS");
@@ -1002,7 +1050,7 @@ public class ChartModel {
 			List configuredParameters = section.selectNodes("//"+type.toString()+"[@name='"+subType+"']/CONF/SECTION/PARAMETER");
 			for (int j = 0; j < configuredParameters.size(); j++) {
 				Node aConfiguredParameter = (Node) configuredParameters.get(j);
-//				System.out.println(aConfiguredParameter.asXML());
+				//				System.out.println(aConfiguredParameter.asXML());
 				String namePar = aConfiguredParameter.valueOf("@name");
 				String description = aConfiguredParameter.valueOf("@description");
 				String typeStr = aConfiguredParameter.valueOf("@type");
@@ -1134,7 +1182,8 @@ public class ChartModel {
 		seriesDrawPersonalization=false;
 		seriesLabelPersonalization=false;
 		seriesScalesPersonalization=false;
-
+seriesOrderColorPersonalization = false;
+		
 		// Get the node configuration
 		Node specificConfig = configDocument.selectSingleNode("//"+upperCaseNamePl+"/"+upperCaseNameSl+"[@name='"+chartSubType.trim()+"']");
 
@@ -1156,6 +1205,11 @@ public class ChartModel {
 		Node seriesScalesNode = specificConfig.selectSingleNode("//"+upperCaseNameSl+"[@name='"+chartSubType+"']/SERIES_SCALES");
 		if(seriesScalesNode!=null){
 			seriesScalesPersonalization=true;
+		}
+
+		Node seriesOrderColorsNode = specificConfig.selectSingleNode("//"+upperCaseNameSl+"[@name='"+chartSubType+"']/SERIES_ORDER_COLORS");
+		if(seriesOrderColorsNode!=null){
+			seriesOrderColorPersonalization=true;
 		}
 
 
@@ -1428,6 +1482,24 @@ public class ChartModel {
 
 	public void setSdkDataSetId(Integer sdkDataSetId) {
 		this.sdkDataSetId = sdkDataSetId;
+	}
+
+	public Vector<RGB> getSeriesOrderPersonalizationVector() {
+		return seriesOrderPersonalizationVector;
+	}
+
+	public void setSeriesOrderPersonalizationVector(
+			Vector<RGB> seriesOrderPersonalizationVector) {
+		this.seriesOrderPersonalizationVector = seriesOrderPersonalizationVector;
+	}
+
+	public boolean isSeriesOrderColorPersonalization() {
+		return seriesOrderColorPersonalization;
+	}
+
+	public void setSeriesOrderColorPersonalization(
+			boolean seriesOrderColorPersonalization) {
+		this.seriesOrderColorPersonalization = seriesOrderColorPersonalization;
 	}
 
 

@@ -1,39 +1,51 @@
-/*
-Ext.override(Ext.data.JsonReader, {
-	readRecords : function(o){
-    
-		alert('read records: ' + o.toSource());
+/* =============================================================================
+ * ...
+============================================================================= */
+Ext.override(Ext.grid.GridView, {
 	
-	    this.jsonData = o;
-	    if(o.metaData){
-	        this.onMetaChange(o.metaData);
-	    }
-	    var s = this.meta, Record = this.recordType,
-	        f = Record.prototype.fields, fi = f.items, fl = f.length, v;
-	
-	    var root = this.getRoot(o), c = root.length, totalRecords = c, success = true;
-	    if(s.totalProperty){
-	        v = parseInt(this.getTotal(o), 10);
-	        if(!isNaN(v)){
-	            totalRecords = v;
-	        }
-	    }
-	    if(s.successProperty){
-	        v = this.getSuccess(o);
-	        if(v === false || v === 'false'){
-	            success = false;
-	        }
-	    }
-	
-	    
-	    return {
-	        success : success,
-	        records : this.extractData(root, true), 
-	        totalRecords : totalRecords
-	    };
+
+	init : function(grid){
+    	this.grid = grid;
+
+    	this.templates = this.templates || {};
+    	this.templates.hcell = new Ext.Template(
+                '<td class="x-grid3-hd x-grid3-cell x-grid3-td-{id} {css}" style="{style}"><div {tooltip} {attr} class="x-grid3-hd-inner x-grid3-hd-{id} x-grid3-hd-{cls}" unselectable="on" style="{istyle}">', this.grid.enableHdMenu ? '<a class="x-grid3-hd-btn" href="#"></a>' : '',
+                '{value}<img class="x-grid3-sort-icon" src="', Ext.BLANK_IMAGE_URL, '" />',
+                '</div></td>'
+        );
+    	
+    	this.initTemplates();
+    	this.initData(grid.store, grid.colModel);
+    	this.initUI(grid);
 	}
-}); 
-*/
+	
+	// private
+   , renderHeaders : function(){
+        var cm = this.cm, 
+            ts = this.templates,
+            ct = ts.hcell,
+            cb = [], 
+            p = {},
+            len = cm.getColumnCount(),
+            last = len - 1;
+            
+        for(var i = 0; i < len; i++){
+            p.id = cm.getColumnId(i);
+            p.cls = cm.getColumnById(p.id).cls || '';
+            p.value = cm.getColumnHeader(i) || '';
+            p.style = this.getColumnStyle(i, true);
+            p.tooltip = this.getColumnTooltip(i);
+            p.css = i === 0 ? 'x-grid3-cell-first ' : (i == last ? 'x-grid3-cell-last ' : '');
+            if(cm.config[i].align == 'right'){
+                p.istyle = 'padding-right:16px';
+            } else {
+                delete p.istyle;
+            }
+            cb[cb.length] = ct.apply(p);
+        }
+        return ts.header.apply({cells: cb.join(''), tstyle:'width:'+this.getTotalWidth()+';'});
+    }
+});
 
 /* =============================================================================
  * Force remote loading on refresh button click if the 

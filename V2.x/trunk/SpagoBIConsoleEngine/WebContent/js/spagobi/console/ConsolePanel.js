@@ -108,6 +108,23 @@ Sbi.console.ConsolePanel = function(config) {
 
 	// constructor
 	Sbi.console.ConsolePanel.superclass.constructor.call(this, c);
+	
+	this.summaryPanel.on('destroy', function() {
+		alert('Time to die (destroy)');
+	}, this);
+	
+	this.on('beforedestroy', function() {
+		alert('Time to die (beforedestroy)');
+	}, this);
+	
+	this.on('beforeclose', function() {
+		alert('Time to die (beforeclose)');
+	}, this);
+	
+	this.on('deactivate', function() {
+		alert('Time to die (deactivate )');
+	}, this);
+	 
 };
 
 Ext.extend(Sbi.console.ConsolePanel, Ext.Panel, {

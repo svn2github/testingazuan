@@ -124,9 +124,18 @@ public class GetConsoleDataAction extends AbstractConsoleEngineAction {
 	private IDataSet getDataSet(String label) {
 		IDataSet dataSet;
 		DataSetServiceProxy datasetProxy;
+		ConsoleEngineInstance engineInstance;
 		
-		datasetProxy = getConsoleEngineInstance().getDataSetServiceProxy();
-		dataSet =  datasetProxy.getDataSetByLabel(label);
+		engineInstance = getConsoleEngineInstance();
+		dataSet = engineInstance.getDataSet(label);
+		if (dataSet == null) {
+			logger.debug("Dataset with label " + label + " was not already loaded. Invoking DataSetService....");
+			datasetProxy = engineInstance.getDataSetServiceProxy();
+			dataSet = datasetProxy.getDataSetByLabel(label);
+			engineInstance.setDataSet(label, dataSet);
+		} else {
+			logger.debug("Dataset with label " + label + " was already loaded. Returning it without calling DataSetService.");
+		}
 		
 		return dataSet;
 	}

@@ -47,7 +47,7 @@ public class ConsoleEngineInstance extends AbstractEngineInstance {
 	private String[] lstEnvVariables = {"SBI_EXECUTION_ID", "SBICONTEXT", "SBI_COUNTRY", "SBI_LANGUAGE", "SBI_SPAGO_CONTROLLER",  "SBI_EXECUTION_ROLE", "SBI_HOST", 
 										"DOCUMENT_ID", "isFromCross", "country", "language",  "user_id" };
 
-	
+	private Map<String, IDataSet> datasets = new HashMap<String, IDataSet>();
 	
 	private JSONObject template;
 	
@@ -86,6 +86,14 @@ public class ConsoleEngineInstance extends AbstractEngineInstance {
 	
 	public IDataSet getDataSet() {
 		return (IDataSet)this.getEnv().get(EngineConstants.ENV_DATASET);
+	}
+	
+	public IDataSet getDataSet(String label) {
+		return this.datasets.get(label);
+	}
+	
+	public void setDataSet(String label, IDataSet dataset) {
+		this.datasets.put(label, dataset);
 	}
 	
 	public Locale getLocale() {

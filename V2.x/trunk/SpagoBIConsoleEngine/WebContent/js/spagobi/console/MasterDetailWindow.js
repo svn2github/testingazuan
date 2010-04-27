@@ -216,7 +216,7 @@ Ext.extend(Sbi.console.MasterDetailWindow, Ext.Window, {
 	       	var detailValue = record.get(this.detailField);
 	       	
 	       	if(!detailValue) return;
-	       	
+	       	detailValue = detailValue.replace(/</g, '\n <');
 	       	this.detailText.setValue(detailValue);
 	       	//this.detailText.setValue(Ext.util.Format.htmlEncode(detailValue));
 		}, this);

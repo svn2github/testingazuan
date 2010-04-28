@@ -107,6 +107,12 @@
         background-image:url('../../../img/analiticalmodel/browser/document_acc.png')!important;
     }
     
+     .list-view .document-item-icon .CONSOLE-icon {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/document_console.gif')!important;
+    }
+    
     .list-view #icon {
     	height:96px;	
     	width:96px;	

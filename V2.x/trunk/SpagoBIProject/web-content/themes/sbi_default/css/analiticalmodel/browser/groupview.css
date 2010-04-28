@@ -137,6 +137,12 @@
 		!important;
 }
 
+.group-view .document-item-icon .CONSOLE-icon {
+   	width:96px;
+    height:96px;
+    background-image:url('../../../img/analiticalmodel/browser/document_console.gif')!important;
+}
+
 .group-view  #icon {
 	width: 96px;
 	height: 96px;

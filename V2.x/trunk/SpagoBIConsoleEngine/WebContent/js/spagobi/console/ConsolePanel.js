@@ -108,7 +108,7 @@ Sbi.console.ConsolePanel = function(config) {
 
 	// constructor
 	Sbi.console.ConsolePanel.superclass.constructor.call(this, c);
-	
+	/*
 	this.summaryPanel.on('destroy', function() {
 		alert('Time to die (destroy)');
 	}, this);
@@ -124,6 +124,7 @@ Sbi.console.ConsolePanel = function(config) {
 	this.on('deactivate', function() {
 		alert('Time to die (deactivate )');
 	}, this);
+	*/
 	 
 };
 

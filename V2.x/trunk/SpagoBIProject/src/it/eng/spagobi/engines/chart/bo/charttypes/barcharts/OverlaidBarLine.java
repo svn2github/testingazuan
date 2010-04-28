@@ -478,11 +478,24 @@ public class OverlaidBarLine extends LinkableBar {
 				barRenderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
 				barRenderer.setBaseItemLabelPaint(styleValueLabels.getColor());
 
-				barRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
-
-				barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+//				barRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+//						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+//
+//				barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+//						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+			
+				if (valueLabelsPosition.equalsIgnoreCase("inside")) {
+					barRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+							ItemLabelAnchor.CENTER, TextAnchor.BASELINE_LEFT));
+					barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+							ItemLabelAnchor.CENTER, TextAnchor.BASELINE_LEFT));
+				} else {
+					barRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+							ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+					barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+							ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+				}
+			
 			}
 			else if(additionalLabels){
 				barRenderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
@@ -510,12 +523,26 @@ public class OverlaidBarLine extends LinkableBar {
 				barRenderer2.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
 				barRenderer2.setBaseItemLabelPaint(styleValueLabels.getColor());
 
-				barRenderer2.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+//				barRenderer2.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+//						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+//
+//				barRenderer2.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+//						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
 
-				barRenderer2.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+				if (valueLabelsPosition.equalsIgnoreCase("inside")) {
+					barRenderer2.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+							ItemLabelAnchor.CENTER, TextAnchor.BASELINE_LEFT));
+					barRenderer2.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+							ItemLabelAnchor.CENTER, TextAnchor.BASELINE_LEFT));
+				} else {
+					barRenderer2.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+							ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+					barRenderer2.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+							ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+				}
 
+				
+				
 			}
 			else if(additionalLabels){
 				barRenderer2.setBaseItemLabelGenerator(generator);

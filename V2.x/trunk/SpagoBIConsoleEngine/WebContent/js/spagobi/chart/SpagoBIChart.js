@@ -108,7 +108,6 @@ Ext.extend(Sbi.chart.SpagoBIChart, Ext.FlashComponent, {
 	, disableCaching: Ext.isIE || Ext.isOpera
     , disableCacheParam: '_dc'
 	
-	, CHART_BASE_URL: '/SpagoBIConsoleEngine/swf/spagobichart/'
 	
 	
     // -- public methods -------------------------------------------------------------------
@@ -121,7 +120,7 @@ Ext.extend(Sbi.chart.SpagoBIChart, Ext.FlashComponent, {
 	, initComponent : function(){
 		Sbi.chart.SpagoBIChart.superclass.initComponent.call(this);
     	if(!this.url){
-        	this.url = this.CHART_BASE_URL + this.CHART_SWF;
+        	this.url = Sbi.chart.SpagoBIChart.CHART_BASE_URL + this.CHART_SWF;
     	}
     	if(this.disableCaching){
             this.url = Ext.urlAppend(this.url, String.format('{0}={1}', this.disableCacheParam, new Date().getTime()));
@@ -214,6 +213,8 @@ Ext.extend(Sbi.chart.SpagoBIChart, Ext.FlashComponent, {
 	}
     
 });
+
+Sbi.chart.SpagoBIChart.CHART_BASE_URL =  '/SpagoBIConsoleEngine/swf/spagobichart/';
 
 
 Sbi.chart.Multileds = Ext.extend(Sbi.chart.SpagoBIChart, {

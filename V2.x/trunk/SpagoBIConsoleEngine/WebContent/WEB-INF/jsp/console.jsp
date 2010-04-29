@@ -71,6 +71,7 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 	// used in remote ServiceRegistry
     spagobiServerHost = request.getParameter(SpagoBIConstants.SBI_HOST);
     spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
+    spagobiContext = spagobiContext.substring(1);
     spagobiSpagoController = request.getParameter(SpagoBIConstants.SBI_SPAGO_CONTROLLER);
     
  	// used in local ServiceRegistry
@@ -102,7 +103,7 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 		<%@include file="commons/includeSbiConsoleJS.jspf"%>
 		
 		<!-- Active TEST  -->
-		<%--<%@include file="tests/template.jspf"%>--%>
+		<%@include file="tests/template.jspf"%>
 		<!-- Active TEST  -->
 		
 		<%-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) --
@@ -120,6 +121,10 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 			
 			Sbi.config = {};
 
+			Sbi.chart.SpagoBIChart.CHART_BASE_URL =  '/<%= engineContext %>/swf/spagobichart/';
+			Sbi.chart.OpenFlashChart.CHART_URL = '/<%= engineContext %>/swf/openflashchart/open-flash-chart.swf';
+			Sbi.chart.FusionFreeChart.CHART_URL = '/<%= engineContext %>/swf/fusionchartfree/FCF_Column3D.swf';
+			
 			var url = {
 				host: '<%= engineServerHost %>'
 				, port: '<%= enginePort %>'
@@ -143,9 +148,11 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 			    , baseParams: {NEW_SESSION: 'TRUE', LIGHT_NAVIGATOR_DISABLED: 'TRUE'}
 			});
 
+
+			
 			Sbi.config.spagobiServiceRegistry = new Sbi.service.ServiceRegistry({
 				baseUrl: {
-					contextPath: 'SpagoBI'
+					contextPath: '<%= spagobiContext %>'
 				}
 			    , baseParams: {LIGHT_NAVIGATOR_DISABLED: 'TRUE'}
 			});

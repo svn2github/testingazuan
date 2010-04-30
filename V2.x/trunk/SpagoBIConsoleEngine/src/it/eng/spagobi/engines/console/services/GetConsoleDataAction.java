@@ -128,7 +128,7 @@ public class GetConsoleDataAction extends AbstractConsoleEngineAction {
 		
 		engineInstance = getConsoleEngineInstance();
 		dataSet = engineInstance.getDataSet(label);
-		if (dataSet == null) {
+		if (dataSet == null || dataSet.hasDataStoreTransformer()) {
 			logger.debug("Dataset with label " + label + " was not already loaded. Invoking DataSetService....");
 			datasetProxy = engineInstance.getDataSetServiceProxy();
 			dataSet = datasetProxy.getDataSetByLabel(label);

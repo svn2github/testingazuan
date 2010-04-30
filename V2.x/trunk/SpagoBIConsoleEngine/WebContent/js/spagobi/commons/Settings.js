@@ -1,21 +1,23 @@
 Ext.ns("Sbi.settings");
 
 Sbi.settings.console = {
-  chartWidget: {
-   height: 130
-  }
+  
+		
+	summaryPanel: {
+		height: 300
+	}		
+		
+	, chartWidget: {
+		height: 130
+	}
 
-  , widgetPanel: {
-   columnNumber:3
-  }
-  
-  , summaryPanel: {
-	  height: 300
-  }
-  
-  , gridPanel: {
-	   limit: 15
-	  }
+	, widgetPanel: {
+		columnNumber:3
+	}
+    
+	, gridPanel: {
+		limit: 15
+	}
 };
 
 Sbi.settings.console.masterDetailWindow = {

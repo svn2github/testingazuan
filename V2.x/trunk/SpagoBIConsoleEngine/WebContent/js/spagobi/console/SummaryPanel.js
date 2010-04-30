@@ -66,26 +66,24 @@ Sbi.console.SummaryPanel = function(config) {
 		var c = Ext.apply(defaultSettings, config || {});
 		Ext.apply(this, c);
 		
-		var x, y, z, widgetPanel;
-		var items = [];
+		
+		var widgetPanelConfig = config.layoutManagerConfig || {};
+		widgetPanelConfig.storeManager = this.storeManager;
+		widgetPanelConfig.items = [];
+		
 		for(var i = 0, l = config.charts.length ; i < l; i++) {
-			items.push(new Sbi.console.ChartWidget(config.charts[i]));
+			widgetPanelConfig.items.push(new Sbi.console.ChartWidget(config.charts[i]));
 		}
 		
-		widgetPanel = new Sbi.console.WidgetPanel({
-			storeManager: this.storeManager
-			, items: items
-		});
+		var widgetPanel = new Sbi.console.WidgetPanel(widgetPanelConfig);
 		
 		c = Ext.apply(c, {  	
 			items: [widgetPanel]
-			//html: 'Io sono il summary panel'
 		});
 
 		// constructor
 		Sbi.console.SummaryPanel.superclass.constructor.call(this, c);
-    
-		//this.addEvents();
+		
 };
 
 Ext.extend(Sbi.console.SummaryPanel, Ext.Panel, {

@@ -105,8 +105,8 @@ Ext.extend(Sbi.console.DetailPanel, Ext.Panel, {
 		  var conf = pagesConfig[i];
 		  conf.executionContext = pagesConfig.executionContext; 
 		  conf.storeManager = pagesConfig.storeManager;
-			detailPage = new Sbi.console.DetailPage(pagesConfig[i]);
-			this.pages.push(detailPage);
+		  detailPage = new Sbi.console.DetailPage(conf);
+		  this.pages.push(detailPage);
 		}
 	}
 

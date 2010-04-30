@@ -66,8 +66,8 @@ Sbi.console.ConsolePanel = function(config) {
 	var summaryPanelConfig = c.summaryPanel;
 	delete c.summaryPanel;
 	
-	var detailPanelConfig = c.detailPanel || {};
-	detailPanelConfig.executionContext = c.executionContext; 
+	var detailPanelConfig = c.detailPanel;
+	if(detailPanelConfig) detailPanelConfig.executionContext = c.executionContext; 
 	delete c.detailPanel;
 		
 	Ext.apply(this, c);
@@ -79,53 +79,54 @@ Sbi.console.ConsolePanel = function(config) {
 	});
 	
 	
+	
 	this.initStoreManager(datasetsConfig);
+	
+	var items = new Array();	
+	
+	
 	if (summaryPanelConfig !== undefined){
 		summaryPanelConfig.storeManager = this.storeManager;
 		this.initSummaryPanel(summaryPanelConfig);
-	}else{
-		this.summaryPanel = {};
+		items.push(this.summaryPanel);
 	}
-	detailPanelConfig.storeManager = this.storeManager;
-	this.initDetailPanel(detailPanelConfig);
+	
+	if (detailPanelConfig !== undefined){
+		detailPanelConfig.storeManager = this.storeManager;
+		this.initDetailPanel(detailPanelConfig);
+		items.push(this.detailPanel);
+	} 
+	
+	if(this.detailPanel === null) {
+		if(!this.summaryPanel === null) {
+			items.push({region: 'center', html: 'The console is empty. Please check the template.'});
+		} else {
+			this.summaryPanel.region = 'center';
+		}
+	}
+	
+	// just for test export function
+	items.push({
+		title: 'Export panel'
+		, hidden: true
+		,region: 'south'
+		, tools: [{
+			id:'gear',
+			qtip: LN('export as text'),
+				hidden: false,
+				handler: this.exportConsole,
+				scope: this
+			}]
+		, html: 'Click on the button up here to export console document'
+	});
 	
 	c = Ext.apply(c, {  	
-		items: [this.summaryPanel, this.detailPanel, {
-			title: 'Export panel'
-			, hidden: true
-			,region: 'south'
-				, tools: [{
-					id:'gear',
-					qtip: LN('export as text'),
-					hidden: false,
-					handler: this.exportConsole,
-					scope: this
-				}]
-				, html: 'Click on the button up here to export console document'
-		}]
+		items: items
 	});
 	
 
 	// constructor
 	Sbi.console.ConsolePanel.superclass.constructor.call(this, c);
-	/*
-	this.summaryPanel.on('destroy', function() {
-		alert('Time to die (destroy)');
-	}, this);
-	
-	this.on('beforedestroy', function() {
-		alert('Time to die (beforedestroy)');
-	}, this);
-	
-	this.on('beforeclose', function() {
-		alert('Time to die (beforeclose)');
-	}, this);
-	
-	this.on('deactivate', function() {
-		alert('Time to die (deactivate )');
-	}, this);
-	*/
-	 
 };
 
 Ext.extend(Sbi.console.ConsolePanel, Ext.Panel, {

@@ -25,13 +25,18 @@ Sbi.template = {
 	// --------------------------------------------------------------------------------
 	// SUMMARY PANEL
 	// --------------------------------------------------------------------------------
+	
 	, summaryPanel: {
     
 	    // layout properties
 	    collassable: true
 	    , collapsed: false
 	    , hidden: false
-    
+    	, layoutManagerConfig: {
+			layout:'column'
+			, columnNumber: 4
+			, columnWidths: [.2, .2, .2, .4]
+		}
 
     	// ogni dataset può avere più grafici associati (1..N)
     	, charts: [
@@ -120,10 +125,12 @@ Sbi.template = {
     	]
     
 	}	
-
+	
+	
 	//--------------------------------------------------------------------------------
 	// DETAIL PANEL
 	// -------------------------------------------------------------------------------
+	
 	, detailPanel: {
     	pages: [
     		
@@ -155,11 +162,17 @@ Sbi.template = {
 			}
 	
             , table: {
-	            dataset: 'testConsole'
-		      , columnDefaultConfig: {
-		    	  width: 100
-		      }
-	          , columnId: 'ID' //the column ID of the single row
+		        dataset: 'testConsole'
+			    , columnDefaultConfig: {
+			    	width: 100
+			    }
+		    	, columnConfig: {
+			    	'productName': {
+		    			width: 200
+		    			, header: 'Nome del prodotto'
+			    	}
+			    }
+	          	, columnId: 'ID' //the column ID of the single row
 	            // -- Filter bar -----------------------------------------------------------------
 	    	    , filterBar: {
 	    	    	type: 'custom'  

@@ -672,9 +672,10 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 			}
 		}
 		
-		for(i = 0; i < tmpMeta.fields.length; i++) {			
-			var t = Ext.apply({}, this.columnDefaultConfig);
-		    tmpMeta.fields[i] = Ext.apply(t, tmpMeta.fields[i]);
+		for(i = 0; i < tmpMeta.fields.length; i++) {	
+		
+			var t = Ext.apply({}, this.columnConfig[tmpMeta.fields[i].header] || {},  this.columnDefaultConfig);
+		    tmpMeta.fields[i] = Ext.apply(tmpMeta.fields[i], t);
 			if(tmpMeta.fields[i].type) {
 				var t = tmpMeta.fields[i].type;	
 				tmpMeta.fields[i].renderer  =  Sbi.locale.formatters[t];			   

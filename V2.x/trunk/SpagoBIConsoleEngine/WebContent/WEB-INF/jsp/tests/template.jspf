@@ -75,6 +75,14 @@ Sbi.template = {
             	, styles: {
         			 border: {color: 'black', size: '0'}
         			, padding: {top: 28, right: 8, bottom: 3, left: 8}
+        			, plot: {
+        				//width: 2200
+        				//, height: 2400
+        				widthScale: .5
+        				, heightScale: 1
+        				, valign: 'bottom'
+        				, halign: 'right'
+        			}
         			, gauge: {
         				padding: {right: 2, left: 2},
         				colors: {firstInterval: "green", secondInterval: "orange", thirdInterval: "red"},

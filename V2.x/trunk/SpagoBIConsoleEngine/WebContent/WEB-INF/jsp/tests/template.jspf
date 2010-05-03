@@ -109,6 +109,14 @@ Sbi.template = {
 		        	title: { text: 'Liveline', visible: true,  align: "center", valign: "top", font: {name: "serif", color: "black", size: 10, style: "bold"} }
 					, border: {color: "black", size: "0"}
 					, padding: {top: 15, right: 50, bottom: 0, left: 50}
+					, plot: {
+        				//width: 2200
+        				//, height: 2400
+        				widthScale: .5
+        				, heightScale: .5
+        				, valign: 'bottom'
+        				, halign: 'center'
+        			}
 					, legend: {
 						text: 'Lege.'
 						, active: false
@@ -122,13 +130,23 @@ Sbi.template = {
             , widgetConfig: {
                	type: 'chart.sbi.speedometer'
                	, title:'Speedometer'
-               	, paramWidth: 100
-            	, paramHeight: 100
             	, minValue: 0
             	, maxValue: 100
             	, lowValue: 33
             	, highValue: 66
             	, field: 'EffortIndex'
+            	, styles: {
+					/*
+        			plot: {
+    					//width: 2200
+    					//, height: 2400
+    					widthScale: .5
+    					, heightScale: .5
+    					, valign: 'bottom'
+    					, halign: 'center'
+    				}
+					*/
+        		}
             }
         }
     	]

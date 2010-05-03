@@ -347,9 +347,7 @@ Sbi.chart.Speedometer = Ext.extend(Sbi.chart.SpagoBIChart, {
 	
 	CHART_SWF: 'speedometer.swf'
 	, CHART_DEFAULT_CONFIG: {
-		paramWidth: 100
-		, paramHeight: 100
-		, minValue: 0
+		minValue: 0
 		, maxValue: 100
 		, lowValue: 33
 		, highValue: 66
@@ -361,8 +359,8 @@ Sbi.chart.Speedometer = Ext.extend(Sbi.chart.SpagoBIChart, {
 	}
 
 	, onRender : function(ct, position) {
-		this.flashVars.paramWidth = ct.getWidth();
-		this.flashVars.paramHeight = ct.getHeight();
+		//this.flashVars.paramWidth = ct.getWidth();
+		//this.flashVars.paramHeight = ct.getHeight();
 		Sbi.chart.SpagoBIChart.superclass.onRender.call(this, ct, position);
 	}
 	

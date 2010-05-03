@@ -291,3 +291,13 @@ Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.title'] = 'Driver analitici d
 Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.emptytext'] = 'Questo documento non ha driver analitici';
 Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.headers.label'] = 'Intestazione';
 Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.parameterreference'] = 'Driver analitico';
+
+
+//===================================================================
+//EXTERNAL SERVICES
+//===================================================================
+Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.title'] = 'Servizio esterno invocato correttamente';
+Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.serviceresponse'] = 'Il servizio esterno ha risposto con questo messaggio:';
+Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.errors.title'] = 'Errore';
+Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.errors.missingcolumns'] = 'Il servizio richiesto necessita le seguenti colonne:';
+

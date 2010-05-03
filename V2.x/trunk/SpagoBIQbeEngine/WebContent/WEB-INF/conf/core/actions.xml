@@ -136,6 +136,12 @@
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
+	
+	<ACTION name="INVOKE_EXTERNAL_SERVICE_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.InvokeExternalServiceAction"  
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
 
 </ACTIONS>
 

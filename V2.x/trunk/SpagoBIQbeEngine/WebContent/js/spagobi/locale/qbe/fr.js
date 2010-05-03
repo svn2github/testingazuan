@@ -204,3 +204,13 @@ Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.name.asc']                 = 'cr
 Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.name.desc']                = 'd\u00E9croissant';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.name.none']                = 'auncun';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.title']                             = 'S\u00E9lectionner des champs';
+
+
+
+//===================================================================
+//EXTERNAL SERVICES
+//===================================================================
+Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.title'] = 'The service was properly invoked';
+Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.serviceresponse'] = 'The service has returned this message:';
+Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.errors.title'] = 'Error';
+Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.errors.missingcolumns'] = 'The required service needs the following columns:';

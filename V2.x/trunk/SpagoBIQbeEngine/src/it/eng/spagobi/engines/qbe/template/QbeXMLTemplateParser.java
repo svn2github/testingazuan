@@ -21,7 +21,9 @@
 package it.eng.spagobi.engines.qbe.template;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
@@ -29,6 +31,7 @@ import org.json.JSONObject;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.utilities.StringUtilities;
+import it.eng.spagobi.engines.qbe.externalservices.ExternalServiceConfiguration;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 
@@ -49,6 +52,12 @@ public class QbeXMLTemplateParser implements IQbeTemplateParser{
 	public static String TAG_FUNCTIONALITIES = "FUNCTIONALITIES";
 	public static String TAG_QUERY = "QUERY";
 	public static String TAG_FORM = "FORM";
+	public static String TAG_EXTERNAL_SERVICES = "EXTERNAL_SERVICES";
+	public static String TAG_EXTERNAL_SERVICE = "EXTERNAL_SERVICE";
+	public static String PROP_SERVICE_DESCRIPTION = "description";
+	public static String PROP_SERVICE_ENDPOINT = "endpoint";
+	public static String PROP_SERVICE_OPERATION = "operation";
+	public static String PROP_SERVICE_REQUIREDCOLUMNS = "requiredcolumns";
 	
 
 	/** Logger component. */
@@ -195,6 +204,57 @@ public class QbeXMLTemplateParser implements IQbeTemplateParser{
 				DataMartModelAccessModality datamartModelAccessModality = new DataMartModelAccessModality(compositeModalitySB);
 				qbeTemplate.setDatamartModelAccessModality(datamartModelAccessModality);
 			}
+			
+			if(template.containsAttribute(TAG_EXTERNAL_SERVICES)) {
+				SourceBean extServiceConfig = (SourceBean) template.getAttribute(TAG_EXTERNAL_SERVICES);
+				List services = extServiceConfig.getAttributeAsList(TAG_EXTERNAL_SERVICE);
+				Iterator it = services.iterator();
+				while (it.hasNext()) {
+					SourceBean aServiceConfig = (SourceBean) it.next();
+					logger.debug("Reading external service configuration....");
+					String description = (String) aServiceConfig.getAttribute(PROP_SERVICE_DESCRIPTION);
+					logger.debug("Description = [" + description + "]");
+					String endpoint = (String) aServiceConfig.getAttribute(PROP_SERVICE_ENDPOINT);
+					logger.debug("Endpoint = [" + endpoint + "]");
+					String operation = (String) aServiceConfig.getAttribute(PROP_SERVICE_OPERATION);
+					logger.debug("Operation = [" + operation + "]");
+					String requiredColumns = (String) aServiceConfig.getAttribute(PROP_SERVICE_REQUIREDCOLUMNS);
+					logger.debug("Required columns = [" + requiredColumns + "]");
+					if (description == null || description.trim().equals("")) {
+						logger.error("External service configuration is not valid: " + PROP_SERVICE_DESCRIPTION + " attribute is mandatory.");
+						QbeTemplateParseException e = new QbeTemplateParseException("Wrong external service configuration");
+						e.setDescription("External service configuration is not valid: " + PROP_SERVICE_DESCRIPTION 
+								+ " attribute is mandatory.");
+						e.addHint("Check document template in external service details section");
+						throw e;
+					}
+					if (endpoint == null || endpoint.trim().equals("")) {
+						logger.error("External service configuration is not valid:  " + PROP_SERVICE_ENDPOINT + " attribute is mandatory.");
+						QbeTemplateParseException e = new QbeTemplateParseException("Wrong external service configuration");
+						e.setDescription("External service configuration is not valid:  " + PROP_SERVICE_ENDPOINT
+								+ " attribute is mandatory.");
+						e.addHint("Check document template in external service details section");
+						throw e;
+					}
+					
+					ExternalServiceConfiguration conf = new ExternalServiceConfiguration();
+					String id = UUID.randomUUID().toString();
+					logger.debug("Created id = " + id + " for service with description [" + description + "]");
+					conf.setId(id);
+					conf.setDescription(description);
+					conf.setEndpoint(endpoint);
+					conf.setOperation(operation);
+					if (requiredColumns != null && !requiredColumns.trim().equals("")) {
+						conf.setRequiredColumns(requiredColumns.split(","));
+					}
+					qbeTemplate.addExternalServiceConfiguration(conf);
+				}
+				
+			} else {
+				logger.debug("Qbe template does not contain tag [" + TAG_EXTERNAL_SERVICES +"]");
+			}
+			
+			
 		
 			
 			logger.debug("Templete parsed succesfully");

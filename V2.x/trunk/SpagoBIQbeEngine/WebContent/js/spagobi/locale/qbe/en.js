@@ -301,3 +301,12 @@ Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.title'] = 'Document\'s analyt
 Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.emptytext'] = 'This document has no analytical drivers';
 Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.headers.label'] = 'Title';
 Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.parameterreference'] = 'Analytical driver';
+
+
+//===================================================================
+//EXTERNAL SERVICES
+//===================================================================
+Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.title'] = 'The service was properly invoked';
+Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.serviceresponse'] = 'The service has returned this message:';
+Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.errors.title'] = 'Error';
+Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.errors.missingcolumns'] = 'The required service needs the following columns:';

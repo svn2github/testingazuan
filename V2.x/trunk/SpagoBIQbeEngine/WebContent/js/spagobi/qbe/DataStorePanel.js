@@ -48,6 +48,8 @@ Ext.ns("Sbi.widgets");
 
 Sbi.widgets.DataStorePanel = function(config) {
 	
+	this.baseConfig = config;
+	
 	var c = Ext.apply({
 		// set default values here
 	}, config || {});
@@ -60,6 +62,10 @@ Sbi.widgets.DataStorePanel = function(config) {
 	});
 	this.services['exportDataStore'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'EXPORT_RESULT_ACTION'
+		, baseParams: params
+	});
+	this.services['exportToExternalService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'INVOKE_EXTERNAL_SERVICE_ACTION'
 		, baseParams: params
 	});
 		
@@ -81,7 +87,8 @@ Sbi.widgets.DataStorePanel = function(config) {
 Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
     
     services: null
-	, store: null
+	, baseConfig: null
+    , store: null
 	, paging: null
 	, pageSize: null
 	, pageNumber: null
@@ -161,6 +168,23 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 		   }
 		   meta.fields[0] = new Ext.grid.RowNumberer();
 		   this.grid.getColumnModel().setConfig(meta.fields);
+		   
+		   
+		   this.alias2FieldMetaMap = {};
+		   var fields = meta.fields;
+		   for(var i = 0, l = fields.length, f; i < l; i++) {
+			   f = fields[i];
+			   if( typeof f === 'string' ) {
+				   f = {name: f};
+			   }
+			   f.header = f.header || f.name;
+			   this.alias2FieldMetaMap[f.header] = f;
+			   //if(!this.alias2FieldMetaMap[f.header]) {
+			   //	this.alias2FieldMetaMap[f.header] = new Array();
+			   //}
+			   //this.alias2FieldMetaMap[f.header].push(f);
+		   }
+		   
 		}, this);
 		
 		this.store.on('load', this.onDataStoreLoaded, this);
@@ -257,9 +281,92 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	        
 	        //tbar:this.exportTBar,
 	        bbar: this.pagingTBar
-	    });   
+	    });
+	    
+		// the row context menu
+	    var externalServicesMenuItems = [];
+	    for (var counter = 0; counter < this.baseConfig.externalServicesConfig.length; counter++) {
+	    	externalServicesMenuItems.push({
+	    		id: this.baseConfig.externalServicesConfig[counter].id,
+				text: this.baseConfig.externalServicesConfig[counter].description,
+				scope: this,
+				handler: function(item) {
+					var selectedRecords = new Array();
+					for (var i = 0; i < menu.selectedRecords.length; i++) {
+						var record = menu.selectedRecords[i];
+						var myRecord = this.adjustRecordHeaders(record.data);
+						selectedRecords.push(myRecord);
+					}
+					var params = {
+							"id": item.id
+							, "records": Sbi.commons.JSON.encode(selectedRecords)
+					};
+					this.callExternalService(params);
+				}
+	    	});
+	    }
+	    
+	   	var menu = 
+			new Ext.menu.Menu({
+				items: externalServicesMenuItems
+		});
+	    
+	    this.grid.on(
+			'rowcontextmenu', 
+			function(grid, rowIndex, e) {
+				var sm = grid.getSelectionModel();
+				if (!sm.isSelected(rowIndex)) {
+					sm.clearSelections();
+					sm.selectRow(rowIndex, true);
+				}
+				var records = sm.getSelections();
+				e.stopEvent();
+				menu.selectedRecords = records;
+				menu.showAt(e.getXY());
+			}
+	    );
+	    
 	}
-
+	
+	, adjustRecordHeaders: function(data) {
+		var toReturn = {};
+		for (header in this.alias2FieldMetaMap) {
+			if (header !== undefined) {
+				var field = this.alias2FieldMetaMap[header];
+				toReturn[header] = data[field.name];
+			}
+		}
+		return toReturn;
+	}
+	
+	, callExternalService: function(params) {
+		Ext.MessageBox.wait('Please wait...', 'Processing');
+		Ext.Ajax.request({
+		    url: this.services['exportToExternalService'],
+		    success: function(response, options) {
+				var content = Ext.util.JSON.decode( response.responseText );
+				if (content.missingcolumns) {
+		    		Ext.Msg.show({
+	 				   title: LN('sbi.qbe.datastorepanel.externalservices.errors.title'),
+	 				   msg: LN('sbi.qbe.datastorepanel.externalservices.errors.missingcolumns') + ' ' + content.missingcolumns,
+					   buttons: Ext.Msg.OK,
+					   icon: Ext.MessageBox.WARNING
+			 		});
+				} else {
+		    		Ext.Msg.show({
+	 				   title: LN('sbi.qbe.datastorepanel.externalservices.title'),
+	 				   msg: LN('sbi.qbe.datastorepanel.externalservices.serviceresponse') + ' ' + content.serviceresponse,
+					   buttons: Ext.Msg.OK,
+					   icon: Ext.MessageBox.INFO
+		 			});
+				}
+			},
+		    failure: Sbi.exception.ExceptionHandler.handleFailure,
+		    scope: this,
+		    params: params
+		});
+	}
+	
 	, onDataStoreLoaded: function(store) {
 		 var recordsNumber = store.getTotalCount();
        	 if(recordsNumber == 0) {

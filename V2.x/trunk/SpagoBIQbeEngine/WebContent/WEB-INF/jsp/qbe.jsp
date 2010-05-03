@@ -162,6 +162,8 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	      	%>
 	      	qbeConfig.westConfig = {};
 	      	qbeConfig.westConfig.datamartsName = <%= datamartNamesBuffer.toString() %>;
+
+	      	qbeConfig.externalServicesConfig = <%= qbeEngineInstance.getTemplate().getExternalServiceConfigurationsAsJSONArray() %>;
 	
 	        // javascript-side user profile object
 	        Ext.ns("Sbi.user");

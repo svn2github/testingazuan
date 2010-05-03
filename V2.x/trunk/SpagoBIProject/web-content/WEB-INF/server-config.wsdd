@@ -276,7 +276,17 @@
   <arrayMapping innerType="soapenc:string" languageSpecificType="java:java.lang.String[]" qname="ns49:ArrayOf_soapenc_string" xmlns:ns49="urn:spagobisdkdocuments" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"/>
   <arrayMapping innerType="ns51:SDKDocument" languageSpecificType="java:it.eng.spagobi.sdk.documents.bo.SDKDocument[]" qname="ns50:ArrayOf_tns2_SDKDocument" xmlns:ns50="urn:spagobisdkdocuments" xmlns:ns51="http://bo.documents.sdk.spagobi.eng.it"/>
   <arrayMapping innerType="ns53:SDKFunctionality" languageSpecificType="java:it.eng.spagobi.sdk.documents.bo.SDKFunctionality[]" qname="ns52:ArrayOf_tns2_SDKFunctionality" xmlns:ns52="urn:spagobisdkdocuments" xmlns:ns53="http://bo.documents.sdk.spagobi.eng.it"/>
- </service> 
+ </service>
+ <service name="ExportRecordsService" provider="java:RPC">
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="typeMappingVersion" value="1.2"/>
+  <parameter name="wsdlPortType" value="ExportRecordsService"/>
+  <parameter name="scope" value="Session"/>
+  <parameter name="className" value="it.eng.spagobi.services.exportrecords.stub.ExportRecordsServiceSoapBindingSkeleton"/>
+  <parameter name="wsdlServicePort" value="ExportRecordsService"/>
+  <parameter name="wsdlTargetNamespace" value="urn:spagobiexportrecords"/>
+  <parameter name="wsdlServiceElement" value="ExportRecordsServiceService"/>
+ </service>
   <!-- <service name="DocumentsService" provider="java:RPC">
   <requestFlow>
    <handler type="java:org.apache.ws.axis.security.WSDoAllReceiver">

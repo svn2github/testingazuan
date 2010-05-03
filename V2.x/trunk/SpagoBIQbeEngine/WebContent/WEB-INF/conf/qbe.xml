@@ -7,7 +7,13 @@
 	 - if isBlocking=true (and enabled=true), incorrect queries cannot be saved
 	-->
 	<QUERY-VALIDATION enabled="true" isBlocking="false" />
-	 
+	
+	<!-- 
+	Timeout (in ms) for external services invocation: 
+	this should be minor to Ajax request timeout (see includeExtJS.jspf, Ext.Ajax.timeout parameter) 
+	since service invocation is performed into a synchronous action invoked by an Ajax call
+	-->
+	<EXTERNAL_SERVICES timeout="10000" />
 	
 	<QBE-ENABLE-SCRIPT enablescript="true" calculateFieldPosition="BEFORE_COLUMNS" /> 
 	

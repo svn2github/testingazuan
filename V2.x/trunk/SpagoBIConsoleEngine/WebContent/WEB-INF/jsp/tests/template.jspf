@@ -103,7 +103,8 @@ Sbi.template = {
         		, rangeMaxValue: 120 
         		, stepY: 40
         		, domainValueNumber: 18
-        		//, fields: ['EffortIndex', 'Competitiveness']
+        		, fields: ['EffortIndex', 'cluster']
+        	    , includeFields: false
         		, styles: {
 		        	title: { text: 'Liveline', visible: true,  align: "center", valign: "top", font: {name: "serif", color: "black", size: 10, style: "bold"} }
 					, border: {color: "black", size: "0"}

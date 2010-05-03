@@ -81,13 +81,9 @@ Sbi.chart.SpagoBIChart = function(config) {
 	}
 	
 	this.flashVars = Ext.applyIf(c, this.CHART_DEFAULT_CONFIG);
-	/*
-	if(c.xtype === 'chart.sbi.multileds') {
-		c.fields = c.fields.replace(new RegExp('"','g'), '|');
-		if(c.styles) c.styles = c.styles.replace(new RegExp('"','g'), '|');
-		//Sbi.Msg.showInfo('x-> ' + c.fields);
-	}
-	*/
+	
+	
+	
 
 	this.flashVars.scale = 'exactfit'; 
 	this.flashParams = this.flashParams | {};
@@ -95,6 +91,11 @@ Sbi.chart.SpagoBIChart = function(config) {
 	
 	
 	Sbi.chart.SpagoBIChart.superclass.constructor.call(this, config);
+	/*
+	if(c.xtype === 'chart.sbi.livelines') {
+		alert(this.includeFields + ' - ' +  config.includeFields);
+	}
+	*/
 };
 
 Ext.extend(Sbi.chart.SpagoBIChart, Ext.FlashComponent, {
@@ -323,12 +324,19 @@ Sbi.chart.Livelines = Ext.extend(Sbi.chart.SpagoBIChart, {
 	, isVisible: function(alias){
 		if (this.fields === undefined) return true;
 		
+		var isVisible = false;
 		for (var i = 0; i < this.fields.length; i++){
 			if (alias === this.fields[i] ){
-				return true;
+				isVisible = true;
+				break;
 			}				
 		}
-		return false;	
+		
+		if(this.includeFields !== undefined && this.includeFields === false) {
+			isVisible = !isVisible;
+		}
+		
+		return isVisible;	
 		
 	}
 });

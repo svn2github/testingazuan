@@ -283,51 +283,67 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	        bbar: this.pagingTBar
 	    });
 	    
-		// the row context menu
-	    var externalServicesMenuItems = [];
-	    for (var counter = 0; counter < this.baseConfig.externalServicesConfig.length; counter++) {
-	    	externalServicesMenuItems.push({
-	    		id: this.baseConfig.externalServicesConfig[counter].id,
-				text: this.baseConfig.externalServicesConfig[counter].description,
-				scope: this,
-				handler: function(item) {
-					var selectedRecords = new Array();
-					for (var i = 0; i < menu.selectedRecords.length; i++) {
-						var record = menu.selectedRecords[i];
-						var myRecord = this.adjustRecordHeaders(record.data);
-						selectedRecords.push(myRecord);
+	    // START CONTEXT MENU FOR EXTERNAL SERVICES INTEGRATION
+	    if (this.baseConfig.externalServicesConfig.length > 0) {
+	    	
+			// the row context menu
+		    var externalServicesMenuItems = [];
+		    for (var counter = 0; counter < this.baseConfig.externalServicesConfig.length; counter++) {
+		    	externalServicesMenuItems.push({
+		    		id: this.baseConfig.externalServicesConfig[counter].id,
+					text: this.baseConfig.externalServicesConfig[counter].description,
+					scope: this,
+					handler: function(item) {
+						var selectedRecords = new Array();
+						for (var i = 0; i < menu.selectedRecords.length; i++) {
+							var record = menu.selectedRecords[i];
+							var myRecord = this.adjustRecordHeaders(record.data);
+							selectedRecords.push(myRecord);
+						}
+						var params = {
+								"id": item.id
+								, "records": Sbi.commons.JSON.encode(selectedRecords)
+						};
+						this.callExternalService(params);
 					}
-					var params = {
-							"id": item.id
-							, "records": Sbi.commons.JSON.encode(selectedRecords)
-					};
-					this.callExternalService(params);
+		    	});
+		    }
+		    
+		   	var menu = 
+				new Ext.menu.Menu({
+					items: externalServicesMenuItems
+			});
+		    
+		    this.grid.on(
+				'rowcontextmenu', 
+				function(grid, rowIndex, e) {
+					var sm = grid.getSelectionModel();
+					if (!sm.isSelected(rowIndex)) {
+						sm.clearSelections();
+						sm.selectRow(rowIndex, true);
+					}
+					var records = sm.getSelections();
+					e.stopEvent();
+					menu.selectedRecords = records;
+					menu.showAt(e.getXY());
 				}
-	    	});
-	    }
+		    );
 	    
-	   	var menu = 
-			new Ext.menu.Menu({
-				items: externalServicesMenuItems
-		});
-	    
-	    this.grid.on(
-			'rowcontextmenu', 
-			function(grid, rowIndex, e) {
-				var sm = grid.getSelectionModel();
-				if (!sm.isSelected(rowIndex)) {
-					sm.clearSelections();
-					sm.selectRow(rowIndex, true);
-				}
-				var records = sm.getSelections();
-				e.stopEvent();
-				menu.selectedRecords = records;
-				menu.showAt(e.getXY());
-			}
-	    );
+	    } 
+	    // END CONTEXT MENU FOR EXTERNAL SERVICES INTEGRATION
 	    
 	}
 	
+	
+	/**
+	 * Utility method that returns the JSON object associated to a grid record data:
+	 * the JSON object has this structure:
+	 * {
+	 * 		"header_column_1": "row_cell_1"
+	 * 		, "header_column_2": "row_cell_2"
+	 * 		, ....
+	 * }
+	 */
 	, adjustRecordHeaders: function(data) {
 		var toReturn = {};
 		for (header in this.alias2FieldMetaMap) {
@@ -339,6 +355,9 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 		return toReturn;
 	}
 	
+	/**
+	 * This method calls the action for external services integration and shows service response.
+	 */
 	, callExternalService: function(params) {
 		Ext.MessageBox.wait('Please wait...', 'Processing');
 		Ext.Ajax.request({

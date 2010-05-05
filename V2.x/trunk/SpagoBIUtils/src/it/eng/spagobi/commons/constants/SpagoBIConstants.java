@@ -35,6 +35,8 @@ public class SpagoBIConstants {
 	public static final String EXECUTION_ROLE = "SBI_EXECUTION_ROLE";
 	public static final String SBI_LANGUAGE = "SBI_LANGUAGE";
 	public static final String SBI_COUNTRY = "SBI_COUNTRY";
+	public static final String EXECUTE_DOCUMENT_ACTION = "EXECUTE_DOCUMENT_ACTION";
+
 	
 	
 	public static final String EXECUTION_MODALITY = "EXECUTION_MODALITY";

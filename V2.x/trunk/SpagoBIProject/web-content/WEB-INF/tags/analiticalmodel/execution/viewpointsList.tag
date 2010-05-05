@@ -46,7 +46,8 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 	<%
 } else {
     Map deleteVPUrlPars = new HashMap();
-    deleteVPUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+    //deleteVPUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+	deleteVPUrlPars.put("ACTION_NAME", SpagoBIConstants.EXECUTE_DOCUMENT_ACTION);    
     deleteVPUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.VIEWPOINT_ERASE);
     deleteVPUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
     String deleteVPUrl = urlBuilder.getUrl(request, deleteVPUrlPars);

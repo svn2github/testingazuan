@@ -43,7 +43,8 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
 	<%
 } else {
     Map deleteSnapUrlPars = new HashMap();
-    deleteSnapUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+    //deleteSnapUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+    deleteSnapUrlPars.put("ACTION_NAME", SpagoBIConstants.EXECUTE_DOCUMENT_ACTION);
     deleteSnapUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.ERASE_SNAPSHOT_MESSAGE);
     deleteSnapUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
     String deleteSnapUrl = urlBuilder.getUrl(request, deleteSnapUrlPars);

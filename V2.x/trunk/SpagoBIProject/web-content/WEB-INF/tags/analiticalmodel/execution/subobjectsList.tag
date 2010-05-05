@@ -32,7 +32,8 @@ IUrlBuilder urlBuilder = UrlBuilderFactory.getUrlBuilder(requestContainer.getCha
 IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 SessionContainer permSess=requestContainer.getSessionContainer().getPermanentContainer();
 Map baseDeleteSubObjUrlPars = new HashMap();
-baseDeleteSubObjUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+//baseDeleteSubObjUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+baseDeleteSubObjUrlPars.put("ACTION_NAME", SpagoBIConstants.EXECUTE_DOCUMENT_ACTION);
 baseDeleteSubObjUrlPars.put(SpagoBIConstants.MESSAGEDET, "DELETE_SUBOBJECT");
 baseDeleteSubObjUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
 

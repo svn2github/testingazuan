@@ -58,6 +58,7 @@ Sbi.locale.ln['sbi.execution.error']                                            
 Sbi.locale.ln['sbi.execution.error.nodocid']                                                              = 'L\'ID du document est requis pour ex\u00E9cuter le document';
 Sbi.locale.ln['sbi.execution.error.novalidrole']                                                          = 'Cet utilisateur n\'a pas de r\u00F4les valides pour ex\u00E9cuter le document selectionn\u00E9';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.annotate']                                             = 'Ajouter des notes au document';
+Sbi.locale.ln['sbi.execution.executionpage.toolbar.documentView'] 										  = 'Retourner \u00E0 la page de s\u00E9lection des documents';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.back']                                                 = 'Retourner \u00E0 la page de s\u00E9lection des param\u00E8tres';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.bookmark']                                             = 'Enregistrer mes documents Favoris';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.expand']                                               = 'D\u00E9velopper/R\u00E9duire';

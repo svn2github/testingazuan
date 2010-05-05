@@ -94,6 +94,18 @@ Sbi.execution.ExecutionWizard = function(config, doc) {
 		delete documentExecutionPageConfig.snapshot;
 	}
 	this.documentExecutionPage = new Sbi.execution.DocumentExecutionPage(documentExecutionPageConfig || {}, doc);
+
+	// 20100505: set if coming from tree or list of documents
+	if (config.preferences){
+		if(config.preferences.fromDocTreeOrList){
+			if(config.preferences.fromDocTreeOrList == true){			
+				this.documentExecutionPage.callFromTreeListDoc = true;
+				this.parametersSelectionPage.callFromTreeListDoc = true;
+				this.roleSelectionPage.callFromTreeListDoc = true;
+			}
+		}
+	}
+	
 	this.documentExecutionPage.maskOnRender = true;
 	
 	this.errorPage = new Ext.Panel({
@@ -107,13 +119,19 @@ Sbi.execution.ExecutionWizard = function(config, doc) {
 	this.roleSelectionPage.on('beforetoolbarinit', function(page, toolbar){
 		this.fireEvent('beforetoolbarinit', toolbar);
 	}, this);
-	
+
+	// 20100505
+	this.roleSelectionPage.on('backToAdmin', this.backToAdmin, this);
+	this.parametersSelectionPage.on('backToAdmin', this.backToAdmin, this);
+		
 	this.parametersSelectionPage.on('moveprevrequest', this.moveToPreviousPage, this);
 	this.parametersSelectionPage.on('movenextrequest', this.moveToNextPage, this);
 	this.parametersSelectionPage.on('beforetoolbarinit', function(page, toolbar){
 		this.fireEvent('beforetoolbarinit', toolbar);
 	}, this);
 	
+	// 20100505
+	this.documentExecutionPage.on('backToAdmin', this.backToAdmin, this);
 	
 	this.documentExecutionPage.on('moveprevrequest', this.moveToPreviousPage, this);
 	this.documentExecutionPage.on('beforetoolbarinit', function(page, toolbar){
@@ -214,7 +232,20 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
     , moveToNextPage: function() {
     	this.moveToPage( this.activePageNumber+1 );
 	}
-    
+	
+	// 20100505
+	, backToAdmin: function(){
+		// build url to go back one page
+		var serviceRegistry = Sbi.config.serviceRegistry;
+		protocol = serviceRegistry.baseUrl.protocol;
+		host = serviceRegistry.baseUrl.host;
+		port = serviceRegistry.baseUrl.port;
+		contextPath = serviceRegistry.baseUrl.contextPath;
+		controllerPath = serviceRegistry.baseUrl.controllerPath;
+		urlStr = protocol + '://' + host + ":" + port + '/' + contextPath + '/' + controllerPath+'?LIGHT_NAVIGATOR_BACK_TO=1';
+		//alert(urlStr);
+		window.location=urlStr;
+    }
     // execution
     , execute : function() {
     	this.roleSelectionPage.loadingMask.show();

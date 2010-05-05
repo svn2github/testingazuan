@@ -104,8 +104,9 @@ Sbi.execution.DocumentExecutionPage = function(config, doc) {
 	});
 
 	
-	// add events
-    this.addEvents('beforetoolbarinit', 'beforesynchronize', 'moveprevrequest', 'loadurlfailure', 'crossnavigation', 'beforerefresh','collapse3');
+	// add events 20100505
+    this.addEvents('beforetoolbarinit', 'beforesynchronize', 'moveprevrequest', 'loadurlfailure', 'crossnavigation', 'beforerefresh','collapse3', 'backToAdmin');
+
     
     this.toolbarHiddenPreference = config.toolbarHidden!== undefined ? config.toolbarHidden : false;
 	this.shortcutsHiddenPreference = config.shortcutsHidden !== undefined ? config.shortcutsHidden : false;
@@ -239,12 +240,28 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		
 		this.toolbar.addFill();
 		
-		if (executionInstance.isPossibleToComeBackToParametersPage == undefined || executionInstance.isPossibleToComeBackToParametersPage === true) {
+		var drawParBack = false;
+		
+		if (executionInstance.isPossibleToComeBackToParametersPage == undefined || executionInstance.isPossibleToComeBackToParametersPage === true)
+		 {
 			this.toolbar.addButton(new Ext.Toolbar.Button({
 				iconCls: 'icon-back' 
 				, tooltip: LN('sbi.execution.executionpage.toolbar.back')
 				, scope: this
 				, handler : function() {this.fireEvent('moveprevrequest');}
+			}));
+			drawParBack = true;
+		}
+		
+		// 20100505
+	if (this.callFromTreeListDoc == true && drawParBack == false) {
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-back' 
+				, tooltip: LN('sbi.execution.executionpage.toolbar.documentView')
+				, scope: this
+				, handler : function() {
+					this.fireEvent('backToAdmin');
+				}
 			}));
 		}
 		

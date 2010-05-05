@@ -92,6 +92,7 @@ Sbi.locale.ln['sbi.execution.parametersselection.message.page3.fillFormAndRefres
 Sbi.locale.ln['sbi.execution.parametersselection.message.page3.refresh']  = 'Click on the refresh button on the toolbar to re-execute the document';
 
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.back'] = 'Go back to parameters selection page';
+Sbi.locale.ln['sbi.execution.executionpage.toolbar.documentView'] = 'Go back to documents selection page';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.refresh'] = 'Refresh document execution';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.rating'] = 'Rate document';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.print'] = 'Print docuemnt';

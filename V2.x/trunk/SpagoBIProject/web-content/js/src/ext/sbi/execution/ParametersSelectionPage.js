@@ -75,7 +75,7 @@ Sbi.execution.ParametersSelectionPage = function(config, doc) {
 		, baseParams: params
 	});
 	 
-    this.addEvents('beforetoolbarinit', 'beforesynchronize', 'synchronize', 'synchronizeexception', 'movenextrequest', 'moveprevrequest', 'collapse3');	
+    this.addEvents('beforetoolbarinit', 'beforesynchronize', 'synchronize', 'synchronizeexception', 'movenextrequest', 'moveprevrequest', 'collapse3', 'backToAdmin');	
 	
     this.shortcutsHiddenPreference = config.shortcutsHidden !== undefined ? config.shortcutsHidden : false;
     
@@ -228,6 +228,8 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 		this.fireEvent('beforetoolbarinit', this, this.toolbar);
 		
 		this.toolbar.addFill();
+	
+		var drawRoleBack = false;
 		
 		if (executionInstance.isPossibleToComeBackToRolePage == undefined || executionInstance.isPossibleToComeBackToRolePage === true) {
 			this.toolbar.addButton(new Ext.Toolbar.Button({
@@ -238,7 +240,24 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 			}));
 			
 			this.toolbar.addSeparator();
+		
+			drawRoleBack = true;
 		}
+	
+				// 20100505
+		if (this.callFromTreeListDoc == true && drawRoleBack == false) {
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-back' 
+				, tooltip: LN('sbi.execution.executionpage.toolbar.documentView')
+				, scope: this
+				, handler : function() {
+					this.fireEvent('backToAdmin');
+				}
+			}));
+		}
+		
+		
+		
 		
 		if(Sbi.user.ismodeweb){
 			this.toolbar.addButton(new Ext.Toolbar.Button({

@@ -350,11 +350,17 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	moduleConfigStr += "	</COLUMNS>";
 	moduleConfigStr += "	<CAPTIONS>";
 	moduleConfigStr += "	<EXEC_CAPTION  confirm=\"FALSE\" image=\"/img/execObject.gif\" label=\"SBISet.objects.captionExecute\">"
+//		+ "		<PARAMETER name=\""
+//		+ ObjectsTreeConstants.PAGE
+//		+ "\" scope=\"\" type=\"ABSOLUTE\" value=\""
+//		+ ExecuteBIObjectModule.MODULE_PAGE
+//		+ "\"/> "
+		// call new Action
 		+ "		<PARAMETER name=\""
-		+ ObjectsTreeConstants.PAGE
+		+ ObjectsTreeConstants.ACTION
 		+ "\" scope=\"\" type=\"ABSOLUTE\" value=\""
-		+ ExecuteBIObjectModule.MODULE_PAGE
-		+ "\"/> "
+		+ SpagoBIConstants.EXECUTE_DOCUMENT_ACTION
+		+ "\"/> "		
 		+ "		<PARAMETER name=\""
 		+ SpagoBIConstants.MESSAGEDET
 		+ "\" scope=\"\" type=\"ABSOLUTE\" value=\""

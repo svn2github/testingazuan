@@ -534,7 +534,7 @@ public class ExporterMetadata {
 			Integer dataSetId = biobj.getDataSetId();
 
 			if (dataSetId != null) { 
-				// if the transaction is new insert dataset if missing   // MODIFIED BY GIULIO 
+				// if the transaction is new insert dataset if missing   
 				IDataSetDAO datasetDao=DAOFactory.getDataSetDAO();
 				IDataSet ds=datasetDao.loadDataSetByID(dataSetId);
 				insertDataSet(ds, session);

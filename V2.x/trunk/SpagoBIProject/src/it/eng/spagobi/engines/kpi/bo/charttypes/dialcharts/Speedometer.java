@@ -120,6 +120,9 @@ public class Speedometer extends ChartImpl {
 
 		increment = (upper-lower)/10;
 		StandardDialScale scale = new StandardDialScale(lower, upper, -120, -300, 10.0, 4);
+//		if (!( increment > 0)){
+//			increment = 0.01;
+//		}
 		scale.setMajorTickIncrement(increment);
 		logger.debug("Setted the unit after which a new MajorTickline will be drawed");
 		scale.setMinorTickCount(minorTickCount);

@@ -356,7 +356,8 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 			String onlyTestObjectsView = (String)_serviceRequest.getAttribute("view_only_test_objects");
 			
 			Map execUrlPars = new HashMap();
-			execUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+			//execUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+			execUrlPars.put(ObjectsTreeConstants.ACTION, SpagoBIConstants.EXECUTE_DOCUMENT_ACTION);			
 			execUrlPars.put(ObjectsTreeConstants.OBJECT_ID, idObj.toString());
 			execUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
 			

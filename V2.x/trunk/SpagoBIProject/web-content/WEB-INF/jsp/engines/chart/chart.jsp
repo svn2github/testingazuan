@@ -78,7 +78,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				executionAuditId_chart = executionAuditId;	   
 
 		Map crossNavigationParameters = new HashMap();
-		crossNavigationParameters.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+		//crossNavigationParameters.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+		crossNavigationParameters.put(ObjectsTreeConstants.ACTION, SpagoBIConstants.EXECUTE_DOCUMENT_ACTION);
 		crossNavigationParameters.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CROSS_NAVIGATION);
 		crossNavigationParameters.put("EXECUTION_FLOW_ID", executionFlowId);
 		crossNavigationParameters.put("SOURCE_EXECUTION_ID", uuid);

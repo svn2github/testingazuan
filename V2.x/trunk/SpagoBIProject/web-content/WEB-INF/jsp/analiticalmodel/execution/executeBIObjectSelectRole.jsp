@@ -56,7 +56,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	// build the url for the parameters form
    	Map formActPars = new HashMap();
-   	formActPars.put(AdmintoolsConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
+   	//formActPars.put(AdmintoolsConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
+	formActPars.put(ObjectsTreeConstants.ACTION, SpagoBIConstants.EXECUTE_DOCUMENT_ACTION);
    	formActPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_PHASE_SELECTED_ROLE);
    	formActPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     String formAct = urlBuilder.getUrl(request, formActPars);

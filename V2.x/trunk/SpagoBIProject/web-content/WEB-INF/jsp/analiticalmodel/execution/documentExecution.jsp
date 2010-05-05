@@ -128,6 +128,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			}
 		}
 	}
+	// 20100505: check if in request there is parameter
+		boolean comingFromDocOrTreeList = false;
+		if(request.getParameter("BIOBJECT_TREE_LIST") != null){
+			comingFromDocOrTreeList = true;
+		}
+	
     %>
     //var menuConfig = <%= aServiceResponse.getAttribute("metaConfiguration")%>;
     
@@ -161,7 +167,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	var snaphost = {'name': snapshotName, 'historyNumber': snapshotHistoryNumber};
 	var shortcutsHidden = <%= shortcutsHidden %>;
 	var toolbarHidden = <%= toolbarHidden %>;
-	
+
+// 20100505, added fromDOcTreeOrList parameter	
     var config = {
     	document: object
     	, preferences: {
@@ -170,6 +177,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			, snapshot: snaphost
 			, toolbarHidden: toolbarHidden
 			, shortcutsHidden: shortcutsHidden
+			, fromDocTreeOrList : <%=comingFromDocOrTreeList%>
 	    }
 	};
 	

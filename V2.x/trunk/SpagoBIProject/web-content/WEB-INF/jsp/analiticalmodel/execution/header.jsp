@@ -210,7 +210,8 @@ if (titleVisibile) {
 				ExecutionInstance anInstance = (ExecutionInstance) list.get(i);
 				BIObject aBIObject = anInstance.getBIObject();
 				Map recoverExecutionParams = new HashMap();
-				recoverExecutionParams.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+				//recoverExecutionParams.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+				recoverExecutionParams.put(ObjectsTreeConstants.ACTION, SpagoBIConstants.EXECUTE_DOCUMENT_ACTION);	
 				recoverExecutionParams.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.RECOVER_EXECUTION_FROM_CROSS_NAVIGATION);
 				recoverExecutionParams.put("EXECUTION_FLOW_ID", anInstance.getFlowId());
 				recoverExecutionParams.put("EXECUTION_ID", anInstance.getExecutionId());

@@ -239,7 +239,8 @@ if (heightArea == null || heightArea.trim().equals("")) {
 <%-- start cross navigation scripts --%>
 <%
 Map crossNavigationParameters = new HashMap();
-crossNavigationParameters.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+//crossNavigationParameters.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+crossNavigationParameters.put(ObjectsTreeConstants.ACTION, SpagoBIConstants.EXECUTE_DOCUMENT_ACTION);
 crossNavigationParameters.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CROSS_NAVIGATION);
 crossNavigationParameters.put("EXECUTION_FLOW_ID", executionFlowId);
 crossNavigationParameters.put(ObjectsTreeConstants.MODALITY, modality);

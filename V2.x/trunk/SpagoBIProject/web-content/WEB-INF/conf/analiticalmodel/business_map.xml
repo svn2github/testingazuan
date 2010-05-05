@@ -4,13 +4,14 @@
 		<MAP_ACTION actionName="MOVE_UP_LOWFUNCTIONALITY" businessProcess="FunctionalitiesManagement" />
 		<MAP_ACTION actionName="MOVE_DOWN_LOWFUNCTIONALITY" businessProcess="FunctionalitiesManagement" />
 		<MAP_ACTION actionName="DOWNLOAD_BIOBJ_TEMPLATE" businessProcess="DocumentDevManagement" />
+		<!-- 
 		<MAP_ACTION actionName="GET_FTREE_FOLDERS_ACTION"  businessProcess="DocumentUserManagement"/>
 		<MAP_ACTION actionName="GET_FOLDER_CONTENT_ACTION" businessProcess="DocumentUserManagement"/>
 		
 		<MAP_ACTION actionName="GET_FOLDER_PATH_ACTION"  businessProcess="DocumentUserManagement"/>
 		<MAP_ACTION actionName="SEARCH_CONTENT_ACTION"  businessProcess="DocumentUserManagement"/>
 		<MAP_ACTION actionName="GET_CATEGORIES_ACTION"  businessProcess="DocumentUserManagement"/>
-		
+		-->
 		<MAP_ACTION actionName="START_EXECUTION_PROCESS_ACTION"  businessProcess="DocumentUserManagement"/>
 		<MAP_ACTION actionName="GET_ROLES_FOR_EXECUTION_ACTION"  businessProcess="DocumentUserManagement"/>
 		<MAP_ACTION actionName="GET_PARAMETERS_FOR_EXECUTION_ACTION"  businessProcess="DocumentUserManagement"/>

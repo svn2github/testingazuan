@@ -443,12 +443,13 @@ public class SbiUserDAOHibImpl extends AbstractHibernateDAO implements ISbiUserD
 			if(id!=0){
 				save = false;
 				userToUpdate =(SbiUser)aSession.load(SbiUser.class, id);
-				userToUpdate.setPassword(user.getPassword());
+				if(user.getPassword() != null){
+					userToUpdate.setPassword(user.getPassword());
+				}
 				userToUpdate.setFullName(user.getFullName());
 				userToUpdate.setUserId(user.getUserId());
 				userToUpdate.setId(id);
-/*				userAttrList = userToUpdate.getSbiUserAttributeses();
-				extUserRoles = userToUpdate.getSbiExtUserRoleses();*/
+
 			}	
 			
 			if(save){

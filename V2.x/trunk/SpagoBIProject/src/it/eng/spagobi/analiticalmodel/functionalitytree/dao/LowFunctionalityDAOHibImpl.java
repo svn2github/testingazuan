@@ -823,6 +823,10 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		
 		lowFunct.setBiObjects(biObjects);
 		logger.debug( "OUT" );
+		//if(lowFunct == null){
+			System.out.println(hibFunct.getName() +" "+hibFunct.getPath()+" "+hibFunct.getCode());
+			System.out.println(lowFunct.getName());
+		//}
 		return lowFunct;
 	}
 

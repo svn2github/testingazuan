@@ -171,6 +171,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
  	        })
  	    	]
  	    });
+
  	   this.tabs = new Ext.TabPanel({
            enableTabScroll : true
            , activeTab : 1
@@ -179,14 +180,15 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
            , width: 450
            , height: 450
            , itemId: 'tabs'
-           , tbar: this.tbSave 
+           , tbar: this.tbSave            
 		   , items: [{
 		        title: LN('sbi.roles.details')
-		        , itemId: 'detail'
-		        , layout: 'fit'
+		        , itemId: 'detail'		
+		        , layout: 'fit'		        	
 		        , items: {
-		 		   	itemId: 'user-detail',   	              
-		 		   	columnWidth: 0.4,
+		 		   	 itemId: 'user-detail',  
+		 		     id : 'detail',		 		    
+		 		   	 columnWidth: 0.4,
 		             xtype: 'fieldset',
 		             labelWidth: 90,
 		             defaults: {width: 140, border:false},    
@@ -194,11 +196,32 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		             autoHeight: true,
 		             autoScroll  : true,
 		             bodyStyle: Ext.isIE ? 'padding:0 0 5px 15px;' : 'padding:10px 15px;',
-		             border: false,
+		             border: false, 
+		             buttons: [{
+		                 text: 'Change Password',
+		                 id: 'changePwd',
+		                 iconCls: 'icon-refresh',		                 
+		                 style: Ext.isIE ? {} : {	
+			            	 position: 'absolute'
+		            	 	,top: '95px'
+			            	,left: '320px'
+			            	,zIndex: '100'
+				         },
+		                 handler: function(){
+	                         Ext.getCmp("detail").items.each(function(item){
+	                              if(item.getItemId() == 'pwdId' || item.getItemId() == 'confirmpwdId'){
+		   	                   		  item.enable();
+	   	                   		  }	
+	                         });
+		                 }
+				         ,scope: this
+		             }],
+
 		             style: {
 		                 "margin-left": "10px", 
 		                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
 		             },
+
 		             items: [{
 		                 name: 'id',
 		                 hidden: true
@@ -223,21 +246,23 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		             },{
 		                 fieldLabel: LN('sbi.users.pwd'),
 		                 name: 'pwd',
+		                 itemId: 'pwdId',
 		                 inputType: 'password',
 		                 //allowBlank: false,
 		                 validationEvent:true,
 		            	 maxLength:160,
 		            	 minLength:1
 		             },{
-		                 fieldLabel:  LN('sbi.users.confPwd'),
+		                 fieldLabel:  LN('sbi.users.confPwd'),		                 
 		                 name: 'confirmpwd',
+		                 itemId: 'confirmpwdId',
 		                 inputType: 'password',
 		                 //allowBlank: false,
 		                 validationEvent:true,
 		            	 maxLength:160,
 		            	 minLength:1
 		             }]
-		    	
+		             
 		    	}
 		    },{
 		        title: LN('sbi.users.roles')
@@ -254,6 +279,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	            , items : [ this.attributesGridPanel ]
 		        , itemId: 'attributes'
 		    }]
+
 		});
 
 	    this.tb = new Ext.Toolbar({
@@ -278,6 +304,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	          bodyStyle:'padding:5px',
    	          width: 850,
    	          layout: 'column',
+
    	          items: [{
    	              columnWidth: 0.90,
    	              layout: 'fit',
@@ -321,8 +348,13 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	                          rowselect: function(sm, row, rec) {   
    	                          	  Ext.getCmp('save-btn').enable();
    	                          	  rec.set('confirmpwd', '');
-   	                              Ext.getCmp("user-form").getForm().loadRecord(rec);  	
-   	                              	 
+   	                              Ext.getCmp("user-form").getForm().loadRecord(rec);  
+   	                              Ext.getCmp("detail").items.each(function(item){
+	   	                              if(item.getItemId() == 'pwdId' || item.getItemId() == 'confirmpwdId'){
+	  		   	                   		  item.disable();
+	  	   	                   		  }	
+   	                              });
+   	                              Ext.getCmp('changePwd').show();
    	                	  		  this.fillAttributes(row, rec);
    	                	  		  this.fillRoles(row, rec);   	                                  	                              
    	                          }
@@ -344,9 +376,6 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
    	              }
    	          }, this.tabs
    	          ],
-
-   	          //buttons: this.buttons,   	          
-   	          //buttonAlign: 'right',
    	          renderTo: Ext.getBody()
    	      });
 
@@ -420,19 +449,21 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 	,save : function() {
 		   
 	   var values = this.gridForm.getForm().getValues();
-
+	   
        if(!Sbi.config.passwordAbilitated || (values['pwd']===values['confirmpwd'])){
+
 	      	var newRec = null;
 	      	var idRec = values['id'];
 	      	
 			var params = {
 	        	userId : values['userId'],
-	        	fullName : values['fullName'],
-	        	pwd : values['pwd']            
+	        	fullName : values['fullName']  
 	        }
 	        params.id = values['id'];
 	        
-	       
+			if(values['pwd'] != undefined){
+				params.pwd = values['pwd'] ;
+			}
 	        
 	        var rolesSelected = Ext.getCmp("roles-form").selModel.getSelections();
 	        var lengthR = rolesSelected.length;
@@ -497,7 +528,10 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		   	    }	
 				record.set('userId',values['userId']);
 				record.set('fullName',values['fullName']);
-				record.set('pwd',values['pwd']);
+				if(values['pwd'] != undefined){
+					record.set('pwd',values['pwd']);
+				}
+				
 				record.set('userRoles',userRoles);
 				record.set('userAttributes',userAttributes);				      
 			}
@@ -613,7 +647,12 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
           	var tempRecord = new Ext.data.Record({"description":tempRolesArr[i].description,"name":tempRolesArr[i].name,"id":tempRolesArr[i].id });
 			Ext.getCmp("roles-form").store.add(tempRecord);								   
         }	
-		
+        Ext.getCmp("detail").items.each(function(item){
+            if(item.getItemId() == 'pwdId' || item.getItemId() == 'confirmpwdId'){
+        		  item.enable();
+    		}	
+        });
+        Ext.getCmp('changePwd').hide();
 		Ext.getCmp('user-form').doLayout();
 	}
 	
@@ -666,6 +705,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
             this
 		);
 	}
+
 
 });
 

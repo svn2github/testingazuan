@@ -174,7 +174,8 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 
  	   this.tabs = new Ext.TabPanel({
            enableTabScroll : true
-           , activeTab : 1
+           , renderTo: Ext.getBody()
+           , activeTab : 0
            , autoScroll : true
            //, deferredRender: false
            , width: 450
@@ -411,7 +412,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
     }
     
     , initRolesGridPanel : function() {
-       
+    	
     	this.smRoles = new Ext.grid.CheckboxSelectionModel( {header: ' ',singleSelect: false, scope:this, dataIndex: 'id'} );
 		
         this.cmRoles = new Ext.grid.ColumnModel([
@@ -424,6 +425,8 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		this.rolesGrid = new Ext.grid.GridPanel({
 			  store: this.rolesStore
 			, id: 'roles-form'
+			//NB: Important trick!!!to render the grid with activeTab=0	
+			, renderTo: Ext.getBody()
    	     	, cm: this.cmRoles
    	     	, sm: this.smRoles
    	     	, frame: false
@@ -442,7 +445,6 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		Ext.getCmp("roles-form").on('recToSelect', function(roleId, index){		
 			Ext.getCmp("roles-form").selModel.selectRow(index,true);
 		});
-
 	}
 
 	

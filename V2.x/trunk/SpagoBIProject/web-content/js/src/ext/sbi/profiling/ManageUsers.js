@@ -177,7 +177,8 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
            , renderTo: Ext.getBody()
            , activeTab : 0
            , autoScroll : true
-           //, deferredRender: false
+           //NB: Important trick: to render all content tabs on page load
+           , deferredRender: false
            , width: 450
            , height: 450
            , itemId: 'tabs'
@@ -270,6 +271,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		        , id : 'rolesList'
 		        , layout: 'fit'
 		        , autoScroll: true
+		        //, renderTo: Ext.getBody()
 		        , items: [this.rolesGrid]
 		        , itemId: 'roles'
 		        , scope: this
@@ -279,6 +281,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 		        , autoScroll: true
 	            , items : [ this.attributesGridPanel ]
 		        , itemId: 'attributes'
+		        , layout: 'fit'
 		    }]
 
 		});
@@ -426,7 +429,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 			  store: this.rolesStore
 			, id: 'roles-form'
 			//NB: Important trick!!!to render the grid with activeTab=0	
-			, renderTo: Ext.getBody()
+			//, renderTo: Ext.get('ext-gen97')
    	     	, cm: this.cmRoles
    	     	, sm: this.smRoles
    	     	, frame: false

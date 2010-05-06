@@ -357,6 +357,8 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
 		this.contactsGridPanel = new Ext.grid.GridPanel({
 			  store: this.contactsStore
 			, id: 'contacts-form'
+			//NB: Important trick!!!to render the grid with activeTab=0	
+			, renderTo: Ext.getBody()
    	     	, cm: this.cmContacts
    	     	, sm: this.smContacts
    	     	, frame: false
@@ -447,7 +449,7 @@ Ext.extend(Sbi.alarms.ManageAlarms, Ext.FormPanel, {
  	    
  	   this.tabs = new Ext.TabPanel({
            enableTabScroll : true
-           , activeTab : 2
+           , activeTab : 0
            , autoScroll : true
            , width: 450
            , height: 450

@@ -21,5 +21,5 @@ Sbi.settings.console = {
 };
 
 Sbi.settings.console.masterDetailWindow = {
-	height: 600
+	height: 350
 };

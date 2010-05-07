@@ -266,6 +266,11 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     	this.toolbar.addSpacer();
     	
     	
+    	var titleLn = LN('sbi.browser.document.functionalities');
+    	if(breadcrumbs[0]){
+    			breadcrumbs[0].name = titleLn;
+    	}
+    	
         for(var i=0; i<breadcrumbs.length-1; i++) {
         	this.toolbar.add({
         		text: breadcrumbs[i].name

@@ -111,6 +111,7 @@ Sbi.browser.FolderViewTemplate = function(config) {
 	    trackMouse: true
 	}); 
 
+	var noItem = LN('sbi.browser.folderdetailpanel.emptytext');
 	
 	Sbi.browser.FolderViewTemplate.superclass.constructor.call(this, 
 			 '<div id="sample-ct">',
@@ -119,7 +120,9 @@ Sbi.browser.FolderViewTemplate = function(config) {
 	            '<h2><div class="group-header">{title} ({[values.samples.length]})</div></h2>',
 	            '<dl class="group-body">',
 	            	'<tpl if="samples.length == 0">',
-	            		'<div id="empty-group-message">No items in this group</div>',
+	            		'<div id="empty-group-message">',
+	            		noItem,
+	            		'</div>',
 	            	'</tpl>',
 	                '<tpl for="samples">',   
 	                	'{[engine=""]}',

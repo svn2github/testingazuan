@@ -138,11 +138,20 @@ Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
     , applyState : function() {
     	if(!this.ready) return;
     	this.reset();
+    	this.localize();
     	this.applyFilter(this.viewState.filterType);
     	this.applySort(this.viewState.sortGroup, this.viewState.sortAttribute);
     	this.applyGroup(this.viewState.groupGroup, this.viewState.groupAttribute);
     	this.createIndex();
     	this.refresh();
+    }
+    
+    
+    , localize: function() {
+    	 var groups = this.store.getRange(0, this.store.getCount());
+         for(var i = 0; i < groups.length; i++) {
+        	 groups[i].data.titleLabel = LN(groups[i].data.title);
+         }
     }
     
     , sort : function(groupName, attributeName) { 

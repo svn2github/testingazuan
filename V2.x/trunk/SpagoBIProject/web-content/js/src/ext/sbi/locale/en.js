@@ -40,6 +40,8 @@ Sbi.locale.ln['sbi.browser.searchpanel.similar'] = 'search similar words';
 Sbi.locale.ln['sbi.browser.misc.x']  = 'by';
 Sbi.locale.ln['sbi.browser.misc.ungroup']  = 'ungroup';
 
+Sbi.locale.ln['engine']  = 'engine';
+Sbi.locale.ln['description']  = 'description';
 Sbi.locale.ln['sbi.browser.document.label']  = 'label';
 Sbi.locale.ln['sbi.browser.document.name']  = 'name';
 Sbi.locale.ln['sbi.browser.document.extendedDescription']  = 'long description';

@@ -37,6 +37,9 @@ Sbi.locale.ln['sbi.browser.searchpanel.similar'] = 'cerca parole simili';
 Sbi.locale.ln['sbi.browser.misc.x']  = 'per';
 Sbi.locale.ln['sbi.browser.misc.ungroup']  = 'rimuovi gruppi';
 
+Sbi.locale.ln['engine']  = 'motore';
+Sbi.locale.ln['description']  = 'descrizione';
+
 Sbi.locale.ln['sbi.browser.document.label']  = 'label';
 Sbi.locale.ln['sbi.browser.document.name']  = 'nome';
 Sbi.locale.ln['sbi.browser.document.extendedDescription']  = 'descrizione lunga';

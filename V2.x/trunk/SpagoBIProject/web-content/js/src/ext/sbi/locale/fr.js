@@ -11,6 +11,8 @@ Sbi.locale.ln['sbi.browser.document.engine']                                    
 Sbi.locale.ln['sbi.browser.document.extendedDescription']                                                 = 'description longue ';
 Sbi.locale.ln['sbi.browser.document.functionalities']                                                     = 'fonctionnalit\u00E9s';
 Sbi.locale.ln['sbi.browser.document.keywords']                                                            = 'mots cl\u00E9s';
+Sbi.locale.ln['engine']  																				  = 'moteur';
+Sbi.locale.ln['description']  																			  = 'Description';
 Sbi.locale.ln['sbi.browser.document.label']                                                               = 'libell\u00E9';
 Sbi.locale.ln['sbi.browser.document.language']                                                            = 'langue';
 Sbi.locale.ln['sbi.browser.document.name']                                                                = 'nom';

@@ -31,16 +31,18 @@ Sbi.browser.FolderViewTemplate = function(config) {
 	
 	//alert('->' + config.metaFolder.toSource());
 	//alert('->' + config.metaDocument.toSource());	
-	
 	var documentAttributes = '';
+	var attributeNameView = '';
 	for(var i = 0; i < config.metaDocument.length; i++) {
 
 		var meta = config.metaDocument[i];
 		if(meta.visible) {		
-			
+			// translate meta.id if present
+			attributeNameView = LN(meta.id);
 			documentAttributes += '<p id="' + meta.id + '">';
 			if(meta.showLabel) {
-				documentAttributes += '<span class="field-label">' + meta.id + ':</span>';
+				//documentAttributes += '<span class="field-label">' + meta.id + ':</span>';
+				documentAttributes += '<span class="field-label">' + attributeNameView + ':</span>';
 			}
 			if(meta.maxChars) {
 				documentAttributes += '<span class="field-value" title="{' + meta.id + '}"> {[Ext.util.Format.ellipsis(values.' + meta.id + ', ' + meta.maxChars + ')]}</span>';
@@ -54,7 +56,7 @@ Sbi.browser.FolderViewTemplate = function(config) {
 
 	var documentTpl = '' +
 	'<div id="document-item-icon" class="document-item-icon">' +
-
+	
 	'<tpl if="this.isSearchResult(summary) == true">'+
 		'<img src="' + Ext.BLANK_IMAGE_URL + '" class="{typeCode}-icon" ext:qtip="<b>{views}</b><br/>{summary}"></img>' +
 	'</tpl>'+

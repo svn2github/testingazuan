@@ -233,19 +233,17 @@
 	<CONFIGURATOR path="/WEB-INF/conf/config/useragents.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/renderers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/mail.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/config/business_map.xml" />
-	<!-- -->      	
+	<CONFIGURATOR path="/WEB-INF/conf/config/business_map.xml" />    	
 	<CONFIGURATOR path="/WEB-INF/conf/config/security.xml" />	
 
-	<!-- profile manager 
-	
-  	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/pages.xml" />
+	<!-- exo profile manager 
+ 	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/business_map.xml" />
 	-->
--->
+
     <!-- kpi --> 
     <CONFIGURATOR path="/WEB-INF/conf/kpi/actions.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/kpi/graphs.xml" />

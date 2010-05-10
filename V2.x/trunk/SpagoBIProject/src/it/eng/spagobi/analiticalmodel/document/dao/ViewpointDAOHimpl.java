@@ -420,7 +420,7 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 			//String hql = "from SbiViewpoints vp where vp.sbiObject.biobjId = " + objId + " and (vp.vpScope = 'Public' or " +
 			//		"vp.vpOwner = '" + ((UserProfile)userProfile).getUserId().toString() + "')";
 			
-			String hql = "from SbiViewpoints vp where vp.sbiObject.biobjId = ? and (vp.vpScope = 'Public' or  "+
+			String hql = "from SbiViewpoints vp where vp.sbiObject.biobjId = ? and (vp.vpScope = 'Public' or vp.vpScope = 'PUBLIC' or  "+
 			"vp.vpOwner = ?)";
 
 			Query hqlQuery = aSession.createQuery(hql);

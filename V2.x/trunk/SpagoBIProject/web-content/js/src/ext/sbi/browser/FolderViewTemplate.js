@@ -117,7 +117,7 @@ Sbi.browser.FolderViewTemplate = function(config) {
 			 '<div id="sample-ct">',
 	            '<tpl for=".">',
 	            '<div class="group">',
-	            '<h2><div class="group-header">{title} ({[values.samples.length]})</div></h2>',
+	            '<h2><div class="group-header">{titleLabel} ({[values.samples.length]})</div></h2>',
 	            '<dl class="group-body">',
 	            	'<tpl if="samples.length == 0">',
 	            		'<div id="empty-group-message">',

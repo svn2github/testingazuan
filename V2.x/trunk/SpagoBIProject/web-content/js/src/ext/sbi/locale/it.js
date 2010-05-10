@@ -1,5 +1,9 @@
 Ext.ns("Sbi.locale");
 Sbi.locale.ln = new Array();
+
+Sbi.locale.ln['Folders'] = 'Cartelle';
+Sbi.locale.ln['Documents']  = 'Documenti';
+
 Sbi.locale.ln['sbi.browser.documentstree.title'] = 'Albero delle funzionalità';
 Sbi.locale.ln['sbi.browser.documentstree.root']  = 'Radice';
 

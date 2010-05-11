@@ -41,21 +41,21 @@
 			
 			/~ --- Grammar specification --- ~/
 			
-			p:      numberexpression              
+			p:      numericexpression              
 			        | stringexpression
 					;
 			
-			numberexpression:	numberexpression '+' numberexpression        
-			       				| numberexpression '-' numberexpression      
-								| numberexpression '*' numberexpression      
-								| numberexpression '/' numberexpression      
-								| '-' numberexpression &'*'   
-								| SUM '(' numberexpression ')'
-								| COUNT '(' numberexpression ')'  
-								| AVG '(' numberexpression ')'  
-								| MIN '(' numberexpression ')'
-								| MAX '(' numberexpression ')'  
-								| '(' numberexpression ')'    
+			numericexpression:	numericexpression '+' numericexpression        
+			       				| numericexpression '-' numericexpression      
+								| numericexpression '*' numericexpression      
+								| numericexpression '/' numericexpression      
+								| '-' numericexpression &'*'   
+								| SUM '(' numericexpression ')'
+								| COUNT '(' numericexpression ')'  
+								| AVG '(' numericexpression ')'  
+								| MIN '(' numericexpression ')'
+								| MAX '(' numericexpression ')'  
+								| '(' numericexpression ')'    
 								| INT
 								| FLOAT
 								| Identifier
@@ -68,6 +68,9 @@
 								;
 	    
 */
+SQLExpressionParser = {}; 
+
+SQLExpressionParser.module = function(){ 
 
 var _dbg_withtrace        = false;
 var _dbg_string            = new String();
@@ -889,17 +892,21 @@ switch( act )
     return err_cnt;
 }
 
+return{
+	
+	validateInLineCalculatedField: function (str){
 
-function validateInLineCalculatedField(str){
-
-	var error_offsets = new Array(); 
-	var error_lookaheads = new Array(); 
-	var error_count = 0; 
-	if( ( error_count = __parse( str, error_offsets, error_lookaheads ) ) > 0 ) { 
-		var errstr = new String(); 
-		for( var i = 0; i < error_count; i++ ) 
-			errstr += "Parse error in line " + ( str.substr( 0, error_offsets[i] ).match( /\n/g ) ? str.substr( 0, error_offsets[i] ).match( /\n/g ).length : 1 ) + " near \"" + str.substr( error_offsets[i] ) + "\", expecting \"" + error_lookaheads[i].join() + "\"\n" ; alert( errstr );
-	}else{
-		alert("Validation ok");
+		var error_offsets = new Array(); 
+		var error_lookaheads = new Array(); 
+		var error_count = 0; 
+		if( ( error_count = __parse( str, error_offsets, error_lookaheads ) ) > 0 ) { 
+			var errstr = new String(); 
+			for( var i = 0; i < error_count; i++ ) 
+				errstr += "Parse error in line " + ( str.substr( 0, error_offsets[i] ).match( /\n/g ) ? str.substr( 0, error_offsets[i] ).match( /\n/g ).length : 1 ) + " near \"" + str.substr( error_offsets[i] ) + "\", expecting \"" + error_lookaheads[i].join() + "\"\n" ; alert( errstr );
+		}else{
+			alert("Validation ok");
+		}
 	}
-}
+
+};
+}();

@@ -204,7 +204,11 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 	, addFilter : function(filter) {
 		filter = filter || {};
 		filter = Ext.apply(this.createFilter(), filter || {});
-		filter = this.documentParametersStore.modifyFilter(filter);
+		if(filter.leftOperandValue.expression!=undefined){
+			filter.leftOperandDescription = filter.leftOperandValue.alias; 
+		}else{
+			filter = this.documentParametersStore.modifyFilter(filter);
+		}
 		var record = new this.Record( filter );
 		this.grid.store.add(record); 
 	}

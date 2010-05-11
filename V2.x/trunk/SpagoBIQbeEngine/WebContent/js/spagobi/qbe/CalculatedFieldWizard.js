@@ -33,13 +33,12 @@ Sbi.qbe.CalculatedFieldWizard = function(config) {
 	
 	var c = Ext.apply({}, config || {}, {
 		title: 'Expression wizard ...'
-		, width: 500
-		, height: 250
+		, width: 600
+		, height: 300
 		, hasBuddy: false		
 	});
-	
+
 	Ext.apply(this, c);
-	
 	
 	this.initMainPanel(c);	
 	
@@ -75,7 +74,7 @@ Sbi.qbe.CalculatedFieldWizard = function(config) {
     		buddy : this
     	});
 	}
-	
+		
 	this.addEvents('apply');    
 };
 
@@ -99,15 +98,24 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 	, expressionEditorPanel: null
 	
 	, inputFields: null
+	, expertCheckBox: null
 	
 	, target: null
 	
 	, validationService:  null
+	, expertMode:  false
+	
+	, expItemGroups: null
+	, groupRootNodes: null
+	
 	
 
     // --------------------------------------------------------------------------------------------
     // public methods
     // --------------------------------------------------------------------------------------------
+	
+	
+
 	
 	, getExpression: function() {
 		//alert('getExpression');
@@ -124,6 +132,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 		return expression;
 	}
 
+
 	, setExpression: function(expression) {
 		//alert('setExpression');
 		if(this.expressionEditor) {
@@ -132,6 +141,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 			expression = expression.replace(/ /g,"&nbsp;");
 	  		expression = expression.replace(/</g,"&lt;");
 	  		expression = expression.replace(/>/g,"&gt;");
+
 	  		if(this.expressionEditor.initialized) {
 	  			this.expressionEditor.insertAtCursor( expression );
 	  		} else {
@@ -154,8 +164,6 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
       	
       	return formState;
     }
-	
-	
 	
 	, setTargetRecord: function(record) {
 		this.target = record;
@@ -195,27 +203,32 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 	}
 
 	, validate: function() {
-		
-		var serviceUrl;
-		var params;
-		if(typeof this.validationService === 'object') {
-			serviceUrl = Sbi.config.serviceRegistry.getServiceUrl(this.validationService);
-			params = this.validationService.params || {};
-		} else {
-			serviceUrl = this.validationService;
-			params = {};
+		if(this.expertMode) {
+
+			var serviceUrl;
+			var params;
+			if(typeof this.validationService === 'object') {
+				serviceUrl = Sbi.config.serviceRegistry.getServiceUrl(this.validationService);
+				params = this.validationService.params || {};
+			} else {
+				serviceUrl = this.validationService;
+				params = {};
+			}
+			
+			params.expression = this.getExpression();
+			
+			Ext.Ajax.request({
+			    url: serviceUrl,
+			    success: this.onValidationSuccess,
+			    failure: Sbi.exception.ExceptionHandler.handleFailure,	
+			    scope: this,
+			    params: params
+			}); 
+			
+		}else{
+			validateInLineCalculatedField(this.getExpression());
 		}
-		
-		params.expression = this.getExpression();
-		
-		Ext.Ajax.request({
-		    url: serviceUrl,
-		    success: this.onValidationSuccess,
-		    failure: Sbi.exception.ExceptionHandler.handleFailure,	
-		    scope: this,
-		    params: params
-		});   
-		
+
 	}
 	
 	, onValidationSuccess: function(response) {
@@ -273,10 +286,11 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 		
 		this.centerRegionPanel = this.expressionEditorPanel;
 	}
+	
 
 	// details form
 	, initDetailsFormPanel: function(c) {
-		var items = [];
+	
 		
 		if(this.inputFields === null) {
 			this.inputFields = new Object();
@@ -284,13 +298,17 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 		
 		this.inputFields['alias'] = new Ext.form.TextField({
     		name:'alias',
-    		allowBlank:false, 
+    		allowBlank: false, 
     		inputType:'text',
     		maxLength:50,
     		width:250,
     		fieldLabel:'Alias' 
     	});
-    	items.push( this.inputFields['alias'] );
+    	var aliasPanel = new  Ext.form.FormPanel({
+    		bodyStyle: "background-color: transparent; border-color: transparent",
+    		items: [this.inputFields['alias'] ]
+    	});
+    	
     	
     	var scopeComboBoxData = [
     	    ['STRING','String', 'If the expression script returns a plain text string'],
@@ -301,8 +319,26 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
     	var scopeComboBoxStore = new Ext.data.SimpleStore({
     		fields: ['value', 'field', 'description'],
     		data : scopeComboBoxData 
-    	});    		    
-    	             		    
+    	});  
+    	
+    	this.expertCheckBox = new Ext.form.Checkbox({
+			checked: this.expertMode,
+			boxLabel: LN('sbi.qbe.selectgridpanel.buttons.text.expert'),
+		    listeners: {
+		    	 check: function(checkbox , checked) {
+			    	 if (!checked) {
+			    		  this.fireEvent('expert');
+			    		  this.hide();
+			    	  }else{
+			    		  this.fireEvent('notexpert');
+			    		  this.hide();
+			    	  }
+    		
+			     },scope: this
+		     }
+
+		});	
+
     	this.inputFields['type'] = new Ext.form.ComboBox({
     		tpl: '<tpl for="."><div ext:qtip="{field}: {description}" class="x-combo-list-item">{field}</div></tpl>',	
     		editable  : false,
@@ -318,20 +354,33 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
     		triggerAction: 'all',
     		selectOnFocus:true
     	});
-    	items.push( this.inputFields['type'] );
     	
-    	this.detailsFormPanel = new Ext.form.FormPanel(
-    	 Ext.apply({
-    		items: items
-    	 }, c || {}) 
+    	var typePanel = new  Ext.form.FormPanel({
+    		bodyStyle: "background-color: transparent; border-color: transparent",
+    		items: [this.inputFields['type'] ]
+    	});
+
+    	this.detailsFormPanel = new Ext.Panel(
+	    	 Ext.apply({
+		    	 layout: 'table',
+		    	 layoutConfig: {
+			        columns: 2
+			     },
+	    		 items: [
+	    		     aliasPanel,
+	    		     this.expertCheckBox ,
+	    		     typePanel
+	    		 ]
+	    	 }, c || {})
+
     	);
+
 	}
 	
 	
 	// items tree
 	
-	, expItemGroups: null
-	, groupRootNodes: null
+
 	
 	, setExpItems: function(itemGroupName, items) {
 		var groupRootNode = this.groupRootNodes[itemGroupName];
@@ -365,7 +414,6 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 					this.groupRootNodes[groupName] = new Ext.tree.AsyncTreeNode(Ext.apply({}, {leaf: false}, this.expItemGroups[i]));
 				}
 				this.expItemsTreeRootNode.appendChild( this.groupRootNodes[groupName] );
-				
 				if(this[groupName] != null) {
 					this.setExpItems(groupName, this[groupName]);
 				}
@@ -398,11 +446,15 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 	
 	, expItemsTreeClick: function(node, e) {
 		if(node.attributes.value) {
-	    	var text = node.attributes.value + ' ';
+			var text;
+			if(node.attributes.alias !== undefined){
+				text= node.attributes.alias + ' ';
+			}else{
+				text= node.attributes.value + ' ';	
+			}
 	    	this.expressionEditor.insertAtCursor(text) ; 
 		}
 	}
-	
 	
 	
 	// expression editor
@@ -464,6 +516,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
     	        'beforesync': function(){
     	          // do nothings
     	        }
+  	        
     	    }
     	});
 		
@@ -481,6 +534,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 	, initMainPanel: function(c) {
 		
 		c = c || {};
+
 		this.initNorthRegionPanel(c.northRegionConfig || {});
 		this.initWestRegionPanel(c.westRegionConfig || {});
 		this.initCenterRegionPanel(c.centerRegionConfig || {});
@@ -504,7 +558,7 @@ Sbi.qbe.CalculatedFieldWizard.getUsedItemSeeds = function(itemGroupName, express
      var patternSeed = new RegExp(/'.*'/);
      var token = null;
      var seeds = new Array();
-     while( (token = pattern.exec(expression)) != null) {
+     while( (token = pattern.exec(expression)) !== null) {
          token = patternSeed.exec(token); 
          token = new String(token);
          token = token.substring(1, token.length - 1);

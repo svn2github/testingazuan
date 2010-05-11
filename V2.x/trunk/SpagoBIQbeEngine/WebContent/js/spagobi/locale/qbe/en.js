@@ -269,6 +269,10 @@ Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.group'] = 'Group fields by par
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.add'] = 'Add calculated';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.add'] = 'Add an ad-hoc calculated field (i.e. valid only for this query)';
 
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.addinline'] = 'Add in line calculated field';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.addinline'] = 'Add an ad-hoc in line calculated field (i.e. valid only for this query)';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.expert'] = 'Expert User';
+
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.delete'] = 'Delete all';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.delete'] = 'Delete selected filed';
 

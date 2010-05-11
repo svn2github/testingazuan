@@ -193,7 +193,9 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	, addFilter : function(filter) {
 		filter = filter || {};
 		filter = Ext.apply(this.createFilter(), filter || {});
-		if(this.documentParametersStore) {
+		if(filter.leftOperandValue.expression!=undefined){
+			filter.leftOperandDescription = filter.leftOperandValue.alias; 
+		} else if(this.documentParametersStore) {
 			filter = this.documentParametersStore.modifyFilter(filter);
 		}
 		var record = new this.Record( filter );
@@ -531,10 +533,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	              emptyText: LN('sbi.qbe.filtergridpanel.foperators.editor.emptymsg'),
 	              selectOnFocus: true //True to select any existing text in the field immediately on focus
 	        });
-		    
-		    
-		   
-		    
+   
 		    var parentFieldEditor = new Ext.form.TriggerField({
 	             allowBlank: true
 	             , triggerClass: 'trigger-up'

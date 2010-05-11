@@ -304,7 +304,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			Criteria criteria = aSession.createCriteria(SbiObjects.class);
 			criteria.add(labelCriterrion);
 			SbiObjects hibObject = (SbiObjects) criteria.uniqueResult();
-			if (hibObject == null) return null;
+			//if (hibObject == null) return null;
 			biObject = toBIObject(hibObject);
 			tx.commit();
 		} catch (HibernateException he) {

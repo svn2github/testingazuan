@@ -877,7 +877,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	
 	, pdfExecution: function () {
 		var urlExporter = this.services['toPdf'] + '&OBJECT_ID=' + this.executionInstance.OBJECT_ID;
-		window.open(urlExporter,'name','height=750,width=1000');
+		window.open(urlExporter,'name','resizable=1,height=750,width=1000');
 	}		
 	
 	, pdfDCExecution: function () {
@@ -905,7 +905,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
  			//alert(newPars);
 		var urlExporter = this.services['toDCPdf'] + '&OBJECT_ID=' + this.executionInstance.OBJECT_ID;
 		urlExporter+=newPars;
-		window.open(urlExporter,'name','height=750,width=1000');	
+		window.open(urlExporter,'name','resizable=1,height=750,width=1000');	
 	}		
 	
 	,exportReportExecution: function (exportType) {
@@ -920,7 +920,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	    parurl.outputType = exportType;
 	    parurl = Ext.urlEncode(parurl);
 	    var endUrl = baseUrl +parurl;
-		window.open(endUrl,'name','height=750,width=1000');
+		window.open(endUrl,'name','resizable=1,height=750,width=1000');
 	}
 	
 	,exportOlapExecution: function (exportType) {
@@ -938,7 +938,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	    var endUrl = baseUrl + docurlPar;
 	    //alert ("endUrl: " + endUrl);
 	    
-		window.open(endUrl,'name','height=750,width=1000');
+		window.open(endUrl,'name','resizable=1,height=750,width=1000');
 	}
 	
 	, exportChartExecution: function (exportType) {		
@@ -948,7 +948,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			urlExporter = this.services['toChartPdf'] + '&OBJECT_ID=' + this.executionInstance.OBJECT_ID ;
 			urlExporter+= '&SBI_EXECUTION_ID=' + this.executionInstance.SBI_EXECUTION_ID + "&outputType=PDF";
 		}
-		window.open(urlExporter,'name','height=750,width=1000');
+		window.open(urlExporter,'name','resizable=1,height=750,width=1000');
 	}
 	
 	, exportQbEExecution: function (exportType) {	
@@ -977,7 +977,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			form.action = endUrl;
 			form.submit();
 	    } else {
-	    	window.open(endUrl,'name','height=750,width=1000');
+	    	window.open(endUrl,'name','resizable=1,height=750,width=1000');
 	    }
 	}
 	
@@ -993,7 +993,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	    var endUrl = baseUrl + docurlPar;
 	   // alert ("endUrl: " + endUrl);
 	    
-		window.open(endUrl,'name','height=750,width=1000');
+		window.open(endUrl,'name','resizable=1,height=750,width=1000');
 	}
 
 	

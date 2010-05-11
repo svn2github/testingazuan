@@ -25,6 +25,7 @@ import it.eng.qbe.datasource.hibernate.IHibernateDataSource;
 import it.eng.qbe.query.CalculatedSelectField;
 import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.ISelectField;
+import it.eng.qbe.query.InLineCalculatedSelectField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statment.hibernate.HQLStatement;
 import it.eng.spago.error.EMFInternalError;
@@ -194,10 +195,20 @@ public class QbeDataSet extends AbstractDataSet {
 				if (format != null && !format.trim().equals("")) {
 					dataStoreFieldMeta.setProperty("format", format);
 				}
-			} else {
+			} else if(queryFiled.isCalculatedField()){
 				CalculatedSelectField claculatedQueryField = (CalculatedSelectField)queryFiled;
 				dataStoreFieldMeta.setName(claculatedQueryField.getAlias());
 				dataStoreFieldMeta.setProperty("calculated", new Boolean(true));	
+				// FIXME also calculated field must have uniquename for uniformity
+				dataStoreFieldMeta.setProperty("uniqueName", claculatedQueryField.getAlias());
+				DataSetVariable variable = new DataSetVariable(claculatedQueryField.getAlias(), claculatedQueryField.getType(), claculatedQueryField.getExpression());
+				dataStoreFieldMeta.setProperty("variable", variable);	
+				dataStoreFieldMeta.setType( variable.getTypeClass() );	
+				
+			} else if(queryFiled.isInLineCalculatedField()){
+				InLineCalculatedSelectField claculatedQueryField = (InLineCalculatedSelectField)queryFiled;
+				dataStoreFieldMeta.setName(claculatedQueryField.getAlias());
+				dataStoreFieldMeta.setProperty("calculated", new Boolean(false));	
 				// FIXME also calculated field must have uniquename for uniformity
 				dataStoreFieldMeta.setProperty("uniqueName", claculatedQueryField.getAlias());
 				DataSetVariable variable = new DataSetVariable(claculatedQueryField.getAlias(), claculatedQueryField.getType(), claculatedQueryField.getExpression());

@@ -33,6 +33,7 @@ import it.eng.qbe.query.AggregationFunctions;
 import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.IAggregationFunction;
+import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.spagobi.commons.utilities.StringUtilities;
@@ -182,7 +183,14 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 						expression = fieldClaculationDescriptor.getString(SerializationConstants.FIELD_EXPRESSION);
 						
 						query.addCalculatedFiled(alias, expression, type, included, visible);
-					} else {
+					} else if (ISelectField.IN_LINE_CALCULATED_FIELD.equalsIgnoreCase(fieldType)) {
+						
+						fieldClaculationDescriptor = fieldJSON.getJSONObject(SerializationConstants.FIELD_ID);
+						type = fieldClaculationDescriptor.getString(SerializationConstants.FIELD_TYPE);
+						expression = fieldClaculationDescriptor.getString(SerializationConstants.FIELD_EXPRESSION);
+						
+						query.addInLineCalculatedFiled(alias, expression, type, included, visible);
+					}else {
 						Assert.assertUnreachable("Type [" + fieldType + "] of field [" + alias + "] is not valid");
 					}
 					

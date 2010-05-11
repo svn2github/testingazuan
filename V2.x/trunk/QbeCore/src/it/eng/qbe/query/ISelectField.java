@@ -27,6 +27,7 @@ package it.eng.qbe.query;
 public interface ISelectField {
 	public final static String DATAMART_FIELD = "datamartField";
 	public final static String CALCULATED_FIELD = "calculatedField";
+	public final static String IN_LINE_CALCULATED_FIELD = "inLineCalculatedField";
 	
 	String getAlias();	
 	void setAlias(String alias);
@@ -34,6 +35,8 @@ public interface ISelectField {
 	String getType();	
 	void setType(String type);	
 	boolean isDataMartField();
+	boolean isInLineCalculatedField();
+	boolean isCalculatedField();
 	
 	boolean isVisible() ;
 	void setVisible(boolean visible);

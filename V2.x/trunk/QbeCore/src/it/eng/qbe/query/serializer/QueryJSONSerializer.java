@@ -200,10 +200,20 @@ public class QueryJSONSerializer implements QuerySerializer {
 						fieldJSON.put(SerializationConstants.FIELD_ORDER, dataMartSelectField.getOrderType());
 						fieldJSON.put(SerializationConstants.FIELD_AGGREGATION_FUNCTION, dataMartSelectField.getFunction().getName());
 						
-					} else {
+					} else if (field.getType().equals(ISelectField.CALCULATED_FIELD)){
 						CalculatedSelectField calculatedSelectField = (CalculatedSelectField)field;
 						
 						fieldJSON.put(SerializationConstants.FIELD_TYPE, field.CALCULATED_FIELD);
+						
+						JSONObject fieldClaculationDescriptor = new JSONObject();
+						fieldClaculationDescriptor.put(SerializationConstants.FIELD_TYPE, calculatedSelectField.getType());
+						fieldClaculationDescriptor.put(SerializationConstants.FIELD_EXPRESSION, calculatedSelectField.getExpression());
+						fieldJSON.put(SerializationConstants.FIELD_ID, fieldClaculationDescriptor);
+						
+					} else if (field.getType().equals(ISelectField.IN_LINE_CALCULATED_FIELD)){
+						CalculatedSelectField calculatedSelectField = (CalculatedSelectField)field;
+						
+						fieldJSON.put(SerializationConstants.FIELD_TYPE, field.IN_LINE_CALCULATED_FIELD);
 						
 						JSONObject fieldClaculationDescriptor = new JSONObject();
 						fieldClaculationDescriptor.put(SerializationConstants.FIELD_TYPE, calculatedSelectField.getType());

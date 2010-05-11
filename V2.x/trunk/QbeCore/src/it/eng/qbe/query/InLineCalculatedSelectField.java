@@ -24,61 +24,41 @@ package it.eng.qbe.query;
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public abstract class AbstractSelectField implements ISelectField {
-	private String alias;
+public class InLineCalculatedSelectField extends AbstractSelectField {
+	
+	private String expression;
 	private String type;
-	private boolean visible;
-	private boolean included;
+	private Object initialValue;
+	private int resetType;
+	private int incrementType;
 	
-	public AbstractSelectField(String alias, String type, boolean included, boolean visible) {
-		setAlias(alias);
-		setType(type);
-		setIncluded( included );
-		setVisible( visible );
+	public InLineCalculatedSelectField(String alias, String expression, String type, boolean included, boolean visible) {
+		super(alias, ISelectField.CALCULATED_FIELD, included, visible);
+		this.expression = expression;
+		this.type = type;
 	}
 	
-	public String getAlias() {
-		return alias;
+	public String getExpression() {
+		return expression;
 	}
-	
-	public void setAlias(String alias) {
-		this.alias = alias;
+
+	public void setExpression(String expression) {
+		this.expression = expression;
 	}
 	
 	public String getType() {
 		return type;
 	}
-	
+
 	public void setType(String type) {
 		this.type = type;
 	}
 	
-	public boolean isDataMartField() {
-		return this.DATAMART_FIELD.equalsIgnoreCase(type);
+	public ISelectField copy() {
+		return null;
 	}
 	
 	public boolean isInLineCalculatedField() {
-		return this.IN_LINE_CALCULATED_FIELD.equalsIgnoreCase(type);
+		return true;
 	}
-	
-	public boolean isCalculatedField() {
-		return this.CALCULATED_FIELD.equalsIgnoreCase(type);
-	}
-	
-	public boolean isVisible() {
-		return visible;
-	}
-
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
-
-	public boolean isIncluded() {
-		return included;
-	}
-
-	public void setIncluded(boolean included) {
-		this.included = included;
-	}
-
 }

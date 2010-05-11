@@ -66,4 +66,8 @@ public class CalculatedSelectField extends AbstractSelectField {
 	public ISelectField copy() {
 		return null;
 	}
+
+	public boolean isCalculatedField() {
+		return true;
+	}
 }

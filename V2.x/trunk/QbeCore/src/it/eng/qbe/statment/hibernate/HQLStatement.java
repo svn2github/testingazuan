@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -47,6 +48,7 @@ import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.Filter;
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.IAggregationFunction;
+import it.eng.qbe.query.InLineCalculatedSelectField;
 import it.eng.qbe.query.Operand;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
@@ -261,7 +263,10 @@ public class HQLStatement extends BasicStatement {
 	private String buildSelectClause(Query query, Map entityAliasesMaps) {
 		StringBuffer buffer;
 		List selectFields;
+		List allSelectFields;
+		List selectInLineCalculatedFields;
 		DataMartSelectField selectField;
+		InLineCalculatedSelectField selectInLineField;
 		DataMartEntity rootEntity;
 		DataMartField datamartField;
 		String queryName;
@@ -317,7 +322,51 @@ public class HQLStatement extends BasicStatement {
 				}
 				logger.debug("select clause element succesfully added to select clause");
 			}
-		} finally {
+			
+			selectInLineCalculatedFields = query.getInLineCalculatedSelectFields(true);
+			it = selectInLineCalculatedFields.iterator();
+			Map<String, String> map = new HashMap<String, String>();
+			while( it.hasNext() ) {
+
+				selectInLineField = (InLineCalculatedSelectField)it.next();
+				
+				String expr = selectInLineField.getExpression();//.replace("\'", "");
+				
+				StringTokenizer stk = new StringTokenizer(selectInLineField.getExpression().replace("\'", ""), "+-|,()*");
+				while(stk.hasMoreTokens()){
+					String alias = stk.nextToken().trim();
+					String uniqueName;
+					allSelectFields = query.getSelectFields(false);
+					for(int i=0; i<allSelectFields.size(); i++){
+						if(allSelectFields.get(i).getClass().equals(DataMartSelectField.class) && ((DataMartSelectField)allSelectFields.get(i)).getAlias().equals(alias)){
+							uniqueName=((DataMartSelectField)allSelectFields.get(i)).getUniqueName();
+							datamartField = getDataSource().getDataMartModelStructure().getField(uniqueName);	
+							queryName = datamartField.getQueryName();
+							rootEntity = datamartField.getParent().getRoot(); 
+							rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
+							map.put(alias,rootEntityAlias+"."+queryName);
+						}
+					}
+				}
+				
+				
+				Iterator<String> keyIter = map.keySet().iterator();
+				while(keyIter.hasNext()){
+					String key = keyIter.next();
+					expr=expr.replaceAll(key, map.get(key));
+				}
+				
+				buffer.append(", ");
+				buffer.append(expr);
+
+				
+				logger.debug("select clause element succesfully added to select clause");
+			}
+		} 
+		
+		
+		
+		finally {
 			logger.debug("OUT");
 		}
 		
@@ -670,25 +719,32 @@ public class HQLStatement extends BasicStatement {
 			conditionalOperator = (IConditionalOperator)conditionalOperators.get( whereField.getOperator() );
 			Assert.assertNotNull(conditionalOperator, "Unsopported operator " + whereField.getOperator() + " used in query definition");
 			
-			leftOperandElement = buildOperand(whereField.getLeftOperand(), query, entityAliasesMaps);
-			
-			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(whereField.getRightOperand().type) 
-					&& whereField.isPromptable()) {
-				// get last value first (the last value edited by the user)
-				rightOperandElement = whereField.getRightOperand().lastValue;
-			} else {
-				rightOperandElement = buildOperand(whereField.getRightOperand(), query, entityAliasesMaps);
+			if(whereField.getLeftOperand().value.contains("expression")){
+				whereClauseElement = buildInLineCalculatedFieldClause(whereField.getOperator(), whereField.getLeftOperand(), whereField.isPromptable(), whereField.getRightOperand(), query, entityAliasesMaps, conditionalOperator);
+			}else{
+				
+				leftOperandElement = buildOperand(whereField.getLeftOperand(), query, entityAliasesMaps);
+				
+				if (OPERAND_TYPE_STATIC.equalsIgnoreCase(whereField.getRightOperand().type) 
+						&& whereField.isPromptable()) {
+					// get last value first (the last value edited by the user)
+					rightOperandElement = whereField.getRightOperand().lastValue;
+				} else {
+					rightOperandElement = buildOperand(whereField.getRightOperand(), query, entityAliasesMaps);
+				}
+				
+				if (OPERAND_TYPE_STATIC.equalsIgnoreCase(whereField.getLeftOperand().type) )  {
+					leftOperandElement= getTypeBoundedStaticOperand(whereField.getRightOperand(), whereField.getOperator(), leftOperandElement);
+				}
+				
+				if (OPERAND_TYPE_STATIC.equalsIgnoreCase(whereField.getRightOperand().type) )  {
+					rightOperandElement= getTypeBoundedStaticOperand(whereField.getLeftOperand(), whereField.getOperator(), rightOperandElement);
+				}
+				
+				whereClauseElement = conditionalOperator.apply(leftOperandElement, rightOperandElement);
+	
 			}
 			
-			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(whereField.getLeftOperand().type) )  {
-				leftOperandElement= getTypeBoundedStaticOperand(whereField.getRightOperand(), whereField.getOperator(), leftOperandElement);
-			}
-			
-			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(whereField.getRightOperand().type) )  {
-				rightOperandElement= getTypeBoundedStaticOperand(whereField.getLeftOperand(), whereField.getOperator(), rightOperandElement);
-			}
-			
-			whereClauseElement = conditionalOperator.apply(leftOperandElement, rightOperandElement);
 			logger.debug("where element value [" + whereClauseElement + "]");
 		} finally {
 			logger.debug("OUT");
@@ -697,6 +753,103 @@ public class HQLStatement extends BasicStatement {
 		
 		return  whereClauseElement;
 	}
+	
+	
+	
+	/**
+	 * Builds the sql statement (for the having or the where clause) for the calculate fields.  
+	 * @param operator the operator of the clause 
+	 * @param leftOperand the left operand
+	 * @param isPromptable
+	 * @param rightOperand right operand
+	 * @param query the sql query
+	 * @param entityAliasesMaps the map of the entity involved in the query
+	 * @return
+	 */
+	private String buildInLineCalculatedFieldClause(String operator, Operand leftOperand, boolean isPromptable, Operand rightOperand, Query query, Map entityAliasesMaps, IConditionalOperator conditionalOperator){
+		List allSelectFields;
+		DataMartEntity rootEntity;
+		DataMartField datamartField;
+		String queryName;
+		String rootEntityAlias;
+		Map entityAliases = (Map)entityAliasesMaps.get(query.getId());
+		Map<String, String> map = new HashMap<String, String>();
+		String rightOperandElement;
+		
+		String expr = leftOperand.value.substring(15,leftOperand.value.indexOf("\",\"alias"));//.replace("\'", "");
+		StringTokenizer stk = new StringTokenizer(expr, "+-|,()*");
+		while(stk.hasMoreTokens()){
+			String alias = stk.nextToken().trim();
+			String uniqueName;
+			allSelectFields = query.getSelectFields(false);
+			for(int i=0; i<allSelectFields.size(); i++){
+				if(allSelectFields.get(i).getClass().equals(DataMartSelectField.class) && ((DataMartSelectField)allSelectFields.get(i)).getAlias().equals(alias)){
+					uniqueName=((DataMartSelectField)allSelectFields.get(i)).getUniqueName();
+					datamartField = getDataSource().getDataMartModelStructure().getField(uniqueName);	
+					queryName = datamartField.getQueryName();
+					rootEntity = datamartField.getParent().getRoot(); 
+					rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
+					map.put(alias,rootEntityAlias+"."+queryName);
+				}
+			}
+		}
+
+		Iterator<String> keyIter = map.keySet().iterator();
+		while(keyIter.hasNext()){
+			String key = keyIter.next();
+			expr=expr.replaceAll(key, map.get(key));
+		}
+				
+		logger.debug("IN");
+					
+		if (OPERAND_TYPE_STATIC.equalsIgnoreCase(rightOperand.type) && isPromptable) {
+			// get last value first (the last value edited by the user)
+			rightOperandElement = rightOperand.lastValue;
+		} else {
+			rightOperandElement = buildOperand(rightOperand, query, entityAliasesMaps);
+		}
+		
+		if (OPERAND_TYPE_STATIC.equalsIgnoreCase(rightOperand.type) )  {
+			String boundedValue = rightOperandElement;
+
+			if (OPERAND_TYPE_FIELD.equalsIgnoreCase(leftOperand.type) 
+							|| OPERAND_TYPE_PARENT_FIELD.equalsIgnoreCase(leftOperand.type)) {
+				String type = (leftOperand.value.substring(leftOperand.value.indexOf("type\":")+7, leftOperand.value.indexOf("\"}")));
+				if(type.equalsIgnoreCase("String")) {
+					if( !( CriteriaConstants.IN.equalsIgnoreCase( operator ) 
+							|| CriteriaConstants.NOT_IN.equalsIgnoreCase( operator )
+							|| CriteriaConstants.BETWEEN.equalsIgnoreCase( operator )
+							|| CriteriaConstants.NOT_BETWEEN.equalsIgnoreCase(operator ) 
+					)) {
+						// if the value is already surrounded by quotes, does not neither add quotes nor escape quotes 
+						if (rightOperandElement.startsWith("'") && rightOperandElement.endsWith("'")) {
+							boundedValue = rightOperandElement ;
+						} else {
+							rightOperandElement = escapeQuotes(rightOperandElement);
+							boundedValue = "'" + rightOperandElement + "'";
+						}
+					} else {
+						String[] items = rightOperandElement.split(",");
+						boundedValue = "";
+						for(int i = 0; i < items.length; i++) {
+							// if the value is already surrounded by quotes, does not add quotes
+							if (items[i].startsWith("'") && items[i].endsWith("'")) {
+								boundedValue += (i==0?"":",") + items[i];
+							} else {
+								String temp = escapeQuotes(items[i]);
+								boundedValue += (i==0?"":",") + "'" + temp + "'";
+							}
+						}					
+					}
+				}
+			}
+			
+			rightOperandElement= boundedValue;
+		}
+		
+		return conditionalOperator.apply("("+expr+")", rightOperandElement);
+	}
+	
 	/*
 	private String buildUserProvidedWhereField(WhereField whereField, Query query, Map entityAliasesMaps) {
 		
@@ -916,7 +1069,18 @@ public class HQLStatement extends BasicStatement {
 			Iterator it = query.getHavingFields().iterator();
 			while (it.hasNext()) {
 				HavingField field = (HavingField) it.next();
-				buffer.append( buildHavingClauseElement(field, query, entityAliasesMaps) );
+								
+				if(field.getLeftOperand().value.contains("expression")){
+					IConditionalOperator conditionalOperator = null;
+					conditionalOperator = (IConditionalOperator)conditionalOperators.get( field.getOperator() );
+					Assert.assertNotNull(conditionalOperator, "Unsopported operator " + field.getOperator() + " used in query definition");
+
+					String havingClauseElement =  buildInLineCalculatedFieldClause(field.getOperator(), field.getLeftOperand(), field.isPromptable(), field.getRightOperand(), query, entityAliasesMaps, conditionalOperator);
+					buffer.append(havingClauseElement);
+				}else{
+						buffer.append( buildHavingClauseElement(field, query, entityAliasesMaps) );
+				}
+				
 				if (it.hasNext()) {
 					buffer.append(" " + field.getBooleanConnector() + " ");
 				}

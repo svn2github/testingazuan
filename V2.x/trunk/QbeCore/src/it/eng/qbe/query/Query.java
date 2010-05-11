@@ -113,6 +113,10 @@ public class Query {
 	public void addCalculatedFiled(String fieldAlias, String expression, String type, boolean included, boolean visible) {
 		selectFields.add( new CalculatedSelectField(fieldAlias, expression, type, included, visible) );
 	}
+	
+	public void addInLineCalculatedFiled(String fieldAlias, String expression, String type, boolean included, boolean visible) {
+		selectFields.add( new InLineCalculatedSelectField(fieldAlias, expression, type, included, visible) );
+	}
 
 	
 	public void addWhereField(String name, String description, boolean promptable,
@@ -236,7 +240,7 @@ public class Query {
 		it = getSelectFields(false).iterator();
 		while(it.hasNext()) {
 			field = (ISelectField)it.next();
-			if(!field.isDataMartField()) {
+			if(field.isCalculatedField()) {
 				if( onlyIncluded == false || (onlyIncluded == true && field.isIncluded()) ) {
 					calculatedSelectFields.add(field);
 				}
@@ -244,6 +248,25 @@ public class Query {
 		}
 		
 		return calculatedSelectFields;
+	}
+	
+	public List getInLineCalculatedSelectFields(boolean onlyIncluded) {
+		List inLineCalculatedSelectFields;
+		Iterator it;
+		ISelectField field;
+		
+		inLineCalculatedSelectFields = new ArrayList();
+		it = getSelectFields(false).iterator();
+		while(it.hasNext()) {
+			field = (ISelectField)it.next();
+			if(field.isInLineCalculatedField()) {
+				if( onlyIncluded == false || (onlyIncluded == true && field.isIncluded()) ) {
+					inLineCalculatedSelectFields.add(field);
+				}
+			}
+		}
+		
+		return inLineCalculatedSelectFields;
 	}
 	
 	public List getWhereFields() {

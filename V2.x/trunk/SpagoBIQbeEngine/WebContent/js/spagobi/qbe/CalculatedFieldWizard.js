@@ -226,7 +226,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 			}); 
 			
 		}else{
-			validateInLineCalculatedField(this.getExpression());
+			SQLExpressionParser.module.validateInLineCalculatedField(this.getExpression());
 		}
 
 	}

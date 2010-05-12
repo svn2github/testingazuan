@@ -217,9 +217,15 @@ public class QueryJSONSerializer implements QuerySerializer {
 						fieldJSON.put(SerializationConstants.FIELD_TYPE, field.IN_LINE_CALCULATED_FIELD);
 						
 						JSONObject fieldClaculationDescriptor = new JSONObject();
+						fieldClaculationDescriptor.put(SerializationConstants.FIELD_ALIAS, calculatedSelectField.getAlias());
 						fieldClaculationDescriptor.put(SerializationConstants.FIELD_TYPE, calculatedSelectField.getType());
 						fieldClaculationDescriptor.put(SerializationConstants.FIELD_EXPRESSION, calculatedSelectField.getExpression());
 						fieldJSON.put(SerializationConstants.FIELD_ID, fieldClaculationDescriptor);
+						fieldJSON.put(SerializationConstants.FIELD_LONG_DESCRIPTION, calculatedSelectField.getExpression());
+						fieldJSON.put(SerializationConstants.FIELD_GROUP, "");
+						fieldJSON.put(SerializationConstants.FIELD_ORDER, "");
+						fieldJSON.put(SerializationConstants.FIELD_AGGREGATION_FUNCTION, "");
+						
 						
 					}
 				} catch(Throwable t) {

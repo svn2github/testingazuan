@@ -46,6 +46,7 @@ import it.eng.qbe.export.ReportRunner;
 import it.eng.qbe.export.SQLFieldsReader;
 import it.eng.qbe.export.TemplateBuilder;
 import it.eng.qbe.query.DataMartSelectField;
+import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.statment.IStatement;
 import it.eng.qbe.statment.QbeDataSet;
 import it.eng.spago.base.RequestContainer;
@@ -170,7 +171,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			}
 			logger.debug("Fields extracted succesfully");
 			
-			Assert.assertTrue(getEngineInstance().getActiveQuery().getDataMartSelectFields(true).size() == extractedFields.size(), 
+			Assert.assertTrue(getEngineInstance().getActiveQuery().getDataMartSelectFields(true).size()+getEngineInstance().getActiveQuery().getInLineCalculatedSelectFields(true).size() == extractedFields.size(), 
 					"The number of fields extracted from query resultset cannot be different from the number of fields specified into the query select clause");
 			
 			decorateExtractedFields( extractedFields );
@@ -313,15 +314,16 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 
 
 	private void decorateExtractedFields(List extractedFields) {
-		List selectedFields = getEngineInstance().getActiveQuery().getDataMartSelectFields(true);
+		List selectedFields = getEngineInstance().getActiveQuery().getSelectFields(true);
 		Iterator selectedFieldsIterator = selectedFields.iterator();
 		Iterator extractedFieldsIterator =  extractedFields.iterator();
 		while( extractedFieldsIterator.hasNext() ) {
 			Field exctractedField = (Field)extractedFieldsIterator.next();
-			DataMartSelectField selectedField = (DataMartSelectField)selectedFieldsIterator.next();
+			ISelectField selectedField = (ISelectField)selectedFieldsIterator.next();
 			exctractedField.setAlias( selectedField.getAlias() );
 			exctractedField.setVisible( selectedField.isVisible() );
-			exctractedField.setPattern( selectedField.getPattern() );
+			if(selectedField.isDataMartField())
+				exctractedField.setPattern( ((DataMartSelectField)selectedField).getPattern() );
 		}
 	}
 	

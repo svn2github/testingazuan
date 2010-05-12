@@ -59,6 +59,8 @@ Sbi.browser.SearchPanel = function(config) {
 	
 	this.addEvents("onsearch", "onreset");
 	
+	var attributeLabel = LN('sbi.browser.searchpanel.attribute');
+	
 	this.addListener('afterlayout', function(el){
 		
 		if(this.searchField) return;		
@@ -78,10 +80,12 @@ Sbi.browser.SearchPanel = function(config) {
 		}, this);
 
 
+	
+
 		this.attributesComboBox = new Ext.form.ComboBox({
 			tpl: '<tpl for="."><div ext:qtip="{name}: {name}" class="x-combo-list-item">{name}</div></tpl>',	
 		    editable  : false,
-		    fieldLabel : 'Attribute',
+		    fieldLabel : attributeLabel,
 		    forceSelection : true,
 		    mode : 'local',
 		    name : 'attributes',

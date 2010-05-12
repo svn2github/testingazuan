@@ -26,6 +26,7 @@ Sbi.locale.ln['sbi.browser.folderdetailpanel.listviewTT']  = 'List View';
 Sbi.locale.ln['sbi.browser.folderdetailpanel.groupviewTT']  = 'Group View';
 Sbi.locale.ln['sbi.browser.folderdetailpanel.waitmsg']  = 'Please wait ...';
 
+Sbi.locale.ln['sbi.browser.searchpanel.attribute'] = 'Attribute';
 Sbi.locale.ln['sbi.browser.searchpanel.attributes.all']  = 'all';
 Sbi.locale.ln['sbi.browser.searchpanel.attributes.label']  = 'label';
 Sbi.locale.ln['sbi.browser.searchpanel.attributes.name']  = 'name';

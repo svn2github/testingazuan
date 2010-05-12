@@ -40,6 +40,7 @@ Sbi.locale.ln['sbi.browser.folderdetailpanel.waitmsg']                          
 Sbi.locale.ln['sbi.browser.misc.ungroup']                                                                 = 'Pas de groupe';
 Sbi.locale.ln['sbi.browser.misc.x']                                                                       = 'par';
 Sbi.locale.ln['sbi.browser.searchpanel.advanced']                                                         = 'options avanc\u00E9es';
+Sbi.locale.ln['sbi.browser.searchpanel.attribute'] 														  = 'Attribut';
 Sbi.locale.ln['sbi.browser.searchpanel.attributes']                                                       = 'Chercher dans';
 Sbi.locale.ln['sbi.browser.searchpanel.attributes.all']                                                   = 'tout';
 Sbi.locale.ln['sbi.browser.searchpanel.attributes.categories']                                            = 'cat\u00E9gories';

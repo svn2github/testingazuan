@@ -29,6 +29,7 @@ Sbi.locale.ln['sbi.browser.searchpanel.attributes.name']  = 'nome';
 Sbi.locale.ln['sbi.browser.searchpanel.attributes.description']  = 'descrizione';
 Sbi.locale.ln['sbi.browser.searchpanel.attributes.categories']  = 'categorie';
 
+Sbi.locale.ln['sbi.browser.searchpanel.attribute'] = 'Attributo';
 Sbi.locale.ln['sbi.browser.searchpanel.attributes'] = 'Cerca in';
 Sbi.locale.ln['sbi.browser.searchpanel.query'] = 'Testo';
 Sbi.locale.ln['sbi.browser.searchpanel.advanced'] = 'Opzioni avanzate';

@@ -107,6 +107,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 	
 	, expItemGroups: null
 	, groupRootNodes: null
+	, scopeComboBoxData: null
 	
 	
 
@@ -309,21 +310,14 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
     		items: [this.inputFields['alias'] ]
     	});
     	
-    	
-    	var scopeComboBoxData = [
-    	    ['STRING','String', 'If the expression script returns a plain text string'],
-    		['HTML', 'Html', 'If the expression script returns a valid html fragment'],
-    		['NUMBER', 'Number', 'If the expression script returns a number']
-    	];
-    	         	    		
     	var scopeComboBoxStore = new Ext.data.SimpleStore({
     		fields: ['value', 'field', 'description'],
-    		data : scopeComboBoxData 
+    		data : this.scopeComboBoxData 
     	});  
     	
     	this.expertCheckBox = new Ext.form.Checkbox({
 			checked: this.expertMode,
-			boxLabel: LN('sbi.qbe.selectgridpanel.buttons.text.expert'),
+			fieldLabel: LN('sbi.qbe.selectgridpanel.buttons.text.expert'),
 		    listeners: {
 		    	 check: function(checkbox , checked) {
 			    	 if (!checked) {
@@ -359,6 +353,11 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
     		bodyStyle: "background-color: transparent; border-color: transparent",
     		items: [this.inputFields['type'] ]
     	});
+    	
+    	var expertCheckPanel = new  Ext.form.FormPanel({
+    		bodyStyle: "background-color: transparent; border-color: transparent; padding-left: 10px;",
+    		items: [this.expertCheckBox]
+    	});
 
     	this.detailsFormPanel = new Ext.Panel(
 	    	 Ext.apply({
@@ -368,7 +367,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 			     },
 	    		 items: [
 	    		     aliasPanel,
-	    		     this.expertCheckBox ,
+	    		     expertCheckPanel ,
 	    		     typePanel
 	    		 ]
 	    	 }, c || {})

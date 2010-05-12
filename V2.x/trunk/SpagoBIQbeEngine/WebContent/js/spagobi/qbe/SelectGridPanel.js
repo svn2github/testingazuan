@@ -748,6 +748,10 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
     		functions: functionsForInline,
     		aggregationFunctions: aggregationFunctions,
     		expertMode: false,
+        	scopeComboBoxData :[
+    	                 	    ['STRING','String', 'If the expression script returns a plain text string'],
+    	                 		['NUMBER', 'Number', 'If the expression script returns a number']
+    	                 	],
     		validationService: {
 				serviceName: 'VALIDATE_EXPRESSION_ACTION'
 				, baseParams: {contextType: 'query'}
@@ -766,6 +770,11 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
      		fields: fields,
      		functions: functions,
      		expertMode: true,
+        	scopeComboBoxData :[
+        	                 	    ['STRING','String', 'If the expression script returns a plain text string'],
+        	                 		['HTML', 'Html', 'If the expression script returns a valid html fragment'],
+        	                 		['NUMBER', 'Number', 'If the expression script returns a number']
+        	                 	],
      		validationService: {
  				serviceName: 'VALIDATE_EXPRESSION_ACTION'
  				, baseParams: {contextType: 'query'}
@@ -818,16 +827,19 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		});
 		
 		var fields = new Array();
+		//removes from the fields the calculated fields
 		records.each(function(r) {
-			var field = {
-				uniqueName: r.data.id,
-				alias: r.data.alias,
-				text: r.data.alias, 
-				qtip: r.data.entity + ' : ' + r.data.field, 
-				type: 'field', 
-				value: 'fields[\'' + r.data.alias + '\']'
-			};	
-			fields.push(field);
+			if(r.data.type == "datamartField"){
+				var field = {
+					uniqueName: r.data.id,
+					alias: r.data.alias,
+					text: r.data.alias, 
+					qtip: r.data.entity + ' : ' + r.data.field, 
+					type: 'field', 
+					value: 'fields[\'' + r.data.alias + '\']'
+				};
+				fields.push(field);
+			}
 		});			
 		this.inLineCalculatedFieldWizard.show();
 		this.inLineCalculatedFieldWizard.validationService.params = {fields: Ext.util.JSON.encode(fields)};
@@ -848,16 +860,20 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		});
 		
 		var fields = new Array();
+		
 		records.each(function(r) {
-			var field = {
-				uniqueName: r.data.id,
-				alias: r.data.alias,
-				text: r.data.alias, 
-				qtip: r.data.entity + ' : ' + r.data.field, 
-				type: 'field', 
-				value: 'fields[\'' + r.data.alias + '\']'
-			};	
-			fields.push(field);
+			//if the if statement isn't commented removes from the fields the calculated fields
+			//if(r.data.type == "datamartField"){
+				var field = {
+					uniqueName: r.data.id,
+					alias: r.data.alias,
+					text: r.data.alias, 
+					qtip: r.data.entity + ' : ' + r.data.field, 
+					type: 'field', 
+					value: 'fields[\'' + r.data.alias + '\']'
+				};
+				fields.push(field);
+			//}
 		});					
 		this.calculatedFieldWizard.validationService.params = {fields: Ext.util.JSON.encode(fields)};
 		this.calculatedFieldWizard.setExpItems('fields', fields);
@@ -961,13 +977,8 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	       	if(record.data.type === this.IN_LINE_CALCULATED_FIELD) {
 	       		this.addInLineCalculatedField(record);
 	       	}
-	     }, this);
-		
-		this.grid.on("rowdblclick", function(grid,  rowIndex, e){
-	    	var row;
-	       	var record = grid.getStore().getAt( rowIndex );
 	       	if(record.data.type === this.CALCULATED_FIELD) {
-	       		this.addInLineCalculatedField(record);
+	       		this.addCalculatedField(record);
 	       	}
 	     }, this);
 		

@@ -40,6 +40,7 @@ import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.ISelectField;
+import it.eng.qbe.query.InLineCalculatedSelectField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.spagobi.commons.utilities.StringUtilities;
@@ -200,7 +201,7 @@ public class QueryJSONSerializer implements QuerySerializer {
 						fieldJSON.put(SerializationConstants.FIELD_ORDER, dataMartSelectField.getOrderType());
 						fieldJSON.put(SerializationConstants.FIELD_AGGREGATION_FUNCTION, dataMartSelectField.getFunction().getName());
 						
-					} else if (field.getType().equals(ISelectField.CALCULATED_FIELD)){
+					} else if (field.isCalculatedField()){
 						CalculatedSelectField calculatedSelectField = (CalculatedSelectField)field;
 						
 						fieldJSON.put(SerializationConstants.FIELD_TYPE, field.CALCULATED_FIELD);
@@ -210,8 +211,8 @@ public class QueryJSONSerializer implements QuerySerializer {
 						fieldClaculationDescriptor.put(SerializationConstants.FIELD_EXPRESSION, calculatedSelectField.getExpression());
 						fieldJSON.put(SerializationConstants.FIELD_ID, fieldClaculationDescriptor);
 						
-					} else if (field.getType().equals(ISelectField.IN_LINE_CALCULATED_FIELD)){
-						CalculatedSelectField calculatedSelectField = (CalculatedSelectField)field;
+					} else if (field.isInLineCalculatedField()){
+						InLineCalculatedSelectField calculatedSelectField = (InLineCalculatedSelectField)field;
 						
 						fieldJSON.put(SerializationConstants.FIELD_TYPE, field.IN_LINE_CALCULATED_FIELD);
 						

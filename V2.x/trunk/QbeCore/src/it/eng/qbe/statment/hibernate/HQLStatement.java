@@ -781,8 +781,15 @@ public class HQLStatement extends BasicStatement {
 		Map entityAliases = (Map)entityAliasesMaps.get(query.getId());
 		Map<String, String> map = new HashMap<String, String>();
 		String rightOperandElement;
+				
+		String expr = leftOperand.value.substring(leftOperand.value.indexOf("\"expression\":\"")+14);//.replace("\'", "");
+		expr = expr.substring(0, expr.indexOf("\""));
 		
-		String expr = leftOperand.value.substring(15,leftOperand.value.indexOf("\",\"alias"));//.replace("\'", "");
+		logger.debug("Left operand (of a inline calculated field) for the filter clause of the query: "+leftOperand);
+		logger.debug("Expression of a inline calculated field for the filter clause of the query: "+expr);
+
+		
+		//String expr = leftOperand.value.substring(15,leftOperand.value.indexOf("\",\"alias"));//.replace("\'", "");
 		StringTokenizer stk = new StringTokenizer(expr, "+-|,()*");
 		while(stk.hasMoreTokens()){
 			String alias = stk.nextToken().trim();

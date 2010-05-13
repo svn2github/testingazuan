@@ -348,7 +348,8 @@ public class HQLStatement extends BasicStatement {
 								queryName = datamartField.getQueryName();
 								rootEntity = datamartField.getParent().getRoot(); 
 								rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
-								map.put(alias,rootEntityAlias+"."+queryName);
+								queryName = ((DataMartSelectField)allSelectFields.get(i)).getFunction().apply(rootEntityAlias+"."+queryName);
+								map.put(alias,queryName);
 							}
 						}
 					}
@@ -785,7 +786,7 @@ public class HQLStatement extends BasicStatement {
 		String expr = leftOperand.value.substring(leftOperand.value.indexOf("\"expression\":\"")+14);//.replace("\'", "");
 		expr = expr.substring(0, expr.indexOf("\""));
 		
-		logger.debug("Left operand (of a inline calculated field) for the filter clause of the query: "+leftOperand);
+		logger.debug("Left operand (of a inline calculated field) for the filter clause of the query: "+leftOperand.value);
 		logger.debug("Expression of a inline calculated field for the filter clause of the query: "+expr);
 
 		
@@ -802,7 +803,8 @@ public class HQLStatement extends BasicStatement {
 					queryName = datamartField.getQueryName();
 					rootEntity = datamartField.getParent().getRoot(); 
 					rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
-					map.put(alias,rootEntityAlias+"."+queryName);
+					queryName = ((DataMartSelectField)allSelectFields.get(i)).getFunction().apply(rootEntityAlias+"."+queryName);
+					map.put(alias,queryName);
 				}
 			}
 		}

@@ -325,7 +325,9 @@ public class QueryJSONSerializer implements QuerySerializer {
 				if(operand.type.equalsIgnoreCase("Field Content")) {
 					if(operand.value.contains("\"expression\":\"")){
 						filterJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description );
-						filterJSON.put(SerializationConstants.FILTER_LO_LONG_DESCRIPTION, operand.value);						
+						String description = operand.value.substring(operand.value.indexOf("\"expression\":\"")+14);
+						description.substring(0, description.indexOf("\""));
+						filterJSON.put(SerializationConstants.FILTER_LO_LONG_DESCRIPTION, description);						
 					}else{
 						datamartField = datamartModel.getDataMartModelStructure().getField( operand.value );
 						
@@ -468,7 +470,9 @@ public class QueryJSONSerializer implements QuerySerializer {
 					
 					if(operand.value.contains("\"expression\":\"")){
 						havingJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description );
-						havingJSON.put(SerializationConstants.FILTER_LO_LONG_DESCRIPTION, operand.value);						
+						String description = operand.value.substring(operand.value.indexOf("\"expression\":\"")+14);
+						description.substring(0, description.indexOf("\""));
+						havingJSON.put(SerializationConstants.FILTER_LO_LONG_DESCRIPTION, description);						
 					}else{
 					
 						datamartField = datamartModel.getDataMartModelStructure().getField( operand.value );

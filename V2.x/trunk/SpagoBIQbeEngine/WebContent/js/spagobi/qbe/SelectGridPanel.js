@@ -823,7 +823,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		}
 
 		var records = this.store.queryBy( function(record) {
-			return record.data.include === true;
+			return record;
 		});
 		
 		var fields = new Array();

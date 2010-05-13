@@ -54,9 +54,17 @@ Sbi.qbe.CalculatedFieldWizard = function(config) {
 	    buttons: [{
 			text: 'Save',
 		    handler: function(){
-	    		this.fireEvent('apply', this, this.getFormState(), this.target);
-            	this.hide();
-            	//alert(sendMessage || 'sendMessage not defined');
+	    	    var emptyAlias = (this.inputFields.alias.getValue()==null) || (this.inputFields.alias.getValue()=="");
+	    	    var emptyType = (this.inputFields.type.getValue()==null) || (this.inputFields.type.getValue()=="");
+
+	    	    if(emptyAlias){
+	    	    	this.inputFields.alias.focus();
+	    	    }else if(emptyType){
+	    	    	this.inputFields.type.focus();
+	    	    }else{
+		    		this.fireEvent('apply', this, this.getFormState(), this.target);
+	            	this.hide();
+	    	    }
         	}
         	, scope: this
 	    },{
@@ -108,6 +116,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 	, expItemGroups: null
 	, groupRootNodes: null
 	, scopeComboBoxData: null
+
 	
 	
 
@@ -205,7 +214,6 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 
 	, validate: function() {
 		if(this.expertMode) {
-
 			var serviceUrl;
 			var params;
 			if(typeof this.validationService === 'object') {
@@ -229,7 +237,6 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 		}else{
 			SQLExpressionParser.module.validateInLineCalculatedField(this.getExpression());
 		}
-
 	}
 	
 	, onValidationSuccess: function(response) {
@@ -338,6 +345,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
     		editable  : false,
     		fieldLabel : 'Type',
     		forceSelection : true,
+    		allowBlank :false,
     		mode : 'local',
     		name : 'scope',
     		store : scopeComboBoxStore,
@@ -537,7 +545,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 		this.initNorthRegionPanel(c.northRegionConfig || {});
 		this.initWestRegionPanel(c.westRegionConfig || {});
 		this.initCenterRegionPanel(c.centerRegionConfig || {});
-		
+
 		this.mainPanel = new Ext.Panel({
 			layout: 'border',
 		    frame: false, 

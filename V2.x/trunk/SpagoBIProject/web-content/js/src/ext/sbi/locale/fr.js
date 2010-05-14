@@ -51,6 +51,11 @@ Sbi.locale.ln['sbi.browser.searchpanel.opt.scope']                              
 Sbi.locale.ln['sbi.browser.searchpanel.query']                                                            = 'Requ\u00EAte';
 Sbi.locale.ln['sbi.browser.searchpanel.similar']                                                          = 'Etendre aux synonymes';
 Sbi.locale.ln['sbi.browser.searchpanel.title']                                                            = 'Chercher';
+Sbi.locale.ln['sbi.browser.defaultRole.title']  														  = 'selectiones une default r\u00F4le';
+Sbi.locale.ln['sbi.browser.defaultRole.role']  															  = 'R\u00F4le: ';
+Sbi.locale.ln['sbi.browser.defaultRole.noDefRole']  													  = 'Aucun default r\u00F4le';
+Sbi.locale.ln['sbi.browser.defaultRole.save'] 															  = 'Enregistrer';
+Sbi.locale.ln['sbi.browser.defaultRole.cancel']  														  = 'Effacer';
 Sbi.locale.ln['sbi.execution.CsvExport']                                                                  = 'CSV';
 Sbi.locale.ln['sbi.execution.JpgExport']                                                                  = 'JPG';
 Sbi.locale.ln['sbi.execution.PdfExport']                                                                  = 'PDF';
@@ -172,3 +177,19 @@ Sbi.locale.ln['sbi.rememberme.missingName']                                     
 Sbi.locale.ln['sbi.rememberme.name']                                                                      = 'Nom';
 Sbi.locale.ln['sbi.rememberme.save']                                                                      = 'Enregistrer';
 Sbi.locale.ln['sbi.rememberme.saveOk']                                                                    = 'Ex\u00E9cution enregistr\u00E9 correctement comme Favoris';
+// Profile Management
+Sbi.locale.ln['sbi.attributes.add'] 																		= 'Add';
+Sbi.locale.ln['sbi.attributes.delete'] 																		= 'Delete';
+Sbi.locale.ln['sbi.attributes.title'] = 'Profil Attributes';
+Sbi.locale.ln['sbi.attributes.update'] = 'Enregistres';
+Sbi.locale.ln['sbi.attributes.validationError'] = 'Validation Error';
+Sbi.locale.ln['sbi.attributes.headerName'] = 'Nom';
+Sbi.locale.ln['sbi.attributes.headerDescr'] = 'Description';
+Sbi.locale.ln['sbi.attributes.error'] = 'Erreur';
+Sbi.locale.ln['sbi.attributes.error.msg'] = 'Operation manqu\u00E9';
+Sbi.locale.ln['sbi.attributes.ok'] = 'Informations';
+Sbi.locale.ln['sbi.attributes.ok.msg'] = 'Operation arriv\u00E9 ';
+Sbi.locale.ln['sbi.attributes.result'] = 'Modifications enregistr\u00E9s';
+Sbi.locale.ln['sbi.attributes.resultMsg'] = 'Sors et rentres dans SpagoBi';
+Sbi.locale.ln['sbi.roles.resultMsg'] = 'Modifications enregistr\u00E9s';
+

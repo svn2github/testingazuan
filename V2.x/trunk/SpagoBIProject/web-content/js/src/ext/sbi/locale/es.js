@@ -65,6 +65,12 @@ Sbi.locale.ln['sbi.browser.document.objectve']  = 'objetivo';
 Sbi.locale.ln['sbi.browser.document.keywords']  = 'palabras clave';
 Sbi.locale.ln['sbi.browser.document.refreshSeconds']  = 'refresh interval';
 
+Sbi.locale.ln['sbi.browser.defaultRole.title']  = 'Select a default role';
+Sbi.locale.ln['sbi.browser.defaultRole.role']  = 'Role: ';
+Sbi.locale.ln['sbi.browser.defaultRole.noDefRole']  = 'No default role';
+Sbi.locale.ln['sbi.browser.defaultRole.save']  = 'Save';
+Sbi.locale.ln['sbi.browser.defaultRole.cancel']  = 'Cancel';
+
 
 Sbi.locale.ln['sbi.execution.error']  = 'An error has occured while executing documento';
 Sbi.locale.ln['sbi.execution.error.nodocid']  = 'Document id is required in order to execute a documento';
@@ -164,6 +170,9 @@ Sbi.locale.ln['sbi.attributes.error'] = 'Error';
 Sbi.locale.ln['sbi.attributes.error.msg'] = 'Operation failed';
 Sbi.locale.ln['sbi.attributes.ok'] = 'Information';
 Sbi.locale.ln['sbi.attributes.ok.msg'] = 'Operation succeded';
+Sbi.locale.ln['sbi.attributes.result'] = 'Updates saved';
+Sbi.locale.ln['sbi.attributes.resultMsg'] = 'Exit and re-enter SpagoBi';
+Sbi.locale.ln['sbi.roles.resultMsg'] = 'Operation succeeded';
 
 Sbi.locale.ln['sbi.roles.save'] = 'Guardar';
 Sbi.locale.ln['sbi.roles.savePersonalFolder'] = 'Guardar in carpeta personal';

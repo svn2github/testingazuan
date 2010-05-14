@@ -108,7 +108,9 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	//themes menu button
 	 tbThemesButton: null,
 	//info menu button   
-	 tbInfoButton: null,	
+	 tbInfoButton: null,
+	 	//role menu button   
+	 tbRoleButton: null,	
 	//languages menu button	        
 	 tbLanguagesButton: null,	
 	//toolbar welcome text
@@ -218,15 +220,17 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	
 	//initializes all menu Buttons
 	 initButtons: function(config){
-	 		var menus = config.bannerMenu;
 	 		
+	 		var menus = config.bannerMenu;
 	 		//user menus initialization
 	 		if(menus){
 	 			this.menuArray = [];
+	 			if(menus.items){
 	 			for(var i = 0; i < menus.items.length; i++) {
 					this.menuArray.push(this.getMenu(menus.items[i]));
+	 				}
+	 			  }
 	 			}
-	 		}
 	 		
 	 		//themes menus initialization
 	 		var menuThemesList = config.themesMenu;
@@ -276,6 +280,8 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	 		});
 	 	this.languages.addListener('mouseexit', function(item) {item.hide();});	
  	    
+ 	    
+ 	    
  	    //exit button initialization
  		this.tbExitButton = new Ext.Toolbar.Button({
 	            id: '5',
@@ -294,6 +300,19 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		            handler: this.info,
 		            scope: this
 		        })	;	
+		 
+		//role button initialization
+		// draw only if user has more than one role
+		//alert(Sbi.user.roles.length);
+		//if(Sbi.user.roles && Sbi.user.roles.length > 1){
+	    this.tbRoleButton = new Ext.Toolbar.Button({
+		            id: '',
+		            iconCls: 'icon-role',
+		            cls: 'x-btn-logout x-btn-text-icon bmenu',
+		            handler: this.role,
+		            scope: this
+		        })	;	
+		 //}
 		 
 		//languages button initialization       
 		this.tbLanguagesButton = new Ext.Toolbar.Button({
@@ -387,6 +406,9 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 			}
 			this.tbx.add(this.tbLanguagesButton);
 	 	    this.tbx.addButton(this.tbInfoButton);
+			if(this.tbRoleButton && this.tbRoleButton != null) {
+	 	    	this.tbx.addButton(this.tbRoleButton);
+	 	    }
 			this.tbx.add(this.tbExitButton);
 
 		}, this);
@@ -436,6 +458,14 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 			});
 		};
 		win_info_1.show();
+	  },
+	
+		role: function(){
+				if(Sbi.user.roles && Sbi.user.roles.length > 1){
+				this.win_roles = new Sbi.home.DefaultRoleWindow({'SBI_EXECUTION_ID': ''});
+				this.win_roles.show();
+				}
+
 	  },
 	
 	  logout: function() {

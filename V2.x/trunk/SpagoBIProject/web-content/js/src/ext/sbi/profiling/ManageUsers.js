@@ -573,7 +573,7 @@ Ext.extend(Sbi.profiling.ManageUsers, Ext.FormPanel, {
 					            }
 								Ext.MessageBox.show({
 			                        title: LN('sbi.attributes.result'),
-			                        msg: 'Operation succeded',
+			                        msg: LN('sbi.attributes.resultMsg'),
 			                        width: 200,
 			                        buttons: Ext.MessageBox.OK
 			                });		

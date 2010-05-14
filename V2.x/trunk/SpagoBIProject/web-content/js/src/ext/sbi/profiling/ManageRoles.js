@@ -546,7 +546,7 @@ Ext.extend(Sbi.profiling.ManageRoles, Ext.FormPanel, {
 			      			
 			      			Ext.MessageBox.show({
 			                        title: LN('sbi.attributes.result'),
-			                        msg: 'Operation succeded',
+			                        msg: LN('sbi.roles.resultMsg'),
 			                        width: 200,
 			                        buttons: Ext.MessageBox.OK
 			                });

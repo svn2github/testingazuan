@@ -38,6 +38,13 @@ Sbi.locale.ln['sbi.browser.searchpanel.similar'] = 'cerca parole simili';
 Sbi.locale.ln['sbi.browser.misc.x']  = 'per';
 Sbi.locale.ln['sbi.browser.misc.ungroup']  = 'rimuovi gruppi';
 
+Sbi.locale.ln['sbi.browser.defaultRole.title']  = 'Seleziona un ruolo di default';
+Sbi.locale.ln['sbi.browser.defaultRole.role']  = 'Ruolo: ';
+Sbi.locale.ln['sbi.browser.defaultRole.noDefRole']  = 'Nessun ruolo di default';
+Sbi.locale.ln['sbi.browser.defaultRole.save']  = 'Salva';
+Sbi.locale.ln['sbi.browser.defaultRole.cancel']  = 'Cancella';
+
+
 Sbi.locale.ln['engine']  = 'motore';
 Sbi.locale.ln['description']  = 'descrizione';
 
@@ -160,6 +167,9 @@ Sbi.locale.ln['sbi.attributes.error'] = 'Errore';
 Sbi.locale.ln['sbi.attributes.error.msg'] = 'Operazione fallita';
 Sbi.locale.ln['sbi.attributes.ok'] = 'Informazione';
 Sbi.locale.ln['sbi.attributes.ok.msg'] = 'Operazione avvenuta con successo';
+Sbi.locale.ln['sbi.attributes.result'] = 'Modifiche salvate';
+Sbi.locale.ln['sbi.attributes.resultMsg'] = 'Uscire e rientrare nel sistema';
+Sbi.locale.ln['sbi.roles.resultMsg'] = 'Operazione riuscita';
 
 Sbi.locale.ln['sbi.roles.save'] = 'Salva';
 Sbi.locale.ln['sbi.roles.savePersonalFolder'] = 'Salva nella cartella personale';

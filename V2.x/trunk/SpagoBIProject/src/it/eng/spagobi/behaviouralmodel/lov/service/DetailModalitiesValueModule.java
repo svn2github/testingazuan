@@ -191,7 +191,9 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			    UserProfile userProfile=new UserProfile((String)((UserProfile)profile).getUserId());
 				// copy all the roles, functionalities of the original profile
 			    userProfile.setFunctionalities(profile.getFunctionalities());
-			    userProfile.setRoles(profile.getRoles());
+			    userProfile.setRoles(((UserProfile)profile).getRolesForUse());
+			    userProfile.setDefaultRole(((UserProfile)profile).getDefaultRole());
+			    
 				// copy attributes and add the missing ones
 				Map attributes = new HashMap();
 				Collection origAttrNames = profile.getUserAttributeNames();

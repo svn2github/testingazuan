@@ -255,9 +255,6 @@ Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.group'] = 'Raggruppa per entit
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.add'] = 'Aggiungi campo calcolato';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.add'] = 'Add an ad-hoc calculated field (i.e. valid only for this query)';
 
-Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.addinline'] = 'Aggiungi campo calcolato in line';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.addinline'] = 'Add an ad-hoc in line calculated field (i.e. valid only for this query)';
-
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.delete'] = 'Elimina tutti';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.delete'] = 'Elimina campi selezionati';
 
@@ -265,7 +262,6 @@ Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.deleteall'] = 'Elimina tutto
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.deleteall'] = 'Elimina tutti i campi selezionati';
 
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.distinct'] = 'Valori distinti';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.expert'] = 'Utente Esperto';
 
 Sbi.locale.ln['sbi.qbe.freeconditionswindow.title'] = 'Inserisci condizioni ...';
 Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.apply'] = 'Attiva';
@@ -305,3 +301,11 @@ Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.serviceresponse'] = 'Il s
 Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.errors.title'] = 'Errore';
 Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.errors.missingcolumns'] = 'Il servizio richiesto necessita le seguenti colonne:';
 
+//===================================================================
+//CALCULATED FIELD WIZARD
+//===================================================================
+Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.success.title'] = 'Validazione';
+Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.success.text'] = 'Espressione valida';
+Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.fail.title'] = 'Errore di validazione';
+Sbi.locale.ln['sbi.qbe.calculatedFields.expert.nofilterwindow.title'] = 'Attenzione con questa tipologia di campi calcolati non è possibile applicare i filtri';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.expert'] = 'Utente Esperto';

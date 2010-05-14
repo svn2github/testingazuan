@@ -214,3 +214,12 @@ Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.title'] = 'The service wa
 Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.serviceresponse'] = 'The service has returned this message:';
 Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.errors.title'] = 'Error';
 Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.errors.missingcolumns'] = 'The required service needs the following columns:';
+
+///===================================================================
+//CALCULATED FIELD WIZARD
+//===================================================================
+Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.success.title'] = 'Validation';
+Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.success.text'] = 'Validation OK';
+Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.fail.title'] = 'Validation Fail';
+Sbi.locale.ln['sbi.qbe.calculatedFields.expert.nofilterwindow.title'] = 'Warning: with this type of calculated fields you can\'t use filters';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.expert'] = 'Expert User';

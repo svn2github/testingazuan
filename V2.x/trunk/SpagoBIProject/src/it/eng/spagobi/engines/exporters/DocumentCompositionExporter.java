@@ -4,6 +4,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
 import it.eng.spagobi.engines.config.bo.Engine;
@@ -57,7 +58,10 @@ public class DocumentCompositionExporter {
 			BIObject object=null;
 
 			// get roles
-			Collection roles=profile.getRoles();
+			Collection roles = null;
+			roles = ((UserProfile)profile).getRolesForUse();
+
+
 			for (Iterator iterator2 = roles.iterator(); iterator2.hasNext();) {
 				Object role = (Object) iterator2.next();
 				try{
@@ -77,7 +81,7 @@ public class DocumentCompositionExporter {
 			// Calling execution proxy
 			ExecutionProxy proxy = new ExecutionProxy();
 			proxy.setBiObject(object);
-			
+
 			// if engine is Birt, export in PDF, elsewhere in JPG
 			Engine engine = object.getEngine();
 			String driverName = engine.getDriverName();

@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.workflow.services;
 
 import it.eng.spago.base.SessionContainer;
@@ -36,6 +36,7 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.AuditLogUtilities;
 import it.eng.spagobi.commons.utilities.HibernateUtil;
@@ -68,70 +69,74 @@ public class WorkListModule extends AbstractBasicListModule {
 	private SourceBean getAssigments() throws Exception {
 		JbpmContext jbpmContext = null;
 		// Empty task list definition
-    	List taskList = new ArrayList();
-    	try{
-	    	//Getting Containers
-	    	SessionContainer session = getRequestContainer().getSessionContainer();
-	    	SessionContainer permSession = session.getPermanentContainer();
-	    	//ApplicationContainer application = ApplicationContainer.getInstance();
-	    	IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	    	//Getting Jbpm context 
-	    	JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
-	    	jbpmContext = jbpmConfiguration.createJbpmContext();
-	    	//Getting user roles
-	    	Collection roles = userProfile.getRoles();
-	    	//For each user role, find the task list associated
-	    	Iterator rolesIt = roles.iterator();
-	    	while (rolesIt.hasNext()) {
-	    		String role = (String) rolesIt.next();
-	    		List tmpTaskList = jbpmContext.getTaskList(role);
-	    		Iterator iterTaskInst = tmpTaskList.iterator();
-	    		while(iterTaskInst.hasNext()) {
-	    			TaskInstance ti = (TaskInstance)iterTaskInst.next();
-	    			taskList.add(ti);
-	    		}
-	    	}
-	    	SourceBean workListAsSourceBean = tasksToSourceBean(taskList);
-	    	return workListAsSourceBean;
-    	} catch (Exception e) {
-    		SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-    							"getAssigments", "Cannot recover assignment", e);
-    		throw e;
-    	} finally {
-	    	if (jbpmContext != null) {
-	    		jbpmContext.close();
-	    	}
-    	}
+		List taskList = new ArrayList();
+		try{
+			//Getting Containers
+			SessionContainer session = getRequestContainer().getSessionContainer();
+			SessionContainer permSession = session.getPermanentContainer();
+			//ApplicationContainer application = ApplicationContainer.getInstance();
+			IEngUserProfile userProfile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			//Getting Jbpm context 
+			JbpmConfiguration jbpmConfiguration = JbpmConfiguration.getInstance();
+			jbpmContext = jbpmConfiguration.createJbpmContext();
+			//Getting user roles
+			Collection roles = null;
 
-    	
-//    	GraphSession graphSession = jbpmContext.getGraphSession();
-//    	List processDefinitions = graphSession.findAllProcessDefinitions();
-//    	if (processDefinitions == null) return null;
-//    	Iterator itProcessDefinitions = processDefinitions.iterator();
-//    	while (itProcessDefinitions.hasNext()) {
-//    		ProcessDefinition aProcessDefinition = (ProcessDefinition) itProcessDefinitions.next();
-//    		long aProcessDefinitionId = aProcessDefinition.getId();
-//    		List processInstances = graphSession.findProcessInstances(aProcessDefinitionId);
-//    		if (processInstances == null) continue;
-//    		Iterator itProcessInstances = processDefinitions.iterator();
-//    		while (itProcessInstances.hasNext()) {
-//    			ProcessInstance aProcessInstance = (ProcessInstance) itProcessInstances.next();
-//    			.....
-//    		}
-//    	}
-    	//Getting Workflow Engine 
-    	//IWorkflowEngine wfEngine = (IWorkflowEngine)application.getAttribute("WfEngine");
-    	//Getting Connection From Workflow
-    	//IWorkflowConnection wfConnection = wfEngine.getWorkflowConnection();
-    	// Open the connection
-    	//wfConnection.open((String)userProfile.getUserUniqueIdentifier(), (String)userProfile.getUserAttribute("password"));
-        //List worklist = wfConnection.getAssignments();
-        // Transform List to sourceBean
-        //SourceBean workListAsSourceBean = assignmentsToSourceBean(worklist);
-        //return workListAsSourceBean;
-        
+			roles = ((UserProfile)userProfile).getRolesForUse();
+
+
+			//For each user role, find the task list associated
+			Iterator rolesIt = roles.iterator();
+			while (rolesIt.hasNext()) {
+				String role = (String) rolesIt.next();
+				List tmpTaskList = jbpmContext.getTaskList(role);
+				Iterator iterTaskInst = tmpTaskList.iterator();
+				while(iterTaskInst.hasNext()) {
+					TaskInstance ti = (TaskInstance)iterTaskInst.next();
+					taskList.add(ti);
+				}
+			}
+			SourceBean workListAsSourceBean = tasksToSourceBean(taskList);
+			return workListAsSourceBean;
+		} catch (Exception e) {
+			SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
+					"getAssigments", "Cannot recover assignment", e);
+			throw e;
+		} finally {
+			if (jbpmContext != null) {
+				jbpmContext.close();
+			}
+		}
+
+
+//		GraphSession graphSession = jbpmContext.getGraphSession();
+//		List processDefinitions = graphSession.findAllProcessDefinitions();
+//		if (processDefinitions == null) return null;
+//		Iterator itProcessDefinitions = processDefinitions.iterator();
+//		while (itProcessDefinitions.hasNext()) {
+//		ProcessDefinition aProcessDefinition = (ProcessDefinition) itProcessDefinitions.next();
+//		long aProcessDefinitionId = aProcessDefinition.getId();
+//		List processInstances = graphSession.findProcessInstances(aProcessDefinitionId);
+//		if (processInstances == null) continue;
+//		Iterator itProcessInstances = processDefinitions.iterator();
+//		while (itProcessInstances.hasNext()) {
+//		ProcessInstance aProcessInstance = (ProcessInstance) itProcessInstances.next();
+//		.....
+//		}
+//		}
+		//Getting Workflow Engine 
+		//IWorkflowEngine wfEngine = (IWorkflowEngine)application.getAttribute("WfEngine");
+		//Getting Connection From Workflow
+		//IWorkflowConnection wfConnection = wfEngine.getWorkflowConnection();
+		// Open the connection
+		//wfConnection.open((String)userProfile.getUserUniqueIdentifier(), (String)userProfile.getUserAttribute("password"));
+		//List worklist = wfConnection.getAssignments();
+		// Transform List to sourceBean
+		//SourceBean workListAsSourceBean = assignmentsToSourceBean(worklist);
+		//return workListAsSourceBean;
+
 	}
-	
+
 	/**
 	 * Map a java.util.List of assignments to a source bean
 	 * @param aWorkList - The java.util.List of the assignment
@@ -141,12 +146,12 @@ public class WorkListModule extends AbstractBasicListModule {
 	 */
 	protected SourceBean tasksToSourceBean (List aWorkList) throws SourceBeanException {
 		SourceBean rows = new SourceBean("ROWS");
-        
+
 		for (Iterator it = aWorkList.iterator(); it.hasNext();){
-        	rows.setAttribute(adapt((TaskInstance)it.next()));
-        }
-        
-        return rows; 
+			rows.setAttribute(adapt((TaskInstance)it.next()));
+		}
+
+		return rows; 
 	}
 
 	/** Map a single assignment to a source bean
@@ -183,9 +188,9 @@ public class WorkListModule extends AbstractBasicListModule {
 //		row.setAttribute("Accepted",new Boolean(wfAssignment.isAccepted()));
 //		row.setAttribute("TargetForm",wfAssignment.getMappedForm());
 		return row;
-		
+
 	}
-	
+
 	/**
 	 * Ovverided to code the logic to get the worklist from workflow engine.
 	 * 
@@ -199,10 +204,10 @@ public class WorkListModule extends AbstractBasicListModule {
 	public ListIFace getList(SourceBean arg0, SourceBean arg1) throws Exception {
 		PaginatorIFace paginator = new GenericPaginator();
 		InitializerIFace serviceInitializer = (InitializerIFace) this;
-		
+
 		int pagedRows = 10;
-		
-		 //Start writing log in the DB
+
+		//Start writing log in the DB
 		Session aSession =null;
 		try {
 			aSession = HibernateUtil.currentSession();
@@ -217,15 +222,15 @@ public class WorkListModule extends AbstractBasicListModule {
 			}
 		}
 		//End writing log in the DB
-		
+
 		paginator.setPageSize(pagedRows);
-		
+
 		RequestContextIFace serviceRequestContext = (RequestContextIFace) this;
-		
+
 		// Chiamata al workflow
 		SourceBean rowsSourceBean = getAssigments();
-		
-		
+
+
 		List rowsVector = null;
 		if (rowsSourceBean != null)
 			rowsVector = rowsSourceBean.getAttributeAsList(DataRow.ROW_TAG);

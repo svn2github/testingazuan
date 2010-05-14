@@ -43,7 +43,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	//SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
 	IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	Collection roles = profile.getRoles();
+	Collection roles = null;
+	roles = ((UserProfile)profile).getRolesForUse();
+	
 	boolean hasPortletEditPermissionRoles = false;
 	ConfigSingleton configSingleton = ConfigSingleton.getInstance();
 	List rolesSB = (List) configSingleton.getAttributeAsList("SPAGOBI.PORTLET_EDIT_MODE_ROLES.ROLE");

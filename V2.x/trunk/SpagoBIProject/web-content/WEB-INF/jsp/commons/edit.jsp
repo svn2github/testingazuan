@@ -45,7 +45,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%
 
-	Collection roles = userProfile.getRoles();
+	Collection roles = null;;
+		roles = ((UserProfile)userProfile).getRolesForUse();
+	
+
 	boolean hasPortletEditPermissionRoles = false;
 	ConfigSingleton configSingleton = ConfigSingleton.getInstance();
 	List rolesSB = (List) configSingleton.getAttributeAsList("SPAGOBI.PORTLET_EDIT_MODE_ROLES.ROLE");

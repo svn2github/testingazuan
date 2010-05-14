@@ -15,7 +15,7 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/locale/" + locale.getLanguage() + ".js")%>'></script>
 
 <!-- START-DEBUG -->
-<%--
+
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/locale/LocaleUtils.js")%>'></script>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/exception/ExceptionHandler.js")%>'></script>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/service/ServiceRegistry.js")%>'></script>
@@ -58,12 +58,15 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/execution/toolbar/RatingWindow.js")%>'></script>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/home/Footer.js")%>'></script>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/home/Banner.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/execution/toolbar/ListNotesWindow.js")%>'></script>
---%>
+<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/execution/toolbar/ListNotesWindow.js")%>'></script> 
+<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/home/DefaultRoleWindow.js")%>'></script> 
+
 <!-- END-DEBUG -->
 
 <!-- START-PRODUCTION-->
+<!--  
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi-all-2.5.0.js")%>'></script>
+-->
 <!-- END-PRODUCTION -->
 
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/commons/Settings.js")%>'></script>

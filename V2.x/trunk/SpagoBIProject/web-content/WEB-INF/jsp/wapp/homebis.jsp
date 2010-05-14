@@ -91,7 +91,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	List filteredMenuList = MenuUtilities.filterListForUser(lstMenu, userProfile);
 	MenuListJSONSerializer m = new MenuListJSONSerializer();
 	JSONObject jsonMenuList = (JSONObject)m.serialize(filteredMenuList,locale);
-	
+	if(jsonMenuList == null) jsonMenuList= new JSONObject();	
 	ConfigSingleton spagoconfig = ConfigSingleton.getInstance(); 
 	// get mode of execution
 	String viewTrack = (String)spagoconfig.getAttribute("SPAGOBI.MENU.pathTracked");   
@@ -269,6 +269,20 @@ if(showfooter){%>
 
 <script type="text/javascript">
     
+   // 20100511
+   var url = {
+    	host: '<%= request.getServerName()%>'
+    	, port: '<%= request.getServerPort()%>'
+    	, contextPath: '<%= request.getContextPath().startsWith("/")||request.getContextPath().startsWith("\\")?
+    	   				  request.getContextPath().substring(1):
+    	   				  request.getContextPath()%>'
+    };
+
+    Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({
+    	baseUrl: url
+    });
+    // END 20100511
+    
     var northFrame;
     var centerFrame;
     var southFrame;
@@ -334,7 +348,7 @@ if(showfooter){%>
       Ext.QuickTips.init();              
       var menuList = <%=jsonMenuList%>;
       var firstUrl =  '<%= StringEscapeUtils.escapeJavaScript(firstUrlToCall) %>';
-      northFrame = new Sbi.home.Banner({bannerMenu: menuList,themesMenu: jsonMenuThemesList});
+     northFrame = new Sbi.home.Banner({bannerMenu: menuList,themesMenu: jsonMenuThemesList});
       centerFrame = new  Ext.ux.ManagedIframePanel({
       					region: 'center'
       					,xtype: 'panel'

@@ -50,6 +50,9 @@ The following directive catches exceptions thrown by jsps, must be commented in 
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
 <%@page import="it.eng.spagobi.utilities.themes.ThemesManager"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+
 <!-- IMPORT TAG LIBRARY  -->
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
 
@@ -150,11 +153,17 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 	String userUniqueIdentifier="";
 	String userId="";
 	String userName="";
+	String defaultRole="";
+	List<String> userRoles = new ArrayList();;
+	
 	//if (userProfile!=null) userId=(String)userProfile.getUserUniqueIdentifier();
 	if (userProfile!=null){
 		userId=(String)((UserProfile)userProfile).getUserId();
 		userUniqueIdentifier=(String)userProfile.getUserUniqueIdentifier();
 		userName=(String)((UserProfile)userProfile).getUserName();
+		userRoles = (ArrayList)userProfile.getRoles();
+		defaultRole = ((UserProfile)userProfile).getDefaultRole();		
+		
 	}
 	
 	// Set Theme
@@ -218,6 +227,8 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
     Sbi.user.userId = '<%= StringEscapeUtils.escapeJavaScript(userId) %>';
     Sbi.user.userName = '<%= StringEscapeUtils.escapeJavaScript(userName) %>';    
     Sbi.user.ismodeweb = <%= sbiMode.equals("WEB")? "true" : "false"%>;
+	Sbi.user.roles = new Array();
+	Sbi.user.defaultRole = '<%= defaultRole != null ? StringEscapeUtils.escapeJavaScript(defaultRole)  : ""%>'
 	<%
 	StringBuffer buffer = new StringBuffer("[");
 	if (userProfile != null && userProfile.getFunctionalities() != null && !userProfile.getFunctionalities().isEmpty()) {
@@ -232,6 +243,21 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 	}
 	buffer.append("]");
 	%>
+	
+	<%
+	// Set roles
+	Integer ind = Integer.valueOf(0);
+	for(Iterator it = userRoles.iterator();it.hasNext();)
+	{
+		String aRole = (String)it.next();
+	%>
+		Sbi.user.roles[<%=ind.toString()%>] = '<%=StringEscapeUtils.escapeJavaScript(aRole)%>';
+	<%
+		ind = Integer.valueOf( ind.intValue()+1 );
+	}
+	%>
+	
+	
 	// Sbi.user.functionalities is a javascript array containing all user functionalities' names
 	Sbi.user.functionalities = <%= buffer.toString() %>;
 </script>

@@ -192,7 +192,8 @@ if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
 	String rowClass = null;
 	
     Map baseExecSubObjUrlPars = new HashMap();
-    baseExecSubObjUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
+    //baseExecSubObjUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
+	baseExecSubObjUrlPars.put("ACTION_NAME", SpagoBIConstants.EXECUTE_DOCUMENT_ACTION);  
     baseExecSubObjUrlPars.put(SpagoBIConstants.MESSAGEDET, "EXEC_SUBOBJECT");
     baseExecSubObjUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
     

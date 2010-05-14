@@ -177,8 +177,9 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
   
 		
 		Map execSnapUrlPars = new HashMap();
-		execSnapUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-	    execSnapUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_SNAPSHOT_MESSAGE);
+//		execSnapUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+		execSnapUrlPars.put("ACTION_NAME", SpagoBIConstants.EXECUTE_DOCUMENT_ACTION);  		    
+		execSnapUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_SNAPSHOT_MESSAGE);
 	    execSnapUrlPars.put(SpagoBIConstants.SNAPSHOT_ID, snap.getId());
 	    execSnapUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
 	    execSnapUrl = urlBuilder.getUrl(request, execSnapUrlPars);

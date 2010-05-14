@@ -198,7 +198,8 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 		creationDateVP = vp.getVpCreationDate();
 		
 		Map execVPUrlPars = new HashMap();
-		execVPUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+		//execVPUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+		execVPUrlPars.put("ACTION_NAME", SpagoBIConstants.EXECUTE_DOCUMENT_ACTION);    
 		execVPUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.VIEWPOINT_EXEC);	
 		execVPUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");						
 		execVPUrlPars.put("content", vp.getVpValueParams());

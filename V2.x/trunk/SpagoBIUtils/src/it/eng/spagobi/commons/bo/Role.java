@@ -51,6 +51,8 @@ public class Role  implements Serializable  {
     private boolean isAbleToSaveMetadata;
     private boolean isAbleToBuildQbeQuery;
 
+    private boolean defaultRole;
+    
 	/**
 	 * Checks if is able to save subobjects.
 	 * 
@@ -379,6 +381,15 @@ public class Role  implements Serializable  {
 	public void setCode(String code) {
 		this.code = code;
 	}
+
+	public boolean isDefaultRole() {
+		return defaultRole;
+	}
+
+	public void setDefaultRole(boolean defaultRole) {
+		this.defaultRole = defaultRole;
+	}
+	
 	
 	
 }

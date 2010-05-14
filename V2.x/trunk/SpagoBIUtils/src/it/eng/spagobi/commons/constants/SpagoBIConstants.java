@@ -144,7 +144,7 @@ public class SpagoBIConstants {
 	public static final String INPUT_TYPE_SCRIPT_CODE = "SCRIPT";
 	
 	public static final String THEME = "THEME";
-
+	public static final String DEFAULT_ROLE = "DEFAULT_ROLE";
 	
 	public static final String BIOBJECT_TYPE_CODE = "BIOBJECT_TYPE_CODE";
 	public static final String REPORT_TYPE_CODE = "REPORT";
@@ -339,6 +339,7 @@ public class SpagoBIConstants {
 	public static final String MENU_MANAGEMENT = "MenuManagement";
 	public static final String HOTLINK_MANAGEMENT = "HotLinkManagement";
 	public static final String KPI_MANAGEMENT = "KpiManagement";
+	public static final String PROFILE_MANAGEMENT = "ProfileManagement";
 	
 	public static final String SAVE_SUBOBJECT_FUNCTIONALITY = "SaveSubobjectFunctionality";
 	public static final String SEE_SUBOBJECTS_FUNCTIONALITY = "SeeSubobjectsFunctionality";

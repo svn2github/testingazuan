@@ -26,7 +26,10 @@ import it.eng.spago.security.IEngUserProfile;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -789,6 +792,29 @@ public class StringUtilities {
 
 		return statement;
 
+	}
+
+
+	static public String[] convertCollectionInArray(Collection coll){
+		String[] array = new String[coll.size()];
+		int i = 0;
+		for (Iterator iterator = coll.iterator(); iterator.hasNext();) {
+			Object object = (Object) iterator.next();
+			String role =object.toString();
+			array[i] = role;
+			i++;
+		}
+		return array;
+	}
+
+	static public Collection convertArrayInCollection(String[] array){
+		Collection coll = new ArrayList();
+
+		for (int i =0; i < array.length; i++) {
+			String role = array[i];
+			coll.add(role);
+		}
+		return coll;
 	}
 
 

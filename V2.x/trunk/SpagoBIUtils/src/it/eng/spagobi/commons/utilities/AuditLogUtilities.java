@@ -27,6 +27,7 @@ import it.eng.spagobi.commons.bo.CustomJDBCAppender;
 import it.eng.spagobi.commons.bo.UserProfile;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
@@ -63,34 +64,37 @@ public class AuditLogUtilities {
 		if(updateDBConf!=null && updateDBConf.equalsIgnoreCase("true")){
 			updateDB=true;
 		}
-		
+
 		String userName = "";
 		String userRoles = "";
 		if(profile!=null){
 			userName = ((UserProfile)profile).getUserId().toString();
-			userRoles = createRolesString(profile.getRoles());
+
+			Collection roles = ((UserProfile)profile).getRolesForUse();
+
+			userRoles = createRolesString(roles);
 		}
-		
+
 		if(jdbcConnection!=null){
 			ja = new CustomJDBCAppender(jdbcConnection);			
 			if(updateDB && action_code!=null){
 				String sqlInsert = "INSERT INTO SBI_ACTIVITY_MONITORING (ACTION_TIME, USERNAME, USERGROUP, LOG_LEVEL, ACTION_CODE, INFO)";
 				sqlInsert += "VALUES('%d{"+dbTimestampFormat+"}','"+userName+"','"+userRoles+"','%5p','"+action_code+"','"+(info!=null?info:"")+"')";
 				logger.debug("SQL INSERT:"+sqlInsert);
-			    ja.setSql(sqlInsert);
-			    audit_logger.addAppender(ja);
+				ja.setSql(sqlInsert);
+				audit_logger.addAppender(ja);
 			}
 		}
-	    // These messages with Priority >= setted priority will be logged to the database.
-	    audit_logger.info("activity_info: USERNAME="+userName+"; USERGROUP="+userRoles+" ACTION_CODE="+action_code+"");
+		// These messages with Priority >= setted priority will be logged to the database.
+		audit_logger.info("activity_info: USERNAME="+userName+"; USERGROUP="+userRoles+" ACTION_CODE="+action_code+"");
 
-	    // not required
-	    if(updateDB && ja!=null){
-	    	audit_logger.removeAppender(ja);
-	    }
-	    logger.debug("OUT");
+		// not required
+		if(updateDB && ja!=null){
+			audit_logger.removeAppender(ja);
+		}
+		logger.debug("OUT");
 	}	
-	
+
 	private static String createRolesString(Collection roles){
 		logger.debug("IN");
 		String rolesStr = "";

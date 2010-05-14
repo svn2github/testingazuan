@@ -454,7 +454,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 	, expItemsTreeClick: function(node, e) {
 		if(node.attributes.value) {
 			var text;
-			if(node.attributes.alias !== undefined){
+			if(node.attributes.alias !== undefined && !this.expertMode ){
 				text= node.attributes.alias + ' ';
 			}else{
 				text= node.attributes.value + ' ';	

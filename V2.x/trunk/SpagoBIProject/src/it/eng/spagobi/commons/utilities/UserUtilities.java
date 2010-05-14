@@ -116,6 +116,7 @@ public class UserUtilities {
 	    SpagoBIUserProfile user = null;
 	    try {
 		user = supplier.createUserProfile(userId);
+		
 		user.setFunctions(readFunctionality(user.getRoles()));
 		userProfile = new UserProfile(user);
 	    } catch (Exception e) {
@@ -208,7 +209,7 @@ public class UserUtilities {
 	try {
 	    String username = (String) ((UserProfile)userProfile).getUserId();
 	    logger.debug("username: " + username);
-	    Collection roleStrs = userProfile.getRoles();
+	    Collection roleStrs = ((UserProfile)userProfile).getRolesForUse();
 	    Iterator roleIter = roleStrs.iterator();
 	    List roles = new ArrayList();
 	    logger.debug("Roles's number: " + roleStrs.size());
@@ -382,4 +383,7 @@ public class UserUtilities {
 		return virtualRole;
 	}
 
+	
+
+	
 }

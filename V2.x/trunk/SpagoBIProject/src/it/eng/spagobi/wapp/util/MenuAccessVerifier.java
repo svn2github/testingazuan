@@ -4,8 +4,10 @@ package it.eng.spagobi.wapp.util;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.Role;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.wapp.bo.Menu;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -17,10 +19,13 @@ public class MenuAccessVerifier {
 
 		Role[] menuRoles=menu.getRoles();
 		Collection profileRoles=null;
+
 		try {
-			profileRoles=profile.getRoles();
+			profileRoles = ((UserProfile)profile).getRolesForUse();
 		} catch (EMFInternalError e) {
-			return false;	}
+			return false;
+		}
+
 
 		boolean found=false;
 		for (Iterator iterator = profileRoles.iterator(); iterator.hasNext() && !found;) {

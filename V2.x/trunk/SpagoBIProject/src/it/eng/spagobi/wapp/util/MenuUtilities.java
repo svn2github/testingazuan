@@ -41,6 +41,7 @@ import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.util.JavaScript;
 import it.eng.spagobi.commons.bo.Role;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -83,6 +84,7 @@ public class MenuUtilities {
 		}
 		}
 		catch (Exception e) {
+			logger.error("Exception in getting menu path");
 			return "";
 		}
 	}
@@ -122,8 +124,9 @@ public class MenuUtilities {
 			SourceBean configSingleton = (SourceBean)ConfigSingleton.getInstance();
 			boolean technicalMenuLoaded = false;
 			
-	        Collection lstRolesForUser = profile.getRoles();
+	        Collection lstRolesForUser = ((UserProfile)profile).getRolesForUse();
 			logger.debug("** Roles for user: " + lstRolesForUser.size());
+
 			
 			Object[] arrRoles = lstRolesForUser.toArray();
 			Integer levelItem = 1;			

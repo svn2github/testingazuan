@@ -112,6 +112,20 @@ Sbi.exception.ExceptionHandler = function(){
            		, icon: Ext.MessageBox.WARNING
            		, modal: false
        		});
+        },
+        
+        showInfoMessage : function(errMessage, title) {
+        	var m = errMessage || 'Info';
+        	var t = title || 'Info';
+        	
+        	Ext.MessageBox.show({
+           		title: t
+           		, msg: m
+           		, buttons: Ext.MessageBox.OK     
+           		, icon: Ext.MessageBox.INFO
+           		, modal: false
+           		, 
+       		});
         }
 
 	};

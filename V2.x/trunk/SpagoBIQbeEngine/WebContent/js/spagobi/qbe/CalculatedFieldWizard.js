@@ -115,9 +115,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 	
 	, expItemGroups: null
 	, groupRootNodes: null
-	, scopeComboBoxData: null
-
-	
+	, scopeComboBoxData: null	
 	
 
     // --------------------------------------------------------------------------------------------
@@ -235,12 +233,17 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 			}); 
 			
 		}else{
-			SQLExpressionParser.module.validateInLineCalculatedField(this.getExpression());
-		}
+			var error = SQLExpressionParser.module.validateInLineCalculatedField(this.getExpression());
+			if(error==""){
+				Sbi.exception.ExceptionHandler.showInfoMessage(LN('sbi.qbe.calculatedFields.validationwindow.success.text'), LN('sbi.qbe.calculatedFields.validationwindow.success.title'));
+			}else{
+				Sbi.exception.ExceptionHandler.showWarningMessage(error, LN('sbi.qbe.calculatedFields.validationwindow.fail.title'));
+			}
+		}		
 	}
 	
 	, onValidationSuccess: function(response) {
-		alert("Ok it's valid");
+		Sbi.exception.ExceptionHandler.showWarningMessage(LN('sbi.qbe.calculatedFields.validationwindow.success.text'), LN('sbi.qbe.calculatedFields.validationwindow.success.title'));
 	}
 	
 	, onValidationFailure: function(response) {

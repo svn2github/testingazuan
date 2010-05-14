@@ -18,13 +18,14 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.events.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiEventRole;
 import it.eng.spagobi.commons.metadata.SbiEventRoleId;
@@ -51,9 +52,9 @@ import org.hibernate.Transaction;
  *
  */
 public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLogDAO {
-	
-	 static private Logger logger = Logger.getLogger(EventLogDAOHibImpl.class);
-	
+
+	static private Logger logger = Logger.getLogger(EventLogDAOHibImpl.class);
+
 	/**
 	 * Load event log by id.
 	 * 
@@ -72,26 +73,26 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 		EventLog realResult = null;
 //		String hql = null;
 //		Query hqlQuery = null;
-		
+
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiEventsLog aSbiEventsLog = (SbiEventsLog) aSession.get(SbiEventsLog.class, id);
 //			hql = "from SbiEventsLog as eventlog " + 
-//	         "where eventlog.user = '" + user + "' and " + 
-//	         "eventlog.id = '" + id + "' and " +
-//	         "eventlog.date = :eventDate";
-//			
+//			"where eventlog.user = '" + user + "' and " + 
+//			"eventlog.id = '" + id + "' and " +
+//			"eventlog.date = :eventDate";
+
 //			long time = Long.valueOf(date).longValue();
-//			
+
 //			hqlQuery = aSession.createQuery(hql);
 //			hqlQuery.setTimestamp("eventDate", new Date(time));
 //			SbiEventsLog aSbiEventsLog = (SbiEventsLog) hqlQuery.uniqueResult();
-			
+
 			if (aSbiEventsLog == null) return null; 
-			
+
 			realResult = toEventsLog(aSbiEventsLog);
-			
+
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
@@ -108,10 +109,10 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 		}
 		logger.debug("OUT");
 		return realResult;
-		
+
 	}
 
-	
+
 	/**
 	 * Load events log by user.
 	 * 
@@ -131,12 +132,14 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 		String hql = null;
 		Query hqlQuery = null;
 		Collection roles = null;
+
 		try {
-			roles = profile.getRoles();
+			roles = ((UserProfile)profile).getRolesForUse();
 		} catch (EMFInternalError e) {
 			logException(e);
 			return new ArrayList();
 		}
+
 		if (roles == null || roles.size() == 0) return new ArrayList();
 		boolean isFirtElement = true;
 		String collectionRoles = "";
@@ -145,11 +148,11 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 		while (rolesIt.hasNext()) {
 			String roleName = (String) rolesIt.next();
 			//if (isFirtElement) {
-				//collectionRoles += roleName;
-				//isFirtElement = false;
+			//collectionRoles += roleName;
+			//isFirtElement = false;
 			//} else {
-				//collectionRoles += "', '" + roleName;
-				if (!roleNames.contains(roleName)) roleNames.add(roleName);
+			//collectionRoles += "', '" + roleName;
+			if (!roleNames.contains(roleName)) roleNames.add(roleName);
 			//}
 		}
 		try {
@@ -170,27 +173,27 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 	         		"roles.name in ('" + collectionRoles + "') " +
 	         	"order by " +
 	         		"eventlog.date";*/
-			
+
 			hql = 
 				"select " +
-					"eventlog " +
+				"eventlog " +
 				"from " +
-					"SbiEventsLog as eventlog, " +
-					"SbiEventRole as eventRole, " +
-					"SbiExtRoles as roles " + 
-	         	"where " +
-	         		"eventlog.id = eventRole.id.event.id and " +
-	         		"eventRole.id.role.extRoleId = roles.extRoleId " +
-	         		"and " +
-	         		"roles.name in (:ROLE_NAMES) " +
-	         	"order by " +
-	         		"eventlog.date";
-			
+				"SbiEventsLog as eventlog, " +
+				"SbiEventRole as eventRole, " +
+				"SbiExtRoles as roles " + 
+				"where " +
+				"eventlog.id = eventRole.id.event.id and " +
+				"eventRole.id.role.extRoleId = roles.extRoleId " +
+				"and " +
+				"roles.name in (:ROLE_NAMES) " +
+				"order by " +
+				"eventlog.date";
+
 			hqlQuery = aSession.createQuery(hql);
 			//hqlQuery.setString(0, collectionRoles);
 			hqlQuery.setParameterList("ROLE_NAMES", roleNames);
 			List hibList = hqlQuery.list();
-			
+
 			Iterator it = hibList.iterator();
 
 			while (it.hasNext()) {
@@ -232,7 +235,7 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 		session = getSession();
 		tx = session.beginTransaction();
 		//SbiEventsLog hibEventLog = toSbiEventsLog(aSession, eventLog);
-		
+
 		SbiEventsLog hibEventLog = new SbiEventsLog();
 		//hibEventLog.setId(eventLog.getId());
 		hibEventLog.setUser(eventLog.getUser());
@@ -248,10 +251,10 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 			String roleName = (String) rolesIt.next();
 			/*String hql = "from SbiExtRoles as roles " + 
 	         "where roles.name = '" + roleName + "'";*/
-			
+
 			String hql = "from SbiExtRoles as roles " + 
-	         "where roles.name = ?";
-			
+			"where roles.name = ?";
+
 			Query hqlQuery = session.createQuery(hql);
 			hqlQuery.setString(0, roleName);
 			SbiExtRoles aHibRole = (SbiExtRoles) hqlQuery.uniqueResult();
@@ -285,7 +288,7 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
-		
+
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();			
@@ -334,17 +337,17 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			
+
 			/*hql = "from SbiEventsLog as eventlog " + 
 	         "where eventlog.user = '" + user + "'";*/
-			
+
 			hql = "from SbiEventsLog as eventlog " + 
-	         "where eventlog.user = ?";
-			
+			"where eventlog.user = ?";
+
 			hqlQuery = aSession.createQuery(hql);
 			hqlQuery.setString(0, user);
 			events = hqlQuery.list();
-			
+
 			Iterator it = events.iterator();
 			while (it.hasNext()) {
 				SbiEventsLog aSbiEventsLog = (SbiEventsLog) it.next();
@@ -373,7 +376,7 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 			}
 		} logger.debug("OUT");		
 	}
-	
+
 	private EventLog toEventsLog(SbiEventsLog hibEventLog) {
 		logger.debug("IN");
 		EventLog eventLog = new EventLog();
@@ -388,12 +391,12 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 		Iterator rolesIt = rolesSet.iterator();
 		while (rolesIt.hasNext()) {
 			SbiEventRole hibEventRole = (SbiEventRole) rolesIt.next();
-		    SbiExtRoles hibRole = hibEventRole.getId().getRole();
-		    roles.add(hibRole.getName());
+			SbiExtRoles hibRole = hibEventRole.getId().getRole();
+			roles.add(hibRole.getName());
 		}
 		eventLog.setRoles(roles);
 		logger.debug("OUT");
 		return eventLog;
 	}
-	
+
 }

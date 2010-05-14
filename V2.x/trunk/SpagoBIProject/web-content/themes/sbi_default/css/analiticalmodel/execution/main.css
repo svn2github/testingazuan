@@ -158,6 +158,10 @@
 	background-image: url('../../../img/wapp/exit16.png') !important;
 }
 
+.icon-role {
+	background-image: url('../../../img/wapp/roles.png') !important;
+}
+
 .icon-info {
 	background-image: url('../../../img/question.gif') !important;
 }

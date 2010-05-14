@@ -49,6 +49,7 @@ public class RoleJSONSerializer implements Serializer {
 	private static final String SEE_VIEWPOINTS="seeViewpoints";
 	private static final String SEND_MAIL="sendMail";
 	private static final String BUILD_QBE="buildQbe";	
+	private static final String DEFAULT_ROLE="defaultRole";	
 	
 	public Object serialize(Object o, Locale locale) throws SerializationException {
 		JSONObject  result = null;
@@ -78,6 +79,7 @@ public class RoleJSONSerializer implements Serializer {
 			result.put(SEE_VIEWPOINTS, role.isAbleToSeeViewpoints() );
 			result.put(SEND_MAIL, role.isAbleToSendMail() );
 			result.put(BUILD_QBE, role.isAbleToBuildQbeQuery() );
+			result.put(DEFAULT_ROLE, role.isDefaultRole() );
 			
 			
 		} catch (Throwable t) {

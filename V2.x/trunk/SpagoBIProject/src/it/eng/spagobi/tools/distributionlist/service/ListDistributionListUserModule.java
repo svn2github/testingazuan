@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.tools.distributionlist.service;
 
 import it.eng.spago.base.RequestContainer;
@@ -37,6 +37,7 @@ import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.services.common.SsoServiceInterface;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -47,7 +48,7 @@ import org.hibernate.Session;
  * Loads the Distributionlist List
  */
 public class ListDistributionListUserModule extends AbstractBasicListModule{
-	
+
 	public static final String MODULE_PAGE = "ListDistributionListUserPage";
 
 	/**
@@ -60,10 +61,10 @@ public class ListDistributionListUserModule extends AbstractBasicListModule{
 	 * 
 	 * @throws Exception the exception
 	 */
-	
+
 	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
-	    
-		 //Start writing log in the DB
+
+		//Start writing log in the DB
 		Session aSession =null;
 		try {
 			aSession = HibernateUtil.currentSession();
@@ -78,18 +79,22 @@ public class ListDistributionListUserModule extends AbstractBasicListModule{
 			}
 		}
 		//End writing log in the DB
-		
-        RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
-        SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-	     
-	    IEngUserProfile userProfile =UserUtilities.getUserProfile();
+
+		RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
+		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
+
+		IEngUserProfile userProfile =UserUtilities.getUserProfile();
 		String userId="";
 		if (userProfile!=null) userId=(String)((UserProfile)userProfile).getUserId();
 		//sets the userid as input parameter for the query fo statements.xml
 		aSessionContainer.setAttribute(SsoServiceInterface.USER_ID ,userId);
-		
 
-		Collection c = userProfile.getRoles();
+
+		Collection c = null;
+
+		c = ((UserProfile)userProfile).getRolesForUse();
+
+
 		Iterator i = c.iterator();
 		int j = 0;
 		while (i.hasNext()){
@@ -97,12 +102,12 @@ public class ListDistributionListUserModule extends AbstractBasicListModule{
 			aSessionContainer.setAttribute("role"+j,roles);
 			j++ ;
 		}
-			while (j<6){
-				String s= "/";
-				aSessionContainer.setAttribute("role"+j,s);
-				j++ ;
-			}
-		
+		while (j<6){
+			String s= "/";
+			aSessionContainer.setAttribute("role"+j,s);
+			j++ ;
+		}
+
 		return DelegatedHibernateConnectionListService.getList(this, request, response);
 	} 
 

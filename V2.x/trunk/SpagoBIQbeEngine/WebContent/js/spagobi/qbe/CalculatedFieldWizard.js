@@ -243,7 +243,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 	}
 	
 	, onValidationSuccess: function(response) {
-		Sbi.exception.ExceptionHandler.showWarningMessage(LN('sbi.qbe.calculatedFields.validationwindow.success.text'), LN('sbi.qbe.calculatedFields.validationwindow.success.title'));
+		Sbi.exception.ExceptionHandler.showInfoMessage(LN('sbi.qbe.calculatedFields.validationwindow.success.text'), LN('sbi.qbe.calculatedFields.validationwindow.success.title'));
 	}
 	
 	, onValidationFailure: function(response) {

@@ -36,6 +36,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -130,7 +131,7 @@ public class MenuModule extends AbstractHttpModule {
 	logger.debug("IN");
 	try {
 	    List lstFinalMenu = new ArrayList();
-	    Collection lstRolesForUser = profile.getRoles();
+	    Collection lstRolesForUser = ((UserProfile)profile).getRolesForUse();
 	    Object[] arrRoles = lstRolesForUser.toArray();
 	    for (int i = 0; i < arrRoles.length; i++) {
 			Integer roleId = (Integer) arrRoles[i];

@@ -116,6 +116,18 @@
 
 	</target>
 	
+	<target name="create_only.war" depends="compile,copy.artifacts">
+	      <war warfile="${dist}/${war_name}" 
+	           webxml="${build}/${webapp_name}/WEB-INF/web.xml" 
+	           manifest="${build}/${webapp_name}/META-INF/MANIFEST.MF" 
+	           basedir="${build}/${webapp_name}"/>
+	           
+        <zip destfile="${dist}/CasServer-${project.version}_${project.date}.zip"
+              basedir="${dist}">
+        </zip>
+
+	</target>
+	
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <!--   CREAZIONE WAR  					                                        -->
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->

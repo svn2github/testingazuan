@@ -33,20 +33,21 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 
    
     public void doService( EngineStartServletIOManager servletIOManager ) throws SpagoBIEngineException {
-    	JPaloEngineTemplate template;
+    	//JPaloEngineTemplate template;
     	String jpaloUrl;
 
     	logger.debug("IN");
 		
 		try {		
 		
-			template = new JPaloEngineTemplate( servletIOManager.getTemplateAsSourceBean() );			
+			//template = new JPaloEngineTemplate( servletIOManager.getTemplateAsSourceBean() );			
 			//http://localhost:8888/com.tensegrity.wpalo.SpagoBIJPaloEngine/SpagoBIJPaloEngine.html?options=user="admin";pass="ISMvKXpXpadDiUoOSoAfww==";openview="Sales"
 	    	jpaloUrl = PALO_BASE_URL+"?options=";	
 
 			jpaloUrl += "user=\"admin\";pass=\"ISMvKXpXpadDiUoOSoAfww==\"";
 			jpaloUrl += ";openview=\"";
-			jpaloUrl += template.getViewName();
+			//jpaloUrl += template.getViewName();
+			jpaloUrl += "Sales";
 			jpaloUrl += "\"";
 			jpaloUrl += ",hidenavigator";
 			jpaloUrl += ",hideviewtabs";

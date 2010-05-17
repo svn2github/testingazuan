@@ -60,6 +60,7 @@ import it.eng.spagobi.utilities.cache.CacheSingleton;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -718,7 +719,8 @@ public class ExecutionInstance {
 		List values = biparam.getParameterValues();
 		if (values != null && values.size()>0) {
 			for (int i = 0; i < values.size(); i++) {
-				String value = values.get(i).toString();
+				//String value = values.get(i).toString();
+				String value = URLDecoder.decode(values.get(i).toString(), "UTF-8");
 				String description = null;
 				if (!value.equals("") && !lovResultHandler.containsValue(value, lovProvDet
 						.getValueColumnName())) {

@@ -4,7 +4,17 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
-
+	<display-name>SpagoBIJPaloEngine</display-name>
+	<description>
+		SpagoBI - Palo Web Client Engine
+	</description>
+	
+	<filter>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<filter-class>
+			it.eng.spagobi.utilities.filters.SpagoBIAccessFilter
+		</filter-class>
+	</filter>
 	<filter>
 		<filter-name>NoCacheFilter</filter-name>
 		<filter-class>
@@ -15,6 +25,10 @@
 			<param-value>private,no-cache,no-store</param-value>
 		</init-param>
 	</filter>
+	<filter-mapping>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<url-pattern>/com.tensegrity.wpalo.SpagoBIJPaloEngine/JPaloEngineStartServlet</url-pattern>
+	</filter-mapping>
 	<filter-mapping>
 		<filter-name>NoCacheFilter</filter-name>
 		<url-pattern>*.css</url-pattern>
@@ -28,7 +42,13 @@
 		<url-pattern>*.js</url-pattern>
 	</filter-mapping>
 	
-<!--  SERVLETS  -->	
+<!--  SERVLETS  -->
+	<servlet>
+		<servlet-name>EngineTestServlet</servlet-name>
+		<servlet-class>
+			it.eng.spagobi.utilities.engines.EngineTestServlet
+		</servlet-class>
+	</servlet>	
 	<servlet>
 		<servlet-name>wpalo-service</servlet-name>
 		<servlet-class>
@@ -84,6 +104,10 @@
         <servlet-name>JPaloEngineStartServlet</servlet-name>
         <url-pattern>/com.tensegrity.wpalo.SpagoBIJPaloEngine/JPaloEngineStartServlet</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+		<servlet-name>EngineTestServlet</servlet-name>
+		<url-pattern>/com.tensegrity.wpalo.SpagoBIJPaloEngine/JPaloEngineStartServletTest</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 	  <servlet-name>remoteLoggingServiceImpl</servlet-name>
 	  <url-pattern>/com.tensegrity.wpalo.SpagoBIJPaloEngine/logging</url-pattern>
@@ -130,5 +154,27 @@
 	    <url-pattern>/com.tensegrity.wpalo.SpagoBIJPaloEngine/wpalo-download.srv</url-pattern>
 	</servlet-mapping>
 
-
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+	
+	  <error-page>
+	  	<exception-type>java.lang.Throwable</exception-type>
+	  	<location>/html/error.html</location>
+	  </error-page>
+		 
+	  <error-page>
+	  	<error-code>404</error-code>
+	  	<location>/html/error.html</location>
+	  </error-page>
+  
+	  <error-page>
+	  	<error-code>500</error-code>
+	  	<location>/html/error.html</location>
+	  </error-page>
 </web-app>

@@ -57,8 +57,8 @@ public class ExtendedAccountStatusGetter extends AbstractAccountStatusGetter {
     /** The default timeout. */
     private static final int DEFAULT_TIMEOUT = 1000;
 
-    /** The patter for define admin role... is necessary render it dynamic!!!*/
-    private static final String ADMIN_PATTERN = "/spagobi/admin";
+    /** The role for the administrator */
+    private static final String ADMIN_ROLE = "ADMIN";
     
 	public int getStatus(String userID) {
         logger.debug("lookup for userID='" + userID + "'");
@@ -235,10 +235,10 @@ public class ExtendedAccountStatusGetter extends AbstractAccountStatusGetter {
         try{
         	AuthenticationUtility utility = new AuthenticationUtility();
         	String query = "SELECT U.ID, NAME FROM  SBI_EXT_USER_ROLES UR, SBI_EXT_ROLES R, SBI_USER U " +
-        					"WHERE U.USER_ID = ? AND UR.ID = U.ID  AND R.EXT_ROLE_ID = UR.EXT_ROLE_ID AND R.NAME =? ";
+        					"WHERE U.USER_ID = ? AND UR.ID = U.ID  AND R.EXT_ROLE_ID = UR.EXT_ROLE_ID AND R.ROLE_TYPE_CD =? ";
         	List pars = new LinkedList();
         	pars.add(userID);
-        	pars.add(ADMIN_PATTERN);
+        	pars.add(ADMIN_ROLE);
         	
         	List lstResult = utility.executeQuery(query, pars);
         	if (lstResult.size() == 0){

@@ -243,14 +243,14 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 	
 	<%
 	// Set roles
-	Integer ind = Integer.valueOf(0);
+	Integer indexRoles = Integer.valueOf(0);
 	for(Iterator it = userRoles.iterator();it.hasNext();)
 	{
 		String aRole = (String)it.next();
 	%>
-		Sbi.user.roles[<%=ind.toString()%>] = '<%=StringEscapeUtils.escapeJavaScript(aRole)%>';
+		Sbi.user.roles[<%=indexRoles.toString()%>] = '<%=StringEscapeUtils.escapeJavaScript(aRole)%>';
 	<%
-		ind = Integer.valueOf( ind.intValue()+1 );
+	indexRoles = Integer.valueOf( indexRoles.intValue()+1 );
 	}
 	%>
 

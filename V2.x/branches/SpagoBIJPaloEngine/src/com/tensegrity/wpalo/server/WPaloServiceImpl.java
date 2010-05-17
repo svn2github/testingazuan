@@ -42,6 +42,7 @@ import java.security.MessageDigest;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -64,6 +65,7 @@ import org.palo.viewapi.Account;
 import org.palo.viewapi.AuthUser;
 import org.palo.viewapi.Axis;
 import org.palo.viewapi.AxisHierarchy;
+import org.palo.viewapi.CubeView;
 import org.palo.viewapi.DbConnection;
 import org.palo.viewapi.Group;
 import org.palo.viewapi.PaloConnection;
@@ -76,7 +78,6 @@ import org.palo.viewapi.exceptions.OperationFailedException;
 import org.palo.viewapi.internal.AuthUserImpl;
 import org.palo.viewapi.internal.ExplorerTreeNode;
 import org.palo.viewapi.internal.FolderElement;
-import org.palo.viewapi.internal.IAccountManagement;
 import org.palo.viewapi.internal.IUserRoleManagement;
 import org.palo.viewapi.internal.IViewManagement;
 import org.palo.viewapi.internal.dbmappers.MapperRegistry;
@@ -864,8 +865,28 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 				
 		try {
 			ViewService viewService = ServiceProvider.getViewService(authUser);
+			/*SpagoBI modification begin*/
+			//View v = viewService.getView(view);
 			
-			View v = viewService.getView(view);
+			View v = null;
+
+			for (Account a: authUser.getAccounts()) {
+				if(a != null){
+					List<View> views = viewService.getViews(a);
+					if(!views.isEmpty()){
+						Iterator it = views.iterator();
+						while(it.hasNext()){
+							View selView = (View)it.next();
+							if(selView.getName().equals(view)){
+								v = selView;
+								break;
+							}
+						}
+					}
+				}
+			}
+			/*end*/
+			
 			if (v != null) {
 				String connectionId = v.getAccount().getConnection().getId();
 				Account neededAccount = null;

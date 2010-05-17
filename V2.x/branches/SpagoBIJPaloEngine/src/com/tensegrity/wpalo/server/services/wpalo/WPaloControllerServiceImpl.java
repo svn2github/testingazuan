@@ -152,9 +152,8 @@ public class WPaloControllerServiceImpl extends BasePaloServiceServlet
 			throws AuthenticationFailedException {		
 		// try to authenticate:
 		try {
-			AuthUser usr =
-			 ServiceProvider.getAuthenticationService()
-					.authenticate(login, password);
+			AuthUser usr = ServiceProvider.getAuthenticationService().authenticate(login, password);
+			//AuthUser usr = ServiceProvider.getAuthenticationService().authenticate("admin", "admin");
 			registerListeners();
 			UserSession userSession = setLoggedInUser(usr);
 			configureNumberFormat(userSession.getSessionId(), usr);			
@@ -179,8 +178,10 @@ public class WPaloControllerServiceImpl extends BasePaloServiceServlet
 			throws AuthenticationFailedException {
 		// try to authenticate:
 		try {
+
 			AuthUser usr = ServiceProvider.getAuthenticationService()
 					.authenticateHash(login, password);
+
 			registerListeners();
 			UserSession userSession = setLoggedInUser(usr);
 			configureNumberFormat(userSession.getSessionId(), usr);

@@ -301,7 +301,7 @@ public class CreateDirectLinkDialog extends Window {
 		if (!adaptedHostPage.endsWith("/")) {
 			adaptedHostPage = adaptedHostPage + "/";
 		}
-		String link = adaptedHostPage + "WPalo.html?";
+		String link = adaptedHostPage + "SpagoBIJPaloEngine.html?";
 		String languageCode = languageBox.getValue().getValue().getId();
 		if (languageCode != null && !languageCode.isEmpty()) {
 			if (!languageCode.equals("en")) {

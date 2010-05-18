@@ -527,8 +527,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						Calendar cal = new GregorianCalendar();
 					    int hour24 = cal.get(Calendar.HOUR_OF_DAY);     
 					    int min = cal.get(Calendar.MINUTE);             
-					    int sec = cal.get(Calendar.SECOND);             
-						trigName = jobInfo.getJobName() + "_schedule_" + hour24 + "" + min + "" + sec; 
+					    int sec = cal.get(Calendar.SECOND);   
+					    int nameL = jobInfo.getJobName().length();
+					    if(nameL<=40){
+					    	trigName = jobInfo.getJobName() + "_" + hour24 + "" + min + "" + sec; 
+					    }else{
+							trigName = jobInfo.getJobName().substring(0,39) + "_" + hour24 + "" + min + "" + sec; 
+					    }
 					}
 				}
 				String saveFormat = "dd/MM/yyyy";
@@ -552,7 +557,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				
 				%>
 				<div class='div_form_field'>
-					<input id="triggername" value="<%=StringEscapeUtils.escapeHtml(trigName)%>" type="text" name="triggername" size="35" <%=readonly%> />
+					<input id="triggername" value="<%=StringEscapeUtils.escapeHtml(trigName)%>" type="text" name="triggername" size="50" <%=readonly%> />
 				    &nbsp;*
 				</div>
 			</div>
@@ -563,7 +568,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</span>
 				</div>
 				<div class='div_form_field'>
-					<input type="text" value="<%=StringEscapeUtils.escapeHtml(triggerInfo.getTriggerDescription())%>" name="triggerdescription" size="35"/>
+					<input type="text" value="<%=StringEscapeUtils.escapeHtml(triggerInfo.getTriggerDescription())%>" name="triggerdescription" size="50"/>
 					&nbsp;
 				</div>
 		     </div>

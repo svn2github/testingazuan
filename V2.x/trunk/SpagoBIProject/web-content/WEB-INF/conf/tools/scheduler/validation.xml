@@ -28,12 +28,12 @@
 			<FIELDS>
 				<FIELD name="triggername" label="#scheduler.schedname">
 					 <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
-					<VALIDATOR validatorName="MAXLENGTH" arg0="35"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
 					<VALIDATOR validatorName="MANDATORY"/>
 				</FIELD>
 				<FIELD name="triggerdescription" label="triggerdescription">
 					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
-					<VALIDATOR validatorName="MAXLENGTH" arg0="35"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
 				</FIELD>
 				<FIELD name="startdate" label="#scheduler.startdate">
 					<VALIDATOR validatorName="MANDATORY"/>

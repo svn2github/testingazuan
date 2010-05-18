@@ -43,7 +43,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 <%@page import="java.util.List"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="org.json.JSONObject"%>
-
+<%@page import="it.eng.spagobi.services.proxy.SbiDocumentServiceProxy"%>
 <%-- ---------------------------------------------------------------------- --%>
 <%-- JAVA CODE 																--%>
 <%-- ---------------------------------------------------------------------- --%>
@@ -75,6 +75,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	
 	qbeEngineConfig = QbeEngineConfig.getInstance();
     
+	
     // settings for max records number limit
     resultLimit = qbeEngineConfig.getResultLimit();
     isMaxResultLimitBlocking = qbeEngineConfig.isMaxResultLimitBlocking();
@@ -84,6 +85,15 @@ author: Andrea Gioia (andrea.gioia@eng.it)
     spagobiServerHost = request.getParameter(SpagoBIConstants.SBI_HOST);
     spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
     spagobiSpagoController = request.getParameter(SpagoBIConstants.SBI_SPAGO_CONTROLLER);
+    
+    String jSonPars = "[{}]";
+    
+    Object documentIdO = qbeEngineInstance.getEnv().get("DOCUMENT_ID");
+
+    if(documentIdO != null) { 
+		SbiDocumentServiceProxy proxy = new SbiDocumentServiceProxy(profile.getUserId().toString(), session);
+		jSonPars = proxy.getDocumentAnalyticalDriversJSON(Integer.valueOf(documentIdO.toString()), locale.getLanguage(), locale.getCountry());
+    }
     
 %>
 
@@ -173,7 +183,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	        	Ext.QuickTips.init();   
 	
 	        	var parametersStore = new Sbi.qbe.DocumentParametersStore({});
-	        	var parametersInfo = <%= request.getParameter("SBI_DOCUMENT_PARAMETERS") != null ? request.getParameter("SBI_DOCUMENT_PARAMETERS") : "[{}]" %>;
+	        	var parametersInfo = <%=jSonPars%>;	        	
 	        	parametersStore.loadData(parametersInfo);
 	        	
 	       		qbeConfig.documentParametersStore = parametersStore;

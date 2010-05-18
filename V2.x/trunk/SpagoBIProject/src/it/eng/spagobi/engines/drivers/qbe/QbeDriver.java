@@ -87,7 +87,7 @@ public class QbeDriver extends AbstractDriver implements IEngineDriver {
 			parameters = new Hashtable();
 			parameters = getRequestParameters(biObject);
 			parameters = applySecurity(parameters, profile);
-			parameters = addDocumentParametersInfo(parameters, biObject);
+			//parameters = addDocumentParametersInfo(parameters, biObject);
 			parameters = applyService(parameters, biObject);
 		} finally {
 			logger.debug("OUT");
@@ -135,7 +135,7 @@ public class QbeDriver extends AbstractDriver implements IEngineDriver {
 			parameters.put("subobjectId", subObject.getId());
 			
 			parameters = applySecurity(parameters, profile);
-			parameters = addDocumentParametersInfo(parameters, biObject);
+			//parameters = addDocumentParametersInfo(parameters, biObject);
 			parameters = applyService(parameters, biObject);
 			parameters.put("isFromCross", "false");
 		
@@ -146,37 +146,31 @@ public class QbeDriver extends AbstractDriver implements IEngineDriver {
 		
 	}
 	
-	/**
-	 * Adds a system parameter contaning info about document parameters (url name, label, type)
-	 * @param biobject The BIObject under execution
-	 * @param map The parameters map
-	 * @return the modified map with the new parameter
-	 */
-    private Map addDocumentParametersInfo(Map map, BIObject biobject) {
-    	logger.debug("IN");
-    	JSONArray parametersJSON = new JSONArray();
-    	try {
-	    	Locale locale = getLocale();
-			List parameters = biobject.getBiObjectParameters();
-			if (parameters != null && parameters.size() > 0) {
-				Iterator iter = parameters.iterator();
-				while (iter.hasNext()) {
-					BIObjectParameter biparam = (BIObjectParameter) iter.next();
-					JSONObject jsonParam = new JSONObject();
-					jsonParam.put("id", biparam.getParameterUrlName());
-					IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
-					jsonParam.put("label", msgBuilder.getUserMessage(biparam.getLabel(), SpagoBIConstants.DEFAULT_USER_BUNDLE, locale));
-					jsonParam.put("type", biparam.getParameter().getType());
-					parametersJSON.put(jsonParam);
-				}
-			}
-    	} catch (Exception e) {
-    		logger.error("Error while adding document parameters info", e);
-    	}
-    	map.put("SBI_DOCUMENT_PARAMETERS", parametersJSON.toString());
-    	logger.debug("OUT");
-		return map;
-	}
+//    private Map addDocumentParametersInfo(Map map, BIObject biobject) {
+//    	logger.debug("IN");
+//    	JSONArray parametersJSON = new JSONArray();
+//    	try {
+//	    	Locale locale = getLocale();
+//			List parameters = biobject.getBiObjectParameters();
+//			if (parameters != null && parameters.size() > 0) {
+//				Iterator iter = parameters.iterator();
+//				while (iter.hasNext()) {
+//					BIObjectParameter biparam = (BIObjectParameter) iter.next();
+//					JSONObject jsonParam = new JSONObject();
+//					jsonParam.put("id", biparam.getParameterUrlName());
+//					IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
+//					jsonParam.put("label", msgBuilder.getUserMessage(biparam.getLabel(), SpagoBIConstants.DEFAULT_USER_BUNDLE, locale));
+//					jsonParam.put("type", biparam.getParameter().getType());
+//					parametersJSON.put(jsonParam);
+//				}
+//			}
+//    	} catch (Exception e) {
+//    		logger.error("Error while adding document parameters info", e);
+//    	}
+//    	map.put("SBI_DOCUMENT_PARAMETERS", parametersJSON.toString());
+//    	logger.debug("OUT");
+//		return map;
+//	}
 
 	/**
      * Starting from a BIObject extracts from it the map of the paramaeters for the

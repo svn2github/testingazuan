@@ -1,0 +1,5 @@
+<olap database="MondrianXMLA" 
+      schema="FoodMart" 
+	  view="Sales"
+      cube="HR"> 
+</olap>

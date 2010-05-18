@@ -1,0 +1,8 @@
+http://localhost:8888/com.tensegrity.wpalo.SpagoBIJPaloEngine/SpagoBIJPaloEngine.html?options=user="admin";pass="admin"
+ISMvKXpXpadDiUoOSoAfww==
+/*prima di modifica a parseSingleView*/
+http://localhost:8888/com.tensegrity.wpalo.SpagoBIJPaloEngine/SpagoBIJPaloEngine.html?options=user="admin";pass="ISMvKXpXpadDiUoOSoAfww==";openview="0"
+/*dopo modifica a parseSingleView*/
+http://localhost:8888/com.tensegrity.wpalo.SpagoBIJPaloEngine/SpagoBIJPaloEngine.html?options=user="admin";pass="ISMvKXpXpadDiUoOSoAfww==";openview="Sales,hideviewtabs,hidenavigator
+/*servlet che compone url*/
+http://localhost:8888/com.tensegrity.wpalo.SpagoBIJPaloEngine/JPaloEngineStartServlet

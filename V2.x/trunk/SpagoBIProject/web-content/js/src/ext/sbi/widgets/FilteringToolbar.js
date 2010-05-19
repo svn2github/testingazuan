@@ -161,7 +161,7 @@ Ext.extend(Sbi.widgets.FilteringToolbar, Ext.Toolbar, {
 	    this.doButton = this.addButton({
 	        tooltip: 'apply filter'
 	        //, iconCls: 'icon-filter'
-	        , iconCls: 'icon-execute'
+	        , iconCls: 'icon-filter-funnel'
 	        , disabled: false
 	        , handler: this.onClick.createDelegate(this)
 	    });

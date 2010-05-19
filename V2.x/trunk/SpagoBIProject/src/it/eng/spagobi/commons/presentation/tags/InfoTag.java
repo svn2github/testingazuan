@@ -65,7 +65,7 @@ public class InfoTag extends TagSupport {
 		output.append("                applyTo     : '"+ getButtonId() +"content',\n");
 		output.append("                layout      : 'fit',\n");
 		output.append("                width       : 500,\n");
-		output.append("                height      : 300,\n");
+		output.append("                height      : 150,\n");
 		output.append("                closeAction :'hide',\n");
 		output.append("                plain       : true,\n");
 		output.append("                items       : new Ext.TabPanel({\n");

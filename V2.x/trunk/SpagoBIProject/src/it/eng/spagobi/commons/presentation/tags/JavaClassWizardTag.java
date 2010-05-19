@@ -135,7 +135,7 @@ public class JavaClassWizardTag extends CommonWizardLovTag {
 		output.append("		}\n");
 		output.append("		function openJavaWizardInfo(){\n");
 		output.append("			if(winJWT==null) {\n");
-		output.append("				winJWT = new Window('winJWTInfo', {className: \"alphacube\", title:\""+msgBuilder.getMessage("SBIDev.javaClassWiz.SintaxLbl", "messages", httpRequest)+"\", minWidth:150, destroyOnClose: false});\n");
+		output.append("				winJWT = new Window('winJWTInfo', {className: \"alphacube\", title:\""+msgBuilder.getMessage("SBIDev.javaClassWiz.SintaxLbl", "messages", httpRequest)+"\", width:680, height:150, destroyOnClose: false});\n");
 		output.append("         	winJWT.setContent('javawizardinfodiv', true, false);\n");
 		output.append("         	winJWT.showCenter(false);\n");
 		output.append("		    } else {\n");

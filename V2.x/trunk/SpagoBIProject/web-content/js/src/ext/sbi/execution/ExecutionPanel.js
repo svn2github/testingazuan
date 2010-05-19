@@ -213,7 +213,9 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 		  tabblocked = false;
 		  config.preferences.executionToolbarConfig = {};
 		  config.preferences.executionToolbarConfig.expandBtnVisible = false;
-		  	var activeDocument = new Sbi.execution.ExecutionPanel( {preferences: config.preferences, isFromCross: true}, config.document );
+		
+		  	var activeDocument = new Sbi.execution.ExecutionPanel( {preferences: config.preferences, isFromCross: true}, config.document );  	
+			
 			var popupWin = new Ext.Window({
 	   	        layout: 'fit',                	          
 	           	title: config.title,
@@ -253,6 +255,12 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 			this.activeDocument.on('beforetoolbarinit', this.setBreadcrumbs, this);
 			//this.activeDocument.tb.on('beforeinit', this.setBreadcrumbs, this);	
 			this.activeDocument.documentExecutionPage.on('crossnavigation', this.loadCrossNavigationTargetDocument , this);
+			this.activeDocument.documentExecutionPage.on('collapse3', function() {
+				sendMessage({}, 'collapse2'); 
+			}, this);
+			this.activeDocument.parametersSelectionPage.on('collapse3', function() {
+				sendMessage({}, 'collapse2'); 
+			}, this);
 			
 			this.add(this.activeDocument);
 			this.doLayout();

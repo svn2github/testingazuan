@@ -54,6 +54,8 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	private Configuration compositeConfiguration = null;	
 	private SessionFactory compositeSessionFactory = null;
 	
+	private boolean hibernateInitialized = false;
+	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(CompositeHibernateDataSource.class);
 	
@@ -191,9 +193,11 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	/**
 	 * Inits the hibernate.
 	 */
-	private void initHibernate(){
+	private synchronized void initHibernate(){
 		logger.debug("IN");
-				
+		
+		if (hibernateInitialized) return;
+		
 		compositeConfiguration = buildEmptyConfiguration();
 		
 		addDatamarts();
@@ -201,6 +205,8 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 		addDbLinks();	
 		
 		compositeSessionFactory = compositeConfiguration.buildSessionFactory();
+		
+		hibernateInitialized = true;
 	}	
 	
 	

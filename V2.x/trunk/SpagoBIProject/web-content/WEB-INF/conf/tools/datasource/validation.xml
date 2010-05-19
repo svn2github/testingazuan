@@ -27,8 +27,8 @@
 					<VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
 				</FIELD>	
 				<FIELD name="URL_CONNECTION" label="URL_CONNECTION">
-					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9.:@\s\-\_\(\)\\\/])*$"/>
-					<VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
+					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9.:;=@\s\-\_\(\)\\\/])*$"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="500"/>
 				</FIELD>
 				<FIELD name="USER" label="USER">
 					<VALIDATOR validatorName="ALFANUMERIC"/>
@@ -68,8 +68,8 @@
 					<VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
 				</FIELD>	
 				<FIELD name="URL_CONNECTION" label="URL_CONNECTION">
-					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9.:@\s\-\_\(\)\\\/])*$"/>
-					<VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
+					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9.:;=@\s\-\_\(\)\\\/])*$"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="500"/>
 				</FIELD>
 				<FIELD name="USER" label="USER">
 					<VALIDATOR validatorName="ALFANUMERIC"/>

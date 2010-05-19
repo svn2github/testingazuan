@@ -271,10 +271,30 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		    , scope: this
 		    , handler : function() {
 					// save parameters into session
-					Sbi.execution.SessionParametersManager.saveState(this.parametersPanel);
-					this.southPanel.collapse();
-					this.northPanel.collapse();
-					this.refreshExecution();
+					// if type is QBE inform user that will lose configurations
+					if(executionInstance.document.typeCode == 'DATAMART'){
+						
+							Ext.MessageBox.confirm(
+    						    LN('sbi.users.confirm'),
+            					LN('sbi.execution.executionpage.toolbar.qberefresh'),            
+            					function(btn, text) {
+                					if (btn=='yes') {
+										Sbi.execution.SessionParametersManager.saveState(this.parametersPanel);
+										this.southPanel.collapse();
+										this.northPanel.collapse();
+										this.refreshExecution();
+                					}
+            					},
+            					this
+								);
+					
+					} // it 's not a qbe
+					else {
+						Sbi.execution.SessionParametersManager.saveState(this.parametersPanel);
+						this.southPanel.collapse();
+						this.northPanel.collapse();
+						this.refreshExecution();
+				}
 			}			
 		}));
 		//

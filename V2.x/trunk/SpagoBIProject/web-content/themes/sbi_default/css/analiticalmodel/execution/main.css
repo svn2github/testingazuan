@@ -44,7 +44,7 @@
 }
 
 .icon-filter-funnel {
-	background:transparent url('../../../img/filter-funnel.gif') !important;
+	background-image:url(../../../img/filter-funnel.gif) !important;
 }
 
 .icon-unfilter {

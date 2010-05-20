@@ -523,7 +523,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	        selectOnFocus:true
 	    });
 	    // we do not want editing to start after node clicking
-	    this.treeEditor.beforeNodeClick = Ext.emptyFn;
+	    //this.treeEditor.beforeNodeClick = Ext.emptyFn;
 
 		
 		this.tree.getSelectionModel().on('beforeselect', this.onSelect, this);

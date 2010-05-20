@@ -82,7 +82,16 @@ public class ContentServiceImplSupplier {
 		    biobj = DAOFactory.getBIObjectDAO().loadBIObjectById(id);
 		    // only if the user is not Scheduler or Workflow system user or it is a call to retrieve a subreport, 
 		    //check visibility on document and parameter values
-		    if (!UserProfile.isSchedulerUser(user) && !UserProfile.isWorkflowUser(user)  && !isSubReportCall(biobj, parameters)) {
+		    boolean checkNeeded = true;
+		    boolean modContained = parameters.containsKey("read");
+		    if(modContained){
+		    	 boolean onlytemplate = parameters.containsValue("onlytemplate");
+		    	 if(onlytemplate){
+		    		 checkNeeded = false;
+		    	 }
+		    }
+		    
+		    if (checkNeeded && !UserProfile.isSchedulerUser(user) && !UserProfile.isWorkflowUser(user)  && !isSubReportCall(biobj, parameters)) {
 		    	checkRequestCorrectness(user, biobj, parameters);
 		    }
 	    	

@@ -230,6 +230,7 @@ public class WPalo implements EntryPoint {
 	}
 	
 	private final void parseDefaultLinkData(final Dispatcher dispatcher, final ViewBrowserController viewBrowserController) {
+
 		final String directLink = Window.Location.getParameter("options");
 		final String locale = Window.Location.getParameter("locale");
 		if (directLink == null) {
@@ -240,7 +241,8 @@ public class WPalo implements EntryPoint {
 			final String pass = getValue("pass", directLink);
 			if (user == null || pass == null) {
 				dispatcher.dispatch(WPaloEvent.APP_START);
-			} else {				
+			} else {
+
 				waitPanel = new BusyIndicatorPanel();
 				waitPanel.show(constants.startingApplication(), false);
 				WPaloServiceProvider.getInstance().openViewDirectly(locale, directLink,
@@ -399,6 +401,7 @@ public class WPalo implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
+
 		String theme = Window.Location.getParameter("theme");
 		if (theme == null || theme.isEmpty() || theme.equalsIgnoreCase("blue") || theme.equalsIgnoreCase("default")) {
 			GXT.setDefaultTheme(Theme.BLUE, true);

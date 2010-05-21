@@ -10,6 +10,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.palo.viewapi.services.ServiceProvider;
+import org.palo.viewapi.services.ViewService;
+
+import com.tensegrity.palo.gwt.core.server.services.UserSession;
 
 import sun.misc.BASE64Decoder;
 
@@ -49,9 +53,10 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
     	String jpaloUrl;
 
     	logger.debug("IN");
-		
+
 		try {		
 			HttpSession session = servletIOManager.getHttpSession();
+
 			IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			ContentServiceProxy contentProxy = new ContentServiceProxy((String)profile.getUserUniqueIdentifier(),session);
 			String documentId = (String) servletIOManager.getRequest().getParameter(DOCUMENT_ID);
@@ -61,32 +66,51 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			try {
 				BASE64Decoder bASE64Decoder = new BASE64Decoder();
 				byteContent = bASE64Decoder.decodeBuffer(templateContent.getContent());
-				System.out.println("metodo 1::"+byteContent.length);
 				String xmlSourceBean = new String(byteContent);
-				System.out.println(xmlSourceBean);
 				SourceBean sb =SourceBean.fromXMLString(xmlSourceBean);
-				template = new JPaloEngineTemplate(sb);
-				System.out.println(template.getViewName());
+				template = new JPaloEngineTemplate(sb);		
+				
+
 			}catch (Throwable t){
 				logger.warn("Error on decompile",t); 
 			}
-			//template = new JPaloEngineTemplate( servletIOManager.getTemplateAsSourceBean() );			
-			//http://localhost:8888/com.tensegrity.wpalo.SpagoBIJPaloEngine/SpagoBIJPaloEngine.html?options=user="admin";pass="ISMvKXpXpadDiUoOSoAfww==";openview="Sales"
-	    	jpaloUrl = PALO_BASE_URL+"?options=";	
+			
+			//looks for cube name to create view 
+			//NB: methods to create view dinamically available only if already logged in Jpalo
+			String cubeName = template.getCubeName();
 
-			jpaloUrl += "user=\"admin\";pass=\"ISMvKXpXpadDiUoOSoAfww==\"";
-			jpaloUrl += ";openview=\"";
-			jpaloUrl += template.getViewName();
-			//jpaloUrl += "Sales";
-			jpaloUrl += "\"";
+	    	jpaloUrl = PALO_BASE_URL;	
+
+	    	jpaloUrl += "?theme=gray&options=(";
+			//adds information about spagobi context of execution
+	    	if(documentId != null && profile != null){
+	    		jpaloUrl += "spagobiusr=\""+(String)profile.getUserUniqueIdentifier()+"\"";	    	
+	    		jpaloUrl += ",spagobidoc=\""+documentId+"\",";
+	    	}
+	    	//jpalo informations
+			jpaloUrl += "user=\"admin\",pass=\"ISMvKXpXpadDiUoOSoAfww==\"";
+			if(cubeName != null && !cubeName.equals("")){				
+				System.out.println(cubeName);
+				jpaloUrl += ",openview=\"";
+				jpaloUrl += "\"";
+				jpaloUrl += ",cubename=\"";
+				jpaloUrl += cubeName;
+				jpaloUrl += "\"";
+			}else{
+				jpaloUrl += ",openview=\"";
+				jpaloUrl += template.getViewName();
+				jpaloUrl += "\"";
+			}
+			jpaloUrl += ",hidestaticfilter";
 			jpaloUrl += ",hidenavigator";
 			jpaloUrl += ",hideviewtabs";
-
+			jpaloUrl += ")";
 
 			String urlWithSessionID = servletIOManager.getResponse().encodeRedirectURL( jpaloUrl );
 			servletIOManager.getResponse().sendRedirect( urlWithSessionID );
 	    
 		} catch(Throwable t) {
+			t.printStackTrace();
 			throw new SpagoBIEngineException("An unpredicted error occured while executing palo-engine. Please check the log for more informations on the causes",
 			"an.unpredicted.error.occured", t);				
 		} finally {

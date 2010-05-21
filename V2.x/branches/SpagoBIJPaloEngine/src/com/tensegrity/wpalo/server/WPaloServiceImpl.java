@@ -31,6 +31,8 @@
 
 package com.tensegrity.wpalo.server;
 
+import it.eng.spagobi.util.spagobi.JPaloSavingUtil;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -81,6 +83,7 @@ import org.palo.viewapi.internal.FolderElement;
 import org.palo.viewapi.internal.IUserRoleManagement;
 import org.palo.viewapi.internal.IViewManagement;
 import org.palo.viewapi.internal.dbmappers.MapperRegistry;
+import org.palo.viewapi.internal.io.CubeViewIO;
 import org.palo.viewapi.services.AdministrationService;
 import org.palo.viewapi.services.ServiceProvider;
 import org.palo.viewapi.services.ViewService;
@@ -861,13 +864,29 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 	
 	private final XDirectLinkData parseSingleView(String locale, AuthUser authUser, String link, XDirectLinkData data) {
 		String view = getValue("openview", link);
-		if (view == null) return data;
+		if (view == null) {
+			return data;
+		}
+		//SpagoBI informations
+		String spagoBIUser = getValue("spagobiusr", link);
+		if (spagoBIUser != null) {			
+			getSession().setAttribute("spagobiuser", spagoBIUser);
+		}
+		String spagoBIDoc = getValue("spagobidoc", link);
+		if (spagoBIDoc != null) {			
+			getSession().setAttribute("spagobidocument", spagoBIDoc);
+		}
 				
 		try {
 			ViewService viewService = ServiceProvider.getViewService(authUser);
 			/*SpagoBI modification begin*/
 			//View v = viewService.getView(view);
-			
+			if(view.equalsIgnoreCase("")){
+				//cube name --> create view dinamically
+				String cubeName = getValue("cubename", link);
+				//viewService.setCube(cubeId, ofView)
+				//viewService.setDefinition(xml, ofView)
+			}
 			View v = null;
 
 			for (Account a: authUser.getAccounts()) {
@@ -885,6 +904,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 					}
 				}
 			}
+
 			/*end*/
 			
 			if (v != null) {
@@ -948,6 +968,12 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 				
 				ViewConverter conv = new ViewConverter();
 				XView xView = (XView) conv.toXObject(v);
+				//SpagoBI modification
+				JPaloSavingUtil util = new JPaloSavingUtil();
+				String definition = util.getSubobjectForJPalo(getSession(), v.getName());
+				System.out.println("def::"+definition);
+				xView.setDefinition(definition);
+				
 				xView.setDisplayFlags(createDisplayFlags(link));
 				data.setViews(new XView [] {xView});
 				return data;				
@@ -1904,7 +1930,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 	
 	public XDirectLinkData openViewDirectly(String locale, String link) {		
 		myInitDbConnection(getServletContext(), true);
-				
+		System.out.println("openViewDirectly IN");		
 		XDirectLinkData data = new XDirectLinkData();
 		
 		// Parse link information:
@@ -1923,6 +1949,17 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 			data.setAuthenticated(false);
 			data.addError(UserSession.trans(locale, "noDirectLinkPasswordSpecified"));
 			return data;
+		}
+		//SpagoBI informations
+		String spagoBIUser = getValue("spagobiusr", link);
+		System.out.println(spagoBIUser);
+		if (spagoBIUser != null) {			
+			getSession().setAttribute("spagobiuser", spagoBIUser);
+		}
+		String spagoBIDoc = getValue("spagobidoc", link);
+		System.out.println(spagoBIDoc);
+		if (spagoBIDoc != null) {			
+			getSession().setAttribute("spagobidocument", spagoBIDoc);
 		}
 		
 		List <Boolean> gFlags = createGlobalDisplayFlags(link);

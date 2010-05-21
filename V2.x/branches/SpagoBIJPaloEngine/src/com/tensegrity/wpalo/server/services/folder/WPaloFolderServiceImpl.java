@@ -41,6 +41,7 @@ import java.util.List;
 
 import org.palo.api.exceptions.PaloIOException;
 import org.palo.viewapi.AuthUser;
+import org.palo.viewapi.CubeView;
 import org.palo.viewapi.Group;
 import org.palo.viewapi.Right;
 import org.palo.viewapi.Role;
@@ -53,6 +54,7 @@ import org.palo.viewapi.internal.IRoleManagement;
 import org.palo.viewapi.internal.RoleImpl;
 import org.palo.viewapi.internal.StaticFolder;
 import org.palo.viewapi.internal.dbmappers.MapperRegistry;
+import org.palo.viewapi.internal.io.CubeViewIO;
 import org.palo.viewapi.services.FolderService;
 import org.palo.viewapi.services.ServiceProvider;
 import org.palo.viewapi.services.ViewService;
@@ -303,7 +305,10 @@ public class WPaloFolderServiceImpl extends BasePaloServiceServlet implements
 		}
 		importedXView.setRoleIds(roleIds);
 		importedXView.setRoleNames(roleNames);				
-		
+		//saves xml definition in spagobi
+		CubeView  cubeView = realView.getCubeView();
+		String xml = CubeViewIO.toXML(cubeView);
+		System.out.println(xml);
 		return importedXView;
 	}
 

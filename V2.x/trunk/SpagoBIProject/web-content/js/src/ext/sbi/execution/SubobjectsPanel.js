@@ -75,7 +75,10 @@ Sbi.execution.SubobjectsPanel = function(config, doc) {
                    {name:'lastModificationDate', type:'date', dateFormat: Sbi.config.clientServerTimestampFormat}, 
                    'visibility']
 		, url: this.services['getSubObjectsService']
-    }); 
+    });
+    
+    // need to put subobject id
+    this.idGlob; 
     
      this.executeMetadataColumn = new Ext.grid.ButtonColumn({
 	       header:  '',
@@ -198,8 +201,7 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 	   
     // public methods
 	
-	, synchronize: function( executionInstance ) {
-		
+	, synchronize: function( executionInstance ) {	
 		this.executionInstance = executionInstance;
 		if (this.isHidden === false) {
 			this.subObjectsStore.on(
@@ -211,8 +213,34 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 		} else {
 			// must fire 'ready' event to inform that the panel is ready (see ParametersSelectionPage.js)
 			this.fireEvent('ready');
-		}
+		}		
+	}
+	// called when saving a subobject, set listener when datastore loading is end to open metadata window
+	, openMetadataWindowAfterSaving: function( id, executionInstance ) {
 		
+		this.idGlob = id;
+			this.on(
+				'ready', 
+				this.openMetadataWindowAfterSavingFunction,
+				this
+			);
+
+	}
+	// opens metadata window by calling the metadata event on the just inserted subobject id
+	, openMetadataWindow: function( id, executionInstance ) {
+				// erase listener
+			this.un(
+				'ready', 
+				this.openMetadataWindow,
+				this
+			);
+	
+			// search for the index of record with right id	
+			var index = this.subObjectsStore.find('id', this.idGlob );
+			var record = this.subObjectsStore.getAt(index);
+	        var subObjectId = record.get('id');
+			// call the metadata event on the just inserted subobject id
+	        this.fireEvent('showmetadatarequest', subObjectId);
 	}
 
 	, deleteSelectedSubObjects: function() {

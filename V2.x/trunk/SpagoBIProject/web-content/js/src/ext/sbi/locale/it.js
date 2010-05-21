@@ -106,7 +106,7 @@ Sbi.locale.ln['sbi.execution.executionpage.toolbar.save'] = 'Salva il documento 
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.bookmark'] = 'Aggiungi il documento ai preferiti';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.annotate'] = 'Aggiungi note al documento';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.metadata'] = 'Mostra i metadati associati al documento';
-
+Sbi.locale.ln['sbi.execution.executionpage.toolbar.qberefresh'] = 'Il refresh della pagina comporta la perdita della impostazione attuale del QBE: proseguire?';
 
 Sbi.locale.ln['sbi.execution.viewpoints.title'] = 'Parametri Salvati';
 Sbi.locale.ln['sbi.execution.viewpoints.emptyText'] = '[Il documento non ha parametri salvati]';

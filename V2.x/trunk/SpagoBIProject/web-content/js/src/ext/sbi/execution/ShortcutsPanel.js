@@ -109,7 +109,12 @@ Ext.extend(Sbi.execution.ShortcutsPanel, Ext.Panel, {
 	, synchronizeSubobjects: function( executionInstance ) {
 		this.subobjectsPanel.synchronize( executionInstance );
 	}
-	
+	, synchronizeSubobjectsAndOpenMetadata: function( id, executionInstance ) {
+		// synchronize subobjects
+		this.subobjectsPanel.synchronize( executionInstance );		
+		// open the metadata windows
+		this.subobjectsPanel.openMetadataWindowAfterSaving( id, executionInstance );
+	}
 	, synchronizeSnapshots: function( executionInstance ) {
 		this.snapshotsPanel.synchronize( executionInstance );
 	}

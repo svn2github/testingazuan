@@ -212,20 +212,6 @@
   <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns26:SpagoBiDataSource" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.services.datasource.bo.SpagoBiDataSource" xmlns:ns26="http://bo.datasource.services.spagobi.eng.it"/>
   <arrayMapping innerType="ns28:SpagoBiDataSet" languageSpecificType="java:it.eng.spagobi.services.dataset.bo.SpagoBiDataSet[]" qname="ns27:ArrayOf_tns2_SpagoBiDataSet" xmlns:ns27="urn:spagobidataset" xmlns:ns28="http://bo.dataset.services.spagobi.eng.it"/>
  </service>
-  <service name="SbiDocumentService" provider="java:RPC">
-  <parameter name="wsdlServicePort" value="SbiDocumentService"/>
-  <parameter name="className" value="it.eng.spagobi.services.sbidocument.stub.SbiDocumentServiceSoapBindingSkeleton"/>
-  <parameter name="typeMappingVersion" value="1.2"/>
-  <parameter name="allowedMethods" value="*"/>
-  <parameter name="wsdlServiceElement" value="SbiDocumentServiceService"/>
-  <parameter name="wsdlTargetNamespace" value="urn:spagobisbidocument"/>
-  <parameter name="wsdlPortType" value="SbiDocumentService"/>
-  <parameter name="scope" value="Session"/>
-  <parameter name="schemaUnqualified" value="http://bo.sbidocument.services.spagobi.eng.it,urn:spagobisbidocument"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns32:SpagobiAnalyticalDriver" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.services.sbidocument.bo.SpagobiAnalyticalDriver" xmlns:ns32="http://bo.sbidocument.services.spagobi.eng.it"/>
-  <arrayMapping innerType="ns34:SpagobiAnalyticalDriver" languageSpecificType="java:it.eng.spagobi.services.sbidocument.bo.SpagobiAnalyticalDriver[]" qname="ns33:ArrayOf_tns2_SpagobiAnalyticalDriver" xmlns:ns33="urn:spagobisbidocument" xmlns:ns34="http://bo.sbidocument.services.spagobi.eng.it"/>
-  <arrayMapping innerType="xsd:anyType" languageSpecificType="java:java.lang.Object[]" qname="ns35:ArrayOf_xsd_anyType" xmlns:ns35="urn:spagobisbidocument" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
- </service>
  <service name="SchedulerService" provider="java:RPC">
   <parameter name="allowedMethods" value="*"/>
   <parameter name="wsdlPortType" value="SchedulerService"/>
@@ -290,17 +276,7 @@
   <arrayMapping innerType="soapenc:string" languageSpecificType="java:java.lang.String[]" qname="ns49:ArrayOf_soapenc_string" xmlns:ns49="urn:spagobisdkdocuments" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"/>
   <arrayMapping innerType="ns51:SDKDocument" languageSpecificType="java:it.eng.spagobi.sdk.documents.bo.SDKDocument[]" qname="ns50:ArrayOf_tns2_SDKDocument" xmlns:ns50="urn:spagobisdkdocuments" xmlns:ns51="http://bo.documents.sdk.spagobi.eng.it"/>
   <arrayMapping innerType="ns53:SDKFunctionality" languageSpecificType="java:it.eng.spagobi.sdk.documents.bo.SDKFunctionality[]" qname="ns52:ArrayOf_tns2_SDKFunctionality" xmlns:ns52="urn:spagobisdkdocuments" xmlns:ns53="http://bo.documents.sdk.spagobi.eng.it"/>
- </service>
- <service name="ExportRecordsService" provider="java:RPC">
-  <parameter name="allowedMethods" value="*"/>
-  <parameter name="typeMappingVersion" value="1.2"/>
-  <parameter name="wsdlPortType" value="ExportRecordsService"/>
-  <parameter name="scope" value="Session"/>
-  <parameter name="className" value="it.eng.spagobi.services.exportrecords.stub.ExportRecordsServiceSoapBindingSkeleton"/>
-  <parameter name="wsdlServicePort" value="ExportRecordsService"/>
-  <parameter name="wsdlTargetNamespace" value="urn:spagobiexportrecords"/>
-  <parameter name="wsdlServiceElement" value="ExportRecordsServiceService"/>
- </service>
+ </service> 
   <!-- <service name="DocumentsService" provider="java:RPC">
   <requestFlow>
    <handler type="java:org.apache.ws.axis.security.WSDoAllReceiver">

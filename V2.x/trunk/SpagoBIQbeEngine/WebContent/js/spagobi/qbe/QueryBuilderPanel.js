@@ -271,8 +271,14 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 				parent.loadSubObject(window.name, content.text);
 			} catch (ex) {}
 			// for new gui
+			// build a JSON object containing message and ID of the saved  object
+			
 			try {
-				sendMessage("Subobject saved!!!!","subobjectsaved");
+			// get the id of the subobject just inserted, decode string, need to call metadata window
+			var responseJSON = Ext.util.JSON.decode( response.responseText )
+			var id = responseJSON.text;
+			var msgToSend = 'Sub Object Saved!!';
+			sendMessage({'id': id, 'msg': msgToSend},'subobjectsaved');
 			} catch (ex) {}
 			
 			Ext.Msg.show({

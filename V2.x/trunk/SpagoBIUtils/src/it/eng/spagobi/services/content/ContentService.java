@@ -61,6 +61,15 @@ public interface ContentService {
      * 
      * @param token String
      * @param user String
+     * @param nameSubObject String
+     * @param objId Integer
+     * @return  Content
+     */
+    Content readSubObjectContent(String token,String user,String nameSubObject, Integer objId);
+    /**
+     * 
+     * @param token String
+     * @param user String
      * @param documentiId String
      * @param analysisName String
      * @param analysisDescription String

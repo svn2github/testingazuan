@@ -226,7 +226,29 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
 	}
 	return null;
     }
-    
+
+    /**Read sub object content.
+     * @param nameSubObject
+     * @param objId
+     * @return
+     * @throws java.rmi.RemoteException
+     */
+    public Content readSubObjectContent(String nameSubObject, Integer objId) throws java.rmi.RemoteException{
+    	logger.debug("IN.nameSubObject="+nameSubObject);
+    	if (nameSubObject==null || nameSubObject.length()==0){
+    	    logger.error("SubObject is NULL");
+    	    return null;
+    	}	
+    	try {
+    	    return lookUp().readSubObjectContent(readTicket(), userId, nameSubObject, objId);
+    	} catch (Exception e) {
+    	    logger.error("Error during service execution",e);
+
+    	}finally{
+    	    logger.debug("OUT");
+    	}
+    	return null;
+      }
     /**
      * Save sub object.
      * 

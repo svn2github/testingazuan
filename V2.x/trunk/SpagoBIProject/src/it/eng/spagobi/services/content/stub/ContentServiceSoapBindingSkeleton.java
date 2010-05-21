@@ -64,6 +64,21 @@ public class ContentServiceSoapBindingSkeleton implements it.eng.spagobi.service
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in3"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"), java.lang.Integer.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("readSubObjectContent", _params, new javax.xml.namespace.QName("", "readSubObjectContentReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://bo.content.services.spagobi.eng.it", "Content"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobicontent", "readSubObjectContent"));
+        _oper.setSoapAction("");
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("readSubObjectContent") == null) {
+            _myOperations.put("readSubObjectContent", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("readSubObjectContent")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("readSubObjectContent", _params, new javax.xml.namespace.QName("", "readSubObjectContentReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://bo.content.services.spagobi.eng.it", "Content"));
@@ -186,6 +201,12 @@ public class ContentServiceSoapBindingSkeleton implements it.eng.spagobi.service
     public it.eng.spagobi.services.content.bo.Content readTemplateByLabel(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.util.HashMap in3) throws java.rmi.RemoteException
     {
         it.eng.spagobi.services.content.bo.Content ret = impl.readTemplateByLabel(in0, in1, in2, in3);
+        return ret;
+    }
+
+    public it.eng.spagobi.services.content.bo.Content readSubObjectContent(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.Integer in3) throws java.rmi.RemoteException
+    {
+        it.eng.spagobi.services.content.bo.Content ret = impl.readSubObjectContent(in0, in1, in2, in3);
         return ret;
     }
 

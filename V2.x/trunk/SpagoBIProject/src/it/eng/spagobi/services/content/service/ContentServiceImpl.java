@@ -136,7 +136,31 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	} 
 
     }
-    
+    /**
+     * Read sub object content.
+     * 
+     * @param token the token
+     * @param user the user
+     * @param subObjectName the sub object name
+     * @param objId the object id
+     * 
+     * @return the content
+     */
+    public Content readSubObjectContent(String token,String user,String subObjectName, Integer objId){
+        logger.debug("IN");
+        Monitor monitor =MonitorFactory.start("spagobi.service.content.readSubObjectContent");
+        try {
+            validateTicket(token,user);
+            return readSubObjectContent(user, subObjectName, objId);
+	} catch (SecurityException e) {
+	    logger.error("SecurityException",e);
+	    return null;
+	}finally{
+	    monitor.stop();	    
+	    logger.debug("OUT");
+	} 
+
+    } 
     /**
      * Save sub object.
      * 
@@ -241,7 +265,28 @@ public class ContentServiceImpl extends AbstractServiceImpl{
     	logger.debug("OUT");
     	return null;	
     }
-    
+  
+    private Content readSubObjectContent(String user,String subObjectName, Integer objId){
+    	logger.debug("IN");
+    	Content content=new Content();
+    	try {
+    	    ISubObjectDAO subdao = DAOFactory.getSubObjectDAO();
+    	    SubObject subobj = subdao.getSubObjectByNameAndBIObjectId(subObjectName, objId);
+    	    byte[] cont = subobj.getContent();
+    	    BASE64Encoder bASE64Encoder = new BASE64Encoder();
+    	    content.setContent(bASE64Encoder.encode(cont));
+    	    content.setFileName(subobj.getName());
+    	    return content;
+    	} catch (NumberFormatException e) {
+    	    logger.error("NumberFormatException",e);
+    	} catch (EMFUserError e) {
+    	    logger.error("EMFUserError",e);
+    	} catch (EMFInternalError e) {
+    		logger.error("EMFInternalError",e);
+		} 
+    	logger.debug("OUT");
+    	return null;	
+    }
     
     private String saveSubObject(String user,String documentiId,String analysisName,String analysisDescription,String visibilityBoolean,String content){
 	logger.debug("IN");

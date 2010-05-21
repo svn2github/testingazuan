@@ -30,25 +30,37 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
   </schema>
  </wsdl:types>
 
-   <wsdl:message name="publishTemplateRequest">
+   <wsdl:message name="readSubObjectContentRequest">
 
       <wsdl:part name="in0" type="soapenc:string"/>
 
       <wsdl:part name="in1" type="soapenc:string"/>
 
-      <wsdl:part name="in2" type="apachesoap:Map"/>
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+      <wsdl:part name="in3" type="soapenc:int"/>
 
    </wsdl:message>
 
-   <wsdl:message name="publishTemplateResponse">
+   <wsdl:message name="readTemplateByLabelResponse">
 
-      <wsdl:part name="publishTemplateReturn" type="soapenc:string"/>
+      <wsdl:part name="readTemplateByLabelReturn" type="tns2:Content"/>
 
    </wsdl:message>
 
-   <wsdl:message name="mapCatalogueResponse">
+   <wsdl:message name="readMapRequest">
 
-      <wsdl:part name="mapCatalogueReturn" type="soapenc:string"/>
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="readMapResponse">
+
+      <wsdl:part name="readMapReturn" type="tns2:Content"/>
 
    </wsdl:message>
 
@@ -68,19 +80,59 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="readSubObjectContentResponse">
+   <wsdl:message name="publishTemplateResponse">
+
+      <wsdl:part name="publishTemplateReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="readSubObjectContentResponse1">
 
       <wsdl:part name="readSubObjectContentReturn" type="tns2:Content"/>
 
    </wsdl:message>
 
-   <wsdl:message name="saveObjectTemplateResponse">
+   <wsdl:message name="readTemplateResponse">
 
-      <wsdl:part name="saveObjectTemplateReturn" type="soapenc:string"/>
+      <wsdl:part name="readTemplateReturn" type="tns2:Content"/>
 
    </wsdl:message>
 
-   <wsdl:message name="readTemplateRequest">
+   <wsdl:message name="downloadAllRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+      <wsdl:part name="in3" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishTemplateRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="apachesoap:Map"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="downloadAllResponse">
+
+      <wsdl:part name="downloadAllReturn" type="tns2:Content"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="mapCatalogueResponse">
+
+      <wsdl:part name="mapCatalogueReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="readTemplateByLabelRequest">
 
       <wsdl:part name="in0" type="soapenc:string"/>
 
@@ -92,9 +144,15 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="readMapResponse">
+   <wsdl:message name="saveSubObjectResponse">
 
-      <wsdl:part name="readMapReturn" type="tns2:Content"/>
+      <wsdl:part name="saveSubObjectReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="saveObjectTemplateResponse">
+
+      <wsdl:part name="saveObjectTemplateReturn" type="soapenc:string"/>
 
    </wsdl:message>
 
@@ -112,53 +170,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="downloadAllRequest">
+   <wsdl:message name="readSubObjectContentRequest1">
 
       <wsdl:part name="in0" type="soapenc:string"/>
 
       <wsdl:part name="in1" type="soapenc:string"/>
 
       <wsdl:part name="in2" type="soapenc:string"/>
-
-      <wsdl:part name="in3" type="soapenc:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="downloadAllResponse">
-
-      <wsdl:part name="downloadAllReturn" type="tns2:Content"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="readMapRequest">
-
-      <wsdl:part name="in0" type="soapenc:string"/>
-
-      <wsdl:part name="in1" type="soapenc:string"/>
-
-      <wsdl:part name="in2" type="soapenc:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="saveSubObjectResponse">
-
-      <wsdl:part name="saveSubObjectReturn" type="soapenc:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="readSubObjectContentRequest">
-
-      <wsdl:part name="in0" type="soapenc:string"/>
-
-      <wsdl:part name="in1" type="soapenc:string"/>
-
-      <wsdl:part name="in2" type="soapenc:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="readTemplateResponse">
-
-      <wsdl:part name="readTemplateReturn" type="tns2:Content"/>
 
    </wsdl:message>
 
@@ -180,6 +198,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
+   <wsdl:message name="readSubObjectContentResponse">
+
+      <wsdl:part name="readSubObjectContentReturn" type="tns2:Content"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="readTemplateRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+      <wsdl:part name="in3" type="apachesoap:Map"/>
+
+   </wsdl:message>
+
    <wsdl:portType name="ContentService">
 
       <wsdl:operation name="readTemplate" parameterOrder="in0 in1 in2 in3">
@@ -190,11 +226,27 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="readSubObjectContent" parameterOrder="in0 in1 in2">
+      <wsdl:operation name="readTemplateByLabel" parameterOrder="in0 in1 in2 in3">
+
+         <wsdl:input message="impl:readTemplateByLabelRequest" name="readTemplateByLabelRequest"/>
+
+         <wsdl:output message="impl:readTemplateByLabelResponse" name="readTemplateByLabelResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="readSubObjectContent" parameterOrder="in0 in1 in2 in3">
 
          <wsdl:input message="impl:readSubObjectContentRequest" name="readSubObjectContentRequest"/>
 
          <wsdl:output message="impl:readSubObjectContentResponse" name="readSubObjectContentResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="readSubObjectContent" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:readSubObjectContentRequest1" name="readSubObjectContentRequest1"/>
+
+         <wsdl:output message="impl:readSubObjectContentResponse1" name="readSubObjectContentResponse1"/>
 
       </wsdl:operation>
 
@@ -270,6 +322,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="readTemplateByLabel">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="readTemplateByLabelRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobicontent" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="readTemplateByLabelResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobicontent" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
       <wsdl:operation name="readSubObjectContent">
 
          <wsdlsoap:operation soapAction=""/>
@@ -281,6 +351,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:input>
 
          <wsdl:output name="readSubObjectContentResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobicontent" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="readSubObjectContent">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="readSubObjectContentRequest1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobicontent" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="readSubObjectContentResponse1">
 
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobicontent" use="encoded"/>
 

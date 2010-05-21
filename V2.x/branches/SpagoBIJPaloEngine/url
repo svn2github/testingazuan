@@ -6,3 +6,7 @@ http://localhost:8888/com.tensegrity.wpalo.SpagoBIJPaloEngine/SpagoBIJPaloEngine
 http://localhost:8888/com.tensegrity.wpalo.SpagoBIJPaloEngine/SpagoBIJPaloEngine.html?options=user="admin";pass="ISMvKXpXpadDiUoOSoAfww==";openview="Sales,hideviewtabs,hidenavigator
 /*servlet che compone url*/
 http://localhost:8888/com.tensegrity.wpalo.SpagoBIJPaloEngine/JPaloEngineStartServlet
+
+/*test di mondrian integrato in SpagoBI -jpalo */
+http://localhost:8080/SpagoBIJPaloEngine/com.tensegrity.wpalo.SpagoBIJPaloEngine/SpagoBIJPaloEngine.html
+http://localhost:8080/SpagoBIJPaloEngine/index.html

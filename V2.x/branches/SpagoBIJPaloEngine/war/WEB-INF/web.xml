@@ -8,13 +8,14 @@
 	<description>
 		SpagoBI - Palo Web Client Engine
 	</description>
-	
+	<!--  
 	<filter>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<filter-class>
 			it.eng.spagobi.utilities.filters.SpagoBIAccessFilter
 		</filter-class>
 	</filter>
+	-->
 	<filter>
 		<filter-name>NoCacheFilter</filter-name>
 		<filter-class>
@@ -25,7 +26,7 @@
 			<param-value>private,no-cache,no-store</param-value>
 		</init-param>
 	</filter>
-<!-- START-CAS 
+<!-- START-CAS
 <filter>
   <filter-name>CAS Authentication Filter</filter-name>
   <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
@@ -90,11 +91,13 @@ END-CAS -->
 		<filter-name>CAS Validation Filter</filter-name>
 		<url-pattern>/proxyCallback</url-pattern>	
   </filter-mapping>
-END-CAS -->	
+ END-CAS -->	
+ <!-- 
 	<filter-mapping>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<url-pattern>/com.tensegrity.wpalo.SpagoBIJPaloEngine/JPaloEngineStartServlet</url-pattern>
 	</filter-mapping>
+	-->	
 	<filter-mapping>
 		<filter-name>NoCacheFilter</filter-name>
 		<url-pattern>*.css</url-pattern>
@@ -107,7 +110,7 @@ END-CAS -->
 		<filter-name>NoCacheFilter</filter-name>
 		<url-pattern>*.js</url-pattern>
 	</filter-mapping>
-	
+
 <!--  SERVLETS  -->
 	<servlet>
 		<servlet-name>EngineTestServlet</servlet-name>

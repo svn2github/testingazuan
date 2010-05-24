@@ -102,7 +102,6 @@ public class InternalSecurityServiceSupplierImpl implements
 		try {
 			SbiUser user = DAOFactory.getSbiUserDAO().loadSbiUserByUserId(userId);
 
-			String password = user.getPassword();
 			if (user == null) {
 				logger.error("UserName [" + userId + "] not found!!");
 			    return null;
@@ -111,6 +110,7 @@ public class InternalSecurityServiceSupplierImpl implements
 			profile = new SpagoBIUserProfile();
 			profile.setUniqueIdentifier(userId);
 			profile.setUserId(userId);
+			profile.setUserName(user.getFullName());
 	
 			// get user name
 			String userName = userId;

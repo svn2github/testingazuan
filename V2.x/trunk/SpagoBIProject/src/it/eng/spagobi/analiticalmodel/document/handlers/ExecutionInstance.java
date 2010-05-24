@@ -80,6 +80,7 @@ import org.safehaus.uuid.UUIDGenerator;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import java.io.Serializable;
 
 /**
  * This class represents a document execution instance.
@@ -93,7 +94,7 @@ import com.jamonapi.MonitorFactory;
  * @author zerbetto
  *
  */
-public class ExecutionInstance {
+public class ExecutionInstance implements Serializable{
 
 	static private Logger logger = Logger.getLogger(ExecutionInstance.class);
 

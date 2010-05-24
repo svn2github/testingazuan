@@ -206,7 +206,10 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 		if (this.isHidden === false) {
 			this.subObjectsStore.on(
 				'load', 
-				function() {this.fireEvent('ready');},
+				function() {
+				this.fireEvent('ready');
+				//this.fireEvent('meta');								
+				},
 				this
 			);
 			this.subObjectsStore.load({params: executionInstance});
@@ -217,7 +220,6 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 	}
 	// called when saving a subobject, set listener when datastore loading is end to open metadata window
 	, openMetadataWindowAfterSaving: function( id, executionInstance ) {
-		
 		this.idGlob = id;
 			this.on(
 				'ready', 
@@ -227,11 +229,11 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 
 	}
 	// opens metadata window by calling the metadata event on the just inserted subobject id
-	, openMetadataWindow: function( id, executionInstance ) {
+	, openMetadataWindowAfterSavingFunction: function( id, executionInstance ) {
 				// erase listener
 			this.un(
 				'ready', 
-				this.openMetadataWindow,
+				this.openMetadataWindowAfterSavingFunction,
 				this
 			);
 	

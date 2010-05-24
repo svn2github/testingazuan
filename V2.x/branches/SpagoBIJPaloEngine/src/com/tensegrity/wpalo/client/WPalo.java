@@ -34,6 +34,8 @@ package com.tensegrity.wpalo.client;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -149,6 +151,7 @@ public class WPalo implements EntryPoint {
 	}		
 	
 	private final void parsePaloSuiteLinkData(final Dispatcher dispatcher, final ViewBrowserController viewBrowserController) {
+
 		final String directLink = Window.Location.getQueryString();
 		final String locale = Window.Location.getParameter("locale");
 		WPaloServiceProvider.getInstance().openPaloSuiteView(locale, directLink,
@@ -205,6 +208,7 @@ public class WPalo implements EntryPoint {
 											} else {
 												try {
 												XView xView = xViews[0];
+												
 												DisplayFlags.setDisplayFlagsFor(xView, user, xView.getDisplayFlags(), data.getGlobalDisplayFlags());
 												DisplayFlags displayFlags = DisplayFlags.getDisplayFlagsFor(xView);
 												dispatcher.dispatch(WPaloEvent.INIT, displayFlags);
@@ -259,6 +263,7 @@ public class WPalo implements EntryPoint {
 									MessageBox.alert(constants.errorsWhileProcessingOptions(), buf.toString(), null);
 								}								
 							} else {
+
 //								CubeViewEditor.hasBeenResized = true;
 //								CubeViewEditor.fromDirectLink = true;
 								WPaloControllerServiceProvider.getInstance().loginHash(
@@ -271,6 +276,7 @@ public class WPalo implements EntryPoint {
 												waitPanel.hide();
 											}
 											public void onSuccess(XUser user) {
+
 												XView [] xViews = data.getViews();
 												if (xViews == null || xViews.length == 0) {
 													try {																		
@@ -294,6 +300,7 @@ public class WPalo implements EntryPoint {
 													viewBrowserController.addViewToLoad(xViews[i]);
 												}
 												XView xView = xViews[0];
+												
 												DisplayFlags.setDisplayFlagsFor(xView, user, xView.getDisplayFlags(), data.getGlobalDisplayFlags());
 												DisplayFlags displayFlags = DisplayFlags.getDisplayFlagsFor(xView);
 												dispatcher.dispatch(WPaloEvent.INIT, displayFlags);
@@ -456,6 +463,7 @@ public class WPalo implements EntryPoint {
 						} else {
 							parseDefaultLinkData(dispatcher, viewBrowserController);
 						}
+						
 					}
 				});
 	}

@@ -54,6 +54,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.ServletContext;
 
+import org.apache.log4j.Logger;
 import org.palo.api.Connection;
 import org.palo.api.ConnectionConfiguration;
 import org.palo.api.ConnectionFactory;
@@ -67,7 +68,6 @@ import org.palo.viewapi.Account;
 import org.palo.viewapi.AuthUser;
 import org.palo.viewapi.Axis;
 import org.palo.viewapi.AxisHierarchy;
-import org.palo.viewapi.CubeView;
 import org.palo.viewapi.DbConnection;
 import org.palo.viewapi.Group;
 import org.palo.viewapi.PaloConnection;
@@ -83,7 +83,6 @@ import org.palo.viewapi.internal.FolderElement;
 import org.palo.viewapi.internal.IUserRoleManagement;
 import org.palo.viewapi.internal.IViewManagement;
 import org.palo.viewapi.internal.dbmappers.MapperRegistry;
-import org.palo.viewapi.internal.io.CubeViewIO;
 import org.palo.viewapi.services.AdministrationService;
 import org.palo.viewapi.services.ServiceProvider;
 import org.palo.viewapi.services.ViewService;
@@ -129,6 +128,7 @@ import com.tensegrity.wpalo.server.services.wpalo.WPaloControllerServiceImpl;
 public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloService {
 	private static final long serialVersionUID = 389580199199443146L;
 	private final WPaloPropertyServiceImpl properties;
+	private static transient Logger logger = Logger.getLogger(WPaloServiceImpl.class);
 	
 	public WPaloServiceImpl() {
 		properties = new WPaloPropertyServiceImpl();
@@ -876,7 +876,10 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 		if (spagoBIDoc != null) {			
 			getSession().setAttribute("spagobidocument", spagoBIDoc);
 		}
-				
+		String spagoBISub = getValue("spagobisubobj", link);
+		if (spagoBISub != null) {			
+			getSession().setAttribute("spagobisubobj", spagoBISub);
+		}		
 		try {
 			ViewService viewService = ServiceProvider.getViewService(authUser);
 			/*SpagoBI modification begin*/
@@ -966,17 +969,19 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 					return data;
 				}
 				
-				ViewConverter conv = new ViewConverter();
-				XView xView = (XView) conv.toXObject(v);
+				logger.info("PRIMA trasforamzione di update:::"+v.getDefinition());
 				//SpagoBI modification
 				JPaloSavingUtil util = new JPaloSavingUtil();
-				String definition = util.getSubobjectForJPalo(getSession(), v.getName());
-				System.out.println("def::"+definition);
-				xView.setDefinition(definition);
+				String xml = util.getSubobjectForJPalo(getSession(), v.getName());
 				
+				//viewService.setDefinition(xml, v);
+				
+				ViewConverter conv = new ViewConverter();
+				XView xView = (XView) conv.toXObject(v);
 				xView.setDisplayFlags(createDisplayFlags(link));
+
 				data.setViews(new XView [] {xView});
-				return data;				
+				return data;					
 			}
 			data.addError(UserSession.trans(locale, "couldNotFindView", view));							
 			return data;
@@ -1930,7 +1935,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 	
 	public XDirectLinkData openViewDirectly(String locale, String link) {		
 		myInitDbConnection(getServletContext(), true);
-		System.out.println("openViewDirectly IN");		
+
 		XDirectLinkData data = new XDirectLinkData();
 		
 		// Parse link information:
@@ -1952,12 +1957,10 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 		}
 		//SpagoBI informations
 		String spagoBIUser = getValue("spagobiusr", link);
-		System.out.println(spagoBIUser);
 		if (spagoBIUser != null) {			
 			getSession().setAttribute("spagobiuser", spagoBIUser);
 		}
 		String spagoBIDoc = getValue("spagobidoc", link);
-		System.out.println(spagoBIDoc);
 		if (spagoBIDoc != null) {			
 			getSession().setAttribute("spagobidocument", spagoBIDoc);
 		}

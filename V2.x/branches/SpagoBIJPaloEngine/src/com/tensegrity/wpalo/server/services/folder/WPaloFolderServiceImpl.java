@@ -308,7 +308,7 @@ public class WPaloFolderServiceImpl extends BasePaloServiceServlet implements
 		//saves xml definition in spagobi
 		CubeView  cubeView = realView.getCubeView();
 		String xml = CubeViewIO.toXML(cubeView);
-		System.out.println(xml);
+
 		return importedXView;
 	}
 

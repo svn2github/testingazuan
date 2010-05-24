@@ -33,6 +33,7 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 	
 	private static final String PALO_BASE_URL = "SpagoBIJPaloEngine.html";
 	private static String DOCUMENT_ID="document";
+	private static String SUBOBJ_ID="subobjectId";
 	
 	/**
      * Logger component
@@ -60,6 +61,7 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			ContentServiceProxy contentProxy = new ContentServiceProxy((String)profile.getUserUniqueIdentifier(),session);
 			String documentId = (String) servletIOManager.getRequest().getParameter(DOCUMENT_ID);
+			String subobj = (String) servletIOManager.getRequest().getParameter(SUBOBJ_ID);
 			Content templateContent = contentProxy.readTemplate(documentId,new HashMap());
 
 			byte[] byteContent = null;
@@ -86,6 +88,12 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 	    	if(documentId != null && profile != null){
 	    		jpaloUrl += "spagobiusr=\""+(String)profile.getUserUniqueIdentifier()+"\"";	    	
 	    		jpaloUrl += ",spagobidoc=\""+documentId+"\",";
+	    	}
+	    	if(subobj != null){
+	    		if(!jpaloUrl.endsWith(",")){
+	    			jpaloUrl += ",";
+	    		}
+	    		jpaloUrl += "spagobisubobj=\""+subobj+"\",";
 	    	}
 	    	//jpalo informations
 			jpaloUrl += "user=\"admin\",pass=\"ISMvKXpXpadDiUoOSoAfww==\"";

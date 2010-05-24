@@ -36,12 +36,13 @@ import it.eng.spagobi.services.proxy.AuditServiceProxy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-public class AuditAccessUtils {
+public class AuditAccessUtils implements Serializable{
 
     static private Logger logger = Logger.getLogger(AuditAccessUtils.class);
     private List _auditIds;

@@ -883,7 +883,11 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 		String spagoBISub = getValue("spagobisubobj", link);
 		if (spagoBISub != null) {			
 			getSession().setAttribute("spagobisubobj", spagoBISub);
-		}		
+		}
+		String spagoBIIsDev = getValue("isdeveloper", link);
+		if (spagoBIIsDev != null) {			
+			getSession().setAttribute("isdeveloper", spagoBIIsDev);
+		}
 		try {
 			ViewService viewService = ServiceProvider.getViewService(authUser);
 			/*SpagoBI modification begin*/
@@ -1009,37 +1013,34 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 					return data;
 				}
 
-				//SpagoBI modification
-				JPaloSavingUtil util = new JPaloSavingUtil();
-				String xml = util.getSubobjectForJPalo(getSession(), v.getName());
 				
-				ViewConverter conv = new ViewConverter();
-				XView xView = (XView) conv.toXObject(v);
-				xView.setDisplayFlags(createDisplayFlags(link));
-
-				data.setViews(new XView [] {xView});
-				return data;					
 			}else if(v == null && cube != null){
 				//dinamically create view
 				//if doesn't exist
 				View existingView = viewService.getViewByName(cubeName, cube);
-				View dynaView = null;
+
 				if(existingView == null){
-					dynaView = CubeViewConverter.createDefaultView(cubeName, cube, accountId, authUser, "", null);
-					viewService.save(dynaView);
+					v = CubeViewConverter.createDefaultView(cubeName, cube, accountId, authUser, "", null);
+					viewService.save(v);
 				}else{
-					dynaView = existingView;
+					v = existingView;
 				}
-
-				ViewConverter conv = new ViewConverter();
-				XView xView = (XView) conv.toXObject(dynaView);
-				xView.setDisplayFlags(createDisplayFlags(link));
-
-				data.setViews(new XView [] {xView});
-				return data;	
+			}else{
+				data.addError(UserSession.trans(locale, "couldNotFindView", view));							
+				return data;
 			}
-			data.addError(UserSession.trans(locale, "couldNotFindView", view));							
-			return data;
+			//SpagoBI modification
+			JPaloSavingUtil util = new JPaloSavingUtil();
+			String xml = util.getSubobjectForJPalo(getSession(), v.getName());
+			
+			ViewConverter conv = new ViewConverter();
+			XView xView = (XView) conv.toXObject(v);
+			xView.setDisplayFlags(createDisplayFlags(link));
+
+			data.setViews(new XView [] {xView});
+			return data;	
+			
+
 		} catch (Throwable t) {
 			data.addError(UserSession.trans(locale, "errorWhileOpeningDirectLinkView", view, t.getLocalizedMessage()));
 		}

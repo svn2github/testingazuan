@@ -34,6 +34,7 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 	private static final String PALO_BASE_URL = "SpagoBIJPaloEngine.html";
 	private static String DOCUMENT_ID="document";
 	private static String SUBOBJ_ID="subobjectId";
+	private static String IS_DEVELOPER="isSpagoBIDev";
 	
 	/**
      * Logger component
@@ -62,6 +63,8 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			ContentServiceProxy contentProxy = new ContentServiceProxy((String)profile.getUserUniqueIdentifier(),session);
 			String documentId = (String) servletIOManager.getRequest().getParameter(DOCUMENT_ID);
 			String subobj = (String) servletIOManager.getRequest().getParameter(SUBOBJ_ID);
+			String isSpagoBIDev = (String) servletIOManager.getRequest().getParameter(IS_DEVELOPER);
+			System.out.println("DA SERVLET!::"+isSpagoBIDev);
 			Content templateContent = contentProxy.readTemplate(documentId,new HashMap());
 
 			byte[] byteContent = null;
@@ -95,6 +98,12 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 	    		}
 	    		jpaloUrl += "spagobisubobj=\""+subobj+"\",";
 	    	}
+	    	if(isSpagoBIDev != null){
+	    		if(!jpaloUrl.endsWith(",")){
+	    			jpaloUrl += ",";
+	    		}
+	    		jpaloUrl += "isdeveloper=\""+isSpagoBIDev+"\",";
+	    	}
 	    	//jpalo informations
 			jpaloUrl += "user=\"admin\",pass=\"ISMvKXpXpadDiUoOSoAfww==\"";
 			if(cubeName != null && !cubeName.equals("")){				
@@ -121,7 +130,10 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 				jpaloUrl += "\"";
 			}
 			jpaloUrl += ",hidestaticfilter";
-			jpaloUrl += ",hidenavigator";
+			if(isSpagoBIDev == null || isSpagoBIDev.equals("")){
+				jpaloUrl += ",hidenavigator";
+			}
+			
 			jpaloUrl += ",hideviewtabs";
 			jpaloUrl += ")";
 

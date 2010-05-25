@@ -32,7 +32,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
 package it.eng.spagobi.engines.drivers.jpalo;
 
+import java.util.HashMap;
+
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.engines.drivers.EngineURL;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
+import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.engines.drivers.generic.GenericDriver;
 
 import org.apache.log4j.Logger;
@@ -43,6 +50,70 @@ import org.apache.log4j.Logger;
 public class JPaloDriver extends GenericDriver implements IEngineDriver {
 
     static private Logger logger = Logger.getLogger(JPaloDriver.class);
+	/**
+	 * Returns the url to be invoked for editing template document.
+	 * 
+	 * @param biobject The biobject
+	 * @param profile the profile
+	 * 
+	 * @return the url to be invoked for editing template document
+	 * 
+	 * @throws InvalidOperationRequest the invalid operation request
+	 */
+	public EngineURL getEditDocumentTemplateBuildUrl(Object biobject, IEngUserProfile profile)
+	throws InvalidOperationRequest {
+		logger.debug("IN");
+		BIObject obj = null;
+		try {
+			obj = (BIObject) biobject;
+		} catch (ClassCastException cce) {
+			logger.error("The input object is not a BIObject type", cce);
+			return null;
+		}
+		Engine engine = obj.getEngine();
+		String url = engine.getUrl();
+		HashMap parameters = new HashMap();
+		String documentId = obj.getId().toString();
+		parameters.put("document", documentId);
+		parameters.put("isSpagoBIDev", "true");
+		//parameters.put("forward", "SpagoBIJPaloEngine.html");
+		applySecurity(parameters, profile);
+		EngineURL engineURL = new EngineURL(url, parameters);
+		logger.debug("OUT");
+		return engineURL;
+	}
 
+	/**
+	 * Returns the url to be invoked for creating a new template document.
+	 * 
+	 * @param biobject The biobject
+	 * @param profile the profile
+	 * 
+	 * @return the url to be invoked for creating a new template document
+	 * 
+	 * @throws InvalidOperationRequest the invalid operation request
+	 */
+	public EngineURL getNewDocumentTemplateBuildUrl(Object biobject, IEngUserProfile profile)
+	throws InvalidOperationRequest {
+		logger.debug("IN");
+		BIObject obj = null;
+		try {
+			obj = (BIObject) biobject;
+		} catch (ClassCastException cce) {
+			logger.error("The input object is not a BIObject type", cce);
+			return null;
+		}
+		Engine engine = obj.getEngine();
+		String url = engine.getUrl();
+		HashMap parameters = new HashMap();
+		String documentId = obj.getId().toString();
+		parameters.put("document", documentId);
+		parameters.put("isSpagoBIDev", "true");
+		//parameters.put("forward", "SpagoBIJPaloEngine.html");
+		applySecurity(parameters, profile);
+		EngineURL engineURL = new EngineURL(url, parameters);
+		logger.debug("OUT");
+		return engineURL;
+	}
 
 }

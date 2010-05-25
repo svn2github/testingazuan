@@ -163,7 +163,7 @@ Ext.extend(Sbi.console.PromptablesWindow, Ext.Window, {
 	    	        triggerAction: 'all'
         		 });        		 		 
     		}
-    		if (param.values.defaultValue !== undefined){
+    		if (param.values !== undefined && param.values.defaultValue !== undefined){
    			 tmpField.defaultValue = param.values.defaultValue;
    		 	}
     		fields.push(tmpField);
@@ -191,7 +191,7 @@ Ext.extend(Sbi.console.PromptablesWindow, Ext.Window, {
     	for(f in this.fieldMap) {
     		//sets the default value if it's defined into the template
     		
-    		if (this.fieldMap[f].getValue() === undefined || this.fieldMap[f].getValue() == ''){
+    		if ((this.fieldMap[f].getValue() === undefined || this.fieldMap[f].getValue() == '') && this.fieldMap[f].defaultValue !== undefined){
     			state[f] = this.fieldMap[f].defaultValue;
     		}
     		else {

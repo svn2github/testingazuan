@@ -184,33 +184,8 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		
 	    if(dynamicParams) { 
 	    	var msgErr = ""; 
-	    	/*ORIG	    	
-	      	for (var i = 0, l = dynamicParams.length; i < l; i++) {      		     
-	      		var param = dynamicParams[i]; 
-	        	for(p in param) { 
-	        		if(p === 'scope') continue;
-		            if (param.scope === 'dataset') {       	         
-	                	if(record.get(this.store.getFieldNameByAlias(param[p])) === undefined) {         
-	                		msgErr += 'Parameter "' + p + '" undefined into dataset.<p>';
-				        } else {
-				        	results[p] = record.get(this.store.getFieldNameByAlias(param[p])); 
-				        }
-		            } else if (param.scope === 'env'){ 
-		            	if (p !== this.USER_ID && context[p] === undefined) {              	 	 	      
-		            		msgErr += 'Parameter "' + p + '" undefined into request. <p>';
-	                    } else {          	 	 		           	 	 		  
-	                    	results[p] = context[p];
-	                    } 	 		 
-	                } else if (param.scope === 'promptable'){
-		                	promptables = promptables || {};	
-		                	promptables[p] = param[p];
-	                }
-	          		    
-	        	 }
-	        	}*/
 	    	for (var i = 0, l = dynamicParams.length; i < l; i++) { 
-	    	 	var param = dynamicParams[i]; 
-	          //for(p in param) { 		             
+	    	 	var param = dynamicParams[i];              
 		              if (param.scope === 'dataset') {
 			               for(p in param) { 
 			            	   if(p === 'scope') continue;

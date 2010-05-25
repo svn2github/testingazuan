@@ -884,10 +884,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 		if (spagoBISub != null) {			
 			getSession().setAttribute("spagobisubobj", spagoBISub);
 		}
-		String spagoBIIsDev = getValue("isdeveloper", link);
-		if (spagoBIIsDev != null) {			
-			getSession().setAttribute("isdeveloper", spagoBIIsDev);
-		}
+
 		try {
 			ViewService viewService = ServiceProvider.getViewService(authUser);
 			/*SpagoBI modification begin*/
@@ -2019,6 +2016,10 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 		String spagoBIDoc = getValue("spagobidoc", link);
 		if (spagoBIDoc != null) {			
 			getSession().setAttribute("spagobidocument", spagoBIDoc);
+		}
+		String isDeveloper = getValue("isdeveloper", link);
+		if (isDeveloper != null) {			
+			getSession().setAttribute("isdeveloper", isDeveloper);
 		}
 		
 		List <Boolean> gFlags = createGlobalDisplayFlags(link);

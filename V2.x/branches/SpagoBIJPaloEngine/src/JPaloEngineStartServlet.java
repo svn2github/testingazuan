@@ -35,6 +35,7 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 	private static String DOCUMENT_ID="document";
 	private static String SUBOBJ_ID="subobjectId";
 	private static String IS_DEVELOPER="isSpagoBIDev";
+	private static String IS_NEW_DOCUMENT="isNewDocument";
 	
 	/**
      * Logger component
@@ -64,79 +65,90 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			String documentId = (String) servletIOManager.getRequest().getParameter(DOCUMENT_ID);
 			String subobj = (String) servletIOManager.getRequest().getParameter(SUBOBJ_ID);
 			String isSpagoBIDev = (String) servletIOManager.getRequest().getParameter(IS_DEVELOPER);
-			System.out.println("DA SERVLET!::"+isSpagoBIDev);
-			Content templateContent = contentProxy.readTemplate(documentId,new HashMap());
-
-			byte[] byteContent = null;
-			try {
-				BASE64Decoder bASE64Decoder = new BASE64Decoder();
-				byteContent = bASE64Decoder.decodeBuffer(templateContent.getContent());
-				String xmlSourceBean = new String(byteContent);
-				SourceBean sb =SourceBean.fromXMLString(xmlSourceBean);
-				template = new JPaloEngineTemplate(sb);		
-				
-
-			}catch (Throwable t){
-				logger.warn("Error on decompile",t); 
-			}
+			String isNewDoc = (String) servletIOManager.getRequest().getParameter(IS_NEW_DOCUMENT);
 			
-			//looks for cube name to create view 
-			//NB: methods to create view dinamically available only if already logged in Jpalo
-			String cubeName = template.getCubeName();
-
-	    	jpaloUrl = PALO_BASE_URL;	
-
-	    	jpaloUrl += "?theme=gray&options=(";
-			//adds information about spagobi context of execution
-	    	if(documentId != null && profile != null){
-	    		jpaloUrl += "spagobiusr=\""+(String)profile.getUserUniqueIdentifier()+"\"";	    	
-	    		jpaloUrl += ",spagobidoc=\""+documentId+"\",";
-	    	}
-	    	if(subobj != null){
-	    		if(!jpaloUrl.endsWith(",")){
-	    			jpaloUrl += ",";
-	    		}
-	    		jpaloUrl += "spagobisubobj=\""+subobj+"\",";
-	    	}
-	    	if(isSpagoBIDev != null){
-	    		if(!jpaloUrl.endsWith(",")){
-	    			jpaloUrl += ",";
-	    		}
-	    		jpaloUrl += "isdeveloper=\""+isSpagoBIDev+"\",";
-	    	}
-	    	//jpalo informations
+			jpaloUrl = PALO_BASE_URL;	
+			jpaloUrl += "?theme=gray&options=(";
 			jpaloUrl += "user=\"admin\",pass=\"ISMvKXpXpadDiUoOSoAfww==\"";
-			if(cubeName != null && !cubeName.equals("")){				
-				jpaloUrl += ",openview=\"";
-				jpaloUrl += "\"";
-				jpaloUrl += ",cubename=\"";
-				jpaloUrl += cubeName;
-				jpaloUrl += "\"";
-			}else{
-				jpaloUrl += ",openview=\"";
-				jpaloUrl += template.getViewName();
-				jpaloUrl += "\"";
-			}
-			String account = template.getAccountName();
-			if(account != null && !account.equals("")){
-				jpaloUrl += ",account=\"";
-				jpaloUrl += account;
-				jpaloUrl += "\"";
-			}
-			String connection = template.getConnectionName();
-			if(connection != null && !connection.equals("")){
-				jpaloUrl += ",connection=\"";
-				jpaloUrl += connection;
-				jpaloUrl += "\"";
-			}
-			jpaloUrl += ",hidestaticfilter";
-			if(isSpagoBIDev == null || isSpagoBIDev.equals("")){
-				jpaloUrl += ",hidenavigator";
-			}
 			
+			if((isNewDoc != null && isNewDoc.equals("true")) && 
+					(isSpagoBIDev != null && isSpagoBIDev.equals("true"))){
+				//new document--> template doesn't exist!
+				//open editor with no view
+				System.out.println("New document");
+				System.out.println(isSpagoBIDev);
+		    	if(documentId != null && profile != null){
+		    		jpaloUrl += ",spagobiusr=\""+(String)profile.getUserUniqueIdentifier()+"\"";	    	
+		    		jpaloUrl += ",spagobidoc=\""+documentId+"\"";
+		    	}
+		    	if(isSpagoBIDev != null){
+		    		jpaloUrl += ",isdeveloper=\""+isSpagoBIDev+"\"";
+		    	}		    	
+		    	
+			}else{
+				Content templateContent = contentProxy.readTemplate(documentId,new HashMap());
+	
+				byte[] byteContent = null;
+				try {
+					BASE64Decoder bASE64Decoder = new BASE64Decoder();
+					byteContent = bASE64Decoder.decodeBuffer(templateContent.getContent());
+					String xmlSourceBean = new String(byteContent);
+					SourceBean sb =SourceBean.fromXMLString(xmlSourceBean);
+					template = new JPaloEngineTemplate(sb);		
+					
+	
+				}catch (Throwable t){
+					logger.warn("Error on decompile",t); 
+				}
+				
+				//looks for cube name to create view 
+				//NB: methods to create view dinamically available only if already logged in Jpalo
+				String cubeName = template.getCubeName();
+
+				//adds information about spagobi context of execution
+		    	if(documentId != null && profile != null){
+		    		jpaloUrl += ",spagobiusr=\""+(String)profile.getUserUniqueIdentifier()+"\"";	    	
+		    		jpaloUrl += ",spagobidoc=\""+documentId+"\"";
+		    	}
+		    	if(subobj != null){
+		    		jpaloUrl += ",spagobisubobj=\""+subobj+"\"";
+		    	}
+		    	if(isSpagoBIDev != null){
+		    		jpaloUrl += ",isdeveloper=\""+isSpagoBIDev+"\"";
+		    	}
+
+				if(cubeName != null && !cubeName.equals("")){				
+					jpaloUrl += ",openview=\"";
+					jpaloUrl += "\"";
+					jpaloUrl += ",cubename=\"";
+					jpaloUrl += cubeName;
+					jpaloUrl += "\"";
+				}else{
+					jpaloUrl += ",openview=\"";
+					jpaloUrl += template.getViewName();
+					jpaloUrl += "\"";
+				}
+				String account = template.getAccountName();
+				if(account != null && !account.equals("")){
+					jpaloUrl += ",account=\"";
+					jpaloUrl += account;
+					jpaloUrl += "\"";
+				}
+				String connection = template.getConnectionName();
+				if(connection != null && !connection.equals("")){
+					jpaloUrl += ",connection=\"";
+					jpaloUrl += connection;
+					jpaloUrl += "\"";
+				}
+				jpaloUrl += ",hidestaticfilter";
+				if(isSpagoBIDev == null || isSpagoBIDev.equals("")){
+					jpaloUrl += ",hidenavigator";
+				}
+
+			}
 			jpaloUrl += ",hideviewtabs";
 			jpaloUrl += ")";
-
+			System.out.println(jpaloUrl);
 			String urlWithSessionID = servletIOManager.getResponse().encodeRedirectURL( jpaloUrl );
 			servletIOManager.getResponse().sendRedirect( urlWithSessionID );
 	    

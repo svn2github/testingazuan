@@ -317,9 +317,10 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
     
 	var value = (active?editor.getValue(): expression);
     
-    str = Ext.util.Format.stripTags( value );
-    str = str.replace("&nbsp;"," ");
-    
+	if(value !== undefined) {
+		str = Ext.util.Format.stripTags( value );
+		str = str.replace("&nbsp;"," ");
+	}
     return str;
   };
   

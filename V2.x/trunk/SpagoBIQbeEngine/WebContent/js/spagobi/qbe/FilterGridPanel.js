@@ -232,6 +232,21 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		this.setWizardExpression(false);
 	}
 	
+	, deleteFilter: function(record) {
+		Ext.Msg.show({
+			title: LN('sbi.qbe.filtergridpanel.warning.delete.title'),
+		   	msg: LN('sbi.qbe.filtergridpanel.warning.delete.msg'),
+		   	buttons: Ext.Msg.YESNOCANCEL,
+		   	fn: function(btn) {
+				if(btn === 'yes') {
+					this.store.remove( record );
+				}
+			},
+			scope: this
+		});
+		
+	}
+	
 	, getFilterAt: function(i) {
 		var record;
 		var filter;
@@ -357,7 +372,13 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			}
 		}
 		it.eng.spagobi.engines.qbe.filterwizard.setExpression(exp, true);
-		
+	}
+	
+	, appendFilterToWizardExpression: function(record) {
+		var exp = it.eng.spagobi.engines.qbe.filterwizard.getExpression();
+		if(exp === undefined || exp === 'undefined') return;
+		exp += ' AND $F{' + record.data.filterId + '}';
+		it.eng.spagobi.engines.qbe.filterwizard.setExpression(exp, true);
 	}
 	
 	, getFiltersExpression : function() {	
@@ -476,7 +497,18 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		       , clickHandler:function(e, t){
 		          var index = this.grid.getView().findRowIndex(t);
 		          var record = this.grid.store.getAt(index);
-		          this.grid.store.remove(record);
+		          Ext.Msg.show({
+		        	title: LN('sbi.qbe.filtergridpanel.warning.delete.title'),
+		  		   	msg: LN('sbi.qbe.filtergridpanel.warning.delete.msg'),
+		  		   	buttons: Ext.Msg.YESNOCANCEL,
+		  		   	fn: function(btn) {
+		  				if(btn === 'yes') {
+		  					this.grid.store.remove(record);
+		  				}
+		  			},
+		  			scope: this
+		  		  });
+		          
 		       }
 			   , hideable: true
 		       , hidden: true
@@ -500,7 +532,20 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		        listeners: {
 		        	'change': {
      					fn: function(){
-		     				this.setWizardExpression(false);        						
+		    				var exp = it.eng.spagobi.engines.qbe.filterwizard.getExpression();
+		    				if(exp === undefined || exp === 'undefined') return;
+		    				Ext.Msg.show({
+		    					title: LN('sbi.qbe.filtergridpanel.warning.changebolop.title'),
+		    				   	msg: LN('sbi.qbe.filtergridpanel.warning.changebolop.msg'),
+		    				   	buttons: Ext.Msg.YESNOCANCEL,
+		    				   	fn: function(btn) {
+		    						if(btn === 'yes') {
+		    							this.setWizardExpression(false);   
+		    						}
+		    					},
+		    					scope: this
+		    				});
+		     				     						
 		     			}
      					, scope: this
      				}
@@ -839,12 +884,26 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	    
 	    this.grid.on('keydown', function(e){ 
 	      if(e.keyCode === 46) {
-	        var sm=this.grid.getSelectionModel();
-	        var ds = this.grid.getStore();
-	        var rows=sm.getSelections();
-	        for (i = 0; i < rows.length; i++) {
-	          this.store.remove( ds.getById(rows[i].id) );
-	        }
+	        Ext.Msg.show({
+	        	title: LN('sbi.qbe.filtergridpanel.warning.delete.title'),
+			   	msg: LN('sbi.qbe.filtergridpanel.warning.delete.msg'),
+			   	buttons: Ext.Msg.YESNOCANCEL,
+			   	fn: function(btn) {
+					if(btn === 'yes') {
+						var sm=this.grid.getSelectionModel();
+				        var ds = this.grid.getStore();
+				        var rows=sm.getSelections();
+						for (i = 0; i < rows.length; i++) {
+							this.store.remove( ds.getById(rows[i].id) );
+					    }
+					}
+				},
+				scope: this
+			});
+	        
+	        
+	        
+	        
 	      }      
 	    }, this);
 	    
@@ -865,6 +924,12 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	    
 	    this.grid.store.on('remove', function(e){
 	    	this.setWizardExpression(false);
+	    }, this);
+	    
+	    this.grid.store.on('add', function(store, records, index){
+	    	for(var i = 0; i < records.length; i++){
+	    		this.appendFilterToWizardExpression(records[i]);
+	    	}
 	    }, this);
 	}
 	

@@ -197,6 +197,14 @@ Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.text.wizard'] = 'Espressioni';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.tt.wizard'] = 'Espressioni';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.text.add'] = 'Nuova condizione';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.tt.add'] = 'Crea una nuova condizione';
+
+//warnings
+Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.delete.title'] = 'Rimuovi condizione?';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.delete.msg'] = 'Stai per rimuovere una condizione utilizzata nell\'espressione complessa associata (vd. nell\'expression wizard). Così facendo tale espressione verà resettata. Procedere ugualmente?';
+
+Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.changebolop.title'] = 'Modifica connettore?';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.changebolop.msg'] = 'Modificando il connetore booleano associato a questo filtro causerai il reset dell\'espresione complessa associata (vd. nell\'expression wizard). Procedere ugualmente?';
+
 // ===================================================================
 //	SELECT GRID
 // ===================================================================

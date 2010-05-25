@@ -211,6 +211,13 @@ Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.tt.delete'] = 'Delete all filters
 Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.text.wizard'] = 'Exp Wizard';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.tt.wizard'] = 'Exp Wizard';
 
+// warnings
+Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.delete.title'] = 'Remove filter?';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.delete.msg'] = 'Your are removing a filter that is used in a neasted expression (see expression wizard). Removing it will reset the expression. Would you like to go on anyway?';
+
+Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.changebolop.title'] = 'Change boolean connector?';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.changebolop.msg'] = 'Changing the boolean connector of this filter will reset the associated neasted expression (see expression wizard). Would you like to go on anyway?';
+
 // ===================================================================
 //	SELECT GRID
 // ===================================================================

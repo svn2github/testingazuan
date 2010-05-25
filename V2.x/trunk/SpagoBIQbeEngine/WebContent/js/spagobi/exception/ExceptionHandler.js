@@ -124,7 +124,6 @@ Sbi.exception.ExceptionHandler = function(){
            		, buttons: Ext.MessageBox.OK     
            		, icon: Ext.MessageBox.INFO
            		, modal: false
-           		, 
        		});
         }
 

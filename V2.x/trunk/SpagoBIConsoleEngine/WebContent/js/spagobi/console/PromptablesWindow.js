@@ -121,17 +121,56 @@ Ext.extend(Sbi.console.PromptablesWindow, Ext.Window, {
     , initFormPanel: function() {	
 		var fields = [];
 		this.fieldMap = {};
-
-        	for(p in this.promptables) {       
-        		var tmpField = new Ext.form.TextField({
-        		  fieldLabel: this.promptables[p]
-    	          , width: 150    	     
-    	        });
+		
+		for(var i = 0, l = this.promptables.length; i < l; i++) { 
+			var tmpLabel = null;
+			var tmpName = null;
+			var param = this.promptables[i]; 
+			var tmpField = null;
+			//defining label (its variable)
+			for(p in param) {    		
+        		if (p !== 'values' && p !== 'scope'){
+        			tmpLabel = param[p];
+        			tmpName = p;
+        		}
+			}
         		
-        		fields.push(tmpField);
-        		this.fieldMap[p] = tmpField;
-	        }  			   
+    		if (param.values === undefined || param.values.type == 'text'){    			
+    			//default is a textarea
+        		tmpField = new Ext.form.TextField({
+        		  fieldLabel: tmpLabel 
+    	          , width: 250    	     
+    	        });
+        		          		
+    		} else if (param.values.type == 'combo'){	
+    			//combobox 
+    			var tmpStore = null;    			
+    			tmpStore = new Ext.data.SimpleStore({
+    	              fields: ['value','text']
+    	            , data: param.values.data
+    	        });
 
+        		 tmpField = new Ext.form.ComboBox({
+	        		  fieldLabel: tmpLabel
+	    	          , width: 250    	    
+	    	          , store: tmpStore,
+	    	        valueField: 'value',
+	    	        displayField: 'text',
+	    	        mode : 'local',
+	    	        typeAhead: true,
+	    	        emptyText:'Select ...',
+	    	        selectOnFocus:true,
+	    	        triggerAction: 'all'
+        		 });        		 		 
+    		}
+    		if (param.values.defaultValue !== undefined){
+   			 tmpField.defaultValue = param.values.defaultValue;
+   		 	}
+    		fields.push(tmpField);
+			this.fieldMap[tmpName] = tmpField;  
+			    		
+        }  			   
+	
     	this.formPanel = new  Ext.FormPanel({
     		  //title:  LN('sbi.console.promptables.title'),
     		  margins: '50 50 50 50',
@@ -139,6 +178,7 @@ Ext.extend(Sbi.console.PromptablesWindow, Ext.Window, {
 	          bodyStyle:'padding:5px',
 	          width: 850,
 	          height: 600,
+	          labelWidth: 150,
 	          layout: 'form',
 	          trackResetOnLoad: true,
 	          items: fields
@@ -149,7 +189,15 @@ Ext.extend(Sbi.console.PromptablesWindow, Ext.Window, {
     	var state = {};
     	
     	for(f in this.fieldMap) {
-    		state[f] = this.fieldMap[f].getValue();
+    		//sets the default value if it's defined into the template
+    		
+    		if (this.fieldMap[f].getValue() === undefined || this.fieldMap[f].getValue() == ''){
+    			state[f] = this.fieldMap[f].defaultValue;
+    		}
+    		else {
+    			state[f] = this.fieldMap[f].getValue();
+    		}
+    	
     	}
     	
     	return state;

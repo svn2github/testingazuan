@@ -184,6 +184,7 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 		
 	    if(dynamicParams) { 
 	    	var msgErr = ""; 
+	    	/*ORIG	    	
 	      	for (var i = 0, l = dynamicParams.length; i < l; i++) {      		     
 	      		var param = dynamicParams[i]; 
 	        	for(p in param) { 
@@ -200,18 +201,46 @@ Ext.extend(Sbi.console.GridPanel, Ext.grid.GridPanel, {
 	                    } else {          	 	 		           	 	 		  
 	                    	results[p] = context[p];
 	                    } 	 		 
-	                } else if (param.scope === 'promptable'){	  
-	                	promptables = promptables || {};
-	                	promptables[p] = param[p];
+	                } else if (param.scope === 'promptable'){
+		                	promptables = promptables || {};	
+		                	promptables[p] = param[p];
 	                }
 	          		    
-	        	 }          			   
+	        	 }
+	        	}*/
+	    	for (var i = 0, l = dynamicParams.length; i < l; i++) { 
+	    	 	var param = dynamicParams[i]; 
+	          //for(p in param) { 		             
+		              if (param.scope === 'dataset') {
+			               for(p in param) { 
+			            	   if(p === 'scope') continue;
+			                   if(record.get(this.store.getFieldNameByAlias(param[p])) === undefined) {         
+			                    msgErr += 'Parameter "' + p + '" undefined into dataset.<p>';
+					           } else {
+					              results[p] = record.get(this.store.getFieldNameByAlias(param[p])); 
+					           }
+			               }
+		              } else if (param.scope === 'env'){ 
+		            	  if(p === 'scope') continue;
+			               for(p in param) { 
+			            	  if (p !== this.USER_ID && context[p] === undefined) {                         
+			            		   msgErr += 'Parameter "' + p + '" undefined into request. <p>';
+		                      } else {                                   
+		                       results[p] = context[p];
+		                      }
+			               }
+	                 } else if (param.scope === 'promptable'){   
+		                  promptables = promptables || [];
+		                  promptables.push(param);
+	                 }	                 
+	           }    
+	    	   
 	      	}
 	    	var metaParams = parameters.metaParams;
 		    if(metaParams) {  
 		    	results['metaParams'] = Ext.util.JSON.encode(metaParams);
 		    }
-	    }
+	   
         if  (msgErr != ""){
         	Sbi.Msg.showError(msgErr, 'Service Error');
         }	

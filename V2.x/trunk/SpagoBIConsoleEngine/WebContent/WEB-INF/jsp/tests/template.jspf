@@ -367,13 +367,22 @@ Sbi.template = {
 							 	 	{
 										label: 'ptest'
 										, staticParams: {stmt: 'pippo', P4: 'paramValue_AA' , P5: 'paramValue_BB', 'idService': 2} 
-										, dynamicParams: [{'level': 'Debug level: ' 
-														 , scope: 'promptable'   
-														 },{'id': 'ID'  					
+										, dynamicParams: [{'level': 'Livello debug ' 
+														 , scope: 'promptable'
+													     , values:{
+															   type: 'combo' //combo, text
+														     , data:[['1', 'Business' ],['2', 'Database'],['8', 'Ping']
+															 		,['9', 'Util'],['10', 'Update_Wr'],['11', 'Sco Id System']
+																	,['13', 'Errors'],['15', 'Main'],['2,13', 'Database + Errors']]   
+														 }},{'id': 'ID'  					
 														  , scope: 'dataset'
 													     },{'resourceName': 'ID'  					
 														  , scope: 'dataset'
-													     }]	 
+													     },{'update': 'Modalita aggiornamento ' 
+				          								   , scope: 'promptable'   
+					          							   , values: {type:'combo',
+						          							   		  data: [['full', 'Full'],['reset', 'Reset']]	}
+			          									 }]	 
 									}
 								}
 							}, {
@@ -461,8 +470,7 @@ Sbi.template = {
 									target: 'new'
 									 , document: 
 								 	 {
-										label: 'DepartmentList'
-										, staticParams: {P4: 'paramValue_AA' , P5: 'paramValue_BB'} 
+										label: 'DepartmentList'  // 'testReportParams' 									
 										, dynamicParams: [/*{
 											'P1': 'brandname' 
 											, scope: 'dataset'   
@@ -470,9 +478,24 @@ Sbi.template = {
 											'P2': 'productName'
 											, scope: 'dataset'
 										},{'prompt1': 'debug' 			//fieldname(on req) : label
-											 , scope: 'promptable'   
+											 , scope: 'promptable' 
+										     , values: {type: 'text'}  
 										},{'P3': 'Param3' 
-										  , scope: 'promptable'   
+										  , scope: 'promptable'  
+									      , values: {type: 'combo'
+										  , defaultValue: '2,13'
+										  , data:[['1', 'Business' ],['2', 'Database'],['8', 'Ping']
+    									 		 ,['9', 'Util'],['10', 'Update_Wr'],['11', 'Sco Id System']
+												 ,['13', 'Errors'],['15', 'Main'],['2,13', 'Database + Errors']]} 
+										},{'P4': 'Test' 			//fieldname(on req) : label
+										 , scope: 'promptable' 
+									     , values: {type: 'text'
+										    	  , defaultValue: 'this is a default value!'}
+									    },{'P5': 'Param 5' 
+										  , scope: 'promptable'  
+										  , values: {type: 'combo'
+										  , defaultValue: 'full'
+										  , data: [['full', 'Full'],['reset', 'Reset']]} 
 										}*/]	 
 									}
 								}
@@ -481,10 +504,10 @@ Sbi.template = {
 								, hidden: false
 								, tooltip: 'Cross on BARCHART_overlaidbar document (inline)'
 								, config: {
-									target: 'new' 
+									target: 'self' 
 									, document: 
 									{
-										label: 'BARCHART_overlaidbar'
+										label: 'DepartmentList'
 										, staticParams: {P3:'paramValue_A' , P5: 'paramValue_B'} 
 										, dynamicParams: [/*{
 											'P1': 'brandname' 

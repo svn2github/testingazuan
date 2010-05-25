@@ -98,7 +98,6 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 	    	//jpalo informations
 			jpaloUrl += "user=\"admin\",pass=\"ISMvKXpXpadDiUoOSoAfww==\"";
 			if(cubeName != null && !cubeName.equals("")){				
-				System.out.println(cubeName);
 				jpaloUrl += ",openview=\"";
 				jpaloUrl += "\"";
 				jpaloUrl += ",cubename=\"";
@@ -107,6 +106,18 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			}else{
 				jpaloUrl += ",openview=\"";
 				jpaloUrl += template.getViewName();
+				jpaloUrl += "\"";
+			}
+			String account = template.getAccountName();
+			if(account != null && !account.equals("")){
+				jpaloUrl += ",account=\"";
+				jpaloUrl += account;
+				jpaloUrl += "\"";
+			}
+			String connection = template.getConnectionName();
+			if(connection != null && !connection.equals("")){
+				jpaloUrl += ",connection=\"";
+				jpaloUrl += connection;
 				jpaloUrl += "\"";
 			}
 			jpaloUrl += ",hidestaticfilter";

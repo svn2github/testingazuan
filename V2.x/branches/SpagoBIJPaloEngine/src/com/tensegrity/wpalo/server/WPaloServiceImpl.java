@@ -70,6 +70,7 @@ import org.palo.viewapi.Axis;
 import org.palo.viewapi.AxisHierarchy;
 import org.palo.viewapi.DbConnection;
 import org.palo.viewapi.Group;
+import org.palo.viewapi.PaloAccount;
 import org.palo.viewapi.PaloConnection;
 import org.palo.viewapi.Right;
 import org.palo.viewapi.Role;
@@ -98,6 +99,7 @@ import com.tensegrity.palo.gwt.core.client.models.cubeviews.XAxisHierarchy;
 import com.tensegrity.palo.gwt.core.client.models.cubeviews.XDirectLinkData;
 import com.tensegrity.palo.gwt.core.client.models.cubeviews.XView;
 import com.tensegrity.palo.gwt.core.client.models.palo.XCube;
+import com.tensegrity.palo.gwt.core.client.models.palo.XDatabase;
 import com.tensegrity.palo.gwt.core.client.models.palo.XDimension;
 import com.tensegrity.palo.gwt.core.client.models.palo.XElement;
 import com.tensegrity.palo.gwt.core.client.models.palo.XElementNode;
@@ -113,7 +115,9 @@ import com.tensegrity.palo.gwt.core.server.converter.cubeviews.ViewConverter;
 import com.tensegrity.palo.gwt.core.server.services.BasePaloServiceServlet;
 import com.tensegrity.palo.gwt.core.server.services.UserSession;
 import com.tensegrity.palo.gwt.core.server.services.cubeview.CubeViewController;
+import com.tensegrity.palo.gwt.core.server.services.cubeview.CubeViewService;
 import com.tensegrity.palo.gwt.core.server.services.cubeview.XElementFactory;
+import com.tensegrity.palo.gwt.core.server.services.cubeview.converter.CubeViewConverter;
 import com.tensegrity.wpalo.client.WPaloService;
 import com.tensegrity.wpalo.client.serialization.templates.XApplication;
 import com.tensegrity.wpalo.client.serialization.templates.XTemplate;
@@ -884,24 +888,60 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 			ViewService viewService = ServiceProvider.getViewService(authUser);
 			/*SpagoBI modification begin*/
 			//View v = viewService.getView(view);
+			
+			//Account name
+			String accountName = getValue("account", link);
+			//Connection
+			String connection = getValue("connection", link);
+			String cubeName = null;
+			Cube cube = null;
+			String accountId = null;
 			if(view.equalsIgnoreCase("")){
 				//cube name --> create view dinamically
-				String cubeName = getValue("cubename", link);
-				//viewService.setCube(cubeId, ofView)
-				//viewService.setDefinition(xml, ofView)
+				cubeName = getValue("cubename", link);
+
 			}
 			View v = null;
 
 			for (Account a: authUser.getAccounts()) {
 				if(a != null){
-					List<View> views = viewService.getViews(a);
-					if(!views.isEmpty()){
-						Iterator it = views.iterator();
-						while(it.hasNext()){
-							View selView = (View)it.next();
-							if(selView.getName().equals(view)){
-								v = selView;
-								break;
+/*					System.out.println(a.getUser().getLoginName());
+					System.out.println(a.getLoginName());
+					System.out.println(a.getId());
+					System.out.println(a.getConnection().getName());*/
+					//if account, connection and cube specified
+					if(accountName != null && !accountName.equals("")){
+						if(a.getLoginName().equals(accountName)){
+							if(a.getConnection().getName().equals(connection)){
+								//use cube name
+								accountId = a.getId();
+								Connection con = ((PaloAccount) a).login();
+								for (Database db: con.getDatabases()) {
+									int connectionType = db.getConnection().getType();
+									Cube c = db.getCubeByName(cubeName);
+									if(c != null){
+										cube = c;
+										//((PaloAccount) a).logout();
+										break;
+									}
+
+								}
+								
+							}
+						}
+					}else{
+						//if view specified
+						List<View> views = viewService.getViews(a);
+						if(!views.isEmpty()){
+							Iterator it = views.iterator();
+							while(it.hasNext()){
+								View selView = (View)it.next();
+								if(view != null && !view.equals("")){
+									if(selView.getName().equals(view)){
+										v = selView;
+										break;
+									}
+								}
 							}
 						}
 					}
@@ -968,13 +1008,10 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 					data.addError(UserSession.trans(locale, "viewCannotBeSeen", v.getName(), v.getId()));							
 					return data;
 				}
-				
-				logger.info("PRIMA trasforamzione di update:::"+v.getDefinition());
+
 				//SpagoBI modification
 				JPaloSavingUtil util = new JPaloSavingUtil();
 				String xml = util.getSubobjectForJPalo(getSession(), v.getName());
-				
-				//viewService.setDefinition(xml, v);
 				
 				ViewConverter conv = new ViewConverter();
 				XView xView = (XView) conv.toXObject(v);
@@ -982,6 +1019,24 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 
 				data.setViews(new XView [] {xView});
 				return data;					
+			}else if(v == null && cube != null){
+				//dinamically create view
+				//if doesn't exist
+				View existingView = viewService.getViewByName(cubeName, cube);
+				View dynaView = null;
+				if(existingView == null){
+					dynaView = CubeViewConverter.createDefaultView(cubeName, cube, accountId, authUser, "", null);
+					viewService.save(dynaView);
+				}else{
+					dynaView = existingView;
+				}
+
+				ViewConverter conv = new ViewConverter();
+				XView xView = (XView) conv.toXObject(dynaView);
+				xView.setDisplayFlags(createDisplayFlags(link));
+
+				data.setViews(new XView [] {xView});
+				return data;	
 			}
 			data.addError(UserSession.trans(locale, "couldNotFindView", view));							
 			return data;

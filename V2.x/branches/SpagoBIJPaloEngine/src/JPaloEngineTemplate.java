@@ -12,15 +12,16 @@ public class JPaloEngineTemplate {
 	/**
 	 * expected template structure:
 	 *
-	 * <olap database="Palo" 
-     *  	 schema="Demo" 
+	 * <olap connection="Mondrian" 
+     *  	 account="admin" 
+     *       view="Sales"
      *		 cube="Sales">
 	 * </olap>
 	 */
 	private SourceBean templateSB;
 	
-	private static final String DATABASE_ATTRIBUTE_NAME = "database";
-	private static final String SCHEMA_ATTRIBUTE_NAME = "schema";
+	private static final String CONNECTION_NAME = "connection";
+	private static final String ACCOUNT_NAME = "account";
 	private static final String CUBE_ATTRIBUTE_NAME = "cube";
 	private static final String VIEW_NAME = "view";
 	
@@ -37,14 +38,12 @@ public class JPaloEngineTemplate {
 	protected void setTemplateSB(SourceBean templateSB) {
 		this.templateSB = templateSB;
 	}
-
-	
-	public String getDatabaseName() {	
-		return (String)getTemplateSB().getAttribute( DATABASE_ATTRIBUTE_NAME );
+	public String getAccountName() {
+		return (String)getTemplateSB().getAttribute( ACCOUNT_NAME );
 	}
 	
-	public String getSchemaName() {		
-		return (String)getTemplateSB().getAttribute( SCHEMA_ATTRIBUTE_NAME );
+	public String getConnectionName() {	
+		return (String)getTemplateSB().getAttribute( CONNECTION_NAME );
 	}
 	
 	public String getCubeName() {		

@@ -15,7 +15,21 @@ allora la vista viene creata dinamicamente se non esiste, o aperta quella esiste
 per quel cubo.
 
 
-Classi principali:
+Classi modificate in SpagoBIJPaloEngine:
+JPaloEngineStartServlet (new)
+JPaloEngineTemplate (new)
 WPaloServiceImpl x apertura viste
 CubeViewService  x salvataggio
 BasePaloServiceServlet x sessione nuova jpalo
+DisplayFlags (aggiunti hide)
+AccountNavigatorView
+AdminNavigatorView
+
+Modifiche palo-gwt-core:
+BasePaloServiceServlet
+CubeViewController
+CubeViewService
+JPaloSavingUtil (new)
+
+palo-xmla:
+XMLAClient (errore url lowercase)

@@ -147,9 +147,14 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 				}
 
 			}
+			if(isSpagoBIDev != null && isSpagoBIDev.equals("true")){
+				jpaloUrl += ",hideconnectionaccount";
+				jpaloUrl += ",hideuserrights";
+			}
+			jpaloUrl += ",hideSaveAs";
 			jpaloUrl += ",hideviewtabs";
 			jpaloUrl += ")";
-			//System.out.println(jpaloUrl);
+			logger.debug(jpaloUrl);
 			String urlWithSessionID = servletIOManager.getResponse().encodeRedirectURL( jpaloUrl );
 			servletIOManager.getResponse().sendRedirect( urlWithSessionID );
 	    

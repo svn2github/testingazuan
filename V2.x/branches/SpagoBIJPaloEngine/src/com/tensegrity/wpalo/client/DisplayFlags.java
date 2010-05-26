@@ -58,6 +58,10 @@ public class DisplayFlags {
 	private static boolean hideViewTabs = false;
 	private static boolean hideNavigator = false;
 	private final boolean hidePrint;
+	
+	//SpagoBI modifications
+	private final boolean hideConnectionAccount;
+	private final boolean hideUsersRights;
 		
 
 	public static DisplayFlags getDisplayFlagsFor(XView view) {
@@ -99,6 +103,8 @@ public class DisplayFlags {
 		hideVerticalAxis   = displayFlags.get(7);
 		hidePrint          = !true;
 		hideConnectionPicker = displayFlags.get(8);
+		hideConnectionAccount = displayFlags.get(9);
+		hideUsersRights = displayFlags.get(10);
 	}
 	
 	private DisplayFlags() {
@@ -116,6 +122,8 @@ public class DisplayFlags {
 		hideNavigator      = false;
 		hidePrint          = !true;
 		hideConnectionPicker = true;
+		hideConnectionAccount = false;
+		hideUsersRights = false;
 	}
 
 	public XUser getUser() {
@@ -172,5 +180,14 @@ public class DisplayFlags {
 	
 	public boolean isHideConnectionPicker() {
 		return hideConnectionPicker;
+	}
+
+	public boolean isHideConnectionAccount() {
+		return hideConnectionAccount;
+	}
+
+	public boolean isHideUsersRights() {
+		return hideUsersRights;
 	}	
+	
 }

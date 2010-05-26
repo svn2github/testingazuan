@@ -117,6 +117,7 @@ public class AdminNavigatorView extends View {
 				if(user.isAdmin()) {
 					//create ui:
 					initUI(user);
+					
 				}
 			} else if (event.data instanceof DisplayFlags) {
 				DisplayFlags df = (DisplayFlags) event.data;
@@ -125,7 +126,9 @@ public class AdminNavigatorView extends View {
 					//check if we are admin:
 					if(user.isAdmin()) {
 						//create ui:
-						initUI(user);
+						if(!df.isHideUsersRights()){
+							initUI(user);
+						}
 					}					
 				}
 			}

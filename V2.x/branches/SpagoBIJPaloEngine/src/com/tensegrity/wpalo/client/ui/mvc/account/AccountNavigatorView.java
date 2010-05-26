@@ -116,6 +116,7 @@ public class AccountNavigatorView extends View {
 		case WPaloEvent.INIT:
 		case WPaloEvent.LOGIN:
 			if(event.data instanceof XUser) {
+				System.out.println("instance of XUser");
 				XUser user = (XUser)event.data;
 				//check if we are admin:
 				if(user.isAdmin()) {
@@ -123,13 +124,16 @@ public class AccountNavigatorView extends View {
 					initUI(user);
 				}
 			} else if (event.data instanceof DisplayFlags) {
+				System.out.println("instance of display flags");
 				DisplayFlags df = (DisplayFlags) event.data;
 				if (!df.isHideNavigator()) {
 					XUser user = df.getUser();
 					//check if we are admin:
 					if(user.isAdmin()) {
 						//create ui:
-						initUI(user);
+						if(!df.isHideConnectionAccount()){
+							initUI(user);
+						}
 					}					
 				}
 			}

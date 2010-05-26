@@ -746,6 +746,8 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 		displayFlags.add(checkFlag("hidehorizontalaxis", link));
 		displayFlags.add(checkFlag("hideverticalaxis", link));
 		displayFlags.add(checkFlag("hideconnectionpicker", link));
+		displayFlags.add(checkFlag("hideconnectionaccount", link));
+		displayFlags.add(checkFlag("hideuserrights", link));
 //		boolean hideMulti = checkFlag("hideviewtabs", link);
 //		boolean hideOverview = checkFlag("hidenavigator", link);
 //		if (!hideOverview) {

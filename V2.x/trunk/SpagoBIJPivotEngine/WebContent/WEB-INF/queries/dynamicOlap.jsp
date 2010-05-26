@@ -153,12 +153,6 @@ LICENSE: see LICENSE.txt file
 			SAXReader readerConfigFile = new SAXReader();
 			Document documentConfigFile = readerConfigFile.read(getClass().getResourceAsStream("/engine-config.xml"));
 			List schemas = documentConfigFile.selectNodes("//ENGINE-CONFIGURATION/SCHEMAS/SCHEMA");
-			Node crossNavigation = document.selectSingleNode("//olap/CROSS_NAVIGATION");
-			if (crossNavigation != null) {
-				SpagoBICrossNavigationConfig cninfo = new SpagoBICrossNavigationConfig(crossNavigation);
-				session.setAttribute(SpagoBICrossNavigationConfig.ID, cninfo);
-			}
-			
 			Iterator it = schemas.iterator();
 			Node selectedSchemaNode = null;
 			while (it.hasNext()) {
@@ -182,6 +176,13 @@ LICENSE: see LICENSE.txt file
 		ToolbarBean tb = new ToolbarBean();
 		tb.setValuesFromTemplate(document);
 		session.setAttribute("toolbarButtonsVisibility",tb);
+		
+		//Check for cross navigation configuration
+		Node crossNavigation = document.selectSingleNode("//olap/CROSS_NAVIGATION");
+		if (crossNavigation != null) {
+			SpagoBICrossNavigationConfig cninfo = new SpagoBICrossNavigationConfig(crossNavigation);
+			session.setAttribute(SpagoBICrossNavigationConfig.ID, cninfo);
+		}
 		
 		// adjust reference
 		if (!reference.startsWith("file:")) {

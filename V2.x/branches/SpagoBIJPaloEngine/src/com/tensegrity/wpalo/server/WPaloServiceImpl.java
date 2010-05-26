@@ -917,7 +917,25 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 					System.out.println(a.getId());
 					System.out.println(a.getConnection().getName());*/
 					//if account, connection and cube specified
-					if(accountName != null && !accountName.equals("")){
+					//if(accountName != null && !accountName.equals("")){
+					if(view != null && !view.equals("")){						
+						//if view specified
+						List<View> views = viewService.getViews(a);
+						if(!views.isEmpty()){
+							Iterator it = views.iterator();
+							while(it.hasNext()){
+								View selView = (View)it.next();
+								if(view != null && !view.equals("")){
+									if(selView.getName().equals(view)){
+										v = selView;
+										break;
+									}
+								}
+							}
+						}
+
+					}else{
+						///tries to get cube
 						if(a.getLoginName().equals(accountName)){
 							if(a.getConnection().getName().equals(connection)){
 								//use cube name
@@ -934,21 +952,6 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 
 								}
 								
-							}
-						}
-					}else{
-						//if view specified
-						List<View> views = viewService.getViews(a);
-						if(!views.isEmpty()){
-							Iterator it = views.iterator();
-							while(it.hasNext()){
-								View selView = (View)it.next();
-								if(view != null && !view.equals("")){
-									if(selView.getName().equals(view)){
-										v = selView;
-										break;
-									}
-								}
 							}
 						}
 					}
@@ -2053,7 +2056,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 			// Multiple views...			
 			return parseMultipleViews(locale, authUser, modifiedLink, data);
 		}
-		System.out.println("open directly: ci sono");
+
 		return parseSingleView(locale, authUser, link, data);		
 	}	
 

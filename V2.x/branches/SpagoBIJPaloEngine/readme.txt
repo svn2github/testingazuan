@@ -13,7 +13,15 @@ Se viene specificato
 "account" = <login name dell'account da utilizzare per loggarsi al server mondrian>
 allora la vista viene creata dinamicamente se non esiste, o aperta quella esistente 
 per quel cubo.
-
+Se specificati tutti gli attributi (come nel caso di template generato con SpagoBI), allora
+viene cercata la vista corrispondente al nome della vista "view" specificato nel template.
+Se si invoca il motore per editare un template, viene aperto JPalo con navigator sulla vista 
+specificata nel template con possibilità di creare una nuova vista ma senza Connections e Accounts e Roles.
+Se si apre JPalo per eseguire un documento JPalo di SpagoBI, ed il documento è appena stato creato,
+il motore apre la vista salvata in fase di definizione del documento. I salvataggi successivi della vista,
+avvengono sotto forma di subobject legati al documento con nome della vista.
+Quindi eseguendo un doc JPalo che ha già un subobject, viene eseguito il subobject.
+ 
 
 Classi modificate in SpagoBIJPaloEngine:
 JPaloEngineStartServlet (new)
@@ -33,3 +41,6 @@ JPaloSavingUtil (new)
 
 palo-xmla:
 XMLAClient (errore url lowercase)
+
+SpagoBIProject:
+modificato JPaloDriver

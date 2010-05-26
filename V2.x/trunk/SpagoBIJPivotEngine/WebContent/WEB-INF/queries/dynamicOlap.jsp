@@ -133,16 +133,7 @@ LICENSE: see LICENSE.txt file
 //			byte[] template = bASE64Decoder.decodeBuffer(templateBase64Coded);
 			//is = new java.io.ByteArrayInputStream(template);
 			org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
-		    document = reader.read(is);	
-		    
-		    // Read data access information and put it in session...
-		    Node  filtersData=document.selectSingleNode("//olap/DATA-ACCESS");
-		    if (filtersData != null) {
-		    	String filters=filtersData.asXML();
-			    if (filters!=null && filters.length()>1){
-			    	session.setAttribute("filters",filters);
-			    }
-		    }
+		    document = reader.read(is);
 		    
 		    //nameConnection = request.getParameter("connectionName");
 		    if (ds != null)	nameConnection = ds.getLabel();
@@ -172,17 +163,26 @@ LICENSE: see LICENSE.txt file
 			session.setAttribute("analysisBean",analysis);
 	
 		}
-		//Check for Toolbar Configuration
+		//Check for Toolbar Configuration and put it in session...
 		ToolbarBean tb = new ToolbarBean();
 		tb.setValuesFromTemplate(document);
-		session.setAttribute("toolbarButtonsVisibility",tb);
+		session.setAttribute("toolbarButtonsVisibility", tb);
 		
-		//Check for cross navigation configuration
+		//Check for cross navigation configuration and put it in session...
 		Node crossNavigation = document.selectSingleNode("//olap/CROSS_NAVIGATION");
 		if (crossNavigation != null) {
 			SpagoBICrossNavigationConfig cninfo = new SpagoBICrossNavigationConfig(crossNavigation);
 			session.setAttribute(SpagoBICrossNavigationConfig.ID, cninfo);
 		}
+		
+	    //Read data access information and put it in session...
+	    Node filtersData = document.selectSingleNode("//olap/DATA-ACCESS");
+	    if (filtersData != null) {
+	    	String filters = filtersData.asXML();
+		    if (filters != null && filters.length() > 1){
+		    	session.setAttribute("filters", filters);
+		    }
+	    }
 		
 		// adjust reference
 		if (!reference.startsWith("file:")) {

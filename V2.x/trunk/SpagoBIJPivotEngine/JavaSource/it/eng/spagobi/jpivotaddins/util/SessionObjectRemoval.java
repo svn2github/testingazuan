@@ -153,6 +153,10 @@ public class SessionObjectRemoval {
 		if (session.getAttribute("query01.crossnavigationtable") != null) {
 			session.removeAttribute("query01.crossnavigationtable");
 		}
+		
+		if (session.getAttribute("filters") != null) {
+			session.removeAttribute("filters");
+		}
 	}
 	
 }

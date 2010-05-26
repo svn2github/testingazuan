@@ -59,7 +59,8 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 
 		try {		
 			HttpSession session = servletIOManager.getHttpSession();
-
+			cleanSessionAttributes(session);
+			
 			IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			ContentServiceProxy contentProxy = new ContentServiceProxy((String)profile.getUserUniqueIdentifier(),session);
 			String documentId = (String) servletIOManager.getRequest().getParameter(DOCUMENT_ID);
@@ -148,7 +149,7 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			}
 			jpaloUrl += ",hideviewtabs";
 			jpaloUrl += ")";
-			System.out.println(jpaloUrl);
+			//System.out.println(jpaloUrl);
 			String urlWithSessionID = servletIOManager.getResponse().encodeRedirectURL( jpaloUrl );
 			servletIOManager.getResponse().sendRedirect( urlWithSessionID );
 	    
@@ -161,5 +162,10 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			logger.debug("OUT");
 		}
 
+    }
+    
+    private void cleanSessionAttributes(HttpSession session){
+    	session.removeAttribute("isdeveloper");
+    	session.removeAttribute("spagobi_state");
     }
 }

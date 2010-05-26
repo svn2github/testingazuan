@@ -1027,9 +1027,11 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 				return data;
 			}
 			//SpagoBI modification
-			JPaloSavingUtil util = new JPaloSavingUtil();
-			String xml = util.getSubobjectForJPalo(getSession(), v.getName());
-			
+			String isDeveloper = getValue("isdeveloper", link);
+			if(isDeveloper == null || isDeveloper.equals("")){
+				JPaloSavingUtil util = new JPaloSavingUtil();
+				String xml = util.getSubobjectForJPalo(getSession(), v.getName());
+			}
 			ViewConverter conv = new ViewConverter();
 			XView xView = (XView) conv.toXObject(v);
 			xView.setDisplayFlags(createDisplayFlags(link));

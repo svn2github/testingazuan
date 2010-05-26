@@ -763,11 +763,15 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 		List <Boolean> displayFlags = new ArrayList<Boolean>();												
 		boolean hideMulti = checkFlag("hideviewtabs", link);
 		boolean hideOverview = checkFlag("hidenavigator", link);
+		boolean hideconnectionaccount = checkFlag("hideconnectionaccount", link);
+		boolean hideuserrights = checkFlag("hideuserrights", link);
 		if (!hideOverview) {
 			hideMulti = false;
 		}
 		displayFlags.add(hideMulti);
-		displayFlags.add(hideOverview);				
+		displayFlags.add(hideOverview);	
+		displayFlags.add(hideconnectionaccount);
+		displayFlags.add(hideuserrights);	
 		return displayFlags;		
 	}
 

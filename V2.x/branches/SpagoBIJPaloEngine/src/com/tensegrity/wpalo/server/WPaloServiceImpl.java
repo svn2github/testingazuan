@@ -2053,7 +2053,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 			// Multiple views...			
 			return parseMultipleViews(locale, authUser, modifiedLink, data);
 		}
-		
+		System.out.println("open directly: ci sono");
 		return parseSingleView(locale, authUser, link, data);		
 	}	
 

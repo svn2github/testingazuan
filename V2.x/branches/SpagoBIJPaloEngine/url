@@ -7,6 +7,7 @@ http://localhost:8888/com.tensegrity.wpalo.SpagoBIJPaloEngine/SpagoBIJPaloEngine
 /*servlet che compone url*/
 http://localhost:8888/com.tensegrity.wpalo.SpagoBIJPaloEngine/JPaloEngineStartServlet
 http://localhost:8888/com.tensegrity.wpalo.SpagoBIJPaloEngine/SpagoBIJPaloEngine.html?options=user="admin";pass="ISMvKXpXpadDiUoOSoAfww==";openview="",cubename="Warehouse",account="admin",connection="Mondrian"
+http://localhost:8888/com.tensegrity.wpalo.SpagoBIJPaloEngine/SpagoBIJPaloEngine.html?options=user="admin";pass="ISMvKXpXpadDiUoOSoAfww==";openview="Sales",hideconnectionaccount,hideuserrights
 
 /*test di mondrian integrato in SpagoBI -jpalo */
 http://localhost:8080/SpagoBIJPaloEngine/com.tensegrity.wpalo.SpagoBIJPaloEngine/SpagoBIJPaloEngine.html

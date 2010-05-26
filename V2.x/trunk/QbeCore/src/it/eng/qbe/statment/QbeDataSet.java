@@ -21,6 +21,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.statment;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
+import org.apache.log4j.Logger;
+import org.hibernate.ScrollableResults;
+import org.hibernate.Session;
+
 import it.eng.qbe.datasource.hibernate.IHibernateDataSource;
 import it.eng.qbe.query.CalculatedSelectField;
 import it.eng.qbe.query.DataMartSelectField;
@@ -45,21 +60,6 @@ import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
 import it.eng.spagobi.utilities.assertion.Assert;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineFactory;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-
-import org.apache.log4j.Logger;
-import org.hibernate.ScrollableResults;
-import org.hibernate.Session;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -302,7 +302,7 @@ public class QbeDataSet extends AbstractDataSet {
 			Map dmFields = new HashMap();
 			Object[] columns = new Object[dataStoreMeta.getFieldCount()];
 			for(int j = 0; j < dataStoreMeta.getFieldCount(); j++) {
-				qFields.put(dataStoreMeta.getFieldName(j), record.getFieldAt(j).getValue());
+				qFields.put(dataStoreMeta.getFieldMeta(j).getAlias(), record.getFieldAt(j).getValue());
 				dmFields.put(dataStoreMeta.getFieldMeta(j).getProperty("uniqueName"), record.getFieldAt(j).getValue());
 				columns[j] = record.getFieldAt(j).getValue();
 			}

@@ -73,7 +73,7 @@ public class DisplayFlags {
 	
 	public static DisplayFlags createDisplayFlags(XUser user, List <Boolean> globalFlags) {
 		List <Boolean> list = new ArrayList<Boolean>();
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 10; i++) {
 			list.add(false);
 		}
 		list.add(true);

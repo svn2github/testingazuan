@@ -192,6 +192,20 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 			//2) if the list of fields is changed we should reload the columnsPosition and columnsWidth arrays
 			if(this.oldColumns != null && this.firstPage && !val){
 
+				
+				
+//				Suppose the columns in the select clause before the re executions are
+//				A B C D E . After some operation the visualization in the data store panel is C B E D A
+//				So we have the following arrays
+//				oldColumns = A B C D E  
+//				columnsPosition= 4 1 0 3 2
+//				Now suppose the new fields are: A X D K. 
+//				The new visualization should keeps the order and so should look like D A X K
+
+				
+//				The first step is calculate the array fieldsOrder that maps the new fields in the oldColumns array:
+//				fieldsOrder: 0, , 3,    : A live in the position 0 in oldColumns, D in position 3, and the new fields have no position.
+
 				var filedsOrder = new Array();
 				var name;
 				filedsOrder.length = fields.length;
@@ -206,6 +220,13 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 					}
 				}
 
+				
+//				Now we change the indexes in fieldsOrder with previous position of the linked element. 
+//				In code fieldsOrder[i] = columnsPosition[fieldsOrder[i]] and fieldsOrder: 4, , 3,    
+//				Clean the array fieldsOrder filtering the empty spaces. 
+//				The result is saved in the array cleanFreshPos = 4,3.
+
+				
 				var cleanFreshPos = new Array();
 				var sortedCleanFreshPos = new Array();
 				for(var i = 0; i <filedsOrder.length ;i++) {
@@ -220,6 +241,10 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 				width.length = filedsOrder.length;
 
 				sortedCleanFreshPos.sort();
+
+//				Normalize the array cleanFreshPos: force the indexes to be an enumeration between 1 to cleanFreshPos.length. 
+//				So normalizedCleanFreshPos = 2,1
+//				We have to normalize the array because these values are the new position of the linked elements. 
 				
 				var normalizedCleanFreshPos = new Array();
 				normalizedCleanFreshPos.length = sortedCleanFreshPos.length;
@@ -233,18 +258,25 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 					}
 				}
 				
+				
+//				At the end we create the new array columnsPosition.
+//				We take the fields we have also in the previous query and we save them at the beginning (with the normalizedCleanFreshPos array) 
+//				of the array columnsPosition. 
+//				Than we push the new fields in the tail of the array. 
+
+				
 				this.columnsPosition = new Array();
 				this.columnsPosition.length = filedsOrder.length;
-				this.columnsPosition[0]=0;
+				this.columnsPosition[0]=0;//the position 0 is for the column with the row indexes
 				
 				var k=1;
 				var m=0;
 				for(var i = 1; i <filedsOrder.length ;i++) {
-					if(filedsOrder[i]==null){
-						this.columnsPosition[i]=k+cleanFreshPos.length;
+					if(filedsOrder[i]==null){//new fields
+						this.columnsPosition[i]=k+cleanFreshPos.length;//in the tail
 						width[k+cleanFreshPos.length] = 100;
 						k++;
-					}else{
+					}else{//old fields
 						for(var j = 0; j <cleanFreshPos.length ;j++) {
 							if(cleanFreshPos[j]==filedsOrder[i]){
 								this.columnsPosition[i]=normalizedCleanFreshPos[m];

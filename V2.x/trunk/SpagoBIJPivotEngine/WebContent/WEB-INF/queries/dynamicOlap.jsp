@@ -69,7 +69,7 @@ LICENSE: see LICENSE.txt file
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
 			HashMap requestParameters = new HashMap();
 			//parameter that permits to tell to SpagoBI not to realize a control on the parameters passed.
-			requestParameters.put("read","onlytemplate");
+			requestParameters.put("SBI_READ_ONLY_TEMPLATE","true");
 			
 			// remove the dimension_access_rules parameter because it produces an exception (not blocking but the exception 
 			// is visilble on the console) since it is not compatible with multi value parameter encoding.

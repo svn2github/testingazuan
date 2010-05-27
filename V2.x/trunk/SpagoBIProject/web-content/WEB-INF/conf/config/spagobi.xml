@@ -172,7 +172,7 @@ END-LIFERAY -->
      <DATE-FORMAT-IT_IT format="dd/MM/yyyy" extJsFormat="d/m/Y"/>
      <DATE-FORMAT-EN_US format="dd/MM/yyyy" extJsFormat="d/m/Y"/>
      <DATE-FORMAT-FR_FR format="dd/MM/yyyy" extJsFormat="d/m/Y"/>      
-  	 <TIMESTAMP-FORMAT format="dd/MM/yyyy hh:mm:ss"/>
+  	 <TIMESTAMP-FORMAT format="dd/MM/yyyy hh:mm:ss" extJsFormat="d/m/Y H:i:s"/>
   	 
     <!--  Date visual format if language is not found-->      	 
   	<DATE-FORMAT format="dd/MM/yyyy" extJsFormat="d/m/Y"/>

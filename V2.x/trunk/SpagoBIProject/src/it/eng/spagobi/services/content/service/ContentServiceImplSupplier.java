@@ -83,9 +83,9 @@ public class ContentServiceImplSupplier {
 		    // only if the user is not Scheduler or Workflow system user or it is a call to retrieve a subreport, 
 		    //check visibility on document and parameter values
 		    boolean checkNeeded = true;
-		    boolean modContained = parameters.containsKey("read");
+		    boolean modContained = parameters.containsKey("SBI_READ_ONLY_TEMPLATE");
 		    if(modContained){
-		    	 boolean onlytemplate = parameters.containsValue("onlytemplate");
+		    	 boolean onlytemplate = parameters.containsValue("true");
 		    	 if(onlytemplate){
 		    		 checkNeeded = false;
 		    	 }

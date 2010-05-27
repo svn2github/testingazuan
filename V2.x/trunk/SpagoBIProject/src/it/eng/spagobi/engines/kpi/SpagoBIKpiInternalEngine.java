@@ -284,7 +284,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				logger.debug("New value inserted in the DB");		
 				// Checks if the value is alarming (out of a certain range)
 				// If the value is alarming a new line will be inserted in the sbi_alarm_event table and scheduled to be sent
-				DAOFactory.getAlarmDAO().isAlarmingValue(value);   		
+				DAOFactory.getAlarmDAO().isAlarmingValue(value);   	
 			} catch (EMFInternalError e) {
 				e.printStackTrace();
 			}

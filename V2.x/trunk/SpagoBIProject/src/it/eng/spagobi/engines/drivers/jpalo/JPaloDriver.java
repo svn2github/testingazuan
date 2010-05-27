@@ -76,7 +76,6 @@ public class JPaloDriver extends GenericDriver implements IEngineDriver {
 		String documentId = obj.getId().toString();
 		parameters.put("document", documentId);
 		parameters.put("isSpagoBIDev", "true");
-		//parameters.put("forward", "SpagoBIJPaloEngine.html");
 		applySecurity(parameters, profile);
 		EngineURL engineURL = new EngineURL(url, parameters);
 		logger.debug("OUT");
@@ -109,7 +108,7 @@ public class JPaloDriver extends GenericDriver implements IEngineDriver {
 		String documentId = obj.getId().toString();
 		parameters.put("document", documentId);
 		parameters.put("isSpagoBIDev", "true");
-		//parameters.put("forward", "SpagoBIJPaloEngine.html");
+		parameters.put("isNewDocument", "true");
 		applySecurity(parameters, profile);
 		EngineURL engineURL = new EngineURL(url, parameters);
 		logger.debug("OUT");

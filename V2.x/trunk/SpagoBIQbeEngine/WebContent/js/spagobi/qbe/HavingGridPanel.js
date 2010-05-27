@@ -49,10 +49,8 @@ Ext.ns("Sbi.qbe");
 Sbi.qbe.HavingGridPanel = function(config) {
 	
 	
-	var c = Ext.apply({
-		// set default values here
-	}, config || {});
-	
+	var c = Ext.apply(Sbi.settings.qbe.havingGridPanel, config || {});
+	Ext.apply(this, c);
 	this.services = new Array();
 	
 	this.filterIdPrefix = 'having'; 
@@ -809,7 +807,7 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 	        clicksToEdit:1,	        
 	        style:'padding:10px',
 	        frame: true,
-	        height: 300,
+	        height: this.gridHeight,
 	        border:true,  
 	        collapsible:false,
 	        layout: 'fit',

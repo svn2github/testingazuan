@@ -88,6 +88,19 @@ Sbi.qbe.SelectGridPanel = function(config) {
 	this.initGrid(c);
 	this.initGridListeners(c);
 	
+//	Ext.apply(c, {
+//
+//	collapsible: true,
+//	split: true,
+////	layout: 'fit',
+//
+//		 autoHeight:true,
+//		 autoWidth: true
+//		, items: [this.grid]          
+//	});	
+//	
+//	
+	
 	Ext.apply(c, {
 		layout: 'fit'
 		, autoWidth: Ext.isIE ? false : true
@@ -941,11 +954,9 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		        cm: this.cm,  
 		        sm : this.sm,
 		        tbar: this.toolbar,
-		        
 		        clicksToEdit:1,
-		        plugins: this.plgins,
-		        		        
-		        height: 350,
+		        plugins: this.plgins,	        
+		        height: this.gridHeight,
 		        frame: true,
 		        border:true,  
 		        style:'padding:10px',
@@ -955,7 +966,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		        viewConfig: {
 		            forceFit:true
 		        },		
-		        
+
 		        enableDragDrop:true,
      			ddGroup: 'gridDDGroup'	
 		    });

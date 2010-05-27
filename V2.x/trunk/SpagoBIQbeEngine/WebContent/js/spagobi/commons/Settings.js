@@ -16,7 +16,8 @@ Sbi.settings.qbe = {
 		}
 
 		, selectGridPanel: {
-			enableTbAddCalculatedBtn: true 
+			gridHeight: 300
+			, enableTbAddCalculatedBtn: true 
 			, enableTbHideNonvisibleBtn: true
 			, enableTbAddCalculatedBtn: true
 			, enableTbDeleteAllBtn: true
@@ -35,7 +36,8 @@ Sbi.settings.qbe = {
 		}
 		
 		, filterGridPanel: {
-			enableTbExpWizardBtn: true
+			gridHeight: 300
+			, enableTbExpWizardBtn: true
 			, enableTbRemoveAllFilterBtn: true
 			, enableTbAddFilterBtn: true
 			, columns : {
@@ -50,6 +52,10 @@ Sbi.settings.qbe = {
 				, 'deleteButton': {hideable: true, hidden: true, sortable: false, editable: true}
 				, 'promptable': {hideable: true, hidden: false, sortable: false, editable: true}				
 			}
+		}
+		
+		,havingGridPanel: {
+			gridHeight: 300
 		}
 		
 		, dataMartStructurePanel: {

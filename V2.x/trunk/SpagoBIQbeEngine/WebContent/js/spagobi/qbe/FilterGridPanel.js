@@ -51,7 +51,6 @@ Sbi.qbe.FilterGridPanel = function(config) {
 	
 	var defaultSettings = {
 		border: true,
-		gridHeight: 300,
 		gridStyle: 'padding:10px'
 	};
 		
@@ -59,8 +58,9 @@ Sbi.qbe.FilterGridPanel = function(config) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.filterGridPanel);
 	}
 		
-	var c = Ext.apply(defaultSettings, config || {});	
+	var c = Ext.apply(Sbi.settings.qbe.filterGridPanel, config, defaultSettings || {});
 	Ext.apply(this, c);
+
 	
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE'};
 	this.services = new Array();

@@ -302,12 +302,14 @@ Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.parameterreference'] = 'Drive
 
 
 //===================================================================
-//EXTERNAL SERVICES
+//DATA STORE PANEL AND EXTERNAL SERVICES
 //===================================================================
 Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.title'] = 'Servizio esterno invocato correttamente';
 Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.serviceresponse'] = 'Il servizio esterno ha risposto con questo messaggio:';
 Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.errors.title'] = 'Errore';
 Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.errors.missingcolumns'] = 'Il servizio richiesto necessita le seguenti colonne:';
+Sbi.locale.ln['sbi.qbe.datastore.refreshgrid'] = 'Ripristina formato tabella'
+
 
 //===================================================================
 //CALCULATED FIELD WIZARD
@@ -317,3 +319,6 @@ Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.success.text'] = 'Espre
 Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.fail.title'] = 'Errore di validazione';
 Sbi.locale.ln['sbi.qbe.calculatedFields.expert.nofilterwindow.title'] = 'Attenzione con questa tipologia di campi calcolati non è possibile applicare i filtri';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.expert'] = 'Utente Esperto';
+
+
+

@@ -208,12 +208,13 @@ Sbi.locale.ln['sbi.qbe.selectgridpanel.title']                             = 'S\
 
 
 //===================================================================
-//EXTERNAL SERVICES
+//DATA STORE PANEL AND EXTERNAL SERVICES
 //===================================================================
 Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.title'] = 'The service was properly invoked';
 Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.serviceresponse'] = 'The service has returned this message:';
 Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.errors.title'] = 'Error';
 Sbi.locale.ln['sbi.qbe.datastorepanel.externalservices.errors.missingcolumns'] = 'The required service needs the following columns:';
+Sbi.locale.ln['sbi.qbe.datastore.refreshgrid'] = 'Restore grid style'
 
 ///===================================================================
 //CALCULATED FIELD WIZARD

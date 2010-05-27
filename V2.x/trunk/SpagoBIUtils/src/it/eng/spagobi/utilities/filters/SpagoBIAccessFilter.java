@@ -132,12 +132,22 @@ public class SpagoBIAccessFilter implements Filter {
 					    profile=UserProfile.createSchedulerUserProfile();
 					    ioManager.setInSession(IS_BACKEND_ATTR_NAME, "true");
 					    ioManager.contextManager.set(IS_BACKEND_ATTR_NAME, "true");
+					    
 					    if (userId!=null && UserProfile.isSchedulerUser(userId)){
-			    		ioManager.setInSession(IEngUserProfile.ENG_USER_PROFILE, UserProfile.createSchedulerUserProfile());
-			    		ioManager.contextManager.set(IEngUserProfile.ENG_USER_PROFILE, UserProfile.createSchedulerUserProfile());
-			    		logger.info("IS a Scheduler Request ...");
-					    }else
-					    logger.info("IS a backEnd Request ...");
+					    	
+				    		ioManager.setInSession(IEngUserProfile.ENG_USER_PROFILE, UserProfile.createSchedulerUserProfile());
+				    		ioManager.contextManager.set(IEngUserProfile.ENG_USER_PROFILE, UserProfile.createSchedulerUserProfile());
+				    		logger.info("IS a Scheduler Request ...");
+				    		
+					    }else if(userId!=null && UserProfile.isWorkflowUser(userId)){
+					    	
+					    	ioManager.setInSession(IEngUserProfile.ENG_USER_PROFILE, UserProfile.createWorkFlowUserProfile());
+				    		ioManager.contextManager.set(IEngUserProfile.ENG_USER_PROFILE, UserProfile.createWorkFlowUserProfile());
+				    		logger.info("IS a Workflow Request ...");
+				    		
+					    }else{
+					    	logger.info("IS a backEnd Request ...");
+					    }
 					} else {
 					    logger.warn("PassTicked is NULL in BackEnd call");
 					    throw new ServletException();

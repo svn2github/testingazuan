@@ -22,6 +22,7 @@ public class SbiResources  implements java.io.Serializable {
      private String columnName;
      private String resourceName;
      private String resourceDescr;
+     private String resourceCode;
      private Set sbiKpiValues = new HashSet(0);
      private Set sbiKpiModelResourceses = new HashSet(0);
 
@@ -116,6 +117,14 @@ public class SbiResources  implements java.io.Serializable {
 
 	public void setResourceDescr(String resourceDescr) {
 		this.resourceDescr = resourceDescr;
+	}
+	
+	public String getResourceCode() {
+		return resourceCode;
+	}
+
+	public void setResourceCode(String resourceCode) {
+		this.resourceCode = resourceCode;
 	}
    
 }

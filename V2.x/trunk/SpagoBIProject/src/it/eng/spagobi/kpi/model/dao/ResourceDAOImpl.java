@@ -40,6 +40,7 @@ IResourceDAO {
 			String columnName = resource.getColumn_name();
 			String resourceName = resource.getName();
 			String resourceDescription = resource.getDescr();
+			String resourceCode = resource.getCode();
 
 			SbiDomains sbiDomain = (SbiDomains) aSession.load(SbiDomains.class,
 					resource.getTypeId());
@@ -50,6 +51,7 @@ IResourceDAO {
 			sbiResource.setColumnName(columnName);
 			sbiResource.setResourceName(resourceName);
 			sbiResource.setResourceDescr(resourceDescription);
+			sbiResource.setResourceCode(resourceCode);
 			sbiResource.setType(sbiDomain);
 
 			aSession.update(sbiResource);
@@ -83,6 +85,7 @@ IResourceDAO {
 			SbiResources hibResource = new SbiResources();
 			hibResource.setResourceName(toCreate.getName());
 			hibResource.setResourceDescr(toCreate.getDescr());
+			hibResource.setResourceCode(toCreate.getCode());
 			hibResource.setTableName(toCreate.getTable_name());
 			hibResource.setColumnName(toCreate.getColumn_name());
 			SbiDomains sbiDomains = (SbiDomains) aSession.load(
@@ -152,6 +155,7 @@ IResourceDAO {
 		String name = r.getResourceName();
 		String table_name = r.getTableName();
 		String descr = r.getResourceDescr();
+		String code = r.getResourceCode();
 		SbiDomains d = r.getType();
 		String type = d.getValueCd();
 		Integer resourceId = r.getResourceId();
@@ -163,6 +167,8 @@ IResourceDAO {
 		logger.debug("Resource name setted:"+name);
 		toReturn.setDescr(descr);
 		logger.debug("Resource description setted:"+descr);
+		toReturn.setCode(code);
+		logger.debug("Resource code setted:"+code);
 		toReturn.setTable_name(table_name);
 		logger.debug("Resource table_name setted:"+table_name);
 		toReturn.setType(type);
@@ -195,6 +201,7 @@ IResourceDAO {
 		String columnName = r.getColumn_name();
 		String resourceName = r.getName();
 		String resourceDescr = r.getDescr();
+		String resourceCode = r.getCode();
 		String tableName = r.getTable_name();
 		Integer resourceId = r.getId();
 		String type = r.getType();
@@ -215,6 +222,8 @@ IResourceDAO {
 		logger.debug("SbiResource resourceName setted");
 		toReturn.setResourceDescr(resourceDescr);
 		logger.debug("SbiResource resourceDescr setted");
+		toReturn.setResourceCode(resourceCode);
+		logger.debug("SbiResource resourceCode setted");
 		toReturn.setType(sbiDomains);
 		logger.debug("SbiResource sbiDomains setted");
 		toReturn.setTableName(tableName);
@@ -327,6 +336,40 @@ IResourceDAO {
 			}	
 		}	
 	
+	} catch (HibernateException he) {
+		logger.error("Error while loading the Resource", he);
+	
+		if (tx != null)
+			tx.rollback();
+	
+		throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+	
+	} finally {
+		if (aSession != null) {
+			if (aSession.isOpen())
+				aSession.close();
+			logger.debug("OUT");
+		}
+	}
+	return toReturn;
+	}
+	
+	public Resource loadResourceByCode(String resourceCode) throws EMFUserError {
+		//TODO to be controlled
+	logger.debug("IN");
+	Resource toReturn = new Resource();
+	Session aSession = null;
+	Transaction tx = null;
+	
+	try {
+		aSession = getSession();
+		tx = aSession.beginTransaction();
+		Criteria finder = aSession.createCriteria(SbiResources.class);
+		finder.add(Expression.eq("resourceCode", resourceCode));
+		
+		SbiResources hibResource =(SbiResources) finder.uniqueResult();
+		toReturn = toResource(hibResource);
+
 	} catch (HibernateException he) {
 		logger.error("Error while loading the Resource", he);
 	

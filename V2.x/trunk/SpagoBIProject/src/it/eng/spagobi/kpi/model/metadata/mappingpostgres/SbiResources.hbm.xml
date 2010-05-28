@@ -7,7 +7,7 @@
         <id name="resourceId" type="integer">
             <column name="RESOURCE_ID" />
             <generator class="native">
-            	<param name="sequence">RESOURCES_SEQ</param>
+            	<param name="sequence">sbi_resources</param>
             </generator>
         </id>
         <many-to-one name="type" class="it.eng.spagobi.commons.metadata.SbiDomains" >
@@ -20,10 +20,13 @@
             <column name="COLUMN_NAME" length="40" />
         </property>
         <property name="resourceName" type="string">
-            <column name="RESOURCE_NAME" length="40" />
+            <column name="RESOURCE_NAME" length="40" not-null="true" />
         </property>
         <property name="resourceDescr" type="string">
             <column name="RESOURCE_DESCR" length="400" />
+        </property>
+        <property name="resourceCode" type="string">
+            <column name="RESOURCE_CODE" length="45" unique="true" not-null="true" />
         </property>
         <set name="sbiKpiValues" inverse="true">
             <key>

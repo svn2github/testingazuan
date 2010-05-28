@@ -7,6 +7,7 @@ public class Resource implements Serializable{
 	Integer id = null;
 	String name = null;
 	String descr = null;
+	String code = null;
 	String column_name = null;
 	String table_name = null;
 	String type = null; //type of the resource, such as Project...
@@ -70,6 +71,14 @@ public class Resource implements Serializable{
 
 	public void setDescr(String descr) {
 		this.descr = descr;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 }

@@ -34,6 +34,15 @@ public interface IResourceDAO {
 	 */	
 	public Resource loadResourcesByNameAndModelInst(String resourceName) throws EMFUserError ;
 	
+	/**
+	 * Returns the Resource of the referred code
+	 * 
+	 * @param code of the Resource
+	 * @return Resource with the referred code
+	 * @throws EMFUserError If an Exception occurred
+	 */	
+	public Resource loadResourceByCode(String resourceCode) throws EMFUserError ;
+	
 	public SbiResources toSbiResource(Resource r) throws EMFUserError; 
 	
 	public void modifyResource(Resource resource) throws EMFUserError;

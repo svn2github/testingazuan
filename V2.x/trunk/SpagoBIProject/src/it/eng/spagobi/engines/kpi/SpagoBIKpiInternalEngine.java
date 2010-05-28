@@ -986,6 +986,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 						Integer res = new Integer(value);
 						Resource toAdd = DAOFactory.getResourceDAO().loadResourceById(res);
 						this.resources.add(toAdd);
+					}else if (url.equals("ParKpiResourcesCode")) {
+						this.resources = new ArrayList();
+						for (int k = 0; k < values.size(); k++) {
+							String value = (String) values.get(k);
+							Resource toAdd = DAOFactory.getResourceDAO().loadResourceByCode(value);
+							this.resources.add(toAdd);
+						}
 					}else if(url.equals("register_values")){
 						String value = (String) values.get(0);
 						if (value.equalsIgnoreCase("true")){
@@ -1038,8 +1045,14 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 							Resource toAdd = DAOFactory.getResourceDAO().loadResourceById(res);
 							this.resources.add(toAdd);
 						}
-					}
-					else {
+					}else if (url.equals("ParKpiResourcesCode")) {
+						this.resources = new ArrayList();
+						for (int k = 0; k < values.size(); k++) {
+							String value = (String) values.get(k);
+							Resource toAdd = DAOFactory.getResourceDAO().loadResourceByCode(value);
+							this.resources.add(toAdd);
+						}
+					}else {
 						String value = "'" + (String) values.get(0) + "'";
 						for (int k = 1; k < values.size(); k++) {
 							value = value + ",'" + (String) values.get(k) + "'";

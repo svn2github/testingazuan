@@ -200,6 +200,11 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		}
 
 		List kpiRBlocks = new ArrayList();// List of KpiValues Trees for each Resource: it will be sent to the jsp
+		
+		if(!parametersObject.containsKey("ParKpiDate")){
+			String dateForDataset = getDateForDataset(dateOfKPI);	
+			parametersObject.put("ParKpiDate", dateForDataset);
+		}
 
 		// gets the ModelInstanceNode
 		ModelInstanceNode mI = DAOFactory.getModelInstanceDAO().loadModelInstanceByLabel(modelNodeInstance, this.dateOfKPI);
@@ -338,6 +343,10 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			// Date for which we want to see the KpiValues
 			this.dateOfKPI = new Date();
 			this.parametersObject = readParameters(obj.getBiObjectParameters());
+			if(!parametersObject.containsKey("ParKpiDate")){
+				String dateForDataset = getDateForDataset(dateOfKPI);	
+				parametersObject.put("ParKpiDate", dateForDataset);
+			}
 			logger.debug("Got the date for which the KpiValues have to be calculated. Date:" + this.dateOfKPI);
 
 			// **************take informations on the modelInstance and its KpiValues*****************
@@ -634,11 +643,24 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		}
 
 		KpiInstance kpiI = modI.getKpiInstanceAssociated();
+		//if true the kpi value will always use the display behaviour
+		boolean alreadyExistent = false;
+		
+		if (kpiI == null && modI.getModelInstaceReferenceLabel() != null){
+	        ModelInstanceNode modelInstanceRefered = DAOFactory.getModelInstanceDAO().loadModelInstanceByLabel(modI.getModelInstaceReferenceLabel(), dateOfKPI);
+	        alreadyExistent = true;
+	        if (modelInstanceRefered != null && modelInstanceRefered.getKpiInstanceAssociated() != null){
+	           kpiI = modelInstanceRefered.getKpiInstanceAssociated();
+	           modI.setKpiInstanceAssociated(kpiI);
+	        }
+	    }
+		
+		
 		line.setChildren(children);
 		if (kpiI != null) {
 			Integer kpiInstID = kpiI.getKpiInstanceId();
 			logger.info("Got KpiInstance with ID: " + kpiInstID.toString());
-			KpiValue value = getValueDependingOnBehaviour(kpiI, miId, r);
+			KpiValue value = getValueDependingOnBehaviour(kpiI, miId, r,alreadyExistent );
 			line.setValue(value);
 			Integer kpiId = kpiI.getKpi();
 			Kpi k = DAOFactory.getKpiDAO().loadKpiById(kpiId);
@@ -664,42 +686,48 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		return line;
 	}
 	
-	private KpiValue getValueDependingOnBehaviour(KpiInstance kpiI,Integer miId, Resource r) throws EMFUserError, EMFInternalError, SourceBeanException{
+	private KpiValue getValueDependingOnBehaviour(KpiInstance kpiI,Integer miId, Resource r, boolean alreadyExistent) throws EMFUserError, EMFInternalError, SourceBeanException{
 		logger.debug("IN");
 		KpiValue value = new KpiValue();
 		boolean no_period_to_period = false;
 
-		if(behaviour.equalsIgnoreCase("default") || //If the behaviour is default
-				(behaviour.equalsIgnoreCase("recalculate") && kpiI.getPeriodicityId()!=null)){//or the behaviour is recalculate and the kpiinstance has a setted periodicity
-			// the old value still valid is retrieved
-			logger.debug("Trying to retrieve the old value still valid");
-			value = DAOFactory.getKpiDAO().getKpiValue(kpiI.getKpiInstanceId(), dateOfKPI, r);
-			logger.debug("Old KpiValue retrieved");		
-		}
-		if(value!=null && value.getEndDate()!=null && kpiI.getPeriodicityId()!=null){
-			GregorianCalendar c2 = new GregorianCalendar();		
-			c2.setTime(value.getEndDate());
-			int year = c2.get(1);
-			if(year==9999){
-				no_period_to_period = true;
-				logger.debug("The periodicity was null and now exists");
-			}
-		}
-		if (value==null || //If the retrieved value is null
-				no_period_to_period || //or the periodicity was before null and now is setted
-				behaviour.equalsIgnoreCase("force_recalculation") || //or the  behaviour is force_recalculation
-				(behaviour.equalsIgnoreCase("recalculate") && kpiI.getPeriodicityId()==null) ) {// or the behaviour is recalculate and the kpiinstance hasn't a setted periodicity
-			//a new value is calculated
-			logger.debug("Old value not valid anymore or recalculation forced");
-			IDataSet dataSet = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());	
-			logger.info("Retrieved the Dataset to be calculated: " + (dataSet!=null ? dataSet.getId():"null"));
-			value = getNewKpiValue(dataSet, kpiI, r, miId);		
-
-		}else if(behaviour.equalsIgnoreCase("display")){//diplay behaviour
+		if(alreadyExistent){//use diplay behaviour since value already exists
 			logger.debug("Display behaviour");
 			value = DAOFactory.getKpiDAO().getDisplayKpiValue(kpiI.getKpiInstanceId(), dateOfKPI, r);
 			logger.debug("Old KpiValue retrieved it could be still valid or not");
-		} 
+		}else{	
+			if(behaviour.equalsIgnoreCase("default") || //If the behaviour is default
+					(behaviour.equalsIgnoreCase("recalculate") && kpiI.getPeriodicityId()!=null)){//or the behaviour is recalculate and the kpiinstance has a setted periodicity
+				// the old value still valid is retrieved
+				logger.debug("Trying to retrieve the old value still valid");
+				value = DAOFactory.getKpiDAO().getKpiValue(kpiI.getKpiInstanceId(), dateOfKPI, r);
+				logger.debug("Old KpiValue retrieved");		
+			}
+			if(value!=null && value.getEndDate()!=null && kpiI.getPeriodicityId()!=null){
+				GregorianCalendar c2 = new GregorianCalendar();		
+				c2.setTime(value.getEndDate());
+				int year = c2.get(1);
+				if(year==9999){
+					no_period_to_period = true;
+					logger.debug("The periodicity was null and now exists");
+				}
+			}
+			if (value==null || //If the retrieved value is null
+					no_period_to_period || //or the periodicity was before null and now is setted
+					behaviour.equalsIgnoreCase("force_recalculation") || //or the  behaviour is force_recalculation
+					(behaviour.equalsIgnoreCase("recalculate") && kpiI.getPeriodicityId()==null) ) {// or the behaviour is recalculate and the kpiinstance hasn't a setted periodicity
+				//a new value is calculated
+				logger.debug("Old value not valid anymore or recalculation forced");
+				IDataSet dataSet = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());	
+				logger.info("Retrieved the Dataset to be calculated: " + (dataSet!=null ? dataSet.getId():"null"));
+				value = getNewKpiValue(dataSet, kpiI, r, miId);		
+	
+			}else if(behaviour.equalsIgnoreCase("display")){//diplay behaviour
+				logger.debug("Display behaviour");
+				value = DAOFactory.getKpiDAO().getDisplayKpiValue(kpiI.getKpiInstanceId(), dateOfKPI, r);
+				logger.debug("Old KpiValue retrieved it could be still valid or not");
+			} 
+		}
 		logger.debug("OUT");
 		return value;
 	}
@@ -1066,6 +1094,16 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		}
 		logger.debug("OUT. Date:" + this.dateOfKPI);
 		return parametersMap;
+	}
+	
+	private String getDateForDataset(Date d){
+		String toReturn = "";
+		SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
+		String format = (String) formatSB.getAttribute("format");
+		SimpleDateFormat f = new SimpleDateFormat();
+		f.applyPattern(format);
+		toReturn = f.format(this.dateOfKPI);
+		return toReturn;
 	}
 	
 	private String setCalculationDateOfKpi(String value){

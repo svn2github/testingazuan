@@ -735,9 +735,11 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		if (r != null) {
 			String colName = r.getColumn_name();
 			String value = r.getName();
+			String code = r.getCode();
 			kVal.setR(r);
 			logger.info("Setted the Resource:"+r.getName());
 			temp.put("ParKpiResource", value);
+			temp.put("ParKpiResourceCode", code);
 		}
 		
 		// cast Integer Ids to String

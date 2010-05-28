@@ -320,6 +320,7 @@
 			    	 <file name="./src/ext/sbi/execution/toolbar/RatingWindow.js"/>	
              		 <file name="./src/ext/sbi/execution/toolbar/SaveRememberMeWindow.js"/>	    
 			    	 <file name="./src/ext/sbi/home/Footer.js"/>	 
+			    	 <file name="./src/ext/sbi/home/DefaultRoleWindow.js"/>
 			    	 <file name="./src/ext/sbi/home/Banner.js"/>
 			    	 <file name="./src/ext/sbi/execution/toolbar/ListNotesWindow.js"/>
 			    	

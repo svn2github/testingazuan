@@ -94,6 +94,7 @@ Sbi.locale.ln['sbi.qbe.savewindow.public'] = 'Pubblico';
 Sbi.locale.ln['sbi.qbe.savewindow.private'] = 'Privato';
 Sbi.locale.ln['sbi.qbe.savewindow.publicdesc'] = 'Tutti coloro che possono eseguire questo documento vedranno il tuo subobject salvato';
 Sbi.locale.ln['sbi.qbe.savewindow.privatedesc'] = 'Il subobject salvato sarà visibile solo da te';
+Sbi.locale.ln['sbi.qbe.savewindow.selectmetadata'] = 'Inserisci i metadati';
 
 //===================================================================
 //FILTER GRID

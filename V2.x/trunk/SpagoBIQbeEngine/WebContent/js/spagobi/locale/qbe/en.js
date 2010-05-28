@@ -97,6 +97,7 @@ Sbi.locale.ln['sbi.qbe.savewindow.public'] = 'Public';
 Sbi.locale.ln['sbi.qbe.savewindow.private'] = 'Private';
 Sbi.locale.ln['sbi.qbe.savewindow.publicdesc'] = 'Everybody that can execute this document will see also your saved subobject';
 Sbi.locale.ln['sbi.qbe.savewindow.privatedesc'] = 'The saved quary will be visible only to you';
+Sbi.locale.ln['sbi.qbe.savewindow.selectmetadata'] = 'Insert metadata';
 
 
 //===================================================================

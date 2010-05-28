@@ -18,6 +18,7 @@ public class ModelInstanceNode implements Serializable{
 	List childrenIds = null;// List of ModelNodesInstances children
 	KpiInstance kpiInstanceAssociated = null;
 	List resources = null ; //Resources to which this model has to be applied
+	String modelInstaceReferenceLabel = null;
 	
 	public Boolean getIsRoot() {
 		return isRoot;
@@ -112,6 +113,14 @@ public class ModelInstanceNode implements Serializable{
 
 	public void setModelNodeId(Integer modelNodeId) {
 		this.modelNodeId = modelNodeId;
+	}
+
+	public String getModelInstaceReferenceLabel() {
+		return modelInstaceReferenceLabel;
+	}
+
+	public void setModelInstaceReferenceLabel(String modelInstaceReferenceLabel) {
+		this.modelInstaceReferenceLabel = modelInstaceReferenceLabel;
 	}
 	
 

@@ -143,6 +143,8 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		toReturn.setModelCode(modelCode);
 		logger.debug("KpiModelInstanceNode childrenIds setted");
 
+		
+		toReturn.setModelInstaceReferenceLabel(hibSbiKpiModelInst.getModelUUID());
 		logger.debug("OUT");
 		return toReturn;
 	}

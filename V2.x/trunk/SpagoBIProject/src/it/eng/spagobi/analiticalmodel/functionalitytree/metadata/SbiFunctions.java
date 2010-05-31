@@ -54,6 +54,7 @@ public class SbiFunctions  implements java.io.Serializable {
      * default constructor.
      */
     public SbiFunctions() {
+    	this.functId = -1;
     }
     
     /**

@@ -50,6 +50,7 @@ public class SbiChecks  implements java.io.Serializable {
      * default constructor.
      */
     public SbiChecks() {
+    this.checkId = -1;
     }
     
     /**

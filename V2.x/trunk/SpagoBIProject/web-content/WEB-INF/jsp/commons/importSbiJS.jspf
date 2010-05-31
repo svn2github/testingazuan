@@ -63,11 +63,11 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 
 <!-- END-DEBUG -->
 
-<!-- START-PRODUCTION-->
-<!--  
+<!-- START-PRODUCTION
+  
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi-all-2.5.0.js")%>'></script>
--->
-<!-- END-PRODUCTION -->
+
+END-PRODUCTION -->
 
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/commons/Settings.js")%>'></script>
 

@@ -4,6 +4,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.detail.impl.DefaultDetailModule;
 import it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService;
 import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -42,10 +43,16 @@ public class DetailResourcesModule extends DefaultDetailModule {
 			response.setAttribute("ID", Integer.parseInt(idResource));
 			response.setAttribute("MESSAGE", SpagoBIConstants.DETAIL_SELECT);
 			if (!validationError) {
+				try{
 				DetailResourcesUtil.updateResourceFromRequest(request, Integer
 						.parseInt(idResource));
 				DetailResourcesUtil.selectResource(
 						Integer.parseInt(idResource), response);
+				} catch (EMFUserError e) {
+					EMFErrorHandler engErrorHandler = getErrorHandler();
+					engErrorHandler.addError(e);
+					DetailResourcesUtil.restoreResource(null, request, response);
+				}
 			} else {
 				DetailResourcesUtil.restoreResource(Integer
 						.parseInt(idResource), request, response);
@@ -54,7 +61,13 @@ public class DetailResourcesModule extends DefaultDetailModule {
 		// DETAIL_INSERT
 		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)) {
 			if (!validationError) {
+				try{
 				DetailResourcesUtil.newResource(request, response);
+				} catch (EMFUserError e) {
+					EMFErrorHandler engErrorHandler = getErrorHandler();
+					engErrorHandler.addError(e);
+					DetailResourcesUtil.restoreResource(null, request, response);
+				}
 			} else {
 				DetailResourcesUtil.restoreResource(null, request, response);
 			}

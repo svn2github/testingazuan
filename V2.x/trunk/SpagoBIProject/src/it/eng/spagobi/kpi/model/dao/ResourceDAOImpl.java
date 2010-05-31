@@ -24,7 +24,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.exception.ConstraintViolationException;
 
 public class ResourceDAOImpl extends AbstractHibernateDAO implements
-IResourceDAO {
+		IResourceDAO {
 
 	static private Logger logger = Logger.getLogger(ResourceDAOImpl.class);
 
@@ -56,6 +56,13 @@ IResourceDAO {
 
 			aSession.update(sbiResource);
 			tx.commit();
+
+		} catch (ConstraintViolationException cve) {
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+			logger.info("Impossible to modify the resource", cve);
+			throw new EMFUserError(EMFErrorSeverity.WARNING, 10118);
 
 		} catch (HibernateException he) {
 			logException(he);
@@ -95,13 +102,20 @@ IResourceDAO {
 			idToReturn = (Integer) aSession.save(hibResource);
 			tx.commit();
 
+		} catch (ConstraintViolationException cve) {
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+			logger.info("Impossible to insert the resource", cve);
+			throw new EMFUserError(EMFErrorSeverity.WARNING, 10118);
+
 		} catch (HibernateException he) {
 			logger.error("Error while inserting the KpiResource ", he);
 
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 10103);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10117);
 
 		} finally {
 			if (aSession != null) {
@@ -112,6 +126,7 @@ IResourceDAO {
 		}
 		return idToReturn;
 	}
+
 	public Resource loadResourceById(Integer id) throws EMFUserError {
 		logger.debug("IN");
 		Resource toReturn = null;
@@ -124,9 +139,8 @@ IResourceDAO {
 			SbiResources hibSbiResource = (SbiResources) aSession.load(
 					SbiResources.class, id);
 			toReturn = toResource(hibSbiResource);
-
 		} catch (HibernateException he) {
-			logger.error("Error while loading the Model Instance with id "
+			logger.error("Error while loading the Resource with id "
 					+ ((id == null) ? "" : id.toString()), he);
 
 			if (tx != null)
@@ -145,7 +159,6 @@ IResourceDAO {
 		return toReturn;
 	}
 
-	
 	public Resource toResource(SbiResources r) {
 
 		logger.debug("IN");
@@ -162,17 +175,17 @@ IResourceDAO {
 		Integer typeId = d.getValueId();
 
 		toReturn.setColumn_name(coumn_name);
-		logger.debug("Resource columnName setted:"+coumn_name);
+		logger.debug("Resource columnName setted:" + coumn_name);
 		toReturn.setName(name);
-		logger.debug("Resource name setted:"+name);
+		logger.debug("Resource name setted:" + name);
 		toReturn.setDescr(descr);
-		logger.debug("Resource description setted:"+descr);
+		logger.debug("Resource description setted:" + descr);
 		toReturn.setCode(code);
-		logger.debug("Resource code setted:"+code);
+		logger.debug("Resource code setted:" + code);
 		toReturn.setTable_name(table_name);
-		logger.debug("Resource table_name setted:"+table_name);
+		logger.debug("Resource table_name setted:" + table_name);
 		toReturn.setType(type);
-		logger.debug("Resource type setted:"+type);
+		logger.debug("Resource type setted:" + type);
 		toReturn.setTypeId(typeId);
 		logger.debug("Resource typeID setted");
 		toReturn.setId(resourceId);
@@ -181,8 +194,7 @@ IResourceDAO {
 		logger.debug("OUT");
 		return toReturn;
 	}
-	
-	
+
 	public Resource toResource(SbiKpiModelResources re) {
 
 		logger.debug("IN");
@@ -205,7 +217,8 @@ IResourceDAO {
 		String tableName = r.getTable_name();
 		Integer resourceId = r.getId();
 		String type = r.getType();
-		Domain domain = DAOFactory.getDomainDAO().loadDomainByCodeAndValue("RESOURCE", type);
+		Domain domain = DAOFactory.getDomainDAO().loadDomainByCodeAndValue(
+				"RESOURCE", type);
 		SbiDomains sbiDomains = new SbiDomains();
 		sbiDomains.setDomainCd(domain.getDomainCode());
 		sbiDomains.setDomainNm(domain.getDomainName());
@@ -232,9 +245,7 @@ IResourceDAO {
 		logger.debug("OUT");
 		return toReturn;
 	}
-	
-	
-	
+
 	public void deleteResource(Integer resouceId) throws EMFUserError {
 		Session aSession = getSession();
 		Transaction tx = null;
@@ -264,9 +275,9 @@ IResourceDAO {
 			aSession.close();
 		}
 	}
-	
+
 	public List loadResourcesList(String fieldOrder, String typeOrder)
-	throws EMFUserError {
+			throws EMFUserError {
 		logger.debug("IN");
 		List toReturn = null;
 		Session aSession = null;
@@ -312,80 +323,81 @@ IResourceDAO {
 		}
 		return toReturn;
 	}
-	
-	public Resource loadResourcesByNameAndModelInst(String resourceName)
-	throws EMFUserError {
-	logger.debug("IN");
-	Resource toReturn = new Resource();
-	Session aSession = null;
-	Transaction tx = null;
-	
-	try {
-		aSession = getSession();
-		tx = aSession.beginTransaction();
-		Criteria finder = aSession.createCriteria(SbiResources.class);
-		finder.add(Expression.eq("resourceName", resourceName));
-		
-		List l = finder.list();
-		if (l!=null && !l.isEmpty()){
-			if (l.size()==1){
-				SbiResources hibResource = (SbiResources) l.get(0);
-				toReturn = toResource(hibResource);
-			}	else{
-				logger.debug("More Resources with same resourceName exist check the DB tables sbi_resources and sbi_kpi_model_resources");
-			}	
-		}	
-	
-	} catch (HibernateException he) {
-		logger.error("Error while loading the Resource", he);
-	
-		if (tx != null)
-			tx.rollback();
-	
-		throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
-	
-	} finally {
-		if (aSession != null) {
-			if (aSession.isOpen())
-				aSession.close();
-			logger.debug("OUT");
-		}
-	}
-	return toReturn;
-	}
-	
-	public Resource loadResourceByCode(String resourceCode) throws EMFUserError {
-		//TODO to be controlled
-	logger.debug("IN");
-	Resource toReturn = new Resource();
-	Session aSession = null;
-	Transaction tx = null;
-	
-	try {
-		aSession = getSession();
-		tx = aSession.beginTransaction();
-		Criteria finder = aSession.createCriteria(SbiResources.class);
-		finder.add(Expression.eq("resourceCode", resourceCode));
-		
-		SbiResources hibResource =(SbiResources) finder.uniqueResult();
-		toReturn = toResource(hibResource);
 
-	} catch (HibernateException he) {
-		logger.error("Error while loading the Resource", he);
-	
-		if (tx != null)
-			tx.rollback();
-	
-		throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
-	
-	} finally {
-		if (aSession != null) {
-			if (aSession.isOpen())
-				aSession.close();
-			logger.debug("OUT");
+	public Resource loadResourcesByNameAndModelInst(String resourceName)
+			throws EMFUserError {
+		logger.debug("IN");
+		Resource toReturn = new Resource();
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Criteria finder = aSession.createCriteria(SbiResources.class);
+			finder.add(Expression.eq("resourceName", resourceName));
+
+			List l = finder.list();
+			if (l != null && !l.isEmpty()) {
+				if (l.size() == 1) {
+					SbiResources hibResource = (SbiResources) l.get(0);
+					toReturn = toResource(hibResource);
+				} else {
+					logger
+							.debug("More Resources with same resourceName exist check the DB tables sbi_resources and sbi_kpi_model_resources");
+				}
+			}
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the Resource", he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
 		}
+		return toReturn;
 	}
-	return toReturn;
+
+	public Resource loadResourceByCode(String resourceCode) throws EMFUserError {
+		// TODO to be controlled
+		logger.debug("IN");
+		Resource toReturn = new Resource();
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Criteria finder = aSession.createCriteria(SbiResources.class);
+			finder.add(Expression.eq("resourceCode", resourceCode));
+
+			SbiResources hibResource = (SbiResources) finder.uniqueResult();
+			toReturn = toResource(hibResource);
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the Resource", he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		return toReturn;
 	}
 
 	private String getResourcesProperty(String property) {
@@ -396,5 +408,5 @@ IResourceDAO {
 			toReturn = "resourceName";
 		return toReturn;
 	}
-	
+
 }

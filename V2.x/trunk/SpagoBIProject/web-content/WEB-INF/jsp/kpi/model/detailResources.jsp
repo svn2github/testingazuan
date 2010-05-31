@@ -35,6 +35,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String tableName = "";
 	String columnName = "";
 	String resourceName = "";
+	String resourceCode = "";
 	String resourceDescription = "";
 	String resourceTypeDescription = "";
 	Integer resourceTypeId = null;
@@ -102,6 +103,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			tableName = resource.getTable_name();
 			columnName = resource.getColumn_name();
 			resourceName = resource.getName();
+			resourceCode = resource.getCode();
 			resourceDescription = resource.getDescr();
 			resourceTypeDescription = resource.getType();
 			resourceTypeId = resource.getTypeId();
@@ -163,6 +165,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.code" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'><input
+	class='portlet-form-input-field' type="text" name="resourceCode" size="50"
+	value="<%=StringEscapeUtils.escapeHtml(resourceCode)%>" maxlength="200"> &nbsp;*</div>	
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.description" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form' style='height: 150px;'>
 	<textarea name="resourceDescription" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=StringEscapeUtils.escapeHtml(resourceDescription)%></textarea>
@@ -220,9 +229,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%} %>
 </div>
 
-
 </form>
-
 
 <spagobi:error />
 <%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

@@ -8,11 +8,15 @@
 					<VALIDATOR validatorName="MANDATORY" />
 					<VALIDATOR validatorName="EXTENDED_ALFANUMERIC"/>
 				</FIELD>
-				
+
+				<FIELD name="resourceCode" label="#sbi.kpi.label.tableName" bundle="component_kpi_messages">
+					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)\.\:\;\,])*$"/>
+				</FIELD>
+
 				<FIELD name="tableName" label="#sbi.kpi.label.tableName" bundle="component_kpi_messages">
 					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)\.\:\;\,])*$"/>
 				</FIELD>
-				
+
 				<FIELD name="columnName" label="#sbi.kpi.label.columnName" bundle="component_kpi_messages">
 					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)\.\:\;\,])*$"/>
 				</FIELD>

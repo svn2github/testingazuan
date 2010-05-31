@@ -2387,13 +2387,13 @@ public class ImportManager implements IImportManager, Serializable {
 		Iterator iterSbiResources = exportedResource.iterator();
 		while (iterSbiResources.hasNext()) {
 			SbiResources dsExp = (SbiResources) iterSbiResources.next();
-			String name = dsExp.getResourceName();
-			Object existObj = importer.checkExistence(name, sessionCurrDB, new SbiResources());
+			String code = dsExp.getResourceCode();
+			Object existObj = importer.checkExistence(code, sessionCurrDB, new SbiResources());
 			if (existObj != null) {
 				SbiResources dsCurr = (SbiResources) existObj;
 				metaAss.insertCoupleResources(dsExp.getResourceId(), dsCurr.getResourceId());
-				metaLog.log("Found an existing resource " + dsCurr.getResourceName() + " with "
-						+ "the same name of one exported resource");
+				metaLog.log("Found an existing resource code " + dsCurr.getResourceCode() + " with "
+						+ "the same code of one exported resource");
 			}
 		}
 
@@ -2404,9 +2404,9 @@ public class ImportManager implements IImportManager, Serializable {
 		Iterator iterSbiModResources = exportedModResource.iterator();
 		while (iterSbiModResources.hasNext()) {
 			SbiKpiModelResources dsExp = (SbiKpiModelResources) iterSbiModResources.next();
-			String resourceName=dsExp.getSbiResources().getResourceName();
+			String resourceCode = dsExp.getSbiResources().getResourceCode();
 			String modelInstLabel=dsExp.getSbiKpiModelInst().getLabel();
-			Object existObj = importer.checkExistenceModelResource(modelInstLabel,resourceName, sessionCurrDB, new SbiKpiModelResources());
+			Object existObj = importer.checkExistenceModelResource(modelInstLabel,resourceCode, sessionCurrDB, new SbiKpiModelResources());
 			if (existObj != null) {
 				SbiKpiModelResources dsCurr = (SbiKpiModelResources) existObj;
 				metaAss.insertCoupleModelResources(dsExp.getKpiModelResourcesId(), dsCurr.getKpiModelResourcesId());

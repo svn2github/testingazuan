@@ -524,7 +524,7 @@ public class ImporterMetadata {
 			return hibDs;
 		} 	else if (hibObj instanceof SbiResources) {
 			String label = (String) unique;
-			hql = "from SbiResources ds where ds.resourceName = '" + label + "'";
+			hql = "from SbiResources ds where ds.resourceCode = '" + label + "'";
 			hqlQuery = sessionCurrDB.createQuery(hql);
 			SbiResources hibDs = null;
 			try{
@@ -687,7 +687,7 @@ public class ImporterMetadata {
 	 * @throws                EMFUserError
 	 * @throws EMFUserError the EMF user error
 	 */
-	public Object checkExistenceModelResource(String modelInstLabel, String resourceLabel, Session sessionCurrDB, Object hibObj) throws EMFUserError {
+	public Object checkExistenceModelResource(String modelInstLabel, String resourceCode, Session sessionCurrDB, Object hibObj) throws EMFUserError {
 		logger.debug("IN");
 		String hql = null;
 		Query hqlQuery = null;
@@ -703,7 +703,7 @@ public class ImporterMetadata {
 
 		// get Resource
 		Integer idResource=null;
-		hql = "from SbiResources where resourceName = '" + resourceLabel + "'";
+		hql = "from SbiResources where resourceCode = '" + resourceCode + "'";
 		hqlQuery = sessionCurrDB.createQuery(hql);
 		SbiResources hibRes = (SbiResources) hqlQuery.uniqueResult();
 		if(hibRes==null) return null;

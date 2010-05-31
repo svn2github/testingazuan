@@ -8,7 +8,7 @@
             <column name="KPI_MODEL_ID" />
         </id>
         <many-to-one name="modelType" class="it.eng.spagobi.commons.metadata.SbiDomains" >
-            <column name="KPI_MODEL_TYPE_ID" not-null="true" />
+            <column name="KPI_MODEL_TYPE_ID" not-null="false" />
         </many-to-one>
         <many-to-one name="sbiKpiModel" class="it.eng.spagobi.kpi.model.metadata.SbiKpiModel" >
             <column name="KPI_PARENT_MODEL_ID" />

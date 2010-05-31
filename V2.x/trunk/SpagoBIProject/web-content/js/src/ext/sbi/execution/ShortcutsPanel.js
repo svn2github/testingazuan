@@ -109,13 +109,16 @@ Ext.extend(Sbi.execution.ShortcutsPanel, Ext.Panel, {
 	, synchronizeSubobjects: function( executionInstance ) {
 		this.subobjectsPanel.synchronize( executionInstance );
 	}
-	, synchronizeSubobjectsAndOpenMetadata: function( id, meta, executionInstance ) {
+	
+	//method use with checkbox , synchronizeSubobjectsAndOpenMetadata: function( id, meta, executionInstance ) {
+	, synchronizeSubobjectsAndOpenMetadata: function( id, executionInstance ) {
 		// synchronize subobjects
-		this.subobjectsPanel.synchronize( executionInstance );		
+		this.subobjectsPanel.synchronize( executionInstance );
 		// open the metadata windows if so chosen in saveWindow
-		if(meta == true) {
-			this.subobjectsPanel.openMetadataWindowAfterSaving( id, executionInstance );
-		}
+		//if(meta == true) {
+		this.subobjectsPanel.openMetadataWindowAfterSaving( id, executionInstance );
+
+		//}
 	}
 	, synchronizeSnapshots: function( executionInstance ) {
 		this.snapshotsPanel.synchronize( executionInstance );

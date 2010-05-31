@@ -307,6 +307,7 @@ Ext.extend(Sbi.execution.toolbar.MetadataWindow, Ext.Window, {
 				} else {
 					Sbi.exception.ExceptionHandler.showErrorMessage('Error while saving Metadata', 'Service Error');
 				}
+				//this.hide();
             },
             failure: Sbi.exception.ExceptionHandler.handleFailure,    
             scope: this,

@@ -208,7 +208,6 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 				'load', 
 				function() {
 				this.fireEvent('ready');
-				//this.fireEvent('meta');								
 				},
 				this
 			);

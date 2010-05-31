@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 /*
  * Created on 13-mag-2005
  *
@@ -33,6 +33,8 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuse;
 
 import java.util.List;
 
+import org.hibernate.Session;
+
 
 /**
  * Defines the interfaces for all methods needed to insert, 
@@ -41,8 +43,8 @@ import java.util.List;
  * @author zoppello
  */
 public interface IParameterUseDAO {
-	
-	
+
+
 	/**
 	 * Loads all detail information for a parameter use mode identified by
 	 * its <code>id</code>. All these information, achived by a query
@@ -56,7 +58,7 @@ public interface IParameterUseDAO {
 	 * @throws EMFUserError EMFUserError If an Exception occurred
 	 */
 	public SbiParuse loadById(Integer id) throws EMFUserError;
-	
+
 	/**
 	 * Loads all detail information for a parameter use mode identified by
 	 * its <code>useID</code>. All these information, achived by a query
@@ -70,8 +72,8 @@ public interface IParameterUseDAO {
 	 * @throws EMFUserError EMFUserError If an Exception occurred
 	 */
 	public ParameterUse loadByUseID(Integer useID) throws EMFUserError;
-	
-	
+
+
 	/**
 	 * Loads all detail information for a parameter use mode identified by
 	 * a parameter id and a role name. All these information, achived by a query
@@ -86,7 +88,7 @@ public interface IParameterUseDAO {
 	 * @throws EMFUserError EMFUserError If an Exception occurred
 	 */
 	public ParameterUse loadByParameterIdandRole(Integer parameterId, String roleName) throws EMFUserError;
-	
+
 
 	/**
 	 * Given at input a <code>ParameterUse</code> objects, asks for all possible Checks
@@ -97,7 +99,7 @@ public interface IParameterUseDAO {
 	 * @throws EMFUserError if an Exception occurred.
 	 */
 	public void fillAssociatedChecksForParUse(ParameterUse aParameterUse) throws EMFUserError;
-	
+
 	/**
 	 * Given at input a <code>ParameterUse</code> objects, asks for all possible Roles
 	 * associated whith it and fills the <code>ListRoles</code> object's list.
@@ -107,7 +109,7 @@ public interface IParameterUseDAO {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void fillRolesForParUse(ParameterUse aParameterUse) throws EMFUserError;
-	
+
 	/**
 	 * Implements the query to modify a parameter use mode. All information needed
 	 * is stored into the input <code>ParameterUse</code> object.
@@ -137,7 +139,7 @@ public interface IParameterUseDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public void eraseParameterUse(ParameterUse aParameterUse) throws EMFUserError;
-	
+
 	/**
 	 * Controls if a parameter has some use modes associated or not. It is useful
 	 * because a parameter can be deleted only if it hasn't any use mode associated.
@@ -150,7 +152,7 @@ public interface IParameterUseDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public boolean hasParUseModes (String parId) throws EMFUserError;
-	
+
 	/**
 	 * Loads the list of parameter use modes associated to the input
 	 * parameter id.
@@ -162,8 +164,8 @@ public interface IParameterUseDAO {
 	 * @throws EMFUserError EMFUserError If an Exception occurred
 	 */
 	public List loadParametersUseByParId(Integer parId) throws EMFUserError;
-	
-	
+
+
 	/**
 	 * Delete all the parameter use modes associated to the input
 	 * parameter id.
@@ -173,7 +175,7 @@ public interface IParameterUseDAO {
 	 * @throws EMFUserError EMFUserError If an Exception occurred
 	 */
 	public void eraseParameterUseByParId(Integer parId) throws EMFUserError;
-	
+
 	/**
 	 * Gets the list of parameter uses associated to the lov identified by the lovId at input.
 	 * 
@@ -184,5 +186,17 @@ public interface IParameterUseDAO {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public List getParameterUsesAssociatedToLov(Integer lovId) throws EMFUserError;
-	
+
+
+	/**
+	 * Delete from hibernate session a parameter use
+	 * 
+	 * @param Session hibernate Session
+	 * 
+	 * @return The list of parameter uses associated to the lov identified by the lovId at input
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void eraseParameterUseByParIdSameSession(Integer parId, Session sessionCurrDB) throws EMFUserError;
+
 }

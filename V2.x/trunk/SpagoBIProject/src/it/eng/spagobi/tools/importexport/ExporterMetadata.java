@@ -90,6 +90,8 @@ import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
 import it.eng.spagobi.kpi.config.metadata.SbiMeasureUnit;
 import it.eng.spagobi.kpi.model.bo.Model;
+import it.eng.spagobi.kpi.model.bo.ModelAttribute;
+import it.eng.spagobi.kpi.model.bo.ModelAttributeValue;
 import it.eng.spagobi.kpi.model.bo.ModelInstance;
 import it.eng.spagobi.kpi.model.bo.ModelResources;
 import it.eng.spagobi.kpi.model.bo.Resource;
@@ -98,6 +100,8 @@ import it.eng.spagobi.kpi.model.dao.IModelInstanceDAO;
 import it.eng.spagobi.kpi.model.dao.IModelResourceDAO;
 import it.eng.spagobi.kpi.model.dao.IResourceDAO;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModel;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttr;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttrVal;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelResources;
 import it.eng.spagobi.kpi.model.metadata.SbiResources;
@@ -154,6 +158,8 @@ public class ExporterMetadata {
 	static private Logger logger = Logger.getLogger(ExporterMetadata.class);
 	private List biObjectToInsert=null;
 
+	// list of ids of models that have an attribute with value filled.
+	List modelsWithAttributeValued = null;
 
 	/**
 	 * Insert a domain into the exported database.
@@ -255,6 +261,7 @@ public class ExporterMetadata {
 			if(!hibList.isEmpty()) {
 				return;
 			}
+
 			SbiDataSetConfig hibDataset = null;
 			if (dataset instanceof FileDataSet) {
 				hibDataset = new SbiFileDataSet();
@@ -1407,15 +1414,23 @@ public class ExporterMetadata {
 	 */
 	public List insertAllFromModelInstance(ModelInstance mi, Session session) throws EMFUserError {
 		logger.debug("IN");
-
+		
 		biObjectToInsert=new ArrayList();
 
 		//I want to insert the whole model instance tree, first of all I get the model instance root
 		IModelInstanceDAO modInstDAO=DAOFactory.getModelInstanceDAO();
 		ModelInstance miRoot=modInstDAO.loadModelInstanceRoot(mi);
 
+
 		// insert the model (model instance root points to model root)
 		logger.debug("Insert the model root and the tree");		
+		
+		// isnert all kpi model attribute thought are related to domains!
+		insertAllKpiModelAttr(session);
+		// fill the array with models with attributes
+		modelsWithAttributeValued = DAOFactory.getSbiKpiModelAttrValDAO().allModelsIdWithAttribute();
+
+		// insert model tree starting from root.
 		Model modelRoot=miRoot.getModel();
 		insertModelTree(modelRoot, session);
 
@@ -1489,7 +1504,7 @@ public class ExporterMetadata {
 			Transaction tx = session.beginTransaction();
 			session.save(hibMi);
 			tx.commit();
-
+			
 			// Load all the model resources of the current instance model
 			// after having inserted model instance
 			IModelResourceDAO modelResourceDao=DAOFactory.getModelResourcesDAO();			
@@ -1517,8 +1532,11 @@ public class ExporterMetadata {
 			}
 			hibMi.setSbiKpiModelInsts(modelInstanceChildren);  // serve?
 
+
+
+
 		} catch (Exception e) {
-			logger.error("Error while inserting dataSource into export database " , e);
+			logger.error("Error while inserting ModelInstance tree into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
 			logger.debug("OUT");
@@ -1539,6 +1557,8 @@ public class ExporterMetadata {
 		IModelDAO modelDao=DAOFactory.getModelDAO();
 		try {
 			
+
+
 			Query hibQuery = session.createQuery(" from SbiKpiModel where kpiModelId = " + mod.getId());
 			List hibList = hibQuery.list();
 			if(!hibList.isEmpty()) {
@@ -1600,8 +1620,22 @@ public class ExporterMetadata {
 			}
 			hibMod.setSbiKpiModels(modelChildren);
 
+			// Load Model Attribute Values
+			List attributes = mod.getModelAttributes();
+
+			// check if actual model has attributes value
+			if(modelsWithAttributeValued.contains(mod.getId())){
+				for (Iterator iterator = attributes.iterator(); iterator.hasNext();) {
+					ModelAttribute modelAttribute = (ModelAttribute) iterator.next();
+					insertKpiModelAttrVal(modelAttribute, mod.getId(), session);
+				}
+			}
+			//insertKpiModelAttr(modAttribute, session)
+
+
+
 		} catch (Exception e) {
-			logger.error("Error while inserting dataSource into export database " , e);
+			logger.error("Error while inserting Model into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
 			logger.debug("OUT");
@@ -2145,6 +2179,7 @@ public class ExporterMetadata {
 			SbiResources hibRes = new SbiResources();
 
 			hibRes.setResourceId(res.getId());
+			hibRes.setResourceCode(res.getCode());
 			hibRes.setResourceName(res.getName());
 			hibRes.setResourceDescr(res.getDescr());
 			hibRes.setColumnName(res.getColumn_name());
@@ -2301,6 +2336,105 @@ public class ExporterMetadata {
 	}
 
 
+
+
+
+
+
+	/**
+	 * Insert ModelAttr.
+	 * 
+	 * @param modAttr the modelAttribute
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertAllKpiModelAttr(Session session) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			//			Query hibQuery = session.createQuery(" from SbiKpiModelAttr where kpiModelAttrId = " + modAttribute.getId());
+			//			List hibList = hibQuery.list();
+			//			if(!hibList.isEmpty()) {
+			//				insertKpiModelAttrVal(modAttribute, modelId, session);
+			//				return;
+			//			} 
+
+			List attrs = DAOFactory.getSbiKpiModelAttrDAO().loadAllModelAttrs();
+
+			for (Iterator iterator = attrs.iterator(); iterator.hasNext();) {
+				ModelAttribute modAttribute = (ModelAttribute) iterator.next();
+
+				// main attributes			
+				SbiKpiModelAttr hibModAttr = new SbiKpiModelAttr();
+				hibModAttr.setKpiModelAttrId(modAttribute.getId());
+				hibModAttr.setKpiModelAttrCd(modAttribute.getCode());
+				hibModAttr.setKpiModelAttrNm(modAttribute.getName());
+				hibModAttr.setKpiModelAttrDescr(modAttribute.getDescr());
+
+				SbiDomains sbiDomains = (SbiDomains)session.load(SbiDomains.class, modAttribute.getTypeId());
+				hibModAttr.setSbiDomains(sbiDomains);
+
+
+				Transaction tx = session.beginTransaction();			
+				session.save(hibModAttr);
+				tx.commit();
+
+			}
+
+		} catch (Exception e) {
+			logger.error("Error while inserting model attr into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}
+	}
+
+
+	/**
+	 * Insert ModelAttrVal.
+	 * 
+	 * @param modAttrval the modelAttribute
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertKpiModelAttrVal(ModelAttribute modAttribute, Integer modelId, Session session) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			Query hibQuery = session.createQuery(" from SbiKpiModelAttrVal s where s.sbiKpiModelAttr.kpiModelAttrId = " + modAttribute.getId() + " AND s.sbiKpiModel.kpiModelId = " + modelId);
+			List hibRes = hibQuery.list();
+			if(!hibRes.isEmpty()) {
+				return;
+			} 
+
+
+			// load kpiModelAttributeValue
+			ModelAttributeValue modelAttributeValue = DAOFactory.getSbiKpiModelAttrValDAO().loadModelAttrValByAttrIdAndModelId(modAttribute.getId(), modelId);
+
+			if(modelAttributeValue == null )
+				return;
+
+			// main attributes		
+			SbiKpiModelAttrVal hibModAttrVal = new SbiKpiModelAttrVal();
+			hibModAttrVal.setKpiModelAttrValId(modelAttributeValue.getId());
+			hibModAttrVal.setValue(modelAttributeValue.getValue());
+
+			SbiKpiModel sbiKpiModel = (SbiKpiModel)session.load(SbiKpiModel.class, modelAttributeValue.getModelId());
+			hibModAttrVal.setSbiKpiModel(sbiKpiModel);
+
+			SbiKpiModelAttr sbiKpiModelAttr = (SbiKpiModelAttr)session.load(SbiKpiModelAttr.class, modelAttributeValue.getAttrId());
+			hibModAttrVal.setSbiKpiModelAttr(sbiKpiModelAttr);
+
+			Transaction tx = session.beginTransaction();			
+			session.save(hibModAttrVal);
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting model attr value into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}
+	}
 
 
 }

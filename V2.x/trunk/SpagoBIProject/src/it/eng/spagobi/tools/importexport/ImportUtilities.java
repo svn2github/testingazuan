@@ -57,6 +57,8 @@ import it.eng.spagobi.kpi.config.metadata.SbiKpiInstPeriod;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModel;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttr;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttrVal;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelResources;
 import it.eng.spagobi.kpi.model.metadata.SbiResources;
@@ -92,6 +94,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 
 public class ImportUtilities {
 
@@ -887,15 +891,15 @@ public class ImportUtilities {
 		SbiDataSource expDs = exportedObj.getDataSource();
 		if (expDs != null) {
 			Integer existingDsId = (Integer) metaAss.getDataSourceIDAssociation().get(new Integer(expDs.getDsId()));
-//			if (label == null) {
-//			// exist a DataSource Association, read a new DataSource
-//			// from the DB
-//			label = expDs.getLabel();
-//			}
-//			Criterion labelCriterrion = Expression.eq("label", label);
-//			Criteria criteria = sessionCurrDB.createCriteria(SbiDataSource.class);
-//			criteria.add(labelCriterrion);
-//			SbiDataSource localDS = (SbiDataSource) criteria.uniqueResult();
+			//			if (label == null) {
+			//			// exist a DataSource Association, read a new DataSource
+			//			// from the DB
+			//			label = expDs.getLabel();
+			//			}
+			//			Criterion labelCriterrion = Expression.eq("label", label);
+			//			Criteria criteria = sessionCurrDB.createCriteria(SbiDataSource.class);
+			//			criteria.add(labelCriterrion);
+			//			SbiDataSource localDS = (SbiDataSource) criteria.uniqueResult();
 			SbiDataSource localDS = (SbiDataSource) sessionCurrDB.load(SbiDataSource.class, existingDsId);
 			logger.debug("OUT");
 			return localDS;
@@ -1109,11 +1113,11 @@ public class ImportUtilities {
 					existingLov.setLovProvider(queryDetail.toXML());
 				}
 			} catch (SourceBeanException e) {
-				logger.error("error in reading the xml of lov provider, transcribe the original by default ",e);		
+				logger.error("error in reading the xml of lov provider, transcribe the original by default ");		
 				existingLov.setLovProvider(exportedLov.getLovProvider());
 			}
 			catch (Exception e) {
-				logger.error("error in reading the xml of lov provider; transcribe the original by default ",e);		
+				logger.error("error in reading the xml of lov provider; transcribe the original by default ");		
 				existingLov.setLovProvider(exportedLov.getLovProvider());
 			}
 
@@ -1696,7 +1700,7 @@ public class ImportUtilities {
 		}
 
 
-//		add Kpi
+		//		add Kpi
 
 		Map kpiIdAss=metaAss.getKpiIDAssociation();
 		if(exportedKpiInst.getSbiKpi()!=null){
@@ -1712,7 +1716,7 @@ public class ImportUtilities {
 			}
 		}
 
-//		add Threshold
+		//		add Threshold
 
 		Map thIdAss=metaAss.getTresholdIDAssociation();
 		if(exportedKpiInst.getSbiThreshold()!=null){
@@ -1843,7 +1847,7 @@ public class ImportUtilities {
 			existingThvalue.setSeverity(null);
 		}
 
-//		add Threshold
+		//		add Threshold
 
 		Map thresholdIdAss=metaAss.getTresholdIDAssociation();
 		if(exportedThValue.getSbiThreshold()!=null){
@@ -2007,6 +2011,13 @@ public class ImportUtilities {
 			newMod.setKpiModelDesc(model.getKpiModelDesc());
 			newMod.setKpiModelNm(model.getKpiModelNm());
 
+			// if label is null means we are coming from a version < 2.4 (transformator has changed so). Then assign a new unique label 
+			if(newMod.getKpiModelLabel() == null){
+				UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+				UUID uuid = uuidGen.generateTimeBasedUUID();
+				newMod.setKpiModelLabel(uuid.toString());
+			}
+			
 			// associations
 			entitiesAssociationsSbiModel(model, newMod, sessionCurrDB, metaAss);
 
@@ -2041,6 +2052,8 @@ public class ImportUtilities {
 			existingMod = (SbiKpiModel) sessionCurrDB.load(SbiKpiModel.class, existingId);
 			existingMod.setKpiModelLabel(exportedMod.getKpiModelLabel());
 			existingMod.setKpiModelCd(exportedMod.getKpiModelCd());
+
+
 			existingMod.setKpiModelNm(exportedMod.getKpiModelNm());
 			existingMod.setKpiModelDesc(exportedMod.getKpiModelDesc());
 
@@ -2280,6 +2293,7 @@ public class ImportUtilities {
 		SbiResources newResource = new SbiResources();
 		try{
 			newResource.setResourceName(resource.getResourceName());
+			newResource.setResourceCode(resource.getResourceCode());
 			newResource.setResourceDescr(resource.getResourceDescr());
 			newResource.setColumnName(resource.getColumnName());
 			newResource.setTableName(resource.getTableName());
@@ -2316,6 +2330,7 @@ public class ImportUtilities {
 		try {
 			// update th Value
 			existingRes = (SbiResources) sessionCurrDB.load(SbiResources.class, existingId);
+			existingRes.setResourceCode(exportedRes.getResourceCode());
 			existingRes.setResourceName(exportedRes.getResourceName());
 			existingRes.setResourceDescr(exportedRes.getResourceDescr());
 			existingRes.setTableName(exportedRes.getTableName());
@@ -2926,6 +2941,235 @@ public class ImportUtilities {
 		logger.debug("IN");
 		logger.debug("OUT");
 	}	
+
+
+
+
+
+
+
+	/**
+	 * Creates a new hibernate kpi model attr object.
+	 * 
+	 * @param SbiKpiModelAttr kpiModelAttr
+	 * 
+	 * @return the new hibernate parameter object
+	 */
+	public static SbiKpiModelAttr makeNewSbiKpiModelAttr(SbiKpiModelAttr kpiModelAttr,Session sessionCurrDB, 
+			MetadataAssociations metaAss, ImporterMetadata importer){
+		logger.debug("IN");
+		SbiKpiModelAttr newKpiModelAttr = new SbiKpiModelAttr();
+		try{
+			newKpiModelAttr.setKpiModelAttrCd( kpiModelAttr.getKpiModelAttrCd() );
+			newKpiModelAttr.setKpiModelAttrNm( kpiModelAttr.getKpiModelAttrNm() );
+			newKpiModelAttr.setKpiModelAttrDescr( kpiModelAttr.getKpiModelAttrDescr() );
+
+			// associations
+			entitiesAssociationsSbiKpiModelAttr(kpiModelAttr, newKpiModelAttr, sessionCurrDB, metaAss, importer); 
+
+			logger.debug("OUT");
+		}
+		catch (Exception e) {
+			logger.error("Error inc reating new Model Attr with label "+newKpiModelAttr.getKpiModelAttrCd());			
+		}
+		finally{
+
+		}
+		return newKpiModelAttr;
+	}
+
+
+	/**
+	 * Load an existing kpiModelAttr and make modifications as per the exported kpiModelAttr in input
+	 * 
+	 * @param exportedKpiModelAttr the exported KpiModelAttr
+	 * @param sessionCurrDB the session curr db
+	 * @param existingId the existing id
+	 * 
+	 * @return the existing Kpi modified as per the exported parameter in input
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static SbiKpiModelAttr modifyExistingSbiKpiModelAttr(SbiKpiModelAttr exportedKpiModelAttr, Session sessionCurrDB, 
+			Integer existingId, MetadataAssociations metaAss, ImporterMetadata importer) throws EMFUserError {
+		logger.debug("IN");
+		SbiKpiModelAttr existingKpiModelAttr = null;
+		try {
+			// update th Value
+			existingKpiModelAttr = (SbiKpiModelAttr) sessionCurrDB.load(SbiKpiModelAttr.class, existingId);
+			existingKpiModelAttr.setKpiModelAttrCd(exportedKpiModelAttr.getKpiModelAttrCd());
+			existingKpiModelAttr.setKpiModelAttrNm(exportedKpiModelAttr.getKpiModelAttrNm());
+			existingKpiModelAttr.setKpiModelAttrDescr(exportedKpiModelAttr.getKpiModelAttrDescr());
+
+			// overwrite existging entities (maybe create a function speciic for domains, maybe not)
+			entitiesAssociationsSbiKpiModelAttr(exportedKpiModelAttr, existingKpiModelAttr, sessionCurrDB, metaAss, importer); 
+
+		}
+
+		finally {
+			logger.debug("OUT");
+		}
+		return existingKpiModelAttr;
+	}
+
+
+
+	/**
+	 * For KpiModelAttr search new Ids
+	 * 
+	 * @param exportedKpi the exported Kpi
+	 * @param sessionCurrDB the session curr db
+	 * 
+	 * @return the existing Kpi modified as per the exported parameter in input
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static void entitiesAssociationsSbiKpiModelAttr(SbiKpiModelAttr exportedKpiModelAttr, SbiKpiModelAttr existingKpiModelAttr,Session sessionCurrDB, 
+			MetadataAssociations metaAss, ImporterMetadata importer) throws EMFUserError {
+		logger.debug("IN");
+		// overwrite existging entities
+
+		Map domainIdAss=metaAss.getDomainIDAssociation();
+		if(exportedKpiModelAttr.getSbiDomains()!=null){
+			Integer oldDomainId=exportedKpiModelAttr.getSbiDomains().getValueId();
+			Integer newDomainId=(Integer)domainIdAss.get(oldDomainId);
+			if(newDomainId==null) {
+				logger.error("could not find domain between association"+exportedKpiModelAttr.getSbiDomains().getValueCd());
+				existingKpiModelAttr.setSbiDomains(null);
+			}
+			else{
+				// I must get the new SbiDomains object
+				SbiDomains newSbiDomain= (SbiDomains) sessionCurrDB.load(SbiDomains.class, newDomainId);
+				existingKpiModelAttr.setSbiDomains(newSbiDomain);
+			}
+		}
+		else{
+			existingKpiModelAttr.setSbiDomains(null);
+		}
+	}
+
+
+
+
+	/**
+	 * Creates a new hibernate kpi model attr val object.
+	 * 
+	 * @param SbiKpiModelAttr kpiModelAttrVal
+	 * 
+	 * @return the new hibernate parameter object
+	 */
+	public static SbiKpiModelAttrVal makeNewSbiKpiModelAttrVal(SbiKpiModelAttrVal kpiModelAttrVal,Session sessionCurrDB, 
+			MetadataAssociations metaAss, ImporterMetadata importer){
+		logger.debug("IN");
+		SbiKpiModelAttrVal newKpiModelAttrVal = new SbiKpiModelAttrVal();
+		try{
+			newKpiModelAttrVal.setValue( kpiModelAttrVal.getValue() );
+
+			// associations
+			entitiesAssociationsSbiKpiModelAttrVal(kpiModelAttrVal, newKpiModelAttrVal, sessionCurrDB, metaAss, importer); 
+
+			logger.debug("OUT");
+		}
+		catch (Exception e) {
+			logger.error("Error inc reating new Model Attr Val referring to model "+newKpiModelAttrVal.getSbiKpiModel().getKpiModelNm()+" an to attribute "+newKpiModelAttrVal.getSbiKpiModelAttr().getKpiModelAttrNm());			
+		}
+		finally{
+
+		}
+		return newKpiModelAttrVal;
+	}
+
+
+	/**
+	 * Load an existing kpiModelAttrVal and make modifications as per the exported kpiModelAttr in input
+	 * 
+	 * @param exportedKpiModelAttrVal the exported KpiModelAttrVal
+	 * @param sessionCurrDB the session curr db
+	 * @param existingId the existing id
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static SbiKpiModelAttrVal modifyExistingSbiKpiModelAttrVal(SbiKpiModelAttrVal exportedKpiModelAttrVal, Session sessionCurrDB, 
+			Integer existingId, MetadataAssociations metaAss, ImporterMetadata importer) throws EMFUserError {
+		logger.debug("IN");
+		SbiKpiModelAttrVal existingKpiModelAttrVal = null;
+		try {
+			// update th Value
+			existingKpiModelAttrVal = (SbiKpiModelAttrVal) sessionCurrDB.load(SbiKpiModelAttrVal.class, existingId);
+			existingKpiModelAttrVal.setSbiKpiModel(exportedKpiModelAttrVal.getSbiKpiModel());
+			existingKpiModelAttrVal.setSbiKpiModelAttr(exportedKpiModelAttrVal.getSbiKpiModelAttr());
+
+			// overwrite existging entities (maybe create a function speciic for domains, maybe not)
+			entitiesAssociationsSbiKpiModelAttrVal(exportedKpiModelAttrVal, existingKpiModelAttrVal, sessionCurrDB, metaAss, importer); 
+
+		}
+
+		finally {
+			logger.debug("OUT");
+		}
+		return existingKpiModelAttrVal;
+	}
+
+
+
+	/**
+	 * KpiModelAttrVal association entities search new Ids
+	 * 
+	 * @param exportedKpiMdelAtrVal the exported KpiModelATtrVal
+	 * @param sessionCurrDB the session curr db
+	 * 
+	 * @return the existing Kpi modified as per the exported parameter in input
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static void entitiesAssociationsSbiKpiModelAttrVal(SbiKpiModelAttrVal exportedKpiModelAttrVal, SbiKpiModelAttrVal existingKpiModelAttrVal,Session sessionCurrDB, 
+			MetadataAssociations metaAss, ImporterMetadata importer) throws EMFUserError {
+		logger.debug("IN");
+		// overwrite existging entities
+
+		// set the model
+		Map modelIdAss=metaAss.getModelIDAssociation();
+		if(exportedKpiModelAttrVal.getSbiKpiModel()!=null){
+			Integer oldModelId=exportedKpiModelAttrVal.getSbiKpiModel().getKpiModelId();
+			Integer newModelId=(Integer)modelIdAss.get(oldModelId);
+			if(newModelId==null) {
+				logger.error("could not find model associated with mdeol with label "+exportedKpiModelAttrVal.getSbiKpiModel().getKpiModelLabel());
+				existingKpiModelAttrVal.setSbiKpiModel(null);
+			}
+			else{
+				// I must get the new 
+				SbiKpiModel newSbiKpiModel= (SbiKpiModel) sessionCurrDB.load(SbiKpiModel.class, newModelId);
+				existingKpiModelAttrVal.setSbiKpiModel(newSbiKpiModel);
+			}
+		}
+		else{
+			existingKpiModelAttrVal.setSbiKpiModel(null);
+		}
+
+
+		// set the model attr
+		Map modelAttrIdAss=metaAss.getSbiKpiModelAttrIDAssociation();
+		if(exportedKpiModelAttrVal.getSbiKpiModelAttr()!=null){
+			Integer oldModelAttrId=exportedKpiModelAttrVal.getSbiKpiModelAttr().getKpiModelAttrId();
+			Integer newModelAttrId=(Integer)modelAttrIdAss.get(oldModelAttrId);
+			if(newModelAttrId==null) {
+				logger.error("could not find model Attr associated with model Attrwith label "+exportedKpiModelAttrVal.getSbiKpiModelAttr().getKpiModelAttrCd());
+				existingKpiModelAttrVal.setSbiKpiModelAttr(null);
+			}
+			else{
+				// I must get the new 
+				SbiKpiModelAttr newSbiKpiModelAttr= (SbiKpiModelAttr) sessionCurrDB.load(SbiKpiModelAttr.class, newModelAttrId);
+				existingKpiModelAttrVal.setSbiKpiModelAttr(newSbiKpiModelAttr);
+			}
+		}
+		else{
+			existingKpiModelAttrVal.setSbiKpiModelAttr(null);
+		}
+
+	}
+
+
+
 
 
 }

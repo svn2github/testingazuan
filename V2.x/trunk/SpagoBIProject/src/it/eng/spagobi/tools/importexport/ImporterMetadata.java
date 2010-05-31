@@ -48,6 +48,8 @@ import it.eng.spagobi.kpi.config.metadata.SbiKpi;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstPeriod;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModel;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttr;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttrVal;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelResources;
 import it.eng.spagobi.kpi.model.metadata.SbiResources;
@@ -470,7 +472,7 @@ public class ImporterMetadata {
 			hqlQuery = sessionCurrDB.createQuery(hql);
 			SbiThreshold hibDs = null;
 			try{
-			hibDs = (SbiThreshold) hqlQuery.uniqueResult();
+				hibDs = (SbiThreshold) hqlQuery.uniqueResult();
 			}
 			catch (Exception e) {
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "9001", "component_impexp_messages");
@@ -488,19 +490,21 @@ public class ImporterMetadata {
 			hqlQuery = sessionCurrDB.createQuery(hql);
 			SbiKpi hibDs =null;
 			try{
-			hibDs= (SbiKpi) hqlQuery.uniqueResult();
+				hibDs= (SbiKpi) hqlQuery.uniqueResult();
 			}
 			catch (Exception e) {
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "9002", "component_impexp_messages");
 			}
 			return hibDs;
 		} 	else if (hibObj instanceof SbiKpiModel) {
+			// if unique == null means we are importing form a SpagoBI version < 2.4
+			if(unique == null) return null;
 			String label = (String) unique;
 			hql = "from SbiKpiModel ds where ds.kpiModelLabel = '" + label + "'";
 			hqlQuery = sessionCurrDB.createQuery(hql);
 			SbiKpiModel hibDs =null;
 			try{
-			hibDs=(SbiKpiModel) hqlQuery.uniqueResult();
+				hibDs=(SbiKpiModel) hqlQuery.uniqueResult();
 			}
 			catch (Exception e) {
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "9003", "component_impexp_messages");
@@ -512,7 +516,7 @@ public class ImporterMetadata {
 			hqlQuery = sessionCurrDB.createQuery(hql);
 			SbiKpiModelInst hibDs = null;
 			try{
-			hibDs=(SbiKpiModelInst) hqlQuery.uniqueResult();
+				hibDs=(SbiKpiModelInst) hqlQuery.uniqueResult();
 			}
 			catch (Exception e) {
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "9004", "component_impexp_messages");
@@ -524,7 +528,7 @@ public class ImporterMetadata {
 			hqlQuery = sessionCurrDB.createQuery(hql);
 			SbiResources hibDs = null;
 			try{
-			hibDs=(SbiResources) hqlQuery.uniqueResult();
+				hibDs=(SbiResources) hqlQuery.uniqueResult();
 			}
 			catch (Exception e) {
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "9005", "component_impexp_messages");
@@ -536,7 +540,7 @@ public class ImporterMetadata {
 			hqlQuery = sessionCurrDB.createQuery(hql);
 			SbiKpiPeriodicity hibDs = null;
 			try{
-			hibDs=(SbiKpiPeriodicity) hqlQuery.uniqueResult();
+				hibDs=(SbiKpiPeriodicity) hqlQuery.uniqueResult();
 			}
 			catch (Exception e) {
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "9006", "component_impexp_messages");
@@ -548,7 +552,7 @@ public class ImporterMetadata {
 			hqlQuery = sessionCurrDB.createQuery(hql);
 			SbiAlarm hibDs = null;
 			try{
-			hibDs=(SbiAlarm) hqlQuery.uniqueResult();
+				hibDs=(SbiAlarm) hqlQuery.uniqueResult();
 			}
 			catch (Exception e) {
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "9007", "component_impexp_messages");
@@ -560,7 +564,7 @@ public class ImporterMetadata {
 			hqlQuery = sessionCurrDB.createQuery(hql);
 			SbiAlarmContact hibDs = null;
 			try{
-			hibDs=(SbiAlarmContact) hqlQuery.uniqueResult();
+				hibDs=(SbiAlarmContact) hqlQuery.uniqueResult();
 			}
 			catch (Exception e) {
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "9008", "component_impexp_messages");
@@ -632,7 +636,7 @@ public class ImporterMetadata {
 		hqlQuery = sessionCurrDB.createQuery(hql);
 		SbiThresholdValue hibDs=null;
 		try{
-		hibDs = (SbiThresholdValue) hqlQuery.uniqueResult();
+			hibDs = (SbiThresholdValue) hqlQuery.uniqueResult();
 		}
 		catch (Exception e) {
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "9009", "component_impexp_messages");
@@ -641,7 +645,7 @@ public class ImporterMetadata {
 	}
 
 
-	
+
 	/**
 	 * Check the existance of a ModelInstance, based on his unique constraints, into
 	 * the current SpagoBI database. Requires two labels
@@ -658,7 +662,7 @@ public class ImporterMetadata {
 	 * @throws                EMFUserError
 	 * @throws EMFUserError the EMF user error 
 	 */
-/*	public Object checkExistenceModelInst(String labelModInst, String modelId,Session sessionCurrDB, Object hibObj) throws EMFUserError {
+	/*	public Object checkExistenceModelInst(String labelModInst, String modelId,Session sessionCurrDB, Object hibObj) throws EMFUserError {
 		logger.debug("IN");
 		String hql = null;
 		Query hqlQuery = null;
@@ -754,5 +758,71 @@ public class ImporterMetadata {
 	}
 
 
+	/**
+	 * Check the existance of a KpiModelAttr, based on his unique constraints, into
+	 * the current SpagoBI database.existance means referring to the same domain and having the same label
+	 * 
+	 * @param unique          The object which contains the unique constraints for the
+	 * object
+	 * @param domainCd          domain code
+	 * @param sessionCurrDB   Hibernate session for the current SpagoBI database
+	 * @param hibObj          An empty object usefull to identify the kind of object to
+	 * analize
+	 * 
+	 * @return                The existing Object or null if it doesn't exist
+	 * 
+	 * @throws                EMFUserError
+	 * @throws EMFUserError the EMF user error
+	 */
+	public Object checkExistenceKpiModelAttr(Integer newSbiDomainId, String kpiModelAttrCd,Session sessionCurrDB, Object hibObj) throws EMFUserError {
+		// TODO
+		logger.debug("IN");
+		String hql = null;
+		Query hqlQuery = null;
+		SbiKpiModelAttr toReturn = null;
+		
+		if (hibObj instanceof SbiKpiModelAttr && newSbiDomainId != null) {
+		// check if there is a model attribute referring to the same domain (with new ID) and with the same Label
+				hql = "from SbiKpiModelAttr s where s.sbiDomains.valueId = " + newSbiDomainId + " "+"AND s.kpiModelAttrCd = '"+kpiModelAttrCd+"'";
+				hqlQuery = sessionCurrDB.createQuery(hql);
+				toReturn = (SbiKpiModelAttr) hqlQuery.uniqueResult();
+		} 	
+		
+		logger.debug("OUT");
+		return toReturn;
+	}
+
+
+	/**
+	 * Check the existance of a KpiModelAttrVal, 
+	 * .existance means referring to the same attribute and to the same model
+	 * 
+	 * @param kpiModelAttrId The id of the attribute referred
+	 * @param KpiModelID id of the model referred
+	 * @param sessionCurrDB   Hibernate session for the current SpagoBI database
+	 * @param hibObj          An empty object usefull to identify the kind of object to
+	 * analize
+	 * 
+	 * @return                The existing Object or null if it doesn't exist
+	 * 
+	 * @throws                EMFUserError
+	 * @throws EMFUserError the EMF user error
+	 */
+	public Object checkExistenceKpiModelAttrVal(Integer kpiModelAttrId, Integer kpiModelId,Session sessionCurrDB, Object hibObj) throws EMFUserError {
+		logger.debug("IN");
+		String hql = null;
+		Query hqlQuery = null;
+		SbiKpiModelAttrVal toReturn = null;
+		
+		if (hibObj instanceof SbiKpiModelAttrVal && kpiModelAttrId != null && kpiModelId != null) {
+		// check if there is a model attribute referring to the same domain (with new ID) and with the same Label
+				hql = "from SbiKpiModelAttrVal s where s.sbiKpiModelAttr.kpiModelAttrId = " + kpiModelAttrId + " "+"AND s.sbiKpiModel.kpiModelId = '"+kpiModelId+"'";
+				hqlQuery = sessionCurrDB.createQuery(hql);
+				toReturn = (SbiKpiModelAttrVal) hqlQuery.uniqueResult();
+		} 	
+		
+		logger.debug("OUT");
+		return toReturn;
+	}
 
 }

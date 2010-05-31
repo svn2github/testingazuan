@@ -38,6 +38,7 @@ import it.eng.spagobi.kpi.config.metadata.SbiKpiInstPeriod;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModel;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttr;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelResources;
 import it.eng.spagobi.kpi.model.metadata.SbiResources;
@@ -97,8 +98,12 @@ public class MetadataAssociations {
 	private Map alarmAssociation = new HashMap();
 	private Map alarmContactIDAssociation = new HashMap();
 	private Map alarmContactAssociation = new HashMap();
+	private Map sbiKpiModelAttrIDAssociation = new HashMap();
+	private Map sbiKpiModelAttrAssociation = new HashMap();
+	private Map sbiKpiModelAttrValIDAssociation = new HashMap();
+	private Map sbiKpiModelAttrValAssociation = new HashMap();
 
-	 
+
 
 
 	/**
@@ -158,8 +163,16 @@ public class MetadataAssociations {
 		if(!alarmContactIDAssociation.keySet().isEmpty())
 			return false;
 		if(!alarmContactAssociation.keySet().isEmpty())
+			return false;
+		if(!sbiKpiModelAttrIDAssociation.keySet().isEmpty())
 			return false;	
-		
+		if(!sbiKpiModelAttrAssociation.keySet().isEmpty())
+			return false;	
+		if(!sbiKpiModelAttrValIDAssociation.keySet().isEmpty())
+			return false;	
+		if(!sbiKpiModelAttrValAssociation.keySet().isEmpty())
+			return false;	
+
 		return true;
 	}
 
@@ -211,7 +224,8 @@ public class MetadataAssociations {
 		alarmAssociation = new HashMap();
 		alarmContactIDAssociation = new HashMap();
 		alarmContactAssociation = new HashMap();
-
+		sbiKpiModelAttrValIDAssociation = new HashMap();
+		sbiKpiModelAttrValAssociation = new HashMap();
 	}
 
 	/**
@@ -1095,9 +1109,9 @@ public class MetadataAssociations {
 	public void insertCoupleResources(SbiResources exp, SbiResources curr) {
 		resourcesAssociation.put(exp, curr);	
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Gets the Map of associations between current and exported ModelResources.
 	 * 
@@ -1136,9 +1150,9 @@ public class MetadataAssociations {
 		modelResourcesAssociation.put(exp, curr);	
 	}
 
-	
-	
-	
+
+
+
 	/**
 	 * Gets the Map of associations between current and exported Periodicity.
 	 * 
@@ -1176,10 +1190,10 @@ public class MetadataAssociations {
 	public void insertCouplePeriodicity(SbiKpiPeriodicity exp, SbiKpiPeriodicity curr) {
 		periodicityAssociation.put(exp, curr);	
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Gets the Map of associations between current and exported kpiInstPeriod.
 	 * 
@@ -1217,9 +1231,9 @@ public class MetadataAssociations {
 	public void insertCoupleKpiInstPeriod(SbiKpiInstPeriod exp, SbiKpiInstPeriod curr) {
 		kpiInstPeriodAssociation.put(exp, curr);	
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Gets the Map of associations between current and exported Alarms
 	 * 
@@ -1257,7 +1271,7 @@ public class MetadataAssociations {
 	public void insertCoupleAlarm(SbiAlarm exp, SbiAlarm curr) {
 		alarmAssociation.put(exp, curr);	
 	}
-	
+
 	/**
 	 * Gets the Map of associations between current and exported AlarmsContact
 	 * 
@@ -1267,6 +1281,88 @@ public class MetadataAssociations {
 		return alarmContactIDAssociation;
 	}
 
+	
+	/**
+	 * Inserts a couple of sbiKpiModelAttr into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
+	 */
+	public void insertCoupleSbiKpiModelAttr(SbiKpiModelAttr exp, SbiKpiModelAttr curr) {
+		sbiKpiModelAttrAssociation.put(exp, curr);	
+	}
+
+	/**
+	 * Inserts a couple of sbiKpiModelAttr ids into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
+	 */
+	public void insertCoupleSbiKpiModelAttrID(Integer idExp, Integer idCurr) {
+		sbiKpiModelAttrIDAssociation.put(idExp, idCurr);	
+	}
+
+	
+	/**
+	 * Gets the Map of associations between current and exported SbiKpiModelAttr
+	 * 
+	 * @return Map of SbiKpiModelAttr
+	 */
+	public Map getSbiKpiModelAttrIDAssociation() {
+		return sbiKpiModelAttrIDAssociation;
+	}
+
+	/**
+	 * Gets the Map of associations between current and exported SbiKpiModelAttr
+	 * 
+	 * @return Map of SbiKpiModelAttr
+	 */
+	public Map getSbiKpiModelAttrAssociation() {
+		return sbiKpiModelAttrAssociation;
+	}
+
+	
+	/**
+	 * Inserts a couple of sbiKpiModelAttr into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
+	 */
+	public void insertCoupleSbiKpiModelAttrVal(SbiKpiModelAttr exp, SbiKpiModelAttr curr) {
+		sbiKpiModelAttrValAssociation.put(exp, curr);	
+	}
+
+	/**
+	 * Inserts a couple of sbiKpiModelAttr ids into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
+	 */
+	public void insertCoupleSbiKpiModelAttrValID(Integer idExp, Integer idCurr) {
+		sbiKpiModelAttrValIDAssociation.put(idExp, idCurr);	
+	}
+
+	
+	/**
+	 * Gets the Map of associations between current and exported SbiKpiModelAttr
+	 * 
+	 * @return Map of SbiKpiModelAttr
+	 */
+	public Map getSbiKpiModelAttrValIDAssociation() {
+		return sbiKpiModelAttrValIDAssociation;
+	}
+
+	/**
+	 * Gets the Map of associations between current and exported SbiKpiModelAttr
+	 * 
+	 * @return Map of SbiKpiModelAttr
+	 */
+	public Map getSbiKpiModelAttrValAssociation() {
+		return sbiKpiModelAttrValAssociation;
+	}
+
+	
+	
 	/**
 	 * Inserts a couple of Alarm Contact value into the associations
 	 * 
@@ -1295,8 +1391,8 @@ public class MetadataAssociations {
 	public void insertCoupleAlarmContact(SbiAlarmContact exp, SbiAlarmContact curr) {
 		alarmContactAssociation.put(exp, curr);	
 	}
-	
-	
-	
-	
+
+
+
+
 }

@@ -282,17 +282,20 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 			var responseJSON = Ext.util.JSON.decode( response.responseText )
 			var id = responseJSON.text;
 			var msgToSend = 'Sub Object Saved!!';
-			sendMessage({'id': id, 'meta' : meta.metadata, 'msg': msgToSend},'subobjectsaved');
+			
+			//sendMessage({'id': id, 'meta' : meta.metadata, 'msg': msgToSend},'subobjectsaved');
+			//alert('id '+id+' message '+msgToSend);
+			sendMessage({'id': id, 'msg': msgToSend},'subobjectsaved');
 			} catch (ex) {}
 			// show only if not showing metadata windows
-			if( meta.metadata == false ){
+			/*if( meta.metadata == false ){
 			Ext.Msg.show({
 				   title:LN('sbi.qbe.queryeditor.querysaved'),
 				   msg: LN('sbi.qbe.queryeditor.querysavedsucc'),
 				   buttons: Ext.Msg.OK,
 				   icon: Ext.MessageBox.INFO
 			});
-		}
+		}*/
 		}, this);
     }
     

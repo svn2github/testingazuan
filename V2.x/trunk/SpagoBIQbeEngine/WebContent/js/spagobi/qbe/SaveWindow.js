@@ -34,11 +34,11 @@ Sbi.widgets.SaveWindow = function(config) {
 	var c = Ext.apply({}, config || {}, {
 		title: LN('sbi.qbe.savewindow.saveas')  
 		, width: 500
-		, height: 250
+		, height: 200
 		, nameFieldVisible: true
 		, descriptionFieldVisible: true
 		, scopeFieldVisible: true
-		, metadataFieldVisible: false
+		//, metadataFieldVisible: false
 		, hasBuddy: false
 		
 	});
@@ -73,7 +73,7 @@ Ext.extend(Sbi.widgets.SaveWindow, Ext.Window, {
 	nameField: null
 	, descriptionField: null
 	, scopeField: null
-	, metadataField: null
+	//, metadataField: null
 	, hasBuddy: null
     , buddy: null
    
@@ -85,7 +85,7 @@ Ext.extend(Sbi.widgets.SaveWindow, Ext.Window, {
       	if(this.nameField) formState.name= this.nameField.getValue();
       	if(this.descriptionField) formState.description= this.descriptionField.getValue();
       	if(this.scopeField) formState.scope= this.scopeField.getValue();
-      	if(this.metadataField) formState.metadata= this.metadataField.getValue();
+      	//if(this.metadataField) formState.metadata= this.metadataField.getValue();
       	
       	return formState;
     }
@@ -94,7 +94,7 @@ Ext.extend(Sbi.widgets.SaveWindow, Ext.Window, {
 		if(formState.name !== undefined) this.nameField.setValue(formState.name);
 		if(formState.description !== undefined) this.descriptionField.setValue(formState.description);
 		if(formState.scope !== undefined) this.scopeField.setValue(formState.scope.toUpperCase());
-		if(formState.metadata !== undefined) this.metadataField.setValue(formState.metadata);
+		//if(formState.metadata !== undefined) this.metadataField.setValue(formState.metadata);
 	}
 
 	//private methods
@@ -158,7 +158,7 @@ Ext.extend(Sbi.widgets.SaveWindow, Ext.Window, {
 		}
 		
 		
-		if(this.metadataFieldVisible) {
+		/*	if(this.metadataFieldVisible) {
 			this.metadataField =  new Ext.form.Checkbox({
 	    	//boxLabel: LN('sbi.qbe.savewindow.selectmetadata'),
 	    	fieldLabel: LN('sbi.qbe.savewindow.selectmetadata'),
@@ -167,7 +167,7 @@ Ext.extend(Sbi.widgets.SaveWindow, Ext.Window, {
 	    });	
 
 	    	items.push(this.metadataField);
-    	}
+    	} */
 		
 		
     	

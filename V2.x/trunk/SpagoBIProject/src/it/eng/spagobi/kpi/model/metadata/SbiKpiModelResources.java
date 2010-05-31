@@ -21,6 +21,7 @@ public class SbiKpiModelResources  implements java.io.Serializable {
 
     /** default constructor */
     public SbiKpiModelResources() {
+    this.kpiModelResourcesId = -1;
     }
 
     

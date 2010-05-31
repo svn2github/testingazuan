@@ -31,6 +31,7 @@ public class SbiKpiModel implements java.io.Serializable {
 
 	/** default constructor */
 	public SbiKpiModel() {
+	this.kpiModelId = -1;
 	}
 
 	/** minimal constructor */

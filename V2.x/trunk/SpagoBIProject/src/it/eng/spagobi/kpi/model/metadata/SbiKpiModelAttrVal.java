@@ -22,6 +22,7 @@ public class SbiKpiModelAttrVal  implements java.io.Serializable {
 
     /** default constructor */
     public SbiKpiModelAttrVal() {
+    this.kpiModelAttrValId = -1;
     }
 
 	/** minimal constructor */

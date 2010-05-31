@@ -42,6 +42,7 @@ public class SbiKpiModelInst  implements java.io.Serializable {
 
 	/** default constructor */
     public SbiKpiModelInst() {
+    this.kpiModelInst = -1;
     }
 
 	/** minimal constructor */

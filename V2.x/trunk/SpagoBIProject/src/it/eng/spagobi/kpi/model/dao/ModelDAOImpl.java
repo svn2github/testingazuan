@@ -231,10 +231,62 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		toReturn.setParentId(rootId);
 		toReturn.setKpiId(kpiId);
 
+		List modelAttributes = addAttributeToModel(value, session);
+		toReturn.setModelAttributes(modelAttributes);
+
+		
 		logger.debug("OUT");
 		return toReturn;
 	}
 
+	
+	/**
+	 * Called by toModel
+	 */
+	static protected List addAttributeToModel(SbiKpiModel value,
+			Session aSession) {
+		logger.debug("IN");
+
+		List modelAttributes = new ArrayList();
+
+		List modelAttrList = getModelAttListByDomain(value.getModelType(),
+				aSession);
+
+		for (Iterator iterator = modelAttrList.iterator(); iterator.hasNext();) {
+			ModelAttribute attribute = new ModelAttribute();
+			SbiKpiModelAttr attr = (SbiKpiModelAttr) iterator.next();
+			String aCode = null;
+			String aName = null;
+			String aDesc = null;
+			String aValue = null;
+			Integer idType = null;
+			Integer aId = null;
+
+			aCode = attr.getKpiModelAttrCd();
+			aName = attr.getKpiModelAttrNm();
+			aDesc = attr.getKpiModelAttrDescr();
+			aValue = getModelAttrValue(value, attr, aSession);
+			aId = attr.getKpiModelAttrId();
+			idType = attr.getSbiDomains().getValueId();
+
+			attribute.setId(aId);
+			attribute.setCode(aCode);
+			attribute.setName(aName);
+			attribute.setDescr(aDesc);
+			attribute.setValue(aValue);
+			attribute.setTypeId(idType);
+			modelAttributes.add(attribute);
+		}
+
+		
+		logger.debug("OUT");
+		return modelAttributes;
+		
+	}
+	
+	
+	
+	
 	static protected Model toModelWithoutChildren(SbiKpiModel value,
 			Session aSession) {
 		logger.debug("IN");
@@ -255,34 +307,34 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		String typeName = value.getModelType().getValueNm();
 		String typeDescription = value.getModelType().getValueDs();
 
-		List modelAttributes = new ArrayList();
-		//
-
-		List modelAttrList = getModelAttListByDomain(value.getModelType(),
-				aSession);
-
-		for (Iterator iterator = modelAttrList.iterator(); iterator.hasNext();) {
-			ModelAttribute attribute = new ModelAttribute();
-			SbiKpiModelAttr attr = (SbiKpiModelAttr) iterator.next();
-			String aCode = null;
-			String aName = null;
-			String aDesc = null;
-			String aValue = null;
-			Integer aId = null;
-
-			aCode = attr.getKpiModelAttrCd();
-			aName = attr.getKpiModelAttrNm();
-			aDesc = attr.getKpiModelAttrDescr();
-			aValue = getModelAttrValue(value, attr, aSession);
-			aId = attr.getKpiModelAttrId();
-
-			attribute.setId(aId);
-			attribute.setCode(aCode);
-			attribute.setName(aName);
-			attribute.setDescr(aDesc);
-			attribute.setValue(aValue);
-			modelAttributes.add(attribute);
-		}
+//		List modelAttributes = new ArrayList();
+//		//
+//
+//		List modelAttrList = getModelAttListByDomain(value.getModelType(),
+//				aSession);
+//
+//		for (Iterator iterator = modelAttrList.iterator(); iterator.hasNext();) {
+//			ModelAttribute attribute = new ModelAttribute();
+//			SbiKpiModelAttr attr = (SbiKpiModelAttr) iterator.next();
+//			String aCode = null;
+//			String aName = null;
+//			String aDesc = null;
+//			String aValue = null;
+//			Integer aId = null;
+//
+//			aCode = attr.getKpiModelAttrCd();
+//			aName = attr.getKpiModelAttrNm();
+//			aDesc = attr.getKpiModelAttrDescr();
+//			aValue = getModelAttrValue(value, attr, aSession);
+//			aId = attr.getKpiModelAttrId();
+//
+//			attribute.setId(aId);
+//			attribute.setCode(aCode);
+//			attribute.setName(aName);
+//			attribute.setDescr(aDesc);
+//			attribute.setValue(aValue);
+//			modelAttributes.add(attribute);
+//		}
 
 		toReturn.setId(id);
 		toReturn.setName(name);
@@ -292,7 +344,10 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		toReturn.setTypeCd(typeCd);		
 		toReturn.setTypeName(typeName);
 		toReturn.setTypeDescription(typeDescription);
+
+		List modelAttributes = addAttributeToModel(value, aSession);
 		toReturn.setModelAttributes(modelAttributes);
+		
 		toReturn.setChildrenNodes(null);
 		toReturn.setKpiId(kpiId);
 
@@ -318,7 +373,8 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 	static private List getModelAttListByDomain(SbiDomains sbiDomains,
 			Session session) {
 		Criteria critt = session.createCriteria(SbiKpiModelAttr.class);
-		critt.add(Expression.eq("sbiDomains", sbiDomains));
+
+		critt.add(Expression.eq("sbiDomains.valueId", sbiDomains.getValueId()));
 		return critt.list();
 	}
 

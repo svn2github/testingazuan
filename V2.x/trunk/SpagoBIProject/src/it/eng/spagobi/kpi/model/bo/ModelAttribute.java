@@ -9,6 +9,7 @@ public class ModelAttribute implements Serializable{
 	private String code = null;// SBI_KPI_MODEL_ATTR code
 	private String descr = null;// SBI_KPI_MODEL_ATTR descr
 	private String value = null; // SBI_KPI_MODEL_ATTR_VAL value
+	private Integer typeId = null; // DOMAIN ID
 	
 	public Integer getId() {
 		return id;
@@ -54,4 +55,14 @@ public class ModelAttribute implements Serializable{
 		super();
 	}
 
+	public Integer getTypeId() {
+		return typeId;
+	}
+
+	public void setTypeId(Integer typeId) {
+		this.typeId = typeId;
+	}
+
+	
+	
 }

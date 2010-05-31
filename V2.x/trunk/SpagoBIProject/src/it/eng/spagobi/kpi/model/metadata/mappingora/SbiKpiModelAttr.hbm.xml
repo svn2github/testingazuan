@@ -6,7 +6,9 @@
     <class name="it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttr" table="SBI_KPI_MODEL_ATTR" >
         <id name="kpiModelAttrId" type="integer">
             <column name="KPI_MODEL_ATTR_ID" />
-            <generator class="assigned" />
+            <generator class="native">
+            	<param name="sequence">SBI_KPI_MODEL_ATTR_SEQ</param>
+            </generator>        
         </id>
         <many-to-one name="sbiDomains" class="it.eng.spagobi.commons.metadata.SbiDomains" >
             <column name="KPI_MODEL_ATTR_TYPE_ID" not-null="true" />

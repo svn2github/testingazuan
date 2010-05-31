@@ -372,6 +372,11 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
     				alert('Invalid type [' + (typeof query) + '] for object query in function [deleteQueries]');
     			}
     		}
+    		// don't let to erase the root query
+    		if(p == 'q1'){
+				Sbi.exception.ExceptionHandler.showWarningMessage(LN('sbi.qbe.queryeditor.eastregion.tools.wanringEraseRoot'), 'Warning');
+    			return;	
+    		}
     		
 			Ext.Ajax.request({
 			   	url: this.services['deleteQueries'],

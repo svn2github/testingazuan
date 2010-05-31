@@ -43,6 +43,7 @@ Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.title'] = 'Catalogo delle query';
 Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.delete'] = 'Cancella';
 Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.add'] = 'Aggiungi query';
 Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.insert'] = 'Aggiungi query secondaria';
+Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.wanringEraseRoot'] = 'Non è possibile cancellare la query radice';
 
 //===================================================================
 //EXPRESSION EDITOR

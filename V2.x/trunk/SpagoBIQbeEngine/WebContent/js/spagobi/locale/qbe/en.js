@@ -43,6 +43,7 @@ Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.title'] = 'Query Catalogue';
 Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.delete'] = 'Delete query';
 Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.add'] = 'Add query';
 Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.insert'] = 'Insert query';
+Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.wanringEraseRoot'] = 'Cannot erase root query';
 
 
 //===================================================================

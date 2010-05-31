@@ -139,6 +139,7 @@ Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.title']                      = 'Bi
 Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.add']                  = 'Ajouter une requ\u00EAte';
 Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.delete']               = 'Supprimer la requ\u00EAte';
 Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.insert']               = 'Ins\u00E9rer une requ\u00EAte';
+Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.wanringEraseRoot'] 	   = 'On ne peut pas echauffer la racine query ';
 Sbi.locale.ln['sbi.qbe.queryeditor.msgwarning']                            = 'La requ\u00EAte est incorrecte, voulez-vous l\'enregistrer?';
 Sbi.locale.ln['sbi.qbe.queryeditor.querysaved']                            = 'Requ\u00EAte sauvegard\u00E9e!';
 Sbi.locale.ln['sbi.qbe.queryeditor.querysavedsucc']                        = 'Requ\u00EAte sauvegard\u00E9e avec succ\u00E8s';

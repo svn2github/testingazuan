@@ -50,6 +50,8 @@ public class SbiObjPar  implements java.io.Serializable {
      * default constructor.
      */
     public SbiObjPar() {
+		this.objParId = -1;
+
     }
     
     /**

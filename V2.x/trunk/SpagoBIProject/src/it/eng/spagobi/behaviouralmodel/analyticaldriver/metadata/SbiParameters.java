@@ -54,6 +54,7 @@ public class SbiParameters  implements java.io.Serializable {
      * default constructor.
      */
     public SbiParameters() {
+		this.parId = -1;
     }
     
     /**

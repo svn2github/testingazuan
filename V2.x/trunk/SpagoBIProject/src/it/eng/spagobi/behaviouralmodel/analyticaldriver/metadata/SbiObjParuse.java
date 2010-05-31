@@ -18,35 +18,35 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata;
 
 public class SbiObjParuse implements java.io.Serializable {
 
-	
+
 	private SbiObjParuseId id;
-    private Integer prog;
-    private String filterColumn;
-    private String preCondition;
-    private String postCondition;
-    private String logicOperator;
-    
-    // Constructors
+	private Integer prog;
+	private String filterColumn;
+	private String preCondition;
+	private String postCondition;
+	private String logicOperator;
+
+	// Constructors
 
 	/**
-     * default constructor.
-     */
-    public SbiObjParuse() {
-    }
-    
-    /**
-     * constructor with id.
-     * 
-     * @param id the id
-     */
-    public SbiObjParuse(SbiObjParuseId id) {
-        this.id = id;
-    }
+	 * default constructor.
+	 */
+	public SbiObjParuse() {
+	}
+
+	/**
+	 * constructor with id.
+	 * 
+	 * @param id the id
+	 */
+	public SbiObjParuse(SbiObjParuseId id) {
+		this.id = id;
+	}
 
 	/**
 	 * Gets the filter column.
@@ -156,6 +156,6 @@ public class SbiObjParuse implements java.io.Serializable {
 		this.id = objparuseId;
 	}
 
-	
-	
+
+
 }

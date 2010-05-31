@@ -55,6 +55,8 @@ public class SbiParuse  implements java.io.Serializable {
      * default constructor.
      */
     public SbiParuse() {
+        this.useId = -1;
+
     }
     
     /**

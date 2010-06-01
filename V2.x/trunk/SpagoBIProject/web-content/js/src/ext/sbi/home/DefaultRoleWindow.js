@@ -198,7 +198,8 @@ Ext.extend(Sbi.home.DefaultRoleWindow, Ext.Window, {
 					var urlToCall = Sbi.config.serviceRegistry.getBaseUrlStr({
 						//isAbsolute :  true
 					});	
-					urlToCall += '?PAGE=LoginPage&NEW_SESSION=TRUE';
+					//urlToCall += '?PAGE=LoginPage&NEW_SESSION=TRUE';
+					urlToCall += '?PAGE=LoginPage';
 					window.location.href=urlToCall;					
 
 				

@@ -182,14 +182,22 @@ public class UserProfile implements IEngUserProfile {
 	 *  if a role default is assigned return it, else returns all roles
 	 */
 	public Collection getRolesForUse() throws EMFInternalError {
+		logger.debug("IN");
 		Collection toReturn = null;
+		logger.debug("look if default role is selected");		
 		if (defaultRole != null){
+			logger.debug("default role selected is "+defaultRole);				
 			toReturn=new ArrayList<String>();
 			toReturn.add(defaultRole); 
 		}
 		else{
+			logger.debug("default role not selected");
+
 			toReturn = this.roles;
 		}
+		
+		
+		logger.debug("OUT");
 		return toReturn;
 	}
 
@@ -329,8 +337,9 @@ public class UserProfile implements IEngUserProfile {
 
 
 	public void setDefaultRole(String defaultRole) {
+		logger.debug("IN "+defaultRole);
 		this.defaultRole = defaultRole;
-		
+		logger.debug("OUT");
 	}
 
 

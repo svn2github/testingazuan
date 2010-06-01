@@ -170,8 +170,9 @@ END-LIFERAY -->
     IF YOU CHANGE ONE FORMAT YOU MUST CHANGE THE OTHER ONE ACCORDINGLY.
     -->    
      <DATE-FORMAT-IT_IT format="dd/MM/yyyy" extJsFormat="d/m/Y"/>
-     <DATE-FORMAT-EN_US format="dd/MM/yyyy" extJsFormat="d/m/Y"/>
+     <DATE-FORMAT-EN_US format="MM/dd/yyyy" extJsFormat="m/d/Y"/>
      <DATE-FORMAT-FR_FR format="dd/MM/yyyy" extJsFormat="d/m/Y"/>      
+     <DATE-FORMAT-ES_ES format="dd/MM/yyyy" extJsFormat="d/m/Y"/>   
   	 <TIMESTAMP-FORMAT format="dd/MM/yyyy hh:mm:ss" extJsFormat="d/m/Y H:i:s"/>
   	 
     <!--  Date visual format if language is not found-->      	 
@@ -198,7 +199,7 @@ END-LIFERAY -->
 	<!-- <THEME name="other_theme" default="false" view_name="other" />  -->	
 	 </THEMES>
 
-	 <SESSION_PARAMETERS_MANAGER enabled="true" />
+	 <SESSION_PARAMETERS_MANAGER enabled="false" />
      
      <LOOKUP numberRows = "20" />
 
@@ -254,7 +255,7 @@ END-LIFERAY -->
      <INDEX_INITIALIZATION>
 		<INDEX jndiResourcePath="java://comp/env/spagobi_resource_path" name="//idx" />
 	 </INDEX_INITIALIZATION>
-     <INTERNAL_PROFILING_INITIALIZER passwordAbilitated="true">
+     <INTERNAL_PROFILING_INITIALIZER passwordAbilitated="false">
 		<DEFAULT_USERS>
 			<USER userId="biadmin" password="biadmin" fullName="SpagoBI Administrator">
 				<ATTRIBUTE name="email" value="admin@eng.it" />

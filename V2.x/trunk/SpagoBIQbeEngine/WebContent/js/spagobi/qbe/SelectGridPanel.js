@@ -548,7 +548,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		     , Ext.apply({
 		    	 id:'field'
 		         , header: LN('sbi.qbe.selectgridpanel.headers.field')
-		         , dataIndex: 'field'
+		         , dataIndex: 'longDescription'
 		         , hideable: true
 				 , hidden: false	
 				 , sortable: false

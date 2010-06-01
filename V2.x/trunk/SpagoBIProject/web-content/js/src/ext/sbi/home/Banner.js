@@ -304,15 +304,15 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		//role button initialization
 		// draw only if user has more than one role
 		//alert(Sbi.user.roles.length);
-		//if(Sbi.user.roles && Sbi.user.roles.length > 1){
-	    this.tbRoleButton = new Ext.Toolbar.Button({
+		if(Sbi.user.roles && Sbi.user.roles.length > 1){
+			this.tbRoleButton = new Ext.Toolbar.Button({
 		            id: '',
 		            iconCls: 'icon-role',
 		            cls: 'x-btn-logout x-btn-text-icon bmenu',
 		            handler: this.role,
 		            scope: this
-		        })	;	
-		 //}
+			});	
+		 }
 		 
 		//languages button initialization       
 		this.tbLanguagesButton = new Ext.Toolbar.Button({

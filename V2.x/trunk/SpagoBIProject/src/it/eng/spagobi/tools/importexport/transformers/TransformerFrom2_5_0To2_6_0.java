@@ -93,8 +93,9 @@ public class TransformerFrom2_5_0To2_6_0 implements ITransformer {
 		// ALTER TABLE SBI_OBJECT_NOTES ADD COLUMN OWNER VARCHAR(50);
 		try{
 			sql =  "ALTER TABLE SBI_RESOURCES ADD COLUMN RESOURCE_CODE VARCHAR(45)";
-			sql =  "UPDATE SBI_RESOURCES SET RESOURCE_CODE=RESOURCE_NAME WHERE RESOURCE_CODE IS NULL";
 			stmt.execute(sql);
+			sql =  "UPDATE SBI_RESOURCES SET RESOURCE_CODE=RESOURCE_NAME WHERE RESOURCE_CODE IS NULL";
+			stmt.executeUpdate(sql);
 		}
 		catch (Exception e) {
 			logger.error("Error adding column: if add column fails may mean that column already esists; means you ar enot using an exact version spagobi DB",e);	

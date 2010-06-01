@@ -54,7 +54,8 @@ public class SetDefaultRoleAction extends AbstractSpagoBIAction{
 			if(selRoleO != null && !selRoleO.toString().equals("")) {
 				selRole = selRoleO.toString();
 			}
-
+			logger.debug("Selected role "+selRole);
+			
 			// check if selected role is part of the user ones
 			ArrayList<String> roles = (ArrayList<String>)profile.getRoles();
 
@@ -78,7 +79,7 @@ public class SetDefaultRoleAction extends AbstractSpagoBIAction{
 
 		    // if new selROle is null refresh all the functionalities!
 			if(selRole == null){
-				
+				logger.debug("Selected role is null, refresh all functionalities ");				
 				Collection allRoles = profile.getRoles();
 				String[] array = StringUtilities.convertCollectionInArray(allRoles);
 				//String[] arrayFuncs = dao.readUserFunctionality(array);				
@@ -117,6 +118,7 @@ public class SetDefaultRoleAction extends AbstractSpagoBIAction{
 //			if( coll == null ) StringUtilities.convertArrayInCollection(newFunctions);
 //			((UserProfile)profile).setFunctionalities(coll);
 			// end refresh of the functionalities
+			logger.debug("FIltered functionalities for selected role "+selRole);
 
 
 		}

@@ -195,11 +195,11 @@ Ext.extend(Sbi.home.DefaultRoleWindow, Ext.Window, {
 				if (response !== undefined) {
 
 					// call again the home page
-					var urlToCall = Sbi.config.serviceRegistry.getContextUrlStr({
+					var urlToCall = Sbi.config.serviceRegistry.getBaseUrlStr({
 						//isAbsolute :  true
 					});	
-				
-				window.location.href=urlToCall;					
+					urlToCall += '?PAGE=LoginPage&NEW_SESSION=TRUE';
+					window.location.href=urlToCall;					
 
 				
 				

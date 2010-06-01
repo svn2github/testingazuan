@@ -167,6 +167,19 @@ public class LoginModule extends AbstractHttpModule {
 	    	SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
 			userId = userProxy.readUserIdentifier(servletRequest);
 		    logger.debug("OUT,userId:"+userId);
+		    // if we are in SSO and user has a previous profile keep it!
+			if (userId == null) {
+				if (previousProfile != null) {
+					profile = previousProfile;
+					// user is authenticated, nothing to do
+					logger.debug("User is authenticated");
+					// fill response
+					MenuUtilities.getMenuItems(request, response, profile);
+					// set publisher name
+					response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "userhome");
+					return;
+				} 
+			}	
 		    
 		}
 

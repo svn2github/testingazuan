@@ -9,8 +9,11 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.commons.utilities.UserUtilities;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
+import it.eng.spagobi.utilities.service.JSONAcknowledge;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -42,19 +45,12 @@ public class SetDefaultRoleAction extends AbstractSpagoBIAction{
 	 */
 
 	public void doService() {
-		logger.debug("IN");
+		logger.debug("IN on service");
 		try {
-			// get user roles
-			RequestContainer reqCont = RequestContainer.getRequestContainer();
-			SessionContainer sessCont = reqCont.getSessionContainer();
-			SessionContainer permSess = sessCont.getPermanentContainer();
-			IEngUserProfile	profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			
+			IEngUserProfile	profile = this.getUserProfile();
 
-			Object selRoleO = reqCont.getServiceRequest().getAttribute(SELECTED_ROLE);
-			String selRole = null;
-			if(selRoleO != null && !selRoleO.toString().equals("")) {
-				selRole = selRoleO.toString();
-			}
+			String selRole = this.getAttributeAsString(SELECTED_ROLE);
 			logger.debug("Selected role "+selRole);
 
 			// check if selected role is part of the user ones
@@ -135,25 +131,21 @@ public class SetDefaultRoleAction extends AbstractSpagoBIAction{
 			//			((UserProfile)profile).setFunctionalities(coll);
 			// end refresh of the functionalities
 			logger.debug("FIltered functionalities for selected role "+selRole);
+			
+			try {
+				writeBackToClient( new JSONAcknowledge() );
+			} catch (IOException e) {
+				String message = "Impossible to write back the responce to the client";
+				throw new SpagoBIEngineServiceException(getActionName(), message, e);
+			}
 
-
-		}
-		catch (SpagoBIServiceException e) {
-			throw new SpagoBIServiceException(SERVICE_NAME, e.getMessage(), null);
-		}
-		catch (ClassCastException e) {
-			throw new SpagoBIServiceException(SERVICE_NAME, "COuld not retrieve user roles", e);
-		}
-		catch (EMFInternalError e) {
-			throw new SpagoBIServiceException(SERVICE_NAME, "COuld not retrieve user roles", e);
-
-		} 		
-		catch (Exception e) {
-			throw new SpagoBIServiceException(SERVICE_NAME, "Error in updating the profile", e);
-
-		}finally {
+		} catch (Exception e) {
+			throw new SpagoBIServiceException(SERVICE_NAME, "Exception occurred while retrieving metadata", e);
+		} finally {
 			logger.debug("OUT");
-		}
+		}	
+		
+	
 	}
 
 

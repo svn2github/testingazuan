@@ -36,7 +36,7 @@ Sbi.service.ServiceRegistry = function(config) {
 	this.baseUrl = Ext.apply({}, config.baseUrl || {}, {
 		protocol: 'http'     
 		, host: 'localhost'
-	    , port: '8080'
+	    , port: '8081'
 	    , contextPath: 'SpagoBI'
 	    , controllerPath: 'servlet/AdapterHTTP'    
 	});
@@ -112,4 +112,18 @@ Ext.extend(Sbi.service.ServiceRegistry, Ext.util.Observable, {
     	
     	return  baseUrlStr;
     }
+    , getContextUrlStr: function(s) {
+    	var baseUrlStr;
+    	
+    	var isAbsolute = s.isAbsolute || this.defaultAbsolute;
+    	var url = Ext.apply({}, s.baseUrl || {}, this.baseUrl);
+    	
+    	if(isAbsolute) {
+    		baseUrlStr = url.protocol + '://' + url.host + ":" + url.port + '/' + url.contextPath;
+    	} else {
+    		baseUrlStr = '/' + url.contextPath;
+    	}
+    	
+    	return  baseUrlStr;
+    }    
 });

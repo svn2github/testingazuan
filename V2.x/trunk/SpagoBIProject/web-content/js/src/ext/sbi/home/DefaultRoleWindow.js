@@ -193,12 +193,16 @@ Ext.extend(Sbi.home.DefaultRoleWindow, Ext.Window, {
             url: this.services['setDefaultRole'],
             success: function(response, options) {
 				if (response !== undefined) {
-				//alert(Sbi.config.serviceRegistry.baseUrl.toSource());
+
+					// call again the home page
+					var urlToCall = Sbi.config.serviceRegistry.getContextUrlStr({
+						isAbsolute :  true
+					});	
 				
-				var bu = Sbi.config.serviceRegistry.baseUrl;
-				// call again the home page
-				var url = bu.protocol + '://'+bu.host+':'+bu.port+'/'+bu.contextPath;
-				window.location.href=url;
+				window.location.href=urlToCall;					
+
+				
+				
 				} else {
 					Sbi.exception.ExceptionHandler.showErrorMessage('Error while setting default role', 'Service Error');
 				}

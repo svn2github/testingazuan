@@ -237,14 +237,15 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 	, backToAdmin: function(){
 		// build url to go back one page
 		var serviceRegistry = Sbi.config.serviceRegistry;
-		protocol = serviceRegistry.baseUrl.protocol;
-		host = serviceRegistry.baseUrl.host;
-		port = serviceRegistry.baseUrl.port;
-		contextPath = serviceRegistry.baseUrl.contextPath;
-		controllerPath = serviceRegistry.baseUrl.controllerPath;
-		urlStr = protocol + '://' + host + ":" + port + '/' + contextPath + '/' + controllerPath+'?LIGHT_NAVIGATOR_BACK_TO=1';
+		
+		var urlToCall = Sbi.config.serviceRegistry.getBaseUrlStr({
+			isAbsolute :  true
+		});		
+
+		urlToCall = urlToCall+'?LIGHT_NAVIGATOR_BACK_TO=1';		
+		
 		//alert(urlStr);
-		window.location=urlStr;
+		window.location=urlToCall;
     }
     // execution
     , execute : function() {

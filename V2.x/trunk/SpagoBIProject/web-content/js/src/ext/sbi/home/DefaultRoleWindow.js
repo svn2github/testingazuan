@@ -196,7 +196,7 @@ Ext.extend(Sbi.home.DefaultRoleWindow, Ext.Window, {
 
 					// call again the home page
 					var urlToCall = Sbi.config.serviceRegistry.getContextUrlStr({
-						isAbsolute :  true
+						//isAbsolute :  true
 					});	
 				
 				window.location.href=urlToCall;					

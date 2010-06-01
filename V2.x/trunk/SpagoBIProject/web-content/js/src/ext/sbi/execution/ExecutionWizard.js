@@ -239,7 +239,7 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 		var serviceRegistry = Sbi.config.serviceRegistry;
 		
 		var urlToCall = Sbi.config.serviceRegistry.getBaseUrlStr({
-			isAbsolute :  true
+			//isAbsolute :  true
 		});		
 
 		urlToCall = urlToCall+'?LIGHT_NAVIGATOR_BACK_TO=1';		

@@ -47,7 +47,7 @@ public class SetDefaultRoleAction extends AbstractSpagoBIAction{
 	public void doService() {
 		logger.debug("IN on service");
 		try {
-			
+
 			IEngUserProfile	profile = this.getUserProfile();
 
 			String selRole = this.getAttributeAsString(SELECTED_ROLE);
@@ -60,6 +60,9 @@ public class SetDefaultRoleAction extends AbstractSpagoBIAction{
 				logger.debug("user roles "+roles.get(i));
 			}			
 
+			if(selRole.equals("")){
+				selRole = null;
+			}
 
 			if(selRole!=null && !roles.contains(selRole)){
 				logger.error("Security alert. Role not among the user ones");
@@ -131,7 +134,7 @@ public class SetDefaultRoleAction extends AbstractSpagoBIAction{
 			//			((UserProfile)profile).setFunctionalities(coll);
 			// end refresh of the functionalities
 			logger.debug("FIltered functionalities for selected role "+selRole);
-			
+
 			try {
 				writeBackToClient( new JSONAcknowledge() );
 			} catch (IOException e) {
@@ -144,8 +147,8 @@ public class SetDefaultRoleAction extends AbstractSpagoBIAction{
 		} finally {
 			logger.debug("OUT");
 		}	
-		
-	
+
+
 	}
 
 

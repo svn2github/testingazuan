@@ -13,6 +13,7 @@ import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 
@@ -27,14 +28,14 @@ public class SetDefaultRoleAction extends AbstractSpagoBIAction{
 	public static final String MESSAGE = "MESSAGE";
 	public static final String SELECTED_ROLE = "SELECTED_ROLE";
 
-//	static public String[] funcsToRemove = {
-//		SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN
-//		, SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV
-//		, SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST
-//		, SpagoBIConstants.DOCUMENT_MANAGEMENT_USER
-//		, SpagoBIConstants.DISTRIBUTIONLIST_MANAGEMENT
-//		//, SpagoBIConstants.FUNCTIONALITIES_MANAGEMENT
-//	};
+	//	static public String[] funcsToRemove = {
+	//		SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN
+	//		, SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV
+	//		, SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST
+	//		, SpagoBIConstants.DOCUMENT_MANAGEMENT_USER
+	//		, SpagoBIConstants.DISTRIBUTIONLIST_MANAGEMENT
+	//		//, SpagoBIConstants.FUNCTIONALITIES_MANAGEMENT
+	//	};
 
 	/**
 	 *  Returns Default role if present
@@ -55,9 +56,14 @@ public class SetDefaultRoleAction extends AbstractSpagoBIAction{
 				selRole = selRoleO.toString();
 			}
 			logger.debug("Selected role "+selRole);
-			
+
 			// check if selected role is part of the user ones
 			ArrayList<String> roles = (ArrayList<String>)profile.getRoles();
+
+			for (int i = 0; i < roles.size(); i++) {
+				logger.debug("user roles "+roles.get(i));
+			}			
+
 
 			if(selRole!=null && !roles.contains(selRole)){
 				logger.error("Security alert. Role not among the user ones");
@@ -69,15 +75,16 @@ public class SetDefaultRoleAction extends AbstractSpagoBIAction{
 			logger.debug("previous default role "+previousDefault);
 			logger.debug("new default role "+selRole);
 			((UserProfile)profile).setDefaultRole(selRole);
+			logger.debug("default role set! ");
 
 			// now I must refresh userProfile functions
 
 			//String[] newFunctions = null;
 			Collection coll = null;
 
-		    it.eng.spagobi.commons.dao.IUserFunctionalityDAO dao = DAOFactory.getUserFunctionalityDAO();
+			it.eng.spagobi.commons.dao.IUserFunctionalityDAO dao = DAOFactory.getUserFunctionalityDAO();
 
-		    // if new selROle is null refresh all the functionalities!
+			// if new selROle is null refresh all the functionalities!
 			if(selRole == null){
 				logger.debug("Selected role is null, refresh all functionalities ");				
 				Collection allRoles = profile.getRoles();
@@ -86,37 +93,46 @@ public class SetDefaultRoleAction extends AbstractSpagoBIAction{
 				String[] arrayFuncs = UserUtilities.readFunctionality(array);
 
 				coll = StringUtilities.convertArrayInCollection(arrayFuncs);
-			    ((UserProfile)profile).setFunctionalities(coll);
-//				ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();		
-//				SpagoBIUserProfile user = supplier.createUserProfile(profile.getUserUniqueIdentifier().toString());
-//				newFunctions = user.getRoles();
-				
+				((UserProfile)profile).setFunctionalities(coll);
+				//				ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();		
+				//				SpagoBIUserProfile user = supplier.createUserProfile(profile.getUserUniqueIdentifier().toString());
+				//				newFunctions = user.getRoles();
+
 				if( coll == null ) StringUtilities.convertArrayInCollection(arrayFuncs);
 				((UserProfile)profile).setFunctionalities(coll);
 			}
 			else {
 				// there is a default role selected so filter only its functionalities
+				logger.debug("Selected role is not null, put right functionality");				
 				String[] selRoleArray = new String[1];
 				selRoleArray[0] = selRole;
 				String[] arrayFuncs = UserUtilities.readFunctionality(selRoleArray);
+
 				//String[] arrayFuncs = dao.readUserFunctionality(selRoleArray);
 				//String[] arrayFuncs = UserUtilities.readFunctionality(selRoleArray);
 
 				coll = StringUtilities.convertArrayInCollection(arrayFuncs);
+
+				for (Iterator iterator = coll.iterator(); iterator.hasNext();) {
+					Object object = (Object) iterator.next();
+					logger.debug("functionality to add "+object.toString());
+				}
+
 				((UserProfile)profile).setFunctionalities(coll);
-				
-			    // check if single functionality is included in role, else remove it
-//			    for (int i = 0; i < funcsToRemove.length; i++) {
-//			    	String funcToRem = funcsToRemove[i];
-//			    	if(!coll.contains(funcToRem)){
-//			    		((UserProfile)profile).getFunctionalities().remove(funcToRem);
-//			    	}
-//			    }
+
+				logger.debug("set functionalities for default role");
+				// check if single functionality is included in role, else remove it
+				//			    for (int i = 0; i < funcsToRemove.length; i++) {
+				//			    	String funcToRem = funcsToRemove[i];
+				//			    	if(!coll.contains(funcToRem)){
+				//			    		((UserProfile)profile).getFunctionalities().remove(funcToRem);
+				//			    	}
+				//			    }
 
 			}
 
-//			if( coll == null ) StringUtilities.convertArrayInCollection(newFunctions);
-//			((UserProfile)profile).setFunctionalities(coll);
+			//			if( coll == null ) StringUtilities.convertArrayInCollection(newFunctions);
+			//			((UserProfile)profile).setFunctionalities(coll);
 			// end refresh of the functionalities
 			logger.debug("FIltered functionalities for selected role "+selRole);
 

@@ -646,7 +646,7 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 				}, {
 				    header: LN('sbi.qbe.filtergridpanel.headers.lodesc')
 				    , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.lodesc')
-				    , dataIndex: 'leftOperandDescription'       
+				    , dataIndex: 'leftOperandLongDescription'       
 				    , editor: new Ext.form.TextField({allowBlank: false})
 				    , hideable: false
 				    , hidden: false		 

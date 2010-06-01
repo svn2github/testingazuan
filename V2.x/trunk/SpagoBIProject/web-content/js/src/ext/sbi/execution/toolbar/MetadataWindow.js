@@ -298,16 +298,16 @@ Ext.extend(Sbi.execution.toolbar.MetadataWindow, Ext.Window, {
             success: function(response, options) {
 				if (response !== undefined) {
 					Ext.MessageBox.hide();
-					this.shortTextMetadataStore.commitChanges();
-					var editablePanels = this.longTextMetadataTabPanel.items;
+					//this.shortTextMetadataStore.commitChanges();
+					//var editablePanels = this.longTextMetadataTabPanel.items;
 					//editablePanels.each(function() {this.commitChanges();});
-					for (var i = 0; i < editablePanels.getCount(); i++) {
-						editablePanels.get(i).commitChanges();
-					}
+					//for (var i = 0; i < editablePanels.getCount(); i++) {
+					//	editablePanels.get(i).commitChanges();
+					//}
+					this.close();
 				} else {
 					Sbi.exception.ExceptionHandler.showErrorMessage('Error while saving Metadata', 'Service Error');
 				}
-				//this.hide();
             },
             failure: Sbi.exception.ExceptionHandler.handleFailure,    
             scope: this,

@@ -626,6 +626,10 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 				logger.debug("Order Date Criteria setted");
 				finder2.setMaxResults(1);
 				logger.debug("Max result to 1 setted");
+				
+				if (r != null) {
+					finder2.add(Expression.eq("sbiResources.resourceId", r.getId()));
+				}
 
 				List l2 = finder2.list();
 				if (!l2.isEmpty()) {

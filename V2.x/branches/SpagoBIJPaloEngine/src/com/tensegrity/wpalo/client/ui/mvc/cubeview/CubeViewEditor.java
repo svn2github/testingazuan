@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.allen_sauer.gwt.log.client.SystemLogger;
 import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -96,12 +98,10 @@ import com.tensegrity.palo.gwt.core.client.models.cubeviews.XPrintConfiguration;
 import com.tensegrity.palo.gwt.core.client.models.cubeviews.XPrintResult;
 import com.tensegrity.palo.gwt.core.client.models.cubeviews.XView;
 import com.tensegrity.palo.gwt.core.client.models.cubeviews.XViewModel;
-import com.tensegrity.palo.gwt.core.client.models.folders.XFolderElement;
 import com.tensegrity.palo.gwt.core.client.models.palo.XElement;
 import com.tensegrity.palo.gwt.core.client.models.palo.XElementNode;
 import com.tensegrity.palo.gwt.core.client.models.palo.XElementType;
 import com.tensegrity.palo.gwt.core.client.models.subsets.XSubset;
-import com.tensegrity.palo.gwt.core.server.services.cubeview.CubeViewService;
 import com.tensegrity.palo.gwt.widgets.client.container.Container;
 import com.tensegrity.palo.gwt.widgets.client.container.ContainerListener;
 import com.tensegrity.palo.gwt.widgets.client.container.ContainerWidget;
@@ -129,8 +129,6 @@ import com.tensegrity.wpalo.client.i18n.ILocalMessages;
 import com.tensegrity.wpalo.client.i18n.Resources;
 import com.tensegrity.wpalo.client.services.cubeview.WPaloCubeViewServiceProvider;
 import com.tensegrity.wpalo.client.services.folder.WPaloFolderServiceProvider;
-import com.tensegrity.wpalo.client.ui.mvc.viewbrowser.CreateDirectLinkDialog;
-import com.tensegrity.wpalo.client.ui.mvc.viewbrowser.EditViewPropertiesDialog;
 import com.tensegrity.wpalo.client.ui.mvc.viewbrowser.TestFastTreeDialog;
 import com.tensegrity.wpalo.client.ui.mvc.viewbrowser.ViewBrowser;
 import com.tensegrity.wpalo.client.ui.mvc.viewbrowser.ViewBrowserModel;
@@ -514,13 +512,16 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 	
 	public void handleEvent(final ToolBarEvent tbe) {
 		String button = tbe.item.getId();
+		Log.info(button);
+		
 		if(button.equals(SAVE_BTN))
 			doSave();
-		else if(button.equals(SAVE_AS_BTN))
+		else if(button.equals(SAVE_AS_BTN)){
+			Log.info(writeRight+"");
 			doSaveAs();
-		else if (button.equals(PRINT_BTN))
+		}else if (button.equals(PRINT_BTN)){
 			doPrint();
-		else if(button.equals(REVERSE_ROWS_BTN)) {
+		}else if(button.equals(REVERSE_ROWS_BTN)) {
 			editorPanel.reverseRows(((ToggleToolItem) tbe.item).isPressed());
 //			updateView(null);
 			markDirty(true);
@@ -1063,6 +1064,7 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 		repositoryContainer.addContainerListener(this);
 		editorPanel.addCellChangedListener(new CellChangedListener() {
 			public void changed(final Cell cell, final String oldValue) {
+				Log.info("initEventHandling");
 				showWaitDialog(constants.writingCellContents());
 				String sessionId = ((Workbench)Registry.get(Workbench.ID)).getUser().getSessionId();
 				removeLocalFilter();
@@ -1263,12 +1265,15 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 							constants.errorsWhilePrinting(), null);
 				} else {
 					String fileName = result.getFilename(); //URL.encode(result.getFilename());
+
 					int index = Math.max(fileName.lastIndexOf("/"), fileName.lastIndexOf("\\"));
 					if (index != -1) {
 						fileName = fileName.substring(index + 1);
 					}
 					fileName = URL.encode(fileName);
+
 					final String link = GWT.getModuleBaseURL() + "downloads/" + fileName;
+
 					WPaloPropertyServiceProvider.getInstance().getBooleanProperty("askForPDFFileDeletion", false, new Callback<Boolean>() {
 						public void onSuccess(Boolean res) {
 							if (res) {
@@ -1355,15 +1360,21 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 	
 	private final void doSaveAsAfterCheck() {
 		final String[] usedNames = getViewNames();
+		for(int i =0; i<usedNames.length; i++){
+			Log.info(usedNames[i]);
+		}
 		XUser user = ((Workbench)Registry.get(Workbench.ID)).getUser();
 		int permission = user.isAdmin() ? 0 : 16;		
 		WPaloCubeViewServiceProvider.getInstance().checkPermission(user.getSessionId(), permission, new AsyncCallback <Boolean>(){
 			private final void showDialog(boolean showBoxes) {
+				Log.info("Eccomi");
 				final SaveAsDialog saveAsDlg = new SaveAsDialog(view.getName(), showBoxes);
+				Log.info("Creato save dialog");
 				saveAsDlg.setUsedViewNames(usedNames);
 				// add close listener:
 				saveAsDlg.addListener(Events.Close, new Listener<WindowEvent>() {
 					public void handleEvent(WindowEvent be) {
+						Log.info("handleEvent::"+be);
 						try {
 						// which button was pressed:
 						if (be.buttonClicked.getItemId().equals(SaveAsDialog.SAVE)) {
@@ -1389,6 +1400,8 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 							});
 						}
 						} catch (Throwable t) {
+							 GWT.log(t.getMessage(), t); 
+							 Log.error(t.getMessage(), t);
 							t.printStackTrace();
 						}
 					}
@@ -1411,6 +1424,7 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 	}
 	
 	private final void doSaveAs() {
+		Log.info("doSaveAs");
 		if (writeRight == -1) {
 			XUser usr = ((Workbench)Registry.get(Workbench.ID)).getUser();
 			WPaloCubeViewServiceProvider.getInstance().isOwner(usr.getSessionId(), view.getId(), new AsyncCallback<Boolean>(){
@@ -1451,16 +1465,29 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 		}		
 	}
 	private final String[] getViewNames() {
+		Log.info("getViewNames IN");
+		Log.info("viewBrowser ID::"+ViewBrowser.ID);
 		ViewBrowser viewBrowser = (ViewBrowser) Registry.get(ViewBrowser.ID);
-		XView[] views = viewBrowser.getViews();
-		String[] names = new String[views.length];
-		for(int i = 0; i < views.length; ++i) {
-			if (views[i] == null || views[i].getName() == null) {
-				names[i] = constants.deletedView(); 
-			} else {
-				names[i] = views[i].getName();
+		Log.info("viewBrowser::"+viewBrowser);
+		String[] names = null;
+		try{
+			XView[] views = viewBrowser.getViews();
+			Log.info("views::"+views);
+			Log.info("views lenght::"+views.length);
+			names =  new String[views.length];
+			for(int i = 0; i < views.length; ++i) {
+				if (views[i] == null || views[i].getName() == null) {
+					names[i] = constants.deletedView(); 
+				} else {
+					names[i] = views[i].getName();
+				}
 			}
+		}catch(Exception re){
+			Log.info("getViewNames exception");
+			names =  new String[1];
+			names[0]="";
 		}
+		Log.info("getViewNames OUT");
 		return names;
 	}
 	private final void doShowAbout() {
@@ -2035,6 +2062,7 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 				}
 
 				public void onSuccess(Boolean result) {
+					Log.info("markDirty success");
 					if (result) {
 						writeRight = 1;
 						isDirty = doIt;
@@ -2390,6 +2418,7 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 	}
 
 	public void onClick(ClickEvent ignored) {
+		Log.info("onClick");
 		showWaitDialog(constants.updatingView());
 		final String sessionId = ((Workbench)Registry.get(Workbench.ID)).getUser().getSessionId();
 		WPaloCubeViewServiceProvider.getInstance().willSwapAxes(sessionId, view.getId(), new Callback<XLoadInfo>() {

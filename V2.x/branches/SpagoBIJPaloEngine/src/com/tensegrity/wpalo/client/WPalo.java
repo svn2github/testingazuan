@@ -304,8 +304,7 @@ public class WPalo implements EntryPoint {
 												
 												DisplayFlags.setDisplayFlagsFor(xView, user, xView.getDisplayFlags(), data.getGlobalDisplayFlags());
 												DisplayFlags displayFlags = DisplayFlags.getDisplayFlagsFor(xView);
-												System.out
-														.println("hide conn?"+displayFlags.isHideConnectionAccount());
+
 												dispatcher.dispatch(WPaloEvent.INIT, displayFlags);
 												((Workbench)Registry.get(Workbench.ID)).directLogin(user);
 //												CubeViewEditor.hasBeenResized = true;

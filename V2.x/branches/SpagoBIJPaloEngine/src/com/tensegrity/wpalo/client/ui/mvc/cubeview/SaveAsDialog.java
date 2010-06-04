@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.KeyListener;
@@ -57,7 +58,6 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.ui.KeyboardListener;
 import com.tensegrity.wpalo.client.i18n.ILocalConstants;
-import com.tensegrity.wpalo.client.i18n.ILocalMessages;
 import com.tensegrity.wpalo.client.i18n.Resources;
 
 /**
@@ -67,6 +67,7 @@ import com.tensegrity.wpalo.client.i18n.Resources;
  * @version $Id: SaveAsDialog.java,v 1.16 2010/04/12 11:13:36 PhilippBouillon Exp $
  **/
 public class SaveAsDialog extends Window {
+
 	protected transient final ILocalConstants constants = Resources.getInstance().getConstants();
 
 	public static final String SAVE = "save";
@@ -82,7 +83,8 @@ public class SaveAsDialog extends Window {
 	private CheckBox makeEditableView;
 	private final boolean showBoxes;
 	
-	public SaveAsDialog(String initialName, boolean showBoxes) {		
+	public SaveAsDialog(String initialName, boolean showBoxes) {
+		Log.info("IN");
 		this.initialName = initialName;
 		this.showBoxes = showBoxes;
 		setHeading(constants.saveView());

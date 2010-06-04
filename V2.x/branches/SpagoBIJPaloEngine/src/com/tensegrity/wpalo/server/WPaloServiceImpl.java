@@ -151,6 +151,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 				nodeList.add(new TreeNode(node, r, true));
 			}
 		} catch (Throwable t) {
+			logger.error(t.getMessage());
 			t.printStackTrace();
 		}
 		return nodeList;
@@ -178,6 +179,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 				reps.put(id, rep + 1);
 			}
 		} catch (Throwable t) {
+			logger.error(t.getMessage());
 			t.printStackTrace();
 		}
 		// TODO Remember to set parent of each returned TreeNode!
@@ -285,6 +287,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 			try {
 				addChildren(currentDepth, level, rootNodes, nodes, hierarchyId, viewId, parents);
 			} catch (Throwable t) {
+				logger.error(t.getMessage());
 				t.printStackTrace();
 			}
 		}
@@ -680,6 +683,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 			}
 		} catch (RuntimeException e) {
 			e.printStackTrace();
+			logger.error(e.getMessage());
 			// TODO introduce an exception here...
 			// throw new WPaloException("Couldn't start the application!!", e);
 		}
@@ -740,7 +744,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 		displayFlags.add(checkFlag("hidetitlebar", link));
 		displayFlags.add(checkFlag("hidetoolbar", link));
 		displayFlags.add(checkFlag("hidesave", link));
-		displayFlags.add(true); //checkFlag("hidesaveas", link));
+		displayFlags.add(checkFlag("hidesaveas", link));
 		displayFlags.add(checkFlag("hidefilter", link));
 		displayFlags.add(checkFlag("hidestaticfilter", link));
 		displayFlags.add(checkFlag("hidehorizontalaxis", link));
@@ -867,12 +871,17 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 			data.setViews(allViews.toArray(new XView[0]));
 			return data;
 		} catch (Throwable t) {
+			logger.error(t.getMessage());
 			data.addError(UserSession.trans(locale, "errorWhileOpeningMultipleViews", t.getLocalizedMessage()));
 		}
 		return data;
 	}
 	
 	private final XDirectLinkData parseSingleView(String locale, AuthUser authUser, String link, XDirectLinkData data) {
+		logger.info("parseSingleView IN");
+		logger.info("LINK::"+link);
+		logger.info("autenticato?::"+data.isAuthenticated());
+
 		String view = getValue("openview", link);
 		if (view == null) {
 			return data;
@@ -1015,7 +1024,8 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 					}
 				}
 				if (!allowed) {
-					data.addError(UserSession.trans(locale, "viewCannotBeSeen", v.getName(), v.getId()));							
+					data.addError(UserSession.trans(locale, "viewCannotBeSeen", v.getName(), v.getId()));	
+					logger.error("viewCannotBeSeen");
 					return data;
 				}
 
@@ -1032,7 +1042,8 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 					v = existingView;
 				}
 			}else{
-				data.addError(UserSession.trans(locale, "couldNotFindView", view));							
+				data.addError(UserSession.trans(locale, "couldNotFindView", view));		
+				logger.error("couldNotFindView");
 				return data;
 			}
 			//SpagoBI modification
@@ -1046,10 +1057,12 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 			xView.setDisplayFlags(createDisplayFlags(link));
 
 			data.setViews(new XView [] {xView});
+			logger.info("parseSingleView OUT");
 			return data;	
 			
-
+			
 		} catch (Throwable t) {
+			logger.error(t.getMessage());
 			data.addError(UserSession.trans(locale, "errorWhileOpeningDirectLinkView", view, t.getLocalizedMessage()));
 		}
 		return data;		
@@ -1199,6 +1212,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 	    	log.debug("Given SHA-1 hash:      " + cksum);
 	    	return hexSha1 != null && hexSha1.equals(cksum);
 	    } catch (Exception e) {
+	    	logger.error(e.getMessage());
 	    	log.error("Exception when creating SHA-1 checksum.", e);
 	    	return false;
 	    }
@@ -1261,6 +1275,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 				return new ArrayList<ConnectionDescriptor>();
 			}			
 		} catch (Throwable t) {
+			logger.error(t.getMessage());
 			log.error("Error authenticating (WPALO!) user", t);
 		}
 			
@@ -1281,6 +1296,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 		try {
 			psd = initPaloSuiteData(new SimpleLogger(1));
 		} catch (IOException e) {
+			logger.error(e.getMessage());
 			e.printStackTrace();
 			return null;
 		}
@@ -1379,6 +1395,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 		try {
 			link = URLDecoder.decode(link, "UTF-8");
 		} catch (UnsupportedEncodingException e1) {
+			logger.error(e1.getMessage());
 		}
 		log.debug("Decoded Link: " + link);
 		XDirectLinkData data = new XDirectLinkData();
@@ -1392,6 +1409,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 			psd = initPaloSuiteData(log);
 		} catch (IOException e) {
 			e.printStackTrace();
+			logger.error(e.getMessage());
 			return null;
 		}
 		if (psd.secret == null) {
@@ -2044,8 +2062,10 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 		try {
 			authUser = ServiceProvider.getAuthenticationService().authenticateHash(user, pass);
 		} catch (AuthenticationFailedException e) {
+			logger.error(e.getMessage());
 		}
 		if (authUser == null) {
+			logger.error("direct link auth failed");
 			data.setAuthenticated(false);
 			data.addError("directLinkAuthenticationFailed");
 			return data;

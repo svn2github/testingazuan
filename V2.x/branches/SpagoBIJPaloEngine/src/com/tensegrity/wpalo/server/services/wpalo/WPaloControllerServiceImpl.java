@@ -42,6 +42,7 @@ import java.util.Locale;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.palo.viewapi.Account;
 import org.palo.viewapi.AuthUser;
 import org.palo.viewapi.DbConnection;
@@ -68,7 +69,7 @@ import com.tensegrity.wpalo.server.dbconnection.MySqlDbConnection;
 public class WPaloControllerServiceImpl extends BasePaloServiceServlet
 		implements WPaloControllerService {
 	/* manages applications life cycle */
-
+	static private Logger logger = Logger.getLogger(WPaloControllerServiceImpl.class);
 	/** generated serial number */
 	private static final long serialVersionUID = -6287168959908304515L;
 
@@ -98,6 +99,7 @@ public class WPaloControllerServiceImpl extends BasePaloServiceServlet
 					dbConnection = ServiceProvider.getDbConnection();
 				}
 			} catch (Throwable e) {
+				logger.error(e.getMessage());
 //				initialised = false;
 //				throw new WPaloException("Couldn't start the application!!", e);
 			}
@@ -122,6 +124,7 @@ public class WPaloControllerServiceImpl extends BasePaloServiceServlet
 				logout(userSession.getUser());
 //				ServiceProvider.release(dbConnection);
 			} catch (RuntimeException e) {
+				logger.error(e.getMessage());
 				initialised = true;
 			}
 		}
@@ -131,6 +134,7 @@ public class WPaloControllerServiceImpl extends BasePaloServiceServlet
 		try {
 			getUserSession(sessionId).setLocale(locale);
 		} catch (SessionExpiredException e) {
+			logger.error(e.getMessage());
 		}
 	}
 	
@@ -170,6 +174,7 @@ public class WPaloControllerServiceImpl extends BasePaloServiceServlet
 			return user; 
 		} catch (org.palo.viewapi.exceptions.AuthenticationFailedException e) {
 			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			throw new AuthenticationFailedException(e.getMessage(), e);
 		}
 	}
@@ -199,6 +204,7 @@ public class WPaloControllerServiceImpl extends BasePaloServiceServlet
 			return user; 
 		} catch (org.palo.viewapi.exceptions.AuthenticationFailedException e) {
 			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			throw new AuthenticationFailedException(e.getMessage(), e);
 		}
 	}
@@ -220,11 +226,14 @@ public class WPaloControllerServiceImpl extends BasePaloServiceServlet
 			try {
 				CubeViewController.removeAllViewsAndShutdownConnectionPool(userSession);
 			} catch (Throwable t) {
+				logger.error(t.getMessage(), t);
 			}
 			stopIgnoreException(userSession);
 		} catch (SessionExpiredException ex) {
 			// already logged out...
+			logger.error(ex.getMessage(), ex);
 		} catch (RuntimeException ex) {
+			logger.error(ex.getMessage(), ex);
 			ex.printStackTrace();
 		}		
 	}
@@ -242,6 +251,7 @@ public class WPaloControllerServiceImpl extends BasePaloServiceServlet
 				if (account.isLoggedIn())
 					account.logout();
 			} catch (Exception ex) {
+				logger.error(ex.getMessage(), ex);
 			}
 		}
 	}
@@ -278,6 +288,7 @@ public class WPaloControllerServiceImpl extends BasePaloServiceServlet
 			}
 		} catch (RuntimeException e) {
 			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			// TODO introduce an exception here...
 			// throw new WPaloException("Couldn't start the application!!", e);
 		}

@@ -38,6 +38,8 @@ package com.tensegrity.wpalo.client.ui.mvc.viewbrowser;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mortbay.log.Log;
+
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.store.TreeStore;

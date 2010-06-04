@@ -1,5 +1,10 @@
 <module>
 
+        <!-- For development a default of `DEBUG` is recommended -->
+        <inherits name="com.allen_sauer.gwt.log.gwt-log-DEBUG" />
+
+        
+        
 	<!-- Inherit the core Web Toolkit stuff.                        -->
 	<inherits name='com.google.gwt.user.User' />
 

@@ -380,7 +380,9 @@ public class ResourceDAOImpl extends AbstractHibernateDAO implements
 			finder.add(Expression.eq("resourceCode", resourceCode));
 
 			SbiResources hibResource = (SbiResources) finder.uniqueResult();
-			toReturn = toResource(hibResource);
+			if(hibResource != null){
+				toReturn = toResource(hibResource);
+			}
 
 		} catch (HibernateException he) {
 			logger.error("Error while loading the Resource", he);

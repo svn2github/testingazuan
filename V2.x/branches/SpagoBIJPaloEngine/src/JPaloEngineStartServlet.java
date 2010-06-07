@@ -188,9 +188,9 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
     
     private void cleanSessionAttributes(HttpSession session){
     	session.removeAttribute("isdeveloper");
-    	logger.info("clean 1 ::"+(String)session.getAttribute("spagobi_state"));
+    	//logger.info("clean 1 ::"+(String)session.getAttribute("spagobi_state"));
     	session.removeAttribute("spagobi_state");
-    	logger.info("clean 2 ::"+(String)session.getAttribute("spagobi_state"));
+    	//logger.info("clean 2 ::"+(String)session.getAttribute("spagobi_state"));
     	session.removeAttribute("spagobisubobj");
     }
 }

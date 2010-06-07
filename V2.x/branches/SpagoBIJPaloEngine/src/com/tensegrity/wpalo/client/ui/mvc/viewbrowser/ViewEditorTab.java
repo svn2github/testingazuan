@@ -172,19 +172,19 @@ public class ViewEditorTab extends EditorTab {
 						
 						public void onSuccess(XView xView) {
 							hideWaitCursor();
-							if (xView == null) {
+/*							if (xView == null) {
 								MessageBox.alert(constants.notEnoughRights(),
 										constants.notEnoughRightsToSaveView(), null);
-							} else {
+							} else {*/
 /*								ViewBrowser viewBrowser = 
 									(ViewBrowser) Registry.get(ViewBrowser.ID);							
 								viewBrowser.addView(inputView, xView, true, isPublic, isEditable);*/
-								if (callback != null) {
-									callback.onSuccess(false);									
-									MessageBox.alert("Success",
-											"SpagoBI subobject created", null);
-								}
+							if (callback != null) {
+								callback.onSuccess(false);									
+								MessageBox.info(constants.subobjectSaved(),
+										constants.subobjectSavedMsg(), null);
 							}
+							//}
 //							ViewEditorTab.super.close();
 						}
 					});

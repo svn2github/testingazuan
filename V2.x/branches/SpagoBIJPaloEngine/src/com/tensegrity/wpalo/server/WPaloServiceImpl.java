@@ -878,9 +878,6 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 	}
 	
 	private final XDirectLinkData parseSingleView(String locale, AuthUser authUser, String link, XDirectLinkData data) {
-		logger.info("parseSingleView IN");
-		logger.info("LINK::"+link);
-		logger.info("autenticato?::"+data.isAuthenticated());
 
 		String view = getValue("openview", link);
 		if (view == null) {
@@ -921,12 +918,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 
 			for (Account a: authUser.getAccounts()) {
 				if(a != null){
-/*					System.out.println(a.getUser().getLoginName());
-					System.out.println(a.getLoginName());
-					System.out.println(a.getId());
-					System.out.println(a.getConnection().getName());*/
-					//if account, connection and cube specified
-					//if(accountName != null && !accountName.equals("")){
+
 					if(view != null && !view.equals("")){						
 						//if view specified
 						List<View> views = viewService.getViews(a);
@@ -989,12 +981,6 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 					return data;
 				}
 
-//				FolderService fs = ServiceProvider.getFolderService(authUser);
-//				if (searchView(fs.getTreeRoot(), v) == null) {
-//					data.addError("The view " + v.getName() + " (" + v.getId() + ") cannot be seen by this user.");
-//					return data;
-//				}
-				
 				boolean allowed = false;
 				if (v.getOwner() != null) {
 					if (authUser.getId().equals(v.getOwner().getId())) {
@@ -1049,15 +1035,16 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 			//SpagoBI modification
 			String isDeveloper = getValue("isdeveloper", link);
 			if(isDeveloper == null || isDeveloper.equals("")){
+				logger.info("user--> saving subobj");
 				JPaloSavingUtil util = new JPaloSavingUtil();
 				String xml = util.getSubobjectForJPalo(getSession(), v.getName());
+				logger.info("saved subobj"+xml);
 			}
 			ViewConverter conv = new ViewConverter();
 			XView xView = (XView) conv.toXObject(v);
 			xView.setDisplayFlags(createDisplayFlags(link));
 
 			data.setViews(new XView [] {xView});
-			logger.info("parseSingleView OUT");
 			return data;	
 			
 			

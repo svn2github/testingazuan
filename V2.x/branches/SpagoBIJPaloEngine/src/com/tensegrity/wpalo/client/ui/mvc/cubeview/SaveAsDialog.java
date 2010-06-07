@@ -140,7 +140,7 @@ public class SaveAsDialog extends Window {
 //		makePublicView.setValue(true);
 //		makeEditableView.setValue(true);
 		
-		panel.add(rights);
+		//panel.add(rights);
 		
 		addSaveCancelButtons(panel);	
 		name.focus();		
@@ -159,7 +159,8 @@ public class SaveAsDialog extends Window {
 		return panel;
 	}
 	private final void addViewNameField(FormPanel panel, FormData data, String initialName) {
-		name.setFieldLabel(constants.viewName());
+		name.setFieldLabel(constants.subobjectName());
+		
 		name.setValue(initialName);
 		name.addKeyListener(new KeyListener() {
 			public void componentKeyUp(ComponentEvent event) {

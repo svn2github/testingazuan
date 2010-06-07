@@ -67,4 +67,5 @@ public interface ILocalMessages extends Messages {
 	String view(String name);
 	
 	String warningsWhenOpeningView(String name);
+	
 }

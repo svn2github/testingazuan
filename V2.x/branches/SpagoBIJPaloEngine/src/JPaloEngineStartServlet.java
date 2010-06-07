@@ -36,6 +36,8 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 	private static String SUBOBJ_ID="subobjectId";
 	private static String IS_DEVELOPER="isSpagoBIDev";
 	private static String IS_NEW_DOCUMENT="isNewDocument";
+	private static final String LANG = "language";
+	private static final String COUNTRY = "country";
 	
 	/**
      * Logger component
@@ -68,8 +70,13 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			String isSpagoBIDev = (String) servletIOManager.getRequest().getParameter(IS_DEVELOPER);
 			String isNewDoc = (String) servletIOManager.getRequest().getParameter(IS_NEW_DOCUMENT);
 			
-			jpaloUrl = PALO_BASE_URL;	
-			jpaloUrl += "?theme=gray&options=(";
+			String language = (String) servletIOManager.getRequest().getParameter(LANG);
+			String country = (String) servletIOManager.getRequest().getParameter(COUNTRY);
+			
+			jpaloUrl = PALO_BASE_URL;
+			jpaloUrl += "?locale=";
+			jpaloUrl += language+"_"+country;
+			jpaloUrl += "&theme=gray&options=(";
 			jpaloUrl += "user=\"admin\",pass=\"ISMvKXpXpadDiUoOSoAfww==\"";
 			
 			if((isNewDoc != null && isNewDoc.equals("true")) && 
@@ -82,7 +89,6 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 		    	}
 		    	if(isSpagoBIDev != null){
 		    		jpaloUrl += ",isdeveloper=\""+isSpagoBIDev+"\"";
-
 		    	}		    	
 		    	
 			}else{
@@ -182,6 +188,9 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
     
     private void cleanSessionAttributes(HttpSession session){
     	session.removeAttribute("isdeveloper");
+    	logger.info("clean 1 ::"+(String)session.getAttribute("spagobi_state"));
     	session.removeAttribute("spagobi_state");
+    	logger.info("clean 2 ::"+(String)session.getAttribute("spagobi_state"));
+    	session.removeAttribute("spagobisubobj");
     }
 }

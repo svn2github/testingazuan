@@ -360,4 +360,9 @@ public interface ILocalConstants extends Constants {
 	String wss();
 	
 	String xmla();
+	//SpagoBI
+	String subobjectName();
+	String subobjectSaved();
+	String saveViewAsSubobject();
+	String subobjectSavedMsg();
 }

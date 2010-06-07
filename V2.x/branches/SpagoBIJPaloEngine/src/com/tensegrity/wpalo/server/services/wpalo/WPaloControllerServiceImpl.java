@@ -38,6 +38,7 @@ package com.tensegrity.wpalo.server.services.wpalo;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -73,7 +74,7 @@ public class WPaloControllerServiceImpl extends BasePaloServiceServlet
 	/** generated serial number */
 	private static final long serialVersionUID = -6287168959908304515L;
 
-	public static final boolean USE_MYSQL = false;
+	public static boolean USE_MYSQL = false;
 
 	private DbConnection dbConnection;
 	private final SessionListener sessionListener;
@@ -295,6 +296,15 @@ public class WPaloControllerServiceImpl extends BasePaloServiceServlet
 	}
 
 	private final DbConnection createConnection() {
+		try{
+			String useMySql = ResourceBundle.getBundle("deploy", Locale.ITALIAN).getString("use.mysql");
+			if(useMySql != null){				
+				USE_MYSQL = Boolean.valueOf(ResourceBundle.getBundle("deploy", Locale.ITALIAN).getString("use.mysql"));
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 		if (USE_MYSQL)
 			return MySqlDbConnection.newInstance();
 		else

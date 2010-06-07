@@ -955,7 +955,7 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 		saveAs.setId(SAVE_AS_BTN);
 		saveAs.setIconStyle("ten-icons-save-as");
 		saveAs.addListener(Events.Select, this);
-		saveAs.setToolTip(constants.saveViewAs());
+		saveAs.setToolTip(constants.saveViewAsSubobject());
 		if (!displayFlags.isHideSaveAs()) {
 			toolbar.add(saveAs);			
 		}
@@ -1382,7 +1382,7 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 											saveAsDlg.isPublic(), saveAsDlg.isEditable(), new Callback<Boolean>(){
 												public void onSuccess(Boolean result) {
 													if (result) {
-														markDirty(false);
+														save.setEnabled(false);
 														tab.close();
 													}
 												}

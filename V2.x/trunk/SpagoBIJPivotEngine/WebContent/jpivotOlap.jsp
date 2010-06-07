@@ -268,9 +268,13 @@ if (message != null && !message.trim().equals("")) {
 				parent.loadSubObject(window.name, <%= subObjId %>);
 			} catch (ex) {
 			}
-			// for new ExtJs-based execution interface
+			// for new ExtJs-based execution interface, call metadata window first
 			try {
-				window.onLoad = setTimeout('try {sendMessage("Subobject saved!!!!","subobjectsaved")} catch (ex) {}', 1000);
+				var id = <%= subObjId %>;
+				var msgToSend = 'Sub Object Saved!!';
+				//sendMessage({'id': id, 'msg': msgToSend},'subobjectsaved');
+				
+				window.onLoad = setTimeout('try {sendMessage({\'id\': id, \'msg\': msgToSend},"subobjectsaved")} catch (ex) {}', 1000);
 			} catch (err) {
 			}
 			</script>

@@ -1083,8 +1083,10 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	        		fn: function(srcFrame, message) {
 			        	// call metadata open window
 						//this.shortcutsPanel.synchronizeSubobjectsAndOpenMetadata(message.data.id, message.data.meta, this.executionInstance);
-				this.shortcutsPanel.synchronizeSubobjectsAndOpenMetadata(message.data.id, this.executionInstance);
-			        }
+				if(message.data.id != null && message.data.id){
+						this.shortcutsPanel.synchronizeSubobjectsAndOpenMetadata(message.data.id, this.executionInstance);
+					}    
+				}
 	        		, scope: this
 	        	}
 	        

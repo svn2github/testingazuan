@@ -84,7 +84,6 @@ public class SaveAsDialog extends Window {
 	private final boolean showBoxes;
 	
 	public SaveAsDialog(String initialName, boolean showBoxes) {
-		Log.info("IN");
 		this.initialName = initialName;
 		this.showBoxes = showBoxes;
 		setHeading(constants.saveView());

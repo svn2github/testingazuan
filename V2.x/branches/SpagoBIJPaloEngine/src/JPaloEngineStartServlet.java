@@ -82,6 +82,7 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 		    	}
 		    	if(isSpagoBIDev != null){
 		    		jpaloUrl += ",isdeveloper=\""+isSpagoBIDev+"\"";
+
 		    	}		    	
 		    	
 			}else{
@@ -146,7 +147,7 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 						jpaloUrl += ",hidestaticfilter";
 						if(isSpagoBIDev == null || isSpagoBIDev.equals("")){
 							jpaloUrl += ",hidenavigator";
-						}
+						}			
 					}
 				}catch (Throwable t){
 					logger.warn("Error on decompile",t); 
@@ -156,8 +157,11 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			if(isSpagoBIDev != null && isSpagoBIDev.equals("true")){
 				jpaloUrl += ",hideconnectionaccount";
 				jpaloUrl += ",hideuserrights";
+				jpaloUrl += ",hidesaveas";
+			}else{
+				jpaloUrl += ",hidesave";
 			}
-			jpaloUrl += ",hidesave";
+			
 			jpaloUrl += ",hideviewtabs";
 			jpaloUrl += ")";
 			logger.debug(jpaloUrl);

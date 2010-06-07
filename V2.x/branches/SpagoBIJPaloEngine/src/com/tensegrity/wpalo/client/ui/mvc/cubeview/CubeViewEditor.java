@@ -512,12 +512,10 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 	
 	public void handleEvent(final ToolBarEvent tbe) {
 		String button = tbe.item.getId();
-		Log.info(button);
-		
+	
 		if(button.equals(SAVE_BTN))
 			doSave();
 		else if(button.equals(SAVE_AS_BTN)){
-			Log.info(writeRight+"");
 			doSaveAs();
 		}else if (button.equals(PRINT_BTN)){
 			doPrint();
@@ -1064,7 +1062,6 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 		repositoryContainer.addContainerListener(this);
 		editorPanel.addCellChangedListener(new CellChangedListener() {
 			public void changed(final Cell cell, final String oldValue) {
-				Log.info("initEventHandling");
 				showWaitDialog(constants.writingCellContents());
 				String sessionId = ((Workbench)Registry.get(Workbench.ID)).getUser().getSessionId();
 				removeLocalFilter();
@@ -1360,21 +1357,15 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 	
 	private final void doSaveAsAfterCheck() {
 		final String[] usedNames = getViewNames();
-		for(int i =0; i<usedNames.length; i++){
-			Log.info(usedNames[i]);
-		}
 		XUser user = ((Workbench)Registry.get(Workbench.ID)).getUser();
 		int permission = user.isAdmin() ? 0 : 16;		
 		WPaloCubeViewServiceProvider.getInstance().checkPermission(user.getSessionId(), permission, new AsyncCallback <Boolean>(){
 			private final void showDialog(boolean showBoxes) {
-				Log.info("Eccomi");
 				final SaveAsDialog saveAsDlg = new SaveAsDialog(view.getName(), showBoxes);
-				Log.info("Creato save dialog");
 				saveAsDlg.setUsedViewNames(usedNames);
 				// add close listener:
 				saveAsDlg.addListener(Events.Close, new Listener<WindowEvent>() {
 					public void handleEvent(WindowEvent be) {
-						Log.info("handleEvent::"+be);
 						try {
 						// which button was pressed:
 						if (be.buttonClicked.getItemId().equals(SaveAsDialog.SAVE)) {
@@ -1400,8 +1391,7 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 							});
 						}
 						} catch (Throwable t) {
-							 GWT.log(t.getMessage(), t); 
-							 Log.error(t.getMessage(), t);
+							Log.error(t.getMessage(), t);
 							t.printStackTrace();
 						}
 					}
@@ -1424,7 +1414,6 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 	}
 	
 	private final void doSaveAs() {
-		Log.info("doSaveAs");
 		if (writeRight == -1) {
 			XUser usr = ((Workbench)Registry.get(Workbench.ID)).getUser();
 			WPaloCubeViewServiceProvider.getInstance().isOwner(usr.getSessionId(), view.getId(), new AsyncCallback<Boolean>(){
@@ -1465,15 +1454,10 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 		}		
 	}
 	private final String[] getViewNames() {
-		Log.info("getViewNames IN");
-		Log.info("viewBrowser ID::"+ViewBrowser.ID);
 		ViewBrowser viewBrowser = (ViewBrowser) Registry.get(ViewBrowser.ID);
-		Log.info("viewBrowser::"+viewBrowser);
 		String[] names = null;
 		try{
 			XView[] views = viewBrowser.getViews();
-			Log.info("views::"+views);
-			Log.info("views lenght::"+views.length);
 			names =  new String[views.length];
 			for(int i = 0; i < views.length; ++i) {
 				if (views[i] == null || views[i].getName() == null) {
@@ -1483,11 +1467,9 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 				}
 			}
 		}catch(Exception re){
-			Log.info("getViewNames exception");
 			names =  new String[1];
 			names[0]="";
 		}
-		Log.info("getViewNames OUT");
 		return names;
 	}
 	private final void doShowAbout() {
@@ -2062,7 +2044,6 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 				}
 
 				public void onSuccess(Boolean result) {
-					Log.info("markDirty success");
 					if (result) {
 						writeRight = 1;
 						isDirty = doIt;
@@ -2418,7 +2399,6 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 	}
 
 	public void onClick(ClickEvent ignored) {
-		Log.info("onClick");
 		showWaitDialog(constants.updatingView());
 		final String sessionId = ((Workbench)Registry.get(Workbench.ID)).getUser().getSessionId();
 		WPaloCubeViewServiceProvider.getInstance().willSwapAxes(sessionId, view.getId(), new Callback<XLoadInfo>() {

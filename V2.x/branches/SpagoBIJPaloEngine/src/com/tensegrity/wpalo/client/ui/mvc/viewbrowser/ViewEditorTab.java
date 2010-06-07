@@ -42,6 +42,7 @@ import com.extjs.gxt.ui.client.mvc.Dispatcher;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.google.gwt.gen2.logging.shared.Log;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Element;
@@ -174,12 +175,14 @@ public class ViewEditorTab extends EditorTab {
 							if (xView == null) {
 								MessageBox.alert(constants.notEnoughRights(),
 										constants.notEnoughRightsToSaveView(), null);
-							} else {							
-								ViewBrowser viewBrowser = 
+							} else {
+/*								ViewBrowser viewBrowser = 
 									(ViewBrowser) Registry.get(ViewBrowser.ID);							
-								viewBrowser.addView(inputView, xView, true, isPublic, isEditable);
+								viewBrowser.addView(inputView, xView, true, isPublic, isEditable);*/
 								if (callback != null) {
-									callback.onSuccess(true);
+									callback.onSuccess(false);									
+									MessageBox.alert("Success",
+											"SpagoBI subobject created", null);
 								}
 							}
 //							ViewEditorTab.super.close();

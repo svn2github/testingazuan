@@ -279,6 +279,7 @@ public class WPaloCubeViewServiceImpl extends CubeViewService implements
 	public XView saveViewAs(String sessionId, String name, XViewModel xViewModel)
 			throws DbOperationFailedException, SessionExpiredException {
 		try {
+			
 			return saveAs(sessionId, name, xViewModel);
 		} catch (OperationFailedException e) {
 			UserSession userSession = getUserSession(sessionId);

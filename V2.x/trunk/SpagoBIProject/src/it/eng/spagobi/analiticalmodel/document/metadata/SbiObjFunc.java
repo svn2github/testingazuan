@@ -96,11 +96,19 @@ public class SbiObjFunc  implements java.io.Serializable, Comparable {
 	 */
 	public int compareTo(Object obj2) {
 		SbiObjFunc sbiObjFunc2 = (SbiObjFunc) obj2;
-		SbiObjects sbiObj1 = this.getId().getSbiObjects();
-		SbiObjects sbiObj2 = sbiObjFunc2.getId().getSbiObjects();
-		String sbiObjName1 = sbiObj1.getName();
-		String sbiObjName2 = sbiObj2.getName();
-		return sbiObjName1.compareTo(sbiObjName2);
+		String path2 = sbiObjFunc2.getId().getSbiFunctions().getPath();
+		String thisPath = this.getId().getSbiFunctions().getPath();
+		int folderComparison = thisPath.compareTo(path2);
+		if (folderComparison == 0) {
+			SbiObjects sbiObj1 = this.getId().getSbiObjects();
+			SbiObjects sbiObj2 = sbiObjFunc2.getId().getSbiObjects();
+			String sbiObjName1 = sbiObj1.getLabel();
+			String sbiObjName2 = sbiObj2.getLabel();
+			return sbiObjName1.compareTo(sbiObjName2);
+		} else {
+			return folderComparison;
+		}
+
 	}
 
 }

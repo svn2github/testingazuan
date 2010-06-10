@@ -38,6 +38,7 @@ package com.tensegrity.wpalo.client.ui.mvc.viewbrowser;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.mvc.AppEvent;
 import com.extjs.gxt.ui.client.mvc.Controller;
@@ -110,7 +111,9 @@ public class ViewBrowserController  extends Controller {
 			initialize(hideTitlebar);
 			if (event.data instanceof DisplayFlags) {
 				viewEditor.initUI((DisplayFlags) event.data);
+
 			}
+			
 			forwardToView(viewBrowser, event);
 
 			break;

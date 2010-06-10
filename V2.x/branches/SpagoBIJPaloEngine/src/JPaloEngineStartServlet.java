@@ -1,22 +1,6 @@
 
 
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpSession;
-
-import org.apache.log4j.Logger;
-import org.palo.viewapi.services.ServiceProvider;
-import org.palo.viewapi.services.ViewService;
-
-import com.tensegrity.palo.gwt.core.server.services.UserSession;
-
-import sun.misc.BASE64Decoder;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.content.bo.Content;
@@ -24,6 +8,17 @@ import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
 import it.eng.spagobi.utilities.engines.EngineStartServletIOManager;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+
+import java.util.HashMap;
+import java.util.Locale;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
+
+import sun.misc.BASE64Decoder;
 
 /**
  * @author Monica Franceschini
@@ -72,13 +67,22 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			
 			String language = (String) servletIOManager.getRequest().getParameter(LANG);
 			String country = (String) servletIOManager.getRequest().getParameter(COUNTRY);
+			System.out.println(language );
+			System.out.println(country );
+			if(language == null || country == null){
+				Locale locale = servletIOManager.getLocale();
+				country = locale.getCountry();
+				language = locale.getLanguage();
+			}
 			
 			jpaloUrl = PALO_BASE_URL;
-			jpaloUrl += "?locale=";
+			
+			jpaloUrl += "?locale=";			
 			jpaloUrl += language+"_"+country;
 			jpaloUrl += "&theme=gray&options=(";
 			jpaloUrl += "user=\"admin\",pass=\"ISMvKXpXpadDiUoOSoAfww==\"";
-			
+			System.out.println(language );
+			System.out.println(country );
 			if((isNewDoc != null && isNewDoc.equals("true")) && 
 					(isSpagoBIDev != null && isSpagoBIDev.equals("true"))){
 				//new document--> template doesn't exist!
@@ -170,7 +174,8 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			
 			jpaloUrl += ",hideviewtabs";
 			jpaloUrl += ")";
-			logger.debug(jpaloUrl);
+			logger.info(jpaloUrl);
+			System.out.println(jpaloUrl);
 			String urlWithSessionID = servletIOManager.getResponse().encodeRedirectURL( jpaloUrl );
 			servletIOManager.getResponse().sendRedirect( urlWithSessionID );
 			

@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Registry;
@@ -88,7 +89,6 @@ import com.extjs.gxt.ui.client.widget.tree.TreeItem;
 import com.extjs.gxt.ui.client.widget.tree.TreeItemUI;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.tensegrity.palo.gwt.core.client.exceptions.SessionExpiredException;
 import com.tensegrity.palo.gwt.core.client.models.XObject;
@@ -145,7 +145,7 @@ public class ViewBrowser extends View {
 	private int createRight = -1;
 	private MenuItem editViewProperties;
 	private MenuItem createDirectLink;
-	
+
 	public ViewBrowser(Controller controller) {
 		super(controller);
 		Registry.register(ID, this);
@@ -913,18 +913,14 @@ public class ViewBrowser extends View {
 				xViews, xParentFolder, isPublic, isEditable,
 				new Callback<XFolderElement[]>(constants.couldNotCreateView()) {
 					public void onSuccess(XFolderElement[] xFolderElements) {
-//						int counter = 0;
-//						for (XFolderElement xfe: xFolderElements) {
-//							xViews[counter].setRoleIds(((XView) xfe.getSourceObject()).getRoleIds());
-//							xViews[counter].setRoleNames(((XView) xfe.getSourceObject()).getRoleNames());
-//							counter++;
-//						}
+		
 						browserModel.addViews(xFolderElements, parent);
 						TreeItem it = viewsTree.getSelectedItem();
 						if (it != null) {
 							viewsTree.expandPath(it.getPath());
 						}
 						hideWaitCursor();
+
 					}
 				});
 	}
@@ -935,6 +931,7 @@ public class ViewBrowser extends View {
 			WPaloCubeViewServiceProvider.getInstance().
 				checkPermission(sessionId, CubeViewEditor.RIGHT_CREATE, new Callback <Boolean>(){
 					public void onSuccess(Boolean result) {
+						Log.info("nel view browser::importViews");
 						if (result) {		
 							createRight = 1;
 							importViewsAfterCheck(node);

@@ -91,6 +91,12 @@ public class WPalo implements EntryPoint {
 	// the main panel for the content
 	private Viewport contentPane = null;
 
+	public static native void refreshSubobjects(String id) /*-{
+	  $wnd.alert(id);
+	  $wnd.msgToSend = 'Sub Object Saved!!';
+	  $wnd.sendMessage({'id': id, 'msg': msgToSend},'subobjectsaved');
+	}-*/;
+	
 	public void show(Widget panel) {		
 		contentPane.setVisible(false);
 		contentPane.removeAll();
@@ -178,7 +184,8 @@ public class WPalo implements EntryPoint {
 											super.onFailure(t);
 										}
 										public void onSuccess(XUser user) {
-											XView [] xViews = data.getViews();											
+											XView [] xViews = data.getViews();	
+
 											if (xViews == null || xViews.length == 0) {
 												try {
 												DisplayFlags df = DisplayFlags.createDisplayFlags(user, data.getGlobalDisplayFlags());												
@@ -207,27 +214,28 @@ public class WPalo implements EntryPoint {
 												}
 											} else {
 												try {
-												XView xView = xViews[0];
-												
-												DisplayFlags.setDisplayFlagsFor(xView, user, xView.getDisplayFlags(), data.getGlobalDisplayFlags());
-												DisplayFlags displayFlags = DisplayFlags.getDisplayFlagsFor(xView);
-												dispatcher.dispatch(WPaloEvent.INIT, displayFlags);
-												((Workbench)Registry.get(Workbench.ID)).directLogin(user);
-												((Workbench)Registry.get(Workbench.ID)).setPaloSuite(true);
-												dispatcher.dispatch(WPaloEvent.EDIT_VIEWBROWSER_VIEW, xView);
-												if (data.getErrors().length > 0) {
-													StringBuffer buf = new StringBuffer();
-													for (String s: data.getErrors()) {
-														buf.append(s + "\n");
-													}
-													MessageBox.alert(constants.errorsWhileProcessingOptions(), buf.toString(), null);
-												}	
+													XView xView = xViews[0];
+													
+													DisplayFlags.setDisplayFlagsFor(xView, user, xView.getDisplayFlags(), data.getGlobalDisplayFlags());
+													DisplayFlags displayFlags = DisplayFlags.getDisplayFlagsFor(xView);
+													dispatcher.dispatch(WPaloEvent.INIT, displayFlags);
+													((Workbench)Registry.get(Workbench.ID)).directLogin(user);
+													((Workbench)Registry.get(Workbench.ID)).setPaloSuite(true);
+													dispatcher.dispatch(WPaloEvent.EDIT_VIEWBROWSER_VIEW, xView);
+													if (data.getErrors().length > 0) {
+														StringBuffer buf = new StringBuffer();
+														for (String s: data.getErrors()) {
+															buf.append(s + "\n");
+														}
+														MessageBox.alert(constants.errorsWhileProcessingOptions(), buf.toString(), null);
+													}	
 												} catch (Throwable t) {
 													t.printStackTrace();
 												}
 											}											
 										}
 									});
+
 						}
 					}
 				});

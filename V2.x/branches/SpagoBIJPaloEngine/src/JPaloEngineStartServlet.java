@@ -67,8 +67,6 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			
 			String language = (String) servletIOManager.getRequest().getParameter(LANG);
 			String country = (String) servletIOManager.getRequest().getParameter(COUNTRY);
-			System.out.println(language );
-			System.out.println(country );
 			if(language == null || country == null){
 				Locale locale = servletIOManager.getLocale();
 				country = locale.getCountry();
@@ -81,8 +79,6 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			jpaloUrl += language+"_"+country;
 			jpaloUrl += "&theme=gray&options=(";
 			jpaloUrl += "user=\"admin\",pass=\"ISMvKXpXpadDiUoOSoAfww==\"";
-			System.out.println(language );
-			System.out.println(country );
 			if((isNewDoc != null && isNewDoc.equals("true")) && 
 					(isSpagoBIDev != null && isSpagoBIDev.equals("true"))){
 				//new document--> template doesn't exist!
@@ -175,7 +171,7 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			jpaloUrl += ",hideviewtabs";
 			jpaloUrl += ")";
 			logger.info(jpaloUrl);
-			System.out.println(jpaloUrl);
+
 			String urlWithSessionID = servletIOManager.getResponse().encodeRedirectURL( jpaloUrl );
 			servletIOManager.getResponse().sendRedirect( urlWithSessionID );
 			

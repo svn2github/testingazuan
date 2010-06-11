@@ -91,6 +91,13 @@ END-CAS -->
 		<servlet-name>AccessibilityServlet</servlet-name>
 		<servlet-class>it.eng.spagobi.engines.accessibility.servlet.AccessibilityServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>EngineTestServlet</servlet-name>
+		<servlet-class>
+			it.eng.spagobi.utilities.engines.EngineTestServlet
+		</servlet-class>
+	</servlet>
+	
 	<servlet-mapping>
 		<servlet-name>AccessibilityServlet</servlet-name>
 		<url-pattern>/servlet/AccessibilityServlet</url-pattern>
@@ -99,5 +106,9 @@ END-CAS -->
 		<servlet-name>AccessibilityServlet</servlet-name>
 		<url-pattern>/servlet/AccessibilityServletBackEnd</url-pattern>
 	</servlet-mapping>	
+	<servlet-mapping>
+		<servlet-name>EngineTestServlet</servlet-name>
+		<url-pattern>/servlet/AccessibilityServletTest</url-pattern>
+	</servlet-mapping>
 	
 </web-app>

@@ -129,6 +129,12 @@
 			it.eng.spagobi.engines.georeport.services.MapOlAction
 	  </servlet-class>
     </servlet>
+    <servlet>
+		<servlet-name>EngineTestServlet</servlet-name>
+		<servlet-class>
+			it.eng.spagobi.utilities.engines.EngineTestServlet
+		</servlet-class>
+	</servlet>
 
 	<!--  ============================================================================ -->
 	<!--  SERVLET MAPPINGS						 									                               -->
@@ -149,6 +155,11 @@
     	<servlet-name>MapOl</servlet-name>
     	<url-pattern>/MapOl</url-pattern>
   	</servlet-mapping>
+  	 	    
+    <servlet-mapping>
+		<servlet-name>EngineTestServlet</servlet-name>
+		<url-pattern>/GeoReportEngineStartActionTest</url-pattern>
+	</servlet-mapping>
 	
 	
 	<!--  ============================================================================ -->

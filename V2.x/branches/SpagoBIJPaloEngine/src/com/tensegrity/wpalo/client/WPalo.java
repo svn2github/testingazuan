@@ -34,7 +34,6 @@ package com.tensegrity.wpalo.client;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Registry;
@@ -152,6 +151,8 @@ public class WPalo implements EntryPoint {
 							DisplayFlags.setDisplayFlagsFor(xView, user, displayFlags, globalFlags);
 							xView.setExternalId(viewId);
 							Dispatcher.get().dispatch(WPaloEvent.EDIT_VIEWBROWSER_VIEW, xView);
+							String subobjId = "OK - 4";
+							refreshSubobjects(subobjId);
 						}
 					});
 	}		

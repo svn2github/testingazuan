@@ -43,6 +43,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.palo.api.Attribute;
 import org.palo.api.Element;
 import org.palo.api.ElementNode;
@@ -1339,4 +1341,11 @@ public class WPaloCubeViewServiceImpl extends CubeViewService implements
 			throw new SessionExpiredException("Session expired!");
 		}
 	}
+
+	public String getSubobjectId() {
+		// TODO Auto-generated method stub
+		HttpSession httpSession = getThreadLocalRequest().getSession(true);  
+		return (String)httpSession.getAttribute("saveSubObjectId");  
+	}
+
 }

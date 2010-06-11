@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.allen_sauer.gwt.log.client.SystemLogger;
 import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -72,6 +71,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToggleToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -180,6 +180,11 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 	
 	//-1 no yet set, 0 no write right, 1 write right
 	private int writeRight = -1;
+	public static native void refreshSubobjects(String id) /*-{	  
+
+	  	$wnd.sendMessage({'id': id, 'msg': 'Sub Object Saved!!'},'subobjectsaved');	  
+
+	}-*/;
 	
 	//drag n drop support:
 	private final PickupDragController dragController = 
@@ -1355,6 +1360,8 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 		pd.show();
 	}
 	
+
+	
 	private final void doSaveAsAfterCheck() {
 		final String[] usedNames = getViewNames();
 		XUser user = ((Workbench)Registry.get(Workbench.ID)).getUser();
@@ -1369,18 +1376,29 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 						try {
 						// which button was pressed:
 						if (be.buttonClicked.getItemId().equals(SaveAsDialog.SAVE)) {
+
 							showWaitDialog(constants.savingView());
 							updateView(new Callback<Void>() {
 								public void onFailure(Throwable t) {
+									//Window.alert("fallito!");
 									super.onFailure(t);
 									restoreLocalFilter(view);
 									view.setNeedsRestore(false);
 								}
 								public void onSuccess(Void arg0) {
 									String viewName = saveAsDlg.getViewName();
+									//Window.alert("ok!");
 									((ViewEditorTab) tab).saveAs(viewName, view,
 											saveAsDlg.isPublic(), saveAsDlg.isEditable(), new Callback<Boolean>(){
 												public void onSuccess(Boolean result) {
+													WPaloCubeViewServiceProvider.getInstance().getSubobjectId(new Callback<String>(){
+														public void onFailure(Throwable t) {						
+															super.onFailure(t);
+														}
+														public void onSuccess(String id) {
+															 refreshSubobjects(id);
+														}
+													});
 													if (result) {
 														save.setEnabled(false);
 														tab.close();
@@ -1633,6 +1651,18 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 		view.setNeedsRestore(true);
 		WPaloCubeViewServiceProvider.getInstance().updateView(sessionId, view,
 				updateCallback);
+		
+		
+/*		WPaloCubeViewServiceProvider.getInstance().getSubobjectId(new Callback<String>(){
+			public void onFailure(Throwable t) {						
+				super.onFailure(t);
+			}
+			public void onSuccess(String id) {
+				refreshSubobjects(id);
+			}
+		});*/
+		
+		
 	}
 	
 	private final void updateAndSaveView(final Callback<XViewModel> callbackAfterSave) {

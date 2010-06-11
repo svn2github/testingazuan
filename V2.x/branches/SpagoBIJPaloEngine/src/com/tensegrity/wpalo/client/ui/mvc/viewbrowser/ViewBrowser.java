@@ -173,6 +173,8 @@ public class ViewBrowser extends View {
 		fireEvent(new AppEvent<TreeNode>(WPaloEvent.EDIT_VIEWBROWSER_VIEW, node));
 	}
 	
+
+	
 	protected void handleEvent(AppEvent<?> event) {
 		switch (event.type) {
 		case WPaloEvent.INIT:			

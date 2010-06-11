@@ -75,6 +75,7 @@ public class ViewBrowserController  extends Controller {
 				WPaloEvent.DELETED_ITEM,
 				WPaloEvent.VIEW_LOADED);
 	}
+
 	
 	public void addViewToLoad(XView view) {
 		viewsToLoad.add(view);

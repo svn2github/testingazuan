@@ -154,4 +154,5 @@ public interface WPaloCubeViewService extends RemoteService {
 	public String [] hideItem(String sessionId, XAxisItem item, List <XAxisItem> roots, String viewId, String axisId, boolean column, boolean hideLevel) throws SessionExpiredException;
 	
 	public void deleteFile(String fileName);
+	public String getSubobjectId();  
 }

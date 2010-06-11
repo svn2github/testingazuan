@@ -102,6 +102,10 @@ public class WPaloCubeViewServiceProvider implements WPaloCubeViewServiceAsync {
 //		}
 //	}
 	
+	public WPaloCubeViewServiceAsync getProxy() {
+		return proxy;
+	}
+
 	public WPaloCubeViewServiceProvider() {
 		proxy = GWT.create(WPaloCubeViewService.class);
 		((ServiceDefTarget) proxy).setServiceEntryPoint(GWT.getModuleBaseURL()
@@ -362,4 +366,9 @@ public class WPaloCubeViewServiceProvider implements WPaloCubeViewServiceAsync {
 	public void deleteFile(String fileName, AsyncCallback<Void> cb) {
 		proxy.deleteFile(fileName, cb);
 	}
+
+	public void getSubobjectId(AsyncCallback<String> cb) {
+		proxy.getSubobjectId(cb);
+	}
+
 }

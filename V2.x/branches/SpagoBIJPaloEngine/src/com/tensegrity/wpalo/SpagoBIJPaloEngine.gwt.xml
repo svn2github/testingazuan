@@ -7,6 +7,7 @@
 	<!-- Inherit the core Web Toolkit stuff.                        -->
 	<inherits name='com.google.gwt.user.User' />
 
+
 	<!-- Inherit the default GWT style sheet.  You can change       -->
 	<!-- the theme of your GWT application by uncommenting          -->
 	<!-- any one of the following lines.                            -->
@@ -27,6 +28,7 @@
 
 	<!-- Inherit gwt-dnd support                   -->
 	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />
+	
 
 	<!-- i18n -->
 	<inherits name='com.google.gwt.i18n.I18N' />

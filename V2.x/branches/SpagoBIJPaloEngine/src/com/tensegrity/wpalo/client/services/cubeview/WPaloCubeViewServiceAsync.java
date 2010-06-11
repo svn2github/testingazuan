@@ -140,4 +140,5 @@ public interface WPaloCubeViewServiceAsync {
 	public void hideItem(String sessionId, XAxisItem item, List <XAxisItem> roots, String viewId, String axisId, boolean column, boolean hideLevel, AsyncCallback <String []> cb);
 	
 	public void deleteFile(String fileName, AsyncCallback <Void> cb);
+	public void getSubobjectId(AsyncCallback <String> cb);
 }

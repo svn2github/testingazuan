@@ -4,29 +4,24 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
+	
 	<display-name>SpagoBIJPaloEngine</display-name>
 	<description>
 		SpagoBI - Palo Web Client Engine
 	</description>
-	<!--  
-	<filter>
-		<filter-name>SpagoBIAccessFilter</filter-name>
-		<filter-class>
-			it.eng.spagobi.utilities.filters.SpagoBIAccessFilter
-		</filter-class>
-	</filter>
-	-->
-	<filter>
-		<filter-name>NoCacheFilter</filter-name>
-		<filter-class>
-			com.tensegrity.wpalo.server.filter.NoCacheFilter
-		</filter-class>
-		<init-param>
-			<param-name>Cache-Control</param-name>
-			<param-value>private,no-cache,no-store</param-value>
-		</init-param>
-	</filter>
-<!-- START-CAS
+	  <!-- optional? now in JPivot by default  -->
+	  <context-param>
+		<param-name>contextFactory</param-name>
+		<param-value>com.tonbeller.wcf.controller.RequestContextFactoryImpl</param-value>
+	  </context-param>
+
+	  <context-param>
+		<param-name>connectString</param-name>
+		<param-value>Provider=mondrian;Jdbc=jdbc:mysql://sibilla2/foodmartmondrian?user=root&#38;password=;Catalog=/WEB-INF/schema/FoodMart.xml;JdbcDrivers=com.mysql.jdbc.Driver; 
+	</param-value>
+	  </context-param>
+	  
+<!-- START-CAS 	  
 <filter>
   <filter-name>CAS Authentication Filter</filter-name>
   <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
@@ -36,7 +31,7 @@
   </init-param>
   <init-param>
     <param-name>serverName</param-name>
-    <param-value>athos.engilab.ewebpd.eng.it:14473</param-value>
+    <param-value>athos.engilab.ewebpd.eng.it:1447</param-value>
   </init-param>    
 </filter>
 
@@ -64,40 +59,88 @@
 <filter>
   <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
   <filter-class>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
-</filter>
+</filter>	
 END-CAS -->
+
+	<filter>
+		<filter-name>EngineCheckSessionFilter</filter-name>
+		<filter-class>it.eng.spagobi.utilities.filters.EngineCheckSessionFilter</filter-class>
+	</filter>  
+  <filter>
+    <filter-name>JPivotController</filter-name>
+    <filter-class>com.tonbeller.wcf.controller.RequestFilter</filter-class>
+    <init-param>
+      <param-name>indexJSP</param-name>
+      <param-value>/index.html</param-value>
+      <description>forward to this page if session is new</description>
+    </init-param>
+    <init-param>
+      <param-name>errorJSP</param-name>
+      <param-value>/error.jsp</param-value>
+      <description>URI of error page</description>
+    </init-param>
+    <init-param>
+      <param-name>busyJSP</param-name>
+      <param-value>/busy.jsp</param-value>
+      <description>This page is displayed if a the user clicks
+        on a query before the previous query has finished</description>
+    </init-param>
+    <!--
+    <init-param>
+      <param-name>forceExtension</param-name>
+      <param-value>.faces</param-value>
+      <description>replace .jsp with .faces</description>
+    </init-param>
+    -->
+  </filter>  
+	<filter>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<filter-class>
+			it.eng.spagobi.utilities.filters.SpagoBIAccessFilter
+		</filter-class>
+	</filter>
+	<filter>
+		<filter-name>NoCacheFilter</filter-name>
+		<filter-class>
+			com.tensegrity.wpalo.server.filter.NoCacheFilter
+		</filter-class>
+		<init-param>
+			<param-name>Cache-Control</param-name>
+			<param-value>private,no-cache,no-store</param-value>
+		</init-param>
+	</filter>	
+	<filter-mapping>
+		<filter-name>EngineCheckSessionFilter</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
 	
-	<!--  ============================================================================ -->
-	<!--  FILTER MAPPINGS						 									   -->
-	<!--  ============================================================================ -->
-<!-- START-CAS 
+<!-- START-CAS	
   <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/com.tensegrity.wpalo.SpagoBIJPaloEngine/JPaloEngineStartServlet/*</url-pattern>
   </filter-mapping> 
     	
    <filter-mapping>
     <filter-name>CAS Validation Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/com.tensegrity.wpalo.SpagoBIJPaloEngine/JPaloEngineStartServlet/*</url-pattern>
   </filter-mapping> 
    	
 
    <filter-mapping>
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/com.tensegrity.wpalo.SpagoBIJPaloEngine/JPaloEngineStartServlet/*</url-pattern>
   </filter-mapping> 
   
   <filter-mapping>
 		<filter-name>CAS Validation Filter</filter-name>
 		<url-pattern>/proxyCallback</url-pattern>	
   </filter-mapping>
- END-CAS -->	
- <!-- 
+END-CAS -->  
 	<filter-mapping>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<url-pattern>/com.tensegrity.wpalo.SpagoBIJPaloEngine/JPaloEngineStartServlet</url-pattern>
 	</filter-mapping>
-	-->	
+
 	<filter-mapping>
 		<filter-name>NoCacheFilter</filter-name>
 		<url-pattern>*.css</url-pattern>
@@ -110,7 +153,20 @@ END-CAS -->
 		<filter-name>NoCacheFilter</filter-name>
 		<url-pattern>*.js</url-pattern>
 	</filter-mapping>
+	  <filter-mapping>
+		<filter-name>JPivotController</filter-name>
+		<url-pattern>/testpage.jsp</url-pattern>
+	  </filter-mapping>
 
+
+	  <listener>
+		<listener-class>mondrian.web.taglib.Listener</listener-class>
+	  </listener>
+
+	  <!-- resources initializer -->
+	  <listener>
+		<listener-class>com.tonbeller.tbutils.res.ResourcesFactoryContextListener</listener-class>
+	  </listener>
 <!--  SERVLETS  -->
 	<servlet>
 		<servlet-name>EngineTestServlet</servlet-name>
@@ -168,7 +224,69 @@ END-CAS -->
 			JPaloEngineStartServlet
 		</servlet-class>
 	</servlet>
+	<servlet>
+    <servlet-name>MDXQueryServlet</servlet-name>
+    <servlet-class>mondrian.web.servlet.MDXQueryServlet</servlet-class>
+    <init-param>
+      <param-name>connectString</param-name>
+      <param-value>Provider=mondrian;Jdbc=jdbc:mysql://sibilla2/foodmartmondrian?user=root&#38;password=mysql;Catalog=/WEB-INF/schema/FoodMart.xml;JdbcDrivers=com.mysql.jdbc.Driver; </param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>MondrianXmlaServlet</servlet-name>
+    <servlet-class>mondrian.xmla.impl.DefaultXmlaServlet</servlet-class>
+    <!--
+    <init-param>
+      <param-name>DataSourcesConfig</param-name>
+      <param-value>/datasources.xml</param-value>
+    </init-param>
+    -->
+  </servlet>
+
+
+  <!-- jfreechart provided servlet -->
+  <servlet>
+    <servlet-name>DisplayChart</servlet-name>
+    <servlet-class>org.jfree.chart.servlet.DisplayChart</servlet-class>
+  </servlet>
+
+  <!-- jfreechart provided servlet -->
+  <servlet>
+    <servlet-name>GetChart</servlet-name>
+    <display-name>GetChart</display-name>
+    <description>Default configuration created for servlet.</description>
+    <servlet-class>com.tonbeller.jpivot.chart.GetChart</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>Print</servlet-name>
+    <display-name>Print</display-name>
+    <description>Default configuration created for servlet.</description>
+    <servlet-class>com.tonbeller.jpivot.print.PrintServlet</servlet-class>
+  </servlet>
 <!--  MAPPING  -->
+  <servlet-mapping>
+    <servlet-name>DisplayChart</servlet-name>
+    <url-pattern>/DisplayChart</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Print</servlet-name>
+    <url-pattern>/Print</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>GetChart</servlet-name>
+    <url-pattern>/GetChart</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>MDXQueryServlet</servlet-name>
+    <url-pattern>/mdxquery</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>MondrianXmlaServlet</servlet-name>
+    <url-pattern>/xmla</url-pattern>
+  </servlet-mapping>
 	<servlet-mapping>
         <servlet-name>JPaloEngineStartServlet</servlet-name>
         <url-pattern>/com.tensegrity.wpalo.SpagoBIJPaloEngine/JPaloEngineStartServlet</url-pattern>
@@ -231,7 +349,16 @@ END-CAS -->
 		<welcome-file>default.htm</welcome-file>
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
-	
+  <taglib>
+    <taglib-uri>http://www.tonbeller.com/wcf</taglib-uri>
+    <taglib-location>/WEB-INF/wcf/wcf-tags.tld</taglib-location>
+  </taglib>
+
+  <taglib>
+    <taglib-uri>http://www.tonbeller.com/jpivot</taglib-uri>
+    <taglib-location>/WEB-INF/jpivot/jpivot-tags.tld</taglib-location>
+  </taglib>
+
 	  <error-page>
 	  	<exception-type>java.lang.Throwable</exception-type>
 	  	<location>/html/error.html</location>
@@ -239,11 +366,12 @@ END-CAS -->
 		 
 	  <error-page>
 	  	<error-code>404</error-code>
-	  	<location>/html/error.html</location>
+	  	<location>/html/error404.html</location>
 	  </error-page>
   
 	  <error-page>
 	  	<error-code>500</error-code>
 	  	<location>/html/error.html</location>
 	  </error-page>
+
 </web-app>

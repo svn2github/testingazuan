@@ -218,7 +218,7 @@ Ext.extend(Sbi.formviewer.ResultsPage, Ext.Panel, {
 		this.masterResultsPanel = new Sbi.formviewer.DataStorePanel({
 			region: 'west',
 			split: true,
-			collapsible: true,
+			collapsible: false,
 			autoScroll: true,
 			frame: false, 
 			border: false,

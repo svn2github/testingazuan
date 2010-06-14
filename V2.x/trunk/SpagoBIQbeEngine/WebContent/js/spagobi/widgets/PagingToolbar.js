@@ -57,7 +57,7 @@ Ext.extend(Sbi.widgets.PagingToolbar, Ext.PagingToolbar, {
 	beforeLoad : function(store, o){
 		Sbi.widgets.PagingToolbar.superclass.beforeLoad.call(this);
 		
-		 var pn = this.paramNames;
+		 var pn = store.paramNames;
 		 if(o.params[pn.start] === undefined && o.params[pn.limit] === undefined) {
 			 // load has been forced not by paging toolbar
 			 o.params[pn.start] = 0; //this.cursor;

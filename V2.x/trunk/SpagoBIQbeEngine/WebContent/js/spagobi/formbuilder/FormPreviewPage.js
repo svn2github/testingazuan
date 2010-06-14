@@ -52,7 +52,7 @@ Sbi.formbuilder.FormPreviewPage = function(config) {
 		title: LN('sbi.formbuilder.formpreviewpage.title')
 		, defaultSrc: 'about:blank'
 		, autoLoad: true
-        , loadMask: true
+        , loadMask: {msg: 'Loading...'}
         , fitToParent: true  // not valid in a layout
         , disableMessaging: true
 	};
@@ -68,6 +68,6 @@ Sbi.formbuilder.FormPreviewPage = function(config) {
 	
 };
 
-Ext.extend(Sbi.formbuilder.FormPreviewPage, Ext.ux.ManagedIframePanel, {
+Ext.extend(Sbi.formbuilder.FormPreviewPage, Ext.ux.ManagedIFramePanel, {
     
 });

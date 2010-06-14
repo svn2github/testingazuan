@@ -67,6 +67,7 @@ Sbi.formbuilder.StaticCloseFilterGroupEditor = function(config) {
 		filterTitle: this.groupTitle || 'Filter Group'
 		, filterFrame: true
 		, tbar: this.toolbar
+		, header: false
 	});
 	
 	// constructor
@@ -153,7 +154,8 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupEditor, Sbi.formbuilder.EditorP
 	}
 	
 	, deleteFilter: function(f) {
-		this.remove(f, true);
+		f.destroy();
+		//this.remove(f, true);
 	}
 	
 	, editFilter: function(f) {

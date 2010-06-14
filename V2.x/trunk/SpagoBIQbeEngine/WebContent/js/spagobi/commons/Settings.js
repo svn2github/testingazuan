@@ -72,4 +72,7 @@ Sbi.settings.formviewer = {
 			width: 300
 			//, height: 150
 		}
+		, staticOpenFiltersPanel: {
+			valueDelimiter: '--!;;;;;!--'
+		}
 };

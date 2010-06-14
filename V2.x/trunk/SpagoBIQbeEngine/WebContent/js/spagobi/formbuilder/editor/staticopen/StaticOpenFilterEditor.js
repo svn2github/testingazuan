@@ -49,7 +49,7 @@ Ext.ns("Sbi.formbuilder");
 Sbi.formbuilder.StaticOpenFilterEditor = function(config) {
 	
 	var defaultSettings = {
-			layout: 'form' // form layout required: input field labels are displayed only with this layout
+		layout: 'form' // form layout required: input field labels are displayed only with this layout
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.staticOpenFilterEditor) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.staticOpenFilterEditor);
@@ -69,7 +69,8 @@ Sbi.formbuilder.StaticOpenFilterEditor = function(config) {
 	
 	// constructor
 	Ext.apply(c, {
-		items: [this.filter]
+		header: false
+		, items: [this.filter]
 	});
     Sbi.formbuilder.StaticOpenFilterEditor.superclass.constructor.call(this, c);
 };
@@ -166,6 +167,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditor, Ext.Panel,  {
 		
 		this.store = new Ext.data.JsonStore({
 			url: this.services['getFilterValuesService']
+			, remoteSort: true
 		});
 		var baseParams = {'ENTITY_ID': entityId, 'ORDER_ENTITY': orderField, 'ORDER_TYPE': orderType, 'QUERY_ROOT_ENTITY': queryRootEntity};
 		this.store.baseParams = baseParams;
@@ -174,4 +176,5 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditor, Ext.Panel,  {
 			Sbi.exception.ExceptionHandler.handleFailure(response, options);
 		});
 	}
+	
 });

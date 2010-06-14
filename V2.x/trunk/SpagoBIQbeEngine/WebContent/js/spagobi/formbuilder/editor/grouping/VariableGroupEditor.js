@@ -71,6 +71,7 @@ Sbi.formbuilder.VariableGroupEditor = function(config) {
 	Ext.apply(c, {
 		filterTitle: this.groupTitle
 		, filterFrame: true
+		, header: false
 	});
 	
 	// constructor
@@ -117,7 +118,8 @@ Ext.extend(Sbi.formbuilder.VariableGroupEditor, Sbi.formbuilder.EditorPanel, {
 	}
 	
 	, deleteField: function(f) {
-		this.remove(f, true);
+		f.destroy();
+		//this.remove(f, true);
 	}
 	
 	, editFilter: function(f) {

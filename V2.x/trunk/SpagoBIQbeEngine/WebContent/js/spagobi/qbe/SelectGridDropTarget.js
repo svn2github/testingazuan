@@ -121,13 +121,12 @@ Ext.extend(Sbi.qbe.SelectGridDropTarget, Ext.dd.DropTarget, {
 		nodeType = node.attributes.type || node.attributes.attributes.type;
 
         if(nodeType == 'field') {
-        	
         	field = {
-        		id: ddSource.dragData.node.id , 
-            	entity: ddSource.dragData.node.attributes.entity , 
-            	field: ddSource.dragData.node.attributes.field,
-            	alias: ddSource.dragData.node.attributes.field,
-            	longDescription: ddSource.dragData.node.attributes.longDescription
+        		id: node.id , 
+            	entity: node.attributes.attributes.entity , 
+            	field: node.attributes.attributes.field,
+            	alias: node.attributes.attributes.field,
+            	longDescription: node.attributes.attributes.longDescription
           	};
         
         	this.targetPanel.addField(field, rowIndex);
@@ -135,10 +134,10 @@ Ext.extend(Sbi.qbe.SelectGridDropTarget, Ext.dd.DropTarget, {
         } else if(nodeType == 'calculatedField'){
         	
         	field = {
-            	id: ddSource.dragData.node.id , 
-                entity: ddSource.dragData.node.attributes.entity , 
-                field: ddSource.dragData.node.attributes.field,
-                alias: ddSource.dragData.node.attributes.field  
+            	id: node.id , 
+                entity: node.attributes.attributes.entity , 
+                field: node.attributes.attributes.field,
+                alias: node.attributes.attributes.field  
              };
             
             this.targetPanel.addField(field, rowIndex);

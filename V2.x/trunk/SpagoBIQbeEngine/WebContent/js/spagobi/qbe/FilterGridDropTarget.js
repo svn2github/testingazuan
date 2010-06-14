@@ -220,25 +220,25 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 			if(dropColDataIndex === 'rightOperandDescription') {			
 				filter = {
 					rightOperandValue: node.id
-					, rightOperandDescription: node.attributes.entity + ' : ' + node.attributes.field 
+					, rightOperandDescription: node.attributes.attributes.entity + ' : ' + node.attributes.attributes.field 
 					, rightOperandType: 'Field Content'
-					, rightOperandLongDescription: node.attributes.longDescription
+					, rightOperandLongDescription: node.attributes.attributes.longDescription
 				};
 				this.targetPanel.modifyFilter(filter, rowIndex);
 			}else if(dropColDataIndex === 'leftOperandDescription') {			
 				filter = {
 					leftOperandValue: node.id
-					, leftOperandDescription: node.attributes.entity + ' : ' + node.attributes.field 
+					, leftOperandDescription: node.attributes.attributes.entity + ' : ' + node.attributes.attributes.field 
 					, leftOperandType: 'Field Content'
-					, leftOperandLongDescription: node.attributes.longDescription
+					, leftOperandLongDescription: node.attributes.attributes.longDescription
 				};
 				this.targetPanel.modifyFilter(filter, rowIndex);
 			} else {
 				filter = {
 					leftOperandValue: node.id
-					, leftOperandDescription: node.attributes.entity + ' : ' + node.attributes.field 
+					, leftOperandDescription: node.attributes.attributes.entity + ' : ' + node.attributes.attributes.field 
 					, leftOperandType: 'Field Content'
-					, leftOperandLongDescription: node.attributes.longDescription
+					, leftOperandLongDescription: node.attributes.attributes.longDescription
 				};
 	  			this.targetPanel.insertFilter(filter, rowIndex);
 			}

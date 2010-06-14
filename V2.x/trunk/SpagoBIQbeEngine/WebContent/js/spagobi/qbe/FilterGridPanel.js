@@ -214,10 +214,14 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	}
 	
 	, modifyFilter: function(filter, i) {
+		alert(i);
 		if(i != undefined) {			
 			var record = this.store.getAt( i );
+			alert(record);
+			alert(record.data.toSource());
 			Ext.apply(record.data, filter || {});	
 			record = this.store.getAt( i );
+			alert(record.data.toSource());
 			this.store.fireEvent('datachanged', this.store) ;
 		}
 	}
@@ -578,7 +582,8 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	              emptyText: LN('sbi.qbe.filtergridpanel.foperators.editor.emptymsg'),
 	              selectOnFocus: true //True to select any existing text in the field immediately on focus
 	        });
-   
+
+		    /*
 		    var parentFieldEditor = new Ext.form.TriggerField({
 	             allowBlank: true
 	             , triggerClass: 'trigger-up'
@@ -644,14 +649,6 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    multiButtonEditor.onTrigger1Click = this.openValuesForQbeFilterLookup.createDelegate(this);
 		    multiButtonEditor.onTrigger2Click = this.onOpenValueEditor.createDelegate(this);  	
 		    
-		   /* multiButtonEditor.on('onlookupvalues', function(f){
-		    	this.openValuesForQbeFilterLookup.createDelegate(this);	    	
-		    }, this);
-		    
-		    multiButtonEditor.on('onparentvalues', function(f){
-		    	this.onOpenValueEditor.createDelegate(this);  	
-		    }, this);*/
-		    
 		    multiButtonEditor.on('change', function(f, newValue, oldValue){
 		    	if(this.activeEditingContext) {
 		    		if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
@@ -660,14 +657,13 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    	}		    	
 		    }, this);
 		    
-		    
 		    this.valueColumnEditors = {
 		    		parentFieldEditor: new Ext.grid.GridEditor(parentFieldEditor)		    		
 		    		, textEditor: new Ext.grid.GridEditor(textEditor)
 		    		, lookupFieldEditor: new Ext.grid.GridEditor(lookupFieldEditor)	
 		    		, multiButtonEditor: new Ext.grid.GridEditor(multiButtonEditor)
-		    }
-		    
+		    };
+		    */
 			
 		    this.cm = new Ext.grid.ColumnModel([
 		        new Ext.grid.RowNumberer(),
@@ -726,7 +722,6 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				    header: LN('sbi.qbe.filtergridpanel.headers.rodesc')
 				    , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.rodesc')
 				    , dataIndex: 'rightOperandDescription'       
-				    , editor: this.columns['rightOperandDescription'].editable === true? textEditor : undefined
 				    , hideable: false
 				    , hidden: false	
 				    , sortable: false
@@ -944,7 +939,6 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			cancel - Set this to true to cancel the edit or return false from your handler.
 		 */
 		
-		
 		if(this.activeEditingContext) {
 			var filter = this.getFilterAt(this.activeEditingContext.row);
 			if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
@@ -978,18 +972,111 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			var editor;
 			if(this.parentQuery !== null) {
 				if(dataIndex === 'rightOperandDescription'){
-					editor = this.valueColumnEditors.multiButtonEditor;
+					editor = this.createMultiButtonEditor();
 				}else{
-					editor = this.valueColumnEditors.parentFieldEditor;
+					editor = this.createParentFieldEditor();
 				}
 			} else if(dataIndex === 'rightOperandDescription') {
-				editor = this.valueColumnEditors.lookupFieldEditor;
+				editor = this.createLookupFieldEditor();
 			}  else {
-				editor = this.valueColumnEditors.textEditor;
+				editor = this.createTextEditor();
 			}
 				
-			this.grid.colModel.setEditor(col,editor);
-		}			
+			this.grid.colModel.setEditor(col, editor);
+		}	
+		
+	}
+	
+	, createMultiButtonEditor: function () {
+		var multiButtonEditor = new Sbi.widgets.TriggerFieldMultiButton({
+	     		allowBlank: true
+	    });
+    
+	    multiButtonEditor.ownerGrid = this;
+	    multiButtonEditor.fireKey = this.fireKeyHandler;
+	    
+	    multiButtonEditor.onTrigger1Click = this.openValuesForQbeFilterLookup.createDelegate(this);
+	    multiButtonEditor.onTrigger2Click = this.onOpenValueEditor.createDelegate(this);  	
+	    
+	    multiButtonEditor.on('change', function(f, newValue, oldValue) {
+	    	if (this.activeEditingContext) {
+	    		if (this.activeEditingContext.dataIndex === 'rightOperandDescription') {
+	    			this.modifyFilter({
+		    				rightOperandValue: newValue, 
+		    				rightOperandType: 'Static Value', 
+		    				rightOperandLongDescription: null
+	    				}, 
+	    				this.activeEditingContext.row);
+	    		}
+	    	}		    	
+	    }, this);
+	    
+	    return multiButtonEditor;
+	}
+	
+	, createParentFieldEditor: function () {
+	    var parentFieldEditor = new Ext.form.TriggerField({
+            allowBlank: true
+            , triggerClass: 'trigger-up'
+
+	    });
+	    parentFieldEditor.onTriggerClick = this.onOpenValueEditor.createDelegate(this);
+	    parentFieldEditor.on('change', function(f, newValue, oldValue){
+	    	if(this.activeEditingContext) {
+	    		if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
+	    			this.modifyFilter({leftOperandValue: newValue, leftOperandType: 'Static Value', leftOperandLongDescription: null}, this.activeEditingContext.row);
+	    		} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
+	    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value', rightOperandLongDescription: null}, this.activeEditingContext.row);
+	    		}
+	    	}		    	
+	    }, this);
+	    
+	    return parentFieldEditor;
+	}
+	
+	, createLookupFieldEditor: function () {
+	    var lookupFieldEditor = new Ext.form.TriggerField({
+            allowBlank: true
+            , triggerClass: 'x-form-search-trigger'
+	    });
+	    
+		lookupFieldEditor.ownerGrid = this;
+		lookupFieldEditor.fireKey = this.fireKeyHandler;
+	    
+	    lookupFieldEditor.onTriggerClick = this.openValuesForQbeFilterLookup.createDelegate(this);
+	    lookupFieldEditor.on('change', function(f, newValue, oldValue){
+	    	if(this.activeEditingContext) {
+	    		if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
+	    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value', rightOperandLongDescription: null}, this.activeEditingContext.row);
+	    		}
+	    	}		    	
+	    }, this);
+	    
+	    return lookupFieldEditor;
+	}
+	
+	, createTextEditor: function () {
+	    var textEditor = new Ext.form.TextField({
+            allowBlank: true
+	    });
+	    
+	    textEditor.ownerGrid = this;
+	    textEditor.fireKey = this.fireKeyHandler;
+	    
+	    textEditor.on('change', function(f, newValue, oldValue){
+	    	
+	    	if(this.activeEditingContext) {
+	    		if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
+	    			this.modifyFilter({leftOperandValue: newValue, leftOperandType: 'Static Value', leftOperandLongDescription: null}, this.activeEditingContext.row);
+	    		} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
+	    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value', rightOperandLongDescription: null}, this.activeEditingContext.row);
+	    		} else {
+	    			//alert('ONCHANGE: ' + this.activeEditingContext.dataIndex);
+	    		}
+	    	}		    	
+	    }, this);
+	    
+	    return textEditor;
 	}
 	
 	, onOpenValueEditor: function(e) {

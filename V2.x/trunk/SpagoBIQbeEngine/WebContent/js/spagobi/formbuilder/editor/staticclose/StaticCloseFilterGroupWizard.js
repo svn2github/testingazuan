@@ -169,7 +169,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 		
 		var s = Ext.apply(this.baseState || {}, {
 			singleSelection: true
-			, allowNoSelection: false
+			, allowNoSelection: true
 			, noSelectionText: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.noselectiontext')
 			, booleanConnector: 'AND'
 		})
@@ -233,8 +233,8 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupWizard, Ext.Window, {
 			boxLabel: LN('sbi.formbuilder.staticclosefiltergroupwizard.fields.enablesingleselection.no'),
 			name: 'singleSelection',
 			checked: (this.baseState.singleSelection === false),
-            inputValue: false,
-            style:'margin-bottom:20px;'
+            inputValue: false
+            //style:'margin-bottom:20px;'
 		});
     	//items.push(this.singleSelectionField['fasle']);
     	this.singleSelectionField['false'].on('check', function(cb, checked){

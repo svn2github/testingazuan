@@ -304,7 +304,7 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 		this.rootNode = this.createRootNode();
 		
 		this.tree = new Ext.tree.TreePanel({
-	        collapsible: true,
+	        collapsible: false,
 	        
 	        enableDD: true,
 	        ddGroup: this.ddGroup,

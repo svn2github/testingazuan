@@ -431,11 +431,11 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
             lastText: LN('sbi.qbe.datastorepanel.grid.lasttext'),
             refreshText: LN('sbi.qbe.datastorepanel.grid.refreshtext'),
             //  prependButtons: true,
-          	buttonAlign  :"center",
+          	//buttonAlign  :"center",
 
             
     	    buttons: [{
-    	    	pressed: true,
+    	    	//pressed: true,
     	    	style: "margin-left: 30px;",
     			text: LN('sbi.qbe.datastore.refreshgrid'),
     		    handler: function(){
@@ -466,7 +466,7 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	        style:'padding:10px',
 	        frame: true,
 	        border:true,  	        
-	        collapsible:true,
+	        collapsible:false,
 	        loadMask: true,
 	        viewConfig: {
 	            forceFit:false,
@@ -518,7 +518,7 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	    } , this);
 	    
 	    // START CONTEXT MENU FOR EXTERNAL SERVICES INTEGRATION
-	    if (this.baseConfig.externalServicesConfig.length > 0) {
+	    if (this.baseConfig.externalServicesConfig && this.baseConfig.externalServicesConfig.length > 0) {
 	    	
 			// the row context menu
 		    var externalServicesMenuItems = [];

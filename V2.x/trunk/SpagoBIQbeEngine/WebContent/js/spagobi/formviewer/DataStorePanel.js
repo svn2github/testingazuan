@@ -246,7 +246,7 @@ Ext.extend(Sbi.formviewer.DataStorePanel, Ext.Panel, {
 		this.pagingTBar.on('render', function() {
 			this.pagingTBar.addItem(this.warningMessageItem);
 			this.warningMessageItem.setVisible(false);
-			this.pagingTBar.loading.setVisible(false);
+			//this.pagingTBar.loading.setVisible(false); // it does not work with Ext 3.2.1
 		}, this);
 		
 		// create the Grid
@@ -257,7 +257,7 @@ Ext.extend(Sbi.formviewer.DataStorePanel, Ext.Panel, {
 	        style:'padding:10px',
 	        frame: true,
 	        border:true,  	        
-	        collapsible:true,
+	        collapsible: false,
 	        loadMask: true,
 	        viewConfig: {
 	            forceFit:false,

@@ -465,7 +465,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	    });
 		
 		this.tree = new Ext.tree.TreePanel({
-	        collapsible: true,
+	        collapsible: false,
 	        
 	        enableDD: true,	        
 	        ddGroup: 'gridDDGroup',

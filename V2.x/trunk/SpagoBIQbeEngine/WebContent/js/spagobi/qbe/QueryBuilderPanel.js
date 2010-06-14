@@ -62,8 +62,8 @@ Sbi.qbe.QueryBuilderPanel = function(config) {
 		enableQueryTbSaveViewBtn: false,
 		enableQueryTbValidateBtn: false,
 		enableCatalogueTbDeleteBtn: true,
-		enableCatalogueTbAddBtn: true,
-		enableCatalogueTbInsertBtn: false
+		enableCatalogueTbAddBtn: false,
+		enableCatalogueTbInsertBtn: true
   	};
 	if(Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.queryBuilderPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.queryBuilderPanel);
@@ -399,7 +399,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		
 		this.qbeStructurePanel = new Ext.Panel({
 	        id:'treepanel',
-	        collapsible: true,
+	        collapsible: false,
 	        margins:'0 0 0 5',
 	        layout:'accordion',
 	        layoutConfig:{
@@ -480,6 +480,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	
 	, initCenterRegionPanel: function(c) {
 		c.documentParametersStore = this.documentParametersStore;
+		//c.flex = 1;
 		this.selectGridPanel = new Sbi.qbe.SelectGridPanel(c);
 	    this.filterGridPanel = new Sbi.qbe.FilterGridPanel(Ext.apply(c || {}, {gridTitle: LN('sbi.qbe.filtergridpanel.title')}));
 	    this.havingGridPanel = new Sbi.qbe.HavingGridPanel(c);
@@ -489,7 +490,13 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        region:'center',
 	        autoScroll: true,
 			containerScroll: true,
-			layout: 'fit',
+			/*
+			layout: {
+                type:'vbox',
+                padding:'0',
+                align:'stretch'
+            },
+            */
 	        margins: '5 5 5 5',
 	        tools:[{
 	        	id:'save',
@@ -599,7 +606,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		          }, 
 		          scope: this
 		        }, {
-		          id:'plus',
+		          id:'add',
 		          qtip:LN('sbi.qbe.queryeditor.eastregion.tools.add'),
 		          hidden: (this.enableCatalogueTbAddBtn == false),
 		          handler: function(event, toolEl, panel){
@@ -650,10 +657,10 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     			field = {
 			    	id: node.id,
 			    	type: this.selectGridPanel.DATAMART_FIELD,
-			    	entity: node.attributes.entity, 
-			    	field: node.attributes.field,
-			    	alias: node.attributes.field,
-			    	longDescription: node.attributes.longDescription
+			    	entity: node.attributes.attributes.entity, 
+			    	field: node.attributes.attributes.field,
+			    	alias: node.attributes.attributes.field,
+			    	longDescription: node.attributes.attributes.longDescription
 			    };				    	
 			    
     			Ext.apply(field, recordBaseConfig);
@@ -726,9 +733,9 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     		if(nodeType == 'field') {
 				filter = {
 					leftOperandValue: node.id
-					, leftOperandDescription: node.attributes.entity + ' : ' + node.attributes.field 
+					, leftOperandDescription: node.attributes.attributes.entity + ' : ' + node.attributes.attributes.field 
 					, leftOperandType: 'Field Content'
-					, leftOperandLongDescription: node.attributes.longDescription
+					, leftOperandLongDescription: node.attributes.attributes.longDescription
 				};
 		  		this.filterGridPanel.addFilter(filter);
 			
@@ -768,9 +775,9 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     		if(nodeType == 'field') {
 				filter = {
 					leftOperandValue: node.id
-					, leftOperandDescription: node.attributes.entity + ' : ' + node.attributes.field 
+					, leftOperandDescription: node.attributes.attributes.entity + ' : ' + node.attributes.attributes.field 
 					, leftOperandType: 'Field Content'
-					, leftOperandLongDescription: node.attributes.longDescription
+					, leftOperandLongDescription: node.attributes.attributes.longDescription
 				};
 		  		this.havingGridPanel.addFilter(filter);
 			

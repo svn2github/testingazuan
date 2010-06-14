@@ -335,6 +335,7 @@ public class ExtJsQbeTreeBuilder  {
 		try {
 			fieldNode.put("id", field.getUniqueName());
 			fieldNode.put("text", fieldLabel);
+			fieldNode.put("iconCls", iconCls);
 			fieldNode.put("leaf", true);
 			
 			JSONObject nodeAttributes = new JSONObject();

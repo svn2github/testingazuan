@@ -77,6 +77,7 @@ Sbi.formbuilder.DynamicFilterGroupEditor = function(config) {
 		filterTitle: this.groupTitle
 		, filterFrame: true
 		, tbar: this.toolbar
+		, header: false
 	});
 	
 	// constructor
@@ -126,7 +127,8 @@ Ext.extend(Sbi.formbuilder.DynamicFilterGroupEditor, Sbi.formbuilder.EditorPanel
 	}
 	
 	, deleteField: function(f) {
-		this.remove(f, true);
+		f.destroy();
+		//this.remove(f, true);
 	}
 	
 	, modifyFilter: function(state) {

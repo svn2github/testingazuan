@@ -563,47 +563,6 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 		         selectOnFocus:true
 	        });
 		   
-		    /*
-		    var parentFieldEditor = new Ext.form.TriggerField({
-	             allowBlank: true
-	             , triggerClass: 'x-form-search-trigger'
-
-		    });
-		    parentFieldEditor.onTriggerClick = this.onOpenValueEditor.createDelegate(this);
-		    parentFieldEditor.on('change', function(f, newValue, oldValue){
-		    	if(this.activeEditingContext) {
-		    		if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
-		    			this.modifyFilter({leftOperandValue: newValue, leftOperandType: 'Static Value'}, this.activeEditingContext.row);
-		    		} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
-		    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value'}, this.activeEditingContext.row);
-		    		}
-		    	}		    	
-		    }, this);
-		    */
-		    
-		    var textEditor = new Ext.form.TextField({
-	             allowBlank: true
-		    });
-		    
-		    textEditor.ownerGrid = this;
-		    textEditor.fireKey = this.fireKeyHandler;
-		    
-		    textEditor.on('change', function(f, newValue, oldValue){
-		    	if(this.activeEditingContext) {
-		    		if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
-		    			this.modifyFilter({leftOperandValue: newValue, leftOperandType: 'Static Value'}, this.activeEditingContext.row);
-		    		} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
-		    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value'}, this.activeEditingContext.row);
-		    		}
-		    	}		    	
-		    }, this);
-		    		
-		    this.valueColumnEditors = {
-		    		//parentFieldEditor: new Ext.grid.GridEditor(parentFieldEditor),		    		
-		    		textEditor: new Ext.grid.GridEditor(textEditor)
-		    }
-		    
-			
 		    this.cm = new Ext.grid.ColumnModel([
 		        new Ext.grid.RowNumberer(),
 		        { 
@@ -705,8 +664,8 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 				}, {
 				    header: LN('sbi.qbe.filtergridpanel.headers.rodesc')
 				    , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.rodesc')
-				    , dataIndex: 'rightOperandDescription'       
-				    , editor: textEditor
+				    , dataIndex: 'rightOperandDescription'
+				    , editor: new Ext.form.TextField({allowBlank: false})
 				    , hideable: false
 				    , hidden: false	
 				    , sortable: false
@@ -901,17 +860,30 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 		this.activeEditingContext.dirty = false;
 		
 		if(dataIndex === 'leftOperandDescription' || dataIndex === 'rightOperandDescription') {
-			var editor = this.valueColumnEditors.textEditor;
-			/*
-			var editor;
-			if(this.parentQuery !== null) {
-				editor = this.valueColumnEditors.parentFieldEditor;
-			} else {
-				editor = this.valueColumnEditors.textEditor;
-			}
-			*/
-			this.grid.colModel.setEditor(col,editor);
+			var editor = this.createTextEditor();
+			this.grid.colModel.setEditor(col, editor);
 		}			
+	}
+	
+	, createTextEditor: function() {
+	    var textEditor = new Ext.form.TextField({
+            allowBlank: true
+	    });
+	    
+	    textEditor.ownerGrid = this;
+	    textEditor.fireKey = this.fireKeyHandler;
+	    
+	    textEditor.on('change', function(f, newValue, oldValue){
+	    	if(this.activeEditingContext) {
+	    		if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
+	    			this.modifyFilter({leftOperandValue: newValue, leftOperandType: 'Static Value'}, this.activeEditingContext.row);
+	    		} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
+	    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value'}, this.activeEditingContext.row);
+	    		}
+	    	}		    	
+	    }, this);
+	    
+	    return textEditor;
 	}
 	
 	/*

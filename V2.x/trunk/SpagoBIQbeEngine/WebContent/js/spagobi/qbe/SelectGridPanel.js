@@ -448,6 +448,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	
 	, initColumnModel: function() {
 		// check-columns
+		
 	    var visibleCheckColumn = new Ext.grid.CheckColumn(
 	    	Ext.apply({
 	    		header: LN('sbi.qbe.selectgridpanel.headers.visible')
@@ -962,6 +963,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		        style:'padding:10px',
 		        iconCls:'icon-grid',
 		        collapsible:false,
+		        minColumnWidth: 5,
 		        layout: 'fit',
 		        viewConfig: {
 		            forceFit:true

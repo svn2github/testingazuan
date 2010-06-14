@@ -20,29 +20,28 @@
  **/
  
 /**
-  * Object name 
-  * 
-  * [description]
-  * 
-  * 
-  * Public Properties
-  * 
-  * [list]
-  * 
-  * 
-  * Public Methods
-  * 
-  *  [list]
-  * 
-  * 
-  * Public Events
-  * 
-  *  [list]
-  * 
-  * Authors
-  * 
-  * - Davide Zerbetto (davide.zerbetto@eng.it)
-  */
+ * Object name
+ * 
+ * [description]
+ * 
+ * 
+ * Public Properties
+ * 
+ * [list]
+ * 
+ * 
+ * Public Methods
+ * 
+ * [list]
+ * 
+ * 
+ * Public Events
+ * 
+ * [list]
+ * 
+ * Authors
+ *  - Davide Zerbetto (davide.zerbetto@eng.it)
+ */
 
 Ext.ns("Sbi.formviewer");
 
@@ -60,10 +59,12 @@ Sbi.formviewer.StaticOpenFiltersPanel = function(openFilters, config) {
     	, layoutConfig: {
 	        columns: openFilters.length
 	    }
+		, valueDelimiter: '--!;;;;!--'
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.staticOpenFiltersPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.staticOpenFiltersPanel);
 	}
+	
 	var c = Ext.apply(defaultSettings, config || {});
 	
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE'};
@@ -80,7 +81,7 @@ Sbi.formviewer.StaticOpenFiltersPanel = function(openFilters, config) {
 	Ext.apply(c, {
   		items: this.fields
 	});
-	
+
 	// constructor
     Sbi.formviewer.StaticOpenFiltersPanel.superclass.constructor.call(this, c);
     
@@ -104,9 +105,11 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
 			this.combos.push( field );
 			var aPanel = new Ext.Panel({
 				items: [field]
-				, layout: 'form' // form layout required: input field labels are displayed only with this layout
+				, layout: 'form' // form layout required: input field labels
+									// are displayed only with this layout
 				, width: 350
-				//, height: 40 // cannot set a static height, since the SuperBoxSelect resize vertically
+				// , height: 40 // cannot set a static height, since the
+				// SuperBoxSelect resize vertically
 			});
 			this.fields.push(aPanel);
 		}
@@ -121,6 +124,7 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
 		   , name : openFilter.id
 		   , width: this.baseConfig.fieldWidth
 		   , allowBlank: true
+		   , valueDelimiter: this.baseConfig.valueDelimiter
 		};
 		
 		var store = this.createStore(openFilter);
@@ -131,24 +135,16 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
 		}
 		
 		/*
-		var tpl = new Ext.XTemplate(
-			 '<tpl for=".">'
-	         + '<tpl if="this.isDate(values[\'column-1\'])">'
-	         +   '<div class="x-combo-list-item">{[values["column-1"]]}</div>'
-	         + '</tpl>'
-	         + '<tpl if="false == true">'
-	         +   '<div class="x-combo-list-item">{column-1}</div>'
-	         + '</tpl>'
-			 + '</tpl>', {
-			 isDate: function(value){
-	        	 alert(typeof value == 'date');
-		         return typeof value == 'date';
-		     }
-		});
-		*/
+		 * var tpl = new Ext.XTemplate( '<tpl for=".">' + '<tpl
+		 * if="this.isDate(values[\'column-1\'])">' + '<div
+		 * class="x-combo-list-item">{[values["column-1"]]}</div>' + '</tpl>' + '<tpl
+		 * if="false == true">' + '<div class="x-combo-list-item">{column-1}</div>' + '</tpl>' + '</tpl>', {
+		 * isDate: function(value){ alert(typeof value == 'date'); return typeof
+		 * value == 'date'; } });
+		 */
 		
 		field = new Ext.ux.form.SuperBoxSelect(Ext.apply(baseConfig, {
-			//displayFieldTpl: tpl
+			// displayFieldTpl: tpl
 			editable: true			    
 		    , forceSelection: false
 		    , store: store
@@ -164,7 +160,7 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
 		    , maxHeight: 250
 		    , displayDateFormat: Sbi.locale.formats.date.dateFormat
 		}));
-
+		
 		return field;
 	}
 
@@ -196,7 +192,14 @@ Ext.extend(Sbi.formviewer.StaticOpenFiltersPanel, Ext.form.FormPanel, {
 		var state = {};
 		for (var i = 0; i < this.combos.length; i++) {
 			var aCombo = this.combos[i];
-			state[aCombo.name] = aCombo.getValuesList();
+			// state[aCombo.name] = aCombo.getValuesList(); // it does not work
+			// in Ext 3.2.1
+			var concatenatedValues = aCombo.getValue();
+			if (concatenatedValues == '') {
+				state[aCombo.name] = [];
+			} else {
+				state[aCombo.name] = concatenatedValues.split(aCombo.valueDelimiter);
+			}
 		}
 		return state;
 	}

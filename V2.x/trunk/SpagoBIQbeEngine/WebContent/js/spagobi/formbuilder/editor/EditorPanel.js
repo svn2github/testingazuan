@@ -186,12 +186,15 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 	, reset: function() {	
 		if(this.contents && this.contents.length) {
 			for(var i = this.contents.length-1; i >= 0; i--) {
+				this.contents[i].destroy();
+				/*
 				if(this.rendered === true) {
 					// beware: "remove" fire destroy event that is catched above here. the callback modify the length of contents) 
 					this.remove(this.contents[i], true);
 				} else {
 					this.contents[i].destroy();
 				}
+				*/
 			}
 		}
 	}
@@ -264,11 +267,12 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 	
 	, onEditorDestroy: function() {
 		this.pendingDestruction = true;
+		return true;
 	}
 	
 	, onFilterItemDestroy: function(filterItem) {
 		
-		if(this.pendingDestruction === true) return;
+		if (this.pendingDestruction && this.pendingDestruction === true) return;
 		
 		var t = this.contents;
 		this.contents = [];
@@ -297,6 +301,7 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 			this.contents = [this.emptyMsgPanel];
 			this.doLayout();
 		}
+		
 	}
 
 	   

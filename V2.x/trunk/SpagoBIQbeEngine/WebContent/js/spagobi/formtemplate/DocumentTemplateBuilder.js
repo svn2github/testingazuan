@@ -123,31 +123,35 @@ Ext.extend(Sbi.formtemplate.DocumentTemplateBuilder, Ext.Panel, {
 	        method: 'GET'
 	    });
 		
-		
-		
-		this.proxy.handleResponse = function(o, trans){
-	        this.trans = false;
-	        this.destroyTrans(trans, true);
+		this.proxy.onRead = function(action, trans, res) {
 	        var result;
-	        try {	        	
-	        	var t, fc = o.folderContent; 
-	            for(var i = 0; i < fc.length; i++) {
-	            	if(fc[i].title === 'Documents') {
-	            		t = fc[i];
-	            		break;
-	            	}
-	            }
-	            t = t.samples;	        
-	            
+	        try {
+	        	var t, fc = res.folderContent; 
+	        	for (var i = 0; i < fc.length; i++) {
+	        		if(fc[i].title === 'Documents') {
+	        			t = fc[i];
+	        			break;
+	        		}
+	        	}
+	        	t = t.samples;	        
 	        	result = trans.reader.readRecords(t);
 	        }catch(e){
-	            this.fireEvent("loadexception", this, o, trans.arg, e);
+	            // @deprecated: fire loadexception
+	            this.fireEvent("loadexception", this, trans, res, e);
+
+	            this.fireEvent('exception', this, 'response', action, trans, res, e);
 	            trans.callback.call(trans.scope||window, null, trans.arg, false);
 	            return;
 	        }
-	       
-	        this.fireEvent("load", this, o, trans.arg);
-	        trans.callback.call(trans.scope||window, result, trans.arg, true);
+	        if (result.success === false) {
+	            // @deprecated: fire old loadexception for backwards-compat.
+	            this.fireEvent('loadexception', this, trans, res);
+
+	            this.fireEvent('exception', this, 'remote', action, trans, res, null);
+	        } else {
+	            this.fireEvent("load", this, res, trans.arg);
+	        }
+	        trans.callback.call(trans.scope||window, result, trans.arg, result.success);
 	    };
 	   
 	    var store = new Ext.data.Store({

@@ -49,6 +49,8 @@ Ext.ns("Sbi.formbuilder");
 Sbi.formbuilder.StaticOpenFilterGroupEditor = function(config) {
 		
 	var defaultSettings = {
+		width: 400
+		, autoWidth: false
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.staticOpenFilterGroupEditor) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formbuilder.staticOpenFilterGroupEditor);
@@ -59,6 +61,7 @@ Sbi.formbuilder.StaticOpenFilterGroupEditor = function(config) {
 	
 	Ext.apply(c, {
 		tbar: this.toolbar
+		, header: false
 	});
 	
 	// constructor
@@ -118,6 +121,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterGroupEditor, Sbi.formbuilder.EditorPa
 			    		} else {
 			    			this.destroy();
 			    		}
+			    		
 				    },
 					scope: this
 			    }
@@ -129,23 +133,6 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterGroupEditor, Sbi.formbuilder.EditorPa
 		var staticOpenFilterWindow = new Sbi.formbuilder.StaticOpenFilterWizard(targetFilter.getContents(), {});
 		staticOpenFilterWindow.show();
 		staticOpenFilterWindow.on('apply', this.modifyFilter , this);
-		
-		/*
-		if(this.wizard === null) {
-			this.wizard = new Sbi.formbuilder.StaticCloseFilterWizard();
-			this.wizard.on('apply', function(win, target, state) {
-				if(target === null) {
-					this.addFilter(state);
-				} else {
-					target.setContents(state);
-				}
-				
-			}, this);
-		}
-		
-		this.wizard.setTarget(targetFilter || null);		
-		this.wizard.show();
-		*/
 	}
 	
 });

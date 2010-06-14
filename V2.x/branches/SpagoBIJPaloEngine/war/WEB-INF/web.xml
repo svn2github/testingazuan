@@ -14,12 +14,6 @@
 		<param-name>contextFactory</param-name>
 		<param-value>com.tonbeller.wcf.controller.RequestContextFactoryImpl</param-value>
 	  </context-param>
-
-	  <context-param>
-		<param-name>connectString</param-name>
-		<param-value>Provider=mondrian;Jdbc=jdbc:mysql://sibilla2/foodmartmondrian?user=root&#38;password=;Catalog=/WEB-INF/schema/FoodMart.xml;JdbcDrivers=com.mysql.jdbc.Driver; 
-	</param-value>
-	  </context-param>
 	  
 <!-- START-CAS 	  
 <filter>
@@ -224,14 +218,6 @@ END-CAS -->
 			JPaloEngineStartServlet
 		</servlet-class>
 	</servlet>
-	<servlet>
-    <servlet-name>MDXQueryServlet</servlet-name>
-    <servlet-class>mondrian.web.servlet.MDXQueryServlet</servlet-class>
-    <init-param>
-      <param-name>connectString</param-name>
-      <param-value>Provider=mondrian;Jdbc=jdbc:mysql://sibilla2/foodmartmondrian?user=root&#38;password=mysql;Catalog=/WEB-INF/schema/FoodMart.xml;JdbcDrivers=com.mysql.jdbc.Driver; </param-value>
-    </init-param>
-  </servlet>
 
   <servlet>
     <servlet-name>MondrianXmlaServlet</servlet-name>
@@ -276,11 +262,6 @@ END-CAS -->
   <servlet-mapping>
     <servlet-name>GetChart</servlet-name>
     <url-pattern>/GetChart</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>MDXQueryServlet</servlet-name>
-    <url-pattern>/mdxquery</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

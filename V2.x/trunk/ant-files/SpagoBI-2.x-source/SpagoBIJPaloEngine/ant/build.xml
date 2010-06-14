@@ -56,10 +56,10 @@
       description="Updates sbi.utils library from distribution folder (THIS JAR MUST BE EXISTING)">
     <!-- deletes any previuos sbi.utils -->
     <delete>
-      <fileset dir="${web.dir}/WEB-INF/lib" includes="**/sbi-utils*.jar"/>
+      <fileset dir="${web.dir}/WEB-INF/lib" includes="**/sbi.utils*.jar"/>
     </delete>
     <!-- copies the newly created jar file -->
-    <copy file="${sbiutils.dir}/dist/sbi-utils-${project.version}.jar" 
+    <copy file="${sbiutils.dir}/dist/sbi.utils-${project.version}.jar" 
         todir="${web.dir}/WEB-INF/lib" overwrite="true" />
   </target>
 

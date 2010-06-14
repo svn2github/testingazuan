@@ -36,7 +36,7 @@
   </target>
 
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-  <!--   SCARICO DEI SORGENTI AGGIORNATI DA CVS							                        -->
+  <!--   SCARICO DEI SORGENTI AGGIORNATI DA SVN							                        -->
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <target name="svn.checkout" depends="init"
       description="Sincronizza l'applicazione con il repository">
@@ -56,10 +56,10 @@
       description="Updates sbi.utils library from distribution folder (THIS JAR MUST BE EXISTING)">
     <!-- deletes any previuos sbi.utils -->
     <delete>
-      <fileset dir="${web.dir}/WEB-INF/lib" includes="**/sbi.utils*.jar"/>
+      <fileset dir="${web.dir}/WEB-INF/lib" includes="**/sbi-utils*.jar"/>
     </delete>
     <!-- copies the newly created jar file -->
-    <copy file="${sbiutils.dir}/dist/sbi.utils-${project.version}.jar" 
+    <copy file="${sbiutils.dir}/dist/sbi-utils-${project.version}.jar" 
         todir="${web.dir}/WEB-INF/lib" overwrite="true" />
   </target>
 
@@ -90,7 +90,7 @@
         <exclude name="**/*.svn"/>
       </fileset>
     </copy>
-            <copy file="${web.dir}/COPYING" todir="${dist}" overwrite="true" />
+    <copy file="${web.dir}/COPYING" todir="${dist}" overwrite="true" />
   </target>
 
   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -132,10 +132,37 @@
   <target name="sso.no_sso"  >
   </target>	
   
+	
+	  <target name="jpalo_ssl.no_ssl"  >
+			<replace file="${build}/${webapp_name}/WEB-INF/classes/deploy_it.properties">
+				 <replacetoken>is.ssl=true</replacetoken>      
+				 <replacevalue>is.ssl=false</replacevalue>		
+			</replace>			
+	  </target>
+	  <target name="jpalo_ssl.ssl"  >
+			<replace file="${build}/${webapp_name}/WEB-INF/classes/deploy_it.properties">
+				 <replacetoken>is.ssl=false</replacetoken>      
+				 <replacevalue>is.ssl=true</replacevalue>		
+			</replace>			
+	  </target>
+	  <target name="jpalo_db.no_mysql"  >
+			<replace file="${build}/${webapp_name}/WEB-INF/classes/deploy_it.properties">
+				 <replacetoken>use.mysql=true</replacetoken>      
+				 <replacevalue>use.mysql=false</replacevalue>		
+			</replace>			
+	  </target>
+	  <target name="jpalo_db.mysql"  >
+			<replace file="${build}/${webapp_name}/WEB-INF/classes/deploy_it.properties">
+				 <replacetoken>use.mysql=false</replacetoken>      
+				 <replacevalue>use.mysql=true</replacevalue>		
+			</replace>			
+	  </target>
 	<target name="create.war" depends="init,copy.artifacts" >
 		<antcall target="${sso}" />
 		<antcall target="${specific.ant.task}" />
-	
+		<antcall target="${jpalo_ssl}" />
+		<antcall target="${jpalo_db}" />
+		
 	      <mkdir dir="${dist}"/>
 	      <delete file="${dist}/${war_name}" />
 	      <war warfile="${dist}/${war_name}" 

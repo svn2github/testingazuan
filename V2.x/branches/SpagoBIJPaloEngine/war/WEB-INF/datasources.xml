@@ -45,8 +45,8 @@
              Catalogs can override the connect string with their own
              <DataSourceInfo> element.
           -->
-         <DataSourceInfo>Provider=mondrian;Jdbc=jdbc:mysql://localhost/foodmartmondrian?user=root&#38;password=;JdbcDrivers=com.mysql.jdbc.Driver;</DataSourceInfo>
-
+         <!--DataSourceInfo>Provider=mondrian;Jdbc=jdbc:mysql://localhost/foodmartmondrian?user=root&#38;password=;JdbcDrivers=com.mysql.jdbc.Driver;</DataSourceInfo-->
+		<DataSourceInfo>Provider=mondrian;DataSource=java:comp/env/jdbc/foodmartmondrian;</DataSourceInfo>
         <!-- 
              Provider name must be 'Mondrian'.
         -->

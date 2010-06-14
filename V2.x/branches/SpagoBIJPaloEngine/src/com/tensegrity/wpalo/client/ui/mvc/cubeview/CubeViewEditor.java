@@ -181,9 +181,10 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 	//-1 no yet set, 0 no write right, 1 write right
 	private int writeRight = -1;
 	public static native void refreshSubobjects(String id) /*-{	  
-
-	  	$wnd.sendMessage({'id': id, 'msg': 'Sub Object Saved!!'},'subobjectsaved');	  
-
+		try{
+	  		$wnd.sendMessage({'id': id, 'msg': 'Sub Object Saved!!'},'subobjectsaved');	  
+	  	}catch(e){
+	  	}
 	}-*/;
 	
 	//drag n drop support:

@@ -193,11 +193,15 @@
           <file name='./spagobi/qbe/DocumentParametersStore.js'/>
           <file name='./spagobi/qbe/HavingGridPanel.js'/>
           
+          <file name='./spagobi/qbe/InLineCalculatedFieldValidator.js'/>
+          
           <file name='./spagobi/widgets/LookupField.js'/>
           <file name='./spagobi/widgets/FilterLookupField.js'/>
           <file name='./spagobi/widgets/FilteringToolbar.js'/>
           <file name='./spagobi/widgets/PagingToolbar.js'/>
           <file name='./spagobi/widgets/TriggerFieldMultiButton.js'/>
+          
+          
           
           <!-- Form Builder-->
           

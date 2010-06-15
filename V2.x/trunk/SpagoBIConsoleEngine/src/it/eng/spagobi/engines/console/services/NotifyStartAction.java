@@ -21,16 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.console.services;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import org.apache.log4j.Logger;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engines.console.ConsoleEngineRuntimeException;
@@ -40,6 +30,16 @@ import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+
+import org.apache.log4j.Logger;
 
 
 
@@ -79,7 +79,8 @@ public class NotifyStartAction extends AbstractConsoleEngineAction {
 		
 		Double idServiceInstanceParam = null;
 		Integer idServiceParam = null;
-		Date sysDate = null;
+		//Date sysDate = null;
+		Timestamp sysDate = null;
 		String pidParam = null;
 		Integer resourceIdParam = null;
 		
@@ -145,7 +146,8 @@ public class NotifyStartAction extends AbstractConsoleEngineAction {
 			idServiceParam = idService;
 			logger.debug("Query parameter [idServiceParam] is equals to [" + idServiceParam + "]");			
 			
-			sysDate = new Date( System.currentTimeMillis() );
+			sysDate = new Timestamp( System.currentTimeMillis() );
+			// sysDate = new Date( System.currentTimeMillis() );
 			logger.debug("Query parameter [sysDate] is equals to [" + sysDate + "]");			
 			
 			
@@ -164,9 +166,11 @@ public class NotifyStartAction extends AbstractConsoleEngineAction {
 			try {
 				stmt.setDouble(1, idServiceInstanceParam);
 				stmt.setInt(2, idServiceParam);
-				stmt.setDate(3, sysDate);
+				//stmt.setDate(3, sysDate);
+				stmt.setTimestamp(3, sysDate);
 				stmt.setString(4, pidParam);
-				stmt.setDate(5, sysDate);
+				//stmt.setDate(5, sysDate);
+				stmt.setTimestamp(5, sysDate);
 				stmt.setInt(6, resourceIdParam.intValue());
 			} catch (SQLException e) {
 				throw new ConsoleEngineRuntimeException("Impossible to set the value of the parameter [resourceName] to [" + resourceName + "] in query [" + sql + "]", e);

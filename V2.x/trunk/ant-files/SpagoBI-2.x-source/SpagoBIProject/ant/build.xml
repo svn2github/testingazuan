@@ -101,8 +101,6 @@
         <exclude name="**/*.svn"/>
         <exclude name="**/*.xml"/>
         <exclude name="**/*.properties"/>
-        <exclude name="js/lib/qooxdoo-0.8/**/*.*"/>
-        <exclude name="js/src/qooxdoo/**/*.*"/>
       </fileset>
     </copy>
     <!-- copies artifacts with filter (*.xml, *.properties) -->

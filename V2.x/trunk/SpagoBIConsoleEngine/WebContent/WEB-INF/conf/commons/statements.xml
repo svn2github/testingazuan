@@ -31,51 +31,51 @@
 
   <!-- start statements for AGENDE & BOOKING document -->
 	<STATEMENT name="UPDATE_MONITOR_STATE" 
-  			   query="UPDATE SERVICE_INSTANCE SET MONITOR_CHECK = ? , TS_UPDATE = sysdate WHERE ID_SERVICE_INSTANCE = ? "/>	
+  			   query="UPDATE SERVICE_INSTANCE SET MONITOR_CHECK = ? , TS_UPDATE = to_timestamp(to_char(SYSTIMESTAMP, 'dd/mm/yyyy hh24:mi:ss'),'dd/mm/yyyy hh24:mi:ss') WHERE ID_SERVICE_INSTANCE = ? "/>	
   			   
 	<STATEMENT name="UPDATE_CHECK_STATE" 
-  			   query="UPDATE SERVICE_INSTANCE SET VIEWS_CHECK = ? , TS_UPDATE = sysdate WHERE ID_SERVICE_INSTANCE = ? "/>	 
+  			   query="UPDATE SERVICE_INSTANCE SET VIEWS_CHECK = ? , TS_UPDATE = to_timestamp(to_char(SYSTIMESTAMP, 'dd/mm/yyyy hh24:mi:ss'),'dd/mm/yyyy hh24:mi:ss') WHERE ID_SERVICE_INSTANCE = ? "/>	 
   			   
    <STATEMENT name="UPDATE_ERROR_STATE" 
-  			   query="UPDATE SERVICE_INSTANCE SET ERRORS_CHECK = ? , TS_UPDATE = sysdate WHERE ID_SERVICE_INSTANCE = ? "/>	 
+  			   query="UPDATE SERVICE_INSTANCE SET ERRORS_CHECK = ? , TS_UPDATE = to_timestamp(to_char(SYSTIMESTAMP, 'dd/mm/yyyy hh24:mi:ss'),'dd/mm/yyyy hh24:mi:ss') WHERE ID_SERVICE_INSTANCE = ? "/>	 
   			   
    <STATEMENT name="UPDATE_ALARM_STATE" 
-  			   query="UPDATE SERVICE_INSTANCE SET ALARMS_CHECK = ? , TS_UPDATE = sysdate WHERE ID_SERVICE_INSTANCE = ? "/>	  			 
+  			   query="UPDATE SERVICE_INSTANCE SET ALARMS_CHECK = ? , TS_UPDATE = to_timestamp(to_char(SYSTIMESTAMP, 'dd/mm/yyyy hh24:mi:ss'),'dd/mm/yyyy hh24:mi:ss') WHERE ID_SERVICE_INSTANCE = ? "/>	  			 
   			   
    <STATEMENT name="UPDATE_ALL_ERRORS_STATE" 
-  			   query="UPDATE SERVICE_INSTANCE SET ERRORS_CHECK = ? , USER_ID = ?, TS_UPDATE = sysdate where ID_SERVICE =(SELECT ID_SERVICE FROM SERVICE WHERE NAME ='BATCH_AGENDE')"/>	
+  			   query="UPDATE SERVICE_INSTANCE SET ERRORS_CHECK = ? , USER_ID = ?, TS_UPDATE = to_timestamp(to_char(SYSTIMESTAMP, 'dd/mm/yyyy hh24:mi:ss'),'dd/mm/yyyy hh24:mi:ss') where ID_SERVICE =(SELECT ID_SERVICE FROM SERVICE WHERE NAME ='BATCH_AGENDE')"/>	
   			   		 <!--  WHERE  FLG2 = 1  
   			   		  AND COLUMN1 like ? and COLUMN2 like ? and DATE_FORMAT(column_data,'%Y-%m-%d') like ?-->
   			   
    <STATEMENT name="UPDATE_ALL_ALARMS_STATE" 
-  			   query="UPDATE SERVICE_INSTANCE SET ALARMS_CHECK = ? , USER_ID = ?, TS_UPDATE = sysdate where ID_SERVICE =(SELECT ID_SERVICE FROM SERVICE WHERE NAME ='BATCH_AGENDE')"/>	
+  			   query="UPDATE SERVICE_INSTANCE SET ALARMS_CHECK = ? , USER_ID = ?, TS_UPDATE = to_timestamp(to_char(SYSTIMESTAMP, 'dd/mm/yyyy hh24:mi:ss'),'dd/mm/yyyy hh24:mi:ss') where ID_SERVICE =(SELECT ID_SERVICE FROM SERVICE WHERE NAME ='BATCH_AGENDE')"/>	
 
    <STATEMENT name="UPDATE_ALL_VIEWING_STATE" 
-  			   query="UPDATE SERVICE_INSTANCE SET VIEWS_CHECK = ? , USER_ID = ?, TS_UPDATE = sysdate where ID_SERVICE =(SELECT ID_SERVICE FROM SERVICE WHERE NAME ='BATCH_AGENDE')"/>	
+  			   query="UPDATE SERVICE_INSTANCE SET VIEWS_CHECK = ? , USER_ID = ?, TS_UPDATE = to_timestamp(to_char(SYSTIMESTAMP, 'dd/mm/yyyy hh24:mi:ss'),'dd/mm/yyyy hh24:mi:ss') where ID_SERVICE =(SELECT ID_SERVICE FROM SERVICE WHERE NAME ='BATCH_AGENDE')"/>	
 
   <STATEMENT name="UPDATE_ALL_ERRORS_STATE_BOOK" 
-  			   query="UPDATE SERVICE_INSTANCE SET ERRORS_CHECK = ? , USER_ID = ?, TS_UPDATE = sysdate where ID_SERVICE =(SELECT ID_SERVICE FROM SERVICE WHERE NAME ='BOOKING')"/>
+  			   query="UPDATE SERVICE_INSTANCE SET ERRORS_CHECK = ? , USER_ID = ?, TS_UPDATE = to_timestamp(to_char(SYSTIMESTAMP, 'dd/mm/yyyy hh24:mi:ss'),'dd/mm/yyyy hh24:mi:ss') where ID_SERVICE =(SELECT ID_SERVICE FROM SERVICE WHERE NAME ='BOOKING')"/>
   			   	
    <STATEMENT name="UPDATE_ALL_ALARMS_STATE_BOOK" 
-  			   query="UPDATE SERVICE_INSTANCE SET ALARMS_CHECK = ? , USER_ID = ?, TS_UPDATE = sysdate where ID_SERVICE =(SELECT ID_SERVICE FROM SERVICE WHERE NAME ='BOOKING')"/>	
+  			   query="UPDATE SERVICE_INSTANCE SET ALARMS_CHECK = ? , USER_ID = ?, TS_UPDATE = to_timestamp(to_char(SYSTIMESTAMP, 'dd/mm/yyyy hh24:mi:ss'),'dd/mm/yyyy hh24:mi:ss') where ID_SERVICE =(SELECT ID_SERVICE FROM SERVICE WHERE NAME ='BOOKING')"/>	
 
    <STATEMENT name="UPDATE_ALL_VIEWING_STATE_BOOK" 
-  			   query="UPDATE SERVICE_INSTANCE SET VIEWS_CHECK = ? , USER_ID = ?, TS_UPDATE = sysdate where ID_SERVICE =(SELECT ID_SERVICE FROM SERVICE WHERE NAME ='BOOKING')"/>	
+  			   query="UPDATE SERVICE_INSTANCE SET VIEWS_CHECK = ? , USER_ID = ?, TS_UPDATE = to_timestamp(to_char(SYSTIMESTAMP, 'dd/mm/yyyy hh24:mi:ss'),'dd/mm/yyyy hh24:mi:ss') where ID_SERVICE =(SELECT ID_SERVICE FROM SERVICE WHERE NAME ='BOOKING')"/>	
    <STATEMENT name="UPDATE_ALARM_STATE_BOOK" 
-  			   query="UPDATE SERVICE_INSTANCE SET ALARMS_CHECK = ? , TS_UPDATE = sysdate WHERE ID_SERVICE_INSTANCE = ?"/>	
+  			   query="UPDATE SERVICE_INSTANCE SET ALARMS_CHECK = ? , TS_UPDATE = to_timestamp(to_char(SYSTIMESTAMP, 'dd/mm/yyyy hh24:mi:ss'),'dd/mm/yyyy hh24:mi:ss') WHERE ID_SERVICE_INSTANCE = ?"/>	
   <!-- end statements for AGENDE & BOOKING document -->
 
   <!-- start statements for pingsco console -->
   <STATEMENT name="UPD_ERROR_STATE_PINGSCO" 
-  			     query="UPDATE SERVICE_INSTANCE SET ERRORS_CHECK = ? , USER_ID = ?, TS_UPDATE = SYSDATE
+  			     query="UPDATE SERVICE_INSTANCE SET ERRORS_CHECK = ? , USER_ID = ?, TS_UPDATE = to_timestamp(to_char(SYSTIMESTAMP, 'dd/mm/yyyy hh24:mi:ss'),'dd/mm/yyyy hh24:mi:ss')
                     WHERE ID_SERVICE_INSTANCE = SUBSTR(?,INSTR(?,'|',1,1)+1) "/>	 
   			   
   <STATEMENT name="UPD_ALARM_STATE_PINGSCO" 
-  			     query="UPDATE SERVICE_INSTANCE SET ALARMS_CHECK = ? , USER_ID = ?, TS_UPDATE = SYSDATE
+  			     query="UPDATE SERVICE_INSTANCE SET ALARMS_CHECK = ? , USER_ID = ?, TS_UPDATE = to_timestamp(to_char(SYSTIMESTAMP, 'dd/mm/yyyy hh24:mi:ss'),'dd/mm/yyyy hh24:mi:ss')
                     WHERE ID_SERVICE_INSTANCE = SUBSTR(?,INSTR(?,'|',1,1)+1)"/>	  	
                     
   <STATEMENT name="UPD_PROCESS_DATE_PINGSCO" 
-  			     query="UPDATE SERVICE_INSTANCE SET  USER_ID = ?, ENDDATE = SYSDATE, TS_UPDATE = SYSDATE
+  			     query="UPDATE SERVICE_INSTANCE SET  USER_ID = ?, ENDDATE = SYSDATE, TS_UPDATE = to_timestamp(to_char(SYSTIMESTAMP, 'dd/mm/yyyy hh24:mi:ss'),'dd/mm/yyyy hh24:mi:ss')
                     WHERE ID_SERVICE_INSTANCE = SUBSTR(?,INSTR(?,'|',1,1)+1)"/>	  			
   <!-- end statements for pingsco console -->  	  			 
   			

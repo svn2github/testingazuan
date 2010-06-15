@@ -214,14 +214,10 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	}
 	
 	, modifyFilter: function(filter, i) {
-		alert(i);
 		if(i != undefined) {			
 			var record = this.store.getAt( i );
-			alert(record);
-			alert(record.data.toSource());
 			Ext.apply(record.data, filter || {});	
 			record = this.store.getAt( i );
-			alert(record.data.toSource());
 			this.store.fireEvent('datachanged', this.store) ;
 		}
 	}

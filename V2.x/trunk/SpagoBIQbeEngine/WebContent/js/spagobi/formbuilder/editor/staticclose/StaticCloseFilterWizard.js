@@ -324,7 +324,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
     		, sm: sm
     		, enableTbExpWizardBtn: false
     		, columns : {
-				'filterId': {hideable: true, hidden: false, sortable: false, editable: false}
+				'filterId': {hideable: true, hidden: true, sortable: false, editable: false}
 				, 'filterDescripion': {hideable: true, hidden: true, sortable: false, editable: false}
 				, 'operator': {hideable: false, hidden: false, sortable: false, editable: false}
 				, 'leftOperandDescription': {hideable: false, hidden: false, sortable: false, editable: false}

@@ -16,7 +16,7 @@ Sbi.settings.qbe = {
 		}
 
 		, selectGridPanel: {
-			gridHeight: 300
+			gridHeight: 250
 			, enableTbAddCalculatedBtn: true 
 			, enableTbHideNonvisibleBtn: true
 			, enableTbAddCalculatedBtn: true
@@ -36,7 +36,7 @@ Sbi.settings.qbe = {
 		}
 		
 		, filterGridPanel: {
-			gridHeight: 300
+			gridHeight: 250
 			, enableTbExpWizardBtn: true
 			, enableTbRemoveAllFilterBtn: true
 			, enableTbAddFilterBtn: true
@@ -55,7 +55,7 @@ Sbi.settings.qbe = {
 		}
 		
 		,havingGridPanel: {
-			gridHeight: 300
+			gridHeight: 250
 		}
 		
 		, dataMartStructurePanel: {

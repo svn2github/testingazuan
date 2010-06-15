@@ -103,8 +103,8 @@ Sbi.qbe.SelectGridPanel = function(config) {
 	
 	Ext.apply(c, {
 		layout: 'fit'
-		, autoWidth: Ext.isIE ? false : true
-		, width: Ext.isIE ? undefined : 'auto'
+		//, autoWidth: Ext.isIE ? false : true
+		//, width: Ext.isIE ? undefined : 'auto'
 		, items: [this.grid]
 	});	
 	

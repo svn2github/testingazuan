@@ -84,8 +84,8 @@ Sbi.qbe.FilterGridPanel = function(config) {
 	
 	c = Ext.apply(c, {
 		layout: 'fit',
-		autoWidth: true,
-		width: 'auto',
+		//autoWidth: true,
+		//width: 'auto',
 		items: [this.grid]
 	});
 	

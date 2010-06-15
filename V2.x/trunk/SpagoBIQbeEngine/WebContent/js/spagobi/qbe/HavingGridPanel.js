@@ -66,8 +66,8 @@ Sbi.qbe.HavingGridPanel = function(config) {
 	c = Ext.apply(c, {
 		border: true,
 		layout: 'fit',
-		autoWidth: true,
-		width: 'auto',
+		//autoWidth: true,
+		//width: 'auto',
 		//width: 1000,
 		items: [this.grid]
 	});

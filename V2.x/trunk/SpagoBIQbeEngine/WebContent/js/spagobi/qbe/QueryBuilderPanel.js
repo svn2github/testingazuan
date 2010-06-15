@@ -478,25 +478,42 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		}, this);
 	}
 	
+	/**
+	 * Makes the input panel resizable; if the panel contains a grid property, its height is modified.
+	 * It was conceived for selectGridPanel and filterGridPanel.
+	 */
+	, createResizable: function(aPanel) {
+		aPanel.on('render', function() {
+			var resizer = new Ext.Resizable(this.id, {
+			    handles: 's',
+			    minHeight: 150,
+			    pinned: false
+			});
+			resizer.on('resize', function(resizable, width, height, event) {
+				if (this.grid) {
+					this.grid.setHeight(height - 5);
+				}
+			}, this);
+		}, aPanel);
+	}
+	
 	, initCenterRegionPanel: function(c) {
 		c.documentParametersStore = this.documentParametersStore;
-		//c.flex = 1;
-		this.selectGridPanel = new Sbi.qbe.SelectGridPanel(c);
-	    this.filterGridPanel = new Sbi.qbe.FilterGridPanel(Ext.apply(c || {}, {gridTitle: LN('sbi.qbe.filtergridpanel.title')}));
-	    this.havingGridPanel = new Sbi.qbe.HavingGridPanel(c);
+		c.anchor = '-20'; // for anchor layout, see http://www.sencha.com/forum/showthread.php?71796-No-vertical-scrollbar-with-vbox-layout
+		this.selectGridPanel = new Sbi.qbe.SelectGridPanel(Ext.apply(c || {}, {id: 'qbeSelectGridPanel'}));
+		this.createResizable(this.selectGridPanel);
+	    this.filterGridPanel = new Sbi.qbe.FilterGridPanel(Ext.apply(c || {}, {id: 'qbeFilterGridPanel', gridTitle: LN('sbi.qbe.filtergridpanel.title')}));
+	    this.createResizable(this.filterGridPanel);
+	    this.havingGridPanel = new Sbi.qbe.HavingGridPanel(Ext.apply(c || {}, {id: 'qbeHavingGridPanel'}));
 	    
 	    this.centerRegionPanel = new Ext.Panel({ 
 	    	title: LN('sbi.qbe.queryeditor.centerregion.title'),
 	        region:'center',
 	        autoScroll: true,
-			containerScroll: true,
-			/*
-			layout: {
-                type:'vbox',
-                padding:'0',
-                align:'stretch'
-            },
-            */
+	        layout: 'anchor', // do not use vbox layout, see http://www.sencha.com/forum/showthread.php?71796-No-vertical-scrollbar-with-vbox-layout
+	        style: {
+	            overflow: 'auto'
+	        },
 	        margins: '5 5 5 5',
 	        tools:[{
 	        	id:'save',
@@ -539,8 +556,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	    });
 	    /*
 	     * work-around for filters grids (where clause and having clause) resizing, since they are not automatically resized
-	     * TODO: fix this problem with an Ext override
-	    */ 
+	     * TODO: fix this problem with an Ext override (fixed upgrading to Ext3)
 	    this.selectGridPanel.grid.on('resize', function (component, adjWidth, adjHeight, rawWidth, rawHeight) {
 	    	if (this.filterGridPanel.grid.rendered) {
 	    		var previousSize = this.filterGridPanel.grid.getSize();
@@ -551,6 +567,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		    	this.havingGridPanel.grid.setSize(adjWidth, previousSize.height);
 	    	}
 	    }, this);
+	    */
 	    
 	    this.selectGridPanel.on('filter', function(panel, record) {
 	    	filter = {

@@ -79,7 +79,10 @@ Sbi.formbuilder.StaticCloseFilterWizard = function(config) {
 		layout: 'fit',
 		width: this.width,
 		height: this.height,
-		closeAction:'hide',
+		closeAction:'close', // closeAction must be 'close' and not 'hide'!!!
+		// Using Ext 3.2.1, if closeAction is 'hide', a side effect appear: open the form designer, open a StaticCloseFilterWizard window,
+		// then come back to the query designer: the FilterGridPanel of the static close filter is displayed between base query select clause
+		// grid and where clause grid!!!
 		plain: true,
 		title: this.title,
 		items: [this.formPanel]

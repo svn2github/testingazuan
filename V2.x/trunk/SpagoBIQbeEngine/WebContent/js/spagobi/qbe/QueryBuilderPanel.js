@@ -500,15 +500,16 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	, initCenterRegionPanel: function(c) {
 		c.documentParametersStore = this.documentParametersStore;
 		c.anchor = '-20'; // for anchor layout, see http://www.sencha.com/forum/showthread.php?71796-No-vertical-scrollbar-with-vbox-layout
-		this.selectGridPanel = new Sbi.qbe.SelectGridPanel(Ext.apply(c || {}, {id: 'qbeSelectGridPanel'}));
+		this.selectGridPanel = new Sbi.qbe.SelectGridPanel(c);
 		this.createResizable(this.selectGridPanel);
-	    this.filterGridPanel = new Sbi.qbe.FilterGridPanel(Ext.apply(c || {}, {id: 'qbeFilterGridPanel', gridTitle: LN('sbi.qbe.filtergridpanel.title')}));
+	    this.filterGridPanel = new Sbi.qbe.FilterGridPanel(Ext.apply(c || {}, {gridTitle: LN('sbi.qbe.filtergridpanel.title')}));
 	    this.createResizable(this.filterGridPanel);
-	    this.havingGridPanel = new Sbi.qbe.HavingGridPanel(Ext.apply(c || {}, {id: 'qbeHavingGridPanel'}));
+	    this.havingGridPanel = new Sbi.qbe.HavingGridPanel(c);
 	    
 	    this.centerRegionPanel = new Ext.Panel({ 
 	    	title: LN('sbi.qbe.queryeditor.centerregion.title'),
 	        region:'center',
+	        width: '100%', // this is necessary in order to set the proper width to the columns of select/where/having clauses' grids in Firefox
 	        autoScroll: true,
 	        layout: 'anchor', // do not use vbox layout, see http://www.sencha.com/forum/showthread.php?71796-No-vertical-scrollbar-with-vbox-layout
 	        style: {

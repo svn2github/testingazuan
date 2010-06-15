@@ -200,7 +200,8 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupEditor, Sbi.formbuilder.EditorP
 	
 	
 	, onFilterWizardShow: function(targetFilter) {
-		if(this.wizard === null) {
+		//if(this.wizard === null) { // must create a new StaticCloseFilterWizard instance:
+		// see comments on 'close' closeAction config option in StaticCloseFilterWizard class
 			this.wizard = new Sbi.formbuilder.StaticCloseFilterWizard();
 			this.wizard.on('apply', function(win, target, state) {
 				if(target === null) {
@@ -210,7 +211,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterGroupEditor, Sbi.formbuilder.EditorP
 				}
 				
 			}, this);
-		}
+		//}
 		
 		this.wizard.setTarget(targetFilter || null);		
 		this.wizard.show();

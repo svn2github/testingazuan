@@ -66,8 +66,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
     spagobiSpagoController = request.getParameter(SpagoBIConstants.SBI_SPAGO_CONTROLLER);
     docId = request.getParameter("document");
 
-    
-    
+        
     
 	Map parsMap=request.getParameterMap();
 	String parametersString="";
@@ -104,8 +103,33 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	if(parametersString.indexOf('&')==0){
 		parametersString=parametersString.substring(1,parametersString.length());
 	}
-int i=0;
 
+	// Check if I am in scheduler mode!	in that case call directly the start Engine
+	Object userIdO = parsMap.get("user_id");
+	String userIdNow = null;
+	if(userIdO != null){
+	 if(userIdO instanceof String[]){
+		 String[] userIdArray = (String[])userIdO;
+		 userIdNow = userIdArray[0];
+		 }
+	 else if(userIdO instanceof String){
+		userIdNow = userIdO.toString();	 
+	 }
+	
+	 if(userIdNow.equalsIgnoreCase("scheduler")){
+			// call directly startWorkEngineService
+			// TODO: separate logic code from action so it can be use as a class
+		
+					   //auditProxy = new AuditServiceProxy(getAuditId(), getUserIdentifier(), getHttpSession());
+		   //EventServiceProxy eventProxy = new EventServiceProxy(userIdNow, ses);
+
+			StartWorkAction	startWorkAction = new StartWorkAction();
+	     	 startWorkAction.serviceStart(userIdNow, docId, parsMap, session, request, false);
+	 }
+	
+	}
+	
+	
 
 %>
 
@@ -113,7 +137,10 @@ int i=0;
 <%-- ---------------------------------------------------------------------- --%>
 <%-- HTML	 																--%>
 <%-- ---------------------------------------------------------------------- --%>
-<html>
+
+<%@page import="it.eng.spagobi.engines.commonj.services.StartWorkAction"%>
+<%@page import="it.eng.spagobi.utilities.engines.AuditServiceProxy"%>
+<%@page import="it.eng.spagobi.services.proxy.EventServiceProxy"%><html>
 	
 	<head>
 		<%@include file="commons/includeExtJS.jspf" %>
@@ -151,7 +178,7 @@ int i=0;
 		        var viewport = new Ext.Viewport({
 	           		items: [generalPanel]
 	           	});  
-	           	
+			        
 	           //	setTimeout("timer()", 5000);
 	           	timer();
 	           	
@@ -171,7 +198,6 @@ int i=0;
 	}
 	
 		
-	      	
 	      	
 	      	
 	    </script>

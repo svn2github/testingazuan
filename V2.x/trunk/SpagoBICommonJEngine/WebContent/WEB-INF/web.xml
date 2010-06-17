@@ -197,15 +197,19 @@ END-CAS -->
 		<servlet-name>WorkRunServlet</servlet-name>
 		<url-pattern>/WorkRunServlet</url-pattern>
 	</servlet-mapping>
-	-->
 	
-	<!-- 
+	
 	<servlet-mapping>
 		<servlet-name>WorkRunService</servlet-name>
 		<url-pattern>/WorkRunServiceBackEnd</url-pattern>
 	</servlet-mapping>	
-	-->
 	
+-->
+
+		<servlet-mapping>
+		<servlet-name>AdapterHTTP</servlet-name>
+		<url-pattern>/servlet/AdapterHTTPBackEnd/*</url-pattern>
+	</servlet-mapping>
 	
 	 <servlet-mapping>
 		<servlet-name>EngineTestServlet</servlet-name>

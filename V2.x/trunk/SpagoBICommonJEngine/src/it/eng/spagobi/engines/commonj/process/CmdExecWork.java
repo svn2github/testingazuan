@@ -114,7 +114,7 @@ public class CmdExecWork extends SpagoBIWork {
 			String url= (String) iterator.next();
 			if (sbiParameters.get(url) != null){
 				Object value = sbiParameters.get(url);
-				command += url + "=" + value +" "; 
+				command += url + "=" + value.toString() +" "; 
 			}
 		}
 

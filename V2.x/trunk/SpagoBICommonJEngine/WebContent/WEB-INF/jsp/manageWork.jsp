@@ -69,6 +69,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
         
     
 	Map parsMap=request.getParameterMap();
+	Map<String,String> paramsMapToSend = new HashMap<String, String>();
 	String parametersString="";
 	for (Iterator iterator = parsMap.keySet().iterator(); iterator.hasNext();) {
 		String url= (String) iterator.next();
@@ -77,27 +78,34 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 		// take only String or numbers
 		if(val!=null && val instanceof String[]){
 			String[] strs=(String[])val;
-			
+			String toAdd="";			
 			if(strs.length==1){
-			parametersString+="&"+url+"="+strs[0];	
+				paramsMapToSend.put(url, strs[0].toString());
+				parametersString+="&"+url+"="+strs[0];	
 			}
 			else{
 			parametersString+="&"+url+"=[";
+			toAdd+="&"+url+"=[";
 			for(int i=0; i< strs.length;i++){
 				String valS=strs[i];
-			if(i==0){
-				parametersString+=valS;
-			}
+				if(i==0){
+					parametersString+=valS;
+					toAdd+=valS;
+				}
 			else{
 				parametersString+=","+valS;				
+				toAdd+=","+valS;
 			}
 			}
-			parametersString+="]";
+				parametersString+="]";
+				toAdd+="]";
+				paramsMapToSend.put(url, toAdd.toString());
 			}
 		}
 		else
 		if(val!=null && (val instanceof String || val instanceof Integer)) {
 			parametersString+="&"+url+"="+val.toString();
+			paramsMapToSend.put(url, val.toString());
 		}
 	}
 	if(parametersString.indexOf('&')==0){
@@ -118,13 +126,14 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	
 	 if(userIdNow.equalsIgnoreCase("scheduler")){
 			// call directly startWorkEngineService
-			// TODO: separate logic code from action so it can be use as a class
-		
-					   //auditProxy = new AuditServiceProxy(getAuditId(), getUserIdentifier(), getHttpSession());
+			// TODO: separate logic code from action so it can be use as a class		
+			//auditProxy = new AuditServiceProxy(getAuditId(), getUserIdentifier(), getHttpSession());
 		   //EventServiceProxy eventProxy = new EventServiceProxy(userIdNow, ses);
 
+		   // I have to convert the parmeters MAP to a Map of strings
+		   
 			StartWorkAction	startWorkAction = new StartWorkAction();
-	     	 startWorkAction.serviceStart(userIdNow, docId, parsMap, session, request, false);
+	     	 startWorkAction.serviceStart(userIdNow, docId, paramsMapToSend, session, request, false);
 	 }
 	
 	}
@@ -140,7 +149,8 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 
 <%@page import="it.eng.spagobi.engines.commonj.services.StartWorkAction"%>
 <%@page import="it.eng.spagobi.utilities.engines.AuditServiceProxy"%>
-<%@page import="it.eng.spagobi.services.proxy.EventServiceProxy"%><html>
+<%@page import="it.eng.spagobi.services.proxy.EventServiceProxy"%>
+<%@page import="java.util.HashMap"%><html>
 	
 	<head>
 		<%@include file="commons/includeExtJS.jspf" %>

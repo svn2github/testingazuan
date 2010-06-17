@@ -44,7 +44,9 @@ import it.eng.spagobi.engines.commonj.runtime.CommonjWork;
 import it.eng.spagobi.engines.commonj.runtime.WorkConfiguration;
 import it.eng.spagobi.engines.commonj.runtime.WorksRepository;
 import it.eng.spagobi.engines.commonj.utils.ProcessesStatusContainer;
+import it.eng.spagobi.services.proxy.EventServiceProxy;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
+import it.eng.spagobi.utilities.engines.AuditServiceProxy;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
@@ -71,7 +73,7 @@ public class CommonjEngineStartAction extends AbstractEngineStartAction {
 	public static transient Logger logger = Logger.getLogger(CommonjEngineStartAction.class);
 	public static final String ENGINE_NAME = "SpagoBICommonjEngine";
 
-
+	EventServiceProxy eventServiceProxy = null;
 
 
 	@Override
@@ -89,11 +91,34 @@ public class CommonjEngineStartAction extends AbstractEngineStartAction {
 		env.put(EngineConstants.ENV_DOCUMENT_ID, getDocumentId());
 		env.put(EngineConstants.ENV_USER_PROFILE, getUserProfile());
 		//env.put(EngineConstants.ENV_CONTENT_SERVICE_PROXY, getContentServiceProxy());
-		env.put(EngineConstants.ENV_AUDIT_SERVICE_PROXY, getAuditServiceProxy() );
+		// in scxheduling AUDIT not working 
+		try{
+			env.put(EngineConstants.ENV_AUDIT_SERVICE_PROXY, getAuditServiceProxy() );
+		}
+		catch(Exception e){
+			logger.warn("No audit service proxy: probably in shedulign mode");
+		}
+
+		try{
+			env.put(EngineConstants.ENV_EVENT_SERVICE_PROXY, getEventServiceProxy() );
+		}
+		catch(Exception e){
+			logger.warn("No event service proxy: probably in shedulign mode");
+		}
+
 		env.put(EngineConstants.ENV_LOCALE, getLocale()); 
 
 		return env;
 	}
+
+
+	   public EventServiceProxy getEventServiceProxy() {
+		   if(eventServiceProxy == null ) {
+			   eventServiceProxy = new EventServiceProxy(getUserIdentifier(), getHttpSession());
+		   }	   
+		   return eventServiceProxy;
+	   }
+
 
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws SpagoBIEngineException {
 
@@ -132,7 +157,7 @@ public class CommonjEngineStartAction extends AbstractEngineStartAction {
 				}
 			}
 
-			
+
 			// calculate process Id
 			/*
 			work.calculatePId(documentId, parameters);

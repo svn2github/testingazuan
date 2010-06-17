@@ -31,6 +31,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  **/
 package it.eng.spagobi.engines.commonj.runtime;
 
+import it.eng.spagobi.engines.commonj.utils.ProcessesStatusContainer;
 import it.eng.spagobi.services.proxy.EventServiceProxy;
 import it.eng.spagobi.utilities.engines.AuditServiceProxy;
 
@@ -62,7 +63,7 @@ public class CommonjWorkListener implements WorkListener {
 	String executionRole;
 	String biObjectID;
 	String biObjectLabel;
-
+	String pid;
 
 	private static transient Logger logger = Logger.getLogger(CommonjWorkListener.class);
 
@@ -162,6 +163,12 @@ public class CommonjWorkListener implements WorkListener {
 			logger.debug("OUT");
 		}
 
+		// clean the singleton!!! 
+		if(pid != null){
+			ProcessesStatusContainer processesStatusContainer = ProcessesStatusContainer.getInstance();
+			processesStatusContainer.getPidContainerMap().remove(pid);
+			logger.debug("removed from singleton process item with pid "+pid);
+		}
 		logger.info("OUT");
 	}
 
@@ -200,7 +207,7 @@ public class CommonjWorkListener implements WorkListener {
 		if(biObjectLabel != null){
 			startEventParams.put(BIOBJECT_LABEL, biObjectLabel);			
 		}
-		
+
 		String startEventParamsStr = getParamsStr(startEventParams);
 		logger.debug("OUT");
 		return  startEventParamsStr;
@@ -228,8 +235,8 @@ public class CommonjWorkListener implements WorkListener {
 	public void setBiObjectID(String biObjectID) {
 		this.biObjectID = biObjectID;
 	}
-	
-	
+
+
 
 
 	public String getBiObjectLabel() {

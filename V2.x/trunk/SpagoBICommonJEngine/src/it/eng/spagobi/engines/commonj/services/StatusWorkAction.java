@@ -139,7 +139,7 @@ public class StatusWorkAction extends AbstractEngineAction {
 					}
 				}
 				else{
-					// if not workitem is set means that is not started yet
+					// if not workitem is set means that is not started yet or has been cancelled by listener!?!
 					statusWI=0;
 				}
 			}

@@ -71,7 +71,7 @@ Sbi.formbuilder.QueryFieldsPanel = function(config) {
 	
 		
 		
-	this.initGrid();
+	this.initGrid(c.gridConfig || {});
 
 	
 	c = Ext.apply(c, {
@@ -142,7 +142,7 @@ Ext.extend(Sbi.formbuilder.QueryFieldsPanel, Ext.Panel, {
 	
 		this.store = new Ext.data.JsonStore({
 			root: 'results'
-			, fields: ['id', 'alias']
+			, fields: ['id', 'alias', 'iconCls', 'nature']
 			, url: this.services['getQueryFields']
 		}); 
 		
@@ -150,16 +150,16 @@ Ext.extend(Sbi.formbuilder.QueryFieldsPanel, Ext.Panel, {
 			Sbi.exception.ExceptionHandler.handleFailure(response, options);
 		}, this);
 		
-		this.grid = new Ext.grid.GridPanel({
+		this.grid = new Ext.grid.GridPanel(Ext.apply(c || {}, {
 	        store: this.store,
 	        columns: [
 	            {id:'alias', header: LN('sbi.formbuilder.queryfieldspanel.fieldname'), width: 160, sortable: true, dataIndex: 'alias'}
 	        ],
 	        stripeRows: false,
 	        autoExpandColumn: 'alias',
-	        enableDragDrop: true,
-	        ddGroup: 'formbuilderDDGroup'
-	    });
+	        enableDragDrop: true
+	        //ddGroup: c.ddGroup //'formbuilderDDGroup'
+	    }));
     }
     
    

@@ -52,6 +52,7 @@ Sbi.qbe.QbePanel = function(config) {
 		// set default values here
 		displayQueryBuilderPanel: true
 		, displayFormBuilderPanel: false
+		, displayCrosstabDesignerPanel: true
 	}, config || {});
 	
 	this.services = new Array();
@@ -65,6 +66,7 @@ Sbi.qbe.QbePanel = function(config) {
 	
 	this.queryEditorPanel = null;
 	this.queryResultPanel = new Sbi.widgets.DataStorePanel(c);
+	this.crosstabDesignerPanel = null;
 	
 	var items = [];
 	
@@ -74,6 +76,11 @@ Sbi.qbe.QbePanel = function(config) {
 	}
 	
 	items.push(this.queryResultPanel);
+	
+	if (c.displayCrosstabDesignerPanel) {
+		this.crosstabDesignerPanel = new Sbi.qbe.CrosstabDesignerPanel(c);
+		items.push(this.crosstabDesignerPanel);
+	}
 	
 	if (c.displayFormBuilderPanel && c.formbuilder !== undefined && c.formbuilder.template !== undefined) {
 		this.formBuilderPage = new Sbi.formbuilder.FormPanel({template: c.formbuilder.template});

@@ -323,4 +323,10 @@ Sbi.locale.ln['sbi.qbe.calculatedFields.expert.nofilterwindow.title'] = 'Attenzi
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.expert'] = 'Utente Esperto';
 
 
-
+//===================================================================
+//CROSSTAB DESIGNER
+//===================================================================
+Sbi.locale.ln['sbi.qbe.crosstabdesignerpanel.title'] = 'Crosstab designer';
+Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.title'] = 'Definizione della Crosstab';
+Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.rows'] = 'Righe';
+Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.columns'] = 'Colonne';

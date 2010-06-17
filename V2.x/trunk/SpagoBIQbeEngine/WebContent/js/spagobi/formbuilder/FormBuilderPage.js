@@ -122,7 +122,8 @@ Ext.extend(Sbi.formbuilder.FormBuilderPage, Ext.Panel, {
 	        width:250,
 	        //margins: '5 5 5 5',
 	        collapsible: true,
-	        collapseFirst: false
+	        collapseFirst: false,
+	        gridConfig: {ddGroup: 'formbuilderDDGroup'}
 	        //bodyStyle:'background:red',
 		});
     }

@@ -44,6 +44,9 @@ public class SerializationConstants {
 	public static final String FIELD_INCLUDE = "include";
 	public static final String FIELD_INITIAL_VALUE = "initialValue";
 	public static final String FIELD_EXPRESSION = "expression";
+	public static final String FIELD_NATURE = "nature";
+	public static final String FIELD_ICON_CLS = "iconCls";
+	
 	
 	public static final String DISTINCT = "distinct";
 	public static final String IS_NESTED_EXPRESSION = "isNestedExpression";

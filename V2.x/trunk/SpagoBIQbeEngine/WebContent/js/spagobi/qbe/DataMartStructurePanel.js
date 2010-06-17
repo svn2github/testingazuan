@@ -269,7 +269,7 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 		} else {
 			Ext.Msg.show({
 				   title:'Invalid operation',
-				   msg: 'Impossible to add calculated field to a node of type [' + nodeType + ']',
+				   msg: 'Impossible to add calculated field to a node of type [' + type + ']',
 				   buttons: Ext.Msg.OK,
 				   icon: Ext.MessageBox.ERROR
 			});		

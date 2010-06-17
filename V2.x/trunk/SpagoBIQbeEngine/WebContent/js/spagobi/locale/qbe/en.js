@@ -330,3 +330,12 @@ Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.success.title'] = 'Vali
 Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.success.text'] = 'Validation OK';
 Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.fail.title'] = 'Validation Fail';
 Sbi.locale.ln['sbi.qbe.calculatedFields.expert.nofilterwindow.title'] = 'Warning: with this type of calculated fields you can\'t use filters';
+
+
+//===================================================================
+//CROSSTAB DESIGNER
+//===================================================================
+Sbi.locale.ln['sbi.qbe.crosstabdesignerpanel.title'] = 'Crosstab designer';
+Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.title'] = 'Crosstab definition';
+Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.rows'] = 'Rows';
+Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.columns'] = 'Columns';

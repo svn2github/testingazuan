@@ -31,14 +31,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import it.eng.qbe.bo.DatamartLabels;
+import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.cache.QbeCacheManager;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
+import it.eng.qbe.query.AggregationFunctions;
 import it.eng.qbe.query.CalculatedSelectField;
 import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.HavingField;
+import it.eng.qbe.query.IAggregationFunction;
 import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.query.InLineCalculatedSelectField;
 import it.eng.qbe.query.Query;
@@ -164,7 +167,10 @@ public class QueryJSONSerializer implements QuerySerializer {
 					fieldJSON.put(SerializationConstants.FIELD_VISIBLE, field.isVisible());
 					fieldJSON.put(SerializationConstants.FIELD_INCLUDE, field.isIncluded());					
 					
-					if(field.isDataMartField()) {
+					// field nature can me "measure" or "attribute"
+					String nature = null;
+					
+					if (field.isDataMartField()) {
 						DataMartSelectField dataMartSelectField = (DataMartSelectField)field;
 						
 						fieldJSON.put(SerializationConstants.FIELD_TYPE, field.DATAMART_FIELD);
@@ -201,6 +207,21 @@ public class QueryJSONSerializer implements QuerySerializer {
 						fieldJSON.put(SerializationConstants.FIELD_ORDER, dataMartSelectField.getOrderType());
 						fieldJSON.put(SerializationConstants.FIELD_AGGREGATION_FUNCTION, dataMartSelectField.getFunction().getName());
 						
+						DatamartProperties datamartProperties = datamartModel.getDataSource().getProperties();
+						String iconCls = datamartProperties.getFieldIconClass( datamartField );	
+						fieldJSON.put(SerializationConstants.FIELD_ICON_CLS, iconCls);
+						
+						// if an aggregation function is defined or if the field is declared as "measure" into property file,
+						// then it is a measure, elsewhere it is an attribute
+						if (
+								(dataMartSelectField.getFunction() != null 
+								&& !dataMartSelectField.getFunction().equals(AggregationFunctions.NONE_FUNCTION))
+								|| iconCls.equals("measure")) {
+							nature = "measure";
+						} else {
+							nature = "attribute";
+						}
+						
 					} else if (field.isCalculatedField()){
 						CalculatedSelectField calculatedSelectField = (CalculatedSelectField)field;
 						
@@ -210,6 +231,11 @@ public class QueryJSONSerializer implements QuerySerializer {
 						fieldClaculationDescriptor.put(SerializationConstants.FIELD_TYPE, calculatedSelectField.getType());
 						fieldClaculationDescriptor.put(SerializationConstants.FIELD_EXPRESSION, calculatedSelectField.getExpression());
 						fieldJSON.put(SerializationConstants.FIELD_ID, fieldClaculationDescriptor);
+						
+						fieldJSON.put(SerializationConstants.FIELD_ICON_CLS, "calculation");
+						
+						// TODO manage calculated fields?
+						nature = "attribute";
 						
 					} else if (field.isInLineCalculatedField()){
 						InLineCalculatedSelectField calculatedSelectField = (InLineCalculatedSelectField)field;
@@ -226,8 +252,14 @@ public class QueryJSONSerializer implements QuerySerializer {
 						fieldJSON.put(SerializationConstants.FIELD_ORDER, "");
 						fieldJSON.put(SerializationConstants.FIELD_AGGREGATION_FUNCTION, "");
 						
+						fieldJSON.put(SerializationConstants.FIELD_ICON_CLS, "calculation");
 						
+						// TODO manage calculated fields?
+						nature = "attribute";
 					}
+					
+					fieldJSON.put(SerializationConstants.FIELD_NATURE, nature);	
+					
 				} catch(Throwable t) {
 					throw new SerializationException("An error occurred while serializing field: " + field.getAlias(), t);
 				}

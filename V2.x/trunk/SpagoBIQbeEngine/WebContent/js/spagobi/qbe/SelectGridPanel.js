@@ -866,7 +866,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	
 	, addCalculatedField: function(targetRecord) {
 		
-		alert('Attenzione con questa tipologia di campi calcolati non è possibile applicare i filtri');
+		alert(LN('sbi.qbe.calculatedFields.expert.nofilterwindow.title'));
 		//Sbi.exception.ExceptionHandler.showWarningMessage(, LN('sbi.qbe.calculatedFields.expert.nofilterwindow.title'));
 		
 		if(this.calculatedFieldWizard === null) {

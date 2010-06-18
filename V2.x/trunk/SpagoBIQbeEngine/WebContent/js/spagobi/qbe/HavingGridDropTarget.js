@@ -259,7 +259,19 @@ Ext.extend(Sbi.qbe.HavingGridDropTarget, Ext.dd.DropTarget, {
 				
 				this.targetPanel.insertFilter(filter, rowIndex);
 			}
-		} else {
+		} else if(nodeType == 'inLineCalculatedField'){
+			filter = {
+					leftOperandValue: node.attributes.attributes.formState
+					, leftOperandDescription: node.attributes.entity + ' : ' + node.attributes.attributes.formState.alias 
+					, leftOperandType: 'Field Content'
+					, leftOperandLongDescription: node.attributes.attributes.formState.alias 
+			};
+				
+			this.targetPanel.insertFilter(filter, rowIndex);
+			
+
+            
+        } else {
 			Ext.Msg.show({
 				   title:'Drop target not allowed',
 				   msg: 'Node of type [' + nodeType + '] cannot be dropped here',

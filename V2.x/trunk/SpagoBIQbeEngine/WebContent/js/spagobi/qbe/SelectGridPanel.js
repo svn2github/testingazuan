@@ -765,9 +765,9 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
     		aggregationFunctions: aggregationFunctions,
     		expertMode: false,
         	scopeComboBoxData :[
-    	                 	    ['STRING','String', 'If the expression script returns a plain text string'],
-    	                 		['NUMBER', 'Number', 'If the expression script returns a number']
-    	                 	],
+        	     ['STRING','String', 'If the expression script returns a plain text string'],
+    	         ['NUMBER', 'Number', 'If the expression script returns a number']
+    	    ],
     		validationService: {
 				serviceName: 'VALIDATE_EXPRESSION_ACTION'
 				, baseParams: {contextType: 'query'}
@@ -787,10 +787,10 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
      		functions: functions,
      		expertMode: true,
         	scopeComboBoxData :[
-        	                 	    ['STRING','String', 'If the expression script returns a plain text string'],
-        	                 		['HTML', 'Html', 'If the expression script returns a valid html fragment'],
-        	                 		['NUMBER', 'Number', 'If the expression script returns a number']
-        	                 	],
+        	    ['STRING','String', 'If the expression script returns a plain text string'],
+        	    ['HTML', 'Html', 'If the expression script returns a valid html fragment'],
+        	    ['NUMBER', 'Number', 'If the expression script returns a number']
+        	],
      		validationService: {
  				serviceName: 'VALIDATE_EXPRESSION_ACTION'
  				, baseParams: {contextType: 'query'}

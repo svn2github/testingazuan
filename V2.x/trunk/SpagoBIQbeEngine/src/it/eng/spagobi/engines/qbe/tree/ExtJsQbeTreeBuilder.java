@@ -44,6 +44,7 @@ import it.eng.qbe.query.serializer.QueryJSONSerializer;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engines.qbe.tree.filter.QbeTreeFilter;
+import it.eng.spagobi.tools.dataset.common.dataproxy.FileDataProxy;
 
 /**
  * The Class ExtJsQbeTreeBuilder.
@@ -298,6 +299,7 @@ public class ExtJsQbeTreeBuilder  {
 		Iterator calculatedFieldIterator = calculatedFields.iterator();
 		while (calculatedFieldIterator.hasNext() ) {
 			DataMartCalculatedField field = (DataMartCalculatedField)calculatedFieldIterator.next();
+			
 			JSONObject jsObject = getCalculatedFieldNode(entity, field);
 			if(jsObject != null) {
 				children.put( jsObject );
@@ -354,8 +356,7 @@ public class ExtJsQbeTreeBuilder  {
 		return fieldNode;
 	}
 	
-	public  JSONObject getCalculatedFieldNode(DataMartEntity parentEntity,
-			 DataMartCalculatedField field) {
+	public  JSONObject getCalculatedFieldNode(DataMartEntity parentEntity, DataMartCalculatedField field) {
 
 		DatamartProperties datamartProperties = datamartModel.getDataSource().getProperties();
 		String iconCls = "calculation";;//datamartProperties.getFieldIconClass( field );		
@@ -371,11 +372,16 @@ public class ExtJsQbeTreeBuilder  {
 			fieldNode.put("id", field.getUniqueName());
 			fieldNode.put("text", fieldLabel);
 			fieldNode.put("leaf", true);
-			
+			fieldNode.put("iconCls", "calculation");
 			
 			JSONObject nodeAttributes = new JSONObject();
-			nodeAttributes.put("iconCls", iconCls);
-			nodeAttributes.put("type", "calculatedField");
+			nodeAttributes.put("iconCls", "calculation");
+			if(field.isInLine()){
+				nodeAttributes.put("type", "inLineCalculatedField");
+			}else{
+				nodeAttributes.put("type", "calculatedField");
+			}
+			
 			nodeAttributes.put("entity", entityLabel);
 			nodeAttributes.put("qtip", fieldTooltip);
 			nodeAttributes.put("field", fieldLabel);

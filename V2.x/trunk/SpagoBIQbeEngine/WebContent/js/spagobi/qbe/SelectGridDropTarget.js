@@ -112,7 +112,7 @@ Ext.extend(Sbi.qbe.SelectGridDropTarget, Ext.dd.DropTarget, {
 	, notifyDropFromDatamartStructureTree: function(ddSource, e, data, rowIndex) {
 		//alert('Source object: tree');
 
-       
+
         var node;  // the node dragged from tree to grid
         var field;        
         var nodeType;
@@ -144,7 +144,7 @@ Ext.extend(Sbi.qbe.SelectGridDropTarget, Ext.dd.DropTarget, {
             
             // TODO: drop also all  the correlated fields. Snippet from method onAddNodeToSelect of QueryBuilderPanel
             /*
-            var seeds =  Sbi.qbe.CalculatedFieldWizard.getUsedItemSeeds('dmFields', node.attributes.formState.expression);
+            var seeds =  Sbi.qbe.CalculatedFieldWizard.getUsedItemSeeds('dmFields', node.attributes.attributes.formState.expression);
  	    		for(var i = 0; i < seeds.length; i++) {
  	    			var n = node.parentNode.findChildBy(function(childNode) {
  	    				return childNode.id === seeds[i];
@@ -160,6 +160,19 @@ Ext.extend(Sbi.qbe.SelectGridDropTarget, Ext.dd.DropTarget, {
  	    			
  	    		}
              */
+        } else if(nodeType == 'inLineCalculatedField'){
+
+        	field = {
+        			id: node.attributes.attributes.formState,
+        			type: 'inLineCalculatedField',
+        			entity: node.parentNode.text, 
+        			field: node.text,
+        			alias: node.text,
+        			longDescription: null
+		    };
+
+            this.targetPanel.addField(field, rowIndex);
+            
         } else if(nodeType == 'entity'){
 			
 			for(var i = 0; i < node.attributes.children.length; i++) {

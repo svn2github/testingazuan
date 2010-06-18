@@ -91,8 +91,6 @@ public class AddCalculatedFieldAction extends AbstractQbeEngineAction {
 		}			
 	}
 
-
-
 	private DataMartCalculatedField deserialize(JSONObject fieldJSON) {
 		DataMartCalculatedField field;
 		String alias;
@@ -119,7 +117,16 @@ public class AddCalculatedFieldAction extends AbstractQbeEngineAction {
 			type = fieldClaculationDescriptor.getString(SerializationConstants.FIELD_TYPE);
 			expression = fieldClaculationDescriptor.getString(SerializationConstants.FIELD_EXPRESSION);
 			
-			field = new DataMartCalculatedField(alias, type, expression);
+			
+			String ft = fieldJSON.getString("filedType");
+			
+			if(ft.equals("calculatedField")){
+				field = new DataMartCalculatedField(alias, type, expression);
+			}else{
+				field = new DataMartCalculatedField(alias, type, expression, true);
+			}
+			
+			
 		} catch (Throwable t) {
 			throw new SpagoBIEngineServiceException(getActionName(), "impossible to deserialize calculated field [" + fieldJSON.toString() + "]", t);
 		}					

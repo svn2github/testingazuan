@@ -5,6 +5,7 @@ Sbi.settings.qbe = {
 			enableTreeToolbar: true,
 			enableTreeTbPinBtn: true,
 			enableTreeTbUnpinBtn: true,
+			enableTreeTbSaveBtn: true,
 			
 			enableQueryTbExecuteBtn: true,
 			enableQueryTbSaveBtn: true,

@@ -101,7 +101,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 	, expItemsTree: null
 	, expItemsPanel: null
 		
-	, baseExpression: ' '
+	, baseExpression: ''
 	, expressionEditor: null
 	, expressionEditorPanel: null
 	
@@ -133,10 +133,10 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 	  		expression = Ext.util.Format.stripTags( expression );
 	  		//expression = Ext.util.Format.htmlEncode(expression);
 	  		expression = expression.replace(/&nbsp;/g," ");
+	  		expression = expression.replace(/\u200B/g,"");
 	  		expression = expression.replace(/&gt;/g,">");
 	  		expression = expression.replace(/&lt;/g,"<");
 	  	}
-		
 		return expression;
 	}
 
@@ -201,9 +201,13 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 			} else if(nodeType === 'field') {
 				Sbi.qbe.commons.unimplementedFunction('handle [field] target');
 			} else if(nodeType === 'calculatedField') {
-				this.inputFields.alias.setValue( node.attributes.formState.alias );
-				this.inputFields.type.setValue( node.attributes.formState.type );
-				this.setExpression( node.attributes.formState.expression );
+				this.inputFields.alias.setValue( node.attributes.attributes.formState.alias );
+				this.inputFields.type.setValue( node.attributes.attributes.formState.type );
+				this.setExpression( node.attributes.attributes.formState.expression );
+			} else if(nodeType === 'inLineCalculatedField') {
+				this.inputFields.alias.setValue( node.attributes.attributes.formState.alias );
+				this.inputFields.type.setValue( node.attributes.attributes.formState.type );
+				this.setExpression( node.attributes.attributes.formState.expression );
 			} else if(nodeType === 'field') {
 				alert('Impossible to edit node of type [' + nodeType +']');
 			} 
@@ -462,7 +466,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 			}else{
 				text= node.attributes.value + ' ';	
 			}
-	    	this.expressionEditor.insertAtCursor(text) ; 
+	    	this.expressionEditor.insertAtCursor(text) ;
 		}
 	}
 	
@@ -529,7 +533,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
   	        
     	    }
     	});
-		
+
 		this.expressionEditorPanel = new Ext.Panel(
 			Ext.apply({
 				layout: 'fit',

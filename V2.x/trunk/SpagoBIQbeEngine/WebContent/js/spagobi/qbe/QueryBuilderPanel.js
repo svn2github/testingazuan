@@ -142,6 +142,8 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     
     , saveQueryWindow: null
     , saveViewWindow: null
+	, CALCULATED_FIELD: 'calculatedField'
+	, IN_LINE_CALCULATED_FIELD: 'inLineCalculatedField'
    
     // --------------------------------------------------------------------------------
 	// public methods
@@ -181,6 +183,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     		query.fields = this.selectGridPanel.getFields();
     		query.distinct = this.selectGridPanel.distinctCheckBox.getValue();
     		query.filters = this.filterGridPanel.getFilters();
+    		
     		query.expression = this.filterGridPanel.getFiltersExpression();
     		query.isNestedExpression = this.filterGridPanel.isWizardExpression();
     		query.havings = this.havingGridPanel.getFilters();
@@ -575,7 +578,8 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	    		leftOperandValue: record.data.id
 				, leftOperandDescription: record.data.entity + ' : ' + record.data.field 
 				, leftOperandType: 'Field Content'
-				, leftOperandLongDescription: record.data.longDescription
+				, leftOperandLongDescription: record.data.alias
+
 			};
 	    	this.filterGridPanel.addFilter(filter);
 	    }, this);
@@ -586,7 +590,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 				, leftOperandDescription: record.data.entity + ' : ' + record.data.field 
 				, leftOperandType: 'Field Content'
 				, leftOperandAggregator: record.data.funct
-				, leftOperandLongDescription: record.data.longDescription
+				, leftOperandLongDescription: record.data.alias
 			};
 	    	this.havingGridPanel.addFilter(filter);
 	    }, this);
@@ -685,9 +689,9 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     			
     			this.selectGridPanel.addField(field);
 			    		    
-    		} else if(nodeType == 'calculatedField') {	
+    		} else if(nodeType == this.CALCULATED_FIELD) {	
  	    		var field = {
- 	    			id: node.attributes.formState,
+ 	    			id: node.attributes.attributes.formState,
  	    			type: this.selectGridPanel.CALCULATED_FIELD,
  	    			entity: node.parentNode.text, 
 			    	field: node.text,
@@ -700,7 +704,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
  	    		this.selectGridPanel.addField(field);
  	    		
 
- 	    		var seeds =  Sbi.qbe.CalculatedFieldWizard.getUsedItemSeeds('dmFields', node.attributes.formState.expression);
+ 	    		var seeds =  Sbi.qbe.CalculatedFieldWizard.getUsedItemSeeds('dmFields', node.attributes.attributes.formState.expression);
  	    		for(var i = 0; i < seeds.length; i++) {
  	    			var n = node.parentNode.findChildBy(function(childNode) {
  	    				return childNode.id === seeds[i];
@@ -715,11 +719,41 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
  	    			
  	    			
  	    		}
- 	    		
+    		}else if(nodeType == this.IN_LINE_CALCULATED_FIELD) {	
+ 	 	    		var field = {
+ 	 	    			id: node.attributes.attributes.formState,
+ 	 	    			type: this.selectGridPanel.IN_LINE_CALCULATED_FIELD,
+ 	 	    			entity: node.parentNode.text, 
+ 				    	field: node.text,
+ 	 			        alias: node.text,
+ 	 			        longDescription: null
+ 	 			    };
+ 	 	    		
+ 	 	    		Ext.apply(field, recordBaseConfig);
+ 	 	    		
+ 	 	    		this.selectGridPanel.addField(field);
+ 	 	    		
+
+ 	 	    		var seeds =  Sbi.qbe.CalculatedFieldWizard.getUsedItemSeeds('dmFields', node.attributes.attributes.formState.expression);
+ 	 	    		for(var i = 0; i < seeds.length; i++) {
+ 	 	    			var n = node.parentNode.findChildBy(function(childNode) {
+ 	 	    				return childNode.id === seeds[i];
+ 	 	    			});
+ 	 	    			
+ 	 	    			if(n) {
+ 	 	    				this.onAddNodeToSelect(n, {visible:false});
+ 	 	    				//this.currentDataMartStructurePanel.fireEvent('click', this.currentDataMartStructurePanel, n);
+ 	 	    			} else {
+ 	 	    				alert('node  [' + seeds + '] not contained in entity [' + node.parentNode.text + ']');
+ 	 	    			}
+ 	 	    			
+ 	 	    			
+ 	 	    		}
+
     		} else if(nodeType == 'entity'){
     			for(var i = 0; i < node.attributes.children.length; i++) {
-    				if(node.attributes.children[i].attributes.type != 'field'
-    					&& node.attributes.children[i].attributes.type != 'calculatedField') continue;
+    				if((node.attributes.children[i].attributes.type != 'field' && node.attributes.children[i].attributes.type != this.CALCULATED_FIELD) || 
+    					(node.attributes.children[i].attributes.type != 'field' && node.attributes.children[i].attributes.type != this.IN_LINE_CALCULATED_FIELD)) continue;
     				field = {
           				id: node.attributes.children[i].id , 
             			entity: node.attributes.children[i].attributes.entity , 
@@ -737,7 +771,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 					   icon: Ext.MessageBox.ERROR
 				});
     		}
-		 }
+		}
 	}
 	
 	, onAddNodeToWhere: function(node, recordBaseConfig) {

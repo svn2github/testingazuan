@@ -123,7 +123,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		var params = {
 				catalogue: Ext.util.JSON.encode(this.getQueries())
 		};
-		
+
 		Ext.Ajax.request({
 		    url: this.services['setCatalogue'],
 		    success: callback,
@@ -146,6 +146,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	
 	, save: function(meta, callback, scope) {
 		var params = Ext.apply({}, meta);
+		
 		var doSave = function() {
 			Ext.Ajax.request({
 			    url: this.services['saveCatalogue'],

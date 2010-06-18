@@ -265,7 +265,7 @@ public class HQLStatement extends BasicStatement {
 		StringBuffer buffer;
 		List selectFields;
 		List allSelectFields;
-		List selectInLineCalculatedFields;
+		List<InLineCalculatedSelectField> selectInLineCalculatedFields = new ArrayList<InLineCalculatedSelectField>();
 		AbstractSelectField selectAbstractField;
 		DataMartSelectField selectField;
 		InLineCalculatedSelectField selectInLineField;
@@ -296,6 +296,8 @@ public class HQLStatement extends BasicStatement {
 			Iterator it = selectFields.iterator();
 			if(it.hasNext()){
 				selectAbstractField = (AbstractSelectField)it.next();
+				String[] idsForQuery = new String[selectFields.size()-query.getCalculatedSelectFields(true).size()]; 
+				int index=0;
 				do{				
 					if(selectAbstractField.isDataMartField()){
 					
@@ -324,59 +326,77 @@ public class HQLStatement extends BasicStatement {
 						selectClauseElement = selectField.getFunction().apply(selectClauseElement);
 						logger.debug("select clause element after aggregation [" + selectClauseElement + "]");
 						
-						buffer.append(" " + selectClauseElement);
-//						if( it.hasNext() ) {
-//							buffer.append(",");
-//						}
+						
+						idsForQuery[index] = " " + selectClauseElement;
+						index++;
 						logger.debug("select clause element succesfully added to select clause");
+
 					}else if(selectAbstractField.isInLineCalculatedField()){
-	
-						selectInLineField = (InLineCalculatedSelectField)selectAbstractField;
-						
-						String expr = selectInLineField.getExpression();//.replace("\'", "");
-						
-						StringTokenizer stk = new StringTokenizer(selectInLineField.getExpression().replace("\'", ""), "+-|,()*");
-						while(stk.hasMoreTokens()){
-							String alias = stk.nextToken().trim();
-							String uniqueName;
-							allSelectFields = query.getSelectFields(false);
-							for(int i=0; i<allSelectFields.size(); i++){
-								if(allSelectFields.get(i).getClass().equals(DataMartSelectField.class) && ((DataMartSelectField)allSelectFields.get(i)).getAlias().equals(alias)){
-									uniqueName=((DataMartSelectField)allSelectFields.get(i)).getUniqueName();
-									datamartField = getDataSource().getDataMartModelStructure().getField(uniqueName);	
-									queryName = datamartField.getQueryName();
-									rootEntity = datamartField.getParent().getRoot(); 
-									rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
-									queryName = ((DataMartSelectField)allSelectFields.get(i)).getFunction().apply(rootEntityAlias+"."+queryName);
-									map.put(alias,queryName);
-								}
-							}
-						}
-						
-						
-						Iterator<String> keyIter = map.keySet().iterator();
-						while(keyIter.hasNext()){
-							String key = keyIter.next();
-							expr=expr.replaceAll(key, map.get(key));
-						}
-						
-						buffer.append(" " +expr);
-//						if( it.hasNext() ) {
-//							buffer.append(",");
-//						}
-						
-						logger.debug("select clause element succesfully added to select clause");
+						selectInLineCalculatedFields.add((InLineCalculatedSelectField)selectAbstractField);
+						index++;
 					}
+
 					if(it.hasNext()){
 						selectAbstractField = (AbstractSelectField)it.next();
-						if(!selectAbstractField.isCalculatedField()){
-							buffer.append(",");
-						}
 					}else{
 						break;
 					}
 					
+					
+					
 				} while( true );
+				
+				
+				index=0;
+				for(int k=0; k< selectInLineCalculatedFields.size(); k++){
+					selectInLineField = selectInLineCalculatedFields.get(k);
+					
+					String expr = selectInLineField.getExpression();//.replace("\'", "");
+					
+					StringTokenizer stk = new StringTokenizer(selectInLineField.getExpression().replace("\'", ""), "+-|,()*");
+					while(stk.hasMoreTokens()){
+						String alias = stk.nextToken().trim();
+						String uniqueName;
+						allSelectFields = query.getSelectFields(false);
+						for(int i=0; i<allSelectFields.size(); i++){
+							if(allSelectFields.get(i).getClass().equals(DataMartSelectField.class) && ((DataMartSelectField)allSelectFields.get(i)).getAlias().equals(alias)){
+								uniqueName=((DataMartSelectField)allSelectFields.get(i)).getUniqueName();
+								datamartField = getDataSource().getDataMartModelStructure().getField(uniqueName);	
+								queryName = datamartField.getQueryName();
+								rootEntity = datamartField.getParent().getRoot(); 
+								rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
+								queryName = ((DataMartSelectField)allSelectFields.get(i)).getFunction().apply(rootEntityAlias+"."+queryName);
+								map.put(alias,queryName);
+							}
+						}
+					}
+					
+					
+					Iterator<String> keyIter = map.keySet().iterator();
+					while(keyIter.hasNext()){
+						String key = keyIter.next();
+						expr=expr.replaceAll(key, map.get(key));
+					}
+					
+					for(int y= index; y<idsForQuery.length; y++){
+						if(idsForQuery[y]==null){
+							idsForQuery[y]=" " +expr;
+							index = y;
+							break;
+						}
+					}
+					
+					
+					
+					logger.debug("select clause element succesfully added to select clause");
+				}
+				
+				
+				for(int y= 0; y<idsForQuery.length-1; y++){
+					buffer.append(idsForQuery[y]+",");
+				}
+				buffer.append(idsForQuery[idsForQuery.length-1]);
+				
 			}
 		
 		}

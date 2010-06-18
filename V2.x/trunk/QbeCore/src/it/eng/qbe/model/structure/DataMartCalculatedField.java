@@ -26,11 +26,20 @@ package it.eng.qbe.model.structure;
 public class DataMartCalculatedField extends DataMartField {
 	
 	String expression;
+	boolean inLine;
 	
 	public DataMartCalculatedField(String name, String type, String expression) {
 		setName(name);
 		setType(type);
 		setExpression(expression);
+		this.inLine = false;
+	}
+	
+	public DataMartCalculatedField(String name, String type, String expression, boolean inLine) {
+		setName(name);
+		setType(type);
+		setExpression(expression);
+		this.inLine = inLine;
 	}
 	
 	public DataMartCalculatedField(String name, DataMartEntity parent, String type, String expression) {
@@ -50,4 +59,10 @@ public class DataMartCalculatedField extends DataMartField {
 	public boolean isBoundToDataMart() {
 		return getStructure() != null && getParent() != null;
 	}
+
+	public boolean isInLine() {
+		return inLine;
+	}
+	
+	
 }

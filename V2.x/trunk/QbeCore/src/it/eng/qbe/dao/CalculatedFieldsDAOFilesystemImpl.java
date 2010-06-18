@@ -60,6 +60,7 @@ public class CalculatedFieldsDAOFilesystemImpl implements ICalculatedFieldsDAO {
 	public final static String FIELD_TAG_ENTIY_ATTR = "entity";
 	public final static String FIELD_TAG_NAME_ATTR = "name";
 	public final static String FIELD_TAG_TYPE_ATTR = "type";
+	public final static String FIELD_TAG_IN_LINE_ATTR = "isInLine";
 	
 	public static transient Logger logger = Logger.getLogger(CalculatedFieldsDAOFilesystemImpl.class);
 	
@@ -78,6 +79,7 @@ public class CalculatedFieldsDAOFilesystemImpl implements ICalculatedFieldsDAO {
 		String entity;
 		String name;
 		String type;
+		Boolean inLineCF;
 		String expression;
 		DataMartCalculatedField calculatedField;
 		List calculatedFieldNodes;
@@ -112,8 +114,8 @@ public class CalculatedFieldsDAOFilesystemImpl implements ICalculatedFieldsDAO {
 					entity = calculatedFieldNode.valueOf("@" + FIELD_TAG_ENTIY_ATTR);
 					name = calculatedFieldNode.valueOf("@" + FIELD_TAG_NAME_ATTR);
 					type = calculatedFieldNode.valueOf("@" + FIELD_TAG_TYPE_ATTR);
-					expression = calculatedFieldNode.getStringValue();
-					calculatedField = new DataMartCalculatedField(name, type, expression);
+					inLineCF = new Boolean(calculatedFieldNode.valueOf("@" + FIELD_TAG_IN_LINE_ATTR));					expression = calculatedFieldNode.getStringValue();
+					calculatedField = new DataMartCalculatedField(name, type, expression, inLineCF.booleanValue());
 			
 					if(!calculatedFiledsMap.containsKey(entity)) {
 						calculatedFiledsMap.put(entity, new ArrayList());
@@ -193,6 +195,7 @@ public class CalculatedFieldsDAOFilesystemImpl implements ICalculatedFieldsDAO {
 		            	.addAttribute( FIELD_TAG_ENTIY_ATTR, entityName )
 		            	.addAttribute( FIELD_TAG_NAME_ATTR, field.getName() )
 		            	.addAttribute( FIELD_TAG_TYPE_ATTR, field.getType() )
+		            	.addAttribute( FIELD_TAG_IN_LINE_ATTR, ""+field.isInLine() )
 		            	.addCDATA( field.getExpression() );
 				}
 			}

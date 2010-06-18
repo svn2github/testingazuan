@@ -58,6 +58,25 @@ Sbi.qbe.FieldsContainerPanel = function(config) {
 	
 	Ext.apply(this, c);
 	
+	this.init(c);
+			
+	Ext.apply(c, {
+        store: this.store
+        , cm: this.cm
+        , enableDragDrop: true
+        , ddGroup: 'crosstabDesignerDDGroup'
+	    , layout: 'fit'
+	    , viewConfig: {
+	    	forceFit: true
+	    }
+        , listeners: {
+			render: function(grid) { // hide the grid header
+				grid.getView().el.select('.x-grid3-header').setStyle('display', 'none');
+    		}                
+		}
+        , type: 'fieldsContainerPanel'
+	});	
+	
 	// constructor
     Sbi.qbe.FieldsContainerPanel.superclass.constructor.call(this, c);
     
@@ -65,10 +84,40 @@ Sbi.qbe.FieldsContainerPanel = function(config) {
     
 };
 
-Ext.extend(Sbi.qbe.FieldsContainerPanel, Ext.Panel, {
-
-
-	initDropTarget: function() {
+Ext.extend(Sbi.qbe.FieldsContainerPanel, Ext.grid.GridPanel, {
+	
+	init: function(c) {
+	
+		this.store =  new Ext.data.SimpleStore({
+	        fields: ['id', 'alias', 'iconCls', 'nature']
+		});
+	
+        this.template = new Ext.Template( // see Ext.Button.buttonTemplate and Button's onRender method
+        		// margin auto in order to have button center alignment
+                '<table style="margin-left: auto; margin-right: auto;" id="{4}" cellspacing="0" class="x-btn {3}"><tbody class="{1}">',
+                '<tr><td class="x-btn-tl"><i>&#160;</i></td><td class="x-btn-tc"></td><td class="x-btn-tr"><i>&#160;</i></td></tr>',
+                '<tr><td class="x-btn-ml"><i>&#160;</i></td><td class="x-btn-mc"><em class="{2}" unselectable="on"><button type="{0}" class=" x-btn-text {5}">{6}</button></em></td><td class="x-btn-mr"><i>&#160;</i></td></tr>',
+                '<tr><td class="x-btn-bl"><i>&#160;</i></td><td class="x-btn-bc"></td><td class="x-btn-br"><i>&#160;</i></td></tr>',
+                '</tbody></table>');
+        this.template.compile();
+		
+	    var fieldColumn = new Ext.grid.Column({
+	    	header:  ''
+	    	, dataIndex: 'alias'
+	    	, hideable: false
+	    	, hidden: false	
+	    	, sortable: false
+	   	    , renderer : function(value, metaData, record, rowIndex, colIndex, store){
+	        	return this.template.apply(
+	        			['button', 'x-btn-small x-btn-icon-small-left', '', 'x-btn-text-icon', Ext.id(), record.data.iconCls, record.data.alias]		
+	        	);
+	    	}
+	        , scope: this
+	    });
+	    this.cm = new Ext.grid.ColumnModel([fieldColumn]);
+	}
+	
+	, initDropTarget: function() {
 		this.removeListener('render', this.initDropTarget, this);
 		var dropTarget = new Sbi.widgets.GenericDropTarget(this, {
 			ddGroup: 'crosstabDesignerDDGroup'
@@ -80,21 +129,12 @@ Ext.extend(Sbi.qbe.FieldsContainerPanel, Ext.Panel, {
 		if (ddSource.grid && ddSource.grid.type && ddSource.grid.type === 'queryFieldsPanel') {
 			// dragging from QueryFieldsPanel
 			var rows = ddSource.dragData.selections;
-			for (var i = 0; i < rows.length; i++) {
-				var aRow = rows[i];
-				//ddSource.grid.store.remove(aRow);
-				this.add(new Ext.Panel({
-					padding: 5
-					//, bodyStyle: 'horizontal-align: center;'
-					, items: [{
-					    xtype: 'button'
-						, text: aRow.data.alias // text permits html tags
-						, iconCls: aRow.data.iconCls
-						, style: 'margin-left: auto; margin-right: auto;'
-					}]
-				}));
-			}
-			this.doLayout();
+			this.store.add(rows);
+		} else if (ddSource.grid && ddSource.grid.type && ddSource.grid.type === 'fieldsContainerPanel') {
+			// dragging from FieldsContainerPanel
+			var rows = ddSource.dragData.selections;
+			ddSource.grid.store.remove(rows);
+			this.store.add(rows);
 		}
 	}
 

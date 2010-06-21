@@ -339,3 +339,10 @@ Sbi.locale.ln['sbi.qbe.crosstabdesignerpanel.title'] = 'Crosstab designer';
 Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.title'] = 'Crosstab definition';
 Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.rows'] = 'Rows';
 Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.columns'] = 'Columns';
+Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.measures'] = 'Measures';
+Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.cannotdrophere.title'] = 'Drop not allowed';
+Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.cannotdrophere.attributealreadypresent'] = 'The attribute is already present';
+Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.cannotdrophere.measurealreadypresent'] = 'The measure is already present';
+Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.cannotdrophere.measures'] = 'You cannot drag measures on rows or columns: you have to drag them into the central section of the crosstab';
+Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.cannotdrophere.attributes'] = 'You cannot drag attributes into the central section of the crosstab: you have to drag them on rows or columns';
+

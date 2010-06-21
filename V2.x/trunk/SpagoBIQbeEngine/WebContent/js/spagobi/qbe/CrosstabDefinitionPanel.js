@@ -76,17 +76,23 @@ Ext.extend(Sbi.qbe.CrosstabDefinitionPanel, Ext.Panel, {
 	crosstabDefinitionPanel: null
 	, columnsContainerPanel: null
 	, rowsContainerPanel: null
+	, measuresContainerPanel: null
 	
 	, init: function(c) {
 	
-		this.columnsContainerPanel = new Sbi.qbe.FieldsContainerPanel({
+		this.columnsContainerPanel = new Sbi.qbe.AttributesContainerPanel({
             title: LN('sbi.qbe.crosstabDefinitionPanel.columns')
             , width: 400
 		});
 		
-		this.rowsContainerPanel = new Sbi.qbe.FieldsContainerPanel({
+		this.rowsContainerPanel = new Sbi.qbe.AttributesContainerPanel({
             title: LN('sbi.qbe.crosstabDefinitionPanel.rows')
             , width: 200
+		});
+		
+		this.measuresContainerPanel = new Sbi.qbe.MeasuresContainerPanel({
+            title: LN('sbi.qbe.crosstabDefinitionPanel.measures')
+            , width: 400
 		});
 	
 	    this.crosstabDefinitionPanel = new Ext.Panel({
@@ -102,10 +108,8 @@ Ext.extend(Sbi.qbe.CrosstabDefinitionPanel, Ext.Panel, {
 		        }
 		        , this.columnsContainerPanel
 		        , this.rowsContainerPanel
-		        , {
-		            header: false
-		            , width: 400
-	        }]
+		        , this.measuresContainerPanel
+		    ]
 	    });
 	
 	}

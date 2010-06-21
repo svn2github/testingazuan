@@ -151,29 +151,39 @@
 			<replace file="${build}/${webapp_name}/WEB-INF/classes/deploy_it.properties">
 				 <replacetoken>use.mysql=true</replacetoken>      
 				 <replacevalue>use.mysql=false</replacevalue>		
-			</replace>			
+			</replace>
+
 	  </target>
 	  <target name="mysql"  >
 			<replace file="${build}/${webapp_name}/WEB-INF/classes/deploy_it.properties">
 				 <replacetoken>use.mysql=false</replacetoken>      
 				 <replacevalue>use.mysql=true</replacevalue>		
-			</replace>			
+			</replace>	
 	  </target>
 	<!-- database properties: changes -->
-	<propertyfile file="${web.dir}/WEB-INF/classes/sql/${jpalo_db}/credentials">
-	  <entry  key="jdbcDriver" value="${jpalo_db.driver}"/>
-	  <entry  key="jdbcURL" value="${jpalo_db.url}"/>
-	  <entry  key="jdbcPort" value="${jpalo_db.port}"/>
-	  <entry  key="userName" value="${jpalo_db.user}"/>
-	  <entry  key="userPassword" value="${jpalo_db.password}"/>
-	  <entry  key="databaseName" value="${jpalo_db.name}"/>
-	</propertyfile>
-
+	<target name="change_db"  >
+		<propertyfile file="${web.dir}/WEB-INF/classes/sql/${jpalo_db}/credentials">
+		  <entry  key="jdbcDriver" value="${jpalo_db.driver}"/>
+		  <entry  key="jdbcURL" value="${jpalo_db.url}"/>
+		  <entry  key="jdbcPort" value="${jpalo_db.port}"/>
+		  <entry  key="userName" value="${jpalo_db.user}"/>
+		  <entry  key="userPassword" value="${jpalo_db.password}"/>
+		  <entry  key="databaseName" value="${jpalo_db.name}"/>
+		</propertyfile>
+	</target>
+	<target name="datasource_mondrian">
+		<replaceregexp file="${web.dir}/WEB-INF/datasources.xml">
+			<regexp pattern="(&lt;Definition&gt;)(.*?)(&lt;/Definition&gt;)"/>
+			<substitution expression="&lt;Definition&gt;${mondrian_ds}&lt;/Definition&gt;"/>
+		</replaceregexp>
+	</target>
 	<target name="create.war" depends="init,copy.artifacts" >
 		<antcall target="${sso}" />
 		<antcall target="${specific.ant.task}" />
 		<antcall target="${jpalo_ssl}" />
 		<antcall target="${jpalo_db}" />
+		<antcall target="change_db" />
+		<antcall target="datasource_mondrian" />
 		
 	      <mkdir dir="${dist}"/>
 	      <delete file="${dist}/${war_name}" />

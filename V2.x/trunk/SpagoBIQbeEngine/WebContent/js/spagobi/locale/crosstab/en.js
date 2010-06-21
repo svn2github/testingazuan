@@ -1,0 +1,20 @@
+Ext.ns("Sbi.locale");
+Sbi.locale.ln = Sbi.locale.ln || new Array();
+
+
+//===================================================================
+//CROSSTAB DESIGNER
+//===================================================================
+Sbi.locale.ln['sbi.crosstab.crosstabdesignerpanel.title'] = 'Crosstab designer';
+Sbi.locale.ln['sbi.crosstab.crosstabdefinitionpanel.title'] = 'Crosstab definition';
+Sbi.locale.ln['sbi.crosstab.crosstabdefinitionpanel.rows'] = 'Rows';
+Sbi.locale.ln['sbi.crosstab.crosstabdefinitionpanel.columns'] = 'Columns';
+Sbi.locale.ln['sbi.crosstab.crosstabdefinitionpanel.measures'] = 'Measures';
+Sbi.locale.ln['sbi.crosstab.attributescontainerpanel.cannotdrophere.title'] = 'Drop not allowed';
+Sbi.locale.ln['sbi.crosstab.attributescontainerpanel.cannotdrophere.attributealreadypresent'] = 'The attribute is already present';
+Sbi.locale.ln['sbi.crosstab.attributescontainerpanel.cannotdrophere.measures'] = 'You cannot drag measures on rows or columns: you have to drag them into the central section of the crosstab';
+
+Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.cannotdrophere.title'] = 'Drop not allowed';
+Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.cannotdrophere.measurealreadypresent'] = 'The measure is already present';
+Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.cannotdrophere.attributes'] = 'You cannot drag attributes into the central section of the crosstab: you have to drag them on rows or columns';
+

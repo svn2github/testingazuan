@@ -44,12 +44,12 @@
   * - Davide Zerbetto (davide.zerbetto@eng.it)
   */
 
-Ext.ns("Sbi.qbe");
+Ext.ns("Sbi.crosstab");
 
-Sbi.qbe.CrosstabDefinitionPanel = function(config) {
+Sbi.crosstab.CrosstabDefinitionPanel = function(config) {
 	
 	var defaultSettings = {
-		title: LN('sbi.qbe.crosstabDefinitionPanel.title')
+		title: LN('sbi.crosstab.crosstabdefinitionpanel.title')
   	};
 	if(Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.crosstabDefinitionPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.crosstabDefinitionPanel);
@@ -67,11 +67,11 @@ Sbi.qbe.CrosstabDefinitionPanel = function(config) {
 	});
 	
 	// constructor
-    Sbi.qbe.CrosstabDefinitionPanel.superclass.constructor.call(this, c);
+    Sbi.crosstab.CrosstabDefinitionPanel.superclass.constructor.call(this, c);
     
 };
 
-Ext.extend(Sbi.qbe.CrosstabDefinitionPanel, Ext.Panel, {
+Ext.extend(Sbi.crosstab.CrosstabDefinitionPanel, Ext.Panel, {
 	
 	crosstabDefinitionPanel: null
 	, columnsContainerPanel: null
@@ -80,18 +80,18 @@ Ext.extend(Sbi.qbe.CrosstabDefinitionPanel, Ext.Panel, {
 	
 	, init: function(c) {
 	
-		this.columnsContainerPanel = new Sbi.qbe.AttributesContainerPanel({
-            title: LN('sbi.qbe.crosstabDefinitionPanel.columns')
+		this.columnsContainerPanel = new Sbi.crosstab.AttributesContainerPanel({
+            title: LN('sbi.crosstab.crosstabdefinitionpanel.columns')
             , width: 400
 		});
 		
-		this.rowsContainerPanel = new Sbi.qbe.AttributesContainerPanel({
-            title: LN('sbi.qbe.crosstabDefinitionPanel.rows')
+		this.rowsContainerPanel = new Sbi.crosstab.AttributesContainerPanel({
+            title: LN('sbi.crosstab.crosstabdefinitionpanel.rows')
             , width: 200
 		});
 		
-		this.measuresContainerPanel = new Sbi.qbe.MeasuresContainerPanel({
-            title: LN('sbi.qbe.crosstabDefinitionPanel.measures')
+		this.measuresContainerPanel = new Sbi.crosstab.MeasuresContainerPanel({
+            title: LN('sbi.crosstab.crosstabdefinitionpanel.measures')
             , width: 400
 		});
 	

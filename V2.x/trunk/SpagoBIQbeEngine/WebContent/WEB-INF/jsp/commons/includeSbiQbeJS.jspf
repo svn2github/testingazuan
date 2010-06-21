@@ -11,6 +11,7 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/locale/qbe/<%=locale.getLanguage()%>.js'/></script>
 <script type="text/javascript" src='../js/spagobi/locale/formbuilder/<%=locale.getLanguage()%>.js'/></script>
 <script type="text/javascript" src='../js/spagobi/locale/widgets/lookupfield/<%=locale.getLanguage()%>.js'/></script>
+<script type="text/javascript" src='../js/spagobi/locale/crosstab/<%=locale.getLanguage()%>.js'/></script>
 
 <script type="text/javascript" src='../js/spagobi/commons/Settings.js'/></script>	
 
@@ -103,9 +104,10 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 
 
 <script type="text/javascript" src='../js/spagobi/widgets/GenericDropTarget.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbe/FieldsContainerPanel.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbe/CrosstabDefinitionPanel.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbe/CrosstabDesignerPanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/crosstab/AttributesContainerPanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/crosstab/MeasuresContainerPanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/crosstab/CrosstabDefinitionPanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/crosstab/CrosstabDesignerPanel.js'/></script>
 
 
 

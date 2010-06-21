@@ -321,18 +321,3 @@ Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.success.text'] = 'Espre
 Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.fail.title'] = 'Errore di validazione';
 Sbi.locale.ln['sbi.qbe.calculatedFields.expert.nofilterwindow.title'] = 'Attenzione con questa tipologia di campi calcolati non è possibile applicare i filtri';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.expert'] = 'Utente Esperto';
-
-
-//===================================================================
-//CROSSTAB DESIGNER
-//===================================================================
-Sbi.locale.ln['sbi.qbe.crosstabdesignerpanel.title'] = 'Crosstab designer';
-Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.title'] = 'Definizione della Crosstab';
-Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.rows'] = 'Righe';
-Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.columns'] = 'Colonne';
-Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.measures'] = 'Misure';
-Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.cannotdrophere.title'] = 'Drop non consentito';
-Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.cannotdrophere.attributealreadypresent'] = 'Il campo è già presente';
-Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.cannotdrophere.measurealreadypresent'] = 'La misura è già presente';
-Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.cannotdrophere.measures'] = 'Non puoi inserire delle misure su righe o colonne: devi inserirle nella parte centrale della crosstab';
-Sbi.locale.ln['sbi.qbe.crosstabDefinitionPanel.cannotdrophere.attributes'] = 'Non puoi inserire degli attributi nella parte centrale della crosstab: devi inserirli su righe o colonne';

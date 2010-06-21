@@ -44,12 +44,12 @@
   * - Davide Zerbetto (davide.zerbetto@eng.it)
   */
 
-Ext.ns("Sbi.qbe");
+Ext.ns("Sbi.crosstab");
 
-Sbi.qbe.CrosstabDesignerPanel = function(config) {
+Sbi.crosstab.CrosstabDesignerPanel = function(config) {
 	
 	var defaultSettings = {
-		title: LN('sbi.qbe.crosstabdesignerpanel.title')
+		title: LN('sbi.crosstab.crosstabdesignerpanel.title')
   	};
 	if(Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.crosstabDesignerPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.crosstabDesignerPanel);
@@ -67,11 +67,11 @@ Sbi.qbe.CrosstabDesignerPanel = function(config) {
 	});
 	
 	// constructor
-    Sbi.qbe.CrosstabDesignerPanel.superclass.constructor.call(this, c);
+    Sbi.crosstab.CrosstabDesignerPanel.superclass.constructor.call(this, c);
 	
 };
 
-Ext.extend(Sbi.qbe.CrosstabDesignerPanel, Ext.Panel, {
+Ext.extend(Sbi.crosstab.CrosstabDesignerPanel, Ext.Panel, {
     
 	init: function(c) {
 		this.initWestRegionPanel(c.westConfig || {});
@@ -95,7 +95,7 @@ Ext.extend(Sbi.qbe.CrosstabDesignerPanel, Ext.Panel, {
 	}
 	
 	, initCenterRegionPanel: function(c) {
-		this.centerRegionPanel = new Sbi.qbe.CrosstabDefinitionPanel(Ext.apply(c, {
+		this.centerRegionPanel = new Sbi.crosstab.CrosstabDefinitionPanel(Ext.apply(c, {
 			region: 'center'
 		}));
 	}

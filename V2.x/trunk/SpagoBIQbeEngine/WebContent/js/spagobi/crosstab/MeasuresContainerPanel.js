@@ -44,15 +44,15 @@
   * - Davide Zerbetto (davide.zerbetto@eng.it)
   */
 
-Ext.ns("Sbi.qbe");
+Ext.ns("Sbi.crosstab");
 
-Sbi.qbe.AttributesContainerPanel = function(config) {
+Sbi.crosstab.MeasuresContainerPanel = function(config) {
 	
 	var defaultSettings = {
 	};
 	
-	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.attributesContainerPanel) {
-		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.attributesContainerPanel);
+	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.measuresContainerPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.measuresContainerPanel);
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 	
@@ -91,17 +91,17 @@ Sbi.qbe.AttributesContainerPanel = function(config) {
         	}
 		}
         , scope: this
-        , type: 'attributesContainerPanel'
+        , type: 'measuresContainerPanel'
 	});	
 	
 	// constructor
-    Sbi.qbe.AttributesContainerPanel.superclass.constructor.call(this, c);
+    Sbi.crosstab.MeasuresContainerPanel.superclass.constructor.call(this, c);
     
     this.on('render', this.initDropTarget, this);
     
 };
 
-Ext.extend(Sbi.qbe.AttributesContainerPanel, Ext.grid.GridPanel, {
+Ext.extend(Sbi.crosstab.MeasuresContainerPanel, Ext.grid.GridPanel, {
 	
 	targetRow: null
 	
@@ -154,17 +154,17 @@ Ext.extend(Sbi.qbe.AttributesContainerPanel, Ext.grid.GridPanel, {
 				var aRow = rows[i];
 				if (this.store.getById(aRow.data.id) !== undefined) {
 					Ext.Msg.show({
-						   title: LN('sbi.qbe.crosstabDefinitionPanel.cannotdrophere.title'),
-						   msg: LN('sbi.qbe.crosstabDefinitionPanel.cannotdrophere.attributealreadypresent'),
+						   title: LN('sbi.crosstab.measurescontainerpanel.cannotdrophere.title'),
+						   msg: LN('sbi.crosstab.measurescontainerpanel.cannotdrophere.measurealreadypresent'),
 						   buttons: Ext.Msg.OK,
 						   icon: Ext.MessageBox.WARNING
 					});
 					return;
 				}
-				if (aRow.data.nature === 'measure') {
+				if (aRow.data.nature === 'attribute') {
 					Ext.Msg.show({
-						   title: LN('sbi.qbe.crosstabDefinitionPanel.cannotdrophere.title'),
-						   msg: LN('sbi.qbe.crosstabDefinitionPanel.cannotdrophere.measures'),
+						   title: LN('sbi.crosstab.measurescontainerpanel.cannotdrophere.title'),
+						   msg: LN('sbi.crosstab.measurescontainerpanel.cannotdrophere.attributes'),
 						   buttons: Ext.Msg.OK,
 						   icon: Ext.MessageBox.WARNING
 					});
@@ -172,10 +172,10 @@ Ext.extend(Sbi.qbe.AttributesContainerPanel, Ext.grid.GridPanel, {
 				}
 				this.store.add([aRow]);
 			}
-		} else if (ddSource.grid && ddSource.grid.type && ddSource.grid.type === 'attributesContainerPanel') {
-			// dragging from AttributesContainerPanel
+		} else if (ddSource.grid && ddSource.grid.type && ddSource.grid.type === 'measuresContainerPanel') {
+			// dragging from MeasuresContainerPanel
 			if (ddSource.grid.id === this.id) {
-				// DD on the same AttributesContainerPanel --> re-order the fields
+				// DD on the same MeasuresContainerPanel --> re-order the fields
 				var rows = ddSource.dragData.selections;
 				if (rows.length > 1) {
 					Ext.Msg.show({
@@ -206,16 +206,13 @@ Ext.extend(Sbi.qbe.AttributesContainerPanel, Ext.grid.GridPanel, {
 					
 				}
 			} else {
-				// DD on another AttributesContainerPanel --> moving the fields
-				var rows = ddSource.dragData.selections;
-				ddSource.grid.store.remove(rows);
-				this.store.add(rows);
+				// it should never occur....
 			}
 			
-		} else if (ddSource.grid && ddSource.grid.type && ddSource.grid.type === 'measuresContainerPanel') {
+		} else if (ddSource.grid && ddSource.grid.type && ddSource.grid.type === 'attributesContainerPanel') {
 			Ext.Msg.show({
-				   title: LN('sbi.qbe.crosstabDefinitionPanel.cannotdrophere.title'),
-				   msg: LN('sbi.qbe.crosstabDefinitionPanel.cannotdrophere.measures'),
+				   title: LN('sbi.crosstab.measurescontainerpanel.cannotdrophere.title'),
+				   msg: LN('sbi.crosstab.measurescontainerpanel.cannotdrophere.attributes'),
 				   buttons: Ext.Msg.OK,
 				   icon: Ext.MessageBox.WARNING
 			});

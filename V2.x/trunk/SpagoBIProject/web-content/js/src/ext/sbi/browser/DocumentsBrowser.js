@@ -120,7 +120,8 @@ Sbi.browser.DocumentsBrowser = function(config) {
 												"};";
 								documentPage.miframe.iframe.execScript(scriptFn, true);
 							}
-						} catch (e) {alert(e);}
+						//} catch (e) {alert(e);}
+						} catch (e) {}
 					}
 				}
 				, this

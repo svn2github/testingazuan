@@ -147,10 +147,15 @@ Sbi.execution.DocumentExecutionPage = function(config, doc) {
 		 win_metadata.show();
 	}, this);
     
+	var items = [this.miframe, this.southPanel];
+	if (config.hideParametersPanel === undefined || config.hideParametersPanel === false) {
+		items.push(this.northPanel);
+	}
+	
 	var c = Ext.apply({}, config, {
 		layout: 'border'
 		, tbar: this.toolbar
-		, items: [this.miframe, this.southPanel, this.northPanel]
+		, items: items
 	});	    
 	
 	// constructor
@@ -180,8 +185,11 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		
 		if(this.fireEvent('beforesynchronize', this, executionInstance, this.executionInstance) !== false){
 			this.executionInstance = executionInstance;
-			this.synchronizeToolbar( executionInstance );
-			
+			//if (this.rendered) {
+				this.synchronizeToolbar( executionInstance );
+			//} else {
+			//	this.on('render', function(){this.synchronizeToolbar( this.executionInstance );}, this);
+			//}
 			if(synchronizeSliders === undefined || synchronizeSliders === true) {
 				/*
 				this.parametersPanel.on(

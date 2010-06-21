@@ -70,13 +70,17 @@ Sbi.execution.ExecutionPanel = function(config, doc) {
 	this.documentsStack.push( this.activeDocument );
 	
 	this.activeDocument.on('beforetoolbarinit', this.setBreadcrumbs, this);
-	//this.activeDocument.tb.on('beforeinit', this.setBreadcrumbs, this);	
-	this.activeDocument.documentExecutionPage.on('crossnavigation', this.loadCrossNavigationTargetDocument , this);
-	this.activeDocument.documentExecutionPage.on('collapse3', function() {
-		sendMessage({}, 'collapse2'); 
-	}, this);
+	//this.activeDocument.tb.on('beforeinit', this.setBreadcrumbs, this);
+	
 	this.activeDocument.parametersSelectionPage.on('collapse3', function() {
 		sendMessage({}, 'collapse2'); 
+	}, this);
+	
+	this.activeDocument.on('documentexecutionpageinit', function() {
+		this.activeDocument.documentExecutionPage.on('crossnavigation', this.loadCrossNavigationTargetDocument , this);
+		this.activeDocument.documentExecutionPage.on('collapse3', function() {
+			sendMessage({}, 'collapse2'); 
+		}, this);
 	}, this);
 	
 	/*
@@ -254,12 +258,16 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 			
 			this.activeDocument.on('beforetoolbarinit', this.setBreadcrumbs, this);
 			//this.activeDocument.tb.on('beforeinit', this.setBreadcrumbs, this);	
-			this.activeDocument.documentExecutionPage.on('crossnavigation', this.loadCrossNavigationTargetDocument , this);
-			this.activeDocument.documentExecutionPage.on('collapse3', function() {
-				sendMessage({}, 'collapse2'); 
-			}, this);
+			
 			this.activeDocument.parametersSelectionPage.on('collapse3', function() {
 				sendMessage({}, 'collapse2'); 
+			}, this);
+			
+			this.activeDocument.on('documentexecutionpageinit', function() {
+				this.activeDocument.documentExecutionPage.on('crossnavigation', this.loadCrossNavigationTargetDocument , this);
+				this.activeDocument.documentExecutionPage.on('collapse3', function() {
+					sendMessage({}, 'collapse2'); 
+				}, this);
 			}, this);
 			
 			this.add(this.activeDocument);

@@ -161,13 +161,22 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 
 			}
 			if(isSpagoBIDev != null && isSpagoBIDev.equals("true")){
-				jpaloUrl += ",hideconnectionaccount";
-				jpaloUrl += ",hideuserrights";
 				jpaloUrl += ",hidesaveas";
+
 			}else{
 				jpaloUrl += ",hidesave";
+				//checks if some user tries to execute document with no template
+				if(template == null 
+						||(template.getViewName() == null || template.getViewName().equals(""))
+						||(template.getCubeName() == null || template.getCubeName().equals(""))){
+					logger.error("Forbidden operation: user trying to execute document with no template or view defined");
+					throw new SpagoBIEngineException("You are trying to execute document with no template or view defined.",
+							"You are trying to execute document with no template or view defined.") {
+					};	
+				}
 			}
-			
+			jpaloUrl += ",hideconnectionaccount";
+			jpaloUrl += ",hideuserrights";
 			jpaloUrl += ",hideviewtabs";
 			jpaloUrl += ")";
 			logger.info(jpaloUrl);

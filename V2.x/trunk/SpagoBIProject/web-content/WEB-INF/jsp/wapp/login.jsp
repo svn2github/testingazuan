@@ -36,6 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.utilities.themes.ThemesManager"%>
 <%@page import="it.eng.spagobi.commons.constants.ObjectsTreeConstants"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@page import="java.util.Enumeration"%>
 
 <%      
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
@@ -80,6 +81,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 
+
 <html>
   <head>
 	<link rel="shortcut icon" href="<%=urlBuilder.getResourceLink(request, "img/favicon.ico")%>" />
@@ -109,17 +111,31 @@ else {
         	// propagates parameters (if any) for document execution
         	if (request.getParameter(ObjectsTreeConstants.OBJECT_LABEL) != null) {
         		String label = request.getParameter(ObjectsTreeConstants.OBJECT_LABEL);
-        	    String parameters = request.getParameter(ObjectsTreeConstants.PARAMETERS);
         	    String subobjectName = request.getParameter(SpagoBIConstants.SUBOBJECT_NAME);
         	    %>
         	    <input type="hidden" name="<%= ObjectsTreeConstants.OBJECT_LABEL %>" value="<%= StringEscapeUtils.escapeHtml(label) %>" />
-        	    <% if (parameters != null && !parameters.trim().equals("")) { %>
-        	    	<input type="hidden" name="<%= ObjectsTreeConstants.PARAMETERS %>" value="<%= StringEscapeUtils.escapeHtml(parameters) %>" />
-        	    <% } %>
         	    <% if (subobjectName != null && !subobjectName.trim().equals("")) { %>
         	    	<input type="hidden" name="<%= SpagoBIConstants.SUBOBJECT_NAME %>" value="<%= StringEscapeUtils.escapeHtml(subobjectName) %>" />
         	    <% } %>
         	    <%
+        	    // propagates other request parameters than PAGE, NEW_SESSION, OBJECT_LABEL and SUBOBJECT_NAME
+        	    Enumeration parameters = request.getParameterNames();
+        	    while (parameters.hasMoreElements()) {
+        	    	String aParameterName = (String) parameters.nextElement();
+        	    	if (aParameterName != null 
+        	    			&& !aParameterName.equalsIgnoreCase("PAGE") && !aParameterName.equalsIgnoreCase("NEW_SESSION") 
+        	    			&& !aParameterName.equalsIgnoreCase(ObjectsTreeConstants.OBJECT_LABEL)
+        	    			&& !aParameterName.equalsIgnoreCase(SpagoBIConstants.SUBOBJECT_NAME) 
+        	    			&& request.getParameterValues(aParameterName) != null) {
+        	    		String[] values = request.getParameterValues(aParameterName);
+        	    		for (int i = 0; i < values.length; i++) {
+        	    			%>
+        	    			<input type="hidden" name="<%= StringEscapeUtils.escapeHtml(aParameterName) %>" 
+        	    								 value="<%= StringEscapeUtils.escapeHtml(values[i]) %>" />
+        	    			<%
+        	    		}
+        	    	}
+        	    }
         	} 
         	%>
         	

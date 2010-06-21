@@ -33,6 +33,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="org.json.JSONObject"%>
 <%@page import="it.eng.spagobi.commons.constants.ObjectsTreeConstants"%>
 <%@page import="it.eng.spagobi.chiron.serializer.MenuListJSONSerializer"%>
+<%@page import="java.net.URLEncoder"%>
+<%@page import="org.apache.log4j.Logger"%>
+
+<%! private static transient Logger logger = Logger.getLogger("it.eng.spagobi.homebis_jsp");%>
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 <%@ include file="/WEB-INF/jsp/commons/importSbiJS.jspf"%>
@@ -43,6 +47,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	N.B.  TODO con il CAS da problemi perchè non valida il ticket ...
 	--%>
+
 
 
 <script type="text/javascript" src="/SpagoBI/js/src/ext/sbi/overrides/overrides.js"></script>
@@ -79,6 +84,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%  
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
+
+	String characterEncoding = response.getCharacterEncoding();
+	if (characterEncoding == null) {
+		logger.warn("Response characterEncoding not found!!! Using UTF-8 as default.");
+		characterEncoding = "UTF-8";
+	}
+
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("LoginModule"); 
 
 	if(moduleResponse==null) moduleResponse=aServiceResponse;
@@ -138,18 +150,33 @@ var themesViewName;
 	// if a document execution is required, execute it
 	if (aServiceRequest.getAttribute(ObjectsTreeConstants.OBJECT_LABEL) != null) {
 		String label = (String) aServiceRequest.getAttribute(ObjectsTreeConstants.OBJECT_LABEL);
-	    String parameters = (String) aServiceRequest.getAttribute(ObjectsTreeConstants.PARAMETERS);
 	    String subobjectName = (String) aServiceRequest.getAttribute(SpagoBIConstants.SUBOBJECT_NAME);
 		
 	    StringBuffer temp = new StringBuffer();
 	    temp.append(contextName + "/servlet/AdapterHTTP?ACTION_NAME=EXECUTE_DOCUMENT_ACTION&");
 	    temp.append(ObjectsTreeConstants.OBJECT_LABEL + "=" + label);
-	    if (parameters != null && !parameters.trim().equals("")) {
-	    	temp.append("&" + ObjectsTreeConstants.PARAMETERS + "=" + parameters);
-	    }
 	    if (subobjectName != null && !subobjectName.trim().equals("")) {
-	    	temp.append("&" + SpagoBIConstants.SUBOBJECT_NAME + "=" + subobjectName);
+	    	temp.append("&" + SpagoBIConstants.SUBOBJECT_NAME + "=" + URLEncoder.encode(subobjectName, characterEncoding));
 	    }
+	    
+	    // propagates other request parameters than PAGE, NEW_SESSION, OBJECT_LABEL and SUBOBJECT_NAME
+	    Enumeration parameters = request.getParameterNames();
+	    while (parameters.hasMoreElements()) {
+	    	String aParameterName = (String) parameters.nextElement();
+	    	if (aParameterName != null 
+	    			&& !aParameterName.equalsIgnoreCase("PAGE") && !aParameterName.equalsIgnoreCase("NEW_SESSION") 
+	    			&& !aParameterName.equalsIgnoreCase(ObjectsTreeConstants.OBJECT_LABEL)
+        	    	&& !aParameterName.equalsIgnoreCase(SpagoBIConstants.SUBOBJECT_NAME) 
+	    			&& request.getParameterValues(aParameterName) != null) {
+	    		String[] values = request.getParameterValues(aParameterName);
+	    		
+	    		for (int i = 0; i < values.length; i++) {
+	    			temp.append("&" + URLEncoder.encode(aParameterName, characterEncoding) + "=" 
+	    					+ URLEncoder.encode(values[i], characterEncoding));
+	    		}
+	    	}
+	    }
+	    
 		firstUrlToCall = temp.toString();
 		
 	} else {

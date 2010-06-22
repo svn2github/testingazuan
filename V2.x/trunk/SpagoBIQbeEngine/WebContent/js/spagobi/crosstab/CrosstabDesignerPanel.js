@@ -100,4 +100,8 @@ Ext.extend(Sbi.crosstab.CrosstabDesignerPanel, Ext.Panel, {
 		}));
 	}
 	
+	, getCrosstabConfig: function() {
+		
+	}
+	
 });

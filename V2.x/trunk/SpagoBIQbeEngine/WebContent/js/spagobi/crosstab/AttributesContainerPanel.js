@@ -104,6 +104,8 @@ Sbi.crosstab.AttributesContainerPanel = function(config) {
 Ext.extend(Sbi.crosstab.AttributesContainerPanel, Ext.grid.GridPanel, {
 	
 	targetRow: null
+	, calculateTotalsCheckbox: null
+	, calculateSubtotalsCheckbox: null
 	
 	, init: function(c) {
 	

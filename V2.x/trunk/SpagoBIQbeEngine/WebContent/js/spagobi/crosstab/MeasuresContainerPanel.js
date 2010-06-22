@@ -69,6 +69,19 @@ Sbi.crosstab.MeasuresContainerPanel = function(config) {
 	    , viewConfig: {
 	    	forceFit: true
 	    }
+		, tools: [
+	          {
+	        	  id: 'help'
+	        	, handler: function(event, toolEl, panel) {
+	        	  	if (this.detailsWizard === undefined) {
+	        	  		this.detailsWizard = new Sbi.crosstab.CrosstabDetailsWizard();
+	        	  	}
+	        	  	this.detailsWizard.show();
+	          	}
+	          	, scope: this
+	          	, qtip: LN('sbi.crosstab.measurescontainerpanel.tools.tt.showdetailswizard')
+	          }
+		]
         , listeners: {
 			render: function(grid) { // hide the grid header
 				grid.getView().el.select('.x-grid3-header').setStyle('display', 'none');
@@ -104,6 +117,8 @@ Sbi.crosstab.MeasuresContainerPanel = function(config) {
 Ext.extend(Sbi.crosstab.MeasuresContainerPanel, Ext.grid.GridPanel, {
 	
 	targetRow: null
+	, measuresOn: 'columns'
+	, detailsWizard: undefined
 	
 	, init: function(c) {
 	

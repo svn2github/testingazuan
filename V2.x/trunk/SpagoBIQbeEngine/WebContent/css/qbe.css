@@ -207,3 +207,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 width: 20px;
 
 }
+
+/* see Sbi.crosstab.CrosstabDetailsWizard.js, alternate group style.
+See also http://www.sencha.com/deploy/dev/examples/form/check-radio.html */
+.x-check-group-alt {
+    background: #E8E8E8;
+    border-top:1px dotted #D0D0D0;
+    border-bottom:1px dotted #D0D0D0;
+}

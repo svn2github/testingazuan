@@ -18,3 +18,15 @@ Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.cannotdrophere.title'] = 'Dro
 Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.cannotdrophere.measurealreadypresent'] = 'The measure is already present';
 Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.cannotdrophere.attributes'] = 'You cannot drag attributes into the central section of the crosstab: you have to drag them on rows or columns';
 
+Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.tools.tt.showdetailswizard'] = 'Show details';
+
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.title'] = 'Crosstab details';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.measureson'] = 'Measures on';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.measuresonrows'] = 'rows';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.measuresoncolumns'] = 'columns';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.onrows'] = 'On rows';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.oncolumns'] = 'On columns';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.calculatetotalsonrows'] = 'show totals';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.calculatesubtotalsonrows'] = 'show sub-totals';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.calculatetotalsoncolumns'] = 'show totals';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.calculatesubtotalsoncolumns'] = 'show sub-totals';

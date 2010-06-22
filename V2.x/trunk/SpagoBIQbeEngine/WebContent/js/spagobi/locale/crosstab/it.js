@@ -17,3 +17,17 @@ Sbi.locale.ln['sbi.crosstab.attributescontainerpanel.cannotdrophere.measures'] =
 Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.cannotdrophere.title'] = 'Drop non consentito';
 Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.cannotdrophere.measurealreadypresent'] = 'La misura è già presente';
 Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.cannotdrophere.attributes'] = 'Non puoi inserire degli attributi nella parte centrale della crosstab: devi inserirli su righe o colonne';
+
+Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.tools.tt.showdetailswizard'] = 'Visualizza dettagli';
+
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.title'] = 'Dettagli crosstab';
+
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.measureson'] = 'Misure su';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.measuresonrows'] = 'righe';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.measuresoncolumns'] = 'colonne';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.onrows'] = 'Sulle righe';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.oncolumns'] = 'Sulle colonne';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.calculatetotalsonrows'] = 'Visualizza totali';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.calculatesubtotalsonrows'] = 'Visualizza sub-totali';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.calculatetotalsoncolumns'] = 'Visualizza totali';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.calculatesubtotalsoncolumns'] = 'Visualizza sub-totali';

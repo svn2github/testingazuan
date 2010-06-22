@@ -74,9 +74,14 @@ Sbi.crosstab.MeasuresContainerPanel = function(config) {
 	        	  id: 'help'
 	        	, handler: function(event, toolEl, panel) {
 	        	  	if (this.detailsWizard === undefined) {
-	        	  		this.detailsWizard = new Sbi.crosstab.CrosstabDetailsWizard();
+	        	  		this.detailsWizard = new Sbi.crosstab.CrosstabDetailsWizard(c.crosstabDetailsWizard || {});
+	        	  		this.detailsWizard.on('apply', function(values, theWizard) {
+	        	  			this.detailsWizardFormState = values;
+	        	  		}, this);
 	        	  	}
 	        	  	this.detailsWizard.show();
+	        	  	this.detailsWizard.setFormState(this.detailsWizardFormState);
+	        	  	
 	          	}
 	          	, scope: this
 	          	, qtip: LN('sbi.crosstab.measurescontainerpanel.tools.tt.showdetailswizard')
@@ -119,6 +124,7 @@ Ext.extend(Sbi.crosstab.MeasuresContainerPanel, Ext.grid.GridPanel, {
 	targetRow: null
 	, measuresOn: 'columns'
 	, detailsWizard: undefined
+	, detailsWizardFormState: {}
 	
 	, init: function(c) {
 	

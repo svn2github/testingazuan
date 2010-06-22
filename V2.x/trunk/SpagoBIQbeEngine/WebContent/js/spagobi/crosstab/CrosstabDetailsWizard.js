@@ -50,6 +50,7 @@ Sbi.crosstab.CrosstabDetailsWizard = function(config) {
 	
 	var defaultSettings = {
 		title: LN('sbi.crosstab.crosstabdetailswizard.title')
+		, width: 300
   	};
 	if(Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.crosstabDetailsWizard) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.crosstabDetailsWizard);
@@ -69,6 +70,8 @@ Sbi.crosstab.CrosstabDetailsWizard = function(config) {
 	// constructor
     Sbi.crosstab.CrosstabDetailsWizard.superclass.constructor.call(this, c);
 	
+    this.addEvents('apply');
+    
 };
 
 Ext.extend(Sbi.crosstab.CrosstabDetailsWizard, Ext.Window, {
@@ -76,9 +79,6 @@ Ext.extend(Sbi.crosstab.CrosstabDetailsWizard, Ext.Window, {
 	crosstabDetailsForm: null
 	
 	, init: function(c) {
-	
-	
-	
 	
 		this.crosstabDetailsForm = new Ext.form.FormPanel({
 			frame: true
@@ -111,7 +111,29 @@ Ext.extend(Sbi.crosstab.CrosstabDetailsWizard, Ext.Window, {
 	                ]
 	            }
 			]
+			, buttons: [{
+    			text: LN('sbi.crosstab.crosstabdetailswizard.buttons.apply')
+    		    , handler: function() {
+    	    		this.fireEvent('apply', this.getFormState(), this);
+                	this.hide();
+            	}
+            	, scope: this
+    	    },{
+    		    text: LN('sbi.crosstab.crosstabdetailswizard.buttons.cancel')
+    		    , handler: function(){ this.hide(); }
+            	, scope: this
+    		}]
 		});
+		
+	}
+
+	, getFormState: function() {
+		return this.crosstabDetailsForm.getForm().getValues();
+	}
+	
+	, setFormState: function(values) {
+		this.crosstabDetailsForm.getForm().reset(); // it is mandatory, since setValues method does not work properly for checkboxes
+		this.crosstabDetailsForm.getForm().setValues(values);
 	}
 	
 });

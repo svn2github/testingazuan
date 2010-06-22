@@ -31,3 +31,5 @@ Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.calculatetotalsonrows'] = 'Vis
 Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.calculatesubtotalsonrows'] = 'Visualizza sub-totali';
 Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.calculatetotalsoncolumns'] = 'Visualizza totali';
 Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.calculatesubtotalsoncolumns'] = 'Visualizza sub-totali';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.buttons.apply'] = 'Applica';
+Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.buttons.cancel'] = 'Cancella';

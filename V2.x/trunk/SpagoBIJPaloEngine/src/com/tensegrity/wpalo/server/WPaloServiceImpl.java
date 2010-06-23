@@ -937,7 +937,7 @@ public class WPaloServiceImpl extends BasePaloServiceServlet implements WPaloSer
 
 					}else{
 						///tries to get cube
-						if(a.getLoginName().equals(accountName)){
+						if(a.getUser().getLoginName().equals(accountName)){
 							if(a.getConnection().getName().equals(connection)){
 								//use cube name
 								accountId = a.getId();

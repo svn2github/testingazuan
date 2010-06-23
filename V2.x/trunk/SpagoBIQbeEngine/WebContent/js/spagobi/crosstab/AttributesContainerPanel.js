@@ -74,17 +74,12 @@ Sbi.crosstab.AttributesContainerPanel = function(config) {
 				grid.getView().el.select('.x-grid3-header').setStyle('display', 'none');
     		}
         	, keydown: function(e) { 
-        		if(e.keyCode === 46) {
-	      	        var sm = this.getSelectionModel();
-	      	        var ds = this.getStore();
-	      	        var rows = sm.getSelections();
-	      	        for (i = 0; i < rows.length; i++) {
-	      	          this.store.remove( ds.getById(rows[i].id) );
-	      	        }
+        		if (e.keyCode === 46) {
+        			this.removeSelectedAttributes();
       	      	}      
       	    }
         	, mouseover: function(e, t) {
-        		this.targetRow = t;
+        		this.targetRow = t; // for Drag&Drop
         	}
         	, mouseout: function(e, t) {
         		this.targetRow = undefined;
@@ -115,7 +110,11 @@ Ext.extend(Sbi.crosstab.AttributesContainerPanel, Ext.grid.GridPanel, {
 	])
 	
 	, init: function(c) {
-		
+		this.initStore(c);
+		this.initColumnModel(c);
+	}
+	
+	, initStore: function(c) {
 		this.store =  new Ext.data.SimpleStore({
 	        fields: ['id', 'alias', 'iconCls', 'nature']
 		});
@@ -126,7 +125,9 @@ Ext.extend(Sbi.crosstab.AttributesContainerPanel, Ext.grid.GridPanel, {
 	  			this.store.add(record);
 			}
 		}
+	}
 	
+	, initColumnModel: function(c) {
         this.template = new Ext.Template( // see Ext.Button.buttonTemplate and Button's onRender method
         		// margin auto in order to have button center alignment
                 '<table style="margin-left: auto; margin-right: auto;" id="{4}" cellspacing="0" class="x-btn {3}"><tbody class="{1}">',
@@ -152,7 +153,7 @@ Ext.extend(Sbi.crosstab.AttributesContainerPanel, Ext.grid.GridPanel, {
 	    });
 	    this.cm = new Ext.grid.ColumnModel([fieldColumn]);
 	}
-	
+
 	, initDropTarget: function() {
 		this.removeListener('render', this.initDropTarget, this);
 		var dropTarget = new Sbi.widgets.GenericDropTarget(this, {
@@ -165,69 +166,10 @@ Ext.extend(Sbi.crosstab.AttributesContainerPanel, Ext.grid.GridPanel, {
 		
 		if (ddSource.grid && ddSource.grid.type && ddSource.grid.type === 'queryFieldsPanel') {
 			// dragging from QueryFieldsPanel
-			var rows = ddSource.dragData.selections;
-			for (var i = 0; i < rows.length; i++) {
-				var aRow = rows[i];
-				if (this.store.getById(aRow.data.id) !== undefined) {
-					Ext.Msg.show({
-						   title: LN('sbi.crosstab.attributescontainerpanel.cannotdrophere.title'),
-						   msg: LN('sbi.crosstab.attributescontainerpanel.cannotdrophere.attributealreadypresent'),
-						   buttons: Ext.Msg.OK,
-						   icon: Ext.MessageBox.WARNING
-					});
-					return;
-				}
-				if (aRow.data.nature === 'measure') {
-					Ext.Msg.show({
-						   title: LN('sbi.crosstab.attributescontainerpanel.cannotdrophere.title'),
-						   msg: LN('sbi.crosstab.attributescontainerpanel.cannotdrophere.measures'),
-						   buttons: Ext.Msg.OK,
-						   icon: Ext.MessageBox.WARNING
-					});
-					return;
-				}
-				this.store.add([aRow]);
-			}
+			this.notifyDropFromQueryFieldsPanel(ddSource);
 		} else if (ddSource.grid && ddSource.grid.type && ddSource.grid.type === 'attributesContainerPanel') {
 			// dragging from AttributesContainerPanel
-			if (ddSource.grid.id === this.id) {
-				// DD on the same AttributesContainerPanel --> re-order the fields
-				var rows = ddSource.dragData.selections;
-				if (rows.length > 1) {
-					Ext.Msg.show({
-						   title:'Drop not allowed',
-						   msg: 'You can move only one field at a time',
-						   buttons: Ext.Msg.OK,
-						   icon: Ext.MessageBox.WARNING
-					});
-				} else {
-					var row = rows[0];
-					var rowIndex; // the row index on which the field has been dropped on
-					if(this.targetRow) {
-						rowIndex = this.getView().findRowIndex( this.targetRow );
-					}
-					if (rowIndex == undefined || rowIndex === false) {
-						rowIndex = undefined;
-					}
-			           
-		         	var rowData = this.store.getById(row.id);
-	            	this.store.remove(this.store.getById(row.id));
-	                if (rowIndex != undefined) {
-	                	this.store.insert(rowIndex, rowData);
-	                } else {
-	                	this.store.add(rowData);
-	                }
-			         
-			         this.getView().refresh();
-					
-				}
-			} else {
-				// DD on another AttributesContainerPanel --> moving the fields
-				var rows = ddSource.dragData.selections;
-				ddSource.grid.store.remove(rows);
-				this.store.add(rows);
-			}
-			
+			this.notifyDropFromAttributesContainerPanel(ddSource);
 		} else if (ddSource.grid && ddSource.grid.type && ddSource.grid.type === 'measuresContainerPanel') {
 			Ext.Msg.show({
 				   title: LN('sbi.crosstab.attributescontainerpanel.cannotdrophere.title'),
@@ -239,6 +181,74 @@ Ext.extend(Sbi.crosstab.AttributesContainerPanel, Ext.grid.GridPanel, {
 		
 	}
 	
+	, notifyDropFromQueryFieldsPanel: function(ddSource) {
+		var rows = ddSource.dragData.selections;
+		for (var i = 0; i < rows.length; i++) {
+			var aRow = rows[i];
+			// if the attribute is already present show a warning
+			if (this.store.getById(aRow.data.id) !== undefined) {
+				Ext.Msg.show({
+					   title: LN('sbi.crosstab.attributescontainerpanel.cannotdrophere.title'),
+					   msg: LN('sbi.crosstab.attributescontainerpanel.cannotdrophere.attributealreadypresent'),
+					   buttons: Ext.Msg.OK,
+					   icon: Ext.MessageBox.WARNING
+				});
+				return;
+			}
+			// if the field is a measure show a warning
+			if (aRow.data.nature === 'measure') {
+				Ext.Msg.show({
+					   title: LN('sbi.crosstab.attributescontainerpanel.cannotdrophere.title'),
+					   msg: LN('sbi.crosstab.attributescontainerpanel.cannotdrophere.measures'),
+					   buttons: Ext.Msg.OK,
+					   icon: Ext.MessageBox.WARNING
+				});
+				return;
+			}
+			this.store.add([aRow]);
+		}
+	}
+	
+	, notifyDropFromAttributesContainerPanel: function(ddSource) {
+		if (ddSource.grid.id === this.id) {
+			// DD on the same AttributesContainerPanel --> re-order the fields
+			var rows = ddSource.dragData.selections;
+			if (rows.length > 1) {
+				Ext.Msg.show({
+					   title:'Drop not allowed',
+					   msg: 'You can move only one field at a time',
+					   buttons: Ext.Msg.OK,
+					   icon: Ext.MessageBox.WARNING
+				});
+			} else {
+				var row = rows[0];
+				var rowIndex; // the row index on which the field has been dropped on
+				if(this.targetRow) {
+					rowIndex = this.getView().findRowIndex( this.targetRow );
+				}
+				if (rowIndex == undefined || rowIndex === false) {
+					rowIndex = undefined;
+				}
+		           
+	         	var rowData = this.store.getById(row.id);
+            	this.store.remove(this.store.getById(row.id));
+                if (rowIndex != undefined) {
+                	this.store.insert(rowIndex, rowData);
+                } else {
+                	this.store.add(rowData);
+                }
+		         
+		         this.getView().refresh();
+				
+			}
+		} else {
+			// DD on another AttributesContainerPanel --> moving the fields from rows to columns or from columns to rows
+			var rows = ddSource.dragData.selections;
+			ddSource.grid.store.remove(rows);
+			this.store.add(rows);
+		}
+	}
+	
 	, getContainedAttributes: function () {
 		var attributes = [];
 		for(i = 0; i < this.store.getCount(); i++) {
@@ -246,6 +256,14 @@ Ext.extend(Sbi.crosstab.AttributesContainerPanel, Ext.grid.GridPanel, {
 			attributes.push(record.data);
 		}
 		return attributes;
+	}
+	
+	, removeSelectedAttributes: function() {
+        var sm = this.getSelectionModel();
+        var rows = sm.getSelections();
+        for (i = 0; i < rows.length; i++) {
+          this.store.remove( this.store.getById(rows[i].id) );
+        }
 	}
 
 });

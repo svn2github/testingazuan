@@ -30,12 +30,14 @@ import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.palo.viewapi.internal.AuthUserImpl;
 
 import sun.misc.BASE64Decoder;
 
@@ -52,6 +54,7 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 	private static String IS_NEW_DOCUMENT="isNewDocument";
 	private static final String LANG = "language";
 	private static final String COUNTRY = "country";
+	private static final ResourceBundle rb = ResourceBundle.getBundle("deploy", Locale.ITALIAN);
 	
 	/**
      * Logger component
@@ -92,12 +95,18 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 				language = locale.getLanguage();
 			}
 			
+			String pass = AuthUserImpl.encrypt(rb.getString("jpalo.admin.password"));
+			
 			jpaloUrl = PALO_BASE_URL;
 			
 			jpaloUrl += "?locale=";			
 			jpaloUrl += language+"_"+country;
 			jpaloUrl += "&theme=gray&options=(";
-			jpaloUrl += "user=\"admin\",pass=\"ISMvKXpXpadDiUoOSoAfww==\"";
+			jpaloUrl += "user=\"";
+			jpaloUrl += rb.getString("jpalo.admin.user");
+			jpaloUrl += "\",pass=\"";
+			jpaloUrl += pass;
+			jpaloUrl += "\"";
 			if((isNewDoc != null && isNewDoc.equals("true")) && 
 					(isSpagoBIDev != null && isSpagoBIDev.equals("true"))){
 				//new document--> template doesn't exist!

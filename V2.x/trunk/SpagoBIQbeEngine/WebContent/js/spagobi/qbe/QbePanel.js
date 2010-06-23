@@ -78,7 +78,7 @@ Sbi.qbe.QbePanel = function(config) {
 	items.push(this.queryResultPanel);
 	
 	if (c.displayCrosstabDesignerPanel) {
-		this.crosstabDesignerPanel = new Sbi.crosstab.CrosstabDesignerPanel(c);
+		this.crosstabDesignerPanel = new Sbi.crosstab.CrosstabDesignerPanel(c.crosstab);
 		items.push(this.crosstabDesignerPanel);
 	}
 	

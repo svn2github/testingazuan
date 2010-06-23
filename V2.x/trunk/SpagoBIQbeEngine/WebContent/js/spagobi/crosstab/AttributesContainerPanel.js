@@ -56,7 +56,7 @@ Sbi.crosstab.AttributesContainerPanel = function(config) {
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 	
-	Ext.apply(this, c);
+	Ext.apply(this, c); // this operation should overwrite this.initialData content, that is initial grid's content
 	
 	this.init(c);
 			
@@ -103,15 +103,29 @@ Sbi.crosstab.AttributesContainerPanel = function(config) {
 
 Ext.extend(Sbi.crosstab.AttributesContainerPanel, Ext.grid.GridPanel, {
 	
-	targetRow: null
+	initialData: undefined
+	, targetRow: null
 	, calculateTotalsCheckbox: null
 	, calculateSubtotalsCheckbox: null
+	, Record: Ext.data.Record.create([
+	      {name: 'id', type: 'string'}
+	      , {name: 'alias', type: 'string'}
+	      , {name: 'iconCls', type: 'string'}
+	      , {name: 'nature', type: 'string'}
+	])
 	
 	, init: function(c) {
-	
+		
 		this.store =  new Ext.data.SimpleStore({
 	        fields: ['id', 'alias', 'iconCls', 'nature']
 		});
+		// if there are initialData, load them into the store
+		if (this.initialData !== undefined) {
+			for (i = 0; i < this.initialData.length; i++) {
+				var record = new this.Record(this.initialData[i]);
+	  			this.store.add(record);
+			}
+		}
 	
         this.template = new Ext.Template( // see Ext.Button.buttonTemplate and Button's onRender method
         		// margin auto in order to have button center alignment
@@ -223,6 +237,15 @@ Ext.extend(Sbi.crosstab.AttributesContainerPanel, Ext.grid.GridPanel, {
 			});
 		}
 		
+	}
+	
+	, getContainedAttributes: function () {
+		var attributes = [];
+		for(i = 0; i < this.store.getCount(); i++) {
+			var record = this.store.getAt(i);
+			attributes.push(record.data);
+		}
+		return attributes;
 	}
 
 });

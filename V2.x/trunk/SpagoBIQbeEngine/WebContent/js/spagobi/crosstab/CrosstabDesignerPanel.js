@@ -57,7 +57,7 @@ Sbi.crosstab.CrosstabDesignerPanel = function(config) {
 	
 	var c = Ext.apply(defaultSettings, config || {});
 	
-	Ext.apply(this, c);
+	Ext.apply(this, c); // this operation should overwrite this.crosstabTemplate content, that is the definition of the crosstab
 
 	this.init(c);
 	
@@ -73,7 +73,9 @@ Sbi.crosstab.CrosstabDesignerPanel = function(config) {
 
 Ext.extend(Sbi.crosstab.CrosstabDesignerPanel, Ext.Panel, {
     
-	init: function(c) {
+	crosstabTemplate: {}
+	
+	, init: function(c) {
 		this.initWestRegionPanel(c.westConfig || {});
 		this.initCenterRegionPanel(c.centerConfig || {});
 	}
@@ -97,11 +99,12 @@ Ext.extend(Sbi.crosstab.CrosstabDesignerPanel, Ext.Panel, {
 	, initCenterRegionPanel: function(c) {
 		this.centerRegionPanel = new Sbi.crosstab.CrosstabDefinitionPanel(Ext.apply(c, {
 			region: 'center'
+			, crosstabTemplate: this.crosstabTemplate
 		}));
 	}
 	
-	, getCrosstabConfig: function() {
-		
+	, getCrosstabDefinition: function() {
+		return this.centerRegionPanel.getCrosstabDefinition();
 	}
 	
 });

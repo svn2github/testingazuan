@@ -56,7 +56,8 @@ Sbi.crosstab.MeasuresContainerPanel = function(config) {
 	}
 	var c = Ext.apply(defaultSettings, config || {});
 	
-	Ext.apply(this, c);
+	Ext.apply(this, c); // this operation should overwrite this.initialData content, that is initial grid's content, 
+						// and crosstabConfig content, that is the crosstab configuration
 	
 	this.init(c);
 			
@@ -76,11 +77,11 @@ Sbi.crosstab.MeasuresContainerPanel = function(config) {
 	        	  	if (this.detailsWizard === undefined) {
 	        	  		this.detailsWizard = new Sbi.crosstab.CrosstabDetailsWizard(c.crosstabDetailsWizard || {});
 	        	  		this.detailsWizard.on('apply', function(values, theWizard) {
-	        	  			this.detailsWizardFormState = values;
+	        	  			this.crosstabConfig = values;
 	        	  		}, this);
 	        	  	}
 	        	  	this.detailsWizard.show();
-	        	  	this.detailsWizard.setFormState(this.detailsWizardFormState);
+	        	  	this.detailsWizard.setFormState(this.crosstabConfig);
 	        	  	
 	          	}
 	          	, scope: this
@@ -121,17 +122,30 @@ Sbi.crosstab.MeasuresContainerPanel = function(config) {
 
 Ext.extend(Sbi.crosstab.MeasuresContainerPanel, Ext.grid.GridPanel, {
 	
-	targetRow: null
-	, measuresOn: 'columns'
+	initialData: undefined
+	, targetRow: null
 	, detailsWizard: undefined
-	, detailsWizardFormState: {}
-	
+	, crosstabConfig: {measureson: "columns"} // initial value
+	, Record: Ext.data.Record.create([
+	      {name: 'id', type: 'string'}
+	      , {name: 'alias', type: 'string'}
+	      , {name: 'iconCls', type: 'string'}
+	      , {name: 'nature', type: 'string'}
+	])
+
 	, init: function(c) {
 	
 		this.store =  new Ext.data.SimpleStore({
 	        fields: ['id', 'alias', 'iconCls', 'nature']
 		});
-	
+		// if there are initialData, load them into the store
+		if (this.initialData !== undefined) {
+			for (i = 0; i < this.initialData.length; i++) {
+				var record = new this.Record(this.initialData[i]);
+	  			this.store.add(record);
+			}
+		}
+		
         this.template = new Ext.Template( // see Ext.Button.buttonTemplate and Button's onRender method
         		// margin auto in order to have button center alignment
                 '<table style="margin-left: auto; margin-right: auto;" id="{4}" cellspacing="0" class="x-btn {3}"><tbody class="{1}">',
@@ -239,6 +253,19 @@ Ext.extend(Sbi.crosstab.MeasuresContainerPanel, Ext.grid.GridPanel, {
 			});
 		}
 		
+	}
+	
+	, getCrosstabConfig: function() {
+		return this.crosstabConfig;
+	}
+	
+	, getContainedMeasures: function () {
+		var measures = [];
+		for(i = 0; i < this.store.getCount(); i++) {
+			var record = this.store.getAt(i);
+			measures.push(record.data);
+		}
+		return measures;
 	}
 
 });

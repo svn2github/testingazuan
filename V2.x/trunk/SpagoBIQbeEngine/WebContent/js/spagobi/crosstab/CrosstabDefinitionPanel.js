@@ -57,13 +57,27 @@ Sbi.crosstab.CrosstabDefinitionPanel = function(config) {
 	
 	var c = Ext.apply(defaultSettings, config || {});
 	
-	Ext.apply(this, c);
+	Ext.apply(this, c); // this operation should overwrite this.crosstabTemplate content, that is the definition of the crosstab
 	
 	this.init(c);
 	
 	c = Ext.apply(c, {
       	items: [this.crosstabDefinitionPanel]
       	, autoScroll: true
+      	, tools: [{
+        	  id: 'help'
+        	, handler: function(event, toolEl, panel) {
+        	  	var aWindow = new Ext.Window({
+        	  		width: 400
+        	  		, items: [{
+        	  			xtype: 'panel'
+        	  			, html: this.getCrosstabDefinition().toSource()
+        	  		}]
+        	  	});
+        	  	aWindow.show();
+          	}
+          	, scope: this
+      	}]
 	});
 	
 	// constructor
@@ -73,26 +87,31 @@ Sbi.crosstab.CrosstabDefinitionPanel = function(config) {
 
 Ext.extend(Sbi.crosstab.CrosstabDefinitionPanel, Ext.Panel, {
 	
-	crosstabDefinitionPanel: null
+	crosstabTemplate: {}
+	, crosstabDefinitionPanel: null
 	, columnsContainerPanel: null
 	, rowsContainerPanel: null
 	, measuresContainerPanel: null
 	
 	, init: function(c) {
-	
+		
 		this.columnsContainerPanel = new Sbi.crosstab.AttributesContainerPanel({
             title: LN('sbi.crosstab.crosstabdefinitionpanel.columns')
             , width: 400
+            , initialData: this.crosstabTemplate.columns
 		});
 		
 		this.rowsContainerPanel = new Sbi.crosstab.AttributesContainerPanel({
             title: LN('sbi.crosstab.crosstabdefinitionpanel.rows')
             , width: 200
+            , initialData: this.crosstabTemplate.rows
 		});
 		
 		this.measuresContainerPanel = new Sbi.crosstab.MeasuresContainerPanel({
             title: LN('sbi.crosstab.crosstabdefinitionpanel.measures')
             , width: 400
+            , initialData: this.crosstabTemplate.measures
+            , crosstabConfig: this.crosstabTemplate.config
 		});
 	
 	    this.crosstabDefinitionPanel = new Ext.Panel({
@@ -112,6 +131,15 @@ Ext.extend(Sbi.crosstab.CrosstabDefinitionPanel, Ext.Panel, {
 		    ]
 	    });
 	
+	}
+
+	, getCrosstabDefinition: function() {
+		var crosstabDef = {};
+		crosstabDef.rows = this.rowsContainerPanel.getContainedAttributes();
+		crosstabDef.columns = this.columnsContainerPanel.getContainedAttributes();
+		crosstabDef.measures = this.measuresContainerPanel.getContainedMeasures();
+		crosstabDef.config = this.measuresContainerPanel.getCrosstabConfig();
+		return crosstabDef;
 	}
 	
 });

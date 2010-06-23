@@ -77,6 +77,12 @@ Sbi.crosstab.MeasuresContainerPanel = function(config) {
 	          	, scope: this
 	          	, qtip: LN('sbi.crosstab.measurescontainerpanel.tools.tt.showdetailswizard')
 	          }
+	          , {
+	        	  id: 'close'
+  	        	, handler: this.removeAllMeasures
+  	          	, scope: this
+  	          	, qtip: LN('sbi.crosstab.measurescontainerpanel.tools.tt.removeall')
+	  	      }
 		]
         , listeners: {
 			render: function(grid) { // hide the grid header
@@ -114,6 +120,7 @@ Ext.extend(Sbi.crosstab.MeasuresContainerPanel, Ext.grid.GridPanel, {
 	, Record: Ext.data.Record.create([
 	      {name: 'id', type: 'string'}
 	      , {name: 'alias', type: 'string'}
+	      , {name: 'funct', type: 'string'}
 	      , {name: 'iconCls', type: 'string'}
 	      , {name: 'nature', type: 'string'}
 	])
@@ -125,13 +132,13 @@ Ext.extend(Sbi.crosstab.MeasuresContainerPanel, Ext.grid.GridPanel, {
 	
 	, initStore: function(c) {
 		this.store =  new Ext.data.SimpleStore({
-	        fields: ['id', 'alias', 'iconCls', 'nature']
+	        fields: ['id', 'alias', 'funct', 'iconCls', 'nature']
 		});
 		// if there are initialData, load them into the store
 		if (this.initialData !== undefined) {
 			for (i = 0; i < this.initialData.length; i++) {
 				var record = new this.Record(this.initialData[i]);
-	  			this.store.add(record);
+	  			this.addMeasure(record);
 			}
 		}
 	}
@@ -141,7 +148,7 @@ Ext.extend(Sbi.crosstab.MeasuresContainerPanel, Ext.grid.GridPanel, {
         		// margin auto in order to have button center alignment
                 '<table style="margin-left: auto; margin-right: auto;" id="{4}" cellspacing="0" class="x-btn {3}"><tbody class="{1}">',
                 '<tr><td class="x-btn-tl"><i>&#160;</i></td><td class="x-btn-tc"></td><td class="x-btn-tr"><i>&#160;</i></td></tr>',
-                '<tr><td class="x-btn-ml"><i>&#160;</i></td><td class="x-btn-mc"><button type="{0}" class=" x-btn-text {5}"></button>{6}</td><td class="x-btn-mr"><i>&#160;</i></td></tr>',
+                '<tr><td class="x-btn-ml"><i>&#160;</i></td><td class="x-btn-mc"><button type="{0}" class=" x-btn-text {5}"></button>{6} ({7})</td><td class="x-btn-mr"><i>&#160;</i></td></tr>',
                 '<tr><td class="x-btn-bl"><i>&#160;</i></td><td class="x-btn-bc"></td><td class="x-btn-br"><i>&#160;</i></td></tr>',
                 '</tbody></table>');
         
@@ -155,7 +162,7 @@ Ext.extend(Sbi.crosstab.MeasuresContainerPanel, Ext.grid.GridPanel, {
 	    	, sortable: false
 	   	    , renderer : function(value, metaData, record, rowIndex, colIndex, store){
 	        	return this.template.apply(
-	        			['button', 'x-btn-small x-btn-icon-small-left', '', 'x-btn-text-icon', Ext.id(), record.data.iconCls, record.data.alias]		
+	        			['button', 'x-btn-small x-btn-icon-small-left', '', 'x-btn-text-icon', Ext.id(), record.data.iconCls, record.data.alias, record.data.funct]		
 	        	);
 	    	}
 	        , scope: this
@@ -194,16 +201,7 @@ Ext.extend(Sbi.crosstab.MeasuresContainerPanel, Ext.grid.GridPanel, {
 		var rows = ddSource.dragData.selections;
 		for (var i = 0; i < rows.length; i++) {
 			var aRow = rows[i];
-			if (this.store.getById(aRow.data.id) !== undefined) {
-				Ext.Msg.show({
-					   title: LN('sbi.crosstab.measurescontainerpanel.cannotdrophere.title'),
-					   msg: LN('sbi.crosstab.measurescontainerpanel.cannotdrophere.measurealreadypresent'),
-					   buttons: Ext.Msg.OK,
-					   icon: Ext.MessageBox.WARNING
-				});
-				return;
-			}
-			if (aRow.data.nature === 'attribute') {
+			if (aRow.data.nature !== 'measure') {
 				Ext.Msg.show({
 					   title: LN('sbi.crosstab.measurescontainerpanel.cannotdrophere.title'),
 					   msg: LN('sbi.crosstab.measurescontainerpanel.cannotdrophere.attributes'),
@@ -212,7 +210,17 @@ Ext.extend(Sbi.crosstab.MeasuresContainerPanel, Ext.grid.GridPanel, {
 				});
 				return;
 			}
-			this.store.add([aRow]);
+			// if the measure is missing the aggregation function, user must select it
+			if (aRow.data.funct === null || aRow.data.funct === 'NONE') {
+				var aWindow = new Sbi.crosstab.ChooseAggregationFunctionWindow({
+					behindMeasure: Ext.apply({}, aRow.data) // creates a clone
+        	  	});
+        	  	aWindow.show();
+        	  	aWindow.on('apply', function(modifiedMeasure, theWindow) {this.addMeasure(new this.Record(modifiedMeasure));}, this);
+			} else {
+				this.addMeasure(aRow);
+			}
+			
 		}
 	}
 	
@@ -264,9 +272,7 @@ Ext.extend(Sbi.crosstab.MeasuresContainerPanel, Ext.grid.GridPanel, {
 	, removeSelectedMeasures: function() {
         var sm = this.getSelectionModel();
         var rows = sm.getSelections();
-        for (i = 0; i < rows.length; i++) {
-          this.store.remove( this.store.getById( rows[i].id) );
-        }
+        this.store.remove( rows );
 	}
 	
 	, openDetailsWizard: function(event, toolEl, panel) {
@@ -279,5 +285,33 @@ Ext.extend(Sbi.crosstab.MeasuresContainerPanel, Ext.grid.GridPanel, {
 	  	this.detailsWizard.show();
 	  	this.detailsWizard.setFormState(this.crosstabConfig);
   	}
+	
+	, addMeasure: function(record) {
+		// if the measure is already present, does not insert it 
+		if (this.containsMeasure(record)) {
+			Ext.Msg.show({
+				   title: LN('sbi.crosstab.measurescontainerpanel.cannotdrophere.title'),
+				   msg: LN('sbi.crosstab.measurescontainerpanel.cannotdrophere.measurealreadypresent'),
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.WARNING
+			});
+		} else {
+			this.store.add(record);
+		}
+	}
+	
+	, containsMeasure: function(record) {
+		if (this.store.findBy(function(aRecord) {
+            	return aRecord.get("alias") === record.get("alias") && aRecord.get("funct") === record.get("funct");
+        	}) === -1) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	, removeAllMeasures: function() {
+		this.store.removeAll(false);
+	}
 
 });

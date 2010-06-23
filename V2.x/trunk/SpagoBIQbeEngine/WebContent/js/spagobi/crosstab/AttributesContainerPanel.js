@@ -69,6 +69,14 @@ Sbi.crosstab.AttributesContainerPanel = function(config) {
 	    , viewConfig: {
 	    	forceFit: true
 	    }
+		, tools: [
+	          {
+	        	  id: 'close'
+	        	, handler: this.removeAllAttributes
+	          	, scope: this
+	          	, qtip: LN('sbi.crosstab.attributescontainerpanel.tools.tt.removeall')
+	          }
+		]
         , listeners: {
 			render: function(grid) { // hide the grid header
 				grid.getView().el.select('.x-grid3-header').setStyle('display', 'none');
@@ -105,6 +113,7 @@ Ext.extend(Sbi.crosstab.AttributesContainerPanel, Ext.grid.GridPanel, {
 	, Record: Ext.data.Record.create([
 	      {name: 'id', type: 'string'}
 	      , {name: 'alias', type: 'string'}
+	      , {name: 'funct', type: 'string'}
 	      , {name: 'iconCls', type: 'string'}
 	      , {name: 'nature', type: 'string'}
 	])
@@ -116,7 +125,7 @@ Ext.extend(Sbi.crosstab.AttributesContainerPanel, Ext.grid.GridPanel, {
 	
 	, initStore: function(c) {
 		this.store =  new Ext.data.SimpleStore({
-	        fields: ['id', 'alias', 'iconCls', 'nature']
+	        fields: ['id', 'alias', 'funct', 'iconCls', 'nature']
 		});
 		// if there are initialData, load them into the store
 		if (this.initialData !== undefined) {
@@ -261,9 +270,11 @@ Ext.extend(Sbi.crosstab.AttributesContainerPanel, Ext.grid.GridPanel, {
 	, removeSelectedAttributes: function() {
         var sm = this.getSelectionModel();
         var rows = sm.getSelections();
-        for (i = 0; i < rows.length; i++) {
-          this.store.remove( this.store.getById(rows[i].id) );
-        }
+        this.store.remove(rows);
+	}
+	
+	, removeAllAttributes: function() {
+		this.store.removeAll(false);
 	}
 
 });

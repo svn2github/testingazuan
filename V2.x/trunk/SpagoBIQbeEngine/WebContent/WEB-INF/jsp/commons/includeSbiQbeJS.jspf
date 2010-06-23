@@ -102,8 +102,11 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 
 <script type="text/javascript" src='../js/spagobi/formtemplate/DocumentTemplateBuilder.js'/></script>
 
+<!-- only for test purposes -->
+<script type="text/javascript" src='../js/spagobi/crosstab/test/crosstabDefinitionExample.js'/></script>
 
 <script type="text/javascript" src='../js/spagobi/widgets/GenericDropTarget.js'/></script>
+<script type="text/javascript" src='../js/spagobi/crosstab/ChooseAggregationFunctionWindow.js'/></script>
 <script type="text/javascript" src='../js/spagobi/crosstab/CrosstabDetailsWizard.js'/></script>
 <script type="text/javascript" src='../js/spagobi/crosstab/AttributesContainerPanel.js'/></script>
 <script type="text/javascript" src='../js/spagobi/crosstab/MeasuresContainerPanel.js'/></script>

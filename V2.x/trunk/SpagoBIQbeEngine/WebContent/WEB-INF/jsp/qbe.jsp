@@ -174,7 +174,10 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	      	qbeConfig.westConfig.datamartsName = <%= datamartNamesBuffer.toString() %>;
 
 	      	qbeConfig.externalServicesConfig = <%= qbeEngineInstance.getTemplate().getExternalServiceConfigurationsAsJSONArray() %>;
-	
+
+	      	qbeConfig.crosstab = {};
+	      	qbeConfig.crosstab.crosstabTemplate = crosstabDefinition;
+	    	
 	        // javascript-side user profile object
 	        Ext.ns("Sbi.user");
 	        Sbi.user.isPowerUser = <%= isPowerUser %>;

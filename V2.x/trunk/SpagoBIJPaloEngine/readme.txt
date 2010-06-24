@@ -42,5 +42,16 @@ JPaloSavingUtil (new)
 palo-xmla:
 XMLAClient (errore url lowercase)
 
+paloviewapi: DbService (parametrizzato sia login/pwd dello user che connection a mondrian--> deploy_it.properties)
+
 SpagoBIProject:
 modificato JPaloDriver
+
+NB: Le modifiche a DbService.java riguardano:
+- user/password del JPalo User che sono parametrizzate (usate per autenticazione su JPalo, 
+	e prese da deploy_it.properties). Vengono inserite nel db di jpalo e a questo user è associato
+	l'account admin/admin, ruolo e gruppo admin.
+- la connessione al server mondrian è parametrizzata sempre in deploy_it.properties 
+- viene modificata l'associazione connection_to_mondrian - user_paramtrizzato - account_admin, 
+	di modo che venga inserita di default in ciascuno dei db di jpalo e che sia già presente nella
+	combo all'atto della creazione della view di jpalo

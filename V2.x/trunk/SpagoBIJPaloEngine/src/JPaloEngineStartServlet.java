@@ -87,12 +87,13 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			String isSpagoBIDev = (String) servletIOManager.getRequest().getParameter(IS_DEVELOPER);
 			String isNewDoc = (String) servletIOManager.getRequest().getParameter(IS_NEW_DOCUMENT);
 			
-			String language = (String) servletIOManager.getRequest().getParameter(LANG);
-			String country = (String) servletIOManager.getRequest().getParameter(COUNTRY);
+			Locale locale = servletIOManager.getLocale();
+			String country = locale.getCountry();
+			String language = locale.getLanguage();
+
 			if(language == null || country == null){
-				Locale locale = servletIOManager.getLocale();
-				country = locale.getCountry();
-				language = locale.getLanguage();
+				language = (String) servletIOManager.getRequest().getParameter(LANG);
+				country = (String) servletIOManager.getRequest().getParameter(COUNTRY);
 			}
 			
 			String pass = AuthUserImpl.encrypt(rb.getString("jpalo.admin.password"));

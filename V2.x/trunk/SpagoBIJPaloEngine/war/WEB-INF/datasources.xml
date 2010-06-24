@@ -88,8 +88,6 @@
                     URI of the schema definition file.
                 -->
 				<Definition>E:/progetti/SpagoBI/rilasci/apache-tomcat-6.0.18/resources/mondrian_schema/FoodMart3.xml</Definition>
-                <!--Definition>/WEB-INF/schema/FoodMart.xml</Definition-->
-                <!--Definition>file:/home/spagobi/runtime/apache-tomcat-6.0.18/resources/mondrian_schema/FoodMart.xml</Definition-->
             </Catalog>
         </Catalogs>
 

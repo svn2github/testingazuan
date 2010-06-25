@@ -99,6 +99,14 @@ Sbi.crosstab.MeasuresContainerPanel = function(config) {
         	, mouseout: function(e, t) {
         		this.targetRow = undefined;
         	}
+        	, rowdblclick: function(theGrid, rowIndex, e) {
+        		var theRow = this.store.getAt(rowIndex);
+				var aWindow = new Sbi.crosstab.ChooseAggregationFunctionWindow({
+					behindMeasure: Ext.apply({}, theRow.data) // creates a clone
+        	  	});
+        	  	aWindow.show();
+        	  	aWindow.on('apply', function(modifiedMeasure, theWindow) {this.modifyMeasure(theRow, new this.Record(modifiedMeasure));}, this);
+        	}
 		}
         , scope: this
         , type: 'measuresContainerPanel'
@@ -312,6 +320,10 @@ Ext.extend(Sbi.crosstab.MeasuresContainerPanel, Ext.grid.GridPanel, {
 	
 	, removeAllMeasures: function() {
 		this.store.removeAll(false);
+	}
+	
+	, modifyMeasure: function(recordToBeModified, newRecordsValues) {
+		recordToBeModified.set("funct", newRecordsValues.get("funct")); // only the aggregation function must be modified
 	}
 
 });

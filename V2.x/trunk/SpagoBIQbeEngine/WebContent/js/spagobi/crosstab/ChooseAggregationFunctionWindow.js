@@ -93,6 +93,11 @@ Ext.extend(Sbi.crosstab.ChooseAggregationFunctionWindow, Ext.Window, {
 	
 	, init: function(c) {
 	
+		var initialAggregationFunction = 'SUM';
+		if (this.behindMeasure.funct && this.behindMeasure.funct !== 'NONE') {
+			initialAggregationFunction = this.behindMeasure.funct;
+		}
+		
 		this.aggregationFunctionCombo = new Ext.form.ComboBox({
             fieldLabel: LN('sbi.qbe.selectgridpanel.headers.function')
             , allowBlank: false
@@ -104,7 +109,7 @@ Ext.extend(Sbi.crosstab.ChooseAggregationFunctionWindow, Ext.Window, {
 		    , triggerAction: 'all'
 		    , autocomplete: 'off'
 		    , forceSelection: true
-		    , value: 'SUM'
+		    , value: initialAggregationFunction
         });
 	
 		this.form = new Ext.form.FormPanel({

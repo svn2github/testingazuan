@@ -72,7 +72,8 @@
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <target name="compile" depends="sbi.utils.update" description="compile the source" >
     <!-- Compile the java code from ${src} into ${build}/${webapp_name}/WEB-INF/classes -->
-    <javac srcdir="${src}" destdir="${build}/${webapp_name}/WEB-INF/classes" debug="on">
+    <javac srcdir="${src}" destdir="${build}/${webapp_name}/WEB-INF/classes" debug="on" 
+    	executable="/usr/local/jdk1.6.0_13/bin/javac" fork="yes">
       <classpath refid="web.classpath"/>
     </javac> 
   </target>
@@ -162,7 +163,7 @@
 	  </target>
 	<!-- database properties: changes -->
 	<target name="change_db"  >
-		<propertyfile file="${web.dir}/WEB-INF/classes/sql/${jpalo_db}/credentials">
+		<propertyfile file="${build}/${webapp_name}/WEB-INF/classes/sql/${jpalo_db}/credentials">
 		  <entry  key="jdbcDriver" value="${jpalo_db.driver}"/>
 		  <entry  key="jdbcURL" value="${jpalo_db.url}"/>
 		  <entry  key="jdbcPort" value="${jpalo_db.port}"/>

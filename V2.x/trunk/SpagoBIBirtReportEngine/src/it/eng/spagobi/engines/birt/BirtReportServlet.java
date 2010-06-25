@@ -453,10 +453,25 @@ public class BirtReportServlet extends HttpServlet {
 		String kpiUrl = EnginConf.getInstance().getSpagoBiServerUrl()+"/publicjsp/kpiValueXml.jsp?SECURITY_TOKEN="+token+"&USERID="+userId;
 		//String kpiUrl = EnginConf.getInstance().getSpagoBiServerUrl()+"/testXml.jsp?"+"USERID="+userId;
 		
-		
 		Locale locale = null;
-		String language=request.getParameter("SBI_LANGUAGE");
-		String country=request.getParameter("SBI_COUNTRY");
+		
+		String language=null;
+		String country=null;
+		
+		String languageOverride = request.getParameter("LanguageOverride");
+		if (languageOverride != null){
+			language = languageOverride;
+		}else{
+			language=request.getParameter("SBI_LANGUAGE");
+		}
+		String countryOverride = request.getParameter("CountryOverride");
+		if (countryOverride != null){
+			country = countryOverride;
+		}else{
+			country=request.getParameter("SBI_COUNTRY");
+		}
+		
+		
 		if(language!=null && country!=null){
 			locale=new Locale(language,country,"");
 		}

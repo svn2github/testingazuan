@@ -45,9 +45,9 @@ public class BirtImageServlet extends HttpServlet {
 		InputStream fis = null;
 		File imageFile = null;
 		String completeImageFileName = "";
-		
-		
+		response.setContentType("image");
 
+		
 		if (chartLabel == null){
 			String imagePath = request.getParameter("imagePath");
 			String imageDirectory = getServletContext().getRealPath(imagePath);

@@ -40,9 +40,9 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
 	</portlet>
 	
 	  <portlet>
-        <description>AdministrationDistribution List</description>		
+        <description>Administration Distribution List</description>		
         <portlet-name>SBIAdminDistributionList</portlet-name>		
-        <display-name>Distribution List</display-name>		
+        <display-name>Administration Distribution List</display-name>		
         <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
         <init-param>
             <name>serviceType</name>
@@ -64,9 +64,10 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
 		</supports>
 		<supported-locale>en</supported-locale>
 		<portlet-info>
-        	<title>Distribution List</title>
-        	<short-title>Distribution List</short-title>
-        	<keywords>Distribution List</keywords>
+        	<title>Administration Distribution List</title>
+        	<short-title>Administration Distribution List</short-title>
+        	<keywords>Administration Distribution List</keywords>
+        	
         </portlet-info>
 	</portlet>
 

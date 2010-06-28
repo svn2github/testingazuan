@@ -73,10 +73,10 @@ END-CAS -->
 	<!--  FILTER MAPPINGS						 									   -->
 	<!--  ============================================================================ -->
 
-	<filter-mapping>
-		<filter-name>EngineCheckSessionFilter</filter-name>
-		<url-pattern>/servlet/*</url-pattern>
-	</filter-mapping>
+    <filter-mapping>
+        <filter-name>EngineCheckSessionFilter</filter-name>
+        <url-pattern>*.jsp</url-pattern>
+    </filter-mapping>
 
 <!-- START-CAS 
   <filter-mapping>
@@ -103,8 +103,13 @@ END-CAS -->
 END-CAS -->
 	
 	<filter-mapping>
-		<filter-name>SpagoBIAccessFilter</filter-name>
-		<url-pattern>/servlet/*</url-pattern>
+    		<filter-name>SpagoBIAccessFilter</filter-name>
+    		<url-pattern>/servlet/AdapterHTTP/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+    		<filter-name>SpagoBIAccessFilter</filter-name>
+    		<url-pattern>/servlet/AdapterHTTPBackEnd/*</url-pattern>
 	</filter-mapping>
 	
 

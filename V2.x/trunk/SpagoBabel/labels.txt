@@ -1,0 +1,704 @@
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\commons\extObjectTemplate.js
+// labels: 1
+//===============================================================================================================
+
+sbi.qbe.queryeditor.title
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\commons\Format.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\commons\Settings.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\commons\Utils.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\exception\ExceptionHandler.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formbuilder\FormBuilderPage.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formbuilder\QueryFieldsPanel.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formbuilder\TemplateEditorPanel.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formviewer\DataStorePanel.js
+// labels: 15
+//===============================================================================================================
+
+sbi.qbe.datastorepanel.grid.nexttext
+sbi.qbe.datastorepanel.grid.lasttext
+sbi.qbe.datastorepanel.grid.firsttext
+sbi.qbe.datastorepanel.grid.afteroverflow
+sbi.qbe.messagewin.info.title
+sbi.qbe.datastorepanel.grid.beforepagetext
+sbi.qbe.datastorepanel.grid.beforeoverflow
+sbi.qbe.datastorepanel.grid.emptywarningmsg
+sbi.qbe.datastorepanel.grid.afterpagetext
+sbi.qbe.messagewin.error.title
+sbi.qbe.datastorepanel.grid.refreshtext
+sbi.qbe.datastorepanel.button.tt.exportto
+sbi.qbe.datastorepanel.grid.emptymsg
+sbi.qbe.datastorepanel.grid.prevtext
+sbi.qbe.datastorepanel.grid.displaymsg
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formviewer\DynamicFilter.js
+// labels: 6
+//===============================================================================================================
+
+sbi.formviewer.dynamicfilterspanel.variable
+sbi.formviewer.dynamicfilter.validation.missingvalue
+sbi.formviewer.dynamicfilterspanel.clear.tt
+sbi.formviewer.dynamicfilterspanel.value
+sbi.formviewer.dynamicfilterspanel.tovalue
+sbi.formviewer.dynamicfilterspanel.fromvalue
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formviewer\DynamicFiltersPanel.js
+// labels: 1
+//===============================================================================================================
+
+sbi.formviewer.dynamicfilterspanel.title
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formviewer\FormEnginePanel.js
+// labels: 1
+//===============================================================================================================
+
+sbi.qbe.queryeditor.title
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formviewer\FormViewerPage.js
+// labels: 3
+//===============================================================================================================
+
+sbi.formviewer.formviewerpage.title
+sbi.formviewer.formviewerpage.validation.error
+sbi.formviewer.formviewerpage.execute
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formviewer\GroupingVariablesPanel.js
+// labels: 1
+//===============================================================================================================
+
+sbi.formviewer.groupingvariablespanel.title
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formviewer\OperandChooserWindow.js
+// labels: 1
+//===============================================================================================================
+
+sbi.qbe.operandchooserwindow.title
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formviewer\ResultsPage.js
+// labels: 2
+//===============================================================================================================
+
+sbi.qbe.queryeditor.title
+sbi.formviewer.resultspage.backtoform
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formviewer\StaticClosedFiltersPanel.js
+// labels: 1
+//===============================================================================================================
+
+sbi.formviewer.staticclosedfilterspanel.title
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formviewer\StaticClosedOnOffFiltersPanel.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formviewer\StaticClosedXORFiltersPanel.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formviewer\StaticOpenFiltersPanel.js
+// labels: 2
+//===============================================================================================================
+
+sbi.formviewer.staticopenfilterspanel.title
+sbi.formviewer.staticopenfilterspanel.validation.maxselectiontext
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\locale\LocaleUtils.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\overrides\overrides.css
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\overrides\overrides.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\CalculatedFieldWizard.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\DataMartStructurePanel.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\DataStorePanel.js
+// labels: 16
+//===============================================================================================================
+
+sbi.qbe.datastorepanel.grid.nexttext
+sbi.qbe.datastorepanel.grid.lasttext
+sbi.qbe.datastorepanel.grid.firsttext
+sbi.qbe.messagewin.info.title
+sbi.qbe.datastorepanel.grid.afteroverflow
+sbi.qbe.datastorepanel.grid.beforepagetext
+sbi.qbe.datastorepanel.title
+sbi.qbe.datastorepanel.grid.beforeoverflow
+sbi.qbe.datastorepanel.grid.emptywarningmsg
+sbi.qbe.datastorepanel.grid.afterpagetext
+sbi.qbe.messagewin.error.title
+sbi.qbe.datastorepanel.grid.refreshtext
+sbi.qbe.datastorepanel.button.tt.exportto
+sbi.qbe.datastorepanel.grid.emptymsg
+sbi.qbe.datastorepanel.grid.prevtext
+sbi.qbe.datastorepanel.grid.displaymsg
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\DocumentParametersGridPanel.js
+// labels: 3
+//===============================================================================================================
+
+sbi.qbe.documentparametersgridpanel.emptytext
+sbi.qbe.documentparametersgridpanel.headers.label
+sbi.qbe.documentparametersgridpanel.title
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\DocumentParametersStore.js
+// labels: 1
+//===============================================================================================================
+
+sbi.qbe.documentparametersgridpanel.parameterreference
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\FilterGridDropTarget.js
+// labels: 1
+//===============================================================================================================
+
+sbi.qbe.documentparametersgridpanel.parameterreference
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\FilterGridPanel.js
+// labels: 79
+//===============================================================================================================
+
+sbi.qbe.filtergridpanel.foperators.name.notnull
+sbi.qbe.filtergridpanel.foperators.desc.eq
+sbi.qbe.filtergridpanel.foperators.name.noteq
+sbi.qbe.filtergridpanel.foperators.name.eqlt
+sbi.qbe.filtergridpanel.foperators.desc.eqlt
+sbi.qbe.filtergridpanel.foperators.desc.isnull
+sbi.qbe.filtergridpanel.headers.operator
+sbi.qbe.filtergridpanel.foperators.desc.noteq
+sbi.qbe.filtergridpanel.foperators.name.notends
+sbi.qbe.filtergridpanel.buttons.tt.wizard
+sbi.qbe.filtergridpanel.foperators.desc.contains
+sbi.qbe.filtergridpanel.headers.loval
+sbi.qbe.filtergridpanel.headers.delete
+sbi.qbe.filtergridpanel.foperators.name.ends
+sbi.qbe.filtergridpanel.title
+sbi.qbe.filtergridpanel.tooltip.rodef
+sbi.qbe.filtergridpanel.tooltip.notdef
+sbi.qbe.filtergridpanel.boperators.name.or
+sbi.qbe.filtergridpanel.tooltip.loval
+sbi.qbe.filtergridpanel.buttons.tt.delete
+sbi.qbe.filtergridpanel.tooltip.lotype
+sbi.qbe.filtergridpanel.foperators.desc.in
+sbi.qbe.filtergridpanel.headers.rolast
+sbi.qbe.filtergridpanel.foperators.desc.notbetween
+sbi.qbe.filtergridpanel.headers.boperator
+sbi.qbe.filtergridpanel.tooltip.roval
+sbi.qbe.filtergridpanel.foperators.desc.ends
+sbi.qbe.filtergridpanel.boperators.desc.or
+sbi.qbe.filtergridpanel.foperators.name.eqgt
+sbi.qbe.filtergridpanel.foperators.name.isnull
+sbi.qbe.filtergridpanel.headers.rodef
+sbi.qbe.filtergridpanel.foperators.desc.starts
+sbi.qbe.filtergridpanel.buttons.text.delete
+sbi.qbe.filtergridpanel.foperators.desc.eqgt
+sbi.qbe.filtergridpanel.headers.lotype
+sbi.qbe.filtergridpanel.foperators.desc.between
+sbi.qbe.filtergridpanel.foperators.name.notstarts
+sbi.qbe.filtergridpanel.buttons.text.add
+sbi.qbe.filtergridpanel.boperators.desc.and
+sbi.qbe.filtergridpanel.foperators.name.between
+sbi.qbe.filtergridpanel.foperators.name.starts
+sbi.qbe.filtergridpanel.foperators.desc.notin
+sbi.qbe.filtergridpanel.foperators.name.notcontains
+sbi.qbe.filtergridpanel.headers.desc
+sbi.qbe.filtergridpanel.headers.lodesc
+sbi.qbe.filtergridpanel.foperators.desc.lt
+sbi.qbe.filtergridpanel.buttons.tt.add
+sbi.qbe.filtergridpanel.headers.lodef
+sbi.qbe.filtergridpanel.buttons.text.wizard
+sbi.qbe.filtergridpanel.tooltip.rolast
+sbi.qbe.filtergridpanel.headers.rotype
+sbi.qbe.filtergridpanel.headers.name
+sbi.qbe.filtergridpanel.foperators.name.eq
+sbi.qbe.filtergridpanel.headers.lolast
+sbi.qbe.filtergridpanel.tooltip.desc
+sbi.qbe.filtergridpanel.foperators.editor.emptymsg
+sbi.qbe.filtergridpanel.foperators.name.contains
+sbi.qbe.filtergridpanel.foperators.name.notin
+sbi.qbe.filtergridpanel.tooltip.lolast
+sbi.qbe.filtergridpanel.foperators.name.lt
+sbi.qbe.filtergridpanel.tooltip.rodesc
+sbi.qbe.filtergridpanel.foperators.desc.notcontains
+sbi.qbe.filtergridpanel.foperators.name.in
+sbi.qbe.filtergridpanel.foperators.desc.notstarts
+sbi.qbe.filtergridpanel.boperators.name.and
+sbi.qbe.filtergridpanel.foperators.desc.gt
+sbi.qbe.filtergridpanel.headers.rodesc
+sbi.qbe.filtergridpanel.tooltip.lodesc
+sbi.qbe.filtergridpanel.foperators.desc.notnull
+sbi.qbe.filtergridpanel.tooltip.name
+sbi.qbe.filtergridpanel.foperators.name.notbetween
+sbi.qbe.filtergridpanel.tooltip.rotype
+sbi.qbe.filtergridpanel.headers.roval
+sbi.qbe.filtergridpanel.headers.isfree
+sbi.qbe.filtergridpanel.tooltip.lodef
+sbi.qbe.filtergridpanel.boperators.editor.emptymsg
+sbi.qbe.filtergridpanel.foperators.desc.notends
+sbi.qbe.filtergridpanel.foperators.name.gt
+sbi.qbe.filtergridpanel.foperators.name.none
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\FreeConditionsWindow.js
+// labels: 6
+//===============================================================================================================
+
+sbi.qbe.freeconditionswindow.buttons.text.apply
+sbi.qbe.freeconditionswindow.buttons.text.saveasdefaults
+sbi.qbe.freeconditionswindow.buttons.text.cancel
+sbi.qbe.freeconditionswindow.title
+sbi.qbe.freeconditionswindow.buttons.text.restorelast
+sbi.qbe.freeconditionswindow.buttons.text.restoredefaults
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\HavingGridDropTarget.js
+// labels: 1
+//===============================================================================================================
+
+sbi.qbe.documentparametersgridpanel.parameterreference
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\HavingGridPanel.js
+// labels: 91
+//===============================================================================================================
+
+sbi.qbe.filtergridpanel.foperators.name.notnull
+sbi.qbe.filtergridpanel.foperators.name.noteq
+sbi.qbe.filtergridpanel.foperators.desc.eq
+sbi.qbe.filtergridpanel.foperators.name.eqlt
+sbi.qbe.filtergridpanel.foperators.desc.isnull
+sbi.qbe.filtergridpanel.foperators.desc.eqlt
+sbi.qbe.selectgridpanel.aggfunc.desc.count
+sbi.qbe.filtergridpanel.headers.operator
+sbi.qbe.filtergridpanel.foperators.desc.noteq
+sbi.qbe.filtergridpanel.foperators.name.notends
+sbi.qbe.selectgridpanel.aggfunc.name.sum
+sbi.qbe.filtergridpanel.foperators.desc.contains
+sbi.qbe.filtergridpanel.headers.loval
+sbi.qbe.filtergridpanel.headers.delete
+sbi.qbe.filtergridpanel.foperators.name.ends
+sbi.qbe.filtergridpanel.tooltip.rodef
+sbi.qbe.filtergridpanel.tooltip.notdef
+sbi.qbe.filtergridpanel.boperators.name.or
+sbi.qbe.filtergridpanel.tooltip.loval
+sbi.qbe.filtergridpanel.buttons.tt.delete
+sbi.qbe.filtergridpanel.tooltip.lotype
+sbi.qbe.filtergridpanel.foperators.desc.in
+sbi.qbe.filtergridpanel.headers.rolast
+sbi.qbe.havinggridpanel.title
+sbi.qbe.selectgridpanel.aggfunc.name.max
+sbi.qbe.filtergridpanel.foperators.desc.notbetween
+sbi.qbe.filtergridpanel.headers.boperator
+sbi.qbe.filtergridpanel.tooltip.roval
+sbi.qbe.filtergridpanel.foperators.desc.ends
+sbi.qbe.filtergridpanel.boperators.desc.or
+sbi.qbe.filtergridpanel.foperators.name.eqgt
+sbi.qbe.filtergridpanel.foperators.name.isnull
+sbi.qbe.filtergridpanel.headers.rodef
+sbi.qbe.selectgridpanel.aggfunc.name.min
+sbi.qbe.filtergridpanel.foperators.desc.starts
+sbi.qbe.selectgridpanel.aggfunc.desc.max
+sbi.qbe.filtergridpanel.buttons.text.delete
+sbi.qbe.filtergridpanel.foperators.desc.eqgt
+sbi.qbe.selectgridpanel.aggfunc.desc.avg
+sbi.qbe.filtergridpanel.headers.lotype
+sbi.qbe.selectgridpanel.aggfunc.desc.min
+sbi.qbe.filtergridpanel.foperators.desc.between
+sbi.qbe.selectgridpanel.aggfunc.desc.sum
+sbi.qbe.filtergridpanel.foperators.name.notstarts
+sbi.qbe.filtergridpanel.buttons.text.add
+sbi.qbe.filtergridpanel.boperators.desc.and
+sbi.qbe.filtergridpanel.foperators.name.between
+sbi.qbe.filtergridpanel.foperators.name.starts
+sbi.qbe.filtergridpanel.foperators.desc.notin
+sbi.qbe.filtergridpanel.foperators.name.notcontains
+sbi.qbe.filtergridpanel.headers.desc
+sbi.qbe.filtergridpanel.headers.lodesc
+sbi.qbe.selectgridpanel.aggfunc.name.avg
+sbi.qbe.filtergridpanel.foperators.desc.lt
+sbi.qbe.filtergridpanel.buttons.tt.add
+sbi.qbe.filtergridpanel.headers.lodef
+sbi.qbe.filtergridpanel.tooltip.rolast
+sbi.qbe.filtergridpanel.headers.rotype
+sbi.qbe.filtergridpanel.headers.name
+sbi.qbe.filtergridpanel.foperators.name.eq
+sbi.qbe.filtergridpanel.headers.lolast
+sbi.qbe.filtergridpanel.tooltip.desc
+sbi.qbe.selectgridpanel.aggfunc.editor.emptymsg
+sbi.qbe.selectgridpanel.aggfunc.name.none
+sbi.qbe.selectgridpanel.aggfunc.desc.none
+sbi.qbe.filtergridpanel.foperators.editor.emptymsg
+sbi.qbe.selectgridpanel.headers.function
+sbi.qbe.filtergridpanel.foperators.name.contains
+sbi.qbe.filtergridpanel.foperators.name.notin
+sbi.qbe.filtergridpanel.tooltip.lolast
+sbi.qbe.filtergridpanel.foperators.name.lt
+sbi.qbe.filtergridpanel.tooltip.rodesc
+sbi.qbe.filtergridpanel.foperators.desc.notcontains
+sbi.qbe.filtergridpanel.foperators.name.in
+sbi.qbe.filtergridpanel.foperators.desc.notstarts
+sbi.qbe.filtergridpanel.boperators.name.and
+sbi.qbe.filtergridpanel.foperators.desc.gt
+sbi.qbe.filtergridpanel.headers.rodesc
+sbi.qbe.filtergridpanel.tooltip.lodesc
+sbi.qbe.filtergridpanel.foperators.desc.notnull
+sbi.qbe.filtergridpanel.tooltip.name
+sbi.qbe.filtergridpanel.foperators.name.notbetween
+sbi.qbe.filtergridpanel.tooltip.rotype
+sbi.qbe.filtergridpanel.headers.roval
+sbi.qbe.filtergridpanel.headers.isfree
+sbi.qbe.filtergridpanel.tooltip.lodef
+sbi.qbe.filtergridpanel.boperators.editor.emptymsg
+sbi.qbe.filtergridpanel.foperators.name.gt
+sbi.qbe.filtergridpanel.foperators.desc.notends
+sbi.qbe.filtergridpanel.foperators.name.none
+sbi.qbe.selectgridpanel.aggfunc.name.count
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\QbePanel.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\QueryBuilderPanel.js
+// labels: 14
+//===============================================================================================================
+
+save
+sbi.qbe.queryeditor.centerregion.tools.view
+sbi.qbe.queryeditor.eastregion.tools.add
+sbi.qbe.queryeditor.westregion.tools.collapse
+sbi.qbe.queryeditor.centerregion.tools.save
+sbi.qbe.queryeditor.centerregion.tools.validate
+sbi.qbe.queryeditor.westregion.tools.expand
+sbi.qbe.queryeditor.title
+sbi.qbe.queryeditor.eastregion.tools.insert
+sbi.qbe.queryeditor.westregion.title
+sbi.qbe.queryeditor.centerregion.tools.execute
+sbi.qbe.queryeditor.centerregion.title
+sbi.qbe.queryeditor.eastregion.tools.delete
+sbi.qbe.queryeditor.eastregion.title
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\QueryCataloguePanel.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\SaveWindow.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\SelectGridDropTarget.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\SelectGridPanel.js
+// labels: 39
+//===============================================================================================================
+
+sbi.qbe.selectgridpanel.sortfunc.name.asc
+sbi.qbe.selectgridpanel.sortfunc.editor.emptymsg
+sbi.qbe.selectgridpanel.aggfunc.desc.count
+sbi.qbe.selectgridpanel.aggfunc.name.avg
+sbi.qbe.selectgridpanel.title
+sbi.qbe.selectgridpanel.aggfunc.name.sum
+sbi.qbe.selectgridpanel.headers.order
+sbi.qbe.selectgridpanel.headers.visible
+sbi.qbe.selectgridpanel.aggfunc.editor.emptymsg
+sbi.qbe.selectgridpanel.aggfunc.name.none
+sbi.qbe.selectgridpanel.aggfunc.desc.none
+sbi.qbe.selectgridpanel.sortfunc.desc.asc
+sbi.qbe.selectgridpanel.headers.field
+sbi.qbe.selectgridpanel.buttons.text.hide
+sbi.qbe.selectgridpanel.headers.function
+sbi.qbe.selectgridpanel.headers.filter
+sbi.qbe.selectgridpanel.headers.entity
+sbi.qbe.selectgridpanel.headers.having
+sbi.qbe.selectgridpanel.sortfunc.desc.desc
+sbi.qbe.selectgridpanel.buttons.tt.hide
+sbi.qbe.selectgridpanel.buttons.text.distinct
+sbi.qbe.selectgridpanel.aggfunc.name.max
+sbi.qbe.selectgridpanel.buttons.tt.deleteall
+sbi.qbe.selectgridpanel.headers.alias
+sbi.qbe.selectgridpanel.buttons.text.add
+sbi.qbe.selectgridpanel.headers.group
+sbi.qbe.selectgridpanel.sortfunc.name.desc
+sbi.qbe.selectgridpanel.aggfunc.name.min
+sbi.qbe.selectgridpanel.headers.include
+sbi.qbe.selectgridpanel.aggfunc.desc.max
+sbi.qbe.selectgridpanel.sortfunc.desc.none
+sbi.qbe.selectgridpanel.aggfunc.desc.avg
+sbi.qbe.selectgridpanel.headers.delete
+sbi.qbe.selectgridpanel.aggfunc.desc.min
+sbi.qbe.selectgridpanel.sortfunc.name.none
+sbi.qbe.selectgridpanel.buttons.tt.add
+sbi.qbe.selectgridpanel.aggfunc.desc.sum
+sbi.qbe.selectgridpanel.buttons.text.deleteall
+sbi.qbe.selectgridpanel.aggfunc.name.count
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\service\ServiceRegistry.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\widgets\FilteringToolbar.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\widgets\LookupField.js
+// labels: 3
+//===============================================================================================================
+
+sbi.lookup.Annulla
+sbi.lookup.Confirm
+sbi.lookup.Select
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\widgets\PagingToolbar.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formbuilder\editor\EditorPanel.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\locale\formviewer\en.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\locale\formviewer\it.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\locale\qbe\en.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\locale\qbe\it.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\filterwizard\buttonColumn.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\filterwizard\filterWizard.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\qbe\filterwizard\parser.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formbuilder\editor\staticclose\Copy of StaticCloseFilterEditorPanel.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formbuilder\editor\staticclose\Copy of StaticCloseFilterGroupEditor.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formbuilder\editor\staticclose\StaticCloseFilterEditor.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formbuilder\editor\staticclose\StaticCloseFilterEditorPanel.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formbuilder\editor\staticclose\StaticCloseFilterGroupEditor.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formbuilder\editor\staticclose\StaticCloseFilterGroupWizard.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formbuilder\editor\staticclose\StaticCloseFilterWizard.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formbuilder\editor\staticopen\Copy of StaticOpenFilterEditorPanel.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formbuilder\editor\staticopen\StaticOpenFilterEditor.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formbuilder\editor\staticopen\StaticOpenFilterEditorPanel.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formbuilder\editor\staticopen\StaticOpenFiltersEditorPanelDropTarget.js
+// labels: 0
+//===============================================================================================================
+
+
+//===============================================================================================================
+// file: C:\progetti\spagobi2.0\workspace\SpagoBIQbeEngine\WebContent\js\spagobi\formbuilder\editor\staticopen\StaticOpenFilterWizard.js
+// labels: 38
+//===============================================================================================================
+
+sbi.qbe.filtergridpanel.foperators.name.notnull
+sbi.qbe.filtergridpanel.foperators.name.noteq
+sbi.qbe.filtergridpanel.foperators.desc.eq
+sbi.qbe.filtergridpanel.foperators.name.eqlt
+sbi.qbe.filtergridpanel.foperators.name.starts
+sbi.qbe.filtergridpanel.foperators.desc.isnull
+sbi.qbe.filtergridpanel.foperators.desc.eqlt
+sbi.qbe.filtergridpanel.foperators.desc.notin
+sbi.qbe.filtergridpanel.foperators.name.notcontains
+sbi.qbe.filtergridpanel.foperators.desc.lt
+sbi.qbe.filtergridpanel.foperators.desc.noteq
+sbi.qbe.filtergridpanel.foperators.name.notends
+sbi.qbe.filtergridpanel.foperators.name.eq
+sbi.qbe.filtergridpanel.foperators.desc.contains
+sbi.qbe.filtergridpanel.foperators.editor.emptymsg
+sbi.qbe.filtergridpanel.foperators.name.ends
+sbi.qbe.filtergridpanel.foperators.name.notin
+sbi.qbe.filtergridpanel.foperators.name.contains
+sbi.qbe.filtergridpanel.foperators.name.lt
+sbi.qbe.filtergridpanel.foperators.desc.notcontains
+sbi.qbe.filtergridpanel.foperators.name.in
+sbi.qbe.filtergridpanel.foperators.desc.in
+sbi.qbe.filtergridpanel.foperators.desc.notstarts
+sbi.qbe.filtergridpanel.foperators.desc.gt
+sbi.qbe.filtergridpanel.foperators.desc.notbetween
+sbi.qbe.filtergridpanel.foperators.desc.notnull
+sbi.qbe.filtergridpanel.foperators.desc.ends
+sbi.qbe.filtergridpanel.foperators.name.notbetween
+sbi.qbe.filtergridpanel.foperators.name.eqgt
+sbi.qbe.filtergridpanel.foperators.name.isnull
+sbi.qbe.filtergridpanel.foperators.desc.starts
+sbi.qbe.filtergridpanel.foperators.desc.eqgt
+sbi.qbe.filtergridpanel.foperators.desc.between
+sbi.qbe.filtergridpanel.foperators.name.gt
+sbi.qbe.filtergridpanel.foperators.name.notstarts
+sbi.qbe.filtergridpanel.foperators.desc.notends
+sbi.qbe.filtergridpanel.foperators.name.between
+sbi.qbe.filtergridpanel.foperators.name.none

@@ -10,6 +10,11 @@
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
   
+  	<filter>
+		<filter-name>EngineCheckSessionFilter</filter-name>
+		<filter-class>it.eng.spagobi.utilities.filters.EngineCheckSessionFilter</filter-class>
+	</filter>
+	
 <!-- START-CAS  
 <filter>
   <filter-name>CAS Authentication Filter</filter-name>
@@ -60,7 +65,11 @@ END-CAS -->
 			it.eng.spagobi.utilities.filters.SpagoBIAccessFilter
 		</filter-class>
 	</filter>
-	
+	<!-- filter mappings -->
+	<filter-mapping>
+		<filter-name>EngineCheckSessionFilter</filter-name>
+		<url-pattern>/servlet/*</url-pattern>
+	</filter-mapping>
 <!-- START-CAS  
    <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>
@@ -83,10 +92,16 @@ END-CAS -->
 		<url-pattern>/proxyCallback</url-pattern>	
 	</filter-mapping>
 END-CAS -->
+
 	<filter-mapping>
 		<filter-name>SpagoBIAccessFilter</filter-name>
-		<url-pattern>/servlet/*</url-pattern>
-	</filter-mapping>	  
+		<url-pattern>/servlet/AccessibilityServlet/*</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<url-pattern>/servlet/AccessibilityServletBackEnd/*</url-pattern>
+	</filter-mapping>
     <servlet>
 		<servlet-name>AccessibilityServlet</servlet-name>
 		<servlet-class>it.eng.spagobi.engines.accessibility.servlet.AccessibilityServlet</servlet-class>

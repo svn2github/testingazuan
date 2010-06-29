@@ -214,6 +214,7 @@ public class ScriptWizardTag extends CommonWizardLovTag {
 		output.append("				winSWT = new Window('winSWTInfo', {className: \"alphacube\", title:\""+msgBuilder.getMessage("SBIDev.scriptWiz.showSintax", "messages", httpRequest)+"\",width:680, height:150, destroyOnClose: false});\n");
 		output.append("         	winSWT.setContent('scriptwizardinfodiv', true, false);\n");
 		output.append("         	winSWT.showCenter(false);\n");
+		output.append("         	winSWT.setLocation(40,50);\n");
 		output.append("		    } else {\n");
 		output.append("         	winSWT.showCenter(false);\n");
 		output.append("		    }\n");

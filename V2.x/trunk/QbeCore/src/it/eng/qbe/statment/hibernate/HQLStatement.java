@@ -353,7 +353,7 @@ public class HQLStatement extends BasicStatement {
 					
 					String expr = selectInLineField.getExpression();//.replace("\'", "");
 					
-					StringTokenizer stk = new StringTokenizer(selectInLineField.getExpression().replace("\'", ""), "+-|,()*");
+					StringTokenizer stk = new StringTokenizer(selectInLineField.getExpression().replace("\'", ""), "+-|,()*/");
 					while(stk.hasMoreTokens()){
 						String alias = stk.nextToken().trim();
 						String uniqueName;
@@ -820,7 +820,7 @@ public class HQLStatement extends BasicStatement {
 
 		
 		//String expr = leftOperand.value.substring(15,leftOperand.value.indexOf("\",\"alias"));//.replace("\'", "");
-		StringTokenizer stk = new StringTokenizer(expr, "+-|,()*");
+		StringTokenizer stk = new StringTokenizer(expr, "+-|,()*/");
 		while(stk.hasMoreTokens()){
 			String alias = stk.nextToken().trim();
 			String uniqueName;

@@ -20,6 +20,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.sun.star.configuration.backend.StratumCreationException;
+
 import sun.misc.BASE64Decoder;
 
 public class ConsoleExportManager extends AbstractTypesExportManager {
@@ -86,11 +88,40 @@ public class ConsoleExportManager extends AbstractTypesExportManager {
 					logger.debug("get dataset with label " + string);
 					IDataSet dataset = dataSetDAO.loadDataSetByLabel(string);
 					if(dataset != null){
+						logger.debug("found dataset with label " + string);
 						exporter.insertDataSet(dataset, session);
 					}
 					else {
 						logger.error("could not find dataset with label "+string+" : ignore it");
 					}
+
+					// search for xxxErrors dataset
+					String labelErrors = string+"Errors";
+					logger.debug("get dataset with label " + labelErrors+" if present");
+					IDataSet datasetErrors = dataSetDAO.loadDataSetByLabel(labelErrors);
+					if(datasetErrors != null){
+						logger.debug("found dataset with label " + labelErrors+"");
+						exporter.insertDataSet(datasetErrors, session);
+					}
+					else {
+						logger.warn("could not find dataset with label "+labelErrors);
+					}
+
+					// search for xxxAlarms dataset
+					String labelAlarms = string+"Alarms";
+					logger.debug("get dataset with label " + labelAlarms+" if present");
+					IDataSet datasetAlarms = dataSetDAO.loadDataSetByLabel(labelAlarms);
+					if(datasetAlarms != null){
+						logger.debug("found dataset with label " + labelAlarms+"");
+						exporter.insertDataSet(datasetAlarms, session);
+					}
+					else {
+						logger.warn("could not find dataset with label "+labelAlarms);
+					}
+					
+					
+					
+					
 				}
 			} catch (Exception e) {
 				logger.error("Error while exporting console with id " + biobj.getId() + " and label " + biobj.getLabel() + " : " +

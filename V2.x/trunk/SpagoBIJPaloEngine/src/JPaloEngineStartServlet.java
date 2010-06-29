@@ -202,6 +202,7 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 					throw new SpagoBIEngineException("You are trying to execute document with no template or view defined.",
 							"You are trying to execute document with no template or view defined.") {
 					};	
+					
 				}
 			}
 			jpaloUrl += ",hideconnectionaccount";
@@ -209,6 +210,7 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			jpaloUrl += ",hideviewtabs";
 			jpaloUrl += ")";
 			logger.info(jpaloUrl);
+			//System.out.println(jpaloUrl);
 
 			String urlWithSessionID = servletIOManager.getResponse().encodeRedirectURL( jpaloUrl );
 			servletIOManager.getResponse().sendRedirect( urlWithSessionID );
@@ -216,8 +218,12 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 		} catch(Throwable t) {
 			t.printStackTrace();
 			logger.error(t.getMessage());
-			throw new SpagoBIEngineException("An unpredicted error occured while executing palo-engine. Please check the log for more informations on the causes",
-			"an.unpredicted.error.occured", t);				
+			if(t instanceof SpagoBIEngineException){
+				throw (SpagoBIEngineException)t;
+			}else{
+				throw new SpagoBIEngineException("An unpredicted error occured while executing palo-engine. Please check the log for more informations on the causes",
+				"An unpredicted error occured while executing palo-engine. Please check the log for more informations on the causes", t);		
+			}
 		} finally {
 			servletIOManager.auditServiceEndEvent();
 			logger.debug("OUT");

@@ -55,6 +55,8 @@ import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
+import it.eng.spagobi.tools.importexport.typesmanager.ITypesExportManager;
+import it.eng.spagobi.tools.importexport.typesmanager.TypesExportManagerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -154,8 +156,8 @@ public class ExportManager implements IExportManager {
 				exportSingleObj(idobj);
 			}
 			closeSession();
-//			createExportArchive();
-//			deleteTmpFolder();
+			//			createExportArchive();
+			//			deleteTmpFolder();
 		} catch (EMFUserError emfue) {
 			throw emfue;
 		} catch (Exception e) {
@@ -326,14 +328,14 @@ public class ExportManager implements IExportManager {
 	 * @param idObj The idObj to export
 	 * @throws EMFUserError
 	 */
-	private void exportSingleObj(String idObj) throws EMFUserError {
+	public void exportSingleObj(String idObj) throws EMFUserError {
 		logger.debug("IN");
-		
+
 		if(objectsInserted.contains(Integer.valueOf(idObj))){
 			logger.warn("object already inserted");
 			return;
 		}
-		
+
 		try {
 			if ((idObj == null) || idObj.trim().equals(""))
 				return;
@@ -398,57 +400,66 @@ public class ExportManager implements IExportManager {
 				}
 			}
 
+
+			// use Types Manager to handle specific export types, by now only KPI and CONSOLE.. TODO with all types
+
+			ITypesExportManager typeManager = TypesExportManagerFactory.createTypesExportManager(biobj, engine, exporter, this);
+			// if null means it is not defined
+			if (typeManager != null)
+				typeManager.manageExport(biobj, session);
+
+
 			//maps kpi export
-			boolean isKpi = false;
-			if (biobj.getBiObjectTypeCode().equalsIgnoreCase("KPI") 
-					&& engine.getClassName() != null && engine.getClassName().equals("it.eng.spagobi.engines.kpi.SpagoBIKpiInternalEngine")) {
-				isKpi = true;
-			}
+//			boolean isKpi = false;
+//			if (biobj.getBiObjectTypeCode().equalsIgnoreCase("KPI") 
+//					&& engine.getClassName() != null && engine.getClassName().equals("it.eng.spagobi.engines.kpi.SpagoBIKpiInternalEngine")) {
+//				isKpi = true;
+//			}
 
-			if (isKpi) {
-				List objsToInsert=new ArrayList();
-				ObjTemplate template = biobj.getActiveTemplate();
-				if (template != null) {
-					try {
-						byte[] tempFileCont = template.getContent();
-						String tempFileStr = new String(tempFileCont);
-						SourceBean tempFileSB = SourceBean.fromXMLString(tempFileStr);
-
-
-						String modelInstanceLabel = (String) tempFileSB.getAttribute("model_node_instance");
-
-						// biObjectToInsert keeps track of objects that have to be inserted beacuse related to Kpi
-
-						if (modelInstanceLabel != null) {
-							IModelInstanceDAO modelInstanceDao = DAOFactory.getModelInstanceDAO();
-							ModelInstance modelInstance = modelInstanceDao.loadModelInstanceWithoutChildrenByLabel(modelInstanceLabel);
-							if (modelInstance == null) {
-								logger.warn("Error while exporting kpi with id " + idObj + " and label " + biobj.getLabel() + " : " +
-										"the template refers to a Model Instance with label " + modelInstanceLabel + " that does not exist!");
-							} else {
-								objsToInsert=exporter.insertAllFromModelInstance(modelInstance, session);
-								//exporter.insertModelInstance(modelInstance, session);
-							}
-						}
-					} catch (Exception e) {
-						logger.error("Error while exporting kpi with id " + idObj + " and label " + biobj.getLabel());
-						throw new EMFUserError(EMFErrorSeverity.ERROR, "8010", "component_impexp_messages");
-
-					}
-				}
-
-				for (Iterator iterator = objsToInsert.iterator(); iterator.hasNext();) {
-					Integer id = (Integer) iterator.next();
-					BIObject obj=(BIObject)biobjDAO.loadBIObjectById(id);
-					if(obj!=null){
-						exportSingleObj(obj.getId().toString());
-					}
-					else{
-						logger.error("Could not find object with id"+id);
-					}
-				}
-
-			}
+//			if (isKpi) {
+//				List objsToInsert=new ArrayList();
+//				ObjTemplate template = biobj.getActiveTemplate();
+//				if (template != null) {
+//					try {
+//						byte[] tempFileCont = template.getContent();
+//						String tempFileStr = new String(tempFileCont);
+//						SourceBean tempFileSB = SourceBean.fromXMLString(tempFileStr);
+//
+//
+//						String modelInstanceLabel = (String) tempFileSB.getAttribute("model_node_instance");
+//
+//						// biObjectToInsert keeps track of objects that have to be inserted beacuse related to Kpi
+//
+//						if (modelInstanceLabel != null) {
+//							IModelInstanceDAO modelInstanceDao = DAOFactory.getModelInstanceDAO();
+//							ModelInstance modelInstance = modelInstanceDao.loadModelInstanceWithoutChildrenByLabel(modelInstanceLabel);
+//							if (modelInstance == null) {
+//								logger.warn("Error while exporting kpi with id " + idObj + " and label " + biobj.getLabel() + " : " +
+//										"the template refers to a Model Instance with label " + modelInstanceLabel + " that does not exist!");
+//							} else {
+//								objsToInsert=exporter.insertAllFromModelInstance(modelInstance, session);
+//								//exporter.insertModelInstance(modelInstance, session);
+//							}
+//						}
+//					} catch (Exception e) {
+//						logger.error("Error while exporting kpi with id " + idObj + " and label " + biobj.getLabel());
+//						throw new EMFUserError(EMFErrorSeverity.ERROR, "8010", "component_impexp_messages");
+//
+//					}
+//				}
+//
+//				for (Iterator iterator = objsToInsert.iterator(); iterator.hasNext();) {
+//					Integer id = (Integer) iterator.next();
+//					BIObject obj=(BIObject)biobjDAO.loadBIObjectById(id);
+//					if(obj!=null){
+//						exportSingleObj(obj.getId().toString());
+//					}
+//					else{
+//						logger.error("Could not find object with id"+id);
+//					}
+//				}
+//
+//			}
 
 
 

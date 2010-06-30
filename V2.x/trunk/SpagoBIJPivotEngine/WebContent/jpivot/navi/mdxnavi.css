@@ -1,19 +1,41 @@
 th.navi-axis {
-  background-color : #DEE3EF;
-  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-  font-size: 0.8em;;
-  color : Black;
+  background-color : #B1C9E2;
+  font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+  font-size: 0.7em;;
+  color : black;
   text-align: left;
   vertical-align: middle;
+  border-style: none;
 }
 
 td.navi-hier {
   background-color : #ffffff;
-  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-  font-size: 0.8em;;
+  font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+  font-size: 0.7em;;
   color : Black;
   text-align: left;
+  border-style: solid;
+  border-color: #B1C9E2;
+  padding: 2px;
 }
+
+/* Added */
+a:link {
+	color: blue;
+}
+
+a:visited {
+	color: purple;
+}
+
+a:active {
+	background-color: yellow;
+}
+
+a:hover {
+	color:red;
+}
+
 
 td.navi-buttons {
   text-align: right;
@@ -23,7 +45,7 @@ td.navi-buttons {
 td.member-node-odd {
   background-color : #ffffff;
   font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-  font-size: 0.8em;;
+  font-size: 0.7em;;
   color : Black;
   text-align: left;
 }
@@ -31,7 +53,7 @@ td.member-node-odd {
 td.member-node-even {
   background-color : #DEE3EF;
   font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-  font-size: 0.8em;;
+  font-size: 0.7em;;
   color : Black;
   text-align: left;
 }

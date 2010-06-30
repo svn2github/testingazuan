@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
 <xform style="manual" bundle="com.tonbeller.jpivot.table.resources">
-<table border="1" cellspacing="0" cellpadding="2" id="mdxEditForm">
+<table cellspacing="0" cellpadding="2" id="mdxEditForm">
   <tr>
     <th colspan="2" class="xform-title">
       <table border="0" cellspacing="0" cellpadding="0" width="100%">

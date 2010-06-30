@@ -29,6 +29,9 @@ span.xform-error {
 
 td.xform-label, td.xform-number,td.xform-input, td.xform-both {
   vertical-align: top;
+  border-style: none;
+  font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+
 }
 
 td.xform-number {
@@ -40,8 +43,10 @@ th.xform-title-right,
 th.xform-title-center,
 th.xform-title-right-bottom,
 td.xform-close-button {
-  background-color : #DEE3EF;
+  background-color : #B1C9E2;
   font-weight: bold;
+  border-style: none;
+  font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
 }
 
 th.xform-title-right,
@@ -78,6 +83,18 @@ td.xform-close-button {
 
 textarea.xform-textarea, 
 span.xform-textarea {
-  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-  font-size: 0.9em;
+  font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+  font-size: 0.7em;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #B1C9E2;
+  padding: 2px;
 }
+
+input {
+  font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+  font-size: 0.7em;
+}
+
+
+

@@ -65,7 +65,7 @@
 
 <xsl:template match="column-heading">
   <th class="column-heading-{@style}" colspan="{@colspan}" rowspan="{@rowspan}">
-    <xsl:call-template name="nowrap"/>
+   <!--  <xsl:call-template name="nowrap"/> -->
     <xsl:apply-templates/>
   </th>
 </xsl:template>

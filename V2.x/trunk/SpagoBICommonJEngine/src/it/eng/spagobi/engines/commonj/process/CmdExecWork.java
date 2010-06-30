@@ -32,8 +32,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.engines.commonj.process;
 
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -123,34 +125,24 @@ public class CmdExecWork extends SpagoBIWork {
 		command += pidStr;
 		
 
-//		ProcessBuilder pb = new ProcessBuilder(command);
-//		pb.directory(envFile);
-//		Map<String, String> env = pb.environment();
-
-		//env.put("Var1", "myValue");
-		//env.remove("OTHERVAR");
-		//env.put("VAR2", env.get("VAR1") + "suffix");
-
-
     	if(isRunning()){
 			logger.info("launch command "+command);
 			process = Runtime.getRuntime().exec(command, null, directoryExec);
 			logger.info("Wait for the end of the process... ");
-			//process.waitFor();
+
+
+		 		BufferedReader input =
+		 	 	new BufferedReader(new InputStreamReader(process.getInputStream()));
+		 	 	while (( input.readLine()) != null) {
+
+		 	 	}
+		 	 	input.close();
+		 	 	
 			logger.info("Process END "+command);
 		}
 		else{
 			logger.warn("Command not launched cause work has been stopper");
 		}
-		//int exitValue = p.exitValue();
-		//p.exitValue();
-		//p.wait(1000);
-
-//		try{
-//		p.waitFor();
-//		}catch(InterruptedException ie){
-//		p.destroy();
-//		}
 
 		logger.debug("OUT");
 		return 0;

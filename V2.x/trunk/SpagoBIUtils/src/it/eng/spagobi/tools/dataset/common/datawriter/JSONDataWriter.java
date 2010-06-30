@@ -135,6 +135,11 @@ public class JSONDataWriter implements IDataWriter {
 						fieldMetaDataJSON.put("type", "float");
 					}
 					
+					String format = (String) fieldMetaData.getProperty("format");
+					if ( format != null ) {
+						fieldMetaDataJSON.put("format", format);
+					}
+					
 				} else if( String.class.isAssignableFrom(clazz) ) {
 					logger.debug("Column [" + (i+1) + "] type is equal to [" + "STRING" + "]");
 					fieldMetaDataJSON.put("type", "string");

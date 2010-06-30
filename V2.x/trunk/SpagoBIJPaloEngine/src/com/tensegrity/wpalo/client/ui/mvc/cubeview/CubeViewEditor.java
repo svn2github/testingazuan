@@ -71,7 +71,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToggleToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -962,12 +961,34 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 		saveAs.setIconStyle("ten-icons-save-as");
 		saveAs.addListener(Events.Select, this);
 		saveAs.setToolTip(constants.saveViewAsSubobject());
-		if (!displayFlags.isHideSaveAs()) {
-			toolbar.add(saveAs);			
-		}
-		if (!displayFlags.isHideSave() || !displayFlags.isHideSaveAs()) {
-			toolbar.add(new SeparatorToolItem());
-		}
+
+		final String[] hideSaveSubobjects = {"false"};
+
+		WPaloCubeViewServiceProvider.getInstance().getSpagoBIUserMode(new Callback<String>(){
+			public void onFailure(Throwable t) {	
+				//MessageBox.alert("Save as", "failure", null);
+				super.onFailure(t);
+			}
+			public void onSuccess(String id) {
+				//MessageBox.alert("Save as", "is dev:"+id, null);
+				if(id!= null && id.equalsIgnoreCase("true")){
+					 //toolbar.remove(saveAs);
+					 hideSaveSubobjects[0] = "true";	
+					 
+				}
+				if ((hideSaveSubobjects[0]).equals("false")) {					
+					//MessageBox.alert("Save as", "not DEV", null);
+					if(!displayFlags.isHideSaveAs()){
+						toolbar.add(saveAs);	
+						MessageBox.alert("Save as", "added save as", null);
+					}
+				}
+/*				if (!displayFlags.isHideSave() || !displayFlags.isHideSaveAs() || (hideSaveSubobjects[0]).equals("true")) {
+					toolbar.add(new SeparatorToolItem());
+				}*/
+			}
+		});
+
 		
 		if (((Workbench)Registry.get(Workbench.ID)).isPaloSuite()) {
 			if (!displayFlags.isHideConnectionPicker()) {

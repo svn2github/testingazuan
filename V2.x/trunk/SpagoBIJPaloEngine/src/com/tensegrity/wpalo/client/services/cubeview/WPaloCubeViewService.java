@@ -155,4 +155,5 @@ public interface WPaloCubeViewService extends RemoteService {
 	
 	public void deleteFile(String fileName);
 	public String getSubobjectId();  
+	public String getSpagoBIUserMode();
 }

@@ -370,5 +370,7 @@ public class WPaloCubeViewServiceProvider implements WPaloCubeViewServiceAsync {
 	public void getSubobjectId(AsyncCallback<String> cb) {
 		proxy.getSubobjectId(cb);
 	}
-
+	public void getSpagoBIUserMode(AsyncCallback<String> cb) {
+		proxy.getSpagoBIUserMode(cb);
+	}
 }

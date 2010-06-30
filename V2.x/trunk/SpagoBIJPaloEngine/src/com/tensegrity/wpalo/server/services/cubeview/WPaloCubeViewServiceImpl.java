@@ -1347,5 +1347,11 @@ public class WPaloCubeViewServiceImpl extends CubeViewService implements
 		HttpSession httpSession = getThreadLocalRequest().getSession(true);  
 		return (String)httpSession.getAttribute("saveSubObjectId");  
 	}
+	
+	public String getSpagoBIUserMode() {
+		// TODO Auto-generated method stub
+		HttpSession httpSession = getThreadLocalRequest().getSession(true);  
+		return (String)httpSession.getAttribute("isdeveloper");  
+	}
 
 }

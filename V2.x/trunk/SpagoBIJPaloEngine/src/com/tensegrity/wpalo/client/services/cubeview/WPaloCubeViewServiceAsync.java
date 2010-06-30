@@ -141,4 +141,5 @@ public interface WPaloCubeViewServiceAsync {
 	
 	public void deleteFile(String fileName, AsyncCallback <Void> cb);
 	public void getSubobjectId(AsyncCallback <String> cb);
+	public void getSpagoBIUserMode(AsyncCallback <String> cb);
 }

@@ -7,17 +7,22 @@ package it.eng.spagobi.jpivotaddins.roles;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 import mondrian.olap.Util;
 import mondrian.spi.impl.FilterDynamicSchemaProcessor;
 
 import org.apache.log4j.Logger;
 
+import sun.misc.BASE64Decoder;
+
 public class SpagoBIFilterDynamicSchemaProcessor extends
 FilterDynamicSchemaProcessor {
 
 	private static Logger logger = Logger.getLogger(SpagoBIFilterDynamicSchemaProcessor.class);
 
+	private static final BASE64Decoder DECODER = new BASE64Decoder();
+	
 	Integer indexProgression = null;
 	
 	protected String filter(String schemaUrl, Util.PropertyList connectInfo, InputStream stream) throws Exception {
@@ -30,8 +35,18 @@ FilterDynamicSchemaProcessor {
 		while(att != null){
 			// if value is null I put null, if instead there is no the attribute name in connectInfo I don't substitute			
 			if (connectInfo.get(att) != null) {
-				logger.debug("change attribute " + att + " with  [" + connectInfo.get(att) + "]");
-				modifiedSchema = modifiedSchema.replaceAll("\\$\\{"+att+"\\}", connectInfo.get(att));
+				String attrValueBase64 = connectInfo.get(att);
+				logger.debug("Attribute value in Base64 encoding is " + attrValueBase64);
+				String value = null;
+				try {
+					value = new String(DECODER.decodeBuffer(attrValueBase64), "UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					logger.error("UTF-8 encoding not supported!!!!!", e);
+					value = new String(DECODER.decodeBuffer(attrValueBase64));
+				}
+				logger.debug("change attribute " + att + " with  [" + value + "]");
+				
+				modifiedSchema = modifiedSchema.replaceAll("\\$\\{"+att+"\\}", value);
 			}		
 			att = findProfileAttributeInSchema(modifiedSchema);
 		}

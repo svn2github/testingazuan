@@ -17,6 +17,7 @@ import it.eng.spago.security.IEngUserProfile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -31,6 +32,8 @@ import org.dom4j.DocumentException;
 import org.dom4j.Node;
 import org.xml.sax.SAXException;
 
+import sun.misc.BASE64Encoder;
+
 import com.tonbeller.jpivot.core.ModelFactory;
 import com.tonbeller.jpivot.mondrian.MondrianModel;
 import com.tonbeller.tbutils.res.Resources;
@@ -44,6 +47,8 @@ import com.tonbeller.wcf.expr.ExprUtils;
 public class MondrianModelFactory {
 	private static Logger logger = Logger.getLogger(MondrianModelFactory.class);
 
+	private static final BASE64Encoder ENCODER = new BASE64Encoder();
+	
 	private MondrianModelFactory() {
 	}
 
@@ -138,7 +143,18 @@ public class MondrianModelFactory {
 							logger.debug("add profile attribute "+attributeName+ " with value "+value);
 							// put attribute not with filter name but with attribute name!
 							
-							sb.append(";"+attributeName+"=" + value);		    		
+							// encoding value in Base64 
+							String valueBase64 = null;
+							if (value != null) {
+								try {
+									valueBase64 = ENCODER.encode(value.getBytes("UTF-8"));
+								} catch (UnsupportedEncodingException e) {
+									logger.error("UTF-8 encoding not supported!!!!!", e);
+									valueBase64 = ENCODER.encode(value.getBytes());
+								}
+							}
+							logger.debug("Attribute value in Base64 encoding is " + valueBase64);
+							sb.append(";"+attributeName+"=" + valueBase64);		    		
 							//sb.append(";filter=" + profile.getUserAttribute(attributeName));
 
 						} else {

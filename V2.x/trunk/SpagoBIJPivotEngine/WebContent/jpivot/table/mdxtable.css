@@ -1,23 +1,25 @@
 /* slicer */
 .slicer-normal {
-  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-  font-size: 0.9em;;
+  font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+  font-size: 0.7em;;
 }
 
 .slicer-selected {
   background-color : #ABE5B5;
-  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-  font-size: 0.8em;;
+  font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+  font-size: 0.7em;;
   color : Black;
 }
 
 
 /* headings */
-th.corner-heading,
-th.heading-heading,
+th.corner-heading {
+  background-color : #FFFFFF;
+  border: none;
+}
+
+
 th.column-heading-selected,
-th.column-heading-even,
-th.column-heading-odd, 
 th.column-heading-span, 
 
 th.column-heading-red, 
@@ -35,8 +37,18 @@ th.row-heading-gruen,
 th.row-heading-gelb,
 
 th.row-heading-selected,
-th.row-heading-even,
-th.row-heading-odd,
+/* modificato */
+th.row-heading-even
+{
+  font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+  font-size: 0.7em;
+  background-color : #B1C9E2;
+  border: none;
+  text-align: left;
+  
+}
+
+
 th.row-heading-span,
 
 th.column-heading-even-right, 
@@ -48,8 +60,8 @@ th.column-heading-span-right,
 
 th.property-heading,
 td.property-name {
-  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-  font-size: 0.8em;;
+  font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+  font-size: 0.7em;;
   color : Black;
   text-align: left;
   vertical-align: top;
@@ -70,12 +82,27 @@ th.column-heading-selected
 {
   background-color : #ABE5B5;
 }
-
-th.column-heading-even,
-th.column-heading-odd, 
+/* Modificato */
+th.column-heading-even
+{
+	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 0.7em;
+	background-color : #96CAFF;
+	border-style: none;
+	white-space: normal;
+	width:130px;
+}
+/* Modificato */
+th.column-heading-odd
+{
+	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 0.7em;
+	background-color : #96CAFF;
+	border-style: none;
+    white-space: normal;
+	width:130px;
+}
 th.column-heading-span, 
-th.corner-heading,
-th.row-heading-even,
 th.row-heading-span,
 th.column-heading-even-right, 
 th.row-heading-even-right,
@@ -83,17 +110,33 @@ th.column-heading-span-right,
 th.row-heading-span-right,
 th.property-heading
 {
-  background-color : #DEE3EF;
+  background-color : #C3D1E0;
+  border-style: none;
+
+
 }
 
-
-th.heading-heading,
+/* Modificato */
+th.heading-heading
+{
+	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 0.7em;
+	color: #FFFFFF;
+	background-color : #4E83BB;
+	border-style: none;
+}
 td.property-name,
 th.column-heading-odd-right, 
 th.row-heading-odd-right,
 th.row-heading-odd
 {
-  background-color : #EEF3FF;
+  font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+  font-size: 0.7em;
+  background-color : #C9E4FF;
+  border: none;
+  text-align: left;
+  border-style: none;
+
 }
 
 th.row-heading-red,
@@ -132,8 +175,8 @@ td.cell-gelb,
 td.cell-gruen,
 td.property-value,
 td.property-span {
-  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-  font-size: 0.8em;;
+  font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+  font-size: 0.7em;;
   color : Black;
   text-align: right;
 }
@@ -146,14 +189,20 @@ span.cell-odd {
 
 td.cell-even
 {
-  background-color : #f0f0f0;
+  border: none;
+  background-color : #E2E2E2;
 }
 
-td.cell-odd,
+td.cell-odd
+{
+  border: none;
+  background-color : #ECEBFF;
+}
 td.property-value,
 td.property-span
 {
-  background-color : #ffffff;
+  border: 0 none;
+  background-color : #F8F8F8;
 }
 
 td.cell-rot,
@@ -182,8 +231,22 @@ span.cell-green
 
 
 div.table-message {
-  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+  font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
   font-size :12pt;
   color : Black;
   font-weight: bold;
+}
+
+/*Added styles */
+table {
+  border: 0 none;
+  border-collapse: separate;
+  border-spacing: 1px;
+  border-collapse: expression('separate', cellSpacing = '1px');
+  border-color: white;
+  font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+h3 {
+	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
 }

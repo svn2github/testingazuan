@@ -60,5 +60,7 @@
         <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiAlarmEvent.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiThreshold.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiThresholdValue.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiObjMetadata.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiObjMetacontents.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 /*
  * Created on 20-giu-2005
  *
@@ -55,9 +55,9 @@ import org.hibernate.criterion.Expression;
  * for a metadata content
  */
 public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IObjMetacontentDAO{
-	
+
 	static private Logger logger = Logger.getLogger(ObjMetacontentDAOHibImpl.class);
-	
+
 	/**
 	 * Load object's metadata content by id.
 	 * 
@@ -71,7 +71,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 	 */
 	public ObjMetacontent loadObjMetaContentByID(Integer id) throws EMFUserError {		
 		logger.debug("IN");
-		
+
 		ObjMetacontent toReturn = null;
 		Session aSession = null;
 		Transaction tx = null;
@@ -108,7 +108,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 	 * @see it.eng.spagobi.tools.objmetadata.dao.IObjMetacontentDAO#loadObjMetacontentByObjMetaId(java.lang.Integer)
 	 */	
 	public List loadObjMetacontentByObjMetaId(Integer objMetaId) throws EMFUserError {
-	
+
 		logger.debug("IN");
 		List realResult = new ArrayList();
 		Session session = null;
@@ -116,7 +116,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 		try {
 			session = getSession();
 			tx = session.beginTransaction();
-			
+
 			String hql = " from SbiObjMetacontents c where c.objmetaId = ?";
 			Query aQuery = session.createQuery(hql);
 			aQuery.setInteger(0, objMetaId.intValue());
@@ -142,7 +142,78 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 		return realResult;	
 
 	}
-	
+
+
+
+	/**
+	 * Loads all metacontent for one object or for one subobject, if biObjId is not null load all metacontents for object, if subObjId is not null load all metacontents for subobject 
+	 * 
+	 * @param biObjId The biObjId for the object to load
+	 * @param subObjId The subObjId for the subObject to load
+	 * 
+	 * @return A list containing all metadata objects 
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+
+	public List loadObjOrSubObjMetacontents(Integer biObjId, Integer subObjId) throws EMFUserError {
+
+		logger.debug("IN");
+		List realResult = new ArrayList();
+		Session session = null;
+		Transaction tx = null;
+		Integer id = null;
+		try {
+			session = getSession();
+			tx = session.beginTransaction();
+			String hql = "";
+
+			if(biObjId != null){
+				logger.debug("laod metacontents associated to biobj "+biObjId);
+				hql = " from SbiObjMetacontents c where c.sbiObjects.biobjId = ?";
+				id = biObjId;
+			}
+			else if(subObjId != null){
+				logger.debug("laod metacontents associated to subbiobj "+subObjId);
+				hql = " from SbiObjMetacontents c where c.sbiSubObjects.subObjId = ?";				
+				id = subObjId;
+			}
+
+			Query aQuery = session.createQuery(hql);
+			aQuery.setInteger(0, id.intValue());
+			List hibList = aQuery.list();			
+			if (hibList != null && !hibList.isEmpty()) {
+				Iterator it = hibList.iterator();
+				while (it.hasNext()) {
+					realResult.add(toObjMetacontent((SbiObjMetacontents) it.next()));
+				}
+			}
+			tx.rollback();
+		} catch (HibernateException he) {
+			logger.error("Error while loading the metadata content referring to object or subobject (check log before) with id = " + id, he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (session!=null){
+				if (session.isOpen()) session.close();
+			}
+		}
+		logger.debug("OUT");
+		return realResult;	
+
+	}
+
+
+
+
+
+
+
+
+
+
+
 	/**
 	 * Load object's metadata by objMetaId, biObjId and subobjId.
 	 * 
@@ -164,7 +235,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 		try {
 			session = getSession();
 			tx = session.beginTransaction();
-			
+
 			String hql = " from SbiObjMetacontents c where c.objmetaId = ? and c.sbiObjects.biobjId = ? ";
 			if(subObjId!=null){
 				hql += "and c.sbiSubObjects.subObjId = ? ";
@@ -207,7 +278,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 	 * @see it.eng.spagobi.tools.objmetadata.dao.IObjMetacontentDAO#loadAllObjMetacontent()
 	 */
 	public List loadAllObjMetacontent() throws EMFUserError {
-		
+
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
@@ -217,7 +288,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 			tx = aSession.beginTransaction();
 
 			Query hibQuery = aSession.createQuery(" from SbiObjMetacontents");
-			
+
 			List hibList = hibQuery.list();
 			if (hibList != null && !hibList.isEmpty()) {
 				Iterator it = hibList.iterator();
@@ -239,7 +310,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 		logger.debug("OUT");
 		return realResult;
 	}
-	
+
 	/**
 	 * Modify metadata content.
 	 * 
@@ -250,7 +321,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 	 * @see it.eng.spagobi.tools.objmetadata.dao.IObjMetadataDAO#modifyObjMetacontent(it.eng.spagobi.tools.objmetadata.bo.ObjMetacontent)
 	 */
 	public void modifyObjMetacontent(ObjMetacontent aObjMetacontent) throws EMFUserError {
-		
+
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
@@ -259,10 +330,10 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-		
+
 			SbiObjMetacontents hibContents = (SbiObjMetacontents) aSession.load(SbiObjMetacontents.class,
 					new Integer(aObjMetacontent.getObjMetacontentId()));	
-			
+
 			// update biobject reference
 			if (hibContents.getSbiObjects().getBiobjId() != aObjMetacontent.getBiobjId()) {
 				aCriterion = Expression.eq("biobjId", aObjMetacontent.getBiobjId());
@@ -271,7 +342,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 				SbiObjects biobj = (SbiObjects) criteria.uniqueResult();
 				hibContents.setSbiObjects(biobj);
 			}
-			
+
 			// update subobject reference
 			if (aObjMetacontent.getSubobjId() == null) {
 				hibContents.setSbiSubObjects(null);
@@ -285,7 +356,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 					hibContents.setSbiSubObjects(subobj);
 				}
 			}
-			
+
 			// update content
 			SbiBinContents binaryContent = hibContents.getSbiBinContents();
 			if (binaryContent == null) {
@@ -299,10 +370,10 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 
 			// update metadata reference
 			hibContents.setObjmetaId(aObjMetacontent.getObjmetaId());
-			
+
 			// update last change date
 			hibContents.setLastChangeDate(aObjMetacontent.getLastChangeDate());
-			
+
 			tx.commit();
 		} catch (HibernateException he) {
 			logger.error("Error while modifing the meta content with id " + ((aObjMetacontent == null)?"":String.valueOf(aObjMetacontent.getObjMetacontentId())), he);
@@ -315,7 +386,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 			}
 		}
 		logger.debug("OUT");
-	
+
 	}
 
 	/**
@@ -328,7 +399,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 	 * @see it.eng.spagobi.tools.objmetadata.dao.IObjMetadataDAO#insertObjMetacontent(it.eng.spagobi.tools.objmetadata.bo.ObjMetacontent)
 	 */
 	public void insertObjMetacontent(ObjMetacontent aObjMetacontent) throws EMFUserError {
-	
+
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
@@ -337,7 +408,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			
+
 			SbiObjMetacontents hibContents = new SbiObjMetacontents();	
 
 			// get biobject reference		
@@ -346,7 +417,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 			criteria.add(aCriterion);
 			SbiObjects biobj = (SbiObjects) criteria.uniqueResult();
 			hibContents.setSbiObjects(biobj);
-			
+
 			// get subobject reference
 			if (aObjMetacontent.getSubobjId() == null) {
 				hibContents.setSbiSubObjects(null);
@@ -357,17 +428,17 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 				SbiSubObjects subobj = (SbiSubObjects) criteria.uniqueResult();
 				hibContents.setSbiSubObjects(subobj);
 			}
-			
+
 			SbiBinContents binaryContent = new SbiBinContents();
 			binaryContent.setContent(aObjMetacontent.getContent());
 			aSession.save(binaryContent);
 			hibContents.setSbiBinContents(binaryContent);
-			
+
 			hibContents.setObjmetaId(aObjMetacontent.getObjmetaId());
-			
+
 			hibContents.setCreationDate(aObjMetacontent.getCreationDate());;
 			hibContents.setLastChangeDate(aObjMetacontent.getLastChangeDate());
-			
+
 			aSession.save(hibContents);
 			tx.commit();
 		} catch (HibernateException he) {
@@ -384,7 +455,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 				logger.debug("OUT");
 			}
 		}
-		
+
 	}
 
 	/**
@@ -424,7 +495,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 		}
 
 	}
-	
+
 	/**
 	 * From the hibernate SbiObjMetacontent at input, gives
 	 * the corrispondent <code>ObjMetacontent</code> object.
@@ -435,7 +506,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 	 */
 	private ObjMetacontent toObjMetacontent(SbiObjMetacontents hibObjMetacontent){
 		ObjMetacontent meta = new ObjMetacontent();
-		
+
 		meta.setObjMetacontentId(hibObjMetacontent.getObjMetacontentId());
 		meta.setObjmetaId(hibObjMetacontent.getObjmetaId());
 		meta.setBiobjId(hibObjMetacontent.getSbiObjects().getBiobjId());
@@ -449,7 +520,7 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 
 		return meta;
 	}
-	
+
 }
 
 

@@ -63,6 +63,8 @@ import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.Subreport;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.DomainDAOHibImpl;
+import it.eng.spagobi.commons.dao.IBinContentDAO;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
 import it.eng.spagobi.commons.metadata.SbiDomains;
@@ -135,6 +137,10 @@ import it.eng.spagobi.tools.dataset.metadata.SbiScriptDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
+import it.eng.spagobi.tools.objmetadata.bo.ObjMetacontent;
+import it.eng.spagobi.tools.objmetadata.bo.ObjMetadata;
+import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetacontents;
+import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetadata;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -188,6 +194,111 @@ public class ExporterMetadata {
 			tx.commit();
 		} catch (Exception e) {
 			logger.error("Error while inserting domain into export database ",e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}	
+	}
+
+
+	/**
+	 * Insert a Object Metadata Category into the exported database.
+	 * 
+	 * @param objMetadata ObjMetadata object to export
+	 * @param session Hibernate session for the exported database
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertObjMetadata(ObjMetadata objMetadata, Session session) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			Transaction tx = session.beginTransaction();
+			Query hibQuery = session.createQuery(" from SbiObjMetadata where objMetaId = " + objMetadata.getObjMetaId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			}
+			SbiObjMetadata hibObjMeta = new SbiObjMetadata();
+			hibObjMeta.setObjMetaId(objMetadata.getObjMetaId());
+			hibObjMeta.setCreationDate(objMetadata.getCreationDate());
+			hibObjMeta.setDescription(objMetadata.getDescription());
+			hibObjMeta.setLabel(objMetadata.getLabel());
+			hibObjMeta.setName(objMetadata.getName());
+
+			if(objMetadata.getDataType() != null){
+				SbiDomains dataType=(SbiDomains)session.load(SbiDomains.class, objMetadata.getDataType());
+				hibObjMeta.setDataType(dataType);
+			}
+
+			session.save(hibObjMeta);
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting objMetadata into export database ",e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}	
+	}
+
+
+	/**
+	 * Insert a Object Metadata Content into the exported database.
+	 * 
+	 * @param objMetadataContent ObjMetadataContent object to export
+	 * @param session Hibernate session for the exported database
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertObjMetacontent(ObjMetacontent objMetacontent, Session session) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			Query hibQuery = session.createQuery(" from SbiObjMetacontents where objMetacontentId = " + objMetacontent.getObjMetacontentId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			}
+
+			// first of all insert binary content
+			if (objMetacontent.getBinaryContentId() != null) {
+				// get the content			
+				IBinContentDAO binContentDAO = DAOFactory.getBinContentDAO();
+				byte[] content = binContentDAO.getBinContent(objMetacontent.getBinaryContentId());
+				insertBinContet(objMetacontent.getBinaryContentId(), content, session);
+			}
+
+			Transaction tx = session.beginTransaction();
+
+			SbiObjMetacontents hibObjMetacontents = new SbiObjMetacontents();
+
+			hibObjMetacontents.setObjMetacontentId(objMetacontent.getObjMetacontentId());
+			hibObjMetacontents.setCreationDate(objMetacontent.getCreationDate());
+			hibObjMetacontents.setLastChangeDate(objMetacontent.getLastChangeDate());
+			hibObjMetacontents.setObjmetaId(objMetacontent.getObjmetaId());
+
+			// get the object to insert if present
+			if (objMetacontent.getBiobjId() != null) {
+				SbiObjects sbiObjects = (SbiObjects) session.load(SbiObjects.class, objMetacontent.getBiobjId());
+				hibObjMetacontents.setSbiObjects(sbiObjects);
+				logger.debug("inserted sbi " + objMetacontent.getBiobjId() + " Object metacontent");
+			}
+			// get the sub object to insert if present
+			if (objMetacontent.getSubobjId() != null) {
+				SbiSubObjects sbiSubObjects = (SbiSubObjects) session.load(SbiSubObjects.class, objMetacontent.getSubobjId());
+				hibObjMetacontents.setSbiSubObjects(sbiSubObjects);
+				logger.debug("inserted sbi " + objMetacontent.getSubobjId() + " SubObject metacontent");
+			}
+			// get the content
+			if (objMetacontent.getBinaryContentId() != null) {
+				SbiBinContents sbiBinContents = (SbiBinContents) session.load(SbiBinContents.class, objMetacontent.getBinaryContentId());
+				hibObjMetacontents.setSbiBinContents(sbiBinContents);
+				// insert the binary content!!				
+				logger.debug("inserted sbi " + objMetacontent.getBinaryContentId() + " Binary Content metacontent");
+			}
+
+			session.save(hibObjMetacontents);
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting objMetadataContent into export database ",e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
 			logger.debug("OUT");
@@ -1414,7 +1525,7 @@ public class ExporterMetadata {
 	 */
 	public List insertAllFromModelInstance(ModelInstance mi, Session session) throws EMFUserError {
 		logger.debug("IN");
-		
+
 		biObjectToInsert=new ArrayList();
 
 		//I want to insert the whole model instance tree, first of all I get the model instance root
@@ -1424,7 +1535,7 @@ public class ExporterMetadata {
 
 		// insert the model (model instance root points to model root)
 		logger.debug("Insert the model root and the tree");		
-		
+
 		// isnert all kpi model attribute thought are related to domains!
 		insertAllKpiModelAttr(session);
 		// fill the array with models with attributes
@@ -1504,7 +1615,7 @@ public class ExporterMetadata {
 			Transaction tx = session.beginTransaction();
 			session.save(hibMi);
 			tx.commit();
-			
+
 			// Load all the model resources of the current instance model
 			// after having inserted model instance
 			IModelResourceDAO modelResourceDao=DAOFactory.getModelResourcesDAO();			
@@ -1556,7 +1667,7 @@ public class ExporterMetadata {
 		logger.debug("IN");
 		IModelDAO modelDao=DAOFactory.getModelDAO();
 		try {
-			
+
 
 
 			Query hibQuery = session.createQuery(" from SbiKpiModel where kpiModelId = " + mod.getId());
@@ -2435,6 +2546,42 @@ public class ExporterMetadata {
 			logger.debug("OUT");
 		}
 	}
+
+
+
+	/**
+	 * Insert BinContent.
+	 * 
+	 * @param id and content 
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertBinContet(Integer idContent, byte[] content, Session session) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			Query hibQuery = session.createQuery(" from SbiBinContents s where s.id = " + idContent);
+			List hibRes = hibQuery.list();
+			if(!hibRes.isEmpty()) {
+				return;
+			} 
+
+			SbiBinContents hibContent = new SbiBinContents();
+			hibContent.setId(idContent);
+			hibContent.setContent(content);
+			Transaction tx = session.beginTransaction();			
+			session.save(hibContent);
+			tx.commit();
+
+		} catch (Exception e) {
+			logger.error("Error while inserting binContent into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}
+	}
+
+
 
 
 }

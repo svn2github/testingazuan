@@ -51,9 +51,12 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import commonj.work.Work;
 
-
+/**
+ * configurazione ....
+ * @author bernabei
+ *
+ */
 public class WorkConfiguration {
 
 

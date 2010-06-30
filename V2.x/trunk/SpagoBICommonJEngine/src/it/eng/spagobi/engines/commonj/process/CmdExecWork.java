@@ -136,7 +136,7 @@ public class CmdExecWork extends SpagoBIWork {
 			logger.info("launch command "+command);
 			process = Runtime.getRuntime().exec(command, null, directoryExec);
 			logger.info("Wait for the end of the process... ");
-			process.waitFor();
+			//process.waitFor();
 			logger.info("Process END "+command);
 		}
 		else{

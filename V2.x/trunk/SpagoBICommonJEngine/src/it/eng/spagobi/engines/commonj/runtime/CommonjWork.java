@@ -45,6 +45,11 @@ import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
+/**
+ * contiene le configurazioni del WORK quando le legge da template
+ * @author bernabei
+ *
+ */
 public class CommonjWork {
 
 	String pId;

@@ -41,6 +41,11 @@ import commonj.work.WorkItem;
 
 import de.myfoo.commonj.work.FooRemoteWorkItem;
 
+/**
+ * stato del work, contenuto nella mappa
+ * @author bernabei
+ *
+ */
 public class CommonjWorkContainer {
 
 	String pid=null;

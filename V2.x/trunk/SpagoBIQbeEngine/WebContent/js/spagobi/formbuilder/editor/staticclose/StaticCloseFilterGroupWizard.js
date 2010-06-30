@@ -52,8 +52,8 @@ Sbi.formbuilder.StaticCloseFilterGroupWizard = function(config) {
 		// set default values here
 		title: LN('sbi.formbuilder.staticclosefiltergroupwizard.title')
 		, autoScroll: true
-		, width: 350
-		, height: 350
+		, width: 400
+		, height: 380
 		, baseState: {
 			groupTitle: undefined,
 			singleSelection: true,

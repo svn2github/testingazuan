@@ -52,7 +52,7 @@ Sbi.formbuilder.DynamicFilterGroupWizard = function(config) {
 		// set default values here
 		title: LN('sbi.formbuilder.dynamicfiltergroupwizard.title')
 		, autoScroll: true
-		, width: 350
+		, width: 400
 		, height: 150
 	};
 	if (Sbi.settings && Sbi.settings.formbuilder && Sbi.settings.formbuilder.dynamicFilterGroupWizard) {

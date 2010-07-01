@@ -980,7 +980,6 @@ public class CubeViewEditor extends LayoutContainer implements ContainerListener
 					//MessageBox.alert("Save as", "not DEV", null);
 					if(!displayFlags.isHideSaveAs()){
 						toolbar.add(saveAs);	
-						MessageBox.alert("Save as", "added save as", null);
 					}
 				}
 /*				if (!displayFlags.isHideSave() || !displayFlags.isHideSaveAs() || (hideSaveSubobjects[0]).equals("true")) {

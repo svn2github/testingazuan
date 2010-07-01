@@ -71,6 +71,8 @@ import it.eng.spagobi.tools.dataset.metadata.SbiQueryDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiScriptDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
+import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetacontents;
+import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetadata;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -2017,7 +2019,7 @@ public class ImportUtilities {
 				UUID uuid = uuidGen.generateTimeBasedUUID();
 				newMod.setKpiModelLabel(uuid.toString());
 			}
-			
+
 			// associations
 			entitiesAssociationsSbiModel(model, newMod, sessionCurrDB, metaAss);
 
@@ -3169,6 +3171,250 @@ public class ImportUtilities {
 	}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/**
+	 * Creates a new hibernate ObjMetadata.
+	 * 
+	 * @param ObjMetadata objMetadata
+	 * 
+	 * @return the new hibernate parameter object
+	 */
+	public static SbiObjMetadata makeNewSbiObjMetadata(SbiObjMetadata objMetadata,Session sessionCurrDB, 
+			MetadataAssociations metaAss, ImporterMetadata importer){
+		logger.debug("IN");
+		SbiObjMetadata newObjMetadata = new SbiObjMetadata();
+		try{
+			newObjMetadata.setLabel(objMetadata.getLabel());
+			newObjMetadata.setName(objMetadata.getName());
+			newObjMetadata.setDescription(objMetadata.getDescription());
+			newObjMetadata.setCreationDate(objMetadata.getCreationDate());
+
+			// associations
+			entitiesAssociationsSbiObjMetadata(objMetadata, newObjMetadata, sessionCurrDB, metaAss, importer); 
+
+			logger.debug("OUT");
+		}
+		catch (Exception e) {
+			logger.error("Error inc reating new ObjMetadata with label "+newObjMetadata.getLabel());			
+		}
+		finally{
+
+		}
+		return newObjMetadata;
+	}
+
+
+	/**
+	 * Load an existing ObjMetadata and make modifications as per the exported ObjMetadata in input
+	 * 
+	 * @param ObjMetadata objMetadata
+	 * @param sessionCurrDB the session curr db
+	 * @param existingId the existing id
+	 * 
+	 * @return the existing ObjMetadata modified as per the exported parameter in input
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static SbiObjMetadata modifyExistingSbiObjMetadata(SbiObjMetadata exportedObjMetadata, Session sessionCurrDB, 
+			Integer existingId, MetadataAssociations metaAss, ImporterMetadata importer) throws EMFUserError {
+		logger.debug("IN");
+		SbiObjMetadata existingObjMetadata = null;
+		try {
+			existingObjMetadata= (SbiObjMetadata) sessionCurrDB.load(SbiObjMetadata.class, existingId);
+
+			existingObjMetadata.setName(exportedObjMetadata.getName());
+			existingObjMetadata.setDescription(exportedObjMetadata.getDescription());
+			existingObjMetadata.setCreationDate(exportedObjMetadata.getCreationDate());
+
+			// overwrite existging entities (maybe create a function speciic for domains, maybe not)
+			entitiesAssociationsSbiObjMetadata(exportedObjMetadata, existingObjMetadata, sessionCurrDB, metaAss, importer); 
+
+		}
+
+		finally {
+			logger.debug("OUT");
+		}
+		return existingObjMetadata;
+	}
+
+
+
+	/**
+	 * For ObjMetadata search new Ids
+	 * 
+	 * @param exported metadata ObjMetadata
+	 * @param sessionCurrDB the session curr db
+	 * 
+	 * @return the existing Kpi modified as per the exported parameter in input
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static void entitiesAssociationsSbiObjMetadata(SbiObjMetadata exportedObjMetadata, SbiObjMetadata existingObjMetadata,Session sessionCurrDB, 
+			MetadataAssociations metaAss, ImporterMetadata importer) throws EMFUserError {
+		logger.debug("IN");
+		// overwrite existging entities
+
+		Map domainIdAss=metaAss.getDomainIDAssociation();
+		if(exportedObjMetadata.getDataType() != null){
+			Integer oldDomainId=exportedObjMetadata.getDataType().getValueId();
+			Integer newDomainId=(Integer)domainIdAss.get(oldDomainId);
+			if(newDomainId==null) {
+				logger.error("could not find domain between association"+exportedObjMetadata.getDataType().getValueCd());
+				existingObjMetadata.setDataType(null);
+			}
+			else{
+				// I must get the new SbiDomains object
+				SbiDomains newSbiDomain= (SbiDomains) sessionCurrDB.load(SbiDomains.class, newDomainId);
+				existingObjMetadata.setDataType(newSbiDomain);
+			}
+		}
+		else{
+			existingObjMetadata.setDataType(null);
+		}
+	}
+
+
+
+	/**
+	 * Creates a new hibernate SbiObjMetacontent object.
+	 * 
+	 * @param SbiObjectMetacontent metcontent
+	 * 
+	 * @return the new hibernate parameter object
+	 */
+	public static SbiObjMetacontents makeNewSbiObjMetacontent(SbiObjMetacontents metacontents,Session sessionCurrDB, MetadataAssociations metaAss, ImporterMetadata importer){
+		logger.debug("IN");
+		SbiObjMetacontents newMetacontents = new SbiObjMetacontents();
+		try{
+			newMetacontents.setCreationDate(metacontents.getCreationDate());
+			newMetacontents.setLastChangeDate(metacontents.getLastChangeDate());
+			// associations
+			entitiesAssociationsSbiObjMetacontents(metacontents, newMetacontents, sessionCurrDB, metaAss, importer);
+
+			logger.debug("OUT");
+		}
+		catch (Exception e) {
+			logger.error("Error in creating new metacontent with exported id " + metacontents.getObjMetacontentId());			
+		}
+		finally{
+
+		}
+		return newMetacontents;
+	}
+
+	/**
+	 * Load an existing ObjMetacontents and make modifications as per the exported ObjMetacontents in input
+	 * 
+	 * @param exportedObjMetacontents the exported ObjMetacontents
+	 * @param sessionCurrDB the session curr db
+	 * @param existingId the existing id
+	 * 
+	 * @return the existing ObjMetacontents modified as per the exported parameter in input
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static SbiObjMetacontents modifyExistingSbiObjMetacontents(SbiObjMetacontents exportedMetacontents, Session sessionCurrDB, 
+			Integer existingId, MetadataAssociations metaAss, ImporterMetadata importer) throws EMFUserError {
+		logger.debug("IN");
+		SbiObjMetacontents existingMetacontents = null;
+		try {
+			// update Alarm
+			existingMetacontents= (SbiObjMetacontents) sessionCurrDB.load(SbiObjMetacontents.class, existingId);
+
+			existingMetacontents.setCreationDate(exportedMetacontents.getCreationDate());
+			existingMetacontents.setLastChangeDate(exportedMetacontents.getLastChangeDate());
+
+			// associations
+			entitiesAssociationsSbiObjMetacontents(exportedMetacontents, existingMetacontents, sessionCurrDB, metaAss, importer);
+		}
+
+		finally {
+			logger.debug("OUT");
+		}
+		return existingMetacontents;
+	}
+
+
+	/**
+	 * For SBiObjMetacontents search new Ids
+	 * 
+	 * @param exportedMetacontent the exported SbiObjMetacontent
+	 * @param sessionCurrDB the session curr db
+	 * 
+	 * @return the existing ObjMetacontent modified as per the exported parameter in input
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static void entitiesAssociationsSbiObjMetacontents(SbiObjMetacontents exportedMetacontents, SbiObjMetacontents existingMetacontents,Session sessionCurrDB, 
+			MetadataAssociations metaAss, ImporterMetadata importer) throws EMFUserError {
+		logger.debug("IN");	
+
+		// overwrite existging entities
+
+		// Obj Metadata
+		Map metadataIdAss=metaAss.getObjMetadataIDAssociation();
+		if(exportedMetacontents.getObjmetaId()!=null){
+			Integer oldMetaId=exportedMetacontents.getObjmetaId();
+			Integer newMetaId=(Integer)metadataIdAss.get(oldMetaId);
+			if(newMetaId==null) {
+				logger.error("could not find association with metadata with id " + exportedMetacontents.getObjmetaId());
+			}
+			else{
+				existingMetacontents.setObjmetaId(newMetaId);
+			}
+		}
+
+		// SbiObject
+		Map objectIdAss=metaAss.getBIobjIDAssociation();
+		if(exportedMetacontents.getSbiObjects()!=null){
+			Integer oldObjId=exportedMetacontents.getSbiObjects().getBiobjId();
+			Integer newObjId=(Integer)objectIdAss.get(oldObjId);
+			if(newObjId==null) {
+				logger.error("could not find object associated "+exportedMetacontents.getSbiObjects().getLabel());
+			}
+			else{
+				// I must get the new SbiDomains object
+				SbiObjects newSbiObjects = (SbiObjects) sessionCurrDB.load(SbiObjects.class, newObjId);
+				existingMetacontents.setSbiObjects(newSbiObjects);
+			}
+		}
+
+		// TODO SubObject not treated yet
+
+		// Binary contents will be always inserted as new
+		logger.debug("Insert the binary content associated");
+		SbiBinContents exportedBinContent = exportedMetacontents.getSbiBinContents();
+		SbiBinContents newBinContents = new SbiBinContents();
+		newBinContents.setContent(exportedBinContent.getContent());
+		sessionCurrDB.save(newBinContents);
+		existingMetacontents.setSbiBinContents(newBinContents);
+
+		logger.debug("OUT");
+	}
 
 
 

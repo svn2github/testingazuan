@@ -2463,17 +2463,19 @@ public class ExporterMetadata {
 	public void insertAllKpiModelAttr(Session session) throws EMFUserError {
 		logger.debug("IN");
 		try {
-			//			Query hibQuery = session.createQuery(" from SbiKpiModelAttr where kpiModelAttrId = " + modAttribute.getId());
-			//			List hibList = hibQuery.list();
-			//			if(!hibList.isEmpty()) {
-			//				insertKpiModelAttrVal(modAttribute, modelId, session);
-			//				return;
-			//			} 
 
 			List attrs = DAOFactory.getSbiKpiModelAttrDAO().loadAllModelAttrs();
 
 			for (Iterator iterator = attrs.iterator(); iterator.hasNext();) {
 				ModelAttribute modAttribute = (ModelAttribute) iterator.next();
+
+				// if already present not insert again!!
+				Query hibQuery = session.createQuery(" from SbiKpiModelAttr where kpiModelAttrId = " + modAttribute.getId());
+				List hibList = hibQuery.list();
+				if(!hibList.isEmpty()) {
+					continue;
+				} 
+
 
 				// main attributes			
 				SbiKpiModelAttr hibModAttr = new SbiKpiModelAttr();

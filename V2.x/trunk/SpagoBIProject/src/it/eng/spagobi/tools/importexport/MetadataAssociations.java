@@ -44,6 +44,8 @@ import it.eng.spagobi.kpi.model.metadata.SbiKpiModelResources;
 import it.eng.spagobi.kpi.model.metadata.SbiResources;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
+import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetacontents;
+import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetadata;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -102,6 +104,10 @@ public class MetadataAssociations {
 	private Map sbiKpiModelAttrAssociation = new HashMap();
 	private Map sbiKpiModelAttrValIDAssociation = new HashMap();
 	private Map sbiKpiModelAttrValAssociation = new HashMap();
+	private Map objMetadataIDAssociation = new HashMap();
+	private Map objMetadataAssociation = new HashMap();
+	private Map objMetacontentsIDAssociation = new HashMap();
+	private Map objMetacontentsAssociation = new HashMap();
 
 
 
@@ -172,6 +178,14 @@ public class MetadataAssociations {
 			return false;	
 		if(!sbiKpiModelAttrValAssociation.keySet().isEmpty())
 			return false;	
+		if(!objMetadataIDAssociation.keySet().isEmpty())
+			return false;	
+		if(!objMetadataAssociation.keySet().isEmpty())
+			return false;	
+		if(!objMetacontentsIDAssociation.keySet().isEmpty())
+			return false;	
+		if(!objMetacontentsAssociation.keySet().isEmpty())
+			return false;	
 
 		return true;
 	}
@@ -226,6 +240,10 @@ public class MetadataAssociations {
 		alarmContactAssociation = new HashMap();
 		sbiKpiModelAttrValIDAssociation = new HashMap();
 		sbiKpiModelAttrValAssociation = new HashMap();
+		objMetadataIDAssociation = new HashMap();
+		objMetadataAssociation = new HashMap();
+		objMetacontentsIDAssociation = new HashMap();
+		objMetacontentsAssociation = new HashMap();
 	}
 
 	/**
@@ -1281,7 +1299,7 @@ public class MetadataAssociations {
 		return alarmContactIDAssociation;
 	}
 
-	
+
 	/**
 	 * Inserts a couple of sbiKpiModelAttr into the associations.
 	 * 
@@ -1302,7 +1320,7 @@ public class MetadataAssociations {
 		sbiKpiModelAttrIDAssociation.put(idExp, idCurr);	
 	}
 
-	
+
 	/**
 	 * Gets the Map of associations between current and exported SbiKpiModelAttr
 	 * 
@@ -1321,7 +1339,7 @@ public class MetadataAssociations {
 		return sbiKpiModelAttrAssociation;
 	}
 
-	
+
 	/**
 	 * Inserts a couple of sbiKpiModelAttr into the associations.
 	 * 
@@ -1342,7 +1360,7 @@ public class MetadataAssociations {
 		sbiKpiModelAttrValIDAssociation.put(idExp, idCurr);	
 	}
 
-	
+
 	/**
 	 * Gets the Map of associations between current and exported SbiKpiModelAttr
 	 * 
@@ -1361,8 +1379,8 @@ public class MetadataAssociations {
 		return sbiKpiModelAttrValAssociation;
 	}
 
-	
-	
+
+
 	/**
 	 * Inserts a couple of Alarm Contact value into the associations
 	 * 
@@ -1393,6 +1411,86 @@ public class MetadataAssociations {
 	}
 
 
+	/**
+	 * Gets the Map of associations between current and exported ObjMetadata.
+	 * 
+	 * @return Map of ObjMetadata
+	 */
+	public Map getObjMetadataAssociation() {
+		return objMetadataAssociation;
+	}
 
+	/**
+	 * Inserts a couple of ObjMetadata into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
+	 */
+	public void insertCoupleObjMetadataAssociation(SbiObjMetadata exp, SbiObjMetadata curr) {
+		objMetadataAssociation.put(exp, curr);	
+	}
+
+	
+	/**
+	 * Gets the Map of associations between current and exported ObjMetadata ID.
+	 * 
+	 * @return Map of ObjMetadata
+	 */
+	public Map getObjMetadataIDAssociation() {
+		return objMetadataIDAssociation;
+	}
+
+	/**
+	 * Inserts a couple of ObjMetadata ID into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
+	 */
+	public void insertCoupleObjMetadataIDAssociation(Integer exp, Integer curr) {
+		objMetadataIDAssociation.put(exp, curr);	
+	}
+
+
+	/**
+	 * Gets the Map of associations between current and exported ObjMetacontents.
+	 * 
+	 * @return Map of ObjMetacontents
+	 */
+	public Map getObjMetacontentsAssociation() {
+		return objMetacontentsAssociation;
+	}
+
+	/**
+	 * Inserts a couple of ObjMetacontents into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
+	 */
+	public void insertCoupleObjMetacontentsAssociation(SbiObjMetacontents exp, SbiObjMetacontents curr) {
+		objMetacontentsAssociation.put(exp, curr);	
+	}
+
+	
+	/**
+	 * Gets the Map of associations between current and exported ObjMetacontents ID.
+	 * 
+	 * @return Map of ObjMetacontents
+	 */
+	public Map getObjMetacontentsIDAssociation() {
+		return objMetacontentsIDAssociation;
+	}
+
+	/**
+	 * Inserts a couple of ObjMetacontents ID into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
+	 */
+	public void insertCoupleObjMetacontentsIDAssociation(Integer exp, Integer curr) {
+		objMetacontentsIDAssociation.put(exp, curr);	
+	}
+
+	
+	
 
 }

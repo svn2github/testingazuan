@@ -86,6 +86,9 @@ import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 import it.eng.spagobi.tools.importexport.bo.AssociationFile;
 import it.eng.spagobi.tools.importexport.transformers.TransformersUtilities;
+import it.eng.spagobi.tools.objmetadata.bo.ObjMetadata;
+import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetacontents;
+import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetadata;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -253,6 +256,8 @@ public class ImportManager implements IImportManager, Serializable {
 		metaLog.log("-+-+-+-+-+-+-Begin import objects-+-+-+-+-+-");
 		metaLog.log("                                             ");
 		updateDataSourceReferences(metaAss.getDataSourceIDAssociation());
+		metaLog.log("-------ObjMetadata-----");
+		importObjMetadata(overwrite);
 		metaLog.log("-------Data Source-----");
 		importDataSource(overwrite);
 		metaLog.log("-------Data Set-----");
@@ -311,6 +316,8 @@ public class ImportManager implements IImportManager, Serializable {
 		importKpiModelAttr(overwrite);
 		metaLog.log("-------SbiKpiModel Attr Value-----");
 		importKpiModelAttrVal(overwrite);
+		metaLog.log("-------SbiObjMetacontents -----");
+		importObjMetacontent(overwrite);
 
 
 
@@ -662,6 +669,69 @@ public class ImportManager implements IImportManager, Serializable {
 		}
 	}
 
+	
+	
+	
+	
+	/**
+	 *  function to import ObjMetada
+	 * @param overwrite
+	 * @throws EMFUserError
+	 */
+	
+	private void importObjMetadata(boolean overwrite) throws EMFUserError {
+		logger.debug("IN");
+		SbiObjMetadata exportedObjMetadata = null;
+		try {
+			List exportedDS = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjMetadata", null);
+			Iterator iterSbiObjMetadata = exportedDS.iterator();
+
+			while (iterSbiObjMetadata.hasNext()) {
+				exportedObjMetadata = (SbiObjMetadata) iterSbiObjMetadata.next();
+				Integer oldId = new Integer(exportedObjMetadata.getObjMetaId());
+				Integer existingMetadataId= null;
+				Map metadataIdAss = metaAss.getObjMetadataIDAssociation();
+				Set metadataIdAssSet = metadataIdAss.keySet();
+				if (metadataIdAssSet.contains(oldId) && !overwrite) {
+					metaLog.log("Exported objMetadata " + exportedObjMetadata.getLabel() + " not inserted"
+							+ " because exist objMetadata with the same label ");
+					continue;
+				} else {
+					existingMetadataId = (Integer) metadataIdAss.get(oldId);
+				}
+
+				if (existingMetadataId != null) {
+					logger.info("The objMetadata with label:[" + exportedObjMetadata.getLabel() + "] is just present. It will be updated.");
+					metaLog.log("The objMetadata with label = [" + exportedObjMetadata.getLabel() + "] will be updated.");
+					SbiObjMetadata existingObjMetadata = ImportUtilities.modifyExistingSbiObjMetadata(exportedObjMetadata, sessionCurrDB, existingMetadataId, metaAss,importer);
+
+					sessionCurrDB.update(existingObjMetadata);
+				} else {
+					SbiObjMetadata newObjM= ImportUtilities.makeNewSbiObjMetadata(exportedObjMetadata, sessionCurrDB, metaAss, importer);
+					sessionCurrDB.save(newObjM);
+					metaLog.log("Inserted new ObjectMetadata " + newObjM.getLabel());
+					Integer newId = new Integer(newObjM.getObjMetaId());
+					metaAss.insertCoupleObjMetadataIDAssociation(oldId, newId);
+				}
+			}
+		} catch (Exception e) {
+			if (exportedObjMetadata != null) {
+				logger.error("Error while importing exported ObjectMetadata with label [" + exportedObjMetadata.getLabel() + "].", e);
+			}
+			logger.error("Error while inserting object ", e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+		} finally {
+			logger.debug("OUT");
+		}
+	}
+
+	
+	
+	
+	
+	
+	
+	
 	private void importDataSource(boolean overwrite) throws EMFUserError {
 		logger.debug("IN");
 		SbiDataSource dataSource = null;
@@ -1010,7 +1080,7 @@ public class ImportManager implements IImportManager, Serializable {
 					// Delete the UseParameters Object
 
 					IParameterUseDAO iParameterUseDAO=DAOFactory.getParameterUseDAO();
-//					iParameterUseDAO.eraseParameterUseByParIdSameSession(newIdPar, sessionCurrDB, txCurrDB);
+					//					iParameterUseDAO.eraseParameterUseByParIdSameSession(newIdPar, sessionCurrDB, txCurrDB);
 					//deleteParameterUseByParId(newIdPar);
 					iParameterUseDAO.eraseParameterUseByParIdSameSession(newIdPar, sessionCurrDB);
 
@@ -1054,7 +1124,7 @@ public class ImportManager implements IImportManager, Serializable {
 			Object o =  iterator.next();
 			ParameterUse parameterUse = (ParameterUse) o;
 			SbiParuse sbiParuse = parUseDAO.loadById(parameterUse.getId());
-			
+
 			Set checks =	sbiParuse.getSbiParuseCks();
 			Set dets =	sbiParuse.getSbiParuseDets();
 
@@ -2063,6 +2133,27 @@ public class ImportManager implements IImportManager, Serializable {
 	 */
 	public void checkExistingMetadata() throws EMFUserError {
 		logger.debug("IN");
+
+		logger.debug("ObjMetadata check existence");
+		List exportedMeta = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjMetadata", null);
+		// use this data structure to save Id-Label, will be used later to have labels
+		HashMap<String, String> exportedMetadatasMap = new HashMap<String, String>();
+		Iterator iterSbiMeta = exportedMeta.iterator();
+		while (iterSbiMeta.hasNext()) {
+			SbiObjMetadata metaExp = (SbiObjMetadata) iterSbiMeta.next();
+			String labelMeta = metaExp.getLabel();
+			exportedMetadatasMap.put(metaExp.getObjMetaId().toString(), metaExp.getLabel());
+			Object existObj = importer.checkExistence(labelMeta, sessionCurrDB, new SbiObjMetadata());
+			if (existObj != null) {
+				SbiObjMetadata metaCurr = (SbiObjMetadata) existObj;
+				metaAss.insertCoupleObjMetadataIDAssociation(metaExp.getObjMetaId(), metaCurr.getObjMetaId());
+				metaAss.insertCoupleObjMetadataAssociation(metaExp, metaCurr);
+				metaLog.log("Found an existing ObjMetadata " + metaCurr.getName() + " with "
+						+ "the same label of the exported ObjMetadata " + metaExp.getName());
+			}
+		}
+
+
 		List exportedParams = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParameters", null);
 		Iterator iterSbiParams = exportedParams.iterator();
 		while (iterSbiParams.hasNext()) {
@@ -2077,6 +2168,7 @@ public class ImportManager implements IImportManager, Serializable {
 						+ "the same label of the exported parameter " + paramExp.getName());
 			}
 		}
+
 		List exportedRoles = importer.getAllExportedSbiObjects(sessionExpDB, "SbiExtRoles", null);
 		Iterator iterSbiRoles = exportedRoles.iterator();
 		while (iterSbiRoles.hasNext()) {
@@ -2538,7 +2630,7 @@ public class ImportManager implements IImportManager, Serializable {
 			SbiKpiModelAttrVal attrValExp = (SbiKpiModelAttrVal) iterSbiKpiModelAttrVal.next();
 			Integer kpiModelId = attrValExp.getSbiKpiModel().getKpiModelId();
 			Integer kpiModelAttrId = attrValExp.getSbiKpiModelAttr().getKpiModelAttrId();
-			
+
 			// get the new Ids
 			Integer newModelId = (Integer)metaAss.getModelIDAssociation().get(kpiModelId);
 			Integer newModelAttrId = (Integer)metaAss.getSbiKpiModelAttrIDAssociation().get(kpiModelAttrId);
@@ -2554,7 +2646,33 @@ public class ImportManager implements IImportManager, Serializable {
 			}
 		}
 
-		// Kpi Instance (identificalo da model instance e Kpi
+
+		logger.debug("check existence of Object MetaContent, only for Objects!");
+		List exportedMetaContent = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjMetacontents", null);
+		Iterator iterSbiModMetaContent = exportedMetaContent.iterator();
+		while (iterSbiModMetaContent.hasNext()) {
+			SbiObjMetacontents contExp = (SbiObjMetacontents) iterSbiModMetaContent.next();
+			String objectLabel = contExp.getSbiObjects().getLabel();
+			Integer objMetaId = contExp.getObjmetaId();
+
+			// smetatdata for subobject not importable by now
+			if(contExp.getSbiSubObjects() != null){
+				logger.warn("Not importable metacontent with id "+contExp.getObjMetacontentId()+"  cause is associated to a subobject");
+				continue;
+			}
+			// I want metadata label
+			String metaLabel = exportedMetadatasMap.get(objMetaId.toString());
+
+			Object existObj = importer.checkExistenceObjMetacontent(objectLabel,metaLabel, sessionCurrDB, new SbiObjMetacontents());
+			if (existObj != null) {
+				SbiObjMetacontents contCurr = (SbiObjMetacontents) existObj;
+				//metaAss.insertCoupleObjMeIDAssociation(metaExp.getKpiModelResourcesId(), metaCurr.getKpiModelResourcesId());				
+				metaAss.insertCoupleObjMetacontentsIDAssociation(contExp.getObjMetacontentId(), contCurr.getObjMetacontentId());
+				metaLog.log("Found an existing metacontents with id " + contCurr.getObjMetacontentId()+ "referring to the same object label "+contCurr.getSbiObjects().getLabel()+", referring to meta with id "+ contCurr.getObjmetaId());
+			}
+		}
+
+
 
 		logger.debug("OUT");
 	}
@@ -3550,7 +3668,7 @@ public class ImportManager implements IImportManager, Serializable {
 		}
 	}
 
-	
+
 	/**
 	 * Import exported KpiMdoelAttrVal
 	 * 
@@ -3595,18 +3713,18 @@ public class ImportManager implements IImportManager, Serializable {
 		} catch (Exception e) {
 			if (exportedKpiModelAttrVal!= null) {
 				logger.error("Error while importing exported KpiModelAttrVal referring to model " + exportedKpiModelAttrVal.getSbiKpiModel().getKpiModelNm() + " and " +
-							" referring to attribute  "+ exportedKpiModelAttrVal.getSbiKpiModelAttr().getKpiModelAttrNm() +"  will be updated.", e);
+						" referring to attribute  "+ exportedKpiModelAttrVal.getSbiKpiModelAttr().getKpiModelAttrNm() +"  will be updated.", e);
 			}
 			else{
 				logger.error("Error while inserting KpiModelAttrVal referring to model " + exportedKpiModelAttrVal.getSbiKpiModel().getKpiModelNm() + " and " +
-							" referring to attribute  "+ exportedKpiModelAttrVal.getSbiKpiModelAttr().getKpiModelAttrNm() +"  will be updated.", e);
+						" referring to attribute  "+ exportedKpiModelAttrVal.getSbiKpiModelAttr().getKpiModelAttrNm() +"  will be updated.", e);
 			}
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		} finally {
 			logger.debug("OUT");
 		}
 	}
-	
+
 
 	/**
 	 * Import exported Alarms Contacts
@@ -3659,4 +3777,56 @@ public class ImportManager implements IImportManager, Serializable {
 	}
 
 
+	/**
+	 * Import exported ObjMetacontent
+	 * 
+	 * @throws EMFUserError
+	 */
+	private void importObjMetacontent(boolean overwrite) throws EMFUserError {
+		logger.debug("IN");
+		SbiObjMetacontents exportedMetacontent = null;
+		try {
+			List exportedMetacontents = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjMetacontents", null);
+			Iterator iterMetacontents = exportedMetacontents.iterator();
+			while (iterMetacontents.hasNext()) {
+				exportedMetacontent = (SbiObjMetacontents) iterMetacontents.next();
+				Integer oldId = exportedMetacontent.getObjMetacontentId();
+				Integer existingMetacontentsId = null;
+				Map metaContentIdAss = metaAss.getObjMetacontentsIDAssociation();
+				Set metaContentIdAssSet = metaContentIdAss.keySet();
+				if (metaContentIdAssSet.contains(oldId) && !overwrite) {
+					metaLog.log("Exported metaContent with original id" + exportedMetacontent.getObjMetacontentId() + " not inserted"
+							+ " because there isalready one asociation to the same object "+exportedMetacontent.getSbiObjects().getLabel()+" " +
+									" and to the same metadata with id "+exportedMetacontent.getObjmetaId());
+					continue;
+				} else {
+					existingMetacontentsId = (Integer) metaContentIdAss.get(oldId);
+				}
+				if (existingMetacontentsId != null) {
+					logger.info("The Metacontent with id:[" + exportedMetacontent.getObjMetacontentId() + "] is already present. It will be updated.");
+					metaLog.log("The Metacontent with original id = " + exportedMetacontent.getObjMetacontentId() + "and associated to the object with label" + exportedMetacontent.getSbiObjects().getLabel() +"  will be updated.");
+					SbiObjMetacontents existingObjMetacontents = ImportUtilities.modifyExistingSbiObjMetacontents(exportedMetacontent, sessionCurrDB, existingMetacontentsId, metaAss,importer);
+					sessionCurrDB.update(existingObjMetacontents);
+				} else {
+					SbiObjMetacontents newMetacontents = ImportUtilities.makeNewSbiObjMetacontent(exportedMetacontent, sessionCurrDB, metaAss, importer);
+					sessionCurrDB.save(newMetacontents);
+					metaLog.log("Inserted new Metacontents associated to object  " + newMetacontents.getSbiObjects().getLabel());
+					Integer newId = newMetacontents.getObjMetacontentId();
+					metaAss.insertCoupleAlarm(oldId, newId);
+				}
+			}
+		} catch (Exception e) {
+			if (exportedMetacontent != null) {
+				logger.error("Error while importing exported Metacontent with original id [" + exportedMetacontent.getObjMetacontentId() + "]. and associated to object "+exportedMetacontent.getSbiObjects().getLabel(), e);
+			}
+			else{
+				logger.error("Error while inserting SbiObjMetacontents ", e);
+			}
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+		} finally {
+			logger.debug("OUT");
+		}
+	}
+
+	
 }

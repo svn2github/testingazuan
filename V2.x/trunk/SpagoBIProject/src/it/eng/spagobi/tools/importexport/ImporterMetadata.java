@@ -60,6 +60,8 @@ import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeatures;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
+import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetacontents;
+import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetadata;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -478,7 +480,8 @@ public class ImporterMetadata {
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "9001", "component_impexp_messages");
 			}
 			return hibDs;
-		} /*else if (hibObj instanceof SbiThresholdValue) {
+		}
+		/*else if (hibObj instanceof SbiThresholdValue) {
 			String label = (String) unique;
 			hql = "from SbiThresholdValue ds where ds.label = '" + label + "'";
 			hqlQuery = sessionCurrDB.createQuery(hql);
@@ -571,7 +574,13 @@ public class ImporterMetadata {
 			}
 			return hibDs;
 		}
-
+		else if (hibObj instanceof SbiObjMetadata) {
+			String metaName = (String) unique;
+			hql = "from SbiObjMetadata er where er.label = '" + metaName + "'";
+			hqlQuery = sessionCurrDB.createQuery(hql);
+			SbiObjMetadata hibMeta = (SbiObjMetadata) hqlQuery.uniqueResult();
+			return hibMeta;		
+		}
 
 
 		logger.debug("OUT");
@@ -720,6 +729,55 @@ public class ImporterMetadata {
 	}
 
 
+
+	/**
+	 * Check the existance of a Metacontents association, must refer to the same object (label) and to the same metadata (label)
+	 * 
+	 * @param objLabel     label of the SbiObject    
+	 * @param metaLabel      label of metadata
+	 * @param sessionCurrDB   Hibernate session for the current SpagoBI database
+	 * @param hibObj          An empty object usefull to identify the kind of object to
+	 * analize
+	 * 
+	 * @return                The existing Object or null if it doesn't exist
+	 * 
+	 * @throws                EMFUserError
+	 * @throws EMFUserError the EMF user error
+	 */
+	public Object checkExistenceObjMetacontent(String objLabel , String metaLabel, Session sessionCurrDB, Object hibObj) throws EMFUserError {
+		logger.debug("IN");
+		String hql = null;
+		Query hqlQuery = null;
+
+		// get Object
+		//		hql = "from SbiObjects s where s.label = '" + objLabel + "'";
+		//		hqlQuery = sessionCurrDB.createQuery(hql);
+		//		SbiObjects hibDs = (SbiObjects) hqlQuery.uniqueResult();
+		//		if(hibDs==null) return null;
+		//		Integer idObject = hibDs.getBiobjId();
+
+
+		// get Metadata
+		logger.debug("get metadata with label "+metaLabel);
+		hql = "from SbiObjMetadata s where s.label = '" + metaLabel + "'";
+		hqlQuery = sessionCurrDB.createQuery(hql);
+		SbiObjMetadata hibMetadata = (SbiObjMetadata) hqlQuery.uniqueResult();
+		if(hibMetadata==null) return null;
+		Integer idMeta = hibMetadata.getObjMetaId();
+		logger.debug("Id meta is "+idMeta);
+
+
+		// check now if association exists
+		logger.debug("Get metacontent with label "+objLabel+" and metaId "+idMeta);
+		hql = "from SbiObjMetacontents so where so.sbiObjects.label = '" + objLabel + "' AND so.objmetaId ='"+ idMeta +"'";
+		hqlQuery = sessionCurrDB.createQuery(hql);
+		SbiObjMetacontents hibMetacontents = (SbiObjMetacontents) hqlQuery.uniqueResult();
+
+		logger.debug("OUT");
+		return hibMetacontents;
+	}
+
+
 	/**
 	 * Check the existance of a Kpi Instance Periodicity association, must get ids from kpi instance and periodicity
 	 * 
@@ -780,14 +838,14 @@ public class ImporterMetadata {
 		String hql = null;
 		Query hqlQuery = null;
 		SbiKpiModelAttr toReturn = null;
-		
+
 		if (hibObj instanceof SbiKpiModelAttr && newSbiDomainId != null) {
-		// check if there is a model attribute referring to the same domain (with new ID) and with the same Label
-				hql = "from SbiKpiModelAttr s where s.sbiDomains.valueId = " + newSbiDomainId + " "+"AND s.kpiModelAttrCd = '"+kpiModelAttrCd+"'";
-				hqlQuery = sessionCurrDB.createQuery(hql);
-				toReturn = (SbiKpiModelAttr) hqlQuery.uniqueResult();
+			// check if there is a model attribute referring to the same domain (with new ID) and with the same Label
+			hql = "from SbiKpiModelAttr s where s.sbiDomains.valueId = " + newSbiDomainId + " "+"AND s.kpiModelAttrCd = '"+kpiModelAttrCd+"'";
+			hqlQuery = sessionCurrDB.createQuery(hql);
+			toReturn = (SbiKpiModelAttr) hqlQuery.uniqueResult();
 		} 	
-		
+
 		logger.debug("OUT");
 		return toReturn;
 	}
@@ -813,14 +871,14 @@ public class ImporterMetadata {
 		String hql = null;
 		Query hqlQuery = null;
 		SbiKpiModelAttrVal toReturn = null;
-		
+
 		if (hibObj instanceof SbiKpiModelAttrVal && kpiModelAttrId != null && kpiModelId != null) {
-		// check if there is a model attribute referring to the same domain (with new ID) and with the same Label
-				hql = "from SbiKpiModelAttrVal s where s.sbiKpiModelAttr.kpiModelAttrId = " + kpiModelAttrId + " "+"AND s.sbiKpiModel.kpiModelId = '"+kpiModelId+"'";
-				hqlQuery = sessionCurrDB.createQuery(hql);
-				toReturn = (SbiKpiModelAttrVal) hqlQuery.uniqueResult();
+			// check if there is a model attribute referring to the same domain (with new ID) and with the same Label
+			hql = "from SbiKpiModelAttrVal s where s.sbiKpiModelAttr.kpiModelAttrId = " + kpiModelAttrId + " "+"AND s.sbiKpiModel.kpiModelId = '"+kpiModelId+"'";
+			hqlQuery = sessionCurrDB.createQuery(hql);
+			toReturn = (SbiKpiModelAttrVal) hqlQuery.uniqueResult();
 		} 	
-		
+
 		logger.debug("OUT");
 		return toReturn;
 	}

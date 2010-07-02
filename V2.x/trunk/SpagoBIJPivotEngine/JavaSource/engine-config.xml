@@ -29,6 +29,7 @@
 		<SCHEMA catalogUri="/Olap/FoodMart.xml" name="FoodMart" />
 		<SCHEMA catalogUri="/Olap/SbiMonitor.xml" name="SpagoMonitor" />
 		<SCHEMA catalogUri="/Olap/TestCorso.xml" name="TestCorso" />		
+		<SCHEMA catalogUri="/Olap/FoodMartProfiled.xml" name="FoodMartProfiled" />	
 	</SCHEMAS>
 	
 </ENGINE-CONFIGURATION>

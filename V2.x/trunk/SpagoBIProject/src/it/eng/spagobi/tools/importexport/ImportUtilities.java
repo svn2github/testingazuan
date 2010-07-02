@@ -3397,13 +3397,24 @@ public class ImportUtilities {
 				logger.error("could not find object associated "+exportedMetacontents.getSbiObjects().getLabel());
 			}
 			else{
-				// I must get the new SbiDomains object
 				SbiObjects newSbiObjects = (SbiObjects) sessionCurrDB.load(SbiObjects.class, newObjId);
 				existingMetacontents.setSbiObjects(newSbiObjects);
 			}
 		}
 
-		// TODO SubObject not treated yet
+		// SbiSubobject (if present)
+		Map subObjectIdAss=metaAss.getObjSubObjectIDAssociation();
+		if(exportedMetacontents.getSbiSubObjects()!=null){
+			Integer oldSubObjId=exportedMetacontents.getSbiSubObjects().getSubObjId();
+			Integer newSubObjId=(Integer)subObjectIdAss.get(oldSubObjId);
+			if(newSubObjId==null) {
+				logger.error("could not find subobject associated "+exportedMetacontents.getSbiSubObjects().getName());
+			}
+			else{
+				SbiSubObjects newSbiSubObjects = (SbiSubObjects) sessionCurrDB.load(SbiSubObjects.class, newSubObjId);
+				existingMetacontents.setSbiSubObjects(newSbiSubObjects);
+			}
+		}
 
 		// Binary contents will be always inserted as new
 		logger.debug("Insert the binary content associated");

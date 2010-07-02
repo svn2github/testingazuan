@@ -749,13 +749,6 @@ public class ImporterMetadata {
 		String hql = null;
 		Query hqlQuery = null;
 
-		// get Object
-		//		hql = "from SbiObjects s where s.label = '" + objLabel + "'";
-		//		hqlQuery = sessionCurrDB.createQuery(hql);
-		//		SbiObjects hibDs = (SbiObjects) hqlQuery.uniqueResult();
-		//		if(hibDs==null) return null;
-		//		Integer idObject = hibDs.getBiobjId();
-
 
 		// get Metadata
 		logger.debug("get metadata with label "+metaLabel);
@@ -768,8 +761,22 @@ public class ImporterMetadata {
 
 
 		// check now if association exists
-		logger.debug("Get metacontent with label "+objLabel+" and metaId "+idMeta);
-		hql = "from SbiObjMetacontents so where so.sbiObjects.label = '" + objLabel + "' AND so.objmetaId ='"+ idMeta +"'";
+		logger.debug("Get metacontent with label "+objLabel+", metaId "+idMeta);
+
+		// distinguish if serching a metacontent related to a subobject or to an object: subObject not associated here!
+
+		//		if(subObjectName != null){
+		//			hql = "from SbiObjMetacontents so where so.sbiObjects.label = '" + objLabel + "'"+
+		//			" AND so.sbiSubObjects.name ='"+ subObjectName +"'" +
+		//			" AND so.objmetaId ='"+ idMeta +"'";
+		//		}
+		//		else {
+		hql = "from SbiObjMetacontents so where so.sbiObjects.label = '" + objLabel + "'"+
+		" AND so.sbiSubObjects is null" +
+		" AND so.objmetaId ='"+ idMeta +"'";			
+		//		}
+
+
 		hqlQuery = sessionCurrDB.createQuery(hql);
 		SbiObjMetacontents hibMetacontents = (SbiObjMetacontents) hqlQuery.uniqueResult();
 

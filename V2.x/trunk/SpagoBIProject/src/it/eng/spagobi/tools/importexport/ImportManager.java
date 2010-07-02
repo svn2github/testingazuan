@@ -669,16 +669,16 @@ public class ImportManager implements IImportManager, Serializable {
 		}
 	}
 
-	
-	
-	
-	
+
+
+
+
 	/**
 	 *  function to import ObjMetada
 	 * @param overwrite
 	 * @throws EMFUserError
 	 */
-	
+
 	private void importObjMetadata(boolean overwrite) throws EMFUserError {
 		logger.debug("IN");
 		SbiObjMetadata exportedObjMetadata = null;
@@ -725,13 +725,13 @@ public class ImportManager implements IImportManager, Serializable {
 		}
 	}
 
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	private void importDataSource(boolean overwrite) throws EMFUserError {
 		logger.debug("IN");
 		SbiDataSource dataSource = null;
@@ -1377,11 +1377,15 @@ public class ImportManager implements IImportManager, Serializable {
 			.createQuery(" from SbiSubObjects ot where ot.sbiObject.biobjId = " + obj.getBiobjId());
 			currentSubObjList = hibQuery.list();
 			Iterator exportedSubObjListIt = exportedSubObjList.iterator();
+			Map idAssociation = metaAss.getObjSubObjectIDAssociation();
 			while (exportedSubObjListIt.hasNext()) {
 				expSubObject = (SbiSubObjects) exportedSubObjListIt.next();
-				if (isAlreadyExisting(expSubObject, currentSubObjList)) {
+				SbiSubObjects current = isAlreadyExisting(expSubObject, currentSubObjList) ;
+				if (current != null) {
 					logger.info("Exported subobject with name = [" + expSubObject.getName() + "] and owner = [" + expSubObject.getOwner() + "] and visibility = [" + expSubObject.getIsPublic() + "] and creation date = [" + expSubObject.getCreationDate() + "] (of document with name = [" + exportedObj.getName() + "] and label = [" + exportedObj.getLabel() + "]) is already existing, so it will not be inserted.");
 					metaLog.log("Exported subobject with name = [" + expSubObject.getName() + "] and owner = [" + expSubObject.getOwner() + "] and visibility = [" + expSubObject.getIsPublic() + "] and creation date = [" + expSubObject.getCreationDate() + "] (of document with name = [" + exportedObj.getName() + "] and label = [" + exportedObj.getLabel() + "]) is already existing, most likely it is the same subobject, so it will not be inserted.");
+					// if already present don't modify the subObject so don't map the ID!
+					//idAssociation.put(expSubObject.getSubObjId(), current.getSubObjId());
 					continue;
 				} else {
 					SbiSubObjects newSubObj = ImportUtilities.makeNewSbiSubObjects(expSubObject);
@@ -1389,6 +1393,7 @@ public class ImportManager implements IImportManager, Serializable {
 					SbiBinContents binary = insertBinaryContent(expSubObject.getSbiBinContents());
 					newSubObj.setSbiBinContents(binary);
 					sessionCurrDB.save(newSubObj);
+					idAssociation.put(expSubObject.getSubObjId(), newSubObj.getSubObjId());
 				}
 			}
 		} catch (Exception e) {
@@ -1408,9 +1413,9 @@ public class ImportManager implements IImportManager, Serializable {
 	 * creation date and last modification date)
 	 * @param expSubObject
 	 * @param currentSubObjList
-	 * @return the true if the subobject is already existing, false otherwise
+	 * @return the subobject if is already existing, null otherwise
 	 */
-	private boolean isAlreadyExisting(SbiSubObjects expSubObject,
+	private SbiSubObjects isAlreadyExisting(SbiSubObjects expSubObject,
 			List currentSubObjList) {
 		Iterator currentSubObjListIt = currentSubObjList.iterator();
 		while (currentSubObjListIt.hasNext()) {
@@ -1422,10 +1427,10 @@ public class ImportManager implements IImportManager, Serializable {
 							&& currentSubObject.getIsPublic().equals(expSubObject.getIsPublic())
 							&& currentSubObject.getCreationDate().equals(expSubObject.getCreationDate())
 							&& currentSubObject.getLastChangeDate().equals(expSubObject.getLastChangeDate())) {
-				return true;
+				return currentSubObject;
 			}
 		}
-		return false;
+		return null;
 	} 
 
 
@@ -2653,13 +2658,14 @@ public class ImportManager implements IImportManager, Serializable {
 		while (iterSbiModMetaContent.hasNext()) {
 			SbiObjMetacontents contExp = (SbiObjMetacontents) iterSbiModMetaContent.next();
 			String objectLabel = contExp.getSbiObjects().getLabel();
+			// metacontent referring to subobjects not referred here because of a previous structure
+			if( contExp.getSbiSubObjects() != null ){
+				continue;
+				//				SbiSubObjects sub = contExp.getSbiSubObjects();
+				//				subObjectName = sub.getName();
+			}
 			Integer objMetaId = contExp.getObjmetaId();
 
-			// smetatdata for subobject not importable by now
-			if(contExp.getSbiSubObjects() != null){
-				logger.warn("Not importable metacontent with id "+contExp.getObjMetacontentId()+"  cause is associated to a subobject");
-				continue;
-			}
 			// I want metadata label
 			String metaLabel = exportedMetadatasMap.get(objMetaId.toString());
 
@@ -2668,7 +2674,10 @@ public class ImportManager implements IImportManager, Serializable {
 				SbiObjMetacontents contCurr = (SbiObjMetacontents) existObj;
 				//metaAss.insertCoupleObjMeIDAssociation(metaExp.getKpiModelResourcesId(), metaCurr.getKpiModelResourcesId());				
 				metaAss.insertCoupleObjMetacontentsIDAssociation(contExp.getObjMetacontentId(), contCurr.getObjMetacontentId());
-				metaLog.log("Found an existing metacontents with id " + contCurr.getObjMetacontentId()+ "referring to the same object label "+contCurr.getSbiObjects().getLabel()+", referring to meta with id "+ contCurr.getObjmetaId());
+				metaLog.log("Found an existing metacontents with id " + contCurr.getObjMetacontentId()+ "" +
+						"referring to the same object label "+contCurr.getSbiObjects().getLabel()+", " +
+						"referring to meta with id "+ contCurr.getObjmetaId()
+				);
 			}
 		}
 
@@ -3797,9 +3806,19 @@ public class ImportManager implements IImportManager, Serializable {
 				if (metaContentIdAssSet.contains(oldId) && !overwrite) {
 					metaLog.log("Exported metaContent with original id" + exportedMetacontent.getObjMetacontentId() + " not inserted"
 							+ " because there isalready one asociation to the same object "+exportedMetacontent.getSbiObjects().getLabel()+" " +
-									" and to the same metadata with id "+exportedMetacontent.getObjmetaId());
+							" and to the same metadata with id "+exportedMetacontent.getObjmetaId());
 					continue;
-				} else {
+				}
+
+				// if the content is associated to a subobject wich has not been inserted ignore it
+				Map subObjectIdAssociation = metaAss.getObjSubObjectIDAssociation();
+				if(exportedMetacontent.getSbiSubObjects()!=null && 
+						!subObjectIdAssociation.keySet().contains(exportedMetacontent.getSbiSubObjects().getSubObjId())){
+					metaLog.log("Exported metaContent with original id" + exportedMetacontent.getObjMetacontentId() + " not inserted" +
+					" becuase referring to a subobjects that will not be updated bcause already present" );	
+					continue;
+				}
+				else {
 					existingMetacontentsId = (Integer) metaContentIdAss.get(oldId);
 				}
 				if (existingMetacontentsId != null) {
@@ -3810,9 +3829,17 @@ public class ImportManager implements IImportManager, Serializable {
 				} else {
 					SbiObjMetacontents newMetacontents = ImportUtilities.makeNewSbiObjMetacontent(exportedMetacontent, sessionCurrDB, metaAss, importer);
 					sessionCurrDB.save(newMetacontents);
-					metaLog.log("Inserted new Metacontents associated to object  " + newMetacontents.getSbiObjects().getLabel());
+					String subObject = newMetacontents.getSbiSubObjects() != null ? newMetacontents.getSbiSubObjects().getName() : null;
+					if( subObject != null){
+						metaLog.log("Inserted new Metacontents associated to subobject "+subObject +" of object  " + 
+								newMetacontents.getSbiObjects().getLabel());
+					}
+					else {
+						metaLog.log("Inserted new Metacontents associated to object  " + 
+								newMetacontents.getSbiObjects().getLabel());
+					}
 					Integer newId = newMetacontents.getObjMetacontentId();
-					metaAss.insertCoupleAlarm(oldId, newId);
+					metaAss.insertCoupleObjMetacontentsIDAssociation(oldId, newId);
 				}
 			}
 		} catch (Exception e) {
@@ -3828,5 +3855,5 @@ public class ImportManager implements IImportManager, Serializable {
 		}
 	}
 
-	
+
 }

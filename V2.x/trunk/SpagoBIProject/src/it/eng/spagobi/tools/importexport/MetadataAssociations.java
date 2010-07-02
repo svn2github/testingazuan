@@ -108,6 +108,7 @@ public class MetadataAssociations {
 	private Map objMetadataAssociation = new HashMap();
 	private Map objMetacontentsIDAssociation = new HashMap();
 	private Map objMetacontentsAssociation = new HashMap();
+	private Map subObjectIDAssociation = new HashMap();
 
 
 
@@ -186,6 +187,8 @@ public class MetadataAssociations {
 			return false;	
 		if(!objMetacontentsAssociation.keySet().isEmpty())
 			return false;	
+		if(!subObjectIDAssociation.keySet().isEmpty())
+			return false;	
 
 		return true;
 	}
@@ -244,6 +247,7 @@ public class MetadataAssociations {
 		objMetadataAssociation = new HashMap();
 		objMetacontentsIDAssociation = new HashMap();
 		objMetacontentsAssociation = new HashMap();
+		subObjectIDAssociation = new HashMap();
 	}
 
 	/**
@@ -1491,6 +1495,24 @@ public class MetadataAssociations {
 	}
 
 	
+	/**
+	 * Gets the Map of associations between current and exported SubObjects ID.
+	 * 
+	 * @return Map of SubObjects
+	 */
+	public Map getObjSubObjectIDAssociation() {
+		return subObjectIDAssociation;
+	}
+
+	/**
+	 * Inserts a couple of SubObjects ID into the associations.
+	 * 
+	 * @param exp the exp
+	 * @param curr the curr
+	 */
+	public void insertCoupleSubObjectsIDAssociation(Integer exp, Integer curr) {
+		subObjectIDAssociation.put(exp, curr);	
+	}
 	
 
 }

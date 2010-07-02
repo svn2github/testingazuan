@@ -168,15 +168,15 @@ public class ObjMetacontentDAOHibImpl extends AbstractHibernateDAO implements IO
 			tx = session.beginTransaction();
 			String hql = "";
 
-			if(biObjId != null){
-				logger.debug("laod metacontents associated to biobj "+biObjId);
-				hql = " from SbiObjMetacontents c where c.sbiObjects.biobjId = ?";
-				id = biObjId;
-			}
-			else if(subObjId != null){
+			if(subObjId != null){
 				logger.debug("laod metacontents associated to subbiobj "+subObjId);
 				hql = " from SbiObjMetacontents c where c.sbiSubObjects.subObjId = ?";				
 				id = subObjId;
+			}
+			else if(biObjId != null){
+				logger.debug("laod metacontents associated to biobj "+biObjId);
+				hql = " from SbiObjMetacontents c where c.sbiObjects.biobjId = ? AND c.sbiSubObjects.subObjId is null";
+				id = biObjId;
 			}
 
 			Query aQuery = session.createQuery(hql);

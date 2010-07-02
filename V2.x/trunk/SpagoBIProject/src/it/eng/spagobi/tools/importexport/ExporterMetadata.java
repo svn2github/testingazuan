@@ -139,6 +139,7 @@ import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 import it.eng.spagobi.tools.objmetadata.bo.ObjMetacontent;
 import it.eng.spagobi.tools.objmetadata.bo.ObjMetadata;
+import it.eng.spagobi.tools.objmetadata.dao.IObjMetacontentDAO;
 import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetacontents;
 import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetadata;
 
@@ -556,7 +557,19 @@ public class ExporterMetadata {
 		logger.debug("IN");
 		Iterator iter=subObjectLis.iterator();
 		while(iter.hasNext()){
-			insertSubObject(biobj,(SubObject)iter.next(),session);
+			SubObject subObject = (SubObject)iter.next();
+			insertSubObject(biobj,subObject,session);
+
+			//  insert metadata associated to subObject
+			logger.debug("search for metadata associate to subobject wit ID "+subObject.getId());
+			IObjMetacontentDAO objMetacontentDAO = DAOFactory.getObjMetacontentDAO();
+			//  get metacontents associated to object
+			List metacontents = objMetacontentDAO.loadObjOrSubObjMetacontents(biobj.getId(), subObject.getId());
+			for (Iterator iterator = metacontents.iterator(); iterator.hasNext();) {
+				ObjMetacontent metacontent = (ObjMetacontent) iterator.next();
+				insertObjMetacontent(metacontent, session);
+			}
+
 		}
 		logger.debug("OUT");
 	}

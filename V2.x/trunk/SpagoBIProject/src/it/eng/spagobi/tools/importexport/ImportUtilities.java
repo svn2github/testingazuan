@@ -421,7 +421,8 @@ public class ImportUtilities {
 	 * 
 	 * @return the new hibernate lov object
 	 */
-	public static SbiLov makeNewSbiLov(SbiLov lov){
+	public static SbiLov makeNewSbiLov(SbiLov lov,
+			HashMap<String, String> dsExportUser){
 		logger.debug("IN");
 		SbiLov newlov = new SbiLov();
 		newlov.setDefaultVal(lov.getDefaultVal());
@@ -432,6 +433,26 @@ public class ImportUtilities {
 		newlov.setLovProvider(lov.getLovProvider());
 		newlov.setName(lov.getName());
 		newlov.setProfileAttr(lov.getProfileAttr());
+
+		try {
+			// if user has associated another datasource then set the associated one, else put the same
+			QueryDetail queryDetail=new QueryDetail(lov.getLovProvider());
+			String dataSource=queryDetail.getDataSource();
+			if(dsExportUser!=null && dsExportUser.get(dataSource)!=null){
+				String newDs=dsExportUser.get(dataSource);
+				queryDetail.setDataSource(newDs);
+			} else {
+				queryDetail.setDataSource(dataSource);
+			}
+			newlov.setLovProvider(queryDetail.toXML());				
+		} 
+		catch (Exception e) {
+			logger.error("error in reading the xml of lov provider; transcribe the original by default ");		
+		}
+		if(newlov.getLovProvider() == null){
+			newlov.setLovProvider(lov.getLovProvider());
+		}
+
 		logger.debug("OUT");
 		return newlov;
 	}
@@ -444,9 +465,9 @@ public class ImportUtilities {
 	 * 
 	 * @return the new hibernate lov object
 	 */
-	public static SbiLov makeNewSbiLov(SbiLov lov, Integer id){
+	public static SbiLov makeNewSbiLov(SbiLov lov, Integer id, Map user){
 		logger.debug("IN");
-		SbiLov newlov = makeNewSbiLov(lov);
+		SbiLov newlov = makeNewSbiLov(lov, null);
 		newlov.setLovId(id);
 		logger.debug("OUT");
 		return newlov;
@@ -1107,17 +1128,18 @@ public class ImportUtilities {
 			existingLov.setLabel(exportedLov.getLabel());
 
 			try {
+				// if user has associated another datasource then set the associated one, else put the same
 				QueryDetail queryDetail=new QueryDetail(exportedLov.getLovProvider());
 				String dataSource=queryDetail.getDataSource();
 				if(dsExportUser!=null && dsExportUser.get(dataSource)!=null){
 					String newDs=dsExportUser.get(dataSource);
 					queryDetail.setDataSource(newDs);
-					existingLov.setLovProvider(queryDetail.toXML());
+				} else {
+					queryDetail.setDataSource(dataSource);
 				}
-			} catch (SourceBeanException e) {
-				logger.error("error in reading the xml of lov provider, transcribe the original by default ");		
-				existingLov.setLovProvider(exportedLov.getLovProvider());
-			}
+
+				existingLov.setLovProvider(queryDetail.toXML());				
+			} 
 			catch (Exception e) {
 				logger.error("error in reading the xml of lov provider; transcribe the original by default ");		
 				existingLov.setLovProvider(exportedLov.getLovProvider());

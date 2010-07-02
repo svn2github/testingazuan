@@ -969,7 +969,7 @@ public class ImportManager implements IImportManager, Serializable {
 					ImportUtilities.associateWithExistingEntities(existinglov, exportedLov, sessionCurrDB, importer, metaAss);
 					sessionCurrDB.update(existinglov);
 				} else {
-					SbiLov newlov = ImportUtilities.makeNewSbiLov(exportedLov);
+					SbiLov newlov = ImportUtilities.makeNewSbiLov(exportedLov, getUserAssociation().getDsExportedToUserLabel());
 					ImportUtilities.associateWithExistingEntities(newlov, exportedLov, sessionCurrDB, importer, metaAss);
 					sessionCurrDB.save(newlov); 
 					metaLog.log("Inserted new lov " + newlov.getName());
@@ -1551,7 +1551,7 @@ public class ImportManager implements IImportManager, Serializable {
 					Map assLovs = metaAss.getLovIDAssociation();
 					Integer newLovId = (Integer) assLovs.get(oldLovId);
 					if (newLovId != null) {
-						SbiLov newlov = ImportUtilities.makeNewSbiLov(lov, newLovId);
+						SbiLov newlov = ImportUtilities.makeNewSbiLov(lov, newLovId, null);
 						paruse.setSbiLov(newlov);
 					}
 				}

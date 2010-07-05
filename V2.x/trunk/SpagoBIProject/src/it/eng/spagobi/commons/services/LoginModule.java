@@ -124,6 +124,31 @@ public class LoginModule extends AbstractHttpModule {
 			permSess.setAttribute(SpagoBIConstants.THEME, theme_name);
 		}
 
+
+
+		// updates locale information on permanent container for Spago messages mechanism
+		// search firstly if a default language is set on configuraiton file, else take browser from spago
+
+		if(permSess.getAttribute(Constants.USER_LANGUAGE)== null || permSess.getAttribute(Constants.USER_COUNTRY) == null){
+			logger.debug("getting locale...");
+			Locale locale =GeneralUtilities.getStartingDefaultLocale();
+			if(locale == null){
+				locale = MessageBuilder.getBrowserLocaleFromSpago();
+			}
+			else{
+				logger.debug("Locale "+locale.getLanguage()+" - "+locale.getCountry()+" taken as default from configuraiton file");
+			}
+			if (locale != null) {
+				logger.debug("locale taken as default is "+locale.getLanguage()+" - "+locale.getCountry());
+				permSess.setAttribute(Constants.USER_LANGUAGE, locale.getLanguage());
+				permSess.setAttribute(Constants.USER_COUNTRY, locale.getCountry());
+			}
+		}
+		else{
+			logger.debug("locale already found in session");	
+		}
+
+
 		// Set BACK URL if present
 		String backUrl=(String)request.getAttribute(SpagoBIConstants.BACK_URL);
 
@@ -272,22 +297,6 @@ public class LoginModule extends AbstractHttpModule {
 			// put user profile into session
 			permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
 
-
-			// updates locale information on permanent container for Spago messages mechanism
-			// search firstly if a default language is set on configuraiton file, else take browser from spago
-
-			Locale locale =GeneralUtilities.getStartingDefaultLocale();
-			if(locale == null){
-				locale = MessageBuilder.getBrowserLocaleFromSpago();
-			}
-			else{
-				logger.debug("Locale "+locale.getLanguage()+" - "+locale.getCountry()+" taken as default from configuraiton file");
-			}
-			if (locale != null) {
-				logger.debug("locale taken as default is "+locale.getLanguage()+" - "+locale.getCountry());
-				permSess.setAttribute(Constants.USER_LANGUAGE, locale.getLanguage());
-				permSess.setAttribute(Constants.USER_COUNTRY, locale.getCountry());
-			}
 
 		} catch (Exception e) {
 			logger.error("Reading user information... ERROR");

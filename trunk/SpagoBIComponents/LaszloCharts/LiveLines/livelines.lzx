@@ -1,5 +1,5 @@
 <canvas debug="false" width="100%" height="100%"> 
-
+ 
 
 	<script src="json.js"/>
  	
@@ -60,6 +60,9 @@
 		
 		
 		global.domainValues = global.domainValues || null; // ['01/02/2010', '15/02/2010', '28/02/210'];
+        if(global.domainValues !== null) {
+            global.domainValues = decode(global.domainValues); 
+        }		
 		Debug.write("domainValues: " + domainValues);
 		
 		
@@ -633,7 +636,9 @@
 	    this.lineWidth = 2;
 	    this.stroke();
 			 
-		
+	    Debug.write("domainValues: " + domainValues);
+	    Debug.write("domainValues.length: " + domainValues.length);
+		Debug.write("domainValues[0]: " + domainValues[0]);
 		if(domainValues != null) {
 			domainMajorTickNumber = domainValues.length;
 		}
@@ -847,15 +852,3 @@
 
 
 </canvas>
-
-
-		
-		
-		
-		
-
-	        
-	        
-
-		
-		

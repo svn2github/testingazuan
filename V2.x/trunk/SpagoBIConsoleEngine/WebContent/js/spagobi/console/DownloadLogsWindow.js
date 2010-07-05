@@ -201,6 +201,7 @@ Ext.extend(Sbi.console.DownloadLogsWindow, Ext.Window, {
     		 					 fieldLabel: LN('sbi.console.downloadlogs.initialTime') 
     		 				   , width: 150
     						   , increment: 30
+    						   , format: 'H:i'
     						});
     	 
     	 
@@ -208,6 +209,7 @@ Ext.extend(Sbi.console.DownloadLogsWindow, Ext.Window, {
 					    	   fieldLabel: LN('sbi.console.downloadlogs.finalTime') 
 					    	 , width: 150
 							 , increment: 30
+							 , format: 'H:i'
     						});
     	
     	this.formPanel = new  Ext.FormPanel({

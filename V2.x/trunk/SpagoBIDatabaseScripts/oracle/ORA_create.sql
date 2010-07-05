@@ -2376,6 +2376,23 @@ IF :NEW.ID IS NULL THEN
      :NEW.ID:=NUOVO_ID;
 END IF;
 END;
+
+
+create trigger TRG_SBI_KPI_MODEL_ATTR
+  BEFORE INSERT
+  on SBI_KPI_MODEL_ATTR
+  REFERENCING OLD AS old NEW AS new
+  for each row
+  declare nuovo_id number;
+begin
+IF :new.KPI_MODEL_ATTR_ID IS NULL THEN
+     select SBI_KPI_MODEL_ATTR_SEQ.nextval into nuovo_id from dual;
+     :new.KPI_MODEL_ATTR_ID:=nuovo_id;
+END IF;
+end;
+/
+
+
 -- CREATE PACKAGES SECTION
 
 

@@ -1,11 +1,35 @@
 <canvas debug="false" width="100%" height="100%"> 
 
- 
+
+	<script src="json.js"/>
+ 	
 	<script>
+	<![CDATA[ 
+		
+		// -- utils functions -------------------------------------------------------------
+		var jsonParserOptions = {
+			errorHandler: function(msg, index) {
+					Debug.write('Error[' + index + ']: ' + msg);
+			}
+		}
+		
+		var apply = function(o, c, defaults){
+		    if(defaults){
+		        // no "this" reference for friendly out of scope calls
+		        Sbi.sdk.apply(o, defaults);
+		    }
+		    if(o && c && typeof(c) == 'object'){
+		        for(var p in c){
+		            o[p] = c[p];
+		        }
+		    }
+		    return o;
+		};
+		
 		// -- core ----------------------------------------------------------------------
 		
-		global.chartTitle = global.chartTitle || 'Livelines';
-		Debug.write("chartTitle: " + chartTitle);
+		global.title = global.title || 'Livelines';
+		Debug.write("title: " + title);
 		
 		global.rangeMinValue = global.rangeMinValue || 0;
 		Debug.write("rangeMinValue: " + rangeMinValue);
@@ -14,8 +38,9 @@
 		Debug.write("rangeMaxValue: " + rangeMaxValue);
 		
 		
-		global.rangeMaxValue = global.rangeMaxValue || null; // ['01/02/2010', '15/02/2010', '28/02/210'];
+		global.domainValues = global.domainValues || null; // ['01/02/2010', '15/02/2010', '28/02/210'];
 		Debug.write("domainValues: " + domainValues);
+		
 		
 		global.domainValueNumber = global.domainValueNumber || 5;
 		Debug.write("domainValueNumber: " + domainValueNumber);
@@ -25,12 +50,29 @@
 		
 		// -- style ----------------------------------------------------------------------
 		
-		var padding = {
-	  		top: 50, // 20 + 30 per il titolo
-	  		right: 20,
-	  		bottom: 50,
-	  		left: 50  				
-	  	};
+		// Style to use in rendering text fields appearing inside the view; 
+		// valid values are plain, bold , italic, or bolditalic.
+		global.fontDefault = {name: "serif", color: "black", size: 8, style: "plain"};
+		
+		
+		global.stylesDefault =	{
+		
+			title: { text: title, visible: true,  align: "center", valign: "top", font: apply(global.fontDefault, {size: 16, style: "bold"}) }
+			
+			, border: {color: "black", size: "0"}
+			
+			// A numeric value that specifies the spacing around 
+			// the edges of the chart's plot area
+			, padding: {top: 30, right: 50, bottom: 50, left: 50}
+			
+			, plot: {}
+		}
+		
+		global.styles = global.styles || '{}';
+		global.styles = JSON.parse(global.styles, jsonParserOptions);
+		global.styles = apply(stylesDefault, global.styles);
+		
+
 		
 		// -- private ----------------------------------------------------------------------
 		var colors = [0xf92525, 0x17e512, 0xbe4ce3, 0x5420ff, 0xf442ff, 0xfb7819, 0x19fbee, 0xe570ad, 0xfd0c23, 0x4618de];
@@ -40,13 +82,62 @@
 	    function loadData(data) {
             canvas.chart.load(data);
         };
+    ]]>
 	</script>  
 
 
 	<drawview name="chart"> 
 		
 		<text name="title">No title</text>
+		<!-- text x="40" name="debug">Debug</text -->
 		<drawview name="plot"/> 
+		<!--  button name="testBtn" text="test">
+			<handler name="onclick">
+				canvas.chart.loadPointA();
+				Debug.write("click");
+			</handler>	
+		</button -->
+		
+		<!--  =================================================================== -->
+		<!--  Legend Button														  -->
+		<!--  =================================================================== -->
+		<button name="legendButton" text="Legend">
+		
+			<handler name="onclick">
+				canvas.chart.legendWindow.setAttribute("visible",true);
+				this.setAttribute("visible", false);
+			</handler>	
+			
+		</button>
+		
+		<!--  =================================================================== -->
+		<!--  Legend Window														  -->
+		<!--  =================================================================== -->
+		<window name="legendWindow">
+			
+			<attribute name="y" value="10"/>
+			<attribute name="x" value="0"/>
+			<attribute name="height" value="100"/>
+			<attribute name="width" value="250"/>
+			<attribute name="title" value="Legend"/>
+			<attribute name="resizable" value="true"/>
+			<attribute name="closeable" value="true"/>
+			<attribute name="align" value="center"/>
+			
+			<wrappinglayout axis="y" spacing="10"/>
+			
+			<method name="addItem" args="lineName, color, ID">
+				var legIt = new lz.LegendItem(this,{name:"legend"+ID});
+				legIt.drawItem(lineName, color);		
+				this.setVisible(false);
+			</method>
+		
+			<handler name="onvisible">
+				Debug.write("LegendWindow: onvisible: " + visible);
+				canvas.chart.legendButton.setAttribute("visible", !visible);
+			</handler>
+		
+		</window>
 
   		<method name="render">
   		
@@ -57,24 +148,44 @@
   			var chartWidth = canvas.width;
   			var chartHeight = canvas.height;
   			
+  			// -- render title --------------------------------------------------------
+						
+			if(styles.title.visible) {			
+				this.title.setAttribute('x', 0);
+				this.title.setAttribute('y', 0);
+				this.title.setAttribute('width', chartWidth);
+				this.title.setAttribute('height', styles.title.font.size + 6);
+				
+				this.title.setAttribute('font', styles.title.font.name);
+				this.title.setAttribute('fontsize', styles.title.font.size);
+				this.title.setAttribute('fontstyle', styles.title.font.style);
+				this.title.setAttribute('fgcolor', styles.title.font.color);
+				this.title.setAttribute('align', styles.title.align);
+				this.title.setAttribute('valign', styles.title.valign);
+				this.title.setAttribute('text', styles.title.text);
+			}
+			
+			// -- render plot --------------------------------------------------------
+			
   			var range, vLineNumber, hLineNumber;  
 				
-			var plotAreaX = padding.left;
-			var plotAreaY = padding.top;
-			var plotAreaWidth = chartWidth - padding.right - padding.left;
-			var plotAreaHeight = chartHeight - padding.top - padding.bottom;
+			var plotAreaX = styles.padding.left;
+			var plotAreaY = styles.padding.top;
+			var plotAreaWidth = chartWidth - styles.padding.right - styles.padding.left;
+			var plotAreaHeight = chartHeight - styles.padding.top - styles.padding.bottom - 20;
+			Debug.write("plotAreaX: " + plotAreaX);
+			Debug.write("plotAreaY: " + plotAreaY);
+			Debug.write("plotAreaWidth: " + plotAreaWidth);
+			Debug.write("plotAreaHeight: " + plotAreaHeight);
 			
 	        this.plot.setAttribute('x', plotAreaX);
 			this.plot.setAttribute('y', plotAreaY);
 			this.plot.setAttribute('width', plotAreaWidth);
 			this.plot.setAttribute('height', plotAreaHeight);
-
-			this.title.setAttribute('x', 10);
-			this.title.setAttribute('y', 0);
-			this.title.setAttribute('width', chartWidth);
-			this.title.setAttribute('height', 20);
-			this.title.setAttribute('align', 'center');
-			this.title.setAttribute('text', chartTitle);
+			
+			this.legendButton.setX(plotAreaX + (plotAreaWidth/2)-(this.legendButton.width/2));
+			this.legendButton.setY(plotAreaY + plotAreaHeight + 20);
+			this.legendWindow.setAttribute("visible", false);
 			
 			domainValueNumber = (domainValues != null)? domainValues.length: domainValueNumber;
 			domainValueNumber = domainValueNumber || 10;
@@ -86,13 +197,8 @@
 			
 			hLineNumber = range/stepY;
 			Debug.write("hLineNumber: " + hLineNumber);
-		
-			<!--Define chart dimensions-->
-	   	 	this.setWidth(chartWidth);
-	  	 	this.setHeight(chartHeight);
 	        
 			<!--draw chart-->
-			
 			
 			var background = new lz.Background(this.plot, {
 				name : "chartBackground",
@@ -124,7 +230,11 @@
 				rangeMajorTickNumber: hLineNumber,
 				rangeMinorTickVisible: false				
 			});
+			/*
+			var legendWin = new lz.LegendWindow(this, {
 			
+			});
+			*/
 			Debug.write("render OUT");	
 		</method>
 
@@ -165,13 +275,16 @@
 	<![CDATA[ 
 		var seriesId = 0;
 		for ( var attributeName in attributeMap ) {
+			var color = canvas.chart.getColor(seriesId++);
 			var series = new lz.DataSeries(canvas.chart.plot, {
 				name : attributeName, 
 				dataPointNumber : domainValueNumber, 
 				minDataValue: rangeMinValue, 
 				maxDataValue: rangeMaxValue,
-				color: canvas.chart.getColor(seriesId++)
+				color: color
 			});
+			
+			canvas.chart.legendWindow.addItem(attributeName, color, seriesId);
 		}
 	]]>
 	</method>
@@ -207,21 +320,9 @@
     <method name="start" event="oninit">
 		Debug.write("start IN");	
 		
-		
-		
         canvas.chart.render();
 
-   
-		//loadDelegate = new LzDelegate( this, "loadPointA" );
-   		//lz.Timer.addTimer( loadDelegate, 5000 ); 
-   		
-   		//loadDelegate = new LzDelegate( this, "loadPointB" );
-   		//lz.Timer.addTimer( loadDelegate, 10000 ); 
-   		
-   		//loadDelegate = new LzDelegate( this, "loadPointA" );
-   		//lz.Timer.addTimer( loadDelegate, 15000 ); 
-   	
-		//Debug.write("start OUT");	
+		Debug.write("start OUT");	
     </method>
 
     
@@ -252,11 +353,25 @@
 
 
   	<method name="addDataPoint" args="dataValue">	
+  	<![CDATA[ 
 		Debug.write("addDataPoint " + dataValue + " to " + this.name);
+		
 		var dataRange = maxDataValue - minDataValue;
 		var dataGap = this.width/(dataPointNumber-1);
 		
 		var r = this.height/dataRange;
+		
+		//canvas.chart.debug.setAttribute('text', data.length + ' = ' + dataPointNumber + ' -> ' + (data.length >= dataPointNumber));
+		if(data.length >= dataPointNumber) {
+			//canvas.chart.debug.setAttribute('text', '-> 1');
+			data = [];			
+			//canvas.chart.debug.setAttribute('text', '-> 2');
+			this.clear();
+			//canvas.chart.debug.setAttribute('text', '-> 3');
+			this.beginPath();
+			//canvas.chart.debug.setAttribute('text', '-> 4');
+			//canvas.chart.debug.setAttribute('text', data.length + ' = ' + dataPointNumber  + ' [CLEAR]');
+		}
 		
 		data.push(dataValue);
 		
@@ -277,7 +392,7 @@
         	this.lineWidth = 4;
         	this.stroke();
 		}
-		
+	]]>	
 	</method>
 </class>
 
@@ -605,6 +720,29 @@
        	}
 	</method>
 </class>
+
+
+<class name="LegendItem" extends="drawview">
+	
+	 <method name="init">
+       	     super.init();   
+	 </method>
+		
+	 <method name="drawItem" args="lineName, color">
+       	 this.moveTo(10,10);
+	     this.lineTo(20,10);
+					
+       	 this.strokeStyle = color;
+         this.lineWidth = 4;
+         this.stroke();
+	
+	     var txt = new LzText(this,{x:50,text:lineName});
+	 </method>
+		
+</class>
+
+
+
 
 </canvas>
 

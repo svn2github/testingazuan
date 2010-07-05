@@ -90,7 +90,7 @@ public class MenuUtilities {
 			}
 		}
 		catch (Exception e) {
-			logger.error("Exception in getting menu path");
+			logger.error("Exception in getting menu path",e);
 			return "";
 		}
 	}

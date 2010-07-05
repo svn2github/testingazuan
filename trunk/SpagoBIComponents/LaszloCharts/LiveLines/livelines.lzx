@@ -26,6 +26,27 @@
 		    return o;
 		};
 		
+		var decode = function(jsonStr) {
+			var json, c;
+			
+			Debug.write("decode IN: " + jsonStr);
+			//var regExp = new RegExp('[|]','g');
+			//global.fields = global.fields.replace(regExp, '"');
+			
+			json = '';
+			for(var i = 0, l = jsonStr.length; i < l; i++) {
+				c = jsonStr.charAt(i);
+				if(c == '|') c = '"';
+				json += c;
+			}
+			
+			Debug.write("decode OUT: " + json);
+			
+			json = JSON.parse(json, jsonParserOptions);
+			
+			return json;
+		}
+		
 		// -- core ----------------------------------------------------------------------
 		
 		global.title = global.title || 'Livelines';
@@ -63,16 +84,27 @@
 			
 			// A numeric value that specifies the spacing around 
 			// the edges of the chart's plot area
-			, padding: {top: 30, right: 50, bottom: 50, left: 50}
+			, padding: {top: 30, right: 50, bottom: 0, left: 50}
 			
-			, plot: {}
+			, plot: {
+				//width: 300
+				//, height: 400
+				//, widthScale: .5
+				//, heightScale: .5
+				//, valign: 'center'
+				//, halign: 'center'
+			}
+			, legend: {
+				text: 'Legenda'
+				, active: false
+				, valign: 'top'
+				, halign: 'right'
+			}
 		}
 		
 		global.styles = global.styles || '{}';
-		global.styles = JSON.parse(global.styles, jsonParserOptions);
+		global.styles = decode(global.styles);	
 		global.styles = apply(stylesDefault, global.styles);
-		
-
 		
 		// -- private ----------------------------------------------------------------------
 		var colors = [0xf92525, 0x17e512, 0xbe4ce3, 0x5420ff, 0xf442ff, 0xfb7819, 0x19fbee, 0xe570ad, 0xfd0c23, 0x4618de];
@@ -90,7 +122,13 @@
 		
 		<text name="title">No title</text>
 		<!-- text x="40" name="debug">Debug</text -->
-		<drawview name="plot"/> 
+		<drawview name="plot">
+			<handler name="onclick">
+				canvas.chart.legendWindow.setAttribute("visible",true);
+				canvas.chart.legendButton.setAttribute("visible",false);
+			</handler>	
+		</drawview> 
+		
 		<!--  button name="testBtn" text="test">
 			<handler name="onclick">
 				canvas.chart.loadPointA();
@@ -102,7 +140,18 @@
 		<!--  Legend Button														  -->
 		<!--  =================================================================== -->
 		<button name="legendButton" text="Legend">
-		
+			
+			<method name="init">
+				super.init(); 
+				Debug.write("styles.legend.active: " + styles.legend.active);
+				if(styles.legend.active === false) {
+					canvas.chart.legendWindow.setAttribute("visible",false);
+					this.setAttribute("visible", false);
+					Debug.write("Legend Active: " + false);
+				}
+				
+			</method>
+			
 			<handler name="onclick">
 				canvas.chart.legendWindow.setAttribute("visible",true);
 				this.setAttribute("visible", false);
@@ -134,19 +183,58 @@
 		
 			<handler name="onvisible">
 				Debug.write("LegendWindow: onvisible: " + visible);
-				canvas.chart.legendButton.setAttribute("visible", !visible);
+				if(styles.legend.active === true) {
+					canvas.chart.legendButton.setAttribute("visible", !visible);
+				}
 			</handler>
 		
 		</window>
 
   		<method name="render">
-  		
+  		<![CDATA[ 
   			Debug.write("render IN");
   			Debug.write("canvas.width: " + canvas.width);
   			Debug.write("canvas.height: " + canvas.height);
   			
-  			var chartWidth = canvas.width;
-  			var chartHeight = canvas.height;
+  			styles.plot = styles.plot || {};
+  			var chartHeight = styles.plot.height || canvas.height;
+  			var chartWidth = styles.plot.width || canvas.width;
+  			  			
+  			chartHeight = chartHeight > canvas.height? canvas.height: chartHeight;
+  			chartWidth = chartWidth > canvas.width? canvas.width: chartWidth;
+  			
+  			if(styles.plot.heightScale && styles.plot.heightScale < 1) {
+  				chartHeight = chartHeight * styles.plot.heightScale;
+  			}
+  			
+  			if(styles.plot.widthScale && styles.plot.widthScale < 1) {
+  				chartWidth = chartWidth * styles.plot.widthScale;
+  			}
+  			
+  			var chartX;
+  			var chartY;
+  			
+  			if(styles.plot.halign === 'left') {
+  				chartX = 0;
+  			} else if(styles.plot.halign === 'right') {
+  				chartX = (canvas.width - chartWidth);
+  			} else {
+  				chartX = (canvas.width - chartWidth)/2;
+  			}
+  			
+  			if(styles.plot.valign === 'top') {
+  				chartY = 0;
+  			} else if(styles.plot.valign === 'bottom') {
+  				chartY = (canvas.height - chartHeight);
+  			} else {
+  				chartY = (canvas.height - chartHeight)/2;
+  			}
+  			
+			
+			this.setAttribute('x', chartX);
+			this.setAttribute('y', chartY);
+			this.setAttribute('width', chartWidth);
+			this.setAttribute('height', chartHeight);
   			
   			// -- render title --------------------------------------------------------
 						
@@ -168,11 +256,15 @@
 			// -- render plot --------------------------------------------------------
 			
   			var range, vLineNumber, hLineNumber;  
-				
+			var xAxisHeight = 20;
 			var plotAreaX = styles.padding.left;
 			var plotAreaY = styles.padding.top;
 			var plotAreaWidth = chartWidth - styles.padding.right - styles.padding.left;
-			var plotAreaHeight = chartHeight - styles.padding.top - styles.padding.bottom - 20;
+			var plotAreaHeight = chartHeight - styles.padding.top - styles.padding.bottom - xAxisHeight;
+			if(styles.legend.valign == 'bottom') {
+				plotAreaHeight -=  this.legendButton.height; 
+			}
+			
 			Debug.write("plotAreaX: " + plotAreaX);
 			Debug.write("plotAreaY: " + plotAreaY);
 			Debug.write("plotAreaWidth: " + plotAreaWidth);
@@ -183,9 +275,28 @@
 			this.plot.setAttribute('width', plotAreaWidth);
 			this.plot.setAttribute('height', plotAreaHeight);
 			
-			this.legendButton.setX(plotAreaX + (plotAreaWidth/2)-(this.legendButton.width/2));
-			this.legendButton.setY(plotAreaY + plotAreaHeight + 20);
-			this.legendWindow.setAttribute("visible", false);
+			if(styles.legend.active) {
+				this.legendButton.setAttribute("text", styles.legend.text);
+				var x, y;
+				if(styles.legend.valign == 'top') {
+					y = 0;
+				} else {
+				 	y = plotAreaY + plotAreaHeight + xAxisHeight;
+				}
+				
+				Debug.write("styles.legend.halign: " + styles.legend.halign);
+				if(styles.legend.halign == 'left') {
+					x = 0;
+				} else if(styles.legend.halign == 'right') {
+				 	x = chartWidth - this.legendButton.width;
+				} else { // center
+					x = plotAreaX + (plotAreaWidth/2)-(this.legendButton.width/2);
+				}
+				
+				this.legendButton.setX(x);
+				this.legendButton.setY(y);
+				this.legendWindow.setAttribute("visible", false);				
+			}
 			
 			domainValueNumber = (domainValues != null)? domainValues.length: domainValueNumber;
 			domainValueNumber = domainValueNumber || 10;
@@ -197,8 +308,6 @@
 			
 			hLineNumber = range/stepY;
 			Debug.write("hLineNumber: " + hLineNumber);
-	        
-			<!--draw chart-->
 			
 			var background = new lz.Background(this.plot, {
 				name : "chartBackground",
@@ -230,12 +339,9 @@
 				rangeMajorTickNumber: hLineNumber,
 				rangeMinorTickVisible: false				
 			});
-			/*
-			var legendWin = new lz.LegendWindow(this, {
-			
-			});
-			*/
+		
 			Debug.write("render OUT");	
+		]]>
 		</method>
 
 
@@ -487,11 +593,7 @@
 	    	var txt = rangeMaxValue - (i*majorInterval);
 			var label = new LzText(this ,{name : "xlabel"+i, align:"center"});
 			
-			
-			//var label = new lz.Label(canvas.chart, {x: this.x + posX-10, y: this.y + this.height + 5});
-			//label.render(txt);
-			
-			
+		
 			label.setAttribute("fontsize", 10);
 			label.setColor(0x000000);
 			label.setText(txt);

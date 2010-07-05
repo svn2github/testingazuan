@@ -397,6 +397,41 @@ public class GeneralUtilities extends SpagoBIUtilities{
 	}
 
 
+
+	/** Gets the default locale from SpagoBI configuraiton file,
+	 *  the behaviours is the same of getDefaultLocale() function, with difference that if not finds returns null
+	 *  
+	 *  TODO : merge its behaviour with GetDefaultLocale (not done know cause today is release date).
+	 * Gets the default locale.
+	 * 
+	 * @return the default locale
+	 */
+	public static Locale getStartingDefaultLocale() {
+		logger.debug("IN");
+		String country = null;
+		String language = null;
+		Locale locale = null;
+		ConfigSingleton config = ConfigSingleton.getInstance();
+		String attName = "SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE";
+		SourceBean languageSB = (SourceBean) config.getFilteredSourceBeanAttribute(attName, "default", "true");
+		if (languageSB != null) {
+			country = (String) languageSB.getAttribute("country");
+			language = (String) languageSB.getAttribute("language");
+			if ((country == null) || country.trim().equals("") || (language == null) || language.trim().equals("")) {
+
+			}
+			else{
+				// set the locale!
+				locale = new Locale(language, country);				
+				logger.debug("locale set to "+locale);
+			}
+		} 
+
+		logger.debug("OUT");
+		return locale;
+	}
+
+
 	/**
 	 * Gets the default locale.
 	 * 
@@ -425,7 +460,7 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT:" + locale.toString());
 		return locale;
 	}
-	
+
 	public static List<Locale> getSupportedLocales() {
 		logger.debug("IN");
 		List<Locale> toReturn = new ArrayList<Locale>();
@@ -468,7 +503,7 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT");
 		return toReturn;
 	}
-	
+
 	public static Locale getCurrentLocale(RequestContainer requestContainer) {
 		Locale locale=null;
 		if(requestContainer!=null){    	
@@ -647,8 +682,8 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT:" + path);
 		return path;
 	}      
-	
-	
+
+
 	public static String getSessionExpiredURL() {
 		logger.debug("IN");
 		String sessionExpiredUrl = null;

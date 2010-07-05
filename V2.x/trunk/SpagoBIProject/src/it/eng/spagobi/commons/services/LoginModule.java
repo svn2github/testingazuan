@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 /*
  * Created on 21-apr-2005
  *
@@ -45,6 +45,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IConfigDAO;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.commons.utilities.AuditLogUtilities;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.HibernateUtil;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.commons.utilities.UserUtilities;
@@ -78,16 +79,16 @@ import org.hibernate.Transaction;
 
 public class LoginModule extends AbstractHttpModule {
 
-    static Logger logger = Logger.getLogger(LoginModule.class);
-    
-    private static final String PROP_NODE = "changepwd.";
+	static Logger logger = Logger.getLogger(LoginModule.class);
 
-    /**  The format date to manage the data validation. */
+	private static final String PROP_NODE = "changepwd.";
+
+	/**  The format date to manage the data validation. */
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
-    
-    IEngUserProfile profile = null;
-    EMFErrorHandler errorHandler = null;
-	
+
+	IEngUserProfile profile = null;
+	EMFErrorHandler errorHandler = null;
+
 	/**
 	 * Service.
 	 * 
@@ -99,42 +100,42 @@ public class LoginModule extends AbstractHttpModule {
 	 * @see it.eng.spago.dispatching.action.AbstractHttpAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
-	    logger.debug("IN");
-	    
+		logger.debug("IN");
+
 		String theme_name=(String)request.getAttribute(ChangeTheme.THEME_NAME);
 		logger.debug("theme selected: "+theme_name);
-		
-    	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
-    	SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
-    	String activeStr = (String) validateSB.getCharacters();
-    	boolean activeSoo=false;
-    	if (activeStr != null && activeStr.equalsIgnoreCase("true")) {
-    		activeSoo=true;
-    	}
+
+		ConfigSingleton serverConfig = ConfigSingleton.getInstance();
+		SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
+		String activeStr = (String) validateSB.getCharacters();
+		boolean activeSoo=false;
+		if (activeStr != null && activeStr.equalsIgnoreCase("true")) {
+			activeSoo=true;
+		}
 		RequestContainer reqCont = RequestContainer.getRequestContainer();
 		SessionContainer sessCont = reqCont.getSessionContainer();
 		SessionContainer permSess = sessCont.getPermanentContainer();
-		
+
 		HttpServletRequest servletRequest=getHttpRequest();
 		HttpSession httpSession=servletRequest.getSession();
-		
+
 		// Set THEME
 		if (theme_name!=null && theme_name.length()>0){
 			permSess.setAttribute(SpagoBIConstants.THEME, theme_name);
 		}
-		
+
 		// Set BACK URL if present
 		String backUrl=(String)request.getAttribute(SpagoBIConstants.BACK_URL);
-		
+
 		if (backUrl!=null && !backUrl.equalsIgnoreCase("")){
 			//permSess.setAttribute(SpagoBIConstants.BACK_URL, backUrl);
 			httpSession.setAttribute(SpagoBIConstants.BACK_URL, backUrl);		
 		}
-		
+
 		errorHandler = getErrorHandler();
-		
+
 		UserProfile previousProfile = (UserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	
+
 		String userId=null;
 		if (!activeSoo) {
 			userId = (String)request.getAttribute("userID");
@@ -153,7 +154,7 @@ public class LoginModule extends AbstractHttpModule {
 					// user must authenticate
 					logger.debug("User must authenticate");
 					String url = servletRequest.getProtocol().substring(0,servletRequest.getProtocol().indexOf("/")) + 
-		 				"://"+servletRequest.getServerName()+":"+servletRequest.getLocalPort()+servletRequest.getContextPath();
+					"://"+servletRequest.getServerName()+":"+servletRequest.getLocalPort()+servletRequest.getContextPath();
 					response.setAttribute("start_url", url);
 					response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "login");
 					logger.debug("OUT");
@@ -163,12 +164,12 @@ public class LoginModule extends AbstractHttpModule {
 				//throw new SecurityException("User identifier not found.");
 			}			
 		} else {
-			
-	    	SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
+
+			SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
 			userId = userProxy.readUserIdentifier(servletRequest);
-		    logger.debug("OUT,userId:"+userId);
-		    // if we are in SSO and user has a previous profile keep it!
-    		if (previousProfile != null && previousProfile.getUserId().equals(userId)) {
+			logger.debug("OUT,userId:"+userId);
+			// if we are in SSO and user has a previous profile keep it!
+			if (previousProfile != null && previousProfile.getUserId().equals(userId)) {
 				if (previousProfile != null) {
 					profile = previousProfile;
 					// user is authenticated, nothing to do
@@ -180,116 +181,127 @@ public class LoginModule extends AbstractHttpModule {
 					return;
 				} 
 			}	
-		    
+
 		}
 
 		ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
-    	// If SSO is not active, check username and password, i.e. performs the authentication;
-    	// instead, if SSO is active, the authentication mechanism is provided by the SSO itself, so SpagoBI does not make 
-    	// any authentication, just creates the user profile object and puts it into Spago permanent container
-    	if (!activeSoo) {
+		// If SSO is not active, check username and password, i.e. performs the authentication;
+		// instead, if SSO is active, the authentication mechanism is provided by the SSO itself, so SpagoBI does not make 
+		// any authentication, just creates the user profile object and puts it into Spago permanent container
+		if (!activeSoo) {
 			String pwd=(String)request.getAttribute("password");       
-	        try {
-	        	Object ris=supplier.checkAuthentication(userId, pwd);
-	        	if (ris==null){
-	        		logger.error("pwd uncorrect");
-	            	EMFUserError emfu = new EMFUserError(EMFErrorSeverity.ERROR, 501);
-	    			errorHandler.addError(emfu); 		    	
-	    			return;
-	        	}
-	        } catch (Exception e) {
-	            logger.error("Reading user information... ERROR");
-	            throw new SecurityException("Reading user information... ERROR",e);
-	        }
-	        //getting security type: if it's internal (SpagoBI) active pwd management and checks
-	        boolean isInternalSecurity = ("true".equalsIgnoreCase((String)request.getAttribute("isInternalSecurity")))?true:false;
-	        logger.debug("isInternalSecurity: " + isInternalSecurity);
-	    	if (isInternalSecurity)  {			 
-	    		//gets the user bo
-		        ISbiUserDAO userDao = DAOFactory.getSbiUserDAO();
-		        SbiUser user = userDao.loadSbiUserByUserId(userId);
-		        
-		        //check user's role: if he's admin it doesn't apply checks on password
-		    	SourceBean adminPatternSB = (SourceBean) serverConfig.getAttribute("SPAGOBI.SECURITY.ROLE-TYPE-PATTERNS.ADMIN-PATTERN");
-		    	String strAdminPatter = (String) adminPatternSB.getCharacters();
-	    		List lstRoles = userDao.loadSbiUserRolesById(user.getId());
-		        boolean isAdminUser = false;
-		      
-		        for (int i=0; i<lstRoles.size(); i++){
-		        	SbiExtRoles tmpRole = (SbiExtRoles)lstRoles.get(i);
-		        	Role role = DAOFactory.getRoleDAO().loadByID(tmpRole.getExtRoleId());
-		        	if (role.getName().equals(strAdminPatter)){
-		        		isAdminUser = true;
-		        		logger.debug("User is administrator. Checks on the password are not applied !");
-		        		break;
-		        	}
-		        }
-				
-		        if (!isAdminUser){
-			        //check validation of the password
-			        logger.debug("Validation password starting...");
-			        
-			        boolean goToChangePwd = checkPwd(user);
+			try {
+				Object ris=supplier.checkAuthentication(userId, pwd);
+				if (ris==null){
+					logger.error("pwd uncorrect");
+					EMFUserError emfu = new EMFUserError(EMFErrorSeverity.ERROR, 501);
+					errorHandler.addError(emfu); 		    	
+					return;
+				}
+			} catch (Exception e) {
+				logger.error("Reading user information... ERROR");
+				throw new SecurityException("Reading user information... ERROR",e);
+			}
+			//getting security type: if it's internal (SpagoBI) active pwd management and checks
+			boolean isInternalSecurity = ("true".equalsIgnoreCase((String)request.getAttribute("isInternalSecurity")))?true:false;
+			logger.debug("isInternalSecurity: " + isInternalSecurity);
+			if (isInternalSecurity)  {			 
+				//gets the user bo
+				ISbiUserDAO userDao = DAOFactory.getSbiUserDAO();
+				SbiUser user = userDao.loadSbiUserByUserId(userId);
+
+				//check user's role: if he's admin it doesn't apply checks on password
+				SourceBean adminPatternSB = (SourceBean) serverConfig.getAttribute("SPAGOBI.SECURITY.ROLE-TYPE-PATTERNS.ADMIN-PATTERN");
+				String strAdminPatter = (String) adminPatternSB.getCharacters();
+				List lstRoles = userDao.loadSbiUserRolesById(user.getId());
+				boolean isAdminUser = false;
+
+				for (int i=0; i<lstRoles.size(); i++){
+					SbiExtRoles tmpRole = (SbiExtRoles)lstRoles.get(i);
+					Role role = DAOFactory.getRoleDAO().loadByID(tmpRole.getExtRoleId());
+					if (role.getName().equals(strAdminPatter)){
+						isAdminUser = true;
+						logger.debug("User is administrator. Checks on the password are not applied !");
+						break;
+					}
+				}
+
+				if (!isAdminUser){
+					//check validation of the password
+					logger.debug("Validation password starting...");
+
+					boolean goToChangePwd = checkPwd(user);
 					if (goToChangePwd){
 						response.setAttribute("user_id", user.getUserId());
 						String url = servletRequest.getProtocol().substring(0,servletRequest.getProtocol().indexOf("/")) + 
-									 "://"+servletRequest.getServerName()+":"+servletRequest.getLocalPort()+servletRequest.getContextPath();
+						"://"+servletRequest.getServerName()+":"+servletRequest.getLocalPort()+servletRequest.getContextPath();
 						response.setAttribute("start_url", url);
-				        response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ChangePwdPublisher"); 
-				        return;
+						response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ChangePwdPublisher"); 
+						return;
 					}
-					
+
 					logger.info("The pwd is active!");
 					//update lastAccessDate on db with current date
 					try{
 						user.setDtLastAccess(new Date());
 						userDao.updateSbiUser(user, user.getId());
 					}catch(Exception e){
-			        	logger.error("Error while update user's dtLastAccess: " + e);
-			        	e.printStackTrace();
-			        }
-		        }
-	    	}
-    	}
-    	
-        try {
-        	profile=UserUtilities.getUserProfile(userId);
-            if (profile == null){		            	
-            	logger.error("user not created");
-            	EMFUserError emfu = new EMFUserError(EMFErrorSeverity.ERROR, 501);
-    			errorHandler.addError(emfu); 		    	
-    			return;
-            }
-          
-            Boolean userHasChanged = Boolean.TRUE;
-    		// try to find if the user has changed: if so, the session parameters must be reset, see also homebis.jsp
-    		// check previous userId with current one: if they are equals, user has not changed
-    		if (previousProfile != null && previousProfile.getUserId().equals(((UserProfile)profile).getUserId())) {
-    			userHasChanged = Boolean.FALSE;
-    		}
-    		response.setAttribute("USER_HAS_CHANGED", userHasChanged);
-            // put user profile into session
-            permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
-    		// updates locale information on permanent container for Spago messages mechanism
-    		Locale locale = MessageBuilder.getBrowserLocaleFromSpago();
-    		if (locale != null) {
-    			permSess.setAttribute(Constants.USER_LANGUAGE, locale.getLanguage());
-    			permSess.setAttribute(Constants.USER_COUNTRY, locale.getCountry());
-    		}
-    		
-        } catch (Exception e) {
-            logger.error("Reading user information... ERROR");
-            throw new SecurityException("Reading user information... ERROR",e);
-        }
-	        
+						logger.error("Error while update user's dtLastAccess: " + e);
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+		try {
+			profile=UserUtilities.getUserProfile(userId);
+			if (profile == null){		            	
+				logger.error("user not created");
+				EMFUserError emfu = new EMFUserError(EMFErrorSeverity.ERROR, 501);
+				errorHandler.addError(emfu); 		    	
+				return;
+			}
+
+			Boolean userHasChanged = Boolean.TRUE;
+			// try to find if the user has changed: if so, the session parameters must be reset, see also homebis.jsp
+			// check previous userId with current one: if they are equals, user has not changed
+			if (previousProfile != null && previousProfile.getUserId().equals(((UserProfile)profile).getUserId())) {
+				userHasChanged = Boolean.FALSE;
+			}
+			response.setAttribute("USER_HAS_CHANGED", userHasChanged);
+			// put user profile into session
+			permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+
+
+			// updates locale information on permanent container for Spago messages mechanism
+			// search firstly if a default language is set on configuraiton file, else take browser from spago
+
+			Locale locale =GeneralUtilities.getStartingDefaultLocale();
+			if(locale == null){
+				locale = MessageBuilder.getBrowserLocaleFromSpago();
+			}
+			else{
+				logger.debug("Locale "+locale.getLanguage()+" - "+locale.getCountry()+" taken as default from configuraiton file");
+			}
+			if (locale != null) {
+				logger.debug("locale taken as default is "+locale.getLanguage()+" - "+locale.getCountry());
+				permSess.setAttribute(Constants.USER_LANGUAGE, locale.getLanguage());
+				permSess.setAttribute(Constants.USER_COUNTRY, locale.getCountry());
+			}
+
+		} catch (Exception e) {
+			logger.error("Reading user information... ERROR");
+			throw new SecurityException("Reading user information... ERROR",e);
+		}
+
 		//String username = (String) profile.getUserUniqueIdentifier();
-        String username = (String) ((UserProfile)profile).getUserId();
+		String username = (String) ((UserProfile)profile).getUserId();
 		if (!UserUtilities.userFunctionalityRootExists(username)) {
-		    logger.debug("funcitonality root not yet exists for "+username);	
+			logger.debug("funcitonality root not yet exists for "+username);	
 			//UserUtilities.createUserFunctionalityRoot(profile);
 		}
 		else{
-		    logger.debug("funcitonality root already exists for "+username);					
+			logger.debug("funcitonality root already exists for "+username);					
 		}
 
 		//Start writing log in the DB
@@ -306,24 +318,24 @@ public class LoginModule extends AbstractHttpModule {
 			}
 		}
 		//End writing log in the DB
-			
+
 		MenuUtilities.getMenuItems(request, response, profile);
 
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "userhome");
-		
+
 		logger.debug("OUT");		
 	}
-	
+
 	private boolean checkPwd(SbiUser user) throws Exception{
 		logger.debug ("IN");
 		boolean toReturn = false;
 		Date currentDate = new Date();
-		
-		 //gets the active controls to applicate:
+
+		//gets the active controls to applicate:
 		IConfigDAO configDao = DAOFactory.getSbiConfigDAO();
 		List lstConfigChecks = configDao.loadConfigParametersByProperties(PROP_NODE);
 		logger.debug("checks found on db: " + lstConfigChecks.size());
-		
+
 		for(int i=0; i<lstConfigChecks.size(); i++){
 			Config check = (Config)lstConfigChecks.get(i);
 			if ((SpagoBIConstants.CHANGEPWD_CHANGE_FIRST).equals(check.getLabel()) && user.getDtLastAccess() == null){
@@ -332,7 +344,7 @@ public class LoginModule extends AbstractHttpModule {
 				toReturn = true;
 				break;
 			}
-			
+
 			if ((SpagoBIConstants.CHANGEPWD_EXPIRED_TIME).equals(check.getLabel()) &&
 					user.getDtPwdEnd() != null && currentDate.compareTo(user.getDtPwdEnd()) >= 0){
 				//check if the pwd is expiring, in this case it's locked.
@@ -363,7 +375,7 @@ public class LoginModule extends AbstractHttpModule {
 				}
 			}					
 		} //for
-		
+
 		//general controls: check if the account is already blocked, otherwise update dtLastAccess field
 		if (user.getFlgPwdBlocked() != null && user.getFlgPwdBlocked()){
 			//if flgPwdBlocked is true the user cannot goes on
@@ -374,5 +386,5 @@ public class LoginModule extends AbstractHttpModule {
 		return toReturn;
 	}
 
-	
+
 }

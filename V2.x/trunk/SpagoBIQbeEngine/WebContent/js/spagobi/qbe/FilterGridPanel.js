@@ -1084,17 +1084,17 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
 					filter = {
 						leftOperandType: 'Parent Field Content'
-						, leftOperandDescription: this.parentQuery.id  + ' : ' +  node.attributes.entity + ' : ' + node.attributes.field
+						, leftOperandDescription: this.parentQuery.id  + ' : ' +  node.attributes.attributes.entity + ' : ' + node.attributes.attributes.field
 						, leftOperandValue: this.parentQuery.id + ' ' + node.id
-						, leftOperandLongDescription: 'Query ' + this.parentQuery.id + ', ' + node.attributes.longDescription
+						, leftOperandLongDescription: 'Query ' + this.parentQuery.id + ', ' + node.attributes.attributes.longDescription
 					}
 					this.modifyFilter(filter, this.activeEditingContext.row);
 				} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
 					filter = {
 						rightOperandType: 'Parent Field Content'
-						, rightOperandDescription: this.parentQuery.id  + ' : ' +  node.attributes.entity + ' : ' + node.attributes.field
+						, rightOperandDescription: this.parentQuery.id  + ' : ' +  node.attributes.attributes.entity + ' : ' + node.attributes.attributes.field
 						, rightOperandValue: this.parentQuery.id + ' ' + node.id
-						, rightOperandLongDescription: 'Query ' + this.parentQuery.id + ', ' + node.attributes.longDescription
+						, rightOperandLongDescription: 'Query ' + this.parentQuery.id + ', ' + node.attributes.attributes.longDescription
 					}
 					this.modifyFilter(filter, this.activeEditingContext.row);
 				}

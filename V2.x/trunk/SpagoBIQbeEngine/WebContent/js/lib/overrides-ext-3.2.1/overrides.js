@@ -51,3 +51,28 @@ Ext.override(Ext.BasicForm, {
         return field || null;
     }
 });
+
+/* =============================================================================
+* Added by Davide Zerbetto (July 2010)
+* This is actually a work-around: there is a problem with the lookup trigger on filters definition on sub-queries.
+* In order to reproduce the problem you should comment the following override, then define a filter on a sub-query: 
+* use the lookup trigger in the right operand description, then try to open it again: the right operand cell is not editable anymore.
+* May be it is trying to delete the previous editor but something fails....
+* The error is: 
+* [Errore: this.doc is undefined
+* Source file: ........../SpagoBIQbeEngine/js/lib/ext-3.2.1/ext-all-debug-w-comments.js
+* Row: 59174] 
+* Therefore I put an additional "if (this.doc)" condition before "this.doc.un('mousedown', this.mimicBlur, this);".
+============================================================================= */
+Ext.override(Ext.form.TriggerField, {
+    onDestroy : function() {
+	    Ext.destroy(this.trigger, this.wrap);
+	    if (this.doc) { // added by Davide Zerbetto (July 2010)
+		    if (this.mimicing){
+		        this.doc.un('mousedown', this.mimicBlur, this);
+		    }
+		    delete this.doc;
+	    } // added by Davide Zerbetto (July 2010)
+	    Ext.form.TriggerField.superclass.onDestroy.call(this);
+	}
+});

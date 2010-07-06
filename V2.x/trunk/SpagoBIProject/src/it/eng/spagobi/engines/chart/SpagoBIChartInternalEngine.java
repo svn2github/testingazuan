@@ -129,7 +129,8 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				return null;
 			}
 
-			Map parametersMap=getParametersCode(obj);
+			//Map parametersMap=getParametersCode(obj);
+			Map parametersMap=getParameters(obj);
 
 			try{
 				logger.debug("create the chart");
@@ -691,10 +692,10 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				if(values!=null){
 					if(values.size()==1){
 						String value=(String)values.get(0);
-						/*String parType=par.getParameter().getType();
-							if(parType.equalsIgnoreCase("STRING") || parType.equalsIgnoreCase("DATE")){
+						String parType=par.getParameter().getType();
+							if(parType.equalsIgnoreCase(SpagoBIConstants.STRING_TYPE_FILTER) || parType.equalsIgnoreCase(SpagoBIConstants.DATE_TYPE_FILTER)){
 								value="'"+value+"'";
-							}*/
+							}
 						parametersMap.put(url, value);
 					}else if(values.size() >=1){
 						String type = (par.getParameter() != null) ? par.getParameter().getType() : SpagoBIConstants.STRING_TYPE_FILTER;
@@ -725,43 +726,54 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 
 
 	/** Called by exporter function COnverts from BIObject Parameters to a map, in presence of multi value creates an array,
-	 * 
+	 * Only difference with getParameters functionis that does include in '' single values. merge with getParameters
 	 * @param obj
 	 * @return
 	 */
-	public Map getParametersCode(BIObject obj){
-		HashMap parametersMap=null;
-
-		//Search if the chart has parameters
-		List parametersList=obj.getBiObjectParameters();
-		logger.debug("Check for BIparameters and relative values");
-		if(parametersList!=null){
-			parametersMap=new HashMap();
-			for (Iterator iterator = parametersList.iterator(); iterator.hasNext();) {
-				BIObjectParameter par= (BIObjectParameter) iterator.next();
-				String url=par.getParameterUrlName();
-				List values=par.getParameterValues();
-				if(values!=null){
-					if(values.size()==1){
-						String value=(String)values.get(0);
-						String parType=par.getParameter().getType();
-						if(parType.equalsIgnoreCase("STRING") || parType.equalsIgnoreCase("DATE")){
-							value="'"+value+"'";
-						}
-						parametersMap.put(url, value);
-					}else if(values.size() >=1){
-						String value = "'"+(String)values.get(0)+"'";
-						for(int k = 1; k< values.size() ; k++){
-							value = value + ",'" + (String)values.get(k)+"'";
-						}
-						parametersMap.put(url, values);
-					}
-				}
-			}	
-
-		} // end looking for parameters
-		return parametersMap;
-	}
+//	public Map getParametersCode(BIObject obj){
+//		HashMap parametersMap=null;
+//
+//		//Search if the chart has parameters
+//		List parametersList=obj.getBiObjectParameters();
+//		logger.debug("Check for BIparameters and relative values");
+//		if(parametersList!=null){
+//			parametersMap=new HashMap();
+//			for (Iterator iterator = parametersList.iterator(); iterator.hasNext();) {
+//				BIObjectParameter par= (BIObjectParameter) iterator.next();
+//				String url=par.getParameterUrlName();
+//				List values=par.getParameterValues();
+//				if(values!=null){
+//					if(values.size()==1){
+//						String value=(String)values.get(0);
+//						String parType=par.getParameter().getType();
+//						if(parType.equalsIgnoreCase(SpagoBIConstants.STRING_TYPE_FILTER) || parType.equalsIgnoreCase(SpagoBIConstants.DATE_TYPE_FILTER)){
+//							value="'"+value+"'";
+//						}
+//						parametersMap.put(url, value);
+//					}else if(values.size() >=1){
+//						String type = (par.getParameter() != null) ? par.getParameter().getType() : SpagoBIConstants.STRING_TYPE_FILTER;
+//						String value = "";
+//						if(type.equalsIgnoreCase(SpagoBIConstants.STRING_TYPE_FILTER) || type.equalsIgnoreCase(SpagoBIConstants.DATE_TYPE_FILTER)){
+//							value = "'"+(String)values.get(0)+"'";
+//							for(int k = 1; k< values.size() ; k++){
+//								value = value + ",'" + (String)values.get(k)+"'";
+//							}
+//						}
+//						else{
+//							value = (String)values.get(0);
+//							for(int k = 1; k< values.size() ; k++){
+//								value = value + "," + (String)values.get(k)+"";
+//							}	
+//						}
+//						
+//						parametersMap.put(url, values);
+//					}
+//				}
+//			}	
+//
+//		} // end looking for parameters
+//		return parametersMap;
+//	}
 
 
 	public DatasetMap retrieveDatasetValue(ChartImpl sbi) throws EMFUserError{

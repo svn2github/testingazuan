@@ -45,7 +45,7 @@ Sbi.locale.formats = {
 		
 		boolean: {
 			trueSymbol: 'vero',
-    		falseSymbol: 'false',
+    		falseSymbol: 'falso',
     		nullValue: ''
 		}
 };

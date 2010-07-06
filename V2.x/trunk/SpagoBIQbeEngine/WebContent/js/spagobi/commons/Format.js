@@ -198,7 +198,7 @@ Sbi.qbe.commons.Format = function(){
         	
         	if(v === true){
         		 v = format.trueSymbol;
-            } else if(v === true){
+            } else if(v === false){
             	 v = format.falseSymbol;
             } else {
             	 v = format.nullValue;

@@ -52,7 +52,7 @@ Sbi.qbe.QbePanel = function(config) {
 		// set default values here
 		displayQueryBuilderPanel: true
 		, displayFormBuilderPanel: false
-		, displayCrosstabDesignerPanel: true
+		, displayCrosstabDesignerPanel: false
 	}, config || {});
 	
 	this.services = new Array();

@@ -362,6 +362,11 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		+ SpagoBIConstants.EXECUTE_DOCUMENT_ACTION
 		+ "\"/> "		
 		+ "		<PARAMETER name=\""
+		+ ObjectsTreeConstants.BIOBJECT_TREE_LIST
+		+ "\" scope=\"\" type=\"ABSOLUTE\" value=\""
+		+ ObjectsTreeConstants.BIOBJECT_TREE_LIST
+		+ "\"/> "
+		+ "		<PARAMETER name=\""
 		+ SpagoBIConstants.MESSAGEDET
 		+ "\" scope=\"\" type=\"ABSOLUTE\" value=\""
 		+ ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE

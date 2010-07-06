@@ -360,6 +360,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 			execUrlPars.put(ObjectsTreeConstants.ACTION, SpagoBIConstants.EXECUTE_DOCUMENT_ACTION);			
 			execUrlPars.put(ObjectsTreeConstants.OBJECT_ID, idObj.toString());
 			execUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
+			execUrlPars.put(ObjectsTreeConstants.BIOBJECT_TREE_LIST, ObjectsTreeConstants.BIOBJECT_TREE_LIST);			
 			
 			
 			
@@ -519,9 +520,12 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 				String stateIcon = urlBuilder.getResourceLinkByTheme(httpRequest, stateImgUrl, currTheme);
 				// create execution link
 				Map execUrlPars = new HashMap();
-				execUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+				//execUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+				execUrlPars.put(ObjectsTreeConstants.ACTION, SpagoBIConstants.EXECUTE_DOCUMENT_ACTION);			
 				execUrlPars.put(ObjectsTreeConstants.OBJECT_ID, idObj.toString());
 				execUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
+				execUrlPars.put(ObjectsTreeConstants.BIOBJECT_TREE_LIST, ObjectsTreeConstants.BIOBJECT_TREE_LIST);			
+				
 				String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
 				String prog = idObj.toString();
 				htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'"+execUrl+"\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'"+createEraseDocumentLink(idObj,idFolder)+"\\', \\'\\', \\'\\',\\'\\', \\'\\')' );\n");
@@ -542,8 +546,10 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	
 	private String createExecuteObjectLink(Integer id) {
 		HashMap execUrlParMap = new HashMap();
-		execUrlParMap.put(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
+		//execUrlParMap.put(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
+		execUrlParMap.put(ObjectsTreeConstants.ACTION, SpagoBIConstants.EXECUTE_DOCUMENT_ACTION);			
 		execUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, id.toString());
+		execUrlParMap.put(ObjectsTreeConstants.BIOBJECT_TREE_LIST, ObjectsTreeConstants.BIOBJECT_TREE_LIST);		
 		execUrlParMap.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
 		String execUrl = urlBuilder.getUrl(httpRequest, execUrlParMap);
 		return execUrl;

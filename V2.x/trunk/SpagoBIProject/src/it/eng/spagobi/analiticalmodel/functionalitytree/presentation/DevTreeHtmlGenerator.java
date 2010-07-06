@@ -323,6 +323,7 @@ public class DevTreeHtmlGenerator implements ITreeHtmlGenerator {
 		HashMap execUrlParMap = new HashMap();
 		//execUrlParMap.put(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
 		execUrlParMap.put(ObjectsTreeConstants.ACTION, SpagoBIConstants.EXECUTE_DOCUMENT_ACTION);
+		execUrlParMap.put(ObjectsTreeConstants.BIOBJECT_TREE_LIST, ObjectsTreeConstants.BIOBJECT_TREE_LIST);		
 		execUrlParMap.put(ObjectsTreeConstants.OBJECT_ID, id.toString());
 		execUrlParMap.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
 		String execUrl = urlBuilder.getUrl(httpRequest, execUrlParMap);

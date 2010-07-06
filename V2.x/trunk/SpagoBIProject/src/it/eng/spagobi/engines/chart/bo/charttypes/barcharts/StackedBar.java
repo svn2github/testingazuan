@@ -190,15 +190,26 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 						}
 					}
 					else if (this.getNumberSerVisualization() > 0 && contSer < this.getNumberSerVisualization()){
-						series.put(nameP, value);
-						orderSeries.add(nameP);
+
+						String serieName = nameP;
+						if(seriesLabelsMap != null && seriesLabelsMap.keySet().contains(nameP)){
+							serieName = seriesLabelsMap.get(nameP).toString();
+						}
+						series.put(serieName, value);
+						orderSeries.add(serieName);
 						contSer++;
+						
 					}
 					else if (this.getNumberSerVisualization() == 0){
-						series.put(nameP, value);
-						orderSeries.add(nameP);
+						String serieName = nameP;
+						if(seriesLabelsMap != null && seriesLabelsMap.keySet().contains(nameP)){
+							serieName = seriesLabelsMap.get(nameP).toString();
+						}
+						series.put(serieName, value);
+						orderSeries.add(serieName);
 					}
 
+					
 					// for now I make like if addition value is checked he seek for an attribute with name with value+name_serie
 				}
 			}
@@ -240,6 +251,14 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 						valueD=null;
 					}
 
+					
+					// check if serie must be rinominated!
+//					String serieName = nameS;
+//					if(seriesLabelsMap != null && seriesLabelsMap.keySet().contains(nameS)){
+//						serieName = seriesLabelsMap.get(nameS).toString();
+//					}
+					
+					
 					dataset.addValue(valueD!=null ? valueD.doubleValue() : null, nameS, catValue);
 					cumulativeValue+=valueD!=null ? valueD.doubleValue() : 0.0;
 					if(!seriesNames.contains(nameS)){
@@ -418,10 +437,13 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator.next();
 
 				String serieName=new String(object.getKey());
+				// I put the serieName if rinominated
+				String nameRinominated = (seriesLabelsMap != null && seriesLabelsMap.containsKey(serieName)) ? seriesLabelsMap.get(serieName).toString() : serieName;
+				
 				colorSerie=new String((String)object.getValue());
 				Color col=new Color(Integer.decode(colorSerie).intValue());
 				if(col!=null){
-					colorMap.put(serieName,col); 
+					colorMap.put(nameRinominated,col); 
 				}
 			}		
 
@@ -592,7 +614,11 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		if(colorMap!=null){
 			for (int i = 0; i < seriesN; i++) {
 				String serieName=(String)dataset.getRowKey(i);
-				Color color=(Color)colorMap.get(serieName);
+				
+				// if serie has been rinominated I must search with the new name!
+				String nameToSearchWith = (seriesLabelsMap != null && seriesLabelsMap.containsKey(serieName)) ? seriesLabelsMap.get(serieName).toString() : serieName;
+				
+				Color color=(Color)colorMap.get(nameToSearchWith);
 				if(color!=null){
 					renderer.setSeriesPaint(i, color);
 					renderer.setSeriesItemLabelFont(i, new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));

@@ -75,4 +75,18 @@ Ext.override(Ext.form.TriggerField, {
 	    } // added by Davide Zerbetto (July 2010)
 	    Ext.form.TriggerField.superclass.onDestroy.call(this);
 	}
+
+	, triggerBlur : function(){
+        this.mimicing = false;
+        if (this.doc) { // added by Davide Zerbetto (July 2010)
+        	this.doc.un('mousedown', this.mimicBlur, this);
+        } // added by Davide Zerbetto (July 2010)
+        if(this.monitorTab && this.el){
+            this.un('specialkey', this.checkTab, this);
+        }
+        Ext.form.TriggerField.superclass.onBlur.call(this);
+        if(this.wrap){
+            this.wrap.removeClass(this.wrapFocusClass);
+        }
+    }
 });

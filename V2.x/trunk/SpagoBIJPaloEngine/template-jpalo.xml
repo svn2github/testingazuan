@@ -1,5 +1,0 @@
-	 <olap connection="Mondrian" 
-      	 account="admin" 
-           view="Sales"
-    	   cube="Sales">
-	 </olap>

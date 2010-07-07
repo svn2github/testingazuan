@@ -278,7 +278,7 @@ public class ExecutionInstance implements Serializable{
 			return true;
 		else return false;
 	}
-	
+
 	public void applyViewpoint( String userProvidedParametersStr, boolean transientMode) {
 		logger.debug("IN");
 		if (userProvidedParametersStr != null) {
@@ -323,8 +323,8 @@ public class ExecutionInstance implements Serializable{
 					List parameterValues = new ArrayList();
 					String[] values = parValue.split(";");
 					for (int m = 0; m < values.length; m++) {
-					parameterValues.add(values[m]);
-				}
+						parameterValues.add(values[m]);
+					}
 					biparameter.setParameterValues(parameterValues);
 				}
 				biparameter.setTransientParmeters(transientMode);
@@ -375,11 +375,11 @@ public class ExecutionInstance implements Serializable{
 					biparameter.setParameterValues(null);
 				} else {
 					List parameterValues = decoder.decode(parValue);
-//					List parameterValues = new ArrayList();
-//					String[] values = parValue.split(";");
-//					for (int m = 0; m < values.length; m++) {
-//					parameterValues.add(values[m]);
-//					}
+					//					List parameterValues = new ArrayList();
+					//					String[] values = parValue.split(";");
+					//					for (int m = 0; m < values.length; m++) {
+					//					parameterValues.add(values[m]);
+					//					}
 					biparameter.setParameterValues(parameterValues);
 				}
 				biparameter.setTransientParmeters(transientMode);
@@ -695,13 +695,13 @@ public class ExecutionInstance implements Serializable{
 		logger.debug("IN");
 		String biparamLabel = biparam.getLabel();
 		List toReturn = new ArrayList();
-		
+
 		String urlName = biparam.getParameterUrlName();
 		if ("outputType".equals(urlName)) {
 			logger.debug("Parameter is outputType parameter, it is not validated");
 			return toReturn;
 		}
-		
+
 		// get lov
 		ModalitiesValue lov = biparam.getParameter().getModalityValue();
 		if (lov.getITypeCd().equals("MAN_IN")) {
@@ -721,7 +721,14 @@ public class ExecutionInstance implements Serializable{
 		if (values != null && values.size()>0) {
 			for (int i = 0; i < values.size(); i++) {
 				//String value = values.get(i).toString();
-				String value = URLDecoder.decode(values.get(i).toString(), "UTF-8");
+				String value = null;
+				String val = values.get(i).toString();
+				if(val.equalsIgnoreCase("%")){
+					value = "%";
+				}
+				else {
+					value = URLDecoder.decode(val, "UTF-8");
+				}
 				String description = null;
 				if (!value.equals("") && !lovResultHandler.containsValue(value, lovProvDet
 						.getValueColumnName())) {
@@ -811,7 +818,7 @@ public class ExecutionInstance implements Serializable{
 			Map mapPars = aEngineDriver.getParameterMap(object, this.subObject, userProfile, executionRole);
 			// adding "system" parameters
 			addSystemParametersForExternalEngines(mapPars, locale);
-			
+
 			url = GeneralUtilities.getUrl(engine.getUrl(), mapPars);
 		} else {
 			throw new RuntimeException("Internal engines does not support subobjects!!");
@@ -873,7 +880,7 @@ public class ExecutionInstance implements Serializable{
 		object.setBiObjectParameters(listPars);
 		logger.debug("OUT");
 	}
-	
+
 
 	public String getExecutionUrl(Locale locale) {
 		logger.debug("IN");

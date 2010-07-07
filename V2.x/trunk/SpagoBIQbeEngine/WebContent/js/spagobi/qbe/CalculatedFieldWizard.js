@@ -213,6 +213,10 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 			} 
 		} 	
 	}
+	
+	, setCFAlias: function(alias) {
+		this.inputFields.alias.setValue(alias);
+	}
 
 	, validate: function() {
 		if(this.expertMode) {

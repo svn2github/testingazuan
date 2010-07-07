@@ -25,6 +25,7 @@ package it.eng.spagobi.behaviouralmodel.analyticaldriver.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ParameterUse;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiObjParuse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParameters;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseCk;
@@ -756,6 +757,7 @@ IParameterUseDAO {
 	 * @see it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterUseDAO#eraseParameterUseByParId(java.lang.Integer)
 	 */
 	public void eraseParameterUseByParIdSameSession(Integer parId, Session sessionCurrDB) throws EMFUserError {
+		logger.debug("IN");
 		Session aSession = null;
 		SbiParuse sbiPar = new SbiParuse();
 		List parUseList = null;
@@ -777,15 +779,20 @@ IParameterUseDAO {
 				Set checks = sbiParuse.getSbiParuseCks();
 				Set dets =	sbiParuse.getSbiParuseDets();
 
+				logger.debug("Delete details");
+
 				for (Iterator iterator2 = dets.iterator(); iterator2.hasNext();) {
 					SbiParuseDet det = (SbiParuseDet) iterator2.next();
 					sessionCurrDB.delete(det);
 				}
+				logger.debug("Delete checks");
 				for (Iterator iterator2 = checks.iterator(); iterator2.hasNext();) {
 					SbiParuseCk check = (SbiParuseCk) iterator2.next();
 					sessionCurrDB.delete(check);
 				}
 
+				logger.debug("Delete obj Paruse used on correlation parameters");
+				eraseParameterObjUseByParuseIdSameSession(sbiParuse.getUseId(), sessionCurrDB);
 				sbiPar.setUseId(sbiParuse.getUseId());
 				sbiPar.setLabel(sbiParuse.getLabel());
 				sbiPar.setName(sbiParuse.getName());
@@ -800,6 +807,7 @@ IParameterUseDAO {
 
 				sessionCurrDB.delete(sbiPar);
 				sessionCurrDB.flush();
+				logger.debug("OUT");
 
 			}
 		}
@@ -815,6 +823,26 @@ IParameterUseDAO {
 		}
 	}
 
+	/*
+	 *  delete all objects paruse related to parUSe that must be deleted
+	 */
+	public void eraseParameterObjUseByParuseIdSameSession(Integer parUseId, Session sessionCurrDB) throws EMFUserError {
+		logger.debug("IN");
+		String q = "from SbiObjParuse use where use.id.sbiParuse.useId = '" + parUseId + "' order by use.prog desc";
+		Query hqlQuery = sessionCurrDB.createQuery(q);
+		try{
+			List hibUse = (List) hqlQuery.list();
 
+			for (Iterator iterator = hibUse.iterator(); iterator.hasNext();) {
+				SbiObjParuse object = (SbiObjParuse) iterator.next();
+				sessionCurrDB.delete(object);
+			}
 
+		}
+		catch (Exception e) {
+			logger.error("Error in deleting SbiObjParuse associated to paruse with id "+parUseId+": go on anyway; exception will be thrown when trying to erase paruse");
+		}
+		logger.debug("OUT");
+
+	}
 }

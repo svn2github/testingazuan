@@ -329,7 +329,7 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
 	  if(active) {
   		//editor.reset();
   		
-  		if(exp.trim() == "") {return;}
+  		//if(exp.trim() == "") {return;}
   		
         //editor.insertAtCursor(exp) ;
   		editor.setValue( exp );

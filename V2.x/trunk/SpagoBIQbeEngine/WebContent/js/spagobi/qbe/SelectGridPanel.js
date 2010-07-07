@@ -810,13 +810,22 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
      	}, this);
      	
      	this.calculatedFieldWizard.on('expert', function(){
+     		if(this.calculatedFieldWizard!=null){
+     			var alias = this.calculatedFieldWizard.inputFields.alias.getValue();
+     		}
      		this.initCalculatedFieldWizards();
      		this.addInLineCalculatedField(null);
+     		this.inLineCalculatedFieldWizard.setCFAlias(alias);
      	}, this);
  
      	this.inLineCalculatedFieldWizard.on('notexpert', function(){
+     		if(this.inLineCalculatedFieldWizard!=null){
+     			var alias = this.inLineCalculatedFieldWizard.inputFields.alias.getValue();
+     		}
      		this.initCalculatedFieldWizards();
      		this.addCalculatedField(null);
+   			this.calculatedFieldWizard.setCFAlias(alias);
+
      	}, this);
 		
     	this.inLineCalculatedFieldWizard.on('apply', function(win, formState, targetRecord){
@@ -892,11 +901,12 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 				};
 				fields.push(field);
 			//}
-		});					
+		});			
+		
+		this.calculatedFieldWizard.show();
 		this.calculatedFieldWizard.validationService.params = {fields: Ext.util.JSON.encode(fields)};
 		this.calculatedFieldWizard.setExpItems('fields', fields);
 		this.calculatedFieldWizard.setTargetRecord(targetRecord);
-		
 		this.calculatedFieldWizard.show();
 	}
 	

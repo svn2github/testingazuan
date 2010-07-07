@@ -87,6 +87,15 @@ Sbi.qbe.commons.Utils = function(){
 			}
 			return randomstring;
 		}
+		
+		, encodeEscapes: function(string) {
+			var encodedHtml = string;
+			encodedHtml = encodedHtml.replace(/\"/g,"&quot;");
+			//encodedHtml = encodedHtml.replace(/\'/g,"&apos;");
+			encodedHtml = encodedHtml.replace(/</g,"&lt;");
+			encodedHtml = encodedHtml.replace(/>/g,"&gt;");
+			return encodedHtml;
+		}
         
 	};
 }();

@@ -1043,7 +1043,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	, getCellTooltip: function (value, cell, record) {
 	 	var tooltipString = record.data.longDescription;
 	 	if (tooltipString !== undefined && tooltipString != null) {
-	 		cell.attr = ' ext:qtip="'  + tooltipString + '"';
+	 		cell.attr = ' ext:qtip="'  + Sbi.qbe.commons.Utils.encodeEscapes(tooltipString)+ '"';
 	 	}
 	 	return value;
 	}

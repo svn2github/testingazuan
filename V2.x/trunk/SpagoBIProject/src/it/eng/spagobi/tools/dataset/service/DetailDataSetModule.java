@@ -380,6 +380,9 @@ public class DetailDataSetModule extends AbstractModule {
 			// if is to update dataset check if there is a file to upload aaa
 			if(serviceRequest.getAttribute("UPLOADED_FILE")!=null){
 				String fileName=uploadFileToResources(serviceRequest);
+				if(fileName == null){
+					return;
+				}
 				dsNew.setFileName(fileName);
 			}
 
@@ -484,12 +487,12 @@ public class DetailDataSetModule extends AbstractModule {
 
 				// create a new File and copy the exported one
 				File newFile=new File(filePath+"/"+fileName);
-
+				
 				try {
 					uploaded.write(newFile);
 				} catch (Exception e) {
 					EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "Error in writing the file", "202");
-					this.getErrorHandler().addError(error);
+					this.getErrorHandler().addError(error);	
 					return null;						
 				}
 				// FIle has been written

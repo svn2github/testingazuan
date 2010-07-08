@@ -96,6 +96,7 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	, SBI_CHART_SPEEDOMETER: 'chart.sbi.speedometer'
 	, SBI_CHART_LIVELINES: 'chart.sbi.livelines'
 	, SBI_CHART_MULTILEDS: 'chart.sbi.multileds'
+	, SBI_CHART_SEMAPHORE: 'chart.sbi.semaphore'
 	, OFC_CHART_BAR: 'chart.of.bar'
 	, FCF_CHART_BAR: 'chart.fcf.bar'
 		
@@ -174,7 +175,8 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 			chart = this.createPieChart(chartConfig);
 		} else if(chartType === this.SBI_CHART_SPEEDOMETER 
 				|| chartType === this.SBI_CHART_LIVELINES
-				|| chartType === this.SBI_CHART_MULTILEDS){
+				|| chartType === this.SBI_CHART_MULTILEDS
+				|| chartType === this.SBI_CHART_SEMAPHORE){
 			
 			chart = this.createSpagoBIChart(chartConfig);
 			

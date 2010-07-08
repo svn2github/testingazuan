@@ -47,7 +47,6 @@
 Ext.ns("Sbi.console");
 
 Sbi.console.Widget = function(config) {
-	
 		var defaultSettings = {
 			defaultMsg: 'Empty widget'
 		};

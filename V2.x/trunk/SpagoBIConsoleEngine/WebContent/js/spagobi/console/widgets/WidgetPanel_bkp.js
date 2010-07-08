@@ -47,9 +47,9 @@
 Ext.ns("Sbi.console");
 
 Sbi.console.WidgetPanel = function(config) {
-	
+	alert("Sbi.console.WidgetPanel");
 		var defaultSettings = {
-			layout:'table'
+			layout:'column'
 			, columnNumber: 3
 		};
 		
@@ -58,23 +58,6 @@ Sbi.console.WidgetPanel = function(config) {
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
-		
-		
-		//for retrocompatibility with 'column' type layout. 
-		//if (c.layoutConfig === undefined && c.columnNumber !== undefined){
-		if (c.layout !== undefined && c.layout === 'column'){
-			
-			//c.layoutConfig = {columns: c.columnNumber};
-			delete c.layout;
-			c.layout = {}; 
-			c.layoutConfig = {};
-			c.layout = 'table';
-			c.layoutConfig.columns = c.columnNumber;
-			delete c.columnNumber;
-			delete c.columnWidths;
-			alert(c.layout.toSource());		
-			alert(c.layoutConfig.toSource());			
-		}
 		
 		this.widgetContainer = new Sbi.console.WidgetContainer({storeManager: c.storeManager});
 		if(c.storeManager) {
@@ -88,15 +71,34 @@ Sbi.console.WidgetPanel = function(config) {
 		}
 		
 		Ext.apply(this, c);
-	
+				
+		this.widgetColumns = [];
+		for(var i = 0; i < this.columnNumber; i++) {
+			var w = this.columnWidths? this.columnWidths[i]: 1/this.columnNumber; 
+			this.widgetColumns.push(
+				new Ext.Panel({
+					columnWidth: w
+					, baseCls:'x-plain'
+					, bodyStyle:'padding:5px 3px 3px 5px'
+				})
+			);
+		}
+		
+		
+		c = Ext.apply(c, {  	
+	      	items: this.widgetColumns
+		});
+
+		
 		// constructor
 		Sbi.console.WidgetPanel.superclass.constructor.call(this, c);
     
 };
 
-Ext.extend(Sbi.console.WidgetPanel, Sbi.console.Widget, {
+Ext.extend(Sbi.console.WidgetPanel, Ext.Panel, {
     
 	columnNumber: null
+	, widgetColumns: null
 	, widgetContainer: null
     
     //  -- public methods ---------------------------------------------------------
@@ -105,6 +107,7 @@ Ext.extend(Sbi.console.WidgetPanel, Sbi.console.Widget, {
 		var widgets = this.widgetContainer.getWidgets();
 		var index = widgets.getCount();
 		this.widgetContainer.register(widget);
+		this.widgetColumns[index%this.columnNumber].add(widget);
 	}
     
     //  -- private methods ---------------------------------------------------------
@@ -112,20 +115,12 @@ Ext.extend(Sbi.console.WidgetPanel, Sbi.console.Widget, {
     , onRender: function(ct, position) {
 		Sbi.console.WidgetPanel.superclass.onRender.call(this, ct, position);
 		
-	    this.items.each( function(item) {
-			this.items.remove(item);
-	        item.destroy();           
-	    }, this);   
 		
 		var widgets = this.widgetContainer.getWidgets();
 		
-		widgets.each(function(widget, index, length) {			
-			this.add(widget);
-			//var columnspan = widget.colspan || 1;
-			//alert("columnspan: " + columnspan);
-			//this.add(new Ext.Panel({colspan: columnspan, items: [widget]}));
+		widgets.each(function(widget, index, length) {
+			this.widgetColumns[index%this.columnNumber].add(widget);
 		}, this);
-		
 	}
 
 	

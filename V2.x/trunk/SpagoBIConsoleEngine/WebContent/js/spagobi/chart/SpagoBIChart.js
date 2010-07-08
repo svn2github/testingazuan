@@ -376,3 +376,37 @@ Sbi.chart.Speedometer = Ext.extend(Sbi.chart.SpagoBIChart, {
 });
 Ext.reg('chart.sbi.speedometer', Sbi.chart.Speedometer);
 
+Sbi.chart.Semaphore = Ext.extend(Sbi.chart.SpagoBIChart, {
+	
+	CHART_SWF: 'semaphore.swf'
+	, CHART_DEFAULT_CONFIG: {
+		title: 'Title',
+  	  header: 'Effort',
+    	field:'EffortIndex', 
+    	orientation:'vertical',
+    	rangeMaxValue: 100, 
+    	rangeSecondInterval: 66, 
+    	rangeFirstInterval: 10, 
+    	rangeMinValue: 0
+	}
+		
+	, isSwfReady: function() {
+		return this.swf.setValue;
+	}
+
+	, onRender : function(ct, position) {
+		Sbi.chart.SpagoBIChart.superclass.onRender.call(this, ct, position);
+	}
+	
+	, onRefresh: function() {
+		var value;
+		var rec = this.store.getAt(0);
+		if(rec) {
+			var fName = this.store.getFieldNameByAlias(this.flashVars.field);
+			value = rec.get(fName);
+		}
+		this.swf.setValue(value);			
+	}
+});
+Ext.reg('chart.sbi.semaphore', Sbi.chart.Semaphore);
+

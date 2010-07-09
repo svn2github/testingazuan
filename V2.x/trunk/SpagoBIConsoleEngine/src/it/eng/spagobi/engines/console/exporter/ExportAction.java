@@ -23,7 +23,9 @@ package it.eng.spagobi.engines.console.exporter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -112,7 +114,10 @@ public class ExportAction extends AbstractConsoleEngineAction {
 				responseType = RESPONSE_TYPE_ATTACHMENT;
 				logger.debug("Parameter [" + RESPONSE_TYPE + "] has been set equal to [" + responseType + "]");
 			}
-					
+				
+			String test = getAttributeAsString(META);
+			logger.debug("Parameter [" + META + "] is equal to [" + test + "]");
+			
 			jsonArray = this.getAttributeAsJSONArray(META);
 			logger.debug("Parameter [" + META + "] is equal to [" + jsonArray.toString(4) + "]");
 		
@@ -144,21 +149,37 @@ public class ExportAction extends AbstractConsoleEngineAction {
 					dataStore.getMetaData().getFieldMeta(i).setProperty("visible", Boolean.FALSE);
 				}
 				
+				List actionColumns = new ArrayList();
+				
 				for(int i = 0; i < jsonArray.length(); i++) {
-					String fieldName = jsonArray.getJSONObject(i).optString("header", null);
-					if(StringUtilities.isEmpty(fieldName)) {
-						logger.warn("no header for column: " + jsonArray.getJSONObject(i).toString(4));
-						continue;
-					}
-					int fieldIndex = dataStore.getMetaData().getFieldIndex(fieldName);
-					if(fieldIndex < 0){
-						logger.warn("dataStore does not conatin a column named [" + fieldIndex + "]");
-						continue;
-					}
-					if(jsonArray.getJSONObject(i).optBoolean("hidden", true) == false) {
-						dataStore.getMetaData().getFieldMeta(fieldIndex).setProperty("visible", Boolean.TRUE);
+					String fieldName = jsonArray.getJSONObject(i).optString("name", null);
+					String fieldHeader = jsonArray.getJSONObject(i).optString("header", null);
+					Boolean isActionColumn = jsonArray.getJSONObject(i).optBoolean("actionColumn", Boolean.FALSE);
+					
+					if(isActionColumn.booleanValue() == false) {
+						if(StringUtilities.isEmpty(fieldName)) {
+							logger.warn("no name for column: " + jsonArray.getJSONObject(i).toString(4));
+							continue;
+						}
+						int fieldIndex = dataStore.getMetaData().getFieldIndex(fieldName);
+						if(fieldIndex < 0){
+							logger.warn("dataStore does not conatin a column named [" + fieldIndex + "]");
+							continue;
+						}
+						if(jsonArray.getJSONObject(i).optBoolean("hidden", true) == false) {
+							dataStore.getMetaData().getFieldMeta(fieldIndex).setProperty("visible", Boolean.TRUE);
+							dataStore.getMetaData().getFieldMeta(fieldIndex).setAlias(fieldHeader);
+						}
+					} else {
+						String actionConfig = jsonArray.getJSONObject(i).optString("actionConfig");
+						logger.debug("Parameter [actionConfig] is equal to [" + actionConfig + "]");
+						Assert.assertNotNull(actionConfig, "Parameter [actionConfig]connot be undefined if parameter [actionColumn] is true");
+						JSONObject actionConfigJson = new JSONObject(actionConfig);
+						actionColumns.add( actionConfigJson );
 					}
 				}
+				
+				dataStore.getMetaData().setProperty("actionColumns", actionColumns);
 			}
 			
 			
@@ -197,46 +218,6 @@ public class ExportAction extends AbstractConsoleEngineAction {
 				throw new SpagoBIEngineException("Impossible to write back the responce to the client", ioe);
 			}	
 			
-			
-			/*
-			dataSetJSON = null;
-			try {
-				JSONDataWriter writer = new JSONDataWriter();
-				
-				dataSetJSON = (JSONObject)writer.write(dataStore);				
-			} catch (Throwable e) {
-				throw new SpagoBIServiceException("Impossible to serialize datastore", e);
-			}
-			
-			try {
-				reportFile = File.createTempFile("pippo", ".txt");
-				logger.debug("Temporary staging file created in [" + reportFile.toString() + "]");
-			} catch (IOException ioe) {
-				throw new SpagoBIEngineException("Impossible to create a temporary file to store the template generated on the fly", ioe);
-			}
-			
-			try {
-				PrintWriter out = new PrintWriter(new FileWriter(reportFile));
-				if(dataSet instanceof JDBCDataSet) {
-					JDBCDataSet jdbcDataSet = (JDBCDataSet)dataSet;
-					QuerableBehaviour querableBehaviour = (QuerableBehaviour)jdbcDataSet.getBehaviour(QuerableBehaviour.class.getName());
-					
-					out.println(querableBehaviour.getStatement());
-				}
-				
-				out.print(dataSetJSON.toString(4));
-				out.flush();
-				out.close();
-			} catch (IOException ioe) {
-				throw new SpagoBIEngineException("Impossible to create report", ioe);
-			}
-			
-			try {				
-				writeBackToClient(reportFile, null, writeBackResponseInline, fileName, mimeType);
-			} catch (IOException ioe) {
-				throw new SpagoBIEngineException("Impossible to write back the responce to the client", ioe);
-			}
-			*/
 			
 		} catch(Throwable t) {
 			logger.error("Impossible to export doc", t);

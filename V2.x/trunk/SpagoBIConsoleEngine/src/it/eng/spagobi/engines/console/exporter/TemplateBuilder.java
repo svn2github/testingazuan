@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 import it.eng.spago.dbaccess.sql.DateDecorator;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
@@ -97,17 +98,18 @@ public class TemplateBuilder {
 	
 	public String buildTemplate() {
 		String templateStr;
+		IDataStoreDecorator dataStoreDecorator;
 		
 		logger.debug("IN");
 		
 		try {
 			templateStr = getTemplateFileContent();
+			logger.debug("Base template: " + templateStr);
+			Assert.assertNotNull(templateStr, "base template cannot be null");
 			
-			IDataStoreDecorator dataStoreDecorator = new DisplaySizeDecorator();
+			dataStoreDecorator = new DisplaySizeDecorator();
 			dataStoreDecorator.decorate(dataStore);
-			
-			
-			
+						
 			if(getParamValue("pagination", "false").equalsIgnoreCase("true")) {
 				templateStr = replaceParam(templateStr, "pagination", "isIgnorePagination=\"true\"");
 			} else {
@@ -168,7 +170,7 @@ public class TemplateBuilder {
 			}
 		} catch (Throwable t) {
 			if(t instanceof ExportException) throw (ExportException)t;
-			throw new ExportException("An upredictable error occured while reading base template content");
+			throw new ExportException("An upredictable error occured while reading base template content", t);
 		} finally {
 			logger.debug("OUT");
 		}
@@ -210,134 +212,203 @@ public class TemplateBuilder {
 	public String getDetailsBlock(int[] columnWidth) {
 		StringBuffer buffer = new StringBuffer();
 		
-		
-		int detailHeight = getRowHeight(Integer.parseInt(DEFAULT_HEADER_HEIGHT));
-		
-		buffer.append("<detail>\n");
-		buffer.append("<band " + 
-					  "height=\"" + detailHeight + "\"  " + 
-					  "isSplitAllowed=\"true\" >\n");
-		
-		
-		int x = 0;
-		
-		int i=0;
-		int fieldNo = dataStore.getMetaData().getFieldCount();
-		for(i = 0; i < fieldNo; i++) {
-			IFieldMetaData fieldMeta = dataStore.getMetaData().getFieldMeta(i);
+		try {
+			int detailHeight = getRowHeight(Integer.parseInt(DEFAULT_HEADER_HEIGHT));
 			
-			Boolean isVisible = (Boolean)fieldMeta.getProperty("visible");
-			if(isVisible != null && isVisible.booleanValue() == false) {
-				continue;
-			}
+			buffer.append("<detail>\n");
+			buffer.append("<band " + 
+						  "height=\"" + detailHeight + "\"  " + 
+						  "isSplitAllowed=\"true\" >\n");
 			
 			
-			boolean isANumber = false;
-			String className = fieldMeta.getType().getName();
-			Class fieldClass = Object.class;
-			try {
-				fieldClass = Class.forName(className);
-			} catch (ClassNotFoundException e) {
-				logger.error("Class type not recognized: [" + className + "]", e);
-			}
-			if (Number.class.isAssignableFrom(fieldClass)){
-				isANumber = true;
-			}
+			int x = 0;
 			
-			buffer.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"false\" evaluationTime=\"Now\" hyperlinkType=\"None\"  hyperlinkTarget=\"Self\" ");
-			if (isANumber) {
-				String pattern = (String)fieldMeta.getProperty("pattern");
-				buffer.append(" pattern=\"" + ((pattern != null) ? pattern : DEFAULT_NUMBER_PATTERN) + "\"");
-			}
-			buffer.append(" >\n");
+			int i=0;
+			List visibleFields = dataStore.getMetaData().findFieldMeta("visible", Boolean.TRUE);
+			int fieldNo = visibleFields.size();
+			for(i = 0; i < fieldNo; i++) {
+				IFieldMetaData fieldMeta = (IFieldMetaData)visibleFields.get(i);
+				
+				Boolean isVisible = (Boolean)fieldMeta.getProperty("visible");
+				if(isVisible != null && isVisible.booleanValue() == false) {
+					continue;
+				}
+				
+				
+				boolean isANumber = false;
+				String className = fieldMeta.getType().getName();
+				Class fieldClass = Object.class;
+				try {
+					fieldClass = Class.forName(className);
+				} catch (ClassNotFoundException e) {
+					logger.error("Class type not recognized: [" + className + "]", e);
+				}
+				if (Number.class.isAssignableFrom(fieldClass)){
+					isANumber = true;
+				}
+				
+				buffer.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"false\" evaluationTime=\"Now\" hyperlinkType=\"None\"  hyperlinkTarget=\"Self\" ");
+				if (isANumber) {
+					String pattern = (String)fieldMeta.getProperty("pattern");
+					buffer.append(" pattern=\"" + ((pattern != null) ? pattern : DEFAULT_NUMBER_PATTERN) + "\"");
+				}
+				buffer.append(" >\n");
+				
+				buffer.append("<reportElement " + 
+							  		"mode=\"" + "Opaque" + "\" " + 
+							  		"x=\"" + x + "\" " + 
+							  		"y=\"" + 0 + "\" " + 
+							  		"width=\"" + columnWidth[i] + "\" " + 
+							  		"height=\"" + detailHeight + "\" " + 
+							  		"forecolor=\"" + getParamValue(PN_DETAIL_EVEN_ROW_FORECOLOR, DEFAULT_DETAIL_EVEN_ROW_FORECOLOR ) + "\" " + 
+							  		"backcolor=\"" + getParamValue(PN_DETAIL_EVEN_ROW_BACKCOLOR, DEFAULT_DETAIL_EVEN_ROW_BACKCOLOR) + "\" " + 
+							  		"key=\"textField\">\n");
+				
+				buffer.append("<printWhenExpression><![CDATA[new Boolean(\\$V\\{REPORT_COUNT\\}.intValue() % 2 == 0)]]></printWhenExpression>");
+				buffer.append("</reportElement>");
+				buffer.append("<box leftPadding=\"2\" rightPadding=\"2\" topBorder=\"None\" topBorderColor=\"#000000\" leftBorder=\"None\" leftBorderColor=\"#000000\" rightBorder=\"None\" rightBorderColor=\"#000000\" bottomBorder=\"None\" bottomBorderColor=\"#000000\"/>\n");
+	
+				
+				buffer.append("<textElement " +
+									"textAlignment=\"" + (isANumber ? "Right": "Left") + "\" " +
+									"verticalAlignment=\"Middle\"> " +
+									"<font pdfFontName=\"" + getParamValue(PN_ROW_FONT, DEFAULT_ROW_FONT)+ "\" " +
+										  "size=\"" + getParamValue(PN_ROW_FONT_SIZE, DEFAULT_ROW_FONT_SIZE)+ "\"/>" +
+							  "</textElement>\n");
+				
+				if(fieldMeta.getType().getName().equalsIgnoreCase("java.sql.Date")) {
+					buffer.append("<textFieldExpression   " + 
+							  "class=\"java.lang.String\"> " + 
+							  "<![CDATA[\\$F\\{" + fieldMeta.getName() + "\\}.toString()]]>\n" +
+							  "</textFieldExpression>\n");
+				} else {
+					buffer.append("<textFieldExpression   " + 
+							  "class=\"" + fieldMeta.getType().getName() + "\"> " + 
+							  "<![CDATA[\\$F\\{" + fieldMeta.getName() + "\\}]]>\n" +
+							  "</textFieldExpression>\n");
+				}
 			
-			buffer.append("<reportElement " + 
-						  		"mode=\"" + "Opaque" + "\" " + 
-						  		"x=\"" + x + "\" " + 
-						  		"y=\"" + 0 + "\" " + 
-						  		"width=\"" + columnWidth[i] + "\" " + 
-						  		"height=\"" + detailHeight + "\" " + 
-						  		"forecolor=\"" + getParamValue(PN_DETAIL_EVEN_ROW_FORECOLOR, DEFAULT_DETAIL_EVEN_ROW_FORECOLOR ) + "\" " + 
-						  		"backcolor=\"" + getParamValue(PN_DETAIL_EVEN_ROW_BACKCOLOR, DEFAULT_DETAIL_EVEN_ROW_BACKCOLOR) + "\" " + 
-						  		"key=\"textField\">\n");
-			
-			buffer.append("<printWhenExpression><![CDATA[new Boolean(\\$V\\{REPORT_COUNT\\}.intValue() % 2 == 0)]]></printWhenExpression>");
-			buffer.append("</reportElement>");
-			buffer.append("<box leftPadding=\"2\" rightPadding=\"2\" topBorder=\"None\" topBorderColor=\"#000000\" leftBorder=\"None\" leftBorderColor=\"#000000\" rightBorder=\"None\" rightBorderColor=\"#000000\" bottomBorder=\"None\" bottomBorderColor=\"#000000\"/>\n");
-
-			
-			buffer.append("<textElement " +
-								"textAlignment=\"" + (isANumber ? "Right": "Left") + "\" " +
-								"verticalAlignment=\"Middle\"> " +
-								"<font pdfFontName=\"" + getParamValue(PN_ROW_FONT, DEFAULT_ROW_FONT)+ "\" " +
+				
+				buffer.append("</textField>\n\n");	
+				
+				
+				
+				
+				buffer.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"false\" evaluationTime=\"Now\" hyperlinkType=\"None\"  hyperlinkTarget=\"Self\" ");
+				if (isANumber) {
+					String pattern = (String)fieldMeta.getProperty("pattern");
+					buffer.append(" pattern=\"" + ((pattern != null) ? pattern : DEFAULT_NUMBER_PATTERN) + "\"");
+				}
+				buffer.append(" >\n");
+				buffer.append("<reportElement " + 
+						      		"mode=\"" + "Opaque" + "\" " + 
+						      		"x=\"" +  x  + "\" " + 
+						      		"y=\"" + 0 + "\" " + 
+						      		"width=\"" + columnWidth[i] + "\" " + 
+						      		"height=\"" + detailHeight + "\" " + 
+						      		"forecolor=\"" + getParamValue(PN_DETAIL_ODD_ROW_FORECOLOR, DEFAULT_DETAIL_ODD_ROW_FORECOLOR ) + "\" " + 
+							  		"backcolor=\"" + getParamValue(PN_DETAIL_ODD_ROW_BACKCOLOR, DEFAULT_DETAIL_ODD_ROW_BACKCOLOR) + "\" " + 
+							  		"key=\"textField\">\n");
+				buffer.append("<printWhenExpression><![CDATA[new Boolean(\\$V\\{REPORT_COUNT\\}.intValue() % 2 != 0)]]></printWhenExpression>");
+				buffer.append("</reportElement>");
+				buffer.append("<box leftPadding=\"2\" rightPadding=\"2\" topBorder=\"None\" topBorderColor=\"#000000\" leftBorder=\"None\" leftBorderColor=\"#000000\" rightBorder=\"None\" rightBorderColor=\"#000000\" bottomBorder=\"None\" bottomBorderColor=\"#000000\"/>\n");
+	
+				buffer.append("<textElement " +
+									"textAlignment=\"" + (isANumber ? "Right": "Left") + "\" " +
+									"verticalAlignment=\"Middle\"> " +
+									"<font pdfFontName=\"" + getParamValue(PN_ROW_FONT, DEFAULT_ROW_FONT)+ "\" " +
 									  "size=\"" + getParamValue(PN_ROW_FONT_SIZE, DEFAULT_ROW_FONT_SIZE)+ "\"/>" +
-						  "</textElement>\n");
-			
-			if(fieldMeta.getType().getName().equalsIgnoreCase("java.sql.Date")) {
-				buffer.append("<textFieldExpression   " + 
-						  "class=\"java.lang.String\"> " + 
-						  "<![CDATA[\\$F\\{" + fieldMeta.getName() + "\\}.toString()]]>\n" +
-						  "</textFieldExpression>\n");
-			} else {
-				buffer.append("<textFieldExpression   " + 
-						  "class=\"" + fieldMeta.getType().getName() + "\"> " + 
-						  "<![CDATA[\\$F\\{" + fieldMeta.getName() + "\\}]]>\n" +
-						  "</textFieldExpression>\n");
+				  			  "</textElement>\n");
+				
+				if(fieldMeta.getType().getName().equalsIgnoreCase("java.sql.Date")) {
+					buffer.append("<textFieldExpression   " + 
+							  "class=\"java.lang.String\"> " + 
+							  "<![CDATA[\\$F\\{" + fieldMeta.getName() + "\\}.toString()]]>\n" +
+							  "</textFieldExpression>\n");
+				} else {
+					buffer.append("<textFieldExpression   " + 
+							  "class=\"" + fieldMeta.getType().getName() + "\"> " + 
+							  "<![CDATA[\\$F\\{" + fieldMeta.getName() + "\\}]]>\n" +
+							  "</textFieldExpression>\n");
+				}
+				
+				buffer.append("</textField>\n\n\n");	
+				
+				x += columnWidth[i];		
 			}
+			
+			List actionColumns = (List)dataStore.getMetaData().getProperty("actionColumns");
+			
+			for(int j = 0; j < actionColumns.size(); j++) {
+				JSONObject actionColumnConfig = (JSONObject)actionColumns.get(j);
+				
+				String name = actionColumnConfig.optString("name");
+				String flagColumn;
+				String checkColumn;
+				String enabledImage;
+				String disabledImage;
+				String printIfEnabledExpression;
+				String printIfDisabledExpression;
+				
+				if("errors".equalsIgnoreCase(name)) {
+					flagColumn = actionColumnConfig.getString("flagColumn");
+					checkColumn = actionColumnConfig.getString("checkColumn");
+					printIfDisabledExpression = "<printWhenExpression><![CDATA[new Boolean(\\$F\\{" + flagColumn +"\\}.doubleValue() > 0 && \\$\\F{" + checkColumn + "\\}.doubleValue() != 0)]]></printWhenExpression>" ;
+					printIfEnabledExpression = "<printWhenExpression><![CDATA[new Boolean(\\$F\\{" + flagColumn + "\\}.doubleValue() > 0 && \\$\\F{" + checkColumn + "\\}.doubleValue() == 0)]]></printWhenExpression>";
+					enabledImage = "ico_errors.gif";
+					disabledImage = "ico_errors_gray.gif";
+				} else if("alarms".equalsIgnoreCase(name)) {
+					flagColumn = actionColumnConfig.getString("flagColumn");
+					checkColumn = actionColumnConfig.getString("checkColumn");
+					printIfDisabledExpression = "<printWhenExpression><![CDATA[new Boolean(\\$F\\{" + flagColumn +"\\}.doubleValue() > 0 && \\$\\F{" + checkColumn + "\\}.doubleValue() != 0)]]></printWhenExpression>" ;
+					printIfEnabledExpression = "<printWhenExpression><![CDATA[new Boolean(\\$F\\{" + flagColumn + "\\}.doubleValue() > 0 && \\$\\F{" + checkColumn + "\\}.doubleValue() == 0)]]></printWhenExpression>";
+					enabledImage = "ico_alarms.gif";
+					disabledImage = "ico_alarms_gray.gif";
+				} else if("monitor".equalsIgnoreCase(name)) {
+					checkColumn = actionColumnConfig.getString("checkColumn");
+					printIfDisabledExpression = "<printWhenExpression><![CDATA[new Boolean(\\$\\F{" + checkColumn + "\\}.doubleValue() != 0)]]></printWhenExpression>" ;
+					printIfEnabledExpression = "<printWhenExpression><![CDATA[new Boolean(\\$\\F{" + checkColumn + "\\}.doubleValue() == 0)]]></printWhenExpression>";
+					disabledImage = "ico_monitor.gif";
+					enabledImage = "ico_monitor_gray.gif";
+				} else if("views".equalsIgnoreCase(name)) {
+					checkColumn = actionColumnConfig.getString("checkColumn");
+					printIfDisabledExpression = "<printWhenExpression><![CDATA[new Boolean(\\$\\F{" + checkColumn + "\\}.doubleValue() != 0)]]></printWhenExpression>" ;
+					printIfEnabledExpression = "<printWhenExpression><![CDATA[new Boolean(\\$\\F{" + checkColumn + "\\}.doubleValue() == 0)]]></printWhenExpression>";
+					enabledImage = "ico_views.gif";
+					disabledImage = "ico_views_gray.gif";
+				} else {
+					continue;
+				}
+				
+				buffer.append("<image>" +
+					"<reportElement x=\"" + x + "\" y=\"" + 0 + "\" width=\"14\" height=\"14\">" +
+						//"<printWhenExpression><![CDATA[new Boolean(\\$F\\{errors_flag\\}.doubleValue() > 0 && \\$\\F{errors_check\\}.doubleValue() != 0)]]></printWhenExpression>" +
+					printIfDisabledExpression + 
+					"</reportElement>" +
+					"<imageExpression class=\"java.lang.String\"><![CDATA[\\$P\\{SBI_RESOURCE_PATH\\} + \"" + disabledImage + "\"]]></imageExpression>" +
+				"</image>");
+				
+				buffer.append("<image>" +
+					"<reportElement x=\"" + x + "\" y=\"" + 0 + "\" width=\"14\" height=\"14\">" +
+						//"<printWhenExpression><![CDATA[new Boolean(\\$F\\{errors_flag\\}.doubleValue() > 0 && \\$\\F{errors_check\\}.doubleValue() == 0)]]></printWhenExpression>" +
+					printIfEnabledExpression + 
+					"</reportElement>" +
+					"<imageExpression class=\"java.lang.String\"><![CDATA[\\$P\\{SBI_RESOURCE_PATH\\} + \"" + enabledImage + "\"]]></imageExpression>" +
+				"</image>");
+				
+				x += 16;
+			}
+			
+			
+			buffer.append("</band>");
+			buffer.append("</detail>");
 		
-			
-			buffer.append("</textField>\n\n");	
-			
-			
-			
-			
-			buffer.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"false\" evaluationTime=\"Now\" hyperlinkType=\"None\"  hyperlinkTarget=\"Self\" ");
-			if (isANumber) {
-				String pattern = (String)fieldMeta.getProperty("pattern");
-				buffer.append(" pattern=\"" + ((pattern != null) ? pattern : DEFAULT_NUMBER_PATTERN) + "\"");
-			}
-			buffer.append(" >\n");
-			buffer.append("<reportElement " + 
-					      		"mode=\"" + "Opaque" + "\" " + 
-					      		"x=\"" +  x  + "\" " + 
-					      		"y=\"" + 0 + "\" " + 
-					      		"width=\"" + columnWidth[i] + "\" " + 
-					      		"height=\"" + detailHeight + "\" " + 
-					      		"forecolor=\"" + getParamValue(PN_DETAIL_ODD_ROW_FORECOLOR, DEFAULT_DETAIL_ODD_ROW_FORECOLOR ) + "\" " + 
-						  		"backcolor=\"" + getParamValue(PN_DETAIL_ODD_ROW_BACKCOLOR, DEFAULT_DETAIL_ODD_ROW_BACKCOLOR) + "\" " + 
-						  		"key=\"textField\">\n");
-			buffer.append("<printWhenExpression><![CDATA[new Boolean(\\$V\\{REPORT_COUNT\\}.intValue() % 2 != 0)]]></printWhenExpression>");
-			buffer.append("</reportElement>");
-			buffer.append("<box leftPadding=\"2\" rightPadding=\"2\" topBorder=\"None\" topBorderColor=\"#000000\" leftBorder=\"None\" leftBorderColor=\"#000000\" rightBorder=\"None\" rightBorderColor=\"#000000\" bottomBorder=\"None\" bottomBorderColor=\"#000000\"/>\n");
-
-			buffer.append("<textElement " +
-								"textAlignment=\"" + (isANumber ? "Right": "Left") + "\" " +
-								"verticalAlignment=\"Middle\"> " +
-								"<font pdfFontName=\"" + getParamValue(PN_ROW_FONT, DEFAULT_ROW_FONT)+ "\" " +
-								  "size=\"" + getParamValue(PN_ROW_FONT_SIZE, DEFAULT_ROW_FONT_SIZE)+ "\"/>" +
-			  			  "</textElement>\n");
-			
-			if(fieldMeta.getType().getName().equalsIgnoreCase("java.sql.Date")) {
-				buffer.append("<textFieldExpression   " + 
-						  "class=\"java.lang.String\"> " + 
-						  "<![CDATA[\\$F\\{" + fieldMeta.getName() + "\\}.toString()]]>\n" +
-						  "</textFieldExpression>\n");
-			} else {
-				buffer.append("<textFieldExpression   " + 
-						  "class=\"" + fieldMeta.getType().getName() + "\"> " + 
-						  "<![CDATA[\\$F\\{" + fieldMeta.getName() + "\\}]]>\n" +
-						  "</textFieldExpression>\n");
-			}
-			
-			buffer.append("</textField>\n\n\n");	
-			
-			x += columnWidth[i];		
+		} catch (Throwable t) {
+			if(t instanceof ExportException) throw (ExportException)t;
+			throw new ExportException("An upredictable error occured while creating detail blok", t);
+		} finally {
+			logger.debug("OUT");
 		}
-		
-		
-		buffer.append("</band>");
-		buffer.append("</detail>");
-		
 		
 		return buffer.toString();
 	}
@@ -358,9 +429,11 @@ public class TemplateBuilder {
 		int x = 0;
 		
 		int i=0;
-		int fieldNo = dataStore.getMetaData().getFieldCount();
+		
+		List visibleFields = dataStore.getMetaData().findFieldMeta("visible", Boolean.TRUE);
+		int fieldNo = visibleFields.size();
 		for(i = 0; i < fieldNo; i++) {
-			IFieldMetaData fieldMeta = dataStore.getMetaData().getFieldMeta(i);
+			IFieldMetaData fieldMeta = (IFieldMetaData)visibleFields.get(i);
 			Boolean isVisible = (Boolean)fieldMeta.getProperty("visible");
 			if(isVisible != null && isVisible.booleanValue() == false) {
 				continue;
@@ -554,8 +627,22 @@ public class TemplateBuilder {
 
 	private String replaceParam(String template, String pname, String pvalue) {
 		int index = -1;
-		while( (index = template.indexOf("${" + pname + "}")) != -1) {
-			template = template.replaceAll("\\$\\{" + pname + "\\}", pvalue);
+		
+		logger.debug("IN");
+		try {
+			Assert.assertNotNull(template, "input parameter [template] cannot be null");
+			Assert.assertNotNull(pname, "input parameter [pname] cannot be null");
+			Assert.assertNotNull(pvalue, "input parameter [pvalue] cannot be null");
+			
+			while( (index = template.indexOf("${" + pname + "}")) != -1) {
+				template = template.replaceAll("\\$\\{" + pname + "\\}", pvalue);
+			}
+			
+			logger.debug("parameter [" + pname + "] succesfully replaced");
+		} catch(Throwable t) {
+			throw new ExportException("Impossible to replace parameter [" + pname +"] with value [" + pvalue+ "] into template [" + template + "]", t);
+		} finally {
+			logger.debug("OUT");
 		}
 		
 		return template;

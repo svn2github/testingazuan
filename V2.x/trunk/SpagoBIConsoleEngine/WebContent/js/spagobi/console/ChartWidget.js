@@ -200,11 +200,17 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		delete chartConfig.type;
 		
 		if (chartConfig.xtype === this.SBI_CHART_COMPOSITE){
-			chartConfig.storeManager = this.store;
-			//subchart --> item
-			chartConfig.items =  chartConfig.subcharts;
-			delete chartConfig.subcharts;
-			return new Sbi.console.WidgetPanel(chartConfig);
+			var widgetPanelConfig = {};
+			widgetPanelConfig.storeManager = this.store;
+			widgetPanelConfig.items = [];
+			
+			for(var i = 0, l = chartConfig.subcharts.length ; i < l; i++) {
+				widgetPanelConfig.items.push(new Sbi.console.ChartWidget(chartConfig.subcharts[i]));
+			}
+		
+			var widgetPanel = new Sbi.console.WidgetPanel(widgetPanelConfig);
+		
+			return widgetPanel;
 		}
 		
 		return new Ext.Panel({

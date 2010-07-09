@@ -109,7 +109,7 @@ Sbi.console.ConsolePanel = function(config) {
 	items.push({
 		title: 'Export panel'
 		, hidden: true
-		,region: 'south'
+		, region: 'south'
 		, tools: [{
 			id:'gear',
 			qtip: LN('export as text'),
@@ -127,6 +127,8 @@ Sbi.console.ConsolePanel = function(config) {
 
 	// constructor
 	Sbi.console.ConsolePanel.superclass.constructor.call(this, c);
+	
+	onhostmessage(this.exportConsole, this, false, 'export');
 };
 
 Ext.extend(Sbi.console.ConsolePanel, Ext.Panel, {
@@ -157,24 +159,10 @@ Ext.extend(Sbi.console.ConsolePanel, Ext.Panel, {
 		this.detailPanel = new Sbi.console.DetailPanel(conf);
 	}
 	
-	, exportConsole: function() {
+	, exportConsole: function(format) {
 		
 		var detailPage = this.detailPanel.getActivePage();
-	
-		var columnConfigs = new Array();
-		var cm, colNo;
-		cm = detailPage.gridPanel.columnModel;
-		colNo = cm.getColumnCount();
-		for(var i = 0; i < colNo; i++) {
-			var c = {};
-			c.header = cm.getColumnHeader(i);
-			c.id = cm.getColumnId(i);
-			c.tooltip = cm.getColumnTooltip(i);
-			c.width = cm.getColumnWidth(i);
-			c.dataIndex = cm.getDataIndex(i);
-			c.hidden = cm.isHidden(i);
-			columnConfigs.push(c);
-		}
+		var columnConfigs = detailPage.gridPanel.getColumnConfigs();
 		
 		var params = {
 			mimeType: 'application/pdf'

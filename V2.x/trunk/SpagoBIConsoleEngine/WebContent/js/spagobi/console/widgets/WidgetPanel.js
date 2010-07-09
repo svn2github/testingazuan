@@ -53,11 +53,14 @@ Sbi.console.WidgetPanel = function(config) {
 			, columnNumber: 3
 		};
 		
+		
+		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.widgetPanel) {
 			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.widgetPanel);
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
+		
 		
 		
 		//for retrocompatibility with 'column' type layout. 
@@ -71,9 +74,7 @@ Sbi.console.WidgetPanel = function(config) {
 			c.layout = 'table';
 			c.layoutConfig.columns = c.columnNumber;
 			delete c.columnNumber;
-			delete c.columnWidths;
-			alert(c.layout.toSource());		
-			alert(c.layoutConfig.toSource());			
+			delete c.columnWidths;		
 		}
 		
 		this.widgetContainer = new Sbi.console.WidgetContainer({storeManager: c.storeManager});
@@ -81,7 +82,7 @@ Sbi.console.WidgetPanel = function(config) {
 			delete c.storeManager;
 		}
 		
-		alert("WP - c.items: " + c.items.toSource());
+		
 		if(c.items !== undefined) {
 			this.widgetContainer.register(c.items);
 			var x = c.items[0];
@@ -120,7 +121,6 @@ Ext.extend(Sbi.console.WidgetPanel, Sbi.console.Widget, {
 	    }, this);   
 		
 		var widgets = this.widgetContainer.getWidgets();
-		alert("WP - widgets: " + widgets.toSource());
 		
 		widgets.each(function(widget, index, length) {
 			this.add(widget);

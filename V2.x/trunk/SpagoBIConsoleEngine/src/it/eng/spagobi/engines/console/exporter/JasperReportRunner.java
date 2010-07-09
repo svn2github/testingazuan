@@ -53,6 +53,7 @@ import net.sf.jasperreports.engine.fill.JRFileVirtualizer;
 import org.apache.log4j.Logger;
 
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 /**
@@ -175,6 +176,10 @@ public class JasperReportRunner {
 		
 		params = new HashMap();
 		exporterConfig = 	ExporterConfiguration.getInstance();
+		
+		
+		String resourcePath = EnginConf.getInstance().getResourcePath()+ "/console/img/";
+		params.put("SBI_RESOURCE_PATH", resourcePath);
 		
 		if (locale != null) {
 			params.put("REPORT_LOCALE", locale);

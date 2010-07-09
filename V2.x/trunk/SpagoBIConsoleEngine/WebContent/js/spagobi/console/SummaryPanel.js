@@ -66,6 +66,8 @@ Sbi.console.SummaryPanel = function(config) {
 		var c = Ext.apply(defaultSettings, config || {});
 		Ext.apply(this, c);
 		
+		defaultSettings.toSource();
+		alert('begin');
 		
 		var widgetPanelConfig = config.layoutManagerConfig || {};
 		widgetPanelConfig.storeManager = this.storeManager;

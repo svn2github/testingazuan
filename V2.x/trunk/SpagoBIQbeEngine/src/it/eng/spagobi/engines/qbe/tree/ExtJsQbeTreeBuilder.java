@@ -373,6 +373,7 @@ public class ExtJsQbeTreeBuilder  {
 			fieldNode.put("text", fieldLabel);
 			fieldNode.put("leaf", true);
 			fieldNode.put("iconCls", "calculation");
+			fieldNode.put("qtip", fieldTooltip);
 			
 			JSONObject nodeAttributes = new JSONObject();
 			nodeAttributes.put("iconCls", "calculation");
@@ -383,7 +384,6 @@ public class ExtJsQbeTreeBuilder  {
 			}
 			
 			nodeAttributes.put("entity", entityLabel);
-			nodeAttributes.put("qtip", fieldTooltip);
 			nodeAttributes.put("field", fieldLabel);
 			
 			JSONObject formState = new JSONObject();

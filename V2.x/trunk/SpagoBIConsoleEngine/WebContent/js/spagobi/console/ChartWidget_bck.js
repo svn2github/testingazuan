@@ -90,7 +90,6 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	, widgetConfig: null
 	, chart: null
 	
-	, SBI_CHART_COMPOSITE: 'chart.composite'
 	, YUI_CHART_LINE: 'chart.ext.line'
 	, YUI_CHART_BAR: 'chart.ext.bar'
 	, YUI_CHART_PIE: 'chart.ext.pie'
@@ -177,8 +176,7 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		} else if(chartType === this.SBI_CHART_SPEEDOMETER 
 				|| chartType === this.SBI_CHART_LIVELINES
 				|| chartType === this.SBI_CHART_MULTILEDS
-				|| chartType === this.SBI_CHART_SEMAPHORE
-				|| chartType === this.SBI_CHART_COMPOSITE){
+				|| chartType === this.SBI_CHART_SEMAPHORE){
 			
 			chart = this.createSpagoBIChart(chartConfig);
 			
@@ -198,14 +196,6 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		chartConfig.store = this.store;
 		chartConfig.xtype = chartConfig.type;
 		delete chartConfig.type;
-		
-		if (chartConfig.xtype === this.SBI_CHART_COMPOSITE){
-			chartConfig.storeManager = this.store;
-			//subchart --> item
-			chartConfig.items =  chartConfig.subcharts;
-			delete chartConfig.subcharts;
-			return new Sbi.console.WidgetPanel(chartConfig);
-		}
 		
 		return new Ext.Panel({
 			layout:'fit'

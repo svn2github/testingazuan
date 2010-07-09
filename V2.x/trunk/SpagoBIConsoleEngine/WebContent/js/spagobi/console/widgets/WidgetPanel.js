@@ -81,6 +81,7 @@ Sbi.console.WidgetPanel = function(config) {
 			delete c.storeManager;
 		}
 		
+		alert("WP - c.items: " + c.items.toSource());
 		if(c.items !== undefined) {
 			this.widgetContainer.register(c.items);
 			var x = c.items[0];
@@ -96,8 +97,8 @@ Sbi.console.WidgetPanel = function(config) {
 
 Ext.extend(Sbi.console.WidgetPanel, Sbi.console.Widget, {
     
-	columnNumber: null
-	, widgetContainer: null
+	//columnNumber: null
+	 widgetContainer: null
     
     //  -- public methods ---------------------------------------------------------
     
@@ -110,6 +111,7 @@ Ext.extend(Sbi.console.WidgetPanel, Sbi.console.Widget, {
     //  -- private methods ---------------------------------------------------------
     
     , onRender: function(ct, position) {
+    	
 		Sbi.console.WidgetPanel.superclass.onRender.call(this, ct, position);
 		
 	    this.items.each( function(item) {
@@ -118,17 +120,13 @@ Ext.extend(Sbi.console.WidgetPanel, Sbi.console.Widget, {
 	    }, this);   
 		
 		var widgets = this.widgetContainer.getWidgets();
+		alert("WP - widgets: " + widgets.toSource());
 		
-		widgets.each(function(widget, index, length) {			
+		widgets.each(function(widget, index, length) {
 			this.add(widget);
-			//var columnspan = widget.colspan || 1;
-			//alert("columnspan: " + columnspan);
-			//this.add(new Ext.Panel({colspan: columnspan, items: [widget]}));
 		}, this);
 		
 	}
 
-	
-    
     
 });

@@ -946,7 +946,9 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	    var docurlPar = docurl.substring(startIndex,endIndex);
 	    var parurl = Ext.urlDecode(docurlPar);
 	    parurl.outputType = exportType;
-	    parurl = Ext.urlEncode(parurl);
+	    //parurl = Ext.urlEncode(parurl);
+	    // method that does not encode parameters
+	    parurl = Sbi.commons.Utilities.urlToString(parurl);
 	    var endUrl = baseUrl +parurl;
 		window.open(endUrl,'name','resizable=1,height=750,width=1000');
 	}

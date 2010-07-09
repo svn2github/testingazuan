@@ -396,6 +396,9 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 			aDataMartStructurePanel.on('expand', function(panel, node) {
 				this.currentDataMartStructurePanel = panel;
 		    }, this);
+			aDataMartStructurePanel.on('addnodetoselect', function(panel, node) {
+				this.onAddNodeToSelect(node);
+		    }, this);
 		}
 		
 		this.currentDataMartStructurePanel = this.datamarts[0];
@@ -458,12 +461,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        
 	        items:[this.qbeStructurePanel]
 	    });
-		
-		
-		
-		this.currentDataMartStructurePanel.on('addnodetoselect', function(panel, node) {
-			this.onAddNodeToSelect(node);
-	    }, this);
+
 		
 		/*
 		 * work-around: when executing the following operations:

@@ -339,12 +339,12 @@ public class ExtJsQbeTreeBuilder  {
 			fieldNode.put("text", fieldLabel);
 			fieldNode.put("iconCls", iconCls);
 			fieldNode.put("leaf", true);
+			fieldNode.put("qtip", fieldTooltip);
 			
 			JSONObject nodeAttributes = new JSONObject();
 			nodeAttributes.put("iconCls", iconCls);
 			nodeAttributes.put("type", "field");
 			nodeAttributes.put("entity", entityLabel);
-			nodeAttributes.put("qtip", fieldTooltip);
 			nodeAttributes.put("field", fieldLabel);
 			nodeAttributes.put("longDescription", longDescription);
 			fieldNode.put("attributes", nodeAttributes);

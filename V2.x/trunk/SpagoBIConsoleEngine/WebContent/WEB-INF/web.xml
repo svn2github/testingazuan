@@ -129,6 +129,11 @@ END-CAS -->
 		<servlet-name>AdapterHTTP</servlet-name>
 		<url-pattern>/servlet/AdapterHTTP</url-pattern>
 	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>AdapterHTTP</servlet-name>
+		<url-pattern>/servlet/AdapterHTTPBackEnd/*</url-pattern>
+	</servlet-mapping>
     
     <servlet-mapping>
 		<servlet-name>EngineTestServlet</servlet-name>
@@ -161,13 +166,6 @@ END-CAS -->
       <res-auth>Container</res-auth>
     </resource-ref>
 
-  	<!-- resource-ref>
-  		<description>eBAM metadata</description>
-  		<res-ref-name>jdbc/ebam</res-ref-name>
-  		<res-type>javax.sql.DataSource</res-type>
-  		<res-auth>Container</res-auth>
-  		<res-sharing-scope>Shareable</res-sharing-scope>
-  	</resource-ref-->
 
 
 </web-app>

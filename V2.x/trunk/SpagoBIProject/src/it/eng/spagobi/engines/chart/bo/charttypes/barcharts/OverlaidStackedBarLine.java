@@ -155,7 +155,12 @@ public class OverlaidStackedBarLine extends LinkableBar {
 								seriesCaptions.put(serieLabel, nameP);
 								contSer++;
 							}
-							else if(this.getNumberSerVisualization() == 0  || ((String)seriesDraw.get(nameP)).equalsIgnoreCase("line")){ //all series
+							else if(this.getNumberSerVisualization() == 0  
+									|| 
+									( seriesDraw.get(nameP)!= null &&
+											((String)seriesDraw.get(nameP)).equalsIgnoreCase("line"))
+							)
+							{ //all series
 								String serieLabel = (String)seriesLabelsMap.get(nameP);
 								series.put(serieLabel, value);
 								seriesCaptions.put(serieLabel, nameP);
@@ -189,8 +194,8 @@ public class OverlaidStackedBarLine extends LinkableBar {
 					logger.warn("error in double conversion, put default to null");
 					valueD=null;
 				}
-				
-				
+
+
 				if(!hiddenSeries.contains(nameS)){
 					if(seriesLabelsMap != null && (seriesCaptions != null && seriesCaptions.size()>0)){
 						nameS = (String)(seriesCaptions.get(nameS));
@@ -198,7 +203,7 @@ public class OverlaidStackedBarLine extends LinkableBar {
 					}
 					else
 						labelS = nameS;	
-					
+
 					// if to draw as a line
 					if(seriesDraw.get(nameS)!=null && ((String)seriesDraw.get(nameS.toUpperCase())).equalsIgnoreCase("line")){
 						if(!seriesNames.contains(nameS.toUpperCase()))seriesNames.add(nameS.toUpperCase());
@@ -249,7 +254,12 @@ public class OverlaidStackedBarLine extends LinkableBar {
 
 
 		//reading series colors if present
-		SourceBean draws = (SourceBean)content.getAttribute("CONF.SERIES_DRAW");
+		SourceBean draws = (SourceBean)content.getAttribute("SERIES_DRAW");
+
+		if(draws == null) {
+			draws = (SourceBean)content.getAttribute("CONF.SERIES_DRAW");
+		}
+
 		seriesDraw=new LinkedHashMap();
 		if(draws!=null){
 
@@ -289,29 +299,29 @@ public class OverlaidStackedBarLine extends LinkableBar {
 	}
 
 	public JFreeChart createChart(DatasetMap datasets) {
-		
+
 		// create the first renderer...
 
 
 		CategoryPlot plot = new CategoryPlot();
-        NumberFormat nf = NumberFormat.getNumberInstance(locale);
-		
+		NumberFormat nf = NumberFormat.getNumberInstance(locale);
+
 		NumberAxis rangeAxis = new NumberAxis(getValueLabel());
 		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
-        rangeAxis.setNumberFormatOverride(nf);		
+		rangeAxis.setNumberFormatOverride(nf);		
 		plot.setRangeAxis(rangeAxis);
 		if(rangeIntegerValues==true){
 			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
-			}
-		
+		}
+
 		CategoryAxis domainAxis = new CategoryAxis(getCategoryLabel());
 		domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
-        domainAxis.setLabelPaint(styleYaxesLabels.getColor());
-        domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
-        domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
+		domainAxis.setLabelPaint(styleYaxesLabels.getColor());
+		domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+		domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
 		plot.setDomainAxis(domainAxis);
 
 		plot.setOrientation(PlotOrientation.VERTICAL);
@@ -335,15 +345,15 @@ public class OverlaidStackedBarLine extends LinkableBar {
 			if(maxBarWidth!=null){
 				((BarRenderer)barRenderer).setMaximumBarWidth(maxBarWidth.doubleValue());
 			}
-			
+
 			if(additionalLabels){
 				barRenderer.setBaseItemLabelGenerator(generator);
 				double orient=(-Math.PI / 2.0);
 				if(styleValueLabels.getOrientation().equalsIgnoreCase("horizontal")){
 					orient=0.0;
 				}
-			barRenderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
-			barRenderer.setBaseItemLabelPaint(styleValueLabels.getColor());
+				barRenderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+				barRenderer.setBaseItemLabelPaint(styleValueLabels.getColor());
 				barRenderer.setBaseItemLabelsVisible(true);
 				barRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
 						ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
@@ -368,7 +378,7 @@ public class OverlaidStackedBarLine extends LinkableBar {
 					}
 					else
 						index=datasetBar.getRowIndex(serName);
-					
+
 					Color color=(Color)colorMap.get(serName);
 					if(color!=null){
 						barRenderer.setSeriesPaint(index, color);
@@ -380,7 +390,7 @@ public class OverlaidStackedBarLine extends LinkableBar {
 				MyCategoryToolTipGenerator generatorToolTip=new MyCategoryToolTipGenerator(freeToolTips, seriesTooltip, categoriesTooltip, seriesCaptions);
 				barRenderer.setToolTipGenerator(generatorToolTip);
 			}
-			
+
 			//defines url for drill
 			boolean document_composition=false;
 			if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
@@ -401,7 +411,7 @@ public class OverlaidStackedBarLine extends LinkableBar {
 			if(mycatUrl!=null){
 				barRenderer.setItemURLGenerator(mycatUrl);
 			}
-			
+
 			plot.setDataset(1,datasetBar);
 			plot.setRenderer(1,barRenderer);
 
@@ -430,7 +440,7 @@ public class OverlaidStackedBarLine extends LinkableBar {
 					String serName = (String) iterator.next();
 					String labelName = "";
 					int index=-1;
-					
+
 					if (seriesCaptions != null && seriesCaptions.size()>0){
 						labelName = serName;
 						serName = (String)seriesCaptions.get(serName);
@@ -438,7 +448,7 @@ public class OverlaidStackedBarLine extends LinkableBar {
 					}
 					else
 						index=datasetLine.getRowIndex(serName);
-					
+
 					Color color=(Color)colorMap.get(serName);
 					if(color!=null){
 						lineRenderer.setSeriesPaint(index, color);
@@ -459,8 +469,8 @@ public class OverlaidStackedBarLine extends LinkableBar {
 			na.setUpperMargin(0.10);
 			if(rangeIntegerValues==true){
 				na.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
-				}
-	        na.setNumberFormatOverride(nf);			
+			}
+			na.setNumberFormatOverride(nf);			
 			plot.setRangeAxis(1,na);
 			plot.mapDatasetToRangeAxis(0, 1);
 		}
@@ -480,7 +490,7 @@ public class OverlaidStackedBarLine extends LinkableBar {
 		}
 
 		chart.setBackgroundPaint(Color.white);
-		
+
 		if(legend==true) drawLegend(chart);
 		return chart;
 

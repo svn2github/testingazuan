@@ -66,8 +66,7 @@ Sbi.console.WidgetPanel = function(config) {
 		//for retrocompatibility with 'column' type layout. 
 		//if (c.layoutConfig === undefined && c.columnNumber !== undefined){
 		if (c.layout !== undefined && c.layout === 'column'){
-			
-			//c.layoutConfig = {columns: c.columnNumber};
+		
 			delete c.layout;
 			c.layout = {}; 
 			c.layoutConfig = {};
@@ -98,14 +97,11 @@ Sbi.console.WidgetPanel = function(config) {
 
 Ext.extend(Sbi.console.WidgetPanel, Sbi.console.Widget, {
     
-	//columnNumber: null
 	 widgetContainer: null
     
     //  -- public methods ---------------------------------------------------------
-    
+   
     , addWidget: function(widget) {
-		var widgets = this.widgetContainer.getWidgets();
-		var index = widgets.getCount();
 		this.widgetContainer.register(widget);
 	}
     
@@ -114,14 +110,17 @@ Ext.extend(Sbi.console.WidgetPanel, Sbi.console.Widget, {
     , onRender: function(ct, position) {
     	
 		Sbi.console.WidgetPanel.superclass.onRender.call(this, ct, position);
-		
+	
 	    this.items.each( function(item) {
 			this.items.remove(item);
 	        item.destroy();           
-	    }, this);   
+	    }, this); 
+	    
+	   
 		
 		var widgets = this.widgetContainer.getWidgets();
 		
+	
 		widgets.each(function(widget, index, length) {
 			this.add(widget);
 		}, this);

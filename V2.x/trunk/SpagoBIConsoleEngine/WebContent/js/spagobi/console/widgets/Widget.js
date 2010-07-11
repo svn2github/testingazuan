@@ -75,20 +75,20 @@ Sbi.console.Widget = function(config) {
 Ext.extend(Sbi.console.Widget, Ext.Panel, {
     
     services: null
-    , widgetContainer: null
+    , parentContainer: null
     
    
     //  -- public methods ---------------------------------------------------------
     
-    , setContainer: function(c) {
-		this.widgetContainer = c;
+    , setParentContainer: function(c) {
+		this.parentContainer = c;
 	}
 
 	, getStore: function(storeiId) {
 		var store;
 		
-		if(this.widgetContainer) {
-			var sm = this.widgetContainer.getStoreManager();
+		if(this.parentContainer) {
+			var sm = this.parentContainer.getStoreManager();
 			if(sm) {
 				store = sm.getStore(storeiId);
 			} else {

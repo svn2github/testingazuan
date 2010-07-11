@@ -130,10 +130,10 @@ Ext.extend(Sbi.console.WidgetContainer, Ext.util.Observable, {
 	}
     
     , onWidgetAdd: function(index, widget, key) {
-    	widget.setContainer(this);
+    	widget.setParentContainer(this);
     }
     
     , onWidgetRemove: function(widget, key) {
-    	widget.setContainer(null);
+    	widget.setParentContainer(null);
     }
 });

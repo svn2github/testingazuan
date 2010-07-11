@@ -90,7 +90,6 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	, widgetConfig: null
 	, chart: null
 	
-	, SBI_CHART_COMPOSITE: 'chart.composite'
 	, YUI_CHART_LINE: 'chart.ext.line'
 	, YUI_CHART_BAR: 'chart.ext.bar'
 	, YUI_CHART_PIE: 'chart.ext.pie'
@@ -113,6 +112,9 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	, onRender: function(ct, position) {
 		Sbi.console.ChartWidget.superclass.onRender.call(this, ct, position);
 		
+		alert('render: ' + this.widgetConfig.type);
+		
+		
 		if(!this.store) {
 			if(this.storeName) {
 				this.store = this.getStore(this.storeName);
@@ -134,12 +136,12 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		
 		this.chart = null;
 		if(this.store.ready === true) {
+			alert('store ready: ' + this.widgetConfig.type);
 			this.initChart();
 		} else {
+			alert('store not ready: ' + this.widgetConfig.type);
 			this.store.on('load', this.initChart, this);
 		}
-			
-		
 	}
 
 	, initChart: function() {
@@ -147,7 +149,11 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 			this.store.un('load', this.initChart, this);
 		}
 		
+		alert('initChart: ' + this.widgetConfig.type);
+		
 		this.chart = this.createChart(this.widgetConfig);
+		
+		alert('initChart ended: ' + this.widgetConfig.type + ' -> ' + this.chart);
 		
 		this.items.each( function(item) {
 			this.items.remove(item);
@@ -167,7 +173,8 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		
 		var chartType = chartConfig.type;
 			
-	
+		alert('createChart: ' + chartType);
+		
 		if(chartType === this.YUI_CHART_LINE) {
 			chart = this.createLineChart(chartConfig);
 		} else if(chartType === this.YUI_CHART_BAR) {
@@ -199,9 +206,10 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		chartConfig.xtype = chartConfig.type;
 		delete chartConfig.type;
 		
+		/*
 		if (chartConfig.xtype === this.SBI_CHART_COMPOSITE){
 			var widgetPanelConfig = {};
-			widgetPanelConfig.storeManager = this.store;
+			widgetPanelConfig.storeManager = chartConfig.storeManager;
 			widgetPanelConfig.items = [];
 			
 			for(var i = 0, l = chartConfig.subcharts.length ; i < l; i++) {
@@ -210,13 +218,22 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		
 			var widgetPanel = new Sbi.console.WidgetPanel(widgetPanelConfig);
 		
-			return widgetPanel;
+			return new Ext.Panel({
+				layout:'fit'
+			    , height: this.height	
+			    , items: [widgetPanel]
+			});	
 		}
+		*/
 		
+		
+		alert('xtype: ' + chartConfig.xtype);
 		return new Ext.Panel({
-			layout:'fit'
-		    , height: this.height	
+			//layout:'fit'
+		    height: this.height	
 		    , items: [chartConfig]
+		    , width:200
+		   //, html: 'pippo'
 		});		
 	}
 	

@@ -102,7 +102,9 @@ author: Antonella Giachino (antonella.giachino@eng.it)
 		<%@include file="commons/includeExtJS.jspf" %>
 		<%@include file="commons/includeSbiConsoleJS.jspf"%>
 		
-		
+		<!-- Active TEST  -->
+		<!--  %@include file="tests/template.jspf"% -->
+		<!-- Active TEST  -->
 		
 		<%-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) --
 		<script type="text/javascript">

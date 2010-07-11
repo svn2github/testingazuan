@@ -66,15 +66,24 @@ Sbi.console.SummaryPanel = function(config) {
 		var c = Ext.apply(defaultSettings, config || {});
 		Ext.apply(this, c);
 		
-		defaultSettings.toSource();
-		alert('begin');
-		
 		var widgetPanelConfig = config.layoutManagerConfig || {};
 		widgetPanelConfig.storeManager = this.storeManager;
 		widgetPanelConfig.items = [];
 		
-		for(var i = 0, l = config.charts.length ; i < l; i++) {
-			widgetPanelConfig.items.push(new Sbi.console.ChartWidget(config.charts[i]));
+		for(var i = 0, l1 = config.charts.length ; i < l1; i++) {
+			if(config.charts[i].widgetConfig.type === 'chart.composite') {
+				var compositeWidgetPanelConfig = {};
+				compositeWidgetPanelConfig.storeManager = this.storeManager;
+				compositeWidgetPanelConfig.items = [];
+					
+				for(var j = 0, l2 = config.charts[i].widgetConfig.subcharts.length ; j < l2; j++) {
+					compositeWidgetPanelConfig.items.push(new Sbi.console.ChartWidget(config.charts[i].widgetConfig.subcharts[j]));
+				}
+				var compositeWidgetPanel = new Sbi.console.WidgetPanel(compositeWidgetPanelConfig);
+				widgetPanelConfig.items.push(compositeWidgetPanel);
+			} else {
+				widgetPanelConfig.items.push(new Sbi.console.ChartWidget(config.charts[i]));
+			}
 		}
 		
 		var widgetPanel = new Sbi.console.WidgetPanel(widgetPanelConfig);

@@ -50,7 +50,7 @@ Sbi.console.WidgetPanel = function(config) {
 	
 		var defaultSettings = {
 			layout:'table'
-			, columnNumber: 3
+			, columnNumber: 3			
 		};
 		
 		

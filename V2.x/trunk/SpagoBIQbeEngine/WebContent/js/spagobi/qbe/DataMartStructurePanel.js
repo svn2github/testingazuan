@@ -153,7 +153,7 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 	, removeCalculatedField:  function(fieldNode) {
 		var nodeType;
 		nodeType = fieldNode.attributes.type || fieldNode.attributes.attributes.type;
-		if(nodeType === 'calculatedField') {
+		if(nodeType === 'calculatedField' || nodeType === 'inLineCalculatedField') {
 			
 			var entityId = fieldNode.parentNode.id;
     		var f = {

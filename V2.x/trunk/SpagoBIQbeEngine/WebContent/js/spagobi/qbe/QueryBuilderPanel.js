@@ -689,7 +689,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 			    		    
     		} else if(nodeType == this.CALCULATED_FIELD) {	
  	    		var field = {
- 	    			id: node.attributes.attributes.formState,
+ 	    			id: node.attributes.formState,
  	    			type: this.selectGridPanel.CALCULATED_FIELD,
  	    			entity: node.parentNode.text, 
 			    	field: node.text,

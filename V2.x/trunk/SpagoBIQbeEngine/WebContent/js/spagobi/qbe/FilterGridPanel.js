@@ -934,9 +934,9 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			column - The grid column index
 			cancel - Set this to true to cancel the edit or return false from your handler.
 		 */
-		
+		var filter;
 		if(this.activeEditingContext) {
-			var filter = this.getFilterAt(this.activeEditingContext.row);
+			filter = this.getFilterAt(this.activeEditingContext.row);
 			if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
 				if(this.activeEditingContext.dirty === true){
 					this.modifyFilter({
@@ -963,7 +963,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		var dataIndex = this.activeEditingContext.grid.getColumnModel().getDataIndex( col );
 		this.activeEditingContext.dataIndex = dataIndex;
 		this.activeEditingContext.dirty = false;
-		
+		filter = this.getFilterAt(row);
 		if(dataIndex === 'leftOperandDescription' || dataIndex === 'rightOperandDescription') {
 			var editor;
 			if(this.parentQuery !== null) {
@@ -972,7 +972,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				}else{
 					editor = this.createParentFieldEditor();
 				}
-			} else if(dataIndex === 'rightOperandDescription') {
+			} else if(dataIndex === 'rightOperandDescription' && (filter.leftOperandType == 'Field Content')) {
 				editor = this.createLookupFieldEditor();
 			}  else {
 				editor = this.createTextEditor();

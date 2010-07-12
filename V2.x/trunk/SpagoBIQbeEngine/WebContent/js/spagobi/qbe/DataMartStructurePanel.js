@@ -156,10 +156,16 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 		if(nodeType === 'calculatedField' || nodeType === 'inLineCalculatedField') {
 			
 			var entityId = fieldNode.parentNode.id;
+			var formState;
+			if( fieldNode.attributes.attributes!=null){
+				formState = fieldNode.attributes.attributes.formState;
+			}else{
+				formState = fieldNode.attributes.formState;
+			}
     		var f = {
-    			alias: fieldNode.attributes.attributes.formState.alias
-    			, type: fieldNode.attributes.attributes.formState.type
-    			, calculationDescriptor: fieldNode.attributes.attributes.formState
+    			alias: formState.alias
+    			, type: formState.type
+    			, calculationDescriptor: formState
     		};
     		
     		var params = {
@@ -590,20 +596,27 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 				, params: null
 			}
     	});
-		
-
+     	
      	this.calculatedFieldWizard.on('expert', function(){
+     		if(this.calculatedFieldWizard!=null){
+     			var alias = this.calculatedFieldWizard.inputFields.alias.getValue();
+     		}
      		this.initCalculatedFieldWizards();
      		this.addInLineCalculatedField(this.pressedNode);
+     		this.inLineCalculatedFieldWizard.setCFAlias(alias);
      		this.inLineCalculatedFieldWizard.show();
      	}, this);
  
      	this.inLineCalculatedFieldWizard.on('notexpert', function(){
+     		if(this.inLineCalculatedFieldWizard!=null){
+     			var alias = this.inLineCalculatedFieldWizard.inputFields.alias.getValue();
+     		}
      		this.initCalculatedFieldWizards();
      		this.addCalculatedField(this.pressedNode);
-     		this.calculatedFieldWizard.show();
+   			this.calculatedFieldWizard.setCFAlias(alias);
+   			this.calculatedFieldWizard.show();
      	}, this);
-     	
+	
     	this.inLineCalculatedFieldWizard.on('apply', function(win, formState, targetNode){
     		
     		var nodeType;

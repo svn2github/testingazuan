@@ -146,6 +146,7 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		}
 		
 		this.chart = this.createChart(this.widgetConfig);
+
 		
 		this.items.each( function(item) {
 			this.items.remove(item);
@@ -194,12 +195,15 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		chartConfig.store = this.store;
 		chartConfig.xtype = chartConfig.type;
 		delete chartConfig.type;
-		
+
 		return new Ext.Panel({
-			//layout:'fit'
-		    height: this.height	
+			layout:'fit'
+		    , height: this.height	
+		   // , width: this.width
 		    , items: [chartConfig]
-		    , width:200
+		    , border: false
+		    , bodyBorder: false
+		    , hideBorders: true
 		});		
 	}
 	
@@ -227,6 +231,7 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	        layout:'fit'
 	        , height: this.height
 	        , items: c
+	        , border: false
 	    });
 	}
 	
@@ -255,6 +260,7 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		return new Ext.Panel({
 			layout:'fit'
 		    , height: this.height	
+		    , width: this.width
 		    , items: c
 		});		
 	}

@@ -47,26 +47,20 @@
 Ext.ns("Sbi.console");
 
 Sbi.console.WidgetPanel = function(config) {
-	
+
 		var defaultSettings = {
 			layout:'table'
-			, columnNumber: 3			
+		  , columnNumber: 3
 		};
-		
-		
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.widgetPanel) {
 			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.widgetPanel);
 		}
 		
 		var c = Ext.apply(defaultSettings, config || {});
-		
-		
-		
+	
 		//for retrocompatibility with 'column' type layout. 
-		//if (c.layoutConfig === undefined && c.columnNumber !== undefined){
 		if (c.layout !== undefined && c.layout === 'column'){
-		
 			delete c.layout;
 			c.layout = {}; 
 			c.layoutConfig = {};
@@ -116,16 +110,14 @@ Ext.extend(Sbi.console.WidgetPanel, Sbi.console.Widget, {
 	        item.destroy();           
 	    }, this); 
 	    
-	   
-		
 		var widgets = this.widgetContainer.getWidgets();
-		
 	
 		widgets.each(function(widget, index, length) {
 			this.add(widget);
 		}, this);
 		
+
+		
 	}
 
-    
 });

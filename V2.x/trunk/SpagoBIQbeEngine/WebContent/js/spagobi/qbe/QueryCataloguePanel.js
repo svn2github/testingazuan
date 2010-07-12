@@ -210,6 +210,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		if(queryNode) {
 			
 			query = queryNode.props.query;
+			query.name = queryNode.text;
 			query.subqueries = [];
 			if( queryNode.childNodes && queryNode.childNodes.length > 0 ) {
 				for(var i = 0; i < queryNode.childNodes.length; i++) {

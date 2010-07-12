@@ -75,6 +75,10 @@ public class ContentServiceImplSupplier {
     	logger.debug("user: [" + user + "]");
 		logger.debug("document: [" + document + "]");
 		
+	    if (parameters == null) {
+	    	logger.debug("Input parameters map is null. It will be considered as an empty map");
+	    	parameters = new HashMap();
+	    }
 		
 		content = new Content();
 		try {

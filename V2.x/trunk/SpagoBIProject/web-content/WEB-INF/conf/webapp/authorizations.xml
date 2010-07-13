@@ -5,33 +5,38 @@
 			<ATTRIBUTE name="month" />
 			<ATTRIBUTE name="email"  />
 			<ATTRIBUTE name="name"  />
-			<ATTRIBUTE name="ente"  />
 			<ATTRIBUTE name="family"  />
-			<ATTRIBUTE name="multiValue"  />			
+			<ATTRIBUTE name="country"  />
 		</ATTRIBUTES>	
 		<USERS>
-			<USER userID="biadmin" password="biadmin" month="03" name="SpagoBI Admin" email="spagobi@eng.it" ente="ENTE_1" family="Food" multiValue="{,{'Oakland','Milwaukie'}}"/>
-			<USER userID="bimodel" password="bimodel" month="03" name="SpagoBI Model Admin" email="spagobi@eng.it" ente="ENTE_1" family="Food" />			
-			<USER userID="biuser" password="biuser" month="04" name="SpagoBI User" email="spagobi@eng.it" ente="ENTE_2" family="Food" multiValue="{,{'Oakland','Milwaukie','Los Angeles', 'San Francisco'}}"/>
-			<USER userID="bidev" password="bidev" month="03" name="SpagoBI Dev" email="spagobi@eng.it" ente="ENTE_1" family="Food"/>
-			<USER userID="bitest" password="bitest" month="03" name="SpagoBI Test" email="spagobi@eng.it" ente="ENTE_1" family="Food"/>
-			<USER userID="biuser_a" password="biuser" month="04" name="SpagoBI User" email="spagobi@eng.it" ente="ENTE_1" family="Food"/>
-            <USER userID="biuser_b" password="biuser" month="05" name="SpagoBI User" email="spagobi@eng.it" ente="ENTE_2" family="Drink"/>
-			<USER userID="chiron" password="chiron" />
-			<USER userID="prod_drink" password="prod_drink" family="Drink" />
-			<USER userID="prod_food" password="prod_food" family="Food" />
-			<USER userID="prod_nc" password="prod_nc" family="Non-Consumable" />
-			<USER userID="ANALISTA_ENTE_A" password="ANALISTA_ENTE_A" family="Non-Consumable" />
+			<USER userID="biadmin" password="biadmin" month="03" name="SpagoAdmin" email="bernabei@eng.it" country="USA" family="Food" />
+			<USER userID="biuser" password="biuser" month="04" name="SpagoUser" email="bernabei@eng.it"/>
+			<USER userID="bidev" password="bidev" />
+			<USER userID="bitest" password="bitest" />
+			<USER userID="bimodeladmin" password="bimodeladmin" />
+			<USER userID="general_manger" password="general_manger" />
+			<USER userID="staff_general_manger" password="staff_general_manger" />
+			<USER userID="product_manger" password="product_manger" />
+			<USER userID="food_director" password="food_director" family="Food"/>
+			<USER userID="drink_director" password="drink_director" family="Drink"/>
+			<USER userID="nonconsumable_director" password="nonconsumable_director" family="Non-Consumable"/>
+			<USER userID="warehouse_manger" password="warehouse_manger" />
+			<USER userID="warehouse_usa_manger" password="warehouse_usa_manger" country="USA" />
+			<USER userID="warehouse_canada_manger" password="warehouse_canada_manger" country="Canada" />
+			<USER userID="warehouse_mexico_manger" password="warehouse_mexico_manger" country="Mexico" />
 		</USERS>
 		<ROLES>
 			<ROLE roleName="/spagobi/dev" description="/spagobi/dev" />
-			<ROLE roleName="/spagobi/test" description="/spagobi/test" />
 			<ROLE roleName="/spagobi/user" description="/spagobi/user" />
-			<ROLE roleName="/spagobi/userb" description="/spagobi/userb" />
+			<ROLE roleName="/spagobi/test" description="/spagobi/test" />
 			<ROLE roleName="/spagobi/admin" description="/spagobi/admin" />
 			<ROLE roleName="/spagobi/modeladmin" description="/spagobi/modeladmin" />
-			<ROLE roleName="/spagobi/op_reva" description="/spagobi/op_reva" />
-			<ROLE roleName="/spagobi/an_reva" description="/spagobi/an_reva" />			
+			<ROLE roleName="/spagobi/general_manger" description="/spagobi/general_manger" />
+			<ROLE roleName="/spagobi/staff_general_manger" description="/spagobi/staff_general_manger" />
+			<ROLE roleName="/spagobi/product_manger" description="/spagobi/product_manger" />
+			<ROLE roleName="/spagobi/product_family_director" description="/spagobi/product_family_director" />
+			<ROLE roleName="/spagobi/warehouse_manger" description="/spagobi/warehouse_manger" />
+			<ROLE roleName="/spagobi/warehouse_country_manger" description="/spagobi/warehouse_country_manger" />
 		</ROLES>
 		<FUNCTIONALITIES></FUNCTIONALITIES>
 		<RESOURCES></RESOURCES>
@@ -40,18 +45,20 @@
 	<RELATIONS>
 		<BEHAVIOURS>
 			<BEHAVIOUR userID="biuser" roleName="/spagobi/user" />
-			<BEHAVIOUR userID="biuser" roleName="/spagobi/userb" />
-			<BEHAVIOUR userID="biuser_a" roleName="/spagobi/user" />
-			<BEHAVIOUR userID="biuser_b" roleName="/spagobi/user" />
-			<BEHAVIOUR userID="bitest" roleName="/spagobi/test" />
 			<BEHAVIOUR userID="biadmin" roleName="/spagobi/admin" />
+			<BEHAVIOUR userID="bimodeladmin" roleName="/spagobi/modeladmin" />
 			<BEHAVIOUR userID="bidev" roleName="/spagobi/dev" />
-			<BEHAVIOUR userID="bimodel" roleName="/spagobi/modeladmin" />
-			<BEHAVIOUR userID="chiron" roleName="/spagobi/admin" />
-			<BEHAVIOUR userID="prod_drink" roleName="/spagobi/user" />
-			<BEHAVIOUR userID="prod_food" roleName="/spagobi/user" />
-			<BEHAVIOUR userID="prod_nc" roleName="/spagobi/user" />
-			<BEHAVIOUR userID="ANALISTA_ENTE_A" roleName="/spagobi/an_reva" />
+			<BEHAVIOUR userID="bitest" roleName="/spagobi/test" />
+			<BEHAVIOUR userID="general_manger" roleName="/spagobi/general_manger" />
+			<BEHAVIOUR userID="staff_general_manger" roleName="/spagobi/staff_general_manger" />
+			<BEHAVIOUR userID="product_manger" roleName="/spagobi/product_manger" />
+			<BEHAVIOUR userID="food_director" roleName="/spagobi/product_family_director" />
+			<BEHAVIOUR userID="drink_director" roleName="/spagobi/product_family_director" />
+			<BEHAVIOUR userID="nonconsumable_director" roleName="/spagobi/product_family_director" />
+			<BEHAVIOUR userID="warehouse_manger" roleName="/spagobi/warehouse_manger" />
+			<BEHAVIOUR userID="warehouse_usa_manger" roleName="/spagobi/warehouse_country_manger" />
+			<BEHAVIOUR userID="warehouse_canada_manger" roleName="/spagobi/warehouse_country_manger" />
+			<BEHAVIOUR userID="warehouse_mexico_manger" roleName="/spagobi/warehouse_country_manger" />
 		</BEHAVIOURS>
 	</RELATIONS>
 </AUTHORIZATIONS>

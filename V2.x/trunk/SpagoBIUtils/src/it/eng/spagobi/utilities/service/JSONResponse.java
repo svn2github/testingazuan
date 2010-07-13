@@ -82,6 +82,7 @@ public class JSONResponse implements IServiceResponse {
 	}
 
 	public JSONResponse(int statusCode, String content) {
+		setStatusCode( statusCode );
 		JSONObject o = null;
 		try {
 			o = new JSONObject("{text: " + content + "}");

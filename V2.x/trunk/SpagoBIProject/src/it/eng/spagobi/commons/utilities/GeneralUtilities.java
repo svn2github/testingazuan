@@ -64,6 +64,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -725,11 +726,16 @@ public class GeneralUtilities extends SpagoBIUtilities{
 					// encoding value
 					try {
 						value = URLEncoder.encode(value, "UTF-8");
+						
+						// put all + to space! 
+						value = value.replaceAll(Pattern.quote("+") , " "); 
+						
 					} catch (UnsupportedEncodingException e) {
 						logger.warn("UTF-8 encoding is not supported!!!", e);
 						logger.warn("Using system encoding...");
 						value = URLEncoder.encode(value);
 					}
+					
 					buffer.append(key + "=" + value);
 					if (iterKeys.hasNext()) {
 						buffer.append("&");

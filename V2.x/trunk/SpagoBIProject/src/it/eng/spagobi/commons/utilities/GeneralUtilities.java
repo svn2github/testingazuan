@@ -727,7 +727,10 @@ public class GeneralUtilities extends SpagoBIUtilities{
 					try {
 						value = URLEncoder.encode(value, "UTF-8");
 						
-						// put all + to space! 
+						// put all + to space!  that is because 
+						// otherwise %2B (encoding of plus) and + (substitution of white space in an url) 
+						//will otherwise be interpreted in the same way
+						// and when using exporter I would no more be able to distinguish + from ' '
 						value = value.replaceAll(Pattern.quote("+") , " "); 
 						
 					} catch (UnsupportedEncodingException e) {

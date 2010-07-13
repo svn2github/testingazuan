@@ -33,12 +33,10 @@ import com.jamonapi.MonitorFactory;
 
 import it.eng.qbe.datasource.hibernate.DBConnection;
 import it.eng.qbe.datasource.hibernate.IHibernateDataSource;
-import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.query.AggregationFunctions;
 import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.IAggregationFunction;
-import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.query.serializer.QuerySerializerFactory;
@@ -235,7 +233,7 @@ public class ExecuteMasterQueryAction extends AbstractQbeEngineAction {
 			logger.debug("Query executed succesfully");
 			
 			
-			dataStore.getMetaData().setProperty("resultNumber", new Integer( (int)dataStore.getRecordsCount() ));
+			//dataStore.getMetaData().setProperty("resultNumber", new Integer( (int)dataStore.getRecordsCount() ));
 			
 			resultNumber = (Integer)dataStore.getMetaData().getProperty("resultNumber");
 			Assert.assertNotNull(resultNumber, "property [resultNumber] of the dataStore returned by loadData method of the class [" + dataSet.getClass().getName()+ "] cannot be null");

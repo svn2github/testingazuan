@@ -9,14 +9,23 @@ import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.kpi.model.bo.Resource;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelResources;
 import it.eng.spagobi.kpi.model.metadata.SbiResources;
+import it.eng.spagobi.profiling.bean.SbiExtUserRoles;
+import it.eng.spagobi.profiling.bean.SbiExtUserRolesId;
+import it.eng.spagobi.profiling.bean.SbiUser;
+import it.eng.spagobi.profiling.bean.SbiUserAttributes;
+import it.eng.spagobi.profiling.bean.SbiUserAttributesId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Expression;
@@ -297,13 +306,15 @@ public class ResourceDAOImpl extends AbstractHibernateDAO implements
 					crit.addOrder(Order.desc(getResourcesProperty(fieldOrder)));
 				toTransform = crit.list();
 			} else {
-				toTransform = aSession.createQuery("from SbiResources").list();
+				toTransform = aSession.createQuery("from SbiResources order by resourceName").list();
 			}
 
-			for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
-				SbiResources hibResource = (SbiResources) iterator.next();
-				Resource resource = toResource(hibResource);
-				toReturn.add(resource);
+			if(toTransform != null){
+				for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
+					SbiResources hibResource = (SbiResources) iterator.next();
+					Resource resource = toResource(hibResource);
+					toReturn.add(resource);
+				}
 			}
 
 		} catch (HibernateException he) {

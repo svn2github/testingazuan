@@ -34,6 +34,12 @@ import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.kpi.alarm.metadata.SbiAlarm;
 import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact;
+import it.eng.spagobi.kpi.config.bo.Kpi;
+import it.eng.spagobi.kpi.model.bo.Model;
+import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
+import it.eng.spagobi.kpi.model.bo.ModelNode;
+import it.eng.spagobi.kpi.model.bo.Resource;
+import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.bean.SbiUser;
@@ -76,6 +82,15 @@ public class JSONSerializer implements Serializer {
 		mappings.put( SbiAlarm.class, new AlarmJSONSerializer());
 		mappings.put( SbiAlarmContact.class, new AlarmContactJSONSerializer());
 		mappings.put( ThresholdValue.class, new ThresholdValueJSONSerializer());
+		
+		mappings.put( Resource.class, new ResourceJSONSerializer());
+		
+		//TODO da aggiungere mano a mano
+		/*
+		mappings.put( ModelNode.class, new ModelNodeJSONSerializer());
+		mappings.put( Threshold.class, new ThresholdJSONSerializer());
+		mappings.put( ModelInstanceNode.class, new ModelInstanceNodeJSONSerializer());
+		mappings.put( Kpi.class, new KpiJSONSerializer());*/
 		
 		mappings.put( GetParametersForExecutionAction.ParameterForExecution.class, new ParameterForExecutionJSONSerializer() );
 	}

@@ -21,10 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/WEB-INF/jsp/commons/portlet_base311.jsp"%>
 <%@ page import="it.eng.spagobi.commons.bo.Domain,
 				 java.util.ArrayList,
-				 java.util.List" %>
+				 java.util.List,
+				 org.json.JSONArray" %>
 <%
 
-	List<Domain> roleTypesCd = (List<Domain>) aSessionContainer.getAttribute("roleTypes");
+	List nodeTypesCd = (List) aSessionContainer.getAttribute("nodeTypesList");
 
 %>
 
@@ -32,22 +33,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <script type="text/javascript">
 
-	<%
-	String types ="{}";
-	if(roleTypesCd != null){
-		types="[";
-		for(int i=0; i< roleTypesCd.size(); i++){
-			Domain domain = roleTypesCd.get(i);
-			//types+="{typeCd: '"+domain.getValueCd()+"'}";
-			types+="['"+domain.getValueCd()+"']";
-			if(i != (roleTypesCd.size()-1)){
-				types+=",";
-			}
+	<%	
+	JSONArray nodeTypesArray = new JSONArray();
+	if(nodeTypesCd != null){
+		for(int i=0; i< nodeTypesCd.size(); i++){
+			Domain domain = (Domain)nodeTypesCd.get(i);
+			JSONArray temp = new JSONArray();
+			temp.put(domain.getValueCd());
+			nodeTypesArray.put(temp);
 		}
-		types+="]";
-	}
-	%>
-	var config=<%= types%>;
+	}	
+	String nodeTypes = nodeTypesArray.toString();
+	nodeTypes = nodeTypes.replaceAll("\"","'");
+    %>
+
+    var config = {};
+	config.nodeTypesCd = <%= nodeTypes%>;
+	
 	var url = {
     	host: '<%= request.getServerName()%>'
     	, port: '<%= request.getServerPort()%>'
@@ -63,14 +65,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 Ext.onReady(function(){
 	Ext.QuickTips.init();
-	var manageRoles = new Sbi.profiling.ManageRoles(config);
+	var manageResources = new Sbi.kpi.ManageResources(config);
 	var viewport = new Ext.Viewport({
 		layout: 'border'
 		, items: [
 		    {
 		       region: 'center',
 		       layout: 'accordion',
-		       items: [manageRoles]
+		       items: [manageResources]
 		    }
 		]
 

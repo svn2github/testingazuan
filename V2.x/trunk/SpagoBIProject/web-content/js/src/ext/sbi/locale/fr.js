@@ -1,6 +1,36 @@
 Ext.ns("Sbi.locale");
 Sbi.locale.ln = new Array();
 
+//START Generic messages
+//Buttons
+Sbi.locale.ln['sbi.generic.add'] = 'Ajouter';
+Sbi.locale.ln['sbi.generic.delete'] = 'Effacer';
+Sbi.locale.ln['sbi.generic.update'] = 'Enregistrer';
+Sbi.locale.ln['sbi.generic.details'] = 'Detail';
+//Fields
+Sbi.locale.ln['sbi.generic.name'] = 'Nom';
+Sbi.locale.ln['sbi.generic.descr'] = 'Description';
+Sbi.locale.ln['sbi.generic.code'] = 'Code';
+Sbi.locale.ln['sbi.generic.type'] = 'Type';
+Sbi.locale.ln['sbi.generic.label'] = 'Libell\u00E9';
+//Messages
+Sbi.locale.ln['sbi.generic.validationError'] = 'Erreur de Validation';
+Sbi.locale.ln['sbi.generic.error'] = 'Erreur';
+Sbi.locale.ln['sbi.generic.error.msg'] = 'Operation manqu\u00E9';
+Sbi.locale.ln['sbi.generic.ok'] = 'Informations';
+Sbi.locale.ln['sbi.generic.ok.msg'] = 'Modifications enregistr\u00E9s correctement';
+Sbi.locale.ln['sbi.generic.resultMsg'] = 'Operation réussîte';
+Sbi.locale.ln['sbi.generic.result'] = 'Modifications enregistr\u00E9s';
+Sbi.locale.ln['sbi.generic.serviceError'] = 'Service Error';
+Sbi.locale.ln['sbi.generic.serviceResponseEmpty'] = 'Server response is empty';
+Sbi.locale.ln['sbi.generic.savingItemError'] = 'Error while saving item';
+Sbi.locale.ln['sbi.generic.deletingItemError'] = 'Error while deleting item';
+Sbi.locale.ln['sbi.generic.warning'] = 'Warning';
+Sbi.locale.ln['sbi.generic.pleaseConfirm'] = 'Please confirm';
+Sbi.locale.ln['sbi.generic.confirmDelete'] = 'Confirm item delete?';
+//END Generic messages
+
+
 Sbi.locale.ln['sbi.browser.document.creationDate']                                                        = 'date de cr\u00E9ation';
 Sbi.locale.ln['sbi.browser.document.creationUser']                                                        = 'utilisateur';
 Sbi.locale.ln['sbi.browser.document.dataset']                                                             = 'dataset';
@@ -179,10 +209,10 @@ Sbi.locale.ln['sbi.rememberme.name']                                            
 Sbi.locale.ln['sbi.rememberme.save']                                                                      = 'Enregistrer';
 Sbi.locale.ln['sbi.rememberme.saveOk']                                                                    = 'Ex\u00E9cution enregistr\u00E9 correctement comme Favoris';
 // Profile Management
-Sbi.locale.ln['sbi.attributes.add'] 																		= 'Add';
-Sbi.locale.ln['sbi.attributes.delete'] 																		= 'Delete';
+Sbi.locale.ln['sbi.attributes.add'] 																		= 'Ajouter';
+Sbi.locale.ln['sbi.attributes.delete'] 																		= 'Effacer';
 Sbi.locale.ln['sbi.attributes.title'] = 'Profil Attributes';
-Sbi.locale.ln['sbi.attributes.update'] = 'Enregistres';
+Sbi.locale.ln['sbi.attributes.update'] = 'Enregistrer';
 Sbi.locale.ln['sbi.attributes.validationError'] = 'Validation Error';
 Sbi.locale.ln['sbi.attributes.headerName'] = 'Nom';
 Sbi.locale.ln['sbi.attributes.headerDescr'] = 'Description';

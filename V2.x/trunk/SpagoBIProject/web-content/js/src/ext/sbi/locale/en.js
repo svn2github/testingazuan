@@ -4,6 +4,35 @@ Sbi.locale.ln = new Array();
 Sbi.locale.ln['sbi.browser.documentstree.title'] = 'Functionality Tree';
 Sbi.locale.ln['sbi.browser.documentstree.root']  = 'Root';
 
+//START Generic messages
+//Buttons
+Sbi.locale.ln['sbi.generic.add'] = 'Add';
+Sbi.locale.ln['sbi.generic.delete'] = 'Delete';
+Sbi.locale.ln['sbi.generic.update'] = 'Save';
+Sbi.locale.ln['sbi.generic.details'] = 'Detail';
+//Fields
+Sbi.locale.ln['sbi.generic.name'] = 'Name';
+Sbi.locale.ln['sbi.generic.descr'] = 'Description';
+Sbi.locale.ln['sbi.generic.code'] = 'Code';
+Sbi.locale.ln['sbi.generic.type'] = 'Type';
+Sbi.locale.ln['sbi.generic.label'] = 'Label';
+//Messages
+Sbi.locale.ln['sbi.generic.validationError'] = 'Validation Error';
+Sbi.locale.ln['sbi.generic.error'] = 'Error';
+Sbi.locale.ln['sbi.generic.error.msg'] = 'Operation failed';
+Sbi.locale.ln['sbi.generic.ok'] = 'Information';
+Sbi.locale.ln['sbi.generic.ok.msg'] = 'Operation succesfully ended';
+Sbi.locale.ln['sbi.generic.resultMsg'] = 'Operation succeded';
+Sbi.locale.ln['sbi.generic.result'] = 'Updates saved';
+Sbi.locale.ln['sbi.generic.serviceError'] = 'Service Error';
+Sbi.locale.ln['sbi.generic.serviceResponseEmpty'] = 'Server response is empty';
+Sbi.locale.ln['sbi.generic.savingItemError'] = 'Error while saving item';
+Sbi.locale.ln['sbi.generic.deletingItemError'] = 'Error while deleting item';
+Sbi.locale.ln['sbi.generic.warning'] = 'Warning';
+Sbi.locale.ln['sbi.generic.pleaseConfirm'] = 'Please confirm';
+Sbi.locale.ln['sbi.generic.confirmDelete'] = 'Confirm item delete?';
+//END Generic messages
+
 
 Sbi.locale.ln['sbi.browser.filtrpanel.title']  = 'Sort, group and filter';
 

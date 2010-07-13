@@ -69,6 +69,9 @@ Sbi.console.Widget = function(config) {
 
 		// constructor
 		Sbi.console.Widget.superclass.constructor.call(this, c);
+		
+		//anto
+		this.doLayout();
     
 };
 

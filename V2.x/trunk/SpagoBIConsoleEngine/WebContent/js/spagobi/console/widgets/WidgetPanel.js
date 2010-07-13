@@ -50,7 +50,11 @@ Sbi.console.WidgetPanel = function(config) {
 
 		var defaultSettings = {
 			layout:'table'
-		  , columnNumber: 3
+		  , layoutConfig: {
+			   tableAttrs: {
+                    style: {width: '100%', height:'100%'}
+              }
+            }  
 		};
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.widgetPanel) {
@@ -116,8 +120,6 @@ Ext.extend(Sbi.console.WidgetPanel, Sbi.console.Widget, {
 			this.add(widget);
 		}, this);
 		
-
-		
 	}
 
-});
+}); 

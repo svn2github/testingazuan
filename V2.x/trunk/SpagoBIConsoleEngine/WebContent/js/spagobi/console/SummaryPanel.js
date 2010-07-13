@@ -67,51 +67,54 @@ Sbi.console.SummaryPanel = function(config) {
 		Ext.apply(this, c);
 		
 		var widgetPanelConfig = config.layoutManagerConfig || {};
+		
 		widgetPanelConfig.storeManager = this.storeManager;
 		widgetPanelConfig.items = [];
-
+		
 		for(var i = 0, l1 = config.charts.length ; i < l1; i++) {
+			
 			if(config.charts[i].widgetConfig.type === 'chart.composite') {
+				//composite widget
+				
+				//sets the general style of the table 
+				widgetPanelConfig.layoutConfig = config.layoutManagerConfig.layoutConfig || {};
+				widgetPanelConfig.layoutConfig.tableAttrs = config.layoutManagerConfig.layoutConfig.tableAttrs || {style: {width: '100%', height: '100%'}};
+				
 				var compositeWidgetPanelConfig = {};
-				//******** defaults configuration applied to each contained panel **********
+				//******** DEFAULTS configuration applied to each contained panel **********
 				
-				//dataset (default)				
-				var defaultDataset = widgetPanelConfig.defaults.dataset;		
-				
-				//width (default)
-				var defaultWidth =  (widgetPanelConfig.defaults.width === undefined) ? 400 : widgetPanelConfig.defaults.width;
-				
-				//heigt (default)
-				var defaultHeight =  (widgetPanelConfig.defaults.height === undefined) ? 400: widgetPanelConfig.defaults.height;
-				
-				//**************** configuration about single contained panel *************
+				//dataset 			
+				var defaultDataset = widgetPanelConfig.defaults.dataset;						
+				//width 
+				var defaultWidth =  (widgetPanelConfig.defaults.columnWidthDefault === undefined) ? .1 : widgetPanelConfig.defaults.columnWidthDefault;				
+				//heigt 
+				var defaultHeight =  (widgetPanelConfig.defaults.columnHeightDefault === undefined) ? .1: widgetPanelConfig.defaults.columnHeightDefault;
+
+			
+				//**************** configuration about the SINGLE contained panel *************
 				
 				//title
-				compositeWidgetPanelConfig.title = (config.charts[i].widgetConfig.title.text === undefined) ? "" :  config.charts[i].widgetConfig.title.text;
-				
+				compositeWidgetPanelConfig.title = (config.charts[i].widgetConfig.title === undefined) ? "" :  config.charts[i].widgetConfig.title;				
 				//colspan
-				compositeWidgetPanelConfig.colspan = (config.charts[i].widgetConfig.colspan === undefined) ? 1 : config.charts[i].widgetConfig.colspan;
-				
+				compositeWidgetPanelConfig.colspan = (config.charts[i].widgetConfig.colspan === undefined) ? 1 : config.charts[i].widgetConfig.colspan;				
 				//rowspan
 				compositeWidgetPanelConfig.rowspan = (config.charts[i].widgetConfig.rowspan === undefined) ? 1 : config.charts[i].widgetConfig.rowspan;
-
-				//dataset (single panel)
+				//dataset 
 				componentDataset = config.charts[i].widgetConfig.dataset;
-				//width (single panel)
+				//width 
 				var componentWidth = config.charts[i].widgetConfig.width;								
-				//height (single panel)
-				var componentHeight = config.charts[i].widgetConfig.height;				
-				
+				//height 
+				var componentHeight = config.charts[i].widgetConfig.height;	
 				
 				compositeWidgetPanelConfig.storeManager = this.storeManager;
 				compositeWidgetPanelConfig.items = [];
-					
-				for(var j = 0, l2 = config.charts[i].widgetConfig.subcharts.length ; j < l2; j++) {
 				
+				
+				for(var j = 0, l2 = config.charts[i].widgetConfig.subcharts.length ; j < l2; j++) {
 					var configSubChart = {};
-					configSubChart = config.charts[i].widgetConfig.subcharts[j];
+					configSubChart = config.charts[i].widgetConfig.subcharts[j];									
 					
-					//sets the dataset; the order for getting values are: single single panel, table
+					//sets the DATASET; the order for getting values are: single widget, single panel, table
 					if (configSubChart.dataset === undefined){
 						if (componentDataset !== undefined){
 							configSubChart.dataset = componentDataset;
@@ -121,7 +124,7 @@ Sbi.console.SummaryPanel = function(config) {
 						}
 					}
 					
-					//sets the width of single element; the order for getting values are: single widget, single panel, table
+					//sets the WIDTH of single element; the order for getting values are: single widget, single panel, table
 					if (configSubChart.width === undefined){
 						if (componentWidth !== undefined){
 							configSubChart.width = componentWidth/l2; //divides total space by the number of elements
@@ -129,12 +132,20 @@ Sbi.console.SummaryPanel = function(config) {
 						else{
 							configSubChart.width = defaultWidth/l2; //divides default total space by the number of elements
 						}
+					}					
+					//apply the colspan
+					configSubChart.width = (configSubChart.width * compositeWidgetPanelConfig.colspan);				
+					
+					
+					//percentage dimensions: the single widget occupies the total space; otherwise if the value is not a valid number,
+					//deletes the property from configuration (for IE problem) 
+					if (configSubChart.width <= 1){						
+						configSubChart.width = "100%";								
+					}else if (configSubChart.width === undefined || isNaN(configSubChart.width) ){
+						delete configSubChart.width;						
 					}
 
-					//apply the colspan
-					configSubChart.width = (configSubChart.width * compositeWidgetPanelConfig.colspan);
-					
-					//sets the height of single element; the order for getting values are: single widget, single panel, table
+					//sets the HEIGHT of single element; the order for getting values are: single widget, single panel, table
 					if (configSubChart.height === undefined){
 						if (componentHeight !== undefined){
 							configSubChart.height = componentHeight; 
@@ -142,20 +153,28 @@ Sbi.console.SummaryPanel = function(config) {
 						else{
 							configSubChart.height = defaultHeight;
 						}
+					}					
+					//apply the rowspan
+					configSubChart.height = (configSubChart.height * compositeWidgetPanelConfig.rowspan);
+				
+					//percentage dimensions: the single widget occupies the total space; otherwise if the value is not a valid number,
+					//deletes the property from configuration (for IE problem) 
+					if (configSubChart.height <= 1){						
+						configSubChart.height = "100%";			
+					}else if (configSubChart.height === undefined || isNaN(configSubChart.height) ){
+						delete configSubChart.height;							
 					}
 					
-					//apply the colspan
-					configSubChart.height = (configSubChart.height * compositeWidgetPanelConfig.rowspan);
-		
+					//sets the dimensions on the parent panel
 					compositeWidgetPanelConfig.width = (componentWidth > configSubChart.width)? componentWidth : configSubChart.width;
-					compositeWidgetPanelConfig.height = (componentHeight > configSubChart.height)? componentHeight : configSubChart.height;
-				
-					//compositeWidgetPanelConfig.items.push(new Sbi.console.ChartWidget(config.charts[i].widgetConfig.subcharts[j]));
+					compositeWidgetPanelConfig.height = (componentHeight > configSubChart.height)? componentHeight : configSubChart.height;										
+										
 					compositeWidgetPanelConfig.items.push(new Sbi.console.ChartWidget(configSubChart));
 				}
 				var compositeWidgetPanel = new Sbi.console.WidgetPanel(compositeWidgetPanelConfig);
 				widgetPanelConfig.items.push(compositeWidgetPanel);
 			} else {
+				//simple widget
 				widgetPanelConfig.items.push(new Sbi.console.ChartWidget(config.charts[i]));
 			}
 		}

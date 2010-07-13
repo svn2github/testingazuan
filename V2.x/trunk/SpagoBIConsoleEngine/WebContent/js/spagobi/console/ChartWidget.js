@@ -197,10 +197,8 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		delete chartConfig.type;
 
 		return new Ext.Panel({
-			layout:'fit'
-		    , height: this.height	
-		   // , width: this.width
-		    , items: [chartConfig]
+			//layout:'fit'
+		      items: [chartConfig]
 		    , border: false
 		    , bodyBorder: false
 		    , hideBorders: true

@@ -100,8 +100,8 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
 		                                         {header: LN('sbi.generic.code'), width: 150, sortable: true, dataIndex: 'code'}
 		                                        ];
 		
-		this.configurationObject.panelTitle = 'Resources Management';
-		this.configurationObject.listTitle = 'Resources List';
+		this.configurationObject.panelTitle = LN('sbi.resources.panelTitle');
+		this.configurationObject.listTitle = LN('sbi.resources.listTitle');
 		
 		this.initTabItems();
     }

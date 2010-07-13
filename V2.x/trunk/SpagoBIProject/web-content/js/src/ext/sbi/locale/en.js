@@ -33,6 +33,18 @@ Sbi.locale.ln['sbi.generic.pleaseConfirm'] = 'Please confirm';
 Sbi.locale.ln['sbi.generic.confirmDelete'] = 'Confirm item delete?';
 //END Generic messages
 
+//START List Detail messages
+Sbi.locale.ln['sbi.resources.panelTitle'] = 'Resources Management';
+Sbi.locale.ln['sbi.resources.listTitle'] = 'Resources List';
+Sbi.locale.ln['sbi.thresholds.panelTitle'] = 'Thresholds Management';
+Sbi.locale.ln['sbi.thresholds.listTitle'] = 'Thresholds List';
+Sbi.locale.ln['sbi.kpis.panelTitle'] = 'Kpis Management';
+Sbi.locale.ln['sbi.kpis.listTitle'] = 'Kpis List';
+Sbi.locale.ln['sbi.models.panelTitle'] = 'Models Management';
+Sbi.locale.ln['sbi.models.listTitle'] = 'Models List';
+Sbi.locale.ln['sbi.modelinstances.panelTitle'] = 'Model Instances Management';
+Sbi.locale.ln['sbi.modelinstances.listTitle'] = 'Model Instances List';
+//END List Detail messages
 
 Sbi.locale.ln['sbi.browser.filtrpanel.title']  = 'Sort, group and filter';
 

@@ -33,6 +33,19 @@ Sbi.locale.ln['sbi.generic.pleaseConfirm'] = 'Per favore confermare';
 Sbi.locale.ln['sbi.generic.confirmDelete'] = 'Confermi l\'eliminazione dell\'oggetto?';
 //END Generic messages
 
+//START List Detail messages
+Sbi.locale.ln['sbi.resources.panelTitle'] = 'Gestione Risorse';
+Sbi.locale.ln['sbi.resources.listTitle'] = 'Lista Risorse';
+Sbi.locale.ln['sbi.thresholds.panelTitle'] = 'Gestione Soglie';
+Sbi.locale.ln['sbi.thresholds.listTitle'] = 'Lista Soglie';
+Sbi.locale.ln['sbi.kpis.panelTitle'] = 'Gestione Kpi';
+Sbi.locale.ln['sbi.kpis.listTitle'] = 'Lista Kpi';
+Sbi.locale.ln['sbi.models.panelTitle'] = 'Gestione Modelli';
+Sbi.locale.ln['sbi.models.listTitle'] = 'Lista Modelli';
+Sbi.locale.ln['sbi.modelinstances.panelTitle'] = 'Gestione Istanze di Modello';
+Sbi.locale.ln['sbi.modelinstances.listTitle'] = 'Lista Istanze di Modello';
+//END List Detail messages
+
 Sbi.locale.ln['sbi.browser.documentstree.title'] = 'Albero delle funzionalità';
 Sbi.locale.ln['sbi.browser.documentstree.root']  = 'Radice';
 

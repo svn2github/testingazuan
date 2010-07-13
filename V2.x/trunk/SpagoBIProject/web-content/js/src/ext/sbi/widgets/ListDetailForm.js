@@ -161,7 +161,7 @@ Sbi.widgets.ListDetailForm = function(config) {
     	autoLoad: false    	  
     	, id : 'id'		
     	, fields: config.fields
-    	, root: 'samples'
+    	, root: 'rows'
 		, url: this.services['manageListService']		
 	});
 
@@ -248,6 +248,15 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
  	            })
  	    	]
  	    });
+ 	    
+ 	  // var filteringToolbar = new Sbi.widgets.FilteringToolbar({store: this.store});
+ 	   var pagingBar = new Ext.PagingToolbar({
+	        pageSize: 16,
+	        store: this.mainElementsStore,
+	        displayInfo: true,
+	        displayMsg: '', 
+	        emptyMsg: "No topics to display"	        
+	    });
 
    	   /*
    	   *    Here is where we create the Form
@@ -286,6 +295,7 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
    	                  width: 400,
    	                  layout: 'fit',
    	                  title: this.listTitle,
+   		              bbar: pagingBar,
    	                  tbar: this.tb,
    	                  border: true,
    	                  listeners: {

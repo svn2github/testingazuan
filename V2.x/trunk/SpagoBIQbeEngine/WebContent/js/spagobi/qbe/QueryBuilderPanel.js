@@ -626,7 +626,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		          }, 
 		          scope: this
 		        }, {
-		          id:'add',
+		          id:'list',
 		          qtip:LN('sbi.qbe.queryeditor.eastregion.tools.add'),
 		          hidden: (this.enableCatalogueTbAddBtn == false),
 		          handler: function(event, toolEl, panel){
@@ -634,7 +634,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		          },
 		          scope: this
 		        }, {
-			      id:'plus',
+			      id:'tree',
 			      qtip:LN('sbi.qbe.queryeditor.eastregion.tools.insert'),
 			      hidden: (this.enableCatalogueTbInsertBtn == false),
 			      handler: function(event, toolEl, panel){

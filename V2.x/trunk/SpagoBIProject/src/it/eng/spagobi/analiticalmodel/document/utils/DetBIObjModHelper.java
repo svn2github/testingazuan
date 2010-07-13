@@ -120,11 +120,11 @@ public class DetBIObjModHelper {
 		String refreshSecondsString = (String) request.getAttribute("refreshseconds");
 		if(refreshSecondsString==null || refreshSecondsString.equalsIgnoreCase(""))refreshSecondsString="0";
 		Integer refreshSeconds=Integer.valueOf(refreshSecondsString);
-		String longDescription = (String) request.getAttribute("longDescription");
+		/*String longDescription = (String) request.getAttribute("longDescription");
 		String objective = (String) request.getAttribute("objective");
 		String language = (String) request.getAttribute("language");
 		String Keywords = (String) request.getAttribute("Keywords");
-		//String Rating = (String) request.getAttribute("Rating");
+		String Rating = (String) request.getAttribute("Rating");*/
 		// ELABORATE DATA RECOVERED FROM REQUEST
 		Integer id = null;
 		if(idStr!=null) id = new Integer(idStr);

@@ -74,6 +74,8 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 	configurationObject: null
 	, gridForm:null
 	, mainElementsStore:null
+	, thrWin:null
+	, dsWin:null
 
 	,initConfigObject:function(){
 	   this.configurationObject.fields = ['id'
@@ -175,36 +177,44 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
              name: 'weight'
           };	
  	  
- 	  var detailFieldDataset = {
-             maxLength:160,
-          	 minLength:1,
-          	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
-          	 regexText : LN('sbi.roles.alfanumericString'),
-             fieldLabel: 'Dataset',
-             validationEvent:true,
-             name: 'dataset'
-           };
- 	  
- 	 var detailFieldThreshold = {
-             maxLength:160,
-          	 minLength:1,
-          	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
-          	 regexText : LN('sbi.roles.alfanumericString'),
-             fieldLabel: 'Threshold',
-             validationEvent:true,
-             name: 'threshold'
-           };
  	 
- 	 var detailFieldDocuments = {
-             maxLength:160,
-          	 minLength:1,
-          	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
-          	 regexText : LN('sbi.roles.alfanumericString'),
-             fieldLabel: 'Documents',
-             validationEvent:true,
-             name: 'documents'
-           };
- 		   
+  	 var baseConfig = {};
+  	 var myData = [
+ 	               ['3msCo','ss','sss'],
+ 	               ['Alcoa Inc','aaa','www']
+ 	           ];
+ 	 var storea = new Ext.data.ArrayStore({
+         fields: [
+            {name: 'company'},
+            {name: 'price'},
+            {name: 'change'}
+         ]
+     });
+
+     // manually load local data
+     storea.loadData(myData);
+ 	  
+ 	  var detailFieldDataset = new Sbi.widgets.LookupField(Ext.apply(baseConfig, {
+			  store: storea
+			  , name: 'dataset'
+			  ,	fieldLabel: 'Dataset'
+			  , singleSelect: false
+		 }));  
+
+ 	  
+ 	 var detailFieldThreshold = new Ext.form.TriggerField({
+ 		     triggerClass: 'x-form-search-trigger',
+ 		     fieldLabel: 'Threshold',
+ 		     name: 'threshold'
+ 		    });
+ 	detailFieldThreshold.onTriggerClick = this.launchThrWindow;
+ 	 
+ 	 var detailFieldDocuments = new Sbi.widgets.LookupField(Ext.apply(baseConfig, {
+		  store: storea
+		  , name: 'documents'
+		  ,	fieldLabel: 'Documents'
+		  , singleSelect: false
+	 }));   
  	    
  	   //END list of detail fields
  	   
@@ -360,7 +370,7 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 		             },
 		             items: [detailFieldId, detailFieldName, detailFieldCode, 
 		                     detailFieldDescr, detailFieldWeight, detailFieldDataset,
-		                     detailFieldThreshold, detailFieldDocuments ]
+		                     detailFieldThreshold, detailFieldDocuments]
 		    	}
 		    },{
 		    	title: 'Advanced'
@@ -389,8 +399,38 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 		    }];
 	}
 	
+	,launchThrWindow : function() {
+		
+		config.nodeTypesCd = {};
+		var manageThresholds = new Sbi.kpi.ManageThresholds(config);
+		/*var viewport = new Ext.Viewport({
+			layout: 'border'
+			, items: [
+			    {
+			       region: 'center',
+			       layout: 'accordion',
+			       items: [manageThresholds]
+			    }
+			]
+
+		});*/
+		
+		this.thrWin = new Ext.Window({
+			title: LN('sbi.lookup.Select') ,   
+            layout      : 'fit',
+            width       : 580,
+            height      : 300,
+            closeAction :'hide',
+            plain       : true,
+            items       : [manageThresholds]
+		});
+		
+		this.thrWin.show();
+	}
+	
     //OVERRIDING save method
 	,save : function() {
+		alert('Dentro a save');
 		/*
 		var values = this.gridForm.getForm().getValues();
 		var idRec = values['id'];

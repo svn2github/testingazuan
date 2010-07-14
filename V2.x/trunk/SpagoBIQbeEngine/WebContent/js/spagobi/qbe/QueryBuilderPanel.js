@@ -54,7 +54,7 @@ Sbi.qbe.QueryBuilderPanel = function(config) {
 		border: false,
 		enableTreeContextMenu: true,
 		enableTreeToolbar: true,
-		enableTreeTbSaveBtn: false,
+		enableTreeTbSaveBtn: true,
 		enableTreeTbPinBtn: true,
 		enableTreeTbUnpinBtn: true,
 		enableQueryTbExecuteBtn: true,

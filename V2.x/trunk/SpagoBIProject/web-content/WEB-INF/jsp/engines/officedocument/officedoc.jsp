@@ -67,11 +67,15 @@ if (heightArea == null || heightArea.trim().equals("")) {
 				heightMainIFrame = 0;
 				// calculates the iframe height
 				if(isIE5()) { heightMainIFrame = document.body.clientHeight; }
-				if(isIE6()) { heightMainIFrame = document.body.clientHeight; }
-				if(isIE7()) { heightMainIFrame = document.body.clientHeight; }
-				if(isMoz()) { heightMainIFrame = innerHeight; }
+				else if(isIE6()) { heightMainIFrame = document.body.clientHeight; }
+				else if(isIE7()) { heightMainIFrame = document.body.clientHeight; }
+				else if(isMoz()) { heightMainIFrame = innerHeight; }
+					// this else in case of other browser or a newer version of IE
+				else { heightMainIFrame = document.body.clientHeight; }
+
 				// minus a fixed size (header height)
-				heightExecIFrame = heightMainIFrame - 70;
+				//heightExecIFrame = heightMainIFrame - 70;
+				heightExecIFrame = heightMainIFrame ;
 				iframeEl = document.getElementById('iframeexec<%=strUuid%>');
 				iframeEl.style.height = heightExecIFrame + 'px';
 				return;
@@ -81,9 +85,10 @@ if (heightArea == null || heightArea.trim().equals("")) {
 			heightVisArea = 0;
 
 			if(isIE5()) { heightVisArea = top.document.body.clientHeight; }
-			if(isIE6()) { heightVisArea = top.document.body.clientHeight; }
-			if(isIE7()) { heightVisArea = top.document.documentElement.clientHeight }
-			if(isMoz()) { heightVisArea = top.innerHeight; }
+			else if(isIE6()) { heightVisArea = top.document.body.clientHeight; }
+			else if(isIE7()) { heightVisArea = top.document.documentElement.clientHeight }
+			else if(isMoz()) { heightVisArea = top.innerHeight; }
+			else { heightVisArea = top.document.documentElement.clientHeight }
 	
 			// get the frame div object
 			diviframeobj = document.getElementById('divIframe<%=strUuid%>');

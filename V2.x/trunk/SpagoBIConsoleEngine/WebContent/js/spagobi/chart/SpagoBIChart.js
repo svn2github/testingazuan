@@ -49,7 +49,7 @@ Ext.ns("Sbi.chart");
 
 Sbi.chart.SpagoBIChart = function(config) {	
 	
-	this.bindStoreBeforeSwfInit = config.bindStoreBeforeSwfInit | false;
+	this.bindStoreBeforeSwfInit = config.bindStoreBeforeSwfInit || false;
 	
 	// because swfInit do not work for spago chart...
 	/*
@@ -86,7 +86,7 @@ Sbi.chart.SpagoBIChart = function(config) {
 	
 
 	this.flashVars.scale = 'exactfit'; 
-	this.flashParams = this.flashParams | {};
+	this.flashParams = this.flashParams || {};
 	this.flashParams.scale = 'exactfit'; 
 	
 	
@@ -222,8 +222,8 @@ Sbi.chart.Multileds = Ext.extend(Sbi.chart.SpagoBIChart, {
 	
 	CHART_SWF: 'multileds.swf'
 	, CHART_DEFAULT_CONFIG: {
-		title:'SpagoBI Multileds'
-		, fields: Ext.util.JSON.encode([
+		//title:'SpagoBI Multileds'
+			fields: Ext.util.JSON.encode([
 		    {
 		    	header: 'EffortIdx',
 		    	name:'EffortIndex', 
@@ -380,8 +380,8 @@ Sbi.chart.Semaphore = Ext.extend(Sbi.chart.SpagoBIChart, {
 	
 	CHART_SWF: 'semaphore.swf'
 	, CHART_DEFAULT_CONFIG: {
-		title: 'Title',
-  	  header: 'Effort',
+	//	title: 'Title',
+  	    header: 'Effort',
     	field:'EffortIndex', 
     	orientation:'vertical',
     	rangeMaxValue: 100, 

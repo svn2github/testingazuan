@@ -140,7 +140,9 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
  		   
  	   var detailFieldDescr = {
           	 maxLength:160,
-        	 minLength:1,
+        	 xtype: 'textarea',
+        	 width : 250,
+             height : 80,
         	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
         	 regexText : LN('sbi.roles.alfanumericString'),
              fieldLabel: LN('sbi.generic.descr'),

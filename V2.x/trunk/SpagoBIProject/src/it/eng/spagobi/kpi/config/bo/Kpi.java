@@ -29,6 +29,34 @@ public class Kpi implements Serializable{
 	Integer kpiTypeId = null;
 	Integer metricScaleId = null;
 	Integer measureTypeId = null;
+	String kpiTypeCd = null;
+	String metricScaleCd = null;
+	String measureTypeCd = null;
+
+
+	public String getKpiTypeCd() {
+		return kpiTypeCd;
+	}
+
+	public void setKpiTypeCd(String kpiTypeCd) {
+		this.kpiTypeCd = kpiTypeCd;
+	}
+
+	public String getMetricScaleCd() {
+		return metricScaleCd;
+	}
+
+	public void setMetricScaleCd(String metricScaleCd) {
+		this.metricScaleCd = metricScaleCd;
+	}
+
+	public String getMeasureTypeCd() {
+		return measureTypeCd;
+	}
+
+	public void setMeasureTypeCd(String measureTypeCd) {
+		this.measureTypeCd = measureTypeCd;
+	}
 
 	public Kpi() {
 		super();

@@ -209,6 +209,10 @@ public interface IKpiDAO {
 	public List loadKpiList() throws EMFUserError;
 	
 	public List loadKpiList(String fieldOrder, String typeOrder) throws EMFUserError;
+	
+    public List loadPagedKpiList(Integer offset, Integer fetchSize)throws EMFUserError ;
+	
+	public Integer countKpis()throws EMFUserError ;
 
 	/*public void modifyResource(Resource resource) throws EMFUserError;
 

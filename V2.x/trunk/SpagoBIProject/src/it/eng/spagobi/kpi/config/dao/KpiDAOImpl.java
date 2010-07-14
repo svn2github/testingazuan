@@ -138,19 +138,25 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		String targetAudience = kpi.getTargetAudience();
 
 		Integer kpiTypeId = null;
+		String kpiTypeCd = null;
 		Integer metricScaleId = null;
+		String metricScaleCd = null;
 		Integer measureTypeId = null;
+		String measureTypeCd = null;
 
 		if (kpi.getSbiDomainsByKpiType() != null) {
 			kpiTypeId = kpi.getSbiDomainsByKpiType().getValueId();
+			kpiTypeCd = kpi.getSbiDomainsByKpiType().getValueCd();
 		}
 
 		if (kpi.getSbiDomainsByMeasureType() != null) {
 			measureTypeId = kpi.getSbiDomainsByMeasureType().getValueId();
+			measureTypeCd = kpi.getSbiDomainsByMeasureType().getValueCd();
 		}
 
 		if (kpi.getSbiDomainsByMetricScaleType() != null) {
 			metricScaleId = kpi.getSbiDomainsByMetricScaleType().getValueId();
+			metricScaleCd = kpi.getSbiDomainsByMetricScaleType().getValueCd();
 		}
 
 
@@ -191,10 +197,13 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("Kpi TargetAudience setted");
 
 		toReturn.setKpiTypeId(kpiTypeId);
+		toReturn.setKpiTypeCd(kpiTypeCd);
 		logger.debug("Kpi KpiTypeId setted");
 		toReturn.setMetricScaleId(metricScaleId);
+		toReturn.setMetricScaleCd(metricScaleCd);
 		logger.debug("Kpi MetricScaleId setted");
 		toReturn.setMeasureTypeId(measureTypeId);
+		toReturn.setMeasureTypeCd(measureTypeCd);
 		logger.debug("Kpi MeasureTypeId setted");
 
 		logger.debug("OUT");
@@ -914,12 +923,15 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 		if(kpi.getSbiDomainsByKpiType()!=null){
 			toReturn.setKpiTypeId(kpi.getSbiDomainsByKpiType().getValueId());
+			toReturn.setKpiTypeCd(kpi.getSbiDomainsByKpiType().getValueCd());
 		}
 		if(kpi.getSbiDomainsByMeasureType()!=null){
 			toReturn.setMeasureTypeId(kpi.getSbiDomainsByMeasureType().getValueId());
+			toReturn.setMeasureTypeCd(kpi.getSbiDomainsByMeasureType().getValueCd());
 		}
 		if(kpi.getSbiDomainsByMetricScaleType()!=null){
 			toReturn.setMetricScaleId(kpi.getSbiDomainsByMetricScaleType().getValueId());
+			toReturn.setMetricScaleCd(kpi.getSbiDomainsByMetricScaleType().getValueCd());
 		}
 
 		logger.debug("OUT");
@@ -1243,6 +1255,102 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			}
 		}
 		logger.debug("OUT");
+		return toReturn;
+	}
+
+
+	public Integer countKpis() throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		Integer resultNumber;
+		
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+		
+			String hql = "select count(*) from SbiKpi ";
+			Query hqlQuery = aSession.createQuery(hql);
+			resultNumber = (Integer)hqlQuery.uniqueResult();
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the list of Kpis", he);	
+			if (tx != null)
+				tx.rollback();	
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+		
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		return resultNumber;
+	}
+
+
+	public List loadPagedKpiList(Integer offset, Integer fetchSize)
+			throws EMFUserError {
+		logger.debug("IN");
+		List toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+		Integer resultNumber;
+		Query hibernateQuery;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			toReturn = new ArrayList();
+			List toTransform = null;
+			
+			String hql = "select count(*) from SbiKpi ";
+			Query hqlQuery = aSession.createQuery(hql);
+			resultNumber = (Integer)hqlQuery.uniqueResult();
+			
+			offset = offset < 0 ? 0 : offset;
+			if(resultNumber > 0) {
+				fetchSize = (fetchSize > 0)? Math.min(fetchSize, resultNumber): resultNumber;
+			}
+			
+			hibernateQuery = aSession.createQuery("from SbiKpi order by name");
+			hibernateQuery.setFirstResult(offset);
+			if(fetchSize > 0) hibernateQuery.setMaxResults(fetchSize);			
+
+			toTransform = hibernateQuery.list();			
+
+			for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
+				SbiKpi hibKpi = (SbiKpi) iterator.next();
+				Kpi kpi = new Kpi();
+				kpi.setCode(hibKpi.getCode());
+				kpi.setDescription(hibKpi.getDescription());
+				kpi.setKpiName(hibKpi.getName());
+				kpi.setKpiId(hibKpi.getKpiId());
+				if(hibKpi.getSbiThreshold() != null){
+					Threshold threshold = new Threshold();
+					threshold.setId(hibKpi.getSbiThreshold().getThresholdId());
+					threshold.setName(hibKpi.getSbiThreshold().getName());
+					kpi.setThreshold(threshold);
+				}
+				toReturn.add(kpi);
+			}
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the list of Threshold", he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
 		return toReturn;
 	}
 

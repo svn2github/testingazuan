@@ -85,12 +85,13 @@ public class JSONSerializer implements Serializer {
 		
 		mappings.put( Resource.class, new ResourceJSONSerializer());
 		mappings.put( Threshold.class, new ThresholdJSONSerializer());
+		mappings.put( Kpi.class, new KpiJSONSerializer());
 		
 		//TODO da aggiungere mano a mano le classi esistono già
 		/*
 		mappings.put( ModelNode.class, new ModelNodeJSONSerializer());		
 		mappings.put( ModelInstanceNode.class, new ModelInstanceNodeJSONSerializer());
-		mappings.put( Kpi.class, new KpiJSONSerializer());*/
+		*/
 		
 		mappings.put( GetParametersForExecutionAction.ParameterForExecution.class, new ParameterForExecutionJSONSerializer() );
 	}

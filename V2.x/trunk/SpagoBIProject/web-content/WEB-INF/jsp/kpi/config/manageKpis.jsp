@@ -21,33 +21,61 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/WEB-INF/jsp/commons/portlet_base311.jsp"%>
 <%@ page import="it.eng.spagobi.commons.bo.Domain,
 				 java.util.ArrayList,
-				 java.util.List" %>
+				 java.util.List,
+				 org.json.JSONArray" %>
 <%
-
-	List<Domain> roleTypesCd = (List<Domain>) aSessionContainer.getAttribute("roleTypes");
-
+	List kpiTypesCd = (List) aSessionContainer.getAttribute("kpiTypesList");
+	List measureTypesCd = (List) aSessionContainer.getAttribute("measureTypesList");
+	List metricScaleTypesCd = (List) aSessionContainer.getAttribute("metricScaleTypesList");
 %>
 
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/service/ServiceRegistry.js")%>'></script>
 
 <script type="text/javascript">
 
-	<%
-	String types ="{}";
-	if(roleTypesCd != null){
-		types="[";
-		for(int i=0; i< roleTypesCd.size(); i++){
-			Domain domain = roleTypesCd.get(i);
-			//types+="{typeCd: '"+domain.getValueCd()+"'}";
-			types+="['"+domain.getValueCd()+"']";
-			if(i != (roleTypesCd.size()-1)){
-				types+=",";
-			}
+	<%	
+	JSONArray kpiTypesArray = new JSONArray();
+	if(kpiTypesCd != null){
+		for(int i=0; i< kpiTypesCd.size(); i++){
+			Domain domain = (Domain)kpiTypesCd.get(i);
+			JSONArray temp = new JSONArray();
+			temp.put(domain.getValueCd());
+			kpiTypesArray.put(temp);
 		}
-		types+="]";
-	}
-	%>
-	var config=<%= types%>;
+	}	
+	String kpiTypes = kpiTypesArray.toString();
+	kpiTypes = kpiTypes.replaceAll("\"","'");
+	
+	JSONArray measureTypesArray = new JSONArray();
+	if(measureTypesCd != null){
+		for(int i=0; i< measureTypesCd.size(); i++){
+			Domain domain = (Domain)measureTypesCd.get(i);
+			JSONArray temp = new JSONArray();
+			temp.put(domain.getValueCd());
+			measureTypesArray.put(temp);
+		}
+	}	
+	String measureTypes = measureTypesArray.toString();
+	measureTypes = measureTypes.replaceAll("\"","'");
+	
+	JSONArray metricScaleTypesArray = new JSONArray();
+	if(metricScaleTypesCd != null){
+		for(int i=0; i< metricScaleTypesCd.size(); i++){
+			Domain domain = (Domain)metricScaleTypesCd.get(i);
+			JSONArray temp = new JSONArray();
+			temp.put(domain.getValueCd());
+			metricScaleTypesArray.put(temp);
+		}
+	}	
+	String metricScalesTypes = metricScaleTypesArray.toString();
+	metricScalesTypes = metricScalesTypes.replaceAll("\"","'");	
+    %>
+
+    var config = {};
+	config.kpiTypesCd = <%= kpiTypes%>;
+	config.measureTypesCd = <%= measureTypes%>;
+	config.metricScaleTypesCd = <%= metricScalesTypes%>;
+	
 	var url = {
     	host: '<%= request.getServerName()%>'
     	, port: '<%= request.getServerPort()%>'
@@ -61,22 +89,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	baseUrl: url
     });
 
-Ext.onReady(function(){
-	Ext.QuickTips.init();
-	var manageRoles = new Sbi.profiling.ManageRoles(config);
-	var viewport = new Ext.Viewport({
-		layout: 'border'
-		, items: [
-		    {
-		       region: 'center',
-		       layout: 'accordion',
-		       items: [manageRoles]
-		    }
-		]
-
+	Ext.onReady(function(){
+		Ext.QuickTips.init();
+		var manageKpis = new Sbi.kpi.ManageKpis(config);
+		var viewport = new Ext.Viewport({
+			layout: 'border'
+			, items: [
+			    {
+			       region: 'center',
+			       layout: 'accordion',
+			       items: [manageKpis]
+			    }
+			]
+	
+		});
+	   	
 	});
-   	
-});
 
 
 </script>

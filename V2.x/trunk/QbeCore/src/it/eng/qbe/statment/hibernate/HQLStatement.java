@@ -353,7 +353,7 @@ public class HQLStatement extends BasicStatement {
 					
 					String expr = selectInLineField.getExpression();//.replace("\'", "");
 					
-					StringTokenizer stk = new StringTokenizer(selectInLineField.getExpression().replace("\'", ""), "+-|,()*/");
+					StringTokenizer stk = new StringTokenizer(selectInLineField.getExpression().replace("\'", ""), "+-|*/");
 					while(stk.hasMoreTokens()){
 						String alias = stk.nextToken().trim();
 						String uniqueName;
@@ -375,7 +375,7 @@ public class HQLStatement extends BasicStatement {
 					Iterator<String> keyIter = map.keySet().iterator();
 					while(keyIter.hasNext()){
 						String key = keyIter.next();
-						expr=expr.replaceAll(key, map.get(key));
+						expr=expr.replace((CharSequence)key, (CharSequence)map.get(key));
 					}
 					
 					for(int y= index; y<idsForQuery.length; y++){
@@ -820,7 +820,7 @@ public class HQLStatement extends BasicStatement {
 
 		
 		//String expr = leftOperand.value.substring(15,leftOperand.value.indexOf("\",\"alias"));//.replace("\'", "");
-		StringTokenizer stk = new StringTokenizer(expr, "+-|,()*/");
+		StringTokenizer stk = new StringTokenizer(expr, "+-|*/");
 		while(stk.hasMoreTokens()){
 			String alias = stk.nextToken().trim();
 			String uniqueName;
@@ -841,7 +841,7 @@ public class HQLStatement extends BasicStatement {
 		Iterator<String> keyIter = map.keySet().iterator();
 		while(keyIter.hasNext()){
 			String key = keyIter.next();
-			expr=expr.replaceAll(key, map.get(key));
+			expr=expr.replace((CharSequence)key, (CharSequence)map.get(key));
 		}
 				
 		logger.debug("IN");
@@ -1452,8 +1452,7 @@ public class HQLStatement extends BasicStatement {
 		Map entityAliasesMaps = new HashMap();
 		
 		queryStr = compose(getQuery(), entityAliasesMaps);	
-		
-		
+
 		
 		if(getParameters() != null) {
 			try {

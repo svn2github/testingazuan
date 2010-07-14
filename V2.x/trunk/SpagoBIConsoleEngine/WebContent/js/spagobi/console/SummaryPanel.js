@@ -78,7 +78,7 @@ Sbi.console.SummaryPanel = function(config) {
 				
 				//sets the general style of the table 
 				widgetPanelConfig.layoutConfig = config.layoutManagerConfig.layoutConfig || {};
-				widgetPanelConfig.layoutConfig.tableAttrs = config.layoutManagerConfig.layoutConfig.tableAttrs || {style: {width: '100%', height: '100%'}};
+				widgetPanelConfig.layoutConfig.tableAttrs = config.layoutManagerConfig.layoutConfig.tableAttrs || {style: {width: '100%'}};
 				
 				var compositeWidgetPanelConfig = {};
 				//******** DEFAULTS configuration applied to each contained panel **********
@@ -92,7 +92,7 @@ Sbi.console.SummaryPanel = function(config) {
 
 			
 				//**************** configuration about the SINGLE contained panel *************
-				
+				 
 				//title
 				compositeWidgetPanelConfig.title = (config.charts[i].widgetConfig.title === undefined) ? "" :  config.charts[i].widgetConfig.title;				
 				//colspan

@@ -17,6 +17,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
@@ -118,6 +119,7 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 				threshold.setDescription(hibThreshold.getDescription());
 				threshold.setId(hibThreshold.getThresholdId());
 				threshold.setThresholdTypeId(hibThreshold.getThresholdType().getValueId());
+				threshold.setThresholdTypeCode(hibThreshold.getThresholdType().getValueCd());
 				toReturn.add(threshold);
 			}
 
@@ -284,6 +286,7 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 		toReturn.setDescription(description);
 		toReturn.setCode(code);
 		toReturn.setThresholdTypeId(d.getValueId());
+		toReturn.setThresholdTypeCode(d.getValueCd());
 		
 		// get all the threshold Values
 		IThresholdValueDAO thValuesDao=(IThresholdValueDAO)DAOFactory.getThresholdValueDAO();
@@ -296,6 +299,98 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 		toReturn.setThresholdValues(thValues);
 		
 		logger.debug("OUT");
+		return toReturn;
+	}
+
+
+	public Integer countThresholds() throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		Integer resultNumber;
+		
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+		
+			String hql = "select count(*) from SbiThreshold ";
+			Query hqlQuery = aSession.createQuery(hql);
+			resultNumber = (Integer)hqlQuery.uniqueResult();
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the list of Thresholds", he);	
+			if (tx != null)
+				tx.rollback();	
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+		
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		return resultNumber;
+	}
+
+
+	public List loadPagedThresholdList(Integer offset, Integer fetchSize)
+			throws EMFUserError {
+		logger.debug("IN");
+		List toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+		Integer resultNumber;
+		Query hibernateQuery;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			toReturn = new ArrayList();
+			List toTransform = null;
+			
+			String hql = "select count(*) from SbiThreshold ";
+			Query hqlQuery = aSession.createQuery(hql);
+			resultNumber = (Integer)hqlQuery.uniqueResult();
+			
+			offset = offset < 0 ? 0 : offset;
+			if(resultNumber > 0) {
+				fetchSize = (fetchSize > 0)? Math.min(fetchSize, resultNumber): resultNumber;
+			}
+			
+			hibernateQuery = aSession.createQuery("from SbiThreshold order by name");
+			hibernateQuery.setFirstResult(offset);
+			if(fetchSize > 0) hibernateQuery.setMaxResults(fetchSize);			
+
+			toTransform = hibernateQuery.list();			
+
+			for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
+				SbiThreshold hibThreshold = (SbiThreshold) iterator.next();
+				Threshold threshold = new Threshold();
+				threshold.setName(hibThreshold.getName());
+				threshold.setCode(hibThreshold.getCode());
+				threshold.setDescription(hibThreshold.getDescription());
+				threshold.setId(hibThreshold.getThresholdId());
+				threshold.setThresholdTypeId(hibThreshold.getThresholdType().getValueId());
+				threshold.setThresholdTypeCode(hibThreshold.getThresholdType().getValueCd());
+				toReturn.add(threshold);
+			}
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the list of Threshold", he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
 		return toReturn;
 	}
 	

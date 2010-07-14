@@ -43,33 +43,33 @@
  */
 Ext.ns("Sbi.kpi");
 
-Sbi.kpi.ManageResources = function(config) {
+Sbi.kpi.ManageThresholds = function(config) {
 	 
-	var paramsList = {MESSAGE_DET: "RESOURCES_LIST"};
-	var paramsSave = {LIGHT_NAVIGATOR_DISABLED: 'TRUE',MESSAGE_DET: "RESOURCE_INSERT"};
-	var paramsDel = {LIGHT_NAVIGATOR_DISABLED: 'TRUE',MESSAGE_DET: "RESOURCE_DELETE"};
+	var paramsList = {MESSAGE_DET: "THRESHOLDS_LIST"};
+	var paramsSave = {LIGHT_NAVIGATOR_DISABLED: 'TRUE',MESSAGE_DET: "THRESHOLD_INSERT"};
+	var paramsDel = {LIGHT_NAVIGATOR_DISABLED: 'TRUE',MESSAGE_DET: "THRESHOLD_DELETE"};
 	
 	this.configurationObject = {};
 	
 	this.configurationObject.manageListService = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'MANAGE_RESOURCES_ACTION'
+		serviceName: 'MANAGE_THRESHOLDS_ACTION'
 		, baseParams: paramsList
 	});
 	this.configurationObject.saveItemService = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'MANAGE_RESOURCES_ACTION'
+		serviceName: 'MANAGE_THRESHOLDS_ACTION'
 		, baseParams: paramsSave
 	});
 	this.configurationObject.deleteItemService = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'MANAGE_RESOURCES_ACTION'
+		serviceName: 'MANAGE_THRESHOLDS_ACTION'
 		, baseParams: paramsDel
 	});
 	
 	this.initConfigObject();
 
-	Sbi.kpi.ManageResources.superclass.constructor.call(this, this.configurationObject);	 	
+	Sbi.kpi.ManageThresholds.superclass.constructor.call(this, this.configurationObject);	 	
 };
 
-Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
+Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 	
 	configurationObject: null
 	, gridForm:null
@@ -80,8 +80,6 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
 		                     	          , 'name'
 		                    	          , 'code'
 		                    	          , 'description'   
-		                    	          , 'tablename' 
-		                    	          , 'columnname' 
 		                    	          , 'typeCd'
 		                    	          ];
 		
@@ -90,8 +88,6 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
 										  name:'', 
 										  code:'', 
 										  description:'',
-										  tablename:'',
-										  columnname:'',
 										  typeCd: ''
 										 });
 		
@@ -100,8 +96,8 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
 		                                         {header: LN('sbi.generic.code'), width: 150, sortable: true, dataIndex: 'code'}
 		                                        ];
 		
-		this.configurationObject.panelTitle = LN('sbi.resources.panelTitle');
-		this.configurationObject.listTitle = LN('sbi.resources.listTitle');
+		this.configurationObject.panelTitle = LN('sbi.thresholds.panelTitle');
+		this.configurationObject.listTitle = LN('sbi.thresholds.listTitle');
 		
 		this.initTabItems();
     }
@@ -150,27 +146,7 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
              fieldLabel: LN('sbi.generic.descr'),
              validationEvent:true,
              name: 'description'
-         };
- 	 		   
- 	   var detailFieldTabName = {
-          	 maxLength:160,
-        	 minLength:1,
-        	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
-        	 regexText : LN('sbi.roles.alfanumericString'),
-             fieldLabel: 'Table Name',
-             validationEvent:true,
-             name: 'tablename'
-         };
- 	 	 			  
- 	   var detailFieldColName = {
-          	 maxLength:160,
-        	 minLength:1,
-        	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
-        	 regexText : LN('sbi.roles.alfanumericString'),
-             fieldLabel: 'Column Name',
-             validationEvent:true,
-             name: 'columnname'
-         }; 
+         };	 		   
  		   
  	   var detailFieldNodeType =  {
         	  name: 'typeCd',
@@ -210,14 +186,15 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
 		                 "margin-left": "10px", 
 		                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
 		             },
-		             items: [detailFieldId, detailFieldName, detailFieldCode, detailFieldDescr,
-		                     detailFieldTabName, detailFieldColName, detailFieldNodeType]
+		             items: [detailFieldId, detailFieldName, detailFieldCode, 
+		                     detailFieldDescr, detailFieldNodeType]
 		    	}
 		    }];
 	}
 	
     //OVERRIDING save method
 	,save : function() {
+
 		var values = this.gridForm.getForm().getValues();
 		var idRec = values['id'];
 		var newRec;
@@ -226,10 +203,8 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
 			newRec =new Ext.data.Record({
 					name: values['name'],
 					code: values['code'],
-			        description: values['description'],			        
-			        tablename: values['tablename'],	
-			        columnname: values['columnname'],
-			        typeCd: values['typeCd'],
+			        description: values['description'],		
+			        typeCd: values['typeCd']
 			});	  
 			
 		}else{
@@ -244,8 +219,6 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
 			record.set('name',values['name']);
 			record.set('code',values['code']);
 			record.set('description',values['description']);
-			record.set('tablename',values['tablename']);
-			record.set('columnname',values['columnname']);
 			record.set('typeCd',values['typeCd']);			
 			
 			newRec = this.fillRecord(record);			
@@ -255,8 +228,6 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
         	name : newRec.data.name,
         	code : newRec.data.code,
         	description : newRec.data.description,
-        	tablename : newRec.data.tablename,
-        	columnname : newRec.data.columnname,
         	typeCd : newRec.data.typeCd	
         };
         

@@ -23,172 +23,176 @@ package it.eng.spagobi.kpi.threshold.service;
 
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.x.AbstractSpagoBIAction;
-import it.eng.spagobi.analiticalmodel.document.x.SaveMetadataAction;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
+import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.metadata.SbiExtRoles;
-import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
-import it.eng.spagobi.profiling.bean.SbiAttribute;
-import it.eng.spagobi.profiling.bean.SbiUser;
-import it.eng.spagobi.profiling.bo.UserBO;
-import it.eng.spagobi.profiling.dao.ISbiUserDAO;
+import it.eng.spagobi.kpi.threshold.bo.Threshold;
+import it.eng.spagobi.kpi.threshold.dao.IThresholdDAO;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ManageThresholdsAction extends AbstractSpagoBIAction {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8920524215721282986L;
-	// logger component
-	private static Logger logger = Logger.getLogger(SaveMetadataAction.class);
+	public class ManageThresholdsAction extends AbstractSpagoBIAction{
+		// logger component
+	private static Logger logger = Logger.getLogger(ManageThresholdsAction.class);
 	private final String MESSAGE_DET = "MESSAGE_DET";
 	// type of service
-	private final String USERS_LIST = "USERS_LIST";
-	private final String USER_INSERT = "USER_INSERT";
-	private final String USER_DELETE = "USER_DELETE";
-
-	// USER detail
-	private final String ID = "id";
-	private final String USER_ID = "userId";
-	private final String FULL_NAME = "fullName";
-	private final String PASSWORD = "pwd";
+	private final String THRESHOLDS_LIST = "THRESHOLDS_LIST";
+	private final String THRESHOLD_INSERT = "THRESHOLD_INSERT";
+	private final String THRESHOLD_DELETE = "THRESHOLD_DELETE";
 	
-	private final String ROLES = "userRoles";
-	private final String ATTRIBUTES = "userAttributes";
-
-
+	private final String THRESHOLD_DOMAIN_TYPE = "THRESHOLD_TYPE";
+	
+	// RES detail
+	private final String ID = "id";
+	private final String NAME = "name";
+	private final String CODE = "code";
+	private final String DESCRIPTION = "description";
+	private final String NODE_TYPE_CODE = "typeCd";
+	
+	public static String START = "start";
+	public static String LIMIT = "limit";
+	public static Integer START_DEFAULT = 0;
+	public static Integer LIMIT_DEFAULT = 16;
+	
 	@Override
 	public void doService() {
 		logger.debug("IN");
-		ISbiUserDAO userDao;
+		IThresholdDAO thrDao;
 		try {
-			userDao = DAOFactory.getSbiUserDAO();
+			thrDao = DAOFactory.getThresholdDAO();
 		} catch (EMFUserError e1) {
 			logger.error(e1.getMessage(), e1);
 			throw new SpagoBIServiceException(SERVICE_NAME,	"Error occurred");
 		}
 		Locale locale = getLocale();
-
+	
 		String serviceType = this.getAttributeAsString(MESSAGE_DET);
 		logger.debug("Service type "+serviceType);
-		if (serviceType != null && serviceType.equalsIgnoreCase(USERS_LIST)) {
+		if (serviceType != null && serviceType.equalsIgnoreCase(THRESHOLDS_LIST)) {
 			
-			try {				
-				ArrayList<UserBO> users = userDao.loadUsers();
-				logger.debug("Loaded users list");
-				JSONArray usersJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(users,	locale);
-				JSONObject usersResponseJSON = createJSONResponseUsers(usersJSON);
-
-				writeBackToClient(new JSONSuccess(usersResponseJSON));
-
-			} catch (Throwable e) {
-				logger.error("Exception occurred while retrieving users", e);
-				throw new SpagoBIServiceException(SERVICE_NAME,
-						"Exception occurred while retrieving users", e);
-			}
-		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(USER_INSERT)) {
-			Integer id = getAttributeAsInteger(ID);
-			String userId = getAttributeAsString(USER_ID);
-			String fullName = getAttributeAsString(FULL_NAME);
-			String password = getAttributeAsString(PASSWORD);
-			JSONArray rolesJSON = getAttributeAsJSONArray(ROLES);
-			JSONArray attributesJSON = getAttributeAsJSONArray(ATTRIBUTES);
-			if (userId != null) {
-				SbiUser user = new SbiUser();
-				user.setUserId(userId);
-				user.setFullName(fullName);
-				if(password != null){
-					user.setPassword(password);
-				}				
+			try {		
 				
-				if(id!=null){
-					user.setId(id);
+				Integer start = getAttributeAsInteger( START );
+				Integer limit = getAttributeAsInteger( LIMIT );
+				
+				if(start==null){
+					start = START_DEFAULT;
 				}
-				try {
-					HashMap<Integer, String> attrList = null;
-					if(attributesJSON != null){
-						attrList = deserializeAttributesJSONArray(attributesJSON);
-					}
-					
-					List rolesList = null;
-					if(rolesJSON != null){
-						rolesList = deserializeRolesJSONArray(rolesJSON);
-					}
-					
-					id = userDao.fullSaveOrUpdateSbiUser(user, rolesList, attrList);
-					logger.debug("User udated or Inserted");
-					
-					//Integer id = userDao.saveSbiUser(user);
-					logger.debug("New user inserted");
-					JSONObject attributesResponseSuccessJSON = new JSONObject();
-					attributesResponseSuccessJSON.put("success", true);
-					attributesResponseSuccessJSON.put("responseText", "Operation succeded");
-					attributesResponseSuccessJSON.put("id", id);
-					writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );
-
-				} catch (EMFUserError e) {
-					logger.error("Exception occurred while saving new user", e);
-					writeErrorsBackToClient();
-					throw new SpagoBIServiceException(SERVICE_NAME,	"Exception occurred while saving new user",	e);
-				} catch (IOException e) {
-					logger.error("Exception occurred while writing response to client", e);
-					throw new SpagoBIServiceException(SERVICE_NAME,
-							"Exception occurred while writing response to client",
-							e);
-				} catch (JSONException e) {
-					logger.error("JSON Exception", e);
-					e.printStackTrace();
+				if(limit==null){
+					limit = LIMIT_DEFAULT;
 				}
-			}else{
-				logger.error("User name missing");
-				throw new SpagoBIServiceException(SERVICE_NAME,	"Please enter user name");
+	
+				Integer totalItemsNum = thrDao.countThresholds();
+				List thresholds = thrDao.loadPagedThresholdList(start,limit);
+				logger.debug("Loaded thresholds list");
+				JSONArray resourcesJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(thresholds, locale);
+				JSONObject resourcesResponseJSON = createJSONResponseResources(resourcesJSON, totalItemsNum);
+	
+				writeBackToClient(new JSONSuccess(resourcesResponseJSON));
+	
+			} catch (Throwable e) {
+				logger.error("Exception occurred while retrieving thresholds", e);
+				throw new SpagoBIServiceException(SERVICE_NAME,
+						"Exception occurred while retrieving thresholds", e);
 			}
-		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(USER_DELETE)) {
+		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(THRESHOLD_INSERT)) {
+			String id = getAttributeAsString(ID);
+			String code = getAttributeAsString(CODE);
+			String name = getAttributeAsString(NAME);
+			String description = getAttributeAsString(DESCRIPTION);
+			String typeCD = getAttributeAsString(NODE_TYPE_CODE);		
+			
+			List<Domain> domains = (List<Domain>)getSessionContainer().getAttribute("nodeTypesList");
+			
+		    HashMap<String, Integer> domainIds = new HashMap<String, Integer> ();
+		    if(domains != null){
+			    for(int i=0; i< domains.size(); i++){
+			    	domainIds.put(domains.get(i).getValueCd(), domains.get(i).getValueId());
+			    }
+		    }
+		    
+		    Integer typeID = domainIds.get(typeCD);
+		    if(typeID == null){
+		    	logger.error("Threshold type CD does not exist");
+		    	throw new SpagoBIServiceException(SERVICE_NAME,	"Threshold Type ID is undefined");
+		    }
+	
+			if (name != null && typeID != null && code != null) {
+				Threshold thr = new Threshold();
+				thr.setName(name);
+				thr.setThresholdTypeCode(typeCD);
+				thr.setThresholdTypeId(typeID);
+				thr.setCode(code);
+				
+				if(description != null){
+					thr.setDescription(description);
+				}			
+				
+				try {
+					if(id != null && !id.equals("") && !id.equals("0")){							
+						thr.setId(Integer.valueOf(id));
+						thrDao.modifyThreshold(thr);
+						logger.debug("threshold "+id+" updated");
+						JSONObject attributesResponseSuccessJSON = new JSONObject();
+						attributesResponseSuccessJSON.put("success", true);
+						attributesResponseSuccessJSON.put("responseText", "Operation succeded");
+						attributesResponseSuccessJSON.put("id", id);
+						writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );
+					}else{
+						Integer resourceID = thrDao.insertThreshold(thr);
+						logger.debug("New threshold inserted");
+						JSONObject attributesResponseSuccessJSON = new JSONObject();
+						attributesResponseSuccessJSON.put("success", true);
+						attributesResponseSuccessJSON.put("responseText", "Operation succeded");
+						attributesResponseSuccessJSON.put("id", resourceID);
+						writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );
+					}
+	
+				} catch (Throwable e) {
+					logger.error(e.getMessage(), e);
+					throw new SpagoBIServiceException(SERVICE_NAME,
+							"Exception occurred while saving new threshold", e);
+				}
+								
+			}else{
+				logger.error("Resource name, code or type are missing");
+				throw new SpagoBIServiceException(SERVICE_NAME,	"Please fill threshold name, code and type");
+			}
+		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(THRESHOLD_DELETE)) {
 			Integer id = getAttributeAsInteger(ID);
 			try {
-				userDao.deleteSbiUserById(id);
-				logger.debug("User deleted");
+				thrDao.deleteThreshold(id);
+				logger.debug("Resource deleted");
 				writeBackToClient( new JSONAcknowledge("Operation succeded") );
-
 			} catch (Throwable e) {
-				logger.error("Exception occurred while retrieving user to delete", e);
+				logger.error("Exception occurred while retrieving resource to delete", e);
 				throw new SpagoBIServiceException(SERVICE_NAME,
-						"Exception occurred while retrieving user to delete",
-						e);
+						"Exception occurred while retrieving resource to delete", e);
 			}
 		}else if(serviceType == null){
 			try {
-				List<SbiAttribute> attributes = DAOFactory.getSbiAttributeDAO().loadSbiAttributes();
-				List<SbiExtRoles> roles = DAOFactory.getRoleDAO().loadAllRoles();
-				getSessionContainer().setAttribute("attributesList", attributes);
-				getSessionContainer().setAttribute("rolesList", roles);
+				List nodeTypes = DAOFactory.getDomainDAO().loadListDomainsByType(THRESHOLD_DOMAIN_TYPE);
+				getSessionContainer().setAttribute("nodeTypesList", nodeTypes);
 				
 			} catch (EMFUserError e) {
 				logger.error(e.getMessage(), e);
 				throw new SpagoBIServiceException(SERVICE_NAME,
-						"Exception retrieving role types",
-						e);
+						"Exception retrieving resources types", e);
 			}
 		}
 		logger.debug("OUT");
-
 	}
-
+	
 	/**
 	 * Creates a json array with children users informations
 	 * 
@@ -196,38 +200,14 @@ public class ManageThresholdsAction extends AbstractSpagoBIAction {
 	 * @return
 	 * @throws JSONException
 	 */
-	private JSONObject createJSONResponseUsers(JSONArray rows)
+	private JSONObject createJSONResponseResources(JSONArray rows, Integer totalResNumber)
 			throws JSONException {
 		JSONObject results;
-
+	
 		results = new JSONObject();
-		results.put("title", "Users");
-		results.put("samples", rows);
+		results.put("total", totalResNumber);
+		results.put("title", "Thresholds");
+		results.put("rows", rows);
 		return results;
 	}
-	
-	private List deserializeRolesJSONArray(JSONArray rows) throws JSONException{
-		List toReturn = new ArrayList();
-		//HashMap<Integer, String> toReturn = new HashMap<Integer, String>();
-		for(int i=0; i< rows.length(); i++){
-			JSONObject obj = (JSONObject)rows.get(i);
-			Integer id = obj.getInt("id");
-			//String name = obj.getString("name");
-			//String description = obj.getString("description");
-			toReturn.add(id);
-		}	
-		return toReturn;
-	}
-	
-	private HashMap<Integer, String> deserializeAttributesJSONArray(JSONArray rows) throws JSONException{
-		HashMap<Integer, String> toReturn = new HashMap<Integer, String>();
-		for(int i=0; i< rows.length(); i++){
-			JSONObject obj = (JSONObject)rows.get(i);
-			Integer key = obj.getInt("id");
-			String value = obj.getString("value");
-			toReturn.put(key, value);
-		}	
-		return toReturn;
-	}
-
 }

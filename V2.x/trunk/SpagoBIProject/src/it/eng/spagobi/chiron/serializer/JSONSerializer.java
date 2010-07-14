@@ -84,11 +84,11 @@ public class JSONSerializer implements Serializer {
 		mappings.put( ThresholdValue.class, new ThresholdValueJSONSerializer());
 		
 		mappings.put( Resource.class, new ResourceJSONSerializer());
-		
-		//TODO da aggiungere mano a mano
-		/*
-		mappings.put( ModelNode.class, new ModelNodeJSONSerializer());
 		mappings.put( Threshold.class, new ThresholdJSONSerializer());
+		
+		//TODO da aggiungere mano a mano le classi esistono già
+		/*
+		mappings.put( ModelNode.class, new ModelNodeJSONSerializer());		
 		mappings.put( ModelInstanceNode.class, new ModelInstanceNodeJSONSerializer());
 		mappings.put( Kpi.class, new KpiJSONSerializer());*/
 		

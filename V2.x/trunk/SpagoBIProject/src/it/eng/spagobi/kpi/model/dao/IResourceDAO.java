@@ -49,6 +49,10 @@ public interface IResourceDAO {
 
 	public List loadResourcesList(String fieldOrder, String typeOrder)throws EMFUserError;
 	
+	public List loadPagedResourcesList(Integer offset, Integer fetchSize)throws EMFUserError;
+	
+	public Integer countResources()throws EMFUserError;
+	
 	public void deleteResource(Integer resourceId) throws EMFUserError;
 
 	public Resource toResource(SbiResources r);

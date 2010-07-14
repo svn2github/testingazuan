@@ -52,10 +52,8 @@ public class ManageResourcesAction extends AbstractSpagoBIAction {
 	private final String RESOURCE_DELETE = "RESOURCE_DELETE";
 	
 	private final String RESOURCE_DOMAIN_TYPE = "RESOURCE";
-	private final String RES_NAME_FIELD = "resourceName";
-	private final String RES_ORDER_TYPE = "ASC";
 
-	// USER detail
+	// RES detail
 	private final String ID = "id";
 	private final String NAME = "name";
 	private final String CODE = "code";
@@ -63,6 +61,11 @@ public class ManageResourcesAction extends AbstractSpagoBIAction {
 	private final String TABLE_NAME = "tablename";
 	private final String COLUMN_NAME = "columnname";
 	private final String NODE_TYPE_CODE = "typeCd";
+	
+	public static String START = "start";
+	public static String LIMIT = "limit";
+	public static Integer START_DEFAULT = 0;
+	public static Integer LIMIT_DEFAULT = 16;
 
 	@Override
 	public void doService() {
@@ -80,13 +83,23 @@ public class ManageResourcesAction extends AbstractSpagoBIAction {
 		logger.debug("Service type "+serviceType);
 		if (serviceType != null && serviceType.equalsIgnoreCase(RESOURCES_LIST)) {
 			
-			try {				
-				//Resources ordered by name ascending
-				//List resources = resDao.loadResourcesList(RES_NAME_FIELD, RES_ORDER_TYPE);
-				List resources = resDao.loadResourcesList(null, null);
+			try {		
+				
+				Integer start = getAttributeAsInteger( START );
+				Integer limit = getAttributeAsInteger( LIMIT );
+				
+				if(start==null){
+					start = START_DEFAULT;
+				}
+				if(limit==null){
+					limit = LIMIT_DEFAULT;
+				}
+
+				Integer totalResNum = resDao.countResources();
+				List resources = resDao.loadPagedResourcesList(start,limit);
 				logger.debug("Loaded resources list");
-				JSONArray resourcesJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(resources,	locale);
-				JSONObject resourcesResponseJSON = createJSONResponseResources(resourcesJSON);
+				JSONArray resourcesJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(resources, locale);
+				JSONObject resourcesResponseJSON = createJSONResponseResources(resourcesJSON, totalResNum);
 
 				writeBackToClient(new JSONSuccess(resourcesResponseJSON));
 
@@ -198,13 +211,14 @@ public class ManageResourcesAction extends AbstractSpagoBIAction {
 	 * @return
 	 * @throws JSONException
 	 */
-	private JSONObject createJSONResponseResources(JSONArray rows)
+	private JSONObject createJSONResponseResources(JSONArray rows, Integer totalResNumber)
 			throws JSONException {
 		JSONObject results;
 
 		results = new JSONObject();
+		results.put("total", totalResNumber);
 		results.put("title", "Resources");
-		results.put("samples", rows);
+		results.put("rows", rows);
 		return results;
 	}
 

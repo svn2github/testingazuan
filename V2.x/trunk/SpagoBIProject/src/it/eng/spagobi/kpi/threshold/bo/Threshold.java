@@ -11,8 +11,16 @@ public class Threshold implements Serializable{
 	String description = null;//all thresholds referred to the same kpi will have this description equal
 	String code = null;
 	Integer thresholdTypeId = null;
+	String thresholdTypeCode = null;
 	List thresholdValues=null;
 	
+	public String getThresholdTypeCode() {
+		return thresholdTypeCode;
+	}
+
+	public void setThresholdTypeCode(String thresholdTypeCode) {
+		this.thresholdTypeCode = thresholdTypeCode;
+	}
 
 	public Threshold() {
 		super();

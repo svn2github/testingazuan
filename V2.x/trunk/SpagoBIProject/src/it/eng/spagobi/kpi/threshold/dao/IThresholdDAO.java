@@ -27,6 +27,10 @@ public interface IThresholdDAO {
 	public List loadThresholdList(String fieldOrder, String typeOrder) throws EMFUserError ;
 	
 	public List loadThresholdList() throws EMFUserError ;
+	
+	public List loadPagedThresholdList(Integer offset, Integer fetchSize)throws EMFUserError ;
+	
+	public Integer countThresholds()throws EMFUserError ;
 
 	public void modifyThreshold(Threshold threshold) throws EMFUserError ;
 

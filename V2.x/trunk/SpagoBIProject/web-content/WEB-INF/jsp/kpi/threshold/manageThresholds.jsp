@@ -65,14 +65,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 Ext.onReady(function(){
 	Ext.QuickTips.init();
-	var manageResources = new Sbi.kpi.ManageResources(config);
+	var manageThresholds = new Sbi.kpi.ManageThresholds(config);
 	var viewport = new Ext.Viewport({
 		layout: 'border'
 		, items: [
 		    {
 		       region: 'center',
 		       layout: 'accordion',
-		       items: [manageResources]
+		       items: [manageThresholds]
 		    }
 		]
 

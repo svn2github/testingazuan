@@ -1,7 +1,10 @@
 package it.eng.spagobi.kpi.model.dao;
 
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -14,6 +17,9 @@ import it.eng.spagobi.profiling.bean.SbiExtUserRolesId;
 import it.eng.spagobi.profiling.bean.SbiUser;
 import it.eng.spagobi.profiling.bean.SbiUserAttributes;
 import it.eng.spagobi.profiling.bean.SbiUserAttributesId;
+import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
+import it.eng.spagobi.tools.dataset.common.dataproxy.JDBCSharedConnectionDataProxy;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -334,7 +340,90 @@ public class ResourceDAOImpl extends AbstractHibernateDAO implements
 		}
 		return toReturn;
 	}
+	
+	public List loadPagedResourcesList(Integer offset, Integer fetchSize)throws EMFUserError {
+	logger.debug("IN");
+	List toReturn = null;
+	Session aSession = null;
+	Transaction tx = null;
+	Integer resultNumber;
+	Query hibernateQuery;
+	
+	try {
+		aSession = getSession();
+		tx = aSession.beginTransaction();
+		toReturn = new ArrayList();
+		List toTransform = null;
+	
+		String hql = "select count(*) from SbiResources ";
+		Query hqlQuery = aSession.createQuery(hql);
+		resultNumber = (Integer)hqlQuery.uniqueResult();
+		
+		offset = offset < 0 ? 0 : offset;
+		if(resultNumber > 0) {
+			fetchSize = (fetchSize > 0)? Math.min(fetchSize, resultNumber): resultNumber;
+		}
+		
+		hibernateQuery = aSession.createQuery("from SbiResources order by resourceName");
+		hibernateQuery.setFirstResult(offset);
+		if(fetchSize > 0) hibernateQuery.setMaxResults(fetchSize);			
 
+		toTransform = hibernateQuery.list();	
+		
+	
+		if(toTransform != null){
+			for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
+				SbiResources hibResource = (SbiResources) iterator.next();
+				Resource resource = toResource(hibResource);
+				toReturn.add(resource);
+			}
+		}	
+	} catch (HibernateException he) {
+		logger.error("Error while loading the list of Resources", he);	
+		if (tx != null)
+			tx.rollback();	
+		throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+	
+	} finally {
+		if (aSession != null) {
+			if (aSession.isOpen())
+				aSession.close();
+			logger.debug("OUT");
+		}
+	}
+	return toReturn;
+	}
+	
+	public Integer countResources()throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		Integer resultNumber;
+		
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+		
+			String hql = "select count(*) from SbiResources ";
+			Query hqlQuery = aSession.createQuery(hql);
+			resultNumber = (Integer)hqlQuery.uniqueResult();
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the list of Resources", he);	
+			if (tx != null)
+				tx.rollback();	
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+		
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		return resultNumber;
+	}
+	
 	public Resource loadResourcesByNameAndModelInst(String resourceName)
 			throws EMFUserError {
 		logger.debug("IN");

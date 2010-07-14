@@ -229,7 +229,7 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
 			        description: values['description'],			        
 			        tablename: values['tablename'],	
 			        columnname: values['columnname'],
-			        typeCd: values['typeCd'],
+			        typeCd: values['typeCd']
 			});	  
 			
 		}else{

@@ -3,6 +3,14 @@ Sbi.locale.ln = Sbi.locale.ln || new Array();
 
 
 //===================================================================
+//MESSAGE GENERAL
+//===================================================================
+Sbi.locale.ln['sbi.qbe.messagewin.yes'] = 'Yes';
+Sbi.locale.ln['sbi.qbe.messagewin.no'] = 'No';
+Sbi.locale.ln['sbi.qbe.messagewin.cancel'] = 'Cancel';
+
+
+//===================================================================
 // MESSAGE WINDOW
 //===================================================================
 Sbi.locale.ln['sbi.qbe.messagewin.warning.title'] = 'Warning message';

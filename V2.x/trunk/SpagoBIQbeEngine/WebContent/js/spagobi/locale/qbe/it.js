@@ -3,6 +3,14 @@ Sbi.locale.ln = Sbi.locale.ln || new Array();
 
 
 //===================================================================
+//GENERAL
+//===================================================================
+Sbi.locale.ln['sbi.qbe.messagewin.yes'] = 'Si';
+Sbi.locale.ln['sbi.qbe.messagewin.no'] = 'No';
+Sbi.locale.ln['sbi.qbe.messagewin.cancel'] = 'Cancella';
+
+
+//===================================================================
 // MESSAGE WINDOW
 //===================================================================
 Sbi.locale.ln['sbi.qbe.messagewin.warning.title'] = 'Warning';
@@ -205,7 +213,7 @@ Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.delete.title'] = 'Rimuovi condizi
 Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.delete.msg'] = 'Stai per rimuovere una condizione utilizzata nell\'espressione complessa associata (vd. nell\'expression wizard). Così facendo tale espressione verà resettata. Procedere ugualmente?';
 
 Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.changebolop.title'] = 'Modifica connettore?';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.changebolop.msg'] = 'Modificando il connetore booleano associato a questo filtro causerai il reset dell\'espresione complessa associata (vd. nell\'expression wizard). Procedere ugualmente?';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.changebolop.msg'] = 'Modificando il connettore booleano associato a questo filtro causerai il reset dell\'espresione complessa associata (vd. nell\'expression wizard). Procedere ugualmente?';
 
 // ===================================================================
 //	SELECT GRID

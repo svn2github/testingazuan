@@ -233,10 +233,13 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	}
 	
 	, deleteFilter: function(record) {
+  		Ext.Msg.buttonText.yes = LN('sbi.qbe.messagewin.yes');
+  		Ext.Msg.buttonText.no = LN('sbi.qbe.messagewin.no');
 		Ext.Msg.show({
 			title: LN('sbi.qbe.filtergridpanel.warning.delete.title'),
 		   	msg: LN('sbi.qbe.filtergridpanel.warning.delete.msg'),
-		   	buttons: Ext.Msg.YESNOCANCEL,
+		   	buttons: Ext.Msg.YESNO,
+		   	buttonText: lc, 
 		   	fn: function(btn) {
 				if(btn === 'yes') {
 					this.store.remove( record );
@@ -497,10 +500,15 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		       , clickHandler:function(e, t){
 		          var index = this.grid.getView().findRowIndex(t);
 		          var record = this.grid.store.getAt(index);
+
+			  		Ext.Msg.buttonText.yes = LN('sbi.qbe.messagewin.yes');
+			  		Ext.Msg.buttonText.no = LN('sbi.qbe.messagewin.no');
+
 		          Ext.Msg.show({
 		        	title: LN('sbi.qbe.filtergridpanel.warning.delete.title'),
 		  		   	msg: LN('sbi.qbe.filtergridpanel.warning.delete.msg'),
-		  		   	buttons: Ext.Msg.YESNOCANCEL,
+		  		   	buttons: Ext.Msg.YESNO,
+		  		   	buttonText: lc ,
 		  		   	fn: function(btn) {
 		  				if(btn === 'yes') {
 		  					this.grid.store.remove(record);
@@ -875,10 +883,13 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	    
 	    this.grid.on('keydown', function(e){ 
 	      if(e.keyCode === 46) {
-	        Ext.Msg.show({
+		  		Ext.Msg.buttonText.yes = LN('sbi.qbe.messagewin.yes');
+		  		Ext.Msg.buttonText.no = LN('sbi.qbe.messagewin.no');
+	    	  
+		  		Ext.Msg.show({
 	        	title: LN('sbi.qbe.filtergridpanel.warning.delete.title'),
 			   	msg: LN('sbi.qbe.filtergridpanel.warning.delete.msg'),
-			   	buttons: Ext.Msg.YESNOCANCEL,
+			   	buttons: Ext.Msg.YESNO,
 			   	fn: function(btn) {
 					if(btn === 'yes') {
 						var sm=this.grid.getSelectionModel();

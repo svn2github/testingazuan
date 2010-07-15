@@ -62,11 +62,7 @@ public class DocumentsJSONSerializer implements Serializer {
 	public static final String STATEID = "stateId";
 	public static final String FUNCTIONALITIES = "functionalities";
 	public static final String CREATIONDATE = "creationDate";
-	public static final String EXTENDEDDESCRIPTION = "extendedDescription";
 	public static final String CREATIONUSER = "creationUser";
-	public static final String LANGUAGE = "language";
-	public static final String OBJECTVE = "objectve";
-	public static final String KEYWORDS = "keywords";
 	public static final String REFRESHSECONDS = "refreshSeconds";
 	public static final String ACTIONS = "actions";
 	public static final String EXPORTERS = "exporters";

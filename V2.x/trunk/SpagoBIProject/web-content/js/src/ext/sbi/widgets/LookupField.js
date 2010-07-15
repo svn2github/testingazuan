@@ -53,6 +53,9 @@ Sbi.widgets.LookupField = function(config) {
 	Ext.apply(this, config);
 	
 	this.store = config.store;
+	if(config.cm){
+	    this.cm = config.cm;
+    }
 	this.store.on('metachange', function( store, meta ) {
 		this.updateMeta( meta );
 	}, this);
@@ -116,6 +119,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	// SUB-COMPONENTS MEMBERS
 	, store: null
 	, sm: null
+	, cm: null
     , grid: null
     , win: null
     
@@ -180,7 +184,8 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     
     // private methods
     , initWin: function() {
-		var cm = new Ext.grid.ColumnModel([
+    	if(!this.cm){
+		this.cm = new Ext.grid.ColumnModel([
 		   new Ext.grid.RowNumberer(),
 	       {
 	       	  header: "Data",
@@ -188,8 +193,9 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	          width: 75
 	       }
 	    ]);
+    	}
 		
-		var pagingBar = new Sbi.widgets.PagingToolbar({
+		var pagingBar = new Ext.PagingToolbar({
 	        pageSize: this.limit,
 	        store: this.store,
 	        displayInfo: true,
@@ -226,7 +232,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 		
 		this.grid = new Ext.grid.GridPanel({
 			store: this.store
-   	     	, cm: cm
+   	     	, cm: this.cm
    	     	, sm: this.sm
    	     	, frame: false
    	     	, border:false  

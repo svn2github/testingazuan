@@ -286,6 +286,10 @@ public interface IBIObjectDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public List loadAllBIObjects(String filterOrder) throws EMFUserError;
+
+	public List loadPagedObjectsList(Integer offset, Integer fetchSize)throws EMFUserError ;
+	
+	public Integer countBIObjects()throws EMFUserError ;
 	
 	/**
 	 * Loads all the BIObjects that belong to sub functionalities of the given functionality path.

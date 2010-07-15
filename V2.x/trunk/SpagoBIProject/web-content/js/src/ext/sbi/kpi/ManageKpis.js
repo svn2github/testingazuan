@@ -64,6 +64,22 @@ Sbi.kpi.ManageKpis = function(config) {
 		, baseParams: paramsDel
 	});
 	
+	
+	this.services = new Array();
+	
+	var paramsDocList = {MESSAGE_DET: "BIOBJECTS_LIST"};
+	var paramsDatasetList = {MESSAGE_DET: "DATASETS_LIST"};
+	
+	this.services['manageDocumentsService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'MANAGE_BIOBJECTS_ACTION'
+		, baseParams: paramsDocList
+	});	
+	
+	this.services['manageDatasetsService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'MANAGE_DATASETS_ACTION'
+		, baseParams: paramsDatasetList
+	});
+	
 	this.initConfigObject();
 
 	Sbi.kpi.ManageKpis.superclass.constructor.call(this, this.configurationObject);	 	
@@ -179,26 +195,35 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
  	  
  	 
   	 var baseConfig = {};
-  	 var myData = [
- 	               ['3msCo','ss','sss'],
- 	               ['Alcoa Inc','aaa','www']
- 	           ];
- 	 var storea = new Ext.data.ArrayStore({
-         fields: [
-            {name: 'company'},
-            {name: 'price'},
-            {name: 'change'}
-         ]
-     });
-
-     // manually load local data
-     storea.loadData(myData);
+     
+      var datasets = new Ext.data.JsonStore({
+ 		root: 'rows'
+ 		, fields: ['label','name','description']
+ 		, url: this.services['manageDatasetsService']
+ 	  });
+      //datasets.load();
  	  
  	  var detailFieldDataset = new Sbi.widgets.LookupField(Ext.apply(baseConfig, {
-			  store: storea
+			  store: datasets
 			  , name: 'dataset'
 			  ,	fieldLabel: 'Dataset'
-			  , singleSelect: false
+			  , singleSelect: true
+			  ,	valueField: 'label'
+			  , displayField: 'label'
+			  , descriptionField: 'label'
+			  , cm: new Ext.grid.ColumnModel([
+				                        		new Ext.grid.RowNumberer(),
+				                        		{   header: 'Label',
+				                        		    dataIndex: 'label',
+				                        		    width: 75
+				                        		},{   header: 'Name',
+				                        		    dataIndex: 'name',
+				                        		    width: 75
+				                        		},{   header: 'Description',
+				                        		    dataIndex: 'description',
+				                        		    width: 75
+				                        		}
+				                    		])
 		 }));  
 
  	  
@@ -208,13 +233,39 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
  		     name: 'threshold'
  		    });
  	detailFieldThreshold.onTriggerClick = this.launchThrWindow;
- 	 
+ 	
+ 	var docs = new Ext.data.JsonStore({
+		root: 'rows'
+		, fields: ['label','name','engine','stateCode']
+		, url: this.services['manageDocumentsService']
+	});
+ 	//docs.load();
+ 	
  	 var detailFieldDocuments = new Sbi.widgets.LookupField(Ext.apply(baseConfig, {
-		  store: storea
+		  store: docs
 		  , name: 'documents'
 		  ,	fieldLabel: 'Documents'
 		  , singleSelect: false
-	 }));   
+		  ,	valueField: 'label'
+		  , displayField: 'label'
+		  , descriptionField: 'label'
+		  , cm: new Ext.grid.ColumnModel([
+			                        		new Ext.grid.RowNumberer(),
+			                        		{   header: 'Label',
+			                        		    dataIndex: 'code',
+			                        		    width: 75
+			                        		},{   header: 'Name',
+			                        		    dataIndex: 'name',
+			                        		    width: 75
+			                        		},{   header: 'Engine',
+			                        		    dataIndex: 'description',
+			                        		    width: 75
+			                        		},{   header: 'State',
+			                        		    dataIndex: 'stateCode',
+			                        		    width: 75
+			                        		}
+			                    		])
+ 	 }));  	 
  	    
  	   //END list of detail fields
  	   
@@ -402,19 +453,10 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 	,launchThrWindow : function() {
 		
 		config.nodeTypesCd = {};
-		var manageThresholds = new Sbi.kpi.ManageThresholds(config);
-		/*var viewport = new Ext.Viewport({
-			layout: 'border'
-			, items: [
-			    {
-			       region: 'center',
-			       layout: 'accordion',
-			       items: [manageThresholds]
-			    }
-			]
-
-		});*/
+		config.drawSelectColumn = true;
 		
+		var manageThresholds = new Sbi.kpi.ManageThresholds(config);
+	
 		this.thrWin = new Ext.Window({
 			title: LN('sbi.lookup.Select') ,   
             layout      : 'fit',
@@ -426,8 +468,15 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 		});
 		
 		this.thrWin.show();
+		manageThresholds.on('select', this.selectThrItem, this);
 	}
 	
+	,selectThrItem: function(itemId, index){
+		alert('entrato');
+		alert(itemId);
+		alert(index);
+		this.thrWin.close();		
+	}
     //OVERRIDING save method
 	,save : function() {
 		alert('Dentro a save');

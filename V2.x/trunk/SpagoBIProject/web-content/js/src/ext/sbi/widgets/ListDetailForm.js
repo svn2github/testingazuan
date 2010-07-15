@@ -156,6 +156,7 @@ Sbi.widgets.ListDetailForm = function(config) {
 	this.gridColItems = config.gridColItems;
 	this.panelTitle = config.panelTitle;
 	this.listTitle = config.listTitle;  	
+	this.drawSelectColumn = config.drawSelectColumn;  
 
 	this.mainElementsStore = new Ext.data.JsonStore({
     	autoLoad: false    	  
@@ -178,6 +179,11 @@ Sbi.widgets.ListDetailForm = function(config) {
 	);  	
    	
    	Ext.getCmp('maingrid').on('delete', this.deleteSelectedItem, this);
+	Ext.getCmp('maingrid').on('select', this.sendSelectedItem, this);
+   	
+   	var c = {};
+   	
+   	Sbi.widgets.ListDetailForm.superclass.constructor.call(this);	
 };
 
 Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
@@ -188,28 +194,50 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
 	, mainElementsStore:null
 	, colModel:null
 	, gridColItems: null
+	, drawSelectColumn: null
 	, emptyRecord : null
 	, tabs: null
 	, tabItems: null
 	
 	,initWidget: function(){
 
+
+        
+        this.selectColumn = new Ext.grid.ButtonColumn({
+		       header:  ' '
+		       ,iconCls: 'icon-execute'
+		       ,clickHandler: function(e, t) {
+		          var index = Ext.getCmp("maingrid").getView().findRowIndex(t);	          
+		          var selectedRecord = Ext.getCmp("maingrid").store.getAt(index);
+		          var itemId = selectedRecord.get('id');
+		          Ext.getCmp("maingrid").fireEvent('select', itemId, index);
+		       }
+		       ,width: 25
+		       ,renderer : function(v, p, record){
+		           return '<center><img class="x-mybutton-'+this.id+' grid-button ' +this.iconCls+'" width="16px" height="16px" src="'+Ext.BLANK_IMAGE_URL+'"/></center>';
+		       }
+	        }); 
+        
         this.deleteColumn = new Ext.grid.ButtonColumn({
-	       header:  ' '
-	       ,iconCls: 'icon-remove'
-	       ,clickHandler: function(e, t) {
-	          var index = Ext.getCmp("maingrid").getView().findRowIndex(t);	          
-	          var selectedRecord = Ext.getCmp("maingrid").store.getAt(index);
-	          var itemId = selectedRecord.get('id');
-	          Ext.getCmp("maingrid").fireEvent('delete', itemId, index);
-	       }
-	       ,width: 25
-	       ,renderer : function(v, p, record){
-	           return '<center><img class="x-mybutton-'+this.id+' grid-button ' +this.iconCls+'" width="16px" height="16px" src="'+Ext.BLANK_IMAGE_URL+'"/></center>';
-	       }
-        });
+ 	       header:  ' '
+ 	       ,iconCls: 'icon-remove'
+ 	       ,clickHandler: function(e, t) {
+ 	          var index = Ext.getCmp("maingrid").getView().findRowIndex(t);	          
+ 	          var selectedRecord = Ext.getCmp("maingrid").store.getAt(index);
+ 	          var itemId = selectedRecord.get('id');
+ 	          Ext.getCmp("maingrid").fireEvent('delete', itemId, index);
+ 	       }
+ 	       ,width: 25
+ 	       ,renderer : function(v, p, record){
+ 	           return '<center><img class="x-mybutton-'+this.id+' grid-button ' +this.iconCls+'" width="16px" height="16px" src="'+Ext.BLANK_IMAGE_URL+'"/></center>';
+ 	       }
+         });
        
-        this.gridColItems.push(this.deleteColumn);      
+        this.gridColItems.push(this.deleteColumn);  
+
+        if(this.drawSelectColumn){
+        	this.gridColItems.push(this.selectColumn); 
+        }
         this.colModel = new Ext.grid.ColumnModel(this.gridColItems);
 
  	    this.tbSave = new Ext.Toolbar({
@@ -257,6 +285,15 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
 	        displayMsg: '', 
 	        emptyMsg: "No topics to display"	        
 	    });
+ 	   
+ 	  
+ 	   var pluginsToAdd;
+ 	  
+ 	   if(this.drawSelectColumn){
+ 		  pluginsToAdd = [ this.deleteColumn, this.selectColumn]; 
+       }else{
+    	  pluginsToAdd = this.deleteColumn; 
+       }
 
    	   /*
    	   *    Here is where we create the Form
@@ -280,7 +317,7 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
    	                  xtype: 'grid',
    	                  ds: this.mainElementsStore,   	                  
    	                  cm: this.colModel,
-   	                  plugins: this.deleteColumn,
+   	                  plugins: pluginsToAdd ,
    	                  sm: new Ext.grid.RowSelectionModel({
    	                      singleSelect: true,
    	                      scope:this,   	                   
@@ -306,6 +343,10 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
    	          ]
    	      });
 	}
+
+	,sendSelectedItem: function(itemId, index){
+		this.fireEvent('select', itemId, index);
+	}	
 
 	, addNewItem : function(){
 	

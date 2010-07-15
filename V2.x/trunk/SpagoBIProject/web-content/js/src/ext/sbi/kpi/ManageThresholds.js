@@ -89,13 +89,18 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 										  code:'', 
 										  description:'',
 										  typeCd: ''
-										 });
+										 });   
 		
 		this.configurationObject.gridColItems = [
 		                                         {id:'name',header: LN('sbi.generic.name'), width: 50, sortable: true, locked:false, dataIndex: 'name'},
 		                                         {header: LN('sbi.generic.code'), width: 150, sortable: true, dataIndex: 'code'}
 		                                        ];
 		
+		//alert(config.drawSelectColumn);
+		if(config.drawSelectColumn){
+			this.configurationObject.drawSelectColumn = true;
+		}
+
 		this.configurationObject.panelTitle = LN('sbi.thresholds.panelTitle');
 		this.configurationObject.listTitle = LN('sbi.thresholds.listTitle');
 		

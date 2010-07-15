@@ -162,6 +162,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/tools/datasource/business_map.xml" />
 	
 	<!-- tools.dataset -->	
+	<CONFIGURATOR path="/WEB-INF/conf/tools/dataset/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/dataset/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/dataset/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/tools/dataset/presentation.xml" />

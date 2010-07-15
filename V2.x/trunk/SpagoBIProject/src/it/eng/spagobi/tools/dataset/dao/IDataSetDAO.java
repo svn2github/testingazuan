@@ -75,6 +75,10 @@ public interface IDataSetDAO {
 	 */
 	
 	public List loadAllDataSets() throws EMFUserError;
+	
+	public List loadPagedDatasetList(Integer offset, Integer fetchSize)throws EMFUserError ;
+	
+	public Integer countDatasets()throws EMFUserError ;
 
 	/**
 	 * Implements the query to modify a data Set. All information needed is stored

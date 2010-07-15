@@ -25,6 +25,8 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
+import it.eng.spagobi.kpi.model.bo.Resource;
+import it.eng.spagobi.kpi.model.metadata.SbiResources;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
@@ -560,6 +562,87 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 		logger.debug("OUT");
 		return bool;
 
+	}
+
+	public Integer countDatasets() throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		Integer resultNumber;
+		
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+		
+			String hql = "select count(*) from SbiDataSetConfig ";
+			Query hqlQuery = aSession.createQuery(hql);
+			resultNumber = (Integer)hqlQuery.uniqueResult();
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the list of SbiDataSet", he);	
+			if (tx != null)
+				tx.rollback();	
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+		
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		return resultNumber;
+	}
+
+	public List loadPagedDatasetList(Integer offset, Integer fetchSize)
+			throws EMFUserError {
+		logger.debug("IN");
+		List toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+		Integer resultNumber;
+		Query hibernateQuery;
+		
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			toReturn = new ArrayList();
+			List toTransform = null;
+		
+			String hql = "select count(*) from SbiDataSetConfig ";
+			Query hqlQuery = aSession.createQuery(hql);
+			resultNumber = (Integer)hqlQuery.uniqueResult();
+			
+			offset = offset < 0 ? 0 : offset;
+			if(resultNumber > 0) {
+				fetchSize = (fetchSize > 0)? Math.min(fetchSize, resultNumber): resultNumber;
+			}
+			
+			hibernateQuery = aSession.createQuery("from SbiDataSetConfig order by label");
+			hibernateQuery.setFirstResult(offset);
+			if(fetchSize > 0) hibernateQuery.setMaxResults(fetchSize);			
+
+			toTransform = hibernateQuery.list();			
+			Iterator it = toTransform.iterator();
+
+			while (it.hasNext()) {
+				SbiDataSetConfig temp = (SbiDataSetConfig) it.next();
+				toReturn.add(temp);
+			}
+		} catch (HibernateException he) {
+			logger.error("Error while loading the list of Resources", he);	
+			if (tx != null)
+				tx.rollback();	
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+		
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		return toReturn;
 	}
 }
 

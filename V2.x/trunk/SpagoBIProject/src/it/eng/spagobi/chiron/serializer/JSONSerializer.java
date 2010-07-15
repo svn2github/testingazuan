@@ -45,6 +45,11 @@ import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.bean.SbiUser;
 import it.eng.spagobi.profiling.bo.UserBO;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
+import it.eng.spagobi.tools.dataset.metadata.SbiJClassDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiQueryDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiScriptDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
 import it.eng.spagobi.tools.objmetadata.bo.ObjMetadata;
 
 import java.util.Collection;
@@ -82,6 +87,11 @@ public class JSONSerializer implements Serializer {
 		mappings.put( SbiAlarm.class, new AlarmJSONSerializer());
 		mappings.put( SbiAlarmContact.class, new AlarmContactJSONSerializer());
 		mappings.put( ThresholdValue.class, new ThresholdValueJSONSerializer());
+		mappings.put( SbiDataSetConfig.class, new DataSetJSONSerializer());
+		mappings.put( SbiQueryDataSet.class, new DataSetJSONSerializer());
+		mappings.put( SbiJClassDataSet.class, new DataSetJSONSerializer());
+		mappings.put( SbiScriptDataSet.class, new DataSetJSONSerializer());
+		mappings.put( SbiWSDataSet.class, new DataSetJSONSerializer());
 		
 		mappings.put( Resource.class, new ResourceJSONSerializer());
 		mappings.put( Threshold.class, new ThresholdJSONSerializer());

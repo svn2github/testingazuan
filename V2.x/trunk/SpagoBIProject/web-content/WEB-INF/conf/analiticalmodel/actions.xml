@@ -38,6 +38,10 @@
  	<CONFIG/>
  </ACTION>
  
+ <ACTION name="MANAGE_BIOBJECTS_ACTION" class="it.eng.spagobi.analiticalmodel.document.service.ManageBIObjects" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ 
  <!-- =================================================================================
  		Document Browser
       ================================================================================= -->

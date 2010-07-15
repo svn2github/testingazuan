@@ -65,6 +65,8 @@ import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration;
 import it.eng.spagobi.engines.dossier.dao.IDossierPartsTempDAO;
 import it.eng.spagobi.engines.dossier.dao.IDossierPresentationsDAO;
+import it.eng.spagobi.kpi.model.bo.Resource;
+import it.eng.spagobi.kpi.model.metadata.SbiResources;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 import it.eng.spagobi.tools.objmetadata.bo.ObjMetacontent;
@@ -1925,6 +1927,95 @@ IBIObjectDAO {
 		}
 		logger.debug("OUT");
 		return realResult;
+	}
+
+
+
+
+
+	public Integer countBIObjects() throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		Integer resultNumber;
+		
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+		
+			String hql = "select count(*) from SbiObjects ";
+			Query hqlQuery = aSession.createQuery(hql);
+			resultNumber = (Integer)hqlQuery.uniqueResult();
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the list of BIObjects", he);	
+			if (tx != null)
+				tx.rollback();	
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+		
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		return resultNumber;
+	}
+
+
+
+
+
+	public List loadPagedObjectsList(Integer offset, Integer fetchSize)
+			throws EMFUserError {
+		logger.debug("IN");
+		List toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+		Integer resultNumber;
+		Query hibernateQuery;
+		
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			toReturn = new ArrayList();
+			List toTransform = null;
+		
+			String hql = "select count(*) from SbiObjects ";
+			Query hqlQuery = aSession.createQuery(hql);
+			resultNumber = (Integer)hqlQuery.uniqueResult();
+			
+			offset = offset < 0 ? 0 : offset;
+			if(resultNumber > 0) {
+				fetchSize = (fetchSize > 0)? Math.min(fetchSize, resultNumber): resultNumber;
+			}
+			
+			hibernateQuery = aSession.createQuery("from SbiObjects order by label");
+			hibernateQuery.setFirstResult(offset);
+			if(fetchSize > 0) hibernateQuery.setMaxResults(fetchSize);			
+
+			toTransform = hibernateQuery.list();	
+			
+			Iterator it = toTransform.iterator();
+			while (it.hasNext()) {
+				SbiObjects object = (SbiObjects) it.next();
+				toReturn.add(toBIObject(object));
+			}
+		} catch (HibernateException he) {
+			logger.error("Error while loading the list of Resources", he);	
+			if (tx != null)
+				tx.rollback();	
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+		
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		return toReturn;
 	}
 }
 

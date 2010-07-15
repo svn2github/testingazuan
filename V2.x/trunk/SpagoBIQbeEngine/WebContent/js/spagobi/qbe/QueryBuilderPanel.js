@@ -576,7 +576,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	    		leftOperandValue: record.data.id
 				, leftOperandDescription: record.data.entity + ' : ' + record.data.field 
 				, leftOperandType: 'Field Content'
-				, leftOperandLongDescription: record.data.alias
+				, leftOperandLongDescription: record.data.longDescription
 
 			};
 	    	this.filterGridPanel.addFilter(filter);
@@ -588,7 +588,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 				, leftOperandDescription: record.data.entity + ' : ' + record.data.field 
 				, leftOperandType: 'Field Content'
 				, leftOperandAggregator: record.data.funct
-				, leftOperandLongDescription: record.data.alias
+				, leftOperandLongDescription: record.data.longDescription
 			};
 	    	this.havingGridPanel.addFilter(filter);
 	    }, this);

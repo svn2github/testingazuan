@@ -1,17 +1,9 @@
-
-<%@page import="it.eng.spago.navigation.LightNavigationManager"%>
-<%@page import="it.eng.spagobi.monitoring.dao.AuditManager"%>
-<%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
-<%@page import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance"%>
-<%@page import="sun.misc.BASE64Decoder"%>
-<%@page import="it.eng.spagobi.utilities.mime.MimeUtils"%>
-<%@page import="it.eng.spagobi.services.content.bo.Content"%>
-<%@page import="it.eng.spagobi.services.content.service.ContentServiceImplSupplier"%><%--
+<%--
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
 
-aThis library is free software; you can redistribute it and/or
+This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
 version 2.1 of the License, or (at your option) any later version.
@@ -26,8 +18,13 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
 
-<%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
+<%@page import="it.eng.spago.navigation.LightNavigationManager"%>
+<%@page import="it.eng.spagobi.monitoring.dao.AuditManager"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance"%>
 <%@page import="it.eng.spagobi.services.common.SsoServiceInterface"%>
+
+<%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 
 <% 
 SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");

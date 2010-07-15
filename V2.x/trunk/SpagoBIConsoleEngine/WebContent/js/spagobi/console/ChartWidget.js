@@ -49,7 +49,6 @@ Ext.chart.Chart.CHART_URL = '/SpagoBIConsoleEngine/swf/yuichart/charts.swf';
 Ext.ns("Sbi.console");
 
 Sbi.console.ChartWidget = function(config) {
-	
 		var defaultSettings = {
 			height: 170,
 			dataset: 'testStore'
@@ -58,8 +57,7 @@ Sbi.console.ChartWidget = function(config) {
 	        	, xField: 'name'
 	            , yField: 'visits'
 	        }
-		};
-		
+		};	
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.chartWidget) {
 			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.chartWidget);
 		}
@@ -73,8 +71,7 @@ Sbi.console.ChartWidget = function(config) {
 			}
 			delete c.dataset;
 		}		
-		Ext.apply(this, c);
-
+		Ext.apply(this, c);	
 		// constructor
 		Sbi.console.ChartWidget.superclass.constructor.call(this, c);
 		
@@ -110,8 +107,8 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 	
 
 	, onRender: function(ct, position) {
-		Sbi.console.ChartWidget.superclass.onRender.call(this, ct, position);
 		
+		Sbi.console.ChartWidget.superclass.onRender.call(this, ct, position);	
 		
 		if(!this.store) {
 			if(this.storeName) {
@@ -137,10 +134,10 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 			this.initChart();
 		} else {
 			this.store.on('load', this.initChart, this);
-		}
+		}	
 	}
 
-	, initChart: function() {
+	, initChart: function() {	
 		if(this.chart == null) {
 			this.store.un('load', this.initChart, this);
 		}
@@ -156,10 +153,11 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		if(this.chart !== null) {
 			this.add(this.chart);
 			this.doLayout();
-		}
+		}	
 	}
     
 	, createChart: function(chartConfig) {
+			
 		var chart = null;
 		
 		chartConfig = chartConfig || {};
@@ -186,23 +184,24 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		} else {
 			Sbi.Msg.showError('Chart type [' + chartType + '] not supported by [ChartWidget]');
 		}
-		
+			
 		return chart;
 	}
 	
 	, createSpagoBIChart: function(chartConfig) {
-		
-		chartConfig.store = this.store;
-		chartConfig.xtype = chartConfig.type;
-		delete chartConfig.type;
-
+			
+		chartConfig.store = this.store;	
+		chartConfig.xtype = chartConfig.type;	
+		delete chartConfig.type; 	
 		return new Ext.Panel({
 			//layout:'fit'
-		      items: [chartConfig]
+			height : this.height
+			, width : this.width
+		    , items: [chartConfig]
 		    , border: false
 		    , bodyBorder: false
 		    , hideBorders: true
-		});		
+		});			
 	}
 	
 	, createLineChart: function(chartConfig) {
@@ -335,5 +334,5 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		
 		return fname;
 	}
-    
+	
 });

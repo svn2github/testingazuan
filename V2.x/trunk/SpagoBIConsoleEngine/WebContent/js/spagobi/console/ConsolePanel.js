@@ -64,6 +64,7 @@ Sbi.console.ConsolePanel = function(config) {
 	delete c.datasets;
 	
 	var summaryPanelConfig = c.summaryPanel;
+	if(summaryPanelConfig) summaryPanelConfig.executionContext = c.executionContext; 
 	delete c.summaryPanel;
 	
 	var detailPanelConfig = c.detailPanel;

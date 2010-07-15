@@ -47,7 +47,7 @@
 Ext.ns("Sbi.console");
 
 Sbi.console.WidgetPanel = function(config) {
-
+	
 		var defaultSettings = {
 			layout:'table'
 		  , layoutConfig: {
@@ -59,8 +59,7 @@ Sbi.console.WidgetPanel = function(config) {
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.widgetPanel) {
 			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.widgetPanel);
-		}
-		
+		}	
 		var c = Ext.apply(defaultSettings, config || {});
 	
 		//for retrocompatibility with 'column' type layout. 
@@ -72,24 +71,20 @@ Sbi.console.WidgetPanel = function(config) {
 			c.layoutConfig.columns = c.columnNumber;
 			delete c.columnNumber;
 			delete c.columnWidths;		
-		}
-		
+		}	
 		this.widgetContainer = new Sbi.console.WidgetContainer({storeManager: c.storeManager});
 		if(c.storeManager) {
 			delete c.storeManager;
 		}
-		
-		
+
 		if(c.items !== undefined) {
 			this.widgetContainer.register(c.items);
 			var x = c.items[0];
 			delete c.items;
-		}
-		
+		}	
 		Ext.apply(this, c);
-	
 		// constructor
-		Sbi.console.WidgetPanel.superclass.constructor.call(this, c);
+		Sbi.console.WidgetPanel.superclass.constructor.call(this, c);	
     
 };
 
@@ -99,13 +94,13 @@ Ext.extend(Sbi.console.WidgetPanel, Sbi.console.Widget, {
     
     //  -- public methods ---------------------------------------------------------
    
-    , addWidget: function(widget) {
-		this.widgetContainer.register(widget);
+    , addWidget: function(widget) {	
+		this.widgetContainer.register(widget);	
 	}
     
     //  -- private methods ---------------------------------------------------------
     
-    , onRender: function(ct, position) {
+    , onRender: function(ct, position) {	
     	
 		Sbi.console.WidgetPanel.superclass.onRender.call(this, ct, position);
 	
@@ -118,8 +113,7 @@ Ext.extend(Sbi.console.WidgetPanel, Sbi.console.Widget, {
 	
 		widgets.each(function(widget, index, length) {
 			this.add(widget);
-		}, this);
-		
+		}, this);	
 	}
 
 }); 

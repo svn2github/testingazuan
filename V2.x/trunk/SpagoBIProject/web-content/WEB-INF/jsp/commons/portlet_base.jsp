@@ -154,7 +154,7 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 	String userId="";
 	String userName="";
 	String defaultRole="";
-	List<String> userRoles = new ArrayList();;
+	List userRoles = new ArrayList();;
 	
 	//if (userProfile!=null) userId=(String)userProfile.getUserUniqueIdentifier();
 	if (userProfile!=null){

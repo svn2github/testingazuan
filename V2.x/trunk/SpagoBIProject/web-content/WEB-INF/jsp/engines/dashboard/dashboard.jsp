@@ -147,7 +147,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   
     
 	//defines dynamic parameters for multichart management (ie. recNum)
-	int numCharts = (confParameters.get("numCharts")==null)? 1:Integer.valueOf((String)confParameters.get("numCharts"));
+	int numCharts = (confParameters.get("numCharts")==null)? 1:Integer.valueOf((String)confParameters.get("numCharts")).intValue();
 	String multichart = (confParameters.get("multichart")==null)?"false":(String)confParameters.get("multichart");
 	String orientation = (confParameters.get("orientation_multichart")==null)?"vertical":(String)confParameters.get("orientation_multichart");
 	String legend = (confParameters.get("legend")==null)?"true":(String)confParameters.get("legend");
@@ -155,8 +155,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	//int numItems = (confParameters.get("numNeedles")==null)? 1:Integer.valueOf((String)confParameters.get("numNeedles"));
 	
 	//defines radius for get dynamic height : only the last chart with the legend uses the total height; the others are riduced.
-	double radiusByWidth = (Integer.valueOf(width)-2*10)/2;
-	double radiusByHeight = (Integer.valueOf(height)-2*10)/(1+(1/4));
+	double radiusByWidth = (Integer.valueOf(width).intValue()-2*10)/2;
+	double radiusByHeight = (Integer.valueOf(height).intValue()-2*10)/(1+(1/4));
 	double radius = 0;
 	String dinHeight = height;
 	

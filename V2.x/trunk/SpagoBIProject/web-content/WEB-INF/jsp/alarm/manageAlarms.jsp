@@ -25,8 +25,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				java.util.List" %>
 
 <%
-	List<SbiAlarmContact> contacts = (List<SbiAlarmContact>) aSessionContainer.getAttribute("contactsList");
-	List<KpiAlarmInstance> kpis = (List<KpiAlarmInstance>) aSessionContainer.getAttribute("KPI_LIST");
+	List contacts = (List) aSessionContainer.getAttribute("contactsList");
+	List kpis = (List) aSessionContainer.getAttribute("KPI_LIST");
 	//List<ThresholdValue> tresholds = (List<ThresholdValue>) aResponseContainer.getAttribute("TRESHOLD_LIST");
 %>
 
@@ -36,7 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if(contacts != null){
 		contactsList="[";
 		for(int i=0; i< contacts.size(); i++){
-			SbiAlarmContact contact = contacts.get(i);
+			SbiAlarmContact contact = (SbiAlarmContact) contacts.get(i);
 			contactsList+="{";
 			contactsList+="'id':"+contact.getId()+",";
 			contactsList+="'name':'"+contact.getName()+"',";

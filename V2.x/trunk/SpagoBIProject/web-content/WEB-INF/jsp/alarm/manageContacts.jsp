@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 java.util.List" %>
 <%
 
-	List<String> resourcesList = (List<String>) aSessionContainer.getAttribute("RESOURCES_LIST");
+	List resourcesList = (List) aSessionContainer.getAttribute("RESOURCES_LIST");
 
 %>
 

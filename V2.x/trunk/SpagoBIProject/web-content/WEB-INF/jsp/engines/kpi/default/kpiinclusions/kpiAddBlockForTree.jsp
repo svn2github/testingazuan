@@ -1,3 +1,26 @@
+<%
+
+Iterator blocksIt = null;
+KpiLineVisibilityOptions options = null;
+String currTheme = null;
+CoreContextManager contextManager = null;
+String metadata_publisher_Name = null;
+String trend_publisher_Name = null;
+String userId = null;
+%>
+
+<%@page import="it.eng.spagobi.container.CoreContextManager"%>
+<%@page import="it.eng.spagobi.engines.kpi.bo.KpiResourceBlock"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.engines.kpi.bo.KpiLine"%>
+<%@page import="it.eng.spagobi.kpi.model.bo.Resource"%>
+<%@page import="java.util.Date"%>
+<%@page import="it.eng.spagobi.utilities.themes.ThemesManager"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance"%>
+<%@page import="java.util.Iterator"%>	
+<%@page import="it.eng.spagobi.engines.kpi.bo.KpiLineVisibilityOptions"%>
+
+
 <%--
 SpagoBI - The Business Intelligence Free Platform
 
@@ -55,12 +78,12 @@ final String td_first_line_css_class = "kpi_first_line_td";
 			Integer resourceId = r.getId();
 			%>
 			<!-- START DIV containing each resource tree -->
-			<div id='<%=resourceName%>' >	
+			<div id='<%=resourceName%>' >
 			
 			<!-- START Table containing a specific resource -->		
 			<table class='<%=table_css_class%>' id='KPI_TABLE<%=resourceId%>' >
 			<TBODY>
-			<% if (options.getDisplay_bullet_chart() && options.getDisplay_threshold_image() ){%>
+			<% if (options.getDisplay_bullet_chart().booleanValue() && options.getDisplay_threshold_image().booleanValue() ){%>
 				 <tr class='<%=res_css_class%>' >
 				 	<td colspan='10' id='ext-gen58' >
 				 		<spagobi:message key="sbi.kpi.RESOURCE" /><%=resourceName%>
@@ -110,7 +133,7 @@ final String td_first_line_css_class = "kpi_first_line_td";
 					<!-- START KPI WEIGHT COLUMN -->
 				<% } 
 				
-				if (options.getDisplay_weight() && options.getWeight_title()!=null){ %>
+				if (options.getDisplay_weight().booleanValue() && options.getWeight_title()!=null){ %>
 					<td width='<%=WEIGHT_COL_W%>%' class='<%=td_first_line_css_class%>' >
 						<%=options.getWeight_title()%>
 					</td>
@@ -123,18 +146,18 @@ final String td_first_line_css_class = "kpi_first_line_td";
 					<!-- START BULLET CHART AND THRESHOLD IMAGE COLUMN -->
 				<% } 
 				
-				if (options.getDisplay_bullet_chart() && options.getDisplay_threshold_image() && options.getBullet_chart_title()!=null && options.getBullet_chart_title()!=null){ %>
+				if (options.getDisplay_bullet_chart().booleanValue() && options.getDisplay_threshold_image().booleanValue() && options.getBullet_chart_title()!=null && options.getBullet_chart_title()!=null){ %>
 					<td width='<%=CHART_COL_W%>%' class='<%=td_first_line_css_class%>' style='text-align:center;' >
 						<%=options.getBullet_chart_title()%>
 					</td>
 					<td width='<%=IMG_COL_W%>%' class='<%=td_first_line_css_class%>' >
 						<%=(options.getThreshold_image_title()!=null?options.getThreshold_image_title():"")%>
 					</td>
-				<% }else if(options.getDisplay_bullet_chart()  && options.getBullet_chart_title()!=null){%>
+				<% }else if(options.getDisplay_bullet_chart().booleanValue()  && options.getBullet_chart_title()!=null){%>
 					<td width='<%=CHART_OR_IMAGE_COL_W%>%' class='<%=td_first_line_css_class%>' style='text-align:center;' >
 						<%=options.getBullet_chart_title()%>
 					</td>
-				<% }else if(options.getDisplay_threshold_image()  && options.getThreshold_image_title()!=null){%>
+				<% }else if(options.getDisplay_threshold_image().booleanValue()  && options.getThreshold_image_title()!=null){%>
 					<td width='<%=CHART_OR_IMAGE_COL_W%>%' class='<%=td_first_line_css_class%>' style='text-align:center;' >
 						<%=options.getThreshold_image_title()%>
 					</td>
@@ -154,7 +177,7 @@ final String td_first_line_css_class = "kpi_first_line_td";
 		<% StringBuffer _htmlStream = new StringBuffer();
 		   ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
 		   //KpiUtils k = new KpiUtils();
-		   _htmlStream = addItemForTree(id ,instance,userId,0,false,request, root,_htmlStream,options,currTheme,parMap,r,d,metadata_publisher_Name,trend_publisher_Name);%>
+		   _htmlStream = addItemForTree(id ,instance,userId,0,Boolean.FALSE,request, root,_htmlStream,options,currTheme,parMap,r,d,metadata_publisher_Name,trend_publisher_Name);%>
 		   
 		<%= _htmlStream%>
 			</TBODY>

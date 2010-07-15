@@ -59,7 +59,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if(!kpiRBlocks.isEmpty()){
 		Iterator blocksIt = kpiRBlocks.iterator();%>
 		<p> 
-		<% if(options.getWeighted_values()){%>
+		<% if(options.getWeighted_values().booleanValue()){%>
 			<div class="kpi_note_section">Valori Pesati
 			</div>
 	    <%}%>

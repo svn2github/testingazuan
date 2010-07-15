@@ -1,4 +1,35 @@
-<%--
+
+<%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
+<%@page import="java.io.IOException"%>
+<%@page import="org.jfree.chart.ChartUtilities"%>
+<%@page import="org.jfree.chart.entity.StandardEntityCollection"%>
+<%@page import="org.jfree.chart.ChartRenderingInfo"%>
+<%@page import="org.jfree.chart.JFreeChart"%>
+<%@page import="it.eng.spagobi.engines.kpi.bo.ChartImpl"%>
+<%@page import="java.text.ParseException"%>
+<%@page import="it.eng.spago.configuration.ConfigSingleton"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="it.eng.spago.base.SourceBean"%>
+<%@page import="it.eng.spago.navigation.LightNavigationManager"%>
+<%@page import="it.eng.spagobi.commons.constants.ObjectsTreeConstants"%>
+<%@page import="it.eng.spagobi.kpi.threshold.bo.ThresholdValue"%>
+<%@page import="java.awt.Color"%>
+<%@page import="java.util.Iterator"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
+<%@page import="it.eng.spagobi.kpi.config.bo.KpiValue"%>
+<%@page import="org.safehaus.uuid.UUID"%>
+<%@page import="org.safehaus.uuid.UUIDGenerator"%>
+<%@page import="it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory"%>
+<%@page import="it.eng.spagobi.commons.utilities.urls.IUrlBuilder"%>
+<%@page import="it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory"%>
+<%@page import="it.eng.spagobi.commons.utilities.messages.IMessageBuilder"%>
+<%@page import="java.util.Date"%>
+<%@page import="it.eng.spagobi.kpi.model.bo.Resource"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="it.eng.spagobi.engines.kpi.bo.KpiLine"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance"%>
+<%@page import="it.eng.spagobi.engines.kpi.bo.KpiLineVisibilityOptions"%><%--
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
@@ -113,8 +144,8 @@ public StringBuffer addItemForTree(String lineTagId,ExecutionInstance execInstan
 			Double val = new Double(value);
 			kpiValue = new Float( val.floatValue());
 			weightValue = kpiVal.getWeight();
-			if(options.getWeighted_values()){
-				kpiValue =new Float(val*weightValue);
+			if(options.getWeighted_values().booleanValue()){
+				kpiValue =new Float(val.doubleValue()*weightValue.doubleValue());
 			}
 		}	
 	}	
@@ -130,28 +161,28 @@ public StringBuffer addItemForTree(String lineTagId,ExecutionInstance execInstan
 	//END EVALUATING REAL VARIABLE VALUES
 	
 	//BEGIN ROW
-	if(isEvenLine){
+	if(isEvenLine.booleanValue()){
 		 _htmlStream.append("	<tr class='"+tr_even_css_class+"' id='"+lineTagId+"' >\n");
 	}else{
 		_htmlStream.append("	<tr class='"+tr_odd_css_class+"' id='"+lineTagId+"' >\n");
 	}
 	
 	//START ADDING COLUMNS
-	_htmlStream = addModelNameColumn(_htmlStream,kpiVal,recursionLevel, modelName, options.getDisplay_semaphore(), hasChildren, lineTagId, tab_name);
+	_htmlStream = addModelNameColumn(_htmlStream,kpiVal,recursionLevel, modelName, options.getDisplay_semaphore().booleanValue(), hasChildren, lineTagId, tab_name);
 	
 	_htmlStream = addMetadataIconColumn(_htmlStream, recursionLevel, requestIdentity, kpiVal, options.getWeighted_values(), line.getModelInstanceNodeId(), userId,infoImgSrc,metadata_publisher_Name);	
 	
 	_htmlStream = addKpiValueColumn(_htmlStream, kpiValue,scaleCode , kpiVal, periodValid);
 	
-	_htmlStream = addKpiWeightColumn(_htmlStream, options.getDisplay_weight(), weightValue, weightTitle);
+	_htmlStream = addKpiWeightColumn(_htmlStream, options.getDisplay_weight().booleanValue(), weightValue, weightTitle);
 	
-	_htmlStream = addBulletChartAndOrThresholdImageColumn( _htmlStream, options.getDisplay_bullet_chart(),options.getDisplay_threshold_image(),options.getShow_axis(),line, requestIdentity);
+	_htmlStream = addBulletChartAndOrThresholdImageColumn( _htmlStream, options.getDisplay_bullet_chart().booleanValue(),options.getDisplay_threshold_image().booleanValue(),options.getShow_axis().booleanValue(),line, requestIdentity);
 			
 	_htmlStream = addTrendColumn( _htmlStream,recursionLevel, requestIdentity,userId,kpiVal,r,timeRangeTo,timeRangeFrom,d, trendTitle,trendImgSrc,trend_publisher_Name);
 	
 	_htmlStream = addDocumentDetailColumn( _htmlStream, execInstance,documents,kpiVal,timeRangeFrom, timeRangeTo,d, docLinkedTitle, docImgSrc, r);
 
-	_htmlStream = addAlarmColumn(_htmlStream, alarm, options.getDisplay_alarm(), alarmImgSrc,alarmTitle);
+	_htmlStream = addAlarmColumn(_htmlStream, alarm.booleanValue(), options.getDisplay_alarm().booleanValue(), alarmImgSrc,alarmTitle);
 	//END ADDING COLUMNS
 	
    _htmlStream.append("	</tr>\n");
@@ -165,10 +196,10 @@ public StringBuffer addItemForTree(String lineTagId,ExecutionInstance execInstan
 	   while (childIt.hasNext()){
 		   KpiLine l = (KpiLine)childIt.next();
 		   String idTemp = lineTagId+"_child"+children.indexOf(l);
-		   if (isEvenLine){			   
-			   addItemForTree(idTemp,execInstance,userId,recursionLevel,false,httpReq, l,_htmlStream,options,currTheme,parametersMap,r,d,metadata_publisher_Name,trend_publisher_Name);
+		   if (isEvenLine.booleanValue()){			   
+			   addItemForTree(idTemp,execInstance,userId,recursionLevel,Boolean.FALSE,httpReq, l,_htmlStream,options,currTheme,parametersMap,r,d,metadata_publisher_Name,trend_publisher_Name);
 		   }else{
-			   addItemForTree(idTemp,execInstance,userId,recursionLevel,true,httpReq, l,_htmlStream,options,currTheme,parametersMap,r,d,metadata_publisher_Name,trend_publisher_Name);
+			   addItemForTree(idTemp,execInstance,userId,recursionLevel,Boolean.TRUE,httpReq, l,_htmlStream,options,currTheme,parametersMap,r,d,metadata_publisher_Name,trend_publisher_Name);
 		   }  
 	   }
    } 
@@ -212,7 +243,7 @@ private StringBuffer addMetadataIconColumn(StringBuffer _htmlStream,int recursio
 		if(kpiVal.getValueDescr()!=null){
 			valueDescr = kpiVal.getValueDescr();		
 		}
-		HashMap execUrlParMap = createParMapForMetadataWindow(kpiVal,modelInstanceNodeId,isWeightedValue,metadata_publisher_Name);
+		HashMap execUrlParMap = createParMapForMetadataWindow(kpiVal,modelInstanceNodeId,isWeightedValue.booleanValue(),metadata_publisher_Name);
 		String metadataPopupUrl = createUrl_popup(execUrlParMap,userId);
 		
 		_htmlStream.append("<td  width='"+META_COL_W+"%'  class='"+td_css_class+"' title='"+valueDescr+"' style='text-align:center;' ><div class='"+div_css_class+"'  ><a id='linkMetadata_"+requestIdentity+"_"+recursionLevel+"' ><img src=\""+infoImgSrc+"\" /></div></a></td>\n");
@@ -346,7 +377,7 @@ private HashMap createParMapForMetadataWindow(KpiValue kpiVal,Integer modelInsta
 		execUrlParMap.put("KPI_INST_ID", kpiVal.getKpiInstanceId()!=null ? kpiVal.getKpiInstanceId().toString():"");
 		execUrlParMap.put("KPI_VALUE",kpiVal.getValue()!=null ? kpiVal.getValue():"");
 		execUrlParMap.put("KPI_WEIGHT",kpiVal.getWeight()!=null ? kpiVal.getWeight().toString():"");
-		execUrlParMap.put("WEIGHTED_VALUE",isWeightedValue);
+		execUrlParMap.put("WEIGHTED_VALUE",new Boolean(isWeightedValue));
 		execUrlParMap.put("KPI_TARGET",kpiVal.getTarget()!=null ? kpiVal.getTarget().toString():"");
 	}		
 	execUrlParMap.put("KPI_MODEL_INST_ID",modelInstanceNodeId!=null ? modelInstanceNodeId.toString():"");		

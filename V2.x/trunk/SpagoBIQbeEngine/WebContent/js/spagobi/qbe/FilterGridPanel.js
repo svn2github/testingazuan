@@ -72,7 +72,7 @@ Sbi.qbe.FilterGridPanel = function(config) {
 	
 	this.documentParametersStore = c.documentParametersStore;
 	
-	this.filterIdPrefix = 'filter';
+	this.filterIdPrefix = LN('sbi.qbe.filtergridpanel.namePrefix');
 	
 	this.idCount = 0;
 	this.initStore(c);

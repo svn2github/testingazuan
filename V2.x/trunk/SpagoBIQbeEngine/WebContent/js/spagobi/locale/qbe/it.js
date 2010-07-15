@@ -110,6 +110,8 @@ Sbi.locale.ln['sbi.qbe.savewindow.selectmetadata'] = 'Inserisci i metadati';
 //===================================================================
 Sbi.locale.ln['sbi.qbe.filtergridpanel.title'] = 'Filtri';
 
+Sbi.locale.ln['sbi.qbe.filtergridpanel.namePrefix'] = 'Filtro';
+
 //column headers
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.delete'] = 'Elimina tutti';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.name'] = 'Nome';

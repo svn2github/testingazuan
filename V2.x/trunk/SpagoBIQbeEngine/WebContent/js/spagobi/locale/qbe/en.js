@@ -114,6 +114,8 @@ Sbi.locale.ln['sbi.qbe.savewindow.selectmetadata'] = 'Insert metadata';
 //===================================================================
 Sbi.locale.ln['sbi.qbe.filtergridpanel.title'] = 'Where clause';
 
+Sbi.locale.ln['sbi.qbe.filtergridpanel.namePrefix'] = 'Filter';
+
 //column headers
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.name'] = 'Filter Name';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.desc'] = 'Filter Desc.';

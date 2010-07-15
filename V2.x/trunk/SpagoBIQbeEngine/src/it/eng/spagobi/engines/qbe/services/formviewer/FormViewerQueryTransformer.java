@@ -21,6 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.qbe.services.formviewer;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import it.eng.qbe.query.AggregationFunctions;
 import it.eng.qbe.query.CriteriaConstants;
 import it.eng.qbe.query.DataMartSelectField;
@@ -32,15 +40,6 @@ import it.eng.qbe.query.serializer.QueryJSONDeserializer;
 import it.eng.qbe.query.transformers.AbstractQbeQueryTransformer;
 import it.eng.spagobi.engines.qbe.bo.FormViewerState;
 import it.eng.spagobi.engines.qbe.template.QbeJSONTemplateParser;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Transforms the input query starting from document template and form viewer state 
@@ -145,7 +144,13 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 			WhereField.Operand leftOperand = new WhereField.Operand(filter.getString("leftOperandValue"), null, "Field Content", null, null);
 			WhereField.Operand rightOperand = null;
 			if (filter.optString("rightOperandValue") != null) {
-				rightOperand = new WhereField.Operand(filter.getString("rightOperandValue"), null, "Static Value", null, null);
+				logger.debug(filter.toString(3));
+				String type = filter.optString("rightOperandType");
+				String defType = "Static Value";
+				if(type == null || type.equalsIgnoreCase("")) {
+					type = defType;
+				}
+				rightOperand = new WhereField.Operand(filter.getString("rightOperandValue"), null, type, null, null);
 			}
 			query.addWhereField(filter.getString("id"), null, false, leftOperand, filter.getString("operator"), rightOperand, filter.getString("booleanConnector"));
 		}

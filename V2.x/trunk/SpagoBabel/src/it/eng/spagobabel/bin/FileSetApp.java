@@ -32,9 +32,15 @@ import it.eng.spagobabel.fileset.FileSet;
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
+
+//Primo
+
+//Crea un file out.txt che contiene il nome dei file
 public class FileSetApp {
+	//Parametro di input
+	public static final String DEFAULT_ROOT = "/home/spinelli/Scrivania";
 	
-	public static final String DEFAULT_ROOT = "C:\\progetti\\spagobi2.0\\workspace\\SpagoBIQbeEngine\\WebContent\\js\\spagobi";
+	//Parametro di output
 	public static final String DEFAULT_OUT = "out.txt";
 
 	public static String getArg(String[] args, int i, String defVal) {

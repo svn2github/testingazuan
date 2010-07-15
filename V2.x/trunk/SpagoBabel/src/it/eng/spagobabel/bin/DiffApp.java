@@ -41,13 +41,14 @@ public class DiffApp extends AbstractApp {
 	
 	
 	private static final String stringRegExp = "'[^']+'";
-	
+	public static final String TARGET_LANGUAGE = "fr";
+	public static final String REFERENCE_LANGUAGE = "en";
 	
 	public static void main(String[] args) throws IOException {
 		File inputFile, diffDir, diffFile, boundlesDir, referenceBoundleFile, targetBoundleFile;
 		PrintWriter diffWriter;
 		String targetLanguage, referenceLanguage;
-	
+		
 			
 		boundlesDir = new File(getArg(args, 0, BOUNDLES_DIR));
 		targetLanguage = getArg(args, 1, TARGET_LANGUAGE);

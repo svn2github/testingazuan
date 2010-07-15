@@ -36,10 +36,16 @@ import it.eng.spagobabel.scanner.JSFileScanner;
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class ScannerApp {
 
+//Secondo
+//Prende in input l'output di FileSetApp e crea labels.txt
+public class ScannerApp {
+	
+	//Lista dei file che devono essere scannerizzati
 	public static final String DEFAULT_IN = "out.txt";
-	public static final String DEFAULT_OUT = "labels.js";
+	
+	//label del contenuto del file javascript
+	public static final String DEFAULT_OUT = "labels.txt";
 	
 	
 	public static String getArg(String[] args, int i, String defVal) {
@@ -59,13 +65,19 @@ public class ScannerApp {
 			
 		inputFile = new File(getArg(args, 0, DEFAULT_IN));
 		outputFile = new File(getArg(args, 1, DEFAULT_OUT));
-		
+				
 		scanner = new JSFileScanner();
 		writer = new PrintWriter(new FileWriter(outputFile));
 		
 		reader = new BufferedReader( new FileReader(inputFile));
+		
 		while( (line = reader.readLine()) != null) {
+			
+			System.out.println(line);
+			
 			File f = new File(line.trim());
+			
+			//Crea un set di risultati a partire dai file presenti nel percorso di SpagoBI
 			Set results = scanner.scan(f);
 			
 			writer.println("");
@@ -76,6 +88,7 @@ public class ScannerApp {
 			writer.println("");
 			
 			Iterator it = results.iterator();
+			
 			while( it.hasNext() ) {
 				writer.println(it.next());
 			}

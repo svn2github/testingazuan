@@ -27,7 +27,7 @@ package it.eng.spagobabel.bin;
 public class AbstractApp {
 	
 	public static final String LABELS_FILE = "labels.txt";
-	public static final String BOUNDLES_DIR = "C:\\progetti\\spagobi2.0\\workspace\\SpagoBIQbeEngine\\WebContent\\js\\spagobi\\locale\\qbe";
+	public static String BOUNDLES_DIR = "/home/spinelli/Scrivania/";
 	public static final String TARGET_LANGUAGE = "fr";
 	public static final String REFERENCE_LANGUAGE = "en";
 	public static final String OUTPUT_DIR = ".";
@@ -40,4 +40,10 @@ public class AbstractApp {
 		
 		return args[i];
 	}
+	
+	public static void setBOUNDLES_DIR(String path)
+	{
+		BOUNDLES_DIR = path;
+	}
+	
 }

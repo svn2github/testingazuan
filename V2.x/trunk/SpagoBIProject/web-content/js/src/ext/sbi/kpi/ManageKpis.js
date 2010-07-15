@@ -201,7 +201,6 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
  		, fields: ['label','name','description']
  		, url: this.services['manageDatasetsService']
  	  });
-      //datasets.load();
  	  
  	  var detailFieldDataset = new Sbi.widgets.LookupField(Ext.apply(baseConfig, {
 			  store: datasets
@@ -239,7 +238,6 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 		, fields: ['label','name','engine','stateCode']
 		, url: this.services['manageDocumentsService']
 	});
- 	//docs.load();
  	
  	 var detailFieldDocuments = new Sbi.widgets.LookupField(Ext.apply(baseConfig, {
 		  store: docs

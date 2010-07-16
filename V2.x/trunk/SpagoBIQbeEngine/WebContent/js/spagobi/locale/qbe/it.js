@@ -221,6 +221,10 @@ Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.tt.add'] = 'Crea una nuova condiz
 //warnings
 Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.delete.title'] = 'Rimuovi condizione?';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.delete.msg'] = 'Stai per rimuovere una condizione utilizzata nell\'espressione complessa associata (vd. nell\'expression wizard). Così facendo tale espressione verrà resettata. Procedere ugualmente?';
+//warnings
+Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.deleteAll.title'] = 'Rimuovi tutte le condizioni?';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.deleteAll.msg'] = 'Stai per rimuovere tutte le condizioni. Procedere?';
+
 
 Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.changebolop.title'] = 'Modifica connettore?';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.changebolop.msg'] = 'Modificando il connettore booleano associato a questo filtro causerai il reset dell\'espresione complessa associata (vd. nell\'expression wizard). Procedere ugualmente?';
@@ -295,7 +299,7 @@ Sbi.locale.ln['sbi.qbe.freeconditionswindow.title'] = 'Inserisci condizioni ...'
 Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.apply'] = 'Attiva';
 Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.cancel'] = 'Elimina tutti';
 Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.restoredefaults'] = 'Riprista valori pedefiniti';
-Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.saveasdefaults'] = 'Sala come predefinito';
+Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.saveasdefaults'] = 'Salva come predefinito';
 Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.restorelast'] = 'Ripristina precedente';
 
 //===================================================================

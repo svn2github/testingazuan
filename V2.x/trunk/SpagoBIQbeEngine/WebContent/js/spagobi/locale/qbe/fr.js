@@ -233,6 +233,8 @@ Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.tt.wizard'] = 'Assistant Exp.';
 //warnings
 Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.delete.title'] = 'Supprimer le filtre ?';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.delete.msg'] = 'Vous êtes sur le point de supprimer un filtre qui est utilisé par une expression (voir l\'assistant des expressions). Le supprimer réinitialise complètement l\'expression. Souhaitez-vous toujours le supprimer ?';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.deleteAll.title'] = 'Supprimer les filtres ?';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.deleteAll.msg'] = 'Tu es en train de suppremer tous les filtres. Continues?';
 
 Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.changebolop.title'] = 'Changer le connecteur booleen ?';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.changebolop.msg'] = 'Changer le connecteur booleen de ce filtre réinitialise l\'expression associée (voir l\'assistant des expressions). Souhaitez-vous toujours le supprimer ?';

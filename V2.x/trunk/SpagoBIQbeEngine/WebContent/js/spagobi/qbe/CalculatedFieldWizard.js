@@ -52,7 +52,7 @@ Sbi.qbe.CalculatedFieldWizard = function(config) {
 		title: this.title,
 		buttonAlign : 'center',
 	    buttons: [{
-			text: 'Save',
+			text: LN('sbi.qbe.calculatedFields.buttons.text.ok'),
 		    handler: function(){
 	    	    var emptyAlias = (this.inputFields.alias.getValue()==null) || (this.inputFields.alias.getValue()=="");
 	    	    var emptyType = (this.inputFields.type.getValue()==null) || (this.inputFields.type.getValue()=="");
@@ -68,7 +68,7 @@ Sbi.qbe.CalculatedFieldWizard = function(config) {
         	}
         	, scope: this
 	    },{
-		    text: 'Cancel',
+		    text: LN('sbi.qbe.calculatedFields.buttons.text.cancel'),
 		    handler: function(){
             	this.hide();
         	}
@@ -310,7 +310,6 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 	// details form
 	, initDetailsFormPanel: function(c) {
 	
-		
 		if(this.inputFields === null) {
 			this.inputFields = new Object();
 		}

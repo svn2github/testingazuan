@@ -281,9 +281,9 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 					// save parameters into session
 					// if type is QBE inform user that will lose configurations
 					if(executionInstance.document.typeCode == 'DATAMART'){
-						
+
 							Ext.MessageBox.confirm(
-    						    LN('sbi.users.confirm'),
+    						    LN('sbi.generic.warning'),
             					LN('sbi.execution.executionpage.toolbar.qberefresh'),            
             					function(btn, text) {
                 					if (btn=='yes') {

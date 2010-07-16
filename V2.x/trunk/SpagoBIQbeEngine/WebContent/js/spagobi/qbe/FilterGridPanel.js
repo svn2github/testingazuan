@@ -231,7 +231,21 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		this.grid.store.removeAll();
 		this.setWizardExpression(false);
 	}
-	
+	// make another delete filters for confirm option because the previous one is called in other situations
+	, deleteFiltersConfirm : function() {
+		Ext.Msg.show({
+			title: LN('sbi.qbe.filtergridpanel.warning.deleteAll.title'),
+		   	msg: LN('sbi.qbe.filtergridpanel.warning.deleteAll.msg'),
+		   	buttons: Ext.Msg.YESNO,
+		   	fn: function(btn) {
+				if(btn === 'yes') {
+					this.deleteFilters();
+				}
+			},
+			scope: this
+		});
+			}
+
 	, deleteFilter: function(record) {
 		Ext.Msg.show({
 			title: LN('sbi.qbe.filtergridpanel.warning.delete.title'),
@@ -791,7 +805,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				    hidden: (this.enableTbRemoveAllFilterBtn === false),
 				    listeners: {
 				    	'click': {
-			    			fn: this.deleteFilters,
+			    			fn: this.deleteFiltersConfirm,
 			    			scope: this
 			    		}
 				    }

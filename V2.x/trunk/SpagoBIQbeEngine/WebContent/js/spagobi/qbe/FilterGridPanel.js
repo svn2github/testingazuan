@@ -216,7 +216,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	, modifyFilter: function(filter, i) {
 		if(i != undefined) {			
 			var record = this.store.getAt( i );
-			Ext.apply(record.data, filter || {});	
+			Ext.apply(record.data, filter || {});
 			record = this.store.getAt( i );
 			this.store.fireEvent('datachanged', this.store) ;
 		}
@@ -689,7 +689,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			    Ext.apply({
 				    header: LN('sbi.qbe.filtergridpanel.headers.lodesc')
 				    , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.lodesc')
-				    , dataIndex: 'leftOperandLongDescription'       
+				    , dataIndex: 'leftOperandDescription'       
 				    , editor: this.columns['leftOperandDescription'].editable === true? new Ext.form.TextField({allowBlank: false}): undefined
 				    , hideable: false
 				    , hidden: false		 
@@ -1002,6 +1002,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	    		if (this.activeEditingContext.dataIndex === 'rightOperandDescription') {
 	    			this.modifyFilter({
 		    				rightOperandValue: newValue, 
+		    				rightOperandDescription: newValue,
 		    				rightOperandType: 'Static Value', 
 		    				rightOperandLongDescription: null
 	    				}, 
@@ -1023,9 +1024,9 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	    parentFieldEditor.on('change', function(f, newValue, oldValue){
 	    	if(this.activeEditingContext) {
 	    		if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
-	    			this.modifyFilter({leftOperandValue: newValue, leftOperandType: 'Static Value', leftOperandLongDescription: null}, this.activeEditingContext.row);
+	    			this.modifyFilter({leftOperandValue: newValue, leftOperandDescription: newValue, leftOperandType: 'Static Value', leftOperandLongDescription: null}, this.activeEditingContext.row);
 	    		} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
-	    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value', rightOperandLongDescription: null}, this.activeEditingContext.row);
+	    			this.modifyFilter({rightOperandValue: newValue, rightOperandDescription: newValue, rightOperandType: 'Static Value', rightOperandLongDescription: null}, this.activeEditingContext.row);
 	    		}
 	    	}		    	
 	    }, this);
@@ -1046,7 +1047,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	    lookupFieldEditor.on('change', function(f, newValue, oldValue){
 	    	if(this.activeEditingContext) {
 	    		if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
-	    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value', rightOperandLongDescription: null}, this.activeEditingContext.row);
+	    			this.modifyFilter({rightOperandValue: newValue, rightOperandDescription: newValue, rightOperandType: 'Static Value', rightOperandLongDescription: null}, this.activeEditingContext.row);
 	    		}
 	    	}		    	
 	    }, this);
@@ -1063,12 +1064,11 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	    textEditor.fireKey = this.fireKeyHandler;
 	    
 	    textEditor.on('change', function(f, newValue, oldValue){
-	    	
 	    	if(this.activeEditingContext) {
 	    		if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
-	    			this.modifyFilter({leftOperandValue: newValue, leftOperandType: 'Static Value', leftOperandLongDescription: null}, this.activeEditingContext.row);
+	    			this.modifyFilter({leftOperandValue: newValue, leftOperandDescription: newValue, leftOperandType: 'Static Value', leftOperandLongDescription: null}, this.activeEditingContext.row);
 	    		} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
-	    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value', rightOperandLongDescription: null}, this.activeEditingContext.row);
+	    			this.modifyFilter({rightOperandValue: newValue, rightOperandDescription: newValue, rightOperandType: 'Static Value', rightOperandLongDescription: null}, this.activeEditingContext.row);
 	    		} else {
 	    			//alert('ONCHANGE: ' + this.activeEditingContext.dataIndex);
 	    		}

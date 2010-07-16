@@ -146,22 +146,23 @@ Ext.ns("Sbi.widgets");
 
 Sbi.widgets.ListDetailForm = function(config) {
 	
+	var conf = config.configurationObject;
 	this.services = new Array();
-	this.services['manageListService'] = config.manageListService;
-	this.services['saveItemService'] = config.saveItemService;
-	this.services['deleteItemService'] = config.deleteItemService;
+	this.services['manageListService'] = conf.manageListService;
+	this.services['saveItemService'] = conf.saveItemService;
+	this.services['deleteItemService'] = conf.deleteItemService;
 	
-	this.emptyRecord = config.emptyRecToAdd;
-	this.tabItems = config.tabItems;
-	this.gridColItems = config.gridColItems;
-	this.panelTitle = config.panelTitle;
-	this.listTitle = config.listTitle;  	
-	this.drawSelectColumn = config.drawSelectColumn;  
+	this.emptyRecord = conf.emptyRecToAdd;
+	this.tabItems = conf.tabItems;
+	this.gridColItems = conf.gridColItems;
+	this.panelTitle = conf.panelTitle;
+	this.listTitle = conf.listTitle;  	
+	this.drawSelectColumn = conf.drawSelectColumn;  
 
 	this.mainElementsStore = new Ext.data.JsonStore({
     	autoLoad: false    	  
     	, id : 'id'		
-    	, fields: config.fields
+    	, fields: conf.fields
     	, root: 'rows'
 		, url: this.services['manageListService']		
 	});
@@ -170,20 +171,17 @@ Sbi.widgets.ListDetailForm = function(config) {
 
 	this.initWidget();
 	   
-   	Ext.getCmp('maingrid').store.on('load', function(){
+	this.mainElementsStore.on('load', function(){
 		 var grid = Ext.getCmp('maingrid');
 		 grid.getSelectionModel().selectRow(0);
 		 }, this, {
 		 single: true
 		 }
-	);  	
+	);  		
    	
-   	Ext.getCmp('maingrid').on('delete', this.deleteSelectedItem, this);
-	Ext.getCmp('maingrid').on('select', this.sendSelectedItem, this);
+	var c = Ext.apply({}, config, this.gridForm);
    	
-   	var c = {};
-   	
-   	Sbi.widgets.ListDetailForm.superclass.constructor.call(this);	
+   	Sbi.widgets.ListDetailForm.superclass.constructor.call(this,c);	
 };
 
 Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
@@ -201,8 +199,6 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
 	
 	,initWidget: function(){
 
-
-        
         this.selectColumn = new Ext.grid.ButtonColumn({
 		       header:  ' '
 		       ,iconCls: 'icon-execute'
@@ -221,11 +217,11 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
         this.deleteColumn = new Ext.grid.ButtonColumn({
  	       header:  ' '
  	       ,iconCls: 'icon-remove'
- 	       ,clickHandler: function(e, t) {
+ 	       ,clickHandler: function(e, t) {      		
  	          var index = Ext.getCmp("maingrid").getView().findRowIndex(t);	          
  	          var selectedRecord = Ext.getCmp("maingrid").store.getAt(index);
  	          var itemId = selectedRecord.get('id');
- 	          Ext.getCmp("maingrid").fireEvent('delete', itemId, index);
+ 	         Ext.getCmp("maingrid").fireEvent('delete', itemId, index);
  	       }
  	       ,width: 25
  	       ,renderer : function(v, p, record){
@@ -294,6 +290,42 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
        }else{
     	  pluginsToAdd = this.deleteColumn; 
        }
+ 	   
+ 	   this.mainGrid = {
+        	  	  id: 'maingrid',
+	                  xtype: 'grid',
+	                  ds: this.mainElementsStore,   	                  
+	                  cm: this.colModel,
+	                  plugins: pluginsToAdd ,
+	                  sm: new Ext.grid.RowSelectionModel({
+	                      singleSelect: true,
+	                      scope:this,   	                   
+	                      listeners: {
+	                          rowselect: function(sm, row, rec) { 
+	                              Ext.getCmp('items-form').getForm().loadRecord(rec);      	
+	                          }
+	                      }
+	                  }),
+	                  autoExpandColumn: 'name',
+	                  height: 500,
+	                  width: 450,
+	                  layout: 'fit',
+	                  title: this.listTitle,
+		              bbar: pagingBar,
+	                  tbar: this.tb,
+	                  border: true,
+	                  listeners: {
+ 		   							'delete': {
+							     		fn: this.deleteSelectedItem,
+							      		scope: this
+							    	} ,
+							    	'select': {
+							     		fn: this.sendSelectedItem,
+							      		scope: this
+							    	} ,
+	                      			viewready: function(g) {g.getSelectionModel().selectRow(0); } 
+	                             }
+	                  };
 
    	   /*
    	   *    Here is where we create the Form
@@ -308,37 +340,11 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
    	          height: 550,
    	          layout: 'column',
    	          trackResetOnLoad: true,
-	          renderTo: Ext.getBody(),
-   	          items: [{
-   	              columnWidth: 0.90,
+   	          items: [
+   	              {
+   	              columnWidth: 0.60,
    	              layout: 'fit',
-   	              items: {
-   	        	  	  id: 'maingrid',
-   	                  xtype: 'grid',
-   	                  ds: this.mainElementsStore,   	                  
-   	                  cm: this.colModel,
-   	                  plugins: pluginsToAdd ,
-   	                  sm: new Ext.grid.RowSelectionModel({
-   	                      singleSelect: true,
-   	                      scope:this,   	                   
-   	                      listeners: {
-   	                          rowselect: function(sm, row, rec) { 
-   	                              Ext.getCmp('items-form').getForm().loadRecord(rec);      	
-   	                          }
-   	                      }
-   	                  }),
-   	                  autoExpandColumn: 'name',
-   	                  height: 500,
-   	                  width: 450,
-   	                  layout: 'fit',
-   	                  title: this.listTitle,
-   		              bbar: pagingBar,
-   	                  tbar: this.tb,
-   	                  border: true,
-   	                  listeners: {
-   	                      			viewready: function(g) {g.getSelectionModel().selectRow(0); } 
-   	                             }
-   	                  }
+   	              items: this.mainGrid
    	              }, this.tabs
    	          ]
    	      });
@@ -351,13 +357,13 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
 	, addNewItem : function(){
 	
 		var emptyRecToAdd = this.emptyRecord;
-		Ext.getCmp('items-form').getForm().loadRecord(emptyRecToAdd);
+		this.gridForm.getForm().loadRecord(emptyRecToAdd);
 	
 	    this.tabs.items.each(function(item)
 		    {		
 		    	item.doLayout();
 		    });   
-		Ext.getCmp('items-form').doLayout();	
+	    this.gridForm.doLayout();	
 	}
 	
 	, deleteSelectedItem: function(itemId, index) {

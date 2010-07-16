@@ -71,7 +71,7 @@ Ext.onReady(function(){
 		, items: [
 		    {
 		       region: 'center',
-		       layout: 'accordion',
+		       layout: 'fit',
 		       items: [manageThresholds]
 		    }
 		]

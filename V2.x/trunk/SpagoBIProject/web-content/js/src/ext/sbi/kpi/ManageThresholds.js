@@ -65,8 +65,11 @@ Sbi.kpi.ManageThresholds = function(config) {
 	});
 	
 	this.initConfigObject();
+	config.configurationObject = this.configurationObject;
+	
+	var c = Ext.apply({}, config || {}, {});
 
-	Sbi.kpi.ManageThresholds.superclass.constructor.call(this, this.configurationObject);	 	
+	Sbi.kpi.ManageThresholds.superclass.constructor.call(this, c);	 	
 };
 
 Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
@@ -96,7 +99,6 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 		                                         {header: LN('sbi.generic.code'), width: 150, sortable: true, dataIndex: 'code'}
 		                                        ];
 		
-		//alert(config.drawSelectColumn);
 		if(config.drawSelectColumn){
 			this.configurationObject.drawSelectColumn = true;
 		}
@@ -202,7 +204,7 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
     //OVERRIDING save method
 	,save : function() {
 
-		var values = this.gridForm.getForm().getValues();
+		var values = this.gridForm.getForm().getFieldValues();
 		var idRec = values['id'];
 		var newRec;
 	

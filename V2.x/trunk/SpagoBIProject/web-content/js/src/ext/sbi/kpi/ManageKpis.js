@@ -81,8 +81,11 @@ Sbi.kpi.ManageKpis = function(config) {
 	});
 	
 	this.initConfigObject();
+	config.configurationObject = this.configurationObject;
+	
+	var c = Ext.apply({}, config || {}, {});
 
-	Sbi.kpi.ManageKpis.superclass.constructor.call(this, this.configurationObject);	 	
+	Sbi.kpi.ManageKpis.superclass.constructor.call(this, c);	 	
 };
 
 Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
@@ -458,8 +461,8 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 		this.thrWin = new Ext.Window({
 			title: LN('sbi.lookup.Select') ,   
             layout      : 'fit',
-            width       : 580,
-            height      : 300,
+            width       : 700,
+            height      : 500,
             closeAction :'hide',
             plain       : true,
             items       : [manageThresholds]
@@ -479,7 +482,7 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 	,save : function() {
 		alert('Dentro a save');
 		/*
-		var values = this.gridForm.getForm().getValues();
+		var values = this.gridForm.getForm().getFieldValues();
 		var idRec = values['id'];
 		var newRec;
 	

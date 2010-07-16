@@ -989,7 +989,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				}else{
 					editor = this.createParentFieldEditor();
 				}
-			} else if(dataIndex === 'rightOperandDescription' && (filter.leftOperandType == 'Field Content')) {
+			} else if(dataIndex === 'rightOperandDescription' && (filter.leftOperandType == 'Field Content') && (filter.leftOperandValue!=null && filter.leftOperandValue.expression==null)) {
 				editor = this.createLookupFieldEditor();
 			}  else {
 				editor = this.createTextEditor();

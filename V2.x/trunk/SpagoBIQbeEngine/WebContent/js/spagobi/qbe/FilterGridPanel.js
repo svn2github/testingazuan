@@ -168,7 +168,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			
 			, leftOperandValue: ''
 			, leftOperandDescription: ''
-			, leftOperandLongDescription: null
+			, leftOperandLongDescription: ''
 			, leftOperandType: 'Static Value'
 			, leftOperandDefaultValue: null
 			, leftOperandLastValue: null
@@ -177,7 +177,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				
 			, rightOperandValue: ''
 			, rightOperandDescription: ''
-			, rightOperandLongDescription: null
+			, rightOperandLongDescription: ''
 			, rightOperandType: 'Static Value'
 			, rightOperandDefaultValue: null
 			, rightOperandLastValue: null
@@ -1187,6 +1187,11 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	 	var tooltipString = record.data.leftOperandLongDescription;
 	 	if (tooltipString !== undefined && tooltipString != null) {
 	 		metadata.attr = ' ext:qtip="'  + tooltipString + '"';
+	 	}
+	 	//if the left operand is a datamart field we show the long description (in this way we show also the father entity)
+	 	//otherwise we show the leftOperandDescription
+	 	if (record.data.leftOperandLongDescription!=null){
+	 		return record.data.leftOperandLongDescription;
 	 	}
 	 	return value;
 	}

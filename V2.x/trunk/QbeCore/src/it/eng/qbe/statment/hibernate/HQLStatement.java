@@ -275,7 +275,7 @@ public class HQLStatement extends BasicStatement {
 		String rootEntityAlias;
 		String selectClauseElement; // rootEntityAlias.queryName
 		Map entityAliases;
-		Map<String, String> map = new HashMap<String, String>();
+		List<String> aliasEntityMapping;
 		
 		logger.debug("IN");
 		buffer = new StringBuffer();
@@ -346,16 +346,20 @@ public class HQLStatement extends BasicStatement {
 					
 				} while( true );
 				
+
 				
-				index=0;
+				aliasEntityMapping = new ArrayList<String>();
 				for(int k=0; k< selectInLineCalculatedFields.size(); k++){
 					selectInLineField = selectInLineCalculatedFields.get(k);
 					
 					String expr = selectInLineField.getExpression();//.replace("\'", "");
 					
+					
 					StringTokenizer stk = new StringTokenizer(selectInLineField.getExpression().replace("\'", ""), "+-|*/");
 					while(stk.hasMoreTokens()){
 						String alias = stk.nextToken().trim();
+											
+						
 						String uniqueName;
 						allSelectFields = query.getSelectFields(false);
 						for(int i=0; i<allSelectFields.size(); i++){
@@ -366,18 +370,27 @@ public class HQLStatement extends BasicStatement {
 								rootEntity = datamartField.getParent().getRoot(); 
 								rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
 								queryName = ((DataMartSelectField)allSelectFields.get(i)).getFunction().apply(rootEntityAlias+"."+queryName);
-								map.put(alias,queryName);
+								aliasEntityMapping.add(queryName);
+								break;
 							}
 						}
 					}
 					
-					
-					Iterator<String> keyIter = map.keySet().iterator();
-					while(keyIter.hasNext()){
-						String key = keyIter.next();
-						expr=expr.replace((CharSequence)key, (CharSequence)map.get(key));
+					index = 0;
+					String freshExpr = selectInLineField.getExpression();
+					int ind =0;
+					int pos =0;
+					stk = new StringTokenizer(selectInLineField.getExpression().replace("\'", ""), "+-|*/");
+					while(stk.hasMoreTokens()){
+						String alias = stk.nextToken().trim();
+						pos = freshExpr.indexOf(alias, pos);
+						freshExpr = freshExpr.substring(0, pos)+ aliasEntityMapping.get(ind)+freshExpr.substring(pos+alias.length());
+						pos = pos+ aliasEntityMapping.get(ind).length();
+						ind++;
 					}
-					
+			
+					expr = freshExpr;
+
 					for(int y= index; y<idsForQuery.length; y++){
 						if(idsForQuery[y]==null){
 							idsForQuery[y]=" " +expr;
@@ -809,7 +822,7 @@ public class HQLStatement extends BasicStatement {
 		String queryName;
 		String rootEntityAlias;
 		Map entityAliases = (Map)entityAliasesMaps.get(query.getId());
-		Map<String, String> map = new HashMap<String, String>();
+		List<String> aliasEntityMapping = new  ArrayList<String>();
 		String rightOperandElement;
 				
 		String expr = leftOperand.value.substring(leftOperand.value.indexOf("\"expression\":\"")+14);//.replace("\'", "");
@@ -833,16 +846,24 @@ public class HQLStatement extends BasicStatement {
 					rootEntity = datamartField.getParent().getRoot(); 
 					rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
 					queryName = ((DataMartSelectField)allSelectFields.get(i)).getFunction().apply(rootEntityAlias+"."+queryName);
-					map.put(alias,queryName);
+					aliasEntityMapping.add(queryName);
+					break;
 				}
 			}
 		}
-
-		Iterator<String> keyIter = map.keySet().iterator();
-		while(keyIter.hasNext()){
-			String key = keyIter.next();
-			expr=expr.replace((CharSequence)key, (CharSequence)map.get(key));
+		
+		String freshExpr = expr;
+		int ind =0;
+		int pos =0;
+		stk = new StringTokenizer(expr.replace("\'", ""), "+-|*/");
+		while(stk.hasMoreTokens()){
+			String alias = stk.nextToken().trim();
+			pos = freshExpr.indexOf(alias, pos);
+			freshExpr = freshExpr.substring(0, pos)+ aliasEntityMapping.get(ind)+freshExpr.substring(pos+alias.length());
+			pos = pos+ aliasEntityMapping.get(ind).length();
+			ind++;
 		}
+		expr = freshExpr;
 				
 		logger.debug("IN");
 					

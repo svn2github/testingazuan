@@ -331,3 +331,5 @@ Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.success.text'] = 'Espre
 Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.fail.title'] = 'Errore di validazione';
 Sbi.locale.ln['sbi.qbe.calculatedFields.expert.nofilterwindow.title'] = 'Attenzione con questa tipologia di campi calcolati non è possibile applicare i filtri';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.expert'] = 'Utente Esperto';
+Sbi.locale.ln['sbi.qbe.calculatedFields.buttons.text.ok'] = 'OK';
+Sbi.locale.ln['sbi.qbe.calculatedFields.buttons.text.cancel'] = 'Annulla';

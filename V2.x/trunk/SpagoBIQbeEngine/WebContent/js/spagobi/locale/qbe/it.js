@@ -2,6 +2,14 @@ Ext.ns("Sbi.locale");
 Sbi.locale.ln = Sbi.locale.ln || new Array();
 
 
+
+//===================================================================
+//MESSAGE BOX BUTTONS
+//===================================================================
+Ext.Msg.buttonText.yes = 'Sì'; 
+Ext.Msg.buttonText.no = 'No';
+
+
 //===================================================================
 //GENERAL
 //===================================================================
@@ -212,7 +220,7 @@ Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.tt.add'] = 'Crea una nuova condiz
 
 //warnings
 Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.delete.title'] = 'Rimuovi condizione?';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.delete.msg'] = 'Stai per rimuovere una condizione utilizzata nell\'espressione complessa associata (vd. nell\'expression wizard). Così facendo tale espressione verà resettata. Procedere ugualmente?';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.delete.msg'] = 'Stai per rimuovere una condizione utilizzata nell\'espressione complessa associata (vd. nell\'expression wizard). Così facendo tale espressione verrà resettata. Procedere ugualmente?';
 
 Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.changebolop.title'] = 'Modifica connettore?';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.changebolop.msg'] = 'Modificando il connettore booleano associato a questo filtro causerai il reset dell\'espresione complessa associata (vd. nell\'expression wizard). Procedere ugualmente?';

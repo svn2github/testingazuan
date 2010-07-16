@@ -340,3 +340,5 @@ Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.success.title'] = 'Vali
 Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.success.text'] = 'Validation OK';
 Sbi.locale.ln['sbi.qbe.calculatedFields.validationwindow.fail.title'] = 'Validation Fail';
 Sbi.locale.ln['sbi.qbe.calculatedFields.expert.nofilterwindow.title'] = 'Warning: with this type of calculated fields you can\'t use filters';
+Sbi.locale.ln['sbi.qbe.calculatedFields.buttons.text.ok'] = 'OK';
+Sbi.locale.ln['sbi.qbe.calculatedFields.buttons.text.cancel'] = 'Cancel';

@@ -12,7 +12,7 @@ Sbi.settings.qbe = {
 			enableQueryTbValidateBtn: false,
 			
 			enableCatalogueTbDeleteBtn: true,
-			enableCatalogueTbAddBtn: false,
+			enableCatalogueTbAddBtn: true,
 			enableCatalogueTbInsertBtn: true
 		}
 
@@ -53,6 +53,7 @@ Sbi.settings.qbe = {
 				, 'deleteButton': {hideable: true, hidden: true, sortable: false, editable: true}
 				, 'promptable': {hideable: true, hidden: false, sortable: false, editable: true}				
 			}
+			, lookupValuesSeparator: ' || '
 		}
 		
 		,havingGridPanel: {

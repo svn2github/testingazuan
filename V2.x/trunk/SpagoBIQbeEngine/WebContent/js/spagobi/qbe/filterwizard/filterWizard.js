@@ -224,7 +224,6 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
     
   var getExpStructureTree = function(isLogActive) {
     var _log = function(msg){};
-    
     if(isLogActive === true) {
     	_log = log;
     } 
@@ -235,7 +234,27 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
     var str = getExpression();
     
     _log("Parsing expression: " + str);
-    var startDate = new Date();                      
+
+    var startDate = new Date();  
+    
+    // remove special character
+    str = str.replace(/\u200B/g,"");
+    
+    // upper case of OR and AND    
+    var st = 0;
+    var end = 0;
+    var toSub;
+    var toSubNew;
+    do{
+    	st = str.indexOf('}',end);
+    	end = str.indexOf('$',st);
+    	if(end == -1) {break;}
+    	toSub = str.substring(st,end);    
+    	toSubNew = toSub.toUpperCase();
+    	str = str.replace(toSub, toSubNew);    
+    } while(true); 
+    
+    
     error_count = boolstaf.module.parse( str, error_offsets, error_lookaheads );  
     var endDate = new Date();
     
@@ -255,7 +274,6 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
     
   var refreshExpStructureTreePanel = function() {
     var rootNode = new Ext.tree.TreeNode({text:LN('sbi.qbe.expreditor.structure'), iconCls:'database',expanded:true});
-     
     rootNode.appendChild([
       getExpStructureTree(true)
     ]);

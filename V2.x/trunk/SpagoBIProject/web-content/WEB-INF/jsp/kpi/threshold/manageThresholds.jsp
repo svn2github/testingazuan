@@ -48,6 +48,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     %>
 
     var config = {};
+
 	config.nodeTypesCd = <%= nodeTypes%>;
 	
 	var url = {
@@ -66,7 +67,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 Ext.onReady(function(){
 	Ext.QuickTips.init();
 	var manageThresholds = new Sbi.kpi.ManageThresholds(config);
-	var viewport = new Ext.Viewport({
+   var viewport = new Ext.Viewport({
 		layout: 'border'
 		, items: [
 		    {

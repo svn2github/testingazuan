@@ -253,9 +253,10 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
            enableTabScroll : true
            , id: 'tab-panel'
            , activeTab : 0
+           , columnWidth: 0.6
            , autoScroll : true
-           , width: 450
-           , height: 500
+           , width: 450          
+           , height: 490
            , itemId: 'tabs' 
            , tbar: this.tbSave
 		   , items: this.tabItems
@@ -292,7 +293,7 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
        }
  	   
  	   this.mainGrid = {
-        	  	  id: 'maingrid',
+        	  	      id: 'maingrid',
 	                  xtype: 'grid',
 	                  ds: this.mainElementsStore,   	                  
 	                  cm: this.colModel,
@@ -307,13 +308,11 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
 	                      }
 	                  }),
 	                  autoExpandColumn: 'name',
-	                  height: 500,
+	                  height: 490,
 	                  width: 450,
-	                  layout: 'fit',
 	                  title: this.listTitle,
 		              bbar: pagingBar,
 	                  tbar: this.tb,
-	                  border: true,
 	                  listeners: {
  		   							'delete': {
 							     		fn: this.deleteSelectedItem,
@@ -333,16 +332,18 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
    	   this.gridForm = new Ext.FormPanel({
    	          id: 'items-form',
    	          frame: true,
+   	          autoScroll: true,
    	          labelAlign: 'left',
+   	          //autoWidth: true,
    	          title: this.panelTitle,
-   	          bodyStyle:'padding:7px',
-   	          width: 900,
+   	          //bodyStyle:'padding:7px',
+   	          width: 1000,
    	          height: 550,
    	          layout: 'column',
    	          trackResetOnLoad: true,
    	          items: [
    	              {
-   	              columnWidth: 0.60,
+   	              columnWidth: 0.4,
    	              layout: 'fit',
    	              items: this.mainGrid
    	              }, this.tabs

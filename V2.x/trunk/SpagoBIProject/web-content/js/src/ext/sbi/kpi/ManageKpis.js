@@ -461,8 +461,8 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 		this.thrWin = new Ext.Window({
 			title: LN('sbi.lookup.Select') ,   
             layout      : 'fit',
-            width       : 700,
-            height      : 500,
+            width       : 800,
+            height      : 350,
             closeAction :'hide',
             plain       : true,
             items       : [manageThresholds]

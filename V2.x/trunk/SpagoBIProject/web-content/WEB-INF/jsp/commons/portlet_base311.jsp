@@ -269,6 +269,7 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/exception/ExceptionHandler.js")%>'></script>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/service/ServiceRegistry.js")%>'></script>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/lib/ext-3.1.1/ux/grid/Ext.grid.ButtonColumn.js")%>'></script> 
+<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-3.1.1/ux/grid/Ext.ux.ColorField.js")%>"></script> 
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-3.1.1/ux/grid/Ext.ux.grid.RowEditor.js")%>"></script> 
 
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/widgets/FilteringToolbar.js")%>'></script>
@@ -282,6 +283,7 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/alarm/ManageContacts.js")%>'></script>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/alarm/ManageAlarms.js")%>'></script>
 
+<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/kpi/ManageThresholdValues.js")%>'></script>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/kpi/ManageResources.js")%>'></script>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/kpi/ManageThresholds.js")%>'></script>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/kpi/ManageKpis.js")%>'></script>
@@ -350,6 +352,11 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 <link rel='stylesheet' 
 		type='text/css' 
 		href='<%=urlBuilder.getResourceLink(request, "js/lib/ext-3.1.1/ux/css/RowEditor.css")
+		%>'/> 
+		
+<link rel='stylesheet' 
+		type='text/css' 
+		href='<%=urlBuilder.getResourceLink(request, "js/lib/ext-3.1.1/ux/css/Ext.ux.ColorField.css")
 		%>'/> 
       
       	  

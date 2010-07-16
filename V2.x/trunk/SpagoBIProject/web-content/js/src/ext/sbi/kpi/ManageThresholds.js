@@ -174,6 +174,9 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
               xtype: 'combo'
           };  
  	  //END list of detail fields
+ 	   
+ 	  var tempThrV = new Sbi.kpi.ManageThresholdValues({});
+ 	  var fb = new Ext.ux.ColorField({fieldLabel: 'Fallback Picker', value: '#FFFFFF', msgTarget: 'qtip', fallback: true});
 
  	   this.configurationObject.tabItems = [{
 		        title: LN('sbi.generic.details')
@@ -196,8 +199,16 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 		                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
 		             },
 		             items: [detailFieldId, detailFieldName, detailFieldCode, 
-		                     detailFieldDescr, detailFieldNodeType]
+		                     detailFieldDescr, detailFieldNodeType,fb]
 		    	}
+		    },{
+		        title: 'Values'
+		        , id : 'thr-values'
+		        , layout: 'fit'
+		        , autoScroll: true
+		        , items: [tempThrV]
+		        , itemId: 'thrValues'
+		        , scope: this
 		    }];
 	}
 	

@@ -4,6 +4,10 @@ Sbi.locale.ln = new Array();
 Sbi.locale.ln['Folders'] = 'Cartelle';
 Sbi.locale.ln['Documents']  = 'Documenti';
 
+Sbi.locale.ln['sbi.general.yes'] = 'Si';
+Sbi.locale.ln['sbi.general.No'] = 'No';
+
+
 //START Generic messages
 //Buttons
 Sbi.locale.ln['sbi.generic.add'] = 'Aggiungi';
@@ -368,3 +372,9 @@ Sbi.locale.ln['sbi.home.Info'] = 'Informazioni su SpagoBI';
 
 Sbi.locale.ln['sbi.lookup.ValueOfColumn'] ='Il valore della colonna';
 Sbi.locale.ln['sbi.lookup.asA'] = 'inteso come';
+
+//===================================================================
+//MESSAGE BOX BUTTONS
+//===================================================================
+Ext.Msg.buttonText.yes = 'Sì'; 
+Ext.Msg.buttonText.no = 'No';

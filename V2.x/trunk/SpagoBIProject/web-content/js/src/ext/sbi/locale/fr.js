@@ -1,6 +1,9 @@
 Ext.ns("Sbi.locale");
 Sbi.locale.ln = new Array();
 
+Sbi.locale.ln['sbi.general.yes'] = 'Oui';
+Sbi.locale.ln['sbi.general.No'] = 'Non';
+
 //START Generic messages
 //Buttons
 Sbi.locale.ln['sbi.generic.add'] = 'Ajouter';
@@ -236,3 +239,8 @@ Sbi.locale.ln['sbi.attributes.result'] = 'Modifications enregistr\u00E9s';
 Sbi.locale.ln['sbi.attributes.resultMsg'] = 'Sors et rentres dans SpagoBi';
 Sbi.locale.ln['sbi.roles.resultMsg'] = 'Modifications enregistr\u00E9s';
 
+//===================================================================
+//MESSAGE BOX BUTTONS
+//===================================================================
+Ext.Msg.buttonText.yes = 'Oui'; 
+Ext.Msg.buttonText.no = 'Non';

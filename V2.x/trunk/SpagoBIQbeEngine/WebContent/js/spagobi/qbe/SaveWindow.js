@@ -117,7 +117,7 @@ Ext.extend(Sbi.widgets.SaveWindow, Ext.Window, {
 		if(this.descriptionFieldVisible) {
 	    	this.descriptionField = new Ext.form.TextField({
 	    		name:'description',
-	    		allowBlank:false, 
+	    		allowBlank:true, 
 	    		inputType:'text',
 	    		maxLength:1000,
 	    		width:250,

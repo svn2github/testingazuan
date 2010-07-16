@@ -625,6 +625,7 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
     		var entityId = (nodeType == this.IN_LINE_CALCULATED_FIELD)? targetNode.parentNode.id: targetNode.id;
     		var f = {
     			alias: formState.alias
+    			, id: formState
     			, filedType: this.IN_LINE_CALCULATED_FIELD
     			, type: formState.type
     			, calculationDescriptor: formState
@@ -692,6 +693,7 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
     		var entityId = (nodeType == this.CALCULATED_FIELD)? targetNode.parentNode.id: targetNode.id;
     		var f = {
     			alias: formState.alias
+    			, id: formState
     			, type: formState.type
     			, filedType: this.CALCULATED_FIELD
     			, calculationDescriptor: formState
@@ -722,7 +724,14 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
         			type: this.CALCULATED_FIELD, 
         			longDescription: formState.expression,
         			formState: formState, 
-        			iconCls: 'calculation'
+        			iconCls: 'calculation',
+        			attributes:{
+	        			text: formState.alias,
+	        			leaf: true,
+	        			type: this.CALCULATED_FIELD, 
+	        			longDescription: formState.expression,
+	        			formState: formState, 
+	        			iconCls: 'calculation'}
         		});
 
     			
@@ -803,9 +812,11 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 	}
 	
 	, onContextMenu : function(node, e){
-        if(this.menu == null){ // create context menu on first right click
-        	this.initMenu();
-        }
+		if(this.menu != null){
+			this.menu.destroy();
+		}
+
+		this.initMenu();// create context menu on first right click
         
         if(this.ctxNode){
             this.ctxNode.ui.removeClass('x-node-ctx');

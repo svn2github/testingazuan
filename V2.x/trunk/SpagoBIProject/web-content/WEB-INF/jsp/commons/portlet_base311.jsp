@@ -172,7 +172,6 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 	
 	%>
 
-
 <!-- based on ecexution mode include initial html  -->   
 <% if (sbiMode.equalsIgnoreCase("WEB")){ %> 
 
@@ -194,6 +193,7 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-3.1.1/ext-all.js")%>"></script>  
 <%-- Ext js overrides --%>
 <%--<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/src/ext/sbi/overrides/overrides.js")%>"></script>--%>
+
 
 <script type="text/javascript">
     Ext.BLANK_IMAGE_URL = '<%=urlBuilder.getResourceLink(request, "/js/lib/ext-3.1.1/resources/images/default/s.gif")%>';
@@ -260,35 +260,6 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 	Sbi.user.functionalities = <%= buffer.toString() %>;
 </script>
 
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/locale/" + locale.getLanguage() + ".js")%>'></script>
-
-
-
-
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/locale/LocaleUtils.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/exception/ExceptionHandler.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/service/ServiceRegistry.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/lib/ext-3.1.1/ux/grid/Ext.grid.ButtonColumn.js")%>'></script> 
-<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-3.1.1/ux/grid/Ext.ux.ColorField.js")%>"></script> 
-<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-3.1.1/ux/grid/Ext.ux.grid.RowEditor.js")%>"></script> 
-
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/widgets/FilteringToolbar.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/widgets/PagingToolbar.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/widgets/ListDetailForm.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/widgets/LookupField.js")%>'></script>
-
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/profiling/ManageAttributes.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/profiling/ManageRoles.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/profiling/ManageUsers.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/alarm/ManageContacts.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/alarm/ManageAlarms.js")%>'></script>
-
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/kpi/ManageThresholdValues.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/kpi/ManageResources.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/kpi/ManageThresholds.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/kpi/ManageKpis.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/kpi/ManageModels.js")%>'></script>
-<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/kpi/ManageModelInstances.js")%>'></script>
 
 <%-- <SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>--%>
 
@@ -298,10 +269,6 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 	if (sbiMode.equalsIgnoreCase("WEB")) {
 %>
 
-<link rel='stylesheet' 
-		type='text/css' 
-		href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/execution/main.css",currTheme)
-		%>'/>
 <LINK rel='StyleSheet' 
       href='<%=urlBuilder.getResourceLinkByTheme(request, "css/spagobi_wa.css",currTheme)%>' 
       type='text/css' />
@@ -327,11 +294,6 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
       href='<%=urlBuilder.getResourceLinkByTheme(request, "css/menu.css",currTheme)%>' 
       type='text/css' />
       
-  <!-- 
-<LINK rel='StyleSheet' 
-	  href='<%=urlBuilder.getResourceLink(request, "css/extjs/ext-all.css")%>' 
-	  type='text/css' />
-	   --> 
 <LINK rel='StyleSheet' 
 	  href='<%=urlBuilder.getResourceLink(request, "js/lib/ext-3.1.1/resources/css/ext-all.css")%>' 
 	  type='text/css' />
@@ -359,12 +321,8 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 		href='<%=urlBuilder.getResourceLink(request, "js/lib/ext-3.1.1/ux/css/Ext.ux.ColorField.css")
 		%>'/> 
       
-      	  
- <!--   for web menu
-<LINK rel='StyleSheet' 
-	  href='<%=urlBuilder.getResourceLink(request, "css/extjs/extSpagoBI.css")%>' 
-	  type='text/css' />
-  -->
+<%@ include file="/WEB-INF/jsp/commons/importSbiJS311.jspf"%>
+
 <script>
 	document.onselectstart = function() { return true; }
 </script>

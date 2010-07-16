@@ -515,6 +515,13 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	        root 			 : this.rootNode
 	    });	
 		
+		// defines the tree sorting
+		new Ext.tree.TreeSorter(this.tree, {
+		    folderSort: true
+		    , dir: 'asc'
+		    , property: 'id'
+		});
+		
 		this.tree.type = this.type;
 		
 		/*

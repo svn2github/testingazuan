@@ -229,6 +229,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 
 	, deleteFilters : function() {
 		this.grid.store.removeAll();
+		this.activeEditingContext = null;
 		this.setWizardExpression(false);
 	}
 	// make another delete filters for confirm option because the previous one is called in other situations
@@ -264,7 +265,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	, getFilterAt: function(i) {
 		var record;
 		var filter;
-		
+	
 		record =  this.grid.store.getAt(i);
 		filter = Ext.apply({}, record.data);
 		filter.promptable = filter.promptable || false;
@@ -972,7 +973,6 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				}				
 			}
 		}
-		
 		
 		this.activeEditingContext = Ext.apply({}, e);
 		var col = this.activeEditingContext.column;

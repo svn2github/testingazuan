@@ -453,17 +453,18 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 	
 	,launchThrWindow : function() {
 		
-		config.nodeTypesCd = {};
-		config.drawSelectColumn = true;
+		var conf = {};
+		conf.nodeTypesCd = config.thrTypes;
+		conf.drawSelectColumn = true;
 		
-		var manageThresholds = new Sbi.kpi.ManageThresholds(config);
+		var manageThresholds = new Sbi.kpi.ManageThresholds(conf);
 	
 		this.thrWin = new Ext.Window({
 			title: LN('sbi.lookup.Select') ,   
             layout      : 'fit',
             width       : 800,
             height      : 350,
-            closeAction :'hide',
+            closeAction :'close',
             plain       : true,
             items       : [manageThresholds]
 		});
@@ -543,8 +544,7 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 			      			}
 			      			this.mainElementsStore.commitChanges();
 			      			if(itemId != null && itemId !==''){
-								var grid = Ext.getCmp('maingrid');
-					            grid.getSelectionModel().selectLastRow(true);
+								this.rowselModel.selectLastRow(true);
 				            }
 			      			
 			      			Ext.MessageBox.show({

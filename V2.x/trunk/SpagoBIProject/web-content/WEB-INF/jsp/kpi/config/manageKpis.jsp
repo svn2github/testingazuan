@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 java.util.List,
 				 org.json.JSONArray" %>
 <%
+    List thrTypesCd = (List) aSessionContainer.getAttribute("thrTypesList");
 	List kpiTypesCd = (List) aSessionContainer.getAttribute("kpiTypesList");
 	List measureTypesCd = (List) aSessionContainer.getAttribute("measureTypesList");
 	List metricScaleTypesCd = (List) aSessionContainer.getAttribute("metricScaleTypesList");
@@ -34,6 +35,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script type="text/javascript">
 
 	<%	
+	
+	JSONArray thrTypesArray = new JSONArray();
+	if(thrTypesCd != null){
+		for(int i=0; i< thrTypesCd.size(); i++){
+			Domain domain = (Domain)thrTypesCd.get(i);
+			JSONArray temp = new JSONArray();
+			temp.put(domain.getValueCd());
+			thrTypesArray.put(temp);
+		}
+	}	
+	String thrTypes = thrTypesArray.toString();
+	thrTypes = thrTypes.replaceAll("\"","'");
+	
 	JSONArray kpiTypesArray = new JSONArray();
 	if(kpiTypesCd != null){
 		for(int i=0; i< kpiTypesCd.size(); i++){
@@ -71,10 +85,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	metricScalesTypes = metricScalesTypes.replaceAll("\"","'");	
     %>
 
-    var config = {};
+    var config = {};  
 	config.kpiTypesCd = <%= kpiTypes%>;
 	config.measureTypesCd = <%= measureTypes%>;
 	config.metricScaleTypesCd = <%= metricScalesTypes%>;
+	config.thrTypes = <%= thrTypes%>;
 	
 	var url = {
     	host: '<%= request.getServerName()%>'

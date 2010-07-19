@@ -51,6 +51,9 @@ Sbi.kpi.ManageThresholds = function(config) {
 	
 	this.configurationObject = {};
 	
+	this.nodeTypesCd = config.nodeTypesCd;
+	this.drawSelectColumn = config.drawSelectColumn;
+	
 	this.configurationObject.manageListService = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'MANAGE_THRESHOLDS_ACTION'
 		, baseParams: paramsList
@@ -65,7 +68,8 @@ Sbi.kpi.ManageThresholds = function(config) {
 	});
 	
 	this.initConfigObject();
-	config.configurationObject = this.configurationObject;
+	
+	config.configurationObject = this.configurationObject;	
 	
 	var c = Ext.apply({}, config || {}, {});
 
@@ -77,6 +81,8 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 	configurationObject: null
 	, gridForm:null
 	, mainElementsStore:null
+	, nodeTypesCd: null
+	, drawSelectColumn: null
 
 	,initConfigObject:function(){
 	    this.configurationObject.fields = ['id'
@@ -99,7 +105,7 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 		                                         {header: LN('sbi.generic.code'), width: 150, sortable: true, dataIndex: 'code'}
 		                                        ];
 		
-		if(config.drawSelectColumn){
+		if(this.drawSelectColumn){
 			this.configurationObject.drawSelectColumn = true;
 		}
 
@@ -114,7 +120,7 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 		//Store of the combobox
  	    this.typesStore = new Ext.data.SimpleStore({
  	        fields: ['typeCd'],
- 	        data: config.nodeTypesCd,
+ 	        data: this.nodeTypesCd,
  	        autoLoad: false
  	    });
  	    
@@ -239,20 +245,18 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 			record.set('name',values['name']);
 			record.set('code',values['code']);
 			record.set('description',values['description']);
-			record.set('typeCd',values['typeCd']);			
-			
-			newRec = this.fillRecord(record);			
+			record.set('typeCd',values['typeCd']);						
 		}
 
         var params = {
-        	name : newRec.data.name,
-        	code : newRec.data.code,
-        	description : newRec.data.description,
-        	typeCd : newRec.data.typeCd	
+        	name : values['name'],
+        	code : values['code'],
+        	description : values['description'],
+        	typeCd : values['typeCd']
         };
         
         if(idRec){
-        	params.id = newRec.data.id;
+        	params.id = idRec;
         }
         
         Ext.Ajax.request({
@@ -273,14 +277,13 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 			                   });
 			      		}else{
 			      			var itemId = content.id;
-			      			if(itemId != null && itemId !==''){
+			      			if(newRec != null && newRec != undefined && itemId != null && itemId !==''){
 			      				newRec.set('id', itemId);
 			      				this.mainElementsStore.add(newRec);  
 			      			}
 			      			this.mainElementsStore.commitChanges();
 			      			if(itemId != null && itemId !==''){
-								var grid = Ext.getCmp('maingrid');
-					            grid.getSelectionModel().selectLastRow(true);
+					            this.rowselModel.selectLastRow(true);
 				            }
 			      			
 			      			Ext.MessageBox.show({

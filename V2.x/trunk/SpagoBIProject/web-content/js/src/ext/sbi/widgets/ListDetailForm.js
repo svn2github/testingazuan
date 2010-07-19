@@ -167,17 +167,17 @@ Sbi.widgets.ListDetailForm = function(config) {
 		, url: this.services['manageListService']		
 	});
 
-	this.mainElementsStore.load();
-
 	this.initWidget();
 	   
-	this.mainElementsStore.on('load', function(){
-		 var grid = Ext.getCmp('maingrid');
-		 grid.getSelectionModel().selectRow(0);
-		 }, this, {
-		 single: true
-		 }
-	);  		
+	this.mainElementsStore.on('load', 
+			function(){
+		 		this.rowselModel.selectRow(0);
+		 	}, 
+		 	this);  	
+	
+	this.mainElementsStore.load();
+	
+	this.addEvents('select');	
    	
 	var c = Ext.apply({}, config, this.gridForm);
    	
@@ -196,17 +196,22 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
 	, emptyRecord : null
 	, tabs: null
 	, tabItems: null
+	, mainGrid: null
+	, gridForm: null
+	, rowselModel:null
+	
 	
 	,initWidget: function(){
 
         this.selectColumn = new Ext.grid.ButtonColumn({
 		       header:  ' '
 		       ,iconCls: 'icon-execute'
+		       ,scope: this
 		       ,clickHandler: function(e, t) {
-		          var index = Ext.getCmp("maingrid").getView().findRowIndex(t);	          
-		          var selectedRecord = Ext.getCmp("maingrid").store.getAt(index);
+		          var index = this.grid.getView().findRowIndex(t);	          
+		          var selectedRecord = this.grid.store.getAt(index);
 		          var itemId = selectedRecord.get('id');
-		          Ext.getCmp("maingrid").fireEvent('select', itemId, index);
+		          this.grid.fireEvent('select', itemId, index);
 		       }
 		       ,width: 25
 		       ,renderer : function(v, p, record){
@@ -217,11 +222,13 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
         this.deleteColumn = new Ext.grid.ButtonColumn({
  	       header:  ' '
  	       ,iconCls: 'icon-remove'
- 	       ,clickHandler: function(e, t) {      		
- 	          var index = Ext.getCmp("maingrid").getView().findRowIndex(t);	          
- 	          var selectedRecord = Ext.getCmp("maingrid").store.getAt(index);
+ 	       ,scope: this
+ 	       ,clickHandler: function(e, t) {   
+        	//this.grid is called since this is the only name that can be used. Look at ButtonColumn.js
+ 	          var index = this.grid.getView().findRowIndex(t);	
+ 	          var selectedRecord =  this.grid.store.getAt(index);
  	          var itemId = selectedRecord.get('id');
- 	         Ext.getCmp("maingrid").fireEvent('delete', itemId, index);
+ 	          this.grid.fireEvent('delete', itemId, index);
  	       }
  	       ,width: 25
  	       ,renderer : function(v, p, record){
@@ -243,7 +250,6 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
  	            iconCls: 'icon-save',
  	            handler: this.save,
  	            width: 30,
- 	            id: 'save-btn',
  	            scope: this
  	            })
  	    	]
@@ -251,7 +257,6 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
 
  	   this.tabs = new Ext.TabPanel({
            enableTabScroll : true
-           , id: 'tab-panel'
            , activeTab : 0
            , columnWidth: 0.6
            , autoScroll : true
@@ -259,6 +264,7 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
            , height: 490
            , itemId: 'tabs' 
            , tbar: this.tbSave
+           , scope: this
 		   , items: this.tabItems
 		});
 
@@ -280,6 +286,7 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
 	        store: this.mainElementsStore,
 	        displayInfo: true,
 	        displayMsg: '', 
+	        scope: this,
 	        emptyMsg: "No topics to display"	        
 	    });
  	   
@@ -287,29 +294,29 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
  	   var pluginsToAdd;
  	  
  	   if(this.drawSelectColumn){
- 		  pluginsToAdd = [ this.deleteColumn, this.selectColumn]; 
+ 		  pluginsToAdd = [this.deleteColumn, this.selectColumn]; 
        }else{
     	  pluginsToAdd = this.deleteColumn; 
        }
  	   
+ 	  this.rowselModel = new Ext.grid.RowSelectionModel({
+           singleSelect: true
+       });
+ 	  
+ 	  this.rowselModel.addListener('rowselect',function(sm, row, rec) { 
+ 		 this.gridForm.getForm().loadRecord(rec);     
+      }, this);
+ 	   
  	   this.mainGrid = {
-        	  	      id: 'maingrid',
 	                  xtype: 'grid',
 	                  ds: this.mainElementsStore,   	                  
-	                  cm: this.colModel,
+	                  colModel: this.colModel,
 	                  plugins: pluginsToAdd ,
-	                  sm: new Ext.grid.RowSelectionModel({
-	                      singleSelect: true,
-	                      scope:this,   	                   
-	                      listeners: {
-	                          rowselect: function(sm, row, rec) { 
-	                              Ext.getCmp('items-form').getForm().loadRecord(rec);      	
-	                          }
-	                      }
-	                  }),
+	                  selModel: this.rowselModel,
 	                  autoExpandColumn: 'name',
 	                  height: 490,
 	                  width: 450,
+	                  scope: this,
 	                  title: this.listTitle,
 		              bbar: pagingBar,
 	                  tbar: this.tb,
@@ -330,7 +337,6 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
    	   *    Here is where we create the Form
    	   */
    	   this.gridForm = new Ext.FormPanel({
-   	          id: 'items-form',
    	          frame: true,
    	          autoScroll: true,
    	          labelAlign: 'left',
@@ -340,9 +346,11 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
    	          width: 1000,
    	          height: 550,
    	          layout: 'column',
+   	          scope:this,
    	          trackResetOnLoad: true,
    	          items: [
    	              {
+   	              scope:this,
    	              columnWidth: 0.4,
    	              layout: 'fit',
    	              items: this.mainGrid
@@ -381,14 +389,11 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
 				            method: 'GET',
 				            success: function(response, options) {
 								if (response !== undefined) {
-									var sm = Ext.getCmp('maingrid').getSelectionModel();
-									var deleteRow = sm.getSelected();
+									var deleteRow = this.rowselModel.getSelected();
 									this.mainElementsStore.remove(deleteRow);
 									this.mainElementsStore.commitChanges();
 									if(this.mainElementsStore.getCount()>0){
-										var grid = Ext.getCmp('maingrid');
-										grid.getSelectionModel().selectRow(0);
-										grid.fireEvent('rowclick', grid, 0);
+										this.rowselModel.selectRow(0);
 									}else{
 										this.addNewItem();
 									}

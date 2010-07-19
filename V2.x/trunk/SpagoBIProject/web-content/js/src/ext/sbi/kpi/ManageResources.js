@@ -250,22 +250,20 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
 			record.set('description',values['description']);
 			record.set('tablename',values['tablename']);
 			record.set('columnname',values['columnname']);
-			record.set('typeCd',values['typeCd']);			
-			
-			newRec = this.fillRecord(record);			
+			record.set('typeCd',values['typeCd']);		
 		}
 
         var params = {
-        	name : newRec.data.name,
-        	code : newRec.data.code,
-        	description : newRec.data.description,
-        	tablename : newRec.data.tablename,
-        	columnname : newRec.data.columnname,
-        	typeCd : newRec.data.typeCd	
+        	name :  values['name'],
+        	code : values['code'],
+        	description : values['description'],
+        	tablename : values['tablename'],
+        	columnname : values['columnname'],
+        	typeCd : values['typeCd']	
         };
         
         if(idRec){
-        	params.id = newRec.data.id;
+        	params.id = idRec;
         }
         
         Ext.Ajax.request({
@@ -285,15 +283,15 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
 			                        buttons: Ext.MessageBox.OK
 			                   });
 			      		}else{
-			      			var itemId = content.id;
-			      			if(itemId != null && itemId !==''){
+			      			var itemId = content.id;			      			
+			      			
+			      			if(newRec != null && newRec != undefined && itemId != null && itemId !==''){
 			      				newRec.set('id', itemId);
 			      				this.mainElementsStore.add(newRec);  
 			      			}
 			      			this.mainElementsStore.commitChanges();
 			      			if(itemId != null && itemId !==''){
-								var grid = Ext.getCmp('maingrid');
-					            grid.getSelectionModel().selectLastRow(true);
+								this.rowselModel.selectLastRow(true);
 				            }
 			      			
 			      			Ext.MessageBox.show({

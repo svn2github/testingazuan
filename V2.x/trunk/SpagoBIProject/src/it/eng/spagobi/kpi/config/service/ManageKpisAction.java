@@ -67,6 +67,7 @@ public class ManageKpisAction extends AbstractSpagoBIAction {
 	private final String KPI_DOMAIN_TYPE = "KPI_TYPE";
 	private final String METRIC_SCALE_DOMAIN_TYPE = "METRIC_SCALE_TYPE";
 	private final String MEASURE_DOMAIN_TYPE = "MEASURE_TYPE";
+	private final String THRESHOLD_DOMAIN_TYPE = "THRESHOLD_TYPE";
 	
 	// RES detail
 	private final String ID = "id";
@@ -265,6 +266,8 @@ public class ManageKpisAction extends AbstractSpagoBIAction {
 				getSessionContainer().setAttribute("measureTypesList", measureTypesList);
 				List metricScaleTypesList = DAOFactory.getDomainDAO().loadListDomainsByType(METRIC_SCALE_DOMAIN_TYPE);
 				getSessionContainer().setAttribute("metricScaleTypesList", metricScaleTypesList);
+				List thrTypesList = DAOFactory.getDomainDAO().loadListDomainsByType(THRESHOLD_DOMAIN_TYPE);
+				getSessionContainer().setAttribute("thrTypesList", thrTypesList);
 				
 			} catch (EMFUserError e) {
 				logger.error(e.getMessage(), e);

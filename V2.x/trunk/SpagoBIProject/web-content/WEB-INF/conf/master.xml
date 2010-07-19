@@ -252,6 +252,7 @@
     <CONFIGURATOR path="/WEB-INF/conf/kpi/presentation.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/kpi/publishers.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/kpi/business_map.xml" />
+    <CONFIGURATOR path="/WEB-INF/conf/kpi/validation.xml" />
     
     <!-- kpi config -->     
     <CONFIGURATOR path="/WEB-INF/conf/kpi/config/modules.xml" />

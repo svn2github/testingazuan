@@ -1,8 +1,86 @@
 <canvas debug="false" width="100%" height="100%"> 
 
-  <dataset type="http" name="data" src=""/>   
+  <script src="json.js"/> 
   
   <script>
+  <![CDATA[ 
+  	
+  	// -- utils functions -------------------------------------------------------------
+	
+	var jsonParserOptions = {
+		errorHandler: function(msg, index) {
+				Debug.write('Error[' + index + ']: ' + msg);
+		}
+	}
+		
+	var apply = function(o, c, defaults){
+	    if(defaults){
+	        // no "this" reference for friendly out of scope calls
+	        Sbi.sdk.apply(o, defaults);
+	    }
+	    if(o && c && typeof(c) == 'object'){
+	        for(var p in c){
+	            o[p] = c[p];
+	        }
+	    }
+	    return o;
+	};
+	
+	var decode = function(jsonStr) {
+		var json, c;
+			
+		Debug.write("decode IN: " + jsonStr);
+		//var regExp = new RegExp('[|]','g');
+		//global.fields = global.fields.replace(regExp, '"');
+			
+		json = '';
+		for(var i = 0, l = jsonStr.length; i < l; i++) {
+			c = jsonStr.charAt(i);
+			if(c == '|') c = '"';
+			json += c;
+		}
+			
+		Debug.write("decode OUT: " + json);
+		
+		json = JSON.parse(json, jsonParserOptions);
+		
+		return json;
+	}
+	
+	// -- core ----------------------------------------------------------------------
+		
+  	global.title = global.title || 'Speedometer';
+	Debug.write("title: " + title);
+		
+	// -- style ----------------------------------------------------------------------
+		
+		
+	// Style to use in rendering text fields appearing inside the view; 
+	// valid values are plain, bold , italic, or bolditalic.
+	global.fontDefault = {name: "serif", color: "black", size: 8, style: "plain"};
+		
+	global.stylesDefault =	{
+		title: { text: title, visible: true,  align: "center", valign: "top", font: apply(global.fontDefault, {size: 16, style: "bold"}) }
+	  , header: { visible: false,  align: "center", font: apply(global.fontDefault, {"name":"serif", size: 15, style: "bold"}) }	
+	  , headerValue: { visible: false,  align: "center", font:  {name: "serif", color: "black", size: 10, style: "plain"}}
+		
+	  , padding: {top: 28, right: 8, bottom: 3, left: 8}
+	  , plot: {
+			//width: 600
+			//, height: 600
+			// widthScale: .5
+			//, heightScale: .5
+			//, valign: 'bottom'
+    		//, halign: 'center'
+		}
+	}
+		
+	global.styles = global.styles || '{}';
+	global.styles = decode(global.styles);	
+	global.styles = apply(stylesDefault, global.styles);
+  
+    
+    // -- deprectade ---------------------------------------------------------------
 	var appHeight = typeof(global.paramHeight)!="undefined" ? parseInt(global.paramHeight) 	: 300;
 	var appWidth = typeof(global.paramWidth)!="undefined" ? parseInt(global.paramWidth) 	: 300;		
     var appMargin = typeof(global.windowMargin)!="undefined" ? global.windowMargin 			: 10;
@@ -10,7 +88,7 @@
     var dataurlParam = typeof(global.dataurl)!="undefined" ? global.dataurl : "http://localhost:8080/openlaszlo/OpenLaszloEngineDash"; 
 	var xLabelAttributeName = typeof(global.xLabel)!="undefined" ? global.xLabel : "xLabel";	
 	var valueAttributeName = typeof(global.VALUE)!="undefined" ? global.VALUE :  "value";
-	var min = typeof(global.minValue)!="undefined" ? parseInt(global.minValue) : 100;	
+	var min = typeof(global.minValue)!="undefined" ? parseInt(global.minValue) : 0;	
     var low = typeof(global.lowValue)!="undefined" ? parseInt(global.lowValue) : 295;
     var high = typeof(global.highValue)!="undefined" ? parseInt(global.highValue) : 340;
     var max = typeof(global.maxValue)!="undefined" ? parseInt(global.maxValue) : 400;
@@ -25,8 +103,6 @@
 	var withMainText=typeof(global.showMainText)!="undefined" ? global.showMainText : true;
 	var withSecText=typeof(global.showSecText)!="undefined" ? global.showSecText : true; 
 
-	
-	<!--layout -->
 	var fontSize1=1/15;
 	var fontSize2=1/25;
 	var textPositionRate1 = 8/10;
@@ -46,48 +122,116 @@
 	var text1Color = 0x0000ff;	
 	var text2Color = 0x0000ff;
 
-
-	<!--Set dataset-->
-	var dataset = canvas.datasets.data;
-    dataset.setQueryType("POST");
-    dataset.setSrc(dataurlParam); 
+	
     var actualang = -1;  
 
 	var clickID = 0;
 	
 	flash.external.ExternalInterface.addCallback("setValue", null, setValue);
 	function setValue(v) {
-		v = v || 300;
+
+		if(v === undefined) v = 0;
+		
+		
   		var rotation = (v-min)*180/(max-min);
         if(actualang==-1) {
         	actualang = rotation;
-            canvas.display.rotDisplay.changeang(rotation);
+            canvas.display.rotDisplay.changeang(rotation, v);
         } else {
-            canvas.display.rotDisplay.changeang(rotation);
+            canvas.display.rotDisplay.changeang(rotation, v);
         }
+        if(styles.header.visible) {			
+	        //sets the value of the infocontainer
+	        canvas.display.infoContainer.headerValue.setAttribute("text",v);
+		}
   	};
 
-
+	 ]]>
   </script>  
 
   <drawview name="display">
+	
+	<text name="title"></text>
+	<drawview name="infoContainer" strokeStyle="0xAAAAAA" lineWidth="1">
+		<text name="header" fontsize="12" multiline="true"></text>
+		<text name="headerValue" fontsize="18"></text>
+	</drawview>
 
+	
   	<method name="showDisplay" args="min,low,high,max">
+  	<![CDATA[ 
+  	
+  		styles.plot = styles.plot || {};
+  		var chartHeight = styles.plot.height || canvas.height;
+  		var chartWidth = styles.plot.width || canvas.width;
+  			  			
+  		chartHeight = chartHeight > canvas.height? canvas.height: chartHeight;
+  		chartWidth = chartWidth > canvas.width? canvas.width: chartWidth;
+  			
+  		if(styles.plot.heightScale && styles.plot.heightScale < 1) {
+  			chartHeight = chartHeight * styles.plot.heightScale;
+  		}
+  			
+  		if(styles.plot.widthScale && styles.plot.widthScale < 1) {
+  			chartWidth = chartWidth * styles.plot.widthScale;
+  		}
+  		
+  		var chartX;
+  		var chartY;
+  		
+  		if(styles.plot.halign === 'left') {
+  			chartX = 0;
+  		} else if(styles.plot.halign === 'right') {
+  			chartX = (canvas.width - chartWidth);
+  		} else {
+  			chartX = (canvas.width - chartWidth)/2;
+  		}
+  			
+  		if(styles.plot.valign === 'top') {
+  			chartY = 0;
+  		} else if(styles.plot.valign === 'bottom') {
+  			chartY = (canvas.height - chartHeight);
+  		} else {
+  			chartY = (canvas.height - chartHeight)/2;
+  		}
+  			
+  		this.setAttribute('x', chartX);
+		this.setAttribute('y', chartY);
+		this.setAttribute('width', chartWidth);
+		this.setAttribute('height', chartHeight);
+  	
+  		// -- render title --------------------------------------------------------
+			
+		if(styles.title.visible) {			
+			this.title.setAttribute('x', 0);
+			this.title.setAttribute('y', 0);
+			this.title.setAttribute('width', '100%');
+			this.title.setAttribute('height', styles.title.font.size + 6);
+				
+			this.title.setAttribute('font', styles.title.font.name);
+			this.title.setAttribute('fontsize', styles.title.font.size);
+			this.title.setAttribute('fontstyle', styles.title.font.style);
+			this.title.setAttribute('fgcolor', styles.title.font.color);
+			this.title.setAttribute('align', styles.title.align);
+			this.title.setAttribute('valign', styles.title.valign);
+			this.title.setAttribute('text', styles.title.text);
+		}
 		
 		var radius = 0;
 		var centerX = 0;
 		var centerY = 0;
 		var w, h;
 	
-		Debug.write("appWidth: " + appWidth);
-		Debug.write("appHeight: " + appHeight);
+		Debug.write("chartWidth: " + chartWidth);
+		Debug.write("chartHeight: " + chartHeight);
 		
 		// calculate radious	
-	   	var radiusByWidth  = (appWidth  - (2*appMargin) ) / 2;
+	   	var radiusByWidth  = (chartWidth  - (2*appMargin) ) / 2;
+	   	
 	   	// è la percentuale di spazio in altezza riservata all'ombra. tutto il resto può essere usata dal raggio
-	    var radiusByHeight = (appHeight - (2*appMargin) ) / (1+rectangleHeightRate);
+	    var radiusByHeight = (chartHeight - (2*appMargin) -20 ) / (1+rectangleHeightRate);
 	
-	    if (radiusByWidth &lt;  radiusByHeight) {
+	    if (radiusByWidth <  radiusByHeight) {
 	  		radius = radiusByWidth;					     
 	    } else {
 			radius = radiusByHeight;			
@@ -97,26 +241,25 @@
 		Debug.write("radiusByHeight: " + radiusByHeight);
 		Debug.write("radius: " + radius);
 
-		w = appWidth;
-		// -radius -> perche il rotate è un semicerchio; + 2*appMargin -> perchè ho l'ombra
-		//h = appHeight - radius + (2*appMargin); 
-		h = appHeight;
-
-		this.setWidth( w );
-		this.setHeight( h ); 
+		//w = chartWidth;
+		//h = chartHeight;
+ 
+		this.setAttribute('width',chartWidth);
+		this.setAttribute('height',chartHeight);
 		
 		Debug.write("width: " + w);
 		Debug.write("height: " + h);
 		
-		//centerY = appHeight-radius+appMargin;
-		centerY = radius+appMargin;
-		centerX = (appWidth-2*appMargin)/2+appMargin;
+		//centerY = chartHeight-radius+appMargin;
+		centerY = radius+appMargin + 20;
+		centerX = (chartWidth-2*appMargin)/2+appMargin;
 		
 		Debug.write("x: " + centerX);
 		Debug.write("y: " + centerY);
+
+		this.rotDisplay.setAttribute("x", centerX);
+		this.rotDisplay.setAttribute("y", centerY);
 		
-		this.rotDisplay.setX(centerX);
-		this.rotDisplay.setY(centerY);
 		this.rotDisplay.ago.setAgo(-radius*agoWidthRate, radius*agoHeightRate, agoColor);
 		 
 		var deltaDiv = (max-min)/numDiv;
@@ -157,9 +300,53 @@
 
 		
 		this.rotDisplay.sphere.setSphere(centerX,centerY,radius*innerSphereRate);
-
-		this.shadow.showShadow(centerX,centerY,radius);
 		
+		// -- render header --------------------------------------------------------
+			
+		// info containers ....
+		if(styles.header.visible) {
+
+			var yOffset	= parseFloat(this.height) - 10;		
+  			yOffset -= parseFloat(styles.header.font.size);		
+  			yOffset -= parseFloat(styles.headerValue.font.size);
+			yOffset -= parseFloat(styles.padding.bottom);
+  			Debug.write("yOffset: " + yOffset);
+  			
+			var containerHeight = 10 +  parseFloat(styles.header.font.size) + parseFloat(styles.headerValue.font.size);
+	 		this.infoContainer.setAttribute('x', 10);
+			this.infoContainer.setAttribute('y', yOffset);
+			this.infoContainer.setAttribute('height', containerHeight);
+			this.infoContainer.setAttribute('width', this.width - 20);
+			
+			Debug.write("this.infoContainer.x: " + this.infoContainer.x);
+			Debug.write("this.infoContainer.y: " + this.infoContainer.y);
+				
+			this.infoContainer.rect(0, 0, this.infoContainer.width, this.infoContainer.height);	
+			this.infoContainer.stroke("this.infoContainer.height: " + containerHeight);
+					
+			this.infoContainer.header.setAttribute('y', 0);		
+			this.infoContainer.header.setAttribute('font', styles.header.font.name);
+			this.infoContainer.header.setAttribute('fontsize', styles.header.font.size);
+			this.infoContainer.header.setAttribute('fontstyle', styles.header.font.style);
+			this.infoContainer.header.setAttribute('fgcolor', styles.header.font.color);
+			//this.infoContainer.header.setAttribute('align', styles.header.align);
+			this.infoContainer.header.setAttribute('align', 'center');
+			this.infoContainer.header.setAttribute('text', styles.header.text);
+			this.infoContainer.header.setAttribute('multiline', true);
+			
+			this.infoContainer.headerValue.setAttribute('y', this.infoContainer.header.fontsize + 3);
+			this.infoContainer.headerValue.setAttribute('font', styles.headerValue.font.name);
+			this.infoContainer.headerValue.setAttribute('fontsize', styles.headerValue.font.size);
+			this.infoContainer.headerValue.setAttribute('fontstyle', styles.headerValue.font.style);
+			this.infoContainer.headerValue.setAttribute('fgcolor', styles.headerValue.font.color);
+			//this.infoContainer.headerValue.setAttribute('align', styles.headerValue.align);
+			this.infoContainer.headerValue.setAttribute('align', 'center');				
+		
+		}else{
+			this.shadow.showShadow(centerX,centerY,radius);
+		}
+		
+	 ]]>
     </method>
 
 	<method name="setArc" args="centerX,centerY,radius,angStart,angStop,color"> 
@@ -230,7 +417,7 @@
 		        this.fillStyle = g;
 		        this.fill();
 			
-        	        this.strokeStyle = 0xffffff;
+        	    this.strokeStyle = 0xffffff;
 		        this.lineWidth = 5;
 		        this.stroke();
 	
@@ -239,9 +426,9 @@
 		        this.stroke();
 		</method>
 
-		<method event="onclick">
+		<handler name="onclick">
 			this.setVisible(false);
-		</method>
+		</handler>
 	</drawview>	        
 
 
@@ -266,10 +453,10 @@
 			this.lineTo(stopX,stopY);
 			this.moveTo(startX,startY);
 			
-   		    	this.strokeStyle = 0x000000;
-		        this.lineWidth = size;
+   	    	this.strokeStyle = 0x000000;
+	        this.lineWidth = size;
 			this.globalAlpha = 1; 
-		        this.stroke();
+		    this.stroke();
 
 	   	ang = ang+Math.PI/numDiv;
 
@@ -301,15 +488,15 @@
 
 			var txt = new LzText(this);
 			txt.setAttribute("fontsize",fontSize);
-			txt.setColor(text2Color);
+			txt.setAttribute("color", text2Color);
 			txt.setAttribute("immediateparent",this);
-			txt.setText(label);
-			
-			txt.setWidth(fontSize*3);
-			txt.setHeight(fontSize*3);
+			txt.setAttribute("text", label);
 
-			txt.setX(textX-fontSize);					
-			txt.setY(textY-fontSize);
+			txt.setAttribute("width",fontSize*3);
+			txt.setAttribute("height", fontSize*3); 
+
+			txt.setAttribute("x", textX-fontSize);
+			txt.setAttribute("y", textY-fontSize);
 
 	   	ang = ang+Math.PI/numDiv;
 		label=label+deltaDiv;
@@ -371,15 +558,15 @@
 
 			var txt = new LzText(this);
 			txt.setAttribute("fontsize",fontSize);
-			txt.setColor(text2Color);
+			txt.setAttribute("color",text2Color);
 			txt.setAttribute("immediateparent",this);
-			txt.setText(label);
+			txt.setAttribute("text",label);
 			
-			txt.setWidth(fontSize*3);
-			txt.setHeight(fontSize*3);
+			txt.setAttribute("width",fontSize*3);
+			txt.setAttribute("height",fontSize*3);
 
-			txt.setX(textX-fontSize);					
-			txt.setY(textY-fontSize);
+			txt.setAttribute("x",textX-fontSize);
+			txt.setAttribute("y",textY-fontSize);
 	
 		ang = ang+Math.PI/numDiv;
 		label=label+deltaDiv;
@@ -397,12 +584,12 @@
     		
 	      <animator name="rot" attribute="rotation" duration="3000" start="false" />
   	        
-	      <method name="changeang" args="ang" >
-
+	      <method name="changeang" args="ang, val" >
                   this.rot.setTo(ang);
                   this.rot.doStart();  
-
-              </method>
+                  
+                  //canvas.display.infoContainer.headerValue.setAttribute("text",val);
+          </method>
 
 <!-- **CANVAS.DISPLAY.rotDisplay.AGO***********************************************************************-->	
 		<drawview name="ago" >	
@@ -471,54 +658,13 @@
 
 	</view> <!-- **CANVAS.DISPLAY.rotDisplay*************************************************************************-->
 	
+	<handler name="oninit">
+	        canvas.display.showDisplay(min,low,high,max);
+	        //setValue(0);
+	</handler>
 
 
-    <datapointer id="rotationresponse" xpath="data:/rows/row[0]">
-      	<method event="ondata"> 
-              var label = rotationresponse.getNodeAttribute(xLabelAttributeName);
-              var rotation = rotationresponse.getNodeAttribute(valueAttributeName);
-              if (rotation == undefined || rotation == "undefined")
-              	rotation =  rotationresponse.getNodeAttribute(valueAttributeName.toUpperCase());
-              	
-              	
-              rotation = rotation*180/(max-min);
-              if(actualang==-1) {
-                  actualang = rotation;
-                  canvas.display.rotDisplay.changeang(rotation);
-               } else {
-                  canvas.display.rotDisplay.changeang(rotation);
-               }
-      	</method>
-    </datapointer>
-
-    <method name="refresh" >
-       	dataset.doRequest();
-       	canvas.display.timer();
-    </method>
-
-    <method name="timer">
-        this.fadeDelegate = new LzDelegate( this, "refresh" );
-   	LzTimer.addTimer( this.fadeDelegate, refRate ); 	
-    </method>  
-
-
-
-
-
-
-    <method name="start" event="oninit">
-          canvas.display.showDisplay(min,low,high,max);
-          dataset.doRequest();
-          canvas.display.timer();
-    </method>
-
-
-
-
-
-
-
-    <method event="onclick">
+    <handler name="onclick">
 	Debug.write("clickID"+clickID);
 		<![CDATA[ 
 	      switch(clickID ++){
@@ -551,7 +697,7 @@
 			clickID =1;
 		}
 	       ]]>
-     </method>
+     </handler>
 
      
  </drawview> <!-- **CANVAS.DISPLAY**************************************************************-->

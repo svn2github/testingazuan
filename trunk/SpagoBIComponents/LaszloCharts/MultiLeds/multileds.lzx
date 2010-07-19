@@ -10,7 +10,7 @@
 			errorHandler: function(msg, index) {
 					Debug.write('Error[' + index + ']: ' + msg);
 			}
-		}
+		};
 		
 		var apply = function(o, c, defaults){
 		    if(defaults){
@@ -23,6 +23,27 @@
 		        }
 		    }
 		    return o;
+		};
+		
+		var decode = function(jsonStr) {
+			var json, c;
+			
+			Debug.write("decode IN: " + jsonStr);
+			//var regExp = new RegExp('[|]','g');
+			//global.fields = global.fields.replace(regExp, '"');
+			
+			json = '';
+			for(var i = 0, l = jsonStr.length; i < l; i++) {
+				c = jsonStr.charAt(i);
+				if(c == '|') c = '"';
+				json += c;
+			}
+			
+			Debug.write("decode OUT: " + json);
+			
+			json = JSON.parse(json, jsonParserOptions);
+			
+			return json;
 		};
 		
 		// -- core ----------------------------------------------------------------------
@@ -40,14 +61,15 @@
 		Debug.write("pivoted: " + pivoted);
 		
 		global.fieldsDefault =	[
-			{header: 'Valore 1',name:'value1', rangeMaxValue: 100, secondIntervalUb: 50, firstIntervalUb: 10, rangeMinValue: 0}, 
-			{header: 'Valore 2',name:'value2', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}, 
-			{header: 'Valore 3',name:'value3', rangeMaxValue: 100, secondIntervalUb: 90, firstIntervalUb: 50, rangeMinValue: 0}
+			{header: 'Valore 1',name:'value1', rangeMaxValue: 100, secondIntervalUb: 50, firstIntervalUb: 10, rangeMinValue: 0}
+			//{header: 'Valore 2',name:'value2', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}, 
+			//{header: 'Valore 3',name:'value3', rangeMaxValue: 100, secondIntervalUb: 90, firstIntervalUb: 50, rangeMinValue: 0}
 		];
 		
 		
 		global.fields = global.fields || '{}';
-		global.fields = JSON.parse(global.fields, jsonParserOptions);
+		//global.fields = JSON.parse(global.fields, jsonParserOptions);
+		global.fields = decode(global.fields);
 		global.fields = apply(fieldsDefault, global.fields);
 		
 		
@@ -61,7 +83,7 @@
 		
 			title: { text: title, visible: true,  align: "center", valign: "top", font: apply(global.fontDefault, {size: 18, style: "bold"}) }
 			
-			, border: {color: "black", size: "0"}
+			, border: {color: "black", size: 1}
 			
 			// A numeric value that specifies the spacing around 
 			// the edges of the chart's plot area
@@ -72,12 +94,15 @@
 			, gauge: {
 				padding: {right: 2, left: 2},
 				colors: {firstInterval: "green", secondInterval: "orange", thirdInterval: "red"},
-				led: {height: 10, gap: 1}
+				led: {height: 10, gap: 1},
+				title: { visible: false,  align: "center", font: {name: "serif", color: "black", size: 12, style: "bold"}},
+				value: { visible: false,  align: "center", font:  {name: "serif", color: "black", size: 10, style: "plain"}}
 			} 
 		}
 		
 		global.styles = global.styles || '{}';
-		global.styles = JSON.parse(global.styles, jsonParserOptions);
+		//global.styles = JSON.parse(global.styles, jsonParserOptions);
+		global.styles = decode(global.styles);
 		global.styles = apply(stylesDefault, global.styles);
 		
 			
@@ -119,7 +144,8 @@
 			
 			
 			// -- render title --------------------------------------------------------
-						
+				
+			Debug.write("styles.title.visible: " + styles.title.visible);		
 			if(styles.title.visible) {			
 				this.title.setAttribute('x', 0);
 				this.title.setAttribute('y', 3);
@@ -152,6 +178,7 @@
 			if(pivoted == true) {
 				ledGuages = {};
 				var gaugeNo = fields.length;
+				Debug.write("gaugeNo: " + gaugeNo);
 				var gaugeWidth = (this.plot.width / gaugeNo) - (styles.gauge.padding.left + styles.gauge.padding.right);
 				
 				for(var i = 0, offset = 0; i < gaugeNo; i++) {
@@ -221,7 +248,7 @@
   	
   		<drawview name="ledContainer" strokeStyle="0xAAAAAA" lineWidth="1"/>
   		<drawview name="infoContainer" strokeStyle="0xAAAAAA" lineWidth="1">
-  			<text name="title" fontsize="12">Led Gauge</text>
+  			<text name="title" fontsize="12" multiline="true">Led Gauge</text>
   			<text name="valueLabel" fontsize="18">???</text>
   		</drawview>
   		
@@ -257,11 +284,20 @@
   			
   			this.infoContainer.title.setAttribute('y', 0);
 			this.infoContainer.title.setAttribute('align', 'center');
-			this.infoContainer.title.setAttribute('text', gaugeTitle);
+			this.infoContainer.title.setAttribute('text', gaugeTitle);			
+			this.infoContainer.title.setAttribute('font', styles.gauge.title.font.name);
+			this.infoContainer.title.setAttribute('fontsize', styles.gauge.title.font.size);
+			this.infoContainer.title.setAttribute('fontstyle', styles.gauge.title.font.style);
+			this.infoContainer.title.setAttribute('fgcolor', styles.gauge.title.font.color);
+			this.infoContainer.title.setAttribute('multiline', true);
 			
-			this.infoContainer.valueLabel.setAttribute('y', this.infoContainer.title.fontsize);
+			this.infoContainer.valueLabel.setAttribute('y', this.infoContainer.title.fontsize + 5);
 			this.infoContainer.valueLabel.setAttribute('align', 'center');
-			this.infoContainer.valueLabel.setAttribute('text', '???');
+			this.infoContainer.valueLabel.setAttribute('text', '???');			
+			this.infoContainer.valueLabel.setAttribute('font', styles.gauge.value.font.name);
+			this.infoContainer.valueLabel.setAttribute('fontsize', styles.gauge.value.font.size);
+			this.infoContainer.valueLabel.setAttribute('fontstyle', styles.gauge.value.font.style);
+			this.infoContainer.valueLabel.setAttribute('fgcolor', styles.gauge.value.font.color);
 					
 					
 			// led containers ...	
@@ -270,14 +306,16 @@
   			this.ledContainer.setAttribute('x', padding);
 			this.ledContainer.setAttribute('y', padding);
 			this.ledContainer.setAttribute('width', (this.width - (2*padding)) );
-			this.ledContainer.setAttribute('height', yOffset - this.ledContainer.y);		
+			this.ledContainer.setAttribute('height', yOffset - this.ledContainer.y);	
 			this.ledContainer.rect(0, 0, this.ledContainer.width, this.ledContainer.height);	
-  			this.ledContainer.stroke();	
-  					
-			rect(0, 0, this.width, this.height);
-        	strokeStyle = 0x000000;
-        	lineWidth = 4;
-        	stroke();
+			this.ledContainer.stroke();	
+			
+			if (styles.border.size > 0){		
+				rect(0, 0, this.width, this.height);
+	        	strokeStyle = 0x000000;
+	        	lineWidth = 4;
+	        	stroke();
+	        }
         	
         	
         	//var colors = ["green", "orange", "red"]; 
@@ -358,11 +396,13 @@
   		
   		<handler name="oninit">
             super.init(); 
+			Debug.write("styles.border.size: " + styles.border.size);
             rect(0, 0, this.width, this.height);
         	strokeStyle = 0xAAAAAA;
-        	lineWidth = 1;
+        	//lineWidth = 1;
+        	lineWidth = styles.border.size;
         	stroke();
-        	
+
         	if(isOn) {
         		turnOn();
         	} else {

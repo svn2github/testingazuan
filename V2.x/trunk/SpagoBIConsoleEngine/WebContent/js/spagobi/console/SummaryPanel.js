@@ -170,7 +170,7 @@ Sbi.console.SummaryPanel = function(config) {
 					
 					//sets the dimensions on the parent panel
 					compositeWidgetPanelConfig.width = (componentWidth > configSubChart.width)? componentWidth : configSubChart.width;
-					compositeWidgetPanelConfig.height = (componentHeight > configSubChart.height)? componentHeight : configSubChart.height;																	
+					compositeWidgetPanelConfig.height = (componentHeight > configSubChart.height)? componentHeight : configSubChart.height;	
 					compositeWidgetPanelConfig.linkableDoc = config.charts[i].linkableDoc;
 					compositeWidgetPanelConfig.executionContext = widgetPanelConfig.executionContext;
 					
@@ -178,11 +178,14 @@ Sbi.console.SummaryPanel = function(config) {
 				}
 				var compositeWidgetPanel = new Sbi.console.WidgetPanel(compositeWidgetPanelConfig);
 				widgetPanelConfig.items.push(compositeWidgetPanel);
+				
 			} else {
 				//simple widget
 				widgetPanelConfig.items.push(new Sbi.console.ChartWidget(config.charts[i]));
 			}
 		}		
+		widgetPanelConfig.autoScroll = true;
+		widgetPanelConfig.autoWidth = true;
 		var widgetPanel = new Sbi.console.WidgetPanel(widgetPanelConfig);
 		
 		c = Ext.apply(c, {  	

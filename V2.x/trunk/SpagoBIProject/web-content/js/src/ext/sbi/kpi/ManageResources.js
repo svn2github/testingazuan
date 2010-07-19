@@ -125,7 +125,7 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
            };
  		   
  	   var detailFieldName = {
-          	 maxLength:100,
+          	 maxLength:40,
         	 minLength:1,
         	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
         	 regexText : LN('sbi.roles.alfanumericString'),
@@ -136,17 +136,18 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
          };
  			  
  	   var detailFieldCode = {
-          	 maxLength:20,
-        	 minLength:0,
+          	 maxLength:45,
+        	 minLength:1,
         	 regex : new RegExp("^([A-Za-z0-9_])+$", "g"),
         	 regexText : LN('sbi.roles.alfanumericString2'),
              fieldLabel:LN('sbi.generic.code'),
+             allowBlank: false,
              validationEvent:true,
              name: 'code'
          };	  
  		   
  	   var detailFieldDescr = {
-          	 maxLength:160,
+          	 maxLength:400,
           	 xtype: 'textarea',
        	     width : 250,
              height : 80,
@@ -158,8 +159,7 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
          };
  	 		   
  	   var detailFieldTabName = {
-          	 maxLength:160,
-        	 minLength:1,
+          	 maxLength:40,
         	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
         	 regexText : LN('sbi.roles.alfanumericString'),
              fieldLabel: 'Table Name',
@@ -168,8 +168,7 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
          };
  	 	 			  
  	   var detailFieldColName = {
-          	 maxLength:160,
-        	 minLength:1,
+          	 maxLength:40,
         	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
         	 regexText : LN('sbi.roles.alfanumericString'),
              fieldLabel: 'Column Name',

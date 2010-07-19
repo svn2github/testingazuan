@@ -72,8 +72,8 @@ Sbi.console.Widget = function(config) {
 				, handler: this.execCrossNavigation
 				, scope: this
 			});
-			
-			this.toolLink = new Ext.Toolbar({items: buttonLink});			
+		
+			this.toolLink = new Ext.Toolbar({autoWidth: true,  items: buttonLink});			
 			delete this.linkableDoc;
 		}
 		if (this.toolLink !== undefined){
@@ -94,7 +94,6 @@ Sbi.console.Widget = function(config) {
 Ext.extend(Sbi.console.Widget, Ext.Panel, {
     services: null
     , parentContainer: null
-    , toolLinkDoc: null
     
    
     //  -- public methods ---------------------------------------------------------

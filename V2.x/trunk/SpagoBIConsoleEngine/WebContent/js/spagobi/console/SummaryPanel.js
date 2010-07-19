@@ -166,14 +166,14 @@ Sbi.console.SummaryPanel = function(config) {
 					}else if (configSubChart.height === undefined || isNaN(configSubChart.height) ){
 						delete configSubChart.height;							
 					}
+					configSubChart.executionContext = widgetPanelConfig.executionContext;
 					
 					//sets the dimensions on the parent panel
 					compositeWidgetPanelConfig.width = (componentWidth > configSubChart.width)? componentWidth : configSubChart.width;
-					compositeWidgetPanelConfig.height = (componentHeight > configSubChart.height)? componentHeight : configSubChart.height;										
-							
+					compositeWidgetPanelConfig.height = (componentHeight > configSubChart.height)? componentHeight : configSubChart.height;																	
 					compositeWidgetPanelConfig.linkableDoc = config.charts[i].linkableDoc;
 					compositeWidgetPanelConfig.executionContext = widgetPanelConfig.executionContext;
-					configSubChart.executionContext = widgetPanelConfig.executionContext;
+					
 					compositeWidgetPanelConfig.items.push(new Sbi.console.ChartWidget(configSubChart));
 				}
 				var compositeWidgetPanel = new Sbi.console.WidgetPanel(compositeWidgetPanelConfig);

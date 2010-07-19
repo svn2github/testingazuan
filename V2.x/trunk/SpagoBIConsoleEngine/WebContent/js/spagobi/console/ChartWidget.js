@@ -193,10 +193,11 @@ Ext.extend(Sbi.console.ChartWidget, Sbi.console.Widget, {
 		chartConfig.store = this.store;	
 		chartConfig.xtype = chartConfig.type;	
 		delete chartConfig.type; 	
+
 		return new Ext.Panel({
-			//layout:'fit'
+			//layout:'fit',
 			height : this.height
-			, width : this.width
+			//, width : this.width //don't put this attribute value: the static version will not work!
 		    , items: [chartConfig]
 		    , border: false
 		    , bodyBorder: false

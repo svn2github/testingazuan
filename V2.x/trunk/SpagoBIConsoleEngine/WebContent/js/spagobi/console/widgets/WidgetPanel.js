@@ -52,7 +52,7 @@ Sbi.console.WidgetPanel = function(config) {
 			layout:'table'
 		  , layoutConfig: {
 			   tableAttrs: {
-                    style: {width: '100%', height:'100%'}
+                    style: {width: '100%', height:'100%', float:'left'}
               }
             }  
 		};
@@ -69,6 +69,11 @@ Sbi.console.WidgetPanel = function(config) {
 			c.layoutConfig = {};
 			c.layout = 'table';
 			c.layoutConfig.columns = c.columnNumber;
+			c.layoutConfig.tableAttrs = {};
+			c.layoutConfig.tableAttrs.style = {};
+			c.layoutConfig.tableAttrs.style.float = 'left';
+		//	c.layoutConfig.tableAttrs.style.width = '100%';
+
 			delete c.columnNumber;
 			delete c.columnWidths;		
 		}	

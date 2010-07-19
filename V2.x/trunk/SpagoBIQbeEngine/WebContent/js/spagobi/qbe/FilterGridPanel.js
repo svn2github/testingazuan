@@ -905,6 +905,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 						for (i = 0; i < rows.length; i++) {
 							this.store.remove( ds.getById(rows[i].id) );
 					    }
+						this.activeEditingContext = null;					
 					}
 				},
 				scope: this
@@ -954,6 +955,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		 */
 		var filter;
 		if(this.activeEditingContext) {
+			//alert("a "+this.activeEditingContext.row);
 			filter = this.getFilterAt(this.activeEditingContext.row);
 			if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
 				if(this.activeEditingContext.dirty === true){
@@ -980,6 +982,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		var dataIndex = this.activeEditingContext.grid.getColumnModel().getDataIndex( col );
 		this.activeEditingContext.dataIndex = dataIndex;
 		this.activeEditingContext.dirty = false;
+		//alert("b "+row);
 		filter = this.getFilterAt(row);
 		if(dataIndex === 'leftOperandDescription' || dataIndex === 'rightOperandDescription') {
 			var editor;

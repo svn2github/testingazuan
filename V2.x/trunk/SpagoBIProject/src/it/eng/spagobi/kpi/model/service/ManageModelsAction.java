@@ -24,10 +24,12 @@ package it.eng.spagobi.kpi.model.service;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.x.AbstractSpagoBIAction;
 import it.eng.spagobi.analiticalmodel.document.x.SaveMetadataAction;
+import it.eng.spagobi.chiron.serializer.SerializationException;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
+import it.eng.spagobi.kpi.model.bo.Model;
 import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.bean.SbiUser;
 import it.eng.spagobi.profiling.bo.UserBO;
@@ -58,10 +60,12 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 	private static Logger logger = Logger.getLogger(SaveMetadataAction.class);
 	private final String MESSAGE_DET = "MESSAGE_DET";
 	// type of service
-	private final String USERS_LIST = "USERS_LIST";
+	private final String MODELS_LIST = "MODELS_LIST";
 	private final String USER_INSERT = "USER_INSERT";
 	private final String USER_DELETE = "USER_DELETE";
 
+	
+	private final String MODEL_DOMAIN_TYPE = "MODEL_ROOT";
 	// USER detail
 	private final String ID = "id";
 	private final String USER_ID = "userId";
@@ -86,20 +90,23 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 
 		String serviceType = this.getAttributeAsString(MESSAGE_DET);
 		logger.debug("Service type "+serviceType);
-		if (serviceType != null && serviceType.equalsIgnoreCase(USERS_LIST)) {
+		if (serviceType != null && serviceType.equalsIgnoreCase(MODELS_LIST)) {
 			
 			try {				
-				ArrayList<UserBO> users = userDao.loadUsers();
-				logger.debug("Loaded users list");
-				JSONArray usersJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(users,	locale);
-				JSONObject usersResponseJSON = createJSONResponseUsers(usersJSON);
+				String parentId = (String)getAttributeAsString("ID");
+				//String parentId = "1";
+				Model aModel = DAOFactory.getModelDAO().loadModelWithChildrenById(Integer.parseInt(parentId));
+				
+				logger.debug("Loaded model tree");
+				JSONArray modelChildrenJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(aModel.getChildrenNodes(),	locale);
+				//JSONObject treeResponseJSON = createJSONResponseModelTree(modelChildrenJSON, aModel.getName());
 
-				writeBackToClient(new JSONSuccess(usersResponseJSON));
+				writeBackToClient(new JSONSuccess(modelChildrenJSON));
 
 			} catch (Throwable e) {
-				logger.error("Exception occurred while retrieving users", e);
+				logger.error("Exception occurred while retrieving model tree", e);
 				throw new SpagoBIServiceException(SERVICE_NAME,
-						"Exception occurred while retrieving users", e);
+						"Exception occurred while retrieving model tree", e);
 			}
 		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(USER_INSERT)) {
 			Integer id = getAttributeAsInteger(ID);
@@ -173,16 +180,13 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 			}
 		}else if(serviceType == null){
 			try {
-				List<SbiAttribute> attributes = DAOFactory.getSbiAttributeDAO().loadSbiAttributes();
-				List<SbiExtRoles> roles = DAOFactory.getRoleDAO().loadAllRoles();
-				getSessionContainer().setAttribute("attributesList", attributes);
-				getSessionContainer().setAttribute("rolesList", roles);
+				List nodeTypes = DAOFactory.getDomainDAO().loadListDomainsByType(MODEL_DOMAIN_TYPE);
+				getSessionContainer().setAttribute("nodeTypesList", nodeTypes);
 				
 			} catch (EMFUserError e) {
 				logger.error(e.getMessage(), e);
 				throw new SpagoBIServiceException(SERVICE_NAME,
-						"Exception retrieving role types",
-						e);
+						"Exception retrieving model types", e);
 			}
 		}
 		logger.debug("OUT");
@@ -196,13 +200,13 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 	 * @return
 	 * @throws JSONException
 	 */
-	private JSONObject createJSONResponseUsers(JSONArray rows)
+	private JSONObject createJSONResponseModelTree(JSONArray rows, String root)
 			throws JSONException {
 		JSONObject results;
 
 		results = new JSONObject();
-		results.put("title", "Users");
-		results.put("samples", rows);
+		//results.put("root", root);
+		results.put(root, rows);
 		return results;
 	}
 	

@@ -184,8 +184,8 @@ Sbi.console.SummaryPanel = function(config) {
 				widgetPanelConfig.items.push(new Sbi.console.ChartWidget(config.charts[i]));
 			}
 		}		
+		widgetPanelConfig.autoScroll = {};
 		widgetPanelConfig.autoScroll = true;
-		widgetPanelConfig.autoWidth = true;
 		var widgetPanel = new Sbi.console.WidgetPanel(widgetPanelConfig);
 		
 		c = Ext.apply(c, {  	

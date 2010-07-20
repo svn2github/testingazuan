@@ -52,9 +52,9 @@ Sbi.console.WidgetPanel = function(config) {
 			layout:'table'
 		  , layoutConfig: {
 			   tableAttrs: {
-                    style: {width: '100%', height:'100%', float:'left'}
+                    style: {width: '100%', height:'100%'}
               }
-            }  
+            }
 		};
 		
 		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.widgetPanel) {

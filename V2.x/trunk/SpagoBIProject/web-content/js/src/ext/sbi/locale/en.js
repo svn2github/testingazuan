@@ -20,6 +20,10 @@ Sbi.locale.ln['sbi.generic.descr'] = 'Description';
 Sbi.locale.ln['sbi.generic.code'] = 'Code';
 Sbi.locale.ln['sbi.generic.type'] = 'Type';
 Sbi.locale.ln['sbi.generic.label'] = 'Label';
+
+Sbi.locale.ln['sbi.generic.kpi'] = 'Kpi';
+Sbi.locale.ln['sbi.generic.nodetype'] = 'Node Type';
+Sbi.locale.ln['sbi.generic.nodedescr'] = 'Node Description';
 //Messages
 Sbi.locale.ln['sbi.generic.validationError'] = 'Validation Error';
 Sbi.locale.ln['sbi.generic.error'] = 'Error';

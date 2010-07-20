@@ -98,8 +98,9 @@ public class JSONSerializer implements Serializer {
 		mappings.put( Kpi.class, new KpiJSONSerializer());
 		
 		//TODO da aggiungere mano a mano le classi esistono già
+		
+		mappings.put( Model.class, new ModelNodeJSONSerializer());	
 		/*
-		mappings.put( ModelNode.class, new ModelNodeJSONSerializer());		
 		mappings.put( ModelInstanceNode.class, new ModelInstanceNodeJSONSerializer());
 		*/
 		

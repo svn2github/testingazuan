@@ -51,6 +51,7 @@ import org.json.JSONObject;
 	private final String THRESHOLD_DELETE = "THRESHOLD_DELETE";
 	
 	private final String THRESHOLD_DOMAIN_TYPE = "THRESHOLD_TYPE";
+	private final String THRESHOLD_SEVERITY_TYPE = "SEVERITY";
 	
 	// RES detail
 	private final String ID = "id";
@@ -183,6 +184,8 @@ import org.json.JSONObject;
 			try {
 				List nodeTypes = DAOFactory.getDomainDAO().loadListDomainsByType(THRESHOLD_DOMAIN_TYPE);
 				getSessionContainer().setAttribute("nodeTypesList", nodeTypes);
+				List thrSeverityTypes = DAOFactory.getDomainDAO().loadListDomainsByType(THRESHOLD_SEVERITY_TYPE);
+				getSessionContainer().setAttribute("thrSeverityTypes", thrSeverityTypes);
 				
 			} catch (EMFUserError e) {
 				logger.error(e.getMessage(), e);

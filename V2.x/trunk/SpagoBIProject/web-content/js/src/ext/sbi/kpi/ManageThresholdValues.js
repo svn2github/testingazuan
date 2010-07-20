@@ -185,52 +185,63 @@ Sbi.kpi.ManageThresholdValues = function(config) {
 	    	id:'position',
 	    	width: 50, 
 	    	sortable: true, dataIndex: 'name', editor: 
-	    		new Ext.form.TextField({
-	    			id:'aa'
-	    				})},
+	    		new Ext.form.TextField({})
+	    },
 	    {header: 'Label', width: 50, 
 				id:'label',
 				sortable: true, dataIndex: 'description',  
-				editor: new Ext.form.TextField({
-					id:'bb'})},
+				editor: new Ext.form.TextField({})
+	    },
 		{header: 'Min', width: 50, 
 				id:'min',
 				sortable: true, 
 				xtype: 'numbercolumn',
 				dataIndex: 'min',  
-				editor: {
-		                xtype: 'numberfield',
+				editor: new Ext.form.NumberField({
 		                allowBlank: false,
 		                minValue: 1,
 		                maxValue: 150000
-		            }				
-		},
-		{header: 'Max', width: 50, 
+		            })				
+		},new Ext.form.Checkbox({
+			header: 'Max', 
+			width: 50, 
+			xtype: 'booleancolumn',
+			sortable: true, 
+			dataIndex: 'max' 
+		})
+		/*{header: 'Max', width: 50, 
 				id:'max',
 				xtype: 'booleancolumn',
 				sortable: true, dataIndex: 'max',  
-				editor: {
-		                xtype: 'checkbox'
-		            }
-					},
-		{header: 'Severity', width: 50, 
+				editor:new Ext.form.Checkbox({})
+		}*/,new Ext.form.ComboBox({
+			header: 'Severity', 
+			width: 50, 
+			sortable: true, 
+			dataIndex: 'severityCd'})
+		/*{header: 'Severity', width: 50, 
 				id:'severity',
-				sortable: true, dataIndex: 'description',  
-				editor:{
-	                xtype: 'checkbox'
-	            }
-
-		},
-		{header: 'Color', width: 50, 
+				sortable: true, dataIndex: 'severity',  
+				editor: new Ext.form.ComboBox({})
+		}*/,new Ext.ux.ColorField({
+			header: 'Color', 
+			width: 50, 
+			sortable: true, 
+			dataIndex: 'color',
+			value: '#FFFFFF', 
+			msgTarget: 'qtip', 
+			fallback: true
+		})
+		/*{header: 'Color', width: 50, 
 				id:'color',
 				sortable: true, dataIndex: 'color',  
 				editor: new Ext.ux.ColorField({ value: '#FFFFFF', msgTarget: 'qtip', fallback: true})
-					},
+					}*/,
 		{header: 'Value', width: 50, 
 				id:'val',
-				sortable: true, dataIndex: 'description',  
-				editor: new Ext.form.TextField({
-					id:'bb'})}
+				sortable: true, dataIndex: 'val',  
+				editor: new Ext.form.NumberField({})
+		}
 					
 	];
 

@@ -366,13 +366,7 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 
 			for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
 				SbiThreshold hibThreshold = (SbiThreshold) iterator.next();
-				Threshold threshold = new Threshold();
-				threshold.setName(hibThreshold.getName());
-				threshold.setCode(hibThreshold.getCode());
-				threshold.setDescription(hibThreshold.getDescription());
-				threshold.setId(hibThreshold.getThresholdId());
-				threshold.setThresholdTypeId(hibThreshold.getThresholdType().getValueId());
-				threshold.setThresholdTypeCode(hibThreshold.getThresholdType().getValueCd());
+				Threshold threshold = toThreshold(hibThreshold);
 				toReturn.add(threshold);
 			}
 

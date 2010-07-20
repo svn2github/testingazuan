@@ -468,9 +468,10 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
             plain       : true,
             items       : [manageThresholds]
 		});
-		
+		//manageThresholds.addEvents('select');	
+		manageThresholds.gridForm.on('select2', this.selectThrItem, this);
 		this.thrWin.show();
-		manageThresholds.on('select', this.selectThrItem, this);
+		manageThresholds.on('select2', this.selectThrItem, this);
 	}
 	
 	,selectThrItem: function(itemId, index){

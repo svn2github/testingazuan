@@ -52,6 +52,7 @@ Sbi.kpi.ManageThresholds = function(config) {
 	this.configurationObject = {};
 	
 	this.nodeTypesCd = config.nodeTypesCd;
+	this.thrSeverityTypesCd = config.thrSeverityTypesCd;
 	this.drawSelectColumn = config.drawSelectColumn;
 	
 	this.configurationObject.manageListService = Sbi.config.serviceRegistry.getServiceUrl({
@@ -74,6 +75,8 @@ Sbi.kpi.ManageThresholds = function(config) {
 	var c = Ext.apply({}, config || {}, {});
 
 	Sbi.kpi.ManageThresholds.superclass.constructor.call(this, c);	 	
+	
+	this.rowselModel.addListener('rowselect',this.fillThrValues,this);
 };
 
 Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
@@ -81,8 +84,44 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 	configurationObject: null
 	, gridForm:null
 	, mainElementsStore:null
+	, severityStore: null
 	, nodeTypesCd: null
+	, thrSeverityTypesCd: null
 	, drawSelectColumn: null
+	
+	
+	,activateThrValuesForm:function(combo,record,index){
+
+		var thrTypeSelected = record.get('typeCd');
+		if(thrTypeSelected != null && thrTypeSelected=='MINIMUM'){
+			this.tempThrV.setVisible(false);
+			this.thrMinOrMaxDetail.setVisible(true);
+			this.detailThrMin.enable();
+            this.detailThrMinClosed.enable();
+            this.detailThrMax.disable();
+            this.detailThrMaxClosed.disable();
+		}else if (thrTypeSelected != null && thrTypeSelected=='MAXIMUM'){
+			this.tempThrV.setVisible(false);
+			this.thrMinOrMaxDetail.setVisible(true);
+			this.detailThrMin.disable();
+            this.detailThrMinClosed.disable();
+            this.detailThrMax.enable();
+            this.detailThrMaxClosed.enable();
+		}else if (thrTypeSelected != null && thrTypeSelected=='RANGE'){
+			this.tempThrV.setVisible(true);
+			this.thrMinOrMaxDetail.setVisible(false);			
+		}
+	}
+
+	, fillThrValues : function(sm, row, rec) {	 
+          	var tempArr = rec.data.thrValues;
+         	var length = rec.data.thrValues.length;
+         	this.activateThrValuesForm(null, rec, row);
+         	/*if(length>0){
+	         	var tempRecord = new Ext.data.Record({"label":tempArr[0].label, "position":tempArr[0].position});
+	         	this.thrMinOrMaxDetail.items	    
+         	}  */    	
+    }
 
 	,initConfigObject:function(){
 	    this.configurationObject.fields = ['id'
@@ -90,6 +129,16 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 		                    	          , 'code'
 		                    	          , 'description'   
 		                    	          , 'typeCd'
+		                    	          , 'thrValues'
+		                    	          , 'label'
+		                    	          , 'position'
+		                    	          , 'min'
+		                    	          , 'minIncluded'
+		                    	          , 'max'
+		                    	          , 'maxIncluded'
+		                    	          , 'val'
+		                    	          , 'color'
+		                    	          , 'severityCd'
 		                    	          ];
 		
 		this.configurationObject.emptyRecToAdd = new Ext.data.Record({
@@ -97,7 +146,8 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 										  name:'', 
 										  code:'', 
 										  description:'',
-										  typeCd: ''
+										  typeCd: '',
+										  thrValues: []
 										 });   
 		
 		this.configurationObject.gridColItems = [
@@ -124,13 +174,19 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
  	        autoLoad: false
  	    });
  	    
+ 	   this.severityStore = new Ext.data.SimpleStore({
+	        fields: ['severityCd'],
+	        data: this.thrSeverityTypesCd,
+	        autoLoad: false
+	    });
+ 	    
  	   //START list of detail fields
  	   var detailFieldId = {
                name: 'id',
                hidden: true
            };
  		   
- 	   var detailFieldName = {
+ 	   var detailFieldName = new Ext.form.TextField({
           	 maxLength:100,
         	 minLength:1,
         	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
@@ -139,9 +195,9 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
              allowBlank: false,
              validationEvent:true,
              name: 'name'
-         };
+         });
  			  
- 	   var detailFieldCode = {
+ 	   var detailFieldCode = new Ext.form.TextField({
           	 maxLength:20,
         	 minLength:0,
         	 regex : new RegExp("^([A-Za-z0-9_])+$", "g"),
@@ -149,11 +205,10 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
              fieldLabel:LN('sbi.generic.code'),
              validationEvent:true,
              name: 'code'
-         };	  
+         });	  
  		   
- 	   var detailFieldDescr = {
+ 	   var detailFieldDescr = new Ext.form.TextArea({
           	 maxLength:160,
-        	 xtype: 'textarea',
         	 width : 250,
              height : 80,
         	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
@@ -161,9 +216,9 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
              fieldLabel: LN('sbi.generic.descr'),
              validationEvent:true,
              name: 'description'
-         };	 		   
+         });	 		   
  		   
- 	   var detailFieldNodeType =  {
+ 	   var detailFieldNodeType =  new Ext.form.ComboBox({
         	  name: 'typeCd',
               store: this.typesStore,
               fieldLabel: LN('sbi.generic.type'),
@@ -176,46 +231,141 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
               selectOnFocus: true,
               editable: false,
               allowBlank: false,
-              validationEvent:true,
-              xtype: 'combo'
-          };  
+              validationEvent:true
+          });  
+ 	  detailFieldNodeType.addListener('select',this.activateThrValuesForm,this);
  	  //END list of detail fields
  	   
- 	  var tempThrV = new Sbi.kpi.ManageThresholdValues({});
- 	  var fb = new Ext.ux.ColorField({fieldLabel: 'Fallback Picker', value: '#FFFFFF', msgTarget: 'qtip', fallback: true});
+ 	  this.tempThrV = new Sbi.kpi.ManageThresholdValues({});
+ 	  
+ 	  var detailThrPosition = new Ext.form.TextField({
+ 			 maxLength:20,
+             fieldLabel: 'Position',
+             validationEvent:true,
+             name: 'position'
+         });	 
+ 	  
+ 	  var detailThrLabel = new Ext.form.TextField({
+ 			 maxLength:20,
+             fieldLabel: 'Label',
+             validationEvent:true,
+             name: 'label'
+         });	
+ 	  
+ 	 this.detailThrMin = new Ext.form.NumberField({
+ 			 maxLength:20,
+             fieldLabel: 'Min Value',
+             validationEvent:true,
+             name: 'min'
+         });
+ 	 
+ 	this.detailThrMinClosed = new Ext.form.Checkbox({
+			 maxLength:20,
+            fieldLabel: 'Included?',
+            validationEvent:true,
+            name: 'minIncluded'
+        });
+ 	
+ 	 this.detailThrMax = new Ext.form.NumberField({
+ 			 maxLength:20,
+             fieldLabel: 'Max Value',
+             validationEvent:true,
+             name: 'max'
+         });
+ 	 
+ 	this.detailThrMaxClosed = new Ext.form.Checkbox({
+			 maxLength:20,
+			 xtype: 'checkbox',
+            fieldLabel: 'Included?',
+            validationEvent:true,
+            name: 'maxIncluded'
+ 		});
+ 	
+ 	var detailThrValue = new Ext.form.NumberField({
+			 maxLength:20,
+            fieldLabel: 'Value',
+            validationEvent:true,
+            name: 'val'
+        });
+ 	
+ 	var detailThrColor = new Ext.ux.ColorField({
+ 			fieldLabel: 'Color', 
+ 			value: '#FFFFFF', 
+ 			msgTarget: 'qtip', 
+ 			name: 'color',
+ 			fallback: true});
+ 	
+ 	var detailThrSeverity = new Ext.form.ComboBox({
+      	  name: 'severityCd',
+          store: this.severityStore,
+          fieldLabel: 'Severity',
+          displayField: 'severityCd',   // what the user sees in the popup
+          valueField: 'severityCd',        // what is passed to the 'change' event
+          typeAhead: true,
+          forceSelection: true,
+          mode: 'local',
+          triggerAction: 'all',
+          selectOnFocus: true,
+          editable: false,
+          allowBlank: false,
+          validationEvent:true,
+          xtype: 'combo'
+      });  
+ 	  
+ 	  this.thrMinOrMaxDetail = new Ext.form.FieldSet({  	
+             labelWidth: 90,
+             defaults: {width: 140, border:false},    
+             defaultType: 'textfield',
+             autoHeight: true,
+             autoScroll  : true,
+             bodyStyle: Ext.isIE ? 'padding:0 0 5px 15px;' : 'padding:10px 15px;',
+             border: true,
+             style: {
+                 "margin-left": "10px", 
+                 "margin-top": "10px", 
+                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "10px"  
+             },
+             items: [detailThrPosition, detailThrLabel, this.detailThrMin, 
+                     this.detailThrMinClosed, this.detailThrMax, this.detailThrMaxClosed, 
+                     detailThrValue, detailThrColor, detailThrSeverity]
+    	});
 
+ 	  this.detailItem = new Ext.form.FieldSet({ 
+		   		 id: 'items-detail',   	
+	 		   	 itemId: 'items-detail',   	              
+	 		   	 columnWidth: 0.4,
+	             xtype: 'fieldset',
+	             labelWidth: 90,
+	             defaults: {width: 140, border:false},    
+	             defaultType: 'textfield',
+	             autoHeight: true,
+	             autoScroll  : true,
+	             bodyStyle: Ext.isIE ? 'padding:0 0 5px 15px;' : 'padding:10px 15px;',
+	             border: false,
+	             style: {
+	                 "margin-left": "10px",  
+	                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
+	             },
+	             items: [detailFieldId, detailFieldName, detailFieldCode, 
+	                     detailFieldDescr, detailFieldNodeType]
+	    	});
+ 	   
+ 	   this.thrValuesItem = new Ext.Panel({
+		        title: 'Values'
+			        , id : 'thr-values'
+			        , layout: 'fit'
+			        , autoScroll: true
+			        , items: [this.tempThrV,this.thrMinOrMaxDetail]
+			        , itemId: 'thrValues'
+			        , scope: this
+			    });
+ 		
  	   this.configurationObject.tabItems = [{
 		        title: LN('sbi.generic.details')
 		        , itemId: 'detail'
 		        , width: 430
-		        , items: {
-			   		 id: 'items-detail',   	
-		 		   	 itemId: 'items-detail',   	              
-		 		   	 columnWidth: 0.4,
-		             xtype: 'fieldset',
-		             labelWidth: 90,
-		             defaults: {width: 140, border:false},    
-		             defaultType: 'textfield',
-		             autoHeight: true,
-		             autoScroll  : true,
-		             bodyStyle: Ext.isIE ? 'padding:0 0 5px 15px;' : 'padding:10px 15px;',
-		             border: false,
-		             style: {
-		                 "margin-left": "10px", 
-		                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
-		             },
-		             items: [detailFieldId, detailFieldName, detailFieldCode, 
-		                     detailFieldDescr, detailFieldNodeType,fb]
-		    	}
-		    },{
-		        title: 'Values'
-		        , id : 'thr-values'
-		        , layout: 'fit'
-		        , autoScroll: true
-		        , items: [tempThrV]
-		        , itemId: 'thrValues'
-		        , scope: this
-		    }];
+		        , items: [this.detailItem]
+		    },this.thrValuesItem];
 	}
 	
     //OVERRIDING save method

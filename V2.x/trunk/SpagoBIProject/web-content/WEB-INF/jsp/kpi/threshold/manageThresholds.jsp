@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%
 
 	List nodeTypesCd = (List) aSessionContainer.getAttribute("nodeTypesList");
+    List thrSeverityTypesCd = (List) aSessionContainer.getAttribute("thrSeverityTypes");
 
 %>
 
@@ -34,6 +35,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script type="text/javascript">
 
 	<%	
+	JSONArray severityTypesArray = new JSONArray();
+	if(thrSeverityTypesCd != null){
+		for(int i=0; i< thrSeverityTypesCd.size(); i++){
+			Domain domain = (Domain)thrSeverityTypesCd.get(i);
+			JSONArray temp = new JSONArray();
+			temp.put(domain.getValueCd());
+			severityTypesArray.put(temp);
+		}
+	}	
+	String severityTypes = severityTypesArray.toString();
+	severityTypes = severityTypes.replaceAll("\"","'");	
+	
 	JSONArray nodeTypesArray = new JSONArray();
 	if(nodeTypesCd != null){
 		for(int i=0; i< nodeTypesCd.size(); i++){
@@ -50,6 +63,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     var config = {};
 
 	config.nodeTypesCd = <%= nodeTypes%>;
+	config.thrSeverityTypesCd = <%= severityTypes%>;
 	
 	var url = {
     	host: '<%= request.getServerName()%>'

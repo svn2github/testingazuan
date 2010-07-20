@@ -239,6 +239,7 @@ IThresholdValueDAO {
 			toReturn.setColour(color);
 			toReturn.setColourString(hibThresholdValue.getColour());
 			toReturn.setSeverityId(hibThresholdValue.getSeverity().getValueId());
+			toReturn.setSeverityCd(hibThresholdValue.getSeverity().getValueCd());
 			toReturn.setThresholdId(hibThresholdValue.getSbiThreshold()
 					.getThresholdId());
 			toReturn.setThresholdType(hibThresholdValue.getSbiThreshold().getThresholdType().getValueCd());
@@ -478,6 +479,7 @@ IThresholdValueDAO {
 		String label = t.getLabel();
 		SbiDomains d = t.getSeverity();
 		Integer severityId = d.getValueId();
+		String severityCd = d.getValueCd();
 		Integer position = t.getPosition();
 		Double maxValue = t.getMaxValue();
 		Double minValue = t.getMinValue();
@@ -510,6 +512,7 @@ IThresholdValueDAO {
 		toReturn.setThresholdId(thresholdId);
 		toReturn.setLabel(label);
 		toReturn.setSeverityId(severityId);
+		toReturn.setSeverityCd(severityCd);
 		toReturn.setPosition(position);
 		toReturn.setMaxValue(maxValue);
 		toReturn.setMinValue(minValue);
@@ -519,7 +522,6 @@ IThresholdValueDAO {
 		toReturn.setMaxClosed(maxClosed);
 		toReturn.setMinClosed(minClosed);
 		toReturn.setValue(value);
-		//TODO the alarms
 
 		logger.debug("OUT");
 		return toReturn;

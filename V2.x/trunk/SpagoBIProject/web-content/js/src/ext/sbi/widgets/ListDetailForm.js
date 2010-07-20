@@ -175,13 +175,14 @@ Sbi.widgets.ListDetailForm = function(config) {
 		 	}, 
 		 	this);  	
 	
-	this.mainElementsStore.load();
-	
-	this.addEvents('select');	
+	this.mainElementsStore.load();	
    	
 	var c = Ext.apply({}, config, this.gridForm);
    	
    	Sbi.widgets.ListDetailForm.superclass.constructor.call(this,c);	
+   	
+   	//to be addedd at the end!
+   	this.addEvents('select2');	
 };
 
 Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
@@ -260,6 +261,7 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
            , activeTab : 0
            , columnWidth: 0.6
            , autoScroll : true
+           , deferredRender: false
            , width: 450          
            , height: 490
            , itemId: 'tabs' 
@@ -304,6 +306,10 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
        });
  	  
  	  this.rowselModel.addListener('rowselect',function(sm, row, rec) { 
+ 		 this.gridForm.getForm().loadRecord(rec);     
+      }, this);
+ 	  
+ 	 this.rowselModel.addListener('select',function(sm, row, rec) { 
  		 this.gridForm.getForm().loadRecord(rec);     
       }, this);
  	   
@@ -355,12 +361,24 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
    	              layout: 'fit',
    	              items: this.mainGrid
    	              }, this.tabs
-   	          ]
+   	          ]/*,
+   	         listeners: {
+			    	'select': {
+			     		fn: this.sendSelectedItem,
+			      		scope: this
+			    	}
+               }*/
+   	          
    	      });
+   	 
+   	   // this.gridForm.addListener('select',this.sendSelectedItem, this);
 	}
 
 	,sendSelectedItem: function(itemId, index){
-		this.fireEvent('select', itemId, index);
+		alert('selected: '+itemId);
+		alert(this.gridForm);
+		this.gridForm.addEvents('select2');
+		this.gridForm.fireEvent('select2');
 	}	
 
 	, addNewItem : function(){

@@ -9,6 +9,7 @@ public class ThresholdValue implements Serializable {
 	Integer id = null;
 	Integer thresholdId = null;
 	Integer severityId = null;
+	String severityCd = null;
 	Integer position = null;
 	Double minValue = null;// null if type = max
 	Double maxValue = null;// null if type = min
@@ -141,6 +142,14 @@ public class ThresholdValue implements Serializable {
 
 	public void setValue(Double value) {
 		this.value = value;
+	}
+	
+	public String getSeverityCd() {
+		return severityCd;
+	}
+
+	public void setSeverityCd(String severityCd) {
+		this.severityCd = severityCd;
 	}
 
 }

@@ -62,8 +62,6 @@
 		
 		global.fieldsDefault =	[
 			{header: 'Valore 1',name:'value1', rangeMaxValue: 100, secondIntervalUb: 50, firstIntervalUb: 10, rangeMinValue: 0}
-			//{header: 'Valore 2',name:'value2', rangeMaxValue: 100, secondIntervalUb: 66, firstIntervalUb: 33, rangeMinValue: 0}, 
-			//{header: 'Valore 3',name:'value3', rangeMaxValue: 100, secondIntervalUb: 90, firstIntervalUb: 50, rangeMinValue: 0}
 		];
 		
 		
@@ -95,8 +93,8 @@
 				padding: {right: 2, left: 2},
 				colors: {firstInterval: "green", secondInterval: "orange", thirdInterval: "red"},
 				led: {height: 10, gap: 1},
-				title: { visible: false,  align: "center", valign: "middle", font: {name: "serif", color: "black", size: 12, style: "bold"}},
-				value: { visible: false,  align: "center", valign: "bottom", font:  {name: "serif", color: "black", size: 10, style: "plain"}}
+				title: { visible: false,  align: "center", valign: "top", font: {name: "serif", color: "black", size: 12, style: "bold"}},
+				value: { visible: false,  align: "center", valign: "top", font:  {name: "serif", color: "black", size: 10, style: "plain"}}
 			} 
 		}
 		
@@ -148,7 +146,7 @@
 			Debug.write("styles.title.visible: " + styles.title.visible);		
 			if(styles.title.visible) {			
 				this.title.setAttribute('x', 0);
-				this.title.setAttribute('y', 3);
+				this.title.setAttribute('y', 0);
 				this.title.setAttribute('width', chartWidth);
 				this.title.setAttribute('height', styles.title.font.size + 6);
 				
@@ -248,6 +246,7 @@
   	
   		<drawview name="ledContainer" strokeStyle="0xAAAAAA" lineWidth="1"/>
   		<drawview name="infoContainer" strokeStyle="0xAAAAAA" lineWidth="1">
+  		  	<!-- <wrappinglayout axis="x" spacing="3"/>  -->
   			<text name="title" fontsize="12" multiline="true">Led Gauge</text>
   			<text name="valueLabel" fontsize="18">???</text>
   		</drawview>
@@ -276,14 +275,15 @@
   			// info containers ....
   			this.infoContainer.setAttribute('x', padding);
 			this.infoContainer.setAttribute('y', yOffset);
-			this.infoContainer.setAttribute('height', 10 + this.infoContainer.title.fontsize + this.infoContainer.valueLabel.fontsize);
+			this.infoContainer.setAttribute('height',  this.infoContainer.title.fontsize + this.infoContainer.valueLabel.fontsize);
 			this.infoContainer.setAttribute('width', (this.width - (2*padding)) );
 						
 			this.infoContainer.rect(0, 0, this.infoContainer.width, this.infoContainer.height);	
   			this.infoContainer.stroke();	
   			
   			this.infoContainer.title.setAttribute('y', 0);
-			this.infoContainer.title.setAttribute('align', 'center');
+			//this.infoContainer.title.setAttribute('align', 'center');
+			this.infoContainer.title.setAttribute('align', styles.gauge.title.align);
 			this.infoContainer.title.setAttribute('valign', styles.gauge.title.valign);
 			this.infoContainer.title.setAttribute('text', gaugeTitle);			
 			this.infoContainer.title.setAttribute('font', styles.gauge.title.font.name);
@@ -293,7 +293,8 @@
 			this.infoContainer.title.setAttribute('multiline', true);
 			
 			this.infoContainer.valueLabel.setAttribute('y', this.infoContainer.title.fontsize + 5);
-			this.infoContainer.valueLabel.setAttribute('align', 'center');
+			//this.infoContainer.valueLabel.setAttribute('align', 'center');
+			this.infoContainer.valueLabel.setAttribute('align', styles.gauge.value.align);
 			this.infoContainer.valueLabel.setAttribute('valign', styles.gauge.value.valign);
 			this.infoContainer.valueLabel.setAttribute('text', '???');			
 			this.infoContainer.valueLabel.setAttribute('font', styles.gauge.value.font.name);

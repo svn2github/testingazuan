@@ -95,8 +95,8 @@
 				padding: {right: 2, left: 2},
 				colors: {firstInterval: "green", secondInterval: "orange", thirdInterval: "red"},
 				led: {height: 10, gap: 1},
-				title: { visible: false,  align: "center", font: {name: "serif", color: "black", size: 12, style: "bold"}},
-				value: { visible: false,  align: "center", font:  {name: "serif", color: "black", size: 10, style: "plain"}}
+				title: { visible: false,  align: "center", valign: "middle", font: {name: "serif", color: "black", size: 12, style: "bold"}},
+				value: { visible: false,  align: "center", valign: "bottom", font:  {name: "serif", color: "black", size: 10, style: "plain"}}
 			} 
 		}
 		
@@ -284,6 +284,7 @@
   			
   			this.infoContainer.title.setAttribute('y', 0);
 			this.infoContainer.title.setAttribute('align', 'center');
+			this.infoContainer.title.setAttribute('valign', styles.gauge.title.valign);
 			this.infoContainer.title.setAttribute('text', gaugeTitle);			
 			this.infoContainer.title.setAttribute('font', styles.gauge.title.font.name);
 			this.infoContainer.title.setAttribute('fontsize', styles.gauge.title.font.size);
@@ -293,6 +294,7 @@
 			
 			this.infoContainer.valueLabel.setAttribute('y', this.infoContainer.title.fontsize + 5);
 			this.infoContainer.valueLabel.setAttribute('align', 'center');
+			this.infoContainer.valueLabel.setAttribute('valign', styles.gauge.value.valign);
 			this.infoContainer.valueLabel.setAttribute('text', '???');			
 			this.infoContainer.valueLabel.setAttribute('font', styles.gauge.value.font.name);
 			this.infoContainer.valueLabel.setAttribute('fontsize', styles.gauge.value.font.size);

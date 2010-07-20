@@ -110,7 +110,7 @@
 		global.styles = apply(stylesDefault, global.styles);
 		
 		// -- private ----------------------------------------------------------------------
-		var colors = [0xf92525, 0x17e512, 0xbe4ce3, 0x5420ff, 0xf442ff, 0xfb7819, 0x19fbee, 0xe570ad, 0xfd0c23, 0x4618de];
+		var colors = [0xf92525, 0x17e512, 0xbe4ce3, 0x5420ff, 0xf442ff, 0xfb7819, 0x006600, 0x99FF00,0xFFFF00, 0xFF9966, 0x19fbee, 0xe570ad, 0xfd0c23, 0x4618de];
 	    var isSetup = true;
 	    
 	    flash.external.ExternalInterface.addCallback("loadData", null, loadData);
@@ -132,12 +132,13 @@
 			</handler>	
 		</drawview> 
 		
-		<!--  button name="testBtn" text="test">
+		<!-- test 
+		<button name="testBtn" text="test">
 			<handler name="onclick">
 				canvas.chart.loadPointA();
 				Debug.write("click");
 			</handler>	
-		</button -->
+		</button>-->
 		
 		<!--  =================================================================== -->
 		<!--  Legend Button														  -->
@@ -170,18 +171,34 @@
 			<attribute name="y" value="10"/>
 			<attribute name="x" value="0"/>
 			<attribute name="height" value="100"/>
-			<attribute name="width" value="250"/>
+			<attribute name="width" value="300"/>
 			<attribute name="title" value="Legend"/>
 			<attribute name="resizable" value="true"/>
 			<attribute name="closeable" value="true"/>
 			<attribute name="align" value="center"/>
+
+			<wrappinglayout axis="y" spacing="10"/>  
 			
-			<wrappinglayout axis="y" spacing="10"/>
-			
-			<method name="addItem" args="lineName, color, ID">
+			<method name="addItem" args="lineName, color, ID, numElem">
+			<![CDATA[ 		
+				var numRowsCol = 4;		//the number of rows in the legend at the begin with the standard dimensions
+				var numColumns =  parseInt(numElem) / numRowsCol;  
+				var elemColumn = parseInt((ID-1) / numRowsCol);
+				var widthColumn = parseInt(this.width / numColumns);
+		 		var startX = elemColumn * widthColumn;
+				
+				Debug.write("this.width: " + this.width);
+				Debug.write("ID: " + ID-1);
+				Debug.write("numColumns: " + numColumns);
+				Debug.write("elemColumn: " + elemColumn);
+				Debug.write("widthColumn: " + widthColumn);
+				Debug.write("startX: " + startX);
+				
 				var legIt = new lz.LegendItem(this,{name:"legend"+ID});
-				legIt.drawItem(lineName, color);		
+				legIt.drawItem(lineName, color, startX);		
 				this.setVisible(false);
+				
+				]]>
 			</method>
 		
 			<handler name="onvisible">
@@ -383,6 +400,13 @@
 	<method name="initSeries" args="attributeMap" >
 	<![CDATA[ 
 		var seriesId = 0;
+		Debug.write("attributeMap: " + attributeMap);
+		//defines number of elements (to optimize!)
+		var numElems = 0;
+		for ( var attributeName in attributeMap ) {
+			numElems ++;
+		}
+		Debug.write("numElems: " + numElems);
 		for ( var attributeName in attributeMap ) {
 			var color = canvas.chart.getColor(seriesId++);
 			var series = new lz.DataSeries(canvas.chart.plot, {
@@ -392,8 +416,8 @@
 				maxDataValue: rangeMaxValue,
 				color: color
 			});
-			
-			canvas.chart.legendWindow.addItem(attributeName, color, seriesId);
+			 
+			canvas.chart.legendWindow.addItem(attributeName, color, seriesId, numElems);
 		}
 	]]>
 	</method>
@@ -409,6 +433,14 @@
 			, Competitiveness: 98
 			, Cost_Optimization: 35
 			, Health: 68
+			, value_a: 0
+			, value_b: 12
+			, value_c: 45
+			, value_d: 78
+			, value_e: 82
+			, value_f: 34
+			, value_g: 72
+			, value_h: 87
 			//, xLabel: 'wundabar1'
 		});
     </method>  
@@ -835,15 +867,18 @@
        	     super.init();   
 	 </method>
 		
-	 <method name="drawItem" args="lineName, color">
-       	 this.moveTo(10,10);
-	     this.lineTo(20,10);
+	 <method name="drawItem" args="lineName, color, startColumn">
+       	 //this.moveTo(10,10);
+	     //this.lineTo(20,10);
+	     
+	     this.moveTo(startColumn,10);
+	     this.lineTo(startColumn+10,10);
 					
        	 this.strokeStyle = color;
          this.lineWidth = 4;
          this.stroke();
-	
-	     var txt = new LzText(this,{x:50,text:lineName});
+	     //var txt = new LzText(this,{x:50,text:lineName});	     
+	     var txt = new LzText(this,{x:startColumn + 15, text:lineName});
 	 </method>
 		
 </class>

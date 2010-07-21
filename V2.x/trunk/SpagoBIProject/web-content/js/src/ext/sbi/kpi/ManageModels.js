@@ -72,7 +72,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	,initConfigObject: function(){
 		this.configurationObject.root = "model1";
 		this.configurationObject.rootId = "1";
-		this.configurationObject.treeTitle = "Models";
+		this.configurationObject.treeTitle = LN('sbi.models.listTitle');;
 
     	this.configurationObject.fields = ['id'
 		                     	          , 'name'
@@ -83,8 +83,8 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		                    	          , 'label'
 		                    	          ];
 		
-		this.configurationObject.panelTitle = LN('sbi.resources.panelTitle');
-		this.configurationObject.listTitle = LN('sbi.resources.listTitle');
+		this.configurationObject.panelTitle = LN('sbi.models.panelTitle');
+		this.configurationObject.listTitle = LN('sbi.models.listTitle');
 		
 		this.initTabItems();
     }
@@ -158,7 +158,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	 	   this.detailFieldNodeType =  new Ext.form.ComboBox({
 	        	  name: 'typeCd',
 	              store: this.typesStore,
-	              fieldLabel: LN('sbi.generic.type'),
+	              fieldLabel: LN('sbi.generic.nodetype'),
 	              displayField: 'typeCd',   // what the user sees in the popup
 	              valueField: 'typeCd',        // what is passed to the 'change' event
 	              typeAhead: true,
@@ -169,7 +169,17 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	              editable: false,
 	              allowBlank: false,
 	              validationEvent:true
-	          }); 
+	          });
+	 	  this.detailFieldTypeDescr = new Ext.form.TextArea({
+	          	 maxLength:400,
+	       	     width : 250,
+	             height : 80,
+	        	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
+	        	 regexText : LN('sbi.roles.alfanumericString'),
+	             fieldLabel: LN('sbi.generic.nodedescr'),
+	             validationEvent:true,
+	             name: 'typeDescr'
+	         });
 	 	   /*END*/
 	   this.configurationObject.tabItems = [{
 		        title: LN('sbi.generic.details')
@@ -192,7 +202,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
 		             },
 		             items: [detailFieldId, this.detailFieldName, this.detailFieldCode, this.detailFieldDescr,
-		                     this.detailFieldLabel, this.detailFieldKpi, this.detailFieldNodeType]
+		                     this.detailFieldLabel, this.detailFieldKpi, this.detailFieldNodeType, this.detailFieldTypeDescr]
 		    	}
 		    }];
 	}

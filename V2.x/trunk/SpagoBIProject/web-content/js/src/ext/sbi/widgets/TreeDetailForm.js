@@ -107,7 +107,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
  	    	items:[new Ext.Toolbar.Button({
  	            text: LN('sbi.generic.add'),
  	            iconCls: 'icon-add',
- 	            //handler: this.addNewItem,
+ 	            handler: this.addNewItem,
  	            width: 30,
  	            scope: this
  	            })
@@ -123,31 +123,30 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
            animate: true,
            autoScroll: true,
            dataUrl: this.services['manageTreeService'],
-           //loader  : this.treeLoader,
 	       preloadTree	: this.preloadTree,
            enableDD	: true,
            dropConfig : {appendOnly:true},
            scope: this,
+           tbar: this.tb,
            root: {
                nodeType: 'async',
                text: this.rootNodeText,
                id: this.rootNodeId
-               //,handler: this.fillDetail
            }
 	   		
-	    });	
+	    });
+ 	   
  	  this.mainTree.addListener('click',this.fillDetail,this );
- 	  this.mainTree.addListener('dblclick',this.editNode,this );
  	  this.mainTree.addListener('render',this.renderTree,this );
-
- 	    // add an inline editor for the nodes
- 	    var ge = new Ext.tree.TreeEditor(this.mainTree, {/* fieldconfig here */ }, {
- 	        allowBlank:false,
- 	        blankText:'A name is required',
- 	        selectOnFocus:true
- 	    });
-
-
+ 	  /*
+ 	 this.mainTree.on('append', function(tree, p, node){
+ 		 //alert("appended");
+ 		//node.select.defer(100, node);
+ 	 });
+ 	 */
+ 	  /*form fields editing*/
+ 	 this.detailFieldName.addListener('change',this.editNode,this);
+ 	 this.detailFieldCode.addListener('change',this.editNode,this);
    	   /*
    	   *    Here is where we create the Form
    	   */
@@ -174,9 +173,25 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	,save : function() {		
 		alert('Abstract Method: it needs to be overridden');
     }
-	, fillDetail : function(node, e) {		
-		this.detailFieldName.setValue(node.attributes.name);
-		this.detailFieldName.show();
+	, fillDetail : function(node, e) {	
+		var val = node.text;
+		var aPosition = val.indexOf(" - ");
+		
+		var name = node.attributes.name;
+		var code =	node.attributes.code;
+		if(aPosition !== undefined && aPosition != -1){
+			name = val.substr(aPosition + 3);
+			code = val.substr(0 , aPosition)
+		}
+
+		this.detailFieldDescr.setValue(node.attributes.description);
+		this.detailFieldTypeDescr.setValue(node.attributes.typeDescr);
+		this.detailFieldLabel.setValue(node.attributes.label);
+		this.detailFieldKpi.setValue(node.attributes.kpi);
+		this.detailFieldNodeType.setValue(node.attributes.type);
+		this.detailFieldName.setValue(name);
+		this.detailFieldCode.setValue(code);
+
     }
 	, renderTree: function() {		
 		this.mainTree.getLoader().nodeParameter = 'id';
@@ -197,8 +212,53 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	    }
 	    */
     }
-	, editNode: function(node, e) {		
-        ge.editNode = node;
-        ge.startEdit(node.ui.textNode);
+	, editNode: function(field, newVal, oldVal) {		
+		var node = this.mainTree.getSelectionModel().getSelectedNode();
+		if(node !== undefined){
+			var val = node.text;
+			var aPosition = val.indexOf(" - ");
+			var name = "";
+			var code =	"";
+			if(aPosition !== undefined && aPosition != -1){
+				name = val.substr(aPosition + 3);
+				code = val.substr(0 , aPosition);
+				//replace text
+				if(field.getName() == 'name'){
+					name = newVal;
+				}else if(field.getName() == 'code'){
+					code = newVal;
+				}
+			}
+			var text = code +" - "+name;
+			node.setText( text);
+			
+			this.mainTree.render();
+		}
     }
+	, addNewItem : function(){
+
+		var parent = this.mainTree.getSelectionModel().getSelectedNode();
+		if(parent === undefined || parent == null){
+			alert("Select parent node");
+			return;
+		}else{
+			parent.leaf=false;
+			parent.allowChildren= true;
+		}
+		
+		var node = new Ext.tree.TreeNode({
+            text:'... - ...',
+            leaf:true,
+            cls: 'image-node',
+            allowDrag:false
+        });
+		
+		if(!parent.isExpanded()){
+			parent.expand(true);
+		}
+
+		parent.appendChild(node);
+
+		this.mainTree.fireEvent('click', node);
+	}
 });

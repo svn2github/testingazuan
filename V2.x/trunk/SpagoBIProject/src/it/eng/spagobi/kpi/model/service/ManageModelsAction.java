@@ -65,7 +65,8 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 	private final String USER_DELETE = "USER_DELETE";
 
 	
-	private final String MODEL_DOMAIN_TYPE = "MODEL_ROOT";
+	private final String MODEL_DOMAIN_TYPE_ROOT = "MODEL_ROOT";
+	private final String MODEL_DOMAIN_TYPE_NODE = "MODEL_NODE";
 	// USER detail
 	private final String ID = "id";
 	private final String USER_ID = "userId";
@@ -180,7 +181,11 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 			}
 		}else if(serviceType == null){
 			try {
-				List nodeTypes = DAOFactory.getDomainDAO().loadListDomainsByType(MODEL_DOMAIN_TYPE);
+				List nodeTypesNodes = DAOFactory.getDomainDAO().loadListDomainsByType(MODEL_DOMAIN_TYPE_NODE);
+				List nodeTypesRoot = DAOFactory.getDomainDAO().loadListDomainsByType(MODEL_DOMAIN_TYPE_ROOT);
+				List nodeTypes = new ArrayList();
+				nodeTypes.addAll(nodeTypesNodes);
+				nodeTypes.addAll(nodeTypesRoot);
 				getSessionContainer().setAttribute("nodeTypesList", nodeTypes);
 				
 			} catch (EMFUserError e) {

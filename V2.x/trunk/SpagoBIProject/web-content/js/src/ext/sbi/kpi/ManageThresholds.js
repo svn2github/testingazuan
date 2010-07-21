@@ -98,13 +98,17 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 			this.thrMinOrMaxDetail.setVisible(true);
 			this.detailThrMin.enable();
             this.detailThrMinClosed.enable();
+            this.detailThrMax.setRawValue( null );
             this.detailThrMax.disable();
+            this.detailThrMaxClosed.setValue( false );
             this.detailThrMaxClosed.disable();
 		}else if (thrTypeSelected != null && thrTypeSelected=='MAXIMUM'){
 			this.tempThrV.setVisible(false);
 			this.thrMinOrMaxDetail.setVisible(true);
 			this.detailThrMin.disable();
+			this.detailThrMin.setRawValue( null );
             this.detailThrMinClosed.disable();
+			this.detailThrMinClosed.setValue( false );
             this.detailThrMax.enable();
             this.detailThrMaxClosed.enable();
 		}else if (thrTypeSelected != null && thrTypeSelected=='RANGE'){
@@ -114,8 +118,8 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 	}
 
 	, fillThrValues : function(sm, row, rec) {	 
-          	var tempArr = rec.data.thrValues;
-         	var length = rec.data.thrValues.length;
+          	//var tempArr = rec.data.thrValues;
+         	//var length = rec.data.thrValues.length;
          	this.activateThrValuesForm(null, rec, row);
          	/*if(length>0){
 	         	var tempRecord = new Ext.data.Record({"label":tempArr[0].label, "position":tempArr[0].position});
@@ -130,6 +134,7 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 		                    	          , 'description'   
 		                    	          , 'typeCd'
 		                    	          , 'thrValues'
+		                    	          , 'itThrVal'
 		                    	          , 'label'
 		                    	          , 'position'
 		                    	          , 'min'
@@ -147,12 +152,23 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 										  code:'', 
 										  description:'',
 										  typeCd: '',
-										  thrValues: []
+										  thrValues: [],
+										  itThrVal: 0,
+										  label: '',
+					                      position: '',
+					                      min: '',
+					                      minIncluded: '',
+					                      max: '',
+					                      maxIncluded: '',
+					                      val: '',
+					                      color: '',
+					                      severityCd: ''     
 										 });   
 		
 		this.configurationObject.gridColItems = [
 		                                         {id:'name',header: LN('sbi.generic.name'), width: 50, sortable: true, locked:false, dataIndex: 'name'},
-		                                         {header: LN('sbi.generic.code'), width: 150, sortable: true, dataIndex: 'code'}
+		                                         {header: LN('sbi.generic.code'), width: 150, sortable: true, dataIndex: 'code'},
+		                                         {header: LN('sbi.generic.type'), width: 150, sortable: true, dataIndex: 'typeCd'}
 		                                        ];
 		
 		if(this.drawSelectColumn){
@@ -238,7 +254,12 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
  	   
  	  this.tempThrV = new Sbi.kpi.ManageThresholdValues({});
  	  
- 	  var detailThrPosition = new Ext.form.TextField({
+ 	  var detailThrValFieldId = {
+             name: 'itThrVal',
+             hidden: true
+         };
+ 	  
+ 	  var detailThrPosition = new Ext.form.NumberField({
  			 maxLength:20,
              fieldLabel: 'Position',
              validationEvent:true,
@@ -383,6 +404,27 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 			        typeCd: values['typeCd']
 			});	  
 			
+			if(values['typeCd']!=null && values['typeCd']!=undefined){
+				if(values['typeCd']=='MINIMUM' || values['typeCd']=='MAXIMUM'){
+					
+					newRec.set('label',values['label']);
+					newRec.set('position',values['position']);
+					newRec.set('val',values['val']);
+					newRec.set('color',values['color']);
+					newRec.set('severityCd',values['severityCd']);
+
+					if(values['typeCd']=='MINIMUM'){
+						newRec.set('min',values['min']);
+						newRec.set('minIncluded',values['minIncluded']);						
+					}else if(values['typeCd']=='MAXIMUM'){
+						newRec.set('max',values['max']);
+						newRec.set('maxIncluded',values['maxIncluded']);
+					}					
+				}else if(values['typeCd']=='RANGE'){
+				
+				}
+			}
+			
 		}else{
 			var record;
 			var length = this.mainElementsStore.getCount();
@@ -392,21 +434,57 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 	   	        	record = tempRecord;
 				}			   
 	   	    }	
+
 			record.set('name',values['name']);
 			record.set('code',values['code']);
 			record.set('description',values['description']);
-			record.set('typeCd',values['typeCd']);						
+			record.set('typeCd',values['typeCd']);		
+			
+			if(values['typeCd']!=null && values['typeCd']!=undefined)
+				if(values['typeCd']=='MINIMUM' || values['typeCd']=='MAXIMUM'){
+					
+					record.set('label',values['label']);
+					record.set('position',values['position']);
+					record.set('val',values['val']);
+					record.set('color',values['color']);
+					record.set('severityCd',values['severityCd']);
+
+					if(values['typeCd']=='MINIMUM'){
+						record.set('min',values['min']);
+						record.set('minIncluded',values['minIncluded']);						
+					}else if(values['typeCd']=='MAXIMUM'){
+						record.set('max',values['max']);
+						record.set('maxIncluded',values['maxIncluded']);
+					}					
+				}else if(values['typeCd']=='RANGE'){
+				
+				}
 		}
 
         var params = {
         	name : values['name'],
         	code : values['code'],
         	description : values['description'],
-        	typeCd : values['typeCd']
+        	typeCd : values['typeCd'],
+        	thrValues: values['thrValues'],
+			label: values['label'],
+            position: values['position'],
+            min: values['min'],
+            minIncluded: values['minIncluded'],
+            max: values['max'],
+            maxIncluded: values['maxIncluded'],
+            val: values['val'],
+            color: values['color'],
+            severityCd: values['severityCd']
         };
         
         if(idRec){
         	params.id = idRec;
+        }
+        
+        var idThrValRec = values['itThrVal'];
+        if(idThrValRec){
+        	params.itThrVal = idThrValRec;
         }
         
         Ext.Ajax.request({
@@ -427,9 +505,23 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 			                   });
 			      		}else{
 			      			var itemId = content.id;
+			      			var idThrVal = content.idThrVal;
 			      			if(newRec != null && newRec != undefined && itemId != null && itemId !==''){
 			      				newRec.set('id', itemId);
+			      				if(idThrVal!=null && idThrVal!==''){
+			      					newRec.set('itThrVal', idThrVal);
+			      				}
 			      				this.mainElementsStore.add(newRec);  
+			      			}else if(idThrVal!=null && idThrVal!==''){
+			      				var record;
+			      				var length = this.mainElementsStore.getCount();
+			      				for(var i=0;i<length;i++){
+			      		   	        var tempRecord = this.mainElementsStore.getAt(i);
+			      		   	        if(tempRecord.data.id==itemId){
+			      		   	        	record = tempRecord;
+			      					}			   
+			      		   	    }
+			      				record.set('itThrVal', idThrVal);
 			      			}
 			      			this.mainElementsStore.commitChanges();
 			      			if(itemId != null && itemId !==''){

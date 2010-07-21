@@ -15,9 +15,11 @@ public interface IThresholdValueDAO {
 	
 	SbiThresholdValue loadSbiThresholdValueById(Integer id) throws EMFUserError;
 
-	void modifyThresholdValue(ThresholdValue threshold) throws EMFUserError;
+	void modifyThresholdValue(ThresholdValue thrVal) throws EMFUserError;
 
-	Integer insertThresholdValue(ThresholdValue toCreate) throws EMFUserError;
+	Integer insertThresholdValue(ThresholdValue thrVal) throws EMFUserError;
+	
+	Integer saveOrUpdateThresholdValue(ThresholdValue thrVal) throws EMFUserError;
 
 	boolean deleteThresholdValue(Integer thresholdId) throws EMFUserError;
 	

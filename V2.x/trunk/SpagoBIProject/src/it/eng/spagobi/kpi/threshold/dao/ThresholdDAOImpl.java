@@ -6,6 +6,7 @@ import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
+import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
 
@@ -169,6 +170,8 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 			sbiThreshold.setThresholdType(thresholdType);
 
 			aSession.saveOrUpdate(sbiThreshold);
+			
+			Integer thrId = threshold.getId();
 
 			tx.commit();
 

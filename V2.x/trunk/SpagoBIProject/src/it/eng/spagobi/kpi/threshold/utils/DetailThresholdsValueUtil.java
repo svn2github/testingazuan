@@ -139,7 +139,7 @@ public class DetailThresholdsValueUtil {
 		catch (Exception e) {
 			col=Color.red;
 		}
-		toReturn.setColour(col);
+		toReturn.setColor(col);
 		toReturn.setColourString(colour);
 		toReturn.setSeverityId(severityId);
 		toReturn.setThresholdType(sThresholdType);

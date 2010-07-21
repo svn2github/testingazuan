@@ -27,12 +27,16 @@ import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
+import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 import it.eng.spagobi.kpi.threshold.dao.IThresholdDAO;
+import it.eng.spagobi.kpi.threshold.dao.IThresholdValueDAO;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -58,7 +62,19 @@ import org.json.JSONObject;
 	private final String NAME = "name";
 	private final String CODE = "code";
 	private final String DESCRIPTION = "description";
-	private final String NODE_TYPE_CODE = "typeCd";
+	private final String NODE_TYPE_CODE = "typeCd";	
+	private static final String THRESHOLD_VALUES = "thrValues";
+	
+	private static final String THR_VAL_ID = "itThrVal";
+	private static final String THR_VAL_LABEL = "label";
+	private static final String THR_VAL_POSITION = "position";
+	private static final String THR_VAL_MIN = "min";
+	private static final String THR_VAL_MIN_INCLUDED = "minIncluded";
+	private static final String THR_VAL_MAX = "max";
+	private static final String THR_VAL_MAX_INCLUDED = "maxIncluded";
+	private static final String THR_VAL_VALUE = "val";
+	private static final String THR_VAL_COLOR = "color";
+	private static final String THR_VAL_SEVERITY_CD = "severityCd";
 	
 	public static String START = "start";
 	public static String LIMIT = "limit";
@@ -69,8 +85,10 @@ import org.json.JSONObject;
 	public void doService() {
 		logger.debug("IN");
 		IThresholdDAO thrDao;
+		IThresholdValueDAO tDao;
 		try {
 			thrDao = DAOFactory.getThresholdDAO();
+			tDao = DAOFactory.getThresholdValueDAO();
 		} catch (EMFUserError e1) {
 			logger.error(e1.getMessage(), e1);
 			throw new SpagoBIServiceException(SERVICE_NAME,	"Error occurred");
@@ -112,8 +130,34 @@ import org.json.JSONObject;
 			String name = getAttributeAsString(NAME);
 			String description = getAttributeAsString(DESCRIPTION);
 			String typeCD = getAttributeAsString(NODE_TYPE_CODE);		
+			JSONArray thrValuesJSON = getAttributeAsJSONArray(THRESHOLD_VALUES);
+			
+			String thrValId = getAttributeAsString(THR_VAL_ID);
+			String label = getAttributeAsString(THR_VAL_LABEL);
+			Integer position = getAttributeAsInteger(THR_VAL_POSITION);
+			String colourString = getAttributeAsString(THR_VAL_COLOR);
+			String valueS = getAttributeAsString(THR_VAL_VALUE);
+			Double value = null;
+			if(valueS!=null && valueS != ""){
+				value = new Double(valueS);
+			}
+			String severityCd = getAttributeAsString(THR_VAL_SEVERITY_CD);
+			Boolean minClosed = getAttributeAsBoolean(THR_VAL_MIN_INCLUDED);
+			String minValueS = getAttributeAsString(THR_VAL_MIN);
+			Double minValue = null;
+			if(minValueS!=null && minValueS!=""){
+				minValue = new Double(minValueS);
+			}
+			Boolean maxClosed = getAttributeAsBoolean(THR_VAL_MAX_INCLUDED);
+			String maxValueS = getAttributeAsString(THR_VAL_MAX);
+			Double maxValue = null;
+			if(maxValueS!=null && maxValueS!=""){
+				maxValue = new Double(maxValueS);
+			}
 			
 			List<Domain> domains = (List<Domain>)getSessionContainer().getAttribute("nodeTypesList");
+			List<Domain> domainsthrValues = (List<Domain>)getSessionContainer().getAttribute("thrSeverityTypes");
+			domains.addAll(domainsthrValues);
 			
 		    HashMap<String, Integer> domainIds = new HashMap<String, Integer> ();
 		    if(domains != null){
@@ -135,29 +179,84 @@ import org.json.JSONObject;
 				thr.setThresholdTypeId(typeID);
 				thr.setCode(code);
 				
+				
 				if(description != null){
 					thr.setDescription(description);
-				}			
+				}	
+				
+				List thrValuesList = new ArrayList();;
+				if(typeCD !=null){
+					if(typeCD.equals("MINIMUM") || typeCD.equals("MAXIMUM")){
+						ThresholdValue tVal = new ThresholdValue();
+						if(thrValId!= null && !thrValId.equals("") && !thrValId.equals("0")){
+							tVal.setId(Integer.valueOf(thrValId));
+						}
+						tVal.setLabel(label);						
+						tVal.setPosition(position);
+						tVal.setColourString(colourString);
+						tVal.setValue(value);
+						tVal.setSeverityCd(severityCd);
+						Integer severityId = domainIds.get(severityCd);				   
+						tVal.setSeverityId(severityId);		
+						
+						if(typeCD.equals("MINIMUM")){
+							tVal.setMinClosed(minClosed);
+							tVal.setMinValue(minValue);
+						}else if(typeCD.equals("MAXIMUM")){
+							tVal.setMaxClosed(maxClosed);
+							tVal.setMaxValue(maxValue);
+						}	
+						thrValuesList.add(tVal);
+						thr.setThresholdValues(thrValuesList);
+						
+					}else if(typeCD.equals("RANGE")){
+						
+					}
+				}
+					
 				
 				try {
-					if(id != null && !id.equals("") && !id.equals("0")){							
+					
+					/*if(thrValuesJSON != null){
+						//thrValuesList = deserializeThrValuesJSONArray(thrValuesJSON);
+					}*/
+					Integer idToReturnToClient = null;
+					
+					if(id != null && !id.equals("") && !id.equals("0")){	
+						//modify
 						thr.setId(Integer.valueOf(id));
 						thrDao.modifyThreshold(thr);
-						logger.debug("threshold "+id+" updated");
-						JSONObject attributesResponseSuccessJSON = new JSONObject();
-						attributesResponseSuccessJSON.put("success", true);
-						attributesResponseSuccessJSON.put("responseText", "Operation succeded");
-						attributesResponseSuccessJSON.put("id", id);
-						writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );
+						idToReturnToClient = Integer.valueOf(id);						
 					}else{
-						Integer resourceID = thrDao.insertThreshold(thr);
-						logger.debug("New threshold inserted");
-						JSONObject attributesResponseSuccessJSON = new JSONObject();
-						attributesResponseSuccessJSON.put("success", true);
-						attributesResponseSuccessJSON.put("responseText", "Operation succeded");
-						attributesResponseSuccessJSON.put("id", resourceID);
-						writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );
+						//insert new
+						idToReturnToClient = thrDao.insertThreshold(thr);		
 					}
+					
+					List thrValueIds = new ArrayList();
+					if(thrValuesList!=null && !thrValuesList.isEmpty()){							
+						Iterator it = thrValuesList.iterator();
+						while(it.hasNext()){
+							ThresholdValue tVal = (ThresholdValue)it.next();
+							tVal.setThresholdId(Integer.valueOf(idToReturnToClient));							
+							//insert or update all threshold values
+							Integer thrValueId = tDao.saveOrUpdateThresholdValue(tVal);
+							thrValueIds.add(thrValueId);
+						}				
+					}
+					
+					logger.debug("Threshold inserted or updated");
+					JSONObject attributesResponseSuccessJSON = new JSONObject();
+					attributesResponseSuccessJSON.put("success", true);
+					attributesResponseSuccessJSON.put("responseText", "Operation succeded");
+					attributesResponseSuccessJSON.put("id", idToReturnToClient);
+					if(thrValueIds!=null && !thrValueIds.isEmpty()){
+						if(thrValueIds.size()==1){
+							attributesResponseSuccessJSON.put("idThrVal", thrValueIds.get(0));
+						}else{
+							//attacco l'array di id
+						}
+					}
+					writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );
 	
 				} catch (Throwable e) {
 					logger.error(e.getMessage(), e);

@@ -28,6 +28,7 @@ public class ThresholdJSONSerializer implements Serializer {
 	private static final String THRESHOLD_TYPE_CD = "typeCd";
 	private static final String THRESHOLD_VALUES = "thrValues";
 	
+	private static final String THR_VAL_ID = "itThrVal";
 	private static final String THR_VAL_LABEL = "label";
 	private static final String THR_VAL_POSITION = "position";
 	private static final String THR_VAL_MIN = "min";
@@ -64,6 +65,7 @@ public class ThresholdJSONSerializer implements Serializer {
 					if(thrValues.size()==1){
 						ThresholdValue thrVal = (ThresholdValue) thrValues.get(0);
 						if(thrVal != null){
+						 result.put(THR_VAL_ID,  thrVal.getId());
 						 result.put(THR_VAL_LABEL,  thrVal.getLabel());
 						 result.put(THR_VAL_POSITION,  thrVal.getPosition());
 						 result.put(THR_VAL_MIN,  thrVal.getMinValue());
@@ -80,6 +82,7 @@ public class ThresholdJSONSerializer implements Serializer {
 							
 							 ThresholdValue thrVal = (ThresholdValue) iterator.next();
 							 JSONObject temp = new JSONObject();
+							 temp.put(THR_VAL_ID,  thrVal.getId());
 							 temp.put(THR_VAL_LABEL,  thrVal.getLabel());
 							 temp.put(THR_VAL_POSITION,  thrVal.getPosition());
 							 temp.put(THR_VAL_MIN,  thrVal.getMinValue());

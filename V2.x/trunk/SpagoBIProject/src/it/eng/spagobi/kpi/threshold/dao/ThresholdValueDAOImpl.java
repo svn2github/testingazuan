@@ -9,9 +9,13 @@ import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
+import it.eng.spagobi.profiling.bean.SbiExtUserRoles;
+import it.eng.spagobi.profiling.bean.SbiUser;
+import it.eng.spagobi.profiling.bean.SbiUserAttributes;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -236,7 +240,7 @@ IThresholdValueDAO {
 				}
 				logger.debug("Color decoded");
 			}
-			toReturn.setColour(color);
+			toReturn.setColor(color);
 			toReturn.setColourString(hibThresholdValue.getColour());
 			toReturn.setSeverityId(hibThresholdValue.getSeverity().getValueId());
 			toReturn.setSeverityCd(hibThresholdValue.getSeverity().getValueCd());
@@ -364,6 +368,94 @@ IThresholdValueDAO {
 		}
 		logger.debug("OUT");
 	}
+	
+	public Integer saveOrUpdateThresholdValue(ThresholdValue thresholdValue)
+	throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		Integer toReturn = null;
+		boolean save = true;
+		SbiThresholdValue sbiThresholdValue = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			
+			Integer position = thresholdValue.getPosition();
+			String label = thresholdValue.getLabel();
+			Double minValue = thresholdValue.getMinValue();
+			Double maxValue = thresholdValue.getMaxValue();
+			Boolean minClosed = thresholdValue.getMinClosed();
+			Boolean maxClosed = thresholdValue.getMaxClosed();
+			Double value = thresholdValue.getValue();
+
+			String colour = "";
+			colour=thresholdValue.getColourString();
+
+			Integer thresholdId = thresholdValue.getThresholdId();
+			Integer severityId = thresholdValue.getSeverityId();
+			
+			SbiDomains severity = null;
+			if (severityId != null) {
+				severity = (SbiDomains) aSession.load(SbiDomains.class,
+						severityId);
+			}
+
+			SbiThreshold threshold = null;
+			if (thresholdId != null) {
+				threshold = (SbiThreshold) aSession.load(SbiThreshold.class,
+						thresholdId);
+			}
+			
+			Integer thrValId = thresholdValue.getId();			
+			
+			if(thrValId!=null && !thrValId.equals(new Integer(0))){
+				save = false;
+				sbiThresholdValue = (SbiThresholdValue) aSession.load(SbiThresholdValue.class, thrValId);
+				toReturn = thrValId;
+			}else{
+				sbiThresholdValue = new SbiThresholdValue();
+			}
+
+			sbiThresholdValue.setPosition(position);
+			sbiThresholdValue.setLabel(label);
+			sbiThresholdValue.setMinValue(minValue);
+			sbiThresholdValue.setMaxValue(maxValue);
+			sbiThresholdValue.setColour(colour);
+			sbiThresholdValue.setMinClosed(minClosed);
+			sbiThresholdValue.setMaxClosed(maxClosed);
+			sbiThresholdValue.setThValue(value);
+			sbiThresholdValue.setSbiThreshold(threshold);
+			sbiThresholdValue.setSeverity(severity);
+			
+			if(save){
+				//save
+				toReturn = (Integer)aSession.save(sbiThresholdValue);	
+				sbiThresholdValue.setIdThresholdValue(toReturn);
+			}else{
+				//update
+				aSession.saveOrUpdate(sbiThresholdValue);
+			}
+
+			tx.commit();
+
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
 
 	public Integer insertThresholdValue(ThresholdValue toCreate)
 	throws EMFUserError {
@@ -384,7 +476,7 @@ IThresholdValueDAO {
 			Double value = toCreate.getValue();
 
 			String colour = "";
-			Color col=toCreate.getColour();
+			Color col=toCreate.getColor();
 
 
 			colour=toCreate.getColourString();
@@ -516,7 +608,7 @@ IThresholdValueDAO {
 		toReturn.setPosition(position);
 		toReturn.setMaxValue(maxValue);
 		toReturn.setMinValue(minValue);
-		toReturn.setColour(color);
+		toReturn.setColor(color);
 		toReturn.setColourString(col);
 		
 		toReturn.setMaxClosed(maxClosed);

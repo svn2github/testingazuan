@@ -14,7 +14,7 @@ public class ThresholdValue implements Serializable {
 	Double minValue = null;// null if type = max
 	Double maxValue = null;// null if type = min
 	String label = null;
-	Color colour = null;
+	Color color = null;
 	String colourString = null;
 	List alarms = null;
 	String thresholdType = null;
@@ -80,12 +80,12 @@ public class ThresholdValue implements Serializable {
 		this.label = label;
 	}
 
-	public Color getColour() {
-		return colour;
+	public Color getColor() {
+		return color;
 	}
 
-	public void setColour(Color _colour) {
-		this.colour = _colour;
+	public void setColor(Color _color) {
+		this.color = _color;
 	}
 
 	public List getAlarms() {

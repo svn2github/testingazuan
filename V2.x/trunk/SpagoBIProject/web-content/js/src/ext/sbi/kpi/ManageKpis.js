@@ -246,20 +246,20 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 		  store: docs
 		  , name: 'documents'
 		  ,	fieldLabel: 'Documents'
-		  , singleSelect: false
+		  , singleSelect: true
 		  ,	valueField: 'label'
 		  , displayField: 'label'
 		  , descriptionField: 'label'
 		  , cm: new Ext.grid.ColumnModel([
 			                        		new Ext.grid.RowNumberer(),
 			                        		{   header: 'Label',
-			                        		    dataIndex: 'code',
+			                        		    dataIndex: 'label',
 			                        		    width: 75
 			                        		},{   header: 'Name',
 			                        		    dataIndex: 'name',
 			                        		    width: 75
 			                        		},{   header: 'Engine',
-			                        		    dataIndex: 'description',
+			                        		    dataIndex: 'engine',
 			                        		    width: 75
 			                        		},{   header: 'State',
 			                        		    dataIndex: 'stateCode',

@@ -104,7 +104,7 @@ public class KpiValue implements Cloneable{
 							toReturn = t;
 							break;
 						}else {
-							t.setColour(Color.WHITE) ;
+							t.setColor(Color.WHITE) ;
 							toReturn = t;
 							break;
 						}
@@ -113,7 +113,7 @@ public class KpiValue implements Cloneable{
 							toReturn = t;
 							break;
 						}else {
-							t.setColour(Color.WHITE) ;
+							t.setColor(Color.WHITE) ;
 							toReturn = t;
 							break;
 						}
@@ -124,7 +124,7 @@ public class KpiValue implements Cloneable{
 						if (val.doubleValue() >= max.doubleValue()) {
 							toReturn = t;
 						} else {
-							t.setColour(Color.WHITE);
+							t.setColor(Color.WHITE);
 							toReturn = t;
 							break;
 						}
@@ -132,7 +132,7 @@ public class KpiValue implements Cloneable{
 						if (val.doubleValue() > max.doubleValue()) {
 							toReturn = t;
 						} else {
-							t.setColour(Color.WHITE);
+							t.setColor(Color.WHITE);
 							toReturn = t;
 							break;
 						}

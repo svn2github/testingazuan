@@ -101,28 +101,20 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
            , tbar: this.tbSave
 		   , items: this.tabItems
 		});
- 	   this.addBtn = new Ext.Toolbar.Button({
-           text: LN('sbi.generic.add'),
-	            iconCls: 'icon-add',
-	            handler: this.addNewItem,
-	            width: 30,
-	            scope: this
-	            });
-	   this.deleteBtn = new Ext.Toolbar.Button({
-          text: LN('sbi.generic.delete'),
-	            iconCls: 'icon-remove',
-	            handler: this.deleteItem,
-	            width: 30,
-	            scope: this
-	            });
-	   
- 	    this.tb = new Ext.Toolbar({
- 	    	buttonAlign : 'left',
- 	    	items:[this.addBtn, 
- 	    	       //{xtype: 'tbspacer'}, 
- 	    	       this.deleteBtn	]
- 	    });
 
+ 	    this.tb = new Ext.Toolbar({
+ 	    	buttonAlign : 'right',
+ 	    	items:[new Ext.Toolbar.Button({
+ 	            text: LN('sbi.generic.add'),
+ 	            iconCls: 'icon-add',
+ 	            //handler: this.addNewItem,
+ 	            width: 30,
+ 	            scope: this
+ 	            })
+ 	    	]
+ 	    });
+ 	   
+		
  	   this.mainTree =  new Ext.tree.TreePanel({
            title: this.treeTitle,
            width: 250,
@@ -131,31 +123,30 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
            animate: true,
            autoScroll: true,
            dataUrl: this.services['manageTreeService'],
+           //loader  : this.treeLoader,
 	       preloadTree	: this.preloadTree,
            enableDD	: true,
            dropConfig : {appendOnly:true},
            scope: this,
-           tbar: this.tb,
            root: {
                nodeType: 'async',
                text: this.rootNodeText,
                id: this.rootNodeId
            }
 	   		
-	    });
- 	   
+	    });	
  	  this.mainTree.addListener('click',this.fillDetail,this );
+ 	  this.mainTree.addListener('dblclick',this.editNode,this );
  	  this.mainTree.addListener('render',this.renderTree,this );
 
- 	 this.mainTree.on('append', function(tree, p, node){
- 		 //alert("appended");
- 		//node.select.defer(100, node);
-
- 	 });
-
- 	  /*form fields editing*/
- 	 this.detailFieldName.addListener('change',this.editNode,this);
- 	 this.detailFieldCode.addListener('change',this.editNode,this);
+ 	    // add an inline editor for the nodes
+ 	  this.ge = new Ext.tree.TreeEditor(this.mainTree, {/* fieldconfig here */ }, {
+ 	        allowBlank:false,
+ 	        blankText:'A name is required',
+ 	        selectOnFocus:true
+ 	    });
+ 	  this.ge.addListener('complete',this.editDetail,this );
+ 	  
    	   /*
    	   *    Here is where we create the Form
    	   */
@@ -183,6 +174,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		alert('Abstract Method: it needs to be overridden');
     }
 	, fillDetail : function(node, e) {	
+		//alert("fillDetail");
 		var val = node.text;
 		var aPosition = val.indexOf(" - ");
 		
@@ -221,61 +213,32 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	    }
 	    */
     }
-	, editNode: function(field, newVal, oldVal) {		
-		var node = this.mainTree.getSelectionModel().getSelectedNode();
-		if(node !== undefined){
-			var val = node.text;
-			var aPosition = val.indexOf(" - ");
-			var name = "";
-			var code =	"";
+	, editNode: function(node, e) {		
+		//alert("editNode");
+        this.ge.editNode = node;
+        this.ge.startEdit(node.ui.textNode);
+    }
+	
+	, editDetail: function(editor, val, startVal) {	
+		//alert("editDetail");
+		var aPosition = val.indexOf(" - ");
+		var name = "";
+		var code =	"";
+		if(aPosition === undefined || aPosition == -1){
+			aPosition = startVal.indexOf(" - ");
+			if(aPosition !== undefined && aPosition != -1){
+				name = startVal.substr(aPosition + 3);
+				code = startVal.substr(0 , aPosition)
+			}
+		}else{
+			aPosition = val.indexOf(" - ");
 			if(aPosition !== undefined && aPosition != -1){
 				name = val.substr(aPosition + 3);
-				code = val.substr(0 , aPosition);
-				//replace text
-				if(field.getName() == 'name'){
-					name = newVal;
-				}else if(field.getName() == 'code'){
-					code = newVal;
-				}
+				code = val.substr(0 , aPosition)
 			}
-			var text = code +" - "+name;
-			node.setText( text);
-			
-			this.mainTree.render();
 		}
-    }
-	, addNewItem : function(){
-
-		var parent = this.mainTree.getSelectionModel().getSelectedNode();
-		if(parent === undefined || parent == null){
-			alert("Select parent node");
-			return;
-		}else{
-			parent.leaf=false;
-		}
+		this.detailFieldName.setValue(name);
+		this.detailFieldCode.setValue(code);
 		
-		var node = new Ext.tree.TreeNode({
-            text:'... - ...',
-            leaf:true,
-            cls: 'image-node',
-            allowDrag:false
-        });
-		this.mainTree.render();
-		if(!parent.isExpanded()){
-			parent.expand(false, /*no anim*/ false);
-		}
-		this.mainTree.render();
-		parent.appendChild(node);
-
-		this.mainTree.fireEvent('click', node);
-	}
-	, deleteItem : function(){
-		var node = this.mainTree.getSelectionModel().getSelectedNode();
-		if(node === undefined || node == null){
-			alert("Select node to delete");
-			return;
-		}
-		node.remove();
-		this.mainTree.render();
-	}
+    }
 });

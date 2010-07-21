@@ -202,7 +202,7 @@ public class ChartImpl implements Serializable{
 				Double min = t.getMinValue();
 				Double max = t.getMaxValue();
 				String label = t.getLabel();
-				Color c = t.getColour();
+				Color c = t.getColor();
 				
 				if (type.equals("RANGE")){
 					if (min.doubleValue()<lower){

@@ -162,9 +162,9 @@ public class HavingField {
 		
 		public IAggregationFunction function;
 		
-		public Operand(String value, String description, String type,
-				String defaulttValue, String lastValue, IAggregationFunction function) {
-			super(value, description, type, defaulttValue, lastValue);
+		public Operand(String[] values, String description, String type,
+				String[] defaulttValues, String[] lastValues, IAggregationFunction function) {
+			super(values, description, type, defaulttValues, lastValues);
 			this.function = function;
 		}
 	}

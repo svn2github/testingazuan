@@ -233,7 +233,7 @@ Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.tt.wizard'] = 'Exp Wizard';
 // warnings
 Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.delete.title'] = 'Remove filter?';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.delete.msg'] = 'Your are removing a filter that is used in a neasted expression (see expression wizard). Removing it will reset the expression. Would you like to go on anyway?';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.deleteAll.title'] = 'Delete all filters??';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.deleteAll.title'] = 'Delete all filters?';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.warning.deleteAll.msg'] = 'You are going to delete all filtres. Do you want to go on?';
 
 

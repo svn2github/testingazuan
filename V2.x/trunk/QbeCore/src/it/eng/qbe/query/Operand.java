@@ -27,22 +27,22 @@ package it.eng.qbe.query;
  */
 public abstract class Operand {
 	
-	public String value;
+	public String[] values; // values may be more than 1 (the right operand with IN, NOT IN, BEETWEN and NOT BEETWEN operators)
 	public String description;
 	public String type;
-	public String defaulttValue;
-	public String lastValue;
+	public String[] defaulttValues;
+	public String[] lastValues;
 	
-	public Operand(String value,
+	public Operand(String[] values,
 			String description,
 			String type,
-			String defaulttValue,
-			String lastValue) {
-		this.value = value;
+			String[] defaulttValues,
+			String[] lastValues) {
+		this.values = values;
 		this.description = description;
 		this.type = type;
-		this.defaulttValue = defaulttValue;
-		this.lastValue = lastValue;
+		this.defaulttValues = defaulttValues;
+		this.lastValues = lastValues;
 	}
 	
 }

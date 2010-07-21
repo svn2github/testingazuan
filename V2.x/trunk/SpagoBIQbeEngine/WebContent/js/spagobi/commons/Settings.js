@@ -53,10 +53,10 @@ Sbi.settings.qbe = {
 				, 'deleteButton': {hideable: true, hidden: true, sortable: false, editable: true}
 				, 'promptable': {hideable: true, hidden: false, sortable: false, editable: true}				
 			}
-			, lookupValuesSeparator: ' || '
+			, lookupValuesSeparator: ' ---- '
 		}
 		
-		,havingGridPanel: {
+		, havingGridPanel: {
 			gridHeight: 250
 		}
 		

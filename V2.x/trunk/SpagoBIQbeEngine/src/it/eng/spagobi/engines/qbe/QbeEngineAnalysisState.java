@@ -49,7 +49,7 @@ public class QbeEngineAnalysisState  extends EngineAnalysisState {
 	public static final String CATALOGUE = "CATALOGUE";
 	public static final String DATAMART_MODEL = "DATAMART_MODEL";
 	
-	public static final String CURRENT_VERSION = "5";
+	public static final String CURRENT_VERSION = "6";
 	
 	/** Logger component. */
     private static transient Logger logger = Logger.getLogger(QbeEngineAnalysisState.class);

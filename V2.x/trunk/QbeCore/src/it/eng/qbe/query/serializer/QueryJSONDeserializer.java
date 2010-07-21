@@ -209,17 +209,19 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 	private void deserializeFilters(JSONArray filtersJOSN, DataMartModel datamartModel, Query query) throws SerializationException {
 		
 		JSONObject filterJSON;
-		DataMartField field;
 				
 		String filterId;
 		String filterDescription;
 		boolean promptable;
 
-		String operandValue;
+		String[] operandValues;
 		String operandDescription;
 		String operandType;
-		String operandLasDefaulttValue;
-		String operandLastValue;
+		String[] operandLasDefaulttValues;
+		String[] operandLastValues;
+		JSONArray operandValuesJSONArray;
+		JSONArray operandDefaultValuesJSONArray;
+		JSONArray operandLastValuesJSONArray;
 		WhereField.Operand leftOperand;
 		WhereField.Operand rightOperand;
 		String operator;
@@ -237,21 +239,24 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 					filterDescription = filterJSON.getString(SerializationConstants.FILTER_DESCRIPTION);
 					promptable = filterJSON.getBoolean(SerializationConstants.FILTER_PROMPTABLE);
 					
-					operandValue = filterJSON.getString(SerializationConstants.FILTER_LO_VALUE);
+					operandValues = new String[] {filterJSON.getString(SerializationConstants.FILTER_LO_VALUE)};
 					operandDescription = filterJSON.getString(SerializationConstants.FILTER_LO_DESCRIPTION);
 					operandType = filterJSON.getString(SerializationConstants.FILTER_LO_TYPE);
-					operandLasDefaulttValue = filterJSON.getString(SerializationConstants.FILTER_LO_DEFAULT_VALUE);
-					operandLastValue = filterJSON.getString(SerializationConstants.FILTER_LO_LAST_VALUE);
-					leftOperand = new WhereField.Operand(operandValue, operandDescription, operandType, operandLasDefaulttValue, operandLastValue);
+					operandLasDefaulttValues = new String[] {filterJSON.getString(SerializationConstants.FILTER_LO_DEFAULT_VALUE)};
+					operandLastValues = new String[] {filterJSON.getString(SerializationConstants.FILTER_LO_LAST_VALUE)};
+					leftOperand = new WhereField.Operand(operandValues, operandDescription, operandType, operandLasDefaulttValues, operandLastValues);
 					
-					operator = filterJSON.getString(SerializationConstants.FILTER_OPEARTOR);
+					operator = filterJSON.getString(SerializationConstants.FILTER_OPERATOR);
 					
-					operandValue = filterJSON.getString(SerializationConstants.FILTER_RO_VALUE);
+					operandValuesJSONArray = filterJSON.getJSONArray(SerializationConstants.FILTER_RO_VALUE);
+					operandValues = fromJSONArrayToStringArray(operandValuesJSONArray);
 					operandDescription = filterJSON.getString(SerializationConstants.FILTER_RO_DESCRIPTION);
 					operandType = filterJSON.getString(SerializationConstants.FILTER_RO_TYPE);
-					operandLasDefaulttValue = filterJSON.getString(SerializationConstants.FILTER_RO_DEFAULT_VALUE);
-					operandLastValue = filterJSON.getString(SerializationConstants.FILTER_RO_LAST_VALUE);
-					rightOperand = new WhereField.Operand(operandValue, operandDescription, operandType, operandLasDefaulttValue, operandLastValue);
+					operandDefaultValuesJSONArray = filterJSON.optJSONArray(SerializationConstants.FILTER_RO_DEFAULT_VALUE);
+					operandLasDefaulttValues = fromJSONArrayToStringArray(operandDefaultValuesJSONArray);
+					operandLastValuesJSONArray = filterJSON.optJSONArray(SerializationConstants.FILTER_RO_LAST_VALUE);
+					operandLastValues = fromJSONArrayToStringArray(operandLastValuesJSONArray);
+					rightOperand = new WhereField.Operand(operandValues, operandDescription, operandType, operandLasDefaulttValues, operandLastValues);
 					
 					booleanConnector = filterJSON.getString(SerializationConstants.FILTER_BOOLEAN_CONNETOR);
 					
@@ -273,6 +278,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 			
 	}
 	
+	
 	private void deserializeHavings(JSONArray havingsJOSN, DataMartModel datamartModel, Query query) throws SerializationException {
 		
 		JSONObject havingJSON;
@@ -282,12 +288,15 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 		String filterDescription;
 		boolean promptable;
 
-		String operandValue;
+		String[] operandValues;
 		String operandDescription;
 		String operandType;
 		String operandFunction;
-		String operandLasDefaulttValue;
-		String operandLastValue;
+		String[] operandLasDefaulttValues;
+		String[] operandLastValues;
+		JSONArray operandValuesJSONArray;
+		JSONArray operandDefaultValuesJSONArray;
+		JSONArray operandLastValuesJSONArray;
 		HavingField.Operand leftOperand;
 		HavingField.Operand rightOperand;
 		String operator;
@@ -308,27 +317,30 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 					filterDescription = havingJSON.getString(SerializationConstants.FILTER_DESCRIPTION);
 					promptable = havingJSON.getBoolean(SerializationConstants.FILTER_PROMPTABLE);
 					
-					operandValue = havingJSON.getString(SerializationConstants.FILTER_LO_VALUE);
+					operandValues = new String[] {havingJSON.getString(SerializationConstants.FILTER_LO_VALUE)};
 					operandDescription = havingJSON.getString(SerializationConstants.FILTER_LO_DESCRIPTION);
 					operandType = havingJSON.getString(SerializationConstants.FILTER_LO_TYPE);
-					operandLasDefaulttValue = havingJSON.getString(SerializationConstants.FILTER_LO_DEFAULT_VALUE);
-					operandLastValue = havingJSON.getString(SerializationConstants.FILTER_LO_LAST_VALUE);
+					operandLasDefaulttValues = new String[] {havingJSON.getString(SerializationConstants.FILTER_LO_DEFAULT_VALUE)};
+					operandLastValues = new String[] {havingJSON.getString(SerializationConstants.FILTER_LO_LAST_VALUE)};
 					operandFunction = havingJSON.getString(SerializationConstants.FILTER_LO_FUNCTION);
 					function = AggregationFunctions.get(operandFunction);
-					leftOperand = new HavingField.Operand(operandValue, operandDescription, operandType, 
-							operandLasDefaulttValue, operandLastValue, function);
+					leftOperand = new HavingField.Operand(operandValues, operandDescription, operandType, 
+							operandLasDefaulttValues, operandLastValues, function);
 					
-					operator = havingJSON.getString(SerializationConstants.FILTER_OPEARTOR);
+					operator = havingJSON.getString(SerializationConstants.FILTER_OPERATOR);
 					
-					operandValue = havingJSON.getString(SerializationConstants.FILTER_RO_VALUE);
+					operandValuesJSONArray = havingJSON.getJSONArray(SerializationConstants.FILTER_RO_VALUE);
+					operandValues = fromJSONArrayToStringArray(operandValuesJSONArray);
 					operandDescription = havingJSON.getString(SerializationConstants.FILTER_RO_DESCRIPTION);
 					operandType = havingJSON.getString(SerializationConstants.FILTER_RO_TYPE);
-					operandLasDefaulttValue = havingJSON.getString(SerializationConstants.FILTER_RO_DEFAULT_VALUE);
-					operandLastValue = havingJSON.getString(SerializationConstants.FILTER_RO_LAST_VALUE);
+					operandDefaultValuesJSONArray = havingJSON.optJSONArray(SerializationConstants.FILTER_RO_DEFAULT_VALUE);
+					operandLasDefaulttValues = fromJSONArrayToStringArray(operandDefaultValuesJSONArray);
+					operandLastValuesJSONArray = havingJSON.optJSONArray(SerializationConstants.FILTER_RO_LAST_VALUE);
+					operandLastValues = fromJSONArrayToStringArray(operandLastValuesJSONArray);
 					operandFunction = havingJSON.getString(SerializationConstants.FILTER_RO_FUNCTION);
 					function = AggregationFunctions.get(operandFunction);
-					rightOperand = new HavingField.Operand(operandValue, operandDescription, operandType,
-							operandLasDefaulttValue, operandLastValue, function);
+					rightOperand = new HavingField.Operand(operandValues, operandDescription, operandType,
+							operandLasDefaulttValues, operandLastValues, function);
 					
 					booleanConnector = havingJSON.getString(SerializationConstants.FILTER_BOOLEAN_CONNETOR);
 					
@@ -478,6 +490,18 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 		}
 		
 		return str;
+	}
+	
+	public static String[] fromJSONArrayToStringArray(JSONArray jSONArray) throws JSONException {
+		if (jSONArray == null) {
+			return null;
+		}
+		int length = jSONArray.length();
+		String[] toReturn = new String[jSONArray.length()];
+		for (int i = 0; i < length; i++) {
+			toReturn[i] = jSONArray.getString(i).toString();
+		}
+		return toReturn;
 	}
 
 }

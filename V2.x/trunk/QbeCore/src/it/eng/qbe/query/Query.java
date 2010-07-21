@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import it.eng.qbe.query.WhereField.Operand;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 /**
@@ -120,7 +119,7 @@ public class Query {
 
 	
 	public void addWhereField(String name, String description, boolean promptable,
-			Operand leftOperand, String operator, Operand rightOperand,
+			it.eng.qbe.query.WhereField.Operand leftOperand, String operator, it.eng.qbe.query.WhereField.Operand rightOperand,
 			String booleanConnector) {
 		
 		WhereField whereField = new WhereField(name, description, promptable,  leftOperand, operator, rightOperand, booleanConnector);

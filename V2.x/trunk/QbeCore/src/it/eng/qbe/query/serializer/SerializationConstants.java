@@ -64,7 +64,7 @@ public class SerializationConstants {
 	public static final String FILTER_LO_FUNCTION = "leftOperandAggregator";
 	public static final String FILTER_LO_DEFAULT_VALUE = "leftOperandDefaultValue";
 	public static final String FILTER_LO_LAST_VALUE = "leftOperandLastValue";
-	public static final String FILTER_OPEARTOR = "operator";
+	public static final String FILTER_OPERATOR = "operator";
 	public static final String FILTER_RO_VALUE = "rightOperandValue";
 	public static final String FILTER_RO_DESCRIPTION = "rightOperandDescription";
 	public static final String FILTER_RO_LONG_DESCRIPTION = "rightOperandLongDescription";

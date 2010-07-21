@@ -133,6 +133,22 @@ public class StringUtils {
 	}
 	
 	/**
+	 * Joins the input string array into a unique string using the specified separator
+	 * @param strings The strings to be joined
+	 * @param separator
+	 * @return Joins the input string array into a unique string using the specified separator
+	 */
+	public static String join(String[] strings, String separator) {
+	    StringBuffer sb = new StringBuffer();
+	    for (int i = 0; i < strings.length; i++) {
+	        if (i != 0) sb.append(separator);
+	  	    sb.append(strings[i]);
+	  	}
+	  	return sb.toString();
+	}
+
+	
+	/**
 	 * The main method.
 	 * 
 	 * @param args the arguments

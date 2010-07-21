@@ -124,8 +124,8 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		return getSpagoBIRequestContainer().getBoolean( attrName ).booleanValue();
 	}
 	
-	public List getAttributeAsStringList(String attrName) {
-		return getSpagoBIRequestContainer().getList( attrName );
+	public List getAttributeAsList(String attrName) {
+		return getSpagoBIRequestContainer().toList( attrName );
 	}
 	
 	public List getAttributeAsCsvStringList(String attrName, String separator) {

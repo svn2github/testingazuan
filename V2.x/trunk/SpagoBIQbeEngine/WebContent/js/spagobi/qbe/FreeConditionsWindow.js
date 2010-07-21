@@ -59,22 +59,31 @@ Sbi.qbe.FreeConditionsWindow = function(config) {
 };
 
 Ext.extend(Sbi.qbe.FreeConditionsWindow, Ext.Window, {
-    
-	fields: null
+	
+	freeFilters: null
+	, fields: null
 	, hasBuddy: null
     , buddy: null
     , formItems: null
+    , formItemsMap: null
     , defaultvalues: null
     , lastvalues: null
    
     // public methods
-	,getFormState : function() {      
+	, getFormState : function() {      
       	var formState = {};
       	
-      	for (var i = 0; i < this.formItems.length; i++) {
-      		var aFormItem = this.formItems[i];
-      		formState[aFormItem.getName()] = aFormItem.getValue();
-      	}
+		for (var i = 0; i < this.freeFilters.length; i++) {
+			var filter = this.freeFilters[i];
+			var aFormItem = this.formItemsMap[filter.filterId];
+			// split values if the operator is BETWEEN, NOT BETWEEN, IN or NOT IN
+			if (filter.operator == 'BETWEEN' || filter.operator == 'NOT BETWEEN' || 
+					filter.operator == 'IN' || filter.operator == 'NOT IN') {
+				formState[aFormItem.getName()] = aFormItem.getValue().split(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+			} else {
+				formState[aFormItem.getName()] = [aFormItem.getValue()];
+			}
+		}
 
       	return formState;
     }
@@ -109,7 +118,10 @@ Ext.extend(Sbi.qbe.FreeConditionsWindow, Ext.Window, {
 				if (this.defaultvalues == null) {
 					this.defaultvalues = {};
 				}
-				this.defaultvalues[aFilter.filterId] = aFilter.rightOperandDefaultValue;
+				this.defaultvalues[aFilter.filterId] = 
+					(aFilter.rightOperandDefaultValue instanceof Array ? 
+							aFilter.rightOperandDefaultValue.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator) : 
+								aFilter.rightOperandDefaultValue);
 			}
 		}
 	}
@@ -122,7 +134,10 @@ Ext.extend(Sbi.qbe.FreeConditionsWindow, Ext.Window, {
 				if (this.lastvalues == null) {
 					this.lastvalues = {};
 				}
-				this.lastvalues[aFilter.filterId] = aFilter.rightOperandLastValue;
+				this.lastvalues[aFilter.filterId] = 
+					(aFilter.rightOperandLastValue  instanceof Array ? 
+						aFilter.rightOperandLastValue.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator) : 
+							aFilter.rightOperandLastValue);
 			}
 		}
 	}
@@ -130,6 +145,7 @@ Ext.extend(Sbi.qbe.FreeConditionsWindow, Ext.Window, {
 	, initFormPanel: function() {
 		
 		this.formItems = [];
+		this.formItemsMap = {};
 		
 		for (var i = 0; i < this.freeFilters.length; i++) {
 			var aFilter = this.freeFilters[i];
@@ -141,7 +157,7 @@ Ext.extend(Sbi.qbe.FreeConditionsWindow, Ext.Window, {
 				fieldLabel = aFilter.filterId + ' [' + aFilter.leftOperandDescription + ']';
 			}
 				
-	    	var aField = new Ext.form.TextField({
+	    	var aField = new Ext.form.TextField({ 
 	    		name: aFilter.filterId,
 	    		allowBlank:true, 
 	    		inputType:'text',
@@ -149,9 +165,11 @@ Ext.extend(Sbi.qbe.FreeConditionsWindow, Ext.Window, {
 	    		width:200,
 	    		fieldLabel: fieldLabel,
 	    		labelStyle: 'width:250',
-	    		value: (aFilter.rightOperandDefaultValue !== null) ? aFilter.rightOperandDefaultValue : ''
+	    		value: (this.defaultvalues !== null && this.defaultvalues[aFilter.filterId] !== undefined) ? 
+	    				this.defaultvalues[aFilter.filterId] : ''
 	    	});
 	    	this.formItems.push(aField);
+	    	this.formItemsMap[aFilter.filterId] = aField;
 		}
     	
 		var buttons = this.initButtons();

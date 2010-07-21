@@ -140,9 +140,9 @@ public class WhereField {
 
 	public static class Operand extends it.eng.qbe.query.Operand {
 
-		public Operand(String value, String description, String type,
-				String defaulttValue, String lastValue) {
-			super(value, description, type, defaulttValue, lastValue);
+		public Operand(String[] values, String description, String type,
+				String[] defaulttValues, String[] lastValues) {
+			super(values, description, type, defaulttValues, lastValues);
 		}
 	}
 	

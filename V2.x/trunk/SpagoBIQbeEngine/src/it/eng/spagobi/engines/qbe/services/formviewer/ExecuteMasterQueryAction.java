@@ -279,7 +279,7 @@ public class ExecuteMasterQueryAction extends AbstractQbeEngineAction {
 				String promptValue = this.getAttributeAsString(whereField.getName());
 				logger.debug("Read prompt value [" + promptValue + "] for promptable filter [" + whereField.getName() + "].");
 				if (promptValue != null) {
-					whereField.getRightOperand().lastValue = promptValue;
+					whereField.getRightOperand().lastValues = new String[] {promptValue}; // TODO how to manage multi-values prompts?;
 				}
 			}
 		}
@@ -292,7 +292,7 @@ public class ExecuteMasterQueryAction extends AbstractQbeEngineAction {
 				String promptValue = this.getAttributeAsString(havingField.getName());
 				logger.debug("Read prompt value [" + promptValue + "] for promptable filter [" + havingField.getName() + "].");
 				if (promptValue != null) {
-					havingField.getRightOperand().lastValue = promptValue;
+					havingField.getRightOperand().lastValues = new String[] {promptValue}; // TODO how to manage multi-values prompts?;
 				}
 			}
 		}

@@ -176,13 +176,10 @@ public class GetValuesForQbeFilterLookup  extends AbstractQbeEngineAction{
 			query.setWhereClauseStructure(whereClauseStructure);
 			String valuefilter = (String) filtersJSON.get(SpagoBIConstants.VALUE_FILTER);
 			String typeFilter = (String) filtersJSON.get(SpagoBIConstants.TYPE_FILTER);
-			Map conditionalOperators = HQLStatement.conditionalOperators;
-			IConditionalOperator conditionalOperator = null;
-			conditionalOperator = (IConditionalOperator)conditionalOperators.get( typeFilter );
 			String typeValueFilter = (String) filtersJSON.get(SpagoBIConstants.TYPE_VALUE_FILTER);
-			WhereField.Operand leftOperand = new WhereField.Operand(fieldUniqueName, "", HQLStatement.OPERAND_TYPE_FIELD, null, null);
-			WhereField.Operand rightOperand = new WhereField.Operand(
-					typeValueFilter.equalsIgnoreCase("NUMBER") ? valuefilter : "" + valuefilter + "", 
+			WhereField.Operand leftOperand = new WhereField.Operand(new String[] {fieldUniqueName}, "", HQLStatement.OPERAND_TYPE_FIELD, null, null);
+			valuefilter = typeValueFilter.equalsIgnoreCase("NUMBER") ? valuefilter : "" + valuefilter + "";
+			WhereField.Operand rightOperand = new WhereField.Operand(new String[] {valuefilter}, 
 					"", HQLStatement.OPERAND_TYPE_STATIC, null, null);
 			query.addWhereField("Filter1", "", false, leftOperand, typeFilter, rightOperand, "AND");
 			

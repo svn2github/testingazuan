@@ -220,10 +220,11 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			WhereField whereField = (WhereField) whereFieldsIt.next();
 			if (whereField.isPromptable()) {
 				// getting filter value on request
-				String promptValue = this.getAttributeAsString(whereField.getName());
-				logger.debug("Read prompt value [" + promptValue + "] for promptable filter [" + whereField.getName() + "].");
-				if (promptValue != null) {
-					whereField.getRightOperand().lastValue = promptValue;
+				List promptValuesList = this.getAttributeAsList(whereField.getName());
+				if (promptValuesList != null) {
+					String[] promptValues = (String[]) promptValuesList.toArray(new String[] {});
+					logger.debug("Read prompts " + promptValues + " for promptable filter " + whereField.getName() + ".");
+					whereField.getRightOperand().lastValues = promptValues;
 				}
 			}
 		}
@@ -233,10 +234,11 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			HavingField havingField = (HavingField) havingFieldsIt.next();
 			if (havingField.isPromptable()) {
 				// getting filter value on request
-				String promptValue = this.getAttributeAsString(havingField.getName());
-				logger.debug("Read prompt value [" + promptValue + "] for promptable filter [" + havingField.getName() + "].");
-				if (promptValue != null) {
-					havingField.getRightOperand().lastValue = promptValue;
+				List promptValuesList = this.getAttributeAsList(havingField.getName());
+				if (promptValuesList != null) {
+					String[] promptValues = (String[]) promptValuesList.toArray(new String[] {});
+					logger.debug("Read prompt value " + promptValues + " for promptable filter " + havingField.getName() + ".");
+					havingField.getRightOperand().lastValues = promptValues; // TODO how to manage multi-values prompts?
 				}
 			}
 		}

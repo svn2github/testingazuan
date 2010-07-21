@@ -129,6 +129,8 @@ Ext.extend(Sbi.widgets.FilterLookupField, Ext.form.TriggerField, {
     , grid: null
     , win: null
     
+    // default separator for lookup values
+    , valuesSeparator: ';'
        
    
     // ----------------------------------------------------------------------------------------
@@ -289,10 +291,9 @@ Ext.extend(Sbi.widgets.FilterLookupField, Ext.form.TriggerField, {
     
     , resetSelection: function(valuesToLoad) {
     	this.xselection = Ext.apply({}, this.xvalue);   
-    	if(valuesToLoad && valuesToLoad !== undefined){
+    	if (valuesToLoad && valuesToLoad !== undefined){
     		this.xselection['Values'] = valuesToLoad;    
     	}
-    	
    	}
     
     , onSelect: function(sm, rowIndex, record) {
@@ -300,105 +301,42 @@ Ext.extend(Sbi.widgets.FilterLookupField, Ext.form.TriggerField, {
     	if(this.singleSelect === true){
     		this.xselection = {}
     	}
+    	
+    	// initializing the values' array, if not already initialized
+    	if (this.xselection['Values'] === undefined) {
+    		this.xselection['Values'] = [];
+    	}
 
-		if(this.grid.getColumnModel().getColumnById('1').type == 'date'){
-			var tempTocheck = record.data[this.valueField].format('d/m/Y H:i:s');
-			if(this.xselection['Values']){
-	    		var temp = new Array();
-				temp = this.xselection['Values'].split(',');
-	
-			
-				if(!this.arrayContains(temp,record.data[this.valueField])){
-	    			this.xselection['Values'] = this.xselection['Values']+","+ tempTocheck;
-	    		}
-	    	}else{
-	    		this.xselection['Values'] =''+ tempTocheck;
-	    	} 	
-		}else{
-	    	if(this.xselection['Values']){
-	    		var temp = new Array();
-				temp = this.xselection['Values'].split(',');
-	
-			
-				if(!this.arrayContains(temp,record.data[this.valueField])){
-	    			this.xselection['Values'] = this.xselection['Values']+","+ record.data[this.valueField];
-	    		}
-	    	}else{
-	    		this.xselection['Values'] = ''+record.data[this.valueField];
-	    	} 	
+    	var valueToAdd = record.data[this.valueField];
+    	if(this.grid.getColumnModel().getColumnById('1').type == 'date'){
+    		valueToAdd = valueToAdd.format('d/m/Y H:i:s');
+    	}
+    	
+    	// it the new value is not contained into the values' array, it is added
+    	if (this.xselection['Values'].indexOf(valueToAdd) === -1) {
+    		this.xselection['Values'].push(valueToAdd);
     	}
     }
     
     , onDeselect: function(sm, rowIndex, record) {
-    	
-    	if( this.xselection['Values'] ) {
-    		var temp = new Array();
-			temp = this.xselection['Values'].split(',');
-			delete this.xselection['Values'];
-			if(temp.length!=0){
-				for(i = 0; i <  temp.length; i++) {
-				
-				if(this.grid.getColumnModel().getColumnById('1').type == 'date'){		
-
-					var tempTocheck = record.data[this.valueField].format('d/m/Y H:i:s');
-				
-					if(temp[i] != tempTocheck){
-							if(this.xselection['Values']){
-					    		this.xselection['Values'] = this.xselection['Values']+","+ temp[i];
-					    	}else{
-					    		this.xselection['Values'] = ''+temp[i];
-					    	}
-						}
-				}else{
-						if(temp[i] != record.data[this.valueField]){
-							if(this.xselection['Values']){
-					    		this.xselection['Values'] = this.xselection['Values']+","+ temp[i];
-					    	}else{
-					    		this.xselection['Values'] = ''+temp[i];
-					    	}
-						}
-					}
-				}
-    		}   		
+    	if (this.xselection['Values'] && this.xselection['Values'].length > 0) {
+    		var valueToRemove = record.data[this.valueField];
+    		if (this.grid.getColumnModel().getColumnById('1').type == 'date') {
+    			valueToRemove = valueToRemove.format('d/m/Y H:i:s');
+    		}
+    		this.xselection['Values'].remove(valueToRemove);
     	}    	
-
     }
     
-    ,arrayContains: function(arrayToCheck, obj){
-    	var len = arrayToCheck.length;
-		
-		for (var i = 0; i < len; i++){
-			if(this.grid.getColumnModel().getColumnById('1').type == 'date' && (obj instanceof Date)){
-			
-				var tempTocheck = Date.parseDate(arrayToCheck[i], 'd/m/Y H:i:s');
-
-				if(tempTocheck.getTime()==obj.getTime()){
-
-					return true;
-				}
-			}else{
-				if(arrayToCheck[i]==obj){
-					return true;
-				}
-			}
-		}
-    	return false;
-    }
-    
-    , applySelection: function() {    	
-    	var riga1 = this.store.getAt(1) ;
-		
-    	if(this.grid) {    		    		
+    , applySelection: function() {
+    	if (this.grid && this.xselection['Values']) {
 			var selectedRecs = [];
-			var temp = new Array();
-			
-			if(this.xselection['Values']){
-				temp = this.xselection['Values'].split(',');
-			}
-			
-			this.grid.getStore().each(function(rec){
-			
-				if(this.arrayContains(temp,rec.data[this.valueField])){
+			this.grid.getStore().each(function(rec) {
+				var valueToLookFor = rec.data[this.valueField];
+	    		if (this.grid.getColumnModel().getColumnById('1').type == 'date') {
+	    			valueToLookFor = valueToLookFor.format('d/m/Y H:i:s');
+	    		}
+				if (this.xselection['Values'].indexOf(valueToLookFor) !== -1){
 		        	selectedRecs.push(rec);	        	
 		        }
 		    }, this);
@@ -407,13 +345,13 @@ Ext.extend(Sbi.widgets.FilterLookupField, Ext.form.TriggerField, {
     }
 	
     , clean: function() {
-    	if(this.xdirty) {
+    	if (this.xdirty) {
 	    	var text = Sbi.widgets.FilterLookupField.superclass.getValue.call(this);
-	    	var values = text.split(';');
+	    	var values = text.split(this.valuesSeparator);
 	    	this.xvalue = {};
 	    	if(text.trim() === '') return;
-	    	var ub = (this.singleSelect === true)? 1: values.length;
-	    	for(var i = 0; i < ub; i++) {
+	    	var ub = (this.singleSelect === true)? 1 : values.length;
+	    	for (var i = 0; i < ub; i++) {
 	    		this.xvalue[ '' + values[i] ] = values[i];
 	    	}
 	    	this.xdirty = false;
@@ -435,10 +373,9 @@ Ext.extend(Sbi.widgets.FilterLookupField, Ext.form.TriggerField, {
 	}
 	
 	, onOk: function() {
-		
 		this.setValue(this.xselection);	
 		this.win.hide();	
-		this.fireEvent('selectionmade',this.xselection);	
+		this.fireEvent('selectionmade', this.xselection);	
 	}
 	
 	, onCancel: function() {

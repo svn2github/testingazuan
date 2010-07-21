@@ -23,6 +23,7 @@ package it.eng.qbe.statment.hibernate;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -70,7 +71,7 @@ public class HQLStatement extends BasicStatement {
 	
     
 	public static interface IConditionalOperator {	
-		String apply(String leftHandValue, String rightHandValue);
+		String apply(String leftHandValue, String[] rightHandValues);
 	}
 	public static Map conditionalOperators;
 	
@@ -78,51 +79,51 @@ public class HQLStatement extends BasicStatement {
 		conditionalOperators = new HashMap();
 		conditionalOperators.put(CriteriaConstants.EQUALS_TO, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.EQUALS_TO;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
-				return leftHandValue + "=" + rightHandValue;
+			public String apply(String leftHandValue, String[] rightHandValues) {
+				Assert.assertTrue(rightHandValues != null && rightHandValues[0] != null, "Operand cannot be null when the operator is " + getName());
+				return leftHandValue + "=" + rightHandValues[0];
 			}
 		});
 		conditionalOperators.put(CriteriaConstants.NOT_EQUALS_TO, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.NOT_EQUALS_TO;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
-				return leftHandValue + "!=" + rightHandValue;
+			public String apply(String leftHandValue, String[] rightHandValues) {
+				Assert.assertTrue(rightHandValues != null && rightHandValues[0] != null, "Operand cannot be null when the operator is " + getName());
+				return leftHandValue + "!=" + rightHandValues[0];
 			}
 		});
 		conditionalOperators.put(CriteriaConstants.GREATER_THAN, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.GREATER_THAN;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
-				return leftHandValue + ">" + rightHandValue;
+			public String apply(String leftHandValue, String[] rightHandValues) {
+				Assert.assertTrue(rightHandValues != null && rightHandValues[0] != null, "Operand cannot be null when the operator is " + getName());
+				return leftHandValue + ">" + rightHandValues[0];
 			}
 		});
 		conditionalOperators.put(CriteriaConstants.EQUALS_OR_GREATER_THAN, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.EQUALS_OR_GREATER_THAN;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
-				return leftHandValue + ">=" + rightHandValue;
+			public String apply(String leftHandValue, String[] rightHandValues) {
+				Assert.assertTrue(rightHandValues != null && rightHandValues[0] != null, "Operand cannot be null when the operator is " + getName());
+				return leftHandValue + ">=" + rightHandValues[0];
 			}
 		});
 		conditionalOperators.put(CriteriaConstants.LESS_THAN, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.LESS_THAN;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
-				return leftHandValue + "<" + rightHandValue;
+			public String apply(String leftHandValue, String[] rightHandValues) {
+				Assert.assertTrue(rightHandValues != null && rightHandValues[0] != null, "Operand cannot be null when the operator is " + getName());
+				return leftHandValue + "<" + rightHandValues[0];
 			}
 		});
 		conditionalOperators.put(CriteriaConstants.EQUALS_OR_LESS_THAN, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.EQUALS_OR_LESS_THAN;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
-				return leftHandValue + "<=" + rightHandValue;
+			public String apply(String leftHandValue, String[] rightHandValues) {
+				Assert.assertTrue(rightHandValues != null && rightHandValues[0] != null, "Operand cannot be null when the operator is " + getName());
+				return leftHandValue + "<=" + rightHandValues[0];
 			}
 		});
 		conditionalOperators.put(CriteriaConstants.STARTS_WITH, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.STARTS_WITH;}
-			public String apply(String leftHandValue, String rightHandValue) {	
-				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
-				rightHandValue = rightHandValue.trim();
+			public String apply(String leftHandValue, String[] rightHandValues) {	
+				Assert.assertTrue(rightHandValues != null && rightHandValues[0] != null, "Operand cannot be null when the operator is " + getName());
+				String rightHandValue = rightHandValues[0].trim();
 				rightHandValue = rightHandValue.substring(1, rightHandValue.length()-1);
 				rightHandValue = rightHandValue + "%";
 				return leftHandValue + " like '" + rightHandValue + "'";
@@ -130,9 +131,9 @@ public class HQLStatement extends BasicStatement {
 		});
 		conditionalOperators.put(CriteriaConstants.NOT_STARTS_WITH, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.NOT_STARTS_WITH;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
-				rightHandValue = rightHandValue.trim();
+			public String apply(String leftHandValue, String[] rightHandValues) {
+				Assert.assertTrue(rightHandValues != null && rightHandValues[0] != null, "Operand cannot be null when the operator is " + getName());
+				String rightHandValue = rightHandValues[0].trim();
 				rightHandValue = rightHandValue.substring(1, rightHandValue.length()-1);
 				rightHandValue = rightHandValue + "%";
 				return leftHandValue + " not like '" + rightHandValue + "'";
@@ -140,9 +141,9 @@ public class HQLStatement extends BasicStatement {
 		});
 		conditionalOperators.put(CriteriaConstants.ENDS_WITH, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.ENDS_WITH;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
-				rightHandValue = rightHandValue.trim();
+			public String apply(String leftHandValue, String[] rightHandValues) {
+				Assert.assertTrue(rightHandValues != null && rightHandValues[0] != null, "Operand cannot be null when the operator is " + getName());
+				String rightHandValue = rightHandValues[0].trim();
 				rightHandValue = rightHandValue.substring(1, rightHandValue.length()-1);
 				rightHandValue = "%" + rightHandValue;
 				return leftHandValue + " like '" + rightHandValue + "'";
@@ -150,9 +151,9 @@ public class HQLStatement extends BasicStatement {
 		});
 		conditionalOperators.put(CriteriaConstants.NOT_ENDS_WITH, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.NOT_ENDS_WITH;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
-				rightHandValue = rightHandValue.trim();
+			public String apply(String leftHandValue, String[] rightHandValues) {
+				Assert.assertTrue(rightHandValues != null && rightHandValues[0] != null, "Operand cannot be null when the operator is " + getName());
+				String rightHandValue = rightHandValues[0].trim();
 				rightHandValue = rightHandValue.substring(1, rightHandValue.length()-1);
 				rightHandValue = "%" + rightHandValue;
 				return leftHandValue + " not like '" + rightHandValue + "'";
@@ -160,9 +161,9 @@ public class HQLStatement extends BasicStatement {
 		});		
 		conditionalOperators.put(CriteriaConstants.CONTAINS, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.CONTAINS;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
-				rightHandValue = rightHandValue.trim();
+			public String apply(String leftHandValue, String[] rightHandValues) {
+				Assert.assertTrue(rightHandValues != null && rightHandValues[0] != null, "Operand cannot be null when the operator is " + getName());
+				String rightHandValue = rightHandValues[0].trim();
 				rightHandValue = rightHandValue.substring(1, rightHandValue.length()-1);
 				rightHandValue = "%" + rightHandValue + "%";
 				return leftHandValue + " like '" + rightHandValue + "'";
@@ -170,65 +171,43 @@ public class HQLStatement extends BasicStatement {
 		});
 		conditionalOperators.put(CriteriaConstants.IS_NULL, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.IS_NULL;}
-			public String apply(String leftHandValue, String rightHandValue) {
+			public String apply(String leftHandValue, String[] rightHandValue) {
 				return leftHandValue + " IS NULL";
 			}
 		});
 		conditionalOperators.put(CriteriaConstants.NOT_NULL, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.NOT_NULL;}
-			public String apply(String leftHandValue, String rightHandValue) {
+			public String apply(String leftHandValue, String[] rightHandValue) {
 				return leftHandValue + " IS NOT NULL";
 			}
 		});
 		
 		conditionalOperators.put(CriteriaConstants.BETWEEN, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.BETWEEN;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				Assert.assertTrue(rightHandValue.contains(","), "When  BEETWEEN operator is used the operand have to be specified in the following form: minVal,MaxVal");
-				String[] bounds = new String[2];
-				if (rightHandValue.contains("STR_TO_DATE") || rightHandValue.contains("TO_TIMESTAMP")) {
-					int firstComma = rightHandValue.indexOf(',');
-					int correctComma = rightHandValue.indexOf(',', firstComma+1);
-					String minValue = rightHandValue.substring(0, correctComma-1);
-					String maxValue = rightHandValue.substring(correctComma+1, rightHandValue.length());
-					bounds[0]=minValue;
-					bounds[1]=maxValue;
-				} else {
-					bounds = rightHandValue.split(",");
-				}
-				Assert.assertTrue(bounds.length == 2, "When  BEETWEEN operator is used the operand have to be specified in the following form: minVal,MaxVal");
-				return leftHandValue + " BETWEEN " + bounds[0] + " AND " + bounds[1];
+			public String apply(String leftHandValue, String[] rightHandValues) {
+				Assert.assertTrue(rightHandValues != null && rightHandValues.length == 2, "When BEETWEEN operator is used the operand must contain minValue and MaxValue");
+				return leftHandValue + " BETWEEN " + rightHandValues[0] + " AND " + rightHandValues[1];
 			}
 		});
 		conditionalOperators.put(CriteriaConstants.NOT_BETWEEN, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.NOT_BETWEEN;}
-			public String apply(String leftHandValue, String rightHandValue) {
-				Assert.assertTrue(rightHandValue.contains(","), "When  NOT BEETWEEN operator is used the operand have to be specified in the following form: minVal,MaxVal");
-				String[] bounds = new String[2];
-				if (rightHandValue.contains("STR_TO_DATE") || rightHandValue.contains("TO_TIMESTAMP")) {
-					int firstComma = rightHandValue.indexOf(',');
-					int correctComma = rightHandValue.indexOf(',', firstComma+1);
-					String minValue = rightHandValue.substring(0, correctComma-1);
-					String maxValue = rightHandValue.substring(correctComma+1, rightHandValue.length());
-					bounds[0]=minValue;
-					bounds[1]=maxValue;
-				} else {
-					bounds = rightHandValue.split(",");
-				}
-				Assert.assertTrue(bounds.length == 2, "When  NOT BEETWEEN operator is used the operand have to be specified in the following form: minVal,MaxVal");
-				return leftHandValue + " NOT BETWEEN " + bounds[0] + " AND " + bounds[1];
+			public String apply(String leftHandValue, String[] rightHandValues) {
+				Assert.assertTrue(rightHandValues != null && rightHandValues.length == 2, "When BEETWEEN operator is used the operand must contain minValue and MaxValue");
+				return leftHandValue + " NOT BETWEEN " + rightHandValues[0] + " AND " + rightHandValues[1];
 			}
 		});
 		
 		conditionalOperators.put(CriteriaConstants.IN, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.IN;}
-			public String apply(String leftHandValue, String rightHandValue) {
+			public String apply(String leftHandValue, String[] rightHandValues) {
+				String rightHandValue = StringUtils.join(rightHandValues, ",");
 				return leftHandValue + " IN (" +  rightHandValue + ")";
 			}
 		});
 		conditionalOperators.put(CriteriaConstants.NOT_IN, new IConditionalOperator() {
 			public String getName() {return CriteriaConstants.NOT_IN;}
-			public String apply(String leftHandValue, String rightHandValue) {
+			public String apply(String leftHandValue, String[] rightHandValues) {
+				String rightHandValue = StringUtils.join(rightHandValues, ",");
 				return leftHandValue + " NOT IN (" +  rightHandValue + ")";
 			}
 		});
@@ -475,13 +454,13 @@ public class HQLStatement extends BasicStatement {
 	public static final String OPERAND_TYPE_PARENT_FIELD = "Parent Field Content";
 	
 	
-	private String buildStaticOperand(Operand operand) {
-		String operandElement;
+	private String[] buildStaticOperand(Operand operand) {
+		String[] operandElement;
 		
 		logger.debug("IN");
 		
 		try {
-			operandElement = operand.value;			
+			operandElement = operand.values;
 		} finally {
 			logger.debug("OUT");
 		}		
@@ -505,8 +484,8 @@ public class HQLStatement extends BasicStatement {
 			Assert.assertNotNull(targetQueryEntityAliasesMap, "Entity aliases map for query [" + query.getId() + "] cannot be null in order to execute method [buildUserProvidedWhereField]");
 			
 			
-			datamartField = getDataSource().getDataMartModelStructure().getField( operand.value );
-			Assert.assertNotNull(datamartField, "DataMart does not cantain a field named [" + operand.value + "]");
+			datamartField = getDataSource().getDataMartModelStructure().getField( operand.values[0] );
+			Assert.assertNotNull(datamartField, "DataMart does not cantain a field named [" + operand.values[0] + "]");
 			queryName = datamartField.getQueryName();
 			logger.debug("where field query name [" + queryName + "]");
 			
@@ -555,10 +534,10 @@ public class HQLStatement extends BasicStatement {
 			
 			// it comes directly from the client side GUI. It is a composition of the parent query id and filed name, 
 			// separated by a space
-			logger.debug("operand  is equals to [" + operand.value + "]");
+			logger.debug("operand  is equals to [" + operand.values[0] + "]");
 			
-			chunks = operand.value.split(" ");
-			Assert.assertTrue(chunks.length >= 2, "Operand [" + chunks.toString() + "]does not contains enougth informations in order to resolve the reference to parent field");
+			chunks = operand.values[0].split(" ");
+			Assert.assertTrue(chunks.length >= 2, "Operand [" + chunks.toString() + "] does not contains enougth informations in order to resolve the reference to parent field");
 			
 			parentQueryId = chunks[0];
 			logger.debug("where right-hand field belonging query [" + parentQueryId + "]");
@@ -607,7 +586,7 @@ public class HQLStatement extends BasicStatement {
 			
 			logger.debug("where element right-hand field type [" + OPERAND_TYPE_SUBQUERY + "]");
 			
-			subqueryId = operand.value;
+			subqueryId = operand.values[0];
 			logger.debug("Referenced subquery [" + subqueryId + "]");
 			
 			operandElement = "Q{" + subqueryId + "}";
@@ -620,23 +599,23 @@ public class HQLStatement extends BasicStatement {
 		return operandElement;
 	}
 	
-	private String buildOperand(Operand operand, Query query, Map entityAliasesMaps) {
-		String operandElement;
+	private String[] buildOperand(Operand operand, Query query, Map entityAliasesMaps) {
+		String[] operandElement;
 		
 		logger.debug("IN");
 		
 		try {
 			Assert.assertNotNull(operand, "Input parameter [operand] cannot be null in order to execute method [buildUserProvidedWhereField]");
-			operandElement = "";
+			operandElement = new String[] {""};
 			
 			if(OPERAND_TYPE_STATIC.equalsIgnoreCase(operand.type)) {
 				operandElement = buildStaticOperand(operand);
 			} else if (OPERAND_TYPE_SUBQUERY.equalsIgnoreCase(operand.type)) {
-				operandElement = buildQueryOperand(operand);
+				operandElement = new String[] {buildQueryOperand(operand)};
 			} else if (OPERAND_TYPE_FIELD.equalsIgnoreCase(operand.type)) {
-				operandElement = buildFieldOperand(operand, query, entityAliasesMaps);
+				operandElement = new String[] {buildFieldOperand(operand, query, entityAliasesMaps)};
 			} else if (OPERAND_TYPE_PARENT_FIELD.equalsIgnoreCase(operand.type)) {
-				operandElement = buildParentFieldOperand(operand, query, entityAliasesMaps);
+				operandElement = new String[] {buildParentFieldOperand(operand, query, entityAliasesMaps)};
 			} else {
 				Assert.assertUnreachable("Invalid operand type [" + operand.type+ "]");
 			}
@@ -646,55 +625,54 @@ public class HQLStatement extends BasicStatement {
 		return operandElement;
 	}
 	
-	private String getTypeBoundedStaticOperand(Operand leadOperand, String operator, String operandValueToBound) {
-		String boundedValue = operandValueToBound;
+	private String[] getTypeBoundedStaticOperand(Operand leadOperand, String operator, String[] operandValuesToBound) {
+		String[] boundedValues = new String[operandValuesToBound.length];
 
-		if (OPERAND_TYPE_FIELD.equalsIgnoreCase(leadOperand.type) 
-						|| OPERAND_TYPE_PARENT_FIELD.equalsIgnoreCase(leadOperand.type)) {
+		for (int i = 0; i < operandValuesToBound.length; i++) {
+		
+			String operandValueToBound = operandValuesToBound[i];
+			String boundedValue = operandValueToBound;
 			
-			DataMartField datamartField = getDataSource().getDataMartModelStructure().getField(leadOperand.value);
+			if (OPERAND_TYPE_FIELD.equalsIgnoreCase(leadOperand.type) 
+							|| OPERAND_TYPE_PARENT_FIELD.equalsIgnoreCase(leadOperand.type)) {
+				
+				DataMartField datamartField = getDataSource().getDataMartModelStructure().getField(leadOperand.values[0]);
+				boundedValue = getValueBounded(operandValueToBound, datamartField.getType());
+			}
 			
-			if(datamartField.getType().equalsIgnoreCase("String") || datamartField.getType().equalsIgnoreCase("character")) {
-				if( !( CriteriaConstants.IN.equalsIgnoreCase( operator ) 
-						|| CriteriaConstants.NOT_IN.equalsIgnoreCase( operator )
-						|| CriteriaConstants.BETWEEN.equalsIgnoreCase( operator )
-						|| CriteriaConstants.NOT_BETWEEN.equalsIgnoreCase( operator ) 
-				)) {
-					// if the value is already surrounded by quotes, does not neither add quotes nor escape quotes 
-					if (operandValueToBound.startsWith("'") && operandValueToBound.endsWith("'")) {
-						boundedValue = operandValueToBound ;
-					} else {
-						operandValueToBound = escapeQuotes(operandValueToBound);
-						boundedValue = "'" + operandValueToBound + "'";
-					}
-				} else {
-					String[] items = operandValueToBound.split(",");
-					boundedValue = "";
-					for(int i = 0; i < items.length; i++) {
-						// if the value is already surrounded by quotes, does not add quotes
-						if (items[i].startsWith("'") && items[i].endsWith("'")) {
-							boundedValue += (i==0?"":",") + items[i];
-						} else {
-							String temp = escapeQuotes(items[i]);
-							boundedValue += (i==0?"":",") + "'" + temp + "'";
-						}
-					}					
-				}
-			} else if(datamartField.getType().equalsIgnoreCase("timestamp") || datamartField.getType().equalsIgnoreCase("date")){
-
-				String dbDialect = ((IHibernateDataSource)getDataSource()).getConnection().getDialect();
-				String format = "MM/dd/yyyy";
-				SimpleDateFormat f = new SimpleDateFormat();
-				f.applyPattern(format);
-				String[] items = operandValueToBound.split(",");
-				boundedValue = "";
-				for(int i = 0; i < items.length; i++) {
-					// if the value is already surrounded by quotes, does not add quotes
-						boundedValue += (i==0?"":",") + composeStringToDt(dbDialect,items[i]);						
-				}	
-		}
+			// calculated field
+			// TODO check!!!! why not a OPERAND_TYPE_CALCUALTED_FIELD????
+			if (leadOperand.values[0].contains("expression")) {
+				String type = (leadOperand.values[0].substring(leadOperand.values[0].indexOf("type\":")+7, leadOperand.values[0].indexOf("\"}")));
+				boundedValue = getValueBounded(operandValueToBound, type);
+			}
+			
+			boundedValues[i] = boundedValue;
+		
 		}
 		
+		return boundedValues;
+	}
+	
+	
+	private String getValueBounded(String operandValueToBound, String type) {
+		String boundedValue = operandValueToBound;
+		if (type.equalsIgnoreCase("String") || type.equalsIgnoreCase("character")) {
+			// if the value is already surrounded by quotes, does not neither add quotes nor escape quotes 
+			if (operandValueToBound.startsWith("'") && operandValueToBound.endsWith("'")) {
+				boundedValue = operandValueToBound ;
+			} else {
+				operandValueToBound = escapeQuotes(operandValueToBound);
+				boundedValue = "'" + operandValueToBound + "'";
+			}
+		} else if(type.equalsIgnoreCase("timestamp") || type.equalsIgnoreCase("date")){
+
+			String dbDialect = ((IHibernateDataSource)getDataSource()).getConnection().getDialect();
+			String format = "MM/dd/yyyy";
+			SimpleDateFormat f = new SimpleDateFormat();
+			f.applyPattern(format);
+			boundedValue = composeStringToDt(dbDialect,operandValueToBound);
+		}
 		return boundedValue;
 	}
 	
@@ -758,8 +736,8 @@ public class HQLStatement extends BasicStatement {
 	private String buildUserProvidedWhereField(WhereField whereField, Query query, Map entityAliasesMaps) {
 		
 		String whereClauseElement = "";
-		String leftOperandElement;
-		String rightOperandElement;
+		String[] rightOperandElements;
+		String[] leftOperandElements;
 				
 		logger.debug("IN");
 		
@@ -768,29 +746,30 @@ public class HQLStatement extends BasicStatement {
 			conditionalOperator = (IConditionalOperator)conditionalOperators.get( whereField.getOperator() );
 			Assert.assertNotNull(conditionalOperator, "Unsopported operator " + whereField.getOperator() + " used in query definition");
 			
-			if(whereField.getLeftOperand().value.contains("expression")){
+			if(whereField.getLeftOperand().values[0].contains("expression")){
 				whereClauseElement = buildInLineCalculatedFieldClause(whereField.getOperator(), whereField.getLeftOperand(), whereField.isPromptable(), whereField.getRightOperand(), query, entityAliasesMaps, conditionalOperator);
 			}else{
 				
-				leftOperandElement = buildOperand(whereField.getLeftOperand(), query, entityAliasesMaps);
+				leftOperandElements = buildOperand(whereField.getLeftOperand(), query, entityAliasesMaps);
 				
 				if (OPERAND_TYPE_STATIC.equalsIgnoreCase(whereField.getRightOperand().type) 
 						&& whereField.isPromptable()) {
 					// get last value first (the last value edited by the user)
-					rightOperandElement = whereField.getRightOperand().lastValue;
+					rightOperandElements = whereField.getRightOperand().lastValues;
 				} else {
-					rightOperandElement = buildOperand(whereField.getRightOperand(), query, entityAliasesMaps);
+					
+					rightOperandElements = buildOperand(whereField.getRightOperand(), query, entityAliasesMaps);
 				}
 				
 				if (OPERAND_TYPE_STATIC.equalsIgnoreCase(whereField.getLeftOperand().type) )  {
-					leftOperandElement= getTypeBoundedStaticOperand(whereField.getRightOperand(), whereField.getOperator(), leftOperandElement);
+					leftOperandElements = getTypeBoundedStaticOperand(whereField.getRightOperand(), whereField.getOperator(), leftOperandElements);
 				}
 				
 				if (OPERAND_TYPE_STATIC.equalsIgnoreCase(whereField.getRightOperand().type) )  {
-					rightOperandElement= getTypeBoundedStaticOperand(whereField.getLeftOperand(), whereField.getOperator(), rightOperandElement);
+					rightOperandElements = getTypeBoundedStaticOperand(whereField.getLeftOperand(), whereField.getOperator(), rightOperandElements);
 				}
 				
-				whereClauseElement = conditionalOperator.apply(leftOperandElement, rightOperandElement);
+				whereClauseElement = conditionalOperator.apply(leftOperandElements[0], rightOperandElements);
 	
 			}
 			
@@ -823,12 +802,12 @@ public class HQLStatement extends BasicStatement {
 		String rootEntityAlias;
 		Map entityAliases = (Map)entityAliasesMaps.get(query.getId());
 		List<String> aliasEntityMapping = new  ArrayList<String>();
-		String rightOperandElement;
+		String[] rightOperandElements;
 				
-		String expr = leftOperand.value.substring(leftOperand.value.indexOf("\"expression\":\"")+14);//.replace("\'", "");
+		String expr = leftOperand.values[0].substring(leftOperand.values[0].indexOf("\"expression\":\"")+14);//.replace("\'", "");
 		expr = expr.substring(0, expr.indexOf("\""));
 		
-		logger.debug("Left operand (of a inline calculated field) for the filter clause of the query: "+leftOperand.value);
+		logger.debug("Left operand (of a inline calculated field) for the filter clause of the query: "+leftOperand.values[0]);
 		logger.debug("Expression of a inline calculated field for the filter clause of the query: "+expr);
 
 		
@@ -869,50 +848,16 @@ public class HQLStatement extends BasicStatement {
 					
 		if (OPERAND_TYPE_STATIC.equalsIgnoreCase(rightOperand.type) && isPromptable) {
 			// get last value first (the last value edited by the user)
-			rightOperandElement = rightOperand.lastValue;
+			rightOperandElements = rightOperand.lastValues;
 		} else {
-			rightOperandElement = buildOperand(rightOperand, query, entityAliasesMaps);
+			rightOperandElements = buildOperand(rightOperand, query, entityAliasesMaps);
 		}
 		
 		if (OPERAND_TYPE_STATIC.equalsIgnoreCase(rightOperand.type) )  {
-			String boundedValue = rightOperandElement;
-
-			if (OPERAND_TYPE_FIELD.equalsIgnoreCase(leftOperand.type) 
-							|| OPERAND_TYPE_PARENT_FIELD.equalsIgnoreCase(leftOperand.type)) {
-				String type = (leftOperand.value.substring(leftOperand.value.indexOf("type\":")+7, leftOperand.value.indexOf("\"}")));
-				if(type.equalsIgnoreCase("String")) {
-					if( !( CriteriaConstants.IN.equalsIgnoreCase( operator ) 
-							|| CriteriaConstants.NOT_IN.equalsIgnoreCase( operator )
-							|| CriteriaConstants.BETWEEN.equalsIgnoreCase( operator )
-							|| CriteriaConstants.NOT_BETWEEN.equalsIgnoreCase(operator ) 
-					)) {
-						// if the value is already surrounded by quotes, does not neither add quotes nor escape quotes 
-						if (rightOperandElement.startsWith("'") && rightOperandElement.endsWith("'")) {
-							boundedValue = rightOperandElement ;
-						} else {
-							rightOperandElement = escapeQuotes(rightOperandElement);
-							boundedValue = "'" + rightOperandElement + "'";
-						}
-					} else {
-						String[] items = rightOperandElement.split(",");
-						boundedValue = "";
-						for(int i = 0; i < items.length; i++) {
-							// if the value is already surrounded by quotes, does not add quotes
-							if (items[i].startsWith("'") && items[i].endsWith("'")) {
-								boundedValue += (i==0?"":",") + items[i];
-							} else {
-								String temp = escapeQuotes(items[i]);
-								boundedValue += (i==0?"":",") + "'" + temp + "'";
-							}
-						}					
-					}
-				}
-			}
-			
-			rightOperandElement= boundedValue;
+			rightOperandElements = getTypeBoundedStaticOperand(leftOperand, operator, rightOperandElements);
 		}
 		
-		return conditionalOperator.apply("("+expr+")", rightOperandElement);
+		return conditionalOperator.apply("("+expr+")", rightOperandElements);
 	}
 	
 	/*
@@ -1135,7 +1080,7 @@ public class HQLStatement extends BasicStatement {
 			while (it.hasNext()) {
 				HavingField field = (HavingField) it.next();
 								
-				if(field.getLeftOperand().value.contains("expression")){
+				if(field.getLeftOperand().values[0].contains("expression")){
 					IConditionalOperator conditionalOperator = null;
 					conditionalOperator = (IConditionalOperator)conditionalOperators.get( field.getOperator() );
 					Assert.assertNotNull(conditionalOperator, "Unsopported operator " + field.getOperator() + " used in query definition");
@@ -1158,8 +1103,8 @@ public class HQLStatement extends BasicStatement {
 	private String buildHavingClauseElement(HavingField havingField, Query query, Map entityAliasesMaps) {
 		
 		String havingClauseElement;
-		String leftOperandElement;
-		String rightOperandElement;
+		String[] leftOperandElements;
+		String[] rightOperandElements;
 				
 		logger.debug("IN");
 		
@@ -1168,25 +1113,25 @@ public class HQLStatement extends BasicStatement {
 			conditionalOperator = (IConditionalOperator)conditionalOperators.get( havingField.getOperator() );
 			Assert.assertNotNull(conditionalOperator, "Unsopported operator " + havingField.getOperator() + " used in query definition");
 			
-			leftOperandElement = buildOperand(havingField.getLeftOperand(), query, entityAliasesMaps);
+			leftOperandElements = buildOperand(havingField.getLeftOperand(), query, entityAliasesMaps);
 			
 			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(havingField.getRightOperand().type) 
 					&& havingField.isPromptable()) {
 				// get last value first (the last value edited by the user)
-				rightOperandElement = havingField.getRightOperand().lastValue;
+				rightOperandElements = havingField.getRightOperand().lastValues;
 			} else {
-				rightOperandElement = buildOperand(havingField.getRightOperand(), query, entityAliasesMaps);
+				rightOperandElements = buildOperand(havingField.getRightOperand(), query, entityAliasesMaps);
 			}
 			
 			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(havingField.getLeftOperand().type) )  {
-				leftOperandElement= getTypeBoundedStaticOperand(havingField.getRightOperand(), havingField.getOperator(), leftOperandElement);
+				leftOperandElements = getTypeBoundedStaticOperand(havingField.getRightOperand(), havingField.getOperator(), leftOperandElements);
 			}
 			
 			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(havingField.getRightOperand().type) )  {
-				rightOperandElement= getTypeBoundedStaticOperand(havingField.getLeftOperand(), havingField.getOperator(), rightOperandElement);
+				rightOperandElements = getTypeBoundedStaticOperand(havingField.getLeftOperand(), havingField.getOperator(), rightOperandElements);
 			}
 			
-			havingClauseElement = conditionalOperator.apply(leftOperandElement, rightOperandElement);
+			havingClauseElement = conditionalOperator.apply(leftOperandElements[0], rightOperandElements);
 			logger.debug("Having clause element value [" + havingClauseElement + "]");
 		} finally {
 			logger.debug("OUT");

@@ -34,36 +34,50 @@ public class QbeEngineAnalysisStateLoaderFactory {
 	static {
 		loaderRegistry = new HashMap();
 		
-		loaderRegistry.put("4", new Version4QbeEngineAnalysisStateLoader());
+		loaderRegistry.put("5", new Version5QbeEngineAnalysisStateLoader());
+		
+		loaderRegistry.put("4", 
+			new Version5QbeEngineAnalysisStateLoader(
+					new Version4QbeEngineAnalysisStateLoader()
+			)
+		);
 		
 		loaderRegistry.put("3", 
-			new Version4QbeEngineAnalysisStateLoader(
-				new Version3QbeEngineAnalysisStateLoader()
+			new Version5QbeEngineAnalysisStateLoader(
+				new Version4QbeEngineAnalysisStateLoader(
+					new Version3QbeEngineAnalysisStateLoader()
+				)
 			)
 		);
 		
 		loaderRegistry.put("2", 
-			new Version4QbeEngineAnalysisStateLoader(
-				new Version3QbeEngineAnalysisStateLoader(
-					new Version2QbeEngineAnalysisStateLoader()
+			new Version5QbeEngineAnalysisStateLoader(
+				new Version4QbeEngineAnalysisStateLoader(
+					new Version3QbeEngineAnalysisStateLoader(
+						new Version2QbeEngineAnalysisStateLoader()
+					)
 				)
 			)
 		);
 		loaderRegistry.put("1", 
-			new Version4QbeEngineAnalysisStateLoader(	
-				new Version3QbeEngineAnalysisStateLoader(
-					new Version2QbeEngineAnalysisStateLoader(
-						new Version1QbeEngineAnalysisStateLoader()
+			new Version5QbeEngineAnalysisStateLoader(
+				new Version4QbeEngineAnalysisStateLoader(	
+					new Version3QbeEngineAnalysisStateLoader(
+						new Version2QbeEngineAnalysisStateLoader(
+							new Version1QbeEngineAnalysisStateLoader()
+						)
 					)
 				)
 			)
 		);
 		loaderRegistry.put("0", 
-			new Version4QbeEngineAnalysisStateLoader(
-				new Version3QbeEngineAnalysisStateLoader(
-					new Version2QbeEngineAnalysisStateLoader(
-						new Version1QbeEngineAnalysisStateLoader(
-							new Version0QbeEngineAnalysisStateLoader()
+			new Version5QbeEngineAnalysisStateLoader(
+				new Version4QbeEngineAnalysisStateLoader(
+					new Version3QbeEngineAnalysisStateLoader(
+						new Version2QbeEngineAnalysisStateLoader(
+							new Version1QbeEngineAnalysisStateLoader(
+								new Version0QbeEngineAnalysisStateLoader()
+							)
 						)
 					)
 				)

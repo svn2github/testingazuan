@@ -202,6 +202,25 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 	, addFilter : function(filter) {
 		filter = filter || {};
 		filter = Ext.apply(this.createFilter(), filter || {});
+		if (filter.rightOperandValue && filter.rightOperandValue instanceof Array) {
+			if (filter.rightOperandValue.length == 1) {
+				// case of Field Content, Analytical Driver, Subquery .... or single static value
+				filter.rightOperandValue = filter.rightOperandValue[0];
+			} else {
+				// case of list of static values
+				var joinedValues = filter.rightOperandValue.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+				filter.rightOperandValue = joinedValues;
+				filter.rightOperandDescription = joinedValues;
+				filter.rightOperandLongDescription = joinedValues;
+			}
+		}
+		if (filter.rightOperandLastValue && filter.rightOperandLastValue instanceof Array) {
+			filter.rightOperandLastValue = filter.rightOperandLastValue.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+		}
+		if (filter.rightOperandDefaultValue && filter.rightOperandDefaultValue instanceof Array) {
+			filter.rightOperandDefaultValue = filter.rightOperandDefaultValue.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+		}
+		
 		if(filter.leftOperandValue.expression!=undefined){
 			filter.leftOperandDescription = filter.leftOperandValue.alias; 
 		}else{
@@ -256,6 +275,25 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 			filter = Ext.apply({}, record.data);
 			//filter.operand = (filter.otype === 'Static Value')? filter.odesc: filter.operand;
 			filter.promptable = filter.promptable || false;
+			// splitting values into an array
+			if (filter.rightOperandType == 'Static Value' && (filter.operator == 'BETWEEN' || filter.operator == 'NOT BETWEEN' || 
+					filter.operator == 'IN' || filter.operator == 'NOT IN')) {
+				filter.rightOperandValue = filter.rightOperandValue.split(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+				if (filter.rightOperandLastValue && filter.rightOperandLastValue != null) {
+					filter.rightOperandLastValue = filter.rightOperandLastValue.split(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+				}
+				if (filter.rightOperandDefaultValue && filter.rightOperandDefaultValue != null) {
+					filter.rightOperandDefaultValue = filter.rightOperandDefaultValue.split(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+				}
+			} else {
+				filter.rightOperandValue = [filter.rightOperandValue];
+				if (filter.rightOperandLastValue && filter.rightOperandLastValue != null) {
+					filter.rightOperandLastValue = [filter.rightOperandLastValue];
+				}
+				if (filter.rightOperandDefaultValue && filter.rightOperandDefaultValue != null) {
+					filter.rightOperandDefaultValue = [filter.rightOperandDefaultValue];
+				}
+			}
 			filters.push(filter);
 		}
 		
@@ -321,7 +359,11 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
     		var index = this.grid.store.find('filterId', filterName);
     		if (index != -1) {
     			var record = this.grid.store.getAt(index);
-    			record.set('rightOperandLastValue', formState[filterName]);
+    			var filterValue = formState[filterName];
+    			if (filterValue !== null && filterValue instanceof Array) {
+    				filterValue = filterValue.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+    			}
+    			record.set('rightOperandLastValue', filterValue);
     		}
     	}
     }
@@ -333,7 +375,11 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
     		//alert(index);
     		if (index != -1) {
     			var record = this.grid.store.getAt(index);
-    			record.set('rightOperandDefaultValue', formState[filterName]);
+    			var filterValue = formState[filterName];
+    			if (filterValue !== null && filterValue instanceof Array) {
+    				filterValue = filterValue.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+    			}
+    			record.set('rightOperandDefaultValue', filterValue);
     		}
     	}
     }
@@ -605,7 +651,7 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 				}, {
 				    header: LN('sbi.qbe.filtergridpanel.headers.lodesc')
 				    , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.lodesc')
-				    , dataIndex: 'leftOperandLongDescription'       
+				    , dataIndex: 'leftOperandDescription'       
 				    , editor: new Ext.form.TextField({allowBlank: false})
 				    , hideable: false
 				    , hidden: false		 
@@ -926,6 +972,11 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 	 	var tooltipString = record.data.leftOperandLongDescription;
 	 	if (tooltipString !== undefined && tooltipString != null) {
 	 		metadata.attr = ' ext:qtip="'  + tooltipString + '"';
+	 	}
+	 	//if the left operand is a datamart field we show the long description (in this way we show also the father entity)
+	 	//otherwise we show the leftOperandDescription
+	 	if (record.data.leftOperandLongDescription !== null && record.data.leftOperandLongDescription !== ''){
+	 		return record.data.leftOperandLongDescription;
 	 	}
 	 	return value;
 	}

@@ -193,6 +193,25 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	, addFilter : function(filter) {
 		filter = filter || {};
 		filter = Ext.apply(this.createFilter(), filter || {});
+		if (filter.rightOperandValue && filter.rightOperandValue instanceof Array) {
+			if (filter.rightOperandValue.length == 1) {
+				// case of Field Content, Analytical Driver, Subquery .... or single static value
+				filter.rightOperandValue = filter.rightOperandValue[0];
+			} else {
+				// case of list of static values
+				var joinedValues = filter.rightOperandValue.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+				filter.rightOperandValue = joinedValues;
+				filter.rightOperandDescription = joinedValues;
+				filter.rightOperandLongDescription = joinedValues;
+			}
+		}
+		if (filter.rightOperandLastValue && filter.rightOperandLastValue instanceof Array) {
+			filter.rightOperandLastValue = filter.rightOperandLastValue.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+		}
+		if (filter.rightOperandDefaultValue && filter.rightOperandDefaultValue instanceof Array) {
+			filter.rightOperandDefaultValue = filter.rightOperandDefaultValue.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+		}
+		
 		if(filter.leftOperandValue.expression!=undefined){
 			filter.leftOperandDescription = filter.leftOperandValue.alias; 
 		} else if(this.documentParametersStore) {
@@ -283,6 +302,33 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			filter = Ext.apply({}, record.data);
 			//filter.operand = (filter.otype === 'Static Value')? filter.odesc: filter.operand;
 			filter.promptable = filter.promptable || false;
+			var rightOperandValue = [''];
+			var rightOperandLastValue = [''];
+			var rightOperandDefaultValue = [''];
+			
+			// splitting values into an array
+			if (filter.rightOperandType == 'Static Value' && (filter.operator == 'BETWEEN' || filter.operator == 'NOT BETWEEN' || 
+					filter.operator == 'IN' || filter.operator == 'NOT IN')) {
+				rightOperandValue = filter.rightOperandValue.split(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+				if (filter.rightOperandLastValue && filter.rightOperandLastValue !== null) {
+					rightOperandLastValue = filter.rightOperandLastValue.split(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+				}
+				if (filter.rightOperandDefaultValue && filter.rightOperandDefaultValue !== null) {
+					rightOperandDefaultValue = filter.rightOperandDefaultValue.split(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+				}
+			} else {
+				rightOperandValue = [filter.rightOperandValue];
+				if (filter.rightOperandLastValue && filter.rightOperandLastValue !== null) {
+					rightOperandLastValue = [filter.rightOperandLastValue];
+				}
+				if (filter.rightOperandDefaultValue && filter.rightOperandDefaultValue !== null) {
+					rightOperandDefaultValue = [filter.rightOperandDefaultValue];
+				}
+			}
+			filter.rightOperandValue = 			rightOperandValue;
+			filter.rightOperandLastValue = 		rightOperandLastValue;
+			filter.rightOperandDefaultValue = 	rightOperandDefaultValue;
+			
 			filters.push(filter);
 		}
 		
@@ -347,7 +393,11 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
     		var index = this.grid.store.find('filterId', filterName);
     		if (index != -1) {
     			var record = this.grid.store.getAt(index);
-    			record.set('rightOperandLastValue', formState[filterName]);
+    			var filterValue = formState[filterName];
+    			if (filterValue !== null && filterValue instanceof Array) {
+    				filterValue = filterValue.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+    			}
+    			record.set('rightOperandLastValue', filterValue);
     		}
     	}
     }
@@ -357,7 +407,11 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
     		var index = this.grid.store.find('filterId', filterName);
     		if (index != -1) {
     			var record = this.grid.store.getAt(index);
-    			record.set('rightOperandDefaultValue', formState[filterName]);
+    			var filterValue = formState[filterName];
+    			if (filterValue !== null && filterValue instanceof Array) {
+    				filterValue = filterValue.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+    			}
+    			record.set('rightOperandDefaultValue', filterValue);
     		}
     	}
     }
@@ -1165,20 +1219,25 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			var baseConfig = {
 		       store: store
 		     , singleSelect: false
+		     , valuesSeparator: Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator
 			};
 			
 			this.lookupField = new Sbi.widgets.FilterLookupField(baseConfig);
 			var record = this.activeEditingContext.grid.store.getAt(this.activeEditingContext.row);
-		    var valuesToload = record.get('rightOperandValue');
+		    var valuesToload = record.get('rightOperandValue').split(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+		    // an empty string isn't an actual value
+		    if (valuesToload.length == 1 && valuesToload[0] == '') {
+		    	valuesToload = [];
+		    }
 			this.lookupField.onLookUp(valuesToload);
 			this.lookupField.on('selectionmade', function(xselection) {
 				var filter;
 				if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
 					filter = {
 						rightOperandType: 'Static Value'
-						, rightOperandDescription: xselection.Values
-						, rightOperandValue: xselection.Values
-						, rightOperandLongDescription: xselection.Values
+						, rightOperandDescription: xselection.Values.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator)
+						, rightOperandValue: xselection.Values.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator)
+						, rightOperandLongDescription: xselection.Values.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator)
 					}
 					this.modifyFilter(filter, this.activeEditingContext.row);
 				}
@@ -1193,7 +1252,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	 	}
 	 	//if the left operand is a datamart field we show the long description (in this way we show also the father entity)
 	 	//otherwise we show the leftOperandDescription
-	 	if (record.data.leftOperandLongDescription!=null){
+	 	if (record.data.leftOperandLongDescription !== null && record.data.leftOperandLongDescription !== ''){
 	 		return record.data.leftOperandLongDescription;
 	 	}
 	 	return value;

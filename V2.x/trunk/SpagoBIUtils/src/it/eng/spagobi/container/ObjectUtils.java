@@ -108,7 +108,7 @@ public class ObjectUtils {
 				toReturn = (List)o;
 			} else {
 				toReturn = new ArrayList();
-				toReturn.add( toString(o) );
+				toReturn.add( o );
 			}
 		} catch(Throwable e) {
 			logger.warn("Impossible to convert input object " + o 

@@ -353,15 +353,15 @@ public class QueryJSONSerializer implements QuerySerializer {
 				filterJSON.put(SerializationConstants.FILTER_PROMPTABLE, filter.isPromptable());
 				
 				operand = filter.getLeftOperand();
-				filterJSON.put(SerializationConstants.FILTER_LO_VALUE, operand.value);
+				filterJSON.put(SerializationConstants.FILTER_LO_VALUE, operand.values[0]);
 				if(operand.type.equalsIgnoreCase("Field Content")) {
-					if(operand.value.contains("\"expression\":\"")){
+					if(operand.values[0].contains("\"expression\":\"")){
 						filterJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description );
-						String description = operand.value.substring(operand.value.indexOf("\"expression\":\"")+14);
+						String description = operand.values[0].substring(operand.values[0].indexOf("\"expression\":\"")+14);
 						description.substring(0, description.indexOf("\""));
 						filterJSON.put(SerializationConstants.FILTER_LO_LONG_DESCRIPTION, description);						
 					}else{
-						datamartField = datamartModel.getDataMartModelStructure().getField( operand.value );
+						datamartField = datamartModel.getDataMartModelStructure().getField( operand.values[0] );
 						
 						String labelF, labelE;
 						labelE = null;
@@ -388,7 +388,7 @@ public class QueryJSONSerializer implements QuerySerializer {
 					
 					filterJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description);
 				} else if(operand.type.equalsIgnoreCase("Parent Field Content")) {
-					String[] chunks = operand.value.split(" ");
+					String[] chunks = operand.values[0].split(" ");
 					String parentQueryId = chunks[0];
 					String fieldName = chunks[1];
 					datamartField = datamartModel.getDataMartModelStructure().getField( fieldName );
@@ -404,15 +404,15 @@ public class QueryJSONSerializer implements QuerySerializer {
 				
 				
 				filterJSON.put(SerializationConstants.FILTER_LO_TYPE, operand.type);
-				filterJSON.put(SerializationConstants.FILTER_LO_DEFAULT_VALUE, operand.defaulttValue);
-				filterJSON.put(SerializationConstants.FILTER_LO_LAST_VALUE, operand.lastValue);
+				filterJSON.put(SerializationConstants.FILTER_LO_DEFAULT_VALUE, operand.defaulttValues[0]);
+				filterJSON.put(SerializationConstants.FILTER_LO_LAST_VALUE, operand.lastValues[0]);
 				
-				filterJSON.put(SerializationConstants.FILTER_OPEARTOR, filter.getOperator());
+				filterJSON.put(SerializationConstants.FILTER_OPERATOR, filter.getOperator());
 				
 				operand = filter.getRightOperand();
-				filterJSON.put(SerializationConstants.FILTER_RO_VALUE, operand.value);
+				filterJSON.put(SerializationConstants.FILTER_RO_VALUE, fromStringArrayToJSONArray(operand.values));
 				if(operand.type.equalsIgnoreCase("Field Content")) {
-					datamartField = datamartModel.getDataMartModelStructure().getField( operand.value );
+					datamartField = datamartModel.getDataMartModelStructure().getField( operand.values[0] );
 					
 					String labelF, labelE;
 					labelE = null;
@@ -438,7 +438,7 @@ public class QueryJSONSerializer implements QuerySerializer {
 					
 					filterJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, operand.description);
 				} else if(operand.type.equalsIgnoreCase("Parent Field Content")) {
-					String[] chunks = operand.value.split(" ");
+					String[] chunks = operand.values[0].split(" ");
 					String parentQueryId = chunks[0];
 					String fieldName = chunks[1];
 					datamartField = datamartModel.getDataMartModelStructure().getField( fieldName );
@@ -451,8 +451,8 @@ public class QueryJSONSerializer implements QuerySerializer {
 					filterJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, operand.description);
 				}
 				filterJSON.put(SerializationConstants.FILTER_RO_TYPE, operand.type);
-				filterJSON.put(SerializationConstants.FILTER_RO_DEFAULT_VALUE, operand.defaulttValue);
-				filterJSON.put(SerializationConstants.FILTER_RO_LAST_VALUE, operand.lastValue);
+				filterJSON.put(SerializationConstants.FILTER_RO_DEFAULT_VALUE, fromStringArrayToJSONArray(operand.defaulttValues));
+				filterJSON.put(SerializationConstants.FILTER_RO_LAST_VALUE, fromStringArrayToJSONArray(operand.lastValues));
 				
 				filterJSON.put(SerializationConstants.FILTER_BOOLEAN_CONNETOR, filter.getBooleanConnector());
 				
@@ -497,17 +497,17 @@ public class QueryJSONSerializer implements QuerySerializer {
 				havingJSON.put(SerializationConstants.FILTER_PROMPTABLE, filter.isPromptable());
 				
 				operand = filter.getLeftOperand();
-				havingJSON.put(SerializationConstants.FILTER_LO_VALUE, operand.value);
+				havingJSON.put(SerializationConstants.FILTER_LO_VALUE, operand.values[0]);
 				if(operand.type.equalsIgnoreCase("Field Content")) {
 					
-					if(operand.value.contains("\"expression\":\"")){
+					if(operand.values[0].contains("\"expression\":\"")){
 						havingJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description );
-						String description = operand.value.substring(operand.value.indexOf("\"expression\":\"")+14);
+						String description = operand.values[0].substring(operand.values[0].indexOf("\"expression\":\"")+14);
 						description.substring(0, description.indexOf("\""));
 						havingJSON.put(SerializationConstants.FILTER_LO_LONG_DESCRIPTION, description);						
 					}else{
 					
-						datamartField = datamartModel.getDataMartModelStructure().getField( operand.value );
+						datamartField = datamartModel.getDataMartModelStructure().getField( operand.values[0] );
 						
 						String labelF, labelE;
 						labelE = null;
@@ -536,7 +536,7 @@ public class QueryJSONSerializer implements QuerySerializer {
 					
 					havingJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description);
 				} else if(operand.type.equalsIgnoreCase("Parent Field Content")) {
-					String[] chunks = operand.value.split(" ");
+					String[] chunks = operand.values[0].split(" ");
 					String parentQueryId = chunks[0];
 					String fieldName = chunks[1];
 					datamartField = datamartModel.getDataMartModelStructure().getField( fieldName );
@@ -553,15 +553,15 @@ public class QueryJSONSerializer implements QuerySerializer {
 				
 				havingJSON.put(SerializationConstants.FILTER_LO_TYPE, operand.type);
 				havingJSON.put(SerializationConstants.FILTER_LO_FUNCTION, operand.function.getName());
-				havingJSON.put(SerializationConstants.FILTER_LO_DEFAULT_VALUE, operand.defaulttValue);
-				havingJSON.put(SerializationConstants.FILTER_LO_LAST_VALUE, operand.lastValue);
+				havingJSON.put(SerializationConstants.FILTER_LO_DEFAULT_VALUE, operand.defaulttValues[0]);
+				havingJSON.put(SerializationConstants.FILTER_LO_LAST_VALUE, operand.lastValues[0]);
 				
-				havingJSON.put(SerializationConstants.FILTER_OPEARTOR, filter.getOperator());
+				havingJSON.put(SerializationConstants.FILTER_OPERATOR, filter.getOperator());
 				
 				operand = filter.getRightOperand();
-				havingJSON.put(SerializationConstants.FILTER_RO_VALUE, operand.value);
+				havingJSON.put(SerializationConstants.FILTER_RO_VALUE, fromStringArrayToJSONArray(operand.values));
 				if(operand.type.equalsIgnoreCase("Field Content")) {
-					datamartField = datamartModel.getDataMartModelStructure().getField( operand.value );
+					datamartField = datamartModel.getDataMartModelStructure().getField( operand.values[0] );
 					
 					String labelF, labelE;
 					labelE = null;
@@ -587,7 +587,7 @@ public class QueryJSONSerializer implements QuerySerializer {
 					
 					havingJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, operand.description);
 				} else if(operand.type.equalsIgnoreCase("Parent Field Content")) {
-					String[] chunks = operand.value.split(" ");
+					String[] chunks = operand.values[0].split(" ");
 					String parentQueryId = chunks[0];
 					String fieldName = chunks[1];
 					datamartField = datamartModel.getDataMartModelStructure().getField( fieldName );
@@ -601,8 +601,8 @@ public class QueryJSONSerializer implements QuerySerializer {
 				}
 				havingJSON.put(SerializationConstants.FILTER_RO_TYPE, operand.type);
 				havingJSON.put(SerializationConstants.FILTER_RO_FUNCTION, operand.function.getName());
-				havingJSON.put(SerializationConstants.FILTER_RO_DEFAULT_VALUE, operand.defaulttValue);
-				havingJSON.put(SerializationConstants.FILTER_RO_LAST_VALUE, operand.lastValue);
+				havingJSON.put(SerializationConstants.FILTER_RO_DEFAULT_VALUE, fromStringArrayToJSONArray(operand.defaulttValues));
+				havingJSON.put(SerializationConstants.FILTER_RO_LAST_VALUE, fromStringArrayToJSONArray(operand.lastValues));
 				
 				havingJSON.put(SerializationConstants.FILTER_BOOLEAN_CONNETOR, filter.getBooleanConnector());
 				
@@ -637,6 +637,18 @@ public class QueryJSONSerializer implements QuerySerializer {
 		}		
 		 
 		return exp;
-	}	
+	}
+	
+	public static JSONArray fromStringArrayToJSONArray(String[] stringArray) throws JSONException {
+		if (stringArray == null) {
+			return null;
+		}
+		int length = stringArray.length;
+		JSONArray toReturn = new JSONArray();
+		for (int i = 0; i < length; i++) {
+			toReturn.put(stringArray[i]);
+		}
+		return toReturn;
+	}
 
 }

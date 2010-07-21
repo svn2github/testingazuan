@@ -494,7 +494,6 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 			mapPanelConf.tbar = this.toolbar;
 		}
 	 
-		
 	 
 		this.mapPanel = new Ext.TabPanel({
 		    region    : 'center',
@@ -710,7 +709,7 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 	        nav.activate();
 	          
 	        this.toolbar.add(
-	        	new Ext.Toolbar.Button({
+	        	new Ext.Toolbar.Button({ 
 	        		iconCls: 'back',
 	                tooltip: 'Previous view', 
 	                handler: nav.previous.trigger
@@ -727,6 +726,18 @@ Ext.extend(Sbi.georeport.GeoReportPanel, Ext.Panel, {
 	          
 	         this.addSeparator();
 	    }
+	    
+	    /*
+	    var printConfigUrl = mapfish.SERVER_BASE_URL + 'pdf/info.json';
+	    this.toolbar.add(
+	    	new mapfish.widgets.print.PrintAction({
+	            map: this.map,
+	            overrides: this.layers,
+	            configUrl: printConfigUrl
+	            
+	    	})
+		);
+		*/
 	          
 	    this.toolbar.activate();
 	    

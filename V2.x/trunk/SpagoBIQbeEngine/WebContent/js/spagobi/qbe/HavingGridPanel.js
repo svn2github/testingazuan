@@ -922,9 +922,9 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 	    textEditor.on('change', function(f, newValue, oldValue){
 	    	if(this.activeEditingContext) {
 	    		if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
-	    			this.modifyFilter({leftOperandValue: newValue, leftOperandType: 'Static Value'}, this.activeEditingContext.row);
+	    			this.modifyFilter({leftOperandValue: newValue, leftOperandDescription: newValue, leftOperandType: 'Static Value'}, this.activeEditingContext.row);
 	    		} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
-	    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value'}, this.activeEditingContext.row);
+	    			this.modifyFilter({rightOperandValue: newValue, rightOperandDescription: newValue, rightOperandType: 'Static Value'}, this.activeEditingContext.row);
 	    		}
 	    	}		    	
 	    }, this);

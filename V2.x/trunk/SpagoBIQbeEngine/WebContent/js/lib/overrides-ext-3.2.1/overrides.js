@@ -90,3 +90,17 @@ Ext.override(Ext.form.TriggerField, {
         }
     }
 });
+
+/* =============================================================================
+* Added by Davide Zerbetto (July 2010)
+* In Ext 3.2.1 the method setBoxLabel was missing
+* See http://www.sencha.com/forum/showthread.php?88702-Need-to-change-the-boxLabel-of-Radio-at-runtime&highlight=setboxlabel
+============================================================================= */
+Ext.override(Ext.form.Checkbox, {
+	  setBoxLabel: function(boxLabel){
+	    this.boxLabel = boxLabel;
+	    if(this.rendered){
+	      this.wrap.child('.x-form-cb-label').update(boxLabel);
+	    }
+	  }
+});

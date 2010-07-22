@@ -52,4 +52,28 @@ public class JSONUtils {
 		
 		return list;
 	}
+	
+	public static String[] asStringArray(JSONArray jSONArray) throws JSONException {
+		if (jSONArray == null) {
+			return null;
+		}
+		int length = jSONArray.length();
+		String[] toReturn = new String[jSONArray.length()];
+		for (int i = 0; i < length; i++) {
+			toReturn[i] = jSONArray.getString(i).toString();
+		}
+		return toReturn;
+	}
+	
+	public static JSONArray asJSONArray(String[] stringArray) throws JSONException {
+		if (stringArray == null) {
+			return null;
+		}
+		int length = stringArray.length;
+		JSONArray toReturn = new JSONArray();
+		for (int i = 0; i < length; i++) {
+			toReturn.put(stringArray[i]);
+		}
+		return toReturn;
+	}
 }

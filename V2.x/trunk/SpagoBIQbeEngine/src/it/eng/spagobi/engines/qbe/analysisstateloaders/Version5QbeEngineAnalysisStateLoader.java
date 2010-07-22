@@ -21,9 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.qbe.analysisstateloaders;
 
-import it.eng.qbe.query.CriteriaConstants;
-import it.eng.qbe.query.serializer.SerializationConstants;
-import it.eng.qbe.statment.hibernate.HQLStatement;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
 
@@ -101,7 +98,7 @@ public class Version5QbeEngineAnalysisStateLoader extends AbstractQbeEngineAnaly
 			logger.debug( "Query content to be converted [" + queryJSON.toString() + "]");
 			
 			// convert WHERE filters: values in IN, NOT IN, BETWEEN and NOT BETWEEN are separated by ","; they are converted into an array
-			whereConditionsJSON = queryJSON.optJSONArray( SerializationConstants.FILTERS );	
+			whereConditionsJSON = queryJSON.optJSONArray( "filters" );	
 			if (whereConditionsJSON != null && whereConditionsJSON.length() > 0) {
 				logger.debug( "Query [" + queryId + "] has [" + whereConditionsJSON.length() + "] WHERE filters to convert");
 				for (int i = 0; i < whereConditionsJSON.length(); i++) {
@@ -111,7 +108,7 @@ public class Version5QbeEngineAnalysisStateLoader extends AbstractQbeEngineAnaly
 			}
 			
 			// convert HAVING filters: values in IN, NOT IN, BETWEEN and NOT BETWEEN are separated by ","; they are converted into an array
-			havingConditionsJSON = queryJSON.optJSONArray( SerializationConstants.HAVINGS );	
+			havingConditionsJSON = queryJSON.optJSONArray( "havings" );	
 			if (havingConditionsJSON != null && havingConditionsJSON.length() > 0) {
 				logger.debug( "Query [" + queryId + "] has [" + havingConditionsJSON.length() + "] HAVING filters to convert");
 				for (int i = 0; i < havingConditionsJSON.length(); i++) {
@@ -149,17 +146,17 @@ public class Version5QbeEngineAnalysisStateLoader extends AbstractQbeEngineAnaly
 			JSONArray rightLastValuesJSON = new JSONArray();
 			JSONArray rightDefaultValuesJSON = new JSONArray();
 			logger.debug("Converting filter : " + filterJSON.toString());
-			String operator = filterJSON.getString(SerializationConstants.FILTER_OPERATOR);
-			String rightOperandType = filterJSON.getString(SerializationConstants.FILTER_RO_TYPE);
-			String rightOperandValue = filterJSON.optString(SerializationConstants.FILTER_RO_VALUE);
-			String rightOperandLastValue = filterJSON.optString(SerializationConstants.FILTER_RO_LAST_VALUE);
-			String rightOperandDefaultValue = filterJSON.optString(SerializationConstants.FILTER_RO_DEFAULT_VALUE);
+			String operator = filterJSON.getString("operator");
+			String rightOperandType = filterJSON.getString(			"rightOperandType");
+			String rightOperandValue = filterJSON.optString(		"rightOperandValue");
+			String rightOperandLastValue = filterJSON.optString(	"rightOperandLastValue");
+			String rightOperandDefaultValue = filterJSON.optString(	"rightOperandDefaultValue");
 			logger.debug("Previous rigth operand : " + rightOperandValue);
-			if ( HQLStatement.OPERAND_TYPE_STATIC.equalsIgnoreCase(rightOperandType) && 
-					( CriteriaConstants.IN.equalsIgnoreCase( operator ) 
-					|| CriteriaConstants.NOT_IN.equalsIgnoreCase( operator )
-					|| CriteriaConstants.BETWEEN.equalsIgnoreCase( operator )
-					|| CriteriaConstants.NOT_BETWEEN.equalsIgnoreCase( operator ) )) {
+			if ( "Static Value".equalsIgnoreCase(rightOperandType) && 
+					( "IN".equalsIgnoreCase( operator ) 
+					|| "NOT IN".equalsIgnoreCase( operator )
+					|| "BETWEEN".equalsIgnoreCase( operator )
+					|| "NOT BETWEEN".equalsIgnoreCase( operator ) )) {
 				rightValuesJSON = 			splitValuesUsingComma(rightOperandValue, 		operator);
 				rightLastValuesJSON = 		splitValuesUsingComma(rightOperandLastValue, 	operator);
 				rightDefaultValuesJSON = 	splitValuesUsingComma(rightOperandDefaultValue, operator);
@@ -171,9 +168,9 @@ public class Version5QbeEngineAnalysisStateLoader extends AbstractQbeEngineAnaly
 			logger.debug("New rigth operand : " + 					rightValuesJSON.toString());
 			logger.debug("New rigth operand last values : " + 		rightLastValuesJSON.toString());
 			logger.debug("New rigth operand default values : " + 	rightDefaultValuesJSON.toString());
-			filterJSON.put(SerializationConstants.FILTER_RO_VALUE, 			rightValuesJSON);
-			filterJSON.put(SerializationConstants.FILTER_RO_LAST_VALUE, 	rightLastValuesJSON);
-			filterJSON.put(SerializationConstants.FILTER_RO_DEFAULT_VALUE, 	rightDefaultValuesJSON);
+			filterJSON.put("rightOperandValue", 		rightValuesJSON);
+			filterJSON.put("rightOperandLastValue", 	rightLastValuesJSON);
+			filterJSON.put("rightOperandDefaultValue", 	rightDefaultValuesJSON);
 			logger.debug("Filter converted properly");
 		} catch(Throwable t) {
 			throw new SpagoBIEngineRuntimeException("Impossible convert filter " + (filterJSON == null ? "NULL" : filterJSON.toString()), t);
@@ -188,7 +185,7 @@ public class Version5QbeEngineAnalysisStateLoader extends AbstractQbeEngineAnaly
 		if (value != null) {
 			String[] values = null;
 			// case BETWEEN or NOT BETWEEN using dates
-			if (CriteriaConstants.BETWEEN.equalsIgnoreCase( operator ) || CriteriaConstants.NOT_BETWEEN.equalsIgnoreCase( operator )) {
+			if ("BETWEEN".equalsIgnoreCase( operator ) || "NOT BETWEEN".equalsIgnoreCase( operator )) {
 				
 				if (value.contains("STR_TO_DATE") || value.contains("TO_TIMESTAMP")) {
 					int firstComma = value.indexOf(',');

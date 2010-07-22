@@ -68,9 +68,7 @@ public class SetFormBuilderStateAction  extends AbstractQbeEngineAction {
 			JSONObject formJson = new JSONObject(formState);
 			logger.debug(FORM_STATE + " input parameter parsed correctly as a JSONObject");
 			
-			QbeJSONTemplateParser.addAdditionalInfo(formJson);
-			
-			engineInstance.getTemplate().setProperty("formJSONTemplate", formJson);
+			engineInstance.getFormState().setConf(formJson);
 			
 			try {
 				writeBackToClient( new JSONAcknowledge() );

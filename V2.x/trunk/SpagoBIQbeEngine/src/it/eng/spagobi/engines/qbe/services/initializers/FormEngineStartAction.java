@@ -22,6 +22,7 @@ package it.eng.spagobi.engines.qbe.services.initializers;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.presentation.DynamicPublisher;
+import it.eng.spagobi.engines.qbe.FormState;
 import it.eng.spagobi.engines.qbe.QbeEngine;
 import it.eng.spagobi.engines.qbe.QbeEngineAnalysisState;
 import it.eng.spagobi.engines.qbe.QbeEngineInstance;
@@ -33,6 +34,7 @@ import it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 
 /**
@@ -105,6 +107,15 @@ public class FormEngineStartAction extends AbstractEngineStartAction {
 				throw serviceException;
 			}
 			logger.debug("Engine instance succesfully created");
+			
+			// initializes form state, in not already initialized (starting a new form definition)
+			FormState formState = qbeEngineInstance.getFormState();
+			if (formState == null) {
+				logger.debug("Initializing a new form state object...");
+				formState = new FormState();
+				formState.setConf(new JSONObject());
+				qbeEngineInstance.setFormState(formState);
+			}
 			
 			qbeEngineInstance.getEnv().put("TEMPLATE", getTemplateAsSourceBean());
 			String docId = this.getAttributeAsString("formDocumentId");

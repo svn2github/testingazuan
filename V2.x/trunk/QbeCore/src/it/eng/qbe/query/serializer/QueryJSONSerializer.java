@@ -21,15 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.query.serializer;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-
-import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import it.eng.qbe.bo.DatamartLabels;
 import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.cache.QbeCacheManager;
@@ -41,13 +32,22 @@ import it.eng.qbe.query.CalculatedSelectField;
 import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.HavingField;
-import it.eng.qbe.query.IAggregationFunction;
 import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.query.InLineCalculatedSelectField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.json.JSONUtils;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -410,7 +410,7 @@ public class QueryJSONSerializer implements QuerySerializer {
 				filterJSON.put(SerializationConstants.FILTER_OPERATOR, filter.getOperator());
 				
 				operand = filter.getRightOperand();
-				filterJSON.put(SerializationConstants.FILTER_RO_VALUE, fromStringArrayToJSONArray(operand.values));
+				filterJSON.put(SerializationConstants.FILTER_RO_VALUE, JSONUtils.asJSONArray(operand.values));
 				if(operand.type.equalsIgnoreCase("Field Content")) {
 					datamartField = datamartModel.getDataMartModelStructure().getField( operand.values[0] );
 					
@@ -451,8 +451,8 @@ public class QueryJSONSerializer implements QuerySerializer {
 					filterJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, operand.description);
 				}
 				filterJSON.put(SerializationConstants.FILTER_RO_TYPE, operand.type);
-				filterJSON.put(SerializationConstants.FILTER_RO_DEFAULT_VALUE, fromStringArrayToJSONArray(operand.defaulttValues));
-				filterJSON.put(SerializationConstants.FILTER_RO_LAST_VALUE, fromStringArrayToJSONArray(operand.lastValues));
+				filterJSON.put(SerializationConstants.FILTER_RO_DEFAULT_VALUE, JSONUtils.asJSONArray(operand.defaulttValues));
+				filterJSON.put(SerializationConstants.FILTER_RO_LAST_VALUE, JSONUtils.asJSONArray(operand.lastValues));
 				
 				filterJSON.put(SerializationConstants.FILTER_BOOLEAN_CONNETOR, filter.getBooleanConnector());
 				
@@ -559,7 +559,7 @@ public class QueryJSONSerializer implements QuerySerializer {
 				havingJSON.put(SerializationConstants.FILTER_OPERATOR, filter.getOperator());
 				
 				operand = filter.getRightOperand();
-				havingJSON.put(SerializationConstants.FILTER_RO_VALUE, fromStringArrayToJSONArray(operand.values));
+				havingJSON.put(SerializationConstants.FILTER_RO_VALUE, JSONUtils.asJSONArray(operand.values));
 				if(operand.type.equalsIgnoreCase("Field Content")) {
 					datamartField = datamartModel.getDataMartModelStructure().getField( operand.values[0] );
 					
@@ -601,8 +601,8 @@ public class QueryJSONSerializer implements QuerySerializer {
 				}
 				havingJSON.put(SerializationConstants.FILTER_RO_TYPE, operand.type);
 				havingJSON.put(SerializationConstants.FILTER_RO_FUNCTION, operand.function.getName());
-				havingJSON.put(SerializationConstants.FILTER_RO_DEFAULT_VALUE, fromStringArrayToJSONArray(operand.defaulttValues));
-				havingJSON.put(SerializationConstants.FILTER_RO_LAST_VALUE, fromStringArrayToJSONArray(operand.lastValues));
+				havingJSON.put(SerializationConstants.FILTER_RO_DEFAULT_VALUE, JSONUtils.asJSONArray(operand.defaulttValues));
+				havingJSON.put(SerializationConstants.FILTER_RO_LAST_VALUE, JSONUtils.asJSONArray(operand.lastValues));
 				
 				havingJSON.put(SerializationConstants.FILTER_BOOLEAN_CONNETOR, filter.getBooleanConnector());
 				
@@ -639,16 +639,4 @@ public class QueryJSONSerializer implements QuerySerializer {
 		return exp;
 	}
 	
-	public static JSONArray fromStringArrayToJSONArray(String[] stringArray) throws JSONException {
-		if (stringArray == null) {
-			return null;
-		}
-		int length = stringArray.length;
-		JSONArray toReturn = new JSONArray();
-		for (int i = 0; i < length; i++) {
-			toReturn.put(stringArray[i]);
-		}
-		return toReturn;
-	}
-
 }

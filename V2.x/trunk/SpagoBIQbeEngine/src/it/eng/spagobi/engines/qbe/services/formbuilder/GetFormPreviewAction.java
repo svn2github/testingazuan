@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.qbe.services.formbuilder;
 		
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.qbe.FormState;
 import it.eng.spagobi.engines.qbe.QbeEngineInstance;
 import it.eng.spagobi.engines.qbe.services.AbstractQbeEngineAction;
 import it.eng.spagobi.engines.qbe.services.initializers.FormEngineStartAction;
@@ -48,7 +49,8 @@ public class GetFormPreviewAction extends AbstractQbeEngineAction {
 			QbeEngineInstance engineInstance = getEngineInstance();
 			Assert.assertNotNull(engineInstance, "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
 			
-			Assert.assertNotNull(engineInstance.getTemplate().getProperty("formJSONTemplate"), 
+			FormState fs = engineInstance.getFormState();
+			Assert.assertTrue(fs != null && fs.getConf() != null, 
 					"It's not possible to execute " + this.getActionName() + " service before having properly created a form template");
 			
 			setAttribute(FormEngineStartAction.ENGINE_INSTANCE, engineInstance);

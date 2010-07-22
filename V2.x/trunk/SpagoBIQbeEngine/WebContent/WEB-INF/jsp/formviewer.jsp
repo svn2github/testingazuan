@@ -119,7 +119,7 @@ end DOCTYPE declaration --%>
         Ext.onReady(function() {
         	Ext.QuickTips.init();
 
-			var template = <%= qbeEngineInstance.getTemplate().getProperty("formJSONTemplate").toString() %>;
+			var template = <%= qbeEngineInstance.getFormState().getConf().toString() %>;
         	
 	        var formEnginePanel = new Sbi.formviewer.FormEnginePanel(template, {region: 'center'});
            	var viewport = new Ext.Viewport({layout: 'border', items: [formEnginePanel]});  

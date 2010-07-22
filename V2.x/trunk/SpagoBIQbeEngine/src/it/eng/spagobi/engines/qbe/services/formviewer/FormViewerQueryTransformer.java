@@ -40,6 +40,7 @@ import it.eng.qbe.query.serializer.QueryJSONDeserializer;
 import it.eng.qbe.query.transformers.AbstractQbeQueryTransformer;
 import it.eng.spagobi.engines.qbe.bo.FormViewerState;
 import it.eng.spagobi.engines.qbe.template.QbeJSONTemplateParser;
+import it.eng.spagobi.utilities.json.JSONUtils;
 
 /**
  * Transforms the input query starting from document template and form viewer state 
@@ -150,7 +151,9 @@ public class FormViewerQueryTransformer extends AbstractQbeQueryTransformer {
 				if(type == null || type.equalsIgnoreCase("")) {
 					type = defType;
 				}
-				rightOperand = new WhereField.Operand(new String[] {filter.getString("rightOperandValue")}, null, type, null, null);
+				JSONArray rightOperandValuesJSON = filter.getJSONArray("rightOperandValue");
+				String[] rightOperandValues = JSONUtils.asStringArray(rightOperandValuesJSON);
+				rightOperand = new WhereField.Operand(rightOperandValues, null, type, null, null);
 			}
 			query.addWhereField(filter.getString("id"), null, false, leftOperand, filter.getString("operator"), rightOperand, filter.getString("booleanConnector"));
 		}

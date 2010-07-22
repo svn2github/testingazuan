@@ -21,11 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.query.serializer;
 
-import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.structure.DataMartField;
@@ -38,6 +33,12 @@ import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.json.JSONUtils;
+
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -249,13 +250,13 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 					operator = filterJSON.getString(SerializationConstants.FILTER_OPERATOR);
 					
 					operandValuesJSONArray = filterJSON.getJSONArray(SerializationConstants.FILTER_RO_VALUE);
-					operandValues = fromJSONArrayToStringArray(operandValuesJSONArray);
+					operandValues = JSONUtils.asStringArray(operandValuesJSONArray);
 					operandDescription = filterJSON.getString(SerializationConstants.FILTER_RO_DESCRIPTION);
 					operandType = filterJSON.getString(SerializationConstants.FILTER_RO_TYPE);
 					operandDefaultValuesJSONArray = filterJSON.optJSONArray(SerializationConstants.FILTER_RO_DEFAULT_VALUE);
-					operandLasDefaulttValues = fromJSONArrayToStringArray(operandDefaultValuesJSONArray);
+					operandLasDefaulttValues = JSONUtils.asStringArray(operandDefaultValuesJSONArray);
 					operandLastValuesJSONArray = filterJSON.optJSONArray(SerializationConstants.FILTER_RO_LAST_VALUE);
-					operandLastValues = fromJSONArrayToStringArray(operandLastValuesJSONArray);
+					operandLastValues = JSONUtils.asStringArray(operandLastValuesJSONArray);
 					rightOperand = new WhereField.Operand(operandValues, operandDescription, operandType, operandLasDefaulttValues, operandLastValues);
 					
 					booleanConnector = filterJSON.getString(SerializationConstants.FILTER_BOOLEAN_CONNETOR);
@@ -330,13 +331,13 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 					operator = havingJSON.getString(SerializationConstants.FILTER_OPERATOR);
 					
 					operandValuesJSONArray = havingJSON.getJSONArray(SerializationConstants.FILTER_RO_VALUE);
-					operandValues = fromJSONArrayToStringArray(operandValuesJSONArray);
+					operandValues = JSONUtils.asStringArray(operandValuesJSONArray);
 					operandDescription = havingJSON.getString(SerializationConstants.FILTER_RO_DESCRIPTION);
 					operandType = havingJSON.getString(SerializationConstants.FILTER_RO_TYPE);
 					operandDefaultValuesJSONArray = havingJSON.optJSONArray(SerializationConstants.FILTER_RO_DEFAULT_VALUE);
-					operandLasDefaulttValues = fromJSONArrayToStringArray(operandDefaultValuesJSONArray);
+					operandLasDefaulttValues = JSONUtils.asStringArray(operandDefaultValuesJSONArray);
 					operandLastValuesJSONArray = havingJSON.optJSONArray(SerializationConstants.FILTER_RO_LAST_VALUE);
-					operandLastValues = fromJSONArrayToStringArray(operandLastValuesJSONArray);
+					operandLastValues = JSONUtils.asStringArray(operandLastValuesJSONArray);
 					operandFunction = havingJSON.getString(SerializationConstants.FILTER_RO_FUNCTION);
 					function = AggregationFunctions.get(operandFunction);
 					rightOperand = new HavingField.Operand(operandValues, operandDescription, operandType,
@@ -492,16 +493,4 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 		return str;
 	}
 	
-	public static String[] fromJSONArrayToStringArray(JSONArray jSONArray) throws JSONException {
-		if (jSONArray == null) {
-			return null;
-		}
-		int length = jSONArray.length();
-		String[] toReturn = new String[jSONArray.length()];
-		for (int i = 0; i < length; i++) {
-			toReturn[i] = jSONArray.getString(i).toString();
-		}
-		return toReturn;
-	}
-
 }

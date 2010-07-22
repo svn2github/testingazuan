@@ -178,7 +178,6 @@ public class QbeXMLTemplateParser implements IQbeTemplateParser{
 				if(template.containsAttribute(TAG_FORM)) {
 					formSB = (SourceBean) template.getAttribute(TAG_FORM);
 					formJSONTemplate = new JSONObject(formSB.getCharacters());
-					QbeJSONTemplateParser.addAdditionalInfo(formJSONTemplate);
 					qbeTemplate.setProperty("formJSONTemplate", formJSONTemplate);
 				} else {
 					logger.debug("Qbe template does not contain tag [" + TAG_FORM +"]");

@@ -87,7 +87,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
     spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
     spagobiSpagoController = request.getParameter(SpagoBIConstants.SBI_SPAGO_CONTROLLER);
     
-    formTemplate = (JSONObject) qbeEngineInstance.getTemplate().getProperty("formJSONTemplate");
+    formTemplate = qbeEngineInstance.getFormState() != null ? (JSONObject) qbeEngineInstance.getFormState().getConf() : new JSONObject();
     
     String jSonPars = "[{}]";
     Object documentIdO = qbeEngineInstance.getEnv().get("DOCUMENT_ID");

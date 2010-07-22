@@ -52,6 +52,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 	QueryCatalogue queryCatalogue;
 	String activeQueryId;
 	QbeTemplate template;
+	FormState formState;
 
 	// executable version of the query. cached here for performance reasons (i.e. avoid query re-compilation 
 	// over result-set paging)
@@ -135,11 +136,40 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 			}
 		}
 		
+		if( template.getProperty("formJSONTemplate") != null ) {
+			try {
+				FormState formState = new FormState();
+				// TODO set the encoding
+				formState.load( template.getProperty("formJSONTemplate").toString().getBytes() );
+				setFormState( formState );
+			} catch(Throwable t) {
+				SpagoBIRuntimeException serviceException;
+				String msg = "Impossible load form state [" + template.getProperty("formJSONTemplate") + "].";
+				Throwable rootException = t;
+				while(rootException.getCause() != null) {
+					rootException = rootException.getCause();
+				}
+				String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+				msg += "\nThe root cause of the error is: " + str;
+				serviceException = new SpagoBIRuntimeException(msg, t);
+				
+				throw serviceException;
+			}
+		}
+		
 		validate();
 		
 		logger.debug("OUT");
 	}
 	
+	public void setFormState(FormState formState) {
+		this.formState = formState;
+	}
+	
+	public FormState getFormState() {
+		return this.formState;
+	}
+
 	public void validate() throws QbeEngineException {
 		return;
 	}

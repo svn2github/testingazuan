@@ -199,7 +199,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 		this.leftOperandField.setValue(s.leftOperandValue);
 		this.leftOperandField.setDescription(s.leftOperandDescription);
 		this.operatorField.setValue(s.operator);
-		this.rightOperandField.setValue(s.rightOperandValue);
+		this.rightOperandField.setValue(s.rightOperandValue.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator));
 	}
 	
 	/*
@@ -381,8 +381,16 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 		
 		filterConf.leftOperandValue = r.data.leftOperandValue;
 		filterConf.leftOperandDescription = r.data.leftOperandDescription;
-		filterConf.operator = r.data.operator;
-		filterConf.rightOperandValue = r.data.rightOperandValue;
+		var operator = r.data.operator;
+		filterConf.operator = operator;
+		var filterValues = [];
+		if (operator == 'BETWEEN' || operator == 'NOT BETWEEN' || 
+				operator == 'IN' || operator == 'NOT IN') {
+			filterValues = r.data.rightOperandValue.split(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
+		} else {
+			filterValues.push(r.data.rightOperandValue); 
+		}
+		filterConf.rightOperandValue = filterValues;
 		filterConf.booleanConnector = r.data.booleanConnector;
 		
 		return filterConf;
@@ -394,7 +402,7 @@ Ext.extend(Sbi.formbuilder.StaticCloseFilterWizard, Ext.Window, {
 		recordData.leftOperandValue = c.leftOperandValue;
 		recordData.leftOperandDescription = c.leftOperandDescription || c.leftOperandValue;
 		recordData.operator = c.operator;
-		recordData.rightOperandValue = c.rightOperandValue;
+		recordData.rightOperandValue = c.rightOperandValue.join(Sbi.settings.qbe.filterGridPanel.lookupValuesSeparator);
 		recordData.rightOperandDescription = c.rightOperandValue;
 		recordData.booleanConnector = c.booleanConnector || 'AND';
 		

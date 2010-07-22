@@ -43,7 +43,7 @@ import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class QbeEngineAnalysisState  extends EngineAnalysisState {
+public class QbeEngineAnalysisState extends EngineAnalysisState {
 	
 	// property name
 	public static final String CATALOGUE = "CATALOGUE";

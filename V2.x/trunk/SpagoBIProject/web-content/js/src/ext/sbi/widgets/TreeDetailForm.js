@@ -136,6 +136,8 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
            dropConfig : {appendOnly:true},
            scope: this,
            tbar: this.tb,
+           collapsible:true,
+           shadow:true,
            root: {
                nodeType: 'async',
                text: this.rootNodeText,
@@ -146,20 +148,21 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
  	   
  	  this.mainTree.addListener('click',this.fillDetail,this );
  	  this.mainTree.addListener('render',this.renderTree,this );
+ 	  this.mainTree.addListener('beforeload',this.styleTree,this );
 
- 	 this.mainTree.on('append', function(tree, p, node){
+ 	  this.mainTree.on('append', function(tree, p, node){
  		 //alert("appended");
  		//node.select.defer(100, node);
 
- 	 });
+ 	  });
 
  	  /*form fields editing*/
- 	 this.detailFieldName.addListener('change',this.editNode,this);
- 	 this.detailFieldCode.addListener('change',this.editNode,this);
+ 	  this.detailFieldName.addListener('change',this.editNode,this);
+ 	  this.detailFieldCode.addListener('change',this.editNode,this);
    	   /*
    	   *    Here is where we create the Form
    	   */
-   	   this.gridForm = new Ext.FormPanel({
+   	  this.gridForm = new Ext.FormPanel({
    	          id: 'items-form',
    	          frame: true,
    	          autoScroll: true,
@@ -167,14 +170,43 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
    	          title: this.panelTitle,
    	          width: 600,
    	          height: 550,
-   	          layout: 'column',
+   	          //layout: 'column',
+              layout:'border',
+	          layoutConfig: {
+		          titleCollapse: false,
+		          animate: true,
+		          activeOnTop: false
+
+	          },
    	          trackResetOnLoad: true,
    	          items: [
    	              {
-   	              columnWidth: 0.4,
-   	              layout: 'fit',
-   	              items: this.mainTree
-   	              }, this.tabs
+   	               region:'west',
+   	               margins: '5 0 0 5',
+   	               width: 200,
+   	               collapsible: true,   // make collapsible
+   	               cmargins: '5 5 0 5', // adjust top margin when collapsed
+   	               columnWidth: 0.4,
+   	               layout: 'fit',
+   	               items: this.mainTree
+   	              }, {
+		   		    border: false
+				    , frame: false
+				    , collapsible: false
+				    , collapsed: false
+				    , hideCollapseTool: true
+				    , titleCollapse: true
+				    , collapseMode: 'mini'
+				    , split: true
+				    , region:'center',
+       	           margins: '5 0 0 5',
+       	           width: 200,
+       	           collapsible: true,   // make collapsible
+       	           cmargins: '5 5 0 5', // adjust top margin when collapsed
+       	           columnWidth: 0.4,
+       	           layout: 'fit',
+       	           items: this.tabs
+   	              }
    	          ]
    	      });
 	}
@@ -202,25 +234,22 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		this.detailFieldCode.setValue(code);
 
     }
-	, renderTree: function() {		
-		this.mainTree.getLoader().nodeParameter = 'id';
-		this.mainTree.getRootNode().expand(false, /*no anim*/ false);
-	    
-	    //displays root detail
-	    //this.getSelectionModel().select(this.getRootNode());
-	    /*
-	    var children =this.getRootNode().childNodes;
-	    alert(children.length);
-	    for(var i=0; i < children.length; i++){
-	    	var n = children[i];
-			alert(n);
-			alert(n.attributes.kpi);
-     		if(n.attributes.kpi === undefined ){ 
-     		  n.iconCls = 'no-icon';
-     		}
-	    }
-	    */
+	, renderTree: function(tree) {		
+		tree.getLoader().nodeParameter = 'id';
+		tree.getRootNode().expand(false, /*no anim*/ false);
+
+
     }
+	, styleTree: function(node){	
+		//Ext.fly(this.mainTree.getEl()).frame("ff0000");
+/*
+ 		if(node.attributes.kpi === undefined || node.attributes.kpi == null ){ 
+ 			node.cls ="tree-model-nokpi";
+ 			
+ 		}else{
+ 			node.cls ="tree-model-kpi";
+ 		}*/
+ 	}
 	, editNode: function(field, newVal, oldVal) {		
 		var node = this.mainTree.getSelectionModel().getSelectedNode();
 		if(node !== undefined){

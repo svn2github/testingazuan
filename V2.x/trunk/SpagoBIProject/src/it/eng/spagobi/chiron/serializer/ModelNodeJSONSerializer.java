@@ -19,8 +19,11 @@ public class ModelNodeJSONSerializer implements Serializer {
 	private static final String MODEL_TYPE = "type";
 	private static final String MODEL_TYPE_DESCR = "typeDescr";
 	private static final String MODEL_KPI = "kpi";
+	private static final String MODEL_KPI_ID = "kpiId";
 	private static final String MODEL_IS_LEAF = "leaf";
 	private static final String MODEL_TEXT = "text";
+	
+	private static final String MODEL_ERROR = "error";
 	
 	public Object serialize(Object o, Locale locale) throws SerializationException {
 		JSONObject  result = null;
@@ -41,6 +44,7 @@ public class ModelNodeJSONSerializer implements Serializer {
 			
 			//find kpi name
 			if(model.getKpiId() != null){
+				result.put(MODEL_KPI_ID, model.getKpiId());
 				Kpi kpi = DAOFactory.getKpiDAO().loadKpiById(model.getKpiId());
 				if(kpi != null){
 					result.put(MODEL_KPI, kpi.getKpiName());
@@ -56,6 +60,7 @@ public class ModelNodeJSONSerializer implements Serializer {
 				result.put(MODEL_IS_LEAF, true );
 			}
 			result.put(MODEL_TEXT, model.getCode()+" - "+ model.getName() );
+			result.put(MODEL_ERROR, false);
 		} catch (Throwable t) {
 			throw new SerializationException("An error occurred while serializing object: " + o, t);
 		} finally {

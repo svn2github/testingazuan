@@ -1,0 +1,13 @@
+/*******************************************************************************************************
+ * Model Structure
+ ********************************************************************************************************/
+  
+.has-kpi {
+	 background-image:url(../../img/kpi/kpiico16.png) !important;
+}
+.has-error {
+	 color: #cd2020;
+	 font-weight: bold;
+	 font-style: italic;
+	 text-decoration: underline;
+}

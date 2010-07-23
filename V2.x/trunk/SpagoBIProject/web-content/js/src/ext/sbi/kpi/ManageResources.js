@@ -99,8 +99,9 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
 										 });
 		
 		this.configurationObject.gridColItems = [
-		                                         {id:'name',header: LN('sbi.generic.name'), width: 50, sortable: true, locked:false, dataIndex: 'name'},
-		                                         {header: LN('sbi.generic.code'), width: 150, sortable: true, dataIndex: 'code'}
+		                                         {id:'name',header: LN('sbi.generic.name'), width: 150, sortable: true, locked:false, dataIndex: 'name'},
+		                                         {header: LN('sbi.generic.code'), width: 150, sortable: true, dataIndex: 'code'},
+		                                         {header: LN('sbi.generic.type'), width: 100, sortable: true, dataIndex: 'typeCd'}
 		                                        ];
 		
 		this.configurationObject.panelTitle = LN('sbi.resources.panelTitle');
@@ -222,7 +223,7 @@ Ext.extend(Sbi.kpi.ManageResources, Sbi.widgets.ListDetailForm, {
 	
     //OVERRIDING save method
 	,save : function() {
-		var values = this.gridForm.getForm().getFieldValues();
+		var values = this.getForm().getFieldValues();
 		var idRec = values['id'];
 		var newRec;
 	

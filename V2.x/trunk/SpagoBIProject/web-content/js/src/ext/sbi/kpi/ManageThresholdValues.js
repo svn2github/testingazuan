@@ -60,7 +60,7 @@ Sbi.kpi.ManageThresholdValues = function(config) {
 	    	editor: new Ext.form.NumberField({})	
 	    },{
 	    	header: 'Label', 
-	    	width: 150, 
+	    	width: 70, 
 			id:'label',
 			sortable: true, 
 			dataIndex: 'label',  

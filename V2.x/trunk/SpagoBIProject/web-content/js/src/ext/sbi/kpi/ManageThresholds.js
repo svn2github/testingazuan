@@ -172,9 +172,9 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 										 });   
 		
 		this.configurationObject.gridColItems = [
-		                                         {id:'name',header: LN('sbi.generic.name'), width: 50, sortable: true, locked:false, dataIndex: 'name'},
-		                                         {header: LN('sbi.generic.code'), width: 150, sortable: true, dataIndex: 'code'},
-		                                         {header: LN('sbi.generic.type'), width: 150, sortable: true, dataIndex: 'typeCd'}
+		                                         {id:'name',header: LN('sbi.generic.name'), width: 140, sortable: true, locked:false, dataIndex: 'name'},
+		                                         {header: LN('sbi.generic.code'), width: 140, sortable: true, dataIndex: 'code'},
+		                                         {header: LN('sbi.generic.type'), width: 90, sortable: true, dataIndex: 'typeCd'}
 		                                        ];
 		
 		if(this.drawSelectColumn){
@@ -397,7 +397,7 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
     //OVERRIDING save method
 	,save : function() {
 
-		var values = this.gridForm.getForm().getFieldValues();
+		var values = this.getForm().getFieldValues();
 		var idRec = values['id'];
 		var newRec;
 	

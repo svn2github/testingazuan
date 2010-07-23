@@ -58,23 +58,36 @@ Sbi.kpi.ManageModelsViewPort = function(config) {
 	
 	var viewport = {
 		layout: 'border'
+		, height:560
+		, autoScroll: true
 		, items: [
 	         {
 	           region: 'west',
+	           width: 275,
+	           height:560,
 	           collapseMode:'mini',
-	           width: 300,
+	           autoScroll: true,
+	           split: true,
+	           layout: 'fit',
 	           items:[this.modelsGrid]
 	          },
 		    {
 		       region: 'center',
 		       width: 300,
+		       height:560,
+		       split: true,
 		       collapseMode:'mini',
+		       autoScroll: true,
+		       layout: 'fit',
 		       items: [this.manageModels]
 		    }, {
 		        region: 'east',
 		        split: true,
-		        width: 700,
+		        width: 400,
+		        height:560,
+		        collapsed:true,
 		        collapseMode:'mini',
+		        autoScroll: true,
 		        items:[this.manageKpis]
 		    }
 		]

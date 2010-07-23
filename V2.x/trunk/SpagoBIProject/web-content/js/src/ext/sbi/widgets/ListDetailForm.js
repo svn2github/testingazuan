@@ -168,16 +168,49 @@ Sbi.widgets.ListDetailForm = function(config) {
 	});
 
 	this.initWidget();
-	   
-	this.mainElementsStore.on('load', 
-			function(){
-		 		this.rowselModel.selectRow(0);
-		 	}, 
-		 	this);  	
 	
-	this.mainElementsStore.load();	
+	 /*
+ 	   *    Here is where we create the Form
+ 	   */
+ 	  var gridForm = {
+ 	          frame: true,
+ 	          autoScroll: true,
+ 	          labelAlign: 'left',
+ 	          //autoWidth: true,
+ 	         // title: this.panelTitle,
+ 	          //bodyStyle:'padding:7px',
+ 	          width: 1000,
+ 	          height: 550,
+ 	          layout: 'column',
+ 	          scope:this,
+ 	          trackResetOnLoad: true,
+ 	          items: [
+ 	              {
+ 	              scope:this,
+ 	             // columnWidth: 0.37,
+ 	              layout: 'fit',
+ 	              items: this.mainGrid
+ 	              }, this.tabs
+ 	            	  		
+ 	          ]/*,
+ 	         listeners: {
+			    	'select': {
+			     		fn: this.sendSelectedItem,
+			      		scope: this
+			    	}
+             }*/
+ 	          
+ 	      };
+ 	   
+ 	  this.mainElementsStore.on('load', 
+ 				function(){
+ 			 		this.rowselModel.selectRow(0);
+ 			 	}, 
+ 			 	this);  	
+ 		
+ 		this.mainElementsStore.load();	
    	
-	var c = Ext.apply({}, config, this.gridForm);
+	var c = Ext.apply({}, config, gridForm);
    	
    	Sbi.widgets.ListDetailForm.superclass.constructor.call(this,c);	
    	
@@ -259,12 +292,16 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
  	   this.tabs = new Ext.TabPanel({
            enableTabScroll : true
            , activeTab : 0
-           , columnWidth: 0.6
+           //, columnWidth: 0.63
            , autoScroll : true
            , deferredRender: false
            , width: 450          
            , height: 490
            , itemId: 'tabs' 
+        	   /* ,  split: true,
+		   ,  collapseMode:'mini'
+          , collapseMode:'mini'
+           , collapsible: true*/
            , tbar: this.tbSave
            , scope: this
 		   , items: this.tabItems
@@ -306,11 +343,11 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
        });
  	  
  	  this.rowselModel.addListener('rowselect',function(sm, row, rec) { 
- 		 this.gridForm.getForm().loadRecord(rec);     
+ 		 this.getForm().loadRecord(rec);     
       }, this);
  	  
  	 this.rowselModel.addListener('select',function(sm, row, rec) { 
- 		 this.gridForm.getForm().loadRecord(rec);     
+ 		 this.getForm().loadRecord(rec);     
       }, this);
  	   
  	   this.mainGrid = {
@@ -319,7 +356,7 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
 	                  colModel: this.colModel,
 	                  plugins: pluginsToAdd ,
 	                  selModel: this.rowselModel,
-	                  autoExpandColumn: 'name',
+	                  //autoExpandColumn: 'name',
 	                  height: 490,
 	                  width: 450,
 	                  scope: this,
@@ -338,59 +375,27 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
 	                      			viewready: function(g) {g.getSelectionModel().selectRow(0); } 
 	                             }
 	                  };
-
-   	   /*
-   	   *    Here is where we create the Form
-   	   */
-   	   this.gridForm = new Ext.FormPanel({
-   	          frame: true,
-   	          autoScroll: true,
-   	          labelAlign: 'left',
-   	          //autoWidth: true,
-   	          title: this.panelTitle,
-   	          //bodyStyle:'padding:7px',
-   	          width: 1000,
-   	          height: 550,
-   	          layout: 'column',
-   	          scope:this,
-   	          trackResetOnLoad: true,
-   	          items: [
-   	              {
-   	              scope:this,
-   	              columnWidth: 0.4,
-   	              layout: 'fit',
-   	              items: this.mainGrid
-   	              }, this.tabs
-   	          ]/*,
-   	         listeners: {
-			    	'select': {
-			     		fn: this.sendSelectedItem,
-			      		scope: this
-			    	}
-               }*/
-   	          
-   	      });
    	 
-   	   // this.gridForm.addListener('select',this.sendSelectedItem, this);
+   	   // this.addListener('select',this.sendSelectedItem, this);
 	}
 
 	,sendSelectedItem: function(itemId, index){
 		alert('selected: '+itemId);
-		alert(this.gridForm);
-		this.gridForm.addEvents('select2');
-		this.gridForm.fireEvent('select2');
+		alert(this);
+		this.addEvents('select2');
+		this.fireEvent('select2');
 	}	
 
 	, addNewItem : function(){
 	
 		var emptyRecToAdd = this.emptyRecord;
-		this.gridForm.getForm().loadRecord(emptyRecToAdd);
+		this.getForm().loadRecord(emptyRecToAdd);
 	
 	    this.tabs.items.each(function(item)
 		    {		
 		    	item.doLayout();
 		    });   
-	    this.gridForm.doLayout();	
+	    //this.doLayout();	
 	}
 	
 	, deleteSelectedItem: function(itemId, index) {

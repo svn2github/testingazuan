@@ -135,8 +135,9 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 										 });
 		
 		this.configurationObject.gridColItems = [
-		                                         {id:'name',header: LN('sbi.generic.name'), width: 50, sortable: true, locked:false, dataIndex: 'name'},
-		                                         {header: LN('sbi.generic.code'), width: 150, sortable: true, dataIndex: 'code'}
+		                                         {id:'name',header: LN('sbi.generic.name'), width: 130, sortable: true, locked:false, dataIndex: 'name'},
+		                                         {header: LN('sbi.generic.code'), width: 130, sortable: true, dataIndex: 'code'},
+		                                         {header: 'Threshold', width: 110, sortable: true, dataIndex: 'threshold'}
 		                                        ];
 		
 		this.configurationObject.panelTitle = LN('sbi.kpis.panelTitle');
@@ -462,16 +463,16 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 		this.thrWin = new Ext.Window({
 			title: LN('sbi.lookup.Select') ,   
             layout      : 'fit',
-            width       : 800,
-            height      : 350,
+            width       : 950,
+            height      : 400,
             closeAction :'close',
             plain       : true,
             items       : [manageThresholds]
 		});
 		//manageThresholds.addEvents('select');	
-		manageThresholds.gridForm.on('select2', this.selectThrItem, this);
-		this.thrWin.show();
 		manageThresholds.on('select2', this.selectThrItem, this);
+		this.thrWin.show();
+		//manageThresholds.on('select2', this.selectThrItem, this);
 	}
 	
 	,selectThrItem: function(itemId, index){
@@ -484,7 +485,7 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 	,save : function() {
 		alert('Dentro a save');
 		/*
-		var values = this.gridForm.getForm().getFieldValues();
+		var values = this.getForm().getFieldValues();
 		var idRec = values['id'];
 		var newRec;
 	

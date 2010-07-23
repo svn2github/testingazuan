@@ -55,6 +55,7 @@ Sbi.widgets.TreeDetailForm = function(config) {
 	this.treeTitle = conf.treeTitle;
 
 	this.initWidget();
+	this.initContextMenu();
 	
 	var c = Ext.apply({}, config, this.gridForm);
    	
@@ -73,7 +74,34 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	, preloadTree: true
 	, rootNodeText: null
 	, treeTitle: null
-		
+	, menu: null
+	
+	, selectedNodeToEdit: null
+
+	, initContextMenu: function() {
+	
+		 this.menu = new Ext.menu.Menu({
+            id:'actions',
+            items: [
+            // ACID operations on nodes
+            '-',{
+           	 text:'Add Model Node',
+                iconCls:'icon-add',
+                handler:function(){
+           	   		this.addNewItem(this.ctxNode);	         	 	
+	             },
+                scope: this
+            },{
+           	 text:'Remove Model Node',
+                iconCls:'icon-remove',
+                handler:  function() {
+	            	 this.deleteItem(this.ctxNode);
+                },
+                scope: this
+            }]
+        });
+
+	}	
 	,initWidget: function(){
 
  	    this.tbSave = new Ext.Toolbar({
@@ -98,30 +126,10 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
            , width: 450          
            , height: 490
            , itemId: 'tabs' 
-           , tbar: this.tbSave
 		   , items: this.tabItems
 		});
- 	   this.addBtn = new Ext.Toolbar.Button({
-           text: LN('sbi.generic.add'),
-	            iconCls: 'icon-add',
-	            handler: this.addNewItem,
-	            width: 30,
-	            scope: this
-	            });
-	   this.deleteBtn = new Ext.Toolbar.Button({
-          text: LN('sbi.generic.delete'),
-	            iconCls: 'icon-remove',
-	            handler: this.deleteItem,
-	            width: 30,
-	            scope: this
-	            });
-	   
- 	    this.tb = new Ext.Toolbar({
- 	    	buttonAlign : 'left',
- 	    	items:[this.addBtn, 
- 	    	       //{xtype: 'tbspacer'}, 
- 	    	       this.deleteBtn	]
- 	    });
+
+
 
  	   this.mainTree =  new Ext.tree.TreePanel({
            title: this.treeTitle,
@@ -135,9 +143,9 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
            enableDD	: true,
            dropConfig : {appendOnly:true},
            scope: this,
-           tbar: this.tb,
            collapsible:true,
            shadow:true,
+           tbar: this.tbSave,
            root: {
                nodeType: 'async',
                text: this.rootNodeText,
@@ -145,20 +153,10 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
            }
 	   		
 	    });
- 	   
- 	  this.mainTree.addListener('click',this.fillDetail,this );
- 	  this.mainTree.addListener('render',this.renderTree,this );
- 	  this.mainTree.addListener('beforeload',this.styleTree,this );
+ 	    this.setListeners();
+ 	    this.mainTree.on('contextmenu', this.onContextMenu, this);
 
- 	  this.mainTree.on('append', function(tree, p, node){
- 		 //alert("appended");
- 		//node.select.defer(100, node);
 
- 	  });
-
- 	  /*form fields editing*/
- 	  this.detailFieldName.addListener('change',this.editNode,this);
- 	  this.detailFieldCode.addListener('change',this.editNode,this);
    	   /*
    	   *    Here is where we create the Form
    	   */
@@ -183,7 +181,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
    	              {
    	               region:'west',
    	               margins: '5 0 0 5',
-   	               width: 200,
+   	               width: 300,
    	               collapsible: true,   // make collapsible
    	               cmargins: '5 5 0 5', // adjust top margin when collapsed
    	               columnWidth: 0.4,
@@ -210,49 +208,77 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
    	          ]
    	      });
 	}
+	, setListeners: function(){
+	 	  this.mainTree.getSelectionModel().addListener('selectionchange',this.fillDetail,this );
+	 	  this.mainTree.addListener('render',this.renderTree,this );
 
+	 	  this.mainTree.addListener('beforeappend', this.styleTree, this);
+
+	 	  /*form fields editing*/
+	 	  this.detailFieldName.addListener('focus',this.selectNode,this);
+	 	  this.detailFieldName.addListener('change',this.editNode,this);
+	 	  
+	 	  this.detailFieldCode.addListener('focus',this.selectNode,this);
+	 	  this.detailFieldCode.addListener('change',this.editNode,this);
+	 	  
+	 	 this.detailFieldDescr.addListener('focus',this.selectNode,this);
+	 	  this.detailFieldDescr.addListener('change',this.editDescr,this);
+	 	  
+	 	  this.detailFieldLabel.addListener('focus',this.selectNode,this);
+	 	  this.detailFieldLabel.addListener('change',this.editLabel,this);
+	 	  
+	 	 this.detailFieldTypeDescr.addListener('focus',this.selectNode,this);
+	 	  this.detailFieldTypeDescr.addListener('change',this.editTypeDescr,this);
+	 	  
+	 	 this.detailFieldKpi.addListener('focus',this.selectNode,this);
+	 	  this.detailFieldKpi.addListener('change',this.editKpi,this);
+	 	  
+	 	 this.detailFieldNodeType.addListener('focus',this.selectNode,this);
+	 	  this.detailFieldNodeType.addListener('change',this.editType,this);
+	}
 	,save : function() {		
 		alert('Abstract Method: it needs to be overridden');
     }
-	, fillDetail : function(node, e) {	
-		var val = node.text;
-		var aPosition = val.indexOf(" - ");
+	, fillDetail : function(sel, node) {	
 		
-		var name = node.attributes.name;
-		var code =	node.attributes.code;
-		if(aPosition !== undefined && aPosition != -1){
-			name = val.substr(aPosition + 3);
-			code = val.substr(0 , aPosition)
+		var val = node.text;
+		if(val != null && val !== undefined){
+			var aPosition = val.indexOf(" - ");
+			
+			var name = node.attributes.name;
+			var code =	node.attributes.code;
+			if(aPosition !== undefined && aPosition != -1){
+				name = val.substr(aPosition + 3);
+				code = val.substr(0 , aPosition)
+			}
+	
+			this.detailFieldDescr.setValue(node.attributes.description);
+			this.detailFieldTypeDescr.setValue(node.attributes.typeDescr);
+			this.detailFieldLabel.setValue(node.attributes.label);
+			this.detailFieldKpi.setValue(node.attributes.kpi);
+			this.detailFieldNodeType.setValue(node.attributes.type);
+	
+			this.detailFieldName.setValue(name);
+			this.detailFieldCode.setValue(code);
 		}
-
-		this.detailFieldDescr.setValue(node.attributes.description);
-		this.detailFieldTypeDescr.setValue(node.attributes.typeDescr);
-		this.detailFieldLabel.setValue(node.attributes.label);
-		this.detailFieldKpi.setValue(node.attributes.kpi);
-		this.detailFieldNodeType.setValue(node.attributes.type);
-		this.detailFieldName.setValue(name);
-		this.detailFieldCode.setValue(code);
-
     }
 	, renderTree: function(tree) {		
 		tree.getLoader().nodeParameter = 'id';
 		tree.getRootNode().expand(false, /*no anim*/ false);
-
-
     }
-	, styleTree: function(node){	
-		//Ext.fly(this.mainTree.getEl()).frame("ff0000");
-/*
- 		if(node.attributes.kpi === undefined || node.attributes.kpi == null ){ 
- 			node.cls ="tree-model-nokpi";
- 			
- 		}else{
- 			node.cls ="tree-model-kpi";
- 		}*/
- 	}
-	, editNode: function(field, newVal, oldVal) {		
-		var node = this.mainTree.getSelectionModel().getSelectedNode();
+	, styleTree: function(tree, thisNode, node){
+ 		if(node.attributes.kpi !== undefined 
+ 				&& node.attributes.kpi != null 
+ 				&& node.attributes.kpi != ''){ 
+ 			node.attributes.iconCls = 'has-kpi';	
+ 		}
+ 		//node.attributes.cls = 'has-error';
+	}
+	, editNode: function(field, newVal, oldVal) {
+		var node = this.selectedNodeToEdit;
+		
 		if(node !== undefined){
+
 			var val = node.text;
 			var aPosition = val.indexOf(" - ");
 			var name = "";
@@ -269,13 +295,49 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 			}
 			var text = code +" - "+name;
 			node.setText( text);
-			
-			this.mainTree.render();
+			//this.mainTree.render();
 		}
     }
-	, addNewItem : function(){
-
-		var parent = this.mainTree.getSelectionModel().getSelectedNode();
+	, editKpi: function(field, newVal, oldVal) {	
+		var node = this.selectedNodeToEdit;
+		if(node !== undefined && node !==  null){
+			node.attributes.toSave = true;
+			node.attributes.kpi = newVal;	
+		}
+    }
+	, editType: function(field, newVal, oldVal) {	
+		var node = this.selectedNodeToEdit;
+		if(node !== undefined && node !==  null){
+			node.attributes.toSave = true;
+			node.attributes.type = newVal;	
+		}
+    }
+	, editTypeDescr: function(field, newVal, oldVal) {	
+		var node = this.selectedNodeToEdit;
+		if(node !== undefined && node !==  null){
+			node.attributes.toSave = true;
+			node.attributes.typeDescr = newVal;	
+		}
+    }
+	, editDescr: function(field, newVal, oldVal) {	
+		var node = this.selectedNodeToEdit;
+		if(node !== undefined && node !==  null){
+			node.attributes.toSave = true;
+			node.attributes.description = newVal;	
+		}
+    }
+	, editLabel: function(field, newVal, oldVal) {	
+		var node = this.selectedNodeToEdit;
+		if(node !== undefined && node !==  null){
+			node.attributes.toSave = true;
+			node.attributes.description = newVal;	
+		}
+    }
+	, selectNode: function(field) {	
+		this.selectedNodeToEdit = this.mainTree.getSelectionModel().getSelectedNode();
+		
+    }
+	, addNewItem : function(parent){
 		if(parent === undefined || parent == null){
 			alert("Select parent node");
 			return;
@@ -298,8 +360,8 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 
 		this.mainTree.fireEvent('click', node);
 	}
-	, deleteItem : function(){
-		var node = this.mainTree.getSelectionModel().getSelectedNode();
+	, deleteItem : function(node){
+
 		if(node === undefined || node == null){
 			alert("Select node to delete");
 			return;
@@ -307,4 +369,19 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		node.remove();
 		this.mainTree.render();
 	}
+	, onContextMenu : function(node, e){
+        if(this.menu == null){ // create context menu on first right click
+        	this.initContextMenu();
+        }
+        
+        if(this.ctxNode){
+            this.ctxNode.ui.removeClass('x-node-ctx');
+            this.ctxNode = null;
+        }
+        
+        this.ctxNode = node;
+        this.ctxNode.ui.addClass('x-node-ctx');
+        this.menu.showAt(e.getXY());
+
+    }
 });

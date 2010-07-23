@@ -54,7 +54,7 @@ Sbi.kpi.ManageModels = function(config) {
 		, baseParams: paramsList
 	});	
 	this.configurationObject.saveTreeService = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'MANAGE_RESOURCES_ACTION'
+		serviceName: 'MANAGE_MODELS_ACTION'
 		, baseParams: paramsSave
 	});
 	
@@ -214,13 +214,21 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	
     //OVERRIDING save method
 	,save : function() {
-    	var jsonStr = '';
+    	var jsonStr = '[';
+
 		Ext.each(this.nodesToSave, function(node, index) {
 			if(node instanceof Ext.tree.TreeNode){
-				alert(node.attributes.name);
+				//alert(node.attributes.name);
 				jsonStr += Ext.util.JSON.encode(node.attributes);
+				jsonStr +=',';
 			}
 		});
+		/*
+		var lastcomma = jsonStr.lastIndexOf(',', jsonStr.length-2) ;
+		if(lastcomma != -1 ){
+			jsonStr.substring(0,lastcomma);
+		}*/
+		jsonStr += ']';
 		
 		var params = {
 			nodes : jsonStr

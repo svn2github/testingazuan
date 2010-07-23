@@ -188,13 +188,17 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 			Model model = new Model();
 			model.setId(obj.getInt("id"));
 			model.setCode(obj.getString("code"));
-			model.setDescription("description");
-			model.setLabel("label");
-			model.setName("name");
-			model.setTypeCd("type");
-			model.setTypeDescription("typeDescr");
-			String kpi = obj.getString("kpi");
-			
+			model.setDescription(obj.getString("description"));
+			model.setLabel(obj.getString("label"));
+			model.setName(obj.getString("name"));
+			model.setTypeCd(obj.getString("type"));
+			model.setTypeDescription(obj.getString("typeDescr"));
+			try{
+				model.setKpiId(obj.getInt("kpiId"));
+			}catch(Throwable t){
+				//nothing
+				model.setKpiId(null);
+			}
 			String value = obj.getString("toSave");
 			toReturn.add(model);
 		}	

@@ -68,74 +68,76 @@ Sbi.kpi.ManageThresholdValues = function(config) {
 	
 	// Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
 	this.userColumns =  [
-	    {header: 'Position', 
+	    {
+	        name: 'itThrVal',
+	        hidden: true
+	    },{
+	    	header: 'Position', 
 	    	id:'position',
 	    	width: 50, 
-	    	sortable: true, dataIndex: 'name', editor: 
-	    		new Ext.form.TextField({})
-	    },
-	    {header: 'Label', width: 50, 
-				id:'label',
-				sortable: true, dataIndex: 'description',  
-				editor: new Ext.form.TextField({})
-	    },
-		{header: 'Min', width: 50, 
-				id:'min',
-				sortable: true, 
-				xtype: 'numbercolumn',
-				dataIndex: 'min',  
-				editor: new Ext.form.NumberField({
-		                allowBlank: false,
-		                minValue: 1,
-		                maxValue: 150000
-		            })				
-		},new Ext.form.Checkbox({
-			header: 'Max', 
-			width: 50, 
+	    	sortable: true, 
+	    	xtype: 'numbercolumn',
+	    	dataIndex: 'position', 
+	    	editor: new Ext.form.NumberField({})	
+	    },{
+	    	header: 'Label', 
+	    	width: 150, 
+			id:'label',
+			sortable: true, 
+			dataIndex: 'label',  
+			editor: new Ext.form.TextField({})
+	    },{
+			header: 'Min Included?', 
+			width: 80, 
 			xtype: 'booleancolumn',
 			sortable: true, 
-			dataIndex: 'max' 
-		})
-		/*{header: 'Max', width: 50, 
-				id:'max',
-				xtype: 'booleancolumn',
-				sortable: true, dataIndex: 'max',  
-				editor:new Ext.form.Checkbox({})
-		}*/,new Ext.form.ComboBox({
+			dataIndex: 'minIncluded',
+			editor:new Ext.form.Checkbox({})
+		},{
+	    	header: 'Min', 
+	    	width: 50, 
+			id:'min',
+			sortable: true, 
+			xtype: 'numbercolumn',
+			dataIndex: 'min',  
+			editor: new Ext.form.NumberField({})				
+		},{
+			header: 'Max', 
+			width: 50, 
+			xtype: 'numbercolumn',
+			sortable: true, 
+			dataIndex: 'max',
+			editor: new Ext.form.NumberField({})	
+		},{
+			header: 'Max Included?', 
+			width: 80, 
+			xtype: 'booleancolumn',
+			sortable: true, 
+			dataIndex: 'maxIncluded',
+			editor:new Ext.form.Checkbox({})
+		},{
 			header: 'Severity', 
-			width: 50, 
+			width: 80, 
+			id:'severityCd',
 			sortable: true, 
-			dataIndex: 'severityCd'})
-		/*{header: 'Severity', width: 50, 
-				id:'severity',
-				sortable: true, dataIndex: 'severity',  
-				editor: new Ext.form.ComboBox({})
-		}*/,new Ext.ux.ColorField({
+			dataIndex: 'severityCd',  
+			editor: new Ext.form.ComboBox({})
+		},{	
 			header: 'Color', 
-			width: 50, 
+			width: 80, 
+			id:'color',
 			sortable: true, 
-			dataIndex: 'color',
-			value: '#FFFFFF', 
-			msgTarget: 'qtip', 
-			fallback: true
-		})
-		/*{header: 'Color', width: 50, 
-				id:'color',
-				sortable: true, dataIndex: 'color',  
-				editor: new Ext.ux.ColorField({ value: '#FFFFFF', msgTarget: 'qtip', fallback: true})
-					}*/,
-		{header: 'Value', width: 50, 
-				id:'val',
-				sortable: true, dataIndex: 'val',  
-				editor: new Ext.form.NumberField({})
-		}
-					
+			dataIndex: 'color',  
+			editor: new Ext.ux.ColorField({ value: '#FFFFFF', msgTarget: 'qtip', fallback: true})
+		},{	
+			header: 'Value', 
+			width: 50, 
+			id:'val',
+			sortable: true, 
+			dataIndex: 'val',  
+			editor: new Ext.form.NumberField({})
+		}					
 	];
-
-	 // use RowEditor for editing
-   /* this.editor = new Ext.ux.grid.RowEditor({
-        saveText: LN('sbi.attributes.update')
-    });*/
     
   ///PROVA
 	 var cm = new Ext.grid.ColumnModel({
@@ -145,23 +147,22 @@ Sbi.kpi.ManageThresholdValues = function(config) {
 	        },
 	        columns: this.userColumns
 	    });
-
+	 
 	 this.store = new Ext.data.JsonStore({
-	    	autoLoad: false    	  
-	    	, id : 'id'		
-	    	, fields: [
-        	            'label'
-        	          , 'position'
-        	          , 'min'
-        	          , 'minIncluded'
-        	          , 'max'
-        	          , 'maxIncluded'
-        	          , 'val'
-        	          , 'color'
-        	          , 'severityCd'
-        	          ]
-	    	, root: 'rows'
-			, url: this.services['manageAttributes']		
+		    id : 'itThrVal',
+		    fields: ['itThrVal'
+     	          , 'label'
+      	          , 'position'
+      	          , 'min'
+      	          , 'minIncluded'
+      	          , 'max'
+      	          , 'maxIncluded'
+      	          , 'val'
+      	          , 'color'
+      	          , 'severityCd'
+      	          ],
+		    idIndex: 0,
+		    data:{}
 		});
 	 
 	 var tb = new Ext.Toolbar({
@@ -183,32 +184,28 @@ Sbi.kpi.ManageThresholdValues = function(config) {
 	    });
 
 	    // create the editor grid
-	    var grid = new Ext.grid.EditorGridPanel({
+	    var grid = {
+	    	xtype: 'grid',
 	        store: this.store,
 	        cm: cm,
 	        width: 600,
 	        height: 300,
-	        autoExpandColumn: 'label', // column with this id will be expanded
+	        //autoExpandColumn: 'label', // column with this id will be expanded
 	        frame: true,
 	        clicksToEdit: 1,
 	        tbar: tb
-	    });
-
-	
-	///PROVA
+	    };
 	    
-    this.store.load();
+	
     
     var c = Ext.apply( {}, config, grid);
-    
-
 
     // constructor
     Sbi.kpi.ManageThresholdValues.superclass.constructor.call(this, c);
 
 }
 
-Ext.extend(Sbi.kpi.ManageThresholdValues, Ext.grid.GridPanel, {
+Ext.extend(Sbi.kpi.ManageThresholdValues, Ext.grid.EditorGridPanel, {
   
   	reader:null
   	,services:null
@@ -218,7 +215,10 @@ Ext.extend(Sbi.kpi.ManageThresholdValues, Ext.grid.GridPanel, {
   	,editor:null
   	,userGrid:null
 	
-  	
+  	,loadItems: function(thrValues){
+		this.store.loadData(thrValues);
+	}
+
     ,onAdd: function (btn, ev) {
         var emptyRecToAdd = new Ext.data.Record({
 			  itThrVal: 0,
@@ -233,13 +233,6 @@ Ext.extend(Sbi.kpi.ManageThresholdValues, Ext.grid.GridPanel, {
               severityCd: ''     
 			 });   
         this.store.insert(0,emptyRecToAdd);
-		/*this.gridForm.getForm().loadRecord(emptyRecToAdd);
-	
-	    this.tabs.items.each(function(item)
-		    {		
-		    	item.doLayout();
-		    });   
-	    this.gridForm.doLayout();*/
     }
 
     ,onDelete: function() {

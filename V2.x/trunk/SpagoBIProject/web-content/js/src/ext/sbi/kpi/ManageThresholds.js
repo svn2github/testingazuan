@@ -117,7 +117,9 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
             this.detailThrColor.focus(false,60);
 		}else if (thrTypeSelected != null && thrTypeSelected=='RANGE'){
 			this.tempThrV.setVisible(true);
-			this.thrMinOrMaxDetail.setVisible(false);			
+			this.thrMinOrMaxDetail.setVisible(false);	
+			var myData = record.get('thrValues');
+			this.tempThrV.loadItems(myData);
 		}
 	}
 

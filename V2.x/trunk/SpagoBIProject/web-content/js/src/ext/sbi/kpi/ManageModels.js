@@ -44,7 +44,7 @@
 Ext.ns("Sbi.kpi");
 
 Sbi.kpi.ManageModels = function(config) { 
-	var paramsList = {MESSAGE_DET: "MODELS_LIST"};
+	var paramsList = {MESSAGE_DET: "MODEL_NODES_LIST"};
 	
 	this.configurationObject = {};
 	

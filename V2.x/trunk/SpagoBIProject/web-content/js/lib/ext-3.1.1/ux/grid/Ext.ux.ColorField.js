@@ -35,6 +35,7 @@ Ext.destroy(this.menu);
     afterRender: function(){
         Ext.ux.ColorField.superclass.afterRender.call(this);
         this.el.setStyle('background', this.value);
+        this.focus(false, 60);
         this.detectFontColor();
     },
 
@@ -127,9 +128,9 @@ Ext.ux.ColorMenu = Ext.extend(Ext.menu.Menu, {
    },
 
    menuHide: function() {
-       if(this.hideOnClick){
+      //if(this.hideOnClick){
            this.hide(true);
-       }
+      // }
    },
    
    doLayout: function(shallow, force){
@@ -143,14 +144,14 @@ Ext.ux.ColorMenu = Ext.extend(Ext.menu.Menu, {
 Ext.ux.ColorMenu.prototype.wheelImage = (function(){
     var wheelImage = new Image();
     wheelImage.onload = Ext.emptyFn;
-    wheelImage.src = 'images/wheel.png';
+    wheelImage.src = '../images/wheel.png';
     return wheelImage;
 })();
 
 Ext.ux.ColorMenu.prototype.gradientImage = (function(){
     var gradientImage = new Image();
     gradientImage.onload = Ext.emptyFn;
-    gradientImage.src = 'images/gradient.png';
+    gradientImage.src = '../images/gradient.png';
     return gradientImage;
 })();
 
@@ -168,7 +169,7 @@ Ext.ux.ColorPicker = function(config){
     
     if(!this.value)
         this.value = this.defaultValue;
-
+    
     if(this.handler){
         this.on("select", this.handler, this.scope, true);
     }
@@ -250,7 +251,7 @@ Ext.extend(Ext.ux.ColorPicker, Ext.ColorPalette, {
             this.rawValue = data.data;
             this.value = this.hexValue(data.data[0], data.data[1], data.data[2]);
             this.fireEvent('select', this, this.value);
-        }else{
+        }else{        	
             this.rawValue = data.data;
             this.value = this.hexValue(data.data[0], data.data[1], data.data[2]);
             this.drawGradient();
@@ -303,6 +304,7 @@ Ext.extend(Ext.ux.ColorPicker, Ext.ColorPalette, {
     
     setValue: function(v){
         this.value = v;
+        this.fireEvent('select', this, '#'+this.value);
     }
 });
 Ext.reg('colorfield', Ext.ux.ColorField);

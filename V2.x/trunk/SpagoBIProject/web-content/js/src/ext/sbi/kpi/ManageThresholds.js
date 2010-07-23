@@ -75,6 +75,7 @@ Sbi.kpi.ManageThresholds = function(config) {
 	var c = Ext.apply({}, config || {}, {});
 
 	Sbi.kpi.ManageThresholds.superclass.constructor.call(this, c);	 	
+	this.detailThrColor.focus(false,60);
 	
 	this.rowselModel.addListener('rowselect',this.fillThrValues,this);
 };
@@ -88,6 +89,7 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 	, nodeTypesCd: null
 	, thrSeverityTypesCd: null
 	, drawSelectColumn: null
+	, detailThrColor: null
 	
 	
 	,activateThrValuesForm:function(combo,record,index){
@@ -102,15 +104,17 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
             this.detailThrMax.disable();
             this.detailThrMaxClosed.setValue( false );
             this.detailThrMaxClosed.disable();
+            this.detailThrColor.focus(false,60);
 		}else if (thrTypeSelected != null && thrTypeSelected=='MAXIMUM'){
 			this.tempThrV.setVisible(false);
 			this.thrMinOrMaxDetail.setVisible(true);
 			this.detailThrMin.disable();
 			this.detailThrMin.setRawValue( null );
             this.detailThrMinClosed.disable();
-			this.detailThrMinClosed.setValue( false );
-            this.detailThrMax.enable();
+			this.detailThrMinClosed.setValue( false);
+            this.detailThrMax.enable(true);
             this.detailThrMaxClosed.enable();
+            this.detailThrColor.focus(false,60);
 		}else if (thrTypeSelected != null && thrTypeSelected=='RANGE'){
 			this.tempThrV.setVisible(true);
 			this.thrMinOrMaxDetail.setVisible(false);			
@@ -203,28 +207,27 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
            };
  		   
  	   var detailFieldName = new Ext.form.TextField({
-          	 maxLength:100,
-        	 minLength:1,
+          	 maxLength:400,
         	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
         	 regexText : LN('sbi.roles.alfanumericString'),
              fieldLabel: LN('sbi.generic.name'),
-             allowBlank: false,
              validationEvent:true,
              name: 'name'
          });
  			  
  	   var detailFieldCode = new Ext.form.TextField({
-          	 maxLength:20,
-        	 minLength:0,
+          	 maxLength:45,
+        	 minLength:1,
         	 regex : new RegExp("^([A-Za-z0-9_])+$", "g"),
         	 regexText : LN('sbi.roles.alfanumericString2'),
              fieldLabel:LN('sbi.generic.code'),
+             allowBlank: false,
              validationEvent:true,
              name: 'code'
          });	  
  		   
  	   var detailFieldDescr = new Ext.form.TextArea({
-          	 maxLength:160,
+          	 maxLength:1000,
         	 width : 250,
              height : 80,
         	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
@@ -259,8 +262,7 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
              hidden: true
          };
  	  
- 	  var detailThrPosition = new Ext.form.NumberField({
- 			 maxLength:20,
+ 	  var detailThrPosition = new Ext.form.NumberField({		
              fieldLabel: 'Position',
              validationEvent:true,
              name: 'position'
@@ -268,53 +270,52 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
  	  
  	  var detailThrLabel = new Ext.form.TextField({
  			 maxLength:20,
+ 			 minLength:1,
              fieldLabel: 'Label',
              validationEvent:true,
+             allowBlank: false,
              name: 'label'
          });	
  	  
  	 this.detailThrMin = new Ext.form.NumberField({
- 			 maxLength:20,
              fieldLabel: 'Min Value',
              validationEvent:true,
              name: 'min'
          });
  	 
  	this.detailThrMinClosed = new Ext.form.Checkbox({
-			 maxLength:20,
             fieldLabel: 'Included?',
             validationEvent:true,
             name: 'minIncluded'
         });
  	
  	 this.detailThrMax = new Ext.form.NumberField({
- 			 maxLength:20,
              fieldLabel: 'Max Value',
              validationEvent:true,
              name: 'max'
          });
  	 
  	this.detailThrMaxClosed = new Ext.form.Checkbox({
-			 maxLength:20,
 			 xtype: 'checkbox',
-            fieldLabel: 'Included?',
-            validationEvent:true,
-            name: 'maxIncluded'
+             fieldLabel: 'Included?',
+             validationEvent:true,
+             name: 'maxIncluded'
  		});
  	
  	var detailThrValue = new Ext.form.NumberField({
-			 maxLength:20,
-            fieldLabel: 'Value',
-            validationEvent:true,
-            name: 'val'
+             fieldLabel: 'Value',
+             validationEvent:true,
+             name: 'val'
         });
  	
- 	var detailThrColor = new Ext.ux.ColorField({
+ 	this.detailThrColor = new Ext.ux.ColorField({
  			fieldLabel: 'Color', 
  			value: '#FFFFFF', 
  			msgTarget: 'qtip', 
  			name: 'color',
- 			fallback: true});
+ 			fallback: true
+ 			});
+ 	
  	
  	var detailThrSeverity = new Ext.form.ComboBox({
       	  name: 'severityCd',
@@ -328,7 +329,7 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
           triggerAction: 'all',
           selectOnFocus: true,
           editable: false,
-          allowBlank: false,
+          allowBlank: true,
           validationEvent:true,
           xtype: 'combo'
       });  
@@ -348,7 +349,7 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
              },
              items: [detailThrPosition, detailThrLabel, this.detailThrMin, 
                      this.detailThrMinClosed, this.detailThrMax, this.detailThrMaxClosed, 
-                     detailThrValue, detailThrColor, detailThrSeverity]
+                     detailThrValue, this.detailThrColor, detailThrSeverity]
     	});
 
  	  this.detailItem = new Ext.form.FieldSet({ 
@@ -387,6 +388,8 @@ Ext.extend(Sbi.kpi.ManageThresholds, Sbi.widgets.ListDetailForm, {
 		        , width: 430
 		        , items: [this.detailItem]
 		    },this.thrValuesItem];
+ 	   
+ 	   this.detailThrColor.focus(false,60);
 	}
 	
     //OVERRIDING save method

@@ -64,119 +64,6 @@ Sbi.kpi.ManageThresholdValues = function(config) {
 			serviceName: 'MANAGE_ATTRIBUTES_ACTION'
 			, baseParams: paramsDelete
 		});
-	
-		// Typical JsonReader.  Notice additional meta-data params for defining the core attributes of your json-response
-	this.reader = new Ext.data.JsonReader({
-		    totalProperty: 'total',
-		    successProperty: 'success',
-		    idProperty: 'id',
-		    root: 'samples',
-		    messageProperty: 'message'  // <-- New "messageProperty" meta-data
-		}, [
-		    {name: 'id'},
-		    {name: 'name', type: 'string'},
-		    {name: 'description', type: 'string'},
-		    {name: 'min', type: 'float'},
-		    {name: 'max', type: 'bool'}
-	]);
-
-
-	// The new DataWriter component.
-	this.writer = new Ext.data.JsonWriter({
-	    encode: false   // <-- don't return encoded JSON -- causes Ext.Ajax#request to send data using jsonData config rather than HTTP params
-	});
-	this.httpproxy = new Ext.data.HttpProxy({
-		url: this.services['manageAttributes'],
-        scope: this,
-		success: function(response, o){
-
-			var content = Ext.util.JSON.decode( response.responseText );
-			if(content.newAttr !== undefined && content.newAttr){
-
-				var respObj = o.reader.read(response);
-
-				var attrID = content.id;
-
-				if(attrID != null && attrID !==''){
-
-					if(content.message !==''){
-						//store.commitChanges();
-		                Ext.MessageBox.show({
-		                    title: LN('sbi.attributes.ok'),
-		                    msg: LN('sbi.attributes.ok.msg'),
-		                    width: 200,
-		                    buttons: Ext.MessageBox.OK
-		               });
-					}
-				}
-			}
-		}
-		,listeners: {
-			'exception': function(proxy, type, action, options, response, arg){	
-				try{
-					var content = Ext.util.JSON.decode( response.responseText );
-
-					if(content !== undefined){
-    					if(content.success){
-        					var attrID = content.id;
-
-        					if(attrID != null && attrID !==''){
-        						rec.set('id', attrID);
-        						this.store.commitChanges();
-	    						if(content.message !==''){
-	    							this.store.commitChanges();
-					                Ext.MessageBox.show({
-					                    title: LN('sbi.attributes.ok'),
-					                    msg: LN('sbi.attributes.ok.msg'),
-					                    width: 200,
-					                    buttons: Ext.MessageBox.OK
-					               });
-	    						}
-        					}
-    					}else if(!content.success){
-			                Ext.MessageBox.show({
-			                    title: LN('sbi.attributes.error'),
-			                    msg: content.message,
-			                    width: 400,
-			                    buttons: Ext.MessageBox.OK
-			               });
-
-    					}
-					}else{
-		                Ext.MessageBox.show({
-		                    title: LN('sbi.attributes.error'),
-		                    msg: LN('sbi.attributes.error.msg'),
-		                    width: 400,
-		                    buttons: Ext.MessageBox.OK
-		               }); 
-					}
-				}catch(exception){
-					return;
-				}
-			}
-
-        }
-	});
-	// Typical Store collecting the Proxy, Reader and Writer together.
-	this.store = new Ext.data.Store({
-	    id: 'user',
-		storeId:'storeattr1',
-	    scope:this,
-	    restful: true,     // <-- This Store is RESTful
-	    proxy: this.httpproxy,
-	    reader: this.reader,
-	    writer: this.writer    // <-- plug a DataWriter into the store just as you would a Reader
-	});
-	
-
-	// load the store immeditately
-	this.store.load();
-
-	/* var checkColumn = new Ext.grid.CheckColumn({
-	       header: 'Indoor?',
-	       dataIndex: 'indoor',
-	       width: 55
-	    });*/
 
 	
 	// Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
@@ -246,58 +133,74 @@ Sbi.kpi.ManageThresholdValues = function(config) {
 	];
 
 	 // use RowEditor for editing
-    this.editor = new Ext.ux.grid.RowEditor({
+   /* this.editor = new Ext.ux.grid.RowEditor({
         saveText: LN('sbi.attributes.update')
-    });
+    });*/
+    
+  ///PROVA
+	 var cm = new Ext.grid.ColumnModel({
+	        // specify any defaults for each column
+	        defaults: {
+	            sortable: true // columns are not sortable by default           
+	        },
+	        columns: this.userColumns
+	    });
 
-    
-    
-    this.editor.on({
-  			scope: this,
-  			afteredit: function() {
- 				this.store.commitChanges();
- 				//this.store.save();
-		    },
-		    exceptionOnValidate: function(){
-		    	this.validationErrors();
-		    }
+	 this.store = new Ext.data.JsonStore({
+	    	autoLoad: false    	  
+	    	, id : 'id'		
+	    	, fields: [
+        	            'label'
+        	          , 'position'
+        	          , 'min'
+        	          , 'minIncluded'
+        	          , 'max'
+        	          , 'maxIncluded'
+        	          , 'val'
+        	          , 'color'
+        	          , 'severityCd'
+        	          ]
+	    	, root: 'rows'
+			, url: this.services['manageAttributes']		
 		});
+	 
+	 var tb = new Ext.Toolbar({
+	    	buttonAlign : 'left',
+	    	items:[new Ext.Toolbar.Button({
+	            text: LN('sbi.attributes.add'),
+	            iconCls: 'icon-add',
+	            handler: this.onAdd,
+	            width: 30,
+	            scope: this
+	        }), '-', new Ext.Toolbar.Button({
+	            text: LN('sbi.attributes.delete'),
+	            iconCls: 'icon-remove',
+	            handler: this.onDelete,
+	            width: 30,
+	            scope: this
+	        }), '-'
+	    	]
+	    });
 
+	    // create the editor grid
+	    var grid = new Ext.grid.EditorGridPanel({
+	        store: this.store,
+	        cm: cm,
+	        width: 600,
+	        height: 300,
+	        autoExpandColumn: 'label', // column with this id will be expanded
+	        frame: true,
+	        clicksToEdit: 1,
+	        tbar: tb
+	    });
 
-    // Create a typical GridPanel with RowEditor plugin
+	
+	///PROVA
+	    
+    this.store.load();
     
-    var tb = new Ext.Toolbar({
-    	buttonAlign : 'left',
-    	items:[new Ext.Toolbar.Button({
-            text: LN('sbi.attributes.add'),
-            iconCls: 'icon-add',
-            handler: this.onAdd,
-            width: 30,
-            scope: this
-        }), '-', new Ext.Toolbar.Button({
-            text: LN('sbi.attributes.delete'),
-            iconCls: 'icon-remove',
-            handler: this.onDelete,
-            width: 30,
-            scope: this
-        }), '-'
-    	]
-    });
+    var c = Ext.apply( {}, config, grid);
     
-    var c = Ext.apply( {}, config, {
-        frame: true,
-       // title: LN('sbi.attributes.title'),
-        autoScroll: true,
-        height: 400,
-        width: 600,
-        store: this.store,
-        plugins: [this.editor],
-        columns : this.userColumns,
-        tbar: tb,
-        viewConfig: {
-            forceFit: true
-        }
-    });
 
 
     // constructor
@@ -314,27 +217,31 @@ Ext.extend(Sbi.kpi.ManageThresholdValues, Ext.grid.GridPanel, {
   	,userColumns:null
   	,editor:null
   	,userGrid:null
-	/**
-     * onAdd
-     */
+	
+  	
     ,onAdd: function (btn, ev) {
-        var u = new this.store.recordType({
-           name: '',
-           description : ''
-        });
-        this.store.proxy.setUrl(this.services['manageAttributesNew']);
-
-        this.editor.stopEditing();
-        this.store.insert(0, u);
-
-        this.editor.startEditing(0);
-        //this.store.commitChanges();
-        
-
+        var emptyRecToAdd = new Ext.data.Record({
+			  itThrVal: 0,
+			  label: '',
+              position: '',
+              min: '',
+              minIncluded: '',
+              max: '',
+              maxIncluded: '',
+              val: '',
+              color: '',
+              severityCd: ''     
+			 });   
+        this.store.insert(0,emptyRecToAdd);
+		/*this.gridForm.getForm().loadRecord(emptyRecToAdd);
+	
+	    this.tabs.items.each(function(item)
+		    {		
+		    	item.doLayout();
+		    });   
+	    this.gridForm.doLayout();*/
     }
-    /**
-     * onDelete
-     */
+
     ,onDelete: function() {
         var rec = this.getSelectionModel().getSelected();
 

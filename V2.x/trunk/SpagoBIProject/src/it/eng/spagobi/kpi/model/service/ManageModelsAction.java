@@ -30,6 +30,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.kpi.model.bo.Model;
+import it.eng.spagobi.kpi.model.dao.IModelDAO;
 import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.bean.SbiUser;
 import it.eng.spagobi.profiling.bo.UserBO;
@@ -61,8 +62,9 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 	private final String MESSAGE_DET = "MESSAGE_DET";
 	// type of service
 	private final String MODELS_LIST = "MODELS_LIST";
-	private final String USER_INSERT = "USER_INSERT";
-	private final String USER_DELETE = "USER_DELETE";
+	private final String MODEL_NODES_LIST = "MODEL_NODES_LIST";
+	private final String MODEL_NODE_INSERT = "MODEL_NODE_INSERT";
+	private final String MODEL_NODE_DELETE = "MODEL_NODE_DELETE";
 
 	
 	private final String MODEL_DOMAIN_TYPE_ROOT = "MODEL_ROOT";
@@ -80,9 +82,9 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 	@Override
 	public void doService() {
 		logger.debug("IN");
-		ISbiUserDAO userDao;
+		IModelDAO modelDao;
 		try {
-			userDao = DAOFactory.getSbiUserDAO();
+			modelDao = DAOFactory.getModelDAO();
 		} catch (EMFUserError e1) {
 			logger.error(e1.getMessage(), e1);
 			throw new SpagoBIServiceException(SERVICE_NAME,	"Error occurred");
@@ -91,12 +93,29 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 
 		String serviceType = this.getAttributeAsString(MESSAGE_DET);
 		logger.debug("Service type "+serviceType);
+		
 		if (serviceType != null && serviceType.equalsIgnoreCase(MODELS_LIST)) {
+			
+			try {				
+				List modelRootsList = modelDao.loadModelsRoot();
+				
+				logger.debug("Loaded models list");
+				JSONArray modelsListJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(modelRootsList,locale);
+				JSONObject modelsResponseJSON = createJSONResponseModelsList(modelsListJSON, new Integer(6));
+
+				writeBackToClient(new JSONSuccess(modelsResponseJSON));
+
+			} catch (Throwable e) {
+				logger.error("Exception occurred while retrieving model tree", e);
+				throw new SpagoBIServiceException(SERVICE_NAME,
+						"Exception occurred while retrieving model tree", e);
+			}
+		  }else if (serviceType != null && serviceType.equalsIgnoreCase(MODEL_NODES_LIST)) {
 			
 			try {				
 				String parentId = (String)getAttributeAsString("ID");
 				//String parentId = "1";
-				Model aModel = DAOFactory.getModelDAO().loadModelWithChildrenById(Integer.parseInt(parentId));
+				Model aModel = modelDao.loadModelWithChildrenById(Integer.parseInt(parentId));
 				
 				logger.debug("Loaded model tree");
 				JSONArray modelChildrenJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(aModel.getChildrenNodes(),	locale);
@@ -109,76 +128,10 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 				throw new SpagoBIServiceException(SERVICE_NAME,
 						"Exception occurred while retrieving model tree", e);
 			}
-		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(USER_INSERT)) {
-			Integer id = getAttributeAsInteger(ID);
-			String userId = getAttributeAsString(USER_ID);
-			String fullName = getAttributeAsString(FULL_NAME);
-			String password = getAttributeAsString(PASSWORD);
-			JSONArray rolesJSON = getAttributeAsJSONArray(ROLES);
-			JSONArray attributesJSON = getAttributeAsJSONArray(ATTRIBUTES);
-			if (userId != null) {
-				SbiUser user = new SbiUser();
-				user.setUserId(userId);
-				user.setFullName(fullName);
-				if(password != null){
-					user.setPassword(password);
-				}				
-				
-				if(id!=null){
-					user.setId(id);
-				}
-				try {
-					HashMap<Integer, String> attrList = null;
-					if(attributesJSON != null){
-						attrList = deserializeAttributesJSONArray(attributesJSON);
-					}
-					
-					List rolesList = null;
-					if(rolesJSON != null){
-						rolesList = deserializeRolesJSONArray(rolesJSON);
-					}
-					
-					id = userDao.fullSaveOrUpdateSbiUser(user, rolesList, attrList);
-					logger.debug("User udated or Inserted");
-					
-					//Integer id = userDao.saveSbiUser(user);
-					logger.debug("New user inserted");
-					JSONObject attributesResponseSuccessJSON = new JSONObject();
-					attributesResponseSuccessJSON.put("success", true);
-					attributesResponseSuccessJSON.put("responseText", "Operation succeded");
-					attributesResponseSuccessJSON.put("id", id);
-					writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );
-
-				} catch (EMFUserError e) {
-					logger.error("Exception occurred while saving new user", e);
-					writeErrorsBackToClient();
-					throw new SpagoBIServiceException(SERVICE_NAME,	"Exception occurred while saving new user",	e);
-				} catch (IOException e) {
-					logger.error("Exception occurred while writing response to client", e);
-					throw new SpagoBIServiceException(SERVICE_NAME,
-							"Exception occurred while writing response to client",
-							e);
-				} catch (JSONException e) {
-					logger.error("JSON Exception", e);
-					e.printStackTrace();
-				}
-			}else{
-				logger.error("User name missing");
-				throw new SpagoBIServiceException(SERVICE_NAME,	"Please enter user name");
-			}
-		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(USER_DELETE)) {
-			Integer id = getAttributeAsInteger(ID);
-			try {
-				userDao.deleteSbiUserById(id);
-				logger.debug("User deleted");
-				writeBackToClient( new JSONAcknowledge("Operation succeded") );
-
-			} catch (Throwable e) {
-				logger.error("Exception occurred while retrieving user to delete", e);
-				throw new SpagoBIServiceException(SERVICE_NAME,
-						"Exception occurred while retrieving user to delete",
-						e);
-			}
+		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(MODEL_NODE_INSERT)) {
+			//TODO node insert
+		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(MODEL_NODE_DELETE)) {
+			//TODO node delete
 		}else if(serviceType == null){
 			try {
 				List nodeTypesNodes = DAOFactory.getDomainDAO().loadListDomainsByType(MODEL_DOMAIN_TYPE_NODE);
@@ -205,38 +158,13 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 	 * @return
 	 * @throws JSONException
 	 */
-	private JSONObject createJSONResponseModelTree(JSONArray rows, String root)
-			throws JSONException {
+	private JSONObject createJSONResponseModelsList(JSONArray rows, Integer totalModelsNumber)throws JSONException {
 		JSONObject results;
-
 		results = new JSONObject();
-		//results.put("root", root);
-		results.put(root, rows);
+		results.put("total", totalModelsNumber);
+		results.put("title", "ModelsList");
+		results.put("rows", rows);
 		return results;
-	}
-	
-	private List deserializeRolesJSONArray(JSONArray rows) throws JSONException{
-		List toReturn = new ArrayList();
-		//HashMap<Integer, String> toReturn = new HashMap<Integer, String>();
-		for(int i=0; i< rows.length(); i++){
-			JSONObject obj = (JSONObject)rows.get(i);
-			Integer id = obj.getInt("id");
-			//String name = obj.getString("name");
-			//String description = obj.getString("description");
-			toReturn.add(id);
-		}	
-		return toReturn;
-	}
-	
-	private HashMap<Integer, String> deserializeAttributesJSONArray(JSONArray rows) throws JSONException{
-		HashMap<Integer, String> toReturn = new HashMap<Integer, String>();
-		for(int i=0; i< rows.length(); i++){
-			JSONObject obj = (JSONObject)rows.get(i);
-			Integer key = obj.getInt("id");
-			String value = obj.getString("value");
-			toReturn.put(key, value);
-		}	
-		return toReturn;
 	}
 
 }

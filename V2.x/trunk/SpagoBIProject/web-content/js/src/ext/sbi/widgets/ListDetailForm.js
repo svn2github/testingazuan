@@ -295,7 +295,7 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
            //, columnWidth: 0.63
            , autoScroll : true
            , deferredRender: false
-           , width: 450          
+           , width: 500          
            , height: 490
            , itemId: 'tabs' 
         	   /* ,  split: true,

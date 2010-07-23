@@ -463,7 +463,7 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 		this.thrWin = new Ext.Window({
 			title: LN('sbi.lookup.Select') ,   
             layout      : 'fit',
-            width       : 950,
+            width       : 1000,
             height      : 400,
             closeAction :'close',
             plain       : true,

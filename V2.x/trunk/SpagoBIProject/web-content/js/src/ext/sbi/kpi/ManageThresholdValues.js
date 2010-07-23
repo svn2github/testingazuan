@@ -60,19 +60,12 @@ Sbi.kpi.ManageThresholdValues = function(config) {
 	    	editor: new Ext.form.NumberField({})	
 	    },{
 	    	header: 'Label', 
-	    	width: 70, 
+	    	width: 60, 
 			id:'label',
 			sortable: true, 
 			dataIndex: 'label',  
 			editor: new Ext.form.TextField({})
 	    },{
-			header: 'Min Included?', 
-			width: 80, 
-			xtype: 'booleancolumn',
-			sortable: true, 
-			dataIndex: 'minIncluded',
-			editor:new Ext.form.Checkbox({})
-		},{
 	    	header: 'Min', 
 	    	width: 50, 
 			id:'min',
@@ -81,6 +74,13 @@ Sbi.kpi.ManageThresholdValues = function(config) {
 			dataIndex: 'min',  
 			editor: new Ext.form.NumberField({})				
 		},{
+			header: 'Include?', 
+			width: 50, 
+			xtype: 'booleancolumn',
+			sortable: true, 
+			dataIndex: 'minIncluded',
+			editor:new Ext.form.Checkbox({})
+		},{
 			header: 'Max', 
 			width: 50, 
 			xtype: 'numbercolumn',
@@ -88,29 +88,29 @@ Sbi.kpi.ManageThresholdValues = function(config) {
 			dataIndex: 'max',
 			editor: new Ext.form.NumberField({})	
 		},{
-			header: 'Max Included?', 
-			width: 80, 
+			header: 'Include?', 
+			width: 50, 
 			xtype: 'booleancolumn',
 			sortable: true, 
 			dataIndex: 'maxIncluded',
 			editor:new Ext.form.Checkbox({})
 		},{
 			header: 'Severity', 
-			width: 80, 
+			width: 70, 
 			id:'severityCd',
 			sortable: true, 
 			dataIndex: 'severityCd',  
 			editor: new Ext.form.ComboBox({})
 		},{	
 			header: 'Color', 
-			width: 80, 
+			width: 60, 
 			id:'color',
 			sortable: true, 
 			dataIndex: 'color',  
 			editor: new Ext.ux.ColorField({ value: '#FFFFFF', msgTarget: 'qtip', fallback: true})
 		},{	
 			header: 'Value', 
-			width: 50, 
+			width: 40, 
 			id:'val',
 			sortable: true, 
 			dataIndex: 'val',  

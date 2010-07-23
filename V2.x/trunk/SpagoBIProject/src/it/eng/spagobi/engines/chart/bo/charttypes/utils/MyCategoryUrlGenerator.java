@@ -23,6 +23,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.engines.chart.bo.charttypes.utils;
 
+import java.util.regex.Pattern;
+
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 
 import org.apache.log4j.Logger;
@@ -88,6 +90,12 @@ public class MyCategoryUrlGenerator extends StandardCategoryURLGenerator{
 		// this is the string to move inside PARAMETERS=
 		String toMove=serieToMove+categoryToMove;
 
+		// workaround (work-around): since JFreeChart converts white space into '+', this ruins the cross navigation url
+		// therefore we substitute '+' with white space
+		// TODO check what happens when the chart's template does not specify any categoryUrlName and seriesUrlName
+		toMove = toMove.replaceAll(Pattern.quote("+") , " "); 
+		
+		
 		// insert into PARAMETERS=
 		/*if(!document_composition){
 		String parameters=ObjectsTreeConstants.PARAMETERS;

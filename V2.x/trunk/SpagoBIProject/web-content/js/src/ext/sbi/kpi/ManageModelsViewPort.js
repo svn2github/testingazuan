@@ -62,7 +62,7 @@ Sbi.kpi.ManageModelsViewPort = function(config) {
 	         {
 	           region: 'west',
 	           collapsible: true,
-	           collapsed: false,
+	           collapseMode:'mini',
 	           //title: 'Models List',
 	           width: 300,
 	           items:[this.modelsGrid]
@@ -70,9 +70,9 @@ Sbi.kpi.ManageModelsViewPort = function(config) {
 		    {
 		       region: 'center',
 		       collapsible: true,
-		       collapsed: false,
 		       //title: 'Models Detail',
 		       width: 300,
+		       collapseMode:'mini',
 		       items: [this.manageModels]
 		    }, {
 		        region: 'east',
@@ -80,6 +80,7 @@ Sbi.kpi.ManageModelsViewPort = function(config) {
 		        collapsible: true,
 		        split: true,
 		        width: 700,
+		        collapseMode:'mini',
 		        items:[this.manageKpis]
 		    }
 		]

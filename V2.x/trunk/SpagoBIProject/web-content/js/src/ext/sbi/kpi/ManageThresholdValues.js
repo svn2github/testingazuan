@@ -44,27 +44,6 @@
 Ext.ns("Sbi.kpi");
 
 Sbi.kpi.ManageThresholdValues = function(config) { 
-
-
-	var paramsGetListNew = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: 'ATTR_LIST', IS_NEW_ATTR : 'true'};
-	this.services = new Array();
-	this.services['manageAttributesNew'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'MANAGE_ATTRIBUTES_ACTION'
-		, baseParams: paramsGetListNew
-	});
-	
-	var paramsGetList = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: 'ATTR_LIST'};
-	this.services['manageAttributes'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'MANAGE_ATTRIBUTES_ACTION'
-		, baseParams: paramsGetList
-	});
-		
-	var paramsDelete = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', MESSAGE_DET: 'ATTR_DELETE'};
-	this.services['manageAttributesDelete'] = Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'MANAGE_ATTRIBUTES_ACTION'
-			, baseParams: paramsDelete
-		});
-
 	
 	// Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
 	this.userColumns =  [
@@ -192,7 +171,7 @@ Sbi.kpi.ManageThresholdValues = function(config) {
 	        height: 300,
 	        //autoExpandColumn: 'label', // column with this id will be expanded
 	        frame: true,
-	        clicksToEdit: 1,
+	        clicksToEdit: 2,
 	        tbar: tb
 	    };
 	    
@@ -240,33 +219,6 @@ Ext.extend(Sbi.kpi.ManageThresholdValues, Ext.grid.EditorGridPanel, {
 
         var remove = true;
 
-        this.store.proxy = new Ext.data.HttpProxy({
-				url: this.services['manageAttributesDelete']
-				, listeners: {
-					'exception': function(proxy, type, action, options, response, arg){	    	
-        				var content = Ext.util.JSON.decode( response.responseText );
-        				if(content == undefined || !content.success){
-			                Ext.MessageBox.show({
-			                    title: LN('sbi.attributes.error'),
-			                    msg: LN('sbi.attributes.error.msg'),
-			                    width: 400,
-			                    buttons: Ext.MessageBox.OK
-			                });
-
-			               remove = false;
-        				}else{
-			                Ext.MessageBox.show({
-			                    title: LN('sbi.attributes.ok'),
-			                    msg: LN('sbi.attributes.ok.msg'),
-			                    width: 400,
-			                    buttons: Ext.MessageBox.OK
-			                });
-        				}
-					}
-    				
-		        }
-		        ,scope: this
-			});
         this.store.remove(rec);
         this.store.commitChanges();
 
@@ -275,11 +227,6 @@ Ext.extend(Sbi.kpi.ManageThresholdValues, Ext.grid.EditorGridPanel, {
             this.store.add(rec);
             this.store.commitChanges();
         }
-
-
-        this.store.proxy = new Ext.data.HttpProxy({
-			url: this.services['manageAttributes']
-        });
      }
 
 

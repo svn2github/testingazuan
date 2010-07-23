@@ -21,7 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.kpi.model.service;
 
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.analiticalmodel.document.x.AbstractSpagoBIAction;
 import it.eng.spagobi.analiticalmodel.document.x.SaveMetadataAction;
 import it.eng.spagobi.chiron.serializer.SerializationException;
@@ -39,6 +41,7 @@ import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,6 +50,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.validator.GenericValidator;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,20 +67,16 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 	// type of service
 	private final String MODELS_LIST = "MODELS_LIST";
 	private final String MODEL_NODES_LIST = "MODEL_NODES_LIST";
-	private final String MODEL_NODE_INSERT = "MODEL_NODE_INSERT";
+	private final String MODEL_NODES_SAVE = "MODEL_NODES_SAVE";
 	private final String MODEL_NODE_DELETE = "MODEL_NODE_DELETE";
 
 	
 	private final String MODEL_DOMAIN_TYPE_ROOT = "MODEL_ROOT";
 	private final String MODEL_DOMAIN_TYPE_NODE = "MODEL_NODE";
-	// USER detail
-	private final String ID = "id";
-	private final String USER_ID = "userId";
-	private final String FULL_NAME = "fullName";
-	private final String PASSWORD = "pwd";
+
 	
-	private final String ROLES = "userRoles";
-	private final String ATTRIBUTES = "userAttributes";
+	private final String NODES_TO_SAVE = "nodes";
+
 
 
 	@Override
@@ -128,8 +128,23 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 				throw new SpagoBIServiceException(SERVICE_NAME,
 						"Exception occurred while retrieving model tree", e);
 			}
-		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(MODEL_NODE_INSERT)) {
-			//TODO node insert
+		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(MODEL_NODES_SAVE)) {
+			JSONArray nodesToSaveJSON = getAttributeAsJSONArray(NODES_TO_SAVE);
+			List<Model> modelNodes = null;
+			if(nodesToSaveJSON != null){
+				try {
+					modelNodes = deserializeNodesJSONArray(nodesToSaveJSON);
+					
+					//save them
+					saveModelNodes(modelNodes);
+					
+				} catch (JSONException e) {
+					logger.error(e.getMessage(), e);
+					throw new SpagoBIServiceException(SERVICE_NAME,
+							"Exception retrieving model nodes to save", e);
+				}
+			}
+			
 		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(MODEL_NODE_DELETE)) {
 			//TODO node delete
 		}else if(serviceType == null){
@@ -166,5 +181,27 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 		results.put("rows", rows);
 		return results;
 	}
-
+	private List<Model> deserializeNodesJSONArray(JSONArray rows) throws JSONException{
+		List<Model> toReturn = new ArrayList<Model>();
+		for(int i=0; i< rows.length(); i++){
+			JSONObject obj = (JSONObject)rows.get(i);
+			Model model = new Model();
+			model.setId(obj.getInt("id"));
+			model.setCode(obj.getString("code"));
+			model.setDescription("description");
+			model.setLabel("label");
+			model.setName("name");
+			model.setTypeCd("type");
+			model.setTypeDescription("typeDescr");
+			String kpi = obj.getString("kpi");
+			
+			String value = obj.getString("toSave");
+			toReturn.add(model);
+		}	
+		return toReturn;
+	}
+	
+	private String saveModelNodes(List<Model> nodesToSave){
+		return null;
+	}
 }

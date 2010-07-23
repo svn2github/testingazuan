@@ -45,6 +45,7 @@ Ext.ns("Sbi.kpi");
 
 Sbi.kpi.ManageModels = function(config) { 
 	var paramsList = {MESSAGE_DET: "MODEL_NODES_LIST"};
+	var paramsSave = {LIGHT_NAVIGATOR_DISABLED: 'TRUE',MESSAGE_DET: "MODEL_NODES_SAVE"};
 	
 	this.configurationObject = {};
 	
@@ -52,7 +53,11 @@ Sbi.kpi.ManageModels = function(config) {
 		serviceName: 'MANAGE_MODELS_ACTION'
 		, baseParams: paramsList
 	});	
-
+	this.configurationObject.saveTreeService = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'MANAGE_RESOURCES_ACTION'
+		, baseParams: paramsSave
+	});
+	
 	this.initConfigObject();
 	config.configurationObject = this.configurationObject;
 
@@ -209,7 +214,28 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	
     //OVERRIDING save method
 	,save : function() {
-    	alert("save");
+    	var jsonStr = '';
+		Ext.each(this.nodesToSave, function(node, index) {
+			if(node instanceof Ext.tree.TreeNode){
+				alert(node.attributes.name);
+				jsonStr += Ext.util.JSON.encode(node.attributes);
+			}
+		});
+		
+		var params = {
+			nodes : jsonStr
+		};
+
+		Ext.Ajax.request( {
+			url : this.services['saveTreeService'],
+			success : function(response, options) {
+				//alert('saved');
+			},
+			scope : this,
+			failure : Sbi.exception.ExceptionHandler.handleFailure,
+			params : params
+		});
+		
     }
 
 });

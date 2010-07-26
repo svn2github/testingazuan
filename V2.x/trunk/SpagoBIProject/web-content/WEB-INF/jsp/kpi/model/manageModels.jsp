@@ -22,7 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page import="it.eng.spagobi.commons.bo.Domain,
 				 java.util.ArrayList,
 				 java.util.List,
-				 org.json.JSONArray" %>
+				 org.json.JSONArray, 
+				 org.json.JSONObject" %>
 <%
 
 	List nodeTypesCd = (List) aSessionContainer.getAttribute("nodeTypesList");
@@ -35,20 +36,41 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/service/ServiceRegistry.js")%>'></script>
 
-<script type="text/javascript">
+<script type="text/javascript"><!--
 	<%	
+	/*
+	String nodeTypes ="{}";
+	if(nodeTypesCd != null){
+		nodeTypes="[";
+		for(int i=0; i< nodeTypesCd.size(); i++){
+			Domain domain = (Domain)nodeTypesCd.get(i);		
+			nodeTypes+="{";
+			nodeTypes+="'typeId':"+domain.getValueId()+",";
+			nodeTypes+="'typeCd':'"+domain.getValueCd()+"'";
+			nodeTypes+="}";
+			if(i != (nodeTypesCd.size()-1)){
+				nodeTypes+=",";
+			}
+		}
+		nodeTypes+="]";
+	}
+	*/
+
 	JSONArray nodeTypesArray = new JSONArray();
 	if(nodeTypesCd != null){
+		
 		for(int i=0; i< nodeTypesCd.size(); i++){
-			Domain domain = (Domain)nodeTypesCd.get(i);
+			Domain domain = (Domain)nodeTypesCd.get(i);	
 			JSONArray temp = new JSONArray();
-			temp.put(domain.getValueCd());
+			JSONObject item = new JSONObject();
 			temp.put(domain.getValueId());
+			temp.put(domain.getValueCd());
 			nodeTypesArray.put(temp);
 		}
 	}	
 	String nodeTypes = nodeTypesArray.toString();
 	nodeTypes = nodeTypes.replaceAll("\"","'");
+
 	%>
 
 	var url = {
@@ -74,7 +96,7 @@ Ext.onReady(function(){
 });
 
 
-</script>
+--></script>
 
 
 <%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

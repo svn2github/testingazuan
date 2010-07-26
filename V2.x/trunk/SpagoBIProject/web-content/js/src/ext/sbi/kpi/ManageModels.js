@@ -88,7 +88,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	,initTabItems: function(){
 		//Store of the combobox
  	    this.typesStore = new Ext.data.SimpleStore({
- 	        fields: ['typeCd'],
+ 	        fields: ['typeId', 'typeCd'],
  	        data: config.nodeTypesCd,
  	        autoLoad: false
  	    });
@@ -153,7 +153,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	              store: this.typesStore,
 	              fieldLabel: LN('sbi.generic.nodetype'),
 	              displayField: 'typeCd',   // what the user sees in the popup
-	              valueField: 'typeCd',        // what is passed to the 'change' event
+	              valueField: 'typeId',        // what is passed to the 'change' event
 	              typeAhead: true,
 	              forceSelection: true,
 	              mode: 'local',

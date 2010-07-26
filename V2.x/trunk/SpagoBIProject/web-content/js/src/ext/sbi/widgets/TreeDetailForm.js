@@ -328,7 +328,9 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		var node = this.selectedNodeToEdit;
 		if (node !== undefined && node !== null) {
 			node.attributes.toSave = true;
-			node.attributes.type = newVal;
+			node.attributes.typeId = newVal;
+			node.attributes.type = newVal;//unused server side
+;
 		}
 	},
 	editTypeDescr : function(field, newVal, oldVal) {
@@ -373,6 +375,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 			text : '... - ...',
 			leaf : true,
 			parentId: parent.attributes.modelId,
+			toSave :false,
 			allowDrag : false
 		});
 		this.mainTree.render();

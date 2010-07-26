@@ -33,13 +33,12 @@ import it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.bo.Domain;
-import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
-import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.container.CoreContextManager;
 import it.eng.spagobi.container.SpagoBISessionContainer;
 import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
@@ -84,6 +83,7 @@ public class DocumentCompositionUtils {
 	 */
 	public static String getExecutionUrl(String objLabel, SessionContainer sessionContainer, SourceBean requestSB) {
 		logger.debug("IN");
+		String baseUrlReturn = "";
 		String urlReturn = "";
 
 		if (objLabel == null || objLabel.equals("")){
@@ -100,10 +100,10 @@ public class DocumentCompositionUtils {
 					new LightNavigatorContextRetrieverStrategy(requestSB));
 			ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
 			String executionRole = instance.getExecutionRole();
-			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(objLabel);
+			Integer objId = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(objLabel).getId();
+			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForExecutionByIdAndRole(objId, executionRole);
 			if (obj == null){
 				logger.error("Cannot obtain engine url. Document with label " + objLabel +" doesn't exist into database.");		
-
 				List l = new ArrayList();
 				l.add(objLabel);
 				throw new EMFUserError(EMFErrorSeverity.ERROR, "1005", l, messageBundle);
@@ -173,7 +173,7 @@ public class DocumentCompositionUtils {
 			String className = obj.getEngine().getClassName();
 			if (className == null || className.trim().equals("")) {
 				// external engine
-				urlReturn = obj.getEngine().getUrl() + "?";
+				baseUrlReturn = obj.getEngine().getUrl() + "?";
 				String driverClassName = obj.getEngine().getDriverName();
 				IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
 				Map mapPars = aEngineDriver.getParameterMap(obj, profile, executionRole);
@@ -223,9 +223,8 @@ public class DocumentCompositionUtils {
 
 			} else {
 				// internal engine
-				urlReturn = GeneralUtilities.getSpagoBIProfileBaseUrl(profile.getUserUniqueIdentifier().toString()) + 
-				//String urlReturn = GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserUniqueIdentifier().toString()) + 
-				"&PAGE=ExecuteBIObjectPage&" + SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS + "=true&"
+				baseUrlReturn =  GeneralUtilities.getSpagoBIProfileBaseUrl(profile.getUserUniqueIdentifier().toString());
+				urlReturn = "&PAGE=ExecuteBIObjectPage&" + SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS + "=true&"
 				+ ObjectsTreeConstants.OBJECT_LABEL + "=" + objLabel + "&" 
 				+ ObjectsTreeConstants.MODALITY + "=" + SpagoBIConstants.DOCUMENT_COMPOSITION;
 				// identity string for context
@@ -251,10 +250,10 @@ public class DocumentCompositionUtils {
 			}
 
 			urlReturn += "&" + SpagoBIConstants.ROLE + "=" + executionRole;
-			urlReturn += getParametersUrl(document, requestSB, instance);
+			urlReturn += getParametersUrl(obj, document, requestSB, instance);
 			//adds '|' char for management error into jsp if is necessary.
-
-
+			
+			urlReturn =  baseUrlReturn + urlReturn;  
 
 			logger.debug("urlReturn: " + "|"+urlReturn);
 		}catch(Exception ex){
@@ -263,6 +262,7 @@ public class DocumentCompositionUtils {
 		}
 
 		logger.debug("OUT");
+		
 		return "|"+urlReturn;
 	}
 
@@ -274,7 +274,7 @@ public class DocumentCompositionUtils {
 	 * @param requestSB the request object
 	 * @return a string with the url completed
 	 */
-	private static String getParametersUrl(Document document, SourceBean requestSB, ExecutionInstance instance){
+	private static String getParametersUrl(BIObject obj, Document document, SourceBean requestSB, ExecutionInstance instance){
 		logger.debug("IN");
 		String paramUrl = "";
 		//set others parameters value
@@ -283,9 +283,10 @@ public class DocumentCompositionUtils {
 		List values = new ArrayList();
 		String singleValue = "";
 		int cont = 0;
-
+		
 		try{
 			if(lstParams!=null){
+				ParameterValuesEncoder encoderUtility = new ParameterValuesEncoder();
 				//while(enParams.hasMoreElements()) {
 				for (int i=0; i<lstParams.size(); i++) {
 					String typeParam =  lstParams.getProperty("type_par_"+document.getNumOrder()+"_"+cont);
@@ -297,20 +298,45 @@ public class DocumentCompositionUtils {
 						values = (List)requestSB.getAttributeAsList(key);
 						//if value isn't defined, check if there is a value into the instance(there is when a document is called from a refresh o viewpoint mode) 
 						if(values == null || values.size() == 0 || ((String)values.get(0)).equals("")){
-							values = getInstanceValue(key, instance);
+							List instanceValue = getInstanceValue(key, instance);
+							if (instanceValue != null && instanceValue.size() > 0  && !instanceValue.get(0).equals("")) 
+								values = instanceValue;
 						}
 						//if value isn't defined, gets the default value from the template
-						if(values == null || values.size() == 0 || ((String)values.get(0)).equals("")){
+						if(values == null || values.size() == 0 || ((String)values.get(0)).equals("")){ 							
 							values.add(lstParams.getProperty(("default_value_param_"+document.getNumOrder()+"_"+cont)));
 						}
-
-						for (int j=0; j < values.size(); j++){
-							singleValue = (String)values.get(j);
-							if (singleValue.equals("%")) singleValue = "%25";
-							//	 else if (values.equals(";%")) values = ";%25";
-							if (singleValue != null && !singleValue.equals(""))
-								paramUrl += "&" + key + "=" + singleValue;
+						
+						//define a BIObjectParameter to use it for encode (multivalue management).
+						if (obj.getEngine().getClassName() == null || obj.getEngine().getClassName().equalsIgnoreCase("")){
+							//EXTERNAL ENGINES
+							BIObjectParameter par = getBIObjectParameter(obj, key);
+							par.setParameterValues(values);
+							String parsValue = encoderUtility.encode(par);
+							//conversion in UTF-8 of the par
+							Map parsMap = new HashMap();
+							parsMap.put(key, parsValue);
+							String tmpUrl = GeneralUtilities.getUrl("",  parsMap);
+							paramUrl += "&" + tmpUrl.substring(tmpUrl.indexOf("?")+1);
+							
+							//paramUrl += "&" + key + "=" + tmpUrl;
+						}else{
+							//INTERNAL ENGINES
+							for (int j=0; j < values.size(); j++){
+								singleValue = (String)values.get(j);
+								if (singleValue.equals("%")) singleValue = "%25";
+								//setting an url likes &key=val1;val2;valn
+								if (j == 0) {
+									paramUrl += "&" + key + "=" + singleValue;
+								}else{
+									paramUrl += ";" + singleValue;
+								}
+								
+								/*if (singleValue != null && !singleValue.equals(""))
+									paramUrl += "&" + key + "=" + singleValue;*/
+							}
 						}
+						
 						cont++;
 					}
 				}
@@ -363,6 +389,25 @@ public class DocumentCompositionUtils {
 		}
 		return retVal;
 
+	}
+	
+	/**
+	 * Return the BIObjectParameter with the key passed
+	 * @param key String with url (identifier) of parameter
+	 * @return BIObjectParameter 
+	 */
+	private static BIObjectParameter getBIObjectParameter(BIObject obj, String urlKey){
+		if (urlKey == null || urlKey.equals("")) return null;
+		
+		BIObjectParameter par = null;
+		List objParams = obj.getBiObjectParameters();
+		for (int i = 0, l = objParams.size(); i < l; i++){
+			par = (BIObjectParameter) objParams.get(i);
+			if (par.getParameterUrlName().equals(urlKey))
+				break;
+		}
+		
+		return par;
 	}
 
 }

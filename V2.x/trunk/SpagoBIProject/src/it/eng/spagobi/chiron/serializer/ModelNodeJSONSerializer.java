@@ -11,12 +11,15 @@ import org.json.JSONObject;
 
 public class ModelNodeJSONSerializer implements Serializer {
 
-	public static final String MODEL_ID = "id";
+	public static final String MODEL_ID = "modelId";
+	public static final String MODEL_GUIID = "id";
+	public static final String MODEL_PARENT_ID = "parentId";
 	private static final String MODEL_CODE = "code";
 	private static final String MODEL_DESCRIPTION = "description";
 	private static final String MODEL_LABEL = "label";
 	private static final String MODEL_NAME = "name";
 	private static final String MODEL_TYPE = "type";
+	private static final String MODEL_TYPE_ID = "typeId";
 	private static final String MODEL_TYPE_DESCR = "typeDescr";
 	private static final String MODEL_KPI = "kpi";
 	private static final String MODEL_KPI_ID = "kpiId";
@@ -24,6 +27,7 @@ public class ModelNodeJSONSerializer implements Serializer {
 	private static final String MODEL_TEXT = "text";
 	
 	private static final String MODEL_ERROR = "error";
+
 	
 	public Object serialize(Object o, Locale locale) throws SerializationException {
 		JSONObject  result = null;
@@ -37,6 +41,8 @@ public class ModelNodeJSONSerializer implements Serializer {
 			result = new JSONObject();
 			
 			result.put(MODEL_ID, model.getId() );
+			result.put(MODEL_GUIID, model.getGuiId() );
+			result.put(MODEL_PARENT_ID, model.getParentId() );
 			result.put(MODEL_CODE, model.getCode() );
 			result.put(MODEL_NAME, model.getName() );
 			result.put(MODEL_LABEL, model.getLabel() );
@@ -53,6 +59,7 @@ public class ModelNodeJSONSerializer implements Serializer {
 				}
 			}
 			result.put(MODEL_TYPE, model.getTypeCd() );
+			result.put(MODEL_TYPE_ID, model.getTypeId() );
 			result.put(MODEL_TYPE_DESCR, model.getTypeDescription() );
 			if(model.getChildrenNodes() != null && !model.getChildrenNodes().isEmpty()){
 				result.put(MODEL_IS_LEAF, false );

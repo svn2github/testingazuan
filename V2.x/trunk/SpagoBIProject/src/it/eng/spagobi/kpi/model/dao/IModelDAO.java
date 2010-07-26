@@ -44,7 +44,14 @@ public interface IModelDAO {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public Integer insertModel(Model aModel, Integer modelTypeId) throws EMFUserError;
-	
+	/**
+	 * Insert a model and return the new model.
+	 * 
+	 * @param aModel the model to create
+	 * @return the id of the model created
+	 * @throws EMFUserError the EMF user error
+	 */
+	public Integer insertModel(Model aModel) throws EMFUserError;
 	/**
 	 * 
 	 * Returns the List of Model Root.

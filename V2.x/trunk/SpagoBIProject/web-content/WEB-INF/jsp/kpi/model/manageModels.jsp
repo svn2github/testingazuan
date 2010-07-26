@@ -43,6 +43,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			Domain domain = (Domain)nodeTypesCd.get(i);
 			JSONArray temp = new JSONArray();
 			temp.put(domain.getValueCd());
+			temp.put(domain.getValueId());
 			nodeTypesArray.put(temp);
 		}
 	}	

@@ -121,7 +121,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 
 		this.tabs = new Ext.TabPanel( {
 			enableTabScroll : true,
-			id : 'tab-panel',
+			id : 'tab-panel1',
 			activeTab : 0,
 			columnWidth : 0.6,
 			autoScroll : true,
@@ -138,7 +138,26 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 			userArrows : true,
 			animate : true,
 			autoScroll : true,
-			dataUrl : this.services['manageTreeService'],
+			//dataUrl : this.services['manageTreeService'],
+			loader: new Ext.tree.TreeLoader({
+				dataUrl: this.services['manageTreeService'],
+		        createNode: function(attr) {
+					//alert(Ext.util.JSON.encode(attr));
+		            if (attr.modelId) {
+		                attr.id = attr.modelId;
+		            }
+		    		if (attr.kpi !== undefined && attr.kpi != null
+		    				&& attr.kpi != '') {
+		    			attr.iconCls = 'has-kpi';
+		    		}
+		    		if (attr.error !== undefined && attr.error != false) {
+		    			attr.cls = 'has-error';
+		    		}
+		            return Ext.tree.TreeLoader.prototype.createNode.call(this, attr);
+		        }
+
+			}),
+
 			preloadTree : this.preloadTree,
 			enableDD : true,
 			dropConfig : {
@@ -150,7 +169,8 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 			root : {
 				nodeType : 'async',
 				text : this.rootNodeText,
-				id : this.rootNodeId
+				modelId : this.rootNodeId,
+				id:  this.rootNodeId
 			}
 
 		});
@@ -161,7 +181,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		 * Here is where we create the Form
 		 */
 		this.gridForm = new Ext.FormPanel( {
-			id : 'items-form',
+			id : 'items-form1',
 			frame : true,
 			autoScroll : true,
 			labelAlign : 'left',
@@ -197,8 +217,6 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 				this.fillDetail, this);
 		this.mainTree.addListener('render', this.renderTree, this);
 
-		this.mainTree.addListener('beforeappend', this.styleTree, this);
-
 		/* form fields editing */
 		this.detailFieldName.addListener('focus', this.selectNode, this);
 		this.detailFieldName.addListener('change', this.editNode, this);
@@ -231,12 +249,21 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		Ext.Ajax.request( {
 			url : this.services['saveTreeService'],
 			success : function(response, options) {
-				//alert('saved');
-		},
-		scope : this,
-		failure : Sbi.exception.ExceptionHandler.handleFailure,
-		params : params
+				alert('Operation succeded');
+				if(response.responseText !== undefined) {
+	      			var content = Ext.util.JSON.decode( response.responseText );
+	      			alert(content);
+				}
+			},
+			scope : this,
+			failure : function(response) {
+				if(response.responseText !== undefined) {
+					alert("Error");
+				}
+			},
+			params : params
 		});
+		
 	},
 	fillDetail : function(sel, node) {
 
@@ -262,24 +289,13 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		}
 	},
 	renderTree : function(tree) {
-		tree.getLoader().nodeParameter = 'id';
+		tree.getLoader().nodeParameter = 'modelId';
 		tree.getRootNode().expand(false, /*no anim*/false);
 	},
-	styleTree : function(tree, thisNode, node) {
-		if (node.attributes.kpi !== undefined && node.attributes.kpi != null
-				&& node.attributes.kpi != '') {
-			node.attributes.iconCls = 'has-kpi';
-		}
-		if (node.attributes.error !== undefined && node.attributes.error != false) {
-			node.attributes.cls = 'has-error';
-		}
 
-	},
 	editNode : function(field, newVal, oldVal) {
 		var node = this.selectedNodeToEdit;
-
 		if (node !== undefined) {
-
 			var val = node.text;
 			var aPosition = val.indexOf(" - ");
 			var name = "";
@@ -296,6 +312,9 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 			var text = code + " - " + name;
 			node.setText(text);
 			node.attributes.toSave = true;
+
+			node.attributes.name = name;
+			node.attributes.code = code;
 		}
 	},
 	editKpi : function(field, newVal, oldVal) {
@@ -330,7 +349,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		var node = this.selectedNodeToEdit;
 		if (node !== undefined && node !== null) {
 			node.attributes.toSave = true;
-			node.attributes.description = newVal;
+			node.attributes.label = newVal;
 		}
 	},
 	selectNode : function(field) {
@@ -353,7 +372,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		var node = new Ext.tree.TreeNode( {
 			text : '... - ...',
 			leaf : true,
-			cls : 'image-node',
+			parentId: parent.attributes.modelId,
 			allowDrag : false
 		});
 		this.mainTree.render();
@@ -362,10 +381,11 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		}
 		this.mainTree.render();
 		parent.appendChild(node);
-		
-		this.mainTree.fireEvent('click', node);
-		},
-		deleteItem : function(node) {
+		node.enable();
+		this.selectedNodeToEdit = node;
+
+	},
+	deleteItem : function(node) {
 		
 		if (node === undefined || node == null) {
 			alert("Select node to delete");
@@ -373,6 +393,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		}
 		node.remove();
 		this.mainTree.render();
+		
 	},
 	onContextMenu : function(node, e) {
 		if (this.menu == null) { // create context menu on first right click

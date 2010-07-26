@@ -78,16 +78,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		this.configurationObject.root = "model1";
 		this.configurationObject.rootId = "1";
 		this.configurationObject.treeTitle = LN('sbi.models.listTitle');;
-
-    	this.configurationObject.fields = ['id'
-		                     	          , 'name'
-		                    	          , 'code'
-		                    	          , 'description'   
-		                    	          , 'kpi' 
-		                    	          , 'type' 
-		                    	          , 'label'
-		                    	          ];
-		
+	
 		this.configurationObject.panelTitle = LN('sbi.models.panelTitle');
 		this.configurationObject.listTitle = LN('sbi.models.listTitle');
 		
@@ -102,11 +93,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
  	        autoLoad: false
  	    });
 		/*DETAIL FIELDS*/
-	 	   var detailFieldId = {
-	               name: 'id',
-	               hidden: true
-	           };
-	 		   
+
 	 	   this.detailFieldName = new Ext.form.TextField({
 	          	 maxLength:100,
 	        	 minLength:1,
@@ -156,6 +143,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	        	 regexText : LN('sbi.roles.alfanumericString2'),
 	             fieldLabel: LN('sbi.generic.kpi'),
 	             allowBlank: false,
+	             readOnly: true,
 	             validationEvent:true,
 	             name: 'kpi'
 	         });	 
@@ -191,8 +179,8 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		        , itemId: 'detail'
 		        , width: 430
 		        , items: {
-			   		 id: 'items-detail',   	
-		 		   	 itemId: 'items-detail',   	              
+			   		 id: 'items-detail1',   	
+		 		   	 itemId: 'items-detail1',   	              
 		 		   	 columnWidth: 0.4,
 		             xtype: 'fieldset',
 		             labelWidth: 90,
@@ -206,7 +194,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		                 "margin-left": "10px", 
 		                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
 		             },
-		             items: [detailFieldId, this.detailFieldName, this.detailFieldCode, this.detailFieldDescr,
+		             items: [this.detailFieldName, this.detailFieldCode, this.detailFieldDescr,
 		                     this.detailFieldLabel, this.detailFieldKpi, this.detailFieldNodeType, this.detailFieldTypeDescr]
 		    	}
 		    }];

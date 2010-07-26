@@ -21,36 +21,28 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.kpi.model.service;
 
-import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.analiticalmodel.document.x.AbstractSpagoBIAction;
 import it.eng.spagobi.analiticalmodel.document.x.SaveMetadataAction;
-import it.eng.spagobi.chiron.serializer.SerializationException;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.metadata.SbiExtRoles;
-import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.kpi.model.bo.Model;
 import it.eng.spagobi.kpi.model.dao.IModelDAO;
-import it.eng.spagobi.profiling.bean.SbiAttribute;
-import it.eng.spagobi.profiling.bean.SbiUser;
-import it.eng.spagobi.profiling.bo.UserBO;
-import it.eng.spagobi.profiling.dao.ISbiUserDAO;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
-import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.Vector;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.validator.GenericValidator;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -113,14 +105,11 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 		  }else if (serviceType != null && serviceType.equalsIgnoreCase(MODEL_NODES_LIST)) {
 			
 			try {				
-				String parentId = (String)getAttributeAsString("ID");
-				//String parentId = "1";
+				String parentId = (String)getAttributeAsString("modelId");
 				Model aModel = modelDao.loadModelWithChildrenById(Integer.parseInt(parentId));
 				
 				logger.debug("Loaded model tree");
 				JSONArray modelChildrenJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(aModel.getChildrenNodes(),	locale);
-				//JSONObject treeResponseJSON = createJSONResponseModelTree(modelChildrenJSON, aModel.getName());
-
 				writeBackToClient(new JSONSuccess(modelChildrenJSON));
 
 			} catch (Throwable e) {
@@ -136,12 +125,14 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 					modelNodes = deserializeNodesJSONArray(nodesToSaveJSON);
 					
 					//save them
-					saveModelNodes(modelNodes);
+					JSONArray respErrors = saveModelNodes(modelNodes);
+					writeBackToClient(new JSONSuccess(respErrors));
 					
-				} catch (JSONException e) {
+				} catch (Exception e) {
 					logger.error(e.getMessage(), e);
+					writeErrorsBackToClient();
 					throw new SpagoBIServiceException(SERVICE_NAME,
-							"Exception retrieving model nodes to save", e);
+							"Exception saving model nodes", e);
 				}
 			}
 			
@@ -186,12 +177,23 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 		for(int i=0; i< rows.length(); i++){
 			JSONObject obj = (JSONObject)rows.get(i);
 			Model model = new Model();
-			model.setId(obj.getInt("id"));
+			//always present guiId
+			String guiId = obj.getString("id");
+			model.setGuiId(guiId);
+			System.out.println(guiId);
+			try{
+				model.setId(obj.getInt("modelId"));
+			}catch(Throwable t){
+				//nothing
+				model.setId(null);
+			}
+			model.setParentId(obj.getInt("parentId"));
 			model.setCode(obj.getString("code"));
 			model.setDescription(obj.getString("description"));
 			model.setLabel(obj.getString("label"));
 			model.setName(obj.getString("name"));
 			model.setTypeCd(obj.getString("type"));
+			model.setTypeId(obj.getInt("typeId"));
 			model.setTypeDescription(obj.getString("typeDescr"));
 			try{
 				model.setKpiId(obj.getInt("kpiId"));
@@ -205,7 +207,69 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 		return toReturn;
 	}
 	
-	private String saveModelNodes(List<Model> nodesToSave){
-		return null;
+	private JSONArray saveModelNodes(List<Model> nodesToSave){
+		JSONArray errorNodes = new JSONArray();
+		
+		//loop over nodes and order them ascending
+		TreeMap<Integer, Model> treeMap = new TreeMap<Integer, Model>();
+		for(int i= 0; i<nodesToSave.size(); i++){
+			Model model = (Model)nodesToSave.get(i);
+			if(model.getParentId() != null){
+				//look up for its id: if null --> newly created node
+				Integer id = model.getId();
+				if(id == null){
+					treeMap.put(Integer.valueOf(-i), model);
+				}else{
+				//else to modify node
+					treeMap.put(model.getId(), model);
+				}
+				
+			}else{
+				//root node --> save first
+				try {
+					DAOFactory.getModelDAO().modifyModel(model);
+				} catch (EMFUserError e) {
+					//send error!!!
+					errorNodes.put(model.getGuiId());
+				}
+			}
+		}
+		
+		Set set = treeMap.entrySet();
+		// Get an iterator
+		Iterator it = set.iterator(); 
+		//loop again over treemap
+		while(it.hasNext()) {
+			Map.Entry orderedEntry = (Map.Entry)it.next();
+			//check that parent exists
+			Model orderedNode = (Model)orderedEntry.getValue();
+			Integer parentId = orderedNode.getParentId();
+			try {
+				Model parent = DAOFactory.getModelDAO().loadModelWithoutChildrenById(parentId);
+				if(parent != null){						
+					//if parent exists--> save					
+					//if node id = null --> insert
+					if(orderedNode.getId() == null || (Integer.signum(orderedNode.getId()) == -1)){
+						Integer newId = DAOFactory.getModelDAO().insertModel(orderedNode);
+						if (newId != null){
+							orderedNode.setId(newId);
+						}else{
+							//error!!!
+							errorNodes.put(orderedNode.getGuiId());
+						}
+					}else if(orderedNode.getId() != null && (Integer.signum(orderedNode.getId()) != -1)){
+					//else update
+						DAOFactory.getModelDAO().modifyModel(orderedNode);
+						
+					}
+					
+				}
+			} catch (EMFUserError e) {
+				//if parentId != null but no parent node stored on db --> exception
+				errorNodes.put(orderedNode.getGuiId());
+			}
+
+		} 
+		return errorNodes;
 	}
 }

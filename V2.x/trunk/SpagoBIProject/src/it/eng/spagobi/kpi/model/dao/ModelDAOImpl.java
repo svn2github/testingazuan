@@ -200,6 +200,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			kpiId = sbiKpi.getKpiId();
 		}
 
+		Integer typeId = value.getModelType().getValueId();
 		String typeCd = value.getModelType().getValueCd();
 		String typeName = value.getModelType().getValueNm();
 		String typeDescription = value.getModelType().getValueDs();
@@ -226,6 +227,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		toReturn.setLabel(label);
 		toReturn.setTypeName(typeName);
 		toReturn.setTypeCd(typeCd);
+		toReturn.setTypeId(typeId);
 		toReturn.setTypeDescription(typeDescription);
 		toReturn.setChildrenNodes(childrenNodes);
 		toReturn.setParentId(rootId);
@@ -304,6 +306,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		}
 
 		String typeCd = value.getModelType().getValueCd();
+		Integer typeId = value.getModelType().getValueId();
 		String typeName = value.getModelType().getValueNm();
 		String typeDescription = value.getModelType().getValueDs();
 
@@ -341,7 +344,8 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		toReturn.setDescription(description);
 		toReturn.setCode(code);
 		toReturn.setLabel(label);
-		toReturn.setTypeCd(typeCd);		
+		toReturn.setTypeId(typeId);		
+		toReturn.setTypeCd(typeCd);	
 		toReturn.setTypeName(typeName);
 		toReturn.setTypeDescription(typeDescription);
 
@@ -546,6 +550,59 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		if(property != null && property.equals("CODE"))
 			toReturn = "kpiModelCd";
 		return toReturn;
+	}
+
+	public Integer insertModel(Model model) throws EMFUserError {
+		logger.debug("IN");
+		Integer idToReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+
+			Integer parentId = model.getParentId();
+			Integer kpiId = model.getKpiId();
+
+			// get the domains
+			SbiDomains sbiDomains = (SbiDomains) aSession.load(
+					SbiDomains.class, model.getTypeId());
+			// set the sbiKpiModel
+			SbiKpiModel sbiKpiModel = new SbiKpiModel();
+			sbiKpiModel.setKpiModelNm(model.getName());
+			sbiKpiModel.setKpiModelDesc(model.getDescription());
+			sbiKpiModel.setKpiModelCd(model.getCode());
+			sbiKpiModel.setKpiModelLabel(model.getLabel());
+			sbiKpiModel.setModelType(sbiDomains);
+			if (parentId != null) {
+				SbiKpiModel sbiKpiParentModel = (SbiKpiModel) aSession.load(
+						SbiKpiModel.class, parentId);
+				sbiKpiModel.setSbiKpiModel(sbiKpiParentModel);
+			}
+
+			if (kpiId != null) {
+				SbiKpi sbiKpi = (SbiKpi) aSession.load(SbiKpi.class, kpiId);
+				sbiKpiModel.setSbiKpi(sbiKpi);
+			}
+
+			idToReturn = (Integer) aSession.save(sbiKpiModel);
+
+			tx.commit();
+
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+			}
+		}
+		logger.debug("OUT");
+		return idToReturn;
 	}
 
 	// public boolean hasKpi(Integer modelId) throws EMFUserError {

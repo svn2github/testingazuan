@@ -7,12 +7,14 @@ import java.util.List;
 public class Model implements Serializable{
 	
 	private Integer id = null;// id of ModelNode (KPI_MODEL_ID)
+	private String guiId = null;// id of the rendered node
 	private Integer parentId = null; //the parent id of the tree made of ModelNodes, representing the model
 	private List childrenNodes = null;//List of Model children
 	private List modelAttributes = null;//List of all related ModelAttributes
 	private String name = null;//name of the complete model (like CMMI/GQM)
 	private String description = null;//description of the complete model
 	private String code = null;//code of the complete model
+	private Integer typeId = null;//id of the type of the model 
 	private String typeCd = null;//name of the type of the model (GENERIC_ROOT/GQM_ROOT)
 	private String typeName = null;//name of the type of the model (GENERIC_ROOT/GQM_ROOT)
 	private String typeDescription = null;//description of the type of the model
@@ -35,7 +37,25 @@ public class Model implements Serializable{
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
+
+	public Integer getTypeId() {
+		return typeId;
+	}
+
+
+
+	public String getGuiId() {
+		return guiId;
+	}
+
+	public void setGuiId(String guiId) {
+		this.guiId = guiId;
+	}
+
+	public void setTypeId(Integer typeId) {
+		this.typeId = typeId;
+	}
+
 	public String getName() {
 		return name;
 	}

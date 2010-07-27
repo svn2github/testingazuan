@@ -247,8 +247,29 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		var node = new Ext.tree.AsyncTreeNode({
 	        text		: this.rootNodeText,
 	        expanded	: true,
+	        leaf		: false,
 			modelId 	: this.rootNodeId,
 			id			: this.rootNodeId,
+	        draggable	: false
+	    });
+		return node;
+	},
+	createRootNodeByRec: function(rec) {		
+		var node = new Ext.tree.AsyncTreeNode({
+	        text		: this.rootNodeText,
+	        expanded	: true,
+	        leaf		: false,
+			modelId 	: this.rootNodeId,
+			id			: this.rootNodeId,
+			label		: rec.get('label'),
+			type		: rec.get('type'),
+			typeId		: rec.get('typeId'),
+			description	: rec.get('description'),
+			typeDescr	: rec.get('typeDescr'),
+			kpi			: rec.get('kpi'),
+			kpiId		: rec.get('kpiId'),
+			code		: rec.get('code'),
+			name		: rec.get('name'),
 	        draggable	: false
 	    });
 		return node;

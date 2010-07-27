@@ -74,9 +74,22 @@ Ext.extend(Sbi.kpi.ManageModelsGrid, Sbi.widgets.ListGridPanel, {
 	, mainElementsStore:null
 
 	,initConfigObject:function(){
+
 	    this.configurationObject.fields = ['modelId'
 		                     	          , 'name'
 		                    	          , 'code'
+		                    	          , 'parentId'
+		                    	          , 'label'
+		                    	          , 'type'
+		                    	          , 'typeId'
+		                    	          , 'typeDescr'
+		                    	          , 'kpi'
+		                    	          , 'kpiId'
+		                    	          , 'leaf'
+		                    	          , 'text'
+		                    	          , 'id'
+		                    	          , 'error'
+		                    	          , 'description'
 		                    	          ];
 		
 		this.configurationObject.gridColItems = [

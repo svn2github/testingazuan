@@ -119,8 +119,10 @@ Ext.extend(Sbi.kpi.ManageModelsViewPort, Ext.Viewport, {
 		//alert(rec.get('modelId')+" - "+rec.get('name')+ " - "+rec.get('code'));
 		this.manageModels.rootNodeText = rec.get('code')+ " - "+rec.get('name');
 		this.manageModels.rootNodeId = rec.get('modelId');
-		var newroot = this.manageModels.createRootNode();
+		var newroot = this.manageModels.createRootNodeByRec(rec);
 		this.manageModels.mainTree.setRootNode(newroot);
+		
+		this.manageModels.mainTree.getSelectionModel().select(newroot);
 		this.manageModels.mainTree.doLayout();
 	}
 });

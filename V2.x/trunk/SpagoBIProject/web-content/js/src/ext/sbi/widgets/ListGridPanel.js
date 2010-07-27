@@ -99,7 +99,7 @@ Sbi.widgets.ListGridPanel = function(config) {
 
 	this.mainElementsStore = new Ext.data.JsonStore({
     	autoLoad: false    	  
-    	, id : 'id'		
+    	//, id : 'id'		
     	, fields: conf.fields
     	, root: 'rows'
 		, url: this.services['manageListService']		

@@ -158,6 +158,7 @@ Sbi.widgets.ListDetailForm = function(config) {
 	this.panelTitle = conf.panelTitle;
 	this.listTitle = conf.listTitle;  	
 	this.drawSelectColumn = conf.drawSelectColumn;  
+	this.ddGroup = conf.dragndropGroup;
 
 	this.mainElementsStore = new Ext.data.JsonStore({
     	autoLoad: false    	  
@@ -233,6 +234,7 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
 	, mainGrid: null
 	, gridForm: null
 	, rowselModel:null
+	, ddGroup : null //for dragndrop
 	
 	
 	,initWidget: function(){
@@ -363,6 +365,8 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
 	                  title: this.listTitle,
 		              bbar: pagingBar,
 	                  tbar: this.tb,
+	                  enableDragDrop: true,
+	                  ddGroup: this.ddGroup,
 	                  listeners: {
  		   							'delete': {
 							     		fn: this.deleteSelectedItem,

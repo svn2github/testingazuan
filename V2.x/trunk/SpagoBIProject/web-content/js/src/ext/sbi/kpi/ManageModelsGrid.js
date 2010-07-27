@@ -45,7 +45,7 @@ Ext.ns("Sbi.kpi");
 
 Sbi.kpi.ManageModelsGrid = function(config) { 
 	var paramsList = {MESSAGE_DET: "MODELS_LIST"};
-	var paramsDel = {LIGHT_NAVIGATOR_DISABLED: 'TRUE',MESSAGE_DET: "MODEL_DELETE"};
+	var paramsDel = {LIGHT_NAVIGATOR_DISABLED: 'TRUE',MESSAGE_DET: "MODEL_NODE_DELETE"};
 	
 	this.configurationObject = {};
 	
@@ -74,7 +74,9 @@ Ext.extend(Sbi.kpi.ManageModelsGrid, Sbi.widgets.ListGridPanel, {
 	, mainElementsStore:null
 
 	,initConfigObject:function(){
-
+		
+		this.configurationObject.idKey = 'modelId';
+		this.configurationObject.dragndropGroup = 'grid2kpi';
 	    this.configurationObject.fields = ['modelId'
 		                     	          , 'name'
 		                    	          , 'code'
@@ -93,18 +95,65 @@ Ext.extend(Sbi.kpi.ManageModelsGrid, Sbi.widgets.ListGridPanel, {
 		                    	          ];
 		
 		this.configurationObject.gridColItems = [
-		                                         {id:'name',header: LN('sbi.generic.name'), width: 120, sortable: true, locked:false, dataIndex: 'name'},
+		                                         {id:'modelId',header: LN('sbi.generic.name'), width: 120, sortable: true, locked:false, dataIndex: 'name'},
 		                                         {header: LN('sbi.generic.code'), width: 120, sortable: true, dataIndex: 'code'}
 		                                        ];
 		
 		this.configurationObject.panelTitle = LN('sbi.models.panelTitle');
 		this.configurationObject.listTitle = LN('sbi.models.listTitle');
-
+		
     }
 	
     //OVERRIDING save method
 	,save : function() {
 		alert('Save');
     }
+	, deleteSelectedItem: function(itemId, index) {
+		Ext.MessageBox.confirm(
+				LN('sbi.generic.pleaseConfirm'),
+				LN('sbi.generic.confirmDelete'),            
+	            function(btn, text) {
+	                if (btn=='yes') {
+	                	if (itemId != null) {	
+							Ext.Ajax.request({
+					            url: this.services['deleteItemService'],
+					            params: {'modelId': itemId},
+					            method: 'GET',
+					            success: function(response, options) {
+									if (response !== undefined) {
+										var deleteRow = this.rowselModel.getSelected();
+										this.mainElementsStore.remove(deleteRow);
+										this.mainElementsStore.commitChanges();
+										if(this.mainElementsStore.getCount()>0){
+											this.rowselModel.selectRow(0);
+										}else{
+											this.addNewItem();
+										}
+									} else {
+										Sbi.exception.ExceptionHandler.showErrorMessage(LN('sbi.generic.deletingItemError'), LN('sbi.generic.serviceError'));
+									}
+					            },
+					            failure: function() {
+					                Ext.MessageBox.show({
+					                    title: LN('sbi.generic.error'),
+					                    msg: LN('sbi.generic.deletingItemError'),
+					                    width: 150,
+					                    buttons: Ext.MessageBox.OK
+					               });
+					            }
+					            ,scope: this
+				
+							});
+						} else {
+							Sbi.exception.ExceptionHandler.showWarningMessage(LN('sbi.generic.error.msg'),LN('sbi.generic.warning'));
+						}
+	                }
+	            },
+	            this
+			);
+	}
+	, addNewItem : function(){
+		alert('over written');
+	}
 
 });

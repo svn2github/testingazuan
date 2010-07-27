@@ -29,6 +29,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.model.bo.Model;
 import it.eng.spagobi.kpi.model.dao.IModelDAO;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
+import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
 import java.io.IOException;
@@ -61,10 +62,12 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 	private final String MODEL_NODES_LIST = "MODEL_NODES_LIST";
 	private final String MODEL_NODES_SAVE = "MODEL_NODES_SAVE";
 	private final String MODEL_NODE_DELETE = "MODEL_NODE_DELETE";
+	//private final String MODEL_DELETE = "MODEL_DELETE";
 
 	
 	private final String MODEL_DOMAIN_TYPE_ROOT = "MODEL_ROOT";
 	private final String MODEL_DOMAIN_TYPE_NODE = "MODEL_NODE";
+	
 
 	
 	private final String NODES_TO_SAVE = "nodes";
@@ -142,7 +145,19 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 			}
 			
 		} else if (serviceType != null	&& serviceType.equalsIgnoreCase(MODEL_NODE_DELETE)) {
-			//TODO node delete
+			
+			Integer modelId = getAttributeAsInteger("modelId");
+			try {
+				boolean result = DAOFactory.getModelDAO().deleteModel(modelId);
+				logger.debug("Model deleted");
+				writeBackToClient( new JSONAcknowledge("Operation succeded") );
+			} catch (Throwable e) {
+				logger.error("Exception occurred while retrieving model to delete", e);
+				throw new SpagoBIServiceException(SERVICE_NAME,
+						"Exception occurred while retrieving model to delete", e);
+			}
+			
+			
 		}else if(serviceType == null){
 			try {
 				List nodeTypesNodes = DAOFactory.getDomainDAO().loadListDomainsByType(MODEL_DOMAIN_TYPE_NODE);

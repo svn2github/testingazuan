@@ -142,7 +142,7 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 		
 		this.configurationObject.panelTitle = LN('sbi.kpis.panelTitle');
 		this.configurationObject.listTitle = LN('sbi.kpis.listTitle');
-		
+		this.configurationObject.dragndropGroup ='grid2kpi';
 		this.initTabItems();
     }
 
@@ -215,18 +215,18 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 			  , displayField: 'label'
 			  , descriptionField: 'label'
 			  , cm: new Ext.grid.ColumnModel([
-				                        		new Ext.grid.RowNumberer(),
-				                        		{   header: 'Label',
-				                        		    dataIndex: 'label',
-				                        		    width: 75
-				                        		},{   header: 'Name',
-				                        		    dataIndex: 'name',
-				                        		    width: 75
-				                        		},{   header: 'Description',
-				                        		    dataIndex: 'description',
-				                        		    width: 75
-				                        		}
-				                    		])
+            		new Ext.grid.RowNumberer(),
+            		{   header: 'Label',
+            		    dataIndex: 'label',
+            		    width: 75
+            		},{   header: 'Name',
+            		    dataIndex: 'name',
+            		    width: 75
+            		},{   header: 'Description',
+            		    dataIndex: 'description',
+            		    width: 75
+            		}
+        		])
 		 }));  
 
  	  
@@ -252,21 +252,21 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 		  , displayField: 'label'
 		  , descriptionField: 'label'
 		  , cm: new Ext.grid.ColumnModel([
-			                        		new Ext.grid.RowNumberer(),
-			                        		{   header: 'Label',
-			                        		    dataIndex: 'label',
-			                        		    width: 75
-			                        		},{   header: 'Name',
-			                        		    dataIndex: 'name',
-			                        		    width: 75
-			                        		},{   header: 'Engine',
-			                        		    dataIndex: 'engine',
-			                        		    width: 75
-			                        		},{   header: 'State',
-			                        		    dataIndex: 'stateCode',
-			                        		    width: 75
-			                        		}
-			                    		])
+        		new Ext.grid.RowNumberer(),
+        		{   header: 'Label',
+        		    dataIndex: 'label',
+        		    width: 75
+        		},{   header: 'Name',
+        		    dataIndex: 'name',
+        		    width: 75
+        		},{   header: 'Engine',
+        		    dataIndex: 'engine',
+        		    width: 75
+        		},{   header: 'State',
+        		    dataIndex: 'stateCode',
+        		    width: 75
+        		}
+    		])
  	 }));  	 
  	    
  	   //END list of detail fields

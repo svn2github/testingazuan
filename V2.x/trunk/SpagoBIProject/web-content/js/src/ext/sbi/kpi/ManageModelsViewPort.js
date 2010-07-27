@@ -54,8 +54,6 @@ Sbi.kpi.ManageModelsViewPort = function(config) {
    //DRAW east element
     this.manageKpis = new Sbi.kpi.ManageKpis(conf);
 	
-	
-	
 	var viewport = {
 		layout: 'border'
 		, height:560
@@ -94,12 +92,14 @@ Sbi.kpi.ManageModelsViewPort = function(config) {
 		
 
 	};
-
+	
+	
 	var c = Ext.apply({}, config || {}, viewport);
 	
 	this.initPanels();
 
 	Sbi.kpi.ManageModelsViewPort.superclass.constructor.call(this, c);	 		
+
 };
 
 Ext.extend(Sbi.kpi.ManageModelsViewPort, Ext.Viewport, {
@@ -110,7 +110,7 @@ Ext.extend(Sbi.kpi.ManageModelsViewPort, Ext.Viewport, {
 	,initPanels : function() {
 	
 		this.modelsGrid.addListener('rowclick', this.sendSelectedItem, this);
-		//this.manageKpis.addListener('rowclick', this.sendSelectedItem, this);
+		this.manageKpis.addListener('render', this.configureDD, this);
 
 	}
 	,sendSelectedItem: function(grid, index, e){
@@ -124,5 +124,38 @@ Ext.extend(Sbi.kpi.ManageModelsViewPort, Ext.Viewport, {
 		
 		this.manageModels.mainTree.getSelectionModel().select(newroot);
 		this.manageModels.mainTree.doLayout();
+	}
+	, configureDD: function() {
+	  	  /****
+		  * Setup Drop Targets
+		  ***/
+
+		  // This will make sure we only drop to the view container
+		  var fieldDropTargetEl =  this.manageModels.detailFieldKpi.getEl().dom;
+
+		  var formPanelDropTarget = new Ext.dd.DropTarget(fieldDropTargetEl, {
+		    ddGroup     : 'grid2kpi',
+		    overClass: 'over',
+		    notifyEnter : function(ddSource, e, data) {
+		      //Add some flare to invite drop.
+		      Ext.fly(Ext.getCmp('model-detailFieldKpi').getEl()).frame("00AE00");
+		      //Ext.fly(Ext.getCmp('model-detailFieldKpi').getEl()).highlight("00AE00");
+		    },
+		    notifyDrop  : function(ddSource, e, data){
+
+		      // Reference the record (single selection) for readability
+		      var selectedRecord = ddSource.dragData.selections[0];
+
+		      // Load the record into the form field
+		      Ext.getCmp('model-detailFieldKpi').setValue(selectedRecord.get('name')); 
+		      var node = Ext.getCmp('model-maintree').getSelectionModel().getSelectedNode() ;
+		      if(node !== undefined && node != null){
+			      node.attributes.kpi = selectedRecord.get('name');
+			      node.attributes.kpiId = selectedRecord.get('id');
+		      }
+		      Ext.fly(Ext.getCmp('model-detailFieldKpi').getEl()).frame("ff0000");
+		      return(true);
+		    }
+		  });
 	}
 });

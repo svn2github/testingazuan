@@ -56,6 +56,7 @@ Sbi.widgets.TreeDetailForm = function(config) {
 
 	this.initWidget();
 	this.initContextMenu();
+	
 
 	var c = Ext.apply( {}, config, this.gridForm);
 
@@ -75,7 +76,6 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	treeTitle : null,
 	menu : null,
 	nodesToSave : new Array()
-
 	,
 	selectedNodeToEdit : null
 
@@ -131,13 +131,13 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		});
 
 		this.mainTree = new Ext.tree.TreePanel( {
+			id:'model-maintree',
 			title : this.treeTitle,
 			width : 250,
 			height : 230,
 			userArrows : true,
 			animate : true,
-			autoScroll : true,
-			//dataUrl : this.services['manageTreeService'],
+			autoScroll : true,			
 			loader: new Ext.tree.TreeLoader({
 				dataUrl: this.services['manageTreeService'],
 		        createNode: function(attr) {
@@ -173,14 +173,14 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 			}
 
 		});
-		this.setListeners();
+		
 		this.mainTree.on('contextmenu', this.onContextMenu, this);
 
 		/*
 		 * Here is where we create the Form
 		 */
 		this.gridForm = new Ext.FormPanel( {
-			id : 'items-form1',
+			id : 'model-detail-formpan',
 			frame : true,
 			autoScroll : true,
 			labelAlign : 'left',
@@ -210,6 +210,8 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 				items : this.tabs
 			} ]
 		});
+		this.setListeners();
+
 	},
 	setListeners : function() {
 		this.mainTree.getSelectionModel().addListener('selectionchange',
@@ -238,6 +240,8 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 
 		this.detailFieldNodeType.addListener('focus', this.selectNode, this);
 		this.detailFieldNodeType.addListener('change', this.editType, this);
+		
+		this.gridForm.getForm().addListener('render', this.configureDD, this);
 	},
 	save : function() {
 		alert("Overridden");
@@ -422,4 +426,8 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 			this.menu.showAt(e.getXY());
 		
 		}
-	});
+	, configureDD: function() {
+		alert("to override");
+	}
+});
+

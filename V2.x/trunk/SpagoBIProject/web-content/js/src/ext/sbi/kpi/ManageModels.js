@@ -74,10 +74,9 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	, mainElementsStore:null
 	, root:null
 
+
 	,initConfigObject: function(){
-	/*
-		this.configurationObject.root = "model1";
-		this.configurationObject.rootId = "1";*/
+
 		this.configurationObject.treeTitle = LN('sbi.models.listTitle');;
 	
 		this.configurationObject.panelTitle = LN('sbi.models.panelTitle');
@@ -139,13 +138,14 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	         });	  
 	 	 	 			  
 	 	   this.detailFieldKpi = new Ext.form.TextField({
+	 		   	 itemId: 'model-detailFieldKpi',
+	 		   	 id: 'model-detailFieldKpi',
 	        	 minLength:1,
 	        	 regex : new RegExp("^([A-Za-z0-9_])+$", "g"),
 	        	 regexText : LN('sbi.roles.alfanumericString2'),
 	             fieldLabel: LN('sbi.generic.kpi'),
 	             allowBlank: false,
 	             readOnly: true,
-	             //validationEvent:true,
 	             name: 'kpi'
 	         });	 
 	 		   
@@ -175,12 +175,13 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	             name: 'typeDescr'
 	         });
 	 	   /*END*/
-	   this.configurationObject.tabItems = [{
+	 	  
+	 	  this.configurationObject.tabItems = [{
 		        title: LN('sbi.generic.details')
 		        , itemId: 'detail'
 		        , width: 430
 		        , items: {
-			   		 id: 'items-detail1',   	
+			   		 id: 'items-detail-models',   	
 		 		   	 itemId: 'items-detail1',   	              
 		 		   	 columnWidth: 0.4,
 		             xtype: 'fieldset',
@@ -199,8 +200,10 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		                     this.detailFieldLabel, this.detailFieldKpi, this.detailFieldNodeType, this.detailFieldTypeDescr]
 		    	}
 		    }];
+
 	}
 	
+
     //OVERRIDING save method
 	,save : function() {
     	var jsonStr = '[';
@@ -212,11 +215,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 				jsonStr +=',';
 			}
 		});
-		/*
-		var lastcomma = jsonStr.lastIndexOf(',', jsonStr.length-2) ;
-		if(lastcomma != -1 ){
-			jsonStr.substring(0,lastcomma);
-		}*/
+
 		jsonStr += ']';
 		
 		var params = {

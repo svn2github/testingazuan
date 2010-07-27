@@ -96,6 +96,8 @@ Sbi.widgets.ListGridPanel = function(config) {
 	this.gridColItems = conf.gridColItems;
 	this.panelTitle = conf.panelTitle;
 	this.listTitle = conf.listTitle;  	  
+	this.idKeyForGrid = conf.idKey;
+	this.ddGroup = conf.dragndropGroup;
 
 	this.mainElementsStore = new Ext.data.JsonStore({
     	autoLoad: false    	  
@@ -104,15 +106,8 @@ Sbi.widgets.ListGridPanel = function(config) {
     	, root: 'rows'
 		, url: this.services['manageListService']		
 	});
-
 	this.initWidget();
 	   
-	/*this.mainElementsStore.on('load', 
-			function(){
-		 		this.rowselModel.selectRow(0);
-		 	}, 
-		 	this);  	*/
-	
 	this.mainElementsStore.load();	
    	
 	var c = Ext.apply({}, config, this.mainGrid);
@@ -129,19 +124,22 @@ Ext.extend(Sbi.widgets.ListGridPanel, Ext.grid.GridPanel, {
 	, gridColItems: null
 	, mainGrid: null
 	, rowselModel:null
-	
+	, idKeyForGrid : 'id'
+	, ddGroup : null
 	
 	,initWidget: function(){
+       
         
         this.deleteColumn = new Ext.grid.ButtonColumn({
  	       header:  ' '
  	       ,iconCls: 'icon-remove'
  	       ,scope: this
+ 	       ,initialConfig: this.idKeyForGrid
  	       ,clickHandler: function(e, t) {   
         	//this.grid is called since this is the only name that can be used. Look at ButtonColumn.js
  	          var index = this.grid.getView().findRowIndex(t);	
- 	          var selectedRecord =  this.grid.store.getAt(index);
- 	          var itemId = selectedRecord.get('id');
+        	  var selectedRecord =	this.grid.getSelectionModel().getSelected();
+ 	          var itemId = selectedRecord.get(this.initialConfig);
  	          this.grid.fireEvent('delete', itemId, index);
  	       }
  	       ,width: 25
@@ -197,19 +195,21 @@ Ext.extend(Sbi.widgets.ListGridPanel, Ext.grid.GridPanel, {
 	                  title: this.listTitle,
 		              bbar: pagingBar,
 	                  tbar: this.tb,
+	                  enableDragDrop: true,
+	                  ddGroup: this.ddGroup,
 	                  listeners: {
- 		   							'delete': {
-							     		fn: this.deleteSelectedItem,
-							      		scope: this
-							    	} ,
-							    	'select': {
-							     		fn: this.sendSelectedItem,
-							      		scope: this
-							    	} ,
-	                      			viewready: function(g) {//g.getSelectionModel().selectRow(0); 
-							    		
-							    	} 
-	                             }
+   							'delete': {
+					     		fn: this.deleteSelectedItem,
+					      		scope: this
+					    	} ,
+					    	'select': {
+					     		fn: this.sendSelectedItem,
+					      		scope: this
+					    	} ,
+                  			viewready: function(g) {//g.getSelectionModel().selectRow(0); 
+					    		
+					    	} 
+                         }
 	                  };
 
 	}

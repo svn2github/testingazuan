@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.engines.qbe.services.crosstab;
+package it.eng.spagobi.engines.qbe.utils.crosstab;
 
 import it.eng.qbe.query.AggregationFunctions;
 import it.eng.qbe.query.IAggregationFunction;

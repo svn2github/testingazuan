@@ -30,6 +30,7 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.engines.qbe.QbeEngineConfig;
 import it.eng.spagobi.engines.qbe.bo.CrosstabDefinition;
 import it.eng.spagobi.engines.qbe.services.AbstractQbeEngineAction;
+import it.eng.spagobi.engines.qbe.utils.crosstab.CrosstabQueryCreator;
 import it.eng.spagobi.engines.qbe.utils.temporarytable.TemporaryTableManager;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datawriter.JSONDataWriter;
@@ -92,8 +93,9 @@ public class LoadCrosstabAction extends AbstractQbeEngineAction {
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
 			
-			// retrieving current QbE query
-			query = getEngineInstance().getActiveQuery();
+			// retrieving first QbE query and setting it as active query
+			query = getEngineInstance().getQueryCatalogue().getFirstQuery();
+			getEngineInstance().setActiveQuery(query);
 			
 			statement = getEngineInstance().getStatment();	
 			statement.setParameters( getEnv() );

@@ -7,6 +7,7 @@ Sbi.locale.ln = Sbi.locale.ln || new Array();
 //===================================================================
 Sbi.locale.ln['sbi.crosstab.crosstabdesignerpanel.title'] = 'Crosstab designer';
 Sbi.locale.ln['sbi.crosstab.crosstabdefinitionpanel.title'] = 'Definizione della Crosstab';
+Sbi.locale.ln['sbi.crosstab.crosstabdefinitionpanel.tools.preview'] = 'Mostra anteprima della Crosstab';
 Sbi.locale.ln['sbi.crosstab.crosstabdefinitionpanel.rows'] = 'Righe';
 Sbi.locale.ln['sbi.crosstab.crosstabdefinitionpanel.columns'] = 'Colonne';
 Sbi.locale.ln['sbi.crosstab.crosstabdefinitionpanel.measures'] = 'Misure';
@@ -40,3 +41,5 @@ Sbi.locale.ln['sbi.crosstab.crosstabdetailswizard.buttons.cancel'] = 'Cancella';
 Sbi.locale.ln['sbi.crosstab.chooseaggregationfunctionwindow.title'] = 'Scegli la funzione di aggregazione per la misura';
 Sbi.locale.ln['sbi.crosstab.chooseaggregationfunctionwindow.buttons.apply'] = 'Applica';
 Sbi.locale.ln['sbi.crosstab.chooseaggregationfunctionwindow.buttons.cancel'] = 'Cancella';
+
+Sbi.locale.ln['sbi.crosstab.crosstabpreviewpanel.title'] = 'Anteprima Crosstab';

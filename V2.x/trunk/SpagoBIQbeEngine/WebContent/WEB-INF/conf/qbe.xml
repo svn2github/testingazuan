@@ -26,6 +26,10 @@
 	<!-- QBE-SQL-RESULT-LIMIT value="none" isBlocking="false"/ -->
 	<!-- QBE-SQL-RESULT-LIMIT value="10000" isBlocking="true"/ -->
 	<QBE-SQL-RESULT-LIMIT value="10000" isBlocking="false"/> 
+	
+	
+	<QBE_TEMPORARY_TABLE prefix="ZZZ_SBIQBETMP_" suffix="" />
+	
 		
 	<TEMPLATE-BUILDER>
 		

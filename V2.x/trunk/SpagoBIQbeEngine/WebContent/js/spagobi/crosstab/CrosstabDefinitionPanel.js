@@ -77,11 +77,20 @@ Sbi.crosstab.CrosstabDefinitionPanel = function(config) {
         	  	aWindow.show();
           	}
           	, scope: this
+      	}, {
+		    id: 'gear'
+		    , qtip: LN('sbi.crosstab.crosstabdefinitionpanel.tools.preview')
+		    , handler: function() {
+      			this.fireEvent('preview', this, this.getCrosstabDefinition());
+		    }
+		    , scope: this
       	}]
 	});
 	
 	// constructor
     Sbi.crosstab.CrosstabDefinitionPanel.superclass.constructor.call(this, c);
+    
+    this.addEvents('preview');
     
 };
 

@@ -51,8 +51,7 @@ Sbi.widgets.TreeDetailForm = function(config) {
 	this.services['manageTreeService'] = conf.manageTreeService;
 	this.services['saveTreeService'] = conf.saveTreeService;
 	this.tabItems = conf.tabItems;
-	this.rootNodeText = conf.root;
-	this.rootNodeId = conf.rootId;
+
 	this.treeTitle = conf.treeTitle;
 
 	this.initWidget();
@@ -241,29 +240,18 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		this.detailFieldNodeType.addListener('change', this.editType, this);
 	},
 	save : function() {
+		alert("Overridden");
 		
-		var params = {
-			nodes : Ext.util.JSON.encode(this.nodesToSave)
-		};
-
-		Ext.Ajax.request( {
-			url : this.services['saveTreeService'],
-			success : function(response, options) {
-				alert('Operation succeded');
-				if(response.responseText !== undefined) {
-	      			var content = Ext.util.JSON.decode( response.responseText );
-	      			alert(content);
-				}
-			},
-			scope : this,
-			failure : function(response) {
-				if(response.responseText !== undefined) {
-					alert("Error");
-				}
-			},
-			params : params
-		});
-		
+	},
+	createRootNode: function() {		
+		var node = new Ext.tree.AsyncTreeNode({
+	        text		: this.rootNodeText,
+	        expanded	: true,
+			modelId 	: this.rootNodeId,
+			id			: this.rootNodeId,
+	        draggable	: false
+	    });
+		return node;
 	},
 	fillDetail : function(sel, node) {
 

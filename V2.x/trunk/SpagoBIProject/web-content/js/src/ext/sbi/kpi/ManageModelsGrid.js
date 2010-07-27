@@ -74,7 +74,7 @@ Ext.extend(Sbi.kpi.ManageModelsGrid, Sbi.widgets.ListGridPanel, {
 	, mainElementsStore:null
 
 	,initConfigObject:function(){
-	    this.configurationObject.fields = ['id'
+	    this.configurationObject.fields = ['modelId'
 		                     	          , 'name'
 		                    	          , 'code'
 		                    	          ];
@@ -86,6 +86,7 @@ Ext.extend(Sbi.kpi.ManageModelsGrid, Sbi.widgets.ListGridPanel, {
 		
 		this.configurationObject.panelTitle = LN('sbi.models.panelTitle');
 		this.configurationObject.listTitle = LN('sbi.models.listTitle');
+
     }
 	
     //OVERRIDING save method

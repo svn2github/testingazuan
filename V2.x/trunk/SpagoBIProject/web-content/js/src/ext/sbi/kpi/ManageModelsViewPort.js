@@ -91,16 +91,36 @@ Sbi.kpi.ManageModelsViewPort = function(config) {
 		        items:[this.manageKpis]
 		    }
 		]
+		
 
 	};
 
 	var c = Ext.apply({}, config || {}, viewport);
+	
+	this.initPanels();
 
 	Sbi.kpi.ManageModelsViewPort.superclass.constructor.call(this, c);	 		
-}
+};
 
 Ext.extend(Sbi.kpi.ManageModelsViewPort, Ext.Viewport, {
 	modelsGrid: null,
 	manageModels: null,
 	manageKpis: null
+	
+	,initPanels : function() {
+	
+		this.modelsGrid.addListener('rowclick', this.sendSelectedItem, this);
+		//this.manageKpis.addListener('rowclick', this.sendSelectedItem, this);
+
+	}
+	,sendSelectedItem: function(grid, index, e){
+
+		var rec = grid.getSelectionModel().getSelected();
+		//alert(rec.get('modelId')+" - "+rec.get('name')+ " - "+rec.get('code'));
+		this.manageModels.rootNodeText = rec.get('code')+ " - "+rec.get('name');
+		this.manageModels.rootNodeId = rec.get('modelId');
+		var newroot = this.manageModels.createRootNode();
+		this.manageModels.mainTree.setRootNode(newroot);
+		this.manageModels.mainTree.doLayout();
+	}
 });

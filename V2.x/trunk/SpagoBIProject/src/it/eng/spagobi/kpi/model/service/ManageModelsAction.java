@@ -104,8 +104,13 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 			}
 		  }else if (serviceType != null && serviceType.equalsIgnoreCase(MODEL_NODES_LIST)) {
 			
-			try {				
+			try {	
+				
 				String parentId = (String)getAttributeAsString("modelId");
+				if(parentId == null || parentId.startsWith("xnode")){
+					writeBackToClient(new JSONSuccess("OK"));
+					return;
+				}
 				Model aModel = modelDao.loadModelWithChildrenById(Integer.parseInt(parentId));
 				
 				logger.debug("Loaded model tree");
@@ -175,33 +180,39 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 	private List<Model> deserializeNodesJSONArray(JSONArray rows) throws JSONException{
 		List<Model> toReturn = new ArrayList<Model>();
 		for(int i=0; i< rows.length(); i++){
+			
 			JSONObject obj = (JSONObject)rows.get(i);
 			Model model = new Model();
 			//always present guiId
 			String guiId = obj.getString("id");
 			model.setGuiId(guiId);
-			System.out.println(guiId);
+
 			try{
 				model.setId(obj.getInt("modelId"));
 			}catch(Throwable t){
 				//nothing
 				model.setId(null);
 			}
-			model.setParentId(obj.getInt("parentId"));
-			model.setCode(obj.getString("code"));
-			model.setDescription(obj.getString("description"));
-			model.setLabel(obj.getString("label"));
-			model.setName(obj.getString("name"));
-			model.setTypeCd(obj.getString("type"));
-			model.setTypeId(obj.getInt("typeId"));
-			model.setTypeDescription(obj.getString("typeDescr"));
+			
 			try{
-				model.setKpiId(obj.getInt("kpiId"));
+				model.setParentId(obj.getInt("parentId"));
+				model.setCode(obj.getString("code"));
+				model.setDescription(obj.getString("description"));
+				model.setLabel(obj.getString("label"));
+				model.setName(obj.getString("name"));
+				model.setTypeCd(obj.getString("type"));
+				model.setTypeId(obj.getInt("typeId"));
+				model.setTypeDescription(obj.getString("typeDescr"));
+				try{
+					model.setKpiId(obj.getInt("kpiId"));
+				}catch(Throwable t){
+					//nothing
+					model.setKpiId(null);
+				}
+				String value = obj.getString("toSave");
 			}catch(Throwable t){
-				//nothing
-				model.setKpiId(null);
+				logger.debug("Deserialization error on node: "+guiId);
 			}
-			String value = obj.getString("toSave");
 			toReturn.add(model);
 		}	
 		return toReturn;

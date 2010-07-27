@@ -75,8 +75,9 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	, root:null
 
 	,initConfigObject: function(){
+	/*
 		this.configurationObject.root = "model1";
-		this.configurationObject.rootId = "1";
+		this.configurationObject.rootId = "1";*/
 		this.configurationObject.treeTitle = LN('sbi.models.listTitle');;
 	
 		this.configurationObject.panelTitle = LN('sbi.models.panelTitle');
@@ -101,7 +102,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	        	 regexText : LN('sbi.roles.alfanumericString'),
 	             fieldLabel: LN('sbi.generic.name'),
 	             allowBlank: false,
-	             validationEvent:true,
+	             //validationEvent:true,
 	             name: 'name'
 	         });
 	 			  
@@ -112,7 +113,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	        	 regexText : LN('sbi.roles.alfanumericString2'),
 	             fieldLabel:LN('sbi.generic.code'),
 	             allowBlank: false,
-	             validationEvent:true,
+	             //validationEvent:true,
 	             name: 'code'
 	         });  
 	 		   
@@ -123,7 +124,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	        	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
 	        	 regexText : LN('sbi.roles.alfanumericString'),
 	             fieldLabel: LN('sbi.generic.descr'),
-	             validationEvent:true,
+	             //validationEvent:true,
 	             name: 'description'
 	         });
 	 	 		   
@@ -133,7 +134,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	        	 regexText : LN('sbi.roles.alfanumericString2'),
 	             fieldLabel:LN('sbi.generic.label'),
 	             allowBlank: false,
-	             validationEvent:true,
+	             //validationEvent:true,
 	             name: 'label'
 	         });	  
 	 	 	 			  
@@ -144,7 +145,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	             fieldLabel: LN('sbi.generic.kpi'),
 	             allowBlank: false,
 	             readOnly: true,
-	             validationEvent:true,
+	             //validationEvent:true,
 	             name: 'kpi'
 	         });	 
 	 		   
@@ -160,8 +161,8 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	              triggerAction: 'all',
 	              selectOnFocus: true,
 	              editable: false,
-	              allowBlank: false,
-	              validationEvent:true
+	              allowBlank: false
+	              //,validationEvent:true
 	          });
 	 	  this.detailFieldTypeDescr = new Ext.form.TextArea({
 	          	 maxLength:400,
@@ -170,7 +171,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	        	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
 	        	 regexText : LN('sbi.roles.alfanumericString'),
 	             fieldLabel: LN('sbi.generic.nodedescr'),
-	             validationEvent:true,
+	             //validationEvent:true,
 	             name: 'typeDescr'
 	         });
 	 	   /*END*/
@@ -225,10 +226,25 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		Ext.Ajax.request( {
 			url : this.services['saveTreeService'],
 			success : function(response, options) {
-				//alert('saved');
+				alert('Operation succeded');
+				if(response.responseText !== undefined) {
+	      			var content = Ext.util.JSON.decode( response.responseText );
+	      			alert(content);
+	      			///contains error gui ids
+	      			Ext.each(content, function(node, index) {
+	      				if(node instanceof Ext.tree.TreeNode){
+	      					Ext.getCmp(node.id).attributes.error = true;
+	      				}
+	      			});
+	      			this.mainTree.render();
+				}
 			},
 			scope : this,
-			failure : Sbi.exception.ExceptionHandler.handleFailure,
+			failure : function(response) {
+				if(response.responseText !== undefined) {
+					alert("Error");
+				}
+			},
 			params : params
 		});
 		

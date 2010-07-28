@@ -98,6 +98,7 @@ Sbi.widgets.ListGridPanel = function(config) {
 	this.listTitle = conf.listTitle;  	  
 	this.idKeyForGrid = conf.idKey;
 	this.ddGroup = conf.dragndropGroup;
+	this.reference = conf.referencedCmp;
 
 	this.mainElementsStore = new Ext.data.JsonStore({
     	autoLoad: false    	  
@@ -126,6 +127,7 @@ Ext.extend(Sbi.widgets.ListGridPanel, Ext.grid.GridPanel, {
 	, rowselModel:null
 	, idKeyForGrid : 'id'
 	, ddGroup : null
+	, reference : null
 	
 	,initWidget: function(){
        
@@ -159,6 +161,7 @@ Ext.extend(Sbi.widgets.ListGridPanel, Ext.grid.GridPanel, {
  	            iconCls: 'icon-add',
  	            handler: this.addNewItem,
  	            width: 30,
+ 	            ref : this.renference,
  	            scope: this
  	            })
  	    	]

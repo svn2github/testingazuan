@@ -43,7 +43,7 @@
  */
 Ext.ns("Sbi.kpi");
 
-Sbi.kpi.ManageModels = function(config) { 
+Sbi.kpi.ManageModels = function(config, ref) { 
 	var paramsList = {MESSAGE_DET: "MODEL_NODES_LIST"};
 	var paramsSave = {LIGHT_NAVIGATOR_DISABLED: 'TRUE',MESSAGE_DET: "MODEL_NODES_SAVE"};
 	
@@ -57,7 +57,8 @@ Sbi.kpi.ManageModels = function(config) {
 		serviceName: 'MANAGE_MODELS_ACTION'
 		, baseParams: paramsSave
 	});
-	
+	//reference to viewport container
+	this.referencedCmp = ref;
 	this.initConfigObject();
 	config.configurationObject = this.configurationObject;
 
@@ -73,7 +74,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	, gridForm:null
 	, mainElementsStore:null
 	, root:null
-
+	, referencedCmp : null
 
 	,initConfigObject: function(){
 
@@ -225,18 +226,17 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		Ext.Ajax.request( {
 			url : this.services['saveTreeService'],
 			success : function(response, options) {
-				alert('Operation succeded');
 				if(response.responseText !== undefined) {
 	      			var content = Ext.util.JSON.decode( response.responseText );
-	      			alert(content);
 	      			///contains error gui ids
-	      			Ext.each(content, function(node, index) {
-	      				if(node instanceof Ext.tree.TreeNode){
-	      					Ext.getCmp(node.id).attributes.error = true;
-	      				}
+	      			Ext.each(content, function(nodeId, index) {
+	      				Ext.getCmp(nodeId).attributes.error = true;
 	      			});
-	      			this.mainTree.render();
+	      			//clear tosave attributes!!!
+	      			this.mainTree.doLayout();
+	      			return;
 				}
+				alert('Operation succeded');
 			},
 			scope : this,
 			failure : function(response) {
@@ -248,5 +248,130 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		});
 		
     }
+	,editNode : function(field, newVal, oldVal) {
+		var node = this.selectedNodeToEdit;
+		if (node !== undefined) {
+			var val = node.text;
+			var aPosition = val.indexOf(" - ");
+			var name = "";
+			var code = "";
+			if (aPosition !== undefined && aPosition != -1) {
+				name = val.substr(aPosition + 3);
+				code = val.substr(0, aPosition);
+				if (field.getName() == 'name') {
+					name = newVal;
+				} else if (field.getName() == 'code') {
+					code = newVal;
+				}
+			}
+			var text = code + " - " + name;
+			node.setText(text);
+			node.attributes.toSave = true;
 
+			node.attributes.name = name;
+			node.attributes.code = code;
+
+			if(this.reference.modelsGrid.emptyRecord != null){
+				this.reference.modelsGrid.emptyRecord.name= name;
+				this.reference.modelsGrid.emptyRecord.code= code;
+				this.reference.modelsGrid.emptyRecord.commit();
+			}
+		}
+	},
+	fillDetail : function(sel, node) {
+
+		var val = node.text;
+		if (val != null && val !== undefined) {
+			var aPosition = val.indexOf(" - ");
+
+			var name = node.attributes.name;
+			var code = node.attributes.code;
+			if (aPosition !== undefined && aPosition != -1) {
+				name = val.substr(aPosition + 3);
+				code = val.substr(0, aPosition)
+			}
+
+			this.detailFieldDescr.setValue(node.attributes.description);
+			this.detailFieldTypeDescr.setValue(node.attributes.typeDescr);
+			this.detailFieldLabel.setValue(node.attributes.label);
+			this.detailFieldKpi.setValue(node.attributes.kpi);
+			this.detailFieldNodeType.setValue(node.attributes.type);
+
+			this.detailFieldName.setValue(name);
+			this.detailFieldCode.setValue(code);
+		}
+	}
+	,renderTree : function(tree) {
+		tree.getLoader().nodeParameter = 'modelId';
+		tree.getRootNode().expand(false, /*no anim*/false);
+	}
+	,selectNode : function(field) {
+		/*utility to store node that has been edited*/
+		this.selectedNodeToEdit = this.mainTree.getSelectionModel().getSelectedNode();
+		
+		if(this.selectedNodeToEdit.attributes.toSave === undefined || this.selectedNodeToEdit.attributes.toSave == false){
+			var size = this.nodesToSave.length;
+			this.nodesToSave[size] = this.selectedNodeToEdit;
+		}//else skip because already taken
+	}
+	,setListeners : function() {
+			this.mainTree.getSelectionModel().addListener('selectionchange',
+					this.fillDetail, this);
+			this.mainTree.addListener('render', this.renderTree, this);
+
+			/* form fields editing */
+			this.detailFieldName.addListener('focus', this.selectNode, this);
+			this.detailFieldName.addListener('change', this.editNode, this);
+
+			this.detailFieldCode.addListener('focus', this.selectNode, this);
+			this.detailFieldCode.addListener('change', this.editNode, this);
+
+			this.detailFieldDescr.addListener('focus', this.selectNode, this);
+			this.detailFieldDescr.addListener('change', this.editDescr, this);
+
+			this.detailFieldLabel.addListener('focus', this.selectNode, this);
+			this.detailFieldLabel.addListener('change', this.editLabel, this);
+
+			this.detailFieldTypeDescr.addListener('focus', this.selectNode, this);
+			this.detailFieldTypeDescr.addListener('change', this.editTypeDescr,
+					this);
+
+			this.detailFieldKpi.addListener('focus', this.selectNode, this);
+			this.detailFieldKpi.addListener('change', this.editKpi, this);
+
+			this.detailFieldNodeType.addListener('focus', this.selectNode, this);
+			this.detailFieldNodeType.addListener('change', this.editType, this);
+
+	},	
+	createRootNodeByRec: function(rec) {
+			var iconClass = '';
+			var cssClass = '';
+			if (rec.get('kpi') !== undefined && rec.get('kpi') != null
+					&& rec.get('kpi') != '') {
+				iconClass = 'has-kpi';
+			}
+			if (rec.get('error') !== undefined && rec.get('error') != false) {
+				cssClass = 'has-error';
+			}
+			var node = new Ext.tree.AsyncTreeNode({
+		        text		: this.rootNodeText,
+		        expanded	: true,
+		        leaf		: false,
+				modelId 	: this.rootNodeId,
+				id			: this.rootNodeId,
+				label		: rec.get('label'),
+				type		: rec.get('type'),
+				typeId		: rec.get('typeId'),
+				description	: rec.get('description'),
+				typeDescr	: rec.get('typeDescr'),
+				kpi			: rec.get('kpi'),
+				kpiId		: rec.get('kpiId'),
+				code		: rec.get('code'),
+				name		: rec.get('name'),
+				iconCls		: iconClass,
+				cls			: cssClass,
+		        draggable	: false
+		    });
+			return node;
+	}
 });

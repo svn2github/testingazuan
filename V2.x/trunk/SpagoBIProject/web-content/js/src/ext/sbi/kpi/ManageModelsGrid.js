@@ -43,7 +43,7 @@
  */
 Ext.ns("Sbi.kpi");
 
-Sbi.kpi.ManageModelsGrid = function(config) { 
+Sbi.kpi.ManageModelsGrid = function(config, ref) { 
 	var paramsList = {MESSAGE_DET: "MODELS_LIST"};
 	var paramsDel = {LIGHT_NAVIGATOR_DISABLED: 'TRUE',MESSAGE_DET: "MODEL_NODE_DELETE"};
 	
@@ -57,9 +57,10 @@ Sbi.kpi.ManageModelsGrid = function(config) {
 		serviceName: 'MANAGE_MODELS_ACTION'
 		, baseParams: paramsDel
 	});
-	
+	this.referencedCmp = ref;
 	this.initConfigObject();
 	config.configurationObject = this.configurationObject;
+	
 
 	var c = Ext.apply({}, config || {}, {});
 
@@ -72,10 +73,13 @@ Ext.extend(Sbi.kpi.ManageModelsGrid, Sbi.widgets.ListGridPanel, {
 	, treeConfigObject: null
 	, gridForm:null
 	, mainElementsStore:null
+	, referencedCmp : null
+	, emptyRecord: null
 
 	,initConfigObject:function(){
 		
 		this.configurationObject.idKey = 'modelId';
+		this.configurationObject.referencedCmp = this.referencedCmp;
 		this.configurationObject.dragndropGroup = 'grid2kpi';
 	    this.configurationObject.fields = ['modelId'
 		                     	          , 'name'
@@ -153,7 +157,19 @@ Ext.extend(Sbi.kpi.ManageModelsGrid, Sbi.widgets.ListGridPanel, {
 			);
 	}
 	, addNewItem : function(){
-		alert('over written');
+		///new tree root node
+		var newroot = this.referencedCmp.createNewRootNode();
+		this.referencedCmp.mainTree.setRootNode(newroot);
+		
+		this.referencedCmp.mainTree.getSelectionModel().select(newroot);
+		this.referencedCmp.mainTree.doLayout();
+			 
+		//new empty record in the grid
+		this.emptyRecord =  new Ext.data.Record({id: 0,
+			 name:'...', 
+			 code:'...'});
+		this.mainElementsStore.add(this.emptyRecord);
+		
 	}
 
 });

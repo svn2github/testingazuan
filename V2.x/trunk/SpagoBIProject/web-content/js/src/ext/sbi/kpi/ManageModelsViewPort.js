@@ -46,16 +46,18 @@ Ext.ns("Sbi.kpi");
 Sbi.kpi.ManageModelsViewPort = function(config) { 
 	
 	var conf = config;
-	
+
 	//DRAW center element
-	this.manageModels = new Sbi.kpi.ManageModels(conf);
+	this.manageModels = new Sbi.kpi.ManageModels(conf, this);
+
 	//DRAW west element
-    this.modelsGrid = new Sbi.kpi.ManageModelsGrid(conf);
+    this.modelsGrid = new Sbi.kpi.ManageModelsGrid(conf, this.manageModels);
    //DRAW east element
     this.manageKpis = new Sbi.kpi.ManageKpis(conf);
 	
 	var viewport = {
 		layout: 'border'
+		, id: 'model-viewport'
 		, height:560
 		, autoScroll: true
 		, items: [
@@ -116,7 +118,6 @@ Ext.extend(Sbi.kpi.ManageModelsViewPort, Ext.Viewport, {
 	,sendSelectedItem: function(grid, index, e){
 
 		var rec = grid.getSelectionModel().getSelected();
-		//alert(rec.get('modelId')+" - "+rec.get('name')+ " - "+rec.get('code'));
 		this.manageModels.rootNodeText = rec.get('code')+ " - "+rec.get('name');
 		this.manageModels.rootNodeId = rec.get('modelId');
 		var newroot = this.manageModels.createRootNodeByRec(rec);
@@ -129,33 +130,40 @@ Ext.extend(Sbi.kpi.ManageModelsViewPort, Ext.Viewport, {
 	  	  /****
 		  * Setup Drop Targets
 		  ***/
-
+			
 		  // This will make sure we only drop to the view container
 		  var fieldDropTargetEl =  this.manageModels.detailFieldKpi.getEl().dom;
 
 		  var formPanelDropTarget = new Ext.dd.DropTarget(fieldDropTargetEl, {
 		    ddGroup     : 'grid2kpi',
 		    overClass: 'over',
+		    scope: this,
+		    initialConfig: this.manageModels,
 		    notifyEnter : function(ddSource, e, data) {
 		      //Add some flare to invite drop.
 		      Ext.fly(Ext.getCmp('model-detailFieldKpi').getEl()).frame("00AE00");
-		      //Ext.fly(Ext.getCmp('model-detailFieldKpi').getEl()).highlight("00AE00");
+
 		    },
 		    notifyDrop  : function(ddSource, e, data){
-
+  
 		      // Reference the record (single selection) for readability
 		      var selectedRecord = ddSource.dragData.selections[0];
 
 		      // Load the record into the form field
 		      Ext.getCmp('model-detailFieldKpi').setValue(selectedRecord.get('name')); 
 		      var node = Ext.getCmp('model-maintree').getSelectionModel().getSelectedNode() ;
+		      //var node =this.selectedNodeToEdit;
 		      if(node !== undefined && node != null){
+		    	  var nodesList = this.initialConfig.nodesToSave;
+				  var size = nodesList.length;
+				  this.initialConfig.nodesToSave[size] = node;
+		    	  node.attributes.toSave = true;
 			      node.attributes.kpi = selectedRecord.get('name');
 			      node.attributes.kpiId = selectedRecord.get('id');
 		      }
-		      Ext.fly(Ext.getCmp('model-detailFieldKpi').getEl()).frame("ff0000");
+		      Ext.fly(this.getEl()).frame("ff0000");
 		      return(true);
 		    }
-		  });
+		  }, this);
 	}
 });

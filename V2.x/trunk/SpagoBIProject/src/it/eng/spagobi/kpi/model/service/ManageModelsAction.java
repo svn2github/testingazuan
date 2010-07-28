@@ -197,6 +197,7 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 		for(int i=0; i< rows.length(); i++){
 			
 			JSONObject obj = (JSONObject)rows.get(i);
+
 			Model model = new Model();
 			//always present guiId
 			String guiId = obj.getString("id");
@@ -211,6 +212,11 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 			
 			try{
 				model.setParentId(obj.getInt("parentId"));
+			}catch(Throwable t){
+				//nothing
+				model.setParentId(null);
+			}
+			try{
 				model.setCode(obj.getString("code"));
 				model.setDescription(obj.getString("description"));
 				model.setLabel(obj.getString("label"));

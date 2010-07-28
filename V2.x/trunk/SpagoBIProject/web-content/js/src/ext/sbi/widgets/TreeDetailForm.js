@@ -75,11 +75,10 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	rootNodeText : null,
 	treeTitle : null,
 	menu : null,
-	nodesToSave : new Array()
-	,
-	selectedNodeToEdit : null
-
-	,
+	
+	nodesToSave : new Array(),
+	selectedNodeToEdit : null,
+	
 	initContextMenu : function() {
 
 		this.menu = new Ext.menu.Menu( {
@@ -142,9 +141,11 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 				dataUrl: this.services['manageTreeService'],
 		        createNode: function(attr) {
 					//alert(Ext.util.JSON.encode(attr));
+
 		            if (attr.modelId) {
 		                attr.id = attr.modelId;
 		            }
+
 		    		if (attr.kpi !== undefined && attr.kpi != null
 		    				&& attr.kpi != '') {
 		    			attr.iconCls = 'has-kpi';
@@ -213,122 +214,29 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		this.setListeners();
 
 	},
-	setListeners : function() {
-		this.mainTree.getSelectionModel().addListener('selectionchange',
-				this.fillDetail, this);
-		this.mainTree.addListener('render', this.renderTree, this);
-
-		/* form fields editing */
-		this.detailFieldName.addListener('focus', this.selectNode, this);
-		this.detailFieldName.addListener('change', this.editNode, this);
-
-		this.detailFieldCode.addListener('focus', this.selectNode, this);
-		this.detailFieldCode.addListener('change', this.editNode, this);
-
-		this.detailFieldDescr.addListener('focus', this.selectNode, this);
-		this.detailFieldDescr.addListener('change', this.editDescr, this);
-
-		this.detailFieldLabel.addListener('focus', this.selectNode, this);
-		this.detailFieldLabel.addListener('change', this.editLabel, this);
-
-		this.detailFieldTypeDescr.addListener('focus', this.selectNode, this);
-		this.detailFieldTypeDescr.addListener('change', this.editTypeDescr,
-				this);
-
-		this.detailFieldKpi.addListener('focus', this.selectNode, this);
-		this.detailFieldKpi.addListener('change', this.editKpi, this);
-
-		this.detailFieldNodeType.addListener('focus', this.selectNode, this);
-		this.detailFieldNodeType.addListener('change', this.editType, this);
-		
-		this.gridForm.getForm().addListener('render', this.configureDD, this);
-	},
 	save : function() {
 		alert("Overridden");
 		
 	},
-	createRootNode: function() {		
+	createNewRootNode: function() {
 		var node = new Ext.tree.AsyncTreeNode({
-	        text		: this.rootNodeText,
-	        expanded	: true,
+	        text		: '... - ...',
+	        expanded	: false,
 	        leaf		: false,
-			modelId 	: this.rootNodeId,
-			id			: this.rootNodeId,
 	        draggable	: false
 	    });
 		return node;
 	},
-	createRootNodeByRec: function(rec) {		
-		var node = new Ext.tree.AsyncTreeNode({
-	        text		: this.rootNodeText,
-	        expanded	: true,
-	        leaf		: false,
-			modelId 	: this.rootNodeId,
-			id			: this.rootNodeId,
-			label		: rec.get('label'),
-			type		: rec.get('type'),
-			typeId		: rec.get('typeId'),
-			description	: rec.get('description'),
-			typeDescr	: rec.get('typeDescr'),
-			kpi			: rec.get('kpi'),
-			kpiId		: rec.get('kpiId'),
-			code		: rec.get('code'),
-			name		: rec.get('name'),
-	        draggable	: false
-	    });
-		return node;
-	},
+
 	fillDetail : function(sel, node) {
-
-		var val = node.text;
-		if (val != null && val !== undefined) {
-			var aPosition = val.indexOf(" - ");
-
-			var name = node.attributes.name;
-			var code = node.attributes.code;
-			if (aPosition !== undefined && aPosition != -1) {
-				name = val.substr(aPosition + 3);
-				code = val.substr(0, aPosition)
-			}
-
-			this.detailFieldDescr.setValue(node.attributes.description);
-			this.detailFieldTypeDescr.setValue(node.attributes.typeDescr);
-			this.detailFieldLabel.setValue(node.attributes.label);
-			this.detailFieldKpi.setValue(node.attributes.kpi);
-			this.detailFieldNodeType.setValue(node.attributes.type);
-
-			this.detailFieldName.setValue(name);
-			this.detailFieldCode.setValue(code);
-		}
+		alert("override");
 	},
 	renderTree : function(tree) {
-		tree.getLoader().nodeParameter = 'modelId';
-		tree.getRootNode().expand(false, /*no anim*/false);
+		alert("override");
 	},
 
 	editNode : function(field, newVal, oldVal) {
-		var node = this.selectedNodeToEdit;
-		if (node !== undefined) {
-			var val = node.text;
-			var aPosition = val.indexOf(" - ");
-			var name = "";
-			var code = "";
-			if (aPosition !== undefined && aPosition != -1) {
-				name = val.substr(aPosition + 3);
-				code = val.substr(0, aPosition);
-				if (field.getName() == 'name') {
-					name = newVal;
-				} else if (field.getName() == 'code') {
-					code = newVal;
-				}
-			}
-			var text = code + " - " + name;
-			node.setText(text);
-			node.attributes.toSave = true;
-
-			node.attributes.name = name;
-			node.attributes.code = code;
-		}
+		alert("override");
 	},
 	editKpi : function(field, newVal, oldVal) {
 		var node = this.selectedNodeToEdit;
@@ -343,7 +251,6 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 			node.attributes.toSave = true;
 			node.attributes.typeId = newVal;
 			node.attributes.type = newVal;//unused server side
-;
 		}
 	},
 	editTypeDescr : function(field, newVal, oldVal) {
@@ -367,15 +274,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 			node.attributes.label = newVal;
 		}
 	},
-	selectNode : function(field) {
-		/*utility to store node that has been edited*/
-		this.selectedNodeToEdit = this.mainTree.getSelectionModel().getSelectedNode();
-		
-		if(this.selectedNodeToEdit.attributes.toSave === undefined || this.selectedNodeToEdit.attributes.toSave == false){
-			var size = this.nodesToSave.length;
-			this.nodesToSave[size] = this.selectedNodeToEdit;
-		}//else skip because already taken
-	},
+
 	addNewItem : function(parent) {
 		if (parent === undefined || parent == null) {
 			alert("Select parent node");
@@ -426,8 +325,6 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 			this.menu.showAt(e.getXY());
 		
 		}
-	, configureDD: function() {
-		alert("to override");
-	}
+
 });
 

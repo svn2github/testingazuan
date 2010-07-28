@@ -230,10 +230,18 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	      			var content = Ext.util.JSON.decode( response.responseText );
 	      			///contains error gui ids
 	      			Ext.each(content, function(nodeId, index) {
-	      				Ext.getCmp(nodeId).attributes.error = true;
+	      				var nodeSel = Ext.getCmp('model-maintree').getNodeById(nodeId);
+	      				nodeSel.attributes.error = true;
+	      				//Ext.fly(nodeSel.getUI().getEl()).highlight("00AE00");
+	      				Ext.fly(nodeSel.getUI().getEl()).applyStyles('{ border: 1px solid red; font-weight: bold; font-style: italic; color: #cd2020; text-decoration: underline; }');
+	      				//nodeSel.setText("error!!!!!");
+
 	      			});
 	      			//clear tosave attributes!!!
 	      			this.mainTree.doLayout();
+	      			this.referencedCmp.modelsGrid.mainElementsStore.commitChanges();
+	      			this.referencedCmp.modelsGrid.getView().refresh();
+					this.referencedCmp.modelsGrid.doLayout();
 	      			return;
 				}
 				alert('Operation succeded');
@@ -271,10 +279,12 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 			node.attributes.name = name;
 			node.attributes.code = code;
 
-			if(this.reference.modelsGrid.emptyRecord != null){
-				this.reference.modelsGrid.emptyRecord.name= name;
-				this.reference.modelsGrid.emptyRecord.code= code;
-				this.reference.modelsGrid.emptyRecord.commit();
+			if(this.referencedCmp.modelsGrid.emptyRecord != null){
+				this.referencedCmp.modelsGrid.emptyRecord.set('name', name);
+				this.referencedCmp.modelsGrid.emptyRecord.set('code', code);
+				
+				this.referencedCmp.modelsGrid.getView().refresh();
+				this.referencedCmp.modelsGrid.doLayout();
 			}
 		}
 	},

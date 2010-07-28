@@ -250,7 +250,7 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 				//look up for its id: if null --> newly created node
 				Integer id = model.getId();
 				if(id == null){
-					treeMap.put(Integer.valueOf(-i), model);
+					treeMap.put(Integer.valueOf("-"+i+1), model);
 				}else{
 				//else to modify node
 					treeMap.put(model.getId(), model);
@@ -280,8 +280,8 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 				Model parent = DAOFactory.getModelDAO().loadModelWithoutChildrenById(parentId);
 				if(parent != null){						
 					//if parent exists--> save					
-					//if node id = null --> insert
-					if(orderedNode.getId() == null || (Integer.signum(orderedNode.getId()) == -1)){
+					//if node id is negative --> insert
+					if(orderedNode.getId() == null){
 						Integer newId = DAOFactory.getModelDAO().insertModel(orderedNode);
 						if (newId != null){
 							orderedNode.setId(newId);
@@ -289,14 +289,14 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 							//error!!!
 							errorNodes.put(orderedNode.getGuiId());
 						}
-					}else if(orderedNode.getId() != null && (Integer.signum(orderedNode.getId()) != -1)){
+					}else{
 					//else update
 						DAOFactory.getModelDAO().modifyModel(orderedNode);
 						
 					}
 					
 				}
-			} catch (EMFUserError e) {
+			} catch (Exception e) {
 				//if parentId != null but no parent node stored on db --> exception
 				errorNodes.put(orderedNode.getGuiId());
 			}

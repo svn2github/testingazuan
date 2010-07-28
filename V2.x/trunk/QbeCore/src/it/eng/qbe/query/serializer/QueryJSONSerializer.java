@@ -217,9 +217,9 @@ public class QueryJSONSerializer implements QuerySerializer {
 								(dataMartSelectField.getFunction() != null 
 								&& !dataMartSelectField.getFunction().equals(AggregationFunctions.NONE_FUNCTION))
 								|| iconCls.equals("measure")) {
-							nature = "measure";
+							nature = SerializationConstants.FIELD_NATURE_MEASURE;
 						} else {
-							nature = "attribute";
+							nature = SerializationConstants.FIELD_NATURE_ATTRIBUTE;
 						}
 						
 					} else if (field.isCalculatedField()){
@@ -234,10 +234,9 @@ public class QueryJSONSerializer implements QuerySerializer {
 						
 						fieldJSON.put(SerializationConstants.FIELD_ICON_CLS, "calculation");
 						
-						// TODO manage calculated fields?
-						nature = "attribute";
+						nature = SerializationConstants.FIELD_NATURE_POST_LINE_CALCULATED;
 						
-					} else if (field.isInLineCalculatedField()){
+					} else if (field.isInLineCalculatedField()) {
 						InLineCalculatedSelectField calculatedSelectField = (InLineCalculatedSelectField)field;
 						
 						fieldJSON.put(SerializationConstants.FIELD_TYPE, field.IN_LINE_CALCULATED_FIELD);
@@ -248,14 +247,33 @@ public class QueryJSONSerializer implements QuerySerializer {
 						fieldClaculationDescriptor.put(SerializationConstants.FIELD_EXPRESSION, calculatedSelectField.getExpression());
 						fieldJSON.put(SerializationConstants.FIELD_ID, fieldClaculationDescriptor);
 						fieldJSON.put(SerializationConstants.FIELD_LONG_DESCRIPTION, calculatedSelectField.getExpression());
+
+						if ( calculatedSelectField.isGroupByField() ) {
+							fieldJSON.put(SerializationConstants.FIELD_GROUP, "true");
+						} else {
+							fieldJSON.put(SerializationConstants.FIELD_GROUP, "");
+						}
+						
 						fieldJSON.put(SerializationConstants.FIELD_GROUP, "");
 						fieldJSON.put(SerializationConstants.FIELD_ORDER, "");
 						fieldJSON.put(SerializationConstants.FIELD_AGGREGATION_FUNCTION, "");
 						
 						fieldJSON.put(SerializationConstants.FIELD_ICON_CLS, "calculation");
 						
-						// TODO manage calculated fields?
-						nature = "attribute";
+						/*
+						 * We should understand if the calculated field is an attribute (i.e. a composition of attributes)
+						 * or a measure (i.e. a composition of measures).
+						 * The easiest way to understand this it to see if it is a grouping field.
+						 * TODO manage queries without any aggregation and grouping.
+						 * At the time being this information is used only in crosstab definition, and crosstab base query SHOULD 
+						 * make aggregation.
+						 */
+						if ( calculatedSelectField.isGroupByField() ) {
+							nature = SerializationConstants.FIELD_NATURE_ATTRIBUTE;
+						} else {
+							nature = SerializationConstants.FIELD_NATURE_MEASURE;
+						}
+						
 					}
 					
 					fieldJSON.put(SerializationConstants.FIELD_NATURE, nature);	

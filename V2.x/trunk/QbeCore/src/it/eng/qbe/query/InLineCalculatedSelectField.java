@@ -29,13 +29,15 @@ public class InLineCalculatedSelectField extends AbstractSelectField {
 	private String expression;
 	private String type;
 	private Object initialValue;
+	private boolean groupByField;
 	private int resetType;
 	private int incrementType;
 	
-	public InLineCalculatedSelectField(String alias, String expression, String type, boolean included, boolean visible) {
+	public InLineCalculatedSelectField(String alias, String expression, String type, boolean included, boolean visible, boolean groupByField) {
 		super(alias, ISelectField.CALCULATED_FIELD, included, visible);
 		this.expression = expression;
 		this.type = type;
+		this.groupByField = groupByField;
 	}
 	
 	public String getExpression() {
@@ -60,5 +62,14 @@ public class InLineCalculatedSelectField extends AbstractSelectField {
 	
 	public boolean isInLineCalculatedField() {
 		return true;
+	}
+	
+	public boolean isGroupByField() {
+		return groupByField;
+	}
+
+
+	public void setGroupByField(boolean groupByField) {
+		this.groupByField = groupByField;
 	}
 }

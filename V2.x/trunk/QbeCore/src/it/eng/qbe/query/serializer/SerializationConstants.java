@@ -45,6 +45,9 @@ public class SerializationConstants {
 	public static final String FIELD_INITIAL_VALUE = "initialValue";
 	public static final String FIELD_EXPRESSION = "expression";
 	public static final String FIELD_NATURE = "nature";
+	public static final String FIELD_NATURE_MEASURE = "measure";
+	public static final String FIELD_NATURE_ATTRIBUTE = "attribute";
+	public static final String FIELD_NATURE_POST_LINE_CALCULATED = "postLineCalculated";
 	public static final String FIELD_ICON_CLS = "iconCls";
 	
 	

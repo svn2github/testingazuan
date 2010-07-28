@@ -20,6 +20,7 @@ Sbi.locale.ln['sbi.crosstab.attributescontainerpanel.tools.tt.removeall'] = ['Ri
 Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.cannotdrophere.title'] = 'Drop non consentito';
 Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.cannotdrophere.measurealreadypresent'] = 'La misura è già presente';
 Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.cannotdrophere.attributes'] = 'Non puoi inserire degli attributi nella parte centrale della crosstab: devi inserirli su righe o colonne';
+Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.cannotdrophere.postlinecalculated'] = 'Non puoi utilizzare i campi calcolati basati su script all\'interno della crosstab';
 
 Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.tools.tt.showdetailswizard'] = 'Visualizza dettagli';
 Sbi.locale.ln['sbi.crosstab.measurescontainerpanel.tools.tt.removeall'] = ['Rimuovi tutti'];

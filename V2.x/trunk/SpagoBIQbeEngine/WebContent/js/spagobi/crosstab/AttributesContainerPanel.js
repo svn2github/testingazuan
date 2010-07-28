@@ -214,6 +214,16 @@ Ext.extend(Sbi.crosstab.AttributesContainerPanel, Ext.grid.GridPanel, {
 				});
 				return;
 			}
+			// if the field is a postLineCalculated show an error
+			if (aRow.data.nature === 'postLineCalculated') {
+				Ext.Msg.show({
+					   title: LN('sbi.crosstab.attributescontainerpanel.cannotdrophere.title'),
+					   msg: LN('sbi.crosstab.attributescontainerpanel.cannotdrophere.postlinecalculated'),
+					   buttons: Ext.Msg.OK,
+					   icon: Ext.MessageBox.ERROR
+				});
+				return;
+			}
 			this.store.add([aRow]);
 		}
 	}

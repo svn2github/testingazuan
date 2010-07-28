@@ -189,8 +189,9 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 						fieldClaculationDescriptor = fieldJSON.getJSONObject(SerializationConstants.FIELD_ID);
 						type = fieldClaculationDescriptor.getString(SerializationConstants.FIELD_TYPE);
 						expression = fieldClaculationDescriptor.getString(SerializationConstants.FIELD_EXPRESSION);
+						group = fieldJSON.getString(SerializationConstants.FIELD_GROUP);
 						
-						query.addInLineCalculatedFiled(alias, expression, type, included, visible);
+						query.addInLineCalculatedFiled(alias, expression, type, included, visible, group.equalsIgnoreCase("true"));
 					}else {
 						Assert.assertUnreachable("Type [" + fieldType + "] of field [" + alias + "] is not valid");
 					}

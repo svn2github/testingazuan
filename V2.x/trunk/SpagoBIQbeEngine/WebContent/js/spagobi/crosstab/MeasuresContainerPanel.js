@@ -209,12 +209,23 @@ Ext.extend(Sbi.crosstab.MeasuresContainerPanel, Ext.grid.GridPanel, {
 		var rows = ddSource.dragData.selections;
 		for (var i = 0; i < rows.length; i++) {
 			var aRow = rows[i];
-			if (aRow.data.nature !== 'measure') {
+			// if the field is an attribute show a warning
+			if (aRow.data.nature === 'attribute') {
 				Ext.Msg.show({
 					   title: LN('sbi.crosstab.measurescontainerpanel.cannotdrophere.title'),
 					   msg: LN('sbi.crosstab.measurescontainerpanel.cannotdrophere.attributes'),
 					   buttons: Ext.Msg.OK,
 					   icon: Ext.MessageBox.WARNING
+				});
+				return;
+			}
+			// if the field is a postLineCalculated show an error
+			if (aRow.data.nature === 'postLineCalculated') {
+				Ext.Msg.show({
+					   title: LN('sbi.crosstab.attributescontainerpanel.cannotdrophere.title'),
+					   msg: LN('sbi.crosstab.attributescontainerpanel.cannotdrophere.postlinecalculated'),
+					   buttons: Ext.Msg.OK,
+					   icon: Ext.MessageBox.ERROR
 				});
 				return;
 			}

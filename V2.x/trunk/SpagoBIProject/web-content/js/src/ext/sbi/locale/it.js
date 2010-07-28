@@ -39,6 +39,7 @@ Sbi.locale.ln['sbi.generic.deletingItemError'] = 'Errore nell\'eliminazione dell
 Sbi.locale.ln['sbi.generic.warning'] = 'Attenzione';
 Sbi.locale.ln['sbi.generic.pleaseConfirm'] = 'Per favore confermare';
 Sbi.locale.ln['sbi.generic.confirmDelete'] = 'Confermi l\'eliminazione dell\'oggetto?';
+Sbi.locale.ln['sbi.generic.confirmChangeNode'] = 'Ci sono delle modifiche non salvate. Confermare il cambio di root?';
 //END Generic messages
 
 //START List Detail messages

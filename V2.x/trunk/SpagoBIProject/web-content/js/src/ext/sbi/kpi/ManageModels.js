@@ -384,4 +384,10 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		    });
 			return node;
 	}
+	, cleanAllUnsavedNodes: function() {
+		Ext.each(this.nodesToSave, function(node, index) {
+			node.attributes.toSave = false;  				
+		});
+		this.nodesToSave = new Array();
+	}
 });

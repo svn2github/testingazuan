@@ -75,6 +75,7 @@ Ext.extend(Sbi.kpi.ManageModelsGrid, Sbi.widgets.ListGridPanel, {
 	, mainElementsStore:null
 	, referencedCmp : null
 	, emptyRecord: null
+	
 
 	,initConfigObject:function(){
 		

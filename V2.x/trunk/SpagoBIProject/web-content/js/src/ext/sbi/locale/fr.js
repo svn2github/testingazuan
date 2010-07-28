@@ -35,6 +35,7 @@ Sbi.locale.ln['sbi.generic.deletingItemError'] = 'Error while deleting item';
 Sbi.locale.ln['sbi.generic.warning'] = 'Warning';
 Sbi.locale.ln['sbi.generic.pleaseConfirm'] = 'Please confirm';
 Sbi.locale.ln['sbi.generic.confirmDelete'] = 'Confirm item delete?';
+Sbi.locale.ln['sbi.generic.confirmChangeNode'] = 'There are unsaved changes. Confirm root node change?';
 //END Generic messages
 
 //START List Detail messages

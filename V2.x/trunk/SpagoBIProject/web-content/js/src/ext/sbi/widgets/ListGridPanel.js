@@ -185,8 +185,7 @@ Ext.extend(Sbi.widgets.ListGridPanel, Ext.grid.GridPanel, {
            singleSelect: true
        });
  	   
- 	   this.mainGrid = {
-	                  xtype: 'grid',
+ 	   this.mainGrid = new Ext.grid.GridPanel({
 	                  ds: this.mainElementsStore,   	                  
 	                  colModel: this.colModel,
 	                  plugins: pluginsToAdd ,
@@ -213,13 +212,9 @@ Ext.extend(Sbi.widgets.ListGridPanel, Ext.grid.GridPanel, {
 					    		
 					    	} 
                          }
-	                  };
+	                  });
 
 	}
-
-	,sendSelectedItem: function(itemId, index){
-		alert('selected: '+itemId);
-	}	
 
 	, addNewItem : function(){
 		alert('Add method Needs to be written');

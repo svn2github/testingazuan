@@ -120,7 +120,7 @@ Ext.extend(Sbi.kpi.ManageModelsViewPort, Ext.Viewport, {
 	,sendSelectedItem: function(grid, index, e){
 
 		var rec = grid.getSelectionModel().getSelected();		
-		
+		//alert(rec.data.name);
 		if(rec !== this.lastRecSelected){
 			if(this.manageModels.nodesToSave.length > 0){
 				
@@ -132,9 +132,9 @@ Ext.extend(Sbi.kpi.ManageModelsViewPort, Ext.Viewport, {
 			                	this.manageModels.cleanAllUnsavedNodes();
 			                	this.modelsGrid.fireEvent('rowclick', this.modelsGrid);
 			                }else{
-			                	alert(this.lastRecSelected.data.name);	  
+			                	//alert(this.lastRecSelected.data.name);	  
 			                	grid.getSelectionModel().selectRecords([this.lastRecSelected]);
-			                	alert("fatto");
+			                	//alert("fatto");
 			                }
 			            },
 			            this

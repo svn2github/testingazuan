@@ -222,7 +222,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		var node = new Ext.tree.AsyncTreeNode({
 	        text		: '... - ...',
 	        expanded	: false,
-	        leaf		: false,
+	        leaf		: false,	        
 	        draggable	: false
 	    });
 		return node;
@@ -238,42 +238,6 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	editNode : function(field, newVal, oldVal) {
 		alert("override");
 	},
-	editKpi : function(field, newVal, oldVal) {
-		var node = this.selectedNodeToEdit;
-		if (node !== undefined && node !== null) {
-			node.attributes.toSave = true;
-			node.attributes.kpi = newVal;
-		}
-	},
-	editType : function(field, newVal, oldVal) {
-		var node = this.selectedNodeToEdit;
-		if (node !== undefined && node !== null) {
-			node.attributes.toSave = true;
-			node.attributes.typeId = newVal;
-			node.attributes.type = newVal;//unused server side
-		}
-	},
-	editTypeDescr : function(field, newVal, oldVal) {
-		var node = this.selectedNodeToEdit;
-		if (node !== undefined && node !== null) {
-			node.attributes.toSave = true;
-			node.attributes.typeDescr = newVal;
-		}
-	},
-	editDescr : function(field, newVal, oldVal) {
-		var node = this.selectedNodeToEdit;
-		if (node !== undefined && node !== null) {
-			node.attributes.toSave = true;
-			node.attributes.description = newVal;
-		}
-	},
-	editLabel : function(field, newVal, oldVal) {
-		var node = this.selectedNodeToEdit;
-		if (node !== undefined && node !== null) {
-			node.attributes.toSave = true;
-			node.attributes.label = newVal;
-		}
-	},
 
 	addNewItem : function(parent) {
 		if (parent === undefined || parent == null) {
@@ -282,11 +246,14 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		} else {
 			parent.leaf = false;
 		}
+		var parentId = parent.attributes.modelId;
+		//if parent is newly created --> modelId == null
+		parentId = parent.attributes.id;
 		
 		var node = new Ext.tree.TreeNode( {
 			text : '... - ...',
 			leaf : true,
-			parentId: parent.attributes.modelId,
+			parentId: parentId,
 			toSave :false,
 			allowDrag : false
 		});
@@ -313,18 +280,18 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	onContextMenu : function(node, e) {
 		if (this.menu == null) { // create context menu on first right click
 				this.initContextMenu();
-			}
-		
-			if (this.ctxNode) {
-				this.ctxNode.ui.removeClass('x-node-ctx');
-				this.ctxNode = null;
-			}
-		
-			this.ctxNode = node;
-			this.ctxNode.ui.addClass('x-node-ctx');
-			this.menu.showAt(e.getXY());
-		
 		}
+		
+		if (this.ctxNode && this.ctxNode.ui) {
+			this.ctxNode.ui.removeClass('x-node-ctx');
+			this.ctxNode = null;
+		}
+		
+		this.ctxNode = node;
+		this.ctxNode.ui.addClass('x-node-ctx');
+		this.menu.showAt(e.getXY());
+	
+	}
 
 });
 

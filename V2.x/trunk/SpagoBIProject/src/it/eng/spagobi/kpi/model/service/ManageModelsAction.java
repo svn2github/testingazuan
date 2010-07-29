@@ -223,7 +223,12 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 				model.setName(obj.getString("name"));
 				model.setTypeCd(obj.getString("type"));
 				model.setTypeId(obj.getInt("typeId"));
-				model.setTypeDescription(obj.getString("typeDescr"));
+				try{
+					model.setTypeDescription(obj.getString("typeDescr"));
+				}catch(Throwable t){
+					//nothing
+					model.setTypeDescription(null);
+				}
 				try{
 					model.setKpiId(obj.getInt("kpiId"));
 				}catch(Throwable t){
@@ -259,8 +264,12 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 			}else{
 				//root node --> save first
 				try {
-					DAOFactory.getModelDAO().modifyModel(model);
-				} catch (EMFUserError e) {
+					if(model.getId()  != null){
+						DAOFactory.getModelDAO().modifyModel(model);
+					}else{
+						DAOFactory.getModelDAO().insertModel(model);
+					}
+				} catch (Exception e) {
 					//send error!!!
 					errorNodes.put(model.getGuiId());
 				}

@@ -197,12 +197,18 @@ Ext.extend(Sbi.kpi.ManageModelsViewPort, Ext.Viewport, {
 		      // Load the record into the form field
 		      Ext.getCmp('model-detailFieldKpi').setValue(selectedRecord.get('name')); 
 		      var node = Ext.getCmp('model-maintree').getSelectionModel().getSelectedNode() ;
-		      //var node =this.selectedNodeToEdit;
+
 		      if(node !== undefined && node != null){
 		    	  var nodesList = this.initialConfig.nodesToSave;
-				  var size = nodesList.length;
-				  this.initialConfig.nodesToSave[size] = node;
-		    	  node.attributes.toSave = true;
+		    	  
+		    	  //if the node is already present in the list
+		    	  var exists = nodesList.indexOf(node);
+		    	  if(exists == -1){
+					  var size = nodesList.length;
+					  this.initialConfig.nodesToSave[size] = node;
+					  node.attributes.toSave = true;
+		    	  }
+		    	  
 			      node.attributes.kpi = selectedRecord.get('name');
 			      node.attributes.kpiId = selectedRecord.get('id');
 		      }

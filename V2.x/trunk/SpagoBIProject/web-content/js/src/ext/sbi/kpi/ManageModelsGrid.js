@@ -158,8 +158,17 @@ Ext.extend(Sbi.kpi.ManageModelsGrid, Sbi.widgets.ListGridPanel, {
 			);
 	}
 	, addNewItem : function(){
+		//SELECTS first domainCd = 'MODEL_ROOT' from combo detail
+		var idxRootType = this.referencedCmp.typesStore.find('domainCd', 'MODEL_ROOT');
+		
+		var recDomain = this.referencedCmp.typesStore.getAt(idxRootType);		
+		
 		///new tree root node
 		var newroot = this.referencedCmp.createNewRootNode();
+		newroot.attributes.type = recDomain.data.typeCd;
+		newroot.attributes.typeId = recDomain.data.typeId;
+		newroot.attributes.typeDescr = recDomain.data.typeDs;
+
 		this.referencedCmp.mainTree.setRootNode(newroot);
 		
 		this.referencedCmp.mainTree.getSelectionModel().select(newroot);
@@ -171,7 +180,7 @@ Ext.extend(Sbi.kpi.ManageModelsGrid, Sbi.widgets.ListGridPanel, {
 			 code:'...'});
 		this.mainElementsStore.add(this.emptyRecord);
 		this.emptyRecord.markDirty() 
-		
+
 	}
 
 });

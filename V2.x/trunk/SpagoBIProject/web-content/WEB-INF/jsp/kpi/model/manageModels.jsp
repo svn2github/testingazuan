@@ -38,24 +38,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <script type="text/javascript"><!--
 	<%	
-	/*
-	String nodeTypes ="{}";
-	if(nodeTypesCd != null){
-		nodeTypes="[";
-		for(int i=0; i< nodeTypesCd.size(); i++){
-			Domain domain = (Domain)nodeTypesCd.get(i);		
-			nodeTypes+="{";
-			nodeTypes+="'typeId':"+domain.getValueId()+",";
-			nodeTypes+="'typeCd':'"+domain.getValueCd()+"'";
-			nodeTypes+="}";
-			if(i != (nodeTypesCd.size()-1)){
-				nodeTypes+=",";
-			}
-		}
-		nodeTypes+="]";
-	}
-	*/
-
 	JSONArray nodeTypesArray = new JSONArray();
 	if(nodeTypesCd != null){
 		
@@ -65,6 +47,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			JSONObject item = new JSONObject();
 			temp.put(domain.getValueId());
 			temp.put(domain.getValueCd());
+			temp.put(domain.getValueDescription());
+			temp.put(domain.getDomainCode());
 			nodeTypesArray.put(temp);
 		}
 	}	

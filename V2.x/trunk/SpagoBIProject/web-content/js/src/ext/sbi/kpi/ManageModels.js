@@ -89,7 +89,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	,initTabItems: function(){
 		//Store of the combobox
  	    this.typesStore = new Ext.data.SimpleStore({
- 	        fields: ['typeId', 'typeCd'],
+ 	        fields: ['typeId', 'typeCd', 'typeDs', 'domainCd'],
  	        data: config.nodeTypesCd,
  	        autoLoad: false
  	    });
@@ -173,6 +173,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	        	 regexText : LN('sbi.roles.alfanumericString'),
 	             fieldLabel: LN('sbi.generic.nodedescr'),
 	             //validationEvent:true,
+	             readOnly: true,
 	             name: 'typeDescr'
 	         });
 	 	   /*END*/
@@ -228,17 +229,19 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 			success : function(response, options) {
 				if(response.responseText !== undefined) {
 	      			var content = Ext.util.JSON.decode( response.responseText );
+	      			if(content !== undefined && content !== null && content.length == 0){
+	      				this.cleanAllUnsavedNodes();
+	      			}
 	      			///contains error gui ids
 	      			Ext.each(content, function(nodeId, index) {
 	      				var nodeSel = Ext.getCmp('model-maintree').getNodeById(nodeId);
 	      				nodeSel.attributes.error = true;
-	      				//Ext.fly(nodeSel.getUI().getEl()).highlight("00AE00");
 	      				Ext.fly(nodeSel.getUI().getEl()).applyStyles('{ border: 1px solid red; font-weight: bold; font-style: italic; color: #cd2020; text-decoration: underline; }');
-	      				//nodeSel.setText("error!!!!!");
-
 	      			});
 	      			//clear tosave attributes!!!
 	      			this.mainTree.doLayout();
+	      			
+	      			
 	      			this.referencedCmp.modelsGrid.mainElementsStore.commitChanges();
 	      			this.referencedCmp.modelsGrid.getView().refresh();
 					this.referencedCmp.modelsGrid.doLayout();
@@ -287,8 +290,30 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 				this.referencedCmp.modelsGrid.doLayout();
 			}
 		}
-	},
-	fillDetail : function(sel, node) {
+	}
+	, editNodeAttribute: function(field, newVal, oldVal) {
+		var node = this.selectedNodeToEdit;
+		if (node !== undefined && node !== null) {
+			node.attributes.toSave = true;
+			var fName = field.name;
+			if(fName == 'description'){
+				node.attributes.description = newVal;
+			}else if(fName == 'label'){
+				node.attributes.label = newVal;
+			}
+		}
+	}
+	, setDomainType: function(field, rec, index) {
+		var node = this.selectedNodeToEdit;		
+		if (node !== undefined && node !== null) {
+			node.attributes.toSave = true;
+			node.attributes.typeId = rec.data.typeId;
+			node.attributes.type = rec.data.typeCd;//unused server side		
+
+			this.detailFieldTypeDescr.setValue(rec.data.typeDs);			
+		}
+	}
+	,fillDetail : function(sel, node) {
 
 		var val = node.text;
 		if (val != null && val !== undefined) {
@@ -301,14 +326,15 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 				code = val.substr(0, aPosition)
 			}
 
-			this.detailFieldDescr.setValue(node.attributes.description);
-			this.detailFieldTypeDescr.setValue(node.attributes.typeDescr);
+			this.detailFieldDescr.setValue(node.attributes.description);			
 			this.detailFieldLabel.setValue(node.attributes.label);
 			this.detailFieldKpi.setValue(node.attributes.kpi);
 			this.detailFieldNodeType.setValue(node.attributes.type);
 
 			this.detailFieldName.setValue(name);
 			this.detailFieldCode.setValue(code);
+			
+			this.detailFieldTypeDescr.setValue(node.attributes.typeDescr);
 		}
 	}
 	,renderTree : function(tree) {
@@ -337,20 +363,18 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 			this.detailFieldCode.addListener('change', this.editNode, this);
 
 			this.detailFieldDescr.addListener('focus', this.selectNode, this);
-			this.detailFieldDescr.addListener('change', this.editDescr, this);
+			this.detailFieldDescr.addListener('change', this.editNodeAttribute, this);
 
 			this.detailFieldLabel.addListener('focus', this.selectNode, this);
-			this.detailFieldLabel.addListener('change', this.editLabel, this);
-
-			this.detailFieldTypeDescr.addListener('focus', this.selectNode, this);
-			this.detailFieldTypeDescr.addListener('change', this.editTypeDescr,
-					this);
-
-			this.detailFieldKpi.addListener('focus', this.selectNode, this);
-			this.detailFieldKpi.addListener('change', this.editKpi, this);
-
+			this.detailFieldLabel.addListener('change', this.editNodeAttribute, this);
+			
 			this.detailFieldNodeType.addListener('focus', this.selectNode, this);
-			this.detailFieldNodeType.addListener('change', this.editType, this);
+			this.detailFieldNodeType.addListener('select', this.setDomainType, this);
+/*
+			this.detailFieldTypeDescr.addListener('focus', this.selectNode, this);
+			this.detailFieldTypeDescr.addListener('change', this.editNodeAttribute,this);
+*/
+
 
 	},	
 	createRootNodeByRec: function(rec) {

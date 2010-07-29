@@ -133,8 +133,8 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 					modelNodes = deserializeNodesJSONArray(nodesToSaveJSON);
 					
 					//save them
-					JSONArray respErrors = saveModelNodes(modelNodes);
-					writeBackToClient(new JSONSuccess(respErrors));
+					JSONObject response = saveModelNodes(modelNodes);
+					writeBackToClient(new JSONSuccess(response));
 					
 				} catch (Exception e) {
 					logger.error(e.getMessage(), e);
@@ -244,13 +244,20 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 		return toReturn;
 	}
 	
-	private JSONArray saveModelNodes(List<Model> nodesToSave){
+	private JSONObject saveModelNodes(List<Model> nodesToSave) throws JSONException{
 		JSONArray errorNodes = new JSONArray();
+		
+		JSONObject respObj = new JSONObject();
 		
 		//loop over nodes and order them ascending
 		TreeMap<Integer, Model> treeMap = new TreeMap<Integer, Model>();
 		for(int i= 0; i<nodesToSave.size(); i++){
+			
 			Model model = (Model)nodesToSave.get(i);
+			//loads all nodes guiid with type error
+			
+			respObj.put(model.getGuiId(), "OK");
+			
 			if(model.getParentId() != null){
 				//look up for its id: if null --> newly created node
 				Integer id = model.getId();
@@ -270,8 +277,9 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 						DAOFactory.getModelDAO().insertModel(model);
 					}
 				} catch (Exception e) {
-					//send error!!!
-					errorNodes.put(model.getGuiId());
+					//send error!!!		
+					respObj.put(model.getGuiId(), "KO");
+					
 				}
 			}
 		}
@@ -284,6 +292,8 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 			Map.Entry orderedEntry = (Map.Entry)it.next();
 			//check that parent exists
 			Model orderedNode = (Model)orderedEntry.getValue();
+			
+			//GET JSON OBJECT VALUE
 			Integer parentId = orderedNode.getParentId();
 			try {
 				Model parent = DAOFactory.getModelDAO().loadModelWithoutChildrenById(parentId);
@@ -295,8 +305,8 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 						if (newId != null){
 							orderedNode.setId(newId);
 						}else{
-							//error!!!
-							errorNodes.put(orderedNode.getGuiId());
+						
+							respObj.put(orderedNode.getGuiId(), "KO");
 						}
 					}else{
 					//else update
@@ -307,10 +317,10 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 				}
 			} catch (Exception e) {
 				//if parentId != null but no parent node stored on db --> exception
-				errorNodes.put(orderedNode.getGuiId());
+				respObj.put(orderedNode.getGuiId(), "KO");
 			}
 
 		} 
-		return errorNodes;
+		return respObj;
 	}
 }

@@ -229,25 +229,49 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 			success : function(response, options) {
 				if(response.responseText !== undefined) {
 	      			var content = Ext.util.JSON.decode( response.responseText );
-	      			if(content !== undefined && content !== null && content.length == 0){
+	      			if(content !== undefined && content !== null){
+	      				var hasErrors = false;
+	      				for (var key in content) {
+		      				  var msg = content[key];
+		      				  var nodeSel = Ext.getCmp('model-maintree').getNodeById(key);
+		      				  if(msg  == 'KO'){
+		      					  hasErrors= true;
+		 		      			  ///contains error gui ids      						  
+	      						  nodeSel.attributes.error = true;
+	      						  Ext.fly(nodeSel.getUI().getEl()).applyStyles('{ border: 1px solid red; font-weight: bold; font-style: italic; color: #cd2020; text-decoration: underline; }');
+		      				  }else{
+		      					  nodeSel.attributes.error = false; 
+		      					  Ext.fly(nodeSel.getUI().getEl()).applyStyles('{ border: 0; font-weight: normal; font-style: normal; text-decoration: none; }');
+				      			
+		      				  }
+		      				  
+		      		    }
+	      				if(hasErrors){
+	      					alert(LN('sbi.generic.savingItemError'));
+	      					
+	      				}else{
+	      					///success no errors!
+	      					alert(LN('sbi.generic.resultMsg'));
+		      				this.referencedCmp.modelsGrid.mainElementsStore.load();
+	      				}
 	      				this.cleanAllUnsavedNodes();
+	      				
+	      			}else{
+	      				alert(LN('sbi.generic.savingItemError'));
 	      			}
-	      			///contains error gui ids
-	      			Ext.each(content, function(nodeId, index) {
-	      				var nodeSel = Ext.getCmp('model-maintree').getNodeById(nodeId);
-	      				nodeSel.attributes.error = true;
-	      				Ext.fly(nodeSel.getUI().getEl()).applyStyles('{ border: 1px solid red; font-weight: bold; font-style: italic; color: #cd2020; text-decoration: underline; }');
-	      			});
 	      			//clear tosave attributes!!!
-	      			this.mainTree.doLayout();
-	      			
-	      			
-	      			this.referencedCmp.modelsGrid.mainElementsStore.commitChanges();
-	      			this.referencedCmp.modelsGrid.getView().refresh();
-					this.referencedCmp.modelsGrid.doLayout();
-	      			return;
+
+				}else{
+      				this.cleanAllUnsavedNodes();
+      				alert(LN('sbi.generic.resultMsg'));
+      				this.referencedCmp.modelsGrid.mainElementsStore.load();
 				}
-				alert('Operation succeded');
+      			this.mainTree.doLayout();
+      			
+      			//this.referencedCmp.modelsGrid.mainElementsStore.commitChanges();
+      			this.referencedCmp.modelsGrid.getView().refresh();
+				this.referencedCmp.modelsGrid.doLayout();
+      			return;
 			},
 			scope : this,
 			failure : function(response) {
@@ -409,8 +433,10 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 			return node;
 	}
 	, cleanAllUnsavedNodes: function() {
+		
 		Ext.each(this.nodesToSave, function(node, index) {
-			node.attributes.toSave = false;  				
+			node.attributes.toSave = false;  
+					
 		});
 		this.nodesToSave = new Array();
 	}

@@ -263,8 +263,9 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 		}
 		this.mainTree.render();
 		parent.appendChild(node);
-		node.enable();
+
 		this.selectedNodeToEdit = node;
+		this.mainTree.getSelectionModel().select(node);
 
 	},
 	deleteItem : function(node) {

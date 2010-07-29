@@ -251,6 +251,7 @@
             <file name='./spagobi/crosstab/MeasuresContainerPanel.js'/>
             <file name='./spagobi/crosstab/CrosstabDefinitionPanel.js'/>
             <file name='./spagobi/crosstab/CrosstabDesignerPanel.js'/>
+		    <file name='./spagobi/crosstab/CrosstabPreviewPanel.js'/>
 		    	
 		    </filelist>
 

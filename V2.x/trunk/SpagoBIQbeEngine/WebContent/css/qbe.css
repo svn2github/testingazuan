@@ -215,3 +215,67 @@ See also http://www.sencha.com/deploy/dev/examples/form/check-radio.html */
     border-top:1px dotted #D0D0D0;
     border-bottom:1px dotted #D0D0D0;
 }
+
+/*******************************************************************************************************
+ * Cross Tab
+ ********************************************************************************************************/
+.crosstab-table-headers{
+	font:15px arial,tahoma,helvetica,sans-serif;
+	cursor: pointer !important;
+	border:1px solid;
+	border-left-color:#EEEEEE;	
+	border-right-color:#D0D0D0;
+	border-top-color:#EEEEEE;	
+	border-bottom-color:#D0D0D0;	
+	text-align: center;
+	background-image:url("../img/crosstab/headerbackground.gif");
+	color : #3783E8;
+}
+				
+.crosstab-table-cells{
+	border:1px solid;
+	border-left-color:#EEEEEE;	
+	border-right-color:#D0D0D0;
+	border-top-color:#EEEEEE;	
+	border-bottom-color:#D0D0D0;	
+	text-align: center;
+	background-color: transparent;
+}
+				
+.crosstab-tablebackground{
+	border:1px solid;
+	border-color: #99BBE8;	
+	border-top-style: none;
+	border-left-style: none;
+}
+
+.crosstab-column-header-panel-container{
+	border:1px solid;
+	border-color: #99BBE8;	
+	border-bottom-style: none;
+	border-left-style: none;
+}
+
+.crosstab-row-header-panel-container{
+	border:1px solid;
+	border-color: #99BBE8;	
+	border-right-style: none;
+	border-top-style: none;
+}
+				
+.crosstab-table-empty-panel{
+	border:1px solid;
+	border-color: #99BBE8;	
+	border-left-style: none;
+	border-top-style: none;
+}
+
+.crosstab-borderd{
+	border:1px solid;
+	border-color: #8F8F8F;	
+}
+
+.crosstab-no-border{
+	border-style: none !important;
+		
+}

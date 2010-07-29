@@ -46,6 +46,7 @@ Ext.ns("Sbi.kpi");
 Sbi.kpi.ManageModels = function(config, ref) { 
 	var paramsList = {MESSAGE_DET: "MODEL_NODES_LIST"};
 	var paramsSave = {LIGHT_NAVIGATOR_DISABLED: 'TRUE',MESSAGE_DET: "MODEL_NODES_SAVE"};
+	var paramsDel = {LIGHT_NAVIGATOR_DISABLED: 'TRUE',MESSAGE_DET: "MODEL_NODE_DELETE"};
 	
 	this.configurationObject = {};
 	
@@ -56,6 +57,10 @@ Sbi.kpi.ManageModels = function(config, ref) {
 	this.configurationObject.saveTreeService = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'MANAGE_MODELS_ACTION'
 		, baseParams: paramsSave
+	});
+	this.configurationObject.deleteTreeService = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'MANAGE_MODELS_ACTION'
+		, baseParams: paramsDel
 	});
 	//reference to viewport container
 	this.referencedCmp = ref;
@@ -165,13 +170,12 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	              allowBlank: false
 	              //,validationEvent:true
 	          });
-	 	  this.detailFieldTypeDescr = new Ext.form.TextArea({
+	 	  this.detailFieldTypeDescr = new Ext.form.DisplayField({
 	          	 maxLength:400,
 	       	     width : 250,
 	             height : 80,
 	        	 regex : new RegExp("^([a-zA-Z1-9_\x2F])+$", "g"),
 	        	 regexText : LN('sbi.roles.alfanumericString'),
-	             fieldLabel: LN('sbi.generic.nodedescr'),
 	             //validationEvent:true,
 	             readOnly: true,
 	             name: 'typeDescr'
@@ -198,8 +202,8 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		                 "margin-left": "10px", 
 		                 "margin-right": Ext.isIE6 ? (Ext.isStrict ? "-10px" : "-13px") : "0"  
 		             },
-		             items: [this.detailFieldName, this.detailFieldCode, this.detailFieldDescr,
-		                     this.detailFieldLabel, this.detailFieldKpi, this.detailFieldNodeType, this.detailFieldTypeDescr]
+		             items: [this.detailFieldLabel, this.detailFieldCode, this.detailFieldName,  this.detailFieldDescr,
+		                      this.detailFieldKpi, this.detailFieldNodeType, this.detailFieldTypeDescr]
 		    	}
 		    }];
 
@@ -232,43 +236,38 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	      			if(content !== undefined && content !== null){
 	      				var hasErrors = false;
 	      				for (var key in content) {
-		      				  var msg = content[key];
+		      				  var value = content[key];
 		      				  var nodeSel = Ext.getCmp('model-maintree').getNodeById(key);
-		      				  if(msg  == 'KO'){
+		      				  //response returns key = guiid, value = 'KO' if operation fails, or modelId if operation succeded
+		      				  if(value  == 'KO'){
 		      					  hasErrors= true;
 		 		      			  ///contains error gui ids      						  
 	      						  nodeSel.attributes.error = true;
 	      						  Ext.fly(nodeSel.getUI().getEl()).applyStyles('{ border: 1px solid red; font-weight: bold; font-style: italic; color: #cd2020; text-decoration: underline; }');
 		      				  }else{
 		      					  nodeSel.attributes.error = false; 
+		      					  nodeSel.attributes.modelId = value; 
 		      					  Ext.fly(nodeSel.getUI().getEl()).applyStyles('{ border: 0; font-weight: normal; font-style: normal; text-decoration: none; }');
-				      			
 		      				  }
-		      				  
 		      		    }
 	      				if(hasErrors){
 	      					alert(LN('sbi.generic.savingItemError'));
 	      					
 	      				}else{
 	      					///success no errors!
+	      					this.cleanAllUnsavedNodes();
 	      					alert(LN('sbi.generic.resultMsg'));
 		      				this.referencedCmp.modelsGrid.mainElementsStore.load();
 	      				}
-	      				this.cleanAllUnsavedNodes();
-	      				
 	      			}else{
 	      				alert(LN('sbi.generic.savingItemError'));
 	      			}
-	      			//clear tosave attributes!!!
-
 				}else{
       				this.cleanAllUnsavedNodes();
       				alert(LN('sbi.generic.resultMsg'));
       				this.referencedCmp.modelsGrid.mainElementsStore.load();
 				}
       			this.mainTree.doLayout();
-      			
-      			//this.referencedCmp.modelsGrid.mainElementsStore.commitChanges();
       			this.referencedCmp.modelsGrid.getView().refresh();
 				this.referencedCmp.modelsGrid.doLayout();
       			return;

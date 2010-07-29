@@ -273,8 +273,10 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 				try {
 					if(model.getId()  != null){
 						DAOFactory.getModelDAO().modifyModel(model);
+						respObj.put(model.getGuiId(), model.getId());
 					}else{
-						DAOFactory.getModelDAO().insertModel(model);
+						Integer index = DAOFactory.getModelDAO().insertModel(model);
+						respObj.put(model.getGuiId(), index);
 					}
 				} catch (Exception e) {
 					//send error!!!		
@@ -304,14 +306,14 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 						Integer newId = DAOFactory.getModelDAO().insertModel(orderedNode);
 						if (newId != null){
 							orderedNode.setId(newId);
-						}else{
-						
+							respObj.put(orderedNode.getGuiId(), newId);
+						}else{						
 							respObj.put(orderedNode.getGuiId(), "KO");
 						}
 					}else{
 					//else update
 						DAOFactory.getModelDAO().modifyModel(orderedNode);
-						
+						respObj.put(orderedNode.getGuiId(), orderedNode.getId());
 					}
 					
 				}

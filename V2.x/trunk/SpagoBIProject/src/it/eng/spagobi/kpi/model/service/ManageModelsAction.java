@@ -150,7 +150,7 @@ public class ManageModelsAction extends AbstractSpagoBIAction {
 			try {
 				boolean result = DAOFactory.getModelDAO().deleteModel(modelId);
 				logger.debug("Model deleted");
-				writeBackToClient( new JSONAcknowledge("Operation succeded") );
+				writeBackToClient( new JSONSuccess(Boolean.toString(result)) );
 			} catch (Throwable e) {
 				logger.error("Exception occurred while retrieving model to delete", e);
 				throw new SpagoBIServiceException(SERVICE_NAME,

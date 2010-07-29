@@ -469,21 +469,25 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 
 	private void recursiveStepDelete(Session aSession, SbiKpiModel aModel) {
 		Set children = aModel.getSbiKpiModels();
-		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
-			SbiKpiModel modelChild = (SbiKpiModel) iterator.next();
-			recursiveStepDelete(aSession, modelChild);
-			// delete Model and Attribute
-			deleteModelAndAttribute(aSession, modelChild);
+		if(children != null){
+			for (Iterator iterator = children.iterator(); iterator.hasNext();) {
+				SbiKpiModel modelChild = (SbiKpiModel) iterator.next();
+				recursiveStepDelete(aSession, modelChild);
+				// delete Model and Attribute
+				deleteModelAndAttribute(aSession, modelChild);
+			}
 		}
 	}
 
 	private void deleteModelAndAttribute(Session aSession, SbiKpiModel aModel) {
 		Set modelChildAttributes = aModel.getSbiKpiModelAttrVals();
-		for (Iterator iterator2 = modelChildAttributes.iterator(); iterator2
-				.hasNext();) {
-			SbiKpiModelAttrVal modelAttrVal = (SbiKpiModelAttrVal) iterator2
-					.next();
-			aSession.delete(modelAttrVal);
+		if(modelChildAttributes != null){
+			for (Iterator iterator2 = modelChildAttributes.iterator(); iterator2
+					.hasNext();) {
+				SbiKpiModelAttrVal modelAttrVal = (SbiKpiModelAttrVal) iterator2
+						.next();
+				aSession.delete(modelAttrVal);
+			}
 		}
 		aSession.delete(aModel);
 	}

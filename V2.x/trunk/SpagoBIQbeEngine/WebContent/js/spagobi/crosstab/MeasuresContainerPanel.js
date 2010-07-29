@@ -230,7 +230,7 @@ Ext.extend(Sbi.crosstab.MeasuresContainerPanel, Ext.grid.GridPanel, {
 				return;
 			}
 			// if the measure is missing the aggregation function, user must select it
-			if (aRow.data.funct === null || aRow.data.funct === 'NONE') {
+			if (aRow.data.funct === null || aRow.data.funct === '' || aRow.data.funct === 'NONE') {
 				var aWindow = new Sbi.crosstab.ChooseAggregationFunctionWindow({
 					behindMeasure: Ext.apply({}, aRow.data) // creates a clone
         	  	});

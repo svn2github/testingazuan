@@ -142,7 +142,7 @@ Ext.extend(Sbi.kpi.ManageKpis, Sbi.widgets.ListDetailForm, {
 		
 		this.configurationObject.panelTitle = LN('sbi.kpis.panelTitle');
 		this.configurationObject.listTitle = LN('sbi.kpis.listTitle');
-		this.configurationObject.dragndropGroup ='grid2kpi';
+		this.configurationObject.dragndropGroup ='grid2treeAndDetail';
 		this.initTabItems();
     }
 

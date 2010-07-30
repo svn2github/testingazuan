@@ -162,9 +162,8 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 
 			preloadTree : this.preloadTree,
 			enableDD : true,
-			dropConfig : {
-				appendOnly : true
-			},
+            enableDrop: true,
+            ddAppendOnly: false ,
 			scope : this,
 			shadow : true,
 			tbar : this.tbSave,
@@ -174,7 +173,53 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 				modelId : this.rootNodeId,
 				id:  this.rootNodeId
 			}
+		   ,listeners:{
+			   // create nodes based on data from grid
+			   beforenodedrop:{
+			   	   fn:function(e) {
 
+					   // e.data.selections is the array of selected records
+					   if(Ext.isArray(e.data.selections)) {					    
+						   // reset cancel flag
+						   e.cancel = false;						    
+						   // setup dropNode (it can be array of nodes)
+						   e.dropNode = [];
+						   var r;
+						   for(var i = 0; i < e.data.selections.length; i++) {
+						    
+							   // get record from selectons
+							   r = e.data.selections[i];
+							  /*    * tree - The TreePanel
+								    * target - The node being targeted for the drop
+								    * data - The drag data from the drag source
+								    * point - The point of the drop - append, above or below
+								    * source - The drag source
+								    * rawEvent - Raw mouse event
+								    * dropNode - Drop node(s) provided by the source OR you can supply node(s) to be inserted by setting them on this object.
+								    * cancel - Set this to true to cancel the drop.
+								    * dropStatus - If the default drop action is cancelled but the drop is valid, setting this to true will prevent the animated 'repair' from appearing.
+								*/  
+							   e.target.allowChildren = true;
+							   var newNode = this.loader.createNode({
+								   kpi: r.get('name')
+								   ,kpiId: r.get('id')
+								   , text: r.get('name')
+								   , parentId: e.target.attributes.modelId
+								   ,leaf:false
+							   });
+							   // create node from record data
+							   e.dropNode.push(newNode);
+
+						   }
+					    
+						   // we want Ext to complete the drop, thus return true
+						   return true;
+					   }
+			    
+				   // if we get here the drop is automatically cancelled by Ext
+				   }//end fn
+		   		}
+		   }
 		});
 		
 		this.mainTree.on('contextmenu', this.onContextMenu, this);
@@ -266,7 +311,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	        	    	//then create child node
 	        			var node = new Ext.tree.TreeNode( {
 	        				text : '... - ...',
-	        				leaf : true,
+	        				leaf : false,
 	        				parentId: newparentId,
 	        				toSave :false,
 	        				allowDrag : false
@@ -290,11 +335,12 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	            },
 	            this
 			);
+			return null;
 		}else{
 	    	//then create child node
 			var node = new Ext.tree.TreeNode( {
 				text : '... - ...',
-				leaf : true,
+				leaf : false,
 				parentId: parentId,
 				toSave :false,
 				allowDrag : false
@@ -308,6 +354,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	
 			this.selectedNodeToEdit = node;
 			this.mainTree.getSelectionModel().select(node);
+			return node;
 		}
 
 	},

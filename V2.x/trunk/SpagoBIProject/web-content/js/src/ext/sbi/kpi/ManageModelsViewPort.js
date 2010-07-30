@@ -167,46 +167,53 @@ Ext.extend(Sbi.kpi.ManageModelsViewPort, Ext.Viewport, {
 	  	  /****
 		  * Setup Drop Targets
 		  ***/
-			
-		  // This will make sure we only drop to the view container
-		  var fieldDropTargetEl =  this.manageModels.detailFieldKpi.getEl().dom;
 
-		  var formPanelDropTarget = new Ext.dd.DropTarget(fieldDropTargetEl, {
-		    ddGroup     : 'grid2kpi',
+		  var nodeTreePanelDropTarget = new Ext.tree.TreeDropZone(Ext.getCmp('model-maintree'), {
+		    ddGroup  : 'grid2treeAndDetail',
+		    dropAllowed : true,
 		    overClass: 'over',
 		    scope: this,
-		    initialConfig: this.manageModels,
-		    notifyEnter : function(ddSource, e, data) {
-		      //Add some flare to invite drop.
-		      Ext.fly(Ext.getCmp('model-detailFieldKpi').getEl()).frame("00AE00");
+		    initialConfig: this.manageModels
+		  });
 
-		    },
-		    notifyDrop  : function(ddSource, e, data){
-  
-		      // Reference the record (single selection) for readability
-		      var selectedRecord = ddSource.dragData.selections[0];
+		  // This will make sure we only drop to the view container
+		  var fieldDropTargetEl =  this.manageModels.detailFieldKpi.getEl().dom; 
+		  var formPanelDropTarget = new Ext.dd.DropTarget(fieldDropTargetEl, {
+			    ddGroup  : 'grid2treeAndDetail',
+			    overClass: 'over',
+			    scope: this,
+			    initialConfig: this.manageModels,
+			    notifyEnter : function(ddSource, e, data) {
+			      //Add some flare to invite drop.
+			      Ext.fly(Ext.getCmp('model-detailFieldKpi').getEl()).frame("00AE00");
 
-		      // Load the record into the form field
-		      Ext.getCmp('model-detailFieldKpi').setValue(selectedRecord.get('name')); 
-		      var node = Ext.getCmp('model-maintree').getSelectionModel().getSelectedNode() ;
+			    },
+			    notifyDrop  : function(ddSource, e, data){
+	  
+			      // Reference the record (single selection) for readability
+			      var selectedRecord = ddSource.dragData.selections[0];
 
-		      if(node !== undefined && node != null){
-		    	  var nodesList = this.initialConfig.nodesToSave;
-		    	  
-		    	  //if the node is already present in the list
-		    	  var exists = nodesList.indexOf(node);
-		    	  if(exists == -1){
-					  var size = nodesList.length;
-					  this.initialConfig.nodesToSave[size] = node;
-					  node.attributes.toSave = true;
-		    	  }
-		    	  
-			      node.attributes.kpi = selectedRecord.get('name');
-			      node.attributes.kpiId = selectedRecord.get('id');
-		      }
-		      Ext.fly(this.getEl()).frame("ff0000");
-		      return(true);
-		    }
-		  }, this);
+			      // Load the record into the form field
+			      Ext.getCmp('model-detailFieldKpi').setValue(selectedRecord.get('name')); 
+			      var node = Ext.getCmp('model-maintree').getSelectionModel().getSelectedNode() ;
+
+			      if(node !== undefined && node != null){
+			    	  var nodesList = this.initialConfig.nodesToSave;
+			    	  
+			    	  //if the node is already present in the list
+			    	  var exists = nodesList.indexOf(node);
+			    	  if(exists == -1){
+						  var size = nodesList.length;
+						  this.initialConfig.nodesToSave[size] = node;
+						  node.attributes.toSave = true;
+			    	  }
+			    	  
+				      node.attributes.kpi = selectedRecord.get('name');
+				      node.attributes.kpiId = selectedRecord.get('id');
+			      }
+			      Ext.fly(this.getEl()).frame("ff0000");
+			      return(true);
+			    }
+			  }, this);
 	}
 });

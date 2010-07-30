@@ -330,10 +330,9 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 					            method: 'GET',
 					            success: function(response, options) {
 									if (response !== undefined) {
-										
-										this.mainTree.getLoader().load(node);
-										//node.remove();
-										this.mainTree.doLayout();
+										this.mainTree.getSelectionModel().clearSelections(false);
+										node.remove();
+										//this.mainTree.doLayout();
 									} else {
 										Sbi.exception.ExceptionHandler.showErrorMessage(LN('sbi.generic.deletingItemError'), LN('sbi.generic.serviceError'));
 									}

@@ -419,27 +419,28 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		}
 	}
 	,fillDetail : function(sel, node) {
-
-		var val = node.text;
-		if (val != null && val !== undefined) {
-			var aPosition = val.indexOf(" - ");
-
-			var name = node.attributes.name;
-			var code = node.attributes.code;
-			if (aPosition !== undefined && aPosition != -1) {
-				name = val.substr(aPosition + 3);
-				code = val.substr(0, aPosition)
+		if(node !== undefined && node != null){
+			var val = node.text;
+			if (val != null && val !== undefined) {
+				var aPosition = val.indexOf(" - ");
+	
+				var name = node.attributes.name;
+				var code = node.attributes.code;
+				if (aPosition !== undefined && aPosition != -1) {
+					name = val.substr(aPosition + 3);
+					code = val.substr(0, aPosition)
+				}
+	
+				this.detailFieldDescr.setValue(node.attributes.description);			
+				this.detailFieldLabel.setValue(node.attributes.label);
+				this.detailFieldKpi.setValue(node.attributes.kpi);
+				this.detailFieldNodeType.setValue(node.attributes.type);
+	
+				this.detailFieldName.setValue(name);
+				this.detailFieldCode.setValue(code);
+				
+				this.detailFieldTypeDescr.setValue(node.attributes.typeDescr);
 			}
-
-			this.detailFieldDescr.setValue(node.attributes.description);			
-			this.detailFieldLabel.setValue(node.attributes.label);
-			this.detailFieldKpi.setValue(node.attributes.kpi);
-			this.detailFieldNodeType.setValue(node.attributes.type);
-
-			this.detailFieldName.setValue(name);
-			this.detailFieldCode.setValue(code);
-			
-			this.detailFieldTypeDescr.setValue(node.attributes.typeDescr);
 		}
 	}
 	,renderTree : function(tree) {

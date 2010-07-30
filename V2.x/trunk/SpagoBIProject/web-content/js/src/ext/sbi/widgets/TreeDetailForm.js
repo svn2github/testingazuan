@@ -200,16 +200,28 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 								    * dropStatus - If the default drop action is cancelled but the drop is valid, setting this to true will prevent the animated 'repair' from appearing.
 								*/  
 							   e.target.allowChildren = true;
+							   var parent = e.target;
+							   if(e.target.attributes.modelId == null || e.target.attributes.modelId === undefined){
+								   //drop forbidden!
+								   alert("Save parent first: drop forbidden");
+								   return false;
+							   }
+							   var idxNodeType = this.typesStore.find('domainCd', 'MODEL_NODE');			
+							   var recDomain = this.typesStore.getAt(idxNodeType);	
 							   var newNode = this.loader.createNode({
 								   kpi: r.get('name')
 								   ,kpiId: r.get('id')
 								   , text: r.get('name')
 								   , parentId: e.target.attributes.modelId
+								   ,	type: recDomain.get('typeCd')
+								   ,	typeId: recDomain.get('typeId')
+								   ,	typeDescr: recDomain.get('typeDs')
 								   ,leaf:false
 							   });
+							   
 							   // create node from record data
 							   e.dropNode.push(newNode);
-
+							   
 						   }
 					    
 						   // we want Ext to complete the drop, thus return true
@@ -218,6 +230,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 			    
 				   // if we get here the drop is automatically cancelled by Ext
 				   }//end fn
+				   , scope:this
 		   		}
 		   }
 		});
@@ -287,7 +300,9 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	},
 
 	addNewItem : function(parent) {
-
+		var idxNodeType = this.typesStore.find('domainCd', 'MODEL_NODE');			
+		var recDomain = this.typesStore.getAt(idxNodeType);	
+		
 		if (parent === undefined || parent == null) {
 			alert("Select parent node");
 			return;
@@ -313,6 +328,9 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	        				text : '... - ...',
 	        				leaf : false,
 	        				parentId: newparentId,
+	        				type: recDomain.get('typeCd'),
+	        				typeId: recDomain.get('typeId'),
+	        				typeDescr: recDomain.get('typeDs'),
 	        				toSave :false,
 	        				allowDrag : false
 	        			});
@@ -337,12 +355,16 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 			);
 			return null;
 		}else{
+
 	    	//then create child node
 			var node = new Ext.tree.TreeNode( {
 				text : '... - ...',
 				leaf : false,
 				parentId: parentId,
 				toSave :false,
+				type: recDomain.get('typeCd'),
+				typeId: recDomain.get('typeId'),
+				typeDescr: recDomain.get('typeDs'),
 				allowDrag : false
 			});
 			this.mainTree.render();

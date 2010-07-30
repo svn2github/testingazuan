@@ -111,38 +111,12 @@ Ext.extend(Sbi.kpi.ManageModelsViewPort, Ext.Viewport, {
 	lastRecSelected: null
 	
 	,initPanels : function() {
-	
-		this.modelsGrid.addListener('rowclick', this.sendSelectedItem, this);
+
 		this.manageKpis.addListener('render', this.configureDD, this);
-		//this.modelsGrid.getSelectionModel().addListener('beforerowselect', this.askForSave, this);
+		this.modelsGrid.addListener('rowclick', this.sendSelectedItem, this);
 
 	}
-	,sendSelectedItem: function(grid, index, e){
-
-		var rec = grid.getSelectionModel().getSelected();		
-		//alert(rec.data.name);
-		if(rec !== this.lastRecSelected){
-			if(this.manageModels.nodesToSave.length > 0){
-				
-				Ext.MessageBox.confirm(
-						LN('sbi.generic.pleaseConfirm'),
-						LN('sbi.generic.confirmChangeNode'),            
-			            function(btn, text) {
-			                if (btn=='yes') {
-			                	this.manageModels.cleanAllUnsavedNodes();
-			                	this.modelsGrid.fireEvent('rowclick', this.modelsGrid);
-			                }else{
-			                	//alert(this.lastRecSelected.data.name);	  
-			                	grid.getSelectionModel().selectRecords([this.lastRecSelected]);
-			                	//alert("fatto");
-			                }
-			            },
-			            this
-					);
-			}
-		}
-		this.lastRecSelected = rec;
-		
+	, displayTree: function(rec){
 		this.manageModels.rootNodeText = rec.get('code')+ " - "+rec.get('name');
 		this.manageModels.rootNodeId = rec.get('modelId');
 		var newroot = this.manageModels.createRootNodeByRec(rec);
@@ -151,26 +125,44 @@ Ext.extend(Sbi.kpi.ManageModelsViewPort, Ext.Viewport, {
 		this.manageModels.mainTree.getSelectionModel().select(newroot);
 		this.manageModels.mainTree.doLayout();
 	}
-	,askForSave: function(selMod, rowIndex, keepExisting, record){
+
+	,sendSelectedItem: function(grid, rowIndex, e){
+		var rec = grid.getSelectionModel().getSelected();
+
+
+		//if unsaved changes
 		if(this.manageModels.nodesToSave.length > 0){
+			//if there are modification on current selection
 			Ext.MessageBox.confirm(
 					LN('sbi.generic.pleaseConfirm'),
 					LN('sbi.generic.confirmChangeNode'),            
 		            function(btn, text) {
+
 		                if (btn=='yes') {
-		                	this.manageModels.cleanAllUnsavedNodes();
-		                	this.modelsGrid.fireEvent('rowclick', this.modelsGrid);
+
+		                	this.manageModels.cleanAllUnsavedNodes();	        			
+		        			this.displayTree(rec);
+			        		if(rec != this.lastRecSelected){
+			        			this.lastRecSelected = rec;
+			        		}
+
 		                }else{
-		                	selMod.clearSelections(true);		                	
-		                	selMod.selectRecords([this.lastRecSelected]);
+		                	grid.getSelectionModel().selectRecords([this.lastRecSelected]);
+		                	
 		                }
+
 		            },
 		            this
 				);
+		}else{
+			this.displayTree(rec);
+			if(rec != this.lastRecSelected){
+				this.lastRecSelected = rec;
+			}
 		}
-		
+
 	}
-	
+
 	, configureDD: function() {
 	  	  /****
 		  * Setup Drop Targets

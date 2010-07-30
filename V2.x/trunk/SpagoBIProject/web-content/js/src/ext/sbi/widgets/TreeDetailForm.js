@@ -242,6 +242,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	},
 
 	addNewItem : function(parent) {
+		alert(parent);
 		if (parent === undefined || parent == null) {
 			alert("Select parent node");
 			return;
@@ -259,6 +260,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	                if (btn=='yes') {
 	                	//save parent
 	                	this.save();
+	                	
 	                	this.mainTree.getLoader().load(parent);
 	                	var parentId = parent.attributes.modelId;
 

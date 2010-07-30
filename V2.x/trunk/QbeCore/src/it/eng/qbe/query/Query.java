@@ -113,8 +113,8 @@ public class Query {
 		selectFields.add( new CalculatedSelectField(fieldAlias, expression, type, included, visible) );
 	}
 	
-	public void addInLineCalculatedFiled(String fieldAlias, String expression, String type, boolean included, boolean visible, boolean groupByField) {
-		selectFields.add( new InLineCalculatedSelectField(fieldAlias, expression, type, included, visible, groupByField) );
+	public void addInLineCalculatedFiled(String fieldAlias, String expression, String type, boolean included, boolean visible, boolean groupByField, String orderType, String funct) {
+		selectFields.add( new InLineCalculatedSelectField(fieldAlias, expression, type, included, visible, groupByField, orderType, funct) );
 	}
 
 	
@@ -306,6 +306,15 @@ public class Query {
 				groupByFields.add(selectField);
 			}
 		}
+		
+		Iterator<InLineCalculatedSelectField> it2 = this.getInLineCalculatedSelectFields(false).iterator();
+		while( it2.hasNext() ) {
+			InLineCalculatedSelectField selectField = (InLineCalculatedSelectField)it2.next();
+			if(selectField.isGroupByField()) {
+				groupByFields.add(selectField);
+			}
+		}
+		
 		return groupByFields;
 	}
 	

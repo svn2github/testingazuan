@@ -320,8 +320,6 @@ public class HQLStatement extends BasicStatement {
 						break;
 					}
 					
-					
-					
 				} while( true );
 				
 
@@ -330,46 +328,11 @@ public class HQLStatement extends BasicStatement {
 				for(int k=0; k< selectInLineCalculatedFields.size(); k++){
 					selectInLineField = selectInLineCalculatedFields.get(k);
 					
-					String expr = selectInLineField.getExpression();//.replace("\'", "");
+					String expr = selectInLineField.getExpression();//.replace("\'", "");			
+					expr = parseInLinecalculatedField(expr, query, entityAliasesMaps);
+					expr = selectInLineField.getFunction().apply(expr);
 					
-					
-					StringTokenizer stk = new StringTokenizer(selectInLineField.getExpression().replace("\'", ""), "+-|*/");
-					while(stk.hasMoreTokens()){
-						String alias = stk.nextToken().trim();
-											
-						
-						String uniqueName;
-						allSelectFields = query.getSelectFields(false);
-						for(int i=0; i<allSelectFields.size(); i++){
-							if(allSelectFields.get(i).getClass().equals(DataMartSelectField.class) && ((DataMartSelectField)allSelectFields.get(i)).getAlias().equals(alias)){
-								uniqueName=((DataMartSelectField)allSelectFields.get(i)).getUniqueName();
-								datamartField = getDataSource().getDataMartModelStructure().getField(uniqueName);	
-								queryName = datamartField.getQueryName();
-								rootEntity = datamartField.getParent().getRoot(); 
-								rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
-								queryName = ((DataMartSelectField)allSelectFields.get(i)).getFunction().apply(rootEntityAlias+"."+queryName);
-								aliasEntityMapping.add(queryName);
-								break;
-							}
-						}
-					}
-					
-					index = 0;
-					String freshExpr = selectInLineField.getExpression();
-					int ind =0;
-					int pos =0;
-					stk = new StringTokenizer(selectInLineField.getExpression().replace("\'", ""), "+-|*/");
-					while(stk.hasMoreTokens()){
-						String alias = stk.nextToken().trim();
-						pos = freshExpr.indexOf(alias, pos);
-						freshExpr = freshExpr.substring(0, pos)+ aliasEntityMapping.get(ind)+freshExpr.substring(pos+alias.length());
-						pos = pos+ aliasEntityMapping.get(ind).length();
-						ind++;
-					}
-			
-					expr = freshExpr;
-
-					for(int y= index; y<idsForQuery.length; y++){
+					for(int y= 0; y<idsForQuery.length; y++){
 						if(idsForQuery[y]==null){
 							idsForQuery[y]=" " +expr;
 							index = y;
@@ -632,20 +595,19 @@ public class HQLStatement extends BasicStatement {
 			String operandValueToBound = operandValuesToBound[i];
 			String boundedValue = operandValueToBound;
 			
-			if (OPERAND_TYPE_FIELD.equalsIgnoreCase(leadOperand.type) 
-							|| OPERAND_TYPE_PARENT_FIELD.equalsIgnoreCase(leadOperand.type)) {
-				
-				DataMartField datamartField = getDataSource().getDataMartModelStructure().getField(leadOperand.values[0]);
-				boundedValue = getValueBounded(operandValueToBound, datamartField.getType());
-			}
 			
 			// calculated field
 			// TODO check!!!! why not a OPERAND_TYPE_CALCUALTED_FIELD????
 			if (leadOperand.values[0].contains("expression")) {
 				String type = (leadOperand.values[0].substring(leadOperand.values[0].indexOf("type\":")+7, leadOperand.values[0].indexOf("\"}")));
 				boundedValue = getValueBounded(operandValueToBound, type);
+			}else if (OPERAND_TYPE_FIELD.equalsIgnoreCase(leadOperand.type) 
+							|| OPERAND_TYPE_PARENT_FIELD.equalsIgnoreCase(leadOperand.type)) {
+				
+				DataMartField datamartField = getDataSource().getDataMartModelStructure().getField(leadOperand.values[0]);
+				boundedValue = getValueBounded(operandValueToBound, datamartField.getType());
 			}
-			
+
 			boundedValues[i] = boundedValue;
 		
 		}
@@ -794,13 +756,6 @@ public class HQLStatement extends BasicStatement {
 	 * @return
 	 */
 	private String buildInLineCalculatedFieldClause(String operator, Operand leftOperand, boolean isPromptable, Operand rightOperand, Query query, Map entityAliasesMaps, IConditionalOperator conditionalOperator){
-		List allSelectFields;
-		DataMartEntity rootEntity;
-		DataMartField datamartField;
-		String queryName;
-		String rootEntityAlias;
-		Map entityAliases = (Map)entityAliasesMaps.get(query.getId());
-		List<String> aliasEntityMapping = new  ArrayList<String>();
 		String[] rightOperandElements;
 				
 		String expr = leftOperand.values[0].substring(leftOperand.values[0].indexOf("\"expression\":\"")+14);//.replace("\'", "");
@@ -811,6 +766,35 @@ public class HQLStatement extends BasicStatement {
 
 		
 		//String expr = leftOperand.value.substring(15,leftOperand.value.indexOf("\",\"alias"));//.replace("\'", "");
+
+		expr = parseInLinecalculatedField(expr, query, entityAliasesMaps);
+				
+		logger.debug("IN");
+					
+		if (OPERAND_TYPE_STATIC.equalsIgnoreCase(rightOperand.type) && isPromptable) {
+			// get last value first (the last value edited by the user)
+			rightOperandElements = rightOperand.lastValues;
+		} else {
+			rightOperandElements = buildOperand(rightOperand, query, entityAliasesMaps);
+		}
+		
+		if (OPERAND_TYPE_STATIC.equalsIgnoreCase(rightOperand.type) )  {
+			rightOperandElements = getTypeBoundedStaticOperand(leftOperand, operator, rightOperandElements);
+		}
+		
+		return conditionalOperator.apply("("+expr+")", rightOperandElements);
+	}
+	
+	
+	public String parseInLinecalculatedField(String expr, Query query, Map entityAliasesMaps){
+		List allSelectFields;
+		DataMartEntity rootEntity;
+		DataMartField datamartField;
+		String queryName;
+		String rootEntityAlias;
+		Map entityAliases = (Map)entityAliasesMaps.get(query.getId());
+		List<String> aliasEntityMapping = new  ArrayList<String>();
+		
 		StringTokenizer stk = new StringTokenizer(expr, "+-|*/");
 		while(stk.hasMoreTokens()){
 			String alias = stk.nextToken().trim();
@@ -841,22 +825,7 @@ public class HQLStatement extends BasicStatement {
 			pos = pos+ aliasEntityMapping.get(ind).length();
 			ind++;
 		}
-		expr = freshExpr;
-				
-		logger.debug("IN");
-					
-		if (OPERAND_TYPE_STATIC.equalsIgnoreCase(rightOperand.type) && isPromptable) {
-			// get last value first (the last value edited by the user)
-			rightOperandElements = rightOperand.lastValues;
-		} else {
-			rightOperandElements = buildOperand(rightOperand, query, entityAliasesMaps);
-		}
-		
-		if (OPERAND_TYPE_STATIC.equalsIgnoreCase(rightOperand.type) )  {
-			rightOperandElements = getTypeBoundedStaticOperand(leftOperand, operator, rightOperandElements);
-		}
-		
-		return conditionalOperator.apply("("+expr+")", rightOperandElements);
+		return freshExpr;
 	}
 	
 	/*
@@ -1243,7 +1212,7 @@ public class HQLStatement extends BasicStatement {
 	private String buildGroupByClause(Query query, Map entityAliasesMaps) {
 		StringBuffer buffer = new StringBuffer();
 		List groupByFields = query.getGroupByFields();
-		
+		String fieldName; 
 		if(groupByFields == null ||groupByFields.size() == 0) {
 			return "";
 		}
@@ -1252,17 +1221,25 @@ public class HQLStatement extends BasicStatement {
 		
 		Map entityAliases = (Map)entityAliasesMaps.get(query.getId());
 		
-		Iterator it = groupByFields.iterator();
+		Iterator<AbstractSelectField> it = groupByFields.iterator();
 		while( it.hasNext() ) {
-			DataMartSelectField groupByField = (DataMartSelectField)it.next();
-			DataMartField datamartField = getDataSource().getDataMartModelStructure().getField(groupByField.getUniqueName());
-			DataMartEntity entity = datamartField.getParent().getRoot(); 
-			String queryName = datamartField.getQueryName();
-			if(!entityAliases.containsKey(entity.getUniqueName())) {
-				entityAliases.put(entity.getUniqueName(), getNextAlias(entityAliasesMaps));
+			AbstractSelectField abstractSelectedField = it.next();
+			
+			if(abstractSelectedField.isInLineCalculatedField()){
+				InLineCalculatedSelectField icf = (InLineCalculatedSelectField)abstractSelectedField;
+				fieldName = parseInLinecalculatedField(icf.getExpression(), query, entityAliasesMaps);
+			}else{
+			
+				DataMartSelectField groupByField = (DataMartSelectField)abstractSelectedField;
+				DataMartField datamartField = getDataSource().getDataMartModelStructure().getField(groupByField.getUniqueName());
+				DataMartEntity entity = datamartField.getParent().getRoot(); 
+				String queryName = datamartField.getQueryName();
+				if(!entityAliases.containsKey(entity.getUniqueName())) {
+					entityAliases.put(entity.getUniqueName(), getNextAlias(entityAliasesMaps));
+				}
+				String entityAlias = (String)entityAliases.get( entity.getUniqueName() );
+				fieldName = entityAlias + "." +queryName;
 			}
-			String entityAlias = (String)entityAliases.get( entity.getUniqueName() );
-			String fieldName = entityAlias + "." +queryName;
 			buffer.append(" " + fieldName);
 			if( it.hasNext() ) {
 				buffer.append(",");

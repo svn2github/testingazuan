@@ -254,9 +254,12 @@ public class QueryJSONSerializer implements QuerySerializer {
 							fieldJSON.put(SerializationConstants.FIELD_GROUP, "");
 						}
 						
-						fieldJSON.put(SerializationConstants.FIELD_GROUP, "");
+						fieldJSON.put(SerializationConstants.FIELD_AGGREGATION_FUNCTION, calculatedSelectField.getFunction().getName());
+						fieldJSON.put(SerializationConstants.FIELD_ORDER, calculatedSelectField.getOrderType());
+						
+						//fieldJSON.put(SerializationConstants.FIELD_GROUP, "");
 						fieldJSON.put(SerializationConstants.FIELD_ORDER, "");
-						fieldJSON.put(SerializationConstants.FIELD_AGGREGATION_FUNCTION, "");
+						//fieldJSON.put(SerializationConstants.FIELD_AGGREGATION_FUNCTION, "");
 						
 						fieldJSON.put(SerializationConstants.FIELD_ICON_CLS, "calculation");
 						

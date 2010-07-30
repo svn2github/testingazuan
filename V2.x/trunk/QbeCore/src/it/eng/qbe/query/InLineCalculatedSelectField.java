@@ -30,14 +30,18 @@ public class InLineCalculatedSelectField extends AbstractSelectField {
 	private String type;
 	private Object initialValue;
 	private boolean groupByField;
+	private IAggregationFunction function;
+	private String orderType;
 	private int resetType;
 	private int incrementType;
 	
-	public InLineCalculatedSelectField(String alias, String expression, String type, boolean included, boolean visible, boolean groupByField) {
+	public InLineCalculatedSelectField(String alias, String expression, String type, boolean included, boolean visible, boolean groupByField, String orderType, String function ) {
 		super(alias, ISelectField.CALCULATED_FIELD, included, visible);
 		this.expression = expression;
 		this.type = type;
 		this.groupByField = groupByField;
+		setOrderType(orderType);
+		setFunction( AggregationFunctions.get(function) );
 	}
 	
 	public String getExpression() {
@@ -72,4 +76,33 @@ public class InLineCalculatedSelectField extends AbstractSelectField {
 	public void setGroupByField(boolean groupByField) {
 		this.groupByField = groupByField;
 	}
+	
+	public boolean isOrderByField() {
+		return "ASC".equalsIgnoreCase( getOrderType() )
+			|| "DESC".equalsIgnoreCase( getOrderType() );
+	}
+
+	public boolean isAscendingOrder() {
+		return "ASC".equalsIgnoreCase( getOrderType() );
+	}
+	
+
+
+	public String getOrderType() {
+		return orderType;
+	}
+
+
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
+	}
+	
+	public IAggregationFunction getFunction() {
+		return function;
+	}
+
+	public void setFunction(IAggregationFunction function) {
+		this.function = function;
+	}
+	
 }

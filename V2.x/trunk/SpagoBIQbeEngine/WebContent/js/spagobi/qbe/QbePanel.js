@@ -85,38 +85,6 @@ Sbi.qbe.QbePanel = function(config) {
 		items.push(this.crosstabPreviewPanel);
 	}
 	
-	
-	this.crossTabPanel =  new CrossTab(       [["w1",[["k1",[["z1",[["x2"],["x3"]]],["z2",[["x1"],["x2"],["x3"]]]]],["k2",[["z1",[["x1"],["x2"],["x3"]]],["z2",[["x1"],["x2"],["x3"]]]]]]],["w",[["k1",[["z1",[["x1"],["x2"],["x3"]]],["z2",[["x1"],["x2"],["x3"]]]]],["k2",[["z1",[["x1"],["x2"],["x3"]]],["z2",[["x1"],["x2"],["x3"]]]]]]]], 
-			     [["ax",[["ax1"],["ax2"],["ax3"]]],["ay",[["ax1"],["ax2"]]]], 
-			[
-         ['1','1','1','1','1'],
-         ['2','2','2','2','2'],
-         ['3','3','3','3','3'],
-         ['4','4','4','4','4'],
-         ['5','5','5','5','5'],
-        ['6','6','6','6','6'],
-        ['7','7','7','7','7'],
-        ['8','8','8','8','8'],
-        ['9','9','9','9','9'],
-        ['10','10','10','10','10'],
-         ['11','11','11','11','11'],
-        ['12','12','12','12','12'],
-        ['13','13','13','13','13'],
-        ['14','14','14','14','14'],
-        ['15','15','15','15','15'],
-        ['16','16','16','16','16'],
-         ['17','17','17','17','17'],
-        ['18','18','18','18','18'],
-        ['19','19','19','19','19'],
-        ['20','20','20','20','20'],
-        ['21','21','21','21','21'],
-        ['22','22','22','22','22'],
-        ['23','23','23','23','23']
-       ]);
-	
-	this.crossTabPanel.reloadHeadersAndTable();
-	items.push(this.crossTabPanel);
-	
 	if (c.displayFormBuilderPanel && c.formbuilder !== undefined && c.formbuilder.template !== undefined) {
 		this.formBuilderPage = new Sbi.formbuilder.FormPanel({template: c.formbuilder.template});
 		items.push(this.formBuilderPage);
@@ -218,6 +186,8 @@ Ext.extend(Sbi.qbe.QbePanel, Ext.Panel, {
 	        success : function(response, opts) {
   	  			try {
   	  				var firstQuery = Ext.util.JSON.decode( response.responseText );
+  	  				
+  	  				
   	  				this.checkPromptableFilters(firstQuery);
   	  			} catch (err) {
   	  				Sbi.exception.ExceptionHandler.handleFailure();

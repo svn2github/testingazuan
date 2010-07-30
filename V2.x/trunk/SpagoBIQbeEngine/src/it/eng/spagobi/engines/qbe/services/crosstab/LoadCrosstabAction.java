@@ -53,6 +53,8 @@ public class LoadCrosstabAction extends AbstractQbeEngineAction {
 	
 	// INPUT PARAMETERS
 	public static final String CROSSTAB_DEFINITION = "crosstabDefinition";
+
+	
 	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(LoadCrosstabAction.class);
@@ -147,13 +149,16 @@ public class LoadCrosstabAction extends AbstractQbeEngineAction {
 			}
 			
 			//gridDataFeed = buildGridDataFeed(results, resultNumber.intValue());	
-			
+	
+			CrossTab crossTab = new CrossTab(dataStore, crosstabDefinition);
+			JSONObject crossTabDefinition = crossTab.getJSONCrossTab();
+
 			dataSetWriter = new JSONDataWriter();
 			gridDataFeed = (JSONObject)dataSetWriter.write(dataStore);
 			//logger.debug("Response object: " + gridDataFeed.toString(3));
 			
 			try {
-				writeBackToClient( new JSONSuccess(gridDataFeed) );
+				writeBackToClient( new JSONSuccess(crossTabDefinition) );
 			} catch (IOException e) {
 				String message = "Impossible to write back the responce to the client";
 				throw new SpagoBIEngineServiceException(getActionName(), message, e);
@@ -167,8 +172,5 @@ public class LoadCrosstabAction extends AbstractQbeEngineAction {
 			if (totalTimeMonitor != null) totalTimeMonitor.stop();
 			logger.debug("OUT");
 		}	
-		
-		
 	}
-	
 }

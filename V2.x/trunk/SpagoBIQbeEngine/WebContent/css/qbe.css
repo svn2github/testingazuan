@@ -229,6 +229,7 @@ See also http://www.sencha.com/deploy/dev/examples/form/check-radio.html */
 	border-bottom-color:#D0D0D0;	
 	text-align: center;
 	background-image:url("../img/crosstab/headerbackground.gif");
+	font:12px arial,tahoma,helvetica,sans-serif;
 	color : #3783E8;
 }
 				
@@ -239,6 +240,7 @@ See also http://www.sencha.com/deploy/dev/examples/form/check-radio.html */
 	border-top-color:#EEEEEE;	
 	border-bottom-color:#D0D0D0;	
 	text-align: center;
+	font:12px arial,tahoma,helvetica,sans-serif;
 	background-color: transparent;
 }
 				

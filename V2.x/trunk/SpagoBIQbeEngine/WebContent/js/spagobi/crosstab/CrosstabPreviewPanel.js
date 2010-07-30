@@ -62,11 +62,13 @@ Sbi.crosstab.CrosstabPreviewPanel = function(config) {
 		, baseParams: params
 	});
 	
-	var c = Ext.apply(defaultSettings, config || {
-		html: "ciao davide"
-	});
+
+	var c = Ext.apply(defaultSettings, config || {});
 	
-	this.initStore();
+	c = Ext.apply(c, {
+      		layout:'fit',
+      		border: false     		
+    	});
 	
 	// constructor
     Sbi.crosstab.CrosstabPreviewPanel.superclass.constructor.call(this, c);
@@ -76,30 +78,55 @@ Sbi.crosstab.CrosstabPreviewPanel = function(config) {
 Ext.extend(Sbi.crosstab.CrosstabPreviewPanel, Ext.Panel, {
 	
 	services: null
-	, proxy: null
-	, store: null
+	, crossTabJSON: null
+	
 	
 	, load: function(crosstabDefinition) {
-		this.store.removeAll();
-		var params = {
-				crosstabDefinition: Ext.util.JSON.encode(crosstabDefinition)
-		};
-		this.store.load({params: params});
+			Ext.Ajax.request({
+		        url: this.services['loadCrosstab'],
+		        params: {
+						crosstabDefinition: Ext.util.JSON.encode(crosstabDefinition)
+				},
+		        success : function(response, opts) {
+	  	  			try {
+	  	  				
+	  	  				//this.crossTabJSON = Ext.util.JSON.decode( response.responseText );
+	  	  				this.refreshCrossTab(Ext.util.JSON.decode( response.responseText ));
+	  	  			} catch (err) {
+	  	  				alert(err);
+	  	  				alert(err.description);
+	  	  			}
+		        },
+		        scope: this,
+				failure: Sbi.exception.ExceptionHandler.handleFailure      
+			});
 	}
 
-	, initStore: function() {
-		
-		this.proxy = new Ext.data.HttpProxy({
-	           url: this.services['loadCrosstab']
-	   		   , failure: Sbi.exception.ExceptionHandler.handleFailure
-	    });
-		
-		this.store = new Ext.data.Store({
-	        proxy: this.proxy,
-	        reader: new Ext.data.JsonReader(),
-	        remoteSort: true
-	    });
-		
-	}
+	, refreshCrossTab: function(crosstabDefinition){
+		this.removeAll(true);
 	
+		var rows = this.fromNodeToArray(crosstabDefinition.rows);
+		var columns = this.fromNodeToArray(crosstabDefinition.columns);
+		var data = crosstabDefinition.data;
+		var ct =  new CrossTab( rows,columns, data);
+		ct.reloadHeadersAndTable();
+		
+		this.add(ct);
+		this.doLayout();
+	}
+
+	, fromNodeToArray: function(node){
+		var childs = node.node_childs;
+		var array = new Array();
+		array.push(node.node_key);
+		if(childs!=null && childs.length>0){
+			var childsArray = new Array();
+			for(var i=0; i<childs.length; i++){
+				childsArray.push(this.fromNodeToArray(childs[i]));
+			}
+			array.push(childsArray);
+		}
+		return array;
+	}
+
 });

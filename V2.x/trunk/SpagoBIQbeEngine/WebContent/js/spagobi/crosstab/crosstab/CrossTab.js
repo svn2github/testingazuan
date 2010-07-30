@@ -1,3 +1,49 @@
+/**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
+ 
+/**
+  * Object name 
+  * 
+  * [description]
+  * 
+  * 
+  * Public Properties
+  * 
+  * [list]
+  * 
+  * 
+  * Public Methods
+  * 
+  *  [list]
+  * 
+  * 
+  * Public Events
+  * 
+  *  [list]
+  * 
+  * Authors
+  * 
+  * - Alberto Ghedin (alberto.ghedin@eng.it)
+  */
+
 //================================================================
 //CrossTab
 //================================================================
@@ -34,7 +80,6 @@ CrossTab = function(rowHeadersDefinition, columnHeadersDefinition, entries) {
     this.entries =entries;
     
     this.rowHeader = new Array();
-    rowHeadersDefinition = ['root', rowHeadersDefinition];//the headers structure is a tree. The tree needs a single root. we create a fake one
     this.build(rowHeadersDefinition, 0, this.rowHeader, false);
     this.setFathers(this.rowHeader);
     this.setDragAndDrop(this.rowHeader, false, this);
@@ -42,11 +87,10 @@ CrossTab = function(rowHeadersDefinition, columnHeadersDefinition, entries) {
     this.rowHeaderPanel = this.buildHeaderGroup(this.rowHeader, false);
     
     this.columnHeader = new Array();
-    columnHeadersDefinition = ['root', columnHeadersDefinition];//the headers structure is a tree. The tree needs a single root. we create a fake one
     this.build(columnHeadersDefinition, 0, this.columnHeader, true);
     this.setFathers(this.columnHeader);
     this.setDragAndDrop(this.columnHeader, true, this);
-    this.columnHeader[0][0].hidden=true;
+    this.columnHeader[0][0].hidden=true;//hide the fake root header
     this.columnHeaderPanel = this.buildHeaderGroup(this.columnHeader, true);
 
     this.addDDArrowsToPage();
@@ -54,7 +98,8 @@ CrossTab = function(rowHeadersDefinition, columnHeadersDefinition, entries) {
     var c = {
   		layout:'fit',
   		border: false,
-  		defaults: {autoScroll: true} 
+  		defaults: {autoScroll: true},
+		padding : 10
 	};
 
     CrossTab.superclass.constructor.call(this, c);

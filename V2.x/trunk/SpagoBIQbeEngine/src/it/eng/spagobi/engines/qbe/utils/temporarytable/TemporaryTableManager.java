@@ -220,9 +220,9 @@ public class TemporaryTableManager {
 		}
 		String userId = userProfile.getUserId().toString();
 		// removes accented letters and replace them by their regular ASCII equivalent.
-		String cleanUserId = Normalizer.normalize(userId, Normalizer.DECOMP, 0);
+		//String cleanUserId = Normalizer.normalize(userId, Normalizer, 0);
 		// removing non-ASCII characters
-		cleanUserId = cleanUserId.replaceAll("[^\\p{ASCII}]","");
+		String cleanUserId = userId.replaceAll("[^\\p{ASCII}]","");
 		logger.debug("Cleaned user id : " + cleanUserId);
 		String tableName = tableNamePrefix + cleanUserId + tableNameSuffix;
 		// in most cases, table name length is lower than 30 characters

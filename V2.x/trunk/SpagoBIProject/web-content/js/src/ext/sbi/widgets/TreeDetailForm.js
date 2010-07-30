@@ -242,7 +242,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	},
 
 	addNewItem : function(parent) {
-		alert(parent);
+
 		if (parent === undefined || parent == null) {
 			alert("Select parent node");
 			return;
@@ -259,19 +259,21 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	            function(btn, text) {
 	                if (btn=='yes') {
 	                	//save parent
-	                	this.save();
 	                	
 	                	this.mainTree.getLoader().load(parent);
-	                	var parentId = parent.attributes.modelId;
+	                	var newparentId = parent.attributes.modelId;
 
 	        	    	//then create child node
 	        			var node = new Ext.tree.TreeNode( {
 	        				text : '... - ...',
 	        				leaf : true,
-	        				parentId: parentId,
+	        				parentId: newparentId,
 	        				toSave :false,
 	        				allowDrag : false
 	        			});
+	        			//save parent
+	                	this.saveParentNode(parent, node);
+	                	
 	        			this.mainTree.render();
 	        			if (!parent.isExpanded()) {
 	        				parent.expand(false, /*no anim*/false);
@@ -279,8 +281,8 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 	        			this.mainTree.render();
 	        			parent.appendChild(node);
 	        	
-	        			this.selectedNodeToEdit = node;
 	        			this.mainTree.getSelectionModel().select(node);
+	        			
 	                }else{
 	                	//exit
 	                	return;
@@ -315,6 +317,7 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 			alert("Select node to delete");
 			return;
 		}
+		
 		Ext.MessageBox.confirm(
 				LN('sbi.generic.pleaseConfirm'),
 				LN('sbi.generic.confirmDelete'),            
@@ -327,10 +330,9 @@ Ext.extend(Sbi.widgets.TreeDetailForm, Ext.FormPanel, {
 					            method: 'GET',
 					            success: function(response, options) {
 									if (response !== undefined) {
+										
+										this.mainTree.getLoader().load(node);
 										//node.remove();
-										//this.mainTree.doLayout();
-										//this.mainTree.getLoader().load(node);
-										node.remove();
 										this.mainTree.doLayout();
 									} else {
 										Sbi.exception.ExceptionHandler.showErrorMessage(LN('sbi.generic.deletingItemError'), LN('sbi.generic.serviceError'));

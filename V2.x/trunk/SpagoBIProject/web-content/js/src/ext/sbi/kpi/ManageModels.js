@@ -248,8 +248,11 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		      					  nodeSel.attributes.error = false; 
 		      					  nodeSel.attributes.modelId = value; 
 		      					  Ext.fly(nodeSel.getUI().getEl()).applyStyles('{ border: 0; font-weight: normal; font-style: normal; text-decoration: none; }');
+		      					  this.fireEvent('parentsave-complete', nodeSel);
 		      				  }
+		      				
 		      		    }
+	      				
 	      				if(hasErrors){
 	      					alert(LN('sbi.generic.savingItemError'));
 	      					
@@ -270,6 +273,85 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
       			this.mainTree.doLayout();
       			this.referencedCmp.modelsGrid.getView().refresh();
 				this.referencedCmp.modelsGrid.doLayout();
+				
+				
+				
+      			return;
+			},
+			scope : this,
+			failure : function(response) {
+				if(response.responseText !== undefined) {
+					alert("Error");
+				}
+			},
+			params : params
+		});
+		
+    }
+	,saveParentNode : function(parent, child) {
+		var jsonStr = '[';
+    	jsonStr +=  Ext.util.JSON.encode(parent.attributes)
+    	jsonStr += ']';
+
+		var params = {
+			nodes : jsonStr
+		};
+
+		Ext.Ajax.request( {
+			url : this.services['saveTreeService'],
+			success : function(response, options) {
+				if(response.responseText !== undefined) {
+	      			var content = Ext.util.JSON.decode( response.responseText );
+	      			if(content !== undefined && content !== null){
+	      				var hasErrors = false;
+	      				for (var key in content) {
+		      				  var value = content[key];
+		      				  var nodeSel = Ext.getCmp('model-maintree').getNodeById(key);
+		      				  //response returns key = guiid, value = 'KO' if operation fails, or modelId if operation succeded
+		      				  if(value  == 'KO'){
+		      					  hasErrors= true;
+		 		      			  ///contains error gui ids      						  
+	      						  nodeSel.attributes.error = true;
+	      						  Ext.fly(nodeSel.getUI().getEl()).applyStyles('{ border: 1px solid red; font-weight: bold; font-style: italic; color: #cd2020; text-decoration: underline; }');
+		      				  }else{
+		      					  nodeSel.attributes.error = false; 
+		      					  nodeSel.attributes.modelId = value; 
+		      					  Ext.fly(nodeSel.getUI().getEl()).applyStyles('{ border: 0; font-weight: normal; font-style: normal; text-decoration: none; }');
+		      					  
+		      					  //completes child node instanciation
+			  	        		  this.selectedNodeToEdit = child;
+				        		  //this.mainTree.getSelectionModel().select(child);
+
+			  	        		  child.attributes.parentId = parent.attributes.modelId;
+			        			  var size = this.nodesToSave.length;
+			        			  this.nodesToSave[size] = child;
+	      				      }
+		      				
+		      		    }
+	      				
+	      				if(hasErrors){
+	      					alert(LN('sbi.generic.savingItemError'));
+	      					
+	      				}else{
+	      					///success no errors!
+	      					this.cleanAllUnsavedNodes();
+	      					alert(LN('sbi.generic.resultMsg'));
+		      				this.referencedCmp.modelsGrid.mainElementsStore.load();
+	      				}
+	      			}else{
+	      				alert(LN('sbi.generic.savingItemError'));
+	      			}
+				}else{
+      				this.cleanAllUnsavedNodes();
+      				alert(LN('sbi.generic.resultMsg'));
+      				this.referencedCmp.modelsGrid.mainElementsStore.load();
+				}
+      			this.mainTree.doLayout();
+      			this.referencedCmp.modelsGrid.getView().refresh();
+				this.referencedCmp.modelsGrid.doLayout();
+				
+				
+				
       			return;
 			},
 			scope : this,
@@ -365,6 +447,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		tree.getRootNode().expand(false, /*no anim*/false);
 	}
 	,selectNode : function(field) {
+		
 		/*utility to store node that has been edited*/
 		this.selectedNodeToEdit = this.mainTree.getSelectionModel().getSelectedNode();
 		
@@ -393,11 +476,6 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 			
 			this.detailFieldNodeType.addListener('focus', this.selectNode, this);
 			this.detailFieldNodeType.addListener('select', this.setDomainType, this);
-/*
-			this.detailFieldTypeDescr.addListener('focus', this.selectNode, this);
-			this.detailFieldTypeDescr.addListener('change', this.editNodeAttribute,this);
-*/
-
 
 	},	
 	createRootNodeByRec: function(rec) {

@@ -18,62 +18,79 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.spagobi.engines.qbe.services.catalogue;
-
+package it.eng.spagobi.engines.qbe.services.core;
+       
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
-import it.eng.qbe.catalogue.QueryCatalogue;
-import it.eng.qbe.query.Query;
-import it.eng.qbe.query.serializer.QuerySerializerFactory;
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.qbe.QbeEngineInstance;
-import it.eng.spagobi.engines.qbe.services.AbstractQbeEngineAction;
+import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
 /**
- * This action is responsible to retrieve the first query contained into the catalog.
- * It is used for Read-only users (a Read-only user is able only to execute the first query of the catalog)
  * 
- * @author Davide Zerbetto (davide.zerbetto@eng.it)
+ * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class GetFirstQueryAction extends AbstractQbeEngineAction {
-	
-	public static final String SERVICE_NAME = "GET_FIRST_QUERY_ACTION";
-	public String getActionName(){return SERVICE_NAME;}
+public class GetParametersAction extends AbstractQbeEngineAction {
 
-	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(GetFirstQueryAction.class);
-    
+	public static final String SERVICE_NAME = "GET_PARAMETERS_ACTION";
+	public String getActionName(){return SERVICE_NAME;}
 	
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(GetParametersAction.class);
+    
+    
 	public void service(SourceBean request, SourceBean response) {
+		
+		Iterator it;
+		String parameterName;
+		JSONArray nodes;
+		JSONObject node;
+		JSONObject nodeAttributes;
 		
 		logger.debug("IN");
 		
 		try {
 			super.service(request, response);	
-			// retrieve first query from catalog
-			QbeEngineInstance engineInstance = getEngineInstance();
-			QueryCatalogue queryCatalogue = engineInstance.getQueryCatalogue();
-			Query query = queryCatalogue.getFirstQuery();
-			// serialize query
-			JSONObject queryJSON = (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(query, getEngineInstance().getDatamartModel(), getLocale());
+			
+			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
+			Assert.assertNotNull(getEngineInstance().getEnv(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of Env");
+			
+			nodes = new JSONArray();
+			it = getEngineInstance().getEnv().keySet().iterator();
+			while(it.hasNext()) {
+				parameterName = (String)it.next();
+				node = new JSONObject();
+				node.put("id", parameterName);
+				node.put("text", parameterName);
+				node.put("leaf", true);				
+				nodeAttributes = new JSONObject();
+				nodeAttributes.put("type", "parameter");
+				nodeAttributes.put("value", "parameters['" + parameterName+ "']");
+				node.put("attributes", nodeAttributes);
+				
+				nodes.put(node);
+			}
 			
 			try {
-				writeBackToClient( new JSONSuccess(queryJSON) );
+				writeBackToClient( new JSONSuccess(nodes) );
 			} catch (IOException e) {
 				String message = "Impossible to write back the responce to the client";
 				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
+			
 		} catch(Throwable t) {
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
 			logger.debug("OUT");
-		}		
-	}
+		}
+		
 
+	}
 }

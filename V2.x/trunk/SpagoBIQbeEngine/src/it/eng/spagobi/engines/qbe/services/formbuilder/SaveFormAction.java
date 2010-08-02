@@ -24,7 +24,7 @@ package it.eng.spagobi.engines.qbe.services.formbuilder;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engines.qbe.QbeEngineInstance;
-import it.eng.spagobi.engines.qbe.services.AbstractQbeEngineAction;
+import it.eng.spagobi.engines.qbe.services.core.AbstractQbeEngineAction;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineConstants;

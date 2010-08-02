@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.spagobi.engines.qbe.services;
+package it.eng.spagobi.engines.qbe.services.core.datamart;
        
 import java.io.IOException;
 import java.util.Iterator;
@@ -29,6 +29,7 @@ import org.json.JSONArray;
 
 import it.eng.qbe.query.Query;
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.qbe.services.core.AbstractQbeEngineAction;
 import it.eng.spagobi.engines.qbe.tree.ExtJsQbeTreeBuilder;
 import it.eng.spagobi.engines.qbe.tree.filter.IQbeTreeEntityFilter;
 import it.eng.spagobi.engines.qbe.tree.filter.IQbeTreeFieldFilter;

@@ -33,7 +33,7 @@ import it.eng.qbe.statment.QbeDataSet;
 import it.eng.qbe.statment.hibernate.HQLStatement;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.engines.qbe.QbeEngineInstance;
-import it.eng.spagobi.engines.qbe.services.ExecuteQueryAction;
+import it.eng.spagobi.engines.qbe.services.core.ExecuteQueryAction;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineConstants;

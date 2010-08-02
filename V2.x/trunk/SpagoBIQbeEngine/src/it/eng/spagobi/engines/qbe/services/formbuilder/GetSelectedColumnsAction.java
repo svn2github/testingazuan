@@ -32,7 +32,7 @@ import it.eng.qbe.query.serializer.QuerySerializerFactory;
 import it.eng.qbe.query.serializer.SerializationConstants;
 import it.eng.qbe.query.serializer.SerializationException;
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.qbe.services.AbstractQbeEngineAction;
+import it.eng.spagobi.engines.qbe.services.core.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;

@@ -1,4 +1,4 @@
-package it.eng.spagobi.engines.qbe.services;
+package it.eng.spagobi.engines.qbe.services.core;
 
 import it.eng.qbe.model.LookupStoreJSONSerializer;
 import it.eng.qbe.query.ExpressionNode;

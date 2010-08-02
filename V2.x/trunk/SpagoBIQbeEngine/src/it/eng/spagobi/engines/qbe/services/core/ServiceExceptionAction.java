@@ -18,28 +18,32 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.spagobi.engines.qbe.services;
+package it.eng.spagobi.engines.qbe.services.core;
 
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
+import it.eng.spagobi.utilities.service.JSONFailure;
 
 /**
+ * The Class ServiceExceptionAction.
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class EngineStartupExceptionAction extends AbstractQbeEngineAction {
+public class ServiceExceptionAction extends AbstractQbeEngineAction {
 	
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(EngineStartupExceptionAction.class);
+    public static transient Logger logger = Logger.getLogger(ServiceExceptionAction.class);
 	
    
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse)  {
@@ -50,7 +54,7 @@ public class EngineStartupExceptionAction extends AbstractQbeEngineAction {
 		
 		logger.debug("IN");
 		try {
-			
+		
 			errorHandler = getErrorHandler();
 			Assert.assertNotNull(errorHandler, "error handler cannot be null");
 			
@@ -64,16 +68,26 @@ public class EngineStartupExceptionAction extends AbstractQbeEngineAction {
 				if(o instanceof EMFInternalError) {
 					EMFInternalError error = (EMFInternalError)o;
 					Exception e = error.getNativeException();
-					if(e instanceof SpagoBIEngineStartupException) {
-						SpagoBIEngineStartupException serviceError = (SpagoBIEngineStartupException)e;
+					if(e instanceof SpagoBIEngineServiceException) {
+						SpagoBIEngineServiceException serviceError = (SpagoBIEngineServiceException)e;
 						logError(serviceError);
+						
+						try {
+							writeBackToClient( new JSONFailure( serviceError ) );
+						} catch (IOException ioe) {
+							String message = "Impossible to write back the responce to the client";
+							throw new SpagoBIEngineServiceException(getActionName(), message, e);
+						} catch (JSONException je) {
+							String message = "Error while serializing error into JSON object";
+							throw new SpagoBIEngineServiceException(getActionName(), message, je);
+						}
 					} else {
 						logger.error("Unespected exception",e);		
-					}		
+					}
 				} else {
 					logger.error(o.toString());
 				}
-			}
+			} 
 		} catch(Throwable t) {
 			logger.error("An error occurred while handling a previously thrown Exception");
 		} finally {
@@ -82,7 +96,7 @@ public class EngineStartupExceptionAction extends AbstractQbeEngineAction {
 	}
 
 
-	private void logError(SpagoBIEngineStartupException serviceError) {
+	private void logError(SpagoBIEngineServiceException serviceError) {
 		logger.error(serviceError.getMessage());
 		logger.error("The error root cause is: " + serviceError.getRootCause());	
 		if(serviceError.getHints().size() > 0) {

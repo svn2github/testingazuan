@@ -37,6 +37,10 @@
 	<CONFIGURATOR path="/WEB-INF/conf/core/catalogue/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/core/catalogue/publishers.xml" />
 	
+	<CONFIGURATOR path="/WEB-INF/conf/core/datamart/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/core/datamart/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/core/datamart/publishers.xml" />
+	
 	<!-- start QBE Data Browser (Form Viewer) configuration -->
 	<CONFIGURATOR path="/WEB-INF/conf/formviewer/actions.xml" />
 	

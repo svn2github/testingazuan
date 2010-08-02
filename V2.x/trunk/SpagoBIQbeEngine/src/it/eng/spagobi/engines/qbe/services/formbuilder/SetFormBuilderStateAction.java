@@ -23,7 +23,7 @@ package it.eng.spagobi.engines.qbe.services.formbuilder;
 		
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.qbe.QbeEngineInstance;
-import it.eng.spagobi.engines.qbe.services.AbstractQbeEngineAction;
+import it.eng.spagobi.engines.qbe.services.core.AbstractQbeEngineAction;
 import it.eng.spagobi.engines.qbe.template.QbeJSONTemplateParser;
 import it.eng.spagobi.engines.qbe.template.QbeTemplate;
 import it.eng.spagobi.engines.qbe.template.QbeTemplateParser;

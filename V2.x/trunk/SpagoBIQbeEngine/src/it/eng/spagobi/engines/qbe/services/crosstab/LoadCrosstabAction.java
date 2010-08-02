@@ -29,7 +29,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.engines.qbe.QbeEngineConfig;
 import it.eng.spagobi.engines.qbe.bo.CrosstabDefinition;
-import it.eng.spagobi.engines.qbe.services.AbstractQbeEngineAction;
+import it.eng.spagobi.engines.qbe.services.core.AbstractQbeEngineAction;
 import it.eng.spagobi.engines.qbe.utils.crosstab.CrosstabQueryCreator;
 import it.eng.spagobi.engines.qbe.utils.temporarytable.TemporaryTableManager;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;

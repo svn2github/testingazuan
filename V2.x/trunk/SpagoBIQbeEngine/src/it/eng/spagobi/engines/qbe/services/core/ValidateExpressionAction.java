@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.spagobi.engines.qbe.services;
+package it.eng.spagobi.engines.qbe.services.core;
        
 import java.io.IOException;
 import java.util.ArrayList;

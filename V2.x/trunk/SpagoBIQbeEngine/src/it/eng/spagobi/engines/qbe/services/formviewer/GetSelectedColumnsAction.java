@@ -32,7 +32,7 @@ import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.query.Query;
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.qbe.services.AbstractQbeEngineAction;
+import it.eng.spagobi.engines.qbe.services.core.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.service.JSONSuccess;

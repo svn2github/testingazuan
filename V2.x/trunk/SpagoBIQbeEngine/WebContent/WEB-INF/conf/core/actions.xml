@@ -2,55 +2,43 @@
 
 <ACTIONS>
 
-	<ACTION name="SAVE_TREE_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.SaveTreeAction"  
-			scope="REQUEST">
-		
-		<CONFIG></CONFIG>
-	</ACTION>
-
 	<ACTION name="ADD_CALCULATED_FIELD_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.AddCalculatedFieldAction"  
+			class="it.eng.spagobi.engines.qbe.services.core.AddCalculatedFieldAction"  
 			scope="REQUEST">
 		
 		<CONFIG></CONFIG>
 	</ACTION>
 	<ACTION name="MODIFY_CALCULATED_FIELD_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.AddCalculatedFieldAction"  
+			class="it.eng.spagobi.engines.qbe.services.core.AddCalculatedFieldAction"  
 			scope="REQUEST">
 		
 		<CONFIG></CONFIG>
 	</ACTION>
 	<ACTION name="DELETE_CALCULATED_FIELD_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.DeleteCalculatedFieldAction"  
+			class="it.eng.spagobi.engines.qbe.services.core.DeleteCalculatedFieldAction"  
 			scope="REQUEST">
 		
 		<CONFIG></CONFIG>
 	</ACTION>
 	
 	<ACTION name="VALIDATE_EXPRESSION_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.ValidateExpressionAction"  
+			class="it.eng.spagobi.engines.qbe.services.core.ValidateExpressionAction"  
 			scope="REQUEST">
 		
 		<CONFIG></CONFIG>
 	</ACTION>
 	
-	<ACTION name="GET_TREE_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.GetTreeAction"  
-			scope="REQUEST">
-		
-		<CONFIG></CONFIG>
-	</ACTION>
+
 	
 	<ACTION name="GET_PARAMETERS_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.GetParametersAction"  
+			class="it.eng.spagobi.engines.qbe.services.core.GetParametersAction"  
 			scope="REQUEST">
 		
 		<CONFIG></CONFIG>
 	</ACTION>
 	
 	<ACTION name="GET_ATTRIBUTES_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.GetAttributesAction"  
+			class="it.eng.spagobi.engines.qbe.services.core.GetAttributesAction"  
 			scope="REQUEST">
 		
 		<CONFIG></CONFIG>
@@ -59,21 +47,21 @@
 
 	
 	<ACTION name="EXEC_QUERY_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.ExecuteQueryAction"  
+			class="it.eng.spagobi.engines.qbe.services.core.ExecuteQueryAction"  
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>
 	</ACTION>
 	
 	<ACTION name="EXPORT_RESULT_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.ExportResultAction"  
+			class="it.eng.spagobi.engines.qbe.services.core.ExportResultAction"  
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>
 	</ACTION>
 	
 	<ACTION name="CREATE_VIEW_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.CreateViewAction"  
+			class="it.eng.spagobi.engines.qbe.services.core.CreateViewAction"  
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>
@@ -82,19 +70,19 @@
 
 
 	<ACTION name="GET_ANALYSIS_META_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.GetAnalysisMetaAction"  
+			class="it.eng.spagobi.engines.qbe.services.core.GetAnalysisMetaAction"  
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
 
 	<ACTION name="GET_VALUES_FOR_QBE_FILTER_LOOKUP_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.GetValuesForQbeFilterLookup"  
+			class="it.eng.spagobi.engines.qbe.services.core.GetValuesForQbeFilterLookup"  
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
 	
 	<ACTION name="INVOKE_EXTERNAL_SERVICE_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.InvokeExternalServiceAction"  
+			class="it.eng.spagobi.engines.qbe.services.core.InvokeExternalServiceAction"  
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>

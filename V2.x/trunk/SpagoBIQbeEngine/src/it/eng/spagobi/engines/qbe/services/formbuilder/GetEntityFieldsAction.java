@@ -31,7 +31,7 @@ import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.qbe.services.AbstractQbeEngineAction;
+import it.eng.spagobi.engines.qbe.services.core.AbstractQbeEngineAction;
 import it.eng.spagobi.engines.qbe.tree.ExtJsQbeTreeBuilder;
 import it.eng.spagobi.engines.qbe.tree.filter.IQbeTreeEntityFilter;
 import it.eng.spagobi.engines.qbe.tree.filter.IQbeTreeFieldFilter;

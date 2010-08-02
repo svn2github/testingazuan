@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.spagobi.engines.qbe.services.catalogue;
+package it.eng.spagobi.engines.qbe.services.core.catalogue;
 
 import java.io.IOException;
 
@@ -32,7 +32,7 @@ import it.eng.qbe.query.QueryMeta;
 import it.eng.qbe.query.serializer.QuerySerializerFactory;
 import it.eng.qbe.query.serializer.SerializationException;
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.qbe.services.AbstractQbeEngineAction;
+import it.eng.spagobi.engines.qbe.services.core.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;

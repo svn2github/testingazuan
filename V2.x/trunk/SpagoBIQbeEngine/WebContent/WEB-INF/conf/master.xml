@@ -33,6 +33,10 @@
 	<CONFIGURATOR path="/WEB-INF/conf/core/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/core/validation.xml" />
 	
+	<CONFIGURATOR path="/WEB-INF/conf/core/catalogue/actions.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/core/catalogue/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/core/catalogue/publishers.xml" />
+	
 	<!-- start QBE Data Browser (Form Viewer) configuration -->
 	<CONFIGURATOR path="/WEB-INF/conf/formviewer/actions.xml" />
 	

@@ -56,47 +56,7 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
-	<ACTION name="GET_CATALOGUE_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.GetCatalogueAction"  
-			scope="REQUEST">
-		
-		<CONFIG></CONFIG>
-	</ACTION>
-	
-	<ACTION name="SET_CATALOGUE_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.SetCatalogueAction"  
-			scope="REQUEST">
-			
-		<CONFIG></CONFIG>
-	</ACTION>
-	
-	<ACTION name="VALIDATE_CATALOGUE_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.ValidateCatalogueAction"  
-			scope="REQUEST">
-			
-		<CONFIG></CONFIG>
-	</ACTION>
-	
-	<ACTION name="SAVE_CATALOGUE_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.SaveCatalogueAction"  
-			scope="REQUEST">
-			
-		<CONFIG></CONFIG>
-	</ACTION>
-	
-	<ACTION name="ADD_QUERY_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.AddQueryAction"  
-			scope="REQUEST">
-			
-		<CONFIG></CONFIG>
-	</ACTION>
-	
-	<ACTION name="DELETE_QUERIES_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.DeleteQueriesAction"  
-			scope="REQUEST">
-			
-		<CONFIG></CONFIG>
-	</ACTION>
+
 	
 	<ACTION name="EXEC_QUERY_ACTION" 
 			class="it.eng.spagobi.engines.qbe.services.ExecuteQueryAction"  
@@ -119,11 +79,7 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
-	<ACTION name="GET_FIRST_QUERY_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.GetFirstQueryAction"  
-			scope="REQUEST">
-		<CONFIG></CONFIG>
-	</ACTION>
+
 
 	<ACTION name="GET_ANALYSIS_META_ACTION" 
 			class="it.eng.spagobi.engines.qbe.services.GetAnalysisMetaAction"  

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<ACTIONS>
+
+	<ACTION name="GET_CATALOGUE_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.catalogue.GetCatalogueAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="SET_CATALOGUE_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.catalogue.SetCatalogueAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="VALIDATE_CATALOGUE_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.catalogue.ValidateCatalogueAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="SAVE_CATALOGUE_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.catalogue.SaveCatalogueAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="ADD_QUERY_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.catalogue.AddQueryAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="DELETE_QUERIES_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.catalogue.DeleteQueriesAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="GET_FIRST_QUERY_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.catalogue.GetFirstQueryAction"  
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+</ACTIONS>

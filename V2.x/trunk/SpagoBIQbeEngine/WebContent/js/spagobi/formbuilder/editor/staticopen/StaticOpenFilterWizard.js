@@ -189,6 +189,11 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 	    });
 	    
 	    
+	    
+	    
+	    
+	    
+	    
 	    var orderByFieldStore = new Ext.data.Store({
 	    	proxy: new Ext.data.HttpProxy({
 				url: this.services['getEntityFields']
@@ -264,6 +269,70 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
             autoWidth: true,
             items: []
         }
+	    
+	    
+	    // -- PONT -------------------------------------------------------------------------------------
+	    this.queryDetails.items.push({
+			xtype: 'radio',
+			hideLabel: false,
+			fieldLabel: LN('Query type'),
+            boxLabel: LN('Standard'),
+            name: 'queryType',
+            inputValue: false,
+            checked: 'standard'
+		}, {
+			xtype: 'radio',
+			hideLabel: false,
+			fieldLabel: '',
+			labelSeparator: '',
+            boxLabel: LN('Custom'),
+            name: 'queryType',
+            inputValue: true,
+            checked: 'custom'
+		});
+	    
+	    var lookupQueryStore = new Ext.data.Store({
+	    	proxy: new Ext.data.HttpProxy({
+				url: this.services['getEntityFields']
+		    })
+	    	, reader: new Ext.data.JsonReader({id: 'id'}, [
+                 {name:'id'},
+                 {name:'name'}
+     	    ])
+	    });
+	    
+	    this.lookupQueryCombo = new Ext.form.ComboBox({
+	    	name: 'lookupQuery',
+			store: lookupQueryStore, 
+			displayField: 'name',
+			valueField: 'id',
+			maxHeight: 200,
+			allowBlank: true,
+			editable: true,
+			typeAhead: true, // True to populate and autoselect the remainder of the text being typed after a configurable delay
+			forceSelection: true, // True to restrict the selected value to one of the values in the list
+			triggerAction: 'all',
+			emptyText: '',
+			selectOnFocus: true, //True to select any existing text in the field immediately on focus
+			fieldLabel: LN('Lookup query')
+			//value: openFilter.orderBy === undefined ? '' : openFilter.orderBy
+	    });
+	    
+	    this.lookupQueryValue = openFilter.lookupQuery;
+	    if (this.lookupQueryValue !== undefined && this.lookupQueryValue !== '') {
+		    lookupQueryStore.on('load', function() {
+		    	this.lookupQueryCombo.setValue(this.lookupQueryValue);
+		    }, this);
+		    lookupQueryStore.load();
+	    };
+	    
+	    this.queryDetails.items.push(this.lookupQueryCombo);
+	    
+	    
+	    
+	    // -- PONT -------------------------------------------------------------------------------------
+	    
+	  
 		this.queryDetails.items.push(
 			this.orderByFieldCombo, 
 			this.orderTypeCombo,

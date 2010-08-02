@@ -18,20 +18,19 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.spagobi.engines.qbe.services;
+package it.eng.spagobi.engines.qbe.services.catalogue;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import it.eng.qbe.query.Query;
-import it.eng.qbe.query.QueryMeta;
-import it.eng.qbe.query.serializer.QuerySerializerFactory;
-import it.eng.qbe.query.serializer.SerializationException;
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.qbe.services.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
@@ -39,58 +38,57 @@ import it.eng.spagobi.utilities.service.JSONAcknowledge;
 
 
 /**
- * Commit all the modifications made to the catalogue on the client side
+ * Remove from the catalogue queries whose ids has been passed as argument to the service. 
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class SetCatalogueAction extends AbstractQbeEngineAction {
+public class DeleteQueriesAction extends AbstractQbeEngineAction {	
 	
-	public static final String SERVICE_NAME = "SET_CATALOGUE_ACTION";
+	public static final String SERVICE_NAME = "DELETE_QUERIES_ACTION";
 	public String getActionName(){return SERVICE_NAME;}
 	
+	
 	// INPUT PARAMETERS
-	public static final String CATALOGUE = "catalogue";
+	public static final String QUERY_IDS = "queries";
 	
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(SetCatalogueAction.class);
+    public static transient Logger logger = Logger.getLogger(DeleteQueriesAction.class);
+   
     
 	
 	public void service(SourceBean request, SourceBean response)  {				
-		
-		String jsonEncodedCatalogue = null;
-		JSONArray queries;
-		JSONObject itemJSON;
-		JSONObject queryJSON;
-		JSONObject metaJSON;
-		Query query;
-		QueryMeta meta;
-		
+				
+		JSONArray ids;
+		Iterator it;
+			
 		logger.debug("IN");
 		
 		try {
 		
 			super.service(request, response);		
 			
-			jsonEncodedCatalogue = getAttributeAsString( CATALOGUE );			
-			logger.debug(CATALOGUE + " = [" + jsonEncodedCatalogue + "]");
+			ids = getAttributeAsJSONArray( QUERY_IDS );
+			logger.debug("Parameter [" + QUERY_IDS + "] is equals to [" + ids + "]");
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
-			Assert.assertNotNull(jsonEncodedCatalogue, "Input parameter [" + CATALOGUE + "] cannot be null in oder to execute " + this.getActionName() + " service");
 			
 			
-			try {		
-				queries = new JSONArray( jsonEncodedCatalogue );
-				for(int i = 0; i < queries.length(); i++) {					
-					queryJSON = queries.getJSONObject(i);
-					query = deserializeQuery(queryJSON);
-					
-					getEngineInstance().getQueryCatalogue().addQuery(query);
-					getEngineInstance().resetActiveQuery();
-				}				
-				
-			} catch (SerializationException e) {
-				String message = "Impossible to syncronize the query with the server. Query passed by the client is malformed";
-				throw new SpagoBIEngineServiceException(getActionName(), message, e);
+			if(ids != null && ids.length() > 0) {
+				List list = new ArrayList();
+				for(int i = 0; i < ids.length(); i++) {
+					list.add(ids.getString(i));
+				}
+				it = list.iterator();
+			} else {
+				it = getEngineInstance().getQueryCatalogue().getIds().iterator();
+			}
+			
+			while(it.hasNext()) {
+				String id = (String)it.next();
+				// leave query definition inside the while in order to release to gc the removed query asap			
+				Query query = getEngineInstance().getQueryCatalogue().removeQuery(id);
+				Assert.assertNotNull(query, "A query with id equals to [" + id + "] does not exist in teh catalogue");
+				logger.debug("Qury with id equals to [" + QUERY_IDS + "] has been removed succesfully from the catalogue]");
 			}
 			
 			try {
@@ -99,28 +97,13 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 				String message = "Impossible to write back the responce to the client";
 				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
-		
+			
 		} catch(Throwable t) {
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
 			logger.debug("OUT");
-		}
+		}	
 		
-		
-	}
-
-
-	private QueryMeta deserializeMeta(JSONObject metaJSON) throws JSONException {
-		QueryMeta meta = new QueryMeta();
-		meta.setId( metaJSON.getString("id") );
-		meta.setName( metaJSON.getString("name") );
-		return null;
-	}
-
-
-	private Query deserializeQuery(JSONObject queryJSON) throws SerializationException, JSONException {
-		//queryJSON.put("expression", queryJSON.get("filterExpression"));
-		return QuerySerializerFactory.getDeserializer("application/json").deserialize(queryJSON.toString(), getEngineInstance().getDatamartModel());
 	}
 
 }

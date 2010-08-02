@@ -160,11 +160,9 @@ public class ExecuteMasterQueryAction extends AbstractQbeEngineAction {
 			
 			String hqlQuery = statement.getQueryString();
 			String sqlQuery = ((HQLStatement)statement).getSqlQueryString();
-			//logger.debug("Executable query (HQL): [" +  hqlQuery+ "]");
-			//logger.debug("Executable query (SQL): [" + sqlQuery + "]");
+			
 			UserProfile userProfile = (UserProfile)getEnv().get(EngineConstants.ENV_USER_PROFILE);
-			//auditlogger.info("[" + userProfile.getUserId() + "]:: HQL: " + hqlQuery);
-			//auditlogger.info("[" + userProfile.getUserId() + "]:: SQL: " + sqlQuery);
+			
 			
 			// STEP 3: transform the sql query
 			GroupByQueryTransformer transformer = new GroupByQueryTransformer();
@@ -172,11 +170,10 @@ public class ExecuteMasterQueryAction extends AbstractQbeEngineAction {
 			
 			for(int i = 0; i < groupFields.length(); i++) {
 				String groupByField = groupFields.getString(i);
-				int fieldIndex = query.getSelectFieldIndex(groupByField);				
+				int fieldIndex = query.getSelectFieldIndex(groupByField);		
+				Assert.assertTrue(fieldIndex >= 0 && fieldIndex <groupFields.length(), "Impossible to group on field [" + groupByField + "]");
 				String[] f = (String[])selectFields.get(fieldIndex);				
-//				String as = query.getSelectFieldByIndex(fieldIndex).getAlias();
 				transformer.addGrouByColumn(f[1]!=null? f[1]:f[0], query.getSelectFieldByIndex(fieldIndex).getAlias());
-				//transformer.addGrouByColumn(f[1]!=null? f[1]:f[0], f[1]!=null? f[1]:f[0]);
 			}
 			
 			// count column

@@ -18,76 +18,72 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.spagobi.engines.qbe.services;
+package it.eng.spagobi.engines.qbe.services.catalogue;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
 
 import it.eng.qbe.query.Query;
+import it.eng.qbe.statment.IStatement;
+import it.eng.qbe.statment.hibernate.HQLStatement;
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.engines.qbe.services.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
 
-
 /**
- * Remove queries whose ids has been passed as argument to the service from the catalogue. 
- * 
- * @author Andrea Gioia (andrea.gioia@eng.it)
+ * This action  validate queries stored in current catalogues.
+ * It actually executes the query .
  */
-public class DeleteQueriesAction extends AbstractQbeEngineAction {	
+public class ValidateCatalogueAction extends AbstractQbeEngineAction {
 	
-	public static final String SERVICE_NAME = "DELETE_QUERIES_ACTION";
+	public static final String SERVICE_NAME = "VALIDATE_CATALOGUE_ACTION";
 	public String getActionName(){return SERVICE_NAME;}
 	
-	
 	// INPUT PARAMETERS
-	public static final String QUERY_IDS = "queries";
+	// no input
 	
-	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(DeleteQueriesAction.class);
-   
-    
+	public static transient Logger logger = Logger.getLogger(ValidateCatalogueAction.class);
 	
-	public void service(SourceBean request, SourceBean response)  {				
-				
-		JSONArray ids;
-		Iterator it;
-			
+	public void service(SourceBean request, SourceBean response) {
+		Query query;
+		IStatement statement;
+		boolean validationResult = false;
+		String hqlQueryStr;
+		String sqlQueryStr;
+		
 		logger.debug("IN");
 		
 		try {
-		
-			super.service(request, response);		
+			super.service(request, response);
+						
+			Set queries = getEngineInstance().getQueryCatalogue().getAllQueries(false);
+			logger.debug("Query catalogue contains [" + queries.size() + "] first-class query");
 			
-			ids = getAttributeAsJSONArray( QUERY_IDS );
-			logger.debug("Parameter [" + QUERY_IDS + "] is equals to [" + ids + "]");
-			
-			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
-			
-			
-			if(ids != null && ids.length() > 0) {
-				List list = new ArrayList();
-				for(int i = 0; i < ids.length(); i++) {
-					list.add(ids.getString(i));
-				}
-				it = list.iterator();
-			} else {
-				it = getEngineInstance().getQueryCatalogue().getIds().iterator();
-			}
-			
+			Iterator it = queries.iterator();
 			while(it.hasNext()) {
-				String id = (String)it.next();
-				// leave query definition inside the while in order to release to gc the removed query asap			
-				Query query = getEngineInstance().getQueryCatalogue().removeQuery(id);
-				Assert.assertNotNull(query, "A query with id equals to [" + id + "] does not exist in teh catalogue");
-				logger.debug("Qury with id equals to [" + QUERY_IDS + "] has been removed succesfully from the catalogue]");
+				query = (Query)it.next();
+				logger.debug("Validating query [" + query.getName() +"] ...");
+				
+				statement = getEngineInstance().getDatamartModel().createStatement( query );
+				statement.setParameters( getEnv() );
+				
+				hqlQueryStr = statement.getQueryString();
+				sqlQueryStr = ((HQLStatement)statement).getSqlQueryString();
+				logger.debug("Validating query (HQL): [" +  hqlQueryStr+ "]");
+				logger.debug("Validating query (SQL): [" + sqlQueryStr + "]");
+				
+				try {
+					//statement.execute(0, 1, 1, true);
+					logger.debug("Query [" + query.getName() + "] validated sucesfully");
+				} catch (Throwable t) {
+					logger.debug("Query [" + query.getName() + "] is not valid");
+					throw new SpagoBIEngineServiceException(getActionName(), "Query [" + query.getName() + "] is not valid", t);
+				}
 			}
 			
 			try {
@@ -96,13 +92,11 @@ public class DeleteQueriesAction extends AbstractQbeEngineAction {
 				String message = "Impossible to write back the responce to the client";
 				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
-			
 		} catch(Throwable t) {
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
 			logger.debug("OUT");
-		}	
+		}
 		
 	}
-
 }

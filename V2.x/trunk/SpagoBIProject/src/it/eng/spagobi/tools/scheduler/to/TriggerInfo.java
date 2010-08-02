@@ -243,8 +243,12 @@ public class TriggerInfo implements Serializable{
 		String endDRFC = "";
 		String endD = this.getEndDate();
 		if( (endD!=null) && !endD.trim().equals("") ) {
-			String[] dateParts = endD.split("/");
-			endDRFC = dateParts[2] + "-" + dateParts[1] + "-" +  dateParts[0];
+			if (endD.indexOf("/") > 0) {
+				String[] dateParts = endD.split("/");
+				endDRFC = dateParts[2] + "-" + dateParts[1] + "-" +  dateParts[0];
+			}else{
+				endDRFC = endD;
+			}
 		}
 		return endDRFC;
 	}

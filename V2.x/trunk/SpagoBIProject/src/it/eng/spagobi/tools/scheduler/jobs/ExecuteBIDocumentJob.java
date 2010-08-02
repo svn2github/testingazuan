@@ -21,18 +21,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.tools.scheduler.jobs;
 
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spago.util.StringUtils;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
+import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ParameterValuesRetriever;
 import it.eng.spagobi.behaviouralmodel.check.bo.Check;
@@ -97,8 +96,6 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import com.sun.org.apache.bcel.internal.classfile.JavaClass;
-
 public class ExecuteBIDocumentJob implements Job {
 
 	static private Logger logger = Logger.getLogger(ExecuteBIDocumentJob.class);	
@@ -139,12 +136,21 @@ public class ExecuteBIDocumentJob implements Job {
 
 				retrieveParametersValues(biobj);
 
+				//gets the dataset data about the email address
 				IDataStore dataStore = null;
 				if (sInfo.isUseDataSet()) {
 					IDataSet dataSet = DAOFactory.getDataSetDAO().loadDataSetByLabel(sInfo.getDataSetLabel());
 					dataSet.setUserProfile(profile);
 					dataSet.loadData();
 					dataStore = dataSet.getDataStore();
+				}
+				//gets the dataset data about the folder for the document save
+				IDataStore dataStoreFolder = null;
+				if (sInfo.isUseFolderDataSet()) {
+					IDataSet dataSet = DAOFactory.getDataSetDAO().loadDataSetByLabel(sInfo.getDataSetFolderLabel());
+					dataSet.setUserProfile(profile);
+					dataSet.loadData();
+					dataStoreFolder = dataSet.getDataStore();
 				}
 				Map tempParMap = new HashMap();
 				BIObjectParametersIterator objectParametersIterator = new BIObjectParametersIterator(biobj.getBiObjectParameters());
@@ -235,7 +241,7 @@ public class ExecuteBIDocumentJob implements Job {
 						}
 
 						if(sInfo.isSaveAsDocument()) {
-							saveAsDocument(sInfo, biobj,jex, response, fileextension, toBeAppendedToName.toString(), toBeAppendedToDescription.toString());
+							saveAsDocument(sInfo, biobj,jex, response, fileextension, dataStoreFolder, toBeAppendedToName.toString(), toBeAppendedToDescription.toString());
 						}
 
 						if(sInfo.isSendMail()) {
@@ -529,7 +535,7 @@ public class ExecuteBIDocumentJob implements Job {
 
 
 
-	private void saveAsDocument(SaveInfo sInfo,BIObject biobj, JobExecutionContext jex, byte[] response, String fileExt, String toBeAppendedToName, String toBeAppendedToDescription) {
+	private void saveAsDocument(SaveInfo sInfo,BIObject biobj, JobExecutionContext jex, byte[] response, String fileExt, IDataStore dataStore, String toBeAppendedToName, String toBeAppendedToDescription) {
 		logger.debug("IN");
 		try{
 			String docName = sInfo.getDocumentName();
@@ -557,6 +563,7 @@ public class ExecuteBIDocumentJob implements Job {
 			objTemp.setContent(response);
 			objTemp.setName(docName + fileExt);
 			// load all functionality
+			/*orig
 			List storeInFunctionalities = new ArrayList();
 			String functIdsConcat = sInfo.getFunctionalityIds();
 			String[] functIds =  functIdsConcat.split(",");
@@ -566,7 +573,8 @@ public class ExecuteBIDocumentJob implements Job {
 					continue;
 				Integer functId = Integer.valueOf(functIdStr);
 				storeInFunctionalities.add(functId);
-			}
+			}*/
+			List storeInFunctionalities = findFolders(sInfo, biobj, dataStore);
 			if(storeInFunctionalities.isEmpty()) {
 				throw new Exception(" No functionality specified where store the new document");
 			}
@@ -858,7 +866,119 @@ public class ExecuteBIDocumentJob implements Job {
 		return recipients;
 	}
 
+	private List findFolders(SaveInfo info, BIObject biobj, IDataStore dataStore) {
+		logger.debug("IN");
+		List toReturn = null;
+		List<String> folders = new ArrayList();
+		try {
+			folders.addAll(findFoldersFromFixedList(info));
+		} catch (Exception e) {
+			logger.error(e);
+		}
+		try {
+			folders.addAll(findFoldersFromDataSet(info, biobj, dataStore));
+		} catch (NullPointerException en) {
+			logger.error("Folders defined into dataset " + info.getDataSetFolderLabel()+ "  not found.");
+		} catch (Exception e) {
+			logger.error(e);
+		}
+		
+		toReturn = folders;
+		logger.debug("OUT: returning " + toReturn);
+		return toReturn;
+	}
+	
+	private List findFoldersFromFixedList(SaveInfo info) throws Exception {
+		logger.debug("IN");
+		List folders = new ArrayList();
+		String functIdsConcat = info.getFunctionalityIds();
+		String[] functIds =  functIdsConcat.split(",");
+		for(int i=0; i<functIds.length; i++) {
+			String functIdStr = functIds[i];
+			if(functIdStr.trim().equals(""))
+				continue;
+			Integer functId = Integer.valueOf(functIdStr);
+			folders.add(functId);
+		}
+		logger.debug("OUT");
+		return folders;
+	}
 
+	private List findFoldersFromDataSet(SaveInfo info, BIObject biobj,IDataStore dataStore) throws Exception {
+		logger.debug("IN");
+		List folders = new ArrayList();
+		if (info.isUseFolderDataSet()) {
+			logger.debug("Trigger is configured to save documents to folders retrieved by a dataset");
+			if (dataStore == null || dataStore.isEmpty()) {
+				throw new Exception("The dataset in input is empty!! Cannot retrieve folders from it.");
+			}
+			// in this case folders must be retrieved by the dataset (which the datastore in input belongs to)
+			// we must find the parameter value in order to filter the dataset
+			String dsParameterLabel = info.getDataSetFolderParameterLabel();
+			logger.debug("The dataset will be filtered using the value of the parameter " + dsParameterLabel);
+			// looking for the parameter
+			List parameters = biobj.getBiObjectParameters();
+			BIObjectParameter parameter = null;
+			String codeValue = null;
+			Iterator parameterIt = parameters.iterator();
+			while (parameterIt.hasNext()) {
+				BIObjectParameter aParameter = (BIObjectParameter) parameterIt.next();
+				if (aParameter.getLabel().equalsIgnoreCase(dsParameterLabel)) {
+					parameter = aParameter;
+					break;
+				}
+			}
+			if (parameter == null) {
+				throw new Exception("The document parameter with label [" + dsParameterLabel + "] was not found. Cannot filter the dataset.");
+			}
+
+			// considering the first value of the parameter
+			List values = parameter.getParameterValues();
+			if (values == null || values.isEmpty()) {
+				throw new Exception("The document parameter with label [" + dsParameterLabel + "] has no values. Cannot filter the dataset.");
+			}
+
+			codeValue = (String) values.get(0);
+			logger.debug("Using value [" + codeValue + "] for dataset filtering...");
+			
+			Iterator it = dataStore.iterator();
+			while (it.hasNext()) {
+				String folder = null;
+				IRecord record = (IRecord)it.next();
+				// the parameter value is used to filter on the first dataset field
+				IField valueField = (IField) record.getFieldAt(0);
+				Object valueObj = valueField.getValue();
+				String value = null;
+				if (valueObj != null) 
+					value = valueObj.toString();
+				if (codeValue.equals(value)) {
+					logger.debug("Found value [" + codeValue + "] on the first field of a record of the dataset.");
+					// recipient address is on the second dataset field
+					IField folderField = (IField) record.getFieldAt(1);
+					Object folderFieldObj = folderField.getValue();
+					if (folderFieldObj != null) {
+						folder = folderFieldObj.toString();
+						logger.debug("Found folder [" + folder + "] on the second field of the record.");
+					} else {
+						logger.warn("The second field of the record is null.");
+					}
+				}
+				if (folder != null) {
+					//get the folder Id corresponding to the label folder and add it to the return list
+					try{
+						LowFunctionality func = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByCode(folder, false);
+						folders.add(func.getId());
+					}catch (EMFUserError emf){
+						logger.debug("Folder with code: " + folder + " not exists.");
+					}
+				}
+			}
+			logger.debug("Folders found from dataset: " + folders.toArray());
+		}
+		logger.debug("OUT");
+		return folders;
+	}
+	
 	private void sendToDl(SaveInfo sInfo, BIObject biobj, byte[] response, String retCT, String fileExt, String toBeAppendedToName, String toBeAppendedToDescription) {
 		logger.debug("IN");
 		try{

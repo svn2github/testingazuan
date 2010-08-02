@@ -464,11 +464,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     
 </STYLE>
 
-
-
-
-
-
 <!-- *********************** START HTML CODE ****************************** -->
 
 
@@ -625,9 +620,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					&nbsp;
 				</div>
 			</div>
-			
-		
-
 			<%
 			String repInterv = triggerInfo.getRepeatInterval();
 			if(repInterv!=null) {
@@ -935,18 +927,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div style='clear:left;'></div>
 	<br/>
 
-	
-	
 	<script>
 		fillFormFromRepetitionString('<%=triggerInfo.getChronString()%>');
 	</script>
-	
-	
 
 	<spagobi:error/>
 
-
-  
 	<table>
 		<tr> 
 			<td class='titlebar_level_2_text_section' style='vertical-align:middle;padding-left:5px;'>
@@ -954,8 +940,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</td>
 		</tr>
 	</table>
-
-
 
 	<div style='width:100%;visibility:visible;' class='UITabs'>
 		<div class="first-tab-level" style="background-color:#f8f8f8">
@@ -1026,81 +1010,183 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                <%if(sInfo.isSaveAsSnapshot()){out.write(" checked='checked' " );} %> />
 			  <span class='portlet-form-field-label'>
 					<spagobi:message key="scheduler.saveassnap" bundle="component_scheduler_messages" />
-				</span>
+			  </span>
 		<div id="snapshot_<%=biobj.getId()%>__<%=index%>"  style="margin-left:50px;margin-top:10px;">
             <div class='div_detail_label_scheduler'>
-				        <span class='portlet-form-field-label'>
-					         <spagobi:message key="scheduler.storename" bundle="component_scheduler_messages" />
-				        </span>
-			      </div>
+		        <span class='portlet-form-field-label'>
+			         <spagobi:message key="scheduler.storename" bundle="component_scheduler_messages" />
+		        </span>
+	        </div>
             <div class='div_detail_form'>
-				        <input type="text" id="snaphotname" value="<%=StringEscapeUtils.escapeHtml(sInfo.getSnapshotName())%>"
-				               name="snapshotname_<%=biobj.getId()%>__<%=index%>" size="35"/>
-			      </div>
-			      <div class='div_detail_label_scheduler'>
-				        <span class='portlet-form-field-label'>
-					         <spagobi:message key="scheduler.storedescr" bundle="component_scheduler_messages" />
-				        </span>
-			       </div>
-			       <div class='div_detail_form'>
-				        <input type="text" value="<%=StringEscapeUtils.escapeHtml(sInfo.getSnapshotDescription())%>"
-				               name="snapshotdescription_<%=biobj.getId()%>__<%=index%>" size="35"/>
-			       </div>
-		      	 <div class='div_detail_label_scheduler'>
-				        <span class='portlet-form-field-label'>
-					         <spagobi:message key="scheduler.historylength" bundle="component_scheduler_messages" />
-				        </span>
-			       </div>
-			       <div class='div_detail_form'>
-				        <input type="text" name="snapshothistorylength_<%=biobj.getId()%>__<%=index%>" 
-				               value="<%=StringEscapeUtils.escapeHtml(sInfo.getSnapshotHistoryLength())%>" size="35"/>
-			       </div>		       
+		        <input type="text" id="snaphotname" value="<%=StringEscapeUtils.escapeHtml(sInfo.getSnapshotName())%>"
+		               name="snapshotname_<%=biobj.getId()%>__<%=index%>" size="35"/>
+	        </div>
+	        <div class='div_detail_label_scheduler'>
+		        <span class='portlet-form-field-label'>
+			         <spagobi:message key="scheduler.storedescr" bundle="component_scheduler_messages" />
+		        </span>
+	         </div>
+	         <div class='div_detail_form'>
+		        <input type="text" value="<%=StringEscapeUtils.escapeHtml(sInfo.getSnapshotDescription())%>"
+		               name="snapshotdescription_<%=biobj.getId()%>__<%=index%>" size="35"/>
+	         </div>
+      	     <div class='div_detail_label_scheduler'>
+		        <span class='portlet-form-field-label'>
+			         <spagobi:message key="scheduler.historylength" bundle="component_scheduler_messages" />
+		        </span>
+	         </div>
+	         <div class='div_detail_form'>
+		        <input type="text" name="snapshothistorylength_<%=biobj.getId()%>__<%=index%>" 
+		               value="<%=StringEscapeUtils.escapeHtml(sInfo.getSnapshotHistoryLength())%>" size="35"/>
+	         </div>		       
         </div>
         
 <script>  
 toggle('snapshot_<%=biobj.getId()%>__<%=index%>', 'saveassnapshot_<%=biobj.getId()%>__<%=index%>', <%=sInfo.isSaveAsSnapshot()%> );
 </script> 
-
-		<div> &nbsp;
-		</div>		
-        <br/>
+		    <!-- anto: inizio gestione salvataggio doc -->
+	<div> &nbsp;</div>		
+    <br/>
+		<input type="checkbox" id="saveasdocument_<%=biobj.getId()%>__<%=index%>"  name="saveasdocument_<%=biobj.getId()%>__<%=index%>" 
+		       <%if(sInfo.isSaveAsDocument()){out.write(" checked='checked' " );} %> />
+		<span class='portlet-form-field-label'>
+			<spagobi:message key="scheduler.saveasdoc" bundle="component_scheduler_messages" />
+		</span>
 		
-				<input type="checkbox" id="saveasdocument_<%=biobj.getId()%>__<%=index%>"  name="saveasdocument_<%=biobj.getId()%>__<%=index%>" 
-				       <%if(sInfo.isSaveAsDocument()){out.write(" checked='checked' " );} %> />
-				<span class='portlet-form-field-label'>
-					<spagobi:message key="scheduler.saveasdoc" bundle="component_scheduler_messages" />
-				</span>
 		<div id="document_<%=biobj.getId()%>__<%=index%>" style="margin-left:50px;margin-top:10px;">
-            <div class='div_detail_label_scheduler'>
-				        <span class='portlet-form-field-label'>
-					         <spagobi:message key="scheduler.storename" bundle="component_scheduler_messages" />
-				        </span>
-			      </div>
+			
+	        <div class='div_detail_label_scheduler'>
+		        <span class='portlet-form-field-label'>
+			         <spagobi:message key="scheduler.storename" bundle="component_scheduler_messages" />
+		        </span>
+	        </div>
             <div class='div_detail_form'>
-				        <input type="text" name="documentname_<%=biobj.getId()%>__<%=index%>" 
-				               value="<%=StringEscapeUtils.escapeHtml(sInfo.getDocumentName())%>" size="35"/>
-			      </div>
-			      <div class='div_detail_label_scheduler'>
-				        <span class='portlet-form-field-label'>
-					         <spagobi:message key="scheduler.storedescr" bundle="component_scheduler_messages" />
-				        </span>
-			       </div>
-			       <div class='div_detail_form'>
-				        <input type="text" name="documentdescription_<%=biobj.getId()%>__<%=index%>" 
-				               value="<%=StringEscapeUtils.escapeHtml(sInfo.getDocumentDescription())%>" size="35"/>
-			       </div>   
-			       
-			       <spagobi:treeObjects moduleName="TriggerManagementModule"  
-										htmlGeneratorClass="it.eng.spagobi.tools.scheduler.gui.SelectFunctionalityTreeHtmlGenerator" 
-										treeName="<%=treeName%>" />
-			       
-        </div>
+		        <input type="text" name="documentname_<%=biobj.getId()%>__<%=index%>" 
+		               value="<%=StringEscapeUtils.escapeHtml(sInfo.getDocumentName())%>" size="35"/>
+	        </div>
+	        <div class='div_detail_label_scheduler'>
+		        <span class='portlet-form-field-label'>
+			         <spagobi:message key="scheduler.storedescr" bundle="component_scheduler_messages" />
+		        </span>
+	        </div>
+	        <div class='div_detail_form'>
+		        <input type="text" name="documentdescription_<%=biobj.getId()%>__<%=index%>" 
+		               value="<%=StringEscapeUtils.escapeHtml(sInfo.getDocumentDescription())%>" size="35"/>
+	        </div>   
+	       
+	        <input  type="checkbox" name="useFixedFolder_<%=biobj.getId()%>__<%=index%>" value="true"
+					<%= sInfo.isUseFixedFolder() ? "checked='checked'" : "" %> />
+			<span class='portlet-form-field-label'>
+				<spagobi:message key="scheduler.fixedFolder" bundle="component_scheduler_messages" />
+			</span>
+			<a href="javascript:void(0);" id="folderTo_<%=biobj.getId()%>__<%=index%>_help">
+	      			<img title="<spagobi:message key = "scheduler.help" bundle="component_scheduler_messages" />" 
+	      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/question.gif", currTheme)%>' 
+	      				 alt="<spagobi:message key = "scheduler.help"  bundle="component_scheduler_messages"/>" 
+	      				 style="vertical-align:bottom;" />
+	      	</a>
+  			<script type="text/javascript">
+      			var fixedFolderHelpWin;
+      			Ext.get('folderTo_<%=biobj.getId()%>__<%=index%>_help').on('click', function(){
+      				if(!fixedFolderHelpWin){
+      					fixedFolderHelpWin = new Ext.Window({
+      						id:'fixedFolderHelpWin',
+    					contentEl:'scheduler.help.useFixedFolder',
+    					width:350,
+    					height:100,
+    					title: "<spagobi:message key = "scheduler.fixedFolder" bundle="component_scheduler_messages" />"
+      					});
+      				};
+      				fixedFolderHelpWin.show();
+      			});
+  			</script>
+	        <spagobi:treeObjects moduleName="TriggerManagementModule"  
+								htmlGeneratorClass="it.eng.spagobi.tools.scheduler.gui.SelectFunctionalityTreeHtmlGenerator" 
+								treeName="<%=treeName%>" />
+
+		    <input  type="checkbox" name="useFolderDataset_<%=biobj.getId()%>__<%=index%>" value="true"
+		               <%= sInfo.isUseFolderDataSet() ? "checked='checked'" :"" %> />
+			<span class='portlet-form-field-label'>
+				<spagobi:message key="scheduler.useFolderDataset" bundle="component_scheduler_messages" />
+			</span>
+			<a href="javascript:void(0);" id="folderToDataset_<%=biobj.getId()%>__<%=index%>_help">
+		    			<img title="<spagobi:message key = "scheduler.help" bundle="component_scheduler_messages" />" 
+		    				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/question.gif", currTheme)%>' 
+		    				 alt="<spagobi:message key = "scheduler.help"  bundle="component_scheduler_messages"/>" 
+		    				 style="vertical-align:bottom;" />
+			</a>
+			<script type="text/javascript">
+					var folderToDatasetHelpWin;
+					Ext.get('folderToDataset_<%=biobj.getId()%>__<%=index%>_help').on('click', function(){
+							if(!folderToDatasetHelpWin){
+								folderToDatasetHelpWin = new Ext.Window({
+									id:'folderToDatasetHelpWin',
+									contentEl:'scheduler.help.useFolderDataset',
+									width:350,
+									height:100,
+									title: "<spagobi:message key = "scheduler.useFolderDataset" bundle="component_scheduler_messages" />"
+									});
+							};
+							folderToDatasetHelpWin.show();
+						});
+			</script>
+			<div id="folderDataset_<%=biobj.getId()%>__<%=index%>" style="margin-left:50px;margin-top:10px;">
+		  		<div  class='div_detail_label_scheduler'>
+						<span class='portlet-form-field-label'>
+							<spagobi:message key="scheduler.folderToDataset" bundle="component_scheduler_messages" />
+						</span>
+	 	    	</div>
+	  	  		<div class='div_detail_form'>
+				  	<select name='datasetFolderLabel_<%=biobj.getId()%>__<%=index%>'>
+						<option></option>
+		  		        <%
+		  		        String dsFolderLabel = sInfo.getDataSetFolderLabel();
+		  		        List allFolderDatasets = (List) moduleResponse.getAttribute(SpagoBIConstants.DATASETS_LIST);
+		  		        if (allFolderDatasets != null && !allFolderDatasets.isEmpty()) {
+			  		        Iterator dsIt = allFolderDatasets.iterator();
+			  		        while (dsIt.hasNext()) {
+			  		        	IDataSet ds = (IDataSet) dsIt.next();
+			  		        	%>
+			  		        	<option value='<%= StringEscapeUtils.escapeHtml(ds.getLabel()) %>' <%= ds.getLabel().equalsIgnoreCase(dsFolderLabel) ? "selected='selected'" : ""%>>
+			  		        		<%= StringEscapeUtils.escapeHtml(ds.getName()) %>
+			  		        	</option>
+			  		        	<%
+			  		        }
+		  		        }
+		  		        %>
+					    </select>
+		  	    </div>
+		  		<div  class='div_detail_label_scheduler'>
+						<span class='portlet-form-field-label'>
+							<spagobi:message key="scheduler.folderToDatasetParameter" bundle="component_scheduler_messages" />
+						</span>
+	 	    	</div>
+	  	  		<div class='div_detail_form'>
+				  	<select name='datasetFolderParameter_<%=biobj.getId()%>__<%=index%>'>
+				  		<option></option>
+		  		        <%
+		  		        List folderParameters = biobj.getBiObjectParameters();
+		  		      	if (folderParameters != null && !folderParameters.isEmpty()) {
+			  		        String parameterLabel = sInfo.getDataSetFolderParameterLabel();
+			  		        Iterator parametersIt = folderParameters.iterator();
+			  		        while (parametersIt.hasNext()) {
+			  		        	BIObjectParameter aParameter = (BIObjectParameter) parametersIt.next();
+			  		        	%>
+			  		        	<option value='<%= StringEscapeUtils.escapeHtml(aParameter.getLabel()) %>' <%= aParameter.getLabel().equalsIgnoreCase(parameterLabel) ? "selected='selected'" : ""%>>
+			  		        		<%= StringEscapeUtils.escapeHtml(aParameter.getLabel()) %>
+			  		        	</option>
+			  		        	<%
+			  		        }
+		  		      	}
+		  		        %>
+					   </select>
+		  	    </div>
+	      	</div>
+    	</div>
 <script>
 toggle('document_<%=biobj.getId()%>__<%=index%>', 'saveasdocument_<%=biobj.getId()%>__<%=index%>', <%= sInfo.isSaveAsDocument()%>);
 </script>  
-		<div> &nbsp;
-		</div>			
-				
+		<div> &nbsp;</div>			
         <br/>
 
 	<!--  ADD JAVA CLASS OPTION -->	  	
@@ -1108,161 +1194,150 @@ toggle('document_<%=biobj.getId()%>__<%=index%>', 'saveasdocument_<%=biobj.getId
                <%if(sInfo.isSendToJavaClass()){out.write(" checked='checked' " );} %> />
 			  <span class='portlet-form-field-label'>
 					<spagobi:message key="scheduler.sendtojavaclass" bundle="component_scheduler_messages" />
-				</span>
+			  </span>
 		<div id="javaclass_<%=biobj.getId()%>__<%=index%>"  style="margin-left:50px;margin-top:10px;">
             <div class='div_detail_label_scheduler'>
-				        <span class='portlet-form-field-label'>
-					         <spagobi:message key="scheduler.javaclasspath" bundle="component_scheduler_messages" />
-				        </span>
-			      </div>
+		        <span class='portlet-form-field-label'>
+			         <spagobi:message key="scheduler.javaclasspath" bundle="component_scheduler_messages" />
+		        </span>
+	        </div>
             <div class='div_detail_form'>
-				        <input type="text" id="javaclasspath" value="<%=StringEscapeUtils.escapeHtml(sInfo.getJavaClassPath())%>"
-				               name="javaclasspath_<%=biobj.getId()%>__<%=index%>" size="35"/>
-			      </div>
+		        <input type="text" id="javaclasspath" value="<%=StringEscapeUtils.escapeHtml(sInfo.getJavaClassPath())%>"
+		               name="javaclasspath_<%=biobj.getId()%>__<%=index%>" size="35"/>
+	        </div>
         </div>
-        
 <script>  
 toggle('javaclass_<%=biobj.getId()%>__<%=index%>', 'sendtojavaclass_<%=biobj.getId()%>__<%=index%>', <%=sInfo.isSendToJavaClass()%> );
 </script> 
 
-		<div> &nbsp;
-		</div>		
+		<div> &nbsp;</div>		
         <br/>
 <!-- END JAVA CLASS OPTION -->			  	
 
-
-
-
-
-
-
+<!--  MAIL SEND -->
 			<input type="checkbox" id="sendmail_<%=biobj.getId()%>__<%=index%>"   name="sendmail_<%=biobj.getId()%>__<%=index%>" 
 				       <%if(sInfo.isSendMail()){out.write(" checked='checked' " );} %> />
 				<span class='portlet-form-field-label'>
 					<spagobi:message key="scheduler.sendmail" bundle="component_scheduler_messages" />
 				</span>
-		<div id="mail_<%=biobj.getId()%>__<%=index%>" style="margin-left:50px;margin-top:10px;"> 
-				<input  type="checkbox" name="useFixedRecipients_<%=biobj.getId()%>__<%=index%>" value="true"
-					<%= sInfo.isUseFixedRecipients() ? "checked='checked'" : "" %> />
-				<span class='portlet-form-field-label'>
-					<spagobi:message key="scheduler.fixedRecipients" bundle="component_scheduler_messages" />
-				</span>
-				<a href="javascript:void(0);" id="mailtos_<%=biobj.getId()%>__<%=index%>_help">
-	      			<img title="<spagobi:message key = "scheduler.help" bundle="component_scheduler_messages" />" 
-	      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/question.gif", currTheme)%>' 
-	      				 alt="<spagobi:message key = "scheduler.help"  bundle="component_scheduler_messages"/>" 
-	      				 style="vertical-align:bottom;" />
-      			</a>
-      			<script type="text/javascript">
-      			var fixedRecipientsHelpWin;
-      			Ext.get('mailtos_<%=biobj.getId()%>__<%=index%>_help').on('click', function(){
-      				if(!fixedRecipientsHelpWin){
-      					fixedRecipientsHelpWin = new Ext.Window({
-      						id:'fixedRecipientsHelpWin',
-							contentEl:'scheduler.help.useFixedRecipients',
-							width:350,
-							height:100,
-							title: "<spagobi:message key = "scheduler.fixedRecipients" bundle="component_scheduler_messages" />"
-      					});
-      				};
-      				fixedRecipientsHelpWin.show();
-      			});
-      			</script>
-				<div id="fixedRecipients_<%=biobj.getId()%>__<%=index%>" style="margin-left:50px;margin-top:10px;">
-				  	<div class='div_detail_label_scheduler'>
-						<span class='portlet-form-field-label'>
-							<spagobi:message key="scheduler.mailto" bundle="component_scheduler_messages" />
-						</span>
-		  	      	</div>
-			  	    <div class='div_detail_form'>
-			  		        <input  type="text" name="mailtos_<%=biobj.getId()%>__<%=index%>" 
-			  		               value="<%=StringEscapeUtils.escapeHtml(sInfo.getMailTos())%>" size="35" />
-			  	    </div>
-				</div>
-				
-				<input  type="checkbox" name="useDataset_<%=biobj.getId()%>__<%=index%>" value="true"
- 		               <%= sInfo.isUseDataSet() ? "checked='checked'" :"" %> />
-				<span class='portlet-form-field-label'>
-					<spagobi:message key="scheduler.useDataset" bundle="component_scheduler_messages" />
-				</span>
-				<a href="javascript:void(0);" id="mailToDataset_<%=biobj.getId()%>__<%=index%>_help">
-	      			<img title="<spagobi:message key = "scheduler.help" bundle="component_scheduler_messages" />" 
-	      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/question.gif", currTheme)%>' 
-	      				 alt="<spagobi:message key = "scheduler.help"  bundle="component_scheduler_messages"/>" 
-	      				 style="vertical-align:bottom;" />
-      			</a>
-      			<script type="text/javascript">
-      			var mailToDatasetHelpWin;
-      			Ext.get('mailToDataset_<%=biobj.getId()%>__<%=index%>_help').on('click', function(){
-      				if(!mailToDatasetHelpWin){
-      					mailToDatasetHelpWin = new Ext.Window({
-      						id:'mailToDatasetHelpWin',
-							contentEl:'scheduler.help.useDataset',
-							width:350,
-							height:100,
-							title: "<spagobi:message key = "scheduler.useDataset" bundle="component_scheduler_messages" />"
-      					});
-      				};
-      				mailToDatasetHelpWin.show();
-      			});
-      			</script>
-				<div id="dataset_<%=biobj.getId()%>__<%=index%>" style="margin-left:50px;margin-top:10px;">
-				  	<div  class='div_detail_label_scheduler'>
-						<span class='portlet-form-field-label'>
-							<spagobi:message key="scheduler.mailToDataset" bundle="component_scheduler_messages" />
-						</span>
-		  	      	</div>
-			  	    <div class='div_detail_form'>
-					  	<select name='datasetLabel_<%=biobj.getId()%>__<%=index%>'>
-							<option></option>
-			  		        <%
-			  		        String dsLabel = sInfo.getDataSetLabel();
-			  		        List allDatasets = (List) moduleResponse.getAttribute(SpagoBIConstants.DATASETS_LIST);
-			  		        if (allDatasets != null && !allDatasets.isEmpty()) {
-				  		        Iterator dsIt = allDatasets.iterator();
-				  		        while (dsIt.hasNext()) {
-				  		        	IDataSet ds = (IDataSet) dsIt.next();
-				  		        	%>
-				  		        	<option value='<%= StringEscapeUtils.escapeHtml(ds.getLabel()) %>' <%= ds.getLabel().equalsIgnoreCase(dsLabel) ? "selected='selected'" : ""%>>
-				  		        		<%= StringEscapeUtils.escapeHtml(ds.getName()) %>
-				  		        	</option>
-				  		        	<%
+				<div id="mail_<%=biobj.getId()%>__<%=index%>" style="margin-left:50px;margin-top:10px;"> 
+					<input  type="checkbox" name="useFixedRecipients_<%=biobj.getId()%>__<%=index%>" value="true"
+						<%= sInfo.isUseFixedRecipients() ? "checked='checked'" : "" %> />
+					<span class='portlet-form-field-label'>
+						<spagobi:message key="scheduler.fixedRecipients" bundle="component_scheduler_messages" />
+					</span>
+					<a href="javascript:void(0);" id="mailtos_<%=biobj.getId()%>__<%=index%>_help">
+		      			<img title="<spagobi:message key = "scheduler.help" bundle="component_scheduler_messages" />" 
+		      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/question.gif", currTheme)%>' 
+		      				 alt="<spagobi:message key = "scheduler.help"  bundle="component_scheduler_messages"/>" 
+		      				 style="vertical-align:bottom;" />
+	      			</a>
+	      			<script type="text/javascript">
+	      			var fixedRecipientsHelpWin;
+	      			Ext.get('mailtos_<%=biobj.getId()%>__<%=index%>_help').on('click', function(){
+	      				if(!fixedRecipientsHelpWin){
+	      					fixedRecipientsHelpWin = new Ext.Window({
+	      						id:'fixedRecipientsHelpWin',
+								contentEl:'scheduler.help.useFixedRecipients',
+								width:350,
+								height:100,
+								title: "<spagobi:message key = "scheduler.fixedRecipients" bundle="component_scheduler_messages" />"
+	      					});
+	      				};
+	      				fixedRecipientsHelpWin.show();
+	      			});
+	      			</script>
+					<div id="fixedRecipients_<%=biobj.getId()%>__<%=index%>" style="margin-left:50px;margin-top:10px;">
+					  	<div class='div_detail_label_scheduler'>
+							<span class='portlet-form-field-label'>
+								<spagobi:message key="scheduler.mailto" bundle="component_scheduler_messages" />
+							</span>
+			  	      	</div>
+				  	    <div class='div_detail_form'>
+				  		        <input  type="text" name="mailtos_<%=biobj.getId()%>__<%=index%>" 
+				  		               value="<%=StringEscapeUtils.escapeHtml(sInfo.getMailTos())%>" size="35" />
+				  	    </div>
+					</div>
+					
+					<input  type="checkbox" name="useDataset_<%=biobj.getId()%>__<%=index%>" value="true"
+	 		               <%= sInfo.isUseDataSet() ? "checked='checked'" :"" %> />
+					<span class='portlet-form-field-label'>
+						<spagobi:message key="scheduler.useDataset" bundle="component_scheduler_messages" />
+					</span>
+					<a href="javascript:void(0);" id="mailToDataset_<%=biobj.getId()%>__<%=index%>_help">
+		      			<img title="<spagobi:message key = "scheduler.help" bundle="component_scheduler_messages" />" 
+		      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/question.gif", currTheme)%>' 
+		      				 alt="<spagobi:message key = "scheduler.help"  bundle="component_scheduler_messages"/>" 
+		      				 style="vertical-align:bottom;" />
+	      			</a>
+	      			<script type="text/javascript">
+	      			var mailToDatasetHelpWin;
+	      			Ext.get('mailToDataset_<%=biobj.getId()%>__<%=index%>_help').on('click', function(){
+	      				if(!mailToDatasetHelpWin){
+	      					mailToDatasetHelpWin = new Ext.Window({
+	      						id:'mailToDatasetHelpWin',
+								contentEl:'scheduler.help.useDataset',
+								width:350,
+								height:100,
+								title: "<spagobi:message key = "scheduler.useDataset" bundle="component_scheduler_messages" />"
+	      					});
+	      				};
+	      				mailToDatasetHelpWin.show();
+	      			});
+	      			</script>
+					<div id="dataset_<%=biobj.getId()%>__<%=index%>" style="margin-left:50px;margin-top:10px;">
+					  	<div  class='div_detail_label_scheduler'>
+							<span class='portlet-form-field-label'>
+								<spagobi:message key="scheduler.mailToDataset" bundle="component_scheduler_messages" />
+							</span>
+			  	      	</div>
+				  	    <div class='div_detail_form'>
+						  	<select name='datasetLabel_<%=biobj.getId()%>__<%=index%>'>
+								<option></option>
+				  		        <%
+				  		        String dsLabel = sInfo.getDataSetLabel();
+				  		        List allDatasets = (List) moduleResponse.getAttribute(SpagoBIConstants.DATASETS_LIST);
+				  		        if (allDatasets != null && !allDatasets.isEmpty()) {
+					  		        Iterator dsIt = allDatasets.iterator();
+					  		        while (dsIt.hasNext()) {
+					  		        	IDataSet ds = (IDataSet) dsIt.next();
+					  		        	%>
+					  		        	<option value='<%= StringEscapeUtils.escapeHtml(ds.getLabel()) %>' <%= ds.getLabel().equalsIgnoreCase(dsLabel) ? "selected='selected'" : ""%>>
+					  		        		<%= StringEscapeUtils.escapeHtml(ds.getName()) %>
+					  		        	</option>
+					  		        	<%
+					  		        }
 				  		        }
-			  		        }
-			  		        %>
-						</select>
-			  	    </div>
-				  	<div  class='div_detail_label_scheduler'>
-						<span class='portlet-form-field-label'>
-							<spagobi:message key="scheduler.mailToDatasetParameter" bundle="component_scheduler_messages" />
-						</span>
-		  	      	</div>
-			  	    <div class='div_detail_form'>
-					  	<select name='datasetParameter_<%=biobj.getId()%>__<%=index%>'>
-					  		<option></option>
-			  		        <%
-			  		        List parameters = biobj.getBiObjectParameters();
-			  		      	if (parameters != null && !parameters.isEmpty()) {
-				  		        String parameterLabel = sInfo.getDataSetParameterLabel();
-				  		        Iterator parametersIt = parameters.iterator();
-				  		        while (parametersIt.hasNext()) {
-				  		        	BIObjectParameter aParameter = (BIObjectParameter) parametersIt.next();
-				  		        	%>
-				  		        	<option value='<%= StringEscapeUtils.escapeHtml(aParameter.getLabel()) %>' <%= aParameter.getLabel().equalsIgnoreCase(parameterLabel) ? "selected='selected'" : ""%>>
-				  		        		<%= StringEscapeUtils.escapeHtml(aParameter.getLabel()) %>
-				  		        	</option>
-				  		        	<%
-				  		        }
-			  		      	}
-			  		        %>
-						</select>
-			  	    </div>
-			  	      	 </div>
-		
-			  	
-			
-			  	 
-			  	 <!--  MAIL SEND -->
+				  		        %>
+							</select>
+				  	    </div>
+					  	<div  class='div_detail_label_scheduler'>
+							<span class='portlet-form-field-label'>
+								<spagobi:message key="scheduler.mailToDatasetParameter" bundle="component_scheduler_messages" />
+							</span>
+			  	      	</div>
+				  	    <div class='div_detail_form'>
+						  	<select name='datasetParameter_<%=biobj.getId()%>__<%=index%>'>
+						  		<option></option>
+				  		        <%
+				  		        List parameters = biobj.getBiObjectParameters();
+				  		      	if (parameters != null && !parameters.isEmpty()) {
+					  		        String parameterLabel = sInfo.getDataSetParameterLabel();
+					  		        Iterator parametersIt = parameters.iterator();
+					  		        while (parametersIt.hasNext()) {
+					  		        	BIObjectParameter aParameter = (BIObjectParameter) parametersIt.next();
+					  		        	%>
+					  		        	<option value='<%= StringEscapeUtils.escapeHtml(aParameter.getLabel()) %>' <%= aParameter.getLabel().equalsIgnoreCase(parameterLabel) ? "selected='selected'" : ""%>>
+					  		        		<%= StringEscapeUtils.escapeHtml(aParameter.getLabel()) %>
+					  		        	</option>
+					  		        	<%
+					  		        }
+				  		      	}
+				  		        %>
+							</select>
+				  	    </div>
+		 	      	 </div>
+
 			  	
 				<input  type="checkbox" name="useExpression_<%=biobj.getId()%>__<%=index%>" value="true"
 					<%= sInfo.isUseExpression() ? "checked='checked'" : "" %> />
@@ -1423,5 +1498,11 @@ toggle('dl_<%=biobj.getId()%>__<%=index%>', 'saveasdl_<%=biobj.getId()%>__<%=ind
 	</div>
 	<div id="scheduler.help.useExpression">
 		<spagobi:message key="scheduler.help.useExpression" bundle="component_scheduler_messages" />
+	</div>
+	<div id="scheduler.help.useFixedFolder">
+		<spagobi:message key="scheduler.help.useFixedFolder" bundle="component_scheduler_messages" />
+	</div>
+	<div id="scheduler.help.useFolderDataset">
+		<spagobi:message key="scheduler.help.useFolderDataset" bundle="component_scheduler_messages" />
 	</div>
 </div>

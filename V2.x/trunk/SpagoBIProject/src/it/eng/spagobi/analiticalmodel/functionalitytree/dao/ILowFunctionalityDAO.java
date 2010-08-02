@@ -84,6 +84,22 @@ public interface ILowFunctionalityDAO {
 	public LowFunctionality loadLowFunctionalityByID(Integer functionalityID, boolean recoverBIObjects) throws EMFUserError;
 	
 	/**
+	 * Loads all information for a low functionality identified by its
+	 * <code>code</code>. All these information, are stored into a
+	 * <code>LowFunctionality</code> object, which is
+	 * returned.
+	 * 
+	 * @param code The code for the low functionality to load
+	 * @param recoverBIObjects If true the <code>LowFunctionality</code> at output will have the
+	 * list of contained <code>BIObject</code> objects
+	 * 
+	 * @return A <code>LowFunctionality</code> object containing all loaded information
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public LowFunctionality loadLowFunctionalityByCode(String code, boolean recoverBIObjects) throws EMFUserError;
+	
+	/**
 	 * Load low functionality list by id List
 	 * 
 	 * @param functionalityIDs the functionality id List

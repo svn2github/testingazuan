@@ -275,18 +275,44 @@ public class TriggerManagementModule extends AbstractModule {
 					sInfo.setDocumentName(docname);
 					String docdescr = (String)request.getAttribute("documentdescription_"+biobId+"__"+index);	
 					sInfo.setDocumentDescription(docdescr);
-					String functIdsConcat = "";
-					String tmpValReq = "tree_"+biobId+"__"+index+"_funct_id";
-					List functIds = request.getAttributeAsList(tmpValReq);	
-					Iterator iterFunctIds = functIds.iterator();
-					while(iterFunctIds.hasNext()) {
-						String idFunct = (String)iterFunctIds.next();
-						functIdsConcat += idFunct;
-						if(iterFunctIds.hasNext()){
-							functIdsConcat += ",";
+					boolean useFixedFolder = "true".equalsIgnoreCase((String) request.getAttribute("useFixedFolder_"+biobId+"__"+index));
+					sInfo.setUseFixedFolder(useFixedFolder);
+					if (useFixedFolder) {
+						String functIdsConcat = "";
+						String tmpValReq = "tree_"+biobId+"__"+index+"_funct_id";
+						List functIds = request.getAttributeAsList(tmpValReq);	
+						Iterator iterFunctIds = functIds.iterator();
+						while(iterFunctIds.hasNext()) {
+							String idFunct = (String)iterFunctIds.next();
+							functIdsConcat += idFunct;
+							if(iterFunctIds.hasNext()){
+								functIdsConcat += ",";
+							}
 						}
+						sInfo.setFunctionalityIds(functIdsConcat);
 					}
-					sInfo.setFunctionalityIds(functIdsConcat);
+					//gestire acquisizione folder 
+					boolean useFolderDataset = "true".equalsIgnoreCase((String) request.getAttribute("useFolderDataset_"+biobId+"__"+index));
+					sInfo.setUseFolderDataSet(useFolderDataset);
+					if (useFolderDataset) {
+						String dsLabel = (String)request.getAttribute("datasetFolderLabel_"+biobId+"__"+index);	
+						sInfo.setDataSetFolderLabel(dsLabel);
+						String datasetParameterLabel = (String)request.getAttribute("datasetFolderParameter_"+biobId+"__"+index);	
+						sInfo.setDataSetFolderParameterLabel(datasetParameterLabel);
+						if (dsLabel == null || dsLabel.trim().equals("")) {
+							BIObject biobj = DAOFactory.getBIObjectDAO().loadBIObjectById(biobId);
+							List params = new ArrayList();
+							params.add(biobj.getName());
+							this.getErrorHandler().addError(new EMFValidationError(EMFErrorSeverity.ERROR, null, "errors.trigger.missingDataSet", params, "component_scheduler_messages"));
+						}
+						if (datasetParameterLabel == null || datasetParameterLabel.trim().equals("")) {
+							BIObject biobj = DAOFactory.getBIObjectDAO().loadBIObjectById(biobId);
+							List params = new ArrayList();
+							params.add(biobj.getName());
+							this.getErrorHandler().addError(new EMFValidationError(EMFErrorSeverity.ERROR, null, "errors.trigger.missingDataSetParameter", params, "component_scheduler_messages"));
+						}
+					//	sInfo.setFunctionalityIds(functIdsConcat);
+					}
 				}
 				String sendmail = (String)request.getAttribute("sendmail_"+biobId+"__"+index);	
 				if(sendmail!=null) {
@@ -553,6 +579,15 @@ public class TriggerManagementModule extends AbstractModule {
 				}
 				if( (sInfo.getDocumentDescription()!=null) && !sInfo.getDocumentDescription().trim().equals("") ) {
 					saveOptString += "documentdescription="+sInfo.getDocumentDescription()+"%26";
+				}
+				if(sInfo.isUseFixedFolder() && sInfo.getFoldersTo() != null && !sInfo.getFoldersTo().trim().equals("")) {
+					saveOptString += "foldersTo="+sInfo.getFoldersTo()+"%26";
+				}
+				if(sInfo.isUseFolderDataSet() && sInfo.getDataSetFolderLabel() != null && !sInfo.getDataSetFolderLabel().trim().equals("")) {
+					saveOptString += "datasetFolderLabel="+sInfo.getDataSetFolderLabel()+"%26";
+					if (sInfo.getDataSetFolderParameterLabel() != null && !sInfo.getDataSetFolderParameterLabel().trim().equals("")) {
+						saveOptString += "datasetFolderParameterLabel="+sInfo.getDataSetFolderParameterLabel()+"%26";
+					}
 				}
 				if( (sInfo.getDocumentHistoryLength()!=null) && !sInfo.getDocumentHistoryLength().trim().equals("") ) {
 					saveOptString += "documenthistorylength="+sInfo.getDocumentHistoryLength()+"%26";

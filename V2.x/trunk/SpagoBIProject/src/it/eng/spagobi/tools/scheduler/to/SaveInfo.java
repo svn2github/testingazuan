@@ -42,6 +42,81 @@ public class SaveInfo implements Serializable{
 	private String documentName = "";
 	private String documentDescription = "";
 	private String documentHistoryLength = "";
+	private boolean useFixedFolder = false;
+	private String foldersTo = "";
+	private boolean useFolderDataSet = false;
+	private String dataSetFolderLabel = null;
+	private String dataSetFolderParameterLabel = null;
+	/**
+	 * @return the useFixedFolder
+	 */
+	public boolean isUseFixedFolder() {
+		return useFixedFolder;
+	}
+
+	/**
+	 * @param useFixedFolder the useFixedFolder to set
+	 */
+	public void setUseFixedFolder(boolean useFixedFolder) {
+		this.useFixedFolder = useFixedFolder;
+	}
+
+	/**
+	 * @return the foldersTo
+	 */
+	public String getFoldersTo() {
+		return foldersTo;
+	}
+
+	/**
+	 * @param foldersTo the foldersTo to set
+	 */
+	public void setFoldersTo(String foldersTo) {
+		this.foldersTo = foldersTo;
+	}
+
+	/**
+	 * @return the useFolderDataSet
+	 */
+	public boolean isUseFolderDataSet() {
+		return useFolderDataSet;
+	}
+
+	/**
+	 * @param useFolderDataSet the useFolderDataSet to set
+	 */
+	public void setUseFolderDataSet(boolean useFolderDataSet) {
+		this.useFolderDataSet = useFolderDataSet;
+	}
+
+	/**
+	 * @return the dataSetFolderLabel
+	 */
+	public String getDataSetFolderLabel() {
+		return dataSetFolderLabel;
+	}
+
+	/**
+	 * @param dataSetFolderLabel the dataSetFolderLabel to set
+	 */
+	public void setDataSetFolderLabel(String dataSetFolderLabel) {
+		this.dataSetFolderLabel = dataSetFolderLabel;
+	}
+
+	/**
+	 * @return the dataSetFolderParameterLabel
+	 */
+	public String getDataSetFolderParameterLabel() {
+		return dataSetFolderParameterLabel;
+	}
+
+	/**
+	 * @param dataSetFolderParameterLabel the dataSetFolderParameterLabel to set
+	 */
+	public void setDataSetFolderParameterLabel(String dataSetFolderParameterLabel) {
+		this.dataSetFolderParameterLabel = dataSetFolderParameterLabel;
+	}
+
 	private boolean useFixedRecipients = false;
 	private String mailTos = "";
 	private boolean useDataSet = false;

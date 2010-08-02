@@ -49,6 +49,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.BIObjectDAOHibImpl;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFunc;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.analiticalmodel.document.service.BIObjectsModule;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.UserFunctionality;
@@ -243,6 +244,46 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiFunctions hibFunct = (SbiFunctions)aSession.load(SbiFunctions.class, functionalityID);
+			funct = toLowFunctionality(hibFunct, recoverBIObjects);
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error( "HibernateException",he );
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		logger.debug( "OUT" );
+		return funct;
+	}
+	
+	/**
+	 * Load low functionality by code.
+	 * 
+	 * @param label the functionality code
+	 * @param recoverBIObjects the recover bi objects
+	 * 
+	 * @return the low functionality
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadLowFunctionalityByLabel(java.lang.String)
+	 */
+	public LowFunctionality loadLowFunctionalityByCode(String code, boolean recoverBIObjects) throws EMFUserError {
+		logger.debug( "IN" );
+		LowFunctionality funct = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Criterion labelCriterrion = Expression.eq("code", code);
+			Criteria criteria = aSession.createCriteria(SbiFunctions.class);
+			criteria.add(labelCriterrion);
+			SbiFunctions hibFunct = (SbiFunctions) criteria.uniqueResult();
 			funct = toLowFunctionality(hibFunct, recoverBIObjects);
 			tx.commit();
 		} catch (HibernateException he) {

@@ -395,7 +395,15 @@ public class SchedulerUtilities {
 			if(name.equals("documenthistorylength")) {
 				sInfo.setDocumentHistoryLength(value);
 			}
+			if(name.equals("datasetFolderLabel")) {
+				sInfo.setUseFolderDataSet(true);
+				sInfo.setDataSetFolderLabel(value);
+			}
+			if(name.equals("datasetFolderParameterLabel")) {
+				sInfo.setDataSetFolderParameterLabel(value);
+			}
 			if(name.equals("functionalityids")) {
+				sInfo.setUseFixedFolder(true);
 				sInfo.setFunctionalityIds(value);
 			}
 			if(name.equals("sendmail")) {

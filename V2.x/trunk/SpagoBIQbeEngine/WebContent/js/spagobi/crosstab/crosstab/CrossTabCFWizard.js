@@ -123,14 +123,14 @@ Ext.extend(CrossTabCFWizard, Ext.Window, {
 		return expression;
 	}
 
-//	,validate: function(){
-//		var error = SQLExpressionParser.module.validateInLineCalculatedField(this.getExpression());
-//		if(error==""){
-//			Sbi.exception.ExceptionHandler.showInfoMessage(LN('sbi.qbe.calculatedFields.validationwindow.success.text'), LN('sbi.qbe.calculatedFields.validationwindow.success.title'));
-//		}else{
-//			Sbi.exception.ExceptionHandler.showWarningMessage(error, LN('sbi.qbe.calculatedFields.validationwindow.fail.title'));
-//		}
-//	}
+	,validate: function(){
+		var error = ArithmeticExpressionParser.module.validateCrossTabCalculatedField(this.getExpression());
+		if(error==""){
+			Sbi.exception.ExceptionHandler.showInfoMessage(LN('sbi.qbe.calculatedFields.validationwindow.success.text'), LN('sbi.qbe.calculatedFields.validationwindow.success.title'));
+		}else{
+			Sbi.exception.ExceptionHandler.showWarningMessage(error, LN('sbi.qbe.calculatedFields.validationwindow.fail.title'));
+		}
+	}
 	
 	
 	
@@ -149,7 +149,7 @@ Ext.extend(CrossTabCFWizard, Ext.Window, {
 		    icon: 'null',
 		    iconCls:'option'
 		});
-		//buttons.validate.addListener('click', function(){this.validate();}, this);
+		buttonvalidate.addListener('click', function(){this.validate();}, this);
 
 	
 		this.textField = new Ext.form.HtmlEditor({

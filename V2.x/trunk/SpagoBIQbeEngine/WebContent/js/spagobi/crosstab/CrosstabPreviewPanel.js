@@ -82,6 +82,7 @@ Ext.extend(Sbi.crosstab.CrosstabPreviewPanel, Ext.Panel, {
 	
 	
 	, load: function(crosstabDefinition) {
+			this.addLoadingToPage();
 			Ext.Ajax.request({
 		        url: this.services['loadCrosstab'],
 		        params: {
@@ -128,5 +129,36 @@ Ext.extend(Sbi.crosstab.CrosstabPreviewPanel, Ext.Panel, {
 		}
 		return array;
 	}
+	
+    , addLoadingToPage : function(){
+		var dh = Ext.DomHelper; 
+	
+		
+		var bodyElement = document.getElementsByTagName('body');
+		
+		var loadingmask = {
+				id: 'loading-mask',
+				tag: 'div',
+				html: '&nbsp;'
+			};
+		
+		var loading = {
+				id: 'loading',
+				tag: 'div',
+				html: '&nbsp;'
+			};
+		
+		var loadingindicator = {
+				id: 'loading-indicator',
+				tag: 'div',
+				cls: 'loading-indicator',
+				html: 'Loading...'
+			};
+
+		var loadingmaskDOM = dh.append(bodyElement[0].id, loadingmask);
+		var loadingDOM = dh.append(loadingmaskDOM, loading);
+		dh.append(loadingDOM, loadingindicator);
+		
+    }
 
 });

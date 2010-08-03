@@ -98,9 +98,14 @@ Ext.extend(HeaderEntry, Ext.Panel, {
 	//update the height and the visualization of the panel
 	,updateHeight : function(newThisHeight){
 		this.thisDimension=newThisHeight;
-		if(!this.horizontal && this.body!=null){
-			var paddingTop = this.thisDimension*this.rowHeight/2;
-			this.body.update('<IMG SRC=\"'+this.backgroundImg+'\" WIDTH=\"100%\" HEIGHT=\"105%\" style=\"z-index:0\"><div style= \"top: -'+paddingTop+'px; position:relative; z-index:6; \ margin-top: -10px"><span>'+this.name+'</span><div>');
+		if(!this.horizontal){
+			this.on('afterlayout', function(f) {
+				var paddingTop = this.thisDimension*this.rowHeight/2;
+				this.body.update('<IMG SRC=\"'+this.backgroundImg+'\" WIDTH=\"100%\" HEIGHT=\"105%\" style=\"z-index:0\"><div style= \"top: -'+paddingTop+'px; position:relative; z-index:6; \ margin-top: -10px"><span>'+this.name+'</span><div>');
+			});
+		}else{
+			this.setHeight(this.rowHeight);
+			this.setWidth(this.columnWidth);
 		}
 	}
 
@@ -108,13 +113,15 @@ Ext.extend(HeaderEntry, Ext.Panel, {
 	,update : function(){
 		if(this.horizontal){
 			this.setWidth(this.thisDimension*this.columnWidth);
-			this.body.update(this.name);
+			this.on('afterlayout', function(f) {this.body.update(this.name); this.setHeight(this.rowHeight);} , this);
+
 		}else{
 			var paddingTop = this.thisDimension*this.rowHeight/2;
 			this.setHeight(this.thisDimension*this.rowHeight);
-			if(this.body!=null){
+			this.on('afterlayout', function(f) {
 				this.body.update('<IMG SRC=\"'+this.backgroundImg+'\" WIDTH=\"100%\" HEIGHT=\"105%\" style=\"z-index:0\"><div style= \"top: -'+paddingTop+'px; position:relative; z-index:6; \ margin-top: -10px"><span>'+this.name+'</span><div>');
-			}
+				this.setWidth(this.columnWidth);
+			});
 		}
 	}
 	

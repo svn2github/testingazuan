@@ -166,6 +166,7 @@ Ext.extend(CrossTab, Ext.Panel, {
 										}, scope: this
     					});
 	    				toReturn.push(p);
+    					//toReturn.push(this.entries[i][j]);
 	    				visiblej++;
     				}
     			}
@@ -375,9 +376,7 @@ Ext.extend(CrossTab, Ext.Panel, {
 							c.removeClass("crosstab-borderd");
 							c.setWidth(c.getWidth()+2);
 							c.setHeight(c.getHeight()+2); 
-							
 						}
-							
 							this.clearTableBackground();
 							
 						}
@@ -552,11 +551,9 @@ Ext.extend(CrossTab, Ext.Panel, {
 			        	var myXY;
 			        	var exy;
 			        	if(horizontal){
-//			        		myPanel.columnHeaderPanelContainer=null;
 			        		myXY = this.getDragData().panel.getEl().getX();
 			        		exy = 0;
 			        	}else{
-//			        		myPanel.rowHeaderPanelContainer=null;
 			        		myXY = this.getDragData().panel.getEl().getY();
 			        		exy = 1;
 			        	}
@@ -689,10 +686,11 @@ Ext.extend(CrossTab, Ext.Panel, {
 		};
 		
 		var bodyElement = document.getElementsByTagName('body');
-		
+
 		dh.append(bodyElement[0].id, bottomArrowDOM);
 		dh.append(bodyElement[0].id, topArrowDOM);
 		dh.append(bodyElement[0].id, topArrowDOM2);
+		
     }
 
     //reload the panels after a change (for example DD)
@@ -762,7 +760,7 @@ Ext.extend(CrossTab, Ext.Panel, {
     	this.reloadHeadersAndTable(horizontal);
     }
 
-    //Calculate the translation vector after a trasformation (for example DD)
+    //Calculate the translation vector after a transformation (for example DD)
     //headerLine2: the old headerLine
     //headerLine1: the new headerLine
     //For example:
@@ -878,28 +876,37 @@ Ext.extend(CrossTab, Ext.Panel, {
    	        },
    	        items : this.entriesPanel
    	    });
-  		
+
    		this.table.add(this.emptypanel);
    		this.table.add(this.columnHeaderPanelContainer);
    		this.table.add(this.rowHeaderPanelContainer);
    		this.table.add(this.datapanel);
  		
    		this.add(this.table);
-    	
-   		this.doLayout(true);
-   		this.table.doLayout(true);
-   		this.datapanel.doLayout();
-   		if(horizontal || horizontal==null){
-   			this.columnHeaderPanelContainer.doLayout();
+   		
+   		this.doLayout();
+   		
+   		if(Ext.get('loading')!=null){
+	   		setTimeout(function(){
+	   			Ext.get('loading').remove();
+	   			Ext.get('loading-mask').fadeOut({remove:true});
+	   			}, 250);
    		}
-   		if(!horizontal || horizontal==null){
-   			this.rowHeaderPanelContainer.doLayout();
-    	}
+    	
+//   		this.doLayout(true);
+//   		this.table.doLayout(true);
+//   		this.datapanel.doLayout();
+//   		if(horizontal || horizontal==null){
+//   			this.columnHeaderPanelContainer.doLayout();
+//   		}
+//   		if(!horizontal || horizontal==null){
+//   			this.rowHeaderPanelContainer.doLayout();
+//    	}
 
     }
     
     , reloadHeadersAndTable: function(horizontal){
-    	if(horizontal || horizontal==null){
+   // 	if(horizontal || horizontal==null){
         	
         	this.columnHeaderPanel = this.buildHeaderGroup(this.columnHeader, true);
         	if(this.columnHeaderPanelContainer!=null){
@@ -919,9 +926,9 @@ Ext.extend(CrossTab, Ext.Panel, {
 	   	        items: this.columnHeaderPanel,
 	   	        colspan: 1
 	   	    });
-    	}
-    	
-    	if(!horizontal || horizontal==null){
+//    	}
+//    	
+//    	if(!horizontal || horizontal==null){
         	
 	    	this.rowHeaderPanel = this.buildHeaderGroup(this.rowHeader, false);
 	    	if(this.rowHeaderPanelContainer!=null){
@@ -941,7 +948,7 @@ Ext.extend(CrossTab, Ext.Panel, {
 	   	        items: this.rowHeaderPanel,
 	   	        colspan: 1
 	   	    });
-    	}
+ //   	}
 		this.reloadTable(horizontal);
     }
  
@@ -1120,3 +1127,4 @@ Ext.extend(CrossTab, Ext.Panel, {
     	}
     }
 });
+

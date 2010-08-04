@@ -86,8 +86,9 @@ public class JasperReportServlet extends HttpServlet {
      * @throws ServletException the servlet exception
      */
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    	
 	logger.debug("Start processing a new request...");
-        Monitor monitor =MonitorFactory.start("JasperReportServlet.service");
+    Monitor monitor =MonitorFactory.start("JasperReportServlet.service");
 	HttpSession session = request.getSession();
 	logger.debug("documentId IN Session:"+(String)session.getAttribute("document"));
 	// USER PROFILE
@@ -140,7 +141,7 @@ public class JasperReportServlet extends HttpServlet {
 	    return;
 	}
 	try {
-	    String outputType = (String) params.get(PARAM_OUTPUT_FORMAT);
+	    String outputType = (params.get(PARAM_OUTPUT_FORMAT) == null)?"html":(String) params.get(PARAM_OUTPUT_FORMAT);
 	    String tmpdir = (String) EnginConf.getInstance().getConfig().getAttribute("GENERALSETTINGS.tmpdir");
 	    if (!tmpdir.startsWith("/")) {
 		String contRealPath = getServletContext().getRealPath("/");
@@ -158,9 +159,9 @@ public class JasperReportServlet extends HttpServlet {
 	    out.flush();
 	    out.close();
 
-	    if (outputType == null)
+	   // if (outputType == null)	outputType = "html";
 		//outputType = ExporterFactory.getDefaultType();
-	    outputType = "html";
+	    
 	    response.setHeader("Content-Disposition", "filename=\"report." + outputType + "\";");
 	    // response.setContentType((String)extensions.get(outputType));
 	    response.setContentLength((int) tmpFile.length());
@@ -168,7 +169,7 @@ public class JasperReportServlet extends HttpServlet {
 	    BufferedInputStream in = new BufferedInputStream(new FileInputStream(tmpFile));
 	    int b = -1;
 	    while ((b = in.read()) != -1) {
-		response.getOutputStream().write(b);
+	    	response.getOutputStream().write(b);
 	    }
 	    response.getOutputStream().flush();
 	    in.close();

@@ -138,6 +138,7 @@ public class JasperReportDriver extends AbstractDriver implements IEngineDriver 
 	pars = addBISubreports(biobj, pars);
 	pars = addBIParameters(biobj, pars);
 
+	
 	logger.debug("OUT");
 	return pars;
     }
@@ -158,22 +159,25 @@ public class JasperReportDriver extends AbstractDriver implements IEngineDriver 
 
 	    List subreportList = subrptdao.loadSubreportsByMasterRptId(masterReportId);
 	    for (int i = 0; i < subreportList.size(); i++) {
-		Subreport subreport = (Subreport) subreportList.get(i);
-		BIObject subrptbiobj = biobjectdao.loadBIObjectForDetail(subreport.getSub_rpt_id());
-
-		IObjTemplateDAO tempdao = DAOFactory.getObjTemplateDAO();
-		ObjTemplate objtemp = tempdao.getBIObjectActiveTemplate(subrptbiobj.getId());
-
-		String flgTemplateStandard = "true";
-		if (objtemp.getName().indexOf(".zip") > -1) {
-		    flgTemplateStandard = "false";
-		}
-		logger.debug(" flgTemplateStandard: " + flgTemplateStandard);
-		pars.put("subrpt." + (i + 1) + ".flgTempStd", flgTemplateStandard);
-
-		Integer id = subrptbiobj.getId();
-		logger.debug(" ID: " + id);
-		pars.put("subrpt." + (i + 1) + ".id", id);
+			Subreport subreport = (Subreport) subreportList.get(i);
+			BIObject subrptbiobj = biobjectdao.loadBIObjectForDetail(subreport.getSub_rpt_id());
+	
+			IObjTemplateDAO tempdao = DAOFactory.getObjTemplateDAO();
+			ObjTemplate objtemp = tempdao.getBIObjectActiveTemplate(subrptbiobj.getId());
+			String prefixName = subrptbiobj.getId()  + "__" + objtemp.getBinId();
+			pars.put("subrpt." + (i + 1) + ".prefixName", prefixName);
+			logger.debug(" prefixName: " + prefixName);
+			
+			String flgTemplateStandard = "true";
+			if (objtemp.getName().indexOf(".zip") > -1) {
+			    flgTemplateStandard = "false";
+			}
+			logger.debug(" flgTemplateStandard: " + flgTemplateStandard);
+			pars.put("subrpt." + (i + 1) + ".flgTempStd", flgTemplateStandard);
+	
+			Integer id = subrptbiobj.getId();
+			logger.debug(" ID: " + id);
+			pars.put("subrpt." + (i + 1) + ".id", id);
 	    }
 	    pars.put("srptnum", "" + subreportList.size());
 
@@ -197,28 +201,42 @@ public class JasperReportDriver extends AbstractDriver implements IEngineDriver 
      */
     private Map addBIParameters(BIObject biobj, Map pars) {
 	logger.debug("IN");
-	if (biobj == null) {
-	    logger.warn("BIObject is null");
-	    return pars;
-	}
-
-	ParameterValuesEncoder parValuesEncoder = new ParameterValuesEncoder();
-	if (biobj.getBiObjectParameters() != null) {
-	    BIObjectParameter biobjPar = null;
-	    for (Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();) {
-		try {
-		    biobjPar = (BIObjectParameter) it.next();
-		    String value = parValuesEncoder.encode(biobjPar);
-		    if (value != null)
-			pars.put(biobjPar.getParameterUrlName(), value);
-		    else
-			logger.warn("value encoded IS null");
-		    logger.debug("Add parameter:" + biobjPar.getParameterUrlName() + "/" + value);
-		} catch (Exception e) {
-		    logger.error("Error while processing a BIParameter", e);
+	
+	try{
+		if (biobj == null) {
+		    logger.warn("BIObject is null");
+		    return pars;
 		}
-	    }
+		//add prefix (objId__templateId) of the master template for manage subreport cache 
+		IObjTemplateDAO tempdao = DAOFactory.getObjTemplateDAO();
+		ObjTemplate objtemp = tempdao.getBIObjectActiveTemplate(biobj.getId());
+		String prefixName = biobj.getId()  + "__" + objtemp.getBinId();
+		pars.put("prefixName", prefixName);
+		logger.debug(" prefixName: " + prefixName);
+		
+		ParameterValuesEncoder parValuesEncoder = new ParameterValuesEncoder();
+		if (biobj.getBiObjectParameters() != null) {
+		    BIObjectParameter biobjPar = null;
+		    for (Iterator it = biobj.getBiObjectParameters().iterator(); it.hasNext();) {
+				try {
+				    biobjPar = (BIObjectParameter) it.next();
+				    String value = parValuesEncoder.encode(biobjPar);
+				    if (value != null)
+					pars.put(biobjPar.getParameterUrlName(), value);
+				    else
+					logger.warn("value encoded IS null");
+				    logger.debug("Add parameter:" + biobjPar.getParameterUrlName() + "/" + value);
+				} catch (Exception e) {
+				    logger.error("Error while processing a BIParameter", e);
+				}
+		    }
+		}
+	} catch (EMFUserError e) {
+	    logger.error("Error while reading subreports:", e);
+	} catch (EMFInternalError ex) {
+	    logger.error("Error while reading subreports:", ex);
 	}
+	
 	logger.debug("OUT");
 	return pars;
     }

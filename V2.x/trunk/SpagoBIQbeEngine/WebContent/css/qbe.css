@@ -265,11 +265,54 @@ See also http://www.sencha.com/deploy/dev/examples/form/check-radio.html */
 	border-top-style: none;
 }
 				
-.crosstab-table-empty-panel{
+.crosstab-table-empty-top-left-panel{
 	border:1px solid;
 	border-color: #99BBE8;	
 	border-left-style: none;
 	border-top-style: none;
+}
+
+.crosstab-table-empty-top-right-panel{
+	border:1px solid;
+	border-color: #99BBE8;	
+	border-right-style: none;
+	border-top-style: none;
+}
+
+.crosstab-table-empty-bottom-left-panel{
+	border:1px solid;
+	border-color: #99BBE8;	
+	border-left-style: none;
+	border-top-style: none;
+	border-bottom-style: none;
+}
+
+.crosstab-table-empty-bottom-right-panel{
+	border:1px solid;
+	border-color: #99BBE8;	
+	border-right-style: none;
+	border-bottom-style: none;
+}
+
+.crosstab-table-data-panel{
+	border:1px solid !important;
+	border-color: #99BBE8 !important;
+	border-top-style: none !important;
+	border-left-style: none !important;
+}
+
+.crosstab-row-sum-panel-container{
+	border:1px solid;
+	border-color: #99BBE8;	
+	border-left-style: none;
+	border-top-style: none;
+}
+
+.crosstab-column-sum-panel-container{
+	border:1px solid;
+	border-color: #99BBE8;	
+	border-top-style: none;
+	border-left-style: none;
 }
 
 .crosstab-borderd{
@@ -278,8 +321,23 @@ See also http://www.sencha.com/deploy/dev/examples/form/check-radio.html */
 }
 
 .crosstab-no-border{
-	border-style: none !important;
-		
+	border-style: none !important;	
+}
+
+.crosstab-none-bottom-border-panel{
+	border-bottom-style: none !important;
+}
+
+.crosstab-none-right-border-panel{
+	border-right-style: none !important;
+}
+
+.crosstab-none-top-border-panel{
+	border-top-style: none !important;
+}
+
+.crosstab-none-left-border-panel{
+	border-left-style: none !important;
 }
 
 #loading-mask {

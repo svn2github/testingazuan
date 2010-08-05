@@ -89,14 +89,14 @@ Ext.extend(Sbi.crosstab.CrosstabPreviewPanel, Ext.Panel, {
 						crosstabDefinition: Ext.util.JSON.encode(crosstabDefinition)
 				},
 		        success : function(response, opts) {
-	  	  			try {
+//	  	  			try {
 	  	  				
 	  	  				//this.crossTabJSON = Ext.util.JSON.decode( response.responseText );
 	  	  				this.refreshCrossTab(Ext.util.JSON.decode( response.responseText ));
-	  	  			} catch (err) {
-	  	  				alert(err);
-	  	  				alert(err.description);
-	  	  			}
+//	  	  			} catch (err) {
+//	  	  				alert(err);
+//	  	  				alert(err.description);
+//	  	  			}
 		        },
 		        scope: this,
 				failure: Sbi.exception.ExceptionHandler.handleFailure      
@@ -109,7 +109,7 @@ Ext.extend(Sbi.crosstab.CrosstabPreviewPanel, Ext.Panel, {
 		var rows = this.fromNodeToArray(crosstabDefinition.rows);
 		var columns = this.fromNodeToArray(crosstabDefinition.columns);
 		var data = crosstabDefinition.data;
-		var ct =  new CrossTab( rows,columns, data);
+		var ct =  new CrossTab( rows,columns, data, true, true);
 		ct.reloadHeadersAndTable();
 		
 		this.add(ct);

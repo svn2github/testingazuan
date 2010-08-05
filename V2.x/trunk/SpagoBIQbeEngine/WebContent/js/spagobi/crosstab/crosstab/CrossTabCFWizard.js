@@ -58,7 +58,7 @@ CrossTabCFWizard = function(level, horizontal) {
 			    handler: function(){
 		    		var expression= this.getExpression();
 		    		var cfName= this.cfNameField.getValue()
-		    		if(expression!=null && expression!="" && cfName!=null && cfName!=""){
+		    		if(expression!=null && expression!="" && cfName!=null && cfName!="" && this.validate(false)){
 		    			this.fireEvent('applyCalculatedField', this.activeLevel, this.horizontal, expression, cfName);
 		    			this.hide();
 		    		}
@@ -123,12 +123,16 @@ Ext.extend(CrossTabCFWizard, Ext.Window, {
 		return expression;
 	}
 
-	,validate: function(){
+	,validate: function(showSuccess){
 		var error = ArithmeticExpressionParser.module.validateCrossTabCalculatedField(this.getExpression());
 		if(error==""){
-			Sbi.exception.ExceptionHandler.showInfoMessage(LN('sbi.qbe.calculatedFields.validationwindow.success.text'), LN('sbi.qbe.calculatedFields.validationwindow.success.title'));
+			if(showSuccess){
+				Sbi.exception.ExceptionHandler.showInfoMessage(LN('sbi.qbe.calculatedFields.validationwindow.success.text'), LN('sbi.qbe.calculatedFields.validationwindow.success.title'));
+			}
+			return true;
 		}else{
 			Sbi.exception.ExceptionHandler.showWarningMessage(error, LN('sbi.qbe.calculatedFields.validationwindow.fail.title'));
+			return false;
 		}
 	}
 	
@@ -149,7 +153,7 @@ Ext.extend(CrossTabCFWizard, Ext.Window, {
 		    icon: 'null',
 		    iconCls:'option'
 		});
-		buttonvalidate.addListener('click', function(){this.validate();}, this);
+		buttonvalidate.addListener('click', function(){this.validate(true);}, this);
 
 	
 		this.textField = new Ext.form.HtmlEditor({

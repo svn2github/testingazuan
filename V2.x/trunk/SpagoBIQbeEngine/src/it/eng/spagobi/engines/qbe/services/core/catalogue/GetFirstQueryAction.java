@@ -40,6 +40,8 @@ import it.eng.spagobi.utilities.service.JSONSuccess;
  * It is used for Read-only users (a Read-only user is able only to execute the first query of the catalog)
  * 
  * @author Davide Zerbetto (davide.zerbetto@eng.it)
+ * 
+ * @deprecated use GetQueryAction?SEARCH_TYPE=byType&SEARCH_FILTER=first
  */
 public class GetFirstQueryAction extends AbstractQbeEngineAction {
 	

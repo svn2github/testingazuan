@@ -42,6 +42,7 @@
   * Authors
   * 
   * - Davide Zerbetto (davide.zerbetto@eng.it)
+  * - Andrea Gioia (andrea.gioia@eng.it)
   */
 
 Ext.ns("Sbi.formbuilder");
@@ -66,8 +67,22 @@ Sbi.formbuilder.StaticOpenFilterWizard = function(openFilter, config) {
 		serviceName: 'GET_ENTITY_FIELDS'
 		, baseParams: params
 	});
+	this.services['getQuery'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_QUERY_ACTION'
+		, baseParams: {}
+	});
 	
-	this.init(openFilter);
+	this.entityId = openFilter.field;
+	this.queryType = openFilter.queryType || 'standard';
+	if (openFilter.queryRootEntity === undefined || openFilter.queryRootEntity === null) {
+		openFilter.queryRootEntity = false;
+	} else {
+		if(typeof openFilter.queryRootEntity === "string") {
+			openFilter.queryRootEntity = (openFilter.queryRootEntity === 'true');
+		}
+	}
+	
+	this.initForm(openFilter);
 	
 	c = Ext.apply(c, {
       	items: [this.openFilterForm]
@@ -81,11 +96,56 @@ Sbi.formbuilder.StaticOpenFilterWizard = function(openFilter, config) {
 };
 
 Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
+	
+	services: null
+	
+	, openFilterForm: null
+	, standardQueryDetails: null
+	, customQueryDetails: null
+	
+	// base
+	, filterName: null
+	, filterEntity: null
+	, filterOperatorCombo: null
+	, maxSelectionNumber: null
+	// standard query
+	, orderByFieldCombo: null
+	, orderTypeCombo: null
+	// custom query
+	, lookupQueryCombo: null
+	
+	
+	
+	// ---------------------------------------------------------------------------------
+	// Initialization methods
+	// ---------------------------------------------------------------------------------
+	
+	, initForm: function(openFilter) {
+	
+		this.initFilterBaseFieldSet(openFilter);
+		this.initLookupQueryFieldSet(openFilter);
+	   
+	    	    	
+	    Ext.form.Field.prototype.msgTarget = 'side';
+	    this.openFilterForm = new Ext.form.FormPanel({
+	        frame: true,
+	        bodyStyle: 'padding:5px 5px 0',
+	        items: [this.filterName, this.filterEntity, this.filterOperatorCombo, this.maxSelectionNumber, 
+	                this.queryDetails],
+	        buttons: [
+	            {text: LN('sbi.formbuilder.staticopenfilterwizard.buttons.apply'), handler: this.apply, scope: this}
+	            , {text: LN('sbi.formbuilder.staticopenfilterwizard.buttons.cancel'), handler: function () {this.close();}, scope: this}
+	        ]
+	    });
+	    
+	    return this.openFilterForm;	    
+	}
 
-	init: function(openFilter) {
-	
-		this.entityId = openFilter.field;
-	
+	// ---------------------------------------------------------------------------------
+	// Init base field set
+	// ---------------------------------------------------------------------------------
+
+	, initFilterBaseFieldSet: function(openFilter) {
 		this.filterName = new Ext.form.TextField({
 			id: 'text',
 			name: 'text',
@@ -178,129 +238,182 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 			maxHeight: 200,
 			allowBlank: false,
 			editable: true,
-			typeAhead: true, // True to populate and autoselect the remainder of the text being typed after a configurable delay
+			typeAhead: true, 
 			mode: 'local',
-			forceSelection: true, // True to restrict the selected value to one of the values in the list
+			forceSelection: true,
 			triggerAction: 'all',
 			emptyText: '',
-			selectOnFocus: true, //True to select any existing text in the field immediately on focus
+			selectOnFocus: true,
 			fieldLabel: LN('sbi.formbuilder.staticopenfilterwizard.fields.maxselectionnumber.label'),
 			value: openFilter.maxSelectedNumber
 	    });
+	}
+
+	
+	// ---------------------------------------------------------------------------------
+	// Init lookup query  field set
+	// ---------------------------------------------------------------------------------
+	
+	, initLookupQueryFieldSet: function(openFilter) {
+	    this.initStandardQueryFieldSet(openFilter);
+	    this.initCustomQueryFieldSet(openFilter);
+	    
+	    this.standardQueryDetails.twinFieldSet = this.customQueryDetails;
+	    this.customQueryDetails.twinFieldSet = this.standardQueryDetails;
+	    
+	    var toggleFn = function() {
+	    	if(this.checkbox.dom.checked === true) {
+	    		this.enable();
+	    		this.twinFieldSet.checkbox.dom.checked = false;
+	    		this.twinFieldSet.disable();
+			} else {
+				this.disable();
+	    		this.twinFieldSet.checkbox.dom.checked = true;
+	    		this.twinFieldSet.enable();
+			}
+	    }
 	    
 	    
 	    
+	    this.customQueryDetails.onCheckClick = toggleFn.createDelegate(this.customQueryDetails);
+	    this.standardQueryDetails.onCheckClick = toggleFn.createDelegate(this.standardQueryDetails)
 	    
+	    this.queryDetails = new Ext.form.FieldSet({
+            title: LN('sbi.formbuilder.staticopenfilterwizard.lookupquerydetailssection.title'),
+            autoHeight: true,
+            autoWidth: true,
+            items: [this.standardQueryDetails, this.customQueryDetails]
+        });
 	    
-	    
-	    
-	    var orderByFieldStore = new Ext.data.Store({
-	    	proxy: new Ext.data.HttpProxy({
+	    return this.queryDetails;
+	}
+	
+	
+	
+	, initStandardQueryFieldSet: function(openFilter) {
+		// order by field
+		var orderByFieldStore = new Ext.data.Store({
+			proxy: new Ext.data.HttpProxy({
 				url: this.services['getEntityFields']
-		    })
-	    	, reader: new Ext.data.JsonReader({id: 'id'}, [
-                 {name:'id'},
-                 {name:'name'}
-     	    ])
-	    });
-	    
-	    this.orderByFieldCombo = new Ext.form.ComboBox({
-	    	name: 'orderBy',
+			})
+		    , reader: new Ext.data.JsonReader({id: 'id'}, [
+	            {name:'id'},
+	            {name:'name'}
+	        ])
+		});
+		    
+		this.orderByFieldCombo = new Ext.form.ComboBox({
+		   	name: 'orderBy',
 			store: orderByFieldStore, 
 			displayField: 'name',
 			valueField: 'id',
 			maxHeight: 200,
 			allowBlank: true,
 			editable: true,
-			typeAhead: true, // True to populate and autoselect the remainder of the text being typed after a configurable delay
-			forceSelection: true, // True to restrict the selected value to one of the values in the list
+			typeAhead: true, 
+			forceSelection: true,
 			triggerAction: 'all',
 			emptyText: '',
-			selectOnFocus: true, //True to select any existing text in the field immediately on focus
+			selectOnFocus: true,
 			fieldLabel: LN('sbi.formbuilder.staticopenfilterwizard.fields.orderbyfield.label')
-			//value: openFilter.orderBy === undefined ? '' : openFilter.orderBy
-	    });
-	    
-	    this.orderByValue = openFilter.orderBy;
-	    if (this.orderByValue !== undefined && this.orderByValue !== '') {
-		    orderByFieldStore.on('load', function() {
-		    	this.orderByFieldCombo.setValue(this.orderByValue);
-		    }, this);
-		    orderByFieldStore.load();
-	    }
-	    
-	    var orderingTypesStore = new Ext.data.SimpleStore({
-		     fields: ['type', 'nome', 'descrizione'],
-		     data : [
-			    ['NONE', LN('sbi.qbe.selectgridpanel.sortfunc.name.none'), LN('sbi.qbe.selectgridpanel.sortfunc.desc.none')],
-			    ['ASC', LN('sbi.qbe.selectgridpanel.sortfunc.name.asc'), LN('sbi.qbe.selectgridpanel.sortfunc.desc.asc')],
-			    ['DESC', LN('sbi.qbe.selectgridpanel.sortfunc.name.desc'), LN('sbi.qbe.selectgridpanel.sortfunc.desc.desc')]
+		});
+		    
+		this.orderByValue = openFilter.orderBy;
+		if (this.orderByValue !== undefined && this.orderByValue !== '') {
+			orderByFieldStore.on('load', function() {
+				this.orderByFieldCombo.setValue(this.orderByValue);
+			}, this);
+			orderByFieldStore.load();
+		}
+		
+		
+		// order by type
+		var orderingTypesStore = new Ext.data.SimpleStore({
+			fields: ['type', 'nome', 'descrizione'],
+			data : [
+			        ['NONE', LN('sbi.qbe.selectgridpanel.sortfunc.name.none'), LN('sbi.qbe.selectgridpanel.sortfunc.desc.none')],
+				    ['ASC', LN('sbi.qbe.selectgridpanel.sortfunc.name.asc'), LN('sbi.qbe.selectgridpanel.sortfunc.desc.asc')],
+				    ['DESC', LN('sbi.qbe.selectgridpanel.sortfunc.name.desc'), LN('sbi.qbe.selectgridpanel.sortfunc.desc.desc')]
 			] 
 		});
-	     
-	    this.orderTypeCombo = new Ext.form.ComboBox({
-	    	 name: 'orderType',
-	         tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{nome}</div></tpl>',	
-	         allowBlank: true,
-	         editable: false,
-	         store: orderingTypesStore,
-	         displayField:'nome',
-	         valueField:'type',
-	         typeAhead: true,
-	         mode: 'local',
-	         triggerAction: 'all',
-	         autocomplete: 'off',
-	         emptyText: LN('sbi.qbe.selectgridpanel.sortfunc.editor.emptymsg'),
-	         fieldLabel: LN('sbi.formbuilder.staticopenfilterwizard.fields.ordertype.label'),
-	         selectOnFocus: true,
-	         value: openFilter.orderType === undefined ? '' : openFilter.orderType
-        });
-	    
-	    if (openFilter.queryRootEntity === undefined || openFilter.queryRootEntity == null) {
-	    	openFilter.queryRootEntity = false;
-	    } else {
-	    	openFilter.queryRootEntity = (typeof openFilter.queryRootEntity === "string") ? openFilter.queryRootEntity === 'true' : openFilter.queryRootEntity;
-	    }
-
-	    this.queryDetails = {
-            xtype: 'fieldset',
-            title: LN('sbi.formbuilder.staticopenfilterwizard.lookupquerydetailssection.title'),
-            autoHeight: true,
-            autoWidth: true,
-            items: []
-        }
-	    
-	    
-	    // -- PONT -------------------------------------------------------------------------------------
-	    this.queryDetails.items.push({
-			xtype: 'radio',
-			hideLabel: false,
-			fieldLabel: LN('Query type'),
-            boxLabel: LN('Standard'),
-            name: 'queryType',
-            inputValue: false,
-            checked: 'standard'
-		}, {
-			xtype: 'radio',
-			hideLabel: false,
-			fieldLabel: '',
-			labelSeparator: '',
-            boxLabel: LN('Custom'),
-            name: 'queryType',
-            inputValue: true,
-            checked: 'custom'
-		});
-	    
-	    var lookupQueryStore = new Ext.data.Store({
-	    	proxy: new Ext.data.HttpProxy({
-				url: this.services['getEntityFields']
-		    })
-	    	, reader: new Ext.data.JsonReader({id: 'id'}, [
-                 {name:'id'},
-                 {name:'name'}
-     	    ])
+		     
+		this.orderTypeCombo = new Ext.form.ComboBox({
+		   	 name: 'orderType',
+		     tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{nome}</div></tpl>',	
+		     allowBlank: true,
+		     editable: false,
+		     store: orderingTypesStore,
+		     displayField:'nome',
+		     valueField:'type',
+		     typeAhead: true,
+		     mode: 'local',
+		     triggerAction: 'all',
+		     autocomplete: 'off',
+		     emptyText: LN('sbi.qbe.selectgridpanel.sortfunc.editor.emptymsg'),
+		     fieldLabel: LN('sbi.formbuilder.staticopenfilterwizard.fields.ordertype.label'),
+		     selectOnFocus: true,
+		     value: openFilter.orderType === undefined ? '' : openFilter.orderType
 	    });
-	    
+		 
+		// query details
+		this.standardQueryDetails = new Ext.form.FieldSet({
+			checkboxToggle:true,
+	        title: 'Standard query',
+	        autoHeight:true,
+	        autoWidth: true,
+	        defaultType: 'textfield',
+	        collapsed: false,
+	        items :[
+		        this.orderByFieldCombo, 
+		        this.orderTypeCombo,
+		        {
+		        	xtype: 'radio',
+		        	hideLabel: false,
+		        	fieldLabel: LN('sbi.formbuilder.staticopenfilterwizard.lookupquerydetailssection.promptvalues'),
+		        	boxLabel: LN('sbi.formbuilder.staticopenfilterwizard.lookupquerydetailssection.donotqueryrootentity'),
+		        	name: 'queryRootEntity',
+		        	inputValue: false,
+		        	checked: !openFilter.queryRootEntity
+		        }, {
+		        	xtype: 'radio',
+		        	hideLabel: false,
+		        	fieldLabel: '',
+		        	labelSeparator: '',
+		            boxLabel: LN('sbi.formbuilder.staticopenfilterwizard.lookupquerydetailssection.queryrootentity'),
+		            name: 'queryRootEntity',
+		            inputValue: true,
+		            checked: openFilter.queryRootEntity
+		        }
+	        ]
+	    });
+		
+		this.standardQueryDetails.on('render', function() {
+	    	if(this.queryType !== 'standard') {
+	    		this.standardQueryDetails.checkbox.dom.checked = false;
+	    		this.standardQueryDetails.disable();
+	    		//this.customQueryDetails.checkbox.dom.checked = true;
+	    		//this.customQueryDetails.enable();
+	    	} else {
+	    		this.standardQueryDetails.checkbox.dom.checked = true;
+	    		this.standardQueryDetails.enable();
+	    	}
+	    }, this);
+		
+		
+		
+		return this.standardQueryDetails;		   
+	}
+	
+	, initCustomQueryFieldSet: function(openFilter) {
+	
+	    var lookupQueryStore = new Ext.data.JsonStore({
+	        url: this.services['getQuery'],
+	        // reader configs
+	        root: 'results',
+	        idProperty: 'id',
+	        fields: ['id', 'name', 'description']
+	    });
+	    	    
 	    this.lookupQueryCombo = new Ext.form.ComboBox({
 	    	name: 'lookupQuery',
 			store: lookupQueryStore, 
@@ -309,13 +422,12 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 			maxHeight: 200,
 			allowBlank: true,
 			editable: true,
-			typeAhead: true, // True to populate and autoselect the remainder of the text being typed after a configurable delay
-			forceSelection: true, // True to restrict the selected value to one of the values in the list
+			typeAhead: true, 
+			forceSelection: true,
 			triggerAction: 'all',
 			emptyText: '',
-			selectOnFocus: true, //True to select any existing text in the field immediately on focus
+			selectOnFocus: true, 
 			fieldLabel: LN('Lookup query')
-			//value: openFilter.orderBy === undefined ? '' : openFilter.orderBy
 	    });
 	    
 	    this.lookupQueryValue = openFilter.lookupQuery;
@@ -325,57 +437,37 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 		    }, this);
 		    lookupQueryStore.load();
 	    };
+	    	    
+	    this.customQueryDetails = new Ext.form.FieldSet({
+            checkboxToggle:true,
+            title: 'Custom query',
+            autoHeight:true,
+            autoWidth: true,
+            defaultType: 'textfield',
+            collapsed: false,
+            //style: 'border-style:solid;border-width:1px;padding:25px 45px 20px 20px',
+            //maskDisabled: false,
+            items :[this.lookupQueryCombo]
+        });
 	    
-	    this.queryDetails.items.push(this.lookupQueryCombo);
+	    this.customQueryDetails.on('render', function() {
+	    	if(this.queryType === 'standard') {
+	    		 //this.standardQueryDetails.checkbox.dom.checked = true;
+	    		 //this.standardQueryDetails.enable();
+	    		 this.customQueryDetails.checkbox.dom.checked = false;
+	    		 this.customQueryDetails.disable();
+	    	} else {
+	    		this.customQueryDetails.checkbox.dom.checked = true;
+	    		this.customQueryDetails.enable();
+	    	}
+	    }, this);
 	    
 	    
-	    
-	    // -- PONT -------------------------------------------------------------------------------------
-	    
-	  
-		this.queryDetails.items.push(
-			this.orderByFieldCombo, 
-			this.orderTypeCombo,
-			{
-				xtype: 'radio',
-				hideLabel: false,
-				fieldLabel: LN('sbi.formbuilder.staticopenfilterwizard.lookupquerydetailssection.promptvalues'),
-	            boxLabel: LN('sbi.formbuilder.staticopenfilterwizard.lookupquerydetailssection.donotqueryrootentity'),
-	            name: 'queryRootEntity',
-	            inputValue: false,
-	            checked: (openFilter.queryRootEntity === undefined ? true : !openFilter.queryRootEntity)
-			}, {
-				xtype: 'radio',
-				hideLabel: false,
-				fieldLabel: '',
-				labelSeparator: '',
-	            boxLabel: LN('sbi.formbuilder.staticopenfilterwizard.lookupquerydetailssection.queryrootentity'),
-	            name: 'queryRootEntity',
-	            inputValue: true,
-	            checked: (openFilter.queryRootEntity === undefined ? false : openFilter.queryRootEntity)
-		});
-	    
-	    /*
-		this.queryRootEntityCheckBox = new Ext.form.Checkbox({
-	    	boxLabel: 'Interroga dimensione a sè'
-	    	, checked: openFilter.queryRootEntity === undefined ? false : openFilter.queryRootEntity
-	    	, hideLabel: true
-	    });
-	    */
-	    
-	    Ext.form.Field.prototype.msgTarget = 'side';
-	    this.openFilterForm = new Ext.form.FormPanel({
-	        frame: true,
-	        bodyStyle: 'padding:5px 5px 0',
-	        items: [this.filterName, this.filterEntity, this.filterOperatorCombo, this.maxSelectionNumber, 
-	                this.queryDetails],
-	        buttons: [
-	                  {text: LN('sbi.formbuilder.staticopenfilterwizard.buttons.apply'), handler: this.apply, scope: this}
-	                  , {text: LN('sbi.formbuilder.staticopenfilterwizard.buttons.cancel'), handler: function () {this.close();}, scope: this}
-	                 ]
-	    });
-	    
+
+	    return this.customQueryDetails;
 	}
+	
+	
 
 	, apply : function () {
 		var formState = this.getFormState();
@@ -390,6 +482,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 		openFilter.operator = this.filterOperatorCombo.getValue();
 		openFilter.orderBy = this.orderByFieldCombo.getValue();
 		openFilter.orderType = this.orderTypeCombo.getValue();
+		openFilter.lookupQuery = this.lookupQueryCombo.getValue();
 		// end work-around
 		openFilter.field = this.entityId;
 		if (openFilter.maxSelectedNumber == undefined || openFilter.maxSelectedNumber == null || openFilter.maxSelectedNumber == 1) {
@@ -398,6 +491,10 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 			openFilter.singleSelection = false;
 		}
 		openFilter.queryRootEntity = (typeof openFilter.queryRootEntity === "string") ? openFilter.queryRootEntity === 'true' : openFilter.queryRootEntity;
+		
+		openFilter.queryType = (this.customQueryDetails.checkbox.dom.checked === true)? 'custom': 'standard';
+		
+		alert(openFilter.toSource());
 		
 		return openFilter;
 

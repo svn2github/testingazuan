@@ -110,6 +110,9 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditor, Ext.Panel,  {
 		c.orderType = this.orderType || undefined;
 		c.queryRootEntity = this.queryRootEntity || undefined;
 		
+		c.queryType = this.queryType || undefined;
+		c.lookupQuery = this.lookupQuery || undefined;
+		
 		return c;
 	}
 	
@@ -159,17 +162,26 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterEditor, Ext.Panel,  {
 	}
 		
 	, initStore: function() {
-
+		var queryType = this.queryType;
+		var lookupQuery = this.lookupQuery;
 		var entityId = this.field;
 		var orderField = this.orderBy;
 		var orderType = this.orderType;
 		var queryRootEntity = this.queryRootEntity;
 		
+		
 		this.store = new Ext.data.JsonStore({
 			url: this.services['getFilterValuesService']
 			, remoteSort: true
 		});
-		var baseParams = {'ENTITY_ID': entityId, 'ORDER_ENTITY': orderField, 'ORDER_TYPE': orderType, 'QUERY_ROOT_ENTITY': queryRootEntity};
+		var baseParams = {
+				'QUERY_TYPE': queryType, 
+				'LOOKUP_QUERY': lookupQuery, 
+				'ENTITY_ID': entityId, 
+				'ORDER_ENTITY': orderField, 
+				'ORDER_TYPE': orderType, 
+				'QUERY_ROOT_ENTITY': queryRootEntity
+		};
 		this.store.baseParams = baseParams;
 		
 		this.store.on('loadexception', function(store, options, response, e) {

@@ -36,6 +36,7 @@ import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 import it.eng.qbe.bo.DatamartProperties;
+import it.eng.qbe.catalogue.QueryCatalogue;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
@@ -46,6 +47,8 @@ import it.eng.qbe.statment.QbeDataSet;
 import it.eng.qbe.statment.hibernate.HQLStatement;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.utilities.StringUtilities;
+import it.eng.spagobi.engines.qbe.QbeEngineInstance;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datawriter.JSONDataWriter;
 import it.eng.spagobi.utilities.assertion.Assert;
@@ -55,23 +58,23 @@ import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
 /**
- * @author Davide Zerbetto (davide.zerbetto@eng.it)
+ * @authors 
+ * Davide Zerbetto (davide.zerbetto@eng.it)
+ * Andrea Gioia (andrea.gioia@eng.it)
  */
 public class GetFilterValuesAction extends AbstractQbeEngineAction {
 	
 	public static final String SERVICE_NAME = "GET_FILTER_VALUES_ACTION";
 	
 	// request parameters
+	public static String QUERY_TYPE = "QUERY_TYPE";
+	
+	public static String LOOKUP_QUERY = "LOOKUP_QUERY";
+	
 	public static String ENTITY_ID = "ENTITY_ID";
 	public static String ORDER_ENTITY = "ORDER_ENTITY";
 	public static String ORDER_TYPE = "ORDER_TYPE";
 	public static String QUERY_ROOT_ENTITY = "QUERY_ROOT_ENTITY";
-	public static String FILTERS = "FILTERS";	
-	public static String MODE = "MODE";
-	public static String MODE_SIMPLE = "simple";
-	public static String MODE_COMPLETE = "complete";
-	public static String START = "start";
-	public static String LIMIT = "limit";
 	
 	
 	// logger component
@@ -79,6 +82,16 @@ public class GetFilterValuesAction extends AbstractQbeEngineAction {
 	
 	
 	public void service(SourceBean request, SourceBean response) {
+		
+		// custom | standard
+		String queryType;
+		// standard query
+		String entityId;
+		String orderEntity;
+		String orderType;
+		boolean queryRootEntity;
+		// custom query
+		String lookupQuery;
 		
 		IDataStore dataStore = null;
 		QbeDataSet dataSet = null;
@@ -100,7 +113,40 @@ public class GetFilterValuesAction extends AbstractQbeEngineAction {
 		
 			totalTimeMonitor = MonitorFactory.start("QbeEngine.getFilterValuesAction.totalTime");
 			
-			query = buildQuery();
+			queryType = getAttributeAsString(QUERY_TYPE);
+			logger.debug("Parameter [" + QUERY_TYPE + "] is equals to [" + queryType + "]");
+			if(StringUtilities.isEmpty(queryType)) {
+				queryType = "standard";
+				logger.debug("Parameter [" + QUERY_TYPE + "] set up to default value [" + queryType + "]");
+			}
+			
+			lookupQuery = getAttributeAsString(LOOKUP_QUERY);
+			logger.debug("Parameter [" + LOOKUP_QUERY + "] is equals to [" + lookupQuery + "]");
+			
+			entityId = getAttributeAsString(ENTITY_ID);
+			logger.debug("Parameter [" + ENTITY_ID + "] is equals to [" + entityId + "]");
+			
+			orderEntity = getAttributeAsString(ORDER_ENTITY);
+			logger.debug("Parameter [" + ORDER_ENTITY + "] is equals to [" + orderEntity + "]");
+	
+			orderType = getAttributeAsString(ORDER_TYPE);
+			logger.debug("Parameter [" + ORDER_TYPE + "] is equals to [" + orderType + "]");
+			
+			queryRootEntity = getAttributeAsBoolean(QUERY_ROOT_ENTITY);
+			logger.debug("Parameter [" + QUERY_ROOT_ENTITY + "] is equals to [" + queryRootEntity + "]");
+			
+			if(queryType.equalsIgnoreCase("standard")) {
+				query = buildQuery(entityId, orderEntity, orderType, queryRootEntity);
+			} else {
+				QbeEngineInstance engineInstance = this.getEngineInstance();
+				QueryCatalogue queryCatalogue = engineInstance.getQueryCatalogue();
+				query = queryCatalogue.getQuery(lookupQuery);
+				if(query == null) {
+					throw new SpagoBIEngineServiceException(getActionName(), "Impossible to retrive custom query [" + lookupQuery + "] from catalogue");
+				}
+				
+			}
+			
 			statement = getDatamartModel().createStatement( query );
 			
 			statement.setParameters( getEnv() );
@@ -170,28 +216,24 @@ public class GetFilterValuesAction extends AbstractQbeEngineAction {
 	}
 
 
-	private Query buildQuery() throws JSONException {
-		logger.debug("IN");
-		String entityId = getAttributeAsString(ENTITY_ID);
-		logger.debug("entityId: " + entityId);
-		String entityPattern = null;
-		String orderEntity = getAttributeAsString(ORDER_ENTITY);
-		logger.debug("orderEntity: " + orderEntity);
-		String orderEntityPattern = null;
-		String orderType = getAttributeAsString(ORDER_TYPE);
-		logger.debug("orderType: " + orderType);
-		boolean queryRootEntity = getAttributeAsBoolean(QUERY_ROOT_ENTITY);
-		logger.debug("queryRootEntity: " + queryRootEntity);
+	private Query buildQuery(String entityId, String orderEntity, String orderType, boolean queryRootEntity) 
+	throws JSONException {
 		
+		
+		String entityPattern = null;
+		String orderEntityPattern = null;
+		
+		logger.debug("IN");
+			
 		Assert.assertNotNull(entityId, "Parameter [" + ENTITY_ID + "] cannot be null" );
 		
 		// default values for request parameters
-		if (orderType == null || orderType.trim().equals("")) {
+		if (StringUtilities.isEmpty(orderType)) {
 			orderType = "NONE";
 		}
 		
 		if (queryRootEntity) {
-			logger.debug("Must query root entity. Looking for select and order fields...");
+			logger.debug("Must use query root entity. Looking for select and order fields...");
 			DataMartModel model = this.getDatamartModel();
 			DataMartModelStructure structure = model.getDataMartModelStructure();
 			DatamartProperties props = model.getProperties();
@@ -228,7 +270,6 @@ public class GetFilterValuesAction extends AbstractQbeEngineAction {
 				logger.debug("Order field in root entity is " + orderEntity);
 			}
 		}
-		
 		Query query = new Query();
 		query.addSelectFiled(entityId, "NONE", "Valori", true, true, false, (orderEntity != null && !orderEntity.trim().equals("")) ? null : orderType, entityPattern);
 		query.setDistinctClauseEnabled(true);

@@ -163,6 +163,7 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 	}
 	
 	, addFilterItem: function(filtersItem) {
+		//alert('addFilterItem IN');
 		if(this.empty === true) {
 			this.reset();
 			this.empty = false;
@@ -176,7 +177,9 @@ Ext.extend(Sbi.formbuilder.EditorPanel, Ext.Panel, {
 		if(this.rendered === true) {
 			this.filterItemsCt.add(filtersItem);
 			this.doLayout();	
+			//alert('addFilterItem BETWEENN');
 		}
+		//alert('addFilterItem OUT');
 	}
 
 	// --------------------------------------------------------------------------------

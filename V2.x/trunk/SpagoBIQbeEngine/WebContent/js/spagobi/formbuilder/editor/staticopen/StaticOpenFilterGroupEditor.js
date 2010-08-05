@@ -97,8 +97,11 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterGroupEditor, Sbi.formbuilder.EditorPa
 	}
 	
 	, modifyFilter: function(filterConf) {
+		alert('modifyFilter');
 		this.clearContents();
+		alert('clearContents');
 		this.addFilter(filterConf);
+		alert('addFilter');
 	}
 	
 	// --------------------------------------------------------------------------------
@@ -130,6 +133,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterGroupEditor, Sbi.formbuilder.EditorPa
 	}
 	
 	, onFilterWizardShow: function(targetFilter) {
+		alert(targetFilter.getContents().toSource());
 		var staticOpenFilterWindow = new Sbi.formbuilder.StaticOpenFilterWizard(targetFilter.getContents(), {});
 		staticOpenFilterWindow.show();
 		staticOpenFilterWindow.on('apply', this.modifyFilter , this);

@@ -4,7 +4,7 @@
 	
 	<!-- QBE_ENGINE Initializations -->
 	<ACTION name="GET_FILTER_VALUES_ACTION" 
-			class="it.eng.spagobi.engines.qbe.services.GetFilterValuesAction" 
+			class="it.eng.spagobi.engines.qbe.services.core.GetFilterValuesAction" 
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>

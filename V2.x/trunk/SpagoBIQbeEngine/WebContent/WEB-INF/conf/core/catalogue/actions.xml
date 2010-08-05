@@ -50,4 +50,10 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
+	<ACTION name="GET_QUERY_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.core.catalogue.GetQueryAction"  
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 </ACTIONS>

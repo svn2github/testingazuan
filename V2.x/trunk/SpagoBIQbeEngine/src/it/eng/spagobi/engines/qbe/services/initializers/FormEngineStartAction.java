@@ -20,6 +20,11 @@
  **/
 package it.eng.spagobi.engines.qbe.services.initializers;
 
+import java.util.Locale;
+
+import org.apache.log4j.Logger;
+import org.json.JSONObject;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.presentation.DynamicPublisher;
 import it.eng.spagobi.engines.qbe.FormState;
@@ -30,11 +35,6 @@ import it.eng.spagobi.engines.qbe.template.QbeTemplateParseException;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException;
-
-import java.util.Locale;
-
-import org.apache.log4j.Logger;
-import org.json.JSONObject;
 
 
 /**
@@ -123,31 +123,6 @@ public class FormEngineStartAction extends AbstractEngineStartAction {
 			else {
 				qbeEngineInstance.getEnv().put("DOCUMENT", this.getDocumentId());
 			}
-			
-			/*
-			qbeEngineInstance.setAnalysisMetadata( getAnalysisMetadata() );
-			if( getAnalysisStateRowData() != null ) {
-				logger.debug("Loading subobject [" + qbeEngineInstance.getAnalysisMetadata().getName() + "] ...");
-				try {
-					analysisState = new QbeEngineAnalysisState( qbeEngineInstance.getDatamartModel() );
-					analysisState.load( getAnalysisStateRowData() );
-					qbeEngineInstance.setAnalysisState( analysisState );
-				} catch(Throwable t) {
-					SpagoBIEngineStartupException serviceException;
-					String msg = "Impossible load subobject [" + qbeEngineInstance.getAnalysisMetadata().getName() + "].";
-					Throwable rootException = t;
-					while(rootException.getCause() != null) {
-						rootException = rootException.getCause();
-					}
-					String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
-					msg += "\nThe root cause of the error is: " + str;
-					serviceException = new SpagoBIEngineStartupException(ENGINE_NAME, msg, t);
-					
-					throw serviceException;
-				}
-				logger.debug("Subobject [" + qbeEngineInstance.getAnalysisMetadata().getName() + "] succesfully loaded");
-			}
-			*/
 			
 			locale = (Locale)qbeEngineInstance.getEnv().get(EngineConstants.ENV_LOCALE);
 			

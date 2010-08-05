@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="SpagoBI Meta View"
+            id="eng.it.spagobimeta">
+      </category>
+      <view
+            allowMultiple="false"
+            category="eng.it.spagobimeta"
+            class="eng.it.spagobimeta.views.GraphicEditorView"
+            icon="icons/spagobi.gif"
+            id="eng.it.spagobimeta.GraphicEditorView"
+            name="Graphic Editor View"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="eng.it.spagobimeta"
+            class="eng.it.spagobimeta.views.DBStructureView"
+            icon="icons/spagobi.gif"
+            id="eng.it.spagobimeta.DBStructureView"
+            name="DB Structure View"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="eng.it.spagobimeta"
+            class="eng.it.spagobimeta.views.PropertiesView"
+            icon="icons/spagobi.gif"
+            id="eng.it.spagobimeta.PropertiesView"
+            name="Properties View"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="eng.it.spagobimeta.PerspectiveFactory"
+            icon="icons/spagobi.gif"
+            id="eng.it.spagobimeta.perspective"
+            name="SpagoBI Meta Perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewer
+            popupMenuId="org.eclipse.datatools.connectivity.DataSourceExplorerNavigator#PopupMenu"
+            viewerId="org.eclipse.datatools.connectivity.DataSourceExplorerNavigator">
+      </viewer>
+      <viewerContentBinding
+            viewerId="org.eclipse.datatools.connectivity.DataSourceExplorerNavigator">
+         <includes>
+            <contentExtension 
+                              pattern="org.eclipse.ui.navigator.resourceContent">                      
+            </contentExtension>
+            <contentExtension
+                              pattern="org.eclipse.ui.navigator.resources.filters.*">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.examples.navigator.filters.hideNonJavaProjects">
+            </contentExtension>
+         </includes>
+      </viewerContentBinding>
+      <viewerActionBinding
+            viewerId="org.eclipse.datatools.connectivity.DataSourceExplorerNavigator">
+         <includes>
+            <actionExtension
+                  pattern="org.eclipse.ui.navigator.resources.*">
+            </actionExtension>
+         </includes>
+      </viewerActionBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <commonFilter
+            activeByDefault="true"
+            id="org.eclipse.ui.examples.navigator.filters.hideNonJavaProjects"
+            name="Hide non-Java projects">
+         <filterExpression>
+            <not>
+            	<adapt type="org.eclipse.core.resources.IProject">
+            	  <test
+                       property="org.eclipse.core.resources.projectNature"
+                       value="org.eclipse.jdt.core.javanature" />
+            	</adapt>
+            </not>
+         </filterExpression>
+      </commonFilter>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               id="eng.it.spagobimeta.views.DBStructgView"
+               ratio="0.5"
+               relationship="right"
+               relative="org.eclipse.ui.views.TaskList">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="eng.it.spagobimeta.DBStructureViewContribution"
+            targetID="eng.it.spagobimeta.DBStructureView">
+         <action
+               class="eng.it.spagobimeta.views.actions.SelectConnectionAction"
+               icon="icons/connection.png"
+               id="eng.it.spagobimeta.SelectConnectionAction"
+               label="Select Connection"
+               style="push"
+               toolbarPath="additions"
+               tooltip="Select a Connection from the DSE">
+         </action>
+      </viewContribution>
+   </extension>
+
+</plugin>

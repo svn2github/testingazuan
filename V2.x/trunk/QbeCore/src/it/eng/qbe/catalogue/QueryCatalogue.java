@@ -96,6 +96,59 @@ public class QueryCatalogue {
 		return (Query)this.queries.get(id);
 	}
 	
+	public Set getQueryByName(String name) {
+		return getQueryByName(name, false);
+	}
+	public Set getQueryByName(String name, boolean includeSubqueries) {
+		Set results = null;
+		
+		Set q = getAllQueries(includeSubqueries);
+		
+		results = new HashSet();
+		Iterator it = q.iterator();
+		while(it.hasNext()) {
+			String queryId = (String)it.next();
+			Query query = (Query)queries.get(queryId);
+			if(query.getName().equals(name)) {
+				results.add(query);
+			}
+		}
+		
+		return results;
+	}
+	
+	public Set getAllQueries() {
+		return getAllQueries(false);
+	}
+	public Set getAllQueries(boolean includeSubqueries) {
+		Set results = null;
+		
+		if(includeSubqueries) {
+			results = queries.entrySet();
+		} else {
+			results = new HashSet();
+			Iterator it = queries.keySet().iterator();
+			while(it.hasNext()) {
+				String queryId = (String)it.next();
+				Query query = (Query)queries.get(queryId);
+				if(!query.hasParentQuery()) {
+					results.add(query);
+				}
+			}
+		}
+		
+		return results;
+	}
+	
+	
+	
+
+	public Query getFirstQuery() {
+		//String queryId = (String) queries.keySet().iterator().next();
+		Query query = (Query) getAllQueries(false).iterator().next();
+		return query;
+	}
+	
 	public String addQuery(Query query) {
 		Iterator subqueriesIterator;
 		Query subquery;
@@ -187,30 +240,6 @@ public class QueryCatalogue {
 		}
 	}
 
-	public Set getAllQueries(boolean includeSubqueries) {
-		Set results = null;
-		
-		if(includeSubqueries) {
-			results = queries.entrySet();
-		} else {
-			results = new HashSet();
-			Iterator it = queries.keySet().iterator();
-			while(it.hasNext()) {
-				String queryId = (String)it.next();
-				Query query = (Query)queries.get(queryId);
-				if(!query.hasParentQuery()) {
-					results.add(query);
-				}
-			}
-		}
-		
-		return results;
-	}
-
-	public Query getFirstQuery() {
-		//String queryId = (String) queries.keySet().iterator().next();
-		Query query = (Query) getAllQueries(false).iterator().next();
-		return query;
-	}
+	
 	
 }

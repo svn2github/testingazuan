@@ -169,113 +169,126 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 		
 	}
 	
+	
 	, executeCrossNavigation: function( config ) {
 
-		var targetDocument = config.document;
+		var destinationDocument  = config.document;
 		var sourceDocument = this.activeDocument.document;
-		var sourceTarget = config.target;
+		var destinationTarget = config.target;
 		
-		// if targetDocument and sourceDocument are the same document and config.target is "update", 
-		// does not add a new ExecutionWizard into the stack but updates the current one
-		if (targetDocument.label === sourceDocument.label && (config.target !== undefined && config.target == 'update')) {
+		
+		destinationDocument.title = config.title || destinationDocument.title;
+		var isSourceDocUpdate = (destinationDocument.label === sourceDocument.label);
+		
+		// validate destinationTarget
+		if(destinationTarget === 'update' && isSourceDocUpdate === false ) destinationTarget = 'inline';
+		
+		if (destinationTarget === 'update') {
+			this.executeCrossNavUpdate(config);
+		} else if (destinationTarget === 'tab') {
+			if(this.fireEvent('crossnavigationonothertab', config) !== false) {
+				this.executeCrossNavInline(config);
+			}
+		} else if (destinationTarget === 'popup') {
+			this.executeCrossNavigationPopup(config);		    
+		} else {
+			this.executeCrossNavInline(config);
+		}
+	}
+	
+	, executeCrossNavUpdate: function(config) {
+		
+		var params = config.preferences.parameters;
+		var subobjId = config.preferences.subobject.id;
+		
+		var formState;
+				
+		var activeDocumentExecutionPage = this.activeDocument.documentExecutionPage;
+		var executionInstance = activeDocumentExecutionPage.executionInstance;
+			
+		activeDocumentExecutionPage.parametersPanel.clear();
+			
+		try {
+			formState = Ext.urlDecode(params);
+		} catch (err) {
+			alert('Warning: error while decoding parameters: ' + err);
+			formState = null;
+		}
+		
+		if (formState !== null) {
+			activeDocumentExecutionPage.parametersPanel.setFormState(formState);
+			var formStateStr = Sbi.commons.JSON.encode( formState );
+			executionInstance.PARAMETERS = formStateStr;
+		}
 
-			this.activeDocument.documentExecutionPage.parametersPanel.clear();
-			var executionInstance = this.activeDocument.documentExecutionPage.executionInstance;
-			var formState;
-			try {
-				formState = Ext.urlDecode(config.preferences.parameters);
-			} catch (err) {
-				alert('Warning: error while decoding parameters');
-				formState = null;
-			}
-			if (formState !== null) {
-				this.activeDocument.documentExecutionPage.parametersPanel.setFormState(formState);
-				var formStateStr = Sbi.commons.JSON.encode( formState );
-				executionInstance.PARAMETERS = formStateStr;
-			}
-
-			if (config.preferences.subobject.id !== undefined && config.preferences.subobject.id !== null) {
-				executionInstance.SBI_SUBOBJECT_ID = config.preferences.subobject.id;
-			} else {
-				delete executionInstance.SBI_SUBOBJECT_ID;
-			}
-			
-			this.activeDocument.documentExecutionPage.synchronize(executionInstance, false);
-			
-			return;
+		if (subobjId !== undefined && subobjId !== null) {
+			executionInstance.SBI_SUBOBJECT_ID = subobjId;
+		} else {
+			delete executionInstance.SBI_SUBOBJECT_ID;
 		}
 		
+		activeDocumentExecutionPage.synchronize(executionInstance, false);
+	}
+	
+	, executeCrossNavigationPopup: function(config) {
+		config.preferences.executionToolbarConfig = {};
+		config.preferences.executionToolbarConfig.expandBtnVisible = false;
+	
+		var activeDocument = new Sbi.execution.ExecutionPanel( {preferences: config.preferences, isFromCross: true}, config.document );  	
 		
-		if (config.title !== undefined) {
-			config.document.title = config.title;
+		var popupWin = new Ext.Window({
+			layout: 'fit',                	          
+			title: config.title,
+			width: 500,
+			height: 300,	           	
+			closable: true,
+			resizable: true, 
+			minimizable :false,
+			maximizable : false,
+			plain: true,
+			buttons: [{
+        	  text: 'Close',
+              handler: function(){
+              	this.destroy();
+              }
+			}]
+		});
+	    
+		popupWin.add(activeDocument);
+		popupWin.show();
+		activeDocument.execute();
+	    popupWin.doLayout();
+	}
+	
+	, executeCrossNavInline: function(config) {
+		
+		alert(config.preferences.parameters);
+		var formState = Ext.urlDecode(config.preferences.parameters);
+		for(p in formState) {
+			alert(p + ' = ' + formState[p]);			
 		}
-		var tabblocked = true;
-		if (config.target === 'tab') {
-			tabblocked = this.fireEvent('crossnavigationonothertab', config);
-		}else if (config.target === 'popup') {
-		  // load the document in a popup window
-		  tabblocked = false;
-		  config.preferences.executionToolbarConfig = {};
-		  config.preferences.executionToolbarConfig.expandBtnVisible = false;
 		
-		  	var activeDocument = new Sbi.execution.ExecutionPanel( {preferences: config.preferences, isFromCross: true}, config.document );  	
+		this.activeDocument = new Sbi.execution.ExecutionWizard( {preferences: config.preferences, isFromCross: true}, config.document );
+		this.documentsStack.push( this.activeDocument );
 			
-			var popupWin = new Ext.Window({
-	   	        layout: 'fit',                	          
-	           	title: config.title,
-	     	      width: 500,
-	     	      height: 300,
-	           	//	modal: true,
-	           	closable: true,
-	           	//closeAction:'hide',
-	           	resizable: true, 
-	           	minimizable :false,
-	           	maximizable : false,
-	           	plain: true,
-	           	buttons: [{
-	                       text: 'Close',
-	                       handler: function(){
-	                        //  popupWin.hide();
-	           				popupWin.destroy();
-	                       }
-	                   }]
-				});
-		        popupWin.add(activeDocument);
-		        popupWin.show();
-				activeDocument.execute();
-		        popupWin.doLayout();
-		}
+		this.activeDocument.on('beforetoolbarinit', this.setBreadcrumbs, this);
 		
-		if (tabblocked) {
-		
-		  if (this.origDocumentType === 'popup'){
-			 config.preferences.executionToolbarConfig = {};
-		     config.preferences.executionToolbarConfig.expandBtnVisible = false;
-      }
-		  
-			this.activeDocument = new Sbi.execution.ExecutionWizard( {preferences: config.preferences, isFromCross: true}, config.document );
-			this.documentsStack.push( this.activeDocument );
+		this.activeDocument.parametersSelectionPage.on('collapse3', function() {
+			sendMessage({}, 'collapse2'); 
+		}, this);
 			
-			this.activeDocument.on('beforetoolbarinit', this.setBreadcrumbs, this);
-			//this.activeDocument.tb.on('beforeinit', this.setBreadcrumbs, this);	
-			
-			this.activeDocument.parametersSelectionPage.on('collapse3', function() {
+		this.activeDocument.on('documentexecutionpageinit', function() {
+			this.activeDocument.documentExecutionPage.on('crossnavigation', this.loadCrossNavigationTargetDocument , this);
+			this.activeDocument.documentExecutionPage.on('collapse3', function() {
 				sendMessage({}, 'collapse2'); 
 			}, this);
+		}, this);
 			
-			this.activeDocument.on('documentexecutionpageinit', function() {
-				this.activeDocument.documentExecutionPage.on('crossnavigation', this.loadCrossNavigationTargetDocument , this);
-				this.activeDocument.documentExecutionPage.on('collapse3', function() {
-					sendMessage({}, 'collapse2'); 
-				}, this);
-			}, this);
+		this.add(this.activeDocument);
+		this.doLayout();
+		this.getLayout().setActiveItem(this.documentsStack.length -1);
 			
-			this.add(this.activeDocument);
-			this.doLayout();
-			this.getLayout().setActiveItem(this.documentsStack.length -1);
-			
-			this.activeDocument.execute();
-		}
+		this.activeDocument.execute();
 	}
 	
 	, setBreadcrumbs: function(tb) {

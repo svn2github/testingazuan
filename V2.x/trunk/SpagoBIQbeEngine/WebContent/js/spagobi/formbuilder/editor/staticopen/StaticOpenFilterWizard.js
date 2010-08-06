@@ -358,7 +358,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 		// query details
 		this.standardQueryDetails = new Ext.form.FieldSet({
 			checkboxToggle:true,
-	        title: 'Standard query',
+	        title: LN('sbi.formbuilder.staticopenfilterwizard.standardquerydetailssection.title'),
 	        autoHeight:true,
 	        autoWidth: true,
 	        defaultType: 'textfield',
@@ -427,7 +427,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 			triggerAction: 'all',
 			emptyText: '',
 			selectOnFocus: true, 
-			fieldLabel: LN('Lookup query')
+			fieldLabel: LN('sbi.formbuilder.staticopenfilterwizard.customquerydetailssection.lookupquery')
 	    });
 	    
 	    this.lookupQueryValue = openFilter.lookupQuery;
@@ -440,7 +440,7 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 	    	    
 	    this.customQueryDetails = new Ext.form.FieldSet({
             checkboxToggle:true,
-            title: 'Custom query',
+            title: LN('sbi.formbuilder.staticopenfilterwizard.customquerydetailssection.title'),
             autoHeight:true,
             autoWidth: true,
             defaultType: 'textfield',
@@ -493,8 +493,6 @@ Ext.extend(Sbi.formbuilder.StaticOpenFilterWizard, Ext.Window, {
 		openFilter.queryRootEntity = (typeof openFilter.queryRootEntity === "string") ? openFilter.queryRootEntity === 'true' : openFilter.queryRootEntity;
 		
 		openFilter.queryType = (this.customQueryDetails.checkbox.dom.checked === true)? 'custom': 'standard';
-		
-		alert(openFilter.toSource());
 		
 		return openFilter;
 

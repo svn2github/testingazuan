@@ -60,6 +60,7 @@ Sbi.formviewer.StaticOpenFiltersPanel = function(openFilters, config) {
 	        columns: openFilters.length
 	    }
 		, valueDelimiter: '--!;;;;!--'
+		, style:'padding:10px'
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.staticOpenFiltersPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.staticOpenFiltersPanel);

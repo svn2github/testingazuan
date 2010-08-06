@@ -53,6 +53,7 @@ Sbi.formviewer.FormViewerPage = function(template, config) {
 		title: LN('sbi.formviewer.formviewerpage.title')
 		, layout: 'fit'
 		, autoScroll: true
+		//, bodyStyle: 'padding:30px'
 	};
 	
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.formViewerPage) {

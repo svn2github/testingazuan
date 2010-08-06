@@ -60,6 +60,7 @@ Sbi.formviewer.GroupingVariablesPanel = function(groupingVariables, config) {
     	, layoutConfig: {
 	        columns: groupingVariables.length
 	    }
+		, style:'padding:10px'
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.groupingVariablesPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.groupingVariablesPanel);

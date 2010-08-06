@@ -59,6 +59,7 @@ Sbi.formviewer.StaticClosedFiltersPanel = function(staticFilters, config) {
 		, autoScroll: true
 		, autoWidth: true
 		, autoHeight: true
+		, style:'padding:10px'
 	};
 	if (Sbi.settings && Sbi.settings.formviewer && Sbi.settings.formviewer.staticClosedFiltersPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.formviewer.staticClosedFiltersPanel);

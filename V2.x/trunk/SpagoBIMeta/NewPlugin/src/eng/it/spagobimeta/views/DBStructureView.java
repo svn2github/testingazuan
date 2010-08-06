@@ -5,11 +5,14 @@
 
 package eng.it.spagobimeta.views;
 
+import java.awt.Container;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 
 import eng.it.spagobimeta.Activator;
+import eng.it.spagobimeta.util.DSEContentProvider;
+import eng.it.spagobimeta.util.DSELabelProvider;
 import eng.it.spagobimeta.util.DSE_Bridge;
 
 import org.eclipse.datatools.connectivity.IConnectionProfile;
@@ -19,6 +22,7 @@ import org.eclipse.datatools.modelbase.sql.tables.Column;
 import org.eclipse.datatools.modelbase.sql.tables.Table;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.dnd.DND;
@@ -32,7 +36,9 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.internal.views.ViewsPlugin;
@@ -53,13 +59,6 @@ public class DBStructureView extends ViewPart {
 		GridLayout gridLayout = new GridLayout(); 
 		gridLayout.numColumns = 1; 
 		gridLayout.makeColumnsEqualWidth = true;
-		/*
-		container.setLayout(gridLayout); 
-		sc.setContent(container);
-		sc.setExpandHorizontal(true);
-		sc.setExpandVertical(true);
-		sc.setMinSize(container.computeSize(200, 300));
-		*/
 		//createTree();
 	
 	}
@@ -70,8 +69,8 @@ public class DBStructureView extends ViewPart {
 		DSE_Bridge dse = new DSE_Bridge();
 		cp.connect();
 		Database db = dse.get_dbModel(cp);
-		EList<Schema> schemas = dse.get_schemas(db);
-		Schema sch = schemas.get(0);
+		//EList<Schema> schemas = dse.get_schemas(db);
+		//Schema sch = schemas.get(0);
 		//end temp code
 		
 		//create a new container to host the tree structure
@@ -90,8 +89,14 @@ public class DBStructureView extends ViewPart {
 		Group connGroup = new Group(container, SWT.SHADOW_ETCHED_IN);
 		connGroup.setText(cp.getName());
 		connGroup.setLayout(new GridLayout());
+		TreeViewer connTree = new TreeViewer(connGroup);
+		connTree.setContentProvider(new DSEContentProvider());
+		connTree.setLabelProvider(new DSELabelProvider());
+		connTree.setUseHashlookup(true);
+		connTree.setInput(db);
 		
-		final Tree connTree = new Tree(connGroup, SWT.BORDER);
+		/*
+		final Tree connTree = new Tree(connGroup, SWT.BORDER | SWT.VIRTUAL);
 		connTree.setSize(new Point(200, 400));
 		
 		TreeItem tiDB = new TreeItem(connTree, 0);
@@ -131,7 +136,10 @@ public class DBStructureView extends ViewPart {
 
 			    //insert tree columns type
 				TreeItem ttti1 = new TreeItem(tti, 0);
-				ttti1.setText("Type: "+col.getContainedType().getName());
+				if (col.getContainedType()!=null)
+					ttti1.setText("Type: "+col.getContainedType().getName());
+				else
+					ttti1.setText("Type: N/A");
 				image = Activator.getImageDescriptor("icons/arrow.png").createImage();
 			    if (image!=null) ttti1.setImage(image);
 			    
@@ -163,12 +171,14 @@ public class DBStructureView extends ViewPart {
 	         event.data = sData;
 	      }
 	    });
+		*/
 		
 		//setto le datalayout
 	    GridData gd = new GridData(GridData.FILL_BOTH);
 		
 	    connGroup.setLayoutData(gd);
-		connTree.setLayoutData(gd);
+		//connTree.setLayoutData(gd);
+		connTree.getTree().setLayoutData(gd);
 		
 		Point p = container.getSize();
 		if (ender){
@@ -180,28 +190,26 @@ public class DBStructureView extends ViewPart {
 		}
 		container.pack();
 		container.setSize(p);
-		sc.update();
-		sc.redraw();
-		
-		
+
 	}
+	
 	  
 	/**
      * Returns the image descriptor with the given relative path.
      */
     @SuppressWarnings("deprecation")
-	private ImageDescriptor getImageDescriptor(String relativePath) {
-            String iconPath = "icons/";
-            try {
-                    ViewsPlugin plugin = ViewsPlugin.getDefault();
-                    URL installURL = plugin.getDescriptor().getInstallURL();
-                    URL url = new URL(installURL, iconPath + relativePath);
-                    return ImageDescriptor.createFromURL(url);
-            }
-            catch (MalformedURLException e) {
-                    // should not happen
-                    return ImageDescriptor.getMissingImageDescriptor();
-            }
+	public static ImageDescriptor getImageDescriptor(String relativePath) {
+    	String iconPath = "icons/";
+    	try {
+    		eng.it.spagobimeta.Activator plugin = eng.it.spagobimeta.Activator.getDefault();
+    		URL installURL = plugin.getDescriptor().getInstallURL();
+    		URL url = new URL(installURL, iconPath + relativePath);
+    		return ImageDescriptor.createFromURL(url);
+    	}
+    	catch (MalformedURLException e) {
+    		// should not happen
+    		return ImageDescriptor.getMissingImageDescriptor();
+    	}
     }	
 	
 	@Override

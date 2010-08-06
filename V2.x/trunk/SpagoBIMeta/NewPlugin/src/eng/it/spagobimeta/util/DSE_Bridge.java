@@ -11,6 +11,7 @@ import org.eclipse.datatools.connectivity.IConnectionProfile;
 import org.eclipse.datatools.connectivity.IManagedConnection;
 import org.eclipse.datatools.connectivity.ProfileManager;
 import org.eclipse.datatools.connectivity.sqm.core.connection.ConnectionInfo;
+import org.eclipse.datatools.modelbase.sql.schema.Catalog;
 import org.eclipse.datatools.modelbase.sql.schema.Database;
 import org.eclipse.datatools.modelbase.sql.schema.Schema;
 import org.eclipse.datatools.modelbase.sql.tables.Column;
@@ -69,8 +70,21 @@ public class DSE_Bridge {
 	//return the schemas from a Database object
 	public EList<Schema> get_schemas(Database db)
 	{
+		if (db.getVendor().equals("Oracle"))
+		{
+			EList<Catalog> catalogs = get_catalogs(db);
+			Catalog cat = catalogs.get(0);
+			return cat.getSchemas();
+		}
 		EList<Schema> schemas = db.getSchemas();
 		return schemas;
+	}
+	
+	//return the catalogs from a Database object
+	public EList<Catalog> get_catalogs(Database db)
+	{
+		EList<Catalog> catalogs = db.getCatalogs();
+		return catalogs;
 	}
 	
 	//return the tables from a schema object

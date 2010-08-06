@@ -228,6 +228,7 @@ public class TalendEngineConfig {
 	public String getJavaInstallDir() {
         SourceBean config = EnginConf.getInstance().getConfig();
         String installDir= (String)config.getCharacters("java_install_dir");
+        logger.info("java_install_dir:"+installDir);
 		return installDir;
 	}
 	
@@ -239,6 +240,7 @@ public class TalendEngineConfig {
 	public String getJavaBinDir() {
         SourceBean config = EnginConf.getInstance().getConfig();
         String binDir= (String)config.getCharacters("java_bin_dir");
+        logger.info("java_bin_dir:"+binDir);
 		return binDir;
 	}
 	
@@ -249,7 +251,10 @@ public class TalendEngineConfig {
 	 */
 	public String getJavaCommand() {
         SourceBean config = EnginConf.getInstance().getConfig();
-        String command= (String)config.getCharacters("java_command");	
+        SourceBean sbTmp = (SourceBean)config.getAttribute("java_command");
+        String command = (String) sbTmp.getCharacters();
+        //String command= (String)config.getCharacters("java_command");
+        logger.info("java_command:"+command);
 		return command;
 	}
 	
@@ -263,7 +268,8 @@ public class TalendEngineConfig {
 	public String getJavaCommandOption(String optionName) {
         SourceBean config = EnginConf.getInstance().getConfig();
         String commandOption= (String)config.getCharacters("java_command_option_"+optionName);	
-		return commandOption;
+        logger.info("java_command_option_:"+commandOption);
+        return commandOption;
 	}
 	
 	// perl properties

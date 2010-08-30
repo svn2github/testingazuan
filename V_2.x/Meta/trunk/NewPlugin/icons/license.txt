@@ -4,3 +4,6 @@ column icon by http://art.gnome.org/themes/icon GPL
 key icon by http://led24.de/iconset/ Free for commercial use
 arrow icon by http://p.yusukekamiyamane.com/ CC 3.0 Attribuition
 connection icon by http://www.famfamfam.com/about/ CC 2.5 Attribuition
+business model icon http://pc.de/ico/ Free for commercial use (Include link to authors website)
+business class icon http://splashyfish.com/  Free for commercial use 
+business class field icon http://twitter.com/gasyoun Free for commercial use (Pass along with this Readme.txt)

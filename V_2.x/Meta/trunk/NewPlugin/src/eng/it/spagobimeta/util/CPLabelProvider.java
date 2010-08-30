@@ -9,17 +9,18 @@ import org.eclipse.swt.graphics.Image;
 
 import eng.it.spagobimeta.Activator;
 
-public class DSE_LabelProvider extends LabelProvider {
+public class CPLabelProvider extends LabelProvider {
 
-	public DSE_LabelProvider() {
+	public CPLabelProvider() {
 		
 	}
-	//override
+
 	public String getText(Object element){
 		return ((IConnectionProfile)element).getName();
 	}
+	
 	public Image getImage(Object element){
-		return Activator.getImageDescriptor("icons/database.png").createImage();
+		return Activator.getImageDescriptor("database.png").createImage();
 	}
 
 }

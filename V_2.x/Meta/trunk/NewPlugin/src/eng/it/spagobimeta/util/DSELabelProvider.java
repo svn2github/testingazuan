@@ -1,10 +1,11 @@
+/*
+ * LabelProvider for the TreeViewer inside the DBStructureView
+ */
 package eng.it.spagobimeta.util;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.eclipse.datatools.connectivity.IConnectionProfile;
 import org.eclipse.datatools.modelbase.sql.datatypes.SQLDataType;
 import org.eclipse.datatools.modelbase.sql.schema.Database;
 import org.eclipse.datatools.modelbase.sql.schema.Schema;
@@ -14,16 +15,15 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
-
 import eng.it.spagobimeta.Activator;
-import eng.it.spagobimeta.views.DBStructureView;
+
 
 public class DSELabelProvider implements ILabelProvider {
 
 	private Map<ImageDescriptor,Image> imageCache;
 	
 	public DSELabelProvider(){
-		imageCache = new HashMap();
+		imageCache = new HashMap<ImageDescriptor,Image>();
 	}
 	
 	@Override
@@ -31,23 +31,18 @@ public class DSELabelProvider implements ILabelProvider {
 		ImageDescriptor descriptor = null;
 
 		if (element instanceof Database) {
-			descriptor = DBStructureView.getImageDescriptor("database.png");
-			// return Activator.getImageDescriptor("icons/database.png").createImage();
+			descriptor = Activator.getImageDescriptor("database.png");
 		} else if (element instanceof Schema) {
-			descriptor = DBStructureView.getImageDescriptor("database.png");
-			//return Activator.getImageDescriptor("icons/database.png").createImage();
+			descriptor = Activator.getImageDescriptor("database.png");
 		} else if (element instanceof Table) {
-			descriptor = DBStructureView.getImageDescriptor("table.gif");
-			//return Activator.getImageDescriptor("icons/table.gif").createImage();
+			descriptor = Activator.getImageDescriptor("table.gif");
 		} else if (element instanceof Column) {
 			if (((Column)element).isPartOfPrimaryKey())
-				descriptor = DBStructureView.getImageDescriptor("key.png");
+				descriptor = Activator.getImageDescriptor("key.png");
 			else
-				descriptor = DBStructureView.getImageDescriptor("column.png");
-			//return Activator.getImageDescriptor("icons/column.png").createImage();
+				descriptor = Activator.getImageDescriptor("column.png");
 		} else if (element instanceof SQLDataType) {
-			descriptor = DBStructureView.getImageDescriptor("arrow.png");
-			//return Activator.getImageDescriptor("icons/arrow.png").createImage();
+			descriptor = Activator.getImageDescriptor("arrow.png");
 		} 
 		else {
 			return null;
@@ -81,13 +76,12 @@ public class DSELabelProvider implements ILabelProvider {
 
 	@Override
 	public void addListener(ILabelProviderListener arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void dispose() {
-		for (Iterator i = imageCache.values().iterator(); i.hasNext();) 
+		for (Iterator<Image> i = imageCache.values().iterator(); i.hasNext();) 
 		{
 			((Image) i.next()).dispose();
 		}
@@ -96,13 +90,11 @@ public class DSELabelProvider implements ILabelProvider {
 
 	@Override
 	public boolean isLabelProperty(Object arg0, String arg1) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void removeListener(ILabelProviderListener arg0) {
-		// TODO Auto-generated method stub
 
 	}
 

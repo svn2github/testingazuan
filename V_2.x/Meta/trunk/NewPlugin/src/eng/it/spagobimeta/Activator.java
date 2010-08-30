@@ -1,8 +1,16 @@
+/*
+ * Thi class activate the SpagoBI Meta Plugin
+ */
 package eng.it.spagobimeta;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import eng.it.spagobimeta.model.BMWrapper;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -19,7 +27,10 @@ public class Activator extends AbstractUIPlugin {
 	 * The constructor
 	 */
 	public Activator() {
+		//Create singleton class
+		BMWrapper.getInstance();
 	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -49,13 +60,21 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path
-	 *
-	 * @param path the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(String path) {
-		return imageDescriptorFromPlugin(PLUGIN_ID, path);
-	}
+     * Returns the image descriptor with the given relative path.
+     */
+    @SuppressWarnings("deprecation")
+	public static ImageDescriptor getImageDescriptor(String relativePath) {
+    	String iconPath = "icons/";
+    	try {
+    		eng.it.spagobimeta.Activator plugin = eng.it.spagobimeta.Activator.getDefault();
+    		URL installURL = plugin.getDescriptor().getInstallURL();
+    		URL url = new URL(installURL, iconPath + relativePath);
+    		return ImageDescriptor.createFromURL(url);
+    	}
+    	catch (MalformedURLException e) {
+    		// should not happen
+    		return ImageDescriptor.getMissingImageDescriptor();
+    	}
+    }
+
 }

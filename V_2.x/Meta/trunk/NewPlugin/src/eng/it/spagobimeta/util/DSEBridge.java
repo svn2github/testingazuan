@@ -18,10 +18,10 @@ import org.eclipse.datatools.modelbase.sql.tables.Column;
 import org.eclipse.datatools.modelbase.sql.tables.Table;
 import org.eclipse.emf.common.util.EList;
 
-public class DSE_Bridge {
+public class DSEBridge {
 	
-	public DSE_Bridge()
-	{
+	public DSEBridge()
+	{	
 		
 	}
 	

@@ -85,6 +85,7 @@ public class GraphicEditorView extends ViewPart {
 
 	@Override
 	public void setFocus() {
+		sc.setFocus();
 	}
 
 }

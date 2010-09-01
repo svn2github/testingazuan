@@ -15,9 +15,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 import eng.it.spagobimeta.Activator;
@@ -25,14 +28,15 @@ import eng.it.spagobimeta.Activator;
 
 public class AddBCWizardPage1 extends WizardPage {
     private Text bcName;
-    private Label lblName;
+    private Label lblName,lErr;
     private String defaultName;
+    private Table columns,fields;
 
 	protected AddBCWizardPage1(String pageName, String defaultBCName) {
 		super(pageName);
 		setTitle("Business Class Creation");
-		setDescription("This wizard drives you to create a new Business Class in your Business Model. \n "+
-				"Insert Business Class Name and select fields from the original table");
+		setDescription("This wizard drives you to create a new Business Class in your Business Model.\n"+
+				"Insert Business Class Name and select fields from the original table.");
 		ImageDescriptor image = Activator.getImageDescriptor("wizards/createBC.png");
 	    if (image!=null) setImageDescriptor(image);	
 	    defaultName = defaultBCName;
@@ -83,7 +87,7 @@ public class AddBCWizardPage1 extends WizardPage {
 		compLeft.setLayoutData(gdL);
 		Label lblLeftTab = new Label(compLeft,SWT.NONE);
 		lblLeftTab.setText("Table columns: ");
- 		Table columns = new Table(compLeft, SWT.BORDER);
+ 		columns = new Table(compLeft, SWT.BORDER);
  		columns.setLayoutData(gdL);
 
  		//Center buttons -------------------------------
@@ -109,10 +113,78 @@ public class AddBCWizardPage1 extends WizardPage {
 		compRight.setLayoutData(gdR);
 		Label lblRightTab = new Label(compRight,SWT.NONE);
 		lblRightTab.setText("Business Class fields: ");
- 		Table fields = new Table(compRight, SWT.BORDER);
+ 		fields = new Table(compRight, SWT.BORDER);
  		fields.setLayoutData(gdR);
+ 		
+ 		//Bottom error label
+		Composite err = new Composite(composite, SWT.NULL);
+		GridLayout glerr = new GridLayout();
+		glerr.numColumns = 2;
+		err.setLayout(glerr);	
+		lErr = new Label(err, SWT.NULL);
 	    
-        setControl(composite);
+ 		//populate left table widget
+ 		addTableItems();
+ 		
+		//adding listener to Add button		
+ 		bAddField.addListener(SWT.Selection, new Listener() {		
+			@Override
+			public void handleEvent(Event event) {
+				TableItem tiSel = columns.getSelection()[0];
+				if (!tiSel.equals(null)){
+					TableItem ti = new TableItem(fields, 0);
+					ti.setText(tiSel.getText());
+					columns.remove(columns.getSelectionIndex());
+				}
+				checkPageComplete();
+
+			}
+		});
+ 		
+		//adding listener to Remove button		
+ 		bRemoveField.addListener(SWT.Selection, new Listener() {		
+			@Override
+			public void handleEvent(Event event) {
+				TableItem tiSel = fields.getSelection()[0];
+				if (!tiSel.equals(null)){
+					TableItem ti = new TableItem(columns, 0);
+					ti.setText(tiSel.getText());
+					fields.remove(fields.getSelectionIndex());
+				}
+				checkPageComplete();
+
+			}
+		}); 	
+ 		
+ 		//first check
+ 		checkPageComplete();
+ 		
+        //Important: Setting page control
+ 		setControl(composite);
+	}
+	
+	//add the original columns as TableItem (in the left Table Widget)
+	private void addTableItems(){
+		
+		columns.removeAll();
+		fields.removeAll();
+		//TODO: (TO REMOVE) fake temporary population just to try the widget
+		for (int i=0; i<=3;i++){
+			TableItem ti = new TableItem(columns, 0);
+			ti.setText("Column "+i);
+		}
+	}
+	
+	//check if the right conditions to go forward occurred
+	private void checkPageComplete(){
+		if(fields.getItemCount()!=0){
+			setPageComplete(true);
+			lErr.setText("");
+		}
+		else{			
+			lErr.setText("This BC has not a field, please select at least one to continue");
+			setPageComplete(false);
+		}		
 	}
 
 }

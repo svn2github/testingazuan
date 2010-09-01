@@ -8,11 +8,11 @@ import org.eclipse.jface.wizard.Wizard;
 
 public class AddBCWizard extends Wizard {
 	private AddBCWizardPage1 pageOne;
+	private AddBCWizardPage2 pageTwo;
 	private String originalTableName;
 
 	public AddBCWizard(String originalName){
 		super();
-		setNeedsProgressMonitor(true);
 		this.setWindowTitle("Create a new Business Class");
 		this.setHelpAvailable(false);
 		originalTableName = originalName;
@@ -21,12 +21,14 @@ public class AddBCWizard extends Wizard {
 	@Override
 	public void addPages() {
 		pageOne = new AddBCWizardPage1("Create BC page",originalTableName);
+		pageTwo = new AddBCWizardPage2("Set relationship");
 		addPage(pageOne);
+		addPage(pageTwo);
 	}
 	
 	@Override
 	public boolean performFinish() {
-		if (pageOne.isPageComplete())
+		if (pageTwo.isPageComplete())
 			return true;
 		return false;
 	}

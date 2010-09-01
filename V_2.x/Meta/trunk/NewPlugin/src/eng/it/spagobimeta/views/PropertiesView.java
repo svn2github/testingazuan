@@ -5,6 +5,7 @@ package eng.it.spagobimeta.views;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -20,9 +21,9 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.ViewPart;
-
 import eng.it.spagobimeta.model.BusinessClass;
 import eng.it.spagobimeta.model.BusinessModel;
+
 
 public class PropertiesView extends ViewPart implements ISelectionListener {
 

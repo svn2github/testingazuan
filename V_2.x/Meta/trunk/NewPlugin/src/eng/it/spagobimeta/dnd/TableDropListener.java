@@ -4,15 +4,19 @@
 package eng.it.spagobimeta.dnd;
 
 import java.util.ArrayList;
-
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+
 import eng.it.spagobimeta.model.BMWrapper;
 import eng.it.spagobimeta.model.BusinessClass;
 import eng.it.spagobimeta.model.BusinessModel;
+import eng.it.spagobimeta.wizards.AddBCWizard;
 
 
 public class TableDropListener  extends ViewerDropAdapter {
@@ -30,7 +34,15 @@ public class TableDropListener  extends ViewerDropAdapter {
 	// This method performs the actual drop
 	@Override
 	public boolean performDrop(Object data) {
-		//retrieve Business Model
+		//Get Active Window
+		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		//Launch AddBCWizard
+		AddBCWizard wizard = new AddBCWizard(data.toString());
+    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
+		dialog.create();
+    	dialog.open();
+				
+		//Retrieve Business Model
 		ArrayList<BusinessModel> el = (ArrayList<BusinessModel>)bmw.getBm();
 		BusinessModel bm =  el.get(0);
 		

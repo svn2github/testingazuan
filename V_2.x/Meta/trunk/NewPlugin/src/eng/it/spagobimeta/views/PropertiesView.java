@@ -172,8 +172,10 @@ public class PropertiesView extends ViewPart implements ISelectionListener {
 	}
 	
 	public void dispose() {
-		 toolkit.dispose();
-		 super.dispose();
+		//remove listener
+		getViewSite().getPage().removeSelectionListener(this); 
+		toolkit.dispose();
+		super.dispose();
 	}
 
 }

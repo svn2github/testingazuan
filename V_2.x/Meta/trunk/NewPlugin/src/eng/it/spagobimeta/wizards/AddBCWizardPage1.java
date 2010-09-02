@@ -130,8 +130,10 @@ public class AddBCWizardPage1 extends WizardPage {
  		bAddField.addListener(SWT.Selection, new Listener() {		
 			@Override
 			public void handleEvent(Event event) {
-				TableItem tiSel = columns.getSelection()[0];
-				if (!tiSel.equals(null)){
+				TableItem tiSel = null;
+				if (columns.getSelectionCount() > 0)
+					tiSel = columns.getSelection()[0];
+				if (tiSel!= null){
 					TableItem ti = new TableItem(fields, 0);
 					ti.setText(tiSel.getText());
 					columns.remove(columns.getSelectionIndex());
@@ -145,8 +147,10 @@ public class AddBCWizardPage1 extends WizardPage {
  		bRemoveField.addListener(SWT.Selection, new Listener() {		
 			@Override
 			public void handleEvent(Event event) {
-				TableItem tiSel = fields.getSelection()[0];
-				if (!tiSel.equals(null)){
+				TableItem tiSel = null;
+				if (fields.getSelectionCount() > 0)
+					tiSel = fields.getSelection()[0];
+				if (tiSel!= null){
 					TableItem ti = new TableItem(columns, 0);
 					ti.setText(tiSel.getText());
 					fields.remove(fields.getSelectionIndex());

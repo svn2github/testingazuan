@@ -61,5 +61,21 @@
          </action>
       </viewContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="eng.it.spagobimeta"
+            name="SpagoBI Meta">
+      </category>
+      <wizard
+            category="eng.it.spagobimeta"
+            class="eng.it.spagobimeta.wizards.NewSpagoBIMetaProjectWizard"
+            finalPerspective="eng.it.spagobimeta.perspective"
+            icon="icons/spagobi.gif"
+            id="eng.it.spagobimeta.newSpagoBIMetaProjectWizard"
+            name="SpagoBI Meta Project"
+            project="true">
+      </wizard>
+   </extension>
 
 </plugin>

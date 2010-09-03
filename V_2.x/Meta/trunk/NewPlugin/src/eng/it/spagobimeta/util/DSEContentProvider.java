@@ -23,11 +23,19 @@ public class DSEContentProvider implements ITreeContentProvider {
 	public Object[] getChildren(Object parentElement) {
 	    if(parentElement instanceof Database) {
 	    	//with Oracle we have to access the catalog first to get the schemas
-	    	if (((Database)parentElement).getVendor().equals("Oracle"))
-	    	{
+	    	if (((Database)parentElement).getVendor().equalsIgnoreCase("Oracle") || 
+	    		((Database)parentElement).getVendor().equalsIgnoreCase("Ingres") || 
+	    		((Database)parentElement).getVendor().equalsIgnoreCase("Postgres")){
+	    		/* orig
 	    		EList<Catalog> catalogs = ((Database)parentElement).getCatalogs();
 	    		Catalog cat = catalogs.get(0);
 	    		return cat.getSchemas().toArray();
+	    		*/
+	    		EList<Catalog> catalogs = ((Database)parentElement).getCatalogs();
+	    		for (int i=0, l=catalogs.size(); i<l; i++){
+	    			Catalog cat = catalogs.get(i);
+	    			if (cat.getSchemas() != null && cat.getSchemas().size() > 0 ) return cat.getSchemas().toArray();
+	    		}
 	    	}
 	    	
 	    	//other DBMS

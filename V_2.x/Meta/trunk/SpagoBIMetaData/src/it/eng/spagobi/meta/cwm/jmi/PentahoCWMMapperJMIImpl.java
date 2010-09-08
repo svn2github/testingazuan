@@ -26,10 +26,10 @@ public class PentahoCWMMapperJMIImpl  implements ICWMMapper {
 	// -----------------------------------------------------------------------------
     
 	public PhysicalModel decodeModel(ICWM cwm) {
-		return decodeModel((CWMJMIImpl)cwm);
+		return decodeModel((SpagoBICWMJMIImpl)cwm);
 	}
 	
-	public PhysicalModel decodeModel(CWMJMIImpl cwm) {
+	public PhysicalModel decodeModel(SpagoBICWMJMIImpl cwm) {
 		PhysicalModel model = new PhysicalModel( cwm.getName() );
 		
 		model.setCatalog( cwm.getCatalog().getName() );

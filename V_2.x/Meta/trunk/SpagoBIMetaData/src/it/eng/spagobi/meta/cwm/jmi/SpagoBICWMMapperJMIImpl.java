@@ -19,7 +19,7 @@ import java.util.List;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class CWMMapperJMIImpl  implements ICWMMapper {
+public class SpagoBICWMMapperJMIImpl  implements ICWMMapper {
 	
 	
     // -----------------------------------------------------------------------------
@@ -27,10 +27,10 @@ public class CWMMapperJMIImpl  implements ICWMMapper {
 	// -----------------------------------------------------------------------------
     
 	public PhysicalModel decodeModel(ICWM cwm) {
-		return decodeModel((CWMJMIImpl)cwm);
+		return decodeModel((SpagoBICWMJMIImpl)cwm);
 	}
 	
-	public PhysicalModel decodeModel(CWMJMIImpl cwm) {
+	public PhysicalModel decodeModel(SpagoBICWMJMIImpl cwm) {
 		PhysicalModel model = new PhysicalModel( cwm.getName() );
 		
 		model.setCatalog( cwm.getCatalog().getName() );
@@ -42,9 +42,9 @@ public class CWMMapperJMIImpl  implements ICWMMapper {
 	// ENDECODE
 	// -----------------------------------------------------------------------------
 	
-	public CWMJMIImpl encodeModel(PhysicalModel model) {
+	public SpagoBICWMJMIImpl encodeModel(PhysicalModel model) {
 		
-		CWMJMIImpl cwm = new CWMJMIImpl(model.getName());
+		SpagoBICWMJMIImpl cwm = new SpagoBICWMJMIImpl(model.getName());
 		
 		CwmCatalog catalog = cwm.createCatalog(model.getCatalog());
 		
@@ -60,7 +60,7 @@ public class CWMMapperJMIImpl  implements ICWMMapper {
 		return cwm;
 	}	 
 	
-	public CwmTable encodeTable(CWMJMIImpl cwm, PhysicalTable table) {
+	public CwmTable encodeTable(SpagoBICWMJMIImpl cwm, PhysicalTable table) {
 		CwmTable t;
 		t = cwm.createTable(table.getName());
 		return t;

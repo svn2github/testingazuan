@@ -5,8 +5,8 @@ package it.eng.spagobi.meta.cwm;
 
 import it.eng.spagobi.meta.cwm.emf.CWMEMFImpl;
 import it.eng.spagobi.meta.cwm.emf.CWMMapperEMFImpl;
-import it.eng.spagobi.meta.cwm.jmi.CWMJMIImpl;
-import it.eng.spagobi.meta.cwm.jmi.CWMMapperJMIImpl;
+import it.eng.spagobi.meta.cwm.jmi.SpagoBICWMJMIImpl;
+import it.eng.spagobi.meta.cwm.jmi.SpagoBICWMMapperJMIImpl;
 
 /**
  * @author agioia
@@ -17,7 +17,7 @@ public class CWMMapperFactory {
 		ICWMMapper mapper = null;
 		
 		if(implementationType == CWMImplType.JMI) {
-			mapper = new CWMMapperJMIImpl();
+			mapper = new SpagoBICWMMapperJMIImpl();
 		} else {
 			mapper = new CWMMapperEMFImpl();
 		}

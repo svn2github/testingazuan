@@ -44,7 +44,7 @@ import org.netbeans.mdr.NBMDRepositoryImpl;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class CWMJMIImpl implements ICWM {
+public class SpagoBICWMJMIImpl implements ICWM {
 	
 	private static MDRepository        	repository;
 	
@@ -64,7 +64,7 @@ public class CWMJMIImpl implements ICWM {
 	
     public static final String CWM = "CWM-Model-M3"; //$NON-NLS-1$
     
-    public CWMJMIImpl(String modelName) {
+    public SpagoBICWMJMIImpl(String modelName) {
     	try {
             repository = getRepositoryInstance();
             
@@ -159,7 +159,6 @@ public class CWMJMIImpl implements ICWM {
         
         for (Iterator it = mofPackage.getMofPackage().refAllOfClass().iterator(); it.hasNext();) {
             MofPackage result = (MofPackage)it.next();
-            System.out.println(result.getName());
             if (result.getName().equals(packageName)) {
                 return result;
             }

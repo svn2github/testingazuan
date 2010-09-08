@@ -3,8 +3,8 @@
  */
 package it.eng.spagobi.meta.test;
 
-import it.eng.spagobi.meta.cwm.jmi.CWMJMIImpl;
-import it.eng.spagobi.meta.cwm.jmi.CWMMapperJMIImpl;
+import it.eng.spagobi.meta.cwm.jmi.SpagoBICWMJMIImpl;
+import it.eng.spagobi.meta.cwm.jmi.SpagoBICWMMapperJMIImpl;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
@@ -26,16 +26,16 @@ public class LoadModelTest {
 	 */
 	public static void main(String[] args) throws Exception {
 		
-		CWMJMIImpl cwm;
-		CWMMapperJMIImpl modelMapper;
+		SpagoBICWMJMIImpl cwm;
+		SpagoBICWMMapperJMIImpl modelMapper;
 		PhysicalModel model;
 		
         // xmi -> cwm (jmi) -> spagobi model
         
-        cwm = new CWMJMIImpl("modeldemo");
+        cwm = new SpagoBICWMJMIImpl("modeldemo");
         cwm.importFromXMI(FILENAME);
         
-        modelMapper = new CWMMapperJMIImpl();
+        modelMapper = new SpagoBICWMMapperJMIImpl();
         model = modelMapper.decodeModel(cwm);
         
         System.out.println("Model name: " + model.getName());

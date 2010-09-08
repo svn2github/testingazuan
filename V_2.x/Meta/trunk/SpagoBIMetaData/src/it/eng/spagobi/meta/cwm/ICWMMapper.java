@@ -3,7 +3,7 @@
  */
 package it.eng.spagobi.meta.cwm;
 
-import it.eng.spagobi.meta.cwm.jmi.CWMJMIImpl;
+import it.eng.spagobi.meta.cwm.jmi.SpagoBICWMJMIImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
 /**

@@ -1,30 +1,72 @@
 package it.eng.spagobi.meta.model.physical;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import java.util.List;
 /**
  * @model
  */
-public interface PhysicalForeignKey {
+public interface PhysicalForeignKey extends EObject {
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract String getFkName();
+	String getFkName();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getFkName <em>Fk Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Fk Name</em>' attribute.
+	 * @see #getFkName()
+	 * @generated
+	 */
+	void setFkName(String value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setFkName(String fkName);
+	void setFkName(String fkName);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract String getPkName();
+	String getPkName();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getPkName <em>Pk Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Pk Name</em>' attribute.
+	 * @see #getPkName()
+	 * @generated
+	 */
+	void setPkName(String value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setPkName(String pkName);
+	void setPkName(String pkName);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model fkColumnsMany="true"
+	 * @generated
+	 */
+	void setFkColumns(EList<PhysicalColumn> fkColumns);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model pkColumnsMany="true"
+	 * @generated
+	 */
+	void setPkColumns(EList<PhysicalColumn> pkColumns);
 
 	public abstract String getFkTableName();
 
@@ -48,23 +90,15 @@ public interface PhysicalForeignKey {
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract List<PhysicalColumn> getFkColumns();
+	EList<PhysicalColumn> getFkColumns();
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setFkColumns(List<PhysicalColumn> fkColumns);
-
-	/**
-	 * @model
-	 */
-	public abstract List<PhysicalColumn> getPkColumns();
-
-	/**
-	 * @model
-	 */
-	public abstract void setPkColumns(List<PhysicalColumn> pkColumns);
+	EList<PhysicalColumn> getPkColumns();
 
 	public abstract void addFkColumn(PhysicalColumn fkColumn);
 
@@ -72,22 +106,46 @@ public interface PhysicalForeignKey {
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract PhysicalTable getPkTable();
+	PhysicalTable getPkTable();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getPkTable <em>Pk Table</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Pk Table</em>' reference.
+	 * @see #getPkTable()
+	 * @generated
+	 */
+	void setPkTable(PhysicalTable value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setPkTable(PhysicalTable pkTable);
+	void setPkTable(PhysicalTable pkTable);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract PhysicalTable getFkTable();
+	PhysicalTable getFkTable();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getFkTable <em>Fk Table</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Fk Table</em>' reference.
+	 * @see #getFkTable()
+	 * @generated
+	 */
+	void setFkTable(PhysicalTable value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setFkTable(PhysicalTable fkTable);
+	void setFkTable(PhysicalTable fkTable);
 
 }

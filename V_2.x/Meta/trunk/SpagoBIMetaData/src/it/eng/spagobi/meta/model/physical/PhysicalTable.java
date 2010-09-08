@@ -1,31 +1,57 @@
 package it.eng.spagobi.meta.model.physical;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import java.util.List;
 
 /**
  * @model
  */
-public interface PhysicalTable {
+public interface PhysicalTable extends EObject {
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract String getName();
+	String getName();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getName <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Name</em>' attribute.
+	 * @see #getName()
+	 * @generated
+	 */
+	void setName(String value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setName(String name);
+	void setName(String name);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract PhysicalModel getModel();
+	PhysicalModel getModel();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getModel <em>Model</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Model</em>' reference.
+	 * @see #getModel()
+	 * @generated
+	 */
+	void setModel(PhysicalModel value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setModel(PhysicalModel model);
+	void setModel(PhysicalModel model);
 
 	
 	public abstract String getCatalog();
@@ -37,35 +63,86 @@ public interface PhysicalTable {
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract String getComment();
+	String getComment();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getComment <em>Comment</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Comment</em>' attribute.
+	 * @see #getComment()
+	 * @generated
+	 */
+	void setComment(String value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setComment(String comment);
+	void setComment(String comment);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract String getType();
+	String getType();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getType <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Type</em>' attribute.
+	 * @see #getType()
+	 * @generated
+	 */
+	void setType(String value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setType(String type);
+	void setType(String type);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model columnsMany="true"
+	 * @generated
+	 */
+	void setColumns(EList<PhysicalColumn> columns);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model primaryKeysMany="true"
+	 * @generated
+	 */
+	void setPrimaryKeys(EList<PhysicalPrimaryKey> primaryKeys);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model foreignKeysMany="true"
+	 * @generated
+	 */
+	void setForeignKeys(EList<PhysicalForeignKey> foreignKeys);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model foreignKeysMany="true"
+	 * @generated
+	 */
+	void setIncomingKeys(EList<PhysicalForeignKey> foreignKeys);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract List<PhysicalColumn> getColumns();
+	EList<PhysicalColumn> getColumns();
 
-	/**
-	 * @model
-	 */
-	public abstract void setColumns(List<PhysicalColumn> columns);
-
-	
 	public abstract void addColumn(PhysicalColumn column);
 
 	public abstract PhysicalColumn getColumn(String columnName);
@@ -73,37 +150,25 @@ public interface PhysicalTable {
 	
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setPrimaryKeys(List<PhysicalPrimaryKey> primaryKeys);
-	
-	/**
-	 * @model
-	 */
-	public abstract List<PhysicalPrimaryKey> getPrimaryKeys();
+	EList<PhysicalPrimaryKey> getPrimaryKeys();
 	
 	public abstract void addPrimaryKey(PhysicalPrimaryKey primaryKey);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setForeignKeys(List<PhysicalForeignKey> foreignKeys);
-	
-	/**
-	 * @model
-	 */
-	public abstract List<PhysicalForeignKey> getForeignKeys();
+	EList<PhysicalForeignKey> getForeignKeys();
 	
 	public abstract void addForeignKey(PhysicalForeignKey foreignKey);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setIncomingKeys(List<PhysicalForeignKey> foreignKeys);
-	
-	/**
-	 * @model
-	 */
-	public abstract List<PhysicalForeignKey> getIncomingKeys();
+	EList<PhysicalForeignKey> getIncomingKeys();
 	
 	public abstract void addIncomingKey(PhysicalForeignKey foreignKey);
 

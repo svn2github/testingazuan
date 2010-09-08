@@ -1,92 +1,190 @@
 package it.eng.spagobi.meta.model.physical;
 
+import org.eclipse.emf.ecore.EObject;
+
 
 /**
  * @model
  */
-public interface PhysicalColumn {
+public interface PhysicalColumn extends EObject {
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract String getName();
+	String getName();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#getName <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Name</em>' attribute.
+	 * @see #getName()
+	 * @generated
+	 */
+	void setName(String value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setName(String name);
+	void setName(String name);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract String getComment();
+	String getComment();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#getComment <em>Comment</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Comment</em>' attribute.
+	 * @see #getComment()
+	 * @generated
+	 */
+	void setComment(String value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setComment(String comment);
+	void setComment(String comment);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract short getDataType();
+	short getDataType();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#getDataType <em>Data Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Data Type</em>' attribute.
+	 * @see #getDataType()
+	 * @generated
+	 */
+	void setDataType(short value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setDataType(short dataType);
+	void setDataType(short dataType);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract String getTypeName();
+	String getTypeName();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#getTypeName <em>Type Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Type Name</em>' attribute.
+	 * @see #getTypeName()
+	 * @generated
+	 */
+	void setTypeName(String value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setTypeName(String typeName);
+	void setTypeName(String typeName);
 
 	public abstract int getSize();
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setSize(int size);
+	void setSize(int size);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract int getOctectLength();
+	int getOctectLength();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#getOctectLength <em>Octect Length</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Octect Length</em>' attribute.
+	 * @see #getOctectLength()
+	 * @generated
+	 */
+	void setOctectLength(int value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setOctectLength(int octectLength);
+	void setOctectLength(int octectLength);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract int getDecimalDigits();
+	int getDecimalDigits();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#getDecimalDigits <em>Decimal Digits</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Decimal Digits</em>' attribute.
+	 * @see #getDecimalDigits()
+	 * @generated
+	 */
+	void setDecimalDigits(int value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setDecimalDigits(int decimalDigits);
+	void setDecimalDigits(int decimalDigits);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract int getRadix();
+	int getRadix();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#getRadix <em>Radix</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Radix</em>' attribute.
+	 * @see #getRadix()
+	 * @generated
+	 */
+	void setRadix(int value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setRadix(int radix);
+	void setRadix(int radix);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract String getDefaultValue();
+	String getDefaultValue();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#getDefaultValue <em>Default Value</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Default Value</em>' attribute.
+	 * @see #getDefaultValue()
+	 * @generated
+	 */
+	void setDefaultValue(String value);
 
 	/**
 	 * @model
@@ -95,32 +193,68 @@ public interface PhysicalColumn {
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract boolean isNullable();
+	boolean isNullable();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#isNullable <em>Nullable</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Nullable</em>' attribute.
+	 * @see #isNullable()
+	 * @generated
+	 */
+	void setNullable(boolean value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setNullable(boolean nullable);
+	void setNullable(boolean nullable);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract int getPosition();
+	int getPosition();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#getPosition <em>Position</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Position</em>' attribute.
+	 * @see #getPosition()
+	 * @generated
+	 */
+	void setPosition(int value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setPosition(int position);
+	void setPosition(int position);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract PhysicalTable getTable();
+	PhysicalTable getTable();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#getTable <em>Table</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Table</em>' reference.
+	 * @see #getTable()
+	 * @generated
+	 */
+	void setTable(PhysicalTable value);
 
 	/**
 	 * @model
+	 * @generated
 	 */
-	public abstract void setTable(PhysicalTable table);
+	void setTable(PhysicalTable table);
 
 }

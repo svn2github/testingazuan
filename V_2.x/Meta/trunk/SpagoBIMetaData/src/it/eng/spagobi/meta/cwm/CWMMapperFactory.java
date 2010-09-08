@@ -3,9 +3,7 @@
  */
 package it.eng.spagobi.meta.cwm;
 
-import it.eng.spagobi.meta.cwm.emf.CWMEMFImpl;
 import it.eng.spagobi.meta.cwm.emf.CWMMapperEMFImpl;
-import it.eng.spagobi.meta.cwm.jmi.SpagoBICWMJMIImpl;
 import it.eng.spagobi.meta.cwm.jmi.SpagoBICWMMapperJMIImpl;
 
 /**

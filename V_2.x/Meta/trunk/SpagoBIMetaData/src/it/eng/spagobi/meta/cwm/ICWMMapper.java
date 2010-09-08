@@ -3,11 +3,10 @@
  */
 package it.eng.spagobi.meta.cwm;
 
-import it.eng.spagobi.meta.cwm.jmi.SpagoBICWMJMIImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
 /**
- * @author agioia
+ * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
 public interface ICWMMapper {

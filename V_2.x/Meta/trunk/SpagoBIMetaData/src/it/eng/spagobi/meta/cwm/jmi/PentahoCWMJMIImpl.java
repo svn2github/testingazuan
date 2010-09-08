@@ -3,6 +3,9 @@
  */
 package it.eng.spagobi.meta.cwm.jmi;
 
+import it.eng.spagobi.meta.cwm.CWMImplType;
+import it.eng.spagobi.meta.cwm.ICWM;
+
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -24,7 +27,6 @@ import org.netbeans.api.xmi.XMIReaderFactory;
 import org.netbeans.api.xmi.XMIWriter;
 import org.netbeans.api.xmi.XMIWriterFactory;
 import org.netbeans.mdr.NBMDRepositoryImpl;
-
 import org.pentaho.pms.cwm.pentaho.PentahoPackage;
 import org.pentaho.pms.cwm.pentaho.meta.MetaPackage;
 import org.pentaho.pms.cwm.pentaho.meta.behavioral.BehavioralPackage;
@@ -37,12 +39,6 @@ import org.pentaho.pms.cwm.pentaho.meta.olap.OlapPackage;
 import org.pentaho.pms.cwm.pentaho.meta.relational.CwmCatalog;
 import org.pentaho.pms.cwm.pentaho.meta.relational.CwmTable;
 import org.pentaho.pms.cwm.pentaho.meta.relational.RelationalPackage;
-
-
-
-import it.eng.spagobi.meta.cwm.CWMImplType;
-import it.eng.spagobi.meta.cwm.ICWM;
-import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

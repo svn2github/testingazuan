@@ -3,21 +3,11 @@
  */
 package it.eng.spagobi.meta.initializer;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-
-import it.eng.spagobi.meta.model.physical.PhysicalColumn;
-import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
-import it.eng.spagobi.meta.model.physical.PhysicalTable;
+
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

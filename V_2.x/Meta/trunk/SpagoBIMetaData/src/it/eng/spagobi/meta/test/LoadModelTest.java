@@ -5,15 +5,11 @@ package it.eng.spagobi.meta.test;
 
 import it.eng.spagobi.meta.cwm.jmi.SpagoBICWMJMIImpl;
 import it.eng.spagobi.meta.cwm.jmi.SpagoBICWMMapperJMIImpl;
-import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
 
 
 /**
- * @author agioia
+ * @author Andrea Gioia (andrea.gioi@eng.it)
  *
  */
 public class LoadModelTest {

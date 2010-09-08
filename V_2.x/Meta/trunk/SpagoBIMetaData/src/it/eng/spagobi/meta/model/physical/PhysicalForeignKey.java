@@ -1,10 +1,8 @@
 /**
  * 
  */
-package it.eng.spagobi.meta.initializer;
+package it.eng.spagobi.meta.model.physical;
 
-import it.eng.spagobi.meta.model.physical.PhysicalColumn;
-import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.ArrayList;
 import java.util.List;

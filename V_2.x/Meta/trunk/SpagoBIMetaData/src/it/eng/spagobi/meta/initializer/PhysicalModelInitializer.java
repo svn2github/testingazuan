@@ -14,6 +14,7 @@ import java.util.Map;
 
 
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
+import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;

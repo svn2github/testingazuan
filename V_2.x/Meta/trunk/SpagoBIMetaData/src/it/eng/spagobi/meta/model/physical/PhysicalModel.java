@@ -3,7 +3,6 @@
  */
 package it.eng.spagobi.meta.model.physical;
 
-import it.eng.spagobi.meta.initializer.PhysicalForeignKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;

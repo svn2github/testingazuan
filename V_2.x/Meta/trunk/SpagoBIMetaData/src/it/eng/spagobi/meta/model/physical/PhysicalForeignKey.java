@@ -1,10 +1,12 @@
 package it.eng.spagobi.meta.model.physical;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import java.util.List;
 /**
  * @model
  */
-public interface PhysicalForeignKey {
+public interface PhysicalForeignKey extends EObject {
 
 	/**
 	 * @model
@@ -32,13 +34,13 @@ public interface PhysicalForeignKey {
 	/**
 	 * @model
 	 */
-	public abstract List<PhysicalColumn> getFkColumns();
+	public abstract EList<PhysicalColumn> getFkColumns();
 	public abstract void setFkColumns(List<PhysicalColumn> fkColumns);
 
 	/**
 	 * @model
 	 */
-	public abstract List<PhysicalColumn> getPkColumns();
+	public abstract EList<PhysicalColumn> getPkColumns();
 	public abstract void setPkColumns(List<PhysicalColumn> pkColumns);
 
 	public abstract void addFkColumn(PhysicalColumn fkColumn);

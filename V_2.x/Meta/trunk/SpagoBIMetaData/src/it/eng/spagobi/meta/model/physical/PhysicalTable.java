@@ -1,11 +1,13 @@
 package it.eng.spagobi.meta.model.physical;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import java.util.List;
 
 /**
  * @model
  */
-public interface PhysicalTable {
+public interface PhysicalTable extends EObject {
 
 	/**
 	 * @model
@@ -41,7 +43,7 @@ public interface PhysicalTable {
 	/**
 	 * @model
 	 */
-	public abstract List<PhysicalColumn> getColumns();
+	public abstract EList<PhysicalColumn> getColumns();
 	public abstract void setColumns(List<PhysicalColumn> columns);
 
 	public abstract void addColumn(PhysicalColumn column);
@@ -51,7 +53,7 @@ public interface PhysicalTable {
 	/**
 	 * @model
 	 */
-	public abstract List<PhysicalPrimaryKey> getPrimaryKeys();
+	public abstract EList<PhysicalPrimaryKey> getPrimaryKeys();
 	public abstract void setPrimaryKeys(List<PhysicalPrimaryKey> primaryKeys);
 	
 	public abstract void addPrimaryKey(PhysicalPrimaryKey primaryKey);
@@ -59,7 +61,7 @@ public interface PhysicalTable {
 	/**
 	 * @model
 	 */
-	public abstract List<PhysicalForeignKey> getForeignKeys();
+	public abstract EList<PhysicalForeignKey> getForeignKeys();
 	public abstract void setForeignKeys(List<PhysicalForeignKey> foreignKeys);
 	
 	public abstract void addForeignKey(PhysicalForeignKey foreignKey);
@@ -67,7 +69,7 @@ public interface PhysicalTable {
 	/**
 	 * @model
 	 */
-	public abstract List<PhysicalForeignKey> getIncomingKeys();
+	public abstract EList<PhysicalForeignKey> getIncomingKeys();
 	public abstract void setIncomingKeys(List<PhysicalForeignKey> foreignKeys);
 	
 	public abstract void addIncomingKey(PhysicalForeignKey foreignKey);

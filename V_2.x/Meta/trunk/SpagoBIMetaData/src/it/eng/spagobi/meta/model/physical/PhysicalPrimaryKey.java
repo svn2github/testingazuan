@@ -1,11 +1,13 @@
 package it.eng.spagobi.meta.model.physical;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import java.util.List;
 
 /**
  * @model
  */
-public interface PhysicalPrimaryKey {
+public interface PhysicalPrimaryKey extends EObject {
 
 	/**
 	 * @model
@@ -29,7 +31,7 @@ public interface PhysicalPrimaryKey {
 	/**
 	 * @model
 	 */
-	public abstract List<PhysicalColumn> getColumns();
+	public abstract EList<PhysicalColumn> getColumns();
 	public abstract void setColumns(List<PhysicalColumn> columns);
 
 	public abstract void addColumns(List<PhysicalColumn> columns);

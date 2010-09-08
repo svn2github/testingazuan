@@ -1,18 +1,22 @@
 package it.eng.spagobi.meta.model.physical;
 
+import org.eclipse.emf.ecore.EObject;
+
 
 /**
  * @model
  */
-public interface PhysicalColumn {
+public interface PhysicalColumn extends EObject {
 
 	/**
+	 * @return the name of the column
 	 * @model
 	 */
 	public abstract String getName();
 	public abstract void setName(String name);
 
 	/**
+	 * @return the comment describing the column (may be null)
 	 * @model
 	 */
 	public abstract String getComment();

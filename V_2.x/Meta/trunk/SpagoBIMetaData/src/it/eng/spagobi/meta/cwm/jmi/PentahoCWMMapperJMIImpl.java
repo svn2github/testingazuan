@@ -5,8 +5,8 @@ package it.eng.spagobi.meta.cwm.jmi;
 
 import it.eng.spagobi.meta.cwm.ICWM;
 import it.eng.spagobi.meta.cwm.ICWMMapper;
-import it.eng.spagobi.meta.model.physical.PhysicalModel;
-import it.eng.spagobi.meta.model.physical.PhysicalTable;
+import it.eng.spagobi.meta.model.physical.pojo.PhysicalModel;
+import it.eng.spagobi.meta.model.physical.pojo.PhysicalTable;
 
 import java.util.Collection;
 import java.util.List;

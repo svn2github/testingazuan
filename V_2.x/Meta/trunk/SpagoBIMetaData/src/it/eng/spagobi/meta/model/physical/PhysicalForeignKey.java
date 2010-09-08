@@ -1,180 +1,93 @@
-/**
- * 
- */
 package it.eng.spagobi.meta.model.physical;
 
-
-import java.util.ArrayList;
 import java.util.List;
-
-
 /**
- * @author Andrea Gioia (andrea.gioia@eng.it)
- *
+ * @model
  */
-public class PhysicalForeignKey {
-	
-	/* ----------------------------------------------------------------
-	 * ForeignKey metadata
-	 * ---------------------------------------------------------------- 
+public interface PhysicalForeignKey {
+
+	/**
+	 * @model
 	 */
-	
-	// foreign key name (may be null)
-	private String fkName;
-	
-	// primary key name (may be null)
-	private String pkName;
-	
-	// foreign key table name (...from table)
-	private String fkTableName;
-	
-	// foreign key column names (...from columns)
-	private List<String> fkColumnNames;
-	
-	// primary key table name (...to table)
-	private String pkTableName;
-	
-	// primary key column names (...to columns)
-	private List<String> pkColumnNames;
-	
-	
-	/* ----------------------------------------------------------------
-	 * Referenced objects
-	 * ---------------------------------------------------------------- 
+	public abstract String getFkName();
+
+	/**
+	 * @model
 	 */
-	
-	// OWNED BY ...
-	
-	private PhysicalTable pkTable;
-	
-	private PhysicalTable fkTable;
-	
-	// OWNER OF ...
-	
-	// foreign key columns (...from columns)
-	private List<PhysicalColumn> fkColumns;
-	
-	// primary key columns  (...to columns)
-	private List<PhysicalColumn> pkColumns;
-	
-	
-	/* ----------------------------------------------------------------
-	 * Costructor methods
-	 * ---------------------------------------------------------------- 
+	public abstract void setFkName(String fkName);
+
+	/**
+	 * @model
 	 */
-	
-	public PhysicalForeignKey() {
-		fkColumnNames = new ArrayList();
-		pkColumnNames = new ArrayList();
-		fkColumns = new ArrayList();
-		pkColumns = new ArrayList();
-	}
+	public abstract String getPkName();
 
-
-
-	/* ----------------------------------------------------------------
-	 * Accessor methods 
-	 * ---------------------------------------------------------------- 
+	/**
+	 * @model
 	 */
-	
-	// META
-	public String getFkName() {
-		return fkName;
-	}
+	public abstract void setPkName(String pkName);
 
-	public void setFkName(String fkName) {
-		this.fkName = fkName;
-	}
+	public abstract String getFkTableName();
 
-	public String getPkName() {
-		return pkName;
-	}
+	public abstract void setFkTableName(String fkTableName);
 
-	public void setPkName(String pkName) {
-		this.pkName = pkName;
-	}
+	public abstract List<String> getFkColumnNames();
 
-	public String getFkTableName() {
-		return fkTableName;
-	}
+	public abstract void setFkColumnNames(List<String> fkColumnNames);
 
-	public void setFkTableName(String fkTableName) {
-		this.fkTableName = fkTableName;
-	}
+	public abstract String getPkTableName();
 
-	public List<String> getFkColumnNames() {
-		return fkColumnNames;
-	}
+	public abstract void setPkTableName(String pkTableName);
 
-	public void setFkColumnNames(List<String> fkColumnNames) {
-		this.fkColumnNames = fkColumnNames;
-	}
+	public abstract List<String> getPkColumnNames();
 
-	public String getPkTableName() {
-		return pkTableName;
-	}
+	public abstract void addFkColumnName(String columnName);
 
-	public void setPkTableName(String pkTableName) {
-		this.pkTableName = pkTableName;
-	}
+	public abstract void addPkColumnName(String columnName);
 
-	public List<String> getPkColumnNames() {
-		return pkColumnNames;
-	}
+	public abstract void setPkColumnNames(List<String> pkColumnNames);
 
-	public void addFkColumnName(String columnName) {
-		pkColumnNames.add( columnName );	
-	}
-	
-	public void addPkColumnName(String columnName) {
-		pkColumnNames.add( columnName );	
-	}
-	
-	
-	public void setPkColumnNames(List<String> pkColumnNames) {
-		this.pkColumnNames = pkColumnNames;
-	}
+	/**
+	 * @model
+	 */
+	public abstract List<PhysicalColumn> getFkColumns();
 
-	
-	// OWNER 
-	public List<PhysicalColumn> getFkColumns() {
-		return fkColumns;
-	}
-	
-	public void setFkColumns(List<PhysicalColumn> fkColumns) {
-		this.fkColumns = fkColumns;
-	}
+	/**
+	 * @model
+	 */
+	public abstract void setFkColumns(List<PhysicalColumn> fkColumns);
 
-	public List<PhysicalColumn> getPkColumns() {
-		return pkColumns;
-	}
+	/**
+	 * @model
+	 */
+	public abstract List<PhysicalColumn> getPkColumns();
 
-	public void setPkColumns(List<PhysicalColumn> pkColumns) {
-		this.pkColumns = pkColumns;
-	}
-	
-	public void addFkColumn(PhysicalColumn fkColumn) {
-		this.fkColumns.add(fkColumn);
-	}
-	
-	public void addPkColumn(PhysicalColumn pkColumn) {
-		this.pkColumns.add(pkColumn);
-	}
+	/**
+	 * @model
+	 */
+	public abstract void setPkColumns(List<PhysicalColumn> pkColumns);
 
-	// OWNED
-	
-	public PhysicalTable getPkTable() {
-		return pkTable;
-	}
-	public void setPkTable(PhysicalTable pkTable) {
-		this.pkTable = pkTable;
-	}
+	public abstract void addFkColumn(PhysicalColumn fkColumn);
 
-	public PhysicalTable getFkTable() {
-		return fkTable;
-	}
-	public void setFkTable(PhysicalTable fkTable) {
-		this.fkTable = fkTable;
-	}
-		
+	public abstract void addPkColumn(PhysicalColumn pkColumn);
+
+	/**
+	 * @model
+	 */
+	public abstract PhysicalTable getPkTable();
+
+	/**
+	 * @model
+	 */
+	public abstract void setPkTable(PhysicalTable pkTable);
+
+	/**
+	 * @model
+	 */
+	public abstract PhysicalTable getFkTable();
+
+	/**
+	 * @model
+	 */
+	public abstract void setFkTable(PhysicalTable fkTable);
+
 }

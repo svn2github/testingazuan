@@ -1,190 +1,126 @@
-/**
- * 
- */
 package it.eng.spagobi.meta.model.physical;
 
+
 /**
- * @author Andrea Gioia (andrea.gioia@eng.it)
- *
+ * @model
  */
-public class PhysicalColumn {
-	
-	/* ----------------------------------------------------------------
-	 * Column metadata
-	 * ---------------------------------------------------------------- 
+public interface PhysicalColumn {
+
+	/**
+	 * @model
 	 */
-	
-	// column name
-	private String name;
-	
-	//comment describing column (may be null)
-	private String comment;
-	
-	// SQL type from java.sql.Types
-	private short dataType;
-	
-	//data source dependent type name, for a UDT the type name is fully qualified
-	private String typeName;
-	
-	// for char or date types this is the maximum number of characters (length), for numeric or decimal types this is precision.
-	private int size;
-	
-	// for char types the maximum number of bytes in the column
-	private int octectLength;
-	
-	// for numeric or decimal types this is the number of fractional digits
-	private int decimalDigits;
-	
-	// for numeric or decimal types this is the radix (typically either 10 or 2)
-	private int radix;
-	
-	// column's default value (may be null)
-	private String defaultValue;
-	
-	/*
-	 * true if the column allows null value; false otherwise
+	public abstract String getName();
+
+	/**
+	 * @model
 	 */
-	private boolean nullable;
-	
-	// index of column in table (starting at 1)
-	private int position;
-	
-	/* ----------------------------------------------------------------
-	 * Referenced objects
-	 * ---------------------------------------------------------------- 
+	public abstract void setName(String name);
+
+	/**
+	 * @model
 	 */
-	
-	// OWNED BY ....
-	
-	private PhysicalTable table;
+	public abstract String getComment();
 
-
-	
-	/* ----------------------------------------------------------------
-	 * Accessor methods 
-	 * ---------------------------------------------------------------- 
+	/**
+	 * @model
 	 */
+	public abstract void setComment(String comment);
 
-	public String getName() {
-		return name;
-	}
+	/**
+	 * @model
+	 */
+	public abstract short getDataType();
 
+	/**
+	 * @model
+	 */
+	public abstract void setDataType(short dataType);
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	/**
+	 * @model
+	 */
+	public abstract String getTypeName();
 
+	/**
+	 * @model
+	 */
+	public abstract void setTypeName(String typeName);
 
-	public String getComment() {
-		return comment;
-	}
+	public abstract int getSize();
 
+	/**
+	 * @model
+	 */
+	public abstract void setSize(int size);
 
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
+	/**
+	 * @model
+	 */
+	public abstract int getOctectLength();
 
+	/**
+	 * @model
+	 */
+	public abstract void setOctectLength(int octectLength);
 
-	public short getDataType() {
-		return dataType;
-	}
+	/**
+	 * @model
+	 */
+	public abstract int getDecimalDigits();
 
+	/**
+	 * @model
+	 */
+	public abstract void setDecimalDigits(int decimalDigits);
 
-	public void setDataType(short dataType) {
-		this.dataType = dataType;
-	}
+	/**
+	 * @model
+	 */
+	public abstract int getRadix();
 
+	/**
+	 * @model
+	 */
+	public abstract void setRadix(int radix);
 
-	public String getTypeName() {
-		return typeName;
-	}
+	/**
+	 * @model
+	 */
+	public abstract String getDefaultValue();
 
+	/**
+	 * @model
+	 */
+	public abstract void setDefaultValue(String defaultValue);
 
-	public void setTypeName(String typeName) {
-		this.typeName = typeName;
-	}
+	/**
+	 * @model
+	 */
+	public abstract boolean isNullable();
 
+	/**
+	 * @model
+	 */
+	public abstract void setNullable(boolean nullable);
 
-	public int getSize() {
-		return size;
-	}
+	/**
+	 * @model
+	 */
+	public abstract int getPosition();
 
+	/**
+	 * @model
+	 */
+	public abstract void setPosition(int position);
 
-	public void setSize(int size) {
-		this.size = size;
-	}
+	/**
+	 * @model
+	 */
+	public abstract PhysicalTable getTable();
 
+	/**
+	 * @model
+	 */
+	public abstract void setTable(PhysicalTable table);
 
-	public int getOctectLength() {
-		return octectLength;
-	}
-
-
-	public void setOctectLength(int octectLength) {
-		this.octectLength = octectLength;
-	}
-
-
-	public int getDecimalDigits() {
-		return decimalDigits;
-	}
-
-
-	public void setDecimalDigits(int decimalDigits) {
-		this.decimalDigits = decimalDigits;
-	}
-
-
-	public int getRadix() {
-		return radix;
-	}
-
-
-	public void setRadix(int radix) {
-		this.radix = radix;
-	}
-
-
-	public String getDefaultValue() {
-		return defaultValue;
-	}
-
-
-	public void setDefaultValue(String defaultValue) {
-		this.defaultValue = defaultValue;
-	}
-
-
-	public boolean isNullable() {
-		return nullable;
-	}
-
-
-	public void setNullable(boolean nullable) {
-		this.nullable = nullable;
-	}
-
-
-	public int getPosition() {
-		return position;
-	}
-
-
-	public void setPosition(int position) {
-		this.position = position;
-	}
-
-
-	public PhysicalTable getTable() {
-		return table;
-	}
-
-
-	public void setTable(PhysicalTable table) {
-		this.table = table;
-	}
-	
-	
-	
-	
 }

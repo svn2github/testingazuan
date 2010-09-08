@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="libs/jmi/openide-util.jar"/>
 	<classpathentry kind="lib" path="libs/jdbc/postgresql-8.2-505.jdbc2ee.jar"/>
 	<classpathentry kind="lib" path="libs/jdbc/ojdbc14.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBICWMJMI"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

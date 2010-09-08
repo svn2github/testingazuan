@@ -3,23 +3,22 @@
  */
 package it.eng.spagobi.meta.cwm.jmi;
 
-import it.eng.spagobi.meta.cwm.ICWM;
-import it.eng.spagobi.meta.cwm.ICWMMapper;
-import it.eng.spagobi.meta.cwm.jmi.spagobi.meta.relational.CwmCatalog;
-import it.eng.spagobi.meta.cwm.jmi.spagobi.meta.relational.CwmTable;
-import it.eng.spagobi.meta.model.physical.PhysicalModel;
-import it.eng.spagobi.meta.model.physical.PhysicalTable;
-
 import java.util.Collection;
 import java.util.List;
 
+import it.eng.spagobi.meta.cwm.ICWM;
+import it.eng.spagobi.meta.cwm.ICWMMapper;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
+import org.pentaho.pms.cwm.pentaho.meta.relational.CwmCatalog;
+import org.pentaho.pms.cwm.pentaho.meta.relational.CwmTable;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class CWMMapperJMIImpl  implements ICWMMapper {
+public class PentahoCWMMapperJMIImpl  implements ICWMMapper {
 	
 	
     // -----------------------------------------------------------------------------
@@ -42,9 +41,9 @@ public class CWMMapperJMIImpl  implements ICWMMapper {
 	// ENDECODE
 	// -----------------------------------------------------------------------------
 	
-	public CWMJMIImpl encodeModel(PhysicalModel model) {
+	public PentahoCWMJMIImpl encodeModel(PhysicalModel model) {
 		
-		CWMJMIImpl cwm = new CWMJMIImpl(model.getName());
+		PentahoCWMJMIImpl cwm = new PentahoCWMJMIImpl(model.getName());
 		
 		CwmCatalog catalog = cwm.createCatalog(model.getCatalog());
 		
@@ -60,7 +59,7 @@ public class CWMMapperJMIImpl  implements ICWMMapper {
 		return cwm;
 	}	 
 	
-	public CwmTable encodeTable(CWMJMIImpl cwm, PhysicalTable table) {
+	public CwmTable encodeTable(PentahoCWMJMIImpl cwm, PhysicalTable table) {
 		CwmTable t;
 		t = cwm.createTable(table.getName());
 		return t;

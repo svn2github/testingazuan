@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8' ?>
-<XMI xmi.version = '1.2' xmlns:CWMTFM = 'org.omg.xmi.namespace.CWMTFM' xmlns:CWM = 'org.omg.xmi.namespace.CWM'
-  xmlns:CWMMDB = 'org.omg.xmi.namespace.CWMMDB' xmlns:CWMOLAP = 'org.omg.xmi.namespace.CWMOLAP'
-  xmlns:CWMRDB = 'org.omg.xmi.namespace.CWMRDB' timestamp = 'Wed Sep 08 12:42:40 CEST 2010'>
+<XMI xmi.version = '1.2' xmlns:CWM = 'org.omg.xmi.namespace.CWM' xmlns:CWMTFM = 'org.omg.xmi.namespace.CWMTFM'
+  xmlns:CWMRDB = 'org.omg.xmi.namespace.CWMRDB' xmlns:CWMOLAP = 'org.omg.xmi.namespace.CWMOLAP'
+  xmlns:CWMMDB = 'org.omg.xmi.namespace.CWMMDB' timestamp = 'Wed Sep 08 14:33:57 CEST 2010'>
   <XMI.header>
     <XMI.documentation>
       <XMI.exporter>Netbeans XMI Writer</XMI.exporter>

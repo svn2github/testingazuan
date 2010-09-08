@@ -3,21 +3,6 @@
  */
 package it.eng.spagobi.meta.cwm.jmi;
 
-import it.eng.spagobi.meta.cwm.CWMImplType;
-import it.eng.spagobi.meta.cwm.ICWM;
-import it.eng.spagobi.meta.cwm.jmi.spagobi.SpagobiPackage;
-import it.eng.spagobi.meta.cwm.jmi.spagobi.meta.MetaPackage;
-import it.eng.spagobi.meta.cwm.jmi.spagobi.meta.behavioral.BehavioralPackage;
-import it.eng.spagobi.meta.cwm.jmi.spagobi.meta.businessinformation.BusinessInformationPackage;
-import it.eng.spagobi.meta.cwm.jmi.spagobi.meta.core.CorePackage;
-import it.eng.spagobi.meta.cwm.jmi.spagobi.meta.instance.InstancePackage;
-import it.eng.spagobi.meta.cwm.jmi.spagobi.meta.keysindexes.KeysIndexesPackage;
-import it.eng.spagobi.meta.cwm.jmi.spagobi.meta.multidimensional.MultidimensionalPackage;
-import it.eng.spagobi.meta.cwm.jmi.spagobi.meta.olap.OlapPackage;
-import it.eng.spagobi.meta.cwm.jmi.spagobi.meta.relational.CwmCatalog;
-import it.eng.spagobi.meta.cwm.jmi.spagobi.meta.relational.CwmTable;
-import it.eng.spagobi.meta.cwm.jmi.spagobi.meta.relational.RelationalPackage;
-
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -40,17 +25,36 @@ import org.netbeans.api.xmi.XMIWriter;
 import org.netbeans.api.xmi.XMIWriterFactory;
 import org.netbeans.mdr.NBMDRepositoryImpl;
 
+import org.pentaho.pms.cwm.pentaho.PentahoPackage;
+import org.pentaho.pms.cwm.pentaho.meta.MetaPackage;
+import org.pentaho.pms.cwm.pentaho.meta.behavioral.BehavioralPackage;
+import org.pentaho.pms.cwm.pentaho.meta.businessinformation.BusinessInformationPackage;
+import org.pentaho.pms.cwm.pentaho.meta.core.CorePackage;
+import org.pentaho.pms.cwm.pentaho.meta.instance.InstancePackage;
+import org.pentaho.pms.cwm.pentaho.meta.keysindexes.KeysIndexesPackage;
+import org.pentaho.pms.cwm.pentaho.meta.multidimensional.MultidimensionalPackage;
+import org.pentaho.pms.cwm.pentaho.meta.olap.OlapPackage;
+import org.pentaho.pms.cwm.pentaho.meta.relational.CwmCatalog;
+import org.pentaho.pms.cwm.pentaho.meta.relational.CwmTable;
+import org.pentaho.pms.cwm.pentaho.meta.relational.RelationalPackage;
+
+
+
+import it.eng.spagobi.meta.cwm.CWMImplType;
+import it.eng.spagobi.meta.cwm.ICWM;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
+
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class CWMJMIImpl implements ICWM {
+public class PentahoCWMJMIImpl implements ICWM {
 	
 	private static MDRepository        	repository;
 	
 	private String 						name;
     
-    private SpagobiPackage             	spagobiPackage; // Top level package
+    private PentahoPackage             	pentahoPackage; // Top level package
     private MetaPackage                	metaPackage;    // meta package
 
     private RelationalPackage          	relationalPackage;
@@ -64,7 +68,7 @@ public class CWMJMIImpl implements ICWM {
 	
     public static final String CWM = "CWM-Model-M3"; //$NON-NLS-1$
     
-    public CWMJMIImpl(String modelName) {
+    public PentahoCWMJMIImpl(String modelName) {
     	try {
             repository = getRepositoryInstance();
             
@@ -76,7 +80,7 @@ public class CWMJMIImpl implements ICWM {
             RefPackage cwmPackageM3 = repository.getExtent(CWM);
             if( cwmPackageM3 == null) {
                 cwmPackageM3 = repository.createExtent(CWM);
-                BufferedInputStream inputStream = new BufferedInputStream(getClass().getResourceAsStream("SpagoBICWM.xml")); //$NON-NLS-1$
+                BufferedInputStream inputStream = new BufferedInputStream(getClass().getResourceAsStream("PentahoCWM.xml")); //$NON-NLS-1$
                 XMIReaderFactory.getDefault().createXMIReader().read(inputStream, null, cwmPackageM3);
             }
 
@@ -86,18 +90,18 @@ public class CWMJMIImpl implements ICWM {
             RefPackage refPackage = repository.getExtent("spagobi");
             
             try {
-            	spagobiPackage = (SpagobiPackage) refPackage;
+            	pentahoPackage = (PentahoPackage) refPackage;
             } catch (Exception e) {
             	e.printStackTrace();
             }
             
-            if( spagobiPackage == null ) {
-                spagobiPackage  = (SpagobiPackage) repository.createExtent(name, getModelPackage("Spagobi") );              
+            if( pentahoPackage == null ) {
+                pentahoPackage  = (PentahoPackage) repository.createExtent(name, getModelPackage("Pentaho") );              
             }
                         
             // The rest is just derived...
             
-            metaPackage = spagobiPackage.getMeta();
+            metaPackage = pentahoPackage.getMeta();
             
             corePackage                = metaPackage.getCore();
             relationalPackage          = metaPackage.getRelational();
@@ -159,7 +163,6 @@ public class CWMJMIImpl implements ICWM {
         
         for (Iterator it = mofPackage.getMofPackage().refAllOfClass().iterator(); it.hasNext();) {
             MofPackage result = (MofPackage)it.next();
-            System.out.println(result.getName());
             if (result.getName().equals(packageName)) {
                 return result;
             }
@@ -177,7 +180,7 @@ public class CWMJMIImpl implements ICWM {
          XMIWriter writer = factory.createXMIWriter();
          writer.getConfiguration().setEncoding("UTF-8");
          try {
-        	 writer.write(new FileOutputStream(filename), spagobiPackage, "1.2"); //$NON-NLS-1$
+        	 writer.write(new FileOutputStream(filename), pentahoPackage, "1.2"); //$NON-NLS-1$
          } catch (Throwable t) {
         	 throw new RuntimeException("Impossible to export cwm model [" + name + "] to xmi", t);
          }
@@ -196,7 +199,7 @@ public class CWMJMIImpl implements ICWM {
 	public void importFromXMI( InputStream inputStream ) throws IOException, MalformedXMIException {
         XMIReaderFactory factory = XMIReaderFactory.getDefault();
         XMIReader reader = factory.createXMIReader();
-        reader.read(inputStream, null, spagobiPackage);
+        reader.read(inputStream, null, pentahoPackage);
         inputStream.close();
     }
 	

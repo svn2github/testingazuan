@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libs/jdbc/mysql-connector-java-5.1.7-bin.jar"/>
+	<classpathentry kind="lib" path="libs/jmi/pentaho-cwm-1.5.4.jar"/>
+	<classpathentry kind="lib" path="libs/jmi/jmi.jar"/>
+	<classpathentry kind="lib" path="libs/jmi/jmiutils.jar"/>
+	<classpathentry kind="lib" path="libs/jmi/mdrant.jar"/>
+	<classpathentry kind="lib" path="libs/jmi/mdrapi.jar"/>
+	<classpathentry kind="lib" path="libs/jmi/mdrjdbc142.jar"/>
+	<classpathentry kind="lib" path="libs/jmi/mof.jar"/>
+	<classpathentry kind="lib" path="libs/jmi/nbmdr.jar"/>
+	<classpathentry kind="lib" path="libs/jmi/openide-util.jar"/>
+	<classpathentry kind="lib" path="libs/jdbc/postgresql-8.2-505.jdbc2ee.jar"/>
+	<classpathentry kind="lib" path="libs/jdbc/ojdbc14.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

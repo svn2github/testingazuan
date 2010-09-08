@@ -1,35 +1,21 @@
 package it.eng.spagobi.meta.model.physical;
 
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
 import java.util.List;
 
 /**
  * @model
  */
-public interface PhysicalPrimaryKey extends EObject {
+public interface PhysicalPrimaryKey {
 
 	/**
 	 * @model
-	 * @generated
 	 */
-	String getPkName();
-
-	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getPkName <em>Pk Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Pk Name</em>' attribute.
-	 * @see #getPkName()
-	 * @generated
-	 */
-	void setPkName(String value);
+	public abstract String getPkName();
 
 	/**
 	 * @model
-	 * @generated
 	 */
-	void setPkName(String pkName);
+	public abstract void setPkName(String pkName);
 
 	public abstract String getTableName();
 
@@ -37,33 +23,13 @@ public interface PhysicalPrimaryKey extends EObject {
 
 	/**
 	 * @model
-	 * @generated
 	 */
-	PhysicalTable getTable();
-
-	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getTable <em>Table</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Table</em>' reference.
-	 * @see #getTable()
-	 * @generated
-	 */
-	void setTable(PhysicalTable value);
+	public abstract PhysicalTable getTable();
 
 	/**
 	 * @model
-	 * @generated
 	 */
-	void setTable(PhysicalTable table);
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @model columnsMany="true"
-	 * @generated
-	 */
-	void setColumns(EList<PhysicalColumn> columns);
+	public abstract void setTable(PhysicalTable table);
 
 	public abstract List<String> getColumnNames();
 
@@ -73,10 +39,14 @@ public interface PhysicalPrimaryKey extends EObject {
 
 	/**
 	 * @model
-	 * @generated
 	 */
-	EList<PhysicalColumn> getColumns();
+	public abstract List<PhysicalColumn> getColumns();
 	
+	/**
+	 * @model
+	 */
+	public abstract void setColumns(List<PhysicalColumn> columns);
+
 	public abstract void addColumns(List<PhysicalColumn> columns);
 
 	public abstract void addColumn(PhysicalColumn column);

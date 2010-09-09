@@ -217,5 +217,7 @@ public interface PhysicalModel extends EObject {
 	 * @generated
 	 */
 	EList<PhysicalForeignKey> getForeignKeys();
+	
+	PhysicalTable getTable(String name);
 
 } // PhysicalModel

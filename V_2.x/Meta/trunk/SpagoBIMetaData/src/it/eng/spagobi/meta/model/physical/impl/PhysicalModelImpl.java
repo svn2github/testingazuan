@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.physical.impl;
 
+import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
@@ -13,6 +14,7 @@ import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -531,6 +533,18 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 		result.append(schema);
 		result.append(')');
 		return result.toString();
+	}
+
+	public PhysicalTable getTable(String name) {
+		PhysicalTable table;
+		Iterator<PhysicalTable> it = getTables().iterator();
+		while(it.hasNext()) {
+			table = it.next();
+			if(name.equalsIgnoreCase(table.getName())) {
+				return table;
+			}
+		}
+		return null;
 	}
 
 } //PhysicalModelImpl

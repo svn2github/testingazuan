@@ -221,5 +221,7 @@ public interface PhysicalTable extends EObject {
 	 * @generated
 	 */
 	EList<PhysicalForeignKey> getReverseForeignKeys();
+	
+	public PhysicalColumn getColumn(String name);
 
 } // PhysicalTable

@@ -1,20 +1,18 @@
 /**
  * 
  */
-package it.eng.spagobi.meta.initializer;
+package it.eng.spagobi.meta.model.physical.pojo;
 
-
-import it.eng.spagobi.meta.model.physical.PhysicalModel;
-import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
-import it.eng.spagobi.meta.model.physical.PhysicalColumn;
-import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
-import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
-import it.eng.spagobi.meta.model.physical.PhysicalTable;
+import it.eng.spagobi.meta.model.physical.pojo.PhysicalColumn;
+import it.eng.spagobi.meta.model.physical.pojo.PhysicalForeignKey;
+import it.eng.spagobi.meta.model.physical.pojo.PhysicalPrimaryKey;
+import it.eng.spagobi.meta.model.physical.pojo.PhysicalTable;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -22,85 +20,119 @@ import java.util.Map;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class PhysicalModelInitializer {
+public class MetadataExtractor {
 	
-	static public PhysicalModelFactory FACTORY = PhysicalModelFactory.eINSTANCE;
+	private static void log(String msg) {
+		System.out.println(msg);
+	}
 	
-	public PhysicalModel initizlize(String modelName, Connection conn, String defaultCatalog, String defaultSchema) {
-		PhysicalModel model;
+	
+	public static String retriveCatalog(Connection conn, String defaultCatalog) {
+		String catalog;		
+		List<String> catalogs;
 		DatabaseMetaData dbMeta;
+		ResultSet rs;
+		Iterator<String> it;
+		
+		catalog = null;
 		
 		try {
-			model = FACTORY.createPhysicalModel();
-			model.setName(modelName);
-			log("model: " + model.getName()); 
 			
-			dbMeta = conn.getMetaData();
-			
-			initDatabaseMeta(model, dbMeta);	
-			
-			log("db name: " + model.getDatabaseName());
-			log("db version: " + model.getDatabaseVersion());
-			
-			initCatalogMeta(model, conn, defaultCatalog);
-			log("catalog [" + dbMeta.getCatalogTerm() + "]: " + model.getCatalog());
-						
-			initSchemaMeta(model, dbMeta, defaultSchema);
-			log("schema [" + dbMeta.getSchemaTerm() + "]: " + model.getSchema());
-			
-			initTablesMeta(dbMeta, model);
-			
-			for(int i = 0; i < model.getTables().size(); i++) {
-				initPrimaryKeyMeta(dbMeta, model, model.getTables().get(i));
-				initForeignKeysMeta(dbMeta, model, model.getTables().get(i));
+			catalog = conn.getCatalog();
+			if(catalog == null) {
+				dbMeta = conn.getMetaData();
+				
+				rs = dbMeta.getCatalogs();
+				catalogs = new ArrayList();
+				while (rs.next()) {
+					catalogs.add( rs.getString(1) );
+				}
+				
+				if(catalogs.size() == 0) {
+					log("No schema [" + dbMeta.getSchemaTerm() + "] defined");
+				} else if(catalogs.size() == 1) {
+					catalog = catalogs.get(1);
+				} else {
+					String targetCatalog = null;
+					it = catalogs.iterator();
+					while (it.hasNext()) {
+						String s = it.next();
+						log("s [" + s + "]");
+						if(s.equalsIgnoreCase(defaultCatalog)) {
+							targetCatalog = defaultCatalog;
+							break;
+						}
+					}
+					if(targetCatalog == null) {
+						throw new RuntimeException("No catalog named [" + defaultCatalog + "] is available on db");
+					}
+					catalog = targetCatalog;
+				}
+			}			
+		} catch(Throwable t) {
+			throw new RuntimeException("Impossible to retrive target catalog", t);
+		}
+		
+		return catalog;
+	}
+	
+	public static String retriveSchema(DatabaseMetaData dbMeta, String defaultSchema) {
+		String schema;
+		List<String> schemas;
+		ResultSet rs;
+		Iterator<String> it;
+		
+		schema = null;
+		
+		try {
+			rs = dbMeta.getSchemas();
+			schemas = new ArrayList();
+			while (rs.next()) {
+				schemas.add( rs.getString(1) );
 			}
 			
+			if(schemas.size() == 0) {
+				log("No schema [" + dbMeta.getSchemaTerm() + "] defined");
+			} else if(schemas.size() == 1) {
+				schema = schemas.get(1);
+			} else {
+				String targetSchema = null;
+				it = schemas.iterator();
+				while (it.hasNext()) {
+					String s = it.next();
+					if(s.equalsIgnoreCase(defaultSchema)) {
+						targetSchema = defaultSchema;
+						break;
+					}
+				}
+				if(targetSchema == null) {
+					throw new RuntimeException("No schema named [" + defaultSchema + "] is available on db");
+				}
+				schema = targetSchema;
+			}
 		} catch(Throwable t) {
-			throw new RuntimeException("Impossible to initialize physical model", t);
+			throw new RuntimeException("Impossible to retrive target schema", t);
 		}
 		
-		return model;
+		return schema;
 	}
 	
-	
-	private void initDatabaseMeta(PhysicalModel model, DatabaseMetaData dbMeta) {
-		try {
-			model.setDatabaseName( dbMeta.getDatabaseProductName());
-			model.setDatabaseVersion( dbMeta.getDatabaseProductVersion());
-		} catch(Throwable t) {
-			throw new RuntimeException("Impossible to initialize database metadata", t);
-		}
-	}
-	
-	private void initCatalogMeta(PhysicalModel model, Connection conn, String defaultCatalog) {
-		try {
-			model.setCatalog( MetadataExtractor.retriveCatalog(conn, defaultCatalog) );
-		} catch(Throwable t) {
-			throw new RuntimeException("Impossible to initialize catalog metadata", t);
-		}
-	}
-	
-	private void initSchemaMeta(PhysicalModel model, DatabaseMetaData dbMeta, String defaultSchema) {
-		try {
-			model.setSchema( MetadataExtractor.retriveSchema(dbMeta, defaultSchema) );
-		} catch(Throwable t) {
-			throw new RuntimeException("Impossible to initialize schema metadata", t);
-		}
-	}
-	
-	
-	
-	private void initTablesMeta(DatabaseMetaData dbMeta, PhysicalModel model ) {
+	public static List<PhysicalTable> retriveTables(DatabaseMetaData dbMeta, String targetCatalog, String targetSchema) {
+		List<PhysicalTable> tables;
 		Map<String, PhysicalTable> tabesLookupMap;
 		ResultSet tableRs, columnRs;
 		PhysicalTable table;
+		List<PhysicalColumn> columns;
+		PhysicalColumn column;
 		List<PhysicalPrimaryKey> primaryKeys;
 		PhysicalPrimaryKey primaryKey;
 		List<PhysicalForeignKey> foreignKeys;
 		PhysicalForeignKey foreignKey;
 		
+		tables = new ArrayList();
+				
 		try {
-			tableRs = dbMeta.getTables(model.getCatalog(), model.getSchema(), null, new String[]{"TABLE", "VIEW"});
+			tableRs = dbMeta.getTables(targetCatalog, targetSchema, null, new String[]{"TABLE", "VIEW"});
 			
 			/* 
 			--------------------------------------------------
@@ -120,32 +152,42 @@ public class PhysicalModelInitializer {
 			10. REF_GENERATION String => specifies how values in SELF_REFERENCING_COL_NAME are created. Values are “SYSTEM”, “USER”, “DERIVED”. (may be null)
 			 */
 			while (tableRs.next()) {
-				table = FACTORY.createPhysicalTable();
+				table = new PhysicalTable();
 				
+				table.setCatalog( tableRs.getString("TABLE_CAT") );
+				table.setSchema( tableRs.getString("TABLE_SCHEM") );
 				table.setName( tableRs.getString("TABLE_NAME") );
 				table.setComment( tableRs.getString("REMARKS") );
 				table.setType( tableRs.getString("TABLE_TYPE") );
 				
 				log("Table: " + table.getName() + "[" + table.getType() + "]");
 				
-				initColumnsMeta(dbMeta, model, table);
+				columns = retriveColumns(dbMeta, targetCatalog, targetSchema, table.getName());
+				for(int i = 0; i < columns.size(); i++) {
+					column = columns.get(i);
+					table.addColumn(column);
+				}
 						
-				model.getTables().add(table);
+				tables.add(table);
 			}
 			
 			
 		} catch(Throwable t) {
-			throw new RuntimeException("Impossible to initialize tables metadata", t);
+			throw new RuntimeException("Impossible to retrive tables metadata", t);
 		}
+		
+		return tables;
 	}
 	
-	
-	private void initColumnsMeta(DatabaseMetaData dbMeta, PhysicalModel model, PhysicalTable table ) {
+	public static List<PhysicalColumn> retriveColumns(DatabaseMetaData dbMeta, String targetCatalog, String targetSchema, String targetTable) {
+		List<PhysicalColumn> columns;
 		ResultSet rs;
-		PhysicalColumn column;		
+		PhysicalColumn column;
+		
+		columns = new ArrayList();
 		
 		try {
-			rs = dbMeta.getColumns(model.getCatalog(), model.getSchema(), table.getName(), null);
+			rs = dbMeta.getColumns(targetCatalog, targetSchema, targetTable, null);
 			
 			/*
 			1.  TABLE_CAT String => table catalog (may be null)
@@ -174,7 +216,7 @@ public class PhysicalModelInitializer {
 			22. SOURCE_DATA_TYPE short => source type of a distinct type or user-generated Ref type, SQL type from java.sql.Types (null if DATA_TYPE isn’t DISTINCT or user-generated REF)
 			 */
 			while (rs.next()) 	{
-				column = FACTORY.createPhysicalColumn();
+				column = new PhysicalColumn();
 				column.setName(rs.getString("COLUMN_NAME"));
 				column.setComment( rs.getString("REMARKS") );
 				column.setDataType( rs.getShort("DATA_TYPE") );
@@ -187,24 +229,24 @@ public class PhysicalModelInitializer {
 				column.setNullable( !"NO".equalsIgnoreCase(rs.getString("IS_NULLABLE")) );
 				column.setPosition( rs.getInt("ORDINAL_POSITION") );
 				
-				table.getColumns().add(column);
+				columns.add(column);
 				log("  - column: " + column.getName() + " [" + column.getTypeName() + "]" + " [" + column.getDefaultValue() + "]");
 			}
 		} catch(Throwable t) {
-			throw new RuntimeException("Impossible to initialize primaryKeys metadata", t);
+			throw new RuntimeException("Impossible to retrive primaryKeys metadata", t);
 		}
+		
+		return columns;
 	}
 	
-	
-	private void initPrimaryKeyMeta(DatabaseMetaData dbMeta, PhysicalModel model, PhysicalTable table) {
-		PhysicalColumn column;
+	public static PhysicalPrimaryKey retrivePrimaryKey(DatabaseMetaData dbMeta, String targetCatalog, String targetSchema, String targetTable) {
 		PhysicalPrimaryKey primaryKey;
 		ResultSet rs;
 		
 		primaryKey = null;
 		
 		try {
-			rs = dbMeta.getPrimaryKeys(model.getCatalog(), model.getSchema(), table.getName());
+			rs = dbMeta.getPrimaryKeys(targetCatalog, targetSchema, targetTable);
 			/*
 			1. TABLE_CAT String => table catalog (may be null)
 			2. TABLE_SCHEM String => table schema (may be null)
@@ -217,18 +259,11 @@ public class PhysicalModelInitializer {
 			
 			while (rs.next()) {
 				if(primaryKey == null) {
-					primaryKey = FACTORY.createPhysicalPrimaryKey();
-					primaryKey.setName( rs.getString("PK_NAME") );
-					
-					table.setPrimaryKey(primaryKey);
-					model.getPrimaryKeys().add(primaryKey);
+					primaryKey = new PhysicalPrimaryKey();
+					primaryKey.setPkName( rs.getString("PK_NAME") );
+					primaryKey.setTableName( rs.getString("TABLE_NAME") );
 				}
-				
-				column = table.getColumn( rs.getString("COLUMN_NAME") );
-				if(column != null) {
-					primaryKey.getColumns().add( column );
-				}
-				
+				primaryKey.addColumnName( rs.getString("COLUMN_NAME") );
 			}
 			
 			
@@ -236,9 +271,12 @@ public class PhysicalModelInitializer {
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to retrive primaryKeys metadata", t);
 		}
+	
+		return primaryKey;
 	}
 	
-	private void initForeignKeysMeta(DatabaseMetaData dbMeta, PhysicalModel model, PhysicalTable table) {
+	
+	public static List<PhysicalForeignKey> retriveForeignKey(DatabaseMetaData dbMeta, String targetCatalog, String targetSchema, String targetTable) {
 		List<PhysicalForeignKey> foreignKeys;
 		ResultSet rs;
 		PhysicalForeignKey foreignKey;
@@ -248,7 +286,7 @@ public class PhysicalModelInitializer {
 		foreignKey = null;
 		
 		try {
-			rs = dbMeta.getImportedKeys(model.getCatalog(), model.getSchema(), table.getName());
+			rs = dbMeta.getImportedKeys(targetCatalog, targetSchema, targetTable);
 			/*
 			1. PKTABLE_CAT String => primary key table catalog (may be null)
 			2. PKTABLE_SCHEM String => primary key table schema (may be null)
@@ -280,62 +318,35 @@ public class PhysicalModelInitializer {
 			 */
 			while (rs.next()) {
 				String fkName = rs.getString("FK_NAME");
-				PhysicalTable sourceTable = model.getTable( rs.getString("FKTABLE_NAME") );
-				PhysicalTable destinationTable = model.getTable( rs.getString("PKTABLE_NAME") );
-				
 				if(foreignKey == null) { // OK it's the first iteration
 					
-					foreignKey = FACTORY.createPhysicalForeignKey();
-					foreignKey.setSourceName(fkName);
-					foreignKey.setSourceTable( sourceTable );					
-					foreignKey.setDestinationName(rs.getString("PK_NAME"));
-					foreignKey.setDestinationTable( destinationTable );
+					foreignKey = new PhysicalForeignKey();
+					foreignKey.setFkName(fkName);
+					foreignKey.setFkTableName( rs.getString("FKTABLE_NAME") );					
+					foreignKey.setPkName(rs.getString("PK_NAME"));
+					foreignKey.setPkTableName( rs.getString("PKTABLE_NAME") );
 				
-				} else if (!foreignKey.getSourceName().equals(fkName)) { // we have finished with the previous fk
+				} else if (!foreignKey.getFkName().equals(fkName)) { // we have finished with the previous fk
 
-					table.getForeignKeys().add(foreignKey);
+					foreignKeys.add(foreignKey);
 					
-					foreignKey = FACTORY.createPhysicalForeignKey();
-					foreignKey.setSourceName(fkName);
-					foreignKey.setSourceTable( sourceTable );					
-					foreignKey.setDestinationName(rs.getString("PK_NAME"));
-					foreignKey.setDestinationTable( destinationTable );
+					foreignKey = new PhysicalForeignKey();
+					foreignKey.setFkName(fkName);
+					foreignKey.setFkTableName( rs.getString("FKTABLE_NAME") );					
+					foreignKey.setPkName(rs.getString("PK_NAME"));
+					foreignKey.setPkTableName( rs.getString("PKTABLE_NAME") );
 					
 				}
 				
-				PhysicalColumn c = sourceTable.getColumn(rs.getString("FKCOLUMN_NAME"));
-				if(c == null) {
-					System.out.println( sourceTable.getName() + "!>" +  rs.getString("FKCOLUMN_NAME") );
-					System.out.println(destinationTable.getName() + "!>" +  rs.getString("PKCOLUMN_NAME") );
-					
-					System.out.println("--------------------------" );
-					for(int n = 0; n < sourceTable.getColumns().size(); n++) {
-						System.out.println(" - " + sourceTable.getColumns().get(n).getName() );
-					}
-				}
-				foreignKey.getSourceColumns().add( sourceTable.getColumn(rs.getString("FKCOLUMN_NAME")) );
-				
-				c = destinationTable.getColumn(rs.getString("PKCOLUMN_NAME"));
-				if(c == null) {
-					System.out.println( sourceTable.getName() + "->" +  rs.getString("FKCOLUMN_NAME") );
-					System.out.println(destinationTable.getName() + "->" +  rs.getString("PKCOLUMN_NAME") );
-				}
-				foreignKey.getDestinationColumns().add( destinationTable.getColumn(rs.getString("PKCOLUMN_NAME")) );
+				foreignKey.addFkColumnName( rs.getString("FKCOLUMN_NAME") );
+				foreignKey.addPkColumnName( rs.getString("PKCOLUMN_NAME") );
 				
 			}
 
 		} catch(Throwable t) {
-			throw new RuntimeException("Impossible to initialize foreignKeys metadata", t);
+			throw new RuntimeException("Impossible to retrive foreignKeys metadata", t);
 		}
+	
+		return foreignKeys;
 	}
-	
-
-	//  --------------------------------------------------------
-	//	Static methods
-	//  --------------------------------------------------------
-	
-	private static void log(String msg) {
-		System.out.println(msg);
-	}
-	
 }

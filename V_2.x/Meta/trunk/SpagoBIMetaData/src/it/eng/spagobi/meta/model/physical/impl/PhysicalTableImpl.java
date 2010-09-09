@@ -14,6 +14,7 @@ import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -584,6 +585,18 @@ public class PhysicalTableImpl extends EObjectImpl implements PhysicalTable {
 		result.append(type);
 		result.append(')');
 		return result.toString();
+	}
+	
+	public PhysicalColumn getColumn(String name) {
+		PhysicalColumn column;
+		Iterator<PhysicalColumn> it = getColumns().iterator();
+		while(it.hasNext()) {
+			column = it.next();
+			if(name.equalsIgnoreCase(column.getName())) {
+				return column;
+			}
+		}
+		return null;
 	}
 
 } //PhysicalTableImpl

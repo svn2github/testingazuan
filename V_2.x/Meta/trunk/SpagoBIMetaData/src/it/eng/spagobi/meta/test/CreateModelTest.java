@@ -8,7 +8,7 @@ import it.eng.spagobi.meta.cwm.CWMMapperFactory;
 import it.eng.spagobi.meta.cwm.ICWM;
 import it.eng.spagobi.meta.cwm.ICWMMapper;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
-import it.eng.spagobi.meta.model.physical.pojo.PhysicalModel;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

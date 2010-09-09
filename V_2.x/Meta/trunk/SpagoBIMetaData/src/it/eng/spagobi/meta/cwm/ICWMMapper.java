@@ -3,7 +3,7 @@
  */
 package it.eng.spagobi.meta.cwm;
 
-import it.eng.spagobi.meta.model.physical.pojo.PhysicalModel;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

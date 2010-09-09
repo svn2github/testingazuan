@@ -7,8 +7,9 @@ import it.eng.spagobi.meta.cwm.ICWM;
 import it.eng.spagobi.meta.cwm.ICWMMapper;
 import it.eng.spagobi.meta.cwm.jmi.spagobi.meta.relational.CwmCatalog;
 import it.eng.spagobi.meta.cwm.jmi.spagobi.meta.relational.CwmTable;
-import it.eng.spagobi.meta.model.physical.pojo.PhysicalModel;
-import it.eng.spagobi.meta.model.physical.pojo.PhysicalTable;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,6 +22,8 @@ import java.util.List;
  */
 public class SpagoBICWMMapperJMIImpl  implements ICWMMapper {
 	
+	static public PhysicalModelFactory FACTORY = PhysicalModelFactory.eINSTANCE;
+	
 	
     // -----------------------------------------------------------------------------
 	// DECODE
@@ -31,7 +34,8 @@ public class SpagoBICWMMapperJMIImpl  implements ICWMMapper {
 	}
 	
 	public PhysicalModel decodeModel(SpagoBICWMJMIImpl cwm) {
-		PhysicalModel model = new PhysicalModel( cwm.getName() );
+		PhysicalModel model = FACTORY.createPhysicalModel();
+		model.setName(cwm.getName());
 		
 		model.setCatalog( cwm.getCatalog().getName() );
 		

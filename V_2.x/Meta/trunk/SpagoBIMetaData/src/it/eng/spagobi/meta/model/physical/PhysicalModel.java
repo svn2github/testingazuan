@@ -1,76 +1,221 @@
+/**
+ * <copyright>
+ * </copyright>
+ *
+ * $Id$
+ */
 package it.eng.spagobi.meta.model.physical;
 
 import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EObject;
-import java.util.List;
 
 /**
+ * <!-- begin-user-doc -->
+ * A representation of the model object '<em><b>Physical Model</b></em>'.
+ * <!-- end-user-doc -->
+ *
+ * <p>
+ * The following features are supported:
+ * <ul>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getName <em>Name</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getDatabaseName <em>Database Name</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getDatabaseVersion <em>Database Version</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getCatalog <em>Catalog</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getSchema <em>Schema</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getTables <em>Tables</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getPrimaryKeys <em>Primary Keys</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getForeignKeys <em>Foreign Keys</em>}</li>
+ * </ul>
+ * </p>
+ *
+ * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalModel()
  * @model
+ * @generated
  */
 public interface PhysicalModel extends EObject {
+	/**
+	 * Returns the value of the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Name</em>' attribute.
+	 * @see #setName(String)
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalModel_Name()
+	 * @model
+	 * @generated
+	 */
+	String getName();
 
 	/**
-	 * @model
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getName <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Name</em>' attribute.
+	 * @see #getName()
+	 * @generated
 	 */
-	public abstract String getName();
-	public abstract void setName(String name);
+	void setName(String value);
 
 	/**
+	 * Returns the value of the '<em><b>Database Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Database Name</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Database Name</em>' attribute.
+	 * @see #setDatabaseName(String)
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalModel_DatabaseName()
 	 * @model
+	 * @generated
 	 */
-	public abstract String getDatabaseName();
-	public abstract void setDatabaseName(String databaseName);
+	String getDatabaseName();
 
 	/**
-	 * @model
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getDatabaseName <em>Database Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Database Name</em>' attribute.
+	 * @see #getDatabaseName()
+	 * @generated
 	 */
-	public abstract String getDatabaseVersion();
-	public abstract void setDatabaseVersion(String databaseVersion);
-	
-	public abstract void setDatabaseVersion(String databaseName, String databaseVersion);
+	void setDatabaseName(String value);
 
 	/**
+	 * Returns the value of the '<em><b>Database Version</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Database Version</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Database Version</em>' attribute.
+	 * @see #setDatabaseVersion(String)
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalModel_DatabaseVersion()
 	 * @model
+	 * @generated
 	 */
-	public abstract String getCatalog();
-	public abstract void setCatalog(String catalog);
+	String getDatabaseVersion();
 
 	/**
-	 * @model
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getDatabaseVersion <em>Database Version</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Database Version</em>' attribute.
+	 * @see #getDatabaseVersion()
+	 * @generated
 	 */
-	public abstract String getSchema();
-	public abstract void setSchema(String schema);
+	void setDatabaseVersion(String value);
 
 	/**
+	 * Returns the value of the '<em><b>Catalog</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Catalog</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Catalog</em>' attribute.
+	 * @see #setCatalog(String)
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalModel_Catalog()
 	 * @model
+	 * @generated
 	 */
-	public abstract EList<PhysicalTable> getTables();
-	public abstract void setTables(List<PhysicalTable> tables);
-	
-	public abstract void addTables(List<PhysicalTable> tables);
-	public abstract void addTable(PhysicalTable table);
-	public abstract PhysicalTable getTable(String tableName);
-	
+	String getCatalog();
+
 	/**
-	 * @model
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getCatalog <em>Catalog</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Catalog</em>' attribute.
+	 * @see #getCatalog()
+	 * @generated
 	 */
-	public abstract EList<PhysicalPrimaryKey> getPrimaryKeys();
-	public abstract void setPrimaryKeys(List<PhysicalPrimaryKey> primaryKeys);
-	
-	public abstract void addPrimaryKeys(List<PhysicalPrimaryKey> primaryKeys);
-	public abstract void addPrimaryKey(PhysicalPrimaryKey primaryKey);
+	void setCatalog(String value);
 
-	
 	/**
+	 * Returns the value of the '<em><b>Schema</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Schema</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Schema</em>' attribute.
+	 * @see #setSchema(String)
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalModel_Schema()
 	 * @model
+	 * @generated
 	 */
-	public abstract EList<PhysicalForeignKey> getForeignKeys();
-	public abstract void setForeignKeys(List<PhysicalForeignKey> foreignKeys);
-	
-	public abstract void addForeignKeys(List<PhysicalForeignKey> foreignKeys);
-	public abstract void addForeignKey(PhysicalForeignKey foreignKey);
-	
+	String getSchema();
 
-	
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getSchema <em>Schema</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Schema</em>' attribute.
+	 * @see #getSchema()
+	 * @generated
+	 */
+	void setSchema(String value);
 
-}
+	/**
+	 * Returns the value of the '<em><b>Tables</b></em>' containment reference list.
+	 * The list contents are of type {@link it.eng.spagobi.meta.model.physical.PhysicalTable}.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getModel <em>Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Tables</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Tables</em>' containment reference list.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalModel_Tables()
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalTable#getModel
+	 * @model opposite="model" containment="true"
+	 * @generated
+	 */
+	EList<PhysicalTable> getTables();
+
+	/**
+	 * Returns the value of the '<em><b>Primary Keys</b></em>' reference list.
+	 * The list contents are of type {@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey}.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getModel <em>Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Primary Keys</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Primary Keys</em>' reference list.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalModel_PrimaryKeys()
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getModel
+	 * @model opposite="model"
+	 * @generated
+	 */
+	EList<PhysicalPrimaryKey> getPrimaryKeys();
+
+	/**
+	 * Returns the value of the '<em><b>Foreign Keys</b></em>' reference list.
+	 * The list contents are of type {@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey}.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getModel <em>Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Foreign Keys</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Foreign Keys</em>' reference list.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalModel_ForeignKeys()
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getModel
+	 * @model opposite="model"
+	 * @generated
+	 */
+	EList<PhysicalForeignKey> getForeignKeys();
+
+} // PhysicalModel

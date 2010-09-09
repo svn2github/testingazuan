@@ -1,61 +1,204 @@
+/**
+ * <copyright>
+ * </copyright>
+ *
+ * $Id$
+ */
 package it.eng.spagobi.meta.model.physical;
 
 import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EObject;
-import java.util.List;
+
 /**
+ * <!-- begin-user-doc -->
+ * A representation of the model object '<em><b>Physical Foreign Key</b></em>'.
+ * <!-- end-user-doc -->
+ *
+ * <p>
+ * The following features are supported:
+ * <ul>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getSourceName <em>Source Name</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getSourceTable <em>Source Table</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getSourceColumns <em>Source Columns</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getDestinationName <em>Destination Name</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getDestinationTable <em>Destination Table</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getDestinationColumns <em>Destination Columns</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getModel <em>Model</em>}</li>
+ * </ul>
+ * </p>
+ *
+ * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalForeignKey()
  * @model
+ * @generated
  */
 public interface PhysicalForeignKey extends EObject {
+	/**
+	 * Returns the value of the '<em><b>Source Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Source Name</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Source Name</em>' attribute.
+	 * @see #setSourceName(String)
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalForeignKey_SourceName()
+	 * @model
+	 * @generated
+	 */
+	String getSourceName();
 
 	/**
-	 * @model
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getSourceName <em>Source Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Source Name</em>' attribute.
+	 * @see #getSourceName()
+	 * @generated
 	 */
-	public abstract String getFkName();
-	public abstract void setFkName(String fkName);
+	void setSourceName(String value);
 
 	/**
-	 * @model
+	 * Returns the value of the '<em><b>Source Table</b></em>' reference.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getForeignKeys <em>Foreign Keys</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Source Table</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Source Table</em>' reference.
+	 * @see #setSourceTable(PhysicalTable)
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalForeignKey_SourceTable()
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalTable#getForeignKeys
+	 * @model opposite="foreignKeys" required="true"
+	 * @generated
 	 */
-	public abstract String getPkName();
-	public abstract void setPkName(String pkName);
-
-	public abstract String getFkTableName();
-	public abstract void setFkTableName(String fkTableName);
-	public abstract List<String> getFkColumnNames();
-	public abstract void setFkColumnNames(List<String> fkColumnNames);
-	public abstract String getPkTableName();
-	public abstract void setPkTableName(String pkTableName);
-	public abstract List<String> getPkColumnNames();
-	public abstract void addFkColumnName(String columnName);
-	public abstract void addPkColumnName(String columnName);
-	public abstract void setPkColumnNames(List<String> pkColumnNames);
+	PhysicalTable getSourceTable();
 
 	/**
-	 * @model
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getSourceTable <em>Source Table</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Source Table</em>' reference.
+	 * @see #getSourceTable()
+	 * @generated
 	 */
-	public abstract EList<PhysicalColumn> getFkColumns();
-	public abstract void setFkColumns(List<PhysicalColumn> fkColumns);
+	void setSourceTable(PhysicalTable value);
 
 	/**
-	 * @model
+	 * Returns the value of the '<em><b>Source Columns</b></em>' reference list.
+	 * The list contents are of type {@link it.eng.spagobi.meta.model.physical.PhysicalColumn}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Source Columns</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Source Columns</em>' reference list.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalForeignKey_SourceColumns()
+	 * @model required="true"
+	 * @generated
 	 */
-	public abstract EList<PhysicalColumn> getPkColumns();
-	public abstract void setPkColumns(List<PhysicalColumn> pkColumns);
-
-	public abstract void addFkColumn(PhysicalColumn fkColumn);
-	public abstract void addPkColumn(PhysicalColumn pkColumn);
+	EList<PhysicalColumn> getSourceColumns();
 
 	/**
+	 * Returns the value of the '<em><b>Destination Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Destination Name</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Destination Name</em>' attribute.
+	 * @see #setDestinationName(String)
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalForeignKey_DestinationName()
 	 * @model
+	 * @generated
 	 */
-	public abstract PhysicalTable getPkTable();
-	public abstract void setPkTable(PhysicalTable pkTable);
+	String getDestinationName();
 
 	/**
-	 * @model
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getDestinationName <em>Destination Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Destination Name</em>' attribute.
+	 * @see #getDestinationName()
+	 * @generated
 	 */
-	public abstract PhysicalTable getFkTable();
-	public abstract void setFkTable(PhysicalTable fkTable);
+	void setDestinationName(String value);
 
-}
+	/**
+	 * Returns the value of the '<em><b>Destination Table</b></em>' reference.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getReverseForeignKeys <em>Reverse Foreign Keys</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Destination Table</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Destination Table</em>' reference.
+	 * @see #setDestinationTable(PhysicalTable)
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalForeignKey_DestinationTable()
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalTable#getReverseForeignKeys
+	 * @model opposite="reverseForeignKeys" required="true"
+	 * @generated
+	 */
+	PhysicalTable getDestinationTable();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getDestinationTable <em>Destination Table</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Destination Table</em>' reference.
+	 * @see #getDestinationTable()
+	 * @generated
+	 */
+	void setDestinationTable(PhysicalTable value);
+
+	/**
+	 * Returns the value of the '<em><b>Destination Columns</b></em>' reference list.
+	 * The list contents are of type {@link it.eng.spagobi.meta.model.physical.PhysicalColumn}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Destination Columns</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Destination Columns</em>' reference list.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalForeignKey_DestinationColumns()
+	 * @model required="true"
+	 * @generated
+	 */
+	EList<PhysicalColumn> getDestinationColumns();
+
+	/**
+	 * Returns the value of the '<em><b>Model</b></em>' reference.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getForeignKeys <em>Foreign Keys</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Model</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Model</em>' reference.
+	 * @see #setModel(PhysicalModel)
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalForeignKey_Model()
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModel#getForeignKeys
+	 * @model opposite="foreignKeys"
+	 * @generated
+	 */
+	PhysicalModel getModel();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getModel <em>Model</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Model</em>' reference.
+	 * @see #getModel()
+	 * @generated
+	 */
+	void setModel(PhysicalModel value);
+
+} // PhysicalForeignKey

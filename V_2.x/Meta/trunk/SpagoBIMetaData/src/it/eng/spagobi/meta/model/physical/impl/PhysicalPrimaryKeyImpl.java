@@ -7,14 +7,15 @@
 package it.eng.spagobi.meta.model.physical.impl;
 
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
-import it.eng.spagobi.meta.model.physical.PhysicalPackage;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
 import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
 
@@ -28,12 +29,13 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Primary Key</b></em>'.
+ * An implementation of the model object '<em><b>Physical Primary Key</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl#getPkName <em>Pk Name</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl#getName <em>Name</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl#getModel <em>Model</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl#getTable <em>Table</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl#getColumns <em>Columns</em>}</li>
  * </ul>
@@ -43,24 +45,34 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  */
 public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrimaryKey {
 	/**
-	 * The default value of the '{@link #getPkName() <em>Pk Name</em>}' attribute.
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getPkName()
+	 * @see #getName()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String PK_NAME_EDEFAULT = null;
+	protected static final String NAME_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getPkName() <em>Pk Name</em>}' attribute.
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getPkName()
+	 * @see #getName()
 	 * @generated
 	 * @ordered
 	 */
-	protected String pkName = PK_NAME_EDEFAULT;
+	protected String name = NAME_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getModel() <em>Model</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getModel()
+	 * @generated
+	 * @ordered
+	 */
+	protected PhysicalModel model;
 
 	/**
 	 * The cached value of the '{@link #getTable() <em>Table</em>}' reference.
@@ -98,7 +110,7 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return PhysicalPackage.Literals.PHYSICAL_PRIMARY_KEY;
+		return PhysicalModelPackage.Literals.PHYSICAL_PRIMARY_KEY;
 	}
 
 	/**
@@ -106,8 +118,8 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getPkName() {
-		return pkName;
+	public String getName() {
+		return name;
 	}
 
 	/**
@@ -115,11 +127,71 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setPkName(String newPkName) {
-		String oldPkName = pkName;
-		pkName = newPkName;
+	public void setName(String newName) {
+		String oldName = name;
+		name = newName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalPackage.PHYSICAL_PRIMARY_KEY__PK_NAME, oldPkName, pkName));
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__NAME, oldName, name));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public PhysicalModel getModel() {
+		if (model != null && model.eIsProxy()) {
+			InternalEObject oldModel = (InternalEObject)model;
+			model = (PhysicalModel)eResolveProxy(oldModel);
+			if (model != oldModel) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL, oldModel, model));
+			}
+		}
+		return model;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public PhysicalModel basicGetModel() {
+		return model;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetModel(PhysicalModel newModel, NotificationChain msgs) {
+		PhysicalModel oldModel = model;
+		model = newModel;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL, oldModel, newModel);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setModel(PhysicalModel newModel) {
+		if (newModel != model) {
+			NotificationChain msgs = null;
+			if (model != null)
+				msgs = ((InternalEObject)model).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_MODEL__PRIMARY_KEYS, PhysicalModel.class, msgs);
+			if (newModel != null)
+				msgs = ((InternalEObject)newModel).eInverseAdd(this, PhysicalModelPackage.PHYSICAL_MODEL__PRIMARY_KEYS, PhysicalModel.class, msgs);
+			msgs = basicSetModel(newModel, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL, newModel, newModel));
 	}
 
 	/**
@@ -133,7 +205,7 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 			table = (PhysicalTable)eResolveProxy(oldTable);
 			if (table != oldTable) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, PhysicalPackage.PHYSICAL_PRIMARY_KEY__TABLE, oldTable, table));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE, oldTable, table));
 			}
 		}
 		return table;
@@ -153,11 +225,33 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTable(PhysicalTable newTable) {
+	public NotificationChain basicSetTable(PhysicalTable newTable, NotificationChain msgs) {
 		PhysicalTable oldTable = table;
 		table = newTable;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalPackage.PHYSICAL_PRIMARY_KEY__TABLE, oldTable, table));
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE, oldTable, newTable);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setTable(PhysicalTable newTable) {
+		if (newTable != table) {
+			NotificationChain msgs = null;
+			if (table != null)
+				msgs = ((InternalEObject)table).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_TABLE__PRIMARY_KEY, PhysicalTable.class, msgs);
+			if (newTable != null)
+				msgs = ((InternalEObject)newTable).eInverseAdd(this, PhysicalModelPackage.PHYSICAL_TABLE__PRIMARY_KEY, PhysicalTable.class, msgs);
+			msgs = basicSetTable(newTable, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE, newTable, newTable));
 	}
 
 	/**
@@ -167,7 +261,7 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 	 */
 	public EList<PhysicalColumn> getColumns() {
 		if (columns == null) {
-			columns = new EObjectResolvingEList<PhysicalColumn>(PhysicalColumn.class, this, PhysicalPackage.PHYSICAL_PRIMARY_KEY__COLUMNS);
+			columns = new EObjectResolvingEList<PhysicalColumn>(PhysicalColumn.class, this, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__COLUMNS);
 		}
 		return columns;
 	}
@@ -178,14 +272,53 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL:
+				if (model != null)
+					msgs = ((InternalEObject)model).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_MODEL__PRIMARY_KEYS, PhysicalModel.class, msgs);
+				return basicSetModel((PhysicalModel)otherEnd, msgs);
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE:
+				if (table != null)
+					msgs = ((InternalEObject)table).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_TABLE__PRIMARY_KEY, PhysicalTable.class, msgs);
+				return basicSetTable((PhysicalTable)otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL:
+				return basicSetModel(null, msgs);
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE:
+				return basicSetTable(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case PhysicalPackage.PHYSICAL_PRIMARY_KEY__PK_NAME:
-				return getPkName();
-			case PhysicalPackage.PHYSICAL_PRIMARY_KEY__TABLE:
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__NAME:
+				return getName();
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL:
+				if (resolve) return getModel();
+				return basicGetModel();
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE:
 				if (resolve) return getTable();
 				return basicGetTable();
-			case PhysicalPackage.PHYSICAL_PRIMARY_KEY__COLUMNS:
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__COLUMNS:
 				return getColumns();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -200,13 +333,16 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case PhysicalPackage.PHYSICAL_PRIMARY_KEY__PK_NAME:
-				setPkName((String)newValue);
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__NAME:
+				setName((String)newValue);
 				return;
-			case PhysicalPackage.PHYSICAL_PRIMARY_KEY__TABLE:
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL:
+				setModel((PhysicalModel)newValue);
+				return;
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE:
 				setTable((PhysicalTable)newValue);
 				return;
-			case PhysicalPackage.PHYSICAL_PRIMARY_KEY__COLUMNS:
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__COLUMNS:
 				getColumns().clear();
 				getColumns().addAll((Collection<? extends PhysicalColumn>)newValue);
 				return;
@@ -222,13 +358,16 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case PhysicalPackage.PHYSICAL_PRIMARY_KEY__PK_NAME:
-				setPkName(PK_NAME_EDEFAULT);
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__NAME:
+				setName(NAME_EDEFAULT);
 				return;
-			case PhysicalPackage.PHYSICAL_PRIMARY_KEY__TABLE:
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL:
+				setModel((PhysicalModel)null);
+				return;
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE:
 				setTable((PhysicalTable)null);
 				return;
-			case PhysicalPackage.PHYSICAL_PRIMARY_KEY__COLUMNS:
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__COLUMNS:
 				getColumns().clear();
 				return;
 		}
@@ -243,11 +382,13 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case PhysicalPackage.PHYSICAL_PRIMARY_KEY__PK_NAME:
-				return PK_NAME_EDEFAULT == null ? pkName != null : !PK_NAME_EDEFAULT.equals(pkName);
-			case PhysicalPackage.PHYSICAL_PRIMARY_KEY__TABLE:
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL:
+				return model != null;
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE:
 				return table != null;
-			case PhysicalPackage.PHYSICAL_PRIMARY_KEY__COLUMNS:
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__COLUMNS:
 				return columns != null && !columns.isEmpty();
 		}
 		return super.eIsSet(featureID);
@@ -263,50 +404,10 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (pkName: ");
-		result.append(pkName);
+		result.append(" (name: ");
+		result.append(name);
 		result.append(')');
 		return result.toString();
-	}
-
-	public void addColumn(PhysicalColumn column) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void addColumnName(String columnName) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void addColumnNames(List<String> columnNames) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void addColumns(List<PhysicalColumn> columns) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public List<String> getColumnNames() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getTableName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setColumns(List<PhysicalColumn> columns) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setTableName(String tableName) {
-		// TODO Auto-generated method stub
-		
 	}
 
 } //PhysicalPrimaryKeyImpl

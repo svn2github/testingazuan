@@ -7,10 +7,11 @@
 package it.eng.spagobi.meta.model.physical.impl;
 
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
-import it.eng.spagobi.meta.model.physical.PhysicalPackage;
+import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -20,7 +21,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Column</b></em>'.
+ * An implementation of the model object '<em><b>Physical Column</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
@@ -289,7 +290,7 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return PhysicalPackage.Literals.PHYSICAL_COLUMN;
+		return PhysicalModelPackage.Literals.PHYSICAL_COLUMN;
 	}
 
 	/**
@@ -310,7 +311,7 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalPackage.PHYSICAL_COLUMN__NAME, oldName, name));
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_COLUMN__NAME, oldName, name));
 	}
 
 	/**
@@ -331,7 +332,7 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 		String oldComment = comment;
 		comment = newComment;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalPackage.PHYSICAL_COLUMN__COMMENT, oldComment, comment));
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_COLUMN__COMMENT, oldComment, comment));
 	}
 
 	/**
@@ -352,7 +353,7 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 		short oldDataType = dataType;
 		dataType = newDataType;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalPackage.PHYSICAL_COLUMN__DATA_TYPE, oldDataType, dataType));
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_COLUMN__DATA_TYPE, oldDataType, dataType));
 	}
 
 	/**
@@ -373,7 +374,7 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 		String oldTypeName = typeName;
 		typeName = newTypeName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalPackage.PHYSICAL_COLUMN__TYPE_NAME, oldTypeName, typeName));
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_COLUMN__TYPE_NAME, oldTypeName, typeName));
 	}
 
 	/**
@@ -394,7 +395,7 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 		int oldSize = size;
 		size = newSize;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalPackage.PHYSICAL_COLUMN__SIZE, oldSize, size));
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_COLUMN__SIZE, oldSize, size));
 	}
 
 	/**
@@ -415,7 +416,7 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 		int oldOctectLength = octectLength;
 		octectLength = newOctectLength;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalPackage.PHYSICAL_COLUMN__OCTECT_LENGTH, oldOctectLength, octectLength));
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_COLUMN__OCTECT_LENGTH, oldOctectLength, octectLength));
 	}
 
 	/**
@@ -436,7 +437,7 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 		int oldDecimalDigits = decimalDigits;
 		decimalDigits = newDecimalDigits;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalPackage.PHYSICAL_COLUMN__DECIMAL_DIGITS, oldDecimalDigits, decimalDigits));
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_COLUMN__DECIMAL_DIGITS, oldDecimalDigits, decimalDigits));
 	}
 
 	/**
@@ -457,7 +458,7 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 		int oldRadix = radix;
 		radix = newRadix;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalPackage.PHYSICAL_COLUMN__RADIX, oldRadix, radix));
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_COLUMN__RADIX, oldRadix, radix));
 	}
 
 	/**
@@ -478,7 +479,7 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 		String oldDefaultValue = defaultValue;
 		defaultValue = newDefaultValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalPackage.PHYSICAL_COLUMN__DEFAULT_VALUE, oldDefaultValue, defaultValue));
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_COLUMN__DEFAULT_VALUE, oldDefaultValue, defaultValue));
 	}
 
 	/**
@@ -499,7 +500,7 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 		boolean oldNullable = nullable;
 		nullable = newNullable;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalPackage.PHYSICAL_COLUMN__NULLABLE, oldNullable, nullable));
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_COLUMN__NULLABLE, oldNullable, nullable));
 	}
 
 	/**
@@ -520,7 +521,7 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 		int oldPosition = position;
 		position = newPosition;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalPackage.PHYSICAL_COLUMN__POSITION, oldPosition, position));
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_COLUMN__POSITION, oldPosition, position));
 	}
 
 	/**
@@ -534,7 +535,7 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 			table = (PhysicalTable)eResolveProxy(oldTable);
 			if (table != oldTable) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, PhysicalPackage.PHYSICAL_COLUMN__TABLE, oldTable, table));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, PhysicalModelPackage.PHYSICAL_COLUMN__TABLE, oldTable, table));
 			}
 		}
 		return table;
@@ -554,11 +555,63 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTable(PhysicalTable newTable) {
+	public NotificationChain basicSetTable(PhysicalTable newTable, NotificationChain msgs) {
 		PhysicalTable oldTable = table;
 		table = newTable;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalPackage.PHYSICAL_COLUMN__TABLE, oldTable, table));
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_COLUMN__TABLE, oldTable, newTable);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setTable(PhysicalTable newTable) {
+		if (newTable != table) {
+			NotificationChain msgs = null;
+			if (table != null)
+				msgs = ((InternalEObject)table).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_TABLE__COLUMNS, PhysicalTable.class, msgs);
+			if (newTable != null)
+				msgs = ((InternalEObject)newTable).eInverseAdd(this, PhysicalModelPackage.PHYSICAL_TABLE__COLUMNS, PhysicalTable.class, msgs);
+			msgs = basicSetTable(newTable, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_COLUMN__TABLE, newTable, newTable));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case PhysicalModelPackage.PHYSICAL_COLUMN__TABLE:
+				if (table != null)
+					msgs = ((InternalEObject)table).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_TABLE__COLUMNS, PhysicalTable.class, msgs);
+				return basicSetTable((PhysicalTable)otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case PhysicalModelPackage.PHYSICAL_COLUMN__TABLE:
+				return basicSetTable(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -569,29 +622,29 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case PhysicalPackage.PHYSICAL_COLUMN__NAME:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__NAME:
 				return getName();
-			case PhysicalPackage.PHYSICAL_COLUMN__COMMENT:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__COMMENT:
 				return getComment();
-			case PhysicalPackage.PHYSICAL_COLUMN__DATA_TYPE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__DATA_TYPE:
 				return new Short(getDataType());
-			case PhysicalPackage.PHYSICAL_COLUMN__TYPE_NAME:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__TYPE_NAME:
 				return getTypeName();
-			case PhysicalPackage.PHYSICAL_COLUMN__SIZE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__SIZE:
 				return new Integer(getSize());
-			case PhysicalPackage.PHYSICAL_COLUMN__OCTECT_LENGTH:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__OCTECT_LENGTH:
 				return new Integer(getOctectLength());
-			case PhysicalPackage.PHYSICAL_COLUMN__DECIMAL_DIGITS:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__DECIMAL_DIGITS:
 				return new Integer(getDecimalDigits());
-			case PhysicalPackage.PHYSICAL_COLUMN__RADIX:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__RADIX:
 				return new Integer(getRadix());
-			case PhysicalPackage.PHYSICAL_COLUMN__DEFAULT_VALUE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__DEFAULT_VALUE:
 				return getDefaultValue();
-			case PhysicalPackage.PHYSICAL_COLUMN__NULLABLE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__NULLABLE:
 				return isNullable() ? Boolean.TRUE : Boolean.FALSE;
-			case PhysicalPackage.PHYSICAL_COLUMN__POSITION:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__POSITION:
 				return new Integer(getPosition());
-			case PhysicalPackage.PHYSICAL_COLUMN__TABLE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__TABLE:
 				if (resolve) return getTable();
 				return basicGetTable();
 		}
@@ -606,40 +659,40 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case PhysicalPackage.PHYSICAL_COLUMN__NAME:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__NAME:
 				setName((String)newValue);
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__COMMENT:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__COMMENT:
 				setComment((String)newValue);
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__DATA_TYPE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__DATA_TYPE:
 				setDataType(((Short)newValue).shortValue());
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__TYPE_NAME:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__TYPE_NAME:
 				setTypeName((String)newValue);
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__SIZE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__SIZE:
 				setSize(((Integer)newValue).intValue());
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__OCTECT_LENGTH:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__OCTECT_LENGTH:
 				setOctectLength(((Integer)newValue).intValue());
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__DECIMAL_DIGITS:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__DECIMAL_DIGITS:
 				setDecimalDigits(((Integer)newValue).intValue());
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__RADIX:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__RADIX:
 				setRadix(((Integer)newValue).intValue());
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__DEFAULT_VALUE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__DEFAULT_VALUE:
 				setDefaultValue((String)newValue);
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__NULLABLE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__NULLABLE:
 				setNullable(((Boolean)newValue).booleanValue());
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__POSITION:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__POSITION:
 				setPosition(((Integer)newValue).intValue());
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__TABLE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__TABLE:
 				setTable((PhysicalTable)newValue);
 				return;
 		}
@@ -654,40 +707,40 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case PhysicalPackage.PHYSICAL_COLUMN__NAME:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__COMMENT:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__COMMENT:
 				setComment(COMMENT_EDEFAULT);
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__DATA_TYPE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__DATA_TYPE:
 				setDataType(DATA_TYPE_EDEFAULT);
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__TYPE_NAME:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__TYPE_NAME:
 				setTypeName(TYPE_NAME_EDEFAULT);
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__SIZE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__SIZE:
 				setSize(SIZE_EDEFAULT);
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__OCTECT_LENGTH:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__OCTECT_LENGTH:
 				setOctectLength(OCTECT_LENGTH_EDEFAULT);
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__DECIMAL_DIGITS:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__DECIMAL_DIGITS:
 				setDecimalDigits(DECIMAL_DIGITS_EDEFAULT);
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__RADIX:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__RADIX:
 				setRadix(RADIX_EDEFAULT);
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__DEFAULT_VALUE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__DEFAULT_VALUE:
 				setDefaultValue(DEFAULT_VALUE_EDEFAULT);
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__NULLABLE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__NULLABLE:
 				setNullable(NULLABLE_EDEFAULT);
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__POSITION:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__POSITION:
 				setPosition(POSITION_EDEFAULT);
 				return;
-			case PhysicalPackage.PHYSICAL_COLUMN__TABLE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__TABLE:
 				setTable((PhysicalTable)null);
 				return;
 		}
@@ -702,29 +755,29 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case PhysicalPackage.PHYSICAL_COLUMN__NAME:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case PhysicalPackage.PHYSICAL_COLUMN__COMMENT:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__COMMENT:
 				return COMMENT_EDEFAULT == null ? comment != null : !COMMENT_EDEFAULT.equals(comment);
-			case PhysicalPackage.PHYSICAL_COLUMN__DATA_TYPE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__DATA_TYPE:
 				return dataType != DATA_TYPE_EDEFAULT;
-			case PhysicalPackage.PHYSICAL_COLUMN__TYPE_NAME:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__TYPE_NAME:
 				return TYPE_NAME_EDEFAULT == null ? typeName != null : !TYPE_NAME_EDEFAULT.equals(typeName);
-			case PhysicalPackage.PHYSICAL_COLUMN__SIZE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__SIZE:
 				return size != SIZE_EDEFAULT;
-			case PhysicalPackage.PHYSICAL_COLUMN__OCTECT_LENGTH:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__OCTECT_LENGTH:
 				return octectLength != OCTECT_LENGTH_EDEFAULT;
-			case PhysicalPackage.PHYSICAL_COLUMN__DECIMAL_DIGITS:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__DECIMAL_DIGITS:
 				return decimalDigits != DECIMAL_DIGITS_EDEFAULT;
-			case PhysicalPackage.PHYSICAL_COLUMN__RADIX:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__RADIX:
 				return radix != RADIX_EDEFAULT;
-			case PhysicalPackage.PHYSICAL_COLUMN__DEFAULT_VALUE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__DEFAULT_VALUE:
 				return DEFAULT_VALUE_EDEFAULT == null ? defaultValue != null : !DEFAULT_VALUE_EDEFAULT.equals(defaultValue);
-			case PhysicalPackage.PHYSICAL_COLUMN__NULLABLE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__NULLABLE:
 				return nullable != NULLABLE_EDEFAULT;
-			case PhysicalPackage.PHYSICAL_COLUMN__POSITION:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__POSITION:
 				return position != POSITION_EDEFAULT;
-			case PhysicalPackage.PHYSICAL_COLUMN__TABLE:
+			case PhysicalModelPackage.PHYSICAL_COLUMN__TABLE:
 				return table != null;
 		}
 		return super.eIsSet(featureID);

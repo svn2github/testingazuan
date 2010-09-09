@@ -20,17 +20,17 @@ import org.eclipse.emf.ecore.EObject;
  * The <b>Adapter Factory</b> for the model.
  * It provides an adapter <code>createXXX</code> method for each class of the model.
  * <!-- end-user-doc -->
- * @see it.eng.spagobi.meta.model.physical.PhysicalPackage
+ * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage
  * @generated
  */
-public class PhysicalAdapterFactory extends AdapterFactoryImpl {
+public class PhysicalModelAdapterFactory extends AdapterFactoryImpl {
 	/**
 	 * The cached model package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static PhysicalPackage modelPackage;
+	protected static PhysicalModelPackage modelPackage;
 
 	/**
 	 * Creates an instance of the adapter factory.
@@ -38,9 +38,9 @@ public class PhysicalAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PhysicalAdapterFactory() {
+	public PhysicalModelAdapterFactory() {
 		if (modelPackage == null) {
-			modelPackage = PhysicalPackage.eINSTANCE;
+			modelPackage = PhysicalModelPackage.eINSTANCE;
 		}
 	}
 
@@ -69,8 +69,8 @@ public class PhysicalAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected PhysicalSwitch<Adapter> modelSwitch =
-		new PhysicalSwitch<Adapter>() {
+	protected PhysicalModelSwitch<Adapter> modelSwitch =
+		new PhysicalModelSwitch<Adapter>() {
 			@Override
 			public Adapter casePhysicalColumn(PhysicalColumn object) {
 				return createPhysicalColumnAdapter();
@@ -112,7 +112,7 @@ public class PhysicalAdapterFactory extends AdapterFactoryImpl {
 
 
 	/**
-	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn <em>Column</em>}'.
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn <em>Physical Column</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
@@ -126,7 +126,7 @@ public class PhysicalAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey <em>Foreign Key</em>}'.
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey <em>Physical Foreign Key</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
@@ -140,7 +140,7 @@ public class PhysicalAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.physical.PhysicalModel <em>Model</em>}'.
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.physical.PhysicalModel <em>Physical Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
@@ -154,7 +154,7 @@ public class PhysicalAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey <em>Primary Key</em>}'.
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey <em>Physical Primary Key</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
@@ -168,7 +168,7 @@ public class PhysicalAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.physical.PhysicalTable <em>Table</em>}'.
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.physical.PhysicalTable <em>Physical Table</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
@@ -193,4 +193,4 @@ public class PhysicalAdapterFactory extends AdapterFactoryImpl {
 		return null;
 	}
 
-} //PhysicalAdapterFactory
+} //PhysicalModelAdapterFactory

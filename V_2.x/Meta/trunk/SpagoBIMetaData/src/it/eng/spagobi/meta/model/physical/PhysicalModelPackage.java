@@ -22,11 +22,11 @@ import org.eclipse.emf.ecore.EReference;
  *   <li>and each data type</li>
  * </ul>
  * <!-- end-user-doc -->
- * @see it.eng.spagobi.meta.model.physical.PhysicalFactory
+ * @see it.eng.spagobi.meta.model.physical.PhysicalModelFactory
  * @model kind="package"
  * @generated
  */
-public interface PhysicalPackage extends EPackage {
+public interface PhysicalModelPackage extends EPackage {
 	/**
 	 * The package name.
 	 * <!-- begin-user-doc -->
@@ -57,14 +57,14 @@ public interface PhysicalPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	PhysicalPackage eINSTANCE = it.eng.spagobi.meta.model.physical.impl.PhysicalPackageImpl.init();
+	PhysicalModelPackage eINSTANCE = it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl.init();
 
 	/**
-	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalColumnImpl <em>Column</em>}' class.
+	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalColumnImpl <em>Physical Column</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalColumnImpl
-	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalPackageImpl#getPhysicalColumn()
+	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalColumn()
 	 * @generated
 	 */
 	int PHYSICAL_COLUMN = 0;
@@ -178,7 +178,7 @@ public interface PhysicalPackage extends EPackage {
 	int PHYSICAL_COLUMN__TABLE = 11;
 
 	/**
-	 * The number of structural features of the '<em>Column</em>' class.
+	 * The number of structural features of the '<em>Physical Column</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -187,84 +187,93 @@ public interface PhysicalPackage extends EPackage {
 	int PHYSICAL_COLUMN_FEATURE_COUNT = 12;
 
 	/**
-	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl <em>Foreign Key</em>}' class.
+	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl <em>Physical Foreign Key</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl
-	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalPackageImpl#getPhysicalForeignKey()
+	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalForeignKey()
 	 * @generated
 	 */
 	int PHYSICAL_FOREIGN_KEY = 1;
 
 	/**
-	 * The feature id for the '<em><b>Fk Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Source Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY__FK_NAME = 0;
+	int PHYSICAL_FOREIGN_KEY__SOURCE_NAME = 0;
 
 	/**
-	 * The feature id for the '<em><b>Pk Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Source Table</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY__PK_NAME = 1;
+	int PHYSICAL_FOREIGN_KEY__SOURCE_TABLE = 1;
 
 	/**
-	 * The feature id for the '<em><b>Fk Columns</b></em>' reference list.
+	 * The feature id for the '<em><b>Source Columns</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY__FK_COLUMNS = 2;
+	int PHYSICAL_FOREIGN_KEY__SOURCE_COLUMNS = 2;
 
 	/**
-	 * The feature id for the '<em><b>Pk Columns</b></em>' reference list.
+	 * The feature id for the '<em><b>Destination Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY__PK_COLUMNS = 3;
+	int PHYSICAL_FOREIGN_KEY__DESTINATION_NAME = 3;
 
 	/**
-	 * The feature id for the '<em><b>Pk Table</b></em>' reference.
+	 * The feature id for the '<em><b>Destination Table</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY__PK_TABLE = 4;
+	int PHYSICAL_FOREIGN_KEY__DESTINATION_TABLE = 4;
 
 	/**
-	 * The feature id for the '<em><b>Fk Table</b></em>' reference.
+	 * The feature id for the '<em><b>Destination Columns</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY__FK_TABLE = 5;
+	int PHYSICAL_FOREIGN_KEY__DESTINATION_COLUMNS = 5;
 
 	/**
-	 * The number of structural features of the '<em>Foreign Key</em>' class.
+	 * The feature id for the '<em><b>Model</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY_FEATURE_COUNT = 6;
+	int PHYSICAL_FOREIGN_KEY__MODEL = 6;
 
 	/**
-	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl <em>Model</em>}' class.
+	 * The number of structural features of the '<em>Physical Foreign Key</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_FOREIGN_KEY_FEATURE_COUNT = 7;
+
+	/**
+	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl <em>Physical Model</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl
-	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalPackageImpl#getPhysicalModel()
+	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalModel()
 	 * @generated
 	 */
 	int PHYSICAL_MODEL = 2;
@@ -315,7 +324,7 @@ public interface PhysicalPackage extends EPackage {
 	int PHYSICAL_MODEL__SCHEMA = 4;
 
 	/**
-	 * The feature id for the '<em><b>Tables</b></em>' reference list.
+	 * The feature id for the '<em><b>Tables</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -342,7 +351,7 @@ public interface PhysicalPackage extends EPackage {
 	int PHYSICAL_MODEL__FOREIGN_KEYS = 7;
 
 	/**
-	 * The number of structural features of the '<em>Model</em>' class.
+	 * The number of structural features of the '<em>Physical Model</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -351,23 +360,32 @@ public interface PhysicalPackage extends EPackage {
 	int PHYSICAL_MODEL_FEATURE_COUNT = 8;
 
 	/**
-	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl <em>Primary Key</em>}' class.
+	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl <em>Physical Primary Key</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl
-	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalPackageImpl#getPhysicalPrimaryKey()
+	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalPrimaryKey()
 	 * @generated
 	 */
 	int PHYSICAL_PRIMARY_KEY = 3;
 
 	/**
-	 * The feature id for the '<em><b>Pk Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_PRIMARY_KEY__PK_NAME = 0;
+	int PHYSICAL_PRIMARY_KEY__NAME = 0;
+
+	/**
+	 * The feature id for the '<em><b>Model</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_PRIMARY_KEY__MODEL = 1;
 
 	/**
 	 * The feature id for the '<em><b>Table</b></em>' reference.
@@ -376,7 +394,7 @@ public interface PhysicalPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_PRIMARY_KEY__TABLE = 1;
+	int PHYSICAL_PRIMARY_KEY__TABLE = 2;
 
 	/**
 	 * The feature id for the '<em><b>Columns</b></em>' reference list.
@@ -385,23 +403,23 @@ public interface PhysicalPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_PRIMARY_KEY__COLUMNS = 2;
+	int PHYSICAL_PRIMARY_KEY__COLUMNS = 3;
 
 	/**
-	 * The number of structural features of the '<em>Primary Key</em>' class.
+	 * The number of structural features of the '<em>Physical Primary Key</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_PRIMARY_KEY_FEATURE_COUNT = 3;
+	int PHYSICAL_PRIMARY_KEY_FEATURE_COUNT = 4;
 
 	/**
-	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalTableImpl <em>Table</em>}' class.
+	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalTableImpl <em>Physical Table</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalTableImpl
-	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalPackageImpl#getPhysicalTable()
+	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalTable()
 	 * @generated
 	 */
 	int PHYSICAL_TABLE = 4;
@@ -416,22 +434,13 @@ public interface PhysicalPackage extends EPackage {
 	int PHYSICAL_TABLE__NAME = 0;
 
 	/**
-	 * The feature id for the '<em><b>Model</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_TABLE__MODEL = 1;
-
-	/**
 	 * The feature id for the '<em><b>Comment</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_TABLE__COMMENT = 2;
+	int PHYSICAL_TABLE__COMMENT = 1;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' attribute.
@@ -440,7 +449,16 @@ public interface PhysicalPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_TABLE__TYPE = 3;
+	int PHYSICAL_TABLE__TYPE = 2;
+
+	/**
+	 * The feature id for the '<em><b>Model</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_TABLE__MODEL = 3;
 
 	/**
 	 * The feature id for the '<em><b>Columns</b></em>' reference list.
@@ -452,13 +470,13 @@ public interface PhysicalPackage extends EPackage {
 	int PHYSICAL_TABLE__COLUMNS = 4;
 
 	/**
-	 * The feature id for the '<em><b>Primary Keys</b></em>' reference list.
+	 * The feature id for the '<em><b>Primary Key</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_TABLE__PRIMARY_KEYS = 5;
+	int PHYSICAL_TABLE__PRIMARY_KEY = 5;
 
 	/**
 	 * The feature id for the '<em><b>Foreign Keys</b></em>' reference list.
@@ -470,16 +488,16 @@ public interface PhysicalPackage extends EPackage {
 	int PHYSICAL_TABLE__FOREIGN_KEYS = 6;
 
 	/**
-	 * The feature id for the '<em><b>Incoming Keys</b></em>' reference list.
+	 * The feature id for the '<em><b>Reverse Foreign Keys</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_TABLE__INCOMING_KEYS = 7;
+	int PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS = 7;
 
 	/**
-	 * The number of structural features of the '<em>Table</em>' class.
+	 * The number of structural features of the '<em>Physical Table</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -489,10 +507,10 @@ public interface PhysicalPackage extends EPackage {
 
 
 	/**
-	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn <em>Column</em>}'.
+	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn <em>Physical Column</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Column</em>'.
+	 * @return the meta object for class '<em>Physical Column</em>'.
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalColumn
 	 * @generated
 	 */
@@ -631,86 +649,97 @@ public interface PhysicalPackage extends EPackage {
 	EReference getPhysicalColumn_Table();
 
 	/**
-	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey <em>Foreign Key</em>}'.
+	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey <em>Physical Foreign Key</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Foreign Key</em>'.
+	 * @return the meta object for class '<em>Physical Foreign Key</em>'.
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey
 	 * @generated
 	 */
 	EClass getPhysicalForeignKey();
 
 	/**
-	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getFkName <em>Fk Name</em>}'.
+	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getSourceName <em>Source Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Fk Name</em>'.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getFkName()
+	 * @return the meta object for the attribute '<em>Source Name</em>'.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getSourceName()
 	 * @see #getPhysicalForeignKey()
 	 * @generated
 	 */
-	EAttribute getPhysicalForeignKey_FkName();
+	EAttribute getPhysicalForeignKey_SourceName();
 
 	/**
-	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getPkName <em>Pk Name</em>}'.
+	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getSourceTable <em>Source Table</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pk Name</em>'.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getPkName()
+	 * @return the meta object for the reference '<em>Source Table</em>'.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getSourceTable()
 	 * @see #getPhysicalForeignKey()
 	 * @generated
 	 */
-	EAttribute getPhysicalForeignKey_PkName();
+	EReference getPhysicalForeignKey_SourceTable();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getFkColumns <em>Fk Columns</em>}'.
+	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getSourceColumns <em>Source Columns</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Fk Columns</em>'.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getFkColumns()
+	 * @return the meta object for the reference list '<em>Source Columns</em>'.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getSourceColumns()
 	 * @see #getPhysicalForeignKey()
 	 * @generated
 	 */
-	EReference getPhysicalForeignKey_FkColumns();
+	EReference getPhysicalForeignKey_SourceColumns();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getPkColumns <em>Pk Columns</em>}'.
+	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getDestinationName <em>Destination Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Pk Columns</em>'.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getPkColumns()
+	 * @return the meta object for the attribute '<em>Destination Name</em>'.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getDestinationName()
 	 * @see #getPhysicalForeignKey()
 	 * @generated
 	 */
-	EReference getPhysicalForeignKey_PkColumns();
+	EAttribute getPhysicalForeignKey_DestinationName();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getPkTable <em>Pk Table</em>}'.
+	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getDestinationTable <em>Destination Table</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Pk Table</em>'.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getPkTable()
+	 * @return the meta object for the reference '<em>Destination Table</em>'.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getDestinationTable()
 	 * @see #getPhysicalForeignKey()
 	 * @generated
 	 */
-	EReference getPhysicalForeignKey_PkTable();
+	EReference getPhysicalForeignKey_DestinationTable();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getFkTable <em>Fk Table</em>}'.
+	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getDestinationColumns <em>Destination Columns</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Fk Table</em>'.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getFkTable()
+	 * @return the meta object for the reference list '<em>Destination Columns</em>'.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getDestinationColumns()
 	 * @see #getPhysicalForeignKey()
 	 * @generated
 	 */
-	EReference getPhysicalForeignKey_FkTable();
+	EReference getPhysicalForeignKey_DestinationColumns();
 
 	/**
-	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.physical.PhysicalModel <em>Model</em>}'.
+	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Model</em>'.
+	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getModel()
+	 * @see #getPhysicalForeignKey()
+	 * @generated
+	 */
+	EReference getPhysicalForeignKey_Model();
+
+	/**
+	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.physical.PhysicalModel <em>Physical Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Physical Model</em>'.
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalModel
 	 * @generated
 	 */
@@ -772,10 +801,10 @@ public interface PhysicalPackage extends EPackage {
 	EAttribute getPhysicalModel_Schema();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getTables <em>Tables</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getTables <em>Tables</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Tables</em>'.
+	 * @return the meta object for the containment reference list '<em>Tables</em>'.
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalModel#getTables()
 	 * @see #getPhysicalModel()
 	 * @generated
@@ -805,25 +834,36 @@ public interface PhysicalPackage extends EPackage {
 	EReference getPhysicalModel_ForeignKeys();
 
 	/**
-	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey <em>Primary Key</em>}'.
+	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey <em>Physical Primary Key</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Primary Key</em>'.
+	 * @return the meta object for class '<em>Physical Primary Key</em>'.
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey
 	 * @generated
 	 */
 	EClass getPhysicalPrimaryKey();
 
 	/**
-	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getPkName <em>Pk Name</em>}'.
+	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getName <em>Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pk Name</em>'.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getPkName()
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getName()
 	 * @see #getPhysicalPrimaryKey()
 	 * @generated
 	 */
-	EAttribute getPhysicalPrimaryKey_PkName();
+	EAttribute getPhysicalPrimaryKey_Name();
+
+	/**
+	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getModel <em>Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getModel()
+	 * @see #getPhysicalPrimaryKey()
+	 * @generated
+	 */
+	EReference getPhysicalPrimaryKey_Model();
 
 	/**
 	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getTable <em>Table</em>}'.
@@ -848,10 +888,10 @@ public interface PhysicalPackage extends EPackage {
 	EReference getPhysicalPrimaryKey_Columns();
 
 	/**
-	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.physical.PhysicalTable <em>Table</em>}'.
+	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.physical.PhysicalTable <em>Physical Table</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Table</em>'.
+	 * @return the meta object for class '<em>Physical Table</em>'.
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalTable
 	 * @generated
 	 */
@@ -867,17 +907,6 @@ public interface PhysicalPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getPhysicalTable_Name();
-
-	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getModel <em>Model</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Model</em>'.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalTable#getModel()
-	 * @see #getPhysicalTable()
-	 * @generated
-	 */
-	EReference getPhysicalTable_Model();
 
 	/**
 	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getComment <em>Comment</em>}'.
@@ -902,6 +931,17 @@ public interface PhysicalPackage extends EPackage {
 	EAttribute getPhysicalTable_Type();
 
 	/**
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getModel <em>Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the container reference '<em>Model</em>'.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalTable#getModel()
+	 * @see #getPhysicalTable()
+	 * @generated
+	 */
+	EReference getPhysicalTable_Model();
+
+	/**
 	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getColumns <em>Columns</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -913,15 +953,15 @@ public interface PhysicalPackage extends EPackage {
 	EReference getPhysicalTable_Columns();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getPrimaryKeys <em>Primary Keys</em>}'.
+	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getPrimaryKey <em>Primary Key</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Primary Keys</em>'.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalTable#getPrimaryKeys()
+	 * @return the meta object for the reference '<em>Primary Key</em>'.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalTable#getPrimaryKey()
 	 * @see #getPhysicalTable()
 	 * @generated
 	 */
-	EReference getPhysicalTable_PrimaryKeys();
+	EReference getPhysicalTable_PrimaryKey();
 
 	/**
 	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getForeignKeys <em>Foreign Keys</em>}'.
@@ -935,15 +975,15 @@ public interface PhysicalPackage extends EPackage {
 	EReference getPhysicalTable_ForeignKeys();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getIncomingKeys <em>Incoming Keys</em>}'.
+	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getReverseForeignKeys <em>Reverse Foreign Keys</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Incoming Keys</em>'.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalTable#getIncomingKeys()
+	 * @return the meta object for the reference list '<em>Reverse Foreign Keys</em>'.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalTable#getReverseForeignKeys()
 	 * @see #getPhysicalTable()
 	 * @generated
 	 */
-	EReference getPhysicalTable_IncomingKeys();
+	EReference getPhysicalTable_ReverseForeignKeys();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -952,7 +992,7 @@ public interface PhysicalPackage extends EPackage {
 	 * @return the factory that creates the instances of the model.
 	 * @generated
 	 */
-	PhysicalFactory getPhysicalFactory();
+	PhysicalModelFactory getPhysicalModelFactory();
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -968,11 +1008,11 @@ public interface PhysicalPackage extends EPackage {
 	 */
 	interface Literals {
 		/**
-		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalColumnImpl <em>Column</em>}' class.
+		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalColumnImpl <em>Physical Column</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalColumnImpl
-		 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalPackageImpl#getPhysicalColumn()
+		 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalColumn()
 		 * @generated
 		 */
 		EClass PHYSICAL_COLUMN = eINSTANCE.getPhysicalColumn();
@@ -1074,69 +1114,77 @@ public interface PhysicalPackage extends EPackage {
 		EReference PHYSICAL_COLUMN__TABLE = eINSTANCE.getPhysicalColumn_Table();
 
 		/**
-		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl <em>Foreign Key</em>}' class.
+		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl <em>Physical Foreign Key</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl
-		 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalPackageImpl#getPhysicalForeignKey()
+		 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalForeignKey()
 		 * @generated
 		 */
 		EClass PHYSICAL_FOREIGN_KEY = eINSTANCE.getPhysicalForeignKey();
 
 		/**
-		 * The meta object literal for the '<em><b>Fk Name</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Source Name</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute PHYSICAL_FOREIGN_KEY__FK_NAME = eINSTANCE.getPhysicalForeignKey_FkName();
+		EAttribute PHYSICAL_FOREIGN_KEY__SOURCE_NAME = eINSTANCE.getPhysicalForeignKey_SourceName();
 
 		/**
-		 * The meta object literal for the '<em><b>Pk Name</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Source Table</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute PHYSICAL_FOREIGN_KEY__PK_NAME = eINSTANCE.getPhysicalForeignKey_PkName();
+		EReference PHYSICAL_FOREIGN_KEY__SOURCE_TABLE = eINSTANCE.getPhysicalForeignKey_SourceTable();
 
 		/**
-		 * The meta object literal for the '<em><b>Fk Columns</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Source Columns</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference PHYSICAL_FOREIGN_KEY__FK_COLUMNS = eINSTANCE.getPhysicalForeignKey_FkColumns();
+		EReference PHYSICAL_FOREIGN_KEY__SOURCE_COLUMNS = eINSTANCE.getPhysicalForeignKey_SourceColumns();
 
 		/**
-		 * The meta object literal for the '<em><b>Pk Columns</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Destination Name</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference PHYSICAL_FOREIGN_KEY__PK_COLUMNS = eINSTANCE.getPhysicalForeignKey_PkColumns();
+		EAttribute PHYSICAL_FOREIGN_KEY__DESTINATION_NAME = eINSTANCE.getPhysicalForeignKey_DestinationName();
 
 		/**
-		 * The meta object literal for the '<em><b>Pk Table</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Destination Table</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference PHYSICAL_FOREIGN_KEY__PK_TABLE = eINSTANCE.getPhysicalForeignKey_PkTable();
+		EReference PHYSICAL_FOREIGN_KEY__DESTINATION_TABLE = eINSTANCE.getPhysicalForeignKey_DestinationTable();
 
 		/**
-		 * The meta object literal for the '<em><b>Fk Table</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Destination Columns</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference PHYSICAL_FOREIGN_KEY__FK_TABLE = eINSTANCE.getPhysicalForeignKey_FkTable();
+		EReference PHYSICAL_FOREIGN_KEY__DESTINATION_COLUMNS = eINSTANCE.getPhysicalForeignKey_DestinationColumns();
 
 		/**
-		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl <em>Model</em>}' class.
+		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PHYSICAL_FOREIGN_KEY__MODEL = eINSTANCE.getPhysicalForeignKey_Model();
+
+		/**
+		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl <em>Physical Model</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl
-		 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalPackageImpl#getPhysicalModel()
+		 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalModel()
 		 * @generated
 		 */
 		EClass PHYSICAL_MODEL = eINSTANCE.getPhysicalModel();
@@ -1182,7 +1230,7 @@ public interface PhysicalPackage extends EPackage {
 		EAttribute PHYSICAL_MODEL__SCHEMA = eINSTANCE.getPhysicalModel_Schema();
 
 		/**
-		 * The meta object literal for the '<em><b>Tables</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Tables</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1206,22 +1254,30 @@ public interface PhysicalPackage extends EPackage {
 		EReference PHYSICAL_MODEL__FOREIGN_KEYS = eINSTANCE.getPhysicalModel_ForeignKeys();
 
 		/**
-		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl <em>Primary Key</em>}' class.
+		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl <em>Physical Primary Key</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl
-		 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalPackageImpl#getPhysicalPrimaryKey()
+		 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalPrimaryKey()
 		 * @generated
 		 */
 		EClass PHYSICAL_PRIMARY_KEY = eINSTANCE.getPhysicalPrimaryKey();
 
 		/**
-		 * The meta object literal for the '<em><b>Pk Name</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute PHYSICAL_PRIMARY_KEY__PK_NAME = eINSTANCE.getPhysicalPrimaryKey_PkName();
+		EAttribute PHYSICAL_PRIMARY_KEY__NAME = eINSTANCE.getPhysicalPrimaryKey_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PHYSICAL_PRIMARY_KEY__MODEL = eINSTANCE.getPhysicalPrimaryKey_Model();
 
 		/**
 		 * The meta object literal for the '<em><b>Table</b></em>' reference feature.
@@ -1240,11 +1296,11 @@ public interface PhysicalPackage extends EPackage {
 		EReference PHYSICAL_PRIMARY_KEY__COLUMNS = eINSTANCE.getPhysicalPrimaryKey_Columns();
 
 		/**
-		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalTableImpl <em>Table</em>}' class.
+		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalTableImpl <em>Physical Table</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalTableImpl
-		 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalPackageImpl#getPhysicalTable()
+		 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalTable()
 		 * @generated
 		 */
 		EClass PHYSICAL_TABLE = eINSTANCE.getPhysicalTable();
@@ -1256,14 +1312,6 @@ public interface PhysicalPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute PHYSICAL_TABLE__NAME = eINSTANCE.getPhysicalTable_Name();
-
-		/**
-		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference PHYSICAL_TABLE__MODEL = eINSTANCE.getPhysicalTable_Model();
 
 		/**
 		 * The meta object literal for the '<em><b>Comment</b></em>' attribute feature.
@@ -1282,6 +1330,14 @@ public interface PhysicalPackage extends EPackage {
 		EAttribute PHYSICAL_TABLE__TYPE = eINSTANCE.getPhysicalTable_Type();
 
 		/**
+		 * The meta object literal for the '<em><b>Model</b></em>' container reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PHYSICAL_TABLE__MODEL = eINSTANCE.getPhysicalTable_Model();
+
+		/**
 		 * The meta object literal for the '<em><b>Columns</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1290,12 +1346,12 @@ public interface PhysicalPackage extends EPackage {
 		EReference PHYSICAL_TABLE__COLUMNS = eINSTANCE.getPhysicalTable_Columns();
 
 		/**
-		 * The meta object literal for the '<em><b>Primary Keys</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Primary Key</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference PHYSICAL_TABLE__PRIMARY_KEYS = eINSTANCE.getPhysicalTable_PrimaryKeys();
+		EReference PHYSICAL_TABLE__PRIMARY_KEY = eINSTANCE.getPhysicalTable_PrimaryKey();
 
 		/**
 		 * The meta object literal for the '<em><b>Foreign Keys</b></em>' reference list feature.
@@ -1306,13 +1362,13 @@ public interface PhysicalPackage extends EPackage {
 		EReference PHYSICAL_TABLE__FOREIGN_KEYS = eINSTANCE.getPhysicalTable_ForeignKeys();
 
 		/**
-		 * The meta object literal for the '<em><b>Incoming Keys</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Reverse Foreign Keys</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference PHYSICAL_TABLE__INCOMING_KEYS = eINSTANCE.getPhysicalTable_IncomingKeys();
+		EReference PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS = eINSTANCE.getPhysicalTable_ReverseForeignKeys();
 
 	}
 
-} //PhysicalPackage
+} //PhysicalModelPackage

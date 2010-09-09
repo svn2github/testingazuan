@@ -22,24 +22,24 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
  * <!-- end-user-doc -->
  * @generated
  */
-public class PhysicalFactoryImpl extends EFactoryImpl implements PhysicalFactory {
+public class PhysicalModelFactoryImpl extends EFactoryImpl implements PhysicalModelFactory {
 	/**
 	 * Creates the default factory implementation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static PhysicalFactory init() {
+	public static PhysicalModelFactory init() {
 		try {
-			PhysicalFactory thePhysicalFactory = (PhysicalFactory)EPackage.Registry.INSTANCE.getEFactory("http:///it/eng/spagobi/meta/model/physical.ecore"); 
-			if (thePhysicalFactory != null) {
-				return thePhysicalFactory;
+			PhysicalModelFactory thePhysicalModelFactory = (PhysicalModelFactory)EPackage.Registry.INSTANCE.getEFactory("http:///it/eng/spagobi/meta/model/physical.ecore"); 
+			if (thePhysicalModelFactory != null) {
+				return thePhysicalModelFactory;
 			}
 		}
 		catch (Exception exception) {
 			EcorePlugin.INSTANCE.log(exception);
 		}
-		return new PhysicalFactoryImpl();
+		return new PhysicalModelFactoryImpl();
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class PhysicalFactoryImpl extends EFactoryImpl implements PhysicalFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PhysicalFactoryImpl() {
+	public PhysicalModelFactoryImpl() {
 		super();
 	}
 
@@ -60,11 +60,11 @@ public class PhysicalFactoryImpl extends EFactoryImpl implements PhysicalFactory
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case PhysicalPackage.PHYSICAL_COLUMN: return createPhysicalColumn();
-			case PhysicalPackage.PHYSICAL_FOREIGN_KEY: return createPhysicalForeignKey();
-			case PhysicalPackage.PHYSICAL_MODEL: return createPhysicalModel();
-			case PhysicalPackage.PHYSICAL_PRIMARY_KEY: return createPhysicalPrimaryKey();
-			case PhysicalPackage.PHYSICAL_TABLE: return createPhysicalTable();
+			case PhysicalModelPackage.PHYSICAL_COLUMN: return createPhysicalColumn();
+			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY: return createPhysicalForeignKey();
+			case PhysicalModelPackage.PHYSICAL_MODEL: return createPhysicalModel();
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY: return createPhysicalPrimaryKey();
+			case PhysicalModelPackage.PHYSICAL_TABLE: return createPhysicalTable();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -125,8 +125,8 @@ public class PhysicalFactoryImpl extends EFactoryImpl implements PhysicalFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PhysicalPackage getPhysicalPackage() {
-		return (PhysicalPackage)getEPackage();
+	public PhysicalModelPackage getPhysicalModelPackage() {
+		return (PhysicalModelPackage)getEPackage();
 	}
 
 	/**
@@ -136,8 +136,8 @@ public class PhysicalFactoryImpl extends EFactoryImpl implements PhysicalFactory
 	 * @generated
 	 */
 	@Deprecated
-	public static PhysicalPackage getPackage() {
-		return PhysicalPackage.eINSTANCE;
+	public static PhysicalModelPackage getPackage() {
+		return PhysicalModelPackage.eINSTANCE;
 	}
 
-} //PhysicalFactoryImpl
+} //PhysicalModelFactoryImpl

@@ -15,17 +15,22 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="nullable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="position" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="table" eType="#//PhysicalTable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1" eType="#//PhysicalTable"
+        eOpposite="#//PhysicalTable/columns"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PhysicalForeignKey">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fkName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pkName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="fkColumns" upperBound="-1"
-        eType="#//PhysicalColumn"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="pkColumns" upperBound="-1"
-        eType="#//PhysicalColumn"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="pkTable" eType="#//PhysicalTable"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="fkTable" eType="#//PhysicalTable"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sourceName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceTable" lowerBound="1"
+        eType="#//PhysicalTable" eOpposite="#//PhysicalTable/foreignKeys"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceColumns" lowerBound="1"
+        upperBound="-1" eType="#//PhysicalColumn"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="destinationName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="destinationTable" lowerBound="1"
+        eType="#//PhysicalTable" eOpposite="#//PhysicalTable/reverseForeignKeys"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="destinationColumns" lowerBound="1"
+        upperBound="-1" eType="#//PhysicalColumn"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//PhysicalModel"
+        eOpposite="#//PhysicalModel/foreignKeys"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PhysicalModel">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -34,30 +39,34 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="catalog" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="schema" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="tables" upperBound="-1"
-        eType="#//PhysicalTable"/>
+        eType="#//PhysicalTable" containment="true" eOpposite="#//PhysicalTable/model"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="primaryKeys" upperBound="-1"
-        eType="#//PhysicalPrimaryKey"/>
+        eType="#//PhysicalPrimaryKey" eOpposite="#//PhysicalPrimaryKey/model"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="foreignKeys" upperBound="-1"
-        eType="#//PhysicalForeignKey"/>
+        eType="#//PhysicalForeignKey" eOpposite="#//PhysicalForeignKey/model"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PhysicalPrimaryKey">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pkName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="table" eType="#//PhysicalTable"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="columns" upperBound="-1"
-        eType="#//PhysicalColumn"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="model" lowerBound="1" eType="#//PhysicalModel"
+        eOpposite="#//PhysicalModel/primaryKeys"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="table" eType="#//PhysicalTable"
+        eOpposite="#//PhysicalTable/primaryKey"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="columns" lowerBound="1"
+        upperBound="-1" eType="#//PhysicalColumn"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PhysicalTable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//PhysicalModel"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="comment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="model" lowerBound="1" eType="#//PhysicalModel"
+        eOpposite="#//PhysicalModel/tables"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="columns" upperBound="-1"
-        eType="#//PhysicalColumn"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryKeys" upperBound="-1"
-        eType="#//PhysicalPrimaryKey"/>
+        eType="#//PhysicalColumn" eOpposite="#//PhysicalColumn/table"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryKey" eType="#//PhysicalPrimaryKey"
+        eOpposite="#//PhysicalPrimaryKey/table"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="foreignKeys" upperBound="-1"
-        eType="#//PhysicalForeignKey"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="incomingKeys" upperBound="-1"
-        eType="#//PhysicalForeignKey"/>
+        eType="#//PhysicalForeignKey" eOpposite="#//PhysicalForeignKey/sourceTable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="reverseForeignKeys" upperBound="-1"
+        eType="#//PhysicalForeignKey" eOpposite="#//PhysicalForeignKey/destinationTable"/>
   </eClassifiers>
 </ecore:EPackage>

@@ -65,7 +65,7 @@ public class DSEBridge {
 		java.sql.Connection conn = connect_CP(cp);
 		//check if connection is OK
 		if (conn != null){
-			String modelName = "model"+cp.getName()+cp.getInstanceID();
+			String modelName = cp.getInstanceID();
 			//initialize the EMF Model
 			PhysicalModelInitializer modelInitializer = new PhysicalModelInitializer();
 			PhysicalModel model = modelInitializer.initizlize( modelName, conn,  null, null);

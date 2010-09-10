@@ -6,10 +6,12 @@
 package eng.it.spagobimeta.views;
 
 
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.meta.model.physical.provider.PhysicalModelItemProviderAdapterFactory;
+import it.eng.spagobi.meta.model.physical.util.PhysicalModelAdapterFactory;
+
 import java.util.ArrayList;
 import java.util.List;
-import it.eng.spagobi.meta.model.physical.PhysicalModel;
-import it.eng.spagobi.meta.model.physical.util.PhysicalModelAdapterFactory;
 import eng.it.spagobimeta.dnd.TableDragListener;
 import eng.it.spagobimeta.util.DBTreeAdapterFactoryContentProvider;
 import eng.it.spagobimeta.util.DSEBridge;
@@ -74,12 +76,14 @@ public class DBStructureView extends ViewPart {
 			*/		
 	
 			//Setting TreeViewer for EMF Model instances
-			List factories = new ArrayList();
-			factories.add(new PhysicalModelAdapterFactory());
+			List<PhysicalModelAdapterFactory> factories = new ArrayList<PhysicalModelAdapterFactory>();
+			factories.add(new PhysicalModelItemProviderAdapterFactory());
 			ComposedAdapterFactory adapterFactory = new ComposedAdapterFactory(factories);			
 			connTree.setContentProvider(new DBTreeAdapterFactoryContentProvider(adapterFactory));
 			connTree.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
 			connTree.setInput(model);
+			getSite().setSelectionProvider(connTree);
+			
 			
 			//set drag source
 			int operations = DND.DROP_COPY | DND.DROP_MOVE;

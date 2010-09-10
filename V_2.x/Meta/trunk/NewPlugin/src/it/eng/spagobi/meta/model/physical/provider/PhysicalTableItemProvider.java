@@ -237,21 +237,27 @@ public class PhysicalTableItemProvider
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/PhysicalTable"));
+		return overlayImage(object, getResourceLocator().getImage("table"));
 	}
 
 	/**
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
 	public String getText(Object object) {
+		/*
 		String label = ((PhysicalTable)object).getName();
 		return label == null || label.length() == 0 ?
 			getString("_UI_PhysicalTable_type") :
 			getString("_UI_PhysicalTable_type") + " " + label;
+		*/
+		PhysicalTable table = (PhysicalTable)object;
+        if( table.getName() == null )
+                return "Unnamed table";
+        return table.getName();
+
 	}
 
 	/**

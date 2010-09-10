@@ -9,6 +9,7 @@ package it.eng.spagobi.meta.model.physical.provider;
 
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.Collection;
 import java.util.List;
@@ -352,21 +353,27 @@ public class PhysicalColumnItemProvider
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/PhysicalColumn"));
+		return overlayImage(object, getResourceLocator().getImage("column.png"));
 	}
 
 	/**
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
 	public String getText(Object object) {
+		/*
 		String label = ((PhysicalColumn)object).getName();
 		return label == null || label.length() == 0 ?
 			getString("_UI_PhysicalColumn_type") :
 			getString("_UI_PhysicalColumn_type") + " " + label;
+		*/
+
+		PhysicalColumn col = (PhysicalColumn)object;
+        if( col.getName() == null )
+                return "Unnamed col";
+        return col.getTable().getName()+"."+col.getName();
 	}
 
 	/**

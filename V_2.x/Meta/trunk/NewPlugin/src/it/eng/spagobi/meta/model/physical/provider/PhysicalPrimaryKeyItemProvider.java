@@ -9,6 +9,7 @@ package it.eng.spagobi.meta.model.physical.provider;
 
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
 import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.Collection;
 import java.util.List;
@@ -168,21 +169,26 @@ public class PhysicalPrimaryKeyItemProvider
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/PhysicalPrimaryKey"));
+		return overlayImage(object, getResourceLocator().getImage("key.png"));
 	}
 
 	/**
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
 	public String getText(Object object) {
+		/*
 		String label = ((PhysicalPrimaryKey)object).getName();
 		return label == null || label.length() == 0 ?
 			getString("_UI_PhysicalPrimaryKey_type") :
 			getString("_UI_PhysicalPrimaryKey_type") + " " + label;
+		*/
+		PhysicalPrimaryKey pk = (PhysicalPrimaryKey)object;
+        if( pk.getName() == null )
+                return "Unnamed pk";
+        return pk.getName()+" "+pk.getTable().getName();
 	}
 
 	/**

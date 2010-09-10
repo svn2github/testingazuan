@@ -20,7 +20,7 @@ public class CreateModelTest {
 	public static String FILENAME = "D:\\Documenti\\Progetti\\metadati\\workspace\\SpagoBIMetaData\\model.xml";
 	
 	public static String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-	public static String MYSQL_URL = "jdbc:mysql://localhost:3306/foodmart";
+	public static String MYSQL_URL = "jdbc:mysql://localhost:3306/sogei";
 	public static String MYSQL_USER = "root";
 	public static String MYSQL_PWD = "root";
 	public static String MYSQL_DEFAULT_CATALOGUE = null; //"foodmart";		

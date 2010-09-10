@@ -9,6 +9,7 @@ package it.eng.spagobi.meta.model.physical.provider;
 
 import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
+import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
 
 import java.util.Collection;
 import java.util.List;
@@ -237,7 +238,7 @@ public class PhysicalForeignKeyItemProvider
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/PhysicalForeignKey"));
+		return overlayImage(object, getResourceLocator().getImage("foreignkey.png"));
 	}
 
 	/**
@@ -248,10 +249,16 @@ public class PhysicalForeignKeyItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
+		/*
 		String label = ((PhysicalForeignKey)object).getSourceName();
 		return label == null || label.length() == 0 ?
 			getString("_UI_PhysicalForeignKey_type") :
 			getString("_UI_PhysicalForeignKey_type") + " " + label;
+		*/
+		PhysicalForeignKey fk = (PhysicalForeignKey)object;
+        if (fk.getSourceName() != null)
+        	return "Foreign Key "+fk.getSourceName();
+        else return "unamed fk";
 	}
 
 	/**

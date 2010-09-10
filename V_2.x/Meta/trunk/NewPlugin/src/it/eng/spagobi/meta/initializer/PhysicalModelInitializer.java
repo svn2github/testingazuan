@@ -373,7 +373,7 @@ public class PhysicalModelInitializer {
 				} else if (!foreignKey.getSourceName().equals(fkName)) { // we have finished with the previous fk
 
 					table.getForeignKeys().add(foreignKey);
-					
+					model.getForeignKeys().add(foreignKey);
 					foreignKey = FACTORY.createPhysicalForeignKey();
 					foreignKey.setSourceName(fkName);
 					foreignKey.setSourceTable( sourceTable );					

@@ -6,6 +6,11 @@
 package eng.it.spagobimeta.util;
 
 
+
+
+import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.datatools.connectivity.IConnectionProfile;
 import org.eclipse.datatools.connectivity.IManagedConnection;
@@ -52,6 +57,24 @@ public class DSEBridge {
 		return null;	
 	}
 	
+	/*
+	 * Connect to the specified ConnectionProfile then extract the metadata to initialize
+	 * the EMF PhysicalModel
+	 */
+	public PhysicalModel connectionExtraction(IConnectionProfile cp){
+		java.sql.Connection conn = connect_CP(cp);
+		//check if connection is OK
+		if (conn != null){
+			String modelName = "model"+cp.getName()+cp.getInstanceID();
+			//initialize the EMF Model
+			PhysicalModelInitializer modelInitializer = new PhysicalModelInitializer();
+			PhysicalModel model = modelInitializer.initizlize( modelName, conn,  null, null);
+	        return model;
+		}
+		return null;
+			
+	}
+	
 	//return the database model object which can be used to extract schemas, tables, ect
 	public Database get_dbModel(IConnectionProfile cp)
 	{
@@ -70,12 +93,6 @@ public class DSEBridge {
 	//return the schemas from a Database object
 	public EList<Schema> get_schemas(Database db)
 	{
-		if (db.getVendor().equals("Oracle"))
-		{
-			EList<Catalog> catalogs = get_catalogs(db);
-			Catalog cat = catalogs.get(0);
-			return cat.getSchemas();
-		}
 		EList<Schema> schemas = db.getSchemas();
 		return schemas;
 	}

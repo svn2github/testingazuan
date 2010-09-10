@@ -27,6 +27,7 @@ public class GraphicEditorView extends ViewPart {
 	
 	private ScrolledComposite sc;
 	
+	
 	public GraphicEditorView() {
 		
 	}

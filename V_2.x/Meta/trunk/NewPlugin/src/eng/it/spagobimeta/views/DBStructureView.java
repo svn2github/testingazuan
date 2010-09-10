@@ -6,12 +6,16 @@
 package eng.it.spagobimeta.views;
 
 
+import java.util.ArrayList;
+import java.util.List;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.meta.model.physical.util.PhysicalModelAdapterFactory;
 import eng.it.spagobimeta.dnd.TableDragListener;
-import eng.it.spagobimeta.util.DSEContentProvider;
-import eng.it.spagobimeta.util.DSELabelProvider;
+import eng.it.spagobimeta.util.DBTreeAdapterFactoryContentProvider;
 import eng.it.spagobimeta.util.DSEBridge;
 import org.eclipse.datatools.connectivity.IConnectionProfile;
-import org.eclipse.datatools.modelbase.sql.schema.Database;
+import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -40,11 +44,10 @@ public class DBStructureView extends ViewPart {
 		//get db information from connection profile
 		DSEBridge dse = new DSEBridge();
 		
-		//check if the connection is successful
-		if (dse.connect_CP(cp) != null){
-			//get the db model object
-			Database db = dse.get_dbModel(cp);
-			
+		//extract information from the connection
+		PhysicalModel model = dse.connectionExtraction(cp);
+		//check if the connection extraction is successful
+		if (model != null){
 			//create a new Composite to host the tree structure
 			Composite container = new Composite(sc, SWT.NONE);
 			GridLayout gridLayout = new GridLayout(); 
@@ -63,10 +66,20 @@ public class DBStructureView extends ViewPart {
 			connGroup.setText(cp.getName());
 			connGroup.setLayout(new GridLayout());
 			TreeViewer connTree = new TreeViewer(connGroup);
+			/*
 			connTree.setContentProvider(new DSEContentProvider());
 			connTree.setLabelProvider(new DSELabelProvider());
 			connTree.setUseHashlookup(true);
 			connTree.setInput(db);
+			*/		
+	
+			//Setting TreeViewer for EMF Model instances
+			List factories = new ArrayList();
+			factories.add(new PhysicalModelAdapterFactory());
+			ComposedAdapterFactory adapterFactory = new ComposedAdapterFactory(factories);			
+			connTree.setContentProvider(new DBTreeAdapterFactoryContentProvider(adapterFactory));
+			connTree.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
+			connTree.setInput(model);
 			
 			//set drag source
 			int operations = DND.DROP_COPY | DND.DROP_MOVE;

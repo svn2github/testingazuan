@@ -5,7 +5,10 @@ package eng.it.spagobimeta.views;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -13,6 +16,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -31,7 +35,7 @@ public class PropertiesView extends ViewPart implements ISelectionListener {
     private FormToolkit toolkit;
     private ScrolledForm form;
     private Composite parentRef;
-
+    
     public PropertiesView() {
     	super();
     }
@@ -109,7 +113,6 @@ public class PropertiesView extends ViewPart implements ISelectionListener {
 	private void createBCProperties(BusinessClass bc){
 		if (form!=null)
 			form.dispose();
-		
 		parentRef.layout(true);
 		form = toolkit.createScrolledForm(parentRef);
 		form.setText("Properties of Business Class");
@@ -138,7 +141,7 @@ public class PropertiesView extends ViewPart implements ISelectionListener {
 		sectionClient.setLayout(gl);
 		Label l= toolkit.createLabel(sectionClient,"Business Class Name:");
 		Text t = toolkit.createText(sectionClient, bc.getName());
-		t.setLayoutData(gd);
+		t.setLayoutData(gd);	
 		Label l2= toolkit.createLabel(sectionClient,"Class Type:");
 		Text t2 = toolkit.createText(sectionClient,"");
 		t2.setLayoutData(gd);

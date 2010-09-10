@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,10 @@ import java.util.Map;
 public class PhysicalModelInitializer {
 	
 	static public PhysicalModelFactory FACTORY = PhysicalModelFactory.eINSTANCE;
+	
+	public PhysicalModelInitializer() {
+		
+	}
 	
 	public PhysicalModel initizlize(String modelName, Connection conn, String defaultCatalog, String defaultSchema) {
 		PhysicalModel model;
@@ -37,15 +42,15 @@ public class PhysicalModelInitializer {
 			
 			dbMeta = conn.getMetaData();
 			
-			initDatabaseMeta(model, dbMeta);	
+			initDatabaseMeta(dbMeta, model);	
 			
 			log("db name: " + model.getDatabaseName());
 			log("db version: " + model.getDatabaseVersion());
 			
-			initCatalogMeta(model, conn, defaultCatalog);
+			initCatalogMeta(conn, model, defaultCatalog);
 			log("catalog [" + dbMeta.getCatalogTerm() + "]: " + model.getCatalog());
 						
-			initSchemaMeta(model, dbMeta, defaultSchema);
+			initSchemaMeta(dbMeta, model, defaultSchema);
 			log("schema [" + dbMeta.getSchemaTerm() + "]: " + model.getSchema());
 			
 			initTablesMeta(dbMeta, model);
@@ -63,7 +68,7 @@ public class PhysicalModelInitializer {
 	}
 	
 	
-	private void initDatabaseMeta(PhysicalModel model, DatabaseMetaData dbMeta) {
+	private void initDatabaseMeta(DatabaseMetaData dbMeta, PhysicalModel model) {
 		try {
 			model.setDatabaseName( dbMeta.getDatabaseProductName());
 			model.setDatabaseVersion( dbMeta.getDatabaseProductVersion());
@@ -72,17 +77,91 @@ public class PhysicalModelInitializer {
 		}
 	}
 	
-	private void initCatalogMeta(PhysicalModel model, Connection conn, String defaultCatalog) {
+	private void initCatalogMeta(Connection conn, PhysicalModel model, String defaultCatalog) {
+		String catalog;		
+		List<String> catalogs;
+		DatabaseMetaData dbMeta;
+		ResultSet rs;
+		Iterator<String> it;
+		
+		catalog = null;
+		
 		try {
-			model.setCatalog( MetadataExtractor.retriveCatalog(conn, defaultCatalog) );
+			
+			catalog = conn.getCatalog();
+			if(catalog == null) {
+				dbMeta = conn.getMetaData();
+				
+				rs = dbMeta.getCatalogs();
+				catalogs = new ArrayList();
+				while (rs.next()) {
+					catalogs.add( rs.getString(1) );
+				}
+				
+				if(catalogs.size() == 0) {
+					log("No schema [" + dbMeta.getSchemaTerm() + "] defined");
+				} else if(catalogs.size() == 1) {
+					catalog = catalogs.get(1);
+				} else {
+					String targetCatalog = null;
+					it = catalogs.iterator();
+					while (it.hasNext()) {
+						String s = it.next();
+						log("s [" + s + "]");
+						if(s.equalsIgnoreCase(defaultCatalog)) {
+							targetCatalog = defaultCatalog;
+							break;
+						}
+					}
+					if(targetCatalog == null) {
+						throw new RuntimeException("No catalog named [" + defaultCatalog + "] is available on db");
+					}
+					catalog = targetCatalog;
+				}
+			}
+			
+			model.setCatalog(catalog);
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize catalog metadata", t);
 		}
 	}
 	
-	private void initSchemaMeta(PhysicalModel model, DatabaseMetaData dbMeta, String defaultSchema) {
+	private void initSchemaMeta(DatabaseMetaData dbMeta, PhysicalModel model,  String defaultSchema) {
+		String schema;
+		List<String> schemas;
+		ResultSet rs;
+		Iterator<String> it;
+		
+		schema = null;
+		
 		try {
-			model.setSchema( MetadataExtractor.retriveSchema(dbMeta, defaultSchema) );
+			rs = dbMeta.getSchemas();
+			schemas = new ArrayList();
+			while (rs.next()) {
+				schemas.add( rs.getString(1) );
+			}
+			
+			if(schemas.size() == 0) {
+				log("No schema [" + dbMeta.getSchemaTerm() + "] defined");
+			} else if(schemas.size() == 1) {
+				schema = schemas.get(1);
+			} else {
+				String targetSchema = null;
+				it = schemas.iterator();
+				while (it.hasNext()) {
+					String s = it.next();
+					if(s.equalsIgnoreCase(defaultSchema)) {
+						targetSchema = defaultSchema;
+						break;
+					}
+				}
+				if(targetSchema == null) {
+					throw new RuntimeException("No schema named [" + defaultSchema + "] is available on db");
+				}
+				schema = targetSchema;
+			}
+			
+			model.setSchema(schema);
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize schema metadata", t);
 		}

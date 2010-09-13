@@ -5,17 +5,37 @@
     modelPluginID="SpagoBIMetaData" modelName="SpagoBIMetalModel" importerID="org.eclipse.emf.importer.ecore"
     complianceLevel="5.0" copyrightFields="false">
   <foreignModel>SpagoBIMetaModel.ecore</foreignModel>
-  <genPackages prefix="Model" basePackage="it.eng.spagobi.meta.model" disposableProviderFactory="true"
+  <genPackages prefix="Model" basePackage="it.eng.spagobi.meta" disposableProviderFactory="true"
       ecorePackage="SpagoBIMetaModel.ecore#/">
-    <genClasses ecoreClass="SpagoBIMetaModel.ecore#//ModelObject"/>
-    <genClasses ecoreClass="SpagoBIMetaModel.ecore#//ModelProperty"/>
-    <genClasses ecoreClass="SpagoBIMetaModel.ecore#//ModelObjectFacet"/>
+    <genClasses ecoreClass="SpagoBIMetaModel.ecore#//ModelObject">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//ModelObject/propertyTypes"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//ModelObject/properties"/>
+    </genClasses>
+    <genClasses ecoreClass="SpagoBIMetaModel.ecore#//ModelPropertyType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//ModelPropertyType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//ModelPropertyType/description"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//ModelPropertyType/category"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//ModelPropertyType/defaultValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//ModelPropertyType/admissibleValues"/>
+    </genClasses>
+    <genClasses ecoreClass="SpagoBIMetaModel.ecore#//ModelPropertyCategory">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//ModelPropertyCategory/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//ModelPropertyCategory/description"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//ModelPropertyCategory/parentCategory"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//ModelPropertyCategory/subCategories"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//ModelPropertyCategory/propertyTypes"/>
+    </genClasses>
+    <genClasses ecoreClass="SpagoBIMetaModel.ecore#//ModelProperty">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//ModelProperty/propertyType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//ModelProperty/value"/>
+    </genClasses>
     <genClasses ecoreClass="SpagoBIMetaModel.ecore#//Model">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//Model/name"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//Model/physicalModels"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//Model/businessModels"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//Model/propertyTypes"/>
     </genClasses>
-    <nestedGenPackages prefix="PhysicalModel" basePackage="it.eng.spagobi.meta.model.model"
+    <nestedGenPackages prefix="PhysicalModel" basePackage="it.eng.spagobi.meta.model"
         disposableProviderFactory="true" ecorePackage="SpagoBIMetaModel.ecore#//physical">
       <genClasses ecoreClass="SpagoBIMetaModel.ecore#//physical/PhysicalModel">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalModel/name"/>
@@ -82,7 +102,7 @@
             ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalForeignKey/model"/>
       </genClasses>
     </nestedGenPackages>
-    <nestedGenPackages prefix="BusinessModel" basePackage="it.eng.spagobi.meta.model.model"
+    <nestedGenPackages prefix="BusinessModel" basePackage="it.eng.spagobi.meta.model"
         disposableProviderFactory="true" ecorePackage="SpagoBIMetaModel.ecore#//business">
       <genClasses ecoreClass="SpagoBIMetaModel.ecore#//business/BusinessModel">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//business/BusinessModel/name"/>
@@ -121,15 +141,15 @@
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//business/BusinessDomain/name"/>
       </genClasses>
     </nestedGenPackages>
-    <nestedGenPackages prefix="DimensionalModel" basePackage="it.eng.spagobi.meta.model.model"
-        disposableProviderFactory="true" ecorePackage="SpagoBIMetaModel.ecore#//dimensional">
-      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//dimensional/DimensionalModel"/>
+    <nestedGenPackages prefix="OlapModel" basePackage="it.eng.spagobi.meta.model"
+        disposableProviderFactory="true" ecorePackage="SpagoBIMetaModel.ecore#//olap">
+      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//olap/OlapModel"/>
     </nestedGenPackages>
-    <nestedGenPackages prefix="BehaviouralModel" basePackage="it.eng.spagobi.meta.model.model"
+    <nestedGenPackages prefix="BehaviouralModel" basePackage="it.eng.spagobi.meta.model"
         disposableProviderFactory="true" ecorePackage="SpagoBIMetaModel.ecore#//behavioural">
       <genClasses ecoreClass="SpagoBIMetaModel.ecore#//behavioural/BehaviouralModel"/>
     </nestedGenPackages>
-    <nestedGenPackages prefix="AnalyticalModel" basePackage="it.eng.spagobi.meta.model.model"
+    <nestedGenPackages prefix="AnalyticalModel" basePackage="it.eng.spagobi.meta.model"
         disposableProviderFactory="true" ecorePackage="SpagoBIMetaModel.ecore#//analytical">
       <genClasses ecoreClass="SpagoBIMetaModel.ecore#//analytical/AnalyticalModel"/>
     </nestedGenPackages>

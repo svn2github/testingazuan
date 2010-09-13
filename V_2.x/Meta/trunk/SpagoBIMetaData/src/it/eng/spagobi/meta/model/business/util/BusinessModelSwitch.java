@@ -4,9 +4,9 @@
  *
  * $Id$
  */
-package it.eng.spagobi.meta.model.physical.util;
+package it.eng.spagobi.meta.model.business.util;
 
-import it.eng.spagobi.meta.model.physical.*;
+import it.eng.spagobi.meta.model.business.*;
 
 import java.util.List;
 
@@ -23,17 +23,17 @@ import org.eclipse.emf.ecore.EObject;
  * until a non-null result is returned,
  * which is the result of the switch.
  * <!-- end-user-doc -->
- * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage
+ * @see it.eng.spagobi.meta.model.business.BusinessModelPackage
  * @generated
  */
-public class PhysicalModelSwitch<T> {
+public class BusinessModelSwitch<T> {
 	/**
 	 * The cached model package
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static PhysicalModelPackage modelPackage;
+	protected static BusinessModelPackage modelPackage;
 
 	/**
 	 * Creates an instance of the switch.
@@ -41,9 +41,9 @@ public class PhysicalModelSwitch<T> {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PhysicalModelSwitch() {
+	public BusinessModelSwitch() {
 		if (modelPackage == null) {
-			modelPackage = PhysicalModelPackage.eINSTANCE;
+			modelPackage = BusinessModelPackage.eINSTANCE;
 		}
 	}
 
@@ -87,33 +87,39 @@ public class PhysicalModelSwitch<T> {
 	 */
 	protected T doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
-			case PhysicalModelPackage.PHYSICAL_MODEL: {
-				PhysicalModel physicalModel = (PhysicalModel)theEObject;
-				T result = casePhysicalModel(physicalModel);
+			case BusinessModelPackage.BUSINESS_MODEL: {
+				BusinessModel businessModel = (BusinessModel)theEObject;
+				T result = caseBusinessModel(businessModel);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case PhysicalModelPackage.PHYSICAL_TABLE: {
-				PhysicalTable physicalTable = (PhysicalTable)theEObject;
-				T result = casePhysicalTable(physicalTable);
+			case BusinessModelPackage.BUSINESS_TABLE: {
+				BusinessTable businessTable = (BusinessTable)theEObject;
+				T result = caseBusinessTable(businessTable);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case PhysicalModelPackage.PHYSICAL_COLUMN: {
-				PhysicalColumn physicalColumn = (PhysicalColumn)theEObject;
-				T result = casePhysicalColumn(physicalColumn);
+			case BusinessModelPackage.BUSINESS_COLUMN: {
+				BusinessColumn businessColumn = (BusinessColumn)theEObject;
+				T result = caseBusinessColumn(businessColumn);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY: {
-				PhysicalPrimaryKey physicalPrimaryKey = (PhysicalPrimaryKey)theEObject;
-				T result = casePhysicalPrimaryKey(physicalPrimaryKey);
+			case BusinessModelPackage.BUSINESS_RELATIONSHIP: {
+				BusinessRelationship businessRelationship = (BusinessRelationship)theEObject;
+				T result = caseBusinessRelationship(businessRelationship);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY: {
-				PhysicalForeignKey physicalForeignKey = (PhysicalForeignKey)theEObject;
-				T result = casePhysicalForeignKey(physicalForeignKey);
+			case BusinessModelPackage.BUSINESS_VIEW: {
+				BusinessView businessView = (BusinessView)theEObject;
+				T result = caseBusinessView(businessView);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case BusinessModelPackage.BUSINESS_DOMAIN: {
+				BusinessDomain businessDomain = (BusinessDomain)theEObject;
+				T result = caseBusinessDomain(businessDomain);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -122,77 +128,92 @@ public class PhysicalModelSwitch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Physical Column</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Business Model</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Physical Column</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Business Model</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T casePhysicalColumn(PhysicalColumn object) {
+	public T caseBusinessModel(BusinessModel object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Physical Foreign Key</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Business Table</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Physical Foreign Key</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Business Table</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T casePhysicalForeignKey(PhysicalForeignKey object) {
+	public T caseBusinessTable(BusinessTable object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Physical Model</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Business Column</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Physical Model</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Business Column</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T casePhysicalModel(PhysicalModel object) {
+	public T caseBusinessColumn(BusinessColumn object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Physical Primary Key</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Business Relationship</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Physical Primary Key</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Business Relationship</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T casePhysicalPrimaryKey(PhysicalPrimaryKey object) {
+	public T caseBusinessRelationship(BusinessRelationship object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Physical Table</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Business View</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Physical Table</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Business View</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T casePhysicalTable(PhysicalTable object) {
+	public T caseBusinessView(BusinessView object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Business Domain</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Business Domain</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseBusinessDomain(BusinessDomain object) {
 		return null;
 	}
 
@@ -211,4 +232,4 @@ public class PhysicalModelSwitch<T> {
 		return null;
 	}
 
-} //PhysicalModelSwitch
+} //BusinessModelSwitch

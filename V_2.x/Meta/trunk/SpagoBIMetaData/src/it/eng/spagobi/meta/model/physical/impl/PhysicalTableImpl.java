@@ -240,7 +240,7 @@ public class PhysicalTableImpl extends EObjectImpl implements PhysicalTable {
 	 * @generated
 	 */
 	public PhysicalModel getModel() {
-		if (eContainerFeatureID != PhysicalModelPackage.PHYSICAL_TABLE__MODEL) return null;
+		if (eContainerFeatureID() != PhysicalModelPackage.PHYSICAL_TABLE__MODEL) return null;
 		return (PhysicalModel)eContainer();
 	}
 
@@ -260,7 +260,7 @@ public class PhysicalTableImpl extends EObjectImpl implements PhysicalTable {
 	 * @generated
 	 */
 	public void setModel(PhysicalModel newModel) {
-		if (newModel != eInternalContainer() || (eContainerFeatureID != PhysicalModelPackage.PHYSICAL_TABLE__MODEL && newModel != null)) {
+		if (newModel != eInternalContainer() || (eContainerFeatureID() != PhysicalModelPackage.PHYSICAL_TABLE__MODEL && newModel != null)) {
 			if (EcoreUtil.isAncestor(this, newModel))
 				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
@@ -427,7 +427,7 @@ public class PhysicalTableImpl extends EObjectImpl implements PhysicalTable {
 	 */
 	@Override
 	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
-		switch (eContainerFeatureID) {
+		switch (eContainerFeatureID()) {
 			case PhysicalModelPackage.PHYSICAL_TABLE__MODEL:
 				return eInternalContainer().eInverseRemove(this, PhysicalModelPackage.PHYSICAL_MODEL__TABLES, PhysicalModel.class, msgs);
 		}

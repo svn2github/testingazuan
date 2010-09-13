@@ -67,7 +67,209 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalColumn()
 	 * @generated
 	 */
-	int PHYSICAL_COLUMN = 0;
+	int PHYSICAL_COLUMN = 2;
+
+	/**
+	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl <em>Physical Foreign Key</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl
+	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalForeignKey()
+	 * @generated
+	 */
+	int PHYSICAL_FOREIGN_KEY = 4;
+
+	/**
+	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl <em>Physical Model</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl
+	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalModel()
+	 * @generated
+	 */
+	int PHYSICAL_MODEL = 0;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_MODEL__NAME = 0;
+
+	/**
+	 * The feature id for the '<em><b>Database Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_MODEL__DATABASE_NAME = 1;
+
+	/**
+	 * The feature id for the '<em><b>Database Version</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_MODEL__DATABASE_VERSION = 2;
+
+	/**
+	 * The feature id for the '<em><b>Catalog</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_MODEL__CATALOG = 3;
+
+	/**
+	 * The feature id for the '<em><b>Schema</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_MODEL__SCHEMA = 4;
+
+	/**
+	 * The feature id for the '<em><b>Tables</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_MODEL__TABLES = 5;
+
+	/**
+	 * The feature id for the '<em><b>Primary Keys</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_MODEL__PRIMARY_KEYS = 6;
+
+	/**
+	 * The feature id for the '<em><b>Foreign Keys</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_MODEL__FOREIGN_KEYS = 7;
+
+	/**
+	 * The number of structural features of the '<em>Physical Model</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_MODEL_FEATURE_COUNT = 8;
+
+	/**
+	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl <em>Physical Primary Key</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl
+	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalPrimaryKey()
+	 * @generated
+	 */
+	int PHYSICAL_PRIMARY_KEY = 3;
+
+	/**
+	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalTableImpl <em>Physical Table</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalTableImpl
+	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalTable()
+	 * @generated
+	 */
+	int PHYSICAL_TABLE = 1;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_TABLE__NAME = 0;
+
+	/**
+	 * The feature id for the '<em><b>Comment</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_TABLE__COMMENT = 1;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_TABLE__TYPE = 2;
+
+	/**
+	 * The feature id for the '<em><b>Model</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_TABLE__MODEL = 3;
+
+	/**
+	 * The feature id for the '<em><b>Columns</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_TABLE__COLUMNS = 4;
+
+	/**
+	 * The feature id for the '<em><b>Primary Key</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_TABLE__PRIMARY_KEY = 5;
+
+	/**
+	 * The feature id for the '<em><b>Foreign Keys</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_TABLE__FOREIGN_KEYS = 6;
+
+	/**
+	 * The feature id for the '<em><b>Reverse Foreign Keys</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS = 7;
+
+	/**
+	 * The number of structural features of the '<em>Physical Table</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_TABLE_FEATURE_COUNT = 8;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -187,14 +389,49 @@ public interface PhysicalModelPackage extends EPackage {
 	int PHYSICAL_COLUMN_FEATURE_COUNT = 12;
 
 	/**
-	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl <em>Physical Foreign Key</em>}' class.
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl
-	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalForeignKey()
 	 * @generated
+	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY = 1;
+	int PHYSICAL_PRIMARY_KEY__NAME = 0;
+
+	/**
+	 * The feature id for the '<em><b>Model</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_PRIMARY_KEY__MODEL = 1;
+
+	/**
+	 * The feature id for the '<em><b>Table</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_PRIMARY_KEY__TABLE = 2;
+
+	/**
+	 * The feature id for the '<em><b>Columns</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_PRIMARY_KEY__COLUMNS = 3;
+
+	/**
+	 * The number of structural features of the '<em>Physical Primary Key</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_PRIMARY_KEY_FEATURE_COUNT = 4;
 
 	/**
 	 * The feature id for the '<em><b>Source Name</b></em>' attribute.
@@ -267,243 +504,6 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @ordered
 	 */
 	int PHYSICAL_FOREIGN_KEY_FEATURE_COUNT = 7;
-
-	/**
-	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl <em>Physical Model</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl
-	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalModel()
-	 * @generated
-	 */
-	int PHYSICAL_MODEL = 2;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_MODEL__NAME = 0;
-
-	/**
-	 * The feature id for the '<em><b>Database Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_MODEL__DATABASE_NAME = 1;
-
-	/**
-	 * The feature id for the '<em><b>Database Version</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_MODEL__DATABASE_VERSION = 2;
-
-	/**
-	 * The feature id for the '<em><b>Catalog</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_MODEL__CATALOG = 3;
-
-	/**
-	 * The feature id for the '<em><b>Schema</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_MODEL__SCHEMA = 4;
-
-	/**
-	 * The feature id for the '<em><b>Tables</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_MODEL__TABLES = 5;
-
-	/**
-	 * The feature id for the '<em><b>Primary Keys</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_MODEL__PRIMARY_KEYS = 6;
-
-	/**
-	 * The feature id for the '<em><b>Foreign Keys</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_MODEL__FOREIGN_KEYS = 7;
-
-	/**
-	 * The number of structural features of the '<em>Physical Model</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_MODEL_FEATURE_COUNT = 8;
-
-	/**
-	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl <em>Physical Primary Key</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl
-	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalPrimaryKey()
-	 * @generated
-	 */
-	int PHYSICAL_PRIMARY_KEY = 3;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_PRIMARY_KEY__NAME = 0;
-
-	/**
-	 * The feature id for the '<em><b>Model</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_PRIMARY_KEY__MODEL = 1;
-
-	/**
-	 * The feature id for the '<em><b>Table</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_PRIMARY_KEY__TABLE = 2;
-
-	/**
-	 * The feature id for the '<em><b>Columns</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_PRIMARY_KEY__COLUMNS = 3;
-
-	/**
-	 * The number of structural features of the '<em>Physical Primary Key</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_PRIMARY_KEY_FEATURE_COUNT = 4;
-
-	/**
-	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalTableImpl <em>Physical Table</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalTableImpl
-	 * @see it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl#getPhysicalTable()
-	 * @generated
-	 */
-	int PHYSICAL_TABLE = 4;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_TABLE__NAME = 0;
-
-	/**
-	 * The feature id for the '<em><b>Comment</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_TABLE__COMMENT = 1;
-
-	/**
-	 * The feature id for the '<em><b>Type</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_TABLE__TYPE = 2;
-
-	/**
-	 * The feature id for the '<em><b>Model</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_TABLE__MODEL = 3;
-
-	/**
-	 * The feature id for the '<em><b>Columns</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_TABLE__COLUMNS = 4;
-
-	/**
-	 * The feature id for the '<em><b>Primary Key</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_TABLE__PRIMARY_KEY = 5;
-
-	/**
-	 * The feature id for the '<em><b>Foreign Keys</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_TABLE__FOREIGN_KEYS = 6;
-
-	/**
-	 * The feature id for the '<em><b>Reverse Foreign Keys</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS = 7;
-
-	/**
-	 * The number of structural features of the '<em>Physical Table</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_TABLE_FEATURE_COUNT = 8;
 
 
 	/**

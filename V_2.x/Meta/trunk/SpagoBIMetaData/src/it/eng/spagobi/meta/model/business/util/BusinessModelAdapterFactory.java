@@ -4,9 +4,9 @@
  *
  * $Id$
  */
-package it.eng.spagobi.meta.model.physical.util;
+package it.eng.spagobi.meta.model.business.util;
 
-import it.eng.spagobi.meta.model.physical.*;
+import it.eng.spagobi.meta.model.business.*;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
@@ -20,17 +20,17 @@ import org.eclipse.emf.ecore.EObject;
  * The <b>Adapter Factory</b> for the model.
  * It provides an adapter <code>createXXX</code> method for each class of the model.
  * <!-- end-user-doc -->
- * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage
+ * @see it.eng.spagobi.meta.model.business.BusinessModelPackage
  * @generated
  */
-public class PhysicalModelAdapterFactory extends AdapterFactoryImpl {
+public class BusinessModelAdapterFactory extends AdapterFactoryImpl {
 	/**
 	 * The cached model package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static PhysicalModelPackage modelPackage;
+	protected static BusinessModelPackage modelPackage;
 
 	/**
 	 * Creates an instance of the adapter factory.
@@ -38,9 +38,9 @@ public class PhysicalModelAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PhysicalModelAdapterFactory() {
+	public BusinessModelAdapterFactory() {
 		if (modelPackage == null) {
-			modelPackage = PhysicalModelPackage.eINSTANCE;
+			modelPackage = BusinessModelPackage.eINSTANCE;
 		}
 	}
 
@@ -69,27 +69,31 @@ public class PhysicalModelAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected PhysicalModelSwitch<Adapter> modelSwitch =
-		new PhysicalModelSwitch<Adapter>() {
+	protected BusinessModelSwitch<Adapter> modelSwitch =
+		new BusinessModelSwitch<Adapter>() {
 			@Override
-			public Adapter casePhysicalModel(PhysicalModel object) {
-				return createPhysicalModelAdapter();
+			public Adapter caseBusinessModel(BusinessModel object) {
+				return createBusinessModelAdapter();
 			}
 			@Override
-			public Adapter casePhysicalTable(PhysicalTable object) {
-				return createPhysicalTableAdapter();
+			public Adapter caseBusinessTable(BusinessTable object) {
+				return createBusinessTableAdapter();
 			}
 			@Override
-			public Adapter casePhysicalColumn(PhysicalColumn object) {
-				return createPhysicalColumnAdapter();
+			public Adapter caseBusinessColumn(BusinessColumn object) {
+				return createBusinessColumnAdapter();
 			}
 			@Override
-			public Adapter casePhysicalPrimaryKey(PhysicalPrimaryKey object) {
-				return createPhysicalPrimaryKeyAdapter();
+			public Adapter caseBusinessRelationship(BusinessRelationship object) {
+				return createBusinessRelationshipAdapter();
 			}
 			@Override
-			public Adapter casePhysicalForeignKey(PhysicalForeignKey object) {
-				return createPhysicalForeignKeyAdapter();
+			public Adapter caseBusinessView(BusinessView object) {
+				return createBusinessViewAdapter();
+			}
+			@Override
+			public Adapter caseBusinessDomain(BusinessDomain object) {
+				return createBusinessDomainAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -112,72 +116,86 @@ public class PhysicalModelAdapterFactory extends AdapterFactoryImpl {
 
 
 	/**
-	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn <em>Physical Column</em>}'.
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.business.BusinessModel <em>Business Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalColumn
+	 * @see it.eng.spagobi.meta.model.business.BusinessModel
 	 * @generated
 	 */
-	public Adapter createPhysicalColumnAdapter() {
+	public Adapter createBusinessModelAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey <em>Physical Foreign Key</em>}'.
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.business.BusinessTable <em>Business Table</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey
+	 * @see it.eng.spagobi.meta.model.business.BusinessTable
 	 * @generated
 	 */
-	public Adapter createPhysicalForeignKeyAdapter() {
+	public Adapter createBusinessTableAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.physical.PhysicalModel <em>Physical Model</em>}'.
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.business.BusinessColumn <em>Business Column</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalModel
+	 * @see it.eng.spagobi.meta.model.business.BusinessColumn
 	 * @generated
 	 */
-	public Adapter createPhysicalModelAdapter() {
+	public Adapter createBusinessColumnAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey <em>Physical Primary Key</em>}'.
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.business.BusinessRelationship <em>Business Relationship</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey
+	 * @see it.eng.spagobi.meta.model.business.BusinessRelationship
 	 * @generated
 	 */
-	public Adapter createPhysicalPrimaryKeyAdapter() {
+	public Adapter createBusinessRelationshipAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.physical.PhysicalTable <em>Physical Table</em>}'.
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.business.BusinessView <em>Business View</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalTable
+	 * @see it.eng.spagobi.meta.model.business.BusinessView
 	 * @generated
 	 */
-	public Adapter createPhysicalTableAdapter() {
+	public Adapter createBusinessViewAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.business.BusinessDomain <em>Business Domain</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.business.BusinessDomain
+	 * @generated
+	 */
+	public Adapter createBusinessDomainAdapter() {
 		return null;
 	}
 
@@ -193,4 +211,4 @@ public class PhysicalModelAdapterFactory extends AdapterFactoryImpl {
 		return null;
 	}
 
-} //PhysicalModelAdapterFactory
+} //BusinessModelAdapterFactory

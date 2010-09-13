@@ -49,7 +49,7 @@ public class CreateModelTest {
 		Class.forName(MYSQL_DRIVER).newInstance();			  
         Connection conn = DriverManager.getConnection(MYSQL_URL, MYSQL_USER, MYSQL_PWD);
         PhysicalModelInitializer modelInitializer = new PhysicalModelInitializer();
-        PhysicalModel model = modelInitializer.initizlize( "modeldemo", conn,  MYSQL_DEFAULT_CATALOGUE, MYSQL_DEFAULT_SCHEMA);
+        PhysicalModel model = modelInitializer.initialize( "modeldemo", conn,  MYSQL_DEFAULT_CATALOGUE, MYSQL_DEFAULT_SCHEMA);
         return model;
 	}
 	
@@ -57,7 +57,7 @@ public class CreateModelTest {
 		Class.forName(POSTGRES_DRIVER).newInstance();			  
         Connection conn = DriverManager.getConnection(POSTGRES_URL, POSTGRES_USER, POSTGRES_PWD);
         PhysicalModelInitializer modelInitializer = new PhysicalModelInitializer();
-        PhysicalModel model = modelInitializer.initizlize( "modeldemo", conn,  POSTGRES_DEFAULT_CATALOGUE, POSTGRES_DEFAULT_SCHEMA);
+        PhysicalModel model = modelInitializer.initialize( "modeldemo", conn,  POSTGRES_DEFAULT_CATALOGUE, POSTGRES_DEFAULT_SCHEMA);
         return model;
 	}
 	
@@ -65,7 +65,7 @@ public class CreateModelTest {
 		Class.forName(ORACLE_DRIVER).newInstance();			  
         Connection conn = DriverManager.getConnection(ORACLE_URL, ORACLE_USER, ORACLE_PWD);
         PhysicalModelInitializer modelInitializer = new PhysicalModelInitializer();
-        PhysicalModel model = modelInitializer.initizlize( "modeldemo", conn,  ORACLE_DEFAULT_CATALOGUE, ORACLE_DEFAULT_SCHEMA);
+        PhysicalModel model = modelInitializer.initialize( "modeldemo", conn,  ORACLE_DEFAULT_CATALOGUE, ORACLE_DEFAULT_SCHEMA);
         return model;
 	}
 	

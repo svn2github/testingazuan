@@ -60,11 +60,11 @@ public class PhysicalModelFactoryImpl extends EFactoryImpl implements PhysicalMo
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case PhysicalModelPackage.PHYSICAL_COLUMN: return createPhysicalColumn();
-			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY: return createPhysicalForeignKey();
 			case PhysicalModelPackage.PHYSICAL_MODEL: return createPhysicalModel();
-			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY: return createPhysicalPrimaryKey();
 			case PhysicalModelPackage.PHYSICAL_TABLE: return createPhysicalTable();
+			case PhysicalModelPackage.PHYSICAL_COLUMN: return createPhysicalColumn();
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY: return createPhysicalPrimaryKey();
+			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY: return createPhysicalForeignKey();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}

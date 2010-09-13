@@ -31,7 +31,7 @@ public class PhysicalModelInitializer {
 		
 	}
 	
-	public PhysicalModel initizlize(String modelName, Connection conn, String defaultCatalog, String defaultSchema) {
+	public PhysicalModel initialize(String modelName, Connection conn, String defaultCatalog, String defaultSchema) {
 		PhysicalModel model;
 		DatabaseMetaData dbMeta;
 		

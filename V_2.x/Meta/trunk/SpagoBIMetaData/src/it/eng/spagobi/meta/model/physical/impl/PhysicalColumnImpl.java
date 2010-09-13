@@ -627,23 +627,23 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 			case PhysicalModelPackage.PHYSICAL_COLUMN__COMMENT:
 				return getComment();
 			case PhysicalModelPackage.PHYSICAL_COLUMN__DATA_TYPE:
-				return new Short(getDataType());
+				return getDataType();
 			case PhysicalModelPackage.PHYSICAL_COLUMN__TYPE_NAME:
 				return getTypeName();
 			case PhysicalModelPackage.PHYSICAL_COLUMN__SIZE:
-				return new Integer(getSize());
+				return getSize();
 			case PhysicalModelPackage.PHYSICAL_COLUMN__OCTECT_LENGTH:
-				return new Integer(getOctectLength());
+				return getOctectLength();
 			case PhysicalModelPackage.PHYSICAL_COLUMN__DECIMAL_DIGITS:
-				return new Integer(getDecimalDigits());
+				return getDecimalDigits();
 			case PhysicalModelPackage.PHYSICAL_COLUMN__RADIX:
-				return new Integer(getRadix());
+				return getRadix();
 			case PhysicalModelPackage.PHYSICAL_COLUMN__DEFAULT_VALUE:
 				return getDefaultValue();
 			case PhysicalModelPackage.PHYSICAL_COLUMN__NULLABLE:
-				return isNullable() ? Boolean.TRUE : Boolean.FALSE;
+				return isNullable();
 			case PhysicalModelPackage.PHYSICAL_COLUMN__POSITION:
-				return new Integer(getPosition());
+				return getPosition();
 			case PhysicalModelPackage.PHYSICAL_COLUMN__TABLE:
 				if (resolve) return getTable();
 				return basicGetTable();
@@ -666,31 +666,31 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 				setComment((String)newValue);
 				return;
 			case PhysicalModelPackage.PHYSICAL_COLUMN__DATA_TYPE:
-				setDataType(((Short)newValue).shortValue());
+				setDataType((Short)newValue);
 				return;
 			case PhysicalModelPackage.PHYSICAL_COLUMN__TYPE_NAME:
 				setTypeName((String)newValue);
 				return;
 			case PhysicalModelPackage.PHYSICAL_COLUMN__SIZE:
-				setSize(((Integer)newValue).intValue());
+				setSize((Integer)newValue);
 				return;
 			case PhysicalModelPackage.PHYSICAL_COLUMN__OCTECT_LENGTH:
-				setOctectLength(((Integer)newValue).intValue());
+				setOctectLength((Integer)newValue);
 				return;
 			case PhysicalModelPackage.PHYSICAL_COLUMN__DECIMAL_DIGITS:
-				setDecimalDigits(((Integer)newValue).intValue());
+				setDecimalDigits((Integer)newValue);
 				return;
 			case PhysicalModelPackage.PHYSICAL_COLUMN__RADIX:
-				setRadix(((Integer)newValue).intValue());
+				setRadix((Integer)newValue);
 				return;
 			case PhysicalModelPackage.PHYSICAL_COLUMN__DEFAULT_VALUE:
 				setDefaultValue((String)newValue);
 				return;
 			case PhysicalModelPackage.PHYSICAL_COLUMN__NULLABLE:
-				setNullable(((Boolean)newValue).booleanValue());
+				setNullable((Boolean)newValue);
 				return;
 			case PhysicalModelPackage.PHYSICAL_COLUMN__POSITION:
-				setPosition(((Integer)newValue).intValue());
+				setPosition((Integer)newValue);
 				return;
 			case PhysicalModelPackage.PHYSICAL_COLUMN__TABLE:
 				setTable((PhysicalTable)newValue);

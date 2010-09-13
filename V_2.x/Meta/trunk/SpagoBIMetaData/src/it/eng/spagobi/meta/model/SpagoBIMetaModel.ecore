@@ -1,72 +1,163 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0"
     xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="physical"
-    nsURI="http:///it/eng/spagobi/meta/model/physical.ecore" nsPrefix="it.eng.spagobi.meta.model.physical">
-  <eClassifiers xsi:type="ecore:EClass" name="PhysicalColumn">
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model"
+    nsURI="http:///it/eng/spagobi/meta/model.ecore" nsPrefix="it.eng.spagobi.meta.model">
+  <eClassifiers xsi:type="ecore:EClass" name="ModelObject">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyTypes" upperBound="-1"
+        eType="#//ModelPropertyType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
+        eType="#//ModelProperty"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ModelPropertyType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="comment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EShort"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="size" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="octectLength" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="decimalDigits" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="radix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="category" lowerBound="1"
+        eType="#//ModelPropertyCategory" eOpposite="#//ModelPropertyCategory/propertyTypes"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nullable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="position" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1" eType="#//PhysicalTable"
-        eOpposite="#//PhysicalTable/columns"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="admissibleValues" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="PhysicalForeignKey">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sourceName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceTable" lowerBound="1"
-        eType="#//PhysicalTable" eOpposite="#//PhysicalTable/foreignKeys"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceColumns" lowerBound="1"
-        upperBound="-1" eType="#//PhysicalColumn"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="destinationName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="destinationTable" lowerBound="1"
-        eType="#//PhysicalTable" eOpposite="#//PhysicalTable/reverseForeignKeys"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="destinationColumns" lowerBound="1"
-        upperBound="-1" eType="#//PhysicalColumn"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//PhysicalModel"
-        eOpposite="#//PhysicalModel/foreignKeys"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="PhysicalModel">
+  <eClassifiers xsi:type="ecore:EClass" name="ModelPropertyCategory">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="databaseName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="databaseVersion" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="catalog" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="schema" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="tables" upperBound="-1"
-        eType="#//PhysicalTable" containment="true" eOpposite="#//PhysicalTable/model"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryKeys" upperBound="-1"
-        eType="#//PhysicalPrimaryKey" eOpposite="#//PhysicalPrimaryKey/model"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="foreignKeys" upperBound="-1"
-        eType="#//PhysicalForeignKey" eOpposite="#//PhysicalForeignKey/model"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parentCategory" eType="#//ModelPropertyCategory"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subCategories" upperBound="-1"
+        eType="#//ModelPropertyCategory"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyTypes" upperBound="-1"
+        eType="#//ModelPropertyType" eOpposite="#//ModelPropertyType/category"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="PhysicalPrimaryKey">
+  <eClassifiers xsi:type="ecore:EClass" name="ModelProperty">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyType" lowerBound="1"
+        eType="#//ModelPropertyType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Model">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="model" lowerBound="1" eType="#//PhysicalModel"
-        eOpposite="#//PhysicalModel/primaryKeys"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="table" eType="#//PhysicalTable"
-        eOpposite="#//PhysicalTable/primaryKey"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="columns" lowerBound="1"
-        upperBound="-1" eType="#//PhysicalColumn"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="physicalModels" upperBound="-1"
+        eType="#//physical/PhysicalModel"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="businessModels" upperBound="-1"
+        eType="#//business/BusinessModel"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyTypes" upperBound="-1"
+        eType="#//ModelPropertyType"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="PhysicalTable">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="comment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="model" lowerBound="1" eType="#//PhysicalModel"
-        eOpposite="#//PhysicalModel/tables"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="columns" upperBound="-1"
-        eType="#//PhysicalColumn" eOpposite="#//PhysicalColumn/table"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryKey" eType="#//PhysicalPrimaryKey"
-        eOpposite="#//PhysicalPrimaryKey/table"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="foreignKeys" upperBound="-1"
-        eType="#//PhysicalForeignKey" eOpposite="#//PhysicalForeignKey/sourceTable"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="reverseForeignKeys" upperBound="-1"
-        eType="#//PhysicalForeignKey" eOpposite="#//PhysicalForeignKey/destinationTable"/>
-  </eClassifiers>
+  <eSubpackages name="physical" nsURI="http:///it/eng/spagobi/meta/model/physical.ecore"
+      nsPrefix="it.eng.spagobi.meta.model.physical">
+    <eClassifiers xsi:type="ecore:EClass" name="PhysicalModel">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="databaseName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="databaseVersion" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="catalog" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="schema" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="tables" upperBound="-1"
+          eType="#//physical/PhysicalTable" containment="true" eOpposite="#//physical/PhysicalTable/model"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="primaryKeys" upperBound="-1"
+          eType="#//physical/PhysicalPrimaryKey" eOpposite="#//physical/PhysicalPrimaryKey/model"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="foreignKeys" upperBound="-1"
+          eType="#//physical/PhysicalForeignKey" eOpposite="#//physical/PhysicalForeignKey/model"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PhysicalTable">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="comment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="model" lowerBound="1"
+          eType="#//physical/PhysicalModel" eOpposite="#//physical/PhysicalModel/tables"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="columns" upperBound="-1"
+          eType="#//physical/PhysicalColumn" eOpposite="#//physical/PhysicalColumn/table"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="primaryKey" eType="#//physical/PhysicalPrimaryKey"
+          eOpposite="#//physical/PhysicalPrimaryKey/table"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="foreignKeys" upperBound="-1"
+          eType="#//physical/PhysicalForeignKey" eOpposite="#//physical/PhysicalForeignKey/sourceTable"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="reverseForeignKeys" upperBound="-1"
+          eType="#//physical/PhysicalForeignKey" eOpposite="#//physical/PhysicalForeignKey/destinationTable"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PhysicalColumn">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="comment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EShort"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="size" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="octectLength" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="decimalDigits" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="radix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="nullable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="position" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1"
+          eType="#//physical/PhysicalTable" eOpposite="#//physical/PhysicalTable/columns"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PhysicalPrimaryKey">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="model" lowerBound="1"
+          eType="#//physical/PhysicalModel" eOpposite="#//physical/PhysicalModel/primaryKeys"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="table" eType="#//physical/PhysicalTable"
+          eOpposite="#//physical/PhysicalTable/primaryKey"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="columns" lowerBound="1"
+          upperBound="-1" eType="#//physical/PhysicalColumn"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PhysicalForeignKey">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="sourceName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="sourceTable" lowerBound="1"
+          eType="#//physical/PhysicalTable" eOpposite="#//physical/PhysicalTable/foreignKeys"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="sourceColumns" lowerBound="1"
+          upperBound="-1" eType="#//physical/PhysicalColumn"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="destinationName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="destinationTable" lowerBound="1"
+          eType="#//physical/PhysicalTable" eOpposite="#//physical/PhysicalTable/reverseForeignKeys"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="destinationColumns" lowerBound="1"
+          upperBound="-1" eType="#//physical/PhysicalColumn"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//physical/PhysicalModel"
+          eOpposite="#//physical/PhysicalModel/foreignKeys"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="business" nsURI="http:///it/eng/spagobi/meta/model/businessl.ecore"
+      nsPrefix="it.eng.spagobi.meta.model.business">
+    <eClassifiers xsi:type="ecore:EClass" name="BusinessModel">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="physicalModel" lowerBound="1"
+          eType="#//physical/PhysicalModel"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="tables" upperBound="-1"
+          eType="#//business/BusinessTable"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="relationships" upperBound="-1"
+          eType="#//business/BusinessRelationship"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BusinessTable">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="physicalTable" lowerBound="1"
+          eType="#//physical/PhysicalTable"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BusinessColumn">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="physicalColumn" lowerBound="1"
+          eType="#//physical/PhysicalColumn"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BusinessRelationship">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="sourceTable" lowerBound="1"
+          eType="#//business/BusinessTable"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="destinationTable" lowerBound="1"
+          eType="#//business/BusinessTable"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BusinessView">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="columns" upperBound="-1"
+          eType="#//business/BusinessColumn"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="joinRelationships" upperBound="-1"
+          eType="#//business/BusinessRelationship"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BusinessDomain">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="olap" nsURI="http:///it/eng/spagobi/meta/model/olapl.ecore"
+      nsPrefix="it.eng.spagobi.meta.model.olap">
+    <eClassifiers xsi:type="ecore:EClass" name="OlapModel"/>
+  </eSubpackages>
+  <eSubpackages name="behavioural" nsURI="http:///it/eng/spagobi/meta/model/behavioural.ecore"
+      nsPrefix="it.eng.spagobi.meta.model.behavioural">
+    <eClassifiers xsi:type="ecore:EClass" name="BehaviouralModel"/>
+  </eSubpackages>
+  <eSubpackages name="analytical" nsURI="http:///it/eng/spagobi/meta/model/analytical.ecore"
+      nsPrefix="it.eng.spagobi.meta.model.analytical">
+    <eClassifiers xsi:type="ecore:EClass" name="AnalyticalModel"/>
+  </eSubpackages>
 </ecore:EPackage>

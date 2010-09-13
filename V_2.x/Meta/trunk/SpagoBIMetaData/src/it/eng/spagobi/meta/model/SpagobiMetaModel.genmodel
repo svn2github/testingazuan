@@ -5,56 +5,133 @@
     modelPluginID="SpagoBIMetaData" modelName="SpagoBIMetalModel" importerID="org.eclipse.emf.importer.ecore"
     complianceLevel="5.0" copyrightFields="false">
   <foreignModel>SpagoBIMetaModel.ecore</foreignModel>
-  <genPackages prefix="PhysicalModel" basePackage="it.eng.spagobi.meta.model" disposableProviderFactory="true"
+  <genPackages prefix="Model" basePackage="it.eng.spagobi.meta.model" disposableProviderFactory="true"
       ecorePackage="SpagoBIMetaModel.ecore#/">
-    <genClasses ecoreClass="SpagoBIMetaModel.ecore#//PhysicalColumn">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalColumn/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalColumn/comment"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalColumn/dataType"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalColumn/typeName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalColumn/size"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalColumn/octectLength"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalColumn/decimalDigits"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalColumn/radix"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalColumn/defaultValue"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalColumn/nullable"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalColumn/position"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalColumn/table"/>
+    <genClasses ecoreClass="SpagoBIMetaModel.ecore#//ModelObject"/>
+    <genClasses ecoreClass="SpagoBIMetaModel.ecore#//ModelProperty"/>
+    <genClasses ecoreClass="SpagoBIMetaModel.ecore#//ModelObjectFacet"/>
+    <genClasses ecoreClass="SpagoBIMetaModel.ecore#//Model">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//Model/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//Model/physicalModels"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//Model/businessModels"/>
     </genClasses>
-    <genClasses ecoreClass="SpagoBIMetaModel.ecore#//PhysicalForeignKey">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalForeignKey/sourceName"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalForeignKey/sourceTable"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalForeignKey/sourceColumns"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalForeignKey/destinationName"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalForeignKey/destinationTable"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalForeignKey/destinationColumns"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalForeignKey/model"/>
-    </genClasses>
-    <genClasses ecoreClass="SpagoBIMetaModel.ecore#//PhysicalModel">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalModel/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalModel/databaseName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalModel/databaseVersion"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalModel/catalog"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalModel/schema"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalModel/tables"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalModel/primaryKeys"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalModel/foreignKeys"/>
-    </genClasses>
-    <genClasses ecoreClass="SpagoBIMetaModel.ecore#//PhysicalPrimaryKey">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalPrimaryKey/name"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalPrimaryKey/model"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalPrimaryKey/table"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalPrimaryKey/columns"/>
-    </genClasses>
-    <genClasses ecoreClass="SpagoBIMetaModel.ecore#//PhysicalTable">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalTable/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalTable/comment"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//PhysicalTable/type"/>
-      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalTable/model"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalTable/columns"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalTable/primaryKey"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalTable/foreignKeys"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//PhysicalTable/reverseForeignKeys"/>
-    </genClasses>
+    <nestedGenPackages prefix="PhysicalModel" basePackage="it.eng.spagobi.meta.model.model"
+        disposableProviderFactory="true" ecorePackage="SpagoBIMetaModel.ecore#//physical">
+      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//physical/PhysicalModel">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalModel/name"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalModel/databaseName"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalModel/databaseVersion"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalModel/catalog"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalModel/schema"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalModel/tables"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalModel/primaryKeys"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalModel/foreignKeys"/>
+      </genClasses>
+      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//physical/PhysicalTable">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalTable/name"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalTable/comment"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalTable/type"/>
+        <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalTable/model"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalTable/columns"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalTable/primaryKey"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalTable/foreignKeys"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalTable/reverseForeignKeys"/>
+      </genClasses>
+      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//physical/PhysicalColumn">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalColumn/name"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalColumn/comment"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalColumn/dataType"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalColumn/typeName"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalColumn/size"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalColumn/octectLength"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalColumn/decimalDigits"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalColumn/radix"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalColumn/defaultValue"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalColumn/nullable"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalColumn/position"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalColumn/table"/>
+      </genClasses>
+      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//physical/PhysicalPrimaryKey">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalPrimaryKey/name"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalPrimaryKey/model"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalPrimaryKey/table"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalPrimaryKey/columns"/>
+      </genClasses>
+      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//physical/PhysicalForeignKey">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalForeignKey/sourceName"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalForeignKey/sourceTable"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalForeignKey/sourceColumns"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalForeignKey/destinationName"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalForeignKey/destinationTable"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalForeignKey/destinationColumns"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalForeignKey/model"/>
+      </genClasses>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="BusinessModel" basePackage="it.eng.spagobi.meta.model.model"
+        disposableProviderFactory="true" ecorePackage="SpagoBIMetaModel.ecore#//business">
+      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//business/BusinessModel">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//business/BusinessModel/name"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessModel/physicalModel"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessModel/tables"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessModel/relationships"/>
+      </genClasses>
+      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//business/BusinessTable">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//business/BusinessTable/name"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessTable/physicalTable"/>
+      </genClasses>
+      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//business/BusinessColumn">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//business/BusinessColumn/name"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessColumn/physicalColumn"/>
+      </genClasses>
+      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//business/BusinessRelationship">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//business/BusinessRelationship/name"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessRelationship/sourceTable"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessRelationship/destinationTable"/>
+      </genClasses>
+      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//business/BusinessView">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//business/BusinessView/name"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessView/columns"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessView/joinRelationships"/>
+      </genClasses>
+      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//business/BusinessDomain">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//business/BusinessDomain/name"/>
+      </genClasses>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="DimensionalModel" basePackage="it.eng.spagobi.meta.model.model"
+        disposableProviderFactory="true" ecorePackage="SpagoBIMetaModel.ecore#//dimensional">
+      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//dimensional/DimensionalModel"/>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="BehaviouralModel" basePackage="it.eng.spagobi.meta.model.model"
+        disposableProviderFactory="true" ecorePackage="SpagoBIMetaModel.ecore#//behavioural">
+      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//behavioural/BehaviouralModel"/>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="AnalyticalModel" basePackage="it.eng.spagobi.meta.model.model"
+        disposableProviderFactory="true" ecorePackage="SpagoBIMetaModel.ecore#//analytical">
+      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//analytical/AnalyticalModel"/>
+    </nestedGenPackages>
   </genPackages>
 </genmodel:GenModel>

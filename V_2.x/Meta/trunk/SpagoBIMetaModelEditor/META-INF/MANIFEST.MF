@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: SpagoBI Meta
 Bundle-SymbolicName: eng.it.spagobimeta; singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: eng.it.spagobimeta.Activator
+Bundle-Activator: it.eng.spagobi.meta.editor.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.views.properties.tabbed;bundle-version="3.5.0",

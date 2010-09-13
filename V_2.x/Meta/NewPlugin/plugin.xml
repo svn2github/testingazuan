@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="SpagoBI Meta View"
+            id="eng.it.spagobimeta">
+      </category>
+      <view
+            allowMultiple="false"
+            category="eng.it.spagobimeta"
+            class="eng.it.spagobimeta.views.GraphicEditorView"
+            icon="icons/spagobi.gif"
+            id="eng.it.spagobimeta.GraphicEditorView"
+            name="Graphic Editor View"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="eng.it.spagobimeta"
+            class="eng.it.spagobimeta.views.DBStructureView"
+            icon="icons/spagobi.gif"
+            id="eng.it.spagobimeta.DBStructureView"
+            name="DB Structure View"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="eng.it.spagobimeta"
+            class="eng.it.spagobimeta.views.PropertiesView"
+            icon="icons/spagobi.gif"
+            id="eng.it.spagobimeta.PropertiesView"
+            name="Properties View"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="eng.it.spagobimeta.PerspectiveFactory"
+            icon="icons/spagobi.gif"
+            id="eng.it.spagobimeta.perspective"
+            name="SpagoBI Meta Perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="eng.it.spagobimeta.DBStructureViewContribution"
+            targetID="eng.it.spagobimeta.DBStructureView">
+         <action
+               class="eng.it.spagobimeta.views.actions.SelectConnectionAction"
+               icon="icons/connection.png"
+               id="eng.it.spagobimeta.SelectConnectionAction"
+               label="Select Connection"
+               style="push"
+               toolbarPath="additions"
+               tooltip="Select a Connection from the DSE">
+         </action>
+      </viewContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="eng.it.spagobimeta"
+            name="SpagoBI Meta">
+      </category>
+      <wizard
+            category="eng.it.spagobimeta"
+            class="eng.it.spagobimeta.wizards.NewSpagoBIMetaProjectWizard"
+            finalPerspective="eng.it.spagobimeta.perspective"
+            icon="icons/spagobi.gif"
+            id="eng.it.spagobimeta.newSpagoBIMetaProjectWizard"
+            name="SpagoBI Meta Project"
+            project="true">
+      </wizard>
+   </extension>
+
+</plugin>

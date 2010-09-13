@@ -8,7 +8,7 @@ package it.eng.spagobi.meta.editor.views.actions;
 
 import it.eng.spagobi.meta.editor.util.CPLabelProvider;
 import it.eng.spagobi.meta.editor.util.DSEBridge;
-import it.eng.spagobi.meta.editor.views.DBStructureView;
+import it.eng.spagobi.meta.editor.views.PhysicalModelView;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.datatools.connectivity.IConnectionProfile;
@@ -23,7 +23,7 @@ import org.eclipse.ui.dialogs.ListDialog;
 
 
 
-public class SelectConnectionAction implements IViewActionDelegate {
+public class CreatePhysicalModel implements IViewActionDelegate {
 
 	private IViewPart dbStructView;
 	private IConnectionProfile cp;
@@ -56,9 +56,9 @@ public class SelectConnectionAction implements IViewActionDelegate {
 			Object[] res = ld.getResult();
 			cp = (IConnectionProfile)res[0];
 			//get View reference
-			dbStructView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("eng.it.spagobimeta.DBStructureView");
+			dbStructView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("it.eng.spagobi.meta.editor.PhysicalModel");
 			//invoke tree creation on DBStructureView
-			((DBStructureView)dbStructView).createTree(cp);
+			((PhysicalModelView)dbStructView).createTree(cp);
 		}
 	}
 

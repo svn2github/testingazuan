@@ -1,7 +1,7 @@
 /*
  * This class creates the SpagoBIMeta Perspective with the necessary views
  */
-package it.eng.spagobi.meta.editor;
+package it.eng.spagobi.meta.editor.perspective;
 
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -11,9 +11,9 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 
 	
 	private static final String VIEW_ID = "org.eclipse.datatools.connectivity.DataSourceExplorerNavigator";
-	private static final String VIEW2_ID = "eng.it.spagobimeta.GraphicEditorView";
-	private static final String VIEW3_ID = "eng.it.spagobimeta.DBStructureView";
-	private static final String VIEW4_ID = "eng.it.spagobimeta.PropertiesView";
+	private static final String VIEW2_ID = "it.eng.spagobi.meta.editor.BusinesslModel";
+	private static final String VIEW3_ID = "it.eng.spagobi.meta.editor.PhysicalModel";
+	private static final String VIEW4_ID = "it.eng.spagobi.meta.editor.Properties";
 	
 	@Override
 	public void createInitialLayout(IPageLayout myLayout) {

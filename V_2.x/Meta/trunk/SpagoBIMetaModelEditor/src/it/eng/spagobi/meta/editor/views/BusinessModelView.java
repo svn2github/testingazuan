@@ -24,12 +24,12 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.part.ViewPart;
 
 
-public class GraphicEditorView extends ViewPart {
+public class BusinessModelView extends ViewPart {
 	
 	private ScrolledComposite sc;
 	
 	
-	public GraphicEditorView() {
+	public BusinessModelView() {
 		
 	}
 

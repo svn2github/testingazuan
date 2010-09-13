@@ -5,59 +5,58 @@
    <extension
          point="org.eclipse.ui.views">
       <category
-            name="SpagoBI Meta View"
-            id="eng.it.spagobimeta">
+            name="SpagoBI Meta"
+            id="it.eng.spagobi.meta">
       </category>
       <view
             allowMultiple="false"
-            category="eng.it.spagobimeta"
-            class="eng.it.spagobimeta.views.GraphicEditorView"
+            category="it.eng.spagobi.meta"
+            class="it.eng.spagobi.meta.editor.views.BusinessModelView"
             icon="icons/spagobi.gif"
-            id="eng.it.spagobimeta.GraphicEditorView"
-            name="Graphic Editor View"
+            id="it.eng.spagobi.meta.editor.BusinesslModel"
+            name="Business Model Editor"
             restorable="true">
       </view>
       <view
             allowMultiple="false"
-            category="eng.it.spagobimeta"
-            class="eng.it.spagobimeta.views.DBStructureView"
+            category="it.eng.spagobi.meta"
+            class="it.eng.spagobi.meta.editor.views.PhysicalModelView"
             icon="icons/spagobi.gif"
-            id="eng.it.spagobimeta.DBStructureView"
-            name="DB Structure View"
+            id="it.eng.spagobi.meta.editor.PhysicalModel"
+            name="Physical Model Editor"
             restorable="true">
       </view>
       <view
             allowMultiple="false"
-            category="eng.it.spagobimeta"
-            class="eng.it.spagobimeta.views.PropertiesView"
+            category="it.eng.spagobi.meta"
+            class="it.eng.spagobi.meta.editor.views.PropertiesView"
             icon="icons/spagobi.gif"
-            id="eng.it.spagobimeta.PropertiesView"
-            name="Properties View"
+            id="it.eng.spagobi.meta.editor.Properties"
+            name="Model Properties Editor"
             restorable="true">
       </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="eng.it.spagobimeta.PerspectiveFactory"
-            icon="icons/spagobi.gif"
-            id="eng.it.spagobimeta.perspective"
-            name="SpagoBI Meta Perspective">
+            class="it.eng.spagobi.meta.editor.perspective.PerspectiveFactory"       icon="icons/spagobi.gif"
+            id="it.eng.spagobi.meta.editor.perspective"
+            name="SpagoBI Meta">
       </perspective>
    </extension>
    <extension
          point="org.eclipse.ui.viewActions">
       <viewContribution
-            id="eng.it.spagobimeta.DBStructureViewContribution"
-            targetID="eng.it.spagobimeta.DBStructureView">
+            id="it.eng.spagobi.meta.editor.action.CreatePhysicalModel"
+            targetID="it.eng.spagobi.meta.editor.PhysicalModel">
          <action
-               class="eng.it.spagobimeta.views.actions.SelectConnectionAction"
+               class="it.eng.spagobi.meta.editor.views.actions.CreatePhysicalModel"
                icon="icons/connection.png"
-               id="eng.it.spagobimeta.SelectConnectionAction"
-               label="Select Connection"
+               id="it.eng.spagobi.meta.editor.action.CreatePhysicalModel"
+               label="Create Physical Model"
                style="push"
                toolbarPath="additions"
-               tooltip="Select a Connection from the DSE">
+               tooltip="Create physical model from conecction">
          </action>
       </viewContribution>
    </extension>

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: SpagoBI Meta
-Bundle-SymbolicName: eng.it.spagobimeta; singleton:=true
+Bundle-Name: SpagoBI Meta Editor
+Bundle-SymbolicName: it.eng.spagobi.meta.editor;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: it.eng.spagobi.meta.editor.Activator
 Require-Bundle: org.eclipse.ui,

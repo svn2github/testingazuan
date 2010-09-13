@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.part.ViewPart;
 
-public class DBStructureView extends ViewPart {
+public class PhysicalModelView extends ViewPart {
 	
 	private ScrolledComposite sc;
 	

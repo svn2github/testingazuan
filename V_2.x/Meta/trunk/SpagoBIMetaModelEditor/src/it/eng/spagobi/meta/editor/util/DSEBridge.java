@@ -7,7 +7,6 @@ package it.eng.spagobi.meta.editor.util;
 
 
 
-
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
@@ -68,7 +67,7 @@ public class DSEBridge {
 			String modelName = cp.getInstanceID();
 			//initialize the EMF Model
 			PhysicalModelInitializer modelInitializer = new PhysicalModelInitializer();
-			PhysicalModel model = modelInitializer.initizlize( modelName, conn,  null, null);
+			PhysicalModel model = modelInitializer.initialize( modelName, conn,  null, null);
 	        return model;
 		}
 		return null;

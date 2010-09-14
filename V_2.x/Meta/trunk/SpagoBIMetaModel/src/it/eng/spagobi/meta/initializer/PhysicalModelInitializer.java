@@ -254,6 +254,13 @@ public class PhysicalModelInitializer {
 			 */
 			while (rs.next()) 	{
 				column = FACTORY.createPhysicalColumn();
+				//to prevent Ojdbc bug
+				try{ column.setDefaultValue( rs.getString("COLUMN_DEF") );
+				} catch(Throwable t) {
+					log("Impossible to set Default column value");
+					t.printStackTrace();
+					column.setDefaultValue( null);
+				}
 				column.setName(rs.getString("COLUMN_NAME"));
 				column.setComment( rs.getString("REMARKS") );
 				column.setDataType( rs.getShort("DATA_TYPE") );
@@ -262,7 +269,7 @@ public class PhysicalModelInitializer {
 				column.setOctectLength(rs.getInt("CHAR_OCTET_LENGTH") );
 				column.setDecimalDigits(rs.getInt("DECIMAL_DIGITS") );
 				column.setRadix( rs.getInt("NUM_PREC_RADIX") );
-				column.setDefaultValue( rs.getString("COLUMN_DEF") );
+				//column.setDefaultValue( rs.getString("COLUMN_DEF") );
 				column.setNullable( !"NO".equalsIgnoreCase(rs.getString("IS_NULLABLE")) );
 				column.setPosition( rs.getInt("ORDINAL_POSITION") );
 				

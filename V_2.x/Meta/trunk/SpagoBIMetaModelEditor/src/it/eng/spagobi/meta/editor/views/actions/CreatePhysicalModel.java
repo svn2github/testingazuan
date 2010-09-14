@@ -25,7 +25,7 @@ import org.eclipse.ui.dialogs.ListDialog;
 
 public class CreatePhysicalModel implements IViewActionDelegate {
 
-	private IViewPart dbStructView;
+	private IViewPart physicalStructView;
 	private IConnectionProfile cp;
 	@Override
 	public void init(IViewPart arg0) {
@@ -56,9 +56,9 @@ public class CreatePhysicalModel implements IViewActionDelegate {
 			Object[] res = ld.getResult();
 			cp = (IConnectionProfile)res[0];
 			//get View reference
-			dbStructView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("it.eng.spagobi.meta.editor.PhysicalModel");
+			physicalStructView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("it.eng.spagobi.meta.editor.PhysicalModel");
 			//invoke tree creation on DBStructureView
-			((PhysicalModelView)dbStructView).createTree(cp);
+			((PhysicalModelView)physicalStructView).createTree(cp);
 		}
 	}
 

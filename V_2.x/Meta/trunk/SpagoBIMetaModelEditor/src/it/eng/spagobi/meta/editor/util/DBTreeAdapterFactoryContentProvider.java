@@ -27,9 +27,11 @@ public class DBTreeAdapterFactoryContentProvider extends AdapterFactoryContentPr
 	public Object [] getChildren(Object parentElement) {
 	    if(parentElement instanceof PhysicalModel) {
 	    	PhysicalModel model = (PhysicalModel)parentElement;
+	    	PrimaryKeysFolder pkFolder = new PrimaryKeysFolder(model.getPrimaryKeys().toArray());
+	    	ForeignKeysFolder fkFolder = new ForeignKeysFolder(model.getForeignKeys().toArray());
 	    	return concat(model.getTables().toArray(), 
-	    			model.getPrimaryKeys().toArray(),
-	    			model.getForeignKeys().toArray());
+	    			new Object[]{ pkFolder },
+	    			new Object[]{ fkFolder });
 	    }
 	    
 	    if(parentElement instanceof PhysicalTable) {
@@ -44,6 +46,14 @@ public class DBTreeAdapterFactoryContentProvider extends AdapterFactoryContentPr
 	    	PhysicalColumn col = (PhysicalColumn)parentElement;
 			return new Object[]{ "Type: "+col.getTypeName(), "Size: "+col.getSize()};
 	    }
+	    if(parentElement instanceof PrimaryKeysFolder) {
+	    	PrimaryKeysFolder pkFolder = (PrimaryKeysFolder)parentElement;
+			return pkFolder.getArrayPK();
+	    }
+	    if(parentElement instanceof ForeignKeysFolder) {
+	    	ForeignKeysFolder fkFolder = (ForeignKeysFolder)parentElement;
+			return fkFolder.getArrayFK();
+	    }	    
 	    if(parentElement instanceof PhysicalPrimaryKey) {
 	    	PhysicalPrimaryKey pk = (PhysicalPrimaryKey)parentElement;
 			return pk.getColumns().toArray();

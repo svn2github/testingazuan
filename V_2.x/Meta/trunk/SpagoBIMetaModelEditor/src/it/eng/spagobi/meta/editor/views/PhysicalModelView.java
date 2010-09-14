@@ -8,6 +8,7 @@ package it.eng.spagobi.meta.editor.views;
 
 import it.eng.spagobi.meta.editor.dnd.TableDragListener;
 import it.eng.spagobi.meta.editor.util.DBTreeAdapterFactoryContentProvider;
+import it.eng.spagobi.meta.editor.util.DBTreeAdapterFactoryLabelProvider;
 import it.eng.spagobi.meta.editor.util.DSEBridge;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.provider.PhysicalModelItemProviderAdapterFactory;
@@ -80,7 +81,8 @@ public class PhysicalModelView extends ViewPart {
 			factories.add(new PhysicalModelItemProviderAdapterFactory());
 			ComposedAdapterFactory adapterFactory = new ComposedAdapterFactory(factories);			
 			connTree.setContentProvider(new DBTreeAdapterFactoryContentProvider(adapterFactory));
-			connTree.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
+			//connTree.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
+			connTree.setLabelProvider(new DBTreeAdapterFactoryLabelProvider(adapterFactory));
 			connTree.setInput(model);
 			getSite().setSelectionProvider(connTree);
 			

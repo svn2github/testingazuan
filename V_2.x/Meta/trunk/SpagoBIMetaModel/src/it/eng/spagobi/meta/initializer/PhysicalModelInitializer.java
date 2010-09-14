@@ -96,8 +96,7 @@ public class PhysicalModelInitializer {
 				catalogs = new ArrayList();
 				while (rs.next()) {
 					catalogs.add( rs.getString(1) );
-				}
-				
+				}	
 				if(catalogs.size() == 0) {
 					log("No schema [" + dbMeta.getSchemaTerm() + "] defined");
 				} else if(catalogs.size() == 1) {
@@ -118,6 +117,7 @@ public class PhysicalModelInitializer {
 					}
 					catalog = targetCatalog;
 				}
+				rs.close();
 			}
 			
 			model.setCatalog(catalog);
@@ -160,7 +160,7 @@ public class PhysicalModelInitializer {
 				}
 				schema = targetSchema;
 			}
-			
+			rs.close();
 			model.setSchema(schema);
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize schema metadata", t);
@@ -211,7 +211,7 @@ public class PhysicalModelInitializer {
 						
 				model.getTables().add(table);
 			}
-			
+			tableRs.close();
 			
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize tables metadata", t);
@@ -276,6 +276,7 @@ public class PhysicalModelInitializer {
 				table.getColumns().add(column);
 				log("  - column: " + column.getName() + " [" + column.getTypeName() + "]" + " [" + column.getDefaultValue() + "]");
 			}
+			rs.close();
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize primaryKeys metadata", t);
 		}
@@ -316,7 +317,7 @@ public class PhysicalModelInitializer {
 				}
 				
 			}
-			
+		rs.close();	
 			
 		
 		} catch(Throwable t) {
@@ -409,7 +410,7 @@ public class PhysicalModelInitializer {
 				foreignKey.getDestinationColumns().add( destinationTable.getColumn(rs.getString("PKCOLUMN_NAME")) );
 				
 			}
-
+			rs.close();
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize foreignKeys metadata", t);
 		}

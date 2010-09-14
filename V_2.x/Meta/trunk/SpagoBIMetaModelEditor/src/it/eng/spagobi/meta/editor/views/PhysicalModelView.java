@@ -83,6 +83,7 @@ public class PhysicalModelView extends ViewPart {
 			connTree.setContentProvider(new DBTreeAdapterFactoryContentProvider(adapterFactory));
 			//connTree.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
 			connTree.setLabelProvider(new DBTreeAdapterFactoryLabelProvider(adapterFactory));
+			connTree.setUseHashlookup(true);
 			connTree.setInput(model);
 			getSite().setSelectionProvider(connTree);
 			

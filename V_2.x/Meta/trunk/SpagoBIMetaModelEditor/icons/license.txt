@@ -11,3 +11,5 @@ arrow left/right http://www.visualpharm.com/ Creative Commons Attribution-No Der
 foreignkey icon by http://www.famfamfam.com/about/ Creative Commons (Attribution 2.5 Generic) 
 folderkey icon by http://www.fatcow.com/Creative Commons 3.0 Attribution
 folderforeignkey modified version of folderkey by Marco Cortella
+catalog icon by http://twitter.com/gasyoun Free for commercial use
+databaseconnect icon by http://www.fatcow.com/ Creative Commons Attribuition 3.0

@@ -11,14 +11,18 @@ import it.eng.spagobi.meta.editor.util.DBTreeAdapterFactoryContentProvider;
 import it.eng.spagobi.meta.editor.util.DBTreeAdapterFactoryLabelProvider;
 import it.eng.spagobi.meta.editor.util.DSEBridge;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
+
 import it.eng.spagobi.meta.model.physical.provider.PhysicalModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.physical.util.PhysicalModelAdapterFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.datatools.connectivity.IConnectionProfile;
+import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
+import org.eclipse.emf.edit.ui.view.ExtendedPropertySheetPage;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -31,11 +35,18 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.PropertySheetPage;
 
 public class PhysicalModelView extends ViewPart {
 	
 	private ScrolledComposite sc;
+	protected PropertySheetPage propertySheetPage;
+
 	
 	@Override
 	public void createPartControl(Composite parent) {
@@ -103,14 +114,48 @@ public class PhysicalModelView extends ViewPart {
 			container.pack();
 			container.setSize(p);
 		}
-
 	}
-
  
 	@Override
 	public void setFocus() {
 
 	}
+	
+	/**
+	 * This is how the framework determines which interfaces we implement.
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object getAdapter(Class key) {
+		/*if (key.equals(IContentOutlinePage.class)) {
+			return null;
+		}
+		else */
+		if (key.equals(IPropertySheetPage.class)) {
+			return getPropertySheetPage();
+		}
+		/*
+		else if (key.equals(IGotoMarker.class)) {
+			return this;
+		}*/
+		else {
+			return super.getAdapter(key);
+		}
+	}	
+	
+	/**
+	 * This accesses a cached version of the property sheet.
+	 */
+	public IPropertySheetPage getPropertySheetPage() {
+		List<PhysicalModelAdapterFactory> factories = new ArrayList<PhysicalModelAdapterFactory>();
+		factories.add(new PhysicalModelItemProviderAdapterFactory());
+		ComposedAdapterFactory adapterFactory = new ComposedAdapterFactory(factories);			
+		if (propertySheetPage == null) {
+			propertySheetPage = new PropertySheetPage();
+			propertySheetPage.setPropertySourceProvider(new AdapterFactoryContentProvider(adapterFactory));
+		}
 
+		return propertySheetPage;
+	}	
 	
 }

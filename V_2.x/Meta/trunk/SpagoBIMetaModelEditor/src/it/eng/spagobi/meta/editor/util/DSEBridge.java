@@ -7,6 +7,7 @@ package it.eng.spagobi.meta.editor.util;
 
 
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -17,7 +18,11 @@ import it.eng.spagobi.meta.editor.views.PhysicalModelView;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.datatools.connectivity.IConnectionProfile;
 import org.eclipse.datatools.connectivity.IManagedConnection;
 import org.eclipse.datatools.connectivity.ProfileManager;
@@ -28,12 +33,18 @@ import org.eclipse.datatools.modelbase.sql.schema.Schema;
 import org.eclipse.datatools.modelbase.sql.tables.Column;
 import org.eclipse.datatools.modelbase.sql.tables.Table;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ListDialog;
 
 public class DSEBridge {
+	
+	String defaultCatalog, defaultSchema,modelName; 
+	PhysicalModel model;
+	java.sql.Connection connection;
 	
 	public DSEBridge()
 	{	
@@ -67,26 +78,44 @@ public class DSEBridge {
 		return null;	
 	}
 	
-	/*
+	/**
 	 * Connect to the specified ConnectionProfile then extract the metadata to initialize
 	 * the EMF PhysicalModel
 	 */
-	public PhysicalModel connectionExtraction(IConnectionProfile cp){
-		java.sql.Connection conn = connect_CP(cp);
+	public PhysicalModel connectionExtraction(IConnectionProfile cp) {
+		connection = connect_CP(cp);
 		//check if connection is OK
-		if (conn != null){
-			String modelName = cp.getInstanceID();
+		if (connection != null){
+			modelName = cp.getInstanceID();
 			
 			//Check if default catalog is found
-			String defaultCatalog = checkCatalog(conn);
+			defaultCatalog = checkCatalog(connection);
 			//Check if default schema is found
-			String defaultSchema = checkSchema(conn);
-			//initialize the EMF Physical Model
-			PhysicalModelInitializer modelInitializer = new PhysicalModelInitializer();
-			PhysicalModel model = modelInitializer.initialize( modelName, conn,  defaultCatalog, defaultSchema);
-	        return model;
+			defaultSchema = checkSchema(connection);
+			
+			//ProgressMonitorDialog to show a progress bar for long operation
+			ProgressMonitorDialog dialog = new ProgressMonitorDialog(new Shell());
+			dialog.setCancelable(false);
+			try {
+				dialog.run(true, false, new IRunnableWithProgress(){
+				    public void run(IProgressMonitor monitor) {
+				        monitor.beginTask("Extracting metadata information. This may take a few minutes, please wait...", IProgressMonitor.UNKNOWN);
+				        //initialize the EMF Physical Model
+				        PhysicalModelInitializer modelInitializer = new PhysicalModelInitializer();
+						model = modelInitializer.initialize( modelName, connection,  defaultCatalog, defaultSchema);
+						monitor.setTaskName("Extraction Completed.");
+						monitor.done();				        
+				    }
+				});
+			} catch (InvocationTargetException e1) {
+				log("InvocationTargetException in connectionExtraction");
+				e1.printStackTrace();
+			} catch (InterruptedException e1) {
+				log("InvocationTargetException in connectionExtraction");
+				e1.printStackTrace();
+			}
 		}
-		return null;
+		return model;
 			
 	}
 	
@@ -105,7 +134,12 @@ public class DSEBridge {
 		return null;
 	}
 	
-	//check if the connection has a default catalog
+	/**
+	 * check if the connection has a default catalog
+	 * if no, let the user choose from those available
+	 * @param conn
+	 * @return catalog name
+	 */
 	public String checkCatalog(java.sql.Connection conn){
 		String catalog;
 		List<String> catalogs;
@@ -124,6 +158,26 @@ public class DSEBridge {
 				}
 				if (catalogs.size() == 1)
 					return catalogs.get(1);
+				if (catalogs.size() >  1){
+					//Create ListDialog UI
+					ListDialog ld = new ListDialog(new Shell());
+					ld.setAddCancelButton(true);
+					ld.setContentProvider(new ArrayContentProvider());
+					ld.setLabelProvider(new CatalogLabelProvider());
+					ld.setInput(catalogs);
+					ld.setTitle("Select a catalog");
+					ld.setHelpAvailable(false);
+					ld.setMessage("No default catalog found.\nPlease select a catalog from the list");
+					
+					//wait for selection
+					if (ld.open() == IStatus.OK){
+						//obtaining selection
+						Object[] res = ld.getResult();
+						catalog = (String)res[0];
+						return catalog;
+					}					
+				}
+					
 			}
 				return null;
 		}
@@ -132,7 +186,12 @@ public class DSEBridge {
 		}
 	}
 
-	//check if the connection has a default schema
+	/**
+	 * check if the connection has a default schema
+	 * if no, let the user choose from those available
+	 * @param conn
+	 * @return schema name
+	 */
 	public String checkSchema(java.sql.Connection conn){
 		String schema = null;
 		List<String> schemas;

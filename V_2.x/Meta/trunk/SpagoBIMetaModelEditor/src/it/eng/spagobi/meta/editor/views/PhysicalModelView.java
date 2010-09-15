@@ -68,7 +68,7 @@ public class PhysicalModelView extends ViewPart {
 			Group connGroup = new Group(container, SWT.SHADOW_ETCHED_IN);
 			connGroup.setText(cp.getName());
 			connGroup.setLayout(new GridLayout());
-			TreeViewer connTree = new TreeViewer(connGroup);
+			TreeViewer connTree = new TreeViewer(connGroup, SWT.VIRTUAL | SWT.BORDER);
 			/*
 			connTree.setContentProvider(new DSEContentProvider());
 			connTree.setLabelProvider(new DSELabelProvider());
@@ -112,4 +112,5 @@ public class PhysicalModelView extends ViewPart {
 
 	}
 
+	
 }

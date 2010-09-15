@@ -1,5 +1,5 @@
 /*
- * LabelProvider for IConnectionProfile from the DSE View
+ * LabelProvider for Catalog selection
  */
 package it.eng.spagobi.meta.editor.util;
 
@@ -10,18 +10,18 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 
-public class CPLabelProvider extends LabelProvider {
+public class CatalogLabelProvider extends LabelProvider {
 
-	public CPLabelProvider() {
+	public CatalogLabelProvider() {
 		
 	}
 
 	public String getText(Object element){
-		return ((IConnectionProfile)element).getName();
+		return ((String)element);
 	}
 	
 	public Image getImage(Object element){
-		return Activator.getImageDescriptor("databaseconnect.png").createImage();
+		return Activator.getImageDescriptor("catalog.png").createImage();
 	}
 
 }

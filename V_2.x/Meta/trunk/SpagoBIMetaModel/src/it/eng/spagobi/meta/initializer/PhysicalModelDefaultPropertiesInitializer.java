@@ -15,7 +15,7 @@ import it.eng.spagobi.meta.model.physical.PhysicalTable;
  *
  */
 public class PhysicalModelDefaultPropertiesInitializer implements IPropertiesInitializer {
-	public void initialize(ModelObject o) {
+	public void addProperties(ModelObject o) {
 		
 		if(o instanceof PhysicalColumn) {
 			initColumnProperties((PhysicalColumn)o);

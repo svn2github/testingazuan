@@ -10,5 +10,5 @@ import it.eng.spagobi.meta.model.ModelObject;
  *
  */
 public interface IPropertiesInitializer {
-	void initialize(ModelObject o);
+	void addProperties(ModelObject o);
 }

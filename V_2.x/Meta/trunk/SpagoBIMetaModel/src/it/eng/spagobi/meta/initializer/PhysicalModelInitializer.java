@@ -47,20 +47,21 @@ public class PhysicalModelInitializer {
 			if(getRootModel() != null) {
 				model.setParentModel(getRootModel());
 			}
-			getPropertiesInitializer().initialize(model);
 			
 			dbMeta = conn.getMetaData();
 			
-			initDatabaseMeta(dbMeta, model);			
-			initCatalogMeta(conn, model, defaultCatalog);
-			initSchemaMeta(dbMeta, model, defaultSchema);
+			addDatabase(dbMeta, model);			
+			addCatalog(conn, model, defaultCatalog);
+			addSchema(dbMeta, model, defaultSchema);
 			
-			initTablesMeta(dbMeta, model);
+			addTables(dbMeta, model);
 			
 			for(int i = 0; i < model.getTables().size(); i++) {
-				initPrimaryKeyMeta(dbMeta, model, model.getTables().get(i));
-				initForeignKeysMeta(dbMeta, model, model.getTables().get(i));
+				addPrimaryKey(dbMeta, model, model.getTables().get(i));
+				addForeignKeys(dbMeta, model, model.getTables().get(i));
 			}
+			
+			getPropertiesInitializer().addProperties(model);
 			
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize physical model", t);
@@ -70,7 +71,7 @@ public class PhysicalModelInitializer {
 	}
 	
 	
-	private void initDatabaseMeta(DatabaseMetaData dbMeta, PhysicalModel model) {
+	private void addDatabase(DatabaseMetaData dbMeta, PhysicalModel model) {
 		try {
 			model.setDatabaseName( dbMeta.getDatabaseProductName());
 			model.setDatabaseVersion( dbMeta.getDatabaseProductVersion());
@@ -79,7 +80,7 @@ public class PhysicalModelInitializer {
 		}
 	}
 	
-	private void initCatalogMeta(Connection conn, PhysicalModel model, String defaultCatalog) {
+	private void addCatalog(Connection conn, PhysicalModel model, String defaultCatalog) {
 		String catalog;		
 		List<String> catalogs;
 		DatabaseMetaData dbMeta;
@@ -128,7 +129,7 @@ public class PhysicalModelInitializer {
 		}
 	}
 	
-	private void initSchemaMeta(DatabaseMetaData dbMeta, PhysicalModel model,  String defaultSchema) {
+	private void addSchema(DatabaseMetaData dbMeta, PhysicalModel model,  String defaultSchema) {
 		String schema;
 		List<String> schemas;
 		ResultSet rs;
@@ -171,7 +172,7 @@ public class PhysicalModelInitializer {
 	
 	
 	
-	private void initTablesMeta(DatabaseMetaData dbMeta, PhysicalModel model ) {
+	private void addTables(DatabaseMetaData dbMeta, PhysicalModel model ) {
 		Map<String, PhysicalTable> tabesLookupMap;
 		ResultSet tableRs, columnRs;
 		PhysicalTable table;
@@ -202,7 +203,7 @@ public class PhysicalModelInitializer {
 			 */
 			while (tableRs.next()) {
 				table = FACTORY.createPhysicalTable();
-				getPropertiesInitializer().initialize(table);
+				getPropertiesInitializer().addProperties(table);
 				
 				table.setName( tableRs.getString("TABLE_NAME") );
 				table.setComment( tableRs.getString("REMARKS") );
@@ -257,7 +258,7 @@ public class PhysicalModelInitializer {
 			 */
 			while (rs.next()) 	{
 				column = FACTORY.createPhysicalColumn();
-				getPropertiesInitializer().initialize(column);
+				getPropertiesInitializer().addProperties(column);
 				
 				//to prevent Ojdbc bug
 				try{ column.setDefaultValue( rs.getString("COLUMN_DEF") );
@@ -288,7 +289,7 @@ public class PhysicalModelInitializer {
 	}
 	
 	
-	private void initPrimaryKeyMeta(DatabaseMetaData dbMeta, PhysicalModel model, PhysicalTable table) {
+	private void addPrimaryKey(DatabaseMetaData dbMeta, PhysicalModel model, PhysicalTable table) {
 		PhysicalColumn column;
 		PhysicalPrimaryKey primaryKey;
 		ResultSet rs;
@@ -310,7 +311,7 @@ public class PhysicalModelInitializer {
 			while (rs.next()) {
 				if(primaryKey == null) {
 					primaryKey = FACTORY.createPhysicalPrimaryKey();
-					getPropertiesInitializer().initialize(primaryKey);
+					getPropertiesInitializer().addProperties(primaryKey);
 					
 					primaryKey.setName( rs.getString("PK_NAME") );
 					
@@ -332,7 +333,7 @@ public class PhysicalModelInitializer {
 		}
 	}
 	
-	private void initForeignKeysMeta(DatabaseMetaData dbMeta, PhysicalModel model, PhysicalTable table) {
+	private void addForeignKeys(DatabaseMetaData dbMeta, PhysicalModel model, PhysicalTable table) {
 		List<PhysicalForeignKey> foreignKeys;
 		ResultSet rs;
 		PhysicalForeignKey foreignKey;
@@ -380,7 +381,7 @@ public class PhysicalModelInitializer {
 				if(foreignKey == null) { // OK it's the first iteration
 					
 					foreignKey = FACTORY.createPhysicalForeignKey();
-					getPropertiesInitializer().initialize(foreignKey);
+					getPropertiesInitializer().addProperties(foreignKey);
 					
 					foreignKey.setSourceName(fkName);
 					foreignKey.setSourceTable( sourceTable );					
@@ -392,7 +393,7 @@ public class PhysicalModelInitializer {
 					table.getForeignKeys().add(foreignKey);
 					model.getForeignKeys().add(foreignKey);
 					foreignKey = FACTORY.createPhysicalForeignKey();
-					getPropertiesInitializer().initialize(foreignKey);
+					getPropertiesInitializer().addProperties(foreignKey);
 					foreignKey.setSourceName(fkName);
 					foreignKey.setSourceTable( sourceTable );					
 					foreignKey.setDestinationName(rs.getString("PK_NAME"));

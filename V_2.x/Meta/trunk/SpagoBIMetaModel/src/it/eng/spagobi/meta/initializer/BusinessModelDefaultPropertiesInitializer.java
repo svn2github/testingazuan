@@ -28,7 +28,7 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 	
 	static public ModelFactory FACTORY = ModelFactory.eINSTANCE;
 	
-	public void initialize(ModelObject o) {
+	public void addProperties(ModelObject o) {
 		
 		if(o instanceof BusinessModel) {
 			initModelProperties((BusinessModel)o);
@@ -57,8 +57,12 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		ModelProperty property;
 		ModelPropertyCategory structuralCategory, styleCategory;
 		
-		rootModel = o.getTable().getModel().getParentModel();
+		rootModel = null;
 		
+		if(o.getTable() != null && o.getTable().getModel() != null) {
+			rootModel = o.getTable().getModel().getParentModel();
+		}
+				
 		structuralCategory = FACTORY.createModelPropertyCategory();
 		structuralCategory.setName("Structural");
 		structuralCategory.setDescription("Structural properties");
@@ -66,8 +70,11 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		styleCategory.setName("Style");
 		styleCategory.setDescription("Style properties");
 		
+		
 		// AGGREGATION TYPE
-		propertyType = rootModel.getPropertyType("Agregation Type");
+		propertyType = null;
+		
+		if(rootModel != null) propertyType = rootModel.getPropertyType("Agregation Type");
 		if(propertyType == null) {
 			propertyType = FACTORY.createModelPropertyType();
 			propertyType.setName("Agregation Type");
@@ -80,14 +87,14 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 			propertyType.getAdmissibleValues().add("MIN");
 			propertyType.setDefaultValue("COUNT");
 			
-			rootModel.getPropertyTypes().add(propertyType);
+			if(rootModel != null) rootModel.getPropertyTypes().add(propertyType);
 		}
 		
 		property = FACTORY.createModelProperty();
 		property.setPropertyType(propertyType);
 		
 		// ALIGNMENT TYPE
-		propertyType = rootModel.getPropertyType("Alignment Type");
+		if(rootModel != null) propertyType = rootModel.getPropertyType("Alignment Type");
 		if(propertyType == null) {
 			propertyType = FACTORY.createModelPropertyType();
 			propertyType.setName("Alignment Type");
@@ -99,7 +106,7 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 			propertyType.getAdmissibleValues().add("JUSTIFIED");
 			propertyType.setDefaultValue("LEFT");
 			
-			rootModel.getPropertyTypes().add(propertyType);
+			if(rootModel != null) rootModel.getPropertyTypes().add(propertyType);
 		}
 		
 		property = FACTORY.createModelProperty();

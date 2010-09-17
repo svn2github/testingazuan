@@ -49,13 +49,13 @@ public class BusinessModelInitializer {
 			
 			// tables
 			for(int i = 0; i < physicalModel.getTables().size(); i++) {
-				initTablesMeta( physicalModel, businessModel );
+				addTables( physicalModel, businessModel );
 			}
 			
 			// relationships-foreign keys
-			initRelationshipsMeta( physicalModel, businessModel );
+			addRelationships( physicalModel, businessModel );
 			
-			getPropertiesInitializer().initialize(businessModel);
+			getPropertiesInitializer().addProperties(businessModel);
 			
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business model", t);
@@ -64,20 +64,20 @@ public class BusinessModelInitializer {
 		return businessModel;
 	}
 
-	public void initTablesMeta(PhysicalModel physicalModel, BusinessModel businessModel) {
+	public void addTables(PhysicalModel physicalModel, BusinessModel businessModel) {
 		PhysicalTable physicalTable;
 		
 		try {
 			for(int i = 0; i < physicalModel.getTables().size(); i++) {
 				physicalTable = physicalModel.getTables().get(i);
-				initTableMeta(physicalTable, businessModel);
+				addTable(physicalTable, businessModel);
 			}
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business tables", t);
 		}	
 	}
 	
-	public void initTableMeta(PhysicalTable physicalTable, BusinessModel businessModel) {
+	public void addTable(PhysicalTable physicalTable, BusinessModel businessModel) {
 		BusinessTable businessTable;
 		
 		try {
@@ -88,30 +88,30 @@ public class BusinessModelInitializer {
 			businessTable.setDescription( physicalTable.getDescription() );
 			businessTable.setModel(businessModel);
 							
-			initColumnsMeta(physicalTable, businessTable);
+			addColumns(physicalTable, businessTable);
 			
 			businessModel.getTables().add(businessTable);
 		
-			getPropertiesInitializer().initialize(businessTable);	
+			getPropertiesInitializer().addProperties(businessTable);	
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business table from physical table [" + physicalTable.getName() + "]", t);
 		}
 	}
 
-	public void initColumnsMeta(PhysicalTable physicalTable, BusinessTable businessTable) {
+	public void addColumns(PhysicalTable physicalTable, BusinessTable businessTable) {
 		PhysicalColumn physicalColumn;
 		
 		try {
 			for(int i = 0; i < physicalTable.getColumns().size(); i++) {
 				physicalColumn = physicalTable.getColumns().get(i);				
-				initColumnMeta(physicalColumn, businessTable);
+				addColumn(physicalColumn, businessTable);
 			}
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize columns meta", t);
 		}
 	}
 	
-	public void initColumnMeta(PhysicalColumn physicalColumn, BusinessTable businessTable) {
+	public void addColumn(PhysicalColumn physicalColumn, BusinessTable businessTable) {
 		BusinessColumn businessColumn;
 		
 		try {
@@ -124,26 +124,26 @@ public class BusinessModelInitializer {
 			
 			businessTable.getColumns().add(businessColumn);
 			
-			getPropertiesInitializer().initialize(businessColumn);			
+			getPropertiesInitializer().addProperties(businessColumn);			
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business column from physical column [" + physicalColumn.getName() + "]", t);
 		}
 	}
 
-	public void initRelationshipsMeta(PhysicalModel physicalModel, BusinessModel businessModel) {
+	public void addRelationships(PhysicalModel physicalModel, BusinessModel businessModel) {
 		PhysicalForeignKey physicalForeignKey;
 		
 		try {
 			for(int i = 0; i < physicalModel.getForeignKeys().size(); i++) {
 				physicalForeignKey = physicalModel.getForeignKeys().get(i);
-				initRelationshipMeta(physicalForeignKey, businessModel);
+				addRelationship(physicalForeignKey, businessModel);
 			}
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize relationship meta", t);
 		}
 	}
 	
-	public void initRelationshipMeta(PhysicalForeignKey physicalForeignKey, BusinessModel businessModel) {
+	public void addRelationship(PhysicalForeignKey physicalForeignKey, BusinessModel businessModel) {
 		BusinessRelationship businessRelationship;
 		PhysicalTable physicalTable;
 		BusinessTable businessTable;
@@ -172,7 +172,7 @@ public class BusinessModelInitializer {
 			
 			businessModel.getRelationships().add(businessRelationship);
 			
-			getPropertiesInitializer().initialize(businessRelationship);
+			getPropertiesInitializer().addProperties(businessRelationship);
 			
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business relationship from physical foreign key [" + physicalForeignKey.getSourceName() + "]", t);

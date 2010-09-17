@@ -14,8 +14,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import it.eng.spagobi.meta.editor.Activator;
 import it.eng.spagobi.meta.editor.views.PhysicalModelView;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
+import it.eng.spagobi.meta.model.Model;
+import it.eng.spagobi.meta.model.ModelFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -100,9 +103,13 @@ public class DSEBridge {
 				dialog.run(true, false, new IRunnableWithProgress(){
 				    public void run(IProgressMonitor monitor) {
 				        monitor.beginTask("Extracting metadata information. This may take a few minutes, please wait...", IProgressMonitor.UNKNOWN);
+				        //TODO: to remove, initialize root Model
+						Model rootModel = ModelFactory.eINSTANCE.createModel();
+						rootModel.setName("rootmodel");
 				        //initialize the EMF Physical Model
 				        PhysicalModelInitializer modelInitializer = new PhysicalModelInitializer();
-						model = modelInitializer.initialize( modelName, connection,  defaultCatalog, defaultSchema);
+				        modelInitializer.setRootModel(rootModel);
+				        model = modelInitializer.initialize( modelName, connection,  defaultCatalog, defaultSchema);
 						monitor.setTaskName("Extraction Completed.");
 						monitor.done();				        
 				    }

@@ -7,13 +7,18 @@ import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Display;
 
 public class DBTreeAdapterFactoryContentProvider extends AdapterFactoryContentProvider{
 	private static Object[] EMPTY_ARRAY = new Object[0];
+	public TreeViewer tree;
 	
-	public DBTreeAdapterFactoryContentProvider(AdapterFactory adapterFactory) {
+	public DBTreeAdapterFactoryContentProvider(AdapterFactory adapterFactory, TreeViewer treeViewer) {
 		super(adapterFactory);
+		tree = treeViewer;
 	}
 	
 	@Override
@@ -95,6 +100,23 @@ public class DBTreeAdapterFactoryContentProvider extends AdapterFactoryContentPr
 		System.arraycopy(more, 0, both, object.length, more.length);	
 		return both;
 	}	
+	
+	//update the tree when the model is changed
+	@Override
+	public void notifyChanged(Notification notification)
+	{
+		Display.getDefault().asyncExec(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				if (!tree.getTree().isDisposed())
+				{
+					tree.refresh(true);
+				}
+			}
+		});
+	} 
 	
 	
 }

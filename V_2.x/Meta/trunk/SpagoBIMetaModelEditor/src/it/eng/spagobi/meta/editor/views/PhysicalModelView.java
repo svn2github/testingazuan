@@ -46,6 +46,7 @@ public class PhysicalModelView extends ViewPart {
 	
 	private ScrolledComposite sc;
 	protected PropertySheetPage propertySheetPage;
+	public TreeViewer connTree;
 
 	
 	@Override
@@ -79,7 +80,7 @@ public class PhysicalModelView extends ViewPart {
 			Group connGroup = new Group(container, SWT.SHADOW_ETCHED_IN);
 			connGroup.setText(cp.getName());
 			connGroup.setLayout(new GridLayout());
-			TreeViewer connTree = new TreeViewer(connGroup, SWT.VIRTUAL | SWT.BORDER);
+			connTree = new TreeViewer(connGroup, SWT.VIRTUAL | SWT.BORDER);
 			/*
 			connTree.setContentProvider(new DSEContentProvider());
 			connTree.setLabelProvider(new DSELabelProvider());
@@ -91,10 +92,11 @@ public class PhysicalModelView extends ViewPart {
 			List<PhysicalModelAdapterFactory> factories = new ArrayList<PhysicalModelAdapterFactory>();
 			factories.add(new PhysicalModelItemProviderAdapterFactory());
 			ComposedAdapterFactory adapterFactory = new ComposedAdapterFactory(factories);			
-			connTree.setContentProvider(new DBTreeAdapterFactoryContentProvider(adapterFactory));
-			//connTree.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
-			connTree.setLabelProvider(new DBTreeAdapterFactoryLabelProvider(adapterFactory));
+			connTree.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
+			connTree.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
+			//connTree.setLabelProvider(new DBTreeAdapterFactoryLabelProvider(adapterFactory));
 			connTree.setUseHashlookup(true);
+			model.eAdapters().add(new PhysicalModelItemProviderAdapterFactory().createPhysicalModelAdapter());
 			connTree.setInput(model);
 			getSite().setSelectionProvider(connTree);
 			

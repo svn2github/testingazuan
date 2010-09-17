@@ -258,14 +258,20 @@ public class PhysicalTableItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	@Override
 	public String getText(Object object) {
+		/*
 		String label = ((PhysicalTable)object).getName();
 		return label == null || label.length() == 0 ?
 			getString("_UI_PhysicalTable_type") :
 			getString("_UI_PhysicalTable_type") + " " + label;
+		*/
+		String label = ((PhysicalTable)object).getName();
+		return label == null || label.length() == 0 ?
+			getString("_UI_PhysicalTable_type") :
+			label;
 	}
 
 	/**

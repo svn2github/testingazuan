@@ -374,14 +374,20 @@ public class PhysicalColumnItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	@Override
 	public String getText(Object object) {
+		/*
 		String label = ((PhysicalColumn)object).getName();
 		return label == null || label.length() == 0 ?
 			getString("_UI_PhysicalColumn_type") :
 			getString("_UI_PhysicalColumn_type") + " " + label;
+		*/
+		String label = ((PhysicalColumn)object).getTable().getName()+"."+((PhysicalColumn)object).getName();
+		return label == null || label.length() == 0 ?
+			getString("_UI_PhysicalColumn_type") :
+			label;
 	}
 
 	/**

@@ -36,7 +36,7 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 			initTableProperties((BusinessTable)o);
 		} else if(o instanceof BusinessColumn) {
 			initColumnProperties((BusinessColumn)o);
-		} else if(o instanceof PhysicalPrimaryKey) {
+		} else if(o instanceof BusinessRelationship) {
 			initRelationshipProperties((BusinessRelationship)o);
 		} else {
 			
@@ -92,6 +92,8 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		
 		property = FACTORY.createModelProperty();
 		property.setPropertyType(propertyType);
+		o.getProperties().put(property.getPropertyType().getName(), property);
+		
 		
 		// ALIGNMENT TYPE
 		if(rootModel != null) propertyType = rootModel.getPropertyType("Alignment Type");
@@ -111,6 +113,7 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		
 		property = FACTORY.createModelProperty();
 		property.setPropertyType(propertyType);
+		o.getProperties().put(property.getPropertyType().getName(), property);
 		
 		
 	}

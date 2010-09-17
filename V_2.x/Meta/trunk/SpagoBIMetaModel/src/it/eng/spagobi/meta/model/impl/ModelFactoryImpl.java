@@ -8,6 +8,7 @@ package it.eng.spagobi.meta.model.impl;
 
 import it.eng.spagobi.meta.model.*;
 
+import java.util.Map;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -60,10 +61,11 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case ModelPackage.MODEL_OBJECT: return createModelObject();
-			case ModelPackage.MODEL_PROPERTY_TYPE: return createModelPropertyType();
 			case ModelPackage.MODEL_PROPERTY_CATEGORY: return createModelPropertyCategory();
+			case ModelPackage.MODEL_PROPERTY_TYPE: return createModelPropertyType();
 			case ModelPackage.MODEL_PROPERTY: return createModelProperty();
+			case ModelPackage.MODEL_PROPERTY_MAP_ENTRY: return (EObject)createModelPropertyMapEntry();
+			case ModelPackage.MODEL_OBJECT: return createModelObject();
 			case ModelPackage.MODEL: return createModel();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -108,6 +110,16 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 	public ModelProperty createModelProperty() {
 		ModelPropertyImpl modelProperty = new ModelPropertyImpl();
 		return modelProperty;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Map.Entry<String, ModelProperty> createModelPropertyMapEntry() {
+		ModelPropertyMapEntryImpl modelPropertyMapEntry = new ModelPropertyMapEntryImpl();
+		return modelPropertyMapEntry;
 	}
 
 	/**

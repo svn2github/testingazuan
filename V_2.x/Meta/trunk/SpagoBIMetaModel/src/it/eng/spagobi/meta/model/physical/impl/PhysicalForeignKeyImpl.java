@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.physical.impl;
 
+import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
@@ -46,7 +47,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  *
  * @generated
  */
-public class PhysicalForeignKeyImpl extends EObjectImpl implements PhysicalForeignKey {
+public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalForeignKey {
 	/**
 	 * The default value of the '{@link #getSourceName() <em>Source Name</em>}' attribute.
 	 * <!-- begin-user-doc -->

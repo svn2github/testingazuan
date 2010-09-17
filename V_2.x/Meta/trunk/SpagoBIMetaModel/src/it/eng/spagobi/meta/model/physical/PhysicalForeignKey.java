@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.physical;
 
+import it.eng.spagobi.meta.model.ModelObject;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
@@ -32,7 +33,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface PhysicalForeignKey extends EObject {
+public interface PhysicalForeignKey extends ModelObject {
 	/**
 	 * Returns the value of the '<em><b>Source Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->

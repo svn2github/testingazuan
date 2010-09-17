@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.physical.impl;
 
+import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
@@ -35,7 +36,6 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl#getName <em>Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl#getModel <em>Model</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl#getTable <em>Table</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl#getColumns <em>Columns</em>}</li>
@@ -44,27 +44,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  *
  * @generated
  */
-public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrimaryKey {
-	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected String name = NAME_EDEFAULT;
-
+public class PhysicalPrimaryKeyImpl extends ModelObjectImpl implements PhysicalPrimaryKey {
 	/**
 	 * The cached value of the '{@link #getModel() <em>Model</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -112,27 +92,6 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 	@Override
 	protected EClass eStaticClass() {
 		return PhysicalModelPackage.Literals.PHYSICAL_PRIMARY_KEY;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setName(String newName) {
-		String oldName = name;
-		name = newName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__NAME, oldName, name));
 	}
 
 	/**
@@ -311,8 +270,6 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__NAME:
-				return getName();
 			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL:
 				if (resolve) return getModel();
 				return basicGetModel();
@@ -334,9 +291,6 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__NAME:
-				setName((String)newValue);
-				return;
 			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL:
 				setModel((PhysicalModel)newValue);
 				return;
@@ -359,9 +313,6 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__NAME:
-				setName(NAME_EDEFAULT);
-				return;
 			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL:
 				setModel((PhysicalModel)null);
 				return;
@@ -383,8 +334,6 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__NAME:
-				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL:
 				return model != null;
 			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE:
@@ -393,22 +342,6 @@ public class PhysicalPrimaryKeyImpl extends EObjectImpl implements PhysicalPrima
 				return columns != null && !columns.isEmpty();
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy()) return super.toString();
-
-		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (name: ");
-		result.append(name);
-		result.append(')');
-		return result.toString();
 	}
 
 } //PhysicalPrimaryKeyImpl

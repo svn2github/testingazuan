@@ -9,10 +9,13 @@ package it.eng.spagobi.meta.model.business.impl;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 
+import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
@@ -26,34 +29,14 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessColumnImpl#getName <em>Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessColumnImpl#getPhysicalColumn <em>Physical Column</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessColumnImpl#getTable <em>Table</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class BusinessColumnImpl extends EObjectImpl implements BusinessColumn {
-	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected String name = NAME_EDEFAULT;
-
+public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColumn {
 	/**
 	 * The cached value of the '{@link #getPhysicalColumn() <em>Physical Column</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -63,6 +46,16 @@ public class BusinessColumnImpl extends EObjectImpl implements BusinessColumn {
 	 * @ordered
 	 */
 	protected PhysicalColumn physicalColumn;
+
+	/**
+	 * The cached value of the '{@link #getTable() <em>Table</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTable()
+	 * @generated
+	 * @ordered
+	 */
+	protected BusinessTable table;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -81,27 +74,6 @@ public class BusinessColumnImpl extends EObjectImpl implements BusinessColumn {
 	@Override
 	protected EClass eStaticClass() {
 		return BusinessModelPackage.Literals.BUSINESS_COLUMN;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setName(String newName) {
-		String oldName = name;
-		name = newName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, BusinessModelPackage.BUSINESS_COLUMN__NAME, oldName, name));
 	}
 
 	/**
@@ -147,14 +119,105 @@ public class BusinessColumnImpl extends EObjectImpl implements BusinessColumn {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public BusinessTable getTable() {
+		if (table != null && table.eIsProxy()) {
+			InternalEObject oldTable = (InternalEObject)table;
+			table = (BusinessTable)eResolveProxy(oldTable);
+			if (table != oldTable) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, BusinessModelPackage.BUSINESS_COLUMN__TABLE, oldTable, table));
+			}
+		}
+		return table;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public BusinessTable basicGetTable() {
+		return table;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetTable(BusinessTable newTable, NotificationChain msgs) {
+		BusinessTable oldTable = table;
+		table = newTable;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BusinessModelPackage.BUSINESS_COLUMN__TABLE, oldTable, newTable);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setTable(BusinessTable newTable) {
+		if (newTable != table) {
+			NotificationChain msgs = null;
+			if (table != null)
+				msgs = ((InternalEObject)table).eInverseRemove(this, BusinessModelPackage.BUSINESS_TABLE__COLUMNS, BusinessTable.class, msgs);
+			if (newTable != null)
+				msgs = ((InternalEObject)newTable).eInverseAdd(this, BusinessModelPackage.BUSINESS_TABLE__COLUMNS, BusinessTable.class, msgs);
+			msgs = basicSetTable(newTable, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, BusinessModelPackage.BUSINESS_COLUMN__TABLE, newTable, newTable));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
+				if (table != null)
+					msgs = ((InternalEObject)table).eInverseRemove(this, BusinessModelPackage.BUSINESS_TABLE__COLUMNS, BusinessTable.class, msgs);
+				return basicSetTable((BusinessTable)otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
+				return basicSetTable(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_COLUMN__NAME:
-				return getName();
 			case BusinessModelPackage.BUSINESS_COLUMN__PHYSICAL_COLUMN:
 				if (resolve) return getPhysicalColumn();
 				return basicGetPhysicalColumn();
+			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
+				if (resolve) return getTable();
+				return basicGetTable();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -167,11 +230,11 @@ public class BusinessColumnImpl extends EObjectImpl implements BusinessColumn {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_COLUMN__NAME:
-				setName((String)newValue);
-				return;
 			case BusinessModelPackage.BUSINESS_COLUMN__PHYSICAL_COLUMN:
 				setPhysicalColumn((PhysicalColumn)newValue);
+				return;
+			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
+				setTable((BusinessTable)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -185,11 +248,11 @@ public class BusinessColumnImpl extends EObjectImpl implements BusinessColumn {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_COLUMN__NAME:
-				setName(NAME_EDEFAULT);
-				return;
 			case BusinessModelPackage.BUSINESS_COLUMN__PHYSICAL_COLUMN:
 				setPhysicalColumn((PhysicalColumn)null);
+				return;
+			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
+				setTable((BusinessTable)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -203,28 +266,12 @@ public class BusinessColumnImpl extends EObjectImpl implements BusinessColumn {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_COLUMN__NAME:
-				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case BusinessModelPackage.BUSINESS_COLUMN__PHYSICAL_COLUMN:
 				return physicalColumn != null;
+			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
+				return table != null;
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy()) return super.toString();
-
-		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (name: ");
-		result.append(name);
-		result.append(')');
-		return result.toString();
 	}
 
 } //BusinessColumnImpl

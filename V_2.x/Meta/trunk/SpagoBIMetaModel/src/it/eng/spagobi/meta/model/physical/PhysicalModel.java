@@ -6,6 +6,8 @@
  */
 package it.eng.spagobi.meta.model.physical;
 
+import it.eng.spagobi.meta.model.Model;
+import it.eng.spagobi.meta.model.ModelObject;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
@@ -18,11 +20,11 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getName <em>Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getDatabaseName <em>Database Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getDatabaseVersion <em>Database Version</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getCatalog <em>Catalog</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getSchema <em>Schema</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getParentModel <em>Parent Model</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getTables <em>Tables</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getPrimaryKeys <em>Primary Keys</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getForeignKeys <em>Foreign Keys</em>}</li>
@@ -33,33 +35,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface PhysicalModel extends EObject {
-	/**
-	 * Returns the value of the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Name</em>' attribute.
-	 * @see #setName(String)
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalModel_Name()
-	 * @model
-	 * @generated
-	 */
-	String getName();
-
-	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getName <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Name</em>' attribute.
-	 * @see #getName()
-	 * @generated
-	 */
-	void setName(String value);
-
+public interface PhysicalModel extends ModelObject {
 	/**
 	 * Returns the value of the '<em><b>Database Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -163,6 +139,34 @@ public interface PhysicalModel extends EObject {
 	 * @generated
 	 */
 	void setSchema(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Parent Model</b></em>' reference.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.Model#getPhysicalModels <em>Physical Models</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Parent Model</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Parent Model</em>' reference.
+	 * @see #setParentModel(Model)
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalModel_ParentModel()
+	 * @see it.eng.spagobi.meta.model.Model#getPhysicalModels
+	 * @model opposite="physicalModels" required="true"
+	 * @generated
+	 */
+	Model getParentModel();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getParentModel <em>Parent Model</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Parent Model</em>' reference.
+	 * @see #getParentModel()
+	 * @generated
+	 */
+	void setParentModel(Model value);
 
 	/**
 	 * Returns the value of the '<em><b>Tables</b></em>' containment reference list.

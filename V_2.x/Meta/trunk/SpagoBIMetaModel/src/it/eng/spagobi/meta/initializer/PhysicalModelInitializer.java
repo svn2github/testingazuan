@@ -4,6 +4,7 @@
 package it.eng.spagobi.meta.initializer;
 
 
+import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
@@ -25,9 +26,13 @@ import java.util.Map;
  */
 public class PhysicalModelInitializer {
 	
+	IPropertiesInitializer propertiesInitializer;
+	Model rootModel;
+	
 	static public PhysicalModelFactory FACTORY = PhysicalModelFactory.eINSTANCE;
 	
 	public PhysicalModelInitializer() {
+		setPropertiesInitializer(new PhysicalModelDefaultPropertiesInitializer());
 		
 	}
 	
@@ -38,20 +43,17 @@ public class PhysicalModelInitializer {
 		try {
 			model = FACTORY.createPhysicalModel();
 			model.setName(modelName);
-			log("model: " + model.getName()); 
+			
+			if(getRootModel() != null) {
+				model.setParentModel(getRootModel());
+			}
+			getPropertiesInitializer().initialize(model);
 			
 			dbMeta = conn.getMetaData();
 			
-			initDatabaseMeta(dbMeta, model);	
-			
-			log("db name: " + model.getDatabaseName());
-			log("db version: " + model.getDatabaseVersion());
-			
+			initDatabaseMeta(dbMeta, model);			
 			initCatalogMeta(conn, model, defaultCatalog);
-			log("catalog [" + dbMeta.getCatalogTerm() + "]: " + model.getCatalog());
-						
 			initSchemaMeta(dbMeta, model, defaultSchema);
-			log("schema [" + dbMeta.getSchemaTerm() + "]: " + model.getSchema());
 			
 			initTablesMeta(dbMeta, model);
 			
@@ -200,6 +202,7 @@ public class PhysicalModelInitializer {
 			 */
 			while (tableRs.next()) {
 				table = FACTORY.createPhysicalTable();
+				getPropertiesInitializer().initialize(table);
 				
 				table.setName( tableRs.getString("TABLE_NAME") );
 				table.setComment( tableRs.getString("REMARKS") );
@@ -254,6 +257,8 @@ public class PhysicalModelInitializer {
 			 */
 			while (rs.next()) 	{
 				column = FACTORY.createPhysicalColumn();
+				getPropertiesInitializer().initialize(column);
+				
 				//to prevent Ojdbc bug
 				try{ column.setDefaultValue( rs.getString("COLUMN_DEF") );
 				} catch(Throwable t) {
@@ -305,6 +310,8 @@ public class PhysicalModelInitializer {
 			while (rs.next()) {
 				if(primaryKey == null) {
 					primaryKey = FACTORY.createPhysicalPrimaryKey();
+					getPropertiesInitializer().initialize(primaryKey);
+					
 					primaryKey.setName( rs.getString("PK_NAME") );
 					
 					table.setPrimaryKey(primaryKey);
@@ -373,6 +380,8 @@ public class PhysicalModelInitializer {
 				if(foreignKey == null) { // OK it's the first iteration
 					
 					foreignKey = FACTORY.createPhysicalForeignKey();
+					getPropertiesInitializer().initialize(foreignKey);
+					
 					foreignKey.setSourceName(fkName);
 					foreignKey.setSourceTable( sourceTable );					
 					foreignKey.setDestinationName(rs.getString("PK_NAME"));
@@ -383,6 +392,7 @@ public class PhysicalModelInitializer {
 					table.getForeignKeys().add(foreignKey);
 					model.getForeignKeys().add(foreignKey);
 					foreignKey = FACTORY.createPhysicalForeignKey();
+					getPropertiesInitializer().initialize(foreignKey);
 					foreignKey.setSourceName(fkName);
 					foreignKey.setSourceTable( sourceTable );					
 					foreignKey.setDestinationName(rs.getString("PK_NAME"));
@@ -416,13 +426,35 @@ public class PhysicalModelInitializer {
 		}
 	}
 	
+	//  --------------------------------------------------------
+	//	Accessor methods
+	//  --------------------------------------------------------
 
+	public IPropertiesInitializer getPropertiesInitializer() {
+		return propertiesInitializer;
+	}
+
+	public void setPropertiesInitializer(IPropertiesInitializer propertyInitializer) {
+		this.propertiesInitializer = propertyInitializer;
+	}
+
+	public Model getRootModel() {
+		return rootModel;
+	}
+
+	public void setRootModel(Model rootModel) {
+		this.rootModel = rootModel;
+	}
+	
+	
 	//  --------------------------------------------------------
 	//	Static methods
 	//  --------------------------------------------------------
 	
 	private static void log(String msg) {
-		System.out.println(msg);
+		//System.out.println(msg);
 	}
+
+	
 	
 }

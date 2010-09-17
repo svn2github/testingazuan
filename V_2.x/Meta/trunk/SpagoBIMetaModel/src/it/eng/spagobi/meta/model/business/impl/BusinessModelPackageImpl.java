@@ -183,8 +183,8 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getBusinessModel_Name() {
-		return (EAttribute)businessModelEClass.getEStructuralFeatures().get(0);
+	public EReference getBusinessModel_ParentModel() {
+		return (EReference)businessModelEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -228,8 +228,8 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getBusinessTable_Name() {
-		return (EAttribute)businessTableEClass.getEStructuralFeatures().get(0);
+	public EReference getBusinessTable_Model() {
+		return (EReference)businessTableEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -246,6 +246,15 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getBusinessTable_Columns() {
+		return (EReference)businessTableEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getBusinessColumn() {
 		return businessColumnEClass;
 	}
@@ -255,8 +264,8 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getBusinessColumn_Name() {
-		return (EAttribute)businessColumnEClass.getEStructuralFeatures().get(0);
+	public EReference getBusinessColumn_PhysicalColumn() {
+		return (EReference)businessColumnEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -264,7 +273,7 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getBusinessColumn_PhysicalColumn() {
+	public EReference getBusinessColumn_Table() {
 		return (EReference)businessColumnEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -282,8 +291,8 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getBusinessRelationship_Name() {
-		return (EAttribute)businessRelationshipEClass.getEStructuralFeatures().get(0);
+	public EReference getBusinessRelationship_Model() {
+		return (EReference)businessRelationshipEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -309,6 +318,24 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getBusinessRelationship_SourceColumns() {
+		return (EReference)businessRelationshipEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getBusinessRelationship_DestinationColumns() {
+		return (EReference)businessRelationshipEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getBusinessView() {
 		return businessViewEClass;
 	}
@@ -318,17 +345,8 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getBusinessView_Name() {
-		return (EAttribute)businessViewEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getBusinessView_Columns() {
-		return (EReference)businessViewEClass.getEStructuralFeatures().get(1);
+		return (EReference)businessViewEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -337,7 +355,7 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 	 * @generated
 	 */
 	public EReference getBusinessView_JoinRelationships() {
-		return (EReference)businessViewEClass.getEStructuralFeatures().get(2);
+		return (EReference)businessViewEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -354,8 +372,26 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getBusinessDomain_Name() {
-		return (EAttribute)businessDomainEClass.getEStructuralFeatures().get(0);
+	public EReference getBusinessDomain_BusinesslModel() {
+		return (EReference)businessDomainEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getBusinessDomain_Tables() {
+		return (EReference)businessDomainEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getBusinessDomain_Relationships() {
+		return (EReference)businessDomainEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -387,31 +423,35 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 
 		// Create classes and their features
 		businessModelEClass = createEClass(BUSINESS_MODEL);
-		createEAttribute(businessModelEClass, BUSINESS_MODEL__NAME);
+		createEReference(businessModelEClass, BUSINESS_MODEL__PARENT_MODEL);
 		createEReference(businessModelEClass, BUSINESS_MODEL__PHYSICAL_MODEL);
 		createEReference(businessModelEClass, BUSINESS_MODEL__TABLES);
 		createEReference(businessModelEClass, BUSINESS_MODEL__RELATIONSHIPS);
 
 		businessTableEClass = createEClass(BUSINESS_TABLE);
-		createEAttribute(businessTableEClass, BUSINESS_TABLE__NAME);
+		createEReference(businessTableEClass, BUSINESS_TABLE__MODEL);
 		createEReference(businessTableEClass, BUSINESS_TABLE__PHYSICAL_TABLE);
+		createEReference(businessTableEClass, BUSINESS_TABLE__COLUMNS);
 
 		businessColumnEClass = createEClass(BUSINESS_COLUMN);
-		createEAttribute(businessColumnEClass, BUSINESS_COLUMN__NAME);
 		createEReference(businessColumnEClass, BUSINESS_COLUMN__PHYSICAL_COLUMN);
+		createEReference(businessColumnEClass, BUSINESS_COLUMN__TABLE);
 
 		businessRelationshipEClass = createEClass(BUSINESS_RELATIONSHIP);
-		createEAttribute(businessRelationshipEClass, BUSINESS_RELATIONSHIP__NAME);
+		createEReference(businessRelationshipEClass, BUSINESS_RELATIONSHIP__MODEL);
 		createEReference(businessRelationshipEClass, BUSINESS_RELATIONSHIP__SOURCE_TABLE);
 		createEReference(businessRelationshipEClass, BUSINESS_RELATIONSHIP__DESTINATION_TABLE);
+		createEReference(businessRelationshipEClass, BUSINESS_RELATIONSHIP__SOURCE_COLUMNS);
+		createEReference(businessRelationshipEClass, BUSINESS_RELATIONSHIP__DESTINATION_COLUMNS);
 
 		businessViewEClass = createEClass(BUSINESS_VIEW);
-		createEAttribute(businessViewEClass, BUSINESS_VIEW__NAME);
 		createEReference(businessViewEClass, BUSINESS_VIEW__COLUMNS);
 		createEReference(businessViewEClass, BUSINESS_VIEW__JOIN_RELATIONSHIPS);
 
 		businessDomainEClass = createEClass(BUSINESS_DOMAIN);
-		createEAttribute(businessDomainEClass, BUSINESS_DOMAIN__NAME);
+		createEReference(businessDomainEClass, BUSINESS_DOMAIN__BUSINESSL_MODEL);
+		createEReference(businessDomainEClass, BUSINESS_DOMAIN__TABLES);
+		createEReference(businessDomainEClass, BUSINESS_DOMAIN__RELATIONSHIPS);
 	}
 
 	/**
@@ -438,6 +478,7 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 		setNsURI(eNS_URI);
 
 		// Obtain other dependent packages
+		ModelPackage theModelPackage = (ModelPackage)EPackage.Registry.INSTANCE.getEPackage(ModelPackage.eNS_URI);
 		PhysicalModelPackage thePhysicalModelPackage = (PhysicalModelPackage)EPackage.Registry.INSTANCE.getEPackage(PhysicalModelPackage.eNS_URI);
 
 		// Create type parameters
@@ -445,34 +486,44 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
+		businessModelEClass.getESuperTypes().add(theModelPackage.getModelObject());
+		businessTableEClass.getESuperTypes().add(theModelPackage.getModelObject());
+		businessColumnEClass.getESuperTypes().add(theModelPackage.getModelObject());
+		businessRelationshipEClass.getESuperTypes().add(theModelPackage.getModelObject());
+		businessViewEClass.getESuperTypes().add(theModelPackage.getModelObject());
+		businessDomainEClass.getESuperTypes().add(theModelPackage.getModelObject());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(businessModelEClass, BusinessModel.class, "BusinessModel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getBusinessModel_Name(), ecorePackage.getEString(), "name", null, 0, 1, BusinessModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessModel_ParentModel(), theModelPackage.getModel(), theModelPackage.getModel_BusinessModels(), "parentModel", null, 1, 1, BusinessModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBusinessModel_PhysicalModel(), thePhysicalModelPackage.getPhysicalModel(), null, "physicalModel", null, 1, 1, BusinessModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getBusinessModel_Tables(), this.getBusinessTable(), null, "tables", null, 0, -1, BusinessModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getBusinessModel_Relationships(), this.getBusinessRelationship(), null, "relationships", null, 0, -1, BusinessModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessModel_Tables(), this.getBusinessTable(), this.getBusinessTable_Model(), "tables", null, 0, -1, BusinessModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessModel_Relationships(), this.getBusinessRelationship(), this.getBusinessRelationship_Model(), "relationships", null, 0, -1, BusinessModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(businessTableEClass, BusinessTable.class, "BusinessTable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getBusinessTable_Name(), ecorePackage.getEString(), "name", null, 0, 1, BusinessTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessTable_Model(), this.getBusinessModel(), this.getBusinessModel_Tables(), "model", null, 1, 1, BusinessTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBusinessTable_PhysicalTable(), thePhysicalModelPackage.getPhysicalTable(), null, "physicalTable", null, 1, 1, BusinessTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessTable_Columns(), this.getBusinessColumn(), this.getBusinessColumn_Table(), "columns", null, 0, -1, BusinessTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(businessColumnEClass, BusinessColumn.class, "BusinessColumn", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getBusinessColumn_Name(), ecorePackage.getEString(), "name", null, 0, 1, BusinessColumn.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBusinessColumn_PhysicalColumn(), thePhysicalModelPackage.getPhysicalColumn(), null, "physicalColumn", null, 1, 1, BusinessColumn.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessColumn_Table(), this.getBusinessTable(), this.getBusinessTable_Columns(), "table", null, 1, 1, BusinessColumn.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(businessRelationshipEClass, BusinessRelationship.class, "BusinessRelationship", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getBusinessRelationship_Name(), ecorePackage.getEString(), "name", null, 0, 1, BusinessRelationship.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessRelationship_Model(), this.getBusinessModel(), this.getBusinessModel_Relationships(), "model", null, 1, 1, BusinessRelationship.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBusinessRelationship_SourceTable(), this.getBusinessTable(), null, "sourceTable", null, 1, 1, BusinessRelationship.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBusinessRelationship_DestinationTable(), this.getBusinessTable(), null, "destinationTable", null, 1, 1, BusinessRelationship.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessRelationship_SourceColumns(), this.getBusinessColumn(), null, "sourceColumns", null, 0, -1, BusinessRelationship.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessRelationship_DestinationColumns(), this.getBusinessColumn(), null, "destinationColumns", null, 0, -1, BusinessRelationship.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(businessViewEClass, BusinessView.class, "BusinessView", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getBusinessView_Name(), ecorePackage.getEString(), "name", null, 0, 1, BusinessView.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBusinessView_Columns(), this.getBusinessColumn(), null, "columns", null, 0, -1, BusinessView.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBusinessView_JoinRelationships(), this.getBusinessRelationship(), null, "joinRelationships", null, 0, -1, BusinessView.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(businessDomainEClass, BusinessDomain.class, "BusinessDomain", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getBusinessDomain_Name(), ecorePackage.getEString(), "name", null, 0, 1, BusinessDomain.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessDomain_BusinesslModel(), this.getBusinessModel(), null, "businesslModel", null, 1, 1, BusinessDomain.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessDomain_Tables(), this.getBusinessTable(), null, "tables", null, 0, -1, BusinessDomain.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessDomain_Relationships(), this.getBusinessRelationship(), null, "relationships", null, 0, -1, BusinessDomain.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 	}
 
 } //BusinessModelPackageImpl

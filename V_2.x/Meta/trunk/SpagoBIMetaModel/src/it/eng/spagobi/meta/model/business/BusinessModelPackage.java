@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.business;
 
+import it.eng.spagobi.meta.model.ModelPackage;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -70,13 +71,49 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_MODEL = 0;
 
 	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_MODEL__ID = ModelPackage.MODEL_OBJECT__ID;
+
+	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_MODEL__NAME = 0;
+	int BUSINESS_MODEL__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_MODEL__DESCRIPTION = ModelPackage.MODEL_OBJECT__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_MODEL__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
+
+	/**
+	 * The feature id for the '<em><b>Parent Model</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_MODEL__PARENT_MODEL = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Physical Model</b></em>' reference.
@@ -85,7 +122,7 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_MODEL__PHYSICAL_MODEL = 1;
+	int BUSINESS_MODEL__PHYSICAL_MODEL = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Tables</b></em>' reference list.
@@ -94,7 +131,7 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_MODEL__TABLES = 2;
+	int BUSINESS_MODEL__TABLES = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Relationships</b></em>' reference list.
@@ -103,7 +140,7 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_MODEL__RELATIONSHIPS = 3;
+	int BUSINESS_MODEL__RELATIONSHIPS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of structural features of the '<em>Business Model</em>' class.
@@ -112,7 +149,7 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_MODEL_FEATURE_COUNT = 4;
+	int BUSINESS_MODEL_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 4;
 
 	/**
 	 * The meta object id for the '{@link it.eng.spagobi.meta.model.business.impl.BusinessTableImpl <em>Business Table</em>}' class.
@@ -125,13 +162,49 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_TABLE = 1;
 
 	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_TABLE__ID = ModelPackage.MODEL_OBJECT__ID;
+
+	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_TABLE__NAME = 0;
+	int BUSINESS_TABLE__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_TABLE__DESCRIPTION = ModelPackage.MODEL_OBJECT__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_TABLE__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
+
+	/**
+	 * The feature id for the '<em><b>Model</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_TABLE__MODEL = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Physical Table</b></em>' reference.
@@ -140,7 +213,16 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_TABLE__PHYSICAL_TABLE = 1;
+	int BUSINESS_TABLE__PHYSICAL_TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Columns</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_TABLE__COLUMNS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Business Table</em>' class.
@@ -149,7 +231,7 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_TABLE_FEATURE_COUNT = 2;
+	int BUSINESS_TABLE_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 3;
 
 	/**
 	 * The meta object id for the '{@link it.eng.spagobi.meta.model.business.impl.BusinessColumnImpl <em>Business Column</em>}' class.
@@ -162,13 +244,40 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_COLUMN = 2;
 
 	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_COLUMN__ID = ModelPackage.MODEL_OBJECT__ID;
+
+	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_COLUMN__NAME = 0;
+	int BUSINESS_COLUMN__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_COLUMN__DESCRIPTION = ModelPackage.MODEL_OBJECT__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_COLUMN__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
 	 * The feature id for the '<em><b>Physical Column</b></em>' reference.
@@ -177,7 +286,16 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_COLUMN__PHYSICAL_COLUMN = 1;
+	int BUSINESS_COLUMN__PHYSICAL_COLUMN = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Table</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_COLUMN__TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Business Column</em>' class.
@@ -186,7 +304,7 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_COLUMN_FEATURE_COUNT = 2;
+	int BUSINESS_COLUMN_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
 	 * The meta object id for the '{@link it.eng.spagobi.meta.model.business.impl.BusinessRelationshipImpl <em>Business Relationship</em>}' class.
@@ -199,13 +317,49 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_RELATIONSHIP = 3;
 
 	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_RELATIONSHIP__ID = ModelPackage.MODEL_OBJECT__ID;
+
+	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_RELATIONSHIP__NAME = 0;
+	int BUSINESS_RELATIONSHIP__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_RELATIONSHIP__DESCRIPTION = ModelPackage.MODEL_OBJECT__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_RELATIONSHIP__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
+
+	/**
+	 * The feature id for the '<em><b>Model</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_RELATIONSHIP__MODEL = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Source Table</b></em>' reference.
@@ -214,7 +368,7 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_RELATIONSHIP__SOURCE_TABLE = 1;
+	int BUSINESS_RELATIONSHIP__SOURCE_TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Destination Table</b></em>' reference.
@@ -223,7 +377,25 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_RELATIONSHIP__DESTINATION_TABLE = 2;
+	int BUSINESS_RELATIONSHIP__DESTINATION_TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Source Columns</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_RELATIONSHIP__SOURCE_COLUMNS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Destination Columns</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_RELATIONSHIP__DESTINATION_COLUMNS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of structural features of the '<em>Business Relationship</em>' class.
@@ -232,7 +404,7 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_RELATIONSHIP_FEATURE_COUNT = 3;
+	int BUSINESS_RELATIONSHIP_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 5;
 
 	/**
 	 * The meta object id for the '{@link it.eng.spagobi.meta.model.business.impl.BusinessViewImpl <em>Business View</em>}' class.
@@ -245,13 +417,40 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_VIEW = 4;
 
 	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_VIEW__ID = ModelPackage.MODEL_OBJECT__ID;
+
+	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_VIEW__NAME = 0;
+	int BUSINESS_VIEW__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_VIEW__DESCRIPTION = ModelPackage.MODEL_OBJECT__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_VIEW__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
 	 * The feature id for the '<em><b>Columns</b></em>' reference list.
@@ -260,7 +459,7 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_VIEW__COLUMNS = 1;
+	int BUSINESS_VIEW__COLUMNS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Join Relationships</b></em>' reference list.
@@ -269,7 +468,7 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_VIEW__JOIN_RELATIONSHIPS = 2;
+	int BUSINESS_VIEW__JOIN_RELATIONSHIPS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Business View</em>' class.
@@ -278,7 +477,7 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_VIEW_FEATURE_COUNT = 3;
+	int BUSINESS_VIEW_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
 	 * The meta object id for the '{@link it.eng.spagobi.meta.model.business.impl.BusinessDomainImpl <em>Business Domain</em>}' class.
@@ -291,13 +490,67 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_DOMAIN = 5;
 
 	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_DOMAIN__ID = ModelPackage.MODEL_OBJECT__ID;
+
+	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_DOMAIN__NAME = 0;
+	int BUSINESS_DOMAIN__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_DOMAIN__DESCRIPTION = ModelPackage.MODEL_OBJECT__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_DOMAIN__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
+
+	/**
+	 * The feature id for the '<em><b>Businessl Model</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_DOMAIN__BUSINESSL_MODEL = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Tables</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_DOMAIN__TABLES = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Relationships</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_DOMAIN__RELATIONSHIPS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Business Domain</em>' class.
@@ -306,7 +559,7 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_DOMAIN_FEATURE_COUNT = 1;
+	int BUSINESS_DOMAIN_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 3;
 
 
 	/**
@@ -320,15 +573,15 @@ public interface BusinessModelPackage extends EPackage {
 	EClass getBusinessModel();
 
 	/**
-	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.business.BusinessModel#getName <em>Name</em>}'.
+	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessModel#getParentModel <em>Parent Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see it.eng.spagobi.meta.model.business.BusinessModel#getName()
+	 * @return the meta object for the reference '<em>Parent Model</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessModel#getParentModel()
 	 * @see #getBusinessModel()
 	 * @generated
 	 */
-	EAttribute getBusinessModel_Name();
+	EReference getBusinessModel_ParentModel();
 
 	/**
 	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessModel#getPhysicalModel <em>Physical Model</em>}'.
@@ -374,15 +627,15 @@ public interface BusinessModelPackage extends EPackage {
 	EClass getBusinessTable();
 
 	/**
-	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.business.BusinessTable#getName <em>Name</em>}'.
+	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessTable#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see it.eng.spagobi.meta.model.business.BusinessTable#getName()
+	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessTable#getModel()
 	 * @see #getBusinessTable()
 	 * @generated
 	 */
-	EAttribute getBusinessTable_Name();
+	EReference getBusinessTable_Model();
 
 	/**
 	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessTable#getPhysicalTable <em>Physical Table</em>}'.
@@ -396,6 +649,17 @@ public interface BusinessModelPackage extends EPackage {
 	EReference getBusinessTable_PhysicalTable();
 
 	/**
+	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.business.BusinessTable#getColumns <em>Columns</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Columns</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessTable#getColumns()
+	 * @see #getBusinessTable()
+	 * @generated
+	 */
+	EReference getBusinessTable_Columns();
+
+	/**
 	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.business.BusinessColumn <em>Business Column</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -404,17 +668,6 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getBusinessColumn();
-
-	/**
-	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.business.BusinessColumn#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see it.eng.spagobi.meta.model.business.BusinessColumn#getName()
-	 * @see #getBusinessColumn()
-	 * @generated
-	 */
-	EAttribute getBusinessColumn_Name();
 
 	/**
 	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessColumn#getPhysicalColumn <em>Physical Column</em>}'.
@@ -428,6 +681,17 @@ public interface BusinessModelPackage extends EPackage {
 	EReference getBusinessColumn_PhysicalColumn();
 
 	/**
+	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessColumn#getTable <em>Table</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Table</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessColumn#getTable()
+	 * @see #getBusinessColumn()
+	 * @generated
+	 */
+	EReference getBusinessColumn_Table();
+
+	/**
 	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.business.BusinessRelationship <em>Business Relationship</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -438,15 +702,15 @@ public interface BusinessModelPackage extends EPackage {
 	EClass getBusinessRelationship();
 
 	/**
-	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getName <em>Name</em>}'.
+	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see it.eng.spagobi.meta.model.business.BusinessRelationship#getName()
+	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessRelationship#getModel()
 	 * @see #getBusinessRelationship()
 	 * @generated
 	 */
-	EAttribute getBusinessRelationship_Name();
+	EReference getBusinessRelationship_Model();
 
 	/**
 	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getSourceTable <em>Source Table</em>}'.
@@ -471,6 +735,28 @@ public interface BusinessModelPackage extends EPackage {
 	EReference getBusinessRelationship_DestinationTable();
 
 	/**
+	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getSourceColumns <em>Source Columns</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Source Columns</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessRelationship#getSourceColumns()
+	 * @see #getBusinessRelationship()
+	 * @generated
+	 */
+	EReference getBusinessRelationship_SourceColumns();
+
+	/**
+	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getDestinationColumns <em>Destination Columns</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Destination Columns</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessRelationship#getDestinationColumns()
+	 * @see #getBusinessRelationship()
+	 * @generated
+	 */
+	EReference getBusinessRelationship_DestinationColumns();
+
+	/**
 	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.business.BusinessView <em>Business View</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -479,17 +765,6 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getBusinessView();
-
-	/**
-	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.business.BusinessView#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see it.eng.spagobi.meta.model.business.BusinessView#getName()
-	 * @see #getBusinessView()
-	 * @generated
-	 */
-	EAttribute getBusinessView_Name();
 
 	/**
 	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.business.BusinessView#getColumns <em>Columns</em>}'.
@@ -524,15 +799,37 @@ public interface BusinessModelPackage extends EPackage {
 	EClass getBusinessDomain();
 
 	/**
-	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.business.BusinessDomain#getName <em>Name</em>}'.
+	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessDomain#getBusinesslModel <em>Businessl Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see it.eng.spagobi.meta.model.business.BusinessDomain#getName()
+	 * @return the meta object for the reference '<em>Businessl Model</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessDomain#getBusinesslModel()
 	 * @see #getBusinessDomain()
 	 * @generated
 	 */
-	EAttribute getBusinessDomain_Name();
+	EReference getBusinessDomain_BusinesslModel();
+
+	/**
+	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.business.BusinessDomain#getTables <em>Tables</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Tables</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessDomain#getTables()
+	 * @see #getBusinessDomain()
+	 * @generated
+	 */
+	EReference getBusinessDomain_Tables();
+
+	/**
+	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.business.BusinessDomain#getRelationships <em>Relationships</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Relationships</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessDomain#getRelationships()
+	 * @see #getBusinessDomain()
+	 * @generated
+	 */
+	EReference getBusinessDomain_Relationships();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -567,12 +864,12 @@ public interface BusinessModelPackage extends EPackage {
 		EClass BUSINESS_MODEL = eINSTANCE.getBusinessModel();
 
 		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Parent Model</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute BUSINESS_MODEL__NAME = eINSTANCE.getBusinessModel_Name();
+		EReference BUSINESS_MODEL__PARENT_MODEL = eINSTANCE.getBusinessModel_ParentModel();
 
 		/**
 		 * The meta object literal for the '<em><b>Physical Model</b></em>' reference feature.
@@ -609,12 +906,12 @@ public interface BusinessModelPackage extends EPackage {
 		EClass BUSINESS_TABLE = eINSTANCE.getBusinessTable();
 
 		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute BUSINESS_TABLE__NAME = eINSTANCE.getBusinessTable_Name();
+		EReference BUSINESS_TABLE__MODEL = eINSTANCE.getBusinessTable_Model();
 
 		/**
 		 * The meta object literal for the '<em><b>Physical Table</b></em>' reference feature.
@@ -623,6 +920,14 @@ public interface BusinessModelPackage extends EPackage {
 		 * @generated
 		 */
 		EReference BUSINESS_TABLE__PHYSICAL_TABLE = eINSTANCE.getBusinessTable_PhysicalTable();
+
+		/**
+		 * The meta object literal for the '<em><b>Columns</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BUSINESS_TABLE__COLUMNS = eINSTANCE.getBusinessTable_Columns();
 
 		/**
 		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.business.impl.BusinessColumnImpl <em>Business Column</em>}' class.
@@ -635,20 +940,20 @@ public interface BusinessModelPackage extends EPackage {
 		EClass BUSINESS_COLUMN = eINSTANCE.getBusinessColumn();
 
 		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute BUSINESS_COLUMN__NAME = eINSTANCE.getBusinessColumn_Name();
-
-		/**
 		 * The meta object literal for the '<em><b>Physical Column</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EReference BUSINESS_COLUMN__PHYSICAL_COLUMN = eINSTANCE.getBusinessColumn_PhysicalColumn();
+
+		/**
+		 * The meta object literal for the '<em><b>Table</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BUSINESS_COLUMN__TABLE = eINSTANCE.getBusinessColumn_Table();
 
 		/**
 		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.business.impl.BusinessRelationshipImpl <em>Business Relationship</em>}' class.
@@ -661,12 +966,12 @@ public interface BusinessModelPackage extends EPackage {
 		EClass BUSINESS_RELATIONSHIP = eINSTANCE.getBusinessRelationship();
 
 		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute BUSINESS_RELATIONSHIP__NAME = eINSTANCE.getBusinessRelationship_Name();
+		EReference BUSINESS_RELATIONSHIP__MODEL = eINSTANCE.getBusinessRelationship_Model();
 
 		/**
 		 * The meta object literal for the '<em><b>Source Table</b></em>' reference feature.
@@ -685,6 +990,22 @@ public interface BusinessModelPackage extends EPackage {
 		EReference BUSINESS_RELATIONSHIP__DESTINATION_TABLE = eINSTANCE.getBusinessRelationship_DestinationTable();
 
 		/**
+		 * The meta object literal for the '<em><b>Source Columns</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BUSINESS_RELATIONSHIP__SOURCE_COLUMNS = eINSTANCE.getBusinessRelationship_SourceColumns();
+
+		/**
+		 * The meta object literal for the '<em><b>Destination Columns</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BUSINESS_RELATIONSHIP__DESTINATION_COLUMNS = eINSTANCE.getBusinessRelationship_DestinationColumns();
+
+		/**
 		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.business.impl.BusinessViewImpl <em>Business View</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -693,14 +1014,6 @@ public interface BusinessModelPackage extends EPackage {
 		 * @generated
 		 */
 		EClass BUSINESS_VIEW = eINSTANCE.getBusinessView();
-
-		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute BUSINESS_VIEW__NAME = eINSTANCE.getBusinessView_Name();
 
 		/**
 		 * The meta object literal for the '<em><b>Columns</b></em>' reference list feature.
@@ -729,12 +1042,28 @@ public interface BusinessModelPackage extends EPackage {
 		EClass BUSINESS_DOMAIN = eINSTANCE.getBusinessDomain();
 
 		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Businessl Model</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute BUSINESS_DOMAIN__NAME = eINSTANCE.getBusinessDomain_Name();
+		EReference BUSINESS_DOMAIN__BUSINESSL_MODEL = eINSTANCE.getBusinessDomain_BusinesslModel();
+
+		/**
+		 * The meta object literal for the '<em><b>Tables</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BUSINESS_DOMAIN__TABLES = eINSTANCE.getBusinessDomain_Tables();
+
+		/**
+		 * The meta object literal for the '<em><b>Relationships</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BUSINESS_DOMAIN__RELATIONSHIPS = eINSTANCE.getBusinessDomain_Relationships();
 
 	}
 

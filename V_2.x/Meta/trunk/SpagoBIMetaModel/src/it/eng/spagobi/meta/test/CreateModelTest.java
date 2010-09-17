@@ -7,7 +7,14 @@ import it.eng.spagobi.meta.cwm.CWMImplType;
 import it.eng.spagobi.meta.cwm.CWMMapperFactory;
 import it.eng.spagobi.meta.cwm.ICWM;
 import it.eng.spagobi.meta.cwm.ICWMMapper;
+import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
+import it.eng.spagobi.meta.model.Model;
+import it.eng.spagobi.meta.model.ModelFactory;
+import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.BusinessModelFactory;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
+import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
 import java.sql.Connection;
@@ -46,26 +53,38 @@ public class CreateModelTest {
 
 	
 	public static PhysicalModel getModelFromMySQLConnection() throws Exception {
+		Model rootModel = ModelFactory.eINSTANCE.createModel();
+		rootModel.setName("modelDemo");
+		
+		PhysicalModelInitializer modelInitializer = new PhysicalModelInitializer();
+		modelInitializer.setRootModel(rootModel);
 		Class.forName(MYSQL_DRIVER).newInstance();			  
         Connection conn = DriverManager.getConnection(MYSQL_URL, MYSQL_USER, MYSQL_PWD);
-        PhysicalModelInitializer modelInitializer = new PhysicalModelInitializer();
-        PhysicalModel model = modelInitializer.initialize( "modeldemo", conn,  MYSQL_DEFAULT_CATALOGUE, MYSQL_DEFAULT_SCHEMA);
+        PhysicalModel model = modelInitializer.initialize( "mysqlPhysicalModelDemo", conn,  MYSQL_DEFAULT_CATALOGUE, MYSQL_DEFAULT_SCHEMA);
         return model;
 	}
 	
 	public static PhysicalModel  getModelFromPostgresConnection() throws Exception {
+		Model rootModel = ModelFactory.eINSTANCE.createModel();
+		rootModel.setName("modelDemo");
+		
+		PhysicalModelInitializer modelInitializer = new PhysicalModelInitializer();
+        modelInitializer.setRootModel(rootModel);
 		Class.forName(POSTGRES_DRIVER).newInstance();			  
         Connection conn = DriverManager.getConnection(POSTGRES_URL, POSTGRES_USER, POSTGRES_PWD);
-        PhysicalModelInitializer modelInitializer = new PhysicalModelInitializer();
-        PhysicalModel model = modelInitializer.initialize( "modeldemo", conn,  POSTGRES_DEFAULT_CATALOGUE, POSTGRES_DEFAULT_SCHEMA);
+        PhysicalModel model = modelInitializer.initialize( "postgresPhysicalModelDemo", conn,  POSTGRES_DEFAULT_CATALOGUE, POSTGRES_DEFAULT_SCHEMA);
         return model;
 	}
 	
 	public static PhysicalModel getModelFromOracleConnection() throws Exception {
+		Model rootModel = ModelFactory.eINSTANCE.createModel();
+		rootModel.setName("modelDemo");
+		
+		PhysicalModelInitializer modelInitializer = new PhysicalModelInitializer();
+	    modelInitializer.setRootModel(rootModel);
 		Class.forName(ORACLE_DRIVER).newInstance();			  
         Connection conn = DriverManager.getConnection(ORACLE_URL, ORACLE_USER, ORACLE_PWD);
-        PhysicalModelInitializer modelInitializer = new PhysicalModelInitializer();
-        PhysicalModel model = modelInitializer.initialize( "modeldemo", conn,  ORACLE_DEFAULT_CATALOGUE, ORACLE_DEFAULT_SCHEMA);
+        PhysicalModel model = modelInitializer.initialize( "oraclePhysicalModelDemo", conn,  ORACLE_DEFAULT_CATALOGUE, ORACLE_DEFAULT_SCHEMA);
         return model;
 	}
 	
@@ -75,8 +94,8 @@ public class CreateModelTest {
 	 */
 	public static void main(String[] args) throws Exception {
 	
-		PhysicalModel model;
-		PhysicalModelInitializer modelInitializer;
+		PhysicalModel physicalModel;
+		BusinessModel businessModel;
 		ICWMMapper modelMapper;
 		ICWM cwm;
 		        
@@ -84,10 +103,30 @@ public class CreateModelTest {
 		       
         //model = getModelFromOracleConnection();
         //model = getModelFromPostgresConnection();
-        model = getModelFromMySQLConnection();
+        physicalModel = getModelFromMySQLConnection();
+        BusinessModelInitializer modelInitializer = new BusinessModelInitializer();
+        businessModel = modelInitializer.initialize("businessModelDemo", physicalModel);
+        
+        for(int i = 0; i < businessModel.getTables().size(); i++) {
+        	BusinessTable t = businessModel.getTables().get(i);
+        	System.out.println( t.getName() );
+        	for(int j = 0; j < t.getColumns().size(); j++) {
+        		System.out.println( "  -  " + t.getColumns().get(j).getName());
+        	}
+        }
+        /*
+        for(int i = 0; i < businessModel.getRelationships().size(); i++) {
+        	BusinessRelationship r = businessModel.getRelationships().get(i);
+        	
+        	System.out.println( "(" + r.getName() + ") " +r.getSourceTable().getName() + " -> " + r.getDestinationTable().getName() );
+        	for(int j = 0; j < r.getSourceColumns().size(); j++) {
+        		System.out.println( "  -  " + r.getSourceColumns().get(j).getName() + " -> "+ r.getDestinationColumns().get(j).getName() );
+        	}
+        }
+        */
         
         modelMapper = CWMMapperFactory.getMapper(CWMImplType.JMI);
-        cwm = modelMapper.encodeModel(model);        
+        cwm = modelMapper.encodeModel(physicalModel);        
         cwm.exportToXMI(FILENAME);
      
 	}

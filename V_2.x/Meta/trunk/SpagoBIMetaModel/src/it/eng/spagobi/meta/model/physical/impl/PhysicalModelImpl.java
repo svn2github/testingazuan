@@ -6,6 +6,9 @@
  */
 package it.eng.spagobi.meta.model.physical.impl;
 
+import it.eng.spagobi.meta.model.Model;
+import it.eng.spagobi.meta.model.ModelPackage;
+import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
@@ -38,11 +41,11 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl#getName <em>Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl#getDatabaseName <em>Database Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl#getDatabaseVersion <em>Database Version</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl#getCatalog <em>Catalog</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl#getSchema <em>Schema</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl#getParentModel <em>Parent Model</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl#getTables <em>Tables</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl#getPrimaryKeys <em>Primary Keys</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalModelImpl#getForeignKeys <em>Foreign Keys</em>}</li>
@@ -51,27 +54,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *
  * @generated
  */
-public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
-	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected String name = NAME_EDEFAULT;
-
+public class PhysicalModelImpl extends ModelObjectImpl implements PhysicalModel {
 	/**
 	 * The default value of the '{@link #getDatabaseName() <em>Database Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -153,6 +136,16 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 	protected String schema = SCHEMA_EDEFAULT;
 
 	/**
+	 * The cached value of the '{@link #getParentModel() <em>Parent Model</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getParentModel()
+	 * @generated
+	 * @ordered
+	 */
+	protected Model parentModel;
+
+	/**
 	 * The cached value of the '{@link #getTables() <em>Tables</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -199,27 +192,6 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 	@Override
 	protected EClass eStaticClass() {
 		return PhysicalModelPackage.Literals.PHYSICAL_MODEL;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setName(String newName) {
-		String oldName = name;
-		name = newName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_MODEL__NAME, oldName, name));
 	}
 
 	/**
@@ -311,6 +283,66 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public Model getParentModel() {
+		if (parentModel != null && parentModel.eIsProxy()) {
+			InternalEObject oldParentModel = (InternalEObject)parentModel;
+			parentModel = (Model)eResolveProxy(oldParentModel);
+			if (parentModel != oldParentModel) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL, oldParentModel, parentModel));
+			}
+		}
+		return parentModel;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Model basicGetParentModel() {
+		return parentModel;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetParentModel(Model newParentModel, NotificationChain msgs) {
+		Model oldParentModel = parentModel;
+		parentModel = newParentModel;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL, oldParentModel, newParentModel);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setParentModel(Model newParentModel) {
+		if (newParentModel != parentModel) {
+			NotificationChain msgs = null;
+			if (parentModel != null)
+				msgs = ((InternalEObject)parentModel).eInverseRemove(this, ModelPackage.MODEL__PHYSICAL_MODELS, Model.class, msgs);
+			if (newParentModel != null)
+				msgs = ((InternalEObject)newParentModel).eInverseAdd(this, ModelPackage.MODEL__PHYSICAL_MODELS, Model.class, msgs);
+			msgs = basicSetParentModel(newParentModel, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL, newParentModel, newParentModel));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EList<PhysicalTable> getTables() {
 		if (tables == null) {
 			tables = new EObjectContainmentWithInverseEList<PhysicalTable>(PhysicalTable.class, this, PhysicalModelPackage.PHYSICAL_MODEL__TABLES, PhysicalModelPackage.PHYSICAL_TABLE__MODEL);
@@ -351,6 +383,10 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
+			case PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL:
+				if (parentModel != null)
+					msgs = ((InternalEObject)parentModel).eInverseRemove(this, ModelPackage.MODEL__PHYSICAL_MODELS, Model.class, msgs);
+				return basicSetParentModel((Model)otherEnd, msgs);
 			case PhysicalModelPackage.PHYSICAL_MODEL__TABLES:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getTables()).basicAdd(otherEnd, msgs);
 			case PhysicalModelPackage.PHYSICAL_MODEL__PRIMARY_KEYS:
@@ -369,6 +405,8 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
+			case PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL:
+				return basicSetParentModel(null, msgs);
 			case PhysicalModelPackage.PHYSICAL_MODEL__TABLES:
 				return ((InternalEList<?>)getTables()).basicRemove(otherEnd, msgs);
 			case PhysicalModelPackage.PHYSICAL_MODEL__PRIMARY_KEYS:
@@ -387,8 +425,6 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_MODEL__NAME:
-				return getName();
 			case PhysicalModelPackage.PHYSICAL_MODEL__DATABASE_NAME:
 				return getDatabaseName();
 			case PhysicalModelPackage.PHYSICAL_MODEL__DATABASE_VERSION:
@@ -397,6 +433,9 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 				return getCatalog();
 			case PhysicalModelPackage.PHYSICAL_MODEL__SCHEMA:
 				return getSchema();
+			case PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL:
+				if (resolve) return getParentModel();
+				return basicGetParentModel();
 			case PhysicalModelPackage.PHYSICAL_MODEL__TABLES:
 				return getTables();
 			case PhysicalModelPackage.PHYSICAL_MODEL__PRIMARY_KEYS:
@@ -416,9 +455,6 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_MODEL__NAME:
-				setName((String)newValue);
-				return;
 			case PhysicalModelPackage.PHYSICAL_MODEL__DATABASE_NAME:
 				setDatabaseName((String)newValue);
 				return;
@@ -430,6 +466,9 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 				return;
 			case PhysicalModelPackage.PHYSICAL_MODEL__SCHEMA:
 				setSchema((String)newValue);
+				return;
+			case PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL:
+				setParentModel((Model)newValue);
 				return;
 			case PhysicalModelPackage.PHYSICAL_MODEL__TABLES:
 				getTables().clear();
@@ -455,9 +494,6 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_MODEL__NAME:
-				setName(NAME_EDEFAULT);
-				return;
 			case PhysicalModelPackage.PHYSICAL_MODEL__DATABASE_NAME:
 				setDatabaseName(DATABASE_NAME_EDEFAULT);
 				return;
@@ -469,6 +505,9 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 				return;
 			case PhysicalModelPackage.PHYSICAL_MODEL__SCHEMA:
 				setSchema(SCHEMA_EDEFAULT);
+				return;
+			case PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL:
+				setParentModel((Model)null);
 				return;
 			case PhysicalModelPackage.PHYSICAL_MODEL__TABLES:
 				getTables().clear();
@@ -491,8 +530,6 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_MODEL__NAME:
-				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case PhysicalModelPackage.PHYSICAL_MODEL__DATABASE_NAME:
 				return DATABASE_NAME_EDEFAULT == null ? databaseName != null : !DATABASE_NAME_EDEFAULT.equals(databaseName);
 			case PhysicalModelPackage.PHYSICAL_MODEL__DATABASE_VERSION:
@@ -501,6 +538,8 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 				return CATALOG_EDEFAULT == null ? catalog != null : !CATALOG_EDEFAULT.equals(catalog);
 			case PhysicalModelPackage.PHYSICAL_MODEL__SCHEMA:
 				return SCHEMA_EDEFAULT == null ? schema != null : !SCHEMA_EDEFAULT.equals(schema);
+			case PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL:
+				return parentModel != null;
 			case PhysicalModelPackage.PHYSICAL_MODEL__TABLES:
 				return tables != null && !tables.isEmpty();
 			case PhysicalModelPackage.PHYSICAL_MODEL__PRIMARY_KEYS:
@@ -521,9 +560,7 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (name: ");
-		result.append(name);
-		result.append(", databaseName: ");
+		result.append(" (databaseName: ");
 		result.append(databaseName);
 		result.append(", databaseVersion: ");
 		result.append(databaseVersion);
@@ -535,6 +572,10 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 		return result.toString();
 	}
 
+	// =========================================================================
+	// Utility methods
+	// =========================================================================
+	
 	public PhysicalTable getTable(String name) {
 		PhysicalTable table;
 		Iterator<PhysicalTable> it = getTables().iterator();
@@ -546,5 +587,8 @@ public class PhysicalModelImpl extends EObjectImpl implements PhysicalModel {
 		}
 		return null;
 	}
+
+	
+	
 
 } //PhysicalModelImpl

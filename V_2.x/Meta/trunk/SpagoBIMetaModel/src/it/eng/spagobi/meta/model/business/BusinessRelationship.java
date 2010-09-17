@@ -6,6 +6,8 @@
  */
 package it.eng.spagobi.meta.model.business;
 
+import it.eng.spagobi.meta.model.ModelObject;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -16,9 +18,11 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getName <em>Name</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getModel <em>Model</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getSourceTable <em>Source Table</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getDestinationTable <em>Destination Table</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getSourceColumns <em>Source Columns</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getDestinationColumns <em>Destination Columns</em>}</li>
  * </ul>
  * </p>
  *
@@ -26,32 +30,34 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface BusinessRelationship extends EObject {
+public interface BusinessRelationship extends ModelObject {
 	/**
-	 * Returns the value of the '<em><b>Name</b></em>' attribute.
+	 * Returns the value of the '<em><b>Model</b></em>' reference.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessModel#getRelationships <em>Relationships</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Model</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Name</em>' attribute.
-	 * @see #setName(String)
-	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessRelationship_Name()
-	 * @model
+	 * @return the value of the '<em>Model</em>' reference.
+	 * @see #setModel(BusinessModel)
+	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessRelationship_Model()
+	 * @see it.eng.spagobi.meta.model.business.BusinessModel#getRelationships
+	 * @model opposite="relationships" required="true"
 	 * @generated
 	 */
-	String getName();
+	BusinessModel getModel();
 
 	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getName <em>Name</em>}' attribute.
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getModel <em>Model</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Name</em>' attribute.
-	 * @see #getName()
+	 * @param value the new value of the '<em>Model</em>' reference.
+	 * @see #getModel()
 	 * @generated
 	 */
-	void setName(String value);
+	void setModel(BusinessModel value);
 
 	/**
 	 * Returns the value of the '<em><b>Source Table</b></em>' reference.
@@ -104,5 +110,37 @@ public interface BusinessRelationship extends EObject {
 	 * @generated
 	 */
 	void setDestinationTable(BusinessTable value);
+
+	/**
+	 * Returns the value of the '<em><b>Source Columns</b></em>' reference list.
+	 * The list contents are of type {@link it.eng.spagobi.meta.model.business.BusinessColumn}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Source Columns</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Source Columns</em>' reference list.
+	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessRelationship_SourceColumns()
+	 * @model
+	 * @generated
+	 */
+	EList<BusinessColumn> getSourceColumns();
+
+	/**
+	 * Returns the value of the '<em><b>Destination Columns</b></em>' reference list.
+	 * The list contents are of type {@link it.eng.spagobi.meta.model.business.BusinessColumn}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Destination Columns</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Destination Columns</em>' reference list.
+	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessRelationship_DestinationColumns()
+	 * @model
+	 * @generated
+	 */
+	EList<BusinessColumn> getDestinationColumns();
 
 } // BusinessRelationship

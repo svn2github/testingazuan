@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -19,8 +20,8 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link it.eng.spagobi.meta.model.ModelPropertyType#getName <em>Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.ModelPropertyType#getDescription <em>Description</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.ModelPropertyType#getCategory <em>Category</em>}</li>
- *   <li>{@link it.eng.spagobi.meta.model.ModelPropertyType#getDefaultValue <em>Default Value</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.ModelPropertyType#getAdmissibleValues <em>Admissible Values</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.ModelPropertyType#getDefaultValue <em>Default Value</em>}</li>
  * </ul>
  * </p>
  *
@@ -136,29 +137,19 @@ public interface ModelPropertyType extends EObject {
 	void setDefaultValue(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Admissible Values</b></em>' attribute.
+	 * Returns the value of the '<em><b>Admissible Values</b></em>' attribute list.
+	 * The list contents are of type {@link java.lang.String}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Admissible Values</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Admissible Values</em>' attribute.
-	 * @see #setAdmissibleValues(String)
+	 * @return the value of the '<em>Admissible Values</em>' attribute list.
 	 * @see it.eng.spagobi.meta.model.ModelPackage#getModelPropertyType_AdmissibleValues()
 	 * @model
 	 * @generated
 	 */
-	String getAdmissibleValues();
-
-	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.ModelPropertyType#getAdmissibleValues <em>Admissible Values</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Admissible Values</em>' attribute.
-	 * @see #getAdmissibleValues()
-	 * @generated
-	 */
-	void setAdmissibleValues(String value);
+	EList<String> getAdmissibleValues();
 
 } // ModelPropertyType

@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.physical;
 
+import it.eng.spagobi.meta.model.ModelPackage;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -90,13 +91,40 @@ public interface PhysicalModelPackage extends EPackage {
 	int PHYSICAL_MODEL = 0;
 
 	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_MODEL__ID = ModelPackage.MODEL_OBJECT__ID;
+
+	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_MODEL__NAME = 0;
+	int PHYSICAL_MODEL__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_MODEL__DESCRIPTION = ModelPackage.MODEL_OBJECT__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_MODEL__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
 	 * The feature id for the '<em><b>Database Name</b></em>' attribute.
@@ -105,7 +133,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_MODEL__DATABASE_NAME = 1;
+	int PHYSICAL_MODEL__DATABASE_NAME = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Database Version</b></em>' attribute.
@@ -114,7 +142,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_MODEL__DATABASE_VERSION = 2;
+	int PHYSICAL_MODEL__DATABASE_VERSION = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Catalog</b></em>' attribute.
@@ -123,7 +151,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_MODEL__CATALOG = 3;
+	int PHYSICAL_MODEL__CATALOG = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Schema</b></em>' attribute.
@@ -132,7 +160,16 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_MODEL__SCHEMA = 4;
+	int PHYSICAL_MODEL__SCHEMA = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Parent Model</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_MODEL__PARENT_MODEL = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Tables</b></em>' containment reference list.
@@ -141,7 +178,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_MODEL__TABLES = 5;
+	int PHYSICAL_MODEL__TABLES = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Primary Keys</b></em>' reference list.
@@ -150,7 +187,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_MODEL__PRIMARY_KEYS = 6;
+	int PHYSICAL_MODEL__PRIMARY_KEYS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 6;
 
 	/**
 	 * The feature id for the '<em><b>Foreign Keys</b></em>' reference list.
@@ -159,7 +196,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_MODEL__FOREIGN_KEYS = 7;
+	int PHYSICAL_MODEL__FOREIGN_KEYS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 7;
 
 	/**
 	 * The number of structural features of the '<em>Physical Model</em>' class.
@@ -168,7 +205,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_MODEL_FEATURE_COUNT = 8;
+	int PHYSICAL_MODEL_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 8;
 
 	/**
 	 * The meta object id for the '{@link it.eng.spagobi.meta.model.physical.impl.PhysicalPrimaryKeyImpl <em>Physical Primary Key</em>}' class.
@@ -191,13 +228,40 @@ public interface PhysicalModelPackage extends EPackage {
 	int PHYSICAL_TABLE = 1;
 
 	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_TABLE__ID = ModelPackage.MODEL_OBJECT__ID;
+
+	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_TABLE__NAME = 0;
+	int PHYSICAL_TABLE__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_TABLE__DESCRIPTION = ModelPackage.MODEL_OBJECT__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_TABLE__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
 	 * The feature id for the '<em><b>Comment</b></em>' attribute.
@@ -206,7 +270,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_TABLE__COMMENT = 1;
+	int PHYSICAL_TABLE__COMMENT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' attribute.
@@ -215,7 +279,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_TABLE__TYPE = 2;
+	int PHYSICAL_TABLE__TYPE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Model</b></em>' container reference.
@@ -224,7 +288,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_TABLE__MODEL = 3;
+	int PHYSICAL_TABLE__MODEL = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Columns</b></em>' reference list.
@@ -233,7 +297,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_TABLE__COLUMNS = 4;
+	int PHYSICAL_TABLE__COLUMNS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Primary Key</b></em>' reference.
@@ -242,7 +306,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_TABLE__PRIMARY_KEY = 5;
+	int PHYSICAL_TABLE__PRIMARY_KEY = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Foreign Keys</b></em>' reference list.
@@ -251,7 +315,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_TABLE__FOREIGN_KEYS = 6;
+	int PHYSICAL_TABLE__FOREIGN_KEYS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Reverse Foreign Keys</b></em>' reference list.
@@ -260,7 +324,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS = 7;
+	int PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 6;
 
 	/**
 	 * The number of structural features of the '<em>Physical Table</em>' class.
@@ -269,7 +333,16 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_TABLE_FEATURE_COUNT = 8;
+	int PHYSICAL_TABLE_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 7;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_COLUMN__ID = ModelPackage.MODEL_OBJECT__ID;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -278,7 +351,25 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_COLUMN__NAME = 0;
+	int PHYSICAL_COLUMN__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_COLUMN__DESCRIPTION = ModelPackage.MODEL_OBJECT__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_COLUMN__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
 	 * The feature id for the '<em><b>Comment</b></em>' attribute.
@@ -287,7 +378,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_COLUMN__COMMENT = 1;
+	int PHYSICAL_COLUMN__COMMENT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Data Type</b></em>' attribute.
@@ -296,7 +387,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_COLUMN__DATA_TYPE = 2;
+	int PHYSICAL_COLUMN__DATA_TYPE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Type Name</b></em>' attribute.
@@ -305,7 +396,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_COLUMN__TYPE_NAME = 3;
+	int PHYSICAL_COLUMN__TYPE_NAME = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Size</b></em>' attribute.
@@ -314,7 +405,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_COLUMN__SIZE = 4;
+	int PHYSICAL_COLUMN__SIZE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Octect Length</b></em>' attribute.
@@ -323,7 +414,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_COLUMN__OCTECT_LENGTH = 5;
+	int PHYSICAL_COLUMN__OCTECT_LENGTH = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Decimal Digits</b></em>' attribute.
@@ -332,7 +423,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_COLUMN__DECIMAL_DIGITS = 6;
+	int PHYSICAL_COLUMN__DECIMAL_DIGITS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Radix</b></em>' attribute.
@@ -341,7 +432,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_COLUMN__RADIX = 7;
+	int PHYSICAL_COLUMN__RADIX = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 6;
 
 	/**
 	 * The feature id for the '<em><b>Default Value</b></em>' attribute.
@@ -350,7 +441,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_COLUMN__DEFAULT_VALUE = 8;
+	int PHYSICAL_COLUMN__DEFAULT_VALUE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 7;
 
 	/**
 	 * The feature id for the '<em><b>Nullable</b></em>' attribute.
@@ -359,7 +450,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_COLUMN__NULLABLE = 9;
+	int PHYSICAL_COLUMN__NULLABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 8;
 
 	/**
 	 * The feature id for the '<em><b>Position</b></em>' attribute.
@@ -368,7 +459,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_COLUMN__POSITION = 10;
+	int PHYSICAL_COLUMN__POSITION = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 9;
 
 	/**
 	 * The feature id for the '<em><b>Table</b></em>' reference.
@@ -377,7 +468,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_COLUMN__TABLE = 11;
+	int PHYSICAL_COLUMN__TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 10;
 
 	/**
 	 * The number of structural features of the '<em>Physical Column</em>' class.
@@ -386,7 +477,16 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_COLUMN_FEATURE_COUNT = 12;
+	int PHYSICAL_COLUMN_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 11;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_PRIMARY_KEY__ID = ModelPackage.MODEL_OBJECT__ID;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -395,7 +495,25 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_PRIMARY_KEY__NAME = 0;
+	int PHYSICAL_PRIMARY_KEY__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_PRIMARY_KEY__DESCRIPTION = ModelPackage.MODEL_OBJECT__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_PRIMARY_KEY__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
 	 * The feature id for the '<em><b>Model</b></em>' reference.
@@ -404,7 +522,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_PRIMARY_KEY__MODEL = 1;
+	int PHYSICAL_PRIMARY_KEY__MODEL = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Table</b></em>' reference.
@@ -413,7 +531,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_PRIMARY_KEY__TABLE = 2;
+	int PHYSICAL_PRIMARY_KEY__TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Columns</b></em>' reference list.
@@ -422,7 +540,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_PRIMARY_KEY__COLUMNS = 3;
+	int PHYSICAL_PRIMARY_KEY__COLUMNS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Physical Primary Key</em>' class.
@@ -431,7 +549,43 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_PRIMARY_KEY_FEATURE_COUNT = 4;
+	int PHYSICAL_PRIMARY_KEY_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_FOREIGN_KEY__ID = ModelPackage.MODEL_OBJECT__ID;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_FOREIGN_KEY__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_FOREIGN_KEY__DESCRIPTION = ModelPackage.MODEL_OBJECT__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_FOREIGN_KEY__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
 	 * The feature id for the '<em><b>Source Name</b></em>' attribute.
@@ -440,7 +594,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY__SOURCE_NAME = 0;
+	int PHYSICAL_FOREIGN_KEY__SOURCE_NAME = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Source Table</b></em>' reference.
@@ -449,7 +603,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY__SOURCE_TABLE = 1;
+	int PHYSICAL_FOREIGN_KEY__SOURCE_TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Source Columns</b></em>' reference list.
@@ -458,7 +612,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY__SOURCE_COLUMNS = 2;
+	int PHYSICAL_FOREIGN_KEY__SOURCE_COLUMNS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Destination Name</b></em>' attribute.
@@ -467,7 +621,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY__DESTINATION_NAME = 3;
+	int PHYSICAL_FOREIGN_KEY__DESTINATION_NAME = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Destination Table</b></em>' reference.
@@ -476,7 +630,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY__DESTINATION_TABLE = 4;
+	int PHYSICAL_FOREIGN_KEY__DESTINATION_TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Destination Columns</b></em>' reference list.
@@ -485,7 +639,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY__DESTINATION_COLUMNS = 5;
+	int PHYSICAL_FOREIGN_KEY__DESTINATION_COLUMNS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Model</b></em>' reference.
@@ -494,7 +648,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY__MODEL = 6;
+	int PHYSICAL_FOREIGN_KEY__MODEL = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 6;
 
 	/**
 	 * The number of structural features of the '<em>Physical Foreign Key</em>' class.
@@ -503,7 +657,7 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY_FEATURE_COUNT = 7;
+	int PHYSICAL_FOREIGN_KEY_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 7;
 
 
 	/**
@@ -515,17 +669,6 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getPhysicalColumn();
-
-	/**
-	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalColumn#getName()
-	 * @see #getPhysicalColumn()
-	 * @generated
-	 */
-	EAttribute getPhysicalColumn_Name();
 
 	/**
 	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#getComment <em>Comment</em>}'.
@@ -746,17 +889,6 @@ public interface PhysicalModelPackage extends EPackage {
 	EClass getPhysicalModel();
 
 	/**
-	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalModel#getName()
-	 * @see #getPhysicalModel()
-	 * @generated
-	 */
-	EAttribute getPhysicalModel_Name();
-
-	/**
 	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getDatabaseName <em>Database Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -799,6 +931,17 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getPhysicalModel_Schema();
+
+	/**
+	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getParentModel <em>Parent Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Parent Model</em>'.
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModel#getParentModel()
+	 * @see #getPhysicalModel()
+	 * @generated
+	 */
+	EReference getPhysicalModel_ParentModel();
 
 	/**
 	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getTables <em>Tables</em>}'.
@@ -844,17 +987,6 @@ public interface PhysicalModelPackage extends EPackage {
 	EClass getPhysicalPrimaryKey();
 
 	/**
-	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getName()
-	 * @see #getPhysicalPrimaryKey()
-	 * @generated
-	 */
-	EAttribute getPhysicalPrimaryKey_Name();
-
-	/**
 	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -896,17 +1028,6 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getPhysicalTable();
-
-	/**
-	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalTable#getName()
-	 * @see #getPhysicalTable()
-	 * @generated
-	 */
-	EAttribute getPhysicalTable_Name();
 
 	/**
 	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getComment <em>Comment</em>}'.
@@ -1016,14 +1137,6 @@ public interface PhysicalModelPackage extends EPackage {
 		 * @generated
 		 */
 		EClass PHYSICAL_COLUMN = eINSTANCE.getPhysicalColumn();
-
-		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute PHYSICAL_COLUMN__NAME = eINSTANCE.getPhysicalColumn_Name();
 
 		/**
 		 * The meta object literal for the '<em><b>Comment</b></em>' attribute feature.
@@ -1190,14 +1303,6 @@ public interface PhysicalModelPackage extends EPackage {
 		EClass PHYSICAL_MODEL = eINSTANCE.getPhysicalModel();
 
 		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute PHYSICAL_MODEL__NAME = eINSTANCE.getPhysicalModel_Name();
-
-		/**
 		 * The meta object literal for the '<em><b>Database Name</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1228,6 +1333,14 @@ public interface PhysicalModelPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute PHYSICAL_MODEL__SCHEMA = eINSTANCE.getPhysicalModel_Schema();
+
+		/**
+		 * The meta object literal for the '<em><b>Parent Model</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PHYSICAL_MODEL__PARENT_MODEL = eINSTANCE.getPhysicalModel_ParentModel();
 
 		/**
 		 * The meta object literal for the '<em><b>Tables</b></em>' containment reference list feature.
@@ -1264,14 +1377,6 @@ public interface PhysicalModelPackage extends EPackage {
 		EClass PHYSICAL_PRIMARY_KEY = eINSTANCE.getPhysicalPrimaryKey();
 
 		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute PHYSICAL_PRIMARY_KEY__NAME = eINSTANCE.getPhysicalPrimaryKey_Name();
-
-		/**
 		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1304,14 +1409,6 @@ public interface PhysicalModelPackage extends EPackage {
 		 * @generated
 		 */
 		EClass PHYSICAL_TABLE = eINSTANCE.getPhysicalTable();
-
-		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute PHYSICAL_TABLE__NAME = eINSTANCE.getPhysicalTable_Name();
 
 		/**
 		 * The meta object literal for the '<em><b>Comment</b></em>' attribute feature.

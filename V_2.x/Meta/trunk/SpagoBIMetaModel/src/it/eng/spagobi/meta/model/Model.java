@@ -22,7 +22,6 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link it.eng.spagobi.meta.model.Model#getName <em>Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.Model#getPhysicalModels <em>Physical Models</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.Model#getBusinessModels <em>Business Models</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.Model#getPropertyTypes <em>Property Types</em>}</li>
@@ -33,36 +32,11 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Model extends EObject {
-	/**
-	 * Returns the value of the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Name</em>' attribute.
-	 * @see #setName(String)
-	 * @see it.eng.spagobi.meta.model.ModelPackage#getModel_Name()
-	 * @model
-	 * @generated
-	 */
-	String getName();
-
-	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.Model#getName <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Name</em>' attribute.
-	 * @see #getName()
-	 * @generated
-	 */
-	void setName(String value);
-
+public interface Model extends ModelObject {
 	/**
 	 * Returns the value of the '<em><b>Physical Models</b></em>' reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.physical.PhysicalModel}.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getParentModel <em>Parent Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Physical Models</em>' reference list isn't clear,
@@ -71,7 +45,8 @@ public interface Model extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Physical Models</em>' reference list.
 	 * @see it.eng.spagobi.meta.model.ModelPackage#getModel_PhysicalModels()
-	 * @model
+	 * @see it.eng.spagobi.meta.model.physical.PhysicalModel#getParentModel
+	 * @model opposite="parentModel"
 	 * @generated
 	 */
 	EList<PhysicalModel> getPhysicalModels();
@@ -79,6 +54,7 @@ public interface Model extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Business Models</b></em>' reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.business.BusinessModel}.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessModel#getParentModel <em>Parent Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Business Models</em>' reference list isn't clear,
@@ -87,7 +63,8 @@ public interface Model extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Business Models</em>' reference list.
 	 * @see it.eng.spagobi.meta.model.ModelPackage#getModel_BusinessModels()
-	 * @model
+	 * @see it.eng.spagobi.meta.model.business.BusinessModel#getParentModel
+	 * @model opposite="parentModel"
 	 * @generated
 	 */
 	EList<BusinessModel> getBusinessModels();
@@ -107,5 +84,11 @@ public interface Model extends EObject {
 	 * @generated
 	 */
 	EList<ModelPropertyType> getPropertyTypes();
+	
+	// =========================================================================
+	// Utility methods
+	// =========================================================================
+	
+	ModelPropertyType getPropertyType(String name);
 
 } // Model

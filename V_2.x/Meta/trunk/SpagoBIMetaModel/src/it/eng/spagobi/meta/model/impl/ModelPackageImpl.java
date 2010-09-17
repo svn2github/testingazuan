@@ -34,8 +34,10 @@ import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
 
 import it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl;
 
+import java.util.Map;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EGenericType;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -75,6 +77,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * @generated
 	 */
 	private EClass modelPropertyEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass modelPropertyMapEntryEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -175,8 +184,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getModelObject_PropertyTypes() {
-		return (EReference)modelObjectEClass.getEStructuralFeatures().get(0);
+	public EAttribute getModelObject_Id() {
+		return (EAttribute)modelObjectEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getModelObject_Name() {
+		return (EAttribute)modelObjectEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getModelObject_Description() {
+		return (EAttribute)modelObjectEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -185,7 +212,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * @generated
 	 */
 	public EReference getModelObject_Properties() {
-		return (EReference)modelObjectEClass.getEStructuralFeatures().get(1);
+		return (EReference)modelObjectEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -230,7 +257,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * @generated
 	 */
 	public EAttribute getModelPropertyType_DefaultValue() {
-		return (EAttribute)modelPropertyTypeEClass.getEStructuralFeatures().get(3);
+		return (EAttribute)modelPropertyTypeEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -239,7 +266,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * @generated
 	 */
 	public EAttribute getModelPropertyType_AdmissibleValues() {
-		return (EAttribute)modelPropertyTypeEClass.getEStructuralFeatures().get(4);
+		return (EAttribute)modelPropertyTypeEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -328,6 +355,33 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getModelPropertyMapEntry() {
+		return modelPropertyMapEntryEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getModelPropertyMapEntry_Key() {
+		return (EAttribute)modelPropertyMapEntryEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getModelPropertyMapEntry_Value() {
+		return (EReference)modelPropertyMapEntryEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getModel() {
 		return modelEClass;
 	}
@@ -337,17 +391,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getModel_Name() {
-		return (EAttribute)modelEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getModel_PhysicalModels() {
-		return (EReference)modelEClass.getEStructuralFeatures().get(1);
+		return (EReference)modelEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -356,7 +401,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * @generated
 	 */
 	public EReference getModel_BusinessModels() {
-		return (EReference)modelEClass.getEStructuralFeatures().get(2);
+		return (EReference)modelEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -365,7 +410,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * @generated
 	 */
 	public EReference getModel_PropertyTypes() {
-		return (EReference)modelEClass.getEStructuralFeatures().get(3);
+		return (EReference)modelEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -396,17 +441,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		isCreated = true;
 
 		// Create classes and their features
-		modelObjectEClass = createEClass(MODEL_OBJECT);
-		createEReference(modelObjectEClass, MODEL_OBJECT__PROPERTY_TYPES);
-		createEReference(modelObjectEClass, MODEL_OBJECT__PROPERTIES);
-
-		modelPropertyTypeEClass = createEClass(MODEL_PROPERTY_TYPE);
-		createEAttribute(modelPropertyTypeEClass, MODEL_PROPERTY_TYPE__NAME);
-		createEAttribute(modelPropertyTypeEClass, MODEL_PROPERTY_TYPE__DESCRIPTION);
-		createEReference(modelPropertyTypeEClass, MODEL_PROPERTY_TYPE__CATEGORY);
-		createEAttribute(modelPropertyTypeEClass, MODEL_PROPERTY_TYPE__DEFAULT_VALUE);
-		createEAttribute(modelPropertyTypeEClass, MODEL_PROPERTY_TYPE__ADMISSIBLE_VALUES);
-
 		modelPropertyCategoryEClass = createEClass(MODEL_PROPERTY_CATEGORY);
 		createEAttribute(modelPropertyCategoryEClass, MODEL_PROPERTY_CATEGORY__NAME);
 		createEAttribute(modelPropertyCategoryEClass, MODEL_PROPERTY_CATEGORY__DESCRIPTION);
@@ -414,12 +448,28 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		createEReference(modelPropertyCategoryEClass, MODEL_PROPERTY_CATEGORY__SUB_CATEGORIES);
 		createEReference(modelPropertyCategoryEClass, MODEL_PROPERTY_CATEGORY__PROPERTY_TYPES);
 
+		modelPropertyTypeEClass = createEClass(MODEL_PROPERTY_TYPE);
+		createEAttribute(modelPropertyTypeEClass, MODEL_PROPERTY_TYPE__NAME);
+		createEAttribute(modelPropertyTypeEClass, MODEL_PROPERTY_TYPE__DESCRIPTION);
+		createEReference(modelPropertyTypeEClass, MODEL_PROPERTY_TYPE__CATEGORY);
+		createEAttribute(modelPropertyTypeEClass, MODEL_PROPERTY_TYPE__ADMISSIBLE_VALUES);
+		createEAttribute(modelPropertyTypeEClass, MODEL_PROPERTY_TYPE__DEFAULT_VALUE);
+
 		modelPropertyEClass = createEClass(MODEL_PROPERTY);
 		createEReference(modelPropertyEClass, MODEL_PROPERTY__PROPERTY_TYPE);
 		createEAttribute(modelPropertyEClass, MODEL_PROPERTY__VALUE);
 
+		modelPropertyMapEntryEClass = createEClass(MODEL_PROPERTY_MAP_ENTRY);
+		createEAttribute(modelPropertyMapEntryEClass, MODEL_PROPERTY_MAP_ENTRY__KEY);
+		createEReference(modelPropertyMapEntryEClass, MODEL_PROPERTY_MAP_ENTRY__VALUE);
+
+		modelObjectEClass = createEClass(MODEL_OBJECT);
+		createEAttribute(modelObjectEClass, MODEL_OBJECT__ID);
+		createEAttribute(modelObjectEClass, MODEL_OBJECT__NAME);
+		createEAttribute(modelObjectEClass, MODEL_OBJECT__DESCRIPTION);
+		createEReference(modelObjectEClass, MODEL_OBJECT__PROPERTIES);
+
 		modelEClass = createEClass(MODEL);
-		createEAttribute(modelEClass, MODEL__NAME);
 		createEReference(modelEClass, MODEL__PHYSICAL_MODELS);
 		createEReference(modelEClass, MODEL__BUSINESS_MODELS);
 		createEReference(modelEClass, MODEL__PROPERTY_TYPES);
@@ -467,19 +517,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
+		modelEClass.getESuperTypes().add(this.getModelObject());
 
 		// Initialize classes and features; add operations and parameters
-		initEClass(modelObjectEClass, ModelObject.class, "ModelObject", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getModelObject_PropertyTypes(), this.getModelPropertyType(), null, "propertyTypes", null, 0, -1, ModelObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getModelObject_Properties(), this.getModelProperty(), null, "properties", null, 0, -1, ModelObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(modelPropertyTypeEClass, ModelPropertyType.class, "ModelPropertyType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getModelPropertyType_Name(), ecorePackage.getEString(), "name", null, 0, 1, ModelPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getModelPropertyType_Description(), ecorePackage.getEString(), "description", null, 0, 1, ModelPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getModelPropertyType_Category(), this.getModelPropertyCategory(), this.getModelPropertyCategory_PropertyTypes(), "category", null, 1, 1, ModelPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getModelPropertyType_DefaultValue(), ecorePackage.getEString(), "defaultValue", null, 0, 1, ModelPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getModelPropertyType_AdmissibleValues(), ecorePackage.getEString(), "admissibleValues", null, 0, 1, ModelPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
 		initEClass(modelPropertyCategoryEClass, ModelPropertyCategory.class, "ModelPropertyCategory", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getModelPropertyCategory_Name(), ecorePackage.getEString(), "name", null, 0, 1, ModelPropertyCategory.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getModelPropertyCategory_Description(), ecorePackage.getEString(), "description", null, 0, 1, ModelPropertyCategory.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -487,14 +527,30 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEReference(getModelPropertyCategory_SubCategories(), this.getModelPropertyCategory(), null, "subCategories", null, 0, -1, ModelPropertyCategory.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getModelPropertyCategory_PropertyTypes(), this.getModelPropertyType(), this.getModelPropertyType_Category(), "propertyTypes", null, 0, -1, ModelPropertyCategory.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		initEClass(modelPropertyTypeEClass, ModelPropertyType.class, "ModelPropertyType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getModelPropertyType_Name(), ecorePackage.getEString(), "name", null, 0, 1, ModelPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getModelPropertyType_Description(), ecorePackage.getEString(), "description", null, 0, 1, ModelPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getModelPropertyType_Category(), this.getModelPropertyCategory(), this.getModelPropertyCategory_PropertyTypes(), "category", null, 1, 1, ModelPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getModelPropertyType_AdmissibleValues(), ecorePackage.getEString(), "admissibleValues", null, 0, -1, ModelPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getModelPropertyType_DefaultValue(), ecorePackage.getEString(), "defaultValue", null, 0, 1, ModelPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
 		initEClass(modelPropertyEClass, ModelProperty.class, "ModelProperty", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getModelProperty_PropertyType(), this.getModelPropertyType(), null, "propertyType", null, 1, 1, ModelProperty.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getModelProperty_Value(), ecorePackage.getEString(), "value", null, 1, 1, ModelProperty.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		initEClass(modelPropertyMapEntryEClass, Map.Entry.class, "ModelPropertyMapEntry", !IS_ABSTRACT, !IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getModelPropertyMapEntry_Key(), ecorePackage.getEString(), "key", null, 0, 1, Map.Entry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getModelPropertyMapEntry_Value(), this.getModelProperty(), null, "value", null, 0, 1, Map.Entry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(modelObjectEClass, ModelObject.class, "ModelObject", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getModelObject_Id(), ecorePackage.getEString(), "id", null, 1, 1, ModelObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getModelObject_Name(), ecorePackage.getEString(), "name", null, 0, 1, ModelObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getModelObject_Description(), ecorePackage.getEString(), "description", null, 0, 1, ModelObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getModelObject_Properties(), this.getModelPropertyMapEntry(), null, "properties", null, 0, -1, ModelObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
 		initEClass(modelEClass, Model.class, "Model", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getModel_Name(), ecorePackage.getEString(), "name", null, 0, 1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getModel_PhysicalModels(), thePhysicalModelPackage.getPhysicalModel(), null, "physicalModels", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getModel_BusinessModels(), theBusinessModelPackage.getBusinessModel(), null, "businessModels", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getModel_PhysicalModels(), thePhysicalModelPackage.getPhysicalModel(), thePhysicalModelPackage.getPhysicalModel_ParentModel(), "physicalModels", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getModel_BusinessModels(), theBusinessModelPackage.getBusinessModel(), theBusinessModelPackage.getBusinessModel_ParentModel(), "businessModels", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getModel_PropertyTypes(), this.getModelPropertyType(), null, "propertyTypes", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource

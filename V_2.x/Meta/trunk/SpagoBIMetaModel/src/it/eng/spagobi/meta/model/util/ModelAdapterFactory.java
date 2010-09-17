@@ -8,6 +8,7 @@ package it.eng.spagobi.meta.model.util;
 
 import it.eng.spagobi.meta.model.*;
 
+import java.util.Map;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
 
@@ -72,20 +73,24 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 	protected ModelSwitch<Adapter> modelSwitch =
 		new ModelSwitch<Adapter>() {
 			@Override
-			public Adapter caseModelObject(ModelObject object) {
-				return createModelObjectAdapter();
+			public Adapter caseModelPropertyCategory(ModelPropertyCategory object) {
+				return createModelPropertyCategoryAdapter();
 			}
 			@Override
 			public Adapter caseModelPropertyType(ModelPropertyType object) {
 				return createModelPropertyTypeAdapter();
 			}
 			@Override
-			public Adapter caseModelPropertyCategory(ModelPropertyCategory object) {
-				return createModelPropertyCategoryAdapter();
-			}
-			@Override
 			public Adapter caseModelProperty(ModelProperty object) {
 				return createModelPropertyAdapter();
+			}
+			@Override
+			public Adapter caseModelPropertyMapEntry(Map.Entry<String, ModelProperty> object) {
+				return createModelPropertyMapEntryAdapter();
+			}
+			@Override
+			public Adapter caseModelObject(ModelObject object) {
+				return createModelObjectAdapter();
 			}
 			@Override
 			public Adapter caseModel(Model object) {
@@ -164,6 +169,20 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createModelPropertyAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link java.util.Map.Entry <em>Property Map Entry</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see java.util.Map.Entry
+	 * @generated
+	 */
+	public Adapter createModelPropertyMapEntryAdapter() {
 		return null;
 	}
 

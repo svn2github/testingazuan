@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.physical.util;
 
+import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.physical.*;
 
 import java.util.List;
@@ -90,30 +91,35 @@ public class PhysicalModelSwitch<T> {
 			case PhysicalModelPackage.PHYSICAL_MODEL: {
 				PhysicalModel physicalModel = (PhysicalModel)theEObject;
 				T result = casePhysicalModel(physicalModel);
+				if (result == null) result = caseModelObject(physicalModel);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			case PhysicalModelPackage.PHYSICAL_TABLE: {
 				PhysicalTable physicalTable = (PhysicalTable)theEObject;
 				T result = casePhysicalTable(physicalTable);
+				if (result == null) result = caseModelObject(physicalTable);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			case PhysicalModelPackage.PHYSICAL_COLUMN: {
 				PhysicalColumn physicalColumn = (PhysicalColumn)theEObject;
 				T result = casePhysicalColumn(physicalColumn);
+				if (result == null) result = caseModelObject(physicalColumn);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY: {
 				PhysicalPrimaryKey physicalPrimaryKey = (PhysicalPrimaryKey)theEObject;
 				T result = casePhysicalPrimaryKey(physicalPrimaryKey);
+				if (result == null) result = caseModelObject(physicalPrimaryKey);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY: {
 				PhysicalForeignKey physicalForeignKey = (PhysicalForeignKey)theEObject;
 				T result = casePhysicalForeignKey(physicalForeignKey);
+				if (result == null) result = caseModelObject(physicalForeignKey);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -148,6 +154,21 @@ public class PhysicalModelSwitch<T> {
 	 * @generated
 	 */
 	public T casePhysicalForeignKey(PhysicalForeignKey object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Object</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Object</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseModelObject(ModelObject object) {
 		return null;
 	}
 

@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.business;
 
+import it.eng.spagobi.meta.model.ModelObject;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
@@ -18,7 +19,6 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link it.eng.spagobi.meta.model.business.BusinessView#getName <em>Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessView#getColumns <em>Columns</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessView#getJoinRelationships <em>Join Relationships</em>}</li>
  * </ul>
@@ -28,33 +28,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface BusinessView extends EObject {
-	/**
-	 * Returns the value of the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Name</em>' attribute.
-	 * @see #setName(String)
-	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessView_Name()
-	 * @model
-	 * @generated
-	 */
-	String getName();
-
-	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessView#getName <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Name</em>' attribute.
-	 * @see #getName()
-	 * @generated
-	 */
-	void setName(String value);
-
+public interface BusinessView extends ModelObject {
 	/**
 	 * Returns the value of the '<em><b>Columns</b></em>' reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.business.BusinessColumn}.

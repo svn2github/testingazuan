@@ -10,6 +10,7 @@ import it.eng.spagobi.meta.model.*;
 
 import java.util.List;
 
+import java.util.Map;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
@@ -87,9 +88,9 @@ public class ModelSwitch<T> {
 	 */
 	protected T doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
-			case ModelPackage.MODEL_OBJECT: {
-				ModelObject modelObject = (ModelObject)theEObject;
-				T result = caseModelObject(modelObject);
+			case ModelPackage.MODEL_PROPERTY_CATEGORY: {
+				ModelPropertyCategory modelPropertyCategory = (ModelPropertyCategory)theEObject;
+				T result = caseModelPropertyCategory(modelPropertyCategory);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -99,21 +100,28 @@ public class ModelSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case ModelPackage.MODEL_PROPERTY_CATEGORY: {
-				ModelPropertyCategory modelPropertyCategory = (ModelPropertyCategory)theEObject;
-				T result = caseModelPropertyCategory(modelPropertyCategory);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case ModelPackage.MODEL_PROPERTY: {
 				ModelProperty modelProperty = (ModelProperty)theEObject;
 				T result = caseModelProperty(modelProperty);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case ModelPackage.MODEL_PROPERTY_MAP_ENTRY: {
+				@SuppressWarnings("unchecked") Map.Entry<String, ModelProperty> modelPropertyMapEntry = (Map.Entry<String, ModelProperty>)theEObject;
+				T result = caseModelPropertyMapEntry(modelPropertyMapEntry);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ModelPackage.MODEL_OBJECT: {
+				ModelObject modelObject = (ModelObject)theEObject;
+				T result = caseModelObject(modelObject);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case ModelPackage.MODEL: {
 				Model model = (Model)theEObject;
 				T result = caseModel(model);
+				if (result == null) result = caseModelObject(model);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -178,6 +186,21 @@ public class ModelSwitch<T> {
 	 * @generated
 	 */
 	public T caseModelProperty(ModelProperty object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Property Map Entry</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Property Map Entry</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseModelPropertyMapEntry(Map.Entry<String, ModelProperty> object) {
 		return null;
 	}
 

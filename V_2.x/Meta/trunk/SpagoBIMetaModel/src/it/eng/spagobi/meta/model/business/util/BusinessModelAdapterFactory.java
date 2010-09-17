@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.business.util;
 
+import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.*;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -94,6 +95,10 @@ public class BusinessModelAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseBusinessDomain(BusinessDomain object) {
 				return createBusinessDomainAdapter();
+			}
+			@Override
+			public Adapter caseModelObject(ModelObject object) {
+				return createModelObjectAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -196,6 +201,20 @@ public class BusinessModelAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createBusinessDomainAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.ModelObject <em>Object</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.ModelObject
+	 * @generated
+	 */
+	public Adapter createModelObjectAdapter() {
 		return null;
 	}
 

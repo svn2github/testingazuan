@@ -67,34 +67,7 @@ public interface ModelPackage extends EPackage {
 	 * @see it.eng.spagobi.meta.model.impl.ModelPackageImpl#getModelObject()
 	 * @generated
 	 */
-	int MODEL_OBJECT = 0;
-
-	/**
-	 * The feature id for the '<em><b>Property Types</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MODEL_OBJECT__PROPERTY_TYPES = 0;
-
-	/**
-	 * The feature id for the '<em><b>Properties</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MODEL_OBJECT__PROPERTIES = 1;
-
-	/**
-	 * The number of structural features of the '<em>Object</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MODEL_OBJECT_FEATURE_COUNT = 2;
+	int MODEL_OBJECT = 4;
 
 	/**
 	 * The meta object id for the '{@link it.eng.spagobi.meta.model.impl.ModelPropertyTypeImpl <em>Property Type</em>}' class.
@@ -107,60 +80,6 @@ public interface ModelPackage extends EPackage {
 	int MODEL_PROPERTY_TYPE = 1;
 
 	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MODEL_PROPERTY_TYPE__NAME = 0;
-
-	/**
-	 * The feature id for the '<em><b>Description</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MODEL_PROPERTY_TYPE__DESCRIPTION = 1;
-
-	/**
-	 * The feature id for the '<em><b>Category</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MODEL_PROPERTY_TYPE__CATEGORY = 2;
-
-	/**
-	 * The feature id for the '<em><b>Default Value</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MODEL_PROPERTY_TYPE__DEFAULT_VALUE = 3;
-
-	/**
-	 * The feature id for the '<em><b>Admissible Values</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MODEL_PROPERTY_TYPE__ADMISSIBLE_VALUES = 4;
-
-	/**
-	 * The number of structural features of the '<em>Property Type</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MODEL_PROPERTY_TYPE_FEATURE_COUNT = 5;
-
-	/**
 	 * The meta object id for the '{@link it.eng.spagobi.meta.model.impl.ModelPropertyCategoryImpl <em>Property Category</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -168,7 +87,7 @@ public interface ModelPackage extends EPackage {
 	 * @see it.eng.spagobi.meta.model.impl.ModelPackageImpl#getModelPropertyCategory()
 	 * @generated
 	 */
-	int MODEL_PROPERTY_CATEGORY = 2;
+	int MODEL_PROPERTY_CATEGORY = 0;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -225,6 +144,60 @@ public interface ModelPackage extends EPackage {
 	int MODEL_PROPERTY_CATEGORY_FEATURE_COUNT = 5;
 
 	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL_PROPERTY_TYPE__NAME = 0;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL_PROPERTY_TYPE__DESCRIPTION = 1;
+
+	/**
+	 * The feature id for the '<em><b>Category</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL_PROPERTY_TYPE__CATEGORY = 2;
+
+	/**
+	 * The feature id for the '<em><b>Admissible Values</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL_PROPERTY_TYPE__ADMISSIBLE_VALUES = 3;
+
+	/**
+	 * The feature id for the '<em><b>Default Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL_PROPERTY_TYPE__DEFAULT_VALUE = 4;
+
+	/**
+	 * The number of structural features of the '<em>Property Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL_PROPERTY_TYPE_FEATURE_COUNT = 5;
+
+	/**
 	 * The meta object id for the '{@link it.eng.spagobi.meta.model.impl.ModelPropertyImpl <em>Property</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -232,7 +205,7 @@ public interface ModelPackage extends EPackage {
 	 * @see it.eng.spagobi.meta.model.impl.ModelPackageImpl#getModelProperty()
 	 * @generated
 	 */
-	int MODEL_PROPERTY = 3;
+	int MODEL_PROPERTY = 2;
 
 	/**
 	 * The feature id for the '<em><b>Property Type</b></em>' reference.
@@ -262,14 +235,50 @@ public interface ModelPackage extends EPackage {
 	int MODEL_PROPERTY_FEATURE_COUNT = 2;
 
 	/**
-	 * The meta object id for the '{@link it.eng.spagobi.meta.model.impl.ModelImpl <em>Model</em>}' class.
+	 * The meta object id for the '{@link it.eng.spagobi.meta.model.impl.ModelPropertyMapEntryImpl <em>Property Map Entry</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see it.eng.spagobi.meta.model.impl.ModelImpl
-	 * @see it.eng.spagobi.meta.model.impl.ModelPackageImpl#getModel()
+	 * @see it.eng.spagobi.meta.model.impl.ModelPropertyMapEntryImpl
+	 * @see it.eng.spagobi.meta.model.impl.ModelPackageImpl#getModelPropertyMapEntry()
 	 * @generated
 	 */
-	int MODEL = 4;
+	int MODEL_PROPERTY_MAP_ENTRY = 3;
+
+	/**
+	 * The feature id for the '<em><b>Key</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL_PROPERTY_MAP_ENTRY__KEY = 0;
+
+	/**
+	 * The feature id for the '<em><b>Value</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL_PROPERTY_MAP_ENTRY__VALUE = 1;
+
+	/**
+	 * The number of structural features of the '<em>Property Map Entry</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL_PROPERTY_MAP_ENTRY_FEATURE_COUNT = 2;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL_OBJECT__ID = 0;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -278,7 +287,80 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL__NAME = 0;
+	int MODEL_OBJECT__NAME = 1;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL_OBJECT__DESCRIPTION = 2;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL_OBJECT__PROPERTIES = 3;
+
+	/**
+	 * The number of structural features of the '<em>Object</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL_OBJECT_FEATURE_COUNT = 4;
+
+	/**
+	 * The meta object id for the '{@link it.eng.spagobi.meta.model.impl.ModelImpl <em>Model</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see it.eng.spagobi.meta.model.impl.ModelImpl
+	 * @see it.eng.spagobi.meta.model.impl.ModelPackageImpl#getModel()
+	 * @generated
+	 */
+	int MODEL = 5;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL__ID = MODEL_OBJECT__ID;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL__NAME = MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL__DESCRIPTION = MODEL_OBJECT__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL__PROPERTIES = MODEL_OBJECT__PROPERTIES;
 
 	/**
 	 * The feature id for the '<em><b>Physical Models</b></em>' reference list.
@@ -287,7 +369,7 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL__PHYSICAL_MODELS = 1;
+	int MODEL__PHYSICAL_MODELS = MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Business Models</b></em>' reference list.
@@ -296,7 +378,7 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL__BUSINESS_MODELS = 2;
+	int MODEL__BUSINESS_MODELS = MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Property Types</b></em>' reference list.
@@ -305,7 +387,7 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL__PROPERTY_TYPES = 3;
+	int MODEL__PROPERTY_TYPES = MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Model</em>' class.
@@ -314,7 +396,7 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL_FEATURE_COUNT = 4;
+	int MODEL_FEATURE_COUNT = MODEL_OBJECT_FEATURE_COUNT + 3;
 
 
 	/**
@@ -328,21 +410,43 @@ public interface ModelPackage extends EPackage {
 	EClass getModelObject();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.ModelObject#getPropertyTypes <em>Property Types</em>}'.
+	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.ModelObject#getId <em>Id</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Property Types</em>'.
-	 * @see it.eng.spagobi.meta.model.ModelObject#getPropertyTypes()
+	 * @return the meta object for the attribute '<em>Id</em>'.
+	 * @see it.eng.spagobi.meta.model.ModelObject#getId()
 	 * @see #getModelObject()
 	 * @generated
 	 */
-	EReference getModelObject_PropertyTypes();
+	EAttribute getModelObject_Id();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.ModelObject#getProperties <em>Properties</em>}'.
+	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.ModelObject#getName <em>Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Properties</em>'.
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see it.eng.spagobi.meta.model.ModelObject#getName()
+	 * @see #getModelObject()
+	 * @generated
+	 */
+	EAttribute getModelObject_Name();
+
+	/**
+	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.ModelObject#getDescription <em>Description</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Description</em>'.
+	 * @see it.eng.spagobi.meta.model.ModelObject#getDescription()
+	 * @see #getModelObject()
+	 * @generated
+	 */
+	EAttribute getModelObject_Description();
+
+	/**
+	 * Returns the meta object for the map '{@link it.eng.spagobi.meta.model.ModelObject#getProperties <em>Properties</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the map '<em>Properties</em>'.
 	 * @see it.eng.spagobi.meta.model.ModelObject#getProperties()
 	 * @see #getModelObject()
 	 * @generated
@@ -404,10 +508,10 @@ public interface ModelPackage extends EPackage {
 	EAttribute getModelPropertyType_DefaultValue();
 
 	/**
-	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.ModelPropertyType#getAdmissibleValues <em>Admissible Values</em>}'.
+	 * Returns the meta object for the attribute list '{@link it.eng.spagobi.meta.model.ModelPropertyType#getAdmissibleValues <em>Admissible Values</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Admissible Values</em>'.
+	 * @return the meta object for the attribute list '<em>Admissible Values</em>'.
 	 * @see it.eng.spagobi.meta.model.ModelPropertyType#getAdmissibleValues()
 	 * @see #getModelPropertyType()
 	 * @generated
@@ -512,6 +616,40 @@ public interface ModelPackage extends EPackage {
 	EAttribute getModelProperty_Value();
 
 	/**
+	 * Returns the meta object for class '{@link java.util.Map.Entry <em>Property Map Entry</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Property Map Entry</em>'.
+	 * @see java.util.Map.Entry
+	 * @model keyDataType="org.eclipse.emf.ecore.EString"
+	 *        valueType="it.eng.spagobi.meta.model.ModelProperty"
+	 * @generated
+	 */
+	EClass getModelPropertyMapEntry();
+
+	/**
+	 * Returns the meta object for the attribute '{@link java.util.Map.Entry <em>Key</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Key</em>'.
+	 * @see java.util.Map.Entry
+	 * @see #getModelPropertyMapEntry()
+	 * @generated
+	 */
+	EAttribute getModelPropertyMapEntry_Key();
+
+	/**
+	 * Returns the meta object for the reference '{@link java.util.Map.Entry <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Value</em>'.
+	 * @see java.util.Map.Entry
+	 * @see #getModelPropertyMapEntry()
+	 * @generated
+	 */
+	EReference getModelPropertyMapEntry_Value();
+
+	/**
 	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.Model <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -520,17 +658,6 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getModel();
-
-	/**
-	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.Model#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see it.eng.spagobi.meta.model.Model#getName()
-	 * @see #getModel()
-	 * @generated
-	 */
-	EAttribute getModel_Name();
 
 	/**
 	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.Model#getPhysicalModels <em>Physical Models</em>}'.
@@ -598,15 +725,31 @@ public interface ModelPackage extends EPackage {
 		EClass MODEL_OBJECT = eINSTANCE.getModelObject();
 
 		/**
-		 * The meta object literal for the '<em><b>Property Types</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Id</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference MODEL_OBJECT__PROPERTY_TYPES = eINSTANCE.getModelObject_PropertyTypes();
+		EAttribute MODEL_OBJECT__ID = eINSTANCE.getModelObject_Id();
 
 		/**
-		 * The meta object literal for the '<em><b>Properties</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MODEL_OBJECT__NAME = eINSTANCE.getModelObject_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MODEL_OBJECT__DESCRIPTION = eINSTANCE.getModelObject_Description();
+
+		/**
+		 * The meta object literal for the '<em><b>Properties</b></em>' map feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -656,7 +799,7 @@ public interface ModelPackage extends EPackage {
 		EAttribute MODEL_PROPERTY_TYPE__DEFAULT_VALUE = eINSTANCE.getModelPropertyType_DefaultValue();
 
 		/**
-		 * The meta object literal for the '<em><b>Admissible Values</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Admissible Values</b></em>' attribute list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -740,6 +883,32 @@ public interface ModelPackage extends EPackage {
 		EAttribute MODEL_PROPERTY__VALUE = eINSTANCE.getModelProperty_Value();
 
 		/**
+		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.impl.ModelPropertyMapEntryImpl <em>Property Map Entry</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see it.eng.spagobi.meta.model.impl.ModelPropertyMapEntryImpl
+		 * @see it.eng.spagobi.meta.model.impl.ModelPackageImpl#getModelPropertyMapEntry()
+		 * @generated
+		 */
+		EClass MODEL_PROPERTY_MAP_ENTRY = eINSTANCE.getModelPropertyMapEntry();
+
+		/**
+		 * The meta object literal for the '<em><b>Key</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MODEL_PROPERTY_MAP_ENTRY__KEY = eINSTANCE.getModelPropertyMapEntry_Key();
+
+		/**
+		 * The meta object literal for the '<em><b>Value</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference MODEL_PROPERTY_MAP_ENTRY__VALUE = eINSTANCE.getModelPropertyMapEntry_Value();
+
+		/**
 		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.impl.ModelImpl <em>Model</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -748,14 +917,6 @@ public interface ModelPackage extends EPackage {
 		 * @generated
 		 */
 		EClass MODEL = eINSTANCE.getModel();
-
-		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute MODEL__NAME = eINSTANCE.getModel_Name();
 
 		/**
 		 * The meta object literal for the '<em><b>Physical Models</b></em>' reference list feature.

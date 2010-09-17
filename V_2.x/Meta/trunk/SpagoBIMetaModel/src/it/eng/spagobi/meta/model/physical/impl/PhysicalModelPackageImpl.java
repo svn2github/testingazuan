@@ -165,7 +165,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalColumn_Name() {
+	public EAttribute getPhysicalColumn_Comment() {
 		return (EAttribute)physicalColumnEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -174,7 +174,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalColumn_Comment() {
+	public EAttribute getPhysicalColumn_DataType() {
 		return (EAttribute)physicalColumnEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -183,7 +183,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalColumn_DataType() {
+	public EAttribute getPhysicalColumn_TypeName() {
 		return (EAttribute)physicalColumnEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -192,7 +192,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalColumn_TypeName() {
+	public EAttribute getPhysicalColumn_Size() {
 		return (EAttribute)physicalColumnEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -201,7 +201,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalColumn_Size() {
+	public EAttribute getPhysicalColumn_OctectLength() {
 		return (EAttribute)physicalColumnEClass.getEStructuralFeatures().get(4);
 	}
 
@@ -210,7 +210,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalColumn_OctectLength() {
+	public EAttribute getPhysicalColumn_DecimalDigits() {
 		return (EAttribute)physicalColumnEClass.getEStructuralFeatures().get(5);
 	}
 
@@ -219,7 +219,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalColumn_DecimalDigits() {
+	public EAttribute getPhysicalColumn_Radix() {
 		return (EAttribute)physicalColumnEClass.getEStructuralFeatures().get(6);
 	}
 
@@ -228,7 +228,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalColumn_Radix() {
+	public EAttribute getPhysicalColumn_DefaultValue() {
 		return (EAttribute)physicalColumnEClass.getEStructuralFeatures().get(7);
 	}
 
@@ -237,7 +237,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalColumn_DefaultValue() {
+	public EAttribute getPhysicalColumn_Nullable() {
 		return (EAttribute)physicalColumnEClass.getEStructuralFeatures().get(8);
 	}
 
@@ -246,7 +246,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalColumn_Nullable() {
+	public EAttribute getPhysicalColumn_Position() {
 		return (EAttribute)physicalColumnEClass.getEStructuralFeatures().get(9);
 	}
 
@@ -255,17 +255,8 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalColumn_Position() {
-		return (EAttribute)physicalColumnEClass.getEStructuralFeatures().get(10);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getPhysicalColumn_Table() {
-		return (EReference)physicalColumnEClass.getEStructuralFeatures().get(11);
+		return (EReference)physicalColumnEClass.getEStructuralFeatures().get(10);
 	}
 
 	/**
@@ -354,7 +345,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalModel_Name() {
+	public EAttribute getPhysicalModel_DatabaseName() {
 		return (EAttribute)physicalModelEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -363,7 +354,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalModel_DatabaseName() {
+	public EAttribute getPhysicalModel_DatabaseVersion() {
 		return (EAttribute)physicalModelEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -372,7 +363,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalModel_DatabaseVersion() {
+	public EAttribute getPhysicalModel_Catalog() {
 		return (EAttribute)physicalModelEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -381,7 +372,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalModel_Catalog() {
+	public EAttribute getPhysicalModel_Schema() {
 		return (EAttribute)physicalModelEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -390,8 +381,8 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalModel_Schema() {
-		return (EAttribute)physicalModelEClass.getEStructuralFeatures().get(4);
+	public EReference getPhysicalModel_ParentModel() {
+		return (EReference)physicalModelEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -435,17 +426,8 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalPrimaryKey_Name() {
-		return (EAttribute)physicalPrimaryKeyEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getPhysicalPrimaryKey_Model() {
-		return (EReference)physicalPrimaryKeyEClass.getEStructuralFeatures().get(1);
+		return (EReference)physicalPrimaryKeyEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -454,7 +436,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * @generated
 	 */
 	public EReference getPhysicalPrimaryKey_Table() {
-		return (EReference)physicalPrimaryKeyEClass.getEStructuralFeatures().get(2);
+		return (EReference)physicalPrimaryKeyEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -463,7 +445,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * @generated
 	 */
 	public EReference getPhysicalPrimaryKey_Columns() {
-		return (EReference)physicalPrimaryKeyEClass.getEStructuralFeatures().get(3);
+		return (EReference)physicalPrimaryKeyEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -480,7 +462,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalTable_Name() {
+	public EAttribute getPhysicalTable_Comment() {
 		return (EAttribute)physicalTableEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -489,7 +471,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalTable_Comment() {
+	public EAttribute getPhysicalTable_Type() {
 		return (EAttribute)physicalTableEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -498,17 +480,8 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPhysicalTable_Type() {
-		return (EAttribute)physicalTableEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getPhysicalTable_Model() {
-		return (EReference)physicalTableEClass.getEStructuralFeatures().get(3);
+		return (EReference)physicalTableEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -517,7 +490,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * @generated
 	 */
 	public EReference getPhysicalTable_Columns() {
-		return (EReference)physicalTableEClass.getEStructuralFeatures().get(4);
+		return (EReference)physicalTableEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -526,7 +499,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * @generated
 	 */
 	public EReference getPhysicalTable_PrimaryKey() {
-		return (EReference)physicalTableEClass.getEStructuralFeatures().get(5);
+		return (EReference)physicalTableEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -535,7 +508,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * @generated
 	 */
 	public EReference getPhysicalTable_ForeignKeys() {
-		return (EReference)physicalTableEClass.getEStructuralFeatures().get(6);
+		return (EReference)physicalTableEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -544,7 +517,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * @generated
 	 */
 	public EReference getPhysicalTable_ReverseForeignKeys() {
-		return (EReference)physicalTableEClass.getEStructuralFeatures().get(7);
+		return (EReference)physicalTableEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -576,17 +549,16 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 
 		// Create classes and their features
 		physicalModelEClass = createEClass(PHYSICAL_MODEL);
-		createEAttribute(physicalModelEClass, PHYSICAL_MODEL__NAME);
 		createEAttribute(physicalModelEClass, PHYSICAL_MODEL__DATABASE_NAME);
 		createEAttribute(physicalModelEClass, PHYSICAL_MODEL__DATABASE_VERSION);
 		createEAttribute(physicalModelEClass, PHYSICAL_MODEL__CATALOG);
 		createEAttribute(physicalModelEClass, PHYSICAL_MODEL__SCHEMA);
+		createEReference(physicalModelEClass, PHYSICAL_MODEL__PARENT_MODEL);
 		createEReference(physicalModelEClass, PHYSICAL_MODEL__TABLES);
 		createEReference(physicalModelEClass, PHYSICAL_MODEL__PRIMARY_KEYS);
 		createEReference(physicalModelEClass, PHYSICAL_MODEL__FOREIGN_KEYS);
 
 		physicalTableEClass = createEClass(PHYSICAL_TABLE);
-		createEAttribute(physicalTableEClass, PHYSICAL_TABLE__NAME);
 		createEAttribute(physicalTableEClass, PHYSICAL_TABLE__COMMENT);
 		createEAttribute(physicalTableEClass, PHYSICAL_TABLE__TYPE);
 		createEReference(physicalTableEClass, PHYSICAL_TABLE__MODEL);
@@ -596,7 +568,6 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 		createEReference(physicalTableEClass, PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS);
 
 		physicalColumnEClass = createEClass(PHYSICAL_COLUMN);
-		createEAttribute(physicalColumnEClass, PHYSICAL_COLUMN__NAME);
 		createEAttribute(physicalColumnEClass, PHYSICAL_COLUMN__COMMENT);
 		createEAttribute(physicalColumnEClass, PHYSICAL_COLUMN__DATA_TYPE);
 		createEAttribute(physicalColumnEClass, PHYSICAL_COLUMN__TYPE_NAME);
@@ -610,7 +581,6 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 		createEReference(physicalColumnEClass, PHYSICAL_COLUMN__TABLE);
 
 		physicalPrimaryKeyEClass = createEClass(PHYSICAL_PRIMARY_KEY);
-		createEAttribute(physicalPrimaryKeyEClass, PHYSICAL_PRIMARY_KEY__NAME);
 		createEReference(physicalPrimaryKeyEClass, PHYSICAL_PRIMARY_KEY__MODEL);
 		createEReference(physicalPrimaryKeyEClass, PHYSICAL_PRIMARY_KEY__TABLE);
 		createEReference(physicalPrimaryKeyEClass, PHYSICAL_PRIMARY_KEY__COLUMNS);
@@ -648,25 +618,32 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 		setNsPrefix(eNS_PREFIX);
 		setNsURI(eNS_URI);
 
+		// Obtain other dependent packages
+		ModelPackage theModelPackage = (ModelPackage)EPackage.Registry.INSTANCE.getEPackage(ModelPackage.eNS_URI);
+
 		// Create type parameters
 
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
+		physicalModelEClass.getESuperTypes().add(theModelPackage.getModelObject());
+		physicalTableEClass.getESuperTypes().add(theModelPackage.getModelObject());
+		physicalColumnEClass.getESuperTypes().add(theModelPackage.getModelObject());
+		physicalPrimaryKeyEClass.getESuperTypes().add(theModelPackage.getModelObject());
+		physicalForeignKeyEClass.getESuperTypes().add(theModelPackage.getModelObject());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(physicalModelEClass, PhysicalModel.class, "PhysicalModel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getPhysicalModel_Name(), ecorePackage.getEString(), "name", null, 0, 1, PhysicalModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getPhysicalModel_DatabaseName(), ecorePackage.getEString(), "databaseName", null, 0, 1, PhysicalModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getPhysicalModel_DatabaseVersion(), ecorePackage.getEString(), "databaseVersion", null, 0, 1, PhysicalModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getPhysicalModel_Catalog(), ecorePackage.getEString(), "catalog", null, 0, 1, PhysicalModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getPhysicalModel_Schema(), ecorePackage.getEString(), "schema", null, 0, 1, PhysicalModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getPhysicalModel_ParentModel(), theModelPackage.getModel(), theModelPackage.getModel_PhysicalModels(), "parentModel", null, 1, 1, PhysicalModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalModel_Tables(), this.getPhysicalTable(), this.getPhysicalTable_Model(), "tables", null, 0, -1, PhysicalModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalModel_PrimaryKeys(), this.getPhysicalPrimaryKey(), this.getPhysicalPrimaryKey_Model(), "primaryKeys", null, 0, -1, PhysicalModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalModel_ForeignKeys(), this.getPhysicalForeignKey(), this.getPhysicalForeignKey_Model(), "foreignKeys", null, 0, -1, PhysicalModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(physicalTableEClass, PhysicalTable.class, "PhysicalTable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getPhysicalTable_Name(), ecorePackage.getEString(), "name", null, 0, 1, PhysicalTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getPhysicalTable_Comment(), ecorePackage.getEString(), "comment", null, 0, 1, PhysicalTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getPhysicalTable_Type(), ecorePackage.getEString(), "type", null, 0, 1, PhysicalTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalTable_Model(), this.getPhysicalModel(), this.getPhysicalModel_Tables(), "model", null, 1, 1, PhysicalTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -676,7 +653,6 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 		initEReference(getPhysicalTable_ReverseForeignKeys(), this.getPhysicalForeignKey(), this.getPhysicalForeignKey_DestinationTable(), "reverseForeignKeys", null, 0, -1, PhysicalTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(physicalColumnEClass, PhysicalColumn.class, "PhysicalColumn", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getPhysicalColumn_Name(), ecorePackage.getEString(), "name", null, 0, 1, PhysicalColumn.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getPhysicalColumn_Comment(), ecorePackage.getEString(), "comment", null, 0, 1, PhysicalColumn.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getPhysicalColumn_DataType(), ecorePackage.getEShort(), "dataType", null, 0, 1, PhysicalColumn.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getPhysicalColumn_TypeName(), ecorePackage.getEString(), "typeName", null, 0, 1, PhysicalColumn.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -690,7 +666,6 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 		initEReference(getPhysicalColumn_Table(), this.getPhysicalTable(), this.getPhysicalTable_Columns(), "table", null, 1, 1, PhysicalColumn.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(physicalPrimaryKeyEClass, PhysicalPrimaryKey.class, "PhysicalPrimaryKey", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getPhysicalPrimaryKey_Name(), ecorePackage.getEString(), "name", null, 0, 1, PhysicalPrimaryKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalPrimaryKey_Model(), this.getPhysicalModel(), this.getPhysicalModel_PrimaryKeys(), "model", null, 1, 1, PhysicalPrimaryKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalPrimaryKey_Table(), this.getPhysicalTable(), this.getPhysicalTable_PrimaryKey(), "table", null, 0, 1, PhysicalPrimaryKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalPrimaryKey_Columns(), this.getPhysicalColumn(), null, "columns", null, 1, -1, PhysicalPrimaryKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

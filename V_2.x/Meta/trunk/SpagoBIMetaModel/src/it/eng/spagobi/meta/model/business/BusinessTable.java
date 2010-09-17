@@ -6,8 +6,11 @@
  */
 package it.eng.spagobi.meta.model.business;
 
+import it.eng.spagobi.meta.model.ModelObject;
+import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -18,8 +21,9 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link it.eng.spagobi.meta.model.business.BusinessTable#getName <em>Name</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.business.BusinessTable#getModel <em>Model</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessTable#getPhysicalTable <em>Physical Table</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.business.BusinessTable#getColumns <em>Columns</em>}</li>
  * </ul>
  * </p>
  *
@@ -27,32 +31,34 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface BusinessTable extends EObject {
+public interface BusinessTable extends ModelObject {
 	/**
-	 * Returns the value of the '<em><b>Name</b></em>' attribute.
+	 * Returns the value of the '<em><b>Model</b></em>' reference.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessModel#getTables <em>Tables</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Model</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Name</em>' attribute.
-	 * @see #setName(String)
-	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessTable_Name()
-	 * @model
+	 * @return the value of the '<em>Model</em>' reference.
+	 * @see #setModel(BusinessModel)
+	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessTable_Model()
+	 * @see it.eng.spagobi.meta.model.business.BusinessModel#getTables
+	 * @model opposite="tables" required="true"
 	 * @generated
 	 */
-	String getName();
+	BusinessModel getModel();
 
 	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessTable#getName <em>Name</em>}' attribute.
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessTable#getModel <em>Model</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Name</em>' attribute.
-	 * @see #getName()
+	 * @param value the new value of the '<em>Model</em>' reference.
+	 * @see #getModel()
 	 * @generated
 	 */
-	void setName(String value);
+	void setModel(BusinessModel value);
 
 	/**
 	 * Returns the value of the '<em><b>Physical Table</b></em>' reference.
@@ -79,5 +85,32 @@ public interface BusinessTable extends EObject {
 	 * @generated
 	 */
 	void setPhysicalTable(PhysicalTable value);
+
+	/**
+	 * Returns the value of the '<em><b>Columns</b></em>' reference list.
+	 * The list contents are of type {@link it.eng.spagobi.meta.model.business.BusinessColumn}.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessColumn#getTable <em>Table</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Columns</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Columns</em>' reference list.
+	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessTable_Columns()
+	 * @see it.eng.spagobi.meta.model.business.BusinessColumn#getTable
+	 * @model opposite="table"
+	 * @generated
+	 */
+	EList<BusinessColumn> getColumns();
+	
+	
+	// =========================================================================
+	// Utility methods
+	// =========================================================================
+	
+	BusinessColumn getColumn(String name);
+	
+	BusinessColumn getColumn(PhysicalColumn physicalColumn);
 
 } // BusinessTable

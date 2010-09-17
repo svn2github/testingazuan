@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.physical.impl;
 
+import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
@@ -26,7 +27,6 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalColumnImpl#getName <em>Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalColumnImpl#getComment <em>Comment</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalColumnImpl#getDataType <em>Data Type</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalColumnImpl#getTypeName <em>Type Name</em>}</li>
@@ -43,27 +43,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *
  * @generated
  */
-public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
-	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected String name = NAME_EDEFAULT;
-
+public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColumn {
 	/**
 	 * The default value of the '{@link #getComment() <em>Comment</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -291,27 +271,6 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 	@Override
 	protected EClass eStaticClass() {
 		return PhysicalModelPackage.Literals.PHYSICAL_COLUMN;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setName(String newName) {
-		String oldName = name;
-		name = newName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_COLUMN__NAME, oldName, name));
 	}
 
 	/**
@@ -622,8 +581,6 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_COLUMN__NAME:
-				return getName();
 			case PhysicalModelPackage.PHYSICAL_COLUMN__COMMENT:
 				return getComment();
 			case PhysicalModelPackage.PHYSICAL_COLUMN__DATA_TYPE:
@@ -659,9 +616,6 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_COLUMN__NAME:
-				setName((String)newValue);
-				return;
 			case PhysicalModelPackage.PHYSICAL_COLUMN__COMMENT:
 				setComment((String)newValue);
 				return;
@@ -707,9 +661,6 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_COLUMN__NAME:
-				setName(NAME_EDEFAULT);
-				return;
 			case PhysicalModelPackage.PHYSICAL_COLUMN__COMMENT:
 				setComment(COMMENT_EDEFAULT);
 				return;
@@ -755,8 +706,6 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_COLUMN__NAME:
-				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case PhysicalModelPackage.PHYSICAL_COLUMN__COMMENT:
 				return COMMENT_EDEFAULT == null ? comment != null : !COMMENT_EDEFAULT.equals(comment);
 			case PhysicalModelPackage.PHYSICAL_COLUMN__DATA_TYPE:
@@ -793,9 +742,7 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (name: ");
-		result.append(name);
-		result.append(", comment: ");
+		result.append(" (comment: ");
 		result.append(comment);
 		result.append(", dataType: ");
 		result.append(dataType);
@@ -818,5 +765,30 @@ public class PhysicalColumnImpl extends EObjectImpl implements PhysicalColumn {
 		result.append(')');
 		return result.toString();
 	}
+
+	
+	// =========================================================================
+	// Utility methods
+	// =========================================================================
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PhysicalColumnImpl other = (PhysicalColumnImpl) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!getTable().equals(other.getTable()))
+			return false;
+		return true;
+	}
+	
+	
+	
 
 } //PhysicalColumnImpl

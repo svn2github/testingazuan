@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.physical.util;
 
+import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.physical.*;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -92,6 +93,10 @@ public class PhysicalModelAdapterFactory extends AdapterFactoryImpl {
 				return createPhysicalForeignKeyAdapter();
 			}
 			@Override
+			public Adapter caseModelObject(ModelObject object) {
+				return createModelObjectAdapter();
+			}
+			@Override
 			public Adapter defaultCase(EObject object) {
 				return createEObjectAdapter();
 			}
@@ -136,6 +141,20 @@ public class PhysicalModelAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createPhysicalForeignKeyAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.ModelObject <em>Object</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.ModelObject
+	 * @generated
+	 */
+	public Adapter createModelObjectAdapter() {
 		return null;
 	}
 

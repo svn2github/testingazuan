@@ -10,14 +10,17 @@ import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.ModelPropertyCategory;
 import it.eng.spagobi.meta.model.ModelPropertyType;
 
+import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -29,8 +32,8 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelPropertyTypeImpl#getName <em>Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelPropertyTypeImpl#getDescription <em>Description</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelPropertyTypeImpl#getCategory <em>Category</em>}</li>
- *   <li>{@link it.eng.spagobi.meta.model.impl.ModelPropertyTypeImpl#getDefaultValue <em>Default Value</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelPropertyTypeImpl#getAdmissibleValues <em>Admissible Values</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.impl.ModelPropertyTypeImpl#getDefaultValue <em>Default Value</em>}</li>
  * </ul>
  * </p>
  *
@@ -88,6 +91,16 @@ public class ModelPropertyTypeImpl extends EObjectImpl implements ModelPropertyT
 	protected ModelPropertyCategory category;
 
 	/**
+	 * The cached value of the '{@link #getAdmissibleValues() <em>Admissible Values</em>}' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getAdmissibleValues()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> admissibleValues;
+
+	/**
 	 * The default value of the '{@link #getDefaultValue() <em>Default Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -106,26 +119,6 @@ public class ModelPropertyTypeImpl extends EObjectImpl implements ModelPropertyT
 	 * @ordered
 	 */
 	protected String defaultValue = DEFAULT_VALUE_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getAdmissibleValues() <em>Admissible Values</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getAdmissibleValues()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String ADMISSIBLE_VALUES_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getAdmissibleValues() <em>Admissible Values</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getAdmissibleValues()
-	 * @generated
-	 * @ordered
-	 */
-	protected String admissibleValues = ADMISSIBLE_VALUES_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -274,20 +267,11 @@ public class ModelPropertyTypeImpl extends EObjectImpl implements ModelPropertyT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getAdmissibleValues() {
+	public EList<String> getAdmissibleValues() {
+		if (admissibleValues == null) {
+			admissibleValues = new EDataTypeUniqueEList<String>(String.class, this, ModelPackage.MODEL_PROPERTY_TYPE__ADMISSIBLE_VALUES);
+		}
 		return admissibleValues;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setAdmissibleValues(String newAdmissibleValues) {
-		String oldAdmissibleValues = admissibleValues;
-		admissibleValues = newAdmissibleValues;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MODEL_PROPERTY_TYPE__ADMISSIBLE_VALUES, oldAdmissibleValues, admissibleValues));
 	}
 
 	/**
@@ -335,10 +319,10 @@ public class ModelPropertyTypeImpl extends EObjectImpl implements ModelPropertyT
 			case ModelPackage.MODEL_PROPERTY_TYPE__CATEGORY:
 				if (resolve) return getCategory();
 				return basicGetCategory();
-			case ModelPackage.MODEL_PROPERTY_TYPE__DEFAULT_VALUE:
-				return getDefaultValue();
 			case ModelPackage.MODEL_PROPERTY_TYPE__ADMISSIBLE_VALUES:
 				return getAdmissibleValues();
+			case ModelPackage.MODEL_PROPERTY_TYPE__DEFAULT_VALUE:
+				return getDefaultValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -348,6 +332,7 @@ public class ModelPropertyTypeImpl extends EObjectImpl implements ModelPropertyT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -360,11 +345,12 @@ public class ModelPropertyTypeImpl extends EObjectImpl implements ModelPropertyT
 			case ModelPackage.MODEL_PROPERTY_TYPE__CATEGORY:
 				setCategory((ModelPropertyCategory)newValue);
 				return;
+			case ModelPackage.MODEL_PROPERTY_TYPE__ADMISSIBLE_VALUES:
+				getAdmissibleValues().clear();
+				getAdmissibleValues().addAll((Collection<? extends String>)newValue);
+				return;
 			case ModelPackage.MODEL_PROPERTY_TYPE__DEFAULT_VALUE:
 				setDefaultValue((String)newValue);
-				return;
-			case ModelPackage.MODEL_PROPERTY_TYPE__ADMISSIBLE_VALUES:
-				setAdmissibleValues((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -387,11 +373,11 @@ public class ModelPropertyTypeImpl extends EObjectImpl implements ModelPropertyT
 			case ModelPackage.MODEL_PROPERTY_TYPE__CATEGORY:
 				setCategory((ModelPropertyCategory)null);
 				return;
+			case ModelPackage.MODEL_PROPERTY_TYPE__ADMISSIBLE_VALUES:
+				getAdmissibleValues().clear();
+				return;
 			case ModelPackage.MODEL_PROPERTY_TYPE__DEFAULT_VALUE:
 				setDefaultValue(DEFAULT_VALUE_EDEFAULT);
-				return;
-			case ModelPackage.MODEL_PROPERTY_TYPE__ADMISSIBLE_VALUES:
-				setAdmissibleValues(ADMISSIBLE_VALUES_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -411,10 +397,10 @@ public class ModelPropertyTypeImpl extends EObjectImpl implements ModelPropertyT
 				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
 			case ModelPackage.MODEL_PROPERTY_TYPE__CATEGORY:
 				return category != null;
+			case ModelPackage.MODEL_PROPERTY_TYPE__ADMISSIBLE_VALUES:
+				return admissibleValues != null && !admissibleValues.isEmpty();
 			case ModelPackage.MODEL_PROPERTY_TYPE__DEFAULT_VALUE:
 				return DEFAULT_VALUE_EDEFAULT == null ? defaultValue != null : !DEFAULT_VALUE_EDEFAULT.equals(defaultValue);
-			case ModelPackage.MODEL_PROPERTY_TYPE__ADMISSIBLE_VALUES:
-				return ADMISSIBLE_VALUES_EDEFAULT == null ? admissibleValues != null : !ADMISSIBLE_VALUES_EDEFAULT.equals(admissibleValues);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -433,10 +419,10 @@ public class ModelPropertyTypeImpl extends EObjectImpl implements ModelPropertyT
 		result.append(name);
 		result.append(", description: ");
 		result.append(description);
-		result.append(", defaultValue: ");
-		result.append(defaultValue);
 		result.append(", admissibleValues: ");
 		result.append(admissibleValues);
+		result.append(", defaultValue: ");
+		result.append(defaultValue);
 		result.append(')');
 		return result.toString();
 	}

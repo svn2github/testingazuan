@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
@@ -243,16 +244,6 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 	 * @ordered
 	 */
 	protected int position = POSITION_EDEFAULT;
-
-	/**
-	 * The cached value of the '{@link #getTable() <em>Table</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getTable()
-	 * @generated
-	 * @ordered
-	 */
-	protected PhysicalTable table;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -489,24 +480,8 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 	 * @generated
 	 */
 	public PhysicalTable getTable() {
-		if (table != null && table.eIsProxy()) {
-			InternalEObject oldTable = (InternalEObject)table;
-			table = (PhysicalTable)eResolveProxy(oldTable);
-			if (table != oldTable) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, PhysicalModelPackage.PHYSICAL_COLUMN__TABLE, oldTable, table));
-			}
-		}
-		return table;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public PhysicalTable basicGetTable() {
-		return table;
+		if (eContainerFeatureID() != PhysicalModelPackage.PHYSICAL_COLUMN__TABLE) return null;
+		return (PhysicalTable)eContainer();
 	}
 
 	/**
@@ -515,12 +490,7 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 	 * @generated
 	 */
 	public NotificationChain basicSetTable(PhysicalTable newTable, NotificationChain msgs) {
-		PhysicalTable oldTable = table;
-		table = newTable;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_COLUMN__TABLE, oldTable, newTable);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
+		msgs = eBasicSetContainer((InternalEObject)newTable, PhysicalModelPackage.PHYSICAL_COLUMN__TABLE, msgs);
 		return msgs;
 	}
 
@@ -530,10 +500,12 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 	 * @generated
 	 */
 	public void setTable(PhysicalTable newTable) {
-		if (newTable != table) {
+		if (newTable != eInternalContainer() || (eContainerFeatureID() != PhysicalModelPackage.PHYSICAL_COLUMN__TABLE && newTable != null)) {
+			if (EcoreUtil.isAncestor(this, newTable))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if (table != null)
-				msgs = ((InternalEObject)table).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_TABLE__COLUMNS, PhysicalTable.class, msgs);
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
 			if (newTable != null)
 				msgs = ((InternalEObject)newTable).eInverseAdd(this, PhysicalModelPackage.PHYSICAL_TABLE__COLUMNS, PhysicalTable.class, msgs);
 			msgs = basicSetTable(newTable, msgs);
@@ -552,8 +524,8 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case PhysicalModelPackage.PHYSICAL_COLUMN__TABLE:
-				if (table != null)
-					msgs = ((InternalEObject)table).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_TABLE__COLUMNS, PhysicalTable.class, msgs);
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetTable((PhysicalTable)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -571,6 +543,20 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 				return basicSetTable(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case PhysicalModelPackage.PHYSICAL_COLUMN__TABLE:
+				return eInternalContainer().eInverseRemove(this, PhysicalModelPackage.PHYSICAL_TABLE__COLUMNS, PhysicalTable.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
 
 	/**
@@ -602,8 +588,7 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 			case PhysicalModelPackage.PHYSICAL_COLUMN__POSITION:
 				return getPosition();
 			case PhysicalModelPackage.PHYSICAL_COLUMN__TABLE:
-				if (resolve) return getTable();
-				return basicGetTable();
+				return getTable();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -727,7 +712,7 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 			case PhysicalModelPackage.PHYSICAL_COLUMN__POSITION:
 				return position != POSITION_EDEFAULT;
 			case PhysicalModelPackage.PHYSICAL_COLUMN__TABLE:
-				return table != null;
+				return getTable() != null;
 		}
 		return super.eIsSet(featureID);
 	}

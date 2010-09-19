@@ -56,7 +56,7 @@ public interface BusinessColumn extends ModelObject {
 	void setPhysicalColumn(PhysicalColumn value);
 
 	/**
-	 * Returns the value of the '<em><b>Table</b></em>' reference.
+	 * Returns the value of the '<em><b>Table</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessTable#getColumns <em>Columns</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -64,20 +64,20 @@ public interface BusinessColumn extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Table</em>' reference.
+	 * @return the value of the '<em>Table</em>' container reference.
 	 * @see #setTable(BusinessTable)
 	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessColumn_Table()
 	 * @see it.eng.spagobi.meta.model.business.BusinessTable#getColumns
-	 * @model opposite="columns" required="true"
+	 * @model opposite="columns" required="true" transient="false"
 	 * @generated
 	 */
 	BusinessTable getTable();
 
 	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessColumn#getTable <em>Table</em>}' reference.
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessColumn#getTable <em>Table</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Table</em>' reference.
+	 * @param value the new value of the '<em>Table</em>' container reference.
 	 * @see #getTable()
 	 * @generated
 	 */

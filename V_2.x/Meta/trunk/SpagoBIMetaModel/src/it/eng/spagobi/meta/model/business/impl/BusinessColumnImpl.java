@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
@@ -46,16 +47,6 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	 * @ordered
 	 */
 	protected PhysicalColumn physicalColumn;
-
-	/**
-	 * The cached value of the '{@link #getTable() <em>Table</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getTable()
-	 * @generated
-	 * @ordered
-	 */
-	protected BusinessTable table;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -120,24 +111,8 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	 * @generated
 	 */
 	public BusinessTable getTable() {
-		if (table != null && table.eIsProxy()) {
-			InternalEObject oldTable = (InternalEObject)table;
-			table = (BusinessTable)eResolveProxy(oldTable);
-			if (table != oldTable) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, BusinessModelPackage.BUSINESS_COLUMN__TABLE, oldTable, table));
-			}
-		}
-		return table;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public BusinessTable basicGetTable() {
-		return table;
+		if (eContainerFeatureID() != BusinessModelPackage.BUSINESS_COLUMN__TABLE) return null;
+		return (BusinessTable)eContainer();
 	}
 
 	/**
@@ -146,12 +121,7 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	 * @generated
 	 */
 	public NotificationChain basicSetTable(BusinessTable newTable, NotificationChain msgs) {
-		BusinessTable oldTable = table;
-		table = newTable;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BusinessModelPackage.BUSINESS_COLUMN__TABLE, oldTable, newTable);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
+		msgs = eBasicSetContainer((InternalEObject)newTable, BusinessModelPackage.BUSINESS_COLUMN__TABLE, msgs);
 		return msgs;
 	}
 
@@ -161,10 +131,12 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	 * @generated
 	 */
 	public void setTable(BusinessTable newTable) {
-		if (newTable != table) {
+		if (newTable != eInternalContainer() || (eContainerFeatureID() != BusinessModelPackage.BUSINESS_COLUMN__TABLE && newTable != null)) {
+			if (EcoreUtil.isAncestor(this, newTable))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if (table != null)
-				msgs = ((InternalEObject)table).eInverseRemove(this, BusinessModelPackage.BUSINESS_TABLE__COLUMNS, BusinessTable.class, msgs);
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
 			if (newTable != null)
 				msgs = ((InternalEObject)newTable).eInverseAdd(this, BusinessModelPackage.BUSINESS_TABLE__COLUMNS, BusinessTable.class, msgs);
 			msgs = basicSetTable(newTable, msgs);
@@ -183,8 +155,8 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
-				if (table != null)
-					msgs = ((InternalEObject)table).eInverseRemove(this, BusinessModelPackage.BUSINESS_TABLE__COLUMNS, BusinessTable.class, msgs);
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetTable((BusinessTable)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -210,14 +182,27 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
+				return eInternalContainer().eInverseRemove(this, BusinessModelPackage.BUSINESS_TABLE__COLUMNS, BusinessTable.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case BusinessModelPackage.BUSINESS_COLUMN__PHYSICAL_COLUMN:
 				if (resolve) return getPhysicalColumn();
 				return basicGetPhysicalColumn();
 			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
-				if (resolve) return getTable();
-				return basicGetTable();
+				return getTable();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -269,7 +254,7 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 			case BusinessModelPackage.BUSINESS_COLUMN__PHYSICAL_COLUMN:
 				return physicalColumn != null;
 			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
-				return table != null;
+				return getTable() != null;
 		}
 		return super.eIsSet(featureID);
 	}

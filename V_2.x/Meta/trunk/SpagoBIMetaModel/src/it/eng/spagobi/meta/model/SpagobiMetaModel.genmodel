@@ -40,6 +40,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//Model/physicalModels"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//Model/businessModels"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//Model/propertyTypes"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//Model/propertyCategories"/>
     </genClasses>
     <nestedGenPackages prefix="PhysicalModel" basePackage="it.eng.spagobi.meta.model"
         disposableProviderFactory="true" ecorePackage="SpagoBIMetaModel.ecore#//physical">

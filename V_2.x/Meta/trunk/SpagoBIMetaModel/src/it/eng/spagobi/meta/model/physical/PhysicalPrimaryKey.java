@@ -31,7 +31,7 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface PhysicalPrimaryKey extends ModelObject {
 	/**
-	 * Returns the value of the '<em><b>Model</b></em>' reference.
+	 * Returns the value of the '<em><b>Model</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getPrimaryKeys <em>Primary Keys</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -39,20 +39,20 @@ public interface PhysicalPrimaryKey extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Model</em>' reference.
+	 * @return the value of the '<em>Model</em>' container reference.
 	 * @see #setModel(PhysicalModel)
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalPrimaryKey_Model()
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalModel#getPrimaryKeys
-	 * @model opposite="primaryKeys" required="true"
+	 * @model opposite="primaryKeys" required="true" transient="false"
 	 * @generated
 	 */
 	PhysicalModel getModel();
 
 	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getModel <em>Model</em>}' reference.
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getModel <em>Model</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Model</em>' reference.
+	 * @param value the new value of the '<em>Model</em>' container reference.
 	 * @see #getModel()
 	 * @generated
 	 */

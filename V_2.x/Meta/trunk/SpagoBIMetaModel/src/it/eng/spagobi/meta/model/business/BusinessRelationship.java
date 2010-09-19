@@ -32,7 +32,7 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface BusinessRelationship extends ModelObject {
 	/**
-	 * Returns the value of the '<em><b>Model</b></em>' reference.
+	 * Returns the value of the '<em><b>Model</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessModel#getRelationships <em>Relationships</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -40,20 +40,20 @@ public interface BusinessRelationship extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Model</em>' reference.
+	 * @return the value of the '<em>Model</em>' container reference.
 	 * @see #setModel(BusinessModel)
 	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessRelationship_Model()
 	 * @see it.eng.spagobi.meta.model.business.BusinessModel#getRelationships
-	 * @model opposite="relationships" required="true"
+	 * @model opposite="relationships" required="true" transient="false"
 	 * @generated
 	 */
 	BusinessModel getModel();
 
 	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getModel <em>Model</em>}' reference.
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getModel <em>Model</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Model</em>' reference.
+	 * @param value the new value of the '<em>Model</em>' container reference.
 	 * @see #getModel()
 	 * @generated
 	 */

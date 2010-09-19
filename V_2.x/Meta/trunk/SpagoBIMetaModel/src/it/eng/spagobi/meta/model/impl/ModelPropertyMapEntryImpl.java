@@ -11,6 +11,7 @@ import it.eng.spagobi.meta.model.ModelProperty;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.BasicEMap;
 import org.eclipse.emf.common.util.EMap;
 
@@ -57,7 +58,7 @@ public class ModelPropertyMapEntryImpl extends EObjectImpl implements BasicEMap.
 	protected String key = KEY_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getTypedValue() <em>Value</em>}' reference.
+	 * The cached value of the '{@link #getTypedValue() <em>Value</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getTypedValue()
@@ -112,14 +113,6 @@ public class ModelPropertyMapEntryImpl extends EObjectImpl implements BasicEMap.
 	 * @generated
 	 */
 	public ModelProperty getTypedValue() {
-		if (value != null && value.eIsProxy()) {
-			InternalEObject oldValue = (InternalEObject)value;
-			value = (ModelProperty)eResolveProxy(oldValue);
-			if (value != oldValue) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, ModelPackage.MODEL_PROPERTY_MAP_ENTRY__VALUE, oldValue, value));
-			}
-		}
 		return value;
 	}
 
@@ -128,8 +121,14 @@ public class ModelPropertyMapEntryImpl extends EObjectImpl implements BasicEMap.
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ModelProperty basicGetTypedValue() {
-		return value;
+	public NotificationChain basicSetTypedValue(ModelProperty newValue, NotificationChain msgs) {
+		ModelProperty oldValue = value;
+		value = newValue;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.MODEL_PROPERTY_MAP_ENTRY__VALUE, oldValue, newValue);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
 	}
 
 	/**
@@ -138,10 +137,31 @@ public class ModelPropertyMapEntryImpl extends EObjectImpl implements BasicEMap.
 	 * @generated
 	 */
 	public void setTypedValue(ModelProperty newValue) {
-		ModelProperty oldValue = value;
-		value = newValue;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MODEL_PROPERTY_MAP_ENTRY__VALUE, oldValue, value));
+		if (newValue != value) {
+			NotificationChain msgs = null;
+			if (value != null)
+				msgs = ((InternalEObject)value).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MODEL_PROPERTY_MAP_ENTRY__VALUE, null, msgs);
+			if (newValue != null)
+				msgs = ((InternalEObject)newValue).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MODEL_PROPERTY_MAP_ENTRY__VALUE, null, msgs);
+			msgs = basicSetTypedValue(newValue, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MODEL_PROPERTY_MAP_ENTRY__VALUE, newValue, newValue));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ModelPackage.MODEL_PROPERTY_MAP_ENTRY__VALUE:
+				return basicSetTypedValue(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -155,8 +175,7 @@ public class ModelPropertyMapEntryImpl extends EObjectImpl implements BasicEMap.
 			case ModelPackage.MODEL_PROPERTY_MAP_ENTRY__KEY:
 				return getTypedKey();
 			case ModelPackage.MODEL_PROPERTY_MAP_ENTRY__VALUE:
-				if (resolve) return getTypedValue();
-				return basicGetTypedValue();
+				return getTypedValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}

@@ -163,7 +163,7 @@ public interface PhysicalModelPackage extends EPackage {
 	int PHYSICAL_MODEL__SCHEMA = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 3;
 
 	/**
-	 * The feature id for the '<em><b>Parent Model</b></em>' reference.
+	 * The feature id for the '<em><b>Parent Model</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -181,7 +181,7 @@ public interface PhysicalModelPackage extends EPackage {
 	int PHYSICAL_MODEL__TABLES = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 5;
 
 	/**
-	 * The feature id for the '<em><b>Primary Keys</b></em>' reference list.
+	 * The feature id for the '<em><b>Primary Keys</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -190,7 +190,7 @@ public interface PhysicalModelPackage extends EPackage {
 	int PHYSICAL_MODEL__PRIMARY_KEYS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 6;
 
 	/**
-	 * The feature id for the '<em><b>Foreign Keys</b></em>' reference list.
+	 * The feature id for the '<em><b>Foreign Keys</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -291,7 +291,7 @@ public interface PhysicalModelPackage extends EPackage {
 	int PHYSICAL_TABLE__MODEL = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Columns</b></em>' reference list.
+	 * The feature id for the '<em><b>Columns</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -462,7 +462,7 @@ public interface PhysicalModelPackage extends EPackage {
 	int PHYSICAL_COLUMN__POSITION = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 9;
 
 	/**
-	 * The feature id for the '<em><b>Table</b></em>' reference.
+	 * The feature id for the '<em><b>Table</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -516,7 +516,7 @@ public interface PhysicalModelPackage extends EPackage {
 	int PHYSICAL_PRIMARY_KEY__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
-	 * The feature id for the '<em><b>Model</b></em>' reference.
+	 * The feature id for the '<em><b>Model</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -642,7 +642,7 @@ public interface PhysicalModelPackage extends EPackage {
 	int PHYSICAL_FOREIGN_KEY__DESTINATION_COLUMNS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 5;
 
 	/**
-	 * The feature id for the '<em><b>Model</b></em>' reference.
+	 * The feature id for the '<em><b>Model</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -781,10 +781,10 @@ public interface PhysicalModelPackage extends EPackage {
 	EAttribute getPhysicalColumn_Position();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#getTable <em>Table</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#getTable <em>Table</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Table</em>'.
+	 * @return the meta object for the container reference '<em>Table</em>'.
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalColumn#getTable()
 	 * @see #getPhysicalColumn()
 	 * @generated
@@ -868,10 +868,10 @@ public interface PhysicalModelPackage extends EPackage {
 	EReference getPhysicalForeignKey_DestinationColumns();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getModel <em>Model</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @return the meta object for the container reference '<em>Model</em>'.
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getModel()
 	 * @see #getPhysicalForeignKey()
 	 * @generated
@@ -933,10 +933,10 @@ public interface PhysicalModelPackage extends EPackage {
 	EAttribute getPhysicalModel_Schema();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getParentModel <em>Parent Model</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getParentModel <em>Parent Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Parent Model</em>'.
+	 * @return the meta object for the container reference '<em>Parent Model</em>'.
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalModel#getParentModel()
 	 * @see #getPhysicalModel()
 	 * @generated
@@ -955,10 +955,10 @@ public interface PhysicalModelPackage extends EPackage {
 	EReference getPhysicalModel_Tables();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getPrimaryKeys <em>Primary Keys</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getPrimaryKeys <em>Primary Keys</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Primary Keys</em>'.
+	 * @return the meta object for the containment reference list '<em>Primary Keys</em>'.
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalModel#getPrimaryKeys()
 	 * @see #getPhysicalModel()
 	 * @generated
@@ -966,10 +966,10 @@ public interface PhysicalModelPackage extends EPackage {
 	EReference getPhysicalModel_PrimaryKeys();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getForeignKeys <em>Foreign Keys</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getForeignKeys <em>Foreign Keys</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Foreign Keys</em>'.
+	 * @return the meta object for the containment reference list '<em>Foreign Keys</em>'.
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalModel#getForeignKeys()
 	 * @see #getPhysicalModel()
 	 * @generated
@@ -987,10 +987,10 @@ public interface PhysicalModelPackage extends EPackage {
 	EClass getPhysicalPrimaryKey();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getModel <em>Model</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @return the meta object for the container reference '<em>Model</em>'.
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getModel()
 	 * @see #getPhysicalPrimaryKey()
 	 * @generated
@@ -1063,10 +1063,10 @@ public interface PhysicalModelPackage extends EPackage {
 	EReference getPhysicalTable_Model();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getColumns <em>Columns</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getColumns <em>Columns</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Columns</em>'.
+	 * @return the meta object for the containment reference list '<em>Columns</em>'.
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalTable#getColumns()
 	 * @see #getPhysicalTable()
 	 * @generated
@@ -1219,7 +1219,7 @@ public interface PhysicalModelPackage extends EPackage {
 		EAttribute PHYSICAL_COLUMN__POSITION = eINSTANCE.getPhysicalColumn_Position();
 
 		/**
-		 * The meta object literal for the '<em><b>Table</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Table</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1285,7 +1285,7 @@ public interface PhysicalModelPackage extends EPackage {
 		EReference PHYSICAL_FOREIGN_KEY__DESTINATION_COLUMNS = eINSTANCE.getPhysicalForeignKey_DestinationColumns();
 
 		/**
-		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Model</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1335,7 +1335,7 @@ public interface PhysicalModelPackage extends EPackage {
 		EAttribute PHYSICAL_MODEL__SCHEMA = eINSTANCE.getPhysicalModel_Schema();
 
 		/**
-		 * The meta object literal for the '<em><b>Parent Model</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Parent Model</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1351,7 +1351,7 @@ public interface PhysicalModelPackage extends EPackage {
 		EReference PHYSICAL_MODEL__TABLES = eINSTANCE.getPhysicalModel_Tables();
 
 		/**
-		 * The meta object literal for the '<em><b>Primary Keys</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Primary Keys</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1359,7 +1359,7 @@ public interface PhysicalModelPackage extends EPackage {
 		EReference PHYSICAL_MODEL__PRIMARY_KEYS = eINSTANCE.getPhysicalModel_PrimaryKeys();
 
 		/**
-		 * The meta object literal for the '<em><b>Foreign Keys</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Foreign Keys</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1377,7 +1377,7 @@ public interface PhysicalModelPackage extends EPackage {
 		EClass PHYSICAL_PRIMARY_KEY = eINSTANCE.getPhysicalPrimaryKey();
 
 		/**
-		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Model</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1435,7 +1435,7 @@ public interface PhysicalModelPackage extends EPackage {
 		EReference PHYSICAL_TABLE__MODEL = eINSTANCE.getPhysicalTable_Model();
 
 		/**
-		 * The meta object literal for the '<em><b>Columns</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Columns</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated

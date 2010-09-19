@@ -63,12 +63,21 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 			rootModel = o.getTable().getModel().getParentModel();
 		}
 				
-		structuralCategory = FACTORY.createModelPropertyCategory();
-		structuralCategory.setName("Structural");
-		structuralCategory.setDescription("Structural properties");
-		styleCategory = FACTORY.createModelPropertyCategory();
-		styleCategory.setName("Style");
-		styleCategory.setDescription("Style properties");
+		structuralCategory =  o.getTable().getModel().getParentModel().getPropertyCategory("Structural");
+		if(structuralCategory == null) {
+			structuralCategory = FACTORY.createModelPropertyCategory();
+			structuralCategory.setName("Structural");
+			structuralCategory.setDescription("Structural properties");
+			o.getTable().getModel().getParentModel().getPropertyCategories().add(structuralCategory);
+		}		
+		
+		styleCategory =  o.getTable().getModel().getParentModel().getPropertyCategory("Style");
+		if(styleCategory == null) {
+			styleCategory = FACTORY.createModelPropertyCategory();
+			styleCategory.setName("Style");
+			styleCategory.setDescription("Style properties");
+			o.getTable().getModel().getParentModel().getPropertyCategories().add(styleCategory);
+		}
 		
 		
 		// AGGREGATION TYPE

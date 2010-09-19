@@ -107,7 +107,7 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_MODEL__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
-	 * The feature id for the '<em><b>Parent Model</b></em>' reference.
+	 * The feature id for the '<em><b>Parent Model</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -125,7 +125,7 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_MODEL__PHYSICAL_MODEL = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Tables</b></em>' reference list.
+	 * The feature id for the '<em><b>Tables</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -134,7 +134,7 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_MODEL__TABLES = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Relationships</b></em>' reference list.
+	 * The feature id for the '<em><b>Relationships</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -198,7 +198,7 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_TABLE__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
-	 * The feature id for the '<em><b>Model</b></em>' reference.
+	 * The feature id for the '<em><b>Model</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -216,7 +216,7 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_TABLE__PHYSICAL_TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Columns</b></em>' reference list.
+	 * The feature id for the '<em><b>Columns</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -289,7 +289,7 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_COLUMN__PHYSICAL_COLUMN = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Table</b></em>' reference.
+	 * The feature id for the '<em><b>Table</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -353,7 +353,7 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_RELATIONSHIP__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
-	 * The feature id for the '<em><b>Model</b></em>' reference.
+	 * The feature id for the '<em><b>Model</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -573,10 +573,10 @@ public interface BusinessModelPackage extends EPackage {
 	EClass getBusinessModel();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessModel#getParentModel <em>Parent Model</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.business.BusinessModel#getParentModel <em>Parent Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Parent Model</em>'.
+	 * @return the meta object for the container reference '<em>Parent Model</em>'.
 	 * @see it.eng.spagobi.meta.model.business.BusinessModel#getParentModel()
 	 * @see #getBusinessModel()
 	 * @generated
@@ -595,10 +595,10 @@ public interface BusinessModelPackage extends EPackage {
 	EReference getBusinessModel_PhysicalModel();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.business.BusinessModel#getTables <em>Tables</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.business.BusinessModel#getTables <em>Tables</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Tables</em>'.
+	 * @return the meta object for the containment reference list '<em>Tables</em>'.
 	 * @see it.eng.spagobi.meta.model.business.BusinessModel#getTables()
 	 * @see #getBusinessModel()
 	 * @generated
@@ -606,10 +606,10 @@ public interface BusinessModelPackage extends EPackage {
 	EReference getBusinessModel_Tables();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.business.BusinessModel#getRelationships <em>Relationships</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.business.BusinessModel#getRelationships <em>Relationships</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Relationships</em>'.
+	 * @return the meta object for the containment reference list '<em>Relationships</em>'.
 	 * @see it.eng.spagobi.meta.model.business.BusinessModel#getRelationships()
 	 * @see #getBusinessModel()
 	 * @generated
@@ -627,10 +627,10 @@ public interface BusinessModelPackage extends EPackage {
 	EClass getBusinessTable();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessTable#getModel <em>Model</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.business.BusinessTable#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @return the meta object for the container reference '<em>Model</em>'.
 	 * @see it.eng.spagobi.meta.model.business.BusinessTable#getModel()
 	 * @see #getBusinessTable()
 	 * @generated
@@ -649,10 +649,10 @@ public interface BusinessModelPackage extends EPackage {
 	EReference getBusinessTable_PhysicalTable();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.business.BusinessTable#getColumns <em>Columns</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.business.BusinessTable#getColumns <em>Columns</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Columns</em>'.
+	 * @return the meta object for the containment reference list '<em>Columns</em>'.
 	 * @see it.eng.spagobi.meta.model.business.BusinessTable#getColumns()
 	 * @see #getBusinessTable()
 	 * @generated
@@ -681,10 +681,10 @@ public interface BusinessModelPackage extends EPackage {
 	EReference getBusinessColumn_PhysicalColumn();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessColumn#getTable <em>Table</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.business.BusinessColumn#getTable <em>Table</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Table</em>'.
+	 * @return the meta object for the container reference '<em>Table</em>'.
 	 * @see it.eng.spagobi.meta.model.business.BusinessColumn#getTable()
 	 * @see #getBusinessColumn()
 	 * @generated
@@ -702,10 +702,10 @@ public interface BusinessModelPackage extends EPackage {
 	EClass getBusinessRelationship();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getModel <em>Model</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @return the meta object for the container reference '<em>Model</em>'.
 	 * @see it.eng.spagobi.meta.model.business.BusinessRelationship#getModel()
 	 * @see #getBusinessRelationship()
 	 * @generated
@@ -864,7 +864,7 @@ public interface BusinessModelPackage extends EPackage {
 		EClass BUSINESS_MODEL = eINSTANCE.getBusinessModel();
 
 		/**
-		 * The meta object literal for the '<em><b>Parent Model</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Parent Model</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -880,7 +880,7 @@ public interface BusinessModelPackage extends EPackage {
 		EReference BUSINESS_MODEL__PHYSICAL_MODEL = eINSTANCE.getBusinessModel_PhysicalModel();
 
 		/**
-		 * The meta object literal for the '<em><b>Tables</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Tables</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -888,7 +888,7 @@ public interface BusinessModelPackage extends EPackage {
 		EReference BUSINESS_MODEL__TABLES = eINSTANCE.getBusinessModel_Tables();
 
 		/**
-		 * The meta object literal for the '<em><b>Relationships</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Relationships</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -906,7 +906,7 @@ public interface BusinessModelPackage extends EPackage {
 		EClass BUSINESS_TABLE = eINSTANCE.getBusinessTable();
 
 		/**
-		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Model</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -922,7 +922,7 @@ public interface BusinessModelPackage extends EPackage {
 		EReference BUSINESS_TABLE__PHYSICAL_TABLE = eINSTANCE.getBusinessTable_PhysicalTable();
 
 		/**
-		 * The meta object literal for the '<em><b>Columns</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Columns</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -948,7 +948,7 @@ public interface BusinessModelPackage extends EPackage {
 		EReference BUSINESS_COLUMN__PHYSICAL_COLUMN = eINSTANCE.getBusinessColumn_PhysicalColumn();
 
 		/**
-		 * The meta object literal for the '<em><b>Table</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Table</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -966,7 +966,7 @@ public interface BusinessModelPackage extends EPackage {
 		EClass BUSINESS_RELATIONSHIP = eINSTANCE.getBusinessRelationship();
 
 		/**
-		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Model</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated

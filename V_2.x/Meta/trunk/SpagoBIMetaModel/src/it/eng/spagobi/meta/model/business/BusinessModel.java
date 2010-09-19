@@ -36,7 +36,7 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface BusinessModel extends ModelObject {
 	/**
-	 * Returns the value of the '<em><b>Parent Model</b></em>' reference.
+	 * Returns the value of the '<em><b>Parent Model</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.Model#getBusinessModels <em>Business Models</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -44,20 +44,20 @@ public interface BusinessModel extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Parent Model</em>' reference.
+	 * @return the value of the '<em>Parent Model</em>' container reference.
 	 * @see #setParentModel(Model)
 	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessModel_ParentModel()
 	 * @see it.eng.spagobi.meta.model.Model#getBusinessModels
-	 * @model opposite="businessModels" required="true"
+	 * @model opposite="businessModels" required="true" transient="false"
 	 * @generated
 	 */
 	Model getParentModel();
 
 	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessModel#getParentModel <em>Parent Model</em>}' reference.
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessModel#getParentModel <em>Parent Model</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Parent Model</em>' reference.
+	 * @param value the new value of the '<em>Parent Model</em>' container reference.
 	 * @see #getParentModel()
 	 * @generated
 	 */
@@ -90,7 +90,7 @@ public interface BusinessModel extends ModelObject {
 	void setPhysicalModel(PhysicalModel value);
 
 	/**
-	 * Returns the value of the '<em><b>Tables</b></em>' reference list.
+	 * Returns the value of the '<em><b>Tables</b></em>' containment reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.business.BusinessTable}.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessTable#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
@@ -99,16 +99,16 @@ public interface BusinessModel extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Tables</em>' reference list.
+	 * @return the value of the '<em>Tables</em>' containment reference list.
 	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessModel_Tables()
 	 * @see it.eng.spagobi.meta.model.business.BusinessTable#getModel
-	 * @model opposite="model"
+	 * @model opposite="model" containment="true"
 	 * @generated
 	 */
 	EList<BusinessTable> getTables();
 
 	/**
-	 * Returns the value of the '<em><b>Relationships</b></em>' reference list.
+	 * Returns the value of the '<em><b>Relationships</b></em>' containment reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.business.BusinessRelationship}.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
@@ -117,10 +117,10 @@ public interface BusinessModel extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Relationships</em>' reference list.
+	 * @return the value of the '<em>Relationships</em>' containment reference list.
 	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessModel_Relationships()
 	 * @see it.eng.spagobi.meta.model.business.BusinessRelationship#getModel
-	 * @model opposite="model"
+	 * @model opposite="model" containment="true"
 	 * @generated
 	 */
 	EList<BusinessRelationship> getRelationships();

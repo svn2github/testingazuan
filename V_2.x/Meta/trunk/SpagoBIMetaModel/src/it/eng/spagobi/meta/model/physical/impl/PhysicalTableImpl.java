@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
@@ -93,7 +94,7 @@ public class PhysicalTableImpl extends ModelObjectImpl implements PhysicalTable 
 	protected String type = TYPE_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getColumns() <em>Columns</em>}' reference list.
+	 * The cached value of the '{@link #getColumns() <em>Columns</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getColumns()
@@ -241,7 +242,7 @@ public class PhysicalTableImpl extends ModelObjectImpl implements PhysicalTable 
 	 */
 	public EList<PhysicalColumn> getColumns() {
 		if (columns == null) {
-			columns = new EObjectWithInverseResolvingEList<PhysicalColumn>(PhysicalColumn.class, this, PhysicalModelPackage.PHYSICAL_TABLE__COLUMNS, PhysicalModelPackage.PHYSICAL_COLUMN__TABLE);
+			columns = new EObjectContainmentWithInverseEList<PhysicalColumn>(PhysicalColumn.class, this, PhysicalModelPackage.PHYSICAL_TABLE__COLUMNS, PhysicalModelPackage.PHYSICAL_COLUMN__TABLE);
 		}
 		return columns;
 	}

@@ -254,7 +254,7 @@ public interface ModelPackage extends EPackage {
 	int MODEL_PROPERTY_MAP_ENTRY__KEY = 0;
 
 	/**
-	 * The feature id for the '<em><b>Value</b></em>' reference.
+	 * The feature id for the '<em><b>Value</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -363,7 +363,7 @@ public interface ModelPackage extends EPackage {
 	int MODEL__PROPERTIES = MODEL_OBJECT__PROPERTIES;
 
 	/**
-	 * The feature id for the '<em><b>Physical Models</b></em>' reference list.
+	 * The feature id for the '<em><b>Physical Models</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -372,7 +372,7 @@ public interface ModelPackage extends EPackage {
 	int MODEL__PHYSICAL_MODELS = MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Business Models</b></em>' reference list.
+	 * The feature id for the '<em><b>Business Models</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -381,7 +381,7 @@ public interface ModelPackage extends EPackage {
 	int MODEL__BUSINESS_MODELS = MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Property Types</b></em>' reference list.
+	 * The feature id for the '<em><b>Property Types</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -390,13 +390,22 @@ public interface ModelPackage extends EPackage {
 	int MODEL__PROPERTY_TYPES = MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
+	 * The feature id for the '<em><b>Property Categories</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL__PROPERTY_CATEGORIES = MODEL_OBJECT_FEATURE_COUNT + 3;
+
+	/**
 	 * The number of structural features of the '<em>Model</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL_FEATURE_COUNT = MODEL_OBJECT_FEATURE_COUNT + 3;
+	int MODEL_FEATURE_COUNT = MODEL_OBJECT_FEATURE_COUNT + 4;
 
 
 	/**
@@ -622,7 +631,7 @@ public interface ModelPackage extends EPackage {
 	 * @return the meta object for class '<em>Property Map Entry</em>'.
 	 * @see java.util.Map.Entry
 	 * @model keyDataType="org.eclipse.emf.ecore.EString"
-	 *        valueType="it.eng.spagobi.meta.model.ModelProperty"
+	 *        valueType="it.eng.spagobi.meta.model.ModelProperty" valueContainment="true"
 	 * @generated
 	 */
 	EClass getModelPropertyMapEntry();
@@ -639,10 +648,10 @@ public interface ModelPackage extends EPackage {
 	EAttribute getModelPropertyMapEntry_Key();
 
 	/**
-	 * Returns the meta object for the reference '{@link java.util.Map.Entry <em>Value</em>}'.
+	 * Returns the meta object for the containment reference '{@link java.util.Map.Entry <em>Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Value</em>'.
+	 * @return the meta object for the containment reference '<em>Value</em>'.
 	 * @see java.util.Map.Entry
 	 * @see #getModelPropertyMapEntry()
 	 * @generated
@@ -660,10 +669,10 @@ public interface ModelPackage extends EPackage {
 	EClass getModel();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.Model#getPhysicalModels <em>Physical Models</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.Model#getPhysicalModels <em>Physical Models</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Physical Models</em>'.
+	 * @return the meta object for the containment reference list '<em>Physical Models</em>'.
 	 * @see it.eng.spagobi.meta.model.Model#getPhysicalModels()
 	 * @see #getModel()
 	 * @generated
@@ -671,10 +680,10 @@ public interface ModelPackage extends EPackage {
 	EReference getModel_PhysicalModels();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.Model#getBusinessModels <em>Business Models</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.Model#getBusinessModels <em>Business Models</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Business Models</em>'.
+	 * @return the meta object for the containment reference list '<em>Business Models</em>'.
 	 * @see it.eng.spagobi.meta.model.Model#getBusinessModels()
 	 * @see #getModel()
 	 * @generated
@@ -682,15 +691,26 @@ public interface ModelPackage extends EPackage {
 	EReference getModel_BusinessModels();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.Model#getPropertyTypes <em>Property Types</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.Model#getPropertyTypes <em>Property Types</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Property Types</em>'.
+	 * @return the meta object for the containment reference list '<em>Property Types</em>'.
 	 * @see it.eng.spagobi.meta.model.Model#getPropertyTypes()
 	 * @see #getModel()
 	 * @generated
 	 */
 	EReference getModel_PropertyTypes();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.Model#getPropertyCategories <em>Property Categories</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Property Categories</em>'.
+	 * @see it.eng.spagobi.meta.model.Model#getPropertyCategories()
+	 * @see #getModel()
+	 * @generated
+	 */
+	EReference getModel_PropertyCategories();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -901,7 +921,7 @@ public interface ModelPackage extends EPackage {
 		EAttribute MODEL_PROPERTY_MAP_ENTRY__KEY = eINSTANCE.getModelPropertyMapEntry_Key();
 
 		/**
-		 * The meta object literal for the '<em><b>Value</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Value</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -919,7 +939,7 @@ public interface ModelPackage extends EPackage {
 		EClass MODEL = eINSTANCE.getModel();
 
 		/**
-		 * The meta object literal for the '<em><b>Physical Models</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Physical Models</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -927,7 +947,7 @@ public interface ModelPackage extends EPackage {
 		EReference MODEL__PHYSICAL_MODELS = eINSTANCE.getModel_PhysicalModels();
 
 		/**
-		 * The meta object literal for the '<em><b>Business Models</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Business Models</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -935,12 +955,20 @@ public interface ModelPackage extends EPackage {
 		EReference MODEL__BUSINESS_MODELS = eINSTANCE.getModel_BusinessModels();
 
 		/**
-		 * The meta object literal for the '<em><b>Property Types</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Property Types</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EReference MODEL__PROPERTY_TYPES = eINSTANCE.getModel_PropertyTypes();
+
+		/**
+		 * The meta object literal for the '<em><b>Property Categories</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference MODEL__PROPERTY_CATEGORIES = eINSTANCE.getModel_PropertyCategories();
 
 	}
 

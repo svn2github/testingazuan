@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * <!-- begin-user-doc -->
@@ -45,16 +46,6 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * @generated
  */
 public class PhysicalPrimaryKeyImpl extends ModelObjectImpl implements PhysicalPrimaryKey {
-	/**
-	 * The cached value of the '{@link #getModel() <em>Model</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getModel()
-	 * @generated
-	 * @ordered
-	 */
-	protected PhysicalModel model;
-
 	/**
 	 * The cached value of the '{@link #getTable() <em>Table</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -100,24 +91,8 @@ public class PhysicalPrimaryKeyImpl extends ModelObjectImpl implements PhysicalP
 	 * @generated
 	 */
 	public PhysicalModel getModel() {
-		if (model != null && model.eIsProxy()) {
-			InternalEObject oldModel = (InternalEObject)model;
-			model = (PhysicalModel)eResolveProxy(oldModel);
-			if (model != oldModel) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL, oldModel, model));
-			}
-		}
-		return model;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public PhysicalModel basicGetModel() {
-		return model;
+		if (eContainerFeatureID() != PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL) return null;
+		return (PhysicalModel)eContainer();
 	}
 
 	/**
@@ -126,12 +101,7 @@ public class PhysicalPrimaryKeyImpl extends ModelObjectImpl implements PhysicalP
 	 * @generated
 	 */
 	public NotificationChain basicSetModel(PhysicalModel newModel, NotificationChain msgs) {
-		PhysicalModel oldModel = model;
-		model = newModel;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL, oldModel, newModel);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
+		msgs = eBasicSetContainer((InternalEObject)newModel, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL, msgs);
 		return msgs;
 	}
 
@@ -141,10 +111,12 @@ public class PhysicalPrimaryKeyImpl extends ModelObjectImpl implements PhysicalP
 	 * @generated
 	 */
 	public void setModel(PhysicalModel newModel) {
-		if (newModel != model) {
+		if (newModel != eInternalContainer() || (eContainerFeatureID() != PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL && newModel != null)) {
+			if (EcoreUtil.isAncestor(this, newModel))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if (model != null)
-				msgs = ((InternalEObject)model).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_MODEL__PRIMARY_KEYS, PhysicalModel.class, msgs);
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
 			if (newModel != null)
 				msgs = ((InternalEObject)newModel).eInverseAdd(this, PhysicalModelPackage.PHYSICAL_MODEL__PRIMARY_KEYS, PhysicalModel.class, msgs);
 			msgs = basicSetModel(newModel, msgs);
@@ -235,8 +207,8 @@ public class PhysicalPrimaryKeyImpl extends ModelObjectImpl implements PhysicalP
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL:
-				if (model != null)
-					msgs = ((InternalEObject)model).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_MODEL__PRIMARY_KEYS, PhysicalModel.class, msgs);
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetModel((PhysicalModel)otherEnd, msgs);
 			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE:
 				if (table != null)
@@ -268,11 +240,24 @@ public class PhysicalPrimaryKeyImpl extends ModelObjectImpl implements PhysicalP
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL:
+				return eInternalContainer().eInverseRemove(this, PhysicalModelPackage.PHYSICAL_MODEL__PRIMARY_KEYS, PhysicalModel.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL:
-				if (resolve) return getModel();
-				return basicGetModel();
+				return getModel();
 			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE:
 				if (resolve) return getTable();
 				return basicGetTable();
@@ -335,7 +320,7 @@ public class PhysicalPrimaryKeyImpl extends ModelObjectImpl implements PhysicalP
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL:
-				return model != null;
+				return getModel() != null;
 			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE:
 				return table != null;
 			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__COLUMNS:

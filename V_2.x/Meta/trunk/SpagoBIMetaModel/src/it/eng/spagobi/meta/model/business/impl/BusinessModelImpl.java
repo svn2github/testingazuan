@@ -28,10 +28,12 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
@@ -52,16 +54,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel {
 	/**
-	 * The cached value of the '{@link #getParentModel() <em>Parent Model</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getParentModel()
-	 * @generated
-	 * @ordered
-	 */
-	protected Model parentModel;
-
-	/**
 	 * The cached value of the '{@link #getPhysicalModel() <em>Physical Model</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -72,7 +64,7 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	protected PhysicalModel physicalModel;
 
 	/**
-	 * The cached value of the '{@link #getTables() <em>Tables</em>}' reference list.
+	 * The cached value of the '{@link #getTables() <em>Tables</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getTables()
@@ -82,7 +74,7 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	protected EList<BusinessTable> tables;
 
 	/**
-	 * The cached value of the '{@link #getRelationships() <em>Relationships</em>}' reference list.
+	 * The cached value of the '{@link #getRelationships() <em>Relationships</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getRelationships()
@@ -116,24 +108,8 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	 * @generated
 	 */
 	public Model getParentModel() {
-		if (parentModel != null && parentModel.eIsProxy()) {
-			InternalEObject oldParentModel = (InternalEObject)parentModel;
-			parentModel = (Model)eResolveProxy(oldParentModel);
-			if (parentModel != oldParentModel) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, BusinessModelPackage.BUSINESS_MODEL__PARENT_MODEL, oldParentModel, parentModel));
-			}
-		}
-		return parentModel;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Model basicGetParentModel() {
-		return parentModel;
+		if (eContainerFeatureID() != BusinessModelPackage.BUSINESS_MODEL__PARENT_MODEL) return null;
+		return (Model)eContainer();
 	}
 
 	/**
@@ -142,12 +118,7 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	 * @generated
 	 */
 	public NotificationChain basicSetParentModel(Model newParentModel, NotificationChain msgs) {
-		Model oldParentModel = parentModel;
-		parentModel = newParentModel;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BusinessModelPackage.BUSINESS_MODEL__PARENT_MODEL, oldParentModel, newParentModel);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
+		msgs = eBasicSetContainer((InternalEObject)newParentModel, BusinessModelPackage.BUSINESS_MODEL__PARENT_MODEL, msgs);
 		return msgs;
 	}
 
@@ -157,10 +128,12 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	 * @generated
 	 */
 	public void setParentModel(Model newParentModel) {
-		if (newParentModel != parentModel) {
+		if (newParentModel != eInternalContainer() || (eContainerFeatureID() != BusinessModelPackage.BUSINESS_MODEL__PARENT_MODEL && newParentModel != null)) {
+			if (EcoreUtil.isAncestor(this, newParentModel))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if (parentModel != null)
-				msgs = ((InternalEObject)parentModel).eInverseRemove(this, ModelPackage.MODEL__BUSINESS_MODELS, Model.class, msgs);
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
 			if (newParentModel != null)
 				msgs = ((InternalEObject)newParentModel).eInverseAdd(this, ModelPackage.MODEL__BUSINESS_MODELS, Model.class, msgs);
 			msgs = basicSetParentModel(newParentModel, msgs);
@@ -215,7 +188,7 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	 */
 	public EList<BusinessTable> getTables() {
 		if (tables == null) {
-			tables = new EObjectWithInverseResolvingEList<BusinessTable>(BusinessTable.class, this, BusinessModelPackage.BUSINESS_MODEL__TABLES, BusinessModelPackage.BUSINESS_TABLE__MODEL);
+			tables = new EObjectContainmentWithInverseEList<BusinessTable>(BusinessTable.class, this, BusinessModelPackage.BUSINESS_MODEL__TABLES, BusinessModelPackage.BUSINESS_TABLE__MODEL);
 		}
 		return tables;
 	}
@@ -227,7 +200,7 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	 */
 	public EList<BusinessRelationship> getRelationships() {
 		if (relationships == null) {
-			relationships = new EObjectWithInverseResolvingEList<BusinessRelationship>(BusinessRelationship.class, this, BusinessModelPackage.BUSINESS_MODEL__RELATIONSHIPS, BusinessModelPackage.BUSINESS_RELATIONSHIP__MODEL);
+			relationships = new EObjectContainmentWithInverseEList<BusinessRelationship>(BusinessRelationship.class, this, BusinessModelPackage.BUSINESS_MODEL__RELATIONSHIPS, BusinessModelPackage.BUSINESS_RELATIONSHIP__MODEL);
 		}
 		return relationships;
 	}
@@ -242,8 +215,8 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case BusinessModelPackage.BUSINESS_MODEL__PARENT_MODEL:
-				if (parentModel != null)
-					msgs = ((InternalEObject)parentModel).eInverseRemove(this, ModelPackage.MODEL__BUSINESS_MODELS, Model.class, msgs);
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetParentModel((Model)otherEnd, msgs);
 			case BusinessModelPackage.BUSINESS_MODEL__TABLES:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getTables()).basicAdd(otherEnd, msgs);
@@ -277,11 +250,24 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case BusinessModelPackage.BUSINESS_MODEL__PARENT_MODEL:
+				return eInternalContainer().eInverseRemove(this, ModelPackage.MODEL__BUSINESS_MODELS, Model.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case BusinessModelPackage.BUSINESS_MODEL__PARENT_MODEL:
-				if (resolve) return getParentModel();
-				return basicGetParentModel();
+				return getParentModel();
 			case BusinessModelPackage.BUSINESS_MODEL__PHYSICAL_MODEL:
 				if (resolve) return getPhysicalModel();
 				return basicGetPhysicalModel();
@@ -353,7 +339,7 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case BusinessModelPackage.BUSINESS_MODEL__PARENT_MODEL:
-				return parentModel != null;
+				return getParentModel() != null;
 			case BusinessModelPackage.BUSINESS_MODEL__PHYSICAL_MODEL:
 				return physicalModel != null;
 			case BusinessModelPackage.BUSINESS_MODEL__TABLES:

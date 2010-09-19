@@ -8,6 +8,7 @@ package it.eng.spagobi.meta.model.impl;
 
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelPackage;
+import it.eng.spagobi.meta.model.ModelPropertyCategory;
 import it.eng.spagobi.meta.model.ModelPropertyType;
 
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -26,6 +27,8 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
@@ -43,6 +46,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelImpl#getPhysicalModels <em>Physical Models</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelImpl#getBusinessModels <em>Business Models</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelImpl#getPropertyTypes <em>Property Types</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.impl.ModelImpl#getPropertyCategories <em>Property Categories</em>}</li>
  * </ul>
  * </p>
  *
@@ -50,7 +54,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class ModelImpl extends ModelObjectImpl implements Model {
 	/**
-	 * The cached value of the '{@link #getPhysicalModels() <em>Physical Models</em>}' reference list.
+	 * The cached value of the '{@link #getPhysicalModels() <em>Physical Models</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getPhysicalModels()
@@ -60,7 +64,7 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 	protected EList<PhysicalModel> physicalModels;
 
 	/**
-	 * The cached value of the '{@link #getBusinessModels() <em>Business Models</em>}' reference list.
+	 * The cached value of the '{@link #getBusinessModels() <em>Business Models</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getBusinessModels()
@@ -70,7 +74,7 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 	protected EList<BusinessModel> businessModels;
 
 	/**
-	 * The cached value of the '{@link #getPropertyTypes() <em>Property Types</em>}' reference list.
+	 * The cached value of the '{@link #getPropertyTypes() <em>Property Types</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getPropertyTypes()
@@ -78,6 +82,16 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 	 * @ordered
 	 */
 	protected EList<ModelPropertyType> propertyTypes;
+
+	/**
+	 * The cached value of the '{@link #getPropertyCategories() <em>Property Categories</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPropertyCategories()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<ModelPropertyCategory> propertyCategories;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -105,7 +119,7 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 	 */
 	public EList<PhysicalModel> getPhysicalModels() {
 		if (physicalModels == null) {
-			physicalModels = new EObjectWithInverseResolvingEList<PhysicalModel>(PhysicalModel.class, this, ModelPackage.MODEL__PHYSICAL_MODELS, PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL);
+			physicalModels = new EObjectContainmentWithInverseEList<PhysicalModel>(PhysicalModel.class, this, ModelPackage.MODEL__PHYSICAL_MODELS, PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL);
 		}
 		return physicalModels;
 	}
@@ -117,7 +131,7 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 	 */
 	public EList<BusinessModel> getBusinessModels() {
 		if (businessModels == null) {
-			businessModels = new EObjectWithInverseResolvingEList<BusinessModel>(BusinessModel.class, this, ModelPackage.MODEL__BUSINESS_MODELS, BusinessModelPackage.BUSINESS_MODEL__PARENT_MODEL);
+			businessModels = new EObjectContainmentWithInverseEList<BusinessModel>(BusinessModel.class, this, ModelPackage.MODEL__BUSINESS_MODELS, BusinessModelPackage.BUSINESS_MODEL__PARENT_MODEL);
 		}
 		return businessModels;
 	}
@@ -129,9 +143,21 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 	 */
 	public EList<ModelPropertyType> getPropertyTypes() {
 		if (propertyTypes == null) {
-			propertyTypes = new EObjectResolvingEList<ModelPropertyType>(ModelPropertyType.class, this, ModelPackage.MODEL__PROPERTY_TYPES);
+			propertyTypes = new EObjectContainmentEList<ModelPropertyType>(ModelPropertyType.class, this, ModelPackage.MODEL__PROPERTY_TYPES);
 		}
 		return propertyTypes;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<ModelPropertyCategory> getPropertyCategories() {
+		if (propertyCategories == null) {
+			propertyCategories = new EObjectContainmentEList<ModelPropertyCategory>(ModelPropertyCategory.class, this, ModelPackage.MODEL__PROPERTY_CATEGORIES);
+		}
+		return propertyCategories;
 	}
 
 	/**
@@ -163,6 +189,10 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 				return ((InternalEList<?>)getPhysicalModels()).basicRemove(otherEnd, msgs);
 			case ModelPackage.MODEL__BUSINESS_MODELS:
 				return ((InternalEList<?>)getBusinessModels()).basicRemove(otherEnd, msgs);
+			case ModelPackage.MODEL__PROPERTY_TYPES:
+				return ((InternalEList<?>)getPropertyTypes()).basicRemove(otherEnd, msgs);
+			case ModelPackage.MODEL__PROPERTY_CATEGORIES:
+				return ((InternalEList<?>)getPropertyCategories()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -181,6 +211,8 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 				return getBusinessModels();
 			case ModelPackage.MODEL__PROPERTY_TYPES:
 				return getPropertyTypes();
+			case ModelPackage.MODEL__PROPERTY_CATEGORIES:
+				return getPropertyCategories();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -206,6 +238,10 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 				getPropertyTypes().clear();
 				getPropertyTypes().addAll((Collection<? extends ModelPropertyType>)newValue);
 				return;
+			case ModelPackage.MODEL__PROPERTY_CATEGORIES:
+				getPropertyCategories().clear();
+				getPropertyCategories().addAll((Collection<? extends ModelPropertyCategory>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -227,6 +263,9 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 			case ModelPackage.MODEL__PROPERTY_TYPES:
 				getPropertyTypes().clear();
 				return;
+			case ModelPackage.MODEL__PROPERTY_CATEGORIES:
+				getPropertyCategories().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -245,6 +284,8 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 				return businessModels != null && !businessModels.isEmpty();
 			case ModelPackage.MODEL__PROPERTY_TYPES:
 				return propertyTypes != null && !propertyTypes.isEmpty();
+			case ModelPackage.MODEL__PROPERTY_CATEGORIES:
+				return propertyCategories != null && !propertyCategories.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -254,6 +295,17 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 		for(int i = 0; i < getPropertyTypes().size(); i++) {
 			if(getPropertyTypes().get(i).getName().equals(name)) {
 				return getPropertyTypes().get(i);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public ModelPropertyCategory getPropertyCategory(String name) {
+		
+		for(int i = 0; i < getPropertyCategories().size(); i++) {
+			if(getPropertyCategories().get(i).getName().equals(name)) {
+				return getPropertyCategories().get(i);
 			}
 		}
 		return null;

@@ -33,7 +33,7 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface BusinessTable extends ModelObject {
 	/**
-	 * Returns the value of the '<em><b>Model</b></em>' reference.
+	 * Returns the value of the '<em><b>Model</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessModel#getTables <em>Tables</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -41,20 +41,20 @@ public interface BusinessTable extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Model</em>' reference.
+	 * @return the value of the '<em>Model</em>' container reference.
 	 * @see #setModel(BusinessModel)
 	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessTable_Model()
 	 * @see it.eng.spagobi.meta.model.business.BusinessModel#getTables
-	 * @model opposite="tables" required="true"
+	 * @model opposite="tables" required="true" transient="false"
 	 * @generated
 	 */
 	BusinessModel getModel();
 
 	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessTable#getModel <em>Model</em>}' reference.
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessTable#getModel <em>Model</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Model</em>' reference.
+	 * @param value the new value of the '<em>Model</em>' container reference.
 	 * @see #getModel()
 	 * @generated
 	 */
@@ -87,7 +87,7 @@ public interface BusinessTable extends ModelObject {
 	void setPhysicalTable(PhysicalTable value);
 
 	/**
-	 * Returns the value of the '<em><b>Columns</b></em>' reference list.
+	 * Returns the value of the '<em><b>Columns</b></em>' containment reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.business.BusinessColumn}.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessColumn#getTable <em>Table</em>}'.
 	 * <!-- begin-user-doc -->
@@ -96,10 +96,10 @@ public interface BusinessTable extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Columns</em>' reference list.
+	 * @return the value of the '<em>Columns</em>' containment reference list.
 	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessTable_Columns()
 	 * @see it.eng.spagobi.meta.model.business.BusinessColumn#getTable
-	 * @model opposite="table"
+	 * @model opposite="table" containment="true"
 	 * @generated
 	 */
 	EList<BusinessColumn> getColumns();

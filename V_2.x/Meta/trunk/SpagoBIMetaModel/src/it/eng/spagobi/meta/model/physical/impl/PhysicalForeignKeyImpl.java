@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * <!-- begin-user-doc -->
@@ -127,16 +128,6 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 	 * @ordered
 	 */
 	protected EList<PhysicalColumn> destinationColumns;
-
-	/**
-	 * The cached value of the '{@link #getModel() <em>Model</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getModel()
-	 * @generated
-	 * @ordered
-	 */
-	protected PhysicalModel model;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -349,24 +340,8 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 	 * @generated
 	 */
 	public PhysicalModel getModel() {
-		if (model != null && model.eIsProxy()) {
-			InternalEObject oldModel = (InternalEObject)model;
-			model = (PhysicalModel)eResolveProxy(oldModel);
-			if (model != oldModel) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__MODEL, oldModel, model));
-			}
-		}
-		return model;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public PhysicalModel basicGetModel() {
-		return model;
+		if (eContainerFeatureID() != PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__MODEL) return null;
+		return (PhysicalModel)eContainer();
 	}
 
 	/**
@@ -375,12 +350,7 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 	 * @generated
 	 */
 	public NotificationChain basicSetModel(PhysicalModel newModel, NotificationChain msgs) {
-		PhysicalModel oldModel = model;
-		model = newModel;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__MODEL, oldModel, newModel);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
+		msgs = eBasicSetContainer((InternalEObject)newModel, PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__MODEL, msgs);
 		return msgs;
 	}
 
@@ -390,10 +360,12 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 	 * @generated
 	 */
 	public void setModel(PhysicalModel newModel) {
-		if (newModel != model) {
+		if (newModel != eInternalContainer() || (eContainerFeatureID() != PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__MODEL && newModel != null)) {
+			if (EcoreUtil.isAncestor(this, newModel))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if (model != null)
-				msgs = ((InternalEObject)model).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_MODEL__FOREIGN_KEYS, PhysicalModel.class, msgs);
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
 			if (newModel != null)
 				msgs = ((InternalEObject)newModel).eInverseAdd(this, PhysicalModelPackage.PHYSICAL_MODEL__FOREIGN_KEYS, PhysicalModel.class, msgs);
 			msgs = basicSetModel(newModel, msgs);
@@ -420,8 +392,8 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 					msgs = ((InternalEObject)destinationTable).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS, PhysicalTable.class, msgs);
 				return basicSetDestinationTable((PhysicalTable)otherEnd, msgs);
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__MODEL:
-				if (model != null)
-					msgs = ((InternalEObject)model).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_MODEL__FOREIGN_KEYS, PhysicalModel.class, msgs);
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetModel((PhysicalModel)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -451,6 +423,20 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__MODEL:
+				return eInternalContainer().eInverseRemove(this, PhysicalModelPackage.PHYSICAL_MODEL__FOREIGN_KEYS, PhysicalModel.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_NAME:
@@ -468,8 +454,7 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__DESTINATION_COLUMNS:
 				return getDestinationColumns();
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__MODEL:
-				if (resolve) return getModel();
-				return basicGetModel();
+				return getModel();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -564,7 +549,7 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__DESTINATION_COLUMNS:
 				return destinationColumns != null && !destinationColumns.isEmpty();
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__MODEL:
-				return model != null;
+				return getModel() != null;
 		}
 		return super.eIsSet(featureID);
 	}

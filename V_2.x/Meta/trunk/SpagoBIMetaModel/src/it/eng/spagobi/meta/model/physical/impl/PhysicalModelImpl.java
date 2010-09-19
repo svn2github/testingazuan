@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
@@ -136,16 +137,6 @@ public class PhysicalModelImpl extends ModelObjectImpl implements PhysicalModel 
 	protected String schema = SCHEMA_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getParentModel() <em>Parent Model</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getParentModel()
-	 * @generated
-	 * @ordered
-	 */
-	protected Model parentModel;
-
-	/**
 	 * The cached value of the '{@link #getTables() <em>Tables</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -156,7 +147,7 @@ public class PhysicalModelImpl extends ModelObjectImpl implements PhysicalModel 
 	protected EList<PhysicalTable> tables;
 
 	/**
-	 * The cached value of the '{@link #getPrimaryKeys() <em>Primary Keys</em>}' reference list.
+	 * The cached value of the '{@link #getPrimaryKeys() <em>Primary Keys</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getPrimaryKeys()
@@ -166,7 +157,7 @@ public class PhysicalModelImpl extends ModelObjectImpl implements PhysicalModel 
 	protected EList<PhysicalPrimaryKey> primaryKeys;
 
 	/**
-	 * The cached value of the '{@link #getForeignKeys() <em>Foreign Keys</em>}' reference list.
+	 * The cached value of the '{@link #getForeignKeys() <em>Foreign Keys</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getForeignKeys()
@@ -284,24 +275,8 @@ public class PhysicalModelImpl extends ModelObjectImpl implements PhysicalModel 
 	 * @generated
 	 */
 	public Model getParentModel() {
-		if (parentModel != null && parentModel.eIsProxy()) {
-			InternalEObject oldParentModel = (InternalEObject)parentModel;
-			parentModel = (Model)eResolveProxy(oldParentModel);
-			if (parentModel != oldParentModel) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL, oldParentModel, parentModel));
-			}
-		}
-		return parentModel;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Model basicGetParentModel() {
-		return parentModel;
+		if (eContainerFeatureID() != PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL) return null;
+		return (Model)eContainer();
 	}
 
 	/**
@@ -310,12 +285,7 @@ public class PhysicalModelImpl extends ModelObjectImpl implements PhysicalModel 
 	 * @generated
 	 */
 	public NotificationChain basicSetParentModel(Model newParentModel, NotificationChain msgs) {
-		Model oldParentModel = parentModel;
-		parentModel = newParentModel;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL, oldParentModel, newParentModel);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
+		msgs = eBasicSetContainer((InternalEObject)newParentModel, PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL, msgs);
 		return msgs;
 	}
 
@@ -325,10 +295,12 @@ public class PhysicalModelImpl extends ModelObjectImpl implements PhysicalModel 
 	 * @generated
 	 */
 	public void setParentModel(Model newParentModel) {
-		if (newParentModel != parentModel) {
+		if (newParentModel != eInternalContainer() || (eContainerFeatureID() != PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL && newParentModel != null)) {
+			if (EcoreUtil.isAncestor(this, newParentModel))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if (parentModel != null)
-				msgs = ((InternalEObject)parentModel).eInverseRemove(this, ModelPackage.MODEL__PHYSICAL_MODELS, Model.class, msgs);
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
 			if (newParentModel != null)
 				msgs = ((InternalEObject)newParentModel).eInverseAdd(this, ModelPackage.MODEL__PHYSICAL_MODELS, Model.class, msgs);
 			msgs = basicSetParentModel(newParentModel, msgs);
@@ -357,7 +329,7 @@ public class PhysicalModelImpl extends ModelObjectImpl implements PhysicalModel 
 	 */
 	public EList<PhysicalPrimaryKey> getPrimaryKeys() {
 		if (primaryKeys == null) {
-			primaryKeys = new EObjectWithInverseResolvingEList<PhysicalPrimaryKey>(PhysicalPrimaryKey.class, this, PhysicalModelPackage.PHYSICAL_MODEL__PRIMARY_KEYS, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL);
+			primaryKeys = new EObjectContainmentWithInverseEList<PhysicalPrimaryKey>(PhysicalPrimaryKey.class, this, PhysicalModelPackage.PHYSICAL_MODEL__PRIMARY_KEYS, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL);
 		}
 		return primaryKeys;
 	}
@@ -369,7 +341,7 @@ public class PhysicalModelImpl extends ModelObjectImpl implements PhysicalModel 
 	 */
 	public EList<PhysicalForeignKey> getForeignKeys() {
 		if (foreignKeys == null) {
-			foreignKeys = new EObjectWithInverseResolvingEList<PhysicalForeignKey>(PhysicalForeignKey.class, this, PhysicalModelPackage.PHYSICAL_MODEL__FOREIGN_KEYS, PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__MODEL);
+			foreignKeys = new EObjectContainmentWithInverseEList<PhysicalForeignKey>(PhysicalForeignKey.class, this, PhysicalModelPackage.PHYSICAL_MODEL__FOREIGN_KEYS, PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__MODEL);
 		}
 		return foreignKeys;
 	}
@@ -384,8 +356,8 @@ public class PhysicalModelImpl extends ModelObjectImpl implements PhysicalModel 
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL:
-				if (parentModel != null)
-					msgs = ((InternalEObject)parentModel).eInverseRemove(this, ModelPackage.MODEL__PHYSICAL_MODELS, Model.class, msgs);
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetParentModel((Model)otherEnd, msgs);
 			case PhysicalModelPackage.PHYSICAL_MODEL__TABLES:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getTables()).basicAdd(otherEnd, msgs);
@@ -423,6 +395,20 @@ public class PhysicalModelImpl extends ModelObjectImpl implements PhysicalModel 
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL:
+				return eInternalContainer().eInverseRemove(this, ModelPackage.MODEL__PHYSICAL_MODELS, Model.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case PhysicalModelPackage.PHYSICAL_MODEL__DATABASE_NAME:
@@ -434,8 +420,7 @@ public class PhysicalModelImpl extends ModelObjectImpl implements PhysicalModel 
 			case PhysicalModelPackage.PHYSICAL_MODEL__SCHEMA:
 				return getSchema();
 			case PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL:
-				if (resolve) return getParentModel();
-				return basicGetParentModel();
+				return getParentModel();
 			case PhysicalModelPackage.PHYSICAL_MODEL__TABLES:
 				return getTables();
 			case PhysicalModelPackage.PHYSICAL_MODEL__PRIMARY_KEYS:
@@ -539,7 +524,7 @@ public class PhysicalModelImpl extends ModelObjectImpl implements PhysicalModel 
 			case PhysicalModelPackage.PHYSICAL_MODEL__SCHEMA:
 				return SCHEMA_EDEFAULT == null ? schema != null : !SCHEMA_EDEFAULT.equals(schema);
 			case PhysicalModelPackage.PHYSICAL_MODEL__PARENT_MODEL:
-				return parentModel != null;
+				return getParentModel() != null;
 			case PhysicalModelPackage.PHYSICAL_MODEL__TABLES:
 				return tables != null && !tables.isEmpty();
 			case PhysicalModelPackage.PHYSICAL_MODEL__PRIMARY_KEYS:

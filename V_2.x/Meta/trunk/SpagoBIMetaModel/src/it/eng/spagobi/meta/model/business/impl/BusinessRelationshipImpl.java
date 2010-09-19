@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
@@ -43,16 +44,6 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * @generated
  */
 public class BusinessRelationshipImpl extends ModelObjectImpl implements BusinessRelationship {
-	/**
-	 * The cached value of the '{@link #getModel() <em>Model</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getModel()
-	 * @generated
-	 * @ordered
-	 */
-	protected BusinessModel model;
-
 	/**
 	 * The cached value of the '{@link #getSourceTable() <em>Source Table</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -118,24 +109,8 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	 * @generated
 	 */
 	public BusinessModel getModel() {
-		if (model != null && model.eIsProxy()) {
-			InternalEObject oldModel = (InternalEObject)model;
-			model = (BusinessModel)eResolveProxy(oldModel);
-			if (model != oldModel) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, BusinessModelPackage.BUSINESS_RELATIONSHIP__MODEL, oldModel, model));
-			}
-		}
-		return model;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public BusinessModel basicGetModel() {
-		return model;
+		if (eContainerFeatureID() != BusinessModelPackage.BUSINESS_RELATIONSHIP__MODEL) return null;
+		return (BusinessModel)eContainer();
 	}
 
 	/**
@@ -144,12 +119,7 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	 * @generated
 	 */
 	public NotificationChain basicSetModel(BusinessModel newModel, NotificationChain msgs) {
-		BusinessModel oldModel = model;
-		model = newModel;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BusinessModelPackage.BUSINESS_RELATIONSHIP__MODEL, oldModel, newModel);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
+		msgs = eBasicSetContainer((InternalEObject)newModel, BusinessModelPackage.BUSINESS_RELATIONSHIP__MODEL, msgs);
 		return msgs;
 	}
 
@@ -159,10 +129,12 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	 * @generated
 	 */
 	public void setModel(BusinessModel newModel) {
-		if (newModel != model) {
+		if (newModel != eInternalContainer() || (eContainerFeatureID() != BusinessModelPackage.BUSINESS_RELATIONSHIP__MODEL && newModel != null)) {
+			if (EcoreUtil.isAncestor(this, newModel))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if (model != null)
-				msgs = ((InternalEObject)model).eInverseRemove(this, BusinessModelPackage.BUSINESS_MODEL__RELATIONSHIPS, BusinessModel.class, msgs);
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
 			if (newModel != null)
 				msgs = ((InternalEObject)newModel).eInverseAdd(this, BusinessModelPackage.BUSINESS_MODEL__RELATIONSHIPS, BusinessModel.class, msgs);
 			msgs = basicSetModel(newModel, msgs);
@@ -281,8 +253,8 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__MODEL:
-				if (model != null)
-					msgs = ((InternalEObject)model).eInverseRemove(this, BusinessModelPackage.BUSINESS_MODEL__RELATIONSHIPS, BusinessModel.class, msgs);
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetModel((BusinessModel)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -308,11 +280,24 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case BusinessModelPackage.BUSINESS_RELATIONSHIP__MODEL:
+				return eInternalContainer().eInverseRemove(this, BusinessModelPackage.BUSINESS_MODEL__RELATIONSHIPS, BusinessModel.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__MODEL:
-				if (resolve) return getModel();
-				return basicGetModel();
+				return getModel();
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__SOURCE_TABLE:
 				if (resolve) return getSourceTable();
 				return basicGetSourceTable();
@@ -393,7 +378,7 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__MODEL:
-				return model != null;
+				return getModel() != null;
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__SOURCE_TABLE:
 				return sourceTable != null;
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__DESTINATION_TABLE:

@@ -141,7 +141,7 @@ public interface PhysicalModel extends ModelObject {
 	void setSchema(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Parent Model</b></em>' reference.
+	 * Returns the value of the '<em><b>Parent Model</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.Model#getPhysicalModels <em>Physical Models</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -149,20 +149,20 @@ public interface PhysicalModel extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Parent Model</em>' reference.
+	 * @return the value of the '<em>Parent Model</em>' container reference.
 	 * @see #setParentModel(Model)
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalModel_ParentModel()
 	 * @see it.eng.spagobi.meta.model.Model#getPhysicalModels
-	 * @model opposite="physicalModels" required="true"
+	 * @model opposite="physicalModels" required="true" transient="false"
 	 * @generated
 	 */
 	Model getParentModel();
 
 	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getParentModel <em>Parent Model</em>}' reference.
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalModel#getParentModel <em>Parent Model</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Parent Model</em>' reference.
+	 * @param value the new value of the '<em>Parent Model</em>' container reference.
 	 * @see #getParentModel()
 	 * @generated
 	 */
@@ -187,7 +187,7 @@ public interface PhysicalModel extends ModelObject {
 	EList<PhysicalTable> getTables();
 
 	/**
-	 * Returns the value of the '<em><b>Primary Keys</b></em>' reference list.
+	 * Returns the value of the '<em><b>Primary Keys</b></em>' containment reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey}.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
@@ -196,16 +196,16 @@ public interface PhysicalModel extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Primary Keys</em>' reference list.
+	 * @return the value of the '<em>Primary Keys</em>' containment reference list.
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalModel_PrimaryKeys()
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getModel
-	 * @model opposite="model"
+	 * @model opposite="model" containment="true"
 	 * @generated
 	 */
 	EList<PhysicalPrimaryKey> getPrimaryKeys();
 
 	/**
-	 * Returns the value of the '<em><b>Foreign Keys</b></em>' reference list.
+	 * Returns the value of the '<em><b>Foreign Keys</b></em>' containment reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey}.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
@@ -214,10 +214,10 @@ public interface PhysicalModel extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Foreign Keys</em>' reference list.
+	 * @return the value of the '<em>Foreign Keys</em>' containment reference list.
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalModel_ForeignKeys()
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getModel
-	 * @model opposite="model"
+	 * @model opposite="model" containment="true"
 	 * @generated
 	 */
 	EList<PhysicalForeignKey> getForeignKeys();

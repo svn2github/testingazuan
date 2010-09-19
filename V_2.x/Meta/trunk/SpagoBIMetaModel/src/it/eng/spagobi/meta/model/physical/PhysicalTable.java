@@ -115,7 +115,7 @@ public interface PhysicalTable extends ModelObject {
 	void setModel(PhysicalModel value);
 
 	/**
-	 * Returns the value of the '<em><b>Columns</b></em>' reference list.
+	 * Returns the value of the '<em><b>Columns</b></em>' containment reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.physical.PhysicalColumn}.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#getTable <em>Table</em>}'.
 	 * <!-- begin-user-doc -->
@@ -124,10 +124,10 @@ public interface PhysicalTable extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Columns</em>' reference list.
+	 * @return the value of the '<em>Columns</em>' containment reference list.
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalTable_Columns()
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalColumn#getTable
-	 * @model opposite="table"
+	 * @model opposite="table" containment="true"
 	 * @generated
 	 */
 	EList<PhysicalColumn> getColumns();

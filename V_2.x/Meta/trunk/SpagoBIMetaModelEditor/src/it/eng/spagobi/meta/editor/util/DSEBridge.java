@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import it.eng.spagobi.meta.editor.Activator;
+import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
 import it.eng.spagobi.meta.editor.views.PhysicalModelView;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.Model;
@@ -103,9 +104,10 @@ public class DSEBridge {
 				dialog.run(true, false, new IRunnableWithProgress(){
 				    public void run(IProgressMonitor monitor) {
 				        monitor.beginTask("Extracting metadata information. This may take a few minutes, please wait...", IProgressMonitor.UNKNOWN);
-				        //TODO: to remove, initialize root Model
-						Model rootModel = ModelFactory.eINSTANCE.createModel();
-						rootModel.setName("rootmodel");
+				        //retrieve root Model reference
+				        CoreSingleton cs = CoreSingleton.getInstance();
+				        Model rootModel = cs.getRootModel();
+						 
 				        //initialize the EMF Physical Model
 				        PhysicalModelInitializer modelInitializer = new PhysicalModelInitializer();
 				        modelInitializer.setRootModel(rootModel);

@@ -11,7 +11,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 
 	
 	private static final String VIEW_ID = "org.eclipse.datatools.connectivity.DataSourceExplorerNavigator";
-	private static final String VIEW2_ID = "it.eng.spagobi.meta.editor.BusinesslModel";
+	private static final String VIEW2_ID = "it.eng.spagobi.meta.editor.BusinessModel";
 	private static final String VIEW3_ID = "it.eng.spagobi.meta.editor.PhysicalModel";
 	private static final String VIEW4_ID = "it.eng.spagobi.meta.editor.Properties";
 	private static final String PROPERTIESVIEW_ID = "org.eclipse.ui.views.PropertySheet";

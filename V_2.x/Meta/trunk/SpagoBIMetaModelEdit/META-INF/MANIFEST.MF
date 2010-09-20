@@ -1,11 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %pluginName
-Bundle-SymbolicName: SpagoBIMetaModelEdit;singleton:=true
+Bundle-Name: SpagoBI Meta Model Edit
+Bundle-SymbolicName: it.eng.spagobi.meta.edit;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Bundle-Activator: it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin$Implementation
-Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: it.eng.spagobi.meta.model.analytical.provider,

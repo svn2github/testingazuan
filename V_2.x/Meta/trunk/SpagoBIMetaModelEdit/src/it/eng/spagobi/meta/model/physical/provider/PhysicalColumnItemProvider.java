@@ -141,7 +141,7 @@ public class PhysicalColumnItemProvider
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
 				 getString("_UI_PhysicalColumn_typeName_feature"),
-				 getString("_UI_PhysicalColumn_typeName_description"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_PhysicalColumn_typeName_feature", "_UI_PhysicalColumn_type"),
 				 PhysicalModelPackage.Literals.PHYSICAL_COLUMN__TYPE_NAME,
 				 true,
 				 false,

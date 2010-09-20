@@ -13,7 +13,7 @@
             category="it.eng.spagobi.meta"
             class="it.eng.spagobi.meta.editor.views.BusinessModelView"
             icon="icons/spagobi.gif"
-            id="it.eng.spagobi.meta.editor.BusinesslModel"
+            id="it.eng.spagobi.meta.editor.BusinessModel"
             name="Business Model Editor"
             restorable="true">
       </view>
@@ -56,24 +56,37 @@
                label="Create Physical Model"
                style="push"
                toolbarPath="additions"
-               tooltip="Create physical model from conecction">
+               tooltip="Create physical model from connection">
+         </action>
+      </viewContribution>
+      <viewContribution
+            id="it.eng.spagobi.meta.editor.action.CreateBusinessModelFromPhysicalModel"
+            targetID="it.eng.spagobi.meta.editor.BusinessModel">
+         <action
+               class="it.eng.spagobi.meta.editor.views.actions.CreateBusinessModelFromPhysicalModel"
+               icon="icons/arrow.png"
+               id="it.eng.spagobi.meta.editor.action.CreateBusinessModelFromPhysicalModel"
+               label="Create Business Model from Physical Model Structure"
+               style="push"
+               toolbarPath="additions"
+               tooltip="Create Business Model from Physical Model Structure">
          </action>
       </viewContribution>
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">
       <category
-            id="eng.it.spagobimeta"
+            id="it.eng.spagobi.meta"
             name="SpagoBI Meta">
       </category>
       <wizard
-            category="eng.it.spagobimeta"
-            class="eng.it.spagobimeta.wizards.NewSpagoBIMetaProjectWizard"
-            finalPerspective="eng.it.spagobimeta.perspective"
+            category="it.eng.spagobi.meta"
+            class="it.eng.spagobi.meta.editor.wizards.NewSpagoBIMetaBusinessModelWizard"
+            finalPerspective="it.eng.spagobi.meta.editor.perspective"
             icon="icons/spagobi.gif"
-            id="eng.it.spagobimeta.newSpagoBIMetaProjectWizard"
-            name="SpagoBI Meta Project"
-            project="true">
+            id="it.eng.spagobi.meta.newSpagoBIMetaBusinessModelWizard"
+            name="SpagoBI Meta Business Model"
+            project="false">
       </wizard>
    </extension>
 

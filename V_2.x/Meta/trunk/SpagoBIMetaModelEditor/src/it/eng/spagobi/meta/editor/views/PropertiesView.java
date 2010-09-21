@@ -3,8 +3,6 @@
  */
 package it.eng.spagobi.meta.editor.views;
 
-import it.eng.spagobi.meta.editor.model.BusinessClass;
-import it.eng.spagobi.meta.editor.model.BusinessModel;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -48,16 +46,18 @@ public class PropertiesView extends ViewPart implements ISelectionListener {
 	
 	@Override
 	public void createPartControl(Composite parent) {	
+	/*	
 		parentRef = parent;
 		toolkit = new FormToolkit(parent.getDisplay());
 		
 		//Add this view to SelectionListener (for the BM Tree in GraphicEditorView)
 		getViewSite().getPage().addSelectionListener(this);
-	}
+	*/}
 	
 	@Override
 	//Do something when there is a selection event (from the BM Tree)
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+	/*	
 		if (selection instanceof IStructuredSelection) {
 			Object first = ((IStructuredSelection)selection).getFirstElement();
 			//BC node selected
@@ -68,9 +68,10 @@ public class PropertiesView extends ViewPart implements ISelectionListener {
 			if (first instanceof BusinessModel) {
 				createBMProperties((BusinessModel)first);
 			}
-		}		
+		}	
+	*/	
 	}
-
+/*
 	//Create Properties UI for a BusinessModel object
 	private void createBMProperties(BusinessModel bm){
 		if (form!=null)
@@ -181,5 +182,5 @@ public class PropertiesView extends ViewPart implements ISelectionListener {
 		toolkit.dispose();
 		super.dispose();
 	}
-
+*/
 }

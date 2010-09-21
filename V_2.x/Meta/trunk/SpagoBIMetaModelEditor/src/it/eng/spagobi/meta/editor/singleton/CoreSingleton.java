@@ -7,6 +7,7 @@ import org.eclipse.emf.common.util.EList;
 
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelFactory;
+import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
 public class CoreSingleton {
@@ -77,6 +78,14 @@ public class CoreSingleton {
 	public PhysicalModel getPhysicalModel(){
 		EList<PhysicalModel> pmList = rootModel.getPhysicalModels();
 		return pmList.get(0);
+	}
+	
+	/**
+	 * @return the current BusinessModel
+	 */	
+	public BusinessModel getBusinessModel(){
+		EList<BusinessModel> bmList = rootModel.getBusinessModels();
+		return bmList.get(0);
 	}
 
 }

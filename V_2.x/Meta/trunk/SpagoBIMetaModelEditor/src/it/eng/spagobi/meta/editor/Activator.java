@@ -1,9 +1,8 @@
 /*
- * Thi class activate the SpagoBI Meta Plugin
+ * This class activate the SpagoBI Meta Plugin
  */
 package it.eng.spagobi.meta.editor;
 
-import it.eng.spagobi.meta.editor.model.BMWrapper;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,8 +27,7 @@ public class Activator extends AbstractUIPlugin {
 	 * The constructor
 	 */
 	public Activator() {
-		//Create singleton class
-		BMWrapper.getInstance();
+
 	}
 	
 

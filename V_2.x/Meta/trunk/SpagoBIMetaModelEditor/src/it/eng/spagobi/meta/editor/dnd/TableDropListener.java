@@ -3,9 +3,6 @@
  */
 package it.eng.spagobi.meta.editor.dnd;
 
-import it.eng.spagobi.meta.editor.model.BMWrapper;
-import it.eng.spagobi.meta.editor.model.BusinessClass;
-import it.eng.spagobi.meta.editor.model.BusinessModel;
 import it.eng.spagobi.meta.editor.wizards.AddBCWizard;
 
 import java.util.ArrayList;
@@ -23,13 +20,13 @@ import org.eclipse.ui.PlatformUI;
 public class TableDropListener  extends ViewerDropAdapter {
 
 	private final Viewer viewer;
-	private BMWrapper bmw;
+	//private BMWrapper bmw;
 
 	public TableDropListener(Viewer v){
 		super(v);
 		this.viewer = v;
 		//get unique instance of BMWrapper
-		this.bmw = BMWrapper.getInstance();
+		//this.bmw = BMWrapper.getInstance();
 	}
 	
 	// This method performs the actual drop
@@ -42,7 +39,8 @@ public class TableDropListener  extends ViewerDropAdapter {
     	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
 		dialog.create();
     	dialog.open();
-				
+		
+    	/*
 		//Retrieve Business Model
 		ArrayList<BusinessModel> el = (ArrayList<BusinessModel>)bmw.getBm();
 		BusinessModel bm =  el.get(0);
@@ -54,7 +52,7 @@ public class TableDropListener  extends ViewerDropAdapter {
 		bmw.setBm(el);
 		viewer.setInput(bmw);
 		((TreeViewer)viewer).expandAll();
-		
+		*/
 		return false;
 	}
 

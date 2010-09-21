@@ -4,8 +4,10 @@
 package it.eng.spagobi.meta.editor.views;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import it.eng.spagobi.meta.editor.Activator;
 import it.eng.spagobi.meta.editor.dnd.TableDropListener;
 
 import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
@@ -16,12 +18,26 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.business.util.BusinessModelAdapterFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
-import it.eng.spagobi.meta.model.physical.provider.PhysicalModelItemProviderAdapterFactory;
-import it.eng.spagobi.meta.model.physical.util.PhysicalModelAdapterFactory;
 
+import org.eclipse.emf.common.command.BasicCommandStack;
+import org.eclipse.emf.edit.command.RemoveCommand;
+import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
+import org.eclipse.emf.edit.domain.EditingDomain;
+import org.eclipse.emf.edit.domain.IEditingDomainProvider;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -33,19 +49,33 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 
 
-public class BusinessModelView extends ViewPart {
+public class BusinessModelView extends ViewPart implements IMenuListener, ISelectionChangedListener ,IEditingDomainProvider {
 	
 	private ScrolledComposite sc;
 	private TreeViewer bmTree;
 	protected PropertySheetPage propertySheetPage;
-	
+	private Action firstAction,secondAction;
+	private BasicCommandStack commandStack;
+	protected AdapterFactoryEditingDomain editingDomain;
+	private Object currentTreeSelection;
+	private CoreSingleton cs = CoreSingleton.getInstance();
 	
 	public BusinessModelView() {
+	    
+		// Create an adapter factory that yields item providers.
+		List<BusinessModelAdapterFactory> factories = new ArrayList<BusinessModelAdapterFactory>();
+		factories.add(new BusinessModelItemProviderAdapterFactory());
+		ComposedAdapterFactory adapterFactory = new ComposedAdapterFactory(factories);
+		
+		// Create the editing domain with a special command stack.
+		commandStack = new BasicCommandStack();
+		editingDomain = new AdapterFactoryEditingDomain(adapterFactory, commandStack);
 		
 	}
 
@@ -71,7 +101,6 @@ public class BusinessModelView extends ViewPart {
 		bmGroup.setLayout(new GridLayout());
 		
         //retrieve root Model reference and the PhysicalModel
-        CoreSingleton cs = CoreSingleton.getInstance();
         Model rootModel = cs.getRootModel();
         String bmName = cs.getBmName();
         PhysicalModel pm = cs.getPhysicalModel();
@@ -90,15 +119,7 @@ public class BusinessModelView extends ViewPart {
 		bmTree.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
 		bmTree.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
 		bmTree.setUseHashlookup(true);
-	      
-	    /*
-	    //TODO: (TO REMOVE) create fake BM holder 
-	    BusinessModel bm = new BusinessModel("My Business Model Name");
-	    bm.addBc(new BusinessClass("My Business Class",bm));
-	    //Get Singleton class
-	    BMWrapper.getInstance().init(bm);
-	    */
-	   	    
+	      	    
 	    //add drop support
 	    int operations = DND.DROP_COPY | DND.DROP_MOVE;
 	    Transfer[] transferTypes = new Transfer[]{TextTransfer.getInstance()};
@@ -108,10 +129,15 @@ public class BusinessModelView extends ViewPart {
 	    //Set initial input
 	    model.eAdapters().add(new BusinessModelItemProviderAdapterFactory().createBusinessModelAdapter());
 	    bmTree.setInput(model);
-	    //bmTree.expandAll();
 	    
 	    //register the tree as a selection provider
 	    getSite().setSelectionProvider(bmTree);
+	    //add a SelectionListener to the tree
+	    bmTree.addSelectionChangedListener(this);
+	    
+	    
+	    makeActions();
+	    hookContextMenu();
 
 	    //setting datalayout
 	    GridData gd = new GridData(GridData.FILL_BOTH);
@@ -123,6 +149,51 @@ public class BusinessModelView extends ViewPart {
 		container.setSize(p);		
 	}
 
+	/**
+	 * This creates a context menu for the viewer and adds a listener as well registering the menu for
+	 * extension.
+	 */
+	private void hookContextMenu()
+	{
+		MenuManager contextMenu = new MenuManager("#PopUp");
+		contextMenu.add(new Separator("additions"));
+		contextMenu.setRemoveAllWhenShown(true);
+		contextMenu.addMenuListener(this);
+
+		Menu menu = contextMenu.createContextMenu(bmTree.getControl());
+		bmTree.getControl().setMenu(menu);
+		getSite().registerContextMenu(contextMenu, bmTree);
+
+	}	
+	private void makeActions()
+	{
+		firstAction = new Action()
+		{
+			public void run()
+			{
+				showMessage("Action 1 executed");
+			}
+		};
+		firstAction.setText("Add");
+		firstAction.setToolTipText("Action 1 tooltip");
+		firstAction.setImageDescriptor(Activator.getImageDescriptor("arrow.png"));
+
+		secondAction = new Action()
+		{
+			public void run()
+			{
+				//EditingDomain domain = getEditingDomain();
+				//RemoveCommand cmd = new RemoveCommand();
+				cs.getBusinessModel().getTables().remove(currentTreeSelection);
+				showMessage("Remove executed");
+			}
+		};
+		secondAction.setText("Remove");
+		secondAction.setToolTipText("Action 2 tooltip");
+		secondAction.setImageDescriptor(Activator.getImageDescriptor("arrow.png"));
+		
+	}	
+	
 	@Override
 	public void setFocus() {
 		sc.setFocus();
@@ -155,6 +226,43 @@ public class BusinessModelView extends ViewPart {
 		}
 
 		return propertySheetPage;
+	}
+
+	@Override
+	public void menuAboutToShow(IMenuManager manager) {
+		manager.add(firstAction);
+		manager.add(secondAction);
+	}	
+	private void showMessage(String message)
+	{
+		MessageDialog.openInformation(bmTree.getControl().getShell(), "Business Model Editor", message);
+	}
+
+	//check what element is selected in the tree
+	@Override
+	public void selectionChanged(SelectionChangedEvent event) {
+		ISelection selection;
+		if (event.getSelectionProvider() == bmTree){
+			selection = event.getSelection();
+		    if (selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() == 1)
+		    {
+		      currentTreeSelection = ((IStructuredSelection)selection).getFirstElement();
+		      System.out.println("selection: "+currentTreeSelection);
+
+		    }
+		}
+		
+	}
+	
+
+	/**
+	 * This returns the editing domain as required by the {@link IEditingDomainProvider} interface.
+	 * This is important for implementing the static methods of {@link AdapterFactoryEditingDomain}	
+	 * and for supporting {@link org.eclipse.emf.edit.ui.action.CommandAction}.
+	 */
+	@Override
+	public EditingDomain getEditingDomain() {
+		return editingDomain;
 	}	
 	
 }

@@ -10,6 +10,7 @@ package it.eng.spagobi.meta.model.business.provider;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 
+import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
@@ -133,10 +134,16 @@ public class BusinessColumnItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
+		/*
 		String label = ((BusinessColumn)object).getName();
 		return label == null || label.length() == 0 ?
 			getString("_UI_BusinessColumn_type") :
 			getString("_UI_BusinessColumn_type") + " " + label;
+		*/
+		String label = ((BusinessColumn)object).getTable().getName()+"."+((BusinessColumn)object).getName();
+		return label == null || label.length() == 0 ?
+			getString("_UI_BusinessColumn_type") :
+			label;
 	}
 
 	/**

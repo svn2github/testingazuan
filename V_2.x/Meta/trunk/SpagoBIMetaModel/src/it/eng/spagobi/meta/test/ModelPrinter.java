@@ -19,7 +19,7 @@ public class ModelPrinter {
 	public static void print(BusinessModel model) {
 		for(int i = 0; i < model.getTables().size(); i++) {
         	BusinessTable t = model.getTables().get(i);
-        	System.out.println( t.getName() );
+        	System.out.println( i + " " + t.getName() );
         	for(int j = 0; j < t.getColumns().size(); j++) {
         		System.out.println( "  -  " + t.getColumns().get(j).getName());
         	}

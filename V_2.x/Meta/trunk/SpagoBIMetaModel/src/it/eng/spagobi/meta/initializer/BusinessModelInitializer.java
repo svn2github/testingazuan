@@ -48,9 +48,7 @@ public class BusinessModelInitializer {
 			
 			
 			// tables
-			for(int i = 0; i < physicalModel.getTables().size(); i++) {
-				addTables( physicalModel, businessModel );
-			}
+			addTables( physicalModel, businessModel );
 			
 			// relationships-foreign keys
 			addRelationships( physicalModel, businessModel );
@@ -90,8 +88,9 @@ public class BusinessModelInitializer {
 							
 			addColumns(physicalTable, businessTable);
 			
+			
 			businessModel.getTables().add(businessTable);
-		
+			
 			getPropertiesInitializer().addProperties(businessTable);	
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business table from physical table [" + physicalTable.getName() + "]", t);

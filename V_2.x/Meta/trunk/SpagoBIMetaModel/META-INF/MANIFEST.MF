@@ -47,6 +47,7 @@ Export-Package: it.eng.spagobi.meta.cwm,
  it.eng.spagobi.meta.model.physical.pojo,
  it.eng.spagobi.meta.model.physical.util,
  it.eng.spagobi.meta.model.util,
+ it.eng.spagobi.meta.serializer,
  it.eng.spagobi.meta.test,
  org.apache.commons.lang
 Require-Bundle: org.eclipse.core.runtime,

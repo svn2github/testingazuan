@@ -60,7 +60,6 @@ public interface PhysicalPrimaryKey extends ModelObject {
 
 	/**
 	 * Returns the value of the '<em><b>Table</b></em>' reference.
-	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getPrimaryKey <em>Primary Key</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Table</em>' reference isn't clear,
@@ -70,8 +69,7 @@ public interface PhysicalPrimaryKey extends ModelObject {
 	 * @return the value of the '<em>Table</em>' reference.
 	 * @see #setTable(PhysicalTable)
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalPrimaryKey_Table()
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalTable#getPrimaryKey
-	 * @model opposite="primaryKey"
+	 * @model
 	 * @generated
 	 */
 	PhysicalTable getTable();

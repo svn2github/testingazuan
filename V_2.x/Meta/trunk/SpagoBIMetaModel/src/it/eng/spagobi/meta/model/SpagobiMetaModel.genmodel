@@ -63,12 +63,6 @@
         <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalTable/model"/>
         <genFeatures children="true" createChild="true" propertySortChoices="true"
             ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalTable/columns"/>
-        <genFeatures children="true" createChild="true" propertySortChoices="true"
-            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalTable/primaryKey"/>
-        <genFeatures children="true" createChild="true" propertySortChoices="true"
-            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalTable/foreignKeys"/>
-        <genFeatures notify="false" createChild="false" propertySortChoices="true"
-            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//physical/PhysicalTable/reverseForeignKeys"/>
       </genClasses>
       <genClasses ecoreClass="SpagoBIMetaModel.ecore#//physical/PhysicalColumn">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//physical/PhysicalColumn/comment"/>

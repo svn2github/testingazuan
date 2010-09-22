@@ -62,7 +62,6 @@ public interface PhysicalForeignKey extends ModelObject {
 
 	/**
 	 * Returns the value of the '<em><b>Source Table</b></em>' reference.
-	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getForeignKeys <em>Foreign Keys</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Source Table</em>' reference isn't clear,
@@ -72,8 +71,7 @@ public interface PhysicalForeignKey extends ModelObject {
 	 * @return the value of the '<em>Source Table</em>' reference.
 	 * @see #setSourceTable(PhysicalTable)
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalForeignKey_SourceTable()
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalTable#getForeignKeys
-	 * @model opposite="foreignKeys" required="true"
+	 * @model required="true"
 	 * @generated
 	 */
 	PhysicalTable getSourceTable();
@@ -132,7 +130,6 @@ public interface PhysicalForeignKey extends ModelObject {
 
 	/**
 	 * Returns the value of the '<em><b>Destination Table</b></em>' reference.
-	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getReverseForeignKeys <em>Reverse Foreign Keys</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Destination Table</em>' reference isn't clear,
@@ -142,8 +139,7 @@ public interface PhysicalForeignKey extends ModelObject {
 	 * @return the value of the '<em>Destination Table</em>' reference.
 	 * @see #setDestinationTable(PhysicalTable)
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalForeignKey_DestinationTable()
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalTable#getReverseForeignKeys
-	 * @model opposite="reverseForeignKeys" required="true"
+	 * @model required="true"
 	 * @generated
 	 */
 	PhysicalTable getDestinationTable();

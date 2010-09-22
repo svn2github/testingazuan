@@ -498,33 +498,6 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getPhysicalTable_PrimaryKey() {
-		return (EReference)physicalTableEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getPhysicalTable_ForeignKeys() {
-		return (EReference)physicalTableEClass.getEStructuralFeatures().get(5);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getPhysicalTable_ReverseForeignKeys() {
-		return (EReference)physicalTableEClass.getEStructuralFeatures().get(6);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public PhysicalModelFactory getPhysicalModelFactory() {
 		return (PhysicalModelFactory)getEFactoryInstance();
 	}
@@ -563,9 +536,6 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 		createEAttribute(physicalTableEClass, PHYSICAL_TABLE__TYPE);
 		createEReference(physicalTableEClass, PHYSICAL_TABLE__MODEL);
 		createEReference(physicalTableEClass, PHYSICAL_TABLE__COLUMNS);
-		createEReference(physicalTableEClass, PHYSICAL_TABLE__PRIMARY_KEY);
-		createEReference(physicalTableEClass, PHYSICAL_TABLE__FOREIGN_KEYS);
-		createEReference(physicalTableEClass, PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS);
 
 		physicalColumnEClass = createEClass(PHYSICAL_COLUMN);
 		createEAttribute(physicalColumnEClass, PHYSICAL_COLUMN__COMMENT);
@@ -648,9 +618,6 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 		initEAttribute(getPhysicalTable_Type(), ecorePackage.getEString(), "type", null, 0, 1, PhysicalTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalTable_Model(), this.getPhysicalModel(), this.getPhysicalModel_Tables(), "model", null, 1, 1, PhysicalTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalTable_Columns(), this.getPhysicalColumn(), this.getPhysicalColumn_Table(), "columns", null, 0, -1, PhysicalTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getPhysicalTable_PrimaryKey(), this.getPhysicalPrimaryKey(), this.getPhysicalPrimaryKey_Table(), "primaryKey", null, 0, 1, PhysicalTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getPhysicalTable_ForeignKeys(), this.getPhysicalForeignKey(), this.getPhysicalForeignKey_SourceTable(), "foreignKeys", null, 0, -1, PhysicalTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getPhysicalTable_ReverseForeignKeys(), this.getPhysicalForeignKey(), this.getPhysicalForeignKey_DestinationTable(), "reverseForeignKeys", null, 0, -1, PhysicalTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(physicalColumnEClass, PhysicalColumn.class, "PhysicalColumn", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getPhysicalColumn_Comment(), ecorePackage.getEString(), "comment", null, 0, 1, PhysicalColumn.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -667,15 +634,15 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 
 		initEClass(physicalPrimaryKeyEClass, PhysicalPrimaryKey.class, "PhysicalPrimaryKey", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getPhysicalPrimaryKey_Model(), this.getPhysicalModel(), this.getPhysicalModel_PrimaryKeys(), "model", null, 1, 1, PhysicalPrimaryKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getPhysicalPrimaryKey_Table(), this.getPhysicalTable(), this.getPhysicalTable_PrimaryKey(), "table", null, 0, 1, PhysicalPrimaryKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getPhysicalPrimaryKey_Table(), this.getPhysicalTable(), null, "table", null, 0, 1, PhysicalPrimaryKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalPrimaryKey_Columns(), this.getPhysicalColumn(), null, "columns", null, 1, -1, PhysicalPrimaryKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(physicalForeignKeyEClass, PhysicalForeignKey.class, "PhysicalForeignKey", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getPhysicalForeignKey_SourceName(), ecorePackage.getEString(), "sourceName", null, 0, 1, PhysicalForeignKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getPhysicalForeignKey_SourceTable(), this.getPhysicalTable(), this.getPhysicalTable_ForeignKeys(), "sourceTable", null, 1, 1, PhysicalForeignKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getPhysicalForeignKey_SourceTable(), this.getPhysicalTable(), null, "sourceTable", null, 1, 1, PhysicalForeignKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalForeignKey_SourceColumns(), this.getPhysicalColumn(), null, "sourceColumns", null, 1, -1, PhysicalForeignKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getPhysicalForeignKey_DestinationName(), ecorePackage.getEString(), "destinationName", null, 0, 1, PhysicalForeignKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getPhysicalForeignKey_DestinationTable(), this.getPhysicalTable(), this.getPhysicalTable_ReverseForeignKeys(), "destinationTable", null, 1, 1, PhysicalForeignKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getPhysicalForeignKey_DestinationTable(), this.getPhysicalTable(), null, "destinationTable", null, 1, 1, PhysicalForeignKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalForeignKey_DestinationColumns(), this.getPhysicalColumn(), null, "destinationColumns", null, 1, -1, PhysicalForeignKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalForeignKey_Model(), this.getPhysicalModel(), this.getPhysicalModel_ForeignKeys(), "model", null, 0, 1, PhysicalForeignKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 	}

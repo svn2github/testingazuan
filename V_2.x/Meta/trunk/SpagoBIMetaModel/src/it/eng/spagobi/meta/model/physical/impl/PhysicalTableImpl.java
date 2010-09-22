@@ -44,9 +44,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalTableImpl#getType <em>Type</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalTableImpl#getModel <em>Model</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalTableImpl#getColumns <em>Columns</em>}</li>
- *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalTableImpl#getPrimaryKey <em>Primary Key</em>}</li>
- *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalTableImpl#getForeignKeys <em>Foreign Keys</em>}</li>
- *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalTableImpl#getReverseForeignKeys <em>Reverse Foreign Keys</em>}</li>
  * </ul>
  * </p>
  *
@@ -102,36 +99,6 @@ public class PhysicalTableImpl extends ModelObjectImpl implements PhysicalTable 
 	 * @ordered
 	 */
 	protected EList<PhysicalColumn> columns;
-
-	/**
-	 * The cached value of the '{@link #getPrimaryKey() <em>Primary Key</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getPrimaryKey()
-	 * @generated
-	 * @ordered
-	 */
-	protected PhysicalPrimaryKey primaryKey;
-
-	/**
-	 * The cached value of the '{@link #getForeignKeys() <em>Foreign Keys</em>}' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getForeignKeys()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<PhysicalForeignKey> foreignKeys;
-
-	/**
-	 * The cached value of the '{@link #getReverseForeignKeys() <em>Reverse Foreign Keys</em>}' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getReverseForeignKeys()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<PhysicalForeignKey> reverseForeignKeys;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -252,90 +219,6 @@ public class PhysicalTableImpl extends ModelObjectImpl implements PhysicalTable 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PhysicalPrimaryKey getPrimaryKey() {
-		if (primaryKey != null && primaryKey.eIsProxy()) {
-			InternalEObject oldPrimaryKey = (InternalEObject)primaryKey;
-			primaryKey = (PhysicalPrimaryKey)eResolveProxy(oldPrimaryKey);
-			if (primaryKey != oldPrimaryKey) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, PhysicalModelPackage.PHYSICAL_TABLE__PRIMARY_KEY, oldPrimaryKey, primaryKey));
-			}
-		}
-		return primaryKey;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public PhysicalPrimaryKey basicGetPrimaryKey() {
-		return primaryKey;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetPrimaryKey(PhysicalPrimaryKey newPrimaryKey, NotificationChain msgs) {
-		PhysicalPrimaryKey oldPrimaryKey = primaryKey;
-		primaryKey = newPrimaryKey;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_TABLE__PRIMARY_KEY, oldPrimaryKey, newPrimaryKey);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setPrimaryKey(PhysicalPrimaryKey newPrimaryKey) {
-		if (newPrimaryKey != primaryKey) {
-			NotificationChain msgs = null;
-			if (primaryKey != null)
-				msgs = ((InternalEObject)primaryKey).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE, PhysicalPrimaryKey.class, msgs);
-			if (newPrimaryKey != null)
-				msgs = ((InternalEObject)newPrimaryKey).eInverseAdd(this, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE, PhysicalPrimaryKey.class, msgs);
-			msgs = basicSetPrimaryKey(newPrimaryKey, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_TABLE__PRIMARY_KEY, newPrimaryKey, newPrimaryKey));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EList<PhysicalForeignKey> getForeignKeys() {
-		if (foreignKeys == null) {
-			foreignKeys = new EObjectWithInverseResolvingEList<PhysicalForeignKey>(PhysicalForeignKey.class, this, PhysicalModelPackage.PHYSICAL_TABLE__FOREIGN_KEYS, PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_TABLE);
-		}
-		return foreignKeys;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EList<PhysicalForeignKey> getReverseForeignKeys() {
-		if (reverseForeignKeys == null) {
-			reverseForeignKeys = new EObjectWithInverseResolvingEList<PhysicalForeignKey>(PhysicalForeignKey.class, this, PhysicalModelPackage.PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS, PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__DESTINATION_TABLE);
-		}
-		return reverseForeignKeys;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
@@ -346,14 +229,6 @@ public class PhysicalTableImpl extends ModelObjectImpl implements PhysicalTable 
 				return basicSetModel((PhysicalModel)otherEnd, msgs);
 			case PhysicalModelPackage.PHYSICAL_TABLE__COLUMNS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getColumns()).basicAdd(otherEnd, msgs);
-			case PhysicalModelPackage.PHYSICAL_TABLE__PRIMARY_KEY:
-				if (primaryKey != null)
-					msgs = ((InternalEObject)primaryKey).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE, PhysicalPrimaryKey.class, msgs);
-				return basicSetPrimaryKey((PhysicalPrimaryKey)otherEnd, msgs);
-			case PhysicalModelPackage.PHYSICAL_TABLE__FOREIGN_KEYS:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getForeignKeys()).basicAdd(otherEnd, msgs);
-			case PhysicalModelPackage.PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getReverseForeignKeys()).basicAdd(otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -370,12 +245,6 @@ public class PhysicalTableImpl extends ModelObjectImpl implements PhysicalTable 
 				return basicSetModel(null, msgs);
 			case PhysicalModelPackage.PHYSICAL_TABLE__COLUMNS:
 				return ((InternalEList<?>)getColumns()).basicRemove(otherEnd, msgs);
-			case PhysicalModelPackage.PHYSICAL_TABLE__PRIMARY_KEY:
-				return basicSetPrimaryKey(null, msgs);
-			case PhysicalModelPackage.PHYSICAL_TABLE__FOREIGN_KEYS:
-				return ((InternalEList<?>)getForeignKeys()).basicRemove(otherEnd, msgs);
-			case PhysicalModelPackage.PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS:
-				return ((InternalEList<?>)getReverseForeignKeys()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -410,13 +279,6 @@ public class PhysicalTableImpl extends ModelObjectImpl implements PhysicalTable 
 				return getModel();
 			case PhysicalModelPackage.PHYSICAL_TABLE__COLUMNS:
 				return getColumns();
-			case PhysicalModelPackage.PHYSICAL_TABLE__PRIMARY_KEY:
-				if (resolve) return getPrimaryKey();
-				return basicGetPrimaryKey();
-			case PhysicalModelPackage.PHYSICAL_TABLE__FOREIGN_KEYS:
-				return getForeignKeys();
-			case PhysicalModelPackage.PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS:
-				return getReverseForeignKeys();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -443,17 +305,6 @@ public class PhysicalTableImpl extends ModelObjectImpl implements PhysicalTable 
 				getColumns().clear();
 				getColumns().addAll((Collection<? extends PhysicalColumn>)newValue);
 				return;
-			case PhysicalModelPackage.PHYSICAL_TABLE__PRIMARY_KEY:
-				setPrimaryKey((PhysicalPrimaryKey)newValue);
-				return;
-			case PhysicalModelPackage.PHYSICAL_TABLE__FOREIGN_KEYS:
-				getForeignKeys().clear();
-				getForeignKeys().addAll((Collection<? extends PhysicalForeignKey>)newValue);
-				return;
-			case PhysicalModelPackage.PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS:
-				getReverseForeignKeys().clear();
-				getReverseForeignKeys().addAll((Collection<? extends PhysicalForeignKey>)newValue);
-				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -478,15 +329,6 @@ public class PhysicalTableImpl extends ModelObjectImpl implements PhysicalTable 
 			case PhysicalModelPackage.PHYSICAL_TABLE__COLUMNS:
 				getColumns().clear();
 				return;
-			case PhysicalModelPackage.PHYSICAL_TABLE__PRIMARY_KEY:
-				setPrimaryKey((PhysicalPrimaryKey)null);
-				return;
-			case PhysicalModelPackage.PHYSICAL_TABLE__FOREIGN_KEYS:
-				getForeignKeys().clear();
-				return;
-			case PhysicalModelPackage.PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS:
-				getReverseForeignKeys().clear();
-				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -507,12 +349,6 @@ public class PhysicalTableImpl extends ModelObjectImpl implements PhysicalTable 
 				return getModel() != null;
 			case PhysicalModelPackage.PHYSICAL_TABLE__COLUMNS:
 				return columns != null && !columns.isEmpty();
-			case PhysicalModelPackage.PHYSICAL_TABLE__PRIMARY_KEY:
-				return primaryKey != null;
-			case PhysicalModelPackage.PHYSICAL_TABLE__FOREIGN_KEYS:
-				return foreignKeys != null && !foreignKeys.isEmpty();
-			case PhysicalModelPackage.PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS:
-				return reverseForeignKeys != null && !reverseForeignKeys.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

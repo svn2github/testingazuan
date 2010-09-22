@@ -200,33 +200,11 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetSourceTable(PhysicalTable newSourceTable, NotificationChain msgs) {
+	public void setSourceTable(PhysicalTable newSourceTable) {
 		PhysicalTable oldSourceTable = sourceTable;
 		sourceTable = newSourceTable;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_TABLE, oldSourceTable, newSourceTable);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setSourceTable(PhysicalTable newSourceTable) {
-		if (newSourceTable != sourceTable) {
-			NotificationChain msgs = null;
-			if (sourceTable != null)
-				msgs = ((InternalEObject)sourceTable).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_TABLE__FOREIGN_KEYS, PhysicalTable.class, msgs);
-			if (newSourceTable != null)
-				msgs = ((InternalEObject)newSourceTable).eInverseAdd(this, PhysicalModelPackage.PHYSICAL_TABLE__FOREIGN_KEYS, PhysicalTable.class, msgs);
-			msgs = basicSetSourceTable(newSourceTable, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_TABLE, newSourceTable, newSourceTable));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_TABLE, oldSourceTable, sourceTable));
 	}
 
 	/**
@@ -293,33 +271,11 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetDestinationTable(PhysicalTable newDestinationTable, NotificationChain msgs) {
+	public void setDestinationTable(PhysicalTable newDestinationTable) {
 		PhysicalTable oldDestinationTable = destinationTable;
 		destinationTable = newDestinationTable;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__DESTINATION_TABLE, oldDestinationTable, newDestinationTable);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setDestinationTable(PhysicalTable newDestinationTable) {
-		if (newDestinationTable != destinationTable) {
-			NotificationChain msgs = null;
-			if (destinationTable != null)
-				msgs = ((InternalEObject)destinationTable).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS, PhysicalTable.class, msgs);
-			if (newDestinationTable != null)
-				msgs = ((InternalEObject)newDestinationTable).eInverseAdd(this, PhysicalModelPackage.PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS, PhysicalTable.class, msgs);
-			msgs = basicSetDestinationTable(newDestinationTable, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__DESTINATION_TABLE, newDestinationTable, newDestinationTable));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__DESTINATION_TABLE, oldDestinationTable, destinationTable));
 	}
 
 	/**
@@ -383,14 +339,6 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_TABLE:
-				if (sourceTable != null)
-					msgs = ((InternalEObject)sourceTable).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_TABLE__FOREIGN_KEYS, PhysicalTable.class, msgs);
-				return basicSetSourceTable((PhysicalTable)otherEnd, msgs);
-			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__DESTINATION_TABLE:
-				if (destinationTable != null)
-					msgs = ((InternalEObject)destinationTable).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS, PhysicalTable.class, msgs);
-				return basicSetDestinationTable((PhysicalTable)otherEnd, msgs);
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__MODEL:
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);
@@ -407,10 +355,6 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_TABLE:
-				return basicSetSourceTable(null, msgs);
-			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__DESTINATION_TABLE:
-				return basicSetDestinationTable(null, msgs);
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__MODEL:
 				return basicSetModel(null, msgs);
 		}

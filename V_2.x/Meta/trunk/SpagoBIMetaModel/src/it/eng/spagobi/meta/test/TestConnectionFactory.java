@@ -14,7 +14,7 @@ import java.sql.DriverManager;
 public class TestConnectionFactory {
 	
 	public static String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-	public static String MYSQL_URL = "jdbc:mysql://localhost:3306/foodmart";
+	public static String MYSQL_URL = "jdbc:mysql://localhost:3306/spagobi_local";
 	public static String MYSQL_USER = "root";
 	public static String MYSQL_PWD = "mysql";
 	public static String MYSQL_DEFAULT_CATALOGUE = null; //"foodmart";		

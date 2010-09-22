@@ -157,33 +157,11 @@ public class PhysicalPrimaryKeyImpl extends ModelObjectImpl implements PhysicalP
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetTable(PhysicalTable newTable, NotificationChain msgs) {
+	public void setTable(PhysicalTable newTable) {
 		PhysicalTable oldTable = table;
 		table = newTable;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE, oldTable, newTable);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setTable(PhysicalTable newTable) {
-		if (newTable != table) {
-			NotificationChain msgs = null;
-			if (table != null)
-				msgs = ((InternalEObject)table).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_TABLE__PRIMARY_KEY, PhysicalTable.class, msgs);
-			if (newTable != null)
-				msgs = ((InternalEObject)newTable).eInverseAdd(this, PhysicalModelPackage.PHYSICAL_TABLE__PRIMARY_KEY, PhysicalTable.class, msgs);
-			msgs = basicSetTable(newTable, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE, newTable, newTable));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE, oldTable, table));
 	}
 
 	/**
@@ -210,10 +188,6 @@ public class PhysicalPrimaryKeyImpl extends ModelObjectImpl implements PhysicalP
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetModel((PhysicalModel)otherEnd, msgs);
-			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE:
-				if (table != null)
-					msgs = ((InternalEObject)table).eInverseRemove(this, PhysicalModelPackage.PHYSICAL_TABLE__PRIMARY_KEY, PhysicalTable.class, msgs);
-				return basicSetTable((PhysicalTable)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -228,8 +202,6 @@ public class PhysicalPrimaryKeyImpl extends ModelObjectImpl implements PhysicalP
 		switch (featureID) {
 			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__MODEL:
 				return basicSetModel(null, msgs);
-			case PhysicalModelPackage.PHYSICAL_PRIMARY_KEY__TABLE:
-				return basicSetTable(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}

@@ -315,7 +315,7 @@ public class PhysicalModelInitializer {
 					
 					primaryKey.setName( rs.getString("PK_NAME") );
 					
-					table.setPrimaryKey(primaryKey);
+					//table.setPrimaryKey(primaryKey);
 					model.getPrimaryKeys().add(primaryKey);
 				}
 				
@@ -390,7 +390,7 @@ public class PhysicalModelInitializer {
 				
 				} else if (!foreignKey.getSourceName().equals(fkName)) { // we have finished with the previous fk
 
-					table.getForeignKeys().add(foreignKey);
+					//table.getForeignKeys().add(foreignKey);
 					model.getForeignKeys().add(foreignKey);
 					foreignKey = FACTORY.createPhysicalForeignKey();
 					getPropertiesInitializer().addProperties(foreignKey);

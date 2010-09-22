@@ -23,9 +23,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getType <em>Type</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getModel <em>Model</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getColumns <em>Columns</em>}</li>
- *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getPrimaryKey <em>Primary Key</em>}</li>
- *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getForeignKeys <em>Foreign Keys</em>}</li>
- *   <li>{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getReverseForeignKeys <em>Reverse Foreign Keys</em>}</li>
  * </ul>
  * </p>
  *
@@ -132,70 +129,6 @@ public interface PhysicalTable extends ModelObject {
 	 */
 	EList<PhysicalColumn> getColumns();
 
-	/**
-	 * Returns the value of the '<em><b>Primary Key</b></em>' reference.
-	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getTable <em>Table</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Primary Key</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Primary Key</em>' reference.
-	 * @see #setPrimaryKey(PhysicalPrimaryKey)
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalTable_PrimaryKey()
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey#getTable
-	 * @model opposite="table"
-	 * @generated
-	 */
-	PhysicalPrimaryKey getPrimaryKey();
-
-	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalTable#getPrimaryKey <em>Primary Key</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Primary Key</em>' reference.
-	 * @see #getPrimaryKey()
-	 * @generated
-	 */
-	void setPrimaryKey(PhysicalPrimaryKey value);
-
-	/**
-	 * Returns the value of the '<em><b>Foreign Keys</b></em>' reference list.
-	 * The list contents are of type {@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey}.
-	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getSourceTable <em>Source Table</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Foreign Keys</em>' reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Foreign Keys</em>' reference list.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalTable_ForeignKeys()
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getSourceTable
-	 * @model opposite="sourceTable"
-	 * @generated
-	 */
-	EList<PhysicalForeignKey> getForeignKeys();
-
-	/**
-	 * Returns the value of the '<em><b>Reverse Foreign Keys</b></em>' reference list.
-	 * The list contents are of type {@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey}.
-	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getDestinationTable <em>Destination Table</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Reverse Foreign Keys</em>' reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Reverse Foreign Keys</em>' reference list.
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalTable_ReverseForeignKeys()
-	 * @see it.eng.spagobi.meta.model.physical.PhysicalForeignKey#getDestinationTable
-	 * @model opposite="destinationTable"
-	 * @generated
-	 */
-	EList<PhysicalForeignKey> getReverseForeignKeys();
-	
 	public PhysicalColumn getColumn(String name);
 
 } // PhysicalTable

@@ -72,6 +72,19 @@
                tooltip="Create Business Model from Physical Model Structure">
          </action>
       </viewContribution>
+      <viewContribution
+            id="it.eng.spagobi.meta.editor.action.SerializeBusinessModel"
+            targetID="it.eng.spagobi.meta.editor.BusinessModel">
+         <action
+               class="it.eng.spagobi.meta.editor.views.actions.SerializeBusinessModel"
+               icon="icons/savexml.png"
+               id="it.eng.spagobi.meta.editor.action.SerializeBusinessModel"
+               label="Serialize Business Model to XMI File"
+               style="push"
+               toolbarPath="additions"
+               tooltip="Save Business Model to XMI File">
+         </action>
+      </viewContribution>
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">

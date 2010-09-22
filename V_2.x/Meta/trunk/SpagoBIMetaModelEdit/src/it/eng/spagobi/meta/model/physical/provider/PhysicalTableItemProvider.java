@@ -72,9 +72,6 @@ public class PhysicalTableItemProvider
 			addCommentPropertyDescriptor(object);
 			addTypePropertyDescriptor(object);
 			addColumnsPropertyDescriptor(object);
-			addPrimaryKeyPropertyDescriptor(object);
-			addForeignKeysPropertyDescriptor(object);
-			addReverseForeignKeysPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -146,72 +143,6 @@ public class PhysicalTableItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Primary Key feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addPrimaryKeyPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_PhysicalTable_primaryKey_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_PhysicalTable_primaryKey_feature", "_UI_PhysicalTable_type"),
-				 PhysicalModelPackage.Literals.PHYSICAL_TABLE__PRIMARY_KEY,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Foreign Keys feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addForeignKeysPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_PhysicalTable_foreignKeys_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_PhysicalTable_foreignKeys_feature", "_UI_PhysicalTable_type"),
-				 PhysicalModelPackage.Literals.PHYSICAL_TABLE__FOREIGN_KEYS,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Reverse Foreign Keys feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addReverseForeignKeysPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_PhysicalTable_reverseForeignKeys_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_PhysicalTable_reverseForeignKeys_feature", "_UI_PhysicalTable_type"),
-				 PhysicalModelPackage.Literals.PHYSICAL_TABLE__REVERSE_FOREIGN_KEYS,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
 	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
 	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
 	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
@@ -224,8 +155,6 @@ public class PhysicalTableItemProvider
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(PhysicalModelPackage.Literals.PHYSICAL_TABLE__COLUMNS);
-			childrenFeatures.add(PhysicalModelPackage.Literals.PHYSICAL_TABLE__PRIMARY_KEY);
-			childrenFeatures.add(PhysicalModelPackage.Literals.PHYSICAL_TABLE__FOREIGN_KEYS);
 		}
 		return childrenFeatures;
 	}
@@ -291,8 +220,6 @@ public class PhysicalTableItemProvider
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case PhysicalModelPackage.PHYSICAL_TABLE__COLUMNS:
-			case PhysicalModelPackage.PHYSICAL_TABLE__PRIMARY_KEY:
-			case PhysicalModelPackage.PHYSICAL_TABLE__FOREIGN_KEYS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -314,16 +241,6 @@ public class PhysicalTableItemProvider
 			(createChildParameter
 				(PhysicalModelPackage.Literals.PHYSICAL_TABLE__COLUMNS,
 				 PhysicalModelFactory.eINSTANCE.createPhysicalColumn()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(PhysicalModelPackage.Literals.PHYSICAL_TABLE__PRIMARY_KEY,
-				 PhysicalModelFactory.eINSTANCE.createPhysicalPrimaryKey()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(PhysicalModelPackage.Literals.PHYSICAL_TABLE__FOREIGN_KEYS,
-				 PhysicalModelFactory.eINSTANCE.createPhysicalForeignKey()));
 	}
 
 	/**

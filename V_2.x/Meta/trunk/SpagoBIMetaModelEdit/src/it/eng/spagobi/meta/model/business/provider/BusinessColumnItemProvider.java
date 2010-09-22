@@ -134,16 +134,10 @@ public class BusinessColumnItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		/*
 		String label = ((BusinessColumn)object).getName();
 		return label == null || label.length() == 0 ?
 			getString("_UI_BusinessColumn_type") :
 			getString("_UI_BusinessColumn_type") + " " + label;
-		*/
-		String label = ((BusinessColumn)object).getTable().getName()+"."+((BusinessColumn)object).getName();
-		return label == null || label.length() == 0 ?
-			getString("_UI_BusinessColumn_type") :
-			label;
 	}
 
 	/**

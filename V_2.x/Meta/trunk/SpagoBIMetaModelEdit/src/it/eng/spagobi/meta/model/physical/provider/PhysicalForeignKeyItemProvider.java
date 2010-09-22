@@ -281,14 +281,19 @@ public class PhysicalForeignKeyItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
 	public String getText(Object object) {
+		/*
 		String label = ((PhysicalForeignKey)object).getName();
 		return label == null || label.length() == 0 ?
 			getString("_UI_PhysicalForeignKey_type") :
 			getString("_UI_PhysicalForeignKey_type") + " " + label;
+		*/
+		String label = ((PhysicalForeignKey)object).getSourceName();
+		return label == null || label.length() == 0 ?
+			getString("_UI_PhysicalForeignKey_type") :
+			label;
 	}
 
 	/**

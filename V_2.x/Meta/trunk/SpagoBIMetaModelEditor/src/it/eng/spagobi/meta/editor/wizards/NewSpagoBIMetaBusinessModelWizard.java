@@ -39,7 +39,7 @@ public class NewSpagoBIMetaBusinessModelWizard extends Wizard implements INewWiz
 	
 	@Override
 	public boolean performFinish() {		
-        String path = one.getDirPath().toString()+"/"+one.getBmName();
+        String path = one.getDirPath().toString()+"\\"+one.getBmName();
         if (path != null){
              File dir = new File(path);
 	   		 if (!dir.exists())
@@ -51,7 +51,7 @@ public class NewSpagoBIMetaBusinessModelWizard extends Wizard implements INewWiz
 	   			CoreSingleton cs = CoreSingleton.getInstance();
 	   			cs.initModel();
 	   			cs.setBmName(one.getBmName());
-	   			cs.setBmPath(one.getDirPath().toString()+"/"+one.getBmName());
+	   			cs.setBmPath(path);
 	   			
 	   			//launch perspective
 	   			IWorkbench workbench = PlatformUI.getWorkbench();

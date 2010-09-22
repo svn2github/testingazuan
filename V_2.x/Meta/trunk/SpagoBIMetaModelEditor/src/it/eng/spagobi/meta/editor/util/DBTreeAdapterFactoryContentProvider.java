@@ -41,10 +41,10 @@ public class DBTreeAdapterFactoryContentProvider extends AdapterFactoryContentPr
 	    
 	    if(parentElement instanceof PhysicalTable) {
 	        PhysicalTable table = (PhysicalTable)parentElement;
-	        if (table.getPrimaryKey() != null)
-	        	return concat(table.getColumns().toArray(), new Object[]{table.getPrimaryKey()} ,table.getForeignKeys().toArray());
-	        else
-	        	return concat(table.getColumns().toArray(), table.getForeignKeys().toArray()); 
+	       // if (table.getPrimaryKey() != null)
+	       // 	return concat(table.getColumns().toArray(), new Object[]{table.getPrimaryKey()} ,table.getForeignKeys().toArray());
+	       // else
+	       // 	return concat(table.getColumns().toArray(), table.getForeignKeys().toArray()); 
 		}
 	    
 	    if(parentElement instanceof PhysicalColumn) {

@@ -14,7 +14,9 @@ import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 
 import it.eng.spagobi.meta.model.Model;
+import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.business.util.BusinessModelAdapterFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
@@ -60,7 +62,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	private ScrolledComposite sc;
 	private TreeViewer bmTree;
 	protected PropertySheetPage propertySheetPage;
-	private Action firstAction,secondAction;
+	private Action addBTAction,removeBTAction,addBCAction,removeBCAction;
 	private BasicCommandStack commandStack;
 	protected AdapterFactoryEditingDomain editingDomain;
 	private Object currentTreeSelection;
@@ -85,6 +87,9 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 				  SWT.V_SCROLL | SWT.BORDER);						
 	}
 	
+	/**
+	 * Create the tree of the business model
+	 */
 	public void createTree(){
 		Composite container = new Composite(sc, SWT.NONE);
 		GridLayout gridLayout = new GridLayout(); 
@@ -132,11 +137,13 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	    
 	    //register the tree as a selection provider
 	    getSite().setSelectionProvider(bmTree);
+	    
 	    //add a SelectionListener to the tree
 	    bmTree.addSelectionChangedListener(this);
 	    
-	    
-	    makeActions();
+	    //Create Context Menu and Menu Actions    
+	    createBCActions();
+	    createBTActions();
 	    hookContextMenu();
 
 	    //setting datalayout
@@ -165,40 +172,120 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		getSite().registerContextMenu(contextMenu, bmTree);
 
 	}	
-	private void makeActions()
+	
+	/**
+	 * Create Business Table node Action to show in the context menu
+	 */
+	private void createBTActions()
 	{
-		firstAction = new Action()
+		addBTAction = new Action()
 		{
 			public void run()
 			{
-				showMessage("Action 1 executed");
+				showMessage("Add BT executed");
 			}
 		};
-		firstAction.setText("Add");
-		firstAction.setToolTipText("Action 1 tooltip");
-		firstAction.setImageDescriptor(Activator.getImageDescriptor("arrow.png"));
+		addBTAction.setText("Add a Business Table");
+		addBTAction.setToolTipText("Add a Business Table");
+		addBTAction.setImageDescriptor(Activator.getImageDescriptor("add.png"));
 
-		secondAction = new Action()
+		removeBTAction = new Action()
 		{
 			public void run()
 			{
 				//EditingDomain domain = getEditingDomain();
 				//RemoveCommand cmd = new RemoveCommand();
 				cs.getBusinessModel().getTables().remove(currentTreeSelection);
-				showMessage("Remove executed");
+				showMessage("Remove BT executed");
 			}
 		};
-		secondAction.setText("Remove");
-		secondAction.setToolTipText("Action 2 tooltip");
-		secondAction.setImageDescriptor(Activator.getImageDescriptor("arrow.png"));
+		removeBTAction.setText("Remove Business Table");
+		removeBTAction.setToolTipText("Remove Business Table");
+		removeBTAction.setImageDescriptor(Activator.getImageDescriptor("remove.png"));
+		
+	}	
+
+	/**
+	 * Create Business Column node Action to show in the context menu
+	 */
+	private void createBCActions()
+	{
+		addBCAction = new Action()
+		{
+			public void run()
+			{
+				showMessage("Add BC executed");
+			}
+		};
+		addBCAction.setText("Add Business Column");
+		addBCAction.setToolTipText("Add Business Column");
+		addBCAction.setImageDescriptor(Activator.getImageDescriptor("add.png"));
+
+		removeBCAction = new Action()
+		{
+			public void run()
+			{
+				((BusinessColumn)currentTreeSelection).getTable().getColumns().remove(currentTreeSelection);
+				showMessage("Remove BC executed");
+			}
+		};
+		removeBCAction.setText("Remove Business Column");
+		removeBCAction.setToolTipText("Remove Business Column");
+		removeBCAction.setImageDescriptor(Activator.getImageDescriptor("remove.png"));
 		
 	}	
 	
 	@Override
-	public void setFocus() {
-		sc.setFocus();
+	public void menuAboutToShow(IMenuManager manager) {
+		//create context menu based on the current tree selection
+		if (currentTreeSelection instanceof BusinessTable){
+			manager.removeAll();
+			manager.add(addBTAction);
+			manager.add(removeBTAction);
+		} else if (currentTreeSelection instanceof BusinessColumn){
+			manager.removeAll();
+			manager.add(addBCAction);
+			manager.add(removeBCAction);
+		} else {
+			manager.removeAll();
+		}
+			
+	}
+	
+	//Show a Message in the Dialog
+	private void showMessage(String message)
+	{
+		MessageDialog.openInformation(bmTree.getControl().getShell(), "Business Model Editor", message);
 	}
 
+	/*
+	 * check what element is selected in the tree
+	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+	 */
+	@Override
+	public void selectionChanged(SelectionChangedEvent event) {
+		ISelection selection;
+		if (event.getSelectionProvider() == bmTree){
+			selection = event.getSelection();
+		    if (selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() == 1)
+		    {
+		      currentTreeSelection = ((IStructuredSelection)selection).getFirstElement();
+		      System.out.println("selection: "+currentTreeSelection);
+		    }
+		}
+		
+	}	
+
+	/**
+	 * This returns the editing domain as required by the {@link IEditingDomainProvider} interface.
+	 * This is important for implementing the static methods of {@link AdapterFactoryEditingDomain}	
+	 * and for supporting {@link org.eclipse.emf.edit.ui.action.CommandAction}.
+	 */
+	@Override
+	public EditingDomain getEditingDomain() {
+		return editingDomain;
+	}
+	
 	/**
 	 * This is how the framework determines which interfaces we implement.
 	 */
@@ -227,42 +314,9 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 
 		return propertySheetPage;
 	}
-
-	@Override
-	public void menuAboutToShow(IMenuManager manager) {
-		manager.add(firstAction);
-		manager.add(secondAction);
-	}	
-	private void showMessage(String message)
-	{
-		MessageDialog.openInformation(bmTree.getControl().getShell(), "Business Model Editor", message);
-	}
-
-	//check what element is selected in the tree
-	@Override
-	public void selectionChanged(SelectionChangedEvent event) {
-		ISelection selection;
-		if (event.getSelectionProvider() == bmTree){
-			selection = event.getSelection();
-		    if (selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() == 1)
-		    {
-		      currentTreeSelection = ((IStructuredSelection)selection).getFirstElement();
-		      System.out.println("selection: "+currentTreeSelection);
-
-		    }
-		}
-		
-	}
 	
-
-	/**
-	 * This returns the editing domain as required by the {@link IEditingDomainProvider} interface.
-	 * This is important for implementing the static methods of {@link AdapterFactoryEditingDomain}	
-	 * and for supporting {@link org.eclipse.emf.edit.ui.action.CommandAction}.
-	 */
 	@Override
-	public EditingDomain getEditingDomain() {
-		return editingDomain;
+	public void setFocus() {
+		sc.setFocus();
 	}	
-	
 }

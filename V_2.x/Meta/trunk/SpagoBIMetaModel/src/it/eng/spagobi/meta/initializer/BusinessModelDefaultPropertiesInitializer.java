@@ -26,6 +26,20 @@ import it.eng.spagobi.meta.model.physical.PhysicalTable;
  */
 public class BusinessModelDefaultPropertiesInitializer implements IPropertiesInitializer {
 	
+	// Model property names
+	
+	// Table property names
+	
+	// Column property names
+	
+	public static final String COLUMN_AGGTYPE = "structural.aggtype";
+	public static final String COLUMN_DATATYPE = "structural.datatype";
+	
+	public static final String COLUMN_ALIGNMENT = "style.alignment";
+	
+	// Relationship property names
+	
+	
 	static public ModelFactory FACTORY = ModelFactory.eINSTANCE;
 	
 	public void addProperties(ModelObject o) {
@@ -86,6 +100,7 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		if(rootModel != null) propertyType = rootModel.getPropertyType("Agregation Type");
 		if(propertyType == null) {
 			propertyType = FACTORY.createModelPropertyType();
+			propertyType.setId( COLUMN_AGGTYPE );
 			propertyType.setName("Agregation Type");
 			propertyType.setDescription("The preferred agregation type for the give column (COUNT, SUM, AVG, MAX, MIN)");
 			propertyType.setCategory(structuralCategory);
@@ -101,7 +116,7 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		
 		property = FACTORY.createModelProperty();
 		property.setPropertyType(propertyType);
-		o.getProperties().put(property.getPropertyType().getName(), property);
+		o.getProperties().put(property.getPropertyType().getId(), property);
 		
 		// DATA TYPE
 		propertyType = null;
@@ -109,6 +124,7 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		if(rootModel != null) propertyType = rootModel.getPropertyType("Data Type");
 		if(propertyType == null) {
 			propertyType = FACTORY.createModelPropertyType();
+			propertyType.setId( COLUMN_DATATYPE );
 			propertyType.setName("Data Type");
 			propertyType.setDescription("The data type of the given column (VARCHAR, INTEGER, DOUBLE, ...)");
 			propertyType.setCategory(structuralCategory);
@@ -125,13 +141,14 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		
 		property = FACTORY.createModelProperty();
 		property.setPropertyType(propertyType);
-		o.getProperties().put(property.getPropertyType().getName(), property);
+		o.getProperties().put(property.getPropertyType().getId(), property);
 		
 		
 		// ALIGNMENT TYPE
 		if(rootModel != null) propertyType = rootModel.getPropertyType("Alignment Type");
 		if(propertyType == null) {
 			propertyType = FACTORY.createModelPropertyType();
+			propertyType.setId( COLUMN_ALIGNMENT );
 			propertyType.setName("Alignment Type");
 			propertyType.setDescription("The preferred alignment type for the give column (LEFT, CENTER, RIGHT, JUSTIFIED)");
 			propertyType.setCategory(structuralCategory);
@@ -146,7 +163,7 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		
 		property = FACTORY.createModelProperty();
 		property.setPropertyType(propertyType);
-		o.getProperties().put(property.getPropertyType().getName(), property);
+		o.getProperties().put(property.getPropertyType().getId(), property);
 		
 		
 	}

@@ -5,13 +5,13 @@ package it.eng.spagobi.meta.initializer;
 
 import org.apache.commons.lang.StringUtils;
 
+import it.eng.spagobi.meta.commons.IModelObjectFilter;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
-import it.eng.spagobi.meta.model.commons.IModelObjectFilter;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
@@ -140,7 +140,8 @@ public class BusinessModelInitializer {
 			
 			businessTable.getColumns().add(businessColumn);
 			
-			getPropertiesInitializer().addProperties(businessColumn);			
+			getPropertiesInitializer().addProperties(businessColumn);
+			businessColumn.setProperty(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE, physicalColumn.getDataType());
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business column from physical column [" + physicalColumn.getName() + "]", t);
 		}

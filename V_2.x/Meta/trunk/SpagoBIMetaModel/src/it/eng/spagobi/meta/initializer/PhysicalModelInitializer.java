@@ -4,8 +4,8 @@
 package it.eng.spagobi.meta.initializer;
 
 
+import it.eng.spagobi.meta.commons.JDBCTypeMapper;
 import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.commons.JDBCTypeMapper;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;

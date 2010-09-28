@@ -81,6 +81,11 @@ public class JDBCTypeMapper {
 		}
 	}
 	
+	public static String getJavaTypeName(String modelType) {
+		Class javaClass = getJavaType(modelType);
+		return javaClass != null? javaClass.getName(): null;
+	}
+	
 	public static Class getJavaType(String modelType) {
 		
 		if("ARRAY".equals(modelType))				return java.sql.Array.class;

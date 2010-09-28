@@ -291,9 +291,9 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 	}
 
 	@Override
-	public ModelPropertyType getPropertyType(String name) {
+	public ModelPropertyType getPropertyType(String id) {
 		for(int i = 0; i < getPropertyTypes().size(); i++) {
-			if(getPropertyTypes().get(i).getName().equals(name)) {
+			if(getPropertyTypes().get(i).getId().equals(id)) {
 				return getPropertyTypes().get(i);
 			}
 		}

@@ -97,7 +97,7 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		// AGGREGATION TYPE
 		propertyType = null;
 		
-		if(rootModel != null) propertyType = rootModel.getPropertyType("Agregation Type");
+		if(rootModel != null) propertyType = rootModel.getPropertyType(COLUMN_AGGTYPE);
 		if(propertyType == null) {
 			propertyType = FACTORY.createModelPropertyType();
 			propertyType.setId( COLUMN_AGGTYPE );
@@ -121,7 +121,7 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		// DATA TYPE
 		propertyType = null;
 		
-		if(rootModel != null) propertyType = rootModel.getPropertyType("Data Type");
+		if(rootModel != null) propertyType = rootModel.getPropertyType(COLUMN_DATATYPE);
 		if(propertyType == null) {
 			propertyType = FACTORY.createModelPropertyType();
 			propertyType.setId( COLUMN_DATATYPE );
@@ -145,7 +145,7 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		
 		
 		// ALIGNMENT TYPE
-		if(rootModel != null) propertyType = rootModel.getPropertyType("Alignment Type");
+		if(rootModel != null) propertyType = rootModel.getPropertyType(COLUMN_ALIGNMENT);
 		if(propertyType == null) {
 			propertyType = FACTORY.createModelPropertyType();
 			propertyType.setId( COLUMN_ALIGNMENT );

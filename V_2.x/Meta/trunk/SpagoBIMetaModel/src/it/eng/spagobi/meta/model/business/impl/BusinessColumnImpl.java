@@ -6,11 +6,15 @@
  */
 package it.eng.spagobi.meta.model.business.impl;
 
+import it.eng.spagobi.meta.commons.JDBCTypeMapper;
+import it.eng.spagobi.meta.exception.ModelObjectNotFoundException;
+import it.eng.spagobi.meta.exception.ModelRuntimeException;
+import it.eng.spagobi.meta.initializer.BusinessModelDefaultPropertiesInitializer;
+import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 
 import it.eng.spagobi.meta.model.business.BusinessTable;
-import it.eng.spagobi.meta.model.commons.JDBCTypeMapper;
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
@@ -263,5 +267,33 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	// =========================================================================
 	// Utility methods
 	// =========================================================================
+	
+	public String setProperty(String pname, String pvalue) {
+		String oldValue;
+		ModelPropertyType propertyType;
+		
+		propertyType = null;
+		oldValue = null;
+		
+		try {
+			assert pname != null : "Input parameter pname cannot be null";
+			
+			if(getTable() != null && getTable().getModel() != null && getTable().getModel().getParentModel() != null) {
+				propertyType = getTable().getModel().getParentModel().getPropertyType(pname);
+			}
+			
+			if(propertyType == null) {
+				throw new ModelObjectNotFoundException("Impossible to find a property-type named [" + pname + "] in the model");
+			}
+			
+			oldValue = setProperty(propertyType, pvalue);
+		} catch (Throwable t) {
+			throw new ModelRuntimeException("Impossible to set property of business column [" + getName() + "]", t);
+		} finally {
+			
+		}
+		
+		return oldValue;
+	}
 	
 } //BusinessColumnImpl

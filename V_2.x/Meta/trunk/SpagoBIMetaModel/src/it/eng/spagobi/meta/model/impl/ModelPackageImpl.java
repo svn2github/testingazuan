@@ -229,7 +229,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getModelPropertyType_Name() {
+	public EAttribute getModelPropertyType_Id() {
 		return (EAttribute)modelPropertyTypeEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -238,7 +238,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getModelPropertyType_Description() {
+	public EAttribute getModelPropertyType_Name() {
 		return (EAttribute)modelPropertyTypeEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -247,8 +247,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getModelPropertyType_Description() {
+		return (EAttribute)modelPropertyTypeEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EReference getModelPropertyType_Category() {
-		return (EReference)modelPropertyTypeEClass.getEStructuralFeatures().get(2);
+		return (EReference)modelPropertyTypeEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -257,7 +266,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * @generated
 	 */
 	public EAttribute getModelPropertyType_DefaultValue() {
-		return (EAttribute)modelPropertyTypeEClass.getEStructuralFeatures().get(4);
+		return (EAttribute)modelPropertyTypeEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -266,7 +275,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * @generated
 	 */
 	public EAttribute getModelPropertyType_AdmissibleValues() {
-		return (EAttribute)modelPropertyTypeEClass.getEStructuralFeatures().get(3);
+		return (EAttribute)modelPropertyTypeEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -458,6 +467,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		createEReference(modelPropertyCategoryEClass, MODEL_PROPERTY_CATEGORY__PROPERTY_TYPES);
 
 		modelPropertyTypeEClass = createEClass(MODEL_PROPERTY_TYPE);
+		createEAttribute(modelPropertyTypeEClass, MODEL_PROPERTY_TYPE__ID);
 		createEAttribute(modelPropertyTypeEClass, MODEL_PROPERTY_TYPE__NAME);
 		createEAttribute(modelPropertyTypeEClass, MODEL_PROPERTY_TYPE__DESCRIPTION);
 		createEReference(modelPropertyTypeEClass, MODEL_PROPERTY_TYPE__CATEGORY);
@@ -538,6 +548,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEReference(getModelPropertyCategory_PropertyTypes(), this.getModelPropertyType(), this.getModelPropertyType_Category(), "propertyTypes", null, 0, -1, ModelPropertyCategory.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(modelPropertyTypeEClass, ModelPropertyType.class, "ModelPropertyType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getModelPropertyType_Id(), ecorePackage.getEString(), "id", null, 0, 1, ModelPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getModelPropertyType_Name(), ecorePackage.getEString(), "name", null, 0, 1, ModelPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getModelPropertyType_Description(), ecorePackage.getEString(), "description", null, 0, 1, ModelPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getModelPropertyType_Category(), this.getModelPropertyCategory(), this.getModelPropertyCategory_PropertyTypes(), "category", null, 1, 1, ModelPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

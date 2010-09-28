@@ -16,6 +16,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//ModelPropertyCategory/propertyTypes"/>
     </genClasses>
     <genClasses ecoreClass="SpagoBIMetaModel.ecore#//ModelPropertyType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//ModelPropertyType/id"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//ModelPropertyType/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SpagoBIMetaModel.ecore#//ModelPropertyType/description"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//ModelPropertyType/category"/>

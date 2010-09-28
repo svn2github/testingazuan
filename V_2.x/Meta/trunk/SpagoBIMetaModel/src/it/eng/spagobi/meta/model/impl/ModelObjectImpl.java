@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.impl;
 
+import it.eng.spagobi.meta.model.ModelFactory;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.ModelProperty;
@@ -339,6 +340,36 @@ public class ModelObjectImpl extends EObjectImpl implements ModelObject {
 	// Utility methods
 	// =========================================================================
 	
+	
+	@Override
+	public String setProperty(ModelPropertyType propertyType, String value) {
+		ModelProperty property;
+		String oldValue;
+		
+		oldValue = null;
+		
+		try {
+			assert propertyType != null : "input parameter property type cannot be null";
+			
+			property = getProperties().get( propertyType.getId() );
+			if(property == null) {
+				property = ModelFactory.eINSTANCE.createModelProperty();
+				property.setPropertyType(propertyType);
+			} else {
+				oldValue = property.getValue();
+			}
+					
+			property.setValue(value);
+			getProperties().put(propertyType.getId(), property);
+		} catch (Throwable t) {
+			throw new RuntimeException("Impossible to set property of model object [" + getName() +"]");
+		} finally {
+			
+		}
+		
+		return oldValue;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -360,6 +391,8 @@ public class ModelObjectImpl extends EObjectImpl implements ModelObject {
 			return false;
 		return true;
 	}
+
+	
 
 
 } //ModelObjectImpl

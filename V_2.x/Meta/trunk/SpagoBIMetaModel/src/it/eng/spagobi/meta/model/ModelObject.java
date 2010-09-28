@@ -129,5 +129,10 @@ public interface ModelObject extends EObject {
 	 */
 	EMap<String, ModelProperty> getProperties();
 	
-
+	// =========================================================================
+	// Utility methods
+	// =========================================================================
+	
+	String setProperty(ModelPropertyType propertyType, String value);
+	
 } // ModelObject

@@ -6,8 +6,8 @@
  */
 package it.eng.spagobi.meta.model.physical.impl;
 
+import it.eng.spagobi.meta.commons.JDBCTypeMapper;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
-import it.eng.spagobi.meta.model.commons.JDBCTypeMapper;
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;

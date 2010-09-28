@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
+ *   <li>{@link it.eng.spagobi.meta.model.ModelPropertyType#getId <em>Id</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.ModelPropertyType#getName <em>Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.ModelPropertyType#getDescription <em>Description</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.ModelPropertyType#getCategory <em>Category</em>}</li>
@@ -30,6 +31,32 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface ModelPropertyType extends EObject {
+	/**
+	 * Returns the value of the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Id</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Id</em>' attribute.
+	 * @see #setId(String)
+	 * @see it.eng.spagobi.meta.model.ModelPackage#getModelPropertyType_Id()
+	 * @model
+	 * @generated
+	 */
+	String getId();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.ModelPropertyType#getId <em>Id</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Id</em>' attribute.
+	 * @see #getId()
+	 * @generated
+	 */
+	void setId(String value);
+
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->

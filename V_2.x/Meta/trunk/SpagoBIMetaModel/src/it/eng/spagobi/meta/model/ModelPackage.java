@@ -144,13 +144,22 @@ public interface ModelPackage extends EPackage {
 	int MODEL_PROPERTY_CATEGORY_FEATURE_COUNT = 5;
 
 	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL_PROPERTY_TYPE__ID = 0;
+
+	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL_PROPERTY_TYPE__NAME = 0;
+	int MODEL_PROPERTY_TYPE__NAME = 1;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -159,7 +168,7 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL_PROPERTY_TYPE__DESCRIPTION = 1;
+	int MODEL_PROPERTY_TYPE__DESCRIPTION = 2;
 
 	/**
 	 * The feature id for the '<em><b>Category</b></em>' reference.
@@ -168,7 +177,7 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL_PROPERTY_TYPE__CATEGORY = 2;
+	int MODEL_PROPERTY_TYPE__CATEGORY = 3;
 
 	/**
 	 * The feature id for the '<em><b>Admissible Values</b></em>' attribute list.
@@ -177,7 +186,7 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL_PROPERTY_TYPE__ADMISSIBLE_VALUES = 3;
+	int MODEL_PROPERTY_TYPE__ADMISSIBLE_VALUES = 4;
 
 	/**
 	 * The feature id for the '<em><b>Default Value</b></em>' attribute.
@@ -186,7 +195,7 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL_PROPERTY_TYPE__DEFAULT_VALUE = 4;
+	int MODEL_PROPERTY_TYPE__DEFAULT_VALUE = 5;
 
 	/**
 	 * The number of structural features of the '<em>Property Type</em>' class.
@@ -195,7 +204,7 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL_PROPERTY_TYPE_FEATURE_COUNT = 5;
+	int MODEL_PROPERTY_TYPE_FEATURE_COUNT = 6;
 
 	/**
 	 * The meta object id for the '{@link it.eng.spagobi.meta.model.impl.ModelPropertyImpl <em>Property</em>}' class.
@@ -471,6 +480,17 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getModelPropertyType();
+
+	/**
+	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.ModelPropertyType#getId <em>Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Id</em>'.
+	 * @see it.eng.spagobi.meta.model.ModelPropertyType#getId()
+	 * @see #getModelPropertyType()
+	 * @generated
+	 */
+	EAttribute getModelPropertyType_Id();
 
 	/**
 	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.ModelPropertyType#getName <em>Name</em>}'.
@@ -785,6 +805,14 @@ public interface ModelPackage extends EPackage {
 		 * @generated
 		 */
 		EClass MODEL_PROPERTY_TYPE = eINSTANCE.getModelPropertyType();
+
+		/**
+		 * The meta object literal for the '<em><b>Id</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MODEL_PROPERTY_TYPE__ID = eINSTANCE.getModelPropertyType_Id();
 
 		/**
 		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.

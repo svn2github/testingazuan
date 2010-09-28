@@ -82,5 +82,12 @@ public interface BusinessColumn extends ModelObject {
 	 * @generated
 	 */
 	void setTable(BusinessTable value);
+	
+	// =========================================================================
+	// Utility methods
+	// =========================================================================
+	
+	
+	String setProperty(String pname, String pvalue);
 
 } // BusinessColumn

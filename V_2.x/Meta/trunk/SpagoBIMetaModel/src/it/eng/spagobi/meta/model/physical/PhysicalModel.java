@@ -222,6 +222,16 @@ public interface PhysicalModel extends ModelObject {
 	 */
 	EList<PhysicalForeignKey> getForeignKeys();
 	
+	
+	// =========================================================================
+	// Utility methods
+	// =========================================================================
+	
+	
 	PhysicalTable getTable(String name);
+	
+	PhysicalPrimaryKey getPrimaryKey(String name) ;
+	
+	PhysicalPrimaryKey getPrimaryKey(PhysicalTable table);
 
 } // PhysicalModel

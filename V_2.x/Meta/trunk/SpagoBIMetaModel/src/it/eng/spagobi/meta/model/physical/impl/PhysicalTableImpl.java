@@ -375,6 +375,12 @@ public class PhysicalTableImpl extends ModelObjectImpl implements PhysicalTable 
 	// Utility methods
 	// =========================================================================
 	
+	@Override
+	public PhysicalPrimaryKey getPrimaryKey() {
+		return (getModel() != null)? getModel().getPrimaryKey(this): null;
+	}
+	
+	@Override
 	public PhysicalColumn getColumn(String name) {
 		PhysicalColumn column;
 		Iterator<PhysicalColumn> it = getColumns().iterator();

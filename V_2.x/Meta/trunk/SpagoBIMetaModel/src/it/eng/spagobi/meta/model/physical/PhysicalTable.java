@@ -7,9 +7,9 @@
 package it.eng.spagobi.meta.model.physical;
 
 import it.eng.spagobi.meta.model.ModelObject;
+
 import org.eclipse.emf.common.util.EList;
 
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -129,6 +129,14 @@ public interface PhysicalTable extends ModelObject {
 	 */
 	EList<PhysicalColumn> getColumns();
 
+	
+	// =========================================================================
+	// Utility methods
+	// =========================================================================
+	
+	
+	public PhysicalPrimaryKey getPrimaryKey();
+	
 	public PhysicalColumn getColumn(String name);
 
 } // PhysicalTable

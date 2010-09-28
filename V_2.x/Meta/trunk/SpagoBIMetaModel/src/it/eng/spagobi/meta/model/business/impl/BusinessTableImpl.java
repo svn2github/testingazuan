@@ -323,18 +323,11 @@ public class BusinessTableImpl extends ModelObjectImpl implements BusinessTable 
 
 	@Override
 	public BusinessColumn getColumn(PhysicalColumn physicalColumn) {
-		//System.out.println("-------");
 		for(int i = 0; i < getColumns().size(); i++) {
 			if(getColumns().get(i).getPhysicalColumn().equals(physicalColumn)) {
-				//System.out.println(physicalColumn.getName() + " == "+ getColumns().get(i).getPhysicalColumn().getName());
-				//System.out.println("-------");
 				return getColumns().get(i);
-			} else {
-				//System.out.println(physicalColumn.getName() + " != "+ getColumns().get(i).getPhysicalColumn().getName());
-			}
+			} 
 		}
-		//System.out.println("NO MATCH!");
-		//System.out.println("-------");
 		return null;
 	}
 

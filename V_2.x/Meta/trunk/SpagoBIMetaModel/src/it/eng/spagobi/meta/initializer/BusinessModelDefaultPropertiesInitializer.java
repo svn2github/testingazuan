@@ -103,6 +103,30 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		property.setPropertyType(propertyType);
 		o.getProperties().put(property.getPropertyType().getName(), property);
 		
+		// DATA TYPE
+		propertyType = null;
+		
+		if(rootModel != null) propertyType = rootModel.getPropertyType("Data Type");
+		if(propertyType == null) {
+			propertyType = FACTORY.createModelPropertyType();
+			propertyType.setName("Data Type");
+			propertyType.setDescription("The data type of the given column (VARCHAR, INTEGER, DOUBLE, ...)");
+			propertyType.setCategory(structuralCategory);
+			propertyType.getAdmissibleValues().add("VARCHAR");
+			propertyType.getAdmissibleValues().add("INTEGER");
+			propertyType.getAdmissibleValues().add("DOUBLE");
+			propertyType.getAdmissibleValues().add("DATE");
+			propertyType.getAdmissibleValues().add("TIMESTAMP");
+			// ...
+			propertyType.setDefaultValue("VARCHAR");
+			
+			if(rootModel != null) rootModel.getPropertyTypes().add(propertyType);
+		}
+		
+		property = FACTORY.createModelProperty();
+		property.setPropertyType(propertyType);
+		o.getProperties().put(property.getPropertyType().getName(), property);
+		
 		
 		// ALIGNMENT TYPE
 		if(rootModel != null) propertyType = rootModel.getPropertyType("Alignment Type");

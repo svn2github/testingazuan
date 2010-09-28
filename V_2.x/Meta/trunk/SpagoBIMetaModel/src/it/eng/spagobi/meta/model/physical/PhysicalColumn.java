@@ -323,6 +323,15 @@ public interface PhysicalColumn extends ModelObject {
 	 * @generated
 	 */
 	void setTable(PhysicalTable value);
+	
+	// =========================================================================
+	// Utility methods
+	// =========================================================================
+	
+	
+	boolean isPrimaryKey();
+	
+	boolean isPartOfCompositePrimaryKey();
 
 
 } // PhysicalColumn

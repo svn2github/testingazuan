@@ -11,6 +11,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.commons.IModelObjectFilter;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
@@ -63,7 +64,7 @@ public class BusinessModelInitializer {
 	}
 
 	public void addTables(PhysicalModel physicalModel, BusinessModel businessModel) {
-		PhysicalTable physicalTable;
+		PhysicalTable physicalTable;		
 		
 		try {
 			for(int i = 0; i < physicalModel.getTables().size(); i++) {
@@ -75,7 +76,10 @@ public class BusinessModelInitializer {
 		}	
 	}
 	
-	public void addTable(PhysicalTable physicalTable, BusinessModel businessModel) {
+	public void addTable(PhysicalTable physicalTable,  BusinessModel businessModel) {
+		addTable(physicalTable, null, businessModel);
+	}
+	public void addTable(PhysicalTable physicalTable, IModelObjectFilter columnFilter, BusinessModel businessModel) {
 		BusinessTable businessTable;
 		
 		try {
@@ -86,7 +90,7 @@ public class BusinessModelInitializer {
 			businessTable.setDescription( physicalTable.getDescription() );
 			businessTable.setModel(businessModel);
 							
-			addColumns(physicalTable, businessTable);
+			addColumns(physicalTable, columnFilter, businessTable);
 			
 			
 			businessModel.getTables().add(businessTable);
@@ -98,12 +102,17 @@ public class BusinessModelInitializer {
 	}
 
 	public void addColumns(PhysicalTable physicalTable, BusinessTable businessTable) {
+		addColumns(physicalTable, null, businessTable);
+	}
+	public void addColumns(PhysicalTable physicalTable, IModelObjectFilter columnFilter, BusinessTable businessTable) {
 		PhysicalColumn physicalColumn;
 		
 		try {
 			for(int i = 0; i < physicalTable.getColumns().size(); i++) {
-				physicalColumn = physicalTable.getColumns().get(i);				
-				addColumn(physicalColumn, businessTable);
+				physicalColumn = physicalTable.getColumns().get(i);	
+				if(columnFilter == null || !columnFilter.filter(physicalColumn)) {
+					addColumn(physicalColumn, businessTable);
+				}
 			}
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize columns meta", t);

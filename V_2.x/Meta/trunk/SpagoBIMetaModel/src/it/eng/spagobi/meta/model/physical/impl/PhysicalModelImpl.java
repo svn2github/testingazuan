@@ -572,6 +572,25 @@ public class PhysicalModelImpl extends ModelObjectImpl implements PhysicalModel 
 		}
 		return null;
 	}
+	
+	public PhysicalPrimaryKey getPrimaryKey(String name) {
+		// assert name not null
+		for(PhysicalPrimaryKey primaryKey: getPrimaryKeys() ) {
+			name.equals(primaryKey.getName());
+		}
+		return null;
+	}
+	
+	public PhysicalPrimaryKey getPrimaryKey(PhysicalTable table) {
+		// assert table not null
+		for(PhysicalPrimaryKey primaryKey: getPrimaryKeys() ) {
+			if( table.equals(primaryKey.getTable()) ) {
+				return primaryKey;
+			}
+		}
+		
+		return null;
+	}
 
 	
 	

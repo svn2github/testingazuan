@@ -6,9 +6,12 @@
  */
 package it.eng.spagobi.meta.model.physical.impl;
 
+import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.commons.JDBCTypeMapper;
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
+import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -755,6 +758,26 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 	// =========================================================================
 	// Utility methods
 	// =========================================================================
+	
+	@Override
+	public boolean isPrimaryKey() {
+		// assert getTable() != null
+		PhysicalPrimaryKey primaryKey = getTable().getPrimaryKey();
+		if(primaryKey == null) return false;
+		
+		for(PhysicalColumn column :  primaryKey.getColumns() ) {
+			if(this.equals(column)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean isPartOfCompositePrimaryKey(){
+		if(isPrimaryKey() == false) return false;
+		return (getTable().getPrimaryKey().getColumns().size() > 1);
+	}
 	
 	@Override
 	public boolean equals(Object obj) {

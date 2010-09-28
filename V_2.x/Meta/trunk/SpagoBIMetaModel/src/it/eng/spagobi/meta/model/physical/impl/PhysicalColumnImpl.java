@@ -76,7 +76,7 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 	 * @generated
 	 * @ordered
 	 */
-	protected static final short DATA_TYPE_EDEFAULT = 0;
+	protected static final String DATA_TYPE_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getDataType() <em>Data Type</em>}' attribute.
@@ -86,7 +86,7 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 	 * @generated
 	 * @ordered
 	 */
-	protected short dataType = DATA_TYPE_EDEFAULT;
+	protected String dataType = DATA_TYPE_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
@@ -293,7 +293,7 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public short getDataType() {
+	public String getDataType() {
 		return dataType;
 	}
 
@@ -302,8 +302,8 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setDataType(short newDataType) {
-		short oldDataType = dataType;
+	public void setDataType(String newDataType) {
+		String oldDataType = dataType;
 		dataType = newDataType;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, PhysicalModelPackage.PHYSICAL_COLUMN__DATA_TYPE, oldDataType, dataType));
@@ -608,7 +608,7 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 				setComment((String)newValue);
 				return;
 			case PhysicalModelPackage.PHYSICAL_COLUMN__DATA_TYPE:
-				setDataType((Short)newValue);
+				setDataType((String)newValue);
 				return;
 			case PhysicalModelPackage.PHYSICAL_COLUMN__TYPE_NAME:
 				setTypeName((String)newValue);
@@ -697,7 +697,7 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 			case PhysicalModelPackage.PHYSICAL_COLUMN__COMMENT:
 				return COMMENT_EDEFAULT == null ? comment != null : !COMMENT_EDEFAULT.equals(comment);
 			case PhysicalModelPackage.PHYSICAL_COLUMN__DATA_TYPE:
-				return dataType != DATA_TYPE_EDEFAULT;
+				return DATA_TYPE_EDEFAULT == null ? dataType != null : !DATA_TYPE_EDEFAULT.equals(dataType);
 			case PhysicalModelPackage.PHYSICAL_COLUMN__TYPE_NAME:
 				return TYPE_NAME_EDEFAULT == null ? typeName != null : !TYPE_NAME_EDEFAULT.equals(typeName);
 			case PhysicalModelPackage.PHYSICAL_COLUMN__SIZE:

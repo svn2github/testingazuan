@@ -71,12 +71,12 @@ public interface PhysicalColumn extends ModelObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Data Type</em>' attribute.
-	 * @see #setDataType(short)
+	 * @see #setDataType(String)
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalColumn_DataType()
 	 * @model
 	 * @generated
 	 */
-	short getDataType();
+	String getDataType();
 
 	/**
 	 * Sets the value of the '{@link it.eng.spagobi.meta.model.physical.PhysicalColumn#getDataType <em>Data Type</em>}' attribute.
@@ -86,7 +86,7 @@ public interface PhysicalColumn extends ModelObject {
 	 * @see #getDataType()
 	 * @generated
 	 */
-	void setDataType(short value);
+	void setDataType(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Type Name</b></em>' attribute.

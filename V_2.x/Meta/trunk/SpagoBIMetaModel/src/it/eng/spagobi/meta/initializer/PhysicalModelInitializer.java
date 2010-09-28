@@ -5,6 +5,7 @@ package it.eng.spagobi.meta.initializer;
 
 
 import it.eng.spagobi.meta.model.Model;
+import it.eng.spagobi.meta.model.commons.JDBCTypeMapper;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
@@ -260,8 +261,9 @@ public class PhysicalModelInitializer {
 				column = FACTORY.createPhysicalColumn();
 				getPropertiesInitializer().addProperties(column);
 				
-				//to prevent Ojdbc bug
-				try{ column.setDefaultValue( rs.getString("COLUMN_DEF") );
+				//to prevent ojdbc bug
+				try{ 
+					column.setDefaultValue( rs.getString("COLUMN_DEF") );
 				} catch(Throwable t) {
 					log("Impossible to set Default column value");
 					t.printStackTrace();
@@ -269,7 +271,7 @@ public class PhysicalModelInitializer {
 				}
 				column.setName(rs.getString("COLUMN_NAME"));
 				column.setComment( rs.getString("REMARKS") );
-				column.setDataType( rs.getShort("DATA_TYPE") );
+				column.setDataType( JDBCTypeMapper.getModelType(rs.getShort("DATA_TYPE") ) );
 				column.setTypeName( rs.getString("TYPE_NAME") );
 				column.setSize(rs.getInt("COLUMN_SIZE") );
 				column.setOctectLength(rs.getInt("CHAR_OCTET_LENGTH") );

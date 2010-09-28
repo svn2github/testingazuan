@@ -43,8 +43,75 @@ public class JDBCTypeMapper {
 			case Types.TINYINT: 		return java.lang.Byte.class;
 			case Types.VARBINARY: 		return java.lang.Byte[].class;
 			case Types.VARCHAR: 		return java.lang.String.class;
-			default: 					return null;
-			
+			default: 					return null;	
 		}
 	}
+	
+	public static String getModelType(short jdbcType) {
+		switch(jdbcType) {
+			case Types.ARRAY: 			return "ARRAY";
+			case Types.BIGINT: 			return "BIGINT";
+			case Types.BINARY: 			return "BINARY";
+			case Types.BIT: 			return "BIT";
+			case Types.BLOB: 			return "BLOB";
+			case Types.CHAR: 			return "CHAR";
+			case Types.CLOB: 			return "CLOB";
+			case Types.DATE: 			return "DATE";
+			case Types.DECIMAL: 		return "DECIMAL";
+			case Types.DISTINCT: 		return "DISTINCT";
+			case Types.DOUBLE: 			return "DOUBLE";
+			case Types.FLOAT: 			return "FLOAT";
+			case Types.INTEGER: 		return "INTEGER";
+			case Types.JAVA_OBJECT: 	return "JAVA_OBJECT";
+			case Types.LONGVARBINARY: 	return "LONGVARBINARY";
+			case Types.LONGVARCHAR: 	return "LONGVARCHAR";
+			case Types.NULL: 			return "NULL";
+			case Types.NUMERIC: 		return "NUMERIC";
+			case Types.OTHER: 			return "OTHER";
+			case Types.REAL: 			return "REAL";
+			case Types.REF: 			return "REF";
+			case Types.SMALLINT: 		return "SMALLINT";
+			case Types.STRUCT: 			return "STRUCT";
+			case Types.TIME: 			return "TIME";
+			case Types.TIMESTAMP: 		return "TIMESTAMP";
+			case Types.TINYINT: 		return "TINYINT";
+			case Types.VARBINARY: 		return "VARBINARY";
+			case Types.VARCHAR: 		return "VARCHAR";
+			default: 					return null;	
+		}
+	}
+	
+	public static Class getJavaType(String modelType) {
+		
+		if("ARRAY".equals(modelType))				return java.sql.Array.class;
+		else if( "BIGINT".equals(modelType)) 		return java.lang.Long.class;
+		else if( "BINARY".equals(modelType)) 		return java.lang.Byte[].class;
+		else if( "BIT".equals(modelType))			return java.lang.Boolean.class;
+		else if( "BLOB".equals(modelType)) 			return java.sql.Blob.class;
+		else if( "CHAR".equals(modelType))			return java.lang.String.class;
+		else if( "CLOB".equals(modelType))			return java.sql.Clob.class;
+		else if( "DATE".equals(modelType)) 			return java.sql.Date.class;
+		else if( "DECIMAL".equals(modelType)) 		return java.math.BigDecimal.class;
+		else if( "DISTINCT".equals(modelType)) 		return java.lang.Object.class;
+		else if( "DOUBLE".equals(modelType)) 		return java.lang.Double.class;
+		else if( "FLOAT".equals(modelType)) 		return java.lang.Double.class;
+		else if( "INTEGER".equals(modelType)) 		return java.lang.Integer.class;
+		else if( "JAVA_OBJECT".equals(modelType)) 	return java.lang.Object.class;
+		else if( "LONGVARBINARY".equals(modelType))	return java.lang.Byte[].class;
+		else if( "LONGVARCHAR".equals(modelType)) 	return java.lang.String.class;
+		else if( "NULL".equals(modelType))			return java.lang.Object.class;
+		else if( "NUMERIC".equals(modelType)) 		return java.math.BigDecimal.class;
+		else if( "OTHER".equals(modelType))			return java.lang.Object.class;
+		else if( "REAL".equals(modelType)) 			return java.lang.Float.class;
+		else if( "REF".equals(modelType))			return java.sql.Ref.class;
+		else if( "SMALLINT".equals(modelType)) 		return java.lang.Short.class;
+		else if( "STRUCT".equals(modelType))		return java.sql.Struct.class;
+		else if( "TIME".equals(modelType))			return java.sql.Time.class;
+		else if( "TIMESTAMP".equals(modelType))		return java.sql.Timestamp.class;
+		else if( "TINYINT".equals(modelType))		return java.lang.Byte.class;
+		else if( "VARBINARY".equals(modelType)) 	return java.lang.Byte[].class;
+		else if( "VARCHAR".equals(modelType)) 		return java.lang.String.class;
+		else  										return null;			
+	}
+	
 }

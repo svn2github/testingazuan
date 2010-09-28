@@ -32,6 +32,9 @@ public class BusinessModelInitializer {
 	}
 	
 	public BusinessModel initialize(String modelName, PhysicalModel physicalModel) {
+		return initialize(modelName, null, physicalModel);
+	}
+	public BusinessModel initialize(String modelName, IModelObjectFilter tableFilter, PhysicalModel physicalModel) {
 		BusinessModel businessModel;
 		
 		try {
@@ -49,7 +52,7 @@ public class BusinessModelInitializer {
 			
 			
 			// tables
-			addTables( physicalModel, businessModel );
+			addTables( physicalModel, tableFilter, businessModel );
 			
 			// relationships-foreign keys
 			addRelationships( physicalModel, businessModel );
@@ -64,12 +67,17 @@ public class BusinessModelInitializer {
 	}
 
 	public void addTables(PhysicalModel physicalModel, BusinessModel businessModel) {
+		addTables(physicalModel, businessModel);
+	}
+	public void addTables(PhysicalModel physicalModel, IModelObjectFilter tableFilter, BusinessModel businessModel) {
 		PhysicalTable physicalTable;		
 		
 		try {
 			for(int i = 0; i < physicalModel.getTables().size(); i++) {
 				physicalTable = physicalModel.getTables().get(i);
-				addTable(physicalTable, businessModel);
+				if(tableFilter == null || !tableFilter.filter(physicalTable)) {
+					addTable(physicalTable, businessModel);
+				}
 			}
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business tables", t);

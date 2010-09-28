@@ -1,0 +1,30 @@
+#if ($jpaTable.package != "")
+package ${jpaTable.package};
+#end
+
+import java.io.Serializable;
+import javax.persistence.*;
+${jpaTable.importStatements}
+
+/**
+ * The persistent class for the ${physicalTable.name} database table.
+ * 
+ */
+@Entity
+#if( !${table.defaultname} )
+@Table(name="${physicalTable.name}")
+#end
+public class ${jpaTable.className} {
+	private static final long serialVersionUID = 1L;
+	
+#####
+##### fields
+#####
+
+#if ($jpaTable.compositeKey)
+#if ($jpaTable.access == "field")
+
+	@EmbeddedId
+#end
+	private ${jpaTable.compositeKeyClassName} ${jpaTable.compositeKeyPropertyName};
+#end

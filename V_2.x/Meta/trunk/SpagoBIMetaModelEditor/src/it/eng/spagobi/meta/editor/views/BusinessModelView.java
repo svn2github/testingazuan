@@ -11,6 +11,8 @@ import it.eng.spagobi.meta.editor.Activator;
 import it.eng.spagobi.meta.editor.dnd.TableDropListener;
 
 import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
+import it.eng.spagobi.meta.editor.wizards.AddBCWizard;
+import it.eng.spagobi.meta.editor.wizards.AddBusinessTableWizard;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 
 import it.eng.spagobi.meta.model.Model;
@@ -41,6 +43,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.dnd.DND;
@@ -52,6 +55,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetPage;
@@ -156,6 +161,10 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		container.setSize(p);		
 	}
 
+	//  --------------------------------------------------------
+	//	Context Menu methods
+	//  --------------------------------------------------------
+	
 	/**
 	 * This creates a context menu for the viewer and adds a listener as well registering the menu for
 	 * extension.
@@ -182,7 +191,16 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		{
 			public void run()
 			{
-				showMessage("Add BT executed");
+				//Start Create Business Table Wizard
+				//Get Active Window
+				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				//Launch AddBCWizard
+				AddBusinessTableWizard wizard = new AddBusinessTableWizard();
+		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
+				dialog.create();
+		    	dialog.open();
+				showMessage("Business Table Added");
+				
 			}
 		};
 		addBTAction.setText("Add a Business Table");
@@ -252,7 +270,9 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 			
 	}
 	
-	//Show a Message in the Dialog
+	// --------------------------------------------------------
+	
+	//Show a Message in a Dialog
 	private void showMessage(String message)
 	{
 		MessageDialog.openInformation(bmTree.getControl().getShell(), "Business Model Editor", message);

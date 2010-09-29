@@ -74,7 +74,7 @@ public class JpaTable {
 			ModelProperty property = column.getProperties().get(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE);
 			String modelType = property.getValue();
 			String javaType = JDBCTypeMapper.getJavaTypeName(modelType);
-			System.out.println(modelType + " : " + javaType);
+			//System.out.println(modelType + " : " + javaType);
 			if ( /*!col.isPartOfCompositePrimaryKey()
 					&& !col.isForeignKey()
 					&& */ !javaType.startsWith("java.lang") && javaType.indexOf('.') > 0 ) {

@@ -6,8 +6,6 @@ Bundle-Version: 1.0.0
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;bundle-version="2.6.0",
  it.eng.spagobi.meta.model;bundle-version="1.0.0",
- org.eclipse.jet;bundle-version="1.1.0",
- org.eclipse.jet.core;bundle-version="1.2.0",
  org.eclipse.emf.codegen;bundle-version="2.6.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

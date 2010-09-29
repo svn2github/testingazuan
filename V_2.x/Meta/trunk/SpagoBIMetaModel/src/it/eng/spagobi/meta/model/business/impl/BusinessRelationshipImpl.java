@@ -13,6 +13,7 @@ import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
+import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 
@@ -38,6 +39,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessRelationshipImpl#getDestinationTable <em>Destination Table</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessRelationshipImpl#getSourceColumns <em>Source Columns</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessRelationshipImpl#getDestinationColumns <em>Destination Columns</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessRelationshipImpl#getPhysicalForeignKey <em>Physical Foreign Key</em>}</li>
  * </ul>
  * </p>
  *
@@ -83,6 +85,16 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	 * @ordered
 	 */
 	protected EList<BusinessColumn> destinationColumns;
+
+	/**
+	 * The cached value of the '{@link #getPhysicalForeignKey() <em>Physical Foreign Key</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPhysicalForeignKey()
+	 * @generated
+	 * @ordered
+	 */
+	protected PhysicalForeignKey physicalForeignKey;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -249,6 +261,44 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public PhysicalForeignKey getPhysicalForeignKey() {
+		if (physicalForeignKey != null && physicalForeignKey.eIsProxy()) {
+			InternalEObject oldPhysicalForeignKey = (InternalEObject)physicalForeignKey;
+			physicalForeignKey = (PhysicalForeignKey)eResolveProxy(oldPhysicalForeignKey);
+			if (physicalForeignKey != oldPhysicalForeignKey) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, BusinessModelPackage.BUSINESS_RELATIONSHIP__PHYSICAL_FOREIGN_KEY, oldPhysicalForeignKey, physicalForeignKey));
+			}
+		}
+		return physicalForeignKey;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public PhysicalForeignKey basicGetPhysicalForeignKey() {
+		return physicalForeignKey;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setPhysicalForeignKey(PhysicalForeignKey newPhysicalForeignKey) {
+		PhysicalForeignKey oldPhysicalForeignKey = physicalForeignKey;
+		physicalForeignKey = newPhysicalForeignKey;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, BusinessModelPackage.BUSINESS_RELATIONSHIP__PHYSICAL_FOREIGN_KEY, oldPhysicalForeignKey, physicalForeignKey));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -308,6 +358,9 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 				return getSourceColumns();
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__DESTINATION_COLUMNS:
 				return getDestinationColumns();
+			case BusinessModelPackage.BUSINESS_RELATIONSHIP__PHYSICAL_FOREIGN_KEY:
+				if (resolve) return getPhysicalForeignKey();
+				return basicGetPhysicalForeignKey();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -338,6 +391,9 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 				getDestinationColumns().clear();
 				getDestinationColumns().addAll((Collection<? extends BusinessColumn>)newValue);
 				return;
+			case BusinessModelPackage.BUSINESS_RELATIONSHIP__PHYSICAL_FOREIGN_KEY:
+				setPhysicalForeignKey((PhysicalForeignKey)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -365,6 +421,9 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__DESTINATION_COLUMNS:
 				getDestinationColumns().clear();
 				return;
+			case BusinessModelPackage.BUSINESS_RELATIONSHIP__PHYSICAL_FOREIGN_KEY:
+				setPhysicalForeignKey((PhysicalForeignKey)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -387,6 +446,8 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 				return sourceColumns != null && !sourceColumns.isEmpty();
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__DESTINATION_COLUMNS:
 				return destinationColumns != null && !destinationColumns.isEmpty();
+			case BusinessModelPackage.BUSINESS_RELATIONSHIP__PHYSICAL_FOREIGN_KEY:
+				return physicalForeignKey != null;
 		}
 		return super.eIsSet(featureID);
 	}

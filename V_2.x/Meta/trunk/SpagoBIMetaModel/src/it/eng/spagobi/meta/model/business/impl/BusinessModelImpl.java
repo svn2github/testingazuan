@@ -6,8 +6,11 @@
  */
 package it.eng.spagobi.meta.model.business.impl;
 
+import it.eng.spagobi.meta.exception.ModelObjectNotFoundException;
+import it.eng.spagobi.meta.exception.ModelRuntimeException;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelPackage;
+import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
@@ -47,6 +50,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessModelImpl#getPhysicalModel <em>Physical Model</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessModelImpl#getTables <em>Tables</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessModelImpl#getRelationships <em>Relationships</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessModelImpl#getIdentifiers <em>Identifiers</em>}</li>
  * </ul>
  * </p>
  *
@@ -82,6 +86,16 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	 * @ordered
 	 */
 	protected EList<BusinessRelationship> relationships;
+
+	/**
+	 * The cached value of the '{@link #getIdentifiers() <em>Identifiers</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getIdentifiers()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<BusinessIdentifier> identifiers;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -210,6 +224,18 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EList<BusinessIdentifier> getIdentifiers() {
+		if (identifiers == null) {
+			identifiers = new EObjectContainmentWithInverseEList<BusinessIdentifier>(BusinessIdentifier.class, this, BusinessModelPackage.BUSINESS_MODEL__IDENTIFIERS, BusinessModelPackage.BUSINESS_IDENTIFIER__MODEL);
+		}
+		return identifiers;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
@@ -222,6 +248,8 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getTables()).basicAdd(otherEnd, msgs);
 			case BusinessModelPackage.BUSINESS_MODEL__RELATIONSHIPS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getRelationships()).basicAdd(otherEnd, msgs);
+			case BusinessModelPackage.BUSINESS_MODEL__IDENTIFIERS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getIdentifiers()).basicAdd(otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -240,6 +268,8 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 				return ((InternalEList<?>)getTables()).basicRemove(otherEnd, msgs);
 			case BusinessModelPackage.BUSINESS_MODEL__RELATIONSHIPS:
 				return ((InternalEList<?>)getRelationships()).basicRemove(otherEnd, msgs);
+			case BusinessModelPackage.BUSINESS_MODEL__IDENTIFIERS:
+				return ((InternalEList<?>)getIdentifiers()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -275,6 +305,8 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 				return getTables();
 			case BusinessModelPackage.BUSINESS_MODEL__RELATIONSHIPS:
 				return getRelationships();
+			case BusinessModelPackage.BUSINESS_MODEL__IDENTIFIERS:
+				return getIdentifiers();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -302,6 +334,10 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 				getRelationships().clear();
 				getRelationships().addAll((Collection<? extends BusinessRelationship>)newValue);
 				return;
+			case BusinessModelPackage.BUSINESS_MODEL__IDENTIFIERS:
+				getIdentifiers().clear();
+				getIdentifiers().addAll((Collection<? extends BusinessIdentifier>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -326,6 +362,9 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 			case BusinessModelPackage.BUSINESS_MODEL__RELATIONSHIPS:
 				getRelationships().clear();
 				return;
+			case BusinessModelPackage.BUSINESS_MODEL__IDENTIFIERS:
+				getIdentifiers().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -346,6 +385,8 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 				return tables != null && !tables.isEmpty();
 			case BusinessModelPackage.BUSINESS_MODEL__RELATIONSHIPS:
 				return relationships != null && !relationships.isEmpty();
+			case BusinessModelPackage.BUSINESS_MODEL__IDENTIFIERS:
+				return identifiers != null && !identifiers.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -367,11 +408,26 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 
 	@Override
 	public BusinessTable getTable(PhysicalTable physicalTable) {
-		for(int i = 0; i < getTables().size(); i++) {
-			if( physicalTable.equals( getTables().get(i).getPhysicalTable() ) ) {
-				return getTables().get(i);
+		
+		BusinessTable businessTable;
+		
+		try {
+			
+			assert physicalTable != null : "Input parameter [physicalTable] cannot be null";
+			
+			for(int i = 0; i < getTables().size(); i++) {
+				businessTable = getTables().get(i);
+
+				assert businessTable.getPhysicalTable() != null : "attribute [physicalTable] of business table [" + businessTable.getName() + "] cannot be null";
+				
+				if( physicalTable.equals( getTables().get(i).getPhysicalTable() ) ) {
+					return getTables().get(i);
+				}
 			}
+		} catch(Throwable t) {
+			throw new ModelObjectNotFoundException("Impossible to get business table", t);
 		}
+		
 		return null;
 	}
 

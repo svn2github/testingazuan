@@ -7,6 +7,7 @@
 package it.eng.spagobi.meta.model.business;
 
 import it.eng.spagobi.meta.model.ModelObject;
+import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
@@ -23,6 +24,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getDestinationTable <em>Destination Table</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getSourceColumns <em>Source Columns</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getDestinationColumns <em>Destination Columns</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getPhysicalForeignKey <em>Physical Foreign Key</em>}</li>
  * </ul>
  * </p>
  *
@@ -142,5 +144,31 @@ public interface BusinessRelationship extends ModelObject {
 	 * @generated
 	 */
 	EList<BusinessColumn> getDestinationColumns();
+
+	/**
+	 * Returns the value of the '<em><b>Physical Foreign Key</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Physical Foreign Key</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Physical Foreign Key</em>' reference.
+	 * @see #setPhysicalForeignKey(PhysicalForeignKey)
+	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessRelationship_PhysicalForeignKey()
+	 * @model
+	 * @generated
+	 */
+	PhysicalForeignKey getPhysicalForeignKey();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getPhysicalForeignKey <em>Physical Foreign Key</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Physical Foreign Key</em>' reference.
+	 * @see #getPhysicalForeignKey()
+	 * @generated
+	 */
+	void setPhysicalForeignKey(PhysicalForeignKey value);
 
 } // BusinessRelationship

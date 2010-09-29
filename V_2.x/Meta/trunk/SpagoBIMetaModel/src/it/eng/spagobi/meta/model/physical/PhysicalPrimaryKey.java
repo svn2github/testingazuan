@@ -69,7 +69,7 @@ public interface PhysicalPrimaryKey extends ModelObject {
 	 * @return the value of the '<em>Table</em>' reference.
 	 * @see #setTable(PhysicalTable)
 	 * @see it.eng.spagobi.meta.model.physical.PhysicalModelPackage#getPhysicalPrimaryKey_Table()
-	 * @model
+	 * @model required="true"
 	 * @generated
 	 */
 	PhysicalTable getTable();

@@ -91,7 +91,8 @@
     <eClassifiers xsi:type="ecore:EClass" name="PhysicalPrimaryKey" eSuperTypes="#//ModelObject">
       <eStructuralFeatures xsi:type="ecore:EReference" name="model" lowerBound="1"
           eType="#//physical/PhysicalModel" eOpposite="#//physical/PhysicalModel/primaryKeys"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="table" eType="#//physical/PhysicalTable"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1"
+          eType="#//physical/PhysicalTable"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="columns" lowerBound="1"
           upperBound="-1" eType="#//physical/PhysicalColumn"/>
     </eClassifiers>
@@ -121,6 +122,8 @@
           eType="#//business/BusinessTable" containment="true" eOpposite="#//business/BusinessTable/model"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="relationships" upperBound="-1"
           eType="#//business/BusinessRelationship" containment="true" eOpposite="#//business/BusinessRelationship/model"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="identifiers" upperBound="-1"
+          eType="#//business/BusinessIdentifier" containment="true" eOpposite="#//business/BusinessIdentifier/model"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="BusinessTable" eSuperTypes="#//ModelObject">
       <eStructuralFeatures xsi:type="ecore:EReference" name="model" lowerBound="1"
@@ -147,6 +150,7 @@
           eType="#//business/BusinessColumn"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="destinationColumns" upperBound="-1"
           eType="#//business/BusinessColumn"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="physicalForeignKey" eType="#//physical/PhysicalForeignKey"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="BusinessView" eSuperTypes="#//ModelObject">
       <eStructuralFeatures xsi:type="ecore:EReference" name="columns" upperBound="-1"
@@ -161,6 +165,15 @@
           eType="#//business/BusinessTable"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="relationships" upperBound="-1"
           eType="#//business/BusinessRelationship"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BusinessIdentifier" eSuperTypes="#//ModelObject">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//business/BusinessModel"
+          eOpposite="#//business/BusinessModel/identifiers"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1"
+          eType="#//business/BusinessTable"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="columns" lowerBound="1"
+          upperBound="-1" eType="#//business/BusinessColumn"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="physicalPrimaryKey" eType="#//physical/PhysicalPrimaryKey"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="olap" nsURI="http:///it/eng/spagobi/meta/model/olapl.ecore"

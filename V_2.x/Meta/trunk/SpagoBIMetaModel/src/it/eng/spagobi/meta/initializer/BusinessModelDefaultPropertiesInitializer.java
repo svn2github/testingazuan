@@ -10,6 +10,7 @@ import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.ModelPropertyCategory;
 import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
@@ -50,6 +51,8 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 			initTableProperties((BusinessTable)o);
 		} else if(o instanceof BusinessColumn) {
 			initColumnProperties((BusinessColumn)o);
+		} else if(o instanceof BusinessIdentifier) {
+			initIdentifierProperties((BusinessIdentifier)o);
 		} else if(o instanceof BusinessRelationship) {
 			initRelationshipProperties((BusinessRelationship)o);
 		} else {
@@ -165,6 +168,10 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		property.setPropertyType(propertyType);
 		o.getProperties().put(property.getPropertyType().getId(), property);
 		
+		
+	}
+	
+	private void initIdentifierProperties(BusinessIdentifier o) {
 		
 	}
 	

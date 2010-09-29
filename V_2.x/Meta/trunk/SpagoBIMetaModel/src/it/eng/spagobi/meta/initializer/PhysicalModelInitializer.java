@@ -313,12 +313,12 @@ public class PhysicalModelInitializer {
 			while (rs.next()) {
 				if(primaryKey == null) {
 					primaryKey = FACTORY.createPhysicalPrimaryKey();
-					getPropertiesInitializer().addProperties(primaryKey);
-					
 					primaryKey.setName( rs.getString("PK_NAME") );
 					
-					//table.setPrimaryKey(primaryKey);
+					primaryKey.setTable(table);
 					model.getPrimaryKeys().add(primaryKey);
+					
+					getPropertiesInitializer().addProperties(primaryKey);
 				}
 				
 				column = table.getColumn( rs.getString("COLUMN_NAME") );

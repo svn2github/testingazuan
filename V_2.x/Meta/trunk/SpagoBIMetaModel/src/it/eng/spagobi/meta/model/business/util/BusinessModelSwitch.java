@@ -130,6 +130,13 @@ public class BusinessModelSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case BusinessModelPackage.BUSINESS_IDENTIFIER: {
+				BusinessIdentifier businessIdentifier = (BusinessIdentifier)theEObject;
+				T result = caseBusinessIdentifier(businessIdentifier);
+				if (result == null) result = caseModelObject(businessIdentifier);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -221,6 +228,21 @@ public class BusinessModelSwitch<T> {
 	 * @generated
 	 */
 	public T caseBusinessDomain(BusinessDomain object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Business Identifier</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Business Identifier</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseBusinessIdentifier(BusinessIdentifier object) {
 		return null;
 	}
 

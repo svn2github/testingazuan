@@ -80,6 +80,15 @@ public interface BusinessModelFactory extends EFactory {
 	BusinessDomain createBusinessDomain();
 
 	/**
+	 * Returns a new object of class '<em>Business Identifier</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Business Identifier</em>'.
+	 * @generated
+	 */
+	BusinessIdentifier createBusinessIdentifier();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

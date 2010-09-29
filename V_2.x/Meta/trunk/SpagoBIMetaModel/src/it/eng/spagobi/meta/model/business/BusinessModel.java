@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessModel#getPhysicalModel <em>Physical Model</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessModel#getTables <em>Tables</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessModel#getRelationships <em>Relationships</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.business.BusinessModel#getIdentifiers <em>Identifiers</em>}</li>
  * </ul>
  * </p>
  *
@@ -125,6 +126,24 @@ public interface BusinessModel extends ModelObject {
 	 */
 	EList<BusinessRelationship> getRelationships();
 	
+	/**
+	 * Returns the value of the '<em><b>Identifiers</b></em>' containment reference list.
+	 * The list contents are of type {@link it.eng.spagobi.meta.model.business.BusinessIdentifier}.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessIdentifier#getModel <em>Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Identifiers</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Identifiers</em>' containment reference list.
+	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessModel_Identifiers()
+	 * @see it.eng.spagobi.meta.model.business.BusinessIdentifier#getModel
+	 * @model opposite="model" containment="true"
+	 * @generated
+	 */
+	EList<BusinessIdentifier> getIdentifiers();
+
 	// =========================================================================
 	// Utility methods
 	// =========================================================================

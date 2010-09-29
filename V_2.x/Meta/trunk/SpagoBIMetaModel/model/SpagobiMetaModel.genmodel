@@ -114,6 +114,7 @@
             ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessModel/tables"/>
         <genFeatures children="true" createChild="true" propertySortChoices="true"
             ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessModel/relationships"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessModel/identifiers"/>
       </genClasses>
       <genClasses ecoreClass="SpagoBIMetaModel.ecore#//business/BusinessTable">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
@@ -140,6 +141,8 @@
             ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessRelationship/sourceColumns"/>
         <genFeatures children="true" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessRelationship/destinationColumns"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessRelationship/physicalForeignKey"/>
       </genClasses>
       <genClasses ecoreClass="SpagoBIMetaModel.ecore#//business/BusinessView">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
@@ -154,6 +157,15 @@
             ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessDomain/tables"/>
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessDomain/relationships"/>
+      </genClasses>
+      <genClasses ecoreClass="SpagoBIMetaModel.ecore#//business/BusinessIdentifier">
+        <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessIdentifier/model"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessIdentifier/table"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessIdentifier/columns"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessIdentifier/physicalPrimaryKey"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="OlapModel" basePackage="it.eng.spagobi.meta.model"

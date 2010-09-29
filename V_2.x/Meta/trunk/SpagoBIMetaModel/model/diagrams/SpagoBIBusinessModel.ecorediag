@@ -14,7 +14,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_m2PbkctMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//business/BusinessModel"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_m2PbkstMEd-MNI8gVLf03w" x="86" y="306"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_m2PbkstMEd-MNI8gVLf03w" x="190" y="335"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_m2ZMmctMEd-MNI8gVLf03w" type="1001">
     <children xmi:type="notation:Node" xmi:id="_m2ZMnMtMEd-MNI8gVLf03w" type="4001"/>
@@ -30,7 +30,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_m2ZMmstMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//business/BusinessTable"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_m2ZMm8tMEd-MNI8gVLf03w" y="102"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_m2ZMm8tMEd-MNI8gVLf03w" x="105" y="130"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_m2ZMpctMEd-MNI8gVLf03w" type="1001">
     <children xmi:type="notation:Node" xmi:id="_m2ZMqMtMEd-MNI8gVLf03w" type="4001"/>
@@ -46,7 +46,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_m2ZMpstMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//business/BusinessColumn"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_m2ZMp8tMEd-MNI8gVLf03w" x="253"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_m2ZMp8tMEd-MNI8gVLf03w" x="355" y="30"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_m2ZMsctMEd-MNI8gVLf03w" type="1001">
     <children xmi:type="notation:Node" xmi:id="_m2ZMtMtMEd-MNI8gVLf03w" type="4001"/>
@@ -62,7 +62,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_m2ZMsstMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//business/BusinessRelationship"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_m2ZMs8tMEd-MNI8gVLf03w" x="240" y="204"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_m2ZMs8tMEd-MNI8gVLf03w" x="345" y="235"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_m2ZMvctMEd-MNI8gVLf03w" type="1001">
     <children xmi:type="notation:Node" xmi:id="_m2ZMwMtMEd-MNI8gVLf03w" type="4001"/>
@@ -78,7 +78,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_m2ZMvstMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//business/BusinessView"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_m2ZMv8tMEd-MNI8gVLf03w" x="514" y="306"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_m2ZMv8tMEd-MNI8gVLf03w" x="615" y="335"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_m2ZMyctMEd-MNI8gVLf03w" type="1001">
     <children xmi:type="notation:Node" xmi:id="_m2ZMzMtMEd-MNI8gVLf03w" type="4001"/>
@@ -94,7 +94,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_m2ZMystMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//business/BusinessDomain"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_m2ZMy8tMEd-MNI8gVLf03w" x="81" y="408"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_m2ZMy8tMEd-MNI8gVLf03w" x="185" y="440"/>
   </children>
   <styles xmi:type="notation:DiagramStyle" xmi:id="_m2FqkctMEd-MNI8gVLf03w"/>
   <element xmi:type="ecore:EPackage" href="../SpagoBIMetaModel.ecore#//business"/>
@@ -192,9 +192,9 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_m2iWk8tMEd-MNI8gVLf03w" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_m2iWlMtMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="../SpagoBIMetaModel.ecore#//business/BusinessRelationship/sourceTable"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_m2iWlctMEd-MNI8gVLf03w" points="[0, 0, 207, 60]$[-207, -60, 0, 0]"/>
-    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_m34aWstMEd-MNI8gVLf03w" id="(0.4,0.0)"/>
-    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_m34aW8tMEd-MNI8gVLf03w" id="(0.8725490196078431,1.0)"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_m2iWlctMEd-MNI8gVLf03w" points="[0, 0, 191, 60]$[-191, -60, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_m34aWstMEd-MNI8gVLf03w" id="(0.2,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_m34aW8tMEd-MNI8gVLf03w" id="(0.7549019607843137,1.0)"/>
   </edges>
   <edges xmi:type="notation:Edge" xmi:id="_m2iWmstMEd-MNI8gVLf03w" type="3002" source="_m2ZMsctMEd-MNI8gVLf03w" target="_m2ZMmctMEd-MNI8gVLf03w">
     <children xmi:type="notation:Node" xmi:id="_m2iWnstMEd-MNI8gVLf03w" type="4011">
@@ -206,9 +206,9 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_m2iWm8tMEd-MNI8gVLf03w" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_m2iWnMtMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="../SpagoBIMetaModel.ecore#//business/BusinessRelationship/destinationTable"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_m2iWnctMEd-MNI8gVLf03w" points="[0, 0, 191, 60]$[-191, -60, 0, 0]"/>
-    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_m34aVstMEd-MNI8gVLf03w" id="(0.2,0.0)"/>
-    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_m34aV8tMEd-MNI8gVLf03w" id="(0.7549019607843137,1.0)"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_m2iWnctMEd-MNI8gVLf03w" points="[0, 0, 207, 60]$[-207, -60, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_m34aVstMEd-MNI8gVLf03w" id="(0.4,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_m34aV8tMEd-MNI8gVLf03w" id="(0.8725490196078431,1.0)"/>
   </edges>
   <edges xmi:type="notation:Edge" xmi:id="_m2iWostMEd-MNI8gVLf03w" type="3002" source="_m2ZMsctMEd-MNI8gVLf03w" target="_m2ZMpctMEd-MNI8gVLf03w">
     <children xmi:type="notation:Node" xmi:id="_m2iWpstMEd-MNI8gVLf03w" type="4011">

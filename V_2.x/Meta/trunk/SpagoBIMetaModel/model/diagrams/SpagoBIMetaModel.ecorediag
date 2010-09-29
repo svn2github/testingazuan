@@ -22,7 +22,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_Xt904ctMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//ModelPropertyCategory"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Xt904stMEd-MNI8gVLf03w" y="173"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Xt904stMEd-MNI8gVLf03w" x="30" y="205"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_Xt908MtMEd-MNI8gVLf03w" type="1001">
     <children xmi:type="notation:Node" xmi:id="_Xt9088tMEd-MNI8gVLf03w" type="4001"/>
@@ -58,7 +58,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_Xt908ctMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//ModelPropertyType"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Xt908stMEd-MNI8gVLf03w" x="181"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Xt908stMEd-MNI8gVLf03w" x="210" y="30"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_XuG-2MtMEd-MNI8gVLf03w" type="1001">
     <children xmi:type="notation:Node" xmi:id="_XuG-28tMEd-MNI8gVLf03w" type="4001"/>
@@ -78,7 +78,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_XuG-2ctMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//ModelProperty"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG-2stMEd-MNI8gVLf03w" x="215" y="173"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG-2stMEd-MNI8gVLf03w" x="245" y="205"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_XuG-5stMEd-MNI8gVLf03w" type="1001">
     <children xmi:type="notation:Node" xmi:id="_XuG-6ctMEd-MNI8gVLf03w" type="4001"/>
@@ -98,7 +98,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_XuG-58tMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//ModelPropertyMapEntry"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG-6MtMEd-MNI8gVLf03w" x="195" y="298"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG-6MtMEd-MNI8gVLf03w" x="225" y="330"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_XuG-9MtMEd-MNI8gVLf03w" type="1001">
     <children xmi:type="notation:Node" xmi:id="_XuG-98tMEd-MNI8gVLf03w" type="4001"/>
@@ -126,7 +126,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_XuG-9ctMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//ModelObject"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG-9stMEd-MNI8gVLf03w" x="199" y="407"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG-9stMEd-MNI8gVLf03w" x="230" y="435"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_XuG_BstMEd-MNI8gVLf03w" type="1001">
     <children xmi:type="notation:Node" xmi:id="_XuG_CctMEd-MNI8gVLf03w" type="4001"/>
@@ -142,7 +142,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_XuG_B8tMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//Model"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_CMtMEd-MNI8gVLf03w" x="222" y="548"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_CMtMEd-MNI8gVLf03w" x="250" y="580"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_XuG_EstMEd-MNI8gVLf03w" type="1002">
     <children xmi:type="notation:Node" xmi:id="_XuG_FstMEd-MNI8gVLf03w" type="4006"/>
@@ -154,7 +154,7 @@
     <styles xmi:type="notation:ShapeStyle" xmi:id="_XuG_E8tMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13150135" lineColor="4210752"/>
     <styles xmi:type="notation:MultiDiagramLinkStyle" xmi:id="_XuG_FMtMEd-MNI8gVLf03w"/>
     <element xmi:type="ecore:EPackage" href="../SpagoBIMetaModel.ecore#//physical"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_FctMEd-MNI8gVLf03w" x="425"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_FctMEd-MNI8gVLf03w" x="455" y="30"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_XuG_G8tMEd-MNI8gVLf03w" type="1002">
     <children xmi:type="notation:Node" xmi:id="_XuG_H8tMEd-MNI8gVLf03w" type="4006"/>
@@ -166,7 +166,7 @@
     <styles xmi:type="notation:ShapeStyle" xmi:id="_XuG_HMtMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13150135" lineColor="4210752"/>
     <styles xmi:type="notation:MultiDiagramLinkStyle" xmi:id="_XuG_HctMEd-MNI8gVLf03w"/>
     <element xmi:type="ecore:EPackage" href="../SpagoBIMetaModel.ecore#//business"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_HstMEd-MNI8gVLf03w" x="597"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_HstMEd-MNI8gVLf03w" x="625" y="30"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_XuG_JMtMEd-MNI8gVLf03w" type="1002">
     <children xmi:type="notation:Node" xmi:id="_XuG_KMtMEd-MNI8gVLf03w" type="4006"/>
@@ -178,7 +178,7 @@
     <styles xmi:type="notation:ShapeStyle" xmi:id="_XuG_JctMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13150135" lineColor="4210752"/>
     <styles xmi:type="notation:MultiDiagramLinkStyle" xmi:id="_XuG_JstMEd-MNI8gVLf03w"/>
     <element xmi:type="ecore:EPackage" href="../SpagoBIMetaModel.ecore#//olap"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_J8tMEd-MNI8gVLf03w" x="769"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_J8tMEd-MNI8gVLf03w" x="800" y="30"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_XuG_LctMEd-MNI8gVLf03w" type="1002">
     <children xmi:type="notation:Node" xmi:id="_XuG_MctMEd-MNI8gVLf03w" type="4006"/>
@@ -190,7 +190,7 @@
     <styles xmi:type="notation:ShapeStyle" xmi:id="_XuG_LstMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13150135" lineColor="4210752"/>
     <styles xmi:type="notation:MultiDiagramLinkStyle" xmi:id="_XuG_L8tMEd-MNI8gVLf03w"/>
     <element xmi:type="ecore:EPackage" href="../SpagoBIMetaModel.ecore#//behavioural"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_MMtMEd-MNI8gVLf03w" x="941"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_MMtMEd-MNI8gVLf03w" x="970" y="30"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_XuQv1MtMEd-MNI8gVLf03w" type="1002">
     <children xmi:type="notation:Node" xmi:id="_XuQv2MtMEd-MNI8gVLf03w" type="4006"/>
@@ -202,7 +202,7 @@
     <styles xmi:type="notation:ShapeStyle" xmi:id="_XuQv1ctMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13150135" lineColor="4210752"/>
     <styles xmi:type="notation:MultiDiagramLinkStyle" xmi:id="_XuQv1stMEd-MNI8gVLf03w"/>
     <element xmi:type="ecore:EPackage" href="../SpagoBIMetaModel.ecore#//analytical"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuQv18tMEd-MNI8gVLf03w" x="1113"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuQv18tMEd-MNI8gVLf03w" x="1145" y="30"/>
   </children>
   <styles xmi:type="notation:DiagramStyle" xmi:id="_XthI8ctMEd-MNI8gVLf03w"/>
   <element xmi:type="ecore:EPackage" href="../SpagoBIMetaModel.ecore#/"/>

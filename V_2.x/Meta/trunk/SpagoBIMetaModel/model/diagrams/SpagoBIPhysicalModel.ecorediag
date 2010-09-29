@@ -30,7 +30,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_jd4YoctMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//physical/PhysicalModel"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jd4YostMEd-MNI8gVLf03w" x="109" y="503"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jd4YostMEd-MNI8gVLf03w" x="180" y="535"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_jd4YtMtMEd-MNI8gVLf03w" type="1001">
     <children xmi:type="notation:Node" xmi:id="_jeBikMtMEd-MNI8gVLf03w" type="4001"/>
@@ -54,7 +54,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_jd4YtctMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//physical/PhysicalTable"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jd4YtstMEd-MNI8gVLf03w" y="253"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jd4YtstMEd-MNI8gVLf03w" x="70" y="285"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_jeBinctMEd-MNI8gVLf03w" type="1001">
     <children xmi:type="notation:Node" xmi:id="_jeBioMtMEd-MNI8gVLf03w" type="4001"/>
@@ -110,7 +110,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_jeBinstMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//physical/PhysicalColumn"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jeBin8tMEd-MNI8gVLf03w" x="265"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jeBin8tMEd-MNI8gVLf03w" x="335" y="30"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_jeBivctMEd-MNI8gVLf03w" type="1001">
     <children xmi:type="notation:Node" xmi:id="_jeBiwMtMEd-MNI8gVLf03w" type="4001"/>
@@ -126,7 +126,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_jeBivstMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//physical/PhysicalPrimaryKey"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jeBiv8tMEd-MNI8gVLf03w" x="410" y="378"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jeBiv8tMEd-MNI8gVLf03w" x="480" y="410"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_jeBiyctMEd-MNI8gVLf03w" type="1001">
     <children xmi:type="notation:Node" xmi:id="_jeLTkMtMEd-MNI8gVLf03w" type="4001"/>
@@ -150,7 +150,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_jeBiystMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//physical/PhysicalForeignKey"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jeBiy8tMEd-MNI8gVLf03w" x="169" y="378"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jeBiy8tMEd-MNI8gVLf03w" x="240" y="410"/>
   </children>
   <styles xmi:type="notation:DiagramStyle" xmi:id="_jdk2octMEd-MNI8gVLf03w"/>
   <element xmi:type="ecore:EPackage" href="../SpagoBIMetaModel.ecore#//physical"/>
@@ -304,9 +304,9 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_jeLT7stMEd-MNI8gVLf03w" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_jeLT78tMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="../SpagoBIMetaModel.ecore#//physical/PhysicalForeignKey/sourceColumns"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_jeLT8MtMEd-MNI8gVLf03w" points="[0, 0, -83, 185]$[0, -125, -83, 60]$[83, -185, 0, 0]"/>
-    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_jfN1dstMEd-MNI8gVLf03w" id="(0.5027624309392266,0.0)"/>
-    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_jfN1d8tMEd-MNI8gVLf03w" id="(0.4968152866242038,1.0)"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_jeLT8MtMEd-MNI8gVLf03w" points="[0, 0, -64, 185]$[134, -61, 70, 124]$[134, -125, 70, 60]$[64, -185, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_jfN1dstMEd-MNI8gVLf03w" id="(0.7513812154696132,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_jfN1d8tMEd-MNI8gVLf03w" id="(0.6624203821656051,1.0)"/>
   </edges>
   <edges xmi:type="notation:Edge" xmi:id="_jeUdhMtMEd-MNI8gVLf03w" type="3002" source="_jeBiyctMEd-MNI8gVLf03w" target="_jd4YtMtMEd-MNI8gVLf03w">
     <children xmi:type="notation:Node" xmi:id="_jeUdiMtMEd-MNI8gVLf03w" type="4011">
@@ -332,9 +332,9 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_jeUdjctMEd-MNI8gVLf03w" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_jeUdjstMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="../SpagoBIMetaModel.ecore#//physical/PhysicalForeignKey/destinationColumns"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_jeUdj8tMEd-MNI8gVLf03w" points="[0, 0, -64, 185]$[134, -61, 70, 124]$[134, -125, 70, 60]$[64, -185, 0, 0]"/>
-    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_jfN1eMtMEd-MNI8gVLf03w" id="(0.7513812154696132,0.0)"/>
-    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_jfN1ectMEd-MNI8gVLf03w" id="(0.6624203821656051,1.0)"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_jeUdj8tMEd-MNI8gVLf03w" points="[0, 0, -83, 185]$[0, -125, -83, 60]$[83, -185, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_jfN1eMtMEd-MNI8gVLf03w" id="(0.5027624309392266,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_jfN1ectMEd-MNI8gVLf03w" id="(0.4968152866242038,1.0)"/>
   </edges>
   <edges xmi:type="notation:Edge" xmi:id="_jeUdlMtMEd-MNI8gVLf03w" type="3002" source="_jeBiyctMEd-MNI8gVLf03w" target="_jd4YoMtMEd-MNI8gVLf03w">
     <children xmi:type="notation:Node" xmi:id="_jeUdmMtMEd-MNI8gVLf03w" type="4011">

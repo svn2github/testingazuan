@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link it.eng.spagobi.meta.model.business.BusinessDomain#getBusinesslModel <em>Businessl Model</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.business.BusinessDomain#getModel <em>Model</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessDomain#getTables <em>Tables</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessDomain#getRelationships <em>Relationships</em>}</li>
  * </ul>
@@ -30,30 +30,32 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface BusinessDomain extends ModelObject {
 	/**
-	 * Returns the value of the '<em><b>Businessl Model</b></em>' reference.
+	 * Returns the value of the '<em><b>Model</b></em>' container reference.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessModel#getDomains <em>Domains</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Businessl Model</em>' reference isn't clear,
+	 * If the meaning of the '<em>Model</em>' container reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Businessl Model</em>' reference.
-	 * @see #setBusinesslModel(BusinessModel)
-	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessDomain_BusinesslModel()
-	 * @model required="true"
+	 * @return the value of the '<em>Model</em>' container reference.
+	 * @see #setModel(BusinessModel)
+	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessDomain_Model()
+	 * @see it.eng.spagobi.meta.model.business.BusinessModel#getDomains
+	 * @model opposite="domains" required="true" transient="false"
 	 * @generated
 	 */
-	BusinessModel getBusinesslModel();
+	BusinessModel getModel();
 
 	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessDomain#getBusinesslModel <em>Businessl Model</em>}' reference.
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessDomain#getModel <em>Model</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Businessl Model</em>' reference.
-	 * @see #getBusinesslModel()
+	 * @param value the new value of the '<em>Model</em>' container reference.
+	 * @see #getModel()
 	 * @generated
 	 */
-	void setBusinesslModel(BusinessModel value);
+	void setModel(BusinessModel value);
 
 	/**
 	 * Returns the value of the '<em><b>Tables</b></em>' reference list.

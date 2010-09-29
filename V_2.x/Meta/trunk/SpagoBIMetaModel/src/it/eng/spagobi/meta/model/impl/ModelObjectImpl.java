@@ -6,6 +6,8 @@
  */
 package it.eng.spagobi.meta.model.impl;
 
+import it.eng.spagobi.meta.exception.ModelObjectNotFoundException;
+import it.eng.spagobi.meta.exception.ModelRuntimeException;
 import it.eng.spagobi.meta.model.ModelFactory;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.ModelPackage;
@@ -51,7 +53,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *
  * @generated
  */
-public class ModelObjectImpl extends EObjectImpl implements ModelObject {
+public abstract class ModelObjectImpl extends EObjectImpl implements ModelObject {
 
 	/**
 	 * The default value of the '{@link #getId() <em>Id</em>}' attribute.
@@ -209,6 +211,8 @@ public class ModelObjectImpl extends EObjectImpl implements ModelObject {
 		}
 		return properties;
 	}
+
+	
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -368,6 +372,42 @@ public class ModelObjectImpl extends EObjectImpl implements ModelObject {
 		}
 		
 		return oldValue;
+	}
+	
+	public String setProperty(String pname, String pvalue) {
+		String oldValue;
+		ModelPropertyType propertyType;
+		
+		propertyType = null;
+		oldValue = null;
+		
+		try {
+			assert pname != null : "Input parameter pname cannot be null";
+			
+			propertyType = getPropertyType(pname);
+			
+			if(propertyType == null) {
+				throw new ModelObjectNotFoundException("Impossible to find a property-type named [" + pname + "] in the model");
+			}
+			
+			oldValue = setProperty(propertyType, pvalue);
+		} catch (Throwable t) {
+			throw new ModelRuntimeException("Impossible to set property of business column [" + getName() + "]", t);
+		} finally {
+			
+		}
+		
+		return oldValue;
+	}
+	
+	@Override
+	public ModelPropertyType getPropertyType(String id) {
+		for(int i = 0; i < getPropertyTypes().size(); i++) {
+			if(getPropertyTypes().get(i).getId().equals(id)) {
+				return getPropertyTypes().get(i);
+			}
+		}
+		return null;
 	}
 	
 	@Override

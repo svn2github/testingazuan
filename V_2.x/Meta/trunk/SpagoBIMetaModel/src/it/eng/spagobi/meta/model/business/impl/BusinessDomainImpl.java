@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.business.impl;
 
+import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessDomain;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
@@ -16,12 +17,14 @@ import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
@@ -31,7 +34,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessDomainImpl#getBusinesslModel <em>Businessl Model</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessDomainImpl#getModel <em>Model</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessDomainImpl#getTables <em>Tables</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessDomainImpl#getRelationships <em>Relationships</em>}</li>
  * </ul>
@@ -40,16 +43,6 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * @generated
  */
 public class BusinessDomainImpl extends ModelObjectImpl implements BusinessDomain {
-	/**
-	 * The cached value of the '{@link #getBusinesslModel() <em>Businessl Model</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getBusinesslModel()
-	 * @generated
-	 * @ordered
-	 */
-	protected BusinessModel businesslModel;
-
 	/**
 	 * The cached value of the '{@link #getTables() <em>Tables</em>}' reference list.
 	 * <!-- begin-user-doc -->
@@ -94,37 +87,40 @@ public class BusinessDomainImpl extends ModelObjectImpl implements BusinessDomai
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BusinessModel getBusinesslModel() {
-		if (businesslModel != null && businesslModel.eIsProxy()) {
-			InternalEObject oldBusinesslModel = (InternalEObject)businesslModel;
-			businesslModel = (BusinessModel)eResolveProxy(oldBusinesslModel);
-			if (businesslModel != oldBusinesslModel) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, BusinessModelPackage.BUSINESS_DOMAIN__BUSINESSL_MODEL, oldBusinesslModel, businesslModel));
-			}
+	public BusinessModel getModel() {
+		if (eContainerFeatureID() != BusinessModelPackage.BUSINESS_DOMAIN__MODEL) return null;
+		return (BusinessModel)eContainer();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetModel(BusinessModel newModel, NotificationChain msgs) {
+		msgs = eBasicSetContainer((InternalEObject)newModel, BusinessModelPackage.BUSINESS_DOMAIN__MODEL, msgs);
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setModel(BusinessModel newModel) {
+		if (newModel != eInternalContainer() || (eContainerFeatureID() != BusinessModelPackage.BUSINESS_DOMAIN__MODEL && newModel != null)) {
+			if (EcoreUtil.isAncestor(this, newModel))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+			NotificationChain msgs = null;
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
+			if (newModel != null)
+				msgs = ((InternalEObject)newModel).eInverseAdd(this, BusinessModelPackage.BUSINESS_MODEL__DOMAINS, BusinessModel.class, msgs);
+			msgs = basicSetModel(newModel, msgs);
+			if (msgs != null) msgs.dispatch();
 		}
-		return businesslModel;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public BusinessModel basicGetBusinesslModel() {
-		return businesslModel;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setBusinesslModel(BusinessModel newBusinesslModel) {
-		BusinessModel oldBusinesslModel = businesslModel;
-		businesslModel = newBusinesslModel;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, BusinessModelPackage.BUSINESS_DOMAIN__BUSINESSL_MODEL, oldBusinesslModel, businesslModel));
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, BusinessModelPackage.BUSINESS_DOMAIN__MODEL, newModel, newModel));
 	}
 
 	/**
@@ -157,11 +153,54 @@ public class BusinessDomainImpl extends ModelObjectImpl implements BusinessDomai
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case BusinessModelPackage.BUSINESS_DOMAIN__MODEL:
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
+				return basicSetModel((BusinessModel)otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case BusinessModelPackage.BUSINESS_DOMAIN__MODEL:
+				return basicSetModel(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case BusinessModelPackage.BUSINESS_DOMAIN__MODEL:
+				return eInternalContainer().eInverseRemove(this, BusinessModelPackage.BUSINESS_MODEL__DOMAINS, BusinessModel.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_DOMAIN__BUSINESSL_MODEL:
-				if (resolve) return getBusinesslModel();
-				return basicGetBusinesslModel();
+			case BusinessModelPackage.BUSINESS_DOMAIN__MODEL:
+				return getModel();
 			case BusinessModelPackage.BUSINESS_DOMAIN__TABLES:
 				return getTables();
 			case BusinessModelPackage.BUSINESS_DOMAIN__RELATIONSHIPS:
@@ -179,8 +218,8 @@ public class BusinessDomainImpl extends ModelObjectImpl implements BusinessDomai
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_DOMAIN__BUSINESSL_MODEL:
-				setBusinesslModel((BusinessModel)newValue);
+			case BusinessModelPackage.BUSINESS_DOMAIN__MODEL:
+				setModel((BusinessModel)newValue);
 				return;
 			case BusinessModelPackage.BUSINESS_DOMAIN__TABLES:
 				getTables().clear();
@@ -202,8 +241,8 @@ public class BusinessDomainImpl extends ModelObjectImpl implements BusinessDomai
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_DOMAIN__BUSINESSL_MODEL:
-				setBusinesslModel((BusinessModel)null);
+			case BusinessModelPackage.BUSINESS_DOMAIN__MODEL:
+				setModel((BusinessModel)null);
 				return;
 			case BusinessModelPackage.BUSINESS_DOMAIN__TABLES:
 				getTables().clear();
@@ -223,14 +262,24 @@ public class BusinessDomainImpl extends ModelObjectImpl implements BusinessDomai
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_DOMAIN__BUSINESSL_MODEL:
-				return businesslModel != null;
+			case BusinessModelPackage.BUSINESS_DOMAIN__MODEL:
+				return getModel() != null;
 			case BusinessModelPackage.BUSINESS_DOMAIN__TABLES:
 				return tables != null && !tables.isEmpty();
 			case BusinessModelPackage.BUSINESS_DOMAIN__RELATIONSHIPS:
 				return relationships != null && !relationships.isEmpty();
 		}
 		return super.eIsSet(featureID);
+	}
+	
+	// =========================================================================
+	// Utility methods
+	// =========================================================================
+	
+	
+	@Override
+	public EList<ModelPropertyType> getPropertyTypes() {
+		return this.getModel().getParentModel().getPropertyTypes();
 	}
 
 } //BusinessDomainImpl

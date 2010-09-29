@@ -8,6 +8,7 @@ package it.eng.spagobi.meta.model.business;
 
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
+import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import org.eclipse.emf.common.util.EList;
@@ -108,6 +109,8 @@ public interface BusinessTable extends ModelObject {
 	// =========================================================================
 	// Utility methods
 	// =========================================================================
+	
+	BusinessIdentifier getIdentifier();
 	
 	BusinessColumn getColumn(String name);
 	

@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.business.impl;
 
+import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -360,6 +361,16 @@ public class BusinessIdentifierImpl extends ModelObjectImpl implements BusinessI
 				return physicalPrimaryKey != null;
 		}
 		return super.eIsSet(featureID);
+	}
+	
+	// =========================================================================
+	// Utility methods
+	// =========================================================================
+	
+	
+	@Override
+	public EList<ModelPropertyType> getPropertyTypes() {
+		return getModel().getParentModel().getPropertyTypes();
 	}
 
 } //BusinessIdentifierImpl

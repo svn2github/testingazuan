@@ -29,7 +29,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * </p>
  *
  * @see it.eng.spagobi.meta.model.ModelPackage#getModelObject()
- * @model
+ * @model abstract="true"
  * @generated
  */
 public interface ModelObject extends EObject {
@@ -133,6 +133,12 @@ public interface ModelObject extends EObject {
 	// Utility methods
 	// =========================================================================
 	
+	EList<ModelPropertyType> getPropertyTypes();
+	
+	ModelPropertyType getPropertyType(String name);
+	
 	String setProperty(ModelPropertyType propertyType, String value);
+	
+	String setProperty(String name, String value);
 	
 } // ModelObject

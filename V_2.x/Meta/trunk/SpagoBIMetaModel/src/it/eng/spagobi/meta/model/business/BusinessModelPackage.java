@@ -152,13 +152,31 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_MODEL__IDENTIFIERS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 4;
 
 	/**
+	 * The feature id for the '<em><b>Views</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_MODEL__VIEWS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>Domains</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_MODEL__DOMAINS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 6;
+
+	/**
 	 * The number of structural features of the '<em>Business Model</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_MODEL_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 5;
+	int BUSINESS_MODEL_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 7;
 
 	/**
 	 * The meta object id for the '{@link it.eng.spagobi.meta.model.business.impl.BusinessTableImpl <em>Business Table</em>}' class.
@@ -471,13 +489,22 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_VIEW__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
+	 * The feature id for the '<em><b>Model</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_VIEW__MODEL = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
+
+	/**
 	 * The feature id for the '<em><b>Columns</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_VIEW__COLUMNS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
+	int BUSINESS_VIEW__COLUMNS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Join Relationships</b></em>' reference list.
@@ -486,7 +513,7 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_VIEW__JOIN_RELATIONSHIPS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
+	int BUSINESS_VIEW__JOIN_RELATIONSHIPS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Business View</em>' class.
@@ -495,7 +522,7 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_VIEW_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
+	int BUSINESS_VIEW_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 3;
 
 	/**
 	 * The meta object id for the '{@link it.eng.spagobi.meta.model.business.impl.BusinessDomainImpl <em>Business Domain</em>}' class.
@@ -544,13 +571,13 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_DOMAIN__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
-	 * The feature id for the '<em><b>Businessl Model</b></em>' reference.
+	 * The feature id for the '<em><b>Model</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_DOMAIN__BUSINESSL_MODEL = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
+	int BUSINESS_DOMAIN__MODEL = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Tables</b></em>' reference list.
@@ -738,6 +765,28 @@ public interface BusinessModelPackage extends EPackage {
 	EReference getBusinessModel_Identifiers();
 
 	/**
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.business.BusinessModel#getViews <em>Views</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Views</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessModel#getViews()
+	 * @see #getBusinessModel()
+	 * @generated
+	 */
+	EReference getBusinessModel_Views();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.business.BusinessModel#getDomains <em>Domains</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Domains</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessModel#getDomains()
+	 * @see #getBusinessModel()
+	 * @generated
+	 */
+	EReference getBusinessModel_Domains();
+
+	/**
 	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.business.BusinessTable <em>Business Table</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -899,6 +948,17 @@ public interface BusinessModelPackage extends EPackage {
 	EClass getBusinessView();
 
 	/**
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.business.BusinessView#getModel <em>Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the container reference '<em>Model</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessView#getModel()
+	 * @see #getBusinessView()
+	 * @generated
+	 */
+	EReference getBusinessView_Model();
+
+	/**
 	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.business.BusinessView#getColumns <em>Columns</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -931,15 +991,15 @@ public interface BusinessModelPackage extends EPackage {
 	EClass getBusinessDomain();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessDomain#getBusinesslModel <em>Businessl Model</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.business.BusinessDomain#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Businessl Model</em>'.
-	 * @see it.eng.spagobi.meta.model.business.BusinessDomain#getBusinesslModel()
+	 * @return the meta object for the container reference '<em>Model</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessDomain#getModel()
 	 * @see #getBusinessDomain()
 	 * @generated
 	 */
-	EReference getBusinessDomain_BusinesslModel();
+	EReference getBusinessDomain_Model();
 
 	/**
 	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.business.BusinessDomain#getTables <em>Tables</em>}'.
@@ -1090,6 +1150,22 @@ public interface BusinessModelPackage extends EPackage {
 		EReference BUSINESS_MODEL__IDENTIFIERS = eINSTANCE.getBusinessModel_Identifiers();
 
 		/**
+		 * The meta object literal for the '<em><b>Views</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BUSINESS_MODEL__VIEWS = eINSTANCE.getBusinessModel_Views();
+
+		/**
+		 * The meta object literal for the '<em><b>Domains</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BUSINESS_MODEL__DOMAINS = eINSTANCE.getBusinessModel_Domains();
+
+		/**
 		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.business.impl.BusinessTableImpl <em>Business Table</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1218,6 +1294,14 @@ public interface BusinessModelPackage extends EPackage {
 		EClass BUSINESS_VIEW = eINSTANCE.getBusinessView();
 
 		/**
+		 * The meta object literal for the '<em><b>Model</b></em>' container reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BUSINESS_VIEW__MODEL = eINSTANCE.getBusinessView_Model();
+
+		/**
 		 * The meta object literal for the '<em><b>Columns</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1244,12 +1328,12 @@ public interface BusinessModelPackage extends EPackage {
 		EClass BUSINESS_DOMAIN = eINSTANCE.getBusinessDomain();
 
 		/**
-		 * The meta object literal for the '<em><b>Businessl Model</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Model</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference BUSINESS_DOMAIN__BUSINESSL_MODEL = eINSTANCE.getBusinessDomain_BusinesslModel();
+		EReference BUSINESS_DOMAIN__MODEL = eINSTANCE.getBusinessDomain_Model();
 
 		/**
 		 * The meta object literal for the '<em><b>Tables</b></em>' reference list feature.

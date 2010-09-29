@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.business.impl;
 
+import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
@@ -452,4 +453,13 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 		return super.eIsSet(featureID);
 	}
 
+	// =========================================================================
+	// Utility methods
+	// =========================================================================
+	
+	@Override
+	public EList<ModelPropertyType> getPropertyTypes() {
+		return getModel().getParentModel().getPropertyTypes();
+	}
+	
 } //BusinessRelationshipImpl

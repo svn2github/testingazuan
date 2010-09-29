@@ -65,21 +65,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 			case ModelPackage.MODEL_PROPERTY_TYPE: return createModelPropertyType();
 			case ModelPackage.MODEL_PROPERTY: return createModelProperty();
 			case ModelPackage.MODEL_PROPERTY_MAP_ENTRY: return (EObject)createModelPropertyMapEntry();
-			case ModelPackage.MODEL_OBJECT: return createModelObject();
 			case ModelPackage.MODEL: return createModel();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ModelObject createModelObject() {
-		ModelObjectImpl modelObject = new ModelObjectImpl();
-		return modelObject;
 	}
 
 	/**

@@ -12,15 +12,18 @@ import it.eng.spagobi.meta.exception.ModelRuntimeException;
 import it.eng.spagobi.meta.initializer.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
+import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
@@ -268,32 +271,32 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	// Utility methods
 	// =========================================================================
 	
-	public String setProperty(String pname, String pvalue) {
-		String oldValue;
-		ModelPropertyType propertyType;
+	@Override
+	public EList<ModelPropertyType> getPropertyTypes() {
+		return getTable().getModel().getParentModel().getPropertyTypes();
+	}
+
+	@Override
+	public boolean isIdentifier() {
 		
-		propertyType = null;
-		oldValue = null;
+		BusinessIdentifier identifier;
 		
-		try {
-			assert pname != null : "Input parameter pname cannot be null";
-			
-			if(getTable() != null && getTable().getModel() != null && getTable().getModel().getParentModel() != null) {
-				propertyType = getTable().getModel().getParentModel().getPropertyType(pname);
+		identifier = getTable().getIdentifier();
+		
+		if(identifier == null) return false;
+		
+		for(BusinessColumn column :  identifier.getColumns() ) {
+			if(this.equals(column)) {
+				return true;
 			}
-			
-			if(propertyType == null) {
-				throw new ModelObjectNotFoundException("Impossible to find a property-type named [" + pname + "] in the model");
-			}
-			
-			oldValue = setProperty(propertyType, pvalue);
-		} catch (Throwable t) {
-			throw new ModelRuntimeException("Impossible to set property of business column [" + getName() + "]", t);
-		} finally {
-			
 		}
-		
-		return oldValue;
+		return false;
+	}
+
+	@Override
+	public boolean isPartOfCompositeIdentifier() {
+		if(isIdentifier() == false) return false;
+		return (getTable().getIdentifier().getColumns().size() > 1);
 	}
 	
 } //BusinessColumnImpl

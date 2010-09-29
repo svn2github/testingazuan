@@ -9,6 +9,7 @@ package it.eng.spagobi.meta.model.business;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import org.eclipse.emf.common.util.EList;
@@ -28,6 +29,8 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessModel#getTables <em>Tables</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessModel#getRelationships <em>Relationships</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessModel#getIdentifiers <em>Identifiers</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.business.BusinessModel#getViews <em>Views</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.business.BusinessModel#getDomains <em>Domains</em>}</li>
  * </ul>
  * </p>
  *
@@ -144,9 +147,50 @@ public interface BusinessModel extends ModelObject {
 	 */
 	EList<BusinessIdentifier> getIdentifiers();
 
+	/**
+	 * Returns the value of the '<em><b>Views</b></em>' containment reference list.
+	 * The list contents are of type {@link it.eng.spagobi.meta.model.business.BusinessView}.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessView#getModel <em>Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Views</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Views</em>' containment reference list.
+	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessModel_Views()
+	 * @see it.eng.spagobi.meta.model.business.BusinessView#getModel
+	 * @model opposite="model" containment="true"
+	 * @generated
+	 */
+	EList<BusinessView> getViews();
+
+	/**
+	 * Returns the value of the '<em><b>Domains</b></em>' containment reference list.
+	 * The list contents are of type {@link it.eng.spagobi.meta.model.business.BusinessDomain}.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessDomain#getModel <em>Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Domains</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Domains</em>' containment reference list.
+	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessModel_Domains()
+	 * @see it.eng.spagobi.meta.model.business.BusinessDomain#getModel
+	 * @model opposite="model" containment="true"
+	 * @generated
+	 */
+	EList<BusinessDomain> getDomains();
+
 	// =========================================================================
 	// Utility methods
 	// =========================================================================
+	
+	
+	BusinessIdentifier getIdentifier(String name);
+	
+	BusinessIdentifier getIdentifier(BusinessTable table);
 	
 	/**
 	 * @return the business table with the given name

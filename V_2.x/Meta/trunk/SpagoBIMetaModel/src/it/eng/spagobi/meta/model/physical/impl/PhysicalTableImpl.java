@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.physical.impl;
 
+import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
@@ -393,6 +394,11 @@ public class PhysicalTableImpl extends ModelObjectImpl implements PhysicalTable 
 		return null;
 	}
 
+	@Override
+	public EList<ModelPropertyType> getPropertyTypes() {
+		return getModel().getParentModel().getPropertyTypes();
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

@@ -7,6 +7,7 @@
 package it.eng.spagobi.meta.model.physical.impl;
 
 import it.eng.spagobi.meta.commons.JDBCTypeMapper;
+import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
@@ -16,6 +17,7 @@ import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -780,6 +782,11 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 	}
 	
 	@Override
+	public EList<ModelPropertyType> getPropertyTypes() {
+		return getTable().getModel().getParentModel().getPropertyTypes();
+	}
+	
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -796,7 +803,4 @@ public class PhysicalColumnImpl extends ModelObjectImpl implements PhysicalColum
 		return true;
 	}
 	
-	
-	
-
 } //PhysicalColumnImpl

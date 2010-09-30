@@ -27,6 +27,7 @@ public class AddBusinessTableWizardPageTwo extends WizardPage {
 	private String tableSelected;
 	private boolean columnSelection;
 	private AddBusinessTableWizardPageOne pageOneRef;
+	private AddBusinessTableWizardPageThree pageThreeRef;
 	
 	protected AddBusinessTableWizardPageTwo(String pageName, AddBusinessTableWizardPageOne pageOne) {
 		super(pageName);
@@ -112,6 +113,8 @@ public class AddBusinessTableWizardPageTwo extends WizardPage {
 	private void checkPageComplete(){
 		if(tableSelected != null){
 			setPageComplete(true);
+			if (pageThreeRef != null)
+				pageThreeRef.addTableItems(tableSelected);
 		}
 		else{			
 			setPageComplete(false);
@@ -119,8 +122,9 @@ public class AddBusinessTableWizardPageTwo extends WizardPage {
 	}	
 	
 	public IWizardPage getNextPage() {
+		//check if column selection is needed
 		columnSelection = pageOneRef.isColumnSelection();
-		//go to the normal next page
+		//go to finish page
 		if (!columnSelection) {
 			return null; 
 		}
@@ -140,6 +144,20 @@ public class AddBusinessTableWizardPageTwo extends WizardPage {
 	 */
 	public String getTableSelected() {
 		return tableSelected;
+	}
+
+	/**
+	 * @param pageThreeRef the pageThreeRef to set
+	 */
+	public void setPageThreeRef(AddBusinessTableWizardPageThree pageThreeRef) {
+		this.pageThreeRef = pageThreeRef;
+	}
+
+	/**
+	 * @return the pageThreeRef
+	 */
+	public AddBusinessTableWizardPageThree getPageThreeRef() {
+		return pageThreeRef;
 	}
 
 }

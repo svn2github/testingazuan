@@ -22,7 +22,7 @@
     </children>
     <styles xmi:type="notation:ShapeStyle" xmi:id="_Xt904ctMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
     <element xmi:type="ecore:EClass" href="../SpagoBIMetaModel.ecore#//ModelPropertyCategory"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Xt904stMEd-MNI8gVLf03w" x="30" y="205"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Xt904stMEd-MNI8gVLf03w" x="-65" y="205"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_Xt908MtMEd-MNI8gVLf03w" type="1001">
     <children xmi:type="notation:Node" xmi:id="_Xt9088tMEd-MNI8gVLf03w" type="4001"/>
@@ -154,7 +154,7 @@
     <styles xmi:type="notation:ShapeStyle" xmi:id="_XuG_E8tMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13150135" lineColor="4210752"/>
     <styles xmi:type="notation:MultiDiagramLinkStyle" xmi:id="_XuG_FMtMEd-MNI8gVLf03w"/>
     <element xmi:type="ecore:EPackage" href="../SpagoBIMetaModel.ecore#//physical"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_FctMEd-MNI8gVLf03w" x="455" y="30"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_FctMEd-MNI8gVLf03w" x="625" y="505"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_XuG_G8tMEd-MNI8gVLf03w" type="1002">
     <children xmi:type="notation:Node" xmi:id="_XuG_H8tMEd-MNI8gVLf03w" type="4006"/>
@@ -166,7 +166,7 @@
     <styles xmi:type="notation:ShapeStyle" xmi:id="_XuG_HMtMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13150135" lineColor="4210752"/>
     <styles xmi:type="notation:MultiDiagramLinkStyle" xmi:id="_XuG_HctMEd-MNI8gVLf03w"/>
     <element xmi:type="ecore:EPackage" href="../SpagoBIMetaModel.ecore#//business"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_HstMEd-MNI8gVLf03w" x="625" y="30"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_HstMEd-MNI8gVLf03w" x="625" y="385"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_XuG_JMtMEd-MNI8gVLf03w" type="1002">
     <children xmi:type="notation:Node" xmi:id="_XuG_KMtMEd-MNI8gVLf03w" type="4006"/>
@@ -178,7 +178,7 @@
     <styles xmi:type="notation:ShapeStyle" xmi:id="_XuG_JctMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13150135" lineColor="4210752"/>
     <styles xmi:type="notation:MultiDiagramLinkStyle" xmi:id="_XuG_JstMEd-MNI8gVLf03w"/>
     <element xmi:type="ecore:EPackage" href="../SpagoBIMetaModel.ecore#//olap"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_J8tMEd-MNI8gVLf03w" x="800" y="30"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_J8tMEd-MNI8gVLf03w" x="625" y="265"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_XuG_LctMEd-MNI8gVLf03w" type="1002">
     <children xmi:type="notation:Node" xmi:id="_XuG_MctMEd-MNI8gVLf03w" type="4006"/>
@@ -190,7 +190,7 @@
     <styles xmi:type="notation:ShapeStyle" xmi:id="_XuG_LstMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13150135" lineColor="4210752"/>
     <styles xmi:type="notation:MultiDiagramLinkStyle" xmi:id="_XuG_L8tMEd-MNI8gVLf03w"/>
     <element xmi:type="ecore:EPackage" href="../SpagoBIMetaModel.ecore#//behavioural"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_MMtMEd-MNI8gVLf03w" x="970" y="30"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuG_MMtMEd-MNI8gVLf03w" x="625" y="145"/>
   </children>
   <children xmi:type="notation:Node" xmi:id="_XuQv1MtMEd-MNI8gVLf03w" type="1002">
     <children xmi:type="notation:Node" xmi:id="_XuQv2MtMEd-MNI8gVLf03w" type="4006"/>
@@ -202,7 +202,7 @@
     <styles xmi:type="notation:ShapeStyle" xmi:id="_XuQv1ctMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10" fillColor="13150135" lineColor="4210752"/>
     <styles xmi:type="notation:MultiDiagramLinkStyle" xmi:id="_XuQv1stMEd-MNI8gVLf03w"/>
     <element xmi:type="ecore:EPackage" href="../SpagoBIMetaModel.ecore#//analytical"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuQv18tMEd-MNI8gVLf03w" x="1145" y="30"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XuQv18tMEd-MNI8gVLf03w" x="625" y="25"/>
   </children>
   <styles xmi:type="notation:DiagramStyle" xmi:id="_XthI8ctMEd-MNI8gVLf03w"/>
   <element xmi:type="ecore:EPackage" href="../SpagoBIMetaModel.ecore#/"/>
@@ -216,7 +216,8 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_XuQv3stMEd-MNI8gVLf03w" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_XuQv38tMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="../SpagoBIMetaModel.ecore#//ModelPropertyCategory/parentCategory"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_XuQv4MtMEd-MNI8gVLf03w" points="[0, 0, 0, 0]$[0, 0, 0, 0]"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_XuQv4MtMEd-MNI8gVLf03w" points="[77, 1, 23, -4]$[150, 1, 96, -4]$[150, -71, 96, -76]$[54, -71, 0, -76]$[54, -31, 0, -36]"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_Ck7nIMx0Ed-Y0uncMPYXPw" id="(0.8516129032258064,0.5846153846153846)"/>
   </edges>
   <edges xmi:type="notation:Edge" xmi:id="_XuQv5ctMEd-MNI8gVLf03w" type="3002" source="_Xt904MtMEd-MNI8gVLf03w" target="_Xt904MtMEd-MNI8gVLf03w">
     <children xmi:type="notation:Node" xmi:id="_XuQv6ctMEd-MNI8gVLf03w" type="4011">
@@ -228,7 +229,8 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_XuQv5stMEd-MNI8gVLf03w" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_XuQv58tMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="../SpagoBIMetaModel.ecore#//ModelPropertyCategory/subCategories"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_XuQv6MtMEd-MNI8gVLf03w" points="[0, 0, 0, 0]$[0, 0, 0, 0]"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_XuQv6MtMEd-MNI8gVLf03w" points="[77, 10, 39, -21]$[100, 14, 62, -17]$[168, 14, 130, -17]$[168, 119, 130, 88]$[94, 119, 56, 88]$[39, 32, 1, 1]"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_I2E1EMx0Ed-Y0uncMPYXPw" id="(0.7483870967741936,0.9846153846153847)"/>
   </edges>
   <edges xmi:type="notation:Edge" xmi:id="_XuQv7ctMEd-MNI8gVLf03w" type="3002" source="_Xt904MtMEd-MNI8gVLf03w" target="_Xt908MtMEd-MNI8gVLf03w">
     <children xmi:type="notation:Node" xmi:id="_XuQv8ctMEd-MNI8gVLf03w" type="4011">
@@ -240,7 +242,7 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_XuQv7stMEd-MNI8gVLf03w" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_XuQv78tMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="../SpagoBIMetaModel.ecore#//ModelPropertyCategory/propertyTypes"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_XuQv8MtMEd-MNI8gVLf03w" points="[0, 0, -160, 60]$[160, -60, 0, 0]"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_XuQv8MtMEd-MNI8gVLf03w" points="[0, 0, -254, 64]$[0, -64, -254, 0]$[225, -64, -29, 0]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_XvKHsstMEd-MNI8gVLf03w" id="(0.32903225806451614,0.0)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_XvKHs8tMEd-MNI8gVLf03w" id="(0.16304347826086957,1.0)"/>
   </edges>
@@ -254,9 +256,9 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_XuQv9stMEd-MNI8gVLf03w" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_XuQv98tMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="../SpagoBIMetaModel.ecore#//ModelPropertyType/category"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_XuQv-MtMEd-MNI8gVLf03w" points="[0, 0, 139, -60]$[-139, 60, 0, 0]"/>
-    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_XvKHsMtMEd-MNI8gVLf03w" id="(0.33152173913043476,1.0)"/>
-    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_XvKHsctMEd-MNI8gVLf03w" id="(0.6645161290322581,0.0)"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_XuQv-MtMEd-MNI8gVLf03w" points="[-29, 0, 225, -64]$[-254, 0, 0, -64]$[-254, 64, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_8zraMsxzEd-Y0uncMPYXPw" id="(0.16304347826086957,1.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_8zraM8xzEd-Y0uncMPYXPw" id="(0.32903225806451614,0.0)"/>
   </edges>
   <edges xmi:type="notation:Edge" xmi:id="_XuQv_ctMEd-MNI8gVLf03w" type="3002" source="_XuG-2MtMEd-MNI8gVLf03w" target="_Xt908MtMEd-MNI8gVLf03w">
     <children xmi:type="notation:Node" xmi:id="_XuQwActMEd-MNI8gVLf03w" type="4011">
@@ -310,7 +312,7 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_XuQwFstMEd-MNI8gVLf03w" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_XuQwF8tMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="../SpagoBIMetaModel.ecore#//Model/propertyTypes"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_XuQwGMtMEd-MNI8gVLf03w" points="[0, 0, -21, 435]$[173, -61, 152, 374]$[173, -250, 152, 185]$[152, -375, 131, 60]$[21, -435, 0, 0]"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_XuQwGMtMEd-MNI8gVLf03w" points="[26, 0, 4, 439]$[181, 0, 159, 439]$[181, -439, 159, 0]$[68, -439, 46, 0]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_XvTRqstMEd-MNI8gVLf03w" id="(0.7450980392156863,0.0)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_XvTRq8tMEd-MNI8gVLf03w" id="(0.75,1.0)"/>
   </edges>
@@ -324,7 +326,7 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_XuQwHstMEd-MNI8gVLf03w" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_XuQwH8tMEd-MNI8gVLf03w" fontColor="4210752" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="../SpagoBIMetaModel.ecore#//Model/propertyCategories"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_XuQwIMtMEd-MNI8gVLf03w" points="[0, 0, 171, 310]$[-171, -61, 0, 249]$[-171, -310, 0, 0]"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_XuQwIMtMEd-MNI8gVLf03w" points="[-24, 0, 240, 312]$[-264, 0, 0, 312]$[-264, -312, 0, 0]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_XvTRqMtMEd-MNI8gVLf03w" id="(0.24509803921568626,0.0)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_XvTRqctMEd-MNI8gVLf03w" id="(0.49032258064516127,1.0)"/>
   </edges>

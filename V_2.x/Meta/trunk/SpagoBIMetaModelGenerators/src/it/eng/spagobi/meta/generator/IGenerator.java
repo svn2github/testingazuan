@@ -3,9 +3,9 @@
  */
 package it.eng.spagobi.meta.generator;
 
-import java.io.File;
-
 import it.eng.spagobi.meta.model.ModelObject;
+
+import java.io.File;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

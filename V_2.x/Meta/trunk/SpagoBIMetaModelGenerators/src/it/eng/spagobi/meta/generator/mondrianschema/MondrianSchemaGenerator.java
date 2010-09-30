@@ -3,12 +3,12 @@
  */
 package it.eng.spagobi.meta.generator.mondrianschema;
 
-import java.io.File;
-
 import it.eng.spagobi.meta.generator.GenerationException;
 import it.eng.spagobi.meta.generator.IGenerator;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.olap.OlapModel;
+
+import java.io.File;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

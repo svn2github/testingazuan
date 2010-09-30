@@ -84,7 +84,7 @@ public class BusinessDomainItemProvider
 				 getResourceLocator(),
 				 getString("_UI_BusinessDomain_businesslModel_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_BusinessDomain_businesslModel_feature", "_UI_BusinessDomain_type"),
-				 BusinessModelPackage.Literals.BUSINESS_DOMAIN__BUSINESSL_MODEL,
+				 BusinessModelPackage.Literals.BUSINESS_DOMAIN__MODEL,
 				 true,
 				 false,
 				 true,

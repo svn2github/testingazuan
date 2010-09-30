@@ -64,6 +64,7 @@ public class ModelPropertyTypeItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
+			addIdPropertyDescriptor(object);
 			addNamePropertyDescriptor(object);
 			addDescriptionPropertyDescriptor(object);
 			addCategoryPropertyDescriptor(object);
@@ -71,6 +72,28 @@ public class ModelPropertyTypeItemProvider
 			addDefaultValuePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
+	}
+
+	/**
+	 * This adds a property descriptor for the Id feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addIdPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ModelPropertyType_id_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ModelPropertyType_id_feature", "_UI_ModelPropertyType_type"),
+				 ModelPackage.Literals.MODEL_PROPERTY_TYPE__ID,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -230,6 +253,7 @@ public class ModelPropertyTypeItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(ModelPropertyType.class)) {
+			case ModelPackage.MODEL_PROPERTY_TYPE__ID:
 			case ModelPackage.MODEL_PROPERTY_TYPE__NAME:
 			case ModelPackage.MODEL_PROPERTY_TYPE__DESCRIPTION:
 			case ModelPackage.MODEL_PROPERTY_TYPE__ADMISSIBLE_VALUES:

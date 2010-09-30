@@ -168,29 +168,6 @@ public class ModelItemProviderAdapterFactory extends ModelAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.ModelObject} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ModelObjectItemProvider modelObjectItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link it.eng.spagobi.meta.model.ModelObject}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createModelObjectAdapter() {
-		if (modelObjectItemProvider == null) {
-			modelObjectItemProvider = new ModelObjectItemProvider(this);
-		}
-
-		return modelObjectItemProvider;
-	}
-
-	/**
 	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.Model} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -316,7 +293,6 @@ public class ModelItemProviderAdapterFactory extends ModelAdapterFactory impleme
 		if (modelPropertyTypeItemProvider != null) modelPropertyTypeItemProvider.dispose();
 		if (modelPropertyItemProvider != null) modelPropertyItemProvider.dispose();
 		if (modelPropertyMapEntryItemProvider != null) modelPropertyMapEntryItemProvider.dispose();
-		if (modelObjectItemProvider != null) modelObjectItemProvider.dispose();
 		if (modelItemProvider != null) modelItemProvider.dispose();
 	}
 

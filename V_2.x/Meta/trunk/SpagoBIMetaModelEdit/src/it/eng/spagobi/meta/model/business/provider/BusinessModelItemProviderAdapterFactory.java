@@ -214,6 +214,29 @@ public class BusinessModelItemProviderAdapterFactory extends BusinessModelAdapte
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.business.BusinessIdentifier} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected BusinessIdentifierItemProvider businessIdentifierItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link it.eng.spagobi.meta.model.business.BusinessIdentifier}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createBusinessIdentifierAdapter() {
+		if (businessIdentifierItemProvider == null) {
+			businessIdentifierItemProvider = new BusinessIdentifierItemProvider(this);
+		}
+
+		return businessIdentifierItemProvider;
+	}
+
+	/**
 	 * This returns the root adapter factory that contains this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -318,6 +341,7 @@ public class BusinessModelItemProviderAdapterFactory extends BusinessModelAdapte
 		if (businessRelationshipItemProvider != null) businessRelationshipItemProvider.dispose();
 		if (businessViewItemProvider != null) businessViewItemProvider.dispose();
 		if (businessDomainItemProvider != null) businessDomainItemProvider.dispose();
+		if (businessIdentifierItemProvider != null) businessIdentifierItemProvider.dispose();
 	}
 
 }

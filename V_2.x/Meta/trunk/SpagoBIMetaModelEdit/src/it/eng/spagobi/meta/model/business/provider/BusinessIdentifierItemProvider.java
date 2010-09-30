@@ -7,7 +7,7 @@
 package it.eng.spagobi.meta.model.business.provider;
 
 
-import it.eng.spagobi.meta.model.business.BusinessDomain;
+import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
@@ -30,12 +30,12 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 
 /**
- * This is the item provider adapter for a {@link it.eng.spagobi.meta.model.business.BusinessDomain} object.
+ * This is the item provider adapter for a {@link it.eng.spagobi.meta.model.business.BusinessIdentifier} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class BusinessDomainItemProvider
+public class BusinessIdentifierItemProvider
 	extends ModelObjectItemProvider
 	implements
 		IEditingDomainItemProvider,
@@ -49,7 +49,7 @@ public class BusinessDomainItemProvider
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BusinessDomainItemProvider(AdapterFactory adapterFactory) {
+	public BusinessIdentifierItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -64,26 +64,27 @@ public class BusinessDomainItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addTablesPropertyDescriptor(object);
-			addRelationshipsPropertyDescriptor(object);
+			addTablePropertyDescriptor(object);
+			addColumnsPropertyDescriptor(object);
+			addPhysicalPrimaryKeyPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This adds a property descriptor for the Tables feature.
+	 * This adds a property descriptor for the Table feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addTablesPropertyDescriptor(Object object) {
+	protected void addTablePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_BusinessDomain_tables_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_BusinessDomain_tables_feature", "_UI_BusinessDomain_type"),
-				 BusinessModelPackage.Literals.BUSINESS_DOMAIN__TABLES,
+				 getString("_UI_BusinessIdentifier_table_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_BusinessIdentifier_table_feature", "_UI_BusinessIdentifier_type"),
+				 BusinessModelPackage.Literals.BUSINESS_IDENTIFIER__TABLE,
 				 true,
 				 false,
 				 true,
@@ -93,19 +94,19 @@ public class BusinessDomainItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Relationships feature.
+	 * This adds a property descriptor for the Columns feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addRelationshipsPropertyDescriptor(Object object) {
+	protected void addColumnsPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_BusinessDomain_relationships_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_BusinessDomain_relationships_feature", "_UI_BusinessDomain_type"),
-				 BusinessModelPackage.Literals.BUSINESS_DOMAIN__RELATIONSHIPS,
+				 getString("_UI_BusinessIdentifier_columns_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_BusinessIdentifier_columns_feature", "_UI_BusinessIdentifier_type"),
+				 BusinessModelPackage.Literals.BUSINESS_IDENTIFIER__COLUMNS,
 				 true,
 				 false,
 				 true,
@@ -115,14 +116,36 @@ public class BusinessDomainItemProvider
 	}
 
 	/**
-	 * This returns BusinessDomain.gif.
+	 * This adds a property descriptor for the Physical Primary Key feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addPhysicalPrimaryKeyPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_BusinessIdentifier_physicalPrimaryKey_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_BusinessIdentifier_physicalPrimaryKey_feature", "_UI_BusinessIdentifier_type"),
+				 BusinessModelPackage.Literals.BUSINESS_IDENTIFIER__PHYSICAL_PRIMARY_KEY,
+				 true,
+				 false,
+				 true,
+				 null,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This returns BusinessIdentifier.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/BusinessDomain"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/BusinessIdentifier"));
 	}
 
 	/**
@@ -133,10 +156,10 @@ public class BusinessDomainItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((BusinessDomain)object).getName();
+		String label = ((BusinessIdentifier)object).getName();
 		return label == null || label.length() == 0 ?
-			getString("_UI_BusinessDomain_type") :
-			getString("_UI_BusinessDomain_type") + " " + label;
+			getString("_UI_BusinessIdentifier_type") :
+			getString("_UI_BusinessIdentifier_type") + " " + label;
 	}
 
 	/**

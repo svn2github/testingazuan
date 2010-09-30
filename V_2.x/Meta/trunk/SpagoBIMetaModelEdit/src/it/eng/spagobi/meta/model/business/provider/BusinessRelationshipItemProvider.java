@@ -71,6 +71,7 @@ public class BusinessRelationshipItemProvider
 			addDestinationTablePropertyDescriptor(object);
 			addSourceColumnsPropertyDescriptor(object);
 			addDestinationColumnsPropertyDescriptor(object);
+			addPhysicalForeignKeyPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -177,6 +178,28 @@ public class BusinessRelationshipItemProvider
 				 getString("_UI_BusinessRelationship_destinationColumns_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_BusinessRelationship_destinationColumns_feature", "_UI_BusinessRelationship_type"),
 				 BusinessModelPackage.Literals.BUSINESS_RELATIONSHIP__DESTINATION_COLUMNS,
+				 true,
+				 false,
+				 true,
+				 null,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Physical Foreign Key feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addPhysicalForeignKeyPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_BusinessRelationship_physicalForeignKey_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_BusinessRelationship_physicalForeignKey_feature", "_UI_BusinessRelationship_type"),
+				 BusinessModelPackage.Literals.BUSINESS_RELATIONSHIP__PHYSICAL_FOREIGN_KEY,
 				 true,
 				 false,
 				 true,

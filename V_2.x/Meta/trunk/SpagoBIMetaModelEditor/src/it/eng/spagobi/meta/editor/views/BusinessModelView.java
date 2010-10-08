@@ -290,7 +290,6 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		    if (selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() == 1)
 		    {
 		      currentTreeSelection = ((IStructuredSelection)selection).getFirstElement();
-		      System.out.println("selection: "+currentTreeSelection);
 		    }
 		}
 		

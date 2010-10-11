@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="lib/eclipselink.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mysql-connector-java-5.1.8-bin.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.draw2d_3.4.2.v20090114-1330.jar"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

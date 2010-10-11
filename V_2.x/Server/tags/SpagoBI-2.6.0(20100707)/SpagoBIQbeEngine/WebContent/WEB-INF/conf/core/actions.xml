@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<ACTIONS>
+
+	<ACTION name="SAVE_TREE_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.SaveTreeAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+
+	<ACTION name="ADD_CALCULATED_FIELD_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.AddCalculatedFieldAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	<ACTION name="MODIFY_CALCULATED_FIELD_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.AddCalculatedFieldAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	<ACTION name="DELETE_CALCULATED_FIELD_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.DeleteCalculatedFieldAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="VALIDATE_EXPRESSION_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.ValidateExpressionAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="GET_TREE_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.GetTreeAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="GET_PARAMETERS_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.GetParametersAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="GET_ATTRIBUTES_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.GetAttributesAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="GET_CATALOGUE_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.GetCatalogueAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="SET_CATALOGUE_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.SetCatalogueAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="VALIDATE_CATALOGUE_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.ValidateCatalogueAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="SAVE_CATALOGUE_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.SaveCatalogueAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="ADD_QUERY_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.AddQueryAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="DELETE_QUERIES_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.DeleteQueriesAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="EXEC_QUERY_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.ExecuteQueryAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="EXPORT_RESULT_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.ExportResultAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="CREATE_VIEW_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.CreateViewAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="GET_FIRST_QUERY_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.GetFirstQueryAction"  
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+
+	<ACTION name="GET_ANALYSIS_META_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.GetAnalysisMetaAction"  
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+
+	<ACTION name="GET_VALUES_FOR_QBE_FILTER_LOOKUP_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.GetValuesForQbeFilterLookup"  
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="INVOKE_EXTERNAL_SERVICE_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.InvokeExternalServiceAction"  
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+
+</ACTIONS>
+

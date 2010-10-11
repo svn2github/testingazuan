@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<KPI model_node_instance='supplaier' name='Supplier'>
+  <STYLE_SUBTITLE font='Arial' size='10' color='#6699FF' name='Kpi Document Supplier'/> 
+  <STYLE_TITLE font='Arial' size='12' color='#000000'/>  
+  <CONF>
+    <PARAMETER name='display_semaphore' value='true'/>
+    <PARAMETER name='display_bullet_chart' value='true'/>
+    <PARAMETER name='display_weight' value='true'/>
+    <PARAMETER name='display_alarm' value='true'/>
+  </CONF>
+</KPI>

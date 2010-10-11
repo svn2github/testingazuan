@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Bmm
+Bundle-SymbolicName: bi.bmm; singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: bi.bmm.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: .,
+ lib/eclipselink.jar,
+ lib/mysql-connector-java-5.1.8-bin.jar,
+ lib/org.eclipse.draw2d_3.4.2.v20090114-1330.jar

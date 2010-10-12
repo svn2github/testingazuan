@@ -81,7 +81,7 @@ public class BusinessModelInitializer {
 			for(int i = 0; i < physicalModel.getTables().size(); i++) {
 				physicalTable = physicalModel.getTables().get(i);
 				if(tableFilter == null || !tableFilter.filter(physicalTable)) {
-					addTable(physicalTable, businessModel);
+					addTable(physicalTable, businessModel,false);
 				}
 			}
 		} catch(Throwable t) {
@@ -89,10 +89,10 @@ public class BusinessModelInitializer {
 		}	
 	}
 	
-	public void addTable(PhysicalTable physicalTable,  BusinessModel businessModel) {
-		addTable(physicalTable, null, businessModel);
+	public void addTable(PhysicalTable physicalTable,  BusinessModel businessModel, boolean addIdentifier) {
+		addTable(physicalTable, null, businessModel, addIdentifier);
 	}
-	public void addTable(PhysicalTable physicalTable, IModelObjectFilter columnFilter, BusinessModel businessModel) {
+	public void addTable(PhysicalTable physicalTable, IModelObjectFilter columnFilter, BusinessModel businessModel, boolean addIdentifier) {
 		BusinessTable businessTable;
 		
 		try {
@@ -105,9 +105,15 @@ public class BusinessModelInitializer {
 							
 			addColumns(physicalTable, columnFilter, businessTable);
 			
-			
 			businessModel.getTables().add(businessTable);
 			
+			//adding table identifier if requested
+			if(addIdentifier){
+				if (physicalTable.getPrimaryKey() != null){
+					addIdentifier(physicalTable.getPrimaryKey(),businessModel);
+				}
+			}
+						
 			getPropertiesInitializer().addProperties(businessTable);	
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business table from physical table [" + physicalTable.getName() + "]", t);

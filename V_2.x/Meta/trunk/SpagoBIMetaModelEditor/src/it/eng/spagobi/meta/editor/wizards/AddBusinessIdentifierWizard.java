@@ -8,6 +8,7 @@ import org.eclipse.jface.wizard.Wizard;
 public class AddBusinessIdentifierWizard extends Wizard {
 
 	AddBusinessIdentifierWizardPageOne pageOne;
+	AddBusinessIdentifierWizardPageTwo pageTwo;
 	
 	public AddBusinessIdentifierWizard(){
 		super();
@@ -19,6 +20,9 @@ public class AddBusinessIdentifierWizard extends Wizard {
 	public void addPages() {
 		pageOne = new AddBusinessIdentifierWizardPageOne("Add Business Identifier page one");
 		addPage(pageOne);
+		pageTwo = new AddBusinessIdentifierWizardPageTwo("Add Business Identifier page two");
+		addPage(pageTwo);	
+		pageOne.setPageTwoRef(pageTwo);
 	}
 	@Override
 	public boolean performFinish() {

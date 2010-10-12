@@ -2,9 +2,13 @@ package it.eng.spagobi.meta.editor.wizards;
 
 import it.eng.spagobi.meta.editor.Activator;
 import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
+import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessIdentifier;
+import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -20,20 +24,17 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
-public class AddBusinessTableWizardPageThree extends WizardPage {
-
-	private Table columns,fields;
+public class AddBusinessIdentifierWizardPageTwo extends WizardPage {
+	private Table columns,columnsIdentifier;
 	private Label lErr;
-	private AddBusinessTableWizardPageTwo pageTwoRef;
 	private TableItem[] columnsToImport;
-	
-	protected AddBusinessTableWizardPageThree(String pageName, AddBusinessTableWizardPageTwo pageTwo ) {
+		
+	protected AddBusinessIdentifierWizardPageTwo(String pageName) {
 		super(pageName);
-		setTitle("Business Table Creation");
-		setDescription("Please select the columns to use in your Business Table");
+		setTitle("Business Identifier Creation");
+		setDescription("Please select the columns to use in your Business Identifier");
 		ImageDescriptor image = Activator.getImageDescriptor("wizards/createBC.png");
 	    if (image!=null) setImageDescriptor(image);	
-	    pageTwoRef = pageTwo;
 	}
 
 	@Override
@@ -63,7 +64,7 @@ public class AddBusinessTableWizardPageThree extends WizardPage {
 		compLeft.setLayout(glL);
 		compLeft.setLayoutData(gdL);
 		Label lblLeftTab = new Label(compLeft,SWT.NONE);
-		lblLeftTab.setText("Physical Table Columns: ");
+		lblLeftTab.setText("Business Table Columns: ");
  		columns = new Table(compLeft, SWT.BORDER | SWT.MULTI);
  		columns.setLayoutData(gdL);
  		
@@ -74,11 +75,11 @@ public class AddBusinessTableWizardPageThree extends WizardPage {
 		glC.numColumns = 1;
 		compCenter.setLayout(glC);
 		Button bAddField = new Button(compCenter,SWT.FLAT);
-		bAddField.setToolTipText("Add column as a Business Table Column");
+		bAddField.setToolTipText("Add column as a Business Identifier Column");
 		Image imageAdd = Activator.getImageDescriptor("arrow_right.png").createImage();
 	    if (imageAdd!=null) bAddField.setImage(imageAdd);
 		Button bRemoveField = new Button(compCenter,SWT.FLAT);
-		bRemoveField.setToolTipText("Remove column from Business Table");
+		bRemoveField.setToolTipText("Remove column from Business Identifier");
 		Image imageRem = Activator.getImageDescriptor("arrow_left.png").createImage();
 	    if (imageRem!=null) bRemoveField.setImage(imageRem);
 		
@@ -90,9 +91,9 @@ public class AddBusinessTableWizardPageThree extends WizardPage {
 		compRight.setLayout(glR);
 		compRight.setLayoutData(gdR);
 		Label lblRightTab = new Label(compRight,SWT.NONE);
-		lblRightTab.setText("Business Table Columns: ");
- 		fields = new Table(compRight, SWT.BORDER | SWT.MULTI);
- 		fields.setLayoutData(gdR);
+		lblRightTab.setText("Business Identifier Columns: ");
+ 		columnsIdentifier = new Table(compRight, SWT.BORDER | SWT.MULTI);
+ 		columnsIdentifier.setLayoutData(gdR);
  	
  		//Bottom error label
 		Composite err = new Composite(composite, SWT.NULL);
@@ -119,14 +120,14 @@ public class AddBusinessTableWizardPageThree extends WizardPage {
 					}
 				}
 				if (tiSel!= null){
-					TableItem ti = new TableItem(fields, 0);
+					TableItem ti = new TableItem(columnsIdentifier, 0);
 					ti.setText(tiSel.getText());
 					ti.setData(tiSel.getData());
 					columns.remove(columns.getSelectionIndex());
 				}
 				if (tiMultiSel != null){
 					for (int i=0; i< tiMultiSel.length; i++){
-						TableItem ti = new TableItem(fields, 0);
+						TableItem ti = new TableItem(columnsIdentifier, 0);
 						ti.setText(tiMultiSel[i].getText());
 						ti.setData(tiMultiSel[i].getData());											
 					}
@@ -143,21 +144,21 @@ public class AddBusinessTableWizardPageThree extends WizardPage {
 				TableItem tiSel = null;
 				TableItem[] tiMultiSel = null;
 				//single selection
-				if (fields.getSelectionCount() == 1)
-					tiSel = fields.getSelection()[0];
+				if (columnsIdentifier.getSelectionCount() == 1)
+					tiSel = columnsIdentifier.getSelection()[0];
 				//multi selection
-				else if (fields.getSelectionCount() > 1){
-					int selectionCount = fields.getSelectionCount();
+				else if (columnsIdentifier.getSelectionCount() > 1){
+					int selectionCount = columnsIdentifier.getSelectionCount();
 					tiMultiSel = new TableItem[selectionCount];
 					for (int i=0; i<selectionCount; i++){
-						tiMultiSel[i] = fields.getSelection()[i];
+						tiMultiSel[i] = columnsIdentifier.getSelection()[i];
 					}
 				}
 				if (tiSel!= null){
 					TableItem ti = new TableItem(columns, 0);
 					ti.setText(tiSel.getText());
 					ti.setData(tiSel.getData());					
-					fields.remove(fields.getSelectionIndex());
+					columnsIdentifier.remove(columnsIdentifier.getSelectionIndex());
 				}
 				if (tiMultiSel != null){
 					for (int i=0; i< tiMultiSel.length; i++){
@@ -165,7 +166,7 @@ public class AddBusinessTableWizardPageThree extends WizardPage {
 						ti.setText(tiMultiSel[i].getText());
 						ti.setData(tiMultiSel[i].getData());											
 					}
-					fields.remove(fields.getSelectionIndices());
+					columnsIdentifier.remove(columnsIdentifier.getSelectionIndices());
 				}
 				checkPageComplete();
 
@@ -177,48 +178,64 @@ public class AddBusinessTableWizardPageThree extends WizardPage {
 		
         //Important: Setting page control
  		setControl(composite);
+
 	}
 	
-	//add the original physical columns as TableItem (in the left Table Widget)
-	public void addTableItems(String tableName){		
+	//add Business Columns as widget's TableItem
+	public void addTableItems(String tableName){
 		columns.removeAll();
-		fields.removeAll();
-		//String tableName = pageTwoRef.getTableSelected();
+		columnsIdentifier.removeAll();
 		if (tableName != null) {
-			//retrieve the Physical Table Columns
-			PhysicalTable pTable = CoreSingleton.getInstance().getPhysicalModel().getTable(tableName);
-			int numCols = pTable.getColumns().size();
+			//retrieve the Business Table Columns
+			BusinessTable bTable = CoreSingleton.getInstance().getBusinessModel().getTable(tableName);
+			int numCols = bTable.getColumns().size();
 			for (int i=0; i<numCols; i++){
 				TableItem ti = new TableItem(columns, 0);
-				PhysicalColumn pColumn = pTable.getColumns().get(i);
+				BusinessColumn bColumn = bTable.getColumns().get(i);
 				//associate table item with the object It represents
-				ti.setData(pColumn);
-				ti.setText(pColumn.getName());
+				ti.setData(bColumn);
+				ti.setText(bColumn.getName());
 			}
 		}
+		
+		//Checking if a Business Identifier for this Business Table already exists
+		CoreSingleton cs = CoreSingleton.getInstance();
+		BusinessTable bizTable = cs.getBusinessModel().getTable(tableName);
+		BusinessIdentifier bizIdentifier = cs.getBusinessModel().getIdentifier(bizTable);
+		if (bizIdentifier != null){
+			EList<BusinessColumn> bizColumns = bizIdentifier.getColumns();
+			for (BusinessColumn col : bizColumns){
+				TableItem[] items = columns.getItems();
+				if (items != null){
+					for (int i=0; i<items.length; i++){
+						if (items[i].getText().equals(col.getName())){
+							TableItem ti = new TableItem(columnsIdentifier, 0);
+							ti.setText(items[i].getText());
+							ti.setData(items[i].getData());
+							columns.remove(i);
+							break;
+						}
+				    }
+				}
+			}
+		}
+		checkPageComplete(); 
 	}
 	
 	//check if the right conditions to go forward occurred
 	private void checkPageComplete(){
-		if (pageTwoRef.isColumnSelection()){
-			if(fields.getItemCount()!=0){
-				//lErr.setText("");
-				//store the Physical Columns selected
+			if(columnsIdentifier.getItemCount()!=0){
 				setErrorMessage(null);
-				setColumnsToImport(fields.getItems());
+				setColumnsToImport(columnsIdentifier.getItems());
 				setPageComplete(true);
 			}
 			else{			
-				//lErr.setText("This Business Table hasn't columns, please select at least one to continue");
-				setErrorMessage("This Business Table hasn't columns, please select at least one to continue");
+				setErrorMessage("This Business Identifier hasn't columns, please select at least one to continue");
 				setPageComplete(false);
 			}
-		}
-		else {
-			setPageComplete(true);
-		}
-	}
 
+	}
+	
 	/**
 	 * @param columnsToImport the columnsToImport to set
 	 */
@@ -232,5 +249,4 @@ public class AddBusinessTableWizardPageThree extends WizardPage {
 	public TableItem[] getColumnsToImport() {
 		return columnsToImport;
 	}	
-
 }

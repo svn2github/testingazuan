@@ -55,12 +55,12 @@ public class AddBusinessTableWizard extends Wizard {
 				PhysicalColumn pc = ((PhysicalColumn)columnsToImport[i].getData());
 				colList.add(pc);
 			}
-			//Create Business Table from a Physical Table
+			//Create Business Table from a Physical Table with column filter
 			BusinessModel bm = CoreSingleton.getInstance().getBusinessModel();
 			PhysicalModel pm = CoreSingleton.getInstance().getPhysicalModel();
 			PhysicalTable pTable = pm.getTable(tableName);
 			BusinessModelInitializer initializer = new BusinessModelInitializer();
-			initializer.addTable(pTable, new ColumnFilter(colList), bm);			
+			initializer.addTable(pTable, new ColumnFilter(colList), bm, true);			
 			return true;
 		}
 		if (pageTwo.isPageComplete()){
@@ -70,7 +70,7 @@ public class AddBusinessTableWizard extends Wizard {
 			PhysicalModel pm = CoreSingleton.getInstance().getPhysicalModel();
 			PhysicalTable pTable = pm.getTable(tableName);
 			BusinessModelInitializer initializer = new BusinessModelInitializer();
-			initializer.addTable(pTable, bm);
+			initializer.addTable(pTable, bm, true);
 			return true;
 		}
 			return false;

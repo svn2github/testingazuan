@@ -87,5 +87,12 @@ public class CoreSingleton {
 		EList<BusinessModel> bmList = rootModel.getBusinessModels();
 		return bmList.get(0);
 	}
+	
+	/**
+	 * Delete current BusinessModel
+	 */
+	public void deleteBusinessModel(){
+		rootModel.getBusinessModels().remove(0);
+	}
 
 }

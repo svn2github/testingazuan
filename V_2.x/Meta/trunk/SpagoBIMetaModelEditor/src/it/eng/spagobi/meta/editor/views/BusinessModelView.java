@@ -12,6 +12,7 @@ import it.eng.spagobi.meta.editor.dnd.TableDropListener;
 
 import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
 import it.eng.spagobi.meta.editor.wizards.AddBCWizard;
+import it.eng.spagobi.meta.editor.wizards.AddBusinessIdentifierWizard;
 import it.eng.spagobi.meta.editor.wizards.AddBusinessTableWizard;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 
@@ -68,7 +69,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	private ScrolledComposite sc;
 	private TreeViewer bmTree;
 	protected PropertySheetPage propertySheetPage;
-	private Action addBTAction,removeBTAction,addBCAction,removeBCAction;
+	private Action addBTAction,removeBTAction,addBCAction,removeBCAction,addBIAction ;
 	private BasicCommandStack commandStack;
 	protected AdapterFactoryEditingDomain editingDomain;
 	private Object currentTreeSelection;
@@ -191,9 +192,19 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
         String bmName = cs.getBmName();
         PhysicalModel pm = cs.getPhysicalModel();
 	    
-	    //initialize the EMF Business Model
-        BusinessModelInitializer modelInitializer = new BusinessModelInitializer();
-        BusinessModel model = modelInitializer.initialize( bmName, pm);
+        BusinessModel model;
+        //check if BusinessModel is already created
+        if (cs.getBusinessModel() != null){
+            //erase current Business Model
+        	cs.deleteBusinessModel();    	
+        	//initialize the EMF Business Model
+            BusinessModelInitializer modelInitializer = new BusinessModelInitializer();
+            model = modelInitializer.initialize( bmName, pm);
+        }
+        else {
+        	model = cs.getBusinessModel();
+        }
+
 				
 		//Create a TreeViewer
 		bmTree = new TreeViewer(bmGroup);
@@ -225,6 +236,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	    //Create Context Menu and Menu Actions    
 	    createBCActions();
 	    createBTActions();
+	    createBIActions();
 	    hookContextMenu();
 
 	    //setting datalayout
@@ -270,7 +282,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 				//Start Create Business Table Wizard
 				//Get Active Window
 				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-				//Launch AddBCWizard
+				//Launch AddBusinessTableWizard
 				AddBusinessTableWizard wizard = new AddBusinessTableWizard();
 		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
 				dialog.create();
@@ -326,6 +338,31 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		removeBCAction.setImageDescriptor(Activator.getImageDescriptor("remove.png"));
 		
 	}	
+	/**
+	 * Create Business Identifier Action to show in the context menu
+	 */
+	private void createBIActions()
+	{
+		addBIAction = new Action()
+		{
+			public void run()
+			{
+				//Start Create Business Identifier Wizard
+				//Get Active Window
+				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				//Launch AddBusinessIdentifierWizard
+				AddBusinessIdentifierWizard wizard = new AddBusinessIdentifierWizard();
+		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
+				dialog.create();
+		    	dialog.open();
+				showMessage("Add BI executed");
+			}
+		};
+		addBIAction.setText("Add Business Identifier");
+		addBIAction.setToolTipText("Add Business Identifier");
+		addBIAction.setImageDescriptor(Activator.getImageDescriptor("add.png"));
+		
+	}	
 	
 	@Override
 	public void menuAboutToShow(IMenuManager manager) {
@@ -334,6 +371,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 			manager.removeAll();
 			manager.add(addBTAction);
 			manager.add(removeBTAction);
+			manager.add(addBIAction);
 		} else if (currentTreeSelection instanceof BusinessColumn){
 			manager.removeAll();
 			manager.add(addBCAction);

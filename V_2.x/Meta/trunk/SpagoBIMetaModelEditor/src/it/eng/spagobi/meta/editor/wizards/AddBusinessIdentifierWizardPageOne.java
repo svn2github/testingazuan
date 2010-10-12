@@ -21,12 +21,13 @@ public class AddBusinessIdentifierWizardPageOne extends WizardPage {
 
 	private List tableList;
 	private String tableSelected;
+	private AddBusinessIdentifierWizardPageTwo pageTwoRef;
 	
 	protected AddBusinessIdentifierWizardPageOne(String pageName) {
 		super(pageName);
 		setTitle("Business Identifier Creation");
 		setDescription("This wizard drives you to create a new Business Identifier in your Business Model.\n"+
-				"Plese select a Business Table");
+				"Plese select a Business Table.");
 		ImageDescriptor image = Activator.getImageDescriptor("wizards/createBC.png");
 	    if (image!=null) setImageDescriptor(image);	
 	}
@@ -93,11 +94,11 @@ public class AddBusinessIdentifierWizardPageOne extends WizardPage {
 	
 	//populate the list with the Business Tables' names
 	private void populateTableList(){
-		BusinessModel pm = CoreSingleton.getInstance().getBusinessModel();
-		int numTables = pm.getTables().size();
+		BusinessModel bm = CoreSingleton.getInstance().getBusinessModel();
+		int numTables = bm.getTables().size();
 		String tabName;
 		for (int i = 0; i < numTables; i++){
-			tabName = pm.getTables().get(i).getName();
+			tabName = bm.getTables().get(i).getName();
 			tableList.add(tabName);		
 		}
 	}	
@@ -106,6 +107,8 @@ public class AddBusinessIdentifierWizardPageOne extends WizardPage {
 	private void checkPageComplete(){
 		if(tableSelected != null){
 			setPageComplete(true);
+			if (pageTwoRef != null)
+				pageTwoRef.addTableItems(tableSelected);
 		}
 		else{			
 			setPageComplete(false);
@@ -124,5 +127,19 @@ public class AddBusinessIdentifierWizardPageOne extends WizardPage {
 	 */
 	public String getTableSelected() {
 		return tableSelected;
+	}
+
+	/**
+	 * @param pageTwoRef the pageTwoRef to set
+	 */
+	public void setPageTwoRef(AddBusinessIdentifierWizardPageTwo pageTwoRef) {
+		this.pageTwoRef = pageTwoRef;
+	}
+
+	/**
+	 * @return the pageTwoRef
+	 */
+	public AddBusinessIdentifierWizardPageTwo getPageTwoRef() {
+		return pageTwoRef;
 	}
 }

@@ -11,6 +11,7 @@ import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
@@ -18,7 +19,12 @@ import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -341,6 +347,25 @@ public class BusinessTableImpl extends ModelObjectImpl implements BusinessTable 
 	@Override
 	public EList<ModelPropertyType> getPropertyTypes() {
 		return getModel().getParentModel().getPropertyTypes();
+	}
+
+	@Override
+	public List<BusinessRelationship> getRelationships() {
+		List relationships = new ArrayList<BusinessRelationship>();
+		
+		Iterator<BusinessRelationship> it = getModel().getRelationships().iterator();
+		
+		while (it.hasNext()) {
+			BusinessRelationship relationship = it.next();
+			
+			if (relationship.getSourceTable().equals(this)) {
+				relationships.add(relationship);
+			}
+			if (relationship.getDestinationTable().equals(this)) {
+				relationships.add(relationship);
+			}
+		}
+		return relationships;
 	}
 
 } //BusinessTableImpl

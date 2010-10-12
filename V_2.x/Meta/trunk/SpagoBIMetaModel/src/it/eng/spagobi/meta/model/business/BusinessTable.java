@@ -6,6 +6,8 @@
  */
 package it.eng.spagobi.meta.model.business;
 
+import java.util.List;
+
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
@@ -111,6 +113,11 @@ public interface BusinessTable extends ModelObject {
 	// =========================================================================
 	
 	BusinessIdentifier getIdentifier();
+	
+	/**
+	 * Returns the <code>BusinessRelationship</code> objects for this table. 
+	 */
+	List<BusinessRelationship> getRelationships();
 	
 	BusinessColumn getColumn(String name);
 	

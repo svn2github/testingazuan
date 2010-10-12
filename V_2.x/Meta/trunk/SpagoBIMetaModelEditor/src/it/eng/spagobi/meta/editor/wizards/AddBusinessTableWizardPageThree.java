@@ -64,8 +64,9 @@ public class AddBusinessTableWizardPageThree extends WizardPage {
 		compLeft.setLayoutData(gdL);
 		Label lblLeftTab = new Label(compLeft,SWT.NONE);
 		lblLeftTab.setText("Physical Table Columns: ");
- 		columns = new Table(compLeft, SWT.BORDER);
+ 		columns = new Table(compLeft, SWT.BORDER | SWT.MULTI);
  		columns.setLayoutData(gdL);
+ 		
 
  		//Center buttons -------------------------------
 		Composite compCenter = new Composite(columnsGroup, SWT.NONE);
@@ -90,7 +91,7 @@ public class AddBusinessTableWizardPageThree extends WizardPage {
 		compRight.setLayoutData(gdR);
 		Label lblRightTab = new Label(compRight,SWT.NONE);
 		lblRightTab.setText("Business Table Columns: ");
- 		fields = new Table(compRight, SWT.BORDER);
+ 		fields = new Table(compRight, SWT.BORDER | SWT.MULTI);
  		fields.setLayoutData(gdR);
  	
  		//Bottom error label
@@ -108,13 +109,31 @@ public class AddBusinessTableWizardPageThree extends WizardPage {
 			@Override
 			public void handleEvent(Event event) {
 				TableItem tiSel = null;
-				if (columns.getSelectionCount() > 0)
+				TableItem[] tiMultiSel = null;
+				//single selection
+				if (columns.getSelectionCount() == 1)
 					tiSel = columns.getSelection()[0];
+				//multi selection
+				else if (columns.getSelectionCount() > 1){
+					int selectionCount = columns.getSelectionCount();
+					tiMultiSel = new TableItem[selectionCount];
+					for (int i=0; i<selectionCount; i++){
+						tiMultiSel[i] = columns.getSelection()[i];
+					}
+				}
 				if (tiSel!= null){
 					TableItem ti = new TableItem(fields, 0);
 					ti.setText(tiSel.getText());
 					ti.setData(tiSel.getData());
 					columns.remove(columns.getSelectionIndex());
+				}
+				if (tiMultiSel != null){
+					for (int i=0; i< tiMultiSel.length; i++){
+						TableItem ti = new TableItem(fields, 0);
+						ti.setText(tiMultiSel[i].getText());
+						ti.setData(tiMultiSel[i].getData());											
+					}
+					columns.remove(columns.getSelectionIndices());
 				}
 				checkPageComplete();
 			}
@@ -125,13 +144,31 @@ public class AddBusinessTableWizardPageThree extends WizardPage {
 			@Override
 			public void handleEvent(Event event) {
 				TableItem tiSel = null;
-				if (fields.getSelectionCount() > 0)
+				TableItem[] tiMultiSel = null;
+				//single selection
+				if (fields.getSelectionCount() == 1)
 					tiSel = fields.getSelection()[0];
+				//multi selection
+				else if (fields.getSelectionCount() > 1){
+					int selectionCount = fields.getSelectionCount();
+					tiMultiSel = new TableItem[selectionCount];
+					for (int i=0; i<selectionCount; i++){
+						tiMultiSel[i] = fields.getSelection()[i];
+					}
+				}
 				if (tiSel!= null){
 					TableItem ti = new TableItem(columns, 0);
 					ti.setText(tiSel.getText());
 					ti.setData(tiSel.getData());					
 					fields.remove(fields.getSelectionIndex());
+				}
+				if (tiMultiSel != null){
+					for (int i=0; i< tiMultiSel.length; i++){
+						TableItem ti = new TableItem(columns, 0);
+						ti.setText(tiMultiSel[i].getText());
+						ti.setData(tiMultiSel[i].getData());											
+					}
+					fields.remove(fields.getSelectionIndices());
 				}
 				checkPageComplete();
 
@@ -166,18 +203,23 @@ public class AddBusinessTableWizardPageThree extends WizardPage {
 	
 	//check if the right conditions to go forward occurred
 	private void checkPageComplete(){
-		if(fields.getItemCount()!=0){
-			//lErr.setText("");
-			//store the Physical Columns selected
-			setErrorMessage(null);
-			setColumnsToImport(fields.getItems());
+		if (pageTwoRef.isColumnSelection()){
+			if(fields.getItemCount()!=0){
+				//lErr.setText("");
+				//store the Physical Columns selected
+				setErrorMessage(null);
+				setColumnsToImport(fields.getItems());
+				setPageComplete(true);
+			}
+			else{			
+				//lErr.setText("This Business Table hasn't columns, please select at least one to continue");
+				setErrorMessage("This Business Table hasn't columns, please select at least one to continue");
+				setPageComplete(false);
+			}
+		}
+		else {
 			setPageComplete(true);
 		}
-		else{			
-			//lErr.setText("This Business Table hasn't columns, please select at least one to continue");
-			setErrorMessage("This Business Table hasn't columns, please select at least one to continue");
-			setPageComplete(false);
-		}		
 	}
 
 	/**

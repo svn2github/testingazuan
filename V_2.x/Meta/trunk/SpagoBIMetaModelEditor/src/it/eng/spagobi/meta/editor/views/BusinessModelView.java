@@ -18,6 +18,7 @@ import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.business.util.BusinessModelAdapterFactory;
@@ -72,6 +73,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	protected AdapterFactoryEditingDomain editingDomain;
 	private Object currentTreeSelection;
 	private CoreSingleton cs = CoreSingleton.getInstance();
+	static public BusinessModelFactory FACTORY = BusinessModelFactory.eINSTANCE;
 	
 	public BusinessModelView() {
 	    
@@ -90,6 +92,80 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	public void createPartControl(Composite parent) {
 		sc = new ScrolledComposite(parent, SWT.H_SCROLL |   
 				  SWT.V_SCROLL | SWT.BORDER);						
+	}
+	
+	/**
+	 * Create a "blank sheet" for the Business Model Editor
+	 */
+	public void initComposite(){
+		Composite container = new Composite(sc, SWT.NONE);
+		GridLayout gridLayout = new GridLayout(); 
+		gridLayout.numColumns = 1; 
+		gridLayout.makeColumnsEqualWidth = true;
+		container.setLayout(gridLayout); 
+		sc.setContent(container);
+		sc.setExpandHorizontal(true);
+		sc.setExpandVertical(true);
+		sc.setMinSize(container.computeSize(200, 300));
+
+	    Group bmGroup = new Group(container, SWT.SHADOW_ETCHED_IN);
+		bmGroup.setLayout(new GridLayout());
+		
+		//Create a TreeViewer
+		bmTree = new TreeViewer(bmGroup);
+		List<BusinessModelAdapterFactory> factories = new ArrayList<BusinessModelAdapterFactory>();
+		factories.add(new BusinessModelItemProviderAdapterFactory());
+		ComposedAdapterFactory adapterFactory = new ComposedAdapterFactory(factories);	
+		bmTree.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
+		bmTree.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
+		bmTree.setUseHashlookup(true);
+		
+	    //setting initial input
+		BusinessModel model = createEmptyModel();
+		model.eAdapters().add(new BusinessModelItemProviderAdapterFactory().createBusinessModelAdapter());
+	    bmTree.setInput(model);
+	    
+	    bmGroup.setText("Business Model: "+model.getName());
+	    
+	    //register the tree as a selection provider
+	    getSite().setSelectionProvider(bmTree);
+	    
+	    //add a SelectionListener to the tree
+	    bmTree.addSelectionChangedListener(this);
+	    
+	    //Create Context Menu and Menu Actions    
+	    createBCActions();
+	    createBTActions();
+	    hookContextMenu();
+		
+	    //setting datalayout
+	    GridData gd = new GridData(GridData.FILL_BOTH);
+		bmGroup.setLayoutData(gd);
+		bmTree.getTree().setLayoutData(gd);
+		
+		Point p = container.getSize();
+		container.pack();
+		container.setSize(p);
+	}
+	
+	/**
+	 * Create an empty BusinessModel to populate
+	 * @return an empty BusinessModel
+	 */
+	public BusinessModel createEmptyModel(){
+		BusinessModel businessModel = FACTORY.createBusinessModel();
+		//Getting CoreSingleton instance
+		CoreSingleton cs = CoreSingleton.getInstance();
+		String modelName = cs.getBmName();
+		PhysicalModel physicalModel = cs.getPhysicalModel();
+		businessModel.setName(modelName);
+		
+		if(physicalModel.getParentModel() != null) {
+			businessModel.setParentModel(physicalModel.getParentModel());
+		}
+		
+		businessModel.setPhysicalModel(physicalModel);
+		return businessModel;
 	}
 	
 	/**
@@ -115,7 +191,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
         String bmName = cs.getBmName();
         PhysicalModel pm = cs.getPhysicalModel();
 	    
-	    //initialize the EMF Physical Model
+	    //initialize the EMF Business Model
         BusinessModelInitializer modelInitializer = new BusinessModelInitializer();
         BusinessModel model = modelInitializer.initialize( bmName, pm);
 				
@@ -199,8 +275,6 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
 				dialog.create();
 		    	dialog.open();
-				showMessage("Business Table Added");
-				
 			}
 		};
 		addBTAction.setText("Add a Business Table");
@@ -266,6 +340,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 			manager.add(removeBCAction);
 		} else {
 			manager.removeAll();
+			manager.add(addBTAction);
 		}
 			
 	}

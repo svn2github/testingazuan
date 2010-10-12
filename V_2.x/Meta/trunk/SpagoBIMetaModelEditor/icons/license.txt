@@ -13,3 +13,7 @@ folderkey icon by http://www.fatcow.com/Creative Commons 3.0 Attribution
 folderforeignkey modified version of folderkey by Marco Cortella
 catalog icon by http://twitter.com/gasyoun Free for commercial use
 databaseconnect icon by http://www.fatcow.com/ Creative Commons Attribuition 3.0
+databasegear icon by http://www.fatcow.com/ Creative Commons Attribuition 3.0
+document icon by http://p.yusukekamiyamane.com/ Creative Commons Attribuition 3.0
+add,remove icon by http://splashyfish.com/  Free for commercial use
+savexml icon by http://www.iconfinder.com/search/?q=iconset%3Asilk2 Creative Commons (Attribution 2.5 Generic)

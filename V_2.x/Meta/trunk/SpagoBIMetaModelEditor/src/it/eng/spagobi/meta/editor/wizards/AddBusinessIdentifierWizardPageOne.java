@@ -2,40 +2,33 @@ package it.eng.spagobi.meta.editor.wizards;
 
 import it.eng.spagobi.meta.editor.Activator;
 import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
+import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 
-public class AddBusinessTableWizardPageTwo extends WizardPage {
-	
+public class AddBusinessIdentifierWizardPageOne extends WizardPage {
+
 	private List tableList;
 	private String tableSelected;
-	private boolean columnSelection;
-	private AddBusinessTableWizardPageOne pageOneRef;
-	private AddBusinessTableWizardPageThree pageThreeRef;
 	
-	protected AddBusinessTableWizardPageTwo(String pageName, AddBusinessTableWizardPageOne pageOne) {
+	protected AddBusinessIdentifierWizardPageOne(String pageName) {
 		super(pageName);
-		setTitle("Business Table Creation");
-		setDescription("Please select the physical table used to create the Business Table.");
+		setTitle("Business Identifier Creation");
+		setDescription("This wizard drives you to create a new Business Identifier in your Business Model.\n"+
+				"Plese select a Business Table");
 		ImageDescriptor image = Activator.getImageDescriptor("wizards/createBC.png");
 	    if (image!=null) setImageDescriptor(image);	
-	    pageOneRef = pageOne;
 	}
 
 	@Override
@@ -47,9 +40,9 @@ public class AddBusinessTableWizardPageTwo extends WizardPage {
 		gl.makeColumnsEqualWidth = true;
 		composite.setLayout(gl);
 		
-		//Physical Table List
+		//Business Table List
 		Group tableGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
-		tableGroup.setText("Physical Table Selection");
+		tableGroup.setText("Business Table Selection");
 		GridLayout glTable = new GridLayout();
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		glTable.numColumns = 1;
@@ -98,39 +91,25 @@ public class AddBusinessTableWizardPageTwo extends WizardPage {
 
 	}
 	
-	//populate the list with the Physical Tables' names
+	//populate the list with the Business Tables' names
 	private void populateTableList(){
-		PhysicalModel pm = CoreSingleton.getInstance().getPhysicalModel();
+		BusinessModel pm = CoreSingleton.getInstance().getBusinessModel();
 		int numTables = pm.getTables().size();
 		String tabName;
 		for (int i = 0; i < numTables; i++){
 			tabName = pm.getTables().get(i).getName();
 			tableList.add(tabName);		
 		}
-	}
+	}	
 
 	//check if the right conditions to go forward occurred
 	private void checkPageComplete(){
 		if(tableSelected != null){
 			setPageComplete(true);
-			if (pageThreeRef != null)
-				pageThreeRef.addTableItems(tableSelected);
 		}
 		else{			
 			setPageComplete(false);
 		}		
-	}	
-	
-	public IWizardPage getNextPage() {
-		//check if column selection is needed
-		setColumnSelection(pageOneRef.isColumnSelection());
-		//go to finish page
-		if (!isColumnSelection()) {
-			//return getWizard().getPage("Create Business Table step four");
-			return null;
-		}
-		//go to the column selection page
-		return getWizard().getPage("Create Business Table step three");
 	}	
 	
 	/**
@@ -146,33 +125,4 @@ public class AddBusinessTableWizardPageTwo extends WizardPage {
 	public String getTableSelected() {
 		return tableSelected;
 	}
-
-	/**
-	 * @param pageThreeRef the pageThreeRef to set
-	 */
-	public void setPageThreeRef(AddBusinessTableWizardPageThree pageThreeRef) {
-		this.pageThreeRef = pageThreeRef;
-	}
-
-	/**
-	 * @return the pageThreeRef
-	 */
-	public AddBusinessTableWizardPageThree getPageThreeRef() {
-		return pageThreeRef;
-	}
-
-	/**
-	 * @param columnSelection the columnSelection to set
-	 */
-	public void setColumnSelection(boolean columnSelection) {
-		this.columnSelection = columnSelection;
-	}
-
-	/**
-	 * @return the columnSelection
-	 */
-	public boolean isColumnSelection() {
-		return columnSelection;
-	}
-
 }

@@ -3,6 +3,9 @@
  */
 package it.eng.spagobi.meta.editor.wizards;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.eng.spagobi.meta.commons.IModelObjectFilter;
 import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
@@ -40,27 +43,27 @@ public class AddBusinessTableWizard extends Wizard {
 	}
 	
 	@Override
-	public boolean performFinish() {		
-		/*
-		if (pageThree.isPageComplete()){
-			//TODO: to complete
+	public boolean performFinish() {				
+		if (pageThree.isPageComplete() && pageOne.isColumnSelection()){
 			//table to import
 			String tableName = pageTwo.getTableSelected();
 			//columns to import
 			columnsToImport = pageThree.getColumnsToImport();
-			int numCol = columnsToImport.length
+			int numCol = columnsToImport.length;
+			List<PhysicalColumn> colList = new ArrayList<PhysicalColumn>();
+			for (int i=0; i<numCol; i++){
+				PhysicalColumn pc = ((PhysicalColumn)columnsToImport[i].getData());
+				colList.add(pc);
+			}
 			//Create Business Table from a Physical Table
 			BusinessModel bm = CoreSingleton.getInstance().getBusinessModel();
 			PhysicalModel pm = CoreSingleton.getInstance().getPhysicalModel();
 			PhysicalTable pTable = pm.getTable(tableName);
 			BusinessModelInitializer initializer = new BusinessModelInitializer();
-			initializer.addTable(pTable,new ColumnFilter() , bm);
-			
+			initializer.addTable(pTable, new ColumnFilter(colList), bm);			
 			return true;
 		}
-		else
-		*/
-			if (pageTwo.isPageComplete()){
+		if (pageTwo.isPageComplete()){
 			String tableName = pageTwo.getTableSelected();
 			//Create Business Table from a Physical Table
 			BusinessModel bm = CoreSingleton.getInstance().getBusinessModel();
@@ -70,7 +73,6 @@ public class AddBusinessTableWizard extends Wizard {
 			initializer.addTable(pTable, bm);
 			return true;
 		}
-		else
 			return false;
 	}
 	
@@ -84,8 +86,8 @@ public class AddBusinessTableWizard extends Wizard {
 	 */
 	private class ColumnFilter implements IModelObjectFilter{
 
-		EList<PhysicalColumn> columnsTrue;
-		public ColumnFilter(EList<PhysicalColumn> columnsToMantain){
+		List<PhysicalColumn> columnsTrue;
+		public ColumnFilter(List<PhysicalColumn> columnsToMantain){
 			columnsTrue = columnsToMantain;
 		}
 		@Override
@@ -94,8 +96,7 @@ public class AddBusinessTableWizard extends Wizard {
 				return false;
 			else
 				return true;
-		}
-		
+		}		
 	}
 
 }

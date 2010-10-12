@@ -36,6 +36,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -115,6 +117,11 @@ public class PhysicalModelView extends ViewPart {
 			Point p = container.getSize();
 			container.pack();
 			container.setSize(p);
+			
+			//Create blank sheet in BusinessModelView
+			IViewPart businessModelView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("it.eng.spagobi.meta.editor.BusinessModel");
+			//invoke tree creation on BusinessModelView
+			((BusinessModelView)businessModelView).initComposite();
 		}
 	}
  

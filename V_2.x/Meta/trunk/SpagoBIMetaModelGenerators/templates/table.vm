@@ -21,10 +21,34 @@ public class ${jpaTable.className} {
 ##### fields
 #####
 
-#if ($jpaTable.compositeKey)
-#if ($jpaTable.access == "field")
-
+#if ($jpaTable.hasCompositeKey)
+	
+	#if ($jpaTable.access == "field")
 	@EmbeddedId
-#end
+	#end
+	
 	private ${jpaTable.compositeKeyClassName} ${jpaTable.compositeKeyPropertyName};
+#end
+
+#foreach ($jpaColumn in $jpaTable.getSimpleColumns(true, true, false))
+	${jpaColumn.fieldScope} ${jpaColumn.simplePropertyType} ${jpaColumn.propertyName};
+#end
+
+#foreach ($jpaRelationship in $jpaTable.relationships)
+#####
+##### field annotations
+#####
+#if ($jpaTable.access == "field")
+	//${jpaRelationship.description}
+#if ($jpaRelationship.cardinality == "many-to-one")
+manyToOne.vm
+#elseif ($jpaRelationship.cardinality == "many-to-many")
+manyToMany.vm
+#elseif ($jpaRelationship.cardinality == "one-to-many")
+#parse("oneToMany.vm")
+#elseif ($jpaRelationship.cardinality == "one-to-one")
+oneToOne.vm
+#end
+
+#end
 #end

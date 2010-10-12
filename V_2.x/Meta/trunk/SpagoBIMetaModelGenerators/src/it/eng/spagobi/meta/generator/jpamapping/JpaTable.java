@@ -7,10 +7,17 @@ import it.eng.spagobi.meta.commons.JDBCTypeMapper;
 import it.eng.spagobi.meta.initializer.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 
 
 /**
@@ -20,6 +27,9 @@ import java.util.HashMap;
 public class JpaTable {
 	
 	private BusinessTable businessTable;
+	
+	// cache
+	List<JpaColumn> jpaColumns = null;
 	private HashMap<String, String> columnTypesMap =  null;
 	
 	public JpaTable() {
@@ -36,6 +46,22 @@ public class JpaTable {
 
 	public void setBusinessTable(BusinessTable businessTable) {
 		this.businessTable = businessTable;
+	}
+	
+	/**
+	 * Returns the <code>JpaColumn</code> objects to be generated for this
+	 * table.
+	 */
+	public List<JpaColumn> getColumns() {
+		if (jpaColumns == null) {
+			jpaColumns = new ArrayList<JpaColumn>();
+			for (BusinessColumn c : businessTable.getColumns()) {
+				JpaColumn jpaColumn = new JpaColumn(c);
+				jpaColumn.setJpaTable(this);
+				jpaColumns.add(jpaColumn);
+			}
+		}
+		return jpaColumns;
 	}
 
 	public String getPackage() {
@@ -62,6 +88,102 @@ public class JpaTable {
 		
 		return ret.toString();
 	}
+	
+	/**
+	 * Returns one of {@link #PROPERTY_ACCESS}|{@link #FIELD_ACCESS} indicating
+	 * how the entity properties are mapped. Does not return null (defaults to
+	 * {@link #FIELD_ACCESS}).
+	 */
+	public String getAccess() {
+		String name = null;
+		//String name = customized(ACCESS);
+		if (name == null) {
+			name = "field";
+		}
+		return name;
+	}
+	
+	/**
+	 * Returns true if there is more than 1 column in the table identifier
+	 */
+	public boolean hasCompositeKey() {		
+		return businessTable.getIdentifier() != null? businessTable.getIdentifier().getColumns().size() > 1 : false;
+	}
+	
+	/**
+	 * Returns the composite key Java class name (not qualified).
+	 */
+	public String getCompositeKeyClassName() {
+		String name = null;
+		//String name = customized(COMPOSITE_KEY_CLASS_NAME);
+		if (name == null) {
+			name = getClassName() + "PK"; //$NON-NLS-1$
+		}
+		return name;
+	}
+	
+	/**
+	 * Returns the composite key property name.
+	 */
+	public String getCompositeKeyPropertyName() {
+		return "id"; //$NON-NLS-1$
+	}
+	
+	
+	/**
+	 * Returns the <code>ORMGenColumn</code> objects for the the columns that
+	 * are not part of any association.
+	 * 
+	 * @param genOnly
+	 *            Whether to include only the columns marked for generation.
+	 * 
+	 * @param includePk
+	 *            Whether to include the primary kley column(s).
+	 * 
+	 * @param includeInherited
+	 *            Whether to include the columns associated with Java properties
+	 *            that exist in the super class (if any).
+	 */
+	public List<JpaColumn> getSimpleColumns(boolean genOnly, boolean includePk, boolean includeInherited) {
+		List<JpaColumn> result = new ArrayList<JpaColumn>();
+		List<JpaColumn> columns = getColumns();
+	
+		for (int i = 0, n = columns.size(); i < n; ++i) {
+			JpaColumn column = columns.get(i);
+			
+			if (column.isIdentifier()) {
+				if (!includePk || hasCompositeKey()) {
+					continue;
+				} else {
+					result.add(0, column);
+					continue;
+				}
+			} else if (column.isColumnInRelationship()) {
+				continue;
+			}
+			result.add(column);
+		}
+		return result;
+	}
+
+	public List<JpaColumn> getSimpleColumns() {
+		return getSimpleColumns(true/* genOnly */, true/* includePk */, true/* includeInherited */);
+	}
+	
+	public List<JpaRelationship> getRelationships() {
+		List<JpaRelationship> jpaRelationships;
+		JpaRelationship jpaRelationship;
+		
+		jpaRelationships = new ArrayList<JpaRelationship>();
+		for(BusinessRelationship relationshp : businessTable.getRelationships()) {
+			jpaRelationship = new JpaRelationship(this, relationshp);
+			jpaRelationships.add(jpaRelationship);
+		}
+		
+		return jpaRelationships;		
+	}
+	
+	
 	
 	public HashMap<String, String> buildColumnTypesMap(){
 		if ( columnTypesMap != null) {

@@ -17,7 +17,7 @@ public class CoreSingleton {
 	
 	private Model rootModel;
 	private String bmName;
-	private String bmPath;
+	
 	
 	public static CoreSingleton getInstance() {
 		if (_instance == null) 
@@ -58,20 +58,6 @@ public class CoreSingleton {
 		return bmName;
 	}
 
-	/**
-	 * @param bmPath the bmPath to set
-	 */
-	public void setBmPath(String bmPath) {
-		this.bmPath = bmPath;
-	}
-
-	/**
-	 * @return the bmPath
-	 */
-	public String getBmPath() {
-		return bmPath;
-	}
-	
 	/**
 	 * @return the current PhysicalModel
 	 */

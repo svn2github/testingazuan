@@ -185,12 +185,12 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		sc.setMinSize(container.computeSize(200, 300));
 
 	    Group bmGroup = new Group(container, SWT.SHADOW_ETCHED_IN);
-		bmGroup.setText("Business Model");
 		bmGroup.setLayout(new GridLayout());
 		
         //retrieve root Model reference and the PhysicalModel
         Model rootModel = cs.getRootModel();
         String bmName = cs.getBmName();
+		bmGroup.setText("Business Model: "+bmName);
         PhysicalModel pm = cs.getPhysicalModel();
 	    
         BusinessModel model;

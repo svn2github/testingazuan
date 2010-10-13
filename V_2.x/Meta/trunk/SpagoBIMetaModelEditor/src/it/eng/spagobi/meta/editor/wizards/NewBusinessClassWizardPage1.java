@@ -21,14 +21,12 @@ public class NewBusinessClassWizardPage1 extends WizardPage {
 
 	private Label lblName;
 	private Text bmName;
-	private Label lblPath;
-	private Text dirPath;
-	private Button btnSelDir;
+
 
 	protected NewBusinessClassWizardPage1(String pageName) {
 		super(pageName);
 		setDescription("This wizard drives you to create a new SpagoBI Meta Business Model," +
-		" please insert a name and choose a directory to save your BM.");
+		" please insert a name for your BM.");
 		ImageDescriptor image = Activator.getImageDescriptor("/wizards/createBM.png");
 	    if (image!=null)
 	    	setImageDescriptor(image);
@@ -59,7 +57,8 @@ public class NewBusinessClassWizardPage1 extends WizardPage {
         setBmName(new Text(nameGroup,SWT.BORDER));
         bmName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         
-		//Directory Group
+		/*
+        //Directory Group
 		Group dirGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
 		dirGroup.setText("Directory");
 		GridLayout glDir = new GridLayout();
@@ -94,6 +93,7 @@ public class NewBusinessClassWizardPage1 extends WizardPage {
 	              }
             }
         });    
+        */
         //Important: Setting page control
  		setControl(composite);
 	}
@@ -105,7 +105,7 @@ public class NewBusinessClassWizardPage1 extends WizardPage {
 	public String getBmName() {
 		return bmName.getText();
 	}
-
+	/*
 	private void setDirPath(Text dirPath) {
 		this.dirPath = dirPath;
 	}
@@ -113,5 +113,5 @@ public class NewBusinessClassWizardPage1 extends WizardPage {
 	public String getDirPath() {
 		return dirPath.getText();
 	}
-
+	 */
 }

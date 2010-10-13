@@ -39,19 +39,20 @@ public class NewSpagoBIMetaBusinessModelWizard extends Wizard implements INewWiz
 	
 	@Override
 	public boolean performFinish() {		
-        String path = one.getDirPath().toString()+"\\"+one.getBmName();
-        if (path != null){
-             File dir = new File(path);
-	   		 if (!dir.exists())
-	   		 {
+        //String path = one.getDirPath().toString()+"\\"+one.getBmName();
+        String bmName = one.getBmName();
+		if (bmName != null){
+             //File dir = new File(path);
+	   		 //if (!dir.exists())
+	   		// {
 	   			//create directory with Business Model Name
-	   			dir.mkdir();
+	   			//dir.mkdir();
 	   			
 	   			//Create CoreSingleton and initialize root Model
 	   			CoreSingleton cs = CoreSingleton.getInstance();
 	   			cs.initModel();
 	   			cs.setBmName(one.getBmName());
-	   			cs.setBmPath(path);
+	   			//cs.setBmPath(path);
 	   			
 	   			//launch perspective
 	   			IWorkbench workbench = PlatformUI.getWorkbench();
@@ -64,7 +65,7 @@ public class NewSpagoBIMetaBusinessModelWizard extends Wizard implements INewWiz
 
 	   			return true;
 	   		 }
-        }
+       // }
 		return false;
 		
 	}

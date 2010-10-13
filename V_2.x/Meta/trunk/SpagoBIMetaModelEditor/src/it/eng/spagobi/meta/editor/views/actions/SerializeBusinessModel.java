@@ -13,6 +13,8 @@ import java.io.File;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
@@ -23,10 +25,25 @@ public class SerializeBusinessModel implements IViewActionDelegate {
 	public void run(IAction action) {
 		CoreSingleton cs = CoreSingleton.getInstance();
 		Model rootModel = cs.getRootModel();
-		String fileName = cs.getBmPath()+"\\"+cs.getBmName()+".xmi";
-		IModelSerializer serializer = new EmfXmiSerializer();
-        serializer.serialize(rootModel, new File(fileName));
-        showMessage("Model saved to XMI File");
+		DirectoryDialog dialog = new DirectoryDialog(new Shell(), SWT.NULL);
+
+        // Change the title bar text
+        dialog.setText("Business Model save directory selection");
+
+        // Customizable message displayed in the dialog
+        dialog.setMessage("Select a directory for saving file");
+        String path = dialog.open();
+        if (path != null) {
+    		String fileName = path+"\\"+cs.getBmName()+".xmi";
+    		IModelSerializer serializer = new EmfXmiSerializer();
+            serializer.serialize(rootModel, new File(fileName));
+        	showMessage("Model saved to XMI File");
+        }
+        else {
+        	showMessage("Error on directory selection");
+        }
+
+        
 	}
 
 	@Override

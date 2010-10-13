@@ -3,6 +3,8 @@
  */
 package it.eng.spagobi.meta.initializer;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 
 import it.eng.spagobi.meta.commons.IModelObjectFilter;
@@ -119,6 +121,7 @@ public class BusinessModelInitializer {
 			throw new RuntimeException("Impossible to initialize business table from physical table [" + physicalTable.getName() + "]", t);
 		}
 	}
+	
 
 	public void addColumns(PhysicalTable physicalTable, BusinessTable businessTable) {
 		addColumns(physicalTable, null, businessTable);
@@ -190,6 +193,28 @@ public class BusinessModelInitializer {
 			
 			for(int j = 0; j < physicalPrimaryKey.getColumns().size(); j++) {
 				businessColumn = businessTable.getColumn(physicalPrimaryKey.getColumns().get(j));
+				businessIdentifier.getColumns().add(businessColumn);
+			}
+			
+			businessModel.getIdentifiers().add(businessIdentifier);			
+			getPropertiesInitializer().addProperties(businessIdentifier);
+		} catch(Throwable t) {
+			throw new RuntimeException("Impossible to initialize identifier meta", t);
+		}
+	}
+	
+	//add Identifier without PhysicalPrimaryKey specified
+	public void addIdentifier(String businessIdentifierName, BusinessTable businessTable, List<BusinessColumn> businessColumns) {
+		BusinessIdentifier businessIdentifier;
+		BusinessModel businessModel = businessTable.getModel();
+		
+		try {
+			businessIdentifier = FACTORY.createBusinessIdentifier();
+			businessIdentifier.setName( businessIdentifierName );
+			businessIdentifier.setModel( businessModel );
+			businessIdentifier.setTable( businessTable );
+			
+			for(BusinessColumn businessColumn : businessColumns) {
 				businessIdentifier.getColumns().add(businessColumn);
 			}
 			

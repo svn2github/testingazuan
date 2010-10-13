@@ -28,7 +28,7 @@ public class AddBusinessIdentifierWizardPageOne extends WizardPage {
 		setTitle("Business Identifier Creation");
 		setDescription("This wizard drives you to create a new Business Identifier in your Business Model.\n"+
 				"Plese select a Business Table.");
-		ImageDescriptor image = Activator.getImageDescriptor("wizards/createBC.png");
+		ImageDescriptor image = Activator.getImageDescriptor("wizards/createBI.png");
 	    if (image!=null) setImageDescriptor(image);	
 	}
 
@@ -45,22 +45,23 @@ public class AddBusinessIdentifierWizardPageOne extends WizardPage {
 		Group tableGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
 		tableGroup.setText("Business Table Selection");
 		GridLayout glTable = new GridLayout();
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		GridData gd = new GridData(GridData.FILL_BOTH);
 		glTable.numColumns = 1;
 		glTable.makeColumnsEqualWidth = false;
 		tableGroup.setLayout(glTable);
 		tableGroup.setLayoutData(gd);
 
-	    ScrolledComposite sc = new ScrolledComposite(tableGroup, SWT.H_SCROLL
-	            | SWT.V_SCROLL);
-		Composite compList = new Composite(sc, SWT.NONE);
+		Composite compList = new Composite(tableGroup, SWT.NONE);
 		GridLayout glL = new GridLayout();
 		GridData gdL = new GridData(GridData.FILL_BOTH);
 		glL.numColumns = 1;
 		compList.setLayout(glL);
 		compList.setLayoutData(gdL);
- 		tableList = new List(compList, SWT.BORDER);
- 		tableList.setLayoutData(gdL);
+		
+ 		tableList = new List(compList, SWT.BORDER|SWT.SINGLE|SWT.V_SCROLL|SWT.H_SCROLL);
+ 		GridData gdList = new GridData(GridData.FILL_BOTH);
+ 		gdList.heightHint = 250;
+ 		tableList.setLayoutData(gdList);
  		
  		populateTableList();
  		
@@ -74,17 +75,6 @@ public class AddBusinessIdentifierWizardPageOne extends WizardPage {
 			}
 		});
 
- 	    // Set the child as the scrolled content of the ScrolledComposite
- 	    sc.setContent(compList);
-		GridLayout glS = new GridLayout();
-		GridData gdS = new GridData(GridData.FILL_BOTH);
- 	    sc.setLayout(glS);
- 	    sc.setLayoutData(gdS);
-
- 	    // Expand both horizontally and vertically
- 	    sc.setExpandHorizontal(true);
- 	    sc.setExpandVertical(true);
- 	    
  	    checkPageComplete();
 				
         //Important: Setting page control

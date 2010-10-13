@@ -137,6 +137,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	    //Create Context Menu and Menu Actions    
 	    createBCActions();
 	    createBTActions();
+	    createBIActions();
 	    hookContextMenu();
 		
 	    //setting datalayout

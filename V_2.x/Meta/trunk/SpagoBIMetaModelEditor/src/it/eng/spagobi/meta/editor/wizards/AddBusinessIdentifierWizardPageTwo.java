@@ -33,7 +33,7 @@ public class AddBusinessIdentifierWizardPageTwo extends WizardPage {
 		super(pageName);
 		setTitle("Business Identifier Creation");
 		setDescription("Please select the columns to use in your Business Identifier");
-		ImageDescriptor image = Activator.getImageDescriptor("wizards/createBC.png");
+		ImageDescriptor image = Activator.getImageDescriptor("wizards/createBI.png");
 	    if (image!=null) setImageDescriptor(image);	
 	}
 

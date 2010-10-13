@@ -57,16 +57,19 @@ public class AddBusinessTableWizardPageTwo extends WizardPage {
 		tableGroup.setLayout(glTable);
 		tableGroup.setLayoutData(gd);
 
-	    ScrolledComposite sc = new ScrolledComposite(tableGroup, SWT.H_SCROLL
-	            | SWT.V_SCROLL);
-		Composite compList = new Composite(sc, SWT.NONE);
+	    //ScrolledComposite sc = new ScrolledComposite(tableGroup, SWT.H_SCROLL
+	     //       | SWT.V_SCROLL);
+		Composite compList = new Composite(tableGroup, SWT.NONE);
 		GridLayout glL = new GridLayout();
 		GridData gdL = new GridData(GridData.FILL_BOTH);
 		glL.numColumns = 1;
 		compList.setLayout(glL);
 		compList.setLayoutData(gdL);
- 		tableList = new List(compList, SWT.BORDER);
- 		tableList.setLayoutData(gdL);
+ 		
+		tableList = new List(compList, SWT.BORDER|SWT.SINGLE|SWT.V_SCROLL|SWT.H_SCROLL);
+ 		GridData gdList = new GridData(GridData.FILL_BOTH);
+ 		gdList.heightHint = 250;
+ 		tableList.setLayoutData(gdList);
  		
  		populateTableList();
  		
@@ -81,7 +84,8 @@ public class AddBusinessTableWizardPageTwo extends WizardPage {
 		});
 
  	    // Set the child as the scrolled content of the ScrolledComposite
- 	    sc.setContent(compList);
+ 	   /*
+ 		sc.setContent(compList);
 		GridLayout glS = new GridLayout();
 		GridData gdS = new GridData(GridData.FILL_BOTH);
  	    sc.setLayout(glS);
@@ -90,7 +94,7 @@ public class AddBusinessTableWizardPageTwo extends WizardPage {
  	    // Expand both horizontally and vertically
  	    sc.setExpandHorizontal(true);
  	    sc.setExpandVertical(true);
- 	    
+ 	    */
  	    checkPageComplete();
 				
         //Important: Setting page control

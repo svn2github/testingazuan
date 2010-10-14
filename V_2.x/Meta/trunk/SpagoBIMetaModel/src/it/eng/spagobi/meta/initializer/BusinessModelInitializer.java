@@ -276,6 +276,34 @@ public class BusinessModelInitializer {
 		}
 	}
 	
+	//add Relationship without PhysicalForeignKey specified
+	public void addRelationship(BusinessTable sourceTable, BusinessTable destinationTable, List<BusinessColumn> sourceColumns, List<BusinessColumn> destinationColumns){
+		BusinessRelationship businessRelationship;	
+		BusinessModel businessModel = sourceTable.getModel();
+		
+		try {
+			businessRelationship = FACTORY.createBusinessRelationship();
+			
+			businessRelationship.setName( "Business Relationship "+sourceTable.getName()+"_"+destinationTable.getName() );
+
+			businessRelationship.setSourceTable(sourceTable);
+			for(BusinessColumn businessColumn : sourceColumns) {
+				businessRelationship.getSourceColumns().add(businessColumn);
+			}			
+			businessRelationship.setDestinationTable(destinationTable);
+			for(BusinessColumn businessColumn : destinationColumns) {
+				businessRelationship.getDestinationColumns().add(businessColumn);
+			}
+			
+			businessModel.getRelationships().add(businessRelationship);
+			
+			getPropertiesInitializer().addProperties(businessRelationship);
+			
+		} catch(Throwable t) {
+			throw new RuntimeException("Impossible to initialize business relationship", t);
+		}
+	}
+	
 	//  --------------------------------------------------------
 	//	Accessor methods
 	//  --------------------------------------------------------

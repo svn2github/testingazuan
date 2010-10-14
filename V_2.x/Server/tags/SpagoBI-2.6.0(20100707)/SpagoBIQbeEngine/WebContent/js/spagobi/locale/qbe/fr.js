@@ -246,6 +246,7 @@ Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.avg'] = 'moyenne';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.max'] = 'maximum';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.min'] = 'minimum';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.count'] = 'd\u00E9ecompte';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.countdistinct'] = 'd\u00E9ecompte diff\u00E9rents';
 
 Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.none'] = 'Aucune fonction d\'agr\u00E9gation appliqu\u00E9e';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.sum'] = 'Calcule la somme des valeurs du groupe';
@@ -253,6 +254,7 @@ Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.avg'] = 'Calcule la moyenne 
 Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.max'] = 'Calcule la valeur maximale dans le groupe';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.min'] = 'Calcule la valeur minimale dans le groupe';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.count'] = 'Calcule le nombre de valeurs pr\u00E9sentes dans le groupe';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.countdistinct'] = 'Calcule le nombre de valeurs diff\u00E9rents pr\u00E9sentes dans le groupe';
 
 Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.editor.emptymsg'] = 'S\u00E9lectionner une fonction...';
 

@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.TableItem;
 public class AddBusinessTableWizardPageThree extends WizardPage {
 
 	private Table columns,fields;
-	private Label lErr;
 	private AddBusinessTableWizardPageTwo pageTwoRef;
 	private TableItem[] columnsToImport;
 	
@@ -94,12 +93,7 @@ public class AddBusinessTableWizardPageThree extends WizardPage {
  		fields = new Table(compRight, SWT.BORDER | SWT.MULTI);
  		fields.setLayoutData(gdR);
  	
- 		//Bottom error label
-		Composite err = new Composite(composite, SWT.NULL);
-		GridLayout glerr = new GridLayout();
-		glerr.numColumns = 2;
-		err.setLayout(glerr);	
-		lErr = new Label(err, SWT.NULL);
+
 		
 		//adding listener to Add button		
  		bAddField.addListener(SWT.Selection, new Listener() {		
@@ -183,7 +177,7 @@ public class AddBusinessTableWizardPageThree extends WizardPage {
 	public void addTableItems(String tableName){		
 		columns.removeAll();
 		fields.removeAll();
-		//String tableName = pageTwoRef.getTableSelected();
+
 		if (tableName != null) {
 			//retrieve the Physical Table Columns
 			PhysicalTable pTable = CoreSingleton.getInstance().getPhysicalModel().getTable(tableName);
@@ -202,14 +196,12 @@ public class AddBusinessTableWizardPageThree extends WizardPage {
 	private void checkPageComplete(){
 		if (pageTwoRef.isColumnSelection()){
 			if(fields.getItemCount()!=0){
-				//lErr.setText("");
 				//store the Physical Columns selected
 				setErrorMessage(null);
 				setColumnsToImport(fields.getItems());
 				setPageComplete(true);
 			}
 			else{			
-				//lErr.setText("This Business Table hasn't columns, please select at least one to continue");
 				setErrorMessage("This Business Table hasn't columns, please select at least one to continue");
 				setPageComplete(false);
 			}

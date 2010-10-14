@@ -13,11 +13,13 @@ import it.eng.spagobi.meta.editor.dnd.TableDropListener;
 import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
 import it.eng.spagobi.meta.editor.wizards.AddBCWizard;
 import it.eng.spagobi.meta.editor.wizards.AddBusinessIdentifierWizard;
+import it.eng.spagobi.meta.editor.wizards.AddBusinessRelationshipWizard;
 import it.eng.spagobi.meta.editor.wizards.AddBusinessTableWizard;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessTable;
@@ -69,7 +71,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	private ScrolledComposite sc;
 	private TreeViewer bmTree;
 	protected PropertySheetPage propertySheetPage;
-	private Action addBTAction,removeBTAction,addBCAction,removeBCAction,addBIAction ;
+	private Action addBTAction, removeBTAction, addBCAction, removeBCAction, addBIAction, removeBIAction, addBRAction ;
 	private BasicCommandStack commandStack;
 	protected AdapterFactoryEditingDomain editingDomain;
 	private Object currentTreeSelection;
@@ -138,6 +140,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	    createBCActions();
 	    createBTActions();
 	    createBIActions();
+	    createBRActions();
 	    hookContextMenu();
 		
 	    //setting datalayout
@@ -238,6 +241,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	    createBCActions();
 	    createBTActions();
 	    createBIActions();
+	    createBRActions();
 	    hookContextMenu();
 
 	    //setting datalayout
@@ -356,13 +360,49 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
 				dialog.create();
 		    	dialog.open();
-				showMessage("Add BI executed");
 			}
 		};
 		addBIAction.setText("Add Business Identifier");
 		addBIAction.setToolTipText("Add Business Identifier");
 		addBIAction.setImageDescriptor(Activator.getImageDescriptor("add.png"));
 		
+		removeBIAction = new Action()
+		{
+			public void run()
+			{
+				((BusinessIdentifier)currentTreeSelection).getModel().getIdentifiers().remove(currentTreeSelection);
+				showMessage("Remove BI executed");
+			}
+		};
+		removeBIAction.setText("Remove Business Identifier");
+		removeBIAction.setToolTipText("Remove Business Identifier");
+		removeBIAction.setImageDescriptor(Activator.getImageDescriptor("remove.png"));		
+		
+	}	
+
+	/**
+	 * Create Business Relationship Action to show in the context menu
+	 */
+	private void createBRActions()
+	{
+		addBRAction = new Action()
+		{
+			public void run()
+			{
+				//Start Create Business Relationship Wizard
+				//Get Active Window
+				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				//Launch AddBusinessIdentifierWizard
+				AddBusinessRelationshipWizard wizard = new AddBusinessRelationshipWizard();
+		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
+				dialog.create();
+		    	dialog.open();
+		    	showMessage("Add BR executed");
+			}
+		};
+		addBRAction.setText("Add Business Relationship");
+		addBRAction.setToolTipText("Add Business Relationship");
+		addBRAction.setImageDescriptor(Activator.getImageDescriptor("add.png"));
 	}	
 	
 	@Override
@@ -373,11 +413,16 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 			manager.add(addBTAction);
 			manager.add(removeBTAction);
 			manager.add(addBIAction);
+			manager.add(addBRAction);
 		} else if (currentTreeSelection instanceof BusinessColumn){
 			manager.removeAll();
 			manager.add(addBCAction);
 			manager.add(removeBCAction);
-		} else {
+		} else if (currentTreeSelection instanceof BusinessIdentifier){
+			manager.removeAll();
+			manager.add(removeBIAction);
+		}		
+		else {
 			manager.removeAll();
 			manager.add(addBTAction);
 		}

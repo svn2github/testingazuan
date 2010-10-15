@@ -22,6 +22,7 @@ import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.business.util.BusinessModelAdapterFactory;
@@ -71,7 +72,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	private ScrolledComposite sc;
 	private TreeViewer bmTree;
 	protected PropertySheetPage propertySheetPage;
-	private Action addBTAction, removeBTAction, addBCAction, removeBCAction, addBIAction, removeBIAction, addBRAction ;
+	private Action addBTAction, removeBTAction, addBCAction, removeBCAction, addBIAction, removeBIAction, addBRAction, removeBRAction ;
 	private BasicCommandStack commandStack;
 	protected AdapterFactoryEditingDomain editingDomain;
 	private Object currentTreeSelection;
@@ -397,12 +398,23 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
 				dialog.create();
 		    	dialog.open();
-		    	showMessage("Add BR executed");
 			}
 		};
 		addBRAction.setText("Add Business Relationship");
 		addBRAction.setToolTipText("Add Business Relationship");
 		addBRAction.setImageDescriptor(Activator.getImageDescriptor("add.png"));
+		
+		removeBRAction = new Action()
+		{
+			public void run()
+			{
+				((BusinessRelationship)currentTreeSelection).getModel().getRelationships().remove(currentTreeSelection);
+				showMessage("Remove BR executed");
+			}
+		};
+		removeBRAction.setText("Remove Business Relationship");
+		removeBRAction.setToolTipText("Remove Business Relationship");
+		removeBRAction.setImageDescriptor(Activator.getImageDescriptor("remove.png"));
 	}	
 	
 	@Override
@@ -421,7 +433,10 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		} else if (currentTreeSelection instanceof BusinessIdentifier){
 			manager.removeAll();
 			manager.add(removeBIAction);
-		}		
+		} else if (currentTreeSelection instanceof BusinessRelationship){
+			manager.removeAll();
+			manager.add(removeBRAction);
+		}			
 		else {
 			manager.removeAll();
 			manager.add(addBTAction);

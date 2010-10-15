@@ -36,7 +36,7 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
 	private static int MANY_TO_ONE = 3;
 	private static int MANY_TO_MANY = 4;
 	private int cardinality;
-	private BusinessRelationshipContainer relationshipContainer;
+	private java.util.List<BusinessRelationshipContainer> relationshipsContainer;
 	
 	protected AddBusinessRelationshipWizardPageOne(String pageName) {
 		super(pageName);
@@ -45,6 +45,7 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
 		setDescription("This wizard drives you to create a new Business Relationship in your Business Model.\n");
 		ImageDescriptor image = Activator.getImageDescriptor("wizards/createBR.png");
 	    if (image!=null) setImageDescriptor(image);	
+	    relationshipsContainer = new ArrayList<BusinessRelationshipContainer>();
 	}
 
 	@Override
@@ -127,6 +128,19 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
  					setErrorMessage(null);
  					list_2.add(combo.getText()+"."+list.getSelection()[0]+" -> "+combo_1.getText()+"."+list_1.getSelection()[0]+" "+cardinalityToString(cardinality));
  					
+ 					//Adding temporary relationship to object container (isn't a real BusinessRelationship yet!)
+ 					BusinessTable sourceTable = getBusinessTable(combo.getText());
+ 					BusinessTable targetTable = getBusinessTable(combo_1.getText());
+ 					BusinessColumn sourceColumn = getBusinessColumn(combo.getText(),list.getSelection()[0]);
+ 					BusinessColumn targetColumn = getBusinessColumn(combo_1.getText(),list_1.getSelection()[0]);
+ 					java.util.List<BusinessColumn> sourceColumns = new ArrayList<BusinessColumn>();
+ 					sourceColumns.add(sourceColumn);
+ 					java.util.List<BusinessColumn> targetColumns = new ArrayList<BusinessColumn>();
+ 					targetColumns.add(targetColumn);
+ 					BusinessRelationshipContainer br = new BusinessRelationshipContainer(sourceTable, targetTable, sourceColumns, targetColumns, cardinality );
+ 					getRelationshipsContainer().add(br);
+ 					
+ 					checkPageComplete();
  				}
  				else {
  					setErrorMessage("You must select a source column and a target column");
@@ -192,6 +206,8 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
  		composite_5.setLayout(new FillLayout(SWT.HORIZONTAL));
  		
  		list_2 = new List(composite_5, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+ 		
+ 		checkPageComplete();
 	}
 	
 	private void populateLeftCombo(){
@@ -227,9 +243,24 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
 		}
 	}
 	
+	//check if the right conditions to go forward occurred
+	private void checkPageComplete(){
+		if(list_2.getItemCount() > 0){	
+			setPageComplete(true);
+		}
+		else{			
+			setPageComplete(false);
+		}		
+	}
+	
 	private BusinessTable getBusinessTable(String tableName){
 		CoreSingleton cs = CoreSingleton.getInstance();
 		return cs.getBusinessModel().getTable(tableName);
+	}
+	
+	private BusinessColumn getBusinessColumn(String tableName, String columnName){
+		CoreSingleton cs = CoreSingleton.getInstance();
+		return cs.getBusinessModel().getTable(tableName).getColumn(columnName);
 	}
 	
 	private String cardinalityToString(int cardinality){
@@ -242,80 +273,11 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
 		}
 	}
 
-	// ----------------------------------------------------------
-	// ----------------------------------------------------------
-	
 	/**
-	 * Inner class used by the UI for creating BusinessRelationship
-	 * @author cortella
-	 *
+	 * @return the relationshipsContainer
 	 */
-	private class BusinessRelationshipContainer{
-		private BusinessTable sourceTable, destinationTable;
-		private java.util.List<BusinessColumn> sourceColumns, destinationColumns;
-		
-		public BusinessRelationshipContainer(BusinessTable source, BusinessTable destination, java.util.List<BusinessColumn> sourceCol, java.util.List<BusinessColumn> destinationCol){
-			sourceTable = source;
-			destinationTable = destination;
-			sourceColumns = sourceCol;
-			destinationColumns = destinationCol;
-		}
-
-		/**
-		 * @param sourceTable the sourceTable to set
-		 */
-		public void setSourceTable(BusinessTable sourceTable) {
-			this.sourceTable = sourceTable;
-		}
-
-		/**
-		 * @return the sourceTable
-		 */
-		public BusinessTable getSourceTable() {
-			return sourceTable;
-		}
-
-		/**
-		 * @param destinationTable the destinationTable to set
-		 */
-		public void setDestinationTable(BusinessTable destinationTable) {
-			this.destinationTable = destinationTable;
-		}
-
-		/**
-		 * @return the destinationTable
-		 */
-		public BusinessTable getDestinationTable() {
-			return destinationTable;
-		}
-
-		/**
-		 * @param sourceColumns the sourceColumns to set
-		 */
-		public void setSourceColumns(java.util.List<BusinessColumn> sourceColumns) {
-			this.sourceColumns = sourceColumns;
-		}
-
-		/**
-		 * @return the sourceColumns
-		 */
-		public java.util.List<BusinessColumn> getSourceColumns() {
-			return sourceColumns;
-		}
-
-		/**
-		 * @param destinationColumns the destinationColumns to set
-		 */
-		public void setDestinationColumns(java.util.List<BusinessColumn> destinationColumns) {
-			this.destinationColumns = destinationColumns;
-		}
-
-		/**
-		 * @return the destinationColumns
-		 */
-		public java.util.List<BusinessColumn> getDestinationColumns() {
-			return destinationColumns;
-		}
-		
+	public java.util.List<BusinessRelationshipContainer> getRelationshipsContainer() {
+		return relationshipsContainer;
 	}
+
 }

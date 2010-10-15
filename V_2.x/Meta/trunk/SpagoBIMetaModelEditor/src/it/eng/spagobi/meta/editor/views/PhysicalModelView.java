@@ -83,12 +83,6 @@ public class PhysicalModelView extends ViewPart {
 			connGroup.setText(cp.getName());
 			connGroup.setLayout(new GridLayout());
 			connTree = new TreeViewer(connGroup, SWT.VIRTUAL | SWT.BORDER);
-			/*
-			connTree.setContentProvider(new DSEContentProvider());
-			connTree.setLabelProvider(new DSELabelProvider());
-			connTree.setUseHashlookup(true);
-			connTree.setInput(db);
-			*/		
 	
 			//Setting TreeViewer for EMF Model instances
 			List<PhysicalModelAdapterFactory> factories = new ArrayList<PhysicalModelAdapterFactory>();

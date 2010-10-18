@@ -245,7 +245,6 @@ public class PhysicalForeignKeyItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(PhysicalModelPackage.Literals.PHYSICAL_FOREIGN_KEY__SOURCE_NAME);
 			childrenFeatures.add(PhysicalModelPackage.Literals.PHYSICAL_FOREIGN_KEY__SOURCE_COLUMNS);
 			childrenFeatures.add(PhysicalModelPackage.Literals.PHYSICAL_FOREIGN_KEY__DESTINATION_NAME);
 			childrenFeatures.add(PhysicalModelPackage.Literals.PHYSICAL_FOREIGN_KEY__DESTINATION_COLUMNS);
@@ -308,7 +307,6 @@ public class PhysicalForeignKeyItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(PhysicalForeignKey.class)) {
-			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_NAME:
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_COLUMNS:
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__DESTINATION_NAME:
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__DESTINATION_COLUMNS:

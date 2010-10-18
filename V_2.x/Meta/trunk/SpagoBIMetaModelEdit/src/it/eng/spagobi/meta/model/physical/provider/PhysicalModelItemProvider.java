@@ -247,8 +247,6 @@ public class PhysicalModelItemProvider
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(PhysicalModelPackage.Literals.PHYSICAL_MODEL__TABLES);
-			childrenFeatures.add(PhysicalModelPackage.Literals.PHYSICAL_MODEL__PRIMARY_KEYS);
-			childrenFeatures.add(PhysicalModelPackage.Literals.PHYSICAL_MODEL__FOREIGN_KEYS);
 		}
 		return childrenFeatures;
 	}
@@ -310,8 +308,6 @@ public class PhysicalModelItemProvider
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case PhysicalModelPackage.PHYSICAL_MODEL__TABLES:
-			case PhysicalModelPackage.PHYSICAL_MODEL__PRIMARY_KEYS:
-			case PhysicalModelPackage.PHYSICAL_MODEL__FOREIGN_KEYS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -333,16 +329,6 @@ public class PhysicalModelItemProvider
 			(createChildParameter
 				(PhysicalModelPackage.Literals.PHYSICAL_MODEL__TABLES,
 				 PhysicalModelFactory.eINSTANCE.createPhysicalTable()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(PhysicalModelPackage.Literals.PHYSICAL_MODEL__PRIMARY_KEYS,
-				 PhysicalModelFactory.eINSTANCE.createPhysicalPrimaryKey()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(PhysicalModelPackage.Literals.PHYSICAL_MODEL__FOREIGN_KEYS,
-				 PhysicalModelFactory.eINSTANCE.createPhysicalForeignKey()));
 	}
 
 	/**

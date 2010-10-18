@@ -17,6 +17,7 @@ import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -392,6 +393,10 @@ public class PhysicalTableImpl extends ModelObjectImpl implements PhysicalTable 
 			}
 		}
 		return null;
+	}
+	
+	public List<PhysicalForeignKey> getForeignKeys(){
+		return getModel().getForeignKeys(this);
 	}
 
 	@Override

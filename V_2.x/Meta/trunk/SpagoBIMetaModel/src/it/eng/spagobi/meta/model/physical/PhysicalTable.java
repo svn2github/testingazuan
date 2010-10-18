@@ -6,6 +6,8 @@
  */
 package it.eng.spagobi.meta.model.physical;
 
+import java.util.List;
+
 import it.eng.spagobi.meta.model.ModelObject;
 
 import org.eclipse.emf.common.util.EList;
@@ -138,5 +140,7 @@ public interface PhysicalTable extends ModelObject {
 	public PhysicalPrimaryKey getPrimaryKey();
 	
 	public PhysicalColumn getColumn(String name);
+	
+	public List<PhysicalForeignKey> getForeignKeys();
 
 } // PhysicalTable

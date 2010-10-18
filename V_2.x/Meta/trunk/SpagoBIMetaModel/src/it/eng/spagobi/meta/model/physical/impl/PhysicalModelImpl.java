@@ -17,8 +17,10 @@ import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
 import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -561,6 +563,17 @@ public class PhysicalModelImpl extends ModelObjectImpl implements PhysicalModel 
 	// =========================================================================
 	// Utility methods
 	// =========================================================================
+	
+	public List<PhysicalForeignKey> getForeignKeys(PhysicalTable table){
+		EList<PhysicalForeignKey> foreignKeys = getForeignKeys();
+		List<PhysicalForeignKey> outputForeignKeys = new ArrayList<PhysicalForeignKey>();
+		for (PhysicalForeignKey fk: foreignKeys){
+			if (fk.getSourceTable() == table){
+				outputForeignKeys.add(fk);
+			}
+		}
+		return outputForeignKeys;
+	}
 	
 	public PhysicalTable getTable(String name) {
 		PhysicalTable table;

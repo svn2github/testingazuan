@@ -119,10 +119,14 @@ public class BusinessColumnItemProvider
 	 * This returns BusinessColumn.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
+		BusinessColumn businessColumn = ((BusinessColumn)object);
+		//if the column is a identifier display the appropriate icon
+		if (businessColumn.isIdentifier() || businessColumn.isPartOfCompositeIdentifier()){
+			return overlayImage(object, getResourceLocator().getImage("full/obj16/BusinessIdentifier"));
+		}
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/BusinessColumn"));
 	}
 
@@ -130,7 +134,6 @@ public class BusinessColumnItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
 	public String getText(Object object) {

@@ -25,6 +25,7 @@ public class SerializeBusinessModel implements IViewActionDelegate {
 	public void run(IAction action) {
 		CoreSingleton cs = CoreSingleton.getInstance();
 		Model rootModel = cs.getRootModel();
+		
 		DirectoryDialog dialog = new DirectoryDialog(new Shell(), SWT.NULL);
 
         // Change the title bar text

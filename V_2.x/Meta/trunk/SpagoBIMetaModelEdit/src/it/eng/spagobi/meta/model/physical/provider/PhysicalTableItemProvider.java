@@ -7,6 +7,8 @@
 package it.eng.spagobi.meta.model.physical.provider;
 
 
+import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
+import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
@@ -14,7 +16,9 @@ import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -172,6 +176,34 @@ public class PhysicalTableItemProvider
 		return super.getChildFeature(object, child);
 	}
 
+	@Override
+	public Collection<?> getChildren(Object object) {
+		PhysicalTable physicalTable;
+		FolderItemProvider folderItemProvider;
+		FolderItemProvider folderItemProvider2 = null;
+		List<PhysicalForeignKey> physicalForeignKeys;
+		Collection children;
+		
+		physicalTable = (PhysicalTable)object;
+		//group columns
+		folderItemProvider = new FolderItemProvider(adapterFactory, physicalTable, physicalTable.getColumns());
+		folderItemProvider.setText("Columns");
+		
+		//getting foreignKyes
+		physicalForeignKeys = physicalTable.getForeignKeys();
+		folderItemProvider2 = new FolderItemProvider(adapterFactory, physicalTable, physicalTable.getForeignKeys());
+		folderItemProvider2.setText("Foreign Keys");
+		
+		children = new HashSet();
+		//children.addAll(  getChildrenFeatures(object) );
+		children.add( folderItemProvider );
+		if (!physicalForeignKeys.isEmpty()){
+			children.add( folderItemProvider2 );
+		}
+	
+		return children;
+	}	
+	
 	/**
 	 * This returns PhysicalTable.gif.
 	 * <!-- begin-user-doc -->

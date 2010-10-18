@@ -7,6 +7,7 @@
 package it.eng.spagobi.meta.model.physical.provider;
 
 
+import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
 
@@ -363,10 +364,14 @@ public class PhysicalColumnItemProvider
 	 * This returns PhysicalColumn.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
+		PhysicalColumn physicalColumn = ((PhysicalColumn)object);
+		//if the column is a identifier display the appropriate icon
+		if (physicalColumn.isPrimaryKey() || physicalColumn.isPartOfCompositePrimaryKey()){
+			return overlayImage(object, getResourceLocator().getImage("full/obj16/PhysicalPrimaryKey"));
+		}
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/PhysicalColumn"));
 	}
 

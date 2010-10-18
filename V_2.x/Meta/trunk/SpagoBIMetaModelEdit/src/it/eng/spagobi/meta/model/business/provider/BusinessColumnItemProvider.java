@@ -137,7 +137,7 @@ public class BusinessColumnItemProvider
 		String label = ((BusinessColumn)object).getName();
 		return label == null || label.length() == 0 ?
 			getString("_UI_BusinessColumn_type") :
-			getString("_UI_BusinessColumn_type") + " " + label;
+			/*getString("_UI_BusinessColumn_type") + " " + */ label;
 	}
 
 	/**

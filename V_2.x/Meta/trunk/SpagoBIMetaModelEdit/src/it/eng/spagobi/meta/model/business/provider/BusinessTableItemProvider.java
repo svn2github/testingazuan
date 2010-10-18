@@ -11,10 +11,12 @@ import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 
+import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -166,10 +168,26 @@ public class BusinessTableItemProvider
 	protected EStructuralFeature getChildFeature(Object object, Object child) {
 		// Check the type of the specified child object and return the proper feature to use for
 		// adding (see {@link AddCommand}) it as a child.
-
 		return super.getChildFeature(object, child);
 	}
 
+	@Override
+	public Collection<?> getChildren(Object object) {
+		BusinessTable businessTable;
+		FolderItemProvider folderItemProvider;
+		Collection children;
+		
+		businessTable = (BusinessTable)object;
+		folderItemProvider = new FolderItemProvider(adapterFactory, businessTable, businessTable.getColumns());
+		folderItemProvider.setText("Columns");
+		
+		children = new HashSet();
+		children.addAll(  getChildrenFeatures(object) );
+		children.add( folderItemProvider );
+		
+		return children;
+	}
+	
 	/**
 	 * This returns BusinessTable.gif.
 	 * <!-- begin-user-doc -->

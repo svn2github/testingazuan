@@ -69,8 +69,7 @@ public class Activator extends AbstractUIPlugin {
     		URL installURL = plugin.getDescriptor().getInstallURL();
     		URL url = new URL(installURL, iconPath + relativePath);
     		return ImageDescriptor.createFromURL(url);
-    	}
-    	catch (MalformedURLException e) {
+    	} catch (MalformedURLException e) {
     		// should not happen
     		return ImageDescriptor.getMissingImageDescriptor();
     	}

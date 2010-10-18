@@ -213,7 +213,7 @@ public class BusinessTableItemProvider
 
 		
 		children = new HashSet();
-		children.addAll(  getChildrenFeatures(object) );
+		//children.addAll(  getChildrenFeatures(object) );
 		children.add( folderItemProvider );
 		if (!inboundBusinessRelationships.isEmpty()){
 			children.add( folderItemProvider2 );

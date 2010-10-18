@@ -7,6 +7,7 @@
 package it.eng.spagobi.meta.model.business.provider;
 
 
+import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 
@@ -58,19 +59,38 @@ public class BusinessColumnItemProvider
 	 * This returns the property descriptors for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addPhysicalColumnPropertyDescriptor(object);
+			//addPhysicalColumnPropertyDescriptor(object);
 			addTablePropertyDescriptor(object);
+			
+			//added
+			addCustomColumnPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
+	protected void addCustomColumnPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 "Custom property",
+				 "Description of custom property",
+				 ModelPackage.Literals.MODEL_OBJECT__PROPERTIES,
+				 true,
+				 false,
+				 true,
+				 null,
+				 null,
+				 null));
+	}
+	
+	
 	/**
 	 * This adds a property descriptor for the Physical Column feature.
 	 * <!-- begin-user-doc -->

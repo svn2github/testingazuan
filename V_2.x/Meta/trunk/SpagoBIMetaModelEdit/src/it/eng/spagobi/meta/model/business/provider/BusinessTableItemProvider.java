@@ -9,12 +9,14 @@ package it.eng.spagobi.meta.model.business.provider;
 
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -175,15 +177,50 @@ public class BusinessTableItemProvider
 	public Collection<?> getChildren(Object object) {
 		BusinessTable businessTable;
 		FolderItemProvider folderItemProvider;
+		FolderItemProvider folderItemProvider2 = null;
+		FolderItemProvider folderItemProvider3 = null;
+		List<BusinessRelationship> businessRelationships;
+		List<BusinessRelationship> inboundBusinessRelationships = new ArrayList<BusinessRelationship>();
+		List<BusinessRelationship> outboundBusinessRelationships = new ArrayList<BusinessRelationship>();
 		Collection children;
 		
 		businessTable = (BusinessTable)object;
+		//group columns
 		folderItemProvider = new FolderItemProvider(adapterFactory, businessTable, businessTable.getColumns());
 		folderItemProvider.setText("Columns");
+		
+		//getting inbound and outbound relationships
+		businessRelationships = businessTable.getRelationships();
+		
+		for( BusinessRelationship relationship : businessRelationships){
+			if (relationship.getDestinationTable() == businessTable){
+				inboundBusinessRelationships.add(relationship);
+			}
+			else if (relationship.getSourceTable() == businessTable){
+				outboundBusinessRelationships.add(relationship);
+			}
+		}
+		if (!inboundBusinessRelationships.isEmpty()){
+			//group inbound relationship	
+			folderItemProvider2 = new FolderItemProvider(adapterFactory, businessTable,inboundBusinessRelationships);
+			folderItemProvider2.setText("Inbound Relationships");
+		}
+		if (!outboundBusinessRelationships.isEmpty()){
+			//group outbound relationship	
+			folderItemProvider3 = new FolderItemProvider(adapterFactory, businessTable,outboundBusinessRelationships);
+			folderItemProvider3.setText("Outbound Relationships");
+		}
+
 		
 		children = new HashSet();
 		children.addAll(  getChildrenFeatures(object) );
 		children.add( folderItemProvider );
+		if (!inboundBusinessRelationships.isEmpty()){
+			children.add( folderItemProvider2 );
+		}
+		if (!outboundBusinessRelationships.isEmpty()){
+			children.add( folderItemProvider3 );
+		}
 		
 		return children;
 	}

@@ -55,7 +55,7 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 	private String image; 
 	
 	private static final String DEFAULT_TEXT = "Grouping Folder";
-	private static final String DEFAULT_IMAGE = "full/obj16/BusinessTable";
+	private static final String DEFAULT_IMAGE = "full/obj16/Folder";
 	
 
 	public FolderItemProvider(AdapterFactory adapterFactory, Object parent, Collection children) {

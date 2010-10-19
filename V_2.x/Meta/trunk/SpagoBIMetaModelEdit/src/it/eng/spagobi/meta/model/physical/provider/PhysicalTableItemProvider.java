@@ -16,9 +16,8 @@ import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -194,7 +193,7 @@ public class PhysicalTableItemProvider
 		folderItemProvider2 = new FolderItemProvider(adapterFactory, physicalTable, physicalTable.getForeignKeys());
 		folderItemProvider2.setText("Foreign Keys");
 		
-		children = new HashSet();
+		children = new LinkedHashSet();
 		//children.addAll(  getChildrenFeatures(object) );
 		children.add( folderItemProvider );
 		if (!physicalForeignKeys.isEmpty()){

@@ -72,6 +72,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertySheetPage;
+import it.eng.spagobi.meta.model.phantom.provider.RootItemProvider;
 
 
 
@@ -428,7 +429,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	@Override
 	public void menuAboutToShow(IMenuManager manager) {
 		//create context menu based on the current tree selection
-		if (currentTreeSelection instanceof BusinessTable){
+		if (currentTreeSelection instanceof RootItemProvider){
 			manager.removeAll();
 			manager.add(addBTAction);
 			manager.add(removeBTAction);

@@ -312,10 +312,8 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		{
 			public void run()
 			{
-				//EditingDomain domain = getEditingDomain();
-				//RemoveCommand cmd = new RemoveCommand();
 				cs.getBusinessModel().getTables().remove(currentTreeSelection);
-				showMessage("Remove BT executed");
+				showMessage("Business Table Removed");
 			}
 		};
 		removeBTAction.setText("Remove Business Table");
@@ -345,7 +343,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 			public void run()
 			{
 				((BusinessColumn)currentTreeSelection).getTable().getColumns().remove(currentTreeSelection);
-				showMessage("Remove BC executed");
+				showMessage("Business Column Removed");
 			}
 		};
 		removeBCAction.setText("Remove Business Column");
@@ -380,8 +378,19 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		{
 			public void run()
 			{
-				((BusinessIdentifier)currentTreeSelection).getModel().getIdentifiers().remove(currentTreeSelection);
-				showMessage("Remove BI executed");
+				if (currentTreeSelection instanceof BusinessColumn){
+					BusinessTable businessTable = ((BusinessColumn)currentTreeSelection).getTable();
+					BusinessIdentifier businessIdentifier = businessTable.getModel().getIdentifier(businessTable);
+					businessTable.getModel().getIdentifiers().remove(businessIdentifier);
+					bmTree.update(((BusinessColumn)currentTreeSelection), null);
+					showMessage("Business Identifier Removed");
+					
+				}
+				else if (currentTreeSelection instanceof BusinessIdentifier){
+					((BusinessIdentifier)currentTreeSelection).getModel().getIdentifiers().remove(currentTreeSelection);
+					showMessage("Business Identifier Removed");
+				}
+
 			}
 		};
 		removeBIAction.setText("Remove Business Identifier");
@@ -441,6 +450,9 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		}  else if (currentTreeSelection instanceof BusinessColumn){
 			manager.removeAll();
 			manager.add(removeBCAction);
+			if(((BusinessColumn)currentTreeSelection).isIdentifier()){
+				manager.add(removeBIAction);
+			}
 		} else if (currentTreeSelection instanceof BusinessIdentifier){
 			manager.removeAll();
 			manager.add(removeBIAction);
@@ -448,11 +460,6 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 			manager.removeAll();
 			manager.add(removeBRAction);
 		}			
-		/*
-		else {
-			manager.removeAll();
-			manager.add(addBTAction);
-		}*/
 			
 	}
 	

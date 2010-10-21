@@ -48,7 +48,6 @@ import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.Filter;
 import it.eng.qbe.query.HavingField;
-import it.eng.qbe.query.IAggregationFunction;
 import it.eng.qbe.query.InLineCalculatedSelectField;
 import it.eng.qbe.query.Operand;
 import it.eng.qbe.query.Query;
@@ -56,6 +55,7 @@ import it.eng.qbe.query.WhereField;
 import it.eng.qbe.query.serializer.SerializationConstants;
 import it.eng.qbe.statment.BasicStatement;
 import it.eng.qbe.utility.StringUtils;
+import it.eng.spagobi.tools.dataset.common.query.IAggregationFunction;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
@@ -356,6 +356,10 @@ public class HQLStatement extends BasicStatement {
 					StringTokenizer stk = new StringTokenizer(selectInLineField.getExpression().replace("\'", ""), "+-|,()*/");
 					while(stk.hasMoreTokens()){
 						String alias = stk.nextToken().trim();
+						// alias can contain "DISTINCT" HQL/SQL key: we have to remove it
+						if (alias.toUpperCase().startsWith("DISTINCT ")) {
+							alias = alias.substring("DISTINCT ".length());
+						}
 						String uniqueName;
 						allSelectFields = query.getSelectFields(false);
 						for(int i=0; i<allSelectFields.size(); i++){
@@ -823,6 +827,10 @@ public class HQLStatement extends BasicStatement {
 		StringTokenizer stk = new StringTokenizer(expr, "+-|,()*/");
 		while(stk.hasMoreTokens()){
 			String alias = stk.nextToken().trim();
+			// alias can contain "DISTINCT" HQL/SQL key: we have to remove it
+			if (alias.toUpperCase().startsWith("DISTINCT ")) {
+				alias = alias.substring("DISTINCT ".length());
+			}
 			String uniqueName;
 			allSelectFields = query.getSelectFields(false);
 			for(int i=0; i<allSelectFields.size(); i++){

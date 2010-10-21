@@ -184,8 +184,8 @@ public class BusinessTableItemProvider
 	public Collection<?> getChildren(Object object) {
 		BusinessTable businessTable;
 		FolderItemProvider folderItemProvider;
-		FolderItemProvider folderItemProvider2 = null;
-		FolderItemProvider folderItemProvider3 = null;
+		FolderItemProvider folderItemProviderInRel = null;
+		FolderItemProvider folderItemProviderOutRel = null;
 		List<BusinessRelationship> businessRelationships;
 		List<BusinessRelationship> inboundBusinessRelationships = new ArrayList<BusinessRelationship>();
 		List<BusinessRelationship> outboundBusinessRelationships = new ArrayList<BusinessRelationship>();
@@ -209,13 +209,13 @@ public class BusinessTableItemProvider
 		}
 		if (!inboundBusinessRelationships.isEmpty()){
 			//group inbound relationship	
-			folderItemProvider2 = new FolderItemProvider(adapterFactory, businessTable,inboundBusinessRelationships);
-			folderItemProvider2.setText("Inbound Relationships");
+			folderItemProviderInRel = new FolderItemProvider(adapterFactory, businessTable,inboundBusinessRelationships);
+			folderItemProviderInRel.setText("Inbound Relationships");
 		}
 		if (!outboundBusinessRelationships.isEmpty()){
 			//group outbound relationship	
-			folderItemProvider3 = new FolderItemProvider(adapterFactory, businessTable,outboundBusinessRelationships);
-			folderItemProvider3.setText("Outbound Relationships");
+			folderItemProviderOutRel = new FolderItemProvider(adapterFactory, businessTable,outboundBusinessRelationships);
+			folderItemProviderOutRel.setText("Outbound Relationships");
 		}
 
 		
@@ -223,10 +223,10 @@ public class BusinessTableItemProvider
 		//children.addAll(  getChildrenFeatures(object) );
 		children.add( folderItemProvider );
 		if (!inboundBusinessRelationships.isEmpty()){
-			children.add( folderItemProvider2 );
+			children.add( folderItemProviderInRel );
 		}
 		if (!outboundBusinessRelationships.isEmpty()){
-			children.add( folderItemProvider3 );
+			children.add( folderItemProviderOutRel );
 		}
 		
 		

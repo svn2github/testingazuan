@@ -179,7 +179,7 @@ public class PhysicalTableItemProvider
 	public Collection<?> getChildren(Object object) {
 		PhysicalTable physicalTable;
 		FolderItemProvider folderItemProvider;
-		FolderItemProvider folderItemProvider2 = null;
+		FolderItemProvider folderItemProviderFK = null;
 		List<PhysicalForeignKey> physicalForeignKeys;
 		Collection children;
 		
@@ -190,14 +190,14 @@ public class PhysicalTableItemProvider
 		
 		//getting foreignKyes
 		physicalForeignKeys = physicalTable.getForeignKeys();
-		folderItemProvider2 = new FolderItemProvider(adapterFactory, physicalTable, physicalTable.getForeignKeys());
-		folderItemProvider2.setText("Foreign Keys");
+		folderItemProviderFK = new FolderItemProvider(adapterFactory, physicalTable, physicalTable.getForeignKeys());
+		folderItemProviderFK.setText("Foreign Keys");
 		
 		children = new LinkedHashSet();
 		//children.addAll(  getChildrenFeatures(object) );
 		children.add( folderItemProvider );
 		if (!physicalForeignKeys.isEmpty()){
-			children.add( folderItemProvider2 );
+			children.add( folderItemProviderFK );
 		}
 	
 		return children;

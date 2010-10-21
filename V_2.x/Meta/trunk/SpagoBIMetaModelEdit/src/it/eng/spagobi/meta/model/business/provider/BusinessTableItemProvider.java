@@ -12,7 +12,10 @@ import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 
+import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
+import it.eng.spagobi.meta.model.physical.provider.PhysicalTableItemProvider;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
@@ -26,6 +29,8 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
 
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -156,6 +161,7 @@ public class BusinessTableItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
+			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_TABLE__PHYSICAL_TABLE);
 			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_TABLE__COLUMNS);
 		}
 		return childrenFeatures;
@@ -286,6 +292,11 @@ public class BusinessTableItemProvider
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+
+		newChildDescriptors.add
+			(createChildParameter
+				(BusinessModelPackage.Literals.BUSINESS_TABLE__PHYSICAL_TABLE,
+				 PhysicalModelFactory.eINSTANCE.createPhysicalTable()));
 
 		newChildDescriptors.add
 			(createChildParameter

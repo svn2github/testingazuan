@@ -67,29 +67,10 @@ public class BusinessColumnItemProvider
 
 			//addPhysicalColumnPropertyDescriptor(object);
 			addTablePropertyDescriptor(object);
-			
-			//added
-			addCustomColumnPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
-	protected void addCustomColumnPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 "Custom property",
-				 "Description of custom property",
-				 ModelPackage.Literals.MODEL_OBJECT__PROPERTIES,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-	
 	
 	/**
 	 * This adds a property descriptor for the Physical Column feature.

@@ -10,11 +10,19 @@ package it.eng.spagobi.meta.model.business.provider;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
+import it.eng.spagobi.meta.model.business.BusinessTable;
 
+import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.PhysicalTableReferenceItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.RootItemProvider;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -181,6 +189,25 @@ public class BusinessModelItemProvider
 		}
 		return childrenFeatures;
 	}
+	
+	@Override
+	public Collection<?> getChildren(Object object) {
+		BusinessModel businessModel;
+		RootItemProvider rootItemProvider;
+		Collection children;
+		
+		businessModel = (BusinessModel)object;
+		//group columns
+		rootItemProvider = new RootItemProvider(adapterFactory, businessModel, businessModel.getTables());
+		rootItemProvider.setText("Business Model: "+businessModel.getName());
+		
+		children = new LinkedHashSet();
+		//children.addAll(  getChildrenFeatures(object) );
+		children.add( rootItemProvider );
+
+		
+		return children;
+	}	
 
 	/**
 	 * <!-- begin-user-doc -->

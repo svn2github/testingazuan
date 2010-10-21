@@ -11,6 +11,7 @@ Export-Package: it.eng.spagobi.meta.model.analytical.provider,
  it.eng.spagobi.meta.model.behavioural.provider,
  it.eng.spagobi.meta.model.business.provider,
  it.eng.spagobi.meta.model.olap.provider,
+ it.eng.spagobi.meta.model.phantom.provider,
  it.eng.spagobi.meta.model.physical.provider,
  it.eng.spagobi.meta.model.provider
 Require-Bundle: org.eclipse.core.runtime,

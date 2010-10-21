@@ -14,6 +14,7 @@ import it.eng.spagobi.meta.model.business.BusinessTable;
 
 import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.PhysicalTableReferenceItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.model.physical.provider.PhysicalTableItemProvider;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
@@ -183,9 +184,11 @@ public class BusinessTableItemProvider
 	@Override
 	public Collection<?> getChildren(Object object) {
 		BusinessTable businessTable;
+		PhysicalTable physicalTable;
 		FolderItemProvider folderItemProvider;
 		FolderItemProvider folderItemProviderInRel = null;
 		FolderItemProvider folderItemProviderOutRel = null;
+		PhysicalTableReferenceItemProvider physicalTableReferenceItemProvider = null;
 		List<BusinessRelationship> businessRelationships;
 		List<BusinessRelationship> inboundBusinessRelationships = new ArrayList<BusinessRelationship>();
 		List<BusinessRelationship> outboundBusinessRelationships = new ArrayList<BusinessRelationship>();
@@ -218,6 +221,8 @@ public class BusinessTableItemProvider
 			folderItemProviderOutRel.setText("Outbound Relationships");
 		}
 
+		//getting physical table reference
+		physicalTable = businessTable.getPhysicalTable();
 		
 		children = new LinkedHashSet();
 		//children.addAll(  getChildrenFeatures(object) );
@@ -228,7 +233,11 @@ public class BusinessTableItemProvider
 		if (!outboundBusinessRelationships.isEmpty()){
 			children.add( folderItemProviderOutRel );
 		}
-		
+		if (physicalTable != null){
+			physicalTableReferenceItemProvider = new PhysicalTableReferenceItemProvider(adapterFactory, physicalTable);
+			physicalTableReferenceItemProvider.setText("Physical Table: "+physicalTable.getName());
+			children.add(physicalTableReferenceItemProvider);
+		}
 		
 		return children;
 	}

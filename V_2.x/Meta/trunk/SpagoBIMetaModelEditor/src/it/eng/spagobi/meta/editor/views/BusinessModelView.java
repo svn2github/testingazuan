@@ -28,20 +28,25 @@ import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdap
 import it.eng.spagobi.meta.model.business.util.BusinessModelAdapterFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.edit.command.RemoveCommand;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
+import org.eclipse.emf.edit.ui.provider.PropertyDescriptor;
+import org.eclipse.emf.edit.ui.provider.PropertySource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -63,11 +68,14 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 
 
-public class BusinessModelView extends ViewPart implements IMenuListener, ISelectionChangedListener ,IEditingDomainProvider {
+
+public class BusinessModelView extends ViewPart implements IMenuListener, ISelectionChangedListener ,IEditingDomainProvider, IAdaptable {
 	
 	private ScrolledComposite sc;
 	private TreeViewer bmTree;
@@ -484,7 +492,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class key) {
+	public Object getAdapter(Class key) {	
 		if (key.equals(IPropertySheetPage.class)) {
 			return getPropertySheetPage();
 		}
@@ -497,6 +505,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	 * This accesses a cached version of the property sheet.
 	 */
 	public IPropertySheetPage getPropertySheetPage() {
+		
 		List<BusinessModelAdapterFactory> factories = new ArrayList<BusinessModelAdapterFactory>();
 		factories.add(new BusinessModelItemProviderAdapterFactory());
 		ComposedAdapterFactory adapterFactory = new ComposedAdapterFactory(factories);			

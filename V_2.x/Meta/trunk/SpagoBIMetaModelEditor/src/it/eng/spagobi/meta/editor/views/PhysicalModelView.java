@@ -17,6 +17,8 @@ import it.eng.spagobi.meta.model.physical.util.PhysicalModelAdapterFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.datatools.connectivity.IConnectionProfile;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
@@ -44,7 +46,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 
-public class PhysicalModelView extends ViewPart {
+public class PhysicalModelView extends ViewPart implements IAdaptable {
 	
 	private ScrolledComposite sc;
 	protected PropertySheetPage propertySheetPage;
@@ -121,7 +123,7 @@ public class PhysicalModelView extends ViewPart {
  
 	@Override
 	public void setFocus() {
-
+		sc.setFocus();
 	}
 	
 	/**
@@ -130,17 +132,9 @@ public class PhysicalModelView extends ViewPart {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object getAdapter(Class key) {
-		/*if (key.equals(IContentOutlinePage.class)) {
-			return null;
-		}
-		else */
 		if (key.equals(IPropertySheetPage.class)) {
 			return getPropertySheetPage();
 		}
-		/*
-		else if (key.equals(IGotoMarker.class)) {
-			return this;
-		}*/
 		else {
 			return super.getAdapter(key);
 		}

@@ -432,12 +432,14 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		if (currentTreeSelection instanceof RootItemProvider){
 			manager.removeAll();
 			manager.add(addBTAction);
-			manager.add(removeBTAction);
 			manager.add(addBIAction);
 			manager.add(addBRAction);
-		} else if (currentTreeSelection instanceof BusinessColumn){
+		} else if (currentTreeSelection instanceof BusinessTable){
 			manager.removeAll();
+			manager.add(removeBTAction);
 			manager.add(addBCAction);
+		}  else if (currentTreeSelection instanceof BusinessColumn){
+			manager.removeAll();
 			manager.add(removeBCAction);
 		} else if (currentTreeSelection instanceof BusinessIdentifier){
 			manager.removeAll();
@@ -446,10 +448,11 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 			manager.removeAll();
 			manager.add(removeBRAction);
 		}			
+		/*
 		else {
 			manager.removeAll();
 			manager.add(addBTAction);
-		}
+		}*/
 			
 	}
 	

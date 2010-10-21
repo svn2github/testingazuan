@@ -379,10 +379,18 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 			public void run()
 			{
 				if (currentTreeSelection instanceof BusinessColumn){
-					BusinessTable businessTable = ((BusinessColumn)currentTreeSelection).getTable();
+					BusinessColumn businessColumn = ((BusinessColumn)currentTreeSelection);
+					BusinessTable businessTable = businessColumn.getTable();
 					BusinessIdentifier businessIdentifier = businessTable.getModel().getIdentifier(businessTable);
-					businessTable.getModel().getIdentifiers().remove(businessIdentifier);
-					bmTree.update(((BusinessColumn)currentTreeSelection), null);
+					if ( businessIdentifier.getColumns().size() > 0){
+						//remove only the column
+						businessIdentifier.getColumns().remove(businessColumn);		
+					}
+					if ( businessIdentifier.getColumns().size() == 0){
+						//remove the empty businessidentifier
+						businessTable.getModel().getIdentifiers().remove(businessIdentifier);
+					}
+					bmTree.update(businessColumn, null);
 					showMessage("Business Identifier Removed");
 					
 				}

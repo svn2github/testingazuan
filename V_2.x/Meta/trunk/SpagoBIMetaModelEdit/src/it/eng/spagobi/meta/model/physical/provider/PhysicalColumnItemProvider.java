@@ -8,6 +8,9 @@ package it.eng.spagobi.meta.model.physical.provider;
 
 
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
+import it.eng.spagobi.meta.model.phantom.provider.BusinessRelationshipPlaceholderItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.PhysicalColumnInfoItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
 
@@ -15,11 +18,13 @@ import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.ResourceLocator;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -346,6 +351,27 @@ public class PhysicalColumnItemProvider
 		}
 		return childrenFeatures;
 	}
+	
+	@Override
+	public Collection<?> getChildren(Object object) {
+		PhysicalColumn physicalColumn;
+		PhysicalColumnInfoItemProvider columnInfoItemProvider;
+
+		Collection children;
+		
+		physicalColumn = (PhysicalColumn)object;
+
+		
+		//setting info on node
+		columnInfoItemProvider = new PhysicalColumnInfoItemProvider(adapterFactory, physicalColumn);
+		columnInfoItemProvider.setText("Type: "+physicalColumn.getTypeName()+" Size: "+physicalColumn.getSize()+" Nullable: "+physicalColumn.isNullable());
+		
+		children = new LinkedHashSet();
+		//children.addAll(  getChildrenFeatures(object) );
+		children.add( columnInfoItemProvider );
+		
+		return children;
+	}		
 
 	/**
 	 * <!-- begin-user-doc -->

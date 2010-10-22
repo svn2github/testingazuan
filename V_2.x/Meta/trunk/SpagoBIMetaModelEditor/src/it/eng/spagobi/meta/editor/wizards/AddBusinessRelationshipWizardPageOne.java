@@ -25,6 +25,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.widgets.Text;
 
 
 public class AddBusinessRelationshipWizardPageOne extends WizardPage {
@@ -37,6 +38,7 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
 	private static int MANY_TO_MANY = 4;
 	private int cardinality;
 	private java.util.List<BusinessRelationshipContainer> relationshipsContainer;
+	private Text txtBrName;
 	
 	protected AddBusinessRelationshipWizardPageOne(String pageName) {
 		super(pageName);
@@ -56,6 +58,18 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
         //Important: Setting page control
  		setControl(composite);
  		composite.setLayout(new GridLayout(1, false));
+ 		
+ 		Composite composite_name = new Composite(composite, SWT.NONE);
+ 		composite_name.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+ 		composite_name.setLayout(new GridLayout(2, false));
+ 		
+ 		Label lblBusinessRelationshipName = new Label(composite_name, SWT.NONE);
+ 		lblBusinessRelationshipName.setText("Business Relationship Name");
+ 		
+ 		txtBrName = new Text(composite_name, SWT.BORDER);
+ 		txtBrName.setText("br name");
+ 		txtBrName.setToolTipText("Name to assign to the Business Relationship");
+ 		txtBrName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
  		
  		Composite composite_3 = new Composite(composite, SWT.NONE);
  		composite_3.setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -88,6 +102,15 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
  		composite_1.setLayout(new FillLayout(SWT.HORIZONTAL));
  		
  		list = new List(composite_1, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+ 		list.addSelectionListener(new SelectionAdapter() {
+ 			@Override
+ 			public void widgetSelected(SelectionEvent e) {
+ 				if (list_1.getSelectionCount() > 0){
+ 					//set suggested name
+ 					txtBrName.setText("BR_"+combo.getText()+"_"+list.getSelection()[0]+"_"+combo_1.getText()+"_"+list_1.getSelection()[0]);
+ 				}
+ 			}
+ 		});
  		
  		Group group = new Group(composite_3, SWT.NONE);
  		group.setText("Target Business Table");
@@ -115,6 +138,15 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
  		composite_2.setLayout(new FillLayout(SWT.HORIZONTAL));
  		
  		list_1 = new List(composite_2, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+ 		list_1.addSelectionListener(new SelectionAdapter() {
+ 			@Override
+ 			public void widgetSelected(SelectionEvent e) {
+ 				if (list.getSelectionCount() > 0){
+ 					//set suggested name
+ 					txtBrName.setText("BR_"+combo.getText()+"_"+list.getSelection()[0]+"_"+combo_1.getText()+"_"+list_1.getSelection()[0]);
+ 				}
+ 			}
+ 		});
  		
  		Composite composite_4 = new Composite(composite, SWT.NONE);
  		composite_4.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -124,9 +156,9 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
  		btnAddRelationship.addSelectionListener(new SelectionAdapter() {
  			@Override
  			public void widgetSelected(SelectionEvent e) {
- 				if ( (list.getSelection().length != 0) && (list_1.getSelection().length != 0) ){
+ 				if ( (list.getSelection().length != 0) && (list_1.getSelection().length != 0) && (getBusinessRelationshipName().length() != 0) ){
  					setErrorMessage(null);
- 					list_2.add(combo.getText()+"."+list.getSelection()[0]+" -> "+combo_1.getText()+"."+list_1.getSelection()[0]+" "+cardinalityToString(cardinality));
+ 					list_2.add(getBusinessRelationshipName()+": "+combo.getText()+"."+list.getSelection()[0]+" -> "+combo_1.getText()+"."+list_1.getSelection()[0]+" "+cardinalityToString(cardinality));
  					
  					//Adding temporary relationship to object container (isn't a real BusinessRelationship yet!)
  					BusinessTable sourceTable = getBusinessTable(combo.getText());
@@ -137,13 +169,16 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
  					sourceColumns.add(sourceColumn);
  					java.util.List<BusinessColumn> targetColumns = new ArrayList<BusinessColumn>();
  					targetColumns.add(targetColumn);
- 					BusinessRelationshipContainer br = new BusinessRelationshipContainer(sourceTable, targetTable, sourceColumns, targetColumns, cardinality );
+ 					BusinessRelationshipContainer br = new BusinessRelationshipContainer(sourceTable, targetTable, sourceColumns, targetColumns, cardinality, getBusinessRelationshipName() );
  					getRelationshipsContainer().add(br);
+ 					
+ 					//reset text name field
+ 					txtBrName.setText("");
  					
  					checkPageComplete();
  				}
  				else {
- 					setErrorMessage("You must select a source column and a target column");
+ 					setErrorMessage("You must select a source column, a target column and specify a name");
  				}
  					
  			}
@@ -271,6 +306,10 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
 			case 4: return "Many to Many"; 
 			default: return "One to Many";
 		}
+	}
+	
+	public String getBusinessRelationshipName(){
+		return txtBrName.getText();
 	}
 
 	/**

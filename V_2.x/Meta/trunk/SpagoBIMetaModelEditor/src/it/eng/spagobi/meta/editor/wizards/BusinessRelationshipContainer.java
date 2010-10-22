@@ -10,13 +10,15 @@ public class BusinessRelationshipContainer{
 	private BusinessTable sourceTable, destinationTable;
 	private java.util.List<BusinessColumn> sourceColumns, destinationColumns;
 	private int relationCardinality;
+	private String relationshipName;
 	
-	public BusinessRelationshipContainer(BusinessTable source, BusinessTable destination, java.util.List<BusinessColumn> sourceCol, java.util.List<BusinessColumn> destinationCol, int cardinality){
+	public BusinessRelationshipContainer(BusinessTable source, BusinessTable destination, java.util.List<BusinessColumn> sourceCol, java.util.List<BusinessColumn> destinationCol, int cardinality, String relationshipName){
 		sourceTable = source;
 		destinationTable = destination;
 		sourceColumns = sourceCol;
 		destinationColumns = destinationCol;
 		relationCardinality = cardinality;
+		this.relationshipName = relationshipName;
 	}
 
 	/**
@@ -87,6 +89,20 @@ public class BusinessRelationshipContainer{
 	 */
 	public int getRelationCardinality() {
 		return relationCardinality;
+	}
+
+	/**
+	 * @param relationshipName the relationshipName to set
+	 */
+	public void setRelationshipName(String relationshipName) {
+		this.relationshipName = relationshipName;
+	}
+
+	/**
+	 * @return the relationshipName
+	 */
+	public String getRelationshipName() {
+		return relationshipName;
 	}
 	
 }

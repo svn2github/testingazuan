@@ -35,8 +35,8 @@ public class AddBusinessRelationshipWizard extends Wizard {
 				BusinessTable destinationTable = br.getDestinationTable();
 				List<BusinessColumn> sourceColumns = br.getSourceColumns();
 				List<BusinessColumn> destinationColumns = br.getDestinationColumns();
-				
-				initializer.addRelationship(sourceTable, destinationTable, sourceColumns, destinationColumns);
+				String relationshipName =  br.getRelationshipName();
+				initializer.addRelationship(sourceTable, destinationTable, sourceColumns, destinationColumns, relationshipName);
 			}
 			return true;
 		}

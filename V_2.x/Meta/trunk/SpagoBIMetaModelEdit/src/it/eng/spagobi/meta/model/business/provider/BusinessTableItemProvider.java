@@ -235,7 +235,7 @@ public class BusinessTableItemProvider
 		}
 		if (physicalTable != null){
 			physicalTableReferenceItemProvider = new PhysicalTableReferenceItemProvider(adapterFactory, physicalTable);
-			physicalTableReferenceItemProvider.setText("Physical Table: "+physicalTable.getName());
+			physicalTableReferenceItemProvider.setText("Physical Table -> "+physicalTable.getName());
 			children.add(physicalTableReferenceItemProvider);
 		}
 		

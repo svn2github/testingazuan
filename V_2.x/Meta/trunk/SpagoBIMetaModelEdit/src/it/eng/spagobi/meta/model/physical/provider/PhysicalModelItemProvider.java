@@ -7,6 +7,9 @@
 package it.eng.spagobi.meta.model.physical.provider;
 
 
+import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.phantom.provider.PhysicalRootItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.RootItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
@@ -15,6 +18,7 @@ import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -251,6 +255,25 @@ public class PhysicalModelItemProvider
 		return childrenFeatures;
 	}
 
+	@Override
+	public Collection<?> getChildren(Object object) {
+		PhysicalModel physicalModel;
+		PhysicalRootItemProvider rootItemProvider;
+		Collection children;
+		
+		physicalModel = (PhysicalModel)object;
+		//group columns
+		rootItemProvider = new PhysicalRootItemProvider(adapterFactory, physicalModel, physicalModel.getTables());
+		rootItemProvider.setText("Physical Model: "+physicalModel.getName());
+		
+		children = new LinkedHashSet();
+		//children.addAll(  getChildrenFeatures(object) );
+		children.add( rootItemProvider );
+
+		
+		return children;
+	}		
+	
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

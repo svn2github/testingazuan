@@ -531,6 +531,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		if (propertySheetPage == null) {
 			propertySheetPage = new PropertySheetPage();
 			propertySheetPage.setPropertySourceProvider(new AdapterFactoryContentProvider(adapterFactory));
+			//propertySheetPage.setPropertySourceProvider(new CustomizedAdapterFactoryContentProvider(adapterFactory));
 		}
 
 		return propertySheetPage;

@@ -7,6 +7,11 @@
 package it.eng.spagobi.meta.model.physical.provider;
 
 
+import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
+import it.eng.spagobi.meta.model.phantom.provider.BusinessRelationshipPlaceholderItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.PhysicalForeignKeyPlaceholderItemProvider;
+import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
 
@@ -14,11 +19,13 @@ import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.ResourceLocator;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -251,6 +258,38 @@ public class PhysicalForeignKeyItemProvider
 		}
 		return childrenFeatures;
 	}
+	
+	@Override
+	public Collection<?> getChildren(Object object) {
+		PhysicalForeignKey foreignKey;
+		PhysicalForeignKeyPlaceholderItemProvider foreignKeyItemProvider;
+		EList<PhysicalColumn> sourceColumns, destinationColumns;
+		String sourceColumnsNames = "";
+		String destinationColumnsNames = "";
+		Collection children;
+		
+		foreignKey = (PhysicalForeignKey)object;
+		//getting fk's sourceColumns
+		sourceColumns = foreignKey.getSourceColumns();
+		for (PhysicalColumn column : sourceColumns){
+			sourceColumnsNames = sourceColumnsNames+" "+column.getName();
+		}
+		//getting fk's destinationColumns
+		destinationColumns = foreignKey.getDestinationColumns();
+		for (PhysicalColumn column : destinationColumns){
+			destinationColumnsNames = destinationColumnsNames+" "+column.getName();
+		}
+		
+		//group fk
+		foreignKeyItemProvider = new PhysicalForeignKeyPlaceholderItemProvider(adapterFactory, foreignKey);
+		foreignKeyItemProvider.setText("("+foreignKey.getSourceTable().getName()+") "+sourceColumnsNames+" -> ("+foreignKey.getDestinationTable().getName()+") "+destinationColumnsNames);
+		
+		children = new LinkedHashSet();
+		//children.addAll(  getChildrenFeatures(object) );
+		children.add( foreignKeyItemProvider );
+		
+		return children;
+	}		
 
 	/**
 	 * <!-- begin-user-doc -->

@@ -10,8 +10,10 @@ package it.eng.spagobi.meta.model.provider;
 import it.eng.spagobi.meta.model.ModelFactory;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.ModelPackage;
+import it.eng.spagobi.meta.model.ModelProperty;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -70,8 +72,25 @@ public class ModelObjectItemProvider
 			addIdPropertyDescriptor(object);
 			addNamePropertyDescriptor(object);
 			addDescriptionPropertyDescriptor(object);
+			
+			//added
+			addCustomColumnPropertyDescriptors(object);
+			
 		}
 		return itemPropertyDescriptors;
+	}
+	
+	protected void addCustomColumnPropertyDescriptors(Object object) {
+		ModelObject modelObject = (ModelObject)object;
+		Iterator<String> it = modelObject.getProperties().keySet().iterator();
+		while(it.hasNext()) {
+			String key = it.next();
+			ModelProperty property = modelObject.getProperties().get(key);
+			itemPropertyDescriptors.add(
+					new CustomItemPropertyDescriptor( property, ((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator() ) 
+			);
+		}
+		
 	}
 
 	/**

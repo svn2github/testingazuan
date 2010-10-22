@@ -72,6 +72,8 @@ public class BusinessColumnItemProvider
 	}
 
 	
+	
+	
 	/**
 	 * This adds a property descriptor for the Physical Column feature.
 	 * <!-- begin-user-doc -->

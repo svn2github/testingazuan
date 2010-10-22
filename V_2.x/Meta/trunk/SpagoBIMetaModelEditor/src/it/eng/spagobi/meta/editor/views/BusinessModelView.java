@@ -81,7 +81,8 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	private ScrolledComposite sc;
 	private TreeViewer bmTree;
 	protected PropertySheetPage propertySheetPage;
-	private Action addBTAction, removeBTAction, addBCAction, removeBCAction, addBIAction, removeBIAction, addBRAction, removeBRAction ;
+	private Action addBTAction, removeBTAction, addBCAction, removeBCAction, addBIAction,
+				   removeBIAction, addBRAction, removeBRAction, setAsBusinessIdentifierAction ;
 	private BasicCommandStack commandStack;
 	protected AdapterFactoryEditingDomain editingDomain;
 	private Object currentTreeSelection;
@@ -350,6 +351,28 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		removeBCAction.setToolTipText("Remove Business Column");
 		removeBCAction.setImageDescriptor(Activator.getImageDescriptor("remove.png"));
 		
+		setAsBusinessIdentifierAction = new Action()
+		{
+			public void run()
+			{
+				BusinessColumn businessColumn =  ((BusinessColumn)currentTreeSelection);
+				BusinessTable businessTable = ((BusinessColumn)currentTreeSelection).getTable();
+				BusinessIdentifier businessIdentifier = businessTable.getIdentifier();
+				if (businessIdentifier != null){
+					businessIdentifier.getColumns().add(businessColumn);
+				} else {
+					BusinessModelInitializer initializer = new BusinessModelInitializer();
+					List<BusinessColumn> businessColumns = new ArrayList<BusinessColumn>();
+					businessColumns.add(businessColumn);
+					initializer.addIdentifier("BI_"+businessTable.getName(), businessTable, businessColumns);
+				}
+				bmTree.update(businessColumn, null);
+				showMessage("Column setted as Business Identifier");
+			}
+		};
+		setAsBusinessIdentifierAction.setText("Set Column as Identifier");
+		setAsBusinessIdentifierAction.setToolTipText("Set Column as Identifier");
+		setAsBusinessIdentifierAction.setImageDescriptor(Activator.getImageDescriptor("key.png"));
 	}	
 	/**
 	 * Create Business Identifier Action to show in the context menu
@@ -457,6 +480,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 			manager.add(addBCAction);
 		}  else if (currentTreeSelection instanceof BusinessColumn){
 			manager.removeAll();
+			manager.add(setAsBusinessIdentifierAction);
 			manager.add(removeBCAction);
 			if(((BusinessColumn)currentTreeSelection).isIdentifier()){
 				manager.add(removeBIAction);

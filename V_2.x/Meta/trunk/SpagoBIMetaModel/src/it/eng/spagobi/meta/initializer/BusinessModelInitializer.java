@@ -277,14 +277,19 @@ public class BusinessModelInitializer {
 	}
 	
 	//add Relationship without PhysicalForeignKey specified
-	public void addRelationship(BusinessTable sourceTable, BusinessTable destinationTable, List<BusinessColumn> sourceColumns, List<BusinessColumn> destinationColumns){
+	public void addRelationship(BusinessTable sourceTable, BusinessTable destinationTable, List<BusinessColumn> sourceColumns, List<BusinessColumn> destinationColumns, String relationshipName){
 		BusinessRelationship businessRelationship;	
 		BusinessModel businessModel = sourceTable.getModel();
 		
 		try {
 			businessRelationship = FACTORY.createBusinessRelationship();
 			
-			businessRelationship.setName( "Business Relationship "+sourceTable.getName()+"_"+destinationTable.getName() );
+			if (relationshipName == null){
+				businessRelationship.setName( "Business Relationship "+sourceTable.getName()+"_"+destinationTable.getName() );
+			}
+			else {
+				businessRelationship.setName(relationshipName);
+			}
 
 			businessRelationship.setSourceTable(sourceTable);
 			for(BusinessColumn businessColumn : sourceColumns) {

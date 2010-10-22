@@ -90,12 +90,20 @@ public class DSEBridge {
 		connection = connect_CP(cp);
 		//check if connection is OK
 		if (connection != null){
-			modelName = cp.getInstanceID();
-			
+						
 			//Check if default catalog is found
 			defaultCatalog = checkCatalog(connection);
 			//Check if default schema is found
 			defaultSchema = checkSchema(connection);
+			
+			//setting physical model name
+			if (defaultSchema != null){
+				modelName = defaultSchema;
+			}
+			else {
+				modelName = cp.getName();
+			}
+
 			
 			//ProgressMonitorDialog to show a progress bar for long operation
 			ProgressMonitorDialog dialog = new ProgressMonitorDialog(new Shell());

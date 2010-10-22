@@ -7,18 +7,24 @@
 package it.eng.spagobi.meta.model.business.provider;
 
 
+import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 
+import it.eng.spagobi.meta.model.phantom.provider.BusinessRelationshipPlaceholderItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.RootItemProvider;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.ResourceLocator;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -225,6 +231,38 @@ public class BusinessRelationshipItemProvider
 		}
 		return childrenFeatures;
 	}
+	
+	@Override
+	public Collection<?> getChildren(Object object) {
+		BusinessRelationship businessRelationship;
+		BusinessRelationshipPlaceholderItemProvider relationshipItemProvider;
+		EList<BusinessColumn> sourceColumns, destinationColumns;
+		String sourceColumnsNames = "";
+		String destinationColumnsNames = "";
+		Collection children;
+		
+		businessRelationship = (BusinessRelationship)object;
+		//getting relationship's sourceColumns
+		sourceColumns = businessRelationship.getSourceColumns();
+		for (BusinessColumn column : sourceColumns){
+			sourceColumnsNames = sourceColumnsNames+" "+column.getName();
+		}
+		//getting relationship's destinationColumns
+		destinationColumns = businessRelationship.getDestinationColumns();
+		for (BusinessColumn column : destinationColumns){
+			destinationColumnsNames = destinationColumnsNames+" "+column.getName();
+		}
+		
+		//group relationships
+		relationshipItemProvider = new BusinessRelationshipPlaceholderItemProvider(adapterFactory, businessRelationship);
+		relationshipItemProvider.setText("("+businessRelationship.getSourceTable().getName()+") "+sourceColumnsNames+" -> ("+businessRelationship.getDestinationTable().getName()+") "+destinationColumnsNames);
+		
+		children = new LinkedHashSet();
+		//children.addAll(  getChildrenFeatures(object) );
+		children.add( relationshipItemProvider );
+		
+		return children;
+	}	
 
 	/**
 	 * <!-- begin-user-doc -->

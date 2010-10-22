@@ -24,8 +24,6 @@ package it.eng.spagobi.meta.model.phantom.provider;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
-import java.util.ArrayList;
-import java.util.Collection;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.ResourceLocator;

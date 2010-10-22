@@ -7,9 +7,7 @@
 package it.eng.spagobi.meta.model.physical.provider;
 
 
-import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.phantom.provider.PhysicalRootItemProvider;
-import it.eng.spagobi.meta.model.phantom.provider.RootItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;

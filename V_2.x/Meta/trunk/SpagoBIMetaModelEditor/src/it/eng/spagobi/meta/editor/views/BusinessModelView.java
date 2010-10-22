@@ -479,8 +479,12 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 			manager.add(removeBTAction);
 			manager.add(addBCAction);
 		}  else if (currentTreeSelection instanceof BusinessColumn){
+			BusinessColumn businessColumn = (BusinessColumn)currentTreeSelection;
+			BusinessIdentifier businessIdentifier = businessColumn.getTable().getIdentifier();
 			manager.removeAll();
-			manager.add(setAsBusinessIdentifierAction);
+			if ( (businessIdentifier == null) || (!businessIdentifier.getColumns().contains(businessColumn)) ){
+				manager.add(setAsBusinessIdentifierAction);
+			}
 			manager.add(removeBCAction);
 			if(((BusinessColumn)currentTreeSelection).isIdentifier()){
 				manager.add(removeBIAction);

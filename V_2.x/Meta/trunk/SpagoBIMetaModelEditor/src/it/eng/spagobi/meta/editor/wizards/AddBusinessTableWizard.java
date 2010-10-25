@@ -20,9 +20,9 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.TableItem;
 
 public class AddBusinessTableWizard extends Wizard {
+	
 	private AddBusinessTableWizardPageOne pageOne;
 	private AddBusinessTableWizardPageTwo pageTwo;
-	private AddBusinessTableWizardPageThree pageThree;
 	private TableItem[] columnsToImport;
 	
 	public AddBusinessTableWizard(){
@@ -33,22 +33,22 @@ public class AddBusinessTableWizard extends Wizard {
 	
 	@Override
 	public void addPages() {
+		//pageOne = new AddBusinessTableWizardPageOne("Create Business Table step one");
+		//addPage(pageOne);
 		pageOne = new AddBusinessTableWizardPageOne("Create Business Table step one");
 		addPage(pageOne);
 		pageTwo = new AddBusinessTableWizardPageTwo("Create Business Table step two", pageOne);
 		addPage(pageTwo);
-		pageThree = new AddBusinessTableWizardPageThree("Create Business Table step three", pageTwo);
-		addPage(pageThree);
-		pageTwo.setPageThreeRef(pageThree);
+		pageOne.setPageTwoRef(pageTwo);
 	}
 	
 	@Override
 	public boolean performFinish() {				
-		if (pageThree.isPageComplete() && pageOne.isColumnSelection()){
+		if (pageTwo.isPageComplete() && pageTwo.isColumnSelected()){
 			//table to import
-			String tableName = pageTwo.getTableSelected();
+			String tableName = pageOne.getTableSelected();
 			//columns to import
-			columnsToImport = pageThree.getColumnsToImport();
+			columnsToImport = pageTwo.getColumnsToImport();
 			int numCol = columnsToImport.length;
 			List<PhysicalColumn> colList = new ArrayList<PhysicalColumn>();
 			for (int i=0; i<numCol; i++){
@@ -63,8 +63,8 @@ public class AddBusinessTableWizard extends Wizard {
 			initializer.addTable(pTable, new ColumnFilter(colList), bm, true);			
 			return true;
 		}
-		if (pageTwo.isPageComplete()){
-			String tableName = pageTwo.getTableSelected();
+		if (pageOne.isPageComplete()){
+			String tableName = pageOne.getTableSelected();
 			//Create Business Table from a Physical Table
 			BusinessModel bm = CoreSingleton.getInstance().getBusinessModel();
 			PhysicalModel pm = CoreSingleton.getInstance().getPhysicalModel();
@@ -79,6 +79,7 @@ public class AddBusinessTableWizard extends Wizard {
 	
 	public void dispose(){
 		pageOne.dispose();
+		pageTwo.dispose();
 	}
 	
 	/*

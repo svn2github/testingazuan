@@ -415,7 +415,7 @@ public class PhysicalColumnItemProvider
 			getString("_UI_PhysicalColumn_type") :
 			getString("_UI_PhysicalColumn_type") + " " + label;
 		*/
-		String label = ((PhysicalColumn)object).getTable().getName()+"."+((PhysicalColumn)object).getName();
+		String label = ((PhysicalColumn)object).getName();
 		return label == null || label.length() == 0 ?
 			getString("_UI_PhysicalColumn_type") :
 			label;

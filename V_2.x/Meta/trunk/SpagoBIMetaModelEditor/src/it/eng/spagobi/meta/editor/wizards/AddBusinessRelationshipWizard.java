@@ -11,16 +11,18 @@ import org.eclipse.jface.wizard.Wizard;
 public class AddBusinessRelationshipWizard extends Wizard {
 
 	private AddBusinessRelationshipWizardPageOne pageOne;
+	private String defaultTable;
 	
-	public AddBusinessRelationshipWizard(){
+	public AddBusinessRelationshipWizard(String defaultTable){
 		super();
 		this.setWindowTitle("Create a new Business Relationship");
 		this.setHelpAvailable(false);
+		this.defaultTable = defaultTable;
 	}	
 
 	@Override
 	public void addPages() {
-		pageOne = new AddBusinessRelationshipWizardPageOne("Create Business Relationship step one");
+		pageOne = new AddBusinessRelationshipWizardPageOne("Create Business Relationship step one", defaultTable);
 		addPage(pageOne);
 	}	
 	

@@ -39,8 +39,9 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
 	private int cardinality;
 	private java.util.List<BusinessRelationshipContainer> relationshipsContainer;
 	private Text txtBrName;
+	private String defaultTable;
 	
-	protected AddBusinessRelationshipWizardPageOne(String pageName) {
+	protected AddBusinessRelationshipWizardPageOne(String pageName, String defaultTable) {
 		super(pageName);
 		setPageComplete(false);
 		setTitle("Business Relationship Creation");
@@ -48,6 +49,7 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
 		ImageDescriptor image = Activator.getImageDescriptor("wizards/createBR.png");
 	    if (image!=null) setImageDescriptor(image);	
 	    relationshipsContainer = new ArrayList<BusinessRelationshipContainer>();
+	    this.defaultTable = defaultTable;
 	}
 
 	@Override
@@ -242,6 +244,19 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
  		
  		list_2 = new List(composite_5, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
  		
+ 		if (defaultTable !=null){
+ 			BusinessTable businessTable;
+ 			String[] items = combo.getItems();
+ 			for (int i=0; i<items.length; i++){
+ 				if (items[i].equals(defaultTable)){
+ 					combo.select(i);
+ 					CoreSingleton cs = CoreSingleton.getInstance();
+ 					businessTable = cs.getBusinessModel().getTable(defaultTable);
+ 					populateLeftList(businessTable);
+ 					break;
+ 				}
+ 			}
+ 		}
  		checkPageComplete();
 	}
 	

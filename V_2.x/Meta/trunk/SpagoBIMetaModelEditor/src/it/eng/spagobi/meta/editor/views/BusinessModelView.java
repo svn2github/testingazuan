@@ -451,8 +451,16 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 				//Start Create Business Relationship Wizard
 				//Get Active Window
 				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				AddBusinessRelationshipWizard wizard;
 				//Launch AddBusinessIdentifierWizard
-				AddBusinessRelationshipWizard wizard = new AddBusinessRelationshipWizard();
+				if (currentTreeSelection instanceof BusinessTable){
+					BusinessTable businessTable = ((BusinessTable)currentTreeSelection);
+					String tableName = businessTable.getName();
+					wizard = new AddBusinessRelationshipWizard(tableName);
+				}
+				else {
+					wizard = new AddBusinessRelationshipWizard(null);
+				}
 		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
 				dialog.create();
 		    	dialog.open();
@@ -488,6 +496,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 			manager.add(removeBTAction);
 			manager.add(addBCAction);
 			manager.add(addBIAction);
+			manager.add(addBRAction);
 		}  else if (currentTreeSelection instanceof BusinessColumn){
 			BusinessColumn businessColumn = (BusinessColumn)currentTreeSelection;
 			BusinessIdentifier businessIdentifier = businessColumn.getTable().getIdentifier();

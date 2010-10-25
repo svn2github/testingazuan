@@ -28,13 +28,15 @@ public class AddBusinessIdentifierWizardPageTwo extends WizardPage {
 	private Table columns,columnsIdentifier;
 	private Label lErr;
 	private TableItem[] columnsToImport;
+	private String defaultTable;
 		
-	protected AddBusinessIdentifierWizardPageTwo(String pageName) {
+	protected AddBusinessIdentifierWizardPageTwo(String pageName, String defaultTable) {
 		super(pageName);
 		setTitle("Business Identifier Creation");
 		setDescription("Please select the columns to use in your Business Identifier");
 		ImageDescriptor image = Activator.getImageDescriptor("wizards/createBI.png");
 	    if (image!=null) setImageDescriptor(image);	
+	    this.defaultTable = defaultTable;
 	}
 
 	@Override
@@ -172,6 +174,9 @@ public class AddBusinessIdentifierWizardPageTwo extends WizardPage {
 
 			}
 		}); 	
+ 		
+ 		if (defaultTable != null)
+ 			addTableItems(defaultTable);
  		
  		//first check
  		checkPageComplete(); 		

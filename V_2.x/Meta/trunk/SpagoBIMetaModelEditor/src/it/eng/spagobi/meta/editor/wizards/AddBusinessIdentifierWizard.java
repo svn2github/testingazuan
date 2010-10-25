@@ -18,27 +18,36 @@ import org.eclipse.swt.widgets.TableItem;
 
 public class AddBusinessIdentifierWizard extends Wizard {
 
-	AddBusinessIdentifierWizardPageOne pageOne;
-	AddBusinessIdentifierWizardPageTwo pageTwo;
+	private AddBusinessIdentifierWizardPageOne pageOne;
+	private AddBusinessIdentifierWizardPageTwo pageTwo;
+	private String defaultTable;
 	
-	public AddBusinessIdentifierWizard(){
+	public AddBusinessIdentifierWizard(String defaultTable){
 		super();
 		this.setWindowTitle("Create a new Business Identifier");
 		this.setHelpAvailable(false);		
+		this.defaultTable = defaultTable;
 	}
 
 	@Override
 	public void addPages() {
-		pageOne = new AddBusinessIdentifierWizardPageOne("Add Business Identifier page one");
+		pageOne = new AddBusinessIdentifierWizardPageOne("Add Business Identifier page one", defaultTable);
 		addPage(pageOne);
-		pageTwo = new AddBusinessIdentifierWizardPageTwo("Add Business Identifier page two");
+		pageTwo = new AddBusinessIdentifierWizardPageTwo("Add Business Identifier page two", defaultTable);
 		addPage(pageTwo);	
 		pageOne.setPageTwoRef(pageTwo);
 	}
 	@Override
 	public boolean performFinish() {
 		if (pageTwo.isPageComplete()){
-			String tableName = pageOne.getTableSelected();
+			String tableName;
+			if (defaultTable == null){
+				tableName = pageOne.getTableSelected();
+			}
+			else{
+				tableName = defaultTable;
+			}
+				
 			BusinessModelInitializer initializer = new BusinessModelInitializer();
 			
 			//getting columns to import inside Business Identifier

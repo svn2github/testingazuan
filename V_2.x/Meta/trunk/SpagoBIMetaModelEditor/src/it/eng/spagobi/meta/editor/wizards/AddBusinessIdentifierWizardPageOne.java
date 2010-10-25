@@ -22,20 +22,24 @@ public class AddBusinessIdentifierWizardPageOne extends WizardPage {
 	private List tableList;
 	private String tableSelected;
 	private AddBusinessIdentifierWizardPageTwo pageTwoRef;
+	private String defaultTable;
 	
-	protected AddBusinessIdentifierWizardPageOne(String pageName) {
+	protected AddBusinessIdentifierWizardPageOne(String pageName, String defaultTable) {
 		super(pageName);
 		setTitle("Business Identifier Creation");
 		setDescription("This wizard drives you to create a new Business Identifier in your Business Model.\n"+
 				"Plese select a Business Table.");
 		ImageDescriptor image = Activator.getImageDescriptor("wizards/createBI.png");
 	    if (image!=null) setImageDescriptor(image);	
+	    this.defaultTable = defaultTable;
 	}
 
 	@Override
 	public void createControl(Composite parent) {
 		//Main composite
 		Composite composite = new Composite(parent, SWT.NULL);
+        //Important: Setting page control
+ 		setControl(composite);
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 1;
 		gl.makeColumnsEqualWidth = true;
@@ -74,12 +78,8 @@ public class AddBusinessIdentifierWizardPageOne extends WizardPage {
 				checkPageComplete();
 			}
 		});
-
+ 		
  	    checkPageComplete();
-				
-        //Important: Setting page control
- 		setControl(composite);
-
 	}
 	
 	//populate the list with the Business Tables' names
@@ -95,7 +95,12 @@ public class AddBusinessIdentifierWizardPageOne extends WizardPage {
 
 	//check if the right conditions to go forward occurred
 	private void checkPageComplete(){
-		if(tableSelected != null){
+ 		if (defaultTable != null){
+ 			tableList.setSelection(new String[]{defaultTable});
+ 			tableList.setEnabled(false);
+ 			setPageComplete(true);
+ 		}
+ 		else if(tableSelected != null){
 			setPageComplete(true);
 			if (pageTwoRef != null)
 				pageTwoRef.addTableItems(tableSelected);

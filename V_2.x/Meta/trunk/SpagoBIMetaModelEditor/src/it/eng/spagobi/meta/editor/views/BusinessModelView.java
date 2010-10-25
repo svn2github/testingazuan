@@ -386,11 +386,20 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 				//Start Create Business Identifier Wizard
 				//Get Active Window
 				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				AddBusinessIdentifierWizard wizard;
 				//Launch AddBusinessIdentifierWizard
-				AddBusinessIdentifierWizard wizard = new AddBusinessIdentifierWizard();
+				if (currentTreeSelection instanceof BusinessTable){
+					BusinessTable businessTable = ((BusinessTable)currentTreeSelection);
+					String tableName = businessTable.getName();
+					wizard = new AddBusinessIdentifierWizard(tableName);
+				}
+				else {
+					wizard = new AddBusinessIdentifierWizard(null);
+				}
 		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
 				dialog.create();
 		    	dialog.open();
+		    	bmTree.refresh();
 			}
 		};
 		addBIAction.setText("Add Business Identifier");
@@ -478,6 +487,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 			manager.removeAll();
 			manager.add(removeBTAction);
 			manager.add(addBCAction);
+			manager.add(addBIAction);
 		}  else if (currentTreeSelection instanceof BusinessColumn){
 			BusinessColumn businessColumn = (BusinessColumn)currentTreeSelection;
 			BusinessIdentifier businessIdentifier = businessColumn.getTable().getIdentifier();
@@ -559,7 +569,6 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		if (propertySheetPage == null) {
 			propertySheetPage = new PropertySheetPage();
 			propertySheetPage.setPropertySourceProvider(new AdapterFactoryContentProvider(adapterFactory));
-			//propertySheetPage.setPropertySourceProvider(new CustomizedAdapterFactoryContentProvider(adapterFactory));
 		}
 
 		return propertySheetPage;

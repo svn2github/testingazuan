@@ -193,11 +193,20 @@ public class BusinessModelInitializer {
 			
 			for(int j = 0; j < physicalPrimaryKey.getColumns().size(); j++) {
 				businessColumn = businessTable.getColumn(physicalPrimaryKey.getColumns().get(j));
-				businessIdentifier.getColumns().add(businessColumn);
+				if (businessColumn != null){
+					businessIdentifier.getColumns().add(businessColumn);
+				}
 			}
 			
-			businessModel.getIdentifiers().add(businessIdentifier);			
-			getPropertiesInitializer().addProperties(businessIdentifier);
+			if (businessIdentifier.getColumns().size() > 0){
+				businessModel.getIdentifiers().add(businessIdentifier);			
+				getPropertiesInitializer().addProperties(businessIdentifier);
+			}
+			else{
+				//remove "empty" Business Identifier from memory
+				businessIdentifier = null;
+			}
+				
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize identifier meta", t);
 		}

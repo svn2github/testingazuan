@@ -101,6 +101,10 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 		return parent;
 	}
 	
+	public int getChildrenNumber(){
+		return children.size();
+	}
+	
 	/**
 	 * Return the resource locator for this item provider's resources.
 	 * <!-- begin-user-doc -->

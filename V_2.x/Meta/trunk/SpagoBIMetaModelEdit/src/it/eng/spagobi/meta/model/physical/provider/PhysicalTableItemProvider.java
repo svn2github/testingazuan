@@ -186,19 +186,22 @@ public class PhysicalTableItemProvider
 		physicalTable = (PhysicalTable)object;
 		//group columns
 		folderItemProvider = new FolderItemProvider(adapterFactory, physicalTable, physicalTable.getColumns());
-		folderItemProvider.setText("Columns");
+		folderItemProvider.setText("Columns ("+folderItemProvider.getChildrenNumber()+")");
+		if (folderItemProvider.getChildrenNumber() == 0)
+			folderItemProvider.setImage("full/obj16/EmptyFolder");
 		
 		//getting foreignKyes
 		physicalForeignKeys = physicalTable.getForeignKeys();
 		folderItemProviderFK = new FolderItemProvider(adapterFactory, physicalTable, physicalTable.getForeignKeys());
-		folderItemProviderFK.setText("Foreign Keys");
+		folderItemProviderFK.setText("Foreign Keys ("+folderItemProviderFK.getChildrenNumber()+")");
+		if (folderItemProviderFK.getChildrenNumber() == 0)
+			folderItemProviderFK.setImage("full/obj16/EmptyFolder");
 		
 		children = new LinkedHashSet();
 		//children.addAll(  getChildrenFeatures(object) );
 		children.add( folderItemProvider );
-		if (!physicalForeignKeys.isEmpty()){
-			children.add( folderItemProviderFK );
-		}
+		children.add( folderItemProviderFK );
+
 	
 		return children;
 	}	

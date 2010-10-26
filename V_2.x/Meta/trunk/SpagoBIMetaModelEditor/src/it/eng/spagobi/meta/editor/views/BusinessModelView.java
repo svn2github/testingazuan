@@ -306,7 +306,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		    	dialog.open();
 			}
 		};
-		addBTAction.setText("Add a Business Table");
+		addBTAction.setText("Add Business Table");
 		addBTAction.setToolTipText("Add a Business Table");
 		addBTAction.setImageDescriptor(Activator.getImageDescriptor("add.png"));
 
@@ -410,11 +410,15 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
 				dialog.create();
 		    	dialog.open();
+		    	
+		    	//caching expanded elements, refresh tree and restore expanded elements
+		    	Object[] expandedElements = bmTree.getExpandedElements();
 		    	bmTree.refresh();
+		    	bmTree.setExpandedElements(expandedElements);
 			}
 		};
-		addBIAction.setText("Add Business Identifier");
-		addBIAction.setToolTipText("Add Business Identifier");
+		addBIAction.setText("Edit Business Identifier");
+		addBIAction.setToolTipText("Edit Business Identifier");
 		addBIAction.setImageDescriptor(Activator.getImageDescriptor("add.png"));
 		
 		removeBIAction = new Action()
@@ -475,7 +479,12 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
 				dialog.create();
 		    	dialog.open();
+		    	
+		    	//caching expanded elements, refresh tree and restore expanded elements
+		    	Object[] expandedElements = bmTree.getExpandedElements();
 		    	bmTree.refresh();
+		    	bmTree.setExpandedElements(expandedElements);
+
 			}
 		};
 		addBRAction.setText("Add Business Relationship");

@@ -100,7 +100,9 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
  		lblColumns.setText("Source Columns");
  		
  		Composite composite_1 = new Composite(grpSourceBusinessTable, SWT.NONE);
- 		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+ 		GridData gd_composite_1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+ 		gd_composite_1.heightHint = 100;
+ 		composite_1.setLayoutData(gd_composite_1);
  		composite_1.setLayout(new FillLayout(SWT.HORIZONTAL));
  		
  		list = new List(composite_1, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -136,7 +138,9 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
  		label.setText("Target Columns");
  		
  		Composite composite_2 = new Composite(group, SWT.NONE);
- 		composite_2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
+ 		GridData gd_composite_2 = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
+ 		gd_composite_2.heightHint = 100;
+ 		composite_2.setLayoutData(gd_composite_2);
  		composite_2.setLayout(new FillLayout(SWT.HORIZONTAL));
  		
  		list_1 = new List(composite_2, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -253,6 +257,7 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
  					CoreSingleton cs = CoreSingleton.getInstance();
  					businessTable = cs.getBusinessModel().getTable(defaultTable);
  					populateLeftList(businessTable);
+ 					combo.setEnabled(false);
  					break;
  				}
  			}

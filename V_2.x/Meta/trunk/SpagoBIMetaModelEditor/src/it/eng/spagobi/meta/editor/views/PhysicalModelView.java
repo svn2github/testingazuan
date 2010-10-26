@@ -7,8 +7,6 @@ package it.eng.spagobi.meta.editor.views;
 
 
 import it.eng.spagobi.meta.editor.dnd.TableDragListener;
-import it.eng.spagobi.meta.editor.util.DBTreeAdapterFactoryContentProvider;
-import it.eng.spagobi.meta.editor.util.DBTreeAdapterFactoryLabelProvider;
 import it.eng.spagobi.meta.editor.util.DSEBridge;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
@@ -20,11 +18,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.datatools.connectivity.IConnectionProfile;
-import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
-import org.eclipse.emf.edit.ui.view.ExtendedPropertySheetPage;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;

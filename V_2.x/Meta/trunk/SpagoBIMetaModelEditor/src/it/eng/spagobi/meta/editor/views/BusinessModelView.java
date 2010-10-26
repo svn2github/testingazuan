@@ -12,6 +12,7 @@ import it.eng.spagobi.meta.editor.dnd.TableDropListener;
 
 import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
 import it.eng.spagobi.meta.editor.wizards.AddBCWizard;
+import it.eng.spagobi.meta.editor.wizards.AddBusinessColumnWizard;
 import it.eng.spagobi.meta.editor.wizards.AddBusinessIdentifierWizard;
 import it.eng.spagobi.meta.editor.wizards.AddBusinessRelationshipWizard;
 import it.eng.spagobi.meta.editor.wizards.AddBusinessTableWizard;
@@ -72,7 +73,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertySheetPage;
-import it.eng.spagobi.meta.model.phantom.provider.RootItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
 
 
@@ -332,11 +333,21 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		{
 			public void run()
 			{
-				showMessage("Add BC executed");
+				BusinessTable businessTable = ((BusinessTable)currentTreeSelection);
+				//Start Create Business Identifier Wizard
+				//Get Active Window
+				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				AddBusinessColumnWizard wizard;
+				//Launch wizard
+				wizard = new AddBusinessColumnWizard(businessTable);
+		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
+				dialog.create();
+		    	dialog.open();
+		    
 			}
 		};
-		addBCAction.setText("Add Business Column");
-		addBCAction.setToolTipText("Add Business Column");
+		addBCAction.setText("Edit Business Columns");
+		addBCAction.setToolTipText("Edit Business Column");
 		addBCAction.setImageDescriptor(Activator.getImageDescriptor("add.png"));
 
 		removeBCAction = new Action()
@@ -464,6 +475,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
 				dialog.create();
 		    	dialog.open();
+		    	bmTree.refresh();
 			}
 		};
 		addBRAction.setText("Add Business Relationship");
@@ -486,10 +498,10 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	@Override
 	public void menuAboutToShow(IMenuManager manager) {
 		//create context menu based on the current tree selection
-		if (currentTreeSelection instanceof RootItemProvider){
+		if (currentTreeSelection instanceof BusinessRootItemProvider){
 			manager.removeAll();
 			manager.add(addBTAction);
-			manager.add(addBIAction);
+			//manager.add(addBIAction);
 			manager.add(addBRAction);
 		} else if (currentTreeSelection instanceof BusinessTable){
 			manager.removeAll();

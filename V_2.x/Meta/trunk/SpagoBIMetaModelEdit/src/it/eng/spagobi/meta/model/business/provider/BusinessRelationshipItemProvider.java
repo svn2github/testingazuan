@@ -12,8 +12,8 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 
-import it.eng.spagobi.meta.model.phantom.provider.BusinessRelationshipPlaceholderItemProvider;
-import it.eng.spagobi.meta.model.phantom.provider.RootItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
@@ -235,7 +235,7 @@ public class BusinessRelationshipItemProvider
 	@Override
 	public Collection<?> getChildren(Object object) {
 		BusinessRelationship businessRelationship;
-		BusinessRelationshipPlaceholderItemProvider relationshipItemProvider;
+		FolderItemProvider relationshipItemProvider;
 		EList<BusinessColumn> sourceColumns, destinationColumns;
 		String sourceColumnsNames = "";
 		String destinationColumnsNames = "";
@@ -254,7 +254,8 @@ public class BusinessRelationshipItemProvider
 		}
 		
 		//group relationships
-		relationshipItemProvider = new BusinessRelationshipPlaceholderItemProvider(adapterFactory, businessRelationship);
+		relationshipItemProvider = new FolderItemProvider(adapterFactory, businessRelationship,null);
+		relationshipItemProvider.setImage("full/obj16/Arrow");
 		relationshipItemProvider.setText("("+businessRelationship.getSourceTable().getName()+") "+sourceColumnsNames+" -> ("+businessRelationship.getDestinationTable().getName()+") "+destinationColumnsNames);
 		
 		children = new LinkedHashSet();

@@ -9,8 +9,7 @@ package it.eng.spagobi.meta.model.physical.provider;
 
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
-import it.eng.spagobi.meta.model.phantom.provider.BusinessRelationshipPlaceholderItemProvider;
-import it.eng.spagobi.meta.model.phantom.provider.PhysicalForeignKeyPlaceholderItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
@@ -262,7 +261,7 @@ public class PhysicalForeignKeyItemProvider
 	@Override
 	public Collection<?> getChildren(Object object) {
 		PhysicalForeignKey foreignKey;
-		PhysicalForeignKeyPlaceholderItemProvider foreignKeyItemProvider;
+		FolderItemProvider foreignKeyItemProvider;
 		EList<PhysicalColumn> sourceColumns, destinationColumns;
 		String sourceColumnsNames = "";
 		String destinationColumnsNames = "";
@@ -281,7 +280,8 @@ public class PhysicalForeignKeyItemProvider
 		}
 		
 		//group fk
-		foreignKeyItemProvider = new PhysicalForeignKeyPlaceholderItemProvider(adapterFactory, foreignKey);
+		foreignKeyItemProvider = new FolderItemProvider(adapterFactory, foreignKey, null);
+		foreignKeyItemProvider.setImage("full/obj16/Arrow");
 		foreignKeyItemProvider.setText("("+foreignKey.getSourceTable().getName()+") "+sourceColumnsNames+" -> ("+foreignKey.getDestinationTable().getName()+") "+destinationColumnsNames);
 		
 		children = new LinkedHashSet();

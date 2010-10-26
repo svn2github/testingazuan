@@ -14,7 +14,6 @@ import it.eng.spagobi.meta.model.business.BusinessTable;
 
 import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
-import it.eng.spagobi.meta.model.phantom.provider.PhysicalTableReferenceItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.model.physical.provider.PhysicalTableItemProvider;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
@@ -188,7 +187,7 @@ public class BusinessTableItemProvider
 		FolderItemProvider folderItemProvider;
 		FolderItemProvider folderItemProviderInRel = null;
 		FolderItemProvider folderItemProviderOutRel = null;
-		PhysicalTableReferenceItemProvider physicalTableReferenceItemProvider = null;
+		FolderItemProvider physicalTableReferenceItemProvider = null;
 		List<BusinessRelationship> businessRelationships;
 		List<BusinessRelationship> inboundBusinessRelationships = new ArrayList<BusinessRelationship>();
 		List<BusinessRelationship> outboundBusinessRelationships = new ArrayList<BusinessRelationship>();
@@ -234,8 +233,9 @@ public class BusinessTableItemProvider
 			children.add( folderItemProviderOutRel );
 		}
 		if (physicalTable != null){
-			physicalTableReferenceItemProvider = new PhysicalTableReferenceItemProvider(adapterFactory, physicalTable);
+			physicalTableReferenceItemProvider = new FolderItemProvider(adapterFactory, physicalTable, null);
 			physicalTableReferenceItemProvider.setText("Physical Table -> "+physicalTable.getName());
+			physicalTableReferenceItemProvider.setImage("full/obj16/PhysicalTable");
 			children.add(physicalTableReferenceItemProvider);
 		}
 		

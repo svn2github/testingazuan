@@ -262,6 +262,7 @@ public class PhysicalModelItemProvider
 		physicalModel = (PhysicalModel)object;
 		//group columns
 		rootItemProvider = new PhysicalRootItemProvider(adapterFactory, physicalModel, physicalModel.getTables());
+		rootItemProvider.setImage("full/obj16/PhysicalModel");
 		rootItemProvider.setText("Physical Model: "+physicalModel.getName());
 		
 		children = new LinkedHashSet();

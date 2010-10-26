@@ -11,7 +11,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 
-import it.eng.spagobi.meta.model.phantom.provider.RootItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
@@ -187,12 +187,13 @@ public class BusinessModelItemProvider
 	@Override
 	public Collection<?> getChildren(Object object) {
 		BusinessModel businessModel;
-		RootItemProvider rootItemProvider;
+		BusinessRootItemProvider rootItemProvider;
 		Collection children;
 		
 		businessModel = (BusinessModel)object;
 		//group columns
-		rootItemProvider = new RootItemProvider(adapterFactory, businessModel, businessModel.getTables());
+		rootItemProvider = new BusinessRootItemProvider(adapterFactory, businessModel, businessModel.getTables());
+		rootItemProvider.setImage("full/obj16/BusinessModel");
 		rootItemProvider.setText("Business Model: "+businessModel.getName());
 		
 		children = new LinkedHashSet();

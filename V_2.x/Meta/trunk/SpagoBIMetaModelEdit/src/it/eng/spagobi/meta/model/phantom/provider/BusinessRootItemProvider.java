@@ -14,9 +14,9 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 
-public class PhysicalRootItemProvider extends FolderItemProvider{
+public class BusinessRootItemProvider extends FolderItemProvider{
 
-	public PhysicalRootItemProvider(AdapterFactory adapterFactory,
+	public BusinessRootItemProvider(AdapterFactory adapterFactory,
 			Object parent, Collection children) {
 		super(adapterFactory, parent, children);
 	}

@@ -9,8 +9,7 @@ package it.eng.spagobi.meta.model.physical.provider;
 
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
-import it.eng.spagobi.meta.model.phantom.provider.BusinessRelationshipPlaceholderItemProvider;
-import it.eng.spagobi.meta.model.phantom.provider.PhysicalColumnInfoItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
 
@@ -355,7 +354,7 @@ public class PhysicalColumnItemProvider
 	@Override
 	public Collection<?> getChildren(Object object) {
 		PhysicalColumn physicalColumn;
-		PhysicalColumnInfoItemProvider columnInfoItemProvider;
+		FolderItemProvider columnInfoItemProvider;
 
 		Collection children;
 		
@@ -363,7 +362,8 @@ public class PhysicalColumnItemProvider
 
 		
 		//setting info on node
-		columnInfoItemProvider = new PhysicalColumnInfoItemProvider(adapterFactory, physicalColumn);
+		columnInfoItemProvider = new FolderItemProvider(adapterFactory, physicalColumn, null);
+		columnInfoItemProvider.setImage("full/obj16/Arrow");
 		columnInfoItemProvider.setText("Type: "+physicalColumn.getTypeName()+" Size: "+physicalColumn.getSize()+" Nullable: "+physicalColumn.isNullable());
 		
 		children = new LinkedHashSet();

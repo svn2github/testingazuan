@@ -1,76 +1,61 @@
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2010 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.meta.editor.views;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import it.eng.spagobi.meta.editor.Activator;
-import it.eng.spagobi.meta.editor.dnd.TableDropListener;
-
 import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
-import it.eng.spagobi.meta.editor.wizards.AddBCWizard;
-import it.eng.spagobi.meta.editor.wizards.AddBusinessColumnWizard;
-import it.eng.spagobi.meta.editor.wizards.AddBusinessIdentifierWizard;
-import it.eng.spagobi.meta.editor.wizards.AddBusinessRelationshipWizard;
-import it.eng.spagobi.meta.editor.wizards.AddBusinessTableWizard;
-import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
-
-import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.business.BusinessColumn;
-import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
-import it.eng.spagobi.meta.model.business.BusinessRelationship;
-import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.business.util.BusinessModelAdapterFactory;
-import it.eng.spagobi.meta.model.physical.PhysicalModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.common.command.BasicCommandStack;
-import org.eclipse.emf.edit.command.RemoveCommand;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
-import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
-import org.eclipse.emf.edit.ui.provider.PropertyDescriptor;
-import org.eclipse.emf.edit.ui.provider.PropertySource;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
-import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertySheetPage;
-import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
 
 
@@ -82,10 +67,11 @@ public class BusinessModelView extends ViewPart implements ISelectionChangedList
 
 	protected PropertySheetPage propertySheetPage;
 	
-	private BasicCommandStack commandStack;
-	
+	private BasicCommandStack commandStack;	
 	protected AdapterFactoryEditingDomain editingDomain;
+	
 	private Object currentTreeSelection;
+	
 	private CoreSingleton cs = CoreSingleton.getInstance();
 	
 	static public BusinessModelFactory FACTORY = BusinessModelFactory.eINSTANCE;
@@ -165,22 +151,6 @@ public class BusinessModelView extends ViewPart implements ISelectionChangedList
 		container.setSize(p);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	//  --------------------------------------------------------
-	//	Context Menu methods
-	//  --------------------------------------------------------
-	
 	/**
 	 * This creates a context menu for the viewer and adds a listener as well registering the menu for
 	 * extension.
@@ -198,9 +168,6 @@ public class BusinessModelView extends ViewPart implements ISelectionChangedList
 
 	}	
 	
-	
-	
-
 	/*
 	 * check what element is selected in the tree
 	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)

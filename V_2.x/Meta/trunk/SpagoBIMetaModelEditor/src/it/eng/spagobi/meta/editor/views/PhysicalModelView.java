@@ -7,7 +7,10 @@ package it.eng.spagobi.meta.editor.views;
 
 
 import it.eng.spagobi.meta.editor.dnd.TableDragListener;
+import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
 import it.eng.spagobi.meta.editor.util.DSEBridge;
+import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
 import it.eng.spagobi.meta.model.physical.provider.PhysicalModelItemProviderAdapterFactory;
@@ -112,8 +115,22 @@ public class PhysicalModelView extends ViewPart implements IAdaptable {
 			
 			//Create blank sheet in BusinessModelView
 			IViewPart businessModelView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("it.eng.spagobi.meta.editor.BusinessModel");
+			
 			//invoke tree creation on BusinessModelView
-			((BusinessModelView)businessModelView).initComposite();
+			//((BusinessModelView)businessModelView).initComposite();
+			BusinessModel businessModel = BusinessModelFactory.eINSTANCE.createBusinessModel();
+			//Getting CoreSingleton instance
+			CoreSingleton cs = CoreSingleton.getInstance();
+			String modelName = cs.getBmName();
+			PhysicalModel physicalModel = cs.getPhysicalModel();
+			businessModel.setName(modelName);
+			
+			if(physicalModel.getParentModel() != null) {
+				businessModel.setParentModel(physicalModel.getParentModel());
+			}
+			
+			businessModel.setPhysicalModel(physicalModel);
+			((BusinessModelView)businessModelView).setModel(businessModel);
 		}
 	}
  

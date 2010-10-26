@@ -1,6 +1,3 @@
-/*
- * This View shows the Business Model 
- */
 package it.eng.spagobi.meta.editor.views;
 
 import java.util.ArrayList;
@@ -77,17 +74,20 @@ import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
 
 
-public class BusinessModelView extends ViewPart implements IMenuListener, ISelectionChangedListener ,IEditingDomainProvider, IAdaptable {
+public class BusinessModelView extends ViewPart implements ISelectionChangedListener ,IEditingDomainProvider, IAdaptable {
 	
-	private ScrolledComposite sc;
-	private TreeViewer bmTree;
+	private ScrolledComposite scrolledComposite;
+	private TreeViewer businessModelTreeViewer;
+	
+
 	protected PropertySheetPage propertySheetPage;
-	private Action addBTAction, removeBTAction, addBCAction, removeBCAction, addBIAction,
-				   removeBIAction, addBRAction, removeBRAction, setAsBusinessIdentifierAction ;
+	
 	private BasicCommandStack commandStack;
+	
 	protected AdapterFactoryEditingDomain editingDomain;
 	private Object currentTreeSelection;
 	private CoreSingleton cs = CoreSingleton.getInstance();
+	
 	static public BusinessModelFactory FACTORY = BusinessModelFactory.eINSTANCE;
 	
 	public BusinessModelView() {
@@ -105,166 +105,77 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 
 	@Override
 	public void createPartControl(Composite parent) {
-		sc = new ScrolledComposite(parent, SWT.H_SCROLL |   
+		scrolledComposite = new ScrolledComposite(parent, SWT.H_SCROLL |   
 				  SWT.V_SCROLL | SWT.BORDER);						
 	}
 	
-	/**
-	 * Create a "blank sheet" for the Business Model Editor
-	 */
-	public void initComposite(){
-		Composite container = new Composite(sc, SWT.NONE);
-		GridLayout gridLayout = new GridLayout(); 
+	
+	public void setModel(BusinessModel model){
+		Composite container = new Composite(scrolledComposite, SWT.NONE);
+		GridLayout gridLayout;
+		Group businessModelGroup;
+		
+		container = new Composite(scrolledComposite, SWT.NONE);
+		
+		gridLayout = new GridLayout(); 
 		gridLayout.numColumns = 1; 
 		gridLayout.makeColumnsEqualWidth = true;
+		
 		container.setLayout(gridLayout); 
-		sc.setContent(container);
-		sc.setExpandHorizontal(true);
-		sc.setExpandVertical(true);
-		sc.setMinSize(container.computeSize(200, 300));
+		
+		scrolledComposite.setContent(container);
+		scrolledComposite.setExpandHorizontal(true);
+		scrolledComposite.setExpandVertical(true);
+		scrolledComposite.setMinSize(container.computeSize(200, 300));
 
-	    Group bmGroup = new Group(container, SWT.SHADOW_ETCHED_IN);
-		bmGroup.setLayout(new GridLayout());
+	    businessModelGroup = new Group(container, SWT.SHADOW_ETCHED_IN);
+		businessModelGroup.setLayout(new GridLayout());
 		
 		//Create a TreeViewer
-		bmTree = new TreeViewer(bmGroup);
+		businessModelTreeViewer = new TreeViewer(businessModelGroup);
 		List<BusinessModelAdapterFactory> factories = new ArrayList<BusinessModelAdapterFactory>();
 		factories.add(new BusinessModelItemProviderAdapterFactory());
 		ComposedAdapterFactory adapterFactory = new ComposedAdapterFactory(factories);	
-		bmTree.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-		bmTree.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
-		bmTree.setUseHashlookup(true);
+		businessModelTreeViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
+		businessModelTreeViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
+		businessModelTreeViewer.setUseHashlookup(true);
 		
 	    //setting initial input
-		BusinessModel model = createEmptyModel();
 		model.eAdapters().add(new BusinessModelItemProviderAdapterFactory().createBusinessModelAdapter());
-	    bmTree.setInput(model);
+	    businessModelTreeViewer.setInput(model);
 	    
-	    bmGroup.setText("Business Model: "+model.getName());
+	    businessModelGroup.setText("Business Model: "+model.getName());
 	    
 	    //register the tree as a selection provider
-	    getSite().setSelectionProvider(bmTree);
+	    getSite().setSelectionProvider(businessModelTreeViewer);
 	    
 	    //add a SelectionListener to the tree
-	    bmTree.addSelectionChangedListener(this);
+	    businessModelTreeViewer.addSelectionChangedListener(this);
 	    
 	    //Create Context Menu and Menu Actions    
-	    createBCActions();
-	    createBTActions();
-	    createBIActions();
-	    createBRActions();
 	    hookContextMenu();
 		
 	    //setting datalayout
 	    GridData gd = new GridData(GridData.FILL_BOTH);
-		bmGroup.setLayoutData(gd);
-		bmTree.getTree().setLayoutData(gd);
+		businessModelGroup.setLayoutData(gd);
+		businessModelTreeViewer.getTree().setLayoutData(gd);
 		
 		Point p = container.getSize();
 		container.pack();
 		container.setSize(p);
 	}
 	
-	/**
-	 * Create an empty BusinessModel to populate
-	 * @return an empty BusinessModel
-	 */
-	public BusinessModel createEmptyModel(){
-		BusinessModel businessModel = FACTORY.createBusinessModel();
-		//Getting CoreSingleton instance
-		CoreSingleton cs = CoreSingleton.getInstance();
-		String modelName = cs.getBmName();
-		PhysicalModel physicalModel = cs.getPhysicalModel();
-		businessModel.setName(modelName);
-		
-		if(physicalModel.getParentModel() != null) {
-			businessModel.setParentModel(physicalModel.getParentModel());
-		}
-		
-		businessModel.setPhysicalModel(physicalModel);
-		return businessModel;
-	}
 	
-	/**
-	 * Create the tree of the business model
-	 */
-	public void createTree(){
-		Composite container = new Composite(sc, SWT.NONE);
-		GridLayout gridLayout = new GridLayout(); 
-		gridLayout.numColumns = 1; 
-		gridLayout.makeColumnsEqualWidth = true;
-		container.setLayout(gridLayout); 
-		sc.setContent(container);
-		sc.setExpandHorizontal(true);
-		sc.setExpandVertical(true);
-		sc.setMinSize(container.computeSize(200, 300));
-
-	    Group bmGroup = new Group(container, SWT.SHADOW_ETCHED_IN);
-		bmGroup.setLayout(new GridLayout());
-		
-        //retrieve root Model reference and the PhysicalModel
-        Model rootModel = cs.getRootModel();
-        String bmName = cs.getBmName();
-		bmGroup.setText("Business Model: "+bmName);
-        PhysicalModel pm = cs.getPhysicalModel();
-	    
-        BusinessModel model;
-        //check if BusinessModel is already created
-        if (cs.getBusinessModel() != null){
-            //erase current Business Model
-        	cs.deleteBusinessModel();    	
-        	//initialize the EMF Business Model
-            BusinessModelInitializer modelInitializer = new BusinessModelInitializer();
-            model = modelInitializer.initialize( bmName, pm);
-        }
-        else {
-        	model = cs.getBusinessModel();
-        }
-
-				
-		//Create a TreeViewer
-		bmTree = new TreeViewer(bmGroup);
-	    //bmTree.setContentProvider(new BMTreeContentProvider());
-	    //bmTree.setLabelProvider(new BMTreeLabelProvider());
-		List<BusinessModelAdapterFactory> factories = new ArrayList<BusinessModelAdapterFactory>();
-		factories.add(new BusinessModelItemProviderAdapterFactory());
-		ComposedAdapterFactory adapterFactory = new ComposedAdapterFactory(factories);	
-		bmTree.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-		bmTree.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
-		bmTree.setUseHashlookup(true);
-	      	    
-	    //add drop support
-	    int operations = DND.DROP_COPY | DND.DROP_MOVE;
-	    Transfer[] transferTypes = new Transfer[]{TextTransfer.getInstance()};
-	    TableDropListener dtListener = new TableDropListener(bmTree);
-	    bmTree.addDropSupport(operations, transferTypes, dtListener);
-	    
-	    //Set initial input
-	    model.eAdapters().add(new BusinessModelItemProviderAdapterFactory().createBusinessModelAdapter());
-	    bmTree.setInput(model);
-	    
-	    //register the tree as a selection provider
-	    getSite().setSelectionProvider(bmTree);
-	    
-	    //add a SelectionListener to the tree
-	    bmTree.addSelectionChangedListener(this);
-	    
-	    //Create Context Menu and Menu Actions    
-	    createBCActions();
-	    createBTActions();
-	    createBIActions();
-	    createBRActions();
-	    hookContextMenu();
-
-	    //setting datalayout
-	    GridData gd = new GridData(GridData.FILL_BOTH);
-		bmGroup.setLayoutData(gd);
-		bmTree.getTree().setLayoutData(gd);
-		
-		Point p = container.getSize();
-		container.pack();
-		container.setSize(p);		
-	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	//  --------------------------------------------------------
 	//	Context Menu methods
@@ -279,273 +190,16 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		MenuManager contextMenu = new MenuManager("#PopUp");
 		contextMenu.add(new Separator("additions"));
 		contextMenu.setRemoveAllWhenShown(true);
-		contextMenu.addMenuListener(this);
+		contextMenu.addMenuListener( new BusinessModelPopUpMenuListener(this) );
 
-		Menu menu = contextMenu.createContextMenu(bmTree.getControl());
-		bmTree.getControl().setMenu(menu);
-		getSite().registerContextMenu(contextMenu, bmTree);
+		Menu menu = contextMenu.createContextMenu(businessModelTreeViewer.getControl());
+		businessModelTreeViewer.getControl().setMenu(menu);
+		getSite().registerContextMenu(contextMenu, businessModelTreeViewer);
 
 	}	
 	
-	/**
-	 * Create Business Table node Action to show in the context menu
-	 */
-	private void createBTActions()
-	{
-		addBTAction = new Action()
-		{
-			public void run()
-			{
-				//Start Create Business Table Wizard
-				//Get Active Window
-				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-				//Launch AddBusinessTableWizard
-				AddBusinessTableWizard wizard = new AddBusinessTableWizard();
-		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
-				dialog.create();
-		    	dialog.open();
-			}
-		};
-		addBTAction.setText("Add Business Table");
-		addBTAction.setToolTipText("Add a Business Table");
-		addBTAction.setImageDescriptor(Activator.getImageDescriptor("add.png"));
-
-		removeBTAction = new Action()
-		{
-			public void run()
-			{
-				cs.getBusinessModel().getTables().remove(currentTreeSelection);
-				showMessage("Business Table Removed");
-			}
-		};
-		removeBTAction.setText("Remove Business Table");
-		removeBTAction.setToolTipText("Remove Business Table");
-		removeBTAction.setImageDescriptor(Activator.getImageDescriptor("remove.png"));
-		
-	}	
-
-	/**
-	 * Create Business Column node Action to show in the context menu
-	 */
-	private void createBCActions()
-	{
-		addBCAction = new Action()
-		{
-			public void run()
-			{
-				BusinessTable businessTable = ((BusinessTable)currentTreeSelection);
-				//Start Create Business Identifier Wizard
-				//Get Active Window
-				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-				AddBusinessColumnWizard wizard;
-				//Launch wizard
-				wizard = new AddBusinessColumnWizard(businessTable);
-		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
-				dialog.create();
-		    	dialog.open();
-		    
-			}
-		};
-		addBCAction.setText("Edit Business Columns");
-		addBCAction.setToolTipText("Edit Business Column");
-		addBCAction.setImageDescriptor(Activator.getImageDescriptor("add.png"));
-
-		removeBCAction = new Action()
-		{
-			public void run()
-			{
-				((BusinessColumn)currentTreeSelection).getTable().getColumns().remove(currentTreeSelection);
-				showMessage("Business Column Removed");
-			}
-		};
-		removeBCAction.setText("Remove Business Column");
-		removeBCAction.setToolTipText("Remove Business Column");
-		removeBCAction.setImageDescriptor(Activator.getImageDescriptor("remove.png"));
-		
-		setAsBusinessIdentifierAction = new Action()
-		{
-			public void run()
-			{
-				BusinessColumn businessColumn =  ((BusinessColumn)currentTreeSelection);
-				BusinessTable businessTable = ((BusinessColumn)currentTreeSelection).getTable();
-				BusinessIdentifier businessIdentifier = businessTable.getIdentifier();
-				if (businessIdentifier != null){
-					businessIdentifier.getColumns().add(businessColumn);
-				} else {
-					BusinessModelInitializer initializer = new BusinessModelInitializer();
-					List<BusinessColumn> businessColumns = new ArrayList<BusinessColumn>();
-					businessColumns.add(businessColumn);
-					initializer.addIdentifier("BI_"+businessTable.getName(), businessTable, businessColumns);
-				}
-				bmTree.update(businessColumn, null);
-				showMessage("Column setted as Business Identifier");
-			}
-		};
-		setAsBusinessIdentifierAction.setText("Set Column as Identifier");
-		setAsBusinessIdentifierAction.setToolTipText("Set Column as Identifier");
-		setAsBusinessIdentifierAction.setImageDescriptor(Activator.getImageDescriptor("key.png"));
-	}	
-	/**
-	 * Create Business Identifier Action to show in the context menu
-	 */
-	private void createBIActions()
-	{
-		addBIAction = new Action()
-		{
-			public void run()
-			{
-				//Start Create Business Identifier Wizard
-				//Get Active Window
-				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-				AddBusinessIdentifierWizard wizard;
-				//Launch AddBusinessIdentifierWizard
-				if (currentTreeSelection instanceof BusinessTable){
-					BusinessTable businessTable = ((BusinessTable)currentTreeSelection);
-					String tableName = businessTable.getName();
-					wizard = new AddBusinessIdentifierWizard(tableName);
-				}
-				else {
-					wizard = new AddBusinessIdentifierWizard(null);
-				}
-		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
-				dialog.create();
-		    	dialog.open();
-		    	
-		    	//caching expanded elements, refresh tree and restore expanded elements
-		    	Object[] expandedElements = bmTree.getExpandedElements();
-		    	bmTree.refresh();
-		    	bmTree.setExpandedElements(expandedElements);
-			}
-		};
-		addBIAction.setText("Edit Business Identifier");
-		addBIAction.setToolTipText("Edit Business Identifier");
-		addBIAction.setImageDescriptor(Activator.getImageDescriptor("add.png"));
-		
-		removeBIAction = new Action()
-		{
-			public void run()
-			{
-				if (currentTreeSelection instanceof BusinessColumn){
-					BusinessColumn businessColumn = ((BusinessColumn)currentTreeSelection);
-					BusinessTable businessTable = businessColumn.getTable();
-					BusinessIdentifier businessIdentifier = businessTable.getModel().getIdentifier(businessTable);
-					if ( businessIdentifier.getColumns().size() > 0){
-						//remove only the column
-						businessIdentifier.getColumns().remove(businessColumn);		
-					}
-					if ( businessIdentifier.getColumns().size() == 0){
-						//remove the empty businessidentifier
-						businessTable.getModel().getIdentifiers().remove(businessIdentifier);
-					}
-					bmTree.update(businessColumn, null);
-					showMessage("Business Identifier Removed");
-					
-				}
-				else if (currentTreeSelection instanceof BusinessIdentifier){
-					((BusinessIdentifier)currentTreeSelection).getModel().getIdentifiers().remove(currentTreeSelection);
-					showMessage("Business Identifier Removed");
-				}
-
-			}
-		};
-		removeBIAction.setText("Remove Business Identifier");
-		removeBIAction.setToolTipText("Remove Business Identifier");
-		removeBIAction.setImageDescriptor(Activator.getImageDescriptor("remove.png"));		
-		
-	}	
-
-	/**
-	 * Create Business Relationship Action to show in the context menu
-	 */
-	private void createBRActions()
-	{
-		addBRAction = new Action()
-		{
-			public void run()
-			{
-				//Start Create Business Relationship Wizard
-				//Get Active Window
-				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-				AddBusinessRelationshipWizard wizard;
-				//Launch AddBusinessIdentifierWizard
-				if (currentTreeSelection instanceof BusinessTable){
-					BusinessTable businessTable = ((BusinessTable)currentTreeSelection);
-					String tableName = businessTable.getName();
-					wizard = new AddBusinessRelationshipWizard(tableName);
-				}
-				else {
-					wizard = new AddBusinessRelationshipWizard(null);
-				}
-		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
-				dialog.create();
-		    	dialog.open();
-		    	
-		    	//caching expanded elements, refresh tree and restore expanded elements
-		    	Object[] expandedElements = bmTree.getExpandedElements();
-		    	bmTree.refresh();
-		    	bmTree.setExpandedElements(expandedElements);
-
-			}
-		};
-		addBRAction.setText("Add Business Relationship");
-		addBRAction.setToolTipText("Add Business Relationship");
-		addBRAction.setImageDescriptor(Activator.getImageDescriptor("add.png"));
-		
-		removeBRAction = new Action()
-		{
-			public void run()
-			{
-				((BusinessRelationship)currentTreeSelection).getModel().getRelationships().remove(currentTreeSelection);
-				showMessage("Remove BR executed");
-			}
-		};
-		removeBRAction.setText("Remove Business Relationship");
-		removeBRAction.setToolTipText("Remove Business Relationship");
-		removeBRAction.setImageDescriptor(Activator.getImageDescriptor("remove.png"));
-	}	
 	
-	@Override
-	public void menuAboutToShow(IMenuManager manager) {
-		//create context menu based on the current tree selection
-		if (currentTreeSelection instanceof BusinessRootItemProvider){
-			manager.removeAll();
-			manager.add(addBTAction);
-			//manager.add(addBIAction);
-			manager.add(addBRAction);
-		} else if (currentTreeSelection instanceof BusinessTable){
-			manager.removeAll();
-			manager.add(removeBTAction);
-			manager.add(addBCAction);
-			manager.add(addBIAction);
-			manager.add(addBRAction);
-		}  else if (currentTreeSelection instanceof BusinessColumn){
-			BusinessColumn businessColumn = (BusinessColumn)currentTreeSelection;
-			BusinessIdentifier businessIdentifier = businessColumn.getTable().getIdentifier();
-			manager.removeAll();
-			if ( (businessIdentifier == null) || (!businessIdentifier.getColumns().contains(businessColumn)) ){
-				manager.add(setAsBusinessIdentifierAction);
-			}
-			manager.add(removeBCAction);
-			if(((BusinessColumn)currentTreeSelection).isIdentifier()){
-				manager.add(removeBIAction);
-			}
-		} else if (currentTreeSelection instanceof BusinessIdentifier){
-			manager.removeAll();
-			manager.add(removeBIAction);
-		} else if (currentTreeSelection instanceof BusinessRelationship){
-			manager.removeAll();
-			manager.add(removeBRAction);
-		}			
-			
-	}
 	
-	// --------------------------------------------------------
-	
-	//Show a Message in a Dialog
-	private void showMessage(String message)
-	{
-		MessageDialog.openInformation(bmTree.getControl().getShell(), "Business Model Editor", message);
-	}
 
 	/*
 	 * check what element is selected in the tree
@@ -554,7 +208,7 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		ISelection selection;
-		if (event.getSelectionProvider() == bmTree){
+		if (event.getSelectionProvider() == businessModelTreeViewer){
 			selection = event.getSelection();
 		    if (selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() == 1)
 		    {
@@ -563,6 +217,10 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 		}
 		
 	}	
+	
+	public Object getCurrentTreeSelection() {
+		return currentTreeSelection;
+	}
 
 	/**
 	 * This returns the editing domain as required by the {@link IEditingDomainProvider} interface.
@@ -606,6 +264,14 @@ public class BusinessModelView extends ViewPart implements IMenuListener, ISelec
 	
 	@Override
 	public void setFocus() {
-		sc.setFocus();
+		scrolledComposite.setFocus();
 	}	
+	
+	public TreeViewer getBusinessModelTreeViewer() {
+		return businessModelTreeViewer;
+	}
+
+	public void setBusinessModelTreeViewer(TreeViewer businessModelTreeViewer) {
+		this.businessModelTreeViewer = businessModelTreeViewer;
+	}
 }

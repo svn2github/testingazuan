@@ -26,8 +26,9 @@ public class AddBusinessTableWizardPageTwo extends WizardPage {
 	private AddBusinessTableWizardPageOne pageOneRef;
 	private TableItem[] columnsToImport;
 	private boolean columnSelected = false;
+	private PhysicalTable physicalTable;
 	
-	protected AddBusinessTableWizardPageTwo(String pageName, AddBusinessTableWizardPageOne pageOne ) {
+	protected AddBusinessTableWizardPageTwo(String pageName, AddBusinessTableWizardPageOne pageOne, PhysicalTable physicalTable) {
 		super(pageName);
 		setTitle("Business Table Creation");
 		setDescription("Please select the columns to use in your Business Table");
@@ -35,6 +36,7 @@ public class AddBusinessTableWizardPageTwo extends WizardPage {
 		columnsToImport = null;
 	    if (image!=null) setImageDescriptor(image);	
 	    pageOneRef = pageOne;
+	    this.physicalTable = physicalTable;
 	}
 
 	@Override
@@ -167,12 +169,19 @@ public class AddBusinessTableWizardPageTwo extends WizardPage {
 
 			}
 		}); 	
+        
+ 		//Important: Setting page control
+ 		setControl(composite);
  		
  		//first check
- 		checkPageComplete(); 		
-		
-        //Important: Setting page control
- 		setControl(composite);
+ 		checkPageComplete();
+ 		
+ 		//workaround: if a PhysicalTable is passed, use It to populate widgets
+ 		if (physicalTable != null){
+ 			addTableItems(physicalTable);
+ 			pageOneRef.checkPageComplete();
+ 		}
+
 	}
 	
 	//add the original physical columns as TableItem (in the left Table Widget)
@@ -193,6 +202,24 @@ public class AddBusinessTableWizardPageTwo extends WizardPage {
 			}
 		}
 	}
+
+	//add the original physical columns as TableItem (in the left Table Widget), whit PhysicalTable specified
+	public void addTableItems(PhysicalTable physicalTable){		
+		columns.removeAll();
+		fields.removeAll();
+		//retrieve the Physical Table Columns
+		PhysicalTable pTable = physicalTable;
+		int numCols = pTable.getColumns().size();
+		for (int i=0; i<numCols; i++){
+			TableItem ti = new TableItem(columns, 0);
+			PhysicalColumn pColumn = pTable.getColumns().get(i);
+			//associate table item with the object It represents
+			ti.setData(pColumn);
+			ti.setText(pColumn.getName());
+		}
+
+	}	
+	
 	
 	//check if the right conditions to go forward occurred
 	private void checkPageComplete(){

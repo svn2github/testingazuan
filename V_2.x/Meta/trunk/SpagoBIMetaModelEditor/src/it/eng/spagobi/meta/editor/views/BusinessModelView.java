@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.views;
 
+import it.eng.spagobi.meta.editor.dnd.PhysicalTableDropListener;
 import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
@@ -47,6 +48,10 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -129,6 +134,12 @@ public class BusinessModelView extends ViewPart implements ISelectionChangedList
 	    //setting initial input
 		model.eAdapters().add(new BusinessModelItemProviderAdapterFactory().createBusinessModelAdapter());
 	    businessModelTreeViewer.setInput(model);
+	    
+	    //set drop target
+		int operations = DND.DROP_COPY | DND.DROP_MOVE;
+		Transfer[] transferTypes = new Transfer[]{TextTransfer.getInstance()};
+		DropTargetListener dragSourceListener = new PhysicalTableDropListener(businessModelTreeViewer);
+		businessModelTreeViewer.addDropSupport(operations, transferTypes, dragSourceListener);
 	    
 	    businessModelGroup.setText("Business Model: "+model.getName());
 	    

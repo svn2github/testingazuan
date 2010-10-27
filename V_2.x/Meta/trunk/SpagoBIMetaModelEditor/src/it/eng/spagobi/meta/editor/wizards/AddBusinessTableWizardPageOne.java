@@ -3,6 +3,7 @@ package it.eng.spagobi.meta.editor.wizards;
 import it.eng.spagobi.meta.editor.Activator;
 import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -27,13 +28,15 @@ public class AddBusinessTableWizardPageOne extends WizardPage {
 	private String tableSelected;
 	private boolean columnSelection;
 	private AddBusinessTableWizardPageTwo pageTwoRef;
+	private PhysicalTable physicalTable;
 	
-	protected AddBusinessTableWizardPageOne(String pageName) {
+	protected AddBusinessTableWizardPageOne(String pageName, PhysicalTable physicalTable) {
 		super(pageName);
 		setTitle("Business Table Creation");
 		setDescription("Please select the physical table used to create the Business Table.");
 		ImageDescriptor image = Activator.getImageDescriptor("wizards/createBC.png");
 	    if (image!=null) setImageDescriptor(image);	
+	    this.physicalTable = physicalTable;
 	}
 
 	@Override
@@ -67,6 +70,9 @@ public class AddBusinessTableWizardPageOne extends WizardPage {
  		gdList.heightHint = 250;
  		tableList.setLayoutData(gdList);
  		
+        //Important: Setting page control
+ 		setControl(composite);
+ 		
  		populateTableList();
  		
 		//adding listener to List
@@ -78,13 +84,30 @@ public class AddBusinessTableWizardPageOne extends WizardPage {
 				checkPageComplete();
 			}
 		});
+ 		
+ 		checkPageComplete();
+ 		
+		//select physical table and disable widget
+		if (physicalTable != null){
+			String[] items = tableList.getItems();
+			for (int i=0; i<items.length ; i++){
+				if (items[i].equals(physicalTable.getName())){
+					tableList.select(i);
+					setTableSelected(items[i]);
+					tableList.setEnabled(false);					
+					break;
+				}
+			}
+		}
+ 		
 
- 	    checkPageComplete();
-				
-        //Important: Setting page control
- 		setControl(composite);
+ 		
+	}
+	
+	public void setPhysicalTableSelection(){
 
 	}
+
 	
 	//populate the list with the Physical Tables' names
 	private void populateTableList(){
@@ -98,30 +121,20 @@ public class AddBusinessTableWizardPageOne extends WizardPage {
 	}
 
 	//check if the right conditions to go forward occurred
-	private void checkPageComplete(){
+	public void checkPageComplete(){
 		if(tableSelected != null){
 			setPageComplete(true);
 			if (pageTwoRef != null){
 				setColumnSelection(true);
-				pageTwoRef.addTableItems(tableSelected);
+				if (physicalTable == null){
+					pageTwoRef.addTableItems(tableSelected);
+				}
 			}
 		}
 		else{			
 			setPageComplete(false);
 		}		
 	}	
-	/*
-	public IWizardPage getNextPage() {
-		//check if column selection is needed
-		setColumnSelection(pageOneRef.isColumnSelection());
-		//go to finish page
-		if (!isColumnSelection()) {
-			//return null;
-			return getWizard().getPage("Create Business Table step three");
-		}
-		//go to the column selection page
-		return getWizard().getPage("Create Business Table step three");
-	}	*/
 	
 	/**
 	 * @param tableSelected the tableSelected to set

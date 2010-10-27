@@ -80,10 +80,10 @@ public class PhysicalModelView extends ViewPart implements IAdaptable {
 			scrolledComposite.setMinSize(container.computeSize(200, 300));
 			
 			//Setting up tree for tables
-			Group connGroup = new Group(container, SWT.SHADOW_ETCHED_IN);
-			connGroup.setText(cp.getName());
-			connGroup.setLayout(new GridLayout());
-			physicalModelTree = new TreeViewer(connGroup, SWT.VIRTUAL | SWT.BORDER);
+			Group physicalGroup = new Group(container, SWT.SHADOW_ETCHED_IN);
+			physicalGroup.setText(cp.getName());
+			physicalGroup.setLayout(new GridLayout());
+			physicalModelTree = new TreeViewer(physicalGroup, SWT.VIRTUAL | SWT.BORDER | SWT.MULTI);
 	
 			//Setting TreeViewer for EMF Model instances
 			List<PhysicalModelAdapterFactory> factories = new ArrayList<PhysicalModelAdapterFactory>();
@@ -91,10 +91,10 @@ public class PhysicalModelView extends ViewPart implements IAdaptable {
 			ComposedAdapterFactory adapterFactory = new ComposedAdapterFactory(factories);			
 			physicalModelTree.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
 			physicalModelTree.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
-			//connTree.setLabelProvider(new DBTreeAdapterFactoryLabelProvider(adapterFactory));
 			physicalModelTree.setUseHashlookup(true);
 			model.eAdapters().add(new PhysicalModelItemProviderAdapterFactory().createPhysicalModelAdapter());
 			physicalModelTree.setInput(model);
+			//Setting the tree as a selection provider
 			getSite().setSelectionProvider(physicalModelTree);
 			
 			
@@ -106,7 +106,7 @@ public class PhysicalModelView extends ViewPart implements IAdaptable {
 			
 			//setting datalayout
 		    GridData gd = new GridData(GridData.FILL_BOTH);
-			connGroup.setLayoutData(gd);
+			physicalGroup.setLayoutData(gd);
 			physicalModelTree.getTree().setLayoutData(gd);
 			
 			Point p = container.getSize();
@@ -117,7 +117,6 @@ public class PhysicalModelView extends ViewPart implements IAdaptable {
 			IViewPart businessModelView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("it.eng.spagobi.meta.editor.BusinessModel");
 			
 			//invoke tree creation on BusinessModelView
-			//((BusinessModelView)businessModelView).initComposite();
 			BusinessModel businessModel = BusinessModelFactory.eINSTANCE.createBusinessModel();
 			//Getting CoreSingleton instance
 			CoreSingleton cs = CoreSingleton.getInstance();

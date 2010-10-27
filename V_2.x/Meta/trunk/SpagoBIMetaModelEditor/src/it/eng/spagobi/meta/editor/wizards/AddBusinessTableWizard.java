@@ -24,22 +24,23 @@ public class AddBusinessTableWizard extends Wizard {
 	private AddBusinessTableWizardPageOne pageOne;
 	private AddBusinessTableWizardPageTwo pageTwo;
 	private TableItem[] columnsToImport;
+	private PhysicalTable physicalTable;
 	
-	public AddBusinessTableWizard(){
+	public AddBusinessTableWizard(PhysicalTable physicalTable){
 		super();
 		this.setWindowTitle("Create a new Business Table");
 		this.setHelpAvailable(false);
+		this.physicalTable = physicalTable;
 	}
 	
 	@Override
 	public void addPages() {
-		//pageOne = new AddBusinessTableWizardPageOne("Create Business Table step one");
-		//addPage(pageOne);
-		pageOne = new AddBusinessTableWizardPageOne("Create Business Table step one");
+		pageOne = new AddBusinessTableWizardPageOne("Create Business Table step one", physicalTable);
 		addPage(pageOne);
-		pageTwo = new AddBusinessTableWizardPageTwo("Create Business Table step two", pageOne);
+		pageTwo = new AddBusinessTableWizardPageTwo("Create Business Table step two", pageOne, physicalTable);
 		addPage(pageTwo);
 		pageOne.setPageTwoRef(pageTwo);
+		
 	}
 	
 	@Override

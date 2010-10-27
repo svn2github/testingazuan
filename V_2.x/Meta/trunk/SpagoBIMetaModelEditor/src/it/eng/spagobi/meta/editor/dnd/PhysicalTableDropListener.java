@@ -3,11 +3,11 @@
  */
 package it.eng.spagobi.meta.editor.dnd;
 
-import it.eng.spagobi.meta.editor.wizards.AddBCWizard;
+import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
+import it.eng.spagobi.meta.editor.wizards.AddBusinessTableWizard;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
-import java.util.ArrayList;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -19,40 +19,28 @@ import org.eclipse.ui.PlatformUI;
 
 public class PhysicalTableDropListener  extends ViewerDropAdapter {
 
-	private final Viewer viewer;
-	//private BMWrapper bmw;
-
-	public PhysicalTableDropListener(Viewer v){
-		super(v);
-		this.viewer = v;
-		//get unique instance of BMWrapper
-		//this.bmw = BMWrapper.getInstance();
+	private final TreeViewer treeViewer;
+	private CoreSingleton coreSingleton = CoreSingleton.getInstance();
+	
+	public PhysicalTableDropListener(TreeViewer tree){
+		super(tree);
+		treeViewer = tree;
 	}
 	
 	// This method performs the actual drop
 	@Override
 	public boolean performDrop(Object data) {
-		//Get Active Window
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		//Launch AddBCWizard
-		AddBCWizard wizard = new AddBCWizard(data.toString());
-    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
-		dialog.create();
-    	dialog.open();
-		
-    	/*
-		//Retrieve Business Model
-		ArrayList<BusinessModel> el = (ArrayList<BusinessModel>)bmw.getBm();
-		BusinessModel bm =  el.get(0);
-		
-		//Add dropped element to the business model
-		bm.addBc(new BusinessClass(data.toString(),bm));
-		el = new ArrayList<BusinessModel>();
-		el.add(bm);
-		bmw.setBm(el);
-		viewer.setInput(bmw);
-		((TreeViewer)viewer).expandAll();
-		*/
+		//getting physical table
+		PhysicalTable physicalTable = coreSingleton.getPhysicalModel().getTable(data.toString());
+		if (physicalTable != null){
+			//Get Active Window
+			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+			//Launch AddBCWizard
+			AddBusinessTableWizard wizard = new AddBusinessTableWizard(physicalTable);
+	    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
+			dialog.create();
+	    	dialog.open();
+		}	
 		return false;
 	}
 

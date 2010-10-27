@@ -51,7 +51,7 @@ public class AddBusinessTableAction extends BusinessModelAction {
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		
 		//Launch AddBusinessTableWizard
-		AddBusinessTableWizard wizard = new AddBusinessTableWizard();
+		AddBusinessTableWizard wizard = new AddBusinessTableWizard(null);
     	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
 		dialog.create();
     	dialog.open();

@@ -17,12 +17,12 @@ import org.eclipse.ui.PlatformUI;
 
 
 
-public class TableDropListener  extends ViewerDropAdapter {
+public class PhysicalTableDropListener  extends ViewerDropAdapter {
 
 	private final Viewer viewer;
 	//private BMWrapper bmw;
 
-	public TableDropListener(Viewer v){
+	public PhysicalTableDropListener(Viewer v){
 		super(v);
 		this.viewer = v;
 		//get unique instance of BMWrapper

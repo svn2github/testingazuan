@@ -11,11 +11,11 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.TextTransfer;
 
-public class TableDragListener implements DragSourceListener {
+public class PhysicalTableDragListener implements DragSourceListener {
 
 	private final TreeViewer connTree;
 
-	public TableDragListener(TreeViewer viewer) {
+	public PhysicalTableDragListener(TreeViewer viewer) {
 		this.connTree = viewer;
 	}
 

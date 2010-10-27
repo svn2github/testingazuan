@@ -39,7 +39,7 @@ public class AddBusinessColumnAction extends BusinessModelAction {
 	public AddBusinessColumnAction(BusinessModelView businessModelView) {
 		super(businessModelView);
 		setText("Edit Business Columns");
-		setToolTipText("Edit Business Column");
+		setToolTipText("Edit Business Columns");
 		setImageDescriptor(Activator.getImageDescriptor("add.png"));
 	}
 

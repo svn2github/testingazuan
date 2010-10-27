@@ -6,7 +6,7 @@
 package it.eng.spagobi.meta.editor.views;
 
 
-import it.eng.spagobi.meta.editor.dnd.TableDragListener;
+import it.eng.spagobi.meta.editor.dnd.PhysicalTableDragListener;
 import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
 import it.eng.spagobi.meta.editor.util.DSEBridge;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -47,14 +47,14 @@ import org.eclipse.ui.views.properties.PropertySheetPage;
 
 public class PhysicalModelView extends ViewPart implements IAdaptable {
 	
-	private ScrolledComposite sc;
+	private ScrolledComposite scrolledComposite;
 	protected PropertySheetPage propertySheetPage;
-	public TreeViewer connTree;
+	public TreeViewer physicalModelTree;
 
 	
 	@Override
 	public void createPartControl(Composite parent) {
-		sc = new ScrolledComposite(parent, SWT.H_SCROLL |   
+		scrolledComposite = new ScrolledComposite(parent, SWT.H_SCROLL |   
 				  SWT.V_SCROLL | SWT.BORDER);
 	}
 	
@@ -67,47 +67,47 @@ public class PhysicalModelView extends ViewPart implements IAdaptable {
 		//check if the connection extraction is successful
 		if (model != null){
 			//create a new Composite to host the tree structure
-			Composite container = new Composite(sc, SWT.NONE);
+			Composite container = new Composite(scrolledComposite, SWT.NONE);
 			GridLayout gridLayout = new GridLayout(); 
 			gridLayout.numColumns = 1; 
 			gridLayout.makeColumnsEqualWidth = true;
 			container.setLayout(gridLayout); 
 		
 			//Insert composite inside ScrolledComposite
-			sc.setContent(container);
-			sc.setExpandHorizontal(true);
-			sc.setExpandVertical(true);
-			sc.setMinSize(container.computeSize(200, 300));
+			scrolledComposite.setContent(container);
+			scrolledComposite.setExpandHorizontal(true);
+			scrolledComposite.setExpandVertical(true);
+			scrolledComposite.setMinSize(container.computeSize(200, 300));
 			
 			//Setting up tree for tables
 			Group connGroup = new Group(container, SWT.SHADOW_ETCHED_IN);
 			connGroup.setText(cp.getName());
 			connGroup.setLayout(new GridLayout());
-			connTree = new TreeViewer(connGroup, SWT.VIRTUAL | SWT.BORDER);
+			physicalModelTree = new TreeViewer(connGroup, SWT.VIRTUAL | SWT.BORDER);
 	
 			//Setting TreeViewer for EMF Model instances
 			List<PhysicalModelAdapterFactory> factories = new ArrayList<PhysicalModelAdapterFactory>();
 			factories.add(new PhysicalModelItemProviderAdapterFactory());
 			ComposedAdapterFactory adapterFactory = new ComposedAdapterFactory(factories);			
-			connTree.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-			connTree.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
+			physicalModelTree.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
+			physicalModelTree.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
 			//connTree.setLabelProvider(new DBTreeAdapterFactoryLabelProvider(adapterFactory));
-			connTree.setUseHashlookup(true);
+			physicalModelTree.setUseHashlookup(true);
 			model.eAdapters().add(new PhysicalModelItemProviderAdapterFactory().createPhysicalModelAdapter());
-			connTree.setInput(model);
-			getSite().setSelectionProvider(connTree);
+			physicalModelTree.setInput(model);
+			getSite().setSelectionProvider(physicalModelTree);
 			
 			
 			//set drag source
 			int operations = DND.DROP_COPY | DND.DROP_MOVE;
 			Transfer[] transferTypes = new Transfer[]{TextTransfer.getInstance()};
-			DragSourceListener dsListener = new TableDragListener(connTree);
-			connTree.addDragSupport(operations, transferTypes, dsListener);
+			DragSourceListener dragSourceListener = new PhysicalTableDragListener(physicalModelTree);
+			physicalModelTree.addDragSupport(operations, transferTypes, dragSourceListener);
 			
 			//setting datalayout
 		    GridData gd = new GridData(GridData.FILL_BOTH);
 			connGroup.setLayoutData(gd);
-			connTree.getTree().setLayoutData(gd);
+			physicalModelTree.getTree().setLayoutData(gd);
 			
 			Point p = container.getSize();
 			container.pack();
@@ -136,7 +136,7 @@ public class PhysicalModelView extends ViewPart implements IAdaptable {
  
 	@Override
 	public void setFocus() {
-		sc.setFocus();
+		scrolledComposite.setFocus();
 	}
 	
 	/**

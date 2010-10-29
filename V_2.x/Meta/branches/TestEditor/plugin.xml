@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ <copyright>
+ </copyright>
+
+ $Id$
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="it.eng.spagobi.meta.model.presentation.ModelModelWizardID"
+            name="%_UI_ModelModelWizard_label"
+            class="it.eng.spagobi.meta.model.presentation.ModelModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/ModelModelFile.gif">
+         <description>%_UI_ModelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="it.eng.spagobi.meta.model.presentation.ModelEditorID"
+            name="%_UI_ModelEditor_label"
+            icon="icons/full/obj16/ModelModelFile.gif"
+            extensions="model"
+            class="it.eng.spagobi.meta.model.presentation.ModelEditor"
+            contributorClass="it.eng.spagobi.meta.model.presentation.ModelActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="it.eng.spagobi.meta.model.physical.presentation.PhysicalModelModelWizardID"
+            name="%_UI_PhysicalModelModelWizard_label"
+            class="it.eng.spagobi.meta.model.physical.presentation.PhysicalModelModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/PhysicalModelModelFile.gif">
+         <description>%_UI_PhysicalModelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditorID"
+            name="%_UI_PhysicalModelEditor_label"
+            icon="icons/full/obj16/PhysicalModelModelFile.gif"
+            extensions="physicalmodel"
+            class="it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditor"
+            contributorClass="it.eng.spagobi.meta.model.physical.presentation.PhysicalModelActionBarContributor">
+      </editor>
+   </extension>
+   
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="it.eng.spagobi.meta.model.business.presentation.SpagoBIModelEditorID"
+            name="%_UI_PhysicalModelEditor_label"
+            icon="icons/full/obj16/BusinessModelModelFile.gif"
+            extensions="model"
+            class="it.eng.spagobi.meta.model.business.presentation.SpagoBIModelEditor"
+            contributorClass="it.eng.spagobi.meta.model.physical.presentation.PhysicalModelActionBarContributor">
+      </editor>
+   </extension>
+   
+   
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="it.eng.spagobi.meta.model.business.presentation.BusinessModelModelWizardID"
+            name="%_UI_BusinessModelModelWizard_label"
+            class="it.eng.spagobi.meta.model.business.presentation.BusinessModelModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/BusinessModelModelFile.gif">
+         <description>%_UI_BusinessModelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="it.eng.spagobi.meta.model.business.presentation.BusinessModelEditorID"
+            name="%_UI_BusinessModelEditor_label"
+            icon="icons/full/obj16/BusinessModelModelFile.gif"
+            extensions="businessmodel"
+            class="it.eng.spagobi.meta.model.business.presentation.BusinessModelEditor"
+            contributorClass="it.eng.spagobi.meta.model.business.presentation.BusinessModelActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="it.eng.spagobi.meta.model.olap.presentation.OlapModelModelWizardID"
+            name="%_UI_OlapModelModelWizard_label"
+            class="it.eng.spagobi.meta.model.olap.presentation.OlapModelModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/OlapModelModelFile.gif">
+         <description>%_UI_OlapModelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="it.eng.spagobi.meta.model.olap.presentation.OlapModelEditorID"
+            name="%_UI_OlapModelEditor_label"
+            icon="icons/full/obj16/OlapModelModelFile.gif"
+            extensions="olapmodel"
+            class="it.eng.spagobi.meta.model.olap.presentation.OlapModelEditor"
+            contributorClass="it.eng.spagobi.meta.model.olap.presentation.OlapModelActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="it.eng.spagobi.meta.model.behavioural.presentation.BehaviouralModelModelWizardID"
+            name="%_UI_BehaviouralModelModelWizard_label"
+            class="it.eng.spagobi.meta.model.behavioural.presentation.BehaviouralModelModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/BehaviouralModelModelFile.gif">
+         <description>%_UI_BehaviouralModelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="it.eng.spagobi.meta.model.behavioural.presentation.BehaviouralModelEditorID"
+            name="%_UI_BehaviouralModelEditor_label"
+            icon="icons/full/obj16/BehaviouralModelModelFile.gif"
+            extensions="behaviouralmodel"
+            class="it.eng.spagobi.meta.model.behavioural.presentation.BehaviouralModelEditor"
+            contributorClass="it.eng.spagobi.meta.model.behavioural.presentation.BehaviouralModelActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="it.eng.spagobi.meta.model.analytical.presentation.AnalyticalModelModelWizardID"
+            name="%_UI_AnalyticalModelModelWizard_label"
+            class="it.eng.spagobi.meta.model.analytical.presentation.AnalyticalModelModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/AnalyticalModelModelFile.gif">
+         <description>%_UI_AnalyticalModelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="it.eng.spagobi.meta.model.analytical.presentation.AnalyticalModelEditorID"
+            name="%_UI_AnalyticalModelEditor_label"
+            icon="icons/full/obj16/AnalyticalModelModelFile.gif"
+            extensions="analyticalmodel"
+            class="it.eng.spagobi.meta.model.analytical.presentation.AnalyticalModelEditor"
+            contributorClass="it.eng.spagobi.meta.model.analytical.presentation.AnalyticalModelActionBarContributor">
+      </editor>
+   </extension>
+
+</plugin>

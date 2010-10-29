@@ -274,10 +274,9 @@ public class BusinessModelActionBarContributor
 
 			EditingDomain domain = ((IEditingDomainProvider)activeEditorPart).getEditingDomain();
 
-			if(object instanceof EObject) {
 			newChildDescriptors = domain.getNewChildDescriptors(object, null);
-			newSiblingDescriptors = domain.getNewChildDescriptors(null, object);
-			}
+			//newSiblingDescriptors = domain.getNewChildDescriptors(null, object);
+			
 		}
 
 		// Generate actions for selection; populate and redraw the menus.

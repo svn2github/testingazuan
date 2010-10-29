@@ -2,9 +2,10 @@
 <genmodel:GenModel xmi:version="2.0"
     xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/SpagoBIMetaModel/src"
-    editDirectory="/SpagoBIMetaModelEdit/src" modelPluginID="SpagoBIMetaModel" modelName="SpagoBIMetalModel"
+    editDirectory="/SpagoBIMetaModelEdit/src" editorDirectory="/TestEditor/src" modelPluginID="SpagoBIMetaModel"
+    modelName="SpagoBIMetalModel" editorPluginClass="it.eng.spagobi.meta.model.test.TestEditorPlugin"
     importerID="org.eclipse.emf.importer.ecore" complianceLevel="5.0" copyrightFields="false"
-    editPluginID="it.eng.spagobi.meta.edit" optimizedHasChildren="true">
+    editPluginID="it.eng.spagobi.meta.edit" editorPluginID="TestEditorPlugin" optimizedHasChildren="true">
   <foreignModel>SpagoBIMetaModel.ecore</foreignModel>
   <genPackages prefix="Model" basePackage="it.eng.spagobi.meta" disposableProviderFactory="true"
       ecorePackage="SpagoBIMetaModel.ecore#/">

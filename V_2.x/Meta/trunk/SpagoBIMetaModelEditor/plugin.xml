@@ -102,5 +102,20 @@
             project="false">
       </wizard>
    </extension>
+   
+   <!--
+   
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="it.eng.spagobi.meta.editor.editors.BusinessModelEditorID"
+            name="%_UI_BusinessModelEditor_label"
+            icon="icons/businessmodel.png"
+            extensions="businessmodel"
+            class="it.eng.spagobi.meta.editor.editors.BusinessModelEditor"
+            contributorClass="it.eng.spagobi.meta.editor.editors.BusinessModelActionBarContributor">
+      </editor>
+   </extension>
+   
+   -->
 
 </plugin>

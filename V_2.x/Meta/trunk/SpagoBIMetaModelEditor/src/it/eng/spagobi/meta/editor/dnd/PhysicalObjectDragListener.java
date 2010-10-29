@@ -5,6 +5,7 @@ package it.eng.spagobi.meta.editor.dnd;
 
 import java.util.List;
 
+import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -50,8 +51,13 @@ public class PhysicalObjectDragListener implements DragSourceListener {
 			}
 		} else if (selection.size() == 1){
 			//single selection
-			PhysicalTable physicalTable = (PhysicalTable) selection.getFirstElement();
-			textToTransfer = physicalTable.getName(); 
+			if (selection.getFirstElement() instanceof PhysicalTable){
+				PhysicalTable physicalTable = (PhysicalTable) selection.getFirstElement();
+				textToTransfer = physicalTable.getName(); 
+			}
+			if (selection.getFirstElement() instanceof PhysicalColumn){
+				
+			}
 		}
 
 		if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
@@ -65,7 +71,7 @@ public class PhysicalObjectDragListener implements DragSourceListener {
 		IStructuredSelection selection = (IStructuredSelection) physicalModelTree.getSelection();
 		//if selected element is not of the appropriate type don't start the drag
 		if (selection.getFirstElement() instanceof PhysicalTable == false)
-			event.doit = false;
+			event.doit = false;	
 	}
 
 }

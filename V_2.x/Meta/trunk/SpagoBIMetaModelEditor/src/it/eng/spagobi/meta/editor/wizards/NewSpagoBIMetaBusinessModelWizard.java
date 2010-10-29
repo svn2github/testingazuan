@@ -22,7 +22,7 @@ import org.eclipse.ui.WorkbenchException;
 
 public class NewSpagoBIMetaBusinessModelWizard extends Wizard implements INewWizard{
 
-	private NewBusinessClassWizardPage1 one;
+	private NewBusinessClassWizardPageOne one;
 	
 	public NewSpagoBIMetaBusinessModelWizard() {
 		super();
@@ -33,7 +33,7 @@ public class NewSpagoBIMetaBusinessModelWizard extends Wizard implements INewWiz
 
 	@Override
 	public void addPages() {
-		one = new NewBusinessClassWizardPage1("New SpagoBI BM Project Page");
+		one = new NewBusinessClassWizardPageOne("New SpagoBI BM Project Page");
 		addPage(one);
 	}
 	

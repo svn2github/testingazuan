@@ -137,7 +137,7 @@ public class BusinessModelView extends ViewPart implements ISelectionChangedList
 	    
 	    //set drop target
 		int operations = DND.DROP_COPY | DND.DROP_MOVE;
-		Transfer[] transferTypes = new Transfer[]{TextTransfer.getInstance()};
+		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance() };
 		DropTargetListener dragSourceListener = new PhysicalObjectDropListener(businessModelTreeViewer);
 		businessModelTreeViewer.addDropSupport(operations, transferTypes, dragSourceListener);
 	    

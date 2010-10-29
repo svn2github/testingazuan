@@ -17,13 +17,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-public class NewBusinessClassWizardPage1 extends WizardPage {
+public class NewBusinessClassWizardPageOne extends WizardPage {
 
 	private Label lblName;
 	private Text bmName;
 
 
-	protected NewBusinessClassWizardPage1(String pageName) {
+	protected NewBusinessClassWizardPageOne(String pageName) {
 		super(pageName);
 		setDescription("This wizard drives you to create a new SpagoBI Meta Business Model," +
 		" please insert a name for your BM.");

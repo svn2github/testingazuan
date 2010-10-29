@@ -19,9 +19,13 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.presentation;
+package it.eng.spagobi.meta.model.presentation;
+
+import java.io.File;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -30,25 +34,50 @@ import org.eclipse.ui.IPersistableElement;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class PhysicalModelInput implements IEditorInput{
+public class BusinessModelInput implements IEditorInput{
+
+	// the file used to load/store the model
+	File resourceFile;	
+	URI rootObjectURI;
 	
-	URI uri;
 	
-	public URI getUri() {
-		return uri;
+	public BusinessModelInput(File resourceFile) {
+		setResourceFile(resourceFile);
+	}
+	
+	public BusinessModelInput(File resourceFile, EObject rootObject) {
+		setResourceFile(resourceFile);
+		setRootObject(rootObject);
+	}
+	
+	
+	public URI getResourceFileURI() {
+		return resourceFile!=null? URI.createFileURI(resourceFile.getAbsolutePath().toString()): null;
+	}
+	
+	public File getResourceFile() {
+		return resourceFile;
+	}
+
+	public void setResourceFile(File resourceFile) {
+		this.resourceFile = resourceFile;
+	}
+
+	public URI getRootObjectURI() {
+		return rootObjectURI;
 	}
 
 
-	public void setUri(URI uri) {
-		this.uri = uri;
-	}
-
-
-	public PhysicalModelInput(URI fileURI) {
-		uri = fileURI;
+	public void setRootObject(EObject rootObject) {
+		this.rootObjectURI = EcoreUtil.getURI(rootObject);
 	}
 	
+	public void setRootObject(URI rootObjectURI) {
+		this.rootObjectURI = rootObjectURI;
+	}
 
+
+	
 	@Override
 	public Object getAdapter(Class arg0) {
 		// TODO Auto-generated method stub
@@ -69,7 +98,7 @@ public class PhysicalModelInput implements IEditorInput{
 
 	@Override
 	public String getName() {
-		return "PhysicalModelInput";
+		return "BusinessModelInput";
 	}
 
 	@Override

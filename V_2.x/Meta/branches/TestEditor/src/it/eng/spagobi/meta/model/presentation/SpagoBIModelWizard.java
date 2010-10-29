@@ -86,10 +86,11 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessTable;
-import it.eng.spagobi.meta.model.business.presentation.BusinessModelInput;
-import it.eng.spagobi.meta.model.business.presentation.PhysicalModelInput;
+import it.eng.spagobi.meta.model.business.presentation.BusinessModelEditor;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
+import it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditor;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
 
@@ -114,6 +115,7 @@ import org.eclipse.ui.PartInitException;
  * @generated
  */
 public class SpagoBIModelWizard  extends Wizard implements INewWizard {
+		
 	/**
 	 * The supported extensions for created files.
 	 * <!-- begin-user-doc -->
@@ -216,14 +218,20 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 	protected EObject createInitialModel() {
 		Model spagobiModel = ModelFactory.eINSTANCE.createModel();
 		spagobiModel.setName("Fodmart DWH");
+		
 		PhysicalModel physicalModel = PhysicalModelFactory.eINSTANCE.createPhysicalModel();
 		physicalModel.setName("Physical model (Fodmart DWH)");
+		PhysicalTable physicalTable = PhysicalModelFactory.eINSTANCE.createPhysicalTable();
+		physicalTable.setName("table1");
+		physicalModel.getTables().add(physicalTable);
+		
 		BusinessModel businessModel = BusinessModelFactory.eINSTANCE.createBusinessModel();
+		businessModel.setName("Business model (Fodmart DWH)");
 		BusinessTable businessTable = BusinessModelFactory.eINSTANCE.createBusinessTable();
 		businessTable.setName("Tabella 1");
-		businessModel.setName("Business model (Fodmart DWH)");
 		businessModel.setPhysicalModel(physicalModel);
 		businessModel.getTables().add(businessTable);
+		
 		spagobiModel.getPhysicalModels().add(physicalModel);
 		spagobiModel.getBusinessModels().add(businessModel);
 		return spagobiModel;
@@ -300,33 +308,21 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 			}
 
 			// Open an editor on the new file.
-			//
-			
+			//			
 			try {
 				
-				PhysicalModelInput pInput = new PhysicalModelInput(fileURI);
-				BusinessModelInput bInput = new BusinessModelInput(fileURI);
+				PhysicalModel targetPhysicalModel =  spagobiModel.getPhysicalModels().get(0);
+				PhysicalModelInput physicalModelInput = new PhysicalModelInput(modelFile, targetPhysicalModel);
+				
 				BusinessModel targetBusinessModel =  spagobiModel.getBusinessModels().get(0);
-				System.err.println(targetBusinessModel.getName());
-				System.err.println(EcoreUtil.getURI(targetBusinessModel));
-				bInput.setObjectURI(EcoreUtil.getURI(targetBusinessModel));
+				BusinessModelInput businessModelInput = new BusinessModelInput(modelFile, targetBusinessModel);
 				
 				page.openEditor( 
 					new MultiEditorInput(
-						new String[]{
-							"it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditorID", 
-							"it.eng.spagobi.meta.model.business.presentation.BusinessModelEditorID"},
-						new IEditorInput[]{
-								pInput, 
-								bInput}
-					) , "it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorID"
-					     
+						new String[]{PhysicalModelEditor.PLUGIN_ID, BusinessModelEditor.PLUGIN_ID},
+						new IEditorInput[]{physicalModelInput, businessModelInput}
+					) , SpagoBIModelEditor.PLUGIN_ID					     
 				);
-				/*
-				page.openEditor
-					(new FileEditorInput(modelFile),
-					 workbench.getEditorRegistry().getDefaultEditor(modelFile.getAbsolutePath()).toString()).getId());					 	 
-				*/
 			}
 			catch (PartInitException exception) {
 				MessageDialog.openError(workbenchWindow.getShell(), TestEditorPlugin.INSTANCE.getString("_UI_OpenEditorError_label"), exception.getMessage());

@@ -167,6 +167,7 @@ import it.eng.spagobi.meta.model.olap.provider.OlapModelItemProviderAdapterFacto
 
 import it.eng.spagobi.meta.model.physical.provider.PhysicalModelItemProviderAdapterFactory;
 
+import it.eng.spagobi.meta.model.presentation.BusinessModelInput;
 import it.eng.spagobi.meta.model.provider.ModelItemProviderAdapterFactory;
 
 import it.eng.spagobi.meta.model.test.TestEditorPlugin;
@@ -183,6 +184,9 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 public class BusinessModelEditor
 	extends MultiPageEditorPart
 	implements IEditingDomainProvider, ISelectionProvider, IMenuListener, IViewerProvider, IGotoMarker {
+	
+	public static final String PLUGIN_ID = "it.eng.spagobi.meta.model.business.presentation.BusinessModelEditorID";
+	
 	/**
 	 * This keeps track of the editing domain that is used to track all changes to the model.
 	 * <!-- begin-user-doc -->
@@ -954,8 +958,7 @@ public class BusinessModelEditor
 	 */
 	public void createModel() {
 		//URI resourceURI = EditUIUtil.getURI(getEditorInput());
-		//URI resourceURI = ((BusinessModelInput)getEditorInput()).getObjectURI();
-		URI resourceURI = ((BusinessModelInput)getEditorInput()).getUri();
+		URI resourceURI = ((BusinessModelInput)getEditorInput()).getResourceFileURI();
 		Exception exception = null;
 		Resource resource = null;
 		try {
@@ -1046,16 +1049,13 @@ public class BusinessModelEditor
 				selectionViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
 				selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
 				
+			
 				
-				ResourceSet rs = editingDomain.getResourceSet();
-				
-				URI u = ((BusinessModelInput)getEditorInput()).getObjectURI();
-				System.err.println(u);
-				EObject ro = rs.getEObject(u, false);
-				System.err.println("-->" + ro.eClass().getName());
+				URI rootObjectURI = ((BusinessModelInput)getEditorInput()).getRootObjectURI();
+				EObject rootObject = editingDomain.getResourceSet().getEObject(rootObjectURI, false);
 				
 				//selectionViewer.setInput(editingDomain.getResourceSet());
-				selectionViewer.setInput(ro);
+				selectionViewer.setInput(rootObject);
 				//selectionViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)), true);
 				//selectionViewer.setSelection(new StructuredSelection(ro), true);
 				viewerPane.setTitle(editingDomain.getResourceSet());

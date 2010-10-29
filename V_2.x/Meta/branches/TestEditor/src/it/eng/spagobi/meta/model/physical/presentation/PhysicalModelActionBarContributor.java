@@ -13,6 +13,7 @@ import java.util.Collection;
 
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
 
@@ -272,9 +273,11 @@ public class PhysicalModelActionBarContributor
 			Object object = ((IStructuredSelection)selection).getFirstElement();
 
 			EditingDomain domain = ((IEditingDomainProvider)activeEditorPart).getEditingDomain();
-
-			newChildDescriptors = domain.getNewChildDescriptors(object, null);
-			newSiblingDescriptors = domain.getNewChildDescriptors(null, object);
+			
+			if(object instanceof EObject) {
+				newChildDescriptors = domain.getNewChildDescriptors(object, null);
+				newSiblingDescriptors = domain.getNewChildDescriptors(null, object);
+			}
 		}
 
 		// Generate actions for selection; populate and redraw the menus.

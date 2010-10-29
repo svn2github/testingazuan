@@ -163,12 +163,12 @@ import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProvider
 
 import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProviderAdapterFactory;
 
-import it.eng.spagobi.meta.model.business.presentation.BusinessModelInput;
-import it.eng.spagobi.meta.model.business.presentation.PhysicalModelInput;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
 
 import it.eng.spagobi.meta.model.olap.provider.OlapModelItemProviderAdapterFactory;
 
+import it.eng.spagobi.meta.model.presentation.BusinessModelInput;
+import it.eng.spagobi.meta.model.presentation.PhysicalModelInput;
 import it.eng.spagobi.meta.model.provider.ModelItemProviderAdapterFactory;
 
 import it.eng.spagobi.meta.model.test.TestEditorPlugin;
@@ -185,6 +185,10 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 public class PhysicalModelEditor
 	extends MultiPageEditorPart
 	implements IEditingDomainProvider, ISelectionProvider, IMenuListener, IViewerProvider, IGotoMarker {
+	
+	public static final String PLUGIN_ID = "it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditorID";
+
+
 	/**
 	 * This keeps track of the editing domain that is used to track all changes to the model.
 	 * <!-- begin-user-doc -->
@@ -956,8 +960,8 @@ public class PhysicalModelEditor
 	 */
 	public void createModel() {
 		//URI resourceURI = EditUIUtil.getURI(getEditorInput());
-		PhysicalModelInput input = (PhysicalModelInput)getEditorInput();
-		URI resourceURI = input.getUri();
+		URI resourceURI = ((PhysicalModelInput)getEditorInput()).getResourceFileURI();
+		
 		Exception exception = null;
 		Resource resource = null;
 		try {
@@ -1048,8 +1052,15 @@ public class PhysicalModelEditor
 				selectionViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
 
 				selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
-				selectionViewer.setInput(editingDomain.getResourceSet());
-				selectionViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)), true);
+				
+				URI rootObjectURI = ((PhysicalModelInput)getEditorInput()).getRootObjectURI();
+				EObject rootObject = editingDomain.getResourceSet().getEObject(rootObjectURI, false);
+				
+				//selectionViewer.setInput(editingDomain.getResourceSet());
+				selectionViewer.setInput(rootObject);
+				
+				//selectionViewer.setInput(editingDomain.getResourceSet());
+				//selectionViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)), true);
 				viewerPane.setTitle(editingDomain.getResourceSet());
 
 				new AdapterFactoryTreeEditor(selectionViewer.getTree(), adapterFactory);
@@ -1058,7 +1069,7 @@ public class PhysicalModelEditor
 				int pageIndex = addPage(viewerPane.getControl());
 				setPageText(pageIndex, getString("_UI_SelectionPage_label"));
 			}
-
+			/*
 			// Create a page for the parent tree view.
 			//
 			{
@@ -1088,6 +1099,7 @@ public class PhysicalModelEditor
 				setPageText(pageIndex, getString("_UI_ParentPage_label"));
 			}
 
+			
 			// This is the page for the list viewer
 			//
 			{
@@ -1225,6 +1237,7 @@ public class PhysicalModelEditor
 				int pageIndex = addPage(viewerPane.getControl());
 				setPageText(pageIndex, getString("_UI_TreeWithColumnsPage_label"));
 			}
+			*/
 
 			getSite().getShell().getDisplay().asyncExec
 				(new Runnable() {

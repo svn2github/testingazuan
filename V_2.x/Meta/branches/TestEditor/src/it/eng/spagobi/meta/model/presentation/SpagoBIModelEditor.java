@@ -42,6 +42,8 @@ public class SpagoBIModelEditor extends MultiEditor {
 	
 	private CLabel innerEditorTitle[];
 	
+	public static final String PLUGIN_ID = "it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorID";
+	
 	@Override
 	public void createPartControl(Composite parent) {
 		parent = new Composite(parent, SWT.BORDER);

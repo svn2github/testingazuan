@@ -55,7 +55,7 @@ public class BusinessModelInput implements IEditorInput{
 	}
 
 
-	BusinessModelInput(URI fileURI) {
+	public BusinessModelInput(URI fileURI) {
 		uri = fileURI;
 	}
 	

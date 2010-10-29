@@ -44,7 +44,7 @@ public class PhysicalModelInput implements IEditorInput{
 	}
 
 
-	PhysicalModelInput(URI fileURI) {
+	public PhysicalModelInput(URI fileURI) {
 		uri = fileURI;
 	}
 	

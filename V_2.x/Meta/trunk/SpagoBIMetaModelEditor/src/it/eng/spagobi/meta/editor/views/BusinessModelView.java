@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.views;
 
-import it.eng.spagobi.meta.editor.dnd.PhysicalTableDropListener;
+import it.eng.spagobi.meta.editor.dnd.PhysicalObjectDropListener;
 import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
@@ -138,7 +138,7 @@ public class BusinessModelView extends ViewPart implements ISelectionChangedList
 	    //set drop target
 		int operations = DND.DROP_COPY | DND.DROP_MOVE;
 		Transfer[] transferTypes = new Transfer[]{TextTransfer.getInstance()};
-		DropTargetListener dragSourceListener = new PhysicalTableDropListener(businessModelTreeViewer);
+		DropTargetListener dragSourceListener = new PhysicalObjectDropListener(businessModelTreeViewer);
 		businessModelTreeViewer.addDropSupport(operations, transferTypes, dragSourceListener);
 	    
 	    businessModelGroup.setText("Business Model: "+model.getName());

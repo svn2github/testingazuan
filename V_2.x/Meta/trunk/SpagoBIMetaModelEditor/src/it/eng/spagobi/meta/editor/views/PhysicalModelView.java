@@ -6,7 +6,7 @@
 package it.eng.spagobi.meta.editor.views;
 
 
-import it.eng.spagobi.meta.editor.dnd.PhysicalTableDragListener;
+import it.eng.spagobi.meta.editor.dnd.PhysicalObjectDragListener;
 import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
 import it.eng.spagobi.meta.editor.util.DSEBridge;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -39,6 +39,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.widgets.Form;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -46,6 +48,8 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 
 public class PhysicalModelView extends ViewPart implements IAdaptable {
+	public PhysicalModelView() {
+	}
 	
 	private ScrolledComposite scrolledComposite;
 	protected PropertySheetPage propertySheetPage;
@@ -101,7 +105,7 @@ public class PhysicalModelView extends ViewPart implements IAdaptable {
 			//set drag source
 			int operations = DND.DROP_COPY | DND.DROP_MOVE;
 			Transfer[] transferTypes = new Transfer[]{TextTransfer.getInstance()};
-			DragSourceListener dragSourceListener = new PhysicalTableDragListener(physicalModelTree);
+			DragSourceListener dragSourceListener = new PhysicalObjectDragListener(physicalModelTree);
 			physicalModelTree.addDragSupport(operations, transferTypes, dragSourceListener);
 			
 			//setting datalayout

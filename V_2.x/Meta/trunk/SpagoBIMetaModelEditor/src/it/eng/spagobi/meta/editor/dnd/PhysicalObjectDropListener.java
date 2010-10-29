@@ -17,12 +17,12 @@ import org.eclipse.ui.PlatformUI;
 
 
 
-public class PhysicalTableDropListener  extends ViewerDropAdapter {
+public class PhysicalObjectDropListener  extends ViewerDropAdapter {
 
 	private final TreeViewer treeViewer;
 	private CoreSingleton coreSingleton = CoreSingleton.getInstance();
 	
-	public PhysicalTableDropListener(TreeViewer tree){
+	public PhysicalObjectDropListener(TreeViewer tree){
 		super(tree);
 		treeViewer = tree;
 	}

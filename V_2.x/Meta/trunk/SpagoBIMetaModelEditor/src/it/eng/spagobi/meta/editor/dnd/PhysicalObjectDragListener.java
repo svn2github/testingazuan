@@ -14,12 +14,12 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.TextTransfer;
 
-public class PhysicalTableDragListener implements DragSourceListener {
+public class PhysicalObjectDragListener implements DragSourceListener {
 
 	private final TreeViewer physicalModelTree;
 	
 
-	public PhysicalTableDragListener(TreeViewer viewer) {
+	public PhysicalObjectDragListener(TreeViewer viewer) {
 		this.physicalModelTree = viewer;
 	}
 

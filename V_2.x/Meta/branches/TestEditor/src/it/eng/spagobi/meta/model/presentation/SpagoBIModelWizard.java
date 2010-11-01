@@ -8,6 +8,8 @@ package it.eng.spagobi.meta.model.presentation;
 
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,6 +20,7 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.StringTokenizer;
 
+import org.eclipse.datatools.connectivity.IConnectionProfile;
 import org.eclipse.emf.common.CommonPlugin;
 
 import org.eclipse.emf.common.util.URI;
@@ -47,7 +50,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.preference.StringButtonFieldEditor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
@@ -59,13 +66,19 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.ModifyEvent;
 
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import org.eclipse.ui.INewWizard;
@@ -79,6 +92,8 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ISetSelectionTarget;
 import org.eclipse.ui.part.MultiEditorInput;
 
+import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
+import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelFactory;
 import it.eng.spagobi.meta.model.ModelPackage;
@@ -216,6 +231,7 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 	 * @generated
 	 */
 	protected EObject createInitialModel() {
+		
 		Model spagobiModel = ModelFactory.eINSTANCE.createModel();
 		spagobiModel.setName("Fodmart DWH");
 		
@@ -231,6 +247,7 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 		businessTable.setName("Tabella 1");
 		businessModel.setPhysicalModel(physicalModel);
 		businessModel.getTables().add(businessTable);
+		
 		
 		spagobiModel.getPhysicalModels().add(physicalModel);
 		spagobiModel.getBusinessModels().add(businessModel);
@@ -248,9 +265,43 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 		try {
 			// Remember the file.
 			//
-			final File modelFile = newModelWizardFileCreationPage.getModelFile();
+			//final File modelFile = newModelWizardFileCreationPage.getModelFile();
+			//... for retrieving the textfield's input-string:
+			final File modelFile = newModelWizardFileCreationPage.getModelFile() ;		
+			
+			System.err.println(modelFile.getAbsolutePath().toString());
+			
 			final URI fileURI = URI.createFileURI(modelFile.getAbsolutePath().toString());
-			final Model spagobiModel = (Model)createInitialModel();
+			
+			
+			final Model spagobiModel;
+			
+			if(newModelWizardFileCreationPage.getConnection() != null) {
+					
+				spagobiModel = ModelFactory.eINSTANCE.createModel();
+				spagobiModel.setName(newModelWizardFileCreationPage.getModelName());
+				
+				
+				PhysicalModelInitializer physicalModelInitializer = new PhysicalModelInitializer();
+		    	physicalModelInitializer.setRootModel(spagobiModel);
+		    	spagobiModel.getPhysicalModels().add( physicalModelInitializer.initialize(
+						newModelWizardFileCreationPage.getModelName(), 
+						newModelWizardFileCreationPage.getConnection(), 
+						null, 
+						null
+				));
+			
+				BusinessModelInitializer businessModelInitializer = new BusinessModelInitializer();
+				spagobiModel.getBusinessModels().add(businessModelInitializer.initialize(
+						newModelWizardFileCreationPage.getModelName(), 
+						spagobiModel.getPhysicalModels().get(0)
+				));
+						
+			} else {
+				spagobiModel = (Model)createInitialModel();
+			}
+			
+			
 			
 			// Do the work within an operation.
 			//
@@ -311,6 +362,13 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 			//			
 			try {
 				
+				
+				page.openEditor( 
+						new SpagoBIModelInput(modelFile, spagobiModel) , SpagoBIModelEditor.PLUGIN_ID					     
+				);
+				
+				System.out.println("Open editor");
+				/*
 				PhysicalModel targetPhysicalModel =  spagobiModel.getPhysicalModels().get(0);
 				PhysicalModelInput physicalModelInput = new PhysicalModelInput(modelFile, targetPhysicalModel);
 				
@@ -323,6 +381,7 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 						new IEditorInput[]{physicalModelInput, businessModelInput}
 					) , SpagoBIModelEditor.PLUGIN_ID					     
 				);
+				*/
 			}
 			catch (PartInitException exception) {
 				MessageDialog.openError(workbenchWindow.getShell(), TestEditorPlugin.INSTANCE.getString("_UI_OpenEditorError_label"), exception.getMessage());
@@ -357,71 +416,87 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 
 	public class NewModelWizardFileCreationPage extends WizardPage {
 
-		private Label lblName;
-		private Text bmName;
-
-
+		Text modelNameFieldInput;
+		StringButtonFieldEditor modelFileNameFieldInput;
+		org.eclipse.swt.widgets.List tableList;
+		DSEBridge dseBridge;
+		
 		protected NewModelWizardFileCreationPage(String pageName) {
 			super(pageName);
 			setDescription("This wizard drives you to create a new SpagoBI Meta Business Model," +
 			" please insert a name for your BM.");
 			ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(TestEditorPlugin.INSTANCE.getImage("full/wizban/NewBusinessModel"));;
-		    if (image!=null)
+		    if (image!=null) {
 		    	setImageDescriptor(image);
+		    }
+		    dseBridge = new DSEBridge();
 		}
 
 		@Override
 		public void createControl(Composite parent) {
-			//Main composite
 			Composite composite = new Composite(parent, SWT.NULL);
-			GridLayout gl = new GridLayout();
-			gl.numColumns = 1;
-			gl.makeColumnsEqualWidth = true;
-			composite.setLayout(gl);
+			composite.setLayout(new GridLayout(3, false));
 			
-			//Name Group
-			Group nameGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
-			nameGroup.setText("Name");
-			GridLayout glName = new GridLayout();
-			GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-			glName.numColumns = 2;
-			glName.makeColumnsEqualWidth = false;
-			nameGroup.setLayout(glName);
-			nameGroup.setLayoutData(gd);
 			
-			//Adding NameGroup elements
-	        lblName = new Label(nameGroup,SWT.NONE);
-	        lblName.setText("Business Model Name:");
-	        setBmName(new Text(nameGroup,SWT.BORDER));
-	        bmName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-	        
+			new Label(composite, SWT.NONE).setText("Model name:");
+			GridData gridData = new GridData();
+			gridData.horizontalAlignment = GridData.FILL;
+			gridData.horizontalSpan = 2;
+			modelNameFieldInput = new Text(composite, SWT.BORDER);
+			modelNameFieldInput.setLayoutData(gridData);
+			modelNameFieldInput.setText("Test Model");
 			
-	        //Important: Setting page control
+			modelFileNameFieldInput = new FileFieldEditor("modelfile", "Model file:", composite);
+			modelFileNameFieldInput.setStringValue("D:/Documenti/Progetti/metadati/libri/TestModel.sbimodel");
+			
+			tableList = new org.eclipse.swt.widgets.List(composite, SWT.BORDER|SWT.SINGLE|SWT.V_SCROLL|SWT.H_SCROLL);
+	 		GridData gdList = new GridData(GridData.FILL_BOTH);
+	 		gdList.heightHint = 60;
+	 		gdList.horizontalAlignment = GridData.FILL;
+	 		gdList.horizontalSpan = 2;
+	 		gdList.verticalSpan = 2;
+	 		tableList.setLayoutData(gdList);
+	 		
+	 		IConnectionProfile[] cp = dseBridge.getConnectionProfiles();
+	 		for (int i = 0; i < cp.length; i++){
+				tableList.add( cp[i].getName() );		
+			}
+	 		
+	 		new Button(composite, SWT.PUSH).setText("Add");
+	 		new Button(composite, SWT.PUSH).setText("Edit");
+
+	 		
+	 		
+			//Important: Setting page control
 	 		setControl(composite);
 		}
 
-		private void setBmName(Text bmName) {
-			this.bmName = bmName;
+		public String getConnectionName() {
+			return tableList.getSelection()[0];
 		}
-
-		public String getModelName() {
-			return bmName.getText();
+		
+		public Connection getConnection() {
+			return dseBridge.connect( getConnectionName() );
 		}
 		
 		public String getModelFileName() {
-			return getModelName() + "businessmodel";
+			String fileName = modelFileNameFieldInput.getStringValue();
+			if(!fileName.endsWith(".sbimodel")) {
+				fileName += ".sbimodel";
+			}
+			return fileName;
 		}
-		
-		public File getModelFilePath() {
-			return new  File("D:/Documenti/Progetti/metadati/libri/");
-		}
-		
-		
 		
 		public File getModelFile() {
-			//return ResourcesPlugin.getWorkspace().getRoot().getFile(getModelFilePath().append(getModelFileName()));
-			return new File(getModelFilePath(), getModelFileName());
+			return new File( getModelFileName() );
 		}
+
+		
+		
+		public String getModelName() {
+			return modelNameFieldInput.getText();
+		}
+		
 	}
 
 }

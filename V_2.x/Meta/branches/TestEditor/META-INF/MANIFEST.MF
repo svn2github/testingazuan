@@ -20,3 +20,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.ide;visibility:=reexport,
  it.eng.spagobi.meta.model;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.datatools.connectivity,
+ org.eclipse.datatools.connectivity.sqm.core.connection,
+ org.eclipse.datatools.modelbase.sql.schema,
+ org.eclipse.datatools.modelbase.sql.tables

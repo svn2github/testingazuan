@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.presentation;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
@@ -28,11 +29,13 @@ import org.eclipse.swt.custom.ViewForm;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.MultiEditor;
 import org.eclipse.ui.part.MultiEditor.Gradient;
+import org.eclipse.ui.part.MultiEditorInput;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -45,12 +48,21 @@ public class SpagoBIModelEditor extends MultiEditor {
 	public static final String PLUGIN_ID = "it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorID";
 	
 	@Override
+	public void doSave(IProgressMonitor progressMonitor) {
+		System.err.println("model.doSave");
+		super.doSave(progressMonitor);
+	}
+	
+	@Override
 	public void createPartControl(Composite parent) {
 		parent = new Composite(parent, SWT.BORDER);
-
+		
+		
+		
 		parent.setLayout(new FillLayout());
 		SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
 		IEditorPart innerEditors[] = getInnerEditors();
+		
 		
 		for (int i = 0; i < innerEditors.length; i++) {
 			final IEditorPart e = innerEditors[i];
@@ -64,6 +76,8 @@ public class SpagoBIModelEditor extends MultiEditor {
 			
 			viewForm.setContent(content);
 			updateInnerEditorTitle(e, innerEditorTitle[i]);
+			
+			System.err.println(innerEditors[i].getEditorInput().getClass().getName());
 			
 			final int index = i;
 			e.addPropertyListener(new IPropertyListener() {

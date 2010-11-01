@@ -21,8 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.presentation;
 
+import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.presentation.BusinessModelEditor;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditor;
 
 import java.io.File;
 
@@ -32,19 +36,39 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
+import org.eclipse.ui.part.MultiEditorInput;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class BusinessModelInput extends AbstractSpagoBIModelPartInput {
+public class SpagoBIModelInput extends MultiEditorInput {
+	
+	String modelName;
+	String modelDescription;
 
-	public BusinessModelInput(File resourceFile, BusinessModel rootObject) {
-		super(resourceFile, rootObject);
+	public SpagoBIModelInput(File modelFile, Model spagobiModel) {
+		
+		super(
+				new String[]{
+						PhysicalModelEditor.PLUGIN_ID, 
+						BusinessModelEditor.PLUGIN_ID
+				},
+				new IEditorInput[]{
+						new PhysicalModelInput(modelFile, spagobiModel.getPhysicalModels().get(0)), 
+						new BusinessModelInput(modelFile, spagobiModel.getBusinessModels().get(0))}
+		);
+		
+		modelDescription = modelFile.getAbsolutePath();
+		modelName = modelFile.getName();
 	}
 	
 	@Override
 	public String getName() {
-		return "Business model: " + super.getName();
+		return modelName;
+	}
+	
+	public String getToolTipText() {
+		return modelDescription;
 	}
 }

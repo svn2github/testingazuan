@@ -1491,6 +1491,9 @@ public class BusinessModelEditor
 	 */
 	@Override
 	public void doSave(IProgressMonitor progressMonitor) {
+		
+		System.err.println("business.doSave");
+		
 		// Save only resources that have actually changed.
 		//
 		final Map<Object, Object> saveOptions = new HashMap<Object, Object>();

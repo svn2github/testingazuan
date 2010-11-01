@@ -21,95 +21,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.presentation;
 
-import java.io.File;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IPersistableElement;
+import java.io.File;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class PhysicalModelInput implements IEditorInput{
+public class PhysicalModelInput extends AbstractSpagoBIModelPartInput{
 	
-	// the file used to load/store the model
-	File resourceFile;	
-	URI rootObjectURI;
-	
-	
-	public PhysicalModelInput(File resourceFile) {
-		setResourceFile(resourceFile);
+	public PhysicalModelInput(File resourceFile, PhysicalModel rootObject) {
+		super(resourceFile, rootObject);
 	}
 	
-	public PhysicalModelInput(File resourceFile, EObject rootObject) {
-		setResourceFile(resourceFile);
-		setRootObject(rootObject);
-	}
-	
-	
-	public URI getResourceFileURI() {
-		return resourceFile!=null? URI.createFileURI(resourceFile.getAbsolutePath().toString()): null;
-	}
-	
-	public File getResourceFile() {
-		return resourceFile;
-	}
-
-	public void setResourceFile(File resourceFile) {
-		this.resourceFile = resourceFile;
-	}
-
-	public URI getRootObjectURI() {
-		return rootObjectURI;
-	}
-
-
-	public void setRootObject(EObject rootObject) {
-		this.rootObjectURI = EcoreUtil.getURI(rootObject);
-	}
-	
-	public void setRootObject(URI rootObjectURI) {
-		this.rootObjectURI = rootObjectURI;
-	}
-	
-	
-
-	@Override
-	public Object getAdapter(Class arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean exists() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public ImageDescriptor getImageDescriptor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	public String getName() {
-		return "PhysicalModelInput";
+		return "Physical model: " + super.getName();
 	}
-
-	@Override
-	public IPersistableElement getPersistable() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getToolTipText() {
-		return "Questo e un tooltip";
-	}
-
 }

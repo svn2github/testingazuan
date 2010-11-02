@@ -85,6 +85,15 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
        	else if ( (target instanceof BusinessTable) || 
             	( (target instanceof BusinessColumn) && (loc == LOCATION_BEFORE || loc == LOCATION_AFTER)) ){
        		
+       		BusinessTable businessTableTarget = null;
+       		//getting target table object
+       		if (target instanceof BusinessTable){
+       			businessTableTarget = (BusinessTable)target;
+       		}
+       		else if (target instanceof BusinessColumn){
+       			businessTableTarget = ((BusinessColumn)target).getTable();
+       		}
+       			
        		StringTokenizer stringTokenizer = new StringTokenizer(data.toString(), "$$");
        		//obtaining column(s) name(s) from the passed string
        		while (stringTokenizer.hasMoreTokens()){
@@ -97,10 +106,12 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
            		
            		if (eObject instanceof PhysicalColumn){
            			PhysicalColumn physicalColumn = (PhysicalColumn)eObject;
-           			System.out.println(physicalColumn.getName());
             		if (physicalColumn != null){
             			BusinessTable businessTable = coreSingleton.getBusinessModel().getTable(physicalColumn.getTable());
-            			initializer.addColumn(physicalColumn, businessTable);
+            			//if target table is the same of the added columns perform the add
+            			if (businessTable.equals(businessTableTarget)){
+                			initializer.addColumn(physicalColumn, businessTable);
+            			}
         			}		
            		}	
        		}

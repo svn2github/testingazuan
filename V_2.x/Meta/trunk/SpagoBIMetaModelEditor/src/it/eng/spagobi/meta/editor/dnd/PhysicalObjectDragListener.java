@@ -19,6 +19,7 @@ import org.eclipse.swt.dnd.TextTransfer;
 public class PhysicalObjectDragListener implements DragSourceListener {
 
 	private final TreeViewer physicalModelTree;
+	private String textToTransfer;
 	
 
 	public PhysicalObjectDragListener(TreeViewer viewer) {
@@ -32,53 +33,6 @@ public class PhysicalObjectDragListener implements DragSourceListener {
 
 	@Override
 	public void dragSetData(DragSourceEvent event) {
-		//Check if the selection is of the appropriate type and set the data dragged
-		ITreeSelection selection = (ITreeSelection) physicalModelTree.getSelection();
-		String textToTransfer = "";
-		
-		if (selection.size() > 1){
-			//----------------- multiple selection
-			//for multiple PhysicalTable drag
-			if (selection.getFirstElement() instanceof PhysicalTable){
-				List<PhysicalTable> selectionList = selection.toList();
-				boolean firstElement = true;
-				for (PhysicalTable physicalTable : selectionList){
-					if (firstElement){
-						textToTransfer = EcoreUtil.getURI(physicalTable).toString();
-						firstElement = false;
-					}
-					else {
-						textToTransfer = textToTransfer+"$$"+EcoreUtil.getURI(physicalTable).toString();
-					}					
-				}
-			} 
-			//for multiple PhysicalColumn drag
-			else if (selection.getFirstElement() instanceof PhysicalColumn){
-				List<PhysicalColumn> selectionList = selection.toList();
-				boolean firstElement = true;
-				for (PhysicalColumn physicalColumn : selectionList){
-					if (firstElement){
-						textToTransfer = EcoreUtil.getURI(physicalColumn).toString();
-						firstElement = false;
-					}
-					else {
-						textToTransfer = textToTransfer+"$$"+EcoreUtil.getURI(physicalColumn).toString();
-					}					
-				}
-			}
-
-		} else if (selection.size() == 1){
-			//----------------- single selection
-			if (selection.getFirstElement() instanceof PhysicalTable){
-				PhysicalTable physicalTable = (PhysicalTable) selection.getFirstElement();
-				textToTransfer = EcoreUtil.getURI(physicalTable).toString();				
-			}
-			if (selection.getFirstElement() instanceof PhysicalColumn){
-				PhysicalColumn physicalColumn = (PhysicalColumn) selection.getFirstElement();
-				textToTransfer = EcoreUtil.getURI(physicalColumn).toString();
-			}
-		}
-
 		if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
 			//data to transport via the drag
 			event.data = textToTransfer;
@@ -89,11 +43,86 @@ public class PhysicalObjectDragListener implements DragSourceListener {
 	public void dragStart(DragSourceEvent event) {
 		IStructuredSelection selection = (IStructuredSelection) physicalModelTree.getSelection();
 		//if selected element is not of the appropriate type don't start the drag
-		if (selection.getFirstElement() instanceof PhysicalTable == false){
-			if (selection.getFirstElement() instanceof PhysicalColumn == false)
-				event.doit = false;	
-		}
+		if (!checkSelectionSameType(selection)){
+			event.doit = false;	
+		}		
+	}
 	
+	/**
+	 * Check if the selected elements are all of the same (supported) type
+	 * @return true if selected elements are all of the same (supported) type
+	 */
+	public boolean checkSelectionSameType(IStructuredSelection selection){
+		textToTransfer = "";
+		int selectionSize = selection.size();
+		
+		//-------------------- Single Selection
+		if (selectionSize == 1){
+			if (selection.getFirstElement() instanceof PhysicalTable){
+				PhysicalTable physicalTable = (PhysicalTable) selection.getFirstElement();
+				textToTransfer = EcoreUtil.getURI(physicalTable).toString();
+				return true;
+			}			
+			else if (selection.getFirstElement() instanceof PhysicalColumn){
+				PhysicalColumn physicalColumn = (PhysicalColumn) selection.getFirstElement();
+				textToTransfer = EcoreUtil.getURI(physicalColumn).toString();
+				return true;
+			}			
+			else
+				return false;
+		}
+		//-------------------- Multiple Selection
+		else if (selectionSize > 1){
+			
+			//check if the elements are all instance of PhysicalTable
+			if (selection.getFirstElement() instanceof PhysicalTable){
+				Object[] selectionArray = selection.toArray();
+				boolean firstElement = true;		
+				for (int i=0; i < selectionSize; i++){
+					if (selectionArray[i] instanceof PhysicalTable){
+						PhysicalTable physicalTable = (PhysicalTable)selectionArray[i];
+						if (firstElement){
+							textToTransfer = EcoreUtil.getURI(physicalTable).toString();
+							firstElement = false;
+						}
+						else {
+							textToTransfer = textToTransfer+"$$"+EcoreUtil.getURI(physicalTable).toString();
+						}
+					}
+					else {
+						//selection of mixed types
+						return false;
+					}
+				}
+				return true;
+			} 
+			//check if the elements are all instance of PhysicalColumn
+			else if (selection.getFirstElement() instanceof PhysicalColumn){
+				Object[] selectionArray = selection.toArray();
+				boolean firstElement = true;			
+				for (int i=0; i < selectionSize; i++){
+					if (selectionArray[i] instanceof PhysicalColumn){
+						PhysicalColumn physicalcolumn = (PhysicalColumn)selectionArray[i];
+						if (firstElement){
+							textToTransfer = EcoreUtil.getURI(physicalcolumn).toString();
+							firstElement = false;
+						}
+						else {
+							textToTransfer = textToTransfer+"$$"+EcoreUtil.getURI(physicalcolumn).toString();
+						}
+					}
+					else {
+						//selection of mixed types
+						return false;
+					}
+				}
+				return true;				
+			}
+			//no supported elements selected
+			return false;
+		}
+		//no valid selection
+		return false;
 	}
 
 }

@@ -6,10 +6,13 @@
  */
 package it.eng.spagobi.meta.model.business.presentation;
 
+import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.actions.EditBusinessColumnsAction;
 import it.eng.spagobi.meta.model.test.TestEditorPlugin;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 
@@ -303,10 +306,20 @@ public class BusinessModelActionBarContributor
 	 */
 	protected Collection<IAction> generateCreateChildActions(Collection<?> descriptors, ISelection selection) {
 		Collection<IAction> actions = new ArrayList<IAction>();
-		if (descriptors != null) {
-			for (Object descriptor : descriptors) {
-				actions.add(new CreateChildAction(activeEditorPart, selection, descriptor));
-			}
+		
+		
+		if(!selection.isEmpty()) {
+			IStructuredSelection sselection = (IStructuredSelection) selection;
+		    List<?> list = sselection.toList();
+		    if(list.get(0) instanceof BusinessTable) {
+		    	actions.add(new EditBusinessColumnsAction(activeEditorPart, selection));
+		    } else {
+		    	if (descriptors != null) {
+					for (Object descriptor : descriptors) {
+						actions.add(new CreateChildAction(activeEditorPart, selection, descriptor));
+					}
+				}
+		    }
 		}
 		return actions;
 	}

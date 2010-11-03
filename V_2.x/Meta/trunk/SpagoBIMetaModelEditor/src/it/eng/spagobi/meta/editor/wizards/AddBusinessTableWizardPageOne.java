@@ -104,10 +104,6 @@ public class AddBusinessTableWizardPageOne extends WizardPage {
  		
 	}
 	
-	public void setPhysicalTableSelection(){
-
-	}
-
 	
 	//populate the list with the Physical Tables' names
 	private void populateTableList(){

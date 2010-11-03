@@ -41,6 +41,7 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 
+import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
@@ -53,7 +54,8 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 		IItemLabelProvider, IItemPropertySource  {
 
 	
-	protected Object parent;
+	protected Object parentObject;
+
 	private Collection children;
 	private String text;
 	private String image; 
@@ -64,8 +66,8 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 
 	public FolderItemProvider(AdapterFactory adapterFactory, Object parent, Collection children) {
 		super(adapterFactory);
-		this.parent = parent;
-		this.children = children;
+		this.parentObject = parent;
+		this.children = children != null ? children: new ArrayList();
 		this.text= DEFAULT_TEXT;
 		this.image = DEFAULT_IMAGE;
 	}
@@ -102,7 +104,7 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 
 	@Override
 	public Object getParent(Object object) {
-		return parent;
+		return parentObject;
 	}
 	
 	public int getChildrenNumber(){
@@ -141,13 +143,19 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 	  {  
 		Collection newChildDescriptors;
 		if(object instanceof EObject){
+			System.err.println("delegate: " + object.getClass().getName());
+			System.err.println("adapter: " + getAdapterFactory().getClass().getName());
+			
 			newChildDescriptors =  super.getNewChildDescriptors(object, editingDomain, sibling);
 		} else {
 			System.err.println("Not an EObject: " + object.getClass().getName());
 			newChildDescriptors = new ArrayList<Object>();
 			collectNewChildDescriptors(newChildDescriptors, object);
+			newChildDescriptors.addAll( super.getNewChildDescriptors(((FolderItemProvider)object).getParentObject(), editingDomain, sibling) );
 		}
 	   
+		System.err.println("Size: " + newChildDescriptors.size());
+		
 	    return newChildDescriptors;
 	  }
 	  
@@ -161,6 +169,15 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 	  {
 	    Collection<? extends EStructuralFeature> result = getChildrenFeatures(object);
 	    return result.isEmpty() ? getChildrenReferences(object) : result;
+	  }
+	  
+	  public Object getParentObject() {
+		return parentObject;
+	  }
+
+
+	  public void setParentObject(Object parentObject) {
+		this.parentObject = parentObject;
 	  }
 
 

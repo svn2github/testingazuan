@@ -194,7 +194,7 @@ public class BusinessModelItemProvider
 		//group columns
 		rootItemProvider = new BusinessRootItemProvider(adapterFactory, businessModel, businessModel.getTables());
 		rootItemProvider.setImage("full/obj16/BusinessModel");
-		rootItemProvider.setText("Business Model: "+businessModel.getName());
+		rootItemProvider.setText("Business Model: " + businessModel.getName());
 		
 		children = new LinkedHashSet();
 		//children.addAll(  getChildrenFeatures(object) );
@@ -274,6 +274,8 @@ public class BusinessModelItemProvider
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
+		System.err.println("Business model collectNewChildDescriptors");
+		
 		newChildDescriptors.add
 			(createChildParameter
 				(BusinessModelPackage.Literals.BUSINESS_MODEL__TABLES,

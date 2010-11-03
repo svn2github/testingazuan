@@ -24,8 +24,10 @@ public class BusinessRootItemProvider extends FolderItemProvider {
 		super(adapterFactory, parent, children);
 	}
 	
-	public Collection<?> getNewChildDescriptors(Object object, EditingDomain editingDomain, Object sibling) {  
-		BusinessModel busienssModel = (BusinessModel)parent;
+	public Collection<?> getNewChildDescriptors(Object object, EditingDomain editingDomain, Object sibling) { 
+		System.err.println("Business model root selected");
+		
+		BusinessModel busienssModel = (BusinessModel)parentObject;
 
 	    // Build the collection of new child descriptors.
 	    //

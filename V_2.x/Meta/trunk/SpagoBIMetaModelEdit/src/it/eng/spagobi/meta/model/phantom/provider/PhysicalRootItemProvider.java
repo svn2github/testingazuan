@@ -26,7 +26,7 @@ public class PhysicalRootItemProvider extends FolderItemProvider{
 	}
 	
 	public Collection<?> getNewChildDescriptors(Object object, EditingDomain editingDomain, Object sibling) {  
-		PhysicalModel physicalModel = (PhysicalModel)parent;
+		PhysicalModel physicalModel = (PhysicalModel)parentObject;
 
 	    // Build the collection of new child descriptors.
 	    //

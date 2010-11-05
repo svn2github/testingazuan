@@ -324,26 +324,28 @@ public class BusinessModelInitializer {
 	}
 	
 	//add Relationship without PhysicalForeignKey specified
-	public void addRelationship(BusinessTable sourceTable, BusinessTable destinationTable, List<BusinessColumn> sourceColumns, List<BusinessColumn> destinationColumns, String relationshipName){
+	//public void addRelationship(BusinessTable sourceTable, BusinessTable destinationTable, List<BusinessColumn> sourceColumns, List<BusinessColumn> destinationColumns, String relationshipName){
+	public void addRelationship(BusinessRelationshipDescriptor descriptor){
+			
 		BusinessRelationship businessRelationship;	
-		BusinessModel businessModel = sourceTable.getModel();
+		BusinessModel businessModel = descriptor.getSourceTable().getModel();
 		
 		try {
 			businessRelationship = FACTORY.createBusinessRelationship();
 			
-			if (relationshipName == null){
-				businessRelationship.setName( "Business Relationship "+sourceTable.getName()+"_"+destinationTable.getName() );
+			if (descriptor.getRelationshipName() == null){
+				businessRelationship.setName( "Business Relationship "+  descriptor.getSourceTable().getName()+"_"+  descriptor.getDestinationTable().getName() );
 			}
 			else {
-				businessRelationship.setName(relationshipName);
+				businessRelationship.setName( descriptor.getRelationshipName() );
 			}
 
-			businessRelationship.setSourceTable(sourceTable);
-			for(BusinessColumn businessColumn : sourceColumns) {
+			businessRelationship.setSourceTable(descriptor.getSourceTable());
+			for(BusinessColumn businessColumn : descriptor.getSourceColumns()) {
 				businessRelationship.getSourceColumns().add(businessColumn);
 			}			
-			businessRelationship.setDestinationTable(destinationTable);
-			for(BusinessColumn businessColumn : destinationColumns) {
+			businessRelationship.setDestinationTable(descriptor.getDestinationTable());
+			for(BusinessColumn businessColumn : descriptor.getDestinationColumns()) {
 				businessRelationship.getDestinationColumns().add(businessColumn);
 			}
 			

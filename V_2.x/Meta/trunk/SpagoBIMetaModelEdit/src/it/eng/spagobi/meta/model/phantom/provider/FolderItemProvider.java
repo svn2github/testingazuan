@@ -26,11 +26,22 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.common.command.UnexecutableCommand;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.edit.command.AddCommand;
 import org.eclipse.emf.edit.command.CommandParameter;
+import org.eclipse.emf.edit.command.CopyCommand;
+import org.eclipse.emf.edit.command.CreateChildCommand;
+import org.eclipse.emf.edit.command.CreateCopyCommand;
+import org.eclipse.emf.edit.command.DragAndDropCommand;
+import org.eclipse.emf.edit.command.InitializeCopyCommand;
+import org.eclipse.emf.edit.command.MoveCommand;
+import org.eclipse.emf.edit.command.RemoveCommand;
+import org.eclipse.emf.edit.command.ReplaceCommand;
+import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.IChildCreationExtender;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -43,6 +54,7 @@ import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
 /**
@@ -179,6 +191,107 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 	  public void setParentObject(Object parentObject) {
 		this.parentObject = parentObject;
 	  }
+	  
+		/**
+		 * This implements delegated command creation for the given object.
+		 */
+		@Override
+		public Command createCommand(Object object, EditingDomain domain,
+				Class<? extends Command> commandClass,
+				CommandParameter commandParameter) {
+			// Commands should operate on the values, not their wrappers. If the
+			// command's values needed to be unwrapped,
+			// we'll back get a new CommandParameter.
+			//
+			CommandParameter oldCommandParameter = commandParameter;
+			commandParameter = unwrapCommandValues(commandParameter, commandClass);
+
+			Command result = UnexecutableCommand.INSTANCE;
+
+			if (commandClass == SetCommand.class) {
+				result = createSetCommand(
+						domain,
+						commandParameter.getEOwner(),
+						commandParameter.getEStructuralFeature() != null ? commandParameter
+								.getEStructuralFeature() : getSetFeature(
+								commandParameter.getEOwner(),
+								commandParameter.getValue()),
+						commandParameter.getValue(), commandParameter.getIndex());
+			} else if (commandClass == CopyCommand.class) {
+				result = createCopyCommand(domain, commandParameter.getEOwner(),
+						(CopyCommand.Helper) commandParameter.getValue());
+			} else if (commandClass == CreateCopyCommand.class) {
+				result = createCreateCopyCommand(domain,
+						commandParameter.getEOwner(),
+						(CopyCommand.Helper) commandParameter.getValue());
+			} else if (commandClass == InitializeCopyCommand.class) {
+				result = createInitializeCopyCommand(domain,
+						commandParameter.getEOwner(),
+						(CopyCommand.Helper) commandParameter.getValue());
+			} else if (commandClass == RemoveCommand.class) {
+				if (commandParameter.getEStructuralFeature() != null) {
+					result = createRemoveCommand(domain,
+							commandParameter.getEOwner(),
+							commandParameter.getEStructuralFeature(),
+							commandParameter.getCollection());
+				} else {
+					result = factorRemoveCommand(domain, commandParameter);
+				}
+			} else if (commandClass == AddCommand.class) {
+				if (commandParameter.getEStructuralFeature() != null) {
+					result = createAddCommand(domain, commandParameter.getEOwner(),
+							commandParameter.getEStructuralFeature(),
+							commandParameter.getCollection(),
+							commandParameter.getIndex());
+				} else {
+					result = factorAddCommand(domain, commandParameter);
+				}
+			} else if (commandClass == MoveCommand.class) {
+				if (commandParameter.getEStructuralFeature() != null) {
+					result = createMoveCommand(domain,
+							commandParameter.getEOwner(),
+							commandParameter.getEStructuralFeature(),
+							commandParameter.getValue(),
+							commandParameter.getIndex());
+				} else {
+					result = factorMoveCommand(domain, commandParameter);
+				}
+			} else if (commandClass == ReplaceCommand.class) {
+				result = createReplaceCommand(domain, commandParameter.getEOwner(),
+						commandParameter.getEStructuralFeature(),
+						(EObject) commandParameter.getValue(),
+						commandParameter.getCollection());
+			} else if (commandClass == DragAndDropCommand.class) {
+				DragAndDropCommand.Detail detail = (DragAndDropCommand.Detail) commandParameter
+						.getFeature();
+				result = createDragAndDropCommand(domain,
+						commandParameter.getOwner(), detail.location,
+						detail.operations, detail.operation,
+						commandParameter.getCollection());
+			} else if (commandClass == CreateChildCommand.class) {
+				CommandParameter newChildParameter = (CommandParameter) commandParameter
+						.getValue();
+				result = createCreateChildCommand(domain,
+						commandParameter.getEOwner(),
+						newChildParameter.getEStructuralFeature(),
+						newChildParameter.getValue(), newChildParameter.getIndex(),
+						commandParameter.getCollection());
+			} else if (AbstractSpagoBIModelCommand.class.isAssignableFrom(commandClass)) {
+				result = createCustomCommand(object, domain, commandClass, commandParameter);
+			}
+
+			// If necessary, get a command that replaces unwrapped values by their
+			// wrappers in the result and affected objects.
+			//
+			return wrapCommand(result, object, commandClass, commandParameter,oldCommandParameter);
+		}
+		
+		public Command createCustomCommand(Object object, EditingDomain domain,
+				Class<? extends Command> commandClass,
+				CommandParameter commandParameter) {
+			// ignore custom commond at this level
+			return null;
+		}
 
 
 }

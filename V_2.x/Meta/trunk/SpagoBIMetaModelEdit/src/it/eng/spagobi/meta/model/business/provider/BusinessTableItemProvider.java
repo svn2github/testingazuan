@@ -11,6 +11,9 @@ import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.commands.AddBusinessRelationshipCommand;
+import it.eng.spagobi.meta.model.business.commands.AddBusinessTableCommand;
+import it.eng.spagobi.meta.model.business.commands.AddIdentifierCommand;
 import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
 
 import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
@@ -339,143 +342,25 @@ public class BusinessTableItemProvider
 	public ResourceLocator getResourceLocator() {
 		return SpagoBIMetalModelEditPlugin.INSTANCE;
 	}
-	
-	/*
-	@Override
-	public Command createCommand(final Object object,
-			final EditingDomain domain,
-			Class commandClass,
-			CommandParameter commandParameter) {
-		
-		return super.createCommand(object, domain, commandClass, commandParameter);
-	}
-	*/
-	
-	/**
-	 * This creates a primitive {@link org.eclipse.emf.edit.command.AddCommand}.
-	 */
-	 protected Command createAddCommand(EditingDomain domain, EObject owner, EStructuralFeature feature, Collection<?> collection, int index) {
-		 if (feature instanceof EReference) {
-			 return createAddCommand(domain, owner, (EReference)feature, collection, index);
-		 }
-		 return new AddCommand(domain, owner, feature, collection, index);
-	 }
+
 	 
-	  /**
-	   * This implements delegated command creation for the given object.
-	   */
-	 @Override
-	  public Command createCommand(Object object, EditingDomain domain, Class<? extends Command> commandClass, CommandParameter commandParameter)
-	  {
-	    // Commands should operate on the values, not their wrappers.  If the command's values needed to be unwrapped,
-	    // we'll back get a new CommandParameter.
-	    //
-	    CommandParameter oldCommandParameter = commandParameter;
-	    commandParameter = unwrapCommandValues(commandParameter, commandClass);
-
-	    Command result = UnexecutableCommand.INSTANCE;
-
-	    if (commandClass == SetCommand.class)
-	    {
-	      result =
-	        createSetCommand
-	          (domain, 
-	           commandParameter.getEOwner(), 
-	           commandParameter.getEStructuralFeature() != null ?
-	             commandParameter.getEStructuralFeature() :
-	             getSetFeature(commandParameter.getEOwner(), commandParameter.getValue()),
-	           commandParameter.getValue(),
-	           commandParameter.getIndex());
-	    }
-	    else if (commandClass == CopyCommand.class)
-	    {
-	      result = createCopyCommand(domain, commandParameter.getEOwner(), (CopyCommand.Helper)commandParameter.getValue());
-	    }
-	    else if (commandClass == CreateCopyCommand.class)
-	    {
-	      result = createCreateCopyCommand(domain, commandParameter.getEOwner(), (CopyCommand.Helper)commandParameter.getValue());
-	    }
-	    else if (commandClass == InitializeCopyCommand.class)
-	    {
-	      result = createInitializeCopyCommand(domain, commandParameter.getEOwner(), (CopyCommand.Helper)commandParameter.getValue());
-	    }
-	    else if (commandClass == RemoveCommand.class)
-	    {
-	      if (commandParameter.getEStructuralFeature() != null)
-	      {
-	        result = createRemoveCommand(domain, commandParameter.getEOwner(), commandParameter.getEStructuralFeature(), commandParameter.getCollection());
-	      }
-	      else
-	      {
-	        result = factorRemoveCommand(domain, commandParameter);
-	      }
-	    }
-	    else if (commandClass == AddCommand.class)
-	    {
-	      if (commandParameter.getEStructuralFeature() != null)
-	      {
-	        result = 
-	          createAddCommand
-	            (domain, 
-	             commandParameter.getEOwner(), 
-	             commandParameter.getEStructuralFeature(), 
-	             commandParameter.getCollection(),
-	             commandParameter.getIndex());
-	      }
-	      else
-	      {
-	        result = factorAddCommand(domain, commandParameter);
-	      }
-	    }
-	    else if (commandClass == MoveCommand.class)
-	    {
-	      if (commandParameter.getEStructuralFeature() != null)
-	      {
-	        result = 
-	          createMoveCommand
-	            (domain, 
-	             commandParameter.getEOwner(), 
-	             commandParameter.getEStructuralFeature(), 
-	             commandParameter.getValue(), 
-	             commandParameter.getIndex());
-	      }
-	      else
-	      {
-	        result = factorMoveCommand(domain, commandParameter);
-	      }
-	    }
-	    else if (commandClass == ReplaceCommand.class)
-	    {
-	      result = 
-	        createReplaceCommand
-	          (domain, commandParameter.getEOwner(), commandParameter.getEStructuralFeature(), (EObject)commandParameter.getValue(), commandParameter.getCollection());
-	    }
-	    else if (commandClass == DragAndDropCommand.class)
-	    {
-	      DragAndDropCommand.Detail detail = (DragAndDropCommand.Detail)commandParameter.getFeature();
-	      result = 
-	        createDragAndDropCommand
-	          (domain, commandParameter.getOwner(), detail.location, detail.operations, detail.operation, commandParameter.getCollection());
-	    }
-	    else if (commandClass == CreateChildCommand.class)
-	    {
-	      CommandParameter newChildParameter = (CommandParameter)commandParameter.getValue();
-	      result = 
-	        createCreateChildCommand
-	          (domain,
-	           commandParameter.getEOwner(), 
-	           newChildParameter.getEStructuralFeature(), 
-	           newChildParameter.getValue(),
-	           newChildParameter.getIndex(),
-	           commandParameter.getCollection());      
-	    } else if(commandClass == EditBusinessColumnsCommand.class) {
-	    	System.err.println(">>> " + commandClass.getName() + " <<<");
-	    	result = new EditBusinessColumnsCommand(domain, commandParameter);
-	    }
-
-	    // If necessary, get a command that replaces unwrapped values by their wrappers in the result and affected objects.
-	    //
-	    return wrapCommand(result, object, commandClass, commandParameter, oldCommandParameter);
-	  }
+	public Command createCustomCommand(Object object, EditingDomain domain, Class<? extends Command> commandClass, CommandParameter commandParameter) {
+		 Command result;
+		 
+		 result = null;
+		 
+		 if(commandClass == EditBusinessColumnsCommand.class) {
+		    	System.err.println(">>> " + commandClass.getName() + " <<<");
+		    	result = new EditBusinessColumnsCommand(domain, commandParameter);
+		    } else if(commandClass == AddBusinessRelationshipCommand.class) {
+		    	System.err.println(">>> " + commandClass.getName() + " <<<");
+		    	result = new AddBusinessRelationshipCommand(domain, commandParameter);
+		    } else if(commandClass == AddIdentifierCommand.class) {
+		    	System.err.println(">>> " + commandClass.getName() + " <<<");
+		    	result = new AddIdentifierCommand(domain, commandParameter);
+		    }
+		 
+		 return result;
+	}
 
 }

@@ -1,30 +1,28 @@
 package it.eng.spagobi.meta.editor.wizards;
 
-import java.util.ArrayList;
-
 import it.eng.spagobi.meta.editor.Activator;
 import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
+import it.eng.spagobi.meta.initializer.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+
+import java.util.ArrayList;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.custom.StackLayout;
-import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 
 
@@ -37,7 +35,7 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
 	private static int MANY_TO_ONE = 3;
 	private static int MANY_TO_MANY = 4;
 	private int cardinality;
-	private java.util.List<BusinessRelationshipContainer> relationshipsContainer;
+	private java.util.List<BusinessRelationshipDescriptor> relationshipsContainer;
 	private Text txtBrName;
 	private String defaultTable;
 	
@@ -48,7 +46,7 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
 		setDescription("This wizard drives you to create a new Business Relationship in your Business Model.\n");
 		ImageDescriptor image = Activator.getImageDescriptor("wizards/createBR.png");
 	    if (image!=null) setImageDescriptor(image);	
-	    relationshipsContainer = new ArrayList<BusinessRelationshipContainer>();
+	    relationshipsContainer = new ArrayList<BusinessRelationshipDescriptor>();
 	    this.defaultTable = defaultTable;
 	}
 
@@ -175,7 +173,7 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
  					sourceColumns.add(sourceColumn);
  					java.util.List<BusinessColumn> targetColumns = new ArrayList<BusinessColumn>();
  					targetColumns.add(targetColumn);
- 					BusinessRelationshipContainer br = new BusinessRelationshipContainer(sourceTable, targetTable, sourceColumns, targetColumns, cardinality, getBusinessRelationshipName() );
+ 					BusinessRelationshipDescriptor br = new BusinessRelationshipDescriptor(sourceTable, targetTable, sourceColumns, targetColumns, cardinality, getBusinessRelationshipName() );
  					getRelationshipsContainer().add(br);
  					
  					//reset text name field
@@ -335,7 +333,7 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
 	/**
 	 * @return the relationshipsContainer
 	 */
-	public java.util.List<BusinessRelationshipContainer> getRelationshipsContainer() {
+	public java.util.List<BusinessRelationshipDescriptor> getRelationshipsContainer() {
 		return relationshipsContainer;
 	}
 

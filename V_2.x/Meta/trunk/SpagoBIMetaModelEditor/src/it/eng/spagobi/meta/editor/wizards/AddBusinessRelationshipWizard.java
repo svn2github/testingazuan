@@ -1,6 +1,7 @@
 package it.eng.spagobi.meta.editor.wizards;
 
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
+import it.eng.spagobi.meta.initializer.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 
@@ -31,14 +32,9 @@ public class AddBusinessRelationshipWizard extends Wizard {
 		if(pageOne.isPageComplete()){
 			BusinessModelInitializer initializer = new BusinessModelInitializer();
 			//create real BusinessRelationship objects
-			List<BusinessRelationshipContainer> listBr = pageOne.getRelationshipsContainer();
-			for (BusinessRelationshipContainer br : listBr){
-				BusinessTable sourceTable = br.getSourceTable();
-				BusinessTable destinationTable = br.getDestinationTable();
-				List<BusinessColumn> sourceColumns = br.getSourceColumns();
-				List<BusinessColumn> destinationColumns = br.getDestinationColumns();
-				String relationshipName =  br.getRelationshipName();
-				initializer.addRelationship(sourceTable, destinationTable, sourceColumns, destinationColumns, relationshipName);
+			List<BusinessRelationshipDescriptor> listBr = pageOne.getRelationshipsContainer();
+			for (BusinessRelationshipDescriptor br : listBr){
+				initializer.addRelationship(br);
 			}
 			return true;
 		}

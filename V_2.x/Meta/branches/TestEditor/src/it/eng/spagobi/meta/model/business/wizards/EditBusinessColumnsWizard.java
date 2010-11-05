@@ -29,7 +29,7 @@ public class EditBusinessColumnsWizard extends AbstractSpagoBIModelWizard {
 	
 	public EditBusinessColumnsWizard(BusinessTable businessTable, EditingDomain editingDomain, AbstractSpagoBIModelCommand command){
 		super(editingDomain, command);
-		this.setWindowTitle("Edit Business Table Columns");
+		this.setWindowTitle("Edit business columns");
 		this.setHelpAvailable(false);		
 		this.businessTable = businessTable;
 		

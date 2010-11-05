@@ -6,8 +6,16 @@
  */
 package it.eng.spagobi.meta.model.business.presentation;
 
+import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.actions.AddBusinessRelationshipAction;
+import it.eng.spagobi.meta.model.business.actions.AddBusinessTableAction;
+import it.eng.spagobi.meta.model.business.actions.AddIdentifierAction;
+import it.eng.spagobi.meta.model.business.actions.AddIncomeBusinessRelationshipAction;
+import it.eng.spagobi.meta.model.business.actions.AddOutcomeBusinessRelationshipAction;
+import it.eng.spagobi.meta.model.business.actions.AddToIdentifierAction;
 import it.eng.spagobi.meta.model.business.actions.EditBusinessColumnsAction;
+import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 import it.eng.spagobi.meta.model.test.TestEditorPlugin;
 
 import java.util.ArrayList;
@@ -302,7 +310,6 @@ public class BusinessModelActionBarContributor
 	 * and returns the collection of these actions.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	protected Collection<IAction> generateCreateChildActions(Collection<?> descriptors, ISelection selection) {
 		Collection<IAction> actions = new ArrayList<IAction>();
@@ -311,9 +318,19 @@ public class BusinessModelActionBarContributor
 		if(!selection.isEmpty()) {
 			IStructuredSelection sselection = (IStructuredSelection) selection;
 		    List<?> list = sselection.toList();
-		    if(list.get(0) instanceof BusinessTable) {
+		    Object targetObject = list.get(0);
+		    if(targetObject instanceof BusinessTable) {
+		    	actions.add(new AddIdentifierAction(activeEditorPart, selection));
 		    	actions.add(new EditBusinessColumnsAction(activeEditorPart, selection));
+		    	actions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
+		    	actions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));		    	
+		    } else if(targetObject instanceof BusinessColumn){
+		    	actions.add(new AddToIdentifierAction(activeEditorPart, selection));
+		    } else if(targetObject instanceof BusinessRootItemProvider) {
+		    	actions.add(new AddBusinessTableAction(activeEditorPart, selection));
+		    	actions.add(new AddBusinessRelationshipAction(activeEditorPart, selection));
 		    } else {
+		    	System.err.println(">>>> " + targetObject.getClass().getName());
 		    	if (descriptors != null) {
 					for (Object descriptor : descriptors) {
 						actions.add(new CreateChildAction(activeEditorPart, selection, descriptor));

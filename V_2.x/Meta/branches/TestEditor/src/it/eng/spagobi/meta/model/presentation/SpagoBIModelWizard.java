@@ -79,6 +79,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 import org.eclipse.ui.INewWizard;
@@ -92,10 +93,12 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ISetSelectionTarget;
 import org.eclipse.ui.part.MultiEditorInput;
 
+import it.eng.spagobi.meta.commons.IModelObjectFilter;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelFactory;
+import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
@@ -276,26 +279,77 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 			
 			final Model spagobiModel;
 			
-			if(newModelWizardFileCreationPage.getConnection() != null) {
-					
+			if(selectionConnectionPage.getConnection() != null) {
+				String catalogName = null;
+				String schemaName = null;
+				
 				spagobiModel = ModelFactory.eINSTANCE.createModel();
 				spagobiModel.setName(newModelWizardFileCreationPage.getModelName());
 				
 				
 				PhysicalModelInitializer physicalModelInitializer = new PhysicalModelInitializer();
 		    	physicalModelInitializer.setRootModel(spagobiModel);
-		    	spagobiModel.getPhysicalModels().add( physicalModelInitializer.initialize(
-						newModelWizardFileCreationPage.getModelName(), 
-						newModelWizardFileCreationPage.getConnection(), 
-						null, 
-						null
-				));
-			
-				BusinessModelInitializer businessModelInitializer = new BusinessModelInitializer();
-				spagobiModel.getBusinessModels().add(businessModelInitializer.initialize(
-						newModelWizardFileCreationPage.getModelName(), 
-						spagobiModel.getPhysicalModels().get(0)
-				));
+		    	
+		    	if (selectionConnectionPage.getCatalogName() != null){
+		    		catalogName = selectionConnectionPage.getCatalogName();
+		    	}
+		    	if (selectionConnectionPage.getSchemaName() != null){
+		    		schemaName = selectionConnectionPage.getSchemaName();
+		    	}
+		    	
+		    	//Getting table to import inside physical table
+		    	TableItem[] selectedPhysicalTableItem = physicalTableSelectionPage.getTablesToImport();
+		    	List<String> selectedPhysicalTable = new ArrayList<String>();
+		    	for (TableItem item: selectedPhysicalTableItem){
+		    		selectedPhysicalTable.add(item.getText());
+		    	}
+		    	
+		    	//Physical Model initialization
+		    	if (selectedPhysicalTable.isEmpty()){
+			    	spagobiModel.getPhysicalModels().add( physicalModelInitializer.initialize(
+							newModelWizardFileCreationPage.getModelName(), 
+							selectionConnectionPage.getConnection(), 
+							catalogName, 
+							schemaName
+					));		    		
+		    	}
+		    	else {
+		    		//with table filtering
+			    	spagobiModel.getPhysicalModels().add( physicalModelInitializer.initialize(
+							newModelWizardFileCreationPage.getModelName(), 
+							selectionConnectionPage.getConnection(), 
+							catalogName, 
+							schemaName,
+							selectedPhysicalTable
+					));	
+		    	}
+		    	//Getting physical table to import inside business table
+		    	TableItem[] selectedBusinessTableItem = businessTableSelectionPage.getTablesToImport();
+		    	List<PhysicalTable> selectedBusinessTable = new ArrayList<PhysicalTable>();
+		    	PhysicalModel physicalModel = spagobiModel.getPhysicalModels().get(0);
+		    	for (TableItem item: selectedBusinessTableItem){
+		    		PhysicalTable physicalTable = physicalModel.getTable(item.getText());
+		    		selectedBusinessTable.add(physicalTable);
+		    	}
+		    	
+		    	//Business Model initialization
+		    	if (selectedBusinessTable.isEmpty()){
+					BusinessModelInitializer businessModelInitializer = new BusinessModelInitializer();
+					spagobiModel.getBusinessModels().add(businessModelInitializer.initialize(
+							newModelWizardFileCreationPage.getModelName(), 
+							spagobiModel.getPhysicalModels().get(0)
+					));
+		    	}
+		    	else {
+		    		//with table filtering
+					BusinessModelInitializer businessModelInitializer = new BusinessModelInitializer();
+					spagobiModel.getBusinessModels().add(businessModelInitializer.initialize(
+							newModelWizardFileCreationPage.getModelName(),
+							new PhysicalTableFilter(selectedBusinessTable),
+							spagobiModel.getPhysicalModels().get(0)
+					));
+		    	}
+
 						
 			} else {
 				spagobiModel = (Model)createInitialModel();
@@ -398,6 +452,9 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 
 
 	NewModelWizardFileCreationPage newModelWizardFileCreationPage;
+	SelectionConnectionPage selectionConnectionPage;
+	PhysicalTableSelectionPage physicalTableSelectionPage;
+	BusinessTableSelectionPage businessTableSelectionPage;
 	/**
 	 * The framework calls this to create the contents of the wizard.
 	 * <!-- begin-user-doc -->
@@ -409,11 +466,20 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 		// Create a page, set the title, and the initial model file name.
 		//
 		newModelWizardFileCreationPage = new NewModelWizardFileCreationPage("New SpagoBI BM Project Page");
-		newModelWizardFileCreationPage.setTitle("Create new SpagoBI Metamodel");
-		newModelWizardFileCreationPage.setDescription("Create new SpagoBI Metamodel");
+		selectionConnectionPage = new SelectionConnectionPage("Select Connection");
+		physicalTableSelectionPage = new PhysicalTableSelectionPage("Select Physical Tables");
+		businessTableSelectionPage = new BusinessTableSelectionPage("Select Business Tables");
 		addPage(newModelWizardFileCreationPage);	
+		addPage(selectionConnectionPage);
+		addPage(physicalTableSelectionPage);
+		addPage(businessTableSelectionPage);
+		selectionConnectionPage.setPhysicalTableSelectionPageRef(physicalTableSelectionPage);
+		physicalTableSelectionPage.setBusinessTableSelectionPageRef(businessTableSelectionPage);
+
+		
 	}
 
+/*		
 	public class NewModelWizardFileCreationPage extends WizardPage {
 
 		Text modelNameFieldInput;
@@ -498,5 +564,22 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 		}
 		
 	}
+*/
+		/*
+		 * Inner class that implements IModelObjectFilter
+		 */
+		private class PhysicalTableFilter implements IModelObjectFilter{
 
+			List<PhysicalTable> tablesTrue;
+			public PhysicalTableFilter(List<PhysicalTable> tablesToMantain){
+				tablesTrue = tablesToMantain;
+			}
+			@Override
+			public boolean filter(ModelObject o) {
+				if (tablesTrue.contains((PhysicalTable)o))
+					return false;
+				else
+					return true;
+			}		
+		}
 }

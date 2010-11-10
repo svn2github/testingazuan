@@ -37,7 +37,47 @@ public class PhysicalModelInitializer {
 		
 	}
 	
+	//Initialize PhysicalModel with table filter
+	public PhysicalModel initialize(String modelName, Connection conn, String defaultCatalog, String defaultSchema, List<String> selectedTables){
+		PhysicalModel model;
+		DatabaseMetaData dbMeta;
+		
+		try {
+			model = FACTORY.createPhysicalModel();
+			model.setName(modelName);
+			
+			if(getRootModel() != null) {
+				model.setParentModel(getRootModel());
+			}
+			
+			dbMeta = conn.getMetaData();
+			
+			addDatabase(dbMeta, model);			
+			addCatalog(conn, model, defaultCatalog);
+			addSchema(dbMeta, model, defaultSchema);
+			
+			addTables(dbMeta, model, selectedTables);
+			
+			for(int i = 0; i < model.getTables().size(); i++) {
+				addPrimaryKey(dbMeta, model, model.getTables().get(i));
+				addForeignKeys(dbMeta, model, model.getTables().get(i));
+			}
+			
+			getPropertiesInitializer().addProperties(model);
+			
+		} catch(Throwable t) {
+			throw new RuntimeException("Impossible to initialize physical model", t);
+		}
+		
+		return model;		
+		
+	}
+	
+	//Initialize Physical Model with ALL original Database Tables
 	public PhysicalModel initialize(String modelName, Connection conn, String defaultCatalog, String defaultSchema) {
+		return initialize(modelName,conn,defaultCatalog,defaultSchema, null );
+		
+		/*
 		PhysicalModel model;
 		DatabaseMetaData dbMeta;
 		
@@ -69,6 +109,7 @@ public class PhysicalModelInitializer {
 		}
 		
 		return model;
+		*/
 	}
 	
 	
@@ -173,7 +214,12 @@ public class PhysicalModelInitializer {
 	
 	
 	
-	private void addTables(DatabaseMetaData dbMeta, PhysicalModel model ) {
+	private void addTables(DatabaseMetaData dbMeta, PhysicalModel model, List<String> selectedTables ) {
+		boolean filterTable = false;
+		if (selectedTables != null){
+			filterTable = true;
+		}
+		
 		Map<String, PhysicalTable> tabesLookupMap;
 		ResultSet tableRs, columnRs;
 		PhysicalTable table;
@@ -203,18 +249,22 @@ public class PhysicalModelInitializer {
 			10. REF_GENERATION String => specifies how values in SELF_REFERENCING_COL_NAME are created. Values are “SYSTEM”, “USER”, “DERIVED”. (may be null)
 			 */
 			while (tableRs.next()) {
-				table = FACTORY.createPhysicalTable();
-				getPropertiesInitializer().addProperties(table);
-				
-				table.setName( tableRs.getString("TABLE_NAME") );
-				table.setComment( tableRs.getString("REMARKS") );
-				table.setType( tableRs.getString("TABLE_TYPE") );
-				
-				log("Table: " + table.getName() + "[" + table.getType() + "]");
-				
-				initColumnsMeta(dbMeta, model, table);
-						
-				model.getTables().add(table);
+				if( (!filterTable) || 
+				  ( (selectedTables != null) && (selectedTables.contains(tableRs.getString("TABLE_NAME"))) ) )
+				{
+					table = FACTORY.createPhysicalTable();
+					getPropertiesInitializer().addProperties(table);
+					
+					table.setName( tableRs.getString("TABLE_NAME") );
+					table.setComment( tableRs.getString("REMARKS") );
+					table.setType( tableRs.getString("TABLE_TYPE") );
+					
+					log("Table: " + table.getName() + "[" + table.getType() + "]");
+					
+					initColumnsMeta(dbMeta, model, table);
+							
+					model.getTables().add(table);
+				}
 			}
 			tableRs.close();
 			

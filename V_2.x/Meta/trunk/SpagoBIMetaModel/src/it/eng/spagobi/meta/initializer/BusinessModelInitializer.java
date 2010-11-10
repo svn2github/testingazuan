@@ -187,27 +187,31 @@ public class BusinessModelInitializer {
 			businessIdentifier.setName( physicalPrimaryKey.getName() );
 			businessIdentifier.setPhysicalPrimaryKey(physicalPrimaryKey);
 			businessIdentifier.setModel(businessModel);
-			
+			//Note: use a filter on physical table to check?
 			physicalTable = physicalPrimaryKey.getTable();
 			businessTable = businessModel.getTable( physicalTable );
-			businessIdentifier.setTable(businessTable);
 			
-			for(int j = 0; j < physicalPrimaryKey.getColumns().size(); j++) {
-				businessColumn = businessTable.getColumn(physicalPrimaryKey.getColumns().get(j));
-				if (businessColumn != null){
-					businessIdentifier.getColumns().add(businessColumn);
-				}
-			}
-			
-			if (businessIdentifier.getColumns().size() > 0){
-				businessModel.getIdentifiers().add(businessIdentifier);			
-				getPropertiesInitializer().addProperties(businessIdentifier);
-			}
-			else{
-				//remove "empty" Business Identifier from memory
-				businessIdentifier = null;
-			}
+			//check if businessTable is present in Business Model
+			if (businessTable != null){
+				businessIdentifier.setTable(businessTable);
 				
+				for(int j = 0; j < physicalPrimaryKey.getColumns().size(); j++) {
+					businessColumn = businessTable.getColumn(physicalPrimaryKey.getColumns().get(j));
+					if (businessColumn != null){
+						businessIdentifier.getColumns().add(businessColumn);
+					}
+				}
+				
+				if (businessIdentifier.getColumns().size() > 0){
+					businessModel.getIdentifiers().add(businessIdentifier);			
+					getPropertiesInitializer().addProperties(businessIdentifier);
+				}
+				else{
+					//remove "empty" Business Identifier from memory
+					businessIdentifier = null;
+				}				
+			}
+	
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize identifier meta", t);
 		}

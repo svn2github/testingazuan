@@ -60,6 +60,7 @@ public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelCommand 
 		BusinessRelationshipDescriptor descriptor = (BusinessRelationshipDescriptor)parameter.getValue();
 		
 		initializer = new BusinessModelInitializer();
+		//getting the just added Business Relationship reference
 		addedBusinessRelationship = initializer.addRelationship(descriptor);
 				
 		System.err.println("COMMAND [AddBusinessRelationshipCommand] SUCCESFULLY EXECUTED: ");

@@ -61,4 +61,9 @@ public class EditBusinessColumnsWizard extends AbstractSpagoBIModelWizard {
 		return new CommandParameter(businessTable, null, colList, new ArrayList<Object>());
 	}
 
+	@Override
+	public boolean isWizardComplete() {
+		return getStartingPage().isPageComplete();
+	}
+
 }

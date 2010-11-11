@@ -34,7 +34,7 @@ public abstract class AbstractSpagoBIModelWizard extends Wizard {
 	
 	@Override
 	public boolean performFinish() {
-		if (getStartingPage().isPageComplete()){
+		if (isWizardComplete()){
 			
 			performFinishCommand.setParameter( getCommandInputParameter() );
 			
@@ -52,6 +52,7 @@ public abstract class AbstractSpagoBIModelWizard extends Wizard {
 	}
 	
 	public abstract CommandParameter getCommandInputParameter();
+	public abstract boolean isWizardComplete();
 
 	
 

@@ -38,9 +38,11 @@ public class AddBusinessRelationshipWizard extends AbstractSpagoBIModelWizard {
 
 		return new CommandParameter(sourceTable, null, wizardPage.getRelationshipDescriptor(), new ArrayList<Object>());
 
-		
-		
-		
+	}
+	
+	@Override
+	public boolean isWizardComplete() {
+		return getStartingPage().isPageComplete();
 	}
 
 }

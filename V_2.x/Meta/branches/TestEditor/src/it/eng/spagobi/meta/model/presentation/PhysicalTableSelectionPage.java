@@ -82,6 +82,7 @@ public class PhysicalTableSelectionPage extends WizardPage {
 	    }
 		
 	    dseBridge = new DSEBridge();
+
 	}
 
 	@Override
@@ -281,7 +282,7 @@ public class PhysicalTableSelectionPage extends WizardPage {
     	IWizardPage nextPage = super.getNextPage();
     	if (nextPage instanceof BusinessTableSelectionPage) {
     		getBusinessTableSelectionPageRef().addTableItems(getTablesToImport());
-    	}
+    	}  	
         return nextPage;
     }
 	

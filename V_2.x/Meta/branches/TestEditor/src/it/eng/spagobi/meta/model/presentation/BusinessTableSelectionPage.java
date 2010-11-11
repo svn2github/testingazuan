@@ -50,6 +50,7 @@ public class BusinessTableSelectionPage extends WizardPage {
 	private Image physicalTableImage = null;
 	private Image businessTableImage = null;
 	private TableItem[] tablesToImport;
+
 	
 	/**
 	 * @param pageName
@@ -72,6 +73,7 @@ public class BusinessTableSelectionPage extends WizardPage {
 		if (dbTableImageDescriptor!=null) {
 			businessTableImage = dbTableImageDescriptor.createImage();
 	    }
+		
 	}
 
 	@Override
@@ -245,6 +247,7 @@ public class BusinessTableSelectionPage extends WizardPage {
 			setErrorMessage("The Business Model hasn't any tables, please select at least one to continue");
 			setPageComplete(false);
 		}
+
 	}
 	
 	/**

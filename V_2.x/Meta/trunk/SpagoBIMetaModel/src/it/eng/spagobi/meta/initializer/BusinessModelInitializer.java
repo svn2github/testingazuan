@@ -329,7 +329,7 @@ public class BusinessModelInitializer {
 	
 	//add Relationship without PhysicalForeignKey specified
 	//public void addRelationship(BusinessTable sourceTable, BusinessTable destinationTable, List<BusinessColumn> sourceColumns, List<BusinessColumn> destinationColumns, String relationshipName){
-	public void addRelationship(BusinessRelationshipDescriptor descriptor){
+	public BusinessRelationship addRelationship(BusinessRelationshipDescriptor descriptor){
 			
 		BusinessRelationship businessRelationship;	
 		BusinessModel businessModel = descriptor.getSourceTable().getModel();
@@ -357,9 +357,12 @@ public class BusinessModelInitializer {
 			
 			getPropertiesInitializer().addProperties(businessRelationship);
 			
+		
+			
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business relationship", t);
 		}
+		return businessRelationship;
 	}
 	
 	//  --------------------------------------------------------

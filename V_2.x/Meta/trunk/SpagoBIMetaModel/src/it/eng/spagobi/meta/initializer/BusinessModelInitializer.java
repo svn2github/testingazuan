@@ -3,6 +3,7 @@
  */
 package it.eng.spagobi.meta.initializer;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -219,7 +220,7 @@ public class BusinessModelInitializer {
 	}
 	
 	//add Identifier without PhysicalPrimaryKey specified
-	public void addIdentifier(String businessIdentifierName, BusinessTable businessTable, List<BusinessColumn> businessColumns) {
+	public void addIdentifier(String businessIdentifierName, BusinessTable businessTable, Collection<BusinessColumn> businessColumns) {
 		BusinessIdentifier businessIdentifier;
 		BusinessModel businessModel = businessTable.getModel();
 		

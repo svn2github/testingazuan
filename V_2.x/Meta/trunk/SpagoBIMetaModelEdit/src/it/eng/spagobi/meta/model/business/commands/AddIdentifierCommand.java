@@ -22,16 +22,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.model.business.commands;
 
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
-import it.eng.spagobi.meta.initializer.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessIdentifier;
+import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
-import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
-
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 
@@ -52,7 +48,25 @@ public class AddIdentifierCommand extends AbstractSpagoBIModelCommand {
 	
 	@Override
 	public void execute() {
-		// do something here
+		BusinessModelInitializer initializer = new BusinessModelInitializer();
+		//Checking if a Business Identifier for this Business Table already exists
+		BusinessTable businessTable = (BusinessTable)parameter.getOwner();
+		BusinessModel businessModel = businessTable.getModel();
+		Collection<BusinessColumn> selectedColumns = (Collection)parameter.getValue();
+		
+		//BusinessTable bizTable = businessModel.getTable(tableName);
+		BusinessIdentifier businessIdentifier = businessModel.getIdentifier(businessTable);
+		String identifierName = businessIdentifier.getName();
+		if (businessIdentifier != null){
+			//Business Identifier already exists, substitution
+			businessModel.getIdentifiers().remove(businessIdentifier);
+			initializer.addIdentifier(identifierName, businessTable, selectedColumns);			
+		}
+		else {
+			//Business Identifier doesn't exists, create
+			initializer.addIdentifier(identifierName, businessTable, selectedColumns);
+			//initializer.addIdentifier(tableName, businessTable, selectedColumns);
+		}
 		
 		System.err.println("COMMAND [AddIdentifierCommand] SUCCESFULLY EXECUTED: ");
 		

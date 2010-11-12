@@ -320,7 +320,7 @@ public class BusinessModelActionBarContributor
 		    List<?> list = sselection.toList();
 		    Object targetObject = list.get(0);
 		    if(targetObject instanceof BusinessTable) {
-		    	actions.add(new AddIdentifierAction(activeEditorPart, selection));
+		    	actions.add(new AddIdentifierAction(activeEditorPart, selection, null));
 		    	actions.add(new EditBusinessColumnsAction(activeEditorPart, selection));
 		    	actions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
 		    	actions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));		    	

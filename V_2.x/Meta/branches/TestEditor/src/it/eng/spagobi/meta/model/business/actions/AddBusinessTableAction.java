@@ -29,6 +29,9 @@ import it.eng.spagobi.meta.model.business.commands.AddBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.AddIdentifierCommand;
 import it.eng.spagobi.meta.model.business.commands.AddToIdentifierCommand;
 import it.eng.spagobi.meta.model.business.wizards.AddBusinessRelationshipWizard;
+import it.eng.spagobi.meta.model.business.wizards.AddBusinessTableWizard;
+import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -40,9 +43,10 @@ import org.eclipse.ui.IWorkbenchPart;
  *
  */
 public class AddBusinessTableAction extends AbstractSpagoBIModelAction {
-	
-	public AddBusinessTableAction(IWorkbenchPart workbenchPart, ISelection selection) {
+	PhysicalTable physicalTable; //used for drag&drop
+	public AddBusinessTableAction(IWorkbenchPart workbenchPart, ISelection selection, PhysicalTable physicalTable) {
 		super(AddBusinessTableCommand.class, workbenchPart, selection);
+		this.physicalTable = physicalTable;
 	}
 	
 	/**
@@ -51,12 +55,12 @@ public class AddBusinessTableAction extends AbstractSpagoBIModelAction {
 	@Override
 	public void run() {
 		try {
-			/*
-			AddIdentifierWizard wizard = new AddIdentifierWizard( editingDomain, (AbstractSpagoBIModelCommand)command );
+			BusinessModel businessModel = (BusinessModel)((BusinessRootItemProvider)owner).getParentObject();
+			AddBusinessTableWizard wizard = new AddBusinessTableWizard(businessModel, physicalTable, editingDomain, (AbstractSpagoBIModelCommand)command );
 	    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 			dialog.create();
 	    	dialog.open();
-	    	*/
+	    	
 		} catch(Throwable t) {
 			t.printStackTrace();
 		}

@@ -327,7 +327,7 @@ public class BusinessModelActionBarContributor
 		    } else if(targetObject instanceof BusinessColumn){
 		    	actions.add(new AddToIdentifierAction(activeEditorPart, selection));
 		    } else if(targetObject instanceof BusinessRootItemProvider) {
-		    	actions.add(new AddBusinessTableAction(activeEditorPart, selection));
+		    	actions.add(new AddBusinessTableAction(activeEditorPart, selection, null));
 		    	actions.add(new AddBusinessRelationshipAction(activeEditorPart, selection));
 		    } else {
 		    	System.err.println(">>>> " + targetObject.getClass().getName());

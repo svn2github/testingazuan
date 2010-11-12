@@ -91,10 +91,10 @@ public class BusinessModelInitializer {
 		}	
 	}
 	
-	public void addTable(PhysicalTable physicalTable,  BusinessModel businessModel, boolean addIdentifier) {
-		addTable(physicalTable, null, businessModel, addIdentifier);
+	public BusinessTable addTable(PhysicalTable physicalTable,  BusinessModel businessModel, boolean addIdentifier) {
+		return addTable(physicalTable, null, businessModel, addIdentifier);
 	}
-	public void addTable(PhysicalTable physicalTable, IModelObjectFilter columnFilter, BusinessModel businessModel, boolean addIdentifier) {
+	public BusinessTable addTable(PhysicalTable physicalTable, IModelObjectFilter columnFilter, BusinessModel businessModel, boolean addIdentifier) {
 		BusinessTable businessTable;
 		
 		try {
@@ -121,6 +121,7 @@ public class BusinessModelInitializer {
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business table from physical table [" + physicalTable.getName() + "]", t);
 		}
+		return businessTable;
 	}
 	
 

@@ -43,9 +43,9 @@ public class AddIdentifierAction extends AbstractSpagoBIModelAction {
 	
 	private String defaultTable;
 	private BusinessTable businessTable;
-	public AddIdentifierAction(IWorkbenchPart workbenchPart, ISelection selection, String defaultTable) {
+	public AddIdentifierAction(IWorkbenchPart workbenchPart, ISelection selection) {
 		super(AddIdentifierCommand.class, workbenchPart, selection);
-		this.defaultTable = defaultTable;
+		
 	}
 	
 	/**
@@ -54,7 +54,8 @@ public class AddIdentifierAction extends AbstractSpagoBIModelAction {
 	@Override
 	public void run() {
 		try {	
-			BusinessTable businessTable = (BusinessTable)owner;
+			businessTable = (BusinessTable)owner;
+			defaultTable = businessTable.getName();
 			AddBusinessIdentifierWizard wizard = new AddBusinessIdentifierWizard( editingDomain, (AbstractSpagoBIModelCommand)command, defaultTable, businessTable );
 	    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 			dialog.create();

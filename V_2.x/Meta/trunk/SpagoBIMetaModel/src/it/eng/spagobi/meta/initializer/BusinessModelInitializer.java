@@ -178,7 +178,7 @@ public class BusinessModelInitializer {
 		}
 	}
 	
-	public void addIdentifier(PhysicalPrimaryKey physicalPrimaryKey, BusinessModel businessModel) {
+	public BusinessIdentifier addIdentifier(PhysicalPrimaryKey physicalPrimaryKey, BusinessModel businessModel) {
 		BusinessIdentifier businessIdentifier;
 		PhysicalTable physicalTable;
 		BusinessTable businessTable;
@@ -217,10 +217,11 @@ public class BusinessModelInitializer {
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize identifier meta", t);
 		}
+		return businessIdentifier;
 	}
 	
 	//add Identifier without PhysicalPrimaryKey specified
-	public void addIdentifier(String businessIdentifierName, BusinessTable businessTable, Collection<BusinessColumn> businessColumns) {
+	public BusinessIdentifier addIdentifier(String businessIdentifierName, BusinessTable businessTable, Collection<BusinessColumn> businessColumns) {
 		BusinessIdentifier businessIdentifier;
 		BusinessModel businessModel = businessTable.getModel();
 		
@@ -239,11 +240,12 @@ public class BusinessModelInitializer {
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize identifier meta", t);
 		}
+		return businessIdentifier;
 	}
 	
 	//add Identifier with PhysicalPrimaryKey discovered through passed BusinessTable 
-	public void addIdentifier(BusinessTable businessTable, BusinessModel businessModel){
-		BusinessIdentifier businessIdentifier;		
+	public BusinessIdentifier addIdentifier(BusinessTable businessTable, BusinessModel businessModel){
+		BusinessIdentifier businessIdentifier = null;		
 		BusinessColumn businessColumn;
 		PhysicalPrimaryKey physicalPrimaryKey = businessTable.getPhysicalTable().getPrimaryKey();
 	
@@ -274,8 +276,9 @@ public class BusinessModelInitializer {
 			} catch(Throwable t) {
 				throw new RuntimeException("Impossible to initialize identifier meta", t);
 			}
+			
 		}
-
+		return businessIdentifier;
 	}
 	
 	
@@ -292,7 +295,7 @@ public class BusinessModelInitializer {
 		}
 	}
 	
-	public void addRelationship(PhysicalForeignKey physicalForeignKey, BusinessModel businessModel) {
+	public BusinessRelationship addRelationship(PhysicalForeignKey physicalForeignKey, BusinessModel businessModel) {
 		BusinessRelationship businessRelationship;
 		PhysicalTable physicalTable;
 		BusinessTable businessTable;
@@ -327,6 +330,7 @@ public class BusinessModelInitializer {
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business relationship from physical foreign key [" + physicalForeignKey.getSourceName() + "]", t);
 		}
+		return businessRelationship;
 	}
 	
 	//add Relationship without PhysicalForeignKey specified

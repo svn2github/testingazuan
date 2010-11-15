@@ -56,15 +56,16 @@ public class AddIdentifierCommand extends AbstractSpagoBIModelCommand {
 		
 		//BusinessTable bizTable = businessModel.getTable(tableName);
 		BusinessIdentifier businessIdentifier = businessModel.getIdentifier(businessTable);
-		String identifierName = businessIdentifier.getName();
+		
 		if (businessIdentifier != null){
+			String identifierName = businessIdentifier.getName();
 			//Business Identifier already exists, substitution
 			businessModel.getIdentifiers().remove(businessIdentifier);
 			initializer.addIdentifier(identifierName, businessTable, selectedColumns);			
 		}
 		else {
 			//Business Identifier doesn't exists, create
-			initializer.addIdentifier(identifierName, businessTable, selectedColumns);
+			initializer.addIdentifier(businessTable.getName(), businessTable, selectedColumns);
 			//initializer.addIdentifier(tableName, businessTable, selectedColumns);
 		}
 		

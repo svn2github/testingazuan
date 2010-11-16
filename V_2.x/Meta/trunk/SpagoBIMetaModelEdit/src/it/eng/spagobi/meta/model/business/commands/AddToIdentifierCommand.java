@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.model.business.commands;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
@@ -52,7 +53,19 @@ public class AddToIdentifierCommand extends AbstractSpagoBIModelCommand {
 	
 	@Override
 	public void execute() {
-		// do something here
+		BusinessColumn businessColumn = (BusinessColumn)parameter.getOwner();
+		BusinessTable businessTable = businessColumn.getTable();
+		BusinessIdentifier businessIdentifier = businessTable.getIdentifier();
+		if (businessIdentifier != null){
+			//update existing Business Identifier
+			businessIdentifier.getColumns().add(businessColumn);
+		} else {
+			//create a new Business Identifier
+			BusinessModelInitializer initializer = new BusinessModelInitializer();
+			Collection<BusinessColumn> businessColumns = new ArrayList<BusinessColumn>();
+			businessColumns.add(businessColumn);
+			initializer.addIdentifier(businessTable.getName(), businessTable, businessColumns);
+		}
 		
 		System.err.println("COMMAND [AddToIdentifierCommand] SUCCESFULLY EXECUTED: ");
 		

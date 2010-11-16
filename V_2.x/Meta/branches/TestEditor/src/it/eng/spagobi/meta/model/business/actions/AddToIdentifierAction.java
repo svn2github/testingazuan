@@ -40,8 +40,10 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public class AddToIdentifierAction extends AbstractSpagoBIModelAction {
 	
+	AbstractSpagoBIModelCommand performFinishCommand; 
 	public AddToIdentifierAction(IWorkbenchPart workbenchPart, ISelection selection) {
 		super(AddToIdentifierCommand.class, workbenchPart, selection);
+		this.performFinishCommand = (AbstractSpagoBIModelCommand)command;
 	}
 	
 	/**
@@ -51,8 +53,15 @@ public class AddToIdentifierAction extends AbstractSpagoBIModelAction {
 	public void run() {
 		try {
 			/*
-			no wizard here because we do not need some extra imput. we can execute command directly
+			no wizard here because we do not need some extra input. we can execute command directly
 	    	*/
+			
+			// this guard is for extra security, but should not be necessary
+		    if (editingDomain != null && performFinishCommand != null) {
+		    	// use up the command
+		    	editingDomain.getCommandStack().execute(performFinishCommand);
+		    }
+
 		} catch(Throwable t) {
 			t.printStackTrace();
 		}

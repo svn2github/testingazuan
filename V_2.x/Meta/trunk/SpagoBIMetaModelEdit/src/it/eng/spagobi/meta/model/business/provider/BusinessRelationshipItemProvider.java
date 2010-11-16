@@ -244,23 +244,18 @@ public class BusinessRelationshipItemProvider
 		businessRelationship = (BusinessRelationship)object;
 		//getting relationship's sourceColumns
 		sourceColumns = businessRelationship.getSourceColumns();
-		for (BusinessColumn column : sourceColumns){
-			sourceColumnsNames = sourceColumnsNames+" "+column.getName();
-		}
-		//getting relationship's destinationColumns
 		destinationColumns = businessRelationship.getDestinationColumns();
-		for (BusinessColumn column : destinationColumns){
-			destinationColumnsNames = destinationColumnsNames+" "+column.getName();
-		}
-		
-		//group relationships
-		relationshipItemProvider = new FolderItemProvider(adapterFactory, businessRelationship,null);
-		relationshipItemProvider.setImage("full/obj16/Arrow");
-		relationshipItemProvider.setText("("+businessRelationship.getSourceTable().getName()+") "+sourceColumnsNames+" -> ("+businessRelationship.getDestinationTable().getName()+") "+destinationColumnsNames);
-		
 		children = new LinkedHashSet();
-		//children.addAll(  getChildrenFeatures(object) );
-		children.add( relationshipItemProvider );
+		
+		for(int i=0; i<sourceColumns.size(); i++){
+			String sourceColumnName = sourceColumns.get(i).getName();
+			String destinationColumn = destinationColumns.get(i).getName();
+			
+			relationshipItemProvider = new FolderItemProvider(adapterFactory, businessRelationship,null);
+			relationshipItemProvider.setImage("full/obj16/Arrow");
+			relationshipItemProvider.setText("("+businessRelationship.getSourceTable().getName()+") "+sourceColumnName+" -> ("+businessRelationship.getDestinationTable().getName()+") "+destinationColumn);
+			children.add( relationshipItemProvider );
+		}
 		
 		return children;
 	}	

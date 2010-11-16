@@ -13,6 +13,7 @@ import it.eng.spagobi.meta.model.business.actions.AddBusinessTableAction;
 import it.eng.spagobi.meta.model.business.actions.AddIdentifierAction;
 import it.eng.spagobi.meta.model.business.actions.AddIncomeBusinessRelationshipAction;
 import it.eng.spagobi.meta.model.business.actions.AddOutcomeBusinessRelationshipAction;
+import it.eng.spagobi.meta.model.business.actions.AddPhysicalTableToBusinessTableAction;
 import it.eng.spagobi.meta.model.business.actions.AddToIdentifierAction;
 import it.eng.spagobi.meta.model.business.actions.EditBusinessColumnsAction;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
@@ -24,7 +25,7 @@ import java.util.List;
 
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 
-import org.eclipse.emf.ecore.EObject;
+
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
 
@@ -323,7 +324,9 @@ public class BusinessModelActionBarContributor
 		    	actions.add(new AddIdentifierAction(activeEditorPart, selection));
 		    	actions.add(new EditBusinessColumnsAction(activeEditorPart, selection));
 		    	actions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
-		    	actions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));		    	
+		    	actions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
+		    	//
+		    	actions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));	
 		    } else if(targetObject instanceof BusinessColumn){
 		    	actions.add(new AddToIdentifierAction(activeEditorPart, selection));
 		    } else if(targetObject instanceof BusinessRootItemProvider) {

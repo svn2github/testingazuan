@@ -25,6 +25,7 @@ import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
+import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
@@ -42,7 +43,7 @@ import org.eclipse.emf.edit.domain.EditingDomain;
  */
 public class AddToIdentifierCommand extends AbstractSpagoBIModelCommand {
 
-	
+	BusinessColumn businessColumn;
 	public AddToIdentifierCommand(EditingDomain domain, CommandParameter parameter) {
 		super("Identifier", "Add identifier ", domain, parameter);
 	}
@@ -53,7 +54,7 @@ public class AddToIdentifierCommand extends AbstractSpagoBIModelCommand {
 	
 	@Override
 	public void execute() {
-		BusinessColumn businessColumn = (BusinessColumn)parameter.getOwner();
+		businessColumn = (BusinessColumn)parameter.getOwner();
 		BusinessTable businessTable = businessColumn.getTable();
 		BusinessIdentifier businessIdentifier = businessTable.getIdentifier();
 		if (businessIdentifier != null){
@@ -75,12 +76,30 @@ public class AddToIdentifierCommand extends AbstractSpagoBIModelCommand {
 	
 	@Override
 	public void undo() {
-		
+		BusinessTable businessTable = businessColumn.getTable();
+		BusinessIdentifier businessIdentifier = businessTable.getIdentifier();
+		businessIdentifier.getColumns().remove(businessColumn);
+		//check if the Business Identifier is empty after the remove
+		if(businessIdentifier.getColumns().isEmpty()){
+			BusinessModel businessModel = businessTable.getModel();
+			businessModel.getIdentifiers().remove(businessIdentifier);
+		}
 	}
 
 	@Override
 	public void redo() {
-			
+		BusinessTable businessTable = businessColumn.getTable();
+		BusinessIdentifier businessIdentifier = businessTable.getIdentifier();
+		if (businessIdentifier != null){
+			//update existing Business Identifier
+			businessIdentifier.getColumns().add(businessColumn);
+		} else {
+			//create a new Business Identifier
+			BusinessModelInitializer initializer = new BusinessModelInitializer();
+			Collection<BusinessColumn> businessColumns = new ArrayList<BusinessColumn>();
+			businessColumns.add(businessColumn);
+			initializer.addIdentifier(businessTable.getName(), businessTable, businessColumns);
+		}			
 	}
 	
 	@Override

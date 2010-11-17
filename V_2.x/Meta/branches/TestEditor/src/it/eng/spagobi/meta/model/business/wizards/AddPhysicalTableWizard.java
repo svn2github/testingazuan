@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.wizards;
 
+import java.util.ArrayList;
+
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
 
@@ -42,6 +44,8 @@ public class AddPhysicalTableWizard extends AbstractSpagoBIModelWizard {
 	public AddPhysicalTableWizard(BusinessTable owner, EditingDomain editingDomain,
 			AbstractSpagoBIModelCommand command) {
 		super(editingDomain, command);
+		this.setWindowTitle("Add a Physical Table");
+		this.setHelpAvailable(false);	
 		this.owner = owner;
 	}
 
@@ -53,14 +57,16 @@ public class AddPhysicalTableWizard extends AbstractSpagoBIModelWizard {
 	
 	@Override
 	public CommandParameter getCommandInputParameter() {
-		// TODO Auto-generated method stub
-		return null;
+		String physicalTableName = pageOne.getTableSelected();
+		return new CommandParameter(owner, null, physicalTableName, new ArrayList<Object>());
 	}
 
 	@Override
 	public boolean isWizardComplete() {
-		// TODO Auto-generated method stub
-		return false;
+		if (pageOne.isPageComplete()){
+			return true;			
+		}
+		return false;	
 	}
 
 }

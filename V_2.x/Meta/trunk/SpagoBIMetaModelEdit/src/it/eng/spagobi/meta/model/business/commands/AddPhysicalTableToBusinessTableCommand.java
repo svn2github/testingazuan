@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.model.business.commands;
 
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
-
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 
@@ -33,12 +32,6 @@ import org.eclipse.emf.edit.domain.EditingDomain;
 public class AddPhysicalTableToBusinessTableCommand extends
 		AbstractSpagoBIModelCommand {
 
-	/**
-	 * @param commandLabel
-	 * @param commandDescription
-	 * @param domain
-	 * @param parameter
-	 */
 	public AddPhysicalTableToBusinessTableCommand(EditingDomain domain, CommandParameter parameter) {
 		super("Physical Table", "Add Physical Table ", domain, parameter);
 	}
@@ -50,8 +43,11 @@ public class AddPhysicalTableToBusinessTableCommand extends
 	@Override
 	public void execute() {
 		//do something
+		System.err.println("COMMAND [AddPhysicalTableToBusinessTableCommand] SUCCESFULLY EXECUTED");
+		
+		this.executed = true;
 	}
-	
+	@Override
 	public void undo() {
 		
 	}

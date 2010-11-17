@@ -67,8 +67,20 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 		gl.makeColumnsEqualWidth = true;
 		composite.setLayout(gl);
 		
+		createTableGroup(composite, SWT.SHADOW_ETCHED_IN);
+		 		
+        //Important: Setting page control
+ 		setControl(composite);
+ 		
+ 		populateTableList();
+ 		addListener();
+ 		checkPageComplete();
+
+	}
+	
+	private void createTableGroup(Composite composite, int style){
 		//Physical Table List
-		Group tableGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
+		Group tableGroup = new Group(composite, style);
 		tableGroup.setText("Physical Table Selection");
 		GridLayout glTable = new GridLayout();
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -88,12 +100,9 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
  		GridData gdList = new GridData(GridData.FILL_BOTH);
  		gdList.heightHint = 250;
  		tableList.setLayoutData(gdList);
- 		
-        //Important: Setting page control
- 		setControl(composite);
- 		
- 		populateTableList();
- 		
+	}
+	
+	public void addListener(){
 		//adding listener to List
  		tableList.addListener(SWT.Selection, new Listener() {		
 			@Override
@@ -103,10 +112,8 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 				checkPageComplete();
 			}
 		});
- 		
- 		checkPageComplete();
-
 	}
+	
 	//populate the list with the Physical Tables' names
 	private void populateTableList(){
 		PhysicalModel pm = owner.getPhysicalTable().getModel();

@@ -21,9 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.actions;
 
-import it.eng.spagobi.meta.model.business.BusinessTable;
-import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
-import it.eng.spagobi.meta.model.business.wizards.EditBusinessColumnsWizard;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,8 +37,6 @@ import org.eclipse.emf.edit.ui.action.StaticSelectionCommandAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
 
 /**

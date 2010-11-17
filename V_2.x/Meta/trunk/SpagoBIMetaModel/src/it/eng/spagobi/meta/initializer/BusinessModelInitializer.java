@@ -3,6 +3,7 @@
  */
 package it.eng.spagobi.meta.initializer;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
@@ -369,6 +371,79 @@ public class BusinessModelInitializer {
 			throw new RuntimeException("Impossible to initialize business relationship", t);
 		}
 		return businessRelationship;
+	}
+	
+	/**
+	 * Create a BusinessView using the data from a BusinessTable
+	 * @return BusinessView created
+	 */
+	public BusinessView upgradeBusinessTableToBusinessView(BusinessTable businessTable, Collection<PhysicalTable> physicalTables){
+		BusinessView businessView;
+		BusinessModel businessModel = businessTable.getModel();
+		PhysicalTable originalPhysicalTable  = businessTable.getPhysicalTable();
+		Collection<BusinessColumn> businessColumns = businessTable.getColumns();
+		//add original PhysicalTable referenced by BusinessTable
+		//to the collection of Physical Tables added for the upgrade to BusinessView
+		physicalTables.add(originalPhysicalTable);
+		Collection<BusinessRelationship> businessRelationships = businessTable.getRelationships();
+		Collection<BusinessRelationship> inboundBusinessRelationships = new ArrayList<BusinessRelationship>();
+		Collection<BusinessRelationship> outboundBusinessRelationships = new ArrayList<BusinessRelationship>();
+		BusinessIdentifier businessIdentifier;
+		
+		try {
+			businessView = FACTORY.createBusinessView();
+			businessView.setModel(businessModel);
+			businessView.setName(businessTable.getName());
+			
+			//add all the columns of Business Table to the Business View
+			businessView.getColumns().addAll(businessColumns);
+			
+			//add physical table references to BusinessView
+			/*
+			  Something like:
+			  businessView.getPhysicalTables().addAll(physicalTables);			 
+			*/
+			
+			//check Business Table relationships 
+			for( BusinessRelationship relationship : businessRelationships){
+				if (relationship.getDestinationTable() == businessTable){
+					inboundBusinessRelationships.add(relationship);
+				}
+				else if (relationship.getSourceTable() == businessTable){
+					outboundBusinessRelationships.add(relationship);
+				}
+			}
+			/* Something like:
+			for( BusinessRelationship inboundRelationship : inboundBusinessRelationships){
+				//replace business table with business view
+				inboundRelationship.setDestinationTable(businessView);
+			}
+			for( BusinessRelationship outboundRelationship : outboundBusinessRelationships){
+				//replace business table with business view
+				inboundRelationship.getSourceTable(businessView);
+			}
+			*/
+			
+			//check Identifier to inherit
+			businessIdentifier = businessTable.getIdentifier();
+			/* Something like:
+			businessIdentifier.setTable(businessView);
+			*/
+			
+			//add BusinessView to BusinessModel
+			/* Something like:
+			businessModel.getTables().add(businessView);
+			*/
+			//add BusinessView properties(?)
+			getPropertiesInitializer().addProperties(businessView);
+			
+			//destroy Business Table
+			businessModel.getTables().remove(businessTable);
+		}
+		catch(Throwable t) {
+			throw new RuntimeException("Impossible to initialize business view", t);
+		}
+		return businessView;
 	}
 	
 	//  --------------------------------------------------------

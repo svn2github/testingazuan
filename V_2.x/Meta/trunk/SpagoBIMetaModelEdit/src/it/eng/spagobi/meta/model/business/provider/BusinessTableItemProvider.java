@@ -14,6 +14,7 @@ import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.AddBusinessRelationshipCommand;
 import it.eng.spagobi.meta.model.business.commands.AddBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.AddIdentifierCommand;
+import it.eng.spagobi.meta.model.business.commands.AddPhysicalTableToBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
 
 import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
@@ -358,6 +359,9 @@ public class BusinessTableItemProvider
 		    } else if(commandClass == AddIdentifierCommand.class) {
 		    	System.err.println(">>> " + commandClass.getName() + " <<<");
 		    	result = new AddIdentifierCommand(domain, commandParameter);
+		    } else if(commandClass == AddPhysicalTableToBusinessTableCommand.class) {
+		    	System.err.println(">>> " + commandClass.getName() + " <<<");
+		    	result = new AddPhysicalTableToBusinessTableCommand(domain, commandParameter);
 		    }
 		 
 		 return result;

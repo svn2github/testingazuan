@@ -63,6 +63,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 
 import org.eclipse.swt.events.ControlAdapter;
@@ -162,6 +164,7 @@ import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdap
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
 
 import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProviderAdapterFactory;
+import it.eng.spagobi.meta.model.dnd.PhysicalObjectDropListener;
 
 import it.eng.spagobi.meta.model.olap.provider.OlapModelItemProviderAdapterFactory;
 
@@ -944,10 +947,21 @@ public class BusinessModelEditor
 		viewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(contextMenu, new UnwrappingSelectionProvider(viewer));
 
+		/*
 		int dndOperations = DND.DROP_COPY | DND.DROP_MOVE | DND.DROP_LINK;
 		Transfer[] transfers = new Transfer[] { LocalTransfer.getInstance() };
 		viewer.addDragSupport(dndOperations, transfers, new ViewerDragAdapter(viewer));
 		viewer.addDropSupport(dndOperations, transfers, new EditingDomainViewerDropAdapter(editingDomain, viewer));
+		*/
+		
+		URI rootObjectURI = ((BusinessModelInput)getEditorInput()).getRootObjectURI();
+		EObject rootObject = editingDomain.getResourceSet().getEObject(rootObjectURI, false);
+	    
+		//set drop target
+		int operations = DND.DROP_COPY | DND.DROP_MOVE;
+		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance() };
+		DropTargetListener dragSourceListener = new PhysicalObjectDropListener(viewer, rootObject);
+		viewer.addDropSupport(operations, transferTypes, dragSourceListener);
 	}
 
 	/**

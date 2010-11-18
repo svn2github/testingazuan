@@ -63,6 +63,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 
 import org.eclipse.swt.events.ControlAdapter;
@@ -164,6 +166,7 @@ import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProvider
 import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProviderAdapterFactory;
 
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
+import it.eng.spagobi.meta.model.dnd.PhysicalObjectDragListener;
 
 import it.eng.spagobi.meta.model.olap.provider.OlapModelItemProviderAdapterFactory;
 
@@ -946,10 +949,18 @@ public class PhysicalModelEditor
 		viewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(contextMenu, new UnwrappingSelectionProvider(viewer));
 
+		/*
 		int dndOperations = DND.DROP_COPY | DND.DROP_MOVE | DND.DROP_LINK;
 		Transfer[] transfers = new Transfer[] { LocalTransfer.getInstance() };
 		viewer.addDragSupport(dndOperations, transfers, new ViewerDragAdapter(viewer));
 		viewer.addDropSupport(dndOperations, transfers, new EditingDomainViewerDropAdapter(editingDomain, viewer));
+		*/
+		
+		//set drag source
+		int operations = DND.DROP_COPY | DND.DROP_MOVE;
+		Transfer[] transferTypes = new Transfer[]{TextTransfer.getInstance()};
+		DragSourceListener dragSourceListener = new PhysicalObjectDragListener(viewer);
+		viewer.addDragSupport(operations, transferTypes, dragSourceListener);
 	}
 
 	/**

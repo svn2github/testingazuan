@@ -55,6 +55,7 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 	private TableItem[] columnsToImport;
 	private boolean columnSelected = false;
 	private PhysicalTable physicalTable;
+	private Button bAddField, bRemoveField;
 	
 	/**
 	 * @param pageName
@@ -83,8 +84,32 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 		gl.makeColumnsEqualWidth = true;
 		composite.setLayout(gl);
 		
+		Group columnsGroup = createColumnsGroup(composite, SWT.SHADOW_ETCHED_IN);
+
+		createPhysicalColumnsGroup(columnsGroup, SWT.NONE);
+		
+		createButtonsGroup(columnsGroup, SWT.NONE);
+
+		createBusinessColumnsGroup(columnsGroup, SWT.NONE);
+		
+		addListeners();
+        
+ 		//Important: Setting page control
+ 		setControl(composite);
+ 		
+ 		//first check
+ 		checkPageComplete();
+ 		
+ 		//workaround: if a PhysicalTable is passed, use It to populate widgets
+ 		if (physicalTable != null){
+ 			addTableItems(physicalTable);
+ 			pageOneRef.checkPageComplete();
+ 		}
+	}
+
+	public Group createColumnsGroup(Composite composite, int style){
 		//Columns Group
-		Group columnsGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
+		Group columnsGroup = new Group(composite, style);
 		columnsGroup.setText("Columns selection");
 		GridLayout glColumns = new GridLayout();
 		GridData gd2 = new GridData(GridData.FILL_BOTH);
@@ -92,48 +117,55 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 		glColumns.makeColumnsEqualWidth = false;
 		columnsGroup.setLayout(glColumns);
 		columnsGroup.setLayoutData(gd2);
-        
-		//Left table -------------------------------
-		Composite compLeft = new Composite(columnsGroup, SWT.NONE);
+		
+		return columnsGroup;
+	}
+	
+	public void createPhysicalColumnsGroup(Composite composite, int style){
+		//Physical Columns Group -------------------------------
+		Composite compPhysicalColumns = new Composite(composite, SWT.NONE);
 		GridLayout glL = new GridLayout();
 		GridData gdL = new GridData(GridData.FILL_BOTH);
 		glL.numColumns = 1;
-		compLeft.setLayout(glL);
-		compLeft.setLayoutData(gdL);
-		Label lblLeftTab = new Label(compLeft,SWT.NONE);
+		compPhysicalColumns.setLayout(glL);
+		compPhysicalColumns.setLayoutData(gdL);
+		Label lblLeftTab = new Label(compPhysicalColumns,SWT.NONE);
 		lblLeftTab.setText("Physical Table Columns: ");
- 		columns = new Table(compLeft, SWT.BORDER | SWT.MULTI);
+ 		columns = new Table(compPhysicalColumns, SWT.BORDER | SWT.MULTI);
  		columns.setLayoutData(gdL);
- 		
-
- 		//Center buttons -------------------------------
-		Composite compCenter = new Composite(columnsGroup, SWT.NONE);
+	}
+	
+	public void createButtonsGroup(Composite composite, int style){
+ 		//Buttons Group -------------------------------
+		Composite compButtons = new Composite(composite, SWT.NONE);
 		GridLayout glC = new GridLayout();
 		glC.numColumns = 1;
-		compCenter.setLayout(glC);
-		Button bAddField = new Button(compCenter,SWT.FLAT);
+		compButtons.setLayout(glC);
+		bAddField = new Button(compButtons,SWT.FLAT);
 		bAddField.setToolTipText("Add column as a Business Table Column");
 		Image imageAdd = ExtendedImageRegistry.INSTANCE.getImageDescriptor(TestEditorPlugin.INSTANCE.getImage("arrow_right.png")).createImage();
 	    if (imageAdd!=null) bAddField.setImage(imageAdd);
-		Button bRemoveField = new Button(compCenter,SWT.FLAT);
+		bRemoveField = new Button(compButtons,SWT.FLAT);
 		bRemoveField.setToolTipText("Remove column from Business Table");
 		Image imageRem = ExtendedImageRegistry.INSTANCE.getImageDescriptor(TestEditorPlugin.INSTANCE.getImage("arrow_left.png")).createImage();
-	    if (imageRem!=null) bRemoveField.setImage(imageRem);
-		
-		//Right table -------------------------------
-		Composite compRight = new Composite(columnsGroup, SWT.NONE);
+	    if (imageRem!=null) bRemoveField.setImage(imageRem);		
+	}
+	
+	public void createBusinessColumnsGroup(Composite composite, int style){
+		//Business Columns Group -------------------------------
+		Composite compBusinessColumns = new Composite(composite, SWT.NONE);
 		GridLayout glR = new GridLayout();
 		GridData gdR = new GridData(GridData.FILL_BOTH);
 		glR.numColumns = 1;
-		compRight.setLayout(glR);
-		compRight.setLayoutData(gdR);
-		Label lblRightTab = new Label(compRight,SWT.NONE);
+		compBusinessColumns.setLayout(glR);
+		compBusinessColumns.setLayoutData(gdR);
+		Label lblRightTab = new Label(compBusinessColumns,SWT.NONE);
 		lblRightTab.setText("Business Table Columns: ");
- 		fields = new Table(compRight, SWT.BORDER | SWT.MULTI);
- 		fields.setLayoutData(gdR);
- 	
-
-		
+ 		fields = new Table(compBusinessColumns, SWT.BORDER | SWT.MULTI);
+ 		fields.setLayoutData(gdR);		
+	}
+	
+	public void addListeners(){
 		//adding listener to Add button		
  		bAddField.addListener(SWT.Selection, new Listener() {		
 			@Override
@@ -203,22 +235,9 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 				checkPageComplete();
 
 			}
-		}); 	
-        
- 		//Important: Setting page control
- 		setControl(composite);
- 		
- 		//first check
- 		checkPageComplete();
- 		
- 		//workaround: if a PhysicalTable is passed, use It to populate widgets
- 		if (physicalTable != null){
- 			addTableItems(physicalTable);
- 			pageOneRef.checkPageComplete();
- 		}
-
+		}); 			
 	}
-
+	
 	//add the original physical columns as TableItem (in the left Table Widget)
 	public void addTableItems(String tableName){		
 		columns.removeAll();

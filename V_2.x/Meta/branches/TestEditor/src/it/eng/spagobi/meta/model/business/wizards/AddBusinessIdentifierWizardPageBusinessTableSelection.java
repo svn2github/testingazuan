@@ -70,13 +70,25 @@ public class AddBusinessIdentifierWizardPageBusinessTableSelection extends
 		Composite composite = new Composite(parent, SWT.NULL);
         //Important: Setting page control
  		setControl(composite);
-		GridLayout gl = new GridLayout();
+		
+ 		GridLayout gl = new GridLayout();
 		gl.numColumns = 1;
 		gl.makeColumnsEqualWidth = true;
 		composite.setLayout(gl);
 		
+		createTableGroup(composite,SWT.SHADOW_ETCHED_IN);
+ 		
+ 		populateTableList();
+ 		
+ 		addListener();
+ 		
+ 	    checkPageComplete();
+
+	}
+	
+	private void createTableGroup(Composite composite, int style){
 		//Business Table List
-		Group tableGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
+		Group tableGroup = new Group(composite, style);
 		tableGroup.setText("Business Table Selection");
 		GridLayout glTable = new GridLayout();
 		GridData gd = new GridData(GridData.FILL_BOTH);
@@ -96,9 +108,9 @@ public class AddBusinessIdentifierWizardPageBusinessTableSelection extends
  		GridData gdList = new GridData(GridData.FILL_BOTH);
  		gdList.heightHint = 250;
  		tableList.setLayoutData(gdList);
- 		
- 		populateTableList();
- 		
+	}
+	
+	public void addListener(){
 		//adding listener to List
  		tableList.addListener(SWT.Selection, new Listener() {		
 			@Override
@@ -107,11 +119,9 @@ public class AddBusinessIdentifierWizardPageBusinessTableSelection extends
 				setTableSelected(sel[0]);
 				checkPageComplete();
 			}
-		});
- 		
- 	    checkPageComplete();
-
+		});		
 	}
+	
 	//populate the list with the Business Tables' names
 	private void populateTableList(){
 		BusinessModel businessModel = businessTable.getModel();

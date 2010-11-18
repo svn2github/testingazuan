@@ -55,6 +55,7 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 	private TableItem[] columnsToImport;
 	private String defaultTable;
 	private BusinessTable businessTable;
+	private Button bAddField, bRemoveField;
 	
 	/**
 	 * @param pageName
@@ -78,6 +79,30 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 		gl.makeColumnsEqualWidth = true;
 		composite.setLayout(gl);
 		
+		Group columnsGroup = createColumnsGroup(composite, SWT.SHADOW_ETCHED_IN);
+
+		createBusinessColumnsGroup(columnsGroup, SWT.NONE); 
+		
+		createButtonsGroup(columnsGroup, SWT.NONE);
+
+        createBusinessIdentifierColumnsGroup(columnsGroup, SWT.NONE);
+
+        createErrorLabel(composite, SWT.NULL);
+
+		addListeners();
+ 		
+ 		if (defaultTable != null)
+ 			addTableItems(defaultTable);
+ 		
+ 		//first check
+ 		checkPageComplete(); 		
+		
+        //Important: Setting page control
+ 		setControl(composite);
+
+	}
+	
+	public Group createColumnsGroup(Composite composite, int style){
 		//Columns Group
 		Group columnsGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
 		columnsGroup.setText("Columns selection");
@@ -87,53 +112,49 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 		glColumns.makeColumnsEqualWidth = false;
 		columnsGroup.setLayout(glColumns);
 		columnsGroup.setLayoutData(gd2);
-        
-		//Left table -------------------------------
-		Composite compLeft = new Composite(columnsGroup, SWT.NONE);
+		return columnsGroup;
+	}
+	
+	public void createBusinessColumnsGroup(Composite composite, int style){
+		//BusinessColumns group -------------------------------
+		Composite compBusinessColumns = new Composite(composite, style);
 		GridLayout glL = new GridLayout();
 		GridData gdL = new GridData(GridData.FILL_BOTH);
 		glL.numColumns = 1;
-		compLeft.setLayout(glL);
-		compLeft.setLayoutData(gdL);
-		Label lblLeftTab = new Label(compLeft,SWT.NONE);
-		lblLeftTab.setText("Business Table Columns: ");
- 		columns = new Table(compLeft, SWT.BORDER | SWT.MULTI);
- 		columns.setLayoutData(gdL);
- 		
-
- 		//Center buttons -------------------------------
-		Composite compCenter = new Composite(columnsGroup, SWT.NONE);
+		compBusinessColumns.setLayout(glL);
+		compBusinessColumns.setLayoutData(gdL);
+		Label lblBusinessColumns = new Label(compBusinessColumns,SWT.NONE);
+		lblBusinessColumns.setText("Business Table Columns: ");
+ 		columns = new Table(compBusinessColumns, SWT.BORDER | SWT.MULTI);
+ 		columns.setLayoutData(gdL);		
+	}
+	
+	public void createButtonsGroup(Composite composite, int style){
+ 		//Buttons Group -------------------------------
+		Composite compButtons = new Composite(composite, style);
 		GridLayout glC = new GridLayout();
 		glC.numColumns = 1;
-		compCenter.setLayout(glC);
-		Button bAddField = new Button(compCenter,SWT.FLAT);
+		compButtons.setLayout(glC);
+		bAddField = new Button(compButtons,SWT.FLAT);
 		bAddField.setToolTipText("Add column as a Business Identifier Column");
 		Image imageAdd = ExtendedImageRegistry.INSTANCE.getImageDescriptor(TestEditorPlugin.INSTANCE.getImage("arrow_right.png")).createImage();
 	    if (imageAdd!=null) bAddField.setImage(imageAdd);
-		Button bRemoveField = new Button(compCenter,SWT.FLAT);
+		bRemoveField = new Button(compButtons,SWT.FLAT);
 		bRemoveField.setToolTipText("Remove column from Business Identifier");
 		Image imageRem = ExtendedImageRegistry.INSTANCE.getImageDescriptor(TestEditorPlugin.INSTANCE.getImage("arrow_left.png")).createImage();
-	    if (imageRem!=null) bRemoveField.setImage(imageRem);
-		
-		//Right table -------------------------------
-		Composite compRight = new Composite(columnsGroup, SWT.NONE);
-		GridLayout glR = new GridLayout();
-		GridData gdR = new GridData(GridData.FILL_BOTH);
-		glR.numColumns = 1;
-		compRight.setLayout(glR);
-		compRight.setLayoutData(gdR);
-		Label lblRightTab = new Label(compRight,SWT.NONE);
-		lblRightTab.setText("Business Identifier Columns: ");
- 		columnsIdentifier = new Table(compRight, SWT.BORDER | SWT.MULTI);
- 		columnsIdentifier.setLayoutData(gdR);
- 	
+	    if (imageRem!=null) bRemoveField.setImage(imageRem);		
+	}
+	
+	public void createErrorLabel(Composite composite, int style){
  		//Bottom error label
-		Composite err = new Composite(composite, SWT.NULL);
+		Composite err = new Composite(composite,style);
 		GridLayout glerr = new GridLayout();
 		glerr.numColumns = 2;
 		err.setLayout(glerr);	
 		lErr = new Label(err, SWT.NULL);
-		
+	}
+	
+	public void addListeners(){
 		//adding listener to Add button		
  		bAddField.addListener(SWT.Selection, new Listener() {		
 			@Override
@@ -203,18 +224,23 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 				checkPageComplete();
 
 			}
-		}); 	
- 		
- 		if (defaultTable != null)
- 			addTableItems(defaultTable);
- 		
- 		//first check
- 		checkPageComplete(); 		
-		
-        //Important: Setting page control
- 		setControl(composite);
-
+		}); 			
 	}
+	
+	public void createBusinessIdentifierColumnsGroup(Composite composite, int style){
+		//Business Identifier Columns Group -------------------------------
+		Composite compBusinessIdentifier = new Composite(composite, style);
+		GridLayout glR = new GridLayout();
+		GridData gdR = new GridData(GridData.FILL_BOTH);
+		glR.numColumns = 1;
+		compBusinessIdentifier.setLayout(glR);
+		compBusinessIdentifier.setLayoutData(gdR);
+		Label lblRightTab = new Label(compBusinessIdentifier,SWT.NONE);
+		lblRightTab.setText("Business Identifier Columns: ");
+ 		columnsIdentifier = new Table(compBusinessIdentifier, SWT.BORDER | SWT.MULTI);
+ 		columnsIdentifier.setLayoutData(gdR);
+	}
+	
 	//add Business Columns as widget's TableItem
 	public void addTableItems(String tableName){
 		columns.removeAll();

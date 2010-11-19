@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import it.eng.spagobi.meta.initializer.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.test.TestEditorPlugin;
@@ -298,16 +299,16 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	
 	
 	private void populateSourceTableCombo(){
-		EList<BusinessTable> businessTables = model.getTables();
-		for(BusinessTable table : businessTables){
+		EList<BusinessColumnSet> businessTables = model.getTables();
+		for(BusinessColumnSet table : businessTables){
 			sourceTableCombo.add(table.getName());
 		}
 	}
 	
 	private void populateDestinationTableCombo(){
 		destinationTableCombo.removeAll();
-		EList<BusinessTable> businessTables = model.getTables();
-		for(BusinessTable table : businessTables){
+		EList<BusinessColumnSet> businessTables = model.getTables();
+		for(BusinessColumnSet table : businessTables){
 			destinationTableCombo.add(table.getName());
 		}
 	}

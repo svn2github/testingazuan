@@ -89,7 +89,7 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
         				//*** to CHECK ***
         				Command addBusinessTableCommand = editingDomain.createCommand
         		        (AddBusinessTableCommand.class, 
-        		        		new CommandParameter(physicalTable, null, null, new ArrayList<Object>()));
+        		        		new CommandParameter(businessModel, null, null, new ArrayList<Object>()));
         				AddBusinessTableWizard wizard = new AddBusinessTableWizard(businessModel, physicalTable, editingDomain,(AbstractSpagoBIModelCommand)addBusinessTableCommand);
         		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
         				dialog.create();

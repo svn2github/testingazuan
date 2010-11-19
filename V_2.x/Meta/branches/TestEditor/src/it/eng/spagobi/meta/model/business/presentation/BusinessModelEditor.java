@@ -960,7 +960,7 @@ public class BusinessModelEditor
 		//set drop target
 		int operations = DND.DROP_COPY | DND.DROP_MOVE;
 		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance() };
-		DropTargetListener dragSourceListener = new PhysicalObjectDropListener(viewer, rootObject);
+		DropTargetListener dragSourceListener = new PhysicalObjectDropListener(viewer, rootObject, editingDomain);
 		viewer.addDropSupport(operations, transferTypes, dragSourceListener);
 	}
 

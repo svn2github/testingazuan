@@ -764,6 +764,107 @@ public interface BusinessModelPackage extends EPackage {
 
 
 	/**
+	 * The meta object id for the '{@link it.eng.spagobi.meta.model.business.impl.BusinessViewInnerJoinRelationshipImpl <em>Business View Inner Join Relationship</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see it.eng.spagobi.meta.model.business.impl.BusinessViewInnerJoinRelationshipImpl
+	 * @see it.eng.spagobi.meta.model.business.impl.BusinessModelPackageImpl#getBusinessViewInnerJoinRelationship()
+	 * @generated
+	 */
+	int BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP = 8;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__ID = ModelPackage.MODEL_OBJECT__ID;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__DESCRIPTION = ModelPackage.MODEL_OBJECT__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
+
+	/**
+	 * The feature id for the '<em><b>Model</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__MODEL = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Source Table</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__SOURCE_TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Destination Table</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__DESTINATION_TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Source Columns</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__SOURCE_COLUMNS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Destination Columns</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__DESTINATION_COLUMNS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 4;
+
+	/**
+	 * The number of structural features of the '<em>Business View Inner Join Relationship</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 5;
+
+
+	/**
 	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.business.BusinessModel <em>Business Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1119,6 +1220,71 @@ public interface BusinessModelPackage extends EPackage {
 	EReference getBusinessIdentifier_PhysicalPrimaryKey();
 
 	/**
+	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship <em>Business View Inner Join Relationship</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Business View Inner Join Relationship</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship
+	 * @generated
+	 */
+	EClass getBusinessViewInnerJoinRelationship();
+
+	/**
+	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getModel <em>Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getModel()
+	 * @see #getBusinessViewInnerJoinRelationship()
+	 * @generated
+	 */
+	EReference getBusinessViewInnerJoinRelationship_Model();
+
+	/**
+	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getSourceTable <em>Source Table</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Source Table</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getSourceTable()
+	 * @see #getBusinessViewInnerJoinRelationship()
+	 * @generated
+	 */
+	EReference getBusinessViewInnerJoinRelationship_SourceTable();
+
+	/**
+	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getDestinationTable <em>Destination Table</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Destination Table</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getDestinationTable()
+	 * @see #getBusinessViewInnerJoinRelationship()
+	 * @generated
+	 */
+	EReference getBusinessViewInnerJoinRelationship_DestinationTable();
+
+	/**
+	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getSourceColumns <em>Source Columns</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Source Columns</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getSourceColumns()
+	 * @see #getBusinessViewInnerJoinRelationship()
+	 * @generated
+	 */
+	EReference getBusinessViewInnerJoinRelationship_SourceColumns();
+
+	/**
+	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getDestinationColumns <em>Destination Columns</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Destination Columns</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getDestinationColumns()
+	 * @see #getBusinessViewInnerJoinRelationship()
+	 * @generated
+	 */
+	EReference getBusinessViewInnerJoinRelationship_DestinationColumns();
+
+	/**
 	 * Returns the factory that creates the instances of the model.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1419,6 +1585,56 @@ public interface BusinessModelPackage extends EPackage {
 		 * @generated
 		 */
 		EReference BUSINESS_IDENTIFIER__PHYSICAL_PRIMARY_KEY = eINSTANCE.getBusinessIdentifier_PhysicalPrimaryKey();
+
+		/**
+		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.business.impl.BusinessViewInnerJoinRelationshipImpl <em>Business View Inner Join Relationship</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see it.eng.spagobi.meta.model.business.impl.BusinessViewInnerJoinRelationshipImpl
+		 * @see it.eng.spagobi.meta.model.business.impl.BusinessModelPackageImpl#getBusinessViewInnerJoinRelationship()
+		 * @generated
+		 */
+		EClass BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP = eINSTANCE.getBusinessViewInnerJoinRelationship();
+
+		/**
+		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__MODEL = eINSTANCE.getBusinessViewInnerJoinRelationship_Model();
+
+		/**
+		 * The meta object literal for the '<em><b>Source Table</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__SOURCE_TABLE = eINSTANCE.getBusinessViewInnerJoinRelationship_SourceTable();
+
+		/**
+		 * The meta object literal for the '<em><b>Destination Table</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__DESTINATION_TABLE = eINSTANCE.getBusinessViewInnerJoinRelationship_DestinationTable();
+
+		/**
+		 * The meta object literal for the '<em><b>Source Columns</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__SOURCE_COLUMNS = eINSTANCE.getBusinessViewInnerJoinRelationship_SourceColumns();
+
+		/**
+		 * The meta object literal for the '<em><b>Destination Columns</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__DESTINATION_COLUMNS = eINSTANCE.getBusinessViewInnerJoinRelationship_DestinationColumns();
 
 	}
 

@@ -13,6 +13,7 @@ import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessView;
 
+import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import java.util.Collection;
 
@@ -52,7 +53,7 @@ public class BusinessViewImpl extends BusinessColumnSetImpl implements BusinessV
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<BusinessRelationship> joinRelationships;
+	protected EList<BusinessViewInnerJoinRelationship> joinRelationships;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -78,9 +79,9 @@ public class BusinessViewImpl extends BusinessColumnSetImpl implements BusinessV
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<BusinessRelationship> getJoinRelationships() {
+	public EList<BusinessViewInnerJoinRelationship> getJoinRelationships() {
 		if (joinRelationships == null) {
-			joinRelationships = new EObjectResolvingEList<BusinessRelationship>(BusinessRelationship.class, this, BusinessModelPackage.BUSINESS_VIEW__JOIN_RELATIONSHIPS);
+			joinRelationships = new EObjectResolvingEList<BusinessViewInnerJoinRelationship>(BusinessViewInnerJoinRelationship.class, this, BusinessModelPackage.BUSINESS_VIEW__JOIN_RELATIONSHIPS);
 		}
 		return joinRelationships;
 	}
@@ -110,7 +111,7 @@ public class BusinessViewImpl extends BusinessColumnSetImpl implements BusinessV
 		switch (featureID) {
 			case BusinessModelPackage.BUSINESS_VIEW__JOIN_RELATIONSHIPS:
 				getJoinRelationships().clear();
-				getJoinRelationships().addAll((Collection<? extends BusinessRelationship>)newValue);
+				getJoinRelationships().addAll((Collection<? extends BusinessViewInnerJoinRelationship>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);

@@ -98,6 +98,15 @@ public interface BusinessModelFactory extends EFactory {
 	BusinessIdentifier createBusinessIdentifier();
 
 	/**
+	 * Returns a new object of class '<em>Business View Inner Join Relationship</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Business View Inner Join Relationship</em>'.
+	 * @generated
+	 */
+	BusinessViewInnerJoinRelationship createBusinessViewInnerJoinRelationship();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

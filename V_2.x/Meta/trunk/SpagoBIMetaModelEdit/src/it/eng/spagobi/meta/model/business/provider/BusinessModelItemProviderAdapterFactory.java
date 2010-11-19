@@ -260,6 +260,29 @@ public class BusinessModelItemProviderAdapterFactory extends BusinessModelAdapte
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected BusinessViewInnerJoinRelationshipItemProvider businessViewInnerJoinRelationshipItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createBusinessViewInnerJoinRelationshipAdapter() {
+		if (businessViewInnerJoinRelationshipItemProvider == null) {
+			businessViewInnerJoinRelationshipItemProvider = new BusinessViewInnerJoinRelationshipItemProvider(this);
+		}
+
+		return businessViewInnerJoinRelationshipItemProvider;
+	}
+
+	/**
 	 * This returns the root adapter factory that contains this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -366,6 +389,7 @@ public class BusinessModelItemProviderAdapterFactory extends BusinessModelAdapte
 		if (businessRelationshipItemProvider != null) businessRelationshipItemProvider.dispose();
 		if (businessDomainItemProvider != null) businessDomainItemProvider.dispose();
 		if (businessIdentifierItemProvider != null) businessIdentifierItemProvider.dispose();
+		if (businessViewInnerJoinRelationshipItemProvider != null) businessViewInnerJoinRelationshipItemProvider.dispose();
 	}
 
 }

@@ -68,6 +68,7 @@ public class BusinessModelFactoryImpl extends EFactoryImpl implements BusinessMo
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP: return createBusinessRelationship();
 			case BusinessModelPackage.BUSINESS_DOMAIN: return createBusinessDomain();
 			case BusinessModelPackage.BUSINESS_IDENTIFIER: return createBusinessIdentifier();
+			case BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP: return createBusinessViewInnerJoinRelationship();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -151,6 +152,16 @@ public class BusinessModelFactoryImpl extends EFactoryImpl implements BusinessMo
 	public BusinessIdentifier createBusinessIdentifier() {
 		BusinessIdentifierImpl businessIdentifier = new BusinessIdentifierImpl();
 		return businessIdentifier;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public BusinessViewInnerJoinRelationship createBusinessViewInnerJoinRelationship() {
+		BusinessViewInnerJoinRelationshipImpl businessViewInnerJoinRelationship = new BusinessViewInnerJoinRelationshipImpl();
+		return businessViewInnerJoinRelationship;
 	}
 
 	/**

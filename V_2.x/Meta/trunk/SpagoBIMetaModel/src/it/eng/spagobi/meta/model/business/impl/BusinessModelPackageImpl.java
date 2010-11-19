@@ -27,6 +27,7 @@ import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 
+import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.impl.ModelPackageImpl;
 
 import it.eng.spagobi.meta.model.olap.OlapModelPackage;
@@ -106,6 +107,13 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 	 * @generated
 	 */
 	private EClass businessIdentifierEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass businessViewInnerJoinRelationshipEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -487,6 +495,60 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getBusinessViewInnerJoinRelationship() {
+		return businessViewInnerJoinRelationshipEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getBusinessViewInnerJoinRelationship_Model() {
+		return (EReference)businessViewInnerJoinRelationshipEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getBusinessViewInnerJoinRelationship_SourceTable() {
+		return (EReference)businessViewInnerJoinRelationshipEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getBusinessViewInnerJoinRelationship_DestinationTable() {
+		return (EReference)businessViewInnerJoinRelationshipEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getBusinessViewInnerJoinRelationship_SourceColumns() {
+		return (EReference)businessViewInnerJoinRelationshipEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getBusinessViewInnerJoinRelationship_DestinationColumns() {
+		return (EReference)businessViewInnerJoinRelationshipEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public BusinessModelFactory getBusinessModelFactory() {
 		return (BusinessModelFactory)getEFactoryInstance();
 	}
@@ -550,6 +612,13 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 		createEReference(businessIdentifierEClass, BUSINESS_IDENTIFIER__TABLE);
 		createEReference(businessIdentifierEClass, BUSINESS_IDENTIFIER__COLUMNS);
 		createEReference(businessIdentifierEClass, BUSINESS_IDENTIFIER__PHYSICAL_PRIMARY_KEY);
+
+		businessViewInnerJoinRelationshipEClass = createEClass(BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP);
+		createEReference(businessViewInnerJoinRelationshipEClass, BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__MODEL);
+		createEReference(businessViewInnerJoinRelationshipEClass, BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__SOURCE_TABLE);
+		createEReference(businessViewInnerJoinRelationshipEClass, BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__DESTINATION_TABLE);
+		createEReference(businessViewInnerJoinRelationshipEClass, BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__SOURCE_COLUMNS);
+		createEReference(businessViewInnerJoinRelationshipEClass, BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__DESTINATION_COLUMNS);
 	}
 
 	/**
@@ -592,6 +661,7 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 		businessRelationshipEClass.getESuperTypes().add(theModelPackage.getModelObject());
 		businessDomainEClass.getESuperTypes().add(theModelPackage.getModelObject());
 		businessIdentifierEClass.getESuperTypes().add(theModelPackage.getModelObject());
+		businessViewInnerJoinRelationshipEClass.getESuperTypes().add(theModelPackage.getModelObject());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(businessModelEClass, BusinessModel.class, "BusinessModel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -614,7 +684,7 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 		initEReference(getBusinessTable_PhysicalTable(), thePhysicalModelPackage.getPhysicalTable(), null, "physicalTable", null, 1, 1, BusinessTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(businessViewEClass, BusinessView.class, "BusinessView", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getBusinessView_JoinRelationships(), this.getBusinessRelationship(), null, "joinRelationships", null, 0, -1, BusinessView.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessView_JoinRelationships(), this.getBusinessViewInnerJoinRelationship(), null, "joinRelationships", null, 0, -1, BusinessView.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(businessRelationshipEClass, BusinessRelationship.class, "BusinessRelationship", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getBusinessRelationship_Model(), this.getBusinessModel(), this.getBusinessModel_Relationships(), "model", null, 1, 1, BusinessRelationship.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -634,6 +704,13 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 		initEReference(getBusinessIdentifier_Table(), this.getBusinessColumnSet(), null, "table", null, 1, 1, BusinessIdentifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBusinessIdentifier_Columns(), this.getBusinessColumn(), null, "columns", null, 1, -1, BusinessIdentifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBusinessIdentifier_PhysicalPrimaryKey(), thePhysicalModelPackage.getPhysicalPrimaryKey(), null, "physicalPrimaryKey", null, 0, 1, BusinessIdentifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(businessViewInnerJoinRelationshipEClass, BusinessViewInnerJoinRelationship.class, "BusinessViewInnerJoinRelationship", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getBusinessViewInnerJoinRelationship_Model(), this.getBusinessModel(), null, "model", null, 1, 1, BusinessViewInnerJoinRelationship.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessViewInnerJoinRelationship_SourceTable(), thePhysicalModelPackage.getPhysicalTable(), null, "sourceTable", null, 1, 1, BusinessViewInnerJoinRelationship.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessViewInnerJoinRelationship_DestinationTable(), thePhysicalModelPackage.getPhysicalTable(), null, "destinationTable", null, 1, 1, BusinessViewInnerJoinRelationship.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessViewInnerJoinRelationship_SourceColumns(), thePhysicalModelPackage.getPhysicalColumn(), null, "sourceColumns", null, 0, -1, BusinessViewInnerJoinRelationship.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBusinessViewInnerJoinRelationship_DestinationColumns(), thePhysicalModelPackage.getPhysicalColumn(), null, "destinationColumns", null, 0, -1, BusinessViewInnerJoinRelationship.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 	}
 
 } //BusinessModelPackageImpl

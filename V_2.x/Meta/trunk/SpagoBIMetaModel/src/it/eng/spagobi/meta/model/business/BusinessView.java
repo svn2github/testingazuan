@@ -30,7 +30,7 @@ import org.eclipse.emf.ecore.EObject;
 public interface BusinessView extends BusinessColumnSet {
 	/**
 	 * Returns the value of the '<em><b>Join Relationships</b></em>' reference list.
-	 * The list contents are of type {@link it.eng.spagobi.meta.model.business.BusinessRelationship}.
+	 * The list contents are of type {@link it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Join Relationships</em>' reference list isn't clear,
@@ -42,6 +42,6 @@ public interface BusinessView extends BusinessColumnSet {
 	 * @model
 	 * @generated
 	 */
-	EList<BusinessRelationship> getJoinRelationships();
+	EList<BusinessViewInnerJoinRelationship> getJoinRelationships();
 
 } // BusinessView

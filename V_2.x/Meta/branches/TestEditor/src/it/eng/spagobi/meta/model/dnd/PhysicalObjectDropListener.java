@@ -3,6 +3,7 @@
  */
 package it.eng.spagobi.meta.model.dnd;
 
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 
@@ -13,18 +14,23 @@ import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.AddBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.wizards.AddBusinessTableWizard;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.eclipse.emf.edit.command.CommandParameter;
+import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
@@ -41,13 +47,15 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
 
 	private final Viewer viewer;
 	private BusinessModel businessModel;
+	private AdapterFactoryEditingDomain editingDomain;
 	//private CoreSingleton coreSingleton = CoreSingleton.getInstance();
 	
-	public PhysicalObjectDropListener(Viewer viewer, EObject viewerInput){
+	public PhysicalObjectDropListener(Viewer viewer, EObject viewerInput, AdapterFactoryEditingDomain editingDomain){
 		super(viewer);
 		this.viewer = viewer;
 		this.setScrollExpandEnabled(true);
 		businessModel = (BusinessModel)viewerInput; 
+		this.editingDomain = editingDomain;
 	}
 	
 	// This method performs the actual drop
@@ -79,7 +87,10 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
         				//Launch AddBCWizard
         				
         				//*** to CHECK ***
-        				AddBusinessTableWizard wizard = new AddBusinessTableWizard(businessModel, physicalTable, null, null);
+        				Command addBusinessTableCommand = editingDomain.createCommand
+        		        (AddBusinessTableCommand.class, 
+        		        		new CommandParameter(physicalTable, null, null, new ArrayList<Object>()));
+        				AddBusinessTableWizard wizard = new AddBusinessTableWizard(businessModel, physicalTable, editingDomain,(AbstractSpagoBIModelCommand)addBusinessTableCommand);
         		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
         				dialog.create();
         		    	dialog.open();
@@ -97,7 +108,7 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
        			businessTableTarget = (BusinessTable)target;
        		}
        		else if (target instanceof BusinessColumn){
-       			businessTableTarget = ((BusinessColumn)target).getTable();
+       			businessTableTarget = (BusinessTable)((BusinessColumn)target).getTable();
        		}
        			
        		StringTokenizer stringTokenizer = new StringTokenizer(data.toString(), "$$");

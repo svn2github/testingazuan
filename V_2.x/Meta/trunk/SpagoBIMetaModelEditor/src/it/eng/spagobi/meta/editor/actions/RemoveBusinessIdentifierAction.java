@@ -27,6 +27,7 @@ import it.eng.spagobi.meta.editor.views.BusinessModelView;
 import it.eng.spagobi.meta.editor.wizards.AddBusinessColumnWizard;
 import it.eng.spagobi.meta.editor.wizards.AddBusinessTableWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
@@ -53,7 +54,7 @@ public class RemoveBusinessIdentifierAction extends BusinessModelAction {
 	public void run() {
 		if (getTargetObject() instanceof BusinessColumn){
 			BusinessColumn businessColumn = ((BusinessColumn)getTargetObject());
-			BusinessTable businessTable = businessColumn.getTable();
+			BusinessColumnSet businessTable = businessColumn.getTable();
 			BusinessIdentifier businessIdentifier = businessTable.getModel().getIdentifier(businessTable);
 			if ( businessIdentifier.getColumns().size() > 0){
 				//remove only the column

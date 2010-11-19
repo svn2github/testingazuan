@@ -4,6 +4,7 @@ import it.eng.spagobi.meta.editor.Activator;
 import it.eng.spagobi.meta.editor.singleton.CoreSingleton;
 import it.eng.spagobi.meta.initializer.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 
 import java.util.ArrayList;
@@ -265,8 +266,8 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
 	
 	private void populateLeftCombo(){
 		CoreSingleton cs = CoreSingleton.getInstance();
-		EList<BusinessTable> businessTables = cs.getBusinessModel().getTables();
-		for(BusinessTable table : businessTables){
+		EList<BusinessColumnSet> businessTables = cs.getBusinessModel().getTables();
+		for(BusinessColumnSet table : businessTables){
 			combo.add(table.getName());
 		}
 	}
@@ -274,8 +275,8 @@ public class AddBusinessRelationshipWizardPageOne extends WizardPage {
 	private void populateRightCombo(){
 		combo_1.removeAll();
 		CoreSingleton cs = CoreSingleton.getInstance();
-		EList<BusinessTable> businessTables = cs.getBusinessModel().getTables();
-		for(BusinessTable table : businessTables){
+		EList<BusinessColumnSet> businessTables = cs.getBusinessModel().getTables();
+		for(BusinessColumnSet table : businessTables){
 			combo_1.add(table.getName());
 		}
 	}

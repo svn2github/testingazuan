@@ -11,6 +11,7 @@ import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
@@ -85,7 +86,7 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
        	else if ( (target instanceof BusinessTable) || 
             	( (target instanceof BusinessColumn) && (loc == LOCATION_BEFORE || loc == LOCATION_AFTER)) ){
        		
-       		BusinessTable businessTableTarget = null;
+       		BusinessColumnSet businessTableTarget = null;
        		//getting target table object
        		if (target instanceof BusinessTable){
        			businessTableTarget = (BusinessTable)target;

@@ -34,6 +34,7 @@ import it.eng.spagobi.meta.editor.views.BusinessModelView;
 import it.eng.spagobi.meta.editor.wizards.AddBusinessColumnWizard;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 
@@ -52,7 +53,7 @@ public class AddBusinessColumnToBusinessIdentifierAction extends BusinessModelAc
 
 	public void run() {
 		BusinessColumn businessColumn = (BusinessColumn)getTargetObject();
-		BusinessTable businessTable = businessColumn.getTable();
+		BusinessColumnSet businessTable = businessColumn.getTable();
 		BusinessIdentifier businessIdentifier = businessTable.getIdentifier();
 		if (businessIdentifier != null){
 			businessIdentifier.getColumns().add(businessColumn);

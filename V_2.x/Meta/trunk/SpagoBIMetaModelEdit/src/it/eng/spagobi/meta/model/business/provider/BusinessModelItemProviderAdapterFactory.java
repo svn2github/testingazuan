@@ -145,6 +145,29 @@ public class BusinessModelItemProviderAdapterFactory extends BusinessModelAdapte
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.business.BusinessColumnSet} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected BusinessColumnSetItemProvider businessColumnSetItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link it.eng.spagobi.meta.model.business.BusinessColumnSet}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createBusinessColumnSetAdapter() {
+		if (businessColumnSetItemProvider == null) {
+			businessColumnSetItemProvider = new BusinessColumnSetItemProvider(this);
+		}
+
+		return businessColumnSetItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.business.BusinessRelationship} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -336,10 +359,11 @@ public class BusinessModelItemProviderAdapterFactory extends BusinessModelAdapte
 	 */
 	public void dispose() {
 		if (businessModelItemProvider != null) businessModelItemProvider.dispose();
-		if (businessTableItemProvider != null) businessTableItemProvider.dispose();
 		if (businessColumnItemProvider != null) businessColumnItemProvider.dispose();
-		if (businessRelationshipItemProvider != null) businessRelationshipItemProvider.dispose();
+		if (businessColumnSetItemProvider != null) businessColumnSetItemProvider.dispose();
+		if (businessTableItemProvider != null) businessTableItemProvider.dispose();
 		if (businessViewItemProvider != null) businessViewItemProvider.dispose();
+		if (businessRelationshipItemProvider != null) businessRelationshipItemProvider.dispose();
 		if (businessDomainItemProvider != null) businessDomainItemProvider.dispose();
 		if (businessIdentifierItemProvider != null) businessIdentifierItemProvider.dispose();
 	}

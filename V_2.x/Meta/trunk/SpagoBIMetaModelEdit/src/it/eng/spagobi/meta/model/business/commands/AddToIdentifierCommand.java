@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.model.business.commands;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
@@ -55,8 +56,8 @@ public class AddToIdentifierCommand extends AbstractSpagoBIModelCommand {
 	@Override
 	public void execute() {
 		businessColumn = (BusinessColumn)parameter.getOwner();
-		BusinessTable businessTable = businessColumn.getTable();
-		BusinessIdentifier businessIdentifier = businessTable.getIdentifier();
+		BusinessColumnSet businessColumnSet = businessColumn.getTable();
+		BusinessIdentifier businessIdentifier = businessColumnSet.getIdentifier();
 		if (businessIdentifier != null){
 			//update existing Business Identifier
 			businessIdentifier.getColumns().add(businessColumn);
@@ -65,7 +66,7 @@ public class AddToIdentifierCommand extends AbstractSpagoBIModelCommand {
 			BusinessModelInitializer initializer = new BusinessModelInitializer();
 			Collection<BusinessColumn> businessColumns = new ArrayList<BusinessColumn>();
 			businessColumns.add(businessColumn);
-			initializer.addIdentifier(businessTable.getName(), businessTable, businessColumns);
+			initializer.addIdentifier(businessColumnSet.getName(), businessColumnSet, businessColumns);
 		}
 		
 		System.err.println("COMMAND [AddToIdentifierCommand] SUCCESFULLY EXECUTED: ");
@@ -76,20 +77,20 @@ public class AddToIdentifierCommand extends AbstractSpagoBIModelCommand {
 	
 	@Override
 	public void undo() {
-		BusinessTable businessTable = businessColumn.getTable();
-		BusinessIdentifier businessIdentifier = businessTable.getIdentifier();
+		BusinessColumnSet businessColumnSet = businessColumn.getTable();
+		BusinessIdentifier businessIdentifier = businessColumnSet.getIdentifier();
 		businessIdentifier.getColumns().remove(businessColumn);
 		//check if the Business Identifier is empty after the remove
 		if(businessIdentifier.getColumns().isEmpty()){
-			BusinessModel businessModel = businessTable.getModel();
+			BusinessModel businessModel = businessColumnSet.getModel();
 			businessModel.getIdentifiers().remove(businessIdentifier);
 		}
 	}
 
 	@Override
 	public void redo() {
-		BusinessTable businessTable = businessColumn.getTable();
-		BusinessIdentifier businessIdentifier = businessTable.getIdentifier();
+		BusinessColumnSet businessColumnSet = businessColumn.getTable();
+		BusinessIdentifier businessIdentifier = businessColumnSet.getIdentifier();
 		if (businessIdentifier != null){
 			//update existing Business Identifier
 			businessIdentifier.getColumns().add(businessColumn);
@@ -98,7 +99,7 @@ public class AddToIdentifierCommand extends AbstractSpagoBIModelCommand {
 			BusinessModelInitializer initializer = new BusinessModelInitializer();
 			Collection<BusinessColumn> businessColumns = new ArrayList<BusinessColumn>();
 			businessColumns.add(businessColumn);
-			initializer.addIdentifier(businessTable.getName(), businessTable, businessColumns);
+			initializer.addIdentifier(businessColumnSet.getName(), businessColumnSet, businessColumns);
 		}			
 	}
 	

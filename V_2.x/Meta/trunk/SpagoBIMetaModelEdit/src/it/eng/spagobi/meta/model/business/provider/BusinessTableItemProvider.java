@@ -68,7 +68,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * @generated
  */
 public class BusinessTableItemProvider
-	extends ModelObjectItemProvider
+	extends BusinessColumnSetItemProvider
 	implements
 		IEditingDomainItemProvider,
 		IStructuredItemContentProvider,
@@ -96,33 +96,9 @@ public class BusinessTableItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addModelPropertyDescriptor(object);
 			addPhysicalTablePropertyDescriptor(object);
-			addColumnsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This adds a property descriptor for the Model feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addModelPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_BusinessTable_model_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_BusinessTable_model_feature", "_UI_BusinessTable_type"),
-				 BusinessModelPackage.Literals.BUSINESS_TABLE__MODEL,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
 	}
 
 	/**
@@ -148,28 +124,6 @@ public class BusinessTableItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Columns feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addColumnsPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_BusinessTable_columns_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_BusinessTable_columns_feature", "_UI_BusinessTable_type"),
-				 BusinessModelPackage.Literals.BUSINESS_TABLE__COLUMNS,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
 	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
 	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
 	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
@@ -182,7 +136,6 @@ public class BusinessTableItemProvider
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_TABLE__PHYSICAL_TABLE);
-			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_TABLE__COLUMNS);
 		}
 		return childrenFeatures;
 	}
@@ -302,12 +255,6 @@ public class BusinessTableItemProvider
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
-
-		switch (notification.getFeatureID(BusinessTable.class)) {
-			case BusinessModelPackage.BUSINESS_TABLE__COLUMNS:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
-				return;
-		}
 		super.notifyChanged(notification);
 	}
 
@@ -326,25 +273,8 @@ public class BusinessTableItemProvider
 			(createChildParameter
 				(BusinessModelPackage.Literals.BUSINESS_TABLE__PHYSICAL_TABLE,
 				 PhysicalModelFactory.eINSTANCE.createPhysicalTable()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(BusinessModelPackage.Literals.BUSINESS_TABLE__COLUMNS,
-				 BusinessModelFactory.eINSTANCE.createBusinessColumn()));
 	}
 
-	/**
-	 * Return the resource locator for this item provider's resources.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public ResourceLocator getResourceLocator() {
-		return SpagoBIMetalModelEditPlugin.INSTANCE;
-	}
-
-	 
 	public Command createCustomCommand(Object object, EditingDomain domain, Class<? extends Command> commandClass, CommandParameter commandParameter) {
 		 Command result;
 		 

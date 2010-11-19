@@ -178,7 +178,6 @@ public class BusinessModelItemProvider
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_MODEL__TABLES);
-			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_MODEL__VIEWS);
 			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_MODEL__DOMAINS);
 		}
 		return childrenFeatures;
@@ -255,7 +254,6 @@ public class BusinessModelItemProvider
 
 		switch (notification.getFeatureID(BusinessModel.class)) {
 			case BusinessModelPackage.BUSINESS_MODEL__TABLES:
-			case BusinessModelPackage.BUSINESS_MODEL__VIEWS:
 			case BusinessModelPackage.BUSINESS_MODEL__DOMAINS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
@@ -274,8 +272,11 @@ public class BusinessModelItemProvider
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
-		System.err.println("Business model collectNewChildDescriptors");
-		
+		newChildDescriptors.add
+			(createChildParameter
+				(BusinessModelPackage.Literals.BUSINESS_MODEL__TABLES,
+				 BusinessModelFactory.eINSTANCE.createBusinessColumnSet()));
+
 		newChildDescriptors.add
 			(createChildParameter
 				(BusinessModelPackage.Literals.BUSINESS_MODEL__TABLES,
@@ -283,7 +284,7 @@ public class BusinessModelItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(BusinessModelPackage.Literals.BUSINESS_MODEL__VIEWS,
+				(BusinessModelPackage.Literals.BUSINESS_MODEL__TABLES,
 				 BusinessModelFactory.eINSTANCE.createBusinessView()));
 
 		newChildDescriptors.add

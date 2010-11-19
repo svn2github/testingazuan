@@ -72,7 +72,7 @@ public class JpaMappingGenerator implements IGenerator {
 		}
 		
 		for(int i = 0; i < 1; i++) {
-			businessTable = model.getTables().get(i);
+			businessTable = (BusinessTable)model.getTables().get(i);
 			
 		    context = new VelocityContext();
 		    context.put("physicalTable", businessTable.getPhysicalTable()); //$NON-NLS-1$

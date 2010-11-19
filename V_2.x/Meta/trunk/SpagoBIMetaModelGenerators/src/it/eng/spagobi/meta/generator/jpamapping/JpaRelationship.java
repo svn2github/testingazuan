@@ -47,10 +47,15 @@ public class JpaRelationship {
 	
 	public JpaTable getReferencedTable()  {
 		if ( isSourceRole() ) {
-			return new JpaTable(businessRelationship.getDestinationTable());
+			if(businessRelationship.getDestinationTable() instanceof BusinessTable) {
+				return new JpaTable((BusinessTable)businessRelationship.getDestinationTable());
+			}
 		} else {
-			return new JpaTable(businessRelationship.getSourceTable());
+			if(businessRelationship.getSourceTable() instanceof BusinessTable) {
+				return new JpaTable((BusinessTable)businessRelationship.getSourceTable());
+			}
 		}
+		return null;
 	}
 	
 	public String getCardinality() {

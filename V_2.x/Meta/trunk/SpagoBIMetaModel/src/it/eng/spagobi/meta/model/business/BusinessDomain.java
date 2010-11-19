@@ -59,7 +59,7 @@ public interface BusinessDomain extends ModelObject {
 
 	/**
 	 * Returns the value of the '<em><b>Tables</b></em>' reference list.
-	 * The list contents are of type {@link it.eng.spagobi.meta.model.business.BusinessTable}.
+	 * The list contents are of type {@link it.eng.spagobi.meta.model.business.BusinessColumnSet}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Tables</em>' reference list isn't clear,
@@ -71,7 +71,7 @@ public interface BusinessDomain extends ModelObject {
 	 * @model
 	 * @generated
 	 */
-	EList<BusinessTable> getTables();
+	EList<BusinessColumnSet> getTables();
 
 	/**
 	 * Returns the value of the '<em><b>Relationships</b></em>' reference list.

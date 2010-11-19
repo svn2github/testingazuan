@@ -95,13 +95,6 @@ public class BusinessModelSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case BusinessModelPackage.BUSINESS_TABLE: {
-				BusinessTable businessTable = (BusinessTable)theEObject;
-				T result = caseBusinessTable(businessTable);
-				if (result == null) result = caseModelObject(businessTable);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case BusinessModelPackage.BUSINESS_COLUMN: {
 				BusinessColumn businessColumn = (BusinessColumn)theEObject;
 				T result = caseBusinessColumn(businessColumn);
@@ -109,17 +102,33 @@ public class BusinessModelSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case BusinessModelPackage.BUSINESS_RELATIONSHIP: {
-				BusinessRelationship businessRelationship = (BusinessRelationship)theEObject;
-				T result = caseBusinessRelationship(businessRelationship);
-				if (result == null) result = caseModelObject(businessRelationship);
+			case BusinessModelPackage.BUSINESS_COLUMN_SET: {
+				BusinessColumnSet businessColumnSet = (BusinessColumnSet)theEObject;
+				T result = caseBusinessColumnSet(businessColumnSet);
+				if (result == null) result = caseModelObject(businessColumnSet);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case BusinessModelPackage.BUSINESS_TABLE: {
+				BusinessTable businessTable = (BusinessTable)theEObject;
+				T result = caseBusinessTable(businessTable);
+				if (result == null) result = caseBusinessColumnSet(businessTable);
+				if (result == null) result = caseModelObject(businessTable);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			case BusinessModelPackage.BUSINESS_VIEW: {
 				BusinessView businessView = (BusinessView)theEObject;
 				T result = caseBusinessView(businessView);
+				if (result == null) result = caseBusinessColumnSet(businessView);
 				if (result == null) result = caseModelObject(businessView);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case BusinessModelPackage.BUSINESS_RELATIONSHIP: {
+				BusinessRelationship businessRelationship = (BusinessRelationship)theEObject;
+				T result = caseBusinessRelationship(businessRelationship);
+				if (result == null) result = caseModelObject(businessRelationship);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -183,6 +192,21 @@ public class BusinessModelSwitch<T> {
 	 * @generated
 	 */
 	public T caseBusinessColumn(BusinessColumn object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Business Column Set</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Business Column Set</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseBusinessColumnSet(BusinessColumnSet object) {
 		return null;
 	}
 

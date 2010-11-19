@@ -10,6 +10,7 @@ import it.eng.spagobi.meta.exception.ModelObjectNotFoundException;
 import it.eng.spagobi.meta.exception.ModelRuntimeException;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelPackage;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessDomain;
 import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
@@ -56,7 +57,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessModelImpl#getTables <em>Tables</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessModelImpl#getRelationships <em>Relationships</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessModelImpl#getIdentifiers <em>Identifiers</em>}</li>
- *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessModelImpl#getViews <em>Views</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessModelImpl#getDomains <em>Domains</em>}</li>
  * </ul>
  * </p>
@@ -82,7 +82,7 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<BusinessTable> tables;
+	protected EList<BusinessColumnSet> tables;
 
 	/**
 	 * The cached value of the '{@link #getRelationships() <em>Relationships</em>}' containment reference list.
@@ -103,16 +103,6 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	 * @ordered
 	 */
 	protected EList<BusinessIdentifier> identifiers;
-
-	/**
-	 * The cached value of the '{@link #getViews() <em>Views</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getViews()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<BusinessView> views;
 
 	/**
 	 * The cached value of the '{@link #getDomains() <em>Domains</em>}' containment reference list.
@@ -227,9 +217,9 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<BusinessTable> getTables() {
+	public EList<BusinessColumnSet> getTables() {
 		if (tables == null) {
-			tables = new EObjectContainmentWithInverseEList<BusinessTable>(BusinessTable.class, this, BusinessModelPackage.BUSINESS_MODEL__TABLES, BusinessModelPackage.BUSINESS_TABLE__MODEL);
+			tables = new EObjectContainmentWithInverseEList<BusinessColumnSet>(BusinessColumnSet.class, this, BusinessModelPackage.BUSINESS_MODEL__TABLES, BusinessModelPackage.BUSINESS_COLUMN_SET__MODEL);
 		}
 		return tables;
 	}
@@ -263,18 +253,6 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<BusinessView> getViews() {
-		if (views == null) {
-			views = new EObjectContainmentWithInverseEList<BusinessView>(BusinessView.class, this, BusinessModelPackage.BUSINESS_MODEL__VIEWS, BusinessModelPackage.BUSINESS_VIEW__MODEL);
-		}
-		return views;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EList<BusinessDomain> getDomains() {
 		if (domains == null) {
 			domains = new EObjectContainmentWithInverseEList<BusinessDomain>(BusinessDomain.class, this, BusinessModelPackage.BUSINESS_MODEL__DOMAINS, BusinessModelPackage.BUSINESS_DOMAIN__MODEL);
@@ -301,8 +279,6 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getRelationships()).basicAdd(otherEnd, msgs);
 			case BusinessModelPackage.BUSINESS_MODEL__IDENTIFIERS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getIdentifiers()).basicAdd(otherEnd, msgs);
-			case BusinessModelPackage.BUSINESS_MODEL__VIEWS:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getViews()).basicAdd(otherEnd, msgs);
 			case BusinessModelPackage.BUSINESS_MODEL__DOMAINS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getDomains()).basicAdd(otherEnd, msgs);
 		}
@@ -325,8 +301,6 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 				return ((InternalEList<?>)getRelationships()).basicRemove(otherEnd, msgs);
 			case BusinessModelPackage.BUSINESS_MODEL__IDENTIFIERS:
 				return ((InternalEList<?>)getIdentifiers()).basicRemove(otherEnd, msgs);
-			case BusinessModelPackage.BUSINESS_MODEL__VIEWS:
-				return ((InternalEList<?>)getViews()).basicRemove(otherEnd, msgs);
 			case BusinessModelPackage.BUSINESS_MODEL__DOMAINS:
 				return ((InternalEList<?>)getDomains()).basicRemove(otherEnd, msgs);
 		}
@@ -366,8 +340,6 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 				return getRelationships();
 			case BusinessModelPackage.BUSINESS_MODEL__IDENTIFIERS:
 				return getIdentifiers();
-			case BusinessModelPackage.BUSINESS_MODEL__VIEWS:
-				return getViews();
 			case BusinessModelPackage.BUSINESS_MODEL__DOMAINS:
 				return getDomains();
 		}
@@ -391,7 +363,7 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 				return;
 			case BusinessModelPackage.BUSINESS_MODEL__TABLES:
 				getTables().clear();
-				getTables().addAll((Collection<? extends BusinessTable>)newValue);
+				getTables().addAll((Collection<? extends BusinessColumnSet>)newValue);
 				return;
 			case BusinessModelPackage.BUSINESS_MODEL__RELATIONSHIPS:
 				getRelationships().clear();
@@ -400,10 +372,6 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 			case BusinessModelPackage.BUSINESS_MODEL__IDENTIFIERS:
 				getIdentifiers().clear();
 				getIdentifiers().addAll((Collection<? extends BusinessIdentifier>)newValue);
-				return;
-			case BusinessModelPackage.BUSINESS_MODEL__VIEWS:
-				getViews().clear();
-				getViews().addAll((Collection<? extends BusinessView>)newValue);
 				return;
 			case BusinessModelPackage.BUSINESS_MODEL__DOMAINS:
 				getDomains().clear();
@@ -436,9 +404,6 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 			case BusinessModelPackage.BUSINESS_MODEL__IDENTIFIERS:
 				getIdentifiers().clear();
 				return;
-			case BusinessModelPackage.BUSINESS_MODEL__VIEWS:
-				getViews().clear();
-				return;
 			case BusinessModelPackage.BUSINESS_MODEL__DOMAINS:
 				getDomains().clear();
 				return;
@@ -464,8 +429,6 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 				return relationships != null && !relationships.isEmpty();
 			case BusinessModelPackage.BUSINESS_MODEL__IDENTIFIERS:
 				return identifiers != null && !identifiers.isEmpty();
-			case BusinessModelPackage.BUSINESS_MODEL__VIEWS:
-				return views != null && !views.isEmpty();
 			case BusinessModelPackage.BUSINESS_MODEL__DOMAINS:
 				return domains != null && !domains.isEmpty();
 		}
@@ -480,8 +443,9 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	@Override
 	public BusinessTable getTable(String name) {
 		for(int i = 0; i < getTables().size(); i++) {
-			if( name.equals( getTables().get(i).getName() ) ) {
-				return getTables().get(i);
+			if( (getTables().get(i) instanceof BusinessTable) 
+					&& name.equals( getTables().get(i).getName() ) ) {
+				return (BusinessTable)getTables().get(i);
 			}
 		}
 		return null;
@@ -490,19 +454,20 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	@Override
 	public BusinessTable getTable(PhysicalTable physicalTable) {
 		
-		BusinessTable businessTable;
+		BusinessTable businessTable = null;;
 		
 		try {
 			
 			assert physicalTable != null : "Input parameter [physicalTable] cannot be null";
 			
 			for(int i = 0; i < getTables().size(); i++) {
-				businessTable = getTables().get(i);
-
+				if( !(getTables().get(i) instanceof BusinessTable) )  continue;
+				
+				businessTable = (BusinessTable)getTables().get(i);
 				assert businessTable.getPhysicalTable() != null : "attribute [physicalTable] of business table [" + businessTable.getName() + "] cannot be null";
 				
-				if( physicalTable.equals( getTables().get(i).getPhysicalTable() ) ) {
-					return getTables().get(i);
+				if( physicalTable.equals( businessTable.getPhysicalTable() ) ) {
+					return businessTable;
 				}
 			}
 		} catch(Throwable t) {
@@ -528,7 +493,7 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	}
 
 	@Override
-	public BusinessIdentifier getIdentifier(BusinessTable table) {
+	public BusinessIdentifier getIdentifier(BusinessColumnSet table) {
 		// assert table not null
 		for(BusinessIdentifier identifier: getIdentifiers() ) {
 			if( table.equals(identifier.getTable()) ) {

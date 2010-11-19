@@ -69,12 +69,12 @@ public interface BusinessIdentifier extends ModelObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Table</em>' reference.
-	 * @see #setTable(BusinessTable)
+	 * @see #setTable(BusinessColumnSet)
 	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessIdentifier_Table()
 	 * @model required="true"
 	 * @generated
 	 */
-	BusinessTable getTable();
+	BusinessColumnSet getTable();
 
 	/**
 	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessIdentifier#getTable <em>Table</em>}' reference.
@@ -84,7 +84,7 @@ public interface BusinessIdentifier extends ModelObject {
 	 * @see #getTable()
 	 * @generated
 	 */
-	void setTable(BusinessTable value);
+	void setTable(BusinessColumnSet value);
 
 	/**
 	 * Returns the value of the '<em><b>Columns</b></em>' reference list.

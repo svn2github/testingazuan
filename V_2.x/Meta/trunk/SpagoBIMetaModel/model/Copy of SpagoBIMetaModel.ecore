@@ -119,52 +119,56 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="physicalModel" lowerBound="1"
           eType="#//physical/PhysicalModel"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="tables" upperBound="-1"
-          eType="#//business/BusinessColumnSet" containment="true" eOpposite="#//business/BusinessColumnSet/model"/>
+          eType="#//business/BusinessTable" containment="true" eOpposite="#//business/BusinessTable/model"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="relationships" upperBound="-1"
           eType="#//business/BusinessRelationship" containment="true" eOpposite="#//business/BusinessRelationship/model"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="identifiers" upperBound="-1"
           eType="#//business/BusinessIdentifier" containment="true" eOpposite="#//business/BusinessIdentifier/model"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="views" upperBound="-1"
+          eType="#//business/BusinessView" containment="true" eOpposite="#//business/BusinessView/model"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="domains" upperBound="-1"
           eType="#//business/BusinessDomain" containment="true" eOpposite="#//business/BusinessDomain/model"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BusinessTable" eSuperTypes="#//ModelObject">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="model" lowerBound="1"
+          eType="#//business/BusinessModel" eOpposite="#//business/BusinessModel/tables"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="physicalTable" lowerBound="1"
+          eType="#//physical/PhysicalTable"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="columns" upperBound="-1"
+          eType="#//business/BusinessColumn" containment="true" eOpposite="#//business/BusinessColumn/table"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="BusinessColumn" eSuperTypes="#//ModelObject">
       <eStructuralFeatures xsi:type="ecore:EReference" name="physicalColumn" lowerBound="1"
           eType="#//physical/PhysicalColumn"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1"
-          eType="#//business/BusinessColumnSet" eOpposite="#//business/BusinessColumnSet/columns"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="BusinessColumnSet" eSuperTypes="#//ModelObject">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="model" lowerBound="1"
-          eType="#//business/BusinessModel" eOpposite="#//business/BusinessModel/tables"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="columns" upperBound="-1"
-          eType="#//business/BusinessColumn" containment="true" eOpposite="#//business/BusinessColumn/table"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="BusinessTable" eSuperTypes="#//business/BusinessColumnSet">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="physicalTable" lowerBound="1"
-          eType="#//physical/PhysicalTable"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="BusinessView" eSuperTypes="#//business/BusinessColumnSet">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="joinRelationships" upperBound="-1"
-          eType="#//business/BusinessRelationship"/>
+          eType="#//business/BusinessTable" eOpposite="#//business/BusinessTable/columns"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="BusinessRelationship" eSuperTypes="#//ModelObject">
       <eStructuralFeatures xsi:type="ecore:EReference" name="model" lowerBound="1"
           eType="#//business/BusinessModel" eOpposite="#//business/BusinessModel/relationships"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="sourceTable" lowerBound="1"
-          eType="#//business/BusinessColumnSet"/>
+          eType="#//business/BusinessTable"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="destinationTable" lowerBound="1"
-          eType="#//business/BusinessColumnSet"/>
+          eType="#//business/BusinessTable"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="sourceColumns" upperBound="-1"
           eType="#//business/BusinessColumn"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="destinationColumns" upperBound="-1"
           eType="#//business/BusinessColumn"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="physicalForeignKey" eType="#//physical/PhysicalForeignKey"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BusinessView" eSuperTypes="#//ModelObject">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="model" lowerBound="1"
+          eType="#//business/BusinessModel" eOpposite="#//business/BusinessModel/views"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="columns" upperBound="-1"
+          eType="#//business/BusinessColumn"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="joinRelationships" upperBound="-1"
+          eType="#//business/BusinessRelationship"/>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="BusinessDomain" eSuperTypes="#//ModelObject">
       <eStructuralFeatures xsi:type="ecore:EReference" name="model" lowerBound="1"
           eType="#//business/BusinessModel" eOpposite="#//business/BusinessModel/domains"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="tables" upperBound="-1"
-          eType="#//business/BusinessColumnSet"/>
+          eType="#//business/BusinessTable"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="relationships" upperBound="-1"
           eType="#//business/BusinessRelationship"/>
     </eClassifiers>
@@ -172,7 +176,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//business/BusinessModel"
           eOpposite="#//business/BusinessModel/identifiers"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1"
-          eType="#//business/BusinessColumnSet"/>
+          eType="#//business/BusinessTable"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="columns" lowerBound="1"
           upperBound="-1" eType="#//business/BusinessColumn"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="physicalPrimaryKey" eType="#//physical/PhysicalPrimaryKey"/>

@@ -77,20 +77,24 @@ public class BusinessModelAdapterFactory extends AdapterFactoryImpl {
 				return createBusinessModelAdapter();
 			}
 			@Override
-			public Adapter caseBusinessTable(BusinessTable object) {
-				return createBusinessTableAdapter();
-			}
-			@Override
 			public Adapter caseBusinessColumn(BusinessColumn object) {
 				return createBusinessColumnAdapter();
 			}
 			@Override
-			public Adapter caseBusinessRelationship(BusinessRelationship object) {
-				return createBusinessRelationshipAdapter();
+			public Adapter caseBusinessColumnSet(BusinessColumnSet object) {
+				return createBusinessColumnSetAdapter();
+			}
+			@Override
+			public Adapter caseBusinessTable(BusinessTable object) {
+				return createBusinessTableAdapter();
 			}
 			@Override
 			public Adapter caseBusinessView(BusinessView object) {
 				return createBusinessViewAdapter();
+			}
+			@Override
+			public Adapter caseBusinessRelationship(BusinessRelationship object) {
+				return createBusinessRelationshipAdapter();
 			}
 			@Override
 			public Adapter caseBusinessDomain(BusinessDomain object) {
@@ -163,6 +167,20 @@ public class BusinessModelAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createBusinessColumnAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.business.BusinessColumnSet <em>Business Column Set</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.business.BusinessColumnSet
+	 * @generated
+	 */
+	public Adapter createBusinessColumnSetAdapter() {
 		return null;
 	}
 

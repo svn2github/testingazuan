@@ -8,6 +8,7 @@ package it.eng.spagobi.meta.model.business.impl;
 
 import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
@@ -57,7 +58,7 @@ public class BusinessIdentifierImpl extends ModelObjectImpl implements BusinessI
 	 * @generated
 	 * @ordered
 	 */
-	protected BusinessTable table;
+	protected BusinessColumnSet table;
 
 	/**
 	 * The cached value of the '{@link #getColumns() <em>Columns</em>}' reference list.
@@ -144,10 +145,10 @@ public class BusinessIdentifierImpl extends ModelObjectImpl implements BusinessI
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BusinessTable getTable() {
+	public BusinessColumnSet getTable() {
 		if (table != null && table.eIsProxy()) {
 			InternalEObject oldTable = (InternalEObject)table;
-			table = (BusinessTable)eResolveProxy(oldTable);
+			table = (BusinessColumnSet)eResolveProxy(oldTable);
 			if (table != oldTable) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, BusinessModelPackage.BUSINESS_IDENTIFIER__TABLE, oldTable, table));
@@ -161,7 +162,7 @@ public class BusinessIdentifierImpl extends ModelObjectImpl implements BusinessI
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BusinessTable basicGetTable() {
+	public BusinessColumnSet basicGetTable() {
 		return table;
 	}
 
@@ -170,8 +171,8 @@ public class BusinessIdentifierImpl extends ModelObjectImpl implements BusinessI
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTable(BusinessTable newTable) {
-		BusinessTable oldTable = table;
+	public void setTable(BusinessColumnSet newTable) {
+		BusinessColumnSet oldTable = table;
 		table = newTable;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, BusinessModelPackage.BUSINESS_IDENTIFIER__TABLE, oldTable, table));
@@ -306,7 +307,7 @@ public class BusinessIdentifierImpl extends ModelObjectImpl implements BusinessI
 				setModel((BusinessModel)newValue);
 				return;
 			case BusinessModelPackage.BUSINESS_IDENTIFIER__TABLE:
-				setTable((BusinessTable)newValue);
+				setTable((BusinessColumnSet)newValue);
 				return;
 			case BusinessModelPackage.BUSINESS_IDENTIFIER__COLUMNS:
 				getColumns().clear();
@@ -331,7 +332,7 @@ public class BusinessIdentifierImpl extends ModelObjectImpl implements BusinessI
 				setModel((BusinessModel)null);
 				return;
 			case BusinessModelPackage.BUSINESS_IDENTIFIER__TABLE:
-				setTable((BusinessTable)null);
+				setTable((BusinessColumnSet)null);
 				return;
 			case BusinessModelPackage.BUSINESS_IDENTIFIER__COLUMNS:
 				getColumns().clear();

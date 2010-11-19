@@ -12,6 +12,7 @@ import it.eng.spagobi.meta.exception.ModelRuntimeException;
 import it.eng.spagobi.meta.initializer.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 
@@ -118,9 +119,9 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BusinessTable getTable() {
+	public BusinessColumnSet getTable() {
 		if (eContainerFeatureID() != BusinessModelPackage.BUSINESS_COLUMN__TABLE) return null;
-		return (BusinessTable)eContainer();
+		return (BusinessColumnSet)eContainer();
 	}
 
 	/**
@@ -128,7 +129,7 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetTable(BusinessTable newTable, NotificationChain msgs) {
+	public NotificationChain basicSetTable(BusinessColumnSet newTable, NotificationChain msgs) {
 		msgs = eBasicSetContainer((InternalEObject)newTable, BusinessModelPackage.BUSINESS_COLUMN__TABLE, msgs);
 		return msgs;
 	}
@@ -138,7 +139,7 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTable(BusinessTable newTable) {
+	public void setTable(BusinessColumnSet newTable) {
 		if (newTable != eInternalContainer() || (eContainerFeatureID() != BusinessModelPackage.BUSINESS_COLUMN__TABLE && newTable != null)) {
 			if (EcoreUtil.isAncestor(this, newTable))
 				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
@@ -146,7 +147,7 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 			if (eInternalContainer() != null)
 				msgs = eBasicRemoveFromContainer(msgs);
 			if (newTable != null)
-				msgs = ((InternalEObject)newTable).eInverseAdd(this, BusinessModelPackage.BUSINESS_TABLE__COLUMNS, BusinessTable.class, msgs);
+				msgs = ((InternalEObject)newTable).eInverseAdd(this, BusinessModelPackage.BUSINESS_COLUMN_SET__COLUMNS, BusinessColumnSet.class, msgs);
 			msgs = basicSetTable(newTable, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
@@ -165,7 +166,7 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);
-				return basicSetTable((BusinessTable)otherEnd, msgs);
+				return basicSetTable((BusinessColumnSet)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -193,7 +194,7 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
 		switch (eContainerFeatureID()) {
 			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
-				return eInternalContainer().eInverseRemove(this, BusinessModelPackage.BUSINESS_TABLE__COLUMNS, BusinessTable.class, msgs);
+				return eInternalContainer().eInverseRemove(this, BusinessModelPackage.BUSINESS_COLUMN_SET__COLUMNS, BusinessColumnSet.class, msgs);
 		}
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
@@ -227,7 +228,7 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 				setPhysicalColumn((PhysicalColumn)newValue);
 				return;
 			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
-				setTable((BusinessTable)newValue);
+				setTable((BusinessColumnSet)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -245,7 +246,7 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 				setPhysicalColumn((PhysicalColumn)null);
 				return;
 			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
-				setTable((BusinessTable)null);
+				setTable((BusinessColumnSet)null);
 				return;
 		}
 		super.eUnset(featureID);

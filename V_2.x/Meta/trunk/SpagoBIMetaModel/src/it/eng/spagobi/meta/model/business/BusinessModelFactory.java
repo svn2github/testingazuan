@@ -53,6 +53,15 @@ public interface BusinessModelFactory extends EFactory {
 	BusinessColumn createBusinessColumn();
 
 	/**
+	 * Returns a new object of class '<em>Business Column Set</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Business Column Set</em>'.
+	 * @generated
+	 */
+	BusinessColumnSet createBusinessColumnSet();
+
+	/**
 	 * Returns a new object of class '<em>Business Relationship</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

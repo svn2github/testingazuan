@@ -70,12 +70,12 @@ public interface BusinessRelationship extends ModelObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Source Table</em>' reference.
-	 * @see #setSourceTable(BusinessTable)
+	 * @see #setSourceTable(BusinessColumnSet)
 	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessRelationship_SourceTable()
 	 * @model required="true"
 	 * @generated
 	 */
-	BusinessTable getSourceTable();
+	BusinessColumnSet getSourceTable();
 
 	/**
 	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getSourceTable <em>Source Table</em>}' reference.
@@ -85,7 +85,7 @@ public interface BusinessRelationship extends ModelObject {
 	 * @see #getSourceTable()
 	 * @generated
 	 */
-	void setSourceTable(BusinessTable value);
+	void setSourceTable(BusinessColumnSet value);
 
 	/**
 	 * Returns the value of the '<em><b>Destination Table</b></em>' reference.
@@ -96,12 +96,12 @@ public interface BusinessRelationship extends ModelObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Destination Table</em>' reference.
-	 * @see #setDestinationTable(BusinessTable)
+	 * @see #setDestinationTable(BusinessColumnSet)
 	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessRelationship_DestinationTable()
 	 * @model required="true"
 	 * @generated
 	 */
-	BusinessTable getDestinationTable();
+	BusinessColumnSet getDestinationTable();
 
 	/**
 	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessRelationship#getDestinationTable <em>Destination Table</em>}' reference.
@@ -111,7 +111,7 @@ public interface BusinessRelationship extends ModelObject {
 	 * @see #getDestinationTable()
 	 * @generated
 	 */
-	void setDestinationTable(BusinessTable value);
+	void setDestinationTable(BusinessColumnSet value);
 
 	/**
 	 * Returns the value of the '<em><b>Source Columns</b></em>' reference list.

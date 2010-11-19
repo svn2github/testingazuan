@@ -46,15 +46,13 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessTableImpl#getModel <em>Model</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessTableImpl#getPhysicalTable <em>Physical Table</em>}</li>
- *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessTableImpl#getColumns <em>Columns</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class BusinessTableImpl extends ModelObjectImpl implements BusinessTable {
+public class BusinessTableImpl extends BusinessColumnSetImpl implements BusinessTable {
 	/**
 	 * The cached value of the '{@link #getPhysicalTable() <em>Physical Table</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -64,16 +62,6 @@ public class BusinessTableImpl extends ModelObjectImpl implements BusinessTable 
 	 * @ordered
 	 */
 	protected PhysicalTable physicalTable;
-
-	/**
-	 * The cached value of the '{@link #getColumns() <em>Columns</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getColumns()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<BusinessColumn> columns;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -92,47 +80,6 @@ public class BusinessTableImpl extends ModelObjectImpl implements BusinessTable 
 	@Override
 	protected EClass eStaticClass() {
 		return BusinessModelPackage.Literals.BUSINESS_TABLE;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public BusinessModel getModel() {
-		if (eContainerFeatureID() != BusinessModelPackage.BUSINESS_TABLE__MODEL) return null;
-		return (BusinessModel)eContainer();
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetModel(BusinessModel newModel, NotificationChain msgs) {
-		msgs = eBasicSetContainer((InternalEObject)newModel, BusinessModelPackage.BUSINESS_TABLE__MODEL, msgs);
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setModel(BusinessModel newModel) {
-		if (newModel != eInternalContainer() || (eContainerFeatureID() != BusinessModelPackage.BUSINESS_TABLE__MODEL && newModel != null)) {
-			if (EcoreUtil.isAncestor(this, newModel))
-				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-			NotificationChain msgs = null;
-			if (eInternalContainer() != null)
-				msgs = eBasicRemoveFromContainer(msgs);
-			if (newModel != null)
-				msgs = ((InternalEObject)newModel).eInverseAdd(this, BusinessModelPackage.BUSINESS_MODEL__TABLES, BusinessModel.class, msgs);
-			msgs = basicSetModel(newModel, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, BusinessModelPackage.BUSINESS_TABLE__MODEL, newModel, newModel));
 	}
 
 	/**
@@ -178,77 +125,12 @@ public class BusinessTableImpl extends ModelObjectImpl implements BusinessTable 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<BusinessColumn> getColumns() {
-		if (columns == null) {
-			columns = new EObjectContainmentWithInverseEList<BusinessColumn>(BusinessColumn.class, this, BusinessModelPackage.BUSINESS_TABLE__COLUMNS, BusinessModelPackage.BUSINESS_COLUMN__TABLE);
-		}
-		return columns;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_TABLE__MODEL:
-				if (eInternalContainer() != null)
-					msgs = eBasicRemoveFromContainer(msgs);
-				return basicSetModel((BusinessModel)otherEnd, msgs);
-			case BusinessModelPackage.BUSINESS_TABLE__COLUMNS:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getColumns()).basicAdd(otherEnd, msgs);
-		}
-		return super.eInverseAdd(otherEnd, featureID, msgs);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_TABLE__MODEL:
-				return basicSetModel(null, msgs);
-			case BusinessModelPackage.BUSINESS_TABLE__COLUMNS:
-				return ((InternalEList<?>)getColumns()).basicRemove(otherEnd, msgs);
-		}
-		return super.eInverseRemove(otherEnd, featureID, msgs);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
-		switch (eContainerFeatureID()) {
-			case BusinessModelPackage.BUSINESS_TABLE__MODEL:
-				return eInternalContainer().eInverseRemove(this, BusinessModelPackage.BUSINESS_MODEL__TABLES, BusinessModel.class, msgs);
-		}
-		return super.eBasicRemoveFromContainerFeature(msgs);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_TABLE__MODEL:
-				return getModel();
 			case BusinessModelPackage.BUSINESS_TABLE__PHYSICAL_TABLE:
 				if (resolve) return getPhysicalTable();
 				return basicGetPhysicalTable();
-			case BusinessModelPackage.BUSINESS_TABLE__COLUMNS:
-				return getColumns();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -262,15 +144,8 @@ public class BusinessTableImpl extends ModelObjectImpl implements BusinessTable 
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_TABLE__MODEL:
-				setModel((BusinessModel)newValue);
-				return;
 			case BusinessModelPackage.BUSINESS_TABLE__PHYSICAL_TABLE:
 				setPhysicalTable((PhysicalTable)newValue);
-				return;
-			case BusinessModelPackage.BUSINESS_TABLE__COLUMNS:
-				getColumns().clear();
-				getColumns().addAll((Collection<? extends BusinessColumn>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -284,14 +159,8 @@ public class BusinessTableImpl extends ModelObjectImpl implements BusinessTable 
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_TABLE__MODEL:
-				setModel((BusinessModel)null);
-				return;
 			case BusinessModelPackage.BUSINESS_TABLE__PHYSICAL_TABLE:
 				setPhysicalTable((PhysicalTable)null);
-				return;
-			case BusinessModelPackage.BUSINESS_TABLE__COLUMNS:
-				getColumns().clear();
 				return;
 		}
 		super.eUnset(featureID);
@@ -305,67 +174,12 @@ public class BusinessTableImpl extends ModelObjectImpl implements BusinessTable 
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_TABLE__MODEL:
-				return getModel() != null;
 			case BusinessModelPackage.BUSINESS_TABLE__PHYSICAL_TABLE:
 				return physicalTable != null;
-			case BusinessModelPackage.BUSINESS_TABLE__COLUMNS:
-				return columns != null && !columns.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
-	// =========================================================================
-	// Utility methods
-	// =========================================================================
 	
-	@Override
-	public BusinessIdentifier getIdentifier() {
-		return (getModel() != null)? getModel().getIdentifier(this): null;
-	}
-	
-	@Override
-	public BusinessColumn getColumn(String name) {
-		for(int i = 0; i < getColumns().size(); i++) {
-			if(getColumns().get(i).getName().equals(name)) {
-				return getColumns().get(i);
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public BusinessColumn getColumn(PhysicalColumn physicalColumn) {
-		for(int i = 0; i < getColumns().size(); i++) {
-			if(getColumns().get(i).getPhysicalColumn().equals(physicalColumn)) {
-				return getColumns().get(i);
-			} 
-		}
-		return null;
-	}
-	
-	@Override
-	public EList<ModelPropertyType> getPropertyTypes() {
-		return getModel().getParentModel().getPropertyTypes();
-	}
-
-	@Override
-	public List<BusinessRelationship> getRelationships() {
-		List relationships = new ArrayList<BusinessRelationship>();
-		
-		Iterator<BusinessRelationship> it = getModel().getRelationships().iterator();
-		
-		while (it.hasNext()) {
-			BusinessRelationship relationship = it.next();
-			
-			if (relationship.getSourceTable().equals(this)) {
-				relationships.add(relationship);
-			}
-			if (relationship.getDestinationTable().equals(this)) {
-				relationships.add(relationship);
-			}
-		}
-		return relationships;
-	}
 
 } //BusinessTableImpl

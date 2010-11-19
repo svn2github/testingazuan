@@ -3,6 +3,7 @@
  */
 package it.eng.spagobi.meta.test;
 
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
@@ -18,7 +19,7 @@ public class ModelPrinter {
 	
 	public static void print(BusinessModel model) {
 		for(int i = 0; i < model.getTables().size(); i++) {
-        	BusinessTable t = model.getTables().get(i);
+        	BusinessColumnSet t = model.getTables().get(i);
         	System.out.println( i + " " + t.getName() );
         	for(int j = 0; j < t.getColumns().size(); j++) {
         		System.out.println( "  -  " + t.getColumns().get(j).getName());

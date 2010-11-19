@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import it.eng.spagobi.meta.commons.IModelObjectFilter;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
@@ -223,15 +224,15 @@ public class BusinessModelInitializer {
 	}
 	
 	//add Identifier without PhysicalPrimaryKey specified
-	public BusinessIdentifier addIdentifier(String businessIdentifierName, BusinessTable businessTable, Collection<BusinessColumn> businessColumns) {
+	public BusinessIdentifier addIdentifier(String businessIdentifierName, BusinessColumnSet businessColumnSet, Collection<BusinessColumn> businessColumns) {
 		BusinessIdentifier businessIdentifier;
-		BusinessModel businessModel = businessTable.getModel();
+		BusinessModel businessModel = businessColumnSet.getModel();
 		
 		try {
 			businessIdentifier = FACTORY.createBusinessIdentifier();
 			businessIdentifier.setName( businessIdentifierName );
 			businessIdentifier.setModel( businessModel );
-			businessIdentifier.setTable( businessTable );
+			businessIdentifier.setTable( businessColumnSet );
 			
 			for(BusinessColumn businessColumn : businessColumns) {
 				businessIdentifier.getColumns().add(businessColumn);

@@ -61,10 +61,11 @@ public class BusinessModelFactoryImpl extends EFactoryImpl implements BusinessMo
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case BusinessModelPackage.BUSINESS_MODEL: return createBusinessModel();
-			case BusinessModelPackage.BUSINESS_TABLE: return createBusinessTable();
 			case BusinessModelPackage.BUSINESS_COLUMN: return createBusinessColumn();
-			case BusinessModelPackage.BUSINESS_RELATIONSHIP: return createBusinessRelationship();
+			case BusinessModelPackage.BUSINESS_COLUMN_SET: return createBusinessColumnSet();
+			case BusinessModelPackage.BUSINESS_TABLE: return createBusinessTable();
 			case BusinessModelPackage.BUSINESS_VIEW: return createBusinessView();
+			case BusinessModelPackage.BUSINESS_RELATIONSHIP: return createBusinessRelationship();
 			case BusinessModelPackage.BUSINESS_DOMAIN: return createBusinessDomain();
 			case BusinessModelPackage.BUSINESS_IDENTIFIER: return createBusinessIdentifier();
 			default:
@@ -100,6 +101,16 @@ public class BusinessModelFactoryImpl extends EFactoryImpl implements BusinessMo
 	public BusinessColumn createBusinessColumn() {
 		BusinessColumnImpl businessColumn = new BusinessColumnImpl();
 		return businessColumn;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public BusinessColumnSet createBusinessColumnSet() {
+		BusinessColumnSetImpl businessColumnSet = new BusinessColumnSetImpl();
+		return businessColumnSet;
 	}
 
 	/**

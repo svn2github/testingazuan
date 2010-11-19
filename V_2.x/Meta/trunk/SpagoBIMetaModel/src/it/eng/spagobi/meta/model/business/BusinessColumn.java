@@ -58,7 +58,7 @@ public interface BusinessColumn extends ModelObject {
 
 	/**
 	 * Returns the value of the '<em><b>Table</b></em>' container reference.
-	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessTable#getColumns <em>Columns</em>}'.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessColumnSet#getColumns <em>Columns</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Table</em>' reference isn't clear,
@@ -66,13 +66,13 @@ public interface BusinessColumn extends ModelObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Table</em>' container reference.
-	 * @see #setTable(BusinessTable)
+	 * @see #setTable(BusinessColumnSet)
 	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessColumn_Table()
-	 * @see it.eng.spagobi.meta.model.business.BusinessTable#getColumns
+	 * @see it.eng.spagobi.meta.model.business.BusinessColumnSet#getColumns
 	 * @model opposite="columns" required="true" transient="false"
 	 * @generated
 	 */
-	BusinessTable getTable();
+	BusinessColumnSet getTable();
 
 	/**
 	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessColumn#getTable <em>Table</em>}' container reference.
@@ -82,8 +82,8 @@ public interface BusinessColumn extends ModelObject {
 	 * @see #getTable()
 	 * @generated
 	 */
-	void setTable(BusinessTable value);
-	
+	void setTable(BusinessColumnSet value);
+
 	// =========================================================================
 	// Utility methods
 	// =========================================================================

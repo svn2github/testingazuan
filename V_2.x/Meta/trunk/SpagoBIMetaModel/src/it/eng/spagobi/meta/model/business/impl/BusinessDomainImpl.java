@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.business.impl;
 
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessDomain;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -51,7 +52,7 @@ public class BusinessDomainImpl extends ModelObjectImpl implements BusinessDomai
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<BusinessTable> tables;
+	protected EList<BusinessColumnSet> tables;
 
 	/**
 	 * The cached value of the '{@link #getRelationships() <em>Relationships</em>}' reference list.
@@ -128,9 +129,9 @@ public class BusinessDomainImpl extends ModelObjectImpl implements BusinessDomai
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<BusinessTable> getTables() {
+	public EList<BusinessColumnSet> getTables() {
 		if (tables == null) {
-			tables = new EObjectResolvingEList<BusinessTable>(BusinessTable.class, this, BusinessModelPackage.BUSINESS_DOMAIN__TABLES);
+			tables = new EObjectResolvingEList<BusinessColumnSet>(BusinessColumnSet.class, this, BusinessModelPackage.BUSINESS_DOMAIN__TABLES);
 		}
 		return tables;
 	}
@@ -223,7 +224,7 @@ public class BusinessDomainImpl extends ModelObjectImpl implements BusinessDomai
 				return;
 			case BusinessModelPackage.BUSINESS_DOMAIN__TABLES:
 				getTables().clear();
-				getTables().addAll((Collection<? extends BusinessTable>)newValue);
+				getTables().addAll((Collection<? extends BusinessColumnSet>)newValue);
 				return;
 			case BusinessModelPackage.BUSINESS_DOMAIN__RELATIONSHIPS:
 				getRelationships().clear();

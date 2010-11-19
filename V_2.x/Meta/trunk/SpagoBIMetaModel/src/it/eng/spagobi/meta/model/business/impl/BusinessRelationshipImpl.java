@@ -8,6 +8,7 @@ package it.eng.spagobi.meta.model.business.impl;
 
 import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
@@ -55,7 +56,7 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	 * @generated
 	 * @ordered
 	 */
-	protected BusinessTable sourceTable;
+	protected BusinessColumnSet sourceTable;
 
 	/**
 	 * The cached value of the '{@link #getDestinationTable() <em>Destination Table</em>}' reference.
@@ -65,7 +66,7 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	 * @generated
 	 * @ordered
 	 */
-	protected BusinessTable destinationTable;
+	protected BusinessColumnSet destinationTable;
 
 	/**
 	 * The cached value of the '{@link #getSourceColumns() <em>Source Columns</em>}' reference list.
@@ -162,10 +163,10 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BusinessTable getSourceTable() {
+	public BusinessColumnSet getSourceTable() {
 		if (sourceTable != null && sourceTable.eIsProxy()) {
 			InternalEObject oldSourceTable = (InternalEObject)sourceTable;
-			sourceTable = (BusinessTable)eResolveProxy(oldSourceTable);
+			sourceTable = (BusinessColumnSet)eResolveProxy(oldSourceTable);
 			if (sourceTable != oldSourceTable) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, BusinessModelPackage.BUSINESS_RELATIONSHIP__SOURCE_TABLE, oldSourceTable, sourceTable));
@@ -179,7 +180,7 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BusinessTable basicGetSourceTable() {
+	public BusinessColumnSet basicGetSourceTable() {
 		return sourceTable;
 	}
 
@@ -188,8 +189,8 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setSourceTable(BusinessTable newSourceTable) {
-		BusinessTable oldSourceTable = sourceTable;
+	public void setSourceTable(BusinessColumnSet newSourceTable) {
+		BusinessColumnSet oldSourceTable = sourceTable;
 		sourceTable = newSourceTable;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, BusinessModelPackage.BUSINESS_RELATIONSHIP__SOURCE_TABLE, oldSourceTable, sourceTable));
@@ -200,10 +201,10 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BusinessTable getDestinationTable() {
+	public BusinessColumnSet getDestinationTable() {
 		if (destinationTable != null && destinationTable.eIsProxy()) {
 			InternalEObject oldDestinationTable = (InternalEObject)destinationTable;
-			destinationTable = (BusinessTable)eResolveProxy(oldDestinationTable);
+			destinationTable = (BusinessColumnSet)eResolveProxy(oldDestinationTable);
 			if (destinationTable != oldDestinationTable) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, BusinessModelPackage.BUSINESS_RELATIONSHIP__DESTINATION_TABLE, oldDestinationTable, destinationTable));
@@ -217,7 +218,7 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BusinessTable basicGetDestinationTable() {
+	public BusinessColumnSet basicGetDestinationTable() {
 		return destinationTable;
 	}
 
@@ -226,8 +227,8 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setDestinationTable(BusinessTable newDestinationTable) {
-		BusinessTable oldDestinationTable = destinationTable;
+	public void setDestinationTable(BusinessColumnSet newDestinationTable) {
+		BusinessColumnSet oldDestinationTable = destinationTable;
 		destinationTable = newDestinationTable;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, BusinessModelPackage.BUSINESS_RELATIONSHIP__DESTINATION_TABLE, oldDestinationTable, destinationTable));
@@ -379,10 +380,10 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 				setModel((BusinessModel)newValue);
 				return;
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__SOURCE_TABLE:
-				setSourceTable((BusinessTable)newValue);
+				setSourceTable((BusinessColumnSet)newValue);
 				return;
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__DESTINATION_TABLE:
-				setDestinationTable((BusinessTable)newValue);
+				setDestinationTable((BusinessColumnSet)newValue);
 				return;
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__SOURCE_COLUMNS:
 				getSourceColumns().clear();
@@ -411,10 +412,10 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 				setModel((BusinessModel)null);
 				return;
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__SOURCE_TABLE:
-				setSourceTable((BusinessTable)null);
+				setSourceTable((BusinessColumnSet)null);
 				return;
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__DESTINATION_TABLE:
-				setDestinationTable((BusinessTable)null);
+				setDestinationTable((BusinessColumnSet)null);
 				return;
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__SOURCE_COLUMNS:
 				getSourceColumns().clear();

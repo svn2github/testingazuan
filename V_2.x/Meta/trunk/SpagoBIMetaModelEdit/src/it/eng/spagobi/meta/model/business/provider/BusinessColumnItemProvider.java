@@ -189,7 +189,7 @@ public class BusinessColumnItemProvider
 		return SpagoBIMetalModelEditPlugin.INSTANCE;
 	}
 	
-	 public Command createCustomCommand(Object object, EditingDomain domain, Class<? extends Command> commandClass, CommandParameter commandParameter) {
+	public Command createCustomCommand(Object object, EditingDomain domain, Class<? extends Command> commandClass, CommandParameter commandParameter) {
 		 Command result;
 		 
 		 result = null;

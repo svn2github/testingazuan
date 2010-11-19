@@ -10,6 +10,8 @@ package it.eng.spagobi.meta.model.business.provider;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
+import it.eng.spagobi.meta.model.business.commands.AddBusinessRelationshipCommand;
+import it.eng.spagobi.meta.model.business.commands.AddBusinessTableCommand;
 
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
@@ -19,12 +21,15 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.edit.command.CommandParameter;
+import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -302,6 +307,22 @@ public class BusinessModelItemProvider
 	@Override
 	public ResourceLocator getResourceLocator() {
 		return SpagoBIMetalModelEditPlugin.INSTANCE;
+	}
+	
+	public Command createCustomCommand(Object object, EditingDomain domain, Class<? extends Command> commandClass, CommandParameter commandParameter) {
+		 Command result;
+		 
+		 result = null;
+		 
+		 if(commandClass == AddBusinessTableCommand.class) {
+		   	System.err.println("-> " + commandClass.getName() + " <<<");
+		   	result = new AddBusinessTableCommand(domain, commandParameter);
+		 } else if(commandClass == AddBusinessRelationshipCommand.class) {
+			System.err.println("-> " + commandClass.getName() + " <<<");
+			result = new AddBusinessRelationshipCommand(domain, commandParameter);
+		 }
+		 
+		 return result;
 	}
 
 }

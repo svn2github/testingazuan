@@ -23,6 +23,7 @@ package it.eng.spagobi.meta.model.business.wizards;
 
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.model.test.TestEditorPlugin;
 
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
@@ -46,6 +47,7 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	private List tableList;
 	private BusinessTable owner;
 	private String tableSelected;
+	private AddBusinessViewInnerJoinPage pageTwoRef;
 	/**
 	 * @param pageName
 	 */
@@ -126,7 +128,11 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	}
 	//check if the right conditions to go forward occurred
 	public void checkPageComplete(){
+
 		if(tableSelected != null){
+			PhysicalModel physicalModel = owner.getPhysicalTable().getModel();
+			PhysicalTable physicalTable = physicalModel.getTable(tableSelected);
+			pageTwoRef.populatePhysicalTableGroup(physicalTable);
 			setPageComplete(true);
 		}
 		else{			
@@ -146,5 +152,19 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	 */
 	public String getTableSelected() {
 		return tableSelected;
+	}
+
+	/**
+	 * @param pageTwoRef the pageTwoRef to set
+	 */
+	public void setPageTwoRef(AddBusinessViewInnerJoinPage pageTwoRef) {
+		this.pageTwoRef = pageTwoRef;
+	}
+
+	/**
+	 * @return the pageTwoRef
+	 */
+	public AddBusinessViewInnerJoinPage getPageTwoRef() {
+		return pageTwoRef;
 	}	
 }

@@ -19,6 +19,7 @@ import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
@@ -375,17 +376,14 @@ public class BusinessModelInitializer {
 	}
 	
 	/**
-	 * Create a BusinessView using the data from a BusinessTable
+	 * Create a BusinessView using the data from a BusinessTable and the added PhysicalTable with a specified join path
 	 * @return BusinessView created
 	 */
-	public BusinessView upgradeBusinessTableToBusinessView(BusinessTable businessTable, Collection<PhysicalTable> physicalTables){
+	public BusinessView upgradeBusinessTableToBusinessView(BusinessTable businessTable, PhysicalTable physicalTable, BusinessViewInnerJoinRelationship innerJoinRelationship){
 		BusinessView businessView;
 		BusinessModel businessModel = businessTable.getModel();
-		PhysicalTable originalPhysicalTable  = businessTable.getPhysicalTable();
 		Collection<BusinessColumn> businessColumns = businessTable.getColumns();
-		//add original PhysicalTable referenced by BusinessTable
-		//to the collection of Physical Tables added for the upgrade to BusinessView
-		physicalTables.add(originalPhysicalTable);
+
 		Collection<BusinessRelationship> businessRelationships = businessTable.getRelationships();
 		Collection<BusinessRelationship> inboundBusinessRelationships = new ArrayList<BusinessRelationship>();
 		Collection<BusinessRelationship> outboundBusinessRelationships = new ArrayList<BusinessRelationship>();
@@ -398,43 +396,41 @@ public class BusinessModelInitializer {
 			
 			//add all the columns of Business Table to the Business View
 			businessView.getColumns().addAll(businessColumns);
-			
-			//add physical table references to BusinessView
-			/*
-			  Something like:
-			  businessView.getPhysicalTables().addAll(physicalTables);			 
-			*/
+			//add the inner join relationship between two physical table
+			businessView.getJoinRelationships().add(innerJoinRelationship);
 			
 			//check Business Table relationships 
 			for( BusinessRelationship relationship : businessRelationships){
 				if (relationship.getDestinationTable() == businessTable){
-					inboundBusinessRelationships.add(relationship);
+					//inboundBusinessRelationships.add(relationship);
+					//replace business table with business view
+					relationship.setDestinationTable(businessView);
 				}
 				else if (relationship.getSourceTable() == businessTable){
-					outboundBusinessRelationships.add(relationship);
+					//outboundBusinessRelationships.add(relationship);
+					//replace business table with business view
+					relationship.setSourceTable(businessView);
 				}
 			}
-			/* Something like:
+			
+			/*
 			for( BusinessRelationship inboundRelationship : inboundBusinessRelationships){
 				//replace business table with business view
 				inboundRelationship.setDestinationTable(businessView);
 			}
 			for( BusinessRelationship outboundRelationship : outboundBusinessRelationships){
 				//replace business table with business view
-				inboundRelationship.getSourceTable(businessView);
+				outboundRelationship.setSourceTable(businessView);
 			}
 			*/
 			
 			//check Identifier to inherit
 			businessIdentifier = businessTable.getIdentifier();
-			/* Something like:
 			businessIdentifier.setTable(businessView);
-			*/
 			
 			//add BusinessView to BusinessModel
-			/* Something like:
 			businessModel.getTables().add(businessView);
-			*/
+			
 			//add BusinessView properties(?)
 			getPropertiesInitializer().addProperties(businessView);
 			

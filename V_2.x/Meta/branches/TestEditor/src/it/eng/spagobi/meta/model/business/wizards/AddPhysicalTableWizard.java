@@ -36,6 +36,7 @@ import org.eclipse.emf.edit.domain.EditingDomain;
 public class AddPhysicalTableWizard extends AbstractSpagoBIModelWizard {
 
 	private AddPhysicalTableSelectionPage pageOne;
+	private AddBusinessViewInnerJoinPage pageTwo;
 	private BusinessTable owner;
 	/**
 	 * @param editingDomain
@@ -53,6 +54,9 @@ public class AddPhysicalTableWizard extends AbstractSpagoBIModelWizard {
 	public void addPages() {
 		pageOne = new AddPhysicalTableSelectionPage("Add Physical Table to Business Table",owner);
 		addPage(pageOne);
+		pageTwo = new AddBusinessViewInnerJoinPage("Select join relationship",owner);
+		addPage(pageTwo);
+		pageOne.setPageTwoRef(pageTwo);
 	}	
 	
 	@Override
@@ -63,7 +67,7 @@ public class AddPhysicalTableWizard extends AbstractSpagoBIModelWizard {
 
 	@Override
 	public boolean isWizardComplete() {
-		if (pageOne.isPageComplete()){
+		if (pageTwo.isPageComplete()){
 			return true;			
 		}
 		return false;	

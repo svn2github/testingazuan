@@ -325,7 +325,6 @@ public class BusinessModelActionBarContributor
 		    	actions.add(new EditBusinessColumnsAction(activeEditorPart, selection));
 		    	actions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
 		    	actions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
-		    	//
 		    	actions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));	
 		    } else if(targetObject instanceof BusinessColumn){
 		    	actions.add(new AddToIdentifierAction(activeEditorPart, selection));

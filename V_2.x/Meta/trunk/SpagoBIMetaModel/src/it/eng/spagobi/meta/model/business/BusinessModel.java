@@ -30,6 +30,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessModel#getRelationships <em>Relationships</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessModel#getIdentifiers <em>Identifiers</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessModel#getDomains <em>Domains</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.business.BusinessModel#getJoinRelationships <em>Join Relationships</em>}</li>
  * </ul>
  * </p>
  *
@@ -163,6 +164,24 @@ public interface BusinessModel extends ModelObject {
 	 * @generated
 	 */
 	EList<BusinessDomain> getDomains();
+
+	/**
+	 * Returns the value of the '<em><b>Join Relationships</b></em>' containment reference list.
+	 * The list contents are of type {@link it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship}.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getModel <em>Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Join Relationships</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Join Relationships</em>' containment reference list.
+	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessModel_JoinRelationships()
+	 * @see it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getModel
+	 * @model opposite="model" containment="true"
+	 * @generated
+	 */
+	EList<BusinessViewInnerJoinRelationship> getJoinRelationships();
 
 	// =========================================================================
 	// Utility methods

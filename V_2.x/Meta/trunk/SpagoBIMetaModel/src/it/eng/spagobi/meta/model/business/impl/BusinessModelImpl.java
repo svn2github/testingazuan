@@ -17,6 +17,7 @@ import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
+import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 
 import it.eng.spagobi.meta.model.business.BusinessView;
@@ -58,6 +59,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessModelImpl#getRelationships <em>Relationships</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessModelImpl#getIdentifiers <em>Identifiers</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessModelImpl#getDomains <em>Domains</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessModelImpl#getJoinRelationships <em>Join Relationships</em>}</li>
  * </ul>
  * </p>
  *
@@ -113,6 +115,16 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	 * @ordered
 	 */
 	protected EList<BusinessDomain> domains;
+
+	/**
+	 * The cached value of the '{@link #getJoinRelationships() <em>Join Relationships</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getJoinRelationships()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<BusinessViewInnerJoinRelationship> joinRelationships;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -265,6 +277,18 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EList<BusinessViewInnerJoinRelationship> getJoinRelationships() {
+		if (joinRelationships == null) {
+			joinRelationships = new EObjectContainmentWithInverseEList<BusinessViewInnerJoinRelationship>(BusinessViewInnerJoinRelationship.class, this, BusinessModelPackage.BUSINESS_MODEL__JOIN_RELATIONSHIPS, BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__MODEL);
+		}
+		return joinRelationships;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
@@ -281,6 +305,8 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getIdentifiers()).basicAdd(otherEnd, msgs);
 			case BusinessModelPackage.BUSINESS_MODEL__DOMAINS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getDomains()).basicAdd(otherEnd, msgs);
+			case BusinessModelPackage.BUSINESS_MODEL__JOIN_RELATIONSHIPS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getJoinRelationships()).basicAdd(otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -303,6 +329,8 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 				return ((InternalEList<?>)getIdentifiers()).basicRemove(otherEnd, msgs);
 			case BusinessModelPackage.BUSINESS_MODEL__DOMAINS:
 				return ((InternalEList<?>)getDomains()).basicRemove(otherEnd, msgs);
+			case BusinessModelPackage.BUSINESS_MODEL__JOIN_RELATIONSHIPS:
+				return ((InternalEList<?>)getJoinRelationships()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -342,6 +370,8 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 				return getIdentifiers();
 			case BusinessModelPackage.BUSINESS_MODEL__DOMAINS:
 				return getDomains();
+			case BusinessModelPackage.BUSINESS_MODEL__JOIN_RELATIONSHIPS:
+				return getJoinRelationships();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -377,6 +407,10 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 				getDomains().clear();
 				getDomains().addAll((Collection<? extends BusinessDomain>)newValue);
 				return;
+			case BusinessModelPackage.BUSINESS_MODEL__JOIN_RELATIONSHIPS:
+				getJoinRelationships().clear();
+				getJoinRelationships().addAll((Collection<? extends BusinessViewInnerJoinRelationship>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -407,6 +441,9 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 			case BusinessModelPackage.BUSINESS_MODEL__DOMAINS:
 				getDomains().clear();
 				return;
+			case BusinessModelPackage.BUSINESS_MODEL__JOIN_RELATIONSHIPS:
+				getJoinRelationships().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -431,6 +468,8 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 				return identifiers != null && !identifiers.isEmpty();
 			case BusinessModelPackage.BUSINESS_MODEL__DOMAINS:
 				return domains != null && !domains.isEmpty();
+			case BusinessModelPackage.BUSINESS_MODEL__JOIN_RELATIONSHIPS:
+				return joinRelationships != null && !joinRelationships.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

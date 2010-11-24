@@ -126,6 +126,9 @@
           eType="#//business/BusinessIdentifier" containment="true" eOpposite="#//business/BusinessIdentifier/model"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="domains" upperBound="-1"
           eType="#//business/BusinessDomain" containment="true" eOpposite="#//business/BusinessDomain/model"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="joinRelationships" upperBound="-1"
+          eType="#//business/BusinessViewInnerJoinRelationship" containment="true"
+          eOpposite="#//business/BusinessViewInnerJoinRelationship/model"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="BusinessColumn" eSuperTypes="#//ModelObject">
       <eStructuralFeatures xsi:type="ecore:EReference" name="physicalColumn" lowerBound="1"
@@ -180,7 +183,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="BusinessViewInnerJoinRelationship"
         eSuperTypes="#//ModelObject">
       <eStructuralFeatures xsi:type="ecore:EReference" name="model" lowerBound="1"
-          eType="#//business/BusinessModel"/>
+          eType="#//business/BusinessModel" eOpposite="#//business/BusinessModel/joinRelationships"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="sourceTable" lowerBound="1"
           eType="#//physical/PhysicalTable"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="destinationTable" lowerBound="1"

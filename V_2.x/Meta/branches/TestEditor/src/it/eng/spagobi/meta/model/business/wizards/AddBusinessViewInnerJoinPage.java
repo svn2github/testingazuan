@@ -130,7 +130,7 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 				//add relationship
 				if ( (physicalColumnsList.getSelection().length != 0) && (businessColumnsList.getSelection().length != 0)  ){
 					setErrorMessage(null);
-					addJoinRelationship(physicalColumnsList.getSelection()[0], businessColumnsList.getSelection()[0]);
+					addJoinRelationship(businessColumnsList.getSelection()[0],physicalColumnsList.getSelection()[0]);
 					checkPageComplete();
 				} else {
 					setErrorMessage("You must select a source column and a destination column");
@@ -171,18 +171,21 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 	}
 	
 	public void addJoinRelationship(String sourceColumn, String destinationColumn){
-		PhysicalColumn sourcePhysicalColumn = originalPhysicalTable.getColumn(sourceColumn);
+		//Get BusinessColumn first, than corresponding PhysicalColumn
+		BusinessColumn businessColumn = owner.getColumn(sourceColumn);
+		PhysicalColumn sourcePhysicalColumn = businessColumn.getPhysicalColumn();
+		
 		PhysicalColumn destinationPhysicalColumn = physicalTable.getColumn(destinationColumn);
 		sourceColumns.add(sourcePhysicalColumn);
 		destinationColumns.add(destinationPhysicalColumn);
 		
-		if (getRelationshipDescriptor() == null){
+		if (relationshipDescriptor == null){
 			//create descriptor
-			setRelationshipDescriptor(new BusinessViewInnerJoinRelationshipDescriptor(owner.getPhysicalTable(), physicalTable, sourceColumns, destinationColumns,1,owner.getName()));
+			relationshipDescriptor = new BusinessViewInnerJoinRelationshipDescriptor(originalPhysicalTable, physicalTable, sourceColumns, destinationColumns,1,owner.getName());
 		} else {
 			//update descriptor
-			getRelationshipDescriptor().setSourceColumns(sourceColumns);
-			getRelationshipDescriptor().setDestinationColumns(destinationColumns);
+			relationshipDescriptor.setSourceColumns(sourceColumns);
+			relationshipDescriptor.setDestinationColumns(destinationColumns);
 		}
 		
 		joinRelationshipList.add(sourceColumn+" -> "+destinationColumn );

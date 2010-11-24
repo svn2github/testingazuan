@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
@@ -28,6 +29,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * <!-- begin-user-doc -->
@@ -47,16 +49,6 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * @generated
  */
 public class BusinessViewInnerJoinRelationshipImpl extends ModelObjectImpl implements BusinessViewInnerJoinRelationship {
-	/**
-	 * The cached value of the '{@link #getModel() <em>Model</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getModel()
-	 * @generated
-	 * @ordered
-	 */
-	protected BusinessModel model;
-
 	/**
 	 * The cached value of the '{@link #getSourceTable() <em>Source Table</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -122,15 +114,8 @@ public class BusinessViewInnerJoinRelationshipImpl extends ModelObjectImpl imple
 	 * @generated
 	 */
 	public BusinessModel getModel() {
-		if (model != null && model.eIsProxy()) {
-			InternalEObject oldModel = (InternalEObject)model;
-			model = (BusinessModel)eResolveProxy(oldModel);
-			if (model != oldModel) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__MODEL, oldModel, model));
-			}
-		}
-		return model;
+		if (eContainerFeatureID() != BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__MODEL) return null;
+		return (BusinessModel)eContainer();
 	}
 
 	/**
@@ -138,8 +123,9 @@ public class BusinessViewInnerJoinRelationshipImpl extends ModelObjectImpl imple
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BusinessModel basicGetModel() {
-		return model;
+	public NotificationChain basicSetModel(BusinessModel newModel, NotificationChain msgs) {
+		msgs = eBasicSetContainer((InternalEObject)newModel, BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__MODEL, msgs);
+		return msgs;
 	}
 
 	/**
@@ -148,10 +134,19 @@ public class BusinessViewInnerJoinRelationshipImpl extends ModelObjectImpl imple
 	 * @generated
 	 */
 	public void setModel(BusinessModel newModel) {
-		BusinessModel oldModel = model;
-		model = newModel;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__MODEL, oldModel, model));
+		if (newModel != eInternalContainer() || (eContainerFeatureID() != BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__MODEL && newModel != null)) {
+			if (EcoreUtil.isAncestor(this, newModel))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+			NotificationChain msgs = null;
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
+			if (newModel != null)
+				msgs = ((InternalEObject)newModel).eInverseAdd(this, BusinessModelPackage.BUSINESS_MODEL__JOIN_RELATIONSHIPS, BusinessModel.class, msgs);
+			msgs = basicSetModel(newModel, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__MODEL, newModel, newModel));
 	}
 
 	/**
@@ -260,11 +255,54 @@ public class BusinessViewInnerJoinRelationshipImpl extends ModelObjectImpl imple
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__MODEL:
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
+				return basicSetModel((BusinessModel)otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__MODEL:
+				return basicSetModel(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__MODEL:
+				return eInternalContainer().eInverseRemove(this, BusinessModelPackage.BUSINESS_MODEL__JOIN_RELATIONSHIPS, BusinessModel.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__MODEL:
-				if (resolve) return getModel();
-				return basicGetModel();
+				return getModel();
 			case BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__SOURCE_TABLE:
 				if (resolve) return getSourceTable();
 				return basicGetSourceTable();
@@ -345,7 +383,7 @@ public class BusinessViewInnerJoinRelationshipImpl extends ModelObjectImpl imple
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__MODEL:
-				return model != null;
+				return getModel() != null;
 			case BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__SOURCE_TABLE:
 				return sourceTable != null;
 			case BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__DESTINATION_TABLE:

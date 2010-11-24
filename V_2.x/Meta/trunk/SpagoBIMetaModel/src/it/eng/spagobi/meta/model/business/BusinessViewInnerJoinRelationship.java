@@ -35,26 +35,28 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface BusinessViewInnerJoinRelationship extends ModelObject {
 	/**
-	 * Returns the value of the '<em><b>Model</b></em>' reference.
+	 * Returns the value of the '<em><b>Model</b></em>' container reference.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessModel#getJoinRelationships <em>Join Relationships</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Model</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Model</em>' reference.
+	 * @return the value of the '<em>Model</em>' container reference.
 	 * @see #setModel(BusinessModel)
 	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessViewInnerJoinRelationship_Model()
-	 * @model required="true"
+	 * @see it.eng.spagobi.meta.model.business.BusinessModel#getJoinRelationships
+	 * @model opposite="joinRelationships" required="true" transient="false"
 	 * @generated
 	 */
 	BusinessModel getModel();
 
 	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getModel <em>Model</em>}' reference.
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getModel <em>Model</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Model</em>' reference.
+	 * @param value the new value of the '<em>Model</em>' container reference.
 	 * @see #getModel()
 	 * @generated
 	 */

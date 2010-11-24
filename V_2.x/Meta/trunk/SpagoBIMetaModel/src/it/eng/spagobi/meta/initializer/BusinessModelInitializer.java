@@ -443,9 +443,13 @@ public class BusinessModelInitializer {
 			innerJoinRelationship.setSourceTable(innerJoinRelationshipDescriptor.getSourceTable());
 			innerJoinRelationship.getSourceColumns().addAll(innerJoinRelationshipDescriptor.getSourceColumns());
 			innerJoinRelationship.setDestinationTable(innerJoinRelationshipDescriptor.getDestinationTable());
-			innerJoinRelationship.getDestinationColumns().addAll(innerJoinRelationshipDescriptor.getDestinationColumns());			
+			innerJoinRelationship.getDestinationColumns().addAll(innerJoinRelationshipDescriptor.getDestinationColumns());	
 			
-			innerJoinRelationship.setModel(businessModel);
+			//add BusinessViewInnerJoinRelationship properties
+			getPropertiesInitializer().addProperties(innerJoinRelationship);
+			
+			//add BusinessViewInnerJoinRelationship to BusinessModel
+			businessModel.getJoinRelationships().add(innerJoinRelationship);
 			
 		}
 		catch(Throwable t) {

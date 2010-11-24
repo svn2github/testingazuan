@@ -184,6 +184,7 @@ public class BusinessModelItemProvider
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_MODEL__TABLES);
 			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_MODEL__DOMAINS);
+			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_MODEL__JOIN_RELATIONSHIPS);
 		}
 		return childrenFeatures;
 	}
@@ -260,6 +261,7 @@ public class BusinessModelItemProvider
 		switch (notification.getFeatureID(BusinessModel.class)) {
 			case BusinessModelPackage.BUSINESS_MODEL__TABLES:
 			case BusinessModelPackage.BUSINESS_MODEL__DOMAINS:
+			case BusinessModelPackage.BUSINESS_MODEL__JOIN_RELATIONSHIPS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -296,6 +298,11 @@ public class BusinessModelItemProvider
 			(createChildParameter
 				(BusinessModelPackage.Literals.BUSINESS_MODEL__DOMAINS,
 				 BusinessModelFactory.eINSTANCE.createBusinessDomain()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(BusinessModelPackage.Literals.BUSINESS_MODEL__JOIN_RELATIONSHIPS,
+				 BusinessModelFactory.eINSTANCE.createBusinessViewInnerJoinRelationship()));
 	}
 
 	/**

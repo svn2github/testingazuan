@@ -161,13 +161,22 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_MODEL__DOMAINS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 5;
 
 	/**
+	 * The feature id for the '<em><b>Join Relationships</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_MODEL__JOIN_RELATIONSHIPS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 6;
+
+	/**
 	 * The number of structural features of the '<em>Business Model</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BUSINESS_MODEL_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 6;
+	int BUSINESS_MODEL_FEATURE_COUNT = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 7;
 
 	/**
 	 * The meta object id for the '{@link it.eng.spagobi.meta.model.business.impl.BusinessTableImpl <em>Business Table</em>}' class.
@@ -810,7 +819,7 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
-	 * The feature id for the '<em><b>Model</b></em>' reference.
+	 * The feature id for the '<em><b>Model</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -939,6 +948,17 @@ public interface BusinessModelPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getBusinessModel_Domains();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.business.BusinessModel#getJoinRelationships <em>Join Relationships</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Join Relationships</em>'.
+	 * @see it.eng.spagobi.meta.model.business.BusinessModel#getJoinRelationships()
+	 * @see #getBusinessModel()
+	 * @generated
+	 */
+	EReference getBusinessModel_JoinRelationships();
 
 	/**
 	 * Returns the meta object for class '{@link it.eng.spagobi.meta.model.business.BusinessTable <em>Business Table</em>}'.
@@ -1230,10 +1250,10 @@ public interface BusinessModelPackage extends EPackage {
 	EClass getBusinessViewInnerJoinRelationship();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getModel <em>Model</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @return the meta object for the container reference '<em>Model</em>'.
 	 * @see it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship#getModel()
 	 * @see #getBusinessViewInnerJoinRelationship()
 	 * @generated
@@ -1363,6 +1383,14 @@ public interface BusinessModelPackage extends EPackage {
 		 * @generated
 		 */
 		EReference BUSINESS_MODEL__DOMAINS = eINSTANCE.getBusinessModel_Domains();
+
+		/**
+		 * The meta object literal for the '<em><b>Join Relationships</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BUSINESS_MODEL__JOIN_RELATIONSHIPS = eINSTANCE.getBusinessModel_JoinRelationships();
 
 		/**
 		 * The meta object literal for the '{@link it.eng.spagobi.meta.model.business.impl.BusinessTableImpl <em>Business Table</em>}' class.
@@ -1597,7 +1625,7 @@ public interface BusinessModelPackage extends EPackage {
 		EClass BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP = eINSTANCE.getBusinessViewInnerJoinRelationship();
 
 		/**
-		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Model</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated

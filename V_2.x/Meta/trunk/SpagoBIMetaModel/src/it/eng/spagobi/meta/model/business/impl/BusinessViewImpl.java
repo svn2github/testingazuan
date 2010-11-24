@@ -15,7 +15,13 @@ import it.eng.spagobi.meta.model.business.BusinessView;
 
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
+
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -153,6 +159,19 @@ public class BusinessViewImpl extends BusinessColumnSetImpl implements BusinessV
 	@Override
 	public EList<ModelPropertyType> getPropertyTypes() {
 		return null;
+	}
+	
+	@Override
+	public List<PhysicalTable> getPhysicalTables(){
+		EList<BusinessViewInnerJoinRelationship> joinRelationships = this.getJoinRelationships();
+		Set<PhysicalTable> physicalTableSet = new HashSet<PhysicalTable>();
+		List<PhysicalTable> physicalTables;
+		for (BusinessViewInnerJoinRelationship relationship: joinRelationships){
+			physicalTableSet.add(relationship.getSourceTable());
+			physicalTableSet.add(relationship.getDestinationTable());
+		}
+		physicalTables = new ArrayList<PhysicalTable>(physicalTableSet);
+		return physicalTables;
 	}
 
 } //BusinessViewImpl

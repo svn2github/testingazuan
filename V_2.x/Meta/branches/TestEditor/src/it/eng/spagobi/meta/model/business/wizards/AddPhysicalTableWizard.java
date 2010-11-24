@@ -23,6 +23,7 @@ package it.eng.spagobi.meta.model.business.wizards;
 
 import java.util.ArrayList;
 
+import it.eng.spagobi.meta.initializer.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
 
@@ -61,8 +62,9 @@ public class AddPhysicalTableWizard extends AbstractSpagoBIModelWizard {
 	
 	@Override
 	public CommandParameter getCommandInputParameter() {
-		String physicalTableName = pageOne.getTableSelected();
-		return new CommandParameter(owner, null, physicalTableName, new ArrayList<Object>());
+		//String physicalTableName = pageOne.getTableSelected();
+		BusinessViewInnerJoinRelationshipDescriptor joinRelationshipDescriptor = pageTwo.getRelationshipDescriptor();
+		return new CommandParameter(owner, null, joinRelationshipDescriptor, new ArrayList<Object>());
 	}
 
 	@Override

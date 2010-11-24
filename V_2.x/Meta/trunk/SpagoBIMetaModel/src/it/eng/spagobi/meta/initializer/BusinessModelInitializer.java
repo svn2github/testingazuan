@@ -379,17 +379,18 @@ public class BusinessModelInitializer {
 	 * Create a BusinessView using the data from a BusinessTable and the added PhysicalTable with a specified join path
 	 * @return BusinessView created
 	 */
-	public BusinessView upgradeBusinessTableToBusinessView(BusinessTable businessTable, PhysicalTable physicalTable, BusinessViewInnerJoinRelationship innerJoinRelationship){
+	public BusinessView upgradeBusinessTableToBusinessView(BusinessTable businessTable, BusinessViewInnerJoinRelationshipDescriptor innerJoinRelationshipDescriptor){
 		BusinessView businessView;
 		BusinessModel businessModel = businessTable.getModel();
 		Collection<BusinessColumn> businessColumns = businessTable.getColumns();
-
+		
 		Collection<BusinessRelationship> businessRelationships = businessTable.getRelationships();
-		Collection<BusinessRelationship> inboundBusinessRelationships = new ArrayList<BusinessRelationship>();
-		Collection<BusinessRelationship> outboundBusinessRelationships = new ArrayList<BusinessRelationship>();
 		BusinessIdentifier businessIdentifier;
 		
 		try {
+			//create BusinessViewInnerJoinRelationship object
+			BusinessViewInnerJoinRelationship innerJoinRelationship = addBusinessViewInnerJoinRelationship(businessModel, innerJoinRelationshipDescriptor);
+			
 			businessView = FACTORY.createBusinessView();
 			businessView.setModel(businessModel);
 			businessView.setName(businessTable.getName());
@@ -402,28 +403,15 @@ public class BusinessModelInitializer {
 			//check Business Table relationships 
 			for( BusinessRelationship relationship : businessRelationships){
 				if (relationship.getDestinationTable() == businessTable){
-					//inboundBusinessRelationships.add(relationship);
 					//replace business table with business view
 					relationship.setDestinationTable(businessView);
 				}
 				else if (relationship.getSourceTable() == businessTable){
-					//outboundBusinessRelationships.add(relationship);
 					//replace business table with business view
 					relationship.setSourceTable(businessView);
 				}
 			}
-			
-			/*
-			for( BusinessRelationship inboundRelationship : inboundBusinessRelationships){
-				//replace business table with business view
-				inboundRelationship.setDestinationTable(businessView);
-			}
-			for( BusinessRelationship outboundRelationship : outboundBusinessRelationships){
-				//replace business table with business view
-				outboundRelationship.setSourceTable(businessView);
-			}
-			*/
-			
+
 			//check Identifier to inherit
 			businessIdentifier = businessTable.getIdentifier();
 			businessIdentifier.setTable(businessView);
@@ -441,6 +429,29 @@ public class BusinessModelInitializer {
 			throw new RuntimeException("Impossible to initialize business view", t);
 		}
 		return businessView;
+	}
+	
+	/**
+	 * Create BusinessViewInnerJoinRelationship from a BusinessViewInnerJoinRelationshipDescriptor
+	 * @param businessModel
+	 * @return 
+	 */
+	public BusinessViewInnerJoinRelationship addBusinessViewInnerJoinRelationship(BusinessModel businessModel, BusinessViewInnerJoinRelationshipDescriptor innerJoinRelationshipDescriptor){
+		BusinessViewInnerJoinRelationship innerJoinRelationship;
+		try {
+			innerJoinRelationship = FACTORY.createBusinessViewInnerJoinRelationship();
+			innerJoinRelationship.setSourceTable(innerJoinRelationshipDescriptor.getSourceTable());
+			innerJoinRelationship.getSourceColumns().addAll(innerJoinRelationshipDescriptor.getSourceColumns());
+			innerJoinRelationship.setDestinationTable(innerJoinRelationshipDescriptor.getDestinationTable());
+			innerJoinRelationship.getDestinationColumns().addAll(innerJoinRelationshipDescriptor.getDestinationColumns());			
+			
+			innerJoinRelationship.setModel(businessModel);
+			
+		}
+		catch(Throwable t) {
+			throw new RuntimeException("Impossible to initialize business view inner join relationship", t);
+		}
+		return innerJoinRelationship;
 	}
 	
 	//  --------------------------------------------------------

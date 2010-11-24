@@ -176,13 +176,13 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 		sourceColumns.add(sourcePhysicalColumn);
 		destinationColumns.add(destinationPhysicalColumn);
 		
-		if (relationshipDescriptor == null){
+		if (getRelationshipDescriptor() == null){
 			//create descriptor
-			relationshipDescriptor = new BusinessViewInnerJoinRelationshipDescriptor(owner.getPhysicalTable(), physicalTable, sourceColumns, destinationColumns,1,owner.getName());
+			setRelationshipDescriptor(new BusinessViewInnerJoinRelationshipDescriptor(owner.getPhysicalTable(), physicalTable, sourceColumns, destinationColumns,1,owner.getName()));
 		} else {
 			//update descriptor
-			relationshipDescriptor.setSourceColumns(sourceColumns);
-			relationshipDescriptor.setDestinationColumns(destinationColumns);
+			getRelationshipDescriptor().setSourceColumns(sourceColumns);
+			getRelationshipDescriptor().setDestinationColumns(destinationColumns);
 		}
 		
 		joinRelationshipList.add(sourceColumn+" -> "+destinationColumn );
@@ -197,5 +197,21 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 		else{			
 			setPageComplete(false);
 		}		
+	}
+
+
+	/**
+	 * @param relationshipDescriptor the relationshipDescriptor to set
+	 */
+	public void setRelationshipDescriptor(BusinessViewInnerJoinRelationshipDescriptor relationshipDescriptor) {
+		this.relationshipDescriptor = relationshipDescriptor;
+	}
+
+
+	/**
+	 * @return the relationshipDescriptor
+	 */
+	public BusinessViewInnerJoinRelationshipDescriptor getRelationshipDescriptor() {
+		return relationshipDescriptor;
 	}
 }

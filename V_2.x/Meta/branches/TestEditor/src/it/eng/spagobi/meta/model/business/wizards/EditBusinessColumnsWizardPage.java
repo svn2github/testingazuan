@@ -1,7 +1,11 @@
 package it.eng.spagobi.meta.model.business.wizards;
 
+import java.util.Collection;
+
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.model.test.TestEditorPlugin;
@@ -27,15 +31,19 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 	private Table columns,fields;
 	private TableItem[] columnsToImport;
 	private BusinessTable businessTable;
+	private BusinessView businessView;
 	
-	protected EditBusinessColumnsWizardPage(String pageName, BusinessTable businessTable) {
+	protected EditBusinessColumnsWizardPage(String pageName, BusinessColumnSet businessColumnSet) {
 		super(pageName);
 		setTitle("Edit Business Table Columns");
 		setDescription("Please select the columns to add in your Business Table");
-		ImageDescriptor image =	ExtendedImageRegistry.INSTANCE.getImageDescriptor(TestEditorPlugin.INSTANCE.getImage("wizards/createBC.png"));
-	
+		ImageDescriptor image =	ExtendedImageRegistry.INSTANCE.getImageDescriptor(TestEditorPlugin.INSTANCE.getImage("wizards/createBC.png"));	
 	    if (image!=null) setImageDescriptor(image);	
-	    this.businessTable = businessTable;
+	    
+	    if (businessColumnSet instanceof BusinessTable)
+	    	this.businessTable = (BusinessTable)businessColumnSet;
+	    else if (businessColumnSet instanceof BusinessView)
+	    	this.businessView = (BusinessView)businessColumnSet;
 	}
 
 	@Override
@@ -182,7 +190,8 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 	public void addTableItems(){		
 		columns.removeAll();
 		fields.removeAll();
-
+		
+		//Get Columns for a simple Business Tables
 		if (businessTable != null) {
 			//retrieve the Physical Table Columns
 			PhysicalTable pTable = businessTable.getPhysicalTable();
@@ -209,6 +218,37 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 			}
 			
 		}
+		//--------------
+		//Get Columns for a Business View
+		else if (businessView != null){
+			//retrieve the Physical Table Columns
+			Collection<PhysicalTable> physicalTables = businessView.getPhysicalTables();
+			int numCols;
+			for (PhysicalTable physicalTable:physicalTables){
+				numCols = physicalTable.getColumns().size();
+				for (int i=0; i<numCols; i++){
+					PhysicalColumn pColumn = physicalTable.getColumns().get(i);
+					//check if a corresponding Business Column already exist in the Business View
+					if ( businessView.getColumn(pColumn) == null ){
+						TableItem ti = new TableItem(columns, 0);
+						//associate table item with the object It represents
+						ti.setData(pColumn);
+						ti.setText(pColumn.getName());
+					}
+				}
+			}
+			
+			//retrieve Business Table Columns
+			numCols = businessView.getColumns().size();
+			for (int i=0; i<numCols; i++){
+				TableItem ti = new TableItem(fields, 0);
+				BusinessColumn bColumn = businessView.getColumns().get(i);
+				//associate table item with the object It represents
+				ti.setData(bColumn);
+				ti.setText(bColumn.getName());
+			}
+		}
+		//------
 	}
 	
 	//check if the right conditions to go forward occurred

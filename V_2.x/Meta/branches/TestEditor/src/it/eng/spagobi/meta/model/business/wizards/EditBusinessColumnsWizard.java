@@ -7,6 +7,7 @@ import it.eng.spagobi.meta.commons.IModelObjectFilter;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
@@ -24,20 +25,20 @@ import org.eclipse.swt.widgets.TableItem;
 
 public class EditBusinessColumnsWizard extends AbstractSpagoBIModelWizard {
 
-	BusinessTable businessTable;
+	BusinessColumnSet businessColumnSet;
 	
 	
-	public EditBusinessColumnsWizard(BusinessTable businessTable, EditingDomain editingDomain, AbstractSpagoBIModelCommand command){
+	public EditBusinessColumnsWizard(BusinessColumnSet businessColumnSet, EditingDomain editingDomain, AbstractSpagoBIModelCommand command){
 		super(editingDomain, command);
 		this.setWindowTitle("Edit business columns");
-		this.setHelpAvailable(false);		
-		this.businessTable = businessTable;
+		this.setHelpAvailable(false);	
+		this.businessColumnSet = businessColumnSet;
 		
 	}
 	
 	@Override
 	public void addPages() {
-		IWizardPage pageOne = new EditBusinessColumnsWizardPage("Edit Business Column page one",businessTable);
+		IWizardPage pageOne = new EditBusinessColumnsWizardPage("Edit Business Column page one",businessColumnSet);
 		addPage( pageOne );
 	}
 	
@@ -58,7 +59,7 @@ public class EditBusinessColumnsWizard extends AbstractSpagoBIModelWizard {
 			colList.add(pc);
 		}
 		
-		return new CommandParameter(businessTable, null, colList, new ArrayList<Object>());
+		return new CommandParameter(businessColumnSet, null, colList, new ArrayList<Object>());
 	}
 
 	@Override

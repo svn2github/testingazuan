@@ -23,7 +23,9 @@ package it.eng.spagobi.meta.model.business.commands;
 
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
@@ -55,7 +57,16 @@ public class EditBusinessColumnsCommand extends AbstractSpagoBIModelCommand {
 	@Override
 	public void execute() {
 		BusinessModelInitializer initializer;
-		BusinessTable businessTable = (BusinessTable)parameter.getOwner();
+		BusinessColumnSet businessColumnSet;
+		BusinessView businessView;
+		businessColumnSet = (BusinessColumnSet)parameter.getOwner();
+		/*
+		if (parameter.getOwner() instanceof BusinessTable){
+			businessTable = (BusinessTable)parameter.getOwner();
+		} else if (parameter.getOwner() instanceof BusinessTable){
+			businessView = (BusinessView)parameter.getOwner();
+		}*/
+
 		Collection<PhysicalColumn> selectedColumns = (Collection)parameter.getValue();
 		List<PhysicalColumn> columns;
 		
@@ -64,18 +75,18 @@ public class EditBusinessColumnsCommand extends AbstractSpagoBIModelCommand {
 		
 		initializer = new BusinessModelInitializer();	
 		
-		columns = getColumnsToRemove(businessTable, selectedColumns);
+		columns = getColumnsToRemove(businessColumnSet, selectedColumns);
 		for(PhysicalColumn column: columns) {
-			BusinessColumn c = businessTable.getColumn(column);
-			businessTable.getColumns().remove(c);
+			BusinessColumn c = businessColumnSet.getColumn(column);
+			businessColumnSet.getColumns().remove(c);
 			removedColumns.add(c);
 			//System.err.println("Removed column [" + column.getName() + "]");
 		}
 				
-		columns = getColumnsToAdd(businessTable, selectedColumns);
+		columns = getColumnsToAdd(businessColumnSet, selectedColumns);
 		for(PhysicalColumn column: columns) {
-			initializer.addColumn(column, businessTable);
-			addedColumns.add( businessTable.getColumn(column) );
+			initializer.addColumn(column, businessColumnSet);
+			addedColumns.add( businessColumnSet.getColumn(column) );
 			//System.err.println("Added column [" + businessTable.getColumn(column).getName() + "]");
 		}
 		
@@ -85,13 +96,13 @@ public class EditBusinessColumnsCommand extends AbstractSpagoBIModelCommand {
 		this.executed = true;
 	}
 	
-	private List<PhysicalColumn> getColumnsToRemove(BusinessTable businessTable, Collection<PhysicalColumn> newColumnSet) {
+	private List<PhysicalColumn> getColumnsToRemove(BusinessColumnSet businessColumnSet, Collection<PhysicalColumn> newColumnSet) {
 		
 		List columnsToRemove;
 		
 		columnsToRemove = new ArrayList();
 		
-		for(BusinessColumn businessColumn : businessTable.getColumns()) {
+		for(BusinessColumn businessColumn : businessColumnSet.getColumns()) {
 			boolean deleteColumn = true;
 			for(PhysicalColumn column : newColumnSet) {
 				if(businessColumn.equals(column)) {
@@ -106,14 +117,14 @@ public class EditBusinessColumnsCommand extends AbstractSpagoBIModelCommand {
 		return columnsToRemove;
 	}
 	
-	private List<PhysicalColumn> getColumnsToAdd(BusinessTable businessTable, Collection<PhysicalColumn> newColumnSet) {
+	private List<PhysicalColumn> getColumnsToAdd(BusinessColumnSet businessColumnSet, Collection<PhysicalColumn> newColumnSet) {
 		
 		List<PhysicalColumn> columnsToAdd;
 		
 		columnsToAdd = new ArrayList();
 		
 		for(PhysicalColumn column : newColumnSet) {
-			if(businessTable.getColumn(column) == null) {
+			if(businessColumnSet.getColumn(column) == null) {
 				columnsToAdd.add(column);
 			}
 		}
@@ -124,7 +135,7 @@ public class EditBusinessColumnsCommand extends AbstractSpagoBIModelCommand {
 	
 	@Override
 	public void undo() {
-		BusinessTable businessTable = (BusinessTable)parameter.getOwner();
+		BusinessColumnSet businessTable = (BusinessColumnSet)parameter.getOwner();
 		for(BusinessColumn column: removedColumns) {
 			businessTable.getColumns().add(column);
 		}	
@@ -136,7 +147,7 @@ public class EditBusinessColumnsCommand extends AbstractSpagoBIModelCommand {
 
 	@Override
 	public void redo() {
-		BusinessTable businessTable = (BusinessTable)parameter.getOwner();
+		BusinessColumnSet businessTable = (BusinessColumnSet)parameter.getOwner();
 		for(BusinessColumn column: removedColumns) {
 			businessTable.getColumns().remove(column);
 		}	

@@ -148,7 +148,7 @@ public class BusinessModelInitializer {
 		}
 	}
 	
-	public void addColumn(PhysicalColumn physicalColumn, BusinessTable businessTable) {
+	public void addColumn(PhysicalColumn physicalColumn, BusinessColumnSet businessColumnSet) {
 		BusinessColumn businessColumn;
 		
 		try {
@@ -157,9 +157,9 @@ public class BusinessModelInitializer {
 			businessColumn.setPhysicalColumn(physicalColumn);
 			businessColumn.setName( beutfyName(physicalColumn.getName()) );
 			businessColumn.setDescription( physicalColumn.getDescription() );
-			businessColumn.setTable(businessTable);
+			businessColumn.setTable(businessColumnSet);
 			
-			businessTable.getColumns().add(businessColumn);
+			businessColumnSet.getColumns().add(businessColumn);
 			
 			getPropertiesInitializer().addProperties(businessColumn);
 			businessColumn.setProperty(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE, physicalColumn.getDataType());

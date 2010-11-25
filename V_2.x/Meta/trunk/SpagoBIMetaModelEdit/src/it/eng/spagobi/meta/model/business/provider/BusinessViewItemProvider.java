@@ -10,6 +10,10 @@ package it.eng.spagobi.meta.model.business.provider;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.business.commands.AddBusinessRelationshipCommand;
+import it.eng.spagobi.meta.model.business.commands.AddIdentifierCommand;
+import it.eng.spagobi.meta.model.business.commands.AddPhysicalTableToBusinessTableCommand;
+import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
 
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
@@ -21,11 +25,14 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
 
+import org.eclipse.emf.edit.command.CommandParameter;
+import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -138,9 +145,18 @@ public class BusinessViewItemProvider
 		if (folderItemProviderOutRel.getChildrenNumber() == 0)
 			folderItemProviderOutRel.setImage("full/obj16/EmptyFolder");	
 		
-		//group Physical Table
+		//getting Physical Table
 		physicalTables = businessView.getPhysicalTables();
-		folderItemProviderPhysicalTable = new FolderItemProvider(adapterFactory, businessView, physicalTables);
+		//create physical table item provider
+		Collection<FolderItemProvider> itemProvidersPhysicalTables = new ArrayList<FolderItemProvider>();
+		for (PhysicalTable physicalTable:physicalTables){
+			FolderItemProvider itemProviderPhysicalTable = new FolderItemProvider(adapterFactory, businessView,null);
+			itemProviderPhysicalTable.setText(physicalTable.getName());
+			itemProviderPhysicalTable.setImage("full/obj16/PhysicalTable");
+			itemProvidersPhysicalTables.add(itemProviderPhysicalTable);
+		}
+		//group Physical Tables
+		folderItemProviderPhysicalTable = new FolderItemProvider(adapterFactory, businessView, itemProvidersPhysicalTables);
 		folderItemProviderPhysicalTable.setText("Physical Tables ("+folderItemProviderPhysicalTable.getChildrenNumber()+")");
 		if (folderItemProviderPhysicalTable.getChildrenNumber() == 0)
 			folderItemProviderPhysicalTable.setImage("full/obj16/EmptyFolder");	
@@ -202,4 +218,25 @@ public class BusinessViewItemProvider
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 	}
 
+	public Command createCustomCommand(Object object, EditingDomain domain, Class<? extends Command> commandClass, CommandParameter commandParameter) {
+		 Command result;
+		 
+		 result = null;
+		 
+		 if(commandClass == EditBusinessColumnsCommand.class) {
+		    	System.err.println(">>> " + commandClass.getName() + " <<<");
+		    	result = new EditBusinessColumnsCommand(domain, commandParameter);
+		    } else if(commandClass == AddBusinessRelationshipCommand.class) {
+		    	System.err.println(">>> " + commandClass.getName() + " <<<");
+		    	result = new AddBusinessRelationshipCommand(domain, commandParameter);
+		    } else if(commandClass == AddIdentifierCommand.class) {
+		    	System.err.println(">>> " + commandClass.getName() + " <<<");
+		    	result = new AddIdentifierCommand(domain, commandParameter);
+		    } else if(commandClass == AddPhysicalTableToBusinessTableCommand.class) {
+		    	System.err.println(">>> " + commandClass.getName() + " <<<");
+		    	result = new AddPhysicalTableToBusinessTableCommand(domain, commandParameter);
+		    }
+		 
+		 return result;
+	}
 }

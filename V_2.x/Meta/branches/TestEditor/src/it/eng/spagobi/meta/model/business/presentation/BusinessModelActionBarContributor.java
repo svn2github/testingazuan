@@ -8,6 +8,7 @@ package it.eng.spagobi.meta.model.business.presentation;
 
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.actions.AddBusinessRelationshipAction;
 import it.eng.spagobi.meta.model.business.actions.AddBusinessTableAction;
 import it.eng.spagobi.meta.model.business.actions.AddIdentifierAction;
@@ -326,6 +327,12 @@ public class BusinessModelActionBarContributor
 		    	actions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
 		    	actions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
 		    	actions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));	
+		    } else if(targetObject instanceof BusinessView){
+		    	actions.add(new AddIdentifierAction(activeEditorPart, selection));
+		    	actions.add(new EditBusinessColumnsAction(activeEditorPart, selection));
+		    	actions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
+		    	actions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
+		    	actions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));
 		    } else if(targetObject instanceof BusinessColumn){
 		    	actions.add(new AddToIdentifierAction(activeEditorPart, selection));
 		    } else if(targetObject instanceof BusinessRootItemProvider) {

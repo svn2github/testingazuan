@@ -24,7 +24,9 @@ package it.eng.spagobi.meta.model.business.commands;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -35,7 +37,11 @@ import org.eclipse.emf.edit.domain.EditingDomain;
  */
 public class AddPhysicalTableToBusinessTableCommand extends
 		AbstractSpagoBIModelCommand {
-
+	
+	BusinessColumnSet businessColumnSet;
+	BusinessTable businessTable;
+	BusinessView addedBusinessView;
+	
 	public AddPhysicalTableToBusinessTableCommand(EditingDomain domain, CommandParameter parameter) {
 		super("Physical Table", "Add Physical Table ", domain, parameter);
 	}
@@ -49,11 +55,11 @@ public class AddPhysicalTableToBusinessTableCommand extends
 		//do something
 		BusinessModelInitializer initializer = new BusinessModelInitializer();
 		BusinessViewInnerJoinRelationshipDescriptor joinRelationshipDescriptor = (BusinessViewInnerJoinRelationshipDescriptor)parameter.getValue();
-		BusinessColumnSet businessColumnSet = (BusinessColumnSet)parameter.getOwner();
+		businessColumnSet = (BusinessColumnSet)parameter.getOwner();
 		
 		if (businessColumnSet instanceof BusinessTable){
-			BusinessTable businessTable = (BusinessTable)businessColumnSet;
-			initializer.upgradeBusinessTableToBusinessView(businessTable, joinRelationshipDescriptor);
+			businessTable = (BusinessTable)businessColumnSet;
+			addedBusinessView = initializer.upgradeBusinessTableToBusinessView(businessTable, joinRelationshipDescriptor);
 		}
 		System.err.println("COMMAND [AddPhysicalTableToBusinessTableCommand] SUCCESFULLY EXECUTED");
 		
@@ -61,12 +67,26 @@ public class AddPhysicalTableToBusinessTableCommand extends
 	}
 	@Override
 	public void undo() {
-		
+		//undo the upgrade of a BusinessTable to BusinessView
+		if (businessTable != null){
+			BusinessModel businessModel = addedBusinessView.getModel();
+			//re-add the columns to the business table
+			businessTable.getColumns().addAll(addedBusinessView.getColumns());
+			businessModel.getTables().remove(addedBusinessView);
+			businessModel.getTables().add(businessTable);		
+		}
 	}
 	
 	@Override
 	public void redo() {
-		
+		//redo the upgrade of a BusinessTable to BusinessView
+		if (businessTable != null){
+			BusinessModel businessModel = businessTable.getModel();
+			//add the columns to BusinessView
+			addedBusinessView.getColumns().addAll(businessTable.getColumns());
+			businessModel.getTables().add(addedBusinessView);
+			businessModel.getTables().remove(businessTable);
+		}		
 	}
 	@Override
 	public Object getImage() {

@@ -183,14 +183,19 @@ public class BusinessViewItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
 	public String getText(Object object) {
+		/*
 		String label = ((BusinessView)object).getName();
 		return label == null || label.length() == 0 ?
 			getString("_UI_BusinessView_type") :
 			getString("_UI_BusinessView_type") + " " + label;
+		*/
+		String label = ((BusinessView)object).getName();
+		return label == null || label.length() == 0 ?
+			getString("_UI_BusinessView_type") :
+			label;
 	}
 
 	/**

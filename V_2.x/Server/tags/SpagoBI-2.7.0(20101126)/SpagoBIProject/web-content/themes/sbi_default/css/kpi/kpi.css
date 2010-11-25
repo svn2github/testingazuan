@@ -1,0 +1,45 @@
+/*******************************************************************************************************
+ * Model Structure
+ ********************************************************************************************************/
+  
+.has-kpi {
+	 background-image:url(../../img/kpi/kpiico16.png) !important;
+}
+.ou {
+	 background-image:url(../../img/kpi/door_colsed16.png) !important;
+}
+.no-error {
+	 font-weight: normal;
+	 font-style: normal;
+	 text-decoration: none;
+}
+.x-grid3-scroller{
+	background-color: #f1f1f1;
+}
+.x-grid3-row{
+	background-color: #f1f1f1;
+}
+.icon-copytree {
+	 background-image:url(../../img/copytree.gif) !important;
+}
+
+.kpi-ou-trees{
+	width: 50%;
+	height: 100%;
+}
+.no-grant {
+	 font-weight: bold;
+	 font-style: italic;
+	 text-decoration: none;
+}
+.grant {
+	 font-weight: normal;
+	 font-style: normal;
+	 text-decoration: none;
+}
+.no-pad{
+	padding: 0;
+	margin: 0;
+	/*float: left;
+	width: 100%;*/
+}

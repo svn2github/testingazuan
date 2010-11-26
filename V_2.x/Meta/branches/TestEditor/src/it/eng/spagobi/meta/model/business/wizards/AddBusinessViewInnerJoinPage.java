@@ -26,7 +26,9 @@ import java.util.Collection;
 
 import it.eng.spagobi.meta.initializer.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.model.test.TestEditorPlugin;
@@ -50,7 +52,7 @@ import org.eclipse.swt.widgets.List;
  *
  */
 public class AddBusinessViewInnerJoinPage extends WizardPage {
-	private BusinessTable owner;
+	private BusinessColumnSet owner;
 	private Composite container;
 	private List joinRelationshipList, physicalColumnsList, businessColumnsList ;
 	private PhysicalTable originalPhysicalTable,physicalTable;
@@ -60,7 +62,7 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 	/**
 	 * @param pageName
 	 */
-	protected AddBusinessViewInnerJoinPage(String pageName, BusinessTable owner) {
+	protected AddBusinessViewInnerJoinPage(String pageName, BusinessColumnSet owner) {
 		super(pageName);
 		setTitle("Select join relationship");
 		setDescription("Please select the columns to use in the join relationship.");
@@ -69,7 +71,13 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 	    this.owner = owner;
 	    sourceColumns = new ArrayList<PhysicalColumn>();
 	    destinationColumns = new ArrayList<PhysicalColumn>();
-	    originalPhysicalTable = owner.getPhysicalTable();
+	    if (owner instanceof BusinessTable){
+		    originalPhysicalTable = ((BusinessTable)owner).getPhysicalTable();
+	    } else if (owner instanceof BusinessView){
+	    	//TODO: user must select what physical table use to join, in this will be used the first found
+	    	originalPhysicalTable = ((BusinessView)owner).getPhysicalTables().get(0);
+	    }
+
 	}
 
 
@@ -154,8 +162,8 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 		joinRelationshipList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 	}
 	
-	public void populateBusinessTableGroup(BusinessTable businessTable){
-		Collection<BusinessColumn> businessColumns =  businessTable.getColumns();
+	public void populateBusinessTableGroup(BusinessColumnSet businessColumnSet){
+		Collection<BusinessColumn> businessColumns =  businessColumnSet.getColumns();
 		for(BusinessColumn businessColumn:businessColumns){
 			businessColumnsList.add(businessColumn.getName());
 		}

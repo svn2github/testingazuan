@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.emf.common.util.EList;
 
 import it.eng.spagobi.meta.commons.IModelObjectFilter;
 import it.eng.spagobi.meta.model.Model;
@@ -432,6 +433,42 @@ public class BusinessModelInitializer {
 	}
 	
 	/**
+	 * Add a Physical Tables reference to the passed BusinessView
+	 */
+	public BusinessView addPhysicalTableToBusinessView(BusinessView businessView, BusinessViewInnerJoinRelationshipDescriptor joinRelationshipDescriptor){
+		BusinessModel businessModel = businessView.getModel();
+		
+		try {
+			//create BusinessViewInnerJoinRelationship object
+			BusinessViewInnerJoinRelationship innerJoinRelationship = addBusinessViewInnerJoinRelationship(businessModel, joinRelationshipDescriptor);
+			//add the inner join relationship between two physical table
+			businessView.getJoinRelationships().add(innerJoinRelationship);			
+		} 
+		catch(Throwable t) {
+			throw new RuntimeException("Impossible to add physical table to business view", t);
+		}
+		return businessView;
+	}
+
+	/**
+	 * Remove a Physical Tables reference to the passed BusinessView
+	 */
+	public BusinessView removePhysicalTableToBusinessView(BusinessView businessView, BusinessViewInnerJoinRelationshipDescriptor joinRelationshipDescriptor){
+		BusinessModel businessModel = businessView.getModel();
+		
+		try {
+			//create BusinessViewInnerJoinRelationship object
+			BusinessViewInnerJoinRelationship innerJoinRelationship = removeBusinessViewInnerJoinRelationship(businessModel, joinRelationshipDescriptor);
+			//remove the inner join relationship between two physical table
+			businessView.getJoinRelationships().remove(innerJoinRelationship);			
+		} 
+		catch(Throwable t) {
+			throw new RuntimeException("Impossible to remove physical table to business view", t);
+		}
+		return businessView;
+	}	
+	
+	/**
 	 * Create BusinessViewInnerJoinRelationship from a BusinessViewInnerJoinRelationshipDescriptor
 	 * @param businessModel
 	 * @return 
@@ -457,6 +494,36 @@ public class BusinessModelInitializer {
 		}
 		return innerJoinRelationship;
 	}
+	
+	/**
+	 * Remove BusinessViewInnerJoinRelationship from a BusinessViewInnerJoinRelationshipDescriptor
+	 * @param businessModel
+	 * @return 
+	 */
+	public BusinessViewInnerJoinRelationship removeBusinessViewInnerJoinRelationship(BusinessModel businessModel, BusinessViewInnerJoinRelationshipDescriptor innerJoinRelationshipDescriptor){
+		EList<BusinessViewInnerJoinRelationship> joinRelationships;
+		BusinessViewInnerJoinRelationship innerJoinRelationship = null;
+		try {
+			
+			joinRelationships = businessModel.getJoinRelationships();
+			//search the corresponding BusinessViewInnerJoinRelationship
+			for(BusinessViewInnerJoinRelationship joinRelationship:joinRelationships){
+				if ( (joinRelationship.getSourceTable() == innerJoinRelationshipDescriptor.getSourceTable()) && 
+					(joinRelationship.getDestinationTable() == innerJoinRelationshipDescriptor.getDestinationTable())  )
+				{   
+					innerJoinRelationship = joinRelationship;
+					break;
+				}
+			}
+			//remove BusinessViewInnerJoinRelationship to BusinessModel
+			businessModel.getJoinRelationships().remove(innerJoinRelationship);
+			
+		}
+		catch(Throwable t) {
+			throw new RuntimeException("Impossible to initialize business view inner join relationship", t);
+		}
+		return innerJoinRelationship;
+	}	
 	
 	//  --------------------------------------------------------
 	//	Accessor methods

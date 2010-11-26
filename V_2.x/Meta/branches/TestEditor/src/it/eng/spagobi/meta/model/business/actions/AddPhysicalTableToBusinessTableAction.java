@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.actions;
 
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.AddPhysicalTableToBusinessTableCommand;
@@ -53,8 +54,8 @@ public class AddPhysicalTableToBusinessTableAction extends
 	@Override
 	public void run() {
 		try {	
-			BusinessTable businessTable = (BusinessTable)owner;
-			AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessTable,editingDomain, (AbstractSpagoBIModelCommand)command );
+			BusinessColumnSet businessColumnSet = (BusinessColumnSet)owner;
+			AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (AbstractSpagoBIModelCommand)command );
 	    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 			dialog.create();
 	    	dialog.open();

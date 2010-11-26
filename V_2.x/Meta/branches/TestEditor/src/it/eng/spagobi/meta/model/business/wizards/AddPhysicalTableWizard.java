@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.model.business.wizards;
 import java.util.ArrayList;
 
 import it.eng.spagobi.meta.initializer.BusinessViewInnerJoinRelationshipDescriptor;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
 
@@ -38,12 +39,12 @@ public class AddPhysicalTableWizard extends AbstractSpagoBIModelWizard {
 
 	private AddPhysicalTableSelectionPage pageOne;
 	private AddBusinessViewInnerJoinPage pageTwo;
-	private BusinessTable owner;
+	private BusinessColumnSet owner;
 	/**
 	 * @param editingDomain
 	 * @param command
 	 */
-	public AddPhysicalTableWizard(BusinessTable owner, EditingDomain editingDomain,
+	public AddPhysicalTableWizard(BusinessColumnSet owner, EditingDomain editingDomain,
 			AbstractSpagoBIModelCommand command) {
 		super(editingDomain, command);
 		this.setWindowTitle("Add a Physical Table");

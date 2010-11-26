@@ -21,7 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.wizards;
 
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.model.test.TestEditorPlugin;
@@ -45,13 +47,13 @@ import org.eclipse.swt.widgets.Listener;
 public class AddPhysicalTableSelectionPage extends WizardPage {
 	
 	private List tableList;
-	private BusinessTable owner;
+	private BusinessColumnSet owner;
 	private String tableSelected;
 	private AddBusinessViewInnerJoinPage pageTwoRef;
 	/**
 	 * @param pageName
 	 */
-	protected AddPhysicalTableSelectionPage(String pageName, BusinessTable owner) {
+	protected AddPhysicalTableSelectionPage(String pageName, BusinessColumnSet owner) {
 		super(pageName);
 		setTitle("Add Physical Table");
 		setDescription("Please select the physical table to add to your Business Table.");
@@ -118,7 +120,7 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	
 	//populate the list with the Physical Tables' names
 	private void populateTableList(){
-		PhysicalModel pm = owner.getPhysicalTable().getModel();
+		PhysicalModel pm = owner.getModel().getPhysicalModel();
 		int numTables = pm.getTables().size();
 		String tabName;
 		for (int i = 0; i < numTables; i++){
@@ -128,9 +130,8 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	}
 	//check if the right conditions to go forward occurred
 	public void checkPageComplete(){
-
 		if(tableSelected != null){
-			PhysicalModel physicalModel = owner.getPhysicalTable().getModel();
+			PhysicalModel physicalModel = owner.getModel().getPhysicalModel();
 			PhysicalTable physicalTable = physicalModel.getTable(tableSelected);
 			pageTwoRef.populatePhysicalTableGroup(physicalTable);
 			setPageComplete(true);

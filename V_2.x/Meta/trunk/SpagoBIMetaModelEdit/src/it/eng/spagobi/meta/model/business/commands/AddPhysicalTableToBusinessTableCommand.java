@@ -41,6 +41,8 @@ public class AddPhysicalTableToBusinessTableCommand extends
 	BusinessColumnSet businessColumnSet;
 	BusinessTable businessTable;
 	BusinessView addedBusinessView;
+	BusinessView businessView;
+	BusinessViewInnerJoinRelationshipDescriptor joinRelationshipDescriptor;
 	
 	public AddPhysicalTableToBusinessTableCommand(EditingDomain domain, CommandParameter parameter) {
 		super("Physical Table", "Add Physical Table ", domain, parameter);
@@ -54,12 +56,18 @@ public class AddPhysicalTableToBusinessTableCommand extends
 	public void execute() {
 		//do something
 		BusinessModelInitializer initializer = new BusinessModelInitializer();
-		BusinessViewInnerJoinRelationshipDescriptor joinRelationshipDescriptor = (BusinessViewInnerJoinRelationshipDescriptor)parameter.getValue();
+		joinRelationshipDescriptor = (BusinessViewInnerJoinRelationshipDescriptor)parameter.getValue();
 		businessColumnSet = (BusinessColumnSet)parameter.getOwner();
 		
+		//for BusinessTable upgrade to BusinessView
 		if (businessColumnSet instanceof BusinessTable){
 			businessTable = (BusinessTable)businessColumnSet;
 			addedBusinessView = initializer.upgradeBusinessTableToBusinessView(businessTable, joinRelationshipDescriptor);
+		}
+		//for BusinessView, update the Physical Tables
+		else if (businessColumnSet instanceof BusinessView){
+			businessView = (BusinessView)businessColumnSet;
+			businessView = initializer.addPhysicalTableToBusinessView(businessView, joinRelationshipDescriptor);
 		}
 		System.err.println("COMMAND [AddPhysicalTableToBusinessTableCommand] SUCCESFULLY EXECUTED");
 		
@@ -74,6 +82,11 @@ public class AddPhysicalTableToBusinessTableCommand extends
 			businessTable.getColumns().addAll(addedBusinessView.getColumns());
 			businessModel.getTables().remove(addedBusinessView);
 			businessModel.getTables().add(businessTable);		
+		} 
+		//undo the update of the BusinessView
+		else if (businessView != null){
+			BusinessModelInitializer initializer = new BusinessModelInitializer();
+			businessView = initializer.removePhysicalTableToBusinessView(businessView, joinRelationshipDescriptor);
 		}
 	}
 	
@@ -86,7 +99,10 @@ public class AddPhysicalTableToBusinessTableCommand extends
 			addedBusinessView.getColumns().addAll(businessTable.getColumns());
 			businessModel.getTables().add(addedBusinessView);
 			businessModel.getTables().remove(businessTable);
-		}		
+		} else if (businessView != null){
+			BusinessModelInitializer initializer = new BusinessModelInitializer();
+			initializer.addPhysicalTableToBusinessView(businessView, joinRelationshipDescriptor);
+		}
 	}
 	@Override
 	public Object getImage() {

@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.model.business.wizards;
 
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
@@ -54,20 +55,20 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 	private Label lErr;
 	private TableItem[] columnsToImport;
 	private String defaultTable;
-	private BusinessTable businessTable;
+	private BusinessColumnSet businessColumnSet;
 	private Button bAddField, bRemoveField;
 	
 	/**
 	 * @param pageName
 	 */
-	protected AddBusinessIdentifierWizardPageColumnSelection(String pageName, String defaultTable, BusinessTable businessTable) {
+	protected AddBusinessIdentifierWizardPageColumnSelection(String pageName, String defaultTable, BusinessColumnSet businessColumnSet) {
 		super(pageName);
 		setTitle("Business Identifier Creation");
 		setDescription("Please select the columns to use in your Business Identifier");
 		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(TestEditorPlugin.INSTANCE.getImage("wizards/createBI.png"));
 	    if (image!=null) setImageDescriptor(image);	
 		this.defaultTable = defaultTable;
-		this.businessTable = businessTable;
+		this.businessColumnSet = businessColumnSet;
 	}
 
 	@Override
@@ -247,10 +248,10 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 		columnsIdentifier.removeAll();
 		if (tableName != null) {
 			//retrieve the Business Table Columns
-			int numCols = businessTable.getColumns().size();
+			int numCols = businessColumnSet.getColumns().size();
 			for (int i=0; i<numCols; i++){
 				TableItem ti = new TableItem(columns, 0);
-				BusinessColumn bColumn = businessTable.getColumns().get(i);
+				BusinessColumn bColumn = businessColumnSet.getColumns().get(i);
 				//associate table item with the object It represents
 				ti.setData(bColumn);
 				ti.setText(bColumn.getName());
@@ -258,8 +259,8 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 		}
 		
 		//Checking if a Business Identifier for this Business Table already exists
-		BusinessModel businessModel = businessTable.getModel();	
-		BusinessIdentifier bizIdentifier = businessModel.getIdentifier(businessTable);
+		BusinessModel businessModel = businessColumnSet.getModel();	
+		BusinessIdentifier bizIdentifier = businessModel.getIdentifier(businessColumnSet);
 		if (bizIdentifier != null){
 			EList<BusinessColumn> bizColumns = bizIdentifier.getColumns();
 			for (BusinessColumn col : bizColumns){

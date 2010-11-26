@@ -60,12 +60,6 @@ public class EditBusinessColumnsCommand extends AbstractSpagoBIModelCommand {
 		BusinessColumnSet businessColumnSet;
 		BusinessView businessView;
 		businessColumnSet = (BusinessColumnSet)parameter.getOwner();
-		/*
-		if (parameter.getOwner() instanceof BusinessTable){
-			businessTable = (BusinessTable)parameter.getOwner();
-		} else if (parameter.getOwner() instanceof BusinessTable){
-			businessView = (BusinessView)parameter.getOwner();
-		}*/
 
 		Collection<PhysicalColumn> selectedColumns = (Collection)parameter.getValue();
 		List<PhysicalColumn> columns;

@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.wizards;
 
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.test.TestEditorPlugin;
@@ -48,12 +49,12 @@ public class AddBusinessIdentifierWizardPageBusinessTableSelection extends
 	private List tableList;
 	private String tableSelected;
 	private AddBusinessIdentifierWizardPageColumnSelection pageTwoRef;
-	private BusinessTable businessTable;
+	private BusinessColumnSet businessColumnSet;
 	/**
 	 * @param pageName
 	 */
 	protected AddBusinessIdentifierWizardPageBusinessTableSelection(
-			String pageName, String defaultTable, BusinessTable businessTable) {
+			String pageName, String defaultTable, BusinessColumnSet businessColumnSet) {
 		super(pageName);
 		setTitle("Business Identifier Creation");
 		setDescription("This wizard drives you to create a new Business Identifier in your Business Model.\n"+
@@ -61,7 +62,7 @@ public class AddBusinessIdentifierWizardPageBusinessTableSelection extends
 		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(TestEditorPlugin.INSTANCE.getImage("wizards/createBI.png"));
 		if (image!=null) setImageDescriptor(image);	
 	    this.defaultTable = defaultTable;
-	    this.businessTable = businessTable;
+	    this.businessColumnSet = businessColumnSet;
 	}
 
 	@Override
@@ -124,7 +125,7 @@ public class AddBusinessIdentifierWizardPageBusinessTableSelection extends
 	
 	//populate the list with the Business Tables' names
 	private void populateTableList(){
-		BusinessModel businessModel = businessTable.getModel();
+		BusinessModel businessModel = businessColumnSet.getModel();
 		int numTables = businessModel.getTables().size();
 		String tabName;
 		for (int i = 0; i < numTables; i++){

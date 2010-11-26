@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.actions;
 
-import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.AddIdentifierCommand;
 import it.eng.spagobi.meta.model.business.wizards.AddBusinessIdentifierWizard;
@@ -37,7 +37,7 @@ import org.eclipse.ui.IWorkbenchPart;
 public class AddIdentifierAction extends AbstractSpagoBIModelAction {
 	
 	private String defaultTable;
-	private BusinessTable businessTable;
+	private BusinessColumnSet businessColumnSet;
 	public AddIdentifierAction(IWorkbenchPart workbenchPart, ISelection selection) {
 		super(AddIdentifierCommand.class, workbenchPart, selection);
 		
@@ -49,9 +49,9 @@ public class AddIdentifierAction extends AbstractSpagoBIModelAction {
 	@Override
 	public void run() {
 		try {	
-			businessTable = (BusinessTable)owner;
-			defaultTable = businessTable.getName();
-			AddBusinessIdentifierWizard wizard = new AddBusinessIdentifierWizard( editingDomain, (AbstractSpagoBIModelCommand)command, defaultTable, businessTable );
+			businessColumnSet = (BusinessColumnSet)owner;
+			defaultTable = businessColumnSet.getName();
+			AddBusinessIdentifierWizard wizard = new AddBusinessIdentifierWizard( editingDomain, (AbstractSpagoBIModelCommand)command, defaultTable, businessColumnSet );
 	    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 			dialog.create();
 	    	dialog.open();

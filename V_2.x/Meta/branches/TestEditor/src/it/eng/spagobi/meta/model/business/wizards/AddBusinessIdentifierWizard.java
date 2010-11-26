@@ -26,6 +26,7 @@ import java.util.Collection;
 
 
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
@@ -43,25 +44,25 @@ public class AddBusinessIdentifierWizard extends AbstractSpagoBIModelWizard {
 	private String defaultTable;
 	private AddBusinessIdentifierWizardPageBusinessTableSelection pageOne;
 	private AddBusinessIdentifierWizardPageColumnSelection pageTwo;
-	private BusinessTable businessTable;
+	private BusinessColumnSet businessColumnSet;
 
 	/**
 	 * @param editingDomain
 	 * @param command
 	 */
 	public AddBusinessIdentifierWizard(EditingDomain editingDomain,
-			AbstractSpagoBIModelCommand command, String defaultTable, BusinessTable businessTable) {
+			AbstractSpagoBIModelCommand command, String defaultTable, BusinessColumnSet businessColumnSet) {
 		super(editingDomain, command);
 		this.setWindowTitle("Create a new Business Identifier");
 		this.setHelpAvailable(false);		
 		this.defaultTable = defaultTable;
-		this.businessTable = businessTable;
+		this.businessColumnSet = businessColumnSet;
 	}
 	
 	public void addPages() {
-		pageOne = new AddBusinessIdentifierWizardPageBusinessTableSelection("Add Business Identifier page one", defaultTable, businessTable);
+		pageOne = new AddBusinessIdentifierWizardPageBusinessTableSelection("Add Business Identifier page one", defaultTable, businessColumnSet);
 		addPage(pageOne);
-		pageTwo = new AddBusinessIdentifierWizardPageColumnSelection("Add Business Identifier page two", defaultTable, businessTable);
+		pageTwo = new AddBusinessIdentifierWizardPageColumnSelection("Add Business Identifier page two", defaultTable, businessColumnSet);
 		addPage(pageTwo);	
 		pageOne.setPageTwoRef(pageTwo);
 	}
@@ -84,7 +85,7 @@ public class AddBusinessIdentifierWizard extends AbstractSpagoBIModelWizard {
 			BusinessColumn bc = ((BusinessColumn)columnsToImport[i].getData());
 			colList.add(bc);
 		}
-		return new CommandParameter(businessTable, null, colList, new ArrayList<Object>());
+		return new CommandParameter(businessColumnSet, null, colList, new ArrayList<Object>());
 
 	}
 

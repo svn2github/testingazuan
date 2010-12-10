@@ -72,10 +72,10 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 	    sourceColumns = new ArrayList<PhysicalColumn>();
 	    destinationColumns = new ArrayList<PhysicalColumn>();
 	    if (owner instanceof BusinessTable){
-		    originalPhysicalTable = ((BusinessTable)owner).getPhysicalTable();
+	    	originalPhysicalTable = ((BusinessTable)owner).getPhysicalTable();
 	    } else if (owner instanceof BusinessView){
-	    	//TODO: user must select what physical table use to join, in this will be used the first found
-	    	originalPhysicalTable = ((BusinessView)owner).getPhysicalTables().get(0);
+	    	//this will set later from the AddPhysicalTableSourceSelectionPage
+	    	originalPhysicalTable = null;
 	    }
 
 	}
@@ -96,7 +96,7 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 		createButtons(container, SWT.NONE);
 		createRelationshipGroup(container, SWT.NONE);
 		
-		populateBusinessTableGroup(owner);
+		populateBusinessTableGroup(owner,null);
 		checkPageComplete();
 	}
 	
@@ -162,11 +162,24 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 		joinRelationshipList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 	}
 	
-	public void populateBusinessTableGroup(BusinessColumnSet businessColumnSet){
+	public void populateBusinessTableGroup(BusinessColumnSet businessColumnSet, PhysicalTable filterPhysicalTable){
+		businessColumnsList.removeAll();
 		Collection<BusinessColumn> businessColumns =  businessColumnSet.getColumns();
-		for(BusinessColumn businessColumn:businessColumns){
-			businessColumnsList.add(businessColumn.getName());
+		if (filterPhysicalTable != null){
+			//get only the columns of the specified PhysicalTable
+			for(BusinessColumn businessColumn:businessColumns){
+				if (businessColumn.getPhysicalColumn().getTable() == filterPhysicalTable){
+					businessColumnsList.add(businessColumn.getName());					
+				}
+			}
 		}
+		else {
+			//get all columns
+			for(BusinessColumn businessColumn:businessColumns){
+				businessColumnsList.add(businessColumn.getName());
+			}
+		}
+
 	}
 	
 	public void populatePhysicalTableGroup(PhysicalTable physicalTable){
@@ -189,7 +202,7 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 		
 		if (relationshipDescriptor == null){
 			//create descriptor
-			relationshipDescriptor = new BusinessViewInnerJoinRelationshipDescriptor(originalPhysicalTable, physicalTable, sourceColumns, destinationColumns,1,owner.getName());
+			relationshipDescriptor = new BusinessViewInnerJoinRelationshipDescriptor(getOriginalPhysicalTable(), physicalTable, sourceColumns, destinationColumns,1,owner.getName());
 		} else {
 			//update descriptor
 			relationshipDescriptor.setSourceColumns(sourceColumns);
@@ -224,5 +237,21 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 	 */
 	public BusinessViewInnerJoinRelationshipDescriptor getRelationshipDescriptor() {
 		return relationshipDescriptor;
+	}
+
+
+	/**
+	 * @param originalPhysicalTable the originalPhysicalTable to set
+	 */
+	public void setOriginalPhysicalTable(PhysicalTable originalPhysicalTable) {
+		this.originalPhysicalTable = originalPhysicalTable;
+	}
+
+
+	/**
+	 * @return the originalPhysicalTable
+	 */
+	public PhysicalTable getOriginalPhysicalTable() {
+		return originalPhysicalTable;
 	}
 }

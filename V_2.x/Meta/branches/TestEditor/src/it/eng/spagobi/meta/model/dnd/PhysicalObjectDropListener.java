@@ -123,7 +123,7 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
            		if (eObject instanceof PhysicalColumn){
            			PhysicalColumn physicalColumn = (PhysicalColumn)eObject;
             		if (physicalColumn != null){
-            			BusinessTable businessTable = businessModel.getTable(physicalColumn.getTable());
+            			BusinessTable businessTable = businessModel.getBusinessTable(physicalColumn.getTable());
             			//if target table is the same of the added columns perform the add
             			if (businessTable.equals(businessTableTarget)){
                 			initializer.addColumn(physicalColumn, businessTable);

@@ -23,6 +23,7 @@ package it.eng.spagobi.meta.model.business.actions;
 
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.AddPhysicalTableToBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.wizards.AddPhysicalTableWizard;
@@ -39,6 +40,7 @@ import org.eclipse.ui.IWorkbenchPart;
 public class AddPhysicalTableToBusinessTableAction extends
 		AbstractSpagoBIModelAction {
 
+	boolean isBusinessView = false;
 	/**
 	 * @param commandClass
 	 * @param workbenchPart
@@ -55,7 +57,10 @@ public class AddPhysicalTableToBusinessTableAction extends
 	public void run() {
 		try {	
 			BusinessColumnSet businessColumnSet = (BusinessColumnSet)owner;
-			AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (AbstractSpagoBIModelCommand)command );
+			if (businessColumnSet instanceof BusinessView){
+				isBusinessView = true;		
+			}
+			AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (AbstractSpagoBIModelCommand)command, isBusinessView);
 	    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 			dialog.create();
 	    	dialog.open();

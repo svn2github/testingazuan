@@ -30,6 +30,7 @@ import it.eng.spagobi.meta.model.test.TestEditorPlugin;
 
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -49,17 +50,19 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	private List tableList;
 	private BusinessColumnSet owner;
 	private String tableSelected;
-	private AddBusinessViewInnerJoinPage pageTwoRef;
+	private AddBusinessViewInnerJoinPage pageThreeRef;
+	private boolean isBusinessView;
 	/**
 	 * @param pageName
 	 */
-	protected AddPhysicalTableSelectionPage(String pageName, BusinessColumnSet owner) {
+	protected AddPhysicalTableSelectionPage(String pageName, BusinessColumnSet owner, boolean isBusinessView) {
 		super(pageName);
 		setTitle("Add Physical Table");
 		setDescription("Please select the physical table to add to your Business Table.");
 		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(TestEditorPlugin.INSTANCE.getImage("wizards/createBC.png"));
 	    if (image!=null) setImageDescriptor(image);	
 	    this.owner = owner;
+	    this.isBusinessView = isBusinessView;
 	}
 
 	@Override
@@ -133,13 +136,20 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 		if(tableSelected != null){
 			PhysicalModel physicalModel = owner.getModel().getPhysicalModel();
 			PhysicalTable physicalTable = physicalModel.getTable(tableSelected);
-			pageTwoRef.populatePhysicalTableGroup(physicalTable);
+			pageThreeRef.populatePhysicalTableGroup(physicalTable);
 			setPageComplete(true);
 		}
 		else{			
 			setPageComplete(false);
 		}		
-	}	
+	}
+	
+	public IWizardPage getNextPage() {
+		//If is a BusinessView go to the page to select the physical table to join
+		if (isBusinessView) { return super.getNextPage(); }
+		//If is a BusinessTable go directly to the join relationship selection page
+		return getWizard().getPage("Select join relationship");
+    }
 	
 	/**
 	 * @param tableSelected the tableSelected to set
@@ -158,14 +168,14 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	/**
 	 * @param pageTwoRef the pageTwoRef to set
 	 */
-	public void setPageTwoRef(AddBusinessViewInnerJoinPage pageTwoRef) {
-		this.pageTwoRef = pageTwoRef;
+	public void setPageThreeRef(AddBusinessViewInnerJoinPage pageThreeRef) {
+		this.pageThreeRef = pageThreeRef;
 	}
 
 	/**
 	 * @return the pageTwoRef
 	 */
-	public AddBusinessViewInnerJoinPage getPageTwoRef() {
-		return pageTwoRef;
+	public AddBusinessViewInnerJoinPage getPageThreeRef() {
+		return pageThreeRef;
 	}	
 }

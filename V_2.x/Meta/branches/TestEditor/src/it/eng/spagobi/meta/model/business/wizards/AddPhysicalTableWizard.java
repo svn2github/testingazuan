@@ -38,39 +38,45 @@ import org.eclipse.emf.edit.domain.EditingDomain;
 public class AddPhysicalTableWizard extends AbstractSpagoBIModelWizard {
 
 	private AddPhysicalTableSelectionPage pageOne;
-	private AddBusinessViewInnerJoinPage pageTwo;
+	private AddPhysicalTableSourceSelectionPage pageTwo;
+	private AddBusinessViewInnerJoinPage pageThree;
 	private BusinessColumnSet owner;
+	private boolean isBusinessView;
 	/**
 	 * @param editingDomain
 	 * @param command
 	 */
 	public AddPhysicalTableWizard(BusinessColumnSet owner, EditingDomain editingDomain,
-			AbstractSpagoBIModelCommand command) {
+			AbstractSpagoBIModelCommand command, boolean isBusinessView) {
 		super(editingDomain, command);
 		this.setWindowTitle("Add a Physical Table");
 		this.setHelpAvailable(false);	
 		this.owner = owner;
+		this.isBusinessView = isBusinessView;
 	}
 
 	@Override
 	public void addPages() {
-		pageOne = new AddPhysicalTableSelectionPage("Add Physical Table to Business Table",owner);
+		pageOne = new AddPhysicalTableSelectionPage("Add Physical Table to Business Table", owner, isBusinessView);
 		addPage(pageOne);
-		pageTwo = new AddBusinessViewInnerJoinPage("Select join relationship",owner);
+		pageTwo = new AddPhysicalTableSourceSelectionPage("Select Source Physical Table to Join",owner);
 		addPage(pageTwo);
-		pageOne.setPageTwoRef(pageTwo);
+		pageThree = new AddBusinessViewInnerJoinPage("Select join relationship",owner);
+		addPage(pageThree);
+		pageOne.setPageThreeRef(pageThree);
+		pageTwo.setPageThreeRef(pageThree);
 	}	
 	
 	@Override
 	public CommandParameter getCommandInputParameter() {
 		//String physicalTableName = pageOne.getTableSelected();
-		BusinessViewInnerJoinRelationshipDescriptor joinRelationshipDescriptor = pageTwo.getRelationshipDescriptor();
+		BusinessViewInnerJoinRelationshipDescriptor joinRelationshipDescriptor = pageThree.getRelationshipDescriptor();
 		return new CommandParameter(owner, null, joinRelationshipDescriptor, new ArrayList<Object>());
 	}
 
 	@Override
 	public boolean isWizardComplete() {
-		if (pageTwo.isPageComplete()){
+		if (pageThree.isPageComplete()){
 			return true;			
 		}
 		return false;	

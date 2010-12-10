@@ -480,7 +480,7 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	
 	
 	@Override
-	public BusinessTable getTable(String name) {
+	public BusinessTable getBusinessTable(String name) {
 		for(int i = 0; i < getTables().size(); i++) {
 			if( (getTables().get(i) instanceof BusinessTable) 
 					&& name.equals( getTables().get(i).getName() ) ) {
@@ -491,9 +491,9 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	}
 
 	@Override
-	public BusinessTable getTable(PhysicalTable physicalTable) {
+	public BusinessTable getBusinessTable(PhysicalTable physicalTable) {
 		
-		BusinessTable businessTable = null;;
+		BusinessTable businessTable = null;
 		
 		try {
 			
@@ -516,6 +516,15 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 		return null;
 	}
 	
+	@Override
+	public BusinessColumnSet getTable(String name){
+		for(int i = 0; i < getTables().size(); i++) {
+			if( name.equals( getTables().get(i).getName() ) ) {
+				return getTables().get(i);
+			}
+		}
+		return null;		
+	}
 
 	@Override
 	public EList<ModelPropertyType> getPropertyTypes() {

@@ -23,16 +23,10 @@ package it.eng.spagobi.meta.model.business.commands;
 
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.BusinessRelationshipDescriptor;
-import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
-import it.eng.spagobi.meta.model.business.BusinessTable;
-import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -55,7 +49,7 @@ public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelCommand 
 	@Override
 	public void execute() {
 		BusinessModelInitializer initializer;
-		BusinessTable businessTable = (BusinessTable)parameter.getOwner();
+		BusinessColumnSet businessTable = (BusinessColumnSet)parameter.getOwner();
 		
 		BusinessRelationshipDescriptor descriptor = (BusinessRelationshipDescriptor)parameter.getValue();
 		
@@ -71,7 +65,7 @@ public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelCommand 
 	
 	@Override
 	public void undo() {
-		BusinessTable businessTable = (BusinessTable)parameter.getOwner();
+		BusinessColumnSet businessTable = (BusinessColumnSet)parameter.getOwner();
 		BusinessModel businessModel = businessTable.getModel();
 		businessModel.getRelationships().remove(addedBusinessRelationship);
 		
@@ -79,7 +73,7 @@ public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelCommand 
 
 	@Override
 	public void redo() {
-		BusinessTable businessTable = (BusinessTable)parameter.getOwner();
+		BusinessColumnSet businessTable = (BusinessColumnSet)parameter.getOwner();
 		BusinessModel businessModel = businessTable.getModel();
 		businessModel.getRelationships().add(addedBusinessRelationship);			
 	}

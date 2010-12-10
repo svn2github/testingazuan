@@ -4,17 +4,18 @@
 package it.eng.spagobi.meta.initializer;
 
 import it.eng.spagobi.meta.model.business.BusinessColumn;
-import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+
 
 public class BusinessRelationshipDescriptor {
 	
 	private String relationshipName;
-	private BusinessTable sourceTable, destinationTable;
+	private BusinessColumnSet sourceTable, destinationTable;
 	private java.util.List<BusinessColumn> sourceColumns, destinationColumns;
 	private int relationCardinality;
 	
 	
-	public BusinessRelationshipDescriptor(BusinessTable source, BusinessTable destination, java.util.List<BusinessColumn> sourceCol, java.util.List<BusinessColumn> destinationCol, int cardinality, String relationshipName){
+	public BusinessRelationshipDescriptor(BusinessColumnSet source, BusinessColumnSet destination, java.util.List<BusinessColumn> sourceCol, java.util.List<BusinessColumn> destinationCol, int cardinality, String relationshipName){
 		sourceTable = source;
 		destinationTable = destination;
 		sourceColumns = sourceCol;
@@ -26,28 +27,28 @@ public class BusinessRelationshipDescriptor {
 	/**
 	 * @param sourceTable the sourceTable to set
 	 */
-	public void setSourceTable(BusinessTable sourceTable) {
+	public void setSourceTable(BusinessColumnSet sourceTable) {
 		this.sourceTable = sourceTable;
 	}
 
 	/**
 	 * @return the sourceTable
 	 */
-	public BusinessTable getSourceTable() {
+	public BusinessColumnSet getSourceTable() {
 		return sourceTable;
 	}
 
 	/**
 	 * @param destinationTable the destinationTable to set
 	 */
-	public void setDestinationTable(BusinessTable destinationTable) {
+	public void setDestinationTable(BusinessColumnSet destinationTable) {
 		this.destinationTable = destinationTable;
 	}
 
 	/**
 	 * @return the destinationTable
 	 */
-	public BusinessTable getDestinationTable() {
+	public BusinessColumnSet getDestinationTable() {
 		return destinationTable;
 	}
 

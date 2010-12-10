@@ -196,7 +196,7 @@ public class BusinessModelInitializer {
 			businessIdentifier.setModel(businessModel);
 			//Note: use a filter on physical table to check?
 			physicalTable = physicalPrimaryKey.getTable();
-			businessTable = businessModel.getTable( physicalTable );
+			businessTable = businessModel.getBusinessTable( physicalTable );
 			
 			//check if businessTable is present in Business Model
 			if (businessTable != null){
@@ -313,7 +313,7 @@ public class BusinessModelInitializer {
 			businessRelationship.setPhysicalForeignKey(physicalForeignKey);
 			
 			physicalTable = physicalForeignKey.getSourceTable();
-			businessTable = businessModel.getTable( physicalTable );
+			businessTable = businessModel.getBusinessTable( physicalTable );
 			businessRelationship.setSourceTable(businessTable);
 			for(int j = 0; j < physicalForeignKey.getSourceColumns().size(); j++) {
 				businessColumn = businessTable.getColumn(physicalForeignKey.getSourceColumns().get(j));
@@ -321,7 +321,7 @@ public class BusinessModelInitializer {
 			}
 			
 			physicalTable = physicalForeignKey.getDestinationTable();
-			businessTable = businessModel.getTable( physicalTable );
+			businessTable = businessModel.getBusinessTable( physicalTable );
 			businessRelationship.setDestinationTable(businessTable);
 			for(int j = 0; j < physicalForeignKey.getDestinationColumns().size(); j++) {
 				businessColumn = businessTable.getColumn(physicalForeignKey.getDestinationColumns().get(j));
@@ -339,7 +339,6 @@ public class BusinessModelInitializer {
 	}
 	
 	//add Relationship without PhysicalForeignKey specified
-	//public void addRelationship(BusinessTable sourceTable, BusinessTable destinationTable, List<BusinessColumn> sourceColumns, List<BusinessColumn> destinationColumns, String relationshipName){
 	public BusinessRelationship addRelationship(BusinessRelationshipDescriptor descriptor){
 			
 		BusinessRelationship businessRelationship;	

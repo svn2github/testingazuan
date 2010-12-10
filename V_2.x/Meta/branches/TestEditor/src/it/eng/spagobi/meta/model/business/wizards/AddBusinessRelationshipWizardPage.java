@@ -6,7 +6,6 @@ import it.eng.spagobi.meta.initializer.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.test.TestEditorPlugin;
 
 import org.eclipse.emf.common.util.EList;
@@ -25,9 +24,6 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.custom.StackLayout;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.widgets.Text;
 
 
@@ -50,10 +46,10 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	private static int MANY_TO_MANY = 4;
 	
 	private BusinessModel model;
-	private BusinessTable sourceTable;
-	private BusinessTable destinationTable;
+	private BusinessColumnSet sourceTable;
+	private BusinessColumnSet destinationTable;
 	
-	protected AddBusinessRelationshipWizardPage(String pageName, BusinessModel model, BusinessTable sourceTable, BusinessTable destinationTable) {
+	protected AddBusinessRelationshipWizardPage(String pageName, BusinessModel model, BusinessColumnSet sourceTable, BusinessColumnSet destinationTable) {
 		super(pageName);
 		setPageComplete(false);
 		setTitle("Business Relationship Creation");
@@ -91,7 +87,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
  		checkPageComplete();
 	}
 	
-	private boolean selectTable(Combo combo, BusinessTable table, boolean disableOnSelectCombo) {
+	private boolean selectTable(Combo combo, BusinessColumnSet table, boolean disableOnSelectCombo) {
 		if (table != null){
  			String[] items = combo.getItems();
  			for (int i=0; i < items.length; i++){
@@ -150,11 +146,11 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 		Label lblCardinality = new Label(cardinalityGroup, SWT.NONE);
 		lblCardinality.setText("Cardinality");
 		
-		Composite composite_6 = new Composite(cardinalityGroup, SWT.NONE);
-		composite_6.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1));
-		composite_6.setLayout(new FillLayout(SWT.HORIZONTAL));
+		Composite compCardinality = new Composite(cardinalityGroup, SWT.NONE);
+		compCardinality.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1));
+		compCardinality.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		Button btnTo = new Button(composite_6, SWT.RADIO);
+		Button btnTo = new Button(compCardinality, SWT.RADIO);
 		btnTo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -163,7 +159,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 		});
 		btnTo.setText("1 to 1");
 		
-		Button btnToN = new Button(composite_6, SWT.RADIO);
+		Button btnToN = new Button(compCardinality, SWT.RADIO);
 		btnToN.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -173,7 +169,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 		btnToN.setSelection(true);
 		btnToN.setText("1 to N");
 		
-		Button btnNTo = new Button(composite_6, SWT.RADIO);
+		Button btnNTo = new Button(compCardinality, SWT.RADIO);
 		btnNTo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -182,7 +178,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 		});
 		btnNTo.setText("N to 1");
 		
-		Button btnNToN = new Button(composite_6, SWT.RADIO);
+		Button btnNToN = new Button(compCardinality, SWT.RADIO);
 		btnNToN.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -201,10 +197,10 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
  		correlationSummaryGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
  		correlationSummaryGroup.setText("Relationship");
  		
- 		Composite composite_5 = new Composite(correlationSummaryGroup, SWT.NONE);
- 		composite_5.setLayout(new FillLayout(SWT.HORIZONTAL));
+ 		Composite compCorrelationSummary = new Composite(correlationSummaryGroup, SWT.NONE);
+ 		compCorrelationSummary.setLayout(new FillLayout(SWT.HORIZONTAL));
  		
- 		columnCorrelationList = new List(composite_5, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+ 		columnCorrelationList = new List(compCorrelationSummary, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 	}
 	
 	private void initSourceGroup(Composite parent, int style) {
@@ -228,13 +224,13 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	}
 		
 	private void initSourceColumnList(Composite parent, int style) {
-		Composite composite_1 = new Composite(parent, style);
- 		GridData gd_composite_1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
- 		gd_composite_1.heightHint = 100;
- 		composite_1.setLayoutData(gd_composite_1);
- 		composite_1.setLayout(new FillLayout(SWT.HORIZONTAL));
+		Composite compSourceColumnList = new Composite(parent, style);
+ 		GridData gdCompSourceColumnList = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+ 		gdCompSourceColumnList.heightHint = 100;
+ 		compSourceColumnList.setLayoutData(gdCompSourceColumnList);
+ 		compSourceColumnList.setLayout(new FillLayout(SWT.HORIZONTAL));
  		
- 		sourceColumnList = new List(composite_1, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+ 		sourceColumnList = new List(compSourceColumnList, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
  		sourceColumnList.addSelectionListener(new SelectionAdapter() {
  			@Override
  			public void widgetSelected(SelectionEvent e) {
@@ -247,13 +243,13 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	}
 	
 	private void initDestinationColumnList(Composite parent, int style) {
-		Composite composite_2 = new Composite(parent, style);
- 		GridData gd_composite_2 = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
- 		gd_composite_2.heightHint = 100;
- 		composite_2.setLayoutData(gd_composite_2);
- 		composite_2.setLayout(new FillLayout(SWT.HORIZONTAL));
+		Composite compDestinationColumnList = new Composite(parent, style);
+ 		GridData gdCompDestinationColumnList = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
+ 		gdCompDestinationColumnList.heightHint = 100;
+ 		compDestinationColumnList.setLayoutData(gdCompDestinationColumnList);
+ 		compDestinationColumnList.setLayout(new FillLayout(SWT.HORIZONTAL));
  		
- 		destinationColumnList = new List(composite_2, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+ 		destinationColumnList = new List(compDestinationColumnList, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
  		destinationColumnList.addSelectionListener(new SelectionAdapter() {
  			@Override
  			public void widgetSelected(SelectionEvent e) {
@@ -293,11 +289,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
  		});
 	}
 	
-	
-	
-	
-	
-	
+
 	private void populateSourceTableCombo(){
 		EList<BusinessColumnSet> businessTables = model.getTables();
 		for(BusinessColumnSet table : businessTables){
@@ -313,7 +305,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 		}
 	}
 	
-	private void populateSourceColumnList(BusinessTable businessTable){
+	private void populateSourceColumnList(BusinessColumnSet businessTable){
 		sourceColumnList.removeAll();
 		EList<BusinessColumn> businessColumns = businessTable.getColumns();
 		for (BusinessColumn column : businessColumns ){
@@ -321,7 +313,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 		}
 	}
 	
-	private void populateDestinationColumnList(BusinessTable businessTable){
+	private void populateDestinationColumnList(BusinessColumnSet businessTable){
 		destinationColumnList.removeAll();
 		EList<BusinessColumn> businessColumns = businessTable.getColumns();
 		for (BusinessColumn column : businessColumns ){
@@ -339,12 +331,22 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 		}		
 	}
 	
-	private BusinessTable getSourceTable(){
-		return model.getTable(sourceTableCombo.getText());
+	private BusinessColumnSet getSourceTable(){
+		if (sourceTable != null){
+			return sourceTable;
+		}
+		else{
+			return model.getTable(sourceTableCombo.getText());
+		}
 	}
 	
-	private BusinessTable getDestinationTable(){
-		return model.getTable(destinationTableCombo.getText());
+	private BusinessColumnSet getDestinationTable(){
+		if (destinationTable != null){
+			return destinationTable;
+		}
+		else{
+			return model.getTable(destinationTableCombo.getText());
+		}
 	}
 	
 	private BusinessColumn getSourceColumn() {

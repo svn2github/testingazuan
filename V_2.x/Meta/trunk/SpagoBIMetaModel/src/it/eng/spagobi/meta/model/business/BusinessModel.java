@@ -195,11 +195,17 @@ public interface BusinessModel extends ModelObject {
 	/**
 	 * @return the business table with the given name
 	 */
-	BusinessTable getTable(String name);
+	BusinessTable getBusinessTable(String name);
 	
 	/**
 	 * @return the business table associated to the given physical table
 	 */
-	BusinessTable getTable(PhysicalTable physicalTable);
+	BusinessTable getBusinessTable(PhysicalTable physicalTable);
+	
+	/**
+	 * Precondition: Note that name must be unique!
+	 * @return the the business column set(table or view) set with the given name.
+	 */
+	BusinessColumnSet getTable(String name);
 
 } // BusinessModel

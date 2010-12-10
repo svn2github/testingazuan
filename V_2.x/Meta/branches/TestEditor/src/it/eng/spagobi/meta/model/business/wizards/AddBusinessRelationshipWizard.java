@@ -1,7 +1,7 @@
 package it.eng.spagobi.meta.model.business.wizards;
 
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
 
 import java.util.ArrayList;
@@ -13,11 +13,11 @@ import org.eclipse.jface.wizard.IWizardPage;
 public class AddBusinessRelationshipWizard extends AbstractSpagoBIModelWizard {
 
 	BusinessModel model;
-	BusinessTable sourceTable;
-	BusinessTable destinationTable;
+	BusinessColumnSet sourceTable;
+	BusinessColumnSet destinationTable;
 	
 	
-	public AddBusinessRelationshipWizard(BusinessModel model, BusinessTable sourceTable, BusinessTable destinationTable, EditingDomain editingDomain, AbstractSpagoBIModelCommand command){
+	public AddBusinessRelationshipWizard(BusinessModel model, BusinessColumnSet sourceTable, BusinessColumnSet destinationTable, EditingDomain editingDomain, AbstractSpagoBIModelCommand command){
 		super(editingDomain, command);
 		this.setWindowTitle("Add business relationship");
 		this.setHelpAvailable(false);	

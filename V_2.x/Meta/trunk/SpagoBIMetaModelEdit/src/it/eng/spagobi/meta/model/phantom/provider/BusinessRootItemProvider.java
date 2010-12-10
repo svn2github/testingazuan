@@ -12,6 +12,7 @@ import java.util.Collection;
 
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -41,8 +42,6 @@ public class BusinessRootItemProvider extends FolderItemProvider {
 	   
 	    return super.getNewChildDescriptors(busienssModel, editingDomain, sibling);
 	}
-	
-	
 	
 	public Command createCustomCommand(Object object, EditingDomain domain, Class<? extends Command> commandClass, CommandParameter commandParameter) {
 		 Command result;

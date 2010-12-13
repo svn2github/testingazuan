@@ -54,7 +54,6 @@ public class AddPhysicalTableToBusinessTableCommand extends
 	
 	@Override
 	public void execute() {
-		//do something
 		BusinessModelInitializer initializer = new BusinessModelInitializer();
 		joinRelationshipDescriptor = (BusinessViewInnerJoinRelationshipDescriptor)parameter.getValue();
 		businessColumnSet = (BusinessColumnSet)parameter.getOwner();

@@ -14,6 +14,7 @@ import it.eng.spagobi.meta.model.business.commands.AddBusinessRelationshipComman
 import it.eng.spagobi.meta.model.business.commands.AddIdentifierCommand;
 import it.eng.spagobi.meta.model.business.commands.AddPhysicalTableToBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
+import it.eng.spagobi.meta.model.business.commands.RemovePhysicalTableToBusinessViewCommand;
 
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
@@ -240,6 +241,9 @@ public class BusinessViewItemProvider
 		    } else if(commandClass == AddPhysicalTableToBusinessTableCommand.class) {
 		    	System.err.println(">>> " + commandClass.getName() + " <<<");
 		    	result = new AddPhysicalTableToBusinessTableCommand(domain, commandParameter);
+		    } else if(commandClass == RemovePhysicalTableToBusinessViewCommand.class) {
+		    	System.err.println(">>> " + commandClass.getName() + " <<<");
+		    	result = new RemovePhysicalTableToBusinessViewCommand(domain, commandParameter);
 		    }
 		 
 		 return result;

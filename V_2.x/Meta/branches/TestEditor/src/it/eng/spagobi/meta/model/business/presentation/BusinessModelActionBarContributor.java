@@ -17,6 +17,7 @@ import it.eng.spagobi.meta.model.business.actions.AddOutcomeBusinessRelationship
 import it.eng.spagobi.meta.model.business.actions.AddPhysicalTableToBusinessTableAction;
 import it.eng.spagobi.meta.model.business.actions.AddToIdentifierAction;
 import it.eng.spagobi.meta.model.business.actions.EditBusinessColumnsAction;
+import it.eng.spagobi.meta.model.business.actions.RemovePhysicalTableToBusinessViewAction;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 import it.eng.spagobi.meta.model.test.TestEditorPlugin;
 
@@ -333,6 +334,7 @@ public class BusinessModelActionBarContributor
 		    	actions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
 		    	actions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
 		    	actions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));
+		    	actions.add(new RemovePhysicalTableToBusinessViewAction(activeEditorPart, selection));
 		    } else if(targetObject instanceof BusinessColumn){
 		    	actions.add(new AddToIdentifierAction(activeEditorPart, selection));
 		    } else if(targetObject instanceof BusinessRootItemProvider) {

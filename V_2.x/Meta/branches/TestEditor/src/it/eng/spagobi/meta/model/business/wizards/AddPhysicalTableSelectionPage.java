@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.wizards;
 
+import java.util.ArrayList;
+
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
@@ -123,12 +125,25 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	
 	//populate the list with the Physical Tables' names
 	private void populateTableList(){
-		PhysicalModel pm = owner.getModel().getPhysicalModel();
-		int numTables = pm.getTables().size();
+		PhysicalModel physicalModel = owner.getModel().getPhysicalModel();
+		
+		//get already present Physical Table to exclude
+		java.util.List<PhysicalTable> excludedPhysicalTables = new ArrayList<PhysicalTable>();
+		if (owner instanceof BusinessTable){
+			//get the only Physical Table of Business Table
+			excludedPhysicalTables.add(((BusinessTable)owner).getPhysicalTable());
+		} else if (owner instanceof BusinessView){
+			//get the Physical Tables of the Business View
+			excludedPhysicalTables.addAll(((BusinessView)owner).getPhysicalTables());
+		}
+			
+		int numTables = physicalModel.getTables().size();
 		String tabName;
 		for (int i = 0; i < numTables; i++){
-			tabName = pm.getTables().get(i).getName();
-			tableList.add(tabName);		
+			if (! excludedPhysicalTables.contains(physicalModel.getTables().get(i)) ){
+				tabName = physicalModel.getTables().get(i).getName();
+				tableList.add(tabName);		
+			}
 		}
 	}
 	//check if the right conditions to go forward occurred

@@ -94,7 +94,7 @@ AbstractSpagoBIModelCommand {
 					innerJoinRelationship.getDestinationColumns(),
 					1,
 					innerJoinRelationship.getName());
-			initializer.upgradeBusinessTableToBusinessView(businessTable, innerJoinRelationshipDescriptor);
+			businessView = initializer.upgradeBusinessTableToBusinessView(businessTable, innerJoinRelationshipDescriptor);
 		}
 	}
 	

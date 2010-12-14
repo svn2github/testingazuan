@@ -21,9 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.commands;
 
+import java.util.Arrays;
+
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
+import it.eng.spagobi.meta.initializer.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
@@ -41,6 +47,9 @@ AbstractSpagoBIModelCommand {
 
 	BusinessView businessView;
 	PhysicalTable physicalTable;
+	BusinessViewInnerJoinRelationship innerJoinRelationship;
+	BusinessModel businessModel;
+	BusinessTable businessTable ;
 	
 	public RemovePhysicalTableToBusinessViewCommand(EditingDomain domain, CommandParameter parameter) {
 		super("Remove Physical Table", "Remove Physical Table ", domain, parameter);
@@ -55,8 +64,10 @@ AbstractSpagoBIModelCommand {
 		BusinessModelInitializer initializer = new BusinessModelInitializer();
 		businessView = (BusinessView)parameter.getOwner();
 		physicalTable = (PhysicalTable)parameter.getValue();
+		businessModel = businessView.getModel();
+		innerJoinRelationship = initializer.removePhysicalTableToBusinessView(businessView, physicalTable);
 		
-		if (initializer.removePhysicalTableToBusinessView(businessView, physicalTable) != null){
+		if (innerJoinRelationship != null){
 			System.err.println("COMMAND [RemovePhysicalTableToBusinessViewCommand] SUCCESFULLY EXECUTED: ");
 			
 			this.executed = true;
@@ -69,12 +80,34 @@ AbstractSpagoBIModelCommand {
 	
 	@Override
 	public void undo() {
-		
+		//check if businessView still exists
+		if (businessModel.getTables().contains(businessView)){
+			businessView.getJoinRelationships().add(innerJoinRelationship);
+		} else {
+		//undo the downgrade
+			businessTable = (BusinessTable)businessModel.getTable(businessView.getName());
+			BusinessModelInitializer initializer = new BusinessModelInitializer();
+			BusinessViewInnerJoinRelationshipDescriptor innerJoinRelationshipDescriptor = new BusinessViewInnerJoinRelationshipDescriptor(
+					innerJoinRelationship.getSourceTable(),
+					innerJoinRelationship.getDestinationTable(),
+					innerJoinRelationship.getSourceColumns(),
+					innerJoinRelationship.getDestinationColumns(),
+					1,
+					innerJoinRelationship.getName());
+			initializer.upgradeBusinessTableToBusinessView(businessTable, innerJoinRelationshipDescriptor);
+		}
 	}
 	
 	@Override
 	public void redo() {
+		BusinessModelInitializer initializer = new BusinessModelInitializer();
 		
+		//check if redo the downgrade
+		if (businessTable != null ){
+			initializer.downgradeBusinessViewToBusinessTable(businessView);
+		} else {
+			initializer.removePhysicalTableToBusinessView(businessView, physicalTable);
+		}
 	}
 	
 	@Override

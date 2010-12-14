@@ -415,7 +415,9 @@ public class BusinessModelInitializer {
 
 			//check Identifier to inherit
 			businessIdentifier = businessTable.getIdentifier();
-			businessIdentifier.setTable(businessView);
+			if (businessIdentifier != null){
+				businessIdentifier.setTable(businessView);
+			}
 			
 			//add BusinessView to BusinessModel
 			businessModel.getTables().add(businessView);
@@ -477,7 +479,9 @@ public class BusinessModelInitializer {
 
 			//check Identifier to inherit
 			businessIdentifier = businessView.getIdentifier();
-			businessIdentifier.setTable(businessTable);
+			if (businessIdentifier != null) {
+				businessIdentifier.setTable(businessTable);
+			}
 			
 			//add BusinessTable to BusinessView
 			businessModel.getTables().add(businessTable);
@@ -551,8 +555,9 @@ public class BusinessModelInitializer {
 	}	
 	
 	
-	public BusinessView removePhysicalTableToBusinessView(BusinessView businessView, PhysicalTable physicalTable){
+	public BusinessViewInnerJoinRelationship removePhysicalTableToBusinessView(BusinessView businessView, PhysicalTable physicalTable){
 		BusinessModel businessModel = businessView.getModel();
+		BusinessViewInnerJoinRelationship innerJoinRelationship = null;
 
 		try {
 			if (isSourceTable(businessView,physicalTable)){
@@ -565,6 +570,7 @@ public class BusinessModelInitializer {
 				EList<BusinessViewInnerJoinRelationship> joinRelationships = businessView.getJoinRelationships();
 				for(BusinessViewInnerJoinRelationship joinRelationship : joinRelationships){
 					if (joinRelationship.getDestinationTable() == physicalTable){
+						innerJoinRelationship = joinRelationship;
 						if (businessView.getJoinRelationships().size() == 1){
 							//downgrade to BusinessTable
 							downgradeBusinessViewToBusinessTable(businessView);
@@ -591,7 +597,7 @@ public class BusinessModelInitializer {
 		catch(Throwable t) {
 			throw new RuntimeException("Impossible to remove physical table to business view", t);
 		}
-		return businessView;	
+		return innerJoinRelationship;	
 	}
 	
 	//check if the PhysicalTable is used as a SourceTable in the inner join relationship for BusinessView

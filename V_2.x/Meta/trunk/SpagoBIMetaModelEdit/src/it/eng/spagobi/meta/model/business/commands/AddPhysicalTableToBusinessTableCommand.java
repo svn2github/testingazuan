@@ -74,32 +74,39 @@ public class AddPhysicalTableToBusinessTableCommand extends
 	}
 	@Override
 	public void undo() {
+		BusinessModelInitializer initializer = new BusinessModelInitializer();
 		//undo the upgrade of a BusinessTable to BusinessView
 		if (businessTable != null){
+			/*
 			BusinessModel businessModel = addedBusinessView.getModel();
 			//re-add the columns to the business table
 			businessTable.getColumns().addAll(addedBusinessView.getColumns());
 			businessModel.getTables().remove(addedBusinessView);
-			businessModel.getTables().add(businessTable);		
+			businessModel.getTables().add(businessTable);	
+			*/	
+			businessTable = initializer.downgradeBusinessViewToBusinessTable(addedBusinessView);
 		} 
 		//undo the update of the BusinessView
 		else if (businessView != null){
-			BusinessModelInitializer initializer = new BusinessModelInitializer();
 			businessView = initializer.removePhysicalTableToBusinessView(businessView, joinRelationshipDescriptor);
 		}
 	}
 	
 	@Override
 	public void redo() {
+		BusinessModelInitializer initializer = new BusinessModelInitializer();
 		//redo the upgrade of a BusinessTable to BusinessView
 		if (businessTable != null){
+			/*
 			BusinessModel businessModel = businessTable.getModel();
 			//add the columns to BusinessView
 			addedBusinessView.getColumns().addAll(businessTable.getColumns());
 			businessModel.getTables().add(addedBusinessView);
 			businessModel.getTables().remove(businessTable);
+			*/
+			initializer.upgradeBusinessTableToBusinessView(businessTable, joinRelationshipDescriptor);
+			
 		} else if (businessView != null){
-			BusinessModelInitializer initializer = new BusinessModelInitializer();
 			initializer.addPhysicalTableToBusinessView(businessView, joinRelationshipDescriptor);
 		}
 	}

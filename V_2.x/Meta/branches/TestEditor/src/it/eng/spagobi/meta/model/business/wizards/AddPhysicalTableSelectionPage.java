@@ -54,10 +54,11 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	private String tableSelected;
 	private AddBusinessViewInnerJoinPage pageThreeRef;
 	private boolean isBusinessView;
+	private String selectedPhysicalTableName;
 	/**
 	 * @param pageName
 	 */
-	protected AddPhysicalTableSelectionPage(String pageName, BusinessColumnSet owner, boolean isBusinessView) {
+	protected AddPhysicalTableSelectionPage(String pageName, BusinessColumnSet owner, boolean isBusinessView, String selectedPhysicalTableName) {
 		super(pageName);
 		setTitle("Add Physical Table");
 		setDescription("Please select the physical table to add to your Business Table.");
@@ -65,6 +66,7 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	    if (image!=null) setImageDescriptor(image);	
 	    this.owner = owner;
 	    this.isBusinessView = isBusinessView;
+	    this.selectedPhysicalTableName = selectedPhysicalTableName;
 	}
 
 	@Override
@@ -83,6 +85,17 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
  		
  		populateTableList();
  		addListener();
+ 		//check if the physical table to add is predefined
+ 		if (selectedPhysicalTableName != null){
+ 			String[] items = tableList.getItems();
+ 			for (int i=0; i<items.length; i++){
+ 				if (items[i].equals(selectedPhysicalTableName)){
+ 					tableList.select(i);
+ 					break;
+ 				}
+ 			}
+ 			tableSelected = selectedPhysicalTableName;
+ 		}
  		checkPageComplete();
 
 	}
@@ -149,10 +162,17 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	//check if the right conditions to go forward occurred
 	public void checkPageComplete(){
 		if(tableSelected != null){
-			PhysicalModel physicalModel = owner.getModel().getPhysicalModel();
-			PhysicalTable physicalTable = physicalModel.getTable(tableSelected);
-			pageThreeRef.populatePhysicalTableGroup(physicalTable);
 			setPageComplete(true);
+			//disable selection if PhysicalTable Name is predefined
+			if (selectedPhysicalTableName != null){
+				tableList.setEnabled(false);
+			}
+			else {
+				//do this populate only when table is select from the UI
+				PhysicalModel physicalModel = owner.getModel().getPhysicalModel();
+				PhysicalTable physicalTable = physicalModel.getTable(tableSelected);
+				pageThreeRef.populatePhysicalTableGroup(physicalTable);
+			}
 		}
 		else{			
 			setPageComplete(false);

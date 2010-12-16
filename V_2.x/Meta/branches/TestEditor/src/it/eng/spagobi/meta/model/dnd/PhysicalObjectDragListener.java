@@ -1,17 +1,13 @@
 /*
- * DragSourceListener for the TreeViewer inside the DBStructureView
+ * DragSourceListener for the PhysicalModelEditor
  */
 package it.eng.spagobi.meta.model.dnd;
-
-import java.util.List;
 
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;

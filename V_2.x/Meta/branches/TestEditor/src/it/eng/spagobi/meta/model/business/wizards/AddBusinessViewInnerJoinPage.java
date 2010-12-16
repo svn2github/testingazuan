@@ -30,6 +30,7 @@ import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.model.test.TestEditorPlugin;
 
@@ -58,11 +59,12 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 	private PhysicalTable originalPhysicalTable,physicalTable;
 	private BusinessViewInnerJoinRelationshipDescriptor relationshipDescriptor;
 	private java.util.List<PhysicalColumn> sourceColumns, destinationColumns;
+	private String selectedPhysicalTableName;
 	
 	/**
 	 * @param pageName
 	 */
-	protected AddBusinessViewInnerJoinPage(String pageName, BusinessColumnSet owner) {
+	protected AddBusinessViewInnerJoinPage(String pageName, BusinessColumnSet owner, String selectedPhysicalTableName) {
 		super(pageName);
 		setTitle("Select join relationship");
 		setDescription("Please select the columns to use in the join relationship.");
@@ -77,7 +79,7 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 	    	//this will set later from the AddPhysicalTableSourceSelectionPage
 	    	originalPhysicalTable = null;
 	    }
-
+	    this.selectedPhysicalTableName = selectedPhysicalTableName;
 	}
 
 
@@ -96,6 +98,11 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 		createButtons(container, SWT.NONE);
 		createRelationshipGroup(container, SWT.NONE);
 		
+		if (selectedPhysicalTableName != null){
+			PhysicalModel physicalModel = owner.getModel().getPhysicalModel();
+			PhysicalTable physicalTable = physicalModel.getTable(selectedPhysicalTableName);
+			populatePhysicalTableGroup(physicalTable);
+		}	
 		populateBusinessTableGroup(owner,null);
 		checkPageComplete();
 	}

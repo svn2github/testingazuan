@@ -42,26 +42,29 @@ public class AddPhysicalTableWizard extends AbstractSpagoBIModelWizard {
 	private AddBusinessViewInnerJoinPage pageThree;
 	private BusinessColumnSet owner;
 	private boolean isBusinessView;
+	private String selectedPhysicalTableName;
+	
 	/**
 	 * @param editingDomain
 	 * @param command
 	 */
 	public AddPhysicalTableWizard(BusinessColumnSet owner, EditingDomain editingDomain,
-			AbstractSpagoBIModelCommand command, boolean isBusinessView) {
+			AbstractSpagoBIModelCommand command, boolean isBusinessView, String physicalTableName) {
 		super(editingDomain, command);
 		this.setWindowTitle("Add a Physical Table");
 		this.setHelpAvailable(false);	
 		this.owner = owner;
 		this.isBusinessView = isBusinessView;
+		this.selectedPhysicalTableName = physicalTableName; // may be null
 	}
 
 	@Override
 	public void addPages() {
-		pageOne = new AddPhysicalTableSelectionPage("Add Physical Table to Business Table", owner, isBusinessView);
+		pageOne = new AddPhysicalTableSelectionPage("Add Physical Table to Business Table", owner, isBusinessView, selectedPhysicalTableName);
 		addPage(pageOne);
 		pageTwo = new AddPhysicalTableSourceSelectionPage("Select Source Physical Table to Join",owner);
 		addPage(pageTwo);
-		pageThree = new AddBusinessViewInnerJoinPage("Select join relationship",owner);
+		pageThree = new AddBusinessViewInnerJoinPage("Select join relationship",owner, selectedPhysicalTableName);
 		addPage(pageThree);
 		pageOne.setPageThreeRef(pageThree);
 		pageTwo.setPageThreeRef(pageThree);

@@ -60,7 +60,7 @@ public class AddPhysicalTableToBusinessTableAction extends
 			if (businessColumnSet instanceof BusinessView){
 				isBusinessView = true;		
 			}
-			AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (AbstractSpagoBIModelCommand)command, isBusinessView);
+			AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (AbstractSpagoBIModelCommand)command, isBusinessView, null);
 	    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 			dialog.create();
 	    	dialog.open();

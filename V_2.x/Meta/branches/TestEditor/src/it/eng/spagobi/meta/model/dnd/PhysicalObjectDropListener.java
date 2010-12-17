@@ -195,14 +195,21 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
            		//obtaining table(s) name(s) from the passed string
            		else if (eObject instanceof PhysicalTable){
            			PhysicalTable sourcePhysicalTable = (PhysicalTable)eObject;
+           			boolean isBusinessView = false;
+           			if (businessColumnSet instanceof BusinessView){
+           				isBusinessView = true;
+           			}
            			//add PhysicalTable to BusinessTable or BusinessView
         			Command addPhysicalTableCommand = editingDomain.createCommand
         		    (AddPhysicalTableToBusinessTableCommand.class, 
         		      		new CommandParameter(businessColumnSet, null, null, new ArrayList<Object>()));
-        			AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (AbstractSpagoBIModelCommand)addPhysicalTableCommand, false, sourcePhysicalTable.getName());
+        			AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (AbstractSpagoBIModelCommand)addPhysicalTableCommand, isBusinessView, sourcePhysicalTable.getName());
         		    WizardDialog dialog = new WizardDialog(new Shell(), wizard);
         			dialog.create();
         		    dialog.open();
+        		    
+        		    //update businessColumnSet reference in case that BusinessTable upgraded to BusinessView
+        		    businessColumnSet = businessModel.getTable(businessColumnSet.getName());
            		}
            		
        		}

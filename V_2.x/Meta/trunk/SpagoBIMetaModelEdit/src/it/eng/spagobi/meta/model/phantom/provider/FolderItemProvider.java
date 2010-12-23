@@ -28,6 +28,7 @@ import java.util.List;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.UnexecutableCommand;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -112,6 +113,7 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 	@Override
 	public Collection<?> getChildren(Object object) {
 		return children;
+		
 	}
 
 	@Override
@@ -292,6 +294,5 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 			// ignore custom commond at this level
 			return null;
 		}
-
 
 }

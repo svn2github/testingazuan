@@ -238,7 +238,7 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 				}
 			}
 			
-			//retrieve Business Table Columns
+			//retrieve Business View Columns
 			numCols = businessView.getColumns().size();
 			for (int i=0; i<numCols; i++){
 				TableItem ti = new TableItem(fields, 0);

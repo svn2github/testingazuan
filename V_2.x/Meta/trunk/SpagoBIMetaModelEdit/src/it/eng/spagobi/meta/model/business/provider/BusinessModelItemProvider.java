@@ -10,6 +10,8 @@ package it.eng.spagobi.meta.model.business.provider;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
+import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.business.commands.AddBusinessRelationshipCommand;
 import it.eng.spagobi.meta.model.business.commands.AddBusinessTableCommand;
 
@@ -185,27 +187,31 @@ public class BusinessModelItemProvider
 			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_MODEL__TABLES);
 			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_MODEL__DOMAINS);
 			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_MODEL__JOIN_RELATIONSHIPS);
+			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_MODEL__RELATIONSHIPS);
 		}
 		return childrenFeatures;
 	}
 	
+	protected Collection children = null;
 	@Override
 	public Collection<?> getChildren(Object object) {
-		BusinessModel businessModel;
-		BusinessRootItemProvider rootItemProvider;
-		Collection children;
 		
-		businessModel = (BusinessModel)object;
-		//group columns
-		rootItemProvider = new BusinessRootItemProvider(adapterFactory, businessModel, businessModel.getTables());
-		rootItemProvider.setImage("full/obj16/BusinessModel");
-		rootItemProvider.setText("Business Model: " + businessModel.getName());
-		
-		children = new LinkedHashSet();
-		//children.addAll(  getChildrenFeatures(object) );
-		children.add( rootItemProvider );
+	//	if (children == null) {
+			BusinessModel businessModel;
+			BusinessRootItemProvider rootItemProvider;
+			
+			
+			businessModel = (BusinessModel)object;
+			//group columns
+			rootItemProvider = new BusinessRootItemProvider(adapterFactory, businessModel, businessModel.getTables());
+			rootItemProvider.setImage("full/obj16/BusinessModel");
+			rootItemProvider.setText("Business Model: " + businessModel.getName());
+			
+			children = new LinkedHashSet();
+			//children.addAll(  getChildrenFeatures(object) );
+			children.add( rootItemProvider );
+	//	}
 
-		
 		return children;
 	}	
 
@@ -252,7 +258,7 @@ public class BusinessModelItemProvider
 	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	@Override
 	public void notifyChanged(Notification notification) {
@@ -303,6 +309,11 @@ public class BusinessModelItemProvider
 			(createChildParameter
 				(BusinessModelPackage.Literals.BUSINESS_MODEL__JOIN_RELATIONSHIPS,
 				 BusinessModelFactory.eINSTANCE.createBusinessViewInnerJoinRelationship()));
+	
+		newChildDescriptors.add
+		(createChildParameter
+			(BusinessModelPackage.Literals.BUSINESS_MODEL__RELATIONSHIPS,
+			 BusinessModelFactory.eINSTANCE.createBusinessRelationship()));
 	}
 
 	/**

@@ -85,7 +85,7 @@ public class EditBusinessColumnsCommand extends AbstractSpagoBIModelCommand {
 		}
 		
 		
-		System.err.println("COMMAND [AddBusinessRelationshipCommand] SUCCESFULLY EXECUTED");
+		System.err.println("COMMAND [EditBusinessColumnsCommand] SUCCESFULLY EXECUTED");
 		
 		this.executed = true;
 	}

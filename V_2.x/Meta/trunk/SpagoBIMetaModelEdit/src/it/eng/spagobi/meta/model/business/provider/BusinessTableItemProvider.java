@@ -18,7 +18,10 @@ import it.eng.spagobi.meta.model.business.commands.AddPhysicalTableToBusinessTab
 import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
 
 import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
+import it.eng.spagobi.meta.model.phantom.provider.BusinessColumnFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.InboundRelationshipFolderItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.OutboundRelationshipFolderItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.model.physical.provider.PhysicalTableItemProvider;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
@@ -153,67 +156,74 @@ public class BusinessTableItemProvider
 		return super.getChildFeature(object, child);
 	}
 
+	protected Collection children = null;
+	
 	@Override
 	public Collection<?> getChildren(Object object) {
-		BusinessTable businessTable;
-		PhysicalTable physicalTable;
-		FolderItemProvider folderItemProvider;
-		FolderItemProvider folderItemProviderInRel = null;
-		FolderItemProvider folderItemProviderOutRel = null;
-		FolderItemProvider physicalTableReferenceItemProvider = null;
-		List<BusinessRelationship> businessRelationships;
-		List<BusinessRelationship> inboundBusinessRelationships = new ArrayList<BusinessRelationship>();
-		List<BusinessRelationship> outboundBusinessRelationships = new ArrayList<BusinessRelationship>();
-		Collection children;
-		
-		businessTable = (BusinessTable)object;
-		//group columns
-		folderItemProvider = new FolderItemProvider(adapterFactory, businessTable, businessTable.getColumns());
-		folderItemProvider.setText("Columns ("+folderItemProvider.getChildrenNumber()+")");
-		if (folderItemProvider.getChildrenNumber() == 0)
-			folderItemProvider.setImage("full/obj16/EmptyFolder");
-		
-		//getting inbound and outbound relationships
-		businessRelationships = businessTable.getRelationships();
-		
-		for( BusinessRelationship relationship : businessRelationships){
-			if (relationship.getDestinationTable() == businessTable){
-				inboundBusinessRelationships.add(relationship);
+	//	if (children == null){
+			BusinessTable businessTable;
+			PhysicalTable physicalTable;
+			BusinessColumnFolderItemProvider folderItemProvider;
+			InboundRelationshipFolderItemProvider folderItemProviderInRel = null;
+			OutboundRelationshipFolderItemProvider folderItemProviderOutRel = null;
+			FolderItemProvider physicalTableReferenceItemProvider = null;
+			List<BusinessRelationship> businessRelationships;
+			List<BusinessRelationship> inboundBusinessRelationships = new ArrayList<BusinessRelationship>();
+			List<BusinessRelationship> outboundBusinessRelationships = new ArrayList<BusinessRelationship>();
+			
+			
+			businessTable = (BusinessTable)object;
+			//group columns
+			folderItemProvider = new BusinessColumnFolderItemProvider(adapterFactory, businessTable, businessTable.getColumns());
+			folderItemProvider.setText("Columns ("+folderItemProvider.getChildrenNumber()+")");
+			if (folderItemProvider.getChildrenNumber() == 0)
+				folderItemProvider.setImage("full/obj16/EmptyFolder");
+			
+			//getting inbound and outbound relationships
+			businessRelationships = businessTable.getRelationships();
+			
+			for( BusinessRelationship relationship : businessRelationships){
+				if (relationship.getDestinationTable() == businessTable){
+					inboundBusinessRelationships.add(relationship);
+				}
+				else if (relationship.getSourceTable() == businessTable){
+					outboundBusinessRelationships.add(relationship);
+				}
 			}
-			else if (relationship.getSourceTable() == businessTable){
-				outboundBusinessRelationships.add(relationship);
-			}
-		}
-		//group inbound relationship	
-		folderItemProviderInRel = new FolderItemProvider(adapterFactory, businessTable,inboundBusinessRelationships);
-		folderItemProviderInRel.setText("Inbound Relationships ("+folderItemProviderInRel.getChildrenNumber()+")");
-		if (folderItemProviderInRel.getChildrenNumber() == 0)
-			folderItemProviderInRel.setImage("full/obj16/EmptyFolder");
-		
-		//group outbound relationship	
-		folderItemProviderOutRel = new FolderItemProvider(adapterFactory, businessTable,outboundBusinessRelationships);
-		folderItemProviderOutRel.setText("Outbound Relationships ("+folderItemProviderOutRel.getChildrenNumber()+")");
-		if (folderItemProviderOutRel.getChildrenNumber() == 0)
-			folderItemProviderOutRel.setImage("full/obj16/EmptyFolder");
-		
-		//getting physical table reference
-		physicalTable = businessTable.getPhysicalTable();
-		
-		children = new LinkedHashSet();
-		//children.addAll(  getChildrenFeatures(object) );
-		children.add( folderItemProvider );
-		children.add( folderItemProviderInRel );
-		children.add( folderItemProviderOutRel );
+			//group inbound relationship	
+			folderItemProviderInRel = new InboundRelationshipFolderItemProvider(adapterFactory, businessTable,inboundBusinessRelationships);
+			folderItemProviderInRel.setText("Inbound Relationships ("+folderItemProviderInRel.getChildrenNumber()+")");
+			if (folderItemProviderInRel.getChildrenNumber() == 0)
+				folderItemProviderInRel.setImage("full/obj16/EmptyFolder");
+			
+			//group outbound relationship	
+			folderItemProviderOutRel = new OutboundRelationshipFolderItemProvider(adapterFactory, businessTable,outboundBusinessRelationships);
+			folderItemProviderOutRel.setText("Outbound Relationships ("+folderItemProviderOutRel.getChildrenNumber()+")");
+			if (folderItemProviderOutRel.getChildrenNumber() == 0)
+				folderItemProviderOutRel.setImage("full/obj16/EmptyFolder");
+			
+			//getting physical table reference
+			physicalTable = businessTable.getPhysicalTable();
+			
+			children = new LinkedHashSet();
+			//children.addAll(  getChildrenFeatures(object) );
+			children.add( folderItemProvider );
+			children.add( folderItemProviderInRel );
+			children.add( folderItemProviderOutRel );
+			
+			
 
-		if (physicalTable != null){
-			physicalTableReferenceItemProvider = new FolderItemProvider(adapterFactory, physicalTable, null);
-			physicalTableReferenceItemProvider.setText("Physical Table -> "+physicalTable.getName());
-			physicalTableReferenceItemProvider.setImage("full/obj16/PhysicalTable");
-			children.add(physicalTableReferenceItemProvider);
-		}
+			if (physicalTable != null){
+				physicalTableReferenceItemProvider = new FolderItemProvider(adapterFactory, physicalTable, null);
+				physicalTableReferenceItemProvider.setText("Physical Table -> "+physicalTable.getName());
+				physicalTableReferenceItemProvider.setImage("full/obj16/PhysicalTable");
+				children.add(physicalTableReferenceItemProvider);
+			}
+		//}
 		
 		return children;
 	}
+	
 	
 	/**
 	 * This returns BusinessTable.gif.

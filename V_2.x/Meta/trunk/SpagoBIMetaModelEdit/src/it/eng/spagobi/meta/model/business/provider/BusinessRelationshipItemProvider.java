@@ -313,13 +313,14 @@ public class BusinessRelationshipItemProvider
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
-
+		
 		switch (notification.getFeatureID(BusinessRelationship.class)) {
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__SOURCE_COLUMNS:
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__DESTINATION_COLUMNS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
+		
 		super.notifyChanged(notification);
 	}
 

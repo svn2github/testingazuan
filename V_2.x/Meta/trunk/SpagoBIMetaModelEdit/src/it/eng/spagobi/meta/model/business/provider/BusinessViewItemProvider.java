@@ -7,6 +7,7 @@
 package it.eng.spagobi.meta.model.business.provider;
 
 
+import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessView;
@@ -17,6 +18,7 @@ import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
 import it.eng.spagobi.meta.model.business.commands.RemovePhysicalTableToBusinessViewCommand;
 
 import it.eng.spagobi.meta.model.phantom.provider.BusinessColumnFolderItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.BusinessViewPhysicalTableFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.InboundRelationshipFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.OutboundRelationshipFolderItemProvider;
@@ -44,6 +46,7 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
  * This is the item provider adapter for a {@link it.eng.spagobi.meta.model.business.BusinessView} object.
@@ -115,7 +118,7 @@ public class BusinessViewItemProvider
 			BusinessColumnFolderItemProvider folderItemProvider;
 			InboundRelationshipFolderItemProvider folderItemProviderInRel = null;
 			OutboundRelationshipFolderItemProvider folderItemProviderOutRel = null;
-			FolderItemProvider folderItemProviderPhysicalTable;
+			BusinessViewPhysicalTableFolderItemProvider folderItemProviderPhysicalTable;
 			List<BusinessRelationship> businessRelationships;
 			List<BusinessRelationship> inboundBusinessRelationships = new ArrayList<BusinessRelationship>();
 			List<BusinessRelationship> outboundBusinessRelationships = new ArrayList<BusinessRelationship>();
@@ -161,7 +164,7 @@ public class BusinessViewItemProvider
 				itemProvidersPhysicalTables.add(itemProviderPhysicalTable);
 			}
 			//group Physical Tables
-			folderItemProviderPhysicalTable = new FolderItemProvider(adapterFactory, businessView, itemProvidersPhysicalTables);
+			folderItemProviderPhysicalTable = new BusinessViewPhysicalTableFolderItemProvider(adapterFactory, businessView, itemProvidersPhysicalTables);
 			folderItemProviderPhysicalTable.setText("Physical Tables ("+folderItemProviderPhysicalTable.getChildrenNumber()+")");
 			if (folderItemProviderPhysicalTable.getChildrenNumber() == 0)
 				folderItemProviderPhysicalTable.setImage("full/obj16/EmptyFolder");	
@@ -214,7 +217,17 @@ public class BusinessViewItemProvider
 	 */
 	@Override
 	public void notifyChanged(Notification notification) {
+		/*
 		updateChildren(notification);
+		super.notifyChanged(notification);
+		*/
+		updateChildren(notification);
+
+		switch (notification.getFeatureID(BusinessView.class)) {
+			case BusinessModelPackage.BUSINESS_VIEW__JOIN_RELATIONSHIPS:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
+				return;
+		}
 		super.notifyChanged(notification);
 	}
 

@@ -131,8 +131,7 @@
             ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessTable/physicalTable"/>
       </genClasses>
       <genClasses ecoreClass="SpagoBIMetaModel.ecore#//business/BusinessView">
-        <genFeatures notify="false" createChild="false" propertySortChoices="true"
-            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessView/joinRelationships"/>
+        <genFeatures createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessView/joinRelationships"/>
       </genClasses>
       <genClasses ecoreClass="SpagoBIMetaModel.ecore#//business/BusinessRelationship">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"

@@ -578,6 +578,8 @@ public class BusinessModelInitializer {
 						else{
 							//remove the inner join relationship between two physical table
 							businessView.getJoinRelationships().remove(joinRelationship);
+							//remove he inner join relationship from BusinessModel
+							businessModel.getJoinRelationships().remove(joinRelationship);
 							
 							//remove physical table's columns
 							EList<BusinessColumn> businessColumns = businessView.getColumns();

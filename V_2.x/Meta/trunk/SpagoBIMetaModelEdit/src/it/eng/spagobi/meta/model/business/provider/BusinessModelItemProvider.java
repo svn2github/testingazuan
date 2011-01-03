@@ -267,7 +267,6 @@ public class BusinessModelItemProvider
 		switch (notification.getFeatureID(BusinessModel.class)) {
 			case BusinessModelPackage.BUSINESS_MODEL__TABLES:
 			case BusinessModelPackage.BUSINESS_MODEL__DOMAINS:
-			case BusinessModelPackage.BUSINESS_MODEL__JOIN_RELATIONSHIPS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}

@@ -217,10 +217,10 @@ public class BusinessViewItemProvider
 	 */
 	@Override
 	public void notifyChanged(Notification notification) {
-		/*
+		
 		updateChildren(notification);
 		super.notifyChanged(notification);
-		*/
+		/*
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(BusinessView.class)) {
@@ -228,7 +228,8 @@ public class BusinessViewItemProvider
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
-		super.notifyChanged(notification);
+		super.notifyChanged(notification); 
+		*/
 	}
 
 	/**

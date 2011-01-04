@@ -69,7 +69,7 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 	
 	protected Object parentObject;
 
-	private Collection children;
+	protected Collection children;
 	private String text;
 	private String image; 
 	

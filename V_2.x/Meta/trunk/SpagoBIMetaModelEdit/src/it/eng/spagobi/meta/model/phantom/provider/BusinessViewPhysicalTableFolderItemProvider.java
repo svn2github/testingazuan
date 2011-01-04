@@ -81,13 +81,6 @@ public class BusinessViewPhysicalTableFolderItemProvider extends
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 		
-		/*
-		switch (notification.getFeatureID(BusinessModel.class)) {
-			case BusinessModelPackage.BUSINESS_MODEL__JOIN_RELATIONSHIPS:
-				fireNotifyChanged(new ViewerNotification(notification, parentObject, true, false));
-				return;
-		}
-		*/
 		switch (notification.getFeatureID(BusinessView.class)) {
 		case BusinessModelPackage.BUSINESS_VIEW__JOIN_RELATIONSHIPS:
 			fireNotifyChanged(new ViewerNotification(notification, parentObject, true, false));

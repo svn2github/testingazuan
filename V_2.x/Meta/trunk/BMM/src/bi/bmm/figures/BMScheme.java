@@ -61,7 +61,7 @@ public class BMScheme {
    
    
    
-private static final boolean DEBUG_MODE =true;
+   private static final boolean DEBUG_MODE =true;
    
   public BMScheme(Composite c) {
 	  

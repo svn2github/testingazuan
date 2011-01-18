@@ -6,29 +6,20 @@
  */
 package it.eng.spagobi.meta.model.provider;
 
-import it.eng.spagobi.meta.model.ModelFactory;
+
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.AddBusinessRelationshipCommand;
-import it.eng.spagobi.meta.model.business.commands.AddIdentifierCommand;
-import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.UnexecutableCommand;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
-
 import org.eclipse.emf.edit.command.AddCommand;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.command.CopyCommand;

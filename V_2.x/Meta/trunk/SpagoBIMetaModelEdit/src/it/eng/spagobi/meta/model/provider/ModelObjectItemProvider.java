@@ -76,7 +76,7 @@ public class ModelObjectItemProvider extends ItemProviderAdapter implements
 	 * This returns the property descriptors for the adapted class. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * 
 	 */
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
@@ -86,6 +86,8 @@ public class ModelObjectItemProvider extends ItemProviderAdapter implements
 			addIdPropertyDescriptor(object);
 			addNamePropertyDescriptor(object);
 			addDescriptionPropertyDescriptor(object);
+			//Added
+			addCustomColumnPropertyDescriptors(object) ;
 		}
 		return itemPropertyDescriptors;
 	}

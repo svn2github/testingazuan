@@ -158,6 +158,7 @@ import org.eclipse.emf.edit.ui.util.EditUIMarkerHelper;
 import org.eclipse.emf.edit.ui.util.EditUIUtil;
 
 import org.eclipse.emf.edit.ui.view.ExtendedPropertySheetPage;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
 import it.eng.spagobi.meta.model.physical.provider.PhysicalModelItemProviderAdapterFactory;
 
@@ -723,6 +724,16 @@ public class PhysicalModelEditor
 		adapterFactory.addAdapterFactory(new AnalyticalModelItemProviderAdapterFactory());
 		adapterFactory.addAdapterFactory(new ReflectiveItemProviderAdapterFactory());
 
+		//MOD by M.C
+		//using TransactionalEditingDomain shared between two editor 
+		
+		// Create a transactional editing domain
+	    //
+	    //TransactionalEditingDomain domain = TransactionalEditingDomain.Factory.INSTANCE.createEditingDomain();
+	    //domain.setID("it.eng.spagobi.meta.model.editor.EditingDomain");
+	    //adding editing domain to Registry
+	    //TransactionalEditingDomain.Registry.INSTANCE.add("it.eng.spagobi.meta.model.editor.EditingDomain", domain);
+		
 		// Create the command stack that will notify this editor as commands are executed.
 		//
 		BasicCommandStack commandStack = new BasicCommandStack();
@@ -730,6 +741,7 @@ public class PhysicalModelEditor
 		// Add a listener to set the most recent command's affected objects to be the selection of the viewer with focus.
 		//
 		commandStack.addCommandStackListener
+	    //domain.getCommandStack().addCommandStackListener
 			(new CommandStackListener() {
 				 public void commandStackChanged(final EventObject event) {
 					 getContainer().getDisplay().asyncExec
@@ -754,6 +766,9 @@ public class PhysicalModelEditor
 		// Create the editing domain with a special command stack.
 		//
 		editingDomain = new AdapterFactoryEditingDomain(adapterFactory, commandStack, new HashMap<Resource, Boolean>());
+	    //editingDomain = (AdapterFactoryEditingDomain) domain;
+	   
+
 	}
 
 	/**

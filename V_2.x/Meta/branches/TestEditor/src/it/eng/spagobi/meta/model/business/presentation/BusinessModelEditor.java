@@ -158,6 +158,7 @@ import org.eclipse.emf.edit.ui.util.EditUIMarkerHelper;
 import org.eclipse.emf.edit.ui.util.EditUIUtil;
 
 import org.eclipse.emf.edit.ui.view.ExtendedPropertySheetPage;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
 
@@ -708,6 +709,7 @@ public class BusinessModelEditor
 	 * @generated
 	 */
 	protected void initializeEditingDomain() {
+		
 		// Create an adapter factory that yields item providers.
 		//
 		adapterFactory = new ComposedAdapterFactory(ComposedAdapterFactory.Descriptor.Registry.INSTANCE);
@@ -721,6 +723,9 @@ public class BusinessModelEditor
 		adapterFactory.addAdapterFactory(new AnalyticalModelItemProviderAdapterFactory());
 		adapterFactory.addAdapterFactory(new ReflectiveItemProviderAdapterFactory());
 
+		//TransactionalEditingDomain domain = TransactionalEditingDomain.Registry.INSTANCE.getEditingDomain(
+	    //    "it.eng.spagobi.meta.model.editor.EditingDomain");
+		
 		// Create the command stack that will notify this editor as commands are executed.
 		//
 		BasicCommandStack commandStack = new BasicCommandStack();
@@ -728,6 +733,7 @@ public class BusinessModelEditor
 		// Add a listener to set the most recent command's affected objects to be the selection of the viewer with focus.
 		//
 		commandStack.addCommandStackListener
+		// domain.getCommandStack().addCommandStackListener
 			(new CommandStackListener() {
 				 public void commandStackChanged(final EventObject event) {
 					 getContainer().getDisplay().asyncExec
@@ -752,6 +758,11 @@ public class BusinessModelEditor
 		// Create the editing domain with a special command stack.
 		//
 		editingDomain = new AdapterFactoryEditingDomain(adapterFactory, commandStack, new HashMap<Resource, Boolean>());
+		
+		
+		//using shared TransactionalEditingDomain
+		//editingDomain = (AdapterFactoryEditingDomain) domain;
+
 	}
 
 	/**
@@ -1857,5 +1868,19 @@ public class BusinessModelEditor
 	 */
 	protected boolean showOutlineView() {
 		return true;
+	}
+	
+	/**
+	 * @param selectionViewer the selectionViewer to set
+	 */
+	public void setSelectionViewer(TreeViewer selectionViewer) {
+		this.selectionViewer = selectionViewer;
+	}
+
+	/**
+	 * @return the selectionViewer
+	 */
+	public TreeViewer getSelectionViewer() {
+		return selectionViewer;
 	}
 }

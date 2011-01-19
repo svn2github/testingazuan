@@ -131,17 +131,18 @@ public class BusinessColumnSetItemProvider
 	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
-
+		
 		switch (notification.getFeatureID(BusinessColumnSet.class)) {
 			case BusinessModelPackage.BUSINESS_COLUMN_SET__COLUMNS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
+		
 		super.notifyChanged(notification);
 	}
 

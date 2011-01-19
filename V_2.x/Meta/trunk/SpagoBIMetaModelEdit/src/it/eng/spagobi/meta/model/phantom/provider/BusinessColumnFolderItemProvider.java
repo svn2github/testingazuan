@@ -50,8 +50,12 @@ public class BusinessColumnFolderItemProvider extends FolderItemProvider {
 	public BusinessColumnFolderItemProvider(AdapterFactory adapterFactory,
 			Object parent, Collection children) {
 		super(adapterFactory, parent, children);
-		//adding this custom Item Provider to the adapters of BusinessModel to forward the notify
+		//adding this custom Item Provider to the adapters of BusinessColumnSet to forward the notify
 		((BusinessColumnSet)parent).eAdapters().add(this);
+		//adding this custom Item Provider to the adapters of BusinessModel to forward the notify
+		((BusinessColumnSet)parent).getModel().eAdapters().add(this);
+
+		
 	}
 	public Collection<?> getNewChildDescriptors(Object object, EditingDomain editingDomain, Object sibling) { 
 		BusinessColumnSet businessTable = (BusinessColumnSet)parentObject;
@@ -78,9 +82,16 @@ public class BusinessColumnFolderItemProvider extends FolderItemProvider {
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(BusinessColumnSet.class)) {
-			case BusinessModelPackage.BUSINESS_COLUMN_SET__COLUMNS:
+		case BusinessModelPackage.BUSINESS_COLUMN_SET__COLUMNS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
+		}
+		switch (notification.getFeatureID(BusinessModel.class)) {
+		case BusinessModelPackage.BUSINESS_MODEL__IDENTIFIERS:
+			BusinessColumnFolderItemProvider columnFolder = this;
+			BusinessTable parentTable = (BusinessTable) columnFolder.getParentObject();	
+			fireNotifyChanged(new ViewerNotification(notification, parentTable, true, false));
+			return;
 		}
 		super.notifyChanged(notification);
 	}

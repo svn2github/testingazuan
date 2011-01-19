@@ -21,7 +21,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.presentation;
 
+import it.eng.spagobi.meta.model.business.presentation.BusinessModelEditor;
+import it.eng.spagobi.meta.model.test.TestEditorPlugin;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
+import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
+import org.eclipse.emf.edit.ui.view.ExtendedPropertySheetPage;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
@@ -29,13 +47,28 @@ import org.eclipse.swt.custom.ViewForm;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IPropertyListener;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.MultiEditor;
-import org.eclipse.ui.part.MultiEditor.Gradient;
 import org.eclipse.ui.part.MultiEditorInput;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.IPropertySource;
+import org.eclipse.ui.views.properties.PropertySheet;
+import org.eclipse.ui.views.properties.PropertySheetPage;
+
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -44,8 +77,9 @@ import org.eclipse.ui.part.MultiEditorInput;
 public class SpagoBIModelEditor extends MultiEditor {
 	
 	private CLabel innerEditorTitle[];
-	
+	private SashForm sashForm;
 	public static final String PLUGIN_ID = "it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorID";
+	private IEditorPart innerEditors[];
 	
 	@Override
 	public void doSave(IProgressMonitor progressMonitor) {
@@ -56,12 +90,10 @@ public class SpagoBIModelEditor extends MultiEditor {
 	@Override
 	public void createPartControl(Composite parent) {
 		parent = new Composite(parent, SWT.BORDER);
-		
-		
-		
 		parent.setLayout(new FillLayout());
-		SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
-		IEditorPart innerEditors[] = getInnerEditors();
+		sashForm = new SashForm(parent, SWT.HORIZONTAL);
+		
+		innerEditors = getInnerEditors();
 		
 		
 		for (int i = 0; i < innerEditors.length; i++) {
@@ -71,9 +103,9 @@ public class SpagoBIModelEditor extends MultiEditor {
 			viewForm.marginHeight = 0;
 
 			createInnerEditorTitle(i, viewForm);
-			
+						
 			Composite content = createInnerPartControl(viewForm,e);
-			
+					
 			viewForm.setContent(content);
 			updateInnerEditorTitle(e, innerEditorTitle[i]);
 			
@@ -89,8 +121,118 @@ public class SpagoBIModelEditor extends MultiEditor {
 			});
 		}
 		
+		//*****
+		//Active selection testing
+		//*****
+		/*
+		
+		IWorkbenchPage page = getSite().getPage(); 
+		
+		//the current selection in the entire page
+		ISelection selection = page.getSelection();
+		
+		//Set selection provider
+		getSite().setSelectionProvider(((BusinessModelEditor)innerEditors[1]).getSelectionViewer());
+
+		
+		//the current selection in the navigator view
+		//selection = page.getSelection(IPageLayout.ID_RES_NAV);
+
+
+		//add a listener
+
+		ISelectionListener sl = new ISelectionListener() {
+		      public void selectionChanged(IWorkbenchPart part, ISelection sel) {
+		         System.out.println("Selection is: " + sel);
+		         getSite().setSelectionProvider(((BusinessModelEditor)innerEditors[1]).getSelectionViewer());
+
+		         //getPropertySheetPage();
+		         //propertySheetPage.refresh();
+		      }
+		   };
+		   
+		
+		page.addSelectionListener(sl);
+		 
+		
+		//the active part
+		IWorkbenchPart active = page.getActivePart();
+		System.out.println("Active part: "+ active);
+		//adding a listener
+		IPartListener2 pl = new IPartListener2() {
+			@Override
+			public void partActivated(IWorkbenchPartReference ref)
+		    {
+		         System.out.println("Active: "+ref.getTitle());
+		         //getPropertySheetPage();
+		         //propertySheetPage.refresh();
+		    }
+
+			@Override
+			public void partBroughtToTop(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void partClosed(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void partDeactivated(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void partOpened(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void partHidden(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void partVisible(IWorkbenchPartReference partRef) {
+				 System.out.println("Visible: "+partRef.getTitle());
+				
+			}
+
+			@Override
+			public void partInputChanged(IWorkbenchPartReference partRef) {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		
+		page.addPartListener(pl);
+		*/
+		
+
 	}
 	
+	/*
+	public Object getAdapter(Class key) {
+		if (key.equals(IPropertySheetPage.class)) {
+			return getPropertySheetPage();
+		}
+		else if (key == IPropertySource.class) {
+			return null;
+		}
+		else {
+			return super.getAdapter(key);
+		}
+	}
+	
+	*/
+
+
 	/**
 	 * Draw the gradient for the specified editor.
 	 */
@@ -132,9 +274,7 @@ public class SpagoBIModelEditor extends MultiEditor {
 				label.setImage(image);
 		label.setToolTipText(editor.getTitleToolTip());
 	}
-	/*
-	 * 
-	 */
+	
 	protected int getIndex(IEditorPart editor) {
 		IEditorPart innerEditors[] = getInnerEditors();
 		for (int i = 0; i < innerEditors.length; i++) {
@@ -143,5 +283,30 @@ public class SpagoBIModelEditor extends MultiEditor {
 		}
 		return -1;
 	}
+
+	/*
+	private PropertySheetPage propertySheetPage;
+	public IPropertySheetPage getPropertySheetPage() {
+		
+		AdapterFactoryEditingDomain editingDomain = (AdapterFactoryEditingDomain) ((BusinessModelEditor)innerEditors[1]).getEditingDomain();
+		ComposedAdapterFactory adapterFactory = (ComposedAdapterFactory) ((BusinessModelEditor)innerEditors[1]).getAdapterFactory();
+		if (propertySheetPage == null) {
+			propertySheetPage =
+				new ExtendedPropertySheetPage(editingDomain) {
+					@Override
+					public void setSelectionToViewer(List<?> selection) {
+						((BusinessModelEditor)innerEditors[1]).setSelectionToViewer(selection);
+						((BusinessModelEditor)innerEditors[1]).setFocus();
+					}
+
+				
+					
+				};
+			propertySheetPage.setPropertySourceProvider(new AdapterFactoryContentProvider(adapterFactory));
+		}
+
+		return propertySheetPage;
+	}
+	 */
 
 }

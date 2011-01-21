@@ -23,11 +23,15 @@ package it.eng.spagobi.meta.model.presentation;
 
 
 
+import it.eng.spagobi.meta.model.test.TestEditorPlugin;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
+import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 import org.eclipse.emf.edit.ui.view.ExtendedPropertySheetPage;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -43,6 +47,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -77,7 +82,9 @@ public class SpagoBIModelEditor extends MultiEditor {
 	public static final String PLUGIN_ID = "it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorID";
 	private IEditorPart innerEditors[];
 	private Control innerViewForm[] = new Control[2];
-	private boolean flag;
+	private boolean firstEditor = true;
+	private Label closeLbl;
+	private Image iconCollapse, iconExpand;
 	
 	@Override
 	public void doSave(IProgressMonitor progressMonitor) {
@@ -255,28 +262,43 @@ public class SpagoBIModelEditor extends MultiEditor {
 		titleLabel.setBackground(null, null);
 		parent.setTopLeft(titleLabel);
 		
-		//added
-		if (flag == false) {
-			titleLabel.addMouseListener(new MouseListener() {
+		
+		ImageDescriptor imageDescriptorExpand = ExtendedImageRegistry.INSTANCE.getImageDescriptor(TestEditorPlugin.INSTANCE.getImage("expand"));
+		iconExpand = imageDescriptorExpand.createImage();
+		
+		ImageDescriptor imageDescriptorCollapse = ExtendedImageRegistry.INSTANCE.getImageDescriptor(TestEditorPlugin.INSTANCE.getImage("collapse"));
+		iconCollapse = imageDescriptorCollapse.createImage();
+		
+		
+		//create image and listener to hide physical model editor
+		if (firstEditor == true) {
+			closeLbl = new Label(parent, SWT.NONE);
+			closeLbl.setImage(iconExpand);
+			parent.setTopRight(closeLbl);
+			
+			closeLbl.addMouseListener(new MouseListener() {
 		        public void mouseDoubleClick(MouseEvent e) {
-		            if(sashForm.getMaximizedControl() == innerViewForm[0])
-		        	   sashForm.setMaximizedControl(null);
-		            else
-		               sashForm.setMaximizedControl(innerViewForm[0]);
+
 		        }
 
 		        public void mouseDown(MouseEvent e) {
+		            if(sashForm.getMaximizedControl() == innerViewForm[0]){
+				           sashForm.setMaximizedControl(null);	
+				           closeLbl.setImage(iconExpand);
+			            }
+			            else {
+				           sashForm.setMaximizedControl(innerViewForm[0]);
+				           closeLbl.setImage(iconCollapse);
+			            }		        	
 		        }
 
 		        public void mouseUp(MouseEvent e) {
 		        }
 		    });
 			
-			flag = true;
+			firstEditor = false;
 		}
 
-
-		
 		if (innerEditorTitle == null)
 			innerEditorTitle = new CLabel[getInnerEditors().length];
 		innerEditorTitle[index] = titleLabel;

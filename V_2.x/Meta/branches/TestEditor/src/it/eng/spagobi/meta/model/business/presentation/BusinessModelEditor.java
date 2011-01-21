@@ -158,7 +158,7 @@ import org.eclipse.emf.edit.ui.util.EditUIMarkerHelper;
 import org.eclipse.emf.edit.ui.util.EditUIUtil;
 
 import org.eclipse.emf.edit.ui.view.ExtendedPropertySheetPage;
-import org.eclipse.emf.transaction.TransactionalEditingDomain;
+
 
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
 

@@ -21,14 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.presentation;
 
-import it.eng.spagobi.meta.model.business.presentation.BusinessModelEditor;
-import it.eng.spagobi.meta.model.test.TestEditorPlugin;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
@@ -44,9 +37,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ViewForm;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -80,6 +76,8 @@ public class SpagoBIModelEditor extends MultiEditor {
 	private SashForm sashForm;
 	public static final String PLUGIN_ID = "it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorID";
 	private IEditorPart innerEditors[];
+	private Control innerViewForm[] = new Control[2];
+	private boolean flag;
 	
 	@Override
 	public void doSave(IProgressMonitor progressMonitor) {
@@ -95,13 +93,15 @@ public class SpagoBIModelEditor extends MultiEditor {
 		
 		innerEditors = getInnerEditors();
 		
-		
 		for (int i = 0; i < innerEditors.length; i++) {
 			final IEditorPart e = innerEditors[i];
 			ViewForm viewForm = new ViewForm(sashForm, SWT.NONE);
 			viewForm.marginWidth = 0;
 			viewForm.marginHeight = 0;
 
+			//added store viewform references
+			innerViewForm[i] = viewForm;
+			
 			createInnerEditorTitle(i, viewForm);
 						
 			Composite content = createInnerPartControl(viewForm,e);
@@ -120,7 +120,8 @@ public class SpagoBIModelEditor extends MultiEditor {
 				}
 			});
 		}
-		
+		sashForm.setWeights(new int[]{80,20});
+
 		//*****
 		//Active selection testing
 		//*****
@@ -253,6 +254,29 @@ public class SpagoBIModelEditor extends MultiEditor {
 		titleLabel.setAlignment(SWT.LEFT);
 		titleLabel.setBackground(null, null);
 		parent.setTopLeft(titleLabel);
+		
+		//added
+		if (flag == false) {
+			titleLabel.addMouseListener(new MouseListener() {
+		        public void mouseDoubleClick(MouseEvent e) {
+		            if(sashForm.getMaximizedControl() == innerViewForm[0])
+		        	   sashForm.setMaximizedControl(null);
+		            else
+		               sashForm.setMaximizedControl(innerViewForm[0]);
+		        }
+
+		        public void mouseDown(MouseEvent e) {
+		        }
+
+		        public void mouseUp(MouseEvent e) {
+		        }
+		    });
+			
+			flag = true;
+		}
+
+
+		
 		if (innerEditorTitle == null)
 			innerEditorTitle = new CLabel[getInnerEditors().length];
 		innerEditorTitle[index] = titleLabel;

@@ -51,12 +51,13 @@ public class SpagoBIModelInput extends MultiEditorInput {
 		
 		super(
 				new String[]{
-						PhysicalModelEditor.PLUGIN_ID, 
-						BusinessModelEditor.PLUGIN_ID
+						BusinessModelEditor.PLUGIN_ID,
+						PhysicalModelEditor.PLUGIN_ID
 				},
 				new IEditorInput[]{
+						new BusinessModelInput(modelFile, spagobiModel.getBusinessModels().get(0)),
 						new PhysicalModelInput(modelFile, spagobiModel.getPhysicalModels().get(0)), 
-						new BusinessModelInput(modelFile, spagobiModel.getBusinessModels().get(0))}
+						}
 		);
 		
 		modelDescription = modelFile.getAbsolutePath();

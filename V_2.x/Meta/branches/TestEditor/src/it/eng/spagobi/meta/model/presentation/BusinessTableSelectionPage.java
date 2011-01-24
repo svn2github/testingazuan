@@ -239,15 +239,16 @@ public class BusinessTableSelectionPage extends WizardPage {
 	private void checkPageComplete(){
 		if(businessTables.getItemCount() > 0){				
 			//store the Physical Columns selected
-			setErrorMessage(null);
+			//setErrorMessage(null);
 			setTablesToImport(businessTables.getItems());
 			setPageComplete(true);
 		}
+		/*
 		else{			
 			setErrorMessage("The Business Model hasn't any tables, please select at least one to continue");
 			setPageComplete(false);
 		}
-
+		*/
 	}
 	
 	/**

@@ -327,18 +327,28 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 		    	TableItem[] selectedBusinessTableItem = businessTableSelectionPage.getTablesToImport();
 		    	List<PhysicalTable> selectedBusinessTable = new ArrayList<PhysicalTable>();
 		    	PhysicalModel physicalModel = spagobiModel.getPhysicalModels().get(0);
-		    	for (TableItem item: selectedBusinessTableItem){
-		    		PhysicalTable physicalTable = physicalModel.getTable(item.getText());
-		    		selectedBusinessTable.add(physicalTable);
+		    	//check if there are no selected table to import in the Business Model
+		    	if (selectedBusinessTableItem != null){
+			    	for (TableItem item: selectedBusinessTableItem){
+			    		PhysicalTable physicalTable = physicalModel.getTable(item.getText());
+			    		selectedBusinessTable.add(physicalTable);
+			    	}
 		    	}
-		    	
+	
 		    	//Business Model initialization
 		    	if (selectedBusinessTable.isEmpty()){
+		    		//create empty Business Model
 					BusinessModelInitializer businessModelInitializer = new BusinessModelInitializer();
+					spagobiModel.getBusinessModels().add(businessModelInitializer.initializeEmptyBusinessModel(
+							newModelWizardFileCreationPage.getModelName(), 
+							spagobiModel.getPhysicalModels().get(0)
+					));
+					/*
 					spagobiModel.getBusinessModels().add(businessModelInitializer.initialize(
 							newModelWizardFileCreationPage.getModelName(), 
 							spagobiModel.getPhysicalModels().get(0)
 					));
+					*/
 		    	}
 		    	else {
 		    		//with table filtering

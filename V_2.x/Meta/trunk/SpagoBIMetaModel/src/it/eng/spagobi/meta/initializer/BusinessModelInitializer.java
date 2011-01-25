@@ -348,15 +348,18 @@ public class BusinessModelInitializer {
 				
 				physicalTable = physicalForeignKey.getDestinationTable();
 				businessTable = businessModel.getBusinessTable( physicalTable );
-				businessRelationship.setDestinationTable(businessTable);
-				for(int j = 0; j < physicalForeignKey.getDestinationColumns().size(); j++) {
-					businessColumn = businessTable.getColumn(physicalForeignKey.getDestinationColumns().get(j));
-					businessRelationship.getDestinationColumns().add(businessColumn);
+				if (businessTable != null) {
+					businessRelationship.setDestinationTable(businessTable);
+					for(int j = 0; j < physicalForeignKey.getDestinationColumns().size(); j++) {
+						businessColumn = businessTable.getColumn(physicalForeignKey.getDestinationColumns().get(j));
+						businessRelationship.getDestinationColumns().add(businessColumn);
+					}
+					
+					businessModel.getRelationships().add(businessRelationship);
+					
+					getPropertiesInitializer().addProperties(businessRelationship);
 				}
-				
-				businessModel.getRelationships().add(businessRelationship);
-				
-				getPropertiesInitializer().addProperties(businessRelationship);
+
 			}
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business relationship from physical foreign key [" + physicalForeignKey.getSourceName() + "]", t);

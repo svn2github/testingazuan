@@ -19,6 +19,7 @@ import it.eng.spagobi.meta.model.business.actions.AddToIdentifierAction;
 import it.eng.spagobi.meta.model.business.actions.EditBusinessColumnsAction;
 import it.eng.spagobi.meta.model.business.actions.RemovePhysicalTableToBusinessViewAction;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.InboundRelationshipFolderItemProvider;
 import it.eng.spagobi.meta.model.test.TestEditorPlugin;
 
 import java.util.ArrayList;
@@ -171,9 +172,10 @@ public class BusinessModelActionBarContributor
 	 */
 	public BusinessModelActionBarContributor() {
 		super(ADDITIONS_LAST_STYLE);
-		loadResourceAction = new LoadResourceAction();
-		validateAction = new ValidateAction();
-		controlAction = new ControlAction();
+		//Hiding load/validate/control action 
+		//loadResourceAction = new LoadResourceAction();
+		//validateAction = new ValidateAction();
+		//controlAction = new ControlAction();
 	}
 
 	/**

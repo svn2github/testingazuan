@@ -69,6 +69,7 @@ public class BusinessColumnFolderItemProvider extends FolderItemProvider {
 	    return super.getNewChildDescriptors(businessTable, editingDomain, sibling);
 	}
 	
+	/*
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
@@ -76,7 +77,7 @@ public class BusinessColumnFolderItemProvider extends FolderItemProvider {
 			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_COLUMN_SET__COLUMNS);
 		}
 		return childrenFeatures;
-	}
+	}*/
 	
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);

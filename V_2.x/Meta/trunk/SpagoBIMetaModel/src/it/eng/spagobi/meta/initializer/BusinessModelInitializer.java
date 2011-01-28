@@ -132,7 +132,18 @@ public class BusinessModelInitializer {
 			businessTable = FACTORY.createBusinessTable();
 			
 			businessTable.setPhysicalTable(physicalTable);
-			businessTable.setName( beutfyName(physicalTable.getName()) );
+			//check if BusinessTable name is already used
+			String businessTableName = beutfyName(physicalTable.getName());
+			boolean nameUsed = checkNameAlreadyUsed(businessModel, businessTableName );
+			if (!nameUsed){
+				businessTable.setName( businessTableName );
+			} else {
+				while(nameUsed){
+					businessTableName = businessTableName + "_copy";
+					nameUsed = checkNameAlreadyUsed(businessModel, businessTableName );
+				}	
+				businessTable.setName( businessTableName );
+			}
 			businessTable.setDescription( physicalTable.getDescription() );
 			businessTable.setModel(businessModel);
 							
@@ -155,6 +166,36 @@ public class BusinessModelInitializer {
 		return businessTable;
 	}
 	
+	//create a BusinessTable with the name and description passed ad parameter
+	public BusinessTable addTable(PhysicalTable physicalTable, IModelObjectFilter columnFilter, String businessTableName, String businessTableDescription, BusinessModel businessModel, boolean addIdentifier) {
+		BusinessTable businessTable;
+		
+		try {
+			businessTable = FACTORY.createBusinessTable();
+			
+			businessTable.setPhysicalTable(physicalTable);
+			businessTable.setName( businessTableName );
+			businessTable.setDescription( businessTableDescription);
+			businessTable.setModel(businessModel);
+							
+			addColumns(physicalTable, columnFilter, businessTable);
+			
+			businessModel.getTables().add(businessTable);
+			
+			//adding table identifier if requested
+			if(addIdentifier){
+				if (physicalTable.getPrimaryKey() != null){
+					//addIdentifier(physicalTable.getPrimaryKey(),businessModel);
+					addIdentifier(businessTable, businessModel);
+				}
+			}
+						
+			getPropertiesInitializer().addProperties(businessTable);	
+		} catch(Throwable t) {
+			throw new RuntimeException("Impossible to initialize business table from physical table [" + physicalTable.getName() + "]", t);
+		}
+		return businessTable;
+	}
 
 	public void addColumns(PhysicalTable physicalTable, BusinessTable businessTable) {
 		addColumns(physicalTable, null, businessTable);
@@ -711,7 +752,16 @@ public class BusinessModelInitializer {
 		this.propertiesInitializer = propertyInitializer;
 	}
 
-	
+	/*
+	 * Check if business table name is already in use in the Business Model
+	 */
+	public boolean checkNameAlreadyUsed(BusinessModel businessModel, String BusinessTableName){
+		if (businessModel.getTable(BusinessTableName) != null){
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	
 	//  --------------------------------------------------------

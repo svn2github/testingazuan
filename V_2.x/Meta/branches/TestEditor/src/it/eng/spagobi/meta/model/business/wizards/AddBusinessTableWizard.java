@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.model.business.wizards;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.eng.spagobi.meta.initializer.BusinessTableDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
@@ -42,10 +43,12 @@ public class AddBusinessTableWizard extends AbstractSpagoBIModelWizard {
 
 	private AddBusinessTableWizardPagePhysicalTableSelection pageOne;
 	private AddBusinessTableWizardPageColumnSelection pageTwo;
+	private AddBusinessTableWizardPropertiesPage pageThree;
 	private TableItem[] columnsToImport;
 	private PhysicalTable physicalTable;
 	private BusinessModel owner;
-	
+	private String businessTableName,businessTableDescription;
+	private BusinessTableDescriptor businessTableDescriptor;
 	
 	public AddBusinessTableWizard(BusinessModel owner, PhysicalTable physicalTable, EditingDomain editingDomain, AbstractSpagoBIModelCommand command){
 		super(editingDomain, command);
@@ -53,6 +56,7 @@ public class AddBusinessTableWizard extends AbstractSpagoBIModelWizard {
 		this.setHelpAvailable(false);
 		this.physicalTable = physicalTable;
 		this.owner = owner;
+		businessTableDescriptor = new BusinessTableDescriptor();
 	}
 	
 	@Override
@@ -62,21 +66,37 @@ public class AddBusinessTableWizard extends AbstractSpagoBIModelWizard {
 		pageTwo = new AddBusinessTableWizardPageColumnSelection("Create Business Table step two", owner, pageOne, physicalTable);
 		addPage(pageTwo);
 		pageOne.setColumnSelectionPage(pageTwo);
-		
+		pageThree = new AddBusinessTableWizardPropertiesPage("Create Business Table step three", owner, pageOne, physicalTable);
+		addPage(pageThree);
+		pageOne.setPropertiesPage(pageThree);
 	}
 
 	@Override
 	public CommandParameter getCommandInputParameter() {
-		if (pageTwo.isPageComplete() && pageTwo.isColumnSelected()){
-			//columns to import
-			columnsToImport = pageTwo.getColumnsToImport();
-			int numCol = columnsToImport.length;
-			List<PhysicalColumn> colList = new ArrayList<PhysicalColumn>();
-			for (int i=0; i<numCol; i++){
-				PhysicalColumn pc = ((PhysicalColumn)columnsToImport[i].getData());
-				colList.add(pc);
+		if (pageThree.isPageComplete()){
+			if (pageTwo.isPageComplete() && pageTwo.isColumnSelected()){
+				//columns to import
+				columnsToImport = pageTwo.getColumnsToImport();
+				int numCol = columnsToImport.length;
+				List<PhysicalColumn> colList = new ArrayList<PhysicalColumn>();
+				for (int i=0; i<numCol; i++){
+					PhysicalColumn pc = ((PhysicalColumn)columnsToImport[i].getData());
+					colList.add(pc);
+				}
+				
+				//properties to import if specified
+				businessTableName = pageThree.getName();
+				businessTableDescription = pageThree.getDescription();
+				if ((businessTableName != null) && (businessTableName.length() > 0)){
+					businessTableDescriptor.setBusinessTableName(businessTableName);
+				}
+				if ((businessTableDescription != null) && (businessTableDescription.length() > 0)){
+					businessTableDescriptor.setBusinessTableDescription(businessTableDescription);
+				}
+				businessTableDescriptor.setPhysicalColumns(colList);
+				
+				return new CommandParameter(owner, null, businessTableDescriptor, new ArrayList<Object>());
 			}
-			return new CommandParameter(owner, null, colList, new ArrayList<Object>());
 		}
 		if (pageOne.isPageComplete()){
 			String tableName = pageOne.getTableSelected();
@@ -89,8 +109,10 @@ public class AddBusinessTableWizard extends AbstractSpagoBIModelWizard {
 
 	@Override
 	public boolean isWizardComplete() {
-		if (pageTwo.isPageComplete() && pageTwo.isColumnSelected()){
-			return true;
+		if (pageThree.isPageComplete()){
+			if (pageTwo.isPageComplete() && pageTwo.isColumnSelected()){
+				return true;
+			}
 		}
 		if (pageOne.isPageComplete()){
 			return true;

@@ -47,6 +47,7 @@ public class AddBusinessTableWizardPagePhysicalTableSelection extends
 		WizardPage {
 
 	private AddBusinessTableWizardPageColumnSelection columnSelectionPage;
+	private AddBusinessTableWizardPropertiesPage propertiesPage;
 	private PhysicalTable physicalTable;
 	private List tableList;
 	private String tableSelected;
@@ -147,6 +148,7 @@ public class AddBusinessTableWizardPagePhysicalTableSelection extends
 				setColumnSelection(true);
 				if (physicalTable == null){
 					columnSelectionPage.addTableItems(tableSelected);
+					propertiesPage.setSuggestedBusinessTableName(tableSelected);
 				}
 			}
 		}
@@ -195,5 +197,14 @@ public class AddBusinessTableWizardPagePhysicalTableSelection extends
 	public boolean isColumnSelection() {
 		return columnSelection;
 	}
+
+	/**
+	 * @param propertiesPage the propertiesPage to set
+	 */
+	public void setPropertiesPage(AddBusinessTableWizardPropertiesPage propertiesPage) {
+		this.propertiesPage = propertiesPage;
+	}
+
+
 
 }

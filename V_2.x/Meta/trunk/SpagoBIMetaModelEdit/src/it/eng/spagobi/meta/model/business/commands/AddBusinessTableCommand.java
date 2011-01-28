@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.model.business.commands;
 import it.eng.spagobi.meta.commons.IModelObjectFilter;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.BusinessRelationshipDescriptor;
+import it.eng.spagobi.meta.initializer.BusinessTableDescriptor;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -58,17 +59,21 @@ public class AddBusinessTableCommand extends AbstractSpagoBIModelCommand {
 	
 	@Override
 	public void execute() {
-		if (parameter.getValue() instanceof Collection){
+		if (parameter.getValue() instanceof BusinessTableDescriptor){
 			//parameter is a collection of selected column list
 			
 			//Create Business Table from a Physical Table with column filter
 			BusinessModel businessModel = (BusinessModel)parameter.getOwner();
-			Collection<PhysicalColumn> selectedColumns = (Collection)parameter.getValue();
+			BusinessTableDescriptor businessTableDescriptor = (BusinessTableDescriptor)parameter.getValue();
+			Collection<PhysicalColumn> selectedColumns = businessTableDescriptor.getPhysicalColumns();
 			//getting PhysicalTable reference
 			PhysicalColumn physicalColum =((PhysicalColumn)(selectedColumns.toArray()[0]));
 			PhysicalTable physicalTable = physicalColum.getTable();
 			BusinessModelInitializer initializer = new BusinessModelInitializer();
-			addedBusinessTable = initializer.addTable(physicalTable, new PhysicalColumnFilter(selectedColumns), businessModel, true);	
+			//getting Properties (Name,Description)
+			String businessTableName = businessTableDescriptor.getBusinessTableName();
+			String businessTableDescription = businessTableDescriptor.getBusinessTableDescription();
+			addedBusinessTable = initializer.addTable(physicalTable, new PhysicalColumnFilter(selectedColumns), businessTableName, businessTableDescription, businessModel, true);	
 			
 			System.err.println("COMMAND [AddTableCommand] SUCCESFULLY EXECUTED: ");
 			

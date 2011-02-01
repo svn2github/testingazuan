@@ -1,0 +1,116 @@
+#if ($jpaTable.package != "")
+package ${jpaTable.package};
+#end
+
+import java.io.Serializable;
+import javax.persistence.*;
+${jpaTable.importStatements}
+
+/**
+ * This class refers to the ${physicalTable.name} table.
+ * 
+ */
+@Entity
+#if( !${table.defaultname} )
+@Table(name="${physicalTable.name}")
+#end
+public class ${jpaTable.className} implements Serializable {
+
+private static final long serialVersionUID = 1L;
+
+// Constructor
+public ${jpaTable.className}() {
+}
+	
+###################################################################################
+##### 					fields
+###################################################################################
+#if ($jpaTable.hasCompositeKey)
+@EmbeddedId
+private ${jpaTable.compositeKeyClassName} ${jpaTable.compositeKeyPropertyName};
+#end
+###################################################################################
+#####                                 ADD ONLY THE SIMPLE PROPERTIES
+###################################################################################
+#foreach ($jpaColumn in $jpaTable.getSimpleColumns(true, true, false))
+// Simple properties 
+	#if ($jpaColumn.isIdentifier())
+@Id
+	#end
+#parse("sbi_column.vm")
+private ${jpaColumn.simplePropertyType} ${jpaColumn.propertyName}=null;
+#end
+###################################################################################
+#####                                 GET & SET
+###################################################################################
+// Simple properties getter and setter
+#if ($jpaTable.hasCompositeKey)
+
+public $jpaTable.compositeKeyClassName $jpaTable.compositeKeyPropertyNameGetter () {
+	return this.${jpaTable.compositeKeyPropertyName};
+}
+
+public void $jpaTable.compositeKeyPropertyNameSetter ($jpaTable.compositeKeyClassName $jpaTable.compositeKeyPropertyName) {
+	this.${jpaTable.compositeKeyPropertyName} = ${jpaTable.compositeKeyPropertyName};
+}
+#end
+
+#foreach ($jpaColumn in $jpaTable.getSimpleColumns(true, true, false))
+// simple column 
+$jpaColumn.fieldScope $jpaColumn.simplePropertyType $jpaColumn.propertyNameGetter () {
+	return this.${jpaColumn.propertyName};
+}
+$jpaColumn.fieldScope void $jpaColumn.propertyNameSetter ($jpaColumn.simplePropertyType $jpaColumn.propertyName) {
+	this.${jpaColumn.propertyName} = ${jpaColumn.propertyName};
+}
+#end
+//  ----------------   RELATIONSHIP   -------------------------------------
+#foreach ($jpaRelationship in $jpaTable.relationships)
+###################################################################################
+#####                           field annotations
+###################################################################################
+#if ($jpaTable.access == "field")
+//${jpaRelationship.description}
+	#if ($jpaRelationship.cardinality == "many-to-one")
+#parse("sbi_many_to_one.vm")
+	#elseif ($jpaRelationship.cardinality == "one-to-many")
+#parse("sbi_one_to_many.vm")
+	#end
+#end
+###################################################################################
+#####                                   field declaration
+###################################################################################
+#if ($jpaRelationship.cardinality == "many-to-one")
+private ${jpaRelationship.getReferencedTable().className} $jpaRelationship.propertyName;
+#elseif ($jpaRelationship.cardinality == "one-to-many")
+private ${jpaRelationship.collectionType}<${jpaRelationship.getReferencedTable().className}> $jpaRelationship.getSourceTableName();
+#end
+
+#end
+###################################################################################
+#####                              GET & SET
+###################################################################################
+// associations getters and setters
+
+#foreach ($jpaRelationship in $jpaTable.relationships)
+#if ($jpaRelationship.cardinality == "many-to-one")
+		#set ($propertyType = ${jpaRelationship.getReferencedTable().className})
+		#set ($propertyN = ${jpaRelationship.propertyName})
+		#set ($getMethod = $jpaRelationship.getGetter( ${jpaRelationship.propertyName}) )
+		#set ($setMethod = $jpaRelationship.getSetter( ${jpaRelationship.propertyName}) )
+#elseif ($jpaRelationship.cardinality == "one-to-many")
+		#set ($propertyType = "${jpaRelationship.collectionType}<${jpaRelationship.getReferencedTable().className}>")
+		#set ($propertyN = ${jpaRelationship.getSourceTableName()})
+		#set ($getMethod = $jpaRelationship.getGetter( ${jpaRelationship.getSourceTableName()}) )
+		#set ($setMethod = $jpaRelationship.getSetter( ${jpaRelationship.getSourceTableName()}) )		
+#end
+
+public $propertyType $getMethod () {
+	return this.$propertyN;
+}
+
+public void $setMethod ($propertyType $propertyN) {
+	this.$propertyN = $propertyN;
+} 
+#end
+}

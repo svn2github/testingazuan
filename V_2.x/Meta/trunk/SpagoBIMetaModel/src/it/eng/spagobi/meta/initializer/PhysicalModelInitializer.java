@@ -425,10 +425,14 @@ public class PhysicalModelInitializer {
 				importedKeyInitiallyImmediate - see SQL92 for definition
 				importedKeyNotDeferrable - see SQL92 for definition
 			 */
+			String fkName = null;
+			PhysicalTable sourceTable = null;
+			PhysicalTable destinationTable = null;
+			String pkName = null;
 			while (rs.next()) {
-				String fkName = rs.getString("FK_NAME");
-				PhysicalTable sourceTable = model.getTable( rs.getString("FKTABLE_NAME") );
-				PhysicalTable destinationTable = model.getTable( rs.getString("PKTABLE_NAME") );
+				fkName = rs.getString("FK_NAME");
+				sourceTable = model.getTable( rs.getString("FKTABLE_NAME") );
+				destinationTable = model.getTable( rs.getString("PKTABLE_NAME") );
 				
 				if(foreignKey == null) { // OK it's the first iteration
 					
@@ -439,6 +443,8 @@ public class PhysicalModelInitializer {
 					foreignKey.setSourceTable( sourceTable );					
 					foreignKey.setDestinationName(rs.getString("PK_NAME"));
 					foreignKey.setDestinationTable( destinationTable );
+					
+					pkName = rs.getString("PK_NAME");
 				
 				} else if (!foreignKey.getSourceName().equals(fkName)) { // we have finished with the previous fk
 
@@ -451,6 +457,7 @@ public class PhysicalModelInitializer {
 					foreignKey.setDestinationName(rs.getString("PK_NAME"));
 					foreignKey.setDestinationTable( destinationTable );
 					
+					pkName = rs.getString("PK_NAME");
 				}
 				
 				PhysicalColumn c = sourceTable.getColumn(rs.getString("FKCOLUMN_NAME"));
@@ -473,6 +480,17 @@ public class PhysicalModelInitializer {
 				foreignKey.getDestinationColumns().add( destinationTable.getColumn(rs.getString("PKCOLUMN_NAME")) );
 				
 			}
+			//add the last or the only foreign key found
+			if(foreignKey != null){
+				model.getForeignKeys().add(foreignKey);
+				foreignKey = FACTORY.createPhysicalForeignKey();
+				getPropertiesInitializer().addProperties(foreignKey);
+				foreignKey.setSourceName(fkName);
+				foreignKey.setSourceTable( sourceTable );					
+				foreignKey.setDestinationName(pkName);
+				foreignKey.setDestinationTable( destinationTable );
+			}
+			
 			rs.close();
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize foreignKeys metadata", t);

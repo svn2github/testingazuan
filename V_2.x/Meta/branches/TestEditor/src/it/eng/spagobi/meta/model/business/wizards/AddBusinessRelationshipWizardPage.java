@@ -121,6 +121,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
  		relationshipNameInputField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
  		relationshipNameInputField.addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent me){
+				//check if the input field is changed by the user
 				if (relationshipNameInputField.isFocusControl()){
 					nameInserted = true;
 				}

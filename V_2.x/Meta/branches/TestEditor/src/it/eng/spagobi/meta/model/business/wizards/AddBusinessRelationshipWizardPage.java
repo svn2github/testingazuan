@@ -80,8 +80,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
  		initCorrelationGroup(innerComposite,SWT.NONE);
  		
  		//Create Correlation Summary Group (cardinality + defined correlation)
- 		initCorrelationSummaryGroup(innerComposite, SWT.NONE);
- 		
+ 		initCorrelationSummaryGroup(innerComposite, SWT.NONE);		
 
  		if(selectTable(sourceTableCombo, sourceTable, true)) {
  			populateSourceColumnList(sourceTable);

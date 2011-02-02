@@ -408,6 +408,8 @@ public class BusinessModelInitializer {
 		return businessRelationship;
 	}
 	
+	
+	
 	//add Relationship without PhysicalForeignKey specified
 	public BusinessRelationship addRelationship(BusinessRelationshipDescriptor descriptor){
 			

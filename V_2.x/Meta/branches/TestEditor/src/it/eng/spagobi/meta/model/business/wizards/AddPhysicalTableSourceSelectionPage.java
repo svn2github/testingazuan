@@ -103,7 +103,7 @@ public class AddPhysicalTableSourceSelectionPage extends WizardPage {
 	 		comboPhysicalTables.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 	 		
 	 		Label lblCurrentlyDerivedColumns = new Label(compSourcePhysicalTableSelection, SWT.NONE);
-	 		lblCurrentlyDerivedColumns.setText("Currently derived columns imported:");
+	 		lblCurrentlyDerivedColumns.setText("Columns:");
 	 		
 	 		listPhysicalTableColumns = new List(compSourcePhysicalTableSelection, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 	 		listPhysicalTableColumns.setEnabled(false);
@@ -136,6 +136,7 @@ public class AddPhysicalTableSourceSelectionPage extends WizardPage {
 			}
 		}
 
+		/*
 		EList<BusinessColumn> businessColumns = ((BusinessView)owner).getColumns();
 		for (BusinessColumn businessColumn : businessColumns){
 			if (businessColumn.getPhysicalColumn().getTable() == selectedPhysicalTable ){
@@ -148,6 +149,11 @@ public class AddPhysicalTableSourceSelectionPage extends WizardPage {
 		}
 		else 
 			this.setErrorMessage(null);
+		*/
+		EList<PhysicalColumn> physicalColumns = selectedPhysicalTable.getColumns();
+		for (PhysicalColumn physicalColumn : physicalColumns){
+			listPhysicalTableColumns.add(physicalColumn.getName());
+		}
 	}
 	
 	//check if the right conditions to go forward occurred
@@ -156,7 +162,7 @@ public class AddPhysicalTableSourceSelectionPage extends WizardPage {
 			PhysicalModel physicalModel = owner.getModel().getPhysicalModel();
 			PhysicalTable physicalTable = physicalModel.getTable(selectedPhysicalTable);
 			pageThreeRef.setOriginalPhysicalTable(physicalTable);
-			pageThreeRef.populateBusinessTableGroup(owner, physicalTable);
+			pageThreeRef.populateSourcePhysicalTableGroup(owner, physicalTable);
 			setPageComplete(true);
 		}
 		else{			

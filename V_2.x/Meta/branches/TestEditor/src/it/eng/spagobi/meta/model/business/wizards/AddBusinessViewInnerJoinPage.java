@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Label;
 
 /**
  * @author cortella
@@ -55,11 +56,12 @@ import org.eclipse.swt.widgets.List;
 public class AddBusinessViewInnerJoinPage extends WizardPage {
 	private BusinessColumnSet owner;
 	private Composite container;
-	private List joinRelationshipList, physicalColumnsList, businessColumnsList ;
+	private List joinRelationshipList, destinationPhysicalColumnsList, sourcePhysicalColumnsList ;
 	private PhysicalTable originalPhysicalTable,physicalTable;
 	private BusinessViewInnerJoinRelationshipDescriptor relationshipDescriptor;
 	private java.util.List<PhysicalColumn> sourceColumns, destinationColumns;
 	private String selectedPhysicalTableName;
+	private Label lblSourcePhysicalTable, lblDestinationPhysicalTable;
 	
 	/**
 	 * @param pageName
@@ -93,49 +95,57 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 		compositeColumns.setLayout(new GridLayout(2, true));
 		compositeColumns.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
-		createBusinessTableGroup(compositeColumns, SWT.NONE);
-		createPhysicalTableGroup(compositeColumns, SWT.NONE);
+		createSourcePhysicalTableGroup(compositeColumns, SWT.NONE);
+		createDestinationPhysicalTableGroup(compositeColumns, SWT.NONE);
 		createButtons(container, SWT.NONE);
 		createRelationshipGroup(container, SWT.NONE);
 		
 		if (selectedPhysicalTableName != null){
 			PhysicalModel physicalModel = owner.getModel().getPhysicalModel();
 			PhysicalTable physicalTable = physicalModel.getTable(selectedPhysicalTableName);
-			populatePhysicalTableGroup(physicalTable);
+			populateDestinationPhysicalTableGroup(physicalTable);
 		}	
-		populateBusinessTableGroup(owner,null);
+		populateSourcePhysicalTableGroup(owner,null);
 		checkPageComplete();
 	}
 	
-	public void createBusinessTableGroup(Composite composite, int style){
+	public void createSourcePhysicalTableGroup(Composite composite, int style){
 		Group grpBusinessTableColumns = new Group(composite, style);
-		grpBusinessTableColumns.setText("Business Table Columns");
+		grpBusinessTableColumns.setText("Source Physical Table Columns");
 		grpBusinessTableColumns.setLayout(new GridLayout(1, false));
 		grpBusinessTableColumns.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
+		lblSourcePhysicalTable = new Label(grpBusinessTableColumns, SWT.NONE);
+		
 		Composite compBusinessTableColumns = new Composite(grpBusinessTableColumns, SWT.NONE);
-		compBusinessTableColumns.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		GridData gd_compBusinessTableColumns = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_compBusinessTableColumns.heightHint = 100;
+		compBusinessTableColumns.setLayoutData(gd_compBusinessTableColumns);
 		compBusinessTableColumns.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		businessColumnsList = new List(compBusinessTableColumns, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		sourcePhysicalColumnsList = new List(compBusinessTableColumns, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 	}
 	
-	public void createPhysicalTableGroup(Composite composite, int style){
+	public void createDestinationPhysicalTableGroup(Composite composite, int style){
 		Group grpPhysicalTableColumns = new Group(composite, style);
-		grpPhysicalTableColumns.setText("Physical Table Columns");
+		grpPhysicalTableColumns.setText("Destination Physical Table Columns");
 		grpPhysicalTableColumns.setLayout(new GridLayout(1, false));
 		grpPhysicalTableColumns.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
+		lblDestinationPhysicalTable = new Label(grpPhysicalTableColumns, SWT.NONE);
+		
 		Composite compPhysicalTableColumns = new Composite(grpPhysicalTableColumns, SWT.NONE);
-		compPhysicalTableColumns.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		GridData gd_compPhysicalTableColumns = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_compPhysicalTableColumns.heightHint = 100;
+		compPhysicalTableColumns.setLayoutData(gd_compPhysicalTableColumns);
 		compPhysicalTableColumns.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		physicalColumnsList = new List(compPhysicalTableColumns, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		destinationPhysicalColumnsList = new List(compPhysicalTableColumns, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 	}
 	public void createButtons(Composite composite, int style){
 		Composite compButton = new Composite(container, style);
 		compButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-		compButton.setLayout(new GridLayout(1, false));
+		compButton.setLayout(new GridLayout(2, false));
 		
 		Button btnAddRelationship = new Button(compButton, SWT.NONE);
 		btnAddRelationship.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, false, 1, 1));
@@ -143,9 +153,9 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				//add relationship
-				if ( (physicalColumnsList.getSelection().length != 0) && (businessColumnsList.getSelection().length != 0)  ){
+				if ( (destinationPhysicalColumnsList.getSelection().length != 0) && (sourcePhysicalColumnsList.getSelection().length != 0)  ){
 					setErrorMessage(null);
-					addJoinRelationship(businessColumnsList.getSelection()[0],physicalColumnsList.getSelection()[0]);
+					addJoinRelationship(sourcePhysicalColumnsList.getSelection()[0],destinationPhysicalColumnsList.getSelection()[0]);
 					checkPageComplete();
 				} else {
 					setErrorMessage("You must select a source column and a destination column");
@@ -153,6 +163,24 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 			}
 		});
 		btnAddRelationship.setText("Add Relationship");
+		
+		Button btnRemoveRelationship = new Button(compButton, SWT.NONE);
+		btnRemoveRelationship.setText("Remove Relationship");
+		btnRemoveRelationship.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int selectionIndex = joinRelationshipList.getSelectionIndex();
+				
+				//remove relationship from List
+				joinRelationshipList.remove(selectionIndex);
+								
+				//remove relationship from descriptor
+				sourceColumns.remove(selectionIndex);
+				destinationColumns.remove(selectionIndex);
+				relationshipDescriptor.setSourceColumns(sourceColumns);
+				relationshipDescriptor.setDestinationColumns(destinationColumns);
+			}
+		});
 	}
 	
 	public void createRelationshipGroup(Composite composite, int style){	
@@ -169,8 +197,9 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 		joinRelationshipList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 	}
 	
-	public void populateBusinessTableGroup(BusinessColumnSet businessColumnSet, PhysicalTable filterPhysicalTable){
-		businessColumnsList.removeAll();
+	public void populateSourcePhysicalTableGroup(BusinessColumnSet businessColumnSet, PhysicalTable filterPhysicalTable){
+		sourcePhysicalColumnsList.removeAll();
+		/*
 		Collection<BusinessColumn> businessColumns =  businessColumnSet.getColumns();
 		if (filterPhysicalTable != null){
 			//get only the columns of the specified PhysicalTable
@@ -186,23 +215,47 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 				businessColumnsList.add(businessColumn.getName());
 			}
 		}
+		 */
+		if (filterPhysicalTable != null){
+			//get only the columns of the specified PhysicalTable
+			Collection<PhysicalColumn> physicalColumns =  filterPhysicalTable.getColumns();
+			for (PhysicalColumn physicalColumn : physicalColumns){
+				sourcePhysicalColumnsList.add(physicalColumn.getName());
+			}
+			lblSourcePhysicalTable.setText(filterPhysicalTable.getName());
+			lblSourcePhysicalTable.pack();
+		}
+		else if (businessColumnSet instanceof BusinessTable){
+			BusinessTable businessTable = ((BusinessTable)businessColumnSet);
+			PhysicalTable physicalTable = businessTable.getPhysicalTable();
+			Collection<PhysicalColumn> physicalColumns =  physicalTable.getColumns();
+			for (PhysicalColumn physicalColumn : physicalColumns){
+				sourcePhysicalColumnsList.add(physicalColumn.getName());
+			}
+			lblSourcePhysicalTable.setText(physicalTable.getName());
+			lblSourcePhysicalTable.pack();
+		}
 
 	}
 	
-	public void populatePhysicalTableGroup(PhysicalTable physicalTable){
-		physicalColumnsList.removeAll();
+	public void populateDestinationPhysicalTableGroup(PhysicalTable physicalTable){
+		destinationPhysicalColumnsList.removeAll();
 		this.physicalTable = physicalTable;
 		Collection<PhysicalColumn> physicalColumns =  physicalTable.getColumns();
 		for(PhysicalColumn physicalColumn:physicalColumns){
-			physicalColumnsList.add(physicalColumn.getName());
-		}		
+			destinationPhysicalColumnsList.add(physicalColumn.getName());
+		}
+		lblDestinationPhysicalTable.setText(physicalTable.getName());
+		lblDestinationPhysicalTable.pack();
 	}
 	
 	public void addJoinRelationship(String sourceColumn, String destinationColumn){
 		//Get BusinessColumn first, than corresponding PhysicalColumn
+		/*
 		BusinessColumn businessColumn = owner.getColumn(sourceColumn);
 		PhysicalColumn sourcePhysicalColumn = businessColumn.getPhysicalColumn();
-		
+		*/
+		PhysicalColumn sourcePhysicalColumn = originalPhysicalTable.getColumn(sourceColumn);
 		PhysicalColumn destinationPhysicalColumn = physicalTable.getColumn(destinationColumn);
 		sourceColumns.add(sourcePhysicalColumn);
 		destinationColumns.add(destinationPhysicalColumn);

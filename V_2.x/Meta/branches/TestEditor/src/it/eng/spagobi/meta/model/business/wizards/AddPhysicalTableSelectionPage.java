@@ -171,7 +171,7 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 				//do this populate only when table is select from the UI
 				PhysicalModel physicalModel = owner.getModel().getPhysicalModel();
 				PhysicalTable physicalTable = physicalModel.getTable(tableSelected);
-				pageThreeRef.populatePhysicalTableGroup(physicalTable);
+				pageThreeRef.populateDestinationPhysicalTableGroup(physicalTable);
 			}
 		}
 		else{			

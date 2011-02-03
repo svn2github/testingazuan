@@ -68,7 +68,7 @@ public class AddPhysicalTableToBusinessTableCommand extends
 			businessTable = (BusinessTable)businessColumnSet;
 			addedBusinessView = initializer.upgradeBusinessTableToBusinessView(businessTable, joinRelationshipDescriptor);
 			
-			//---- > add columns in the join relationship to the BusinessView
+			//add columns in the join relationship to the BusinessView
 			addedColumns.addAll(joinRelationshipDescriptor.getSourceColumns()) ;
 			addedColumns.addAll(joinRelationshipDescriptor.getDestinationColumns());
 			for (PhysicalColumn physicalColumn : addedColumns){
@@ -85,7 +85,7 @@ public class AddPhysicalTableToBusinessTableCommand extends
 			businessView = (BusinessView)businessColumnSet;
 			businessView = initializer.addPhysicalTableToBusinessView(businessView, joinRelationshipDescriptor);
 			
-			//---- > add columns in the join relationship to the BusinessView
+			//add columns in the join relationship to the BusinessView
 			addedColumns.addAll(joinRelationshipDescriptor.getSourceColumns()) ;
 			addedColumns.addAll(joinRelationshipDescriptor.getDestinationColumns());
 			for (PhysicalColumn physicalColumn : addedColumns){

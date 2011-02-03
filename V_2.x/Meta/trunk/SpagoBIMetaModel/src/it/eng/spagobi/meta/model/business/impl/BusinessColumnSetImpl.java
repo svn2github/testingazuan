@@ -288,7 +288,7 @@ public class BusinessColumnSetImpl extends ModelObjectImpl implements BusinessCo
 
 	@Override
 	public List<BusinessRelationship> getRelationships() {
-		List relationships = new ArrayList<BusinessRelationship>();
+		List<BusinessRelationship> relationships = new ArrayList<BusinessRelationship>();
 		
 		Iterator<BusinessRelationship> it = getModel().getRelationships().iterator();
 		
@@ -296,9 +296,9 @@ public class BusinessColumnSetImpl extends ModelObjectImpl implements BusinessCo
 			BusinessRelationship relationship = it.next();
 			
 			if ( (relationship.getSourceTable() != null)&& (relationship.getSourceTable().equals(this)) ){
-				relationships.add(relationship);
+				relationships.add(relationship); 
 			}
-			if ( (relationship.getDestinationTable() != null) && (relationship.getDestinationTable().equals(this)) ) {
+			else if ( (relationship.getDestinationTable() != null) && (relationship.getDestinationTable().equals(this)) ) {
 				relationships.add(relationship);
 			}
 		}

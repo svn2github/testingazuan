@@ -21,12 +21,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -43,6 +47,7 @@ public class AddPhysicalTableToBusinessTableCommand extends
 	BusinessView addedBusinessView;
 	BusinessView businessView;
 	BusinessViewInnerJoinRelationshipDescriptor joinRelationshipDescriptor;
+	List<PhysicalColumn> addedColumns = new ArrayList<PhysicalColumn>();
 	
 	public AddPhysicalTableToBusinessTableCommand(EditingDomain domain, CommandParameter parameter) {
 		super("Physical Table", "Add Physical Table ", domain, parameter);
@@ -62,11 +67,34 @@ public class AddPhysicalTableToBusinessTableCommand extends
 		if (businessColumnSet instanceof BusinessTable){
 			businessTable = (BusinessTable)businessColumnSet;
 			addedBusinessView = initializer.upgradeBusinessTableToBusinessView(businessTable, joinRelationshipDescriptor);
+			
+			//---- > add columns in the join relationship to the BusinessView
+			addedColumns.addAll(joinRelationshipDescriptor.getSourceColumns()) ;
+			addedColumns.addAll(joinRelationshipDescriptor.getDestinationColumns());
+			for (PhysicalColumn physicalColumn : addedColumns){
+				//check if column is already present
+				if (addedBusinessView.getColumn(physicalColumn) == null){
+					initializer.addColumn(physicalColumn, addedBusinessView);
+				}
+			}
+			addedColumns.clear();
+			
 		}
 		//for BusinessView, update the Physical Tables
 		else if (businessColumnSet instanceof BusinessView){
 			businessView = (BusinessView)businessColumnSet;
 			businessView = initializer.addPhysicalTableToBusinessView(businessView, joinRelationshipDescriptor);
+			
+			//---- > add columns in the join relationship to the BusinessView
+			addedColumns.addAll(joinRelationshipDescriptor.getSourceColumns()) ;
+			addedColumns.addAll(joinRelationshipDescriptor.getDestinationColumns());
+			for (PhysicalColumn physicalColumn : addedColumns){
+				//check if column is already present
+				if (businessView.getColumn(physicalColumn) == null){
+					initializer.addColumn(physicalColumn, businessView);					
+				}
+			}
+			addedColumns.clear();			
 		}
 		System.err.println("COMMAND [AddPhysicalTableToBusinessTableCommand] SUCCESFULLY EXECUTED");
 		

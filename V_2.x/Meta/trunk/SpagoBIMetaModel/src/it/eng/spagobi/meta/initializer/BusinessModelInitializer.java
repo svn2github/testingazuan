@@ -447,6 +447,8 @@ public class BusinessModelInitializer {
 		return businessRelationship;
 	}
 	
+	
+	
 	/**
 	 * Create a BusinessView using the data from a BusinessTable and the added PhysicalTable with a specified join path
 	 * @return BusinessView created

@@ -199,23 +199,6 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 	
 	public void populateSourcePhysicalTableGroup(BusinessColumnSet businessColumnSet, PhysicalTable filterPhysicalTable){
 		sourcePhysicalColumnsList.removeAll();
-		/*
-		Collection<BusinessColumn> businessColumns =  businessColumnSet.getColumns();
-		if (filterPhysicalTable != null){
-			//get only the columns of the specified PhysicalTable
-			for(BusinessColumn businessColumn:businessColumns){
-				if (businessColumn.getPhysicalColumn().getTable() == filterPhysicalTable){
-					businessColumnsList.add(businessColumn.getName());					
-				}
-			}
-		}
-		else {
-			//get all columns
-			for(BusinessColumn businessColumn:businessColumns){
-				businessColumnsList.add(businessColumn.getName());
-			}
-		}
-		 */
 		if (filterPhysicalTable != null){
 			//get only the columns of the specified PhysicalTable
 			Collection<PhysicalColumn> physicalColumns =  filterPhysicalTable.getColumns();
@@ -250,11 +233,6 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 	}
 	
 	public void addJoinRelationship(String sourceColumn, String destinationColumn){
-		//Get BusinessColumn first, than corresponding PhysicalColumn
-		/*
-		BusinessColumn businessColumn = owner.getColumn(sourceColumn);
-		PhysicalColumn sourcePhysicalColumn = businessColumn.getPhysicalColumn();
-		*/
 		PhysicalColumn sourcePhysicalColumn = originalPhysicalTable.getColumn(sourceColumn);
 		PhysicalColumn destinationPhysicalColumn = physicalTable.getColumn(destinationColumn);
 		sourceColumns.add(sourcePhysicalColumn);

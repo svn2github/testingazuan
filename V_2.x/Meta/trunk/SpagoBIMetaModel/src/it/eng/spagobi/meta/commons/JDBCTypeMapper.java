@@ -83,14 +83,23 @@ public class JDBCTypeMapper {
 	
 	public static String getJavaTypeName(String modelType) {
 		Class javaClass = getJavaType(modelType);
-		return javaClass != null? javaClass.getName(): null;
+		String classString=javaClass != null? javaClass.getName(): null;
+		if (needArray(modelType)) return classString+"[]";
+		else return classString;
+	}
+	
+	private static boolean needArray(String modelType){
+		if( "BINARY".equals(modelType)) 		return true;
+		else if( "LONGVARBINARY".equals(modelType))	return true;
+		else if( "VARBINARY".equals(modelType)) 	return true;
+		else  										return false;					
 	}
 	
 	public static Class getJavaType(String modelType) {
 		
 		if("ARRAY".equals(modelType))				return java.sql.Array.class;
 		else if( "BIGINT".equals(modelType)) 		return java.lang.Long.class;
-		else if( "BINARY".equals(modelType)) 		return java.lang.Byte[].class;
+		else if( "BINARY".equals(modelType)) 		return java.lang.Byte.class;  // tolto []
 		else if( "BIT".equals(modelType))			return java.lang.Boolean.class;
 		else if( "BLOB".equals(modelType)) 			return java.sql.Blob.class;
 		else if( "CHAR".equals(modelType))			return java.lang.String.class;
@@ -102,7 +111,7 @@ public class JDBCTypeMapper {
 		else if( "FLOAT".equals(modelType)) 		return java.lang.Double.class;
 		else if( "INTEGER".equals(modelType)) 		return java.lang.Integer.class;
 		else if( "JAVA_OBJECT".equals(modelType)) 	return java.lang.Object.class;
-		else if( "LONGVARBINARY".equals(modelType))	return java.lang.Byte[].class;
+		else if( "LONGVARBINARY".equals(modelType))	return java.lang.Byte.class;// tolto []
 		else if( "LONGVARCHAR".equals(modelType)) 	return java.lang.String.class;
 		else if( "NULL".equals(modelType))			return java.lang.Object.class;
 		else if( "NUMERIC".equals(modelType)) 		return java.math.BigDecimal.class;
@@ -114,7 +123,7 @@ public class JDBCTypeMapper {
 		else if( "TIME".equals(modelType))			return java.sql.Time.class;
 		else if( "TIMESTAMP".equals(modelType))		return java.sql.Timestamp.class;
 		else if( "TINYINT".equals(modelType))		return java.lang.Byte.class;
-		else if( "VARBINARY".equals(modelType)) 	return java.lang.Byte[].class;
+		else if( "VARBINARY".equals(modelType)) 	return java.lang.Byte.class;// tolto []
 		else if( "VARCHAR".equals(modelType)) 		return java.lang.String.class;
 		else  										return null;			
 	}

@@ -25,9 +25,9 @@ public ${jpaTable.className}() {
 ###################################################################################
 ##### 					fields
 ###################################################################################
-#if ($jpaTable.hasCompositeKey)
+#if ($jpaTable.hasCompositeKey())
 @EmbeddedId
-private ${jpaTable.compositeKeyClassName} ${jpaTable.compositeKeyPropertyName};
+private ${jpaTable.compositeKeyClassName} ${jpaTable.compositeKeyPropertyName}=null;
 #end
 ###################################################################################
 #####                                 ADD ONLY THE SIMPLE PROPERTIES
@@ -44,7 +44,7 @@ private ${jpaColumn.simplePropertyType} ${jpaColumn.propertyName}=null;
 #####                                 GET & SET
 ###################################################################################
 // Simple properties getter and setter
-#if ($jpaTable.hasCompositeKey)
+#if ($jpaTable.hasCompositeKey())
 
 public $jpaTable.compositeKeyClassName $jpaTable.compositeKeyPropertyNameGetter () {
 	return this.${jpaTable.compositeKeyPropertyName};
@@ -69,21 +69,20 @@ $jpaColumn.fieldScope void $jpaColumn.propertyNameSetter ($jpaColumn.simplePrope
 ###################################################################################
 #####                           field annotations
 ###################################################################################
-#if ($jpaTable.access == "field")
+// ${jpaRelationship.isRecoursive()}
 //${jpaRelationship.description}
 	#if ($jpaRelationship.cardinality == "many-to-one")
 #parse("sbi_many_to_one.vm")
 	#elseif ($jpaRelationship.cardinality == "one-to-many")
 #parse("sbi_one_to_many.vm")
 	#end
-#end
 ###################################################################################
 #####                                   field declaration
 ###################################################################################
 #if ($jpaRelationship.cardinality == "many-to-one")
 private ${jpaRelationship.getReferencedTable().className} $jpaRelationship.propertyName;
 #elseif ($jpaRelationship.cardinality == "one-to-many")
-private ${jpaRelationship.collectionType}<${jpaRelationship.getReferencedTable().className}> $jpaRelationship.getSourceTableName();
+private ${jpaRelationship.collectionType}<${jpaRelationship.getReferencedTable().className}> $jpaRelationship.getBidirectionalPropertyName();
 #end
 
 #end
@@ -100,9 +99,9 @@ private ${jpaRelationship.collectionType}<${jpaRelationship.getReferencedTable()
 		#set ($setMethod = $jpaRelationship.getSetter( ${jpaRelationship.propertyName}) )
 #elseif ($jpaRelationship.cardinality == "one-to-many")
 		#set ($propertyType = "${jpaRelationship.collectionType}<${jpaRelationship.getReferencedTable().className}>")
-		#set ($propertyN = ${jpaRelationship.getSourceTableName()})
-		#set ($getMethod = $jpaRelationship.getGetter( ${jpaRelationship.getSourceTableName()}) )
-		#set ($setMethod = $jpaRelationship.getSetter( ${jpaRelationship.getSourceTableName()}) )		
+		#set ($propertyN = ${jpaRelationship.getBidirectionalPropertyName()})
+		#set ($getMethod = $jpaRelationship.getGetter( ${jpaRelationship.getBidirectionalPropertyName()}) )
+		#set ($setMethod = $jpaRelationship.getSetter( ${jpaRelationship.getBidirectionalPropertyName()}) )		
 #end
 
 public $propertyType $getMethod () {

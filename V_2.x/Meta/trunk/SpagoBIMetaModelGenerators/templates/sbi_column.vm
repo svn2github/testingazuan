@@ -16,7 +16,7 @@
 #end
 #set ($members = "")
 #if ( !$jpaColumn.isDefault() )
-#append($members "name=$jpaColumn.ColumnNameDoubleQuoted" )
+#append($members "name=$jpaColumn.columnNameDoubleQuoted" )
 #end
 #####    ADD THE LINE TO THE SOURCE CODE
 #if( $members !="" )

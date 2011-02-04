@@ -57,10 +57,10 @@ public void $jpaTable.compositeKeyPropertyNameSetter ($jpaTable.compositeKeyClas
 
 #foreach ($jpaColumn in $jpaTable.getSimpleColumns(true, true, false))
 // simple column 
-$jpaColumn.fieldScope $jpaColumn.simplePropertyType $jpaColumn.propertyNameGetter () {
+public $jpaColumn.simplePropertyType $jpaColumn.propertyNameGetter () {
 	return this.${jpaColumn.propertyName};
 }
-$jpaColumn.fieldScope void $jpaColumn.propertyNameSetter ($jpaColumn.simplePropertyType $jpaColumn.propertyName) {
+public void $jpaColumn.propertyNameSetter ($jpaColumn.simplePropertyType $jpaColumn.propertyName) {
 	this.${jpaColumn.propertyName} = ${jpaColumn.propertyName};
 }
 #end

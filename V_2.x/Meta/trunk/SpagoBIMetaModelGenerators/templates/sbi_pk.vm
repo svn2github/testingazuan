@@ -28,10 +28,10 @@ public class ${jpaTable.compositeKeyClassName} implements Serializable {
 #####
 #foreach ($jpaColumn in $jpaTable.primaryKeyColumns)
 
-$jpaColumn.fieldScope $jpaColumn.simplePropertyType $jpaColumn.propertyNameGetter () {
+public $jpaColumn.simplePropertyType $jpaColumn.propertyNameGetter () {
 	return this.${jpaColumn.propertyName};
 }
-$jpaColumn.fieldScope void $jpaColumn.propertyNameSetter ($jpaColumn.simplePropertyType $jpaColumn.propertyName) {
+public void $jpaColumn.propertyNameSetter ($jpaColumn.simplePropertyType $jpaColumn.propertyName) {
 	this.${jpaColumn.propertyName} = ${jpaColumn.propertyName};
 }
 

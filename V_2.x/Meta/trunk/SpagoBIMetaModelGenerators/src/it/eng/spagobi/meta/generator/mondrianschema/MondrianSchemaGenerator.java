@@ -17,18 +17,18 @@ import java.io.File;
 public class MondrianSchemaGenerator implements IGenerator {
 		
 	@Override
-	public void generate(ModelObject o, File outputFile) {
+	public void generate(ModelObject o, String outputdir) {
 		OlapModel model;
 		
 		if(o instanceof OlapModel) {
 			model = (OlapModel)o;
-			generateMondrianSchema(model, outputFile);
+			generateMondrianSchema(model, outputdir);
 		} else {
-			throw new GenerationException("Impossible to create Mondrian Schema from an object of type [" + o.getClass().getName() + "]");
+			throw new GenerationException("Impossible to create JPA Mapping from an object of type [" + o.getClass().getName() + "]");
 		}
 	}
 	
-	public void generateMondrianSchema(OlapModel model, File outputFile) {
+	public void generateMondrianSchema(OlapModel model, String outputdir) {
 		throw new GenerationException("Function generateMondrianSchema not yet implemented");
 	}
 

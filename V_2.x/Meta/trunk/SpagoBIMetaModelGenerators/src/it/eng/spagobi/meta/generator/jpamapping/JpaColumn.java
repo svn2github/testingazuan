@@ -95,7 +95,7 @@ public class JpaColumn {
 	 * Returns the column type as JAVA Object
 	 * Does not return null.
 	 */
-	private String getPropertyType()  {
+	public String getPropertyType()  {
 		String type;
 		
 		ModelProperty property = businessColumn.getProperties().get(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE);

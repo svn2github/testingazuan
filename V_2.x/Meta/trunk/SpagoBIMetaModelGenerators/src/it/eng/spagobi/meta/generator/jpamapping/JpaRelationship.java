@@ -73,7 +73,7 @@ public class JpaRelationship {
 	}
 	
 
-	private JpaTable getReferencedTable(){
+	public JpaTable getReferencedTable(){
 		if ( isSourceRole() ) {
 			if(businessRelationship.getDestinationTable() instanceof BusinessTable) {
 				return new JpaTable((BusinessTable)businessRelationship.getDestinationTable());

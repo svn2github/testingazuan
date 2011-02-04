@@ -6,16 +6,20 @@ package it.eng.spagobi.meta.generator.jpamapping;
 import it.eng.spagobi.meta.generator.GenerationException;
 import it.eng.spagobi.meta.generator.IGenerator;
 import it.eng.spagobi.meta.model.ModelObject;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Iterator;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.apache.velocity.texen.util.FileUtil;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -23,81 +27,95 @@ import org.apache.velocity.app.Velocity;
  */
 public class JpaMappingGenerator implements IGenerator {
 	
+	/**
+	 *   The Velocity template directory
+	 */
 	private File templateDir;
-	private String templateFilename;
-	
-	public File DEFAULT_TEMPLATE_DIR = new File("templates");
-	public String DEFAULT_TEMPLATE_FILENAME = "table.vm";
+	private String outputDir=null;
 	
 	public JpaMappingGenerator() {
-		setTemplateDir( DEFAULT_TEMPLATE_DIR );
-		setTemplateFilename( DEFAULT_TEMPLATE_FILENAME );
+		templateDir=new File("templates");
 	}
-	
-	public JpaMappingGenerator(File templateDir, String templateFilename) {
-		setTemplateDir( templateDir );
-		setTemplateFilename( templateFilename );
-	}
-	
 	
 	@Override
-	public void generate(ModelObject o, File outputFile)  {
+	public void generate(ModelObject o, String outputDir)  {
 		BusinessModel model;
 		
 		if(o instanceof BusinessModel) {
 			model = (BusinessModel)o;
 			try {
-				generateJpaMapping(model, outputFile);
+				generateJpaMapping(model, outputDir);
 			} catch (Exception e) {
-				throw new GenerationException("An unpredicted error ocurred while generating JPA Mapping", e);
+				e.printStackTrace();
 			}
 		} else {
 			throw new GenerationException("Impossible to create JPA Mapping from an object of type [" + o.getClass().getName() + "]");
 		}
 	}
 	
-	public void generateJpaMapping(BusinessModel model, File outputFile) {
-		
-		VelocityContext context;
-		Template template;
+	/**
+	 * Generate the JPA Mapping of one BusinessModel in one outputFile
+	 * @param model BusinessModel
+	 * @param outputFile File
+	 */
+	public void generateJpaMapping(BusinessModel model, String outputDir) {
+		this.outputDir=outputDir;
 		BusinessTable businessTable;
-		StringWriter fileWriter;
-		
 		Velocity.setProperty("file.resource.loader.path", getTemplateDir().getAbsolutePath());
-		try {
-			template = Velocity.getTemplate( getTemplateFilename() );
-		} catch (Throwable t) {
-			throw new GenerationException("Impossible to load template file [" + getTemplateFilename() + "]");
-		}
-		
-		// per ora a fine  di test genero il mapping solo per la prima tabella del modello
-		for(int i = 0; i < 1; i++) {
-			businessTable = (BusinessTable)model.getTables().get(i);
-			// tutti gli oggetti aggiunti al contesto velocity possono essere referenziati ed usati
-			// in fase di esecuzione del template
-		    context = new VelocityContext();
-		    context.put("physicalTable", businessTable.getPhysicalTable()); //$NON-NLS-1$
-	        context.put("businessTable", businessTable); //$NON-NLS-1$
-	        // JPATable è un decorator che aggiunge una serie di metodi utili a velocity per 
-	        // estrarre informazioni da una determinata business table durante la creazione dl mapping
-	        context.put("jpaTable", new JpaTable(businessTable)); //$NON-NLS-1$
-	        
-	        fileWriter = new StringWriter();
-			try {
-				template.merge(context, fileWriter);
-			} catch (IOException e) {
-				throw new GenerationException("Impossible to generate output file from template file [" + getTemplateFilename() + "]");
+		Iterator<BusinessColumnSet> tables=model.getTables().iterator();
+	
+		while (tables.hasNext()) {
+			businessTable = (BusinessTable)tables.next();
+			JpaTable jpaTable=new JpaTable(businessTable);
+			createFile("sbi_table.vm",businessTable,jpaTable,jpaTable.getClassName());
+			if (jpaTable.hasCompositeKey()) {
+				createFile("sbi_pk.vm",businessTable,jpaTable,jpaTable.getCompositeKeyClassName());
 			}
-			System.out.println( fileWriter.toString() );
 		}	
 	}
 
+	/**
+	 * This method create a single java class file
+	 * @param templateFile
+	 * @param businessTable
+	 * @param jpaTable
+	 */
+	private void createFile(String templateFile,BusinessTable businessTable,JpaTable jpaTable,String className){
+		Template template=null;
+		VelocityContext context=null;
 
+		FileWriter fileWriter=null;
+		try {
+			template = Velocity.getTemplate( templateFile );
+		} catch (Throwable t) {
+			throw new GenerationException("Impossible to load template file [" + templateFile + "]");
+		}
+		
+	    context = new VelocityContext();
+	    context.put("physicalTable", businessTable.getPhysicalTable()); //$NON-NLS-1$
+        context.put("businessTable", businessTable); //$NON-NLS-1$
+        context.put("jpaTable",jpaTable ); //$NON-NLS-1$
+		try {
+			String path=outputDir+StringUtil.strReplaceAll(jpaTable.getPackage(), ".", "/");
+			createPackage(path);
+			fileWriter=new FileWriter(path +"/"+className+".java");
+			template.merge(context, fileWriter);
+			fileWriter.flush();
+			fileWriter.close();
+		} catch (IOException e) {
+			throw new GenerationException("Impossible to generate output file from template file [" + templateFile + "]");
+		}		
+	}
 	
 	
 	// =======================================================================
 	// ACCESSOR METHODS
 	// =======================================================================
+	
+	private void createPackage(String path){
+			FileUtil.mkdir(path);
+	}
+	
 	
 	public File getTemplateDir() {
 		return templateDir;
@@ -108,13 +126,4 @@ public class JpaMappingGenerator implements IGenerator {
 		this.templateDir = templateDir;
 	}
 
-
-	public String getTemplateFilename() {
-		return templateFilename;
-	}
-
-
-	public void setTemplateFilename(String templateFilename) {
-		this.templateFilename = templateFilename;
-	}
 }

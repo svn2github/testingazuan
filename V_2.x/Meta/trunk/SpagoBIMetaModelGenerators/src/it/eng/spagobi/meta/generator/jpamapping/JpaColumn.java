@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping;
 
-import java.util.Collections;
 import java.util.List;
 
 import it.eng.spagobi.meta.commons.JDBCTypeMapper;
@@ -34,8 +33,6 @@ import it.eng.spagobi.meta.model.business.BusinessRelationship;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-//JpaColumn è un decorator che aggiunge una serie di metodi utili a velocity per 
-//estrarre informazioni da una determinata business column durante la creazione dl mapping
 public class JpaColumn {
 	BusinessColumn businessColumn;
 	JpaTable jpaTable;
@@ -53,11 +50,12 @@ public class JpaColumn {
 		return businessColumn.isIdentifier();
 	}
 	
-	
-	
+	/**
+	 * Return true if this Column belong to any relationship
+	 * @return
+	 */
 	public boolean isColumnInRelationship() {
 		List<BusinessRelationship> relationships;
-		
 		relationships = jpaTable.getBusinessTable().getRelationships();
 		for(BusinessRelationship relationship : relationships) {
 			List<BusinessColumn> columns = null; 
@@ -66,13 +64,13 @@ public class JpaColumn {
 			} else {
 				columns =  relationship.getDestinationColumns();
 			}
-			
-			// scann columns
-			for(BusinessColumn column : columns) {
-				if(column.equals(businessColumn)) return true;
+			if (columns!=null){
+				// scann columns
+				for(BusinessColumn column : columns) {
+					if(column.equals(businessColumn)) return true;
+				}
 			}
 		}
-		
 		return false;
 	}
 	
@@ -82,31 +80,22 @@ public class JpaColumn {
 	 */
 	public String getPropertyName() {
 		String name;
-		
-		name = StringUtil.tableNameToVarName(businessColumn.getPhysicalColumn().getName());
-		//name = StringUtil.initUpper(name);
-				
+		name = StringUtil.tableNameToVarName(businessColumn.getPhysicalColumn().getName());	
 		return name;
 	}
 	
-	/**
-	 * Returns the generated field member scope, one of {@link #PUBLIC_SCOPE}|{@link #PROTECTED_SCOPE}
-	 * |{@link #PRIVATE_SCOPE}.
-	 * This method never returns null (defaults to private).
-	 */
-	public String getFieldScope() {
-		return PRIVATE_SCOPE;
-	}
-	
+
 	public String getSimplePropertyType()  {
-		return getPropertyType().substring( getPropertyType().lastIndexOf('.')+1 );
+		String result=null;
+		result= getPropertyType().substring( getPropertyType().lastIndexOf('.')+1 );
+		return result;
 	}
 	
 	/**
-	 * Returns the column type.
+	 * Returns the column type as JAVA Object
 	 * Does not return null.
 	 */
-	public String getPropertyType()  {
+	private String getPropertyType()  {
 		String type;
 		
 		ModelProperty property = businessColumn.getProperties().get(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE);
@@ -128,8 +117,53 @@ public class JpaColumn {
 	public void setJpaTable(JpaTable jpaTable) {
 		this.jpaTable = jpaTable;
 	}
+	/**
+	 * TODO ... da verificare !!  
+	 * @return
+	 */
+	public boolean isDataTypeLOB(){
+		ModelProperty property = businessColumn.getProperties().get(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE);
+		String modelType = property.getValue();
+		if (modelType.equals("BLOB") || modelType.equals("CLOB")) return true;
+		else return false;
+	}
 	
+	/**
+	 * Return the phisical column name 
+	 * @return
+	 */
+	public String getColumnName(){
+		return businessColumn.getPhysicalColumn().getName();
+	}
+	public String getColumnNameDoubleQuoted(){
+		return StringUtil.doubleQuote(businessColumn.getPhysicalColumn().getName());
+	}
 	
+	public boolean needMapTemporalType(){
+		if (getPropertyType().equals("java.sql.Date") 
+					|| getPropertyType().equals("java.sql.Time")
+					|| getPropertyType().equals("java.sql.Timestamp")) return true;
+		else return false;
+	}
+	public String getMapTemporalType(){
+		if (getPropertyType().equals("java.sql.Date") ) return "DATE";
+		if (getPropertyType().equals("java.sql.Time") ) return "TIME";
+		if (getPropertyType().equals("java.sql.Timestamp") ) return "TIMESTAMP";
+		else return "";
+	}	
 	
-	
+	/**
+	 * Return the name of the metod GETTER
+	 * @return
+	 */
+	public String getPropertyNameGetter() {
+		return "get"+StringUtil.initUpper(getPropertyName());
+	}
+	/**
+	 * Return the name of the metod SETTER
+	 * @return
+	 */
+	public String getPropertyNameSetter() {
+		return "set"+StringUtil.initUpper(getPropertyName());
+	}	
 }

@@ -13,19 +13,14 @@ import it.eng.spagobi.meta.model.business.BusinessTable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
- */ 
-// JPATable è un decorator che aggiunge una serie di metodi utili a velocity per 
-// estrarre informazioni da una determinata business table durante la creazione dl mapping
+ */
 public class JpaTable {
 	
 	private BusinessTable businessTable;
@@ -54,7 +49,7 @@ public class JpaTable {
 	 * Returns the <code>JpaColumn</code> objects to be generated for this
 	 * table.
 	 */
-	public List<JpaColumn> getColumns() {
+	private List<JpaColumn> getColumns() {
 		if (jpaColumns == null) {
 			jpaColumns = new ArrayList<JpaColumn>();
 			for (BusinessColumn c : businessTable.getColumns()) {
@@ -66,10 +61,18 @@ public class JpaTable {
 		return jpaColumns;
 	}
 
+	/**
+	 * return the Package name....  TODO this should be read from model ( e.g. like a simple property )
+	 * @return
+	 */
 	public String getPackage() {
-		return "it.eng.spagobi";
+		return "it.eng.spagobi.meta";
 	}
 	
+	/**
+	 * Return all the import statements ( the properties type )
+	 * @return
+	 */
 	public String getImportStatements(){
 		buildColumnTypesMap();
 		Collection<String> packages = columnTypesMap.keySet();
@@ -77,33 +80,19 @@ public class JpaTable {
 		for ( String s : packages ) {
 			ret.append( "import " + s + ";\n"); //$NON-NLS-1$
 		}
-		/*
-		List<AssociationRole> associationRoles = getAssociationRoles();
-		for ( AssociationRole role :  associationRoles ) {
-			if ( role.getCardinality().equals( Association.ONE_TO_MANY )
-					|| role.getCardinality().equals( Association.MANY_TO_MANY ) ) {
-				ret.append( "import " + getDefaultCollectionType() + ";\n"); //$NON-NLS-1$
+
+		List<JpaRelationship> relationship = getRelationships();
+		for ( JpaRelationship role :  relationship ) {
+			if ( role.getCardinality().equals( JpaRelationship.ONE_TO_MANY )
+					|| role.getCardinality().equals( JpaRelationship.MANY_TO_MANY ) ) {
+				ret.append( "import " + role.getCollectionType() + ";\n"); //$NON-NLS-1$
 				break;
 			}
 		}
-		*/
-		
+
 		return ret.toString();
 	}
 	
-	/**
-	 * Returns one of {@link #PROPERTY_ACCESS}|{@link #FIELD_ACCESS} indicating
-	 * how the entity properties are mapped. Does not return null (defaults to
-	 * {@link #FIELD_ACCESS}).
-	 */
-	public String getAccess() {
-		String name = null;
-		//String name = customized(ACCESS);
-		if (name == null) {
-			name = "field";
-		}
-		return name;
-	}
 	
 	/**
 	 * Returns true if there is more than 1 column in the table identifier
@@ -125,15 +114,77 @@ public class JpaTable {
 	}
 	
 	/**
+	 * Return only the PK column
+	 * @return
+	 */
+	public List<JpaColumn> getPrimaryKeyColumns(){
+		List<JpaColumn> result = new ArrayList<JpaColumn>();
+		List<JpaColumn> columns = getColumns();
+	
+		for (int i = 0, n = columns.size(); i < n; ++i) {
+			JpaColumn column = columns.get(i);
+			
+			if (column.isIdentifier())	result.add(column);
+		}
+		return result;		
+	}
+	/**
+	 * TODO .... da implementare
 	 * Returns the composite key property name.
 	 */
 	public String getCompositeKeyPropertyName() {
-		return "id"; //$NON-NLS-1$
+		return "compId"; //$NON-NLS-1$
 	}
-	
+
+	/**
+	 * Return the name of the metod GETTER
+	 * @return
+	 */
+	public String getCompositeKeyPropertyNameGetter() {
+		return "get"+StringUtil.initUpper(getCompositeKeyPropertyName());
+	}
+	/**
+	 * Return the name of the metod SETTER
+	 * @return
+	 */
+	public String getCompositeKeyPropertyNameSetter() {
+		return "set"+StringUtil.initUpper(getCompositeKeyPropertyName());
+	}	
 	
 	/**
-	 * Returns the <code>ORMGenColumn</code> objects for the the columns that
+	 * 
+	 * @return
+	 */
+	public String getPrimaryKeyEqualsClause(){
+		List<JpaColumn> columns=getPrimaryKeyColumns();
+		String result=null;
+		for (int i = 0, n = columns.size(); i < n; ++i) {
+			JpaColumn column = columns.get(i);
+			if (result==null) result="( this."+column.getPropertyName()+".equals(castOther."+column.getPropertyName()+") )";
+			else result=result+" \n && ( this."+column.getPropertyName()+".equals(castOther."+column.getPropertyName()+") )";
+		}
+		if (result==null) return "";
+		else return result+";";	
+		
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getPrimaryKeyHashCodeClause(){
+		List<JpaColumn> columns=getPrimaryKeyColumns();
+		String result=null;
+		for (int i = 0, n = columns.size(); i < n; ++i) {
+			JpaColumn column = columns.get(i);
+			if (result==null)  result=" hash = hash * prime + this."+column.getPropertyName()+".hashCode() ;\n";
+			else result=result+" hash = hash * prime + this."+column.getPropertyName()+".hashCode() ;\n";
+		}
+		if (result==null) return "";
+		return result;		
+	}
+	/**
+	 * Returns the <code>JpaColumn</code> objects for the the columns that
 	 * are not part of any association.
 	 * 
 	 * @param genOnly
@@ -172,50 +223,58 @@ public class JpaTable {
 		return getSimpleColumns(true/* genOnly */, true/* includePk */, true/* includeInherited */);
 	}
 	
+	/**
+	 * Return the <code>JpaRelationship</code> that contains this table
+	 * @return
+	 */
 	public List<JpaRelationship> getRelationships() {
 		List<JpaRelationship> jpaRelationships;
-		JpaRelationship jpaRelationship;
+		JpaRelationship jpaRelationship=null;
 		
 		jpaRelationships = new ArrayList<JpaRelationship>();
 		for(BusinessRelationship relationshp : businessTable.getRelationships()) {
 			jpaRelationship = new JpaRelationship(this, relationshp);
-			jpaRelationships.add(jpaRelationship);
+			if (jpaRelationship.getBusinessRelationship().getSourceTable().equals(this.getBusinessTable())){
+				// many-to-one
+				jpaRelationship.setCardinality(JpaRelationship.MANY_TO_ONE);
+			}else if (jpaRelationship.getBusinessRelationship().getDestinationTable().equals(this.getBusinessTable())){
+				// one-to-many
+				jpaRelationship.setCardinality(JpaRelationship.ONE_TO_MANY);				
+			}
+			if (jpaRelationship!=null) {
+				jpaRelationship.setBidirectional(true);
+				jpaRelationships.add(jpaRelationship);
+			}			
 		}
-		
 		return jpaRelationships;		
 	}
 	
 	
 	
-	public HashMap<String, String> buildColumnTypesMap(){
-		if ( columnTypesMap != null) {
-			return columnTypesMap;
-		}
-		columnTypesMap = new HashMap<String, String>();
-		for ( BusinessColumn column : businessTable.getColumns() ) {
-			ModelProperty property = column.getProperties().get(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE);
-			String modelType = property.getValue();
-			String javaType = JDBCTypeMapper.getJavaTypeName(modelType);
-			//System.out.println(modelType + " : " + javaType);
-			if ( /*!col.isPartOfCompositePrimaryKey()
-					&& !col.isForeignKey()
-					&& */ !javaType.startsWith("java.lang") && javaType.indexOf('.') > 0 ) {
-				String simpleJavaType= javaType.substring( javaType.lastIndexOf('.')+1 );
-				columnTypesMap.put(javaType, simpleJavaType);
+	/**
+	 * build the hasmap that contains the properties type of this "Business Table"
+	 * @return
+	 */
+	private void buildColumnTypesMap() {
+		if (columnTypesMap == null) {
+			columnTypesMap = new HashMap<String, String>();
+			for (BusinessColumn column : businessTable.getColumns()) {
+				ModelProperty property = column.getProperties().get(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE);
+				String modelType = property.getValue();
+				String javaType = JDBCTypeMapper.getJavaTypeName(modelType);
+				if ( /*
+					 * !col.isPartOfCompositePrimaryKey() && !col.isForeignKey()
+					 * &&
+					 */!javaType.startsWith("java.lang")
+						&& javaType.indexOf('.') > 0) {
+					String simpleJavaType = javaType.substring(javaType
+							.lastIndexOf('.') + 1);
+					columnTypesMap.put(javaType, simpleJavaType);
+				}
 			}
 		}
-		return columnTypesMap;
 	}
 	
-	/**
-	 * Return true if the values of name element in the @Table is default so we
-	 * can skip generating the annotation
-	 * 
-	 * @return true
-	 */
-	public boolean isDefaultname() {
-		return true;
-	}
 	
 	/**
 	 * Returns the generated Java class name (not qualified).
@@ -224,8 +283,15 @@ public class JpaTable {
 		String name;
 		name = StringUtil.tableNameToVarName(businessTable.getPhysicalTable().getName());
 		name = StringUtil.initUpper(name);
-		//name = EntityGenTools.convertToUniqueJavaStyleClassName(getName(), new ArrayList<String>());
-		//name = StringUtil.singularise(name);
 		return name;
+	}
+	
+
+	/**
+	 * TODO .. da implementare
+	 * @return
+	 */
+	public String getDefaultFetch(){
+		return "lazy";
 	}
 }

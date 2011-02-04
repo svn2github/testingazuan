@@ -12,5 +12,5 @@ import java.io.File;
  *
  */
 public interface IGenerator {
-	void generate(ModelObject o, File outputFile);
+	void generate(ModelObject o, String outputFile);
 }

@@ -24,7 +24,7 @@ public class MondrianSchemaGenerator implements IGenerator {
 			model = (OlapModel)o;
 			generateMondrianSchema(model, outputFile);
 		} else {
-			throw new GenerationException("Impossible to create JPA Mapping from an object of type [" + o.getClass().getName() + "]");
+			throw new GenerationException("Impossible to create Mondrian Schema from an object of type [" + o.getClass().getName() + "]");
 		}
 	}
 	

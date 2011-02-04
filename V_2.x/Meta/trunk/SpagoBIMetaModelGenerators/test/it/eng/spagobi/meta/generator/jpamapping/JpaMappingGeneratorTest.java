@@ -26,7 +26,8 @@ public class JpaMappingGeneratorTest {
 		PhysicalModelInitializer modelInitializer;
 		BusinessModel businessModel;
 		BusinessModelInitializer businessModelInitializer;
-	        
+	    
+		// use mysql test db
 		dbType = DatabaseType.MYSQL;
 	
 		// initialize model
@@ -46,7 +47,8 @@ public class JpaMappingGeneratorTest {
         businessModelInitializer = new BusinessModelInitializer();
         businessModel = businessModelInitializer.initialize("businessModelDemo", physicalModel);
         
+        // generate the mapping
 		JpaMappingGenerator gen = new JpaMappingGenerator();	
-		gen.generateJpaMapping( businessModel, (File)null);
+		gen.generateJpaMapping( businessModel, (File)null); // just print it in the console for the moment
 	}
 }

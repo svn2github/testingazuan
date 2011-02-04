@@ -32,6 +32,8 @@ import it.eng.spagobi.meta.model.business.BusinessTable;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
+// JpaRelationship è un decorator che aggiunge una serie di metodi utili a velocity per 
+// estrarre informazioni da una determinata business relationship durante la creazione dl mapping
 public class JpaRelationship {
 	JpaTable jpaTable;
 	BusinessRelationship businessRelationship;

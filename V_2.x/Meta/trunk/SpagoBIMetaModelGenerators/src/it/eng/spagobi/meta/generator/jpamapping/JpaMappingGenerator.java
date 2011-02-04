@@ -49,8 +49,7 @@ public class JpaMappingGenerator implements IGenerator {
 			try {
 				generateJpaMapping(model, outputFile);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new GenerationException("An unpredicted error ocurred while generating JPA Mapping", e);
 			}
 		} else {
 			throw new GenerationException("Impossible to create JPA Mapping from an object of type [" + o.getClass().getName() + "]");
@@ -71,12 +70,16 @@ public class JpaMappingGenerator implements IGenerator {
 			throw new GenerationException("Impossible to load template file [" + getTemplateFilename() + "]");
 		}
 		
+		// per ora a fine  di test genero il mapping solo per la prima tabella del modello
 		for(int i = 0; i < 1; i++) {
 			businessTable = (BusinessTable)model.getTables().get(i);
-			
+			// tutti gli oggetti aggiunti al contesto velocity possono essere referenziati ed usati
+			// in fase di esecuzione del template
 		    context = new VelocityContext();
 		    context.put("physicalTable", businessTable.getPhysicalTable()); //$NON-NLS-1$
 	        context.put("businessTable", businessTable); //$NON-NLS-1$
+	        // JPATable è un decorator che aggiunge una serie di metodi utili a velocity per 
+	        // estrarre informazioni da una determinata business table durante la creazione dl mapping
 	        context.put("jpaTable", new JpaTable(businessTable)); //$NON-NLS-1$
 	        
 	        fileWriter = new StringWriter();

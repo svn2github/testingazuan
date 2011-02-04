@@ -23,7 +23,9 @@ import java.util.Set;
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
- */
+ */ 
+// JPATable è un decorator che aggiunge una serie di metodi utili a velocity per 
+// estrarre informazioni da una determinata business table durante la creazione dl mapping
 public class JpaTable {
 	
 	private BusinessTable businessTable;

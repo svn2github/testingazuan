@@ -34,6 +34,8 @@ import it.eng.spagobi.meta.model.business.BusinessRelationship;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
+//JpaColumn è un decorator che aggiunge una serie di metodi utili a velocity per 
+//estrarre informazioni da una determinata business column durante la creazione dl mapping
 public class JpaColumn {
 	BusinessColumn businessColumn;
 	JpaTable jpaTable;

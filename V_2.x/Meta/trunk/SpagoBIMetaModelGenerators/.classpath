@@ -8,5 +8,22 @@
 	<classpathentry kind="lib" path="libs/velocity/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="libs/velocity/oro-2.0.8.jar"/>
 	<classpathentry kind="lib" path="libs/velocity/velocity-1.6.4.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/org.eclipse.jdt.compiler.tool_1.0.100.v_A68_R36x.jar"/>
+	<classpathentry kind="lib" path="C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar"/>
+	<classpathentry kind="lib" path="C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/org.eclipse.jdt_3.6.1.v201009090800.jar"/>
+	<classpathentry kind="lib" path="C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/org.eclipse.jdt.compiler.apt_1.0.300.v20100513-0845.jar"/>
+	<classpathentry kind="lib" path="C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/org.eclipse.jdt.core.manipulation_1.3.0.v20100520-0800.jar"/>
+	<classpathentry kind="lib" path="C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/org.eclipse.jdt.ui_3.6.1.r361_v20100825-0800.jar"/>
+	<classpathentry kind="lib" path="C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/org.eclipse.jdt.launching_3.5.100.v20100526.jar"/>
+	<classpathentry kind="lib" path="C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/org.eclipse.jdt.junit_3.6.1.r361_v20100825-0800.jar"/>
+	<classpathentry kind="lib" path="C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/org.eclipse.jdt.junit.runtime_3.4.200.v20100526-0800.jar"/>
+	<classpathentry kind="lib" path="C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/org.eclipse.jdt.junit.core_3.6.1.r361_v20100825-0800.jar"/>
+	<classpathentry kind="lib" path="C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/org.eclipse.jdt.junit4.runtime_1.1.100.v20100526-0800.jar"/>
+	<classpathentry kind="lib" path="C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/org.eclipse.jdt.doc.user_3.6.1.r361_v20100721-0800.jar"/>
+	<classpathentry kind="lib" path="C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/org.eclipse.jdt.debug.ui_3.5.0.v20100602-0830.jar"/>
+	<classpathentry kind="lib" path="C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/org.eclipse.jdt.apt.ui_3.3.300.v20100513-0845.jar"/>
+	<classpathentry kind="lib" path="C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/org.eclipse.jdt.apt.pluggable.core_1.0.301.R36_v20100727-0110.jar"/>
+	<classpathentry kind="lib" path="C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/org.eclipse.jdt.apt.core_3.3.401.R36_v20100727-0110.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

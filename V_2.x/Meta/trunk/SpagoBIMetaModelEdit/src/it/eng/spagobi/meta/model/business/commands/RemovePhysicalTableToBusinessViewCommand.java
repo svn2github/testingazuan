@@ -33,6 +33,9 @@ import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
+
 
 
 
@@ -50,7 +53,7 @@ AbstractSpagoBIModelCommand {
 	BusinessTable businessTable ;
 	
 	public RemovePhysicalTableToBusinessViewCommand(EditingDomain domain, CommandParameter parameter) {
-		super("Remove Physical Table", "Remove Physical Table ", domain, parameter);
+		super("Physical Table", "Remove Physical Table ", domain, parameter);
 	}
 
 	public RemovePhysicalTableToBusinessViewCommand(EditingDomain domain){
@@ -72,6 +75,7 @@ AbstractSpagoBIModelCommand {
 		} else {
 			System.err.println("COMMAND [RemovePhysicalTableToBusinessViewCommand] NOT EXECUTED: ");
 			this.executed = false;
+			showInformation("Warning","Cannot delete this physical table because is used in a join relationship as a source table.\nPlease remove first the other tables.");
 		}
 
 	}
@@ -112,4 +116,17 @@ AbstractSpagoBIModelCommand {
 	public Object getImage() {
 		return SpagoBIMetalModelEditPlugin.INSTANCE.getImage("full/obj16/PhysicalTable");
 	}
+	
+	/**
+	 * Show an information dialog box.
+	 */
+	public void showInformation(final String title, final String message) {
+	  Display.getDefault().asyncExec(new Runnable() {
+	    @Override
+	    public void run() {
+	      MessageDialog.openInformation(null, title, message);
+	    }
+	  });
+	}
+
 }

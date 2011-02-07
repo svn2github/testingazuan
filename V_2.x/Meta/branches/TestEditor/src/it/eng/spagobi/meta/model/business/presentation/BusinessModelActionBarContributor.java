@@ -17,6 +17,7 @@ import it.eng.spagobi.meta.model.business.actions.AddOutcomeBusinessRelationship
 import it.eng.spagobi.meta.model.business.actions.AddPhysicalTableToBusinessTableAction;
 import it.eng.spagobi.meta.model.business.actions.AddToIdentifierAction;
 import it.eng.spagobi.meta.model.business.actions.EditBusinessColumnsAction;
+import it.eng.spagobi.meta.model.business.actions.GenerateJPAMappingAction;
 import it.eng.spagobi.meta.model.business.actions.RemovePhysicalTableToBusinessViewAction;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.InboundRelationshipFolderItemProvider;
@@ -164,6 +165,13 @@ public class BusinessModelActionBarContributor
 	 */
 	protected IMenuManager createSiblingMenuManager;
 
+	//added
+	protected Collection<IAction> createRemoveActions;
+	protected IMenuManager createRemoveMenuManager;
+	
+	protected Collection<IAction> createGenerateActions;
+	protected IMenuManager createGenerateMenuManager;
+	
 	/**
 	 * This creates an instance of the contributor.
 	 * <!-- begin-user-doc -->
@@ -217,6 +225,15 @@ public class BusinessModelActionBarContributor
 		//
 		createSiblingMenuManager = new MenuManager(TestEditorPlugin.INSTANCE.getString("_UI_CreateSibling_menu_item"));
 		submenuManager.insertBefore("additions", createSiblingMenuManager);
+		
+		// Prepare for remove item menu
+		//
+		createRemoveMenuManager = new MenuManager("Remove");
+		submenuManager.insertBefore("additions", createRemoveMenuManager);
+		
+		// Prepare for Generate item menu
+		createGenerateMenuManager = new MenuManager("Generate");
+		submenuManager.insertBefore("additions", createGenerateMenuManager);
 
 		// Force an update because Eclipse hides empty menus now.
 		//
@@ -278,11 +295,20 @@ public class BusinessModelActionBarContributor
 		if (createSiblingMenuManager != null) {
 			depopulateManager(createSiblingMenuManager, createSiblingActions);
 		}
+		//added
+		if (createRemoveMenuManager != null) {
+			depopulateManager(createRemoveMenuManager, createRemoveActions);
+		}
+		if (createGenerateMenuManager != null) {
+			depopulateManager(createGenerateMenuManager, createGenerateActions);
+		}
 
 		// Query the new selection for appropriate new child/sibling descriptors
 		//
 		Collection<?> newChildDescriptors = null;
 		Collection<?> newSiblingDescriptors = null;
+		Collection<?> newRemoveDescriptors = null;
+		Collection<?> newGenerateDescriptors = null;
 
 		ISelection selection = event.getSelection();
 		if (selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() == 1) {
@@ -292,6 +318,8 @@ public class BusinessModelActionBarContributor
 
 			newChildDescriptors = domain.getNewChildDescriptors(object, null);
 			//newSiblingDescriptors = domain.getNewChildDescriptors(null, object);
+			newRemoveDescriptors = domain.getNewChildDescriptors(object, null);
+			newGenerateDescriptors =  domain.getNewChildDescriptors(object, null);
 			
 		}
 
@@ -299,6 +327,8 @@ public class BusinessModelActionBarContributor
 		//
 		createChildActions = generateCreateChildActions(newChildDescriptors, selection);
 		createSiblingActions = generateCreateSiblingActions(newSiblingDescriptors, selection);
+		createRemoveActions = generateCreateRemoveActions(newRemoveDescriptors, selection);
+		createGenerateActions = generateCreateGenerateActions(newGenerateDescriptors, selection);
 
 		if (createChildMenuManager != null) {
 			populateManager(createChildMenuManager, createChildActions, null);
@@ -308,7 +338,70 @@ public class BusinessModelActionBarContributor
 			populateManager(createSiblingMenuManager, createSiblingActions, null);
 			createSiblingMenuManager.update(true);
 		}
+		if (createRemoveMenuManager != null) {
+			populateManager(createRemoveMenuManager, createRemoveActions, null);
+			createRemoveMenuManager.update(true);
+		}
+		if (createGenerateMenuManager != null) {
+			populateManager(createGenerateMenuManager, createGenerateActions, null);
+			createGenerateMenuManager.update(true);
+		}
 	}
+	
+	protected Collection<IAction> generateCreateRemoveActions(Collection<?> descriptors, ISelection selection) {
+		Collection<IAction> actions = new ArrayList<IAction>();
+		if(!selection.isEmpty()) {
+			IStructuredSelection sselection = (IStructuredSelection) selection;
+		    List<?> list = sselection.toList();
+		    Object targetObject = list.get(0);
+		    if(targetObject instanceof BusinessTable) {
+
+		    } else if(targetObject instanceof BusinessView){
+		    	actions.add(new RemovePhysicalTableToBusinessViewAction(activeEditorPart, selection));
+		    } else if(targetObject instanceof BusinessColumn){
+		    	
+		    } else if(targetObject instanceof BusinessRootItemProvider) {
+		    	
+		    } else {
+		    	System.err.println(">>>> " + targetObject.getClass().getName());
+		    	if (descriptors != null) {
+					for (Object descriptor : descriptors) {
+						actions.add(new CreateChildAction(activeEditorPart, selection, descriptor));
+					}
+				}
+		    }
+		}
+		return actions;
+	}
+	
+	protected Collection<IAction> generateCreateGenerateActions(Collection<?> descriptors, ISelection selection) {
+		Collection<IAction> actions = new ArrayList<IAction>();
+		
+		
+		if(!selection.isEmpty()) {
+			IStructuredSelection sselection = (IStructuredSelection) selection;
+		    List<?> list = sselection.toList();
+		    Object targetObject = list.get(0);
+		    if(targetObject instanceof BusinessTable) {
+
+		    } else if(targetObject instanceof BusinessView){
+
+		    } else if(targetObject instanceof BusinessColumn){
+
+		    } else if(targetObject instanceof BusinessRootItemProvider) {
+		    	actions.add(new GenerateJPAMappingAction(activeEditorPart, selection));
+		    } else {
+		    	System.err.println(">>>> " + targetObject.getClass().getName());
+		    	if (descriptors != null) {
+					for (Object descriptor : descriptors) {
+						actions.add(new CreateChildAction(activeEditorPart, selection, descriptor));
+					}
+				}
+		    }
+		}
+		return actions;
+	}
+	
 
 	/**
 	 * This generates a {@link org.eclipse.emf.edit.ui.action.CreateChildAction} for each object in <code>descriptors</code>,
@@ -336,7 +429,7 @@ public class BusinessModelActionBarContributor
 		    	actions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
 		    	actions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
 		    	actions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));
-		    	actions.add(new RemovePhysicalTableToBusinessViewAction(activeEditorPart, selection));
+		    	//actions.add(new RemovePhysicalTableToBusinessViewAction(activeEditorPart, selection));
 		    } else if(targetObject instanceof BusinessColumn){
 		    	actions.add(new AddToIdentifierAction(activeEditorPart, selection));
 		    } else if(targetObject instanceof BusinessRootItemProvider) {
@@ -441,6 +534,15 @@ public class BusinessModelActionBarContributor
 		submenuManager = new MenuManager(TestEditorPlugin.INSTANCE.getString("_UI_CreateSibling_menu_item"));
 		populateManager(submenuManager, createSiblingActions, null);
 		menuManager.insertBefore("edit", submenuManager);
+		
+		submenuManager = new MenuManager("Remove");
+		populateManager(submenuManager, createRemoveActions, null);
+		menuManager.insertBefore("edit", submenuManager);
+		
+		submenuManager = new MenuManager("Generate");
+		populateManager(submenuManager, createGenerateActions, null);
+		menuManager.insertBefore("edit", submenuManager);
+		
 	}
 
 	/**

@@ -21,42 +21,31 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.actions;
 
+import it.eng.spagobi.meta.model.business.commands.GenerateJPAMappingCommand;
 
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
-
-import it.eng.spagobi.meta.model.business.BusinessColumnSet;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.RemovePhysicalTableToBusinessViewCommand;
-import it.eng.spagobi.meta.model.business.wizards.RemovePhysicalTableWizard;
 
 /**
  * @author cortella
  *
  */
-public class RemovePhysicalTableToBusinessViewAction extends
-AbstractSpagoBIModelAction {
+public class GenerateJPAMappingAction extends AbstractSpagoBIModelAction {
 
 	/**
-	 * @param editingDomain
-	 * @param command
+	 * @param commandClass
+	 * @param workbenchPart
+	 * @param selection
 	 */
-	public RemovePhysicalTableToBusinessViewAction(IWorkbenchPart workbenchPart, ISelection selection) {
-		super(RemovePhysicalTableToBusinessViewCommand.class, workbenchPart, selection);
+	public GenerateJPAMappingAction(IWorkbenchPart workbenchPart, ISelection selection) {
+		super(GenerateJPAMappingCommand.class, workbenchPart, selection);
 	}
+	
 	/**
 	 * This executes the command.
 	 */
 	@Override
 	public void run() {
-		BusinessColumnSet businessColumnSet = (BusinessColumnSet)owner;
-		RemovePhysicalTableWizard wizard = new RemovePhysicalTableWizard( businessColumnSet, editingDomain, (AbstractSpagoBIModelCommand)command );
-    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
-		dialog.create();
-    	dialog.open();
+
 	}
-
-
 }

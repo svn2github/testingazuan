@@ -6,6 +6,7 @@ import it.eng.spagobi.meta.model.business.commands.AddBusinessRelationshipComman
 import it.eng.spagobi.meta.model.business.commands.AddBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.AddIdentifierCommand;
 import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
+import it.eng.spagobi.meta.model.business.commands.GenerateJPAMappingCommand;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
 import java.util.ArrayList;
@@ -57,6 +58,9 @@ public class BusinessRootItemProvider extends FolderItemProvider {
 		 } else if(commandClass == AddBusinessRelationshipCommand.class) {
 			System.err.println(">>> " + commandClass.getName() + " <<<");
 			result = new AddBusinessRelationshipCommand(domain, commandParameter);
+		 } else if(commandClass == GenerateJPAMappingCommand.class) {
+		    System.err.println(">>> " + commandClass.getName() + " <<<");
+			result = new GenerateJPAMappingCommand(domain, commandParameter);
 		 }
 		 
 		 return result;

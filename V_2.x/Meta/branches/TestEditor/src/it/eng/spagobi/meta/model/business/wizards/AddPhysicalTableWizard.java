@@ -72,7 +72,6 @@ public class AddPhysicalTableWizard extends AbstractSpagoBIModelWizard {
 	
 	@Override
 	public CommandParameter getCommandInputParameter() {
-		//String physicalTableName = pageOne.getTableSelected();
 		BusinessViewInnerJoinRelationshipDescriptor joinRelationshipDescriptor = pageThree.getRelationshipDescriptor();
 		return new CommandParameter(owner, null, joinRelationshipDescriptor, new ArrayList<Object>());
 	}

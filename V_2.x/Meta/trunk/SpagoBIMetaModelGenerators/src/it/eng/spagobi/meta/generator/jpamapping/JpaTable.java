@@ -93,6 +93,13 @@ public class JpaTable {
 		return ret.toString();
 	}
 	
+	/**
+	 * Returns true if the table has a Primary KEY
+	 */
+	public boolean hasPrimaryKey() {		
+		return businessTable.getIdentifier() != null? businessTable.getIdentifier().getColumns().size() > 0 : false;
+	}
+	
 	
 	/**
 	 * Returns true if there is more than 1 column in the table identifier

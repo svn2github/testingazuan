@@ -100,8 +100,10 @@ public class JpaColumn {
 		
 		ModelProperty property = businessColumn.getProperties().get(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE);
 		String modelType = property.getValue();
+		
+		System.out.print(businessColumn.getPhysicalColumn().getName()+"-"+modelType);
 		type = JDBCTypeMapper.getJavaTypeName(modelType);
-					
+		System.out.println("->"+type);		
 		return type;
 	}
 	
@@ -140,14 +142,13 @@ public class JpaColumn {
 	}
 	
 	public boolean needMapTemporalType(){
-		if (getPropertyType().equals("java.sql.Date") 
-					|| getPropertyType().equals("java.sql.Time")
-					|| getPropertyType().equals("java.sql.Timestamp")) return true;
+		if (getPropertyType().equals("java.util.Date")
+					|| getPropertyType().equals("java.util.Calendar")) return true;
 		else return false;
 	}
 	public String getMapTemporalType(){
 		if (getPropertyType().equals("java.sql.Date") ) return "DATE";
-		if (getPropertyType().equals("java.sql.Time") ) return "TIME";
+		if (getPropertyType().equals("java.tim.Date") ) return "TIME";
 		if (getPropertyType().equals("java.sql.Timestamp") ) return "TIMESTAMP";
 		else return "";
 	}	

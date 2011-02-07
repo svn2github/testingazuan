@@ -15,10 +15,8 @@
 @Temporal( TemporalType.$jpaColumn.getMapTemporalType())
 #end
 #set ($members = "")
-#if ( !$jpaColumn.isDefault() )
 #append($members "name=$jpaColumn.columnNameDoubleQuoted" )
-#end
 #####    ADD THE LINE TO THE SOURCE CODE
 #if( $members !="" )
-@Column($members)
+@Column($members , insertable=false, updatable=false)
 #end

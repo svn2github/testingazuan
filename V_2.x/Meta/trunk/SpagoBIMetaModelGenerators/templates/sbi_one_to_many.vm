@@ -14,5 +14,4 @@
 		#set ($members = $jpaRelationship.getGenFetchWithAnnotation($members))
 	#end
 @OneToMany($members)
-#parse("sbi_join.vm")
 #end

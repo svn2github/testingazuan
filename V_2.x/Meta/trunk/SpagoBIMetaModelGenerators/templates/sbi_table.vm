@@ -18,7 +18,6 @@ public class ${jpaTable.className} implements Serializable {
 
 private static final long serialVersionUID = 1L;
 
-// Constructor
 public ${jpaTable.className}() {
 }
 	
@@ -33,7 +32,6 @@ private ${jpaTable.compositeKeyClassName} ${jpaTable.compositeKeyPropertyName}=n
 #####                                 ADD ONLY THE SIMPLE PROPERTIES
 ###################################################################################
 #foreach ($jpaColumn in $jpaTable.getSimpleColumns(true, true, false))
-// Simple properties 
 	#if ($jpaColumn.isIdentifier())
 @Id
 	#end
@@ -43,7 +41,6 @@ private ${jpaColumn.simplePropertyType} ${jpaColumn.propertyName}=null;
 ###################################################################################
 #####                                 GET & SET
 ###################################################################################
-// Simple properties getter and setter
 #if ($jpaTable.hasCompositeKey())
 
 public $jpaTable.compositeKeyClassName $jpaTable.compositeKeyPropertyNameGetter () {
@@ -56,7 +53,6 @@ public void $jpaTable.compositeKeyPropertyNameSetter ($jpaTable.compositeKeyClas
 #end
 
 #foreach ($jpaColumn in $jpaTable.getSimpleColumns(true, true, false))
-// simple column 
 public $jpaColumn.simplePropertyType $jpaColumn.propertyNameGetter () {
 	return this.${jpaColumn.propertyName};
 }
@@ -64,13 +60,11 @@ public void $jpaColumn.propertyNameSetter ($jpaColumn.simplePropertyType $jpaCol
 	this.${jpaColumn.propertyName} = ${jpaColumn.propertyName};
 }
 #end
-//  ----------------   RELATIONSHIP   -------------------------------------
+
 #foreach ($jpaRelationship in $jpaTable.relationships)
 ###################################################################################
 #####                           field annotations
 ###################################################################################
-// ${jpaRelationship.isRecoursive()}
-//${jpaRelationship.description}
 	#if ($jpaRelationship.cardinality == "many-to-one")
 #parse("sbi_many_to_one.vm")
 	#elseif ($jpaRelationship.cardinality == "one-to-many")
@@ -89,8 +83,6 @@ private ${jpaRelationship.collectionType}<${jpaRelationship.getReferencedTable()
 ###################################################################################
 #####                              GET & SET
 ###################################################################################
-// associations getters and setters
-
 #foreach ($jpaRelationship in $jpaTable.relationships)
 #if ($jpaRelationship.cardinality == "many-to-one")
 		#set ($propertyType = ${jpaRelationship.getReferencedTable().className})

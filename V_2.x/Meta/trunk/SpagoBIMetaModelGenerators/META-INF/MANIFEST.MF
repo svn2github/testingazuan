@@ -11,3 +11,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.jdt.core.compiler.batch,
  org.junit
+Export-Package: it.eng.spagobi.meta.generator.jpamapping

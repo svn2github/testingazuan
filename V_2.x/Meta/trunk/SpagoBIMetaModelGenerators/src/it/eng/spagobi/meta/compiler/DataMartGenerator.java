@@ -47,12 +47,8 @@ public class DataMartGenerator {
 	/**
 	 * necessary libraries to compile Java Classes
 	 */
-	private String[] libraryLink={"org.eclipse.jpt.eclipselink.ui_1.3.0.v201004280001.jar",
-								  "org.eclipse.jpt.eclipselink.branding_2.3.2.v201008242310.jar",
-								  "org.eclipse.jpt.eclipselink.core.ddlgen_1.0.300.v201003290000.jar",
-								  "org.eclipse.jpt.eclipselink.core_1.3.1.v201007142310.jar",
-								  "org.eclipse.jpt.eclipselink.jaxb.core.schemagen_1.0.0.v201005120000.jar",
-								  "javax.persistence_2.0.0.v201002051058.jar"};
+	private String[] libraryLink={"org.eclipse.persistence.core_2.1.1.v20100817-r8050.jar",
+								  "javax.persistence_2.0.1.v201006031150.jar"};
 	
 
 	

@@ -49,6 +49,15 @@ public class JpaColumn {
 	public boolean isIdentifier() {
 		return businessColumn.isIdentifier();
 	}
+	/**
+	 * if the PK is composite and we are writing PK Class Property
+	 * @return
+	 */
+	public boolean isPKReadOnly() {
+		if (jpaTable.hasCompositeKey() && businessColumn.isIdentifier())
+		return true;
+		else return false;
+	}	
 	
 	/**
 	 * Return true if this Column belong to any relationship

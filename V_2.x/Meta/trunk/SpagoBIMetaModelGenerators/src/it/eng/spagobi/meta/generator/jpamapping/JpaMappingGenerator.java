@@ -61,7 +61,8 @@ public class JpaMappingGenerator implements IGenerator {
 	public void generateJpaMapping(BusinessModel model, String outputDir) {
 		this.outputDir=outputDir;
 		BusinessTable businessTable;
-		Velocity.setProperty("file.resource.loader.path", getTemplateDir().getAbsolutePath());
+		String path=getTemplateDir().getAbsolutePath();
+		Velocity.setProperty("file.resource.loader.path", path);
 		Iterator<BusinessColumnSet> tables=model.getTables().iterator();
 	
 		while (tables.hasNext()) {

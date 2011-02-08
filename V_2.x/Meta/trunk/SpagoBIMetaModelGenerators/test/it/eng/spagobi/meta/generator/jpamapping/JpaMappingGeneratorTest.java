@@ -57,12 +57,12 @@ public class JpaMappingGeneratorTest {
 
 	@Test
 	public void testGenerate() {
-		String outputDir="C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/spagobiMeta/";
+		String outputDir="C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/src/";
 		gen.generateJpaMapping( businessModel, outputDir);
 		
 		DataMartGenerator generator=new DataMartGenerator(
-				"C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/spagobiMeta/",
-				"C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/build/",
+				"C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/src/",
+				"C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/build/classes",
 				"C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/",
 				"C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/dist",
 				"it/eng/spagobi/meta"

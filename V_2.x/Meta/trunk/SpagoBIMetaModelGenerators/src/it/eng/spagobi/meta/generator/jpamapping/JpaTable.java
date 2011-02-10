@@ -15,6 +15,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 
 /**
@@ -22,6 +25,8 @@ import java.util.List;
  *
  */
 public class JpaTable {
+	
+	private static Logger logger = LoggerFactory.getLogger(JpaTable.class);
 	
 	private BusinessTable businessTable;
 	
@@ -56,6 +61,7 @@ public class JpaTable {
 				JpaColumn jpaColumn = new JpaColumn(c);
 				jpaColumn.setJpaTable(this);
 				jpaColumns.add(jpaColumn);
+				logger.debug("Add Column:"+jpaColumn.getColumnName());
 			}
 		}
 		return jpaColumns;
@@ -74,6 +80,7 @@ public class JpaTable {
 	 * @return
 	 */
 	public String getImportStatements(){
+		logger.debug("IN");
 		buildColumnTypesMap();
 		Collection<String> packages = columnTypesMap.keySet();
 		StringBuilder ret = new StringBuilder();
@@ -89,7 +96,7 @@ public class JpaTable {
 				break;
 			}
 		}
-
+		logger.debug("OUT: "+ret.toString());
 		return ret.toString();
 	}
 	
@@ -127,11 +134,12 @@ public class JpaTable {
 	public List<JpaColumn> getPrimaryKeyColumns(){
 		List<JpaColumn> result = new ArrayList<JpaColumn>();
 		List<JpaColumn> columns = getColumns();
-	
 		for (int i = 0, n = columns.size(); i < n; ++i) {
 			JpaColumn column = columns.get(i);
-			
-			if (column.isIdentifier())	result.add(column);
+			if (column.isIdentifier())	{
+				result.add(column);
+				logger.debug("add PrimaryKeyColumns:"+column.getColumnName());
+			}
 		}
 		return result;		
 	}
@@ -171,8 +179,7 @@ public class JpaTable {
 			else result=result+" \n && ( this."+column.getPropertyName()+".equals(castOther."+column.getPropertyName()+") )";
 		}
 		if (result==null) return "";
-		else return result+";";	
-		
+		else return result+";";
 	}
 	
 	/**
@@ -235,12 +242,25 @@ public class JpaTable {
 	 * @return
 	 */
 	public List<JpaRelationship> getRelationships() {
+		logger.debug("IN");
 		List<JpaRelationship> jpaRelationships;
 		JpaRelationship jpaRelationship=null;
 		
 		jpaRelationships = new ArrayList<JpaRelationship>();
+		logger.info("Number of relationschip of TABLE "+this.getBusinessTable().getName()+" : "+businessTable.getRelationships().size());
 		for(BusinessRelationship relationshp : businessTable.getRelationships()) {
 			jpaRelationship = new JpaRelationship(this, relationshp);
+			
+			if (jpaRelationship.getBusinessRelationship()==null || 
+					jpaRelationship.getBusinessRelationship().getSourceTable()==null){
+				logger.error("There is a problem , the relationship doesn't have any source Table");
+				continue;
+			}
+			if (jpaRelationship.getBusinessRelationship()==null || 
+					jpaRelationship.getBusinessRelationship().getDestinationTable()==null){
+				logger.error("There is a problem , the relationship doesn't have any destination Table");
+				continue;
+			}			
 			if (jpaRelationship.getBusinessRelationship().getSourceTable().equals(this.getBusinessTable())){
 				// many-to-one
 				jpaRelationship.setCardinality(JpaRelationship.MANY_TO_ONE);
@@ -253,6 +273,7 @@ public class JpaTable {
 				jpaRelationships.add(jpaRelationship);
 			}			
 		}
+		logger.debug("OUT");
 		return jpaRelationships;		
 	}
 	

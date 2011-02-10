@@ -27,6 +27,9 @@ package it.eng.spagobi.meta.generator.jpamapping;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 
@@ -44,6 +47,7 @@ public class JpaRelationship {
 	BusinessRelationship businessRelationship;
 	private String cardinality=null;
 	
+	private static Logger logger = LoggerFactory.getLogger(JpaRelationship.class);
 	
 	public boolean isBidirectional() {
 		return bidirectional;
@@ -83,6 +87,7 @@ public class JpaRelationship {
 				return new JpaTable((BusinessTable)businessRelationship.getSourceTable());
 			}
 		}
+		logger.error("getReferencedTable() return null......");
 		return null;
 	}
 	
@@ -121,7 +126,10 @@ public class JpaRelationship {
 	 * @return
 	 */
 	public String getPropertyName(){
-		return StringUtil.columnNameToVarName( getBusinessRelationship().getSourceColumns().get(0).getName());
+		if (getBusinessRelationship().getSourceColumns()!=null){
+			return StringUtil.columnNameToVarName( getBusinessRelationship().getSourceColumns().get(0).getName());
+		}
+		else return "";
 	}
 	public String getBidirectionalPropertyName(){
 		return StringUtil.pluralise(StringUtil.columnNameToVarName( getBusinessRelationship().getName()));

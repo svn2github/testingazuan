@@ -2,8 +2,13 @@ package it.eng.spagobi.meta.generator.jpamapping;
 
 import java.beans.Introspector;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class StringUtil
 {
+	
+	private static Logger logger = LoggerFactory.getLogger(StringUtil.class);
 	
 	/**
 	 * Converts a database table name to a Java variable name (<em>first letter
@@ -18,6 +23,7 @@ public class StringUtil
 	 * not capitalized</em>). employee_name or employee-name -> employeeName
 	 */
 	private static String dbNameToVarName(String s) {
+		logger.debug("IN "+s);
 		if ("".equals(s)) {
 			return s;
 		}
@@ -71,6 +77,7 @@ public class StringUtil
 			// "class" is illegal becauseOf Object.getClass() clash
 			resultStr = "clazz";
 		}
+		logger.debug("OUT "+resultStr);
 		return resultStr;
 	}
 	/**
@@ -79,11 +86,13 @@ public class StringUtil
 	 * the returned string is <tt>'exterme'</tt>.
 	 */
 	public static String quote(String str, char c) {
+		logger.debug("IN "+str+" "+c);
 		assert(str != null);
 		StringBuffer buffer = new StringBuffer(str.length()+2);
 		buffer.append(c);
 		buffer.append(str);
 		buffer.append(c);
+		logger.debug("OUT "+buffer.toString());
 		return buffer.toString();
 	}
 	public static String doubleQuote(String str) {
@@ -94,6 +103,7 @@ public class StringUtil
 	 * Returns the argument string with the first char upper-case.
 	 */
 	public static String initUpper(String str) {
+		logger.debug("IN "+str);
 		if (str == null || str.length() == 0) {
 			return str;
 		}
@@ -101,6 +111,7 @@ public class StringUtil
 	}
 	public static String strReplaceAll(String str, String pattern, String replaceStr)
 	{
+		logger.debug("IN "+str+" "+pattern+ " " +replaceStr);
 		if(str == null) {
 			return null;
 		}
@@ -114,6 +125,7 @@ public class StringUtil
 			str = str.substring(0, index) + replaceStr + str.substring(index + pattern.length());
 			index = str.indexOf(pattern, index+replaceStr.length());
 		}
+		logger.debug("OUT"+str);
 		return str;
 	}
 	/**

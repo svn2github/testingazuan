@@ -23,6 +23,9 @@ package it.eng.spagobi.meta.generator.jpamapping;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.eng.spagobi.meta.commons.JDBCTypeMapper;
 import it.eng.spagobi.meta.initializer.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.ModelProperty;
@@ -41,6 +44,8 @@ public class JpaColumn {
 	public static final String PUBLIC_SCOPE = "public"; //$NON-NLS-1$
 	public static final String PROTECTED_SCOPE = "protected"; //$NON-NLS-1$
 	public static final String PRIVATE_SCOPE = "private"; //$NON-NLS-1$
+	
+	private static Logger logger = LoggerFactory.getLogger(JpaColumn.class);
 	
 	public JpaColumn(BusinessColumn businessColumn) {
 		this.businessColumn = businessColumn;
@@ -66,8 +71,17 @@ public class JpaColumn {
 	public boolean isColumnInRelationship() {
 		List<BusinessRelationship> relationships;
 		relationships = jpaTable.getBusinessTable().getRelationships();
+		logger.debug("The column "+getColumnName()+" has "+relationships.size()+" Relationship");
 		for(BusinessRelationship relationship : relationships) {
 			List<BusinessColumn> columns = null; 
+			if (relationship.getSourceTable()==null){
+				logger.error("The relationship "+relationship.getName()+" doesn't have any source table");
+				continue;
+			}
+			if (relationship.getDestinationTable()==null){
+				logger.error("The relationship "+relationship.getName()+" doesn't have any destination table");
+				continue;
+			}			
 			if(relationship.getSourceTable().equals( jpaTable.getBusinessTable() )) {
 				columns =  relationship.getSourceColumns();
 			} else {
@@ -76,10 +90,16 @@ public class JpaColumn {
 			if (columns!=null){
 				// scann columns
 				for(BusinessColumn column : columns) {
-					if(column.equals(businessColumn)) return true;
+					if(column.equals(businessColumn)) {
+						logger.debug("Column "+getColumnName()+" belong to a Relationship");
+						return true;
+					}
 				}
+			}else {
+				logger.error("The Columns are null");
 			}
 		}
+		logger.debug("Column "+getColumnName()+" doesn't belong to any Relationship");
 		return false;
 	}
 	

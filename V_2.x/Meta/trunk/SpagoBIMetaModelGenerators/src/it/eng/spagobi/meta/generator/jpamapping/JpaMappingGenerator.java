@@ -13,7 +13,6 @@ import it.eng.spagobi.meta.model.business.BusinessTable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Iterator;
 
 import org.apache.velocity.Template;
@@ -24,7 +23,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -33,6 +33,8 @@ import org.osgi.framework.BundleContext;
  */
 public class JpaMappingGenerator implements IGenerator {
 	
+	private static Logger logger = LoggerFactory.getLogger(JpaMappingGenerator.class);
+
 	/**
 	 *   The Velocity template directory
 	 */
@@ -40,15 +42,18 @@ public class JpaMappingGenerator implements IGenerator {
 	private String outputDir=null;
 	
 	public JpaMappingGenerator() {
-
+		logger.debug("IN");
 		//templateDir=new File("templates"); 
 		Bundle generatorBundle = Platform.getBundle("it.eng.spagobi.meta.generator");
 		try {
 			IPath path = new Path(Platform.asLocalURL(generatorBundle.getEntry("templates")).getPath());
 			String templatePath = path.toString();
+			logger.info("templatePath="+templatePath);
 			templateDir = new File(templatePath);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		}finally{
+			logger.debug("OUT");
 		}
 
 	}
@@ -65,6 +70,7 @@ public class JpaMappingGenerator implements IGenerator {
 				e.printStackTrace();
 			}
 		} else {
+			logger.error("Impossible to create JPA Mapping from an object of type [" + o.getClass().getName() + "]");
 			throw new GenerationException("Impossible to create JPA Mapping from an object of type [" + o.getClass().getName() + "]");
 		}
 	}
@@ -83,10 +89,12 @@ public class JpaMappingGenerator implements IGenerator {
 		while (tables.hasNext()) {
 			Object table = tables.next();
 			if (table instanceof BusinessTable){
+				logger.info("Create Java Class for:"+((BusinessTable)table).getName());
 				businessTable = (BusinessTable)table;
 				JpaTable jpaTable=new JpaTable(businessTable);
 				createFile("sbi_table.vm",businessTable,jpaTable,jpaTable.getClassName());
 				if (jpaTable.hasCompositeKey()) {
+					logger.info("Create Composite PK Java Class for:"+((BusinessTable)table).getName());
 					createFile("sbi_pk.vm",businessTable,jpaTable,jpaTable.getCompositeKeyClassName());
 				}
 			}
@@ -102,7 +110,7 @@ public class JpaMappingGenerator implements IGenerator {
 	private void createFile(String templateFile,BusinessTable businessTable,JpaTable jpaTable,String className){
 		Template template=null;
 		VelocityContext context=null;
-
+		logger.debug("IN. createFile. templateFile="+templateFile+" className="+className+" businessTable="+businessTable.getName()+ " jpaTable="+jpaTable.getClassName());
 		FileWriter fileWriter=null;
 		try {
 			template = Velocity.getTemplate( templateFile );
@@ -122,8 +130,10 @@ public class JpaMappingGenerator implements IGenerator {
 			fileWriter.flush();
 			fileWriter.close();
 		} catch (IOException e) {
+			logger.error("Impossible to generate output file from template file [" + templateFile + "]",e);
 			throw new GenerationException("Impossible to generate output file from template file [" + templateFile + "]");
-		}		
+		}	
+		logger.debug("OUT");
 	}
 	
 	

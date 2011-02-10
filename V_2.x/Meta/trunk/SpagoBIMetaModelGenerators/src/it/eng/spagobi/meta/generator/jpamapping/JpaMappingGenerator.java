@@ -13,13 +13,19 @@ import it.eng.spagobi.meta.model.business.BusinessTable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.net.URL;
 import java.util.Iterator;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.texen.util.FileUtil;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -34,7 +40,17 @@ public class JpaMappingGenerator implements IGenerator {
 	private String outputDir=null;
 	
 	public JpaMappingGenerator() {
-		templateDir=new File("templates");
+
+		//templateDir=new File("templates"); 
+		Bundle generatorBundle = Platform.getBundle("it.eng.spagobi.meta.generator");
+		try {
+			IPath path = new Path(Platform.asLocalURL(generatorBundle.getEntry("templates")).getPath());
+			String templatePath = path.toString();
+			templateDir = new File(templatePath);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 	
 	@Override
@@ -61,16 +77,18 @@ public class JpaMappingGenerator implements IGenerator {
 	public void generateJpaMapping(BusinessModel model, String outputDir) {
 		this.outputDir=outputDir;
 		BusinessTable businessTable;
-		String path=getTemplateDir().getAbsolutePath();
-		Velocity.setProperty("file.resource.loader.path", path);
+		Velocity.setProperty("file.resource.loader.path", getTemplateDir().getAbsolutePath());
 		Iterator<BusinessColumnSet> tables=model.getTables().iterator();
 	
 		while (tables.hasNext()) {
-			businessTable = (BusinessTable)tables.next();
-			JpaTable jpaTable=new JpaTable(businessTable);
-			createFile("sbi_table.vm",businessTable,jpaTable,jpaTable.getClassName());
-			if (jpaTable.hasCompositeKey()) {
-				createFile("sbi_pk.vm",businessTable,jpaTable,jpaTable.getCompositeKeyClassName());
+			Object table = tables.next();
+			if (table instanceof BusinessTable){
+				businessTable = (BusinessTable)table;
+				JpaTable jpaTable=new JpaTable(businessTable);
+				createFile("sbi_table.vm",businessTable,jpaTable,jpaTable.getClassName());
+				if (jpaTable.hasCompositeKey()) {
+					createFile("sbi_pk.vm",businessTable,jpaTable,jpaTable.getCompositeKeyClassName());
+				}
 			}
 		}	
 	}
@@ -97,7 +115,7 @@ public class JpaMappingGenerator implements IGenerator {
         context.put("businessTable", businessTable); //$NON-NLS-1$
         context.put("jpaTable",jpaTable ); //$NON-NLS-1$
 		try {
-			String path=outputDir+StringUtil.strReplaceAll(jpaTable.getPackage(), ".", "/");
+			String path=outputDir+"/"+StringUtil.strReplaceAll(jpaTable.getPackage(), ".", "/");
 			createPackage(path);
 			fileWriter=new FileWriter(path +"/"+className+".java");
 			template.merge(context, fileWriter);

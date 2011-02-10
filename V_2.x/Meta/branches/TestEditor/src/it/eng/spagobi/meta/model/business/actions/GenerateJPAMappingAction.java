@@ -21,9 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.actions;
 
+import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.GenerateJPAMappingCommand;
+import it.eng.spagobi.meta.model.business.wizards.GenerateJPAMappingWizard;
+import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
 
 /**
@@ -46,6 +52,15 @@ public class GenerateJPAMappingAction extends AbstractSpagoBIModelAction {
 	 */
 	@Override
 	public void run() {
-
+		try {
+			BusinessModel businessModel = (BusinessModel)((BusinessRootItemProvider)owner).getParentObject();
+			GenerateJPAMappingWizard wizard = new GenerateJPAMappingWizard(businessModel, editingDomain, (AbstractSpagoBIModelCommand)command );
+	    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
+			dialog.create();
+	    	dialog.open();
+	    	
+		} catch(Throwable t) {
+			t.printStackTrace();
+		}
 	}
 }

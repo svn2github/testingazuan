@@ -28,7 +28,7 @@ import it.eng.spagobi.meta.model.physical.PhysicalTable;
 public class BusinessModelDefaultPropertiesInitializer implements IPropertiesInitializer {
 	
 	// Model property names
-	
+	public static final String MODEL_PACKAGE = "structural.package";
 	// Table property names
 	
 	// Column property names
@@ -61,7 +61,43 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 	}
 	
 	private void initModelProperties(BusinessModel o) {
-		
+        ModelPropertyCategory structuralCategory;
+        ModelPropertyType propertyType;
+        ModelProperty property;
+       
+        // if doesn't exist create 'structural' category
+        structuralCategory =  o.getParentModel().getPropertyCategory("Structural");
+        if(structuralCategory == null) {
+            structuralCategory = FACTORY.createModelPropertyCategory();
+            structuralCategory.setName("Structural");
+            structuralCategory.setDescription("Structural properties");
+            o.getParentModel().getPropertyCategories().add(structuralCategory);	
+        }    
+        
+        // Create the new property type and add it to the structural category
+        propertyType = null;
+       
+        if(o.getParentModel() != null) {
+        	propertyType = o.getParentModel().getPropertyType(MODEL_PACKAGE);
+        }
+        if(propertyType == null) {
+            propertyType = FACTORY.createModelPropertyType();
+            propertyType.setId( MODEL_PACKAGE );
+            propertyType.setName("Package name");
+            propertyType.setDescription("Package name used in JPA mapping)");
+            propertyType.setCategory(structuralCategory);
+            propertyType.setDefaultValue("it.eng.spagobi.meta");
+           
+            if(o.getParentModel() != null) {
+            	o.getParentModel().getPropertyTypes().add(propertyType);
+            }
+        }
+       
+        // add a property of type MODEL_PACKAGE to the model object
+        property = FACTORY.createModelProperty();
+        property.setPropertyType(propertyType);
+        o.getProperties().put(property.getPropertyType().getId(), property);
+            
 	}
 
 	private void initTableProperties(BusinessTable o) {

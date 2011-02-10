@@ -56,15 +56,6 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 		generator.generateJpaMapping(businessModel, directory);
 		
 		//Call Java Compiler
-		/*
-		DataMartGenerator datamartGenerator = new DataMartGenerator(
-				"C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/spagobiMeta/",
-				"C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/build/",
-				"C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/",
-				"C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/dist",
-				"it/eng/spagobi/meta"
-				);
-		*/
 		DataMartGenerator datamartGenerator = new DataMartGenerator(
 				directory,
 				directory+"/build/",

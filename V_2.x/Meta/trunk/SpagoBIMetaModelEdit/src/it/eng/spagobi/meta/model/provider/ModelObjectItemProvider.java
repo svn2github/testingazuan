@@ -77,7 +77,7 @@ public class ModelObjectItemProvider extends ItemProviderAdapter implements
 			addNamePropertyDescriptor(object);
 			addDescriptionPropertyDescriptor(object);
 			//Added
-			addCustomColumnPropertyDescriptors(object) ;
+			addCustomColumnPropertyDescriptors(object);	
 		}
 		return itemPropertyDescriptors;
 	}
@@ -94,6 +94,7 @@ public class ModelObjectItemProvider extends ItemProviderAdapter implements
 		}
 
 	}
+	
 
 	/**
 	 * This adds a property descriptor for the Id feature.

@@ -114,6 +114,8 @@ public class DataMartGenerator {
 	 */
 	public void jar(){
 		try{
+			File jarDir = new File(outDir);
+			jarDir.mkdir();
 			File jar=new File (outDir,getDataMartFileName());
 			if (jar.exists()) jar.delete();
 			FileOutputStream fStream=new FileOutputStream(jar);

@@ -69,7 +69,7 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 				directory,
 				directory+"/build/",
 				null,
-				directory+"/dist",
+				directory+"/dist/",
 				"it/eng/spagobi/meta"
 				);		
 		

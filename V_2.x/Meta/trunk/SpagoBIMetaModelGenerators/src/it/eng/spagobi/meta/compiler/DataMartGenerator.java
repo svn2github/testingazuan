@@ -24,9 +24,16 @@ package it.eng.spagobi.meta.compiler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
 
 
 /**
@@ -71,13 +78,19 @@ public class DataMartGenerator {
 	public DataMartGenerator(String srcDir,String binDir,String libDir,String outDir,String srcPackage){
 		this.srcDir=srcDir;
 		this.binDir=binDir;
-		this.libDir=libDir;
+		//this.libDir=libDir;
+		
+	    this.libDir = null;
 		this.outDir=outDir;
 		this.srcPackage=srcPackage;
 		setCP();
 	}
 	
 	private void setCP(){
+	    File plugin = new File("plugins");
+	    
+	    this.libDir = plugin.getAbsolutePath()+"\\";
+		
 		classPath=".";
 		for (int i=0;i<libraryLink.length;i++){
 			classPath=classPath+";"+libDir+libraryLink[i];

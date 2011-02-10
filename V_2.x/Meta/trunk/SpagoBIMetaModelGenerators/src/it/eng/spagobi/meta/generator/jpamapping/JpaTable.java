@@ -19,13 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
 public class JpaTable {
-	
 	private static Logger logger = LoggerFactory.getLogger(JpaTable.class);
 	
 	private BusinessTable businessTable;
@@ -62,6 +60,7 @@ public class JpaTable {
 				jpaColumn.setJpaTable(this);
 				jpaColumns.add(jpaColumn);
 				logger.debug("Add Column:"+jpaColumn.getColumnName());
+
 			}
 		}
 		return jpaColumns;
@@ -72,7 +71,15 @@ public class JpaTable {
 	 * @return
 	 */
 	public String getPackage() {
-		return "it.eng.spagobi.meta";
+        ModelProperty property =  businessTable.getModel().getProperties().get(BusinessModelDefaultPropertiesInitializer.MODEL_PACKAGE);
+        //check if property is setted, else get default value
+        if (property.getValue() != null){
+        	return property.getValue();
+        }
+        else {
+        	return property.getPropertyType().getDefaultValue();
+        }
+		//return "it.eng.spagobi.meta";
 	}
 	
 	/**
@@ -134,8 +141,10 @@ public class JpaTable {
 	public List<JpaColumn> getPrimaryKeyColumns(){
 		List<JpaColumn> result = new ArrayList<JpaColumn>();
 		List<JpaColumn> columns = getColumns();
+	
 		for (int i = 0, n = columns.size(); i < n; ++i) {
 			JpaColumn column = columns.get(i);
+			
 			if (column.isIdentifier())	{
 				result.add(column);
 				logger.debug("add PrimaryKeyColumns:"+column.getColumnName());
@@ -179,7 +188,8 @@ public class JpaTable {
 			else result=result+" \n && ( this."+column.getPropertyName()+".equals(castOther."+column.getPropertyName()+") )";
 		}
 		if (result==null) return "";
-		else return result+";";
+		else return result+";";	
+		
 	}
 	
 	/**
@@ -260,7 +270,7 @@ public class JpaTable {
 					jpaRelationship.getBusinessRelationship().getDestinationTable()==null){
 				logger.error("There is a problem , the relationship doesn't have any destination Table");
 				continue;
-			}			
+			}				
 			if (jpaRelationship.getBusinessRelationship().getSourceTable().equals(this.getBusinessTable())){
 				// many-to-one
 				jpaRelationship.setCardinality(JpaRelationship.MANY_TO_ONE);
@@ -273,7 +283,7 @@ public class JpaTable {
 				jpaRelationships.add(jpaRelationship);
 			}			
 		}
-		logger.debug("OUT");
+		logger.debug("OUT");		
 		return jpaRelationships;		
 	}
 	

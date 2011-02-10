@@ -24,16 +24,12 @@ package it.eng.spagobi.meta.compiler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -50,7 +46,7 @@ public class DataMartGenerator {
 	private String dataMartFileName="datamart.jar";
 	private String classPath="";
 
-
+	private static Logger logger = LoggerFactory.getLogger(DataMartGenerator.class);
 	/**
 	 * necessary libraries to compile Java Classes
 	 */
@@ -78,8 +74,6 @@ public class DataMartGenerator {
 	public DataMartGenerator(String srcDir,String binDir,String libDir,String outDir,String srcPackage){
 		this.srcDir=srcDir;
 		this.binDir=binDir;
-		//this.libDir=libDir;
-		
 	    this.libDir = null;
 		this.outDir=outDir;
 		this.srcPackage=srcPackage;
@@ -95,7 +89,7 @@ public class DataMartGenerator {
 		for (int i=0;i<libraryLink.length;i++){
 			classPath=classPath+";"+libDir+libraryLink[i];
 		}
-
+		logger.info("classPath="+classPath);
 	}
 	
 	/**
@@ -104,7 +98,7 @@ public class DataMartGenerator {
 	public void compile(){
 
 		String command=srcDir+" -classpath " +classPath+ " -d "+binDir+" -source 1.5";
-		
+		logger.info("command="+command);
 		org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(command, new PrintWriter(System.out), new PrintWriter(System.err), null);
 		
 	}
@@ -128,7 +122,7 @@ public class DataMartGenerator {
 		
 		}catch(Exception e)
 		{
-			e.printStackTrace();
+			logger.error("Error...during JAR creation",e);
 		}
 		
 	}
@@ -162,14 +156,14 @@ public class DataMartGenerator {
 				}
 			}
 		} catch (Exception e) {
-				e.printStackTrace();
+			logger.error("Error...during File Compression",e);
 		} finally {
 			try {
 				if (in != null) {
 					in.close();
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error("Error...during closing File",e);
 			}
 		
 		}

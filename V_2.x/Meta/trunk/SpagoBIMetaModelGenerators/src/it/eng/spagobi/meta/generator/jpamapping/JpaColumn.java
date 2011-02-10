@@ -130,9 +130,9 @@ public class JpaColumn {
 		ModelProperty property = businessColumn.getProperties().get(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE);
 		String modelType = property.getValue();
 		
-		System.out.print(businessColumn.getPhysicalColumn().getName()+"-"+modelType);
+		logger.info(businessColumn.getPhysicalColumn().getName()+"-"+modelType);
 		type = JDBCTypeMapper.getJavaTypeName(modelType);
-		System.out.println("->"+type);		
+		logger.info("->"+type);		
 		return type;
 	}
 	

@@ -123,10 +123,9 @@ public class ModelPropertyImpl extends EObjectImpl implements ModelProperty {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public String getValue() {
-		return value;
+		return value == null? this.getPropertyType().getDefaultValue(): value;
 	}
 
 	/**

@@ -83,7 +83,7 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
         if(propertyType == null) {
             propertyType = FACTORY.createModelPropertyType();
             propertyType.setId( MODEL_PACKAGE );
-            propertyType.setName("Package name");
+            propertyType.setName("Package Name");
             propertyType.setDescription("Package name used in JPA mapping)");
             propertyType.setCategory(structuralCategory);
             propertyType.setDefaultValue("it.eng.spagobi.meta");

@@ -21,10 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.provider;
 
+import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
+import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -149,9 +151,24 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor {
 
 	@Override
 	public Object getPropertyValue(Object object) {
+		/*
 		BusinessColumn column = (BusinessColumn)object;
 		ModelProperty p = column.getProperties().get(property.getPropertyType().getId());
-		return p.getValue(); // == null ? "NULL" : property.getValue();
+		*/
+		ModelProperty p = null;
+		
+		if(object instanceof ModelObject) {
+			ModelObject modelObject = (ModelObject)object;
+			p = modelObject.getProperties().get(property.getPropertyType().getId());
+			
+		} else if(object instanceof FolderItemProvider) {
+			FolderItemProvider folderItemProvider = (FolderItemProvider)object;
+			ModelObject modelObject = (ModelObject)folderItemProvider.getParentObject();
+			p = modelObject.getProperties().get(property.getPropertyType().getId());
+		}
+		
+		
+		return p != null? p.getValue(): null; 
 	}
 
 	@Override

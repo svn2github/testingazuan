@@ -92,7 +92,6 @@ public class ModelObjectItemProvider extends ItemProviderAdapter implements
 					property, ((ComposeableAdapterFactory) adapterFactory)
 							.getRootAdapterFactory(), getResourceLocator()));
 		}
-
 	}
 	
 

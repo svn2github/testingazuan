@@ -87,12 +87,12 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor {
 	}
 
 	@Override
-	public boolean canSetProperty(Object arg0) {
+	public boolean canSetProperty(Object o) {
 		return true;
 	}
 
 	@Override
-	public String getCategory(Object arg0) {
+	public String getCategory(Object o) {
 		return property.getPropertyType().getCategory().getName();
 	}
 
@@ -151,12 +151,8 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor {
 
 	@Override
 	public Object getPropertyValue(Object object) {
-		/*
-		BusinessColumn column = (BusinessColumn)object;
-		ModelProperty p = column.getProperties().get(property.getPropertyType().getId());
-		*/
 		ModelProperty p = null;
-		
+		System.err.println(property.getPropertyType().getId() + ": " + property.getValue());
 		if(object instanceof ModelObject) {
 			ModelObject modelObject = (ModelObject)object;
 			p = modelObject.getProperties().get(property.getPropertyType().getId());
@@ -167,13 +163,12 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor {
 			p = modelObject.getProperties().get(property.getPropertyType().getId());
 		}
 		
-		
 		return p != null? p.getValue(): null; 
 	}
 
 	@Override
 	public boolean isCompatibleWith(Object arg0, Object arg1, IItemPropertyDescriptor arg2) {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -198,7 +193,7 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor {
 
 	@Override
 	public void resetPropertyValue(Object object) {
-		property.setValue(null);
+		property.setValue("NULL");
 		
 	}
 

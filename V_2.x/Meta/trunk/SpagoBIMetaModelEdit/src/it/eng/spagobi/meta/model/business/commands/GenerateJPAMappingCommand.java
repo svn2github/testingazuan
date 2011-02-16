@@ -55,6 +55,9 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 		JpaMappingGenerator generator = new JpaMappingGenerator();
 		generator.generateJpaMapping(businessModel, directory);
 		
+		
+		 // TODO .... "it/eng/spagobi/meta" deve essere calcolato sulla base del nome del package e non fisso
+		
 		//Call Java Compiler
 		DataMartGenerator datamartGenerator = new DataMartGenerator(
 				directory,
@@ -64,12 +67,20 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 				"it/eng/spagobi/meta"
 				);		
 		
-		datamartGenerator.compile();
-		datamartGenerator.jar();
+		boolean result=datamartGenerator.compile();
+		if (result){
+			// compile OK
+			datamartGenerator.jar();
+			System.err.println("COMMAND [GenerateJPAMappingCommand] SUCCESFULLY EXECUTED: ");
+			this.executed = true;
+		}else{
+			System.err.println("Compile problem!!!!!!!!!!");
+			// TODO  .... gestire la visualizzazione della popup all'utente
+			this.executed = false; // ????
+		}
+
 		
-		System.err.println("COMMAND [GenerateJPAMappingCommand] SUCCESFULLY EXECUTED: ");
 		
-		this.executed = true;
 	}
 	
 	

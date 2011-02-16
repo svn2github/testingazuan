@@ -1,19 +1,41 @@
 /**
- * 
- */
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2010 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.meta.generator.jpamapping;
 
 import it.eng.spagobi.meta.generator.GenerationException;
 import it.eng.spagobi.meta.generator.IGenerator;
 import it.eng.spagobi.meta.model.ModelObject;
+import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -89,13 +111,26 @@ public class JpaMappingGenerator implements IGenerator {
 		while (tables.hasNext()) {
 			Object table = tables.next();
 			if (table instanceof BusinessTable){
-				logger.info("Create Java Class for:"+((BusinessTable)table).getName());
+				logger.info("Create Java Class for BC:"+((BusinessTable)table).getName());
 				businessTable = (BusinessTable)table;
 				JpaTable jpaTable=new JpaTable(businessTable);
-				createFile("sbi_table.vm",businessTable,jpaTable,jpaTable.getClassName());
+				createFile("sbi_table.vm",jpaTable,jpaTable.getClassName());
 				if (jpaTable.hasCompositeKey()) {
-					logger.info("Create Composite PK Java Class for:"+((BusinessTable)table).getName());
-					createFile("sbi_pk.vm",businessTable,jpaTable,jpaTable.getCompositeKeyClassName());
+					logger.info("Create Composite PK Java Class for BC:"+((BusinessTable)table).getName());
+					createFile("sbi_pk.vm",jpaTable,jpaTable.getCompositeKeyClassName());
+				}
+			}else if (table instanceof BusinessView){
+				logger.info("Create Java Class for BV:"+((BusinessView)table).getName());
+				
+				List<PhysicalTable> phisicalTables=((BusinessView)table).getPhysicalTables();
+				for (PhysicalTable phyT : ((BusinessView)table).getPhysicalTables()) {
+					JpaView jpaView=new JpaView((BusinessView)table,phyT);
+					createFile("sbi_table.vm",jpaView,jpaView.getClassName()); 
+					if (jpaView.hasCompositeKey()) {
+						logger.info("Create Composite PK Java Class for BV:"+((BusinessView)table).getName());
+						createFile("sbi_pk.vm",jpaView,jpaView.getCompositeKeyClassName());
+					}					
+					
 				}
 			}
 		}	
@@ -107,10 +142,10 @@ public class JpaMappingGenerator implements IGenerator {
 	 * @param businessTable
 	 * @param jpaTable
 	 */
-	private void createFile(String templateFile,BusinessTable businessTable,JpaTable jpaTable,String className){
+	private void createFile(String templateFile,JpaTable jpaTable,String className){
 		Template template=null;
 		VelocityContext context=null;
-		logger.debug("IN. createFile. templateFile="+templateFile+" className="+className+" businessTable="+businessTable.getName()+ " jpaTable="+jpaTable.getClassName());
+		logger.debug("IN. createFile. templateFile="+templateFile+" className="+className+ " jpaTable="+jpaTable.getClassName());
 		FileWriter fileWriter=null;
 		try {
 			template = Velocity.getTemplate( templateFile );
@@ -119,8 +154,8 @@ public class JpaMappingGenerator implements IGenerator {
 		}
 		
 	    context = new VelocityContext();
-	    context.put("physicalTable", businessTable.getPhysicalTable()); //$NON-NLS-1$
-        context.put("businessTable", businessTable); //$NON-NLS-1$
+	    context.put("physicalTable", jpaTable.getPhysicalTable()); //$NON-NLS-1$
+        //context.put("businessTable", jpaTable.getBusinessTable()); //$NON-NLS-1$
         context.put("jpaTable",jpaTable ); //$NON-NLS-1$
 		try {
 			String path=outputDir+"/"+StringUtil.strReplaceAll(jpaTable.getPackage(), ".", "/");

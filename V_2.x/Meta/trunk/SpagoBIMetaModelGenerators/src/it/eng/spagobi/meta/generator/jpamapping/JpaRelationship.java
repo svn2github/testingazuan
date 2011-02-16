@@ -30,8 +30,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.physical.PhysicalColumn;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -66,29 +70,89 @@ public class JpaRelationship {
 	public void setCardinality(String cardinality) {
 		this.cardinality = cardinality;
 	}
+	public JpaRelationship() {
 
+	}
 	public JpaRelationship(JpaTable jpaTable, BusinessRelationship businessRelationship) {
 		this.jpaTable = jpaTable;
 		this.businessRelationship = businessRelationship;
 	}
 	
 	private boolean isSourceRole() {
-		return businessRelationship.getSourceTable().equals(jpaTable.getBusinessTable());
+		if (jpaTable instanceof JpaView){
+			return businessRelationship.getSourceTable().equals(((JpaView)jpaTable).getBusinessView());
+		}else if (jpaTable instanceof JpaTable){
+			return businessRelationship.getSourceTable().equals(jpaTable.getBusinessTable());
+		}
+		return false;
+		
 	}
 	
-
+	/**
+	 * return the destination Physical table of the relationship
+	 * @param bv the destination BV of the relationship
+	 * @param columns ...
+	 * @return
+	 */
+	private PhysicalTable findPhysicalTable(BusinessView bv,List<BusinessColumn> columns){
+		// the destination physical tables
+		List<PhysicalTable> physicaltables=bv.getPhysicalTables();
+		PhysicalTable result=null;
+		for (PhysicalTable phyt : physicaltables){
+			boolean found=false;
+			for (BusinessColumn bc : columns){
+				PhysicalColumn fc=findPhysicalColumn(phyt.getColumns(),bc);
+				if (fc != null){
+					logger.info("Physical Column FOUND "+bc.getName());
+					found=true;
+				}
+					
+			}
+			if (found) result=phyt;
+		}
+		return result;
+	}
+	/**
+	 * return true if the BC is included into the Physical column list
+	 * @param phy
+	 * @param column
+	 * @return
+	 */
+	protected PhysicalColumn findPhysicalColumn (List<PhysicalColumn> fColumn,BusinessColumn bColumn){
+		for (PhysicalColumn fc : fColumn){
+			if (bColumn.getPhysicalColumn().getName().equals(fc.getName())){
+				logger.info("FOUND the "+fc.getName()+" Physical Column");
+				return fc;
+			}
+		}	
+		logger.info("No Physical Column FOUND");
+		return null;
+	}
+/**
+ * @return
+ */
 	public JpaTable getReferencedTable(){
+		
 		if ( isSourceRole() ) {
+			
 			if(businessRelationship.getDestinationTable() instanceof BusinessTable) {
 				return new JpaTable((BusinessTable)businessRelationship.getDestinationTable());
+			}else if (businessRelationship.getDestinationTable() instanceof BusinessView){
+				PhysicalTable physicalTMP=findPhysicalTable((BusinessView)businessRelationship.getDestinationTable(),businessRelationship.getDestinationColumns());
+				return new JpaView((BusinessView)businessRelationship.getDestinationTable(),physicalTMP); 
 			}
 		} else {
 			if(businessRelationship.getSourceTable() instanceof BusinessTable) {
 				return new JpaTable((BusinessTable)businessRelationship.getSourceTable());
+			}else if (businessRelationship.getSourceTable() instanceof BusinessView){
+				PhysicalTable physicalTMP=findPhysicalTable((BusinessView)businessRelationship.getSourceTable(),businessRelationship.getSourceColumns());
+				return new JpaView((BusinessView)businessRelationship.getSourceTable(),physicalTMP); 
+
 			}
 		}
 		logger.error("getReferencedTable() return null......");
 		return null;
+		
 	}
 	
 
@@ -106,7 +170,7 @@ public class JpaRelationship {
 		
 	}
 	
-	
+
 	public BusinessRelationship getBusinessRelationship() {
 		return businessRelationship;
 	}
@@ -258,7 +322,7 @@ public class JpaRelationship {
 	 * TODO .. da verificare
 	 * @return
 	 */
-	private String getOppositeRoleName(){
+	protected String getOppositeRoleName(){
 		return StringUtil.columnNameToVarName( getBusinessRelationship().getSourceColumns().get(0).getName());	
 	}
 	

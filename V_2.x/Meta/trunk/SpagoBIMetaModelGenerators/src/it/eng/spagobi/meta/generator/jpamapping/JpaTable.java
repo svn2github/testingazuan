@@ -1,14 +1,35 @@
 /**
- * 
- */
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2010 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.meta.generator.jpamapping;
 
 import it.eng.spagobi.meta.commons.JDBCTypeMapper;
 import it.eng.spagobi.meta.initializer.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,14 +49,18 @@ public class JpaTable {
 	
 	private BusinessTable businessTable;
 	
+	
 	// cache
 	List<JpaColumn> jpaColumns = null;
-	private HashMap<String, String> columnTypesMap =  null;
+	protected HashMap<String, String> columnTypesMap =  null;
 	
 	public JpaTable() {
 		businessTable = null;
 	}
 	
+	protected BusinessModel getModel(){
+		return businessTable.getModel();
+	}
 	public JpaTable(BusinessTable businessTable) {
 		setBusinessTable(businessTable);
 	}
@@ -48,11 +73,14 @@ public class JpaTable {
 		this.businessTable = businessTable;
 	}
 	
+	public PhysicalTable getPhysicalTable() {
+		return businessTable.getPhysicalTable();
+	}
 	/**
 	 * Returns the <code>JpaColumn</code> objects to be generated for this
 	 * table.
 	 */
-	private List<JpaColumn> getColumns() {
+	protected List<JpaColumn> getColumns() {
 		if (jpaColumns == null) {
 			jpaColumns = new ArrayList<JpaColumn>();
 			for (BusinessColumn c : businessTable.getColumns()) {
@@ -67,11 +95,11 @@ public class JpaTable {
 	}
 
 	/**
-	 * return the Package name....  TODO this should be read from model ( e.g. like a simple property )
+	 * return the Package name.... 
 	 * @return
 	 */
 	public String getPackage() {
-        ModelProperty property =  businessTable.getModel().getProperties().get(BusinessModelDefaultPropertiesInitializer.MODEL_PACKAGE);
+	/*	ModelProperty property =  getModel().getProperties().get(BusinessModelDefaultPropertiesInitializer.MODEL_PACKAGE);
         //check if property is setted, else get default value
         if (property.getValue() != null){
         	return property.getValue();
@@ -79,7 +107,8 @@ public class JpaTable {
         else {
         	return property.getPropertyType().getDefaultValue();
         }
-		//return "it.eng.spagobi.meta";
+        */
+		return "it.eng.spagobi.meta";
 	}
 	
 	/**
@@ -257,10 +286,10 @@ public class JpaTable {
 		JpaRelationship jpaRelationship=null;
 		
 		jpaRelationships = new ArrayList<JpaRelationship>();
-		logger.info("Number of relationschip of TABLE "+this.getBusinessTable().getName()+" : "+businessTable.getRelationships().size());
+		logger.info("Number of relationschip of OBJECT "+businessTable.getName()+" : "+businessTable.getRelationships().size());
 		for(BusinessRelationship relationshp : businessTable.getRelationships()) {
 			jpaRelationship = new JpaRelationship(this, relationshp);
-			
+			logger.info("The RELATIONSHIP IS : "+relationshp.getName());
 			if (jpaRelationship.getBusinessRelationship()==null || 
 					jpaRelationship.getBusinessRelationship().getSourceTable()==null){
 				logger.error("There is a problem , the relationship doesn't have any source Table");
@@ -271,10 +300,10 @@ public class JpaTable {
 				logger.error("There is a problem , the relationship doesn't have any destination Table");
 				continue;
 			}				
-			if (jpaRelationship.getBusinessRelationship().getSourceTable().equals(this.getBusinessTable())){
+			if (jpaRelationship.getBusinessRelationship().getSourceTable().equals(businessTable)){
 				// many-to-one
 				jpaRelationship.setCardinality(JpaRelationship.MANY_TO_ONE);
-			}else if (jpaRelationship.getBusinessRelationship().getDestinationTable().equals(this.getBusinessTable())){
+			}else if (jpaRelationship.getBusinessRelationship().getDestinationTable().equals(businessTable)){
 				// one-to-many
 				jpaRelationship.setCardinality(JpaRelationship.ONE_TO_MANY);				
 			}
@@ -293,7 +322,7 @@ public class JpaTable {
 	 * build the hasmap that contains the properties type of this "Business Table"
 	 * @return
 	 */
-	private void buildColumnTypesMap() {
+	protected void buildColumnTypesMap() {
 		if (columnTypesMap == null) {
 			columnTypesMap = new HashMap<String, String>();
 			for (BusinessColumn column : businessTable.getColumns()) {

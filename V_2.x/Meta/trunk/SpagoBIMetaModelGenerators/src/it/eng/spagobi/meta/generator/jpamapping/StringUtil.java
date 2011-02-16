@@ -23,6 +23,7 @@ public class StringUtil
 	 * not capitalized</em>). employee_name or employee-name -> employeeName
 	 */
 	private static String dbNameToVarName(String s) {
+		if (s==null)return "";
 		logger.debug("IN "+s);
 		if ("".equals(s)) {
 			return s;
@@ -141,6 +142,7 @@ public class StringUtil
 	 * appropriate Java type and field name 
 	 */
 	public static String pluralise(String name) {
+		if (name ==null || "".equals(name)) return "";
 		String result = name;
 		if (name.length() == 1) {
 			result += 's';

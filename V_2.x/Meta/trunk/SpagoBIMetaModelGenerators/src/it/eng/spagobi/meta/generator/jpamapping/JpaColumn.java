@@ -31,6 +31,8 @@ import it.eng.spagobi.meta.initializer.BusinessModelDefaultPropertiesInitializer
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
+import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
+import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -69,10 +71,14 @@ public class JpaColumn {
 	 * @return
 	 */
 	public boolean isColumnInRelationship() {
-		List<BusinessRelationship> relationships;
-		relationships = jpaTable.getBusinessTable().getRelationships();
-		logger.debug("The column "+getColumnName()+" has "+relationships.size()+" Relationship");
+		List<BusinessRelationship> relationships=null;
+		
+		if (jpaTable instanceof JpaView) relationships = ((JpaView)jpaTable).getBusinessView().getRelationships();
+		else if (jpaTable instanceof JpaTable) relationships = jpaTable.getBusinessTable().getRelationships();
+		
+		logger.debug("The OBJECT "+jpaTable.getClassName()+" has "+relationships.size()+" Relationship");
 		for(BusinessRelationship relationship : relationships) {
+			logger.info("The RELATIONSHIP IS : "+relationship.getName());
 			List<BusinessColumn> columns = null; 
 			if (relationship.getSourceTable()==null){
 				logger.error("The relationship "+relationship.getName()+" doesn't have any source table");
@@ -81,12 +87,23 @@ public class JpaColumn {
 			if (relationship.getDestinationTable()==null){
 				logger.error("The relationship "+relationship.getName()+" doesn't have any destination table");
 				continue;
-			}			
-			if(relationship.getSourceTable().equals( jpaTable.getBusinessTable() )) {
-				columns =  relationship.getSourceColumns();
-			} else {
-				columns =  relationship.getDestinationColumns();
 			}
+			
+			if (jpaTable instanceof JpaView){
+				if(relationship.getSourceTable().equals( ((JpaView)jpaTable).getBusinessView() )) {
+					columns =  relationship.getSourceColumns();
+				} else {
+					columns =  relationship.getDestinationColumns();
+				}					
+			}else if (jpaTable instanceof JpaTable){
+				if(relationship.getSourceTable().equals( jpaTable.getBusinessTable() )) {
+					columns =  relationship.getSourceColumns();
+				} else {
+					columns =  relationship.getDestinationColumns();
+				}				
+			}
+
+			
 			if (columns!=null){
 				// scann columns
 				for(BusinessColumn column : columns) {
@@ -97,6 +114,40 @@ public class JpaColumn {
 				}
 			}else {
 				logger.error("The Columns are null");
+			}
+		}
+		// check if the column belong to a innerJoin
+		if (jpaTable instanceof JpaView){
+			for (BusinessViewInnerJoinRelationship innerJoin : ((JpaView)jpaTable).getBusinessView().getJoinRelationships()){
+				List<PhysicalColumn> columns = null; 
+				logger.info("The INNER RELATIONSHIP IS : "+innerJoin.getName());
+				if (innerJoin==null || 
+						innerJoin.getSourceTable()==null){
+					logger.error("There is a problem , the innerRelationship doesn't have any source Table");
+					continue;
+				}
+				if (innerJoin==null || 
+						innerJoin.getDestinationTable()==null){
+					logger.error("There is a problem , the innerRelationship doesn't have any destination Table");
+					continue;
+				}
+				if(innerJoin.getSourceTable().equals( ((JpaView)jpaTable).getPhysicalTable() )) {
+					columns =  innerJoin.getSourceColumns();
+				} else {
+					columns =  innerJoin.getDestinationColumns();
+				}
+				if (columns!=null){
+					// scann columns
+					for(PhysicalColumn column : columns) {
+						if(column.getName().equals(businessColumn.getPhysicalColumn().getName())) {
+							logger.debug("Column "+getColumnName()+" belong to a Inner Relationship");
+							return true;
+						}
+					}
+				}else {
+					logger.error("The Columns are null");
+				}		
+				
 			}
 		}
 		logger.debug("Column "+getColumnName()+" doesn't belong to any Relationship");

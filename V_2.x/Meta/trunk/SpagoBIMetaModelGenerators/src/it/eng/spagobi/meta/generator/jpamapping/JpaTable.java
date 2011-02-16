@@ -195,6 +195,7 @@ public class JpaTable {
 	 */
 	public String getCompositeKeyPropertyNameGetter() {
 		return "get"+StringUtil.initUpper(getCompositeKeyPropertyName());
+
 	}
 	/**
 	 * Return the name of the metod SETTER

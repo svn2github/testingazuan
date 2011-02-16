@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.compiler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -94,13 +95,17 @@ public class DataMartGenerator {
 	
 	/**
 	 * Compile all the generated java classes
+	 * @return boolean : true if the compiler has worked well.
 	 */
-	public void compile(){
+	public boolean compile(){
 
 		String command=srcDir+" -classpath " +classPath+ " -d "+binDir+" -source 1.5";
 		logger.info("command="+command);
-		org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(command, new PrintWriter(System.out), new PrintWriter(System.err), null);
-		
+		PrintWriter error=new PrintWriter(System.err);
+		PrintWriter out=new PrintWriter(System.out);
+		boolean result=org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(command, out,error , null);
+		logger.info("Compile Result= " +result);
+		return result;
 	}
 	
 	/**

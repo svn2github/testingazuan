@@ -296,10 +296,12 @@ public class BusinessColumnSetImpl extends ModelObjectImpl implements BusinessCo
 			BusinessRelationship relationship = it.next();
 			
 			if ( (relationship.getSourceTable() != null)&& (relationship.getSourceTable().equals(this)) ){
-				relationships.add(relationship); 
+				if (relationship.getDestinationTable() != null)
+					relationships.add(relationship); 
 			}
 			else if ( (relationship.getDestinationTable() != null) && (relationship.getDestinationTable().equals(this)) ) {
-				relationships.add(relationship);
+				if (relationship.getSourceTable() != null)
+					relationships.add(relationship);
 			}
 		}
 		return relationships;

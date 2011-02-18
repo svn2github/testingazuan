@@ -72,7 +72,7 @@ public class BusinessColumnItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			//addPhysicalColumnPropertyDescriptor(object);
+			addPhysicalColumnPropertyDescriptor(object);
 			addTablePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;

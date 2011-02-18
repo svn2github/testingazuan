@@ -1452,7 +1452,8 @@ public class BusinessModelEditor
 						getActionBarContributor().shareGlobalActions(this, actionBars);
 					}
 				};
-			propertySheetPage.setPropertySourceProvider(new AdapterFactoryContentProvider(adapterFactory));
+			//propertySheetPage.setPropertySourceProvider(new AdapterFactoryContentProvider(adapterFactory));
+			propertySheetPage.setPropertySourceProvider(new CustomizedAdapterFactoryContentProvider(adapterFactory));
 		}
 
 		return propertySheetPage;

@@ -701,7 +701,7 @@ public class BusinessModelInitializer {
 			innerJoinRelationship.setDestinationTable(innerJoinRelationshipDescriptor.getDestinationTable());
 			innerJoinRelationship.getDestinationColumns().addAll(innerJoinRelationshipDescriptor.getDestinationColumns());	
 			
-			//get max identifier for innerJoinRelationship and set a name
+			//get max identifier for innerJoinRelationship 
 			long maxId = getMaxNumberInnerJoinRelationship(businessModel);
 			//increase value to set new identifier
 			maxId = maxId + 1;

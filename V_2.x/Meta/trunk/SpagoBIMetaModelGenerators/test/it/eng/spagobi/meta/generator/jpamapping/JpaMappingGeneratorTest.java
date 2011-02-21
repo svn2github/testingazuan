@@ -58,7 +58,11 @@ public class JpaMappingGeneratorTest {
 	@Test
 	public void testGenerate() {
 		String outputDir="C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/src/";
-		gen.generateJpaMapping( businessModel, outputDir);
+		try {
+			gen.generateJpaMapping( businessModel, outputDir);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		DataMartGenerator generator=new DataMartGenerator(
 				"C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/src/",

@@ -33,6 +33,8 @@ import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
 
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * @author cortella
@@ -48,15 +50,28 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 		this(domain, null);
 	}
 	
+	//This command can't be undo
+	@Override
+	public boolean canUndo() {
+		return false;
+	}
+	
 	@Override
 	public void execute() {
+		
 		BusinessModel businessModel;
 		businessModel = (BusinessModel)parameter.getOwner();
 		String directory = (String)parameter.getValue();
 
 		//Call JPA Mapping generator
 		JpaMappingGenerator generator = new JpaMappingGenerator();
-		generator.generateJpaMapping(businessModel, directory);
+		try {
+			generator.generateJpaMapping(businessModel, directory);
+		} catch (Exception e) {
+			System.err.println(">>> Error in JPAMappingGenerator: "+e);
+			e.printStackTrace();
+			showInformation("Error in JPAMappingGenerator","Cannot create JPA Mapping classes");
+		}
 		
 		//Get Package Name
 		String packageName = businessModel.getProperties().get(BusinessModelDefaultPropertiesInitializer.MODEL_PACKAGE).getValue();
@@ -70,20 +85,22 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 				packageName.replace(".", "/")
 				);		
 		
-		boolean result=datamartGenerator.compile();
+		boolean result = datamartGenerator.compile();
 		if (result){
 			// compile OK
+			showInformation("Successfull Compilation ","JPA Source Code correctly compiled");
+			
+			//Generate Jar from compiled code
 			datamartGenerator.jar();
 			System.err.println("COMMAND [GenerateJPAMappingCommand] SUCCESFULLY EXECUTED: ");
 			this.executed = true;
 		}else{
-			System.err.println("Compile problem!!!!!!!!!!");
-			// TODO  .... gestire la visualizzazione della popup all'utente
-			this.executed = false; // ????
+			// compile error
+			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");
+			System.err.println(">> JPA Compile problem! <<");
+			this.executed = false; 
 		}
 
-		
-		
 	}
 	
 	
@@ -100,5 +117,17 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 	@Override
 	public Object getImage() {
 		return SpagoBIMetalModelEditPlugin.INSTANCE.getImage("full/obj16/Jpaclass");
+	}
+	
+	/**
+	 * Show an information dialog box.
+	 */
+	public void showInformation(final String title, final String message) {
+	  Display.getDefault().asyncExec(new Runnable() {
+	    @Override
+	    public void run() {
+	      MessageDialog.openInformation(null, title, message);
+	    }
+	  });
 	}
 }

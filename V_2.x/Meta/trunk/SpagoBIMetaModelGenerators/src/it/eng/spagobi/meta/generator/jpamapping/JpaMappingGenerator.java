@@ -102,7 +102,7 @@ public class JpaMappingGenerator implements IGenerator {
 	 * @param model BusinessModel
 	 * @param outputFile File
 	 */
-	public void generateJpaMapping(BusinessModel model, String outputDir) {
+	public void generateJpaMapping(BusinessModel model, String outputDir) throws Exception {
 		this.outputDir=outputDir;
 		BusinessTable businessTable;
 		Velocity.setProperty("file.resource.loader.path", getTemplateDir().getAbsolutePath());

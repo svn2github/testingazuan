@@ -95,11 +95,11 @@ public class JpaTable {
 	}
 
 	/**
-	 * return the Package name.... 
+	 * return the Package name 
 	 * @return
 	 */
 	public String getPackage() {
-	/*	ModelProperty property =  getModel().getProperties().get(BusinessModelDefaultPropertiesInitializer.MODEL_PACKAGE);
+	ModelProperty property =  getModel().getProperties().get(BusinessModelDefaultPropertiesInitializer.MODEL_PACKAGE);
         //check if property is setted, else get default value
         if (property.getValue() != null){
         	return property.getValue();
@@ -107,8 +107,7 @@ public class JpaTable {
         else {
         	return property.getPropertyType().getDefaultValue();
         }
-        */
-		return "it.eng.spagobi.meta";
+        
 	}
 	
 	/**

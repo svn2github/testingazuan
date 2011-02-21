@@ -103,17 +103,6 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 
 	}
 	
-	
-	@Override
-	public void undo() {
-		
-	}
-
-	@Override
-	public void redo() {
-	
-	}
-	
 	@Override
 	public Object getImage() {
 		return SpagoBIMetalModelEditPlugin.INSTANCE.getImage("full/obj16/Jpaclass");

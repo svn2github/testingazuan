@@ -701,6 +701,12 @@ public class BusinessModelInitializer {
 			innerJoinRelationship.setDestinationTable(innerJoinRelationshipDescriptor.getDestinationTable());
 			innerJoinRelationship.getDestinationColumns().addAll(innerJoinRelationshipDescriptor.getDestinationColumns());	
 			
+			//get max identifier for innerJoinRelationship and set a name
+			long maxId = getMaxNumberInnerJoinRelationship(businessModel);
+			//increase value to set new identifier
+			maxId = maxId + 1;
+			innerJoinRelationship.setId(new Long(maxId).toString());
+			
 			//add BusinessViewInnerJoinRelationship properties
 			getPropertiesInitializer().addProperties(innerJoinRelationship);
 			
@@ -765,6 +771,23 @@ public class BusinessModelInitializer {
 		} else {
 			return false;
 		}
+	}
+	
+	/*
+	 * Return the current maximum number used as identifier for InnerJoinRelationship objects
+	 */
+	public long getMaxNumberInnerJoinRelationship(BusinessModel model){
+		EList<BusinessViewInnerJoinRelationship> joinRelationships = model.getJoinRelationships();
+		long maxId = 0;
+		for (BusinessViewInnerJoinRelationship joinRelation : joinRelationships){
+			//id is a number that I convert to long
+			String stringId = joinRelation.getId();
+			long longId = Long.parseLong(stringId.trim());
+			if (longId > maxId) {
+				maxId = longId;
+			}
+		}
+		return maxId;
 	}
 	
 	

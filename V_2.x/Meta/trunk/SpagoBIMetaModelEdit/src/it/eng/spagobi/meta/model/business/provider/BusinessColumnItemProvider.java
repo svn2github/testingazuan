@@ -81,45 +81,10 @@ public class BusinessColumnItemProvider
 
 			addPhysicalColumnPropertyDescriptor(object);
 			addTablePropertyDescriptor(object);
-			//added
-			addPhysicalTablePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
-	protected void addPhysicalTablePropertyDescriptor(Object object) {
-		BusinessColumn businessColumn = (BusinessColumn) object;
-		BusinessTable businessTable = (BusinessTable)businessColumn.getTable();
-		PhysicalTable physicalTable = businessColumn.getPhysicalColumn().getTable();
-		
-		itemPropertyDescriptors.add
-		(createItemPropertyDescriptor
-			(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-			 getResourceLocator(),
-			 getString("_UI_BusinessTable_physicalTable_feature"),
-			 getString("_UI_PropertyDescriptor_description", "_UI_BusinessTable_physicalTable_feature", "_UI_BusinessTable_type"),
-			 BusinessModelPackage.Literals.BUSINESS_TABLE__PHYSICAL_TABLE,
-			 true,
-			 false,
-			 true,
-			 null,
-			 null,
-			 null));
-	
-		
-		/*
-		Iterator<String> it = physicalTable.getProperties().keySet().iterator();
-		while (it.hasNext()) {
-			String key = it.next();
-			ModelProperty property = physicalTable.getProperties().get(key);
-			itemPropertyDescriptors.add(new CustomItemPropertyDescriptor(
-					property, ((ComposeableAdapterFactory) adapterFactory)
-							.getRootAdapterFactory(), getResourceLocator()));
-		}
-		*/
-	}
-	
-	
 	/**
 	 * This adds a property descriptor for the Physical Column feature.
 	 * <!-- begin-user-doc -->

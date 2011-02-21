@@ -38,6 +38,8 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 	
 	public static final String COLUMN_ALIGNMENT = "style.alignment";
 	
+	public static final String COLUMN_PHYSICAL_TABLE = "physical.physicaltable";
+	
 	// Relationship property names
 	
 	
@@ -88,7 +90,6 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
             propertyType.setCategory(structuralCategory);
             propertyType.setDefaultValue("it.eng.spagobi.meta");
             
-           
             if(o.getParentModel() != null) {
             	o.getParentModel().getPropertyTypes().add(propertyType);
             }
@@ -109,14 +110,15 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		Model rootModel;
 		ModelPropertyType propertyType;
 		ModelProperty property;
-		ModelPropertyCategory structuralCategory, styleCategory;
+		ModelPropertyCategory structuralCategory, styleCategory, otherCategory;
 		
 		rootModel = null;
 		
 		if(o.getTable() != null && o.getTable().getModel() != null) {
 			rootModel = o.getTable().getModel().getParentModel();
 		}
-				
+		
+		//**** Structural Category ****
 		structuralCategory =  o.getTable().getModel().getParentModel().getPropertyCategory("Structural");
 		if(structuralCategory == null) {
 			structuralCategory = FACTORY.createModelPropertyCategory();
@@ -125,12 +127,22 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 			o.getTable().getModel().getParentModel().getPropertyCategories().add(structuralCategory);
 		}		
 		
+		//**** Style Category ****
 		styleCategory =  o.getTable().getModel().getParentModel().getPropertyCategory("Style");
 		if(styleCategory == null) {
 			styleCategory = FACTORY.createModelPropertyCategory();
 			styleCategory.setName("Style");
 			styleCategory.setDescription("Style properties");
 			o.getTable().getModel().getParentModel().getPropertyCategories().add(styleCategory);
+		}
+		
+		//**** Other Category ****
+		otherCategory =  o.getTable().getModel().getParentModel().getPropertyCategory("Other");
+		if(otherCategory == null) {
+			otherCategory = FACTORY.createModelPropertyCategory();
+			otherCategory.setName("Physical Reference");
+			otherCategory.setDescription("The reference to the original physical object");
+			o.getTable().getModel().getParentModel().getPropertyCategories().add(otherCategory);
 		}
 		
 		
@@ -205,6 +217,24 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		property.setPropertyType(propertyType);
 		o.getProperties().put(property.getPropertyType().getId(), property);
 		
+		// Column Physical Table TYPE
+		propertyType = null;
+		
+		if(rootModel != null) propertyType = rootModel.getPropertyType(COLUMN_PHYSICAL_TABLE);
+		if(propertyType == null) {
+			propertyType = FACTORY.createModelPropertyType();
+			propertyType.setId(COLUMN_PHYSICAL_TABLE);
+			propertyType.setName("Physical Table");
+			propertyType.setDescription("The original physical table of this column");
+			propertyType.setCategory(otherCategory);
+			propertyType.setDefaultValue(o.getPhysicalColumn().getTable().getName());
+			
+			if(rootModel != null) rootModel.getPropertyTypes().add(propertyType);
+		}
+		
+		property = FACTORY.createModelProperty();
+		property.setPropertyType(propertyType);
+		o.getProperties().put(property.getPropertyType().getId(), property);
 		
 	}
 	

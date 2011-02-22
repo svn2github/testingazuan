@@ -332,10 +332,8 @@ public class BusinessModelItemProvider
 		 result = null;
 		 
 		 if(commandClass == AddBusinessTableCommand.class) {
-		   	System.err.println("-> " + commandClass.getName() + " <<<");
 		   	result = new AddBusinessTableCommand(domain, commandParameter);
 		 } else if(commandClass == AddBusinessRelationshipCommand.class) {
-			System.err.println("-> " + commandClass.getName() + " <<<");
 			result = new AddBusinessRelationshipCommand(domain, commandParameter);
 		 }
 		 

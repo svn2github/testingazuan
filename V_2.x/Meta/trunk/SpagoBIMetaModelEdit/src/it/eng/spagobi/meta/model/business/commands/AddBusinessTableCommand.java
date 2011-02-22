@@ -114,10 +114,10 @@ public class AddBusinessTableCommand extends AbstractSpagoBIModelCommand {
 		return SpagoBIMetalModelEditPlugin.INSTANCE.getImage("full/obj16/BusinessTable");
 	}
 
-//-------------------------------------------------------------------------
-//	Inner Classes
-//-------------------------------------------------------------------------
-	
+	//-------------------------------------------------------------------------
+	//	Inner Classes
+	//-------------------------------------------------------------------------
+		
 	/*
 	 * Inner class that implements IModelObjectFilter
 	 */

@@ -109,7 +109,7 @@ import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditor;
-import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
+import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;
 
 
 import it.eng.spagobi.meta.model.test.TestEditorPlugin;

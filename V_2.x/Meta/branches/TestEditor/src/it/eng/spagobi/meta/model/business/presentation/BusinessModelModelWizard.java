@@ -75,7 +75,7 @@ import org.eclipse.ui.part.ISetSelectionTarget;
 
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
-import it.eng.spagobi.meta.model.provider.SpagoBIMetalModelEditPlugin;
+import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;
 
 
 import it.eng.spagobi.meta.model.test.TestEditorPlugin;
@@ -541,7 +541,7 @@ public class BusinessModelModelWizard extends Wizard implements INewWizard {
 		 */
 		protected String getLabel(String typeName) {
 			try {
-				return SpagoBIMetalModelEditPlugin.INSTANCE.getString("_UI_" + typeName + "_type");
+				return SpagoBIMetaModelEditPlugin.INSTANCE.getString("_UI_" + typeName + "_type");
 			}
 			catch(MissingResourceException mre) {
 				TestEditorPlugin.INSTANCE.log(mre);

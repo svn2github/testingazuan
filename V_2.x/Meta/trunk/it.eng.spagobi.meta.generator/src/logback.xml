@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="true">
+
+  <appender name="STDFILE" class="ch.qos.logback.core.FileAppender">
+    <File>./log/eBAM_Adapter.log</File>
+    <append>true</append>
+
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%d [%thread] %-5level %logger %method %line - %msg%n %ex</Pattern>
+    </layout>
+  </appender> 
+
+  		
+  <root level="debug">
+    <appender-ref ref="STDFILE" />
+  </root>
+</configuration>

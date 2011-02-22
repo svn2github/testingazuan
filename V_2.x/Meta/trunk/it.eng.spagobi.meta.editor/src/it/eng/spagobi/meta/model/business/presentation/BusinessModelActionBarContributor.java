@@ -304,8 +304,6 @@ public class BusinessModelActionBarContributor
 		//
 		Collection<?> newChildDescriptors = null;
 		Collection<?> newSiblingDescriptors = null;
-		Collection<?> newRemoveDescriptors = null;
-		Collection<?> newGenerateDescriptors = null;
 
 		ISelection selection = event.getSelection();
 		if (selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() == 1) {
@@ -314,18 +312,15 @@ public class BusinessModelActionBarContributor
 			EditingDomain domain = ((IEditingDomainProvider)activeEditorPart).getEditingDomain();
 
 			newChildDescriptors = domain.getNewChildDescriptors(object, null);
-			//newSiblingDescriptors = domain.getNewChildDescriptors(null, object);
-			newRemoveDescriptors = domain.getNewChildDescriptors(object, null);
-			newGenerateDescriptors =  domain.getNewChildDescriptors(object, null);
-			
+			newSiblingDescriptors = domain.getNewChildDescriptors(null, object);
 		}
 
 		// Generate actions for selection; populate and redraw the menus.
 		//
 		createChildActions = generateCreateChildActions(newChildDescriptors, selection);
-		createSiblingActions = generateCreateSiblingActions(newSiblingDescriptors, selection);
-		createRemoveActions = generateCreateRemoveActions(newRemoveDescriptors, selection);
-		createGenerateActions = generateCreateGenerateActions(newGenerateDescriptors, selection);
+		//createSiblingActions = generateCreateSiblingActions(newSiblingDescriptors, selection);
+		createRemoveActions = generateCreateRemoveActions(newChildDescriptors, selection);
+		createGenerateActions = generateCreateGenerateActions(newChildDescriptors, selection);
 
 		if (createChildMenuManager != null) {
 			populateManager(createChildMenuManager, createChildActions, null);
@@ -361,13 +356,7 @@ public class BusinessModelActionBarContributor
 		    	
 		    } else if(targetObject instanceof BusinessRootItemProvider) {
 		    	
-		    } else {
-		    	if (descriptors != null) {
-					for (Object descriptor : descriptors) {
-						actions.add(new CreateChildAction(activeEditorPart, selection, descriptor));
-					}
-				}
-		    }
+		    } 
 		}
 		return actions;
 	}
@@ -388,13 +377,7 @@ public class BusinessModelActionBarContributor
 
 		    } else if(targetObject instanceof BusinessRootItemProvider) {
 		    	actions.add(new GenerateJPAMappingAction(activeEditorPart, selection));
-		    } else {
-		    	if (descriptors != null) {
-					for (Object descriptor : descriptors) {
-						actions.add(new CreateChildAction(activeEditorPart, selection, descriptor));
-					}
-				}
-		    }
+		    } 
 		}
 		return actions;
 	}
@@ -432,12 +415,6 @@ public class BusinessModelActionBarContributor
 		    } else if(targetObject instanceof BusinessRootItemProvider) {
 		    	actions.add(new AddBusinessTableAction(activeEditorPart, selection, null));
 		    	actions.add(new AddBusinessRelationshipAction(activeEditorPart, selection));
-		    } else {
-		    	if (descriptors != null) {
-					for (Object descriptor : descriptors) {
-						actions.add(new CreateChildAction(activeEditorPart, selection, descriptor));
-					}
-				}
 		    }
 		}
 		return actions;
@@ -490,6 +467,8 @@ public class BusinessModelActionBarContributor
 	 * @generated
 	 */
 	protected void depopulateManager(IContributionManager manager, Collection<? extends IAction> actions) {
+		
+		System.err.println("depopulate >>>>>>>>>>>>>>>>>>>>>>>>>>>>><");
 		if (actions != null) {
 			IContributionItem[] items = manager.getItems();
 			for (int i = 0; i < items.length; i++) {
@@ -519,6 +498,7 @@ public class BusinessModelActionBarContributor
 	 */
 	@Override
 	public void menuAboutToShow(IMenuManager menuManager) {
+		System.err.println("menuAboutToShow");
 		super.menuAboutToShow(menuManager);
 		MenuManager submenuManager = null;
 
@@ -534,7 +514,7 @@ public class BusinessModelActionBarContributor
 		populateManager(submenuManager, createRemoveActions, null);
 		menuManager.insertBefore("edit", submenuManager);
 		
-		submenuManager = new MenuManager("Generate");
+		submenuManager = new MenuManager("Pippo");
 		populateManager(submenuManager, createGenerateActions, null);
 		menuManager.insertBefore("edit", submenuManager);
 		

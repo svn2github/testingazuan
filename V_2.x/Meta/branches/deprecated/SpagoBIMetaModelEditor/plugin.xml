@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ <copyright>
+ </copyright>
+
+ $Id$
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="it.eng.spagobi.meta.model.presentation.SpagoBIModelWizard"
+            name="%_UI_ModelModelWizard_label"
+            class="it.eng.spagobi.meta.model.presentation.SpagoBIModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/SpagoBIModelFile.gif">
+         <description>%_UI_ModelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorID"
+            name="%_UI_ModelEditor_label"
+            icon="icons/full/obj16/SpagoBIModelFile.gif"
+            class="it.eng.spagobi.meta.model.presentation.SpagoBIModelEditor"
+            contributorClass="it.eng.spagobi.meta.model.presentation.ModelActionBarContributor">
+      </editor>
+   </extension>
+   
+    <extension point="org.eclipse.ui.editors">
+      <editor
+            id="it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorAdapterID"
+            name="%_UI_ModelEditorAdapter_label"
+            icon="icons/full/obj16/SpagoBIModelFile.gif"
+            extensions="sbimodel"
+            class="it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorAdapter"
+            contributorClass="it.eng.spagobi.meta.model.presentation.ModelActionBarContributor"
+            launcher="it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorAdapterLauncher">
+      </editor>
+   </extension>
+   
+   
+   
+   
+   
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="it.eng.spagobi.meta.model.physical.presentation.PhysicalModelModelWizardID"
+            name="%_UI_PhysicalModelModelWizard_label"
+            class="it.eng.spagobi.meta.model.physical.presentation.PhysicalModelModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/SpagoBIPhysicalModelFile.gif">
+         <description>%_UI_PhysicalModelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditorID"
+            name="%_UI_PhysicalModelEditor_label"
+            icon="icons/full/obj16/SpagoBIPhysicalModelFile.gif"
+            extensions="physicalmodel"
+            class="it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditor"
+            contributorClass="it.eng.spagobi.meta.model.physical.presentation.PhysicalModelActionBarContributor">
+      </editor>
+   </extension>
+   
+   
+   
+   
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="it.eng.spagobi.meta.model.business.presentation.BusinessModelWizardID"
+            name="%_UI_BusinessModelModelWizard_label"
+            class="it.eng.spagobi.meta.model.business.presentation.BusinessModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/SpagoBIBusinessModelFile.gif">
+         <description>%_UI_BusinessModelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="it.eng.spagobi.meta.model.business.presentation.BusinessModelEditorID"
+            name="%_UI_BusinessModelEditor_label"
+            icon="icons/full/obj16/SpagoBIBusinessModelFile.gif"
+            extensions="sbibusinessmodel"
+            class="it.eng.spagobi.meta.model.business.presentation.BusinessModelEditor"
+            contributorClass="it.eng.spagobi.meta.model.business.presentation.BusinessModelActionBarContributor">
+      </editor>
+   </extension>
+
+
+
+
+
+
+
+</plugin>

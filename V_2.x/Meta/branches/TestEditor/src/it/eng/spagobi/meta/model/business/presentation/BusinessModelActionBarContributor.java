@@ -71,6 +71,7 @@ import org.eclipse.ui.PartInitException;
 public class BusinessModelActionBarContributor
 	extends EditingDomainActionBarContributor
 	implements ISelectionChangedListener {
+	
 	/**
 	 * This keeps track of the active editor.
 	 * <!-- begin-user-doc -->
@@ -176,7 +177,6 @@ public class BusinessModelActionBarContributor
 	 * This creates an instance of the contributor.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public BusinessModelActionBarContributor() {
 		super(ADDITIONS_LAST_STYLE);
@@ -203,7 +203,6 @@ public class BusinessModelActionBarContributor
 	 * as well as the sub-menus for object creation items.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
 	public void contributeToMenu(IMenuManager menuManager) {
@@ -211,6 +210,7 @@ public class BusinessModelActionBarContributor
 
 		IMenuManager submenuManager = new MenuManager(TestEditorPlugin.INSTANCE.getString("_UI_BusinessModelEditor_menu"), "it.eng.spagobi.meta.model.businessMenuID");
 		menuManager.insertAfter("additions", submenuManager);
+		
 		submenuManager.add(new Separator("settings"));
 		submenuManager.add(new Separator("actions"));
 		submenuManager.add(new Separator("additions"));
@@ -284,18 +284,15 @@ public class BusinessModelActionBarContributor
 	 * that can be added to the selected object and updating the menus accordingly.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public void selectionChanged(SelectionChangedEvent event) {
 		// Remove any menu items for old selection.
-		//
 		if (createChildMenuManager != null) {
 			depopulateManager(createChildMenuManager, createChildActions);
 		}
 		if (createSiblingMenuManager != null) {
 			depopulateManager(createSiblingMenuManager, createSiblingActions);
 		}
-		//added
 		if (createRemoveMenuManager != null) {
 			depopulateManager(createRemoveMenuManager, createRemoveActions);
 		}
@@ -348,6 +345,8 @@ public class BusinessModelActionBarContributor
 		}
 	}
 	
+	
+	
 	protected Collection<IAction> generateCreateRemoveActions(Collection<?> descriptors, ISelection selection) {
 		Collection<IAction> actions = new ArrayList<IAction>();
 		if(!selection.isEmpty()) {
@@ -363,7 +362,6 @@ public class BusinessModelActionBarContributor
 		    } else if(targetObject instanceof BusinessRootItemProvider) {
 		    	
 		    } else {
-		    	System.err.println(">>>> " + targetObject.getClass().getName());
 		    	if (descriptors != null) {
 					for (Object descriptor : descriptors) {
 						actions.add(new CreateChildAction(activeEditorPart, selection, descriptor));
@@ -391,7 +389,6 @@ public class BusinessModelActionBarContributor
 		    } else if(targetObject instanceof BusinessRootItemProvider) {
 		    	actions.add(new GenerateJPAMappingAction(activeEditorPart, selection));
 		    } else {
-		    	System.err.println(">>>> " + targetObject.getClass().getName());
 		    	if (descriptors != null) {
 					for (Object descriptor : descriptors) {
 						actions.add(new CreateChildAction(activeEditorPart, selection, descriptor));
@@ -436,7 +433,6 @@ public class BusinessModelActionBarContributor
 		    	actions.add(new AddBusinessTableAction(activeEditorPart, selection, null));
 		    	actions.add(new AddBusinessRelationshipAction(activeEditorPart, selection));
 		    } else {
-		    	System.err.println(">>>> " + targetObject.getClass().getName());
 		    	if (descriptors != null) {
 					for (Object descriptor : descriptors) {
 						actions.add(new CreateChildAction(activeEditorPart, selection, descriptor));
@@ -520,7 +516,6 @@ public class BusinessModelActionBarContributor
 	 * This populates the pop-up menu before it appears.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
 	public void menuAboutToShow(IMenuManager menuManager) {

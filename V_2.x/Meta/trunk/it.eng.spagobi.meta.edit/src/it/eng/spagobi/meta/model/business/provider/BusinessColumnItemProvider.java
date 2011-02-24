@@ -7,26 +7,15 @@
 package it.eng.spagobi.meta.model.business.provider;
 
 
-import it.eng.spagobi.meta.model.ModelObject;
-import it.eng.spagobi.meta.model.ModelPackage;
-import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
-import it.eng.spagobi.meta.model.business.BusinessColumnSet;
-import it.eng.spagobi.meta.model.business.BusinessModelPackage;
-import it.eng.spagobi.meta.model.business.BusinessTable;
-import it.eng.spagobi.meta.model.business.commands.AddBusinessRelationshipCommand;
-import it.eng.spagobi.meta.model.business.commands.AddIdentifierCommand;
-import it.eng.spagobi.meta.model.business.commands.AddToIdentifierCommand;
-import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
 
-import it.eng.spagobi.meta.model.physical.PhysicalColumn;
-import it.eng.spagobi.meta.model.physical.PhysicalTable;
-import it.eng.spagobi.meta.model.provider.CustomItemPropertyDescriptor;
+import it.eng.spagobi.meta.model.business.BusinessModelPackage;
+import it.eng.spagobi.meta.model.business.commands.AddToIdentifierCommand;
+
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.emf.common.command.Command;

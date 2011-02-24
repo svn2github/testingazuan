@@ -464,7 +464,7 @@ public class BusinessModelActionBarContributor
 	 * based on the {@link org.eclipse.jface.action.IAction}s contained in the <code>actions</code> collection.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	protected void depopulateManager(IContributionManager manager, Collection<? extends IAction> actions) {
 		
@@ -514,7 +514,7 @@ public class BusinessModelActionBarContributor
 		populateManager(submenuManager, createRemoveActions, null);
 		menuManager.insertBefore("edit", submenuManager);
 		
-		submenuManager = new MenuManager("Pippo");
+		submenuManager = new MenuManager("Generate");
 		populateManager(submenuManager, createGenerateActions, null);
 		menuManager.insertBefore("edit", submenuManager);
 		

@@ -7,12 +7,10 @@
 package it.eng.spagobi.meta.model.business.provider;
 
 
-import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.AddBusinessRelationshipCommand;
-import it.eng.spagobi.meta.model.business.commands.AddBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.AddIdentifierCommand;
 import it.eng.spagobi.meta.model.business.commands.AddPhysicalTableToBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
@@ -23,9 +21,6 @@ import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.InboundRelationshipFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.OutboundRelationshipFolderItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
-import it.eng.spagobi.meta.model.physical.provider.PhysicalTableItemProvider;
-import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
-import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,27 +28,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.eclipse.emf.common.command.Command;
-import org.eclipse.emf.common.command.UnexecutableCommand;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.common.util.ResourceLocator;
 
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.edit.command.AddCommand;
 import org.eclipse.emf.edit.command.CommandParameter;
-import org.eclipse.emf.edit.command.CopyCommand;
-import org.eclipse.emf.edit.command.CreateChildCommand;
-import org.eclipse.emf.edit.command.CreateCopyCommand;
-import org.eclipse.emf.edit.command.DragAndDropCommand;
-import org.eclipse.emf.edit.command.InitializeCopyCommand;
-import org.eclipse.emf.edit.command.MoveCommand;
-import org.eclipse.emf.edit.command.RemoveCommand;
-import org.eclipse.emf.edit.command.ReplaceCommand;
-import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -62,7 +42,7 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-import org.eclipse.emf.edit.provider.ViewerNotification;
+
 
 /**
  * This is the item provider adapter for a {@link it.eng.spagobi.meta.model.business.BusinessTable} object.
@@ -160,7 +140,6 @@ public class BusinessTableItemProvider
 	
 	@Override
 	public Collection<?> getChildren(Object object) {
-	//	if (children == null){
 			BusinessTable businessTable;
 			PhysicalTable physicalTable;
 			BusinessColumnFolderItemProvider folderItemProvider;
@@ -210,8 +189,6 @@ public class BusinessTableItemProvider
 			children.add( folderItemProvider );
 			children.add( folderItemProviderInRel );
 			children.add( folderItemProviderOutRel );
-			
-			
 
 			if (physicalTable != null){
 				physicalTableReferenceItemProvider = new FolderItemProvider(adapterFactory, physicalTable, null);
@@ -219,7 +196,6 @@ public class BusinessTableItemProvider
 				physicalTableReferenceItemProvider.setImage("full/obj16/PhysicalTable");
 				children.add(physicalTableReferenceItemProvider);
 			}
-		//}
 		
 		return children;
 	}

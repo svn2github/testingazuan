@@ -103,7 +103,7 @@ public class BusinessRootItemProvider extends FolderItemProvider {
 	 * This returns the property descriptors for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
@@ -147,7 +147,7 @@ public class BusinessRootItemProvider extends FolderItemProvider {
 	 * This adds a property descriptor for the Parent Model feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	protected void addParentModelPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
@@ -169,7 +169,7 @@ public class BusinessRootItemProvider extends FolderItemProvider {
 	 * This adds a property descriptor for the Physical Model feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	protected void addPhysicalModelPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
@@ -191,7 +191,7 @@ public class BusinessRootItemProvider extends FolderItemProvider {
 	 * This adds a property descriptor for the Tables feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	protected void addTablesPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
@@ -213,7 +213,7 @@ public class BusinessRootItemProvider extends FolderItemProvider {
 	 * This adds a property descriptor for the Relationships feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	protected void addRelationshipsPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add

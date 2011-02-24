@@ -7,7 +7,7 @@
 package it.eng.spagobi.meta.model.business.provider;
 
 
-import it.eng.spagobi.meta.model.business.BusinessModel;
+
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessView;
@@ -23,8 +23,7 @@ import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.InboundRelationshipFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.OutboundRelationshipFolderItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
-import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
-import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,8 +34,6 @@ import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
@@ -46,7 +43,7 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-import org.eclipse.emf.edit.provider.ViewerNotification;
+
 
 /**
  * This is the item provider adapter for a {@link it.eng.spagobi.meta.model.business.BusinessView} object.
@@ -113,7 +110,6 @@ public class BusinessViewItemProvider
 	
 	@Override
 	public Collection<?> getChildren(Object object) {
-		//if (children == null){
 			BusinessView businessView;
 			BusinessColumnFolderItemProvider folderItemProvider;
 			InboundRelationshipFolderItemProvider folderItemProviderInRel = null;
@@ -174,7 +170,6 @@ public class BusinessViewItemProvider
 			children.add( folderItemProviderInRel );
 			children.add( folderItemProviderOutRel );
 			children.add( folderItemProviderPhysicalTable );
-		//}
 
 		return children;
 	}
@@ -213,7 +208,7 @@ public class BusinessViewItemProvider
 	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	@Override
 	public void notifyChanged(Notification notification) {

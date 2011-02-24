@@ -129,7 +129,7 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 	 * Return the resource locator for this item provider's resources.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	@Override
 	public ResourceLocator getResourceLocator() {

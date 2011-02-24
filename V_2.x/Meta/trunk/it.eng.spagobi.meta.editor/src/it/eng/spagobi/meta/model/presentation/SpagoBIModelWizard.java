@@ -231,7 +231,7 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 	 * Create a new model.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	protected EObject createInitialModel() {
 		
@@ -261,7 +261,7 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 	 * Do the work after everything is specified.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	@Override
 	public boolean performFinish() {
@@ -469,7 +469,7 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 	 * The framework calls this to create the contents of the wizard.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 		@Override
 	public void addPages() {

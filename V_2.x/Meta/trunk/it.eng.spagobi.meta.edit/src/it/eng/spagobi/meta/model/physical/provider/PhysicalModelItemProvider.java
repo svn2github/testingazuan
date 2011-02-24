@@ -268,7 +268,6 @@ public class PhysicalModelItemProvider
 		children = new LinkedHashSet();
 		//children.addAll(  getChildrenFeatures(object) );
 		children.add( rootItemProvider );
-
 		
 		return children;
 	}		

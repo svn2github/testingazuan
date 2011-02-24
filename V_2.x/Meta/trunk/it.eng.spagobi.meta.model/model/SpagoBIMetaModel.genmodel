@@ -113,7 +113,8 @@
         <genFeatures createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessModel/physicalModel"/>
         <genFeatures children="true" createChild="true" propertySortChoices="true"
             ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessModel/tables"/>
-        <genFeatures createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessModel/relationships"/>
+        <genFeatures property="Readonly" children="true" createChild="true" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessModel/relationships"/>
         <genFeatures property="None" createChild="false" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessModel/identifiers"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessModel/domains"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SpagoBIMetaModel.ecore#//business/BusinessModel/joinRelationships"/>

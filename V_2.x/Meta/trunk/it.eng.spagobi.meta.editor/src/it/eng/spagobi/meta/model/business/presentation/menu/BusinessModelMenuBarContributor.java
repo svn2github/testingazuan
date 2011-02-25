@@ -40,6 +40,7 @@ import org.eclipse.ui.IEditorPart;
 
 import it.eng.spagobi.meta.model.business.actions.RefreshViewerAction;
 import it.eng.spagobi.meta.model.business.actions.ShowPropertiesViewAction;
+import it.eng.spagobi.meta.model.editor.LN;
 import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
 
 /**
@@ -60,7 +61,7 @@ public class BusinessModelMenuBarContributor {
 
 	public BusinessModelMenuBarContributor(IMenuManager parentMenuManager, boolean insertAfter, String anchorMenuItemId) {
 		
-		toolbarMainMenuManager = new MenuManager(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_BusinessModelEditor_menu"), "it.eng.spagobi.meta.model.businessMenuID");
+		toolbarMainMenuManager = new MenuManager(LN.get("_UI_BusinessModelEditor_menu"), "it.eng.spagobi.meta.model.businessMenuID");
 		toolbarSubMenuManagers = new HashMap();
 		
 		refreshViewerAction = new RefreshViewerAction();

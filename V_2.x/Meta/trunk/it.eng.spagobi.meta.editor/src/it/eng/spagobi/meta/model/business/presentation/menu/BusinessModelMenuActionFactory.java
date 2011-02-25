@@ -73,7 +73,7 @@ public class BusinessModelMenuActionFactory {
 			 editActions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
 			 editActions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
 			 editActions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));	
-			 actions.put("Edit", editActions);
+			 actions.put("Add", editActions);
 		} else if(target instanceof BusinessView) {
 			 List editActions = new ArrayList();
 			 editActions.add(new AddIdentifierAction(activeEditorPart, selection));
@@ -82,7 +82,7 @@ public class BusinessModelMenuActionFactory {
 			 editActions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
 			 editActions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));
 		     //actions.add(new RemovePhysicalTableToBusinessViewAction(activeEditorPart, selection));
-			 actions.put("Edit", editActions);
+			 actions.put("Add", editActions);
 			 
 			 List removeActions = new ArrayList();
 			 removeActions.add(new RemovePhysicalTableToBusinessViewAction(activeEditorPart, selection));
@@ -90,12 +90,12 @@ public class BusinessModelMenuActionFactory {
 		} else if(target instanceof BusinessColumn){
 			List editActions = new ArrayList();
 			editActions.add(new AddToIdentifierAction(activeEditorPart, selection));
-			actions.put("Edit", editActions);
+			actions.put("Add", editActions);
 	    } else if(target instanceof BusinessRootItemProvider) {
 	    	List editActions = new ArrayList();
 	    	editActions.add(new AddBusinessTableAction(activeEditorPart, selection, null));
 	    	editActions.add(new AddBusinessRelationshipAction(activeEditorPart, selection));
-	    	actions.put("Edit", editActions);
+	    	actions.put("Add", editActions);
 	    	
 	    	List generateActions = new ArrayList();
 	    	generateActions.add(new GenerateJPAMappingAction(activeEditorPart, selection));

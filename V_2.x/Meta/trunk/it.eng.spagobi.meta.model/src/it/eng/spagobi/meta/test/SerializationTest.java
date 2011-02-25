@@ -3,10 +3,6 @@
  */
 package it.eng.spagobi.meta.test;
 
-import it.eng.spagobi.meta.cwm.CWMImplType;
-import it.eng.spagobi.meta.cwm.CWMMapperFactory;
-import it.eng.spagobi.meta.cwm.ICWM;
-import it.eng.spagobi.meta.cwm.ICWMMapper;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.Model;

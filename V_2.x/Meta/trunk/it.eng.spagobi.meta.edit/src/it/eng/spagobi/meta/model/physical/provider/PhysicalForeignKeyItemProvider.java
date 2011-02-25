@@ -74,9 +74,9 @@ public class PhysicalForeignKeyItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addSourceNamePropertyDescriptor(object);
 			addSourceTablePropertyDescriptor(object);
 			addSourceColumnsPropertyDescriptor(object);
+			addSourceNamePropertyDescriptor(object);
 			addDestinationNamePropertyDescriptor(object);
 			addDestinationTablePropertyDescriptor(object);
 			addDestinationColumnsPropertyDescriptor(object);

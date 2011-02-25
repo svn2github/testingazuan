@@ -274,7 +274,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * @generated
 	 */
 	public EAttribute getPhysicalForeignKey_SourceName() {
-		return (EAttribute)physicalForeignKeyEClass.getEStructuralFeatures().get(0);
+		return (EAttribute)physicalForeignKeyEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -283,7 +283,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * @generated
 	 */
 	public EReference getPhysicalForeignKey_SourceTable() {
-		return (EReference)physicalForeignKeyEClass.getEStructuralFeatures().get(1);
+		return (EReference)physicalForeignKeyEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -292,7 +292,7 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 	 * @generated
 	 */
 	public EReference getPhysicalForeignKey_SourceColumns() {
-		return (EReference)physicalForeignKeyEClass.getEStructuralFeatures().get(2);
+		return (EReference)physicalForeignKeyEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -556,9 +556,9 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 		createEReference(physicalPrimaryKeyEClass, PHYSICAL_PRIMARY_KEY__COLUMNS);
 
 		physicalForeignKeyEClass = createEClass(PHYSICAL_FOREIGN_KEY);
-		createEAttribute(physicalForeignKeyEClass, PHYSICAL_FOREIGN_KEY__SOURCE_NAME);
 		createEReference(physicalForeignKeyEClass, PHYSICAL_FOREIGN_KEY__SOURCE_TABLE);
 		createEReference(physicalForeignKeyEClass, PHYSICAL_FOREIGN_KEY__SOURCE_COLUMNS);
+		createEAttribute(physicalForeignKeyEClass, PHYSICAL_FOREIGN_KEY__SOURCE_NAME);
 		createEAttribute(physicalForeignKeyEClass, PHYSICAL_FOREIGN_KEY__DESTINATION_NAME);
 		createEReference(physicalForeignKeyEClass, PHYSICAL_FOREIGN_KEY__DESTINATION_TABLE);
 		createEReference(physicalForeignKeyEClass, PHYSICAL_FOREIGN_KEY__DESTINATION_COLUMNS);
@@ -638,9 +638,9 @@ public class PhysicalModelPackageImpl extends EPackageImpl implements PhysicalMo
 		initEReference(getPhysicalPrimaryKey_Columns(), this.getPhysicalColumn(), null, "columns", null, 1, -1, PhysicalPrimaryKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(physicalForeignKeyEClass, PhysicalForeignKey.class, "PhysicalForeignKey", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getPhysicalForeignKey_SourceName(), ecorePackage.getEString(), "sourceName", null, 0, 1, PhysicalForeignKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalForeignKey_SourceTable(), this.getPhysicalTable(), null, "sourceTable", null, 1, 1, PhysicalForeignKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalForeignKey_SourceColumns(), this.getPhysicalColumn(), null, "sourceColumns", null, 1, -1, PhysicalForeignKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPhysicalForeignKey_SourceName(), ecorePackage.getEString(), "sourceName", null, 0, 1, PhysicalForeignKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getPhysicalForeignKey_DestinationName(), ecorePackage.getEString(), "destinationName", null, 0, 1, PhysicalForeignKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalForeignKey_DestinationTable(), this.getPhysicalTable(), null, "destinationTable", null, 1, 1, PhysicalForeignKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPhysicalForeignKey_DestinationColumns(), this.getPhysicalColumn(), null, "destinationColumns", null, 1, -1, PhysicalForeignKey.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -623,7 +623,7 @@ public class ModelEditor
 			BasicDiagnostic diagnostic =
 				new BasicDiagnostic
 					(Diagnostic.OK,
-					 "SpagoBIModelEditorPlugin",
+					 "it.eng.spagobi.meta.editor",
 					 0,
 					 null,
 					 new Object [] { editingDomain.getResourceSet() });
@@ -985,7 +985,7 @@ public class ModelEditor
 			BasicDiagnostic basicDiagnostic =
 				new BasicDiagnostic
 					(Diagnostic.ERROR,
-					 "SpagoBIMetaEditorPlugin",
+					 "it.eng.spagobi.meta.editor",
 					 0,
 					 getString("_UI_CreateModelError_message", resource.getURI()),
 					 new Object [] { exception == null ? (Object)resource : exception });
@@ -996,7 +996,7 @@ public class ModelEditor
 			return
 				new BasicDiagnostic
 					(Diagnostic.ERROR,
-					 "SpagoBIMetaEditorPlugin",
+					 "it.eng.spagobi.meta.editor",
 					 0,
 					 getString("_UI_CreateModelError_message", resource.getURI()),
 					 new Object[] { exception });

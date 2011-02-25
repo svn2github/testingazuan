@@ -162,7 +162,7 @@ public class BusinessModelItemProvider
 				 getString("_UI_BusinessModel_relationships_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_BusinessModel_relationships_feature", "_UI_BusinessModel_type"),
 				 BusinessModelPackage.Literals.BUSINESS_MODEL__RELATIONSHIPS,
-				 true,
+				 false,
 				 false,
 				 true,
 				 null,
@@ -183,9 +183,9 @@ public class BusinessModelItemProvider
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_MODEL__TABLES);
+			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_MODEL__RELATIONSHIPS);
 			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_MODEL__DOMAINS);
 			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_MODEL__JOIN_RELATIONSHIPS);
-			childrenFeatures.add(BusinessModelPackage.Literals.BUSINESS_MODEL__RELATIONSHIPS);
 		}
 		return childrenFeatures;
 	}
@@ -294,6 +294,11 @@ public class BusinessModelItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
+				(BusinessModelPackage.Literals.BUSINESS_MODEL__RELATIONSHIPS,
+				 BusinessModelFactory.eINSTANCE.createBusinessRelationship()));
+
+		newChildDescriptors.add
+			(createChildParameter
 				(BusinessModelPackage.Literals.BUSINESS_MODEL__DOMAINS,
 				 BusinessModelFactory.eINSTANCE.createBusinessDomain()));
 
@@ -301,11 +306,6 @@ public class BusinessModelItemProvider
 			(createChildParameter
 				(BusinessModelPackage.Literals.BUSINESS_MODEL__JOIN_RELATIONSHIPS,
 				 BusinessModelFactory.eINSTANCE.createBusinessViewInnerJoinRelationship()));
-	
-		newChildDescriptors.add
-		(createChildParameter
-			(BusinessModelPackage.Literals.BUSINESS_MODEL__RELATIONSHIPS,
-			 BusinessModelFactory.eINSTANCE.createBusinessRelationship()));
 	}
 
 	/**

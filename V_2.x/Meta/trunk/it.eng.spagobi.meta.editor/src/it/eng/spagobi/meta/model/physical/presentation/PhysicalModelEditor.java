@@ -632,7 +632,7 @@ public class PhysicalModelEditor
 			BasicDiagnostic diagnostic =
 				new BasicDiagnostic
 					(Diagnostic.OK,
-					 "TestEditorPlugin",
+					 "it.eng.spagobi.meta.editor",
 					 0,
 					 null,
 					 new Object [] { editingDomain.getResourceSet() });
@@ -1018,7 +1018,7 @@ public class PhysicalModelEditor
 			BasicDiagnostic basicDiagnostic =
 				new BasicDiagnostic
 					(Diagnostic.ERROR,
-					 "TestEditorPlugin",
+					 "it.eng.spagobi.meta.editor",
 					 0,
 					 getString("_UI_CreateModelError_message", resource.getURI()),
 					 new Object [] { exception == null ? (Object)resource : exception });
@@ -1029,7 +1029,7 @@ public class PhysicalModelEditor
 			return
 				new BasicDiagnostic
 					(Diagnostic.ERROR,
-					 "TestEditorPlugin",
+					 "it.eng.spagobi.meta.editor",
 					 0,
 					 getString("_UI_CreateModelError_message", resource.getURI()),
 					 new Object[] { exception });

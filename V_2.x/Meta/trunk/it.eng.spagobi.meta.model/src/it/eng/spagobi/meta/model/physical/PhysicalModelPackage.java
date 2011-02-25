@@ -561,22 +561,13 @@ public interface PhysicalModelPackage extends EPackage {
 	int PHYSICAL_FOREIGN_KEY__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
-	 * The feature id for the '<em><b>Source Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PHYSICAL_FOREIGN_KEY__SOURCE_NAME = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
-
-	/**
 	 * The feature id for the '<em><b>Source Table</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY__SOURCE_TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
+	int PHYSICAL_FOREIGN_KEY__SOURCE_TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Source Columns</b></em>' reference list.
@@ -585,7 +576,16 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHYSICAL_FOREIGN_KEY__SOURCE_COLUMNS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
+	int PHYSICAL_FOREIGN_KEY__SOURCE_COLUMNS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Source Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_FOREIGN_KEY__SOURCE_NAME = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Destination Name</b></em>' attribute.

@@ -99,22 +99,13 @@ public interface ModelPackage extends EPackage {
 	int MODEL_PROPERTY_CATEGORY__NAME = 0;
 
 	/**
-	 * The feature id for the '<em><b>Description</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MODEL_PROPERTY_CATEGORY__DESCRIPTION = 1;
-
-	/**
 	 * The feature id for the '<em><b>Parent Category</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL_PROPERTY_CATEGORY__PARENT_CATEGORY = 2;
+	int MODEL_PROPERTY_CATEGORY__PARENT_CATEGORY = 1;
 
 	/**
 	 * The feature id for the '<em><b>Sub Categories</b></em>' reference list.
@@ -123,7 +114,7 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL_PROPERTY_CATEGORY__SUB_CATEGORIES = 3;
+	int MODEL_PROPERTY_CATEGORY__SUB_CATEGORIES = 2;
 
 	/**
 	 * The feature id for the '<em><b>Property Types</b></em>' reference list.
@@ -132,7 +123,16 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL_PROPERTY_CATEGORY__PROPERTY_TYPES = 4;
+	int MODEL_PROPERTY_CATEGORY__PROPERTY_TYPES = 3;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL_PROPERTY_CATEGORY__DESCRIPTION = 4;
 
 	/**
 	 * The number of structural features of the '<em>Property Category</em>' class.

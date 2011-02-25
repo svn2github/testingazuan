@@ -19,10 +19,10 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link it.eng.spagobi.meta.model.ModelPropertyCategory#getName <em>Name</em>}</li>
- *   <li>{@link it.eng.spagobi.meta.model.ModelPropertyCategory#getDescription <em>Description</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.ModelPropertyCategory#getParentCategory <em>Parent Category</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.ModelPropertyCategory#getSubCategories <em>Sub Categories</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.ModelPropertyCategory#getPropertyTypes <em>Property Types</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.ModelPropertyCategory#getDescription <em>Description</em>}</li>
  * </ul>
  * </p>
  *

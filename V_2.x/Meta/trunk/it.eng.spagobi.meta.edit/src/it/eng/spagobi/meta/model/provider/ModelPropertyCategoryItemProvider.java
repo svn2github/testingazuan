@@ -65,10 +65,10 @@ public class ModelPropertyCategoryItemProvider
 			super.getPropertyDescriptors(object);
 
 			addNamePropertyDescriptor(object);
-			addDescriptionPropertyDescriptor(object);
 			addParentCategoryPropertyDescriptor(object);
 			addSubCategoriesPropertyDescriptor(object);
 			addPropertyTypesPropertyDescriptor(object);
+			addDescriptionPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}

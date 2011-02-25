@@ -37,9 +37,9 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl#getSourceName <em>Source Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl#getSourceTable <em>Source Table</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl#getSourceColumns <em>Source Columns</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl#getSourceName <em>Source Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl#getDestinationName <em>Destination Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl#getDestinationTable <em>Destination Table</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.physical.impl.PhysicalForeignKeyImpl#getDestinationColumns <em>Destination Columns</em>}</li>
@@ -50,26 +50,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * @generated
  */
 public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalForeignKey {
-	/**
-	 * The default value of the '{@link #getSourceName() <em>Source Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getSourceName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String SOURCE_NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getSourceName() <em>Source Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getSourceName()
-	 * @generated
-	 * @ordered
-	 */
-	protected String sourceName = SOURCE_NAME_EDEFAULT;
-
 	/**
 	 * The cached value of the '{@link #getSourceTable() <em>Source Table</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -89,6 +69,26 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 	 * @ordered
 	 */
 	protected EList<PhysicalColumn> sourceColumns;
+
+	/**
+	 * The default value of the '{@link #getSourceName() <em>Source Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getSourceName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String SOURCE_NAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getSourceName() <em>Source Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getSourceName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String sourceName = SOURCE_NAME_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getDestinationName() <em>Destination Name</em>}' attribute.
@@ -384,13 +384,13 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_NAME:
-				return getSourceName();
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_TABLE:
 				if (resolve) return getSourceTable();
 				return basicGetSourceTable();
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_COLUMNS:
 				return getSourceColumns();
+			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_NAME:
+				return getSourceName();
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__DESTINATION_NAME:
 				return getDestinationName();
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__DESTINATION_TABLE:
@@ -413,15 +413,15 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_NAME:
-				setSourceName((String)newValue);
-				return;
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_TABLE:
 				setSourceTable((PhysicalTable)newValue);
 				return;
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_COLUMNS:
 				getSourceColumns().clear();
 				getSourceColumns().addAll((Collection<? extends PhysicalColumn>)newValue);
+				return;
+			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_NAME:
+				setSourceName((String)newValue);
 				return;
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__DESTINATION_NAME:
 				setDestinationName((String)newValue);
@@ -448,14 +448,14 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_NAME:
-				setSourceName(SOURCE_NAME_EDEFAULT);
-				return;
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_TABLE:
 				setSourceTable((PhysicalTable)null);
 				return;
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_COLUMNS:
 				getSourceColumns().clear();
+				return;
+			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_NAME:
+				setSourceName(SOURCE_NAME_EDEFAULT);
 				return;
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__DESTINATION_NAME:
 				setDestinationName(DESTINATION_NAME_EDEFAULT);
@@ -481,12 +481,12 @@ public class PhysicalForeignKeyImpl extends ModelObjectImpl implements PhysicalF
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_NAME:
-				return SOURCE_NAME_EDEFAULT == null ? sourceName != null : !SOURCE_NAME_EDEFAULT.equals(sourceName);
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_TABLE:
 				return sourceTable != null;
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_COLUMNS:
 				return sourceColumns != null && !sourceColumns.isEmpty();
+			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__SOURCE_NAME:
+				return SOURCE_NAME_EDEFAULT == null ? sourceName != null : !SOURCE_NAME_EDEFAULT.equals(sourceName);
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__DESTINATION_NAME:
 				return DESTINATION_NAME_EDEFAULT == null ? destinationName != null : !DESTINATION_NAME_EDEFAULT.equals(destinationName);
 			case PhysicalModelPackage.PHYSICAL_FOREIGN_KEY__DESTINATION_TABLE:

@@ -35,10 +35,10 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelPropertyCategoryImpl#getName <em>Name</em>}</li>
- *   <li>{@link it.eng.spagobi.meta.model.impl.ModelPropertyCategoryImpl#getDescription <em>Description</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelPropertyCategoryImpl#getParentCategory <em>Parent Category</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelPropertyCategoryImpl#getSubCategories <em>Sub Categories</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelPropertyCategoryImpl#getPropertyTypes <em>Property Types</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.impl.ModelPropertyCategoryImpl#getDescription <em>Description</em>}</li>
  * </ul>
  * </p>
  *
@@ -64,26 +64,6 @@ public class ModelPropertyCategoryImpl extends EObjectImpl implements ModelPrope
 	 * @ordered
 	 */
 	protected String name = NAME_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getDescription()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String DESCRIPTION_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getDescription()
-	 * @generated
-	 * @ordered
-	 */
-	protected String description = DESCRIPTION_EDEFAULT;
 
 	/**
 	 * The cached value of the '{@link #getParentCategory() <em>Parent Category</em>}' reference.
@@ -114,6 +94,26 @@ public class ModelPropertyCategoryImpl extends EObjectImpl implements ModelPrope
 	 * @ordered
 	 */
 	protected EList<ModelPropertyType> propertyTypes;
+
+	/**
+	 * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String DESCRIPTION_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
+	protected String description = DESCRIPTION_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -277,8 +277,6 @@ public class ModelPropertyCategoryImpl extends EObjectImpl implements ModelPrope
 		switch (featureID) {
 			case ModelPackage.MODEL_PROPERTY_CATEGORY__NAME:
 				return getName();
-			case ModelPackage.MODEL_PROPERTY_CATEGORY__DESCRIPTION:
-				return getDescription();
 			case ModelPackage.MODEL_PROPERTY_CATEGORY__PARENT_CATEGORY:
 				if (resolve) return getParentCategory();
 				return basicGetParentCategory();
@@ -286,6 +284,8 @@ public class ModelPropertyCategoryImpl extends EObjectImpl implements ModelPrope
 				return getSubCategories();
 			case ModelPackage.MODEL_PROPERTY_CATEGORY__PROPERTY_TYPES:
 				return getPropertyTypes();
+			case ModelPackage.MODEL_PROPERTY_CATEGORY__DESCRIPTION:
+				return getDescription();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -302,9 +302,6 @@ public class ModelPropertyCategoryImpl extends EObjectImpl implements ModelPrope
 			case ModelPackage.MODEL_PROPERTY_CATEGORY__NAME:
 				setName((String)newValue);
 				return;
-			case ModelPackage.MODEL_PROPERTY_CATEGORY__DESCRIPTION:
-				setDescription((String)newValue);
-				return;
 			case ModelPackage.MODEL_PROPERTY_CATEGORY__PARENT_CATEGORY:
 				setParentCategory((ModelPropertyCategory)newValue);
 				return;
@@ -315,6 +312,9 @@ public class ModelPropertyCategoryImpl extends EObjectImpl implements ModelPrope
 			case ModelPackage.MODEL_PROPERTY_CATEGORY__PROPERTY_TYPES:
 				getPropertyTypes().clear();
 				getPropertyTypes().addAll((Collection<? extends ModelPropertyType>)newValue);
+				return;
+			case ModelPackage.MODEL_PROPERTY_CATEGORY__DESCRIPTION:
+				setDescription((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -331,9 +331,6 @@ public class ModelPropertyCategoryImpl extends EObjectImpl implements ModelPrope
 			case ModelPackage.MODEL_PROPERTY_CATEGORY__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case ModelPackage.MODEL_PROPERTY_CATEGORY__DESCRIPTION:
-				setDescription(DESCRIPTION_EDEFAULT);
-				return;
 			case ModelPackage.MODEL_PROPERTY_CATEGORY__PARENT_CATEGORY:
 				setParentCategory((ModelPropertyCategory)null);
 				return;
@@ -342,6 +339,9 @@ public class ModelPropertyCategoryImpl extends EObjectImpl implements ModelPrope
 				return;
 			case ModelPackage.MODEL_PROPERTY_CATEGORY__PROPERTY_TYPES:
 				getPropertyTypes().clear();
+				return;
+			case ModelPackage.MODEL_PROPERTY_CATEGORY__DESCRIPTION:
+				setDescription(DESCRIPTION_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -357,14 +357,14 @@ public class ModelPropertyCategoryImpl extends EObjectImpl implements ModelPrope
 		switch (featureID) {
 			case ModelPackage.MODEL_PROPERTY_CATEGORY__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case ModelPackage.MODEL_PROPERTY_CATEGORY__DESCRIPTION:
-				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
 			case ModelPackage.MODEL_PROPERTY_CATEGORY__PARENT_CATEGORY:
 				return parentCategory != null;
 			case ModelPackage.MODEL_PROPERTY_CATEGORY__SUB_CATEGORIES:
 				return subCategories != null && !subCategories.isEmpty();
 			case ModelPackage.MODEL_PROPERTY_CATEGORY__PROPERTY_TYPES:
 				return propertyTypes != null && !propertyTypes.isEmpty();
+			case ModelPackage.MODEL_PROPERTY_CATEGORY__DESCRIPTION:
+				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
 		}
 		return super.eIsSet(featureID);
 	}

@@ -20,7 +20,7 @@ import java.util.List;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class SpagoBICWMMapperJMIImpl  implements ICWMMapper {
+public class SpagoBICWMMapperJMIImpl  extends ICWMMapper {
 	
 	static public PhysicalModelFactory FACTORY = PhysicalModelFactory.eINSTANCE;
 	
@@ -29,7 +29,7 @@ public class SpagoBICWMMapperJMIImpl  implements ICWMMapper {
 	// DECODE
 	// -----------------------------------------------------------------------------
     
-	public PhysicalModel decodeModel(ICWM cwm) {
+	public PhysicalModel decodeICWM(ICWM cwm) {
 		return decodeModel((SpagoBICWMJMIImpl)cwm);
 	}
 	
@@ -46,7 +46,7 @@ public class SpagoBICWMMapperJMIImpl  implements ICWMMapper {
 	// ENDECODE
 	// -----------------------------------------------------------------------------
 	
-	public SpagoBICWMJMIImpl encodeModel(PhysicalModel model) {
+	public SpagoBICWMJMIImpl encodeICWM(PhysicalModel model) {
 		
 		SpagoBICWMJMIImpl cwm = new SpagoBICWMJMIImpl(model.getName());
 		

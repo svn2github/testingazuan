@@ -12,14 +12,14 @@ import it.eng.spagobi.meta.model.physical.PhysicalModel;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class CWMMapperEMFImpl implements ICWMMapper {
+public class CWMMapperEMFImpl extends ICWMMapper {
 
-	public PhysicalModel decodeModel(ICWM cwm) {
+	public PhysicalModel decodeICWM(ICWM cwm) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public ICWM encodeModel(PhysicalModel model) {
+	public ICWM encodeICWM(PhysicalModel model) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -63,7 +63,7 @@ public class CWMMapperEncodeTest {
         ModelPrinter.print(businessModel);
        
         modelMapper = CWMMapperFactory.getMapper(CWMImplType.JMI);
-        cwm = modelMapper.encodeModel(physicalModel);        
+        cwm = modelMapper.encodeICWM(physicalModel);        
         cwm.exportToXMI(FILENAME);        
 	}
 

@@ -6,10 +6,6 @@ package it.eng.spagobi.meta.model;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
-
-import it.eng.spagobi.meta.model.Model;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

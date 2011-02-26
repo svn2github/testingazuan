@@ -4,9 +4,6 @@
 package it.eng.spagobi.meta.model;
 
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
-import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.ModelFactory;
-import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
@@ -21,14 +18,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.Collections;
-import java.util.Iterator;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;

@@ -5,7 +5,6 @@ package it.eng.spagobi.meta.model;
 
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
 /**

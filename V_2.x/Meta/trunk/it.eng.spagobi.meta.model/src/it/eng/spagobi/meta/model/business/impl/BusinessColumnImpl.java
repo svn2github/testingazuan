@@ -7,8 +7,6 @@
 package it.eng.spagobi.meta.model.business.impl;
 
 import it.eng.spagobi.meta.commons.JDBCTypeMapper;
-import it.eng.spagobi.meta.exception.ModelObjectNotFoundException;
-import it.eng.spagobi.meta.exception.ModelRuntimeException;
 import it.eng.spagobi.meta.initializer.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
@@ -17,6 +15,8 @@ import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.exception.ModelObjectNotFoundException;
+import it.eng.spagobi.meta.model.exception.ModelRuntimeException;
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;

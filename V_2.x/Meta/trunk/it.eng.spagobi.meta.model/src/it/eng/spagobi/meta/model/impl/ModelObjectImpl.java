@@ -6,13 +6,13 @@
  */
 package it.eng.spagobi.meta.model.impl;
 
-import it.eng.spagobi.meta.exception.ModelObjectNotFoundException;
-import it.eng.spagobi.meta.exception.ModelRuntimeException;
 import it.eng.spagobi.meta.model.ModelFactory;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.ModelPropertyType;
+import it.eng.spagobi.meta.model.exception.ModelObjectNotFoundException;
+import it.eng.spagobi.meta.model.exception.ModelRuntimeException;
 
 import java.util.Collection;
 

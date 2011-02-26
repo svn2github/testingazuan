@@ -6,8 +6,6 @@
  */
 package it.eng.spagobi.meta.model.business.impl;
 
-import it.eng.spagobi.meta.exception.ModelObjectNotFoundException;
-import it.eng.spagobi.meta.exception.ModelRuntimeException;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
@@ -21,6 +19,8 @@ import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 
 import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.exception.ModelObjectNotFoundException;
+import it.eng.spagobi.meta.model.exception.ModelRuntimeException;
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;

@@ -4,7 +4,6 @@
 package it.eng.spagobi.meta.initializer;
 
 
-import it.eng.spagobi.meta.commons.JDBCTypeMapper;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
@@ -12,6 +11,7 @@ import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
+import it.eng.spagobi.meta.model.util.JDBCTypeMapper;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;

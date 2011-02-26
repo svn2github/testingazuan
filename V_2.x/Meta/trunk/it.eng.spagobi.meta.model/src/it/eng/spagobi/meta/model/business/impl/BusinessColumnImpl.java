@@ -6,7 +6,6 @@
  */
 package it.eng.spagobi.meta.model.business.impl;
 
-import it.eng.spagobi.meta.commons.JDBCTypeMapper;
 import it.eng.spagobi.meta.initializer.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
@@ -20,6 +19,7 @@ import it.eng.spagobi.meta.model.exception.ModelRuntimeException;
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
+import it.eng.spagobi.meta.model.util.JDBCTypeMapper;
 
 import org.eclipse.emf.common.notify.Notification;
 

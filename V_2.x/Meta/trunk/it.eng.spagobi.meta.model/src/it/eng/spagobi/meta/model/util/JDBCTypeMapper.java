@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.eng.spagobi.meta.commons;
+package it.eng.spagobi.meta.model.util;
 
 import java.sql.Types;
 

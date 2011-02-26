@@ -93,7 +93,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ISetSelectionTarget;
 import org.eclipse.ui.part.MultiEditorInput;
 
-import it.eng.spagobi.meta.commons.IModelObjectFilter;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.Model;
@@ -106,6 +105,7 @@ import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.presentation.BusinessModelEditor;
 import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
+import it.eng.spagobi.meta.model.filter.PhysicalTableFilter;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
@@ -488,108 +488,4 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 
 		
 	}
-
-/*		
-	public class NewModelWizardFileCreationPage extends WizardPage {
-
-		Text modelNameFieldInput;
-		StringButtonFieldEditor modelFileNameFieldInput;
-		org.eclipse.swt.widgets.List tableList;
-		DSEBridge dseBridge;
-		
-		protected NewModelWizardFileCreationPage(String pageName) {
-			super(pageName);
-			setDescription("This wizard drives you to create a new SpagoBI Meta Business Model," +
-			" please insert a name for your BM.");
-			ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(TestEditorPlugin.INSTANCE.getImage("full/wizban/NewBusinessModel"));;
-		    if (image!=null) {
-		    	setImageDescriptor(image);
-		    }
-		    dseBridge = new DSEBridge();
-		}
-
-		@Override
-		public void createControl(Composite parent) {
-			Composite composite = new Composite(parent, SWT.NULL);
-			composite.setLayout(new GridLayout(3, false));
-			
-			
-			new Label(composite, SWT.NONE).setText("Model name:");
-			GridData gridData = new GridData();
-			gridData.horizontalAlignment = GridData.FILL;
-			gridData.horizontalSpan = 2;
-			modelNameFieldInput = new Text(composite, SWT.BORDER);
-			modelNameFieldInput.setLayoutData(gridData);
-			modelNameFieldInput.setText("Test Model");
-			
-			modelFileNameFieldInput = new FileFieldEditor("modelfile", "Model file:", composite);
-			modelFileNameFieldInput.setStringValue("D:/Documenti/Progetti/metadati/libri/TestModel.sbimodel");
-			
-			tableList = new org.eclipse.swt.widgets.List(composite, SWT.BORDER|SWT.SINGLE|SWT.V_SCROLL|SWT.H_SCROLL);
-	 		GridData gdList = new GridData(GridData.FILL_BOTH);
-	 		gdList.heightHint = 60;
-	 		gdList.horizontalAlignment = GridData.FILL;
-	 		gdList.horizontalSpan = 2;
-	 		gdList.verticalSpan = 2;
-	 		tableList.setLayoutData(gdList);
-	 		
-	 		IConnectionProfile[] cp = dseBridge.getConnectionProfiles();
-	 		for (int i = 0; i < cp.length; i++){
-				tableList.add( cp[i].getName() );		
-			}
-	 		
-	 		new Button(composite, SWT.PUSH).setText("Add");
-	 		new Button(composite, SWT.PUSH).setText("Edit");
-
-	 		
-	 		
-			//Important: Setting page control
-	 		setControl(composite);
-		}
-
-		public String getConnectionName() {
-			return tableList.getSelection()[0];
-		}
-		
-		public Connection getConnection() {
-			return dseBridge.connect( getConnectionName() );
-		}
-		
-		public String getModelFileName() {
-			String fileName = modelFileNameFieldInput.getStringValue();
-			if(!fileName.endsWith(".sbimodel")) {
-				fileName += ".sbimodel";
-			}
-			return fileName;
-		}
-		
-		public File getModelFile() {
-			return new File( getModelFileName() );
-		}
-
-		
-		
-		public String getModelName() {
-			return modelNameFieldInput.getText();
-		}
-		
-	}
-*/
-		/*
-		 * Inner class that implements IModelObjectFilter
-		 */
-		private class PhysicalTableFilter implements IModelObjectFilter{
-
-			List<PhysicalTable> tablesTrue;
-			public PhysicalTableFilter(List<PhysicalTable> tablesToMantain){
-				tablesTrue = tablesToMantain;
-			}
-			@Override
-			public boolean filter(ModelObject o) {
-				if (tablesTrue.contains((PhysicalTable)o))
-					return false;
-				else
-					return true;
-			}		
-		}
 }

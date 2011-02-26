@@ -3,7 +3,6 @@ package it.eng.spagobi.meta.model.business.wizards;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.eng.spagobi.meta.commons.IModelObjectFilter;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessColumn;

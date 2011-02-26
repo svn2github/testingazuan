@@ -5,7 +5,7 @@ Bundle-SymbolicName: it.eng.spagobi.meta.editor;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Bundle-Activator: it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin$Implementation
-Bundle-Vendor: %providerName
+Bundle-Vendor: it.eng
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: it.eng.spagobi.meta.model.business.presentation,

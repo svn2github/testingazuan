@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping;
 
-import it.eng.spagobi.meta.commons.JDBCTypeMapper;
 import it.eng.spagobi.meta.initializer.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
@@ -30,6 +29,7 @@ import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
+import it.eng.spagobi.meta.model.util.JDBCTypeMapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import java.sql.Types;
 
-import it.eng.spagobi.meta.commons.JDBCTypeMapper;
+import it.eng.spagobi.meta.model.util.JDBCTypeMapper;
 
 import org.junit.Before;
 import org.junit.BeforeClass;

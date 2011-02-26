@@ -9,10 +9,10 @@ import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelFactory;
+import it.eng.spagobi.meta.model.TestConnectionFactory;
+import it.eng.spagobi.meta.model.TestConnectionFactory.DatabaseType;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
-import it.eng.spagobi.meta.test.TestConnectionFactory;
-import it.eng.spagobi.meta.test.TestConnectionFactory.DatabaseType;
 
 import org.junit.Before;
 import org.junit.BeforeClass;

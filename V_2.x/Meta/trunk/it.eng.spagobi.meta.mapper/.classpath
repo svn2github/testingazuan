@@ -4,5 +4,14 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="lib" path="lib/jmi/jmi.jar"/>
+	<classpathentry kind="lib" path="lib/jmi/jmiutils.jar"/>
+	<classpathentry kind="lib" path="lib/jmi/mdrant.jar"/>
+	<classpathentry kind="lib" path="lib/jmi/mdrapi.jar"/>
+	<classpathentry kind="lib" path="lib/jmi/mdrjdbc142.jar"/>
+	<classpathentry kind="lib" path="lib/jmi/mof.jar"/>
+	<classpathentry kind="lib" path="lib/jmi/nbmdr.jar"/>
+	<classpathentry kind="lib" path="lib/jmi/openide-util.jar"/>
+	<classpathentry kind="lib" path="lib/jmi/spagobi-cwm-1.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

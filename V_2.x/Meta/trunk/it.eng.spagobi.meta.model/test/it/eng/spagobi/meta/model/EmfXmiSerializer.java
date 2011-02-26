@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.eng.spagobi.meta.serializer;
+package it.eng.spagobi.meta.model;
 
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.model.Model;

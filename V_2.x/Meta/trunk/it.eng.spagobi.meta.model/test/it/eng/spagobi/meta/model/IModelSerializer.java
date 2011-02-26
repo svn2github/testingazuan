@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.eng.spagobi.meta.serializer;
+package it.eng.spagobi.meta.model;
 
 import java.io.File;
 import java.io.InputStream;

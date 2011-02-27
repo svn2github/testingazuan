@@ -192,11 +192,15 @@ public class SpagoBICWMJMIImpl implements ICWM {
         }
     }
 	
-	public void importFromXMI( InputStream inputStream ) throws IOException, MalformedXMIException {
-        XMIReaderFactory factory = XMIReaderFactory.getDefault();
-        XMIReader reader = factory.createXMIReader();
-        reader.read(inputStream, null, spagobiPackage);
-        inputStream.close();
+	public void importFromXMI( InputStream inputStream ){
+		try {
+	        XMIReaderFactory factory = XMIReaderFactory.getDefault();
+	        XMIReader reader = factory.createXMIReader();
+	        reader.read(inputStream, null, spagobiPackage);
+	        inputStream.close();
+		} catch (Throwable t) {
+        	throw new RuntimeException("Impossible to import cwm from xmi", t);
+        } 
     }
 	
 	// -----------------------------------------------------------------------------

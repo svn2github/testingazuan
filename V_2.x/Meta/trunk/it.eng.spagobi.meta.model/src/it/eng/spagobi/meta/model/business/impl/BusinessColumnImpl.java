@@ -6,7 +6,6 @@
  */
 package it.eng.spagobi.meta.model.business.impl;
 
-import it.eng.spagobi.meta.initializer.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;

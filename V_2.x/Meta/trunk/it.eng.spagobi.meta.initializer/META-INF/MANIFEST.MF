@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: it.eng.spagobi.meta.initializer
+Bundle-SymbolicName: it.eng.spagobi.meta.initializer
+Bundle-Version: 1.0.0
+Bundle-Vendor: it.eng
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: it.eng.spagobi.meta.model;bundle-version="1.0.0"
+Bundle-ClassPath: libs/misc/commons-lang-2.5.jar,
+ .
+Export-Package: it.eng.spagobi.meta.initializer,
+ it.eng.spagobi.meta.initializer.descriptor,
+ it.eng.spagobi.meta.initializer.properties

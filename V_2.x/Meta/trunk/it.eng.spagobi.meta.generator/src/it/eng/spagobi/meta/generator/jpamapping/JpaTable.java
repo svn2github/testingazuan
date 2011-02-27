@@ -21,10 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping;
 
-import it.eng.spagobi.meta.initializer.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
-import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
@@ -99,7 +97,7 @@ public class JpaTable {
 	 * @return
 	 */
 	public String getPackage() {
-	ModelProperty property =  getModel().getProperties().get(BusinessModelDefaultPropertiesInitializer.MODEL_PACKAGE);
+	ModelProperty property =  getModel().getProperties().get(JpaProperties.MODEL_PACKAGE);
         //check if property is setted, else get default value
         if (property.getValue() != null){
         	return property.getValue();
@@ -326,7 +324,7 @@ public class JpaTable {
 		if (columnTypesMap == null) {
 			columnTypesMap = new HashMap<String, String>();
 			for (BusinessColumn column : businessTable.getColumns()) {
-				ModelProperty property = column.getProperties().get(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE);
+				ModelProperty property = column.getProperties().get(JpaProperties.COLUMN_DATATYPE);
 				String modelType = property.getValue();
 				String javaType = JDBCTypeMapper.getJavaTypeName(modelType);
 				if ( /*

@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping;
 
-import it.eng.spagobi.meta.initializer.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
@@ -121,7 +120,7 @@ public class JpaView extends JpaTable {
 		if (columnTypesMap == null) {
 			columnTypesMap = new HashMap<String, String>();
 			for (BusinessColumn column : businessView.getColumns()) {
-				ModelProperty property = column.getProperties().get(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE);
+				ModelProperty property = column.getProperties().get(JpaProperties.COLUMN_DATATYPE);
 				String modelType = property.getValue();
 				String javaType = JDBCTypeMapper.getJavaTypeName(modelType);
 				if ( !javaType.startsWith("java.lang")

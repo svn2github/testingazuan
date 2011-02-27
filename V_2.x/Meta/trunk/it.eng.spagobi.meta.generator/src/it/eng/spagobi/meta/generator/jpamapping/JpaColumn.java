@@ -26,7 +26,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import it.eng.spagobi.meta.initializer.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
@@ -178,7 +177,7 @@ public class JpaColumn {
 	public String getPropertyType()  {
 		String type;
 		
-		ModelProperty property = businessColumn.getProperties().get(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE);
+		ModelProperty property = businessColumn.getProperties().get(JpaProperties.COLUMN_DATATYPE);
 		String modelType = property.getValue();
 		
 		logger.info(businessColumn.getPhysicalColumn().getName()+"-"+modelType);
@@ -204,7 +203,7 @@ public class JpaColumn {
 	 * @return
 	 */
 	public boolean isDataTypeLOB(){
-		ModelProperty property = businessColumn.getProperties().get(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE);
+		ModelProperty property = businessColumn.getProperties().get(JpaProperties.COLUMN_DATATYPE);
 		String modelType = property.getValue();
 		if (modelType.equals("BLOB") || modelType.equals("CLOB")) return true;
 		else return false;

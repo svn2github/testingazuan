@@ -56,8 +56,6 @@ public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelCommand 
 		initializer = new BusinessModelInitializer();
 		//getting the just added Business Relationship reference
 		addedBusinessRelationship = initializer.addRelationship(descriptor);
-				
-		System.err.println("COMMAND [AddBusinessRelationshipCommand] SUCCESFULLY EXECUTED: ");
 		
 		this.executed = true;
 	}

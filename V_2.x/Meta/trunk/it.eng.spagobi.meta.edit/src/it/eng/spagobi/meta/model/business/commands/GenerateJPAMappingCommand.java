@@ -26,7 +26,7 @@ import java.util.Set;
 
 import it.eng.spagobi.meta.compiler.DataMartGenerator;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingGenerator;
-import it.eng.spagobi.meta.initializer.BusinessModelDefaultPropertiesInitializer;
+import it.eng.spagobi.meta.initializer.properties.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;

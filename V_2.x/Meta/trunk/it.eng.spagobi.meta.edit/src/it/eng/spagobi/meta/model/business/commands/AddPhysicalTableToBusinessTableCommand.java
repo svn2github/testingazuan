@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
-import it.eng.spagobi.meta.initializer.BusinessViewInnerJoinRelationshipDescriptor;
+import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;

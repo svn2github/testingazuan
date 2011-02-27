@@ -23,7 +23,7 @@ package it.eng.spagobi.meta.model.business.wizards;
 
 import java.util.ArrayList;
 
-import it.eng.spagobi.meta.initializer.BusinessViewInnerJoinRelationshipDescriptor;
+import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;

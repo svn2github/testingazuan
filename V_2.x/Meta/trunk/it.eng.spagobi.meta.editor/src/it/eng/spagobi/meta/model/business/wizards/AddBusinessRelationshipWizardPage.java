@@ -2,7 +2,7 @@ package it.eng.spagobi.meta.model.business.wizards;
 
 import java.util.ArrayList;
 
-import it.eng.spagobi.meta.initializer.BusinessRelationshipDescriptor;
+import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;

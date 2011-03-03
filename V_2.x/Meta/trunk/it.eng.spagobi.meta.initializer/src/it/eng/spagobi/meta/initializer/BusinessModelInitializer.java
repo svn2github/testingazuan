@@ -31,6 +31,8 @@ import org.eclipse.emf.common.util.EList;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.initializer.properties.BusinessModelDefaultPropertiesInitializer;
+import it.eng.spagobi.meta.initializer.properties.BusinessModelPropertiesFromFileInitializer;
+
 import it.eng.spagobi.meta.initializer.properties.IPropertiesInitializer;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
@@ -60,9 +62,9 @@ public class BusinessModelInitializer {
 	static public BusinessModelFactory FACTORY = BusinessModelFactory.eINSTANCE;
 	
 	public BusinessModelInitializer() {
-		setPropertiesInitializer( new BusinessModelDefaultPropertiesInitializer() );
+		//setPropertiesInitializer( new BusinessModelDefaultPropertiesInitializer() );
+		setPropertiesInitializer( new BusinessModelPropertiesFromFileInitializer() );
 	}
-	
 	public BusinessModel initialize(String modelName, PhysicalModel physicalModel) {
 		return initialize(modelName, null, physicalModel);
 	}
@@ -251,8 +253,8 @@ public class BusinessModelInitializer {
 			businessColumnSet.getColumns().add(businessColumn);
 			
 			getPropertiesInitializer().addProperties(businessColumn);
-			businessColumn.setProperty(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE, physicalColumn.getDataType());
-			businessColumn.setProperty(BusinessModelDefaultPropertiesInitializer.COLUMN_PHYSICAL_TABLE, businessColumn.getPhysicalColumn().getTable().getName());
+			//businessColumn.setProperty(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE, physicalColumn.getDataType());
+			businessColumn.setProperty(BusinessModelPropertiesFromFileInitializer.COLUMN_PHYSICAL_TABLE, businessColumn.getPhysicalColumn().getTable().getName());
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business column from physical column [" + physicalColumn.getName() + "]", t);
 		}

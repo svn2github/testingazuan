@@ -21,6 +21,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.oda.impl;
 
+import it.eng.qbe.conf.QbeCoreSettings;
+import it.eng.qbe.datasource.DBConnection;
+import it.eng.qbe.datasource.DataSourceFactory;
+import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
+import it.eng.spagobi.meta.oda.TestConnectionFactory;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import org.eclipse.datatools.connectivity.oda.IConnection;
 import org.eclipse.datatools.connectivity.oda.IDataSetMetaData;
@@ -33,39 +43,58 @@ import com.ibm.icu.util.ULocale;
  */
 public class Connection implements IConnection
 {
-    private boolean m_isOpen = false;
+	IDataSource datasource = null;
+	private boolean m_isOpen = false;
+    
+    public static final String DATAMART_DIR_PATH = "D:\\Documenti\\Sviluppo\\servers\\tomcat6spagobi3\\resources\\qbe\\datamarts";
+	public static final String DATAMART_NAME = "foodmart";
+
     
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IConnection#open(java.util.Properties)
 	 */
 	public void open( Properties connProperties ) throws OdaException {
-       
-	    m_isOpen = true;        
+		File qbeDataMartDir = new File(DATAMART_DIR_PATH);
+		QbeCoreSettings.getInstance().setQbeDataMartDir(qbeDataMartDir);
+		
+		List dataMartNames = new ArrayList();
+		dataMartNames.add(DATAMART_NAME);
+		
+		DBConnection connection = new DBConnection();
+		connection.setName( "foodmart" );
+		connection.setDialect(  "org.hibernate.dialect.MySQLDialect" );			
+		connection.setJndiName( null );			
+		connection.setDriverClass( TestConnectionFactory.MYSQL_DRIVER );			
+		connection.setPassword( TestConnectionFactory.MYSQL_PWD );
+		connection.setUrl( TestConnectionFactory.MYSQL_URL );
+		connection.setUsername( TestConnectionFactory.MYSQL_USER );	
+		//Connection connection = TestConnectionFactory.createConnection(TestConnectionFactory.DatabaseType.MYSQL);
+		
+		datasource = DataSourceFactory.buildDataSource(DATAMART_NAME, DATAMART_NAME, dataMartNames, null, connection);
+		datasource.setDataMartModelAccessModality(new DataMartModelAccessModality());
+	    
+		m_isOpen = true;        
  	}
 
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IConnection#setAppContext(java.lang.Object)
 	 */
-	public void setAppContext( Object context ) throws OdaException
-	{
+	public void setAppContext( Object context ) throws OdaException {
 	    // do nothing; assumes no support for pass-through context
 	}
 
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IConnection#close()
 	 */
-	public void close() throws OdaException
-	{
-        // TODO replace with data source specific implementation
+	public void close() throws OdaException {
+		datasource = null;
 	    m_isOpen = false;
 	}
 
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IConnection#isOpen()
 	 */
-	public boolean isOpen() throws OdaException
-	{
-        // TODO Auto-generated method stub
+	public boolean isOpen() throws OdaException {
 		return m_isOpen;
 	}
 
@@ -86,7 +115,7 @@ public class Connection implements IConnection
 	{
         // assumes that this driver supports only one type of data set,
         // ignores the specified dataSetType
-		return new Query();
+		return new Query(datasource);
 	}
 
 	/*

@@ -7,6 +7,9 @@
 
 package it.eng.spagobi.meta.oda.impl;
 
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
+
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
@@ -31,17 +34,18 @@ public class ResultSet implements IResultSet
 {
 	private int m_maxRows;
     private int m_currentRowId;
+    private IDataStore dataStore;
 	
+    public ResultSet(IDataStore dataStore) {
+    	this.dataStore = dataStore;
+    }
+    
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IResultSet#getMetaData()
 	 */
 	public IResultSetMetaData getMetaData() throws OdaException
 	{
-        /* TODO Auto-generated method stub
-         * Replace with implementation to return an instance 
-         * based on this result set.
-         */
-		return new ResultSetMetaData();
+		return new ResultSetMetaData(dataStore.getMetaData());
 	}
 
 	/*
@@ -71,7 +75,7 @@ public class ResultSet implements IResultSet
         // simple implementation done below for demo purpose only
         int maxRows = getMaxRows();
         if( maxRows <= 0 )  // no limit is specified
-            maxRows = 5;    // hard-coded for demo purpose
+            maxRows = 100;    // hard-coded for demo purpose
         
         if( m_currentRowId < maxRows )
         {
@@ -104,10 +108,8 @@ public class ResultSet implements IResultSet
 	 */
 	public String getString( int index ) throws OdaException
 	{
-        // TODO replace with data source specific implementation
-        
-        // hard-coded for demo purpose
-        return "row" + getRow() + "_column" + index + " value";
+		IRecord record = dataStore.getRecordAt(getRow());
+        return "" + record.getFieldAt(index-1).getValue();
 	}
 
 	/*

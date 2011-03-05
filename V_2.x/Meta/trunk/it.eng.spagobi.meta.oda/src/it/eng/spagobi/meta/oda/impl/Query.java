@@ -7,10 +7,21 @@
 
 package it.eng.spagobi.meta.oda.impl;
 
+import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.model.structure.DataMartEntity;
+import it.eng.qbe.model.structure.DataMartField;
+import it.eng.qbe.model.structure.DataMartModelStructure;
+import it.eng.qbe.statment.IStatement;
+import it.eng.qbe.statment.QbeDatasetFactory;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.List;
+
 import org.eclipse.datatools.connectivity.oda.IParameterMetaData;
 import org.eclipse.datatools.connectivity.oda.IResultSet;
 import org.eclipse.datatools.connectivity.oda.IResultSetMetaData;
@@ -28,18 +39,45 @@ import org.eclipse.datatools.connectivity.oda.spec.QuerySpecification;
  * A custom ODA driver is expected to implement own data source specific
  * behavior in its place. 
  */
-public class Query implements IQuery
-{
-	private int m_maxRows;
-    private String m_preparedText;
+public class Query implements IQuery {
 	
+	private int m_maxRows;
+	IDataSource datasource;
+    private it.eng.qbe.query.Query query;
+    IDataStore datsStore;
+	
+    public Query(IDataSource datasource) {
+    	this.datasource = datasource;
+    }
+    
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#prepare(java.lang.String)
 	 */
-	public void prepare( String queryText ) throws OdaException
-	{
-        // TODO Auto-generated method stub
-        m_preparedText = queryText;
+	public void prepare(String queryText) throws OdaException {
+		query = new it.eng.qbe.query.Query();
+		
+		DataMartModelStructure dataMartModel = datasource.getDataMartModelStructure();
+		List entities = dataMartModel.getRootEntities( datasource.getName() );
+		if(entities.size() > 0) {
+			DataMartEntity entity = (DataMartEntity)entities.get(0);
+			List fields = entity.getAllFields();
+			for(int i = 0; i < fields.size(); i++) {
+				DataMartField field = (DataMartField)fields.get(i);
+
+				query.addSelectFiled(field.getUniqueName(), null, field.getName(), true, true, false, null, null);			
+			}
+		}
+		
+		IStatement statement = datasource.createStatement(query);
+		statement.setMaxResults(this.m_maxRows);
+		IDataSet datsSet = QbeDatasetFactory.createDataSet(statement);
+		
+		try {
+			datsSet.loadData();
+			datsStore = datsSet.getDataStore() ;
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/*
@@ -53,36 +91,24 @@ public class Query implements IQuery
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#close()
 	 */
-	public void close() throws OdaException
-	{
-        // TODO Auto-generated method stub
-        m_preparedText = null;
+	public void close() throws OdaException {
+        query = null;
 	}
 
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#getMetaData()
 	 */
-	public IResultSetMetaData getMetaData() throws OdaException
-	{
-        /* TODO Auto-generated method stub
-         * Replace with implementation to return an instance 
-         * based on this prepared query.
-         */
-		return new ResultSetMetaData();
+	public IResultSetMetaData getMetaData() throws OdaException {
+        
+		return datsStore!=null? new ResultSetMetaData(datsStore.getMetaData()): null;
 	}
 
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#executeQuery()
 	 */
-	public IResultSet executeQuery() throws OdaException
-	{
-        /* TODO Auto-generated method stub
-         * Replace with implementation to return an instance 
-         * based on this prepared query.
-         */
-		IResultSet resultSet = new ResultSet();
-		resultSet.setMaxRows( getMaxRows() );
-		return resultSet;
+	public IResultSet executeQuery() throws OdaException {
+
+		return new ResultSet( datsStore );
 	}
 
 	/*
@@ -363,10 +389,8 @@ public class Query implements IQuery
     /* (non-Javadoc)
      * @see org.eclipse.datatools.connectivity.oda.IQuery#getEffectiveQueryText()
      */
-    public String getEffectiveQueryText()
-    {
-        // TODO Auto-generated method stub
-        return m_preparedText;
+    public String getEffectiveQueryText() {
+        return null;
     }
 
     /* (non-Javadoc)

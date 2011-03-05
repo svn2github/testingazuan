@@ -7,6 +7,8 @@
 
 package it.eng.spagobi.meta.oda.impl;
 
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
+
 import org.eclipse.datatools.connectivity.oda.IResultSetMetaData;
 import org.eclipse.datatools.connectivity.oda.OdaException;
 
@@ -21,16 +23,19 @@ import org.eclipse.datatools.connectivity.oda.OdaException;
  */
 public class ResultSetMetaData implements IResultSetMetaData
 {
-    
+	IDataStoreMetaData metadata;
+	
+	public ResultSetMetaData(IDataStoreMetaData metadata) {
+		
+		this.metadata = metadata;
+	}
+	
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IResultSetMetaData#getColumnCount()
 	 */
 	public int getColumnCount() throws OdaException
 	{
-        // TODO replace with data source specific implementation
-
-        // hard-coded for demo purpose
-        return 2;
+        return metadata.getFieldCount();
 	}
 
 	/*
@@ -38,10 +43,8 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public String getColumnName( int index ) throws OdaException
 	{
-        // TODO replace with data source specific implementation
-
-        // hard-coded for demo purpose
-        return "Column" + index;
+  
+        return metadata.getFieldName(index-1);
 	}
 
 	/*
@@ -49,7 +52,7 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public String getColumnLabel( int index ) throws OdaException
 	{
-		return getColumnName( index );		// default
+		return  metadata.getFieldName(index-1);
 	}
 
 	/*
@@ -57,12 +60,12 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public int getColumnType( int index ) throws OdaException
 	{
-        // TODO replace with data source specific implementation
+		Class c = metadata.getFieldType(index-1);
 
-        // hard-coded for demo purpose
-        if( index == 1 )
-            return java.sql.Types.INTEGER;   // as defined in data set extension manifest
-        return java.sql.Types.CHAR;          // as defined in data set extension manifest
+        if( c.equals(String.class) ) return java.sql.Types.VARCHAR;
+        else if ( c.equals(Integer.class) ) return java.sql.Types.INTEGER;
+        
+        return java.sql.Types.CHAR;          
 	}
 
 	/*

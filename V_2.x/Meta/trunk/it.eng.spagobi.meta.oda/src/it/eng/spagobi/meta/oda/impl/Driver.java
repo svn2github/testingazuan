@@ -31,6 +31,8 @@ import org.eclipse.datatools.connectivity.oda.util.manifest.ManifestExplorer;
 
 /**
  * Implementation class of IDriver for an ODA runtime driver.
+ * 
+ * @authors  Andrea Gioia (andrea.gioia@eng.it)
  */
 public class Driver implements IDriver
 {

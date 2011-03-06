@@ -42,6 +42,8 @@ import com.ibm.icu.util.ULocale;
 
 /**
  * Implementation class of IConnection for an ODA runtime driver.
+ * 
+ * @authors  Andrea Gioia (andrea.gioia@eng.it)
  */
 public class Connection implements IConnection
 {

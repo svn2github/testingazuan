@@ -123,8 +123,7 @@ public class ResultSet implements IResultSet
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IResultSet#getString(int)
 	 */
-	public String getString( int index ) throws OdaException
-	{
+	public String getString( int index ) throws OdaException {
 		IRecord record = dataStore.getRecordAt(getRow());
         return "" + record.getFieldAt(index-1).getValue();
 	}
@@ -132,27 +131,22 @@ public class ResultSet implements IResultSet
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IResultSet#getString(java.lang.String)
 	 */
-	public String getString( String columnName ) throws OdaException
-	{
+	public String getString( String columnName ) throws OdaException {
 	    return getString( findColumn( columnName ) );
 	}
 
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IResultSet#getInt(int)
 	 */
-	public int getInt( int index ) throws OdaException
-	{
-        // TODO replace with data source specific implementation
-        
-        // hard-coded for demo purpose
-        return getRow();
+	public int getInt( int index ) throws OdaException {
+		IRecord record = dataStore.getRecordAt(getRow());
+        return Integer.parseInt( "" + record.getFieldAt(index-1).getValue() );
 	}
 
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IResultSet#getInt(java.lang.String)
 	 */
-	public int getInt( String columnName ) throws OdaException
-	{
+	public int getInt( String columnName ) throws OdaException {
 	    return getInt( findColumn( columnName ) );
 	}
 

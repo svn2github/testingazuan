@@ -69,7 +69,7 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public String getColumnLabel( int index ) throws OdaException
 	{
-		return  metadata.getFieldName(index-1);
+		return  metadata.getFieldMeta(index-1).getAlias();
 	}
 
 	/*

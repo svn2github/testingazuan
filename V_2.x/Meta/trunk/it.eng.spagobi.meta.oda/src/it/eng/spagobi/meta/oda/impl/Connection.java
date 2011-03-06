@@ -58,23 +58,25 @@ public class Connection implements IConnection
 	 * @see org.eclipse.datatools.connectivity.oda.IConnection#open(java.util.Properties)
 	 */
 	public void open( Properties connProperties ) throws OdaException {
-		File qbeDataMartDir = new File(DATAMART_DIR_PATH);
+		
+		String datamartName = connProperties.getProperty("datamart_name");
+		File qbeDataMartDir = new File(connProperties.getProperty("resource_folder"));
+		
 		QbeCoreSettings.getInstance().setQbeDataMartDir(qbeDataMartDir);
 		
 		List<String> dataMartNames = new ArrayList<String>();
-		dataMartNames.add(DATAMART_NAME);
+		dataMartNames.add( datamartName );
 		
 		DBConnection connection = new DBConnection();
-		connection.setName( "foodmart" );
-		connection.setDialect(  "org.hibernate.dialect.MySQLDialect" );			
+		connection.setName( datamartName );
+		connection.setDialect( connProperties.getProperty("database_dialect") );			
 		connection.setJndiName( null );			
-		connection.setDriverClass( TestConnectionFactory.MYSQL_DRIVER );			
-		connection.setPassword( TestConnectionFactory.MYSQL_PWD );
-		connection.setUrl( TestConnectionFactory.MYSQL_URL );
-		connection.setUsername( TestConnectionFactory.MYSQL_USER );	
-		//Connection connection = TestConnectionFactory.createConnection(TestConnectionFactory.DatabaseType.MYSQL);
+		connection.setDriverClass( connProperties.getProperty("database_driver") );			
+		connection.setPassword( connProperties.getProperty("database_password") );
+		connection.setUrl( connProperties.getProperty("database_url") );
+		connection.setUsername( connProperties.getProperty("database_user") );	
 		
-		datasource = DataSourceFactory.buildDataSource(DATAMART_NAME, DATAMART_NAME, dataMartNames, null, connection);
+		datasource = DataSourceFactory.buildDataSource(datamartName, datamartName, dataMartNames, null, connection);
 		datasource.setDataMartModelAccessModality(new DataMartModelAccessModality());
 	    
 		m_isOpen = true;        

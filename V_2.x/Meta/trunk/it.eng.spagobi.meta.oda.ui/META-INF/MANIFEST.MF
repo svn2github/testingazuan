@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %plugin.name
+Bundle-Name: it.eng.spagobi.meta.oda.ui
 Bundle-SymbolicName: it.eng.spagobi.meta.oda.ui; singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: eng.it

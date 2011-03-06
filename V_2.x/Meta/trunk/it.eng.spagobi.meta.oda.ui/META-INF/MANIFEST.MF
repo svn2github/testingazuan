@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %plugin.name
+Bundle-SymbolicName: it.eng.spagobi.meta.oda.ui; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: eng.it
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.datatools.connectivity.oda.design.ui;bundle-version="[3.2.0,4.0.0)",
+ it.eng.spagobi.meta.oda
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

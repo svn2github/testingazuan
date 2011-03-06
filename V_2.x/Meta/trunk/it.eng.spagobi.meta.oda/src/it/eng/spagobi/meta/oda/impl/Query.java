@@ -57,12 +57,12 @@ public class Query implements IQuery {
 		query = new it.eng.qbe.query.Query();
 		
 		DataMartModelStructure dataMartModel = datasource.getDataMartModelStructure();
-		List entities = dataMartModel.getRootEntities( datasource.getName() );
+		List<DataMartEntity> entities = dataMartModel.getRootEntities( datasource.getName() );
 		if(entities.size() > 0) {
-			DataMartEntity entity = (DataMartEntity)entities.get(0);
-			List fields = entity.getAllFields();
+			DataMartEntity entity = entities.get(0);
+			List<DataMartField> fields = entity.getAllFields();
 			for(int i = 0; i < fields.size(); i++) {
-				DataMartField field = (DataMartField)fields.get(i);
+				DataMartField field = fields.get(i);
 
 				query.addSelectFiled(field.getUniqueName(), null, field.getName(), true, true, false, null, null);			
 			}

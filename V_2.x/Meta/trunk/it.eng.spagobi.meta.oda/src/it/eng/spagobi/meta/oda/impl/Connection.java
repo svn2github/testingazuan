@@ -59,7 +59,7 @@ public class Connection implements IConnection
 		File qbeDataMartDir = new File(DATAMART_DIR_PATH);
 		QbeCoreSettings.getInstance().setQbeDataMartDir(qbeDataMartDir);
 		
-		List dataMartNames = new ArrayList();
+		List<String> dataMartNames = new ArrayList<String>();
 		dataMartNames.add(DATAMART_NAME);
 		
 		DBConnection connection = new DBConnection();

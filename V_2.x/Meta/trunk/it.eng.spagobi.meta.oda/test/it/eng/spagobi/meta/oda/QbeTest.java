@@ -22,18 +22,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.meta.oda;
 
-import java.io.File;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONObject;
-
 import it.eng.qbe.conf.QbeCoreSettings;
 import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.DataSourceFactory;
 import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.datasource.hibernate.BasicHibernateDataSource;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
@@ -43,7 +35,10 @@ import it.eng.qbe.statment.IStatement;
 import it.eng.qbe.statment.QbeDatasetFactory;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
-import it.eng.spagobi.tools.dataset.common.datawriter.JSONDataWriter;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**

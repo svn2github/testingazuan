@@ -21,6 +21,9 @@ Require-Bundle: org.eclipse.core.runtime,
  it.eng.spagobi.meta.generator;bundle-version="1.0.0",
  it.eng.spagobi.meta.initializer;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.jface.dialogs,
- org.eclipse.swt.widgets
+Import-Package: org.eclipse.core.filesystem,
+ org.eclipse.jface.dialogs,
+ org.eclipse.swt.widgets,
+ org.eclipse.ui,
+ org.eclipse.ui.ide
 Bundle-Vendor: eng.it

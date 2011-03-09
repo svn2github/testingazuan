@@ -31,6 +31,7 @@ import it.eng.spagobi.meta.model.business.actions.AddIncomeBusinessRelationshipA
 import it.eng.spagobi.meta.model.business.actions.AddOutcomeBusinessRelationshipAction;
 import it.eng.spagobi.meta.model.business.actions.AddPhysicalTableToBusinessTableAction;
 import it.eng.spagobi.meta.model.business.actions.AddToIdentifierAction;
+import it.eng.spagobi.meta.model.business.actions.CreateQueryAction;
 import it.eng.spagobi.meta.model.business.actions.EditBusinessColumnsAction;
 import it.eng.spagobi.meta.model.business.actions.GenerateJPAMappingAction;
 import it.eng.spagobi.meta.model.business.actions.RemovePhysicalTableToBusinessViewAction;
@@ -100,6 +101,10 @@ public class BusinessModelMenuActionFactory {
 	    	List generateActions = new ArrayList();
 	    	generateActions.add(new GenerateJPAMappingAction(activeEditorPart, selection));
 	    	actions.put("Generate", generateActions);
+	    	
+	    	List queryActions = new ArrayList();
+	    	queryActions.add(new CreateQueryAction(activeEditorPart, selection));
+	    	actions.put("Query", queryActions);
 	    } 
 		
 		return actions;

@@ -45,6 +45,10 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 
+/**
+ * @deprecated  replaced by BusinessModelDropTargetListener
+ * 
+ */
 
 public class PhysicalObjectDropListener  extends ViewerDropAdapter {
 

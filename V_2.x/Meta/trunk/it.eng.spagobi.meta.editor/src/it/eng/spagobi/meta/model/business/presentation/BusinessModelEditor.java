@@ -44,6 +44,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -57,15 +58,22 @@ import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerDropAdapter;
 
 import org.eclipse.swt.SWT;
 
 import org.eclipse.swt.custom.CTabFolder;
 
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.TransferData;
+
+
 
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -160,11 +168,15 @@ import org.eclipse.emf.edit.ui.util.EditUIUtil;
 import org.eclipse.emf.edit.ui.view.ExtendedPropertySheetPage;
 
 
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
 
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
 
 import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProviderAdapterFactory;
+import it.eng.spagobi.meta.model.dnd.BusinessModelDragSourceListener;
+import it.eng.spagobi.meta.model.dnd.BusinessModelDropTargetListener;
 import it.eng.spagobi.meta.model.dnd.PhysicalObjectDropListener;
 import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
 
@@ -967,12 +979,15 @@ public class BusinessModelEditor
 		
 		URI rootObjectURI = ((BusinessModelInput)getEditorInput()).getRootObjectURI();
 		EObject rootObject = editingDomain.getResourceSet().getEObject(rootObjectURI, false);
-	    
+
+		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance(),LocalSelectionTransfer.getTransfer()  };
 		//set drop target
-		int operations = DND.DROP_COPY | DND.DROP_MOVE;
-		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance() };
-		DropTargetListener dragSourceListener = new PhysicalObjectDropListener(viewer, rootObject, editingDomain);
-		viewer.addDropSupport(operations, transferTypes, dragSourceListener);
+		DropTargetListener dropTargetListener = new BusinessModelDropTargetListener(viewer, rootObject,editingDomain);
+		viewer.addDropSupport(DND.DROP_MOVE, transferTypes, dropTargetListener);
+		//set dragSource (drag in the same tree)
+		DragSourceListener dragSourceListener = new BusinessModelDragSourceListener(viewer, rootObject);
+		viewer.addDragSupport(DND.DROP_MOVE,  new Transfer[] {LocalSelectionTransfer.getTransfer()}, dragSourceListener);
+		
 	}
 
 	/**

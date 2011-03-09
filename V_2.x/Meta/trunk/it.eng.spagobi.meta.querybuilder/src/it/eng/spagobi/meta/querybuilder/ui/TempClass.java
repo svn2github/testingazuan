@@ -41,6 +41,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.custom.ScrolledComposite;
 import com.swtdesigner.SWTResourceManager;
+import org.eclipse.swt.widgets.List;
 
 /**
  * @author cortella
@@ -90,31 +91,22 @@ public class TempClass extends EditorPart {
 		lblSelectFields.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblSelectFields.setText("Select Fields");
 		
-		ScrolledComposite scrolledComposite = new ScrolledComposite(grpQueryEditor, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		scrolledComposite.setBackground(SWTResourceManager.getColor(255, 255, 255));
-		scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		scrolledComposite.setExpandHorizontal(true);
-		scrolledComposite.setExpandVertical(true);
+		List listSelect = new List(grpQueryEditor, SWT.BORDER);
+		listSelect.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
 		Label lblWhereClauses = new Label(grpQueryEditor, SWT.NONE);
 		lblWhereClauses.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblWhereClauses.setText("Where Clause");
 		
-		ScrolledComposite scrolledComposite_1 = new ScrolledComposite(grpQueryEditor, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		scrolledComposite_1.setBackground(SWTResourceManager.getColor(255, 255, 255));
-		scrolledComposite_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		scrolledComposite_1.setExpandHorizontal(true);
-		scrolledComposite_1.setExpandVertical(true);
+		List listWhere = new List(grpQueryEditor, SWT.BORDER);
+		listWhere.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
 		Label lblHavingClause = new Label(grpQueryEditor, SWT.NONE);
 		lblHavingClause.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblHavingClause.setText("Having Clause");
 		
-		ScrolledComposite scrolledComposite_2 = new ScrolledComposite(grpQueryEditor, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		scrolledComposite_2.setBackground(SWTResourceManager.getColor(255, 255, 255));
-		scrolledComposite_2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		scrolledComposite_2.setExpandHorizontal(true);
-		scrolledComposite_2.setExpandVertical(true);
+		List listHaving = new List(grpQueryEditor, SWT.BORDER);
+		listHaving.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 	}
 

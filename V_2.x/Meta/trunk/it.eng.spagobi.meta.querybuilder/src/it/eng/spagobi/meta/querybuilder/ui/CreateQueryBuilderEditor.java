@@ -33,6 +33,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.*;
 import org.eclipse.ui.editors.text.TextEditor;
@@ -50,8 +54,6 @@ import com.swtdesigner.SWTResourceManager;
  */
 public class CreateQueryBuilderEditor extends MultiPageEditorPart implements IResourceChangeListener{
 
-	/** The font chosen in page 1. */
-	private Font font;
 	private TextEditor editor;
 
 	/**
@@ -120,31 +122,22 @@ public class CreateQueryBuilderEditor extends MultiPageEditorPart implements IRe
 		lblSelectFields.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblSelectFields.setText("Select Fields");
 		
-		ScrolledComposite scrolledComposite = new ScrolledComposite(grpQueryEditor, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		scrolledComposite.setBackground(SWTResourceManager.getColor(255, 255, 255));
-		scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		scrolledComposite.setExpandHorizontal(true);
-		scrolledComposite.setExpandVertical(true);
+		List listSelect = new List(grpQueryEditor, SWT.BORDER);
+		listSelect.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
 		Label lblWhereClauses = new Label(grpQueryEditor, SWT.NONE);
 		lblWhereClauses.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblWhereClauses.setText("Where Clause");
 		
-		ScrolledComposite scrolledComposite_1 = new ScrolledComposite(grpQueryEditor, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		scrolledComposite_1.setBackground(SWTResourceManager.getColor(255, 255, 255));
-		scrolledComposite_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		scrolledComposite_1.setExpandHorizontal(true);
-		scrolledComposite_1.setExpandVertical(true);
+		List listWhere = new List(grpQueryEditor, SWT.BORDER);
+		listWhere.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
 		Label lblHavingClause = new Label(grpQueryEditor, SWT.NONE);
 		lblHavingClause.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblHavingClause.setText("Having Clause");
 		
-		ScrolledComposite scrolledComposite_2 = new ScrolledComposite(grpQueryEditor, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		scrolledComposite_2.setBackground(SWTResourceManager.getColor(255, 255, 255));
-		scrolledComposite_2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		scrolledComposite_2.setExpandHorizontal(true);
-		scrolledComposite_2.setExpandVertical(true);
+		List listHaving = new List(grpQueryEditor, SWT.BORDER);
+		listHaving.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		
 		int index = addPage(container);
@@ -152,30 +145,50 @@ public class CreateQueryBuilderEditor extends MultiPageEditorPart implements IRe
 	}
 	
 	/**
-	 * Creates page 1 of the multi-page editor,
-	 * which allows you to change the font used in page 2.
+	 * Creates the Query Result Page
 	 */
 	void createResultsPage() {
-
-		Composite composite = new Composite(getContainer(), SWT.NONE);
-		GridLayout layout = new GridLayout();
-		composite.setLayout(layout);
-		layout.numColumns = 2;
-		/*
-		Button fontButton = new Button(composite, SWT.NONE);
-		GridData gd = new GridData(GridData.BEGINNING);
-		gd.horizontalSpan = 2;
-		fontButton.setLayoutData(gd);
-		fontButton.setText("Change Font...");
+		Table tableQueryResults;
+		Composite container = new Composite(getContainer(), SWT.NONE);
+		container.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		fontButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				
-			}
-		});
-		*/
+		Composite composite = new Composite(container, SWT.NONE);
+		FillLayout fl_composite = new FillLayout(SWT.HORIZONTAL);
+		fl_composite.marginWidth = 2;
+		fl_composite.marginHeight = 2;
+		composite.setLayout(fl_composite);
+		
+		Group groupQueryResult = new Group(composite, SWT.NONE);
+		groupQueryResult.setText("Query Result");
+		GridLayout gl_groupQueryResult = new GridLayout(1, false);
+		gl_groupQueryResult.marginRight = 1;
+		gl_groupQueryResult.marginTop = 1;
+		gl_groupQueryResult.marginLeft = 1;
+		gl_groupQueryResult.marginBottom = 1;
+		groupQueryResult.setLayout(gl_groupQueryResult);
+		
+		tableQueryResults = new Table(groupQueryResult, SWT.BORDER | SWT.FULL_SELECTION);
+		tableQueryResults.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		tableQueryResults.setHeaderVisible(true);
+		tableQueryResults.setLinesVisible(true);
+		
+		TableColumn tblclmnColumnHeader = new TableColumn(tableQueryResults, SWT.LEFT);
+		tblclmnColumnHeader.setMoveable(true);
+		tblclmnColumnHeader.setWidth(100);
+		tblclmnColumnHeader.setText("Column Header");
+		
+		TableItem tableItem_1 = new TableItem(tableQueryResults, SWT.NONE);
+		tableItem_1.setText("New TableItem");
+		
+		TableItem tableItem = new TableItem(tableQueryResults, SWT.NONE);
+		tableItem.setText("New TableItem");
+		
+		TableColumn tableColumn = new TableColumn(tableQueryResults, SWT.NONE);
+		tableColumn.setMoveable(true);
+		tableColumn.setWidth(100);
+		tableColumn.setText("New Column");
 
-		int index = addPage(composite);
+		int index = addPage(container);
 		setPageText(index, "Results");
 	}
 
@@ -237,12 +250,12 @@ public class CreateQueryBuilderEditor extends MultiPageEditorPart implements IRe
 		return true;
 	}
 	/**
-	 * Calculates the contents of page 2 when the it is activated.
+	 * Calculates the contents of Result pagewhen the it is activated.
 	 */
 	protected void pageChange(int newPageIndex) {
 		super.pageChange(newPageIndex);
-		if (newPageIndex == 2) {
-			sortWords();
+		if (newPageIndex == 1) {
+			//do something
 		}
 	}
 	/**

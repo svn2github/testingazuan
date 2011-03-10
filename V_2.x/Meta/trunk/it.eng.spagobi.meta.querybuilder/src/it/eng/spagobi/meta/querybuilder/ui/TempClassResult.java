@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.jface.viewers.TableViewer;
 
 /**
  * @author cortella
@@ -44,7 +45,7 @@ import org.eclipse.swt.widgets.TableItem;
 public class TempClassResult extends EditorPart {
 
 	public static final String ID = "it.eng.spagobi.meta.querybuilder.ui.TempClassResult"; //$NON-NLS-1$
-	private Table tableQueryResults;
+	private Table table;
 
 	public TempClassResult() {
 	}
@@ -73,26 +74,9 @@ public class TempClassResult extends EditorPart {
 		gl_groupQueryResult.marginBottom = 1;
 		groupQueryResult.setLayout(gl_groupQueryResult);
 		
-		tableQueryResults = new Table(groupQueryResult, SWT.BORDER | SWT.FULL_SELECTION);
-		tableQueryResults.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		tableQueryResults.setHeaderVisible(true);
-		tableQueryResults.setLinesVisible(true);
-		
-		TableColumn tblclmnColumnHeader = new TableColumn(tableQueryResults, SWT.LEFT);
-		tblclmnColumnHeader.setMoveable(true);
-		tblclmnColumnHeader.setWidth(100);
-		tblclmnColumnHeader.setText("Column Header");
-		
-		TableItem tableItem_1 = new TableItem(tableQueryResults, SWT.NONE);
-		tableItem_1.setText("New TableItem");
-		
-		TableItem tableItem = new TableItem(tableQueryResults, SWT.NONE);
-		tableItem.setText("New TableItem");
-		
-		TableColumn tableColumn = new TableColumn(tableQueryResults, SWT.NONE);
-		tableColumn.setMoveable(true);
-		tableColumn.setWidth(100);
-		tableColumn.setText("New Column");
+		TableViewer tableViewer = new TableViewer(groupQueryResult, SWT.BORDER | SWT.FULL_SELECTION);
+		table = tableViewer.getTable();
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 	}
 

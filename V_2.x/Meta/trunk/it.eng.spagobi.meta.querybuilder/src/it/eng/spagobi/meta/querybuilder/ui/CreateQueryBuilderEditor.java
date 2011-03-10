@@ -55,13 +55,28 @@ import com.swtdesigner.SWTResourceManager;
 public class CreateQueryBuilderEditor extends MultiPageEditorPart implements IResourceChangeListener{
 
 	private TextEditor editor;
+	private CreateQueryBuilderUI queryBuilderUI;
 
+	/**
+	 * Creates a multi-page editor for the Query Builder. This version use
+	 * the passed CreateQueryBuilderUI object.
+	 */
+	public CreateQueryBuilderEditor(CreateQueryBuilderUI queryBuilderUI) {
+		super();
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+		if (queryBuilderUI == null)
+			queryBuilderUI = new CreateQueryBuilderUI();
+		else
+			this.queryBuilderUI = queryBuilderUI;
+	}
+	
 	/**
 	 * Creates a multi-page editor for the Query Builder.
 	 */
 	public CreateQueryBuilderEditor() {
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+		queryBuilderUI = new CreateQueryBuilderUI();
 	}
 	/**
 	 * Creates Edit Page of the multi-page editor,
@@ -81,6 +96,7 @@ public class CreateQueryBuilderEditor extends MultiPageEditorPart implements IRe
 				e.getStatus());
 		}
 	*/
+		/*
 		Composite container = new Composite(getContainer(), SWT.NONE);
 		container.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
@@ -138,8 +154,9 @@ public class CreateQueryBuilderEditor extends MultiPageEditorPart implements IRe
 		
 		List listHaving = new List(grpQueryEditor, SWT.BORDER);
 		listHaving.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-
+		*/
 		
+		Composite container = queryBuilderUI.createEditComponent(getContainer());
 		int index = addPage(container);
 		setPageText(index, "Edit");
 	}
@@ -148,6 +165,7 @@ public class CreateQueryBuilderEditor extends MultiPageEditorPart implements IRe
 	 * Creates the Query Result Page
 	 */
 	void createResultsPage() {
+		/*
 		Table tableQueryResults;
 		Composite container = new Composite(getContainer(), SWT.NONE);
 		container.setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -187,7 +205,9 @@ public class CreateQueryBuilderEditor extends MultiPageEditorPart implements IRe
 		tableColumn.setMoveable(true);
 		tableColumn.setWidth(100);
 		tableColumn.setText("New Column");
-
+*/
+		
+		Composite container = queryBuilderUI.createResultsComponent(getContainer());
 		int index = addPage(container);
 		setPageText(index, "Results");
 	}

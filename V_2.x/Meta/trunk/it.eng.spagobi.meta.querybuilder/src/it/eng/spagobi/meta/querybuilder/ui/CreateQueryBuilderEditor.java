@@ -96,66 +96,6 @@ public class CreateQueryBuilderEditor extends MultiPageEditorPart implements IRe
 				e.getStatus());
 		}
 	*/
-		/*
-		Composite container = new Composite(getContainer(), SWT.NONE);
-		container.setLayout(new FillLayout(SWT.HORIZONTAL));
-		
-		Composite composite = new Composite(container, SWT.NONE);
-		composite.setLayout(new GridLayout(2, false));
-		
-		Composite compositeTree = new Composite(composite, SWT.NONE);
-		GridData gd_compositeTree = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
-		gd_compositeTree.widthHint = 180;
-		compositeTree.setLayoutData(gd_compositeTree);
-		compositeTree.setLayout(new FillLayout(SWT.HORIZONTAL));
-		
-		Group groupBusinessModelTree = new Group(compositeTree, SWT.NONE);
-		groupBusinessModelTree.setText("Business Model");
-		groupBusinessModelTree.setLayout(new FillLayout(SWT.HORIZONTAL));
-		
-		
-		//*******************************************
-		// TODO: Business Model Tree Viewer Here!
-		//*******************************************
-		
-		TreeViewer businessModelTreeViewer = new TreeViewer(groupBusinessModelTree, SWT.BORDER);
-				
-		//only for test, use a fake model and content provider
-		businessModelTreeViewer.setLabelProvider(new LabelProvider());
-		businessModelTreeViewer.setContentProvider(new MyContentProvider());
-		businessModelTreeViewer.setInput(createModel());
-
-		
-		Composite compositeFilters = new Composite(composite, SWT.NONE);
-		compositeFilters.setLayout(new FillLayout(SWT.HORIZONTAL));
-		compositeFilters.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		
-		Group grpQueryEditor = new Group(compositeFilters, SWT.NONE);
-		grpQueryEditor.setText("Query Editor");
-		grpQueryEditor.setLayout(new GridLayout(1, false));
-		
-		Label lblSelectFields = new Label(grpQueryEditor, SWT.NONE);
-		lblSelectFields.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		lblSelectFields.setText("Select Fields");
-		
-		List listSelect = new List(grpQueryEditor, SWT.BORDER);
-		listSelect.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		
-		Label lblWhereClauses = new Label(grpQueryEditor, SWT.NONE);
-		lblWhereClauses.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		lblWhereClauses.setText("Where Clause");
-		
-		List listWhere = new List(grpQueryEditor, SWT.BORDER);
-		listWhere.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		
-		Label lblHavingClause = new Label(grpQueryEditor, SWT.NONE);
-		lblHavingClause.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		lblHavingClause.setText("Having Clause");
-		
-		List listHaving = new List(grpQueryEditor, SWT.BORDER);
-		listHaving.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		*/
-		
 		Composite container = queryBuilderUI.createEditComponent(getContainer());
 		int index = addPage(container);
 		setPageText(index, "Edit");
@@ -165,48 +105,6 @@ public class CreateQueryBuilderEditor extends MultiPageEditorPart implements IRe
 	 * Creates the Query Result Page
 	 */
 	void createResultsPage() {
-		/*
-		Table tableQueryResults;
-		Composite container = new Composite(getContainer(), SWT.NONE);
-		container.setLayout(new FillLayout(SWT.HORIZONTAL));
-		
-		Composite composite = new Composite(container, SWT.NONE);
-		FillLayout fl_composite = new FillLayout(SWT.HORIZONTAL);
-		fl_composite.marginWidth = 2;
-		fl_composite.marginHeight = 2;
-		composite.setLayout(fl_composite);
-		
-		Group groupQueryResult = new Group(composite, SWT.NONE);
-		groupQueryResult.setText("Query Result");
-		GridLayout gl_groupQueryResult = new GridLayout(1, false);
-		gl_groupQueryResult.marginRight = 1;
-		gl_groupQueryResult.marginTop = 1;
-		gl_groupQueryResult.marginLeft = 1;
-		gl_groupQueryResult.marginBottom = 1;
-		groupQueryResult.setLayout(gl_groupQueryResult);
-		
-		tableQueryResults = new Table(groupQueryResult, SWT.BORDER | SWT.FULL_SELECTION);
-		tableQueryResults.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		tableQueryResults.setHeaderVisible(true);
-		tableQueryResults.setLinesVisible(true);
-		
-		TableColumn tblclmnColumnHeader = new TableColumn(tableQueryResults, SWT.LEFT);
-		tblclmnColumnHeader.setMoveable(true);
-		tblclmnColumnHeader.setWidth(100);
-		tblclmnColumnHeader.setText("Column Header");
-		
-		TableItem tableItem_1 = new TableItem(tableQueryResults, SWT.NONE);
-		tableItem_1.setText("New TableItem");
-		
-		TableItem tableItem = new TableItem(tableQueryResults, SWT.NONE);
-		tableItem.setText("New TableItem");
-		
-		TableColumn tableColumn = new TableColumn(tableQueryResults, SWT.NONE);
-		tableColumn.setMoveable(true);
-		tableColumn.setWidth(100);
-		tableColumn.setText("New Column");
-*/
-		
 		Composite container = queryBuilderUI.createResultsComponent(getContainer());
 		int index = addPage(container);
 		setPageText(index, "Results");
@@ -321,98 +219,7 @@ public class CreateQueryBuilderEditor extends MultiPageEditorPart implements IRe
 
 	}
 
-	//***********************************************
-	// Private Class, only for test. Will be deleted.
-	//***********************************************
-	private class MyContentProvider implements ITreeContentProvider {
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-		 */
-		public Object[] getElements(Object inputElement) {
-			return ((MyModel)inputElement).child.toArray();
-		}
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-		 */
-		public void dispose() {
-
-		}
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-		 */
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
-		}
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
-		 */
-		public Object[] getChildren(Object parentElement) {
-			return getElements(parentElement);
-		}
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
-		 */
-		public Object getParent(Object element) {
-			if( element == null) {
-				return null;
-			}
-
-			return ((MyModel)element).parent;
-		}
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
-		 */
-		public boolean hasChildren(Object element) {
-			return ((MyModel)element).child.size() > 0;
-		}
-
-	}
-
-	public class MyModel {
-		public MyModel parent;
-		public ArrayList child = new ArrayList();
-		public int counter;
-		
-		public MyModel(int counter, MyModel parent) {
-			this.parent = parent;
-			this.counter = counter;
-		}
-		
-		public String toString() {
-			String rv = "Item ";
-			if( parent != null ) {
-				rv = parent.toString() + ".";
-			}
-			
-			rv += counter;
-			
-			return rv;
-		}
-	}
-	//****** end private classes
-	
-	private MyModel createModel() {
-		
-		MyModel root = new MyModel(0,null);
-		root.counter = 0;
-		
-		MyModel tmp;
-		for( int i = 1; i < 10; i++ ) {
-			tmp = new MyModel(i, root);
-			root.child.add(tmp);
-			for( int j = 1; j < i; j++ ) {
-				tmp.child.add(new MyModel(j,tmp));
-			}
-		}
-		
-		return root;
-	}
 
 	
 }

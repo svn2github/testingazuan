@@ -40,7 +40,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 
@@ -105,7 +104,6 @@ public class CreateQueryBuilderUI {
 		groupBusinessModelTree.setText("Business Model");
 		groupBusinessModelTree.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		
 		//*******************************************
 		// TODO: Business Model Tree Viewer Here!
 		//*******************************************
@@ -136,7 +134,6 @@ public class CreateQueryBuilderUI {
 		createEditWhere(grpQueryEditor);
 		//create Having panel
 		createEditHaving(grpQueryEditor);
-
 	}
 
 	/*
@@ -177,9 +174,9 @@ public class CreateQueryBuilderUI {
 	
 	/*
 	 *  Create UI components for Query Results
+	 *  @return the composite populated with widgets
 	 */
-	public Composite createResultsComponent(Composite parent){
-		
+	public Composite createResultsComponent(Composite parent){		
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
@@ -202,36 +199,12 @@ public class CreateQueryBuilderUI {
 		createResultsTable(groupQueryResult);
 		
 		return container;
-
 	}
 	
 	/*
 	 *  Create Table widget for Query Results
 	 */
 	private void createResultsTable(Group groupQueryResult){
-		/*
-		Table tableQueryResults;
-		tableQueryResults = new Table(groupQueryResult, SWT.BORDER | SWT.FULL_SELECTION);
-		tableQueryResults.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		tableQueryResults.setHeaderVisible(true);
-		tableQueryResults.setLinesVisible(true);
-		
-		TableColumn tblclmnColumnHeader = new TableColumn(tableQueryResults, SWT.LEFT);
-		tblclmnColumnHeader.setMoveable(true);
-		tblclmnColumnHeader.setWidth(100);
-		tblclmnColumnHeader.setText("Column Header");
-		
-		TableItem tableItem_1 = new TableItem(tableQueryResults, SWT.NONE);
-		tableItem_1.setText("New TableItem");
-		
-		TableItem tableItem = new TableItem(tableQueryResults, SWT.NONE);
-		tableItem.setText("New TableItem");
-		
-		TableColumn tableColumn = new TableColumn(tableQueryResults, SWT.NONE);
-		tableColumn.setMoveable(true);
-		tableColumn.setWidth(100);
-		tableColumn.setText("New Column");
-		*/
 		TableViewer tableViewer = new TableViewer(groupQueryResult, SWT.BORDER | SWT.FULL_SELECTION);
 		Table table = tableViewer.getTable();
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));

@@ -58,11 +58,18 @@
                windowTitle="%wizard.data.set.window.title">
          </dataSetWizard>
          <dataSetPage
-               displayName="%wizard.data.set.page.title"
+               displayName="Edit Query"
                icon="icons/datasetpage.ico"
-               wizardPageClass="it.eng.spagobi.meta.oda.ui.impl.CustomDataSetWizardPage"
+               wizardPageClass="it.eng.spagobi.meta.querybuilder.ui.CreateQueryBuilderEditWizardPage"
                path="/"
                id="it.eng.spagobi.meta.oda.dataSet.page1">
+         </dataSetPage>
+         <dataSetPage
+               displayName="Preview Results"
+               icon="icons/datasetpage.ico"
+               wizardPageClass="it.eng.spagobi.meta.querybuilder.ui.CreateQueryBuilderResultWizardPage"
+               path="/"
+               id="it.eng.spagobi.meta.oda.dataSet.page2">
          </dataSetPage>
       </dataSetUI>
    </extension>

@@ -40,7 +40,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.custom.ScrolledComposite;
-import com.swtdesigner.SWTResourceManager;
 import org.eclipse.swt.widgets.List;
 
 /**

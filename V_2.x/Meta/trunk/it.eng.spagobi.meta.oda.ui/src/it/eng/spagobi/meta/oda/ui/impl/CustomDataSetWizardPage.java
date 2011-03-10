@@ -46,6 +46,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import it.eng.spagobi.meta.querybuilder.ui.CreateQueryBuilderUI;
 
 /**
  * Auto-generated implementation of an ODA data set designer page
@@ -63,6 +64,8 @@ public class CustomDataSetWizardPage extends DataSetWizardPage
     private static String DEFAULT_MESSAGE = "Define the query text for the data set";
     
     private transient Text m_queryTextField;
+    
+    private CreateQueryBuilderUI queryBuilderUI;
 
 	/**
      * Constructor
@@ -73,7 +76,20 @@ public class CustomDataSetWizardPage extends DataSetWizardPage
         super( pageName );
         setTitle( pageName );
         setMessage( DEFAULT_MESSAGE );
+        this.queryBuilderUI = new CreateQueryBuilderUI();
 	}
+	/**
+     * Constructor
+	 * @param pageName
+	 */
+	public CustomDataSetWizardPage( String pageName, CreateQueryBuilderUI queryBuilderUI )
+	{
+        super( pageName );
+        setTitle( pageName );
+        setMessage( DEFAULT_MESSAGE );
+        this.queryBuilderUI = queryBuilderUI;
+	}
+	
 
 	/**
      * Constructor
@@ -102,7 +118,8 @@ public class CustomDataSetWizardPage extends DataSetWizardPage
      */
     private Control createPageControl( Composite parent )
     {
-        Composite composite = new Composite( parent, SWT.NONE );
+        /*
+    	Composite composite = new Composite( parent, SWT.NONE );
         composite.setLayout( new GridLayout( 1, false ) );
         GridData gridData = new GridData( GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_FILL );
@@ -124,8 +141,9 @@ public class CustomDataSetWizardPage extends DataSetWizardPage
                 validateData();
             }
         } );
-       
-        setPageComplete( false );
+       */
+    	Composite composite = queryBuilderUI.createEditComponent(parent);
+        setPageComplete( true );
         return composite;
     }
 

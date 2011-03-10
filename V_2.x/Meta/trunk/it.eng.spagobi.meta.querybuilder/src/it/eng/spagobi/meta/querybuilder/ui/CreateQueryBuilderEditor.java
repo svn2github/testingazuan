@@ -44,7 +44,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.ide.IDE;
 
-import com.swtdesigner.SWTResourceManager;
+
 
 /**
  * @author cortella

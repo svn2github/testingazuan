@@ -11,11 +11,11 @@ import org.eclipse.swt.dnd.TransferData;
 
 public class DatamartFieldTransfer  extends ByteArrayTransfer {
 	   private static DatamartFieldTransfer instance = new DatamartFieldTransfer();
-	   private static final String TYPE_NAME = "gadget-transfer-format";
+	   private static final String TYPE_NAME = "datamartfield-transfer-format";
 	   private static final int TYPEID = registerType(TYPE_NAME);
 
 	   /**
-	    * Returns the singleton gadget transfer instance.
+	    * Returns the singleton transfer instance.
 	    */
 	   public static DatamartFieldTransfer getInstance() {
 	      return instance;
@@ -29,7 +29,7 @@ public class DatamartFieldTransfer  extends ByteArrayTransfer {
 	      DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes));
 
 	      try {
-	         /* read number of gadgets */
+	         /* read number of fields */
 	         int n = in.readInt();
 	         /* read gadgets */
 	         DatamartField[] gadgets = new DatamartField[n];
@@ -45,42 +45,34 @@ public class DatamartFieldTransfer  extends ByteArrayTransfer {
 	         return null;
 	      }
 	   }
-	   /*
-	    * Method declared on Transfer.
-	    */
+
 	   protected int[] getTypeIds() {
 	      return new int[] { TYPEID };
 	   }
-	   /*
-	    * Method declared on Transfer.
-	    */
+
 	   protected String[] getTypeNames() {
 	      return new String[] { TYPE_NAME };
 	   }
-	   /*
-	    * Method declared on Transfer.
-	    */
+
 	   protected void javaToNative(Object object, TransferData transferData) {
 	      byte[] bytes = toByteArray((DatamartField[])object);
 	      if (bytes != null)
 	         super.javaToNative(bytes, transferData);
 	   }
-	   /*
-	    * Method declared on Transfer.
-	    */
+
 	   protected Object nativeToJava(TransferData transferData) {
 	      byte[] bytes = (byte[])super.nativeToJava(transferData);
 	      return fromByteArray(bytes);
 	   }
 	   /**
-	    * Reads and returns a single gadget from the given stream.
+	    * Reads and returns a single field from the given stream.
 	    */
 	   private DatamartField readDatamartField(DatamartField parent, DataInputStream dataIn) throws IOException {
 	      /**
 	       * Gadget serialization format is as follows:
-	       * (String) name of gadget
-	       * (int) number of child gadgets
-	       * (Gadget) child 1
+	       * (String) name of field
+	       * (int) number of child fields
+	       * (DatamartField) child 1
 	       * ... repeat for each child
 	       */
 	      String name = dataIn.readUTF();
@@ -93,12 +85,12 @@ public class DatamartFieldTransfer  extends ByteArrayTransfer {
 	   }
 	   protected byte[] toByteArray(DatamartField[] gadgets) {
 	      /**
-	       * Transfer data is an array of gadgets.  Serialized version is:
-	       * (int) number of gadgets
-	       * (Gadget) gadget 1
-	       * (Gadget) gadget 2
-	       * ... repeat for each subsequent gadget
-	       * see writeGadget for the (Gadget) format.
+	       * Transfer data is an array of fields.  Serialized version is:
+	       * (int) number of fields
+	       * (DatamartField) field 1
+	       * (DatamartField) field 2
+	       * ... repeat for each subsequent field
+	       * see writeDatamartField for the (DatamartField) format.
 	       */
 	      ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 	      DataOutputStream out = new DataOutputStream(byteOut);
@@ -121,14 +113,14 @@ public class DatamartFieldTransfer  extends ByteArrayTransfer {
 	      return bytes;
 	   }
 	   /**
-	    * Writes the given gadget to the stream.
+	    * Writes the given field to the stream.
 	    */
 	   private void writeDatamartField(DatamartField gadget, DataOutputStream dataOut) throws IOException {
 	      /**
-	       * Gadget serialization format is as follows:
-	       * (String) name of gadget
-	       * (int) number of child gadgets
-	       * (Gadget) child 1
+	       * DatamartField serialization format is as follows:
+	       * (String) name of field
+	       * (int) number of child fields
+	       * (DatamartField) child 1
 	       * ... repeat for each child
 	       */
 	      dataOut.writeUTF(gadget.getName());

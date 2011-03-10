@@ -4,38 +4,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.eng.qbe.dao.DAOFactory;
-import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.jpa.JPADataSource;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.qbe.model.structure.builder.DataMartStructureBuilderFactory;
 import it.eng.qbe.model.structure.builder.IDataMartStructureBuilder;
-import it.eng.qbe.model.structure.builder.JPADatamartStructureBuilder;
 import it.eng.spagobi.meta.datamarttree.bo.DatamartField;
 
 public class DatamartSrtuctureBuilder {
 
 	public static List<DatamartField> build(){
-		DBConnection connection = new DBConnection();			
-		connection.setName( "FoodMart" );
-		connection.setDialect( "org.hibernate.dialect.MySQLInnoDBDialect" );			
-		connection.setJndiName("java:comp/env/jdbc/foodmart");			
-		connection.setDriverClass( null);			
-		connection.setPassword( null );
-		connection.setUrl( null );
-		connection.setUsername( null );				
-		
+
 		JPADataSource jpads = new JPADataSource("foodmart");
 		jpads.setDatamartName("foodmart");	
 		ArrayList<String> s = new ArrayList<String>();
 		s.add("foodmart");
 		jpads.setName("foodmart@java:comp/env/jdbc/foodmart_DS");
 		jpads.setDatamartNames(s);
-		jpads.setConnection(connection);	
 		jpads.setProperties( DAOFactory.getDatamartPropertiesDAO().loadDatamartProperties( "foodmart" ) );
-		IDataMartStructureBuilder builder = new JPADatamartStructureBuilder(jpads);
+				
+		IDataMartStructureBuilder builder = DataMartStructureBuilderFactory.getDataMartStructureBuilder(jpads);
 		DataMartModelStructure dms = DataMartStructureBuilderFactory.getDataMartStructureBuilder(jpads).build();
+		
 		List<DataMartEntity> rootEntries = dms.getRootEntities("foodmart");
 		List<DatamartField> datamartFieldEntries= new ArrayList<DatamartField>();
 
@@ -44,8 +35,6 @@ public class DatamartSrtuctureBuilder {
 		}
 		
 		return datamartFieldEntries;
-		
-		
 	}
 	
 	public static DatamartField toDatamartField(DataMartEntity dme){

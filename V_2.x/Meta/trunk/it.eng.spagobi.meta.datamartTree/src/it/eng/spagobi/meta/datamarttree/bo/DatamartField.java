@@ -1,8 +1,5 @@
 package it.eng.spagobi.meta.datamarttree.bo;
 
-
-import it.eng.spagobi.meta.Store;
-
 import java.util.ArrayList;
 
 public class DatamartField {

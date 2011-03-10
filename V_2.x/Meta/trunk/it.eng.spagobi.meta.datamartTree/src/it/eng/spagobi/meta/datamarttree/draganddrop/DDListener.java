@@ -10,7 +10,7 @@ import org.eclipse.ui.part.PluginTransferData;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.dnd.*;
 /**
- * Supports dragging gadgets from a structured viewer.
+ * Supports dragging fields from a structured viewer.
  */
 public class DDListener extends DragSourceAdapter {
    private StructuredViewer viewer;
@@ -20,18 +20,18 @@ public class DDListener extends DragSourceAdapter {
    /**
     * Method declared on DragSourceListener
     */
-   public void dragFinished(DragSourceEvent event) {
-      if (!event.doit)
-         return;
-      //if the gadget was moved, remove it from the source viewer
-      if (event.detail == DND.DROP_MOVE) {
-         IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
-         for (Iterator it = selection.iterator(); it.hasNext();) {
-            ((DatamartField)it.next()).setParent(null);
-         }
-         viewer.refresh();
-      }
-   }
+//   public void dragFinished(DragSourceEvent event) {
+//      if (!event.doit)
+//         return;
+//      //if the field was moved, remove it from the source viewer
+////      if (event.detail == DND.DROP_MOVE) {
+////         IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
+////         for (Iterator it = selection.iterator(); it.hasNext();) {
+////            ((DatamartField)it.next()).setParent(null);
+////         }
+////         viewer.refresh();
+////      }
+//   }
    /**
     * Method declared on DragSourceListener
     */

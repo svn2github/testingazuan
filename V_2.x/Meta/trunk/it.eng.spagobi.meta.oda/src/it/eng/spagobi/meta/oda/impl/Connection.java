@@ -26,7 +26,6 @@ import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.DataSourceFactory;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
-import it.eng.spagobi.meta.oda.TestConnectionFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,15 +44,12 @@ import com.ibm.icu.util.ULocale;
  * 
  * @authors  Andrea Gioia (andrea.gioia@eng.it)
  */
-public class Connection implements IConnection
+public class Connection implements IConnection 
 {
 	IDataSource datasource = null;
 	private boolean m_isOpen = false;
     
-    public static final String DATAMART_DIR_PATH = "D:\\Documenti\\Sviluppo\\servers\\tomcat6spagobi3\\resources\\qbe\\datamarts";
-	public static final String DATAMART_NAME = "foodmart";
-
-    
+   
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IConnection#open(java.util.Properties)
 	 */

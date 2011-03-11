@@ -1,28 +1,20 @@
 package it.eng.spagobi.meta.datamarttree.views;
 
-import it.eng.qbe.model.structure.AbstractDataMartItem;
-import it.eng.qbe.model.structure.DataMartCalculatedField;
+
 import it.eng.qbe.model.structure.DataMartEntity;
-import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.model.structure.DataMartModelStructure;
-import it.eng.spagobi.meta.datamarttree.bo.DatamartItem;
 import it.eng.spagobi.meta.datamarttree.builder.DatamartSrtuctureBuilder;
 import it.eng.spagobi.meta.datamarttree.draganddrop.DDListener;
 import it.eng.spagobi.meta.datamarttree.draganddrop.DatamartFieldTransfer;
+import it.eng.spagobi.meta.datamarttree.tree.DatamartTree;
+import it.eng.spagobi.meta.datamarttree.tree.ViewLabelProvider;
+import it.eng.spagobi.meta.datamarttree.tree.ViewContentProvider;
 
-import java.io.File;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.osgi.service.environment.Constants;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.*;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
@@ -48,87 +40,8 @@ public class DataMartTreeView extends ViewPart {
 	private Action doubleClickAction;
 
 
-	class ViewContentProvider implements IStructuredContentProvider, ITreeContentProvider {
-		private DataMartEntity invisibleRoot;
 
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-		}
-		public void dispose() {
-		}
-		public Object[] getElements(Object parent) {
-			if (parent.equals(getViewSite())) {
-				if (invisibleRoot==null) initialize();
-				return getChildren(invisibleRoot);
-			}
-			return getChildren(parent);
-		}
-		public AbstractDataMartItem getParent(Object child) {
-			return ((AbstractDataMartItem)child).getParent();
-		}
-		public AbstractDataMartItem[] getChildren(Object parent) {
-			List<AbstractDataMartItem> children = new ArrayList<AbstractDataMartItem>();
-			if(parent instanceof DataMartEntity){
-				children.addAll(((DataMartEntity) parent).getSubEntities());
-				children.addAll(((DataMartEntity) parent).getAllFields());
-				children.addAll(((DataMartEntity) parent).getCalculatedFields());
-			}
-			return children.toArray(new AbstractDataMartItem[0]);
-		}
-		public boolean hasChildren(Object parent) {
-			if(parent instanceof DataMartEntity){
-				if((((DataMartEntity) parent).getSubEntities()).size()>0)
-					return true;
-				if((((DataMartEntity) parent).getAllFields()).size()>0)
-					return true;
-				if((((DataMartEntity) parent).getCalculatedFields()).size()>0)
-					return true;
-			}
-			return false;
-		}
-		
-		/*
-		 * We will set up a dummy model to initialize tree heararchy.
-		 * In a real code, you will connect to a real model and
-		 * expose its hierarchy.
-		 */
-		private void initialize() {
-			
-			DataMartModelStructure datamartStructure = DatamartSrtuctureBuilder.build();
-			
-			List<DataMartEntity> datamartFields = datamartStructure.getRootEntities("foodmart");
-			
-			DataMartEntity root = new DataMartEntity("datamart", "path", "role", "type", datamartStructure);
-			for(int i=0; i<datamartFields.size(); i++){
-				root.addSubEntity(datamartFields.get(i));
-			}
-					
-			invisibleRoot = new DataMartEntity("datamart", "path", "role", "type", datamartStructure);
-			invisibleRoot.addSubEntity(root);
-		}
-	}
-	class ViewLabelProvider extends LabelProvider {
 
-		public String getText(Object obj) {
-			return ((AbstractDataMartItem)obj).getName();
-		}
-		public Image getImage(Object obj) {   
-			
-			String path = "D:/sviluppo/SpagoBIMeta/workspaceSpagoBIMeta/it.eng.spagobi.meta.datamartTree/img/datamartstructure/";
-			
-			if(obj instanceof DataMartEntity){
-				path=path+"dimension.gif";
-			} else if(obj instanceof DataMartField){
-				DataMartField dm = (DataMartField)obj;
-				path=path+"attribute.gif";
-			} else if(obj instanceof DataMartCalculatedField){
-				path=path+"calculation.gif";
-			}else{
-				path=path+"dimension.gif";
-			}
-			return new Image(viewer.getControl().getDisplay(), path); 
-		}
-		
-	}
 	class NameSorter extends ViewerSorter {
 	}
 
@@ -143,15 +56,24 @@ public class DataMartTreeView extends ViewPart {
 	 * to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
-		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		
+		
+		
+
+		
+		viewer = new DatamartTree(parent);
+		
 		drillDownAdapter = new DrillDownAdapter(viewer);
-		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setSorter(new NameSorter());
-		viewer.setInput(getViewSite());
+
+
+//		viewer.setSorter(new NameSorter());
+//		viewer.setInput(getViewSite());
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "it.eng.spagobi.meta.datamartTree.viewer");
 		makeActions();
+		
+
+		
 		
 		hookContextMenu();
 		//hookDoubleClickAction();

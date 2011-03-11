@@ -17,3 +17,4 @@ Bundle-ClassPath: lib/datamartJPAE.jar,
  lib/dom4j-1.6.jar,
  lib/hibernate3.jar,
  lib/slf4j-api-1.6.1.jar
+Export-Package: it.eng.spagobi.meta.datamarttree.tree

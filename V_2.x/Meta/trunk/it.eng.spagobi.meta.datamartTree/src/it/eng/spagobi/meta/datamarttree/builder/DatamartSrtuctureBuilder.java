@@ -27,9 +27,6 @@ public class DatamartSrtuctureBuilder {
 		DataMartModelStructure datamartModelStructure = DataMartStructureBuilderFactory.getDataMartStructureBuilder(dataSource).build();
 		
 		//get the root entities
-		
-
-		
 		return datamartModelStructure;
 
 	}

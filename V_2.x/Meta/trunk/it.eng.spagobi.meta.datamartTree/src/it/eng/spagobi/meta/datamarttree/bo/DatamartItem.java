@@ -2,60 +2,74 @@ package it.eng.spagobi.meta.datamarttree.bo;
 
 import java.util.ArrayList;
 
-public class DatamartField {
+public class DatamartItem {
 	   private ArrayList children;
 	   private String name;
-	   private DatamartField parent;
+	   private DatamartItem parent;
+	   private String path;		
+	   private String role;	
+	   private String type;	
 	   
-	   public DatamartField(String name) {
-		      this.name = name;
-		      this.children = new ArrayList();
-		      new DatamartField(parent, name);
-		   }
+	   public DatamartItem(String name) {
+	      this.name = name;
+	      this.children = new ArrayList();
+	      new DatamartItem(parent, name);
+	   }
 
-	   public DatamartField(DatamartField parent, String name) {
+
+	   public DatamartItem(String name, String path, String role, String type) {
+		super();
+		this.name = name;
+		this.path = path;
+		this.role = role;
+		this.type = type;
+	}
+
+
+
+	public DatamartItem(DatamartItem parent, String name) {
 	      this.name = name;
 	      this.children = new ArrayList();
 	      this.parent = parent;
 	      if (parent != null)
 	         parent.addChild(this);
 	   }
-	   public void addChild(DatamartField child) {
+	   public void addChild(DatamartItem child) {
 	      if (child == null)
 	         throw new NullPointerException();
 	      children.add(child);
 	   }
-	   private void doFlatten(DatamartField datamartField, ArrayList allDatamartFields) {
+	   private void doFlatten(DatamartItem datamartField, ArrayList allDatamartFields) {
 	      //add the datamartField and its children to the list
 	      allDatamartFields.add(datamartField);
-	      DatamartField[] children = datamartField.getChildren();
+	      DatamartItem[] children = datamartField.getChildren();
 	      for (int i = 0; i < children.length; i++) {
 	         doFlatten(children[i], allDatamartFields);
 	      }
 	   }
 	   public boolean equals(Object object) {
-	      if (!(object instanceof DatamartField))
+	      if (!(object instanceof DatamartItem))
 	         return false;
 	      if (this == object)
 	         return true;
-	      DatamartField datamartField = ((DatamartField)object);
+	      DatamartItem datamartField = ((DatamartItem)object);
 	      return name.equals(datamartField.name) && children.equals(datamartField.children);
 	   }
 	   /**
 	    * Returns a flat list of all datamartFields in this datamartField tree.
 	    */
-	   public DatamartField[] flatten() {
+	   public DatamartItem[] flatten() {
 	      ArrayList result = new ArrayList();
 	      doFlatten(this, result);
-	      return (DatamartField[])result.toArray(new DatamartField[result.size()]);
+	      return (DatamartItem[])result.toArray(new DatamartItem[result.size()]);
 	   }
-	   public DatamartField[] getChildren() {
-	      return (DatamartField[])children.toArray(new DatamartField[children.size()]);
+	   public DatamartItem[] getChildren() {
+	      return (DatamartItem[])children.toArray(new DatamartItem[children.size()]);
 	   }
 	   public String getName() {
 	      return name;
 	   }
-	   public DatamartField getParent() {
+	   public DatamartItem getParent() {
 	      return parent;
 	   }
 	   public int hashCode() {
@@ -65,15 +79,15 @@ public class DatamartField {
 	    * Returns true if this datamartField has a parent equal to
 	    * the given datamartField, and false otherwise.
 	    */
-	   public boolean hasParent(DatamartField datamartField) {
+	   public boolean hasParent(DatamartItem datamartField) {
 	      if (parent == null)
 	         return false;
 	      return parent.equals(datamartField) || parent.hasParent(datamartField);
 	   }
-	   private void removeChild(DatamartField datamartField) {
+	   private void removeChild(DatamartItem datamartField) {
 	      children.remove(datamartField);
 	   }
-	   public void setParent(DatamartField newParent) {
+	   public void setParent(DatamartItem newParent) {
 	      if (parent != null)
 	         parent.removeChild(this);
 	      this.parent = newParent;

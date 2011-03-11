@@ -1,7 +1,7 @@
 package it.eng.spagobi.meta.datamarttree.draganddrop;
 
 
-import it.eng.spagobi.meta.datamarttree.bo.DatamartField;
+import it.eng.spagobi.meta.datamarttree.bo.DatamartItem;
 
 import java.util.Iterator;
 
@@ -37,7 +37,7 @@ public class DDListener extends DragSourceAdapter {
     */
    public void dragSetData(DragSourceEvent event) {
       IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
-      DatamartField[] gadgets = (DatamartField[])selection.toList().toArray(new DatamartField[selection.size()]);
+      DatamartItem[] gadgets = (DatamartItem[])selection.toList().toArray(new DatamartItem[selection.size()]);
       if (DatamartFieldTransfer.getInstance().isSupportedType(event.dataType)) {
          event.data = gadgets;
       } else if (PluginTransfer.getInstance().isSupportedType(event.dataType)) {

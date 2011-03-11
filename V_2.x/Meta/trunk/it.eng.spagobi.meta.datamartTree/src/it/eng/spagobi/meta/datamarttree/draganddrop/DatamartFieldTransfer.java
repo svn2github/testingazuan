@@ -1,7 +1,7 @@
 package it.eng.spagobi.meta.datamarttree.draganddrop;
 
 
-import it.eng.spagobi.meta.datamarttree.bo.DatamartField;
+import it.eng.spagobi.meta.datamarttree.bo.DatamartItem;
 
 import java.io.*;
 
@@ -25,16 +25,16 @@ public class DatamartFieldTransfer  extends ByteArrayTransfer {
 	    */
 	   private DatamartFieldTransfer() {
 	   }
-	   protected DatamartField[] fromByteArray(byte[] bytes) {
+	   protected DatamartItem[] fromByteArray(byte[] bytes) {
 	      DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes));
 
 	      try {
 	         /* read number of fields */
 	         int n = in.readInt();
 	         /* read gadgets */
-	         DatamartField[] gadgets = new DatamartField[n];
+	         DatamartItem[] gadgets = new DatamartItem[n];
 	         for (int i = 0; i < n; i++) {
-	        	 DatamartField gadget = readDatamartField(null, in);
+	        	 DatamartItem gadget = readDatamartField(null, in);
 	            if (gadget == null) {
 	               return null;
 	            }
@@ -55,7 +55,7 @@ public class DatamartFieldTransfer  extends ByteArrayTransfer {
 	   }
 
 	   protected void javaToNative(Object object, TransferData transferData) {
-	      byte[] bytes = toByteArray((DatamartField[])object);
+	      byte[] bytes = toByteArray((DatamartItem[])object);
 	      if (bytes != null)
 	         super.javaToNative(bytes, transferData);
 	   }
@@ -67,7 +67,7 @@ public class DatamartFieldTransfer  extends ByteArrayTransfer {
 	   /**
 	    * Reads and returns a single field from the given stream.
 	    */
-	   private DatamartField readDatamartField(DatamartField parent, DataInputStream dataIn) throws IOException {
+	   private DatamartItem readDatamartField(DatamartItem parent, DataInputStream dataIn) throws IOException {
 	      /**
 	       * Gadget serialization format is as follows:
 	       * (String) name of field
@@ -77,13 +77,13 @@ public class DatamartFieldTransfer  extends ByteArrayTransfer {
 	       */
 	      String name = dataIn.readUTF();
 	      int n = dataIn.readInt();
-	      DatamartField newParent = new DatamartField(parent, name);
+	      DatamartItem newParent = new DatamartItem(parent, name);
 	      for (int i = 0; i < n; i++) {
 	         readDatamartField(newParent, dataIn);
 	      }
 	      return newParent;
 	   }
-	   protected byte[] toByteArray(DatamartField[] gadgets) {
+	   protected byte[] toByteArray(DatamartItem[] gadgets) {
 	      /**
 	       * Transfer data is an array of fields.  Serialized version is:
 	       * (int) number of fields
@@ -103,7 +103,7 @@ public class DatamartFieldTransfer  extends ByteArrayTransfer {
 
 	         /* write markers */
 	         for (int i = 0; i < gadgets.length; i++) {
-	            writeDatamartField((DatamartField)gadgets[i], out);
+	            writeDatamartField((DatamartItem)gadgets[i], out);
 	         }
 	         out.close();
 	         bytes = byteOut.toByteArray();
@@ -115,7 +115,7 @@ public class DatamartFieldTransfer  extends ByteArrayTransfer {
 	   /**
 	    * Writes the given field to the stream.
 	    */
-	   private void writeDatamartField(DatamartField gadget, DataOutputStream dataOut) throws IOException {
+	   private void writeDatamartField(DatamartItem gadget, DataOutputStream dataOut) throws IOException {
 	      /**
 	       * DatamartField serialization format is as follows:
 	       * (String) name of field
@@ -124,7 +124,7 @@ public class DatamartFieldTransfer  extends ByteArrayTransfer {
 	       * ... repeat for each child
 	       */
 	      dataOut.writeUTF(gadget.getName());
-	      DatamartField[] children = gadget.getChildren();
+	      DatamartItem[] children = gadget.getChildren();
 	      dataOut.writeInt(children.length);
 	      for (int i = 0; i < children.length; i++) {
 	         writeDatamartField(children[i], dataOut);

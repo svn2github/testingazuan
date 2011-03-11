@@ -21,8 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui;
 
+import it.eng.spagobi.meta.datamarttree.tree.DatamartTree;
+import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDragListener;
+import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropListener;
+
 import java.util.ArrayList;
 
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -31,6 +36,9 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -108,12 +116,17 @@ public class QueryBuilder {
 		// TODO: Business Model Tree Viewer Here!
 		//*******************************************
 		
+		/*
 		TreeViewer businessModelTreeViewer = new TreeViewer(groupBusinessModelTree, SWT.BORDER);
 				
 		//only for test, use a fake model and content provider
 		businessModelTreeViewer.setLabelProvider(new LabelProvider());
 		businessModelTreeViewer.setContentProvider(new MyContentProvider());
 		businessModelTreeViewer.setInput(createModel());
+		*/
+		DatamartTree businessModelTreeViewer = new DatamartTree(groupBusinessModelTree);
+		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance(),LocalSelectionTransfer.getTransfer()  };
+		businessModelTreeViewer.addDragSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDragListener(businessModelTreeViewer));
 	}
 
 	/*
@@ -144,8 +157,29 @@ public class QueryBuilder {
 		lblSelectFields.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblSelectFields.setText("Select Fields");
 		
-		List listSelect = new List(grpQueryEditor, SWT.BORDER);
-		listSelect.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));		
+		TableViewer tableViewerSelect  = new TableViewer(grpQueryEditor, SWT.BORDER | SWT.FULL_SELECTION);
+		tableViewerSelect.setColumnProperties(new String[] { "Entity", "Field", "Alias" });
+		
+		Table table = tableViewerSelect.getTable();
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		table.setLinesVisible(true);
+		table.setHeaderVisible(true);
+		
+		TableColumn column = new TableColumn(table,SWT.NONE);
+		column.setWidth(100);
+		column.setText("Entity");
+		
+		column = new TableColumn(table,SWT.NONE);
+		column.setWidth(100);
+		column.setText("Field");
+		
+		column = new TableColumn(table,SWT.NONE);
+		column.setWidth(100);
+		column.setText("Alias");
+		
+		//Drop support
+		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
+		tableViewerSelect.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropListener(tableViewerSelect));
 	}
 	
 	/*

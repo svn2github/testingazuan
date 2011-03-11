@@ -1,7 +1,8 @@
 package it.eng.spagobi.meta.datamarttree.draganddrop;
 
 
-import it.eng.spagobi.meta.datamarttree.bo.DatamartItem;
+import it.eng.qbe.model.structure.AbstractDataMartItem;
+
 
 import java.util.Iterator;
 
@@ -17,31 +18,17 @@ public class DDListener extends DragSourceAdapter {
    public DDListener(StructuredViewer viewer) {
       this.viewer = viewer;
    }
-   /**
-    * Method declared on DragSourceListener
-    */
-//   public void dragFinished(DragSourceEvent event) {
-//      if (!event.doit)
-//         return;
-//      //if the field was moved, remove it from the source viewer
-////      if (event.detail == DND.DROP_MOVE) {
-////         IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
-////         for (Iterator it = selection.iterator(); it.hasNext();) {
-////            ((DatamartField)it.next()).setParent(null);
-////         }
-////         viewer.refresh();
-////      }
-//   }
+
    /**
     * Method declared on DragSourceListener
     */
    public void dragSetData(DragSourceEvent event) {
       IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
-      DatamartItem[] gadgets = (DatamartItem[])selection.toList().toArray(new DatamartItem[selection.size()]);
+      AbstractDataMartItem[] datamartItems = (AbstractDataMartItem[])selection.toList().toArray(new AbstractDataMartItem[selection.size()]);
       if (DatamartFieldTransfer.getInstance().isSupportedType(event.dataType)) {
-         event.data = gadgets;
+         event.data = datamartItems;
       } else if (PluginTransfer.getInstance().isSupportedType(event.dataType)) {
-         byte[] data = DatamartFieldTransfer.getInstance().toByteArray(gadgets);
+         byte[] data = DatamartFieldTransfer.getInstance().toByteArray(datamartItems);
          event.data = new PluginTransferData("it.eng.spagobi.meta.datamarttree.views.datamartFieldDrop", data);
       }
    }

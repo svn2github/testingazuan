@@ -1,12 +1,13 @@
 package it.eng.spagobi.meta.datamarttree.draganddrop;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
 
-import it.eng.spagobi.meta.datamarttree.bo.DatamartItem;
-
-import java.io.*;
+import it.eng.qbe.model.structure.AbstractDataMartItem;
 
 import org.eclipse.swt.dnd.ByteArrayTransfer;
-import org.eclipse.swt.dnd.TransferData;
+
 
 
 public class DatamartFieldTransfer  extends ByteArrayTransfer {
@@ -25,25 +26,12 @@ public class DatamartFieldTransfer  extends ByteArrayTransfer {
 	    */
 	   private DatamartFieldTransfer() {
 	   }
-	   protected DatamartItem[] fromByteArray(byte[] bytes) {
-	      DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes));
-
-	      try {
-	         /* read number of fields */
-	         int n = in.readInt();
-	         /* read gadgets */
-	         DatamartItem[] gadgets = new DatamartItem[n];
-	         for (int i = 0; i < n; i++) {
-	        	 DatamartItem gadget = readDatamartField(null, in);
-	            if (gadget == null) {
-	               return null;
-	            }
-	            gadgets[i] = gadget;
-	         }
-	         return gadgets;
-	      } catch (IOException e) {
-	         return null;
-	      }
+	   protected AbstractDataMartItem[] fromByteArray(byte[] bytes) {
+	      return new AbstractDataMartItem[0];
+	   }
+	   
+	   protected byte[] toByteArray(AbstractDataMartItem[] bytes) {
+		   return new byte[0];
 	   }
 
 	   protected int[] getTypeIds() {
@@ -54,80 +42,5 @@ public class DatamartFieldTransfer  extends ByteArrayTransfer {
 	      return new String[] { TYPE_NAME };
 	   }
 
-	   protected void javaToNative(Object object, TransferData transferData) {
-	      byte[] bytes = toByteArray((DatamartItem[])object);
-	      if (bytes != null)
-	         super.javaToNative(bytes, transferData);
-	   }
 
-	   protected Object nativeToJava(TransferData transferData) {
-	      byte[] bytes = (byte[])super.nativeToJava(transferData);
-	      return fromByteArray(bytes);
-	   }
-	   /**
-	    * Reads and returns a single field from the given stream.
-	    */
-	   private DatamartItem readDatamartField(DatamartItem parent, DataInputStream dataIn) throws IOException {
-	      /**
-	       * Gadget serialization format is as follows:
-	       * (String) name of field
-	       * (int) number of child fields
-	       * (DatamartField) child 1
-	       * ... repeat for each child
-	       */
-	      String name = dataIn.readUTF();
-	      int n = dataIn.readInt();
-	      DatamartItem newParent = new DatamartItem(parent, name);
-	      for (int i = 0; i < n; i++) {
-	         readDatamartField(newParent, dataIn);
-	      }
-	      return newParent;
-	   }
-	   protected byte[] toByteArray(DatamartItem[] gadgets) {
-	      /**
-	       * Transfer data is an array of fields.  Serialized version is:
-	       * (int) number of fields
-	       * (DatamartField) field 1
-	       * (DatamartField) field 2
-	       * ... repeat for each subsequent field
-	       * see writeDatamartField for the (DatamartField) format.
-	       */
-	      ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-	      DataOutputStream out = new DataOutputStream(byteOut);
-
-	      byte[] bytes = null;
-
-	      try {
-	         /* write number of markers */
-	         out.writeInt(gadgets.length);
-
-	         /* write markers */
-	         for (int i = 0; i < gadgets.length; i++) {
-	            writeDatamartField((DatamartItem)gadgets[i], out);
-	         }
-	         out.close();
-	         bytes = byteOut.toByteArray();
-	      } catch (IOException e) {
-	         //when in doubt send nothing
-	      }
-	      return bytes;
-	   }
-	   /**
-	    * Writes the given field to the stream.
-	    */
-	   private void writeDatamartField(DatamartItem gadget, DataOutputStream dataOut) throws IOException {
-	      /**
-	       * DatamartField serialization format is as follows:
-	       * (String) name of field
-	       * (int) number of child fields
-	       * (DatamartField) child 1
-	       * ... repeat for each child
-	       */
-	      dataOut.writeUTF(gadget.getName());
-	      DatamartItem[] children = gadget.getChildren();
-	      dataOut.writeInt(children.length);
-	      for (int i = 0; i < children.length; i++) {
-	         writeDatamartField(children[i], dataOut);
-	      }
-	   }
 	}

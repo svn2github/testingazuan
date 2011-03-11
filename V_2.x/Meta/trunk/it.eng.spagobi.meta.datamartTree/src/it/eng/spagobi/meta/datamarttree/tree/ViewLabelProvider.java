@@ -1,13 +1,19 @@
 package it.eng.spagobi.meta.datamarttree.tree;
 
+import java.io.IOException;
+
 import it.eng.qbe.model.structure.AbstractDataMartItem;
 import it.eng.qbe.model.structure.DataMartCalculatedField;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Image;
+import org.osgi.framework.Bundle;
 
 public 	class ViewLabelProvider extends LabelProvider {
 
@@ -21,8 +27,15 @@ public 	class ViewLabelProvider extends LabelProvider {
 		return ((AbstractDataMartItem)obj).getName();
 	}
 	public Image getImage(Object obj) {   
-		
-		String path = "D:/sviluppo/SpagoBIMeta/workspaceSpagoBIMeta/it.eng.spagobi.meta.datamartTree/img/datamartstructure/";
+		Bundle generatorBundle = Platform.getBundle("it.eng.spagobi.meta.datamartTree");
+		String path = null; 
+		try {
+			IPath ipath = new Path(Platform.asLocalURL(generatorBundle.getEntry("img\\datamartstructure")).getPath());
+			path = ipath.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		//String path = "D:/sviluppo/SpagoBIMeta/workspaceSpagoBIMeta/it.eng.spagobi.meta.datamartTree/img/datamartstructure/";
 		
 		if(obj instanceof DataMartEntity){
 			path=path+"dimension.gif";

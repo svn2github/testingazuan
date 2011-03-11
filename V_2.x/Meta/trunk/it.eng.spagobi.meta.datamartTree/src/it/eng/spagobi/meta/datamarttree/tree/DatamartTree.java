@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.Composite;
 public class DatamartTree extends TreeViewer{
 
 	public DatamartTree(Composite parent){
-		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		DataMartEntity invisibleRoot = getDatamartStructureRoot();
 		setContentProvider(new ViewContentProvider());
 		setLabelProvider(new ViewLabelProvider(this));

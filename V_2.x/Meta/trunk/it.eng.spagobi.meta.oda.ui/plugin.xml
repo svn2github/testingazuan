@@ -60,14 +60,14 @@
          <dataSetPage
                displayName="Edit Query"
                icon="icons/datasetpage.ico"
-               wizardPageClass="it.eng.spagobi.meta.querybuilder.ui.CreateQueryBuilderEditWizardPage"
+               wizardPageClass="it.eng.spagobi.meta.querybuilder.ui.QueryBuilderEditWizardPage"
                path="/"
                id="it.eng.spagobi.meta.oda.dataSet.page1">
          </dataSetPage>
          <dataSetPage
                displayName="Preview Results"
                icon="icons/datasetpage.ico"
-               wizardPageClass="it.eng.spagobi.meta.querybuilder.ui.CreateQueryBuilderResultWizardPage"
+               wizardPageClass="it.eng.spagobi.meta.querybuilder.ui.QueryBuilderResultWizardPage"
                path="/"
                id="it.eng.spagobi.meta.oda.dataSet.page2">
          </dataSetPage>

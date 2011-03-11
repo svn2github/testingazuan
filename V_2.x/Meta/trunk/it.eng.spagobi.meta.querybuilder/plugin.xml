@@ -4,8 +4,8 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="it.eng.spagobi.meta.querybuilder.ui.CreateQueryBuilderEditor"
-            contributorClass="it.eng.spagobi.meta.querybuilder.ui.CreateQueryBuilderEditorContributor"
+            class="it.eng.spagobi.meta.querybuilder.ui.QueryBuilderEditor"
+            contributorClass="it.eng.spagobi.meta.querybuilder.ui.QueryBuilderEditorContributor"
             extensions="metaquery"
             icon="icons/query.gif"
             id="it.eng.spagobi.meta.querybuilder.ui.CreateQueryBuilderEditor"

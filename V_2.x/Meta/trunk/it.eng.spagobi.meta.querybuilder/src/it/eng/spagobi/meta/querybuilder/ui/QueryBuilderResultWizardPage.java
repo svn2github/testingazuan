@@ -32,22 +32,22 @@ import org.eclipse.swt.widgets.Control;
  * @author cortella
  *
  */
-public class CreateQueryBuilderResultWizardPage extends DataSetWizardPage {
+public class QueryBuilderResultWizardPage extends DataSetWizardPage {
     private static String DEFAULT_MESSAGE = "Preview of the query results";
     
-    private CreateQueryBuilderUI queryBuilderUI;
+    private QueryBuilder queryBuilderUI;
  
 
     
-	public CreateQueryBuilderResultWizardPage( String pageName )
+	public QueryBuilderResultWizardPage( String pageName )
 	{
         super( pageName );
         setTitle( pageName );
         setMessage( DEFAULT_MESSAGE );
-        this.queryBuilderUI = new CreateQueryBuilderUI();
+        this.queryBuilderUI = new QueryBuilder();
 	}
 	
-	public CreateQueryBuilderResultWizardPage( String pageName, CreateQueryBuilderUI queryBuilderUI )
+	public QueryBuilderResultWizardPage( String pageName, QueryBuilder queryBuilderUI )
 	{
         super( pageName );
         setTitle( pageName );
@@ -55,12 +55,12 @@ public class CreateQueryBuilderResultWizardPage extends DataSetWizardPage {
         this.queryBuilderUI = queryBuilderUI;
 	}
 	
-	public CreateQueryBuilderResultWizardPage( String pageName, String title,
+	public QueryBuilderResultWizardPage( String pageName, String title,
 			ImageDescriptor titleImage )
 	{
         super( pageName, title, titleImage );
         setMessage( DEFAULT_MESSAGE );
-        this.queryBuilderUI = new CreateQueryBuilderUI();
+        this.queryBuilderUI = new QueryBuilder();
 
 	}
 

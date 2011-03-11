@@ -47,9 +47,9 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  * @author cortella
  *
  */
-public class CreateQueryBuilderUI {
+public class QueryBuilder {
 	
-	public CreateQueryBuilderUI(){
+	public QueryBuilder(){
 		
 	}
 	
@@ -66,7 +66,7 @@ public class CreateQueryBuilderUI {
 	 * and Results pages
 	 */
 	public MultiPageEditorPart createEditor() {
-		return new CreateQueryBuilderEditor(this);
+		return new QueryBuilderEditor(this);
 	}
 	
 	/*

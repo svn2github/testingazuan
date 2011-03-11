@@ -46,7 +46,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import it.eng.spagobi.meta.querybuilder.ui.CreateQueryBuilderUI;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 /**
  * Auto-generated implementation of an ODA data set designer page
@@ -65,7 +65,7 @@ public class CustomDataSetWizardPage extends DataSetWizardPage
     
     private transient Text m_queryTextField;
     
-    private CreateQueryBuilderUI queryBuilderUI;
+    private QueryBuilder queryBuilderUI;
 
 	/**
      * Constructor
@@ -76,13 +76,13 @@ public class CustomDataSetWizardPage extends DataSetWizardPage
         super( pageName );
         setTitle( pageName );
         setMessage( DEFAULT_MESSAGE );
-        this.queryBuilderUI = new CreateQueryBuilderUI();
+        this.queryBuilderUI = new QueryBuilder();
 	}
 	/**
      * Constructor
 	 * @param pageName
 	 */
-	public CustomDataSetWizardPage( String pageName, CreateQueryBuilderUI queryBuilderUI )
+	public CustomDataSetWizardPage( String pageName, QueryBuilder queryBuilderUI )
 	{
         super( pageName );
         setTitle( pageName );

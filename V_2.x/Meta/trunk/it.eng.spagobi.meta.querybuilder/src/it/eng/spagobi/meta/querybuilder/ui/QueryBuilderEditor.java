@@ -52,20 +52,20 @@ import org.eclipse.ui.ide.IDE;
  *  - First Page is for editing the query
  *  - Second Page is for showing query results
  */
-public class CreateQueryBuilderEditor extends MultiPageEditorPart implements IResourceChangeListener{
+public class QueryBuilderEditor extends MultiPageEditorPart implements IResourceChangeListener{
 
 	private TextEditor editor;
-	private CreateQueryBuilderUI queryBuilderUI;
+	private QueryBuilder queryBuilderUI;
 
 	/**
 	 * Creates a multi-page editor for the Query Builder. This version use
 	 * the passed CreateQueryBuilderUI object.
 	 */
-	public CreateQueryBuilderEditor(CreateQueryBuilderUI queryBuilderUI) {
+	public QueryBuilderEditor(QueryBuilder queryBuilderUI) {
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 		if (queryBuilderUI == null)
-			queryBuilderUI = new CreateQueryBuilderUI();
+			queryBuilderUI = new QueryBuilder();
 		else
 			this.queryBuilderUI = queryBuilderUI;
 	}
@@ -73,10 +73,10 @@ public class CreateQueryBuilderEditor extends MultiPageEditorPart implements IRe
 	/**
 	 * Creates a multi-page editor for the Query Builder.
 	 */
-	public CreateQueryBuilderEditor() {
+	public QueryBuilderEditor() {
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-		queryBuilderUI = new CreateQueryBuilderUI();
+		queryBuilderUI = new QueryBuilder();
 	}
 	/**
 	 * Creates Edit Page of the multi-page editor,

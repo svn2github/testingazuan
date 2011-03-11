@@ -44,22 +44,22 @@ import org.eclipse.swt.widgets.Text;
  * @author cortella
  *
  */
-public class CreateQueryBuilderEditWizardPage extends DataSetWizardPage {
+public class QueryBuilderEditWizardPage extends DataSetWizardPage {
 
     private static String DEFAULT_MESSAGE = "Define the query text for the data set";
     
-    private CreateQueryBuilderUI queryBuilderUI;
+    private QueryBuilder queryBuilderUI;
     private transient Text m_queryTextField;
     
-	public CreateQueryBuilderEditWizardPage( String pageName )
+	public QueryBuilderEditWizardPage( String pageName )
 	{
         super( pageName );
         setTitle( pageName );
         setMessage( DEFAULT_MESSAGE );
-        this.queryBuilderUI = new CreateQueryBuilderUI();
+        this.queryBuilderUI = new QueryBuilder();
 	}
 	
-	public CreateQueryBuilderEditWizardPage( String pageName, CreateQueryBuilderUI queryBuilderUI )
+	public QueryBuilderEditWizardPage( String pageName, QueryBuilder queryBuilderUI )
 	{
         super( pageName );
         setTitle( pageName );
@@ -67,12 +67,12 @@ public class CreateQueryBuilderEditWizardPage extends DataSetWizardPage {
         this.queryBuilderUI = queryBuilderUI;
 	}
 	
-	public CreateQueryBuilderEditWizardPage( String pageName, String title,
+	public QueryBuilderEditWizardPage( String pageName, String title,
 			ImageDescriptor titleImage )
 	{
         super( pageName, title, titleImage );
         setMessage( DEFAULT_MESSAGE );
-        this.queryBuilderUI = new CreateQueryBuilderUI();
+        this.queryBuilderUI = new QueryBuilder();
 
 	}
 	

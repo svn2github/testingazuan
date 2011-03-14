@@ -45,18 +45,21 @@ import org.slf4j.LoggerFactory;
 public class JpaTable {
 	private static Logger logger = LoggerFactory.getLogger(JpaTable.class);
 	
-	private BusinessTable businessTable;
+	private BusinessTable businessTable=null;
 	
 	
 	// cache
 	List<JpaColumn> jpaColumns = null;
 	protected HashMap<String, String> columnTypesMap =  null;
 	
-	public JpaTable() {
-		businessTable = null;
+	protected JpaTable() {
 	}
 	
 	protected BusinessModel getModel(){
+		if (businessTable==null) {
+			logger.error("BUSINESS TABLE IS NULL.");
+			return null;
+		}
 		return businessTable.getModel();
 	}
 	public JpaTable(BusinessTable businessTable) {
@@ -72,6 +75,10 @@ public class JpaTable {
 	}
 	
 	public PhysicalTable getPhysicalTable() {
+		if (businessTable==null) {
+			logger.error("BUSINESS TABLE IS NULL.");
+			return null;
+		}
 		return businessTable.getPhysicalTable();
 	}
 	/**
@@ -79,6 +86,10 @@ public class JpaTable {
 	 * table.
 	 */
 	protected List<JpaColumn> getColumns() {
+		if (businessTable==null) {
+			logger.error("BUSINESS TABLE IS NULL.");
+			return null;
+		}
 		if (jpaColumns == null) {
 			jpaColumns = new ArrayList<JpaColumn>();
 			for (BusinessColumn c : businessTable.getColumns()) {
@@ -97,15 +108,18 @@ public class JpaTable {
 	 * @return
 	 */
 	public String getPackage() {
-	ModelProperty property =  getModel().getProperties().get(JpaProperties.MODEL_PACKAGE);
+		logger.debug("IN");
+		String result=null;
+		ModelProperty property =  getModel().getProperties().get(JpaProperties.MODEL_PACKAGE);
         //check if property is setted, else get default value
         if (property.getValue() != null){
-        	return property.getValue();
+        	result= property.getValue();
         }
         else {
-        	return property.getPropertyType().getDefaultValue();
+        	result= property.getPropertyType().getDefaultValue();
         }
-        
+        logger.debug("OUT: "+result);  
+        return result;
 	}
 	
 	/**
@@ -136,7 +150,11 @@ public class JpaTable {
 	/**
 	 * Returns true if the table has a Primary KEY
 	 */
-	public boolean hasPrimaryKey() {		
+	public boolean hasPrimaryKey() {
+		if (businessTable==null) {
+			logger.error("BUSINESS TABLE IS NULL.");
+			return false;
+		}
 		return businessTable.getIdentifier() != null? businessTable.getIdentifier().getColumns().size() > 0 : false;
 	}
 	
@@ -144,7 +162,11 @@ public class JpaTable {
 	/**
 	 * Returns true if there is more than 1 column in the table identifier
 	 */
-	public boolean hasCompositeKey() {		
+	public boolean hasCompositeKey() {	
+		if (businessTable==null) {
+			logger.error("BUSINESS TABLE IS NULL.");
+			return false;
+		}
 		return businessTable.getIdentifier() != null? businessTable.getIdentifier().getColumns().size() > 1 : false;
 	}
 	
@@ -280,6 +302,10 @@ public class JpaTable {
 	 */
 	public List<JpaRelationship> getRelationships() {
 		logger.debug("IN");
+		if (businessTable==null) {
+			logger.error("BUSINESS TABLE IS NULL.");
+			return null;
+		}
 		List<JpaRelationship> jpaRelationships;
 		JpaRelationship jpaRelationship=null;
 		
@@ -321,6 +347,9 @@ public class JpaTable {
 	 * @return
 	 */
 	protected void buildColumnTypesMap() {
+		if (businessTable==null) {
+			logger.error("BUSINESS TABLE IS NULL.");
+		}
 		if (columnTypesMap == null) {
 			columnTypesMap = new HashMap<String, String>();
 			for (BusinessColumn column : businessTable.getColumns()) {
@@ -345,6 +374,10 @@ public class JpaTable {
 	 * Returns the generated Java class name (not qualified).
 	 */
 	public String getClassName() {
+		if (businessTable==null) {
+			logger.error("BUSINESS TABLE IS NULL.");
+			return "";
+		}
 		String name;
 		name = StringUtil.tableNameToVarName(businessTable.getPhysicalTable().getName());
 		name = StringUtil.initUpper(name);

@@ -23,7 +23,9 @@ package it.eng.spagobi.meta.generator.jpamapping;
 
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
+import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
@@ -54,12 +56,18 @@ public class JpaView extends JpaTable {
 	 * @param physicalTable The physical Table used to write this Java Class
 	 */
 	public JpaView(BusinessView businessView,PhysicalTable physicalTable) {
+		super();
 		setBusinessView(businessView);
 		this.physicalTable=physicalTable;
 	}
 	@Override
 	public PhysicalTable getPhysicalTable() {
 		return physicalTable;
+	}
+	
+	@Override
+	protected BusinessModel getModel(){
+		return businessView.getModel();
 	}
 
 	

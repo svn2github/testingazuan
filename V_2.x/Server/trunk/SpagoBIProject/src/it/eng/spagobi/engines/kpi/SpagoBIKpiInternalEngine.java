@@ -56,10 +56,8 @@ import it.eng.spagobi.kpi.config.bo.KpiRel;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.config.dao.KpiDAOImpl;
 import it.eng.spagobi.kpi.exceptions.MissingKpiValueException;
-import it.eng.spagobi.kpi.model.bo.ModelInstance;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 import it.eng.spagobi.kpi.model.bo.Resource;
-import it.eng.spagobi.kpi.ou.bo.OrganizationalUnit;
 import it.eng.spagobi.kpi.ou.bo.OrganizationalUnitGrant;
 import it.eng.spagobi.kpi.ou.bo.OrganizationalUnitGrantNode;
 import it.eng.spagobi.kpi.ou.bo.OrganizationalUnitHierarchy;
@@ -69,7 +67,6 @@ import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.exceptions.DatasetException;
-import it.eng.spagobi.tools.dataset.exceptions.ProfileAttributeDsException;
 
 import java.awt.Color;
 import java.text.ParseException;
@@ -104,8 +101,8 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 	protected String metadata_publisher_Name= "KPI_METADATA_DEFAULT_PUB";//Kpi default publisher
 	protected String trend_publisher_Name= "TREND_DEFAULT_PUB";//Kpi default publisher
 
-	protected String name = "";// Document's title
-	protected String subName = "";// Document's subtitle
+	protected String title = "";// Document's title
+	protected String subTitle = "";// Document's subtitle
 	protected StyleLabel styleTitle;// Document's title style
 	protected StyleLabel styleSubTitle;// Document's subtitle style
 	protected String userIdField=null;
@@ -114,9 +111,9 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 
 	private IEngUserProfile profile=null;
 	//internationalized DateFormat
-	protected String internationalizedFormat = null;
+	protected String internationalizedDateFormat = null;
 	//Server dateFormat
-	protected String formatServer = null;
+	protected String serverDateFormat = null;
 
 	protected HashMap parametersObject;
 
@@ -178,7 +175,7 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 	//force_recalculation: all the values are recalculated
 	//recalculate:old kpiValues are recalculated and also the one without a periodicity
 
-	protected boolean dataset_multires = false;
+	protected boolean dataset_multiresources = false;
 
 	protected Date timeRangeFrom = null;//Begin date of range
 
@@ -198,7 +195,9 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 	private ArrayList<OrganizationalUnitGrantNode> ouList = new ArrayList<OrganizationalUnitGrantNode>();
 	private String ouWarning = null;
 
-	//Method usually called by the scheduler only in order to recalculate kpi values
+	/*Method only called by it.eng.spagobi.engines.kpi.service.KpiEngineJob wich can schedule also single KPIs
+	* Not used very much!
+	*/
 	public void execute(RequestContainer requestContainer, SourceBean response) throws EMFUserError, SourceBeanException {
 		logger.debug("IN");
 		//setting locale, formats, profile
@@ -237,7 +236,7 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 		modelInstanceRootId = mI.getModelInstanceNodeId();
 		logger.debug("Loaded the modelInstanceNode with LABEL " + modelNodeInstance);
 
-		if(dataset_multires){//if datasets return a value for each resource
+		if(dataset_multiresources){//if datasets return a value for each resource
 			this.resources = mI.getResources(); //Set all the Resources for the Model Instance
 			logger.info("Dataset multiresource");
 			try {
@@ -325,7 +324,7 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 
 
 	/**
-	 * Executes the document and populates the response.
+	 * Executes the document and populates the response. Method used for document exceution in document browser and also in schedulation
 	 * @param requestContainer
 	 *                The <code>RequestContainer</code> object (the session
 	 *                can be retrieved from this object)
@@ -333,7 +332,6 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 	 * @param response The response <code>SourceBean</code> to be populated
 	 * @throws EMFUserError the EMF user error
 	 */
-
 	public void execute(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError {
 		logger.debug("IN");
 
@@ -409,7 +407,7 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 				logger.debug("Loaded the modelInstanceNode with LABEL " + modelNodeInstance);
 			}
 
-			if(dataset_multires){//if datasets return a value for each resource
+			if(dataset_multiresources){//if datasets return a value for each resource
 				this.resources = mI.getResources(); //Set all the Resources for the Model Instance
 				logger.info("Dataset multiresource");
 
@@ -437,8 +435,8 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 				block.setParMap(this.parametersObject);
 				KpiLine line = getBlock(mI.getModelInstanceNodeId(), null);
 				block.setRoot(line);
-				block.setTitle(name);
-				block.setSubtitle(subName);
+				block.setTitle(title);
+				block.setSubtitle(subTitle);
 				block.setOptions(options);
 				logger.debug("Setted the tree Root.");
 				kpiRBlocks.add(block);
@@ -468,12 +466,12 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 				response.setAttribute("metadata_publisher_Name", metadata_publisher_Name);
 				response.setAttribute("trend_publisher_Name", trend_publisher_Name);
 
-				if (name != null) {
-					response.setAttribute("title", name);
+				if (title != null) {
+					response.setAttribute("title", title);
 					response.setAttribute("styleTitle", styleTitle);
 				}
-				if (subName != null) {
-					response.setAttribute("subName", subName);
+				if (subTitle != null) {
+					response.setAttribute("subName", subTitle);
 					response.setAttribute("styleSubTitle", styleSubTitle);
 				}
 				response.setAttribute("kpiRBlocks", kpiRBlocks);
@@ -551,9 +549,9 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 		}else{
 			internationalizedFormatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
 		}
-		internationalizedFormat = (String) internationalizedFormatSB.getAttribute("format");	
+		internationalizedDateFormat = (String) internationalizedFormatSB.getAttribute("format");	
 		SourceBean formatServerSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
-		formatServer = (String) formatServerSB.getAttribute("format");
+		serverDateFormat = (String) formatServerSB.getAttribute("format");
 
 		logger.debug("OUT");
 	}
@@ -1382,7 +1380,7 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 
 		for (Iterator iterator = parametersList.iterator(); iterator.hasNext();) {
 			SimpleDateFormat f = new SimpleDateFormat();
-			f.applyPattern(formatServer);
+			f.applyPattern(serverDateFormat);
 			BIObjectParameter par = (BIObjectParameter) iterator.next();
 			String url = par.getParameterUrlName();
 			List values = par.getParameterValues();
@@ -1417,9 +1415,9 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 					}else if(url.equals("dataset_multires")){
 						String value = (String) values.get(0);
 						if (value.equalsIgnoreCase("true")){
-							this.dataset_multires = true;
+							this.dataset_multiresources = true;
 						}else if (value.equalsIgnoreCase("false")){
-							this.dataset_multires = false;
+							this.dataset_multiresources = false;
 						}
 					}else{
 						String value = (String) values.get(0);	
@@ -1791,9 +1789,9 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 	private String replaceParsInString(String title){
 		logger.debug("IN");
 		SimpleDateFormat f = new SimpleDateFormat();
-		f.applyPattern(internationalizedFormat);
+		f.applyPattern(internationalizedDateFormat);
 		SimpleDateFormat fServ = new SimpleDateFormat();
-		fServ.applyPattern(formatServer);
+		fServ.applyPattern(serverDateFormat);
 		if (title != null) {
 			String tmpTitle = title;
 			while (!tmpTitle.equals("")) {
@@ -1847,11 +1845,11 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 	}
 
 	public void setName(String _name) {
-		name = _name;
+		title = _name;
 	}
 
 	public void setSubName(String _name) {
-		subName = _name;
+		subTitle = _name;
 	}
 
 	/**

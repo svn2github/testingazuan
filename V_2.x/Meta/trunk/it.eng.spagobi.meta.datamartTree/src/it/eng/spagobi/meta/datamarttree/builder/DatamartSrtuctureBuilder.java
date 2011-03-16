@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -19,6 +18,7 @@ import org.slf4j.Logger;
 import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.DriverManager;
 import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.datasource.configuration.CompositeDataSourceConfiguration;
 import it.eng.qbe.datasource.configuration.DAOException;
 import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
 import it.eng.qbe.datasource.jpa.JPADataSource;
@@ -38,6 +38,7 @@ public class DatamartSrtuctureBuilder {
 
 	private static Logger logger = LoggerFactory.getLogger(DatamartSrtuctureBuilder.class);
 	private static final String jarPath = "resources//";
+	private static final String boundleName = "it.eng.spagobi.meta.datamartTree";
 	
 	/**
 	 * Build the datamart structure: get the db connection, load the jar files and build the structure
@@ -59,21 +60,21 @@ public class DatamartSrtuctureBuilder {
 	}
 	
 	/**
-	 * 
-	 * @param modelNames
-	 * @param dataSourceProperties
-	 * @return
+	 * Get the data source: for each model name, create a file configuration.. Get the driver name (jpa or hibernate)
+	 * @param modelNames the name of the models
+	 * @param dataSourceProperties the data source properties
+	 * @return The IDataSource
 	 */
 	public static IDataSource getDataSource(List<String> modelNames, Map<String, Object> dataSourceProperties) {
-		logger.debug("IN:Getting the data source for the model names "+modelNames+"..");
-		Bundle generatorBundle = Platform.getBundle("it.eng.spagobi.meta.datamartTree");
+		logger.debug("IN: Getting the data source for the model names "+modelNames+"..");
+		Bundle generatorBundle = Platform.getBundle(boundleName);
 		String path = null; 
 		File modelJarFile = null;
 		List<File> modelJarFiles = new ArrayList<File>();
-		FileDataSourceConfiguration configuration = null; 
+		CompositeDataSourceConfiguration compositeConfiguration = new CompositeDataSourceConfiguration();
+		compositeConfiguration.loadDataSourceProperties().putAll( dataSourceProperties);
 		
 		for(int i = 0; i < modelNames.size(); i++) {
-			
 			try {
 				IPath ipath = new Path(Platform.asLocalURL(generatorBundle.getEntry(jarPath+modelNames.get(i))).getPath());
 				path = ipath.toString();
@@ -83,17 +84,16 @@ public class DatamartSrtuctureBuilder {
 			}
 			modelJarFile = new File(path+"datamart.jar");
 			modelJarFiles.add(modelJarFile);
-			configuration = new FileDataSourceConfiguration(modelNames.get(i), modelJarFile);
-			Iterator<String> it = dataSourceProperties.keySet().iterator();
-			while(it.hasNext()) {
-				String propertyName = it.next();
-				configuration.loadDataSourceProperties().put(propertyName, dataSourceProperties.get(propertyName));
-			}
+			compositeConfiguration.addSubConfiguration(new FileDataSourceConfiguration(modelNames.get(i), modelJarFile));
 		}
 		logger.debug("OUT: Finish to load the data source for the model names "+modelNames+"..");
-		return DriverManager.getDataSource(getDriverName(modelJarFile), configuration);
+		return DriverManager.getDataSource(getDriverName(modelJarFile), compositeConfiguration);
 	}
 	
+	/**
+	 * Build the tree filters (Order and visible filters for entity end fields)
+	 * @return the filters
+	 */
 	private static QbeTreeFilter getTreeFilters(){
 		IQbeTreeEntityFilter entityFilter = null;
 		IQbeTreeFieldFilter fieldFilter = null;
@@ -104,6 +104,10 @@ public class DatamartSrtuctureBuilder {
 		return new QbeTreeFilter(entityFilter, fieldFilter);
 	}	
 	
+	/**
+	 * Initialize the db connection
+	 * @return DBConnection
+	 */
 	private static DBConnection buildDBConnection(){
 		DBConnection connection = new DBConnection();			
 		connection.setName( "FoodMart" );
@@ -116,6 +120,12 @@ public class DatamartSrtuctureBuilder {
 		return connection;
 	}	
 	
+	/**
+	 * Get the driver name (hibernate or jpa). It checks if the passed jar file contains the persistence.xml
+	 * in the META-INF folder
+	 * @param jarFile a jar file with the model definition
+	 * @return jpa if the persistence provder is JPA o hibernate otherwise
+	 */
 	private static String getDriverName(File jarFile){
 		logger.debug("IN: Check the driver name. Looking if "+jarFile+" is a jpa jar file..");
 		ZipFile zipFile;

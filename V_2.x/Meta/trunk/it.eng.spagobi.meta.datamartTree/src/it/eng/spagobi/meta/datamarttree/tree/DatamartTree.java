@@ -20,6 +20,10 @@ public class DatamartTree extends TreeViewer{
 
 	private static Logger logger = LoggerFactory.getLogger(DatamartTree.class);
 	
+	/**
+	 * Initialize the tree
+	 * @param parent
+	 */
 	public DatamartTree(Composite parent){
 		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		logger.debug("IN: initializing the datamartTree");
@@ -31,7 +35,11 @@ public class DatamartTree extends TreeViewer{
 		logger.debug("OUT: datamartTree initialized");
 	}
 	
-	
+	/**
+	 * Get the root entities 
+	 * @param datamartStructure
+	 * @return
+	 */
 	private List<ViewModelEntity> getDatamartStructureRoot(ViewModelStructure datamartStructure){
 		logger.debug("IN: Getting the datamart structure roots");
 		Iterator<String> modelNamesIter = datamartStructure.getModelNames().iterator();

@@ -6,15 +6,22 @@ Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ClassPath: lib/datamartJPAE.jar,
- lib/eclipselink.jar,
+Bundle-ClassPath: lib/eclipselink.jar,
  lib/javax.persistence_2.0.1.v201006031150.jar,
  lib/QbeCore.jar,
  .,
  lib/SpagoBIUtils.jar,
- lib/log4j-1.2.8.jar,
  lib/mysql-connector-java-3.1.13-bin.jar,
  lib/dom4j-1.6.jar,
  lib/hibernate3.jar,
- lib/slf4j-api-1.6.1.jar
+ lib/slf4j-api-1.6.1.jar,
+ lib/ch.qos.logback.classic_0.9.19.v20100519-1505.jar,
+ lib/ch.qos.logback.core_0.9.19.v20100419-1216.jar,
+ lib/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar,
+ lib/org.slf4j.api_1.5.11.v20100519-1910.jar,
+ lib/log4j-1.2.8.jar,
+ lib/spago-core-2.2.0.jar,
+ lib/spago-portlet-2.2.0.jar,
+ lib/spago-profile-2.2.0.jar,
+ lib/spago-web-2.2.0.jar
 Export-Package: it.eng.spagobi.meta.datamarttree.tree

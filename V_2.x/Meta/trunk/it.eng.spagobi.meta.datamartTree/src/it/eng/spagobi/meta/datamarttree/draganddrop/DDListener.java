@@ -1,8 +1,7 @@
 package it.eng.spagobi.meta.datamarttree.draganddrop;
 
 
-import it.eng.qbe.model.structure.AbstractDataMartItem;
-
+import it.eng.qbe.model.structure.AbstractModelNode;
 
 import java.util.Iterator;
 
@@ -24,7 +23,7 @@ public class DDListener extends DragSourceAdapter {
     */
    public void dragSetData(DragSourceEvent event) {
       IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
-      AbstractDataMartItem[] datamartItems = (AbstractDataMartItem[])selection.toList().toArray(new AbstractDataMartItem[selection.size()]);
+      AbstractModelNode[] datamartItems = (AbstractModelNode[])selection.toList().toArray(new AbstractModelNode[selection.size()]);
       if (DatamartFieldTransfer.getInstance().isSupportedType(event.dataType)) {
          event.data = datamartItems;
       } else if (PluginTransfer.getInstance().isSupportedType(event.dataType)) {

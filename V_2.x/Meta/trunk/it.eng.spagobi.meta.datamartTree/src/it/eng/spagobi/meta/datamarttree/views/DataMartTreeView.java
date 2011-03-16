@@ -1,8 +1,5 @@
 package it.eng.spagobi.meta.datamarttree.views;
 
-
-import it.eng.qbe.model.structure.DataMartEntity;
-import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.spagobi.meta.datamarttree.builder.DatamartSrtuctureBuilder;
 import it.eng.spagobi.meta.datamarttree.draganddrop.DDListener;
 import it.eng.spagobi.meta.datamarttree.draganddrop.DatamartFieldTransfer;

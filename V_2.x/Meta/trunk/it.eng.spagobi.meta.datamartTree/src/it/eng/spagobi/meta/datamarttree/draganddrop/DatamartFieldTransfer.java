@@ -1,11 +1,7 @@
 package it.eng.spagobi.meta.datamarttree.draganddrop;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
 
-import it.eng.qbe.model.structure.AbstractDataMartItem;
-
+import it.eng.qbe.model.structure.AbstractModelNode;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 
 
@@ -26,11 +22,11 @@ public class DatamartFieldTransfer  extends ByteArrayTransfer {
 	    */
 	   private DatamartFieldTransfer() {
 	   }
-	   protected AbstractDataMartItem[] fromByteArray(byte[] bytes) {
-	      return new AbstractDataMartItem[0];
+	   protected AbstractModelNode[] fromByteArray(byte[] bytes) {
+	      return new AbstractModelNode[0];
 	   }
 	   
-	   protected byte[] toByteArray(AbstractDataMartItem[] bytes) {
+	   protected byte[] toByteArray(AbstractModelNode[] bytes) {
 		   return new byte[0];
 	   }
 

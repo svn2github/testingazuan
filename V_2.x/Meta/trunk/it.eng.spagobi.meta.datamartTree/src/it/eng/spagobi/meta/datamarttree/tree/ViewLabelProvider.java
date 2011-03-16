@@ -1,11 +1,13 @@
 package it.eng.spagobi.meta.datamarttree.tree;
 
+import it.eng.qbe.model.structure.AbstractModelNode;
+import it.eng.qbe.model.structure.IModelEntity;
+import it.eng.qbe.model.structure.IModelNode;
+import it.eng.qbe.model.structure.ModelField;
+import it.eng.spagobi.meta.datamarttree.tree.i18n.ModelLabelProvider;
+
 import java.io.IOException;
 
-import it.eng.qbe.model.structure.AbstractDataMartItem;
-import it.eng.qbe.model.structure.DataMartCalculatedField;
-import it.eng.qbe.model.structure.DataMartEntity;
-import it.eng.qbe.model.structure.DataMartField;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -13,41 +15,55 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
+
 
 public 	class ViewLabelProvider extends LabelProvider {
 
+	private ModelLabelProvider modelLabelProvider;
+	private static final String imgPath = "img\\datamartstructure";
 	private TreeViewer viewer;
 	
-	public ViewLabelProvider (TreeViewer viewer){
+	public ViewLabelProvider (TreeViewer viewer, ModelLabelProvider modelLabelProvider){
 		this.viewer = viewer;
+		this.modelLabelProvider = modelLabelProvider;
 	}
 	
 	public String getText(Object obj) {
-		return ((AbstractDataMartItem)obj).getName();
+		if(obj instanceof IModelEntity){
+			return modelLabelProvider.getEntityLabel((IModelEntity)obj);
+		}else if(obj instanceof ModelField){
+			return modelLabelProvider.getFieldLabel((ModelField)obj);
+		}
+		return ((AbstractModelNode)obj).getName();
 	}
 	public Image getImage(Object obj) {   
 		Bundle generatorBundle = Platform.getBundle("it.eng.spagobi.meta.datamartTree");
 		String path = null; 
+		String type = null;
+		Image img = null;
 		try {
-			IPath ipath = new Path(Platform.asLocalURL(generatorBundle.getEntry("img\\datamartstructure")).getPath());
+			IPath ipath = new Path(Platform.asLocalURL(generatorBundle.getEntry(imgPath)).getPath());
 			path = ipath.toString();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//String path = "D:/sviluppo/SpagoBIMeta/workspaceSpagoBIMeta/it.eng.spagobi.meta.datamartTree/img/datamartstructure/";
+	
+		type = (String)((IModelNode)obj).getProperties().get("type");
+		path=path+type+".gif";
 		
-		if(obj instanceof DataMartEntity){
-			path=path+"dimension.gif";
-		} else if(obj instanceof DataMartField){
-			DataMartField dm = (DataMartField)obj;
-			path=path+"attribute.gif";
-		} else if(obj instanceof DataMartCalculatedField){
-			path=path+"calculation.gif";
-		}else{
-			path=path+"dimension.gif";
+		try {
+			img = new Image(viewer.getControl().getDisplay(), path); 
+		} catch (Exception e) {
+			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
+			img =  PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
 		}
-		return new Image(viewer.getControl().getDisplay(), path); 
+
+		return img;
 	}
+	
+
 	
 }

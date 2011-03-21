@@ -85,7 +85,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  *
  */
 public class QueryBuilder {
-	// We use icons
+
 	private static final Image CHECKED = Activator.getImageDescriptor(
 			"icons/checked.png").createImage();
 	private static final Image UNCHECKED = Activator.getImageDescriptor(

@@ -21,31 +21,48 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui;
 
+
+
 import it.eng.spagobi.meta.datamarttree.tree.DatamartTree;
+import it.eng.spagobi.meta.querybuilder.Activator;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDragListener;
-import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropListener;
+import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropHavingListener;
+import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropSelectListener;
+import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropWhereListener;
+import it.eng.spagobi.meta.querybuilder.edit.AliasColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.FunctionColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.GroupColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.IncludeColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.OrderColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.VisibleColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.model.SelectField;
+import it.eng.spagobi.meta.querybuilder.model.SelectFieldModelProvider;
+import it.eng.spagobi.meta.querybuilder.model.WhereClause;
+import it.eng.spagobi.meta.querybuilder.model.WhereClauseModelProvider;
 
 import java.util.ArrayList;
 
 import org.eclipse.jface.util.LocalSelectionTransfer;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.MultiPageEditorPart;
@@ -56,7 +73,12 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  *
  */
 public class QueryBuilder {
-	
+	// We use icons
+	private static final Image CHECKED = Activator.getImageDescriptor(
+			"icons/checked.png").createImage();
+	private static final Image UNCHECKED = Activator.getImageDescriptor(
+			"icons/unchecked.png").createImage();
+
 	public QueryBuilder(){
 		
 	}
@@ -158,29 +180,180 @@ public class QueryBuilder {
 		lblSelectFields.setText("Select Fields");
 		
 		TableViewer tableViewerSelect  = new TableViewer(grpQueryEditor, SWT.BORDER | SWT.FULL_SELECTION);
-		tableViewerSelect.setColumnProperties(new String[] { "Entity", "Field", "Alias" });
+		tableViewerSelect.setColumnProperties(new String[] { "Entity", "Field", "Alias", "Function", "Order", "Group", "Include", "Visible", "Filter", "Having" });
 		
 		Table table = tableViewerSelect.getTable();
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
+		createEditSelectColumns(grpQueryEditor, tableViewerSelect);
 		
-		TableColumn column = new TableColumn(table,SWT.NONE);
-		column.setWidth(100);
-		column.setText("Entity");
-		
-		column = new TableColumn(table,SWT.NONE);
-		column.setWidth(100);
-		column.setText("Field");
-		
-		column = new TableColumn(table,SWT.NONE);
-		column.setWidth(100);
-		column.setText("Alias");
+		tableViewerSelect.setContentProvider(new ArrayContentProvider());
+		tableViewerSelect.setInput(SelectFieldModelProvider.INSTANCE.getSelectFields());
 		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
-		tableViewerSelect.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropListener(tableViewerSelect));
+		tableViewerSelect.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropSelectListener(tableViewerSelect));
 	}
+	
+	private void createEditSelectColumns(final Composite parent, final TableViewer viewer){
+		String[] columnsTitles = { "Entity", "Field", "Alias", "Function", "Order", "Group", "Include", "Visible", "Filter", "Having" };
+		int[] columnsBounds = { 100, 100, 50, 50, 50, 50, 50, 50, 50, 50 };	
+
+		//Entity Column
+		TableViewerColumn col = createTableViewerColumn(columnsTitles[0], columnsBounds[0], 0, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				SelectField field = (SelectField) element;
+				return field.getEntity();
+			}
+		});		
+		
+		//Field Column
+		col = createTableViewerColumn(columnsTitles[1], columnsBounds[1], 1, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				SelectField field = (SelectField) element;
+				return field.getField();
+			}
+		});		
+		
+		//Alias Column
+		col = createTableViewerColumn(columnsTitles[2], columnsBounds[2], 2, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				SelectField field = (SelectField) element;
+				return field.getAlias();
+			}
+		});		
+		col.setEditingSupport(new AliasColumnEditingSupport(viewer));
+		
+		//Function Column
+		col = createTableViewerColumn(columnsTitles[3], columnsBounds[3], 3, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				SelectField field = (SelectField) element;
+				return field.getFunction();
+			}
+		});		
+		col.setEditingSupport(new FunctionColumnEditingSupport(viewer));
+		
+		
+		//Order Column
+		col = createTableViewerColumn(columnsTitles[4], columnsBounds[4], 4, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				SelectField field = (SelectField) element;
+				return field.getOrder();
+			}
+		});	
+		col.setEditingSupport(new OrderColumnEditingSupport(viewer));
+		
+		//Group Column
+		col = createTableViewerColumn(columnsTitles[5], columnsBounds[5], 5, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				return null;
+			}
+			
+			@Override
+			public Image getImage(Object element) {
+				if (((SelectField) element).isGroup()) {
+					return CHECKED;
+				} else {
+					return UNCHECKED;
+				}
+			}
+
+		});	
+		col.setEditingSupport(new GroupColumnEditingSupport(viewer));
+		
+		//Include Column
+		col = createTableViewerColumn(columnsTitles[6], columnsBounds[6], 6, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				return null;
+			}
+			
+			@Override
+			public Image getImage(Object element) {
+				if (((SelectField) element).isInclude()) {
+					return CHECKED;
+				} else {
+					return UNCHECKED;
+				}
+			}
+
+		});	
+		col.setEditingSupport(new IncludeColumnEditingSupport(viewer));
+		
+		//Visible Column
+		col = createTableViewerColumn(columnsTitles[7], columnsBounds[7], 7, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				return null;
+			}
+			
+			@Override
+			public Image getImage(Object element) {
+				if (((SelectField) element).isVisible()) {
+					return CHECKED;
+				} else {
+					return UNCHECKED;
+				}
+			}
+
+		});	
+		col.setEditingSupport(new VisibleColumnEditingSupport(viewer));
+
+		
+		//Filter Column
+		col = createTableViewerColumn(columnsTitles[8], columnsBounds[8], 8, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				SelectField field = (SelectField) element;
+				if(field.isFilter())
+					return "true";
+				else 
+					return "false";
+			}
+		});	
+		
+		//Having Column
+		col = createTableViewerColumn(columnsTitles[9], columnsBounds[9], 9, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				SelectField field = (SelectField) element;
+				if(field.isHaving())
+					return "true";
+				else 
+					return "false";
+			}
+		});	
+	}
+
+	private TableViewerColumn createTableViewerColumn(String title, int bound,
+			final int colNumber, TableViewer viewer) {
+		final TableViewerColumn viewerColumn = new TableViewerColumn(viewer,
+				SWT.NONE);
+		final TableColumn column = viewerColumn.getColumn();
+		column.setText(title);
+		column.setWidth(bound);
+		column.setResizable(true);
+		column.setMoveable(true);
+		return viewerColumn;
+
+	}	
 	
 	/*
 	 * Create UI for Query Edit - Where Filter 
@@ -190,9 +363,114 @@ public class QueryBuilder {
 		lblWhereClauses.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblWhereClauses.setText("Where Clause");
 		
-		List listWhere = new List(grpQueryEditor, SWT.BORDER);
-		listWhere.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));		
+		TableViewer tableViewerWhere  = new TableViewer(grpQueryEditor, SWT.BORDER | SWT.FULL_SELECTION);
+		tableViewerWhere.setColumnProperties(new String[] { "Filter Name", "Left Operand", "Operator","Right Operand", "Is for prompt", "Bol. connector" });
+		
+		Table table = tableViewerWhere.getTable();
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		table.setLinesVisible(true);
+		table.setHeaderVisible(true);
+		
+		createEditWhereColumns(grpQueryEditor, tableViewerWhere);
+		
+		tableViewerWhere.setContentProvider(new ArrayContentProvider());
+		tableViewerWhere.setInput(WhereClauseModelProvider.INSTANCE.getWhereClauses());
+		/*
+		TableColumn column = new TableColumn(table,SWT.NONE);
+		column.setWidth(100);
+		column.setText("Filter Name");
+		
+		column = new TableColumn(table,SWT.NONE);
+		column.setWidth(100);
+		column.setText("Left Operand");
+		
+		column = new TableColumn(table,SWT.NONE);
+		column.setWidth(100);
+		column.setText("Operator");
+		
+		column = new TableColumn(table,SWT.NONE);
+		column.setWidth(100);
+		column.setText("Right Operand");
+		
+		column = new TableColumn(table,SWT.NONE);
+		column.setWidth(50);
+		column.setText("Is for prompt");
+		
+		column = new TableColumn(table,SWT.NONE);
+		column.setWidth(50);
+		column.setText("Bol. connector");
+		*/
+		
+		//Drop support
+		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
+		tableViewerWhere.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropWhereListener(tableViewerWhere));
 	}	
+	
+	public void createEditWhereColumns(final Composite parent, final TableViewer viewer){
+		String[] columnsTitles = { "Filter Name", "Left Operand", "Operator", "Right Operand", "Is for prompt", "Bol. connector" };
+		int[] columnsBounds = { 100, 100, 100, 100, 50, 50 };	
+
+		//Filter Name Column
+		TableViewerColumn col = createTableViewerColumn(columnsTitles[0], columnsBounds[0], 0, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				WhereClause whereClause = (WhereClause) element;
+				return whereClause.getFilterName();
+			}
+		});	
+		
+		//Left Operand Column
+		col = createTableViewerColumn(columnsTitles[1], columnsBounds[1], 1, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				WhereClause whereClause = (WhereClause) element;
+				return whereClause.getLeftOperand();
+			}
+		});	
+		
+		//Operator Column
+		col = createTableViewerColumn(columnsTitles[2], columnsBounds[2], 2, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				WhereClause whereClause = (WhereClause) element;
+				return whereClause.getOperator();
+			}
+		});		
+		
+		//Right Operand Column
+		col = createTableViewerColumn(columnsTitles[3], columnsBounds[3], 3, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				WhereClause whereClause = (WhereClause) element;
+				return whereClause.getRightOperand();
+			}
+		});		
+		
+		//Is for Prompt Column
+		col = createTableViewerColumn(columnsTitles[4], columnsBounds[4], 4, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				WhereClause whereClause = (WhereClause) element;
+				return whereClause.getRightOperand();
+			}
+		});		
+		
+		//Bol. Connector Column
+		col = createTableViewerColumn(columnsTitles[5], columnsBounds[5], 5, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				WhereClause whereClause = (WhereClause) element;
+				return whereClause.getBooleanConnector();
+			}
+		});		
+		
+	}
 	
 	/*
 	 * Create UI for Query Edit - Having Filter 
@@ -202,8 +480,49 @@ public class QueryBuilder {
 		lblHavingClause.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblHavingClause.setText("Having Clause");
 		
-		List listHaving = new List(grpQueryEditor, SWT.BORDER);
-		listHaving.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		TableViewer tableViewerHaving  = new TableViewer(grpQueryEditor, SWT.BORDER | SWT.FULL_SELECTION);
+		tableViewerHaving.setColumnProperties(new String[] { "Filter Name","Function", "Left Operand", "Operator", "Function","Right Operand", "Is for prompt", "Bol. connector" });
+		
+		Table table = tableViewerHaving.getTable();
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		table.setLinesVisible(true);
+		table.setHeaderVisible(true);
+		
+		TableColumn column = new TableColumn(table,SWT.NONE);
+		column.setWidth(100);
+		column.setText("Filter Name");
+		
+		column = new TableColumn(table,SWT.NONE);
+		column.setWidth(100);
+		column.setText("Function");		
+		
+		column = new TableColumn(table,SWT.NONE);
+		column.setWidth(100);
+		column.setText("Left Operand");
+		
+		column = new TableColumn(table,SWT.NONE);
+		column.setWidth(100);
+		column.setText("Operator");
+		
+		column = new TableColumn(table,SWT.NONE);
+		column.setWidth(100);
+		column.setText("Function");	
+		
+		column = new TableColumn(table,SWT.NONE);
+		column.setWidth(100);
+		column.setText("Right Operand");
+		
+		column = new TableColumn(table,SWT.NONE);
+		column.setWidth(50);
+		column.setText("Is for prompt");
+		
+		column = new TableColumn(table,SWT.NONE);
+		column.setWidth(50);
+		column.setText("Bol. connector");	
+		
+		//Drop support
+		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
+		tableViewerHaving.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropHavingListener(tableViewerHaving));
 	}	
 	
 	/*

@@ -21,7 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.dnd;
 
+import it.eng.qbe.model.structure.IModelEntity;
+import it.eng.qbe.model.structure.ModelField;
+
+import java.util.List;
+
+
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.SWT;
@@ -33,14 +40,16 @@ import org.eclipse.swt.widgets.TableItem;
  * @author cortella
  *
  */
-public class QueryBuilderDropListener extends ViewerDropAdapter {
+public class QueryBuilderDropHavingListener extends ViewerDropAdapter {
+	private static int counter = 1;
 	private Viewer viewer;
 	/**
 	 * @param viewer
 	 */
-	public QueryBuilderDropListener(Viewer viewer) {
+	public QueryBuilderDropHavingListener(Viewer viewer) {
 		super(viewer);
 		this.viewer = viewer;
+
 	}
 
 	/* (non-Javadoc)
@@ -48,16 +57,23 @@ public class QueryBuilderDropListener extends ViewerDropAdapter {
 	 */
 	@Override
 	public boolean performDrop(Object data) {
-		System.out.println("performDrop");
-		if (viewer instanceof TableViewer){
-			//***** TEMP CODE**********
-			System.out.println("Dropped data: "+data);
-			Table table = ((TableViewer)viewer).getTable();
-			TableItem item1 = new TableItem(table,SWT.NONE);
-	        item1.setText(new String[] {data.toString(),"prova","prova"});
-		}
+		TreeSelection selection = (TreeSelection)data;
+		Object selectionData = selection.getFirstElement();
+
+		System.out.println("SelectionData: "+selectionData.getClass().getName());
+		if (selectionData instanceof IModelEntity){
+   			System.out.println("DataMartEntity");
+   			IModelEntity dataMartEntity = (IModelEntity)selectionData;
+			List<ModelField> dataMartFields = dataMartEntity.getAllFields();
+			for (ModelField dataMartField : dataMartFields){
+				addTableRow((TableViewer)viewer,dataMartField);
+			}        	
+        } else if(selectionData instanceof ModelField){
+        	addTableRow((TableViewer)viewer,(ModelField)selectionData);
+        }
+        
 			
-		return false;
+		return true;
 	}
 
 	/* (non-Javadoc)
@@ -69,5 +85,17 @@ public class QueryBuilderDropListener extends ViewerDropAdapter {
 		// TODO Auto-generated method stub
 		return true;
 	}
+	
+	public void addTableRow(TableViewer tableViewer, ModelField dataMartField){
+		Table table = ((TableViewer)tableViewer).getTable();
+		TableItem item = new TableItem(table,SWT.NONE);
+		
+        //set row text to display in the table
+		item.setText(new String[] {"Having "+counter, "", dataMartField.getParent().getName()+"."+dataMartField.getName(),"", "", "", "", "AND"});
+        //set real data
+        item.setData(dataMartField);
+        
+        counter++;
+		}
 
 }

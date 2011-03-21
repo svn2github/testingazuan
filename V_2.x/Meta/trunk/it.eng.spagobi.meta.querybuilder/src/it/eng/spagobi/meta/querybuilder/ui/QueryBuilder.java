@@ -30,9 +30,13 @@ import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropHavingListener;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropSelectListener;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropWhereListener;
 import it.eng.spagobi.meta.querybuilder.edit.AliasColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.BooleanConnectorColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.FilterColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.FunctionColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.GroupColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.IncludeColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.IsForPromptColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.OperatorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.OrderColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.VisibleColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.model.SelectField;
@@ -375,31 +379,6 @@ public class QueryBuilder {
 		
 		tableViewerWhere.setContentProvider(new ArrayContentProvider());
 		tableViewerWhere.setInput(WhereClauseModelProvider.INSTANCE.getWhereClauses());
-		/*
-		TableColumn column = new TableColumn(table,SWT.NONE);
-		column.setWidth(100);
-		column.setText("Filter Name");
-		
-		column = new TableColumn(table,SWT.NONE);
-		column.setWidth(100);
-		column.setText("Left Operand");
-		
-		column = new TableColumn(table,SWT.NONE);
-		column.setWidth(100);
-		column.setText("Operator");
-		
-		column = new TableColumn(table,SWT.NONE);
-		column.setWidth(100);
-		column.setText("Right Operand");
-		
-		column = new TableColumn(table,SWT.NONE);
-		column.setWidth(50);
-		column.setText("Is for prompt");
-		
-		column = new TableColumn(table,SWT.NONE);
-		column.setWidth(50);
-		column.setText("Bol. connector");
-		*/
 		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
@@ -419,6 +398,8 @@ public class QueryBuilder {
 				return whereClause.getFilterName();
 			}
 		});	
+		col.setEditingSupport(new FilterColumnEditingSupport(viewer));
+
 		
 		//Left Operand Column
 		col = createTableViewerColumn(columnsTitles[1], columnsBounds[1], 1, viewer);
@@ -439,6 +420,8 @@ public class QueryBuilder {
 				return whereClause.getOperator();
 			}
 		});		
+		col.setEditingSupport(new OperatorColumnEditingSupport(viewer));
+
 		
 		//Right Operand Column
 		col = createTableViewerColumn(columnsTitles[3], columnsBounds[3], 3, viewer);
@@ -455,10 +438,21 @@ public class QueryBuilder {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				WhereClause whereClause = (WhereClause) element;
-				return whereClause.getRightOperand();
+				return null;
 			}
+			
+			@Override
+			public Image getImage(Object element) {
+				if (((WhereClause) element).isForPrompt()) {
+					return CHECKED;
+				} else {
+					return UNCHECKED;
+				}
+			}
+
 		});		
+		col.setEditingSupport(new IsForPromptColumnEditingSupport(viewer));
+
 		
 		//Bol. Connector Column
 		col = createTableViewerColumn(columnsTitles[5], columnsBounds[5], 5, viewer);
@@ -469,6 +463,8 @@ public class QueryBuilder {
 				return whereClause.getBooleanConnector();
 			}
 		});		
+		col.setEditingSupport(new BooleanConnectorColumnEditingSupport(viewer));
+
 		
 	}
 	

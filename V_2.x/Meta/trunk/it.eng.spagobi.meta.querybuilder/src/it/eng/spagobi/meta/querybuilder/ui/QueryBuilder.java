@@ -34,11 +34,19 @@ import it.eng.spagobi.meta.querybuilder.edit.BooleanConnectorColumnEditingSuppor
 import it.eng.spagobi.meta.querybuilder.edit.FilterColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.FunctionColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.GroupColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.HavingBooleanConnectorColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.HavingFilterColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.HavingIsForPromptColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.HavingLeftFunctionColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.HavingOperatorColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.HavingRightFunctionColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.IncludeColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.IsForPromptColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.OperatorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.OrderColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.VisibleColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.model.HavingClause;
+import it.eng.spagobi.meta.querybuilder.model.HavingClauseModelProvider;
 import it.eng.spagobi.meta.querybuilder.model.SelectField;
 import it.eng.spagobi.meta.querybuilder.model.SelectFieldModelProvider;
 import it.eng.spagobi.meta.querybuilder.model.WhereClause;
@@ -484,42 +492,123 @@ public class QueryBuilder {
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 		
-		TableColumn column = new TableColumn(table,SWT.NONE);
-		column.setWidth(100);
-		column.setText("Filter Name");
+		createEditHavingColumns(grpQueryEditor, tableViewerHaving);
 		
-		column = new TableColumn(table,SWT.NONE);
-		column.setWidth(100);
-		column.setText("Function");		
-		
-		column = new TableColumn(table,SWT.NONE);
-		column.setWidth(100);
-		column.setText("Left Operand");
-		
-		column = new TableColumn(table,SWT.NONE);
-		column.setWidth(100);
-		column.setText("Operator");
-		
-		column = new TableColumn(table,SWT.NONE);
-		column.setWidth(100);
-		column.setText("Function");	
-		
-		column = new TableColumn(table,SWT.NONE);
-		column.setWidth(100);
-		column.setText("Right Operand");
-		
-		column = new TableColumn(table,SWT.NONE);
-		column.setWidth(50);
-		column.setText("Is for prompt");
-		
-		column = new TableColumn(table,SWT.NONE);
-		column.setWidth(50);
-		column.setText("Bol. connector");	
+		tableViewerHaving.setContentProvider(new ArrayContentProvider());
+		tableViewerHaving.setInput(HavingClauseModelProvider.INSTANCE.getHavingClauses());
 		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
 		tableViewerHaving.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropHavingListener(tableViewerHaving));
-	}	
+	}
+	
+	public void createEditHavingColumns(final Composite parent, final TableViewer viewer){
+		String[] columnsTitles = { "Filter Name","Function", "Left Operand", "Operator","Function", "Right Operand", "Is for prompt", "Bol. connector" };
+		int[] columnsBounds = { 100, 100, 100, 100, 100, 100, 50, 50 };	
+		
+		//Filter Name Column
+		TableViewerColumn col = createTableViewerColumn(columnsTitles[0], columnsBounds[0], 0, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				HavingClause havingClause = (HavingClause) element;
+				return havingClause.getFilterName();
+			}
+		});	
+		col.setEditingSupport(new HavingFilterColumnEditingSupport(viewer));
+
+		
+		//Left Function Column
+		col = createTableViewerColumn(columnsTitles[1], columnsBounds[1], 1, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				HavingClause havingClause = (HavingClause) element;
+				return havingClause.getLeftFunction();
+			}
+		});	
+		col.setEditingSupport(new HavingLeftFunctionColumnEditingSupport(viewer));
+
+		
+		//Left Operand Column
+		col = createTableViewerColumn(columnsTitles[2], columnsBounds[2], 2, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				HavingClause havingClause = (HavingClause) element;
+				return havingClause.getLeftOperand();
+			}
+		});	
+		
+		//Operator Column
+		col = createTableViewerColumn(columnsTitles[3], columnsBounds[3], 3, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				HavingClause havingClause = (HavingClause) element;
+				return havingClause.getOperator();
+			}
+		});	
+		col.setEditingSupport(new HavingOperatorColumnEditingSupport(viewer));
+
+		
+		//Right Function Column
+		col = createTableViewerColumn(columnsTitles[4], columnsBounds[4], 4, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				HavingClause havingClause = (HavingClause) element;
+				return havingClause.getRightFunction();
+			}
+		});	
+		col.setEditingSupport(new HavingRightFunctionColumnEditingSupport(viewer));
+
+		
+		//Right Operand Column
+		col = createTableViewerColumn(columnsTitles[5], columnsBounds[5], 5, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				HavingClause havingClause = (HavingClause) element;
+				return havingClause.getRightOperand();
+			}
+		});	
+		
+		//Is for Prompt Column
+		col = createTableViewerColumn(columnsTitles[6], columnsBounds[6], 6, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				HavingClause havingClause = (HavingClause) element;
+				return null;
+			}
+			
+			@Override
+			public Image getImage(Object element) {
+				if (((HavingClause) element).isForPrompt()) {
+					return CHECKED;
+				} else {
+					return UNCHECKED;
+				}
+			}
+		});	
+		col.setEditingSupport(new HavingIsForPromptColumnEditingSupport(viewer));
+
+		
+		//Bol. Connector Column
+		col = createTableViewerColumn(columnsTitles[7], columnsBounds[7], 7, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				HavingClause havingClause = (HavingClause) element;
+				return havingClause.getBooleanConnector();
+			}
+		});	
+		col.setEditingSupport(new HavingBooleanConnectorColumnEditingSupport(viewer));
+
+	}
+
+	
 	
 	/*
 	 *  Create UI components for Query Results

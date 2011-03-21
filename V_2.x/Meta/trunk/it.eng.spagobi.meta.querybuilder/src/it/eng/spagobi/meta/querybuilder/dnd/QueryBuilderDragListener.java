@@ -54,7 +54,6 @@ public class QueryBuilderDragListener extends DragSourceAdapter  {
 	public void dragSetData(DragSourceEvent event) {
 		StructuredSelection selection = (StructuredSelection)viewer.getSelection();
 		event.data = selection.getFirstElement();
-		//System.out.println("Dragged data: "+event.data);
 		LocalSelectionTransfer.getTransfer().setSelection(selection);
 	}
 

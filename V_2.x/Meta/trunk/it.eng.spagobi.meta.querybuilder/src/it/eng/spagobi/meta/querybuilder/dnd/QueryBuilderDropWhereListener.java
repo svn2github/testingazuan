@@ -87,15 +87,6 @@ public class QueryBuilderDropWhereListener extends ViewerDropAdapter {
 	}
 	
 	public void addTableRow(TableViewer tableViewer, ModelField dataMartField){
-		/*
-		Table table = ((TableViewer)tableViewer).getTable();
-		TableItem item = new TableItem(table,SWT.NONE);
-		
-        //set row text to display in the table
-		item.setText(new String[] {"Filter "+counter, dataMartField.getParent().getName()+"."+dataMartField.getName(),"","","","AND"});
-        //set real data
-        item.setData(dataMartField);
-        */
 		WhereClause whereClause = new WhereClause("Filter "+counter , dataMartField.getParent().getName()+"."+dataMartField.getName(),
 				"NONE","NONE",false,"AND",dataMartField );
 

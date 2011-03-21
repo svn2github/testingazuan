@@ -23,6 +23,10 @@ package it.eng.spagobi.meta.querybuilder.dnd;
 
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.ModelField;
+import it.eng.spagobi.meta.querybuilder.model.HavingClause;
+import it.eng.spagobi.meta.querybuilder.model.HavingClauseModelProvider;
+import it.eng.spagobi.meta.querybuilder.model.WhereClause;
+import it.eng.spagobi.meta.querybuilder.model.WhereClauseModelProvider;
 
 import java.util.List;
 
@@ -87,15 +91,15 @@ public class QueryBuilderDropHavingListener extends ViewerDropAdapter {
 	}
 	
 	public void addTableRow(TableViewer tableViewer, ModelField dataMartField){
-		Table table = ((TableViewer)tableViewer).getTable();
-		TableItem item = new TableItem(table,SWT.NONE);
-		
-        //set row text to display in the table
-		item.setText(new String[] {"Having "+counter, "", dataMartField.getParent().getName()+"."+dataMartField.getName(),"", "", "", "", "AND"});
-        //set real data
-        item.setData(dataMartField);
-        
-        counter++;
-		}
+		HavingClause havingClause = new HavingClause("Having "+counter ,"NONE", dataMartField.getParent().getName()+"."+dataMartField.getName(),
+				"NONE","NONE","",false,"AND",dataMartField );
+
+		HavingClauseModelProvider.INSTANCE.addHavingClause(havingClause);
+		tableViewer.refresh();
+
+		counter++;
+
+
+	}
 
 }

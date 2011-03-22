@@ -6,8 +6,6 @@ import it.eng.qbe.model.structure.ViewModelEntity;
 import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.IStatement;
-import it.eng.spagobi.meta.datamarttree.builder.ModelStructureBuilder;
-import it.eng.spagobi.meta.datamarttree.tree.i18n.ModelLabelProvider;
 
 import java.util.ArrayList;
 import java.util.Iterator;

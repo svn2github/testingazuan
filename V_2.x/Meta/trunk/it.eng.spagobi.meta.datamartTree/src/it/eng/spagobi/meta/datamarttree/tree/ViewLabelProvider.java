@@ -5,7 +5,6 @@ import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelNode;
 import it.eng.qbe.model.structure.IModelObject;
 import it.eng.qbe.model.structure.ModelField;
-import it.eng.spagobi.meta.datamarttree.tree.i18n.ModelLabelProvider;
 
 import java.io.IOException;
 

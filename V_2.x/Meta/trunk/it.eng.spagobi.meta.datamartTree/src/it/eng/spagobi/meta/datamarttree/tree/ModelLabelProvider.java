@@ -1,4 +1,4 @@
-package it.eng.spagobi.meta.datamarttree.tree.i18n;
+package it.eng.spagobi.meta.datamarttree.tree;
 
 import java.util.Locale;
 

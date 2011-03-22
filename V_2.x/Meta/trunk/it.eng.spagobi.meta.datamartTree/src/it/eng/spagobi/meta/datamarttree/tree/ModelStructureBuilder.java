@@ -1,4 +1,4 @@
-package it.eng.spagobi.meta.datamarttree.builder;
+package it.eng.spagobi.meta.datamarttree.tree;
 
 import java.io.File;
 import java.io.IOException;

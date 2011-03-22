@@ -44,11 +44,7 @@ public class ResultTableViewer extends TableViewer {
 		getTable().setHeaderVisible(true);
 		comparator = new ResultTableComparator();
 		setComparator(comparator);
-		final TableColumn column = new TableColumn(getTable(), SWT.NONE);
-		column.setWidth(defaultColumnWidth);
-		column.setText("");
-		column.setResizable(true);
-		setInput(loadData(dataSet, 0, 10, 10));
+		refresh();
 	}
 	
 	public IDataStore loadData(IDataSet dataSet, int offset, int fetchSize, int maxResults){

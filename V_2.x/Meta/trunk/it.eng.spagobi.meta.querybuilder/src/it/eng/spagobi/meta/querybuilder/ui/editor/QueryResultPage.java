@@ -43,7 +43,7 @@ public class QueryResultPage extends Composite {
 		
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		Composite mainContainer = new Composite(container, SWT.NONE);
+		Composite mainContainer = new Composite(this, SWT.NONE);
 		FillLayout fl_composite = new FillLayout(SWT.HORIZONTAL);
 		fl_composite.marginWidth = 2;
 		fl_composite.marginHeight = 2;
@@ -59,6 +59,8 @@ public class QueryResultPage extends Composite {
 		groupQueryResult.setLayout(gl_groupQueryResult);
 		
 		tableViewer = builder.createResultsTableViewer(groupQueryResult);
+		
+		
 	}
 
 	public void refresh() {

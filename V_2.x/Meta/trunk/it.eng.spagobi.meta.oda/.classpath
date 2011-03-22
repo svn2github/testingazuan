@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="libs/qbecore/spagobi-qbecore-3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/spagobi-utils-3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/jamon-2.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/javassist.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/commons-collections-3.1.jar"/>
@@ -60,7 +62,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/poi-3.5-FINAL-20090928.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/portlet-api-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/proxool-0.8.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/qbecore/qbe.core-3.0.0.jar" sourcepath="/QbeCore"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/swarmcache-1.0rc2.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/versioncheck.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/xalan-2.6.0.jar"/>
@@ -68,8 +69,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/xercesImpl.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/xml-apis.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/json.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/sbi.utils-3.0.0.jar" sourcepath="/SpagoBIUtils"/>
-	<classpathentry exported="true" kind="lib" path="libs/spago-core-2.2.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>

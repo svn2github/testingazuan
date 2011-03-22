@@ -21,11 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.oda.impl;
 
-import it.eng.qbe.conf.QbeCoreSettings;
 import it.eng.qbe.datasource.DBConnection;
-import it.eng.qbe.datasource.DataSourceFactory;
 import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -54,26 +51,26 @@ public class Connection implements IConnection
 	 * @see org.eclipse.datatools.connectivity.oda.IConnection#open(java.util.Properties)
 	 */
 	public void open( Properties connProperties ) throws OdaException {
-		
-		String datamartName = connProperties.getProperty("datamart_name");
-		File qbeDataMartDir = new File(connProperties.getProperty("resource_folder"));
-		
-		QbeCoreSettings.getInstance().setQbeDataMartDir(qbeDataMartDir);
-		
-		List<String> dataMartNames = new ArrayList<String>();
-		dataMartNames.add( datamartName );
-		
-		DBConnection connection = new DBConnection();
-		connection.setName( datamartName );
-		connection.setDialect( connProperties.getProperty("database_dialect") );			
-		connection.setJndiName( null );			
-		connection.setDriverClass( connProperties.getProperty("database_driver") );			
-		connection.setPassword( connProperties.getProperty("database_password") );
-		connection.setUrl( connProperties.getProperty("database_url") );
-		connection.setUsername( connProperties.getProperty("database_user") );	
-		
-		datasource = DataSourceFactory.buildDataSource(datamartName, datamartName, dataMartNames, null, connection);
-		datasource.setDataMartModelAccessModality(new DataMartModelAccessModality());
+//		
+//		String datamartName = connProperties.getProperty("datamart_name");
+//		File qbeDataMartDir = new File(connProperties.getProperty("resource_folder"));
+//		
+//		QbeCoreSettings.getInstance().setQbeDataMartDir(qbeDataMartDir);
+//		
+//		List<String> dataMartNames = new ArrayList<String>();
+//		dataMartNames.add( datamartName );
+//		
+//		DBConnection connection = new DBConnection();
+//		connection.setName( datamartName );
+//		connection.setDialect( connProperties.getProperty("database_dialect") );			
+//		connection.setJndiName( null );			
+//		connection.setDriverClass( connProperties.getProperty("database_driver") );			
+//		connection.setPassword( connProperties.getProperty("database_password") );
+//		connection.setUrl( connProperties.getProperty("database_url") );
+//		connection.setUsername( connProperties.getProperty("database_user") );	
+//		
+//		datasource = DataSourceFactory.buildDataSource(datamartName, datamartName, dataMartNames, null, connection);
+//		datasource.setDataMartModelAccessModality(new DataMartModelAccessModality());
 	    
 		m_isOpen = true;        
  	}

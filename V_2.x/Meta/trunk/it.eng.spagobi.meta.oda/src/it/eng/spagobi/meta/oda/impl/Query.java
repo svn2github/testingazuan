@@ -22,11 +22,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.oda.impl;
 
 import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.model.structure.DataMartEntity;
-import it.eng.qbe.model.structure.DataMartField;
-import it.eng.qbe.model.structure.DataMartModelStructure;
-import it.eng.qbe.statment.IStatement;
-import it.eng.qbe.statment.QbeDatasetFactory;
+import it.eng.qbe.model.structure.IModelEntity;
+import it.eng.qbe.model.structure.IModelStructure;
+import it.eng.qbe.model.structure.ModelField;
+import it.eng.qbe.statement.IStatement;
+import it.eng.qbe.statement.QbeDatasetFactory;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
@@ -72,13 +72,13 @@ public class Query implements IQuery {
 	public void prepare(String queryText) throws OdaException {
 		query = new it.eng.qbe.query.Query();
 		
-		DataMartModelStructure dataMartModel = datasource.getDataMartModelStructure();
-		List<DataMartEntity> entities = dataMartModel.getRootEntities( datasource.getName() );
+		IModelStructure dataMartModel = datasource.getModelStructure();
+		List<IModelEntity> entities = dataMartModel.getRootEntities( datasource.getName() );
 		if(entities.size() > 0) {
-			DataMartEntity entity = entities.get(0);
-			List<DataMartField> fields = entity.getAllFields();
+			IModelEntity entity = entities.get(0);
+			List<ModelField> fields = entity.getAllFields();
 			for(int i = 0; i < fields.size(); i++) {
-				DataMartField field = fields.get(i);
+				ModelField field = fields.get(i);
 
 				query.addSelectFiled(field.getUniqueName(), null, field.getName(), true, true, false, null, null);			
 			}

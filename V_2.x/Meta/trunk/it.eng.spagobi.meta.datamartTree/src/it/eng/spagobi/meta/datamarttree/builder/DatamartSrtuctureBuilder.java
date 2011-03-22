@@ -53,8 +53,13 @@ public class DatamartSrtuctureBuilder {
 		ArrayList<String> dataSourceNames = new ArrayList<String>();
 		dataSourceNames.add("foodmart");
 		
+		IModelStructure iDatamartModelStructure = null;
 		JPADataSource dataSource = (JPADataSource)getDataSource(dataSourceNames, dataSourceProperties);
-		IModelStructure iDatamartModelStructure = dataSource.getModelStructure();
+		try{
+			iDatamartModelStructure = dataSource.getModelStructure();	
+		} catch (Exception e){
+			e.printStackTrace();
+		}
 		logger.debug("OUT: ViewModelStructure built for the model names "+dataSourceNames);
 		return new ViewModelStructure(iDatamartModelStructure, dataSource, getTreeFilters());
 	}
@@ -111,13 +116,14 @@ public class DatamartSrtuctureBuilder {
 	private static DBConnection buildDBConnection(){
 		DBConnection connection = new DBConnection();			
 		connection.setName( "FoodMart" );
-		connection.setDialect( "org.hibernate.dialect.MySQLInnoDBDialect" );			
+		connection.setDialect( "org.hibernate.dialect.MySQLMyISAMDialect" );			
 		connection.setJndiName("java:comp/env/jdbc/foodmart");			
 		connection.setDriverClass( "com.mysql.jdbc.Driver");			
-		connection.setPassword( "paola" );
+		connection.setPassword( "root" );
 		connection.setUrl( "jdbc:mysql://localhost:3306/foodmart");
 		connection.setUsername( "root" );	
 		return connection;
+		
 	}	
 	
 	/**

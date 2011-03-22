@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public class DatamartTree extends TreeViewer{
 
-	private static Logger logger = LoggerFactory.getLogger(DatamartTree.class);
+	//private static Logger logger = LoggerFactory.getLogger(DatamartTree.class);
 	
 	/**
 	 * Initialize the tree
@@ -26,13 +26,13 @@ public class DatamartTree extends TreeViewer{
 	 */
 	public DatamartTree(Composite parent){
 		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-		logger.debug("IN: initializing the datamartTree");
+	//	logger.debug("IN: initializing the datamartTree");
 		ViewModelStructure datamartStructure = DatamartSrtuctureBuilder.build();
 		List<ViewModelEntity> roots = getDatamartStructureRoot(datamartStructure);
 		setContentProvider(new ViewContentProvider(roots));
 		setLabelProvider(new ViewLabelProvider(this,new ModelLabelProvider(datamartStructure.getDataSource())));
 		setInput(roots);
-		logger.debug("OUT: datamartTree initialized");
+	//	logger.debug("OUT: datamartTree initialized");
 	}
 	
 	/**
@@ -41,7 +41,7 @@ public class DatamartTree extends TreeViewer{
 	 * @return
 	 */
 	private List<ViewModelEntity> getDatamartStructureRoot(ViewModelStructure datamartStructure){
-		logger.debug("IN: Getting the datamart structure roots");
+	//	logger.debug("IN: Getting the datamart structure roots");
 		Iterator<String> modelNamesIter = datamartStructure.getModelNames().iterator();
 		// TODO GENERICO PER PIU DATAMART
 		List<IModelEntity> datamartEntity = datamartStructure.getRootEntities(modelNamesIter.next());	
@@ -50,7 +50,7 @@ public class DatamartTree extends TreeViewer{
 		for(int i=0; i<datamartEntity.size(); i++){
 			datamartFilterdedEntity.add(new ViewModelEntity (datamartEntity.get(i), datamartStructure.getDataSource(), datamartStructure.getQbeTreeFilter()));
 		}
-		logger.debug("IN: Datamart structure roots loaded");
+//		logger.debug("IN: Datamart structure roots loaded");
 		return datamartFilterdedEntity;
 	}
 	

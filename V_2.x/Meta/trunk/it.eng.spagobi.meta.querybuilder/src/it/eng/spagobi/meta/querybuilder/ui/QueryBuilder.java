@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui;
 
 
-import it.eng.spagobi.meta.datamarttree.tree.ModelTreeViewer;
 import it.eng.spagobi.meta.querybuilder.Activator;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDragListener;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropHavingListener;
@@ -51,6 +50,7 @@ import it.eng.spagobi.meta.querybuilder.model.SelectFieldModelProvider;
 import it.eng.spagobi.meta.querybuilder.model.WhereClause;
 import it.eng.spagobi.meta.querybuilder.model.WhereClauseModelProvider;
 import it.eng.spagobi.meta.querybuilder.ui.result.ResultTable;
+import it.eng.spagobi.meta.querybuilder.ui.tree.ModelTreeViewer;
 
 import java.util.ArrayList;
 

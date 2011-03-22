@@ -1,4 +1,4 @@
-package it.eng.spagobi.meta.querybuilder.ui;
+package it.eng.spagobi.meta.querybuilder.ui.editor;
 
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.MessageDialog;

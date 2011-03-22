@@ -49,7 +49,8 @@ import it.eng.spagobi.meta.querybuilder.model.SelectField;
 import it.eng.spagobi.meta.querybuilder.model.SelectFieldModelProvider;
 import it.eng.spagobi.meta.querybuilder.model.WhereClause;
 import it.eng.spagobi.meta.querybuilder.model.WhereClauseModelProvider;
-import it.eng.spagobi.meta.querybuilder.ui.result.ResultTable;
+import it.eng.spagobi.meta.querybuilder.ui.editor.QueryBuilderEditor;
+import it.eng.spagobi.meta.querybuilder.ui.result.ResultTableViewer;
 import it.eng.spagobi.meta.querybuilder.ui.tree.ModelTreeViewer;
 
 import java.util.ArrayList;
@@ -138,7 +139,7 @@ public class QueryBuilder {
 	/*
 	 * Create UI for Query Edit - Business Model Tree
 	 */
-	private void createEditBusinessModelTree(Composite composite){
+	public void createEditBusinessModelTree(Composite composite){
 		Composite compositeTree = new Composite(composite, SWT.NONE);
 		GridData gd_compositeTree = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
 		gd_compositeTree.widthHint = 180;
@@ -169,7 +170,7 @@ public class QueryBuilder {
 	/*
 	 * Create UI for Query Edit - Query Filters (Select, Where, Having)
 	 */	
-	private void createEditFilters(Composite composite){
+	public void createEditFilters(Composite composite){
 		Composite compositeFilters = new Composite(composite, SWT.NONE);
 		compositeFilters.setLayout(new FillLayout(SWT.HORIZONTAL));
 		compositeFilters.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -637,7 +638,7 @@ public class QueryBuilder {
 		groupQueryResult.setLayout(gl_groupQueryResult);
 		
 		//Create Table widget to host results
-		createResultsTable(groupQueryResult);
+		createResultsTableViewer(groupQueryResult);
 		
 		return container;
 	}
@@ -645,9 +646,13 @@ public class QueryBuilder {
 	/*
 	 *  Create Table widget for Query Results
 	 */
-	private void createResultsTable(Group groupQueryResult){
-		ResultTable tableViewer = new ResultTable(groupQueryResult, businessModelTreeViewer.getDatamartStructure());
-		tableViewer.updateTable(0,10,10);
+	public ResultTableViewer createResultsTableViewer(Group groupQueryResult){
+		ResultTableViewer tableViewer ;
+		
+		tableViewer = new ResultTableViewer(groupQueryResult, businessModelTreeViewer.getModelStructure());
+		//tableViewer.updateTable(0,10,10);
+		
+		return tableViewer;
 	}
 	
 

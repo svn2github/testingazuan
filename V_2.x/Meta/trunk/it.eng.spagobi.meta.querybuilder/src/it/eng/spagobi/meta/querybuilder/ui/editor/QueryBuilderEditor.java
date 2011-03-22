@@ -1,5 +1,7 @@
-package it.eng.spagobi.meta.querybuilder.ui;
+package it.eng.spagobi.meta.querybuilder.ui.editor;
 
+
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -24,8 +26,9 @@ import org.eclipse.ui.ide.IDE;
  */
 public class QueryBuilderEditor extends MultiPageEditorPart implements IResourceChangeListener{
 
-	private TextEditor editor;
 	private QueryBuilder queryBuilderUI;
+	private QueryEditPage queryEditPage;
+	private QueryResultPage queryResultPage;
 
 	/**
 	 * Creates a multi-page editor for the Query Builder. This version use
@@ -53,21 +56,12 @@ public class QueryBuilderEditor extends MultiPageEditorPart implements IResource
 	 * which contains UI for editing the query.
 	 */
 	void createEditPage() {
-	/*	
-		try {
-			editor = new TextEditor();
-			int index = addPage(editor, getEditorInput());
-			setPageText(index, editor.getTitle());
-		} catch (PartInitException e) {
-			ErrorDialog.openError(
-				getSite().getShell(),
-				"Error creating nested text editor",
-				null,
-				e.getStatus());
-		}
-	*/
+		/*
 		Composite container = queryBuilderUI.createEditComponent(getContainer());
 		int index = addPage(container);
+		*/
+		queryEditPage = new QueryEditPage(getContainer(), queryBuilderUI);
+		int index = addPage(queryEditPage);
 		setPageText(index, "Edit");
 	}
 	
@@ -75,8 +69,11 @@ public class QueryBuilderEditor extends MultiPageEditorPart implements IResource
 	 * Creates the Query Result Page
 	 */
 	void createResultsPage() {
-		Composite container = queryBuilderUI.createResultsComponent(getContainer());
-		int index = addPage(container);
+//		Composite container = queryBuilderUI.createResultsComponent(getContainer());
+//		int index = addPage(container);
+		
+		queryResultPage = new QueryResultPage(getContainer(), queryBuilderUI);
+		int index = addPage(queryResultPage);
 		setPageText(index, "Results");
 	}
 
@@ -143,26 +140,27 @@ public class QueryBuilderEditor extends MultiPageEditorPart implements IResource
 	protected void pageChange(int newPageIndex) {
 		super.pageChange(newPageIndex);
 		if (newPageIndex == 1) {
-			//do something
+			queryResultPage.refresh();
 		}
 	}
+	
 	/**
 	 * Closes all project files on project close.
 	 */
 	public void resourceChanged(final IResourceChangeEvent event){
-		if(event.getType() == IResourceChangeEvent.PRE_CLOSE){
-			Display.getDefault().asyncExec(new Runnable(){
-				public void run(){
-					IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
-					for (int i = 0; i<pages.length; i++){
-						if(((FileEditorInput)editor.getEditorInput()).getFile().getProject().equals(event.getResource())){
-							IEditorPart editorPart = pages[i].findEditor(editor.getEditorInput());
-							pages[i].closeEditor(editorPart,true);
-						}
-					}
-				}            
-			});
-		}
+//		if(event.getType() == IResourceChangeEvent.PRE_CLOSE){
+//			Display.getDefault().asyncExec(new Runnable(){
+//				public void run(){
+//					IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
+//					for (int i = 0; i<pages.length; i++){
+//						if(((FileEditorInput)editor.getEditorInput()).getFile().getProject().equals(event.getResource())){
+//							IEditorPart editorPart = pages[i].findEditor(editor.getEditorInput());
+//							pages[i].closeEditor(editorPart,true);
+//						}
+//					}
+//				}            
+//			});
+//		}
 	}
 
 

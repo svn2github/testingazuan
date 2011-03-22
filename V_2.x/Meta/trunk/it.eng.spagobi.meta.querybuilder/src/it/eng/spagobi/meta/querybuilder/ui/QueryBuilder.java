@@ -1,6 +1,6 @@
 /**
 
-SpagoBI - The Business Intelligence Free Platform
+ SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005-2010 Engineering Ingegneria Informatica S.p.A.
 
@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui;
 
 
-import it.eng.spagobi.meta.datamarttree.tree.DatamartTree;
+import it.eng.spagobi.meta.datamarttree.tree.ModelTreeViewer;
 import it.eng.spagobi.meta.querybuilder.Activator;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDragListener;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropHavingListener;
@@ -87,7 +87,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  */
 public class QueryBuilder {
 	
-	private DatamartTree businessModelTreeViewer;
+	private ModelTreeViewer businessModelTreeViewer;
 
 	private static final Image CHECKED = Activator.getImageDescriptor(
 			"icons/checked.png").createImage();
@@ -161,7 +161,7 @@ public class QueryBuilder {
 		businessModelTreeViewer.setContentProvider(new MyContentProvider());
 		businessModelTreeViewer.setInput(createModel());
 		*/
-		businessModelTreeViewer = new DatamartTree(groupBusinessModelTree);
+		businessModelTreeViewer = new ModelTreeViewer(groupBusinessModelTree);
 		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance(),LocalSelectionTransfer.getTransfer()  };
 		businessModelTreeViewer.addDragSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDragListener(businessModelTreeViewer));
 	}

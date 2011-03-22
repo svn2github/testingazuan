@@ -19,9 +19,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ModelTree extends TreeViewer{
+public class ModelTreeViewer extends TreeViewer{
 
-	private static Logger logger = LoggerFactory.getLogger(ModelTree.class);
+	private static Logger logger = LoggerFactory.getLogger(ModelTreeViewer.class);
 	
 	private ViewModelStructure datamartStructure;
 	
@@ -29,7 +29,7 @@ public class ModelTree extends TreeViewer{
 	 * Initialize the tree
 	 * @param parent
 	 */
-	public ModelTree(Composite parent){
+	public ModelTreeViewer(Composite parent){
 		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		logger.debug("IN: initializing the datamartTree");
 		datamartStructure = ModelStructureBuilder.build();

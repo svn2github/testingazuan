@@ -3,6 +3,7 @@ package it.eng.spagobi.meta.datamarttree.tree;
 import it.eng.qbe.model.structure.AbstractModelNode;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelNode;
+import it.eng.qbe.model.structure.IModelObject;
 import it.eng.qbe.model.structure.ModelField;
 import it.eng.spagobi.meta.datamarttree.tree.i18n.ModelLabelProvider;
 
@@ -31,13 +32,17 @@ public 	class ViewLabelProvider extends LabelProvider {
 		this.modelLabelProvider = modelLabelProvider;
 	}
 	
-	public String getText(Object obj) {
-		if(obj instanceof IModelEntity){
-			return modelLabelProvider.getEntityLabel((IModelEntity)obj);
-		}else if(obj instanceof ModelField){
-			return modelLabelProvider.getFieldLabel((ModelField)obj);
+	public String getText(Object o) {
+		String text;
+		
+		if(o instanceof IModelObject){
+			IModelObject modelObject = (IModelObject)o;
+			text =  modelLabelProvider.getLabel(modelObject);
+		} else {
+			text = o.getClass().getName();
 		}
-		return ((AbstractModelNode)obj).getName();
+		
+		return text;
 	}
 	public Image getImage(Object obj) {   
 		Bundle generatorBundle = Platform.getBundle("it.eng.spagobi.meta.datamartTree");

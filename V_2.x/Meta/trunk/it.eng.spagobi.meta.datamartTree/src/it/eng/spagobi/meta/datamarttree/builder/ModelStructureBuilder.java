@@ -34,9 +34,9 @@ import it.eng.qbe.model.structure.filter.QbeTreeOrderFieldFilter;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
 
-public class DatamartSrtuctureBuilder {
+public class ModelStructureBuilder {
 
-	private static Logger logger = LoggerFactory.getLogger(DatamartSrtuctureBuilder.class);
+	private static Logger logger = LoggerFactory.getLogger(ModelStructureBuilder.class);
 	private static final String jarPath = "resources//";
 	private static final String boundleName = "it.eng.spagobi.meta.datamartTree";
 	

@@ -53,7 +53,7 @@ public class ModelStructureBuilder {
 		ArrayList<String> dataSourceNames = new ArrayList<String>();
 		dataSourceNames.add("foodmart");
 		
-		JPADataSource dataSource = (JPADataSource)getDataSource(dataSourceNames, dataSourceProperties);
+		IDataSource dataSource = getDataSource(dataSourceNames, dataSourceProperties);
 		IModelStructure iDatamartModelStructure = dataSource.getModelStructure();
 		logger.debug("OUT: ViewModelStructure built for the model names "+dataSourceNames);
 		return new ViewModelStructure(iDatamartModelStructure, dataSource, getTreeFilters());
@@ -114,7 +114,7 @@ public class ModelStructureBuilder {
 		connection.setDialect( "org.hibernate.dialect.MySQLDialect" );			
 		connection.setJndiName("java:comp/env/jdbc/foodmart");			
 		connection.setDriverClass( "com.mysql.jdbc.Driver");			
-		connection.setPassword( "mysql" );
+		connection.setPassword( "paola" );
 		connection.setUrl( "jdbc:mysql://localhost:3306/foodmart");
 		connection.setUsername( "root" );	
 		return connection;

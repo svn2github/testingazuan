@@ -84,17 +84,22 @@ public class ResultTable extends TableViewer {
 	}
 	
 	private void loadFirstResultAndHeaders(int offset, int fetchSize, int maxResults){
-		IDataStore dataStore = loadData(dataSet, offset, fetchSize, maxResults);
-		List<String> headers = DataStoreReader.getColumnNames(dataStore);
-		for(int i =0; i<headers.size(); i++){
-			final TableColumn column = new TableColumn(getTable(), SWT.NONE);
-			column.setWidth(defaultColumnWidth);
-			column.setText(headers.get(i));
-			column.setResizable(true);
-			column.setMoveable(true);
-			column.addSelectionListener(getSelectionAdapter(column, i));
+		try {
+			IDataStore dataStore = loadData(dataSet, offset, fetchSize, maxResults);
+			List<String> headers = DataStoreReader.getColumnNames(dataStore);
+			for(int i =0; i<headers.size(); i++){
+				final TableColumn column = new TableColumn(getTable(), SWT.NONE);
+				column.setWidth(defaultColumnWidth);
+				column.setText(headers.get(i));
+				column.setResizable(true);
+				column.setMoveable(true);
+				column.addSelectionListener(getSelectionAdapter(column, i));
+			}
+			setInput(dataStore);
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-		setInput(dataStore);
+
 	}
 	
 	private SelectionAdapter getSelectionAdapter(final TableColumn column, final int index) {

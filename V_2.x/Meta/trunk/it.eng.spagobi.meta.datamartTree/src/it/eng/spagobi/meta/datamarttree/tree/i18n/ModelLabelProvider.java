@@ -13,8 +13,13 @@ public class ModelLabelProvider {
 
 	private IModelProperties modelI18NProperties;
 	
-	public ModelLabelProvider(IDataSource dataSource){
-		modelI18NProperties = dataSource.getModelI18NProperties( Locale.getDefault() );
+	public ModelLabelProvider(IDataSource dataSource) {
+		Locale userLocale;
+		String userLanguage;
+		
+		userLanguage = System.getProperty("user.language");
+		userLocale = userLanguage != null? new Locale(userLanguage): Locale.getDefault();
+		modelI18NProperties = dataSource.getModelI18NProperties( userLocale );
 	}
 	
 	

@@ -1,9 +1,9 @@
 package it.eng.spagobi.meta.datamarttree.views;
 
-import it.eng.spagobi.meta.datamarttree.builder.DatamartSrtuctureBuilder;
+import it.eng.spagobi.meta.datamarttree.builder.ModelStructureBuilder;
 import it.eng.spagobi.meta.datamarttree.draganddrop.DDListener;
 import it.eng.spagobi.meta.datamarttree.draganddrop.DatamartFieldTransfer;
-import it.eng.spagobi.meta.datamarttree.tree.DatamartTree;
+import it.eng.spagobi.meta.datamarttree.tree.ModelTree;
 import it.eng.spagobi.meta.datamarttree.tree.ViewLabelProvider;
 import it.eng.spagobi.meta.datamarttree.tree.ViewContentProvider;
 
@@ -58,7 +58,7 @@ public class DataMartTreeView extends ViewPart {
 		
 
 		
-		viewer = new DatamartTree(parent);
+		viewer = new ModelTree(parent);
 		
 		drillDownAdapter = new DrillDownAdapter(viewer);
 

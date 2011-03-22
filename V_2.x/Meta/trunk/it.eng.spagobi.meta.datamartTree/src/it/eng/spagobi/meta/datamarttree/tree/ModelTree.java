@@ -6,7 +6,7 @@ import it.eng.qbe.model.structure.ViewModelEntity;
 import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.IStatement;
-import it.eng.spagobi.meta.datamarttree.builder.DatamartSrtuctureBuilder;
+import it.eng.spagobi.meta.datamarttree.builder.ModelStructureBuilder;
 import it.eng.spagobi.meta.datamarttree.tree.i18n.ModelLabelProvider;
 
 import java.util.ArrayList;
@@ -19,9 +19,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DatamartTree extends TreeViewer{
+public class ModelTree extends TreeViewer{
 
-	private static Logger logger = LoggerFactory.getLogger(DatamartTree.class);
+	private static Logger logger = LoggerFactory.getLogger(ModelTree.class);
 	
 	private ViewModelStructure datamartStructure;
 	
@@ -29,10 +29,10 @@ public class DatamartTree extends TreeViewer{
 	 * Initialize the tree
 	 * @param parent
 	 */
-	public DatamartTree(Composite parent){
+	public ModelTree(Composite parent){
 		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		logger.debug("IN: initializing the datamartTree");
-		datamartStructure = DatamartSrtuctureBuilder.build();
+		datamartStructure = ModelStructureBuilder.build();
 		List<ViewModelEntity> roots = getDatamartStructureRoot(datamartStructure);
 		setContentProvider(new ViewContentProvider(roots));
 		setLabelProvider(new ViewLabelProvider(this,new ModelLabelProvider(datamartStructure.getDataSource())));

@@ -8,6 +8,7 @@ import it.eng.qbe.model.structure.ViewModelEntity;
 import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.QbeDatasetFactory;
+import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
@@ -88,6 +89,7 @@ public class ResultTable extends TableViewer {
 	
 	private IDataSet getDataSet(){
 		IDataSource datasource = modelStructure.getDataSource();
+		/*
 		Query query = new Query();
 		List entities = modelStructure.getRootEntities("foodmart");
 		if(entities.size() > 0) {
@@ -98,6 +100,9 @@ public class ResultTable extends TableViewer {
 					query.addSelectFiled(field.getUniqueName(), null, field.getName(), true, true, false, null, null);
 			}
 		}	
+		*/
+		
+		Query query = QueryProvider.getQuery();
 		return QbeDatasetFactory.createDataSet(modelStructure.getDataSource().createStatement(query));
 	}
 }

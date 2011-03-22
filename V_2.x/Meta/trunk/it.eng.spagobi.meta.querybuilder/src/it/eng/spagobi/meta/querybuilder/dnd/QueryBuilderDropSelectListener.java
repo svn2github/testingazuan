@@ -25,6 +25,8 @@ import java.util.List;
 
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.ModelField;
+import it.eng.qbe.query.Query;
+import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
 import it.eng.spagobi.meta.querybuilder.model.SelectField;
 import it.eng.spagobi.meta.querybuilder.model.SelectFieldModelProvider;
 
@@ -84,12 +86,19 @@ public class QueryBuilderDropSelectListener extends ViewerDropAdapter {
 		return true;
 	}
 	
+
+	
 	public void addTableRow(TableViewer tableViewer, ModelField dataMartField){
+		Query query;
+		
 		SelectField selectField = new SelectField(dataMartField.getParent().getName(),dataMartField.getName(),
-							dataMartField.getQueryName(),"NONE","NONE",false,false,false,false,false,dataMartField );
+				dataMartField.getQueryName(),"NONE","NONE",false,false,false,false,false,dataMartField );
 		
 		SelectFieldModelProvider.INSTANCE.addSelectField(selectField);
 		tableViewer.refresh();
+		
+		query = QueryProvider.getQuery();
+		query.addSelectFiled(dataMartField.getUniqueName(), "NONE", dataMartField.getName(), true, true, false, null, dataMartField.getPropertyAsString("format"));
 	}
 
 }

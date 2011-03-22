@@ -112,7 +112,7 @@ public class ModelStructureBuilder {
 		DBConnection connection = new DBConnection();			
 		connection.setName( "FoodMart" );
 		connection.setDialect( "org.hibernate.dialect.MySQLDialect" );			
-		connection.setJndiName("java:comp/env/jdbc/foodmart");			
+		//connection.setJndiName("java:comp/env/jdbc/foodmart");			
 		connection.setDriverClass( "com.mysql.jdbc.Driver");			
 		connection.setPassword( "paola" );
 		connection.setUrl( "jdbc:mysql://localhost:3306/foodmart");

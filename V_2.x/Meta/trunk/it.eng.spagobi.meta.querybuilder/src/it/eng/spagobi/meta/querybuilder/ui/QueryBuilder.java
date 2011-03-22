@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui;
 
 
-
 import it.eng.spagobi.meta.datamarttree.tree.DatamartTree;
 import it.eng.spagobi.meta.querybuilder.Activator;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDragListener;
@@ -51,6 +50,7 @@ import it.eng.spagobi.meta.querybuilder.model.SelectField;
 import it.eng.spagobi.meta.querybuilder.model.SelectFieldModelProvider;
 import it.eng.spagobi.meta.querybuilder.model.WhereClause;
 import it.eng.spagobi.meta.querybuilder.model.WhereClauseModelProvider;
+import it.eng.spagobi.meta.querybuilder.ui.result.ResultTable;
 
 import java.util.ArrayList;
 
@@ -80,11 +80,14 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 
+
 /**
  * @author cortella
  *
  */
 public class QueryBuilder {
+	
+	private DatamartTree businessModelTreeViewer;
 
 	private static final Image CHECKED = Activator.getImageDescriptor(
 			"icons/checked.png").createImage();
@@ -158,7 +161,7 @@ public class QueryBuilder {
 		businessModelTreeViewer.setContentProvider(new MyContentProvider());
 		businessModelTreeViewer.setInput(createModel());
 		*/
-		DatamartTree businessModelTreeViewer = new DatamartTree(groupBusinessModelTree);
+		businessModelTreeViewer = new DatamartTree(groupBusinessModelTree);
 		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance(),LocalSelectionTransfer.getTransfer()  };
 		businessModelTreeViewer.addDragSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDragListener(businessModelTreeViewer));
 	}
@@ -643,38 +646,15 @@ public class QueryBuilder {
 	 *  Create Table widget for Query Results
 	 */
 	private void createResultsTable(Group groupQueryResult){
-		TableViewer tableViewer = new TableViewer(groupQueryResult, SWT.BORDER | SWT.FULL_SELECTION);
-		Table table = tableViewer.getTable();
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		
-		//***** FAKE SETTINGS TO CHANGE ******
-		tableViewer.setLabelProvider(new LabelProvider());
-		tableViewer.setContentProvider(new MyContentProvider2());
-
-		//populate Table widget with data
-		populateResultsTable(tableViewer);
+		ResultTable tableViewer = new ResultTable(groupQueryResult, businessModelTreeViewer.getDatamartStructure());
+		tableViewer.loadFirstResultAndHeaders(0,10,10);
 	}
 	
-	//Populate the Result Table widgets with data from the query
-	private void populateResultsTable(TableViewer tableViewer){
-		
-		//Create columns with header
-		tableViewer.setColumnProperties(new String[] { "Column 1", "Column 2" });
-		TableColumn column = new TableColumn(tableViewer.getTable(),SWT.NONE);
-		column.setWidth(100);
-		column.setText("Column 1");
-		
-		column = new TableColumn(tableViewer.getTable(),SWT.NONE);
-		column.setWidth(100);
-		column.setText("Column 2");
-		
-		//****** THIS IS A FAKE MODEL ONLY FOR TEST - TO REMOVE ******
-		MyModel2[] model2 = createModel2();
-		tableViewer.setInput(model2);
-		tableViewer.getTable().setLinesVisible(true);
-		tableViewer.getTable().setHeaderVisible(true);
-		
-	}
+
+	
+	
+	
+
 	
 
 //*************************************************************
@@ -682,6 +662,10 @@ public class QueryBuilder {
 	//***********************************************
 	// Private Class, only for test. Will be deleted.
 	//***********************************************
+	
+
+
+	
 	private class MyContentProvider implements ITreeContentProvider {
 
 		/* (non-Javadoc)
@@ -772,52 +756,6 @@ public class QueryBuilder {
 		return root;
 	}
 
-	private class MyContentProvider2 implements IStructuredContentProvider {
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-		 */
-		public Object[] getElements(Object inputElement) {
-			return (MyModel2[])inputElement;
-		}
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-		 */
-		public void dispose() {
-
-		}
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-		 */
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
-		}
-
-	}
-
-	public class MyModel2 {
-		public int counter;
-
-		public MyModel2(int counter) {
-			this.counter = counter;
-		}
-
-		public String toString() {
-			return "Item " + this.counter;
-		}
-	}	
-	
-	private MyModel2[] createModel2() {
-		MyModel2[] elements = new MyModel2[10];
-		
-		for( int i = 0; i < 10; i++ ) {
-			elements[i] = new MyModel2(i);
-		}
-		
-		return elements;
-	}
 	
 //****** end private classes and methods to delete
 }

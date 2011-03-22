@@ -12,7 +12,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.ui.ide,
  org.eclipse.datatools.connectivity.oda.design.ui,
- it.eng.spagobi.meta.datamartTree;bundle-version="1.0.0",
  it.eng.spagobi.meta.oda;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

@@ -44,7 +44,7 @@ public 	class ViewLabelProvider extends LabelProvider {
 		return text;
 	}
 	public Image getImage(Object obj) {   
-		Bundle generatorBundle = Platform.getBundle("it.eng.spagobi.meta.datamartTree");
+		Bundle generatorBundle = Platform.getBundle("it.eng.spagobi.meta.querybuilder");
 		String path = null; 
 		String type = null;
 		Image img = null;

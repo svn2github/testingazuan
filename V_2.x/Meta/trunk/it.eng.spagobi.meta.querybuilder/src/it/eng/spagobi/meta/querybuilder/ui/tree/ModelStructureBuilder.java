@@ -38,7 +38,7 @@ public class ModelStructureBuilder {
 
 	private static Logger logger = LoggerFactory.getLogger(ModelStructureBuilder.class);
 	private static final String jarPath = "resources//JPA//";
-	private static final String boundleName = "it.eng.spagobi.meta.datamartTree";
+	private static final String boundleName = "it.eng.spagobi.meta.querybuilder";
 	
 	/**
 	 * Build the datamart structure: get the db connection, load the jar files and build the structure
@@ -114,7 +114,7 @@ public class ModelStructureBuilder {
 		connection.setDialect( "org.hibernate.dialect.MySQLInnoDBDialect" );			
 		connection.setJndiName("java:comp/env/jdbc/foodmart");			
 		connection.setDriverClass( "com.mysql.jdbc.Driver");			
-		connection.setPassword( "paola" );
+		connection.setPassword( "mysql" );
 		connection.setUrl( "jdbc:mysql://localhost:3306/foodmart");
 		connection.setUsername( "root" );	
 		return connection;

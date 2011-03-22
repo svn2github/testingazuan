@@ -23,7 +23,7 @@ import org.osgi.framework.Bundle;
 public 	class ViewLabelProvider extends LabelProvider {
 
 	private ModelLabelProvider modelLabelProvider;
-	private static final String imgPath = "img\\datamartstructure";
+	private static final String imgPath = "img";
 	private TreeViewer viewer;
 	
 	public ViewLabelProvider (TreeViewer viewer, ModelLabelProvider modelLabelProvider){

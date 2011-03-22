@@ -31,7 +31,7 @@ public class ResultTable extends TableViewer {
 	public ResultTable(Group groupQueryResult, ViewModelStructure modelStructure){
 		super(groupQueryResult, SWT.BORDER | SWT.FULL_SELECTION);
 		this.modelStructure = modelStructure;
-		this.dataSet = getDataSet();
+		updateDataSet();
 		getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		setLabelProvider(new ResultTableLabelProvider());
 		setContentProvider(new ResultTableContentProvider());
@@ -39,21 +39,6 @@ public class ResultTable extends TableViewer {
 		getTable().setHeaderVisible(true);
 		comparator = new ResultTableComparator();
 		setComparator(comparator);
-	}
-	
-
-	public void loadFirstResultAndHeaders(int offset, int fetchSize, int maxResults){
-		IDataStore dataStore = loadData(dataSet, offset, fetchSize, maxResults);
-		List<String> headers = DataStoreReader.getColumnNames(dataStore);
-		for(int i =0; i<headers.size(); i++){
-			final TableColumn column = new TableColumn(getTable(), SWT.NONE);
-			column.setWidth(defaultColumnWidth);
-			column.setText(headers.get(i));
-			column.setResizable(true);
-			column.setMoveable(true);
-			column.addSelectionListener(getSelectionAdapter(column, i));
-		}
-		setInput(dataStore);
 	}
 	
 	public IDataStore loadData(IDataSet dataSet, int offset, int fetchSize, int maxResults){
@@ -65,6 +50,51 @@ public class ResultTable extends TableViewer {
 		IDataStore dataStore = dataSet.getDataStore();
 		
 		return dataStore;
+	}
+	
+	public void updateTable(int offset, int fetchSize, int maxResults){
+		TableColumn[] columns = getTable().getColumns();
+		if(columns!=null){
+			for(int i=0; i<columns.length; i++){
+				columns[i].dispose();
+			}
+		}
+		updateDataSet();
+		loadFirstResultAndHeaders(offset, fetchSize, maxResults);
+
+	}
+	
+	private void updateDataSet(){
+		IDataSource datasource = modelStructure.getDataSource();
+		
+//		Query query = new Query();
+//		List entities = modelStructure.getRootEntities("foodmart");
+//		if(entities.size() > 0) {
+//			ViewModelEntity entity = (ViewModelEntity)entities.get(0);
+//			List fields = entity.getAllFields();
+//			for(int i = 0; i < fields.size(); i++) {
+//					IModelNode field = (IModelNode)fields.get(i);
+//					query.addSelectFiled(field.getUniqueName(), null, field.getName(), true, true, false, null, null);
+//			}
+//		}	
+//		
+//		
+		Query query = QueryProvider.getQuery();
+		this.dataSet =  QbeDatasetFactory.createDataSet(modelStructure.getDataSource().createStatement(query));
+	}
+	
+	private void loadFirstResultAndHeaders(int offset, int fetchSize, int maxResults){
+		IDataStore dataStore = loadData(dataSet, offset, fetchSize, maxResults);
+		List<String> headers = DataStoreReader.getColumnNames(dataStore);
+		for(int i =0; i<headers.size(); i++){
+			final TableColumn column = new TableColumn(getTable(), SWT.NONE);
+			column.setWidth(defaultColumnWidth);
+			column.setText(headers.get(i));
+			column.setResizable(true);
+			column.setMoveable(true);
+			column.addSelectionListener(getSelectionAdapter(column, i));
+		}
+		setInput(dataStore);
 	}
 	
 	private SelectionAdapter getSelectionAdapter(final TableColumn column, final int index) {
@@ -85,24 +115,5 @@ public class ResultTable extends TableViewer {
 			}
 		};
 		return selectionAdapter;
-	}
-	
-	private IDataSet getDataSet(){
-		IDataSource datasource = modelStructure.getDataSource();
-		/*
-		Query query = new Query();
-		List entities = modelStructure.getRootEntities("foodmart");
-		if(entities.size() > 0) {
-			ViewModelEntity entity = (ViewModelEntity)entities.get(0);
-			List fields = entity.getAllFields();
-			for(int i = 0; i < fields.size(); i++) {
-					IModelNode field = (IModelNode)fields.get(i);
-					query.addSelectFiled(field.getUniqueName(), null, field.getName(), true, true, false, null, null);
-			}
-		}	
-		*/
-		
-		Query query = QueryProvider.getQuery();
-		return QbeDatasetFactory.createDataSet(modelStructure.getDataSource().createStatement(query));
 	}
 }

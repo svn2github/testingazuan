@@ -647,7 +647,7 @@ public class QueryBuilder {
 	 */
 	private void createResultsTable(Group groupQueryResult){
 		ResultTable tableViewer = new ResultTable(groupQueryResult, businessModelTreeViewer.getDatamartStructure());
-		tableViewer.loadFirstResultAndHeaders(0,10,10);
+		tableViewer.updateTable(0,10,10);
 	}
 	
 

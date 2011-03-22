@@ -57,7 +57,7 @@ public class ModelTreeViewer extends TreeViewer{
 		return datamartFilterdedEntity;
 	}
 
-	public ViewModelStructure getDatamartStructure() {
+	public ViewModelStructure getModelStructure() {
 		return datamartStructure;
 	}
 		

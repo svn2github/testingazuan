@@ -5,14 +5,14 @@ Bundle-SymbolicName: it.eng.spagobi.meta.querybuilder;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: it.eng.spagobi.meta.querybuilder.Activator
 Bundle-Vendor: it.eng
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.datatools.connectivity.oda.design.ui,
  org.eclipse.jface.text,
  org.eclipse.core.resources,
  org.eclipse.ui.editors,
  org.eclipse.ui.ide,
- org.eclipse.datatools.connectivity.oda.design.ui,
- it.eng.spagobi.meta.oda;bundle-version="1.0.0"
+ it.eng.spagobi.meta.oda
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: it.eng.spagobi.meta.querybuilder.ui

@@ -56,7 +56,7 @@ public 	class ViewLabelProvider extends LabelProvider {
 		}
 	
 		type = (String)((IModelNode)obj).getProperties().get("type");
-		path=path+type+".gif";
+		path=path+type+".png";
 		
 		try {
 			img = new Image(viewer.getControl().getDisplay(), path); 

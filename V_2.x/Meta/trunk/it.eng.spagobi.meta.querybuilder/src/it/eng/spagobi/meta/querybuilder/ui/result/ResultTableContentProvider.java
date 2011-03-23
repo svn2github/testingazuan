@@ -14,7 +14,7 @@ public class ResultTableContentProvider implements IStructuredContentProvider {
 	public void dispose() {	}
 
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		viewer.refresh();
+	//	viewer.refresh();
 	}
 
 }

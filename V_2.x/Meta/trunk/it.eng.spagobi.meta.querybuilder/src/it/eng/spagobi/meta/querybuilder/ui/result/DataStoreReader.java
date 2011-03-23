@@ -1,3 +1,24 @@
+/**
+
+ SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2010 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 package it.eng.spagobi.meta.querybuilder.ui.result;
 
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
@@ -14,15 +35,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class DataStoreReader {
+/**
+ * @author Alberto Ghedin (alberto.ghedin@eng.it)
+ *
+ */
 
+public class DataStoreReader {
 	
 	public static final String TOTAL_PROPERTY = "results";
 	public static final String ROOT = "rows";
 	private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( "dd/MM/yyyy" );
 	private static final SimpleDateFormat TIMESTAMP_FORMATTER = new SimpleDateFormat( "dd/MM/yyyy HH:mm:ss" );
-
 	
+	
+	/**
+	 * Get the columns metadata (i.e column name and data type)
+	 * @param dataStore
+	 * @return A map of metadata for every column.. Now the keys of the map are title and type
+	 * @throws RuntimeException
+	 */
 	public static List<Map<String,Object>> getColumnMetaData(IDataStore dataStore) throws RuntimeException {
 
 		int resultNumber;
@@ -53,12 +84,19 @@ public class DataStoreReader {
 		return headers;
 	}
 	
+	
+	/**
+	 * A table with the result
+	 * @param dataStore the dattastore
+	 * @return
+	 * @throws RuntimeException
+	 */
 	public static String[][] getResultList(IDataStore dataStore) throws RuntimeException {
 		IField field;
 		IRecord record;
 		Object propertyRawValue;
 		propertyRawValue = dataStore.getMetaData().getProperty("resultNumber");
-		String[][] result = new String[((Integer)propertyRawValue).intValue()][dataStore.getMetaData().getFieldCount()];
+		String[][] result = new String[new Long(dataStore.getRecordsCount()).intValue()][dataStore.getMetaData().getFieldCount()];
 		String[] resultRecord = new String[dataStore.getMetaData().getFieldCount()];
 
 						

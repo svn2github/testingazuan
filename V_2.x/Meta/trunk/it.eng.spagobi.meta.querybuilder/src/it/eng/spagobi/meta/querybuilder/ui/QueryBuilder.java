@@ -22,63 +22,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui;
 
 
-import it.eng.spagobi.meta.querybuilder.Activator;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDragListener;
-import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropHavingListener;
-import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropSelectListener;
-import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropWhereListener;
-import it.eng.spagobi.meta.querybuilder.edit.AliasColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.BooleanConnectorColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.FilterColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.FunctionColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.GroupColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.HavingBooleanConnectorColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.HavingFilterColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.HavingIsForPromptColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.HavingLeftFunctionColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.HavingOperatorColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.HavingRightFunctionColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.IncludeColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.IsForPromptColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.OperatorColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.OrderColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.VisibleColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.model.HavingClause;
-import it.eng.spagobi.meta.querybuilder.model.HavingClauseModelProvider;
-import it.eng.spagobi.meta.querybuilder.model.SelectField;
-import it.eng.spagobi.meta.querybuilder.model.SelectFieldModelProvider;
-import it.eng.spagobi.meta.querybuilder.model.WhereClause;
-import it.eng.spagobi.meta.querybuilder.model.WhereClauseModelProvider;
 import it.eng.spagobi.meta.querybuilder.ui.editor.QueryBuilderEditor;
 import it.eng.spagobi.meta.querybuilder.ui.result.ResultTableViewer;
 import it.eng.spagobi.meta.querybuilder.ui.table.QueryFiltersComponents;
 import it.eng.spagobi.meta.querybuilder.ui.tree.ModelTreeViewer;
-
-import java.util.ArrayList;
-
 import org.eclipse.jface.util.LocalSelectionTransfer;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 
@@ -197,11 +156,9 @@ public class QueryBuilder {
 	 */
 	public ResultTableViewer createResultsTableViewer(Group groupQueryResult){
 		ResultTableViewer tableViewer ;
-		
 		tableViewer = new ResultTableViewer(groupQueryResult, businessModelTreeViewer.getModelStructure());
-		//tableViewer.updateTable(0,10,10);
-		
 		return tableViewer;
 	}
 	
+
 }

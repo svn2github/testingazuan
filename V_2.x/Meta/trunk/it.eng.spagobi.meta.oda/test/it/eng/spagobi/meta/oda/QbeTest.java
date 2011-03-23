@@ -24,6 +24,22 @@ package it.eng.spagobi.meta.oda;
 
 
 
+import it.eng.qbe.datasource.DBConnection;
+import it.eng.qbe.datasource.DriverManager;
+import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
+import it.eng.qbe.datasource.configuration.IDataSourceConfiguration;
+import it.eng.qbe.datasource.hibernate.HibernateDriver;
+import it.eng.qbe.model.structure.IModelStructure;
+import it.eng.qbe.model.structure.ModelEntity;
+import it.eng.qbe.model.structure.ModelField;
+import it.eng.qbe.model.structure.ModelStructure;
+import it.eng.qbe.query.Query;
+import it.eng.qbe.statement.IStatement;
+import it.eng.qbe.statement.QbeDatasetFactory;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,57 +50,64 @@ import java.util.List;
  *
  */
 public class QbeTest {
-	public static final String DATAMART_DIR_PATH = "D:\\Documenti\\Sviluppo\\servers\\tomcat6spagobi3\\resources\\qbe\\datamarts";
+	public static final String HIBERNATE_SIMPLE_QBE_FILE = "D:\\Documenti\\Sviluppo\\servers\\tomcat6spagobi3\\resources\\qbe\\datamarts\\foodmart\\datamart.jar";
 	public static final String DATAMART_NAME = "foodmart";
+	
+	public static String CONNECTION_DIALECT = "org.hibernate.dialect.MySQLDialect";
+	public static String CONNECTION_DRIVER = "com.mysql.jdbc.Driver";
+	public static String CONNECTION_URL = "jdbc:mysql://localhost:3306/foodmart";
+	public static String CONNECTION_USER = "root";
+	public static String CONNECTION_PWD = "mysql";
 
 	public static void main(String[] args) {
-//		File qbeDataMartDir = new File(DATAMART_DIR_PATH);
-//		QbeCoreSettings.getInstance().setQbeDataMartDir(qbeDataMartDir);
-//		
-//		List dataMartNames = new ArrayList();
-//		dataMartNames.add(DATAMART_NAME);
-//		
-//		DBConnection connection = new DBConnection();
-//		connection.setName( "foodmart" );
-//		connection.setDialect(  "org.hibernate.dialect.MySQLDialect" );			
-//		connection.setJndiName( null );			
-//		connection.setDriverClass( TestConnectionFactory.MYSQL_DRIVER );			
-//		connection.setPassword( TestConnectionFactory.MYSQL_PWD );
-//		connection.setUrl( TestConnectionFactory.MYSQL_URL );
-//		connection.setUsername( TestConnectionFactory.MYSQL_USER );	
-//		//Connection connection = TestConnectionFactory.createConnection(TestConnectionFactory.DatabaseType.MYSQL);
-//		
-//		IDataSource datasource = DataSourceFactory.buildDataSource(DATAMART_NAME, DATAMART_NAME, dataMartNames, null, connection);
-//		datasource.setDataMartModelAccessModality(new DataMartModelAccessModality());
-//		Query query = new Query();
-//		
-//		DataMartModelStructure dataMartModel = datasource.getDataMartModelStructure();
-//		List entities = dataMartModel.getRootEntities(DATAMART_NAME);
-//		if(entities.size() > 0) {
-//			DataMartEntity entity = (DataMartEntity)entities.get(0);
-//			List fields = entity.getAllFields();
-//			for(int i = 0; i < fields.size(); i++) {
-//				DataMartField field = (DataMartField)fields.get(i);
-//
-//				query.addSelectFiled(field.getUniqueName(), null, field.getName(), true, true, false, null, null);			
-//			}
-//		}
-//		
-//		IStatement statement = datasource.createStatement(query);
-//		IDataSet datsSet = QbeDatasetFactory.createDataSet(statement);
-//		
-//		try {
-//			datsSet.loadData();
-//		} catch (Throwable e) {
-//			e.printStackTrace();
-//		}
-//		
-//		IDataStore dataStore = datsSet.getDataStore();
-//		
-//		//JSONDataWriter dataSetWriter = new JSONDataWriter();
-//		//JSONObject output = (JSONObject)dataSetWriter.write(dataStore);
-//		
-//		System.out.println(dataStore.getRecordsCount());
+		
+		IDataSourceConfiguration configuration;
+		IDataSource hibernateSimpleDataSource; 
+		
+		File file = new File(HIBERNATE_SIMPLE_QBE_FILE);
+		
+		configuration = new FileDataSourceConfiguration("foodmart", file);
+		
+		DBConnection connection = new DBConnection();			
+		connection.setName( "foodmart" );
+		connection.setDialect(CONNECTION_DIALECT );			
+		connection.setDriverClass( CONNECTION_DRIVER  );	
+		connection.setUrl( CONNECTION_URL );
+		connection.setUsername( CONNECTION_USER );		
+		connection.setPassword( CONNECTION_PWD );
+		configuration.loadDataSourceProperties().put("connection", connection);
+		
+		hibernateSimpleDataSource = DriverManager.getDataSource(HibernateDriver.DRIVER_ID, configuration);
+		
+		Query query = new Query();
+		
+		IModelStructure modelStructure = hibernateSimpleDataSource.getModelStructure();
+		List entities = modelStructure.getRootEntities(DATAMART_NAME);
+		if(entities.size() > 0) {
+			ModelEntity entity = (ModelEntity)entities.get(0);
+			List fields = entity.getAllFields();
+			for(int i = 0; i < fields.size(); i++) {
+				ModelField field = (ModelField)fields.get(i);
+
+				query.addSelectFiled(field.getUniqueName(), null, field.getName(), true, true, false, null, null);			
+			}
+		}
+		
+		IStatement statement = hibernateSimpleDataSource.createStatement(query);
+		IDataSet datsSet = QbeDatasetFactory.createDataSet(statement);
+		
+		try {
+			datsSet.loadData();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+		
+		IDataStore dataStore = datsSet.getDataStore();
+		
+		//JSONDataWriter dataSetWriter = new JSONDataWriter();
+		//JSONObject output = (JSONObject)dataSetWriter.write(dataStore);
+		
+		System.out.println(dataStore.getRecordsCount());
 	}
 
 }

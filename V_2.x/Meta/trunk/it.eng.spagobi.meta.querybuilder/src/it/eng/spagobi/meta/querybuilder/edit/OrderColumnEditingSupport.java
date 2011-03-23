@@ -21,7 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.edit;
 
+import it.eng.qbe.query.DataMartSelectField;
+import it.eng.qbe.query.ISelectField;
+import it.eng.qbe.query.Query;
+import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
 import it.eng.spagobi.meta.querybuilder.model.SelectField;
+import it.eng.spagobi.meta.querybuilder.model.SelectFieldModelProvider;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
@@ -82,8 +87,24 @@ public class OrderColumnEditingSupport extends EditingSupport {
 		} else if (((Integer) value) == 2) {
 			selectField.setOrder("DESCENDING");
 		} 
-
+		
 		viewer.refresh();
+		
+		//Update the Query object for execution
+		int selectFieldIndex = SelectFieldModelProvider.INSTANCE.getSelectFieldIndex(selectField);
+		Query query = QueryProvider.getQuery();
+		ISelectField querySelectField = query.getSelectFieldByIndex(selectFieldIndex);
+		if (querySelectField instanceof DataMartSelectField){
+			if ((selectField.getOrder()!= null) && (!selectField.getOrder().equals("NONE"))){
+				if (selectField.getOrder().equals("ASCENDING")){
+					((DataMartSelectField)querySelectField).setOrderType("ASC");
+				} else if (selectField.getOrder().equals("DESCENDING")){
+					((DataMartSelectField)querySelectField).setOrderType("DESC");
+				}
+			}	
+			System.out.println(((DataMartSelectField) querySelectField).getUniqueName()+" is order: "+((DataMartSelectField)querySelectField).getOrderType());
+		}
+		//**********************
 
 	}
 

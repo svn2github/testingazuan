@@ -42,6 +42,10 @@ public enum SelectFieldModelProvider  {
 		return selectFields;
 	}
 	
+	public int getSelectFieldIndex(SelectField selectField){
+		return selectFields.indexOf(selectField);
+	}
+	
 	public void addSelectField(SelectField selectField) {
 		selectFields.add(selectField);
 	}

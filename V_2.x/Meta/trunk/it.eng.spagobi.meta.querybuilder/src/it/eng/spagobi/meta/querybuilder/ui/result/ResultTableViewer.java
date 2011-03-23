@@ -37,7 +37,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +59,11 @@ public class ResultTableViewer extends TableViewer {
 	private IDataSet dataSet;
 	private ResultTableComparator comparator;
 	private static final int defaultColumnWidth = 100;
+	private int offset;
+	private int pageSize;
+	private int maxResults;
+	private int resultSize;
+	private Label pages;
 
 	private static Logger logger = LoggerFactory.getLogger(ResultTableViewer.class);
 	
@@ -63,6 +74,10 @@ public class ResultTableViewer extends TableViewer {
 	 */
 	public ResultTableViewer(Group groupQueryResult, ViewModelStructure modelStructure){
 		super(groupQueryResult, SWT.BORDER | SWT.FULL_SELECTION);
+		offset =0;
+		pageSize = 25;
+		maxResults = 10000;
+		resultSize = 0;
 		this.modelStructure = modelStructure;
 		getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		setLabelProvider(new ResultTableLabelProvider());
@@ -71,15 +86,61 @@ public class ResultTableViewer extends TableViewer {
 		getTable().setHeaderVisible(true);
 		comparator = new ResultTableComparator();
 		setComparator(comparator);
+		
+		Composite bottonContainer = new Composite(groupQueryResult, SWT.NONE);
+		bottonContainer.setLayout(new GridLayout(3, false));
+		
+
+
+		
+		Button downButton = new Button(bottonContainer, SWT.PUSH);
+		downButton.setText("Previous Page");
+		downButton.setLayoutData(new GridData(SWT.BEGINNING  , SWT.BEGINNING, false, false));
+		downButton.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				offset = offset-pageSize;
+				if(offset<0){
+					offset=0;
+				}
+				updateTable();
+			}
+		});
+		
+		
+		pages = new Label(bottonContainer,SWT.CENTER);
+		pages.setLayoutData(new GridData(SWT.BEGINNING  , SWT.BEGINNING, true, true));
+		long end = offset+pageSize;
+		if(end>resultSize){
+			end = resultSize;
+		}
+		pages.setText(offset+" - "+end+" / "+resultSize);
+		
+		Button upButton = new Button(bottonContainer, SWT.PUSH);
+		upButton.setText("Next Page");
+		upButton.setLayoutData(new GridData(SWT.BEGINNING  , SWT.BEGINNING, false, false));
+		upButton.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				offset = offset+pageSize;
+				if(offset>maxResults){
+					offset=maxResults-pageSize;
+					if(offset<0){
+						offset=0;
+					}
+				}
+				updateTable();
+			}
+		});
+		
+		
+		
+		
+		groupQueryResult.update();
 	}
 	
 	/**
 	 * Update the table: delete the columns,  reload the query, execute the query 
-	 * @param offset start record
-	 * @param fetchSize length of the page
-	 * @param maxResults max result
 	 */
-	public void updateTable(int offset, int fetchSize, int maxResults){
+	public void updateTable(){
 		TableColumn[] columns = getTable().getColumns();
 		if(columns!=null){
 			for(int i=0; i<columns.length; i++){
@@ -89,7 +150,7 @@ public class ResultTableViewer extends TableViewer {
 		Query query = QueryProvider.getQuery();
 		if(!query.isEmpty()){
 			this.dataSet =  QbeDatasetFactory.createDataSet(modelStructure.getDataSource().createStatement(query));
-			loadFirstResultAndHeaders(offset, fetchSize, maxResults);
+			loadFirstResultAndHeaders(offset, pageSize, maxResults);
 		}else{
 			logger.debug("The query is empty");
 		}
@@ -126,6 +187,14 @@ public class ResultTableViewer extends TableViewer {
 			column.addSelectionListener(getSelectionAdapter(column, i, type));
 		}
 		setInput(dataStore);
+		
+		resultSize = DataStoreReader.getMaxResult(dataStore);
+		int end = offset+pageSize;
+		if(end>resultSize){
+			end = resultSize;
+		}
+		pages.setText(offset+" - "+end+" / "+resultSize);
+		
 		refresh();
 		logger.debug("Result table built");
 		logger.debug("OUT");
@@ -157,4 +226,18 @@ public class ResultTableViewer extends TableViewer {
 		};
 		return selectionAdapter;
 	}
+
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	public void setMaxResults(int maxResults) {
+		this.maxResults = maxResults;
+	}
+	
+	
 }

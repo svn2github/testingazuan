@@ -145,6 +145,10 @@ public class DataStoreReader {
 		
 		return result;
 	}
+	
+	public static int getMaxResult(IDataStore dataStore){
+		return (Integer)dataStore.getMetaData().getProperty("resultNumber");
+	} 
 
 	public static SimpleDateFormat getDateFormatter(){
 		return DATE_FORMATTER;

@@ -64,7 +64,7 @@ public class QueryResultPage extends Composite {
 	}
 
 	public void refresh() {
-		tableViewer.updateTable(0,10,10);
+		tableViewer.updateTable();
 		
 	}
 

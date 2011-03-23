@@ -142,7 +142,7 @@ public class CustomDataSetWizardPage extends DataSetWizardPage
             }
         } );
        */
-    	Composite composite = queryBuilderUI.createEditComponent(parent);
+    	Composite composite = queryBuilderUI.createEditComponents(parent);
         setPageComplete( true );
         return composite;
     }

@@ -87,7 +87,7 @@ public class QueryBuilderEditWizardPage extends DataSetWizardPage {
      */
     private Control createPageControl( Composite parent )
     {
-    	Composite composite = queryBuilderUI.createEditComponent(parent);
+    	Composite composite = queryBuilderUI.createEditComponents(parent);
         setPageComplete( true );
         return composite;
     }

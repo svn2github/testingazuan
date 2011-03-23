@@ -76,7 +76,7 @@ public class QueryBuilderResultWizardPage extends DataSetWizardPage {
      */
     private Control createPageControl( Composite parent )
     {
-    	Composite composite = queryBuilderUI.createResultsComponent(parent);
+    	Composite composite = queryBuilderUI.createResultsComponents(parent);
         setPageComplete( true );
         return composite;
     }

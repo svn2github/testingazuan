@@ -67,6 +67,7 @@ Export-Package: it.eng.qbe.datasource;
    it.eng.spagobi.tools.datasource.bo,
    it.eng.spagobi.services.dataset.bo",
  it.eng.spagobi.tools.dataset.common.datastore;uses:="it.eng.spago.base",
+ it.eng.spagobi.tools.dataset.common.query,
  it.eng.spagobi.utilities.comparator,
  it.eng.spagobi.utilities.exceptions,
  org.slf4j;uses:="org.slf4j.spi,org.slf4j.helpers"

@@ -23,8 +23,14 @@ package it.eng.spagobi.meta.querybuilder.dnd;
 
 import java.util.List;
 
+import javax.swing.AbstractAction;
+
 import it.eng.qbe.model.structure.IModelEntity;
-import it.eng.qbe.model.structure.ModelField;
+import it.eng.qbe.model.structure.IModelField;
+import it.eng.qbe.query.Query;
+import it.eng.qbe.query.WhereField.Operand;
+import it.eng.qbe.statement.AbstractStatement;
+import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
 import it.eng.spagobi.meta.querybuilder.model.WhereClause;
 import it.eng.spagobi.meta.querybuilder.model.WhereClauseModelProvider;
 
@@ -64,12 +70,12 @@ public class QueryBuilderDropWhereListener extends ViewerDropAdapter {
 		if (selectionData instanceof IModelEntity){
    			System.out.println("DataMartEntity");
    			IModelEntity dataMartEntity = (IModelEntity)selectionData;
-			List<ModelField> dataMartFields = dataMartEntity.getAllFields();
-			for (ModelField dataMartField : dataMartFields){
+			List<IModelField> dataMartFields = dataMartEntity.getAllFields();
+			for (IModelField dataMartField : dataMartFields){
 				addTableRow((TableViewer)viewer,dataMartField);
 			}        	
-        } else if(selectionData instanceof ModelField){
-        	addTableRow((TableViewer)viewer,(ModelField)selectionData);
+        } else if(selectionData instanceof IModelField){
+        	addTableRow((TableViewer)viewer,(IModelField)selectionData);
         }
         
 			
@@ -86,7 +92,8 @@ public class QueryBuilderDropWhereListener extends ViewerDropAdapter {
 		return true;
 	}
 	
-	public void addTableRow(TableViewer tableViewer, ModelField dataMartField){
+	public void addTableRow(TableViewer tableViewer, IModelField dataMartField){
+		Query query;
 		WhereClause whereClause = new WhereClause("Filter "+counter , dataMartField.getParent().getName()+"."+dataMartField.getName(),
 				"NONE","NONE",false,"AND",dataMartField );
 
@@ -94,6 +101,19 @@ public class QueryBuilderDropWhereListener extends ViewerDropAdapter {
 		tableViewer.refresh();
         
         counter++;
+        
+        String[] nullStringArray = new String[1];
+        nullStringArray[0] = "null";
+        
+        String[] values = new String[1];
+        nullStringArray[0] = dataMartField.getUniqueName();
+        
+        Operand leftOperand = new Operand(nullStringArray,dataMartField.getParent().getName()+" : "+dataMartField.getName(), AbstractStatement.OPERAND_TYPE_FIELD, nullStringArray, values);
+        
+        query = QueryProvider.getQuery();
+        query.addWhereField("Filter"+counter, "Filter"+counter, true, leftOperand, null, null, "AND");
+
+        
 	}
 
 }

@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.dnd;
 
 import it.eng.qbe.model.structure.IModelEntity;
-import it.eng.qbe.model.structure.ModelField;
+import it.eng.qbe.model.structure.IModelField;
 import it.eng.spagobi.meta.querybuilder.model.HavingClause;
 import it.eng.spagobi.meta.querybuilder.model.HavingClauseModelProvider;
 import it.eng.spagobi.meta.querybuilder.model.WhereClause;
@@ -68,12 +68,12 @@ public class QueryBuilderDropHavingListener extends ViewerDropAdapter {
 		if (selectionData instanceof IModelEntity){
    			System.out.println("DataMartEntity");
    			IModelEntity dataMartEntity = (IModelEntity)selectionData;
-			List<ModelField> dataMartFields = dataMartEntity.getAllFields();
-			for (ModelField dataMartField : dataMartFields){
+			List<IModelField> dataMartFields = dataMartEntity.getAllFields();
+			for (IModelField dataMartField : dataMartFields){
 				addTableRow((TableViewer)viewer,dataMartField);
 			}        	
-        } else if(selectionData instanceof ModelField){
-        	addTableRow((TableViewer)viewer,(ModelField)selectionData);
+        } else if(selectionData instanceof IModelField){
+        	addTableRow((TableViewer)viewer,(IModelField)selectionData);
         }
         
 			
@@ -90,7 +90,7 @@ public class QueryBuilderDropHavingListener extends ViewerDropAdapter {
 		return true;
 	}
 	
-	public void addTableRow(TableViewer tableViewer, ModelField dataMartField){
+	public void addTableRow(TableViewer tableViewer, IModelField dataMartField){
 		HavingClause havingClause = new HavingClause("Having "+counter ,"NONE", dataMartField.getParent().getName()+"."+dataMartField.getName(),
 				"NONE","NONE","",false,"AND",dataMartField );
 

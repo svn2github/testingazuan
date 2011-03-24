@@ -42,7 +42,7 @@ public class SelectField {
 	private boolean visible;
 	private boolean filter;
 	private boolean having;
-	private ModelField dataMartField;
+	private IModelField dataMartField;
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
 	public SelectField(){
@@ -51,7 +51,7 @@ public class SelectField {
 	
 	public SelectField(String entity, String field, String alias, 
 			String function, String order, boolean group, boolean include,
-			boolean visible, boolean filter, boolean having, ModelField dataMartField){
+			boolean visible, boolean filter, boolean having, IModelField dataMartField){
 		super();
 		this.setEntity(entity);
 		this.setField(field);
@@ -228,7 +228,7 @@ public class SelectField {
 	/**
 	 * @param dataMartField the dataMartField to set
 	 */
-	public void setDataMartField(ModelField dataMartField) {
+	public void setDataMartField(IModelField dataMartField) {
 		propertyChangeSupport.firePropertyChange("dataMartField", this.dataMartField,
 				this.dataMartField = dataMartField);
 	}
@@ -236,7 +236,7 @@ public class SelectField {
 	/**
 	 * @return the dataMartField
 	 */
-	public ModelField getDataMartField() {
+	public IModelField getDataMartField() {
 		return dataMartField;
 	}
 	

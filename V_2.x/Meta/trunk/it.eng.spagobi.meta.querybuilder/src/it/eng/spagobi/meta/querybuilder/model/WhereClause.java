@@ -24,7 +24,7 @@ package it.eng.spagobi.meta.querybuilder.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import it.eng.qbe.model.structure.ModelField;
+import it.eng.qbe.model.structure.IModelField;
 
 /**
  * @author cortella
@@ -37,7 +37,7 @@ public class WhereClause {
 	private String rightOperand;
 	private boolean isForPrompt;
 	private String booleanConnector;
-	private ModelField dataMartField;
+	private IModelField dataMartField;
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
 	public WhereClause(){
@@ -47,7 +47,7 @@ public class WhereClause {
 	public WhereClause(String filterName, String leftOperand, 
 			String operator, String rightOperand, 
 			boolean isForPrompt,String booleanConnector,
-			ModelField dataMartField){
+			IModelField dataMartField){
 		this.setFilterName(filterName);
 		this.setLeftOperand(leftOperand);
 		this.setOperator(operator);
@@ -150,7 +150,7 @@ public class WhereClause {
 	/**
 	 * @param dataMartField the dataMartField to set
 	 */
-	public void setDataMartField(ModelField dataMartField) {
+	public void setDataMartField(IModelField dataMartField) {
 		propertyChangeSupport.firePropertyChange("dataMartField", this.dataMartField,
 				this.dataMartField = dataMartField);
 	}
@@ -158,7 +158,7 @@ public class WhereClause {
 	/**
 	 * @return the dataMartField
 	 */
-	public ModelField getDataMartField() {
+	public IModelField getDataMartField() {
 		return dataMartField;
 	}
 	

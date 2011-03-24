@@ -24,7 +24,7 @@ package it.eng.spagobi.meta.querybuilder.dnd;
 import java.util.List;
 
 import it.eng.qbe.model.structure.IModelEntity;
-import it.eng.qbe.model.structure.ModelField;
+import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.query.Query;
 import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
 import it.eng.spagobi.meta.querybuilder.model.SelectField;
@@ -64,12 +64,12 @@ public class QueryBuilderDropSelectListener extends ViewerDropAdapter {
 		if (selectionData instanceof IModelEntity){
    			System.out.println("DataMartEntity");
    			IModelEntity dataMartEntity = (IModelEntity)selectionData;
-			List<ModelField> dataMartFields = dataMartEntity.getAllFields();
-			for (ModelField dataMartField : dataMartFields){
+			List<IModelField> dataMartFields = dataMartEntity.getAllFields();
+			for (IModelField dataMartField : dataMartFields){
 				addTableRow((TableViewer)viewer,dataMartField);
 			}        	
-        } else if(selectionData instanceof ModelField){
-        	addTableRow((TableViewer)viewer,(ModelField)selectionData);
+        } else if(selectionData instanceof IModelField){
+        	addTableRow((TableViewer)viewer,(IModelField)selectionData);
         }
         
 			
@@ -88,7 +88,7 @@ public class QueryBuilderDropSelectListener extends ViewerDropAdapter {
 	
 
 	
-	public void addTableRow(TableViewer tableViewer, ModelField dataMartField){
+	public void addTableRow(TableViewer tableViewer, IModelField dataMartField){
 		Query query;
 		
 		SelectField selectField = new SelectField(dataMartField.getParent().getName(),dataMartField.getName(),

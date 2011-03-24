@@ -24,7 +24,7 @@ package it.eng.spagobi.meta.querybuilder.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import it.eng.qbe.model.structure.ModelField;
+import it.eng.qbe.model.structure.IModelField;
 
 /**
  * @author cortella
@@ -39,7 +39,7 @@ public class HavingClause {
 	private String rightOperand;
 	private boolean isForPrompt;
 	private String booleanConnector;
-	private ModelField dataMartField;
+	private IModelField dataMartField;
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
 	public HavingClause(){
@@ -49,7 +49,7 @@ public class HavingClause {
 	public HavingClause(String filterName, String leftFunction, String leftOperand, 
 			String operator, String rightFunction, String rightOperand, 
 			boolean isForPrompt,String booleanConnector,
-			ModelField dataMartField){
+			IModelField dataMartField){
 		this.setFilterName(filterName);
 		this.setLeftFunction(leftFunction);
 		this.setLeftOperand(leftOperand);
@@ -154,7 +154,7 @@ public class HavingClause {
 	/**
 	 * @param dataMartField the dataMartField to set
 	 */
-	public void setDataMartField(ModelField dataMartField) {
+	public void setDataMartField(IModelField dataMartField) {
 		propertyChangeSupport.firePropertyChange("dataMartField", this.dataMartField,
 				this.dataMartField = dataMartField);
 	}
@@ -162,7 +162,7 @@ public class HavingClause {
 	/**
 	 * @return the dataMartField
 	 */
-	public ModelField getDataMartField() {
+	public IModelField getDataMartField() {
 		return dataMartField;
 	}
 	

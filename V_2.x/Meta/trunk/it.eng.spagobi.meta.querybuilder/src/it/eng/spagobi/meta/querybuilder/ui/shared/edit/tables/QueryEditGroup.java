@@ -184,7 +184,6 @@ public class QueryEditGroup extends Composite {
 //				SelectField field = (SelectField) element;
 //				return field.getFunction();
 				DataMartSelectField field = (DataMartSelectField) element;
-				IModelField modelField = datamartStructure.getDataSource().getModelStructure().getField(field.getUniqueName());
 				return field.getFunction().getName();
 			}
 		});		
@@ -196,8 +195,10 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				SelectField field = (SelectField) element;
-				return field.getOrder();
+//				SelectField field = (SelectField) element;
+//				return field.getOrder();
+				DataMartSelectField field = (DataMartSelectField) element;
+				return field.getOrderType();
 			}
 		});	
 		col.setEditingSupport(new OrderColumnEditingSupport(viewer));
@@ -212,7 +213,14 @@ public class QueryEditGroup extends Composite {
 			
 			@Override
 			public Image getImage(Object element) {
-				if (((SelectField) element).isGroup()) {
+//				if (((SelectField) element).isGroup()) {
+//					return CHECKED;
+//				} else {
+//					return UNCHECKED;
+//				}
+				DataMartSelectField field = (DataMartSelectField) element;
+				boolean isGroupBy = field.isGroupByField();
+				if (isGroupBy){
 					return CHECKED;
 				} else {
 					return UNCHECKED;
@@ -232,7 +240,14 @@ public class QueryEditGroup extends Composite {
 			
 			@Override
 			public Image getImage(Object element) {
-				if (((SelectField) element).isInclude()) {
+//				if (((SelectField) element).isInclude()) {
+//					return CHECKED;
+//				} else {
+//					return UNCHECKED;
+//				}
+				DataMartSelectField field = (DataMartSelectField) element;
+				boolean isIncluded = field.isIncluded();
+				if (isIncluded){
 					return CHECKED;
 				} else {
 					return UNCHECKED;
@@ -252,7 +267,14 @@ public class QueryEditGroup extends Composite {
 			
 			@Override
 			public Image getImage(Object element) {
-				if (((SelectField) element).isVisible()) {
+//				if (((SelectField) element).isVisible()) {
+//					return CHECKED;
+//				} else {
+//					return UNCHECKED;
+//				}
+				DataMartSelectField field = (DataMartSelectField) element;
+				boolean isVisible = field.isVisible();
+				if (isVisible){
 					return CHECKED;
 				} else {
 					return UNCHECKED;
@@ -268,11 +290,7 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				SelectField field = (SelectField) element;
-				if(field.isFilter())
-					return "true";
-				else 
-					return "false";
+				return "placeholder";
 			}
 		});	
 		
@@ -281,11 +299,8 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				SelectField field = (SelectField) element;
-				if(field.isHaving())
-					return "true";
-				else 
-					return "false";
+//				SelectField field = (SelectField) element;
+				return "placeholder";
 			}
 		});	
 	}

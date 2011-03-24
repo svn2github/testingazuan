@@ -49,6 +49,7 @@ import it.eng.spagobi.meta.querybuilder.model.HavingClause;
 import it.eng.spagobi.meta.querybuilder.model.HavingClauseModelProvider;
 import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
 import it.eng.spagobi.meta.querybuilder.model.SelectField;
+import it.eng.spagobi.meta.querybuilder.model.SelectFieldModelProvider;
 import it.eng.spagobi.meta.querybuilder.model.WhereClause;
 import it.eng.spagobi.meta.querybuilder.model.WhereClauseModelProvider;
 
@@ -76,9 +77,9 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class QueryEditGroup extends Composite {
 	
-	private static final Image CHECKED = ResourceRegistry.getImage("checked");
+	private static final Image CHECKED = ResourceRegistry.getImage("ui.shared.edit.tables.button.checked");
 	// Activator.getImageDescriptor("icons/checked.png").createImage();
-	private static final Image UNCHECKED = ResourceRegistry.getImage("unchecked");
+	private static final Image UNCHECKED = ResourceRegistry.getImage("ui.shared.edit.tables.button.unchecked");
 	// Activator.getImageDescriptor("icons/unchecked.png").createImage();
 	private ViewModelStructure datamartStructure;
 

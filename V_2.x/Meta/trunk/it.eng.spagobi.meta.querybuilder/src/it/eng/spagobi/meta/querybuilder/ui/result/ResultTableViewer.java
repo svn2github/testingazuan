@@ -37,7 +37,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -59,11 +60,11 @@ public class ResultTableViewer extends TableViewer {
 	private IDataSet dataSet;
 	private ResultTableComparator comparator;
 	private static final int defaultColumnWidth = 100;
-	private int offset;
-	private int pageSize;
-	private int maxResults;
-	private int resultSize;
-	private Label pages;
+	private int offset=0;
+	private int pageSize= 25;
+	private int maxResults = 10000;
+	private int resultSize= 0;
+	private Label pages; //label for pagination
 
 	private static Logger logger = LoggerFactory.getLogger(ResultTableViewer.class);
 	
@@ -73,30 +74,38 @@ public class ResultTableViewer extends TableViewer {
 	 * @param modelStructure
 	 */
 	public ResultTableViewer(Group groupQueryResult, ViewModelStructure modelStructure){
-		super(groupQueryResult, SWT.BORDER | SWT.FULL_SELECTION);
-		offset =0;
-		pageSize = 25;
-		maxResults = 10000;
-		resultSize = 0;
+		super(groupQueryResult, SWT.BORDER | SWT.FULL_SELECTION);	
 		this.modelStructure = modelStructure;
 		getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		setLabelProvider(new ResultTableLabelProvider());
 		setContentProvider(new ResultTableContentProvider());
 		getTable().setLinesVisible(true);
 		getTable().setHeaderVisible(true);
+		
+		//COLUMN SORTING
 		comparator = new ResultTableComparator();
 		setComparator(comparator);
-		
+
+		//Pagination
+		addPagination(groupQueryResult);
+
+
+	}
+	
+	/**
+	 * Add the pagination grid to the result page
+	 * @param groupQueryResult
+	 */
+	public void addPagination(Group groupQueryResult){
+	
 		Composite bottonContainer = new Composite(groupQueryResult, SWT.NONE);
-		bottonContainer.setLayout(new GridLayout(3, false));
+		//bottonContainer.setLayout(new GridLayout(3, true));
+		bottonContainer.setLayout(new RowLayout());
 		
-
-
-		
-		Button downButton = new Button(bottonContainer, SWT.PUSH);
-		downButton.setText("Previous Page");
-		downButton.setLayoutData(new GridData(SWT.BEGINNING  , SWT.BEGINNING, false, false));
-		downButton.addListener(SWT.Selection, new Listener() {
+		Button prevoiusButton = new Button(bottonContainer, SWT.PUSH);
+		prevoiusButton.setText("<<");
+		//prevoiusButton.setLayoutData(new GridData(GridData.BEGINNING  , GridData.BEGINNING, false, false));
+		prevoiusButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
 				offset = offset-pageSize;
 				if(offset<0){
@@ -105,24 +114,26 @@ public class ResultTableViewer extends TableViewer {
 				updateTable();
 			}
 		});
-		
-		
+
 		pages = new Label(bottonContainer,SWT.CENTER);
-		pages.setLayoutData(new GridData(SWT.BEGINNING  , SWT.BEGINNING, true, true));
-		long end = offset+pageSize;
+		//pages.setLayoutData(new GridData(GridData.FILL,GridData.FILL,false, false));
+		pages.setLayoutData(new RowData(200,20));
+		int end = offset+pageSize;
 		if(end>resultSize){
 			end = resultSize;
 		}
-		pages.setText(offset+" - "+end+" / "+resultSize);
+		int maxResultSize = (resultSize>maxResults)? maxResults: resultSize;
+		pages.setText(offset+" - "+end+" / "+maxResultSize);
 		
-		Button upButton = new Button(bottonContainer, SWT.PUSH);
-		upButton.setText("Next Page");
-		upButton.setLayoutData(new GridData(SWT.BEGINNING  , SWT.BEGINNING, false, false));
-		upButton.addListener(SWT.Selection, new Listener() {
+		Button nextButton = new Button(bottonContainer, SWT.PUSH);
+		nextButton.setText(">>");
+		//nextButton.setLayoutData(new GridData(GridData.END  , GridData.BEGINNING, false, false));
+		nextButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
+				int maxResultSize = (resultSize>maxResults)? maxResults: resultSize;
 				offset = offset+pageSize;
-				if(offset>maxResults){
-					offset=maxResults-pageSize;
+				if(offset>=maxResultSize){
+					offset=maxResultSize-pageSize;
 					if(offset<0){
 						offset=0;
 					}
@@ -130,11 +141,6 @@ public class ResultTableViewer extends TableViewer {
 				updateTable();
 			}
 		});
-		
-		
-		
-		
-		groupQueryResult.update();
 	}
 	
 	/**

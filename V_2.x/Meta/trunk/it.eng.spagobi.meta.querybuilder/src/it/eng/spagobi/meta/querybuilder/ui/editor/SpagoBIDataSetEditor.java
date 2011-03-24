@@ -26,18 +26,18 @@ import org.eclipse.ui.ide.IDE;
  *  - First Page is for editing the query
  *  - Second Page is for showing query results
  */
-public class QueryBuilderEditor extends MultiPageEditorPart implements IResourceChangeListener{
+public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResourceChangeListener{
 
 	private QueryBuilder queryBuilderUI;
-	private QueryEditPage queryEditPage;
-	private QueryResultPage queryResultPage;
+	private SpagoBIDataSetEditPage queryEditPage;
+	private SpagoBIDataSetResultPage queryResultPage;
 	private ViewModelStructure datamartStructure;
 
 	/**
 	 * Creates a multi-page editor for the Query Builder. This version use
 	 * the passed CreateQueryBuilderUI object.
 	 */
-	public QueryBuilderEditor(QueryBuilder queryBuilderUI) {
+	public SpagoBIDataSetEditor(QueryBuilder queryBuilderUI) {
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 		if (queryBuilderUI == null){
@@ -52,7 +52,7 @@ public class QueryBuilderEditor extends MultiPageEditorPart implements IResource
 	/**
 	 * Creates a multi-page editor for the Query Builder.
 	 */
-	public QueryBuilderEditor() {
+	public SpagoBIDataSetEditor() {
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 		datamartStructure = ModelStructureBuilder.build();
@@ -67,7 +67,7 @@ public class QueryBuilderEditor extends MultiPageEditorPart implements IResource
 		Composite container = queryBuilderUI.createEditComponent(getContainer());
 		int index = addPage(container);
 		*/
-		queryEditPage = new QueryEditPage(getContainer(), queryBuilderUI);
+		queryEditPage = new SpagoBIDataSetEditPage(getContainer(), queryBuilderUI);
 		int index = addPage(queryEditPage);
 		setPageText(index, "Edit");
 	}
@@ -79,7 +79,7 @@ public class QueryBuilderEditor extends MultiPageEditorPart implements IResource
 //		Composite container = queryBuilderUI.createResultsComponent(getContainer());
 //		int index = addPage(container);
 		
-		queryResultPage = new QueryResultPage(getContainer(), queryBuilderUI);
+		queryResultPage = new SpagoBIDataSetResultPage(getContainer(), queryBuilderUI);
 		int index = addPage(queryResultPage);
 		setPageText(index, "Results");
 	}

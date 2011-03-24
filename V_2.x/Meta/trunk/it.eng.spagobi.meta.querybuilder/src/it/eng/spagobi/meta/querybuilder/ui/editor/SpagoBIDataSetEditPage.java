@@ -32,9 +32,9 @@ import org.eclipse.swt.widgets.Composite;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class QueryEditPage extends Composite {
+public class SpagoBIDataSetEditPage extends Composite {
 
-	public QueryEditPage(Composite container, QueryBuilder builder) {
+	public SpagoBIDataSetEditPage(Composite container, QueryBuilder builder) {
 		super(container, SWT.NONE);
 		
 		container.setLayout(new FillLayout(SWT.HORIZONTAL));

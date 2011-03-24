@@ -34,11 +34,11 @@ import org.eclipse.swt.widgets.Group;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class QueryResultPage extends Composite {
+public class SpagoBIDataSetResultPage extends Composite {
 	
 	ResultTableViewer tableViewer;
 	
-	public QueryResultPage(Composite container, QueryBuilder builder) {
+	public SpagoBIDataSetResultPage(Composite container, QueryBuilder builder) {
 		super(container, SWT.NONE);
 		
 		setLayout(new FillLayout(SWT.HORIZONTAL));

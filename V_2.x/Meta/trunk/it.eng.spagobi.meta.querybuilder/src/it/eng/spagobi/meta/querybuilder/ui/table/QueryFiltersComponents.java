@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.table;
 
+import it.eng.qbe.query.DataMartSelectField;
+import it.eng.qbe.query.Query;
 import it.eng.spagobi.meta.querybuilder.Activator;
 import it.eng.spagobi.meta.querybuilder.ResourceRegistry;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropHavingListener;
@@ -44,6 +46,7 @@ import it.eng.spagobi.meta.querybuilder.edit.OrderColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.VisibleColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.model.HavingClause;
 import it.eng.spagobi.meta.querybuilder.model.HavingClauseModelProvider;
+import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
 import it.eng.spagobi.meta.querybuilder.model.SelectField;
 import it.eng.spagobi.meta.querybuilder.model.SelectFieldModelProvider;
 import it.eng.spagobi.meta.querybuilder.model.WhereClause;
@@ -118,6 +121,8 @@ public class QueryFiltersComponents extends Composite {
 		
 		tableViewerSelect.setContentProvider(new ArrayContentProvider());
 		tableViewerSelect.setInput(SelectFieldModelProvider.INSTANCE.getSelectFields());
+		//Query query = QueryProvider.getQuery();
+		//tableViewerSelect.setInput(query.getSelectFields(false));
 		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
@@ -133,8 +138,15 @@ public class QueryFiltersComponents extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
+				
 				SelectField field = (SelectField) element;
 				return field.getEntity();
+				
+				/*
+				DataMartSelectField field = (DataMartSelectField) element;
+				System.out.println("DataMartSelectField: "+field.getUniqueName());
+				return field.getUniqueName();
+				*/
 			}
 		});		
 		

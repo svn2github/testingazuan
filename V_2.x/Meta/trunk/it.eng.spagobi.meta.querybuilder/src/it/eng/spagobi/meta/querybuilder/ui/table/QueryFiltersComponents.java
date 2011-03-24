@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.table;
 
+import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.Query;
 import it.eng.spagobi.meta.querybuilder.Activator;
@@ -84,7 +85,7 @@ public class QueryFiltersComponents extends Composite {
 	/*
 	 * Create UI for Query Edit - Query Filters (Select, Where, Having)
 	 */	
-	public QueryFiltersComponents(Composite composite) {
+	public QueryFiltersComponents(Composite composite, ViewModelStructure datamartStructure) {
 		super(composite, SWT.NONE);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -121,9 +122,8 @@ public class QueryFiltersComponents extends Composite {
 		
 		tableViewerSelect.setContentProvider(new ArrayContentProvider());
 		tableViewerSelect.setInput(SelectFieldModelProvider.INSTANCE.getSelectFields());
-		//Query query = QueryProvider.getQuery();
-		//tableViewerSelect.setInput(query.getSelectFields(false));
-		
+//		Query query = QueryProvider.getQuery();
+//		tableViewerSelect.setInput(query.getSelectFields(false));		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
 		tableViewerSelect.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropSelectListener(tableViewerSelect));
@@ -141,12 +141,11 @@ public class QueryFiltersComponents extends Composite {
 				
 				SelectField field = (SelectField) element;
 				return field.getEntity();
+
+//				DataMartSelectField field = (DataMartSelectField) element;
+//				System.out.println("DataMartSelectField: "+field.getUniqueName());
+//				return field.getUniqueName();
 				
-				/*
-				DataMartSelectField field = (DataMartSelectField) element;
-				System.out.println("DataMartSelectField: "+field.getUniqueName());
-				return field.getUniqueName();
-				*/
 			}
 		});		
 		

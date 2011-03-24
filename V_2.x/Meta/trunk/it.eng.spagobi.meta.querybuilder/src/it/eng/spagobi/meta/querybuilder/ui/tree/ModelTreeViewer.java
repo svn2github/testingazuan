@@ -44,8 +44,6 @@ public class ModelTreeViewer extends TreeViewer{
 
 	private static Logger logger = LoggerFactory.getLogger(ModelTreeViewer.class);
 	
-	private ViewModelStructure datamartStructure;
-	
 	/**
 	 * Initialize the tree
 	 * @param parent
@@ -53,7 +51,6 @@ public class ModelTreeViewer extends TreeViewer{
 	public ModelTreeViewer(Composite parent, ViewModelStructure datamartStructure){
 		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		logger.debug("IN: initializing the datamartTree");
-		//datamartStructure = ModelStructureBuilder.build();
 		List<ViewModelEntity> roots = getDatamartStructureRoot(datamartStructure);
 		setContentProvider(new ViewContentProvider(roots));
 		setLabelProvider(new ViewLabelProvider(this,new ModelLabelProvider(datamartStructure.getDataSource())));
@@ -80,8 +77,5 @@ public class ModelTreeViewer extends TreeViewer{
 		return datamartFilterdedEntity;
 	}
 
-	public ViewModelStructure getModelStructure() {
-		return datamartStructure;
-	}
 		
 }

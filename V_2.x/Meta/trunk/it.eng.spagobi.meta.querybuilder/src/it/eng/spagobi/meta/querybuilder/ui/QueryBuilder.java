@@ -49,7 +49,6 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  */
 public class QueryBuilder {
 	
-	private ModelTreeViewer businessModelTreeViewer;
 	protected ViewModelStructure datamartStructure;
 
 	public QueryBuilder(ViewModelStructure datamartStructure){
@@ -110,7 +109,7 @@ public class QueryBuilder {
 		//*******************************************
 		// Business Model Tree Viewer 
 		//*******************************************
-		businessModelTreeViewer = new ModelTreeViewer(groupBusinessModelTree, datamartStructure);
+		ModelTreeViewer businessModelTreeViewer = new ModelTreeViewer(groupBusinessModelTree, datamartStructure);
 		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance(),LocalSelectionTransfer.getTransfer()  };
 		businessModelTreeViewer.addDragSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDragListener(businessModelTreeViewer));
 	}

@@ -21,15 +21,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder;
 
+import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Properties;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.internal.util.BundleUtility;
 import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -37,15 +39,25 @@ import org.osgi.framework.Bundle;
  */
 public class ResourceRegistry {
 	
+	public static Properties imageMappings;
+	
 	public static final String IMAGE_ROOT_FOOLDER = "icons";
 	public static final String CONF_ROOT_FOOLDER = "conf";
 	
-	public static Map<String,String> images;
+	private static Logger logger = LoggerFactory.getLogger(ResourceRegistry.class);
 	
-	static {
-		images = new HashMap<String,String>();
-		images.put("checked", "checked.png");
-		images.put("unchecked", "unchecked.png");
+	private static void loadImageMappings() {
+		imageMappings = new Properties();
+		
+		Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID); 
+		URL imageMappingsFileURL = bundle.getResource( CONF_ROOT_FOOLDER + "/images.properties" );
+		if(imageMappingsFileURL != null) {
+			try {
+				imageMappings.load( imageMappingsFileURL.openStream() );
+			} catch (IOException e) {
+				logger.error("Impossible to load propertis from URL [" + imageMappingsFileURL + "]", e);
+			}
+		}
 	}
 	
 	public static Image getImage(String imageKey) {
@@ -61,9 +73,11 @@ public class ResourceRegistry {
 	private static String getImagePath(String imageKey) {
 		String imagePath;
 		
+		if(imageMappings == null) loadImageMappings();
+		
 		imagePath = null;
-		if(images.containsKey(imageKey)) {
-			imagePath =  IMAGE_ROOT_FOOLDER + "/" + images.get(imageKey);
+		if(imageMappings.containsKey(imageKey)) {
+			imagePath =  IMAGE_ROOT_FOOLDER + "/" + imageMappings.get(imageKey);
 		} else {
 			imagePath =  IMAGE_ROOT_FOOLDER + "/" + imageKey;
 		}

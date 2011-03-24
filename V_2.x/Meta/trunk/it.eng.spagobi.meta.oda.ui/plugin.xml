@@ -54,20 +54,20 @@
             supportsInParameters="true"
             supportsOutParameters="false">
          <dataSetWizard
-               class="it.eng.spagobi.meta.querybuilder.ui.SpagoBIDataSetWizard"
+               class="it.eng.spagobi.meta.querybuilder.ui.wizard.SpagoBIDataSetWizard"
                windowTitle="%wizard.data.set.window.title">
          </dataSetWizard>
          <dataSetPage
                displayName="Edit Query"
                icon="icons/datasetpage.ico"
-               wizardPageClass="it.eng.spagobi.meta.querybuilder.ui.QueryBuilderEditWizardPage"
+               wizardPageClass="it.eng.spagobi.meta.querybuilder.ui.wizard.SpagoBIDataSetBuilderEditWizardPage"
                path="/"
                id="it.eng.spagobi.meta.oda.dataSet.page1">
          </dataSetPage>
          <dataSetPage
                displayName="Preview Results"
                icon="icons/datasetpage.ico"
-               wizardPageClass="it.eng.spagobi.meta.querybuilder.ui.QueryBuilderResultWizardPage"
+               wizardPageClass="it.eng.spagobi.meta.querybuilder.ui.wizard.SpagoBIDataSetBuilderResultWizardPage"
                path="/"
                id="it.eng.spagobi.meta.oda.dataSet.page2">
          </dataSetPage> 

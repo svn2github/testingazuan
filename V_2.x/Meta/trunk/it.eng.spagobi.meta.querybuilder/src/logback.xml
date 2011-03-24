@@ -1,21 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="false" scan="true">
 
-  <appender name="STDFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <File>./log/Meta/treeBuilder.log</File>
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <FileNamePattern>treeBuilder.%d{yyyy-MM-dd}.log</FileNamePattern>
-      <!-- keep 30 days worth of history -->
-      <MaxHistory>30</MaxHistory>
+<configuration>
+
+  <!-- ===============================================================================  -->
+  <!-- APPENDERS  																		-->
+  <!-- ===============================================================================  -->
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
+    <append>false</append>
+    <File>./log/spagobi/querybuilder.log</File>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd} %5p %c.%M:%L - %m%n</pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <maxIndex>0</maxIndex>
+      <FileNamePattern>./log/spagobi/querybuilder.log.%i</FileNamePattern>
     </rollingPolicy>
-
-    <layout class="ch.qos.logback.classic.PatternLayout">
-      <Pattern>%d [%thread] %-5level  %caller{1} - %msg%n %ex</Pattern>
-    </layout>
-  </appender> 
-
-  		
-  <root level="debug">
-    <appender-ref ref="STDFILE" />
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <MaxFileSize>10000KB</MaxFileSize>
+    </triggeringPolicy>
+  </appender>
+  
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%c.%M:%L - %m%n</pattern>
+    </encoder>
+  </appender>
+  
+  <!-- ===============================================================================  -->
+  <!-- LOGGERS  																		-->
+  <!-- ===============================================================================  -->
+  
+  <root level="ERROR">
+    <appender-ref ref="CONSOLE"/>
   </root>
+  
+  <logger name="org.hibernate" additivity="false" level="ERROR">
+    <appender-ref ref="CONSOLE"/>
+  </logger>
+  
+  <logger name="it.eng.qbe" additivity="false" level="ERROR">
+    <appender-ref ref="FILE"/>
+    <appender-ref ref="CONSOLE"/>
+  </logger>
+
+  <logger name="it.eng.spagobi" additivity="false" level="DEBUG">
+    <appender-ref ref="FILE"/>
+    <appender-ref ref="CONSOLE"/>
+  </logger>
+  
 </configuration>

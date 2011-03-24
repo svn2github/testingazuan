@@ -76,7 +76,7 @@ import org.eclipse.swt.widgets.TableColumn;
  * @author cortella
  *
  */
-public class QueryFiltersComponents extends Composite {
+public class QueryEditGroup extends Composite {
 	
 	private static final Image CHECKED = ResourceRegistry.getImage("checked");
 	// Activator.getImageDescriptor("icons/checked.png").createImage();
@@ -87,7 +87,7 @@ public class QueryFiltersComponents extends Composite {
 	/*
 	 * Create UI for Query Edit - Query Filters (Select, Where, Having)
 	 */	
-	public QueryFiltersComponents(Composite composite, ViewModelStructure datamartStructure) {
+	public QueryEditGroup(Composite composite, ViewModelStructure datamartStructure) {
 		super(composite, SWT.NONE);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));

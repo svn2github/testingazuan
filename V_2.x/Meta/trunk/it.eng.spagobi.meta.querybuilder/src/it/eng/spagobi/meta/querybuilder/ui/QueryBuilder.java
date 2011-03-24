@@ -25,7 +25,7 @@ package it.eng.spagobi.meta.querybuilder.ui;
 import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDragListener;
 import it.eng.spagobi.meta.querybuilder.ui.editor.SpagoBIDataSetEditor;
-import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables.QueryFiltersComponents;
+import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables.QueryEditGroup;
 import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree.ModelTreeViewer;
 import it.eng.spagobi.meta.querybuilder.ui.shared.result.ResultTableViewer;
 
@@ -118,9 +118,9 @@ public class QueryBuilder {
 	/*
 	 * Create UI for Query Edit - Query Filters (Select, Where, Having)
 	 */	
-	public QueryFiltersComponents createEditFilters(Composite composite){
-		QueryFiltersComponents compositeFilters;
-		compositeFilters = new QueryFiltersComponents(composite, datamartStructure);
+	public QueryEditGroup createEditFilters(Composite composite){
+		QueryEditGroup compositeFilters;
+		compositeFilters = new QueryEditGroup(composite, datamartStructure);
 		return compositeFilters;
 	}
 

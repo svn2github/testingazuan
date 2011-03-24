@@ -22,8 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui.wizard;
 
 import it.eng.qbe.model.structure.ViewModelStructure;
-import it.eng.spagobi.meta.querybuilder.ui.QueryBuilderEditWizardPage;
-import it.eng.spagobi.meta.querybuilder.ui.QueryBuilderResultWizardPage;
 import it.eng.spagobi.meta.querybuilder.ui.tree.ModelStructureBuilder;
 
 import org.eclipse.datatools.connectivity.oda.design.ui.wizards.DataSetWizard;
@@ -34,8 +32,8 @@ import org.eclipse.datatools.connectivity.oda.design.ui.wizards.DataSetWizard;
  */
 public class SpagoBIDataSetWizard extends DataSetWizard {
 
-	private QueryBuilderEditWizardPage editPage;
-	private QueryBuilderResultWizardPage resultPage;
+	private SpagoBIDataSetBuilderEditWizardPage editPage;
+	private SpagoBIDataSetBuilderResultWizardPage resultPage;
 	protected ViewModelStructure datamartStructure;
 	
 

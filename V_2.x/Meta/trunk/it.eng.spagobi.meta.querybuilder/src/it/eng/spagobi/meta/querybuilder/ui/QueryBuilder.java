@@ -25,9 +25,10 @@ package it.eng.spagobi.meta.querybuilder.ui;
 import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDragListener;
 import it.eng.spagobi.meta.querybuilder.ui.editor.SpagoBIDataSetEditor;
-import it.eng.spagobi.meta.querybuilder.ui.result.ResultTableViewer;
 import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables.QueryFiltersComponents;
 import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree.ModelTreeViewer;
+import it.eng.spagobi.meta.querybuilder.ui.shared.result.ResultTableViewer;
+
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;

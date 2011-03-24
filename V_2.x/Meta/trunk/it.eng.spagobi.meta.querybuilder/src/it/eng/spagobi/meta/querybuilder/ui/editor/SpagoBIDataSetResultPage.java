@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui.editor;
 
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
-import it.eng.spagobi.meta.querybuilder.ui.result.ResultTableViewer;
+import it.eng.spagobi.meta.querybuilder.ui.shared.result.ResultTableViewer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;

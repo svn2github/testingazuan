@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.querybuilder.ui.table;
+package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables;
 
 import it.eng.qbe.model.structure.ModelField;
 import it.eng.qbe.model.structure.ViewModelStructure;

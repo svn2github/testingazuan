@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui.wizard;
 
 import it.eng.qbe.model.structure.ViewModelStructure;
-import it.eng.spagobi.meta.querybuilder.ui.tree.ModelStructureBuilder;
+import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree.ModelStructureBuilder;
 
 import org.eclipse.datatools.connectivity.oda.design.ui.wizards.DataSetWizard;
 

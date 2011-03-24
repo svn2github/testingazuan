@@ -21,11 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables;
 
-import it.eng.qbe.model.structure.ModelField;
+import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.Query;
-import it.eng.spagobi.meta.querybuilder.Activator;
 import it.eng.spagobi.meta.querybuilder.ResourceRegistry;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropHavingListener;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropSelectListener;
@@ -50,7 +49,6 @@ import it.eng.spagobi.meta.querybuilder.model.HavingClause;
 import it.eng.spagobi.meta.querybuilder.model.HavingClauseModelProvider;
 import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
 import it.eng.spagobi.meta.querybuilder.model.SelectField;
-import it.eng.spagobi.meta.querybuilder.model.SelectFieldModelProvider;
 import it.eng.spagobi.meta.querybuilder.model.WhereClause;
 import it.eng.spagobi.meta.querybuilder.model.WhereClauseModelProvider;
 
@@ -145,7 +143,7 @@ public class QueryEditGroup extends Composite {
 				
 //				SelectField field = (SelectField) element;
 //				return field.getEntity();
-				ModelField modelField=null;
+				IModelField modelField=null;
 				try {
 					DataMartSelectField field = (DataMartSelectField) element;
 					modelField = datamartStructure.getField(field.getUniqueName());

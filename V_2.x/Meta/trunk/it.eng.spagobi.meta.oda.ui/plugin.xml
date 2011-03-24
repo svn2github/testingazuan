@@ -49,12 +49,12 @@
          </newDataSourceWizard>
       </dataSourceUI>
       <dataSetUI
-            supportsOutParameters="false"
-            supportsInParameters="true"
+            id="it.eng.spagobi.meta.oda.dataSet"
             initialPageId="it.eng.spagobi.meta.oda.dataSet.page1"
-            id="it.eng.spagobi.meta.oda.dataSet">
+            supportsInParameters="true"
+            supportsOutParameters="false">
          <dataSetWizard
-               class="org.eclipse.datatools.connectivity.oda.design.ui.wizards.DataSetWizard"
+               class="it.eng.spagobi.meta.oda.ui.impl.SpagoBIDataSetWizard"
                windowTitle="%wizard.data.set.window.title">
          </dataSetWizard>
          <dataSetPage
@@ -70,7 +70,7 @@
                wizardPageClass="it.eng.spagobi.meta.querybuilder.ui.QueryBuilderResultWizardPage"
                path="/"
                id="it.eng.spagobi.meta.oda.dataSet.page2">
-         </dataSetPage>
+         </dataSetPage> 
       </dataSetUI>
    </extension>
 

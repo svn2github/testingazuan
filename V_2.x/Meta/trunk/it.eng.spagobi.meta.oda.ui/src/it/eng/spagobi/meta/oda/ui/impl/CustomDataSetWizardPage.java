@@ -65,7 +65,7 @@ public class CustomDataSetWizardPage extends DataSetWizardPage
     
     private transient Text m_queryTextField;
     
-    private QueryBuilder queryBuilderUI;
+   // private QueryBuilder queryBuilderUI;
 
 	/**
      * Constructor
@@ -76,7 +76,7 @@ public class CustomDataSetWizardPage extends DataSetWizardPage
         super( pageName );
         setTitle( pageName );
         setMessage( DEFAULT_MESSAGE );
-        this.queryBuilderUI = new QueryBuilder();
+       // this.queryBuilderUI = new QueryBuilder();
 	}
 	/**
      * Constructor
@@ -87,7 +87,7 @@ public class CustomDataSetWizardPage extends DataSetWizardPage
         super( pageName );
         setTitle( pageName );
         setMessage( DEFAULT_MESSAGE );
-        this.queryBuilderUI = queryBuilderUI;
+       // this.queryBuilderUI = queryBuilderUI;
 	}
 	
 
@@ -142,9 +142,9 @@ public class CustomDataSetWizardPage extends DataSetWizardPage
             }
         } );
        */
-    	Composite composite = queryBuilderUI.createEditComponents(parent);
+    //	Composite composite = queryBuilderUI.createEditComponents(parent);
         setPageComplete( true );
-        return composite;
+        return null;
     }
 
 	/**

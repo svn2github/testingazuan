@@ -65,12 +65,13 @@ public class OrderColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected Object getValue(Object element) {
-		SelectField selectField = (SelectField) element;
-		if (selectField.getOrder().equals("NONE")) {
+//		SelectField selectField = (SelectField) element;
+		DataMartSelectField selectField = ((DataMartSelectField) element);
+		if (selectField.getOrderType().equals("NONE")) {
 			return 0;
-		} else if (selectField.getOrder().equals("ASCENDING")){
+		} else if (selectField.getOrderType().equals("ASCENDING")){
 			return 1;
-		} else if (selectField.getOrder().equals("DESCENDING")){
+		} else if (selectField.getOrderType().equals("DESCENDING")){
 			return 2;
 		} 
 		return 0;
@@ -79,31 +80,32 @@ public class OrderColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected void setValue(Object element, Object value) {
-		SelectField selectField = (SelectField) element;
+//		SelectField selectField = (SelectField) element;
+		DataMartSelectField selectField = ((DataMartSelectField) element);
 		if (((Integer) value) == 0) {
-			selectField.setOrder("NONE");
+			selectField.setOrderType("NONE");
 		} else if (((Integer) value) == 1) {
-			selectField.setOrder("ASCENDING");
+			selectField.setOrderType("ASC");
 		} else if (((Integer) value) == 2) {
-			selectField.setOrder("DESCENDING");
+			selectField.setOrderType("DESC");
 		} 
 		
 		viewer.refresh();
 		
 		//Update the Query object for execution
-		int selectFieldIndex = SelectFieldModelProvider.INSTANCE.getSelectFieldIndex(selectField);
-		Query query = QueryProvider.getQuery();
-		ISelectField querySelectField = query.getSelectFieldByIndex(selectFieldIndex);
-		if (querySelectField instanceof DataMartSelectField){
-			if ((selectField.getOrder()!= null) && (!selectField.getOrder().equals("NONE"))){
-				if (selectField.getOrder().equals("ASCENDING")){
-					((DataMartSelectField)querySelectField).setOrderType("ASC");
-				} else if (selectField.getOrder().equals("DESCENDING")){
-					((DataMartSelectField)querySelectField).setOrderType("DESC");
-				}
-			}	
-			System.out.println(((DataMartSelectField) querySelectField).getUniqueName()+" is order: "+((DataMartSelectField)querySelectField).getOrderType());
-		}
+//		int selectFieldIndex = SelectFieldModelProvider.INSTANCE.getSelectFieldIndex(selectField);
+//		Query query = QueryProvider.getQuery();
+//		ISelectField querySelectField = query.getSelectFieldByIndex(selectFieldIndex);
+//		if (querySelectField instanceof DataMartSelectField){
+//			if ((selectField.getOrder()!= null) && (!selectField.getOrder().equals("NONE"))){
+//				if (selectField.getOrder().equals("ASCENDING")){
+//					((DataMartSelectField)querySelectField).setOrderType("ASC");
+//				} else if (selectField.getOrder().equals("DESCENDING")){
+//					((DataMartSelectField)querySelectField).setOrderType("DESC");
+//				}
+//			}	
+//			System.out.println(((DataMartSelectField) querySelectField).getUniqueName()+" is order: "+((DataMartSelectField)querySelectField).getOrderType());
+//		}
 		//**********************
 
 	}

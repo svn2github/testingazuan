@@ -21,7 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.edit;
 
+import it.eng.qbe.query.DataMartSelectField;
 import it.eng.spagobi.meta.querybuilder.model.SelectField;
+import it.eng.spagobi.tools.dataset.common.query.AggregationFunctions;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
@@ -48,11 +50,11 @@ public class FunctionColumnEditingSupport extends EditingSupport {
 		String[] functions = new String[7];
 		functions[0] = "NONE";
 		functions[1] = "SUM";
-		functions[2] = "AVERAGE";
-		functions[3] = "MAXIMUM";
-		functions[4] = "MINIMUM";
+		functions[2] = "AVG";
+		functions[3] = "MAX";
+		functions[4] = "MIN";
 		functions[5] = "COUNT";
-		functions[6] = "COUNT DISTINCT";
+		functions[6] = "COUNT_DISTINCT";
 		
 		return new ComboBoxCellEditor(viewer.getTable(), functions);
 	}
@@ -64,20 +66,22 @@ public class FunctionColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected Object getValue(Object element) {
-		SelectField selectField = (SelectField) element;
-		if (selectField.getFunction().equals("NONE")) {
+//		SelectField selectField = (SelectField) element;
+		DataMartSelectField selectField = ((DataMartSelectField) element);
+		String function = selectField.getFunction().getName();
+		if (function.equals("NONE")) {
 			return 0;
-		} else if (selectField.getFunction().equals("SUM")){
+		} else if (function.equals("SUM")){
 			return 1;
-		} else if (selectField.getFunction().equals("AVERAGE")){
+		} else if (function.equals("AVG")){
 			return 2;
-		} else if (selectField.getFunction().equals("MAXIMUM")){
+		} else if (function.equals("MAX")){
 			return 3;
-		} else if (selectField.getFunction().equals("MINIMUM")){
+		} else if (function.equals("MIN")){
 			return 4;
-		} else if (selectField.getFunction().equals("COUNT")){
+		} else if (function.equals("COUNT")){
 			return 5;
-		} else if (selectField.getFunction().equals("COUNT DISTINCT")){
+		} else if (function.equals("COUNT_DISTINCT")){
 			return 6;
 		}
 		return 0;
@@ -86,21 +90,23 @@ public class FunctionColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected void setValue(Object element, Object value) {
-		SelectField selectField = (SelectField) element;
+//		SelectField selectField = (SelectField) element;
+		DataMartSelectField selectField = ((DataMartSelectField) element);
+
 		if (((Integer) value) == 0) {
-			selectField.setFunction("NONE");
+			selectField.setFunction(AggregationFunctions.NONE_FUNCTION);
 		} else if (((Integer) value) == 1) {
-			selectField.setFunction("SUM");
+			selectField.setFunction(AggregationFunctions.SUM_FUNCTION);
 		} else if (((Integer) value) == 2) {
-			selectField.setFunction("AVERAGE");
+			selectField.setFunction(AggregationFunctions.AVG_FUNCTION);
 		} else if (((Integer) value) == 3) {
-			selectField.setFunction("MAXIMUM");
+			selectField.setFunction(AggregationFunctions.MAX_FUNCTION);
 		} else if (((Integer) value) == 4) {
-			selectField.setFunction("MINIMUM");
+			selectField.setFunction(AggregationFunctions.MIN_FUNCTION);
 		} else if (((Integer) value) == 5) {
-			selectField.setFunction("COUNT");
+			selectField.setFunction(AggregationFunctions.COUNT_FUNCTION);
 		} else if (((Integer) value) == 6) {
-			selectField.setFunction("COUNT DISTINCT");
+			selectField.setFunction(AggregationFunctions.COUNT_DISTINCT_FUNCTION);
 		}
 
 		viewer.refresh();

@@ -23,8 +23,8 @@ package it.eng.spagobi.meta.oda.impl;
 
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.structure.IModelEntity;
+import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
-import it.eng.qbe.model.structure.ModelField;
 import it.eng.qbe.statement.IStatement;
 import it.eng.qbe.statement.QbeDatasetFactory;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
@@ -76,9 +76,9 @@ public class Query implements IQuery {
 		List<IModelEntity> entities = dataMartModel.getRootEntities( datasource.getName() );
 		if(entities.size() > 0) {
 			IModelEntity entity = entities.get(0);
-			List<ModelField> fields = entity.getAllFields();
+			List<IModelField> fields = entity.getAllFields();
 			for(int i = 0; i < fields.size(); i++) {
-				ModelField field = fields.get(i);
+				IModelField field = fields.get(i);
 
 				query.addSelectFiled(field.getUniqueName(), null, field.getName(), true, true, false, null, null);			
 			}

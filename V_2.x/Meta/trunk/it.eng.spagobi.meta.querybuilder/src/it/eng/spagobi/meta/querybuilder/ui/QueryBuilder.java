@@ -119,7 +119,7 @@ public class QueryBuilder {
 	 */	
 	public QueryFiltersComponents createEditFilters(Composite composite){
 		QueryFiltersComponents compositeFilters;
-		compositeFilters = new QueryFiltersComponents(composite);
+		compositeFilters = new QueryFiltersComponents(composite, datamartStructure);
 		return compositeFilters;
 	}
 

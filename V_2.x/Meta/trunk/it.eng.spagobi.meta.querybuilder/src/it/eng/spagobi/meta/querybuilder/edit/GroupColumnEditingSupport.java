@@ -61,24 +61,27 @@ public class GroupColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected Object getValue(Object element) {
-		SelectField selectField = (SelectField) element;
-		return selectField.isGroup();
+//		SelectField selectField = (SelectField) element;
+		DataMartSelectField selectField = ((DataMartSelectField) element);
+		return selectField.isGroupByField();
 	}
 
 	@Override
 	protected void setValue(Object element, Object value) {
-		SelectField selectField = (SelectField) element;
-		selectField.setGroup((Boolean) value);
+//		SelectField selectField = (SelectField) element;
+//		selectField.setGroup((Boolean) value);
+		DataMartSelectField selectField = ((DataMartSelectField) element);
+		selectField.setGroupByField((Boolean) value);
 		viewer.refresh();
 		
 		//Update the Query object for execution
-		int selectFieldIndex = SelectFieldModelProvider.INSTANCE.getSelectFieldIndex(selectField);
-		Query query = QueryProvider.getQuery();
-		ISelectField querySelectField = query.getSelectFieldByIndex(selectFieldIndex);
-		if (querySelectField instanceof DataMartSelectField){
-			((DataMartSelectField)querySelectField).setGroupByField((Boolean) value);
-			System.out.println(((DataMartSelectField) querySelectField).getUniqueName()+" is group: "+((DataMartSelectField)querySelectField).isGroupByField());
-		}
+//		int selectFieldIndex = SelectFieldModelProvider.INSTANCE.getSelectFieldIndex(selectField);
+//		Query query = QueryProvider.getQuery();
+//		ISelectField querySelectField = query.getSelectFieldByIndex(selectFieldIndex);
+//		if (querySelectField instanceof DataMartSelectField){
+//			((DataMartSelectField)querySelectField).setGroupByField((Boolean) value);
+//			System.out.println(((DataMartSelectField) querySelectField).getUniqueName()+" is group: "+((DataMartSelectField)querySelectField).isGroupByField());
+//		}
 		//*********************
 		
 	}

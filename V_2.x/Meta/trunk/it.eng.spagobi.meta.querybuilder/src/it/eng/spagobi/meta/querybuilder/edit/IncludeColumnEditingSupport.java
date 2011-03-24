@@ -61,24 +61,26 @@ public class IncludeColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected Object getValue(Object element) {
-		SelectField selectField = (SelectField) element;
-		return selectField.isInclude();
+//		SelectField selectField = (SelectField) element;
+		DataMartSelectField selectField = ((DataMartSelectField) element);
+		return selectField.isIncluded();
 	}
 
 	@Override
 	protected void setValue(Object element, Object value) {
-		SelectField selectField = (SelectField) element;
-		selectField.setInclude((Boolean) value);
+//		SelectField selectField = (SelectField) element;
+		DataMartSelectField selectField = ((DataMartSelectField) element);
+		selectField.setIncluded((Boolean) value);
 		viewer.refresh();
 		
 		//Update the Query object for execution
-		int selectFieldIndex = SelectFieldModelProvider.INSTANCE.getSelectFieldIndex(selectField);
-		Query query = QueryProvider.getQuery();
-		ISelectField querySelectField = query.getSelectFieldByIndex(selectFieldIndex);
-		if (querySelectField instanceof DataMartSelectField){
-			((DataMartSelectField)querySelectField).setIncluded((Boolean) value);
-			System.out.println(((DataMartSelectField) querySelectField).getUniqueName()+" is included: "+((DataMartSelectField)querySelectField).isIncluded());
-		}
+//		int selectFieldIndex = SelectFieldModelProvider.INSTANCE.getSelectFieldIndex(selectField);
+//		Query query = QueryProvider.getQuery();
+//		ISelectField querySelectField = query.getSelectFieldByIndex(selectFieldIndex);
+//		if (querySelectField instanceof DataMartSelectField){
+//			((DataMartSelectField)querySelectField).setIncluded((Boolean) value);
+//			System.out.println(((DataMartSelectField) querySelectField).getUniqueName()+" is included: "+((DataMartSelectField)querySelectField).isIncluded());
+//		}
 		//*********************
 
 	}

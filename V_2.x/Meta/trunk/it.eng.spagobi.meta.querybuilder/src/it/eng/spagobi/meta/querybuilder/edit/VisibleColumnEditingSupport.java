@@ -61,24 +61,26 @@ public class VisibleColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected Object getValue(Object element) {
-		SelectField selectField = (SelectField) element;
+//		SelectField selectField = (SelectField) element;
+		DataMartSelectField selectField = ((DataMartSelectField) element);
 		return selectField.isVisible();
 	}
 
 	@Override
 	protected void setValue(Object element, Object value) {
-		SelectField selectField = (SelectField) element;
+//		SelectField selectField = (SelectField) element;
+		DataMartSelectField selectField = ((DataMartSelectField) element);
 		selectField.setVisible((Boolean) value);
 		viewer.refresh();
 		
 		//Update the Query object for execution
-		int selectFieldIndex = SelectFieldModelProvider.INSTANCE.getSelectFieldIndex(selectField);
-		Query query = QueryProvider.getQuery();
-		ISelectField querySelectField = query.getSelectFieldByIndex(selectFieldIndex);
-		if (querySelectField instanceof DataMartSelectField){
-			((DataMartSelectField)querySelectField).setVisible((Boolean) value);
-			System.out.println(((DataMartSelectField) querySelectField).getUniqueName()+" is visible: "+((DataMartSelectField)querySelectField).isVisible());
-		}
+//		int selectFieldIndex = SelectFieldModelProvider.INSTANCE.getSelectFieldIndex(selectField);
+//		Query query = QueryProvider.getQuery();
+//		ISelectField querySelectField = query.getSelectFieldByIndex(selectFieldIndex);
+//		if (querySelectField instanceof DataMartSelectField){
+//			((DataMartSelectField)querySelectField).setVisible((Boolean) value);
+//			System.out.println(((DataMartSelectField) querySelectField).getUniqueName()+" is visible: "+((DataMartSelectField)querySelectField).isVisible());
+//		}
 		//*********************
 
 	}

@@ -24,7 +24,7 @@ package it.eng.spagobi.meta.querybuilder.ui;
 
 import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDragListener;
-import it.eng.spagobi.meta.querybuilder.ui.editor.QueryBuilderEditor;
+import it.eng.spagobi.meta.querybuilder.ui.editor.SpagoBIDataSetEditor;
 import it.eng.spagobi.meta.querybuilder.ui.result.ResultTableViewer;
 import it.eng.spagobi.meta.querybuilder.ui.table.QueryFiltersComponents;
 import it.eng.spagobi.meta.querybuilder.ui.tree.ModelTreeViewer;
@@ -68,7 +68,7 @@ public class QueryBuilder {
 	 * and Results pages
 	 */
 	public MultiPageEditorPart createEditor() {
-		return new QueryBuilderEditor(this);
+		return new SpagoBIDataSetEditor(this);
 	}
 	
 	/*

@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.table;
 
+import it.eng.qbe.model.structure.ModelField;
 import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.Query;
@@ -81,6 +82,7 @@ public class QueryFiltersComponents extends Composite {
 	// Activator.getImageDescriptor("icons/checked.png").createImage();
 	private static final Image UNCHECKED = ResourceRegistry.getImage("unchecked");
 	// Activator.getImageDescriptor("icons/unchecked.png").createImage();
+	private ViewModelStructure datamartStructure;
 
 	/*
 	 * Create UI for Query Edit - Query Filters (Select, Where, Having)
@@ -93,6 +95,8 @@ public class QueryFiltersComponents extends Composite {
 		Group grpQueryEditor = new Group(this, SWT.NONE);
 		grpQueryEditor.setText("Query Editor");
 		grpQueryEditor.setLayout(new GridLayout(1, false));
+		
+		this.datamartStructure = datamartStructure;
 		
 		//create Select panel
 		createEditSelect(grpQueryEditor);
@@ -121,9 +125,9 @@ public class QueryFiltersComponents extends Composite {
 		createEditSelectColumns(grpQueryEditor, tableViewerSelect);
 		
 		tableViewerSelect.setContentProvider(new ArrayContentProvider());
-		tableViewerSelect.setInput(SelectFieldModelProvider.INSTANCE.getSelectFields());
-//		Query query = QueryProvider.getQuery();
-//		tableViewerSelect.setInput(query.getSelectFields(false));		
+//		tableViewerSelect.setInput(SelectFieldModelProvider.INSTANCE.getSelectFields());
+		Query query = QueryProvider.getQuery();
+		tableViewerSelect.setInput(query.getSelectFields(false));		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
 		tableViewerSelect.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropSelectListener(tableViewerSelect));
@@ -139,12 +143,18 @@ public class QueryFiltersComponents extends Composite {
 			@Override
 			public String getText(Object element) {
 				
-				SelectField field = (SelectField) element;
-				return field.getEntity();
-
-//				DataMartSelectField field = (DataMartSelectField) element;
-//				System.out.println("DataMartSelectField: "+field.getUniqueName());
-//				return field.getUniqueName();
+//				SelectField field = (SelectField) element;
+//				return field.getEntity();
+				ModelField modelField=null;
+				try {
+					DataMartSelectField field = (DataMartSelectField) element;
+					modelField = datamartStructure.getField(field.getUniqueName());
+					//System.out.println("DataMartSelectField: "+modelField.getParent().getName()+"."+modelField.getName());
+		
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			return modelField.getName();
 				
 			}
 		});		

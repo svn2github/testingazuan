@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui.table;
 
 import it.eng.spagobi.meta.querybuilder.Activator;
+import it.eng.spagobi.meta.querybuilder.ResourceRegistry;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropHavingListener;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropSelectListener;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropWhereListener;
@@ -72,10 +73,10 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class QueryFiltersComponents extends Composite {
 	
-	private static final Image CHECKED = Activator.getImageDescriptor(
-	"icons/checked.png").createImage();
-	private static final Image UNCHECKED = Activator.getImageDescriptor(
-	"icons/unchecked.png").createImage();
+	private static final Image CHECKED = ResourceRegistry.getImage("checked");
+	// Activator.getImageDescriptor("icons/checked.png").createImage();
+	private static final Image UNCHECKED = ResourceRegistry.getImage("unchecked");
+	// Activator.getImageDescriptor("icons/unchecked.png").createImage();
 
 	/*
 	 * Create UI for Query Edit - Query Filters (Select, Where, Having)

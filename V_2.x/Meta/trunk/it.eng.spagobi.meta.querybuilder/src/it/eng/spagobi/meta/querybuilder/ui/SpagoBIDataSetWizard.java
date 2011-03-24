@@ -48,16 +48,6 @@ public class SpagoBIDataSetWizard extends DataSetWizard {
 		System.out.println("SpagoBIDataSetWizard ok");
 	}
 	
-	/*
-	@Override
-	public void addPages() {
-		editPage = new QueryBuilderEditWizardPage("Query Editing");
-		this.addPage(editPage);
-		resultPage = new QueryBuilderResultWizardPage("Query Result Preview");
-		this.addPage(resultPage);
-		System.out.println("SpagoBIDataSetWizard addPages ok");
-	}
-	*/
 	@Override
 	public boolean performFinish() {
 		if (resultPage.isPageComplete()){

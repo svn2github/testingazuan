@@ -9,6 +9,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.datatools.connectivity.oda.design.ui;bundle-version="[3.2.0,4.0.0)",
  it.eng.spagobi.meta.oda,
- it.eng.spagobi.meta.querybuilder;bundle-version="1.0.0"
+ it.eng.spagobi.meta.querybuilder;bundle-version="1.0.0",
+ ch.qos.logback.classic;bundle-version="0.9.19",
+ ch.qos.logback.core;bundle-version="0.9.19",
+ org.slf4j.api;bundle-version="1.5.11"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: it.eng.spagobi.meta.oda.ui.impl

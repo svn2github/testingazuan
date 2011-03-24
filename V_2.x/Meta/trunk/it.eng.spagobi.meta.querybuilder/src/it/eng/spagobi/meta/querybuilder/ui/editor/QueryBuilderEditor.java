@@ -1,7 +1,9 @@
 package it.eng.spagobi.meta.querybuilder.ui.editor;
 
 
+import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
+import it.eng.spagobi.meta.querybuilder.ui.tree.ModelStructureBuilder;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -29,6 +31,7 @@ public class QueryBuilderEditor extends MultiPageEditorPart implements IResource
 	private QueryBuilder queryBuilderUI;
 	private QueryEditPage queryEditPage;
 	private QueryResultPage queryResultPage;
+	private ViewModelStructure datamartStructure;
 
 	/**
 	 * Creates a multi-page editor for the Query Builder. This version use
@@ -37,10 +40,13 @@ public class QueryBuilderEditor extends MultiPageEditorPart implements IResource
 	public QueryBuilderEditor(QueryBuilder queryBuilderUI) {
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-		if (queryBuilderUI == null)
-			queryBuilderUI = new QueryBuilder();
-		else
+		if (queryBuilderUI == null){
+			datamartStructure = ModelStructureBuilder.build();
+			queryBuilderUI = new QueryBuilder(datamartStructure);
+		}
+		else{
 			this.queryBuilderUI = queryBuilderUI;
+		}		
 	}
 	
 	/**
@@ -49,7 +55,8 @@ public class QueryBuilderEditor extends MultiPageEditorPart implements IResource
 	public QueryBuilderEditor() {
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-		queryBuilderUI = new QueryBuilder();
+		datamartStructure = ModelStructureBuilder.build();
+		queryBuilderUI = new QueryBuilder(datamartStructure);
 	}
 	/**
 	 * Creates Edit Page of the multi-page editor,

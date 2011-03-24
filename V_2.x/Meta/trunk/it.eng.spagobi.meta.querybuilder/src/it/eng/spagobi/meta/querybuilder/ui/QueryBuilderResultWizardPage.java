@@ -22,6 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui;
 
 
+import it.eng.qbe.model.structure.ViewModelStructure;
+
+import org.eclipse.datatools.connectivity.oda.design.internal.ui.DataSetWizardBase;
 import org.eclipse.datatools.connectivity.oda.design.ui.wizards.DataSetWizardPage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Composite;
@@ -45,7 +48,7 @@ public class QueryBuilderResultWizardPage extends DataSetWizardPage {
         super( pageName );
         setTitle( pageName );
         setMessage( DEFAULT_MESSAGE );
-        this.queryBuilderUI = new QueryBuilder();
+     //   this.queryBuilderUI = new QueryBuilder();
 	}
 	
 	public QueryBuilderResultWizardPage( String pageName, QueryBuilder queryBuilderUI )
@@ -61,7 +64,7 @@ public class QueryBuilderResultWizardPage extends DataSetWizardPage {
 	{
         super( pageName, title, titleImage );
         setMessage( DEFAULT_MESSAGE );
-        this.queryBuilderUI = new QueryBuilder();
+     //   this.queryBuilderUI = new QueryBuilder();
 
 	}
 
@@ -76,6 +79,12 @@ public class QueryBuilderResultWizardPage extends DataSetWizardPage {
      */
     private Control createPageControl( Composite parent )
     {
+        DataSetWizardBase dataSetWizardBase = this.getOdaWizard();
+        ViewModelStructure datamartStructure = null;
+        if (dataSetWizardBase instanceof SpagoBIDataSetWizard){	
+        	datamartStructure = ((SpagoBIDataSetWizard)dataSetWizardBase).getDatamartStructure();
+        }
+        queryBuilderUI = new QueryBuilder(datamartStructure);
     	Composite composite = queryBuilderUI.createResultsComponents(parent);
         setPageComplete( true );
         return composite;

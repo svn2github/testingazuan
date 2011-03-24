@@ -50,10 +50,10 @@ public class ModelTreeViewer extends TreeViewer{
 	 * Initialize the tree
 	 * @param parent
 	 */
-	public ModelTreeViewer(Composite parent){
+	public ModelTreeViewer(Composite parent, ViewModelStructure datamartStructure){
 		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		logger.debug("IN: initializing the datamartTree");
-		datamartStructure = ModelStructureBuilder.build();
+		//datamartStructure = ModelStructureBuilder.build();
 		List<ViewModelEntity> roots = getDatamartStructureRoot(datamartStructure);
 		setContentProvider(new ViewContentProvider(roots));
 		setLabelProvider(new ViewLabelProvider(this,new ModelLabelProvider(datamartStructure.getDataSource())));

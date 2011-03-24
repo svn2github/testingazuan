@@ -95,10 +95,12 @@ public class QueryBuilderDropSelectListener extends ViewerDropAdapter {
 				dataMartField.getQueryName(),"NONE","NONE",false,false,false,false,false,dataMartField );
 		
 		SelectFieldModelProvider.INSTANCE.addSelectField(selectField);
-		tableViewer.refresh();
+		
 		
 		query = QueryProvider.getQuery();
 		query.addSelectFiled(dataMartField.getUniqueName(), "NONE", dataMartField.getName(), true, true, false, null, dataMartField.getPropertyAsString("format"));
+		//tableViewer.setInput(query.getSelectFields(false));
+		tableViewer.refresh();
 	}
 
 }

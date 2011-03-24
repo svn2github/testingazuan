@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui;
 
 
+import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDragListener;
 import it.eng.spagobi.meta.querybuilder.ui.editor.QueryBuilderEditor;
 import it.eng.spagobi.meta.querybuilder.ui.result.ResultTableViewer;
@@ -49,9 +50,10 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 public class QueryBuilder {
 	
 	private ModelTreeViewer businessModelTreeViewer;
+	protected ViewModelStructure datamartStructure;
 
-	public QueryBuilder(){
-		
+	public QueryBuilder(ViewModelStructure datamartStructure){
+		this.datamartStructure = datamartStructure;
 	}
 	
 	/*
@@ -108,7 +110,7 @@ public class QueryBuilder {
 		//*******************************************
 		// Business Model Tree Viewer 
 		//*******************************************
-		businessModelTreeViewer = new ModelTreeViewer(groupBusinessModelTree);
+		businessModelTreeViewer = new ModelTreeViewer(groupBusinessModelTree, datamartStructure);
 		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance(),LocalSelectionTransfer.getTransfer()  };
 		businessModelTreeViewer.addDragSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDragListener(businessModelTreeViewer));
 	}
@@ -156,7 +158,7 @@ public class QueryBuilder {
 	 */
 	public ResultTableViewer createResultsTableViewer(Group groupQueryResult){
 		ResultTableViewer tableViewer ;
-		tableViewer = new ResultTableViewer(groupQueryResult, businessModelTreeViewer.getModelStructure());
+		tableViewer = new ResultTableViewer(groupQueryResult, datamartStructure);
 		return tableViewer;
 	}
 	

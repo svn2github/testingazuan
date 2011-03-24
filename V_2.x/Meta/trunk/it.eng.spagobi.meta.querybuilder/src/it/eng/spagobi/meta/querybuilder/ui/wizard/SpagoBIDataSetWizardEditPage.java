@@ -48,14 +48,14 @@ import org.eclipse.swt.widgets.Text;
  * @author cortella
  *
  */
-public class SpagoBIDataSetBuilderEditWizardPage extends DataSetWizardPage {
+public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
 
     private static String DEFAULT_MESSAGE = "Define the query text for the data set";
     
     private QueryBuilder queryBuilderUI;
     private transient Text m_queryTextField;
     
-	public SpagoBIDataSetBuilderEditWizardPage( String pageName )
+	public SpagoBIDataSetWizardEditPage( String pageName )
 	{
         super( pageName );
         setTitle( pageName );
@@ -63,7 +63,7 @@ public class SpagoBIDataSetBuilderEditWizardPage extends DataSetWizardPage {
         //this.queryBuilderUI = new QueryBuilder();
 	}
 	
-	public SpagoBIDataSetBuilderEditWizardPage( String pageName, QueryBuilder queryBuilderUI )
+	public SpagoBIDataSetWizardEditPage( String pageName, QueryBuilder queryBuilderUI )
 	{
         super( pageName );
         setTitle( pageName );
@@ -71,7 +71,7 @@ public class SpagoBIDataSetBuilderEditWizardPage extends DataSetWizardPage {
         //this.queryBuilderUI = queryBuilderUI;
 	}
 	
-	public SpagoBIDataSetBuilderEditWizardPage( String pageName, String title,
+	public SpagoBIDataSetWizardEditPage( String pageName, String title,
 			ImageDescriptor titleImage )
 	{
         super( pageName, title, titleImage );

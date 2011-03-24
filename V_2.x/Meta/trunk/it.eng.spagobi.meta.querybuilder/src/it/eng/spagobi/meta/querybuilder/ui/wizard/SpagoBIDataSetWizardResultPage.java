@@ -37,14 +37,14 @@ import org.eclipse.swt.widgets.Control;
  * @author cortella
  *
  */
-public class SpagoBIDataSetBuilderResultWizardPage extends DataSetWizardPage {
+public class SpagoBIDataSetWizardResultPage extends DataSetWizardPage {
     private static String DEFAULT_MESSAGE = "Preview of the query results";
     
     private QueryBuilder queryBuilderUI;
  
 
     
-	public SpagoBIDataSetBuilderResultWizardPage( String pageName )
+	public SpagoBIDataSetWizardResultPage( String pageName )
 	{
         super( pageName );
         setTitle( pageName );
@@ -52,7 +52,7 @@ public class SpagoBIDataSetBuilderResultWizardPage extends DataSetWizardPage {
      //   this.queryBuilderUI = new QueryBuilder();
 	}
 	
-	public SpagoBIDataSetBuilderResultWizardPage( String pageName, QueryBuilder queryBuilderUI )
+	public SpagoBIDataSetWizardResultPage( String pageName, QueryBuilder queryBuilderUI )
 	{
         super( pageName );
         setTitle( pageName );
@@ -60,7 +60,7 @@ public class SpagoBIDataSetBuilderResultWizardPage extends DataSetWizardPage {
         this.queryBuilderUI = queryBuilderUI;
 	}
 	
-	public SpagoBIDataSetBuilderResultWizardPage( String pageName, String title,
+	public SpagoBIDataSetWizardResultPage( String pageName, String title,
 			ImageDescriptor titleImage )
 	{
         super( pageName, title, titleImage );

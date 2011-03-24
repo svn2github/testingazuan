@@ -32,8 +32,8 @@ import org.eclipse.datatools.connectivity.oda.design.ui.wizards.DataSetWizard;
  */
 public class SpagoBIDataSetWizard extends DataSetWizard {
 
-	private SpagoBIDataSetBuilderEditWizardPage editPage;
-	private SpagoBIDataSetBuilderResultWizardPage resultPage;
+	private SpagoBIDataSetWizardEditPage editPage;
+	private SpagoBIDataSetWizardResultPage resultPage;
 	protected ViewModelStructure datamartStructure;
 	
 

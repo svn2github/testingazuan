@@ -49,7 +49,6 @@ import it.eng.spagobi.meta.querybuilder.model.HavingClause;
 import it.eng.spagobi.meta.querybuilder.model.HavingClauseModelProvider;
 import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
 import it.eng.spagobi.meta.querybuilder.model.SelectField;
-import it.eng.spagobi.meta.querybuilder.model.SelectFieldModelProvider;
 import it.eng.spagobi.meta.querybuilder.model.WhereClause;
 import it.eng.spagobi.meta.querybuilder.model.WhereClauseModelProvider;
 
@@ -144,17 +143,10 @@ public class QueryEditGroup extends Composite {
 				
 //				SelectField field = (SelectField) element;
 //				return field.getEntity();
-				IModelField modelField=null;
-				try {
-					DataMartSelectField field = (DataMartSelectField) element;
-					modelField = datamartStructure.getField(field.getUniqueName());
-					//System.out.println("DataMartSelectField: "+modelField.getParent().getName()+"."+modelField.getName());
-		
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			return modelField.getName();
-				
+
+				DataMartSelectField field = (DataMartSelectField) element;
+				IModelField modelField = datamartStructure.getDataSource().getModelStructure().getField(field.getUniqueName());
+				return modelField.getParent().getName();
 			}
 		});		
 		
@@ -163,8 +155,11 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				SelectField field = (SelectField) element;
-				return field.getField();
+//				SelectField field = (SelectField) element;
+//				return field.getField();
+				DataMartSelectField field = (DataMartSelectField) element;
+				IModelField modelField = datamartStructure.getDataSource().getModelStructure().getField(field.getUniqueName());
+				return modelField.getName();
 			}
 		});		
 		
@@ -173,7 +168,9 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				SelectField field = (SelectField) element;
+//				SelectField field = (SelectField) element;
+//				return field.getAlias();
+				DataMartSelectField field = (DataMartSelectField) element;
 				return field.getAlias();
 			}
 		});		
@@ -184,8 +181,11 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				SelectField field = (SelectField) element;
-				return field.getFunction();
+//				SelectField field = (SelectField) element;
+//				return field.getFunction();
+				DataMartSelectField field = (DataMartSelectField) element;
+				IModelField modelField = datamartStructure.getDataSource().getModelStructure().getField(field.getUniqueName());
+				return field.getFunction().getName();
 			}
 		});		
 		col.setEditingSupport(new FunctionColumnEditingSupport(viewer));

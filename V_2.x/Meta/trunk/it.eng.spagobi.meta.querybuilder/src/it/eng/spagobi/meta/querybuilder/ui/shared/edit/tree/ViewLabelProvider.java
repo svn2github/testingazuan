@@ -25,18 +25,11 @@ import it.eng.qbe.model.structure.IModelNode;
 import it.eng.qbe.model.structure.IModelObject;
 import it.eng.spagobi.meta.querybuilder.ResourceRegistry;
 
-import java.io.IOException;
-
-
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
-import org.osgi.framework.Bundle;
 
 /**
  * @author Alberto Ghedin (alberto.ghedin@eng.it)

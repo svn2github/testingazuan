@@ -25,7 +25,6 @@ import it.eng.spagobi.utilities.comparator.ObjectComparator;
 
 import java.text.ParseException;
 
-
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.slf4j.Logger;

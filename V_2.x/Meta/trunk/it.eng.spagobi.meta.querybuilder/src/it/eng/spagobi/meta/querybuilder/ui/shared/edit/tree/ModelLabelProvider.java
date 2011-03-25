@@ -21,12 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree;
 
-import java.util.Locale;
-
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.properties.IModelProperties;
 import it.eng.qbe.model.structure.IModelObject;
 import it.eng.spagobi.commons.utilities.StringUtilities;
+
+import java.util.Locale;
 
 /**
  * @author Alberto Ghedin (alberto.ghedin@eng.it)

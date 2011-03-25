@@ -1,6 +1,5 @@
 package it.eng.spagobi.meta.querybuilder;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 

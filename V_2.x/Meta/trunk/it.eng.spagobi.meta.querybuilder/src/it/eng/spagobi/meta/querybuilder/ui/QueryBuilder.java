@@ -25,7 +25,6 @@ package it.eng.spagobi.meta.querybuilder.ui;
 import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.qbe.query.Query;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDragListener;
-import it.eng.spagobi.meta.querybuilder.ui.editor.SpagoBIDataSetEditor;
 import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables.QueryEditGroup;
 import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree.ModelTreeViewer;
 import it.eng.spagobi.meta.querybuilder.ui.shared.result.ResultTableViewer;
@@ -41,7 +40,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.part.MultiPageEditorPart;
 
 
 

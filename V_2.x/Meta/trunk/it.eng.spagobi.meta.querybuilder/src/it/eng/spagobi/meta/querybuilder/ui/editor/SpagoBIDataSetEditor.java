@@ -1,10 +1,6 @@
 package it.eng.spagobi.meta.querybuilder.ui.editor;
 
 
-import it.eng.qbe.model.structure.ViewModelStructure;
-import it.eng.qbe.query.Query;
-import it.eng.spagobi.meta.querybuilder.ResourceRegistry;
-import it.eng.spagobi.meta.querybuilder.ui.ModelStructureBuilder;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.core.resources.IMarker;
@@ -12,13 +8,13 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.*;
-import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
-import org.eclipse.ui.ide.IDE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

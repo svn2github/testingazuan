@@ -21,20 +21,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.dnd;
 
-import java.util.List;
-
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.query.Query;
-import it.eng.spagobi.meta.querybuilder.ResourceRegistry;
 import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
-import it.eng.spagobi.meta.querybuilder.model.SelectField;
-import it.eng.spagobi.meta.querybuilder.model.SelectFieldModelProvider;
 import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables.SelectFieldTable;
+
+import java.util.List;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeSelection;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.TransferData;
 import org.slf4j.Logger;

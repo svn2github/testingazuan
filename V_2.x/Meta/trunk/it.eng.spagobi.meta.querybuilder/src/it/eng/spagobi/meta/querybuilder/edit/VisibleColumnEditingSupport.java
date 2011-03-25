@@ -22,15 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.edit;
 
 import it.eng.qbe.query.DataMartSelectField;
-import it.eng.qbe.query.ISelectField;
-import it.eng.qbe.query.Query;
-import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
-import it.eng.spagobi.meta.querybuilder.model.SelectField;
-import it.eng.spagobi.meta.querybuilder.model.SelectFieldModelProvider;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
-import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;

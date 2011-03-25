@@ -21,37 +21,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables;
 
-import java.util.List;
-
-//import junit.framework.Assert;
-
-import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.ViewModelStructure;
-import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.HavingField.Operand;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.spagobi.meta.querybuilder.ResourceRegistry;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropHavingListener;
-import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropSelectListener;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropWhereListener;
-import it.eng.spagobi.meta.querybuilder.edit.AliasColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.BooleanConnectorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.FilterColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.FunctionColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.GroupColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.HavingBooleanConnectorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.HavingFilterColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.HavingIsForPromptColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.HavingLeftFunctionColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.HavingOperatorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.HavingRightFunctionColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.IncludeColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.IsForPromptColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.OperatorColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.OrderColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.VisibleColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
 
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -62,8 +49,6 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;

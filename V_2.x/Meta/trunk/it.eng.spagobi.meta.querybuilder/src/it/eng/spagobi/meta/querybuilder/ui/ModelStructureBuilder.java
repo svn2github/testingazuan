@@ -21,21 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.DriverManager;
 import it.eng.qbe.datasource.IDataSource;
@@ -52,6 +37,22 @@ import it.eng.qbe.model.structure.filter.QbeTreeFilter;
 import it.eng.qbe.model.structure.filter.QbeTreeOrderEntityFilter;
 import it.eng.qbe.model.structure.filter.QbeTreeOrderFieldFilter;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Alberto Ghedin (alberto.ghedin@eng.it)
@@ -137,7 +138,7 @@ public class ModelStructureBuilder {
 		connection.setName( "FoodMart" );
 		connection.setDialect( "org.hibernate.dialect.MySQLDialect" );			
 		connection.setDriverClass( "com.mysql.jdbc.Driver");			
-		connection.setPassword( "mysql" );
+		connection.setPassword( "root" );
 		connection.setUrl( "jdbc:mysql://localhost:3306/foodmart");
 		connection.setUsername( "root" );	
 		return connection;

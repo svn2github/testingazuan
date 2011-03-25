@@ -72,7 +72,7 @@ public 	class ViewLabelProvider extends LabelProvider {
 		type = (String)((IModelNode)obj).getProperties().get("type");
 		
 		try {
-			img = ResourceRegistry.getImage("it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree.node"+type);
+			img = ResourceRegistry.getImage("it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree.node."+type);
 		} catch (Exception e) {
 			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
 			img =  PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);

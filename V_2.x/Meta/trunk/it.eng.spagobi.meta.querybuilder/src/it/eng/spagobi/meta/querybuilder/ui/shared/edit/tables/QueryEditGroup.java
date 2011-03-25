@@ -42,7 +42,7 @@ import it.eng.spagobi.meta.querybuilder.edit.HavingOperatorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.HavingRightFunctionColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.IsForPromptColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.OperatorColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.WhereRightOperandColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.FilterRightOperandColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -186,7 +186,7 @@ public class QueryEditGroup extends Composite {
 				return rightOperand;
 			}
 		});	
-		col.setEditingSupport(new WhereRightOperandColumnEditingSupport(viewer));
+		col.setEditingSupport(new FilterRightOperandColumnEditingSupport(viewer));
 		
 		//Is for Prompt Column
 		col = createTableViewerColumn(columnsTitles[4], columnsBounds[4], 4, viewer);

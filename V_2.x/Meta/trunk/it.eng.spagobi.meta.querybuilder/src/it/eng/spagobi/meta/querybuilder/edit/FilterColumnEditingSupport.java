@@ -63,6 +63,15 @@ public class FilterColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected void setValue(Object element, Object value) {
+		
+//		WhereField elementField = ((WhereField) element);
+//		Query query = QueryProvider.getQuery();
+//		ExpressionUtilities.updateParentOperation(query.getWhereClauseStructure(), "$F{"+whereClause.getName()+"}", whereClause.getBooleanConnector());
+//		viewer.refresh();
+//		
+//		elementField.setName(String.valueOf(value));
+//		viewer.refresh();
+		
 		((WhereField) element).setName(String.valueOf(value));
 		viewer.refresh();
 	}

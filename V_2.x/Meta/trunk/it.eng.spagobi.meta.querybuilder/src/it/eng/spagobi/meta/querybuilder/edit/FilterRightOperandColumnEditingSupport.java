@@ -37,12 +37,12 @@ import org.eclipse.jface.viewers.TextCellEditor;
  * @author Alberto Ghedin (alberto.ghedin@eng.it)
  *
  */
-public class WhereRightOperandColumnEditingSupport extends EditingSupport {
+public class FilterRightOperandColumnEditingSupport extends EditingSupport {
 	private final TableViewer viewer;
 	/**
 	 * @param viewer
 	 */
-	public WhereRightOperandColumnEditingSupport(TableViewer viewer) {
+	public FilterRightOperandColumnEditingSupport(TableViewer viewer) {
 		super(viewer);
 		this.viewer = viewer;
 	}

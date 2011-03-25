@@ -26,7 +26,7 @@ import java.util.List;
 import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
-import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -39,12 +39,14 @@ import org.eclipse.jface.viewers.TableViewer;
  */
 public class BooleanConnectorColumnEditingSupport extends EditingSupport {
 	private final TableViewer viewer;
+	private QueryBuilder queryBuilder;
 	/**
 	 * @param viewer
 	 */
-	public BooleanConnectorColumnEditingSupport(TableViewer viewer) {
+	public BooleanConnectorColumnEditingSupport(TableViewer viewer, QueryBuilder queryBuilder) {
 		super(viewer);
 		this.viewer = viewer;
+		this.queryBuilder = queryBuilder;
 	}
 
 	@Override
@@ -80,7 +82,7 @@ public class BooleanConnectorColumnEditingSupport extends EditingSupport {
 		} else if (((Integer) value) == 1) {
 			whereClause.setBooleanConnector("OR");
 		} 
-		Query query = QueryProvider.getQuery();
+		Query query = queryBuilder.getQuery();
 		updateNodeExpression(query.getWhereClauseStructure(), "$F{"+whereClause.getName()+"}", whereClause.getBooleanConnector());
 		viewer.refresh();
 	}

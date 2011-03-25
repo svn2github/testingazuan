@@ -28,7 +28,7 @@ import java.util.Map;
 import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.QbeDatasetFactory;
-import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
 
 public class ResultTableViewer extends TableViewer {
 	
-	private ViewModelStructure modelStructure;
+	private QueryBuilder queryBuilder;
 	private IDataSet dataSet;
 	private ResultTableComparator comparator;
 	private static final int defaultColumnWidth = 100;
@@ -73,9 +73,9 @@ public class ResultTableViewer extends TableViewer {
 	 * @param groupQueryResult
 	 * @param modelStructure
 	 */
-	public ResultTableViewer(Group groupQueryResult, ViewModelStructure modelStructure){
+	public ResultTableViewer(Group groupQueryResult, QueryBuilder queryBuilder){
 		super(groupQueryResult, SWT.BORDER | SWT.FULL_SELECTION);	
-		this.modelStructure = modelStructure;
+		this.queryBuilder = queryBuilder;
 		getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		setLabelProvider(new ResultTableLabelProvider());
 		setContentProvider(new ResultTableContentProvider());
@@ -180,10 +180,10 @@ public class ResultTableViewer extends TableViewer {
 	 */
 	public IDataStore updateTableData(){
 		IDataStore dataStore = null;
-		Query query = QueryProvider.getQuery();
+		Query query = queryBuilder.getQuery();
 		if(!query.isEmpty()){
 			logger.debug("Getting the dataset");
-			this.dataSet =  QbeDatasetFactory.createDataSet(modelStructure.getDataSource().createStatement(query));
+			this.dataSet =  QbeDatasetFactory.createDataSet(queryBuilder.getModelStructure().getDataSource().createStatement(query));
 			logger.debug("Data set loaded.");
 			logger.debug("Executing the query");
 			dataSet.loadData(offset,pageSize,maxResults);

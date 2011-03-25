@@ -29,7 +29,7 @@ import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.query.WhereField.Operand;
 import it.eng.qbe.statement.AbstractStatement;
-import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.Viewer;
@@ -45,12 +45,15 @@ public class QueryBuilderDropWhereListener extends ViewerDropAdapter {
 	private static int counter = 1;
 	
 	private Viewer viewer;
+	private QueryBuilder queryBuilder;
+	
 	/**
 	 * @param viewer
 	 */
-	public QueryBuilderDropWhereListener(Viewer viewer) {
+	public QueryBuilderDropWhereListener(Viewer viewer, QueryBuilder queryBuilder) {
 		super(viewer);
 		this.viewer = viewer;
+		this.queryBuilder = queryBuilder;	
 
 	}
 
@@ -98,7 +101,7 @@ public class QueryBuilderDropWhereListener extends ViewerDropAdapter {
         values[0] = dataMartField.getUniqueName();
         
         Operand leftOperand = new Operand(values,dataMartField.getParent().getName()+" : "+dataMartField.getName(), AbstractStatement.OPERAND_TYPE_FIELD, nullStringArray, nullStringArray);
-        query = QueryProvider.getQuery();
+        query = queryBuilder.getQuery();
         query.addWhereField("Filter"+counter, "Filter"+counter, true, leftOperand, "NONE", null, "AND");
         ExpressionNode node = query.getWhereClauseStructure();
         if(node==null){

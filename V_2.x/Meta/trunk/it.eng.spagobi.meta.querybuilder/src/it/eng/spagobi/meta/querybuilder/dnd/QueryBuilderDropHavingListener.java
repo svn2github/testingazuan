@@ -26,7 +26,7 @@ import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.query.HavingField.Operand;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.AbstractStatement;
-import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import java.util.List;
 
@@ -43,13 +43,15 @@ import org.eclipse.swt.dnd.TransferData;
 public class QueryBuilderDropHavingListener extends ViewerDropAdapter {
 	private static int counter = 1;
 	private Viewer viewer;
+	private QueryBuilder queryBuilder;
+	
 	/**
 	 * @param viewer
 	 */
-	public QueryBuilderDropHavingListener(Viewer viewer) {
+	public QueryBuilderDropHavingListener(Viewer viewer, QueryBuilder queryBuilder) {
 		super(viewer);
 		this.viewer = viewer;
-
+		this.queryBuilder = queryBuilder;		
 	}
 
 	/* (non-Javadoc)
@@ -96,7 +98,7 @@ public class QueryBuilderDropHavingListener extends ViewerDropAdapter {
         nullStringArray[0] = dataMartField.getUniqueName();
         
         Operand leftOperand = new Operand(values, dataMartField.getParent().getName()+" : "+dataMartField.getName(), AbstractStatement.OPERAND_TYPE_FIELD, nullStringArray, nullStringArray, null);
-        query = QueryProvider.getQuery();
+        query = queryBuilder.getQuery();
 		query.addHavingField("having"+counter, "having"+counter, false, leftOperand, null, null, "AND");
         tableViewer.setInput(query.getHavingFields());
         tableViewer.refresh();

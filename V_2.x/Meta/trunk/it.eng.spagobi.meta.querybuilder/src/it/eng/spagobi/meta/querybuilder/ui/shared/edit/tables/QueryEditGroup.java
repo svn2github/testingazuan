@@ -25,7 +25,6 @@ import java.util.List;
 
 //import junit.framework.Assert;
 
-import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.HavingField.Operand;
 import it.eng.qbe.query.Query;
@@ -44,7 +43,7 @@ import it.eng.spagobi.meta.querybuilder.edit.HavingRightFunctionColumnEditingSup
 import it.eng.spagobi.meta.querybuilder.edit.IsForPromptColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.OperatorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.WhereRightOperandColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -76,14 +75,15 @@ public class QueryEditGroup extends Composite {
 	// Activator.getImageDescriptor("icons/checked.png").createImage();
 	private static final Image UNCHECKED = ResourceRegistry.getImage("ui.shared.edit.tables.button.unchecked");
 	// Activator.getImageDescriptor("icons/unchecked.png").createImage();
-	private ViewModelStructure datamartStructure;
+	
+	private QueryBuilder queryBuilder;
 
 	private static Logger logger = LoggerFactory.getLogger(QueryEditGroup.class);
 
 	/*
-	 * Create UI for Query Edit - Query Filters (Select, Where, Having)
+	 * Create UI for query edit tables (Select, Where, Having)
 	 */	
-	public QueryEditGroup(Composite composite, ViewModelStructure datamartStructure) {
+	public QueryEditGroup(Composite composite, QueryBuilder queryBuilder) {
 		super(composite, SWT.NONE);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -92,13 +92,10 @@ public class QueryEditGroup extends Composite {
 		grpQueryEditor.setText("Query Editor");
 		grpQueryEditor.setLayout(new GridLayout(1, false));
 		
-		this.datamartStructure = datamartStructure;
+		this.queryBuilder = queryBuilder;
 		
-		//create Select panel
 		createEditSelect(grpQueryEditor);
-		//create Where panel
 		createEditWhere(grpQueryEditor);
-		//create Having panel
 		createEditHaving(grpQueryEditor);
 		
 	}
@@ -107,7 +104,7 @@ public class QueryEditGroup extends Composite {
 	 * Create UI for Query Edit - Select Filter 
 	 */	
 	private void createEditSelect(Group queryEditorGroup){
-		new SelectFieldTable(queryEditorGroup, datamartStructure);
+		new SelectFieldTable(queryEditorGroup, queryBuilder);
 	}	
 	
 	
@@ -131,13 +128,13 @@ public class QueryEditGroup extends Composite {
 		createEditWhereColumns(grpQueryEditor, tableViewerWhere);
 		
 		tableViewerWhere.setContentProvider(new ArrayContentProvider());
-		Query query = QueryProvider.getQuery();
+		Query query = queryBuilder.getQuery();
 		tableViewerWhere.setInput(query.getWhereFields());		
 
 		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
-		tableViewerWhere.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropWhereListener(tableViewerWhere));
+		tableViewerWhere.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropWhereListener(tableViewerWhere, queryBuilder));
 	}	
 	
 	public void createEditWhereColumns(final Composite parent, final TableViewer viewer){
@@ -222,7 +219,7 @@ public class QueryEditGroup extends Composite {
 				return whereClause.getBooleanConnector();
 			}
 		});		
-		col.setEditingSupport(new BooleanConnectorColumnEditingSupport(viewer));
+		col.setEditingSupport(new BooleanConnectorColumnEditingSupport(viewer, queryBuilder));
 	}	
 
 	/*
@@ -244,12 +241,12 @@ public class QueryEditGroup extends Composite {
 		createEditHavingColumns(grpQueryEditor, tableViewerHaving);
 		
 		tableViewerHaving.setContentProvider(new ArrayContentProvider());
-		Query query = QueryProvider.getQuery();
-		tableViewerHaving.setInput(query.getSelectFields(false));		
+		Query query = queryBuilder.getQuery();
+		tableViewerHaving.setInput(query.getHavingFields());		
 		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
-		tableViewerHaving.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropHavingListener(tableViewerHaving));
+		tableViewerHaving.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropHavingListener(tableViewerHaving, queryBuilder));
 	}
 	
 	public void createEditHavingColumns(final Composite parent, final TableViewer viewer){

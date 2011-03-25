@@ -45,7 +45,7 @@ public class SpagoBIDataSetEditPage extends Composite {
 		builder.createEditBusinessModelTree(this);
 		
 		//Create Query Filters
-		builder.createEditFilters(this);
+		builder.createEditGroup(this);
 	}
 
 

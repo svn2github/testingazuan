@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui;
 
 
+import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.qbe.query.Query;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDragListener;
@@ -53,18 +54,9 @@ public class QueryBuilder {
 	protected Query query;
 
 	public QueryBuilder(){
-		this.modelStructure = ModelStructureBuilder.build();;
+		this.modelStructure = ModelStructureBuilder.build();
+		this.query = new Query();
 	}
-	
-	/*
-	 * Create a new Wizard for QueryBuilder with 
-	 * Edit and Results pages
-	 */
-	public Wizard createWizard() {
-		return null;
-	}
-	
-	
 	
 	public Query getQuery() {
 		return query;
@@ -72,6 +64,11 @@ public class QueryBuilder {
 
 	public ViewModelStructure getModelStructure() {
 		return modelStructure;
+	}
+	
+	// this is not good. refactor!
+	public IModelStructure getBaseModelStructure() {
+		return getModelStructure().getDataSource().getModelStructure();
 	}
 	
 	
@@ -91,7 +88,7 @@ public class QueryBuilder {
 		createEditBusinessModelTree(composite);
 		
 		//Create Query Filters
-		createEditFilters(composite);
+		createEditGroup(composite);
 
 		return container;
 	}
@@ -118,12 +115,9 @@ public class QueryBuilder {
 		businessModelTreeViewer.addDragSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDragListener(businessModelTreeViewer));
 	}
 
-	/*
-	 * Create UI for Query Edit - Query Filters (Select, Where, Having)
-	 */	
-	public QueryEditGroup createEditFilters(Composite composite){
+	public QueryEditGroup createEditGroup(Composite composite){
 		QueryEditGroup compositeFilters;
-		compositeFilters = new QueryEditGroup(composite, modelStructure);
+		compositeFilters = new QueryEditGroup(composite, this);
 		return compositeFilters;
 	}
 
@@ -161,7 +155,7 @@ public class QueryBuilder {
 	 */
 	public ResultTableViewer createResultsTableViewer(Group groupQueryResult){
 		ResultTableViewer tableViewer ;
-		tableViewer = new ResultTableViewer(groupQueryResult, modelStructure);
+		tableViewer = new ResultTableViewer(groupQueryResult, this);
 		return tableViewer;
 	}
 	

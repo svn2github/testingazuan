@@ -24,7 +24,6 @@ package it.eng.spagobi.meta.querybuilder.dnd;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.query.Query;
-import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
 import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables.SelectFieldTable;
 
 import java.util.List;
@@ -67,10 +66,10 @@ public class QueryBuilderDropSelectListener extends ViewerDropAdapter {
    			IModelEntity dataMartEntity = (IModelEntity)selectionData;
 			List<IModelField> dataMartFields = dataMartEntity.getAllFields();
 			for (IModelField dataMartField : dataMartFields){
-				addTableRow(selectTable.getViewer(), dataMartField);
+				selectTable.addField(dataMartField);
 			}        	
         } else if(selectionData instanceof IModelField){
-        	addTableRow(selectTable.getViewer(),(IModelField)selectionData);
+        	selectTable.addField((IModelField)selectionData);
         }
         
 			
@@ -89,12 +88,5 @@ public class QueryBuilderDropSelectListener extends ViewerDropAdapter {
 	
 
 	
-	public void addTableRow(TableViewer tableViewer, IModelField dataMartField) {
-		Query query;
-		query = QueryProvider.getQuery();
-		query.addSelectFiled(dataMartField.getUniqueName(), "NONE", dataMartField.getName(), true, true, false, null, dataMartField.getPropertyAsString("format"));
-		tableViewer.setInput(query.getSelectFields(false));
-		tableViewer.refresh();
-	}
 
 }

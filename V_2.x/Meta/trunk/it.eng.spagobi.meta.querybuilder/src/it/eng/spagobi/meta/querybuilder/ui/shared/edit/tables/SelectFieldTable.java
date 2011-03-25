@@ -33,7 +33,7 @@ import it.eng.spagobi.meta.querybuilder.edit.GroupColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.IncludeColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.OrderColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.VisibleColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
 public class SelectFieldTable extends AbstractQueryEditTable {
 	
 	private TableViewer viewer;
-	private ViewModelStructure modelStructure;
+	private QueryBuilder queryBuilder;
 	
 	private static final Image CHECKED = ResourceRegistry.getImage("ui.shared.edit.tables.button.checked");
 	private static final Image UNCHECKED = ResourceRegistry.getImage("ui.shared.edit.tables.button.unchecked");
@@ -70,9 +70,9 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 	private static Logger logger = LoggerFactory.getLogger(SelectFieldTable.class);
 
 
-	public SelectFieldTable(Composite container, ViewModelStructure modelStructure) {
+	public SelectFieldTable(Composite container, QueryBuilder queryBuilder) {
 		super(container, SWT.NONE);
-		this.modelStructure = modelStructure;
+		this.queryBuilder = queryBuilder;
 		
 		setLayout(new GridLayout(1, false));
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -91,46 +91,16 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 		createEditSelectColumns(this, viewer);
 		
 		viewer.setContentProvider(new ArrayContentProvider());
-//		tableViewerSelect.setInput(SelectFieldModelProvider.INSTANCE.getSelectFields());
-		Query query = QueryProvider.getQuery();
+		Query query = queryBuilder.getQuery();
 		viewer.setInput(query.getSelectFields(false));		
+		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
 		viewer.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropSelectListener(this));
 		
 		//Delete via Keyboard
 		//TODO: modify the removeSelectField
-		viewer.getTable().addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent e)
-			{
-				logger.trace("IN");
-				
-				if (e.keyCode == SWT.DEL)
-				{
-					logger.debug("Delete pressed");
-					int[] selectionIndices = viewer.getTable().getSelectionIndices();
-					logger.debug("Number of selected elements is equals to [{}]",selectionIndices.length);
-					int indexLength = selectionIndices.length;
-					Query query = QueryProvider.getQuery();
-					int selectFieldsNumber = query.getSelectFields(false).size();
-					if (indexLength > 0)
-					{
-						logger.debug("Number of selection field in query is equal to [{}]", query.getSelectFields(false).size());
-						for (int i = 0; i < indexLength; i++){		
-							
-							query.removeSelectField(selectionIndices[i]);
-							logger.debug("Successfully removed query selection field at index equal to [{}]", selectionIndices[i]);
-						}
-						logger.debug("Number of selection field in query is equal to [{}]", query.getSelectFields(false).size());
-						//Assert.assertTrue("Unable to delete alla select fields from query", selectFieldsNumber - query.getSelectFields(false).size() == indexLength);
-						viewer.setInput(query.getSelectFields(false));
-						viewer.refresh();
-					}
-				}
-				logger.trace("OUT");
-
-			}
-		}); 
+		viewer.getTable().addKeyListener(new SelectTableKeyAdapter(queryBuilder) ); 
 	}
 	
 	private void createEditSelectColumns(final Composite parent, final TableViewer viewer){
@@ -143,7 +113,7 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 			@Override
 			public String getText(Object element) {
 				DataMartSelectField field = (DataMartSelectField) element;
-				IModelField modelField = modelStructure.getDataSource().getModelStructure().getField(field.getUniqueName());
+				IModelField modelField = queryBuilder.getBaseModelStructure().getField(field.getUniqueName());
 				return modelField.getParent().getName();
 			}
 		});		
@@ -156,7 +126,7 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 //				SelectField field = (SelectField) element;
 //				return field.getField();
 				DataMartSelectField field = (DataMartSelectField) element;
-				IModelField modelField = modelStructure.getDataSource().getModelStructure().getField(field.getUniqueName());
+				IModelField modelField = queryBuilder.getBaseModelStructure().getField(field.getUniqueName());
 				return modelField.getName();
 			}
 		});		
@@ -307,4 +277,54 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 	public TableViewer getViewer() {
 		return viewer;
 	}
+	
+	public void addField(IModelField dataMartField) {
+		Query query;
+		
+		query = queryBuilder.getQuery();
+		query.addSelectFiled(dataMartField.getUniqueName(), "NONE", dataMartField.getName(), true, true, false, null, dataMartField.getPropertyAsString("format"));
+		
+		viewer.setInput(query.getSelectFields(false));
+		viewer.refresh();
+	}
+	
+	public class SelectTableKeyAdapter extends KeyAdapter {
+		QueryBuilder queryBuilder;
+		
+		public SelectTableKeyAdapter(QueryBuilder queryBuilder) {
+			this.queryBuilder = queryBuilder;
+		}
+		
+		public void keyPressed(KeyEvent e)	{
+			logger.trace("IN");
+				
+			if (e.keyCode == SWT.DEL)
+			{
+				logger.debug("Delete pressed");
+				int[] selectionIndices = viewer.getTable().getSelectionIndices();
+				logger.debug("Number of selected elements is equals to [{}]",selectionIndices.length);
+				int indexLength = selectionIndices.length;
+				Query query = queryBuilder.getQuery();
+				int selectFieldsNumber = query.getSelectFields(false).size();
+				if (indexLength > 0)
+				{
+					logger.debug("Number of selection field in query is equal to [{}]", query.getSelectFields(false).size());
+					for (int i = 0; i < indexLength; i++){		
+						query.removeSelectField(selectionIndices[i]);
+						logger.debug("Successfully removed query selection field at index equal to [{}]", selectionIndices[i]);
+					}
+					logger.debug("Number of selection field in query is equal to [{}]", query.getSelectFields(false).size());
+					//Assert.assertTrue("Unable to delete alla select fields from query", selectFieldsNumber - query.getSelectFields(false).size() == indexLength);
+					viewer.setInput(query.getSelectFields(false));
+					viewer.refresh();
+				}
+			}
+			logger.trace("OUT");
+		}
+	}
+	
+	
+	
+	
+	
 }

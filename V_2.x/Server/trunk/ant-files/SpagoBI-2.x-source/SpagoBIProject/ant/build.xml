@@ -130,8 +130,9 @@
           <wcVersion path="${src}" prefix="svn."/>
       </svn>
 		<jar destfile="${build}/${webapp_name}/WEB-INF/lib/spagobi.core-${project.version}.jar"  >
-		<fileset dir="${build}/${webapp_name}/WEB-INF/classes/it/eng/spagobi">
-			<include name="**/*" />
+		<fileset dir="${build}/${webapp_name}/WEB-INF/classes/">
+			<include name="it/**/*" />
+			<exclude name="it/eng/spago/**/*" />
 		</fileset>
 
 			<manifest>

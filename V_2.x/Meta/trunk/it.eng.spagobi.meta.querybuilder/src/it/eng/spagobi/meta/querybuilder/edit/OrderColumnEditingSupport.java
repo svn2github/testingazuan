@@ -52,8 +52,8 @@ public class OrderColumnEditingSupport extends EditingSupport {
 	protected CellEditor getCellEditor(Object element) {
 		String[] order = new String[3];
 		order[0] = "NONE";
-		order[1] = "ASCENDING";
-		order[2] = "DESCENDING";
+		order[1] = "ASC";
+		order[2] = "DESC";
 
 		return new ComboBoxCellEditor(viewer.getTable(), order);
 	}
@@ -69,9 +69,9 @@ public class OrderColumnEditingSupport extends EditingSupport {
 		DataMartSelectField selectField = ((DataMartSelectField) element);
 		if (selectField.getOrderType().equals("NONE")) {
 			return 0;
-		} else if (selectField.getOrderType().equals("ASCENDING")){
+		} else if (selectField.getOrderType().equals("ASC")){
 			return 1;
-		} else if (selectField.getOrderType().equals("DESCENDING")){
+		} else if (selectField.getOrderType().equals("DESC")){
 			return 2;
 		} 
 		return 0;

@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables;
 
+import java.util.List;
+
+//import junit.framework.Assert;
+
 import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.HavingField.Operand;
@@ -39,6 +43,7 @@ import it.eng.spagobi.meta.querybuilder.edit.HavingOperatorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.HavingRightFunctionColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.IsForPromptColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.OperatorColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.WhereRightOperandColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
 
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -183,7 +188,8 @@ public class QueryEditGroup extends Composite {
 				String rightOperand = (whereClause.getRightOperand()!=null)?whereClause.getRightOperand().description:"";
 				return rightOperand;
 			}
-		});		
+		});	
+		col.setEditingSupport(new WhereRightOperandColumnEditingSupport(viewer));
 		
 		//Is for Prompt Column
 		col = createTableViewerColumn(columnsTitles[4], columnsBounds[4], 4, viewer);

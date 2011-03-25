@@ -21,15 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.dnd;
 
+import java.util.List;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
+import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField.Operand;
 import it.eng.qbe.statement.AbstractStatement;
 import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
-
-import java.util.List;
-
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.Viewer;
@@ -95,11 +94,22 @@ public class QueryBuilderDropWhereListener extends ViewerDropAdapter {
         nullStringArray[0] = "null";
         
         String[] values = new String[1];
-        nullStringArray[0] = dataMartField.getUniqueName();
+        values[0] = dataMartField.getUniqueName();
         
         Operand leftOperand = new Operand(values,dataMartField.getParent().getName()+" : "+dataMartField.getName(), AbstractStatement.OPERAND_TYPE_FIELD, nullStringArray, nullStringArray);
         query = QueryProvider.getQuery();
         query.addWhereField("Filter"+counter, "Filter"+counter, true, leftOperand, "NONE", null, "AND");
+        ExpressionNode node = query.getWhereClauseStructure();
+        if(node==null){
+        	node = new ExpressionNode("NO_NODE_OP","$F{Filter" +counter+"}");
+        	query.setWhereClauseStructure(node);
+        }else{
+        	ExpressionNode operationNode = new ExpressionNode("NODE_OP", "AND");
+        	ExpressionNode filterNode = new ExpressionNode("NO_NODE_OP","$F{Filter" +counter+"}");
+        	operationNode.addChild(node);
+        	operationNode.addChild(filterNode);
+        	query.setWhereClauseStructure(operationNode);
+        }
         tableViewer.setInput(query.getWhereFields());
         tableViewer.refresh();
         counter++;

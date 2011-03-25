@@ -26,10 +26,10 @@ import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 
+import java.util.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -130,49 +130,49 @@ public class DataStoreReader {
 		IField field;
 		IRecord record;
 		Object propertyRawValue;
+		int rowcount=0,columncount;
 		propertyRawValue = dataStore.getMetaData().getProperty("resultNumber");
-		
+
 		String[][] result = new String[new Long(dataStore.getRecordsCount()).intValue()][visibleColumns];
 		String[] resultRecord = new String[visibleColumns];
-			
-			int j=0;
 
-			Iterator records = dataStore.iterator();
-			while(records.hasNext()) {
-				record = (IRecord)records.next();
-				resultRecord = new String[dataStore.getMetaData().getFieldCount()];
-				for(int i = 0; i < dataStore.getMetaData().getFieldCount(); i++) {
-					
-					IFieldMetaData fieldMetaData = dataStore.getMetaData().getFieldMeta(i);
-					
-					propertyRawValue = fieldMetaData.getProperty("visible");
-					if(propertyRawValue != null 
-							&& (propertyRawValue instanceof Boolean) 
-							&& ((Boolean)propertyRawValue).booleanValue() == false) {
-						continue;
-					}
-										
-					field = record.getFieldAt( dataStore.getMetaData().getFieldIndex( fieldMetaData.getName() ) );
-	
-					String fieldValue = "";
-					if(field.getValue() != null && field.getValue() != "") {
-						if(Timestamp.class.isAssignableFrom(fieldMetaData.getType())) {
-							fieldValue =  TIMESTAMP_FORMATTER.format(  field.getValue() );
-						} else if (Date.class.isAssignableFrom(fieldMetaData.getType())) {
-							fieldValue =  DATE_FORMATTER.format(  field.getValue() );
-						} else {
-							fieldValue =  field.getValue().toString();
-						}
-					}
-					
-					resultRecord[i]=(fieldValue);
+		Iterator records = dataStore.iterator();
+		while(records.hasNext()) {
+			record = (IRecord)records.next();
+			resultRecord = new String[dataStore.getMetaData().getFieldCount()];
+
+			columncount=0;
+			for(int i = 0; i < dataStore.getMetaData().getFieldCount(); i++) {
+
+				IFieldMetaData fieldMetaData = dataStore.getMetaData().getFieldMeta(i);
+
+				propertyRawValue = fieldMetaData.getProperty("visible");
+				if(propertyRawValue != null && (propertyRawValue instanceof Boolean) && ((Boolean)propertyRawValue).booleanValue() == false) {
+					continue;
 				}
-				result[j]=(resultRecord);
-				j++;
-			}
-			
 
-		
+				field = record.getFieldAt( dataStore.getMetaData().getFieldIndex( fieldMetaData.getName() ) );
+
+				String fieldValue = "";
+				if(field.getValue() != null && field.getValue() != "") {
+					if(Timestamp.class.isAssignableFrom(fieldMetaData.getType())) {
+						fieldValue =  TIMESTAMP_FORMATTER.format(  field.getValue() );
+					} else if (Date.class.isAssignableFrom(fieldMetaData.getType())) {
+						fieldValue =  DATE_FORMATTER.format(  field.getValue() );
+					} else {
+						fieldValue =  field.getValue().toString();
+					}
+				}
+
+				resultRecord[columncount]=(fieldValue);
+				columncount++;
+			}
+			result[rowcount]=(resultRecord);
+			rowcount++;
+		}
+
+
+
 		return result;
 	}
 	

@@ -21,11 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.edit;
 
+import java.util.StringTokenizer;
+
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.query.WhereField.Operand;
 import it.eng.qbe.statement.AbstractStatement;
-
-import java.util.StringTokenizer;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
@@ -70,7 +70,7 @@ public class WhereRightOperandColumnEditingSupport extends EditingSupport {
 	@Override
 	protected void setValue(Object element, Object value) {	
 		String stringValue = (String)value;
-		Operand rightOperand = new Operand(getValues(stringValue),stringValue, AbstractStatement.OPERAND_TYPE_STATIC, new String[0], new String[0]);
+		Operand rightOperand = new Operand(new String[0],stringValue, AbstractStatement.OPERAND_TYPE_STATIC, new String[0], getValues(stringValue));
 		((WhereField) element).setRightOperand(rightOperand);
 		viewer.refresh();
 	}

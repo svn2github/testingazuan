@@ -21,7 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.edit;
 
+import java.util.List;
+
+import it.eng.qbe.query.ExpressionNode;
+import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
+import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -47,8 +52,6 @@ public class BooleanConnectorColumnEditingSupport extends EditingSupport {
 		String[] booleanConnectors = new String[2];
 		booleanConnectors[0] = "AND";
 		booleanConnectors[1] = "OR";
-
-
 		return new ComboBoxCellEditor(viewer.getTable(), booleanConnectors);
 	}
 
@@ -77,9 +80,44 @@ public class BooleanConnectorColumnEditingSupport extends EditingSupport {
 		} else if (((Integer) value) == 1) {
 			whereClause.setBooleanConnector("OR");
 		} 
-
+		Query query = QueryProvider.getQuery();
+		updateNodeExpression(query.getWhereClauseStructure(), "$F{"+whereClause.getName()+"}", whereClause.getBooleanConnector());
 		viewer.refresh();
-
+	}
+	
+	/**
+	 * Update the where clause expression
+	 * @param node root of the expression
+	 * @param fieldName name of this field
+	 * @param connector the new connector
+	 */
+	public static void updateNodeExpression(ExpressionNode node,String fieldName,String connector){
+		ExpressionNode nodeToUpdate = findExpressionNodeToUpdate(node, fieldName);
+		if(nodeToUpdate!=null){
+			nodeToUpdate.setValue(connector);
+		}
+	}
+	
+	private static ExpressionNode findExpressionNodeToUpdate(ExpressionNode node,String fieldName){
+		List<ExpressionNode> children = node.getChildNodes();
+		if(children!=null){
+			//check if the field is the child of the passed node..
+			//if so the node to update is the passed node
+			for(int i=0; i<children.size(); i++){
+				if(children.get(i).getValue().equals(fieldName)){
+					return node;
+				}
+			}
+			//control if the field live in this subtree
+			for(int i=0; i<children.size(); i++){
+				ExpressionNode findNodeInChild = findExpressionNodeToUpdate(children.get(i),fieldName);
+				if(findNodeInChild!=null){
+					return findNodeInChild;
+				}
+			}
+		}
+		//the field doesn't live in ths subtree
+		return null;
 	}
 
 }

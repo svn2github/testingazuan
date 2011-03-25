@@ -26,6 +26,7 @@ import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.Query;
+import it.eng.qbe.query.WhereField;
 import it.eng.qbe.query.WhereField.Operand;
 import it.eng.qbe.statement.AbstractStatement;
 import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
@@ -104,7 +105,9 @@ public class QueryBuilderDropWhereListener extends ViewerDropAdapter {
         	node = new ExpressionNode("NO_NODE_OP","$F{Filter" +counter+"}");
         	query.setWhereClauseStructure(node);
         }else{
-        	ExpressionNode operationNode = new ExpressionNode("NODE_OP", "AND");
+        	//get the previous field
+        	WhereField previousAddedField = (WhereField)query.getWhereFields().get(query.getWhereFields().size()-2);
+        	ExpressionNode operationNode = new ExpressionNode("NODE_OP", previousAddedField.getBooleanConnector());
         	ExpressionNode filterNode = new ExpressionNode("NO_NODE_OP","$F{Filter" +counter+"}");
         	operationNode.addChild(node);
         	operationNode.addChild(filterNode);

@@ -23,7 +23,7 @@ package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables;
 
 import java.util.List;
 
-import junit.framework.Assert;
+//import junit.framework.Assert;
 
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.ViewModelStructure;
@@ -165,7 +165,7 @@ public class QueryEditGroup extends Composite {
 							logger.debug("Successfully removed query selection field at index equal to [{}]", selectionIndices[i]);
 						}
 						logger.debug("Number of selection field in query is equal to [{}]", query.getSelectFields(false).size());
-						Assert.assertTrue("Unable to delete alla select fields from query", selectFieldsNumber - query.getSelectFields(false).size() == indexLength);
+						//Assert.assertTrue("Unable to delete alla select fields from query", selectFieldsNumber - query.getSelectFields(false).size() == indexLength);
 						tableViewerSelect.setInput(query.getSelectFields(false));
 						tableViewerSelect.refresh();
 					}

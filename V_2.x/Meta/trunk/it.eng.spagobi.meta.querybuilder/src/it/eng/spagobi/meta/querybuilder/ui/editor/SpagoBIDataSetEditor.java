@@ -2,7 +2,9 @@ package it.eng.spagobi.meta.querybuilder.ui.editor;
 
 
 import it.eng.qbe.model.structure.ViewModelStructure;
-import it.eng.spagobi.meta.querybuilder.ModelStructureBuilder;
+import it.eng.qbe.query.Query;
+import it.eng.spagobi.meta.querybuilder.ResourceRegistry;
+import it.eng.spagobi.meta.querybuilder.ui.ModelStructureBuilder;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.core.resources.IMarker;
@@ -17,6 +19,8 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.ide.IDE;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -31,33 +35,33 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	private QueryBuilder queryBuilderUI;
 	private SpagoBIDataSetEditPage queryEditPage;
 	private SpagoBIDataSetResultPage queryResultPage;
-	private ViewModelStructure datamartStructure;
-
-	/**
-	 * Creates a multi-page editor for the Query Builder. This version use
-	 * the passed CreateQueryBuilderUI object.
-	 */
-	public SpagoBIDataSetEditor(QueryBuilder queryBuilderUI) {
-		super();
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-		if (queryBuilderUI == null){
-			datamartStructure = ModelStructureBuilder.build();
-			queryBuilderUI = new QueryBuilder(datamartStructure);
-		}
-		else{
-			this.queryBuilderUI = queryBuilderUI;
-		}		
-	}
+	private ViewModelStructure modelStructure;
+	private Query query;
 	
-	/**
-	 * Creates a multi-page editor for the Query Builder.
-	 */
+	private static Logger logger = LoggerFactory.getLogger(SpagoBIDataSetEditor.class);
+	
+
 	public SpagoBIDataSetEditor() {
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-		datamartStructure = ModelStructureBuilder.build();
-		queryBuilderUI = new QueryBuilder(datamartStructure);
+		modelStructure = ModelStructureBuilder.build();
+		queryBuilderUI = new QueryBuilder(modelStructure);
 	}
+	
+	/**
+	 * The <code>MultiPageEditorExample</code> implementation of this method
+	 * checks that the input is an instance of <code>IFileEditorInput</code>.
+	 */
+	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
+		logger.trace("IN");
+		super.init(site, editorInput);
+	
+		logger.debug("editorInput parameter type is equal to [{}]", editorInput.getClass());
+		if (!(editorInput instanceof FileEditorInput)) throw new PartInitException("Invalid Input: Must be FileEditorInput");
+		
+		logger.trace("OUT");
+	}
+	
 	/**
 	 * Creates Edit Page of the multi-page editor,
 	 * which contains UI for editing the query.
@@ -125,16 +129,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		setActivePage(0);
 		IDE.gotoMarker(getEditor(0), marker);
 	}
-	/**
-	 * The <code>MultiPageEditorExample</code> implementation of this method
-	 * checks that the input is an instance of <code>IFileEditorInput</code>.
-	 */
-	public void init(IEditorSite site, IEditorInput editorInput)
-		throws PartInitException {
-		//if (!(editorInput instanceof IFileEditorInput))
-		//	throw new PartInitException("Invalid Input: Must be IFileEditorInput");
-		super.init(site, editorInput);
-	}
+	
 	/* (non-Javadoc)
 	 * Method declared on IEditorPart.
 	 */

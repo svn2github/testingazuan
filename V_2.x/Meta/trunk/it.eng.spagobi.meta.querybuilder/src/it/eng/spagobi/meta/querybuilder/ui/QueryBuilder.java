@@ -64,13 +64,7 @@ public class QueryBuilder {
 		return null;
 	}
 	
-	/*
-	 * Create a new (MultiPage)Editor for QueryBuilder with Edit 
-	 * and Results pages
-	 */
-	public MultiPageEditorPart createEditor() {
-		return new SpagoBIDataSetEditor(this);
-	}
+	
 	
 	/*
 	 * Create UI components for Query Edit

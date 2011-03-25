@@ -2,8 +2,8 @@ package it.eng.spagobi.meta.querybuilder.ui.editor;
 
 
 import it.eng.qbe.model.structure.ViewModelStructure;
+import it.eng.spagobi.meta.querybuilder.ModelStructureBuilder;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
-import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree.ModelStructureBuilder;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;

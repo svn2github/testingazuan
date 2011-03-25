@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables;
 
+import java.util.List;
+
+import junit.framework.Assert;
+
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.qbe.query.DataMartSelectField;
@@ -60,6 +64,8 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -69,6 +75,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author cortella
@@ -81,6 +89,9 @@ public class QueryEditGroup extends Composite {
 	private static final Image UNCHECKED = ResourceRegistry.getImage("ui.shared.edit.tables.button.unchecked");
 	// Activator.getImageDescriptor("icons/unchecked.png").createImage();
 	private ViewModelStructure datamartStructure;
+	private TableViewer tableViewerSelect;
+	
+	private static Logger logger = LoggerFactory.getLogger(QueryEditGroup.class);
 
 	/*
 	 * Create UI for Query Edit - Query Filters (Select, Where, Having)
@@ -113,7 +124,7 @@ public class QueryEditGroup extends Composite {
 		lblSelectFields.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblSelectFields.setText("Select Fields");
 		
-		TableViewer tableViewerSelect  = new TableViewer(grpQueryEditor, SWT.BORDER | SWT.FULL_SELECTION);
+		tableViewerSelect  = new TableViewer(grpQueryEditor, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
 		tableViewerSelect.setColumnProperties(new String[] { "Entity", "Field", "Alias", "Function", "Order", "Group", "Include", "Visible", "Filter", "Having" });
 		
 		Table table = tableViewerSelect.getTable();
@@ -129,6 +140,41 @@ public class QueryEditGroup extends Composite {
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
 		tableViewerSelect.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropSelectListener(tableViewerSelect));
+		
+		//Delete via Keyboard
+		//TODO: modify the removeSelectField
+		tableViewerSelect.getTable().addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e)
+			{
+				logger.trace("IN");
+				
+				if (e.keyCode == SWT.DEL)
+				{
+					logger.debug("Delete pressed");
+					int[] selectionIndices = tableViewerSelect.getTable().getSelectionIndices();
+					logger.debug("Number of selected elements is equals to [{}]",selectionIndices.length);
+					int indexLength = selectionIndices.length;
+					Query query = QueryProvider.getQuery();
+					int selectFieldsNumber = query.getSelectFields(false).size();
+					if (indexLength > 0)
+					{
+						logger.debug("Number of selection field in query is equal to [{}]", query.getSelectFields(false).size());
+						for (int i = 0; i < indexLength; i++){		
+							
+							query.removeSelectField(selectionIndices[i]);
+							logger.debug("Successfully removed query selection field at index equal to [{}]", selectionIndices[i]);
+						}
+						logger.debug("Number of selection field in query is equal to [{}]", query.getSelectFields(false).size());
+						Assert.assertTrue("Unable to delete alla select fields from query", selectFieldsNumber - query.getSelectFields(false).size() == indexLength);
+						tableViewerSelect.setInput(query.getSelectFields(false));
+						tableViewerSelect.refresh();
+					}
+				}
+				logger.trace("OUT");
+
+			}
+		}); 
+		
 	}	
 	
 	private void createEditSelectColumns(final Composite parent, final TableViewer viewer){

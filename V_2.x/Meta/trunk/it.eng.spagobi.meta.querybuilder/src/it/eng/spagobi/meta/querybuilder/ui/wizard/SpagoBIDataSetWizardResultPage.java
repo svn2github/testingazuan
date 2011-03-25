@@ -40,10 +40,6 @@ import org.eclipse.swt.widgets.Control;
 public class SpagoBIDataSetWizardResultPage extends DataSetWizardPage {
     private static String DEFAULT_MESSAGE = "Preview of the query results";
     
-    private QueryBuilder queryBuilderUI;
- 
-
-    
 	public SpagoBIDataSetWizardResultPage( String pageName )
 	{
         super( pageName );
@@ -52,27 +48,25 @@ public class SpagoBIDataSetWizardResultPage extends DataSetWizardPage {
      //   this.queryBuilderUI = new QueryBuilder();
 	}
 	
-	public SpagoBIDataSetWizardResultPage( String pageName, QueryBuilder queryBuilderUI )
-	{
-        super( pageName );
-        setTitle( pageName );
-        setMessage( DEFAULT_MESSAGE );
-        this.queryBuilderUI = queryBuilderUI;
-	}
-	
 	public SpagoBIDataSetWizardResultPage( String pageName, String title,
 			ImageDescriptor titleImage )
 	{
         super( pageName, title, titleImage );
         setMessage( DEFAULT_MESSAGE );
-     //   this.queryBuilderUI = new QueryBuilder();
-
 	}
 
 	@Override
 	public void createPageCustomControl(Composite parent) {
 		setControl( createPageControl( parent ) );
 
+	}
+	
+	public QueryBuilder getQueryBuilder() {
+		return getSpagoBIWizard().getQueryBuilder();
+	}
+	
+	public SpagoBIDataSetWizard getSpagoBIWizard() {
+		return (SpagoBIDataSetWizard)getOdaWizard();
 	}
 	
     /**
@@ -83,10 +77,9 @@ public class SpagoBIDataSetWizardResultPage extends DataSetWizardPage {
         DataSetWizardBase dataSetWizardBase = this.getOdaWizard();
         ViewModelStructure datamartStructure = null;
         if (dataSetWizardBase instanceof SpagoBIDataSetWizard){	
-        	datamartStructure = ((SpagoBIDataSetWizard)dataSetWizardBase).getDatamartStructure();
+        	datamartStructure = getQueryBuilder().getModelStructure();
         }
-        queryBuilderUI = new QueryBuilder(datamartStructure);
-    	Composite composite = queryBuilderUI.createResultsComponents(parent);
+      Composite composite = getQueryBuilder().createResultsComponents(parent);
         setPageComplete( true );
         return composite;
     }

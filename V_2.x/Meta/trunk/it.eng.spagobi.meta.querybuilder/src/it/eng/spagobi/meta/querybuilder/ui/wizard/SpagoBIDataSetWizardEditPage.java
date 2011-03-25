@@ -43,6 +43,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author cortella
@@ -52,8 +54,8 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
 
     private static String DEFAULT_MESSAGE = "Define the query text for the data set";
     
-    private QueryBuilder queryBuilderUI;
-    private transient Text m_queryTextField;
+    private static Logger logger = LoggerFactory.getLogger(SpagoBIDataSetWizardEditPage.class);
+	
     
 	public SpagoBIDataSetWizardEditPage( String pageName )
 	{
@@ -87,19 +89,28 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
 
 	}
 	
+	
+	
+	
+	public QueryBuilder getQueryBuilder() {
+		return getSpagoBIWizard().getQueryBuilder();
+	}
+	
+	public SpagoBIDataSetWizard getSpagoBIWizard() {
+		return (SpagoBIDataSetWizard)getOdaWizard();
+	}
+	
     /**
      * Creates custom control for query editing.
      */
     private Control createPageControl( Composite parent ) {
-        System.out.println("Hosting wizard: "+this.getWizard());
-        System.out.println("OdaWizard: "+this.getOdaWizard());
-        DataSetWizardBase dataSetWizardBase = this.getOdaWizard();
+        DataSetWizardBase dataSetWizardBase = getOdaWizard();
         ViewModelStructure datamartStructure = null;
         if (dataSetWizardBase instanceof SpagoBIDataSetWizard){	
-        	datamartStructure = ((SpagoBIDataSetWizard)dataSetWizardBase).getDatamartStructure();
+        	datamartStructure = getQueryBuilder().getModelStructure();
         }
-        queryBuilderUI = new QueryBuilder(datamartStructure);
-    	Composite composite = queryBuilderUI.createEditComponents(parent);
+      
+    	Composite composite = getQueryBuilder().createEditComponents(parent);
         setPageComplete( true );
         return composite;
     }
@@ -124,7 +135,7 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
             return; // nothing to initialize
 
         // initialize control
-        m_queryTextField.setText( queryText );
+       // TODO inizialization goes here
         validateData();
         setMessage( DEFAULT_MESSAGE );
 
@@ -141,7 +152,7 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
      */
     private String getQueryText( )
     {
-        return m_queryTextField.getText();
+        return "";// TODO returns json serialized query;
     }
 
 	/*
@@ -182,16 +193,11 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
         return isPageComplete();
 	}
 
-    /**
-     * Validates the user-defined value in the page control exists
-     * and not a blank text.
-     * Set page message accordingly.
-     */
+    
 	private void validateData( )
 	{
-        boolean isValid = ( m_queryTextField != null &&
-            getQueryText() != null && getQueryText().trim().length() > 0 );
-
+        //TODO validate query here, please
+		boolean isValid = true;
         if( isValid )
             setMessage( DEFAULT_MESSAGE );
         else

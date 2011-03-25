@@ -26,15 +26,19 @@ import java.util.List;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.query.Query;
+import it.eng.spagobi.meta.querybuilder.ResourceRegistry;
 import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
 import it.eng.spagobi.meta.querybuilder.model.SelectField;
 import it.eng.spagobi.meta.querybuilder.model.SelectFieldModelProvider;
+import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables.SelectFieldTable;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.TransferData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -42,13 +46,14 @@ import org.eclipse.swt.dnd.TransferData;
  *
  */
 public class QueryBuilderDropSelectListener extends ViewerDropAdapter {
-	private Viewer viewer;
-	/**
-	 * @param viewer
-	 */
-	public QueryBuilderDropSelectListener(Viewer viewer) {
-		super(viewer);
-		this.viewer = viewer;
+	
+	private SelectFieldTable selectTable;
+	
+	private static Logger logger = LoggerFactory.getLogger(QueryBuilderDropSelectListener.class);
+	
+	public QueryBuilderDropSelectListener(SelectFieldTable selectFieldTable) {
+		super(selectFieldTable.getViewer());
+		this.selectTable = selectFieldTable;
 
 	}
 
@@ -66,10 +71,10 @@ public class QueryBuilderDropSelectListener extends ViewerDropAdapter {
    			IModelEntity dataMartEntity = (IModelEntity)selectionData;
 			List<IModelField> dataMartFields = dataMartEntity.getAllFields();
 			for (IModelField dataMartField : dataMartFields){
-				addTableRow((TableViewer)viewer,dataMartField);
+				addTableRow(selectTable.getViewer(), dataMartField);
 			}        	
         } else if(selectionData instanceof IModelField){
-        	addTableRow((TableViewer)viewer,(IModelField)selectionData);
+        	addTableRow(selectTable.getViewer(),(IModelField)selectionData);
         }
         
 			
@@ -88,15 +93,8 @@ public class QueryBuilderDropSelectListener extends ViewerDropAdapter {
 	
 
 	
-	public void addTableRow(TableViewer tableViewer, IModelField dataMartField){
+	public void addTableRow(TableViewer tableViewer, IModelField dataMartField) {
 		Query query;
-		
-		SelectField selectField = new SelectField(dataMartField.getParent().getName(),dataMartField.getName(),
-				dataMartField.getQueryName(),"NONE","NONE",false,false,false,false,false,dataMartField );
-		
-		SelectFieldModelProvider.INSTANCE.addSelectField(selectField);
-		
-		
 		query = QueryProvider.getQuery();
 		query.addSelectFiled(dataMartField.getUniqueName(), "NONE", dataMartField.getName(), true, true, false, null, dataMartField.getPropertyAsString("format"));
 		tableViewer.setInput(query.getSelectFields(false));

@@ -21,10 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.wizard;
 
-import it.eng.qbe.model.structure.ViewModelStructure;
-import it.eng.spagobi.meta.querybuilder.ui.ModelStructureBuilder;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.datatools.connectivity.oda.design.ui.wizards.DataSetWizard;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author cortella
@@ -32,29 +33,28 @@ import org.eclipse.datatools.connectivity.oda.design.ui.wizards.DataSetWizard;
  */
 public class SpagoBIDataSetWizard extends DataSetWizard {
 
-	private SpagoBIDataSetWizardEditPage editPage;
-	private SpagoBIDataSetWizardResultPage resultPage;
-	protected ViewModelStructure datamartStructure;
+	protected QueryBuilder queryBuilder;
 	
-
+	private static Logger logger = LoggerFactory.getLogger(SpagoBIDataSetWizard.class);
 	
 	public SpagoBIDataSetWizard(){
 		super();
+		logger.trace("IN");
 		this.setWindowTitle("Create a new SpagoBI Data Set");
 		this.setHelpAvailable(false);
-		datamartStructure =	ModelStructureBuilder.build();
-		System.out.println("SpagoBIDataSetWizard ok");
+		queryBuilder = new QueryBuilder();
+		logger.trace("OUT");
 	}
 	
 	@Override
 	public boolean performFinish() {
-		if (resultPage.isPageComplete()){
-			return true;
-		}
-		return false;
+		return (getPages()[getPageCount()-1].isPageComplete());
+	}
+
+	public QueryBuilder getQueryBuilder() {
+		return queryBuilder;
 	}
 	
-	public ViewModelStructure getDatamartStructure(){
-		return datamartStructure;
-	}
+	
+	
 }

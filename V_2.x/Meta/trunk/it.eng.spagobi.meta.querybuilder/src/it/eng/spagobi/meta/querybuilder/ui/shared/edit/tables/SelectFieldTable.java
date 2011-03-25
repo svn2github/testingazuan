@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SelectFieldTable extends AbstractQueryEditTable {
 	
-	private TableViewer tableViewerSelect;
+	private TableViewer viewer;
 	private ViewModelStructure modelStructure;
 	
 	private static final Image CHECKED = ResourceRegistry.getImage("ui.shared.edit.tables.button.checked");
@@ -81,26 +81,26 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 		selectFieldLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		selectFieldLabel.setText("Select Fields");
 		
-		tableViewerSelect  = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
-		tableViewerSelect.setColumnProperties(new String[] { "Entity", "Field", "Alias", "Function", "Order", "Group", "Include", "Visible", "Filter", "Having" });
+		viewer  = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+		viewer.setColumnProperties(new String[] { "Entity", "Field", "Alias", "Function", "Order", "Group", "Include", "Visible", "Filter", "Having" });
 		
-		Table table = tableViewerSelect.getTable();
+		Table table = viewer.getTable();
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
-		createEditSelectColumns(this, tableViewerSelect);
+		createEditSelectColumns(this, viewer);
 		
-		tableViewerSelect.setContentProvider(new ArrayContentProvider());
+		viewer.setContentProvider(new ArrayContentProvider());
 //		tableViewerSelect.setInput(SelectFieldModelProvider.INSTANCE.getSelectFields());
 		Query query = QueryProvider.getQuery();
-		tableViewerSelect.setInput(query.getSelectFields(false));		
+		viewer.setInput(query.getSelectFields(false));		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
-		tableViewerSelect.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropSelectListener(tableViewerSelect));
+		viewer.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropSelectListener(this));
 		
 		//Delete via Keyboard
 		//TODO: modify the removeSelectField
-		tableViewerSelect.getTable().addKeyListener(new KeyAdapter() {
+		viewer.getTable().addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e)
 			{
 				logger.trace("IN");
@@ -108,7 +108,7 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 				if (e.keyCode == SWT.DEL)
 				{
 					logger.debug("Delete pressed");
-					int[] selectionIndices = tableViewerSelect.getTable().getSelectionIndices();
+					int[] selectionIndices = viewer.getTable().getSelectionIndices();
 					logger.debug("Number of selected elements is equals to [{}]",selectionIndices.length);
 					int indexLength = selectionIndices.length;
 					Query query = QueryProvider.getQuery();
@@ -123,8 +123,8 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 						}
 						logger.debug("Number of selection field in query is equal to [{}]", query.getSelectFields(false).size());
 						//Assert.assertTrue("Unable to delete alla select fields from query", selectFieldsNumber - query.getSelectFields(false).size() == indexLength);
-						tableViewerSelect.setInput(query.getSelectFields(false));
-						tableViewerSelect.refresh();
+						viewer.setInput(query.getSelectFields(false));
+						viewer.refresh();
 					}
 				}
 				logger.trace("OUT");
@@ -302,9 +302,9 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 			}
 		});	
 	}
+
 	
-	
-	public TableViewer getTableViewerSelect() {
-		return tableViewerSelect;
+	public TableViewer getViewer() {
+		return viewer;
 	}
 }

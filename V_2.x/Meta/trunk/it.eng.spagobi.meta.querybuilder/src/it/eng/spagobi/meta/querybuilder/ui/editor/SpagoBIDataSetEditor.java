@@ -32,11 +32,9 @@ import org.slf4j.LoggerFactory;
  */
 public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResourceChangeListener{
 
-	private QueryBuilder queryBuilderUI;
+	private QueryBuilder queryBuilder;
 	private SpagoBIDataSetEditPage queryEditPage;
 	private SpagoBIDataSetResultPage queryResultPage;
-	private ViewModelStructure modelStructure;
-	private Query query;
 	
 	private static Logger logger = LoggerFactory.getLogger(SpagoBIDataSetEditor.class);
 	
@@ -44,8 +42,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	public SpagoBIDataSetEditor() {
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-		modelStructure = ModelStructureBuilder.build();
-		queryBuilderUI = new QueryBuilder(modelStructure);
+		queryBuilder = new QueryBuilder();
 	}
 	
 	/**
@@ -67,11 +64,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	 * which contains UI for editing the query.
 	 */
 	void createEditPage() {
-		/*
-		Composite container = queryBuilderUI.createEditComponent(getContainer());
-		int index = addPage(container);
-		*/
-		queryEditPage = new SpagoBIDataSetEditPage(getContainer(), queryBuilderUI);
+		queryEditPage = new SpagoBIDataSetEditPage(getContainer(), queryBuilder);
 		int index = addPage(queryEditPage);
 		setPageText(index, "Edit");
 	}
@@ -80,10 +73,8 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	 * Creates the Query Result Page
 	 */
 	void createResultsPage() {
-//		Composite container = queryBuilderUI.createResultsComponent(getContainer());
-//		int index = addPage(container);
-		
-		queryResultPage = new SpagoBIDataSetResultPage(getContainer(), queryBuilderUI);
+
+		queryResultPage = new SpagoBIDataSetResultPage(getContainer(), queryBuilder);
 		int index = addPage(queryResultPage);
 		setPageText(index, "Results");
 	}

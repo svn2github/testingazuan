@@ -23,6 +23,7 @@ package it.eng.spagobi.meta.querybuilder.ui;
 
 
 import it.eng.qbe.model.structure.ViewModelStructure;
+import it.eng.qbe.query.Query;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDragListener;
 import it.eng.spagobi.meta.querybuilder.ui.editor.SpagoBIDataSetEditor;
 import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables.QueryEditGroup;
@@ -50,10 +51,11 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  */
 public class QueryBuilder {
 	
-	protected ViewModelStructure datamartStructure;
+	protected ViewModelStructure modelStructure;
+	protected Query query;
 
-	public QueryBuilder(ViewModelStructure datamartStructure){
-		this.datamartStructure = datamartStructure;
+	public QueryBuilder(){
+		this.modelStructure = ModelStructureBuilder.build();;
 	}
 	
 	/*
@@ -64,6 +66,15 @@ public class QueryBuilder {
 		return null;
 	}
 	
+	
+	
+	public Query getQuery() {
+		return query;
+	}
+
+	public ViewModelStructure getModelStructure() {
+		return modelStructure;
+	}
 	
 	
 	/*
@@ -104,7 +115,7 @@ public class QueryBuilder {
 		//*******************************************
 		// Business Model Tree Viewer 
 		//*******************************************
-		ModelTreeViewer businessModelTreeViewer = new ModelTreeViewer(groupBusinessModelTree, datamartStructure);
+		ModelTreeViewer businessModelTreeViewer = new ModelTreeViewer(groupBusinessModelTree, modelStructure);
 		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance(),LocalSelectionTransfer.getTransfer()  };
 		businessModelTreeViewer.addDragSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDragListener(businessModelTreeViewer));
 	}
@@ -114,7 +125,7 @@ public class QueryBuilder {
 	 */	
 	public QueryEditGroup createEditFilters(Composite composite){
 		QueryEditGroup compositeFilters;
-		compositeFilters = new QueryEditGroup(composite, datamartStructure);
+		compositeFilters = new QueryEditGroup(composite, modelStructure);
 		return compositeFilters;
 	}
 
@@ -152,7 +163,7 @@ public class QueryBuilder {
 	 */
 	public ResultTableViewer createResultsTableViewer(Group groupQueryResult){
 		ResultTableViewer tableViewer ;
-		tableViewer = new ResultTableViewer(groupQueryResult, datamartStructure);
+		tableViewer = new ResultTableViewer(groupQueryResult, modelStructure);
 		return tableViewer;
 	}
 	

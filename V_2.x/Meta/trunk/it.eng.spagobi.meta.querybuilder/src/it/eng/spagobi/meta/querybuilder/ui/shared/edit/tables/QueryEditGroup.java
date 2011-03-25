@@ -28,7 +28,10 @@ import java.util.List;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.qbe.query.DataMartSelectField;
+import it.eng.qbe.query.HavingField;
+import it.eng.qbe.query.HavingField.Operand;
 import it.eng.qbe.query.Query;
+import it.eng.qbe.query.WhereField;
 import it.eng.spagobi.meta.querybuilder.ResourceRegistry;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropHavingListener;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropSelectListener;
@@ -49,12 +52,7 @@ import it.eng.spagobi.meta.querybuilder.edit.IsForPromptColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.OperatorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.OrderColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.VisibleColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.model.HavingClause;
-import it.eng.spagobi.meta.querybuilder.model.HavingClauseModelProvider;
 import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
-import it.eng.spagobi.meta.querybuilder.model.SelectField;
-import it.eng.spagobi.meta.querybuilder.model.WhereClause;
-import it.eng.spagobi.meta.querybuilder.model.WhereClauseModelProvider;
 
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -370,7 +368,9 @@ public class QueryEditGroup extends Composite {
 		createEditWhereColumns(grpQueryEditor, tableViewerWhere);
 		
 		tableViewerWhere.setContentProvider(new ArrayContentProvider());
-		tableViewerWhere.setInput(WhereClauseModelProvider.INSTANCE.getWhereClauses());
+		Query query = QueryProvider.getQuery();
+		tableViewerWhere.setInput(query.getWhereFields());		
+
 		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
@@ -386,8 +386,8 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				WhereClause whereClause = (WhereClause) element;
-				return whereClause.getFilterName();
+				WhereField field = (WhereField) element;
+				return field.getName();
 			}
 		});	
 		col.setEditingSupport(new FilterColumnEditingSupport(viewer));
@@ -398,8 +398,9 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				WhereClause whereClause = (WhereClause) element;
-				return whereClause.getLeftOperand();
+				WhereField whereClause = (WhereField) element;
+				String leftOperand = (whereClause.getLeftOperand()!=null)?whereClause.getLeftOperand().description:"";
+				return leftOperand;
 			}
 		});	
 		
@@ -408,7 +409,7 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				WhereClause whereClause = (WhereClause) element;
+				WhereField whereClause = (WhereField) element;
 				return whereClause.getOperator();
 			}
 		});		
@@ -420,8 +421,9 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				WhereClause whereClause = (WhereClause) element;
-				return whereClause.getRightOperand();
+				WhereField whereClause = (WhereField) element;
+				String rightOperand = (whereClause.getRightOperand()!=null)?whereClause.getRightOperand().description:"";
+				return rightOperand;
 			}
 		});		
 		
@@ -430,12 +432,13 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				return null;
+				WhereField whereClause = (WhereField) element;
+				return ""+whereClause.isPromptable();
 			}
 			
 			@Override
 			public Image getImage(Object element) {
-				if (((WhereClause) element).isForPrompt()) {
+				if (((WhereField) element).isPromptable()) {
 					return CHECKED;
 				} else {
 					return UNCHECKED;
@@ -451,7 +454,7 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				WhereClause whereClause = (WhereClause) element;
+				WhereField whereClause = (WhereField) element;
 				return whereClause.getBooleanConnector();
 			}
 		});		
@@ -477,7 +480,8 @@ public class QueryEditGroup extends Composite {
 		createEditHavingColumns(grpQueryEditor, tableViewerHaving);
 		
 		tableViewerHaving.setContentProvider(new ArrayContentProvider());
-		tableViewerHaving.setInput(HavingClauseModelProvider.INSTANCE.getHavingClauses());
+		Query query = QueryProvider.getQuery();
+		tableViewerHaving.setInput(query.getSelectFields(false));		
 		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
@@ -493,8 +497,8 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				HavingClause havingClause = (HavingClause) element;
-				return havingClause.getFilterName();
+				HavingField havingClause = (HavingField) element;
+				return havingClause.getName();
 			}
 		});	
 		col.setEditingSupport(new HavingFilterColumnEditingSupport(viewer));
@@ -505,8 +509,12 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				HavingClause havingClause = (HavingClause) element;
-				return havingClause.getLeftFunction();
+				HavingField havingClause = (HavingField) element;
+				Operand leftOperand = havingClause.getLeftOperand();
+				if(leftOperand!=null && leftOperand.function!=null && leftOperand.function.getName()!=null){
+					return leftOperand.function.getName();
+				}
+				return "";
 			}
 		});	
 		col.setEditingSupport(new HavingLeftFunctionColumnEditingSupport(viewer));
@@ -517,8 +525,12 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				HavingClause havingClause = (HavingClause) element;
-				return havingClause.getLeftOperand();
+				HavingField havingClause = (HavingField) element;
+				Operand leftOperand = havingClause.getLeftOperand();
+				if(leftOperand!=null && leftOperand.description!=null){
+					return leftOperand.description;
+				}
+				return "";
 			}
 		});	
 		
@@ -527,7 +539,7 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				HavingClause havingClause = (HavingClause) element;
+				HavingField havingClause = (HavingField) element;
 				return havingClause.getOperator();
 			}
 		});	
@@ -539,8 +551,12 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				HavingClause havingClause = (HavingClause) element;
-				return havingClause.getRightFunction();
+				HavingField havingClause = (HavingField) element;
+				Operand rightOperand = havingClause.getLeftOperand();
+				if(rightOperand!=null && rightOperand.function!=null && rightOperand.function.getName()!=null){
+					return rightOperand.function.getName();
+				}
+				return "";
 			}
 		});	
 		col.setEditingSupport(new HavingRightFunctionColumnEditingSupport(viewer));
@@ -551,8 +567,12 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				HavingClause havingClause = (HavingClause) element;
-				return havingClause.getRightOperand();
+				HavingField havingClause = (HavingField) element;
+				Operand rightOperand = havingClause.getLeftOperand();
+				if(rightOperand!=null && rightOperand.description!=null){
+					return rightOperand.description;
+				}
+				return "";
 			}
 		});	
 		
@@ -561,13 +581,13 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				HavingClause havingClause = (HavingClause) element;
+				HavingField havingClause = (HavingField) element;
 				return null;
 			}
 			
 			@Override
 			public Image getImage(Object element) {
-				if (((HavingClause) element).isForPrompt()) {
+				if (((HavingField) element).isPromptable()) {
 					return CHECKED;
 				} else {
 					return UNCHECKED;
@@ -582,7 +602,7 @@ public class QueryEditGroup extends Composite {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				HavingClause havingClause = (HavingClause) element;
+				HavingField havingClause = (HavingField) element;
 				return havingClause.getBooleanConnector();
 			}
 		});	

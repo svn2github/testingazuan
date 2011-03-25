@@ -21,12 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.edit;
 
-
-
-import it.eng.spagobi.meta.querybuilder.model.HavingClause;
+import it.eng.qbe.query.HavingField;
+import it.eng.qbe.query.HavingField.Operand;
+import it.eng.spagobi.tools.dataset.common.query.AggregationFunctions;
+import it.eng.spagobi.tools.dataset.common.query.IAggregationFunction;
 
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
@@ -66,46 +66,52 @@ public class HavingRightFunctionColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected Object getValue(Object element) {
-		HavingClause havingClause = (HavingClause) element;
-		if (havingClause.getRightFunction().equals("NONE")) {
+		HavingField havingClause = (HavingField) element;
+		if(havingClause.getRightOperand()==null || havingClause.getRightOperand().function==null){
 			return 0;
-		} else if (havingClause.getRightFunction().equals("SUM")){
+		}
+		IAggregationFunction function = havingClause.getRightOperand().function;
+		if (function.equals("NONE")) {
+			return 0;
+		} else if (function.equals("SUM")){
 			return 1;
-		} else if (havingClause.getRightFunction().equals("AVERAGE")){
+		} else if (function.equals("AVERAGE")){
 			return 2;
-		} else if (havingClause.getRightFunction().equals("MAXIMUM")){
+		} else if (function.equals("MAXIMUM")){
 			return 3;
-		} else if (havingClause.getRightFunction().equals("MINIMUM")){
+		} else if (function.equals("MINIMUM")){
 			return 4;
-		} else if (havingClause.getRightFunction().equals("COUNT")){
+		} else if (function.equals("COUNT")){
 			return 5;
-		} else if (havingClause.getRightFunction().equals("COUNT DISTINCT")){
+		} else if (function.equals("COUNT DISTINCT")){
 			return 6;
 		}
 		return 0;
-
 	}
 
 	@Override
 	protected void setValue(Object element, Object value) {
-		HavingClause havingClause = (HavingClause) element;
-		if (((Integer) value) == 0) {
-			havingClause.setRightFunction("NONE");
-		} else if (((Integer) value) == 1) {
-			havingClause.setRightFunction("SUM");
-		} else if (((Integer) value) == 2) {
-			havingClause.setRightFunction("AVERAGE");
-		} else if (((Integer) value) == 3) {
-			havingClause.setRightFunction("MAXIMUM");
-		} else if (((Integer) value) == 4) {
-			havingClause.setRightFunction("MINIMUM");
-		} else if (((Integer) value) == 5) {
-			havingClause.setRightFunction("COUNT");
-		} else if (((Integer) value) == 6) {
-			havingClause.setRightFunction("COUNT DISTINCT");
+		HavingField havingClause = (HavingField) element;
+		if(havingClause.getRightOperand()!=null){
+			Operand operand = havingClause.getRightOperand();
+			if (((Integer) value) == 0) {
+				operand.function = AggregationFunctions.NONE_FUNCTION;
+			} else if (((Integer) value) == 1) {
+				operand.function = AggregationFunctions.SUM_FUNCTION;
+			} else if (((Integer) value) == 2) {
+				operand.function = AggregationFunctions.AVG_FUNCTION;
+			} else if (((Integer) value) == 3) {
+				operand.function = AggregationFunctions.MAX_FUNCTION;
+			} else if (((Integer) value) == 4) {
+				operand.function = AggregationFunctions.MIN_FUNCTION;
+			} else if (((Integer) value) == 5) {
+				operand.function = AggregationFunctions.COUNT_FUNCTION;
+			} else if (((Integer) value) == 6) {
+				operand.function = AggregationFunctions.COUNT_DISTINCT_FUNCTION;
+			}
 		}
-
 		viewer.refresh();
+
 
 	}
 

@@ -23,22 +23,16 @@ package it.eng.spagobi.meta.querybuilder.dnd;
 
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
-import it.eng.spagobi.meta.querybuilder.model.HavingClause;
-import it.eng.spagobi.meta.querybuilder.model.HavingClauseModelProvider;
-import it.eng.spagobi.meta.querybuilder.model.WhereClause;
-import it.eng.spagobi.meta.querybuilder.model.WhereClauseModelProvider;
-
+import it.eng.qbe.query.Query;
+import it.eng.qbe.query.HavingField.Operand;
+import it.eng.qbe.statement.AbstractStatement;
+import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
 import java.util.List;
-
-
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.TransferData;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 
 /**
  * @author cortella
@@ -91,14 +85,20 @@ public class QueryBuilderDropHavingListener extends ViewerDropAdapter {
 	}
 	
 	public void addTableRow(TableViewer tableViewer, IModelField dataMartField){
-		HavingClause havingClause = new HavingClause("Having "+counter ,"NONE", dataMartField.getParent().getName()+"."+dataMartField.getName(),
-				"NONE","NONE","",false,"AND",dataMartField );
-
-		HavingClauseModelProvider.INSTANCE.addHavingClause(havingClause);
-		tableViewer.refresh();
-
+		Query query;
+	
+        String[] nullStringArray = new String[1];
+        nullStringArray[0] = "null";
+        
+        String[] values = new String[1];
+        nullStringArray[0] = dataMartField.getUniqueName();
+        
+        Operand leftOperand = new Operand(values, dataMartField.getParent().getName()+" : "+dataMartField.getName(), AbstractStatement.OPERAND_TYPE_FIELD, nullStringArray, nullStringArray, null);
+        query = QueryProvider.getQuery();
+		query.addHavingField("having"+counter, "having"+counter, false, leftOperand, null, null, "AND");
+        tableViewer.setInput(query.getHavingFields());
+        tableViewer.refresh();
 		counter++;
-
 
 	}
 

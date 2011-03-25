@@ -22,18 +22,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.dnd;
 
 import java.util.List;
-
-import javax.swing.AbstractAction;
-
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField.Operand;
 import it.eng.qbe.statement.AbstractStatement;
 import it.eng.spagobi.meta.querybuilder.model.QueryProvider;
-import it.eng.spagobi.meta.querybuilder.model.WhereClause;
-import it.eng.spagobi.meta.querybuilder.model.WhereClauseModelProvider;
-
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.Viewer;
@@ -94,26 +88,19 @@ public class QueryBuilderDropWhereListener extends ViewerDropAdapter {
 	
 	public void addTableRow(TableViewer tableViewer, IModelField dataMartField){
 		Query query;
-		WhereClause whereClause = new WhereClause("Filter "+counter , dataMartField.getParent().getName()+"."+dataMartField.getName(),
-				"NONE","NONE",false,"AND",dataMartField );
-
-		WhereClauseModelProvider.INSTANCE.addWhereClause(whereClause);
-		tableViewer.refresh();
-        
-        counter++;
-        
+                
         String[] nullStringArray = new String[1];
         nullStringArray[0] = "null";
         
         String[] values = new String[1];
         nullStringArray[0] = dataMartField.getUniqueName();
         
-        Operand leftOperand = new Operand(nullStringArray,dataMartField.getParent().getName()+" : "+dataMartField.getName(), AbstractStatement.OPERAND_TYPE_FIELD, nullStringArray, values);
-        
+        Operand leftOperand = new Operand(values,dataMartField.getParent().getName()+" : "+dataMartField.getName(), AbstractStatement.OPERAND_TYPE_FIELD, nullStringArray, nullStringArray);
         query = QueryProvider.getQuery();
-        query.addWhereField("Filter"+counter, "Filter"+counter, true, leftOperand, null, null, "AND");
-
-        
+        query.addWhereField("Filter"+counter, "Filter"+counter, true, leftOperand, "NONE", null, "AND");
+        tableViewer.setInput(query.getWhereFields());
+        tableViewer.refresh();
+        counter++;
 	}
 
 }

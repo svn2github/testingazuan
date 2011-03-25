@@ -84,31 +84,64 @@ public class DataStoreReader {
 		return headers;
 	}
 	
-	
 	/**
 	 * A table with the result
 	 * @param dataStore the dattastore
 	 * @return
 	 * @throws RuntimeException
 	 */
+	public static int getVisibleColumns(IDataStore dataStore) throws RuntimeException {
+		int visibleColumns =0;
+		Object propertyRawValue;
+
+		for(int i = 0; i < dataStore.getMetaData().getFieldCount(); i++) {
+			IFieldMetaData fieldMetaData = dataStore.getMetaData().getFieldMeta(i);
+				
+			propertyRawValue = fieldMetaData.getProperty("visible");
+			if(propertyRawValue != null && (propertyRawValue instanceof Boolean) 
+					&& ((Boolean)propertyRawValue).booleanValue() == false) {
+				continue;
+			}
+
+			visibleColumns++;
+		}
+		return visibleColumns;
+	}
+	
+	
+	/**
+	 * A table with the result
+	 * @param dataStore the dataStore
+	 * @return
+	 * @throws RuntimeException
+	 */
 	public static String[][] getResultList(IDataStore dataStore) throws RuntimeException {
+		return getResultList(dataStore, getVisibleColumns(dataStore));
+	}
+	
+	/**
+	 * A table with the result
+	 * @param dataStore
+	 * @param visibleColumns
+	 * @return
+	 * @throws RuntimeException
+	 */
+	public static String[][] getResultList(IDataStore dataStore, int visibleColumns) throws RuntimeException {
 		IField field;
 		IRecord record;
 		Object propertyRawValue;
 		propertyRawValue = dataStore.getMetaData().getProperty("resultNumber");
-		String[][] result = new String[new Long(dataStore.getRecordsCount()).intValue()][dataStore.getMetaData().getFieldCount()];
-		String[] resultRecord = new String[dataStore.getMetaData().getFieldCount()];
-
-						
+		
+		String[][] result = new String[new Long(dataStore.getRecordsCount()).intValue()][visibleColumns];
+		String[] resultRecord = new String[visibleColumns];
+			
 			int j=0;
-
 
 			Iterator records = dataStore.iterator();
 			while(records.hasNext()) {
 				record = (IRecord)records.next();
 				resultRecord = new String[dataStore.getMetaData().getFieldCount()];
 				for(int i = 0; i < dataStore.getMetaData().getFieldCount(); i++) {
-					
 					
 					IFieldMetaData fieldMetaData = dataStore.getMetaData().getFieldMeta(i);
 					
@@ -120,9 +153,7 @@ public class DataStoreReader {
 					}
 										
 					field = record.getFieldAt( dataStore.getMetaData().getFieldIndex( fieldMetaData.getName() ) );
-					
-					
-					
+	
 					String fieldValue = "";
 					if(field.getValue() != null && field.getValue() != "") {
 						if(Timestamp.class.isAssignableFrom(fieldMetaData.getType())) {
@@ -134,7 +165,6 @@ public class DataStoreReader {
 						}
 					}
 					
-					
 					resultRecord[i]=(fieldValue);
 				}
 				result[j]=(resultRecord);
@@ -145,6 +175,8 @@ public class DataStoreReader {
 		
 		return result;
 	}
+	
+
 	
 	public static int getMaxResult(IDataStore dataStore){
 		return (Integer)dataStore.getMetaData().getProperty("resultNumber");

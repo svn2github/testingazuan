@@ -23,6 +23,7 @@ package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree;
 
 import it.eng.qbe.model.structure.IModelNode;
 import it.eng.qbe.model.structure.IModelObject;
+import it.eng.spagobi.meta.querybuilder.ResourceRegistry;
 
 import java.io.IOException;
 
@@ -66,22 +67,12 @@ public 	class ViewLabelProvider extends LabelProvider {
 		return text;
 	}
 	public Image getImage(Object obj) {   
-		Bundle generatorBundle = Platform.getBundle("it.eng.spagobi.meta.querybuilder");
-		String path = null; 
 		String type = null;
 		Image img = null;
-		try {
-			IPath ipath = new Path(Platform.asLocalURL(generatorBundle.getEntry(imgPath)).getPath());
-			path = ipath.toString();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	
 		type = (String)((IModelNode)obj).getProperties().get("type");
-		path=path+type+".png";
 		
 		try {
-			img = new Image(viewer.getControl().getDisplay(), path); 
+			img = ResourceRegistry.getImage("it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree.node"+type);
 		} catch (Exception e) {
 			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
 			img =  PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);

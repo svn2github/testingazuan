@@ -23,10 +23,9 @@ package it.eng.spagobi.meta.querybuilder.edit;
 
 
 
-import it.eng.spagobi.meta.querybuilder.model.WhereClause;
+import it.eng.qbe.query.WhereField;
 
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -59,12 +58,12 @@ public class FilterColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected Object getValue(Object element) {
-		return ((WhereClause)element).getFilterName();
+		return ((WhereField)element).getName();
 	}
 
 	@Override
 	protected void setValue(Object element, Object value) {
-		((WhereClause) element).setFilterName(String.valueOf(value));
+		((WhereField) element).setName(String.valueOf(value));
 		viewer.refresh();
 	}
 

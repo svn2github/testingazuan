@@ -104,19 +104,17 @@ public class ResultTableViewer extends TableViewer {
 		
 		Button prevoiusButton = new Button(bottonContainer, SWT.PUSH);
 		prevoiusButton.setText("<<");
-		//prevoiusButton.setLayoutData(new GridData(GridData.BEGINNING  , GridData.BEGINNING, false, false));
 		prevoiusButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
 				offset = offset-pageSize;
 				if(offset<0){
 					offset=0;
 				}
-				updateTable();
+				setInput(updateTableData());
 			}
 		});
 
 		pages = new Label(bottonContainer,SWT.CENTER);
-		//pages.setLayoutData(new GridData(GridData.FILL,GridData.FILL,false, false));
 		pages.setLayoutData(new RowData(200,20));
 		int end = offset+pageSize;
 		if(end>resultSize){
@@ -127,7 +125,6 @@ public class ResultTableViewer extends TableViewer {
 		
 		Button nextButton = new Button(bottonContainer, SWT.PUSH);
 		nextButton.setText(">>");
-		//nextButton.setLayoutData(new GridData(GridData.END  , GridData.BEGINNING, false, false));
 		nextButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
 				int maxResultSize = (resultSize>maxResults)? maxResults: resultSize;
@@ -138,7 +135,7 @@ public class ResultTableViewer extends TableViewer {
 						offset=0;
 					}
 				}
-				updateTable();
+				setInput(updateTableData());
 			}
 		});
 	}
@@ -147,40 +144,22 @@ public class ResultTableViewer extends TableViewer {
 	 * Update the table: delete the columns,  reload the query, execute the query 
 	 */
 	public void updateTable(){
+		String name;
+		Class type; 
+		//execute the query
+		IDataStore dataStore =updateTableData();
+
+		//delete the old columns
 		TableColumn[] columns = getTable().getColumns();
 		if(columns!=null){
 			for(int i=0; i<columns.length; i++){
 				columns[i].dispose();
 			}
-		}
-		Query query = QueryProvider.getQuery();
-		if(!query.isEmpty()){
-			this.dataSet =  QbeDatasetFactory.createDataSet(modelStructure.getDataSource().createStatement(query));
-			loadFirstResultAndHeaders(offset, pageSize, maxResults);
-		}else{
-			logger.debug("The query is empty");
-		}
-	}
-	
-	/**
-	 * Execute the query and add the new columns (one for every column of the query result)
-	 * @param offset start record
-	 * @param fetchSize length of the page
-	 * @param maxResults max result
-	 */
-	private void loadFirstResultAndHeaders(int offset, int fetchSize, int maxResults){
-		logger.debug("IN");
-		String name;
-		Class type; 
-		IDataStore dataStore = null;
-		List<Map<String,Object>> headers = new ArrayList<Map<String,Object>>();
+		}	
 		
-		logger.debug("Executing the query");
-		dataSet.loadData(offset,fetchSize,maxResults);
-		dataStore = dataSet.getDataStore();
-		logger.debug("Query executed");
-		
+		//build the new columns
 		logger.debug("Building the result table");
+		List<Map<String,Object>> headers = new ArrayList<Map<String,Object>>();
 		headers= DataStoreReader.getColumnMetaData(dataStore);
 		for(int i =0; i<headers.size(); i++){
 			final TableColumn column = new TableColumn(getTable(), SWT.NONE);
@@ -192,19 +171,39 @@ public class ResultTableViewer extends TableViewer {
 			column.setMoveable(true);
 			column.addSelectionListener(getSelectionAdapter(column, i, type));
 		}
+
 		setInput(dataStore);
-		
-		resultSize = DataStoreReader.getMaxResult(dataStore);
-		int end = offset+pageSize;
-		if(end>resultSize){
-			end = resultSize;
-		}
-		pages.setText(offset+" - "+end+" / "+resultSize);
-		
-		refresh();
 		logger.debug("Result table built");
-		logger.debug("OUT");
 	}
+	
+	/**
+	 * Update the table: reload the query, execute the query 
+	 */
+	public IDataStore updateTableData(){
+		IDataStore dataStore = null;
+		Query query = QueryProvider.getQuery();
+		if(!query.isEmpty()){
+			logger.debug("Getting the dataset");
+			this.dataSet =  QbeDatasetFactory.createDataSet(modelStructure.getDataSource().createStatement(query));
+			logger.debug("Data set loaded.");
+			logger.debug("Executing the query");
+			dataSet.loadData(offset,pageSize,maxResults);
+			dataStore = dataSet.getDataStore();
+			logger.debug("Query executed");
+
+			//Update variables for pagination
+			resultSize = DataStoreReader.getMaxResult(dataStore);
+			int end = offset+pageSize;
+			if(end>resultSize){
+				end = resultSize;
+			}
+			pages.setText(offset+" - "+end+" / "+resultSize);
+		}else{
+			logger.debug("The query is empty");
+		}
+		return dataStore;
+	}
+
 	
 	/**
 	 * For every column build a selection adapter (now we manage only the order)

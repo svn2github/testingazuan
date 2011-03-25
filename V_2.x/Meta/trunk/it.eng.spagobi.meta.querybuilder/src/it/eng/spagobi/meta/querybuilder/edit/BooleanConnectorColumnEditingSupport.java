@@ -21,12 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.edit;
 
-
-
-import it.eng.spagobi.meta.querybuilder.model.WhereClause;
+import it.eng.qbe.query.WhereField;
 
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
@@ -62,7 +59,7 @@ public class BooleanConnectorColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected Object getValue(Object element) {
-		WhereClause whereClause = (WhereClause) element;
+		WhereField whereClause = (WhereField) element;
 		if (whereClause.getBooleanConnector().equals("AND")) {
 			return 0;
 		} else if (whereClause.getBooleanConnector().equals("OR")){
@@ -74,7 +71,7 @@ public class BooleanConnectorColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected void setValue(Object element, Object value) {
-		WhereClause whereClause = (WhereClause) element;
+		WhereField whereClause = (WhereField) element;
 		if (((Integer) value) == 0) {
 			whereClause.setBooleanConnector("AND");
 		} else if (((Integer) value) == 1) {

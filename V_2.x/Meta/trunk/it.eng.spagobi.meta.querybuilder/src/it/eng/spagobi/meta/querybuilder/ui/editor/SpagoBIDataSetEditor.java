@@ -2,11 +2,19 @@ package it.eng.spagobi.meta.querybuilder.ui.editor;
 
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.StringReader;
+import java.util.Locale;
 
+import it.eng.qbe.query.Query;
 import it.eng.qbe.query.serializer.SerializerFactory;
+import it.eng.qbe.serializer.SerializationException;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.core.resources.IMarker;
@@ -21,6 +29,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,19 +95,19 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		}
 	}
 	
-	/**
-	 * Creates Edit Page of the multi-page editor,
-	 * which contains UI for editing the query.
-	 */
+
+	protected void createPages() {
+		createEditPage();
+		createResultsPage();
+
+	}
+	
 	void createEditPage() {
 		queryEditPage = new SpagoBIDataSetEditPage(getContainer(), queryBuilder);
 		int index = addPage(queryEditPage);
 		setPageText(index, "Edit");
 	}
 	
-	/**
-	 * Creates the Query Result Page
-	 */
 	void createResultsPage() {
 
 		queryResultPage = new SpagoBIDataSetResultPage(getContainer(), queryBuilder);
@@ -106,14 +115,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		setPageText(index, "Results");
 	}
 
-	/**
-	 * Creates the pages of the multi-page editor.
-	 */
-	protected void createPages() {
-		createEditPage();
-		createResultsPage();
-
-	}
+	
 	/**
 	 * The <code>MultiPageEditorPart</code> implementation of this 
 	 * <code>IWorkbenchPart</code> method disposes all nested editors.
@@ -123,11 +125,67 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 		super.dispose();
 	}
+	
+	public boolean isDirty() {
+		return true;
+	}
+	
 	/**
 	 * Saves the multi-page editor's document.
 	 */
 	public void doSave(IProgressMonitor monitor) {
-		getEditor(0).doSave(monitor);
+		Query query;
+		JSONObject queryJSON;
+		FileEditorInput fileEditorInput;
+		
+		logger.trace("IN");
+		
+		query = queryBuilder.getQuery();
+		
+		fileEditorInput = null;
+		if (getEditorInput() instanceof FileEditorInput) {
+			fileEditorInput = (FileEditorInput)getEditorInput();
+			query.setId(fileEditorInput.getURI().toString());
+			query.setDescription(fileEditorInput.getURI().toString());
+			query.setDistinctClauseEnabled(false);
+		} else {
+			throw new RuntimeException("Editor class [" + this.getClass().getName() + "] is unable to manage input of type [" + getEditorInput().getClass().getName() + "]");
+		}
+		
+		queryJSON = null;
+		try {
+			queryJSON = (JSONObject)SerializerFactory.getSerializer("application/json").serialize(query, queryBuilder.getModelStructure().getDataSource(), Locale.ENGLISH);
+			logger.debug(queryJSON.toString());	
+		} catch (SerializationException e) {
+			throw new RuntimeException("Impossible to save query", e);
+		}
+		
+		
+		File file = new File(fileEditorInput.getURI());
+		BufferedWriter out = null;
+		ByteArrayInputStream in = null;
+		try {
+//			FileWriter fstream = new FileWriter(file);
+//			out = new BufferedWriter(fstream);
+//			out.write(queryJSON.toString(3));
+			in = new ByteArrayInputStream(queryJSON.toString(3).getBytes(fileEditorInput.getFile().getCharset()));
+			fileEditorInput.getFile().setContents(in, true, true, monitor);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(out != null) {
+				try {
+					out.flush();
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		
+		logger.trace("OUT");
 	}
 	/**
 	 * Saves the multi-page editor's document as another file.
@@ -135,10 +193,12 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	 * to correspond to the nested editor's.
 	 */
 	public void doSaveAs() {
+		logger.trace("IN");
 		IEditorPart editor = getEditor(0);
 		editor.doSaveAs();
 		setPageText(0, editor.getTitle());
 		setInput(editor.getEditorInput());
+		logger.trace("OUT");
 	}
 	/* (non-Javadoc)
 	 * Method declared on IEditorPart
@@ -155,7 +215,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		return true;
 	}
 	/**
-	 * Calculates the contents of Result pagewhen the it is activated.
+	 * Calculates the contents of Result page when the it is activated.
 	 */
 	protected void pageChange(int newPageIndex) {
 		super.pageChange(newPageIndex);

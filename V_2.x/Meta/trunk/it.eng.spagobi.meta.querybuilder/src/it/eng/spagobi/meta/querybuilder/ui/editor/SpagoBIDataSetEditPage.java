@@ -47,6 +47,8 @@ public class SpagoBIDataSetEditPage extends Composite {
 		//Create Query Filters
 		builder.createEditGroup(this);
 	}
+	
+	
 
 
 }

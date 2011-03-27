@@ -6,11 +6,15 @@ Bundle-Version: 1.0.0
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;bundle-version="2.6.0",
  it.eng.spagobi.meta.model;bundle-version="1.0.0",
- org.eclipse.emf.codegen;bundle-version="2.6.0"
+ org.eclipse.emf.codegen;bundle-version="2.6.0",
+ ch.qos.logback.classic;bundle-version="0.9.19",
+ ch.qos.logback.core;bundle-version="0.9.19",
+ org.slf4j.api;bundle-version="1.5.11",
+ org.junit;bundle-version="3.8.2",
+ it.eng.spagobi.commons;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.jdt.core.compiler.batch,
- org.junit
+Import-Package: org.eclipse.jdt.core.compiler.batch
 Export-Package: it.eng.spagobi.meta.compiler,
  it.eng.spagobi.meta.generator.jpamapping
 Bundle-ClassPath: libs/velocity/commons-collections-3.2.1.jar,

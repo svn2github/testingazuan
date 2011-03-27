@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables;
 
+import java.net.URL;
 import java.util.List;
 
 //import junit.framework.Assert;
@@ -29,7 +30,8 @@ import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.HavingField.Operand;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
-import it.eng.spagobi.meta.querybuilder.ResourceRegistry;
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.querybuilder.SpagoBIMetaQueryBuilderPlugin;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropHavingListener;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropWhereListener;
 import it.eng.spagobi.meta.querybuilder.edit.BooleanConnectorColumnEditingSupport;
@@ -45,6 +47,7 @@ import it.eng.spagobi.meta.querybuilder.edit.OperatorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.FilterRightOperandColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -71,10 +74,10 @@ import org.slf4j.LoggerFactory;
  */
 public class QueryEditGroup extends Composite {
 	
-	private static final Image CHECKED = ResourceRegistry.getImage("ui.shared.edit.tables.button.checked");
-	// Activator.getImageDescriptor("icons/checked.png").createImage();
-	private static final Image UNCHECKED = ResourceRegistry.getImage("ui.shared.edit.tables.button.unchecked");
-	// Activator.getImageDescriptor("icons/unchecked.png").createImage();
+	
+	private static final IResourceLocator RL = SpagoBIMetaQueryBuilderPlugin.getInstance().getResourceLocator();
+	private static final Image CHECKED = ImageDescriptor.createFromURL( (URL)RL.getImage("ui.shared.edit.tables.button.checked") ).createImage();
+	private static final Image UNCHECKED = ImageDescriptor.createFromURL( (URL)RL.getImage("ui.shared.edit.tables.button.unchecked") ).createImage();
 	
 	private QueryBuilder queryBuilder;
 

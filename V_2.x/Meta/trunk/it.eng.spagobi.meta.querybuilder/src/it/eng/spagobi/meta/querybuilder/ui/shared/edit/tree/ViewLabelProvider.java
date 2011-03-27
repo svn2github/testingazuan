@@ -21,10 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree;
 
+import java.net.URL;
+
 import it.eng.qbe.model.structure.IModelNode;
 import it.eng.qbe.model.structure.IModelObject;
-import it.eng.spagobi.meta.querybuilder.ResourceRegistry;
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.querybuilder.SpagoBIMetaQueryBuilderPlugin;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Image;
@@ -41,6 +45,9 @@ public 	class ViewLabelProvider extends LabelProvider {
 	private ModelLabelProvider modelLabelProvider;
 	private static final String imgPath = "img";
 	private TreeViewer viewer;
+	
+	private static final IResourceLocator RL = SpagoBIMetaQueryBuilderPlugin.getInstance().getResourceLocator();
+	
 	
 	public ViewLabelProvider (TreeViewer viewer, ModelLabelProvider modelLabelProvider){
 		this.viewer = viewer;
@@ -65,7 +72,7 @@ public 	class ViewLabelProvider extends LabelProvider {
 		type = (String)((IModelNode)obj).getProperties().get("type");
 		
 		try {
-			img = ResourceRegistry.getImage("it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree.node."+type);
+			img = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree.node."+type) ).createImage();
 		} catch (Exception e) {
 			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
 			img =  PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);

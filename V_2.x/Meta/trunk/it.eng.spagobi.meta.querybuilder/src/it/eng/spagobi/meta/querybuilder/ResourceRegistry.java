@@ -64,7 +64,7 @@ public class ResourceRegistry {
 		Image image;
 		
 		Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID); 
-		URL imageURL = BundleUtility.find(bundle, getImagePath(imageKey)); 
+		URL imageURL = imageURL = bundle.getResource(getImagePath(imageKey));//BundleUtility.find(bundle, getImagePath(imageKey)); 
 		image = ImageDescriptor.createFromURL(imageURL).createImage(); 
 		
 		return image;

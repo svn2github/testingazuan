@@ -62,6 +62,10 @@ public class QueryBuilder {
 		return query;
 	}
 
+	public void setQuery(Query query) {
+		this.query = query;
+	}
+
 	public ViewModelStructure getModelStructure() {
 		return modelStructure;
 	}

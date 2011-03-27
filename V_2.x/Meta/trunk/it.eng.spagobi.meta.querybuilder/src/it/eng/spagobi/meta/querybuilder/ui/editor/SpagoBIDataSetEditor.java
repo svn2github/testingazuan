@@ -1,6 +1,12 @@
 package it.eng.spagobi.meta.querybuilder.ui.editor;
 
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+
+import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.core.resources.IMarker;
@@ -47,12 +53,37 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	 */
 	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
 		logger.trace("IN");
-		super.init(site, editorInput);
-	
-		logger.debug("editorInput parameter type is equal to [{}]", editorInput.getClass());
-		if (!(editorInput instanceof FileEditorInput)) throw new PartInitException("Invalid Input: Must be FileEditorInput");
 		
-		logger.trace("OUT");
+		try {
+			super.init(site, editorInput);
+		
+			logger.debug("editorInput parameter type is equal to [{}]", editorInput.getClass());
+			if (editorInput instanceof FileEditorInput) {
+				FileEditorInput fileEditorInput = (FileEditorInput)editorInput;
+				InputStream inputStram = fileEditorInput.getFile().getContents();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStram));
+				String line = null;
+				StringBuffer stringBuffer  = new StringBuffer();
+				while((line = reader.readLine())!= null) {
+					stringBuffer.append(line);
+				}
+				reader.close();
+				
+				String queryString = stringBuffer.toString();
+				if(queryString.trim().equals("")) {
+					logger.debug("No previously saved query to load");
+				} else {
+					queryBuilder.setQuery( SerializerFactory.getDeserializer("application/json").deserializeQuery(queryString, queryBuilder.getModelStructure().getDataSource()) );
+				}
+			} else {
+				throw new PartInitException("Editor class [" + this.getClass().getName() + "] is unable to manage input of type [" + editorInput.getClass().getName() + "]");
+			} 
+		} catch(Throwable t) {
+			logger.error("Impossible to initialize editor [" + this.getClass().getName()+ "]", t);
+			throw new PartInitException("Impossible to initialize editor [" + this.getClass().getName()+ "]: " + t.getCause().getMessage());
+		} finally {
+			logger.trace("OUT");
+		}
 	}
 	
 	/**

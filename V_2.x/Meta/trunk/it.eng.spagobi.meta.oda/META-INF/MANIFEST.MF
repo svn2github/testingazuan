@@ -27,7 +27,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.datatools.connectivity.oda.profile;bundle-version="[3.2.0,4.0.0)",
  ch.qos.logback.classic;bundle-version="0.9.19",
  ch.qos.logback.core;bundle-version="0.9.19",
- org.slf4j.api;bundle-version="1.5.11"
+ org.slf4j.api;bundle-version="1.5.11",
+ it.eng.spagobi.commons;bundle-version="1.0.0",
+ org.junit;bundle-version="3.8.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: it.eng.qbe.datasource;
@@ -42,6 +44,8 @@ Export-Package: it.eng.qbe.datasource;
  it.eng.qbe.model.structure;uses:="it.eng.qbe.datasource,it.eng.qbe.model.structure.filter",
  it.eng.qbe.model.structure.filter;uses:="it.eng.qbe.query,it.eng.qbe.datasource",
  it.eng.qbe.query;uses:="it.eng.qbe.model.structure,it.eng.spagobi.tools.dataset.common.query",
+ it.eng.qbe.query.serializer,
+ it.eng.qbe.query.serializer.json,
  it.eng.qbe.statement;
   uses:="org.apache.log4j,
    it.eng.qbe.query,

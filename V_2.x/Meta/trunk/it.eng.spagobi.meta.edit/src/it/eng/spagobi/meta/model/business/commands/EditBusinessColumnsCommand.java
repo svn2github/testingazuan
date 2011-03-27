@@ -35,6 +35,8 @@ import java.util.List;
 
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -46,8 +48,14 @@ public class EditBusinessColumnsCommand extends AbstractSpagoBIModelCommand {
 	List<BusinessColumn> removedColumns;
 	List<BusinessColumn> addedColumns;
 
+	private static Logger logger = LoggerFactory.getLogger(EditBusinessColumnsCommand.class);
+	
+	
 	public EditBusinessColumnsCommand(EditingDomain domain, CommandParameter parameter) {
-		super("Business Columns", "Add/Remove business columns ", domain, parameter);
+		super( "model.business.commands.editbcolumn.label"
+			 , "model.business.commands.editbcolumn.description"
+			 , "model.business.commands.editbcolumn"
+			 , domain, parameter);
 	}
 	
 	public EditBusinessColumnsCommand(EditingDomain domain) {
@@ -84,10 +92,8 @@ public class EditBusinessColumnsCommand extends AbstractSpagoBIModelCommand {
 			//System.err.println("Added column [" + businessTable.getColumn(column).getName() + "]");
 		}
 		
-		
-		System.err.println("COMMAND [EditBusinessColumnsCommand] SUCCESFULLY EXECUTED");
-		
 		this.executed = true;
+		logger.debug("Command [{}] executed succesfully", EditBusinessColumnsCommand.class.getName());
 	}
 	
 	private List<PhysicalColumn> getColumnsToRemove(BusinessColumnSet businessColumnSet, Collection<PhysicalColumn> newColumnSet) {
@@ -151,10 +157,6 @@ public class EditBusinessColumnsCommand extends AbstractSpagoBIModelCommand {
 		}			
 	}
 	
-	@Override
-	public Object getImage() {
-		return SpagoBIMetaModelEditPlugin.INSTANCE.getImage("full/obj16/BusinessColumn");
-	}
 
 	
 

@@ -27,9 +27,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Set;
 
 import it.eng.spagobi.meta.compiler.DataMartGenerator;
+import it.eng.spagobi.meta.edit.SpagoBIMetaEditPlugin;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingGenerator;
 import it.eng.spagobi.meta.initializer.properties.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
@@ -47,55 +49,75 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
- * @author cortella
+ * @authors cortella, gioia
  *
  */
 public class CreateQueryCommand extends AbstractSpagoBIModelCommand {
 
+	File queryFile;
+	
+	private static Logger logger = LoggerFactory.getLogger(CreateQueryCommand.class);
+	
 	public CreateQueryCommand(EditingDomain domain, CommandParameter parameter) {
-		super("Create Query", "Create a new Query on SpagoBI metamodel", domain, parameter);
+		super( "model.business.commands.createquery.label"
+			 , "model.business.commands.createquery.description"
+			 , "model.business.commands.createquery"
+			 , domain, parameter);
 	}
 	
 	public CreateQueryCommand(EditingDomain domain) {
 		this(domain, null);
 	}
 	
-	//This command can't be undo
 	@Override
-	public boolean canUndo() {
-		return false;
+	public void execute() {		
+		prepareMapping();
+		initQueryFileContents();
+		openQueryEditor();		
 	}
 	
-	@Override
-	public void execute() {
+	protected void prepareMapping() {
 		
+	}
+	
+	protected void initQueryFileContents() {
+		String directory;
 		BusinessModel businessModel;
-		businessModel = (BusinessModel)parameter.getOwner();
-		String directory = (String)parameter.getValue();
+		Writer out;
 		
-		//TODO: This is a temporary code only for testing
-		//******************************************************
-		//Create a new SpagoBI Meta query file (.metaquery)
-		File queryFile = new File(directory,"query.metaquery");
+		directory = (String)parameter.getValue();		
+		queryFile = new File(directory,"query.metaquery");
+		
 		if(!queryFile.exists()){
+			out = null;
 			try {
 				queryFile.createNewFile();
 				FileWriter fstream = new FileWriter(queryFile);
-				BufferedWriter out = new BufferedWriter(fstream);
-				out.write("This is an empty Query File, just for placeholder.\n" +
-						  "BusinessModel is: "+businessModel.getName());
-				out.close();
+				out = new BufferedWriter(fstream);
+				businessModel = (BusinessModel)parameter.getOwner();
+				//out.write("// Target business model: " + businessModel.getName());
 			} catch (IOException e) {
 				e.printStackTrace();
+			} finally {
+				if(out != null) {
+					try {
+						out.flush();
+						out.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				
 			}
 		}
-		//******************************************************
-
-		//Open the SpagoBI QueryBuilder Editor
-
+	}
+	
+	protected void openQueryEditor() {
 		if (queryFile.exists() && queryFile.isFile()) {
 		    IFileStore fileStore = EFS.getLocalFileSystem().getStore(queryFile.toURI());
 		    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
@@ -103,17 +125,15 @@ public class CreateQueryCommand extends AbstractSpagoBIModelCommand {
 		    try {
 		        IDE.openEditorOnFileStore( page, fileStore );
 		    } catch ( PartInitException e ) {
-		        //Put your exception handler here if you wish to
+		        e.printStackTrace();
 		    }
-		} else {
-		    //Do something if the file does not exist
 		}
-		
 	}
 	
+	//This command can't be undo
 	@Override
-	public Object getImage() {
-		return SpagoBIMetaModelEditPlugin.INSTANCE.getImage("full/obj16/query");
+	public boolean canUndo() {
+		return false;
 	}
 	
 	/**
@@ -126,5 +146,5 @@ public class CreateQueryCommand extends AbstractSpagoBIModelCommand {
 	      MessageDialog.openInformation(null, title, message);
 	    }
 	  });
-	}
+	}	
 }

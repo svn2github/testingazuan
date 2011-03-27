@@ -35,6 +35,8 @@ import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -52,8 +54,14 @@ AbstractSpagoBIModelCommand {
 	BusinessModel businessModel;
 	BusinessTable businessTable ;
 	
+	private static Logger logger = LoggerFactory.getLogger(RemovePhysicalTableToBusinessViewCommand.class);
+	
+	
 	public RemovePhysicalTableToBusinessViewCommand(EditingDomain domain, CommandParameter parameter) {
-		super("Physical Table", "Remove Physical Table ", domain, parameter);
+		super( "model.business.commands.removeptable.label"
+			 , "model.business.commands.removeptable.description"
+			 , "model.business.commands.removeptable"
+			 , domain, parameter);
 	}
 
 	public RemovePhysicalTableToBusinessViewCommand(EditingDomain domain){
@@ -69,12 +77,11 @@ AbstractSpagoBIModelCommand {
 		innerJoinRelationship = initializer.removePhysicalTableToBusinessView(businessView, physicalTable);
 		
 		if (innerJoinRelationship != null){
-			System.err.println("COMMAND [RemovePhysicalTableToBusinessViewCommand] SUCCESFULLY EXECUTED: ");
-			
 			this.executed = true;
+			logger.debug("Command [{}] executed succesfully", RemovePhysicalTableToBusinessViewCommand.class.getName());
 		} else {
-			System.err.println("COMMAND [RemovePhysicalTableToBusinessViewCommand] NOT EXECUTED: ");
 			this.executed = false;
+			logger.debug("Command [{}] not executed succesfully", RemovePhysicalTableToBusinessViewCommand.class.getName());
 			showInformation("Warning","Cannot delete this physical table because is used in a join relationship as a source table.\nPlease remove first the other tables.");
 		}
 
@@ -110,11 +117,6 @@ AbstractSpagoBIModelCommand {
 		} else {
 			initializer.removePhysicalTableToBusinessView(businessView, physicalTable);
 		}
-	}
-	
-	@Override
-	public Object getImage() {
-		return SpagoBIMetaModelEditPlugin.INSTANCE.getImage("full/obj16/PhysicalTable");
 	}
 	
 	/**

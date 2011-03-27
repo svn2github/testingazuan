@@ -40,6 +40,8 @@ import java.util.List;
 
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -49,8 +51,14 @@ public class AddBusinessTableCommand extends AbstractSpagoBIModelCommand {
 
 	private BusinessTable addedBusinessTable;
 	
+	private static Logger logger = LoggerFactory.getLogger(AddBusinessTableCommand.class);
+	
+	
 	public AddBusinessTableCommand(EditingDomain domain, CommandParameter parameter) {
-		super("Business Table", "Add business table", domain, parameter);
+		super( "model.business.commands.addbtable.label"
+			 , "model.business.commands.addbtable.description"
+			 , "model.business.commands.addbtable"
+			 , domain, parameter);
 	}
 	
 	public AddBusinessTableCommand(EditingDomain domain) {
@@ -74,12 +82,11 @@ public class AddBusinessTableCommand extends AbstractSpagoBIModelCommand {
 			String businessTableName = businessTableDescriptor.getBusinessTableName();
 			String businessTableDescription = businessTableDescriptor.getBusinessTableDescription();
 			addedBusinessTable = initializer.addTable(physicalTable, new PhysicalColumnFilter(selectedColumns), businessTableName, businessTableDescription, businessModel, true);	
+						
+			this.executed = true;			
+			logger.debug("Command [{}] executed succesfully", AddBusinessTableCommand.class.getName());
 			
-			System.err.println("COMMAND [AddTableCommand] SUCCESFULLY EXECUTED: ");
-			
-			this.executed = true;
-		}
-		else if (parameter.getValue() instanceof String){
+		} else if (parameter.getValue() instanceof String){
 			//parameter is a String with Physical Table name to import as Business Table
 			
 			String tableName = (String)parameter.getValue();
@@ -89,9 +96,8 @@ public class AddBusinessTableCommand extends AbstractSpagoBIModelCommand {
 			BusinessModelInitializer initializer = new BusinessModelInitializer();
 			addedBusinessTable = initializer.addTable(physicalTable, businessModel, true);
 
-			System.err.println("COMMAND [AddTableCommand] SUCCESFULLY EXECUTED: ");
-			
 			this.executed = true;
+			logger.debug("Command [{}] executed succesfully", AddBusinessTableCommand.class.getName());	
 		}
 
 	}
@@ -109,11 +115,7 @@ public class AddBusinessTableCommand extends AbstractSpagoBIModelCommand {
 		businessModel.getTables().add(addedBusinessTable);
 	}
 	
-	@Override
-	public Object getImage() {
-		return SpagoBIMetaModelEditPlugin.INSTANCE.getImage("full/obj16/BusinessTable");
-	}
-
+	
 	//-------------------------------------------------------------------------
 	//	Inner Classes
 	//-------------------------------------------------------------------------
@@ -135,7 +137,6 @@ public class AddBusinessTableCommand extends AbstractSpagoBIModelCommand {
 				return true;
 		}		
 	}
-
-//-------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 
 }

@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.commands;
 
+import it.eng.spagobi.meta.edit.SpagoBIMetaEditPlugin;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;
 
 import java.util.ArrayList;
@@ -40,13 +41,20 @@ public class AbstractSpagoBIModelCommand extends AbstractCommand implements Comm
 	CommandParameter parameter;
 	boolean executed;
 	
+	Object image;
+	
 	
 
-	public AbstractSpagoBIModelCommand(String commandLabel, String commandDescription, EditingDomain domain, CommandParameter parameter) {
-		super(commandLabel, commandDescription);
+	public AbstractSpagoBIModelCommand(String commandLabel, String commandDescription, String commandImage, EditingDomain domain, CommandParameter parameter) {
+		
+		
+		super( SpagoBIMetaEditPlugin.getInstance().getResourceLocator().getString(commandLabel)
+			 , SpagoBIMetaEditPlugin.getInstance().getResourceLocator().getString(commandDescription) );
+		
 		this.domain = domain;
 		this.parameter = parameter;
 		this.executed = false;
+		this.image = SpagoBIMetaEditPlugin.getInstance().getResourceLocator().getImage(commandImage);
 	}
 
 	
@@ -92,7 +100,7 @@ public class AbstractSpagoBIModelCommand extends AbstractCommand implements Comm
 	
 	@Override
 	public Object getImage() {
-		return SpagoBIMetaModelEditPlugin.INSTANCE.getImage("full/obj16/Arrow");
+		return image;
 	}
 
 	@Override

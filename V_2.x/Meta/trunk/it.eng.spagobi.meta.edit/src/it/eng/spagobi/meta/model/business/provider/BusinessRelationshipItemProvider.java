@@ -317,14 +317,11 @@ public class BusinessRelationshipItemProvider
 		if (notification.getNotifier() instanceof BusinessRelationship){
 			BusinessRelationship businessRelationship = ((BusinessRelationship)notification.getNotifier());
 
-			//check if the business relationship has null source or destination table
-			if ( ( ((BusinessRelationship)notification.getNotifier()).getDestinationTable() == null ) || ( ((BusinessRelationship)notification.getNotifier()).getSourceTable() == null ) )
-				System.out.println("-- > RIFERIMENTO PENDENTE in "+notification.getNotifier());
-				BusinessModel businessModel = ((BusinessRelationship)notification.getNotifier()).getModel();
-				if ( (businessModel != null) && (businessModel.getRelationships().contains(businessRelationship)) ){
-					businessModel.getRelationships().remove(businessRelationship);	
-					System.out.println("-- > REMOVED RELATIONSHIP "+businessRelationship);
-				}
+				
+			BusinessModel businessModel = ((BusinessRelationship)notification.getNotifier()).getModel();
+			if ( (businessModel != null) && (businessModel.getRelationships().contains(businessRelationship)) ){
+				businessModel.getRelationships().remove(businessRelationship);	
+			}
 		}
 		//*****************************************
 		

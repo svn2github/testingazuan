@@ -34,6 +34,8 @@ import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author cortella
@@ -48,9 +50,15 @@ public class AddPhysicalTableToBusinessTableCommand extends
 	BusinessView businessView;
 	BusinessViewInnerJoinRelationshipDescriptor joinRelationshipDescriptor;
 	List<PhysicalColumn> addedColumns = new ArrayList<PhysicalColumn>();
+		
+	private static Logger logger = LoggerFactory.getLogger(AddPhysicalTableToBusinessTableCommand.class);
+	
 	
 	public AddPhysicalTableToBusinessTableCommand(EditingDomain domain, CommandParameter parameter) {
-		super("Physical Table", "Add Physical Table ", domain, parameter);
+		super( "model.business.commands.addptable.label"
+			 , "model.business.commands.addptable.description"
+			 , "model.business.commands.addptable"
+			 , domain, parameter);
 	}
 	
 	public AddPhysicalTableToBusinessTableCommand(EditingDomain domain){
@@ -96,10 +104,12 @@ public class AddPhysicalTableToBusinessTableCommand extends
 			}
 			addedColumns.clear();			
 		}
-		System.err.println("COMMAND [AddPhysicalTableToBusinessTableCommand] SUCCESFULLY EXECUTED");
 		
 		this.executed = true;
+		logger.debug("Command [{}] executed succesfully", AddPhysicalTableToBusinessTableCommand.class.getName());
 	}
+	
+	
 	@Override
 	public void undo() {
 		BusinessModelInitializer initializer = new BusinessModelInitializer();
@@ -124,8 +134,5 @@ public class AddPhysicalTableToBusinessTableCommand extends
 			initializer.addPhysicalTableToBusinessView(businessView, joinRelationshipDescriptor);
 		}
 	}
-	@Override
-	public Object getImage() {
-		return SpagoBIMetaModelEditPlugin.INSTANCE.getImage("full/obj16/PhysicalTable");
-	}
+	
 }

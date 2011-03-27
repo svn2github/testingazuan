@@ -26,10 +26,11 @@ import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
-import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;
 
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -38,8 +39,15 @@ import org.eclipse.emf.edit.domain.EditingDomain;
 public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelCommand {
 	
 	BusinessRelationship addedBusinessRelationship;
+	
+	private static Logger logger = LoggerFactory.getLogger(AddBusinessRelationshipCommand.class);
+	
+	
 	public AddBusinessRelationshipCommand(EditingDomain domain, CommandParameter parameter) {
-		super("Business Relationship", "Add business relationship ", domain, parameter);
+		super("model.business.commands.addbrelationship.label"
+			 ,"model.business.commands.addbrelationship.description"
+			 ,"model.business.commands.addbrelationship"
+			 ,domain, parameter);
 	}
 	
 	public AddBusinessRelationshipCommand(EditingDomain domain) {
@@ -49,15 +57,14 @@ public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelCommand 
 	@Override
 	public void execute() {
 		BusinessModelInitializer initializer;
-		BusinessColumnSet businessTable = (BusinessColumnSet)parameter.getOwner();
-		
-		BusinessRelationshipDescriptor descriptor = (BusinessRelationshipDescriptor)parameter.getValue();
+		BusinessRelationshipDescriptor descriptor;
 		
 		initializer = new BusinessModelInitializer();
-		//getting the just added Business Relationship reference
+		descriptor = (BusinessRelationshipDescriptor)parameter.getValue();
 		addedBusinessRelationship = initializer.addRelationship(descriptor);
 		
-		this.executed = true;
+		executed = true;
+		logger.debug("Command [{}] executed succesfully", AddBusinessRelationshipCommand.class.getName());
 	}
 	
 	
@@ -65,8 +72,7 @@ public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelCommand 
 	public void undo() {
 		BusinessColumnSet businessTable = (BusinessColumnSet)parameter.getOwner();
 		BusinessModel businessModel = businessTable.getModel();
-		businessModel.getRelationships().remove(addedBusinessRelationship);
-		
+		businessModel.getRelationships().remove(addedBusinessRelationship);	
 	}
 
 	@Override
@@ -76,11 +82,4 @@ public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelCommand 
 		businessModel.getRelationships().add(addedBusinessRelationship);			
 	}
 	
-	@Override
-	public Object getImage() {
-		return SpagoBIMetaModelEditPlugin.INSTANCE.getImage("full/obj16/BusinessRelationship");
-	}
-
-	
-
 }

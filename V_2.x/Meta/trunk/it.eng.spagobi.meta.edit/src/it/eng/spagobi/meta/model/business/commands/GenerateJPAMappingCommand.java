@@ -35,6 +35,8 @@ import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author cortella
@@ -42,8 +44,14 @@ import org.eclipse.swt.widgets.Display;
  */
 public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 
+	private static Logger logger = LoggerFactory.getLogger(GenerateJPAMappingCommand.class);
+	
+	
 	public GenerateJPAMappingCommand(EditingDomain domain, CommandParameter parameter) {
-		super("JPA Mapping", "Generate JPA Mapping", domain, parameter);
+		super( "model.business.commands.generatemapping.label"
+			 , "model.business.commands.generatemapping.description"
+			 , "model.business.commands.generatemapping"
+			 , domain, parameter);
 	}
 	
 	public GenerateJPAMappingCommand(EditingDomain domain) {
@@ -68,8 +76,7 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 		try {
 			generator.generateJpaMapping(businessModel, directory);
 		} catch (Exception e) {
-			System.err.println(">>> Error in JPAMappingGenerator: "+e);
-			e.printStackTrace();
+			logger.error("An error occurred while executing command [{}]:", EditBusinessColumnsCommand.class.getName(), e);
 			showInformation("Error in JPAMappingGenerator","Cannot create JPA Mapping classes");
 		}
 		
@@ -92,22 +99,18 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 			
 			//Generate Jar from compiled code
 			datamartGenerator.jar();
-			System.err.println("COMMAND [GenerateJPAMappingCommand] SUCCESFULLY EXECUTED: ");
 			this.executed = true;
+			logger.debug("Command [{}] executed succesfully", EditBusinessColumnsCommand.class.getName());
 		}else{
 			// compile error
 			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");
-			System.err.println(">> JPA Compile problem! <<");
 			this.executed = false; 
+			logger.debug("Command [{}] not executed succesfully", EditBusinessColumnsCommand.class.getName());
 		}
 
 	}
 	
-	@Override
-	public Object getImage() {
-		return SpagoBIMetaModelEditPlugin.INSTANCE.getImage("full/obj16/Jpaclass");
-	}
-	
+
 	/**
 	 * Show an information dialog box.
 	 */

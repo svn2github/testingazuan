@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -44,8 +46,14 @@ public class AddIdentifierCommand extends AbstractSpagoBIModelCommand {
 	Collection<BusinessColumn> selectedColumns;
 	Collection<BusinessColumn> oldColumns = new ArrayList<BusinessColumn>(); //may be empty
 	
+	private static Logger logger = LoggerFactory.getLogger(AddIdentifierCommand.class);
+	
+	
 	public AddIdentifierCommand(EditingDomain domain, CommandParameter parameter) {
-		super("Identifier", "Add identifier ", domain, parameter);
+		super( "model.business.commands.addidentifier.label"
+			 , "model.business.commands.addidentifier.description"
+			 , "model.business.commands.addidentifier"
+			 , domain, parameter);
 	}
 	
 	public AddIdentifierCommand(EditingDomain domain) {
@@ -75,9 +83,8 @@ public class AddIdentifierCommand extends AbstractSpagoBIModelCommand {
 			addedBusinessIdentifier = initializer.addIdentifier(businessColumnSet.getName(), businessColumnSet, selectedColumns);
 		}
 		
-		System.err.println("COMMAND [AddIdentifierCommand] SUCCESFULLY EXECUTED: ");
-		
 		this.executed = true;
+		logger.debug("Command [{}] executed succesfully", AddIdentifierCommand.class.getName());
 	}
 	
 	
@@ -113,11 +120,4 @@ public class AddIdentifierCommand extends AbstractSpagoBIModelCommand {
 		}			
 	}
 	
-	@Override
-	public Object getImage() {
-		return SpagoBIMetaModelEditPlugin.INSTANCE.getImage("full/obj16/BusinessIdentifier");
-	}
-
-	
-
 }

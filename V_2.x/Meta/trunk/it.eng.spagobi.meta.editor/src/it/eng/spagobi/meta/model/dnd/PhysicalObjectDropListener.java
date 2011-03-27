@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelFactory;
@@ -43,6 +44,8 @@ import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -56,6 +59,9 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
 	private BusinessModel businessModel;
 	private AdapterFactoryEditingDomain editingDomain;
 	
+	private static Logger logger = LoggerFactory.getLogger(PhysicalObjectDropListener.class);
+	
+	
 	public PhysicalObjectDropListener(Viewer viewer, EObject viewerInput, AdapterFactoryEditingDomain editingDomain){
 		super(viewer);
 		this.viewer = viewer;
@@ -67,7 +73,7 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
 	// This method performs the actual drop
 	@Override
 	public boolean performDrop(Object data) {
-		System.err.println(">> Input: "+businessModel);
+		logger.debug("Business model is equal to [{}]", businessModel);
 		BusinessModelInitializer initializer = new BusinessModelInitializer();
 		Model model = businessModel.getParentModel();
 		

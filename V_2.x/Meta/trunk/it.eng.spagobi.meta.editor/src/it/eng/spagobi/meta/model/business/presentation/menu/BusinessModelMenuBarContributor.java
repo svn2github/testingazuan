@@ -37,11 +37,14 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.ui.IEditorPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.model.business.actions.RefreshViewerAction;
 import it.eng.spagobi.meta.model.business.actions.ShowPropertiesViewAction;
-import it.eng.spagobi.meta.model.editor.LN;
-import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
+import it.eng.spagobi.meta.model.business.commands.RemovePhysicalTableToBusinessViewCommand;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -55,13 +58,16 @@ public class BusinessModelMenuBarContributor {
 	protected RefreshViewerAction refreshViewerAction;
 	protected ShowPropertiesViewAction showPropertiesViewAction;
 	
+	private static Logger logger = LoggerFactory.getLogger(RemovePhysicalTableToBusinessViewCommand.class);
+	private static IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator();
+	
 	public Map<String, InlineMenuContributor> getSubmenuManagers() {
 		return toolbarSubMenuManagers;
 	}
 
 	public BusinessModelMenuBarContributor(IMenuManager parentMenuManager, boolean insertAfter, String anchorMenuItemId) {
 		
-		toolbarMainMenuManager = new MenuManager(LN.get("_UI_BusinessModelEditor_menu"), "it.eng.spagobi.meta.model.businessMenuID");
+		toolbarMainMenuManager = new MenuManager(RL.getString("model.business.presentation.menu.metamodel"), "it.eng.spagobi.meta.model.businessMenuID");
 		toolbarSubMenuManagers = new HashMap();
 		
 		refreshViewerAction = new RefreshViewerAction();

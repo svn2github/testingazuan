@@ -3,6 +3,7 @@
  */
 package it.eng.spagobi.meta.model.dnd;
 
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
@@ -12,11 +13,15 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.TextTransfer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PhysicalObjectDragListener implements DragSourceListener {
 
 	private final Viewer physicalModelTree;
 	private String textToTransfer;
+	
+	private static Logger logger = LoggerFactory.getLogger(PhysicalObjectDragListener.class);
 	
 
 	public PhysicalObjectDragListener(Viewer viewer) {
@@ -58,13 +63,13 @@ public class PhysicalObjectDragListener implements DragSourceListener {
 			if (selection.getFirstElement() instanceof PhysicalTable){
 				PhysicalTable physicalTable = (PhysicalTable) selection.getFirstElement();
 				textToTransfer = EcoreUtil.getURI(physicalTable).toString();
-				System.err.println(">> Dragged physical table:"+physicalTable);
+				logger.debug("Dragged physical table [{}]", physicalTable);
 				return true;
 			}			
 			else if (selection.getFirstElement() instanceof PhysicalColumn){
 				PhysicalColumn physicalColumn = (PhysicalColumn) selection.getFirstElement();
 				textToTransfer = EcoreUtil.getURI(physicalColumn).toString();
-				System.err.println(">> Dragged physical column:"+physicalColumn);
+				logger.debug("Dragged physical column [{}]", physicalColumn);
 				return true;
 			}			
 			else
@@ -80,7 +85,7 @@ public class PhysicalObjectDragListener implements DragSourceListener {
 				for (int i=0; i < selectionSize; i++){
 					if (selectionArray[i] instanceof PhysicalTable){
 						PhysicalTable physicalTable = (PhysicalTable)selectionArray[i];
-						System.err.println(">> Dragged physical table:"+physicalTable);
+						logger.debug("Dragged physical table [{}]", physicalTable);
 						if (firstElement){
 							textToTransfer = EcoreUtil.getURI(physicalTable).toString();
 							firstElement = false;
@@ -103,7 +108,7 @@ public class PhysicalObjectDragListener implements DragSourceListener {
 				for (int i=0; i < selectionSize; i++){
 					if (selectionArray[i] instanceof PhysicalColumn){
 						PhysicalColumn physicalColumn = (PhysicalColumn)selectionArray[i];
-						System.err.println(">> Dragged physical column:"+physicalColumn);
+						logger.debug("Dragged physical column [{}]", physicalColumn);
 						if (firstElement){
 							textToTransfer = EcoreUtil.getURI(physicalColumn).toString();
 							firstElement = false;

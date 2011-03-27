@@ -23,6 +23,7 @@ package it.eng.spagobi.meta.model.presentation;
 
 
 
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -69,6 +70,8 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.PropertySheetPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -86,10 +89,14 @@ public class SpagoBIModelEditor extends MultiEditor {
 	private Label closeLbl;
 	private Image iconCollapse, iconExpand;
 	
+	private static Logger logger = LoggerFactory.getLogger(SpagoBIMetaEditorPlugin.class);
+	
+	
 	@Override
 	public void doSave(IProgressMonitor progressMonitor) {
-		System.err.println("model.doSave");
+		logger.trace("IN");
 		super.doSave(progressMonitor);
+		logger.trace("OUT");
 	}
 	
 	@Override
@@ -116,8 +123,6 @@ public class SpagoBIModelEditor extends MultiEditor {
 			viewForm.setContent(content);
 			updateInnerEditorTitle(e, innerEditorTitle[i]);
 			
-			System.err.println(innerEditors[i].getEditorInput().getClass().getName());
-			
 			final int index = i;
 			e.addPropertyListener(new IPropertyListener() {
 				public void propertyChanged(Object source, int property) {
@@ -129,117 +134,12 @@ public class SpagoBIModelEditor extends MultiEditor {
 		}
 		sashForm.setWeights(new int[]{80,20});
 
-		//*****
-		//Active selection testing
-		//*****
-		/*
 		
-		IWorkbenchPage page = getSite().getPage(); 
-		
-		//the current selection in the entire page
-		ISelection selection = page.getSelection();
-		
-		//Set selection provider
-		getSite().setSelectionProvider(((BusinessModelEditor)innerEditors[1]).getSelectionViewer());
-
-		
-		//the current selection in the navigator view
-		//selection = page.getSelection(IPageLayout.ID_RES_NAV);
-
-
-		//add a listener
-
-		ISelectionListener sl = new ISelectionListener() {
-		      public void selectionChanged(IWorkbenchPart part, ISelection sel) {
-		         System.out.println("Selection is: " + sel);
-		         getSite().setSelectionProvider(((BusinessModelEditor)innerEditors[1]).getSelectionViewer());
-
-		         //getPropertySheetPage();
-		         //propertySheetPage.refresh();
-		      }
-		   };
-		   
-		
-		page.addSelectionListener(sl);
-		 
-		
-		//the active part
-		IWorkbenchPart active = page.getActivePart();
-		System.out.println("Active part: "+ active);
-		//adding a listener
-		IPartListener2 pl = new IPartListener2() {
-			@Override
-			public void partActivated(IWorkbenchPartReference ref)
-		    {
-		         System.out.println("Active: "+ref.getTitle());
-		         //getPropertySheetPage();
-		         //propertySheetPage.refresh();
-		    }
-
-			@Override
-			public void partBroughtToTop(IWorkbenchPartReference partRef) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void partClosed(IWorkbenchPartReference partRef) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void partDeactivated(IWorkbenchPartReference partRef) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void partOpened(IWorkbenchPartReference partRef) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void partHidden(IWorkbenchPartReference partRef) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void partVisible(IWorkbenchPartReference partRef) {
-				 System.out.println("Visible: "+partRef.getTitle());
-				
-			}
-
-			@Override
-			public void partInputChanged(IWorkbenchPartReference partRef) {
-				// TODO Auto-generated method stub
-				
-			}
-		};
-		
-		page.addPartListener(pl);
-		*/
 		
 
 	}
 	
-	/*
-	public Object getAdapter(Class key) {
-		if (key.equals(IPropertySheetPage.class)) {
-			return getPropertySheetPage();
-		}
-		else if (key == IPropertySource.class) {
-			return null;
-		}
-		else {
-			return super.getAdapter(key);
-		}
-	}
 	
-	*/
-
 
 	/**
 	 * Draw the gradient for the specified editor.

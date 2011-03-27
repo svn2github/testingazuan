@@ -19,14 +19,40 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.editor;
+package it.eng.spagobi.meta.editor;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import it.eng.spagobi.commons.SpagoBIPlugin;
+import it.eng.spagobi.meta.model.business.commands.RemovePhysicalTableToBusinessViewCommand;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class LN {
-	public static String get(String key) {
-		return SpagoBIMetaModelEditorPlugin.INSTANCE.getString(key);
+public class SpagoBIMetaEditorPlugin extends SpagoBIPlugin {
+	
+	public static final String PLUGIN_ID = "it.eng.spagobi.meta.editor"; //$NON-NLS-1$
+	
+	private static Logger logger = LoggerFactory.getLogger(SpagoBIMetaEditorPlugin.class);
+	
+	
+	static {
+		logger.debug("Plugin [{}] succesfully loaded", PLUGIN_ID);
 	}
+	
+	private SpagoBIMetaEditorPlugin() {
+		super(PLUGIN_ID);
+	}
+	
+	private static SpagoBIMetaEditorPlugin instance;
+	public static SpagoBIMetaEditorPlugin getInstance() {
+		if(instance == null) instance = new SpagoBIMetaEditorPlugin();
+		return instance;
+	}
+	
+	
+	
+	
 }

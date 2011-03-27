@@ -291,12 +291,4 @@ public class DSEBridge {
 		EList<Column> columns = tab.getColumns();
 		return columns;
 	}
-	
-	//  --------------------------------------------------------
-	//	Static methods
-	//  --------------------------------------------------------
-	
-	private static void log(String msg) {
-		System.out.println(msg);
-	}
 }

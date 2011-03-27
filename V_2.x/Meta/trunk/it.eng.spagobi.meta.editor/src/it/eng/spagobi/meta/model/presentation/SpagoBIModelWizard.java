@@ -93,6 +93,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ISetSelectionTarget;
 import org.eclipse.ui.part.MultiEditorInput;
 
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.Model;
@@ -124,6 +125,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -134,6 +137,8 @@ import org.eclipse.ui.PartInitException;
  */
 public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 		
+	private static Logger logger = LoggerFactory.getLogger(SpagoBIModelWizard.class);
+	
 	/**
 	 * The supported extensions for created files.
 	 * <!-- begin-user-doc -->
@@ -272,7 +277,7 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 			//... for retrieving the textfield's input-string:
 			final File modelFile = newModelWizardFileCreationPage.getModelFile() ;		
 			
-			System.err.println(modelFile.getAbsolutePath().toString());
+			logger.debug(modelFile.getAbsolutePath().toString());
 			
 			final URI fileURI = URI.createFileURI(modelFile.getAbsolutePath().toString());
 			
@@ -430,22 +435,6 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 				page.openEditor( 
 						new SpagoBIModelInput(modelFile, spagobiModel) , SpagoBIModelEditor.PLUGIN_ID					     
 				);
-				
-				System.out.println("Open editor");
-				/*
-				PhysicalModel targetPhysicalModel =  spagobiModel.getPhysicalModels().get(0);
-				PhysicalModelInput physicalModelInput = new PhysicalModelInput(modelFile, targetPhysicalModel);
-				
-				BusinessModel targetBusinessModel =  spagobiModel.getBusinessModels().get(0);
-				BusinessModelInput businessModelInput = new BusinessModelInput(modelFile, targetBusinessModel);
-				
-				page.openEditor( 
-					new MultiEditorInput(
-						new String[]{PhysicalModelEditor.PLUGIN_ID, BusinessModelEditor.PLUGIN_ID},
-						new IEditorInput[]{physicalModelInput, businessModelInput}
-					) , SpagoBIModelEditor.PLUGIN_ID					     
-				);
-				*/
 			}
 			catch (PartInitException exception) {
 				MessageDialog.openError(workbenchWindow.getShell(), SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_OpenEditorError_label"), exception.getMessage());

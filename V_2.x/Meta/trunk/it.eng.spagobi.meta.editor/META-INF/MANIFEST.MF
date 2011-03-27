@@ -19,7 +19,12 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.edit.ui;visibility:=reexport,
  org.eclipse.ui.ide;visibility:=reexport,
  it.eng.spagobi.meta.model;bundle-version="1.0.0",
- it.eng.spagobi.meta.initializer;bundle-version="1.0.0"
+ it.eng.spagobi.meta.initializer;bundle-version="1.0.0",
+ it.eng.spagobi.commons;bundle-version="1.0.0",
+ ch.qos.logback.classic;bundle-version="0.9.19",
+ ch.qos.logback.core;bundle-version="0.9.19",
+ org.slf4j.api;bundle-version="1.5.11",
+ org.junit;bundle-version="3.8.2"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.datatools.connectivity,
  org.eclipse.datatools.connectivity.sqm.core.connection,

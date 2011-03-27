@@ -46,6 +46,7 @@ Export-Package: it.eng.qbe.datasource;
  it.eng.qbe.query;uses:="it.eng.qbe.model.structure,it.eng.spagobi.tools.dataset.common.query",
  it.eng.qbe.query.serializer,
  it.eng.qbe.query.serializer.json,
+ it.eng.qbe.serializer,
  it.eng.qbe.statement;
   uses:="org.apache.log4j,
    it.eng.qbe.query,
@@ -72,4 +73,5 @@ Export-Package: it.eng.qbe.datasource;
  it.eng.spagobi.tools.dataset.common.datastore;uses:="it.eng.spago.base",
  it.eng.spagobi.tools.dataset.common.query,
  it.eng.spagobi.utilities.comparator,
- it.eng.spagobi.utilities.exceptions
+ it.eng.spagobi.utilities.exceptions,
+ org.json

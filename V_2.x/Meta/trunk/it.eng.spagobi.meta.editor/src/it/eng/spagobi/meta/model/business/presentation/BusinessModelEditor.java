@@ -7,6 +7,7 @@
 package it.eng.spagobi.meta.model.business.presentation;
 
 
+import it.eng.spagobi.commons.resource.DefaultResourceLocator;
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
@@ -126,6 +127,8 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.PropertySheetPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -497,6 +500,11 @@ public class BusinessModelEditor
 			}
 		};
 
+		
+		
+	private static Logger logger = LoggerFactory.getLogger(BusinessModelEditor.class);
+		
+		
 	/**
 	 * Handles activation of the editor or it's associated views.
 	 * <!-- begin-user-doc -->
@@ -1450,6 +1458,17 @@ public class BusinessModelEditor
 		}
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * This is for implementing {@link IEditorPart} and simply tests the command stack.
 	 * <!-- begin-user-doc -->
@@ -1469,9 +1488,7 @@ public class BusinessModelEditor
 	 */
 	@Override
 	public void doSave(IProgressMonitor progressMonitor) {
-		
-		// Save only resources that have actually changed.
-		//
+		logger.trace("IN");
 		final Map<Object, Object> saveOptions = new HashMap<Object, Object>();
 		//saveOptions.put(Resource.OPTION_SAVE_ONLY_IF_CHANGED, Resource.OPTION_SAVE_ONLY_IF_CHANGED_MEMORY_BUFFER);
 
@@ -1487,15 +1504,20 @@ public class BusinessModelEditor
 					//
 					boolean first = true;
 					for (Resource resource : editingDomain.getResourceSet().getResources()) {
+						logger.debug("Resource: " + resource.getURI());
 						if ((first || !resource.getContents().isEmpty() || isPersisted(resource)) && !editingDomain.isReadOnly(resource)) {
+							logger.debug("Resource can be saved");
 							try {
 								long timeStamp = resource.getTimeStamp();
 								resource.save(saveOptions);
+								logger.debug("Save command executed on resource");
 								if (resource.getTimeStamp() != timeStamp) {
+									logger.debug("Resource modifications has been saved on file");
 									savedResources.add(resource);
 								}
 							}
 							catch (Exception exception) {
+								logger.debug("Impossible to save resource " + resource.getURI());
 								resourceToDiagnosticMap.put(resource, analyzeResourceProblems(resource, exception));
 							}
 							first = false;
@@ -1522,6 +1544,8 @@ public class BusinessModelEditor
 		}
 		updateProblemIndication = true;
 		updateProblemIndication();
+		
+		logger.trace("OUT");
 	}
 
 	/**

@@ -1,25 +1,16 @@
 package it.eng.spagobi.meta.model.business.wizards;
 
+import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.physical.PhysicalColumn;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
-import it.eng.spagobi.meta.model.ModelObject;
-import it.eng.spagobi.meta.model.business.BusinessColumn;
-import it.eng.spagobi.meta.model.business.BusinessColumnSet;
-import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.BusinessTable;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
-import it.eng.spagobi.meta.model.physical.PhysicalColumn;
-import it.eng.spagobi.meta.model.physical.PhysicalModel;
-import it.eng.spagobi.meta.model.physical.PhysicalTable;
-
-import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.TableItem;
 
 public class EditBusinessColumnsWizard extends AbstractSpagoBIModelWizard {

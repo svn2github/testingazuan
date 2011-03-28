@@ -1,10 +1,9 @@
 package it.eng.spagobi.meta.generator.jpamapping;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import it.eng.spagobi.meta.model.util.JDBCTypeMapper;
 
 import java.sql.Types;
-
-import it.eng.spagobi.meta.model.util.JDBCTypeMapper;
 
 import org.junit.Before;
 import org.junit.BeforeClass;

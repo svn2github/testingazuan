@@ -6,15 +6,19 @@
  */
 package it.eng.spagobi.meta.model.impl;
 
-import it.eng.spagobi.meta.model.*;
+import it.eng.spagobi.meta.model.Model;
+import it.eng.spagobi.meta.model.ModelFactory;
+import it.eng.spagobi.meta.model.ModelPackage;
+import it.eng.spagobi.meta.model.ModelProperty;
+import it.eng.spagobi.meta.model.ModelPropertyCategory;
+import it.eng.spagobi.meta.model.ModelPropertyType;
 
 import java.util.Map;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**

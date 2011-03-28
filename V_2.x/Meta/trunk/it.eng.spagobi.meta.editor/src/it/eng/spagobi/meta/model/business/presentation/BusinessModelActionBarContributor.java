@@ -21,36 +21,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.presentation;
 
-import it.eng.spagobi.meta.model.business.actions.RefreshViewerAction;
-import it.eng.spagobi.meta.model.business.actions.ShowPropertiesViewAction;
-import it.eng.spagobi.meta.model.business.presentation.menu.BusinessModelPopupMenuContributor;
-import it.eng.spagobi.meta.model.business.presentation.menu.InlineMenuContributor;
 import it.eng.spagobi.meta.model.business.presentation.menu.BusinessModelMenuBarContributor;
-import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
+import it.eng.spagobi.meta.model.business.presentation.menu.BusinessModelPopupMenuContributor;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-
-import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 import org.eclipse.emf.edit.ui.action.EditingDomainActionBarContributor;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.IContributionManager;
-import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.action.SubContributionItem;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PartInitException;
 
 /**
  * This is the action bar contributor for the BusinessModel model editor.

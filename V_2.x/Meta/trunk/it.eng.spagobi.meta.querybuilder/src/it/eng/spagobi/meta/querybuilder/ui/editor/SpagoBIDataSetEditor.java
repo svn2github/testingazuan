@@ -1,21 +1,22 @@
 package it.eng.spagobi.meta.querybuilder.ui.editor;
 
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.util.Locale;
-
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.util.Locale;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -26,6 +27,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
@@ -84,7 +86,27 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 				} else {
 					queryBuilder.setQuery( SerializerFactory.getDeserializer("application/json").deserializeQuery(queryString, queryBuilder.getDataSource()) );
 				}
-			} else {
+			} 
+			else if(editorInput instanceof FileStoreEditorInput) {
+				FileStoreEditorInput fileStoreEditorInput = (FileStoreEditorInput)editorInput;
+				logger.debug("editorInput is outside Eclipse workspace");
+				URI fileStoreEditorInputURI = fileStoreEditorInput.getURI();
+				logger.debug("fileStoreEditorInputURI is [{}]",fileStoreEditorInputURI);
+				InputStream inputStram = new BufferedInputStream(new FileInputStream(new File(fileStoreEditorInputURI)));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStram));
+				String line = null;
+				StringBuffer stringBuffer  = new StringBuffer();
+				while((line = reader.readLine())!= null) {
+					stringBuffer.append(line);
+				}
+				reader.close();
+				
+				String queryString = stringBuffer.toString();
+				if(queryString.trim().equals("")) {
+					logger.debug("No previously saved query to load");
+				}
+			}
+			else {
 				throw new PartInitException("Editor class [" + this.getClass().getName() + "] is unable to manage input of type [" + editorInput.getClass().getName() + "]");
 			} 
 		} catch(Throwable t) {

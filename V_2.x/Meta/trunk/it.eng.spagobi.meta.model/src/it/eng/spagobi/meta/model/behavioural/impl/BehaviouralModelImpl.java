@@ -10,7 +10,6 @@ import it.eng.spagobi.meta.model.behavioural.BehaviouralModel;
 import it.eng.spagobi.meta.model.behavioural.BehaviouralModelPackage;
 
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**

@@ -25,6 +25,7 @@ import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.AddIdentifierCommand;
 import it.eng.spagobi.meta.model.business.wizards.AddBusinessIdentifierWizard;
+
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;

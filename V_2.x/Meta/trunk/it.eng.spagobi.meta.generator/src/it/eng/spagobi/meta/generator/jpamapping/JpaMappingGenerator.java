@@ -24,7 +24,6 @@ package it.eng.spagobi.meta.generator.jpamapping;
 import it.eng.spagobi.meta.generator.GenerationException;
 import it.eng.spagobi.meta.generator.IGenerator;
 import it.eng.spagobi.meta.model.ModelObject;
-import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;

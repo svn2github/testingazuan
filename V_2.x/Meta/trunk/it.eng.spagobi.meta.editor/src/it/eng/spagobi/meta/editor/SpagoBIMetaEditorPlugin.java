@@ -21,11 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor;
 
+import it.eng.spagobi.commons.SpagoBIPlugin;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import it.eng.spagobi.commons.SpagoBIPlugin;
-import it.eng.spagobi.meta.model.business.commands.RemovePhysicalTableToBusinessViewCommand;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

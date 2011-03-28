@@ -21,11 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.presentation;
 
+import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-
-import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
 
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;

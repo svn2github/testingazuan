@@ -21,12 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.oda.impl;
 
-import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.IDataSource;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import org.eclipse.datatools.connectivity.oda.IConnection;

@@ -3,7 +3,6 @@
  */
 package it.eng.spagobi.meta.model.dnd;
 
-import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 

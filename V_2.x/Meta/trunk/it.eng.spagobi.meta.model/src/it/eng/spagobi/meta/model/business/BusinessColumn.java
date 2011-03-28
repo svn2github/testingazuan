@@ -8,9 +8,6 @@ package it.eng.spagobi.meta.model.business;
 
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
-import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
-
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->

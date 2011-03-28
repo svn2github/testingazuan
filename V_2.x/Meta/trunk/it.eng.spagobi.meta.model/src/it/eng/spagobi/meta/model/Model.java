@@ -7,12 +7,9 @@
 package it.eng.spagobi.meta.model;
 
 import it.eng.spagobi.meta.model.business.BusinessModel;
-
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
 import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->

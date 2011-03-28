@@ -6,12 +6,9 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.commands.AddBusinessRelationshipCommand;
 import it.eng.spagobi.meta.model.business.commands.AddBusinessTableCommand;
-import it.eng.spagobi.meta.model.business.commands.AddIdentifierCommand;
 import it.eng.spagobi.meta.model.business.commands.CreateQueryCommand;
-import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
 import it.eng.spagobi.meta.model.business.commands.GenerateJPAMappingCommand;
 import it.eng.spagobi.meta.model.provider.CustomItemPropertyDescriptor;
-import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,20 +18,12 @@ import java.util.List;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
-import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
-import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.IItemPropertySource;
-import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
-import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ViewerNotification;
-
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 
 public class BusinessRootItemProvider extends FolderItemProvider {
 

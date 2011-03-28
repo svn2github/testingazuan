@@ -7,7 +7,6 @@
 package it.eng.spagobi.meta.model.physical;
 
 import it.eng.spagobi.meta.model.ModelObject;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->

@@ -13,34 +13,23 @@ import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.ModelPropertyCategory;
 import it.eng.spagobi.meta.model.ModelPropertyType;
-
 import it.eng.spagobi.meta.model.analytical.AnalyticalModelPackage;
-
 import it.eng.spagobi.meta.model.analytical.impl.AnalyticalModelPackageImpl;
-
 import it.eng.spagobi.meta.model.behavioural.BehaviouralModelPackage;
-
 import it.eng.spagobi.meta.model.behavioural.impl.BehaviouralModelPackageImpl;
-
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
-
 import it.eng.spagobi.meta.model.business.impl.BusinessModelPackageImpl;
-
 import it.eng.spagobi.meta.model.olap.OlapModelPackage;
-
 import it.eng.spagobi.meta.model.olap.impl.OlapModelPackageImpl;
-
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
-
 import it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl;
 
 import java.util.Map;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EGenericType;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 /**

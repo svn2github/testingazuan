@@ -21,6 +21,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.initializer.properties;
 
+import it.eng.spagobi.meta.model.Model;
+import it.eng.spagobi.meta.model.ModelFactory;
+import it.eng.spagobi.meta.model.ModelObject;
+import it.eng.spagobi.meta.model.ModelProperty;
+import it.eng.spagobi.meta.model.ModelPropertyCategory;
+import it.eng.spagobi.meta.model.ModelPropertyType;
+import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessIdentifier;
+import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
+import it.eng.spagobi.meta.model.business.BusinessTable;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -39,18 +51,6 @@ import org.osgi.framework.Bundle;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
-
-import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.ModelFactory;
-import it.eng.spagobi.meta.model.ModelObject;
-import it.eng.spagobi.meta.model.ModelProperty;
-import it.eng.spagobi.meta.model.ModelPropertyCategory;
-import it.eng.spagobi.meta.model.ModelPropertyType;
-import it.eng.spagobi.meta.model.business.BusinessColumn;
-import it.eng.spagobi.meta.model.business.BusinessIdentifier;
-import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.BusinessRelationship;
-import it.eng.spagobi.meta.model.business.BusinessTable;
 
 /**
  * @author cortella

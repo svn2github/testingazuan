@@ -6,14 +6,14 @@
  */
 package it.eng.spagobi.meta.model.analytical.impl;
 
-import it.eng.spagobi.meta.model.analytical.*;
+import it.eng.spagobi.meta.model.analytical.AnalyticalModel;
+import it.eng.spagobi.meta.model.analytical.AnalyticalModelFactory;
+import it.eng.spagobi.meta.model.analytical.AnalyticalModelPackage;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**

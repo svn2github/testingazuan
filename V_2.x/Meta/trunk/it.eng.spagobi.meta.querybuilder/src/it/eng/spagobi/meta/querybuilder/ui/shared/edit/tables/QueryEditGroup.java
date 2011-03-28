@@ -21,11 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables;
 
-import java.net.URL;
-import java.util.List;
-
-//import junit.framework.Assert;
-
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.HavingField.Operand;
 import it.eng.qbe.query.Query;
@@ -36,6 +31,7 @@ import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropHavingListener;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropWhereListener;
 import it.eng.spagobi.meta.querybuilder.edit.BooleanConnectorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.FilterColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.FilterRightOperandColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.HavingBooleanConnectorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.HavingFilterColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.HavingIsForPromptColumnEditingSupport;
@@ -44,8 +40,9 @@ import it.eng.spagobi.meta.querybuilder.edit.HavingOperatorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.HavingRightFunctionColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.IsForPromptColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.OperatorColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.FilterRightOperandColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
+
+import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.LocalSelectionTransfer;

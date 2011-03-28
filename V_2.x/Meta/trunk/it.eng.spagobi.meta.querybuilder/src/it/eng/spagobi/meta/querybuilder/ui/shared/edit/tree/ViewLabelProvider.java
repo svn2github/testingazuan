@@ -21,12 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree;
 
-import java.net.URL;
-
 import it.eng.qbe.model.structure.IModelNode;
 import it.eng.qbe.model.structure.IModelObject;
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.querybuilder.SpagoBIMetaQueryBuilderPlugin;
+
+import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;

@@ -7,7 +7,7 @@
 package it.eng.spagobi.meta.model.business;
 
 import it.eng.spagobi.meta.model.ModelPackage;
-import org.eclipse.emf.ecore.EAttribute;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;

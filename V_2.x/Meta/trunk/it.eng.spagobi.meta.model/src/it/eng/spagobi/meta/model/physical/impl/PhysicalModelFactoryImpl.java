@@ -6,14 +6,18 @@
  */
 package it.eng.spagobi.meta.model.physical.impl;
 
-import it.eng.spagobi.meta.model.physical.*;
+import it.eng.spagobi.meta.model.physical.PhysicalColumn;
+import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
+import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
+import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**

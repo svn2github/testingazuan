@@ -21,6 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.presentation.menu;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
+import it.eng.spagobi.meta.model.business.actions.RefreshViewerAction;
+import it.eng.spagobi.meta.model.business.actions.ShowPropertiesViewAction;
+import it.eng.spagobi.meta.model.business.commands.RemovePhysicalTableToBusinessViewCommand;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -39,12 +45,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.ui.IEditorPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import it.eng.spagobi.commons.resource.IResourceLocator;
-import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
-import it.eng.spagobi.meta.model.business.actions.RefreshViewerAction;
-import it.eng.spagobi.meta.model.business.actions.ShowPropertiesViewAction;
-import it.eng.spagobi.meta.model.business.commands.RemovePhysicalTableToBusinessViewCommand;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

@@ -21,20 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.initializer;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.eclipse.emf.common.util.EList;
-
 import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
-import it.eng.spagobi.meta.initializer.properties.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.initializer.properties.BusinessModelPropertiesFromFileInitializer;
-
 import it.eng.spagobi.meta.initializer.properties.IPropertiesInitializer;
-import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
@@ -50,6 +40,11 @@ import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
+
+import java.util.Collection;
+
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.emf.common.util.EList;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

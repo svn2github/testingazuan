@@ -6,14 +6,14 @@
  */
 package it.eng.spagobi.meta.model.behavioural.impl;
 
-import it.eng.spagobi.meta.model.behavioural.*;
+import it.eng.spagobi.meta.model.behavioural.BehaviouralModel;
+import it.eng.spagobi.meta.model.behavioural.BehaviouralModelFactory;
+import it.eng.spagobi.meta.model.behavioural.BehaviouralModelPackage;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**

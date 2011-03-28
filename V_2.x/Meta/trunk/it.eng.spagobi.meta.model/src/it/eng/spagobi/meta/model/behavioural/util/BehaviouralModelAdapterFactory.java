@@ -6,13 +6,12 @@
  */
 package it.eng.spagobi.meta.model.behavioural.util;
 
-import it.eng.spagobi.meta.model.behavioural.*;
+import it.eng.spagobi.meta.model.behavioural.BehaviouralModel;
+import it.eng.spagobi.meta.model.behavioural.BehaviouralModelPackage;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**

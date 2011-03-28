@@ -14,12 +14,11 @@ import it.eng.spagobi.meta.model.business.commands.AddBusinessRelationshipComman
 import it.eng.spagobi.meta.model.business.commands.AddIdentifierCommand;
 import it.eng.spagobi.meta.model.business.commands.AddPhysicalTableToBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
-
-import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessColumnFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.InboundRelationshipFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.OutboundRelationshipFolderItemProvider;
+import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.ArrayList;
@@ -30,8 +29,6 @@ import java.util.List;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
-
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;

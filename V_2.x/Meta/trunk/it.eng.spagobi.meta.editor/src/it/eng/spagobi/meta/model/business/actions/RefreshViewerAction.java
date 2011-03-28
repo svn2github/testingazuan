@@ -25,17 +25,8 @@ import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
 
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuCreator;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.events.HelpListener;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

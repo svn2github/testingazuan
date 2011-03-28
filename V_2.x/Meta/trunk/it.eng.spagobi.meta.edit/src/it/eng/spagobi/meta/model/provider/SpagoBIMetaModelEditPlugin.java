@@ -7,7 +7,6 @@
 package it.eng.spagobi.meta.model.provider;
 
 import org.eclipse.emf.common.EMFPlugin;
-
 import org.eclipse.emf.common.util.ResourceLocator;
 
 /**

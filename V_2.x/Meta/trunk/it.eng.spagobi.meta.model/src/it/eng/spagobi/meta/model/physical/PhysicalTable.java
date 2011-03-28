@@ -6,9 +6,9 @@
  */
 package it.eng.spagobi.meta.model.physical;
 
-import java.util.List;
-
 import it.eng.spagobi.meta.model.ModelObject;
+
+import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 

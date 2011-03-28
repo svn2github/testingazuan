@@ -6,14 +6,18 @@
  */
 package it.eng.spagobi.meta.model.util;
 
-import it.eng.spagobi.meta.model.*;
+import it.eng.spagobi.meta.model.Model;
+import it.eng.spagobi.meta.model.ModelObject;
+import it.eng.spagobi.meta.model.ModelPackage;
+import it.eng.spagobi.meta.model.ModelProperty;
+import it.eng.spagobi.meta.model.ModelPropertyCategory;
+import it.eng.spagobi.meta.model.ModelPropertyType;
 
 import java.util.Map;
+
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**

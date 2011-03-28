@@ -33,7 +33,6 @@ import it.eng.qbe.datasource.hibernate.HibernateDriver;
 import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.qbe.model.structure.ModelEntity;
 import it.eng.qbe.model.structure.ModelField;
-import it.eng.qbe.model.structure.ModelStructure;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.IStatement;
 import it.eng.qbe.statement.QbeDatasetFactory;
@@ -41,7 +40,6 @@ import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 

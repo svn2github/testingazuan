@@ -6,14 +6,22 @@
  */
 package it.eng.spagobi.meta.model.business.impl;
 
-import it.eng.spagobi.meta.model.business.*;
+import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.BusinessDomain;
+import it.eng.spagobi.meta.model.business.BusinessIdentifier;
+import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.BusinessModelFactory;
+import it.eng.spagobi.meta.model.business.BusinessModelPackage;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
+import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**

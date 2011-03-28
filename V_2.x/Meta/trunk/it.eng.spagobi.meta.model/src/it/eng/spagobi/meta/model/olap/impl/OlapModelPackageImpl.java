@@ -7,32 +7,21 @@
 package it.eng.spagobi.meta.model.olap.impl;
 
 import it.eng.spagobi.meta.model.ModelPackage;
-
 import it.eng.spagobi.meta.model.analytical.AnalyticalModelPackage;
-
 import it.eng.spagobi.meta.model.analytical.impl.AnalyticalModelPackageImpl;
-
 import it.eng.spagobi.meta.model.behavioural.BehaviouralModelPackage;
-
 import it.eng.spagobi.meta.model.behavioural.impl.BehaviouralModelPackageImpl;
-
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
-
 import it.eng.spagobi.meta.model.business.impl.BusinessModelPackageImpl;
-
 import it.eng.spagobi.meta.model.impl.ModelPackageImpl;
-
 import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.olap.OlapModelFactory;
 import it.eng.spagobi.meta.model.olap.OlapModelPackage;
-
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
-
 import it.eng.spagobi.meta.model.physical.impl.PhysicalModelPackageImpl;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 /**

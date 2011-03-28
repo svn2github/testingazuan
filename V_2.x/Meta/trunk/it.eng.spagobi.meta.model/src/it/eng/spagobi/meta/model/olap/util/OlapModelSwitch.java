@@ -6,7 +6,8 @@
  */
 package it.eng.spagobi.meta.model.olap.util;
 
-import it.eng.spagobi.meta.model.olap.*;
+import it.eng.spagobi.meta.model.olap.OlapModel;
+import it.eng.spagobi.meta.model.olap.OlapModelPackage;
 
 import java.util.List;
 

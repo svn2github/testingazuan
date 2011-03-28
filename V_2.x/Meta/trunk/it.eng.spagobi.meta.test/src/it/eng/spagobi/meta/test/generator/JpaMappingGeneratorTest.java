@@ -1,16 +1,11 @@
 package it.eng.spagobi.meta.test.generator;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-
 import it.eng.spagobi.meta.compiler.DataMartGenerator;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingGenerator;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelFactory;
-
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.test.initializer.TestConnectionFactory;

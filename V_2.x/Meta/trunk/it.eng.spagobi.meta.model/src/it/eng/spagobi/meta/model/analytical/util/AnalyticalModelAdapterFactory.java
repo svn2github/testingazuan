@@ -6,13 +6,12 @@
  */
 package it.eng.spagobi.meta.model.analytical.util;
 
-import it.eng.spagobi.meta.model.analytical.*;
+import it.eng.spagobi.meta.model.analytical.AnalyticalModel;
+import it.eng.spagobi.meta.model.analytical.AnalyticalModelPackage;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**

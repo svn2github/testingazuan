@@ -6,14 +6,14 @@
  */
 package it.eng.spagobi.meta.model.olap.impl;
 
-import it.eng.spagobi.meta.model.olap.*;
+import it.eng.spagobi.meta.model.olap.OlapModel;
+import it.eng.spagobi.meta.model.olap.OlapModelFactory;
+import it.eng.spagobi.meta.model.olap.OlapModelPackage;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**

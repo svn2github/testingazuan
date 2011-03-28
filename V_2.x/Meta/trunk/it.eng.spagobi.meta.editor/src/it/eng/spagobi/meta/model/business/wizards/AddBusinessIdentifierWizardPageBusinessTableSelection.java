@@ -23,7 +23,6 @@ package it.eng.spagobi.meta.model.business.wizards;
 
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
 
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;

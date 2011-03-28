@@ -1,7 +1,5 @@
 package it.eng.spagobi.meta.model.business.wizards;
 
-import java.util.Collection;
-
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
@@ -9,6 +7,8 @@ import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
+
+import java.util.Collection;
 
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;

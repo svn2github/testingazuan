@@ -21,16 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.shared.result;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.QbeDatasetFactory;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;

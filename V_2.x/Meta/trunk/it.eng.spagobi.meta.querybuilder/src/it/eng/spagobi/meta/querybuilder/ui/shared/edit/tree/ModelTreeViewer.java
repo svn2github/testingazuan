@@ -24,8 +24,6 @@ package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelStructure;
-import it.eng.qbe.model.structure.ViewModelEntity;
-import it.eng.qbe.model.structure.ViewModelStructure;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -7,24 +7,11 @@ package it.eng.spagobi.meta.model.presentation;
 
 
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
-import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.ModelFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
-import org.eclipse.core.runtime.IProgressMonitor;
+import java.sql.Connection;
+
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobManager;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.datatools.connectivity.IConnectionProfile;
 import org.eclipse.datatools.connectivity.IManagedConnection;
 import org.eclipse.datatools.connectivity.ProfileManager;
@@ -35,12 +22,6 @@ import org.eclipse.datatools.modelbase.sql.schema.Schema;
 import org.eclipse.datatools.modelbase.sql.tables.Column;
 import org.eclipse.datatools.modelbase.sql.tables.Table;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.ListDialog;
 
 public class DSEBridge {
 	

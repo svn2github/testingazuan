@@ -10,7 +10,6 @@ import it.eng.spagobi.meta.model.analytical.AnalyticalModel;
 import it.eng.spagobi.meta.model.analytical.AnalyticalModelPackage;
 
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**

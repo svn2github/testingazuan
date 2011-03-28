@@ -21,7 +21,6 @@ import it.eng.spagobi.meta.mapper.cwm.ICWM;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Iterator;
@@ -31,7 +30,6 @@ import java.util.Properties;
 import javax.jmi.model.ModelPackage;
 import javax.jmi.model.MofPackage;
 import javax.jmi.reflect.RefPackage;
-import javax.jmi.xmi.MalformedXMIException;
 
 import org.netbeans.api.mdr.MDRepository;
 import org.netbeans.api.xmi.XMIReader;

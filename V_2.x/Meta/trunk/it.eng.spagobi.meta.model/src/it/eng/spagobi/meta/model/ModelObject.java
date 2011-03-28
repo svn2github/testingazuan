@@ -6,12 +6,9 @@
  */
 package it.eng.spagobi.meta.model;
 
-import org.eclipse.emf.common.util.EMap;
-import java.util.Map;
 import org.eclipse.emf.common.util.EList;
-
+import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.FeatureMap;
 
 /**
  * <!-- begin-user-doc -->

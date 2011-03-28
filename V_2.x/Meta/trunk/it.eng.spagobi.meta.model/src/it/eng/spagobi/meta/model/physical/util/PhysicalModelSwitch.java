@@ -7,7 +7,12 @@
 package it.eng.spagobi.meta.model.physical.util;
 
 import it.eng.spagobi.meta.model.ModelObject;
-import it.eng.spagobi.meta.model.physical.*;
+import it.eng.spagobi.meta.model.physical.PhysicalColumn;
+import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
+import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.List;
 

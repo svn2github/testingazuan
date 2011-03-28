@@ -21,8 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.wizard;
 
-import it.eng.qbe.model.structure.IModelStructure;
-import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.datatools.connectivity.oda.IConnection;
@@ -37,7 +35,6 @@ import org.eclipse.datatools.connectivity.oda.design.DesignFactory;
 import org.eclipse.datatools.connectivity.oda.design.ParameterDefinition;
 import org.eclipse.datatools.connectivity.oda.design.ResultSetColumns;
 import org.eclipse.datatools.connectivity.oda.design.ResultSetDefinition;
-import org.eclipse.datatools.connectivity.oda.design.internal.ui.DataSetWizardBase;
 import org.eclipse.datatools.connectivity.oda.design.ui.designsession.DesignSessionUtil;
 import org.eclipse.datatools.connectivity.oda.design.ui.wizards.DataSetWizardPage;
 import org.eclipse.jface.resource.ImageDescriptor;

@@ -21,13 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables;
 
-import java.net.URL;
-
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.Query;
 import it.eng.spagobi.commons.resource.IResourceLocator;
-
 import it.eng.spagobi.meta.querybuilder.SpagoBIMetaQueryBuilderPlugin;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropSelectListener;
 import it.eng.spagobi.meta.querybuilder.edit.AliasColumnEditingSupport;
@@ -37,6 +34,8 @@ import it.eng.spagobi.meta.querybuilder.edit.IncludeColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.OrderColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.VisibleColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
+
+import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.LocalSelectionTransfer;

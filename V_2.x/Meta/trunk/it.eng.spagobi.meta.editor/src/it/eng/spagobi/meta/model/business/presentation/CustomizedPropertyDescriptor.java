@@ -23,7 +23,6 @@ package it.eng.spagobi.meta.model.business.presentation;
 
 import it.eng.spagobi.meta.model.provider.CustomItemPropertyDescriptor;
 
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.ui.provider.PropertyDescriptor;

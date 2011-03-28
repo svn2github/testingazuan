@@ -22,31 +22,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.model.business.commands;
 
 
+import it.eng.spagobi.meta.model.business.BusinessModel;
+
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Set;
 
-import it.eng.spagobi.meta.compiler.DataMartGenerator;
-import it.eng.spagobi.meta.edit.SpagoBIMetaEditPlugin;
-import it.eng.spagobi.meta.generator.jpamapping.JpaMappingGenerator;
-import it.eng.spagobi.meta.initializer.properties.BusinessModelDefaultPropertiesInitializer;
-import it.eng.spagobi.meta.model.business.BusinessColumnSet;
-import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;
-
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
-
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.slf4j.Logger;

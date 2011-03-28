@@ -79,8 +79,8 @@ public class JpaRelationship {
 	}
 	
 	private boolean isSourceRole() {
-		if (jpaTable instanceof JpaView){
-			return businessRelationship.getSourceTable().equals(((JpaView)jpaTable).getBusinessView());
+		if (jpaTable instanceof JpaViewInnerTable){
+			return businessRelationship.getSourceTable().equals(((JpaViewInnerTable)jpaTable).getBusinessView());
 		}else if (jpaTable instanceof JpaTable){
 			return businessRelationship.getSourceTable().equals(jpaTable.getBusinessTable());
 		}
@@ -139,14 +139,14 @@ public class JpaRelationship {
 				return new JpaTable((BusinessTable)businessRelationship.getDestinationTable());
 			}else if (businessRelationship.getDestinationTable() instanceof BusinessView){
 				PhysicalTable physicalTMP=findPhysicalTable((BusinessView)businessRelationship.getDestinationTable(),businessRelationship.getDestinationColumns());
-				return new JpaView((BusinessView)businessRelationship.getDestinationTable(),physicalTMP); 
+				return new JpaViewInnerTable((BusinessView)businessRelationship.getDestinationTable(),physicalTMP); 
 			}
 		} else {
 			if(businessRelationship.getSourceTable() instanceof BusinessTable) {
 				return new JpaTable((BusinessTable)businessRelationship.getSourceTable());
 			}else if (businessRelationship.getSourceTable() instanceof BusinessView){
 				PhysicalTable physicalTMP=findPhysicalTable((BusinessView)businessRelationship.getSourceTable(),businessRelationship.getSourceColumns());
-				return new JpaView((BusinessView)businessRelationship.getSourceTable(),physicalTMP); 
+				return new JpaViewInnerTable((BusinessView)businessRelationship.getSourceTable(),physicalTMP); 
 
 			}
 		}

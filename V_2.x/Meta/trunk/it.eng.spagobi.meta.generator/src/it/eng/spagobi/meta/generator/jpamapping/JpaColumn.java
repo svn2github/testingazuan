@@ -72,7 +72,7 @@ public class JpaColumn {
 	public boolean isColumnInRelationship() {
 		List<BusinessRelationship> relationships=null;
 		
-		if (jpaTable instanceof JpaView) relationships = ((JpaView)jpaTable).getBusinessView().getRelationships();
+		if (jpaTable instanceof JpaViewInnerTable) relationships = ((JpaViewInnerTable)jpaTable).getBusinessView().getRelationships();
 		else if (jpaTable instanceof JpaTable) relationships = jpaTable.getBusinessTable().getRelationships();
 		
 		logger.debug("The OBJECT "+jpaTable.getClassName()+" has "+relationships.size()+" Relationship");
@@ -88,8 +88,8 @@ public class JpaColumn {
 				continue;
 			}
 			
-			if (jpaTable instanceof JpaView){
-				if(relationship.getSourceTable().equals( ((JpaView)jpaTable).getBusinessView() )) {
+			if (jpaTable instanceof JpaViewInnerTable){
+				if(relationship.getSourceTable().equals( ((JpaViewInnerTable)jpaTable).getBusinessView() )) {
 					columns =  relationship.getSourceColumns();
 				} else {
 					columns =  relationship.getDestinationColumns();
@@ -116,8 +116,8 @@ public class JpaColumn {
 			}
 		}
 		// check if the column belong to a innerJoin
-		if (jpaTable instanceof JpaView){
-			for (BusinessViewInnerJoinRelationship innerJoin : ((JpaView)jpaTable).getBusinessView().getJoinRelationships()){
+		if (jpaTable instanceof JpaViewInnerTable){
+			for (BusinessViewInnerJoinRelationship innerJoin : ((JpaViewInnerTable)jpaTable).getBusinessView().getJoinRelationships()){
 				List<PhysicalColumn> columns = null; 
 				logger.info("The INNER RELATIONSHIP IS : "+innerJoin.getName());
 				if (innerJoin==null || 
@@ -130,7 +130,7 @@ public class JpaColumn {
 					logger.error("There is a problem , the innerRelationship doesn't have any destination Table");
 					continue;
 				}
-				if(innerJoin.getSourceTable().equals( ((JpaView)jpaTable).getPhysicalTable() )) {
+				if(innerJoin.getSourceTable().equals( ((JpaViewInnerTable)jpaTable).getPhysicalTable() )) {
 					columns =  innerJoin.getSourceColumns();
 				} else {
 					columns =  innerJoin.getDestinationColumns();

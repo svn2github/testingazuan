@@ -135,10 +135,10 @@ public class JpaMappingGenerator implements IGenerator {
 		logger.info("Creating mapping for business class [{}]", table.getName());
 		
 		JpaTable jpaTable = new JpaTable(table);
-		createFile(tableTemplate, jpaTable, jpaTable.getClassName());
+		createJavaFile(tableTemplate, jpaTable, jpaTable.getClassName());
 		if (jpaTable.hasCompositeKey()) {
 			logger.info("Creating mapping for composite PK of business table [{}]", table.getName());
-			createFile(keyTemplate, jpaTable, jpaTable.getCompositeKeyClassName());
+			createJavaFile(keyTemplate, jpaTable, jpaTable.getCompositeKeyClassName());
 		}
 	}
 	
@@ -146,13 +146,14 @@ public class JpaMappingGenerator implements IGenerator {
 		logger.info("Creating mapping for business view [{}]", view.getName());
 		
 		for (PhysicalTable physicalTable : view.getPhysicalTables()) {
-			JpaView jpaView = new JpaView(view, physicalTable);
-			createFile(tableTemplate, jpaView, jpaView.getClassName()); 
+			JpaViewInnerTable jpaView = new JpaViewInnerTable(view, physicalTable);
+			createJavaFile(tableTemplate, jpaView, jpaView.getClassName()); 
 			if (jpaView.hasCompositeKey()) {
 				logger.info("Creating mapping for composite PK of business view [{}]", view.getName());
-				createFile(keyTemplate, jpaView,jpaView.getCompositeKeyClassName());
+				createJavaFile(keyTemplate, jpaView,jpaView.getCompositeKeyClassName());
 			}				
 		}
+		
 	}
 
 	/**
@@ -161,7 +162,7 @@ public class JpaMappingGenerator implements IGenerator {
 	 * @param businessTable
 	 * @param jpaTable
 	 */
-	private void createFile(File templateFile, JpaTable jpaTable, String className){
+	private void createJavaFile(File templateFile, JpaTable jpaTable, String className){
 
 		VelocityContext context;
 		
@@ -175,6 +176,30 @@ public class JpaMappingGenerator implements IGenerator {
 		outputDir.mkdirs();
 		
 		File outputFile = new File(outputDir, className+".java");
+		
+        createFile(templateFile, outputFile, context);
+
+	}
+	
+	/**
+	 * This method create a single java class file
+	 * @param templateFile
+	 * @param businessTable
+	 * @param jpaView
+	 */
+	private void createViewFile(File templateFile, JpaViewInnerTable jpaView){
+
+		VelocityContext context;
+		
+		logger.debug("IN. createFile. templateFile="+templateFile + " jpaTable="+jpaView.getClassName());
+		
+	    context = new VelocityContext();
+        context.put("jpaView", jpaView ); //$NON-NLS-1$
+        
+        File outputDir = new File(baseOutputDir, StringUtil.strReplaceAll(jpaView.getPackage(), ".", "/") );
+		outputDir.mkdirs();
+		
+		File outputFile = new File(outputDir, jpaView.getBusinessView().getName()+".json");
 		
         createFile(templateFile, outputFile, context);
 

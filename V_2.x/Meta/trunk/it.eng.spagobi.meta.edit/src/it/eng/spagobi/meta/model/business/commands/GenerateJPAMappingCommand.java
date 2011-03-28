@@ -70,7 +70,7 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 		//Call JPA Mapping generator
 		JpaMappingGenerator generator = new JpaMappingGenerator();
 		try {
-			generator.generateJpaMapping(businessModel, directory);
+			generator.generate(businessModel, directory);
 		} catch (Exception e) {
 			logger.error("An error occurred while executing command [{}]:", EditBusinessColumnsCommand.class.getName(), e);
 			showInformation("Error in JPAMappingGenerator","Cannot create JPA Mapping classes");

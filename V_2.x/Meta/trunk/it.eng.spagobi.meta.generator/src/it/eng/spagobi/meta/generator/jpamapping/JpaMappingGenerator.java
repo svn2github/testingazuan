@@ -21,8 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.generator.GenerationException;
 import it.eng.spagobi.meta.generator.IGenerator;
+import it.eng.spagobi.meta.generator.SpagoBIMetaGeneratorPlugin;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -54,6 +56,8 @@ import org.slf4j.LoggerFactory;
  */
 public class JpaMappingGenerator implements IGenerator {
 	
+	private static final IResourceLocator RL = SpagoBIMetaGeneratorPlugin.getInstance().getResourceLocator(); 
+	
 	private static Logger logger = LoggerFactory.getLogger(JpaMappingGenerator.class);
 
 	/**
@@ -63,18 +67,27 @@ public class JpaMappingGenerator implements IGenerator {
 	private String outputDir=null;
 	
 	public JpaMappingGenerator() {
-		logger.debug("IN");
-		//templateDir=new File("templates"); 
-		Bundle generatorBundle = Platform.getBundle("it.eng.spagobi.meta.generator");
+		String templatesDirRelativePath;
+		
+		logger.trace("IN");
+	
+		//Bundle generatorBundle = Platform.getBundle("it.eng.spagobi.meta.generator");
+		
+		templatesDirRelativePath = null;
 		try {
-			IPath path = new Path(Platform.asLocalURL(generatorBundle.getEntry("templates")).getPath());
-			String templatePath = path.toString();
-			logger.info("templatePath="+templatePath);
-			templateDir = new File(templatePath);
-		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
-		}finally{
-			logger.debug("OUT");
+//			IPath path = new Path(Platform.asLocalURL(generatorBundle.getEntry("templates")).getPath());
+//			String templatePath = path.toString();
+//			logger.info("templatePath="+templatePath);
+//			templateDir = new File(templatePath);
+			templatesDirRelativePath = (String)RL.getProperty("jpamapping.templates.dir");
+			if(templatesDirRelativePath == null) {
+				throw new GenerationException("Property [" + "jpamapping.templates.dir" + "] not set");
+			}
+			templateDir = RL.getFile(templatesDirRelativePath);
+		} catch (Throwable t) {
+			logger.error("Impossible to resolve folder [" + templatesDirRelativePath + "]", t);
+		} finally{
+			logger.trace("OUT");
 		}
 
 	}

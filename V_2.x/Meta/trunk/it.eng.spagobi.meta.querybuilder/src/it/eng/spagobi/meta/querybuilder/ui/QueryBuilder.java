@@ -80,7 +80,6 @@ public class QueryBuilder {
 		return modelView;
 	}
 	
-	// this is not good. refactor!
 	public IModelStructure getBaseModelStructure() {
 		//return modelView;
 		return dataSource.getModelStructure();

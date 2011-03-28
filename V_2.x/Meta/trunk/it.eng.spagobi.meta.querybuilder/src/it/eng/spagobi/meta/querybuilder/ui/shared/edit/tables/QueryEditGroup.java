@@ -38,6 +38,7 @@ import it.eng.spagobi.meta.querybuilder.edit.HavingIsForPromptColumnEditingSuppo
 import it.eng.spagobi.meta.querybuilder.edit.HavingLeftFunctionColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.HavingOperatorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.HavingRightFunctionColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.HavingRightOperandColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.IsForPromptColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.OperatorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
@@ -57,9 +58,14 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.slf4j.Logger;
@@ -113,11 +119,15 @@ public class QueryEditGroup extends Composite {
 	 * Create UI for Query Edit - Where Filter 
 	 */	
 	private void createEditWhere(Group grpQueryEditor){
-		Label lblWhereClauses = new Label(grpQueryEditor, SWT.NONE);
-		lblWhereClauses.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		lblWhereClauses.setText("Where Clause");
+		TableViewer tableViewerWhere = null;
 		
-		TableViewer tableViewerWhere  = new TableViewer(grpQueryEditor, SWT.BORDER | SWT.FULL_SELECTION);
+		Composite bottonContainer = new Composite(grpQueryEditor, SWT.NONE);
+		bottonContainer.setLayout(new RowLayout());
+		Label lblWhereClauses = new Label(bottonContainer, SWT.CENTER);
+		lblWhereClauses.setText("Where Clause");
+		Button cleanButton = new Button(bottonContainer, SWT.PUSH);
+
+		tableViewerWhere  = new TableViewer(grpQueryEditor, SWT.BORDER | SWT.FULL_SELECTION);
 		tableViewerWhere.setColumnProperties(new String[] { "Filter Name", "Left Operand", "Operator","Right Operand", "Is for prompt", "Bol. connector" });
 		
 		Table table = tableViewerWhere.getTable();
@@ -130,12 +140,31 @@ public class QueryEditGroup extends Composite {
 		tableViewerWhere.setContentProvider(new ArrayContentProvider());
 		Query query = queryBuilder.getQuery();
 		tableViewerWhere.setInput(query.getWhereFields());		
-
+		
+		cleanButton.setText("Clean");
+		cleanButton.addListener(SWT.Selection, new WhereClearListener(tableViewerWhere));
 		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
 		tableViewerWhere.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropWhereListener(tableViewerWhere, queryBuilder));
 	}	
+
+	private class WhereClearListener implements Listener{
+		
+		TableViewer tableViewerWhere;
+		
+		public WhereClearListener(TableViewer tableViewerHaving){
+			this.tableViewerWhere = tableViewerHaving;
+		}
+		
+		public void handleEvent(Event event) {
+			queryBuilder.getQuery().setWhereClauseStructure(null);
+			queryBuilder.getQuery().getWhereFields().clear();
+			if(tableViewerWhere!=null){
+				tableViewerWhere.refresh();
+			}
+		}
+	}
 	
 	public void createEditWhereColumns(final Composite parent, final TableViewer viewer){
 		String[] columnsTitles = { "Filter Name", "Left Operand", "Operator", "Right Operand", "Is for prompt", "Bol. connector" };
@@ -226,11 +255,15 @@ public class QueryEditGroup extends Composite {
 	 * Create UI for Query Edit - Having Filter 
 	 */	
 	private void createEditHaving(Group grpQueryEditor){
-		Label lblHavingClause = new Label(grpQueryEditor, SWT.NONE);
-		lblHavingClause.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		lblHavingClause.setText("Having Clause");
+		TableViewer tableViewerHaving = null;
 		
-		TableViewer tableViewerHaving  = new TableViewer(grpQueryEditor, SWT.BORDER | SWT.FULL_SELECTION);
+		Composite bottonContainer = new Composite(grpQueryEditor, SWT.NONE);
+		bottonContainer.setLayout(new RowLayout());
+		Label lblHavingClause = new Label(bottonContainer, SWT.NONE);
+		lblHavingClause.setText("Having Clause");
+		Button cleanButton = new Button(bottonContainer, SWT.PUSH);
+
+		tableViewerHaving  = new TableViewer(grpQueryEditor, SWT.BORDER | SWT.FULL_SELECTION);
 		tableViewerHaving.setColumnProperties(new String[] { "Filter Name","Function", "Left Operand", "Operator", "Function","Right Operand", "Is for prompt", "Bol. connector" });
 		
 		Table table = tableViewerHaving.getTable();
@@ -244,9 +277,28 @@ public class QueryEditGroup extends Composite {
 		Query query = queryBuilder.getQuery();
 		tableViewerHaving.setInput(query.getHavingFields());		
 		
+		cleanButton.setText("Clean");
+		cleanButton.addListener(SWT.Selection, new HavingClearListener(tableViewerHaving));
+		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
 		tableViewerHaving.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropHavingListener(tableViewerHaving, queryBuilder));
+	}
+	
+	private class HavingClearListener implements Listener{
+		
+		TableViewer tableViewerHaving;
+		
+		public HavingClearListener(TableViewer tableViewerHaving){
+			this.tableViewerHaving = tableViewerHaving;
+		}
+		
+		public void handleEvent(Event event) {
+			queryBuilder.getQuery().getHavingFields().clear();
+			if(tableViewerHaving!=null){
+				tableViewerHaving.refresh();
+			}
+		}
 	}
 	
 	public void createEditHavingColumns(final Composite parent, final TableViewer viewer){
@@ -313,7 +365,7 @@ public class QueryEditGroup extends Composite {
 			@Override
 			public String getText(Object element) {
 				HavingField havingClause = (HavingField) element;
-				Operand rightOperand = havingClause.getLeftOperand();
+				Operand rightOperand = havingClause.getRightOperand();
 				if(rightOperand!=null && rightOperand.function!=null && rightOperand.function.getName()!=null){
 					return rightOperand.function.getName();
 				}
@@ -329,13 +381,14 @@ public class QueryEditGroup extends Composite {
 			@Override
 			public String getText(Object element) {
 				HavingField havingClause = (HavingField) element;
-				Operand rightOperand = havingClause.getLeftOperand();
+				Operand rightOperand = havingClause.getRightOperand();
 				if(rightOperand!=null && rightOperand.description!=null){
 					return rightOperand.description;
 				}
 				return "";
 			}
-		});	
+		});	                    
+		col.setEditingSupport(new HavingRightOperandColumnEditingSupport(viewer));
 		
 		//Is for Prompt Column
 		col = createTableViewerColumn(columnsTitles[6], columnsBounds[6], 6, viewer);
@@ -386,7 +439,6 @@ public class QueryEditGroup extends Composite {
 		column.setResizable(true);
 		column.setMoveable(true);
 		return viewerColumn;
-
 	}	
 
 }

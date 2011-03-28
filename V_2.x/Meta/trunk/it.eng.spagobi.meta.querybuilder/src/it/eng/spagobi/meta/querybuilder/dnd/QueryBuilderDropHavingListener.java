@@ -27,6 +27,8 @@ import it.eng.qbe.query.HavingField.Operand;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.AbstractStatement;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
+import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables.QueryEditGroup;
+import it.eng.spagobi.tools.dataset.common.query.AggregationFunctions;
 
 import java.util.List;
 
@@ -35,6 +37,8 @@ import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.TransferData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author cortella
@@ -44,7 +48,7 @@ public class QueryBuilderDropHavingListener extends ViewerDropAdapter {
 	private static int counter = 1;
 	private Viewer viewer;
 	private QueryBuilder queryBuilder;
-	
+	private static Logger logger = LoggerFactory.getLogger(QueryBuilderDropHavingListener.class);
 	/**
 	 * @param viewer
 	 */
@@ -62,9 +66,9 @@ public class QueryBuilderDropHavingListener extends ViewerDropAdapter {
 		TreeSelection selection = (TreeSelection)data;
 		Object selectionData = selection.getFirstElement();
 
-		System.out.println("SelectionData: "+selectionData.getClass().getName());
+		logger.debug("SelectionData: "+selectionData.getClass().getName());
 		if (selectionData instanceof IModelEntity){
-   			System.out.println("DataMartEntity");
+			logger.debug("DataMartEntity");
    			IModelEntity dataMartEntity = (IModelEntity)selectionData;
 			List<IModelField> dataMartFields = dataMartEntity.getAllFields();
 			for (IModelField dataMartField : dataMartFields){
@@ -73,8 +77,7 @@ public class QueryBuilderDropHavingListener extends ViewerDropAdapter {
         } else if(selectionData instanceof IModelField){
         	addTableRow((TableViewer)viewer,(IModelField)selectionData);
         }
-        
-			
+	
 		return true;
 	}
 
@@ -95,11 +98,11 @@ public class QueryBuilderDropHavingListener extends ViewerDropAdapter {
         nullStringArray[0] = "null";
         
         String[] values = new String[1];
-        nullStringArray[0] = dataMartField.getUniqueName();
+        values[0] = dataMartField.getUniqueName();
         
-        Operand leftOperand = new Operand(values, dataMartField.getParent().getName()+" : "+dataMartField.getName(), AbstractStatement.OPERAND_TYPE_FIELD, nullStringArray, nullStringArray, null);
+        Operand leftOperand = new Operand(values, dataMartField.getParent().getName()+" : "+dataMartField.getName(), AbstractStatement.OPERAND_TYPE_FIELD, nullStringArray, nullStringArray, AggregationFunctions.NONE_FUNCTION);
         query = queryBuilder.getQuery();
-		query.addHavingField("having"+counter, "having"+counter, false, leftOperand, null, null, "AND");
+		query.addHavingField("Having"+counter, "having"+counter, false, leftOperand, null, null, "AND");
         tableViewer.setInput(query.getHavingFields());
         tableViewer.refresh();
 		counter++;

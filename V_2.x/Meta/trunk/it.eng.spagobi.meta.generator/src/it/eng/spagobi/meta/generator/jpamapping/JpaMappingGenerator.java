@@ -64,8 +64,10 @@ public class JpaMappingGenerator implements IGenerator {
 	 *   The Velocity template directory
 	 */
 	private File templateDir;
+	private File tableTemplate;
+	private File keyTemplate;	
 	private File baseOutputDir;
-	
+
 	public JpaMappingGenerator() {
 		String templatesDirRelativePath;
 		
@@ -79,6 +81,8 @@ public class JpaMappingGenerator implements IGenerator {
 			}
 			templateDir = RL.getFile(templatesDirRelativePath);
 			logger.debug("Template dir is equal to [{}]", templateDir);
+			tableTemplate = new File(templateDir, "sbi_table.vm");
+			keyTemplate = new File(templateDir, "sbi_pk.vm");
 		} catch (Throwable t) {
 			logger.error("Impossible to resolve folder [" + templatesDirRelativePath + "]", t);
 		} finally{
@@ -131,10 +135,10 @@ public class JpaMappingGenerator implements IGenerator {
 		logger.info("Creating mapping for business class [{}]", table.getName());
 		
 		JpaTable jpaTable = new JpaTable(table);
-		createFile("sbi_table.vm", jpaTable, jpaTable.getClassName());
+		createFile(tableTemplate, jpaTable, jpaTable.getClassName());
 		if (jpaTable.hasCompositeKey()) {
 			logger.info("Creating mapping for composite PK of business table [{}]", table.getName());
-			createFile("sbi_pk.vm",jpaTable,jpaTable.getCompositeKeyClassName());
+			createFile(keyTemplate, jpaTable, jpaTable.getCompositeKeyClassName());
 		}
 	}
 	
@@ -143,10 +147,10 @@ public class JpaMappingGenerator implements IGenerator {
 		
 		for (PhysicalTable physicalTable : view.getPhysicalTables()) {
 			JpaView jpaView = new JpaView(view, physicalTable);
-			createFile("sbi_table.vm", jpaView, jpaView.getClassName()); 
+			createFile(tableTemplate, jpaView, jpaView.getClassName()); 
 			if (jpaView.hasCompositeKey()) {
 				logger.info("Creating mapping for composite PK of business view [{}]", view.getName());
-				createFile("sbi_pk.vm",jpaView,jpaView.getCompositeKeyClassName());
+				createFile(keyTemplate, jpaView,jpaView.getCompositeKeyClassName());
 			}				
 		}
 	}
@@ -157,28 +161,36 @@ public class JpaMappingGenerator implements IGenerator {
 	 * @param businessTable
 	 * @param jpaTable
 	 */
-	private void createFile(String templateFile, JpaTable jpaTable, String className){
-		Template template;
+	private void createFile(File templateFile, JpaTable jpaTable, String className){
+
 		VelocityContext context;
 		
 		logger.debug("IN. createFile. templateFile="+templateFile+" className="+className+ " jpaTable="+jpaTable.getClassName());
 		
-		FileWriter fileWriter=null;
+	    context = new VelocityContext();
+	    context.put("physicalTable", jpaTable.getPhysicalTable()); //$NON-NLS-1$
+        context.put("jpaTable", jpaTable ); //$NON-NLS-1$
+        
+        File outputDir = new File(baseOutputDir, StringUtil.strReplaceAll(jpaTable.getPackage(), ".", "/") );
+		outputDir.mkdirs();
+		
+		File outputFile = new File(outputDir, className+".java");
+		
+        createFile(templateFile, outputFile, context);
+
+	}
+	
+	private void createFile(File templateFile, File outputFile, VelocityContext context) {
+		Template template;
+		
 		try {
-			template = Velocity.getTemplate( templateFile );
+			template = Velocity.getTemplate( templateFile.getName() );
 		} catch (Throwable t) {
 			throw new GenerationException("Impossible to load template file [" + templateFile + "]");
 		}
 		
-	    context = new VelocityContext();
-	    context.put("physicalTable", jpaTable.getPhysicalTable()); //$NON-NLS-1$
-        context.put("jpaTable",jpaTable ); //$NON-NLS-1$
-        
+		FileWriter fileWriter = null;
 		try {
-			File outputDir = new File(baseOutputDir, StringUtil.strReplaceAll(jpaTable.getPackage(), ".", "/") );
-			outputDir.mkdirs();
-			
-			File outputFile = new File(outputDir, className+".java");
 			fileWriter = new FileWriter(outputFile);
 			
 			template.merge(context, fileWriter);
@@ -189,17 +201,12 @@ public class JpaMappingGenerator implements IGenerator {
 			logger.error("Impossible to generate output file from template file [" + templateFile + "]",e);
 			throw new GenerationException("Impossible to generate output file from template file [" + templateFile + "]");
 		}	
-		logger.debug("OUT");
 	}
 	
 	
 	// =======================================================================
 	// ACCESSOR METHODS
 	// =======================================================================
-	
-	private void createPackage(String path){
-		FileUtil.mkdir(path);
-	}
 	
 	
 	public File getTemplateDir() {

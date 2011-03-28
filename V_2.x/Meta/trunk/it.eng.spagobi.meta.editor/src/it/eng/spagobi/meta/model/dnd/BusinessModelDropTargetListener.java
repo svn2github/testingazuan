@@ -317,26 +317,6 @@ public class BusinessModelDropTargetListener extends ViewerDropAdapter {
 		
 	}
 	
-	/*
-	@Override
-	public void dragOver(DropTargetEvent event)
-	{
-		//System.err.println("dragOver: "+event);
-		super.dragOver(event);
-		
-		Object target = getCurrentTarget();
-
-		if ((target instanceof BusinessColumnSet)  ){
-			event.feedback = DND.FEEDBACK_SELECT;
-			event.detail = DND.DROP_MOVE;
-		}
-		else if ( (target instanceof BusinessRootItemProvider) || (target instanceof BusinessColumn) ){
-			event.detail = DND.DROP_MOVE;
-		}
-		else {
-			event.detail = DND.DROP_NONE;
-		}
-	}
-	*/
+	
 
 }

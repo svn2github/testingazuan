@@ -65,6 +65,7 @@ public class JpaMappingGenerator implements IGenerator {
 	 */
 	private File templateDir;
 	private File tableTemplate;
+	private File viewTemplate;
 	private File keyTemplate;	
 	private File baseOutputDir;
 
@@ -82,6 +83,7 @@ public class JpaMappingGenerator implements IGenerator {
 			templateDir = RL.getFile(templatesDirRelativePath);
 			logger.debug("Template dir is equal to [{}]", templateDir);
 			tableTemplate = new File(templateDir, "sbi_table.vm");
+			viewTemplate = new File(templateDir, "sbi_view.vm");
 			keyTemplate = new File(templateDir, "sbi_pk.vm");
 		} catch (Throwable t) {
 			logger.error("Impossible to resolve folder [" + templatesDirRelativePath + "]", t);
@@ -146,14 +148,15 @@ public class JpaMappingGenerator implements IGenerator {
 		logger.info("Creating mapping for business view [{}]", view.getName());
 		
 		for (PhysicalTable physicalTable : view.getPhysicalTables()) {
-			JpaViewInnerTable jpaView = new JpaViewInnerTable(view, physicalTable);
-			createJavaFile(tableTemplate, jpaView, jpaView.getClassName()); 
-			if (jpaView.hasCompositeKey()) {
+			JpaViewInnerTable jpaViewInnerTable = new JpaViewInnerTable(view, physicalTable);
+			createJavaFile(tableTemplate, jpaViewInnerTable, jpaViewInnerTable.getClassName()); 
+			if (jpaViewInnerTable.hasCompositeKey()) {
 				logger.info("Creating mapping for composite PK of business view [{}]", view.getName());
-				createJavaFile(keyTemplate, jpaView,jpaView.getCompositeKeyClassName());
+				createJavaFile(keyTemplate, jpaViewInnerTable,jpaViewInnerTable.getCompositeKeyClassName());
 			}				
 		}
-		
+		JpaView jpaView = new JpaView(view);
+		createViewFile(viewTemplate, jpaView);
 	}
 
 	/**
@@ -187,11 +190,11 @@ public class JpaMappingGenerator implements IGenerator {
 	 * @param businessTable
 	 * @param jpaView
 	 */
-	private void createViewFile(File templateFile, JpaViewInnerTable jpaView){
+	private void createViewFile(File templateFile, JpaView jpaView){
 
 		VelocityContext context;
 		
-		logger.debug("IN. createFile. templateFile="+templateFile + " jpaTable="+jpaView.getClassName());
+		logger.debug("IN. createFile. templateFile="+templateFile + " jpaTable=" + jpaView.getBusinessView().getName());
 		
 	    context = new VelocityContext();
         context.put("jpaView", jpaView ); //$NON-NLS-1$

@@ -156,7 +156,7 @@ public class JpaViewInnerTable extends JpaTable {
 	@Override
 	public String getClassName() {
 		String name;
-		name = StringUtil.tableNameToVarName(physicalTable.getName());
+		name = StringUtil.tableNameToVarName(businessView.getName() + "_" + physicalTable.getName());
 		name = StringUtil.initUpper(name);
 		return name;
 	}

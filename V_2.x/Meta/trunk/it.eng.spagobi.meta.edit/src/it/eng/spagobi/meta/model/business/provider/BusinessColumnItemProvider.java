@@ -184,7 +184,6 @@ public class BusinessColumnItemProvider
 		 result = null;
 		 
 		 if(commandClass == AddToIdentifierCommand.class) {
-			 System.err.println(">>> " + commandClass.getName() + " <<<");
 			 result = new AddToIdentifierCommand(domain, commandParameter);
 		 }
 		 

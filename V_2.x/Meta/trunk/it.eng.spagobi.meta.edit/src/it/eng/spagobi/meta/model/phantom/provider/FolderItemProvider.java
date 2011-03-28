@@ -151,19 +151,14 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 	  {  
 		Collection newChildDescriptors;
 		if(object instanceof EObject){
-			System.err.println("delegate: " + object.getClass().getName());
-			System.err.println("adapter: " + getAdapterFactory().getClass().getName());
 			
 			newChildDescriptors =  super.getNewChildDescriptors(object, editingDomain, sibling);
 		} else {
-			System.err.println("Not an EObject: " + object.getClass().getName());
 			newChildDescriptors = new ArrayList<Object>();
 			collectNewChildDescriptors(newChildDescriptors, object);
 			newChildDescriptors.addAll( super.getNewChildDescriptors(((FolderItemProvider)object).getParentObject(), editingDomain, sibling) );
 		}
 	   
-		System.err.println("Size: " + newChildDescriptors.size());
-		
 	    return newChildDescriptors;
 	  }
 	  

@@ -61,11 +61,7 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor {
 
 	    @Override
 	    public String getText(Object object) {
-	    	//BusinessColumn column = (BusinessColumn)object;
-			//ModelProperty p = column.getProperties().get(property.getPropertyType().getId());
-			
-	    	System.err.println(object);
-	    	//return(p.getValue() == null? "NULL" : p.getValue());
+	    	
 	    	return (String)object;
 	    }
 
@@ -117,7 +113,6 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor {
 
 	@Override
 	public Object getFeature(Object object) {
-		System.err.println("getFeature: " + object.getClass().getName());
 		return ModelPackage.Literals.MODEL_PROPERTY;
 	}
 
@@ -134,8 +129,6 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor {
 	@Override
 	public String getId(Object object) {
 		return property.getPropertyType().getId();
-		//System.err.println("getId: " + ModelPackage.Literals.MODEL_PROPERTY.getName());
-		//return ModelPackage.Literals.MODEL_PROPERTY.getName();
 	}
 
 	@Override
@@ -146,7 +139,6 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor {
 	@Override
 	public Object getPropertyValue(Object object) {
 		ModelProperty p = null;
-		System.err.println(property.getPropertyType().getId() + ": " + property.getValue());
 		if(object instanceof ModelObject) {
 			ModelObject modelObject = (ModelObject)object;
 			p = modelObject.getProperties().get(property.getPropertyType().getId());

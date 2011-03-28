@@ -80,14 +80,12 @@ public class EditBusinessColumnsCommand extends AbstractSpagoBIModelCommand {
 			BusinessColumn c = businessColumnSet.getColumn(column);
 			businessColumnSet.getColumns().remove(c);
 			removedColumns.add(c);
-			//System.err.println("Removed column [" + column.getName() + "]");
 		}
 				
 		columns = getColumnsToAdd(businessColumnSet, selectedColumns);
 		for(PhysicalColumn column: columns) {
 			initializer.addColumn(column, businessColumnSet);
 			addedColumns.add( businessColumnSet.getColumn(column) );
-			//System.err.println("Added column [" + businessTable.getColumn(column).getName() + "]");
 		}
 		
 		this.executed = true;

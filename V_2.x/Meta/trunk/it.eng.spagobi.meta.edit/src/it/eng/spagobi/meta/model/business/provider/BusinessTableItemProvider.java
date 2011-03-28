@@ -264,16 +264,12 @@ public class BusinessTableItemProvider
 		 result = null;
 		 
 		 if(commandClass == EditBusinessColumnsCommand.class) {
-		    	System.err.println(">>> " + commandClass.getName() + " <<<");
 		    	result = new EditBusinessColumnsCommand(domain, commandParameter);
 		    } else if(commandClass == AddBusinessRelationshipCommand.class) {
-		    	System.err.println(">>> " + commandClass.getName() + " <<<");
 		    	result = new AddBusinessRelationshipCommand(domain, commandParameter);
 		    } else if(commandClass == AddIdentifierCommand.class) {
-		    	System.err.println(">>> " + commandClass.getName() + " <<<");
 		    	result = new AddIdentifierCommand(domain, commandParameter);
 		    } else if(commandClass == AddPhysicalTableToBusinessTableCommand.class) {
-		    	System.err.println(">>> " + commandClass.getName() + " <<<");
 		    	result = new AddPhysicalTableToBusinessTableCommand(domain, commandParameter);
 		    }
 		 

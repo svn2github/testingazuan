@@ -50,16 +50,12 @@ public class BusinessRootItemProvider extends FolderItemProvider {
 		 result = null;
 		 
 		 if(commandClass == AddBusinessTableCommand.class) {
-		   	System.err.println(">>> " + commandClass.getName() + " <<<");
 		   	result = new AddBusinessTableCommand(domain, commandParameter);
 		 } else if(commandClass == AddBusinessRelationshipCommand.class) {
-			System.err.println(">>> " + commandClass.getName() + " <<<");
 			result = new AddBusinessRelationshipCommand(domain, commandParameter);
 		 } else if(commandClass == GenerateJPAMappingCommand.class) {
-		    System.err.println(">>> " + commandClass.getName() + " <<<");
 			result = new GenerateJPAMappingCommand(domain, commandParameter);
 		 } else if(commandClass == CreateQueryCommand.class) {
-			System.err.println(">>> " + commandClass.getName() + " <<<");
 			result = new CreateQueryCommand(domain, commandParameter);
 		 } 
 		 
@@ -104,7 +100,6 @@ public class BusinessRootItemProvider extends FolderItemProvider {
 		
 		BusinessRootItemProvider businessRootItemProvider = (BusinessRootItemProvider)object;
 		Object o = businessRootItemProvider.getParentObject();
-		System.err.println("----- PPP: " + o.getClass().getName());
 		
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(o);
@@ -120,20 +115,16 @@ public class BusinessRootItemProvider extends FolderItemProvider {
 	}
 	
 	protected void addCustomColumnPropertyDescriptors(Object object) {
-		System.err.println("debug1");
 		ModelObject modelObject = (ModelObject) object;
 		Iterator<String> it = modelObject.getProperties().keySet().iterator();
 		while (it.hasNext()) {
 			String key = it.next();
-			System.err.println("property: " + key);
-			System.err.println("adapterFactory: " + adapterFactory.getClass().getName());
 			
 			ModelProperty property = modelObject.getProperties().get(key);
 			itemPropertyDescriptors.add(new CustomItemPropertyDescriptor(
 					property, ((ComposeableAdapterFactory) adapterFactory)
 							.getRootAdapterFactory(), getResourceLocator()));
 		}
-		System.err.println("debug2");
 	}
 
 	/**

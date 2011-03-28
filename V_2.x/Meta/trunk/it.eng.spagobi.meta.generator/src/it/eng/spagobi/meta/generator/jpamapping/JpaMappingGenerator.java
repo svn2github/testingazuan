@@ -64,26 +64,21 @@ public class JpaMappingGenerator implements IGenerator {
 	 *   The Velocity template directory
 	 */
 	private File templateDir;
-	private String outputDir=null;
+	private File baseOutputDir;
 	
 	public JpaMappingGenerator() {
 		String templatesDirRelativePath;
 		
 		logger.trace("IN");
-	
-		//Bundle generatorBundle = Platform.getBundle("it.eng.spagobi.meta.generator");
-		
+
 		templatesDirRelativePath = null;
 		try {
-//			IPath path = new Path(Platform.asLocalURL(generatorBundle.getEntry("templates")).getPath());
-//			String templatePath = path.toString();
-//			logger.info("templatePath="+templatePath);
-//			templateDir = new File(templatePath);
 			templatesDirRelativePath = (String)RL.getProperty("jpamapping.templates.dir");
 			if(templatesDirRelativePath == null) {
 				throw new GenerationException("Property [" + "jpamapping.templates.dir" + "] not set");
 			}
 			templateDir = RL.getFile(templatesDirRelativePath);
+			logger.debug("Template dir is equal to [{}]", templateDir);
 		} catch (Throwable t) {
 			logger.error("Impossible to resolve folder [" + templatesDirRelativePath + "]", t);
 		} finally{
@@ -99,13 +94,13 @@ public class JpaMappingGenerator implements IGenerator {
 		if(o instanceof BusinessModel) {
 			model = (BusinessModel)o;
 			try {
-				generateJpaMapping(model, outputDir);
+				this.baseOutputDir = new File(outputDir);
+				generateJpaMapping(model);
 			} catch (Exception e) {
-				e.printStackTrace();
+				throw new GenerationException("An error occur while generating JPA mapping", e);
 			}
 		} else {
-			logger.error("Impossible to create JPA Mapping from an object of type [" + o.getClass().getName() + "]");
-			throw new GenerationException("Impossible to create JPA Mapping from an object of type [" + o.getClass().getName() + "]");
+			throw new GenerationException("Impossible to generate JPA mapping from an object of type [" + o.getClass().getName() + "]");
 		}
 	}
 	
@@ -114,38 +109,46 @@ public class JpaMappingGenerator implements IGenerator {
 	 * @param model BusinessModel
 	 * @param outputFile File
 	 */
-	public void generateJpaMapping(BusinessModel model, String outputDir) throws Exception {
-		this.outputDir=outputDir;
-		BusinessTable businessTable;
+	public void generateJpaMapping(BusinessModel model) throws Exception {
+		
 		Velocity.setProperty("file.resource.loader.path", getTemplateDir().getAbsolutePath());
-		Iterator<BusinessColumnSet> tables=model.getTables().iterator();
-	
+		
+		Iterator<BusinessColumnSet> tables = model.getTables().iterator();
 		while (tables.hasNext()) {
-			Object table = tables.next();
-			if (table instanceof BusinessTable){
-				logger.info("Create Java Class for BC:"+((BusinessTable)table).getName());
-				businessTable = (BusinessTable)table;
-				JpaTable jpaTable=new JpaTable(businessTable);
-				createFile("sbi_table.vm",jpaTable,jpaTable.getClassName());
-				if (jpaTable.hasCompositeKey()) {
-					logger.info("Create Composite PK Java Class for BC:"+((BusinessTable)table).getName());
-					createFile("sbi_pk.vm",jpaTable,jpaTable.getCompositeKeyClassName());
-				}
-			}else if (table instanceof BusinessView){
-				logger.info("Create Java Class for BV:"+((BusinessView)table).getName());
-				
-				List<PhysicalTable> phisicalTables=((BusinessView)table).getPhysicalTables();
-				for (PhysicalTable phyT : ((BusinessView)table).getPhysicalTables()) {
-					JpaView jpaView=new JpaView((BusinessView)table,phyT);
-					createFile("sbi_table.vm",jpaView,jpaView.getClassName()); 
-					if (jpaView.hasCompositeKey()) {
-						logger.info("Create Composite PK Java Class for BV:"+((BusinessView)table).getName());
-						createFile("sbi_pk.vm",jpaView,jpaView.getCompositeKeyClassName());
-					}					
-					
-				}
-			}
+			generateJpaMapping( tables.next()) ;
 		}	
+	}
+	
+	public void generateJpaMapping(BusinessColumnSet columnSet) throws Exception {
+		if (columnSet instanceof BusinessTable) {
+			generateJpaMappingForBusinessTable( (BusinessTable)columnSet );
+		} else if (columnSet instanceof BusinessView) {
+			generateJpaMappingForBusinessView( (BusinessView)columnSet );
+		}
+	}
+	
+	public void generateJpaMappingForBusinessTable(BusinessTable table) throws Exception {
+		logger.info("Creating mapping for business class [{}]", table.getName());
+		
+		JpaTable jpaTable = new JpaTable(table);
+		createFile("sbi_table.vm", jpaTable, jpaTable.getClassName());
+		if (jpaTable.hasCompositeKey()) {
+			logger.info("Creating mapping for composite PK of business table [{}]", table.getName());
+			createFile("sbi_pk.vm",jpaTable,jpaTable.getCompositeKeyClassName());
+		}
+	}
+	
+	public void generateJpaMappingForBusinessView(BusinessView view) throws Exception {
+		logger.info("Creating mapping for business view [{}]", view.getName());
+		
+		for (PhysicalTable physicalTable : view.getPhysicalTables()) {
+			JpaView jpaView = new JpaView(view, physicalTable);
+			createFile("sbi_table.vm", jpaView, jpaView.getClassName()); 
+			if (jpaView.hasCompositeKey()) {
+				logger.info("Creating mapping for composite PK of business view [{}]", view.getName());
+				createFile("sbi_pk.vm",jpaView,jpaView.getCompositeKeyClassName());
+			}				
+		}
 	}
 
 	/**
@@ -154,10 +157,12 @@ public class JpaMappingGenerator implements IGenerator {
 	 * @param businessTable
 	 * @param jpaTable
 	 */
-	private void createFile(String templateFile,JpaTable jpaTable,String className){
-		Template template=null;
-		VelocityContext context=null;
+	private void createFile(String templateFile, JpaTable jpaTable, String className){
+		Template template;
+		VelocityContext context;
+		
 		logger.debug("IN. createFile. templateFile="+templateFile+" className="+className+ " jpaTable="+jpaTable.getClassName());
+		
 		FileWriter fileWriter=null;
 		try {
 			template = Velocity.getTemplate( templateFile );
@@ -167,13 +172,17 @@ public class JpaMappingGenerator implements IGenerator {
 		
 	    context = new VelocityContext();
 	    context.put("physicalTable", jpaTable.getPhysicalTable()); //$NON-NLS-1$
-        //context.put("businessTable", jpaTable.getBusinessTable()); //$NON-NLS-1$
         context.put("jpaTable",jpaTable ); //$NON-NLS-1$
+        
 		try {
-			String path=outputDir+"/"+StringUtil.strReplaceAll(jpaTable.getPackage(), ".", "/");
-			createPackage(path);
-			fileWriter=new FileWriter(path +"/"+className+".java");
+			File outputDir = new File(baseOutputDir, StringUtil.strReplaceAll(jpaTable.getPackage(), ".", "/") );
+			outputDir.mkdirs();
+			
+			File outputFile = new File(outputDir, className+".java");
+			fileWriter = new FileWriter(outputFile);
+			
 			template.merge(context, fileWriter);
+			
 			fileWriter.flush();
 			fileWriter.close();
 		} catch (IOException e) {
@@ -189,7 +198,7 @@ public class JpaMappingGenerator implements IGenerator {
 	// =======================================================================
 	
 	private void createPackage(String path){
-			FileUtil.mkdir(path);
+		FileUtil.mkdir(path);
 	}
 	
 	

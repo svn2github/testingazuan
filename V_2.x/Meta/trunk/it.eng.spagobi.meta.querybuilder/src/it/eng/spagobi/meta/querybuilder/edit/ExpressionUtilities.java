@@ -76,7 +76,7 @@ public class ExpressionUtilities {
 	 * @param connector the new connector
 	 */
 	public static void updateNodeName(ExpressionNode node,String oldFieldName,String newFieldName){
-		ExpressionNode nodeToUpdate = findParentNode(node, oldFieldName);
+		ExpressionNode nodeToUpdate = findNode(node, oldFieldName);
 		if(nodeToUpdate!=null){
 			nodeToUpdate.setValue(newFieldName);
 		}

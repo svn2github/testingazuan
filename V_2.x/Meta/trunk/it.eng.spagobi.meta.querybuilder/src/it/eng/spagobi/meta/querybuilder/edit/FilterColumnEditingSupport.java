@@ -21,9 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.edit;
 
-
-
+import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
@@ -37,11 +37,14 @@ import org.eclipse.jface.viewers.TextCellEditor;
 public class FilterColumnEditingSupport extends EditingSupport {
 
 	private final TableViewer viewer;
+	private QueryBuilder queryBuilder;
+	
 	/**
 	 * @param viewer
 	 */
-	public FilterColumnEditingSupport(TableViewer viewer) {
+	public FilterColumnEditingSupport(TableViewer viewer, QueryBuilder queryBuilder) {
 		super(viewer);
+		this.queryBuilder=queryBuilder;
 		this.viewer = viewer;
 	}
 
@@ -62,18 +65,13 @@ public class FilterColumnEditingSupport extends EditingSupport {
 	}
 
 	@Override
-	protected void setValue(Object element, Object value) {
-		
-//		WhereField elementField = ((WhereField) element);
-//		Query query = QueryProvider.getQuery();
-//		ExpressionUtilities.updateParentOperation(query.getWhereClauseStructure(), "$F{"+whereClause.getName()+"}", whereClause.getBooleanConnector());
-//		viewer.refresh();
-//		
-//		elementField.setName(String.valueOf(value));
-//		viewer.refresh();
-		
-		((WhereField) element).setName(String.valueOf(value));
+	protected void setValue(Object element, Object value) {	
+		WhereField elementField = ((WhereField) element);
+		Query query = queryBuilder.getQuery();
+		ExpressionUtilities.updateNodeName(query.getWhereClauseStructure(), "$F{"+elementField.getName()+"}", "$F{"+String.valueOf(value)+"}");
+		elementField.setName(String.valueOf(value));
 		viewer.refresh();
+
 	}
 
 }

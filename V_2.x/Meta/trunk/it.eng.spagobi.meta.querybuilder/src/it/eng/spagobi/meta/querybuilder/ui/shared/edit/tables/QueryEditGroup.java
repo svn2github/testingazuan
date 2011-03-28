@@ -153,7 +153,7 @@ public class QueryEditGroup extends Composite {
 				return field.getName();
 			}
 		});	
-		col.setEditingSupport(new FilterColumnEditingSupport(viewer));
+		col.setEditingSupport(new FilterColumnEditingSupport(viewer, queryBuilder));
 
 		
 		//Left Operand Column

@@ -21,10 +21,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.commons.resource;
 
+import it.eng.spagobi.commons.exception.SpagoBIPluginException;
+
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Properties;
 
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
@@ -58,6 +67,53 @@ public class DefaultResourceLocator implements IResourceLocator {
 	public URL getBaseURL() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public File getFile(String fileRelativePath) {
+		Bundle bundle = Platform.getBundle(pluginId);
+		//IPath path = new Path(Platform.asLocalURL(generatorBundle.getEntry("templates")).getPath());
+		URL fileURL = bundle.getEntry(fileRelativePath);
+		if(fileURL == null) {
+			throw new SpagoBIPluginException("Impossible to resolve resource [" + fileRelativePath + "] to a valid URL");
+		}
+		try {
+			fileURL = FileLocator.toFileURL(fileURL);
+		} catch (IOException e) {
+			throw new SpagoBIPluginException("Impossible to resolve URL [" + fileRelativePath + "] to a valid local URL");
+		}
+		logger.debug("file [" + fileRelativePath + "] URL is equal to [" + fileURL + "]");
+		
+		URI fileURI = null;
+		try {
+			fileURI = fileURL.toURI();
+		} catch (URISyntaxException e) {
+			throw new SpagoBIPluginException("The URL [" + fileURL + "] is not formatted strictly according to RFC2396 and cannot be converted to a URI", e);
+		}
+		logger.debug("file [" + fileRelativePath + "] URI is equals to [" + fileURL + "]");
+		
+		File file = null;
+		try {
+		file = new File( fileURI );
+		} catch (Throwable t) {
+			throw new SpagoBIPluginException("Impossible to creta a file object from URI [" + fileURI + "]");
+		}
+		
+//		InputStream fileStream = null;
+//		try {
+//			fileURL.openStream();
+//		} catch (IOException e) {
+//			throw new SpagoBIPluginException("An I/O exception occurs while opening file [" + file + "]", e);
+//		} finally {
+//			if(fileStream != null) {
+//				try {
+//					fileStream.close();
+//				} catch (IOException e) {
+//					throw new SpagoBIPluginException("An I/O exception occurs while closing file [" + file + "]", e);
+//				}
+//			}
+//		}
+		
+		return file;
 	}
 
 	@Override

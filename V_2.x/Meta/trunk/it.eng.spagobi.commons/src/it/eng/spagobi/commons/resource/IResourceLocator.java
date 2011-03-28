@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.commons.resource;
 
+import java.io.File;
 import java.net.URL;
 
 /**
@@ -33,6 +34,8 @@ public interface IResourceLocator {
 	   * @return the URL from which all resources are based.
 	   */
 	  URL getBaseURL();
+	  
+	  File getFile(String fileRelativePath);
 
 	  /**
 	   * Returns the description that can be used to create the image resource associated with the key.

@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.wizard;
 
+import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
@@ -103,12 +104,6 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
      * Creates custom control for query editing.
      */
     private Control createPageControl( Composite parent ) {
-        DataSetWizardBase dataSetWizardBase = getOdaWizard();
-        ViewModelStructure datamartStructure = null;
-        if (dataSetWizardBase instanceof SpagoBIDataSetWizard){	
-        	datamartStructure = getQueryBuilder().getModelStructure();
-        }
-      
     	Composite composite = getQueryBuilder().createEditComponents(parent);
         setPageComplete( true );
         return composite;

@@ -82,7 +82,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 				if(queryString.trim().equals("")) {
 					logger.debug("No previously saved query to load");
 				} else {
-					queryBuilder.setQuery( SerializerFactory.getDeserializer("application/json").deserializeQuery(queryString, queryBuilder.getModelStructure().getDataSource()) );
+					queryBuilder.setQuery( SerializerFactory.getDeserializer("application/json").deserializeQuery(queryString, queryBuilder.getDataSource()) );
 				}
 			} else {
 				throw new PartInitException("Editor class [" + this.getClass().getName() + "] is unable to manage input of type [" + editorInput.getClass().getName() + "]");
@@ -154,7 +154,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		
 		queryJSON = null;
 		try {
-			queryJSON = (JSONObject)SerializerFactory.getSerializer("application/json").serialize(query, queryBuilder.getModelStructure().getDataSource(), Locale.ENGLISH);
+			queryJSON = (JSONObject)SerializerFactory.getSerializer("application/json").serialize(query, queryBuilder.getDataSource(), Locale.ENGLISH);
 			logger.debug(queryJSON.toString());	
 		} catch (SerializationException e) {
 			throw new RuntimeException("Impossible to save query", e);

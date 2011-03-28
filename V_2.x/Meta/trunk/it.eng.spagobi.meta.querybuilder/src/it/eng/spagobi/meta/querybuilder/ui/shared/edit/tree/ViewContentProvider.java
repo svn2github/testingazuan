@@ -40,9 +40,9 @@ import org.eclipse.jface.viewers.Viewer;
 
 public class ViewContentProvider implements IStructuredContentProvider, ITreeContentProvider {
 	
-	List<ViewModelEntity> roots = null;
+	List<IModelEntity> roots = null;
 	
-	public ViewContentProvider(List<ViewModelEntity> roots){
+	public ViewContentProvider(List<IModelEntity> roots){
 		this.roots = roots;
 	}
 	

@@ -74,11 +74,7 @@ public class SpagoBIDataSetWizardResultPage extends DataSetWizardPage {
      */
     private Control createPageControl( Composite parent )
     {
-        DataSetWizardBase dataSetWizardBase = this.getOdaWizard();
-        ViewModelStructure datamartStructure = null;
-        if (dataSetWizardBase instanceof SpagoBIDataSetWizard){	
-        	datamartStructure = getQueryBuilder().getModelStructure();
-        }
+      
       Composite composite = getQueryBuilder().createResultsComponents(parent);
         setPageComplete( true );
         return composite;

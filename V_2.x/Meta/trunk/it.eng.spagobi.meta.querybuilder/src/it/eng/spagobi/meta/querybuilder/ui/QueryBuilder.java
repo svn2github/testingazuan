@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui;
 
 
+import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.qbe.query.Query;
@@ -50,14 +51,23 @@ import org.eclipse.swt.widgets.Group;
  */
 public class QueryBuilder {
 	
-	protected ViewModelStructure modelStructure;
+	protected IModelStructure modelView;
 	protected Query query;
+	protected IDataSource dataSource;
 
 	public QueryBuilder(){
-		this.modelStructure = ModelStructureBuilder.build();
+		this.dataSource = ModelStructureBuilder.buildDataSource();
+		this.modelView = ModelStructureBuilder.buildModelView(dataSource);
 		this.query = new Query();
+		
 	}
 	
+	public IDataSource getDataSource() {
+		return dataSource;
+	}
+
+
+
 	public Query getQuery() {
 		return query;
 	}
@@ -66,13 +76,14 @@ public class QueryBuilder {
 		this.query = query;
 	}
 
-	public ViewModelStructure getModelStructure() {
-		return modelStructure;
+	public IModelStructure getModelView() {
+		return modelView;
 	}
 	
 	// this is not good. refactor!
 	public IModelStructure getBaseModelStructure() {
-		return getModelStructure().getDataSource().getModelStructure();
+		//return modelView;
+		return dataSource.getModelStructure();
 	}
 	
 	
@@ -114,7 +125,7 @@ public class QueryBuilder {
 		//*******************************************
 		// Business Model Tree Viewer 
 		//*******************************************
-		ModelTreeViewer businessModelTreeViewer = new ModelTreeViewer(groupBusinessModelTree, modelStructure);
+		ModelTreeViewer businessModelTreeViewer = new ModelTreeViewer(groupBusinessModelTree, dataSource, modelView);
 		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance(),LocalSelectionTransfer.getTransfer()  };
 		businessModelTreeViewer.addDragSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDragListener(businessModelTreeViewer));
 	}

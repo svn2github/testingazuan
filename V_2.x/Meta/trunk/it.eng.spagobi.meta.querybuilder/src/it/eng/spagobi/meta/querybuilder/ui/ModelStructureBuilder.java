@@ -65,11 +65,7 @@ public class ModelStructureBuilder {
 	private static final String jarPath = "resources//JPA//";
 	private static final String boundleName = "it.eng.spagobi.meta.querybuilder";
 	
-	/**
-	 * Build the datamart structure: get the db connection, load the jar files and build the structure
-	 * @return ViewModelStructure: the Model structure with the filters
-	 */
-	public static ViewModelStructure build(){
+	public static IDataSource buildDataSource(){
 		logger.debug("IN: Building the Model Structure..");
 		Map<String, Object> dataSourceProperties = new HashMap<String, Object>();
 		dataSourceProperties.put("connection", buildDBConnection());
@@ -79,8 +75,11 @@ public class ModelStructureBuilder {
 		dataSourceNames.add("foodmart");
 		
 		IDataSource dataSource = getDataSource(dataSourceNames, dataSourceProperties);
+		return dataSource;
+	}
+	
+	public static ViewModelStructure buildModelView(IDataSource dataSource) {
 		IModelStructure iDatamartModelStructure = dataSource.getModelStructure();
-		logger.debug("OUT: ViewModelStructure built for the model names "+dataSourceNames);
 		return new ViewModelStructure(iDatamartModelStructure, dataSource, getTreeFilters());
 	}
 	
@@ -90,7 +89,7 @@ public class ModelStructureBuilder {
 	 * @param dataSourceProperties the data source properties
 	 * @return The IDataSource
 	 */
-	public static IDataSource getDataSource(List<String> modelNames, Map<String, Object> dataSourceProperties) {
+	private static IDataSource getDataSource(List<String> modelNames, Map<String, Object> dataSourceProperties) {
 		logger.debug("IN: Getting the data source for the model names "+modelNames+"..");
 		Bundle generatorBundle = Platform.getBundle(boundleName);
 		String path = null; 

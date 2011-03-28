@@ -183,7 +183,7 @@ public class ResultTableViewer extends TableViewer {
 		Query query = queryBuilder.getQuery();
 		if(!query.isEmpty()){
 			logger.debug("Getting the dataset");
-			this.dataSet =  QbeDatasetFactory.createDataSet(queryBuilder.getModelStructure().getDataSource().createStatement(query));
+			this.dataSet =  QbeDatasetFactory.createDataSet(queryBuilder.getDataSource().createStatement(query));
 			logger.debug("Data set loaded.");
 			logger.debug("Executing the query");
 			dataSet.loadData(offset,pageSize,maxResults);

@@ -21,7 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree;
 
+import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.structure.IModelEntity;
+import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.qbe.model.structure.ViewModelEntity;
 import it.eng.qbe.model.structure.ViewModelStructure;
 
@@ -40,7 +42,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 
-public class ModelTreeViewer extends TreeViewer{
+public class ModelTreeViewer extends TreeViewer {
 
 	private static Logger logger = LoggerFactory.getLogger(ModelTreeViewer.class);
 	
@@ -48,33 +50,34 @@ public class ModelTreeViewer extends TreeViewer{
 	 * Initialize the tree
 	 * @param parent
 	 */
-	public ModelTreeViewer(Composite parent, ViewModelStructure datamartStructure){
+	public ModelTreeViewer(Composite parent, IDataSource dataSource, IModelStructure modelView){
 		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		logger.debug("IN: initializing the datamartTree");
-		List<ViewModelEntity> roots = getDatamartStructureRoot(datamartStructure);
+		List<IModelEntity> roots = getModelViewRootEntities(dataSource, modelView);
 		setContentProvider(new ViewContentProvider(roots));
-		setLabelProvider(new ViewLabelProvider(this,new ModelLabelProvider(datamartStructure.getDataSource())));
+		setLabelProvider(new ViewLabelProvider(this,new ModelLabelProvider(dataSource)));
 		setInput(roots);
 		logger.debug("OUT: datamartTree initialized");
 	}
 	
 	/**
 	 * Get the root entities 
-	 * @param datamartStructure
+	 * @param modelView
 	 * @return
 	 */
-	private List<ViewModelEntity> getDatamartStructureRoot(ViewModelStructure datamartStructure){
+	private List<IModelEntity> getModelViewRootEntities(IDataSource dataSource, IModelStructure modelView){
 		logger.debug("IN: Getting the datamart structure roots");
-		Iterator<String> modelNamesIter = datamartStructure.getModelNames().iterator();
+		Iterator<String> modelNamesIter = modelView.getModelNames().iterator();
 		// TODO GENERICO PER PIU DATAMART
-		List<IModelEntity> datamartEntity = datamartStructure.getRootEntities(modelNamesIter.next());	
-		List<ViewModelEntity> datamartFilterdedEntity = new ArrayList<ViewModelEntity>();
+		List<IModelEntity> modelViewEntities = modelView.getRootEntities(modelNamesIter.next());	
+		List<IModelEntity> modelViewFilteredEntities = new ArrayList<IModelEntity>();
 		
-		for(int i=0; i<datamartEntity.size(); i++){
-			datamartFilterdedEntity.add(new ViewModelEntity (datamartEntity.get(i), datamartStructure.getDataSource(), datamartStructure.getQbeTreeFilter()));
-		}
-		logger.debug("IN: Datamart structure roots loaded");
-		return datamartFilterdedEntity;
+		modelViewFilteredEntities = modelViewEntities;
+//		for(int i=0; i<modelViewEntities.size(); i++){
+//			modelViewFilteredEntities.add(new ViewModelEntity (modelViewEntities.get(i), dataSource, modelView.getQbeTreeFilter()));
+//		}
+//		logger.debug("IN: Datamart structure roots loaded");
+		return modelViewFilteredEntities;
 	}
 
 		

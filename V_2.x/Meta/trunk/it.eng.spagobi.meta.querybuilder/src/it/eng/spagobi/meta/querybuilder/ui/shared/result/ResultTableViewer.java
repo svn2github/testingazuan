@@ -95,7 +95,7 @@ public class ResultTableViewer extends TableViewer {
 	 * Add the pagination grid to the result page
 	 * @param groupQueryResult
 	 */
-	public void addPagination(Group groupQueryResult){
+	private void addPagination(Group groupQueryResult){
 	
 		Composite bottonContainer = new Composite(groupQueryResult, SWT.NONE);
 		bottonContainer.setLayout(new RowLayout());

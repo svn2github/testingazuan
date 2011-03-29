@@ -61,6 +61,7 @@ public class QueryBuilder {
 	protected IDataSource dataSource;
 	private int whereFilterCount=1;
 	private int havingFilterCount=1;
+	ResultTableViewer tableViewer = null;
 
 	public QueryBuilder(){
 		this.dataSource = ModelStructureBuilder.buildDataSource();
@@ -175,9 +176,14 @@ public class QueryBuilder {
 	 *  Create Table widget for Query Results
 	 */
 	public ResultTableViewer createResultsTableViewer(Group groupQueryResult){
-		ResultTableViewer tableViewer ;
 		tableViewer = new ResultTableViewer(groupQueryResult, this);
 		return tableViewer;
+	}
+	
+	public void refreshQueryResultPage(){
+		if(tableViewer!=null){
+			tableViewer.updateTable();
+		}
 	}
 
 	public Query addWhereField(IModelField dataMartField){

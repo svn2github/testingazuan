@@ -59,13 +59,11 @@ public class SpagoBIDataSetResultPage extends Composite {
 		groupQueryResult.setLayout(gl_groupQueryResult);
 		
 		tableViewer = builder.createResultsTableViewer(groupQueryResult);
-		
-		
+
 	}
 
 	public void refresh() {
 		tableViewer.updateTable();
-		
 	}
 
 }

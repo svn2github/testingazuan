@@ -51,6 +51,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -77,38 +78,34 @@ public class WhereFieldTable extends AbstractQueryEditTable {
 
 	public WhereFieldTable(Composite container, QueryBuilder queryBuilder) {
 		super(container, SWT.NONE);
-		
 		this.queryBuilder=queryBuilder;
-		setLayout(new GridLayout(1, false));
-		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		setLayout(new GridLayout(2, false));
+		setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true, 1, 1));
 		
 		Label selectFieldLabel = new Label(this, SWT.NONE);
-		selectFieldLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		selectFieldLabel.setLayoutData(new GridData(GridData.BEGINNING  , GridData.BEGINNING , false, false, 1, 1));
 		selectFieldLabel.setText("Where Clause");
 		
-		
-//		Composite bottonContainer = new Composite(container, SWT.NONE);
-//		bottonContainer.setLayout(new RowLayout());
-//		Label lblWhereClauses = new Label(bottonContainer, SWT.CENTER);
-//		lblWhereClauses.setText("Where Clause");
-//		Button cleanButton = new Button(bottonContainer, SWT.PUSH);
+		Button cleanButton = new Button(this, SWT.PUSH);
+		cleanButton.setLayoutData(new GridData(GridData.END  , GridData.FILL  , false, false, 1, 1));
+		cleanButton.setText("Clean");
 
-		tableViewerWhere  = new TableViewer(container, SWT.BORDER | SWT.FULL_SELECTION);
+		tableViewerWhere  = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
 		tableViewerWhere.setColumnProperties(new String[] { "Filter Name", "Left Operand", "Operator","Right Operand", "Is for prompt", "Bol. connector" });
 		
 		Table table = tableViewerWhere.getTable();
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 		
-		createEditWhereColumns(container);
+		createEditWhereColumns(this);
 		
 		tableViewerWhere.setContentProvider(new ArrayContentProvider());
 		Query query = queryBuilder.getQuery();
 		tableViewerWhere.setInput(query.getWhereFields());		
 		
-//		cleanButton.setText("Clean");
-//		cleanButton.addListener(SWT.Selection, new WhereClearListener(tableViewerWhere));
+		cleanButton.addListener(SWT.Selection, new WhereClearListener(tableViewerWhere));
 		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };

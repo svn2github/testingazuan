@@ -53,6 +53,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -75,41 +76,36 @@ public class HavingFieldTable extends AbstractQueryEditTable {
 	private static final Image CHECKED = ImageDescriptor.createFromURL( (URL)RL.getImage("ui.shared.edit.tables.button.checked") ).createImage();
 	private static final Image UNCHECKED = ImageDescriptor.createFromURL( (URL)RL.getImage("ui.shared.edit.tables.button.unchecked") ).createImage();
 
-
-
 	public HavingFieldTable(Composite container, QueryBuilder queryBuilder) {
 		super(container, SWT.NONE);
 		this.queryBuilder = queryBuilder;
 		
-		setLayout(new GridLayout(1, false));
-		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		
+		setLayout(new GridLayout(2, false));
+		setLayoutData(new GridData(GridData.FILL , GridData.FILL, true, true, 1, 1));
+
 		Label selectFieldLabel = new Label(this, SWT.NONE);
-		selectFieldLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		selectFieldLabel.setLayoutData(new GridData(GridData.BEGINNING  , GridData.BEGINNING , false, false, 1, 1));
 		selectFieldLabel.setText("Having Clause");
-
-//		Composite bottonContainer = new Composite(container, SWT.NONE);
-//		bottonContainer.setLayout(new RowLayout());
-//		Label lblHavingClause = new Label(bottonContainer, SWT.NONE);
-//		lblHavingClause.setText("Having Clause");
-//		Button cleanButton = new Button(bottonContainer, SWT.PUSH);
-
-		tableViewerHaving  = new TableViewer(container, SWT.BORDER | SWT.FULL_SELECTION);
+		
+		Button cleanButton = new Button(this, SWT.PUSH);
+		cleanButton.setLayoutData(new GridData(GridData.END  , GridData.FILL  , false, false, 1, 1));
+		cleanButton.setText("Clean");
+		
+		tableViewerHaving  = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
 		tableViewerHaving.setColumnProperties(new String[] { "Filter Name","Function", "Left Operand", "Operator", "Function","Right Operand", "Is for prompt", "Bol. connector" });
 		
 		Table table = tableViewerHaving.getTable();
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 		
-		createEditHavingColumns(container);
+		createEditHavingColumns(this);
 		
 		tableViewerHaving.setContentProvider(new ArrayContentProvider());
 		Query query = queryBuilder.getQuery();
 		tableViewerHaving.setInput(query.getHavingFields());		
 		
-//		cleanButton.setText("Clean");
-//		cleanButton.addListener(SWT.Selection, new HavingClearListener(tableViewerHaving));
+		cleanButton.addListener(SWT.Selection, new HavingClearListener(tableViewerHaving));
 		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };

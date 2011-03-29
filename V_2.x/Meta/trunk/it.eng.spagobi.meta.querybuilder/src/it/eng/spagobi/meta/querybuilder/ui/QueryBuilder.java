@@ -59,8 +59,8 @@ public class QueryBuilder {
 	protected IModelStructure modelView;
 	protected Query query;
 	protected IDataSource dataSource;
-	private int whereFilterCount =0;
-	private int havingFilterCount =0;
+	private int whereFilterCount=1;
+	private int havingFilterCount=1;
 
 	public QueryBuilder(){
 		this.dataSource = ModelStructureBuilder.buildDataSource();

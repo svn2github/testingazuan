@@ -21,24 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables;
 
-import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
-import it.eng.qbe.query.HavingField.Operand;
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.querybuilder.SpagoBIMetaQueryBuilderPlugin;
-import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropHavingListener;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropWhereListener;
 import it.eng.spagobi.meta.querybuilder.edit.BooleanConnectorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.FilterColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.FilterRightOperandColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.HavingBooleanConnectorColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.HavingFilterColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.HavingIsForPromptColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.HavingLeftFunctionColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.HavingOperatorColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.HavingRightFunctionColumnEditingSupport;
-import it.eng.spagobi.meta.querybuilder.edit.HavingRightOperandColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.IsForPromptColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.OperatorColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
@@ -54,11 +44,11 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -120,6 +110,7 @@ public class WhereFieldTable extends AbstractQueryEditTable {
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
 		tableViewerWhere.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropWhereListener(tableViewerWhere, queryBuilder));
+		tableViewerWhere.getTable().addKeyListener(new SelectTableKeyAdapter(queryBuilder) ); 
 	}
 
 	private class WhereClearListener implements Listener{
@@ -228,5 +219,41 @@ public class WhereFieldTable extends AbstractQueryEditTable {
 	public TableViewer getViewer() {
 		return tableViewerWhere;
 	}
+	
+	private class SelectTableKeyAdapter extends KeyAdapter {
+		QueryBuilder queryBuilder;
+		
+		public SelectTableKeyAdapter(QueryBuilder queryBuilder) {
+			this.queryBuilder = queryBuilder;
+		}
+		
+		public void keyPressed(KeyEvent e)	{
+			logger.trace("IN");
+				
+			if (e.keyCode == SWT.DEL)
+			{
+				logger.debug("Delete pressed");
+				int[] selectionIndices = tableViewerWhere.getTable().getSelectionIndices();
+				logger.debug("Number of selected elements is equals to [{}]",selectionIndices.length);
+				int indexLength = selectionIndices.length;
+				Query query = queryBuilder.getQuery();
+				if (indexLength > 0)
+				{
+					logger.debug("Number of selection field in query is equal to [{}]", query.getSelectFields(false).size());
+					for (int i = 0; i < indexLength; i++){		
+						query.removeWhereField(selectionIndices[i]);
+						logger.debug("Successfully removed query selection field at index equal to [{}]", selectionIndices[i]);
+					}
+					logger.debug("Number of selection field in query is equal to [{}]", query.getWhereFields().size());
+					//Assert.assertTrue("Unable to delete alla select fields from query", selectFieldsNumber - query.getSelectFields(false).size() == indexLength);
+					tableViewerWhere.setInput(query.getWhereFields());
+					tableViewerWhere.refresh();
+				}
+			}
+			logger.trace("OUT");
+		}
+	}
+	
+	
 	
 }

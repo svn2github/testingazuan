@@ -37,7 +37,6 @@ import it.eng.spagobi.meta.querybuilder.edit.HavingRightFunctionColumnEditingSup
 import it.eng.spagobi.meta.querybuilder.edit.HavingRightOperandColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
-
 import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -49,11 +48,11 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -115,6 +114,7 @@ public class HavingFieldTable extends AbstractQueryEditTable {
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
 		tableViewerHaving.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropHavingListener(tableViewerHaving, queryBuilder));
+		tableViewerHaving.getTable().addKeyListener(new SelectTableKeyAdapter(queryBuilder) ); 
 	}
 
 	private class HavingClearListener implements Listener{
@@ -255,6 +255,41 @@ public class HavingFieldTable extends AbstractQueryEditTable {
 		col.setEditingSupport(new HavingBooleanConnectorColumnEditingSupport(tableViewerHaving));
 
 	}
+	
+	private class SelectTableKeyAdapter extends KeyAdapter {
+		QueryBuilder queryBuilder;
+		
+		public SelectTableKeyAdapter(QueryBuilder queryBuilder) {
+			this.queryBuilder = queryBuilder;
+		}
+		
+		public void keyPressed(KeyEvent e)	{
+			logger.trace("IN");
+				
+			if (e.keyCode == SWT.DEL)
+			{
+				logger.debug("Delete pressed");
+				int[] selectionIndices = tableViewerHaving.getTable().getSelectionIndices();
+				logger.debug("Number of selected elements is equals to [{}]",selectionIndices.length);
+				int indexLength = selectionIndices.length;
+				Query query = queryBuilder.getQuery();
+				if (indexLength > 0)
+				{
+					logger.debug("Number of selection field in query is equal to [{}]", query.getSelectFields(false).size());
+					for (int i = 0; i < indexLength; i++){		
+						query.removeHavingField(selectionIndices[i]);
+						logger.debug("Successfully removed query selection field at index equal to [{}]", selectionIndices[i]);
+					}
+					logger.debug("Number of selection field in query is equal to [{}]", query.getHavingFields().size());
+					//Assert.assertTrue("Unable to delete alla select fields from query", selectFieldsNumber - query.getSelectFields(false).size() == indexLength);
+					tableViewerHaving.setInput(query.getHavingFields());
+					tableViewerHaving.refresh();
+				}
+			}
+			logger.trace("OUT");
+		}
+	}
+	
 	
 	
 	public TableViewer getViewer() {

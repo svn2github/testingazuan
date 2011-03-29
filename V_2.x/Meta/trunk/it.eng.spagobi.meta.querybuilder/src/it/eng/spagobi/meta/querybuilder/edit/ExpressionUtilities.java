@@ -102,4 +102,53 @@ public class ExpressionUtilities {
 		return null;
 	}
 	
+	/**
+	 * Remove a node from the Expression..
+	 * In general.. it searches in the tree for the node to remove..
+	 * When it finds the node, the method removes the parent node (the parent node is
+	 * the operation of the node to remove).. The children of the parent node are adopted 
+	 * from the grandparent
+	 * @param granParent
+	 * @param parent
+	 * @param nodeName
+	 * @return the new root of the expression
+	 */
+	public static ExpressionNode removeNode(ExpressionNode grandParent,ExpressionNode parent,String nodeName){
+		if(grandParent==null){//we are in the root
+			if(parent.getType().equals("NO_NODE_OP")){//the expression contains only one node
+				if(parent.getValue().equals(nodeName)){
+					parent = null;
+				}
+				return parent;
+			}
+		}
+		List<ExpressionNode> children = parent.getChildNodes();
+		if (children!=null && children.size()>0){
+			int i = 0;
+			for(i=0; i<children.size(); i++){
+				if(children.get(i).getValue().equals(nodeName)){
+					break;
+				}
+			}
+			if(i<children.size()){//we have found the node to remove
+				if(grandParent==null){//it works only for binary trees
+					//the parent node is the root and the node to delete is the right child..
+					//so the new root of the expression is the left child
+					return children.get(0);
+				}
+				children.remove(i);
+				grandParent.setValue(parent.getValue());
+				grandParent.setType(parent.getType());
+				grandParent.getChildNodes().remove(parent);
+				grandParent.getChildNodes().addAll(children);
+				parent=null;
+			}else{//we have to continue the search
+				for(i=0; i<children.size(); i++){
+					removeNode(parent, children.get(i), nodeName);
+				}
+			}
+		}
+		return parent;
+	}
+	
 }

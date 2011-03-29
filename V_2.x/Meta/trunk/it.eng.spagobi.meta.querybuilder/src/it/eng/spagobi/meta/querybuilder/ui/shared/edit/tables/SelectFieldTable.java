@@ -32,6 +32,8 @@ import it.eng.spagobi.meta.querybuilder.edit.FunctionColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.GroupColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.IncludeColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.OrderColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.SelectHavingFilterColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.SelectWhereFilterColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.VisibleColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
@@ -70,6 +72,7 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 	private static final IResourceLocator RL = SpagoBIMetaQueryBuilderPlugin.getInstance().getResourceLocator();
 	private static final Image CHECKED = ImageDescriptor.createFromURL( (URL)RL.getImage("ui.shared.edit.tables.button.checked") ).createImage();
 	private static final Image UNCHECKED = ImageDescriptor.createFromURL( (URL)RL.getImage("ui.shared.edit.tables.button.unchecked") ).createImage();
+	private static final Image FILTER = ImageDescriptor.createFromURL( (URL)RL.getImage("ui.shared.edit.tables.button.filter") ).createImage();
 	
 	private static Logger logger = LoggerFactory.getLogger(SelectFieldTable.class);
 
@@ -92,7 +95,7 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
-		createEditSelectColumns(this, viewer);
+		//createEditSelectColumns(this, viewer);
 		
 		viewer.setContentProvider(new ArrayContentProvider());
 		Query query = queryBuilder.getQuery();
@@ -107,10 +110,9 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 		viewer.getTable().addKeyListener(new SelectTableKeyAdapter(queryBuilder) ); 
 	}
 	
-	private void createEditSelectColumns(final Composite parent, final TableViewer viewer){
+	public void createEditSelectColumns(TableViewer tableViewerWhere, TableViewer tableViewerHaving){
 		String[] columnsTitles = { "Entity", "Field", "Alias", "Function", "Order", "Group", "Include", "Visible", "Filter", "Having" };
 		int[] columnsBounds = { 100, 100, 50, 50, 50, 50, 50, 50, 50, 50 };	
-
 		//Entity Column
 		TableViewerColumn col = createTableViewerColumn(columnsTitles[0], columnsBounds[0], 0, viewer);
 		col.setLabelProvider(new ColumnLabelProvider() {
@@ -262,19 +264,30 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				return "placeholder";
+				return null;
+			}
+			
+			@Override
+			public Image getImage(Object element) {
+				return FILTER;
 			}
 		});	
+		col.setEditingSupport(new SelectWhereFilterColumnEditingSupport(tableViewerWhere, queryBuilder));
 		
 		//Having Column
 		col = createTableViewerColumn(columnsTitles[9], columnsBounds[9], 9, viewer);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-//				SelectField field = (SelectField) element;
-				return "placeholder";
+				return null;
+			}
+			
+			@Override
+			public Image getImage(Object element) {
+				return FILTER;
 			}
 		});	
+		col.setEditingSupport(new SelectHavingFilterColumnEditingSupport(tableViewerHaving, queryBuilder));
 	}
 
 	

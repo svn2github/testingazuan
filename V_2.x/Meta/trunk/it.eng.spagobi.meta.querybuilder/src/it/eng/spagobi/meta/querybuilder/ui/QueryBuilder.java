@@ -23,12 +23,19 @@ package it.eng.spagobi.meta.querybuilder.ui;
 
 
 import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
+import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.Query;
+import it.eng.qbe.query.WhereField;
+import it.eng.qbe.query.WhereField.Operand;
+import it.eng.qbe.statement.AbstractStatement;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDragListener;
 import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables.QueryEditGroup;
 import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree.ModelTreeViewer;
 import it.eng.spagobi.meta.querybuilder.ui.shared.result.ResultTableViewer;
+import it.eng.spagobi.tools.dataset.common.query.AggregationFunctions;
+import it.eng.spagobi.tools.dataset.common.query.IAggregationFunction;
 
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.swt.SWT;
@@ -52,6 +59,8 @@ public class QueryBuilder {
 	protected IModelStructure modelView;
 	protected Query query;
 	protected IDataSource dataSource;
+	private int whereFilterCount =0;
+	private int havingFilterCount =0;
 
 	public QueryBuilder(){
 		this.dataSource = ModelStructureBuilder.buildDataSource();
@@ -171,5 +180,59 @@ public class QueryBuilder {
 		return tableViewer;
 	}
 	
+	public Query addWhereField(IModelField dataMartField){
+		return addWhereField(dataMartField.getUniqueName());
+	}
+	
+	public Query addWhereField(String uniqueName){
+		
+//      String[] nullStringArray = new String[1];
+//      nullStringArray[0] = "null";
+		String[] nullStringArray = new String[0];
+      String[] values = new String[1];
+      values[0] = uniqueName;
+      
+      Operand leftOperand = new Operand(values,uniqueName, AbstractStatement.OPERAND_TYPE_FIELD, nullStringArray,nullStringArray);
+      query.addWhereField("Filter"+whereFilterCount, "Filter"+whereFilterCount, true, leftOperand, "NONE", null, "AND");
+      ExpressionNode node = query.getWhereClauseStructure();
+      if(node==null){
+      	node = new ExpressionNode("NO_NODE_OP","$F{Filter" +whereFilterCount+"}");
+      	query.setWhereClauseStructure(node);
+      }else{
+      	//get the previous field
+      	WhereField previousAddedField = (WhereField)query.getWhereFields().get(query.getWhereFields().size()-2);
+      	ExpressionNode operationNode = new ExpressionNode("NODE_OP", previousAddedField.getBooleanConnector());
+      	ExpressionNode filterNode = new ExpressionNode("NO_NODE_OP","$F{Filter" +whereFilterCount+"}");
+      	operationNode.addChild(node);
+      	operationNode.addChild(filterNode);
+      	query.setWhereClauseStructure(operationNode);
+      }
+      whereFilterCount++;
+      return query;
+	}
+	
+	public Query addHavingField(IModelField dataMartField){	
+		return addHavingField(dataMartField.getUniqueName(), AggregationFunctions.NONE_FUNCTION);
+	}
+	
+	public Query addHavingField(String uniqueName, IAggregationFunction aggregation){
+
+		
+//	    String[] nullStringArray = new String[1];
+//	    nullStringArray[0] = "null";
+	    
+		String[] nullStringArray = new String[0];
+		
+	    String[] values = new String[1];
+	    values[0] = uniqueName;
+	    
+	    it.eng.qbe.query.HavingField.Operand leftOperand = new it.eng.qbe.query.HavingField.Operand(values, uniqueName, AbstractStatement.OPERAND_TYPE_FIELD, nullStringArray, nullStringArray,aggregation);
+	    query = getQuery();
+		query.addHavingField("Having"+havingFilterCount, "having"+havingFilterCount, false, leftOperand, null, null, "AND");
+
+        havingFilterCount++;
+        return query;
+		
+	}
 
 }

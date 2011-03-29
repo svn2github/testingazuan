@@ -23,11 +23,7 @@ package it.eng.spagobi.meta.querybuilder.dnd;
 
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
-import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.Query;
-import it.eng.qbe.query.WhereField;
-import it.eng.qbe.query.WhereField.Operand;
-import it.eng.qbe.statement.AbstractStatement;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import java.util.List;
@@ -44,7 +40,6 @@ import org.eclipse.swt.dnd.TransferData;
  *
  */
 public class QueryBuilderDropWhereListener extends ViewerDropAdapter {
-	private static int counter = 1;
 	
 	private Viewer viewer;
 	private QueryBuilder queryBuilder;
@@ -94,33 +89,8 @@ public class QueryBuilderDropWhereListener extends ViewerDropAdapter {
 	}
 	
 	public void addTableRow(TableViewer tableViewer, IModelField dataMartField){
-		Query query;
-                
-        String[] nullStringArray = new String[1];
-        nullStringArray[0] = "null";
-        
-        String[] values = new String[1];
-        values[0] = dataMartField.getUniqueName();
-        
-        Operand leftOperand = new Operand(values,dataMartField.getParent().getName()+" : "+dataMartField.getName(), AbstractStatement.OPERAND_TYPE_FIELD, nullStringArray, nullStringArray);
-        query = queryBuilder.getQuery();
-        query.addWhereField("Filter"+counter, "Filter"+counter, true, leftOperand, "NONE", null, "AND");
-        ExpressionNode node = query.getWhereClauseStructure();
-        if(node==null){
-        	node = new ExpressionNode("NO_NODE_OP","$F{Filter" +counter+"}");
-        	query.setWhereClauseStructure(node);
-        }else{
-        	//get the previous field
-        	WhereField previousAddedField = (WhereField)query.getWhereFields().get(query.getWhereFields().size()-2);
-        	ExpressionNode operationNode = new ExpressionNode("NODE_OP", previousAddedField.getBooleanConnector());
-        	ExpressionNode filterNode = new ExpressionNode("NO_NODE_OP","$F{Filter" +counter+"}");
-        	operationNode.addChild(node);
-        	operationNode.addChild(filterNode);
-        	query.setWhereClauseStructure(operationNode);
-        }
+		Query query = queryBuilder.addWhereField(dataMartField);
         tableViewer.setInput(query.getWhereFields());
         tableViewer.refresh();
-        counter++;
 	}
-
 }

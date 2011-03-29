@@ -23,12 +23,8 @@ package it.eng.spagobi.meta.querybuilder.dnd;
 
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
-import it.eng.qbe.query.HavingField.Operand;
 import it.eng.qbe.query.Query;
-import it.eng.qbe.statement.AbstractStatement;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
-import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables.QueryEditGroup;
-import it.eng.spagobi.tools.dataset.common.query.AggregationFunctions;
 
 import java.util.List;
 
@@ -45,7 +41,6 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class QueryBuilderDropHavingListener extends ViewerDropAdapter {
-	private static int counter = 1;
 	private Viewer viewer;
 	private QueryBuilder queryBuilder;
 	private static Logger logger = LoggerFactory.getLogger(QueryBuilderDropHavingListener.class);
@@ -92,20 +87,10 @@ public class QueryBuilderDropHavingListener extends ViewerDropAdapter {
 	}
 	
 	public void addTableRow(TableViewer tableViewer, IModelField dataMartField){
-		Query query;
-	
-        String[] nullStringArray = new String[1];
-        nullStringArray[0] = "null";
-        
-        String[] values = new String[1];
-        values[0] = dataMartField.getUniqueName();
-        
-        Operand leftOperand = new Operand(values, dataMartField.getParent().getName()+" : "+dataMartField.getName(), AbstractStatement.OPERAND_TYPE_FIELD, nullStringArray, nullStringArray, AggregationFunctions.NONE_FUNCTION);
-        query = queryBuilder.getQuery();
-		query.addHavingField("Having"+counter, "having"+counter, false, leftOperand, null, null, "AND");
+		Query query  = queryBuilder.addHavingField(dataMartField);
         tableViewer.setInput(query.getHavingFields());
         tableViewer.refresh();
-		counter++;
+
 
 	}
 

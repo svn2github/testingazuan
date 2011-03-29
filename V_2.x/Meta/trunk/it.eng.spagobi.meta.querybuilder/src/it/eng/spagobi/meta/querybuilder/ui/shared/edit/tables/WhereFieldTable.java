@@ -21,12 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables;
 
+import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.querybuilder.SpagoBIMetaQueryBuilderPlugin;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropWhereListener;
 import it.eng.spagobi.meta.querybuilder.edit.BooleanConnectorColumnEditingSupport;
+import it.eng.spagobi.meta.querybuilder.edit.ExpressionUtilities;
 import it.eng.spagobi.meta.querybuilder.edit.FilterColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.FilterRightOperandColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.edit.IsForPromptColumnEditingSupport;
@@ -76,6 +78,7 @@ public class WhereFieldTable extends AbstractQueryEditTable {
 	public WhereFieldTable(Composite container, QueryBuilder queryBuilder) {
 		super(container, SWT.NONE);
 		
+		this.queryBuilder=queryBuilder;
 		setLayout(new GridLayout(1, false));
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
@@ -240,7 +243,9 @@ public class WhereFieldTable extends AbstractQueryEditTable {
 				if (indexLength > 0)
 				{
 					logger.debug("Number of selection field in query is equal to [{}]", query.getSelectFields(false).size());
-					for (int i = 0; i < indexLength; i++){		
+					for (int i = indexLength-1; i >=0; i--){	
+						ExpressionNode root = ExpressionUtilities.removeNode(null, query.getWhereClauseStructure(), "$F{"+((WhereField)query.getWhereFields().get(selectionIndices[i])).getName()+"}");
+						query.setWhereClauseStructure(root);
 						query.removeWhereField(selectionIndices[i]);
 						logger.debug("Successfully removed query selection field at index equal to [{}]", selectionIndices[i]);
 					}

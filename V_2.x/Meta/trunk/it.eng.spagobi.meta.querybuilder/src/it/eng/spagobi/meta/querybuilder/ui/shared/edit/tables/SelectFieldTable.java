@@ -326,7 +326,7 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 				if (indexLength > 0)
 				{
 					logger.debug("Number of selection field in query is equal to [{}]", query.getSelectFields(false).size());
-					for (int i = 0; i < indexLength; i++){		
+					for (int i = indexLength-1; i >=0; i++){		
 						query.removeSelectField(selectionIndices[i]);
 						logger.debug("Successfully removed query selection field at index equal to [{}]", selectionIndices[i]);
 					}

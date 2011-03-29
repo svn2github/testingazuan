@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.edit;
 
+import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.Query;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
@@ -65,7 +66,9 @@ public class SelectHavingFilterColumnEditingSupport extends EditingSupport {
 	@Override
 	protected void setValue(Object element, Object value) {
 		DataMartSelectField selectField = ((DataMartSelectField) element);
-		Query query = queryBuilder.addHavingField(selectField.getUniqueName(), selectField.getFunction());
+		IModelField modelField = queryBuilder.getBaseModelStructure().getField(selectField.getUniqueName());
+		String fieldName = modelField.getParent().getName()+" : "+modelField.getName();
+		Query query = queryBuilder.addHavingField(selectField.getUniqueName(), fieldName, selectField.getFunction());
 		if(havingViewer!=null){
 			havingViewer.setInput(query.getHavingFields());
 			havingViewer.refresh();

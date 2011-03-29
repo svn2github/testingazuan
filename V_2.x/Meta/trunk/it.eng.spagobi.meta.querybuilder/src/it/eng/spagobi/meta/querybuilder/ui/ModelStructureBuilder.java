@@ -78,7 +78,7 @@ public class ModelStructureBuilder {
 		return dataSource;
 	}
 	
-	public static ViewModelStructure buildModelView(IDataSource dataSource) {
+	public static IModelStructure buildModelView(IDataSource dataSource) {
 		IModelStructure iDatamartModelStructure = dataSource.getModelStructure();
 		return new ViewModelStructure(iDatamartModelStructure, dataSource, getTreeFilters());
 	}

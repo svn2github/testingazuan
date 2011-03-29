@@ -24,8 +24,6 @@ package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree;
 
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelNode;
-import it.eng.qbe.model.structure.ViewModelEntity;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,9 +57,9 @@ public class ViewContentProvider implements IStructuredContentProvider, ITreeCon
 	public IModelNode[] getChildren(Object parent) {
 		List<IModelNode> children = new ArrayList<IModelNode>();
 		if(parent instanceof IModelEntity){
-			children.addAll(((ViewModelEntity) parent).getAllFields());
-			children.addAll(((ViewModelEntity) parent).getCalculatedFields());
-			children.addAll(((ViewModelEntity) parent).getSubEntities());
+			children.addAll(((IModelEntity) parent).getAllFields());
+			children.addAll(((IModelEntity) parent).getCalculatedFields());
+			children.addAll(((IModelEntity) parent).getSubEntities());
 		}else if(parent instanceof List){
 			return roots.toArray(new IModelEntity[0]);
 		}

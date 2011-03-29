@@ -144,7 +144,9 @@ public class ResultTableViewer extends TableViewer {
 	public void updateTable(){
 		String name;
 		Class type; 
+		
 		//execute the query
+		offset=0;
 		IDataStore dataStore =updateTableData();
 
 		//delete the old columns
